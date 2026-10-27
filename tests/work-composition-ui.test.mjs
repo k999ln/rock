@@ -1,9 +1,11 @@
+import * as recovery from '../lib/eve-pending-recovery.ts';
 import * as handoff from '../lib/eve-text-handoff.ts';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { randomUUID } from 'node:crypto';
 import test from 'node:test';
+import { setTimeout as pause } from 'node:timers/promises';
 import ts from 'typescript';
 import * as composition from '../lib/work-composition.ts';
 import * as view from '../lib/work-composition-view.ts';
@@ -14,7 +16,28 @@ import * as pendingOwner from '../lib/pending-owner-intent.ts';
 import { createWorkJob, updateComposedWork, applyWorkCommand } from '../lib/workflow.ts';
 import { executeCompositionNode } from '../lib/work-composition-executor.ts';
 
-async function harness({ search = '', initialOwner = 'A', initialJobs = [], fingerprintDelay = 0, mode = 'compose', hideList = false, exactHook = null } = {}) {
+// Older supported Node hosts use a test-only Web Locks model. Node 26 uses
+// its actual LockManager; this does not polyfill production browser support.
+function testLockManager() {
+  const tails = new Map(), waiting = new Set(), held = new Set();
+  return {
+    request(name, options, callback) {
+      if (typeof options === 'function') { callback = options; options = { mode: 'exclusive' }; }
+      const lock = { name, mode: options.mode }, previous = tails.get(name) ?? Promise.resolve();
+      let release; const next = new Promise(resolve => { release = resolve; });
+      tails.set(name, next); waiting.add(lock);
+      return (async () => {
+        await previous; waiting.delete(lock); held.add(lock);
+        try { return await callback(lock); }
+        finally { held.delete(lock); release(); if (tails.get(name) === next) tails.delete(name); }
+      })();
+    },
+    async query() { return { held: [...held], pending: [...waiting] }; },
+  };
+}
+const recoveryTestLocks = globalThis.navigator?.locks ?? testLockManager();
+
+async function harness({ search = '', initialOwner = 'A', initialJobs = [], fingerprintDelay = 0, mode = 'compose', hideList = false, exactHook = null, stored = new Map(), storageFailure = false } = {}) {
   const slots = [], effects = [], inFlight = new Set(), jobs = new Map(), requests = [], listeners = new Map();
   let estimateProps;
   let cursor = 0, tree, owner = initialOwner, corruptResponse = false, loseResponse = false, exactFailure = 0, navigationProtected = false;
@@ -89,7 +112,9 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
     return view.compositionPayloadFingerprint(...args);
   })()) };
   const jsx = (type, props) => ({ type, props });
+  const browserStore = { getItem: key => stored.get(key) ?? null, setItem: (key, value) => { if (storageFailure) throw new Error('quota'); stored.set(key, value); }, removeItem: key => stored.delete(key) };
   const window = {
+    localStorage: browserStore,
     get location() { return new URL(href); },
     history: { state: null, replaceState(_state, _title, next) { href = String(next); } },
     addEventListener(name, callback) { if (!listeners.has(name)) listeners.set(name, new Set()); listeners.get(name).add(callback); },
@@ -97,7 +122,7 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
   };
   // Handoff validation hashes the saved source before its next request too.
   const trackedHandoff = { ...handoff, validateEveTextHandoff: (...args) => track(handoff.validateEveTextHandoff(...args)) };
-  const modules = { '@/lib/eve-text-handoff': trackedHandoff,
+  const modules = { '@/lib/eve-pending-recovery': { ...recovery, loadEvePendingRecovery: owner => recovery.loadEvePendingRecovery(owner, browserStore), saveEvePendingRecovery: record => track(recovery.saveEvePendingRecovery(record, browserStore, recoveryTestLocks)), clearEvePendingRecovery: record => track(recovery.clearEvePendingRecovery(record, browserStore, recoveryTestLocks)), prepareEvePendingRecovery: (...args) => track(recovery.prepareEvePendingRecovery(...args)) }, '@/lib/eve-text-handoff': trackedHandoff,
     // Child behavior runs in eve-text-estimate-ui; this harness owns the parent workspace.
     '@/components/eve-text-estimate': props => { estimateProps = props; return null; },
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
@@ -857,4 +882,232 @@ void test('unknown child create plus origin404 retains the original operation un
   assert.equal(app.find('button', '同じ操作で結果を確認'), undefined);
   assert.equal(app.jobs.get('A').size, 1); assert.equal(app.jobs.get('A').get(child.id).composition.source, null);
   assert.equal(app.requests.filter(r => r.method !== 'GET').length, writes);
+});
+
+void test('EVE13: lost preparation create survives a new page without URL; restored lookup is GET-only', async () => {
+  const stored = new Map(), app = await harness({ mode: 'eve-text', stored });
+  const f = await handoffOrigin(app);
+  app.lose(); await f.props.onPrepare(f.draft); await app.flush();
+  const child = app.requests.filter(r => r.payload?.action === 'create').at(-1).payload.jobId;
+  const before = [...app.jobs.get('A').values()].map(j => structuredClone(j)); app.unmount();
+  const reopened = await harness({ mode: 'eve-text', stored, initialJobs: before });
+  assert.ok(reopened.find('button', '同じ操作で結果を確認'), 'reload must retain the unknown operation');
+  assert.equal(reopened.find('button', '新しい仕事').props.disabled, true);
+  await reopened.click('同じ操作で結果を確認');
+  assert.equal(reopened.requests.some(r => r.method !== 'GET'), false);
+  assert.ok(reopened.requests.some(r => r.path.includes(child)));
+  assert.equal(reopened.jobs.get('A').size, before.length);
+  assert.equal(stored.size, 0); reopened.unmount();
+});
+
+async function lostEveCreate() {
+  const stored = new Map(), app = await harness({ mode: 'eve-text', stored });
+  await eveDraft(app); app.lose(); await app.click('確認して仕事を保存');
+  const payload = app.requests.find(r => r.payload?.action === 'create').payload;
+  const jobs = [...app.jobs.get('A').values()].map(j => structuredClone(j)); app.unmount();
+  return { stored, payload, jobs };
+}
+void test('EVE13: unknown404 survives repeated reload and never POSTs or allocates another ID', async () => {
+  const f = await lostEveCreate(), bytes = [...f.stored.values()][0];
+  for (let n = 0; n < 2; n++) {
+    const app = await harness({ mode: 'eve-text', stored: f.stored });
+    await app.click('同じ操作で結果を確認');
+    assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+    assert.equal([...f.stored.values()][0], bytes);
+    assert.equal(app.find('button', '新しい仕事').props.disabled, true);
+    assert.match(app.alerts(), /未確認/); app.unmount();
+  }
+});
+void test('EVE13: owner B cannot look up A target; returning to A permits only the same GET', async () => {
+  const f = await lostEveCreate(), app = await harness({ mode: 'eve-text', stored: f.stored, initialOwner: 'B' });
+  assert.equal(app.find('button', '同じ操作で結果を確認'), undefined);
+  assert.equal(app.requests.some(r => r.path.includes(f.payload.jobId)), false);
+  app.jobs.set('A', new Map(f.jobs.map(j => [j.id, j]))); app.owner('A'); await app.focus();
+  const stale = app.find('button', '同じ操作で結果を確認'); assert.ok(stale);
+  app.owner('B'); await app.focus(); const count = app.requests.length;
+  stale.props.onClick(); await app.flush(); assert.equal(app.requests.length, count);
+  app.owner('A'); await app.focus(); await app.click('同じ操作で結果を確認');
+  assert.equal(f.stored.size, 0); assert.equal(app.requests.some(r => r.method !== 'GET'), false); app.unmount();
+});
+void test('EVE13: malformed ID and extra private fields block lookup without deleting the record', async () => {
+  const f = await lostEveCreate(), [key, raw] = [...f.stored][0];
+  for (const change of [{ jobId: '../foreign' }, { owner: await intent.ownerScopeFor('B') }, { source: 'never persist this' }, { fingerprint: 'x'.repeat(64) }]) {
+    const value = JSON.stringify({ ...JSON.parse(raw), ...change }); f.stored.set(key, value);
+    const app = await harness({ mode: 'eve-text', stored: f.stored, initialJobs: f.jobs });
+    assert.equal(app.requests.some(r => r.path.includes('?jobId=')), false);
+    assert.equal(app.find('button', '新しい仕事').props.disabled, true);
+    assert.equal(f.stored.get(key), value); assert.match(app.alerts(), /確認記録/); app.unmount();
+  }
+});
+void test('EVE13: valid-looking digest tampering never confirms or writes', async () => {
+  const f = await lostEveCreate(), [key, raw] = [...f.stored][0];
+  f.stored.set(key, JSON.stringify({ ...JSON.parse(raw), fingerprint: '0'.repeat(64) }));
+  const app = await harness({ mode: 'eve-text', stored: f.stored, initialJobs: f.jobs });
+  await app.click('同じ操作で結果を確認');
+  assert.equal(f.stored.size, 1); assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+  assert.equal(app.find('button', '新しい仕事').props.disabled, true); app.unmount();
+});
+void test('EVE13: expired preparation lookup can confirm committed create without quote or consent restoration', async () => {
+  const stored = new Map(), app = await harness({ mode: 'eve-text', stored }), f = await handoffOrigin(app);
+  app.lose(); await f.props.onPrepare(f.draft); await app.flush();
+  const saved = [...app.jobs.get('A').values()].map(j => structuredClone(j)); app.unmount();
+  const now = Date.now; Date.now = () => now() + 3600000;
+  try {
+    const reopened = await harness({ mode: 'eve-text', stored, initialJobs: saved });
+    await reopened.click('同じ操作で結果を確認');
+    assert.equal(stored.size, 0); assert.equal(reopened.requests.some(r => r.method !== 'GET'), false);
+    assert.equal(reopened.byId('composition-source').props.value, '');
+    assert.equal(reopened.find('button', 'この手順を実行').props.disabled, true); reopened.unmount();
+  } finally { Date.now = now; }
+});
+void test('EVE13: stop acknowledgement loss restores matching command without rerunning or erasing materials', async () => {
+  const stored = new Map(), app = await harness({ stored });
+  await app.click('文章サンプルを入力'); await app.click('確認して仕事を保存'); await app.consent(); await app.click('この手順を実行');
+  const original = [...app.jobs.get('A').values()][0].composition.source;
+  app.lose(); await app.click('仕事を中止');
+  const saved = [...app.jobs.get('A').values()].map(j => structuredClone(j)); assert.equal(saved[0].status, 'cancelled'); app.unmount();
+  const reopened = await harness({ stored, initialJobs: saved });
+  await reopened.click('同じ操作で結果を確認');
+  assert.equal(stored.size, 0); assert.equal(reopened.requests.some(r => r.method !== 'GET'), false);
+  assert.equal(reopened.jobs.get('A').get(saved[0].id).composition.source, original);
+  assert.equal(reopened.find('button', 'この手順を実行').props.disabled, true); reopened.unmount();
+});
+void test('EVE13: lost material-save response restores operation digest without persisting source', async () => {
+  const stored = new Map(), app = await harness({ mode: 'eve-text', stored });
+  await eveDraft(app); await app.click('確認して仕事を保存'); await app.consent();
+  app.lose(); await app.click('この手順を実行');
+  const saved = [...app.jobs.get('A').values()].map(j => structuredClone(j));
+  const metadata = [...stored.values()].join(''); assert.ok(metadata);
+  assert.equal(metadata.includes(saved[0].composition.source), false);
+  assert.deepEqual(Object.keys(JSON.parse(metadata)).sort(), ['fingerprint','jobId','kind','operationId','owner','revision','version']); app.unmount();
+  const reopened = await harness({ mode: 'eve-text', stored, initialJobs: saved }); await reopened.click('同じ操作で結果を確認');
+  assert.equal(stored.size, 0); assert.equal(reopened.requests.some(r => r.method !== 'GET'), false);
+  assert.equal(reopened.byId('composition-source').props.value, saved[0].composition.source); reopened.unmount();
+});
+void test('EVE13: unknown page resumes only after authentication; a delayed owner switch cannot retire the marker', async () => {
+  const f = await lostEveCreate(); let active = false;
+  const app = await harness({ mode: 'eve-text', stored: f.stored, initialOwner: null, exactHook: ({ switchOwner }) => { if (active) switchOwner('B'); } });
+  assert.equal(app.find('button', '同じ操作で結果を確認'), undefined);
+  app.jobs.set('A', new Map(f.jobs.map(j => [j.id, j]))); app.owner('A'); await app.focus(); active = true;
+  await app.click('同じ操作で結果を確認'); assert.equal(f.stored.size, 1);
+  assert.equal(app.requests.some(r => r.method !== 'GET'), false); app.unmount();
+});
+
+void test('EVE13: storage write refusal prevents dispatch and falsely durable success', async () => {
+  const app = await harness({ mode: 'eve-text', storageFailure: true });
+  await eveDraft(app); await app.click('確認して仕事を保存');
+  assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+  assert.equal(app.jobs.size, 0); assert.ok(app.find('button', '同じ操作で結果を確認')); app.unmount();
+});
+void test('EVE13: cancelled page cannot retire a delayed matching lookup', async () => {
+  const f = await lostEveCreate(); let release, started = false;
+  const app = await harness({ stored: f.stored, initialJobs: f.jobs, exactHook: async () => { started = true; await new Promise(resolve => { release = resolve; }); } });
+  const button = app.find('button', '同じ操作で結果を確認'); button.props.onClick();
+  while (!started) await new Promise(resolve => setImmediate(resolve));
+  app.unmount(); release(); await app.flush();
+  assert.equal(f.stored.size, 1); assert.equal(app.requests.some(r => r.method !== 'GET'), false);
+});
+
+void test('EVE13: captured restored lookup handler is inert after unmount', async () => {
+  const f = await lostEveCreate(), app = await harness({ stored: f.stored, initialJobs: f.jobs });
+  const click = app.find('button', '同じ操作で結果を確認').props.onClick;
+  app.unmount(); const count = app.requests.length; click(); await app.flush();
+  assert.equal(app.requests.length, count); assert.equal(f.stored.size, 1);
+});
+
+void test('EVE13: closing a page while its recovery write waits for a lock prevents dispatch', async () => {
+  const app = await harness();
+  app.input('composition-objective', 'Synthetic queued work');
+  app.input('composition-acceptance', 'Synthetic accepted');
+  const owner = await intent.ownerScopeFor('A');
+  const name = recovery.EVE_PENDING_RECOVERY_PREFIX + owner;
+  let enter, release;
+  const entered = new Promise(resolve => { enter = resolve; });
+  const barrier = new Promise(resolve => { release = resolve; });
+  const held = recoveryTestLocks.request(name, async () => { enter(); await barrier; });
+  await entered;
+  const sending = app.click('確認して仕事を保存');
+  try {
+    let queued = false;
+    for (let attempt = 0; attempt < 100; attempt++) {
+      queued = (await recoveryTestLocks.query()).pending.some(lock => lock.name === name);
+      if (queued) break;
+      await pause(1);
+    }
+    assert.equal(queued, true, 'actual helper write waits for the exclusive lock');
+    app.unmount();
+  } finally { release(); }
+  await held; await sending;
+  assert.equal(app.requests.some(request => request.method !== 'GET'), false);
+  assert.equal(app.jobs.get('A')?.size ?? 0, 0);
+});
+
+async function holdRecoveryOwnerLock(owner = 'A') {
+  const name = recovery.EVE_PENDING_RECOVERY_PREFIX + await intent.ownerScopeFor(owner);
+  let enter, release;
+  const entered = new Promise(resolve => { enter = resolve; });
+  const barrier = new Promise(resolve => { release = resolve; });
+  const done = recoveryTestLocks.request(name, async () => { enter(); await barrier; });
+  await entered;
+  return { name, release, done };
+}
+async function waitForRecoveryLock(held) {
+  for (let attempt = 0; attempt < 200; attempt++) {
+    if ((await recoveryTestLocks.query()).pending.some(lock => lock.name === held.name)) return;
+    await pause(1);
+  }
+  assert.fail('recovery mutation did not reach the controlled lock barrier');
+}
+void test('EVE13: owner change during save wait is freshly checked before a private POST', async () => {
+  const app = await harness();
+  app.input('composition-objective', 'Synthetic A private goal');
+  app.input('composition-acceptance', 'Synthetic accepted');
+  const held = await holdRecoveryOwnerLock(), action = app.click('確認して仕事を保存');
+  let focus;
+  try { await waitForRecoveryLock(held); app.owner('B'); focus = app.focus(); }
+  finally { held.release(); }
+  await held.done; await action; await focus;
+  assert.equal(app.requests.some(request => request.method !== 'GET'), false);
+  assert.equal(app.jobs.get('B')?.size ?? 0, 0);
+  assert.doesNotMatch(app.text(), /Synthetic A private goal/);
+  app.unmount();
+});
+void test('EVE13: owner change during confirmed clear cannot restore previous-owner private UI', async () => {
+  const stored = new Map(), first = await harness({ stored });
+  first.input('composition-objective', 'Synthetic A private goal'); first.input('composition-acceptance', 'Synthetic accepted');
+  first.lose(); await first.click('確認して仕事を保存');
+  const jobs = [...first.jobs.get('A').values()].map(job => structuredClone(job)); first.unmount();
+  const app = await harness({ stored, initialJobs: jobs }), held = await holdRecoveryOwnerLock();
+  const action = app.click('同じ操作で結果を確認'); let focus;
+  try { await waitForRecoveryLock(held); app.owner('B'); focus = app.focus(); }
+  finally { held.release(); }
+  await held.done; await action; await focus;
+  assert.doesNotMatch(app.text(), /Synthetic A private goal/);
+  assert.equal(app.requests.some(request => request.method !== 'GET'), false);
+  app.unmount();
+});
+void test('EVE13: quote expiry during save wait prevents a new preparation create', async () => {
+  const app = await harness({ mode: 'eve-text' }), f = await handoffOrigin(app), held = await holdRecoveryOwnerLock();
+  const originalNow = Date.now, count = app.requests.filter(request => request.payload?.action === 'create').length;
+  const action = f.props.onPrepare(f.draft);
+  try {
+    try { await waitForRecoveryLock(held); Date.now = () => f.draft.expiresAt + 1; }
+    finally { held.release(); }
+    await held.done; await action; await app.flush();
+    assert.equal(app.requests.filter(request => request.payload?.action === 'create').length, count);
+    assert.equal(app.jobs.get('A').size, 1);
+  } finally { Date.now = originalNow; app.unmount(); }
+});
+void test('EVE13: quote expiry during save wait prevents a new preparation source-save run', async () => {
+  const app = await harness({ mode: 'eve-text' }), f = await handoffOrigin(app);
+  await f.props.onPrepare(f.draft); await app.flush(); await app.consent();
+  const held = await holdRecoveryOwnerLock(), originalNow = Date.now;
+  const count = app.requests.filter(request => request.payload?.action === 'run').length;
+  const action = app.click('この手順を実行');
+  try {
+    try { await waitForRecoveryLock(held); Date.now = () => f.draft.expiresAt + 1; }
+    finally { held.release(); }
+    await held.done; await action;
+    assert.equal(app.requests.filter(request => request.payload?.action === 'run').length, count);
+  } finally { Date.now = originalNow; app.unmount(); }
 });

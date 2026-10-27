@@ -1,0 +1,164 @@
+{
+  "schema": "rockstaros.eve13-pending-recovery/1",
+  "recordedAt": "2026-10-27",
+  "baseMain": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+  "primaryWorkstream": "05-web-pwa-sites",
+  "responsibility": "ROCK",
+  "unit": "EVE-13",
+  "relatedExistingTaskRefs": [
+    "OS10",
+    "SKY21",
+    "WEB04",
+    "AI02",
+    "AI05",
+    "AMC02",
+    "SIM01"
+  ],
+  "status": "AUTHOR_CANDIDATE_PENDING_REQUIRED_INDEPENDENT_ASTRA_HIGH",
+  "sourceAndTests": [
+    {
+      "path": "lib/eve-pending-recovery.ts",
+      "sha256": "d43bf264e1f7a661f6be00b6bec4bb2cd4d8334582952de959b6b23527d272c5"
+    },
+    {
+      "path": "components/work-composition-workspace.tsx",
+      "sha256": "cd3867b0451c149626596d242d919a25ea8cb8e9d10eb4213adafef76abc6ed4"
+    },
+    {
+      "path": "tests/eve-pending-recovery.test.mjs",
+      "sha256": "283914e0a2a96d59e61a8ed30061b7f33ca3e5f851c95886d71a19939f3751d4"
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "fbe8ea184c6a4a6767be05940b770fd8dbdff43e03ddf17230885af0409a4f80"
+    }
+  ],
+  "priorWorkRetained": "PR242/243 handoff/unknown404/natural expiry and PR245 Smith/PR246 Pro are base inputs; not reimplemented.",
+  "gap": "Baseline pending operation Map/useState and owner memory hook vanish on unmount/reload. URL carries job only and cannot identify the operation digest/command. Existing private-storage gate and pending-owner validator are reused, no durable owner-specific composition pending journal existed on this base.",
+  "baselineCounterexample": {
+    "command": "node --experimental-strip-types --test --test-name-pattern='EVE13:' tests/work-composition-ui.test.mjs",
+    "tests": 1,
+    "pass": 0,
+    "expectedFail": 1,
+    "message": "reload must retain the unknown operation",
+    "scope": "New first regression on baseline workspace with test harness storage injection/helper available, before product workspace repair."
+  },
+  "primaryValidation": {
+    "relatedCommand": "node --experimental-strip-types --test tests/eve-pending-recovery.test.mjs tests/work-composition-ui.test.mjs tests/eve-text-handoff.test.mjs tests/eve-text-estimate-ui.test.mjs tests/eve-text-job.test.mjs tests/work-composition-view.test.mjs tests/pending-owner-intent.test.mjs tests/zema-private-storage.test.mjs",
+    "tests": 103,
+    "pass": 103,
+    "fail": 0,
+    "skip": 0,
+    "typecheck": "npm run typecheck exit0, including normal private-module generation",
+    "lint": "node_modules/.bin/oxlint lib/eve-pending-recovery.ts components/work-composition-workspace.tsx tests/eve-pending-recovery.test.mjs tests/work-composition-ui.test.mjs exit0",
+    "diffCheck": "git diff --check PASS",
+    "dependencies": "Existing /private/tmp/rock-eve-handoff-20261027/node_modules reused via isolated symlink; package/lock unchanged"
+  },
+  "validationLayers": {
+    "helper": "host WebCrypto + injected synthetic storage",
+    "UI": "VM hook/component harness + real workflow/read-model helpers; synthetic owner/server store",
+    "actualBrowser": "NOT_RUN",
+    "realAuthenticatedHTTP": "NOT_RUN",
+    "production": "NOT_RUN",
+    "fullVerify": "NOT_RUN; central exact candidate release gate"
+  },
+  "independentReview": {
+    "required": true,
+    "routing": "EVE13: Astra/high",
+    "status": "NOT_PERFORMED; central Git/Root must route after finite author turn; no new actor spawned and no self-approval"
+  },
+  "designSupplement": {
+    "purpose": "Retain a passive same-job/same-operation lookup target after composition page or tab loss; no replayable payload is persisted.",
+    "experience": "After current authentication, re-open shared compose or Eve remix; confirmation card locks new operations until the same saved operation is verified by GET. Unsaved text/quote/consent is lost.",
+    "responsibility": "ROCK client validation and lifecycle; existing server authentication/owner-scoped GET remains authority. EXTERNAL browser storage availability; no paid provider dependency.",
+    "inputsOutputs": "Closed version1 record: owner scope, canonical job UUID, operation UUID, kind(create/composition/command), base revision, SHA256 operation fingerprint. Current owner-scoped API read model is the only result source.",
+    "states": "No marker -> explicit existing write may persist a marker before dispatch. Unknown marker -> GET-only pending after reload. Exact matched readback + fresh owner -> clear matching marker. 404/mismatch/401/invalid metadata/storage failure remain unresolved.",
+    "storage": "Reuse readOwnerScope, pendingOwnerStatus and openZemaPrivateStorage with explicit browser localStorage. New namespaced owner key; no original texts, source descriptor, raw quote, file, credential, note, approval or execution grant. No TTL removal of unknown results. Browser profile persistence, not cross-device/account-server backup.",
+    "failure": "Invalid owner/ID/extra fields/digest/revision or unreadable storage blocks new writes. Failed storage write/readback prevents dispatch. Nonmatching or failed deletion retains pending. Compare-before-save/clear prevents simple stale overwrite, but is not a cross-tab atomic lock.",
+    "recovery": "Explicit resumed confirmation uses current owner -> same exact job GET -> stored operation witness/fingerprint -> current owner again. Confirmed historical create/run/cancel is a saved-state read; no new run, no expiry-based replay, no replacement ID. Missing operation audit or noncommitted marker cannot be resolved without authoritative evidence.",
+    "approval": "Recovered metadata is untrusted lookup intent, never authentication or write authority. No consent restored. Fresh writes continue through existing explicit UI consent, current revision, estimate expiry and existing API contracts.",
+    "acceptance": "One baseline lost-create/reload counterexample fails; fixed related103/103 pass including owner A/B, stale handler, ID/digest/extra-field tampering, repeated404/reload, expired committed preparation create, cancelled job/material retention, lost run ack, quota refusal and unmount. Standard typecheck/target lint/diff pass. Independent Astra/high final review is required and pending.",
+    "openDecision": "Central review must decide this bounded EVE-13 slice, integrate design/index/service/workstream and progress metadata in same adopted change, run full verify/exact head+merge SHA CI. Actual browser localStorage/tab-close, real authenticated API persistence, multi-tab atomic exclusivity, all Eve entrypoints, provider/finance/native/public acceptance are not established. Do not drop unresolved markers or add automatic replay to avoid a stuck lookup."
+  },
+  "protectedUnchanged": [
+    {
+      "path": "lib/workflow.ts",
+      "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5"
+    },
+    {
+      "path": "lib/work-store.ts",
+      "sha256": "178c99ee3cc7cb61f51ed6e14548161d3f156ade891163f9c7458ae06f915330"
+    },
+    {
+      "path": "lib/remote-ai-text-store.ts",
+      "sha256": "405efbebbc3455f148ed3ae98f68eb26ffd9d81beff5eee0cf996eeb79903ae6"
+    },
+    {
+      "path": "lib/work-composition.ts",
+      "sha256": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853"
+    },
+    {
+      "path": "app/api/work-jobs/composition/route.ts",
+      "sha256": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab"
+    },
+    {
+      "path": "app/api/work-jobs/route.ts",
+      "sha256": "9f8f91c3652fa24c0275a8a9fa2ba1bbdf601f1b169b18067743454b9e0a731d"
+    },
+    {
+      "path": "lib/zema-private-storage.ts",
+      "sha256": "20b015c71741f422a0b14453e4970648f7113c3e312bf653cf6730386f01f01e"
+    },
+    {
+      "path": "lib/pending-owner-intent.ts",
+      "sha256": "316a9cc1b1897bb59e6c15d1f9c607fc96a9ae53c463b3412054f69d83327d35"
+    },
+    {
+      "path": "lib/eve-text-handoff.ts",
+      "sha256": "42d9da5e576b4f2f3129e8d72015f07fbb5fef00ecc2eb0896a1cded16c167ec"
+    },
+    {
+      "path": "components/eve-text-estimate.tsx",
+      "sha256": "d2f38af5ac499a7215e0ad67ee2ca344aecd20ab9f30aaa6a28ee1dba61f3767"
+    },
+    {
+      "path": "package.json",
+      "sha256": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+    }
+  ],
+  "verificationLogs": [
+    {
+      "file": "eve13-before.log",
+      "sha256": "90aa9e9b55f89956fcf6ea9c7b92b89afbc8f137bf4da9a8c3021f6f427778c2"
+    },
+    {
+      "file": "eve13-related.log",
+      "sha256": "00b88ff434b00e94f484871893acce23a346989784350550f7f3060708173ea4"
+    },
+    {
+      "file": "eve13-typecheck.log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    {
+      "file": "eve13-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "gitHubSaved": false,
+  "mainMerged": false,
+  "wholeEVE13Accepted": false,
+  "paidExecutionAuthorized": false,
+  "publicDeployment": false,
+  "bulk616": "HELD",
+  "metadataSync": "project.md/status/README/design/index not edited under central ownership; central same-change sync required before adoption",
+  "forbiddenEvidence": "docs/evidence/eve-execution-si.json excluded from sparse checkout and not read/copied/hashed",
+  "next": [
+    "Required independent Astra/high review on these source/test hashes; fix findings and keep author/independent evidence distinct",
+    "Central 11-item design/index/workstream/service contract and project/status/README sync + project:update/design:check/full verify",
+    "Central Git save/review/normal main integration and same-head/same-merge-SHA CI proof"
+  ]
+}

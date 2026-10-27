@@ -1,0 +1,236 @@
+{
+  "schema": "rockstaros.eve13-independent-risk-summary/1",
+  "scope": "Portable subset of immutable independent review evidence; full logs/probes retained outside Git",
+  "attempts": [
+    {
+      "attempt": 1,
+      "decision": "CHANGES_REQUESTED",
+      "mustFixCount": 1,
+      "reviewSha256": "37d90fa546fac3386c4476d6ff745bbabe574bb5a7c3fccb3f414dd40d142406",
+      "findings": [],
+      "checks": [
+        {
+          "name": "related regression rerun",
+          "exitCode": 0,
+          "tests": 103,
+          "pass": 103,
+          "fail": 0,
+          "skip": 0,
+          "logSha256": "d78019fd576abdbd0d4d2f41cbffca607a64bb25244b5cbd44ee70c8201febed"
+        },
+        {
+          "name": "independently authored risk probes plus old counterexample on candidate",
+          "exitCode": 0,
+          "tests": 14,
+          "pass": 14,
+          "fail": 0,
+          "skip": 0,
+          "logSha256": "0f25b6ea4535767967fe4cba160fb3f14146d584ea35d9f0033c8dc240d0bfd0"
+        },
+        {
+          "name": "independent fixed-base negative control",
+          "exitCode": 1,
+          "tests": 1,
+          "pass": 0,
+          "logSha256": "17118748bb40fd6db2406e11fafd57500aafdcf12df336654a7814503aa411ca"
+        },
+        {
+          "name": "read-only typecheck (existing generated modules, no pretypecheck writes)",
+          "exitCode": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "target lint and diff whitespace",
+          "exitCode": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "independent additional controlled interleaving preservation counterexample",
+          "exitCode": 1,
+          "tests": 1,
+          "pass": 0,
+          "fail": 1,
+          "logSha256": "1ca80037c9d2f079498ebb5fbc29cf70f70d763c66b39ae5a15ebc3d45be5ead"
+        }
+      ]
+    },
+    {
+      "attempt": 2,
+      "decision": "CHANGES_REQUESTED",
+      "mustFixCount": 2,
+      "reviewSha256": "b2712d6a53044741f1c39c036b079660d156100dbf2681a6b4349e22ddbcbf0d",
+      "findings": [],
+      "checks": [
+        {
+          "name": "related native Node lock regression",
+          "exitCode": 0,
+          "tests": 107,
+          "pass": 107,
+          "fail": 0,
+          "logSha256": "1f5c52bceaf5956fe30f50e2b29d27d56474159b8c6a65577871b51d52de0c1c"
+        },
+        {
+          "name": "R1 independent behavioral probes on R2",
+          "exitCode": 0,
+          "tests": 14,
+          "pass": 14,
+          "fail": 0,
+          "logSha256": "e79824799b2a1cd1e2546d4abc0e2bd692f3c7190dc8f2e279688c62ef65e83a"
+        },
+        {
+          "name": "independent R1 vs R2 lock and clear counterexamples",
+          "exitCode": 0,
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "logSha256": "935855c930c39acf5eb0d5ef43df147f8ac5ab10ebed925a08f8798d64e1b0e4"
+        },
+        {
+          "name": "independent new wait-boundary probes",
+          "exitCode": 1,
+          "tests": 8,
+          "pass": 4,
+          "fail": 4,
+          "logSha256": "98b70b5600ae380ffab4952b230ec128dfbfd66c3a84bd121d315cfaeff5d2ee"
+        },
+        {
+          "name": "native API hidden, author-injected test-only lock model",
+          "exitCode": 0,
+          "tests": 67,
+          "pass": 67,
+          "fail": 0,
+          "logSha256": "d55c1021bdf773c8b5b9677c6c13b2b5326a8f42abf3eb99e2127ae97496668f"
+        },
+        {
+          "name": "exact old base counterexample repeated",
+          "exitCode": 1,
+          "tests": 1,
+          "pass": 0,
+          "logSha256": "f79bc6cd7f4408a4f87432d49b249ed9a45500dd676524a783cc24fb170ea54a"
+        },
+        {
+          "name": "target lint",
+          "exitCode": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "attempt": 3,
+      "decision": "PASS",
+      "mustFixCount": 0,
+      "reviewSha256": "a2a94acbaee5417504f75e9c05af932346e297e698c949ffa26f9d5cee4f380d",
+      "findings": [
+        {
+          "id": "EVE13-R1",
+          "status": "CLOSED_RETAINED",
+          "prior": "R1 both saves successful, B metadata lost",
+          "r3Evidence": "Same independent lock probe continues to observe the old R1 failure, then observes R3 competing save rejected before simulated dispatch and original acknowledged marker retained. Clear shares owner lock and stale clear cannot remove replacement.",
+          "executionLayer": "Actual Node navigator.locks, controlled Storage-like interleaving; not browser multi-tab proof."
+        },
+        {
+          "id": "EVE13-R2-OWNER",
+          "status": "CLOSED",
+          "prior": "R2 owner-during-save sent one stale POST; owner-during-clear retained visible old private objective.",
+          "r3Evidence": {
+            "stalePostCount": 0,
+            "BCommittedJobs": 0,
+            "oldOwnerPrivateVisible": false,
+            "recoveryMutations": 0
+          },
+          "why": "Post-save/clear verifyOwnerNow performs fresh server-derived owner read; change/refusal prevents dispatch/private-state application. Mount and generation fences remain.",
+          "assertions": "Existing wait-boundary probes unchanged; old R2 test names preserved for comparison."
+        },
+        {
+          "id": "EVE13-R2-EXPIRY",
+          "status": "CLOSED",
+          "prior": "R2 lock-wait expiry allowed one new create and one new run.",
+          "r3Evidence": {
+            "newCreateAfterExpiry": 0,
+            "newRunAfterExpiry": 0,
+            "savedJobsInCreateProbe": 1,
+            "historicalExpiredGETOnlyConfirmation": "PASS"
+          },
+          "why": "Pending handoff validation is repeated after storage wait, followed by fresh owner read and final synchronous expiry check before writeAttempted/dispatch. Committed historical recovery does not require an unexpired new-write quote."
+        }
+      ],
+      "checks": [
+        {
+          "name": "unchanged independent R1/R2 probes on fixed R3",
+          "exitCode": 0,
+          "tests": 26,
+          "pass": 26,
+          "fail": 0,
+          "skip": 0,
+          "logSha256": "5f1c334ad9077b52fdbb829543bd4bd1444044e973af6b0063fddcb9c2121a99"
+        },
+        {
+          "name": "related regressions on native host",
+          "exitCode": 0,
+          "tests": 111,
+          "pass": 111,
+          "fail": 0,
+          "skip": 0,
+          "logSha256": "e2db7b76a6bdfd3bda59919de97e219369b79277aac221fa3d9e4bd8aee79c09"
+        },
+        {
+          "name": "native-hidden explicit test model",
+          "exitCode": 0,
+          "tests": 71,
+          "pass": 71,
+          "fail": 0,
+          "skip": 0,
+          "logSha256": "416b529afa5d3e9485172c5e5b4d19b782e9543fadffe0ed042a89d506b25781",
+          "qualification": "Overlaps related tests; Node26.12.1 with native API hidden, not actual Node22/browser. No production fallback."
+        },
+        {
+          "name": "target lint",
+          "exitCode": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "attempt": 4,
+      "decision": "PASS",
+      "reviewSha256": "01de2ac7a00d303d032a28c52eb9fc4634f46dbab45d7e4ddba81b1d444a68cc",
+      "scope": "R3 to R4 mechanical configured-lint delta",
+      "mustFixCount": 0,
+      "checks": [
+        {
+          "name": "unchanged independent risk/wait/lock probes on R4",
+          "exitCode": 0,
+          "tests": 26,
+          "pass": 26,
+          "fail": 0,
+          "skip": 0,
+          "logSha256": "33e040f40c4db2239d4cb1eab328127199d8c3962b369067fd95d1edfde83b7e"
+        },
+        {
+          "name": "actual central configured targeted lint",
+          "exitCode": 0,
+          "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "changed helper test file",
+          "exitCode": 0,
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "skip": 0,
+          "logSha256": "7345258e5d2979f8969c194e20b5685929c5eaf6822e4363ec1fd806f6f4beaf"
+        }
+      ]
+    }
+  ],
+  "requestedModel": "gpt-6-astra",
+  "requestedEffort": "high",
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "layers": "Host actual helper/component with synthetic owner/storage/API and actual Node Web Locks; no live authenticated browser/physical/provider",
+  "sourceChangedByReviewer": false,
+  "wholeUnitAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD"
+}

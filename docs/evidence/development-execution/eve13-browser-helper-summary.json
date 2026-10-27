@@ -1,0 +1,80 @@
+{
+  "schema": "eve13-pro-platform-smoke/1",
+  "recordedAt": "2026-10-27T12:16:27.547144+00:00",
+  "verdict": "PASS_SCOPED_REAL_BROWSER_HELPER_PLATFORM",
+  "mustFix": 0,
+  "authorPacketManifestSha256": "6a53c2ad9c204e5502d208801238e5f389285ecf7becfb40c198a16cf37db089",
+  "actualSourceSha256": "a7d5e7d2728f0143c491b2f36329805443e9e0065398cda5b94c9ad65c78372d",
+  "sourceHashesBefore": {
+    "lib/eve-pending-recovery.ts": "a7d5e7d2728f0143c491b2f36329805443e9e0065398cda5b94c9ad65c78372d",
+    "lib/pending-owner-intent.ts": "316a9cc1b1897bb59e6c15d1f9c607fc96a9ae53c463b3412054f69d83327d35",
+    "lib/owner-intent.ts": "d2cca263a5234db78f4a77d37a5d2c50b39f8fccea6e21462473831604c4fe6d",
+    "lib/zema-private-storage.ts": "20b015c71741f422a0b14453e4970648f7113c3e312bf653cf6730386f01f01e",
+    "lib/work-composition.ts": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5"
+  },
+  "sourceHashesAfter": {
+    "lib/eve-pending-recovery.ts": "a7d5e7d2728f0143c491b2f36329805443e9e0065398cda5b94c9ad65c78372d",
+    "lib/pending-owner-intent.ts": "316a9cc1b1897bb59e6c15d1f9c607fc96a9ae53c463b3412054f69d83327d35",
+    "lib/owner-intent.ts": "d2cca263a5234db78f4a77d37a5d2c50b39f8fccea6e21462473831604c4fe6d",
+    "lib/zema-private-storage.ts": "20b015c71741f422a0b14453e4970648f7113c3e312bf653cf6730386f01f01e",
+    "lib/work-composition.ts": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5"
+  },
+  "sourceUnchanged": true,
+  "fixedPacketFilesStillExact": {
+    "lib/eve-pending-recovery.ts": true,
+    "components/work-composition-workspace.tsx": true,
+    "tests/eve-pending-recovery.test.mjs": true,
+    "tests/work-composition-ui.test.mjs": true,
+    "docs/evidence/development-execution/eve13-pending-recovery.json": true,
+    "docs/evidence/development-execution/eve13-pending-recovery-r2.json": true,
+    "docs/evidence/development-execution/eve13-pending-recovery-r3.json": true,
+    "docs/evidence/development-execution/eve13-pending-recovery-r4.json": true
+  },
+  "browser": "ChatGPT in-app browser id3; real browser via CUA; 1280x720 screenshots",
+  "observations": {
+    "secureContext": true,
+    "realNavigatorLocks": true,
+    "realLocalStorage": true,
+    "twoTabRequestsQueuedBeforeBarrierRelease": 2,
+    "outcomesBeforeRelease": 0,
+    "success": 1,
+    "refused": 1,
+    "bothReadSameWinnerRecord": true,
+    "reloadHelperLoadSameRecord": true,
+    "mismatchedClearRefusedAndRecordPreserved": true,
+    "matchingClearThenHelperAndRawStorageNull": true,
+    "retainedOperationId": "898d5c20-e599-4e9b-82bc-12befe322f83"
+  },
+  "method": "Bundle exact actual TypeScript helper and unchanged imports with existing esbuild. Two same-origin tabs call save without provided storage/lock overrides. A fixture-only origin lock holds mutations until both helper requests have been invoked; release produces one winner. New document reload uses actual load; actual clear refuses loser and removes exact winner. No storage or locks mock.",
+  "fixtureHistory": "First successful trial emitted started immediately before helper invocation. Preserved in first-fixture/. Tightened fixture emits after real helper promise/request invocation and repeated all four scenarios; final observations above are tightened run. Product source unchanged.",
+  "cleanup": {
+    "ownSyntheticKeyCleared": true,
+    "createdTabsClosed": 4,
+    "ownPythonServerStopped": true,
+    "otherTabsKeysServersTouched": false
+  },
+  "boundaries": {
+    "actualAuthenticatedEveUi": false,
+    "realOwnerSession": false,
+    "actualWorkJobOrProvider": false,
+    "realDevice": false,
+    "additionalModelInference": false,
+    "sourceGitOrGlobalMetadataEdits": false,
+    "wholeEVE13Accepted": false,
+    "bulk616": "HOLD"
+  },
+  "originalReviewSha256": "0a588d0012febe53beed1fabc9eeff65e546cc2e53d07bce86278d7384ad7c88",
+  "screenshotsOutsideGit": {
+    "race.png": {
+      "sha256": "2924d48f3b4e8130ae9e4dc3061872e995b3ef8c3bba51acd7f1cb36dbed5290",
+      "bytes": 82732
+    },
+    "clear.png": {
+      "sha256": "d36a2ca5f928a8ab82bc16dca1388f1f3bbc96d6d327ba5c499984d0d382de8b",
+      "bytes": 120991
+    }
+  },
+  "actualAuthenticatedWorkJobUIAccepted": false
+}

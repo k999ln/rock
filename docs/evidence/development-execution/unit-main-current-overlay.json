@@ -1177,6 +1177,34 @@
       "evidence": "docs/evidence/development-execution/pro-work-entry-main-adoption.json",
       "wholeUnitAccepted": false,
       "publicDeployment": false
+    },
+    {
+      "id": "PR246_PRO02_CURRENT",
+      "kind": "current_git_acceptance",
+      "units": [
+        "PRO-02"
+      ],
+      "pr": "https://github.com/k999ln/rock/pull/246",
+      "acceptedHead": "548a60ec14b3224699d73450daab7c6df9ca4d9f",
+      "mainMergeSha": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+      "headCISuccess": 7,
+      "mainCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/pro-work-entry-main-current.json",
+      "wholeUnitAccepted": false,
+      "publicDeployment": false
+    },
+    {
+      "id": "EVE13_PENDING_RECOVERY_R3",
+      "kind": "reviewed_bounded_source_candidate",
+      "units": [
+        "EVE-13"
+      ],
+      "baseMain": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+      "evidence": "docs/evidence/development-execution/eve13-pending-recovery-main-adoption.json",
+      "mainIntegrated": false,
+      "wholeUnitAccepted": false,
+      "physicalAccepted": false,
+      "publicDeployment": false
     }
   ],
   "executionPriority": [

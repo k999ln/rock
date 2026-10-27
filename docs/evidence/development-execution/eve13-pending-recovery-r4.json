@@ -1,0 +1,23 @@
+{
+  "schema": "rockstaros.eve13-r4-lint-delta/1",
+  "baseMain": "8e1aacf382ec81c3f636ef5c59c8145e8329d6c1",
+  "priorR3IndependentReviewSha256": "a2a94acbaee5417504f75e9c05af932346e297e698c949ffa26f9d5cee4f380d",
+  "priorR3CentralConfiguredLint": "failed2 retained /private/tmp/eve13-continuation-20261027/adoption-lint.log",
+  "delta": [
+    "Move synchronous Date.now comparison to module-scope pendingHandoffExpired helper, preserving final post-await call position",
+    "Initialize interleaved secondOutcome as Promise(not-started) to preserve pending async type and existing rejection assertion"
+  ],
+  "validation": {
+    "targetedConfiguredOxlint": "exit0 using central .oxlintrc.json",
+    "focusedPass": 71,
+    "reviewerProbesUnmodifiedPass": 21,
+    "overlappingNotAdded": true
+  },
+  "remaining": [
+    "Independent narrow delta review",
+    "Fullcheckout canonical lint/fullverify",
+    "Pro final review and Git/main/CI"
+  ],
+  "rootIsAuthorNotIndependentReviewer": true,
+  "bulk616": "HOLD"
+}

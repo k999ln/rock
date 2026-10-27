@@ -324,3 +324,7 @@ main9f2bf146へ、UUID参照restore/begin/autosave/resetの固定source2・recei
 ## PRO-02 私有仕事への共通入口（2026-10-27 / ROCK）
 
 既存AMC02/SIM01、B05/WEB13は文脈、統合G04。Pro商品ページの固定link+共通UI契約test2sourceだけを最新main9cb9d148へ無変更採用。ROCKは入口と第一者owner/revision/workflow/保存停止、EXTERNALは外部接続事実、JOINTは認証browser/配備artifact、OWNERは利用account・原稿利用/実行/費用同意。共通10source hashを維持し、related109、local CUA描画、合成handler/実componentと実route SQLiteを別証拠にする。`node --experimental-strip-types --test tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/work-composition-artifact-route.test.mjs tests/work-composition-view.test.mjs tests/pro-account-import.test.mjs sites/avocado-mini/tests/pro-local-import.test.mjs`と固定union全verify/同SHA CIが検証経路。旧3失敗は同じ入口欠落、wholePRO02/本番/実機/公開は未受入。[契約](../rockstaros-complete-design.md#pro-private-work-entry)／[採用記録](../evidence/development-execution/pro-work-entry-main-adoption.json)。
+
+## EVE-13 同操作確認先の再開（2026-10-27）
+
+主担当ROCK/05、統合10/G04。既存AMC02/SIM01、文脈OS10/SKY21/WEB04/AI02/AI05。source4は既存composeへ閉じたmetadataを追加し、同origin Web Locks・待機後本人/期限再照合・同ID GET-onlyを適用。EXTERNAL/JOINT/OWNERと11項目は[正本](../rockstaros-complete-design.md#eve13-pending-recovery)。`node --experimental-strip-types --test tests/eve-pending-recovery.test.mjs tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/work-composition-artifact-route.test.mjs tests/work-composition-view.test.mjs tests/eve-text-handoff.test.mjs`、type/lint/fullverify/design/scanner、独立source/metadata検収と同SHA CIで限定受入する。実認証browser/全入口/実機/wholeunit/公開は別gate。
