@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.49",
+  "version": "1.50",
   "updatedAt": "2026-10-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3009,7 +3009,12 @@
     "genericAttachmentAccepted": false,
     "independentRetentionAclExpiryAccepted": false,
     "productionD1Accepted": false,
-    "mainMerged": true
+    "mainMerged": true,
+    "activationEvidence": "docs/evidence/development-execution/esim-activation-authority-fence.json",
+    "activationReview": "docs/evidence/development-execution/esim-activation-independent-review.json",
+    "activationCurrentAdoptionEvidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
+    "firstActivationCommitFence": true,
+    "activationMainIntegrated": false
   },
   "billingFinalSendAuthority": {
     "authority": "docs/sky-billing.md#billing-final-send-claim",
@@ -3120,7 +3125,8 @@
       "wholePRO01Accepted": false,
       "productionBrowserAuthAccepted": false,
       "existingServerSchemaCryptoUnchanged": true
-    }
+    },
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json"
   },
   "mini02ConeAwareSearch": {
     "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini02-cone-aware-search",
@@ -3407,7 +3413,7 @@
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
     "publicDeployment": false,
-    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json"
   },
   "eveTextHandoff": {
     "authority": "docs/rockstaros-complete-design.md#eve-text-handoff",
@@ -3427,7 +3433,7 @@
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
     "publicDeployment": false,
-    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json"
   },
   "pixelInputBindingRecovery": {
     "authority": "docs/rockstaros-complete-design.md#pixel-input-binding-recovery",
@@ -3443,7 +3449,7 @@
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
     "publicDeployment": false,
-    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json"
   },
   "gameIntakePathTree": {
     "authority": "docs/rockstaros-complete-design.md#game-intake-path-tree",
@@ -3459,6 +3465,24 @@
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
     "publicDeployment": false,
-    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json"
+  },
+  "webopsInstallCompatibility": {
+    "authority": "docs/rockstaros-complete-design.md#webops03-install-compatibility",
+    "toolDesign": "docs/sky-tools-complete-design.md#webops03-install-compatibility",
+    "implementation": [
+      "app/install/page.tsx",
+      "services/sky-web/domain-router.mjs"
+    ],
+    "tests": [
+      "tests/product-domains.test.mjs",
+      "tests/sky-domain-router.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
+    "publicReadbackEvidence": "docs/evidence/development-execution/webops03-domain-release-readback.json",
+    "publicSourceIdentity": "UNKNOWN",
+    "mainIntegrated": false,
+    "publicDeployment": false,
+    "wholeUnitAccepted": false
   }
 }

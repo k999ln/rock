@@ -1,0 +1,50 @@
+{
+  "schema": "rockstaros.pro-eve-forward-current-main-proof/1",
+  "recordedAt": "2026-10-27T06:27:36.283192+00:00",
+  "sourcePR": 243,
+  "acceptedHead": "32637100af9814cbeb95ccc887a419a939d7e24c",
+  "headCISuccess": 7,
+  "mainMergeSha": "927ac79abd9466869e2096e044a62efe9136512d",
+  "mainCISuccess": 6,
+  "allFourWorkflowRunsSucceeded": true,
+  "mainTree": "79b90d025e6c5a8d1917f118c575ba8835922c18",
+  "mainParents": [
+    "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+    "32637100af9814cbeb95ccc887a419a939d7e24c"
+  ],
+  "all22MainBlobsEqualReviewedManifest": true,
+  "RootFinal22ReviewSha256": "25ffd4cdf5f0812a226985f40645e104ee3bce4d8da9fa6cfbb7af010dd93d15",
+  "final22ManifestSha256": "19fbe492018bbe4a0ad4a5c60feb5c29c8ff0fa80a411a1fd9442059e037045f",
+  "headVerify": {
+    "run": 40459735151,
+    "tests": 3116,
+    "pass": 3114,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "a77fcb453faa0c8a793689000bc74138de8299017cf25ab40c7ac0fb939b09f8"
+  },
+  "mainVerify": {
+    "run": 40460418928,
+    "tests": 3116,
+    "pass": 3114,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "7aec16727f28bd60b821190d7d2ec27b8a68854446ba261d9c6b67796b013396"
+  },
+  "priorPR242": {
+    "head": "c84ea37c5209399f188b795f579a6701b0921699",
+    "headCISuccess": 8,
+    "mainMergeSha": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+    "initialMainCISuccess": 6,
+    "initialMainVerifyFailed": true,
+    "failureLogSha256": "7cbd912eb211179a1bc5f21285f77024a93ce75f720d9115d587767436ddacbb",
+    "forwardFixOnlyTestModuleTracking": true,
+    "failureNeverPromotedToSuccess": true
+  },
+  "sourceCaptureReceiptsUnchanged": true,
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "realProviderFinancialAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD"
+}

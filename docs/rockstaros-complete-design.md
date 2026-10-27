@@ -1,3 +1,14 @@
+<a id="webops03-install-compatibility"></a>
+## 旧install URLの互換入口（WEBOPS-03限定候補）
+
+責任・状態・復旧: 主担当05/ROCKは固定URLとdomain router、EXTERNALはDNS/TLS/hosting、JOINTは配備後の同artifact readback、OWNERは公開判断と既存導入同意。状態はsource候補/ローカル検証/ Git保存/main統合/公開配備を分ける。今回の保存対象にprofile/本人情報/原文/資格情報はなく、失敗時は既存/接続案内を再読込する。通常source revertで戻せ、外部installerや任意URLへ飛ばさない。未決定の公開source同一性・全site導線・一般ローンチは配備artifactと実描画の共同検収で決める。
+
+Miniの既存導線と配布用sitemapが示す`https://avoado.si/install/`を、現在の利用開始案内`/connect`へ結ぶ。`app/install/page.tsx`は固定`/connect#`へ一時転送するだけで、既存の本人確認・利用権・機種適合・費用承認を代行しない。`services/sky-web/domain-router.mjs`は`/install`と`/install/`だけを本体へ通し、Miniへのproxyを避ける。似た名前や下層pathは変更しない。
+
+入力は旧URLのGET/HEAD。queryや外部returnToを転送先に使用せず、空fragmentで旧fragmentのブラウザ継承も防ぐ。保存・購入・download・eSIM発行・OS導入は行わず、`/connect`の既存手順と同意を引き続き使う。末尾slashの既存framework正規化は308で同じ`/install`へ移り、その後307で固定先へ進む。この同一pathの正規化hopでは元queryが残るが、`/connect`へは渡さない。転送先の障害時に別installerや外部URLへ自動fallbackしない。
+
+合格条件は実pageとdomain routerの限定試験、元router・外部target・query漏出の負例、実framework HTTP/ブラウザで固定先・query/fragment非継承を確認すること。[証拠](evidence/development-execution/webops03-domain-release-readback.json)は公開3domainのDNS/TLS/HTTP、描画後リンク、Sites管理metadata、ローカル候補を別層で記録する。公開応答にcommit/版がないため配信source同一性は未確認。今回の候補はmain統合・公開配備・一般ローンチの合格ではない。
+
 <a id="wallet-legacy-db-recovery-fixture"></a>
 ## Legacy earning ledgerのSQLite fault/reopen fixture（WALLET-02限定試験候補）
 
@@ -204,6 +215,12 @@ privacy・互換・復旧: 選択前にuploadせず、raw bytes/keyring/logをGi
 
 <a id="esim-runtime-commit-authority"></a>
 ## eSIM利用権からLinux command保存までの現行権限fence
+
+初回利用開始の追補（ESIM-03限定）: 目的はsetup/利用権を読んだ後の撤回・失効でserviceStartAtや最初のissuer windowを起算しないこと。本人の体験は既存ready→同じworkspaceの開始/再開のまま。ROCKはactivateSetupでsetupとliveGrantの固定SELECTを既存read-setへ捕捉し、同じpersist batchで再照合、workspace owner/revision/全payload CASを通す。入力は既存owner/setup ID/workspace ID/server時刻、出力は同じworkspace documentか拒否。grant期限をcall時刻と実SQL commit時刻の双方へ厳密な「>」で照合し、この遷移がissuer windowを追加する時はissuer期限との小さい方を使う。既存issuer predicateは維持し、inactive/既に期限切れのissuerに新windowを追加する方針へ変えない。
+
+保存・失敗・復旧・承認: 否定/row差替え/revision競合/期限切れは同batchをrollbackし、serviceStartAt=null/window0、job/invoice/receiptを増やさない。外部のauthority更新そのものは残す。現在権限の明示修復後に同workspaceを一度だけ開始し、既開始retryは従来のno-write照合として保持する。未知の応答は同IDを読み戻し、自動課金/再発行しない。既存の本人同意・費用・機種適合gateを追加許可へ昇格させない。通常source revertで復旧できるが、保存workspaceを削除しない。
+
+合格・未決定: exact3source/tests・receipt、独立検収123関連/追加込み18（重複加算なし）、旧5leaf反例を保存。owner/revision/同時開始/期限等号・SQL後段rollback/commit後ack喪失はhost合成SQLiteの証拠。全verify/最終headとmain同SHA CIは[今回の採用記録](evidence/development-execution/esim-webops-main-adoption.json)で別記録する。本番D1/HTTP/Provider/実金融/実機・汎用outbox/whole unitは未受入。外部根拠や一般利用可否は既存JOINT/OWNER gateと同一候補の試験で決める。
 
 目的・体験: 既存購入/install/device-keyとsetup/catalogを読んだ後に失効や変更が起きても、新しいadd/run/claim/heartbeatを古い許可で保存しない。本人の依頼は既存予約/仕事/receiptへ一度だけ反映し、拒否時は保存データを保ったまま現在状態を読み直す。SIM/eSIM・利用権・回線profile・OS/client状態は別々に追跡し、SIMへOS binaryを格納する前提は作らない。
 

@@ -328,3 +328,7 @@ BIL02/O5（JOINT）公開実アカウント追補: [本人限定月次Sandbox移
 ## 2026-10-27 bounded follow-up: billing-recurring-quote-binding
 
 主担当ROCK、統合10/G04。[新規見積の既存recurring契約への固定](../rockstaros-complete-design.md#billing-recurring-quote-binding)の11項目を正本とし、[billing-eve-os-game-main-adoption.json](../evidence/development-execution/billing-eve-os-game-main-adoption.json)で固定source・独立検収・全verify・Git保存・main/同SHA CIを分ける。今回のhost/client/static受入をwhole unit・実Provider/金融・実機・一般公開へ転用しない。既存taskとphase gateを維持し、新しい主入口は作らない。
+
+## ESIM-03 初回activation commit fence（2026-10-27 / ROCK）
+
+既存SIM01/BIL02/G04。最新main927ac79aへ、activateSetupだけの固定source1とtests2/receiptを検収済みhashで採用準備。ROCKはsetup/grant/実commit期限/owner-revision CASの同一batch、EXTERNALはissuer/回線/支払い根拠、JOINTは本番D1/実HTTP、OWNERは既存同意・費用を担う。`node --experimental-strip-types --test tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs`で123/123、独立追加境界込み18/18（重複あり）、旧5leaf反例を保持。全verify/CI・Git段階と未決条件は[採用記録](../evidence/development-execution/esim-webops-main-adoption.json)へ。汎用outbox・本番・wholeunit/616公開は保留。

@@ -1,6 +1,10 @@
-Proの私有原本archiveでは、保存結果が不明な間は新しいfileへ置き換えず「Read back same archive」で同じ保存IDを確認してください。本人確認中にcancelしても照合先だけを保持し、内容は隠します。再開には同じaccountの確認と別の保存同意が必要です。[復旧契約](docs/rockstaros-complete-design.md#pro-archive-unknown-recovery)。[PR242のmain初回verify失敗とforward-fix](docs/evidence/development-execution/billing-eve-os-game-main-current.json)を保持し、[Pro/試験harness新候補](docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)のGit/CIとは分けて記録します。
+旧`https://avoado.si/install/`の互換入口は、固定`/connect`の利用開始案内へつなぎます。最終先へquery/fragmentを渡さず、本人確認・利用権・機種適合・費用の既存手順へ進みます。eSIMの初回開始は現在のsetup/利用権を保存時にも照合し、失効/競合時は起算せず同じworkspaceから再開します。[設計・復旧](docs/rockstaros-complete-design.md#esim-runtime-commit-authority)と[今回の限定候補・Git段階](docs/evidence/development-execution/esim-webops-main-adoption.json)を参照してください。公開側の修正配備は未実施です。
 
-Eveの見積条件を予算0の準備仕事へ渡す限定候補を準備中です。保存済の資料で見積もり、通貨と比較上限、別の準備同意を確認して「この条件で準備仕事を作成」へ進みます。原文は元の仕事へ保持し、新仕事の資料保存は別の保存同意後に行います。期限切れ時は元の仕事で見積もり直します。これは有料生成の承認や予約ではありません。[契約と復旧](docs/rockstaros-complete-design.md#eve-text-handoff)、[4候補の検収・Git段階](docs/evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照してください。
+PR242/243はmain `927ac79a`へ統合済みで、同SHA全6CI・4workflowが成功しています。PR242初回main `e7d458f2`の失敗は保持し、[別のcurrent記録](docs/evidence/development-execution/pr242-243-main-current.json)でforward-fix後の状態を確認できます。
+
+Proの私有原本archiveでは、保存結果が不明な間は新しいfileへ置き換えず「Read back same archive」で同じ保存IDを確認してください。本人確認中にcancelしても照合先だけを保持し、内容は隠します。再開には同じaccountの確認と別の保存同意が必要です。[復旧契約](docs/rockstaros-complete-design.md#pro-archive-unknown-recovery)。[PR242のmain初回verify失敗](docs/evidence/development-execution/billing-eve-os-game-main-current.json)を保持し、[PR243で修正・main統合・同SHA CI成功した現在の記録](docs/evidence/development-execution/pr242-243-main-current.json)を別に保存しています。
+
+Eveの見積条件を予算0の準備仕事へ渡す限定機能はPR242/243でmain統合・同SHA CI確認済みです。保存済の資料で見積もり、通貨と比較上限、別の準備同意を確認して「この条件で準備仕事を作成」へ進みます。原文は元の仕事へ保持し、新仕事の資料保存は別の保存同意後に行います。期限切れ時は元の仕事で見積もり直します。これは有料生成の承認や予約ではありません。[契約と復旧](docs/rockstaros-complete-design.md#eve-text-handoff)、[4候補の検収・Git段階](docs/evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照してください。
 
 [PR225](https://github.com/k999ln/rock/pull/225)のzod修正はmain `f4ed492c`へ統合済みです。HEAD `dcf86f99`の全8CI、main統合SHAの全9CI（CodeQLを含む）が成功し、zod警告2件は解消しました。[最終検収・履歴](docs/evidence/development-execution/zod-security-constraint-review.json)をGit保存しています。root・MiniはZod4.6.7、shadcnは上流Zod4対応版4.22.1です。依存・schema互換性試験は `node --test tests/zod-dependency-security.test.mjs`。実機・追加推論・公開の実施は含みません。
 

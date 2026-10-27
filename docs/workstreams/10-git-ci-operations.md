@@ -367,3 +367,7 @@ PR186 CodeQL filesystem race correction: backup paths are never passed back to S
 ## PR242 mainのEve fixture await欠落をforward-fixする
 
 head8CI成功と同treeのmain e7d458f2で、Eve新UI試験がreview前のactiveを読んだ失敗を保存する。既存harnessはfingerprint/HTTPを追跡する一方、新handoff検証のWebCrypto Promiseは追跡外だった。制御した未完了barrierで旧flushだけが早く戻ることを確認し、実validate Promiseを既存trackへ登録する。assertion・sleep・timeout・retry・runtimeは不変。新候補の同head全verifyと通常main/同SHA CIで受け入れ、旧失敗を成功へ書き換えない。[診断](../evidence/development-execution/eve-handoff-test-drain-diagnosis.json)。
+
+## ESIM-03 / WEBOPS-03 有限統合（2026-10-27 / G04・ROCK）
+
+main927ac79aを基点に、独立検収済みeSIM source/tests3とWebOps source/tests4だけを無変更採用。旧base全文書は上書きせず、最新設計へ限定deltaを加える。393task/14gate/固定95の分類とwhole0、Root HEAD/index、616HOLDを保持。PR242初回e7失敗とPR243正常main927全6CI成功は[別current記録](../evidence/development-execution/pr242-243-main-current.json)へ。固定union全verify・scanner/canary・Root最終delta検収→明示path Git→新PR同headCI→通常main同SHA CIを[採用記録](../evidence/development-execution/esim-webops-main-adoption.json)へ保存する。GitHub保存を公開配備へ換算しない。

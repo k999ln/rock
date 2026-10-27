@@ -1,0 +1,463 @@
+{
+  "schema": "rockstaros.webops03-domain-release-readback-and-install-compatibility/1",
+  "recordedAt": "2026-10-27T06:10:20.735402+00:00",
+  "unit": "WEBOPS-03",
+  "taskContext": [
+    "WEB04",
+    "WEB13",
+    "HOME01",
+    "SYS02",
+    "SYS07",
+    "SYS08",
+    "SYS09"
+  ],
+  "primaryWorkstream": "Web / PWA / Sites",
+  "primaryOwner": "ROCK",
+  "status": "SCOPED_PUBLIC_READBACK_AND_LOCAL_COMPATIBILITY_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
+  "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "githubMainReadback": "7ceef8cf2f2e7ced49425413cb93810b37c15e45 at audit start, not a claim about later main",
+  "sourceHashes": {
+    "app/install/page.tsx": "31dc82953bf7223de97e4b7713421182feac759a3daa3b6842c7a4f95ef54bde",
+    "services/sky-web/domain-router.mjs": "b33650c14e9c6db04dce15d866e0161216c5fc5cae3dc0a817c05db7a1fe766d",
+    "tests/product-domains.test.mjs": "e77288dbae3dce3e832fdd5a37f26edebaff977ce2aa142aea784ecbb219605f",
+    "tests/sky-domain-router.test.mjs": "c41b8e7218d875b9d987918e3a9f083647bdb00c6a7538285f0b4c6cf49879c3"
+  },
+  "documentationHashes": {
+    "docs/rockstaros-complete-design.md": "1d1cdef73775a2a315172c9b1421f1091b9e63751818fab6a82847edcb857f4e",
+    "docs/workstreams/05-web-pwa-sites.md": "d18ae9b56e145ae12ddd36cd8ddefbc35232416d0d4719fda9a2fcf23f0a996d"
+  },
+  "publicReadback": {
+    "recordedAt": "2026-10-27T05:53:23.479282+00:00",
+    "domains": [
+      {
+        "hostname": "avoado.si",
+        "dnsA": [
+          "172.66.3.26",
+          "162.159.143.30"
+        ],
+        "tlsVerified": true,
+        "tlsVersion": "TLSv1.3",
+        "certificateSha256": "1243c2238c343d109f04bb4437251427c1a4cb1f08e3e34d29c2c4413f338ccd",
+        "certificateExpires": "Jan 11 17:59:55 2027 GMT",
+        "httpFirstStatus": "HTTP/1.1 302 Found",
+        "httpRedirectTarget": "https://avoado.si/",
+        "httpsStatus": 200,
+        "httpsFinalUrl": "https://avoado.si/",
+        "httpsTitle": [
+          "RockstarOS — 自分のSI環境を、どこからでも"
+        ],
+        "httpsBodySha256": "c97403ca8f10f8c16f53cd17814d420dc7212807e5246456464c2f6de1f05fef",
+        "sourceCommitOrSitesVersionInResponse": false,
+        "publicSourceIdentity": "UNVERIFIED"
+      },
+      {
+        "hostname": "avocadomini.si",
+        "dnsA": [
+          "172.66.3.26",
+          "162.159.143.30"
+        ],
+        "tlsVerified": true,
+        "tlsVersion": "TLSv1.3",
+        "certificateSha256": "b39f69ba4158eb680d3f5b3991ea1f0cbbfc44ac69950f0f9e30c99ea7d0c543",
+        "certificateExpires": "Jan  3 05:49:10 2027 GMT",
+        "httpFirstStatus": "HTTP/1.1 302 Found",
+        "httpRedirectTarget": "https://avocadomini.si/",
+        "httpsStatus": 200,
+        "httpsFinalUrl": "https://avocadomini.si/",
+        "httpsTitle": [
+          "Mini — avokado"
+        ],
+        "httpsBodySha256": "11171cfa2975c9c0b4ce48973be627274f4108632a92650b4e247936e87fd75a",
+        "sourceCommitOrSitesVersionInResponse": false,
+        "publicSourceIdentity": "UNVERIFIED"
+      },
+      {
+        "hostname": "avocadopro.si",
+        "dnsA": [
+          "162.159.143.30",
+          "172.66.3.26"
+        ],
+        "tlsVerified": true,
+        "tlsVersion": "TLSv1.3",
+        "certificateSha256": "6afc546969fd337c447ce02dd6b2af8e572e370c17c76091101c178d5eeb60af",
+        "certificateExpires": "Jan 10 18:26:07 2027 GMT",
+        "httpFirstStatus": "HTTP/1.1 302 Found",
+        "httpRedirectTarget": "https://avocadopro.si/",
+        "httpsStatus": 200,
+        "httpsFinalUrl": "https://avocadopro.si/",
+        "httpsTitle": [
+          "avocadoPro OS — Your work starts here"
+        ],
+        "httpsBodySha256": "1abbbc6df10c2fec4d3af185948b4b48799dc49ff91c59df0ab5b93c9ed25125",
+        "sourceCommitOrSitesVersionInResponse": false,
+        "publicSourceIdentity": "UNVERIFIED"
+      }
+    ],
+    "method": "Unauthenticated read-only DNS dig, system-trust TLS handshake, curl HTTP/HTTPS GET with redirects; no cookies or tokens, no mutation",
+    "responseHtmlVsRenderedDomSeparate": true,
+    "renderedLinks": [
+      {
+        "url": "https://avoado.si/",
+        "title": "RockstarOS — 自分のSI環境を、どこからでも",
+        "readyState": "complete",
+        "menuExpanded": true,
+        "anchorHostnames": [
+          "avoado.si"
+        ],
+        "miniOrProAnchorDetected": false,
+        "scope": "Root plus its expanded Other menu in this observed DOM only; not all pages or all UI states"
+      },
+      {
+        "url": "https://avocadomini.si/",
+        "title": "Mini — avokado",
+        "readyState": "complete",
+        "anchorHostnames": [
+          "avocadomini.si",
+          "avoado.si"
+        ],
+        "proAnchorDetected": false,
+        "observedServiceLinks": [
+          "https://avoado.si/os/eve",
+          "https://avoado.si/os",
+          "https://avoado.si/install/",
+          "https://avoado.si/privacy/"
+        ],
+        "scope": "Observed root DOM only; HTTP /create/ separately contains Pro link"
+      },
+      {
+        "url": "https://avocadopro.si/",
+        "title": "avocadoPro OS — Your work starts here",
+        "readyState": "complete",
+        "anchorHostnames": [
+          "avocadopro.si",
+          "avoado.si",
+          "avocadomini.si"
+        ],
+        "hardwareLink": "https://avocadopro.si/build/",
+        "scope": "Browser preview and hardware-concept links; not runtime or hardware acceptance"
+      }
+    ],
+    "additionalPublicRoutes": [
+      {
+        "url": "https://avoado.si/connect",
+        "status": 200,
+        "bodySha256": "e4db162522ee19de870426be6611e512c5856505ada73fef4cdee3cd7ffa39c5"
+      },
+      {
+        "url": "https://avoado.si/install/",
+        "status": 404,
+        "bodySha256": null
+      },
+      {
+        "url": "https://avoado.si/privacy/",
+        "status": 200,
+        "bodySha256": "1b1efc78a167a52c6c5dbd2132c707109a95fc31687a3cc24361a505c1c7c6ae"
+      },
+      {
+        "url": "https://avocadomini.si/create/",
+        "status": 200,
+        "bodySha256": "bce5f5839f0d5987117321c9bb12e9695d8acab26df4580df02a2ee6bb7ac1e4"
+      },
+      {
+        "url": "https://avocadopro.si/build/",
+        "status": 200,
+        "bodySha256": "12e4eb7ef5b212226c5ded5b4c06644c721d4cd0d6b266c4ade6abc706247deb"
+      }
+    ],
+    "finding": "Rendered Mini Get RockstarOS link targets https://avoado.si/install/; unauthenticated HTTP returns404 while /connect returns200.",
+    "negativeLinkScope": "Root DOMs only, service Other menu expanded. Not a claim that links are absent across whole websites; Mini/create and Pro have cross-product links.",
+    "bodyHashQualification": "Per-response evidence only, not source identity; dynamic/nonces may differ across requests."
+  },
+  "sitesReadback": {
+    "recordedAt": "2026-10-27T06:05:24.692Z",
+    "projects": [
+      {
+        "site": {
+          "id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+          "title": "RockstarOS — 自分のSI環境を、どこからでも",
+          "status": "active",
+          "latest_version_number": 120,
+          "current_live_url": "https://avoado.si",
+          "access_mode": "public",
+          "updated_at": "2026-10-25T13:07:30.144901+00:00"
+        },
+        "domains": {
+          "items": [
+            {
+              "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+              "hostname": "avoado.si",
+              "status": "active",
+              "provider_status": "active",
+              "ssl_status": "active",
+              "cname_target": "custom-domains.chatgpt.site.",
+              "apex_proxy_ipv4_targets": [
+                "162.159.143.30",
+                "172.66.3.26"
+              ],
+              "updated_at": "2026-10-13T18:04:46.327402+00:00",
+              "last_error": null
+            }
+          ]
+        },
+        "versions": {
+          "items": [
+            {
+              "id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_7823c7c9750081919d69c247968c3a8e",
+              "version_number": 120,
+              "source_commit": "bad2809956a347192707e25be57fda451a6c1a5f",
+              "deployment_id": "appgdep_6addfe73247481919fd53374a9829c52"
+            },
+            {
+              "id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_5048b50342148191bc2d116c36fdbb14",
+              "version_number": 119,
+              "source_commit": "3a6e82bd2f0dde19c5a5dbc824eb86036bc245a7",
+              "deployment_id": "appgdep_6addeb864e888191a1340a47d755a01c"
+            },
+            {
+              "id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_90462e07d8d48191b9aed28950f052ae",
+              "version_number": 118,
+              "source_commit": "d26363bd7f4a37501db6ba2061728b80351bf776",
+              "deployment_id": "appgdep_6adb3be185b48191ad2a481def2e3777"
+            }
+          ]
+        },
+        "deployment": {
+          "id": "appgdep_6addfe73247481919fd53374a9829c52",
+          "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+          "status": "succeeded",
+          "version_id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_7823c7c9750081919d69c247968c3a8e",
+          "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+          "updated_at": "2026-10-25T13:07:30.057529+00:00"
+        }
+      },
+      {
+        "site": {
+          "id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+          "title": "avocadoMini",
+          "status": "active",
+          "latest_version_number": 78,
+          "current_live_url": "https://avocadomini.si",
+          "expected_url": null,
+          "access_mode": "public",
+          "current_user_role": "owner",
+          "updated_at": "2026-10-27T05:23:51.159636+00:00"
+        },
+        "domains": {
+          "items": [
+            {
+              "project_id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+              "hostname": "avocadomini.si",
+              "status": "active",
+              "provider_status": "active",
+              "ssl_status": "active",
+              "cname_target": "custom-domains.chatgpt.site.",
+              "apex_proxy_ipv4_targets": [
+                "162.159.143.30",
+                "172.66.3.26"
+              ],
+              "last_error": null,
+              "updated_at": "2026-10-05T05:50:13.421076+00:00"
+            },
+            {
+              "project_id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+              "hostname": "avocadopro.si",
+              "status": "active",
+              "provider_status": "active",
+              "ssl_status": "active",
+              "cname_target": "custom-domains.chatgpt.site.",
+              "apex_proxy_ipv4_targets": [
+                "162.159.143.30",
+                "172.66.3.26"
+              ],
+              "last_error": null,
+              "updated_at": "2026-10-12T18:29:33.688890+00:00"
+            }
+          ]
+        },
+        "versions": {
+          "items": [
+            {
+              "id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_fb355c3052988191a6d84b24af8c5e88",
+              "version_number": 78,
+              "source_commit": "605bc60998af32da641088c1d125eddad8eaef93",
+              "deployment_id": "appgdep_6ae03501523881918ea00398784a0f52"
+            },
+            {
+              "id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_f54be937023481918cc25df91ec7831b",
+              "version_number": 77,
+              "source_commit": "1a8657cb0eec0d52edeae032d36969ae90ea1273",
+              "deployment_id": "appgdep_6ae03279eb208191b62554a5e30741d5"
+            },
+            {
+              "id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_f2f22e18b3dc81919b9f0d19f7de20f8",
+              "version_number": 76,
+              "source_commit": "7cfd0b31965506b2038b9ec33aaf641dbe1f3f1f",
+              "deployment_id": "appgdep_6ae02c7780588191836a7c317bd77f0d"
+            }
+          ]
+        },
+        "deployment": {
+          "id": "appgdep_6ae03501523881918ea00398784a0f52",
+          "project_id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+          "status": "succeeded",
+          "version_id": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_fb355c3052988191a6d84b24af8c5e88",
+          "url": "https://avocadomini.noellesugar1.chatgpt.site",
+          "updated_at": "2026-10-27T05:23:51.075515+00:00"
+        }
+      }
+    ],
+    "interpretation": "Native metadata associates latest saved versions120/78 with succeeded deployments and active custom domains. It does not cryptographically identify the observed public body or assert source equality with canonical Git.",
+    "canonicalGitIdentity": "Sites bad2809956a347192707e25be57fda451a6c1a5f and605bc60998af32da641088c1d125eddad8eaef93 are not commit objects in this canonical checkout; no fetch credential requested.",
+    "localHostingIdentity": "Repository-root project6aa444 is Columbia, not apex avoado.si; preserved separately.",
+    "historicalEvidence": [
+      {
+        "path": "data/mini-pro-deployment.json",
+        "sha256AtBase": "2f3c8cb1bc5f76465284f7b98b78a512bb301b2b751931a56c7024fb23abeb70",
+        "version": 41,
+        "sourceCommit": "3d4af1635b4684bdf97c90beb34b244cb5a95a14",
+        "deploymentId": "appgdep_6ad8a7edf93c81919f0ef3716eda8202",
+        "qualification": "Historical accepted snapshot only; not current public version identity"
+      },
+      {
+        "path": "docs/evidence/avocadomini-domain.json",
+        "sha256AtBase": "9ac2ee530884d53cc17d97d55906b8e87a6edf1bd17ed4dc5dc20d0e76af3c0b",
+        "version": 4,
+        "sourceCommit": "79714855ad246d591d0a235d7da4bba68ddfb233",
+        "deploymentId": "appgdep_6ac33978c8a081918791852e93d128fe",
+        "qualification": "Historical accepted snapshot only; not current public version identity"
+      }
+    ],
+    "dirtyRootHistory": "Root uncommitted Pro OS v46 evidence was read as unadopted historical context only, not a main or current deployment proof."
+  },
+  "compatibilityGap": {
+    "reproductionAtBase": "Product install page canonical and sitemap name https://avoado.si/install/; no app/install/page.tsx exists, and routesToSky sends/install to Mini. Existing lib/product-domains and product cross-links are not rewritten.",
+    "fix": "New page temporary redirect to fixed /connect#; domain router routes exactly /install and/install/ to same native worker. No arbitrary destination or query/fragment forwarding to connect.",
+    "trailingSlash": "Existing framework first normalizes/install/ with308 to/install, preserving query on that same legacy path; page then307 strips query. Not claimed as a single-hop redirect or as query removal before framework normalization.",
+    "fragment": "Empty target fragment prevents inherited original fragments; actual local browser final search/hash empty.",
+    "scope": "Compatibility alias to existing service-access guide only; no new download, entitlement, eSIM, payment or device-install action.",
+    "restoredNavigation": "Canonical repo candidate only. Public404 and public top-navigation gaps are not claimed fixed."
+  },
+  "validation": {
+    "focused": {
+      "command": "node --experimental-strip-types --test tests/product-domains.test.mjs tests/sky-domain-router.test.mjs",
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0
+    },
+    "lint": {
+      "command": "oxlint app/install/page.tsx services/sky-web/domain-router.mjs tests/product-domains.test.mjs tests/sky-domain-router.test.mjs",
+      "exitCode": 0
+    },
+    "negativeControls": [
+      {
+        "case": "base-missing",
+        "expectedFailure": true,
+        "exitCode": 1
+      },
+      {
+        "case": "external-target",
+        "expectedFailure": true,
+        "exitCode": 1
+      },
+      {
+        "case": "query-leak",
+        "expectedFailure": true,
+        "exitCode": 1
+      },
+      {
+        "case": "original-domain-router-with-new-page",
+        "expectedFailure": true,
+        "exitCode": 1
+      }
+    ],
+    "realFrameworkHttp": {
+      "method": "Unmodified candidate InstallPage in actual installed Vinext dev router; destination/layout fixture only",
+      "requests": 8,
+      "get": 4,
+      "head": 4,
+      "allReachFixedConnectWithoutQuery": true,
+      "sourceRouteSha256": "31dc82953bf7223de97e4b7713421182feac759a3daa3b6842c7a4f95ef54bde",
+      "destinationIsProductOnboarding": false
+    },
+    "browser": {
+      "method": "Actual candidate InstallPage unchanged in real Vinext dev router; destination and layout fixture only",
+      "input": "http://127.0.0.1:41739/install/?returnTo=https%3A%2F%2Foutside.invalid%2Fcollect&token=synthetic-fixture#rockstar-claim=synthetic-fixture",
+      "finalUrl": "http://127.0.0.1:41739/connect",
+      "pathname": "/connect",
+      "search": "",
+      "hash": "",
+      "body": "WEBOPS03 destination fixture only"
+    },
+    "counts": "Test containers, adversarial inputs, HTTP cases, and browser observations overlap; no additive unique-coverage claim.",
+    "fullVerify": "NOT_RUN in partial isolated candidate; central union verify including baseline/design/project checks pending",
+    "sameHeadCI": "NOT_RUN",
+    "independentReview": "PENDING_ROOT"
+  },
+  "failuresRetained": [
+    {
+      "case": "Public web open tool access error and sandbox DNS failure",
+      "countedAsSiteOutage": false,
+      "resolution": "Read-only public network probe succeeded with reviewed network access"
+    },
+    {
+      "case": "Two CUA initial tab CDP frame-tree timeouts",
+      "countedAsBrowserPass": false,
+      "resolution": "Existing created tabs rebound by observed IDs; actual DOM readback subsequently succeeded; tabs closed"
+    },
+    {
+      "case": "Loopback server listen and first client sandbox EPERM",
+      "countedAsProductFailure": false,
+      "resolution": "Loopback-only retry permitted; actual HTTP then executed"
+    },
+    {
+      "case": "Initial HTTP assertion expected one307 for every path",
+      "countedAsPass": false,
+      "resolution": "Observed framework trailing-slash308 first; original failed record preserved, corrected chain assertion passes without product changes"
+    }
+  ],
+  "evidenceSha256": {
+    "public-observation.json": "972209e72fdb8b094e39f83a8b8ffc6dbff03b2ef15fc1b3a398691248e73768",
+    "navigation-observation.json": "a53f471e1bf7e5f0296144c7072a1f0237fe6c567016edab3fd3103180babba1",
+    "sites-metadata-projection.json": "4116d70d51d778c20558a9ad14f1350defe2e7d44e17b947e81952764c07ba9c",
+    "rendered-link-summary.json": "f989e991d816785e9cdd98ce01fdf4f4c20df047f3496e0078e3f3b1f1ba7693",
+    "candidate-focused-with-router.log": "0d8e14b6011cf327d1743b3b284aed052b8da50361ea1abbe26698d2e971244d",
+    "candidate-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "negative-results.json": "29cab57fb796224faf517809b7eda3f7e53aac43a0438f645d0043812206a137",
+    "base-missing-negative.log": "d4080d7827861a5a56401b51388c0ebc212b73bb6dc73577021c6fd8c2c4d0a6",
+    "external-target-negative.log": "0808793095edd1dcd13b6878fc7148994ec5a71d584930d68c82ec61cc7cc9d6",
+    "query-leak-negative.log": "7679147ae06fd0d70857e9b7b6a04df34564f3ab95c2689a6fc35a3008c6bbe7",
+    "base-router-negative.log": "798657793c1edd7b2639d234c060fd3518e57b64670c555aaa17aacdcc07f035",
+    "local-http-initial-one-hop-assumption-failed.json": "7334f6dbd5ea3c814ae69e065f6e5e81abcf24593888244f382d7fd5b6a1d00b",
+    "local-http-results.json": "b02c6a20a35a673e005bdfa2fa7680923d28912cda3e7982d33bdcf399dd75e4",
+    "runtime-server.log": "fbd6f9f8d940e24824f054688af3b2c04693238d674739ca3ccbadda27be5137",
+    "runtime-server-retry.log": "386a79055a31b91642e5473138fa1974ef1d16d386e35281d1bb5cff1eef58e8"
+  },
+  "evidenceHandling": "Only bounded sanitized summary belongs in Git. Raw public bodies, headers, full certificate details and server logs remain outside Git; no private credentials or manuscripts copied.",
+  "operations": {
+    "dnsOrTlsOrSitesSettingsChanged": false,
+    "publicDeployment": false,
+    "siteAccessOrCredentialsChanged": false,
+    "credentialBypassEnvironmentDatabaseToolsCalled": false,
+    "newActorsOrChats": 0,
+    "ownPublicBrowserTabsClosed": 3,
+    "ownLocalBrowserTabsClosed": 1,
+    "ownLoopbackServerStopped": true,
+    "sharedDirtyRootOrOtherWriterSourceEdited": false,
+    "bulk616": "HOLD",
+    "carrierOrFinancialProviderCalls": 0
+  },
+  "acceptance": {
+    "boundedPublicDnsTlsHttpReadback": true,
+    "localCompatibilityCandidate": true,
+    "currentPublicBodySourceIdentity": false,
+    "publicFixDeployed": false,
+    "mainIntegrated": false,
+    "authenticatedOnboardingOrRealCarrier": false,
+    "financialOrPhysicalOrFullOsAccepted": false,
+    "wholeUnitAccepted": false,
+    "generalLaunch": false
+  },
+  "next": "Root independently reviews exact seven-path candidate. Central Git adopts as a separate next candidate after current Pro/Eve manifest, synchronizes README/project/status/index only where applicable, runs union verify and exacthead CI. No DNS/deploy here. Any public fix needs separately pinned deployed source/artifact/readback; top navigation source drift remains a separate unresolved gate."
+}

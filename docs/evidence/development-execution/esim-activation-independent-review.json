@@ -1,0 +1,253 @@
+{
+  "schema": "rockstaros.esim-activation-independent-review/1",
+  "recordedAt": "2026-10-27T06:38:34.653900+00:00",
+  "decision": "PASS_SCOPED",
+  "mustFix": [],
+  "unit": "ESIM-03",
+  "slice": "ESIM03-ACTIVATION-COMMIT-AUTHORITY-01",
+  "independence": {
+    "authorSeparate": true,
+    "reviewer": "central independent acceptance turn",
+    "requestedModel": "gpt-6-astra",
+    "requestedReasoningEffort": "high",
+    "actualModelIdentity": null,
+    "actualReasoningEffort": null,
+    "tokens": null,
+    "cost": null,
+    "requestIsNotTelemetry": true
+  },
+  "candidate": {
+    "worktree": "private-evidence:rock-esim-activation-fence-20261027",
+    "authorBase": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+    "files": {
+      "lib/sky-linux-service-store.ts": "6884c62612178ba1c43ba46284fd3d1613c4ecd9873ceb3b2f2c64fef4fd90df",
+      "tests/sky-linux-service.test.mjs": "b55d185998c2614010de315bdf37a1623cc419dc8f377c0c2517144240af07f7",
+      "tests/rockstar-service-setup.test.mjs": "ebdecdc52baf25f4b56b3acead86be4da8ee1045f2e7ab11fbf90c34bbcb32f4",
+      "docs/evidence/development-execution/esim-activation-authority-fence.json": "aec35d06593b5a6347356e7cfd31d84436dc419c7acc8fe3a87b661f06c78a28"
+    },
+    "trackedDiffSha256": "0476e96abae81f176097456de0ca614211c72acb919aa6a910a94c77adb43d25",
+    "packetSha256": "eb7504f9c4dd5a769b87791f690dad4f9d71135bb4dff2f6c71584d9dd5d0738",
+    "sourceManifestSha256": "9413f8680e5268182311c600c58656342696d42233a25f57f87d951597eb7303",
+    "allHashesCheckedBeforeAndAfter": true
+  },
+  "scopeReview": {
+    "runtime": "Only activateSetup changed; byte-identical prefix/suffix to base. Existing captureEsimAuthorityReads, liveGrant, persist and workspace CAS reused.",
+    "testPreservation": "Removing only added activation test block restores old Linux test bytes. Removing only local Date.now line restores ready-reopen test bytes. No assertion/time-limit/TTL weakening.",
+    "protected7": {
+      "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+      "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
+      "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+      "app/api/rockstar/service-setup/route.ts": "22f71df97f9ef724c4cce70c25348d5e58338015f28038fd6c28836cb2ea5a97",
+      "tests/fixtures/billing-test-d1.mjs": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2",
+      "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+      "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+    },
+    "apiSchemaPricesMigrationsUnchanged": true,
+    "mainCompatibility": {
+      "sha": "927ac79abd9466869e2096e044a62efe9136512d",
+      "basis": "Read exact local Git blobs of accepted main. All three prior source/test blobs and protected7 equal author e7 base. No network main refresh performed in this review-only turn."
+    }
+  },
+  "reasoning": [
+    "Initial setup SELECT and all liveGrant SQL reads now enter one read set. Exact row witnesses and existing owner/revision/full workspace payload CAS are checked in the same batch before the first clock/window update.",
+    "Actual committing SQL time and call time are bounded by grant expiry; issuer expiry also bounds the transition when the existing predicate adds an issuer window. Equality is denied by strict greater-than.",
+    "A failed read witness, expiry or workspace CAS aborts the transaction. Private SQLite probe appends a failure after the final UPDATE and demonstrates rollback of all four tables.",
+    "Concurrent first starts cannot both commit because the workspace revision/payload witness rejects the stale caller. Retry and acknowledgement-loss probes preserve exactly one start/window without another write.",
+    "Authority restoration is explicit fixture repair followed by a new current read; neither tests nor implementation bypass the guard to recover.",
+    "Already-started no-write retry path is unchanged, not an additional current-authority execution permit. Existing inactive/expired issuer behavior is not redefined: service start may be recorded without adding a window under its pre-existing predicate.",
+    "No new grant consumption counter or monetary debit exists here. One-time acceptance covers first persisted service clock/window, not general eSIM balance consumption or financial settlement."
+  ],
+  "verification": {
+    "related": {
+      "command": "node --experimental-strip-types --test tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs",
+      "cwd": "private-evidence:rock-esim-activation-fence-20261027",
+      "tests": 123,
+      "pass": 123,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0
+    },
+    "oldCounterexamples": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='setup activation' tests/sky-linux-service.test.mjs",
+      "cwd": "private-evidence:old",
+      "sourceSha256": "c7d041f636f729b22b28d5d8d24b3f25a20439dc3765cfd591eea34726dba139",
+      "sameTestSha256": "b55d185998c2614010de315bdf37a1623cc419dc8f377c0c2517144240af07f7",
+      "tests": 7,
+      "pass": 1,
+      "fail": 6,
+      "skip": 0,
+      "exitCode": 1,
+      "independentNegativeLeaves": 5,
+      "parentFailureNotAdditionalCounterexample": true,
+      "observations": [
+        {
+          "case": "grant revoked",
+          "rejected": false,
+          "interleavings": 1,
+          "serviceStartAt": 1793082957964,
+          "serviceWindowCount": 1
+        },
+        {
+          "case": "billing readiness revoked",
+          "rejected": false,
+          "interleavings": 1,
+          "serviceStartAt": 1793082957987,
+          "serviceWindowCount": 1
+        },
+        {
+          "case": "ready receipt revoked",
+          "rejected": false,
+          "interleavings": 1,
+          "serviceStartAt": 1793082958006,
+          "serviceWindowCount": 1
+        },
+        {
+          "case": "grant expires during commit delay",
+          "rejected": false,
+          "interleavings": 1,
+          "serviceStartAt": 1793082958029,
+          "serviceWindowCount": 1
+        },
+        {
+          "case": "issuer window expires during commit delay",
+          "rejected": false,
+          "interleavings": 1,
+          "serviceStartAt": 1793082958174,
+          "serviceWindowCount": 1
+        }
+      ]
+    },
+    "fixedWithReviewerBoundaries": {
+      "command": "node --experimental-strip-types --test --test-name-pattern='reviewer:|setup activation' tests/reviewer-activation.test.mjs",
+      "cwd": "private-evidence:fixed",
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "skip": 0,
+      "exitCode": 0,
+      "authorOverlapNodeCount": 7,
+      "newReviewerNodeCount": 11,
+      "newReviewerLeafScenarios": 10,
+      "countsNotAdditiveWithRelated": true,
+      "observations": [
+        {
+          "case": "grant revoked",
+          "rejected": true,
+          "interleavings": 1,
+          "serviceStartAt": null,
+          "serviceWindowCount": 0
+        },
+        {
+          "case": "billing readiness revoked",
+          "rejected": true,
+          "interleavings": 1,
+          "serviceStartAt": null,
+          "serviceWindowCount": 0
+        },
+        {
+          "case": "ready receipt revoked",
+          "rejected": true,
+          "interleavings": 1,
+          "serviceStartAt": null,
+          "serviceWindowCount": 0
+        },
+        {
+          "case": "grant expires during commit delay",
+          "rejected": true,
+          "interleavings": 1,
+          "serviceStartAt": null,
+          "serviceWindowCount": 0
+        },
+        {
+          "case": "issuer window expires during commit delay",
+          "rejected": true,
+          "interleavings": 1,
+          "serviceStartAt": null,
+          "serviceWindowCount": 0
+        }
+      ],
+      "cases": [
+        "workspace row owner change",
+        "workspace revision change",
+        "workspace payload change without revision",
+        "setup row owner change",
+        "setup revision without payload change",
+        "grant scope withdrawal",
+        "wrong owner and exact grant-expiry equality",
+        "competing first activation and unchanged retry",
+        "late SQL failure rollback",
+        "post-commit acknowledgement loss and no-write retry"
+      ]
+    },
+    "isolatedCopies": "302 lib files and 4 script dependencies copied into private old/fixed trees; only old lib/sky-linux-service-store.ts replaced with exact base blob. Candidate source not edited. Same migrations used.",
+    "harnessFailure": {
+      "stage": "Initial isolated old run",
+      "cause": "Missing existing scripts/amc-goal-engine.mjs dependency prevented module loading",
+      "countedAsProductOrCounterexampleResult": false,
+      "resolution": "Copied the exact four existing recursive script dependencies, retaining initial failure log. No source/assertion modifications."
+    },
+    "typecheck": "NOT_RUN_IN_REVIEW",
+    "fullVerify": "NOT_RUN_IN_REVIEW",
+    "CI": "NOT_RUN_FOR_THIS_CANDIDATE"
+  },
+  "evidence": {
+    "initial-hashes.json": {
+      "path": "private-evidence:initial-hashes.json",
+      "sha256": "abac3cefc585745169cf8814f04da350d8ad79b75187ab6fa661effafef180d3"
+    },
+    "compatibility-and-scope.json": {
+      "path": "private-evidence:compatibility-and-scope.json",
+      "sha256": "2e6fd13419cd33d7924ff3b664163047d285f741742899b1b0b8fcd99f1c5ed4"
+    },
+    "isolated-source-manifest.json": {
+      "path": "private-evidence:isolated-source-manifest.json",
+      "sha256": "1ff354cce087b8e90c4035c85b6f52a26d3a93e1583d2c676a785b34a479680f"
+    },
+    "script-dependency-manifest.json": {
+      "path": "private-evidence:script-dependency-manifest.json",
+      "sha256": "762f3f1a7790fe2e8174ae93d85078d647eae3874d5ea2ed84e505a03ab60944"
+    },
+    "related.log": {
+      "path": "private-evidence:related.log",
+      "sha256": "9fbfe051d6a2f35cce13111c29e9b5f859786cb0c30a4de2a414a760e3ce54c9"
+    },
+    "old-initial-harness-import-error.log": {
+      "path": "private-evidence:old-initial-harness-import-error.log",
+      "sha256": "51e89af6e9ae3567dc32d0da5f6557f441078d69fe391df710c0cd09f4eaf319"
+    },
+    "old-five.log": {
+      "path": "private-evidence:old-five.log",
+      "sha256": "b5568017943af0fdaba6eb0ed39338925d0be038afc693642f858a21a20ae1d4"
+    },
+    "probes.mjs": {
+      "path": "private-evidence:probes.mjs",
+      "sha256": "7b0a6f774ce13847e4491f350ef06f6464034ef8f39c5e4409568a2d9ac32199"
+    },
+    "independent-boundaries.log": {
+      "path": "private-evidence:independent-boundaries.log",
+      "sha256": "c35cf83013597e26161ba6a6dd2570c840664ee0561673aeb2dfd6f81060dba4"
+    }
+  },
+  "limits": [
+    "Host synthetic SQLite/D1-shaped adapter and controlled persisted grant; production D1/HTTP/provider/device/real billing/publication not accepted.",
+    "Whole ESIM-03/general eSIM/full setup outbox/orphan/cancel-ready/power-loss acceptance remain false.",
+    "No external provider/network/charge/device action; no runtime edits, commit, push, PR, merge or WebOps integration in this turn."
+  ],
+  "history": {
+    "oldMainE7Verify": "FAILURE_RETAINED",
+    "forwardFixPR": 243,
+    "acceptedMain": "927ac79abd9466869e2096e044a62efe9136512d",
+    "acceptedMainChecks": 6,
+    "acceptedMainChecksStatus": "SUCCESS_ALREADY_VERIFIED",
+    "proofSha256": "2e447747ece8d7576d17e951485fa346fd6081580d24a49251a04b770c655aa8"
+  },
+  "preservation": {
+    "originalHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "originalIndexSha256": "181a20c14e06119d3a09bda219de507d2807053cb5d71f1daa34c71d73fe80b2",
+    "rootExclusiveDevelopmentExecutionReadOrWritten": false,
+    "webopsCheckpointSha256": "ba2246c8b6cb19c7c6b5c6c3bcde7bf8141b7a24005f3b000fdcc28ab237ec8e",
+    "bulk616": "HOLD"
+  },
+  "next": "End independent review turn. Root may resume Sol integration: refresh main, adopt only exact reviewed candidate hashes, sync existing design/index/workstream/project/status/README and preserve source receipts/history; run fixed union full verification/scanner/final manifest review, then normal Git/main and same-final-SHA CI. WebOps preparation remains at its saved checkpoint.",
+  "privateOriginalReviewSha256": "d8df52163b20dcfe79d4cbc18ad256ad42d9ef67a4fedea1fae44b7c2b72455e"
+}

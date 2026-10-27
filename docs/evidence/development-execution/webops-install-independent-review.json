@@ -1,0 +1,83 @@
+{
+  "schema": "rockstaros.webops-install-independent-review/1",
+  "recordedAt": "2026-10-27T06:16:58.685436+00:00",
+  "status": "PASS_SCOPED_SOURCE4_AND_ADDITIVE_DESIGN_DELTA",
+  "sourceManifestSha256": "d06f451a051df11434c258e9e6ca9658680a818ef8123765bd4bcb5041594063",
+  "all7AuthorHashesMatch": true,
+  "sourceFiles": [
+    {
+      "path": "app/install/page.tsx",
+      "sha256": "31dc82953bf7223de97e4b7713421182feac759a3daa3b6842c7a4f95ef54bde"
+    },
+    {
+      "path": "services/sky-web/domain-router.mjs",
+      "sha256": "b33650c14e9c6db04dce15d866e0161216c5fc5cae3dc0a817c05db7a1fe766d"
+    },
+    {
+      "path": "tests/product-domains.test.mjs",
+      "sha256": "e77288dbae3dce3e832fdd5a37f26edebaff977ce2aa142aea784ecbb219605f"
+    },
+    {
+      "path": "tests/sky-domain-router.test.mjs",
+      "sha256": "c41b8e7218d875b9d987918e3a9f083647bdb00c6a7538285f0b4c6cf49879c3"
+    }
+  ],
+  "RootIndependentReviewSha256": "8e7a390d1a7f95f0a21b702ee47a66d974980d0f47362567f0fc3d265debfa48",
+  "sourceReview": [
+    "Actual page always calls existing real redirect with fixed relative /connect# and reads no URL/props; no caller-controlled target/query can enter destination.",
+    "Exact /install and /install/ route to native fetch; similar names and subpaths continue prior routing. No other proxy/auth/session logic changes.",
+    "Initial framework slash normalization308 retains query on same legacy path, then fixed307 drops query; explicit empty fragment prevents browser fragment inheritance. No single-hop claim.",
+    "Public source/version association stays UNKNOWN; public observed404 is capture-time evidence, local compatibility fix is not a deployed fix or authenticated onboarding acceptance."
+  ],
+  "independentTests": {
+    "command": "node --experimental-strip-types --test tests/product-domains.test.mjs tests/sky-domain-router.test.mjs",
+    "tests": 11,
+    "pass": 11,
+    "fail": 0,
+    "skip": 0,
+    "logSha256": "c499ccb033faa6fb665451cc5737f266bd9c47b33726e61180936143570383c1",
+    "countsNotAdditiveWithAuthorOrRoot": true
+  },
+  "baseCompatibilityAtPR243Head": {
+    "head": "32637100af9814cbeb95ccc887a419a939d7e24c",
+    "existingThreeSourcesBaseExact": [
+      {
+        "path": "services/sky-web/domain-router.mjs",
+        "sha256": "8a1e375ac8d31228cdbc1e803a1a65924eab47705c351830d557f8854de0d74d"
+      },
+      {
+        "path": "tests/product-domains.test.mjs",
+        "sha256": "11fb50cb1b8ce52c01f65969c7ffb906fc1c1327dc394316a03a8fc03627c78e"
+      },
+      {
+        "path": "tests/sky-domain-router.test.mjs",
+        "sha256": "709903fc3d86a20bed665a29b58cf8b276d01ecbe5ecea81e34e4efc83eef59a"
+      }
+    ],
+    "newInstallRouteStillAbsent": true
+  },
+  "designDeltas": [
+    {
+      "path": "docs/rockstaros-complete-design.md",
+      "mode": "prepend_only",
+      "addedBytes": 1669
+    },
+    {
+      "path": "docs/workstreams/05-web-pwa-sites.md",
+      "mode": "append_only",
+      "addedBytes": 1789
+    }
+  ],
+  "requiredIntegration": "After PR243 current22 is accepted, copy exact source4+author receipt to latest main. Apply only the two additive document deltas, preserving PR242/243 book/workstream additions. Central index/README/project/status and same-change design/Tool references as applicable; fullverify/scanner/finalmanifest/CI/main separately. Do not change current22.",
+  "requiredSourceChanges": [],
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "notAccepted": [
+    "Public deployment/DNS/TLS/Sites changes",
+    "Main-source/public-artifact identity",
+    "Authenticated onboarding, eSIM issue or installation",
+    "Whole WEBOPS03/general launch/production OS/finance"
+  ],
+  "bulk616": "HOLD"
+}

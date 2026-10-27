@@ -11248,7 +11248,7 @@
   "billingEveOsGameFiniteBatch": {
     "recordedAt": "2026-10-27",
     "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
-    "status": "PR242_normal_main_source_adopted_initial_verify_failed_forward_fixture_fix_pending",
+    "status": "PR242_source_main_adopted_PR243_forward_fix_main_same_sha_CI_passed",
     "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
     "units": [
       "BILL-02",
@@ -11270,17 +11270,70 @@
     "acceptedHead": "c84ea37c5209399f188b795f579a6701b0921699",
     "mainMergeSha": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
     "sameShaCIPassed": false,
-    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json",
+    "currentAcceptedMain": "927ac79abd9466869e2096e044a62efe9136512d",
+    "initialE7VerifyFailurePreserved": true,
+    "currentAcceptedMainCIPassed": true,
+    "currentSameShaCISuccess": 6
   },
   "proRecoveryEveDrainFiniteBatch": {
     "recordedAt": "2026-10-27",
     "baseMain": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
-    "status": "host_full_verify_passed_final_metadata_review_and_head_ci_pending",
+    "status": "PR243_normal_main_integrated_same_sha_CI_passed",
     "evidence": "docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json",
     "units": [
       "PRO-01",
       "EVE-02"
     ],
+    "gitHubSaved": true,
+    "mainIntegrated": true,
+    "wholeUnitsAccepted": 0,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HELD",
+    "fullVerify": "exit0; Node3116/3113pass/0fail/3hostskip, build/API1678/CSV385 passed",
+    "sourcePR": 243,
+    "acceptedHead": "32637100af9814cbeb95ccc887a419a939d7e24c",
+    "mainMergeSha": "927ac79abd9466869e2096e044a62efe9136512d",
+    "sameShaCIPassed": true,
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json",
+    "mainCISuccess": 6,
+    "headCISuccess": 7,
+    "actualMainLinuxVerify": {
+      "tests": 3116,
+      "pass": 3114,
+      "fail": 0,
+      "skip": 2
+    }
+  },
+  "esimWebopsFiniteBatch": {
+    "recordedAt": "2026-10-27",
+    "baseMain": "927ac79abd9466869e2096e044a62efe9136512d",
+    "primaryWorkstream": "10 Git / CI / Operations",
+    "sourceWorkstreams": [
+      "03 Wallet/Billing/Providers",
+      "05 Web/PWA/Sites"
+    ],
+    "owner": "ROCK",
+    "taskIds": [
+      "SIM01",
+      "BIL02",
+      "G04",
+      "WEB04",
+      "WEB13",
+      "HOME01",
+      "SYS02",
+      "SYS07",
+      "SYS08",
+      "SYS09"
+    ],
+    "units": [
+      "ESIM-03",
+      "WEBOPS-03"
+    ],
+    "status": "host_full_verify_and_scanner_passed_fixed26_final_delta_review_pending",
+    "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
     "gitHubSaved": false,
     "mainIntegrated": false,
     "wholeUnitsAccepted": 0,
@@ -11288,6 +11341,6 @@
     "actualProviderFinancialAccepted": false,
     "publicDeployment": false,
     "bulk616": "HELD",
-    "fullVerify": "exit0; Node3116/3113pass/0fail/3hostskip, build/API1678/CSV385 passed"
+    "fullVerify": "exit0; root Node3125/3122pass/0fail/3hostskip; build/API1678/CSV385 passed"
   }
 }

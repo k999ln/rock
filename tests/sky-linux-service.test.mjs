@@ -655,6 +655,107 @@ async function runtimeAuthorityFixture(t) {
   return { db, store, config, w, listing, key, stamp, command, edit };
 }
 
+async function activationAuthorityFixture(t) {
+  const f = await runtimeAuthorityFixture(t);
+  f.edit('sky_linux_service_documents', f.key, w => {
+    w.serviceStartAt = null;
+    w.serviceWindows = [];
+  });
+  const setup = JSON.parse(f.db.sqlite.prepare(
+    "SELECT payload FROM rockstar_service_setups WHERE id='setup'",
+  ).get().payload);
+  const snapshot = () => JSON.stringify([
+    'rockstar_service_setups', 'sky_linux_service_documents',
+    'sky_linux_service_receipts', 'work_jobs',
+  ].map(table => f.db.sqlite.prepare(`SELECT * FROM ${table} ORDER BY id`).all()));
+  return { ...f, setupId: setup.id, snapshot };
+}
+
+void test('setup activation commit denies authority changes after its current read', async t => {
+  const cases = [
+    ['grant revoked', f => f.edit('sky_linux_service_documents', 'fixture-authority', g => { g.state = 'revoked'; })],
+    ['billing readiness revoked', f => f.edit('rockstar_service_setups', 'setup', s => { s.billing.verifiedAt = null; })],
+    ['ready receipt revoked', f => f.edit('rockstar_service_setups', 'setup', s => { s.runtime.verifiedAt = null; })],
+    ['grant expires during commit delay', null, 'grant'],
+    ['issuer window expires during commit delay', null, 'issuer'],
+  ];
+  for (const [name, mutate, expiryKind] of cases) await t.test(name, async child => {
+    const f = await activationAuthorityFixture(child);
+    let expiresAt;
+    if (expiryKind) {
+      expiresAt = Date.now() + 100;
+      if (expiryKind === 'grant')
+        f.edit('sky_linux_service_documents', 'fixture-authority', g => { g.expiresAt = expiresAt; });
+      else
+        f.edit('sky_linux_service_documents', f.key, w => { w.issuer.validUntil = expiresAt; });
+    }
+    const before = f.db.sqlite.prepare('SELECT * FROM sky_linux_service_documents WHERE id=?').get(f.key);
+    let attackedSnapshot;
+    let interleavings = 0;
+    f.db.beforeBatch = async () => {
+      interleavings++;
+      if (mutate) mutate(f);
+      if (expiryKind) {
+        await new Promise(resolve => setTimeout(resolve, Math.max(0, expiresAt - Date.now() + 15)));
+        assert.ok(Date.now() > expiresAt);
+      }
+      attackedSnapshot = f.snapshot();
+    };
+    let rejected;
+    try {
+      await f.store.activateSetup('buyer', f.setupId, f.w.id, f.stamp);
+    } catch (error) {
+      rejected = error;
+    }
+    const after = f.db.sqlite.prepare('SELECT * FROM sky_linux_service_documents WHERE id=?').get(f.key);
+    const payload = JSON.parse(after.payload);
+    child.diagnostic(JSON.stringify({
+      case: name, rejected: rejected instanceof Error, interleavings,
+      serviceStartAt: payload.serviceStartAt, serviceWindowCount: payload.serviceWindows.length,
+    }));
+    assert.equal(interleavings, 1);
+    assert.ok(rejected instanceof Error, 'activation must reject a stale commit authority');
+    assert.deepEqual(after, before);
+    assert.equal(f.snapshot(), attackedSnapshot);
+    assert.equal(payload.serviceStartAt, null);
+    assert.equal(payload.serviceWindows.length, 0);
+    assert.equal(f.db.sqlite.prepare('SELECT count(*) AS count FROM work_jobs').get().count, 0);
+    assert.equal(f.db.sqlite.prepare('SELECT count(*) AS count FROM sky_linux_service_receipts').get().count, 0);
+    // Recovery is a fresh authoritative repair, never a bypass of the fence.
+    f.edit('sky_linux_service_documents', 'fixture-authority', g => {
+      g.state = 'active';
+      g.expiresAt = Date.now() + 60000;
+    });
+    f.edit('rockstar_service_setups', 'setup', s => {
+      s.billing.verifiedAt = f.stamp;
+      s.runtime.verifiedAt = f.stamp;
+    });
+    f.edit('sky_linux_service_documents', f.key, w => { w.issuer.validUntil = Date.now() + 60000; });
+    const recoveredAt = Date.now();
+    const recovered = await f.store.activateSetup('buyer', f.setupId, f.w.id, recoveredAt);
+    assert.equal(recovered.id, before.id);
+    assert.equal(recovered.payload.id, f.w.id);
+    assert.equal(recovered.payload.serviceStartAt, recoveredAt);
+    assert.deepEqual(recovered.payload.serviceWindows, [{ start: recoveredAt, end: null }]);
+    const recoveredSnapshot = f.snapshot();
+    await f.store.activateSetup('buyer', f.setupId, f.w.id, Date.now());
+    assert.equal(f.snapshot(), recoveredSnapshot);
+  });
+});
+
+void test('setup activation with current authority starts once and exact retry preserves its window', async t => {
+  const f = await activationAuthorityFixture(t);
+  const started = await f.store.activateSetup('buyer', f.setupId, f.w.id, f.stamp);
+  assert.equal(started.payload.serviceStartAt, f.stamp);
+  assert.deepEqual(started.payload.serviceWindows, [{ start: f.stamp, end: null }]);
+  const snapshot = f.snapshot();
+  const retry = await f.store.activateSetup('buyer', f.setupId, f.w.id, f.stamp + 1);
+  assert.deepEqual(retry, started);
+  assert.equal(f.snapshot(), snapshot);
+  assert.equal(started.payload.jobs.length, 0);
+  assert.equal(started.payload.invoices.length, 0);
+});
+
 void test('atomic runtime authority: normal reserve, exact retry, metered settle, cancel and revoke preserve existing ledger', async t => {
   const f = await runtimeAuthorityFixture(t);
   const saved = await f.store.command('buyer', 0, f.command, f.stamp);

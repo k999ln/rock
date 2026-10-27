@@ -1078,6 +1078,50 @@
       "evidence": "docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json",
       "wholeUnitAccepted": false,
       "publicDeploymentAccepted": false
+    },
+    {
+      "id": "PR242_243_CURRENT_READBACK",
+      "kind": "current_git_acceptance",
+      "units": [
+        "BILL-02",
+        "EVE-02",
+        "OS-01",
+        "GAME-01",
+        "PRO-01"
+      ],
+      "sourcePRs": [
+        242,
+        243
+      ],
+      "mainMergeSha": "927ac79abd9466869e2096e044a62efe9136512d",
+      "mainCISuccess": 6,
+      "initialE7VerifyFailurePreserved": true,
+      "evidence": "docs/evidence/development-execution/pr242-243-main-current.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "id": "ESIM03_ACTIVATION_FENCE_CANDIDATE",
+      "kind": "reviewed_finite_candidate",
+      "units": [
+        "ESIM-03"
+      ],
+      "baseMain": "927ac79abd9466869e2096e044a62efe9136512d",
+      "state": "independent_PASS_SCOPED_host_union_verify_passed_final_delta_Git_CI_pending",
+      "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "id": "WEBOPS03_INSTALL_COMPAT_CANDIDATE",
+      "kind": "reviewed_finite_candidate",
+      "units": [
+        "WEBOPS-03"
+      ],
+      "baseMain": "927ac79abd9466869e2096e044a62efe9136512d",
+      "state": "independent_PASS_SCOPED_host_union_verify_passed_final_delta_Git_CI_pending",
+      "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
+      "publicSourceIdentity": "UNKNOWN",
+      "publicDeployment": false,
+      "wholeUnitAccepted": false
     }
   ],
   "executionPriority": [

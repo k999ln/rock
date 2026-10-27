@@ -79,6 +79,8 @@ export function routesToSky(path) {
   if (isPath(path, '/api/preorders') || isPath(path, '/api/admin'))
     return false;
   if (path === '/sw.js') return true;
+  // The legacy install entry is handled by the service's fixed-target page.
+  if (path === '/install' || path === '/install/') return true;
   return SKY_PREFIXES.some((prefix) =>
     prefix.endsWith('-') ? path.startsWith(prefix) : isPath(path, prefix),
   );

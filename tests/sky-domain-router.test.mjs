@@ -5,6 +5,37 @@ import {
   withMiniSite,
 } from '../services/sky-web/domain-router.mjs';
 
+void test('legacy install roots stay on the service worker without proxying URL inputs to Mini', async () => {
+  const native = [];
+  const upstream = [];
+  const env = {};
+  const context = {};
+  const app = withMiniSite({ fetch(request, receivedEnv, receivedContext) {
+    assert.equal(receivedEnv, env);
+    assert.equal(receivedContext, context);
+    native.push(request);
+    return new Response('native-install-entry');
+  } }, request => {
+    upstream.push(request);
+    return new Response('mini-page');
+  });
+  for (const method of ['GET', 'HEAD']) {
+    for (const path of ['/install', '/install/']) {
+      assert.equal(routesToSky(path), true);
+      const request = new Request(`https://avoado.si${path}?returnTo=https%3A%2F%2Foutside.invalid&token=synthetic-fixture`, { method });
+      assert.equal(await (await app.fetch(request, env, context)).text(), 'native-install-entry');
+      assert.equal(native.at(-1), request);
+    }
+  }
+  assert.equal(upstream.length, 0);
+  for (const path of ['/installation', '/install-extra', '/install.js', '/install/guide']) {
+    assert.equal(routesToSky(path), false);
+    assert.equal(await (await app.fetch(new Request(`https://avoado.si${path}`), env, context)).text(), 'mini-page');
+  }
+  assert.equal(native.length, 4);
+  assert.equal(upstream.length, 4);
+});
+
 void test('Sky, assets and APIs stay native while Mini keeps its home and preorder paths', () => {
   for (const path of [
     '/sky',

@@ -463,7 +463,8 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig,
     ) {
       requireServiceSetupReady(config);
       const before = await get(owner);
-      const row = await db
+      const reads = captureEsimAuthorityReads(db);
+      const row = await reads.database
         .prepare(
           `SELECT payload FROM rockstar_service_setups WHERE owner_user_id=?`,
         )
@@ -483,17 +484,25 @@ export function linuxServiceStore(db: Database, config: LinuxServiceConfig,
           '利用開始の準備証拠を確認できません。',
           403,
         );
-      await liveGrant(before.payload, now, true);
+      const grant = await liveGrant(before.payload, now, true, reads.database);
       if (before.payload.serviceStartAt !== null) return before;
       const after = structuredClone(before.payload);
       after.serviceStartAt = now;
+      let validUntil = grant.expiresAt;
       if (
         after.issuer.state === 'active' &&
         after.issuer.validUntil > now &&
         !after.serviceWindows.some((window) => window.end === null)
-      )
+      ) {
         after.serviceWindows.push({ start: now, end: null });
-      return persist(before, after);
+        validUntil = Math.min(validUntil, after.issuer.validUntil);
+      }
+      // Activation starts the service clock. Recheck the captured setup/grant
+      // and their expiry in the same batch as that first persistent transition.
+      const checks = reads.assertions();
+      checks.push(db.prepare(`SELECT CASE WHEN (? > MAX(?, ${ESIM_COMMIT_NOW_SQL}))
+        THEN 1 ELSE json('ESIM_ACTIVATION_AUTHORITY_EXPIRED') END`).bind(validUntil, now));
+      return persist(before, after, undefined, null, checks);
     },
     async command(
       owner: string,

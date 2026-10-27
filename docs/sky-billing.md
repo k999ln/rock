@@ -100,6 +100,8 @@ offline・復旧・互換・巻戻し: 401/403本人/scope、404他owner/欠落�
 [受入4hash・原本digest・試験・残gate](evidence/development-execution/billing-final-send-main-adoption.json)。[独立検収の最小要約](evidence/development-execution/billing-final-send-review-summary.json)。
 
 <a id="esim-runtime-commit-authority"></a>
+
+初回activateSetupも同じ権限fenceへ接続する。setup/liveGrantの読戻しとgrant期限（新windowを足す時はissuer期限も）を実commit時刻で同一batch再検査し、最初のserviceStartAt/windowとworkspace CASを原子的に保存する。失効/競合は副作用0、明示修復後は同workspaceでonce、既開始retryは既存no-write扱い。新API/schema/価格/Toolは追加しない。[固定候補・検収・Git段階](evidence/development-execution/esim-webops-main-adoption.json)。本番D1/Provider/実機/金融/whole unitは別gate。
 ## 既存Linux/eSIMの保存時authorityと保持
 
 [OS全体契約](rockstaros-complete-design.md#esim-runtime-commit-authority)の11項目に従い、既存add/run/claim/heartbeatは同一D1 batchで本人/利用権/setup/catalog/latest review/expiryとworkspace CASを再照合する。否定/変更時は予約/仕事/lease/receiptを増やさず、同じrequest/digestは再課金せず保持。通常POSTへworkerやclient trustを渡さない。ROCKはAPI/store、EXTERNALはauthorityの根拠、JOINTは本番D1/実HTTP、OWNERは同意/費用。既存owner sessionのread/exportと実行可否を分け、独立retention ACL/期限や汎用attachment/実Provider・収納を受入済みにしない。新Tool/catalog/料金を作らず既存888c/late usageを保持する。
