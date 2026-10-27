@@ -1277,7 +1277,7 @@
   "billingEveOsGameFiniteBatch": {
     "recordedAt": "2026-10-27",
     "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
-    "status": "host_verify_passed_final_manifest_review_and_head_ci_pending",
+    "status": "PR242_normal_main_source_adopted_initial_verify_failed_forward_fixture_fix_pending",
     "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
     "units": [
       "BILL-02",
@@ -1285,8 +1285,8 @@
       "OS-01",
       "GAME-01"
     ],
-    "gitHubSaved": false,
-    "mainIntegrated": false,
+    "gitHubSaved": true,
+    "mainIntegrated": true,
     "fullVerify": "exit0; root Node3112/3109pass/0fail/3hostskip; build/API/CSV passed",
     "wholeUnitsAccepted": 0,
     "physicalAccepted": false,
@@ -1294,6 +1294,29 @@
     "publicDeployment": false,
     "bulk616": "HELD",
     "sourceReviewEvidence": "docs/evidence/development-execution/billing-eve-os-game-source-review.json",
-    "RootBrowserEvidence": "docs/evidence/development-execution/eve-handoff-root-ui-summary.json"
+    "RootBrowserEvidence": "docs/evidence/development-execution/eve-handoff-root-ui-summary.json",
+    "sourcePR": 242,
+    "acceptedHead": "c84ea37c5209399f188b795f579a6701b0921699",
+    "mainMergeSha": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+    "sameShaCIPassed": false,
+    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
+  },
+  "proRecoveryEveDrainFiniteBatch": {
+    "recordedAt": "2026-10-27",
+    "baseMain": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+    "status": "host_full_verify_passed_final_metadata_review_and_head_ci_pending",
+    "evidence": "docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json",
+    "units": [
+      "PRO-01",
+      "EVE-02"
+    ],
+    "gitHubSaved": false,
+    "mainIntegrated": false,
+    "wholeUnitsAccepted": 0,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HELD",
+    "fullVerify": "exit0; Node3116/3113pass/0fail/3hostskip, build/API1678/CSV385 passed"
   }
 }

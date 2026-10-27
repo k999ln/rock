@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.48",
+  "version": "1.49",
   "updatedAt": "2026-10-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3105,6 +3105,21 @@
       "path": "tests/pro-account-import.test.mjs",
       "change": "25 explicit void registrations; assertions/names/bodies unchanged",
       "independentDeltaReviewPending": false
+    },
+    "unknownRecovery": {
+      "authority": "docs/rockstaros-complete-design.md#pro-archive-unknown-recovery",
+      "toolDesign": "docs/sky-tools-complete-design.md#pro-archive-unknown-recovery",
+      "implementation": [
+        "components/pro-account-import.tsx"
+      ],
+      "tests": [
+        "tests/pro-account-import.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json",
+      "reviewSummary": "docs/evidence/development-execution/pro-archive-recovery-independent-review.json",
+      "wholePRO01Accepted": false,
+      "productionBrowserAuthAccepted": false,
+      "existingServerSchemaCryptoUnchanged": true
     }
   },
   "mini02ConeAwareSearch": {
@@ -3391,7 +3406,8 @@
     "wholeUnitAccepted": false,
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
   },
   "eveTextHandoff": {
     "authority": "docs/rockstaros-complete-design.md#eve-text-handoff",
@@ -3410,7 +3426,8 @@
     "wholeUnitAccepted": false,
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
   },
   "pixelInputBindingRecovery": {
     "authority": "docs/rockstaros-complete-design.md#pixel-input-binding-recovery",
@@ -3425,7 +3442,8 @@
     "wholeUnitAccepted": false,
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
   },
   "gameIntakePathTree": {
     "authority": "docs/rockstaros-complete-design.md#game-intake-path-tree",
@@ -3440,6 +3458,7 @@
     "wholeUnitAccepted": false,
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
   }
 }

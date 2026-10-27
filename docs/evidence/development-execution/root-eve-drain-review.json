@@ -1,0 +1,19 @@
+{
+  "status": "PASS_SCOPED",
+  "reviewer": "Root independent from central fixture author",
+  "path": "tests/work-composition-ui.test.mjs",
+  "candidateSha256": "52aaadb8403246621cb08942e30d74d21ef9a336ad74d9dd5d13a0054894dcda",
+  "deltaVerified": "Exact replacement registers actual validation Promise in existing inFlight tracker. Assertion names/bodies, timeout, sleeps and production runtime unchanged. Existing flush awaits tracked work.",
+  "rootValidation": {
+    "command": "node --experimental-strip-types --test tests/work-composition-ui.test.mjs tests/eve-text-handoff.test.mjs tests/eve-text-estimate-ui.test.mjs",
+    "tests": 61,
+    "pass": 61,
+    "fail": 0,
+    "skip": 0,
+    "logSha256": "78468f94837b4e9cf9b244aaaa427626887fc0f84030c54ee8e94d9c801622e7"
+  },
+  "originalMainFailurePreserved": true,
+  "mainCiAccepted": false,
+  "bulk616": "HOLD",
+  "privateOriginalReviewSha256": "2aa8eb3429d59d5a1a0dffd63a9af5cfc07b2d3343c84de93fd1b4c5415fa8ff"
+}

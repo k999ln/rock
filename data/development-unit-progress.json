@@ -295,7 +295,8 @@
         "EVE_SOURCE_ESTIMATE_CANDIDATE",
         "EVE_RATE_UNIT_ADOPTED",
         "EVE_MULTI_MATERIAL_ADOPTED",
-        "BILL_EVE_OS_GAME_FINITE_20261027"
+        "BILL_EVE_OS_GAME_FINITE_20261027",
+        "PRO_RECOVERY_EVE_FIXTURE_FORWARD_20261027"
       ]
     },
     {
@@ -1940,7 +1941,8 @@
       "wholeUnitAccepted": false,
       "currentOverlayRefs": [
         "PRO_ACCOUNT_ORIGINAL_ARCHIVE_CANDIDATE",
-        "PRO_ARCHIVE_ENTRY_CANDIDATE"
+        "PRO_ARCHIVE_ENTRY_CANDIDATE",
+        "PRO_RECOVERY_EVE_FIXTURE_FORWARD_20261027"
       ]
     },
     {

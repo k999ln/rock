@@ -80,3 +80,7 @@ BIL03（AMC O5、ROCK）の原稿作成は、同じowner・保存ID・正規化�
 別ownerでは旧操作の再送と旧入力の表示を止め、元ownerで接続確認する。保留解除は元ownerで同じ保留操作を表示しているときだけ許可し、古いhandlerや別ownerから新しい保存IDへ移さない。解除は本文を残し、保存済み記録を削除しない。元owner側の保存結果確認を案内し、確認前の強制終了・永続復旧は従来どおり保証しない。外部送信・取引・実決済は追加しない。
 
 関連98試験が合格（実route／SQLiteのowner固定8、実component復帰31、既存Material/Coconala/Mercari/WorkJob/eSIMの回帰）。未知scope、401→BでPOSTなし、A復帰の同一ID再送、確認直後のowner切替409、明示解除後の本文保持と新IDを検証した。Chromeでは実Mercari component・既存認証確認hook・実HTTP client・実route／SQLiteを接続し、認証入口だけを合成化したlocal fixtureで、A保存前503→401→Bで再送停止・A0/B0→Aへ戻り同一操作保存→再読込後A1/B0を確認した。本番IdPや実取引の受入ではない。
+
+## Pro unknown原本archiveの限定復旧（2026-10-27）
+
+ROCK/09主担当、05保存UI、10/G04統合。[同ID復旧契約](../rockstaros-complete-design.md#pro-archive-unknown-recovery)は未照合中のfile置換を同期live guardで拒否し、quarantine中cancelでもowner/targetだけを保持、私有内容は隠す。既存暗号化履歴/server/CAS/同意は不変。独立38+追加2・旧4反例とRoot31は別count。全verify/Git/main/同SHA CIは[新候補証拠](../evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)で分ける。wholePRO01/実本人保存/native/公開は未受入。

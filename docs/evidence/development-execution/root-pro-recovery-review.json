@@ -1,0 +1,26 @@
+{
+  "status": "PASS_SCOPED_PRO_ARCHIVE_PENDING_ID_RECOVERY",
+  "recordedAt": "2026-10-27T05:52:59.087367+00:00",
+  "manifestSha256": "fc581ecb6a931dfc5d16d7a48e89f70cf688cf51044ce2b08c85fb22cdcc4636",
+  "sourceFiles": {
+    "components/pro-account-import.tsx": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44",
+    "tests/pro-account-import.test.mjs": "9d59777a5b96bd456853ca1b0b87a92909401d4fcfb581f8ddfa755a27a9c73a"
+  },
+  "independentSuite": {
+    "command": "node --experimental-strip-types --test tests/pro-account-import.test.mjs",
+    "tests": 31,
+    "pass": 31,
+    "fail": 0,
+    "skip": 0,
+    "logSha256": "1d7c6682c0b73ed4820e2203d7324a1d5b334a5526d92e78884461c5b8ed7fcd"
+  },
+  "review": "Read live needsReadback/written+busy fence, quarantined owner/target retention on cancel, disabled file input and old-handler checks. Existing private panel exposure gating retained. No new store/schema/API/permissions.",
+  "notAccepted": [
+    "Actual browser/production auth",
+    "Whole PRO01 or physical/native OS",
+    "Latest combined integration fullverify/CI"
+  ],
+  "mustFix": [],
+  "bulk616": "HOLD",
+  "privateOriginalReviewSha256": "0ba5703a40c453d695fd631acbf12250d90b9afed52ad93717c898560c2b9c4b"
+}

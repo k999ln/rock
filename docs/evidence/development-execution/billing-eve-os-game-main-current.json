@@ -1,0 +1,38 @@
+{
+  "schema": "rockstaros.finite-billing-eve-os-game-main-current/1",
+  "recordedAt": "2026-10-27",
+  "status": "PR242_normal_main_source_adopted_initial_verify_failed_forward_fixture_fix_pending",
+  "pr": 242,
+  "acceptedHead": "c84ea37c5209399f188b795f579a6701b0921699",
+  "mainMergeSha": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+  "tree": "c4604d19d71f6938825f30a84bf981a99e6c7c0e",
+  "allOriginal41MainBlobsMatchReviewedManifest": true,
+  "headCISuccess": 8,
+  "headVerify": {
+    "run": 40457272334,
+    "tests": 3112,
+    "pass": 3110,
+    "fail": 0,
+    "skip": 2,
+    "logSha256": "fe78172d9d798ce2bdc210ee3275d5b501a40ab8f4ad13cf327eb15869dc18b4"
+  },
+  "initialMainCI": {
+    "success": 6,
+    "failed": 1,
+    "failedCheck": "verify",
+    "run": 40457926979,
+    "logSha256": "7cbd912eb211179a1bc5f21285f77024a93ce75f720d9115d587767436ddacbb",
+    "status": "FAILED_NOT_PROMOTED_TO_SUCCESS"
+  },
+  "source13OriginalManifestSha256": "9d0d7187e1e271f3894289502c6ece4c83673c64849e57a8f2ef2db46ea06bfc",
+  "final41ManifestSha256": "d0d30155da79dab881a3fed9355e97bf280c31b20f7a8980316ee56bfbdc4e87",
+  "RootFinal41ReviewSha256": "ce97ead8530c2ded1966557f90780d2ea43ffe368d091ec409811d2c5ee5f12a",
+  "forwardFixEvidence": "docs/evidence/development-execution/eve-handoff-test-drain-diagnosis.json",
+  "forwardFixStage": "Independent Root source3 reviews and host fullverify3116/3113pass/0fail/3skip passed. Final metadata/newhead/normalmain/same-SHA CI pending.",
+  "priorCaptureReceiptsPreserved": true,
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "realProviderFinancialAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HELD"
+}

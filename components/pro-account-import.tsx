@@ -76,6 +76,9 @@ export default function ProAccountImport() {
   }
   async function choose(selected: File | undefined) {
     if (!alive.current || document.visibilityState === 'hidden') return;
+    // A new file must not replace the owner/ID needed to reconcile an earlier write.
+    // Check live state too: disabled inputs do not fence already queued callbacks.
+    if (live.current.needsReadback || live.current.written && live.current.busy) return;
     invalidate(); const generation = live.current.intent;
     // A deliberate new selection is a new unbound intent. Earlier auth/archive responses cannot own it.
     update({ ...initial, intent: generation, needsReadback: live.current.needsReadback });
@@ -152,7 +155,10 @@ export default function ProAccountImport() {
     if (!current(intent)) return;
     const was = live.current; invalidate();
     update({ file: null, verified: null, needsReadback: was.needsReadback || was.written,
-      ...(was.identity !== 'confirmed' ? { context: null, receipt: null, target: '', written: false, identity: 'unchecked' as const } : {}),
+      // Quarantine hides private content, but an unresolved write still needs its
+      // bound owner and target. Recheck that owner before reading the same archive.
+      ...(was.identity !== 'confirmed' && !was.written && !was.needsReadback
+        ? { context: null, receipt: null, target: '', written: false, identity: 'unchecked' as const } : {}),
       status: was.written ? 'Later requests stopped. In-flight storage is unknown until same-ID readback. Original file is retained.' : 'Preview cancelled. No file was uploaded.' });
     if (fileInput.current) fileInput.current.value = '';
   }
@@ -186,7 +192,7 @@ export default function ProAccountImport() {
     <p>Move an explicitly selected export from avocadoPro into this account’s private encrypted history. Keep your original file and browser notes.</p>
     <p>avocadopro.si is Pro; avocadomini.si is Mini; avoado.si is the general and Smith/Sky account entry. This page copies no cookies or other-origin storage.</p>
     <label htmlFor="pro-original-file">Choose Pro export file (up to 256 KiB)</label>
-    <input ref={fileInput} id="pro-original-file" type="file" accept=".json,application/json" disabled={view.busy} onChange={e => void choose(e.currentTarget.files?.[0])} />
+    <input ref={fileInput} id="pro-original-file" type="file" accept=".json,application/json" disabled={view.busy || view.needsReadback} onChange={e => void choose(e.currentTarget.files?.[0])} />
     <div ref={privatePanel} hidden={!exposed}>
       {exposed && view.file && <details open><summary>Local file preview</summary><p>{view.file.filename} · {view.file.byteLength} bytes</p>
         <p>Full file SHA-256: {view.file.fileSha256}</p><p>Logical notes SHA-256: {view.file.contentSha256}</p>

@@ -1712,3 +1712,21 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 - 受入範囲: RQ14/GM01/AI06の静的構造検査だけ。GAME-01全体/full SDK、実game isolation、認証済保存、Wallet/実交換、実機、公開は未受入。
 
 統合・検収段階は[billing-eve-os-game-main-adoption.json](evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照。
+
+<a id="pro-archive-unknown-recovery"></a>
+
+## Pro原本archiveの結果不明と同ID復旧（2026-10-27・限定候補）
+
+- 目的・利用体験: 原本の保存結果が不明な間、新しいfile選択で読戻し先を失わない。先に「Read back same archive」で同じ保存IDを照合し、その後の明示選択・同意へ進む。
+- 責任: ROCK/09とWeb05が既存clientの意図と私有表示を保護し、既存serverだけが本人・owner・Origin・暗号保存・revision CASを決める。統合は10/G04。OWNERが原本と保存先を確認し、別の保存同意を行う。
+- 入出力: 既存Pro export、ownerScope/binding、operationIdからのtarget、receipt/revisionを再利用する。新しい認証情報・保存schema・upload経路は作らない。
+- 状態: written+busyまたはneedsReadback中はfile inputと同期live guardの双方で置換を止め、queue済callbackも拒否する。確定GETでunknownを解決した後は既存のfile選択へ戻る。
+- 保存: 既存Eve暗号履歴とowner別archive ID、最大256KiB/既存分割CASを使う。元file/ブラウザnotesは保持する。今回のunknown情報はcurrent-page memoryだけで、新しい永続outboxは追加しない。
+- 失敗: 認証確認中のcancelでも書込試行済/未照合ならowner/context/targetを維持する。同時にfile/verifiedと選択inputを消し、既存identity gateで私有内容を隠す。
+- 復旧: focus/visibilityで同じownerを再確認し、元のtargetだけをGETする。GET失敗は置換lockを維持し、別ownerへ切り替わった時は既存のprivate state消去を維持する。cancel反復・遅れた旧応答でも二つ目のarchiveを作らない。
+- 承認: 読戻しは自動POSTや保存同意ではない。部分保存からの継続には既存の現在revisionと新しい明示同意が必要。file選択・account確認・保管・仕事化・native導入を別状態に保つ。
+- 合格条件: 固定Pro2の独立component/実合成handler31、既存local取込7、独自のFile未読込・cancel反復/offline2検査、旧base4反例を照合。Root別source/31試験を保持し、これらの件数は重複加算しない。
+- 未決定の決め方: tab/process終了を越えるunknown保存、実本人auth/production D1/browserとnative Pro移行は別設計・同artifact受入で決める。原本の自動転送や新ownerへの再結合は推測しない。
+- 受入範囲: 合成eventと既存codec/暗号化file-backed SQLiteだけ。wholePRO01、実アカウント保存・本番公開・実機・実収益・Providerを受入へ昇格させない。
+
+統合・検収は[evidence](evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)を参照。

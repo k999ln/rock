@@ -305,3 +305,7 @@ ROCKが指定チャットの最新OS設計と作業branchの実装履歴を照�
 ## 2026-10-27 bounded follow-up: eve-text-handoff
 
 主担当ROCK、統合10/G04。[見積条件から予算0の準備仕事へ](../rockstaros-complete-design.md#eve-text-handoff)の11項目を正本とし、[billing-eve-os-game-main-adoption.json](../evidence/development-execution/billing-eve-os-game-main-adoption.json)で固定source・独立検収・全verify・Git保存・main/同SHA CIを分ける。今回のhost/client/static受入をwhole unit・実Provider/金融・実機・一般公開へ転用しない。既存taskとphase gateを維持し、新しい主入口は作らない。
+
+## Pro unknown原本archiveの限定復旧（2026-10-27）
+
+ROCK/09主担当、05保存UI、10/G04統合。[同ID復旧契約](../rockstaros-complete-design.md#pro-archive-unknown-recovery)は未照合中のfile置換を同期live guardで拒否し、quarantine中cancelでもowner/targetだけを保持、私有内容は隠す。既存暗号化履歴/server/CAS/同意は不変。独立38+追加2・旧4反例とRoot31は別count。全verify/Git/main/同SHA CIは[新候補証拠](../evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)で分ける。wholePRO01/実本人保存/native/公開は未受入。

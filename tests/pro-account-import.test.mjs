@@ -390,3 +390,108 @@ void test('explicit new file selection supersedes pending reauthentication witho
   view.button('Confirm signed-in account').props.onClick(); await view.until(() => view.status().startsWith('Destination confirmed:')); view.consent();
   assert.equal(view.button('Save / continue private archive').props.disabled, false);
 });
+
+function selectWithoutWaiting(view, f) {
+  view.input().props.onChange({ currentTarget: { files: [{ name: f.filename, size: f.bytes.length,
+    arrayBuffer: async () => Uint8Array.from(f.bytes).buffer }] } });
+}
+
+void test('unresolved archive cannot be replaced by another file before same-ID readback', async t => {
+  const { handle, sqlite } = fixture(t); let drop = true;
+  const view = ui(handle, { intercept(response, init) {
+    if (init.method === 'POST' && drop) { drop = false; throw Error('lost acknowledgement'); }
+    return response;
+  } }); t.after(view.cleanup);
+  const original = await file({ padded: true, name: 'unresolved-original.json' });
+  const replacement = await file({ name: 'replacement.json' });
+  assert.notEqual(original.operationId, replacement.operationId);
+  const ctx = await context(handle), id = await proArchiveId(ctx.ownerScope, original.operationId);
+  await ready(view, original);
+  view.button('Save / continue private archive').props.onClick();
+  await view.until(() => view.status().startsWith('Outcome unknown'));
+  // Invoke the handler directly as well as inspecting disabled: a stale event must not bypass the gate.
+  selectWithoutWaiting(view, replacement); await tick();
+  assert.doesNotMatch(view.text(), /replacement.json/);
+  assert.equal(view.input().props.disabled, true);
+  view.button('Read back same archive').props.onClick();
+  await view.until(() => view.status().startsWith('Partial archive found.'));
+  assert.equal(new URL(view.calls.at(-1).path, 'https://avoado.si').searchParams.get('id'), id);
+  assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 1);
+  assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 1);
+  assert.equal(view.input().props.disabled, false);
+  view.consent(); view.button('Save / continue private archive').props.onClick();
+  await view.until(() => view.status().startsWith('Original file archived privately'));
+  assert.equal(JSON.parse(view.calls.filter(c => c.init.method === 'POST')[1].init.body).expectedRevision, 1);
+  assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_messages').get().n, 118);
+  await view.chooseFile(replacement);
+  assert.match(view.text(), /replacement.json/);
+});
+
+void test('cancel while identity is quarantined preserves unresolved same-owner archive for readback', async t => {
+  const { handle, sqlite } = fixture(t); let release, held = false;
+  const view = ui(handle, { intercept(response, init) {
+    if (init.method === 'POST' && !held) { held = true; return new Promise(resolve => { release = () => resolve(response); }); }
+    return response;
+  } }); t.after(view.cleanup);
+  const original = await file({ padded: true, name: 'pending-hidden.json' });
+  const ctx = await context(handle), id = await proArchiveId(ctx.ownerScope, original.operationId);
+  await ready(view, original); view.button('Save / continue private archive').props.onClick();
+  await view.until(() => Boolean(release));
+  view.visibility('hidden'); view.button('Cancel preview / stop later saves').props.onClick();
+  assert.equal(view.privatePanel().hidden, true);
+  view.visibility('visible'); await view.until(() => view.status().startsWith('Account rechecked.'));
+  assert.doesNotMatch(view.text(), /pending-hidden.json|Local file preview/);
+  release(); await tick();
+  assert.equal(view.button('Read back same archive').props.disabled, false);
+  assert.equal(view.input().props.disabled, true);
+  view.button('Read back same archive').props.onClick();
+  await view.until(() => view.status().startsWith('Partial archive found.'));
+  assert.equal(new URL(view.calls.at(-1).path, 'https://avoado.si').searchParams.get('id'), id);
+  assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 1);
+  assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_messages').get().n, 16);
+});
+
+void test('queued selection cannot abandon an in-flight save before UNKNOWN is set', async t => {
+  const { handle, sqlite } = fixture(t); let release, held = false;
+  const view = ui(handle, { intercept(response, init) {
+    if (init.method === 'POST' && !held) { held = true; return new Promise(resolve => { release = () => resolve(response); }); }
+    return response;
+  } }); t.after(view.cleanup);
+  const original = await file({ padded: true }), replacement = await file({ name: 'queued-replacement.json' });
+  await ready(view, original); view.button('Save / continue private archive').props.onClick();
+  await view.until(() => Boolean(release));
+  selectWithoutWaiting(view, replacement); await tick();
+  assert.doesNotMatch(view.text(), /queued-replacement.json/);
+  assert.equal(view.input().props.disabled, true);
+  release(); await view.until(() => view.status().startsWith('Original file archived privately'));
+  const writes = view.calls.filter(c => c.init.method === 'POST').map(c => JSON.parse(c.init.body));
+  assert.equal(writes.length, 8);
+  assert.ok(writes.every(b => b.operationId === original.operationId));
+  assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_conversations').get().n, 1);
+});
+
+void test('failed same-ID readback keeps file replacement locked; owner change clears private pending state', async t => {
+  const { handle, sqlite } = fixture(t); let owner = 'alpha', drop = true, offline = false;
+  const view = ui(handle, { owner: () => owner, intercept(response, init) {
+    if (init.method === 'POST' && drop) { drop = false; throw Error('lost acknowledgement'); }
+    if (!init.method && offline) throw Error('offline');
+    return response;
+  } }); t.after(view.cleanup);
+  await ready(view, await file({ padded: true, name: 'private-pending.json' }));
+  view.button('Save / continue private archive').props.onClick();
+  await view.until(() => view.status().startsWith('Outcome unknown'));
+  offline = true; view.button('Read back same archive').props.onClick();
+  await view.until(() => view.status().startsWith('Readback unresolved'));
+  selectWithoutWaiting(view, await file({ name: 'not-yet.json' })); await tick();
+  assert.equal(view.input().props.disabled, true); assert.doesNotMatch(view.text(), /not-yet.json/);
+  assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 1);
+  view.blur(); view.button('Cancel preview / stop later saves').props.onClick();
+  offline = false; owner = 'beta'; view.focus();
+  await view.until(() => view.status().startsWith('Account changed.'));
+  assert.doesNotMatch(view.text(), /private-pending.json|Destination: /);
+  assert.equal(view.button('Read back same archive').props.disabled, true);
+  assert.equal(view.input().props.disabled, false);
+  await ready(view, await file({ name: 'new-owner-selected.json' }));
+  assert.equal(view.calls.filter(c => c.init.method === 'POST').length, 1);
+  assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM eve_messages').get().n, 16);
+});
