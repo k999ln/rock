@@ -1,3 +1,8 @@
+<a id="webops03-install-compatibility"></a>
+## 旧install URLの利用開始案内への接続
+
+[OS全体の11項目契約](rockstaros-complete-design.md#webops03-install-compatibility)を正本とする。既存導線のGET/HEADだけをexact /install(/)→固定`/connect#`へ案内し、query/fragmentを最終先へ継承しない。新Tool/実行API/保存/購入許可を作らず、本人確認・適合・費用同意は既存`/connect`の契約を通す。失敗時は再読込/通常revertで復旧。限定fixtureと公開readback・未配備は[採用記録](evidence/development-execution/esim-webops-main-adoption.json)で区別する。
+
 <a id="wallet-legacy-db-recovery-fixture"></a>
 ## Legacy earning ledgerのSQLite fault/reopen fixture（WALLET-02限定試験候補）
 
@@ -203,6 +208,8 @@ privacy・互換・復旧: 選択前にuploadせず、raw bytes/keyring/logをGi
 [Billingの11項目契約](sky-billing.md#billing-final-send-claim)で、current parent/rate/time/held cap/ownerと既存opt-in recurringを同じ最終INSERT SELECTへ固定する。拒否/不明時はno-send/元hold維持、既存late usageと一回settleを保持。新migration/料金/Wallet/888c変更なし。共通authority・issuer epoch/consent revision adapterと本番D1/実Providerは未受入。[exact4採用証拠](evidence/development-execution/billing-final-send-main-adoption.json)。ROCK実装、EXTERNAL根拠、JOINT本番受入、OWNER同意/費用の分界を維持する。
 
 <a id="esim-runtime-commit-authority"></a>
+
+初回activateSetupも同じ権限fenceへ接続する。setup/liveGrantの読戻しとgrant期限（新windowを足す時はissuer期限も）を実commit時刻で同一batch再検査し、最初のserviceStartAt/windowとworkspace CASを原子的に保存する。失効/競合は副作用0、明示修復後は同workspaceでonce、既開始retryは既存no-write扱い。新API/schema/価格/Toolは追加しない。[固定候補・検収・Git段階](evidence/development-execution/esim-webops-main-adoption.json)。本番D1/Provider/実機/金融/whole unitは別gate。
 ## 既存Linux/eSIMの保存時authorityと保持
 
 [OS全体契約](rockstaros-complete-design.md#esim-runtime-commit-authority)の11項目に従い、既存add/run/claim/heartbeatは同一D1 batchで本人/利用権/setup/catalog/latest review/expiryとworkspace CASを再照合する。否定/変更時は予約/仕事/lease/receiptを増やさず、同じrequest/digestは再課金せず保持。通常POSTへworkerやclient trustを渡さない。ROCKはAPI/store、EXTERNALはauthorityの根拠、JOINTは本番D1/実HTTP、OWNERは同意/費用。既存owner sessionのread/exportと実行可否を分け、独立retention ACL/期限や汎用attachment/実Provider・収納を受入済みにしない。新Tool/catalog/料金を作らず既存888c/late usageを保持する。

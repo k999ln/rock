@@ -1,0 +1,141 @@
+{
+  "schema": "rockstaros.esim-webops-finite-main-adoption/1",
+  "recordedAt": "2026-10-27T06:42:06.366011+00:00",
+  "baseMain": "927ac79abd9466869e2096e044a62efe9136512d",
+  "latestMainGithubReadback": true,
+  "branch": "codex/webops-install-adoption-20261027",
+  "status": "HOST_VERIFIED_SCANNED_FIXED26_PENDING_ROOT_FINAL_DELTA_REVIEW",
+  "primaryWorkstream": "10 Git / CI / Operations",
+  "sourceWorkstreams": [
+    "03 Wallet/Billing/Providers",
+    "05 Web/PWA/Sites"
+  ],
+  "units": [
+    "ESIM-03",
+    "WEBOPS-03"
+  ],
+  "sourceHashes": {
+    "lib/sky-linux-service-store.ts": "6884c62612178ba1c43ba46284fd3d1613c4ecd9873ceb3b2f2c64fef4fd90df",
+    "tests/sky-linux-service.test.mjs": "b55d185998c2614010de315bdf37a1623cc419dc8f377c0c2517144240af07f7",
+    "tests/rockstar-service-setup.test.mjs": "ebdecdc52baf25f4b56b3acead86be4da8ee1045f2e7ab11fbf90c34bbcb32f4",
+    "app/install/page.tsx": "31dc82953bf7223de97e4b7713421182feac759a3daa3b6842c7a4f95ef54bde",
+    "services/sky-web/domain-router.mjs": "b33650c14e9c6db04dce15d866e0161216c5fc5cae3dc0a817c05db7a1fe766d",
+    "tests/product-domains.test.mjs": "e77288dbae3dce3e832fdd5a37f26edebaff977ce2aa142aea784ecbb219605f",
+    "tests/sky-domain-router.test.mjs": "c41b8e7218d875b9d987918e3a9f083647bdb00c6a7538285f0b4c6cf49879c3"
+  },
+  "esimSourceReceipt": {
+    "path": "docs/evidence/development-execution/esim-activation-authority-fence.json",
+    "sha256": "aec35d06593b5a6347356e7cfd31d84436dc419c7acc8fe3a87b661f06c78a28"
+  },
+  "esimIndependentReview": {
+    "path": "docs/evidence/development-execution/esim-activation-independent-review.json",
+    "privateOriginalSha256": "d8df52163b20dcfe79d4cbc18ad256ad42d9ef67a4fedea1fae44b7c2b72455e",
+    "decision": "PASS_SCOPED",
+    "mustFix": 0,
+    "actualModelIdentity": null,
+    "tokens": null,
+    "cost": null
+  },
+  "webopsSourceReview": {
+    "path": "docs/evidence/development-execution/webops-install-independent-review.json",
+    "sha256": "b1f556d2f2a17b4a2664649680feb399b86a3c8e69f4381cf4f6c2d5ea464f88",
+    "rootReview": "docs/evidence/development-execution/root-webops-install-review.json",
+    "decision": "PASS_SCOPED"
+  },
+  "protectedEsim7": {
+    "lib/rockstar-service-setup-store.ts": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+    "lib/esim-cloud-grant.ts": "4f0c355054ffbdbf4b2bc07273986f1a660ce207703d705ab65e493c36071189",
+    "lib/rockstar-service-setup.ts": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+    "app/api/rockstar/service-setup/route.ts": "22f71df97f9ef724c4cce70c25348d5e58338015f28038fd6c28836cb2ea5a97",
+    "tests/fixtures/billing-test-d1.mjs": "3b164bb4790adad563f126f1d4a569dea5c96b97e2caee3f9100e5e064cb18e2",
+    "package.json": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+    "package-lock.json": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+  },
+  "priorCurrentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json",
+  "validation": {
+    "targeted": {
+      "command": "node --experimental-strip-types --test tests/sky-linux-service.test.mjs tests/rockstar-service-setup.test.mjs tests/product-domains.test.mjs tests/sky-domain-router.test.mjs",
+      "tests": 134,
+      "pass": 134,
+      "fail": 0,
+      "skip": 0
+    },
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "designCheck": "PASS",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3125,
+        "pass": 3122,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "countsNotAdditive": true,
+      "logSha256": "a0d3f2285eea89cae82571a0699df673925986f2276724e397dab26d3ef47aea",
+      "source7UnchangedThroughout": true,
+      "resultMetadataOnlyAfterVerify": true
+    },
+    "scanner": {
+      "payload": {
+        "exitCode": 0,
+        "findings": 0,
+        "reportSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "logSha256": "d4ac7f8c4b7b4fa27036777c86885d35d0a23707fd1ad07e3c502a5e40d1f637"
+      },
+      "canary": {
+        "exitCode": 1,
+        "findings": 1,
+        "reportSha256": "14772a1db189e6778a629b951fb99c856c6b3db27cfa04321e392c838c10a179",
+        "logSha256": "83c3536b696edc42638c827bfe042d5db4e2ff9852b2f849a1d087ff7e61148a"
+      },
+      "version": "8.30.1",
+      "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+      "fixedPolicyCommit": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+      "emptyIgnore": true,
+      "inlineAllowDisabled": true,
+      "paths": 26,
+      "payloadScope": "Explicit changed26 files only; Git history scan is separate CI gate",
+      "syntheticCanary": true
+    },
+    "rootFinalDeltaReview": "REQUIRED_BEFORE_GIT; final exact manifest and independent Root result retained separately",
+    "headCI": "PENDING",
+    "mainCI": "PENDING",
+    "projectUpdate": "PASS",
+    "logs": {
+      "union-source-tests.log": "2802250ccd0ad362f5272969e70f380f41e18025cf46b81870a0f568370760b1",
+      "typecheck.log": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9",
+      "lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "design-check.log": "80fb1340c583a9b7a6ac994927179b5aea3e8854aff5d33720413d7bb9a85ca5",
+      "project-update2.log": "b7a4294b0d9ac6b34bdc77e69a06af11e6efbce9a3ea60784dbc03ed6ef3b79a"
+    },
+    "metadataCorrection": {
+      "oldE7SameShaCIPassed": false,
+      "current927SameShaCISuccess": 6,
+      "reason": "Root pre-full review separated initial PR242 failure from PR243 current success; no source change"
+    },
+    "source7AfterVerify": "ALL_FIXED_HASHES_MATCH"
+  },
+  "Git": {
+    "saved": false,
+    "mainIntegrated": false,
+    "publicDeployment": false
+  },
+  "boundaries": {
+    "taskCount": 393,
+    "phaseGateCount": 14,
+    "fixedUnitCount": 95,
+    "wholeUnitsAccepted": 0,
+    "physicalAccepted": false,
+    "actualProviderFinancialAccepted": false,
+    "productionD1Accepted": false,
+    "publicSourceIdentity": "UNKNOWN",
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "next": "Fixed union verification and scanner/canary, Root final delta review, exact paths Git/save/headCI, normal main/sameSHA CI. Author captures immutable."
+}

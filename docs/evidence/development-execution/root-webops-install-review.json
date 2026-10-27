@@ -1,0 +1,18 @@
+{
+  "status": "PASS_SCOPED",
+  "manifestSha256": "d06f451a051df11434c258e9e6ca9658680a818ef8123765bd4bcb5041594063",
+  "candidateWriteCount": 7,
+  "review": [
+    "All7 hash verified",
+    "Fixed relative redirect /connect# reads no caller URL or props",
+    "Router adds exact /install and /install/ only; near names/subpaths unchanged",
+    "Root independently ran actual page/real redirect shim and router tests11/11,0fail,0skip",
+    "Design/workstream delta reviewed as additions to old7ceef base; MUST apply additions onto latestmain, never overwrite current full documents",
+    "Public404 remains until separate deployment; synthetic connect/layout fixture not real onboarding acceptance"
+  ],
+  "sourceCount": 4,
+  "publicDeploymentAccepted": false,
+  "wholeUnitAccepted": false,
+  "bulk616": "HOLD",
+  "privateOriginalReviewSha256": "8e7a390d1a7f95f0a21b702ee47a66d974980d0f47362567f0fc3d265debfa48"
+}

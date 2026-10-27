@@ -309,3 +309,10 @@ ROCKが指定チャットの最新OS設計と作業branchの実装履歴を照�
 ## Pro unknown原本archiveの限定復旧（2026-10-27）
 
 ROCK/09主担当、05保存UI、10/G04統合。[同ID復旧契約](../rockstaros-complete-design.md#pro-archive-unknown-recovery)は未照合中のfile置換を同期live guardで拒否し、quarantine中cancelでもowner/targetだけを保持、私有内容は隠す。既存暗号化履歴/server/CAS/同意は不変。独立38+追加2・旧4反例とRoot31は別count。全verify/Git/main/同SHA CIは[新候補証拠](../evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)で分ける。wholePRO01/実本人保存/native/公開は未受入。
+## 旧install入口と3domain読戻し（WEBOPS-03 / WEB04・WEB13、限定候補）
+
+ROCKはmain `7ceef8cf`の旧`/install`互換pageとdomain routerを対象に、既存`/connect`への固定転送だけを追加する。EXTERNALはSites配信基盤とDNS/TLS、JOINTは同じ配布artifactの公開応答照合、OWNERは公開・回線・OS導入の各条件を担う。Miniのpublic link先`avoado.si/install/`は読戻し時404であり、mainにも本体pageがなく旧routerはMiniへproxyしていた。source契約と同じ不整合として修復し、現在のSites sourceがmainと同一だとは推測しない。
+
+3domainの公開DNS/TLS/HTTPS 200とHTTP→HTTPS、総合Siteのsaved v120とMini/Pro saved v78の配備成功metadataを個別に読戻した。総合/ Miniトップの相互link未検出は描画後DOMの観測範囲に限定し、MiniのCreate下層やProからの導線は存在する。公開commit/版識別子がないためsource一致は未確認。履歴v4/v41等は現在の配信証拠に流用しない。[詳細証拠](../evidence/development-execution/webops03-domain-release-readback.json)と[互換route設計](../rockstaros-complete-design.md#webops03-install-compatibility)を参照。
+
+検証は`node --experimental-strip-types --test tests/product-domains.test.mjs tests/sky-domain-router.test.mjs`、限定lint、元routeなし/元router/外部target/query漏出の負例、実Vinext最小fixtureのHTTP GET/HEADとブラウザURL。`/connect`先はHTTP fixtureであり本人利用開始全周の合格ではない。全体verify・独立検収・同一head CI・main統合・公開配備は中央の別gate。DNS/TLS/Sites設定・配備・認証・DB・一般ローンチを変更せず、旧失敗履歴と616HOLDを保持する。

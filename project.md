@@ -1,3 +1,9 @@
+## eSIM初回利用開始と旧install導線の有限統合（2026-10-27 / G04・ROCK）
+
+着手: GitHub最新main927ac79aと準備branch一致を読戻し。eSIM初回activation authority fence固定3source/tests・receiptは独立PASS_SCOPED/必須0、関連123/追加込み18成功/旧5leaf反例。WebOps固定4は旧install exactrootを既存connectへ案内し、独立11成功と限定framework/browser証拠。判断: eSIMの既存helper/owner-revision CAS/API/schema/価格を保持し、WebOps旧base全文書をコピーせず最新mainへ追補。393task/14gate/固定95whole0・Root HEAD/index・616HOLD保持。検証完了: 統合134/134・type/lint/designとproject:update成功、host全verify exit0（Node3125/3122pass/0fail/3skip、build/API1678/CSV385含む）。固定policy gitleaks8.30.1はpayload0/canary1、既存ignore/inline allowを使わず検出を確認。次: 固定26の結果metadata最終delta検収、限定Git/同headCI/通常mainと同SHA CI。公開source同一性UNKNOWN・公開修正未配備、本番eSIM/金融/実機/whole unitは未受入。[採用記録](docs/evidence/development-execution/esim-webops-main-adoption.json)。
+
+現行Git受入の訂正: PR242のhead全8CIと初回main e7のverify失敗を履歴保持。PR243 head32637100全7CIを通常main927ac79aへ統合、同SHA全6CI・4workflow成功、Linux3116/3114pass/0fail/2skip、22blob/tree一致を確認済み。作者capture receiptは書換えず[別current記録](docs/evidence/development-execution/pr242-243-main-current.json)を現行根拠にする。
+
 ## Pro原本unknown復旧とEve試験harnessのforward-fix（2026-10-27 / G04）
 
 PR242はheadc84ea37c/全8CI成功をmain e7d458f2へ通常統合し、41blob/tree一致を確認。初回mainは6CI成功/verify1失敗を保持。新Eve UI試験はhandoffのWebCrypto検証Promiseが既存harness追跡外でreview前のactiveを読んだ。制御barrierで旧flushの早期完了を再現し、既存trackへ実Promiseを登録するtest-only修正で関連61成功。assertion/sleep/timeout/runtimeは変更しない。別のPro固定2はunknown時のfile置換拒否/quarantine cancelでowner/ID保持、独立38+追加2/旧4反例・Root31で限定PASS。Rootのfixture差分独立検収61/61を確認し、新固定3sourceのhost全verifyはexit0（Node3116/3113pass/0fail/3skip、build/API1678/CSV385含む）。結果metadataの最終検収→限定Git→同headCI→通常main/同SHA CIへ。ProでEve失敗を隠さず、旧head/main/失敗ログを別記録。393task/14gate/固定95whole0、原本HEAD/index/616HOLD、実Provider/実機/一般公開のgateを保持。証拠 docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json。

@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "Preserve PR209 Pixel candidate and eSIM/UI candidates; compare with latestmain2854d069 and pass their own remaining gates before adoption. Do not repeat PR208 test implementation.",
+  "nextProductSlice": "Reviewed ESIM03 first-activation authority fence and WEBOPS03 legacy /install compatibility: fixed union verify, final delta review, explicit Git/headCI, normal main/sameSHA CI; no public deployment.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -105,6 +105,20 @@
         "skip": 2
       },
       "evidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "pr": 243,
+      "mainMergeSha": "927ac79abd9466869e2096e044a62efe9136512d",
+      "sameShaCISuccess": 6,
+      "evidence": "docs/evidence/development-execution/pr242-243-main-current.json",
+      "wholeUnitAccepted": false
+    },
+    {
+      "kind": "ESIM03_WEBOPS03_reviewed_candidate",
+      "baseMain": "927ac79abd9466869e2096e044a62efe9136512d",
+      "evidence": "docs/evidence/development-execution/esim-webops-main-adoption.json",
+      "mainIntegrated": false,
       "wholeUnitAccepted": false
     }
   ]

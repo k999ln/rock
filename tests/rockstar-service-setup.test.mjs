@@ -607,6 +607,7 @@ void test('provision resumes one persisted canonical workspace after interrupted
 });
 
 void test('ready activation resumes once after its receipt is saved and SQLite is reopened', async (t) => {
+  const now = Date.now();
   const directory = mkdtempSync(join(tmpdir(), 'rock-esim-ready-recovery-'));
   const path = join(directory, 'ready.sqlite');
   const handles = [];
