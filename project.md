@@ -1,3 +1,7 @@
+## Pro原本unknown復旧とEve試験harnessのforward-fix（2026-10-27 / G04）
+
+PR242はheadc84ea37c/全8CI成功をmain e7d458f2へ通常統合し、41blob/tree一致を確認。初回mainは6CI成功/verify1失敗を保持。新Eve UI試験はhandoffのWebCrypto検証Promiseが既存harness追跡外でreview前のactiveを読んだ。制御barrierで旧flushの早期完了を再現し、既存trackへ実Promiseを登録するtest-only修正で関連61成功。assertion/sleep/timeout/runtimeは変更しない。別のPro固定2はunknown時のfile置換拒否/quarantine cancelでowner/ID保持、独立38+追加2/旧4反例・Root31で限定PASS。Rootのfixture差分独立検収61/61を確認し、新固定3sourceのhost全verifyはexit0（Node3116/3113pass/0fail/3skip、build/API1678/CSV385含む）。結果metadataの最終検収→限定Git→同headCI→通常main/同SHA CIへ。ProでEve失敗を隠さず、旧head/main/失敗ログを別記録。393task/14gate/固定95whole0、原本HEAD/index/616HOLD、実Provider/実機/一般公開のgateを保持。証拠 docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json。
+
 ## Billing・Eve・OS復旧・Game診断の有限統合（2026-10-27 / G04・ROCK）
 
 最新main7ceef8cfから固定候補を採用準備。Billing契約binding3sourceは独立74+3成功/旧5反例、OSは初回保存前の入力hash設定だけ、Gameはfile/親directory衝突拒否。Eve最終6はunknown404と同意切替後の自然失効回帰を修正し、中央独立9・関連73成功/旧3失敗反例、Rootの自然期限実画面合格を限定確認。共通schema/価格/既存workflow/Wallet・393task/14gate/固定95whole0は保持。共有設計/index/進捗を同期し、source13不変のhost全verifyはexit0（Node3112/3109pass/0fail/3skip、build/API/CSV含む）。結果だけのmetadataを追記した最終候補について、固定scanner/独立metadata検収→限定Git保存→最終head Linux CI→通常main/同SHA CIへ進む。Git保存/main/CIは現在未完了。実機/Provider/実課金/一般公開・616bulkは保留。証拠 docs/evidence/development-execution/billing-eve-os-game-main-adoption.json。

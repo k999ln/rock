@@ -1,0 +1,69 @@
+{
+  "schema": "rockstaros.pro-recovery-eve-drain-adoption/1",
+  "recordedAt": "2026-10-27",
+  "baseMain": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+  "status": "host_full_verify_passed_final_metadata_review_and_head_ci_pending",
+  "evidence": "docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json",
+  "units": [
+    "PRO-01",
+    "EVE-02"
+  ],
+  "gitHubSaved": false,
+  "mainIntegrated": false,
+  "wholeUnitsAccepted": 0,
+  "physicalAccepted": false,
+  "actualProviderFinancialAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HELD",
+  "fixedSourceAndTests": [
+    {
+      "path": "components/pro-account-import.tsx",
+      "sha256": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44"
+    },
+    {
+      "path": "tests/pro-account-import.test.mjs",
+      "sha256": "9d59777a5b96bd456853ca1b0b87a92909401d4fcfb581f8ddfa755a27a9c73a"
+    },
+    {
+      "path": "tests/work-composition-ui.test.mjs",
+      "sha256": "52aaadb8403246621cb08942e30d74d21ef9a336ad74d9dd5d13a0054894dcda"
+    }
+  ],
+  "ProSourceManifestSha256": "fc581ecb6a931dfc5d16d7a48e89f70cf688cf51044ce2b08c85fb22cdcc4636",
+  "ProIndependentReview": "docs/evidence/development-execution/pro-archive-recovery-independent-review.json",
+  "ProIndependentReviewOriginalSha256": "b5b525c0206c4a932b46d0ce58002dce1844891b6a08d6435827f5aa164140eb",
+  "RootProReview": "docs/evidence/development-execution/root-pro-recovery-review.json",
+  "RootProOriginalReviewSha256": "0ba5703a40c453d695fd631acbf12250d90b9afed52ad93717c898560c2b9c4b",
+  "EveFixtureDiagnosis": "docs/evidence/development-execution/eve-handoff-test-drain-diagnosis.json",
+  "EveFixtureIndependentRootReview": "docs/evidence/development-execution/root-eve-drain-review.json",
+  "initialMainFailurePreserved": "docs/evidence/development-execution/billing-eve-os-game-main-current.json",
+  "fullVerify": {
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "exitCode": 0,
+    "rootNode": {
+      "tests": 3116,
+      "pass": 3113,
+      "fail": 0,
+      "skip": 3
+    },
+    "workAPIAssertions": 1678,
+    "csvAssertions": 385,
+    "buildAndMetadataChecks": "passed",
+    "logSha256": "178532a015c6b7233a44f3df7f9625f154b1d24c8082359710d2804ceec1f9f0",
+    "scope": "Host full candidate/source3 fixed. Result-only metadata follows this execution; final-head Linux CI must check the exact final bytes."
+  },
+  "schemaPricingWalletAndPR242ProductionRuntimeChanged": false,
+  "newSourceScope": "Pro controller and its regression test (2 files); Eve existing test module mock only, all assertions unchanged",
+  "next": "Root final22 metadata delta acceptance, limited Git save/newhead CI, normalmain and same-SHA CI. Preserve original e7 failure and capture-time receipts.",
+  "EveFixtureRootOriginalReviewSha256": "2aa8eb3429d59d5a1a0dffd63a9af5cfc07b2d3343c84de93fd1b4c5415fa8ff",
+  "payloadSecretInspection": {
+    "version": "8.30.1",
+    "policyControlCommit": "bcf5345ca266c92656bbd8c06bb0652b1a8075a8",
+    "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+    "payloadFindings": 0,
+    "canaryFindings": 1,
+    "ignoreFile": "empty",
+    "inlineAllowIgnored": true,
+    "scope": "Changed-file payload; final frozen payload and canary rechecked; CI separately checks reachable history. No security-zero claim."
+  }
+}

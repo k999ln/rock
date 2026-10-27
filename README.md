@@ -1,3 +1,5 @@
+Proの私有原本archiveでは、保存結果が不明な間は新しいfileへ置き換えず「Read back same archive」で同じ保存IDを確認してください。本人確認中にcancelしても照合先だけを保持し、内容は隠します。再開には同じaccountの確認と別の保存同意が必要です。[復旧契約](docs/rockstaros-complete-design.md#pro-archive-unknown-recovery)。[PR242のmain初回verify失敗とforward-fix](docs/evidence/development-execution/billing-eve-os-game-main-current.json)を保持し、[Pro/試験harness新候補](docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)のGit/CIとは分けて記録します。
+
 Eveの見積条件を予算0の準備仕事へ渡す限定候補を準備中です。保存済の資料で見積もり、通貨と比較上限、別の準備同意を確認して「この条件で準備仕事を作成」へ進みます。原文は元の仕事へ保持し、新仕事の資料保存は別の保存同意後に行います。期限切れ時は元の仕事で見積もり直します。これは有料生成の承認や予約ではありません。[契約と復旧](docs/rockstaros-complete-design.md#eve-text-handoff)、[4候補の検収・Git段階](docs/evidence/development-execution/billing-eve-os-game-main-adoption.json)を参照してください。
 
 [PR225](https://github.com/k999ln/rock/pull/225)のzod修正はmain `f4ed492c`へ統合済みです。HEAD `dcf86f99`の全8CI、main統合SHAの全9CI（CodeQLを含む）が成功し、zod警告2件は解消しました。[最終検収・履歴](docs/evidence/development-execution/zod-security-constraint-review.json)をGit保存しています。root・MiniはZod4.6.7、shadcnは上流Zod4対応版4.22.1です。依存・schema互換性試験は `node --test tests/zod-dependency-security.test.mjs`。実機・追加推論・公開の実施は含みません。

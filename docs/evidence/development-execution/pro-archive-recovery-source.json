@@ -1,0 +1,100 @@
+{
+  "schema": "pro-archive-recovery/1",
+  "recordedAt": "2026-10-27T05:49:03.518559+00:00",
+  "unit": "PRO-01",
+  "taskRefs": [
+    "MAT16",
+    "B05",
+    "WEB13"
+  ],
+  "phaseGate": "B05-COMPARE",
+  "responsibility": "ROCK / workstream09; Web05; integration10",
+  "baselineMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "status": "SOURCE_CANDIDATE_READY_FOR_INDEPENDENT_REVIEW",
+  "sourceFiles": {
+    "components/pro-account-import.tsx": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44",
+    "tests/pro-account-import.test.mjs": "9d59777a5b96bd456853ca1b0b87a92909401d4fcfb581f8ddfa755a27a9c73a"
+  },
+  "problem": "New file selection replaced unresolved archive owner/ID; cancel during identity quarantine discarded the recovery target.",
+  "fix": "Fence file selection while a write is in flight or requires readback; retain owner/ID through quarantined cancellation, recheck owner before same-ID GET.",
+  "negativeBaseline": {
+    "tests": 4,
+    "passed": 0,
+    "failed": 4,
+    "logSha256": "9ab4ab0409411f94501fe7987896e5d8ca1998eb96c009f42f0d90ef68d2a9fc"
+  },
+  "focused": {
+    "command": "node --experimental-strip-types --test tests/pro-account-import.test.mjs sites/avocado-mini/tests/pro-local-import.test.mjs",
+    "tests": 38,
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "0d22e481c9fee94aa6c2134f5dfc371661a2153ae22f3cc497565c4698060d40",
+    "dependencyLockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26"
+  },
+  "observationLayer": "synthetic component events + actual Pro codec/handler/encrypted file-backed SQLite; synthetic authentication, no browser/device/provider/model",
+  "pending": [
+    "Independent source review",
+    "Central design/progress synchronization and whole verify",
+    "Central Git save / latest-main integration / exact HEAD and merge CI"
+  ],
+  "unchanged": [
+    "server handlers / workflow / billing / Eve / Pixel manager / Game intake / schema",
+    "existing accepted archive receipts",
+    "source originals and Root HEAD/index",
+    "published Sites deployment; Root dirty content not imported"
+  ],
+  "wholePRO01Accepted": false,
+  "physicalDeviceOperations": 0,
+  "additionalModelInference": 0,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "failedAttempts": [
+    {
+      "command": "npm run verify",
+      "reason": "Host default OpenSSL 4 rejected by existing OpenSSL 3 requirement",
+      "logSha256": "4b5507ff39236e81eb5af69cbf0d4d2ff4d0fd0dd85506cec89da3fc6420b407"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify (sandbox)",
+      "reason": "Existing localhost test listen EPERM; rerun outside filesystem/network sandbox",
+      "logSha256": "eef4398c1b0dc74dd350c7abbefdd1be7faad75cca2ea9395eec48cb3859bba7"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify (host)",
+      "reason": "Old Root dependency directory lacked stripe; TS2307 in five unchanged files; not counted as candidate source failure",
+      "logSha256": "4ad6e053737b33d3853bfc94129d6d31a7a2ff08ae551a509b6231b039403c5c"
+    }
+  ],
+  "rootPreservation": {
+    "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "indexSha256": "181a20c14e06119d3a09bda219de507d2807053cb5d71f1daa34c71d73fe80b2",
+    "rootProControllerAndTest": "absent; not copied from Root",
+    "mainVsRootSites": "pro-os.js and pro page differ; source candidate based only on pinned main; live Sites deployment not read back"
+  },
+  "designAndProgressFiles": [],
+  "unchangedTaskCount": 393,
+  "unchangedPhaseGateCount": 14,
+  "sharedMetadata": "Central Git owns integration-time design/progress updates; author draft is outside Git, not part of source packet. No shared metadata changed.",
+  "fullVerify": {
+    "status": "DEFERRED_TO_CENTRAL_INTEGRATION",
+    "matchedLockAttempt": "Stopped at typecheck with exit130 after coordinator assigned whole verify to central Git",
+    "logSha256": "c437dd8400a99a4abd5dcf7cda67045ea77f5f07ba12c5bf472ddfb1c1e468f3"
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "exitCode": 0,
+    "logSha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+  },
+  "lint": {
+    "command": "oxlint components/pro-account-import.tsx tests/pro-account-import.test.mjs",
+    "exitCode": 0,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "regressions": [
+    "Lost POST acknowledgement: different operation cannot replace pending ID; same-ID GET returns partial revision1 and fresh consent continues eight-batch original archive",
+    "Cancel while hidden/identity checking: retain bound owner/ID, mask private data, same-owner recheck recovers target",
+    "Queued file selection while POST in flight: no intent replacement, all eight writes retain original operationId",
+    "Failed GET: selection remains fenced; different owner after cancellation clears former private state, no cross-owner write"
+  ]
+}

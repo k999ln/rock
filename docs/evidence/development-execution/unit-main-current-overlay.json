@@ -1056,8 +1056,26 @@
         "GAME-01"
       ],
       "kind": "additional_bounded_candidate",
-      "state": "host_verify_passed_final_manifest_review_and_head_ci_pending",
+      "state": "PR242_normal_main_source_adopted_initial_verify_failed_forward_fixture_fix_pending",
       "evidence": "docs/evidence/development-execution/billing-eve-os-game-main-adoption.json",
+      "wholeUnitAccepted": false,
+      "publicDeploymentAccepted": false,
+      "pr": 242,
+      "acceptedHead": "c84ea37c5209399f188b795f579a6701b0921699",
+      "mainMergeSha": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+      "headCISuccess": 8,
+      "initialMainVerifyFailed": true,
+      "currentMainEvidence": "docs/evidence/development-execution/billing-eve-os-game-main-current.json"
+    },
+    {
+      "id": "PRO_RECOVERY_EVE_FIXTURE_FORWARD_20261027",
+      "units": [
+        "PRO-01",
+        "EVE-02"
+      ],
+      "kind": "additional_bounded_candidate_and_fixture_forward_fix",
+      "state": "host_full_verify_passed_final_metadata_review_and_head_ci_pending",
+      "evidence": "docs/evidence/development-execution/pro-recovery-eve-drain-main-adoption.json",
       "wholeUnitAccepted": false,
       "publicDeploymentAccepted": false
     }

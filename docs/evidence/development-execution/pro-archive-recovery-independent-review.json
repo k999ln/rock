@@ -1,0 +1,88 @@
+{
+  "schema": "rockstaros.pro-archive-recovery-independent-review/1",
+  "recordedAt": "2026-10-27T05:57:37.238743+00:00",
+  "status": "PASS_SCOPED_SOURCE2",
+  "baseMain": "7ceef8cf2f2e7ced49425413cb93810b37c15e45",
+  "latestMainObserved": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+  "latestMainCI": "pending; not part of this source verdict",
+  "candidateManifestSha256": "fc581ecb6a931dfc5d16d7a48e89f70cf688cf51044ce2b08c85fb22cdcc4636",
+  "sourceFiles": [
+    {
+      "path": "components/pro-account-import.tsx",
+      "sha256": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44",
+      "bytes": 15166
+    },
+    {
+      "path": "tests/pro-account-import.test.mjs",
+      "sha256": "9d59777a5b96bd456853ca1b0b87a92909401d4fcfb581f8ddfa755a27a9c73a",
+      "bytes": 43604
+    },
+    {
+      "path": "docs/evidence/development-execution/pro-archive-recovery-source.json",
+      "sha256": "091fbb08bd88ff13662b59803eff5b398114bac1c842309361a14d35509b00ce",
+      "bytes": 4979
+    }
+  ],
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "independentAuthorSeparation": "Central reviewer did not implement or edit candidate source. Root source/31-test review is separately retained.",
+  "RootIndependentReviewSha256": "0ba5703a40c453d695fd631acbf12250d90b9afed52ad93717c898560c2b9c4b",
+  "requiredChanges": [],
+  "invariantReview": [
+    "choose reads synchronous live state before invalidation or File bytes; unresolved or written+busy state cannot replace the bound owner/target. Disabled input and queued callback guard both apply.",
+    "cancel while identity quarantined preserves context/target/receipt/written only if prior write or unresolved readback exists. It still nulls file/verified and clears selected DOM input; privatePanel remains gated by existing identity checking.",
+    "Before same-target GET, existing focus/visibility account recheck confirms original owner. Owner change clears private state. No new authentication, authority, persistence engine or automatic POST is added.",
+    "Failed readback leaves replacement locked; successful same-ID readback releases the selector. Explicit consent and existing current-revision CAS control continuation; server handlers/codec/Eve history unchanged.",
+    "Cancel aborts later requests. Late prior response cannot own a newer intent; repeated cancel and failed same-owner auth recheck retain the original target without another POST."
+  ],
+  "independentExecution": {
+    "componentAndRealSyntheticHandler": {
+      "tests": 31,
+      "pass": 31,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "86ac1d8022de91d69e58ddcd30b217e3d905daa5bc73da8a18e53898a89fbefa"
+    },
+    "existingLocalImport": {
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "07e82cbd6229deef478ecded04a2d942bcd5a79245b1ebf87e4b06c92f5db8cb"
+    },
+    "additionalReviewerProbes": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "2f1e88bf3f1f947a21a84ac9b5f05b0240c565c755343e75513c9a5e06228c88",
+      "probeSha256": "6ff5036e39e3337618670e0107965be44707cb24df7ff987c6f328c9a2242ec3",
+      "cases": [
+        "Blocked new selection never reads replacement File bytes during unresolved write",
+        "Repeated quarantined cancel plus offline account recheck preserves exact target and uses only one POST"
+      ]
+    },
+    "fixedBaseCounterexamples": {
+      "tests": 4,
+      "expectedFailures": 4,
+      "pass": 0,
+      "skip": 0,
+      "baselineComponentSha256": "9b51cfbc0b380795d6485b2be8125cd19897ee82a51643133cd40f4fe709679b",
+      "logSha256": "45bd511772fe4bc9f087a14daeb9e37460d99c326d47f609c8dcd235182e11f9",
+      "note": "Same private harness/test assertions with only source URL selecting exact original7cee component; old4fail reach product assertions, not import/fixture errors."
+    },
+    "countsNotAdditiveWithRootOrAuthor": true
+  },
+  "source2BaseMatchesLatestMain": true,
+  "productSourceEditsByReviewer": 0,
+  "next": "After PR242 merge-SHA CI is accepted, synchronize latest main and copy exactly source2+author receipt into a separate integration candidate. Add canonical design/index/status; fixed full verify, payload scanner, independent metadata review, Git/main/same-SHA CI. Do not add to PR242 fixed41.",
+  "notAccepted": [
+    "Actual browser/account authentication/production D1 storage",
+    "Crash/closed-tab persistent pending restoration",
+    "Native Pro OS, wholePRO01 or job migration",
+    "Whole integration verify or GitHub/main adoption of Pro2",
+    "Real provider/inference/charges or public deployment"
+  ],
+  "bulk616": "HOLD"
+}

@@ -95,7 +95,9 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
     addEventListener(name, callback) { if (!listeners.has(name)) listeners.set(name, new Set()); listeners.get(name).add(callback); },
     removeEventListener(name, callback) { listeners.get(name)?.delete(callback); }, confirm: () => true,
   };
-  const modules = { '@/lib/eve-text-handoff': handoff,
+  // Handoff validation hashes the saved source before its next request too.
+  const trackedHandoff = { ...handoff, validateEveTextHandoff: (...args) => track(handoff.validateEveTextHandoff(...args)) };
+  const modules = { '@/lib/eve-text-handoff': trackedHandoff,
     // Child behavior runs in eve-text-estimate-ui; this harness owns the parent workspace.
     '@/components/eve-text-estimate': props => { estimateProps = props; return null; },
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',

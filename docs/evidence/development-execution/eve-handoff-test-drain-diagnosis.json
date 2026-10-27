@@ -1,0 +1,59 @@
+{
+  "schema": "rockstaros.eve-handoff-test-drain-diagnosis/1",
+  "status": "DIAGNOSED_FIXTURE_FORWARD_FIX_PENDING_ROOT_INDEPENDENT_REVIEW",
+  "originalSourcePR": 242,
+  "acceptedHead": "c84ea37c5209399f188b795f579a6701b0921699",
+  "mainMergeSha": "e7d458f20b2e621c4562be7f97345d3b6f7a274f",
+  "mainFailure": {
+    "run": 40457926979,
+    "job": 122035492843,
+    "logSha256": "7cbd912eb211179a1bc5f21285f77024a93ce75f720d9115d587767436ddacbb",
+    "test": "estimate-bound preparation uses existing create/run/readback, retains originals and restores GET-only",
+    "path": "tests/work-composition-ui.test.mjs",
+    "assertionLine": 725,
+    "actual": "active",
+    "expected": "review",
+    "headSameTreePassed": true,
+    "initialMainVerify": "failed; never promoted to success"
+  },
+  "cause": "Existing harness tracks requests and composition fingerprints, but direct handoff module leaves validateEveTextHandoff WebCrypto awaits untracked. The bounded flush can return before validation completes, observing active before run is sent.",
+  "controlledEvidence": {
+    "probeSha256": "42984699be1d82657e2a63ead27faa54200e3e86b9a993f153d3d1ef225cad1d",
+    "untracked": {
+      "tests": 1,
+      "pass": 1,
+      "logSha256": "747b8aa742455efc913fcd2cbb2ac6b2b26e58dbd084abcbb5178e7397d1ccb2",
+      "observation": "Controlled validation is still pending, but old click/flush resolves; child remains active. Release then reaches review with exact descriptor."
+    },
+    "tracked": {
+      "tests": 1,
+      "pass": 1,
+      "logSha256": "ea022859987a2014ec810592d49224a12255dd049197b7282bb48f0c50a24741",
+      "observation": "Tracking same real validation promise keeps click/flush pending until release, then reaches review with exact descriptor."
+    }
+  },
+  "fix": {
+    "path": "tests/work-composition-ui.test.mjs",
+    "baseSha256": "03925531ebd0b9a01f6ebae5b5540543782c39726bc81e2a15796496da2b98d3",
+    "candidateSha256": "52aaadb8403246621cb08942e30d74d21ef9a336ad74d9dd5d13a0054894dcda",
+    "delta": "Two added harness declarations/comment replace one module mapping: actual validateEveTextHandoff promise is registered with existing track().",
+    "assertionsNamesBodiesChanged": false,
+    "productionRuntimeChanges": 0,
+    "sleepTimeoutRetryChanges": 0
+  },
+  "validation": {
+    "related": {
+      "logSha256": "a83c8cbe7d1b9148568fd0e5d77c5fde59cb116b4019603c4e23508767c17c6b",
+      "summary": [
+        "ℹ tests 61",
+        "ℹ pass 61",
+        "ℹ fail 0",
+        "ℹ skipped 0"
+      ]
+    },
+    "fullVerify": "Required on fixed next candidate/head CI; not rerun yet"
+  },
+  "next": "Root independently verifies this fixture delta. Combine with separately reviewed Pro2 only in next limited PR, preserving failed initial-main evidence and fixed source PR242.",
+  "wholeEVE02Accepted": false,
+  "bulk616": "HOLD"
+}
