@@ -1,3 +1,26 @@
+<a id="shared-service-access-binding"></a>
+## 共有service accessの非同期authority結合（ESIM-01/04・ROCK）
+
+目的・体験: 準備済みPixel/Pro/miiを同じ本人サービスへつなぐ既存server evaluatorで、暗号検証中の支払制限・予算取消・親利用権変更を見落として実行可能を返す反例を拒否する。UIや実配備を新規に有効化しない。実consumerはhost testsだけの既存契約受入repairで、実用体験の新規開通や他系統のhard runtime依存とは数えない。
+
+責任: ROCKは渡された依頼とauthority objectの検査・結果を担当。EXTERNALはissuer/回線/決済、JOINTは実DB・認証adapter/Broker、OWNERは契約/費用上限/端末操作を担う。
+
+入出力: 既存owner/workspace/deviceKeyThumbprint/requiredScope/requestDigestの5fieldをawait前に分離。readCurrent/resolveKeyはserver依存で、browser入力から受け取らない。readCurrentへは別の5fieldコピーを渡し、await後の検査に使う内部bindingをadapterへ共有しない。出力canDispatch/canRead/canExport/revisionは同じ。未知の追加request fieldはadapterへ転送しない。
+
+状態: 初回snapshotをdetached化し既存の状態直積・署名を検査。完了時に渡されたlive objectを再cloneし、全snapshotのJSON比較が一致するときだけdispatchを許す。nested factsのobject差替えも拒否。telecom等の無害な変更も保守的に拒否するため、本人の明示retryは現authorityから再評価する。
+
+保存: 新table/DB/schema/予約/台帳/キャッシュを作らず、snapshotはメモリ内。read/exportは初回と完了時の両方が認めた範囲だけ。完了時の本人失効は全拒否、dispatchだけの制限は現在有効なretentionを保持する。
+
+失敗: clone/crypto/authority不正はfail closed。retained authority自体の欠落はrevisionもnull、既存の不正dispatchデータは独立に認証したretentionを消さない。Provider effectや追加課金/書込みを起こさない。
+
+復旧・互換: signature wire/TTL/返却shape/DB/料金/workflowは維持。通常Git revertでhelper/testを戻せ、永続migrationやデータ削除は不要。既存PR248のattachment snapshotを再実装しない。
+
+承認: この結果は再利用可能なdispatch permitではない。Brokerで同一revision/epochと既存予算予約を原子的に再確認・消費する別gateを維持する。新たなProvider/実機/実課金/一般公開の許可を与えない。
+
+合格条件: 旧sourceの8leaf反例（aggregateを別計数）、R1の59焦点/全verify成功後に独立検収でcallback引数aliasの残件を確認。R2で内部bindingを別コピーから隔離し62焦点試験、型・lint、固定artifactのBilling/Astra独立検収と同SHA CI。DB読み直しや本番adapter/実機の受入と区別する。[証拠](evidence/development-execution/shared-service-access-binding.json)。
+
+未決定の決め方: 親DBの変更、object外の変化、変更後の元値復帰は本検査の範囲外。現DB/Brokerの既存schema/transactionを別source確認し、独立retention ACL/期限とともに別受入する。測定や署名等の未知条件を形式試験から補わない。
+
 <a id="esim-attachment-async-binding"></a>
 ## ESIM-04 非同期attachment検証の入力結合（host限定）
 

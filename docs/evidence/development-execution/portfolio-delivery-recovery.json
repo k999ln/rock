@@ -1,0 +1,89 @@
+{
+  "schema": "rockstaros.portfolio-delivery-recovery/1",
+  "baseMain": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+  "reason": "Root relayed direct human correction: all product lanes, not permanent mii-only primary. No product requirements or original95 classification rewritten.",
+  "portfolio": "data/development-portfolio.json",
+  "elevenLanes": true,
+  "allExisting95UnitIdsCoveredExactly": true,
+  "mainReferences": "All sourceRef hashes are pinned baseMain blobs; existence does not imply fresh independent runtime acceptance.",
+  "boundedChatRead": "Latest2turn statements for9 eligible product lanes; source paths/main receipts checked separately. Pixel candidate not read, root registry not read. Old chat pending Git statements superseded only by separate main receipts, not rewritten.",
+  "previousPR250": {
+    "pr": 250,
+    "mainMergeSha": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+    "all6ChecksSuccess": true,
+    "all4WorkflowsSuccess": true,
+    "linux": {
+      "tests": 3207,
+      "pass": 3205,
+      "fail": 0,
+      "skip": 2
+    },
+    "readbackProofSha256": "bd9de34dc0bfc040fd5257500a31fb66e766bc1892cde1a9a390e01cdf7bf695",
+    "scope": "Control R2 and mii decision separately accepted; source capture pending fields remain historical."
+  },
+  "newRuntimeSlice": "docs/evidence/development-execution/shared-service-access-binding.json",
+  "metrology": "Finite Mini source3 completed25 per latest thread; not imported or independently accepted by this batch. No new assignment after author changed to separate human consultation.",
+  "validation": {
+    "controlAndPortfolioTests": 54,
+    "pass": 54,
+    "fail": 0,
+    "unchangedRootProbeReplay": {
+      "role": "Author replay, not independent R2 acceptance",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0
+    },
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3240,
+        "pass": 3237,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "7e0791c259e2dc2b9d8b229d7466a1ba86db92cf72744c696d198077d7f7831b",
+      "executionLayer": "Host R2 only, source/control code and tests unchanged through fullverify. Final evidence/status text updated afterward and metadata checks run separately; exact Git HEAD/main CI and independent R2 reviews remain pending."
+    },
+    "missionCheck": "PASS",
+    "typecheck": "PASS",
+    "configuredLint": "PASS",
+    "designCheck": "PASS"
+  },
+  "independentReview": "PENDING_ROOT_R2",
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "productionEnabled": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "revision": "R2",
+  "r1IndependentReview": {
+    "decision": "CHANGES_REQUESTED",
+    "mustFix": 4,
+    "reviewSha256": "dfcb8aa97f10afdbe21b67debac986f5a3bb8e3fc8676789c4edcb577efa8ec1",
+    "causes": [
+      "Star-only graph rejected known cross-lane dependencies",
+      "Duplicate appliesTo IDs could hide missing canonical unit",
+      "Host-only contract helper misclassified as enabled usable experience/current blocker",
+      "Runtime reviewer incorrectly named Root instead of Billing/Astra"
+    ],
+    "r1ImmutableSnapshot": "Preserved Git-outside with original15 source/metadata bytes, manifests, logs and both reviews",
+    "priorHostVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3229,
+        "pass": 3226,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "e564c78798979cf8bc2fe388c3fc02bac5ea4c05d5affd63a2028bf19218a470",
+      "executionLayer": "Host only; exact HEAD/main CI remain separate. Runtime source2 unchanged throughout; final metadata/control were present for npm test/mission. Final metadata-only checks separately after freeze."
+    }
+  },
+  "r2Correction": "Resolve dependency edges to known unit/queue IDs, reject unknown/self/cycles; require exact unique appliesTo95 set; classify host-only required existing contract repair with planned integration milestone; runtime reviewer Billing/Astra, control reviewer Root."
+}

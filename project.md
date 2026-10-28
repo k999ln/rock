@@ -1,3 +1,11 @@
+### 独立検収差戻しの最小修正R2（2026-10-28 / G04・SIM01・ROCK）
+
+R1の15file・旧59/3229試験・両reviewを不変保存。Billing P2のreadCurrent引数aliasは別コピーで閉じ、62焦点と無変更独立probe16成功。Root P2四件は既存unit/queueの非循環graph、appliesTo集合の一意完全一致、host契約repairの正確な分類/予定consumer milestone、Billing/Astraのruntime検収担当へ修正。control54・無変更Rootprobe5成功。これらのauthor replayは独立R2受入ではない。R2全verify3240/3237pass/0fail/3hostskip、build/API1678/CSV385成功。別source/control再検収→最小Git/HEAD/main同SHA CIが残る。未配線helperで他laneを停止せず、production/物理/Provider/公開・OS通知拒否・616HOLDを維持。
+
+### 全体portfolioと共有アクセス判定の実装（2026-10-28 / G04・SIM01・ROCK）
+
+本人の全体対象の訂正でmii固定primaryを解除し、既存11lane/95unitをmain7d23とsource/残gate/責任へ照合。PR250の通常main・同SHA全6check/4workflow成功は維持。今回の実装はESIM-01/04の既存access evaluatorで、await中の支払い/予算/親facts差替え・retention失効を拒否する。旧8leaf反例（aggregate1別）を保持、修正後59焦点・portfolio46/mission/type成功。初回refactorのretained欠落回帰1件は修正し履歴を保存。全verifyは3229/3226pass/0fail/3hostskip・build/API1678/CSV385成功。独立検収/Git/CIは未完了。親DB/Broker原子性・実認証/端末/Provider/一般公開は未受入、OS通知拒否未受領・616HOLD。次はRoot別検収後に最小Git/HEAD/main同SHA CI。
+
 ### 最終union検収前の状態固定（2026-10-28 / G04・ROCK）
 
 control R2全verify3207/3204pass/0fail/3skipは固定R2に1回。後続の受入済Mini3 byte不変配置・canonical追補には明示verifier11/35721pairと局所44・metadata/designを別実行し、浅いCIでMini再現済みとはしない。最終unionのsourcehashとscanをRootが正式独立検収するまでcontrolを自己採用しない。Git/head/mainCIは別段階。miiの次はM3/M4実測入力→M7別検収でありRootの単なる返答待ちではない。OS通知保留/実機操作なし/616維持。

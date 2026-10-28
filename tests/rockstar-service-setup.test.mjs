@@ -1156,3 +1156,64 @@ void test('runtime owner retention remains independent from unknown dispatch sch
     }
   }
 });
+
+// Shared ESIM-01/04 composition: attachment crypto must not hide other authority changes.
+void test('service access rechecks all authority fields after asynchronous signature verification', async (t) => {
+  for (const [name, mutate, read, exp] of [
+    ['payment restriction', s => { s.payment = 'restricted'; }, true, true],
+    ['budget revoked', s => { s.budget.state = 'unavailable'; }, true, true],
+    ['setup readiness revoked', s => { s.setupFacts.currentGrant = false; }, true, true],
+    ['parent facts replaced', s => { s.attachmentFacts = { ...s.attachmentFacts, parentEntitlementEpoch: 8 }; }, true, true],
+    ['retention revoked', s => { s.retained.read = false; s.retained.export = false; }, false, false],
+    ['identity revoked', s => { s.attachmentFacts = { ...s.attachmentFacts, ownerAuthenticated: false }; }, false, false],
+    ['authority revision changed', s => { s.revision++; }, true, true],
+  ]) await t.test(name, async () => {
+    const f = await accessFixture();
+    const evaluate = serviceAccessEvaluator({ readCurrent: async () => f.snapshot,
+      resolveKey: async (...args) => { mutate(f.snapshot); return f.resolveKey(...args); } });
+    const result = await evaluate(f.request, now);
+    assert.equal(result.canDispatch, false);
+    assert.equal(result.canRead, read);
+    assert.equal(result.canExport, exp);
+  });
+});
+
+void test('service access binds the request before the authority read awaits', async () => {
+  const f = await accessFixture();
+  let release;
+  const waiting = new Promise(resolve => { release = resolve; });
+  let seen;
+  const evaluate = serviceAccessEvaluator({ readCurrent: async request => {
+    seen = request; await waiting; return f.snapshot;
+  }, resolveKey: f.resolveKey });
+  const result = evaluate(f.request, now);
+  f.request.requiredScope = 'agents';
+  release();
+  assert.equal((await result).canDispatch, true);
+  assert.equal(seen.requiredScope, 'sky');
+  assert.notEqual(seen, f.request);
+});
+
+void test('service access keeps its private request separate from adapter-owned arguments', async (t) => {
+  await t.test('adapter cannot retarget the entry budget digest', async () => {
+    const f = await accessFixture();
+    const evaluate = serviceAccessEvaluator({ readCurrent: async request => {
+      request.requestDigest = 'f'.repeat(64);
+      f.snapshot.budget.requestDigest = request.requestDigest;
+      return f.snapshot;
+    }, resolveKey: f.resolveKey });
+    assert.equal((await evaluate(f.request, now)).canDispatch, false);
+    assert.equal(f.request.requestDigest, 'b'.repeat(64));
+  });
+  await t.test('adapter argument edits during crypto cannot change the private owner', async () => {
+    const f = await accessFixture(); let adapterRequest;
+    const evaluate = serviceAccessEvaluator({ readCurrent: async request => {
+      adapterRequest = request; return f.snapshot;
+    }, resolveKey: async (...args) => {
+      adapterRequest.ownerId = 'different-owner'; return f.resolveKey(...args);
+    } });
+    assert.deepEqual(await evaluate(f.request, now), {
+      canDispatch: true, canRead: true, canExport: true, revision: 1,
+    });
+  });
+});

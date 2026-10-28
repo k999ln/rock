@@ -1,0 +1,1719 @@
+{
+  "schema": "rockstaros.delivery-portfolio/1",
+  "baseMain": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+  "scopeCorrection": {
+    "date": "2026-10-28",
+    "authority": "Root relayed direct human correction: いや全体だよ",
+    "reason": "Permanent mii feasibility-only primary wrongly narrowed the full-product request. Select finite primary from all11 lanes and cross-product delivery dependencies; preserve PR250 scoped acceptance."
+  },
+  "scope": "All existing13P/95unit; main source/evidence reconciliation, not full implementation acceptance. Legacy private requirement matrices are not copied.",
+  "fixedInventoryUnchanged": true,
+  "lanes": [
+    {
+      "lane": "os-pixel",
+      "unitRefs": [
+        "OS-01",
+        "OS-02",
+        "OS-03",
+        "OS-04",
+        "OS-05",
+        "OS-06",
+        "OS-07",
+        "OS-08",
+        "OS-09",
+        "OS-10",
+        "OS-11",
+        "OS-12",
+        "OS-13",
+        "OS-14",
+        "OS-15",
+        "OS-16",
+        "OS-17",
+        "OS-18",
+        "NET-01",
+        "NET-02",
+        "NET-03",
+        "OPS-02",
+        "COMPANION-01",
+        "AUTH-01"
+      ],
+      "taskRefs": [
+        "AI05",
+        "AI09",
+        "D01",
+        "DSP01",
+        "LCH03",
+        "MAT07",
+        "MAT15",
+        "N03",
+        "N04",
+        "OS02",
+        "OS10",
+        "OS11",
+        "RLS02",
+        "SIM01",
+        "SKY11",
+        "SKY20",
+        "SYS01",
+        "SYS02",
+        "SYS15",
+        "V01",
+        "WEB14"
+      ],
+      "owner": "os-pixel",
+      "primaryResponsibility": "JOINT",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json",
+        "sha256": "f578516e2f46464bb4545e8de5c8ec22fa0a0543b8d1ab5720b56476a384a7cc",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "contracts/device-capability-snapshot.json",
+          "sha256": "5316fa6c1a0a251e95f8f621482072835da34d75dad1b3b81db51d167df4cfcd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "contracts/platform-api.json",
+          "sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/android-backup-recovery-policy.json",
+          "sha256": "88d91aabca36d3c3a675bd4b9ad9a4c7ae795f724df445f61da5bfe17708ce83",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/android-first-flash-gate.json",
+          "sha256": "48db9232b150687ed5f59b16fa8be3f7661d563fc916f833a35d1dd25ad73ae5",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/avocado-mini-cellular.json",
+          "sha256": "d40cceae8e473d462cdc936f6c8cfe3675e45634861b5f5057300c1abe14f606",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/device-support-matrix.json",
+          "sha256": "ac1936aa96690a4754010365d4ad0193db20f3188105b3e15c7bcc0d7ba09dd0",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/android-backup-recovery.md",
+          "sha256": "b492edfb5024b3f92c5a9f14c791211b2d35b17aaba2aacd50375a066a6f7e6b",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/android-production-signing-custody.md",
+          "sha256": "dd84f0fbcc0747a13035e0d2abb1010a83f5c06759fe8464f5fae132746f471a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/avocado-mini-cellular.md",
+          "sha256": "1eac1e81dcef16150496bded25fd780977fdd0a000e0f1f26bb3309742f1e862",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/device-support-architecture.md",
+          "sha256": "d45df88a3bf92476c4179cfdfc6236245fcb55a06a6ac49c90dfe14ffb159d8f",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json",
+          "sha256": "1c5173c432abeee93d63d15b2008cc225a53ee5b4e93c482f1cc487d52f70bb4",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/phone-preview-20260911.md",
+          "sha256": "4daa938f67f69d80c4a49cc7f3db981f00e6908bb518ea8d02e6b6e387ac62bf",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/rockstaros-avocado-mini-complete-design.md",
+          "sha256": "56dfddd9613cc23367c25607225e04217a86a6fb084c3548fff4871ceb5ee392",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/templates/os-acceptance-report.md",
+          "sha256": "47af9e3f5d18a8a052a9e14bbd6c28fb1fe2c04a9cf7f8610b0c19c0c8ea2152",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/04-security-identity-compliance.md",
+          "sha256": "62c8f05be486416c684f0072218c30d5ce19ba61a4e4349dd739d1c610366dcf",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/07-android-device-local-ai.md",
+          "sha256": "38e6ce32fb9434e24a3ce0de04671ddb2340596ad10ec2684ca7115aec16383d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-delegation-recovery.ts",
+          "sha256": "83d0b4c47cb77a53c1335793b4734713dbec9ebfc2a9c37d0b0e955b737130af",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/backup-crypto.ts",
+          "sha256": "9c6ff40076badde2b9bae99cde9f5b32e006d00facd7680a70e8387878bcbc49",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/device.ts",
+          "sha256": "9d9b59c8c25a8b327d370da8814f1a0185636cb28a3778599574de8e37058448",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/jennifer-passkey.ts",
+          "sha256": "b2b4936f8ba48876c34b98cc46078d794ff866657f0c70aab6c373c7c5862c0d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/owner-revision-json-store.ts",
+          "sha256": "7f78bc6c1edf578f07072b745f5772c55f50fb95a5828ebc26d7dc8c4eb0dfa1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/request-auth.ts",
+          "sha256": "ab995e3c6cdbded2128e81f2f21ada3e4fc912ea65d7951e6a8fef0ea0cc2c1e",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-network-session.ts",
+          "sha256": "668d9e2b8706e6df23f9ba20dab2d1eae405a066fc2fbc9dcf24bd0b63eadee9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-private-loopback.mjs",
+          "sha256": "a2de4a01186fe3db63cdbd705ee0ada1f3aa803d3ef129c6775cced2db264326",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-tool-events.ts",
+          "sha256": "28be25ff8497bc7493ecf6633a3668893e5ddd501877504ec9e63e5f0e37be23",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/system-backup.ts",
+          "sha256": "4ffe0f09ddd250873f83f31082d4c281c043f21eacf57a20d8c916cc299e4872",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/work-store.ts",
+          "sha256": "178c99ee3cc7cb61f51ed6e14548161d3f156ade891163f9c7458ae06f915330",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "scripts/check-device-support.mjs",
+          "sha256": "0bdd69b6279424c91d823021cb5600bb9946abddf5abcd970e69c1b262015681",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "scripts/prepare-phone-build.py",
+          "sha256": "d1e1b84b72e3bc6cf6ed5eae7aaa185cd83aa01ad36ad0cc7c9696ec36e357c7",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/mcp_broker/broker.py",
+          "sha256": "4a747d9d6bd4fe0f36dce96d34b07ae22a71b9dd644bac5923e6ac31577ae017",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/operations/state.py",
+          "sha256": "4b5e58616c22528986cbfad392eab09c2e42fb7410c1e686b592f0e7e38097fa",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/operations/store.py",
+          "sha256": "ca39b074a2c80c17b4acd1df8edb0f72f8bd410126daf56761c21eaa158f756c",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/platform/sensitive_guard.py",
+          "sha256": "ef27a90fd471db5b99f11c52547ee4eecc387b2734bfc564a280fabb6b73b664",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/registry/common.py",
+          "sha256": "e634b2f57724ecc2b1ce6da64f71f3ce964e5c3bf3fce8f6d9fd8259e3ce3849",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/registry/tests/test_registry.py",
+          "sha256": "43812332ccba8174cca7a14a0eb836631fb17187a833a58f423d58b224f045ce",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/runner/executor.py",
+          "sha256": "77bb7211065723af2f8d6a5845871e9fea734ad1b5ef3865db95c4d5268eb655",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/runner/sandbox_launcher.c",
+          "sha256": "6b2316d13fb74d1496a232bf8bd96465ed5d79c0c7382eeb381057037dd01c2e",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/runner/store.py",
+          "sha256": "51ab0e24ee5c6a43c443df9748d523f04939133a4e8459c91511fbf09c429609",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/runner/tests/test_runner.py",
+          "sha256": "f71caa8390e11e8e2ff5456ff970a4dda3c5f0f7654145e2e48e7e1a40391535",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/update/rock_update.py",
+          "sha256": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/update/test_update.py",
+          "sha256": "fc2dc824eff88a26ae37eefa0723defbba78ed52d3935d1d1cea8321c1b48f73",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/tests/test_sensitive_guard.py",
+          "sha256": "0de60bdbbb1d6f47a0559538d01b8765a66e5db6460b710d0fd7b08b6ed7fd9a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/device-lifecycle.test.mjs",
+          "sha256": "b8d35acb2108db70a708d86acaa6fa69bb75b91887aa7612a0664417bdb81d32",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/jennifer-passkey.test.mjs",
+          "sha256": "03125a4e2866c1eeb251d5241c2b4364857dc51757cb0b67fc2eaf0698cde671",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/pixel-worker-contract.test.mjs",
+          "sha256": "e02b5fd1773872d8a80cb61eb540276c2b6a879ec95d3ae4b7f78a35f18ce428",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/pixel-worker-parent-diagnostics.test.mjs",
+          "sha256": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-network-session.test.mjs",
+          "sha256": "3b32bb9e7bb65e628b6cabf2442f39e8ee861131742bce3651287e057e0c7b70",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/system-backup.test.mjs",
+          "sha256": "91c3752c3c89c888c66f7f2e2783b68b16cc99009dd92b375babd4c6f765a9d6",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/test_pixel_worker_diagnostics.py",
+          "sha256": "259c66657e7fb62dc05bc34c31a0d0888456af8b03714d5eeffd13241a130d8f",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/test_pixel_worker_parent_exit.py",
+          "sha256": "0758b04343a7598d401295dc87ee60c06d55ac2fbc1e3a94db6a97ef5d9554c1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "toolkits/sky-linux-local/android-bridge.py",
+          "sha256": "22490f323e31e8e3e2bd543a9c317d2eb7f069a6febec08a8c44291dcabeefef",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "toolkits/sky-linux-local/pixel-bootstrap.py",
+          "sha256": "dc55676f098cad3de57a046a2418f018caf123aeb1938572efed73e792024f13",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "toolkits/sky-linux-local/pixel-server.mjs",
+          "sha256": "2c14f76fb80e8697f9051c9927b80a4e71299f9d93eb891fc3d7359a213f9d93",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "toolkits/sky-linux-local/update-pixel.py",
+          "sha256": "19910cbbf714be2cff07e09b3a228c9b3959d96261917548d4fc8d865c599fcc",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "toolkits/sky-linux-local/worker.py",
+          "sha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": false,
+      "unmergedCandidateStatus": "UNKNOWN_NOT_RETRIEVED",
+      "nextUnit": "OS-14",
+      "nextRockDeliverable": "Compare existing adapter same-job/hash/usage/stop/restore contracts using host fixtures; OS08 candidate notification remains held, no alternate retrieval.",
+      "externalOrOwnerGate": "OWNER physical device/flash/signing/full-loss acceptance and EXTERNAL device support remain separate.",
+      "dependencies": [],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "os-pixel",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "OWNER physical device/flash/signing/full-loss acceptance and EXTERNAL device support remain separate.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "pro",
+      "unitRefs": [
+        "PRO-01",
+        "PRO-02",
+        "PRO-03",
+        "PRO-04"
+      ],
+      "taskRefs": [
+        "AMC02",
+        "MAT16",
+        "OS10",
+        "SIM01"
+      ],
+      "owner": "pro",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/pro-work-entry-main-current.json",
+        "sha256": "8cebc309d6d004d575d269a54558cc4f4d0131cd7fd571379783a83ab2cd79a9",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "contracts/platform-api.json",
+          "sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/avocado-pro-sales-readiness.json",
+          "sha256": "7ba71ef6e42bb83b8dff4b836110f4e2eeaa54409181a3232432dbdf2e9e8dd7",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/avokado-pro-pc.json",
+          "sha256": "30d3c5b482c12acad86eb985456290a3d033e5699af24992688ed320855a004d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/avokado-pro-pc-design.md",
+          "sha256": "eb4ecfd19fc6e1b20680e2c4bca34fd159d95c208113226c23ee1b4cdbb81ac1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/client-game-adoption.json",
+          "sha256": "54ce255af4506e9009643ab545d57d0a0701f8cd073d2b3f3218d4d341321c32",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-owner-export.ts",
+          "sha256": "4b98080be02c39fccd5d36b3edbfc7811f622486c71f984ae30541ecc00e7565",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "scripts/check-pro-sales-readiness.mjs",
+          "sha256": "59e2a3820e82ec905f605ba0f9ebfc896256e1da157f1f13ac58c8bb10ece049",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "sites/avocado-mini/src/pro-local-import.mjs",
+          "sha256": "7be478ae926a8d1f2e30b4d11f93093fb649029818d0b06effc57a1d06419220",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "sites/avocado-mini/src/pro-os.js",
+          "sha256": "fe800646bd608020050e85441aff85e60c5710ccc5f9fe0033980ba6da4e5ea8",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "sites/avocado-mini/tests/pro-local-import.test.mjs",
+          "sha256": "bd549178d59e6c8df37e55ec58bc88f872d9195102c34900ef9d746c6eba6566",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/pro-sales-readiness.test.mjs",
+          "sha256": "e87239791bb504df9161822422ccede0e3f6cc9938109661dcaff2c6dc880545",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "PRO-02",
+      "nextRockDeliverable": "Reuse accepted private work entry for same-job save/stop parity, without account/archive rebuild.",
+      "externalOrOwnerGate": "JOINT authenticated browser/native exact SKU; OWNER device and commerce conditions.",
+      "dependencies": [
+        {
+          "target": "AUTH-01",
+          "kind": "planned_contract"
+        }
+      ],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "pro",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "JOINT authenticated browser/native exact SKU; OWNER device and commerce conditions.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "eve",
+      "unitRefs": [
+        "EVE-01",
+        "EVE-02",
+        "EVE-03",
+        "EVE-04",
+        "EVE-05",
+        "EVE-06",
+        "EVE-07",
+        "EVE-08",
+        "EVE-09",
+        "EVE-10",
+        "EVE-11",
+        "EVE-12",
+        "EVE-13",
+        "EVE-14",
+        "EVE-15",
+        "SYNC-01",
+        "MODEL-01"
+      ],
+      "taskRefs": [
+        "AI07",
+        "AMC02",
+        "B06",
+        "BIL03",
+        "MAT03",
+        "MAT04",
+        "R03",
+        "SIM01",
+        "SKY11"
+      ],
+      "owner": "eve",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
+        "sha256": "9a084fa9578dee46b237c07067c7149cf1a95f7b86ee1b17b509f68a0722cfd4",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "contracts/avocado-mini-spatial-interaction.json",
+          "sha256": "2e7d8e18096226083afc9a6147d6d9d1d1d8e5153c6badf4ce35d626fc4cdb70",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/development-source-handoff.json",
+          "sha256": "c6ef391d8484f4ff7848786e58ecac55e42085957157faca505fa0d04374abb9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/pixel-main-diagnostics-adoption.json",
+          "sha256": "1c5173c432abeee93d63d15b2008cc225a53ee5b4e93c482f1cc487d52f70bb4",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/pixel-worker-diagnostics-physical-summary.json",
+          "sha256": "d5aab48ec5147c659124e14f9e5eb76bcc2c74a15ea56a9e0c0a2f678fc2a3e5",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/llm-evaluation-architecture.md",
+          "sha256": "a3b8452fbebb0bbe3be60faebf35a681ad5052073a02fc81796ae55a82abe1c9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-artifacts.ts",
+          "sha256": "95875bfe09a7775887c6436f3636603fdfa1e6c227ea44208a93255d4cafe59d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-broker-authorization.ts",
+          "sha256": "58bd6addb8be11a4af998086e358af67503bbaa130edbc2bd1ca467d902b326c",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-delegation-contract.ts",
+          "sha256": "7b396f0b9dac4b59d84445edd22f75442f848cd2ddd90a431d6e510e0e0e66f0",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-delegation-recovery.ts",
+          "sha256": "83d0b4c47cb77a53c1335793b4734713dbec9ebfc2a9c37d0b0e955b737130af",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-parent-controller.ts",
+          "sha256": "12b1547b125f6e2cd9f30218a816b0c5453b2785b9908bb4e7dcb9cdeadd3630",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/eve-history.ts",
+          "sha256": "f7e6191faa86014977733b78a00a746f36dd568a75dcb39ded13b40065c8c4e1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/home-intent.ts",
+          "sha256": "5382f243693985e94f7e92507ef6a76e73b519e04998ed318fab5e7b5f16d74a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/jev-evaluation.ts",
+          "sha256": "75f49c00f74561a13c5ccd33a7881f8a31ab24ed5714f31a46fe0e60b87cf8ba",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/local-plan.ts",
+          "sha256": "e0471e3dad6dca7fbc78a1b2becb0e1e861d1f7d7b26c022e53de716d93a9c4a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/mcp-inspection.ts",
+          "sha256": "16d6fad3696963e4a00a47865c4e71fc30f647fdd650fe30f17300c21dbd7f73",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/owner-intent.ts",
+          "sha256": "d2cca263a5234db78f4a77d37a5d2c50b39f8fccea6e21462473831604c4fe6d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/owner-revision-json-store.ts",
+          "sha256": "7f78bc6c1edf578f07072b745f5772c55f50fb95a5828ebc26d7dc8c4eb0dfa1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-add-capability-envelope.ts",
+          "sha256": "e53544f3cd74bed0f4e13c42b8c462f8e5526f8350bfed426a091137b5c2b0dc",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-add-host-contract.ts",
+          "sha256": "244570a040e928ea1a2291757d3116d1449987dfdb985816d132487381b36988",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-agent-library.ts",
+          "sha256": "07ffce024f32dfe6466d7647b97c43ee640c50245fde4564f4d569911335db3a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-citation-agent.ts",
+          "sha256": "df94449c88844985955cefec69c2e20eef51cbca3c60655059889e2e1a0e6a0f",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-linux-models.ts",
+          "sha256": "4c61dd7be615b435b4cab3d0b6760e45ce3ca09c7d4a7f0e353169e95a8eefe9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-model-selector.ts",
+          "sha256": "40fa7d51ac7e7606eb734503150c3fc4a2c11f990d779b36b479a715df17e1ff",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/work-composition-executor.ts",
+          "sha256": "91a53b3a4c771e4729fc1696bc2d5cf477c7a0033f5f58712dd5daea1376c4d7",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/work-composition.ts",
+          "sha256": "236c3abe9df9095add922a7c6a63033c5034fda8af4df7d58f20e5839d1b8853",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/work-store.ts",
+          "sha256": "178c99ee3cc7cb61f51ed6e14548161d3f156ade891163f9c7458ae06f915330",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "scripts/stage-model-crypto.py",
+          "sha256": "5323e154e933f0321df2dcce1dd257dbcec2d612ea16d5d15d5ee17d6d4c1fda",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/a2a-artifacts.test.mjs",
+          "sha256": "7f955139d956fb38d8d3c970bcfa76aea6df4a5d71b809d012a212d0bf790d93",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/a2a-broker-authorization.test.mjs",
+          "sha256": "a394bc1784865a8a43e00bf3161652b38f271f349f204c26047749ea7e7c241d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/a2a-delegation-recovery.test.mjs",
+          "sha256": "31f4e11817f9f42c995bc3c2c4dc15d6c5d5bad04c67f437d1a0a5e743c4e356",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/a2a-parent-controller.test.mjs",
+          "sha256": "43f54827a4dc3e9a3d76e7acd7794de32e7ce01e7e500d84b8f53323506d5f5f",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/eve-history.test.mjs",
+          "sha256": "a5bd6a057886b0272a71296ded6941c3128b1a7de921c257685eabae2e985dd3",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/pixel-worker-parent-diagnostics.test.mjs",
+          "sha256": "ebe50a65e91db338ac4b585edd518cbdfb2ac67d6e2650d207906f03f248ddff",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-add-capability-envelope.test.mjs",
+          "sha256": "7da37034949b1fecafc5024f91478bbd7193b6c6ec9d81078d74332140e73ae9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-agent-library.test.mjs",
+          "sha256": "0b6af17c00a67c5823a464a54b563a8cb2558eefaf09b093867ac910cc08ee06",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-linux-models.test.mjs",
+          "sha256": "3191d591d81f4a7c9201d75f21e70f8b447f7cc5c0e276b72a8bbc6e8f8c4066",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-model-selector.test.mjs",
+          "sha256": "eaf62ca977c96142307c288f7a29be948e4f28559fb592605a88b03cc159bcd3",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/work-composition-route.test.mjs",
+          "sha256": "3e88556da4b7f7e9d752c8951d78a88424e7661214a4f9279306e4f44209d8ac",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/work-composition.test.mjs",
+          "sha256": "55bc4b240a2366d61ef396c5ba8f16084eb0e23b106ac13058e86b7d6e81ee15",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/workflow.test.mjs",
+          "sha256": "6f2a5d99c7a412d6864a64cec3a46b9a1a8df7c3980470e310ef8082da237808",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "SYNC-01",
+      "nextRockDeliverable": "Exercise existing pending readback/revision/delete-priority recovery across common workflow; preserve no automatic writes.",
+      "externalOrOwnerGate": "JOINT actual authenticated browser/API all-entrypoint and paid artifact bridge.",
+      "dependencies": [
+        {
+          "target": "AUTH-01",
+          "kind": "planned_contract"
+        }
+      ],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "eve",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "JOINT actual authenticated browser/API all-entrypoint and paid artifact bridge.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "smith",
+      "unitRefs": [
+        "SMITH-01",
+        "SMITH-02",
+        "SMITH-03",
+        "SMITH-04",
+        "SMITH-05",
+        "SMITH-06",
+        "MCP-01"
+      ],
+      "taskRefs": [
+        "AI02",
+        "AI05",
+        "AI09",
+        "B06",
+        "BIL03",
+        "MAT03",
+        "OS07",
+        "R03",
+        "SIM01",
+        "SKY07",
+        "SKY14",
+        "SYS15"
+      ],
+      "owner": "smith",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/smith-session-main-current.json",
+        "sha256": "53826c02e81739530b74bc4d1f17edc32fc352bee401180be72532fba69b70d3",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "contracts/device-capability-snapshot.json",
+          "sha256": "5316fa6c1a0a251e95f8f621482072835da34d75dad1b3b81db51d167df4cfcd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "contracts/local-ai-runtime.json",
+          "sha256": "41fa4b26e5fef5088d02b7b2ddd3ac8f4ce156de65eb3f4b4bf05fb93a540b59",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/client-game-adoption.json",
+          "sha256": "54ce255af4506e9009643ab545d57d0a0701f8cd073d2b3f3218d4d341321c32",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/07-android-device-local-ai.md",
+          "sha256": "38e6ce32fb9434e24a3ce0de04671ddb2340596ad10ec2684ca7115aec16383d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/agent-control-plane.ts",
+          "sha256": "9a7ab61eeaad8761006410d473532adce0c36336d80c8f1e9489e447eb188027",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/home-intent.ts",
+          "sha256": "5382f243693985e94f7e92507ef6a76e73b519e04998ed318fab5e7b5f16d74a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/mcp-hub.ts",
+          "sha256": "7d1125684de80653f33ee6cc6bdd881bb29f46ba4ee8054f9c16c53dc801e290",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/owner-intent.ts",
+          "sha256": "d2cca263a5234db78f4a77d37a5d2c50b39f8fccea6e21462473831604c4fe6d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-add-capability-envelope.ts",
+          "sha256": "e53544f3cd74bed0f4e13c42b8c462f8e5526f8350bfed426a091137b5c2b0dc",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-add-host-contract.ts",
+          "sha256": "244570a040e928ea1a2291757d3116d1449987dfdb985816d132487381b36988",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-agent-library-store.ts",
+          "sha256": "a516d65fa662dfe8f82a2b300ae088a7d961d96bdda77980fc288700d8ff6a9b",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-agent-library.ts",
+          "sha256": "07ffce024f32dfe6466d7647b97c43ee640c50245fde4564f4d569911335db3a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-network-device.ts",
+          "sha256": "82a12434d8818f47231ef6c6fd818b57c82fa46426dd7ceea283f0d7c94aa7dc",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-submission-store.ts",
+          "sha256": "f05bea8a6c0bfebed6ec1f25aa96f64c1100e76c559f7b793dd927207a9a45bd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-tool-package.ts",
+          "sha256": "d4ec608d1136138a4d77b494632906ced6b2d3634455d744a8d3ae69b56ae124",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/agent-control-plane.test.mjs",
+          "sha256": "a01eb31358d375f6b82df2cbf1200b78a3421092a1b33ed4bbbbb946d8ae5e48",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/mcp.test.mjs",
+          "sha256": "a3341669dce0554da924cfb2e04f246e8f8d0f125d926798eec71059c9440e8a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-agent-library.test.mjs",
+          "sha256": "0b6af17c00a67c5823a464a54b563a8cb2558eefaf09b093867ac910cc08ee06",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-agent-saved-reference.test.mjs",
+          "sha256": "d174090fadd4b562d13b6c4950ccdd839630665510592aac6bb5c53f26e5d774",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "SMITH-02",
+      "nextRockDeliverable": "Retain exact catalog/UUID boundary; inspect live revision/scope/dispatch parity before extending existing host contracts.",
+      "externalOrOwnerGate": "JOINT real account/device/marketplace execution; EXTERNAL remote adapters.",
+      "dependencies": [
+        {
+          "target": "AUTH-01",
+          "kind": "planned_contract"
+        }
+      ],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "smith",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "JOINT real account/device/marketplace execution; EXTERNAL remote adapters.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "esim",
+      "unitRefs": [
+        "ESIM-01",
+        "ESIM-02",
+        "ESIM-03",
+        "ESIM-04",
+        "ESIM-05",
+        "ESIM-06",
+        "ESIM-07",
+        "ESIM-08"
+      ],
+      "taskRefs": [
+        "AI09",
+        "DSP01",
+        "N04",
+        "SIM01"
+      ],
+      "owner": "esim",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json",
+        "sha256": "0bf2d02962f783e97f12e3974b2b446bc2c082204cbe60f46699b12c0ba51f39",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "data/device-support-matrix.json",
+          "sha256": "ac1936aa96690a4754010365d4ad0193db20f3188105b3e15c7bcc0d7ba09dd0",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/project-status.json",
+          "sha256": "e37ced6002f4fcc7db819367d31d64606431ee64d3d28abe9b4c033453fba12f",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/service-contract-adoption.json",
+          "sha256": "e40047e218dda42131199920d77443a060befbbb09c3f16bdba10a448558aecd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-parent-controller.ts",
+          "sha256": "12b1547b125f6e2cd9f30218a816b0c5453b2785b9908bb4e7dcb9cdeadd3630",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/esim-attested-device-activation.ts",
+          "sha256": "ebf221927053fafbeb2579c8a93fa138e488cc400dfcd8fd39bbf593a71b6fdb",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/esim-cloud-access.ts",
+          "sha256": "e78e90e81576286aeb32e839fe3bae513ddcba766054cf9e27263d2c26fb9879",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/esim-device-entitlement-store.ts",
+          "sha256": "1b38691d24e6dc391aa1699f67b6b6c3a6da5db4066b0ebc48e967adccaed73c",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/esim-reconciliation-worker.ts",
+          "sha256": "88babe63a2f5c01122ac7933f2e39dcf0207c1daceab9102aab7f45cbedeaa7d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/rockstar-entitlement-event.ts",
+          "sha256": "9b4456e8837214065c77c91fad957c1b4723d13b53df6caea52ce9571614b9c9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/rockstar-entitlement-issuer-store.ts",
+          "sha256": "291371dc9ca372283a371c948f399a924ce9de8ba52e732defe1a42906f9bc21",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/rockstar-service-attachment.ts",
+          "sha256": "26b984129106f67d656fd6fb4eac8da09dbe6a4c5848c0c84cc58ad6fd7c26df",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/rockstar-service-setup-store.ts",
+          "sha256": "70015aef62c75e86fbd6990dca7ca397e73fb0e9fe6d0d7f320cad4e5cb59b27",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/rockstar-service-setup.ts",
+          "sha256": "e5a70b5a5f1311edf6c875cd57f9abcdb7afab54fe9cd8a62f9643f54ca13ae2",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/esim-attested-device-activation.test.mjs",
+          "sha256": "5f6501e0c5b761dcb70a07eafb1377b951d7218bdb4177ad5679c284503b15a3",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/esim-cloud-access.test.mjs",
+          "sha256": "36fc9b5428b7b6062370ea6d181ebbefdead4697b40bebad2102c0dc13378679",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/esim-reconciliation-worker.test.mjs",
+          "sha256": "18ad042185d9a00a4d3833bf1ef130e0be42247590b7f19b6bd48a32c4fb6597",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/rockstar-entitlement-issuer-store.test.mjs",
+          "sha256": "1d598c34693ff0b135d8b689e3320d5b7a08b493b88600c62942370599cd7770",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/rockstar-service-attachment.test.mjs",
+          "sha256": "67ad56c08cc1419762d776cf516ded940cd84c5d1d48d54adac6d7f764a0c9fa",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/rockstar-service-setup.test.mjs",
+          "sha256": "ebdecdc52baf25f4b56b3acead86be4da8ee1045f2e7ab11fbf90c34bbcb32f4",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "ESIM-01",
+      "nextRockDeliverable": "Repair the existing server access contract prerequisite: keep validated request binding private from the adapter callback. Host consumer only; no production path enabled.",
+      "externalOrOwnerGate": "JOINT parent DB/Broker atomic current revision/reservation, issuer/profile/sandbox; OWNER service consent.",
+      "dependencies": [],
+      "startState": "SOURCE_COMPLETE_REVIEW_REQUIRED",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "Billing / Astra high independent reviewer",
+      "stopReason": "This finite source requires independent review before Git; no new production use.",
+      "releaseCondition": "Same-artifact independent review, explicit Git manifest and same-SHA HEAD/main CI; required external conditions remain separate.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "billing",
+      "unitRefs": [
+        "BILL-01",
+        "BILL-02",
+        "BILL-03",
+        "BILL-04",
+        "BILL-05",
+        "BILL-06",
+        "BILL-07",
+        "BILL-08"
+      ],
+      "taskRefs": [
+        "SIM01"
+      ],
+      "owner": "billing",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/pr242-243-main-current.json",
+        "sha256": "2e447747ece8d7576d17e951485fa346fd6081580d24a49251a04b770c655aa8",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "components/rockstar-service-setup.tsx",
+          "sha256": "422ffa8a093d05f06af464e3460fd732e06ef00870003a506ede995c0a9cc1bd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/service-contract-adoption.json",
+          "sha256": "e40047e218dda42131199920d77443a060befbbb09c3f16bdba10a448558aecd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/a2a-usage-receipt.ts",
+          "sha256": "2e547859de6b3f69fdb35b42a74c13243d11bffb4eba33fe55580e0321894b9e",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/remote-ai-text-store.ts",
+          "sha256": "405efbebbc3455f148ed3ae98f68eb26ffd9d81beff5eee0cf996eeb79903ae6",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/settlement.ts",
+          "sha256": "e540626528367c0e14c8fe2aa33b11e79f6087b3fe7736825aeabcb1e2d85f82",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-agent-monthly-statement.ts",
+          "sha256": "ecfd3007f207bf91a2df1d9aa3165e4ee5ff9138bc95b60bb312943be87dd6cb",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-cloud-monthly-http.ts",
+          "sha256": "fdb0cff9a20410d581b385b9c5db2cad95fb2790728518f479b16003021dd0c5",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-cloud-monthly-store.ts",
+          "sha256": "d9577b24514c3cb259fde45fe6458f751a63c6b228706c7372a995025b5a61e6",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-cloud-monthly-stripe.ts",
+          "sha256": "0ce6e88fd59c56d500859e094891cc0b9097218395b0cb408f09200bc4316ce1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-linux-billing.ts",
+          "sha256": "de75e2a27e1272bb48714b6234422f2cc1172624a87d32201d4352ad7834d123",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-linux-service.ts",
+          "sha256": "339311a11f680557a1602a53839c7f75ec1148e2ad06b038350a7d8de4883ee7",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-marketplace-policy.ts",
+          "sha256": "ddb219b5bfab2a93971de31bb31b2d5da8ad2a23b9163b4d26ed2bd2def29459",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-monthly-sandbox.ts",
+          "sha256": "fad1d6001cbc1c4073e8fdf61ed532e6e1f9cce3fa407da55e7ba05736adb993",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/sky-recurring-usage.ts",
+          "sha256": "b469816bb44a3add1c9fac49f7bb60c77cc85556bf23834d5748f7a640e53f39",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/work-store.ts",
+          "sha256": "178c99ee3cc7cb61f51ed6e14548161d3f156ade891163f9c7458ae06f915330",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/a2a-usage-receipt.test.mjs",
+          "sha256": "3da71cbc8239553b210680347a45956dd3166af1c26edbe85c97a9232d4a12b8",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/remote-ai-text-store.test.mjs",
+          "sha256": "0f982b569afd91ac0e9f2a3ade1b455b509452921a5b47a38c89a743ae883698",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/settlement.test.mjs",
+          "sha256": "c3a7a02ea148079c78f8364c658bb1b0209ebce83d27b9868a40985f7941b086",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-agent-monthly-statement.test.mjs",
+          "sha256": "81683241e3067f3267a4380fea506993bf6a202c2fffda7d7e6919f2d4935b5f",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-cloud-monthly.test.mjs",
+          "sha256": "1629b7aed80d783bb34e1c309fb2ed8184cb62ec0922b003479ee5261fc4eafc",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-linux-billing.test.mjs",
+          "sha256": "b85b68043c69df4a1651e82a4d939361e2f1c0276ddac222fcd28c3ae8c7e1fe",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/sky-monthly-sandbox.test.mjs",
+          "sha256": "3dbd5b9a7e4b985abdab9aa50cffee144fe210919a2a3acef10c48ceee58eeb4",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "BILL-03",
+      "nextRockDeliverable": "Inspect existing meter-to-final invoice uniqueness and usage provenance fixture; keep current pricing and consent boundaries.",
+      "externalOrOwnerGate": "EXTERNAL provider usage/settlement; JOINT production DB; OWNER real collection.",
+      "dependencies": [
+        {
+          "target": "AUTH-01",
+          "kind": "planned_contract"
+        }
+      ],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "billing",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "EXTERNAL provider usage/settlement; JOINT production DB; OWNER real collection.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "wallet",
+      "unitRefs": [
+        "WALLET-01",
+        "WALLET-02",
+        "WALLET-03"
+      ],
+      "taskRefs": [
+        "B03",
+        "BIL02",
+        "SIM01"
+      ],
+      "owner": "wallet",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+        "sha256": "bc7252536f2cf6e95133f889c2de6f7ee3e6abdd195fc0a3c9648bb79e2d1432",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "docs/evidence/development-execution/service-contract-adoption.json",
+          "sha256": "e40047e218dda42131199920d77443a060befbbb09c3f16bdba10a448558aecd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/03-wallet-billing-providers.md",
+          "sha256": "d68892c676247a81bb50ce8c6f44ff053f91e3d87f7e60de37a31d5ae50162c0",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/earning-bridge.ts",
+          "sha256": "c6a2895a0af100fbaabd31db6c96199a2f2d3dc3cc1d4d25686dbd5064fb56f9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/wallet-deposit-provenance.ts",
+          "sha256": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/wallet-snapshot.ts",
+          "sha256": "4352988448f9d5492b2a18db17f1525288dc0972ba987286f70abe80561a2da6",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/atm/simulator.py",
+          "sha256": "7cee5ec6d8b2b04ed8eb3777d26270e6e9fed20f7a0a1f5cf1406500465701a9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/wallet_auth/service.py",
+          "sha256": "39bfa4057dd990b9a439ebf8d62dee37b092b92ddfce4e990b48f22d8915622a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/wallet-deposit-provenance.test.mjs",
+          "sha256": "1cc3fd394f1ab6210d98b5a5b009192bc5f3d55343566c9b8422c8c3f97f8e88",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/wallet-snapshot.test.mjs",
+          "sha256": "ada0810f671491db8a642fe1010cfa934afaa76051c2956d1e985921d53ddf5a",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "WALLET-02",
+      "nextRockDeliverable": "Reuse accepted SQLite process-recovery evidence; inspect ledger/meter replay parity, without resetting ledger or recreating reservations.",
+      "externalOrOwnerGate": "JOINT production durability/concurrency and real signed provider receipts; OWNER funds.",
+      "dependencies": [],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "wallet",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "JOINT production durability/concurrency and real signed provider receipts; OWNER funds.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "game",
+      "unitRefs": [
+        "GAME-01",
+        "GAME-02"
+      ],
+      "taskRefs": [
+        "AI06",
+        "GM01"
+      ],
+      "owner": "game",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/pr242-243-main-current.json",
+        "sha256": "2e447747ece8d7576d17e951485fa346fd6081580d24a49251a04b770c655aa8",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "docs/evidence/development-execution/client-game-adoption.json",
+          "sha256": "54ce255af4506e9009643ab545d57d0a0701f8cd073d2b3f3218d4d341321c32",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/08-game-market-fund.md",
+          "sha256": "f54d52a91d98a276d700077dfb5811cd0d61ba1524d2f6e0c460af3fb73c6d5b",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/game-intake.ts",
+          "sha256": "19f999d0556f0f30f8862a6604cbd9e04ca0e6b66c1707679393fcd4e7c858ba",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/game-sandbox.ts",
+          "sha256": "02598e5d73fa22db1a4e573eaf1e83719faa29721c96e7a98159cd3144de7b36",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/os/game_exchange/exchange_service.py",
+          "sha256": "15559854cde1cba1c3230ac33fd318b8773ac32a84f440386e1b6f46982cd038",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/game-intake.test.mjs",
+          "sha256": "df4a305be91b643765898648d3ad5eec7d5b4014e36f1a585897e20c946f8be3",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "GAME-01",
+      "nextRockDeliverable": "Continue nonfinancial creator SDK diagnostic/sample/save fixture against existing workflow; do not wait for Wallet financial completion.",
+      "externalOrOwnerGate": "JOINT actual engine/process isolation; OWNER game/rate/direction and real exchange disabled.",
+      "dependencies": [],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "game",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "JOINT actual engine/process isolation; OWNER game/rate/direction and real exchange disabled.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "web-ops",
+      "unitRefs": [
+        "WEBOPS-01",
+        "WEBOPS-02",
+        "WEBOPS-03",
+        "OPS-01",
+        "OPS-03"
+      ],
+      "taskRefs": [
+        "DOC05",
+        "HOME02",
+        "SKY13",
+        "SKY21",
+        "SYS01",
+        "SYS02",
+        "SYS03",
+        "SYS04",
+        "SYS08",
+        "SYS11",
+        "SYS15",
+        "WLT02"
+      ],
+      "owner": "web-ops",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/esim-webops-main-current.json",
+        "sha256": "c1a3f8a24a630f905ab96b89b36470f1a1a72d796621285d72f168799e0c9f44",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "components/system-maintenance.tsx",
+          "sha256": "51acb881dd48606fd38f738ee8ca83ef4cbed5c28d200a1ffa4d235cb3fd1b0d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/mini-pro-deployment.json",
+          "sha256": "2f3c8cb1bc5f76465284f7b98b78a512bb301b2b751931a56c7024fb23abeb70",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/client-game-adoption.json",
+          "sha256": "54ce255af4506e9009643ab545d57d0a0701f8cd073d2b3f3218d4d341321c32",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/04-security-identity-compliance.md",
+          "sha256": "62c8f05be486416c684f0072218c30d5ce19ba61a4e4349dd739d1c610366dcf",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/10-git-ci-operations.md",
+          "sha256": "902829ae3f94eb36a336e866830d7b9d316d1e79e3c208f5a68d1861a1dd9e4e",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/decision/observability.ts",
+          "sha256": "3675cc73378c6fda70bdacf6c6fe398314d069852f74050e1979ee904d0cb077",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/operations.ts",
+          "sha256": "d1eefbd1efbfe35fd287c15c89d1b87ca1569abeb67e581cad5baa8e3f54807e",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/product-domains.ts",
+          "sha256": "4c120c26e749abd6e175f4f6b067e27b2042c40d9ef1342e164a5edc41c6dd99",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "package.json",
+          "sha256": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "public/sw.js",
+          "sha256": "d4cf54192afefde19c97414f2be8b45d4e9f3194818cb1de1482f0f7e662177d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/operations.test.mjs",
+          "sha256": "eb453abab306a3cb622eca526fef4125ae5c60a5a44a2b923998f0d827afd8f1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/pwa-offline.test.mjs",
+          "sha256": "33357b280f4c2e437fbe3f94d45d392e35b3bc1461edbde4dd4faf465409e116",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/service-worker-update.test.mjs",
+          "sha256": "1a9a0d9f23ba350f2c39c901a2b7d99c8f63fe21ec4f162fdd89d86a2ac35780",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/system-maintenance-accessibility.test.mjs",
+          "sha256": "d7df52a02889060184b32716301dbf1df6164589e7ab84a6b4de8014f337e911",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/system-maintenance-release.test.mjs",
+          "sha256": "36034f1c2aaabda4ddc31ccc5e6fe3d0290ef3ebb4e672900aaa1d291f22aabb",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "WEBOPS-03",
+      "nextRockDeliverable": "Retain accepted /install compatibility and router; verify common installation links against existing runtime without publication.",
+      "externalOrOwnerGate": "JOINT deployed source/body identity and DNS/TLS readback; OWNER public launch remains held.",
+      "dependencies": [],
+      "startState": "READY_ROCK_AFTER_CURRENT_SLICE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "web-ops",
+      "stopReason": "No blanket ROCK stop. Only the separately named external/owner acceptance is blocked.",
+      "releaseCondition": "JOINT deployed source/body identity and DNS/TLS readback; OWNER public launch remains held.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "mini",
+      "unitRefs": [
+        "MINI-01",
+        "MINI-02",
+        "MINI-03",
+        "MINI-04",
+        "MINI-05",
+        "MINI-06",
+        "MINI-07",
+        "MINI-08",
+        "MATERIAL-01"
+      ],
+      "taskRefs": [
+        "AMC02",
+        "B06",
+        "BIL03",
+        "MAT02",
+        "MAT03",
+        "MAT04",
+        "MAT07",
+        "MAT15",
+        "OS10",
+        "R03",
+        "SIM01"
+      ],
+      "owner": "mini",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/mii-optical-error-map-adoption.json",
+        "sha256": "9eb5642f6d0212501de88d986ee49803c337952981de9915253b3ce7ecc37baa",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": "contracts/avocado-mini-spatial-interaction.json",
+          "sha256": "2e7d8e18096226083afc9a6147d6d9d1d1d8e5153c6badf4ce35d626fc4cdb70",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "contracts/platform-api.json",
+          "sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/avocado-mini-cellular.json",
+          "sha256": "d40cceae8e473d462cdc936f6c8cfe3675e45634861b5f5057300c1abe14f606",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/avocado-mini-r5/embedded-portable-connectivity.md",
+          "sha256": "2066b4533dbef9202f446b9ca7c6f25de0dbe5ac4b609f2ce78e14d4a7ea815b",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+          "sha256": "b021b4c1b88acd7e53689983b5e6d1edf76c1c76c54e518550e2e70711c42634",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/mini-02-joint-main-adoption.json",
+          "sha256": "ce119a954782061947557f16db0511a57fea5936214464440e22cf54c1974660",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/rockstaros-avocado-mini-complete-design.md",
+          "sha256": "56dfddd9613cc23367c25607225e04217a86a6fb084c3548fff4871ceb5ee392",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/material-invention.ts",
+          "sha256": "bc364d0973799ef4c694d3ad7da08078c5dea21f6d60c8779c711e91453b41b0",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/material-study.ts",
+          "sha256": "3723f6311f6824d31c08c772c1cb98e691576aefda24de231082bab68ddfc8a1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/owner-intent.ts",
+          "sha256": "d2cca263a5234db78f4a77d37a5d2c50b39f8fccea6e21462473831604c4fe6d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/rockstar-service-attachment.ts",
+          "sha256": "26b984129106f67d656fd6fb4eac8da09dbe6a4c5848c0c84cc58ad6fd7c26df",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "sha256": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "systems/rock-star-os/targets/avocado-mini/spatial/place-profile.mjs",
+          "sha256": "c97a9bd781496aa71897a753da9ee78be8e879831e9ce96f9076fdb2dba10329",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/avocado-mini-finite-cone.test.mjs",
+          "sha256": "2961f5d25bb27cf9ca45c38a05aa41b47a27f25b862c0590b4458ba6877c08e0",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/avocado-mini-place-profile.test.mjs",
+          "sha256": "cc8561e0e79661417947276e8331352ee9d6024c9ed9baf14aab4f74193debec",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/material-invention.test.mjs",
+          "sha256": "5fb23967c40b966e2b1325b58f676afbc302bfeb738c7227f9651708ecbc6c5b",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": true,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "MINI-02",
+      "nextRockDeliverable": "Finish independent review of finite MII-METROLOGY-READINESS-01 source3; keep NOT_READY inputs and local research provenance separate.",
+      "externalOrOwnerGate": "JOINT M3/M4 measured reference/calibration/clocks/dropout; M7 independent metrology; OWNER device work.",
+      "dependencies": [],
+      "startState": "FINITE_SOURCE_COMPLETE_REVIEW_SEPARATE",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "Root independent reviewer",
+      "stopReason": "This finite source requires independent review before Git; no new production use.",
+      "releaseCondition": "JOINT M3/M4 measured reference/calibration/clocks/dropout; M7 independent metrology; OWNER device work.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    },
+    {
+      "lane": "git",
+      "unitRefs": [
+        "GIT-01",
+        "GIT-02",
+        "GIT-03",
+        "GIT-04",
+        "GIT-05",
+        "GIT-06",
+        "GIT-07",
+        "GIT-08"
+      ],
+      "taskRefs": [
+        "AI09",
+        "DOC05",
+        "R04",
+        "SYS11",
+        "WEB05",
+        "WEB06",
+        "WEB09",
+        "WEB10",
+        "WEB13",
+        "WEB14",
+        "WEB15",
+        "WEB16",
+        "WEB17",
+        "WEB18"
+      ],
+      "owner": "git",
+      "primaryResponsibility": "ROCK",
+      "mainEvidence": {
+        "path": "docs/evidence/development-execution/all-lanes-main-handoff-summary.json",
+        "sha256": "768ca02339b1ee25838ae4e6bd987f1e7d9b78c9bc4a2f086ad1f273d6ab6235",
+        "scope": "Main-tracked bounded receipt only, historical pending captures preserved; not whole-lane acceptance"
+      },
+      "sourceRefs": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "sha256": "473f5f187f6f5c6100f0a21a530fa41aa51da8525200bc6317a55392f66e289c",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/development-source-handoff.json",
+          "sha256": "c6ef391d8484f4ff7848786e58ecac55e42085957157faca505fa0d04374abb9",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/migration-aliases.json",
+          "sha256": "6687610385ba0fc68973051994df9099860f8bca646535b3dafd7a25a5d77f6d",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/mini-pro-deployment.json",
+          "sha256": "2f3c8cb1bc5f76465284f7b98b78a512bb301b2b751931a56c7024fb23abeb70",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "data/project-status.json",
+          "sha256": "e37ced6002f4fcc7db819367d31d64606431ee64d3d28abe9b4c033453fba12f",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/client-game-adoption.json",
+          "sha256": "54ce255af4506e9009643ab545d57d0a0701f8cd073d2b3f3218d4d341321c32",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/evidence/development-execution/service-contract-adoption.json",
+          "sha256": "e40047e218dda42131199920d77443a060befbbb09c3f16bdba10a448558aecd",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/05-web-pwa-sites.md",
+          "sha256": "1e45f997a03235a13b3b9f13fbe536c49b4e73439f27698d00f3035f2ec5ecb1",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "docs/workstreams/10-git-ci-operations.md",
+          "sha256": "902829ae3f94eb36a336e866830d7b9d316d1e79e3c208f5a68d1861a1dd9e4e",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "lib/product-domains.ts",
+          "sha256": "4c120c26e749abd6e175f4f6b067e27b2042c40d9ef1342e164a5edc41c6dd99",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "package.json",
+          "sha256": "f969a7fb345f2f863622f32aaab7453c4e4b18f890830f8f0b1ae10018a133c3",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "scripts/sqlite-migration-aliases.mjs",
+          "sha256": "c171f50aa4cbf095eabe820fb731e9b68904b9c4014a4fc59ba6520c562de930",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        },
+        {
+          "path": "tests/migration-aliases.test.mjs",
+          "sha256": "44c9bf833c16bc21131ef738a532ecefd6221895c0b98aa96684fdbe35fcc332",
+          "meaning": "Located current main blob; existence is not fresh independent acceptance"
+        }
+      ],
+      "latestTwoTurnsRead": false,
+      "unmergedCandidateStatus": "Latest finite chat statements reconciled with main receipts; no new source acceptance",
+      "nextUnit": "GIT-08",
+      "nextRockDeliverable": "Maintain portfolio-aware execution gates and explicit manifests; independently reviewed source then normal merge and exact-SHA CI.",
+      "externalOrOwnerGate": "EXTERNAL GitHub availability; denied OS/Root notifications require direct human destination permission.",
+      "dependencies": [],
+      "startState": "CONTROL_WORKING",
+      "ownershipMeaning": "Queue responsibility, not an active edit lease",
+      "wholeLaneAccepted": false,
+      "nextOwner": "Root independent reviewer",
+      "stopReason": "This finite source requires independent review before Git; no new production use.",
+      "releaseCondition": "Same-artifact independent review, explicit Git manifest and same-SHA HEAD/main CI; required external conditions remain separate.",
+      "dependencyMeaning": "Planned contract links only unless an edge explicitly carries verified_runtime evidence and a consumer path. No current lane is blocked by the unconnected shared helper."
+    }
+  ],
+  "selection": {
+    "primary": "shared-current-access",
+    "unitRefs": [
+      "ESIM-01",
+      "ESIM-04"
+    ],
+    "reason": "Finite required acceptance repair of the existing service-access contract: independent real-signature probes show the adapter argument can retarget the private budget binding. This is bounded host contract correctness, not a new usable experience or a current hard runtime blocker for other lanes.",
+    "nextCandidates": [
+      "OS-14",
+      "SYNC-01",
+      "BILL-03",
+      "PRO-02",
+      "AUTH-01"
+    ],
+    "notUniversalDependency": "Nonfinancial Game and offline mii calculation/trace-contract work do not wait for Wallet real finance or full OS flash.",
+    "actualConsumers": [
+      {
+        "path": "lib/rockstar-service-setup.ts",
+        "export": "serviceAccessEvaluator",
+        "state": "Server-composition helper; no production route currently calls it"
+      },
+      {
+        "path": "tests/rockstar-service-setup.test.mjs",
+        "state": "Actual host consumer with synthetic authorities/signatures; not authenticated production or device path"
+      }
+    ],
+    "integrationLimit": "This is prerequisite contract repair, not a newly enabled Pixel/eSIM end-to-end experience. Production authority adapter/Broker atomic gate and OS14/SYNC01 parity remain next portfolio work.",
+    "workClass": "acceptance_gate_repair",
+    "requiredGateRef": "docs/rockstaros-complete-design.md#reviewed-service-contracts",
+    "consumerMilestone": {
+      "id": "shared-access-authority-integration",
+      "state": "PLANNED_NOT_IMPLEMENTED",
+      "nextOwner": "eSIM and OS14 adapter owners after contract acceptance",
+      "requiredBeforeWiring": "Inspect existing authenticated service-setup/Broker adapter and DB reservation/revision transaction; define exact owner/contract/device readback and effects. No new endpoint or production wiring in this repair.",
+      "evidenceRequired": "Authenticated consumer callsite and same-job fixture for authority, budget, usage, save/restore and stop; then separate device/provider acceptance.",
+      "whole95Accepted": false
+    }
+  },
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "productionEnabled": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "unitDependencies": {}
+}

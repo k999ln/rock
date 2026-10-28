@@ -252,29 +252,38 @@ export function serviceAccessEvaluator(authorities: {
       ![request.ownerId, request.workspaceId, request.requiredScope].every((v) =>
         typeof v === 'string' && /^[A-Za-z0-9._:@-]{1,160}$/.test(v)) ||
       !digest.test(request.deviceKeyThumbprint) || !digest.test(request.requestDigest)) return denied;
-    try {
-      const s = await authorities.readCurrent(request, now);
-      if (!s || s.schema !== 'rockstar.service-access-authorities/1' ||
+    const boundRequest = { ownerId: request.ownerId, workspaceId: request.workspaceId,
+      deviceKeyThumbprint: request.deviceKeyThumbprint, requiredScope: request.requiredScope,
+      requestDigest: request.requestDigest };
+    function retention(s: ServiceAccessSnapshot | null) {
+      if (!s || !s.retained || s.schema !== 'rockstar.service-access-authorities/1' ||
         !Number.isSafeInteger(s.revision) || s.revision < 0 ||
         !Number.isSafeInteger(s.observedAt) || !Number.isSafeInteger(s.validUntil) ||
         s.observedAt > now || s.validUntil <= now ||
-        s.ownerId !== request.ownerId || s.workspaceId !== request.workspaceId ||
-        s.attachmentFacts.ownerAuthenticated !== true ||
-        s.attachmentFacts.ownerRef !== request.ownerId ||
-        s.attachmentFacts.workspaceId !== request.workspaceId) return denied;
-      const retained = s.retained.ownerId === request.ownerId &&
-        s.retained.workspaceId === request.workspaceId;
-      result = { ...denied, revision: s.revision,
+        s.ownerId !== boundRequest.ownerId || s.workspaceId !== boundRequest.workspaceId ||
+        s.attachmentFacts?.ownerAuthenticated !== true ||
+        s.attachmentFacts.ownerRef !== boundRequest.ownerId ||
+        s.attachmentFacts.workspaceId !== boundRequest.workspaceId) return denied;
+      const retained = s.retained?.ownerId === boundRequest.ownerId &&
+        s.retained.workspaceId === boundRequest.workspaceId;
+      return { ...denied, revision: s.revision,
         canRead: retained && s.retained.read === true,
         canExport: retained && s.retained.export === true };
+    }
+    try {
+      const live = await authorities.readCurrent({ ...boundRequest }, now);
+      const s = structuredClone(live);
+      result = retention(s);
+      if (!s || result.revision === null) return result;
+      const snapshotBytes = JSON.stringify(s);
       const setup = s.setup;
       if (!setup || typeof setup !== 'object' || Array.isArray(setup) ||
         setup.schema !== 'rockstar.service-setup/1' ||
         !setup.billing || typeof setup.billing !== 'object' || Array.isArray(setup.billing) ||
         !setup.runtime || typeof setup.runtime !== 'object' || Array.isArray(setup.runtime) ||
         !setup.terms || typeof setup.terms !== 'object' || Array.isArray(setup.terms) ||
-        setup.ownerId !== request.ownerId ||
-        setup.workspaceId !== request.workspaceId ||
+        setup.ownerId !== boundRequest.ownerId ||
+        setup.workspaceId !== boundRequest.workspaceId ||
         !digest.test(s.agreementDigest ?? '') || setup.agreementDigest !== s.agreementDigest ||
         !Number.isSafeInteger(setup.acceptedAt) || (setup.acceptedAt as number) > now ||
         !Number.isSafeInteger(setup.billing.verifiedAt) || (setup.billing.verifiedAt as number) > now ||
@@ -285,19 +294,29 @@ export function serviceAccessEvaluator(authorities: {
         s.setupFacts.linuxCanExecute !== true ||
         s.client !== 'supported' || !['installed', 'not_required'].includes(s.profile) ||
         s.payment !== 'current' || s.pricePolicy !== 'resolved' ||
-        s.budget.state !== 'reserved' || s.budget.requestDigest !== request.requestDigest ||
+        s.budget.state !== 'reserved' || s.budget.requestDigest !== boundRequest.requestDigest ||
         s.attachmentFacts.ownerAuthenticated !== true ||
         s.attachmentFacts.deviceApproved !== true || s.attachmentFacts.deviceProofVerified !== true ||
         s.attachmentFacts.deviceRevoked !== false || s.attachmentFacts.issuerProfileActive !== true ||
         setup.terms.version !== s.attachmentFacts.contractVersion ||
-        s.attachmentFacts.deviceKeyThumbprint !== request.deviceKeyThumbprint ||
-        s.attachmentFacts.requiredScope !== request.requiredScope) return result;
+        s.attachmentFacts.deviceKeyThumbprint !== boundRequest.deviceKeyThumbprint ||
+        s.attachmentFacts.requiredScope !== boundRequest.requiredScope) return result;
       // No implicit cast/migration of legacy or malformed persisted terms.
       parseLinuxTerms(setup.terms);
       const attachment = await verifyServiceAttachment(
         s.attachment, s.attachmentFacts, authorities.resolveKey, now,
       );
-      return { ...result, canDispatch: attachment !== null };
+      // The supplied snapshot may have changed or had nested facts replaced while
+      // key resolution/crypto awaited. Recheck every authority, including retention.
+      // This is object binding only: it does not read a parent DB or issue a Broker permit.
+      let current: ServiceAccessSnapshot | null;
+      try { current = structuredClone(live); } catch { return denied; }
+      const retainedNow = retention(current);
+      result = { ...retainedNow,
+        canRead: result.canRead && retainedNow.canRead,
+        canExport: result.canExport && retainedNow.canExport };
+      return { ...result, canDispatch: attachment !== null &&
+        JSON.stringify(current) === snapshotBytes };
     } catch {
       // Before retention authorization: all denied. After it: dispatch alone fails.
       return result;
