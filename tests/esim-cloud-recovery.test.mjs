@@ -1,4 +1,5 @@
 import * as boundedStream from '../lib/bounded-stream.ts';
+import * as skyAgentLibraryStore from '../lib/sky-agent-library-store.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -319,6 +320,7 @@ function workRoute(f) {
     ['@/lib/owner-intent', ownerIntent],
     ['@/lib/fund-store', { database: () => f.db, requestUser }],
     ['@/lib/work-store', { workStore }],
+    ['@/lib/sky-agent-library-store', skyAgentLibraryStore],
     ['@/lib/rockstar-service-access', { rockstarServiceScopeAllowed, missingRockstarServiceScope }],
     ['@/lib/workflow', workflow],
   ]));

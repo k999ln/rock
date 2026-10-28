@@ -2,6 +2,7 @@ import { database, requestUser } from '@/lib/fund-store';
 import { OperationError } from '@/lib/operations';
 import { skyAgentLibraryStore } from '@/lib/sky-agent-library-store';
 import { skyAgentId, SkyAgentLibraryError } from '@/lib/sky-agent-library';
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 const json = (v: unknown, status = 200) => Response.json(v, { status, headers: { 'Cache-Control': 'no-store' } });
 function failure(e: unknown) {
   if (e instanceof SkyAgentLibraryError || e instanceof OperationError) return json({ error: e.message }, e.status);
@@ -17,9 +18,9 @@ export async function GET(request: Request) {
     if (id !== null) {
       const agent = await store.get(skyAgentId(id));
       if (!agent) throw new SkyAgentLibraryError('エージェントが見つかりません。', 404);
-      return json({ agent });
+      return json({ agent, ownerScope: await ownerScopeFor(owner) });
     }
-    return json({ agents: await store.list() });
+    return json({ agents: await store.list(), ownerScope: await ownerScopeFor(owner) });
   }
   catch (e) { return failure(e); }
 }
@@ -28,6 +29,9 @@ export async function PUT(request: Request) {
     // Explicit Origin applies to browser and device sessions alike for this settings UI.
     if (request.headers.get('origin') !== new URL(request.url).origin) throw new Error('ORIGIN');
     const owner = await requestUser(request);
+    // Preserve the existing optional owner-intent precondition for old clients.
+    const changed = await rejectChangedOwner(request, owner);
+    if (changed) return changed;
     const reader = request.body?.getReader();
     if (!reader) throw new SkyAgentLibraryError('保存する設定を確認してください。');
     const chunks: Uint8Array[] = []; let size = 0;

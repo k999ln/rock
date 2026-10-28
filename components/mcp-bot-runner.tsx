@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   CheckCircle2,
   CircleAlert,
@@ -18,6 +18,8 @@ import {
   type McpApproval,
   type McpConnection,
   type McpToolPassport,
+  type McpJobGate,
+  type McpJobClaim,
 } from '@/lib/mcp-hub';
 import { describeMcpToolResult } from '@/lib/mcp-tool-result';
 
@@ -91,6 +93,8 @@ export function McpBotRunner({
   onStatusChange,
   onOutcome,
   onDisconnected,
+  beforeExecute,
+  onJobClaim,
   fixedToolName,
   executionDisabled = false,
 }: {
@@ -100,6 +104,8 @@ export function McpBotRunner({
   onStatusChange?: (status: ParentRunState) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onDisconnected?: () => void;
+  beforeExecute?: (input: { serverId: string; toolName: string; args: Record<string, unknown> }) => Promise<McpJobGate | void>;
+  onJobClaim?: (claim: McpJobClaim) => void;
   fixedToolName?: string;
   executionDisabled?: boolean;
 }) {
@@ -120,6 +126,7 @@ export function McpBotRunner({
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
   const [disconnecting, setDisconnecting] = useState(false);
+  const executionInFlight = useRef(false);
   const directExecutionAllowed = selectedTool?.pricing.model === 'free';
 
   function changeTool(value: string) {
@@ -176,17 +183,25 @@ export function McpBotRunner({
   }
 
   async function execute() {
-    if (!selectedTool || !approval || state === 'running') return;
+    if (!selectedTool || !approval || state === 'running' || executionInFlight.current) return;
+    executionInFlight.current = true;
     setError('');
     setState('running');
     onStatusChange?.('running');
     onRunningChange?.(true);
     try {
+      // Pin the exact input before the durable job-admission hook. Editing while
+      // that hook waits must not change the input covered by the approval.
+      const args = parseArgs();
+      const jobGate = await beforeExecute?.({ serverId: server.id, toolName: selectedTool.name, args });
+      if (beforeExecute && !jobGate) throw new Error('仕事の実行許可を確認できません。');
       const value = await executeApprovedMcpTool(
         server.id,
         selectedTool.name,
-        parseArgs(),
+        args,
         approval.approvalToken,
+        jobGate || undefined,
+        onJobClaim,
       );
       const outcome = describeMcpToolResult(value);
       setApproval(null);
@@ -208,6 +223,7 @@ export function McpBotRunner({
       setError(message);
       onOutcome?.({ ok: false, text: message });
     } finally {
+      executionInFlight.current = false;
       onRunningChange?.(false);
     }
   }
@@ -247,7 +263,7 @@ export function McpBotRunner({
 
       <label className="mcp-bot-field">
         <span>このbotに任せる機能</span>
-        <select value={toolName} disabled={Boolean(fixedToolName)} onChange={(event) => changeTool(event.target.value)}>
+        <select value={toolName} disabled={Boolean(fixedToolName) || state === 'running'} onChange={(event) => changeTool(event.target.value)}>
           {tools.map((tool) => (
             <option key={tool.name} value={tool.name}>
               {tool.title || tool.name}
@@ -269,13 +285,14 @@ export function McpBotRunner({
           <span>方向・修正指示</span>
           <textarea
             rows={3}
+            disabled={state === 'running'}
             maxLength={4000}
             value={direction}
             onChange={(event) => setDirection(event.target.value)}
             placeholder="次の実行で変えたい方向を伝える"
           />
         </label>
-        <button type="button" onClick={applyDirection}>
+        <button type="button" disabled={state === 'running'} onClick={applyDirection}>
           <RotateCcw size={15} /> 指示を今回の入力へ反映
         </button>
         <small>
@@ -289,6 +306,7 @@ export function McpBotRunner({
         </summary>
         <textarea
           aria-label="MCP toolのJSON引数"
+          disabled={state === 'running'}
           rows={8}
           maxLength={100000}
           spellCheck={false}
@@ -315,7 +333,7 @@ export function McpBotRunner({
 
       <div className="mcp-bot-actions">
         {approval ? (
-          <button type="button" className="black-button" disabled={executionDisabled} onClick={() => void execute()}>
+          <button type="button" className="black-button" disabled={executionDisabled || state === 'running'} onClick={() => void execute()}>
             {state === 'running' ? (
               <LoaderCircle className="sky-chat-spin" size={16} />
             ) : (

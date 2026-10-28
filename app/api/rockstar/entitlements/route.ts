@@ -10,6 +10,7 @@ import {
 } from '@/lib/rockstar-entitlement-claim';
 import { skyToolPackageStore } from '@/lib/sky-tool-package-store';
 import { describeRockstarServiceOfferProfile } from '@/lib/rockstar-service-offers';
+import { ownerScopeFor } from '@/lib/owner-intent';
 
 const json = (value: unknown, status = 200) =>
   Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
@@ -25,6 +26,7 @@ export async function GET(request: Request) {
     const registry = profilesConfigured && entitlements.some((item) => item.status === 'active')
       ? await skyToolPackageStore(db).listRegistry() : [];
     return json({
+      ownerScope: await ownerScopeFor(ownerUserId),
       entitlements: await Promise.all(entitlements.map(async (item) => ({
         ...item,
         serviceProfile: item.status === 'active' ? await describeRockstarServiceOfferProfile(

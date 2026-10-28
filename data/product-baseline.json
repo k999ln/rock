@@ -1,4 +1,11 @@
 {
+  "eveSmithMiiPlatformIntent": {
+    "source": "2026-10-28 owner instruction: user-defined roles and shared Eve/Smith/mii work",
+    "purpose": "用途を固定せず、本人がEveで担当を作り、Smithが能力と実行先を照合し、miiでも同じ仕事を扱う。",
+    "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+    "constraints": ["本人と権限を共通runtimeで確認", "追加モデル推論を行わない", "既存の仕事・モデル・データ・接続情報を保持"],
+    "currentAcceptance": "local-previewと合成miiに限定した検証候補。実account/eSIM・実mii・Pixel全OS・本番Providerは別受入。"
+  },
   "redesignThreadReview": {
     "recordedAt": "2026-10-21",
     "sourceThread": "codex://threads/01a14d54-daee-7c30-87a8-faea84641a40",

@@ -58,6 +58,7 @@ async function harness({ onRemote, budget = null, records = [], executionAvailab
     '@/components/use-pending-save-navigation': { usePendingSaveNavigation() {} },
     '@/components/mr-tool-runner': { MrToolRunner: inert }, '@/components/device-connection': { DeviceConnection: inert }, '@/components/workspace-shell': inert,
     '@/components/mcp-bot-runner': { McpBotRunner: inert }, '@/components/ui/textarea': { Textarea: 'textarea' },
+    '@/components/mii-work-preview': { default: inert }, '@/components/agent-tool-job-runner': { default: inert },
     '@/components/ui/select': Object.fromEntries(['Select','SelectTrigger','SelectValue','SelectContent','SelectItem'].map((x) => [x,x])),
     '@/components/ui/dialog': Object.fromEntries(['Dialog','DialogContent','DialogTitle','DialogDescription'].map((x) => [x,x])),
     '@/lib/operations-client': { OperationRequestError: class extends Error {} },

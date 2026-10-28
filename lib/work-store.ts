@@ -117,6 +117,23 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         .run();
       return get(user, job.id);
     },
+    /** Bind only if the saved owner's enabled role is still the selected revision at insertion. */
+    async createAgentBound(user: string, job: WorkJob) {
+      const binding = job.agentBinding;
+      if (!binding) throw new Error('WORK_AGENT_BINDING_REQUIRED');
+      await db.prepare(`INSERT INTO work_jobs (id, user_id, payload, revision, updated_at)
+        SELECT ?, ?, ?, ?, ? WHERE EXISTS (
+          SELECT 1 FROM sky_agent_settings a
+          WHERE a.owner_user_id = ? AND a.id = ? AND a.revision = ?
+            AND json_extract(a.settings, '$.enabled') = 1
+            AND (a.source_tool IS NULL OR EXISTS (
+              SELECT 1 FROM sky_connections c WHERE c.user_id = a.owner_user_id AND c.tool = a.source_tool
+            ))
+        ) ON CONFLICT(id) DO NOTHING`)
+        .bind(job.id, user, JSON.stringify(job), job.revision, job.updatedAt,
+          user, binding.agentId, binding.agentRevision).run();
+      return get(user, job.id);
+    },
     async update(user: string, job: WorkJob, previousRevision: number) {
       const result = await db
         .prepare(

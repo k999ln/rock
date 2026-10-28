@@ -82,7 +82,7 @@ async function setup(t) {
   const names = [
     'a2a-delegation-store',
     'work-job-view',
-    'work-store',
+    'work-store', 'sky-agent-library-store',
     'work-composition-store',
     'rockstar-service-access',
     'workflow',

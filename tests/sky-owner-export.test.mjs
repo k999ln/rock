@@ -104,3 +104,17 @@ void test('work history uses an allowlist and never transfers approval or execut
   assert.match(html, /本人のメモ/);
   assert.doesNotMatch(html, /secret-event|secret-approval/);
 });
+
+void test('client-observed Tool output remains exact, independently unverified and safe to export', async () => {
+  const input = fixture();
+  const original = '観測した本文\r\n<image onerror="bad()"> & 保存';
+  input.job.toolObservations = [{ schema: 'rockstaros.work-tool-observation/1', id: 'obs',
+    packageKey: 'dev.example@1.0.0', manifestSha256: 'b'.repeat(64), connectorId: 'connector',
+    toolName: 'read', text: original, verification: 'client_observed_unverified', recordedAt: '2026-10-28T00:00:00Z',
+    secret: 'not-exported-extra' }];
+  const { html, manifest } = await buildSkyOwnerExport(input);
+  const saved = JSON.parse(file(html, 'tool-observations.json'));
+  assert.equal(saved[0].text, original); assert.equal(saved[0].verification, 'client_observed_unverified');
+  assert.equal(saved[0].secret, undefined); assert.match(manifest.warnings.join(' '), /独立検証されていません/);
+  assert.doesNotMatch(html, /<image|not-exported-extra/);
+});

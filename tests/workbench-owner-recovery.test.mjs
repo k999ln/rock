@@ -63,7 +63,7 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
     'bounded-stream',
     'owner-intent',
     'a2a-delegation-store',
-    'work-store',
+    'work-store', 'sky-agent-library-store',
     'workflow', 'work-job-view',
     'pending-owner-intent',
     'rockstar-service-access',
@@ -302,6 +302,8 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
     '@/components/ui/textarea': { Textarea: 'textarea' },
     '@/components/workspace-shell': inert,
     '@/components/mcp-bot-runner': { McpBotRunner: inert },
+    '@/components/mii-work-preview': { default: inert },
+    '@/components/agent-tool-job-runner': { default: inert },
     '@/lib/remote-ai-text-client': {
       remoteAiTextRequest: async () => ({
         executions: [],
@@ -1543,4 +1545,29 @@ void test('lazy Delivery auth loss invalidates a parent read captured before401'
  delayed.release();await h.flush();
  assert.ok(!h.text().includes('Private delivery check'),'older authenticated read cannot reintroduce private job after known401');
  assert.equal(h.find('button','このToolの入力・結果を破棄'),undefined,'older read cannot make private draft discardable after auth loss');
+});
+
+void test('Workbench sends the selected saved Agent revision through the real owner-scoped job API', async (t) => {
+  const agentId = randomUUID();
+  const h = await setup(t, { componentProps: { agentRequired: true, agentReference: { id: agentId, revision: 1 } } });
+  const { skyAgentLibraryStore } = await import('../lib/sky-agent-library-store.ts');
+  const { defaultSkyAgentSettings } = await import('../lib/sky-agent-library.ts');
+  await skyAgentLibraryStore(h.db, 'alice').save(agentId, 0, defaultSkyAgentSettings('本人の担当', '用途を自由に設定'), true);
+  h.render(); await h.flush(); h.input('担当に依頼する仕事');
+  await h.click('仕事を作成');
+  const post = h.requests.filter((request) => request.method === 'POST').at(-1);
+  assert.equal(post.status, 201);
+  assert.deepEqual(post.value.agentRef, { id: agentId, revision: 1 });
+  const readback = await h.routeCall('GET', undefined, 'alice');
+  const saved = readback.data.jobs.find(job => job.title === '担当に依頼する仕事');
+  assert.equal(saved.agentBinding.agentId, agentId);
+  assert.equal(saved.agentBinding.agentRevision, 1);
+});
+
+void test('Workbench does not create an unbound job while the selected Agent cannot be verified', async (t) => {
+  const h = await setup(t, { componentProps: { agentRequired: true, agentReference: null } });
+  h.render(); await h.flush(); h.input('未確認の担当');
+  await h.click('仕事を作成');
+  assert.equal(h.requests.filter(request => request.method === 'POST').length, 0);
+  assert.match(h.text(), /担当の最新版を確認/);
 });

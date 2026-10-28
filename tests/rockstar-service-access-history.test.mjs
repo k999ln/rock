@@ -1,4 +1,5 @@
 import * as ownerIntent from '../lib/owner-intent.ts';
+import * as skyAgentLibraryStore from '../lib/sky-agent-library-store.ts';
 import * as boundedStream from '../lib/bounded-stream.ts';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync, randomUUID, sign } from 'node:crypto';
@@ -55,6 +56,7 @@ for (const [scope, newerScope] of [['zema', 'sky'], ['sky', 'zema']]) {
     const dependencies = new Map([
       ['cloudflare:workers', { env }],
       ['@/lib/owner-intent', ownerIntent],
+      ['@/lib/sky-agent-library-store', skyAgentLibraryStore],
       ['@/lib/bounded-stream', boundedStream],
       ['@/lib/a2a-delegation-store', { a2aDelegationStore }],
       ['@/lib/fund-store', { database: () => db, requestUser }],
