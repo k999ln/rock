@@ -11648,5 +11648,142 @@
       "fail": 0,
       "skip": 3
     }
+  },
+  "proExistingJobResumeCurrent": {
+    "baseMain": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+    "status": "HOST_FULLVERIFY_PASS_FINAL_METADATA_REVIEW_GIT_PENDING",
+    "unit": "PRO-02",
+    "taskRefs": [
+      "AMC02",
+      "SIM01"
+    ],
+    "evidence": "docs/evidence/development-execution/pro-existing-job-resume-main-adoption.json",
+    "priorMainReadback": "docs/evidence/development-execution/portfolio-contract-main-current.json",
+    "wholePRO02Accepted": false,
+    "actualAuthenticatedE2EAccepted": false,
+    "olderJobExactGetImplemented": false,
+    "physicalAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD",
+    "hostVerify": {
+      "tests": 3245,
+      "pass": 3242,
+      "fail": 0,
+      "skip": 3
+    }
+  },
+  "developmentSelectionPriorityCurrent": {
+    "schema": "rockstaros.development-selection-priority/1",
+    "recordedAt": "2026-10-28",
+    "authority": "Latest explicit human direction relayed by Root: centralize overall communication in Root and saving/integration in Git; prioritize OS, Eve, Smith and mii. Subsequent explicit human clarification: OS includes billing, Wallet, Game and eSIM requirements; do not blanket-defer them.",
+    "reason": "Reduce fragmented coordination while prioritizing OS as the shared runtime including its billing/Wallet/Game/eSIM requirements, plus Eve/Smith/mii. Preserve existing scope and specialist ownership.",
+    "focusLanes": [
+      "os-pixel",
+      "eve",
+      "smith",
+      "mini"
+    ],
+    "focusDisplayNames": [
+      "OS（料金・請求、Wallet、Game、eSIMを含む）",
+      "Eve",
+      "Smith",
+      "mii"
+    ],
+    "internalOrderSpecified": false,
+    "all95RemainingUnitsRetained": true,
+    "otherLanes": "Billing/Wallet/Game/eSIM requirements are included within OS priority, not blanket-deferred or merely auxiliary. Other independent expansions outside OS/Eve/Smith/mii remain deferred; existing in-flight Pro closes. Keep existing specialty owner/files and reuse contracts.",
+    "inFlightException": "Finish already-started Pro existing-job resume source acceptance, Git/main and same-SHA CI; do not discard it or expand its scope.",
+    "coordination": {
+      "overallFrontDoor": "Root",
+      "saveAndIntegrationOwner": "Git",
+      "newChats": false,
+      "existingExperts": "Start only for finite necessary work; avoid current human mii work",
+      "maxActiveTotal": 3,
+      "startAllFourAtOnce": false
+    },
+    "existingCaptureMeaning": "Prior PR251 portfolio selection/currentExecution are bounded freeze-time captures; this policy governs future selection, not a retroactive rewrite of their independent acceptance.",
+    "OSDeniedNotificationHoldUnchanged": true,
+    "bulk616": "HOLD",
+    "revision": "explicit-os-requirements-inclusion",
+    "osScopeIsKernelOrPixelOnly": false,
+    "nonfinancialGameWaitsForFinancialWallet": false,
+    "osRequirementWorkstreams": [
+      {
+        "lane": "billing",
+        "unitRefs": [
+          "BILL-01",
+          "BILL-02",
+          "BILL-03",
+          "BILL-04",
+          "BILL-05",
+          "BILL-06",
+          "BILL-07",
+          "BILL-08"
+        ],
+        "taskRefs": [
+          "SIM01"
+        ],
+        "ownerAndImplementation": "Existing billing specialist and existing files/contracts; no reimplementation or automatic chat start",
+        "osRuntimeConnectionAndAcceptance": "Terms/consent and budget reservation/usage bounds -> same OS job -> meter/receipt -> final invoice uniqueness; reuse current pricing/settlement contracts.",
+        "individualUnacceptedGates": "Actual Provider usage, collection, production billing and real charges require their existing individual gates.",
+        "implementedOrAcceptedByPriorityChange": false
+      },
+      {
+        "lane": "wallet",
+        "unitRefs": [
+          "WALLET-01",
+          "WALLET-02",
+          "WALLET-03"
+        ],
+        "taskRefs": [
+          "B03",
+          "BIL02",
+          "SIM01"
+        ],
+        "ownerAndImplementation": "Existing wallet specialist and existing files/contracts; no reimplementation or automatic chat start",
+        "osRuntimeConnectionAndAcceptance": "OS permission/job identity -> existing reservation/ledger/receipt uniqueness -> stop/restart reconciliation and restore; no new custody/ledger.",
+        "individualUnacceptedGates": "Real funds/payouts/Provider finality/production durability remain individually gated.",
+        "implementedOrAcceptedByPriorityChange": false
+      },
+      {
+        "lane": "game",
+        "unitRefs": [
+          "GAME-01",
+          "GAME-02"
+        ],
+        "taskRefs": [
+          "AI06",
+          "GM01"
+        ],
+        "ownerAndImplementation": "Existing game specialist and existing files/contracts; no reimplementation or automatic chat start",
+        "osRuntimeConnectionAndAcceptance": "Creator API/SDK/sandbox/sample -> OS Broker/permission/lifecycle/resource/save/restore contracts; advance nonfinancial work independently.",
+        "individualUnacceptedGates": "Real game exchange/rate/direction/assets remain disabled or separately gated; no wait for real-money Wallet completion.",
+        "implementedOrAcceptedByPriorityChange": false
+      },
+      {
+        "lane": "esim",
+        "unitRefs": [
+          "ESIM-01",
+          "ESIM-02",
+          "ESIM-03",
+          "ESIM-04",
+          "ESIM-05",
+          "ESIM-06",
+          "ESIM-07",
+          "ESIM-08"
+        ],
+        "taskRefs": [
+          "AI09",
+          "DSP01",
+          "N04",
+          "SIM01"
+        ],
+        "ownerAndImplementation": "Existing esim specialist and existing files/contracts; no reimplementation or automatic chat start",
+        "osRuntimeConnectionAndAcceptance": "Separate telecom/SIM profile/service entitlement/OS-client installation -> current identity/issuer/attachment/epoch -> cloud job/access/usage/restore. SIM does not store OS binary.",
+        "individualUnacceptedGates": "Actual profile/radio/issuer/sandbox, billing, device/native signed image/flash and deployment remain separate gates.",
+        "implementedOrAcceptedByPriorityChange": false
+      }
+    ],
+    "osCrossLaneAcceptance": "Bind existing OS-14 same-job/identity/capability/permission/budget/usage/save/restore/stop parity to these existing specialist requirements; source, fixture, physical, Provider and production layers remain separate. Priority is not acceptance or permission to move funds/flash."
   }
 }

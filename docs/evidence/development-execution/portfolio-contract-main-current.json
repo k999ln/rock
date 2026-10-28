@@ -1,0 +1,54 @@
+{
+  "schema": "rockstaros.portfolio-contract-main-readback/1",
+  "pr": "https://github.com/k999ln/rock/pull/251",
+  "baseMain": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+  "acceptedHead": "4e9453871bdacd0ab58b1817256b0196cc497e07",
+  "mainMergeSha": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+  "normalMerge": true,
+  "parents": [
+    "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+    "4e9453871bdacd0ab58b1817256b0196cc497e07"
+  ],
+  "headAndMainTree": "970640722ba05275deb1e47269ca04669f24f62b",
+  "exact15BlobsMatch": true,
+  "manifestSha256": "73f01b46fe6eabb3857838300fe4e571e1c3b1342269ea063d2987884591493a",
+  "runtimeIndependentReviewSha256": "561b899f2c0a7bc64e9cedf5ff5799342359f92434f80d1b9c6276569cc9cef1",
+  "controlIndependentReviewSha256": "ac3484615b01ca2a5193e4896a307cc32ec360c1aea84926d09526ab9cf6e757",
+  "headCI": {
+    "sha": "4e9453871bdacd0ab58b1817256b0196cc497e07",
+    "checksSuccess": 7,
+    "allFourWorkflowsSuccess": true,
+    "rootNode": {
+      "tests": 3240,
+      "pass": 3238,
+      "fail": 0,
+      "skip": 2
+    },
+    "verifyRun": 40685591316,
+    "verifyJob": 122807002378,
+    "verifyLogSha256": "318d69103c8c2675dbe85a195a22d0c9d0c07ad83367fb5a3a6d83eb17f7d495"
+  },
+  "mainCI": {
+    "sha": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+    "checksSuccess": 6,
+    "allFourWorkflowsSuccess": true,
+    "rootNode": {
+      "tests": 3240,
+      "pass": 3238,
+      "fail": 0,
+      "skip": 2
+    },
+    "verifyRun": 40686509191,
+    "verifyJob": 122810117218,
+    "verifyLogSha256": "50210ceed6c1e0b7e9b61c253584506381c5e0c2ffa1321e37b9743f98bb0d7f"
+  },
+  "fullExternalReadbackProofSha256": "ddfcbab7c40264b8c4a2eaa626ca6a44d74f6ee69e0d87d99aa772f7f86daeaa",
+  "captureFieldsPreserved": true,
+  "scope": "All11/95 execution portfolio plus bounded host contract repair, not whole product or enabled consumer wiring. This readback is included with the next substantive Pro delivery, not a closeout-only PR.",
+  "whole95Accepted": 0,
+  "physicalAccepted": false,
+  "productionConsumerEnabled": false,
+  "realProviderFinancialAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD"
+}

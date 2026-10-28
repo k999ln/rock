@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.56",
+  "version": "1.57",
   "updatedAt": "2026-10-28",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3597,5 +3597,27 @@
     "productionEnabled": false,
     "physicalAccepted": false,
     "wholeUnitAccepted": false
+  },
+  "proExistingJobResume": {
+    "authority": "docs/rockstaros-complete-design.md#pro-existing-job-resume",
+    "toolDesign": "docs/sky-tools-complete-design.md#pro-existing-job-resume",
+    "proDesign": "docs/rockstaros-avocado-mini-complete-design.md#pro-existing-job-resume",
+    "implementation": [
+      "sites/avocado-mini/src/pages/pro/index.astro",
+      "sites/avocado-mini/src/pro-os.js"
+    ],
+    "tests": [
+      "tests/pro-existing-job-resume.test.mjs"
+    ],
+    "sourceReceipt": "docs/evidence/development-execution/pro-existing-job-resume.json",
+    "evidence": "docs/evidence/development-execution/pro-existing-job-resume-main-adoption.json",
+    "existingWorkflowReused": true,
+    "onlyCurrentListedJobsAccepted": true,
+    "olderJobExactGetImplemented": false,
+    "wholePRO02Accepted": false,
+    "physicalAccepted": false,
+    "authenticatedE2EAccepted": false,
+    "mainIntegrated": false,
+    "publicDeployment": false
   }
 }

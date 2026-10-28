@@ -25,6 +25,11 @@
 
 [現行採用record](evidence/development-execution/mii-optical-error-map-adoption.json)。
 
+<a id="pro-existing-job-resume"></a>
+## Proの既存仕事IDから共通画面への再開
+
+[OSの11項目契約](rockstaros-complete-design.md#pro-existing-job-resume)／[Tool詳細](sky-tools-complete-design.md#pro-existing-job-resume)を正本とする。Proの新規仕事/原本archiveを維持し、保存済みUUIDの形式を確認して固定avoado.siへjobだけを渡す明示入口を追加する。local board/notesをserver jobへ移行せず、本人/権限/同意/料金/停止/成果は共通画面へ残す。未配線serviceAccessEvaluatorへのhard runtime依存はない。mii光学/物理、Proハードウェア/配備/実認証/wholePRO02の合格ではない。
+
 <a id="pro-private-work-entry"></a>
 ## avocadoPro商品ページから共通仕事への限定入口
 

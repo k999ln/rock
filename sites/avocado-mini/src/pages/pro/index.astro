@@ -50,6 +50,16 @@ import ProAssemblyWorkbench from "../../components/ProAssemblyWorkbench.astro";
         </ol>
         <a href="https://avoado.si/zema/compose?tool=mr-citations" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" data-astro-prefetch="false" data-pro-work>Open private text work on avoado.si (new tab) ↗</a>
         <p>Opening this link selects the source-link tool only. It sends no notes, chooses no account, and starts no job or AI generation. Browser notes and private archives remain separate; paste only text you choose to use.</p>
+        <fieldset data-pro-resume>
+          <legend>Resume a saved job</legend>
+          <p>Enter the WorkJob ID shown for a job already saved on avoado.si. A local board card is separate and does not prove that a server job exists.</p>
+          <label for="pro-existing-job-id">Saved WorkJob ID</label>
+          <input id="pro-existing-job-id" type="text" maxlength="36" autocomplete="off" spellcheck="false" aria-describedby="pro-existing-job-status" data-pro-resume-id />
+          <button type="button" data-pro-resume-prepare>Check saved job ID</button>
+          <a target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" data-astro-prefetch="false" data-pro-resume-link hidden>Open saved job on avoado.si (new tab) ↗</a>
+          <p id="pro-existing-job-status" role="status" aria-live="polite" data-pro-resume-status>No job selected. Check a saved WorkJob ID before opening it.</p>
+          <p>The destination checks your account and its saved-job list. If the job is not selected, check the account and saved-job list; this page does not create a replacement. Saving, stopping, and viewing results use that job's existing permissions and revision checks. Only the job ID is sent; notes, credentials, consent, and price are not transferred.</p>
+        </fieldset>
       </div>
     </section>
     <section class="pro-interest" aria-label="Private browser notes">

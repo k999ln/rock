@@ -1,3 +1,10 @@
+<a id="four-lane-priority-20261028"></a>
+## 全体窓口の集約と4系統の開発優先（本人明示・G04）
+
+本人の最新方針により、Rootを全体窓口、Gitを保存・統合担当へ集約する。次の新規開発はOS（料金・請求、Wallet、Game、eSIMの既存要件とOS runtime接続・受入を含む）・Eve・Smith・miiを優先し、4系統内の順位は未指定。全11lane/既存95unitの残件・要求は保持し、OSだけやmiiだけへ狭めない。新chatを増やさず既存専門chatは必要な有限作業時だけ起動、max3を維持し全4同時起動をしない。現在の本人mii作業と重複しない。
+
+着手済みPro再開入口は破棄せず別検収・Git/main・同SHA CIまで閉じる。OSをkernel/Pixelだけへ狭めず、料金・請求/Wallet/Game/eSIMを一律後回しや単なる補助扱いにしない。[OS配下のunit/task/接続・合格条件](../../data/development-portfolio.json#/currentSelectionPolicy/osRequirementWorkstreams)へ既存95の該当unitを紐付け、専門owner/実装file/共通契約を保持する。非金融GameはWalletの本番金融完成待ちにしない。OS/Eve/Smith/miiの範囲外にある独立拡張を後回しとし、共通契約を作り直さない。既存source/採用PR/未完了gateを先に確認し、古い作者の未統合報告を再実装指示にしない。[現行policy](../../data/development-portfolio.json#/currentSelectionPolicy)と[作者capture/main照合](../../data/development-source-handoff.json#/currentAuthorMainReconciliation)を使う。過去のselection/currentExecutionはfreeze時captureとして保持し、今回の優先を製品要件/料金/公開許可の変更へ換算しない。OS候補通知の自動承認レビュー拒否、616一括公開保留、実機/Provider/実課金/一般公開gateはそのまま。成果・停止理由・次の有限作業をRootへ集約し、追加続行返信を形式gateにしない。
+
 <a id="portfolio-delivery-20261028"></a>
 ## 全11laneから有限な共有deliveryを選ぶ（G04・ROCK）
 

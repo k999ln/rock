@@ -53,3 +53,45 @@ migrationDownload?.addEventListener('click', () => {
   migrationStatus.textContent = 'Private file exported to this device. Originals retained; no account data has been saved. Open the private archive link, sign in, manually select this file again, confirm the destination account, and give separate archive save consent.';
 });
 document.querySelector('[data-migration-cancel]')?.addEventListener('click', cancelMigration);
+
+// Lookup only. UUID grammar/canonicalization follows lib/workflow.ts workId;
+// the account host still authenticates and checks ownership before returning jobs.
+const resumeId = document.querySelector('[data-pro-resume-id]');
+const resumePrepare = document.querySelector('[data-pro-resume-prepare]');
+const resumeLink = document.querySelector('[data-pro-resume-link]');
+const resumeStatus = document.querySelector('[data-pro-resume-status]');
+if (resumeId && resumePrepare && resumeLink && resumeStatus) {
+  const lookupUrl = () => {
+    const value = resumeId.value;
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)) return null;
+    const url = new URL('https://avoado.si/zema/compose');
+    url.searchParams.set('job', value.toLowerCase());
+    return url.href;
+  };
+  const invalidateLookup = () => {
+    resumeLink.hidden = true;
+    resumeLink.removeAttribute('href');
+    resumeStatus.textContent = 'No job selected. Check a saved WorkJob ID before opening it.';
+  };
+  const prepareLookup = () => {
+    invalidateLookup();
+    const url = lookupUrl();
+    if (!url) {
+      resumeStatus.textContent = 'Enter only the UUID from a saved job on avoado.si. URLs, local card IDs, and extra text are not accepted.';
+      return;
+    }
+    resumeLink.href = url;
+    resumeLink.hidden = false;
+    resumeStatus.textContent = 'ID format checked; existence and ownership are not checked here. Opening only looks up the job in your signed-in account; it grants no execution or save consent.';
+  };
+  resumeId.addEventListener('input', invalidateLookup);
+  resumeId.addEventListener('change', invalidateLookup);
+  resumeId.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); prepareLookup(); } });
+  resumePrepare.addEventListener('click', prepareLookup);
+  resumeLink.addEventListener('click', event => {
+    const url = lookupUrl();
+    if (!url || resumeLink.hidden || resumeLink.getAttribute('href') !== url) {
+      event.preventDefault(); invalidateLookup();
+    }
+  });
+}

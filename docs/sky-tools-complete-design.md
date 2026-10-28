@@ -52,6 +52,11 @@
 
 [採用・検収の段階](evidence/development-execution/eve13-pending-recovery-main-adoption.json)。
 
+<a id="pro-existing-job-resume"></a>
+## Proの保存済み仕事lookup入口
+
+[OSの11項目契約](rockstaros-complete-design.md#pro-existing-job-resume)に従い、既存WorkCompositionWorkspace/APIとmr-citations導線を再利用する。UUIDを固定avoado.siのjob一項目へ渡すだけで、Tool/仕事/権限/予算/同意を新設しない。本人一覧で選べるjobのGET-only復元と既存停止/成果linkを合成fixtureで確認し、実認証保存/停止/配備/Pro端末受入は分ける。100件上限外のexact GET再開は未実装。不明/他owner/認証なしでは要求本文を出さず代替作成しない。[限定採用](evidence/development-execution/pro-existing-job-resume-main-adoption.json)。
+
 <a id="pro-private-work-entry"></a>
 ## Proの共通私有仕事への入口
 

@@ -1,3 +1,28 @@
+<a id="pro-existing-job-resume"></a>
+## Proから保存済み仕事を開く（PRO-02・限定入口）
+
+1. **目的**: 新規作成入口と別に、既に保存したWorkJobを同じIDで共通本人画面から確認できるようにする。local board cardをserver jobと取り違えない。
+
+2. **利用体験**: Proで保存済みWorkJobのUUIDを入力→形式確認→本人の明示clickで固定avoado.siの別tabへ移る。遷移先の本人一覧に対象jobがある場合だけ、既存の資料・停止control・revision付き成果linkを表示する。自動実行/新規作成はしない。
+
+3. **責任**: ROCK/Pro09は入口の文法・固定URL・失効、既存WorkCompositionWorkspace/APIはauth/owner/revision/同意/保存/停止/成果を担当。Git10は保存/CI、Rootはsource/metadataを別検収。EXTERNALはbrowser/配信、JOINTは実認証/配備/native受入、OWNERは遷移と各既存仕事操作を明示する。
+
+4. **入出力**: lib/workflow.ts workIdと同じUUIDv1–5/variant8–bのみ受け、lowercaseへcanonical化。空白trimや任意URLは受けない。出力は `https://avoado.si/zema/compose?job=<id>` のjob一項目のみ。原文/notes/localカード/credentials/価格/権限/同意/fragmentを付加しない。Pro正式domainはavocadopro.si、miiはavocadomini.si、総合/Sky/仕事入口はavoado.siを保持する。
+
+5. **状態**: 空/不正→linkなし、正規形式確認→明示lookup link、入力/change→即失効。古いqueued clickやhref改竄の通常clickは再検査で止める。形式確認を存在/owner確認へ昇格しない。noopener/noreferrer/no-referrer/prefetch=falseを使い入口自身はfetch/window.openしない。
+
+6. **保存**: 入口は新規storage/DB/job/同意recordを保存せず、local notes/archiveも読まない。既存のowner別仕事・素材・成果・revision/CAS・応答不明復旧を再利用し、URLに本文を入れない。
+
+7. **失敗**: 不明/foreign/signedoutでは要求した私有本文を返さず、自動POST/代替作成をしない。現在の遷移先は本人一覧に含まれるjobだけを選択し、100件上限外の古いjobをexact GETで復旧する機能はない。入力/account/一覧を本人が確認する。
+
+8. **復旧**: 入力変更時はlinkを消して再確認。遷移先の接続/本人確認後は同jobの既存GETを使い、新IDの再作成・実行再送をしない。入口の退行は通常revertで戻せ、notes/archive/server保存資料を消さない。既存の新規mr-citations入口と原本archive入口を維持する。
+
+9. **承認**: UUIDはlookup意図だけで本人性/実行/保存/素材利用/費用承認ではない。遷移後の保存・停止・成果取得は既存の本人権限/現在revision/明示操作に従う。実Provider/課金/端末導入/一般公開は追加しない。
+
+10. **合格条件**: exact4 source/receiptとRoot source PASS_SCOPEDの一致、中央関連95（重複あり）、author local browserの空/正規/変更失効/不正、実common componentを合成owner/GET-onlyで通す試験を層別記録する。全verify・scanner・固定metadata別検収・Git/HEAD/main同SHA CIは別gate。[採用記録](evidence/development-execution/pro-existing-job-resume-main-adoption.json)。
+
+11. **未決定の決め方**: 古いjobのexact lookupは既存APIと一覧上限を別unitで検討し、今回へ黙って追加しない。実認証browserの保存/停止/export、配備の同source読戻し、実Pro/nativeとwholePRO02は同一対象・同意・失敗復旧を別受入する。fixture/入口の成功をそれらへ換算しない。
+
 <a id="shared-service-access-binding"></a>
 ## 共有service accessの非同期authority結合（ESIM-01/04・ROCK）
 

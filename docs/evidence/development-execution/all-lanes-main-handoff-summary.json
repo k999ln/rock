@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "Full11lane portfolio, finite ESIM01/04 host contract acceptance repair R2: source62/unchanged Billing probes16, control54/unchanged Root probes5 pass. Not enabled usable experience or a blocker for other lanes; production wiring/same-job parity is planned separately. R1 reviews requested changes and R2 host fullverify PASS; independent reviews/Git/CI remain separate. OS denied candidates unreceived; physical/provider/public/616 holds retained.",
+  "nextProductSlice": "Already-started Pro02 exact4 resume entry: independent scoped source/related95/fullverify PASS; final metadata/Git/mainCI pending. Future priority: OS (including billing/Wallet/Game/eSIM existing requirements and OS-runtime acceptance), Eve, Smith, mii. No internal ranking/all4 simultaneous start; preserve existing95, specialty ownership and nonfinancial Game independence. Other expansion outside these scopes is deferred, not OS requirements. Root front door/Git integration; do not duplicate current mii work.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -356,5 +356,98 @@
     "path": "data/development-portfolio.json",
     "scope": "All95 IDs/11lanes located; bounded evidence, not whole acceptance.",
     "previousPR250Proof": "docs/evidence/development-execution/portfolio-delivery-recovery.json#/previousPR250"
-  }
+  },
+  "proExistingJobResumeCurrent": {
+    "evidence": "docs/evidence/development-execution/pro-existing-job-resume-main-adoption.json",
+    "previousMainReadback": "docs/evidence/development-execution/portfolio-contract-main-current.json",
+    "wholeUnitAccepted": false
+  },
+  "currentAuthorMainReconciliation": {
+    "recordedAt": "2026-10-28",
+    "observedMain": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+    "scope": "Root reported latest3-turn author/main mismatch; central checked existing canonical main receipts and Git ancestry. Old pending receipts/turns remain historical, not fresh implementation tasks. No whole-lane/full95 completion or new chat notification.",
+    "lanes": [
+      {
+        "lane": "eve",
+        "acceptedPRs": [
+          247
+        ],
+        "recordedMergeSha": "a2b6dfd8bd260a8426e96320caeb05748d559def",
+        "canonicalEvidence": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
+        "canonicalEvidenceSha256": "9a084fa9578dee46b237c07067c7149cf1a95f7b86ee1b17b509f68a0722cfd4",
+        "currentMainContainsMerge": true,
+        "oldAuthorPendingIsNotCurrentIntegrationState": true,
+        "boundedScope": "EVE13 pending GET-only recovery R4; actual browser/authenticated/wholeEve gates remain.",
+        "wholeLaneAccepted": false
+      },
+      {
+        "lane": "smith",
+        "acceptedPRs": [
+          245
+        ],
+        "recordedMergeSha": "9cb9d14822fead1abfcee5080e94ddd7b1c62fb2",
+        "canonicalEvidence": "docs/evidence/development-execution/smith-session-main-current.json",
+        "canonicalEvidenceSha256": "53826c02e81739530b74bc4d1f17edc32fc352bee401180be72532fba69b70d3",
+        "currentMainContainsMerge": true,
+        "oldAuthorPendingIsNotCurrentIntegrationState": true,
+        "boundedScope": "UUID effective grammar retained plus exact catalog Tool references; real current authority/device gates remain.",
+        "wholeLaneAccepted": false
+      },
+      {
+        "lane": "esim",
+        "acceptedPRs": [
+          248
+        ],
+        "recordedMergeSha": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+        "canonicalEvidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json",
+        "canonicalEvidenceSha256": "0bf2d02962f783e97f12e3974b2b446bc2c082204cbe60f46699b12c0ba51f39",
+        "currentMainContainsMerge": true,
+        "oldAuthorPendingIsNotCurrentIntegrationState": true,
+        "boundedScope": "Attachment async input binding only, parent DB/Broker/issuer/profile/production still open.",
+        "wholeLaneAccepted": false
+      },
+      {
+        "lane": "game",
+        "acceptedPRs": [
+          242,
+          243
+        ],
+        "recordedMergeSha": "927ac79abd9466869e2096e044a62efe9136512d",
+        "canonicalEvidence": "docs/evidence/development-execution/pr242-243-main-current.json",
+        "canonicalEvidenceSha256": "2e447747ece8d7576d17e951485fa346fd6081580d24a49251a04b770c655aa8",
+        "currentMainContainsMerge": true,
+        "oldAuthorPendingIsNotCurrentIntegrationState": true,
+        "boundedScope": "Bounded diagnostics adoption and forward test-module fix; initial PR242 merge-CI failure retained, not promoted to success.",
+        "wholeLaneAccepted": false
+      },
+      {
+        "lane": "web-ops",
+        "acceptedPRs": [
+          244
+        ],
+        "recordedMergeSha": "9f2bf1460ceeba43d8da44186b3896b82412f19e",
+        "canonicalEvidence": "docs/evidence/development-execution/esim-webops-main-current.json",
+        "canonicalEvidenceSha256": "c1a3f8a24a630f905ab96b89b36470f1a1a72d796621285d72f168799e0c9f44",
+        "currentMainContainsMerge": true,
+        "oldAuthorPendingIsNotCurrentIntegrationState": true,
+        "boundedScope": "Install URL/router compatibility adoption; deployed source/body identity and publication separate.",
+        "wholeLaneAccepted": false
+      },
+      {
+        "lane": "wallet",
+        "acceptedPRs": [
+          206,
+          208
+        ],
+        "recordedMergeSha": "2854d069bdfaf42d4816d24272b0e2d71f32997c",
+        "canonicalEvidence": "docs/evidence/development-execution/wallet-process-recovery-main-merge.json",
+        "canonicalEvidenceSha256": "bc7252536f2cf6e95133f889c2de6f7ee3e6abdd195fc0a3c9648bb79e2d1432",
+        "currentMainContainsMerge": true,
+        "oldAuthorPendingIsNotCurrentIntegrationState": true,
+        "boundedScope": "Legacy SQLite reopen and later process-termination fixtures are adopted; no production/Provider/real finance acceptance.",
+        "wholeLaneAccepted": false
+      }
+    ]
+  },
+  "currentSelectionPolicy": "data/development-portfolio.json#/currentSelectionPolicy"
 }

@@ -1,3 +1,15 @@
+### OS優先に含まれる既存要件の明示訂正（2026-10-28 / G04）
+
+本人の補足で、OS優先は料金・請求/Wallet/Game/eSIMの既存要件とOS runtime接続・受入を含むと明記。これらを一律後回しにせず、既存95unitとtask/専門owner/接続・合格条件へ4workstreamを紐付ける。非金融GameはWallet完成待ちにしない。4系統はOS（上記を含む）・Eve・Smith・miiで内部順位なし。優先変更だけで実資金/実徴収/Provider/flashや個別gateを合格・実行許可へしない。Pro着手済みcloseout、Root集約/Git保存、新chatなし、616/OS通知拒否を維持する。
+
+### 本人の4系統優先を既存全体台帳へ反映（2026-10-28 / G04）
+
+Root全体窓口/Git保存統合へ集約し、OS・Eve・Smith・miiを次の新規作業の優先とする。4系統内順位なし、全4一斉起動なし、全95残件保持。着手済みPro再開入口のcloseoutを終え、その他の新規独立拡張は4系統に必要な依存以外後回し。現在mii本人作業と重複しない。古い作者captureの未統合を、既採用PR/現mainと照合する参照を6系統へ追加し、元証拠を書換えず再実装を防ぐ。製品要望/料金/許可/元95分類は変更しない。
+
+### Pro既存job再開入口の限定採用開始（2026-10-28 / PRO-02・AMC02/SIM01・ROCK）
+
+PR251/mainc3a9の全6check/4workflow・Linux3240/3238pass/0fail/2skipを閉じ、別実質batchに最小readbackを同梱。Pro source4はRoot独立PASS_SCOPED/5probeでbyte不変採用、再利用10とruntime2の旧/新main blob不変・archive prefixを保持。UUIDだけの固定job URLへ明示遷移し、現本人一覧にあるjobの確認を既存画面へ渡す。中央関連95成功。author local GUIと合成共通画面の層を分け、一覧外exact GET/実認証保存停止/配備/native/wholePRO02は未受入。全verify3245/3242pass/0fail/3hostskip・build/API1678/CSV385成功。次は固定metadataのRoot別検収→最小Git/HEAD/main同SHA CI。Root dirty/index・95分類/393/14・OS通知拒否/616は維持。
+
 ### 独立検収差戻しの最小修正R2（2026-10-28 / G04・SIM01・ROCK）
 
 R1の15file・旧59/3229試験・両reviewを不変保存。Billing P2のreadCurrent引数aliasは別コピーで閉じ、62焦点と無変更独立probe16成功。Root P2四件は既存unit/queueの非循環graph、appliesTo集合の一意完全一致、host契約repairの正確な分類/予定consumer milestone、Billing/Astraのruntime検収担当へ修正。control54・無変更Rootprobe5成功。これらのauthor replayは独立R2受入ではない。R2全verify3240/3237pass/0fail/3hostskip、build/API1678/CSV385成功。別source/control再検収→最小Git/HEAD/main同SHA CIが残る。未配線helperで他laneを停止せず、production/物理/Provider/公開・OS通知拒否・616HOLDを維持。
