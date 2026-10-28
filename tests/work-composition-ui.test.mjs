@@ -37,7 +37,7 @@ function testLockManager() {
 }
 const recoveryTestLocks = globalThis.navigator?.locks ?? testLockManager();
 
-async function harness({ search = '', initialOwner = 'A', initialJobs = [], fingerprintDelay = 0, mode = 'compose', hideList = false, exactHook = null, stored = new Map(), storageFailure = false } = {}) {
+async function harness({ search = '', initialOwner = 'A', initialJobs = [], fingerprintDelay = 0, recoveryConfirmDelay = 0, mode = 'compose', hideList = false, exactHook = null, stored = new Map(), storageFailure = false } = {}) {
   const slots = [], effects = [], inFlight = new Set(), jobs = new Map(), requests = [], listeners = new Map();
   let estimateProps;
   let cursor = 0, tree, owner = initialOwner, corruptResponse = false, loseResponse = false, exactFailure = 0, navigationProtected = false;
@@ -122,7 +122,13 @@ async function harness({ search = '', initialOwner = 'A', initialJobs = [], fing
   };
   // Handoff validation hashes the saved source before its next request too.
   const trackedHandoff = { ...handoff, validateEveTextHandoff: (...args) => track(handoff.validateEveTextHandoff(...args)) };
-  const modules = { '@/lib/eve-pending-recovery': { ...recovery, loadEvePendingRecovery: owner => recovery.loadEvePendingRecovery(owner, browserStore), saveEvePendingRecovery: record => track(recovery.saveEvePendingRecovery(record, browserStore, recoveryTestLocks)), clearEvePendingRecovery: record => track(recovery.clearEvePendingRecovery(record, browserStore, recoveryTestLocks)), prepareEvePendingRecovery: (...args) => track(recovery.prepareEvePendingRecovery(...args)) }, '@/lib/eve-text-handoff': trackedHandoff,
+  // This confirmation also hashes asynchronously between GET and clear. Track
+  // its completion rather than treating a fixed count of event-loop turns as done.
+  const trackedRecoveryConfirms = (...args) => track((async () => {
+    if (recoveryConfirmDelay) await pause(recoveryConfirmDelay);
+    return recovery.evePendingRecoveryConfirms(...args);
+  })());
+  const modules = { '@/lib/eve-pending-recovery': { ...recovery, evePendingRecoveryConfirms: trackedRecoveryConfirms, loadEvePendingRecovery: owner => recovery.loadEvePendingRecovery(owner, browserStore), saveEvePendingRecovery: record => track(recovery.saveEvePendingRecovery(record, browserStore, recoveryTestLocks)), clearEvePendingRecovery: record => track(recovery.clearEvePendingRecovery(record, browserStore, recoveryTestLocks)), prepareEvePendingRecovery: (...args) => track(recovery.prepareEvePendingRecovery(...args)) }, '@/lib/eve-text-handoff': trackedHandoff,
     // Child behavior runs in eve-text-estimate-ui; this harness owns the parent workspace.
     '@/components/eve-text-estimate': props => { estimateProps = props; return null; },
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
@@ -1110,4 +1116,19 @@ void test('EVE13: quote expiry during save wait prevents a new preparation sourc
     await held.done; await action;
     assert.equal(app.requests.filter(request => request.payload?.action === 'run').length, count);
   } finally { Date.now = originalNow; app.unmount(); }
+});
+
+void test('EVE13: delayed stop fingerprint is awaited before GET-only recovery completes', { timeout: 5000 }, async () => {
+  const stored = new Map(), app = await harness({ stored });
+  await app.click('文章サンプルを入力'); await app.click('確認して仕事を保存'); await app.consent(); await app.click('この手順を実行');
+  const original = [...app.jobs.get('A').values()][0].composition.source;
+  app.lose(); await app.click('仕事を中止');
+  const saved = [...app.jobs.get('A').values()].map(j => structuredClone(j));
+  assert.equal(saved[0].status, 'cancelled'); app.unmount();
+  const reopened = await harness({ stored, initialJobs: saved, recoveryConfirmDelay: 35 });
+  await reopened.click('同じ操作で結果を確認');
+  assert.equal(stored.size, 0);
+  assert.equal(reopened.requests.some(r => r.method !== 'GET'), false);
+  assert.equal(reopened.jobs.get('A').get(saved[0].id).composition.source, original);
+  assert.equal(reopened.find('button', 'この手順を実行').props.disabled, true); reopened.unmount();
 });

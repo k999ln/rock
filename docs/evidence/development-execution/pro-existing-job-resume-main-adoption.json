@@ -1,0 +1,108 @@
+{
+  "schema": "rockstaros.pro-existing-job-resume-main-adoption/1",
+  "baseMain": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+  "authorBase": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+  "status": "CI_FIXTURE_REPAIR_HOSTVERIFY_PASS_FINAL22_REVIEW_PENDING",
+  "unit": "PRO-02",
+  "directTaskRefs": [
+    "AMC02",
+    "SIM01"
+  ],
+  "responsibility": "ROCK Pro09 source, Git10 adoption, Root independent source and final metadata acceptance; JOINT actual authenticated/deployed/native gates; OWNER explicit navigation and existing job consent.",
+  "source4": {
+    "sites/avocado-mini/src/pages/pro/index.astro": "39a9b12b1b8f33c381e2221c39d5207c14c56766988b2036d6f9ef3e8799ad3e",
+    "sites/avocado-mini/src/pro-os.js": "e65f7d9b7258940620c78c68765434f504f6012053e5db7f280d87816686a40c",
+    "tests/pro-existing-job-resume.test.mjs": "f3e431eccf61e6aceb712f7440170d866e977c893c8a23730fb474da39baa34d",
+    "docs/evidence/development-execution/pro-existing-job-resume.json": "5c52871e52d79213ece05e139afef70b693d3497e877174c8793088920c36668"
+  },
+  "source4CopiedByteIdentically": true,
+  "authorManifestSha256": "3c020d8d984aee930cd8bc5b22744db460226db5da715629df16277ca7b63d32",
+  "independentSourceReview": {
+    "decision": "PASS_SCOPED",
+    "mustFix": 0,
+    "reviewer": "Root, not Pro source author or central metadata author",
+    "reviewSha256": "850f824fb61c28dde66b2cef5f437370c73f5ac9d33fe3d128af1757cef4d80c",
+    "independentTests": 5,
+    "scope": "Existing listed own-job lookup entry only; not actual authenticated E2E. Root inspected source4/reuse/prefix and author browser records separately."
+  },
+  "compatibility": {
+    "runtime2BaseBlobsMatchLatestMain": true,
+    "protected10HashesMatchLatestMainAndAuthor": true,
+    "originalArchiveControllerPrefixUnchanged": true,
+    "previousNewJobAndArchiveEntriesRetained": true,
+    "workflowApiDbAuthConsentPriceUnchanged": true,
+    "onlyJobIdTransferred": true
+  },
+  "verification": {
+    "related": {
+      "tests": 95,
+      "pass": 95,
+      "fail": 0,
+      "skip": 0,
+      "command": "node --experimental-strip-types --test tests/pro-existing-job-resume.test.mjs tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/work-composition-artifact-route.test.mjs sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "logSha256": "8982d33d30905cd94a783ef9cb7e106d282b31b7ba8a9b0688bb6e2eda957689"
+    },
+    "finalMetadataReview": "PENDING_ROOT_REPAIR_MANIFEST",
+    "configuredLint": "PASS",
+    "designCheck": "PASS",
+    "missionCheck": "PASS",
+    "initialScan": "16 payload0 / syntheticcanary1; final18 scan recorded separately",
+    "preRepairHostFullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3245,
+        "pass": 3242,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "117e959024287a865011a7dbb0abb3f2b363dc234ce8ed27de1d249783eeacca",
+      "qualification": "All pre-fullverify16 files unchanged during execution. Subsequent changes are evidence/progress/author-vs-main reconciliation and new explicit four-lane selection policy only; final metadata checks separate. No source/test changed after fullverify.",
+      "subsequentExplicitPriorityClarification": "Metadata only: OS includes existing billing/Wallet/Game/eSIM; code/test source4 unchanged. Final metadata checks separate."
+    },
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3246,
+        "pass": 3243,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "a5f22ea254346bb58ceb34a245c7caebd4f845fa421da94e60ba25235760e3a0",
+      "scope": "All repair-pre-fullverify22 bytes unchanged through execution; final evidence/progress-only text updated afterward, then metadata checks separately. Host only, no independent review/remote CI/physical acceptance substituted."
+    }
+  },
+  "executionLayers": {
+    "authorLocalBrowser": "Actual local Pro page blank/valid uppercase/input change/invalid controls observed; external link not clicked; Root reviewed local evidence, central does not claim a new browser run.",
+    "commonComponent": "Actual existing WorkCompositionWorkspace/useOwnerMemoryState under synthetic hooks/GET-only owner responses; current consent false, no POST, no replacement.",
+    "routes": "Existing route/SQLite fixtures in related95; not authenticated browser-to-server E2E."
+  },
+  "limits": [
+    "Only jobs in the current authenticated returned list can be selected; older-than-list exact GET recovery is not implemented.",
+    "ID grammar check is not existence/ownership proof. Unknown/foreign/signedout examples disclose no requested body and create no replacement.",
+    "Actual authenticated browser save/stop/artifact export, deployed cross-domain entry, native/Pro device and wholePRO02 remain unaccepted.",
+    "No new provider/model/charge/public deployment; no permission is transferred with the job ID."
+  ],
+  "restore": "Normal Git revert of the Pro markup/controller/test changes; preserve existing browser notes/archive/server jobs and consent. No DB migration or data reset.",
+  "previousMainReadback": "docs/evidence/development-execution/portfolio-contract-main-current.json",
+  "Git": {
+    "saved": false,
+    "headCI": "NOT_STARTED",
+    "mainIntegrated": false,
+    "mergeCI": "NOT_STARTED"
+  },
+  "wholePRO02Accepted": false,
+  "physicalAccepted": false,
+  "actualAuthenticatedE2EAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "selectionPolicy": "data/development-portfolio.json#/currentSelectionPolicy",
+  "selectionScope": "Already-started Pro closeout exception. Future focus is OS including billing/Wallet/Game/eSIM requirements, Eve/Smith/mii, without internal ranking or blanket deferral of OS requirement workstreams.",
+  "revision": "CI_FIXTURE_REPAIR",
+  "ciAcceptanceGateRepair": "docs/evidence/development-execution/eve13-confirmation-fixture.json"
+}

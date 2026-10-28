@@ -1,0 +1,236 @@
+{
+  "schema": "rockstaros.pro-existing-job-resume/1",
+  "recordedAt": "2026-10-28T12:12:22.211214+00:00",
+  "unit": "PRO-02",
+  "directTaskRefs": [
+    "AMC02",
+    "SIM01"
+  ],
+  "contextualTaskRefs": [
+    "MAT16",
+    "B05",
+    "WEB13"
+  ],
+  "phaseGate": "B05-COMPARE",
+  "responsibility": "ROCK / Pro09 and Web05; Root independent acceptance; central Git10 owns fullverify/design/progress/Git/main/CI",
+  "baseMain": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+  "lastObservedGitHubMain": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+  "status": "SOURCE_PACKET_READY_FOR_INDEPENDENT_REVIEW",
+  "completedExperience": "On Pro, enter the UUID from a previously saved WorkJob, check it, and explicitly open the generated fixed general-domain job lookup. The existing signed-in workspace selects a matching owned job in its returned list, showing saved source, existing stop control and revision-bound artifact download. This does not resume execution automatically.",
+  "existingSourceFinding": "No separate pro-work-entry helper exists in this main. Existing Pro browser controller is sites/avocado-mini/src/pro-os.js; existing PR246 static mr-citations new-work entry is retained, as is the private archive entry.",
+  "inputContract": "Mirror the current lib/workflow.ts workId UUID versions1–5/variant8–b grammar and lowercase canonicalization. No whitespace trimming or arbitrary URL parsing. Tests exercise parity with the actual workId validator.",
+  "lookupContract": "Only https://avoado.si/zema/compose?job=<canonical-id>, isolated user-operated new tab, noopener/noreferrer/no-referrer/prefetch=false. No extra query, fragment, body, notes, local-card storage, account, credential, consent, price or authority. Link has no href and is hidden until locally checked; edits/change reset it and stale or tampered normal clicks are refused.",
+  "sourceFiles": {
+    "sites/avocado-mini/src/pages/pro/index.astro": {
+      "sha256": "39a9b12b1b8f33c381e2221c39d5207c14c56766988b2036d6f9ef3e8799ad3e",
+      "bytes": 11056
+    },
+    "sites/avocado-mini/src/pro-os.js": {
+      "sha256": "e65f7d9b7258940620c78c68765434f504f6012053e5db7f280d87816686a40c",
+      "bytes": 5357
+    },
+    "tests/pro-existing-job-resume.test.mjs": {
+      "sha256": "f3e431eccf61e6aceb712f7440170d866e977c893c8a23730fb474da39baa34d",
+      "bytes": 13740
+    }
+  },
+  "unchangedReusedFiles": {
+    "lib/workflow.ts": "3b7c2776b789b80645fdfa9d50afc5c9ddfdad9d532be3dcaa985a163989c7e5",
+    "components/work-composition-workspace.tsx": "950864046fb7673bb3b5ced72500118bd0bf22695a66590dbd8bebb6bccfc4c5",
+    "components/use-owner-memory-state.ts": "dae8486a3a3fd5c34e7258f58659d6b02abc2eebe77302276b79cc2f085f039c",
+    "lib/work-job-view.ts": "35b07adfa3695fba9465ccef7eeb5c3d95b39213e4f9c9b2c76327a512348829",
+    "lib/work-composition-view.ts": "b27a90cdbad38e686993d0666b97d805264d9f5fcce7abf2c5ba5f7da8022d39",
+    "app/api/work-jobs/route.ts": "9f8f91c3652fa24c0275a8a9fa2ba1bbdf601f1b169b18067743454b9e0a731d",
+    "app/api/work-jobs/composition/route.ts": "16ef47aac38afdd67fe5295fe1c7344fc231b52995f7362f088e4fa1a99323ab",
+    "app/api/work-jobs/composition/artifact/route.ts": "62d2ee2abd6d514b572110d8a014ac442ac2397d056f43c5e8be8a171f7e3e7e",
+    "sites/avocado-mini/src/pro-local-import.mjs": "7be478ae926a8d1f2e30b4d11f93093fb649029818d0b06effc57a1d06419220",
+    "components/pro-account-import.tsx": "c1647c6d1dc8a76ef925236f980beddb3c40b7ee9feca4f270fec37eb29e2a44"
+  },
+  "archiveControllerOriginalPrefixByteIdentical": true,
+  "validation": {
+    "oldSource": {
+      "tests": 5,
+      "pass": 0,
+      "fail": 5,
+      "logSha256": "0101417dfb3f2a08f347b232b6612368986beeaf3d4e29dadbb2aad8ed963f8c",
+      "qualification": "All five fail at the same absent resume controls; not five independent vulnerabilities."
+    },
+    "related": {
+      "command": "node --experimental-strip-types --test tests/pro-existing-job-resume.test.mjs tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/work-composition-artifact-route.test.mjs sites/avocado-mini/tests/pro-local-import.test.mjs",
+      "tests": 95,
+      "pass": 95,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "6226d1be1514c470b9362e2b116feb1facfae122d76ce6b91b8801876bfa375e"
+    },
+    "site": {
+      "command": "npm run test:avocado-mini-site",
+      "buildExit": 0,
+      "tests": 45,
+      "pass": 45,
+      "fail": 0,
+      "logSha256": "50cfad2ddecbe9641c473bc7609fb84179742dee91856a3f6ecd41da861b1530",
+      "qualification": "Seven local-import cases overlap related suite; do not sum."
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exit": 0,
+      "logSha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "lint": {
+      "command": "oxlint sites/avocado-mini/src/pro-os.js tests/pro-existing-job-resume.test.mjs",
+      "exit": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "buildControls": {
+      "htmlSha256": "8a60afd7c03b6299af3503f3a59b6c9f953a59365c877e0897a005540e2a8e63",
+      "controls": {
+        "data-pro-resume-id": {
+          "tag": "input",
+          "attrs": {
+            "id": "pro-existing-job-id",
+            "type": "text",
+            "maxlength": "36",
+            "autocomplete": "off",
+            "spellcheck": "false",
+            "aria-describedby": "pro-existing-job-status",
+            "data-pro-resume-id": null
+          }
+        },
+        "data-pro-resume-prepare": {
+          "tag": "button",
+          "attrs": {
+            "type": "button",
+            "data-pro-resume-prepare": null
+          }
+        },
+        "data-pro-resume-link": {
+          "tag": "a",
+          "attrs": {
+            "target": "_blank",
+            "rel": "noopener noreferrer",
+            "referrerpolicy": "no-referrer",
+            "data-astro-prefetch": "false",
+            "data-pro-resume-link": null,
+            "hidden": null
+          }
+        },
+        "data-pro-resume-status": {
+          "tag": "p",
+          "attrs": {
+            "id": "pro-existing-job-status",
+            "role": "status",
+            "aria-live": "polite",
+            "data-pro-resume-status": null
+          }
+        }
+      },
+      "existingEntries": [
+        "https://avoado.si/zema/compose?tool=mr-citations",
+        "https://avoado.si/account/import/pro"
+      ]
+    },
+    "diffWhitespace": 0,
+    "dependencyRootLockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    "dependencySiteLockSha256": "06c9e2ded0496b2c9fd6f6f263857e3d786da705fa42255080ee359f0fc04937",
+    "fullVerify": "NOT_RUN_AUTHOR; central integrated candidate owns it"
+  },
+  "modeledFixtureLayer": {
+    "proController": "Actual shipped pro-os.js against synthetic input/link events parsed from real Pro markup; every fetch/open/storage access fails the test.",
+    "commonComponent": "Actual WorkCompositionWorkspace and useOwnerMemoryState compiled with synthetic hooks, auth and GET-only owner-bound responses; real workflow/executor creates synthetic stored job. Passive-recovery lookup modeled as absent, no recovery/storage mutation.",
+    "existingRouteRegression": "Existing actual composition/artifact route SQLite fixtures run separately in related suite, not a new real browser-to-authenticated-server end-to-end claim.",
+    "verifiedCases": [
+      "Blank/invalid local-card IDs, arbitrary URL, extra query/fragment, body/owner/consent/budget injection refused",
+      "Valid UUID1–5 and uppercase canonicalization match workId; input edit/change and queued/tampered clicks invalidate lookup",
+      "Owned saved job source, existing stop control and revision-bound artifact link are available after lookup; source consent remains false; all lookup requests GET",
+      "Unknown ID, another authenticated owner and signed-out fixtures show no requested private body and issue no non-GET request"
+    ]
+  },
+  "actualLocalBrowserLayer": {
+    "browser": "ChatGPT in-app browser id3 / CUA",
+    "url": "http://127.0.0.1:4397/pro/",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "observed": [
+      "Empty Check button rejects and no resume link appears",
+      "Uppercase synthetic UUID and Check button expose fixed lowercase job-only link",
+      "Changing input immediately removes prior link",
+      "Malformed query-like input is rejected with no resume link"
+    ],
+    "externalLinkClicked": false,
+    "authentication": false,
+    "actualJobLoadedInBrowser": false,
+    "screenshotsAndAX": {
+      "local-only/pro-resume-empty-ax.txt": {
+        "sha256": "41f6e1967479c418c65719695e66c46ca1c1328974134add966268d8c699f14f",
+        "bytes": 534,
+        "gitCandidate": false
+      },
+      "local-only/pro-resume-valid-ax.txt": {
+        "sha256": "2b6041423ed936a8d255aeb9120d1cb3ca927b3235d17132a923a5b48403e562",
+        "bytes": 756,
+        "gitCandidate": false
+      },
+      "local-only/pro-resume-changed-ax.txt": {
+        "sha256": "c81274fb1c478b88fbee01a8ab3b062626dafd260bfc2df7432fb1c75eb78511",
+        "bytes": 594,
+        "gitCandidate": false
+      },
+      "local-only/pro-resume-invalid-ax.txt": {
+        "sha256": "1a7c22ef5c7056bf29bf7e27ba5f925e4ca126f19b3c11d1f0ef9646196f3964",
+        "bytes": 441,
+        "gitCandidate": false
+      },
+      "local-only/pro-resume-valid.png": {
+        "sha256": "1d705921a8241c7672e89406863800c45c8526d7f08d1b38b32f2eab9391f756",
+        "bytes": 78822,
+        "gitCandidate": false
+      },
+      "local-only/pro-resume-invalid.png": {
+        "sha256": "a8a486cfef4056753521632bd5805a4c63f82ac1afba6d3138a5510621f9334f",
+        "bytes": 73616,
+        "gitCandidate": false
+      }
+    },
+    "createdTabClosed": true,
+    "dedicatedAstroServerStopped": true
+  },
+  "limitations": [
+    "Pro validates lookup syntax only; existence/ownership/authentication and operations remain solely on the existing account host.",
+    "Default compose mode selects a job only if present in its authenticated returned list. It does not perform an exact old-job GET for jobs outside that list; no 100-plus-list recovery or server existence preflight is implemented here.",
+    "An unknown/unlisted ID leaves the existing workspace unselected; opening performs no automatic create/replacement. Any later new job action is a separate explicit existing UI action.",
+    "A local prototype/card UUID can be syntactically valid but is never claimed to be a server job by Pro; it still undergoes account-side lookup.",
+    "Actual authenticated browser save/stop/download, deployed cross-domain handoff, native Pro/device/whole PRO02 are not accepted."
+  ],
+  "pending": [
+    "Root independent source/UI-boundary review",
+    "Central design/index/progress synchronization and normal fullverify/scanner",
+    "Central limited Git save / new HEAD CI / normal latest-main integration / merge-SHA CI",
+    "Actual authenticated/deployed/native Pro gates"
+  ],
+  "centralDocumentationProposal": {
+    "authority": "Extend existing docs/rockstaros-complete-design.md#pro-private-work-entry and corresponding sky-tools detail/index, no new Tool.",
+    "progress": "Finite PRO02 lookup entry overlay only; preserve wholeUnitAccepted false, tasks393/phase14 and 95core.",
+    "contract": "New creation link remains distinct from saved-job lookup. Explicit UUID is lookup-only, canonical fixed origin/job query, no private text/authorization transfer or automatic requests. Destination owns auth/owner/revision/consent/stop/artifact checks, and current list-only lookup limitation is explicit."
+  },
+  "setupIncident": "Previously referenced dependency worktree was removed; initial test could not resolve TypeScript. Used an existing same-lock dependency tree without editing its packages or lock. No product source fix required.",
+  "rootProtection": {
+    "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "indexSha256": "181a20c14e06119d3a09bda219de507d2807053cb5d71f1daa34c71d73fe80b2",
+    "unchanged": true,
+    "RootSitesDiffersFromMain": true
+  },
+  "sourceGitOrGlobalMetadataEditedOutsideOwnedPaths": false,
+  "wholePRO02Accepted": false,
+  "actualAccountOperations": 0,
+  "physicalOperations": 0,
+  "additionalModelInference": 0,
+  "paidApiCalls": 0,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null
+}

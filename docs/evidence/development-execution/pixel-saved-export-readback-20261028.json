@@ -1,0 +1,98 @@
+{
+  "schema": "rockstaros.pixel-saved-export-readback-only/1",
+  "recordedAt": "2026-10-28T13:20:00.153964+00:00",
+  "status": "physical_readback_passed_pending_independent_review",
+  "scope": "Existing saved official export bytes and existing native files/connection/service preservation across the 2026-10-28 read-only batch.",
+  "target": {
+    "model": "Pixel 10",
+    "sku": "GL066",
+    "codename": "frankel",
+    "ownerProfileCurrent": true,
+    "ownerUnlockedObserved": true,
+    "serialStored": false
+  },
+  "results": {
+    "savedOfficialExport": {
+      "pcPresent": true,
+      "pixelPresent": true,
+      "bytesEach": 770,
+      "sameSha256": "18c6abab6a8f27a09c5a90fcff3e812db141dc7d1f7e41d9c87ca7c273bf6ca0",
+      "matchesPreviouslyAcceptedExport": true,
+      "pixelUtf8Valid": true,
+      "newExportIssued": false,
+      "fileBytesAreNotBodyBytes": true
+    },
+    "native": {
+      "shellApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
+      "matchesPreviouslyAcceptedShellApk": true,
+      "protectedPresentFileHashesUnchanged": 4,
+      "previouslyAbsentFileRemainsAbsent": 1,
+      "allFiveHashOrAbsenceChecksMatchHistory": true,
+      "beforeAfterApkAndProtectedHashesEqual": true
+    },
+    "connections": {
+      "forwardBefore": 0,
+      "forwardAfter": 0,
+      "reverseBefore": 0,
+      "reverseAfter": 0,
+      "connectionMappingDigestsEqual": true,
+      "shellServicesBefore": 0,
+      "shellServicesAfter": 0,
+      "shellServiceSetEqual": true
+    }
+  },
+  "method": "Read existing files with approved ADB only, hash in memory/on-device, compare PC and Pixel actual bytes and before/after native hashes. No new export, job, inference or repair.",
+  "limitations": [
+    "Guest Linux manifest, live manager/job/model/agent inventory and model weights were not read; old counts are not current observations.",
+    "UI reload, content quality, background execution, live stop/recovery, full OS/P02 and billing/Wallet/Game/eSIM end-to-end remain unaccepted.",
+    "CUA rejected host Terminal access; no alternate Terminal control or new screen action was used.",
+    "Readback of a saved file does not establish a new runtime or source implementation acceptance."
+  ],
+  "operations": {
+    "additionalInference": 0,
+    "newJobOrReplay": 0,
+    "newExportDownload": 0,
+    "deviceDataOrSettingsChanges": 0,
+    "serviceOrForwardAdded": 0,
+    "installRestartUnlockFlash": 0,
+    "permissionKeyGrantChanges": 0,
+    "providerCallsCharges": 0,
+    "newModelRuntimeDownload": 0,
+    "sourceChanges": 0,
+    "rawBodyCredentialsSerialPublished": false
+  },
+  "privateEvidence": [
+    {
+      "name": "connection-readback.json",
+      "sha256": "8740a03ce9a235dd4b891b949af19692b2a0a625019453bc86cf0efdf549ce52",
+      "bytes": 551,
+      "includedInGit": false
+    },
+    {
+      "name": "native-before.json",
+      "sha256": "e4809a87e2b6cfadd3dbc27c3d4b24ec2d7a0bf35cd4bb356a9aa4d7dd4680dc",
+      "bytes": 1295,
+      "includedInGit": false
+    },
+    {
+      "name": "existing-export-readback.json",
+      "sha256": "689be8466a16fc196bd1c82e308da2df2cb146219e10b8960808b30abf884cec",
+      "bytes": 965,
+      "includedInGit": false
+    },
+    {
+      "name": "native-after.json",
+      "sha256": "d56fcec967918cf79f8ba1f9a9c855ccce13af52dcc41da7725639137473bcbc",
+      "bytes": 1280,
+      "includedInGit": false
+    }
+  ],
+  "privateEvidenceCount": 4,
+  "independentReview": "pending Root",
+  "gitSaved": false,
+  "mainIntegrated": false,
+  "wholeUnitAccepted": false,
+  "P02Complete": false,
+  "wholeOSAccepted": false,
+  "publicDeployment": false
+}

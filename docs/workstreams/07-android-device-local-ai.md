@@ -1,3 +1,7 @@
+## Pixelの既存保存exportの読戻しだけの受入（2026-10-28）
+
+唯一operatorのread-only batchで、PC/Pixelの既存770byte exportが同hash/過去一致、APK/protected4+欠落1とforward/service前後不変を確認。Rootの別証拠検収はPASS_SCOPED/整合hash確認で、物理操作の再実施ではない。[public要約1件](../evidence/development-execution/pixel-saved-export-readback-20261028.json)のみを次の実質batch候補へbyte不変同梱し、private4proofはGit担当未取得/非転載。元pendingはcaptureで別受入参照を使う。新export/job/推論/設定変更/flashなし、UIはCUA Terminal拒否で未実施。guest/model等の旧件数を現在観測とせず、wholeOS/P02/品質/実行停止復旧/料金WalletGameeSIM縦断の合格へ換算しない。旧OS08拒否候補の保留は別に維持する。
+
 ## Pixel診断のmain候補とMini r2（OS10 / OS-01 / P02）
 
 主担当07 Android、Gitは候補/共有metadata/Gitの単独writer。ROCKは固定worker/launcher親寿命・任意診断、EXTERNALはkernel、JOINTは同一候補Linux/Pixel、OWNERは導入/接続/費用。6runtime/test＋bounded Python CI stepを移植、manager/URL/model/prepare/build/service hash固定。[候補証拠](../evidence/development-execution/pixel-main-diagnostics-adoption.json)にコマンド/結果/初回host試験反例/保全hash、[OS契約](../rockstaros-complete-design.md#pixel-main-worker-diagnostics)に11項目を記録。次はexact候補の独立review、CI Linux親終了4case、fixed full verifyのGit記録。host skipをLinux成功に換算しない。新serverは旧実機packageと別artifact。cache/native account/背景/P02全体/full OS未受入。Mini r2はaccepted4hash/旧12保持の別scopeで、[review要約](../evidence/development-execution/mini-02-finite-cone-review-summary.json)を参照。実光学/MINI02全体未受入。原計画/元reviewはoperator workspaceのdigest参照、raw資料/ログをコピーしない。

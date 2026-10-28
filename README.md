@@ -1,3 +1,7 @@
+開発の全体窓口はRoot、保存・統合はGitへ集約します。次の新規作業はOS（料金・請求、Wallet、Game、eSIMの既存要件を含む）・Eve・Smith・miiを優先し、既存95unitの残件を保持します。着手済みProは検収・保存・統合まで閉じ、OSに含まれる上記要件を一律後回しにせず、専門ownerと共通契約を再利用します。非金融GameはWallet完成待ちにしません。その他の範囲外の独立拡張は後回しです。[現行運用](docs/workstreams/10-git-ci-operations.md#four-lane-priority-20261028)。
+
+Proの保存済み仕事は、WorkJob IDを確認して共通の本人画面へ開く[限定再開入口](docs/rockstaros-complete-design.md#pro-existing-job-resume)を用意しています。形式確認は存在・所有・実行同意の確認ではなく、現在の本人一覧外の古い仕事をexact GETで取得する機能は未実装です。
+
 共有service accessの開発・検証は[全11lane portfolio](data/development-portfolio.json)と[Git運用](docs/workstreams/10-git-ci-operations.md#portfolio-delivery-20261028)を入口にします。eSIM/Pixelの回線・本人利用権・OS/client状態は独立し、現在のhost検査を実機/本番の合格へ換算しません。
 
 PR247でmain統合・同SHA CI確認済みの共通テキスト仕事とEve準備仕事では、応答不明時に同じbrowserで開き直して保存済みの同じ仕事・操作IDを確認できます。未保存原稿や同意は復元しません。未確認中は自動再送せず、Web Locksまたは保存機能が使えない環境では新規操作を止めます。[復旧条件](docs/rockstaros-complete-design.md#eve13-pending-recovery)。実認証browser・実機・公開側の受入は別です。
