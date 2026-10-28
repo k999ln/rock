@@ -32,7 +32,7 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   let savedJob = structuredClone(initialJob), displayedJob = structuredClone(initialJob), scope = owner, current = true;
   let beginGate = null, beginFailure = '', staleAfterBegin = false, changedAgent = false, changedEntitlementOwner = false;
   const capability = { token: 'x'.repeat(43), expiresAt: Date.now() + 60_000 };
-  const events = [], slots = { parent: [], child: [] }; let cursor = 0, component = 'parent', tree;
+  const events = [], slots = { parent: [], child: [] }; let cursor = 0, component = 'parent', tree, running = false;
   const react = {
     useState(initial) { const list = slots[component], i = cursor++; if (!list[i]) { const item = { value: typeof initial === 'function' ? initial() : initial }; item.set = v => { item.value = typeof v === 'function' ? v(item.value) : v; }; list[i] = item; } return [list[i].value, list[i].set]; },
     useRef(initial) { const list = slots[component], i = cursor++; return list[i] ??= { current: initial }; },
@@ -122,7 +122,7 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   function render() {
     component = 'parent'; cursor = 0;
     const outer = Parent({ server, toolName: 'op', task: '作業', packageKey, manifestSha256, job: displayedJob, ownerScope: owner,
-      agentReference: { id: agent.id, revision: 1 }, isCurrent: () => current, onJob: j => { displayedJob = j; }, onRunningChange: () => {} });
+      agentReference: { id: agent.id, revision: 1 }, isCurrent: () => current, onJob: j => { displayedJob = j; }, onRunningChange: value => { running = value; } });
     function expand(node) {
       if (Array.isArray(node)) return node.map(expand);
       if (!node || typeof node !== 'object') return node;
@@ -134,10 +134,26 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   function nodes(node, out = []) { if (Array.isArray(node)) node.forEach(n => nodes(n, out)); else if (node && typeof node === 'object') { out.push(node); nodes(node.props?.children, out); } return out; }
   const text = node => typeof node === 'string' ? node : Array.isArray(node) ? node.map(text).join('') : node?.props ? text(node.props.children) : '';
   const button = label => nodes(tree).find(n => n.type === 'button' && text(n).includes(label));
-  async function flush() { for (let i = 0; i < 8; i++) { await new Promise(resolve => setImmediate(resolve)); render(); } }
-  async function click(label) { const node = button(label); assert.ok(node && !node.props.disabled, label); node.props.onClick(); render(); await flush(); }
+  async function waitFor(condition, description) {
+    const deadline = Date.now() + 5000;
+    while (Date.now() < deadline) {
+      render();
+      if (condition()) return;
+      await new Promise(resolve => setTimeout(resolve, 1));
+    }
+    assert.fail(`Timed out waiting for ${description}; events: ${events.map(e => e.kind).join(', ')}; UI: ${text(tree)}`);
+  }
+  async function flush() {
+    await waitFor(() => !running && (!events.some(e => e.kind === 'observe') || text(tree).includes('同じ仕事に保存しました')), 'execution and observation to settle');
+  }
+  async function click(label) {
+    const node = button(label); assert.ok(node && !node.props.disabled, label); node.props.onClick(); render();
+    if (label === '実行内容を確認') await waitFor(() => Boolean(button('内容を承認して実行')), 'approval');
+    else if (beginGate) await waitFor(() => events.some(e => e.kind === 'begin'), 'paused begin');
+    else await flush();
+  }
   render();
-  return { events, click, flush, render, button, text: () => text(tree), pauseBegin() { return beginGate = deferred(); },
+  return { events, click, flush, render, button, waitForBegin: () => waitFor(() => events.some(e => e.kind === 'begin'), 'paused begin'), text: () => text(tree), pauseBegin() { return beginGate = deferred(); },
     failBegin(mode) { beginFailure = mode; }, switchOwner() { scope = 'owner-v1:' + 'c'.repeat(64); }, changeAgent() { changedAgent = true; }, switchEntitlementOwner() { changedEntitlementOwner = true; },
     changeJobRevision() { savedJob = { ...savedJob, revision: savedJob.revision + 1 }; },
     revokeAfterBegin() { staleAfterBegin = true; },
@@ -194,7 +210,7 @@ void test('editing arguments revokes approval and duplicate click cannot produce
   const h = harness(); await h.click('実行内容を確認'); h.changeInput('{"text":"changed"}');
   assert.equal(h.button('内容を承認して実行'), undefined);
   await h.click('実行内容を確認'); const gate = h.pauseBegin();
-  const button = h.button('内容を承認して実行'); button.props.onClick(); button.props.onClick(); h.render(); await h.flush();
+  const button = h.button('内容を承認して実行'); button.props.onClick(); button.props.onClick(); h.render(); await h.waitForBegin();
   assert.deepEqual(h.events.map(e => e.kind), ['prepare', 'prepare', 'begin']);
   gate.resolve(); await h.flush(); assert.equal(h.events.filter(e => e.kind === 'execute').length, 1);
   assert.equal(h.events.find(e => e.kind === 'execute').args.text, 'changed');

@@ -1236,3 +1236,5 @@ AMC02主担当、G04連携。Jenniferを利用者に見える唯一の統括窓�
 ## 未統合runtimeの整理
 
 G04 / ROCK。main 8a95ee6f起点の専用cloneでEve履歴・Linux/service・成果持出しとadapterを現行設計へ統合中。共有dirty685件と途中96変更をGit外へ保全。root0030〜0032とmain Site0026はadditive。旧UI/生成物/重複migrationを除き、現行mainの権限・料金・復旧修正を維持する。全verify・同一SHA CI・main統合の結果は冒頭と統合台帳へ記録済み。公開・実機・実課金は別gate。
+
+PR #254の初回Linux CIは3355件中3346成功・4失敗・5skip。UI fixtureの固定8回待ちがworker-pool hash完了を待たない競合を、最大5秒の条件待ちへ修正した。既存のowner・停止・再送assertionは維持し、作者UI58/58・16並列実行と独立10/10が成功。新HEADとmain同SHA CIは未確認として保持する。

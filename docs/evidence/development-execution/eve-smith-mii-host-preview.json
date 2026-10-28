@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.eve-smith-mii-host-preview-evidence/1",
   "baseMain": "2ce2820185e48cd15b0d8c26a1f5c0ea91757476",
-  "state": "verify_and_scoped_independent_review_pass_git_pending",
+  "state": "reviewed_candidate_with_test_wait_repair_new_head_ci_pending",
   "scope": "isolated loopback local-preview, synthetic owner and reviewed Package fixtures, deterministic SDK tools, software mii input",
   "tests": [
     {
@@ -20,10 +20,10 @@
     "reviewedContentSha256": "4d3071a0e7fbe325fd8150407d73f4094bfee2c1dc0a07fcb4f9007c0cfb2526",
     "hashMethod": "git ls-files -co --exclude-standard -z | sort -z | xargs -0 shasum -a 256 | shasum -a 256; before evidence update",
     "tests": "isolated Chrome 2 roles/2 schemas, real Connector and cancel/replay, package and simulated mii persistence: 14/14; owner/CAS/stop/results/mii: 86/86",
-    "note": "Final candidate independently reviewed before this evidence/status update; source 62 hashes were unchanged and match this manifest.",
+    "note": "Original source review covers prior source62; ciRepair records independently reviewed test-only change. Remaining61 source hashes unchanged.",
     "fullVerifyReexecutedByReviewer": false
   },
-  "git": "Candidate has not yet been saved, merged or checked on main.",
+  "git": "PR #254 prior HEAD 2d5c4765689a84ac2c12e69ed9bf1df87f1eedbb is saved and pushed; its verify failed. This test-wait repair candidate is not yet committed or pushed; its new HEAD CI, main merge and merge SHA CI are not started.",
   "limits": [
     "normal account and eSIM dispatch authority not implemented",
     "Tool result is client-observed and unverified",
@@ -143,7 +143,7 @@
     },
     {
       "path": "tests/agent-tool-job-runner-ui.test.mjs",
-      "sha256": "503434ef139ff91ddf8f93eece8fa49342426e565b5ba62ebe801a7f1897298d"
+      "sha256": "b4770c092b06e386a9f39d5e79af45c1e0db945eab841672dab3513f6c5b5bd8"
     },
     {
       "path": "tests/esim-cloud-recovery.test.mjs",
@@ -288,10 +288,30 @@
     "baselineCheck": "pass",
     "missionCheck": "pass",
     "projectUpdate": "pass",
-    "fullVerify": "pass: OpenSSL 3.6.3; 3351 passed, 0 failed, 4 skipped in main Node suite; remaining verify stages passed",
-    "headCi": "not_started",
+    "fullVerify": "Prior pre-repair host candidate: OpenSSL3.6.3;3351passed0failed4skipped;remaining verify stages passed. Repair host acceptance is targeted only; new HEAD full CI pending.",
+    "headCi": {
+      "priorSavedHead": "2d5c4765689a84ac2c12e69ed9bf1df87f1eedbb",
+      "priorResult": "failed;3346passed4failed5skipped/3355",
+      "repairCandidate": "not yet committed/pushed; new HEAD CI not started"
+    },
     "mainMerge": "not_started",
     "mergeCi": "not_started",
     "fullVerifyCommand": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify"
+  },
+  "ciRepair": {
+    "priorHead": "2d5c4765689a84ac2c12e69ed9bf1df87f1eedbb",
+    "priorHeadResult": {
+      "tests": 3355,
+      "pass": 3346,
+      "fail": 4,
+      "skip": 5
+    },
+    "failureLogSha256": "384a7970ba005e4935d7b65d9c1f766a42e2f63f15a33d2104db3613faa6d4d4",
+    "cause": "UI fixture fixed8 event-loop turns did not wait for worker-pool hashing on Linux.",
+    "change": "Test-only bounded5second condition wait for approval, begin and saved observation; existing assertions unchanged.",
+    "sourcePath": "tests/agent-tool-job-runner-ui.test.mjs",
+    "sourceSha256": "b4770c092b06e386a9f39d5e79af45c1e0db945eab841672dab3513f6c5b5bd8",
+    "independentReview": "PASS10/10; author UI58/58 and16 concurrent runs",
+    "newHeadCI": "pending; not promoted from host acceptance"
   }
 }
