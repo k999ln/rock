@@ -1,0 +1,107 @@
+{
+  "schema": "rockstaros.eve13-confirmation-fixture/1",
+  "units": [
+    "EVE-13",
+    "PRO-02"
+  ],
+  "role": "Required shared acceptance-gate test synchronization repair, not a product runtime change",
+  "baseMain": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+  "failedHead": "6a31424aff14fa64b8125eecbc938d0428ac6377",
+  "pr": 252,
+  "failedHeadCI": {
+    "rootNode": {
+      "tests": 3245,
+      "pass": 3242,
+      "fail": 1,
+      "skip": 2
+    },
+    "failedTest": "EVE13: stop acknowledgement loss restores matching command without rerunning or erasing materials",
+    "assertion": "stored.size expected0, actual1 at work-composition-ui.test.mjs:971",
+    "logSha256": "cea055b82ee072571839dbd2fcebce4ba0a9daa90bbdd37df26be563838fdc3e",
+    "workflowAndChecksCapture": "Original first-attempt logs/checks/run records and exact18 files preserved Git-outside; original HEAD remains in normal Git history."
+  },
+  "cause": "evePendingRecoveryConfirms performs async fingerprinting between GET and clear. The fixture spread the real async helper into the component without tracking its returned promise. Twelve event-loop turns could finish with no tracked requests while confirmation was still running, before the tracked clear started.",
+  "proRelationship": "Existing test, EVE component/recovery helper/workflow blobs match baseMain. Pro adds separate page/controller/test work, not a code change to this EVE recovery path. Whether extra suite load affects scheduling is unmeasured; no production defect or Pro runtime causation is claimed.",
+  "controlledEvidence": {
+    "private35msOldProbe": "same existing assertion fails1!=0 when confirmation is delayed35ms and untracked; tracking that promise passes",
+    "newPermanentRegressionOldHarnessComparison": "Author copied same permanent test/assertions with import paths only redirected and removed tracking around the same35ms producer:1test/0pass/1fail at stored.size.",
+    "newPermanentRegressionNewHarness": "Same delayed producer with tracking passes; related96/96 pass.",
+    "oldNegativeLogSha256": "1380e0347b82cd2afe5d57efb4609663af83dd357942ebd01f0705bebf0bcab7",
+    "focused2LogSha256": "c392ec3bde73ee8d7cfaad4a44db8ef1d90006775c18ef4ee826d19d10bc380b",
+    "related96LogSha256": "5089a74a45682123c6baae1da937d7d5bbc1348a70910e3e11c3a9ea901e23f4"
+  },
+  "repair": {
+    "path": "tests/work-composition-ui.test.mjs",
+    "sha256": "6a81be164d24e674759e734e7dfd9881ef13c403a43d188a9acd3a186e5df3dd",
+    "behavior": "Track the actual evePendingRecoveryConfirms promise in the existing inFlight set. Test-only recoveryConfirmDelay parameter enables deterministic producer delay. No fixed flush-count increase or assertion weakening.",
+    "finiteBound": "The deterministic added test has Node test timeout5000ms; injected producer delay35ms is finite and awaited, not a minimum sleep or product latency guarantee. Existing flush retains12 rounds and awaits actual tracked producers/requests.",
+    "preservedAssertions": [
+      "stored marker clears only after exact matching confirmation",
+      "no non-GET on restored lookup",
+      "original material remains",
+      "cancelled job cannot run"
+    ],
+    "productAndAPIChanges": 0
+  },
+  "retryLedger": {
+    "unit": "EVE-13",
+    "rootCause": "test_flush_omits_async_recovery_fingerprint",
+    "attempts": 2,
+    "limit": 3,
+    "resetOnModelOrOwnerChange": false
+  },
+  "verification": {
+    "focused": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0
+    },
+    "related": {
+      "tests": 96,
+      "pass": 96,
+      "fail": 0
+    },
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3246,
+        "pass": 3243,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "a5f22ea254346bb58ceb34a245c7caebd4f845fa421da94e60ba25235760e3a0",
+      "scope": "All repair-pre-fullverify22 bytes unchanged through execution; final evidence/progress-only text updated afterward, then metadata checks separately. Host only, no independent review/remote CI/physical acceptance substituted."
+    },
+    "independentReview": "PENDING_ROOT_FIXED_MANIFEST",
+    "configuredLint": "PASS",
+    "RootReportedIndependentPreflight": "Actual file62/62 and separate80ms untracked-negative/tracked-positive; formal fixed22 acceptance pending, not self-accepted."
+  },
+  "source4ProUnchanged": true,
+  "physicalAccepted": false,
+  "authenticatedE2EAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "separateReadbackInNextRevision": {
+    "evidence": "docs/evidence/development-execution/pixel-saved-export-readback-20261028.json",
+    "sourceSha256": "5afa3cf6f3045f6c0e5a4b0b1b9adb31a8f66d8bb0da70c860914f33c3964713",
+    "independentEvidenceReview": {
+      "decision": "PASS_SCOPED",
+      "mustFix": 0,
+      "reviewSha256": "a92334ed6bcf30493b3f532e8f383f3450e8191ef47bc7c10137349af05c2e42",
+      "scope": "Root consistency/hash review, not repeat physical operation"
+    },
+    "physicalReadbackScope": "Existing PC/Pixel saved export770 bytes same hash/history; current APK/protected4 and absent1, forwards/services preserved. No new export/inference/job/device mutation by this batch.",
+    "ui": "Not run: CUA rejected Terminal access; no alternate control.",
+    "privateProofsReadOrCopiedByGit": false,
+    "oldOS08CandidateReadOrRelayed": false,
+    "wholeOSAccepted": false,
+    "P02Complete": false,
+    "publicDeployment": false,
+    "gitSaved": false,
+    "mainIntegrated": false
+  },
+  "scopeSeparation": "Original Pro18 remains preserved as R1. New candidate explicitly includes this fixture repair and separately scoped public Pixel readback1; final union review required. Pixel proof is not a cause/fix for EVE13 CI failure."
+}

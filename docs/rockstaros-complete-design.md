@@ -21,6 +21,8 @@
 
 10. **合格条件**: exact4 source/receiptとRoot source PASS_SCOPEDの一致、中央関連95（重複あり）、author local browserの空/正規/変更失効/不正、実common componentを合成owner/GET-onlyで通す試験を層別記録する。全verify・scanner・固定metadata別検収・Git/HEAD/main同SHA CIは別gate。[採用記録](evidence/development-execution/pro-existing-job-resume-main-adoption.json)。
 
+検収fixture追補: PR252初回CIのEVE13停止応答喪失1failは、非同期fingerprintのPromise未追跡を35ms制御遅延で再現した。実製品/停止/同意を変えず、fixtureが実完了を待つよう修正し、5000ms上限の回帰を追加する。元assertion/12roundを維持し、Rootの別検収と新HEAD CIを通す。詳細は[fixture証拠](evidence/development-execution/eve13-confirmation-fixture.json)。
+
 11. **未決定の決め方**: 古いjobのexact lookupは既存APIと一覧上限を別unitで検討し、今回へ黙って追加しない。実認証browserの保存/停止/export、配備の同source読戻し、実Pro/nativeとwholePRO02は同一対象・同意・失敗復旧を別受入する。fixture/入口の成功をそれらへ換算しない。
 
 <a id="shared-service-access-binding"></a>

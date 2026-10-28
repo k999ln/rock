@@ -1,3 +1,5 @@
+PR252の初回HEAD verifyは既存EVE13 testの非同期fingerprint未追跡で1fail。原固定18/失敗logを保持し、製品sourceを変えず待機Promiseをtrackするfixture修正と有限遅延回帰を別検収する。[原因・旧反例・待機境界](../evidence/development-execution/eve13-confirmation-fixture.json)。Pro source4/旧archive/共通権限契約は不変、単なる再実行成功で閉じない。
+
 ## PRO-02保存済みjobの再開入口（ROCK・2026-10-28）
 
 最新main c3a9/PR251・同SHA全6check/4workflow成功から、Pro exact4をbyte不変採用。UUID形式確認→固定avoado.si job-onlyの明示別tab入口で、新規仕事/原本archiveと分ける。既存auth/owner/revision/同意/保存/停止/成果を再利用し、local notesや権限を送らない。sourceはRoot別検収PASS_SCOPED/5probe、中央関連95成功。author local実browserと合成common component/GET-only fixtureは別層。現在一覧外（100件上限）のexact GET、実認証/保存停止export/配備/実Pro/wholePRO02は未受入。

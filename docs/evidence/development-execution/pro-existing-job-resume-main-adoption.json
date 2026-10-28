@@ -2,7 +2,7 @@
   "schema": "rockstaros.pro-existing-job-resume-main-adoption/1",
   "baseMain": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
   "authorBase": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
-  "status": "SOURCE_SCOPED_AND_HOST_VERIFY_PASS_FINAL_METADATA_REVIEW_GIT_PENDING",
+  "status": "CI_FIXTURE_REPAIR_HOSTVERIFY_PASS_FINAL22_REVIEW_PENDING",
   "unit": "PRO-02",
   "directTaskRefs": [
     "AMC02",
@@ -42,7 +42,12 @@
       "command": "node --experimental-strip-types --test tests/pro-existing-job-resume.test.mjs tests/work-composition-ui.test.mjs tests/work-composition-route.test.mjs tests/work-composition-artifact-route.test.mjs sites/avocado-mini/tests/pro-local-import.test.mjs",
       "logSha256": "8982d33d30905cd94a783ef9cb7e106d282b31b7ba8a9b0688bb6e2eda957689"
     },
-    "fullVerify": {
+    "finalMetadataReview": "PENDING_ROOT_REPAIR_MANIFEST",
+    "configuredLint": "PASS",
+    "designCheck": "PASS",
+    "missionCheck": "PASS",
+    "initialScan": "16 payload0 / syntheticcanary1; final18 scan recorded separately",
+    "preRepairHostFullVerify": {
       "exitCode": 0,
       "rootNode": {
         "tests": 3245,
@@ -57,11 +62,20 @@
       "qualification": "All pre-fullverify16 files unchanged during execution. Subsequent changes are evidence/progress/author-vs-main reconciliation and new explicit four-lane selection policy only; final metadata checks separate. No source/test changed after fullverify.",
       "subsequentExplicitPriorityClarification": "Metadata only: OS includes existing billing/Wallet/Game/eSIM; code/test source4 unchanged. Final metadata checks separate."
     },
-    "finalMetadataReview": "PENDING_ROOT_FIXED_MANIFEST",
-    "configuredLint": "PASS",
-    "designCheck": "PASS",
-    "missionCheck": "PASS",
-    "initialScan": "16 payload0 / syntheticcanary1; final18 scan recorded separately"
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3246,
+        "pass": 3243,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "a5f22ea254346bb58ceb34a245c7caebd4f845fa421da94e60ba25235760e3a0",
+      "scope": "All repair-pre-fullverify22 bytes unchanged through execution; final evidence/progress-only text updated afterward, then metadata checks separately. Host only, no independent review/remote CI/physical acceptance substituted."
+    }
   },
   "executionLayers": {
     "authorLocalBrowser": "Actual local Pro page blank/valid uppercase/input change/invalid controls observed; external link not clicked; Root reviewed local evidence, central does not claim a new browser run.",
@@ -88,5 +102,7 @@
   "publicDeployment": false,
   "bulk616": "HOLD",
   "selectionPolicy": "data/development-portfolio.json#/currentSelectionPolicy",
-  "selectionScope": "Already-started Pro closeout exception. Future focus is OS including billing/Wallet/Game/eSIM requirements, Eve/Smith/mii, without internal ranking or blanket deferral of OS requirement workstreams."
+  "selectionScope": "Already-started Pro closeout exception. Future focus is OS including billing/Wallet/Game/eSIM requirements, Eve/Smith/mii, without internal ranking or blanket deferral of OS requirement workstreams.",
+  "revision": "CI_FIXTURE_REPAIR",
+  "ciAcceptanceGateRepair": "docs/evidence/development-execution/eve13-confirmation-fixture.json"
 }

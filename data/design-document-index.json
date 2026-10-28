@@ -3450,7 +3450,8 @@
     "physicalAccepted": false,
     "actualProviderFinancialAccepted": false,
     "publicDeployment": false,
-    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json"
+    "currentMainEvidence": "docs/evidence/development-execution/pr242-243-main-current.json",
+    "additionalSavedExportReadback": "docs/evidence/development-execution/pixel-saved-export-readback-20261028.json"
   },
   "gameIntakePathTree": {
     "authority": "docs/rockstaros-complete-design.md#game-intake-path-tree",
@@ -3607,7 +3608,8 @@
       "sites/avocado-mini/src/pro-os.js"
     ],
     "tests": [
-      "tests/pro-existing-job-resume.test.mjs"
+      "tests/pro-existing-job-resume.test.mjs",
+      "tests/work-composition-ui.test.mjs"
     ],
     "sourceReceipt": "docs/evidence/development-execution/pro-existing-job-resume.json",
     "evidence": "docs/evidence/development-execution/pro-existing-job-resume-main-adoption.json",
@@ -3618,6 +3620,7 @@
     "physicalAccepted": false,
     "authenticatedE2EAccepted": false,
     "mainIntegrated": false,
-    "publicDeployment": false
+    "publicDeployment": false,
+    "ciFixtureRepair": "docs/evidence/development-execution/eve13-confirmation-fixture.json"
   }
 }
