@@ -1,3 +1,8 @@
+<a id="smith-local-agent-settings-rejection"></a>
+## Smith Local Agentの設定不一致応答
+
+[OSの11項目契約](rockstaros-complete-design.md#smith-local-agent-settings-rejection)を正本とし、既存library/storeの拒否をestimate/textと同じAGENT_SETTINGS_CHANGED・元status/safe message・no-storeで返す。新Tool、設定変更、実行許可、schema/価格を作らず、認証/scope→binding→runnerの順序を維持する。実route/SQLiteと合成owner/modelの8fixture・関連28を記録し、実owner UI/Provider/運転中race/wholeSMITH02は別gate。[限定採用](evidence/development-execution/smith-local-agent-settings-main-adoption.json)。
+
 <a id="esim-attachment-async-binding"></a>
 ## ESIM-04 非同期attachment検証の入力結合（host限定）
 

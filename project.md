@@ -1,3 +1,7 @@
+### Smith Local Agent設定拒否応答の有限採用開始（2026-10-28 / SMITH-02・SKY21・ROCK）
+
+PR252/main0dcbbf6の全7check/5workflowとLinux3246/3244pass/0fail/2skip、Android compile/emulator/trial成功を閉じ、別実質batchに最小readback同梱。Smith source3をbyte不変採用し、authorbase c3a9と最新mainのroute旧本文/隣接API/store/workflow/locks互換を確認。元から拒否された6設定不一致のstatus/code/message/no-storeを揃えるだけで新権限ではない。Root source独立PASS/実8、中央関連28成功。全verify3254/3251pass/0fail/3hostskip・build/API1678/CSV385成功。次はRoot最終metadata→Git/HEAD/main同SHA CI。実認証UI/Provider/端末/運転中race/wholeSMITH02は未受入。元95/393/14・優先4系統/OS横断要件・616/OS08拒否境界を維持。
+
 ### Pixel既存保存fileの限定readback証拠を別scopeで受領（2026-10-28）
 
 Rootの整合/hash独立PASS_SCOPEDを受けたpublic要約1件だけを次revision候補へbyte不変同梱。既存PC/Pixel770byte同hash/過去一致、APK/protected4+欠落1/forward/service前後不変。private4proofや旧OS08拒否候補は未取得/非転載、Gitは端末操作なし。新推論/新job/export/UI/wholeOS合格なし、UIはCUA Terminal拒否で未実施。Pro18/R1やEve13 fixture修正とは受入を分け、最終unionをRootが別検収する。

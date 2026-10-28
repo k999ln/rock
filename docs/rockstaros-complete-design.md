@@ -1,3 +1,28 @@
+<a id="smith-local-agent-settings-rejection"></a>
+## SmithのLocal Agent設定拒否応答を揃える（SMITH-02/SKY21・ROCK）
+
+1. **目的**: Local Agent APIが元から拒否していたAgent設定不一致を、隣接estimate/text APIと同じstatus/codeで判別できるようにする。新しい実行許可や拒否fenceを追加したとは扱わない。
+
+2. **利用体験**: 保存済みAgentの古いrevision・無効化・切断・別owner・model不一致・不正参照は、元の拒否を維持したまま設定確認が必要な応答になる。実owner UIの案内/原稿保持/再開は今回の受入ではない。
+
+3. **責任**: ROCK/Smith02は既存error変換、既存storeは本人/現在版/有効/接続のbindingを担当。EXTERNALはmodel/host/Provider、JOINTは実認証UI/運転中race/実接続、OWNERは設定と個別実行/予算を選ぶ。Broker/本人承認の境界をmodel結果へ移さない。
+
+4. **入出力**: POST `/api/llm/local-agent` の既存SkyAgentLibraryErrorだけを `code: AGENT_SETTINGS_CHANGED`、既存safe message、元status（409/404/400）とCache-Control:no-storeへ写す。既存request/返却成功schemaや他error変換は維持する。
+
+5. **状態**: 認証/service scopeの拒否はbinding前、Agent不一致はbinding時点でrunner/model前に止まる順序を維持する。古い応答を成功へ昇格せず、自動再試行/代替model実行を追加しない。
+
+6. **保存**: 新DB/schema/Agent設定/同意/価格/usage/権限を書き換えない。応答はno-storeで、素材や資格情報を追加保存しない。既存owner/revision/CASを再利用する。
+
+7. **失敗**: SkyAgentLibraryErrorをgeneric INVALID_INPUTへ潰さず、元status/messageを保持する。一般不正入力、rate limit、認証、service scope、runner/modelの既存error境界は変更しない。拒否6fixtureはrunner/model0で実行済みではない。
+
+8. **復旧**: 本人が既存管理/依頼経路で現在設定を確認して次の操作を判断する。routeはAgent修正/再実行/復旧成功を自動で作らない。通常Git revertでmapper/testを戻せ、データmigrationや保存資料の削除は不要。
+
+9. **承認**: 応答codeは設定確認の診断でありTool成功/新権限/予算同意ではない。[LLM境界](llm-evaluation-architecture.md)の非信頼planner・Broker判定・本人承認を保持する。実Provider/本番課金/端末操作/公開を追加しない。
+
+10. **合格条件**: exact3とRoot source PASS_SCOPED/実8試験、作者旧6fail/fixed28、中央関連28を層別記録。全verify/design/scan・固定metadata別検収・Git/HEAD/main同SHA CIを別gateにする。[採用記録](evidence/development-execution/smith-local-agent-settings-main-adoption.json)。
+
+11. **未決定の決め方**: 実認証A/BのUI・原稿保持、long-running model/Tool中の権限変更/停止race、実host/provider/deviceは既存unitの同対象fixture/実環境で別検収する。response mapperの合格をwholeSMITH02や新規dispatch安全性の証明へ転用しない。
+
 <a id="pro-existing-job-resume"></a>
 ## Proから保存済み仕事を開く（PRO-02・限定入口）
 

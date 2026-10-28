@@ -1,0 +1,168 @@
+{
+  "schema": "rockstaros.smith-local-agent-settings-rejection/1",
+  "recordedAt": "2026-10-28T13:34:59.616455+00:00",
+  "baseMain": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+  "unit": "SMITH-02",
+  "contextTask": "SKY21",
+  "primarySquad": "O5",
+  "primaryOwner": "ROCK",
+  "candidateStatus": "author_source_fixed_root_independent_review_pending",
+  "problem": "Local Agent API already rejects current Agent-state mismatches through bindSkyAgentLlmInput, but its failure mapper loses SkyAgentLibraryError status/message and replies generic400/INVALID_INPUT. Sister estimate/text APIs preserve AGENT_SETTINGS_CHANGED with the original status and safe user-facing reason.",
+  "scope": "Rejection response contract only. This is not a new dispatch fence or proof that previously rejected Agents executed.",
+  "expectedContractSources": [
+    "lib/sky-agent-library-store.ts#bindSkyAgentLlmInput",
+    "lib/sky-agent-library.ts#SkyAgentLibraryError",
+    "app/api/llm/estimate/route.ts SkyAgentLibraryError catch",
+    "app/api/llm/text/route.ts SkyAgentLibraryError catch",
+    "data/development-unit-progress.json#SMITH-02",
+    "data/mission-control.json SKY21 / O5"
+  ],
+  "change": "Import the existing SkyAgentLibraryError class and return AGENT_SETTINGS_CHANGED, its original status/message and no-store before the generic mapper, matching existing sibling route behavior.",
+  "source2": [
+    {
+      "path": "app/api/llm/local-agent/route.ts",
+      "sha256": "d74db2df17031928d66c45e2cc4abe086b183d529ca4d8ed1207738f485ccdb1"
+    },
+    {
+      "path": "tests/sky-local-agent-settings-route.test.mjs",
+      "sha256": "54c767e1914beb86826646d6fc3f4a54fbba8dac6eed15d7b71b5bc736382cdf"
+    }
+  ],
+  "oldSourceSha256": "a3dcebf63677b82d558b97a8c6eae76639fdaa1bdca0d02755d3c676c1dd0546",
+  "oldCounterexample": {
+    "command": "node --test --test-reporter=tap tests/sky-local-agent-settings-route.test.mjs using base c3a9a1d local-agent route with final test file",
+    "exitCode": 1,
+    "tests": 8,
+    "passed": 2,
+    "failed": 6,
+    "failures": [
+      "stale revision",
+      "disabled Agent",
+      "disconnected catalog Tool",
+      "other owner lookup",
+      "model mismatch",
+      "malformed reference"
+    ],
+    "controlsPassed": [
+      "valid saved Agent/ordinary local request",
+      "authentication/service-scope denial"
+    ]
+  },
+  "focused": {
+    "command": "node --test --test-reporter=tap tests/sky-local-agent-settings-route.test.mjs tests/sky-agent-library.test.mjs tests/zema-local-agent.test.mjs tests/sky-add-capability-envelope.test.mjs tests/sky-add-owner-binding.test.mjs",
+    "exitCode": 0,
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    "lint": {
+      "command": "npx oxlint app/api/llm/local-agent/route.ts tests/sky-local-agent-settings-route.test.mjs",
+      "exitCode": 0
+    },
+    "spider": {
+      "command": "npm run spider:plan -- --changed",
+      "exitCode": 0
+    },
+    "diffCheckExitCode": 0
+  },
+  "fixtureBoundaries": {
+    "actualSource": [
+      "Compiled real POST route via existing tests/route-fixture.mjs",
+      "Migrated SQLite skyAgentLibraryStore and bindSkyAgentLlmInput",
+      "Real local Agent runner with deterministic no-network planner reply"
+    ],
+    "stubs": [
+      "Authorization owner from x-fixture-owner header; not real authentication acceptance",
+      "Service scope boolean and denial response; not actual entitlement acceptance",
+      "Model generator returns fixture respond JSON; no external model/Tool/network requests"
+    ],
+    "rejectionCounters": {
+      "binding": 1,
+      "runner": 0,
+      "model": 0
+    },
+    "authScopeDenialCounters": {
+      "binding": 0,
+      "runner": 0,
+      "model": 0
+    },
+    "validAndOrdinaryCombinedCounters": {
+      "binding": 2,
+      "runner": 2,
+      "fixtureModel": 2
+    },
+    "browserExecuted": false
+  },
+  "invariants": [
+    "Binding, owner/revision/enabled/connection checks, scope ordering, runner and planner policy unchanged.",
+    "Existing failure causes remain rejected; original409/404/400 settings status is now distinguishable.",
+    "No provider/cloud/Tool execution permission, schema/migration/price/policy/catalog/Agent setting changes.",
+    "Prior adopted PR245 UUID/catalog fixes are not recreated; former candidate paths not edited.",
+    "No shared status/design/README/index edits, OS08 rejection candidate edits, new actor/chat or external account effects."
+  ],
+  "dependencies": {
+    "readOnlyBorrowedNodeModules": "/private/tmp/rock-execution-control-20261028/node_modules",
+    "exactLockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
+    "dependencyOrLockFilesEdited": false
+  },
+  "logs": {
+    "oldCounterexample": {
+      "path": "/private/tmp/smith-local-agent-settings-before.log",
+      "sha256": "e4e0a5f71a93b79bf0b99109cfa0f4f7ff32f94f6d9ba1694f2d06955b64b9fc"
+    },
+    "focused": {
+      "path": "/private/tmp/smith-local-agent-settings-after.log",
+      "sha256": "620036a88e09ce8ae8bd9f3f315a96da9402e7eed77e278597cd4696cc1e6fc4"
+    },
+    "typecheck": {
+      "path": "/private/tmp/smith-local-agent-settings-typecheck.log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "lint": {
+      "path": "/private/tmp/smith-local-agent-settings-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "spider": {
+      "path": "/private/tmp/smith-local-agent-settings-spider.log",
+      "sha256": "75a9fd947a22d8fa32465e753edd603a31e9f47f92c5f8a9d3cac057c20be28e"
+    }
+  },
+  "fullVerify": {
+    "executed": false,
+    "status": "centralized_adoption_gate_pending_per_coordinator"
+  },
+  "independentReview": {
+    "status": "pending_Root_separate_review",
+    "selfAccepted": false
+  },
+  "git": {
+    "saved": false,
+    "mainMerged": false,
+    "sameShaCI": "pending_central_Git"
+  },
+  "centralMetadataProposal": {
+    "progressAndHandoff": "Record bounded local Agent settings rejection response repair with old6 failures/fixed28 pass, keeping whole SMITH-02 and SKY21 unaccepted.",
+    "contract": "Use the existing AGENT_SETTINGS_CHANGED status/message contract for the local route, as for estimate/text. No design/requirements revision.",
+    "nextUnverifiedConditions": [
+      "Actual authenticated owner A/B UI handles 409/404 and prompts current settings review without losing draft.",
+      "Current state changes during a long-running model/Tool operation and stop races require separate existing runtime acceptance; this mapper fix does not establish them.",
+      "Real host scope/SDK availability and external Provider/device acceptance remain separate gates."
+    ]
+  },
+  "holds": {
+    "bulk616": "HOLD",
+    "publication": false,
+    "deployment": false,
+    "provider": false,
+    "credentials": false,
+    "realFunds": false,
+    "deviceOperation": false,
+    "wholeSmithAccepted": false
+  }
+}

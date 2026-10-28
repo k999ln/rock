@@ -1,3 +1,4 @@
+import { SkyAgentLibraryError } from '@/lib/sky-agent-library';
 import { bindSkyAgentLlmInput } from '@/lib/sky-agent-library-store';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
@@ -44,6 +45,9 @@ const plannerSchema = {
 } satisfies Record<string, unknown>;
 
 function failure(error: unknown) {
+  if (error instanceof SkyAgentLibraryError)
+    return Response.json({ code: 'AGENT_SETTINGS_CHANGED', error: error.message },
+      { status: error.status, headers: noStoreHeaders });
   if (error instanceof RemoteAiGuardError)
     return Response.json({
       error: error.code === 'RATE_LIMITED'

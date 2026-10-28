@@ -1,0 +1,94 @@
+{
+  "schema": "rockstaros.pro-eve-pixel-main-readback/1",
+  "pr": "https://github.com/k999ln/rock/pull/252",
+  "baseMain": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+  "acceptedHead": "df834925895e3c1ce5f6376e6218f5f0bf2d2b91",
+  "mainMergeSha": "0dcbbf69024009318ce6e3eb0aa5494e5e3d5590",
+  "normalMerge": true,
+  "parents": [
+    "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+    "df834925895e3c1ce5f6376e6218f5f0bf2d2b91"
+  ],
+  "headAndMainTree": "3d0b24f96885eb28fb9482505f72ce786a4616de",
+  "exact22MainBlobsMatch": true,
+  "manifestSha256": "5815e5bd023d9ec202368b98267763e1e651cf97410bff21802767d363cf75ec",
+  "final22IndependentReviewSha256": "31655dad91ef6e30ad4966fa59ad6349b64ac58c17775e2c7e9e45d5916acc2a",
+  "headCI": {
+    "sha": "df834925895e3c1ce5f6376e6218f5f0bf2d2b91",
+    "checksSuccess": 8,
+    "workflowCount": 5,
+    "allWorkflowsSuccess": true,
+    "rootNode": {
+      "tests": 3246,
+      "pass": 3244,
+      "fail": 0,
+      "skip": 2
+    },
+    "verifyRun": 40697009355,
+    "verifyJob": 122846379522,
+    "verifyLogSha256": "8222965a55334566a589c93f3d006f99e8d904fcad7ecbd2829892cb21b6fed0",
+    "androidPrototype": {
+      "run": 40697009525,
+      "job": 122846381383,
+      "sha": "df834925895e3c1ce5f6376e6218f5f0bf2d2b91",
+      "compileEmulatorAndTrialCollectionSuccess": true,
+      "steps": [
+        "Compile Android packages and test shared SQLite core",
+        "Exercise real Binder and SQLite in a disposable Android emulator",
+        "Verify and collect the successful Android P1 trial set"
+      ],
+      "physicalOSAcceptance": false
+    }
+  },
+  "mainCI": {
+    "sha": "0dcbbf69024009318ce6e3eb0aa5494e5e3d5590",
+    "checksSuccess": 7,
+    "workflowCount": 5,
+    "allWorkflowsSuccess": true,
+    "rootNode": {
+      "tests": 3246,
+      "pass": 3244,
+      "fail": 0,
+      "skip": 2
+    },
+    "verifyRun": 40698149735,
+    "verifyJob": 122850359062,
+    "verifyLogSha256": "ac4af0c2ad01ff592ffc1846b22c09d75943e91ff720e18f16ec62df0dc48fab",
+    "androidPrototype": {
+      "run": 40698149681,
+      "job": 122850358767,
+      "sha": "0dcbbf69024009318ce6e3eb0aa5494e5e3d5590",
+      "compileEmulatorAndTrialCollectionSuccess": true,
+      "steps": [
+        "Compile Android packages and test shared SQLite core",
+        "Exercise real Binder and SQLite in a disposable Android emulator",
+        "Verify and collect the successful Android P1 trial set"
+      ],
+      "physicalOSAcceptance": false
+    }
+  },
+  "failedR1": {
+    "head": "6a31424aff14fa64b8125eecbc938d0428ac6377",
+    "rootNode": {
+      "tests": 3245,
+      "pass": 3242,
+      "fail": 1,
+      "skip": 2
+    },
+    "logSha256": "cea055b82ee072571839dbd2fcebce4ba0a9daa90bbdd37df26be563838fdc3e",
+    "preservedAsParent": true,
+    "blindRetryUsed": false
+  },
+  "separateScopes": [
+    "Pro current-listed saved-job entry",
+    "EVE13 test-only confirmation Promise tracking",
+    "Pixel existing770byte file readback/protection only, no new export/job/inference/UI acceptance"
+  ],
+  "fullExternalReadbackProofSha256": "8fab56928ff55bb14e50838f5f56ac3b8d0246d68311c1a4f0d8d0b612c040ff",
+  "originalPendingCapturesPreserved": true,
+  "wholePRO02Accepted": false,
+  "wholeOSAccepted": false,
+  "authenticatedE2EAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD"
+}
