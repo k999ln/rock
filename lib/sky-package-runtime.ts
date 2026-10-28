@@ -25,15 +25,16 @@ export async function skyPackageSchemaSha256(schema: Record<string, unknown>) {
 
 /**
  * A Sky Package does not name an MCP operation. Offer a local runtime only when
- * the owner can select a connected PC stdio tool with the exact reviewed I/O
- * schema, and both the Package and runtime declare no per-run usage charge.
+ * the owner can select a connected PC Tool with the exact reviewed I/O schema,
+ * and both the Package and runtime declare no per-run usage charge. The
+ * connector's local_http transport is loopback-only; remote HTTP is excluded.
  */
 export function compatibleLocalPackageRuntimes(
   manifest: SkyToolPackage,
   servers: readonly McpConnection[],
 ): PackageRuntimeCandidate[] {
   if (
-    manifest.adapter.connectionType !== 'mcp_stdio' ||
+    !['mcp_stdio', 'mcp_streamable_http'].includes(manifest.adapter.connectionType) ||
     !manifest.capabilities.executionTargets.includes('pc') ||
     manifest.pricing.model !== 'free'
   ) return [];
@@ -41,7 +42,9 @@ export function compatibleLocalPackageRuntimes(
   const input = canonical(manifest.io.inputSchema);
   const output = canonical(manifest.io.outputSchema);
   return servers.flatMap((server) => {
-    if (server.transport !== 'stdio' || server.state !== 'connected' || !server.passport)
+    const transportMatches = (manifest.adapter.connectionType === 'mcp_stdio' && server.transport === 'stdio') ||
+      (manifest.adapter.connectionType === 'mcp_streamable_http' && server.transport === 'local_http');
+    if (!transportMatches || server.state !== 'connected' || !server.passport)
       return [];
     return server.passport.tools
       .filter((tool) => tool.pricing.model === 'free' && tool.outputSchema !== undefined &&

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'r
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Bot, Check, ChevronRight, Cloud, Plus, RefreshCw, Search, Settings2 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import SkyAgentCapabilityReview from '@/components/sky-agent-capability-review';
 import { SkyPurchases } from '@/components/sky-commerce';
 import { SkyNotice } from '@/components/sky-feedback';
 import { defaultSkyAgentSettings, parseSkyAgentSettings, skyAgentEvePath, type SkyAgentSettings, type SkyLibraryAgent } from '@/lib/sky-agent-library';
@@ -119,6 +120,7 @@ export default function SkyAgentLibrary() {
             </div>
             <p className={styles.boundary}>{dirty ? '未保存の変更があります。保存か破棄後に担当を切り替えられます。' : '設定の保存やEveを開くだけでは、実行・購入・課金は始まりません。'}</p>
           </form>}
+          {selected && !creating && !dirty && <SkyAgentCapabilityReview key={`${selected.id}:${selected.revision}`} agent={selected} onSaved={saved => { setSelected(saved); setSettings(saved); setAgents(list => list.map(item => item.id === saved.id ? saved : item)); }} />}
         </section>
       </div>
     </div>

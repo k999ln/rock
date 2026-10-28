@@ -30,6 +30,14 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 
 [Pixel実装設計](../native-os-integration.md#pixel-si専用端末の実装設計)はこれを具体化する。local-onlyはAndroid正本、cloud受付後はD1正本とし、端末cache/未送信commandを別に扱う。混合工程のroot authority、親参照、委任/成果/停止の対応adapterは未受入であり、同じ仕事を二つのDBへ独立に確定しない。既存device transportを再利用し、ShellのHOME未対応、Brokerの既存通信権限、料金/Provider gateの現状を保持する。
 
+### Eve・Smith・miiの同じ仕事
+
+利用者はEveで担当の名前、目的、入力と期待成果、Agent設定を確認して本人別に保存する。Smithは本人が確認した構造化能力をPackageの版・入出力・実行先と照合し、不足や未確認を残す。OSは既存Agent ID/revisionと既存work jobを結び、MCPで確認した正確な引数に一回の操作を発行する。miiソフトadapterは同じowner/job/Agentを読戻し、表示を権限移転と扱わない。
+
+保存と失敗: jobに操作ID・Tool版・入力hash・未確認の応答を残す。60秒の一回限りcapabilityはhashのみjobへ保存し、応答消失を自動再送しない。Connectorは対象引数、現在のschema・実行先、serverの一回claimを確認後にToolを呼ぶ。取消先勝ちならclaimを拒否し、claim先勝ち後の取消は停止要求として残して実行先の停止を未確認とする。claim後の不可逆作用を取消済みと表示しない。表示した成果はclient観測であり署名済みreceiptではない。
+
+今回の実行authorityは既存local-preview ID、明示したscope非強制、loopback、cookieや別credentialなしの開発環境に限定する。verified Package、freeの提供者申告、schema一致は未知Tool全体の安全性や実料金を保証しない。通常account/eSIMの実行authority・実mii入力/物理停止・有料実行/費用照合は別の実装と受入が必要。owner切替・旧版・失効・不明応答・停止競合・再接続、2種の入力出力と未対応能力を同じ候補で試験する。
+
 ## 3. IDと入力の契約
 
 一回の操作を、認証principal由来のowner、project/job ID、表示revision、operation/idempotency ID、Tool/Agentと版、入力digest、実行先、同意scope、見積/予算、期限へ結ぶ。外部APIではそのschemaで定義されたfieldだけを送り、この概念一覧をそのまま新API payloadにはしない。

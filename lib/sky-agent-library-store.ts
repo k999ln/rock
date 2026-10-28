@@ -23,13 +23,16 @@ export function skyAgentLibraryStore(db: Database, owner: string) {
   async function get(id: string) { return (await list()).find(a => a.id === skyAgentId(id)) ?? null; }
   async function save(id: string, revision: number, input: unknown, create = false) {
     skyAgentId(id);
-    const settings = parseSkyAgentSettings(input);
+    let settings = parseSkyAgentSettings(input);
     if (!Number.isSafeInteger(revision) || revision < 0) throw new SkyAgentLibraryError('設定の版を確認してください。');
     const before = await get(id);
     if (create) {
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id) || revision !== 0 || before) throw new SkyAgentLibraryError('新しいエージェントのIDを確認してください。', 409);
     } else if (!before) throw new SkyAgentLibraryError('エージェントが見つかりません。', 404);
     if (before && before.revision !== revision) throw new SkyAgentLibraryError('別の画面で設定が変更されました。入力を残したまま、最新の設定を確認してください。', 409);
+    // Older editors submit only the original five fields. Preserve requirements
+    // rather than silently erasing them; a current editor may explicitly clear them.
+    if (before?.requirements && !Object.hasOwn(input as object, 'requirements')) settings = { ...settings, requirements: before.requirements };
     const now = Date.now();
     const result = revision === 0
       ? await db.prepare('INSERT INTO sky_agent_settings(owner_user_id,id,source_tool,settings,revision,created_at,updated_at) SELECT ?,?,?,?,1,?,? WHERE (SELECT COUNT(*) FROM sky_agent_settings WHERE owner_user_id=?)<100 ON CONFLICT(owner_user_id,id) DO NOTHING').bind(owner,id,before?.sourceTool ?? null,JSON.stringify(settings),now,now,owner).run()

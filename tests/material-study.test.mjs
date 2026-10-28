@@ -24,7 +24,7 @@ async function setup(t, required = 'false') {
   const refs = new Map([
     ['cloudflare:workers', { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: required } }],
     ['@/lib/fund-store', { database: () => db, requestUser }],
-    ...await Promise.all(['bounded-stream', 'owner-intent', 'work-store', 'workflow', 'material-invention', 'material-study', 'rockstar-service-access', 'a2a-delegation-store']
+    ...await Promise.all(['bounded-stream', 'owner-intent', 'work-store', 'workflow', 'material-invention', 'material-study', 'rockstar-service-access', 'a2a-delegation-store', 'sky-agent-library-store']
       .map(async (name) => [`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url).href)])),
   ]);
   function load(name) {

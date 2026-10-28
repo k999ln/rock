@@ -663,6 +663,8 @@ Pixel 10 GL066 / frankelは確定対象。試験署名APKの非破壊再起動23
 
 ## 次の作業
 
+Eveで自由に担当を作り、SmithでToolと実行先を照合し、同じ仕事をmiiの合成画面から読むlocal-preview候補は範囲限定の独立検収と全verifyに合格した。[設計・責任と制約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)、[試験と残件](docs/evidence/development-execution/eve-smith-mii-host-preview.json)。次はGit保存・main統合・同SHA CIをそれぞれ確認する。実account/eSIM、実mii/Pixel、実費と公開は別受入。
+
 1. main統合済みの設計・入口を対象実装branchへ同期し、元dirty候補の未回収差分と同一公開artifactの受入を比較する。PR #112/#115/#116/#117/#118は既にmain適用済みで、旧文書を復活させない。実NFC・所属/枠・有料Provider・任意claim本番受入は別gateとする。
 2. [横断契約と12受入](docs/service-design/06-consistency-contracts.md)の順で、realm/owner/root/leaf/成果相関 → 状態投影と親取消fence → account期間/Goal予算・価格/pass/後払いadapter → 真正reviewer/Receipt → grant/削除journal/鍵喪失復旧 → authority epoch/機器適合を既存fixtureへ接続する。
 3. 同じ公開artifactで文章素材→処理→検査→本人review→download完了→再取得→レシピ再利用を一周し、操作時間・復旧・改善を測る。JenniferのCOLOMBIA原本、context grant、独立review証拠のserver照合を別に受け入れる。

@@ -1,4 +1,5 @@
 import * as ownerIntent from '../lib/owner-intent.ts';
+import * as skyAgentLibraryStore from '../lib/sky-agent-library-store.ts';
 import * as boundedStream from '../lib/bounded-stream.ts';
 import test from 'node:test';
 import * as amcSkyWeb from '../lib/amc-sky-web.ts';
@@ -56,6 +57,7 @@ function fixture(t) {
     const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
     const exports = {}, modules = {
       '@/lib/owner-intent': ownerIntent,
+      '@/lib/sky-agent-library-store': skyAgentLibraryStore,
       '@/lib/bounded-stream': boundedStream,
       '@/lib/fund-store': { database: () => db, requestUser },
       '@/lib/amc-sky-web': amcSkyWeb,

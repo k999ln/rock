@@ -50,6 +50,10 @@ export type McpApproval = {
   approvalRequired: true;
 };
 
+/** Ephemeral one-use authority for a particular saved job attempt. */
+export type McpJobGate = { jobId: string; attemptId: string; agentId: string; agentRevision: number; ownerScope: string; token: string };
+export type McpJobClaim = { jobId: string; attemptId: string; inputSha256: string; jobRevision: number };
+
 export class McpHubError extends Error {
   code: string;
 
@@ -131,8 +135,10 @@ export async function executeApprovedMcpTool<T = unknown>(
   name: string,
   args: Record<string, unknown>,
   approvalToken: string,
+  jobGate?: McpJobGate,
+  onJobClaim?: (claim: McpJobClaim) => void,
 ) {
-  const data = await connector<{ result: T }>(
+  const data = await connector<{ result: T; jobClaim?: McpJobClaim }>(
     `/servers/${encodeURIComponent(serverId)}/execute`,
     {
       method: 'POST',
@@ -141,8 +147,16 @@ export async function executeApprovedMcpTool<T = unknown>(
         arguments: args,
         approvalToken,
         confirmed: true,
+        ...(jobGate ? { jobGate } : {}),
       }),
     },
   );
+  if (jobGate) {
+    const claim = data.jobClaim;
+    if (!claim || claim.jobId !== jobGate.jobId || claim.attemptId !== jobGate.attemptId ||
+        !/^[a-f0-9]{64}$/.test(claim.inputSha256) || !Number.isSafeInteger(claim.jobRevision))
+      throw new McpHubError('仕事の実行状態を確認できません。再送せず照合してください。', 'job_claim_unknown');
+    onJobClaim?.(claim);
+  }
   return data.result;
 }

@@ -864,7 +864,7 @@ export class McpHub {
       approvalRequired: true,
     };
   }
-  async execute(id, name, args, token, confirmed) {
+  async execute(id, name, args, token, confirmed, beforeCall) {
     if (confirmed !== true || typeof token !== 'string')
       fail('この操作には内容確認と承認が必要です。', 403, 'approval_required');
     const [nonce, expires, supplied] = token.split('.');
@@ -885,6 +885,10 @@ export class McpHub {
     const entry = this.entry(id);
     if (!entry.passport || entry.state !== 'connected')
       fail('先にMCPへ接続してください。', 409, 'not_connected');
+    const tool = entry.passport.tools.find(candidate => candidate.name === name);
+    if (beforeCall && (!tool || tool.pricing.model !== 'free' || !['stdio', 'local_http'].includes(entry.spec.transport) ||
+        !tool.inputSchema || typeof tool.inputSchema !== 'object' || !tool.outputSchema || typeof tool.outputSchema !== 'object'))
+      fail('Toolの料金・入出力・実行先を確認してください。', 409, 'tool_contract_changed');
     const payloadDigest = digest({
       id,
       name,
@@ -899,6 +903,10 @@ export class McpHub {
     });
     approval.used = true;
     try {
+      // Job-bound operations must obtain their one-use authority at the sink,
+      // after validating the connector approval and before calling the Tool.
+      if (beforeCall) await beforeCall({ transport: entry.spec.transport,
+        inputSchemaSha256: digest(tool.inputSchema), outputSchemaSha256: digest(tool.outputSchema) });
       return await this.rpc(
         id,
         'tools/call',
@@ -917,6 +925,41 @@ export class McpHub {
       throw error;
     }
   }
+}
+
+// The endpoint is derived only from the already allowed request Origin; callers
+// cannot provide a URL or choose a redirect. The bearer is one-use and is never
+// placed in a URL, persisted, or included in the response sent to the browser.
+async function claimJobOperation(origin, gate, connectorId, toolName, args, toolContract) {
+  const url = new URL(origin);
+  if (!(url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname))) ||
+      url.username || url.password || url.pathname !== '/' || url.search || url.hash ||
+      !gate || typeof gate !== 'object' || Array.isArray(gate) ||
+      Object.keys(gate).sort().join(',') !== 'agentId,agentRevision,attemptId,jobId,ownerScope,token' ||
+      !['agentId', 'attemptId', 'jobId', 'ownerScope', 'token'].every(key => typeof gate[key] === 'string' && gate[key].length > 0 && gate[key].length <= 256) ||
+      !Number.isSafeInteger(gate.agentRevision) || gate.agentRevision < 1)
+    fail('仕事の実行許可を確認できません。', 403, 'job_claim_invalid');
+  const inputSha256 = createHash('sha256').update(JSON.stringify(args)).digest('hex');
+  let result;
+  try {
+    const response = await fetch(new URL('/api/work-jobs/tool-observations/claim', url), {
+      method: 'POST', redirect: 'error', signal: AbortSignal.timeout(10_000),
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ ...gate, connectorId, toolName, inputSha256, ...toolContract }),
+    });
+    if (!response.ok || !response.body) throw new Error('claim rejected');
+    const reader = response.body.getReader(); let size = 0; const chunks = [];
+    while (true) {
+      const { done, value } = await reader.read(); if (done) break;
+      size += value.byteLength; if (size > 4096) { await reader.cancel(); throw new Error('claim too large'); }
+      chunks.push(value);
+    }
+    result = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+  } catch { fail('仕事の実行許可を確認できません。再送せず状態を照合してください。', 409, 'job_claim_unknown'); }
+  if (!result || result.claimed !== true || result.jobId !== gate.jobId || result.attemptId !== gate.attemptId ||
+      result.inputSha256 !== inputSha256 || !Number.isSafeInteger(result.jobRevision) || result.jobRevision < 1)
+    fail('仕事の実行許可が一致しません。', 409, 'job_claim_mismatch');
+  return { jobId: result.jobId, attemptId: result.attemptId, inputSha256, jobRevision: result.jobRevision };
 }
 
 async function body(request) {
@@ -1057,21 +1100,19 @@ export async function createConnector({
             hub.prepare(id, input.name, input.arguments ?? {}),
             origin,
           );
-        if (action === 'execute')
+        if (action === 'execute') {
+          let jobClaim;
+          const beforeCall = input.jobGate === undefined ? undefined : async toolContract => {
+            jobClaim = await claimJobOperation(origin, input.jobGate, id, input.name, input.arguments ?? {}, toolContract);
+          };
+          const result = await hub.execute(id, input.name, input.arguments ?? {}, input.approvalToken, input.confirmed, beforeCall);
           return send(
             response,
             200,
-            {
-              result: await hub.execute(
-                id,
-                input.name,
-                input.arguments ?? {},
-                input.approvalToken,
-                input.confirmed,
-              ),
-            },
+            { result, ...(jobClaim ? { jobClaim } : {}) },
             origin,
           );
+        }
         if (input.method === 'tools/call')
           fail(
             'tools/callはprepare→確認→executeの順で実行してください。',

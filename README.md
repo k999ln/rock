@@ -254,6 +254,8 @@ eSIMは本人用Cloud Sky・Eve・Linuxサービスへの入口です。OS binar
 
 ## Eve — 会話から仕事と成果へ
 
+開発プレビューでは、Eveの「自分の担当を作る」で名前・目的・入力・期待成果を確認して保存し、続いて必要能力・Tool・PC実行先を選びます。同じ担当で仕事を作り、実行内容を確認してから承認すると、対応するToolの結果を同じ仕事に保存できます。仕事の「mii連携のソフト試用」から同じ担当・依頼・成果を読み直せます。仕事からのTool実行は、既存`local-preview:` IDを設定した隔離loopback環境に限定され、通常account/eSIM・実mii・有料実行は未受入です。Tool結果は独立未検証として扱います。[契約と試験範囲](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+
 Eveの資料付き依頼はPR232でmainへ限定採用した2〜4資料対応です。「資料を追加」「資料Nを外す」で準備し、合計8,000文字以内で保存・復元・見積比較します。2資料の既存保存は互換維持。3・4資料は新版形式で、生成・課金は開始しません。[契約と残gate](docs/rockstaros-complete-design.md#eve-multi-material)。
 
 Eveの[保存資料の料金見積](docs/rockstaros-complete-design.md#eve-saved-source-estimate)を限定候補へ追加。`npm run dev`の`/os/eve/remix`で2〜4資料と依頼を無料準備・保存・読戻し後、「保存した資料で料金を見積もる」から必要なmodel/通貨/比較上限を選び、別の資料利用同意後に「見積のみ確認」を押します。比較上限は未承認で、生成・費用承認・課金は行いません。信頼できる単価がなければ利用不可を表示します。実local UIの保存/復元・503確認は既存2資料の履歴です。採用前の3・4資料検証はhost/API/VMのみでした。その後、実Reactと合成API/RAMによる3・4資料の保存・復元、見積表示/自然失効、owner切替を追加観測し、独立documentary検収しました。[現行証拠](docs/evidence/development-execution/eve-multi-material-main-current.json)。実認証・本番保存・Provider利用の受入は別gateです。数値正常/期限はfixtureと区別し、最新mainのSmith navとの復元・表示切替・入力保持も限定確認しました。実Provider単価・本番認証/保存・本番見積/課金・公開は別gateです。初回CIが指摘したテスト表現1箇所を修正し、製品動作は維持しています。Smith navはPR203でmainへ限定統合済みです。

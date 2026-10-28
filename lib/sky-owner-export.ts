@@ -107,6 +107,9 @@ export function skyOwnerOverview(snapshot: OwnerExportSnapshot, warnings: string
       sections.push(`<section><h2>${escapeHtml(section.title)}</h2>${section.lines.map(text).join('')}</section>`);
     if (request.appId === 'planner') sections.push(text('作業の準備を整理した下書きです。調査、制作、連絡、予定の変更は行っていません。'));
   }
+  for (const item of job.toolObservations ?? []) {
+    sections.push(`<section><h2>Toolから保存した内容</h2>${text('画面で受け取った内容です。Toolの処理成功は独立確認されていません。')}${text(item.text)}</section>`);
+  }
   for (const { delegation, artifacts } of snapshot.agents) {
     sections.push(`<section><h2>${escapeHtml(delegation.targetAgentName)}の成果</h2>${text(skyProgress(delegation.state, 'execution').label)}${artifacts.map((artifact) => text(agentOutputText(ownerExportArtifact(artifact.document)) || '保存された本文はありません。')).join('')}${delegation.artifactsCaptured !== 1 ? text('成果が保存できたかをまだ確認できません。') : ''}</section>`);
   }
@@ -166,6 +169,17 @@ export async function buildSkyOwnerExport(snapshot: OwnerExportSnapshot, exporte
         ? `本人が選んだZoomの表示文章をローカルLLM ${result.model!.name} で整理。会議の全記録・投稿・会議操作の証拠ではありません。`
         : '制限付きtext処理。実Zoom操作・外部実作業の証拠ではありません。',
       result?.body ?? 'この仕事には保存された連携成果がありません。');
+  }
+  if (job.toolObservations?.length) {
+    if (job.toolObservations.length > 20 || job.toolObservations.some(item =>
+      item.schema !== 'rockstaros.work-tool-observation/1' || item.verification !== 'client_observed_unverified' ||
+      typeof item.text !== 'string' || bytes(item.text).byteLength > 8192)) throw new SkyOwnerExportError('INVALID_ARTIFACT');
+    const observations = job.toolObservations.map(item => ({ id: item.id, packageKey: item.packageKey,
+      manifestSha256: item.manifestSha256, connectorId: item.connectorId, toolName: item.toolName,
+      text: item.text, verification: item.verification, recordedAt: item.recordedAt }));
+    await addJson('tool-observations.json', observations);
+    warnings.push('Toolの画面から保存した結果は独立検証されていません。実行成功や費用確定の証拠ではありません。');
+    for (const item of observations) summaries.push(`## Tool: ${item.toolName}`, '状態: 画面で観測した結果（独立未検証）', item.text);
   }
   for (const { delegation: item, artifacts, receipt } of snapshot.agents) {
     agents.push({ id: item.id, revision: item.revision, state: item.state,

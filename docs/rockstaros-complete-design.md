@@ -483,6 +483,16 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 <a id="redesign-thread-home-sky-eve"></a>
 ## RockstarOS本体の最新設計: Home/Sky/Eve
 
+### Eve・Smith・miiの自由な担当と同じ仕事
+
+目的と体験: 用途を決め打ちせず、本人がEveで担当の目的・入力・期待成果を保存し、Smithで必要能力と実行先候補を照合する。既存仕事のowner、担当ID/revision、job ID、入力hashとTool版を結び、miiソフト画面でも同じ仕事と保存された成果を読む。追加SDK Toolは同じ契約で参加する。
+
+責任と入出力: ROCKは既存Agent/workflow/API、ローカルConnectorとmii表示adapterを担当し、EXTERNALはTool作者の実装、JOINTは実デバイスとサービス、OWNERは設定・選択・明示承認を担う。利用者入力とschema宣言を受け、照合候補・不足・仕事の状態・未検証成果を返す。Toolの宣言とmodel出力を権限へ昇格させない。
+
+状態・保存・復旧: 仕事の版付き操作はpending→claimed→client観測未検証、またはclaim前取消／claim後停止要求に分ける。Connectorの一回claimと仕事の取消をCASで競合させ、応答消失時は自動再実行しない。結果は既存仕事に残してexportし、切断後は同一IDを読戻す。短命capabilityの原文や既存credentialを仕事・exportへ保存しない。mii合成観測は期限・boot・epoch・sceneを検査し、実機校正や物理停止を証明しない。
+
+承認・合格・未決定: 実行前の本人確認、Tool版・schema・実行先、停止・再送・別owner、2種の担当と未対応要求を独立検収する。現在の実行経路は既存local-preview IDとloopbackの隔離環境に限る。一般account/eSIMの認可、実料金・Provider・実mii/Pixelの受入、UNKNOWNの最終照合は別途必要。[詳細](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+
 指定チャットの設計をRockstarOS本体の大元とする。以下のHome、Sky、Eve、利用者作成OS版を共通runtime上に置く。旧Buildroot/QEMU等の成果は適合した部分を再利用し、Pixel全OS受入とQEMU Developer Previewは別々に記録する。
 
 目的と体験: Homeを投稿そのものの画面とし、ニュース、モデル、Agent、Tool、任意Wallet/Market、共有OS版を同じ発見経路から扱う。情報投稿は出典・取得日時・提供元・権利状態、機能投稿は作者・版・互換・料金・権限を示す。投稿から詳細、追加、設定、Eve下書きへ進む。追加、購入、仕事実行、外部送信、課金は別の本人承認と状態遷移を持つ。

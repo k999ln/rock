@@ -58,6 +58,20 @@ await sky.start({ port: 8787 });
 
 完全な例は[`examples/minimal.mjs`](examples/minimal.mjs)です。
 
+### 非推論の追加例
+
+[`examples/line-counter.mjs`](examples/line-counter.mjs)には、文章の行数を数えるToolと二つの整数を足すToolがあります。どちらも決定的な処理です。`createLineCounter()`は定義を作るだけで、登録・公開・起動はしません。作者はこの例を参考に、Tool名、入出力Schema、副作用、料金、handlerを自分の処理に合わせて変更できます。個別ToolのIDをOSの仕事処理へ追加する必要はありません。
+
+隔離した一時ディレクトリと合成の登録情報を使い、SDKのローカルMCPとConnector、明示承認、既存の仕事、miiソフトウェア読戻しをまとめて確認する場合は、リポジトリのルートで次を実行します。
+
+```sh
+node --experimental-strip-types --test tests/eve-smith-mii-platform-integration.test.mjs
+```
+
+この試験は外部サービスやモデルを呼びません。試験用に検証済みとして扱うPackageはfixtureであり、実際のcatalog掲載・審査・利用権や、任意の第三者コードの安全性を保証するものではありません。実利用には対象Packageの検証状態と利用権、実行先、入力内容、実行時の承認を別途確認します。miiの確認もソフトウェア上の合成入力に限ります。
+
+同じ仕事からの実行は現在、既存`local-preview:` IDを明示したloopback開発環境に限定されます。通常account/eSIMや有料Toolでの実行権限は、この例を起動しても得られません。Connectorは受け取ったTool仕様と仕事の一回claimを照合し、確認できなければ実行しません。
+
 ## 登録と公開の境界
 
 `start()`でMCPをPC内で起動すると、SDKは`~/.sky/mcp-tools`へ権限を制限した接続定義を置きます。PC Connectorが動いていれば、RockstarOSのSky一覧にこのAppが自動で現れ、そのカードから接続できます。MCP管理画面でも機能を確認でき、実行時は内容ごとの承認を通します。停止時は接続定義を取り除きます。保存場所を変える場合はSDKとConnectorの両方に同じ`SKY_LOCAL_TOOL_DIR`を設定します。

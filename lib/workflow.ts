@@ -133,7 +133,63 @@ export type WorkCommand =
   | { id: string; action: 'complete'; note: string }
   | { id: string; action: 'amc_event'; event: AmcEvent }
   | { id: string; action: 'cancel' };
+/** Immutable provenance of the owner's saved role at job creation. It does not grant execution authority. */
+export type WorkAgentBinding = {
+  schema: 'rockstaros.work-agent-binding/1';
+  agentId: string;
+  agentRevision: number;
+  requestDigest: string;
+};
+/** A fenced client attempt; even an observed response is not a verified remote terminal state. */
+export type WorkToolAttempt = {
+  schema: 'rockstaros.work-tool-attempt/1';
+  id: string;
+  packageKey: string;
+  manifestSha256: string;
+  connectorId: string;
+  toolName: string;
+  inputSha256: string;
+  state: 'pending' | 'claimed' | 'cancelled_before_claim' | 'stop_requested' | 'observed_unverified';
+  startedAt: string;
+  capabilityHash?: string;
+  capabilityExpiresAt?: number;
+  claimedAt?: string;
+  claimedRevision?: number;
+  stopRequestedAt?: string;
+  observationId?: string;
+};
+/** Ephemeral capability for a single claim. Only the hash is persisted. */
+export async function workToolCapabilityHash(value: {
+  owner: string; jobId: string; attemptId: string; inputSha256: string; expiresAt: number; token: string;
+}) {
+  const encoded = new TextEncoder().encode(JSON.stringify([
+    'rockstaros.work-tool-claim/1', value.owner, value.jobId, value.attemptId,
+    value.inputSha256, value.expiresAt, value.token,
+  ]));
+  const hash = await crypto.subtle.digest('SHA-256', encoded);
+  return Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+export function newWorkToolCapability() {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return btoa(String.fromCharCode(...bytes)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
+}
+
+/** User-saved, client-observed Tool text. It is evidence to review, not a verified Tool receipt. */
+export type WorkToolObservation = {
+  schema: 'rockstaros.work-tool-observation/1';
+  id: string;
+  packageKey: string;
+  manifestSha256: string;
+  connectorId: string;
+  toolName: string;
+  text: string;
+  verification: 'client_observed_unverified';
+  recordedAt: string;
+};
 export type WorkJob = {
+  toolAttempts?: WorkToolAttempt[];
+  toolObservations?: WorkToolObservation[];
+  agentBinding?: WorkAgentBinding;
   freeCloud?: {requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'|'queued'|'cancelled'; source:string; backgroundPrompt?:string; backgroundConsent?:boolean; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   skyApp?: SkyAppBinding;
   composition?: CompositionState;
@@ -618,7 +674,17 @@ export function applyWorkCommand(
   };
   if (command.action === 'cancel') {
     next.status = 'cancelled';
-    if (job.skyApp) next.skyApp = { ...job.skyApp, result: null };
+    // Plan cancellation cannot certify the state of an already claimed Tool.
+    // Preserve its result and distinguish pre-claim revocation from a stop request.
+    if (job.toolAttempts) next.toolAttempts = job.toolAttempts.map(attempt => ({
+      ...attempt,
+      ...(attempt.state === 'pending' ? { state: 'cancelled_before_claim' as const } : {}),
+      ...(attempt.state === 'claimed' ? { state: 'stop_requested' as const } : {}),
+      ...(['pending', 'claimed', 'observed_unverified'].includes(attempt.state) ? { stopRequestedAt: now } : {}),
+    }));
+    // A Tool admission can still produce a late observation after cancellation.
+    // Preserve previously saved output; cancellation is not an artifact deletion.
+    if (job.skyApp && !job.toolAttempts?.length) next.skyApp = { ...job.skyApp, result: null };
   }
   else if (command.action === 'complete') {
     if (job.skyApp && !job.skyApp.result) throw new WorkError('Skyの成果を確認してください。');

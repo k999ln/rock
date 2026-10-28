@@ -38,6 +38,8 @@ import { compatibleLocalPackageRuntimes } from '@/lib/sky-package-runtime';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import type { McpConnection } from '@/lib/mcp-hub';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
+import MiiWorkPreview from '@/components/mii-work-preview';
+import AgentToolJobRunner from '@/components/agent-tool-job-runner';
 import { WorkbenchCloudText, WorkbenchCloudTextDeleteDialog, useWorkbenchCloudText } from '@/components/workbench-cloud-text';
 import { Textarea } from '@/components/ui/textarea';
 import { useOwnerMemoryState } from '@/components/use-owner-memory-state';
@@ -58,7 +60,7 @@ const stateNames = {
 type Update = { jobId: string; revision: number; command: WorkCommand };
 type JenniferTaskJobCoordination = NonNullable<WorkJob['coordination']>;
 type PendingUpdate = Update & { ownerScope: string };
-type Creation = { ownerScope: string; id: string; title: string; templateId: string; plan?: Pick<WorkPlan, 'schemaVersion' | 'objective'> };
+type Creation = { ownerScope: string; id: string; title: string; templateId: string; plan?: Pick<WorkPlan, 'schemaVersion' | 'objective'>; agentRef?: { id: string; revision: number } };
 type RunnerDraft = { key: string; ownerScope: string; jobId: string; stepId: string; snapshot: Partial<MrToolRunnerState> };
 type Delegation = {
   id: string;
@@ -391,11 +393,15 @@ export default function Workbench({
   cloudDraft,
   initialPackageKey = '',
   packageRuntimeServers = [],
+  agentReference = null,
+  agentRequired = false,
 }: {
   embedded?: boolean;
   cloudDraft?: CloudWorkDraft | null;
   initialPackageKey?: string;
   packageRuntimeServers?: McpConnection[];
+  agentReference?: { id: string; revision: number } | null;
+  agentRequired?: boolean;
 }) {
   const [ownerScope, setOwnerScopeValue] = useState<string | null>(null);
   const currentOwner = useRef<string | null>(null);
@@ -924,12 +930,14 @@ export default function Workbench({
   async function create() {
     if ((!creation.current && (gameDraft !== gameDraftRef.current || gameInput !== gameInputRef.current)) || gamePrepareFlight.current || createInFlight.current || updateInFlight.current || busy || (!creation.current && !ownsCurrentInput())) return;
     if (!creation.current && (!ownerScope || !ready)) { setError(OWNER_CHECK_REQUIRED); return; }
+    if (!creation.current && agentRequired && !agentReference) { setError('担当の最新版を確認してから仕事を作成してください。'); return; }
     createInFlight.current = true;
     listGeneration.current++; setLoading(false);
     setBusy(true);
     setError('');
     const draft = gameDraftRef.current;
     const operation: Creation = creation.current ?? { ownerScope: ownerScope!, id: crypto.randomUUID(), title: title.trim(), templateId,
+      ...(agentReference ? { agentRef: { ...agentReference } } : {}),
       ...(draft && draft.ownerScope === ownerScope && draft.title === title.trim() && draft.templateId === templateId
         ? { plan: { ...draft.plan } } : {}) };
     creation.current = operation;
@@ -943,10 +951,11 @@ export default function Workbench({
       if (ownerStatus === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
       if (ownerStatus === 'changed')
         throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
-      const input = { id: operation.id, title: operation.title, templateId: operation.templateId, ...(operation.plan ? { plan: operation.plan } : {}) };
+      const input = { id: operation.id, title: operation.title, templateId: operation.templateId, ...(operation.plan ? { plan: operation.plan } : {}), ...(operation.agentRef ? { agentRef: operation.agentRef } : {}) };
       const job = readWorkJobResponse(await request<unknown>('POST', input, operation.ownerScope));
       if (job.id !== input.id || job.title !== input.title || job.templateId !== input.templateId ||
-          (operation.plan && (job.plan.schemaVersion !== operation.plan.schemaVersion || job.plan.objective !== operation.plan.objective)))
+          (operation.plan && (job.plan.schemaVersion !== operation.plan.schemaVersion || job.plan.objective !== operation.plan.objective)) ||
+          (operation.agentRef && (job.agentBinding?.agentId !== operation.agentRef.id || job.agentBinding.agentRevision !== operation.agentRef.revision)))
         throw new Error('保存結果を確認できません。同じ作成内容で結果を確認してください。');
       accept(job);
       selectJob(job.id, operation.ownerScope);
@@ -1636,7 +1645,7 @@ export default function Workbench({
               <p>Package keyとmanifest hashを見積対象の依頼文へ含めます。実行先はA2A Agent候補から別途選択します。相手がこのPackageを実行できるとは限らず、送信は見積同意・上限・圏外継続設定・実行承認が揃うまで行いません。</p>
               {packageRuntimeManifest && <section className="work-package-local-runtime" aria-label="ローカルMCP runtimeへのPackage capability binding">
                 <h3>このPCのMCP runtimeへ手動で結び付ける</h3>
-                <p>PC向けの審査済みPackageについて、接続済みstdio MCP toolの入出力Schemaが完全一致し、双方が無料扱いの場合だけ候補に表示します。これはSchema互換の手動bindingで、Packageのsource codeをConnectorが導入・実行する意味ではありません。選んだMCP toolの説明と引数を毎回確認し、既存の1回限りの承認を行ってください。</p>
+                <p>PC向けの審査済みPackageについて、接続済みのstdioまたはSDKのローカルHTTP MCP toolで入出力Schemaが完全一致し、双方が無料扱いの場合だけ候補に表示します。これはSchema互換の手動bindingで、Packageのsource codeをConnectorが導入・実行する意味ではありません。選んだMCP toolの説明と引数を毎回確認し、既存の1回限りの承認を行ってください。</p>
                 {packageRuntimeCandidates.length > 0 ? <>
                   <label>互換runtime/toolを選択
                     <select value={selectedPackageRuntimeCandidate ? packageRuntimeCandidates.findIndex(({ server, tool }) => server.id === selectedPackageRuntimeCandidate.server.id && tool.name === selectedPackageRuntimeCandidate.tool.name).toString() : ''}
@@ -1654,10 +1663,18 @@ export default function Workbench({
                     <label>このruntimeへ渡す依頼
                       <textarea rows={3} maxLength={4_000} value={localPackageTask} onChange={(event) => setLocalPackageTask(event.target.value)} placeholder="このPackage機能で行う具体的な依頼" />
                     </label>
-                    <McpBotRunner key={`${handoffPackage.packageKey}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}`}
-                      server={selectedPackageRuntimeCandidate.server} request={localPackageTask} fixedToolName={selectedPackageRuntimeCandidate.tool.name} executionDisabled={!ownerScope || !localPackageTask.trim()} />
+                    {agentRequired ? selected && ownerScope && agentReference && localPackageTask.trim() &&
+                      selected.agentBinding?.agentId === agentReference.id && selected.agentBinding.agentRevision === agentReference.revision ?
+                      <AgentToolJobRunner key={`${ownerScope}:${selected.id}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}`}
+                        server={selectedPackageRuntimeCandidate.server} toolName={selectedPackageRuntimeCandidate.tool.name} task={localPackageTask}
+                        packageKey={handoffPackage.packageKey} manifestSha256={handoffPackage.manifestSha256} job={selected}
+                        ownerScope={ownerScope} agentReference={agentReference} isCurrent={() => currentOwner.current === ownerScope && selectedIdRef.current === selected.id}
+                        onJob={accept} onRunningChange={setRunning} /> : <p>この担当に結びついた仕事を作成または選択し、依頼内容を入力してください。</p>
+                      : <McpBotRunner key={`${handoffPackage.packageKey}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}`}
+                        server={selectedPackageRuntimeCandidate.server} request={localPackageTask} fixedToolName={selectedPackageRuntimeCandidate.tool.name} executionDisabled={!ownerScope || !localPackageTask.trim()} />}
+
                   </>}
-                </> : <p>互換する実行先はありません。mcp_stdio・PC実行・Package/Tool双方の無料料金宣言・完全一致する入出力Schema・接続済みPC stdio runtimeが必要です。遠隔MCPや有料処理はこの経路では実行しません。</p>}
+                </> : <p>互換する実行先はありません。対応する接続方式・PC実行・Package/Tool双方の無料料金宣言・完全一致する入出力Schema・接続済みPC runtimeが必要です。遠隔MCPや有料処理はこの経路では実行しません。</p>}
               </section>}
             </>}
             {handoffPackageState === 'not_included' && <p role="alert">このPackageを有効なSIM/eSIM利用権で確認できませんでした。利用権を確認するまで引き継ぎません。</p>}
@@ -1784,6 +1801,7 @@ export default function Workbench({
                   <h2>{selected.title}</h2>
                   <span>{stateNames[selected.status]}</span>
                 </div>
+                {ownerScope && selected.agentBinding && <MiiWorkPreview key={`${ownerScope}:${selected.id}`} job={selected} ownerScope={ownerScope} onRead={accept} />}
                 {selected.coordination && (
                   <section className="work-notice" aria-label="Jennifer leaf task">
                     <strong>Jennifer → Zema leaf task</strong>

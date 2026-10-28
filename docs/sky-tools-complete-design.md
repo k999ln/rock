@@ -336,6 +336,14 @@ Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのS
 
 ## Skyが受け持つmodel・Agent・実行先の選択
 
+### 本人が作る担当の能力照合とSDK Tool
+
+Eveの担当設定に、本人が編集する必要入力・成果・Package・実行先を任意の版付き項目として追加する。SmithはverifiedなPackageと入出力schema、接続されたPC Tool、利用権表示を照合し、不足・未確認を区別する。宣言と候補表示は実行許可ではない。旧担当の編集では新しい能力項目を保持し、版競合時は書き換えない。
+
+実行時は対象Agent/job/入力/Toolの版を記録し、一回だけ本人承認を受ける。Connectorは実際のschema digest・free申告・transportと仕事側の短命claimを照合する。停止がclaimに先行した場合は実行を拒否し、claimが先の場合は停止未確認として扱う。結果は同じ仕事のclient観測として保存し、Tool成功のreceiptや費用確定に置き換えない。`toolkits/sky-tool-sdk/examples/line-counter.mjs`の二つの決定的処理はSDK追加例で、catalog審査や一般Toolの安全性の証拠ではない。
+
+有限範囲は本人設定済みのloopback local-previewと合成Tool。実account/eSIMの権限・有料Toolの見積/予約/usage・外部Providerと実機は未受入。別owner・期限切れ・旧版・schema変更・失効・取消競合・不明応答を拒否または未確認とする。詳細は[共通契約](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+
 本人の2026-10-15指示により、Skyはcloud Agentと導入したlocal LLMの双方を選ぶ入口とする。modelの推論先とAgent runnerを区別し、端末内/cloud/明示した工程ごとの組合せ、必要な導入・接続・データ送信・費用・準備状態を示す。Zemaは選んだ経路の仕事/成果/費用を保持し、Brokerは権限/予算/承認を強制する。使えない時の自動fallbackは行わず選び直す。[詳細契約・現在地・未実行SC01〜05](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、6 adapterの定義と本番接続を区別する。
 
 ## 携帯を持たない制作を既存Toolへ接続する

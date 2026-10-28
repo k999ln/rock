@@ -1,4 +1,14 @@
 {
+  "eveSmithMiiHostPreviewCandidate": {
+    "owner": "ROCK",
+    "workstream": "Android / Device / Local AI with shared Sky and workflow contracts",
+    "baseMain": "2ce2820185e48cd15b0d8c26a1f5c0ea91757476",
+    "status": "verify_and_scoped_independent_review_pass_git_pending",
+    "scope": "isolated loopback local-preview; synthetic owner, SDK tools and mii input",
+    "evidence": "docs/evidence/development-execution/eve-smith-mii-host-preview.json",
+    "notAccepted": ["actual accounts or eSIM authority", "paid execution and verified billing", "physical mii or Pixel OS", "public deployment"],
+    "next": "Save the reviewed candidate in Git, then verify PR head CI, main integration and same-SHA CI."
+  },
   "redesignThreadGitReconciliation": {
     "recordedAt": "2026-10-21",
     "primaryWorkstream": "Git / CI / Operations",

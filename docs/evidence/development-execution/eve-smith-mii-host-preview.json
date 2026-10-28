@@ -1,0 +1,297 @@
+{
+  "schema": "rockstaros.eve-smith-mii-host-preview-evidence/1",
+  "baseMain": "2ce2820185e48cd15b0d8c26a1f5c0ea91757476",
+  "state": "verify_and_scoped_independent_review_pass_git_pending",
+  "scope": "isolated loopback local-preview, synthetic owner and reviewed Package fixtures, deterministic SDK tools, software mii input",
+  "tests": [
+    {
+      "command": "node --experimental-strip-types --test tests/work-tool-observations-route.test.mjs tests/work-agent-binding-route.test.mjs tests/work-plan-route.test.mjs tests/mii-work-adapter.test.mjs",
+      "result": "pass before final candidate freeze"
+    },
+    {
+      "command": "ROCK_TEST_CHROME='<installed Chrome>' node --experimental-strip-types --test tests/eve-smith-mii-browser.test.mjs tests/eve-smith-mii-platform-integration.test.mjs tests/mcp-job-claim-connector.test.mjs",
+      "result": "pass before final candidate freeze; loopback access required"
+    }
+  ],
+  "review": {
+    "result": "PASS_SCOPED",
+    "reviewer": "independent_review",
+    "scope": "isolated local-preview candidate; synthetic owner, reviewed package, SDK tool and mii input",
+    "reviewedContentSha256": "4d3071a0e7fbe325fd8150407d73f4094bfee2c1dc0a07fcb4f9007c0cfb2526",
+    "hashMethod": "git ls-files -co --exclude-standard -z | sort -z | xargs -0 shasum -a 256 | shasum -a 256; before evidence update",
+    "tests": "isolated Chrome 2 roles/2 schemas, real Connector and cancel/replay, package and simulated mii persistence: 14/14; owner/CAS/stop/results/mii: 86/86",
+    "note": "Final candidate independently reviewed before this evidence/status update; source 62 hashes were unchanged and match this manifest.",
+    "fullVerifyReexecutedByReviewer": false
+  },
+  "git": "Candidate has not yet been saved, merged or checked on main.",
+  "limits": [
+    "normal account and eSIM dispatch authority not implemented",
+    "Tool result is client-observed and unverified",
+    "paid usage, production Provider, physical mii and Pixel OS not accepted",
+    "mii software observation is not a sensor or calibration contract",
+    "stored result export has explicit exclusions"
+  ],
+  "preservation": "No model inference, existing device operation, actual account, paid action, new external connection, device credential or existing job mutation.",
+  "sourceSha256": [
+    {
+      "path": "app/api/rockstar/entitlements/route.ts",
+      "sha256": "543753722a410a85c58915b02b0c06886bb8a0667afd0cfa14752b5aab9835fa"
+    },
+    {
+      "path": "app/api/sky/agents/route.ts",
+      "sha256": "ee1229d620b35177e805bdf5d3ac218e27cbef00471697cb0084b20d5d5a31da"
+    },
+    {
+      "path": "app/api/work-jobs/route.ts",
+      "sha256": "b8755a59912e51d5734b087c97c0fa71284834258eb1b2d3dc66ea581f212ee6"
+    },
+    {
+      "path": "app/api/work-jobs/tool-observations/authority.ts",
+      "sha256": "d69427a4517ca5560968eb5cbcb39ee87edaa646cc4b340befc212232a701ea9"
+    },
+    {
+      "path": "app/api/work-jobs/tool-observations/claim/route.ts",
+      "sha256": "fe87b6d6174b7a366031cf8807e1def76895c006e6b11b9b36bb80369fe60042"
+    },
+    {
+      "path": "app/api/work-jobs/tool-observations/route.ts",
+      "sha256": "f51450120401dc051c5d43136d405293cda73f41d0d4aba95c306221948d5f87"
+    },
+    {
+      "path": "components/agent-tool-job-runner.tsx",
+      "sha256": "5010b38c27e48263b7c2675ef763a7b5ff7483e2e0cc37896e07f5c7f9d972c8"
+    },
+    {
+      "path": "components/eve-object-agent-creator.tsx",
+      "sha256": "7dc084eb58734c5c03b1993a207fa607b3dd0c27689443a9fc66f09952cf7b0e"
+    },
+    {
+      "path": "components/mcp-bot-runner.tsx",
+      "sha256": "776062bd57322104efffe52a9d688efb909566c37856c7cfa1f95b264e1eef31"
+    },
+    {
+      "path": "components/mii-work-preview.tsx",
+      "sha256": "f4b6fa13687d5296d67c8f7c6b75b54992799d08333907d5a0afdf9e7c7d5bed"
+    },
+    {
+      "path": "components/sky-agent-capability-review.tsx",
+      "sha256": "c4dcab013d45bf7b0ff11786a4244401fedab3b369c742117fb1bbc136847e93"
+    },
+    {
+      "path": "components/sky-agent-library.tsx",
+      "sha256": "c7ac158db7d9f9056a3b5ceb1e9f2b0ccafd3fae19bc15083b64a187ac5849ed"
+    },
+    {
+      "path": "components/sky-chat-workspace.tsx",
+      "sha256": "7592170f9c47cc754b4d7cc2f1015594f05044ccbe334a348624dc907fdc1e40"
+    },
+    {
+      "path": "components/workbench.tsx",
+      "sha256": "806914506da51f22ce2c055b44f89c1d4de73de8acbf5a841eb11c810dccfb40"
+    },
+    {
+      "path": "lib/eve-agent-creation.ts",
+      "sha256": "4a64daffb541ef0537918d7280881cf866c2ff4e4f064b2496388a380cc571e9"
+    },
+    {
+      "path": "lib/mcp-hub.ts",
+      "sha256": "4c193a8366d8ce4c48217cdeee02ab3b8ab64fe758f1ba6e68c25d15241a31df"
+    },
+    {
+      "path": "lib/mii-indexeddb-journal.ts",
+      "sha256": "321f34d8c5aca5b1202d05647d0df2c87b312bc61a1923cb60029aaa58002605"
+    },
+    {
+      "path": "lib/mii-work-adapter.ts",
+      "sha256": "b01048d59319322b3bcc30d5b5ebbd92941293f75fdd3b51bd4191a965d71b0b"
+    },
+    {
+      "path": "lib/sky-agent-library-store.ts",
+      "sha256": "13120031facce76c5dbf2e17e42b95cc4ccb49e4e77ca576228d6b97ce5aa70e"
+    },
+    {
+      "path": "lib/sky-agent-library.ts",
+      "sha256": "38907087afa677d2ecf8aa5b8d12d06f3c27579408a31a012761b1d9545f5a66"
+    },
+    {
+      "path": "lib/sky-agent-requirements.ts",
+      "sha256": "e97269c250a848d3104b07d3fdd1403f7c85ee35d76d014d7ff8beb01e412a92"
+    },
+    {
+      "path": "lib/sky-owner-export.ts",
+      "sha256": "35697375572a54400d0c7da7be84a5f96010c24b01e14e1a48290f82571961ce"
+    },
+    {
+      "path": "lib/sky-package-runtime.ts",
+      "sha256": "c545021756ac7a9beee56e6c2dfb692fbae24537c6e5bbdab52a418b8e4ecc65"
+    },
+    {
+      "path": "lib/work-store.ts",
+      "sha256": "b0698ef0b6c29a020c18733fecf77688842533d8160486eb8c8017953115417b"
+    },
+    {
+      "path": "lib/workflow.ts",
+      "sha256": "166a8d5acf3c2da06678f206f4472b120f4a8f7f49000fc16c99a1a90b8d82db"
+    },
+    {
+      "path": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+      "sha256": "5ee84a4d158096b0965b08c71e1fbcf2cfcaa6b9046ce7e6994fb178bdce4c57"
+    },
+    {
+      "path": "public/toolkits/sky-mcp-connector.zip",
+      "sha256": "07bf10e5bd9d3d30e6d9c86d2ea015ee263db1666f70a4cfc1ec83d5be1c4e81"
+    },
+    {
+      "path": "tests/agent-tool-job-runner-ui.test.mjs",
+      "sha256": "503434ef139ff91ddf8f93eece8fa49342426e565b5ba62ebe801a7f1897298d"
+    },
+    {
+      "path": "tests/esim-cloud-recovery.test.mjs",
+      "sha256": "8d1cce8dea20f4e03ec787d0e956cc3017dc4925ced509c3d37cbdf1fbcb6d70"
+    },
+    {
+      "path": "tests/eve-agent-creation.test.mjs",
+      "sha256": "c5dbcf4d82c00e400a02ecb1a9529a42886a6b5a2e93aa0ac814d9cdb584df6d"
+    },
+    {
+      "path": "tests/eve-smith-mii-browser.test.mjs",
+      "sha256": "c78e3af68d3f669f5ba07c8a58caf75202ab2cfb64a7c5aedb1d7917e66e00d8"
+    },
+    {
+      "path": "tests/eve-smith-mii-claim-race.test.mjs",
+      "sha256": "ca742a2ec19395b6f798b5240bdfa7c14e1c87ba1daef8ce0f0c68cda3eb1379"
+    },
+    {
+      "path": "tests/eve-smith-mii-platform-integration.test.mjs",
+      "sha256": "4d2fa89ea2518c9cebc9c49c3336db38d18bb7d5d8e7df88252319fada1bb135"
+    },
+    {
+      "path": "tests/fixtures/eve-smith-mii-browser/device.ts",
+      "sha256": "4d2354b67fd313f93da5af0b847cee5780690db64d28719798e8a0bfccb3c9f3"
+    },
+    {
+      "path": "tests/fixtures/eve-smith-mii-browser/entry.tsx",
+      "sha256": "896d0c0a0378321b39f44bd64a1281c006000f9bf588019694de1e5c6b1dd971"
+    },
+    {
+      "path": "tests/fixtures/eve-smith-mii-browser/navigation.ts",
+      "sha256": "68bf2dd608d60f386a2c5d34cf4e8b759bc76a0fbb55bddbdd78cf58300c8a28"
+    },
+    {
+      "path": "tests/fixtures/eve-smith-mii-browser/next-link.tsx",
+      "sha256": "8b73a0d7fb76099fdfff4a81ab56ebfb1941a010b99fc15f4ce0a265757d6deb"
+    },
+    {
+      "path": "tests/material-study.test.mjs",
+      "sha256": "06d03bd5e15e43e38fc5eadd89a2f8855253da24f03464a9f08709f2a288f7f3"
+    },
+    {
+      "path": "tests/mcp-job-claim-connector.test.mjs",
+      "sha256": "3b449fab220563f25c5a1cce15a49b4c5de5c958853f500069a0e7260f9696bf"
+    },
+    {
+      "path": "tests/mii-indexeddb-journal.test.mjs",
+      "sha256": "d2f52fafdd38eb210f240a5026278508292e7db934377bfbddac1a3c96dafce5"
+    },
+    {
+      "path": "tests/mii-work-adapter.test.mjs",
+      "sha256": "568c1db6837908e84a7e22f3aa5cb5b37f925a12ba11a091bf05ac1da4aa50d1"
+    },
+    {
+      "path": "tests/mii-work-preview-ui.test.mjs",
+      "sha256": "42cf41e07f1f876792dac7a66f1d63d6b88d14f8a44e95e460b3362d53815f68"
+    },
+    {
+      "path": "tests/owner-intent-route.test.mjs",
+      "sha256": "7755c4d7ca50d6afb9943ad2f10d43fc6c784b44aeba934bb5c9cea1425c1eec"
+    },
+    {
+      "path": "tests/rockstar-entitlements-owner-scope.test.mjs",
+      "sha256": "80d0d62e6da6e37d75dc62a68151f8339ec7cc7a7d7a0b11787421ba7728ebcc"
+    },
+    {
+      "path": "tests/rockstar-service-access-history.test.mjs",
+      "sha256": "f91552c45648a59b2c00a543b99081bdf3576059e75e9dc364cfcb7b20b4b779"
+    },
+    {
+      "path": "tests/sky-agent-capability-review-ui.test.mjs",
+      "sha256": "884fba9bd5c289c31da4ff906c03ef8bb18127ab3e481aa642da57c2dfb86eaa"
+    },
+    {
+      "path": "tests/sky-agent-requirements.test.mjs",
+      "sha256": "241d34056a4897c501bb4371b2f401e41a039fa33b8be11e6fc2fd7e3a17de2f"
+    },
+    {
+      "path": "tests/sky-owner-export.test.mjs",
+      "sha256": "28ce856e4141fabc203359dfb9fb4f97f09c0e2f2ee39132fea64e2f8117d020"
+    },
+    {
+      "path": "tests/sky-package-runtime.test.mjs",
+      "sha256": "141fe1b859303622c3094a662af21dc4503fc5ec4851705817ba82803168b1eb"
+    },
+    {
+      "path": "tests/sky-sdk-local-package-integration.test.mjs",
+      "sha256": "3028142c2e28478fbfa9ce00ed1bf5156c915c6833db608955af68003456d651"
+    },
+    {
+      "path": "tests/sky-studio-chat.test.mjs",
+      "sha256": "49b1182ee819a5edd7b9efec825ae02990c92a5814e3e1a3a916a3fed787b2d8"
+    },
+    {
+      "path": "tests/web-route-style-contract.test.mjs",
+      "sha256": "dbf41cb0851e35132102e8a42b06b17c0c1995b48f16740b1c9ea55786a75e1c"
+    },
+    {
+      "path": "tests/work-agent-binding-route.test.mjs",
+      "sha256": "bea1beba578b1db0243ced5d2043995f2edb96a35766d2a8ca9d8d466c69dbf4"
+    },
+    {
+      "path": "tests/work-composition-route.test.mjs",
+      "sha256": "46dee186ffe822595e7b3ad0249179b68aabfb95e2b914e29ea7b48737663a41"
+    },
+    {
+      "path": "tests/work-plan-route.test.mjs",
+      "sha256": "21a5f6fdaaaefb1ef6aedfcad4189593657b4edbf278e6aa6fc2778f57a52048"
+    },
+    {
+      "path": "tests/work-tool-observations-route.test.mjs",
+      "sha256": "20504a68e7fa38d0e9a309fe21ac8750bdcd2e280d0f41e1e7cd18b4409e684c"
+    },
+    {
+      "path": "tests/workbench-cloud-text.test.mjs",
+      "sha256": "a653482b0719aa6aabbc41a7107ec40ce828e151cefe6d42c8857f4fc9503fcb"
+    },
+    {
+      "path": "tests/workbench-owner-recovery.test.mjs",
+      "sha256": "012cadbe140f0a826cd074ef09f3b70cba9a037c9941e86617febb4804175dda"
+    },
+    {
+      "path": "tests/workplan-reconcile.test.mjs",
+      "sha256": "0db905c91ccb52ff4041ff739375c76056d4713079474a63e09321df3a3a2030"
+    },
+    {
+      "path": "toolkits/sky-mcp-connector/server.mjs",
+      "sha256": "8f9e8813b367b6d948baccf0c33cf88fb51de6e2ffcc4fa32bb073198a346963"
+    },
+    {
+      "path": "toolkits/sky-tool-sdk/README.md",
+      "sha256": "3e757ccb50c645015bb0dca8081309384119a060cfcaa39e57591c3803cd755b"
+    },
+    {
+      "path": "toolkits/sky-tool-sdk/examples/line-counter.mjs",
+      "sha256": "89ad01600c3690eec9cb2a93876ef9635ac6e7f883c809686c6513124a68ab6e"
+    }
+  ],
+  "researchPackSha256": "ccbfdb1767f3e85b28e997800a7ae009c186bb6482f06c34be0fd34629a7bb03",
+  "verification": {
+    "designCheck": "pass",
+    "baselineCheck": "pass",
+    "missionCheck": "pass",
+    "projectUpdate": "pass",
+    "fullVerify": "pass: OpenSSL 3.6.3; 3351 passed, 0 failed, 4 skipped in main Node suite; remaining verify stages passed",
+    "headCi": "not_started",
+    "mainMerge": "not_started",
+    "mergeCi": "not_started",
+    "fullVerifyCommand": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify"
+  }
+}

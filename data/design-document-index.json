@@ -1,4 +1,16 @@
 {
+  "eveSmithMiiHostPreview": {
+    "authority": "docs/rockstaros-complete-design.md#eve-smith-miiの自由な担当と同じ仕事",
+    "toolDesign": "docs/sky-tools-complete-design.md#本人が作る担当の能力照合とsdk-tool",
+    "serviceContract": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+    "implementation": ["components/eve-object-agent-creator.tsx", "components/sky-agent-capability-review.tsx", "components/agent-tool-job-runner.tsx", "components/mii-work-preview.tsx", "app/api/work-jobs/tool-observations/route.ts", "app/api/work-jobs/tool-observations/claim/route.ts", "toolkits/sky-mcp-connector/server.mjs"],
+    "tests": ["tests/eve-smith-mii-browser.test.mjs", "tests/eve-smith-mii-platform-integration.test.mjs", "tests/work-tool-observations-route.test.mjs", "tests/mii-work-adapter.test.mjs"],
+    "evidence": "docs/evidence/development-execution/eve-smith-mii-host-preview.json",
+    "localPreviewOnly": true,
+    "normalAccountAndEsimAuthorityAccepted": false,
+    "physicalDeviceAccepted": false,
+    "productionOrPaidAccepted": false
+  },
   "latestRockstarOsDesign": {
     "authority": "docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve",
     "sourceThread": "codex://threads/01a14d54-daee-7c30-87a8-faea84641a40",

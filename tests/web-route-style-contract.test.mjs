@@ -180,7 +180,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(chat, /href="\/chat\?view=work"/);
   assert.match(
     chat,
-    /<Workbench embedded cloudDraft=\{cloudWorkDraft\} initialPackageKey=\{preferredPackage\} packageRuntimeServers=\{mcpServers\} \/>/,
+    /<Workbench embedded cloudDraft=\{cloudWorkDraft\} initialPackageKey=\{preferredPackage\} packageRuntimeServers=\{mcpServers\} agentRequired=\{Boolean\(requestedAgentId\)\} agentReference=\{activeAgent \? \{ id: activeAgent\.id, revision: activeAgent\.revision \} : null\} \/>/,
   );
   assert.match(chat, /<ChatLiveProgress/);
   assert.match(chat, /<h1>Jennifer<\/h1>/);

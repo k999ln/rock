@@ -30,7 +30,7 @@ void test('the SDK archive linked by Studio contains exactly the current package
   const filename = `rockstaros-sky-tool-sdk-${manifest.version}.tgz`;
   assert.ok(studio.includes(`/toolkits/${filename}`));
   const archive = fileURLToPath(new URL(`../public/toolkits/${filename}`, import.meta.url));
-  const files = ['README.md', 'bin/create-sky-tool.mjs', 'examples/minimal.mjs', 'package.json', 'src/index.mjs'];
+  const files = ['README.md', 'bin/create-sky-tool.mjs', 'examples/minimal.mjs', 'examples/line-counter.mjs', 'package.json', 'src/index.mjs'];
   const options = { timeout: 5000, maxBuffer: 128 * 1024 };
   const members = execFileSync('tar', ['-tzf', archive], options).toString('utf8').trim().split('\n');
   assert.deepEqual(members.sort(), files.map((name) => `package/${name}`).sort());

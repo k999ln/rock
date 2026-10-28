@@ -48,3 +48,15 @@ void test('Package-to-runtime binding rejects non-PC, paid, remote and schema-mi
     ...serverFor().passport.tools[0], pricing: { model: 'usage', note: 'metered' },
   }] } })]), []);
 });
+
+void test('SDK local HTTP runtime is a candidate only for matching local transport and exact schemas', () => {
+  const original = packageManifest();
+  const local = packageManifest({ adapter: { ...original.adapter, connectionType: 'mcp_streamable_http', endpointUrl: 'https://example.invalid/mcp' } });
+  const localServer = serverFor({ transport: 'local_http' });
+  assert.equal(compatibleLocalPackageRuntimes(local, [localServer]).length, 1);
+  assert.equal(compatibleLocalPackageRuntimes(local, [serverFor({ transport: 'streamable_http' })]).length, 0);
+  assert.equal(compatibleLocalPackageRuntimes(local, [serverFor({ transport: 'stdio' })]).length, 0);
+  assert.equal(compatibleLocalPackageRuntimes(original, [localServer]).length, 0);
+  const mismatched = { ...localServer, passport: { tools: [{ ...localServer.passport.tools[0], outputSchema: { type: 'object', properties: { wrong: { type: 'string' } } } }] } };
+  assert.equal(compatibleLocalPackageRuntimes(local, [mismatched]).length, 0);
+});

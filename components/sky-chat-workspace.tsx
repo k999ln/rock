@@ -1,6 +1,7 @@
 'use client';
 import { skyAgentSystem, type SkyLibraryAgent } from '@/lib/sky-agent-library';
 import { EveHistoryPanel } from '@/components/eve-history-panel';
+import EveObjectAgentCreator from '@/components/eve-object-agent-creator';
 
 import { zemaPrivateStorageBlocked, subscribeZemaPrivateStorage } from '@/lib/zema-private-storage';
 import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-draft';
@@ -1813,7 +1814,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                 </div>
               )}
             </section>
-            <Workbench embedded cloudDraft={cloudWorkDraft} initialPackageKey={preferredPackage} packageRuntimeServers={mcpServers} />
+            <Workbench embedded cloudDraft={cloudWorkDraft} initialPackageKey={preferredPackage} packageRuntimeServers={mcpServers} agentRequired={Boolean(requestedAgentId)} agentReference={activeAgent ? { id: activeAgent.id, revision: activeAgent.revision } : null} />
           </section>
         ) : loading ? (
           <div className="sky-chat-centered">Jenniferを読み込んでいます…</div>
@@ -2459,6 +2460,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               <div ref={messagesEndRef} aria-hidden="true" />
             </div>
 
+            <EveObjectAgentCreator />
             <form className="sky-chat-composer" onSubmit={sendMessage}>
               {error && <p role="alert">{error}</p>}
               <div className="sky-chat-composer-box">
