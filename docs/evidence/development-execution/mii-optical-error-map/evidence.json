@@ -1,0 +1,577 @@
+{
+  "schema": "mii.optical-aperture-error-evidence/1",
+  "date": "2026-10-28",
+  "decisionId": "MII-OPT-ERROR-MAP-01",
+  "decisionSha256": "8e139a2f5d2b420e905c8cd6bd71fd347d468d3d7612e98c2889e59bce5273cb",
+  "verifierSha256": "8bfc64cd7003f54a42ccdbe0b20fee1fa1a6449de22afc473b40a41c9e8bc7f8",
+  "resultSha256": "0e34d9770c1c9ceb9230f17705699bccc9f84766aefcff6a9519c5d4b587cce6",
+  "result": {
+    "decisionId": "MII-OPT-ERROR-MAP-01",
+    "conclusion": "REJECT_UNIFORM_1_TO_1_ERROR_BUDGET",
+    "sources": [
+      {
+        "path": "docs/avocado-mini-r5/spatial-computer-use-design.md",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "6194b311aebd14f9d6d3eed86f2b7611249d1271bc902fd0b99913d137aa35b6"
+      },
+      {
+        "path": "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9"
+      },
+      {
+        "path": "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8"
+      },
+      {
+        "path": "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9"
+      },
+      {
+        "path": "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "a5e28bc4c268ed7971570863e6d5220e02bb4a9ebfd3677ed22ad7c5f240ffba"
+      },
+      {
+        "path": "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab"
+      },
+      {
+        "path": "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "da8946daadaa3b290c0836c6ea98cebf6c3fcfcd5f8920cc62ea1981ee0b99c2"
+      },
+      {
+        "path": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "b021b4c1b88acd7e53689983b5e6d1edf76c1c76c54e518550e2e70711c42634"
+      },
+      {
+        "path": "data/mission-control.json",
+        "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+        "sha256": "8498373e36b3529a5659de1106a54a5f0889c3b066c063407935a2110091cf9c"
+      }
+    ],
+    "fullBaseline": {
+      "resultSha256": "b24881bbcd4262d1dd7b0f7a68de9735552268d12a707001b044fa0ee9f7689b",
+      "sampleCounts": {
+        "eyes": 243,
+        "targets": 147,
+        "eyeTargetPairs": 35721,
+        "pupilRaysPerPair": 18
+      },
+      "interpretation": "unchanged original denominator, physical acceptance false"
+    },
+    "candidateDecisions": [
+      {
+        "id": "four-sides-300mm",
+        "baselineMissingPairs": 35489,
+        "evaluatedPairs": 35721,
+        "requiredPairs": 35721,
+        "nominalAreaM2": 0.35999999999999976,
+        "verdict": "REJECT_AS_ALL_RANGE_SOLUTION",
+        "rationale": "REJECT_AS_ALL_RANGE_SOLUTION in the declared optimistic model; optical steering/brightness alone cannot supply missing exit positions.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "six-faces-300mm",
+        "baselineMissingPairs": 35443,
+        "evaluatedPairs": 35721,
+        "requiredPairs": 35721,
+        "nominalAreaM2": 0.5399999999999997,
+        "verdict": "REJECT_AS_ALL_RANGE_SOLUTION",
+        "rationale": "REJECT_AS_ALL_RANGE_SOLUTION in the declared optimistic model; optical steering/brightness alone cannot supply missing exit positions.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "six-faces-1200mm",
+        "baselineMissingPairs": 31564,
+        "evaluatedPairs": 35721,
+        "requiredPairs": 35721,
+        "nominalAreaM2": 8.64,
+        "verdict": "REJECT_AS_ALL_RANGE_SOLUTION",
+        "rationale": "REJECT_AS_ALL_RANGE_SOLUTION in the declared optimistic model; optical steering/brightness alone cannot supply missing exit positions.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "four-full-faces",
+        "baselineMissingPairs": 5953,
+        "evaluatedPairs": 35721,
+        "requiredPairs": 35721,
+        "nominalAreaM2": 48,
+        "verdict": "REJECT_AS_ALL_RANGE_SOLUTION",
+        "rationale": "REJECT_AS_ALL_RANGE_SOLUTION in the declared optimistic model; optical steering/brightness alone cannot supply missing exit positions.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "six-full-faces-ideal",
+        "baselineMissingPairs": 0,
+        "evaluatedPairs": 35721,
+        "requiredPairs": 35721,
+        "nominalAreaM2": 80,
+        "verdict": "NOT_ADOPTED_IDEAL_CONTROL",
+        "rationale": "NOT_ADOPTED: 80 square metres of ideal emitting boundary, no physical engine, no compact/few-parts/comfort proof; passing finite geometry is a control only.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "six-full-faces-10mm-guard",
+        "baselineMissingPairs": 708,
+        "evaluatedPairs": 35721,
+        "requiredPairs": 35721,
+        "nominalAreaM2": 80,
+        "verdict": "REJECT_AS_ALL_RANGE_SOLUTION",
+        "rationale": "REJECT_AS_ALL_RANGE_SOLUTION in the declared optimistic model; optical steering/brightness alone cannot supply missing exit positions.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "six-full-faces-30mm-guard",
+        "baselineMissingPairs": 1396,
+        "evaluatedPairs": 35721,
+        "requiredPairs": 35721,
+        "nominalAreaM2": 80,
+        "verdict": "REJECT_AS_ALL_RANGE_SOLUTION",
+        "rationale": "REJECT_AS_ALL_RANGE_SOLUTION in the declared optimistic model; optical steering/brightness alone cannot supply missing exit positions.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "relocatable-or-switched-exits",
+        "baselineMissingPairs": null,
+        "evaluatedPairs": 0,
+        "requiredPairs": 35721,
+        "nominalAreaM2": null,
+        "verdict": "UNPROVEN_PHYSICAL_CANDIDATE",
+        "rationale": "UNPROVEN: existing finite-cone/joint source remains reusable host implementation, but measured exit/calibration/error/trajectory/throughput/comfort/stop are UNKNOWN. Do not regress that implementation to absent.",
+        "physicalAccepted": false
+      },
+      {
+        "id": "existing-go-leairr-relay",
+        "baselineMissingPairs": null,
+        "evaluatedPairs": 0,
+        "requiredPairs": 35721,
+        "nominalAreaM2": null,
+        "verdict": "UNPROVEN_PHYSICAL_CANDIDATE",
+        "rationale": "UNPROVEN: no qualified room-boundary ray generator, per-ray error envelope, vertical cone or low-glare/independent optical cutoff acceptance.",
+        "physicalAccepted": false
+      }
+    ],
+    "counterexample": {
+      "naiveNominalPathAvailable": true,
+      "verdict": "FAIL",
+      "scope": "fixed target/normal/face; one-axis interval only, not physical acceptance",
+      "nominalBoundaryM": [
+        0.5599999999999995,
+        0,
+        3
+      ],
+      "geometricGain": 9.999999999999991,
+      "worstExitDisplacementM": 0.19999999999999982,
+      "nominalAxisClearanceM": 0.03000000000000047,
+      "strictlyInsideEyeErrorLimitM": 0.00300000000000005,
+      "worstMarginM": -0.16999999999999937,
+      "endpoints": [
+        {
+          "eyeErrorM": -0.02,
+          "eyeM": [
+            -0.076,
+            0,
+            1.9
+          ],
+          "boundaryM": [
+            0.7599999999999993,
+            0,
+            3
+          ],
+          "faces": [
+            "ceiling"
+          ],
+          "geometricPathAvailable": false,
+          "sameFace": true,
+          "marginM": -0.16999999999999937
+        },
+        {
+          "eyeErrorM": 0.02,
+          "eyeM": [
+            -0.036000000000000004,
+            0,
+            1.9
+          ],
+          "boundaryM": [
+            0.3599999999999997,
+            0,
+            3
+          ],
+          "faces": [
+            "ceiling"
+          ],
+          "geometricPathAvailable": true,
+          "sameFace": true,
+          "marginM": 0.23000000000000026
+        }
+      ],
+      "physicalAccepted": false
+    },
+    "boundSensitivity": [
+      {
+        "errorM": null,
+        "verdict": "UNKNOWN",
+        "reason": "No measured/declared bound"
+      },
+      {
+        "errorM": 0,
+        "verdict": "MODEL_INTERVAL_INSIDE",
+        "scope": "fixed target/normal/face; one-axis interval only, not physical acceptance",
+        "nominalBoundaryM": [
+          0.5599999999999995,
+          0,
+          3
+        ],
+        "geometricGain": 9.999999999999991,
+        "worstExitDisplacementM": 0,
+        "nominalAxisClearanceM": 0.03000000000000047,
+        "strictlyInsideEyeErrorLimitM": 0.00300000000000005,
+        "worstMarginM": 0.03000000000000047,
+        "endpoints": [
+          {
+            "eyeErrorM": 0,
+            "eyeM": [
+              -0.056,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.5599999999999995,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": true,
+            "sameFace": true,
+            "marginM": 0.03000000000000047
+          },
+          {
+            "eyeErrorM": 0,
+            "eyeM": [
+              -0.056,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.5599999999999995,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": true,
+            "sameFace": true,
+            "marginM": 0.03000000000000047
+          }
+        ],
+        "physicalAccepted": false
+      },
+      {
+        "errorM": 0.002,
+        "verdict": "MODEL_INTERVAL_INSIDE",
+        "scope": "fixed target/normal/face; one-axis interval only, not physical acceptance",
+        "nominalBoundaryM": [
+          0.5599999999999995,
+          0,
+          3
+        ],
+        "geometricGain": 9.999999999999991,
+        "worstExitDisplacementM": 0.019999999999999983,
+        "nominalAxisClearanceM": 0.03000000000000047,
+        "strictlyInsideEyeErrorLimitM": 0.00300000000000005,
+        "worstMarginM": 0.010000000000000453,
+        "endpoints": [
+          {
+            "eyeErrorM": -0.002,
+            "eyeM": [
+              -0.058,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.5799999999999995,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": true,
+            "sameFace": true,
+            "marginM": 0.010000000000000453
+          },
+          {
+            "eyeErrorM": 0.002,
+            "eyeM": [
+              -0.054,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.5399999999999995,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": true,
+            "sameFace": true,
+            "marginM": 0.05000000000000049
+          }
+        ],
+        "physicalAccepted": false
+      },
+      {
+        "errorM": 0.003,
+        "verdict": "BOUNDARY_UNKNOWN",
+        "scope": "fixed target/normal/face; one-axis interval only, not physical acceptance",
+        "nominalBoundaryM": [
+          0.5599999999999995,
+          0,
+          3
+        ],
+        "geometricGain": 9.999999999999991,
+        "worstExitDisplacementM": 0.029999999999999975,
+        "nominalAxisClearanceM": 0.03000000000000047,
+        "strictlyInsideEyeErrorLimitM": 0.00300000000000005,
+        "worstMarginM": 4.440892098500626e-16,
+        "endpoints": [
+          {
+            "eyeErrorM": -0.003,
+            "eyeM": [
+              -0.059000000000000004,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.5899999999999995,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": true,
+            "sameFace": true,
+            "marginM": 4.440892098500626e-16
+          },
+          {
+            "eyeErrorM": 0.003,
+            "eyeM": [
+              -0.053,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.5299999999999995,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": true,
+            "sameFace": true,
+            "marginM": 0.0600000000000005
+          }
+        ],
+        "physicalAccepted": false
+      },
+      {
+        "errorM": 0.02,
+        "verdict": "FAIL",
+        "scope": "fixed target/normal/face; one-axis interval only, not physical acceptance",
+        "nominalBoundaryM": [
+          0.5599999999999995,
+          0,
+          3
+        ],
+        "geometricGain": 9.999999999999991,
+        "worstExitDisplacementM": 0.19999999999999982,
+        "nominalAxisClearanceM": 0.03000000000000047,
+        "strictlyInsideEyeErrorLimitM": 0.00300000000000005,
+        "worstMarginM": -0.16999999999999937,
+        "endpoints": [
+          {
+            "eyeErrorM": -0.02,
+            "eyeM": [
+              -0.076,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.7599999999999993,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": false,
+            "sameFace": true,
+            "marginM": -0.16999999999999937
+          },
+          {
+            "eyeErrorM": 0.02,
+            "eyeM": [
+              -0.036000000000000004,
+              0,
+              1.9
+            ],
+            "boundaryM": [
+              0.3599999999999997,
+              0,
+              3
+            ],
+            "faces": [
+              "ceiling"
+            ],
+            "geometricPathAvailable": true,
+            "sameFace": true,
+            "marginM": 0.23000000000000026
+          }
+        ],
+        "physicalAccepted": false
+      }
+    ],
+    "upwardDownwardDiagnostics": [
+      {
+        "id": "downward-gain",
+        "gain": 6.999999999999994,
+        "displacementM": 0.13999999999999987,
+        "physicalAccepted": false
+      },
+      {
+        "id": "upward-gain",
+        "gain": 9.999999999999991,
+        "displacementM": 0.19999999999999982,
+        "physicalAccepted": false
+      }
+    ],
+    "tests": [
+      {
+        "id": "original-full-domain-and-both-pupil-regression",
+        "result": "PASS"
+      },
+      {
+        "id": "naive-30mm-guard-passes-but-20mm-eye-envelope-fails",
+        "result": "PASS"
+      },
+      {
+        "id": "tighter-bound-restores-only-limited-model-pass-and-equality-stays-unknown",
+        "result": "PASS"
+      },
+      {
+        "id": "zero-error-result-survives-JSON-evidence-roundtrip",
+        "result": "PASS"
+      },
+      {
+        "id": "aperture-change-changes-verdict-not-a-fixed-rejection",
+        "result": "PASS"
+      },
+      {
+        "id": "physical-frame-change-turns-2mm-bound-from-inside-to-boundary",
+        "result": "PASS"
+      },
+      {
+        "id": "eye-target-separation-changes-magnification",
+        "result": "PASS"
+      },
+      {
+        "id": "all-201-error-samples-match-independent-affine-oracle",
+        "result": "PASS"
+      },
+      {
+        "id": "face-change-refuses-to-claim-affine-interval-coverage",
+        "result": "PASS"
+      },
+      {
+        "id": "normal-axis-error-is-not-silently-treated-as-tangential",
+        "result": "PASS"
+      },
+      {
+        "id": "source-byte-change-invalidates-evidence-before-calculation",
+        "result": "PASS"
+      }
+    ],
+    "acceptance": {
+      "necessaryConditionCounterexampleClosed": true,
+      "physicalVisible": false,
+      "lowGlare": false,
+      "independentOpticalStop": false,
+      "continuousDomain": false,
+      "portableWholeUnit": false,
+      "manufacturingRelease": false,
+      "mainIntegrated": false,
+      "independentlyReviewed": false
+    }
+  },
+  "existingUnmergedArtifacts": [
+    {
+      "path": "docs/avocado-mini-r5/hardware-feasibility.md",
+      "revision": "unmerged_local_2026-10-27",
+      "sha256": "22c6fdebfa73f998fb0eb097a6e3211a41a2088e4b603f017666ffc122a73d30",
+      "role": "prior_same_thread_work_not_reimplemented_or_main_adopted"
+    },
+    {
+      "path": "docs/avocado-mini-r5/hardware-feasibility.py",
+      "revision": "unmerged_local_2026-10-27",
+      "sha256": "d29b40aa61150ca57d51154b42d83195ff4fd3952116ade6da6119e59be2a1f2",
+      "role": "prior_same_thread_work_not_reimplemented_or_main_adopted"
+    },
+    {
+      "path": "docs/avocado-mini-r5/hardware-feasibility.json",
+      "revision": "unmerged_local_2026-10-27",
+      "sha256": "2b48719050a7c5273c2f51d0f60ce89f2723d1f2725a8bb1af38cf2991899a43",
+      "role": "prior_same_thread_work_not_reimplemented_or_main_adopted"
+    }
+  ],
+  "remainingPhysicalGates": [
+    "Measured tracker/reference/target/aperture/timing error envelope UNKNOWN",
+    "Continuous whole volume, both eyes and simultaneous full scene unaccepted",
+    "Optical engine/finite cone/ray capacity/low glare/independent stop unaccepted",
+    "Few display parts, standalone packaging/power/heat and manufacturing unaccepted"
+  ],
+  "handoff": {
+    "nextOwner": "M4 with M3 input; M7 independent review; M1 MAT15 integration",
+    "inputs": [
+      "decision.json bench MII-OPT-ERROR-BENCH-01",
+      "pinned existing geometry/source hashes",
+      "measured pupil/reference/target/aperture/clock errors and their raw trace hashes"
+    ],
+    "requestedDecision": "Replace uniform 1:1 aperture erosion assumptions with a revision-bound per-ray error envelope; no final aperture/PCB release on this host proof.",
+    "review": "Run verify.mjs; inspect affine-domain restrictions and bench threshold; independent reviewer has not run yet.",
+    "centralGitOnly": true,
+    "mainIntegrated": false,
+    "ciAccepted": false,
+    "publicRelease": false
+  },
+  "verificationHistory": [
+    {
+      "attempt": 1,
+      "stage": "evidence replay",
+      "result": "FAIL",
+      "reason": "JSON stores -0 as 0; deepStrictEqual detected signed-zero mismatch in the zero-error endpoint.",
+      "previousVerifierSha256": "b355d37da89b66ad5dcab087efa38b829837a5d06d2ed0a06a125b24f839ca23",
+      "previousEvidenceSha256": "08aaaa278b73e3514ec8c1e32b9d60227330acfc286e2038062e41738b99db3f",
+      "correction": "Normalize the zero-error endpoint to positive zero and add JSON roundtrip regression. Optical calculations and candidate conclusions unchanged."
+    }
+  ],
+  "reproduce": "node /private/tmp/mii-execution-recovery-20261028/mini/verify.mjs --repo /Users/kaiya/.codex-work/worktrees/mini-host-save/avokdo",
+  "execution": {
+    "kind": "offline host calculation",
+    "nodeVersion": "v26.12.1",
+    "newDeviceOperations": 0,
+    "newModelRuns": 0
+  }
+}

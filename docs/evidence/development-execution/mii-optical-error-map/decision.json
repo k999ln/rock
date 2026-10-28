@@ -1,0 +1,281 @@
+{
+  "schema": "mii.optical-aperture-error-decision/1",
+  "decisionId": "MII-OPT-ERROR-MAP-01",
+  "date": "2026-10-28",
+  "productName": "mii",
+  "scope": "One necessary-condition decision: eye-position error cannot be copied 1:1 into an optical exit aperture guard.",
+  "ownership": {
+    "parentAcceptance": "MAT15",
+    "primarySquad": "M1",
+    "studySeries": "MINI-02 optical study",
+    "registryDistinction": "MINI02 (without hyphen) is M2 mechanical evaluation; do not infer its owner from the optical study label.",
+    "nextOpticsOwner": "M4",
+    "nextSensorOwner": "M3",
+    "independentMetrologyReview": "M7",
+    "integrationOwner": "central Git owner only"
+  },
+  "baselineRevision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+  "artifacts": [
+    {
+      "path": "docs/avocado-mini-r5/spatial-computer-use-design.md",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "6194b311aebd14f9d6d3eed86f2b7611249d1271bc902fd0b99913d137aa35b6",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-optical-study.mjs",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "6d93d7a482f19163fea735a826fad70df5fa774dffc602f27c69d9f3d9b5fef9",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "58e6a31c54c9295c9d9c59494ba7e8a038d9cafb81ec0fa05b04c9832e876fb8",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-candidate-assessment.md",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "b4b3ec9bd40083d2ac7f10ec049e2bde4b4dd2913d1182a8230d4df73af256b9",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.mjs",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "a5e28bc4c268ed7971570863e6d5220e02bb4a9ebfd3677ed22ad7c5f240ffba",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-finite-cone.md",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "ea6e1e050836f438d99b1c06b7f7e13d0f67b38c209aec2a5d3fa7d69c0842ab",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-cone-aware-search.md",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "da8946daadaa3b290c0836c6ea98cebf6c3fcfcd5f8920cc62ea1981ee0b99c2",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "docs/avocado-mini-r5/factory-development/mini-02-joint-allocation.mjs",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "b021b4c1b88acd7e53689983b5e6d1edf76c1c76c54e518550e2e70711c42634",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "data/mission-control.json",
+      "revision": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+      "sha256": "8498373e36b3529a5659de1106a54a5f0889c3b066c063407935a2110091cf9c",
+      "role": "pinned_existing_source_or_contract"
+    },
+    {
+      "path": "docs/avocado-mini-r5/hardware-feasibility.md",
+      "revision": "unmerged_local_2026-10-27",
+      "sha256": "22c6fdebfa73f998fb0eb097a6e3211a41a2088e4b603f017666ffc122a73d30",
+      "role": "prior_same_thread_work_not_reimplemented_or_main_adopted"
+    },
+    {
+      "path": "docs/avocado-mini-r5/hardware-feasibility.py",
+      "revision": "unmerged_local_2026-10-27",
+      "sha256": "d29b40aa61150ca57d51154b42d83195ff4fd3952116ade6da6119e59be2a1f2",
+      "role": "prior_same_thread_work_not_reimplemented_or_main_adopted"
+    },
+    {
+      "path": "docs/avocado-mini-r5/hardware-feasibility.json",
+      "revision": "unmerged_local_2026-10-27",
+      "sha256": "2b48719050a7c5273c2f51d0f60ce89f2723d1f2725a8bb1af38cf2991899a43",
+      "role": "prior_same_thread_work_not_reimplemented_or_main_adopted"
+    }
+  ],
+  "requirements": {
+    "imageLocationPlateOrMembraneAllowed": false,
+    "fewDisplayParts": true,
+    "aboveAndBelowIncluded": true,
+    "lowGlareRequired": true,
+    "nakedEye": true,
+    "standalonePortable": true,
+    "minimumPartCountProven": false,
+    "numericalFewLimit": "UNKNOWN"
+  },
+  "selectedDecision": {
+    "status": "REJECT_UNIFORM_1_TO_1_ERROR_BUDGET",
+    "reason": "The existing 30mm guard is explicitly a sensitivity example (10mm frame + hypothetical 20mm erosion), not a certified 20mm tracking tolerance. A same-face ray counterexample requires ten times that erosion. This closes a missing mapping argument, not a bug claim against the existing solver.",
+    "sourceGap": "candidate-assessment: actual tracking/placement error to aperture erosion mapping undefined; finite-cone: total angle error synthetic, positional conversion unimplemented.",
+    "engineeringAction": "Do not release an optical aperture, tracker accuracy requirement or final driver/PCB using eyeErrorM == extraGuardM. Bind a measured error envelope to each eye/target/exit geometry; reject missing paths and leave unmeasured envelopes UNKNOWN.",
+    "physicalCandidateSelected": false
+  },
+  "model": {
+    "boundsM": {
+      "min": [
+        -2,
+        -2,
+        0
+      ],
+      "max": [
+        2,
+        2,
+        3
+      ]
+    },
+    "eyeDomainXYM": [
+      -1.5,
+      1.5
+    ],
+    "targetDomainXYM": [
+      -1.5,
+      1.5
+    ],
+    "derivation": "For fixed target T, eye E, and intersected plane normal n at B: P_t = T_t + s*(T_t-E_t), s=(B-T_n)/(T_n-E_n). If E_n,T and the intersected face stay fixed, delta(P_t)=-s*delta(E_t).",
+    "validity": "Homogeneous straight-ray geometry only; fixed target and normal coordinates; all tested perturbed rays must retain the same face. No optical diffraction/relay/physical light claim.",
+    "unknownGeneralCase": "normal-axis, target, aperture pose, lens mapping, timing/motion and covariance errors need a larger measured envelope; this one-axis bound is not their total.",
+    "sampling": "counterexamples are additional diagnostics within the same domain, not replacements for the original 35721 pairs / 18 rays"
+  },
+  "counterexample": {
+    "id": "ceiling-1200-near-upper-edge",
+    "eyeM": [
+      -0.056,
+      0,
+      1.9
+    ],
+    "targetM": [
+      0,
+      0,
+      2
+    ],
+    "face": "ceiling",
+    "apertureRectM": [
+      -0.6,
+      -0.6,
+      0.6,
+      0.6
+    ],
+    "physicalFrameGuardM": 0.01,
+    "hypotheticalEyeErrorBoundM": 0.02,
+    "errorAxis": 0,
+    "errorSweepM": [
+      -0.02,
+      0,
+      0.02
+    ],
+    "naiveTotalGuardM": 0.03,
+    "units": "metres; eye is one pupil sample, not a new eye-center/IPD model",
+    "inputMeaning": "Comparison hypothesis only. No sensor is claimed to have measured 20mm error."
+  },
+  "diagnosticCases": [
+    {
+      "id": "downward-gain",
+      "eyeM": [
+        0,
+        0,
+        1.6
+      ],
+      "targetM": [
+        0,
+        0,
+        1.4
+      ],
+      "face": "floor",
+      "planeM": 0,
+      "errorM": 0.02,
+      "expectedGain": 7,
+      "expectedExitShiftM": 0.14
+    },
+    {
+      "id": "upward-gain",
+      "eyeM": [
+        0,
+        0,
+        1.9
+      ],
+      "targetM": [
+        0,
+        0,
+        2
+      ],
+      "face": "ceiling",
+      "planeM": 3,
+      "errorM": 0.02,
+      "expectedGain": 10,
+      "expectedExitShiftM": 0.2
+    }
+  ],
+  "candidatePolicy": {
+    "fixedWithMissingPairs": "REJECT_AS_ALL_RANGE_SOLUTION in the declared optimistic model; optical steering/brightness alone cannot supply missing exit positions.",
+    "sixFullFacesIdeal": "NOT_ADOPTED: 80 square metres of ideal emitting boundary, no physical engine, no compact/few-parts/comfort proof; passing finite geometry is a control only.",
+    "relocatableOrSwitched": "UNPROVEN: existing finite-cone/joint source remains reusable host implementation, but measured exit/calibration/error/trajectory/throughput/comfort/stop are UNKNOWN. Do not regress that implementation to absent.",
+    "existingGoRelay": "UNPROVEN: no qualified room-boundary ray generator, per-ray error envelope, vertical cone or low-glare/independent optical cutoff acceptance.",
+    "particleResearch": "OUTSIDE_THIS_RAY_MODEL: retain prior hardware-feasibility research; no adoption or impossibility conclusion from this counterexample.",
+    "plateE0": "NOT_ADOPTED_AS_FINAL_REQUIREMENT: no permission to put plate/membrane at image position."
+  },
+  "bench": {
+    "id": "MII-OPT-ERROR-BENCH-01",
+    "status": "SPECIFIED_NOT_RUN",
+    "purpose": "Measure the geometry/tracking error envelope needed before choosing aperture margin. No display light source is required for this step.",
+    "setup": [
+      "M4 freezes measured aperture rectangles, physical frames, world transforms and pose revisions; the 1200mm virtual plane here is a metrology reference, not a selected device.",
+      "M3 uses an existing approved position reference/fixture and an inert pupil surrogate at the specified E, with a fixed world target coordinate T. Align the existing tracker and independent reference to one world frame. No new purchase, model run or power-on is authorized by this package.",
+      "Record raw reference and reported 3D position with acquisition timestamps and uncertainty. Include the upward and downward cases, the near-edge counterexample, the original both-pupil offsets, remounts, above/below occlusion and loss/recovery.",
+      "Offline replay each measured position through the pinned geometry source. Measure target/aperture calibration uncertainty separately. Retain failed and missing samples; do not drop them to improve the result."
+    ],
+    "requiredMeasuredInputs": {
+      "trackerErrorXYZM": "UNKNOWN",
+      "referenceUncertaintyXYZM": "UNKNOWN",
+      "targetErrorXYZM": "UNKNOWN",
+      "aperturePoseError": "UNKNOWN",
+      "timestampOffsetAndMotionError": "UNKNOWN",
+      "usableApertureAndFrame": "UNKNOWN",
+      "actualSceneAndSimultaneousViewers": "UNKNOWN"
+    },
+    "acceptance": {
+      "counterexampleOneAxisOnly": "For this exact geometry with other errors fixed to zero: gain=10, nearest physical-edge clearance=30mm, hence the strictly-inside threshold is |eye_x_error| + reference_bound < 3mm. Equality is BOUNDARY_UNKNOWN, not pass. This is a derived metrology target, not a measured sensor rating or whole-product threshold.",
+      "generalGate": "For every required ray, the complete propagated uncertainty footprint must be strictly inside at least one qualified aperture and finite cone. Unknown/error-correlation or face-changing intervals without a conservative enclosure => UNKNOWN. Any actual missing ray => FAIL. All uncertainty budgets and geometry must be revision-bound.",
+      "noFalsePass": "Finite samples below threshold yield only SAMPLE_ENVELOPE_INSIDE; they do not prove a worst-case sensor bound, continuous full domain, simultaneous light, visibility or low glare.",
+      "repeatPlan": "One stationary log and one controlled motion/loss/recovery log per pose, minimum 1000 timestamped valid/invalid events each as a proposed diagnostic acquisition floor, not statistical confidence. Report duration and every dropout. Additional acquisition/coverage is set by M7 from observed rates and uncertainty, not a completion percentage."
+    },
+    "stopConditions": [
+      "Missing reference uncertainty, invalid frame or stale/missing timestamps => stop acceptance and record UNKNOWN.",
+      "Tracker loss, uncalibrated/remounted aperture, face change not enclosed, or any ray outside => record failure; do not enable output.",
+      "Any request to add optical output or energize new hardware is outside this offline package; the existing optical/safety/approval gates remain closed."
+    ],
+    "deliverable": {
+      "summary": "One revision-bound error-envelope report per geometry, with true/reported pupil and target positions, aperture/pose hashes, error bounds and their confidence/assumptions, per-ray margins, UNKNOWN/FAIL reasons, and instrument/reference uncertainty.",
+      "rawRows": [
+        "sampleId",
+        "timestampReference",
+        "timestampTracker",
+        "eyeReferenceXYZ",
+        "eyeReportedXYZ",
+        "targetXYZ",
+        "apertureRevision",
+        "referenceUncertainty",
+        "validity",
+        "boundaryFace",
+        "nominalBoundaryXYZ",
+        "perturbedBoundaryXYZ",
+        "remainingMarginM",
+        "verdict"
+      ],
+      "rawTraceStorage": "Git-external trace, digest and bounded worst-case/failed-row witnesses in report; no private camera images.",
+      "decisionConsumer": "M4 aperture/pose choice and M3 tracker specification, reviewed by M7; M1 keeps MAT15 physical gates unresolved."
+    }
+  },
+  "acceptance": {
+    "necessaryConditionCounterexampleClosed": true,
+    "physicalVisible": false,
+    "lowGlare": false,
+    "independentOpticalStop": false,
+    "continuousDomain": false,
+    "portableWholeUnit": false,
+    "manufacturingRelease": false,
+    "mainIntegrated": false,
+    "independentlyReviewed": false
+  },
+  "reproduce": "node /private/tmp/mii-execution-recovery-20261028/mini/verify.mjs --repo /Users/kaiya/.codex-work/worktrees/mini-host-save/avokdo",
+  "limitations": [
+    "No new vendor facts, hardware operation, model execution, purchase, network service, paid execution or public release.",
+    "Only three files in the assigned temporary directory are written. Existing canonical docs, IDs, hashes and other work are untouched.",
+    "No time estimate without observation; no product completion percentage."
+  ]
+}

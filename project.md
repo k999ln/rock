@@ -1,3 +1,27 @@
+### 最終union検収前の状態固定（2026-10-28 / G04・ROCK）
+
+control R2全verify3207/3204pass/0fail/3skipは固定R2に1回。後続の受入済Mini3 byte不変配置・canonical追補には明示verifier11/35721pairと局所44・metadata/designを別実行し、浅いCIでMini再現済みとはしない。最終unionのsourcehashとscanをRootが正式独立検収するまでcontrolを自己採用しない。Git/head/mainCIは別段階。miiの次はM3/M4実測入力→M7別検収でありRootの単なる返答待ちではない。OS通知保留/実機操作なし/616維持。
+
+### 受入を分けた小unionの保存準備（2026-10-28 / G04・ROCK）
+
+Root受入済mii source3＋別reviewをbyte不変でcanonicalへ保存し、11項目/index/現行再現commandと測定担当へ接続。controlとは別受入を保持するが最終unionをRootが検収し1PRのhead/main CIへまとめる。control R2全verifyは3207/3204pass/0fail/3skipで成功。mii verifierは通常cloneのbaseline/working2hashを明示検査して別実行し、浅いCIの未実行を物理/光学の合格へ換算しない。元未merge hardware3はrefだけ。
+
+### control R2の独立指摘修正（2026-10-28 / G04・ROCK）
+
+Root初版probeの4拒否漏れ（物理フラグ、管理によるprimary代替、path alias所有、baseSHA）を要求内の最小修正で閉じ、恒久負例を追加。R2局所44/既存mission成功、無変更Rootprobe5成功・Root自身のpreflight再実行も5成功。初版code/39試験/fullverify3202成功は別snapshot保持。2actor化で古い負例が4actorを作らなくなった試験失敗1件も保存し、明示4actorへ修正。次は固定R2全体verify/scan→Root正式manifest検収→Git/CI。自己受入・物理証明への換算はしない。
+
+### 固定control全体検証成功・mii限定判断受領（2026-10-28 / G04・ROCK）
+
+control fullverify1回でexit0、root3202/3199pass/0fail/3skip・build/API1678/CSV385成功。Rootからmii MII-OPT-ERROR-MAP-01の独立PASS_SCOPEDを受領しsource3hash一致を確認。眼誤差1:1設計を採用しない判断であり、30mmは10mmframe控除後の有効内縁余裕。一軸/target/normal/face固定必要条件だけで物理/光学方式/全範囲/comfort/製造は未受入。mii3fileはcontrolへコピーせず別Git候補。controlは自己受入せずRootの独立負例検収待ち、次に明示manifest Git/HEAD/mainCI。OS通知拒否/registry非読取/616保留維持。
+
+### 実行管理validatorの局所検証（2026-10-28 / G04・ROCK）
+
+mission:checkへcurrent overlay限定の矛盾拒否を接続。新負例と既存AMCの39件成功、metadata/design/中央lint/diff成功。正規mission:checkの追加不正fixtureも拒否し、実overlayはskip/置換しない。code成果は存在するが独立受入ではなく、Mini商品成立・実GitHub/物理証明も主張しない。次は固定候補fullverify1回→Root独立負例検収→明示Git/PR/headCI/main/mergeCI。元95分類/モデル表、393task/14gate/whole0、OS通知保留・616を維持。
+
+### 商品成立primaryと実行管理の修正開始（2026-10-28 / G04・ROCK）
+
+最新main8793から隔離。miiのMINI-02/MAT15成立判断1件をprimary、Git10のcontrol修正を別候補として所有。95全件bootstrap/再分類はせず、段階・証拠・owner・artifact/SHA・保留解除条件をmission:checkで強制する。main内11laneの限定証拠所在のみ確認し最新chat/未統合sourceはUNKNOWN。OS候補通知拒否は未解決・候補未取得/中継なし。次は負例/正規metadata/design/project整合→候補固定fullverify1回→Root独立検収→明示Git/PR/headCI/main/mergeCI。Mini終了まで新reviewactorを起動しない。実機/推論/契約/課金/公開/whole95/616保留。
+
 ### PR248 eSIM限定修正のGit・main最終検収（2026-10-27 / G04・ROCK）
 
 head05978074全7CI/4workflow成功後、通常mainb5c1ea18へ統合。同SHA6CI/4workflowと実Linux3174/3172pass/0fail/2skip成功、head/main同tree・全18blob・保護12一致、Root HEAD/index保持。元pending captureを変えずcurrentproof/index/status/unit overlay/引継ぎへ同期。metadata-only候補の正規fullverifyもexit0、root3174/3171pass/0fail/3hostskip、build/API1678/CSV385成功。初回11path scanner0/canary1。これはmetadata closeoutでPixelの未受領候補を取り込まない。Pixel作者通知2宛先の本人許可待ちは別条件として記録し、実機/実auth/親DB鮮度/Provider/金融/公開/whole95/616保留を維持。

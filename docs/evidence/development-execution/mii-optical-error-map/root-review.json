@@ -1,0 +1,49 @@
+{
+  "schema": "rockstaros.mii-independent-review/1",
+  "recordedAtUtc": "2026-10-28T10:46:47.537993+00:00",
+  "decision": "PASS_SCOPED",
+  "mustFix": [],
+  "mustFixCount": 0,
+  "authorThread": "01a16c29-97a5-7a50-bce4-b251e505ad52",
+  "reviewer": "Root; independent of candidate author",
+  "source3": {
+    "decision.json": "8e139a2f5d2b420e905c8cd6bd71fd347d468d3d7612e98c2889e59bce5273cb",
+    "verify.mjs": "8bfc64cd7003f54a42ccdbe0b20fee1fa1a6449de22afc473b40a41c9e8bc7f8",
+    "evidence.json": "bbcaa1a10730cd2cd3cc9a89d54641b45b48b8fc2177d37356064bd5aec280e4"
+  },
+  "baseline9HashesIndependentlyMatched": true,
+  "verified": [
+    "Existing full35721-pair domain retained, candidate verifier11 pass and evidence byte/result replay",
+    "Independent exact rational oracle: gain10,0.2m exit shift,0.03m after-frame usable clearance,strict0.003m eye tolerance",
+    "Configured targeted lint exit0",
+    "One-axis fixed-target/fixed-normal/fixed-face restrictions and face-change UNKNOWN",
+    "Physical/manufacturing/continuous-domain/comfort gates remain false",
+    "Bench acquisition proposal retains failures and uncertainty; diagnostic1000 sample floor not statistical guarantee"
+  ],
+  "scope": "Reject uniform1:1 tracking-to-exit budget; accept specified example and offline bench input only",
+  "notes": [
+    "30mm is clearance to the usable inner edge after10mm frame, not40mm raw rectangle-edge clearance. Canonical handoff should use that precise phrase.",
+    "Reproduction requires pinned baseline Git objects and exact working geometry/study modules. Do not claim shallow-CI replay without actually satisfying those prerequisites.",
+    "Prior unmerged hardware feasibility artifacts are provenance references only, not adopted or independently accepted by this review."
+  ],
+  "notAccepted": [
+    "physical ray generation or optical mode adoption",
+    "full-room display, low glare, portable packaging, PCB/manufacturing",
+    "any sensor measured3mm performance",
+    "Git save, main adoption, CI"
+  ],
+  "logs": [
+    {
+      "path": "/private/tmp/mii-execution-recovery-20261028/root-review/mini-verifier.log",
+      "sha256": "e24dc94ea5143f62352510198a8a622d93c2602480a2727e78346db52aea9b36"
+    },
+    {
+      "path": "/private/tmp/mii-execution-recovery-20261028/root-review/mini-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/private/tmp/mii-execution-recovery-20261028/root-review/exact-ceiling-check.json",
+      "sha256": "ff1e80e28880bfbc35301af0b08b0d4c0c84c884c3aa85a3c16cd766c3e0ec1b"
+    }
+  ]
+}
