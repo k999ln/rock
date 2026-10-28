@@ -1453,5 +1453,19 @@
     "publicDeployment": false,
     "gitSaved": false,
     "mainIntegrated": false
-  }
+  },
+  "smithLocalAgentSettingsCurrent": {
+    "unit": "SMITH-02",
+    "contextTask": "SKY21",
+    "baseMain": "0dcbbf69024009318ce6e3eb0aa5494e5e3d5590",
+    "status": "HOST_FULLVERIFY_PASS_FINAL_METADATA_REVIEW_GIT_PENDING",
+    "evidence": "docs/evidence/development-execution/smith-local-agent-settings-main-adoption.json",
+    "wholeSMITH02Accepted": false,
+    "newExecutionPermission": false,
+    "actualAuthenticatedE2EAccepted": false,
+    "providerOrDeviceAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "latestAcceptedProEvePixelReadback": "docs/evidence/development-execution/pro-eve-pixel-main-current.json"
 }

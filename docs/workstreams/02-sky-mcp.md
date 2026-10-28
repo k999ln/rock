@@ -1,3 +1,7 @@
+## SMITH-02/SKY21 Local Agentの設定拒否応答（2026-10-28・ROCK）
+
+既存bindingが元から拒否するAgent不一致を、local-agentでもestimate/textと同じAGENT_SETTINGS_CHANGED/status/message/no-storeで返すexact3限定採用。主担当Smith02、統合Git10、Root別source/metadata検収。旧6failは拒否応答の差で、実行成功を修正したものではない。Root実8/中央関連28成功、元binding/認証/scope/runner順序と価格/schema/権限を保持。[11項目](../rockstaros-complete-design.md#smith-local-agent-settings-rejection)／[採用記録](../evidence/development-execution/smith-local-agent-settings-main-adoption.json)。検証: route/library/zema-local/add-envelope/owner-bindingの関連5file、`npm run verify`。実owner UI/Provider/端末/運転中race/wholeSMITH02は未受入。現在のOS（料金WalletGameeSIMを含む）/Eve/Smith/mii優先の有限仕事として、PR252のPro/Eve fixture/Pixelreadback完了を再実装せず次へ進む。
+
 ## SKY07/SKY21 — 開かれたaddプラグインの共通条件
 
 2026-10-17本人指示: Skyは、みんなが使いたい能力を持ち寄り、ソフト・機器・家具・建築へ追加・交換するaddプラグインの入口。機能・作者・接続先を固定せず、公式専用枠を設けない。「公式」を必須条件や自動選択の優遇理由にしない。LLM/Agent/Tool/recipe/表示/host adapterは各能力契約で接続する。作者・版・互換・権限・費用・検証実績を共通条件で扱い、Pixel固定catalogは検証範囲として区別する。[目的・体験・責任・保存・状態・復旧・承認・未実行受入](../sky-mcp-architecture.md#使いたいものを追加するaddプラグイン基盤)。 主担当ROCK、host接続はJOINT、導入/送信/外部作用/予算の選択はOWNER。既存package/SDK/registry/Connection Passportを再利用し、独立2作者の追加/交換・別host・更新/失効/取消を未実行の合格条件として持つ。検証入口は `npm run baseline:check`、`npm run design:check`、`npm run llm:architecture:check`、`npm run verify`。

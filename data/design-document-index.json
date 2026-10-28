@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.57",
+  "version": "1.58",
   "updatedAt": "2026-10-28",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3622,5 +3622,24 @@
     "mainIntegrated": false,
     "publicDeployment": false,
     "ciFixtureRepair": "docs/evidence/development-execution/eve13-confirmation-fixture.json"
+  },
+  "smithLocalAgentSettingsRejection": {
+    "authority": "docs/rockstaros-complete-design.md#smith-local-agent-settings-rejection",
+    "toolDesign": "docs/sky-tools-complete-design.md#smith-local-agent-settings-rejection",
+    "implementation": [
+      "app/api/llm/local-agent/route.ts"
+    ],
+    "tests": [
+      "tests/sky-local-agent-settings-route.test.mjs"
+    ],
+    "sourceReceipt": "docs/evidence/development-execution/smith-local-agent-settings-rejection.json",
+    "evidence": "docs/evidence/development-execution/smith-local-agent-settings-main-adoption.json",
+    "existingRejectionOnly": true,
+    "newExecutionPermission": false,
+    "wholeSMITH02Accepted": false,
+    "actualAuthenticatedUIAccepted": false,
+    "providerOrDeviceAccepted": false,
+    "mainIntegrated": false,
+    "publicDeployment": false
   }
 }

@@ -1,0 +1,81 @@
+{
+  "schema": "rockstaros.smith-local-agent-settings-main-adoption/1",
+  "baseMain": "0dcbbf69024009318ce6e3eb0aa5494e5e3d5590",
+  "authorBase": "c3a9a1d76313be2e3aedeb1923faa9d204eefdf7",
+  "unit": "SMITH-02",
+  "contextTask": "SKY21",
+  "primaryOwner": "ROCK",
+  "primaryWorkstream": "02-sky-mcp",
+  "source3": {
+    "app/api/llm/local-agent/route.ts": "d74db2df17031928d66c45e2cc4abe086b183d529ca4d8ed1207738f485ccdb1",
+    "tests/sky-local-agent-settings-route.test.mjs": "54c767e1914beb86826646d6fc3f4a54fbba8dac6eed15d7b71b5bc736382cdf",
+    "docs/evidence/development-execution/smith-local-agent-settings-rejection.json": "d97d7872bc3350389b288c86844ed5b4af32c7919870d9a611733f38f4fddd29"
+  },
+  "source3ByteIdentical": true,
+  "authorPacketSha256": "36c41304c5e43a3673928c58ebf1e7b9c68816283dce814a5e36b4c1b63d3ce8",
+  "sourceIndependentReview": {
+    "decision": "PASS_SCOPED",
+    "mustFix": 0,
+    "reviewer": "Root, not Smith author or Git metadata author",
+    "reviewSha256": "3a8affc6092756d978b3150cf9f4dea45c7dd41f23fc2a3131282cfcc897e3de",
+    "actualRouteTests": 8
+  },
+  "scope": "Existing denial response only: preserve SkyAgentLibraryError status/safe message as AGENT_SETTINGS_CHANGED/no-store, matching estimate/text. Existing binding already denied all six mismatches; no new dispatch permission/fence.",
+  "latestBaseCompatibility": "Local route prepatch, sibling estimate/text, store/error class/workflow and package locks byte-identical across author c3a9 and current0dc. Runtime patch is import plus existing-class failure mapper only.",
+  "oldCounterexamples": {
+    "tests": 8,
+    "pass": 2,
+    "fail": 6,
+    "scope": "status/code/message response mismatch, not previously executed unauthorized Agents"
+  },
+  "verification": {
+    "related": {
+      "command": "node --experimental-strip-types --test tests/sky-local-agent-settings-route.test.mjs tests/sky-agent-library.test.mjs tests/zema-local-agent.test.mjs tests/sky-add-capability-envelope.test.mjs tests/sky-add-owner-binding.test.mjs",
+      "tests": 28,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "004836fd9ab13f127603acb7141d9108dab8c582916843b585fb296ac0ce349e"
+    },
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3254,
+        "pass": 3251,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "58bea1c8852cf77433880bf7dced3bcd4cd87a71357dde2d5055b65efa76e247",
+      "qualification": "All pre-fullverify14 bytes unchanged during execution. Final evidence/status text updated afterward, followed by metadata checks. Host only; independent final metadata and exact Git/HEAD/mainCI remain separate."
+    },
+    "finalMetadataReview": "PENDING_ROOT_FIXED_MANIFEST",
+    "configuredLint": "PASS",
+    "designCheck": "PASS",
+    "missionCheck": "PASS",
+    "initialScan": "14payload0/syntheticcanary1; final exact scan recorded separately"
+  },
+  "fixtureBoundary": "Real compiled POST route, migrated SQLite/binder and runner; synthetic owner/service-scope and deterministic model reply. Reject cases binding1/runner0/model0, auth/scope denied before binding; not real authenticated UI/provider/device acceptance.",
+  "limits": [
+    "No actual owner A/B UI recovery or retained-draft acceptance",
+    "No during-operation authority/stop race acceptance",
+    "No new provider/model/Tool/capability/price/schema/permission or fullSMITH02 acceptance"
+  ],
+  "restore": "Normal revert of mapper/test; no DB migration/Agent/settings mutation, no automatic rerun/cloud fallback. Existing denial and generic errors remain.",
+  "previousMainReadback": "docs/evidence/development-execution/pro-eve-pixel-main-current.json",
+  "originalReceiptIsCapture": "Author temp dependency paths and pending review/Git fields are preserved; current same-source acceptance/readback is separate.",
+  "Git": {
+    "saved": false,
+    "headCI": "NOT_STARTED",
+    "mainMerged": false,
+    "mergeCI": "NOT_STARTED"
+  },
+  "wholeSMITH02Accepted": false,
+  "actualAuthenticatedE2EAccepted": false,
+  "providerOrDeviceAccepted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD",
+  "status": "SOURCE_SCOPED_AND_HOST_FULLVERIFY_PASS_FINAL_METADATA_REVIEW_GIT_PENDING"
+}

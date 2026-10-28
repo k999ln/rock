@@ -1,3 +1,5 @@
+Local Agent APIの保存済みAgent設定不一致は、既存の拒否を保ち、estimate/textと同じ `AGENT_SETTINGS_CHANGED` と元のstatusで返します。[応答・復旧契約](docs/rockstaros-complete-design.md#smith-local-agent-settings-rejection)。自動再実行や新しい権限は追加しません。
+
 開発の全体窓口はRoot、保存・統合はGitへ集約します。次の新規作業はOS（料金・請求、Wallet、Game、eSIMの既存要件を含む）・Eve・Smith・miiを優先し、既存95unitの残件を保持します。着手済みProは検収・保存・統合まで閉じ、OSに含まれる上記要件を一律後回しにせず、専門ownerと共通契約を再利用します。非金融GameはWallet完成待ちにしません。その他の範囲外の独立拡張は後回しです。[現行運用](docs/workstreams/10-git-ci-operations.md#four-lane-priority-20261028)。
 
 Proの保存済み仕事は、WorkJob IDを確認して共通の本人画面へ開く[限定再開入口](docs/rockstaros-complete-design.md#pro-existing-job-resume)を用意しています。形式確認は存在・所有・実行同意の確認ではなく、現在の本人一覧外の古い仕事をexact GETで取得する機能は未実装です。

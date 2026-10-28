@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "Already-started Pro02 exact4 resume entry: independent scoped source/related95/fullverify PASS; final metadata/Git/mainCI pending. Future priority: OS (including billing/Wallet/Game/eSIM existing requirements and OS-runtime acceptance), Eve, Smith, mii. No internal ranking/all4 simultaneous start; preserve existing95, specialty ownership and nonfinancial Game independence. Other expansion outside these scopes is deferred, not OS requirements. Root front door/Git integration; do not duplicate current mii work.",
+  "nextProductSlice": "PR252 normalmain0dcbbf6 closed with all7 checks/all5 workflows (Linux3246/3244pass/0fail/2skip, Android compile/emulator/trial). Next Smith02 exact3 existing refusal-response mapping source Root scopedPASS/actual8/central related28; fullverify/final metadata/Git/CI pending. OS(billing/Wallet/Game/eSIM included), Eve, Smith and mii remain priorities; no whole-product acceptance or new Pro expansion.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -468,5 +468,19 @@
     "publicDeployment": false,
     "gitSaved": false,
     "mainIntegrated": false
-  }
+  },
+  "smithLocalAgentSettingsCurrent": {
+    "unit": "SMITH-02",
+    "contextTask": "SKY21",
+    "baseMain": "0dcbbf69024009318ce6e3eb0aa5494e5e3d5590",
+    "status": "HOST_FULLVERIFY_PASS_FINAL_METADATA_REVIEW_GIT_PENDING",
+    "evidence": "docs/evidence/development-execution/smith-local-agent-settings-main-adoption.json",
+    "wholeSMITH02Accepted": false,
+    "newExecutionPermission": false,
+    "actualAuthenticatedE2EAccepted": false,
+    "providerOrDeviceAccepted": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD"
+  },
+  "latestAcceptedProEvePixelReadback": "docs/evidence/development-execution/pro-eve-pixel-main-current.json"
 }
