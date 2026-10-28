@@ -1,3 +1,16 @@
+<a id="portfolio-delivery-20261028"></a>
+## 全11laneから有限な共有deliveryを選ぶ（G04・ROCK）
+
+本人の「全体」の訂正を受け、miiだけを常時primaryにする制約を解除する。PR250/main7d23の別受入・全6check/4workflow成功は保持。[portfolio](../../data/development-portfolio.json)は既存95unit/11laneをsource/main受入と次のROCK作業・JOINT/EXTERNAL/OWNER gateへ結ぶ。元13P/95分類/50RQ/393task/14gateを再分類せず、path実在を実装完成率へ換算しない。
+
+今回のprimaryはESIM-01/04既存service契約の限定acceptance repair。実consumerはhost testsのみで、まだproductionへ配線しないhelperを使える新体験や他laneの現blocking依存として扱わない。予定の契約参照と実consumer証拠付きruntime依存を分離し、既存95unit/queueへ解決できる依存graphを許す。未知/self/循環と重複appliesToを拒否する。元署名fixの再作成や別OS08実装を行わず、OS-14/SYNC-01/BILL-03/PRO-02/AUTH-01は既存source確認後の次候補。非金融Gameとmiiの有限なoffline作業を金融/flash待ちにしない。
+
+R1はBillingのcallback alias P2一件、Rootのgraph/unique集合/分類/検収担当P2四件で差戻し。原15file/旧反例/59試験と全verify成功を不変保存し、R2は別snapshot。実行sourceはBilling/Astra、portfolio/controlはRootが別検収する。予定の次milestoneは既存認証adapter/DB/Brokerを調べて同job/usage/save/stopへ接続する受入であり、今回の修正にproduction配線を追加しない。
+
+次は固定sourceの独立検収→最小Git保存→HEAD CI→通常main merge→同SHA CI。整理/通知/validatorだけを商品成果にしない。Root返信だけのgateは不要だが作者自身を独立検収にしない。source不明はUNKNOWN、Mini metrologyは有限source終了・別検収で新割当なし。OS候補通知拒否は未受領のまま、616/実機/Provider/実課金/一般公開HOLDを維持。
+
+検証: `node --test tests/development-execution-gates.test.mjs`、`npm run mission:check`、既存ESIM-01/04局所試験、`npm run verify`。証拠は[有限batch](../evidence/development-execution/portfolio-delivery-recovery.json)と[共有source](../evidence/development-execution/shared-service-access-binding.json)。
+
 <a id="execution-recovery-20261028"></a>
 ## 商品成立primaryと実行段階の強制（2026-10-28 / G04・ROCK）
 

@@ -299,7 +299,7 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.55",
+  "version": "1.56",
   "updatedAt": "2026-10-28",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -3582,5 +3582,20 @@
     "physicalAccepted": false,
     "wholeProductAccepted": false,
     "existingUnmergedHardwareArtifactsAdopted": false
+  },
+  "sharedServiceAccessBinding": {
+    "authority": "docs/rockstaros-complete-design.md#shared-service-access-binding",
+    "implementation": [
+      "lib/rockstar-service-setup.ts"
+    ],
+    "tests": [
+      "tests/rockstar-service-setup.test.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/shared-service-access-binding.json",
+    "existingSchemaOnly": true,
+    "parentDatabaseFreshnessAccepted": false,
+    "productionEnabled": false,
+    "physicalAccepted": false,
+    "wholeUnitAccepted": false
   }
 }

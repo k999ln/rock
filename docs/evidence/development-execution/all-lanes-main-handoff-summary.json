@@ -71,7 +71,7 @@
     "meaning": "49+16+5+2 source-only snapshots; not main runtime adoption.",
     "remaining616PublicExport": "HELD"
   },
-  "nextProductSlice": "mii MINI-02/MAT15 remains product primary: MII-OPT-ERROR-MAP-01 closed under Root PASS_SCOPED (one-axis necessary condition only), source3 hashes received; Git adoption/headCI/mainCI remain separate. M3/M4 must supply bench measurements for M7 independent metrology; no physical permission from study. Git10 control has code/39 focused/fullverify PASS; independent control review and Git/CI pending. OS notification holds remain without candidate retrieval/relay; no branch-bug dispatch. Product/physical/provider/public/616 holds preserved.",
+  "nextProductSlice": "Full11lane portfolio, finite ESIM01/04 host contract acceptance repair R2: source62/unchanged Billing probes16, control54/unchanged Root probes5 pass. Not enabled usable experience or a blocker for other lanes; production wiring/same-job parity is planned separately. R1 reviews requested changes and R2 host fullverify PASS; independent reviews/Git/CI remain separate. OS denied candidates unreceived; physical/provider/public/616 holds retained.",
   "otherFollowups": [
     "Eve saved-source estimate numeric/expiry actual-browser evidence remains unaccepted; paid artifact bridge separate.",
     "eSIM independent retention policy/ACL/expiry and shared issuer/contract epoch remain separate gates.",
@@ -351,5 +351,10 @@
     ],
     "primaryCanonicalEvidence": "docs/evidence/development-execution/mii-optical-error-map-adoption.json",
     "captureMeaning": "Candidate stage snapshot; Git and CI progress must use subsequent same-artifact readbacks, not restart completed source/review."
+  },
+  "portfolioDeliveryCurrent": {
+    "path": "data/development-portfolio.json",
+    "scope": "All95 IDs/11lanes located; bounded evidence, not whole acceptance.",
+    "previousPR250Proof": "docs/evidence/development-execution/portfolio-delivery-recovery.json#/previousPR250"
   }
 }

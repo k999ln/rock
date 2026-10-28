@@ -1,3 +1,5 @@
+共有service accessの開発・検証は[全11lane portfolio](data/development-portfolio.json)と[Git運用](docs/workstreams/10-git-ci-operations.md#portfolio-delivery-20261028)を入口にします。eSIM/Pixelの回線・本人利用権・OS/client状態は独立し、現在のhost検査を実機/本番の合格へ換算しません。
+
 PR247でmain統合・同SHA CI確認済みの共通テキスト仕事とEve準備仕事では、応答不明時に同じbrowserで開き直して保存済みの同じ仕事・操作IDを確認できます。未保存原稿や同意は復元しません。未確認中は自動再送せず、Web Locksまたは保存機能が使えない環境では新規操作を止めます。[復旧条件](docs/rockstaros-complete-design.md#eve13-pending-recovery)。実認証browser・実機・公開側の受入は別です。
 
 Pro商品ページから、avoado.siの[既存私有テキスト仕事](https://avoado.si/zema/compose?tool=mr-citations)へ進む限定入口はPR246でmainへ反映済みです。linkはToolだけを選び、notesや私有archiveは送信しません。利用accountを確認して新しいtextを入力し、計画保存と別の素材保存同意を確認します。応答不明は同じ仕事/操作で照合し、手順間で停止しても保存原稿/成果を保持します。この接続済みsource-link処理のbudget0と、service・回線・他AI使用料は別です。[契約・復旧](docs/rockstaros-complete-design.md#pro-private-work-entry)。公開側の修正配備は未実施です。

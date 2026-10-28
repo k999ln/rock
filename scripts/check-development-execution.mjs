@@ -17,8 +17,11 @@ export function validateDevelopmentExecution(overlay) {
   const primaries = overlay.queue.filter(item => item.primary);
   check(primaries.length === 1, 'exactly one product primary required');
   const primary = primaries[0];
-  check(primary.workClass === 'product_feasibility' && primary.status === 'working', 'primary must advance product feasibility');
-  check(['product_decision', 'usable_experience'].includes(primary.deliverableKind), 'management cannot replace product primary');
+  check(['product_delivery', 'product_feasibility', 'acceptance_gate_repair'].includes(primary.workClass) && primary.status === 'working', 'primary must advance product delivery, feasibility or a required product gate');
+  if (primary.workClass === 'acceptance_gate_repair') {
+    check(primary.deliverableKind === 'acceptance_gate_repair' && text(primary.requiredGateRef) &&
+      primary.unitRefs?.includes(primary.servesProductUnit) && text(primary.consumerMilestoneRef), 'primary repair needs an existing product contract gate and next consumer milestone');
+  } else check(['product_decision', 'usable_experience'].includes(primary.deliverableKind), 'management cannot replace product primary');
   const ids = new Set(), paths = new Set();
   const blocked = item => {
     for (const key of ['stopReason', 'nextOwner', 'releaseOwner', 'releaseCondition', 'nextPermissionFreeAction']) check(text(item[key]), item.id + ': blocked ' + key);
@@ -33,8 +36,9 @@ export function validateDevelopmentExecution(overlay) {
       check([...paths].every(other => absolute !== other && !absolute.startsWith(other + sep) && !other.startsWith(absolute + sep)), 'editing ownership conflict');
       paths.add(absolute);
     }
-    if (item.workClass === 'acceptance_gate_repair') check(item.servesPrimary === primary.id && text(item.requiredGateRef), 'unrelated branch repair');
-    if (!item.primary) check(['acceptance_gate_repair', 'execution_control'].includes(item.workClass), 'unprioritized secondary work');
+    if (item.workClass === 'acceptance_gate_repair' && !item.primary) check(item.servesPrimary === primary.id && text(item.requiredGateRef), 'unrelated branch repair');
+    if (!item.primary) check(['acceptance_gate_repair', 'execution_control'].includes(item.workClass) ||
+      (['product_delivery', 'product_feasibility'].includes(item.workClass) && ['queued', 'blocked', 'review_ready'].includes(item.status)), 'unprioritized secondary work');
     if (item.status === 'blocked' || Object.values(item.stages ?? {}).some(stage => stage?.status === 'blocked')) blocked(item);
     if (text(item.reviewer)) check(item.reviewer !== item.author, 'author cannot be independent reviewer');
     check(item.waitForRootReply === false, 'unnecessary Root reply gate');
@@ -74,9 +78,67 @@ export function validateDevelopmentExecution(overlay) {
   return { queued: overlay.queue.length, primary: primary.id, structuralOnly: true };
 }
 
+export function validateDeliveryPortfolio(portfolio, units, overlay) {
+  const lanes = ['git', 'eve', 'os-pixel', 'smith', 'esim', 'billing', 'mini', 'pro', 'web-ops', 'wallet', 'game'];
+  check(portfolio?.schema === 'rockstaros.delivery-portfolio/1' && portfolio.baseMain === overlay.baseMain, 'portfolio main binding');
+  check(Array.isArray(portfolio.lanes) && portfolio.lanes.length === lanes.length &&
+    new Set(portfolio.lanes.map(x => x.lane)).size === lanes.length &&
+    portfolio.lanes.every(x => lanes.includes(x.lane)), 'all eleven portfolio lanes required');
+  const expected = new Map(units.map(x => [x.id, x.lane])), seen = new Set();
+  const queueIds = new Set(overlay.queue.map(x => x.id));
+  const graph = new Map([...expected.keys(), ...queueIds].map(x => [x, []]));
+  const dependencies = (from, values) => {
+    check(Array.isArray(values), 'portfolio dependencies required');
+    for (const value of values) {
+      const target = typeof value === 'string' ? value : value?.target;
+      check(graph.has(target) && target !== from, 'unknown or self portfolio dependency');
+      if (typeof value !== 'string') check(['planned_contract', 'verified_runtime'].includes(value.kind) &&
+        (value.kind !== 'verified_runtime' || (text(value.evidenceRef) && text(value.consumerPath))), 'runtime dependency needs evidence and consumer');
+      graph.get(from).push(target);
+    }
+  };
+  for (const lane of portfolio.lanes) {
+    check(['ROCK', 'JOINT', 'EXTERNAL', 'OWNER'].includes(lane.primaryResponsibility) &&
+      ['owner', 'nextOwner', 'stopReason', 'releaseCondition', 'nextUnit', 'nextRockDeliverable', 'externalOrOwnerGate', 'startState'].every(key => text(lane[key])), 'portfolio responsibility/next action required');
+    check(lane.wholeLaneAccepted === false && text(lane.mainEvidence?.path) && digest(lane.mainEvidence?.sha256), 'bounded portfolio evidence required');
+    check(Array.isArray(lane.sourceRefs) && lane.sourceRefs.length > 0 && lane.sourceRefs.every(x => text(x.path) && digest(x.sha256)), 'portfolio source references required');
+    check(Array.isArray(lane.unitRefs) && lane.unitRefs.length > 0 && lane.unitRefs.includes(lane.nextUnit), 'portfolio next unit belongs to lane');
+    for (const id of lane.unitRefs) {
+      check(expected.get(id) === lane.lane && !seen.has(id), 'portfolio unit missing, duplicate or foreign lane'); seen.add(id);
+    }
+    dependencies(lane.nextUnit, lane.dependencies);
+  }
+  for (const item of overlay.queue) dependencies(item.id, item.dependencies ?? []);
+  for (const [id, values] of Object.entries(portfolio.unitDependencies ?? {})) {
+    check(expected.has(id), 'unknown dependency source unit'); dependencies(id, values);
+  }
+  const visiting = new Set(), visited = new Set();
+  const visit = id => {
+    check(!visiting.has(id), 'portfolio dependency cycle');
+    if (visited.has(id)) return;
+    visiting.add(id); for (const target of graph.get(id)) visit(target);
+    visiting.delete(id); visited.add(id);
+  };
+  for (const id of graph.keys()) visit(id);
+  check(seen.size === expected.size && new Set(overlay.appliesToUnitIds).size === expected.size && overlay.appliesToUnitIds.length === expected.size &&
+    overlay.appliesToUnitIds.every(x => seen.has(x)), 'portfolio must cover existing units exactly');
+  check(text(portfolio.selection?.reason) && portfolio.selection.primary === overlay.queue.find(x => x.primary)?.id &&
+    Array.isArray(portfolio.selection.unitRefs) && portfolio.selection.unitRefs.length > 0 &&
+    portfolio.selection.unitRefs.every(x => seen.has(x) && overlay.queue.find(q => q.primary).unitRefs.includes(x)), 'portfolio selection binding');
+  check(portfolio.whole95Accepted === 0 && portfolio.physicalAccepted === false &&
+    portfolio.productionEnabled === false && portfolio.publicDeployment === false && portfolio.bulk616 === 'HOLD', 'portfolio audit cannot grant whole product/physical/production/public acceptance');
+  return { lanes: lanes.length, units: seen.size, structuralOnly: true };
+}
+
 export function checkDevelopmentExecutionFile(routingPath, additionalFixturePath) {
   const routing = JSON.parse(readFileSync(routingPath, 'utf8'));
   const result = validateDevelopmentExecution(routing.currentExecution);
+  if (routing.currentExecution.portfolioPath) {
+    check(routing.currentExecution.portfolioPath === 'data/development-portfolio.json', 'canonical portfolio path required');
+    const root = resolve(routingPath, '..', '..');
+    validateDeliveryPortfolio(JSON.parse(readFileSync(resolve(root, 'data/development-portfolio.json'), 'utf8')),
+      JSON.parse(readFileSync(resolve(root, 'data/development-unit-progress.json'), 'utf8')).units, routing.currentExecution);
+  }
   // Additional negative-fixture validation never replaces or skips the actual repository overlay.
   if (additionalFixturePath) validateDevelopmentExecution(JSON.parse(readFileSync(additionalFixturePath, 'utf8')));
   return result;

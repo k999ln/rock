@@ -11617,5 +11617,36 @@
       "M7"
     ],
     "bench": "MII-OPT-ERROR-BENCH-01 SPECIFIED_NOT_RUN"
+  },
+  "portfolioDeliveryCurrent": {
+    "baseMain": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+    "status": "R2_HOST_FULLVERIFY_PASS_SEPARATE_SOURCE_CONTROL_REVIEW_PENDING",
+    "portfolio": "data/development-portfolio.json",
+    "evidence": "docs/evidence/development-execution/portfolio-delivery-recovery.json",
+    "runtimeEvidence": "docs/evidence/development-execution/shared-service-access-binding.json",
+    "primaryUnits": [
+      "ESIM-01",
+      "ESIM-04"
+    ],
+    "whole95Accepted": 0,
+    "physicalAccepted": false,
+    "productionEnabled": false,
+    "publicDeployment": false,
+    "bulk616": "HOLD",
+    "revision": "R2",
+    "r1HostVerify": {
+      "tests": 3229,
+      "pass": 3226,
+      "fail": 0,
+      "skip": 3
+    },
+    "runtimeRiskReviewer": "Billing / Astra high",
+    "controlReviewer": "Root",
+    "hostVerify": {
+      "tests": 3240,
+      "pass": 3237,
+      "fail": 0,
+      "skip": 3
+    }
   }
 }

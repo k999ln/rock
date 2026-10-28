@@ -1,0 +1,113 @@
+{
+  "schema": "rockstaros.shared-service-access-binding/1",
+  "baseMain": "7d23da4243b1580f9d714f04cfebacd1bbf93c10",
+  "units": [
+    "ESIM-01",
+    "ESIM-04"
+  ],
+  "primaryResponsibility": "ROCK",
+  "scope": "Existing server-composition helper only; no production adapter enabled. Attachment verification remains PR248, not recreated.",
+  "implementation": {
+    "path": "lib/rockstar-service-setup.ts",
+    "sha256": "19abb8cdbdfc1ae5c553d699888e82c4f9869c82bd7ec7f20783eafe550c80c7",
+    "function": "serviceAccessEvaluator"
+  },
+  "tests": {
+    "path": "tests/rockstar-service-setup.test.mjs",
+    "sha256": "76265fa498779ed5910f923ab4f727d88b0a66309f7751de9ce21b34a65a0f8e"
+  },
+  "oldCounterexamples": {
+    "leafCases": 8,
+    "aggregateFailureAlsoReported": 1,
+    "rootReportedTests": 9,
+    "pass": 0,
+    "fail": 9,
+    "logSha256": "5c6675a08c8a2f3ac884dd7ced7c380b509b5adee1a486e5f3eaf71e22a489b4",
+    "cases": [
+      "payment restriction",
+      "budget revoked",
+      "setup grant revoked",
+      "parent facts object replaced",
+      "retention revoked",
+      "authentication object replaced",
+      "revision changed",
+      "request mutation during authority read"
+    ]
+  },
+  "intermediateFailure": {
+    "reason": "Initial refactor gave missing retained authority a known revision instead of prior all-denied/null revision",
+    "focusedTests": 59,
+    "pass": 58,
+    "fail": 1,
+    "preserved": true,
+    "fixed": "Reject absent retained authority before granting revision; current59pass"
+  },
+  "verification": {
+    "command": "node --experimental-strip-types --test --test-name-pattern='ESIM-01|runtime owner retention|service access' tests/rockstar-service-setup.test.mjs",
+    "tests": 62,
+    "pass": 62,
+    "fail": 0,
+    "skip": 0,
+    "typecheck": "PASS",
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3240,
+        "pass": 3237,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "7e0791c259e2dc2b9d8b229d7466a1ba86db92cf72744c696d198077d7f7831b",
+      "executionLayer": "Host R2 only, source/control code and tests unchanged through fullverify. Final evidence/status text updated afterward and metadata checks run separately; exact Git HEAD/main CI and independent R2 reviews remain pending."
+    },
+    "independentProbeReplay": {
+      "role": "Author replay of unchanged Billing probes, not independent R2 acceptance",
+      "tests": 16,
+      "pass": 16,
+      "fail": 0
+    },
+    "configuredLint": "PASS",
+    "missionCheck": "PASS",
+    "designCheck": "PASS"
+  },
+  "behavior": "Bind five request fields before readCurrent await; clone initial snapshot; after signature verification clone supplied live snapshot again, recompute current retention and intersect prior grants; dispatch only if serialized detached whole authority snapshot is unchanged. Replacement nested objects are detected, not merely mutation of old facts reference.",
+  "compatibility": "Unchanged APIs/return shape/wire/TTL/DB/schema/issuer/fees/workflow; readCurrent receives a detached request with defined five fields. Unknown extra request fields are no longer forwarded to the server adapter. Change to any snapshot field conservatively denies dispatch, including benign unrelated telecom metadata; retry explicitly reads current state.",
+  "remainingGates": [
+    "No parent DB reread or atomic Broker reservation consumption; changes outside supplied object and change-then-restore are not detected.",
+    "No persistent independent retention ACL/expiry, real authenticated route/provider/device or production enablement.",
+    "No fresh Pixel runtime/OS08 candidate acceptance; refused candidate remains unreceived."
+  ],
+  "independentReview": "PENDING_BILLING_ASTRA_R2",
+  "gitSave": "NOT_STARTED",
+  "physicalAccepted": false,
+  "productionEnabled": false,
+  "publicDeployment": false,
+  "wholeUnitAccepted": false,
+  "bulk616": "HOLD",
+  "currentConsumerBoundary": "Host tests only; an acceptance_gate_repair for an existing service contract, not usable_experience or a hard runtime blocker for any other lane. Authenticated adapter/DB/Broker and same-job parity are separate future milestones.",
+  "revision": "R2",
+  "r1IndependentReview": {
+    "decision": "CHANGES_REQUESTED",
+    "mustFix": 1,
+    "reviewSha256": "89a3a31a52296ec38371ac3530ebdf10128628be0ed3a6d770b588543ad58639",
+    "cause": "Private boundRequest also shared with readCurrent callback; two independent failing cases, one alias root cause. R1 source3/manifest/59 focused/fullverify evidence preserved separately.",
+    "priorHostVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3229,
+        "pass": 3226,
+        "fail": 0,
+        "skip": 3
+      },
+      "build": "PASS",
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "logSha256": "e564c78798979cf8bc2fe388c3fc02bac5ea4c05d5affd63a2028bf19218a470",
+      "executionLayer": "Host only; exact HEAD/main CI remain separate. Runtime source2 unchanged throughout; final metadata/control were present for npm test/mission. Final metadata-only checks separately after freeze."
+    }
+  },
+  "r2Correction": "Pass a separate five-field copy to readCurrent. Keep the validated internal primitive field snapshot private for every post-await identity/device/scope/budget check. Adapter mutation cannot retarget it."
+}
