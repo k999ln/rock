@@ -1,0 +1,344 @@
+{
+  "schema": "rockstaros.execution-control-recovery/1",
+  "recordedAt": "2026-10-28",
+  "baseMain": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+  "primary": "mii decision closed under separate Root scoped review; product primary still working toward Git/bench gates",
+  "scope": "Execution management enforcement only; no product runtime/DB/provider/physical changes",
+  "independentReview": "PENDING_ROOT_FINAL_FROZEN_UNION; preflight is not final acceptance",
+  "gitSave": "PENDING",
+  "mainIntegration": "PENDING",
+  "actualModelIdentity": null,
+  "tokens": null,
+  "cost": null,
+  "bulk616": "HOLD",
+  "controlArtifacts": {
+    "files": {
+      "scripts/check-development-execution.mjs": "b03f9d0ee94e9c3bd710ddd6ff0eda887d799c45a9254b8ee35a6cf0ef910440",
+      "tests/development-execution-gates.test.mjs": "140a12f32e0b14afdc8fec4d8e702edadfc9061bb1d29b5366045be9a3be3722",
+      "scripts/check-mission-control.mjs": "6c1347567a5d6d65b4bf8f35e68ef93cb0f2554894fb80a60eddb56f9fc506ad"
+    },
+    "aggregateSha256": "b72326767accd63b6bd9bc25bba28b466de4154e81990a3cbde03ca7713ee676",
+    "algorithm": "SHA256 of Python json.dumps(files,sort_keys=True,separators=(comma,colon)) UTF-8"
+  },
+  "incidents": [
+    {
+      "kind": "private preparation script syntax error",
+      "resolved": true,
+      "count": 1,
+      "productAcceptanceClaim": false
+    },
+    {
+      "kind": "actor-limit negative fixture assumed three actors after actual assignment became two",
+      "focusedR2BeforeFix": {
+        "tests": 44,
+        "pass": 43,
+        "fail": 1
+      },
+      "resolvedBy": "Set explicit four-actor fixture; production actor limit unchanged",
+      "failedLogSha256": "233ab8a18124f6baaac0744e9f6b281ed9bb4d8788549f49ce1ed20640ed4402"
+    }
+  ],
+  "limits": [
+    "Validator checks declared structure and internal hashes/SHA bindings, not actual source bytes/CI truth/product physics.",
+    "Assigned Mini source3 hashes and separate Root scoped review received; no Mini file copied into this control candidate and no physical/product acceptance.",
+    "11-lane evidence location read is bounded to tracked main; latest chat/unmerged sources UNKNOWN.",
+    "OS candidates/Root private registry not read; rejected notifications remain held."
+  ],
+  "primarySeparateCandidate": {
+    "decisionId": "MII-OPT-ERROR-MAP-01",
+    "source3Hashes": {
+      "decision.json": "8e139a2f5d2b420e905c8cd6bd71fd347d468d3d7612e98c2889e59bce5273cb",
+      "verify.mjs": "8bfc64cd7003f54a42ccdbe0b20fee1fa1a6449de22afc473b40a41c9e8bc7f8",
+      "evidence.json": "bbcaa1a10730cd2cd3cc9a89d54641b45b48b8fc2177d37356064bd5aec280e4"
+    },
+    "source3AggregateSha256": "56936645da70b8701b84cf09d977cbbd1fafaf66488c7c7d95489cdd5bd73686",
+    "RootReviewSha256": "a6d082c5cd32f982ac5bbd3692b9946d726539e6590f7c0cf8b4515c3c252e0e",
+    "reviewDecision": "PASS_SCOPED",
+    "scope": "Reject uniform1:1 tracking-to-exit budget; accept specified example and offline bench input only",
+    "includedMiniFilesInThisCandidate": false,
+    "physicalAccepted": false
+  },
+  "baseCICapture": {
+    "sha": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+    "currentChecks": 12,
+    "allCurrentChecksSuccess": true,
+    "initialAcceptedMergeChecks": 6,
+    "meaning": "Same-SHA repository check capture, including later suites/collect; not capability count."
+  },
+  "boundedLaneReadAtInitialMainCapture": [
+    {
+      "lane": "git",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "data/development-source-handoff.json",
+        "sha256": "c6ef391d8484f4ff7848786e58ecac55e42085957157faca505fa0d04374abb9",
+        "classification": "UNKNOWN_LATEST_LANE_DELIVERABLE",
+        "recordedStatus": "UNKNOWN; baseline source location only"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "git",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Independent control review, exact Git/HEAD/main CI remain separate.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "eve",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/eve13-pending-recovery-main-current.json",
+        "sha256": "9a084fa9578dee46b237c07067c7149cf1a95f7b86ee1b17b509f68a0722cfd4",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.eve13-pending-recovery-main-current/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "eve",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Authenticated all-entrypoint/paid artifact bridge not accepted.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "os-pixel",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/pr242-243-main-current.json",
+        "sha256": "2e447747ece8d7576d17e951485fa346fd6081580d24a49251a04b770c655aa8",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.pro-eve-forward-current-main-proof/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "os-pixel",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Candidate notification held; physical/full OS/full-loss gates remain.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "smith",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/smith-session-main-current.json",
+        "sha256": "53826c02e81739530b74bc4d1f17edc32fc352bee401180be72532fba69b70d3",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.smith-session-current-main-proof/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "smith",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Real account/device all-loop and marketplace gates remain.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "esim",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json",
+        "sha256": "0bf2d02962f783e97f12e3974b2b446bc2c082204cbe60f46699b12c0ba51f39",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.esim-attachment-async-binding-main-current/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "esim",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Actual issuer/profile/auth/provider/financial/production DB gates remain.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "billing",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/pr242-243-main-current.json",
+        "sha256": "2e447747ece8d7576d17e951485fa346fd6081580d24a49251a04b770c655aa8",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.pro-eve-forward-current-main-proof/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "billing",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Actual usage provenance/settlement and production finance not accepted.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "mini",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/prepared-device-mini-main-current.json",
+        "sha256": "0dc5e3346ef8abf4910dfff43f9f245532e80612220173116210819dac277ec6",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.prepared-device-mini-main-current/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "mini",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Product feasibility/optics/eye safety/manufacturing not accepted; current mii primary assigned.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "pro",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/pro-work-entry-main-current.json",
+        "sha256": "8cebc309d6d004d575d269a54558cc4f4d0131cd7fd571379783a83ab2cd79a9",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.pro-work-entry-current-main-proof/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "pro",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Physical SKU/native/commerce gates remain.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "web-ops",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/esim-webops-main-current.json",
+        "sha256": "c1a3f8a24a630f905ab96b89b36470f1a1a72d796621285d72f168799e0c9f44",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.esim-webops-current-main-proof/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "web-ops",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Current deployed source identity/DNS/TLS/public launch not inferred from Git.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "wallet",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/wallet-process-recovery.json",
+        "sha256": "6e1e0608bf2b764b7f16a2a48b6636e614d583eebf67fcf37223785d0323d999",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "INDEPENDENT_SOURCE_METADATA_AND_HOST_VERIFY_PASS_GIT_SAVE_PENDING"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "wallet",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Production durability/financial/provider acceptance remains.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    },
+    {
+      "lane": "game",
+      "latestLocatedEvidenceInBoundedMainRead": {
+        "path": "docs/evidence/development-execution/pr242-243-main-current.json",
+        "sha256": "2e447747ece8d7576d17e951485fa346fd6081580d24a49251a04b770c655aa8",
+        "classification": "MAIN_TRACKED_BOUNDED_RECEIPT",
+        "recordedStatus": "rockstaros.pro-eve-forward-current-main-proof/1"
+      },
+      "latestChatOrUnmergedSource": "UNKNOWN_NOT_READ",
+      "primaryOwner": "game",
+      "nextOwner": "Root coordinates primary or actual gate owner",
+      "remainingGate": "Full SDK/external-game/exchange gates remain; nonfinancial fixtures independent.",
+      "nextPermissionFreeWork": "Advance or support mii feasibility primary using existing contracts only; retain holds and do not start unrelated bugs.",
+      "wholeLaneAccepted": false
+    }
+  ],
+  "boundedReadQualification": "Initial main-only location snapshot. The subsequently received assigned mii source3/Root scoped review is recorded separately in primarySeparateCandidate; other chat/unmerged state remains UNKNOWN.",
+  "validationR1": {
+    "focusedAndExistingAMC": {
+      "tests": 39,
+      "pass": 39,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "e436fb760d8d3b7395e24cfa3352d33c22da79c0c8731edd3fb8201107a264bb"
+    },
+    "normalMissionNegativeFixture": "PASS: npm run mission:check exit nonzero with exactly-one-primary error; real overlay checked first",
+    "metadata": "PASS",
+    "design": "PASS",
+    "targetLint": "PASS",
+    "diff": "PASS",
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3202,
+        "pass": 3199,
+        "fail": 0,
+        "skip": 3
+      },
+      "logSha256": "bf54c74084b0a01ffa6546c99438bb7f3e7a1eda06a9a20f56c9dd738da2f01f",
+      "build": "PASS",
+      "APIAssertions": 1678,
+      "CSVAssertions": 385,
+      "executions": 1
+    }
+  },
+  "version": "R2",
+  "validation": {
+    "focusedAndExistingAMC": {
+      "tests": 44,
+      "pass": 44,
+      "fail": 0,
+      "skip": 0,
+      "logSha256": "493647a55d7e89448fea8ccb5acefbc50da4beac39af118ae5ac1dd45eeb9332"
+    },
+    "unchangedRootProbesAuthorRerun": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "logSha256": "120470a2b41d32fe99fbf7ee7b735ea77a4607b516ba54ab51b7a13b21f77314",
+      "independentFinalAcceptance": false
+    },
+    "normalMissionNegativeFixture": "PASS; real overlay never replaced",
+    "mission": "PASS",
+    "targetLint": "PASS",
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3207,
+        "pass": 3204,
+        "fail": 0,
+        "skip": 3
+      },
+      "logSha256": "39392b11551f2aab455708bd601d65a25969a3e9a718995b09e6df090a91cb3a",
+      "build": "PASS",
+      "APIAssertions": 1678,
+      "CSVAssertions": 385,
+      "runsForFixedR2": 1,
+      "scope": "Control R2 and normal repository paths before byte-identical standalone Mini study storage/canonical-only followup; not a shallow-CI Mini verifier claim"
+    },
+    "afterSeparateMiiStorage": {
+      "focusedAndExistingAMC": {
+        "tests": 44,
+        "pass": 44,
+        "fail": 0
+      },
+      "miiExplicitNormalCloneReplay": {
+        "testsPassed": 11,
+        "baselinePairs": 35721,
+        "logSha256": "e24dc94ea5143f62352510198a8a622d93c2602480a2727e78346db52aea9b36",
+        "prerequisitesChecked": true,
+        "physicalAccepted": false
+      },
+      "metadata": "PASS",
+      "design": "PASS",
+      "diff": "PASS"
+    },
+    "initialScanner": {
+      "payload": {
+        "exit": 0,
+        "findings": 0,
+        "reportSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      },
+      "canary": {
+        "exit": 1,
+        "findings": 1,
+        "reportSha256": "3cb4e289a5d4efdc9f07bb1ab1ffcf67a7290d9efff4dcf4ac9e167aea2f523a"
+      },
+      "paths": 10,
+      "version": "8.30.1",
+      "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a",
+      "emptyIgnore": true,
+      "inlineAllowDisabled": true
+    }
+  },
+  "reviewHistory": {
+    "R1": "Root independent preflight1pass4fail; four reject gaps, not product acceptance",
+    "RootR1LogSha256": "41931104ea96089cb06d2e750bb51514ce93b13a2ab9559e1a10776cccd12587",
+    "RootR2PreflightSha256": "d2eec05f840239fe29e368bc66d343fb0151a73c6b4080e2918810f826a219bb",
+    "finalRootReview": "PENDING_FROZEN_R2_SCAN_MANIFEST"
+  },
+  "report": {
+    "usableExperience": "mission:check now refuses inconsistent execution claims; no new product UI/runtime",
+    "closedDecision": "Root scoped mii1:1-error-map rejection stored separately; control four reported reject gaps closed in R2 probes",
+    "remainingGate": "Root final union acceptance then explicit Git/HEAD/mainCI; M3/M4 measured bench inputs and M7 metrology remain actual product gates"
+  }
+}

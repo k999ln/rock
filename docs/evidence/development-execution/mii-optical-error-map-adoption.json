@@ -1,0 +1,32 @@
+{
+  "schema": "rockstaros.mii-optical-error-map-adoption/1",
+  "recordedAt": "2026-10-28",
+  "decisionId": "MII-OPT-ERROR-MAP-01",
+  "acceptanceScope": "Reject uniform1:1 tracking-to-exit budget; accept specified example and offline bench input only",
+  "source3": {
+    "decision.json": "8e139a2f5d2b420e905c8cd6bd71fd347d468d3d7612e98c2889e59bce5273cb",
+    "verify.mjs": "8bfc64cd7003f54a42ccdbe0b20fee1fa1a6449de22afc473b40a41c9e8bc7f8",
+    "evidence.json": "bbcaa1a10730cd2cd3cc9a89d54641b45b48b8fc2177d37356064bd5aec280e4"
+  },
+  "originalRootReviewSha256": "a6d082c5cd32f982ac5bbd3692b9946d726539e6590f7c0cf8b4515c3c252e0e",
+  "independentReview": "PASS_SCOPED mustFix0; author Mini, reviewer Root",
+  "closedDecision": "Reject uniform1:1 eye-to-aperture error budget; fixed one-axis necessary condition only",
+  "correctClearanceMeaning": "40mm raw edge clearance minus10mm frame gives30mm usable inner-edge clearance",
+  "reproduction": "node docs/evidence/development-execution/mii-optical-error-map/verify.mjs --repo .",
+  "prerequisites": "Pinned8793 Git objects and exact two working modules must exist; shallow-CI omission is NOT_RUN, never PASS",
+  "currentStageAtCapture": "Root scoped acceptance and separate source3 receipt; Git/HEAD/main CI still pending",
+  "sourceCapturesPreserved": "Original reproduce paths and pre-review/pre-Git fields are immutable captured evidence; use this current record and canonical command, not those old stage fields",
+  "benchNextOwners": {
+    "optics": "M4",
+    "sensor": "M3",
+    "independentMetrology": "M7",
+    "MAT15Integration": "M1"
+  },
+  "remaining": "Measured error/uncertainty traces, full-domain/face-change enclosure, optical mode/low glare/comfort/independent stop/packaging/manufacturing unaccepted",
+  "physicalOperationsAuthorized": false,
+  "physicalAccepted": false,
+  "wholeProductAccepted": false,
+  "existingUnmergedHardwareArtifactsAdopted": false,
+  "publicDeployment": false,
+  "bulk616": "HOLD"
+}

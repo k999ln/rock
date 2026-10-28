@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkDevelopmentExecutionFile } from './check-development-execution.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const requireTrue = (condition, message) => {
@@ -392,6 +393,7 @@ if (
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
   const read = (path) => JSON.parse(readFileSync(resolve(root, path), 'utf8'));
+  checkDevelopmentExecutionFile(resolve(root, 'data/development-model-routing.json'), process.env.ROCK_EXECUTION_CONTROL_NEGATIVE_FIXTURE);
   const mission = read('data/mission-control.json');
   const result = validateMissionControl(
     mission,

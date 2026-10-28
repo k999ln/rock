@@ -551,5 +551,345 @@
       "requestedModel": "gpt-6.1-sol",
       "requestedEffort": "medium"
     }
-  ]
+  ],
+  "currentExecution": {
+    "schema": "rockstaros.current-execution/1",
+    "updatedAt": "2026-10-28",
+    "scope": "Current execution overlay only; historical routing95 and fixed inventory remain unchanged. Validator checks structural consistency, not actual source/CI/physics.",
+    "baseMain": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0",
+    "appliesToUnitIds": [
+      "GIT-01",
+      "GIT-02",
+      "GIT-03",
+      "GIT-04",
+      "GIT-05",
+      "GIT-06",
+      "GIT-07",
+      "GIT-08",
+      "EVE-01",
+      "EVE-02",
+      "EVE-03",
+      "EVE-04",
+      "EVE-05",
+      "EVE-06",
+      "EVE-07",
+      "EVE-08",
+      "EVE-09",
+      "EVE-10",
+      "EVE-11",
+      "EVE-12",
+      "EVE-13",
+      "EVE-14",
+      "EVE-15",
+      "OS-01",
+      "OS-02",
+      "OS-03",
+      "OS-04",
+      "OS-05",
+      "OS-06",
+      "OS-07",
+      "OS-08",
+      "OS-09",
+      "OS-10",
+      "OS-11",
+      "OS-12",
+      "OS-13",
+      "OS-14",
+      "OS-15",
+      "OS-16",
+      "OS-17",
+      "OS-18",
+      "SMITH-01",
+      "SMITH-02",
+      "SMITH-03",
+      "SMITH-04",
+      "SMITH-05",
+      "SMITH-06",
+      "ESIM-01",
+      "ESIM-02",
+      "ESIM-03",
+      "ESIM-04",
+      "ESIM-05",
+      "ESIM-06",
+      "ESIM-07",
+      "ESIM-08",
+      "BILL-01",
+      "BILL-02",
+      "BILL-03",
+      "BILL-04",
+      "BILL-05",
+      "BILL-06",
+      "BILL-07",
+      "BILL-08",
+      "MINI-01",
+      "MINI-02",
+      "MINI-03",
+      "MINI-04",
+      "MINI-05",
+      "MINI-06",
+      "MINI-07",
+      "MINI-08",
+      "PRO-01",
+      "PRO-02",
+      "PRO-03",
+      "PRO-04",
+      "NET-01",
+      "NET-02",
+      "NET-03",
+      "WEBOPS-01",
+      "WEBOPS-02",
+      "WEBOPS-03",
+      "OPS-01",
+      "OPS-02",
+      "OPS-03",
+      "WALLET-01",
+      "WALLET-02",
+      "WALLET-03",
+      "GAME-01",
+      "GAME-02",
+      "MATERIAL-01",
+      "COMPANION-01",
+      "AUTH-01",
+      "SYNC-01",
+      "MODEL-01",
+      "MCP-01"
+    ],
+    "stageContract": [
+      "request",
+      "source",
+      "ownership",
+      "deliverable",
+      "independentReview",
+      "gitSave",
+      "headCI",
+      "mainMerge",
+      "mergeCI"
+    ],
+    "maxActiveTotal": 3,
+    "activeActors": [
+      "Root",
+      "Git"
+    ],
+    "actorSnapshotMeaning": "Assigned current actors reported by coordinator; not confirmed runtime/model telemetry.",
+    "retry": {
+      "totalAttemptsPerUnitAndRootCause": 3,
+      "resetOnModelChange": false,
+      "resetOnOwnerChange": false,
+      "unknownExternalEffectMustReconcileBeforeRetry": true
+    },
+    "attemptLedger": [
+      {
+        "unit": "GIT-08",
+        "rootCause": "missing_enforced_product_primary_and_handoff_gates",
+        "attempts": 2
+      },
+      {
+        "unit": "GIT-08",
+        "rootCause": "private_builder_syntax_before_validation",
+        "attempts": 2
+      },
+      {
+        "unit": "GIT-08",
+        "rootCause": "concurrency_negative_fixture_assumed_three_current_actors",
+        "attempts": 2
+      }
+    ],
+    "queue": [
+      {
+        "id": "mii-optical-feasibility",
+        "unitRefs": [
+          "MINI-02"
+        ],
+        "taskRefs": [
+          "MAT15"
+        ],
+        "primary": true,
+        "workClass": "product_feasibility",
+        "status": "working",
+        "author": "Mini",
+        "reviewer": "Root",
+        "nextOwner": "Git",
+        "editingPaths": [
+          "/private/tmp/mii-execution-recovery-20261028/mini/decision.json",
+          "/private/tmp/mii-execution-recovery-20261028/mini/verify.mjs",
+          "/private/tmp/mii-execution-recovery-20261028/mini/evidence.json"
+        ],
+        "deliverableDescription": "Close one blocking optical feasibility decision with source numbers, reproduced calculation, rejected alternatives, unmeasured conditions and an executable bench pass/fail criterion. Not physical acceptance.",
+        "artifactId": "mii-optical-feasibility-v1",
+        "deliverableKind": "product_decision",
+        "accepted": false,
+        "productAccepted": false,
+        "physicalAccepted": false,
+        "waitForRootReply": false,
+        "stages": {
+          "request": {
+            "status": "passed",
+            "evidence": {
+              "ref": "docs/workstreams/10-git-ci-operations.md#execution-recovery-20261028"
+            }
+          },
+          "source": {
+            "status": "passed",
+            "evidence": {
+              "ref": "artifact:mii/MII-OPT-ERROR-MAP-01/baseline9",
+              "note": "Root independently matched baseline9; Git checked assigned source3 hashes"
+            }
+          },
+          "ownership": {
+            "status": "passed",
+            "evidence": {
+              "ref": "data/development-model-routing.json#/currentExecution/queue"
+            }
+          },
+          "deliverable": {
+            "status": "passed",
+            "evidence": {
+              "ref": "docs/evidence/development-execution/mii-optical-error-map-adoption.json",
+              "artifactId": "mii-optical-feasibility-v1",
+              "sha256": "56936645da70b8701b84cf09d977cbbd1fafaf66488c7c7d95489cdd5bd73686"
+            }
+          },
+          "independentReview": {
+            "status": "passed",
+            "evidence": {
+              "ref": "docs/evidence/development-execution/mii-optical-error-map/root-review.json",
+              "artifactId": "mii-optical-feasibility-v1",
+              "sha256": "56936645da70b8701b84cf09d977cbbd1fafaf66488c7c7d95489cdd5bd73686",
+              "reviewSha256": "a6d082c5cd32f982ac5bbd3692b9946d726539e6590f7c0cf8b4515c3c252e0e",
+              "scope": "Reject uniform1:1 tracking-to-exit budget; accept specified example and offline bench input only"
+            }
+          },
+          "gitSave": {
+            "status": "not_started",
+            "evidence": null
+          },
+          "headCI": {
+            "status": "not_started",
+            "evidence": null
+          },
+          "mainMerge": {
+            "status": "not_started",
+            "evidence": null
+          },
+          "mergeCI": {
+            "status": "not_started",
+            "evidence": null
+          }
+        },
+        "nextBenchOwners": {
+          "optics": "M4",
+          "sensor": "M3",
+          "independentMetrology": "M7"
+        },
+        "closedDecision": "Reject uniform1:1 eye-error to exit-guard mapping; one-axis fixed-target/fixed-normal/fixed-face necessary condition only.",
+        "remainingGate": "Separate source3 Git adoption/headCI/mainCI; measured sensor/optics/eye safety/full-range/comfort/manufacturing not accepted."
+      },
+      {
+        "id": "execution-control-recovery",
+        "unitRefs": [
+          "GIT-08"
+        ],
+        "taskRefs": [
+          "G04"
+        ],
+        "primary": false,
+        "workClass": "execution_control",
+        "status": "working",
+        "author": "Git",
+        "reviewer": "Root",
+        "nextOwner": "Root",
+        "editingPaths": [
+          "data/development-model-routing.json",
+          "docs/workstreams/10-git-ci-operations.md",
+          "docs/evidence/development-execution/all-lanes-main-handoff-summary.json",
+          "scripts/check-development-execution.mjs",
+          "tests/development-execution-gates.test.mjs",
+          "scripts/check-mission-control.mjs",
+          "docs/evidence/development-execution/execution-control-recovery.json",
+          "project.md",
+          "data/project-status.json",
+          "README.md"
+        ],
+        "deliverableDescription": "Enforce stage/evidence/artifact/SHA/ownership/primary/hold consistency through mission:check and negative fixtures. Does not prove product feasibility or GitHub truth.",
+        "artifactId": "execution-control-recovery-v1",
+        "deliverableKind": "execution_control",
+        "accepted": false,
+        "productAccepted": false,
+        "physicalAccepted": false,
+        "waitForRootReply": false,
+        "stages": {
+          "request": {
+            "status": "passed",
+            "evidence": {
+              "ref": "docs/workstreams/10-git-ci-operations.md#execution-recovery-20261028"
+            }
+          },
+          "source": {
+            "status": "passed",
+            "evidence": {
+              "ref": "data/development-model-routing.json#/currentExecution/baseMain",
+              "commitSha": "8793cd4ae70f3c93fd5b8a7c8eed967ce14dd3f0"
+            }
+          },
+          "ownership": {
+            "status": "passed",
+            "evidence": {
+              "ref": "data/development-model-routing.json#/currentExecution/queue"
+            }
+          },
+          "deliverable": {
+            "status": "passed",
+            "evidence": {
+              "ref": "docs/evidence/development-execution/execution-control-recovery.json#/controlArtifacts",
+              "artifactId": "execution-control-recovery-v1",
+              "sha256": "b72326767accd63b6bd9bc25bba28b466de4154e81990a3cbde03ca7713ee676"
+            }
+          },
+          "independentReview": {
+            "status": "not_started",
+            "evidence": null
+          },
+          "gitSave": {
+            "status": "not_started",
+            "evidence": null
+          },
+          "headCI": {
+            "status": "not_started",
+            "evidence": null
+          },
+          "mainMerge": {
+            "status": "not_started",
+            "evidence": null
+          },
+          "mergeCI": {
+            "status": "not_started",
+            "evidence": null
+          }
+        }
+      }
+    ],
+    "blockedWork": [
+      {
+        "id": "OS-08-notification",
+        "stopReason": "Actual author/Root candidate chat notification refusals remain unresolved; no candidate retrieval or alternate transfer.",
+        "nextOwner": "Root coordination after explicit human destination authorization",
+        "releaseOwner": "Human owner",
+        "releaseCondition": "Direct explicit permission for the refused candidate-information destinations; independently reviewed frozen artifact is still required after permission.",
+        "nextPermissionFreeAction": "Continue mii feasibility primary and this execution-control acceptance; do not open a substitute OS implementation."
+      }
+    ],
+    "dispatchRule": "Keep exactly one product-feasibility primary working. Do not auto-dispatch unrelated branch bugs; acceptance repairs must name the primary and its existing gate. Root reply is not a ceremonial approval gate.",
+    "reportFields": [
+      "usableExperience",
+      "closedDecision",
+      "remainingGate"
+    ],
+    "unobservedValue": null,
+    "actualModelIdentity": null,
+    "tokens": null,
+    "cost": null,
+    "generalLaunch": false,
+    "bulk616": "HOLD",
+    "stageSnapshotMeaning": "Candidate-freeze state before Git save; actual later branch/HEAD/main/merge receipts are separate same-artifact readbacks, not new implementation work."
+  }
 }

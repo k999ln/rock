@@ -11568,5 +11568,54 @@
     "publicDeployment": false,
     "actualBlocker": "Automatic approval review rejected author notification to central Git and Root due missing direct human destination-specific send permission; central asked human async",
     "bulk616": "HOLD"
+  },
+  "executionControlRecovery": {
+    "recordedAt": "2026-10-28",
+    "primaryWorkstream": "10 Git / CI / Operations",
+    "taskRefs": [
+      "G04"
+    ],
+    "status": "R2_validated_final_union_Root_independent_acceptance_Git_CI_pending",
+    "primary": "mii MINI-02/MAT15 product-feasibility decision",
+    "miiCandidateReceived": true,
+    "physicalAccepted": false,
+    "controlSelfAccepted": false,
+    "stageContract": [
+      "request",
+      "source",
+      "ownership",
+      "deliverable",
+      "independentReview",
+      "gitSave",
+      "headCI",
+      "mainMerge",
+      "mergeCI"
+    ],
+    "routingOverlay": "data/development-model-routing.json#/currentExecution",
+    "receipt": "docs/evidence/development-execution/execution-control-recovery.json",
+    "fixed95Reclassified": false,
+    "wholeUnitsAccepted": 0,
+    "OSNotificationApproval": "UNRESOLVED_NO_RETRIEVAL_OR_RELAY",
+    "publicDeployment": false,
+    "bulk616": "HOLD",
+    "miiScopedDecision": "MII-OPT-ERROR-MAP-01 PASS_SCOPED; not physical/product completion",
+    "fullVerify": "R1 preserved; fixed R2 exit0 root3207/3204pass/0fail/3skip build/API1678/CSV385; Mini storage replay11 and focused44 separately PASS",
+    "RootPreflight": "R1 four reject gaps preserved; unchanged R2 probes5pass; final union acceptance pending"
+  },
+  "miiOpticalErrorMapDecision": {
+    "status": "Root_scoped_decision_closed_Git_CI_pending_at_capture",
+    "decisionId": "MII-OPT-ERROR-MAP-01",
+    "taskRefs": [
+      "MAT15"
+    ],
+    "evidence": "docs/evidence/development-execution/mii-optical-error-map-adoption.json",
+    "physicalAccepted": false,
+    "wholeProductAccepted": false,
+    "nextOwners": [
+      "M3",
+      "M4",
+      "M7"
+    ],
+    "bench": "MII-OPT-ERROR-BENCH-01 SPECIFIED_NOT_RUN"
   }
 }

@@ -1,3 +1,18 @@
+<a id="execution-recovery-20261028"></a>
+## 商品成立primaryと実行段階の強制（2026-10-28 / G04・ROCK）
+
+現在のprimaryはmiiのMINI-02/MAT15成立判断1件。旧miniのURL/domain/内部ID/file/hashは維持する。目的は、根拠数値・再現計算・不成立候補・未測定条件・具体bench合否を閉じて試作へ進めること。通知、prompt、文書形状check、計算形状checkを商品成立や物理受入へ換算しない。
+
+`data/development-model-routing.json.currentExecution`は全95unitに適用する段階契約と現在2件のqueueだけを持つ。本人要求、現在source、編集所有、具体成果、独立検収、Git branch保存、HEAD CI、通常main統合、merge CIを別状態・証拠refとして記録する。作者と独立reviewerは分け、同artifact ID/hashと該当commit SHAを照合する。元95分類と13P/11lane/50RQ/393task/14gateは変更せず、履歴件数を完成率にしない。
+
+`npm run mission:check`が小validatorを実行し、証拠なし完了、自己検収、別artifact/SHAのCI、branch/main混同、primary不在/所有競合、解除条件不足、prompt/通知/形状検査による商品acceptedを拒否する。これは宣言の構造整合であり、ref内容の真偽・実GitHub成功・物理測定の証明は独立担当の読戻しで行う。負例用`ROCK_EXECUTION_CONTROL_NEGATIVE_FIXTURE`は実overlayを必ず検査した後に追加fixtureも検査するだけで、実overlayの置換/skipはできない。
+
+商品成立primaryを常時1件進め、既存受入gateに必要な安全修正以外の細枝bugへ自動脱線しない。物理acceptedは全段階・商品accepted・実測benchの証拠参照を構造的に必須とし、実測の真偽は別検収で確認する。primaryの成果kindは商品判断/使える体験に限定し、canonical編集pathのalias/祖先競合と基点SHA不正を拒否する。保留には次担当・停止理由・解除者/条件・次の許可不要作業を必須とする。Root返答を不要なgateにせず、実際の拒否は保持して別の許可済み作業へ進む。max3はRoot/author/reviewerを含み、同一unit/原因の総attempt3をモデル/担当変更でresetしない。報告は使える体験・閉じた判断・残gateを中心とする。
+
+OS作者/Root候補の送信拒否は未解決。今回の名称連絡/実行管理修正を情報開示許可へ読み替えず、候補を取得/中継しない。現在の11lane成果所在はmain内の限定読取であり、未確認の最新chat/未統合sourceはUNKNOWN。mii候補はMini担当が固定し、Rootが別検収。control候補もGitが自己受入せずRoot独立検収へ渡す。両候補を不要にunionしない。実機/推論/契約/課金/公開なし、616保留。
+
+検証: `node --test tests/development-execution-gates.test.mjs`、`npm run mission:check`、`npm run metadata:check`、`npm run design:check`。候補固定後に正規fullverify1回、独立検収後に明示manifestでGit/PR→同HEAD CI→通常main→同merge CIを確認する。
+
 ## PR225最終検収のGit保存（2026-10-25 / G04・ROCK）
 
 PR225のhead dcf86f99全8CIとmain f4ed492c全9CI（CodeQL含む）を再読戻しし、[最終検収](../evidence/development-execution/zod-security-constraint-review.json)・project/status/READMEをmain統合済みに同期。原本の絶対local pathは匿名化し、元SHA256・ログhash・CIリンクと失敗履歴を保持。最新main7edbb9beを基点に文書だけを保存し、この新HEADと統合SHAは別CIで検証する。実機操作・追加推論0、Rootregistry非操作、公開保留。

@@ -299,8 +299,8 @@
     }
   },
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.54",
-  "updatedAt": "2026-10-27",
+  "version": "1.55",
+  "updatedAt": "2026-10-28",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -3568,5 +3568,19 @@
     "mainIntegrated": true,
     "publicDeployment": false,
     "currentMainEvidence": "docs/evidence/development-execution/esim-attachment-async-binding-main-current.json"
+  },
+  "miiOpticalErrorMapDecision": {
+    "authority": "docs/rockstaros-avocado-mini-complete-design.md#mii-optical-error-map",
+    "source3": [
+      "docs/evidence/development-execution/mii-optical-error-map/decision.json",
+      "docs/evidence/development-execution/mii-optical-error-map/verify.mjs",
+      "docs/evidence/development-execution/mii-optical-error-map/evidence.json"
+    ],
+    "independentReview": "docs/evidence/development-execution/mii-optical-error-map/root-review.json",
+    "evidence": "docs/evidence/development-execution/mii-optical-error-map-adoption.json",
+    "decisionClosed": true,
+    "physicalAccepted": false,
+    "wholeProductAccepted": false,
+    "existingUnmergedHardwareArtifactsAdopted": false
   }
 }

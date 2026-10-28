@@ -1,3 +1,30 @@
+<a id="mii-optical-error-map"></a>
+## miiの眼誤差・出口guard成立判断（2026-10-28）
+
+1. **目的**: 試作前の最大阻害判断1件として、眼位置誤差を出口guardへ1:1コピーする予算を採用しないと決める。
+
+2. **体験**: 開発担当が固定sourceと同じ全35721眼/target pairを再現し、計算の必要条件と実測待ちを分けてbenchへ進む。製品の表示体験を新たに使えるとはしない。
+
+3. **責任**: M1/MAT15が成立判断、M4が出口/枠/姿勢、M3がtracker/reference誤差、M7が別メトロジー検収、Git10が保存/CI。実測/物理操作は別許可。
+
+4. **入出力**: 固定baseline9hashと既存geometry/studyの2moduleを入力に、source3の判断・再現verifier・証拠を出力する。35721pairを縮約せず、新しい光学solverへ置換しない。
+
+5. **状態**: RootのPASS_SCOPEDでMII-OPT-ERROR-MAP-01を閉じた。次はsourceのGit/CIとbench入力取得。光学方式/全域/製品成立/物理受入は未完了。
+
+6. **保存**: decision/verify/evidenceの3fileをbyte不変で保存し、Rootの別reviewを併置する。旧reproduce絶対pathとpendingはcaptureのまま保持し、現行再現commandは採用recordを使う。
+
+7. **失敗**: hash/Gitobject不一致は停止。face変更・未知誤差相関・保守的包絡なしはUNKNOWN、欠落rayはFAIL。浅いCIで前提不足なら再現NOT_RUNをPASSへ換算しない。
+
+8. **復旧**: 正しいbaselineと2module hashを揃えてoffline再実行し、失敗/不明traceを残す。sourceを合わせるため旧hashを書換えたり35721pairを減らさない。
+
+9. **承認**: 像位置に板膜を置かない条件を維持。1200mm仮想面はメトロジー参照で部品採用ではない。このstudyから実機・購入・光源点灯・推論・公開を許可しない。
+
+10. **合格**: Rootが別Fraction有理数でgain10を確認。眼誤差20mmは出口変位200mm。raw端40mmからframe10mmを引いた有効内縁余裕30mmに対し、他誤差0の固定一軸では|眼誤差|+reference boundが厳密に3mm未満を要求。等号はBOUNDARY_UNKNOWN、実sensor3mm性能の合格ではない。
+
+11. **未決定**: MII-OPT-ERROR-BENCH-01に従いM3/M4が校正/姿勢/target/clock/位置誤差・不確実性・raw trace hashを提出、M7が独立判定。1000sampleは診断下限で統計保証ではない。必要rayの誤差包絡を適格開口/有限cone内に厳密包含できるまで全域/comfort/製造を通さない。
+
+[現行採用record](evidence/development-execution/mii-optical-error-map-adoption.json)。
+
 <a id="pro-private-work-entry"></a>
 ## avocadoPro商品ページから共通仕事への限定入口
 
