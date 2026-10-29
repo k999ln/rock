@@ -1,5 +1,5 @@
 import { readBoundedStream } from './bounded-stream.ts';
-import { readOwnerScope, OWNER_SCOPE_HEADER } from './owner-intent.ts';
+import { ownerScopeFor, readOwnerScope, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { applyWorkCommand, workId, type WorkJob } from './workflow.ts';
 
 /** A host observation, never a proof of hardware, owner identity or consent. */
@@ -17,6 +17,11 @@ export type MiiWorkReadback = {
   agentBinding: 'verified' | 'unverified'; executorBinding: 'unverified';
   hardwareAccepted: false; executionAuthorized: false;
   cancelReconciliation: 'clear' | 'pending' | 'unavailable';
+};
+/** Read-only A2A budget snapshot; not an MCP price or settled invoice. */
+export type MiiBudgetReadback = {
+  jobId: string; jobRevision: number; readAt: number;
+  budget: null | { currency: string; budgetLimitMinor: number; reservedMinor: number; settledMinor: number; revision: number; updatedAt: number };
 };
 export type MiiPlanCancelResult = {
   state: 'plan_cancelled' | 'rejected' | 'unknown';
@@ -87,7 +92,7 @@ export function createMiiWorkAdapter(options: {
   fetchImpl?: typeof fetch; now?: () => number; journal?: MiiCancelJournal;
 }) {
   const fetchImpl = options.fetchImpl ?? fetch, now = options.now ?? Date.now;
-  let latest: MiiObservation | null = null, lastSequence = -1, generation = 0, readSerial = 0, closed = false;
+  let latest: MiiObservation | null = null, lastSequence = -1, generation = 0, readSerial = 0, budgetSerial = 0, closed = false;
   let lastBoot: string | null = null, lastEpoch = -1, detachedEpoch = -1, observationClock = -1;
   const seenBoots = new Set<string>();
   let readback: { generation: number; reference: MiiWorkReference; job: WorkJob;
@@ -202,6 +207,36 @@ export function createMiiWorkAdapter(options: {
     return { job: structuredClone(job), revisionChanged: job.revision !== ref.revision,
       agentBinding, executorBinding: 'unverified', hardwareAccepted: false, executionAuthorized: false, cancelReconciliation };
   }
+  /** Read the existing owner-scoped A2A pool, without creating or authorizing a cost. */
+  async function readBudget(): Promise<MiiBudgetReadback> {
+    const g = current(), snapshot = readback;
+    if (!snapshot || snapshot.generation !== g || busy) return fail('MII_BUDGET_READ_UNAVAILABLE');
+    const serial = readSerial, budgetOperation = ++budgetSerial;
+    const response = await fetchImpl(`/api/sky/a2a-delegations?parentJobId=${encodeURIComponent(snapshot.job.id)}`,
+      { method: 'GET', credentials: 'same-origin', cache: 'no-store', redirect: 'error' });
+    check(g);
+    if (snapshot !== readback || serial !== readSerial || budgetOperation !== budgetSerial || busy) return fail('MII_READ_SUPERSEDED');
+    if (!response.ok) return fail('MII_BUDGET_READ_REJECTED');
+    const body = await responseJson(response); check(g);
+    if (snapshot !== readback || serial !== readSerial || budgetOperation !== budgetSerial || busy) return fail('MII_READ_SUPERSEDED');
+    if (!object(body) || body.ownerScope !== snapshot.reference.ownerScope || body.parentJobId !== snapshot.job.id ||
+        !Object.hasOwn(body, 'budget')) return fail('MII_OWNER_OR_BUDGET_MISMATCH');
+    let budget: MiiBudgetReadback['budget'] = null;
+    if (body.budget !== null) {
+      const b = body.budget;
+      if (!object(b) || b.parentJobId !== snapshot.job.id || typeof b.currency !== 'string' || !/^[A-Z]{3}$/.test(b.currency) ||
+          !integer(b.budgetLimitMinor) || !integer(b.reservedMinor) || !integer(b.settledMinor) || !integer(b.revision) ||
+          !integer(b.updatedAt) || Number(b.reservedMinor) + Number(b.settledMinor) > Number(b.budgetLimitMinor))
+        return fail('MII_BUDGET_INVALID');
+      if (typeof b.ownerUserId !== 'string' || !b.ownerUserId ||
+          await ownerScopeFor(b.ownerUserId) !== snapshot.reference.ownerScope) return fail('MII_OWNER_OR_BUDGET_MISMATCH');
+      check(g);
+      if (snapshot !== readback || serial !== readSerial || budgetOperation !== budgetSerial || busy) return fail('MII_READ_SUPERSEDED');
+      budget = { currency: b.currency, budgetLimitMinor: Number(b.budgetLimitMinor), reservedMinor: Number(b.reservedMinor),
+        settledMinor: Number(b.settledMinor), revision: Number(b.revision), updatedAt: Number(b.updatedAt) };
+    }
+    return { jobId: snapshot.job.id, jobRevision: snapshot.job.revision, readAt: now(), budget };
+  }
   /** Explicit owner operation: cancel the local plan only; never start/retry work. */
   /** A local freshness fence only, never a credential or Tool permission.
    * The existing runner must still recheck owner/job/agent/Package and claim.
@@ -255,5 +290,5 @@ export function createMiiWorkAdapter(options: {
     } catch { return stopResult('unknown'); }
     finally { busy = false; }
   }
-  return { observe, readExisting, createInputGuard, cancelPlan, disconnect() { invalidate(); }, close() { closed = true; invalidate(); } };
+  return { observe, readExisting, readBudget, createInputGuard, cancelPlan, disconnect() { invalidate(); }, close() { closed = true; invalidate(); } };
 }

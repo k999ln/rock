@@ -1,0 +1,30 @@
+{
+  "schema": "rockstaros.mii-budget-readback/1",
+  "baseMain": "aaab99e19ed3c5c11176b1706bc1c5c93b68fca0",
+  "scope": "synthetic authenticated host; same job read-only A2A budget, not MCP pricing or billing",
+  "sourceSha256": {
+    "app/api/sky/a2a-delegations/route.ts": "54060a7d62bda815c52a0836e432d0ff726b2d8da254c43d2df2d0771e28e619",
+    "lib/mii-work-adapter.ts": "68065bb506f499c7afc42b3985490e4eb7e151feae5375efd4844992b10a280c",
+    "components/mii-work-preview.tsx": "e1d0dfa8e11c6fc8da314643b50fce31214e7ddd56212a46ec84b4f14afeb0e1",
+    "tests/mii-budget-readback.test.mjs": "5fcac3f18e1e559672542d8d688d6c7a9bd2f1fe89aa40e57d337c06fede6a27",
+    "tests/mii-work-preview-ui.test.mjs": "5f69311ddb2b368056a80ec176c9724ec3ef8d09bf4fb46de7187c4c1e9161c5",
+    "tests/eve-smith-mii-browser.test.mjs": "e1200fdfe3fbc5c2f1ca6135726b514d8c4591a2c1402a24995b5f4589178f7d"
+  },
+  "checks": [
+    "actual delegation GET adds owner scope and parent job identity; legacy fields retained",
+    "mii validates owner, job, response shape, budget invariant and observation; mismatches and unknown fail closed",
+    "UI distinguishes A2A budget from MCP price and invoice; clears on observation invalidation and deadline",
+    "synthetic browser drives actual UI, route fixture and local connector; no real account or external service"
+  ],
+  "priorReview": "Independent review found missing UI formatter fixture and stale error after retry; both fixed. Final read-only review passed for scope, identity, job, observed time, serial, cost meaning and display. A deterministic observation-loss-during-owner-digest fixture was then added.",
+  "validation": "Final full verify 3384 pass, 0 fail, 4 skip; build/API/mission/work/bot checks complete. Initial full verify failed type-aware lint for missing void on new tests; fixed.",
+  "limits": [
+    "A2A budget is not MCP Tool cost or a reconciled bill",
+    "background timer behavior and physical mii unverified",
+    "production account, Provider and paid execution unverified"
+  ],
+  "gitAndCI": "pending",
+  "independentReview": "PASS_SCOPED: independent reviewer found missing UI formatter fixture and stale error after retry; repaired. Then confirmed owner row hash, owner/parent/job, observation and serial checks, and UI cost semantics; 52 adapter/UI and 2 browser tests passed. Additional deterministic observation-loss-during-owner-digest fixture passed after review.",
+  "fullVerifyLogSha256": "5dd7d60dca18df375cd6d69475488f4034941cd42a6fdebe60de598a833c7d67",
+  "initialLintFailureLogSha256": "c73cd594a1500f6f3a018b671894f70aae7d44d8274cdcfca9dd79e96f74213a"
+}

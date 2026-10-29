@@ -114,6 +114,8 @@ Miniは暮らし・まちづくり、ProはAI専用PC事業と半導体・関連
 
 ## 統合サービスと現行ハードウェアprofile
 
+miiソフト画面では同じ本人・仕事の委任予算を明示読取できる。取得時点の上限・予約・利用量記録であり、MCP料金や請求確定を示さない。期限・観測喪失時は表示を消す。実機・背景動作の受入ではない。[証拠](evidence/development-execution/mii-budget-readback.json)。
+
 miiの合成文章入力は[同じ仕事の契約](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)へ接続する。観測失効・入力変更で旧実行準備を拒否し、既存MCPの一回承認とclaim、job保存を維持する。Eve/miiの同じ未検証応答の読戻しまでを隔離試験し、表示4条件・単体利用・実機未受入を変えない。[証拠](evidence/development-execution/mii-synthetic-input.json)。
 
 利用者の今回の設計再構成では[各製品の役割](service-design/03-product-profiles.md)を共通入口にする。MiniはR5の単独空間端末、Proは既存P0の独立NVIDIA PC、rocketstarは独立工学program。共通OSの本人・job・Asset・版・権限・保存/復旧へ接続し、このMaterial研究profileの四方向台や旧HubをR5に適用しない。Mini通信の最新方針は国内LTE/IoT data SIMの任意option。2026-10-14の[建築一体型設置profile](avocado-mini-r5/README.md#建築一体型miniの設置profile2026-10-14)も同じR5 coreの任意取付であり、四方向台・建物管理Hubへ置き換えない。原本・実機0件・表示未成立と各受入境界を維持する。

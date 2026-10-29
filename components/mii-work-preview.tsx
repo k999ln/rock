@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { createMiiWorkAdapter, type MiiWorkReadback } from '@/lib/mii-work-adapter';
+import { createMiiWorkAdapter, type MiiWorkReadback, type MiiBudgetReadback } from '@/lib/mii-work-adapter';
+import { formatCurrencyMinor } from '@/lib/currency-format';
 import { createMiiIndexedDbJournal } from '@/lib/mii-indexeddb-journal';
 import type { WorkJob } from '@/lib/workflow';
 
@@ -14,7 +15,7 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   onInput?: (input: MiiWorkInput) => void; inputAvailable?: boolean;
 }) {
   const adapter = useRef<ReturnType<typeof createMiiWorkAdapter> | null>(null);
-  const boot = useRef(''); const sequence = useRef(0);
+  const boot = useRef(''); const sequence = useRef(0), observationExpiry = useRef(0);
   const place = useRef(1), scene = useRef(1), inputEpoch = useRef(0);
   const [text, setText] = useState('');
   const available = useRef(inputAvailable);
@@ -24,12 +25,20 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   const lastContext = useRef(currentContext);
   const [current, setCurrent] = useState<{ context: string; value: MiiWorkReadback } | null>(null);
   const [busy, setBusy] = useState(false), [confirmed, setConfirmed] = useState(false), [message, setMessage] = useState('');
+  const [budget, setBudget] = useState<{ context: string; expiresAt: number; value: MiiBudgetReadback } | null>(null);
   const [renderContext, setRenderContext] = useState(currentContext);
+  const [renderInputAvailable, setRenderInputAvailable] = useState(inputAvailable);
+  if (renderInputAvailable !== inputAvailable) { setRenderInputAvailable(inputAvailable); setBudget(null); }
   if (renderContext !== currentContext) {
     setRenderContext(currentContext);
-    if (current?.context !== currentContext) { setCurrent(null); setConfirmed(false); setMessage(''); setText(''); }
+    if (current?.context !== currentContext) { setCurrent(null); setBudget(null); setConfirmed(false); setMessage(''); setText(''); }
   }
   useEffect(() => () => { adapter.current?.close(); }, []);
+  useEffect(() => {
+    if (!budget) return;
+    const timer = setTimeout(() => setBudget(current => current === budget ? null : current), Math.max(0, Math.min(30_000, budget.expiresAt - Date.now())));
+    return () => clearTimeout(timer);
+  }, [budget]);
   useLayoutEffect(() => {
     activeContext.current = currentContext;
     if (lastContext.current === currentContext) return;
@@ -46,11 +55,11 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   async function read() {
     if (busy || !job.agentBinding) return;
     const requestedContext = activeContext.current;
-    setCurrent(null); setConfirmed(false); setBusy(true); setMessage('');
+    setCurrent(null); setBudget(null); setConfirmed(false); setBusy(true); setMessage('');
     try {
       adapter.current ??= createMiiWorkAdapter({ journal: createMiiIndexedDbJournal() });
       boot.current ||= `preview-${crypto.randomUUID()}`;
-      const now = Date.now();
+      const now = Date.now(); observationExpiry.current = now + 30_000;
       adapter.current.observe({ bootId: boot.current, placeEpoch: place.current, sequence: ++sequence.current, sceneRevision: scene.current,
         observedAt: now, expiresAt: now + 30_000, attached: true, tracking: 'tracked' });
       const result = await adapter.current.readExisting({ jobId: job.id, ownerScope, revision: job.revision,
@@ -62,13 +71,24 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
     } catch { if (activeContext.current === requestedContext) { setCurrent(null); setMessage('本人・担当・仕事の状態を確認できません。元の画面で確認してください。'); } }
     finally { setBusy(false); }
   }
+  async function readBudget() {
+    if (busy || !visible || !adapter.current) return;
+    const requestedContext = activeContext.current, expiresAt = observationExpiry.current;
+    setBudget(null); setMessage(''); setBusy(true);
+    try {
+      const result = await adapter.current.readBudget();
+      if (activeContext.current !== requestedContext || Date.now() >= expiresAt) return;
+      setBudget({ context: requestedContext, expiresAt, value: result });
+    } catch { if (activeContext.current === requestedContext) setMessage('同じ仕事の委任予算を確認できません。金額は推測しません。'); }
+    finally { setBusy(false); }
+  }
   function invalidateInput(kind: 'tracking' | 'detach' | 'boot' | 'scene') {
     inputEpoch.current++;
     adapter.current?.disconnect();
     if (kind === 'boot') { boot.current = ''; sequence.current = 0; }
     if (kind === 'detach') place.current++;
     if (kind === 'scene') scene.current++;
-    setCurrent(null); setConfirmed(false);
+    setCurrent(null); setBudget(null); setConfirmed(false);
     setMessage('観測を失効しました。再接続だけでは実行を再開しません。既に送った処理が停止したかは未確認です。同じ仕事を読み直してください。');
   }
   function stageInput() {
@@ -150,7 +170,13 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
       {!visible.job.standaloneAgent?.text && !visible.job.skyApp?.result?.body && !visible.job.freeCloud?.text &&
         !Object.keys(visible.job.composition?.artifacts ?? {}).length && !(visible.job.toolObservations?.length) &&
         <p>この画面で確認できる保存済み本文はありません。成果の不在や失敗を意味しません。</p>}
-      <p>費用はこの画面では照合していません。未確認の額を0円や確定済みとして扱わず、元の仕事の明細を確認してください。</p>
+      <h3>同じ仕事の委任予算</h3>
+      <button type="button" disabled={busy} onClick={() => void readBudget()}>委任予算を読み直す</button>
+      {budget?.context === currentContext && budget.value.jobId === visible.job.id && budget.value.jobRevision === visible.job.revision
+        ? budget.value.budget ? <p>取得時点の委任予算（{new Date(budget.value.readAt).toLocaleString()}、版 {budget.value.budget.revision}）：上限 {formatCurrencyMinor(budget.value.budget.budgetLimitMinor, budget.value.budget.currency)} · 予約中 {formatCurrencyMinor(budget.value.budget.reservedMinor, budget.value.budget.currency)} · 利用量確定記録 {formatCurrencyMinor(budget.value.budget.settledMinor, budget.value.budget.currency)}。</p>
+          : <p>取得時点（{new Date(budget.value.readAt).toLocaleString()}）では、この仕事の委任予算記録はありません。</p>
+        : <p>委任予算は未確認です。</p>}
+      <p>委任予算はMCP Toolの料金や請求確定額ではありません。取得後に変更される場合があります。未確認の額を0円や確定済みとして扱わず、Toolの費用は元の仕事の明細を確認してください。</p>
       <a href={`/api/sky/exports/${encodeURIComponent(visible.job.id)}?revision=${visible.job.revision}`} download>この仕事を持ち出す</a>
       <p>持出し内容と省略・未確認の項目は、生成されたファイルで確認してください。</p>
       {visible.job.standaloneAgent?.text && <p>この持出しにAgent成果本文は含まれません。元の成果画面から保存してください。</p>}

@@ -49,6 +49,21 @@
       "productionConsumer": false,
       "productionMigration": false,
       "runtimeGateChanged": false
+    },
+    "budgetReadback": {
+      "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "implementation": [
+        "app/api/sky/a2a-delegations/route.ts",
+        "lib/mii-work-adapter.ts",
+        "components/mii-work-preview.tsx"
+      ],
+      "tests": [
+        "tests/mii-budget-readback.test.mjs",
+        "tests/mii-work-preview-ui.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/mii-budget-readback.json",
+      "scope": "same owner/job read-only A2A budget snapshot; no MCP cost, invoice, execution authority or physical acceptance"
     }
   },
   "latestRockstarOsDesign": {
