@@ -406,3 +406,7 @@ head8CI成功と同treeのmain e7d458f2で、Eve新UI試験がreview前のactive
 ## ESIM-03 / WEBOPS-03 有限統合（2026-10-27 / G04・ROCK）
 
 main927ac79aを基点に、独立検収済みeSIM source/tests3とWebOps source/tests4だけを無変更採用。旧base全文書は上書きせず、最新設計へ限定deltaを加える。393task/14gate/固定95の分類とwhole0、Root HEAD/index、616HOLDを保持。PR242初回e7失敗とPR243正常main927全6CI成功は[別current記録](../evidence/development-execution/pr242-243-main-current.json)へ。固定union全verify・scanner/canary・Root最終delta検収→明示path Git→新PR同headCI→通常main同SHA CIを[採用記録](../evidence/development-execution/esim-webops-main-adoption.json)へ保存する。GitHub保存を公開配備へ換算しない。
+
+## 任意診断のpositive fixtureと保存完了の同期
+
+G04/ROCKは[Pixel診断fixture証拠](../evidence/development-execution/pixel-diagnostic-fixture-order.json)で、固定sleepを保存完了の根拠にしない。実workerの非待機diagnostics/停止/期限は変更せず、正常fixtureの子終了をfirst outputの保存ackへ同期する。旧mainの失敗attempt・遅延反例と修正後を別に保持し、Python診断27件とLinux親終了4件、head/merge同SHA全CIを記録する。host skipをLinux・実機合格にしない。

@@ -11885,5 +11885,19 @@
     },
     "pixelObservationEvidence": "docs/evidence/development-execution/pixel-visual-readback-20261028.json",
     "pixelObservationAcceptance": false
+  },
+  "pixelDiagnosticFixtureOrder": {
+    "baseMain": "76b327c28b37385234104a2781be6fc62fb8bb2b",
+    "taskId": "G04",
+    "status": "test_only_repair_awaiting_independent_review_and_ci",
+    "evidence": "docs/evidence/development-execution/pixel-diagnostic-fixture-order.json",
+    "priorMiiPR": 255,
+    "priorMiiHead": "7f755a9b24f4066be53ccdb8d3df7476e37b9217",
+    "priorMiiHeadCI": "7checks4workflows successful;3365total3360pass0fail5skip",
+    "priorMiiMerge": "76b327c28b37385234104a2781be6fc62fb8bb2b",
+    "priorMiiMergeCI": "first attempt failed before npmverify; one sameSHA rerun pending",
+    "runtimeChanged": false,
+    "physicalAccepted": false,
+    "next": "Independent test/metadata review, normal Git/PR, exacthead allCI, normalmerge and sameSHA allCI; preserve failure attempts."
   }
 }
