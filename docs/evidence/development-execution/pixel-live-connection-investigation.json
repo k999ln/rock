@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.pixel-live-connection-investigation/1",
-  "status": "v121_eve_candidate_reviewed_fixture_pixel_verified_not_deployed",
+  "status": "v121_sync_candidate_reviewed_v122_published_reconciliation_pending",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "device": "Pixel 10 frankel",
   "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
@@ -46,10 +46,16 @@
     "Eve-only candidate 9df15ed5aacae5a0b48f9e9be5d785134102c9f9 is based on v121; its news and home sources are unchanged. Full Site verify succeeded: 2619 tests, 2618 passed, zero failed, one skipped. Independent reviewer verified exact commit contents and 35 targeted tests.",
     "A real React component at 411x923 using synthetic data was exercised on Mac. Delayed A-to-B-to-A runtime response left current results unconfirmed until a fresh observation; no real account or model was used.",
     "A separate synthetic fixture was opened in a new Pixel browser tab via owned adb reverse 18371. Results navigation and final A-to-B-to-A display were observed. Screenshots do not prove the intermediate rejection timing; the full production shell and actual user account were not tested.",
-    "The owned fixture tab was closed; tab count returned from 51 to 50, the former localhost:18749 test tab was reopened, and the owned 18371 reverse was removed. Independent image-only reviewer judged this PASS_SCOPED; full existing tab and device-data equality was not established."
+    "The owned fixture tab was closed; tab count returned from 51 to 50, the former localhost:18749 test tab was reopened, and the owned 18371 reverse was removed. Independent image-only reviewer judged this PASS_SCOPED; full existing tab and device-data equality was not established.",
+    "A read-only public Eve session showed existing history and results plus a selected Pixel Linux target, but still reported that the device connection needed confirmation. A transient raw abort error remained after later successful loading; no work was executed.",
+    "Site candidate 5f768b873ef8f298f36d7aefe207ed4b21d36d02 separates sync warnings from operation errors and invalidates pre-offline responses. At 411x923 Mac synthetic React fixture, assertions passed for late response after offline, reconnect, operation error preservation, authentication loss and recovery. It did not use an actual account or model.",
+    "Independent reviewer assessed the tracked diff fe105d971859b28f88ef0afd213cd6d678944768a898364f5f19a89a75088094 PASS_SCOPED, independently ran 35 related tests and treated fixture observations as operator-reported. The committed diff hash matches that review.",
+    "Candidate full npm run verify succeeded with isolated exact offline dependencies: 2619 tests, 2618 passed, 1 skipped, zero failed, all stages exit zero. Focused suite passed 56 tests.",
+    "On recheck Site v122 source 7b6a1ea9a5e7a88f9f4855ef4ab456f5c644f34c had a successful deployment. It was created outside this work. The v121 candidate was not deployed and must be reconciled with v122; its v121 rollback is not the current version.",
+    "Pixel was connected and foreground browser showed a separate localhost work screen. To avoid disturbing it, no Pixel interaction or new candidate Pixel test was performed."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "If current Site version is still v121, prepare exact candidate for review and request publication approval; do not treat fixture as real account or news delivery. Recheck deployment source and rollback immediately before any publication.",
+  "next": "Read and reconcile the current v122 source before preparing a new candidate; rerun scoped tests and independent review on the exact result. Confirm a safe Pixel window and verify the actual Site version, target connection and news; no production deployment has been performed by this work.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -69,5 +75,15 @@
     "verify": "npm run verify exit 0; 2619 tests, 2618 pass, 1 skip, 0 fail; full stages completed.",
     "physical": "synthetic fixture only; no real account or full production shell; old-response timing not observed on phone.",
     "rollback": "Existing deployed Site v121 appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_7380f5083790819193885f1d8d975751 remains the candidate rollback. No deployment performed."
+  },
+  "siteCandidateV121Sync": {
+    "base": "6cb3fb01ed75fd346f71241e1aed6bc49456bdec",
+    "commit": "5f768b873ef8f298f36d7aefe207ed4b21d36d02",
+    "reviewedDiffSha256": "fe105d971859b28f88ef0afd213cd6d678944768a898364f5f19a89a75088094",
+    "patch": "docs/evidence/development-execution/pixel-site-v121-sync-candidate.patch",
+    "patchSha256": "ba30328c6093e5f91f988fea67fc2b6ee17be59aea60c72aeeaedfda5ad0a61f",
+    "review": "PASS_SCOPED, independent 35 tests; operator-observed Mac fixture assertions",
+    "verify": "npm run verify exit 0; 2619 tests, 2618 pass, 1 skip, 0 fail",
+    "limitations": "v121 base is superseded by deployed v122; no final candidate Pixel, real-account or production verification."
   }
 }
