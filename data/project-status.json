@@ -12426,17 +12426,18 @@
   },
   "sdkDistRelease": {
     "owner": "ROCK",
-    "status": "main_integrated_merge_ci_rerun_in_progress",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/sdk-dist-release.json",
-    "next": "Merge-SHA CI cancelled by subsequent main pushes; rerun in progress.",
+    "next": "Actual provider, physical device and publication remain separately unaccepted.",
     "pullRequest": 292,
-    "mergeSha": "2fe3ea469de87a0999f7e97a75cb7a67c664b76c"
+    "mergeSha": "2fe3ea469de87a0999f7e97a75cb7a67c664b76c",
+    "mainCiEvidence": "docs/evidence/development-execution/sdk-dist-release-main-ci.json"
   },
   "miiWorkerTwoConsumers": {
     "owner": "ROCK",
-    "status": "main_integrated_merge_ci_rerun_pending",
+    "status": "main_integrated_merge_ci_rerun_in_progress",
     "evidence": "docs/evidence/development-execution/mii-worker-two-consumers.json",
-    "next": "Merge-SHA CI cancelled by subsequent main pushes; rerun after earlier SHA finishes.",
+    "next": "Merge-SHA CI was cancelled after later main pushes; rerun is in progress.",
     "pullRequest": 293,
     "mergeSha": "692a59e0ec1cf210db41e13440e5e8380f2599c8"
   },

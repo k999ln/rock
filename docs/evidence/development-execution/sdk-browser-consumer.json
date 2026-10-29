@@ -3,18 +3,18 @@
   "state": "candidate_independent_test_pass_pr_pending",
   "baseMain": "a749b6233a0e1f8d56c96fb9483d39630c723d7f",
   "sha256": {
-    "tests/eve-smith-mii-browser.test.mjs": "427a7358d63e4304cc7733cdbfa5bb8a8d252afe7fe4f63dcc85469aafacbc01",
+    "tests/eve-smith-mii-browser.test.mjs": "1b2544aa44abbe62029d4ba160eac7682576ac8d11b76e29a6da97626050155a",
     "tests/fixtures/eve-smith-mii-browser/declared-tools.mjs": "fecddbdea7334dfaa5c462aa13ac4eb23f7a4d4edc1ce96b82ec0d99712723dd",
     "public/toolkits/rockstaros-sky-tool-sdk-0.1.5.tgz": "1662cb73047fe337a5957518f02fa84eeff1dceb1010cbfa7f15678d65ca9219"
   },
-  "scenario": "Unpack actual SDK 0.1.5, run its CLI for an empty synthetic author workspace, copy SDK offline, explicitly change sample import from relative source to package root, assert it resolves to dist, and use actual Eve/Smith browser UI, Connector, job and mii readback for two roles and unsupported third.",
+  "scenario": "Unpack actual SDK 0.1.5, run its CLI for an empty synthetic author workspace, copy SDK offline, explicitly change sample import from relative source to package root, assert it resolves to dist, and use actual Eve/Smith browser UI, Connector, job and mii readback for two roles and unsupported third. The mii link downloads through the real export route; original observation and manifest hashes are checked, old and future revisions and another owner are rejected via synthetic HTTP, and the database remains unchanged.",
   "independentTest": {
     "passed": 2,
     "failed": 0,
     "skipped": 0,
-    "logSha256": "b87201dc36098e9603d87961aa594119138d89a2d4c4576885d57c4cf2681da6",
+    "logSha256": "7e9f6b42942a1b09d9ab474db0098f675b8bb922b98abd0976a773aabdcafe1c",
     "scope": "Mac isolated Chrome, local synthetic authority and localhost"
   },
-  "limits": "SDK copied by fixture, not npm install in this browser run; source sample unchanged until explicit author edit. Account, entitlement and review synthetic; some service and device links stubbed. No real provider, payment, physical device, model inference, UI export download or general network isolation accepted. Initial author run required generated private module before browser build; independent rerun did not reproduce that setup failure.",
+  "limits": "SDK copied by fixture, not npm install in this browser run; source sample unchanged until explicit author edit. Account, entitlement and review synthetic; some service and device links stubbed. No real provider, payment, physical device, model inference, Sky output center download or general network isolation accepted. Initial author run required generated private module before browser build; independent rerun did not reproduce that setup failure.",
   "next": "Final review, exact-head CI, main merge and merge-SHA CI."
 }
