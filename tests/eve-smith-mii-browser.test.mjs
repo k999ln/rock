@@ -192,10 +192,16 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await devtools.call('Page.enable');
     await devtools.call('Page.setLifecycleEventsEnabled', { enabled: true });
     const navigateAndWait = async (method, params = {}) => {
-      const previous = (await devtools.call('Page.getFrameTree')).frameTree.frame;
-      let loader, unsubscribe, timer;
+      const bounded = async promise => {
+        let timer;
+        try { return await Promise.race([promise, new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error('browser navigation did not finish')), 15000);
+        })]); } finally { clearTimeout(timer); }
+      };
+      const previous = (await bounded(devtools.call('Page.getFrameTree'))).frameTree.frame;
+      let loader, unsubscribe;
       const loadedLoaders = new Set();
-      const loaded = new Promise((resolve, reject) => {
+      const loaded = new Promise(resolve => {
         const complete = () => { if (loader && loadedLoaders.has(loader)) resolve(loader); };
         unsubscribe = devtools.onMessage(event => {
           if (event.method === 'Page.frameNavigated' && event.params.frame.id === previous.id &&
@@ -205,16 +211,15 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
             loadedLoaders.add(event.params.loaderId); complete();
           }
         });
-        timer = setTimeout(() => reject(new Error('browser navigation did not finish')), 15000);
       });
       try {
-        const [response, loadedLoader] = await Promise.all([devtools.call(method, params), loaded]);
+        const [response, loadedLoader] = await bounded(Promise.all([devtools.call(method, params), loaded]));
         if (response.errorText || (method === 'Page.navigate' &&
             (response.frameId !== previous.id || response.loaderId !== loadedLoader))) {
           throw new Error('browser navigation response did not match loaded frame');
         }
       }
-      finally { clearTimeout(timer); unsubscribe(); }
+      finally { unsubscribe(); }
     };
     const evaluate = async expression => { const result = await devtools.call('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); return result.result.value; };

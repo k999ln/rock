@@ -31,9 +31,9 @@
   },
   "evidencePrFailure": "PR 285 head e0935500 verify failed: local-authority browser CDP reported Inspected target navigated or closed; unavailable-authority browser passed. No root cause established.",
   "navigationCandidate": {
-    "testSha256": "ac228bdd4b8db8d0477099681f5a9d3c65a33bc63022bb9bba7fe9f5dcf237b0",
+    "testSha256": "24da5b019a6d690894657b7118364cee1740c64dfc4029fbcbac467b8d4cacc7",
     "scope": "Wait for a changed top-frame loader and matching lifecycle load on explicitly requested reload/navigate; bound command and load together, check navigate response; no automatic replay of user input or execution.",
     "state": "unverified; CI and independent review pending",
-    "review": "Independent review identified unhandled timeout and non-specific load-event risks; candidate revised, re-review and CI pending."
+    "review": "Independent source review found timeout and event specificity issues; matching loader events and deadlines covering both command and load added; re-review and CI pending."
   }
 }
