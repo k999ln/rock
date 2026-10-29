@@ -18,13 +18,21 @@ def stop_owned(child,grace=5):
         except subprocess.TimeoutExpired: child.kill();child.wait(timeout=5)
 
 def supervise_owned(command,root,limit,log_name='training.log',grace=5,profile_name=None):
-    def interrupted(signum,frame): raise InterruptedError('training supervisor interrupted')
-    signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
+    interrupted_signal=None
+    def interrupted(signum,frame):
+        nonlocal interrupted_signal
+        if interrupted_signal is None: interrupted_signal=signum
+    previous={sig:signal.getsignal(sig) for sig in (signal.SIGTERM,signal.SIGINT)}
     started=time.monotonic();peak=0;reason=None;samples=0;min_available=None;max_pressure=None
-    with open(root/log_name,'x') as log:
-        child=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT,env={**os.environ,**OFFLINE})
-        try:
-            while child.poll() is None:
+    child=None
+    try:
+        for sig in previous: signal.signal(sig,interrupted)
+        with open(root/log_name,'x') as log:
+            if interrupted_signal is None:
+                child=subprocess.Popen(command,stdout=log,stderr=subprocess.STDOUT,env={**os.environ,**OFFLINE})
+            try:
+              while child is not None and interrupted_signal is None and child.poll() is None:
+                if interrupted_signal is not None: break
                 elapsed=time.monotonic()-started
                 sample=subprocess.run(['/bin/ps','-o','rss=','-p',str(child.pid)],capture_output=True,text=True,timeout=1)
                 if sample.returncode==0 and sample.stdout.strip(): peak=max(peak,int(sample.stdout.strip())*1024)
@@ -42,12 +50,15 @@ def supervise_owned(command,root,limit,log_name='training.log',grace=5,profile_n
                 if reason:
                     stop_owned(child,grace)
                     break
-                time.sleep(min(1,max(0.05,limit/10)))
-        except BaseException as error:
-            reason=type(error).__name__+': '+str(error)[:200]
-        finally:
-            stop_owned(child,grace)
-    record={'schema':'eve.training-supervisor/1','exitCode':child.returncode,'stopReason':reason,'ownedChildPid':child.pid,
+                if interrupted_signal is None: time.sleep(min(1,max(0.05,limit/10)))
+            except BaseException as error:
+                reason=type(error).__name__+': '+str(error)[:200]
+            finally:
+                if child is not None: stop_owned(child,grace)
+    finally:
+        for sig,handler in previous.items(): signal.signal(sig,handler)
+    if interrupted_signal is not None: reason='InterruptedError: training supervisor interrupted'
+    record={'schema':'eve.training-supervisor/1','exitCode':child.returncode if child is not None else None,'stopReason':reason,'ownedChildPid':child.pid if child is not None else None,
       'elapsedSeconds':time.monotonic()-started,'sampledPeakRssBytes':peak,'hardIsolation':False,
       'resourceSamples':samples,'minimumAvailablePagesBytes':min_available,'maximumVmPressureLevel':max_pressure,'samplingSeconds':1}
     return record
