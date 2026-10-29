@@ -8,10 +8,15 @@
   },
   "pixelObserverJoinFixture": {
     "owner": "ROCK",
-    "status": "independent_review_and_full_verify_rerun_pass_git_ci_pending",
+    "status": "PR261_main_integrated_same_sha_ci_pass",
     "evidence": "docs/evidence/development-execution/pixel-observer-join-fixture.json",
     "scope": "test-only; no worker or device change",
-    "next": "Save reviewed test-only candidate, then Linux head/main CI; retain initial failed main and unrelated local cleanup failure."
+    "next": "Keep test-only scope; physical Pixel, full OS and runtime changes remain separately unaccepted.",
+    "pullRequest": 261,
+    "head": "54c3654553339a3ee0dee3ce1b380154e83eec8b",
+    "mergeSha": "aaab99e19ed3c5c11176b1706bc1c5c93b68fca0",
+    "headCISuccess": 7,
+    "mainCISuccess": 6
   },
   "eveCreateReconciliation": {
     "owner": "ROCK",
@@ -11981,5 +11986,27 @@
     "prHead": "811eeb4541f8e053e5f7fcffb6ba6e6bb77611e0",
     "mergeSha": "e79461ec33167f96f54d58f1a7938b45d694a3b4",
     "mergeChecks": "6 of 6 completed successfully"
+  },
+  "pixelEsimCurrentMainRevalidation": {
+    "status": "prepared_subsets_latest_main_regression_and_same_sha_ci_pass",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "G04",
+      "OS10",
+      "SIM01"
+    ],
+    "baseMain": "aaab99e19ed3c5c11176b1706bc1c5c93b68fca0",
+    "pixelPR": 261,
+    "esimSourcePR": 248,
+    "evidence": "docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json#currentMainRevalidation",
+    "focusedEsimPass": 88,
+    "localFullVerify": "3380 total / 3376 pass / 0 fail / 4 skip",
+    "wholeUnitAccepted": false,
+    "physicalAccepted": false,
+    "providerFinancialAccepted": false,
+    "publicDeployment": false,
+    "next": "Save this bounded regression record via PR and same-head/main CI; actual device/full OS, parent DB/Broker freshness and provider/financial/public gates remain independent.",
+    "pixelMainCISuccess": 6,
+    "pixelMainWorkflowSuccess": 4
   }
 }
