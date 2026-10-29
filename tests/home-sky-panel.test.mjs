@@ -27,12 +27,12 @@ void test('embedded owner settings reuse the same store, revision, device connec
 void test('panel switching and closing preserve the editor and timeline; keyboard navigation remains available', () => {
   const home = read('components/home-screen.tsx'), dialog = read('components/sky-discovery-dialog.tsx');
   assert.match(home, /panelVisited &&/);
-  assert.match(home, /hidden=\{view!=='manage'\}/);
-  assert.match(home, /hidden=\{view!=='discover'\}/);
+  assert.match(home, /hidden=\{view\s*!==\s*'manage'\}/);
+  assert.match(home, /hidden=\{view\s*!==\s*'discover'\}/);
   assert.doesNotMatch(dialog, /open\s*&&\s*children/);
-  assert.match(home, /key=\{view==='discover'\|\|view==='manage'\?'home':view\}/);
+  assert.match(home, /key=\{view\s*===\s*'discover'\s*\|\|\s*view\s*===\s*'manage'\s*\?\s*'home'\s*:\s*view\}/);
   assert.match(dialog, /onCancel=/);
   assert.match(dialog, /node\.showModal\(\)/);
   for (const text of ['role="tablist"', 'role="tab"', 'aria-selected', 'ArrowLeft', 'ArrowRight', 'Home', 'End']) assert.ok(dialog.includes(text), text);
-  assert.match(read('components/home-screen.module.css'), /repeat\(var\(--os-navigation-count, 3\), minmax\(0, 1fr\)\)/);
+  assert.match(read('components/home-screen.module.css'), /repeat\(\s*var\(--os-navigation-count, 3\),\s*minmax\(0, 1fr\)\s*\)/);
 });

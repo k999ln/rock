@@ -64,18 +64,16 @@ export function useSkyContinuousFeed(
   );
   const candidates = useMemo<ContinuousItem[]>(
     () => [
-      ...posts.slice(0, FEED_WINDOW).map(
-        (post): ContinuousItem => ({
-          key: `post:${post.id}`,
-          source: `author:${post.author.id}`,
-          text: `${post.content} ${post.attachment?.resource ?? ''}`,
-          createdAt: post.createdAt,
-          following: post.following,
-          community: Boolean(post.community),
-          kind: 'post',
-          post,
-        }),
-      ),
+      ...posts.slice(0, FEED_WINDOW).map((post): ContinuousItem => ({
+        key: `post:${post.id}`,
+        source: `author:${post.author.id}`,
+        text: `${post.content} ${post.attachment?.resource ?? ''}`,
+        createdAt: post.createdAt,
+        following: post.following,
+        community: Boolean(post.community),
+        kind: 'post',
+        post,
+      })),
       ...(enabled ? (news?.articles ?? []) : []).map(
         (article): ContinuousItem => ({
           key: `news:${article.id}`,
@@ -270,6 +268,9 @@ export function useSkyContinuousFeed(
       })),
     selection: news?.selection,
     newsLoading,
+    newsEmpty: Boolean(
+      news && !news.articles.length && !newsLoading && !newsError,
+    ),
     newsError,
     fetchedAt: news?.fetchedAt,
     stale: news?.stale,

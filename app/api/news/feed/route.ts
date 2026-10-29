@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import {
-  EVE_NEWS_PROVIDER,
   EVE_NEWS_QUERY,
   EVE_NEWS_TOPICS,
-  gdeltNewsUrl,
-  parseGdeltArticles,
   cachedNewsForTopic,
   type EveNewsLink,
 } from '@/lib/eve-news-feed';
+import { fetchPublicNews } from '@/lib/public-news-provider';
 import seed from '@/data/eve-news-seed-20261021.json';
 import liveSeed from '@/data/sky-live-news-seed.json';
 
 export const dynamic = 'force-dynamic';
 
 type CachedFeed = {
+  source: string;
+  selection?: string;
   fetchedAt: string;
   articles: EveNewsLink[];
   expiresAt: number;
@@ -36,7 +36,8 @@ export async function GET(request?: Request) {
   if (lastGood && lastGood.expiresAt > now) {
     return NextResponse.json(
       {
-        source: EVE_NEWS_PROVIDER,
+        source: lastGood.source,
+        selection: lastGood.selection,
         query,
         fetchedAt: lastGood.fetchedAt,
         articles: lastGood.articles,
@@ -53,15 +54,10 @@ export async function GET(request?: Request) {
     let task = pending.get(topic);
     if (!task) {
       task = (async () => {
-        const response = await fetch(gdeltNewsUrl(topic), {
-          headers: { Accept: 'application/json' },
-          signal: AbortSignal.timeout(10000),
-        });
-        if (!response.ok) throw Error(`provider HTTP ${response.status}`);
-        const articles = parseGdeltArticles(await response.json());
-        if (articles.length === 0)
-          throw Error('provider returned no usable articles');
+        const { source, articles, selection } = await fetchPublicNews(topic);
         const value = {
+          source,
+          selection,
           fetchedAt: new Date().toISOString(),
           articles,
           expiresAt: Date.now() + 15 * 60_000,
@@ -74,7 +70,8 @@ export async function GET(request?: Request) {
     const value = await task;
     return NextResponse.json(
       {
-        source: EVE_NEWS_PROVIDER,
+        source: value.source,
+        selection: value.selection,
         query,
         fetchedAt: value.fetchedAt,
         articles: value.articles,
@@ -90,7 +87,8 @@ export async function GET(request?: Request) {
     if (lastGood && now - Date.parse(lastGood.fetchedAt) < 60 * 60_000) {
       return NextResponse.json(
         {
-          source: EVE_NEWS_PROVIDER,
+          source: lastGood.source,
+          selection: lastGood.selection,
           query,
           fetchedAt: lastGood.fetchedAt,
           articles: lastGood.articles,

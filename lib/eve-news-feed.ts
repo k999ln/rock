@@ -6,6 +6,8 @@ export type EveNewsLink = {
   seenAt: string;
   language: string;
   sourceCountry: string;
+  timestampKind?: 'published' | 'detected';
+  provider?: 'publisher-rss' | 'gdelt';
 };
 
 export const EVE_NEWS_QUERY = 'politics sourcelang:english';
@@ -129,6 +131,23 @@ export function cachedNewsForTopic(articles: EveNewsLink[], topic: string) {
       : [];
 }
 
-export function newsSourceHandoff(article: {url:string;title:string;seenAt:string}, stale=false) {
-  return '/os/eve?'+new URLSearchParams({newsSource:article.url,sourceTitle:article.title.slice(0,240),sourceSeenAt:article.seenAt,sourceStale:String(stale)}).toString();
+export function newsSourceHandoff(
+  article: { url: string; title: string; seenAt: string },
+  stale = false,
+) {
+  return (
+    '/os/eve?' +
+    new URLSearchParams({
+      newsSource: article.url,
+      sourceTitle: article.title.slice(0, 240),
+      sourceSeenAt: article.seenAt,
+      sourceStale: String(stale),
+    }).toString()
+  );
+}
+
+export function newsTimestampLabel(
+  article: Pick<EveNewsLink, 'timestampKind'>,
+) {
+  return article.timestampKind === 'published' ? '配信日時' : 'GDELT検出';
 }

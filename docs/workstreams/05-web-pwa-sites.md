@@ -284,3 +284,13 @@ Source readback追加：現行public v111のproject/version/source/deploymentを
 本人がレビュー指摘の修正と不要な重複ページ・画像の整理および公開を明示依頼。主担当Web。既存公開source（OS v119、Mini/Pro v48）を基に、Homeの仕事入口、Eveへの導線、技術候補の折畳み、48px操作、Proの単一下書きと原稿export/restore、Miniの空メディア枠除去と単一status画面を実装する。Miniの現行3D・映像とProの実部品組立を保持。旧URLは308、決済戻りのsession_idは照会先へ保持し、支払い結果を推測しない。画像は参照調査後にWebPへ変換・未使用配布物のみ除外し、旧画像URLは同一画像の軽量版へ転送する。
 
 保存済みserver job/owner/revision/費用/承認/停止/復旧、Wallet/Game/SDK、販売gateは不変。Proのclipboard移動は本人の貼付が必要で、クラウド同期・原稿保管・実行成功ではない。ローカルメモは保持し、export/restoreはブラウザ内のみ。Mini OSの未承認公開gateを開かない。GitHub mainへの統合・Site source保存・公開・正式domain読戻しを別記録する。検証は対象routing/original/parser/branding、baseline/design/typecheck、npm run verify、同一buildのUIと配布画像容量。
+
+## OSホームの仕事入口とニュース復旧（2026-10-29）
+
+本人の明示依頼で、公開v120のニュース取得失敗と固定幅・空白を修正する。HOME01／WEB04、ROCK担当。実行・予算・本人別保存・停止は既存Eve契約を維持。
+
+目的は、ニュース接続の成否にかかわらず依頼・仕事/成果・端末接続へ進める入口。白/生成りと虹色ロゴを保ち、PCは幅1120px内に3操作、ニュース/投稿と能力/設定の2列、狭い画面は1列。タイムラインのviewport最低高さを外し、取得不能の詳細は小さい接続状態へ集約。投稿/コミュニティー/追加済み担当は既存API・保存・URLを保つ。
+
+入力は固定BBC/Guardian RSSと既存GDELT、出力は元の見出し・HTTPS原文URL・配信元・日時。RSS本文は512KB以内、外部entity/DOCTYPEを拒否、固定媒体のHTTPSリンクに限定、未来/72時間超/重複を除く。RSSの配信日時とGDELT検出時刻を区別する。RSS2経路を並行取得（4.5秒上限）、どちらも失敗したら既存GDELT（6秒）へ。任意URL取得・記事本文の再配布・AI要約・新契約は追加しない。既存の15分cache/in-flight共有/1時間の前回取得分・期限内seedを維持。すべて失敗した場合は503のまま正直に再接続表示し、空配列の成功や古い記事の最新化を行わない。
+
+合格条件: 単一RSS障害でも他方を表示、全障害は明示・入口使用可能、出典/日時の正確性、PC/390pxで横溢れなし、既存Eve/追加/管理/投稿の導線、型/対象/全verify/build、公開後同一版のニュース取得と画面確認。外部稼働率の恒久保証・native/実機受入・一般ローンチ・GitHubmain統合は別。判断未決は現行公開を保つ小さい変更で解消する。

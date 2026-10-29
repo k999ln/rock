@@ -3131,5 +3131,21 @@
       "components/eve-sync-workspace.tsx"
     ],
     "nativeAcceptanceChanged": false
+  },
+  "osHomeNewsRecovery": {
+    "taskIds": [
+      "HOME01",
+      "WEB04"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#osホームの仕事入口とニュース復旧2026-10-29",
+    "toolAuthority": "docs/sky-tools-complete-design.md#osホームの仕事入口とニュース復旧2026-10-29",
+    "source": [
+      "components/home-screen.tsx",
+      "components/sky-social-timeline.tsx",
+      "lib/public-news-provider.ts",
+      "app/api/news/feed/route.ts",
+      "tests/public-news-provider.test.mjs"
+    ],
+    "nativeAcceptanceChanged": false
   }
 }

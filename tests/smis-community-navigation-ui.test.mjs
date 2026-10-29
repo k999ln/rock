@@ -93,13 +93,15 @@ void test('directory creation and invitation controls open existing forms withou
   nodes(app.render()).find(node => node.type === 'button' && text(node) === '招待鍵で参加する').props.onClick();
   assert.ok(nodes(app.render()).some(node => node.type === 'details' && node.props.open && text(node).includes('受け取った招待鍵')));
 });
-void test('smis remains the ordinary timeline and has a self-contained, single-column header and frame', () => {
+void test('OS home preserves the timeline and shared header while adding environment shortcuts', () => {
   const view = harness('home').render();
   assert.ok(nodes(view).some(node => node.props['aria-label'] === 'タイムラインの切替'));
   assert.equal(nodes(view).some(node => node.props['aria-label'] === 'コミュニティーの一覧'), false);
   const home = read('components/home-screen.tsx'), css = read('app/os-shell.css');
-  assert.doesNotMatch(home, /<aside|<OsAccountAccess|fetch\('\/api\/work-jobs'/);
+  assert.doesNotMatch(home, /<OsAccountAccess|fetch\('\/api\/work-jobs'/);
   assert.match(home, /<OSHeader title="smis"/);
+  assert.match(home, /aria-label="自分の環境"/);
+  assert.match(home, /aria-label="仕事の主な操作"/);
   assert.match(css, /\.os-header-row\s*\{\s*display:\s*flex/);
   assert.match(css, /\.os-header-actions\s*\{\s*display:\s*flex/);
   assert.match(read('components/home-screen.module.css'), /\.home \.layout\s*\{\s*display:\s*block/);

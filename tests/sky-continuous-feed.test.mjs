@@ -242,7 +242,7 @@ void test('UI pauses hidden/offline refresh, supports reduced motion and labels 
     assert.ok(hook.includes(term));
   for (const term of [
     'prefers-reduced-motion',
-    'GDELT検出',
+    'newsTimestampLabel',
     '新着',
     '一時停止',
     'visibleIds',

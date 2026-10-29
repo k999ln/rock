@@ -10071,5 +10071,28 @@
       "miniProTests": 44
     },
     "excludedOsImageBytes": 4912313
+  },
+  "osHomeNewsRecovery": {
+    "date": "2026-10-29",
+    "status": "verified_ready_for_publication",
+    "owner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "WEB04"
+    ],
+    "sourceBase": "bad2809956a347192707e25be57fda451a6c1a5f",
+    "observedGithubMain": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+    "evidence": [
+      "tests/public-news-provider.test.mjs",
+      "docs/evidence/os-home-news-recovery.json"
+    ],
+    "next": "Build and save exact Sites source, deploy with existing public audience and MCP/D1/R2; verify actual domain. GitHub main integration separate.",
+    "verification": {
+      "fullVerifyExit": 0,
+      "corePassed": 2613,
+      "coreSkipped": 1,
+      "targetedAfterRefinement": 26,
+      "typecheck": "passed"
+    }
   }
 }

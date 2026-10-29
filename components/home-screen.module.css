@@ -397,7 +397,10 @@
     background: var(--os-shell-bg, #f6f4ef);
     border-top: 1px solid #dedfd6;
     display: grid;
-    grid-template-columns: repeat(var(--os-navigation-count, 3), minmax(0, 1fr));
+    grid-template-columns: repeat(
+      var(--os-navigation-count, 3),
+      minmax(0, 1fr)
+    );
     padding-bottom: env(safe-area-inset-bottom);
   }
   .mobileNav a {
@@ -531,21 +534,268 @@
   color: #252b28;
 }
 
-.providerSettings {border-bottom:1px solid #dedfd6;background:#fffdf8}
-.providerSettings>summary {padding:18px 20px;cursor:pointer;color:var(--os-shell-muted, #626e65);font-size:13px}
+.providerSettings {
+  border-bottom: 1px solid #dedfd6;
+  background: #fffdf8;
+}
+.providerSettings > summary {
+  padding: 18px 20px;
+  cursor: pointer;
+  color: var(--os-shell-muted, #626e65);
+  font-size: 13px;
+}
 
 /* The compact header is shared with every workspace. */
-.home .mobileHeader { padding: 0; border: 0; }
-@media (max-width: 1279px) { .home .mobileHeader { display: block; } }
+.home .mobileHeader {
+  padding: 0;
+  border: 0;
+}
+@media (max-width: 1279px) {
+  .home .mobileHeader {
+    display: block;
+  }
+}
 
-.mobileActions > a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.mobileActions > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
 
 /* smis shows the stream; tools and private work are opened explicitly. */
-.home .layout { display: block; width: 100%; max-width: 680px; margin-inline: auto; }
-.home .main { min-width: 0; }
-.home .mobileHeader { display: block; }
-.home :global(.os-brand-product) { display: inline; }
-.home :global(.os-current-app) { display: none; }
-.home :global(.os-brand-context) { display: none; }
+.home .layout {
+  display: block;
+  width: 100%;
+  max-width: 680px;
+  margin-inline: auto;
+}
+.home .main {
+  min-width: 0;
+}
+.home .mobileHeader {
+  display: block;
+}
+.home :global(.os-brand-product) {
+  display: inline;
+}
+.home :global(.os-current-app) {
+  display: none;
+}
+.home :global(.os-brand-context) {
+  display: none;
+}
 
-.workEntry{padding:20px 20px 16px;border-bottom:1px solid var(--tl-line);background:#fdfcf8}.workEntry strong{font-size:17px;font-weight:650;letter-spacing:0}.workEntry p{margin:6px 0 14px;font-size:13px;color:var(--tl-muted);line-height:1.6}.workEntry nav{display:flex;gap:8px;flex-wrap:wrap}.workEntry nav a{min-height:48px;display:inline-flex;align-items:center;padding:0 15px;border:1px solid var(--tl-line);border-radius:12px;font-size:13px}.workEntry nav a:first-child{background:#315b4d;color:white;border-color:#315b4d}@media(max-width:420px){.workEntry{padding:16px}.workEntry nav{gap:6px}.workEntry nav a{padding:0 11px}}
+/* Work comes first; the stream never reserves an empty viewport. */
+.home .layout {
+  max-width: 1120px;
+  padding: 0 32px 96px;
+}
+.home .main {
+  border: 0;
+  background: transparent;
+}
+.home .mobileHeader {
+  margin-inline: -32px;
+  border-bottom: 1px solid var(--tl-line);
+}
+.workEntry {
+  padding: 40px 0 28px;
+}
+.entryIntro h1 {
+  margin: 10px 0 14px;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.3;
+  letter-spacing: -0.045em;
+  font-weight: 650;
+}
+.entryIntro h1 br {
+  display: none;
+}
+.entryIntro > p:last-child {
+  color: var(--tl-muted);
+  margin: 0 0 26px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.eyebrow {
+  color: var(--tl-blue);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 650;
+  margin: 0;
+}
+.entryActions {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
+  gap: 12px;
+}
+.entryActions a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 22px;
+  border: 1px solid var(--tl-line);
+  border-radius: 18px;
+  background: #fffefa;
+  gap: 12px;
+  min-width: 0;
+  transition: background 0.15s;
+}
+.entryActions a > svg:last-child {
+  position: absolute;
+  right: 20px;
+  top: 23px;
+}
+.entryActions strong {
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 650;
+}
+.entryActions span {
+  font-size: 13px;
+  color: var(--tl-muted);
+  line-height: 1.65;
+}
+.entryActions a:hover {
+  background: #eeeee6;
+}
+.entryActions a.primaryEntry {
+  background: #315b4d;
+  border-color: #315b4d;
+  color: #fff;
+}
+.entryActions a.primaryEntry span {
+  color: #e0e9e2;
+}
+.entryActions a.primaryEntry:hover {
+  background: #25483c;
+}
+.workspaceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  align-items: start;
+  gap: 24px;
+}
+.workspaceGrid > section {
+  min-width: 0;
+  border: 1px solid var(--tl-line);
+  border-radius: 18px;
+  overflow: clip;
+  background: #fffefa;
+}
+.workspaceGrid:not([data-os-home-view='home']) {
+  display: block;
+}
+.workspaceAside {
+  display: grid;
+  gap: 16px;
+}
+.workspaceAside section {
+  padding: 22px;
+  border: 1px solid var(--tl-line);
+  background: #fffefa;
+  border-radius: 18px;
+}
+.workspaceAside h2 {
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 650;
+  margin: 10px 0;
+}
+.workspaceAside p,
+.entryNote {
+  color: var(--tl-muted);
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 0 0 12px;
+}
+.workspaceAside a {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--tl-line);
+  font-size: 13px;
+}
+.entryNote {
+  padding: 0 8px;
+}
+@media (max-width: 800px) {
+  .home .layout {
+    padding: 0 20px 96px;
+  }
+  .home .mobileHeader {
+    margin-inline: -20px;
+  }
+  .workspaceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workspaceAside {
+    grid-template-columns: 1fr 1fr;
+  }
+  .entryNote {
+    grid-column: 1/-1;
+  }
+  .entryActions a {
+    padding: 18px;
+  }
+  .entryActions strong {
+    font-size: 15px;
+  }
+  .entryActions a > svg:last-child {
+    right: 14px;
+    top: 19px;
+  }
+}
+@media (max-width: 540px) {
+  .home .layout {
+    padding: 0 16px 96px;
+  }
+  .home .mobileHeader {
+    margin-inline: -16px;
+  }
+  .workEntry {
+    padding: 28px 0 22px;
+  }
+  .entryIntro h1 {
+    font-size: 34px;
+  }
+  .entryIntro h1 br {
+    display: block;
+  }
+  .entryActions {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .entryActions a {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 3px 12px;
+    padding: 16px 42px 16px 16px;
+    border-radius: 14px;
+  }
+  .entryActions a > svg:first-child {
+    grid-row: 1/3;
+    align-self: center;
+  }
+  .entryActions a > svg:last-child {
+    right: 16px;
+    top: calc(50% - 10px);
+  }
+  .entryActions strong {
+    font-size: 16px;
+  }
+  .entryActions span {
+    font-size: 12px;
+    grid-column: 2;
+  }
+  .workspaceAside {
+    grid-template-columns: 1fr;
+  }
+  .workspaceAside section {
+    padding: 18px;
+  }
+}

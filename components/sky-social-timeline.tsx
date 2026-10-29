@@ -1,5 +1,5 @@
 'use client';
-import { newsSourceHandoff } from '@/lib/eve-news-feed';
+import { newsSourceHandoff, newsTimestampLabel } from '@/lib/eve-news-feed';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway. */
 import {
   useCallback,
@@ -175,7 +175,8 @@ export default function SkySocialTimeline({
   const hub = useSkyHub();
   const router = useRouter();
   const communityPage = initialView === 'communities';
-  const communityDirectory = communityPage && !communityId && !threadId && !lockedCommunity;
+  const communityDirectory =
+    communityPage && !communityId && !threadId && !lockedCommunity;
   useEffect(() => {
     if (!notice) return;
     const timer = window.setTimeout(() => setNotice(''), 6000);
@@ -500,7 +501,14 @@ export default function SkySocialTimeline({
     continuous.hasMore,
   ]);
   useEffect(() => {
-    if (!live || !data.profile || threadId || management || (communityPage && !communityId)) return;
+    if (
+      !live ||
+      !data.profile ||
+      threadId ||
+      management ||
+      (communityPage && !communityId)
+    )
+      return;
     let stopped = false,
       failures = 0,
       pollingNow = false,
@@ -533,7 +541,15 @@ export default function SkySocialTimeline({
       document.removeEventListener('visibilitychange', wake);
       window.removeEventListener('online', wake);
     };
-  }, [live, data.profile, threadId, management, load, communityPage, communityId]);
+  }, [
+    live,
+    data.profile,
+    threadId,
+    management,
+    load,
+    communityPage,
+    communityId,
+  ]);
   async function reactTo(
     item: SkySocialPost,
     reaction: 'like' | 'repost' | 'bookmark',
@@ -625,7 +641,7 @@ export default function SkySocialTimeline({
               <span className={styles.dot}>·</span>
               <time
                 dateTime={article.seenAt}
-                title={`GDELT検出 ${new Date(article.seenAt).toLocaleString('ja-JP')}`}
+                title={`${newsTimestampLabel(article)} ${new Date(article.seenAt).toLocaleString('ja-JP')}`}
               >
                 {relativeTime(item.createdAt)}
               </time>
@@ -642,7 +658,8 @@ export default function SkySocialTimeline({
               <ArrowUpRight size={16} />
             </a>
             <div className={styles.newsMeta}>
-              媒体の原文 · GDELT検出{item.stale ? ' · 前回取得分' : ''}
+              媒体の原文 · {newsTimestampLabel(article)}
+              {item.stale ? ' · 前回取得分' : ''}
             </div>
             <div className={styles.newsActions}>
               <button
@@ -655,7 +672,9 @@ export default function SkySocialTimeline({
               >
                 この話題をもっと
               </button>
-              <a href={newsSourceHandoff(article, item.stale)}>Eveで資料メモを作る</a>
+              <a href={newsSourceHandoff(article, item.stale)}>
+                Eveで資料メモを作る
+              </a>
               <button
                 onClick={() => {
                   writeHomeIntent(
@@ -945,13 +964,30 @@ export default function SkySocialTimeline({
       aria-labelledby="sky-social-title"
     >
       <header className={styles.heading}>
-        <h2 id="sky-social-title">{communityPage ? 'コミュニティー' : 'smis タイムライン'}</h2>
+        <h2 id="sky-social-title">
+          {communityPage ? 'コミュニティー' : 'ニュースとつながり'}
+        </h2>
       </header>
       <div className={styles.timelineTop}>
         {communityPage ? (
           <div className={styles.threadHeading}>
-            {!communityDirectory && <button aria-label="コミュニティーの一覧に戻る" onClick={() => { setCommunityId(''); setThreadId(''); setLockedCommunity(null); setCommunityForm(false); setJoinForm(false); }}><ArrowLeft size={20} /></button>}
-            <strong>{selected?.name || lockedCommunity?.name || 'コミュニティー'}</strong>
+            {!communityDirectory && (
+              <button
+                aria-label="コミュニティーの一覧に戻る"
+                onClick={() => {
+                  setCommunityId('');
+                  setThreadId('');
+                  setLockedCommunity(null);
+                  setCommunityForm(false);
+                  setJoinForm(false);
+                }}
+              >
+                <ArrowLeft size={20} />
+              </button>
+            )}
+            <strong>
+              {selected?.name || lockedCommunity?.name || 'コミュニティー'}
+            </strong>
           </div>
         ) : threadId ? (
           <div className={styles.threadHeading}>
@@ -1002,7 +1038,9 @@ export default function SkySocialTimeline({
         )}
         <button
           className={styles.topIcon}
-          aria-label={communityPage ? 'コミュニティーを更新' : 'タイムラインを更新'}
+          aria-label={
+            communityPage ? 'コミュニティーを更新' : 'タイムラインを更新'
+          }
           disabled={loading}
           onClick={() => {
             continuous.restart();
@@ -1014,62 +1052,89 @@ export default function SkySocialTimeline({
             className={loading ? styles.spinning : undefined}
           />
         </button>
-        {!communityPage && <button
-          className={styles.topIcon}
-          aria-label="タイムラインの設定とコミュニティー"
-          aria-expanded={management}
-          onClick={() => setManagement((v) => !v)}
-        >
-          <SlidersHorizontal size={18} />
-        </button>}
+        {!communityPage && (
+          <button
+            className={styles.topIcon}
+            aria-label="タイムラインの設定とコミュニティー"
+            aria-expanded={management}
+            onClick={() => setManagement((v) => !v)}
+          >
+            <SlidersHorizontal size={18} />
+          </button>
+        )}
       </div>
       {continuousEnabled && (
         <div className={styles.liveControls}>
           <div className={styles.liveLine}>
-            <span className={live && !continuous.newsError && !liveError ? styles.liveDot : styles.pausedDot} />
+            <span
+              className={
+                live && !continuous.newsError && !liveError
+                  ? styles.liveDot
+                  : styles.pausedDot
+              }
+            />
             <span>
-              {!live ? '自動更新を停止中' : continuous.newsError || liveError ? '一部の配信元を確認できません' : continuous.newsLoading && !continuous.items.length ? '新着を確認中' : '自動更新中'}
+              {!live
+                ? '自動更新を停止中'
+                : continuous.newsError || liveError
+                  ? '接続状況を確認'
+                  : continuous.newsLoading && !continuous.items.length
+                    ? '新着を確認中'
+                    : '自動更新中'}
             </span>
             <button aria-pressed={live} onClick={() => setLive((v) => !v)}>
               {live ? '一時停止' : '再開'}
             </button>
           </div>
-          <details className={styles.feedPreferences}><summary>話題と表示設定</summary><div className={styles.topicChips} aria-label="読みたい話題">
-            {[
-              ['all', 'すべて'],
-              ['technology', 'テクノロジー'],
-              ['world', '世界'],
-              ['business', 'ビジネス'],
-              ['science', '科学'],
-              ['games', 'ゲーム'],
-            ].map(([id, label]) => (
-              <button
-                key={id}
-                aria-pressed={continuous.topic === id}
-                onClick={() => continuous.chooseTopic(id)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          <details className={styles.rankingNote}>
-            <summary>この流れについて</summary>
-            <p>
-              フォロー、保存・いいねした投稿の言葉、この画面で開いたニュースの話題、新しさを使って並べています。5件に1件は違う話題を探し、同じ配信元の連続を抑えます。日本語の話題にも対応します。先頭にいると新着を自動表示し、読み進めている間や入力・文字選択中は通知に留めます。閲覧の話題はこの画面を閉じると消えます。ニュースはGDELTの媒体原文リンクです。検出時刻を表示し、内容の正確さを保証する判定には使いません。
-            </p>
-            {refreshedAt > 0 && (
-              <small>
-                投稿の確認 {new Date(refreshedAt).toLocaleTimeString('ja-JP')}
-              </small>
-            )}
-          </details></details>
+          <details className={styles.feedPreferences}>
+            <summary>話題と表示設定</summary>
+            <div className={styles.topicChips} aria-label="読みたい話題">
+              {[
+                ['all', 'すべて'],
+                ['technology', 'テクノロジー'],
+                ['world', '世界'],
+                ['business', 'ビジネス'],
+                ['science', '科学'],
+                ['games', 'ゲーム'],
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  aria-pressed={continuous.topic === id}
+                  onClick={() => continuous.chooseTopic(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <details className={styles.rankingNote}>
+              <summary>この流れについて</summary>
+              <p>
+                フォロー、保存・いいねした投稿の言葉、この画面で開いたニュースの話題、新しさを使って並べています。5件に1件は違う話題を探し、同じ配信元の連続を抑えます。日本語の話題にも対応します。先頭にいると新着を自動表示し、読み進めている間や入力・文字選択中は通知に留めます。閲覧の話題はこの画面を閉じると消えます。ニュースは公開RSSとGDELTから取得する媒体原文リンクです。RSSの配信日時とGDELTの検出時刻を区別し、内容の正確さを保証する判定には使いません。
+              </p>
+              {refreshedAt > 0 && (
+                <small>
+                  投稿の確認 {new Date(refreshedAt).toLocaleTimeString('ja-JP')}
+                </small>
+              )}
+            </details>
+          </details>
           {liveError && (
             <output className={styles.feedStatus}>{liveError}</output>
           )}
           {continuous.newsError && (
+            <div className={styles.newsConnection}>
+              <span>ニュースを再接続しています。</span>
+              <button onClick={continuous.retry}>再接続</button>
+              <details>
+                <summary>接続状況</summary>
+                <p>{continuous.newsError}</p>
+                <a href="/#news-plugins">配信元を確認</a>
+              </details>
+            </div>
+          )}
+          {continuous.newsEmpty && (
             <output className={styles.feedStatus}>
-              {continuous.newsError}
-              <button onClick={continuous.retry}>再試行</button>
+              この話題の新着はまだありません。別の話題も見ることができます。
             </output>
           )}
           {continuous.stale && (
@@ -1259,10 +1324,33 @@ export default function SkySocialTimeline({
               <Link href="/#sky-manage">担当とLLMを設定 →</Link>
             </aside>
             <div className={styles.stream}>
-              {communityDirectory && <SkyCommunityDirectory communities={data.communities} busy={busy}
-                onSelect={c => { setThreadId(''); setCommunityForm(false); setJoinForm(false); if (c.unlocked) { setLockedCommunity(null); setCommunityId(c.id); setRequestedOsVersion(0); } else { setLockedCommunity(c); setCommunityId(''); } }}
-                onCreate={() => { setCommunityForm(true); setJoinForm(false); }}
-                onJoin={() => { setJoinForm(true); setCommunityForm(false); }} />}
+              {communityDirectory && (
+                <SkyCommunityDirectory
+                  communities={data.communities}
+                  busy={busy}
+                  onSelect={(c) => {
+                    setThreadId('');
+                    setCommunityForm(false);
+                    setJoinForm(false);
+                    if (c.unlocked) {
+                      setLockedCommunity(null);
+                      setCommunityId(c.id);
+                      setRequestedOsVersion(0);
+                    } else {
+                      setLockedCommunity(c);
+                      setCommunityId('');
+                    }
+                  }}
+                  onCreate={() => {
+                    setCommunityForm(true);
+                    setJoinForm(false);
+                  }}
+                  onJoin={() => {
+                    setJoinForm(true);
+                    setCommunityForm(false);
+                  }}
+                />
+              )}
               {communityForm && (
                 <form
                   className={styles.communityForm}
@@ -1421,324 +1509,354 @@ export default function SkySocialTimeline({
                   </button>
                 </div>
               )}
-              {showPosts && <>
-              {selected?.unlocked && (
-                <div className={styles.communityIntro}>
-                  <span>
-                    {selected.visibility === 'members'
-                      ? 'メンバー限定'
-                      : '公開コミュニティー'}
-                  </span>
-                  <h3>{selected.name}</h3>
-                  <p>{selected.description}</p>
-                  <details>
-                    <summary>参加ルール</summary>
-                    <p className={styles.rules}>{selected.rules}</p>
-                  </details>
-                  {selected.owned ? (
-                    <div className={styles.ownerActions}>
-                      <button
-                        disabled={busy}
-                        onClick={() =>
-                          void act(
-                            { action: 'invite', id: selected.id },
-                            (result) => {
-                              const v = result.invite as {
-                                id: string;
-                                token: string;
-                              };
-                              setInviteUrl(
-                                JSON.stringify({
-                                  schema: 'rockstar-community-invite/1',
-                                  communityId: v.id,
-                                  token: v.token,
-                                }),
-                              );
-                            },
-                          )
-                        }
-                      >
-                        招待鍵を発行
-                      </button>
-                      <button
-                        disabled={busy}
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              'コミュニティーを終了し、投稿を削除しますか？',
+              {showPosts && (
+                <>
+                  {selected?.unlocked && (
+                    <div className={styles.communityIntro}>
+                      <span>
+                        {selected.visibility === 'members'
+                          ? 'メンバー限定'
+                          : '公開コミュニティー'}
+                      </span>
+                      <h3>{selected.name}</h3>
+                      <p>{selected.description}</p>
+                      <details>
+                        <summary>参加ルール</summary>
+                        <p className={styles.rules}>{selected.rules}</p>
+                      </details>
+                      {selected.owned ? (
+                        <div className={styles.ownerActions}>
+                          <button
+                            disabled={busy}
+                            onClick={() =>
+                              void act(
+                                { action: 'invite', id: selected.id },
+                                (result) => {
+                                  const v = result.invite as {
+                                    id: string;
+                                    token: string;
+                                  };
+                                  setInviteUrl(
+                                    JSON.stringify({
+                                      schema: 'rockstar-community-invite/1',
+                                      communityId: v.id,
+                                      token: v.token,
+                                    }),
+                                  );
+                                },
+                              )
+                            }
+                          >
+                            招待鍵を発行
+                          </button>
+                          <button
+                            disabled={busy}
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  'コミュニティーを終了し、投稿を削除しますか？',
+                                )
+                              )
+                                void act(
+                                  {
+                                    action: 'archiveCommunity',
+                                    id: selected.id,
+                                  },
+                                  () => setCommunityId(''),
+                                );
+                            }}
+                          >
+                            コミュニティーを終了
+                          </button>
+                          {inviteUrl && (
+                            <label>
+                              この招待鍵を渡した人が参加できます。自分のアクセス鍵とは別です。再発行で前の招待は無効になります。
+                              <input
+                                readOnly
+                                value={inviteUrl}
+                                onFocus={(e) => e.target.select()}
+                              />
+                            </label>
+                          )}
+                        </div>
+                      ) : (
+                        <button
+                          disabled={busy}
+                          onClick={() =>
+                            void act({ action: 'leave', id: selected.id }, () =>
+                              setCommunityId(''),
                             )
-                          )
-                            void act(
-                              { action: 'archiveCommunity', id: selected.id },
-                              () => setCommunityId(''),
-                            );
-                        }}
-                      >
-                        コミュニティーを終了
-                      </button>
-                      {inviteUrl && (
-                        <label>
-                          この招待鍵を渡した人が参加できます。自分のアクセス鍵とは別です。再発行で前の招待は無効になります。
-                          <input
-                            readOnly
-                            value={inviteUrl}
-                            onFocus={(e) => e.target.select()}
-                          />
-                        </label>
+                          }
+                        >
+                          参加を解除
+                        </button>
                       )}
                     </div>
-                  ) : (
-                    <button
-                      disabled={busy}
-                      onClick={() =>
-                        void act({ action: 'leave', id: selected.id }, () =>
-                          setCommunityId(''),
-                        )
-                      }
-                    >
-                      参加を解除
-                    </button>
                   )}
-                </div>
-              )}
-              {selected?.unlocked && (
-                <CommunityOsWorkbench
-                  key={`${selected.id}:${requestedOsVersion}`}
-                  community={selected}
-                  initialVersion={requestedOsVersion}
-                  onChanged={() => void load()}
-                />
-              )}
-              {data.thread && renderPost(data.thread, true)}
-              {(!selected || selected.member) && (
-                <form className={styles.composer} onSubmit={post}>
-                  <span className={styles.composerAvatar} aria-hidden="true">
-                    {data.profile.name.slice(0, 1)}
-                  </span>
-                  <label className={styles.srOnly} htmlFor="sky-post">
-                    {data.thread
-                      ? `${data.thread.author.name}に返信`
-                      : selected
-                        ? `${selected.name}に共有`
-                        : 'いまどうしてる？'}
-                  </label>
-                  <textarea
-                    id="sky-post"
-                    onKeyDown={(e) => {
-                      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                        e.preventDefault();
-                        e.currentTarget.form?.requestSubmit();
-                      }
-                    }}
-                    required
-                    maxLength={1000}
-                    rows={2}
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder={
-                      data.thread ? '返信を投稿' : 'いまどうしてる？'
-                    }
-                  />
-                  <div className={styles.attach} hidden={!attachmentOpen}>
-                    <label>
-                      一緒に共有
-                      <select
-                        aria-label="共有する種類"
-                        value={attachmentKind}
-                        onChange={(e) => {
-                          setAttachmentKind(
-                            e.target.value as typeof attachmentKind,
-                          );
-                          setResource('');
-                        }}
+                  {selected?.unlocked && (
+                    <CommunityOsWorkbench
+                      key={`${selected.id}:${requestedOsVersion}`}
+                      community={selected}
+                      initialVersion={requestedOsVersion}
+                      onChanged={() => void load()}
+                    />
+                  )}
+                  {data.thread && renderPost(data.thread, true)}
+                  {(!selected || selected.member) && (
+                    <form className={styles.composer} onSubmit={post}>
+                      <span
+                        className={styles.composerAvatar}
+                        aria-hidden="true"
                       >
-                        <option value="none">テキストだけ</option>
-                        <option value="model">LLM・モデル</option>
-                        <option value="dataset">データセット</option>
-                        <option value="space">Spaces</option>
-                        <option value="agent">smisの公開Agent・Tool</option>
-                        <option value="work">作品のURL</option>
-                        <option value="edition">OS構成の共有URL</option>
-                        <option value="news">ニュースのURL</option>
-                      </select>
-                    </label>
-                    {attachmentKind !== 'none' &&
-                      (attachmentKind === 'agent' ? (
+                        {data.profile.name.slice(0, 1)}
+                      </span>
+                      <label className={styles.srOnly} htmlFor="sky-post">
+                        {data.thread
+                          ? `${data.thread.author.name}に返信`
+                          : selected
+                            ? `${selected.name}に共有`
+                            : 'いまどうしてる？'}
+                      </label>
+                      <textarea
+                        id="sky-post"
+                        onKeyDown={(e) => {
+                          if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                            e.preventDefault();
+                            e.currentTarget.form?.requestSubmit();
+                          }
+                        }}
+                        required
+                        maxLength={1000}
+                        rows={2}
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder={
+                          data.thread ? '返信を投稿' : 'いまどうしてる？'
+                        }
+                      />
+                      <div className={styles.attach} hidden={!attachmentOpen}>
                         <label>
-                          公開Tool
+                          一緒に共有
                           <select
-                            required
-                            value={resource}
-                            onChange={(e) => setResource(e.target.value)}
+                            aria-label="共有する種類"
+                            value={attachmentKind}
+                            onChange={(e) => {
+                              setAttachmentKind(
+                                e.target.value as typeof attachmentKind,
+                              );
+                              setResource('');
+                            }}
                           >
-                            <option value="">選ぶ</option>
-                            {catalog.map((t) => (
-                              <option key={t.id} value={t.id}>
-                                {t.name}
-                              </option>
-                            ))}
+                            <option value="none">テキストだけ</option>
+                            <option value="model">LLM・モデル</option>
+                            <option value="dataset">データセット</option>
+                            <option value="space">Spaces</option>
+                            <option value="agent">smisの公開Agent・Tool</option>
+                            <option value="work">作品のURL</option>
+                            <option value="edition">OS構成の共有URL</option>
+                            <option value="news">ニュースのURL</option>
                           </select>
                         </label>
-                      ) : (
-                        <label>
-                          {['model', 'dataset', 'space'].includes(
-                            attachmentKind,
-                          )
-                            ? 'Hugging Face ID'
-                            : '共有するHTTPS URL'}
-                          <input
-                            required
-                            maxLength={300}
-                            value={resource}
-                            onChange={(e) => setResource(e.target.value)}
-                            placeholder={
-                              ['model', 'dataset', 'space'].includes(
+                        {attachmentKind !== 'none' &&
+                          (attachmentKind === 'agent' ? (
+                            <label>
+                              公開Tool
+                              <select
+                                required
+                                value={resource}
+                                onChange={(e) => setResource(e.target.value)}
+                              >
+                                <option value="">選ぶ</option>
+                                {catalog.map((t) => (
+                                  <option key={t.id} value={t.id}>
+                                    {t.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                          ) : (
+                            <label>
+                              {['model', 'dataset', 'space'].includes(
                                 attachmentKind,
                               )
-                                ? '作者/リポジトリ名'
-                                : 'https://'
-                            }
-                          />
-                        </label>
-                      ))}
+                                ? 'Hugging Face ID'
+                                : '共有するHTTPS URL'}
+                              <input
+                                required
+                                maxLength={300}
+                                value={resource}
+                                onChange={(e) => setResource(e.target.value)}
+                                placeholder={
+                                  ['model', 'dataset', 'space'].includes(
+                                    attachmentKind,
+                                  )
+                                    ? '作者/リポジトリ名'
+                                    : 'https://'
+                                }
+                              />
+                            </label>
+                          ))}
+                      </div>
+                      <footer>
+                        <div className={styles.composerTools}>
+                          <button
+                            type="button"
+                            aria-label="モデル・Agent・作品を添付"
+                            aria-expanded={attachmentOpen}
+                            onClick={() => {
+                              if (attachmentOpen && !resource.trim())
+                                setAttachmentKind('none');
+                              setAttachmentOpen(!attachmentOpen);
+                            }}
+                          >
+                            <Link2 size={20} />
+                          </button>
+                          <small title="Eveの会話は自動共有されません。">
+                            {data.thread?.community || selected
+                              ? 'メンバーのみ'
+                              : 'smisに公開'}
+                          </small>
+                        </div>
+                        <div className={styles.sendControls}>
+                          {text.length > 0 && (
+                            <small aria-live="polite">{text.length}/1000</small>
+                          )}
+                          <button disabled={busy || !text.trim()}>
+                            {busy
+                              ? '送信中…'
+                              : data.thread
+                                ? '返信'
+                                : 'ポストする'}
+                          </button>
+                        </div>
+                      </footer>
+                    </form>
+                  )}
+                  {loading && (
+                    <output className={styles.loading}>
+                      <LoaderCircle size={22} className={styles.spinning} />
+                      <span className={styles.srOnly}>
+                        投稿を読み込んでいます
+                      </span>
+                    </output>
+                  )}
+                  {!loading &&
+                    !data.posts.length &&
+                    !(
+                      discovery &&
+                      !threadId &&
+                      !communityId &&
+                      mode === 'recommended'
+                    ) && (
+                      <div className={styles.empty}>
+                        <Users size={26} />
+                        <h3>
+                          {threadId
+                            ? '会話をはじめよう。'
+                            : mode === 'bookmarks'
+                              ? '気になる投稿を、ここに。'
+                              : 'ここから、つながっていこう。'}
+                        </h3>
+                        <p>
+                          {threadId
+                            ? '最初の返信を投稿してみよう。'
+                            : mode === 'bookmarks'
+                              ? '投稿のブックマークを押すと保存できます。'
+                              : mode === 'following'
+                                ? '人をフォローするか、コミュニティーに参加すると投稿が流れます。'
+                                : 'まだ投稿がありません。最初の発見を共有してみよう。'}
+                        </p>
+                        {!threadId && mode !== 'bookmarks' && (
+                          <a href="/os/eve" className={styles.emptyAction}>
+                            Eveで仕事を始める ↗
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  <div
+                    role="feed"
+                    aria-label={
+                      threadId
+                        ? '返信'
+                        : mode === 'bookmarks'
+                          ? '保存した投稿'
+                          : communityPage
+                            ? `${selected?.name || 'コミュニティー'}の投稿`
+                            : 'smisの投稿'
+                    }
+                    aria-busy={loading}
+                  >
+                    {!communityPage &&
+                      !threadId &&
+                      !communityId &&
+                      mode !== 'bookmarks' &&
+                      personalFeed}
+                    {continuousEnabled
+                      ? continuous.items.map((item) =>
+                          item.kind === 'post'
+                            ? renderPost(item.post)
+                            : renderNews(item),
+                        )
+                      : data.posts
+                          .filter(
+                            (post) =>
+                              !communityPage ||
+                              post.community?.id === communityId,
+                          )
+                          .map((post) => renderPost(post))}
+                    {!threadId &&
+                      !communityId &&
+                      mode !== 'bookmarks' &&
+                      externalFeed}
                   </div>
-                  <footer>
-                    <div className={styles.composerTools}>
+                  <div
+                    ref={sentinel}
+                    className={styles.sentinel}
+                    aria-hidden="true"
+                  />
+                  {moreAvailable && (
+                    <button
+                      className={styles.moreButton}
+                      disabled={loading}
+                      onClick={() => void loadMore()}
+                    >
+                      続きを見る
+                    </button>
+                  )}
+                  {continuousEnabled && !loading && !moreAvailable && (
+                    <div className={styles.feedEnd}>
+                      <Radio size={20} />
+                      <strong>
+                        {continuous.atLimit
+                          ? 'ここまでの投稿を読み終えました'
+                          : 'いま届いている投稿は、ここまで'}
+                      </strong>
+                      <p>
+                        {live
+                          ? '新しい投稿が届くと、上にお知らせします。'
+                          : '自動更新は停止中です。いつでも再開できます。'}
+                      </p>
                       <button
-                        type="button"
-                        aria-label="モデル・Agent・作品を添付"
-                        aria-expanded={attachmentOpen}
                         onClick={() => {
-                          if (attachmentOpen && !resource.trim())
-                            setAttachmentKind('none');
-                          setAttachmentOpen(!attachmentOpen);
+                          continuous.restart();
+                          void load();
                         }}
                       >
-                        <Link2 size={20} />
-                      </button>
-                      <small title="Eveの会話は自動共有されません。">
-                        {data.thread?.community || selected
-                          ? 'メンバーのみ'
-                          : 'smisに公開'}
-                      </small>
-                    </div>
-                    <div className={styles.sendControls}>
-                      {text.length > 0 && (
-                        <small aria-live="polite">{text.length}/1000</small>
-                      )}
-                      <button disabled={busy || !text.trim()}>
-                        {busy ? '送信中…' : data.thread ? '返信' : 'ポストする'}
+                        新しい流れを読む
                       </button>
                     </div>
-                  </footer>
-                </form>
+                  )}
+                  {!threadId &&
+                    !communityId &&
+                    mode === 'recommended' &&
+                    discovery && (
+                      <details className={styles.discoveryMore}>
+                        <summary>LLM・Agent・機能を見つける</summary>
+                        {discovery}
+                      </details>
+                    )}
+                </>
               )}
-              {loading && (
-                <output className={styles.loading}>
-                  <LoaderCircle size={22} className={styles.spinning} />
-                  <span className={styles.srOnly}>投稿を読み込んでいます</span>
-                </output>
-              )}
-              {!loading &&
-                !data.posts.length &&
-                !(
-                  discovery &&
-                  !threadId &&
-                  !communityId &&
-                  mode === 'recommended'
-                ) && (
-                  <div className={styles.empty}>
-                    <Users size={26} />
-                    <h3>
-                      {threadId
-                        ? '会話をはじめよう。'
-                        : mode === 'bookmarks'
-                          ? '気になる投稿を、ここに。'
-                          : 'ここから、つながっていこう。'}
-                    </h3>
-                    <p>
-                      {threadId
-                        ? '最初の返信を投稿してみよう。'
-                        : mode === 'bookmarks'
-                          ? '投稿のブックマークを押すと保存できます。'
-                          : mode === 'following'
-                            ? '人をフォローするか、コミュニティーに参加すると投稿が流れます。'
-                            : 'まだ投稿がありません。最初の発見を共有してみよう。'}
-                    </p>
-                    {!threadId && mode !== 'bookmarks' && <a href="/os/eve" className={styles.emptyAction}>Eveで仕事を始める ↗</a>}
-                  </div>
-                )}
-              <div
-                role="feed"
-                aria-label={
-                  threadId
-                    ? '返信'
-                    : mode === 'bookmarks'
-                      ? '保存した投稿'
-                      : communityPage ? `${selected?.name || 'コミュニティー'}の投稿` : 'smisの投稿'
-                }
-                aria-busy={loading}
-              >
-                {!communityPage && !threadId && !communityId && mode !== 'bookmarks' && personalFeed}
-                {continuousEnabled
-                  ? continuous.items.map((item) =>
-                      item.kind === 'post'
-                        ? renderPost(item.post)
-                        : renderNews(item),
-                    )
-                  : data.posts.filter(post => !communityPage || post.community?.id === communityId).map((post) => renderPost(post))}
-                {!threadId &&
-                  !communityId &&
-                  mode !== 'bookmarks' &&
-                  externalFeed}
-              </div>
-              <div
-                ref={sentinel}
-                className={styles.sentinel}
-                aria-hidden="true"
-              />
-              {moreAvailable && (
-                <button
-                  className={styles.moreButton}
-                  disabled={loading}
-                  onClick={() => void loadMore()}
-                >
-                  続きを見る
-                </button>
-              )}
-              {continuousEnabled && !loading && !moreAvailable && (
-                <div className={styles.feedEnd}>
-                  <Radio size={20} />
-                  <strong>
-                    {continuous.atLimit
-                      ? 'ここまでの投稿を読み終えました'
-                      : 'いま届いている投稿は、ここまで'}
-                  </strong>
-                  <p>
-                    {live
-                      ? '新しい投稿が届くと、上にお知らせします。'
-                      : '自動更新は停止中です。いつでも再開できます。'}
-                  </p>
-                  <button
-                    onClick={() => {
-                      continuous.restart();
-                      void load();
-                    }}
-                  >
-                    新しい流れを読む
-                  </button>
-                </div>
-              )}
-              {!threadId &&
-                !communityId &&
-                mode === 'recommended' &&
-                discovery && (
-                  <details className={styles.discoveryMore}>
-                    <summary>LLM・Agent・機能を見つける</summary>
-                    {discovery}
-                  </details>
-                )}
-              </>}
             </div>
           </div>
         </>

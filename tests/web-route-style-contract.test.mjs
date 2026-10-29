@@ -136,7 +136,7 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
   assert.match(home, /data-sky-home/);
   assert.match(
     homeStyles,
-    /grid-template-columns: repeat\(var\(--os-navigation-count, 3\), minmax\(0, 1fr\)\)/,
+    /grid-template-columns:\s*repeat\(\s*var\(--os-navigation-count, 3\),\s*minmax\(0, 1fr\)\s*\)/,
   );
 });
 

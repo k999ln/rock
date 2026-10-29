@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-29",
+  "scope": "HOME01 / WEB04; existing public Web only",
+  "baseSource": "bad2809956a347192707e25be57fda451a6c1a5f",
+  "githubMainObserved": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+  "cause": "GDELT timeout plus expired static seed; home retained narrow 680px column and viewport minimum timeline height",
+  "implementation": [
+    "3 work entries; responsive 1120px workspace; ability and settings shortcuts",
+    "removed timeline viewport minimum and compacted connection details and profile prompt",
+    "fixed publisher RSS race with existing GDELT fallback; bounded metadata parser; published/detected timestamp distinction",
+    "edge redirect manual (reject redirect responses), no arbitrary feed URLs",
+    "A successful technology RSS with no matching gaming headlines is a real empty-topic state, not an outage. All-source failures still remain errors."
+  ],
+  "localApi": {
+    "source": "Publisher RSS",
+    "articles": 38,
+    "stale": false,
+    "allSixTopics": true,
+    "singleGuardianOutage": "BBC live feed recovered 32 headlines"
+  },
+  "browser": {
+    "desktopWidth": 1280,
+    "mainWidth": 1056,
+    "mobileWidth": 390,
+    "mobileActionHeight": 80.796875,
+    "horizontalOverflow": false,
+    "newsPostsVisible": 24,
+    "discoveryDialogOpenedAndClosed": true
+  },
+  "verification": {
+    "fullVerifyExit": 0,
+    "coreTests": 2614,
+    "passed": 2613,
+    "skipped": 1,
+    "failed": 0,
+    "apiAssertions": 1621,
+    "csvAssertions": 385,
+    "postVerifyEmptyTopicRefinementTests": 26,
+    "typecheck": "passed",
+    "publicAssetClosure": "220 references, missing 0",
+    "finalBuild": "passed; asset closure 220 references missing 0"
+  },
+  "preserved": [
+    "D1 and R2 bindings",
+    "MCP capability",
+    "jobs and owner storage",
+    "budget and authority",
+    "existing domain and saved routes",
+    "rainbow logo and startup animation"
+  ],
+  "nativeAcceptanceChanged": false,
+  "githubMainIntegrated": false,
+  "publication": "pending; final deployment IDs recorded in task publication report"
+}
