@@ -12496,6 +12496,6 @@
     "owner": "ROCK",
     "status": "public_timeline_news_unavailable_under_investigation",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Investigate public Site 120 news-provider timeout/503 and reproduce reported Pixel layout issue; preserve existing data and external connections."
+    "next": "Investigate news delivery and Pixel layout/navigation; local results guidance candidate remains unverified on device and unpublished."
   }
 }
