@@ -2,13 +2,28 @@
 """Build a reproducible SDK distribution without touching prior archives."""
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import gzip
 import io
 import json
 import shutil
+import struct
 import subprocess
 import sys
 import tarfile
+import zlib
+
+def deterministic_gzip(data):
+    # Stored DEFLATE blocks have a canonical byte representation independent
+    # of Python gzip defaults and zlib's version-specific compressor choices.
+    output = bytearray(b'\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff')
+    offsets = range(0, len(data), 65535) if data else (0,)
+    for offset in offsets:
+        block = data[offset:offset + 65535]
+        final = offset + len(block) == len(data)
+        output.append(1 if final else 0)
+        output.extend(struct.pack('<HH', len(block), len(block) ^ 0xffff))
+        output.extend(block)
+    output.extend(struct.pack('<II', zlib.crc32(data) & 0xffffffff, len(data) & 0xffffffff))
+    return bytes(output)
 
 root = Path(__file__).resolve().parents[1]
 sdk = root / 'toolkits/sky-tool-sdk'
@@ -35,10 +50,7 @@ with TemporaryDirectory(prefix='sky-sdk-package-') as temporary:
             info.uname = info.gname = ''
             info.mode = 0o755 if name == 'bin/create-sky-tool.mjs' else 0o644
             archive.addfile(info, io.BytesIO(data))
-    buffer = io.BytesIO()
-    with gzip.GzipFile(fileobj=buffer, mode='wb', filename='', mtime=0) as compressed:
-        compressed.write(tarbytes.getvalue())
-    payload = buffer.getvalue()
+    payload = deterministic_gzip(tarbytes.getvalue())
 if '--check' in sys.argv:
     if not output.exists() or output.read_bytes() != payload:
         raise SystemExit('0.1.5 SDK archive differs from the explicit build.')
