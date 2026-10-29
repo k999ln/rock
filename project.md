@@ -725,6 +725,8 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
+miiソフト画面と実adapterをつないだ隔離ブラウザで、合成hostの短い期限・保存済みjob保持・明示読直しを試験する候補。[証拠](docs/evidence/development-execution/mii-short-lease-browser.json)。物理miiは未受入。
+
 mii読取adapterにhost提供descriptorの能力・版・最短期限の照合を追加する候補は対象試験・独立検収・全体verifyに成功。PR275をmain 6ce98364へ統合し同SHA全6 CI成功。[統合CI](docs/evidence/development-execution/mii-portable-read-main-ci.json)。合成画面と同じ仕事の読戻しを使い、宣言は本人・権限・実機受入にしない。[証拠](docs/evidence/development-execution/mii-portable-read-descriptors.json)。
 
 miiソフト画面の期限切れ・停止要求時に古い表示を失効し、保存成果は明示的読直しで再表示する候補は、対象61件・隔離ブラウザ2件と独立検収に成功。JS timerの限界・物理停止は別受入。PR272をmain 3f3fa56dへ統合し、同SHAの全6 CIが成功。[元証拠](docs/evidence/development-execution/mii-output-lease.json)／[統合CI](docs/evidence/development-execution/mii-output-lease-main-ci.json)。

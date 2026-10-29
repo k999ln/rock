@@ -27,6 +27,7 @@ async function compile() {
   const result = await build({ entryPoints: [path.join(fixture, 'entry.tsx')], bundle: true, write: false,
     platform: 'browser', jsx: 'automatic', logLevel: 'silent', plugins: [{ name: 'fixture-adapters', setup(build) {
       build.onResolve({ filter: /^@\/lib\/device$/ }, args => args.importer.endsWith('/lib/mcp-hub.ts') ? { path: path.join(fixture, 'device.ts') } : undefined);
+      build.onResolve({ filter: /^@\/lib\/mii-preview-descriptors$/ }, () => ({ path: path.join(fixture, 'mii-preview-descriptors.ts') }));
       build.onResolve({ filter: /^@\// }, args => build.resolve('./' + args.path.slice(2), { resolveDir: root, kind: args.kind }));
       build.onResolve({ filter: /^next\/link$/ }, () => ({ path: path.join(fixture, 'next-link.tsx') }));
       build.onResolve({ filter: /^next\/navigation$/ }, () => ({ path: path.join(fixture, 'navigation.ts') }));
@@ -221,6 +222,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await input('担当の名前', 'fixture担当'); await input('何を手伝う担当ですか', '文章の行数を確認'); await input('受け取るもの', 'text'); await input('期待する成果', 'lines');
     await click('内容を確認'); await click('確認して保存');
     await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'Smith');
+    await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));return !!l && [...l.querySelectorAll('option')].some(o=>o.value===${js(JSON.stringify([sdk.localId,'count_lines']))});})()`, 'Smith connection loaded');
     await input('必要な入力項目', 'text'); await input('必要な成果項目', 'lines'); await input('Tool', packageKey); await input('実行先', 'pc');
     await input('期待する入力型',JSON.stringify({text:'string'}));await input('期待する成果型',JSON.stringify({lines:'integer'}));
     await input('必要な処理能力ID',JSON.stringify(['example.count-lines']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
@@ -388,6 +390,22 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload).toolObservations[0].text, job.toolObservations[0].text);
       await click('miiから同じ仕事を確認');
       await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'explicit reread restores saved result');
+      // Real component + real adapter receive a shorter host descriptor. The
+      // saved job remains intact when its output lease expires.
+      await evaluate('window.__fixtureMiiTtl=1000');
+      const readsBeforeShort = requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length;
+      await click('miiから同じ仕事を確認');
+      for (let i=0; i<200 && requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length === readsBeforeShort; i++)
+        await new Promise(resolve => setTimeout(resolve, 10));
+      assert.equal(requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length, readsBeforeShort + 1);
+      await wait(`document.body.innerText.includes('同じ担当と仕事を読み直しました') && ![...document.querySelectorAll('button')].find(e=>e.textContent.includes('miiから同じ仕事を確認'))?.disabled`, 'short descriptor fresh read completes');
+      await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'short descriptor read');
+      await evaluate('window.__fixtureClockOffset=1500;document.dispatchEvent(new Event("visibilitychange"))');
+      await wait(`!document.querySelector('[aria-label="miiから見た同じ仕事"]')`, 'short descriptor expiry hides output');
+      assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload).toolObservations[0].text, job.toolObservations[0].text);
+      await evaluate('window.__fixtureClockOffset=0;delete window.__fixtureMiiTtl');
+      await click('miiから同じ仕事を確認');
+      await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'reread after short lease');
     }
     await devtools.call('Page.reload');
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii after reload');
@@ -418,6 +436,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await input('受け取るもの', 'left と right'); await input('期待する成果', 'sum');
       await click('内容を確認'); await click('確認して保存');
       await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'second Smith review');
+      await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));return !!l && [...l.querySelectorAll('option')].some(o=>o.value===${js(JSON.stringify([sdk.localId,'add_integers']))});})()`, 'second Smith connection loaded');
       await input('必要な入力項目', 'left\nright'); await input('必要な成果項目', 'sum');
       await input('Tool', packages[1].packageKey); await input('実行先', 'pc');
       await input('期待する入力型',JSON.stringify({left:'integer',right:'integer'}));await input('期待する成果型',JSON.stringify({sum:'integer'}));

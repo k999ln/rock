@@ -1,4 +1,10 @@
 {
+  "miiShortLeaseBrowser": {
+    "owner": "ROCK",
+    "status": "candidate_browser_tests_review_pending",
+    "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
+    "next": "Complete independent review, full verify and same-SHA CI. Physical device and host authority remain separate."
+  },
   "sdkDeclaredExample": {
     "owner": "ROCK",
     "status": "independent_review_full_verify_pass_integration_pending",
