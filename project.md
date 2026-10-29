@@ -26,6 +26,10 @@ PR255はhead7check/4workflow成功でmain76b327c2へ通常統合したが、main
 
 F3の統合後進捗記録の全verifyで、一時Chrome profile削除時にENOTEMPTYが発生しブラウザ試験1件が失敗。試験結果表示後も自分の試験processが残ったため、そのprocessだけ停止し初回ログを保存。mkdtemp配下の削除に一時エラー時の限定再試行を追加し、失敗が続けば試験は失敗する。runtime・assertionは不変、独立Chrome2/2成功。[証拠](docs/evidence/development-execution/f3-handoff-browser-cleanup.json)。全verify再実行は3392成功・0失敗・4skip。Git/head/main CIは未完了。
 
+### SDK配布入口の隔離確認（2026-10-29 / ROCK・Sky）
+
+main 924121e1のSDKをoffline・ignore-scriptsでpackし、同梱6ファイルがsourceと一致、package名importと2種類の合成manifestを独立照合。[証拠](docs/evidence/development-execution/sdk-distribution-isolated.json)。公開入口はsrc/index.mjsでSDKのdist buildは定義されず、sampleは同梱されるが公開subpathではない。Node APIのguardはOS全体の遮断ではなく、実登録・Provider・端末・推論・公開は未受入。
+
 ### portable runtimeの隔離buildと配布入口（2026-10-29 / ROCK）
 
 main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致。隔離copyを既存esbuildでbuildし、公開4入口importと合成19試験が成功。独立読取でhashを照合。[証拠](docs/evidence/development-execution/portable-runtime-isolated-build.json)。Nodeの通信guardは検査対象のimport/testに限りOS全体遮断ではない。対象source32件を比較し、元worktree全体の不変は主張しない。main採用・実機・実account・実モデル・Node22実行は未受入。必要なsubsetの採用は別途検収する。
