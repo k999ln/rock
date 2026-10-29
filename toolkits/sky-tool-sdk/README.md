@@ -8,6 +8,10 @@
 - 匿名Installation ID単位の成功・失敗・処理時間の記録
 - 入力Schema検査、timeout、外部変更・金融操作の承認callback
 
+## 配布用の build と確認
+
+SDK 0.1.5 は package の入口として `dist/index.mjs` を使います。source checkout では `npm run build --prefix toolkits/sky-tool-sdk` で生成し、通常の `npm pack` は `prepack` で build を実行します。`--ignore-scripts` を指定した pack はこの build 保証の対象外です。配布 archive には生成済み dist が含まれ、旧 0.1.3・0.1.4 は別 archive として維持します。付属例は source を相対参照するため、独立した作者 workspace で package の公開入口を使う場合は import を `@rockstaros/sky-tool-sdk` に変更します。宣言や署名は実行権限や安全性の保証ではありません。
+
 ## 最小導入
 
 新しいToolは雛形から開始できます。現在のリポジトリ内で試す場合は次を実行します。

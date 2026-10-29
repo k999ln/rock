@@ -183,7 +183,21 @@
       ],
       "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
       "scope": "unpacked SDK sample with synthetic local authority; no publication or general sandbox acceptance",
-      "authorWorkspaceEvidence": "docs/evidence/development-execution/sdk-author-workspace-integration.json"
+      "authorWorkspaceEvidence": "docs/evidence/development-execution/sdk-author-workspace-integration.json",
+      "distCandidate": {
+        "implementation": [
+          "toolkits/sky-tool-sdk/build.mjs",
+          "toolkits/sky-tool-sdk/package.json",
+          "scripts/package-sky-tool-sdk.py",
+          "public/toolkits/rockstaros-sky-tool-sdk-0.1.5.tgz"
+        ],
+        "tests": [
+          "tests/sky-sdk-dist-integration.test.mjs",
+          "tests/sky-sdk-prepack.test.mjs"
+        ],
+        "evidence": "docs/evidence/development-execution/sdk-dist-release.json",
+        "scope": "offline synthetic candidate; default pack builds dist; sample import changed explicitly; no provider or device acceptance"
+      }
     },
     "requiredActionCapabilities": {
       "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",

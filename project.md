@@ -32,6 +32,8 @@ F3の統合後進捗記録の全verifyで、一時Chrome profile削除時にENOT
 
 ### SDK配布入口の隔離確認（2026-10-29 / ROCK・Sky）
 
+SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。 独立6/6成功。候補のPR・CI・main統合は未完了。[証拠](docs/evidence/development-execution/sdk-dist-release.json)。PR291はmain 1ff203a8へ統合し同SHA 6/6 CI成功。[証拠](docs/evidence/development-execution/worker-untrusted-result-main-ci.json)。
+
 main 924121e1のSDKをoffline・ignore-scriptsでpackし、同梱6ファイルがsourceと一致、package名importと2種類の合成manifestを独立照合。[証拠](docs/evidence/development-execution/sdk-distribution-isolated.json)。公開入口はsrc/index.mjsでSDKのdist buildは定義されず、sampleは同梱されるが公開subpathではない。Node APIのguardはOS全体の遮断ではなく、実登録・Provider・端末・推論・公開は未受入。
 
 ### portable runtimeの隔離buildと配布入口（2026-10-29 / ROCK）
