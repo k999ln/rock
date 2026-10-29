@@ -1,0 +1,41 @@
+{
+  "schema": "rockstaros.smith-declared-capability-main-ci/1",
+  "pullRequest": 274,
+  "head": "632eac6a8a56122e76f3ece084388454227dae2a",
+  "mergeSha": "5a85a5238ce607bdc974e2a7122b781e0d459d2a",
+  "mergeChecks": [
+    {
+      "conclusion": "success",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "verify",
+      "status": "completed"
+    }
+  ],
+  "rawRecordSha256": "932e61d72eab0a0afb89cd5934a240391f30e4c8e6e0195c879c6f40a1171554",
+  "priorEvidence": "docs/evidence/development-execution/smith-declared-capability-matching.json",
+  "scope": "host-only; real provider, permissions, device and pricing not accepted"
+}

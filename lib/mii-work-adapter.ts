@@ -1,6 +1,7 @@
 import { readBoundedStream } from './bounded-stream.ts';
 import { ownerScopeFor, readOwnerScope, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { applyWorkCommand, workId, type WorkJob } from './workflow.ts';
+import { negotiateCapabilityAdapters } from './rockstar-adapters.ts';
 
 /** A host observation, never a proof of hardware, owner identity or consent. */
 export type MiiObservation = {
@@ -16,6 +17,7 @@ export type MiiWorkReadback = {
   job: WorkJob; revisionChanged: boolean;
   agentBinding: 'verified' | 'unverified'; executorBinding: 'unverified';
   hardwareAccepted: false; executionAuthorized: false;
+  observationExpiresAt: number;
   cancelReconciliation: 'clear' | 'pending' | 'unavailable';
 };
 /** Read-only A2A budget snapshot; not an MCP price or settled invoice. */
@@ -90,6 +92,8 @@ function expectedCancellation(before: WorkJob, value: unknown, commandId: string
  */
 export function createMiiWorkAdapter(options: {
   fetchImpl?: typeof fetch; now?: () => number; journal?: MiiCancelJournal;
+  /** Declarations from the host integration; never identity, consent or a hardware test. */
+  descriptors?: () => { host: unknown; executor: unknown; output: unknown };
 }) {
   const fetchImpl = options.fetchImpl ?? fetch, now = options.now ?? Date.now;
   let latest: MiiObservation | null = null, lastSequence = -1, generation = 0, readSerial = 0, budgetSerial = 0, closed = false;
@@ -106,6 +110,13 @@ export function createMiiWorkAdapter(options: {
   function observe(value: MiiObservation) {
     // Every new observation invalidates in-flight actions and prior readback.
     invalidate();
+    let descriptorExpiry = Number.MAX_SAFE_INTEGER;
+    if (options.descriptors) {
+      const declared = options.descriptors();
+      const match = negotiateCapabilityAdapters(declared.host, declared.executor, declared.output,
+        { host: ['work.owner-scoped-read'], executor: ['work.read'], output: ['output.text'] }, now());
+      descriptorExpiry = match.expiresAt;
+    }
     if (closed || !object(value) || !id(value.bootId) || !integer(value.placeEpoch) ||
         !integer(value.sequence) || !integer(value.sceneRevision) || !integer(value.observedAt) ||
         !integer(value.expiresAt) || value.observedAt > now() || value.expiresAt <= now() ||
@@ -121,7 +132,7 @@ export function createMiiWorkAdapter(options: {
     lastBoot = value.bootId; lastEpoch = value.placeEpoch; lastSequence = value.sequence;
     if (!value.attached) { detachedEpoch = value.placeEpoch; return; }
     if (value.tracking !== 'tracked') return;
-    latest = { ...value };
+    latest = { ...value, expiresAt: Math.min(value.expiresAt, descriptorExpiry) };
   }
   function current() {
     const time = now();
@@ -205,7 +216,8 @@ export function createMiiWorkAdapter(options: {
     }
     readback = { generation: g, reference: ref, job, cancelReconciliation };
     return { job: structuredClone(job), revisionChanged: job.revision !== ref.revision,
-      agentBinding, executorBinding: 'unverified', hardwareAccepted: false, executionAuthorized: false, cancelReconciliation };
+      agentBinding, executorBinding: 'unverified', hardwareAccepted: false, executionAuthorized: false,
+      observationExpiresAt: latest!.expiresAt, cancelReconciliation };
   }
   /** Read the existing owner-scoped A2A pool, without creating or authorizing a cost. */
   async function readBudget(): Promise<MiiBudgetReadback> {
