@@ -8,7 +8,7 @@ Pixelのobserver試験PR261をmain aaab99e1へ統合、head全7check成功。待
 
 ### Eve合成supervisorの停止信号保持（2026-10-29 / ROCK）
 
-停止signalがsubprocess poll中に消失する競合を合成再現。停止要求を保持してowned childを終了・回収し、元handlerを復元する候補を作成した。独立6/6成功、初回sandboxの1件失敗（原因未確定）と通常権限再実行を区別。[証拠](docs/evidence/development-execution/eve-signal-supervisor.json)。PR290・292のCI Timeoutとの因果は未確定。Linux CI・Git統合は未完了。実モデル、子孫group、端末、hard isolationは未受入。
+停止signalがsubprocess poll中に消失する競合を合成再現。停止要求を保持してowned childを終了・回収し、元handlerを復元する候補を作成した。独立6/6成功、初回sandboxの1件失敗（原因未確定）と通常権限再実行を区別。[証拠](docs/evidence/development-execution/eve-signal-supervisor.json)。PR290・292のCI Timeoutとの因果は未確定。PR294はmain a749b623へ統合し同SHA CI 6/6成功。[CI証拠](docs/evidence/development-execution/eve-signal-supervisor-main-ci.json)。実モデル、子孫group、端末、hard isolationは未受入。
 
 ### Eve担当保存の応答不明と再送照合（2026-10-29 / ROCK・Sky）
 
@@ -35,6 +35,8 @@ PR255はhead7check/4workflow成功でmain76b327c2へ通常統合したが、main
 F3の統合後進捗記録の全verifyで、一時Chrome profile削除時にENOTEMPTYが発生しブラウザ試験1件が失敗。試験結果表示後も自分の試験processが残ったため、そのprocessだけ停止し初回ログを保存。mkdtemp配下の削除に一時エラー時の限定再試行を追加し、失敗が続けば試験は失敗する。runtime・assertionは不変、独立Chrome2/2成功。[証拠](docs/evidence/development-execution/f3-handoff-browser-cleanup.json)。全verify再実行は3392成功・0失敗・4skip。Git/head/main CIは未完了。
 
 ### SDK配布入口の隔離確認（2026-10-29 / ROCK・Sky）
+
+SDK 0.1.5の実CLIで隔離workspaceを作り、sample importを作者操作としてpackage入口へ変更した上で、Eve・Smith実画面、Connector、2担当のjobとmii読戻し、未対応担当の拒否を一連で確認。独立Chrome 2/2成功。本人・reviewは合成、実Provider・実機・UI export downloadは未受入。[証拠](docs/evidence/development-execution/sdk-browser-consumer.json)。候補のPR/CI/統合は未完了。
 
 SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。 初回候補の独立6/6後、Linux CIでgzip既定圧縮率の差を検出し、固定形式へ修正。独立7/7、MacのPython 3.9/3.15で一致。Linux CIは未完了。初回CIのsupervisor停止Timeoutは原因未確定で記録。候補のPR・CI・main統合は未完了。[証拠](docs/evidence/development-execution/sdk-dist-release.json)。PR291はmain 1ff203a8へ統合し同SHA 6/6 CI成功。[証拠](docs/evidence/development-execution/worker-untrusted-result-main-ci.json)。 PR292 head ee3153cc初回verifyは既存Eve合成supervisor停止試験の8秒Timeout（ログSHA256 83726f6778021dd9fc7c023aab6982aa2eb61c1c18d83bd7853f37194f9875f2）、同SHA再実行はSDK archive不一致（09d82bc3764ea492a6b52a5ed3dce0f093c5d7dc734aef9ef25c0119bf8dc397）で失敗。PR293 head 398aa717もSDK archive不一致で失敗（becccbc96a13836104221003e5efb9277a60ea7c01d4e35627d4719d672237b0）。
 

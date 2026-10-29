@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRouteFixture } from './route-fixture.mjs';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
-import { createDeclaredFixtureTools, fixturePermissions } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
+import { createAuthorWorkspace } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
 import { parseSkyToolPackage, skyToolPackageKey, skyToolPackageSha256 } from '../lib/sky-tool-package.ts';
 import { skyPackageSchemaSha256 } from '../lib/sky-package-runtime.ts';
 import { createConnector } from '../toolkits/sky-mcp-connector/server.mjs';
@@ -97,6 +97,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       '/api/work-jobs/tool-observations': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/route.ts', import.meta.url), deps),
       '/api/work-jobs/tool-observations/claim': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/claim/route.ts', import.meta.url), deps),
     };
+    const { createLineCounter: createDeclaredFixtureTools, examplePermissions: fixturePermissions } = await createAuthorWorkspace(dir);
     const app = createDeclaredFixtureTools({ publicMcpUrl: 'https://example.invalid/mcp', skyUrl: 'https://example.invalid', localToolDirectory: path.join(dir, 'discovery'),
       developerToken: 'fixture-token-not-a-credential', fetch: async () => { throw new Error('EXTERNAL_NETWORK_FORBIDDEN'); }, logger: { warn() {} } });
     const packages = await Promise.all(app.manifests().map(async raw => {

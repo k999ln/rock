@@ -12438,8 +12438,16 @@
   },
   "eveSupervisorSignal": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/eve-signal-supervisor.json",
-    "next": "Independent review, exact-head Linux CI, merge and same-SHA CI. Actual model and descendant process-group remain unaccepted."
+    "next": "Real training, descendant process group and hard isolation remain separately unaccepted.",
+    "mergeSha": "a749b6233a0e1f8d56c96fb9483d39630c723d7f",
+    "mainCiEvidence": "docs/evidence/development-execution/eve-signal-supervisor-main-ci.json"
+  },
+  "sdkBrowserConsumer": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/sdk-browser-consumer.json",
+    "next": "Exact-head CI, independent final review, merge and merge-SHA CI; real identity/provider/device remain separate."
   }
 }
