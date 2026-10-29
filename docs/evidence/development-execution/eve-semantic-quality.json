@@ -1,6 +1,6 @@
 {
   "schema": "eve.semantic-quality-progress/1",
-  "status": "scoped_reviews_and_repository_verify_complete_quality_fail_pr_pending",
+  "status": "source_main_ci_verified_quality_fail",
   "owner": "ROCK/O3/AI02",
   "inputMainSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
   "previousRunPreserved": true,
@@ -17,7 +17,7 @@
   ],
   "newModelCalls": 80,
   "newTrainingUpdates": 80,
-  "protocolStatus": "Scoped source/training/semantic/operational reviews and synchronized-tree full repository verification complete; source/progress PR and exact-main-SHA CI pending.",
+  "protocolStatus": "Scoped source/training/semantic/operational reviews, post-evaluation CI hardening and full repository verification complete. PR306 is merged into main51b38983 with all actual same-SHA CI successful; this metadata delivery is confirmed by the external final Git receipt.",
   "qualityAccepted": false,
   "defaultAdopted": false,
   "wholeAI02Complete": false,
@@ -183,17 +183,95 @@
     "LATE_CONTROL_V3_REVIEW.json": "49f7c4e96de9adf460bb40cb5b1c22cc67965ee9253c7facbc0793250e5e28ab",
     "comparison-final.json": "0380edb4d06f4e76b199e84cacee4d9eab4112f1b753f8d629309a9ec4322b0a",
     "run-final-budget.json": "ad241a3f3227871e4689ac85f35815e67c67bbfc70d1712a34d8bb6b933b6a88",
-    "PIXEL_FINAL_OPERATIONAL_REVIEW.json": "4103a7163c0c51d30fb62992dd24ca01feeabffe9098ef3db1dcc4005fdae258"
+    "PIXEL_FINAL_OPERATIONAL_REVIEW.json": "4103a7163c0c51d30fb62992dd24ca01feeabffe9098ef3db1dcc4005fdae258",
+    "CI_FIX_TOKEN_PARITY.json": "ee3e094ee9630f3f2e10ddcd24c62432a9a35d3943c8826c11a60380f8b9a67f",
+    "CI_FIX_INDEPENDENT_REVIEW.json": "63047166a21852f49a1123c788f238fddfb3ba8d21414414878776f6edcedd99",
+    "ROOT_SOURCE_MAIN_CI.json": "b41ec97a4040d4d9434dd9d2c832b0fb62fc91a94ea240063d9e3e97367f7be7",
+    "ROOT_SOURCE_PR_WITNESS.json": "130b3fc63ec93b4099b6bfe75869ae6962f8d38e62eb75c9e4ef15bb6734f483"
   },
   "excludedDataQualification": "Frozen excluded originals and protected execution evidence were never read/copied/hashed. Temporary software unit fixture generation incident is retained and not represented as zero generation; no use in model training or evaluation.",
   "git": {
     "sourceBranch": "codex/eve-semantic-quality",
     "inputMainSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
-    "sourceMainIntegrated": false,
-    "sameShaCiConfirmed": false,
-    "progressMainIntegrated": false,
+    "sourceMainIntegrated": true,
+    "sameShaCiConfirmed": true,
     "synchronizedMainBeforePR": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
-    "localSourceAndMainSyncCheckpoint": "d39c099783c41f2afcda4d5dc36929e1af4d8d4f"
+    "localSourceAndMainSyncCheckpoint": "d39c099783c41f2afcda4d5dc36929e1af4d8d4f",
+    "sourcePullRequest": 306,
+    "sourcePullRequestUrl": "https://github.com/k999ln/rock/pull/306",
+    "sourceHeadSha": "74c8f22d7e852c2b0d0b8cda3f62fe10897480b4",
+    "implementationMainSha": "51b3898356324304bcd84724b2df544e668057bf",
+    "mainCiVerifiedAtUtc": "2026-10-29T23:54:04.356431+00:00",
+    "mainCiCheckCount": 7,
+    "mainCiWorkflowCount": 5,
+    "mainCiChecks": [
+      {
+        "name": "SPIDER CodeQL (python)",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613211/job/123802772933"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613211/job/123802772537"
+      },
+      {
+        "name": "SPIDER / production web security measurement",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613181/job/123802772476"
+      },
+      {
+        "name": "prototype",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613281/job/123802772467"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613191/job/123802772326"
+      },
+      {
+        "name": "SPIDER / repair regressions",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613181/job/123802772151"
+      },
+      {
+        "name": "verify",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613105/job/123802771830"
+      }
+    ],
+    "mainCiWorkflows": [
+      {
+        "name": "SPIDER repository security",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613191"
+      },
+      {
+        "name": "SPIDER CodeQL security",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613211"
+      },
+      {
+        "name": "SPIDER repair regressions",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613181"
+      },
+      {
+        "name": "Rock star verification",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613105"
+      },
+      {
+        "name": "Rock star Android prototype",
+        "conclusion": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40975613281"
+      }
+    ],
+    "sourceHeadCiCheckCount": 8,
+    "sourceHeadCiWorkflowCount": 5,
+    "metadataDelivery": "This record is carried by this metadata change; its containing main merge and exact-SHA CI are confirmed in the external final GIT_FINAL_RECEIPT.json.",
+    "selfShaEmbedded": false
   },
   "independentAcceptance": {
     "source": "PASS_SCOPED, no openP1/P2 reported",
@@ -304,6 +382,9 @@
     },
     "newModelCalls": 0,
     "trainingAndEvaluationArtifactsChanged": false,
-    "qualification": "Post-evaluation preparation/diagnostic/test hardening only. Historical training, source-freeze and physical review hashes remain as recorded; the new source was not used for that training or evaluation. CodeQL alert titles alone do not demonstrate XSS, overwrite or CSP bypass and are not semantic-quality causes."
+    "qualification": "Post-evaluation preparation/diagnostic/test hardening only. Historical training, source-freeze and physical review hashes remain as recorded; the new source was not used for that training or evaluation. CodeQL alert titles alone do not demonstrate XSS, overwrite or CSP bypass and are not semantic-quality causes.",
+    "fixedSourceHead": "74c8f22d7e852c2b0d0b8cda3f62fe10897480b4",
+    "actualNewHeadAllChecksSuccessful": true,
+    "independentReviewSha256": "63047166a21852f49a1123c788f238fddfb3ba8d21414414878776f6edcedd99"
   }
 }
