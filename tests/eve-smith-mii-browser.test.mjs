@@ -354,6 +354,40 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await click('仕事の作成前に条件を確認');await click('この条件を確認して仕事の作成へ進む');
     await wait('document.body.innerText.includes("本人・担当・利用権・Toolの版が変わりました")','wrong owner disclosure denied');
     assert.equal(creationRequests.length,0);entitlements.ownerScope=scope;
+    // A clock jump invalidates the observed Tool snapshot. Returning the
+    // clock alone cannot revive it: re-observe through the real Sky UI before
+    // any further creation confirmation.
+    const restoreObservation = async (target = resume, requireStale = false) => {
+      const requestsBefore = creationRequests.length, previousObservationId = resources.server?.passport?.observationId;
+      assert.ok(previousObservationId);
+      await evaluate('window.__fixtureClockOffset=0');
+      await evaluate(`history.pushState({}, '', '/sky/agents'); dispatchEvent(new Event('fixture-navigation'))`);
+      await wait('document.body.innerText.includes("fixture編集担当")', 'same role for explicit observation');
+      await click('fixture編集担当');
+      await wait(`(()=>{const e=document.querySelector('[aria-label="選択した実Toolの観測"]');return e?.textContent.includes('接続先: Example Line Counter') && e.textContent.includes('Package版: 1.0.0');})()`, 'owner and selected Tool readback loaded');
+      if (requireStale) {
+        await wait('document.body.innerText.includes("実Toolの観測が未確認または期限切れ")', 'old observation remains invalid after clock recovery');
+        assert.equal(await evaluate(`(()=>{const checkbox=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('入力と成果の宣言を'))?.querySelector('input[type="checkbox"]');return !checkbox || checkbox.disabled;})()`), true);
+        assert.equal(creationRequests.length, requestsBefore);
+      }
+      await click('選択した実Toolを再確認');
+      await wait('document.body.innerText.includes("宣言条件が一致しました")', 'explicit fresh Tool observation');
+      const listed = await (await reqConnector('/servers', 'GET')).json();
+      resources.server = listed.servers.find(server => server.id === sdk.localId);
+      assert.ok(resources.server?.passport?.observationId);
+      assert.notEqual(resources.server.passport.observationId, previousObservationId);
+      assert.ok(resources.server.passport.observedAt <= Date.now() && resources.server.passport.observationExpiresAt > Date.now());
+      assert.ok(resources.server.passport.observationExpiresAt - resources.server.passport.observedAt <= 30_000);
+      assert.equal(creationRequests.length, requestsBefore);
+      await evaluate(`window.__fixtureServers=${JSON.stringify([resources.server])}`);
+      await evaluate(`history.pushState({}, '', ${JSON.stringify(target.pathname + target.search)}); dispatchEvent(new Event('fixture-navigation'))`);
+      if (target.searchParams.has('workJob')) {
+        await wait('document.body.innerText.includes("mii連携のソフト試用")', 'same saved job after explicit observation');
+      } else {
+        await wait('document.body.innerText.includes("仕事の名前")', 'workbench after explicit observation');
+        await input('仕事の名前', 'fixture仕事');
+      }
+    };
     // Expiry during each asynchronous fence must leave zero create POSTs.
     await confirmDraft('行数確認',{text:'one\ntwo'});
     let releaseExpiry;
@@ -362,8 +396,8 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     for(let i=0;i<500&&!expiryPause.hit;i++)await new Promise(resolve=>setTimeout(resolve,10));
     assert.equal(expiryPause.hit,true);await evaluate('window.__fixtureClockOffset=31000');
     pausedRegistry=null;releaseExpiry();
-    await wait('document.body.innerText.includes("作成前確認が失効したか条件が変わりました")','expiry during runtime/entitlement recheck');
-    assert.equal(creationRequests.length,0);await evaluate('window.__fixtureClockOffset=0');
+    await wait('document.body.innerText.includes("実行先・入力形式・料金申告が変わりました")','expired Tool observation rejects creation recheck');
+    assert.equal(creationRequests.length,0); await restoreObservation(resume, true);
     await confirmDraft('行数確認',{text:'one\ntwo'});
     let releaseOwnerExpiry;
     const ownerExpiry={remaining:2,hit:false,promise:new Promise(resolve=>{releaseOwnerExpiry=resolve;})};pausedExactGet=ownerExpiry;
@@ -372,7 +406,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     assert.equal(ownerExpiry.hit,true);await evaluate('window.__fixtureClockOffset=31000');
     pausedExactGet=null;releaseOwnerExpiry();
     await wait('document.body.innerText.includes("作成前確認が失効したか条件が変わりました")','expiry after final owner GET');
-    assert.equal(creationRequests.length,0);await evaluate('window.__fixtureClockOffset=0');
+    assert.equal(creationRequests.length,0); await restoreObservation();
     // A failed pre-send identity read is not an uncertain-write exemption.
     await confirmDraft('行数確認',{text:'one\ntwo'});failExactGetOnce=true;
     await click('仕事を作成');await wait('document.body.innerText.includes("Synthetic pre-send identity GET failure")','failed pre-send GET');
@@ -380,8 +414,11 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     assert.equal(await evaluate(`!![...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ作成内容で結果を確認'))`),false);
     await evaluate('window.__fixtureClockOffset=31000');
     assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
-    await evaluate('window.__fixtureClockOffset=0');
+    await restoreObservation();
     entitlements.ownerScope='changed-after-unsent-get';
+    await input('互換runtime/toolを選択', '0');
+    await input('このruntimeへ渡す依頼', '行数確認');
+    await setArgs({text:'one\ntwo'});
     await click('仕事の作成前に条件を確認');await click('この条件を確認して仕事の作成へ進む');
     await wait('document.body.innerText.includes("本人・担当・利用権・Toolの版が変わりました")','retry after failed GET rechecks entitlement');
     assert.equal(creationRequests.length,0);entitlements.ownerScope=scope;
@@ -398,7 +435,12 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await click('同じ作成内容で結果を確認');
     await wait('document.body.innerText.includes("mii連携のソフト試用")','expired same-ID GET-only readback');
     assert.equal(creationRequests.length,1,'uncertain committed POST is recovered by GET, never resent');
-    assert.equal(connectorExecuteCalls,0);await evaluate('window.__fixtureClockOffset=0');
+    assert.equal(connectorExecuteCalls,0);
+    const recoveredJobUrl = new URL(await evaluate('location.href'));
+    assert.ok(recoveredJobUrl.searchParams.has('workJob'));
+    await restoreObservation(recoveredJobUrl);
+    assert.equal(creationRequests.length,1);
+    await input('互換runtime/toolを選択', '0');
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'mii input readback');
     const firstJobId = sqlite.prepare('SELECT id FROM work_jobs WHERE user_id = ?').get(owner).id;
@@ -509,6 +551,12 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await evaluate('window.__fixtureClockOffset=0;delete window.__fixtureMiiTtl');
       await click('miiから同じ仕事を確認');
       await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'reread after short lease');
+    }
+    if (localAuthority) {
+      // The mii lease exercise also advances the browser clock; refresh the
+      // Tool observation explicitly before continuing to later Tool use.
+      const existingJobUrl = new URL(await evaluate('location.href'));
+      await restoreObservation(existingJobUrl);
     }
     await navigateAndWait('Page.reload');
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii after reload');
@@ -635,6 +683,36 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       const row=JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(sent.id).payload);
       assert.equal(row.agentBinding.creationReview.inputSha256,sent.creationReview.inputSha256);
       assert.equal(row.toolAttempts,undefined);assert.equal(connectorExecuteCalls,calls);
+      // The SDK is real and connected to the real Connector. Corrupt only a
+      // subsequent tools/list response to model a declaration changing after
+      // approval; no provider or model is contacted.
+      await input('互換runtime/toolを選択', '0');
+      await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
+      await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'changed declaration same job');
+      await input('miiへの合成テキスト', 'synthetic addition'); await click('同じ仕事のTool確認へ渡す');
+      await click('実行内容を確認');
+      await wait(`!![...document.querySelectorAll('button')].find(e => e.textContent.trim().includes('内容を承認して実行') && !e.disabled)`, 'prepared approval before declaration change');
+      const claimBefore = requests.filter(r => r.path.endsWith('/tool-observations/claim')).length;
+      let toolCalls = 0;
+      const originalRpc = connector.hub.rpc.bind(connector.hub);
+      connector.hub.rpc = async (id, method, ...rest) => {
+        if (method === 'tools/call') toolCalls++;
+        const result = await originalRpc(id, method, ...rest);
+        if (method !== 'tools/list' || id !== sdk.localId) return result;
+        const changed = structuredClone(result);
+        changed.tools[0].inputSchema = { ...changed.tools[0].inputSchema, 'x-fixture-changed': true };
+        return changed;
+      };
+      try {
+        await click('内容を承認して実行');
+        await wait('document.body.innerText.includes("Toolの宣言が変わりました")', 'changed Tool blocked');
+        assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, claimBefore);
+        assert.equal(toolCalls, 0);
+        const read = await fetch(`${base}/api/work-jobs?id=${encodeURIComponent(sent.id)}`);
+        assert.equal(read.status, 200); const body = await read.json();
+        assert.equal(body.ownerScope, scope); assert.equal(body.jobs.length, 1); assert.equal(body.jobs[0].id, sent.id);
+        assert.equal(body.jobs[0].toolAttempts?.[0]?.state, 'pending');
+      } finally { connector.hub.rpc = originalRpc; }
     }
     if (localAuthority) {
       // A third, user-authored purpose requests capabilities not declared by

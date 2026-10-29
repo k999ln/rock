@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 import * as requirements from '../lib/sky-agent-requirements.ts';
+import * as runtime from '../lib/sky-package-runtime.ts';
 import * as packageApi from '../lib/sky-tool-package.ts';
 import * as intent from '../lib/owner-intent.ts';
 import * as packageAccess from '../lib/rockstar-service-package-access.ts';
@@ -12,7 +13,7 @@ const source = readFileSync(new URL('../components/sky-agent-capability-review.t
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022,
   jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText;
 
-function harness(extraRequired = false) {
+function harness(extraRequired = false, holdInitial = false) {
   const manifest = packageApi.createSkyToolPackageDraft({ sourceKind: 'github', sourceUrl: 'https://github.com/example/tool', developerName: 'Example', developerId: 'example', license: 'MIT' });
   if (extraRequired) manifest.io = { inputSchema: { type: 'object', properties: { text: { type: 'integer' }, secret: { type: 'string' } }, required: ['text', 'secret'] },
     outputSchema: { type: 'object', properties: { count: { type: 'string' } } } };
@@ -24,12 +25,14 @@ function harness(extraRequired = false) {
   const initial = { id: '2e762de5-1f39-4a8a-95f9-03f8910b1630', revision: 1, name: '担当', instructions: '作業',
     provider: 'local-model', model: 'fixture-model', enabled: true, source: 'personal', sourceTool: null,
     updatedAt: 0, requirements: { inputFields: extraRequired ? ['text'] : [], outputFields: extraRequired ? ['count'] : [], packageKey, executionTarget: 'pc', contract:{schema:'rockstaros.agent-tool-expectation/1',inputTypes:extraRequired?{text:'integer'}:{},outputTypes:extraRequired?{count:'string'}:{},capabilityIds:['fixture.process'],allowedPermissions:declaration.permissions,runtime:{serverId:'s',toolName:'op'}} } };
-  const servers = [{ id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { toolDigest:'d'.repeat(64), tools: [{ name: 'op',
+  const servers = [{ id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { observationId: crypto.randomUUID(), observedAt:Date.now(), observationExpiresAt:Date.now()+29_000, server: { name: 'PC service', version: 'fixture-3' }, toolDigest:'d'.repeat(64), tools: [{ name: 'op',
     inputSchema: manifest.io.inputSchema, outputSchema: manifest.io.outputSchema, pricing: { model: 'free' } }] } }];
   const entitlements = { ownerScope: owner, entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: [{ packageKey, state: 'ready' }] } }] };
   const slots = [], effects = [], pushes = [], writes = [], timers = [];
   let cursor = 0, tree, account = owner, revoked = false, malformedWrite = false, releaseRegistry;
-  let registryHeld = false;
+  const refreshPending = [];
+  let registryHeld = false, refreshHeld = false, refreshFails = false, holdFinal = false, readsWhileHeld = 0, releaseAgent;
+  let initialHeld = holdInitial, releaseInitial;
   const changed = (a, b) => !a || a.length !== b.length || a.some((v, i) => !Object.is(v, b[i]));
   const react = {
     useState(initialValue) { const i = cursor++; if (!slots[i]) { const x = { value: typeof initialValue === 'function' ? initialValue() : initialValue }; x.set = value => { x.value = typeof value === 'function' ? value(x.value) : value; }; slots[i] = x; } return [slots[i].value, slots[i].set]; },
@@ -38,7 +41,7 @@ function harness(extraRequired = false) {
     useEffect(fn, deps) { const i = cursor++; if (!slots[i] || changed(slots[i].deps, deps)) { const old = slots[i]; slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
   };
   async function fetch(url, options = {}) {
-    if (url.startsWith('/api/sky/agents?id=')) return Response.json({ ownerScope: account, agent: initial });
+    if (url.startsWith('/api/sky/agents?id=')) { if (initialHeld) await new Promise(resolve => { releaseInitial = resolve; }); if (holdFinal && ++readsWhileHeld === 2) await new Promise(resolve => { releaseAgent = resolve; }); return Response.json({ ownerScope: account, agent: initial }); }
     if (url === '/api/sky/tool-registry') { if (registryHeld) await new Promise(resolve => { releaseRegistry = resolve; }); return Response.json({ packages: [{ ...item, ...(revoked ? { status: 'revoked', installable: false } : {}) }] }); }
     if (url === '/api/rockstar/entitlements') return Response.json(entitlements);
     if (url === '/api/sky/agents' && options.method === 'PUT') { writes.push(options); return Response.json(malformedWrite ? {} : { agent: initial }); }
@@ -46,7 +49,7 @@ function harness(extraRequired = false) {
   }
   const modules = { react, 'react/jsx-runtime': { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) },
     'next/navigation': { useRouter: () => ({ push: url => pushes.push(url) }) },
-    '@/lib/mcp-hub': { listMcpConnections: async () => servers }, '@/lib/sky-tool-package': packageApi,
+    '@/lib/mcp-hub': { listMcpConnections: async () => servers, refreshMcpObservation: async () => { if (refreshFails) throw new Error('fixture refresh failure'); if (refreshHeld) return await new Promise((resolve, reject) => refreshPending.push({ resolve, reject })); return { ...servers[0].passport, observationId: crypto.randomUUID(), observedAt: Date.now(), observationExpiresAt: Date.now() + 29_000 }; } }, '@/lib/sky-package-runtime': runtime, '@/lib/sky-tool-package': packageApi,
     '@/lib/sky-agent-requirements': requirements, '@/lib/owner-intent': intent, '@/lib/rockstar-service-package-access': packageAccess };
   const exports = {};
   runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; },
@@ -58,11 +61,20 @@ function harness(extraRequired = false) {
   async function flush() { for (let i = 0; i < 6; i++) { await new Promise(resolve => setImmediate(resolve)); render(); } }
   render();
   return { flush, render, button, writes, pushes, text: () => text(tree),
+    checkbox() { return nodes(tree).find(n => n.type === 'input' && n.props.type === 'checkbox'); },
     confirmSchema() { const node = nodes(tree).find(n => n.type === 'input' && n.props.type === 'checkbox'); assert.ok(node); node.props.onChange({ target: { checked: true } }); render(); },
     unconfirmSchema() { const node = nodes(tree).find(n => n.type === 'input' && n.props.type === 'checkbox'); assert.ok(node); node.props.onChange({ target: { checked: false } }); render(); },
     holdRegistry() { registryHeld = true; }, releaseRegistry() { assert.ok(releaseRegistry); registryHeld = false; releaseRegistry(); },
     begin(name) { const node = button(name); assert.ok(node && !node.props.disabled, name); node.props.onClick(); render(); },
     changeRuntime() { servers[0].passport.toolDigest='e'.repeat(64); },
+    disconnectRuntime() { servers[0].state = 'available'; render(); },
+    reconnectRuntime() { servers[0].state = 'connected'; render(); },
+    expireObservation() { servers[0].passport.observationExpiresAt=Date.now()-1; render(); },
+    selectRuntime(value) { const field=nodes(tree).find(n=>n.type==='label' && text(n).includes('使用する接続と操作')); nodes(field).find(n=>n.type==='select').props.onChange({target:{value}}); render(); },
+    releaseInitial() { assert.ok(releaseInitial); initialHeld = false; releaseInitial(); },
+    holdRefresh() { refreshHeld = true; }, failRefresh() { refreshFails = true; },
+    resolveRefresh(index) { refreshPending[index].resolve({ ...servers[0].passport, observationId: crypto.randomUUID(), observedAt: Date.now(), observationExpiresAt: Date.now() + 29_000 }); },
+    holdFinalAgent() { holdFinal = true; readsWhileHeld = 0; }, releaseFinalAgent() { assert.ok(releaseAgent); holdFinal = false; releaseAgent(); },
     changePermission() { servers[0].passport.tools[0].inputSchema=structuredClone(manifest.io.inputSchema); servers[0].passport.tools[0].inputSchema[requirements.SKY_TOOL_CONTRACT_ANNOTATION].permissions.push({permission:'external_account',scopes:['account:other']}); },
     revoke() { revoked = true; }, switchOwner() { account = 'owner-v1:' + 'c'.repeat(64); }, switchEntitlementOwner() { entitlements.ownerScope = 'owner-v1:' + 'c'.repeat(64); }, malformedWrite() { malformedWrite = true; },
     expire() { timers.at(-1)?.(); render(); },
@@ -123,4 +135,60 @@ void test('new explicit condition changes invalidate acknowledgement; unspecifie
 void test('runtime digest or explicit permission changes after acknowledgement cannot navigate',async()=>{
  for(const change of ['changeRuntime','changePermission']){const h=harness();await h.flush();h.confirmSchema();h[change]();
  await h.click('同じ担当で仕事の確認へ進む');assert.equal(h.pushes.length,0);assert.match(h.text(),/変わりました/);}
+});
+
+void test('Smith reports expired Tool observation and cannot open the reviewed job', async () => {
+  const h = harness(); await h.flush(); h.confirmSchema(); h.expireObservation();
+  assert.match(h.text(), /観測が未確認または期限切れ/);
+  const action = h.button('同じ担当で仕事の確認へ進む');
+  if (action && !action.props.disabled) { h.begin('同じ担当で仕事の確認へ進む'); await h.flush(); }
+  assert.equal(h.pushes.length, 0);
+});
+
+void test('failed, pending, superseded or wrong-owner refresh never reuses the old observation', async () => {
+  for (const mode of ['fail', 'pending', 'owner', 'selection', 'superseded']) {
+    const h = harness(); await h.flush(); h.confirmSchema();
+    if (mode === 'fail') h.failRefresh(); else h.holdRefresh();
+    h.begin('選択した実Toolを再確認'); await h.flush();
+    assert.match(h.text(), /観測が未確認または期限切れ/);
+    const action = h.button('同じ担当で仕事の確認へ進む'); assert.ok(!action || action.props.disabled);
+    if (mode === 'owner') { h.switchOwner(); h.resolveRefresh(0); await h.flush(); assert.match(h.text(), /観測が未確認または期限切れ/); }
+    if (mode === 'selection') { h.selectRuntime(JSON.stringify(['other', 'op'])); h.resolveRefresh(0); await h.flush(); assert.match(h.text(), /観測が未確認または期限切れ/); }
+    if (mode === 'superseded') {
+      h.begin('選択した実Toolを再確認'); await h.flush(); h.resolveRefresh(0); await h.flush();
+      assert.match(h.text(), /観測が未確認または期限切れ/); h.resolveRefresh(1); await h.flush();
+      assert.doesNotMatch(h.text(), /観測が未確認または期限切れ/);
+    }
+    assert.equal(h.pushes.length, 0);
+  }
+});
+void test('observation expiry during final Agent read blocks navigation', async () => {
+  const h = harness(); await h.flush(); h.confirmSchema(); h.holdFinalAgent();
+  h.begin('同じ担当で仕事の確認へ進む'); await h.flush(); h.expireObservation(); h.releaseFinalAgent(); await h.flush();
+  assert.equal(h.pushes.length, 0);
+});
+
+void test('Smith identifies the observed Tool, declared version and UTC lease without asserting safety', async () => {
+  const h = harness(); await h.flush();
+  assert.match(h.text(), /接続先: PC/); assert.match(h.text(), /選択Tool: op/);
+  assert.match(h.text(), /接続先の申告版: fixture-3/); assert.match(h.text(), /Package版: 0\.1\.0/);
+  assert.match(h.text(), /観測日時: .*Z/); assert.match(h.text(), /有効期限: .*Z/);
+  assert.match(h.text(), /安全性・権限・処理成功の保証ではありません/);
+  assert.equal(h.checkbox().props.disabled, false); h.expireObservation();
+  assert.equal(h.checkbox().props.disabled, true);
+});
+
+void test('Tool re-observation waits for owner, Agent and connection readback before it can start', async () => {
+  const h = harness(false, true); await h.flush();
+  assert.equal(h.button('選択した実Toolを再確認').props.disabled, true);
+  assert.match(h.text(), /本人・担当・選択した接続先の確認が整ってから/);
+  h.releaseInitial(); await h.flush();
+  assert.equal(h.button('選択した実Toolを再確認').props.disabled, false);
+  h.disconnectRuntime();
+  assert.equal(h.button('選択した実Toolを再確認').props.disabled, true);
+  assert.match(h.text(), /本人・担当・選択した接続先の確認が整ってから/);
+  h.reconnectRuntime();
+  await h.click('選択した実Toolを再確認');
+  assert.match(h.text(), /宣言条件が一致しました/);
+  assert.equal(h.pushes.length, 0);
 });

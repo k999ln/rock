@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
+import { listMcpConnections, refreshMcpObservation, type McpConnection } from '@/lib/mcp-hub';
+import { isFreshMcpObservation } from '@/lib/sky-package-runtime';
 import { readOwnerScope, OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { includedRockstarServicePackageKeys } from '@/lib/rockstar-service-package-access';
 import { parseSkyToolPackage } from '@/lib/sky-tool-package';
@@ -11,6 +12,8 @@ import type { SkyLibraryAgent } from '@/lib/sky-agent-library';
 
 const empty = (): SkyAgentRequirements => ({ inputFields: [], outputFields: [], packageKey: '', executionTarget: '' });
 const lines = (text: string) => text.split('\n').map(value => value.trim()).filter(Boolean);
+const observationTime = (value: unknown) => typeof value === 'number' && Number.isFinite(new Date(value).getTime())
+  ? new Date(value).toISOString() : '未確認';
 
 /** A saved intent and capability review. It never creates a job or grants a Tool. */
 export default function SkyAgentCapabilityReview({ agent, onSaved }: {
@@ -39,6 +42,9 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   const [fresh, setFresh] = useState(false);
   const [reviewedSchema, setReviewedSchema] = useState('');
   const reviewRef = useRef({ key: '', confirmed: false, deadline: 0, generation: 0 });
+  const refreshRef = useRef({ generation: 0, owner: '', runtime: '', agentId: '', revision: 0 });
+  useEffect(() => { Object.assign(refreshRef.current, { owner, runtime: runtimeText, agentId: current.id, revision: current.revision }); },
+    [owner, runtimeText, current.id, current.revision]);
   const desired = useMemo(() => {
     try {
       const contract:Record<string,unknown> = {schema:'rockstaros.agent-tool-expectation/1'};
@@ -52,11 +58,13 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   const wanted = desired.wanted ?? requirements;
   const runtimeStamp = (connections:readonly McpConnection[]|null) => JSON.stringify(connections?.filter(s=>s.id===wanted.contract?.runtime?.serverId).map(s=>({id:s.id,transport:s.transport,digest:s.passport?.toolDigest,state:s.state})));
 
+  const selectedServer = servers?.find(server => server.id === wanted.contract?.runtime?.serverId);
+  const observationFresh = isFreshMcpObservation(selectedServer?.passport ?? null);
   const reviewedRuntimeStamp=runtimeStamp(servers);
   const selectedPackage = packages.find(item => item.packageKey === wanted.packageKey);
   // This is a local acknowledgement of displayed declarations, not authority.
   // Bind it to the Agent, exact requirements and full Package; any change clears it.
-  const schemaReviewKey = selectedPackage && fresh && owner && !desired.error ? JSON.stringify({ owner, id: current.id, revision: current.revision,
+  const schemaReviewKey = selectedPackage && fresh && owner && observationFresh && !desired.error ? JSON.stringify({ owner, id: current.id, revision: current.revision,
     wanted, package: selectedPackage, runtime:reviewedRuntimeStamp }) : '';
   const review = useMemo(() => {
     try { return desired.error ? {state:'missing' as const,issues:[desired.error],candidates:[]} : reviewSkyAgentRequirements(wanted, packages, servers); }
@@ -64,8 +72,18 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   }, [wanted, packages, servers, desired.error]);
 
   useEffect(() => {
+    const deadline = selectedServer?.passport?.observationExpiresAt;
+    if (!Number.isSafeInteger(deadline) || deadline! <= Date.now()) return;
+    const timer = window.setTimeout(() => {
+      reviewRef.current.generation++; reviewRef.current.confirmed = false; setReviewedSchema('');
+      setServers(current => current ? [...current] : null);
+    }, deadline! - Date.now());
+    return () => window.clearTimeout(timer);
+  }, [selectedServer]);
+
+  useEffect(() => {
     const controller = new AbortController();
-    const activeReview = reviewRef.current;
+    const activeReview = reviewRef.current, activeRefresh = refreshRef.current;
     queueMicrotask(() => { if (!controller.signal.aborted) { reviewRef.current.generation++; reviewRef.current.confirmed = false; reviewRef.current.deadline = 0; setFresh(false); setReviewedSchema(''); setOwner(''); setPackages([]); setServers(null); setEntitlements(null); } });
     void (async () => {
       try {
@@ -92,7 +110,7 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
         if (!controller.signal.aborted) { setFresh(false); setError(reason instanceof Error ? reason.message : '担当とToolを確認できません。'); }
       }
     })();
-    return () => { activeReview.generation++; activeReview.confirmed = false; activeReview.deadline = 0; controller.abort(); };
+    return () => { activeRefresh.generation++; activeReview.generation++; activeReview.confirmed = false; activeReview.deadline = 0; controller.abort(); };
   }, [agent.id, agent.revision]);
   useEffect(() => {
     if (!fresh) return;
@@ -126,10 +144,13 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
       if (!entitlementResponse.ok || entitlement.ownerScope !== owner || !includedRockstarServicePackageKeys(entitlement).has(wanted.packageKey))
         throw new Error('このToolの利用権を確認できません。');
       const connected = await listMcpConnections();
+      if (!isFreshMcpObservation(connected.find(server => server.id === wanted.contract?.runtime?.serverId)?.passport ?? null)) throw new Error('選択した実Toolの観測が期限切れです。再確認してください。');
       if(runtimeStamp(connected)!==reviewedRuntimeStamp)throw new Error('選択した実Toolの版・接続が変わりました。');
       if (reviewSkyAgentRequirements(wanted, actual, connected).state !== 'candidate') throw new Error('実行先の接続または能力が変わりました。読み直してください。');
       await checkAgent();
-      if (reviewRef.current.generation !== generation || !reviewRef.current.confirmed || reviewRef.current.key !== schemaReviewKey || Date.now() >= reviewRef.current.deadline)
+      if (!isFreshMcpObservation(connected.find(server => server.id === wanted.contract?.runtime?.serverId)?.passport ?? null) ||
+          !isFreshMcpObservation(selectedServer?.passport ?? null) ||
+          reviewRef.current.generation !== generation || !reviewRef.current.confirmed || reviewRef.current.key !== schemaReviewKey || Date.now() >= reviewRef.current.deadline)
         throw new Error('確認が変更または期限切れになりました。内容を読み直してください。');
       router.push(`/chat?${new URLSearchParams({ agent: current.id, agentRevision: String(current.revision), package: wanted.packageKey, view: 'work' })}`);
     } catch (reason) {
@@ -191,9 +212,38 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
       ['許容permissionとscope（JSON）',permissionsText,setPermissionsText],
     ] as const).map(([label,value,setValue])=><label key={label}>{label}<textarea value={value} maxLength={6000} disabled={saving||uncertain}
       onChange={event=>{reviewRef.current.generation++;reviewRef.current.confirmed=false;setValue(event.target.value);setDirty(true);}} /></label>)}
-    <label>使用する接続と操作<select value={runtimeText} disabled={saving||uncertain} onChange={event=>{reviewRef.current.generation++;reviewRef.current.confirmed=false;setRuntimeText(event.target.value);setDirty(true);}}>
+    <label>使用する接続と操作<select value={runtimeText} disabled={saving||uncertain} onChange={event=>{refreshRef.current.generation++;reviewRef.current.generation++;reviewRef.current.confirmed=false;setRuntimeText(event.target.value);setDirty(true);}}>
       <option value="">未指定</option>{servers?.flatMap(server=>server.passport?.tools.map(tool=><option key={server.id+':'+tool.name} value={JSON.stringify([server.id,tool.name])}>{server.name} · {tool.name}</option>)??[])}
     </select></label>
+    {wanted.contract?.runtime && <div aria-label="選択した実Toolの観測">
+      <p>接続先: {selectedServer?.name ?? '未確認'} ({wanted.contract.runtime.serverId}) · 選択Tool: {wanted.contract.runtime.toolName}</p>
+      <p>接続先の申告版: {selectedServer?.passport?.server?.version ?? '未確認'} · Package版: {selectedPackage?.manifest.version ?? '未確認'}</p>
+      <p>観測日時: {observationTime(selectedServer?.passport?.observedAt)} · 有効期限: {observationTime(selectedServer?.passport?.observationExpiresAt)} (UTC)</p>
+      <p>接続先が申告した宣言の観測です。安全性・権限・処理成功の保証ではありません。</p>
+    </div>}
+    {wanted.contract?.runtime?.serverId && !observationFresh && <output>実Toolの観測が未確認または期限切れです。接続済みのToolを再確認してください。</output>}
+    {wanted.contract?.runtime?.serverId && (!fresh || !owner || selectedServer?.state !== 'connected') &&
+      <p>本人・担当・選択した接続先の確認が整ってから、実Toolを再確認できます。</p>}
+    {wanted.contract?.runtime?.serverId && <button type="button" disabled={!fresh || !owner || selectedServer?.state !== 'connected' || saving || uncertain} onClick={() => {
+      const id = wanted.contract!.runtime!.serverId, selectedOwner = owner, selectedRuntime = runtimeText;
+      const selectedAgent = current.id, selectedRevision = current.revision;
+      const generation = ++refreshRef.current.generation;
+      reviewRef.current.generation++; reviewRef.current.confirmed = false; setReviewedSchema('');
+      // Retain declarations for display, but immediately invalidate the old observation.
+      setServers(current => current?.map(server => server.id === id && server.passport
+        ? { ...server, passport: { ...server.passport, observedAt: undefined, observationExpiresAt: undefined } } : server) ?? null);
+      const stillCurrent = () => refreshRef.current.generation === generation && refreshRef.current.owner === selectedOwner &&
+        refreshRef.current.runtime === selectedRuntime && refreshRef.current.agentId === selectedAgent && refreshRef.current.revision === selectedRevision;
+      void (async () => {
+        const passport = await refreshMcpObservation(id);
+        const identity = await fetch(`/api/sky/agents?id=${encodeURIComponent(selectedAgent)}`, { cache: 'no-store' });
+        const body = await identity.json() as { ownerScope?: unknown; agent?: SkyLibraryAgent };
+        if (!stillCurrent()) return;
+        if (!identity.ok || body.ownerScope !== selectedOwner || body.agent?.id !== selectedAgent || body.agent.revision !== selectedRevision ||
+            !isFreshMcpObservation(passport)) throw new Error('本人・担当または実Toolの観測を確認できません。');
+        setServers(current => current?.map(server => server.id === id ? { ...server, passport } : server) ?? null);
+      })().catch(reason => { if (stillCurrent()) setError(reason instanceof Error ? reason.message : '実Toolを再確認できません。'); });
+    }}>選択した実Toolを再確認</button>}
     <label>Tool<select disabled={saving||uncertain} value={requirements.packageKey} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setRequirements(value => ({ ...value, packageKey: event.target.value })); setDirty(true); }}>
       <option value="">選択してください</option>{packages.map(item => <option key={item.packageKey} value={item.packageKey}>{item.manifest.name} · {item.manifest.version} ({item.status})</option>)}
     </select></label>
@@ -204,7 +254,7 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
       <p>Toolの宣言です。目的文から必要な項目や型を自動で読み取っていません。空欄も含め、担当の希望と照らしてください。</p>
       <p>入力の型・必須項目</p><pre>{JSON.stringify(selectedPackage.manifest.io.inputSchema, null, 2)}</pre>
       <p>成果の型・項目</p><pre>{JSON.stringify(selectedPackage.manifest.io.outputSchema, null, 2)}</pre>
-      <label><input type="checkbox" checked={Boolean(schemaReviewKey) && reviewedSchema === schemaReviewKey}
+      <label><input type="checkbox" disabled={!schemaReviewKey || dirty || uncertain || saving} checked={Boolean(schemaReviewKey) && reviewedSchema === schemaReviewKey}
         onChange={event => { reviewRef.current.generation++; reviewRef.current.key = schemaReviewKey; reviewRef.current.confirmed = event.target.checked && Boolean(schemaReviewKey) && !dirty && !uncertain; setReviewedSchema(event.target.checked ? schemaReviewKey : ''); }} />
         入力と成果の宣言を、担当の希望と自分で確認しました</label>
     </div>}
