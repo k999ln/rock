@@ -1,0 +1,22 @@
+{
+  "schema": "rockstaros.sdk-declared-example/1",
+  "version": "0.1.4",
+  "baseCandidate": "63dbee1c60dc7d2d361b19544d1e0c5c04fe8635",
+  "sha256": {
+    "toolkits/sky-tool-sdk/examples/line-counter.mjs": "59525e32fff1f1fea4db1de82ca343fd653f74f69e26644d5d8f1714ebec91fe",
+    "public/toolkits/rockstaros-sky-tool-sdk-0.1.4.tgz": "aa82db15f5a5b480844efd5ddbc2d556dde18ea318d2c0254c34de0535e63cbe",
+    "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz": "5ee84a4d158096b0965b08c71e1fbcf2cfcaa6b9046ce7e6994fb178bdce4c57",
+    "tests/fixtures/eve-smith-mii-browser/declared-tools.mjs": "ee3d7f41f2dd5707ec38691ebca470c7cc19cb250f0a7acadfe67ce286d1bf36"
+  },
+  "checks": "8 tests passed: two isolated browser cases, actual unpacked SDK sample two-role same-job/mii integration, local Connector and exact archive parity; independent Node26 loopback integration and parity passed",
+  "limitations": "SDK versioned archive uses illustrative declarations; scope and safety are not enforced or verified by declaration. No publication, external provider, inference, physical mii or Pixel acceptance.",
+  "preservation": "0.1.3 and earlier archives remain unchanged",
+  "initialFailure": "Initial archive/source README parity check failed: 16/17 passed, one parity failure. After generating the 0.1.4 versioned archive, the eight targeted tests including archive parity passed; old archives were preserved.",
+  "fullVerify": {
+    "tests": 3466,
+    "pass": 3462,
+    "fail": 0,
+    "skipped": 4
+  },
+  "review": "independent review PASS_SCOPED after documentation correction"
+}

@@ -2,6 +2,8 @@
 
 最終更新: 2026-10-03
 
+2026-10-29候補: SDK 0.1.4の2非推論作例は、型と本人指定能力を照合するためinputSchemaへ版付き能力ID・permission/scope宣言を含める。StudioとCLIは同版を参照し、0.1.3以前のarchiveは保持する。SDK配布物から隔離フォルダーへ展開した作例を同じ本人・仕事・Connector・miiソフト読戻しで試験する。宣言の一致は本人の実行承認・権限強制・安全性・実料金を保証しない。Git保存はregistry公開ではない。[証拠](evidence/development-execution/sdk-declared-example.json)。
+
 2026-10-03更新: SDK 0.1.3は、PC内MCPへ不正な非ASCII認証値が届いた際のprocess停止を防ぐ。Studioの導入URLとCLIが生成する依存の最小版を0.1.3へ揃え、配布tgzの5ファイルを同じrepository sourceと照合する。旧版archiveは保持する。今回のGit保存はnpm公開や稼働中Toolの自動更新ではない。
 
 2026-09-20更新: SDK 0.1.2ではPC内ToolがRockstarOSのSky一覧へ自動で現れ、カードからHubへ接続できる。`publicMcpUrl`を省くとSky URL・開発者キーなしでローカル専用起動できる。公開URLを設定した場合だけSky RegistryへのPackage登録と利用記録を試す。PCでの接続成功はnative OS、公開審査やCloud配備の合格を意味しない。

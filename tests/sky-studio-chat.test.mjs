@@ -12,7 +12,7 @@ const sdkRoot = new URL('../toolkits/sky-tool-sdk/', import.meta.url);
 void test('Rock Studio exposes copy-first SDK integration for an existing tool', () => {
   assert.match(studio, /このコードを、/);
   assert.match(studio, /createSkyToolApp/);
-  assert.match(studio, /rockstaros-sky-tool-sdk-0\.1\.3\.tgz/);
+  assert.match(studio, /rockstaros-sky-tool-sdk-0\.1\.4\.tgz/);
   assert.match(studio, /\/api\/sky\/developer-tokens/);
   assert.match(studio, /開発者キー（公開時のみ）/);
   assert.doesNotMatch(studio, /type="file"/);
@@ -26,7 +26,7 @@ void test('Rock Studio does not upload source code from the browser', () => {
 
 void test('the SDK archive linked by Studio contains exactly the current package sources', () => {
   const manifest = JSON.parse(readFileSync(new URL('package.json', sdkRoot), 'utf8'));
-  assert.equal(manifest.version, '0.1.3');
+  assert.equal(manifest.version, '0.1.4');
   const filename = `rockstaros-sky-tool-sdk-${manifest.version}.tgz`;
   assert.ok(studio.includes(`/toolkits/${filename}`));
   const archive = fileURLToPath(new URL(`../public/toolkits/${filename}`, import.meta.url));
@@ -49,5 +49,5 @@ void test('the SDK starter requires the patched SDK release', (t) => {
     maxBuffer: 64 * 1024,
   });
   const generated = JSON.parse(readFileSync(join(target, 'package.json'), 'utf8'));
-  assert.equal(generated.dependencies['@rockstaros/sky-tool-sdk'], '^0.1.3');
+  assert.equal(generated.dependencies['@rockstaros/sky-tool-sdk'], '^0.1.4');
 });

@@ -713,6 +713,8 @@ Pixel 10 GL066 / frankelは確定対象。試験署名APKの非破壊再起動23
 
 Eveで自由に担当を作り、SmithでToolと実行先を照合し、同じ仕事をmiiの合成画面から読むlocal-preview候補は範囲限定の独立検収と全verifyに合格した。[設計・責任と制約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)、[試験と残件](docs/evidence/development-execution/eve-smith-mii-host-preview.json)。次はGit保存・main統合・同SHA CIをそれぞれ確認する。実account/eSIM、実mii/Pixel、実費と公開は別受入。
 
+SDK 0.1.4配布archiveから展開した二つの非推論作例を、Smith宣言照合・既存Connector・同じ仕事とmiiソフト読戻しで試験し、独立検収と全体verifyに成功した候補。旧配布版は保持し、宣言を権限や安全保証にしない。[証拠](docs/evidence/development-execution/sdk-declared-example.json)。
+
 Smithの本人指定型・能力ID・permission/scope・実Toolの版付き宣言照合を統合候補へ追加。schema未宣言と対象scope不明を未確認としてbegin/claimでも拒否し、旧jobの互換を維持。合成fixtureと独立検収に限定し、実権限・Provider・実機は未受入。PR274をmain 5a85a523へ統合し同SHA全6 CI成功。[証拠](docs/evidence/development-execution/smith-declared-capability-matching.json)／[統合CI](docs/evidence/development-execution/smith-declared-capability-main-ci.json)。
 
 Smithの入力照合候補は追加必須入力と不明schemaを区別し、本人へschemaを表示して確認取消・期限・再確認の競合を拒否する。PR268をmain 94f0d9dbへ統合し同SHAの全6 CIが成功。期待型の構造化・自動照合、通常accountと実機は別途必要。[証拠](docs/evidence/development-execution/smith-schema-confirmation.json)。
@@ -723,7 +725,7 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
-mii読取adapterにhost提供descriptorの能力・版・最短期限の照合を追加する候補は対象試験・独立検収・全体verifyに成功し、統合待ち。合成画面と同じ仕事の読戻しを使い、宣言は本人・権限・実機受入にしない。[証拠](docs/evidence/development-execution/mii-portable-read-descriptors.json)。
+mii読取adapterにhost提供descriptorの能力・版・最短期限の照合を追加する候補は対象試験・独立検収・全体verifyに成功。PR275をmain 6ce98364へ統合し同SHA全6 CI成功。[統合CI](docs/evidence/development-execution/mii-portable-read-main-ci.json)。合成画面と同じ仕事の読戻しを使い、宣言は本人・権限・実機受入にしない。[証拠](docs/evidence/development-execution/mii-portable-read-descriptors.json)。
 
 miiソフト画面の期限切れ・停止要求時に古い表示を失効し、保存成果は明示的読直しで再表示する候補は、対象61件・隔離ブラウザ2件と独立検収に成功。JS timerの限界・物理停止は別受入。PR272をmain 3f3fa56dへ統合し、同SHAの全6 CIが成功。[元証拠](docs/evidence/development-execution/mii-output-lease.json)／[統合CI](docs/evidence/development-execution/mii-output-lease-main-ci.json)。
 

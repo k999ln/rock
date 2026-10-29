@@ -223,7 +223,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'Smith');
     await input('必要な入力項目', 'text'); await input('必要な成果項目', 'lines'); await input('Tool', packageKey); await input('実行先', 'pc');
     await input('期待する入力型',JSON.stringify({text:'string'}));await input('期待する成果型',JSON.stringify({lines:'integer'}));
-    await input('必要な処理能力ID',JSON.stringify(['fixture.count-lines']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
+    await input('必要な処理能力ID',JSON.stringify(['example.count-lines']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
     await input('使用する接続と操作',JSON.stringify([sdk.localId,'count_lines']));
     // Exercise explicit user intent in real UI before any capability save/dispatch.
     await input('期待する入力型',JSON.stringify({text:'integer'}));
@@ -421,7 +421,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await input('必要な入力項目', 'left\nright'); await input('必要な成果項目', 'sum');
       await input('Tool', packages[1].packageKey); await input('実行先', 'pc');
       await input('期待する入力型',JSON.stringify({left:'integer',right:'integer'}));await input('期待する成果型',JSON.stringify({sum:'integer'}));
-      await input('必要な処理能力ID',JSON.stringify(['fixture.add-integers']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
+      await input('必要な処理能力ID',JSON.stringify(['example.add-integers']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
       await input('使用する接続と操作',JSON.stringify([sdk.localId,'add_integers']));
       await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'second requirements saved');
       await confirmSchema();
