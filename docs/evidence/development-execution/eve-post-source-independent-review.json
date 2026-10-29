@@ -1,0 +1,176 @@
+{
+  "schema": "rockstaros.post-acl-independent-review/1",
+  "task": "POSTACL-v1",
+  "reviewer": "/root/post_acl_review",
+  "baseMain": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+  "result": "PASS_SCOPED",
+  "mustFix": [],
+  "scope": "Exact explicitly selected public post or keyed-community reply source/ACL validation through existing Eve/Agent contracts. Host and synthetic model responses only.",
+  "productionFiles": 13,
+  "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+  "aggregateEncoding": "SHA256 UTF8 JSON.stringify lexicographically sorted path→fileSHA256 map",
+  "checks": [
+    {
+      "name": "independent consolidated regressions",
+      "tests": 164,
+      "passed": 164,
+      "failed": 0,
+      "skipped": 0,
+      "path": "/private/tmp/post-acl-independent-consolidated.log",
+      "sha256": "69a0bc47a014826788fdc64c3ac8970daea2798e13a281e08df2c5123f407b74"
+    },
+    {
+      "name": "independent capability and Job/claim contracts",
+      "tests": 57,
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "path": "/private/tmp/post-acl-independent-contract-job-authorized.log",
+      "sha256": "15373e560bd79ac7623312a9c1767af727c2e80bc89279a66299a9c7eeaf2f6f"
+    }
+  ],
+  "atomicSensitivity": {
+    "result": "PASS",
+    "script": "/private/tmp/post-acl-atomic-independent-probe.mjs",
+    "scriptSha256": "136f920330b27752d2f4919cab4cb9bda600cb4b11adc9e6770315d9a6df15a2",
+    "log": "/private/tmp/post-acl-atomic-independent-probe.log",
+    "logSha256": "f36564154586d4d742e83f0f3f090441a504a4c5bcb622397304cd6165d1ec05",
+    "productionMutated": false,
+    "cases": [
+      "key revoke",
+      "content change",
+      "owner/profile reassignment",
+      "parent deletion"
+    ],
+    "production": "all four reject EVE_SOURCE_CHANGED, zero saved rows",
+    "deliberatelyWeakenedDbAdapter": "all four wrongly save when only INSERT atomic predicate removed, confirming negative oracle sensitivity"
+  },
+  "browserEvidence": {
+    "worker": "/root/post_acl_browser",
+    "packet": "/private/tmp/post-acl-browser-acceptance.json",
+    "sha256": "92044e6d12c2352a9891bddb3a103567a1c4c062cc90b60ddb7af8e232c69037",
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "sourceManifestMatchesReviewedFinal13": true,
+    "reviewerAction": "Inspected actual browser/fixture diff, persisted result/history/reload/Tool assertions, worker run log+hash and all13 source hashes. Browser was executed by worker, not repeated by this reviewer.",
+    "level": "isolated actual Chrome + production owner/source/Agent/Job routes + real local SDK/Connector + synthetic model responses; production-unavailable variant executes no Tool"
+  },
+  "reviewedBoundaries": [
+    "same SELECT authenticated owner/profile + selected post/reply + parent integrity + membership + selected key hash + revocation + archive",
+    "Agent INSERT repeats exact post fields and live ACL; source row never authorized by prior allowed-community list",
+    "snapshot digest omits engagement counts/labels and includes author/community/reply/time/content/attachment; property order canonicalized semantically",
+    "immutable owner-confirmed origin, no server/model attestation or grant; legacy source-free and hub-source records preserved",
+    "selected community access key only on same-site source GET or Agent PUT; no recovery key, unrelated key, raw key in intent/origin/pending/history",
+    "shared latest-selection permits, digest/fetch/generation/route/abort fences including key/profile/storage ABA; saved draft text retained but post reply import requires explicit reconfirmation after event",
+    "generic duplicate/uncertain/lost ack reconciles exact owner/id/revision/settings digest without key or duplicate dispatch; definitive EVE_SOURCE_CHANGED clears pending",
+    "existing Smith actual Tool input/output/capability/permission/scope match, expiry, cancellation/claim race, no legacy downgrade and same-Job result/reload remain exercised"
+  ],
+  "observationsResolved": [
+    {
+      "issue": "Attachment JSON comparison originally key-order-sensitive despite semantic-format comment",
+      "resolution": "Typed two-field json_extract/object/count predicate and reversed-key-order regression now pass"
+    },
+    {
+      "issue": "Loaded source hook invalidated on key events but creator draft initially lacked matching ephemeral guard",
+      "resolution": "Post reply generation bumps on community/storage event; no key persisted; three creator tests cover import/old-draft/final-digest ABA"
+    }
+  ],
+  "verificationAttempts": [
+    {
+      "path": "/private/tmp/post-acl-independent-client-baseline.log",
+      "sha256": "171ea7422140e76c62a831c1587b4ff2164fe14fcffc0d83e72cc86dffa0f69a",
+      "tests": 36,
+      "passed": 33,
+      "failed": 3,
+      "reason": "Existing route fixtures missing new actual module mappings; corrected test-only maps; final consolidated164 pass without weakened assertions"
+    },
+    {
+      "path": "/private/tmp/post-acl-independent-contract-job.log",
+      "sha256": "254046e37cc42ccc5c368901b37f4cfb1fc92efed2b890fc697e150cfe3c8442",
+      "tests": 57,
+      "passed": 53,
+      "failed": 4,
+      "reason": "Sandbox EPERM on localhost listen; identical authorized localhost-only rerun57 passed, no external provider"
+    }
+  ],
+  "lint": {
+    "passed": true,
+    "log": "/private/tmp/post-acl-independent-lint.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "diffCheckPassed": true,
+  "publication": "HOLD",
+  "deployment": "HOLD",
+  "bulk616": "HOLD",
+  "actualModelOrProviderAccepted": false,
+  "physicalAccepted": false,
+  "wholeEveAccepted": false,
+  "limitations": [
+    "Root full npm run verify still running; this review does not claim broad verification completion",
+    "No Git commit/PR/final-head CI claimed yet; root must check exact final pushed SHA",
+    "Upstream timeline streaming, composed Agent graph, actual provider/model, physical-device and all-route acceptance remain separate"
+  ],
+  "forbiddenFileUntouched": true,
+  "fixedVendorPathsChanged": "",
+  "sourceFiles": [
+    {
+      "path": "app/api/eve/source-context/route.ts",
+      "sha256": "771e57be430117e8e02b3c632fb5435a81b4e0abb6d37c207418279ee7bf3a16"
+    },
+    {
+      "path": "app/api/sky/agents/route.ts",
+      "sha256": "9269f713f51504b5cb699fb44113f23acc835307b05ce4325869dc7f29dbba33"
+    },
+    {
+      "path": "components/eve-object-agent-creator.tsx",
+      "sha256": "cf72eb18b732667192f2f3b86f95e6a90e1450c106fac4ec57c03c383527029d"
+    },
+    {
+      "path": "components/eve-source-handoff.tsx",
+      "sha256": "039dfa8c62780c4aa7f6ab27fa3e003527ccb3cc9c25291d50caa7af8284e8a2"
+    },
+    {
+      "path": "components/sky-social-timeline.tsx",
+      "sha256": "c45acdf223edb4ee30c57040de2daf207c99625bd3112da7bdb23ce5a3a77a4f"
+    },
+    {
+      "path": "lib/community-key-client.ts",
+      "sha256": "cf8dfbf2a3a394813f1dcbdb668a857a7bcfc6272058ee348edc27dbc419da31"
+    },
+    {
+      "path": "lib/eve-agent-creation.ts",
+      "sha256": "157e17eb979007a178de473808cb01520a492207ed8d7996e9b7afa0a89901d9"
+    },
+    {
+      "path": "lib/eve-post-source-store.ts",
+      "sha256": "db31e60911a85fc3af76bdc26fc80681f8a8393f6c6f92ed1a9815967fed2dc7"
+    },
+    {
+      "path": "lib/eve-source-client.ts",
+      "sha256": "9653fd5dbf95742e0fd7bd3020201203ddfa5f0a4b99bb7fcb87f3519e55d73d"
+    },
+    {
+      "path": "lib/eve-source-context-store.ts",
+      "sha256": "12f1a94e51a21ddfa310af23cbe22ce9fdbbcebc8b3d71ef5ed4c2094f519b64"
+    },
+    {
+      "path": "lib/eve-source-context.ts",
+      "sha256": "6f2fd385c0ab61ee7d0a0a88fbb10232e4d7c04530c0ed7a181d527f4fd0f9c9"
+    },
+    {
+      "path": "lib/sky-agent-library-store.ts",
+      "sha256": "8e8994a59d412a6beade362ca2d521b38ab9c71fb3a4ac0bd0e23cd970db12f7"
+    },
+    {
+      "path": "lib/use-eve-source-handoff.ts",
+      "sha256": "8a37e9a922dc96f5577b96671def726f3f15cda7af7baac0061388b75eef148e"
+    }
+  ],
+  "manifestEncoding": {
+    "format": "sourceFiles array; aggregate remains SHA256 of sorted path-to-digest JSON",
+    "previousReportSha256": "aa495861b3a8e8ae079ad0d5122a532db57f2a8ed00985fdafff50a20a042f77",
+    "reason": "separate path label from file digest; exact source bytes unchanged; original report retained in PR304 commit58d96f87"
+  }
+}

@@ -1474,7 +1474,7 @@
     "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
     "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
-    "next": "Preserve this merge/CI record by metadata-only normal integration, then exact social-post ACL/provenance is the next bounded development item. Upstream updates, actual model/provider, composition graph and physical acceptance remain separate.",
+    "next": "Post ACL/source followup is implemented and independently reviewed on codex/eve-post-acl-delivery-20261029; see evePostSourceAcl for Git/CI status. Upstream sync, actual model/provider, graph and physical acceptance remain separate.",
     "wholeUnitAccepted": false,
     "publication": "HOLD",
     "deployment": "HOLD",
@@ -1492,5 +1492,27 @@
     "mergeEvidence": "docs/evidence/development-execution/eve-selected-source-main-integration.json",
     "mergeCiEvidence": "docs/evidence/development-execution/eve-selected-source-main-ci.json",
     "mergeChecks": "6 checks / 4 workflows completed successfully"
+  },
+  "evePostSourceAcl": {
+    "owner": "ROCK",
+    "primarySquad": "O5",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "B05",
+      "SKY21"
+    ],
+    "status": "independent_full_verify_pass_host_scoped_git_ci_pending",
+    "baseMain": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+    "evidence": "docs/evidence/development-execution/eve-post-source-acl.json",
+    "wholeUnitAccepted": false,
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "mainMerged": false,
+    "next": "Git preservation and exact final-head CI; normal main integration is a separate followup. Next product gap: upstream refresh/ingestion delivery contract; model/provider/graph/physical acceptance remains separate.",
+    "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+    "independentReview": "docs/evidence/development-execution/eve-post-source-independent-review.json",
+    "supersededPr": "https://github.com/k999ln/rock/pull/304"
   }
 }

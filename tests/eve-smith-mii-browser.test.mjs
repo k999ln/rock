@@ -56,7 +56,7 @@ function cdp(url) {
   } };
 }
 
-for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Smith, real Connector and ${localAuthority ? 'local preview authority' : 'unavailable authority'}`,
+for (const { localAuthority, postMode } of [{ localAuthority: true, postMode: false }, { localAuthority: false, postMode: false }, { localAuthority: true, postMode: true }]) void test(`isolated browser: Eve, Smith, real Connector and ${postMode ? 'exact public-post and keyed-reply provenance' : localAuthority ? 'local preview authority' : 'unavailable authority'}`,
   { timeout: 90000, skip: !existsSync(chrome) && 'ROCK_TEST_CHROME must point to an installed Chrome/Chromium' }, async t => {
     const dir = await mkdtemp(path.join(tmpdir(), 'rock-browser-fixture-'));
     const resources = { child: null, server: null, connectorUrl: '', connectorToken: '' };
@@ -84,11 +84,28 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
         .run(owner, `${kind}:${resource}`, kind, resource, JSON.stringify({ ...sourceMetadata, sourceUrl: `https://huggingface.co/${kind === 'dataset' ? 'datasets/' : 'spaces/'}${resource}` }), Date.now());
     }
 
+    const profileId = '11111111-1111-4111-8111-111111111111', communityId = '22222222-2222-4222-8222-222222222222';
+    const counterPostId = '33333333-3333-4333-8333-333333333333', sumPostId = '44444444-4444-4444-8444-444444444444';
+    const parentPostId = '55555555-5555-4555-8555-555555555555', unrelatedId = '66666666-6666-4666-8666-666666666666';
+    const accessKey = 'a'.repeat(64), unrelatedKey = 'b'.repeat(64), postCreatedAt = Date.now();
+    const counterContent = '選んだ投稿の文章行数を確認したい', sumContent = '選んだ返信で整数を合計したい';
+    const postSnapshot = (id, content, community, replyTo, attachment) => ({ id, author: { id: profileId, name: '合成投稿者' }, community: community ? { id: community, name: '合成専用コミュニティー' } : null, content, replyTo, createdAt: postCreatedAt, attachment });
+    const counterPost = postSnapshot(counterPostId, counterContent, null, null, { kind: 'dataset', resource: 'fixture/counter' });
+    const sumPost = postSnapshot(sumPostId, sumContent, communityId, parentPostId, { kind: 'space', resource: 'fixture/summer' });
+    if (postMode) {
+      sqlite.prepare('INSERT INTO sky_social_profiles(id,owner_id,name,created_at) VALUES(?,?,?,?)').run(profileId, owner, '合成投稿者', postCreatedAt);
+      sqlite.prepare('INSERT INTO sky_communities(id,owner_id,name,description,rules,visibility,created_at) VALUES(?,?,?,?,?,?,?)').run(communityId, owner, '合成専用コミュニティー', '', '', 'members', postCreatedAt);
+      sqlite.prepare('INSERT INTO sky_community_members(community_id,profile_id,joined_at) VALUES(?,?,?)').run(communityId, profileId, postCreatedAt);
+      sqlite.prepare('INSERT INTO sky_community_keys(community_id,profile_id,key_hash,created_at) VALUES(?,?,?,?)').run(communityId, profileId, createHash('sha256').update(accessKey).digest('hex'), postCreatedAt);
+      for (const post of [counterPost, sumPost, postSnapshot(parentPostId, 'PRIVATE_PARENT_NOT_SELECTED', communityId, null, null), postSnapshot(unrelatedId, 'UNRELATED_POST_NOT_SELECTED', communityId, null, null)])
+        sqlite.prepare('INSERT INTO sky_social_posts(id,author_id,community_id,content,attachment,created_at,reply_to) VALUES(?,?,?,?,?,?,?)').run(post.id, post.author.id, post.community?.id ?? null, post.content, post.attachment ? JSON.stringify(post.attachment) : null, post.createdAt, post.replyTo);
+    }
+    const counterKey = postMode ? `post:${counterPostId}` : 'dataset:fixture/counter';
     let authenticatedOwner = owner;
     const env = { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false', ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: localAuthority ? owner : 'local-preview:another-fixture' };
     const deps = new Map([['cloudflare:workers', { env }],
       ['@/lib/fund-store', { database: () => db, requestUser: async () => authenticatedOwner }]]);
-    for (const name of ['eve-source-context-store', 'sky-hub', 'sky-agent-requirements', 'request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
+    for (const name of ['eve-source-context-store', 'community-access', 'sky-social', 'sky-hub', 'sky-agent-requirements', 'request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
       deps.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
     for (const name of ['a2a-authorization', 'a2a-price-quote', 'a2a-usage-receipt', 'jennifer-execution-store', 'jennifer-amc-execution', 'a2a-agent-directory', 'sky-tool-package-store', 'sky-package-runtime-binding', 'sky-package-runtime-binding-store'])
       deps.set(`@/lib/${name}`, {});
@@ -128,9 +145,9 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const creationRequests = [];
     const http = createServer(async (req, res) => {
       try {
-        const url = new URL(req.url, `http://${req.headers.host}`); requests.push({ path: url.pathname, method: req.method });
+        const url = new URL(req.url, `http://${req.headers.host}`); requests.push({ path: url.pathname, method: req.method, selectedCommunityKeys: Object.keys(JSON.parse(req.headers['x-rock-community-keys'] ?? '{}')) });
         if (url.pathname === '/bundle.js') { res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' }); return res.end(bundle); }
-        if (!url.pathname.startsWith('/api/')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(`<div id="root"></div><script>window.__fixtureErrors=[];window.__fixtureClockOffset=0;const fixtureNow=Date.now.bind(Date);Date.now=()=>fixtureNow()+window.__fixtureClockOffset;window.onerror=(...args)=>window.__fixtureErrors.push(args.slice(0,4));window.__fixtureServers=${JSON.stringify([resources.server])};window.__fixtureConnectorUrl=${JSON.stringify(resources.connectorUrl)};window.__fixtureConnectorToken=${JSON.stringify(resources.connectorToken)}</script><script src="/bundle.js"></script>`); }
+        if (!url.pathname.startsWith('/api/')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(`<div id="root"></div><script>window.__fixtureErrors=[];window.__fixtureClockOffset=0;const fixtureNow=Date.now.bind(Date);Date.now=()=>fixtureNow()+window.__fixtureClockOffset;window.onerror=(...args)=>window.__fixtureErrors.push(args.slice(0,4));window.__fixturePostMode=${JSON.stringify(postMode)};window.__fixturePosts=${JSON.stringify({counter:counterPost,summer:sumPost})};window.__fixtureCommunity=${JSON.stringify({profileId,communityId,accessKey,unrelatedId,unrelatedKey})};window.__fixtureServers=${JSON.stringify([resources.server])};window.__fixtureConnectorUrl=${JSON.stringify(resources.connectorUrl)};window.__fixtureConnectorToken=${JSON.stringify(resources.connectorToken)}</script><script src="/bundle.js"></script>`); }
         if (url.pathname === '/api/sky/tool-registry' && pausedRegistry) {
           const pause = pausedRegistry; pause.hit = true; await pause.promise;
         }
@@ -285,17 +302,19 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       // Queueing performs two reads; the receiving hook's third read starts in
       // requestAnimationFrame. A changed fixture thread alone does not prove
       // that this new handoff was checked: the previous button can still exist.
-      for (let i = 0; i < 150 && requests.filter(request => request.path === '/api/eve/source-context').length < previousReads + 3; i++)
+      for (let i = 0; i < 150 && requests.filter(request => request.path === '/api/eve/source-context').length < previousReads + (postMode ? 2 : 3); i++)
         await new Promise(resolve => setTimeout(resolve, 100));
       await wait(`document.querySelector('section[aria-label="合成Eve応答fixture"]').dataset.thread !== ${JSON.stringify(previousThread)} && !![...document.querySelectorAll('button')].find(e=>e.textContent.includes('依頼を入力欄へ読み込む')&&!e.disabled)`, 'owner-bound source handoff ready');
-      assert.ok(requests.filter(request => request.path === '/api/eve/source-context').length >= previousReads + 3, 'queue and receiving hook must verify the saved source');
+      assert.ok(requests.filter(request => request.path === '/api/eve/source-context').length >= previousReads + (postMode ? 2 : 3), 'queue and receiving hook must verify the saved source');
       assert.equal(await evaluate(composerText), '', 'selecting a source must not auto-fill or send the composer');
     };
     // Selection is explicit and rechecked when applied. Saved-resource revision,
     // enabled state and authenticated owner are enforced by the actual route.
-    for (const changed of ['revision', 'disabled', 'owner']) {
+    for (const changed of (postMode ? ['content', 'deleted', 'owner'] : ['revision', 'disabled', 'owner'])) {
       await queueSource('保存した行数データを選ぶ');
-      if (changed === 'revision') sqlite.prepare('UPDATE sky_hub_plugins SET revision=revision+1 WHERE owner_user_id=? AND plugin_key=?').run(owner, 'dataset:fixture/counter');
+      if (changed === 'content') sqlite.prepare('UPDATE sky_social_posts SET content=? WHERE id=?').run('Changed selected post', counterPostId);
+      else if (changed === 'deleted') sqlite.prepare('DELETE FROM sky_social_posts WHERE id=?').run(counterPostId);
+      else if (changed === 'revision') sqlite.prepare('UPDATE sky_hub_plugins SET revision=revision+1 WHERE owner_user_id=? AND plugin_key=?').run(owner, 'dataset:fixture/counter');
       else if (changed === 'disabled') sqlite.prepare('UPDATE sky_hub_plugins SET enabled=0,revision=revision+1 WHERE owner_user_id=? AND plugin_key=?').run(owner, 'dataset:fixture/counter');
       else authenticatedOwner = 'local-preview:another-fixture';
       await click('依頼を入力欄へ読み込む');
@@ -303,20 +322,27 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.equal(await evaluate(composerText), ''); assert.equal(creationRequests.length, 0);
       assert.equal(sqlite.prepare('SELECT count(*) AS n FROM sky_agent_settings').get().n, 0);
       authenticatedOwner = owner;
+      if (postMode) {
+        sqlite.prepare('DELETE FROM sky_social_posts WHERE id=?').run(counterPostId);
+        sqlite.prepare('INSERT INTO sky_social_posts(id,author_id,community_id,content,attachment,created_at,reply_to) VALUES(?,?,NULL,?,?,?,NULL)').run(counterPostId,profileId,counterContent,JSON.stringify(counterPost.attachment),postCreatedAt);
+      }
       if (changed === 'disabled') sqlite.prepare('UPDATE sky_hub_plugins SET enabled=1,revision=revision+1 WHERE owner_user_id=? AND plugin_key=?').run(owner, 'dataset:fixture/counter');
     }
     // A pinned source can become stale independently of the rendered reply.
     // A direct actual Agent-route attempt must reject atomically with no row.
-    const pinnedResponse = await fetch(`${base}/api/eve/source-context?key=dataset%3Afixture%2Fcounter`);
+    const pinnedResponse = await fetch(`${base}/api/eve/source-context?${new URLSearchParams({ key: counterKey })}`);
     assert.equal(pinnedResponse.status, 200); const pinnedContext = await pinnedResponse.json();
-    sqlite.prepare('UPDATE sky_hub_plugins SET revision=revision+1 WHERE owner_user_id=? AND plugin_key=?').run(owner, 'dataset:fixture/counter');
+    if (postMode) sqlite.prepare('UPDATE sky_social_posts SET content=? WHERE id=?').run('Changed after pin',counterPostId);
+    else sqlite.prepare('UPDATE sky_hub_plugins SET revision=revision+1 WHERE owner_user_id=? AND plugin_key=?').run(owner, 'dataset:fixture/counter');
     const rejectedOrigin = { schema: 'rockstaros.eve-agent-origin/1', threadId: 'fixture-stale-thread', replyId: 'fixture-stale-reply', replySha256: 'b'.repeat(64), source: pinnedContext.source };
     const rejectedSave = await fetch(`${base}/api/sky/agents`, { method: 'PUT', headers: { Origin: base, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': scope },
       body: JSON.stringify({ id: randomUUID(), revision: 0, create: true, settings: { name: 'stale fixture', instructions: 'synthetic role', provider: 'local-model', model: 'fixture-model', enabled: true, origin: rejectedOrigin } }) });
     assert.equal(rejectedSave.status, 409); assert.equal(sqlite.prepare('SELECT count(*) AS n FROM sky_agent_settings').get().n, 0);
+    if (postMode) sqlite.prepare('UPDATE sky_social_posts SET content=? WHERE id=?').run(counterContent,counterPostId);
     await queueSource('保存した行数データを選ぶ');
     await click('依頼を入力欄へ読み込む');
-    await wait(`${composerText} === '選んだデータの文章行数を確認したい'`, 'explicit composer apply');
+    await wait(postMode ? `${composerText}?.includes(${JSON.stringify(counterContent)})` : `${composerText} === '選んだデータの文章行数を確認したい'`, 'explicit composer apply');
+    if (postMode) {const text = await evaluate(composerText); assert.ok(!text.includes('PRIVATE_PARENT_NOT_SELECTED') && !text.includes('UNRELATED_POST_NOT_SELECTED') && !text.includes(accessKey));}
     assert.equal(sqlite.prepare('SELECT count(*) AS n FROM sky_agent_settings').get().n, 0);
     assert.equal(creationRequests.length, 0);
     await click('合成回答を生成する（モデル未使用）');
@@ -364,7 +390,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const before = await readAgent(); assert.equal(before.ownerScope, scope);
     assert.equal(before.agent.origin?.schema, 'rockstaros.eve-agent-origin/1');
     assert.equal(before.agent.origin?.replyId, 'fixture-counter-reply');
-    const freshCounter = await (await fetch(`${base}/api/eve/source-context?key=dataset%3Afixture%2Fcounter`)).json();
+    const freshCounter = await (await fetch(`${base}/api/eve/source-context?${new URLSearchParams({ key: counterKey })}`)).json();
     assert.deepEqual(before.agent.origin.source, freshCounter.source);
     const counterReply = JSON.stringify({ schema: 'rockstaros.eve-agent-proposal/1', name: 'fixture担当', purpose: '文章の行数を確認', input: 'text', output: 'lines' });
     assert.equal(before.agent.origin.replySha256, createHash('sha256').update(counterReply).digest('hex'));
@@ -696,8 +722,19 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       // and Tool, but uses the same real UI, routes, Connector and mii adapter.
       await navigateAndWait('Page.navigate', { url: base });
       await wait('document.body.innerText.includes("自分の担当を作る")', 'second Eve role');
+      if (postMode) {
+        await queueSource('保存した合計アプリを選ぶ');
+        sqlite.prepare('UPDATE sky_community_keys SET revoked_at=1 WHERE community_id=? AND profile_id=?').run(communityId,profileId);
+        await click('依頼を入力欄へ読み込む');
+        await wait(`!!document.querySelector('section[aria-label="SkyからEveへの引継ぎ"] [role="alert"]')`, 'revoked keyed reply rejected before apply');
+        assert.equal(await evaluate(composerText),'');
+        assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM sky_agent_settings').get().n,1);
+        assert.equal(connectorExecuteCalls,1);
+        sqlite.prepare('UPDATE sky_community_keys SET revoked_at=0 WHERE community_id=? AND profile_id=?').run(communityId,profileId);
+      }
       await queueSource('保存した合計アプリを選ぶ'); await click('依頼を入力欄へ読み込む');
-      await wait(`${composerText} === '選んだアプリで整数を合計したい'`, 'second explicit composer apply');
+      await wait(postMode ? `${composerText}?.includes(${JSON.stringify(sumContent)})` : `${composerText} === '選んだアプリで整数を合計したい'`, 'second explicit composer apply');
+      if (postMode) { const text=await evaluate(composerText); assert.ok(!text.includes('PRIVATE_PARENT_NOT_SELECTED') && !text.includes('UNRELATED_POST_NOT_SELECTED') && !text.includes(accessKey) && !text.includes(unrelatedKey)); }
       await click('合成回答を生成する（モデル未使用）'); await click('自分の担当を作る');
       await input('下書きに使う回答', 'fixture-sum-reply'); await click('回答から下書きを作る');
       await wait('document.body.innerText.includes("選んだ回答から作った下書き")', 'plain Eve reply draft');
@@ -716,7 +753,8 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       const secondAgentId = new URL(await evaluate('location.href')).searchParams.get('agent');
       const secondAgent = await (await fetch(`${base}/api/sky/agents?id=${encodeURIComponent(secondAgentId)}`)).json();
       assert.equal(secondAgent.agent.origin?.replyId, 'fixture-sum-reply');
-      assert.equal(secondAgent.agent.origin?.source?.key, 'space:fixture/summer');
+      assert.equal(secondAgent.agent.origin?.source?.key, postMode ? `post:${sumPostId}` : 'space:fixture/summer');
+      if (postMode) { assert.equal(secondAgent.agent.origin.source.post.replyTo,parentPostId); assert.equal(secondAgent.agent.origin.source.post.communityId,communityId); assert.equal(secondAgent.agent.origin.source.schema,'rockstaros.eve-post-source/1'); assert.ok(requests.filter(r=>r.path==='/api/eve/source-context'||r.path==='/api/sky/agents').every(r=>r.selectedCommunityKeys.length===0 || (r.selectedCommunityKeys.length===1 && r.selectedCommunityKeys[0]===communityId))); }
       assert.equal(secondAgent.agent.origin?.replySha256, createHash('sha256').update('二つの整数leftとrightを受け取り、合計sumを返す担当です。').digest('hex'));
 
       await input('仕事の名前', '合計fixture仕事'); await confirmDraft('二つの整数を合計',{left:4,right:7}); await createAndWait();

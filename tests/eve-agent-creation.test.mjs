@@ -1,3 +1,5 @@
+import * as postCommunityAccess from '../lib/community-access.ts';
+import * as postSkySocial from '../lib/sky-social.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
@@ -90,7 +92,7 @@ void test('agent API binds authenticated owner and retains previous client/CAS b
     async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },
   }; } }; } };
   class OperationError extends Error { constructor(message, status) { super(message); this.status = status; } }
-  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([
+  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],
     ['@/lib/fund-store', { database: () => db, requestUser: async request => request.headers.get('x-test-owner') }],
     ['@/lib/operations', { OperationError }], ['@/lib/owner-intent', ownerIntent], ['@/lib/sky-agent-library-store', agentStore], ['@/lib/sky-agent-library', library],
   ]));
@@ -162,7 +164,7 @@ void test('Agent route preserves an older attachment and requirements when old s
     async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },
   }; } }; } };
   class OperationError extends Error { constructor(message, status) { super(message); this.status = status; } }
-  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([
+  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],
     ['@/lib/fund-store', { database: () => db, requestUser: async request => request.headers.get('x-test-owner') }],
     ['@/lib/operations', { OperationError }], ['@/lib/owner-intent', ownerIntent], ['@/lib/sky-agent-library-store', agentStore], ['@/lib/sky-agent-library', library],
   ]));
@@ -195,7 +197,7 @@ void test('pending includes optional declarations and reconciles a lost real-rou
     async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },
   }; } }; } };
   class OperationError extends Error { constructor(message, status) { super(message); this.status = status; } }
-  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([
+  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],
     ['@/lib/fund-store', { database: () => db, requestUser: async request => request.headers.get('x-test-owner') }],
     ['@/lib/operations', { OperationError }], ['@/lib/owner-intent', ownerIntent], ['@/lib/sky-agent-library-store', agentStore], ['@/lib/sky-agent-library', library],
   ]));

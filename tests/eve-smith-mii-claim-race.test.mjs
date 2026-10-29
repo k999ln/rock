@@ -1,3 +1,5 @@
+import * as postCommunityAccess from '../lib/community-access.ts';
+import * as postSkySocial from '../lib/sky-social.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomUUID, createHash } from 'node:crypto';
@@ -32,7 +34,7 @@ async function fixture(t, { blockTool = false, loseClaimResponse = false } = {})
   }; } }; } };
   const owner = 'local-preview:claim-race-fixture', scope = await ownerScopeFor(owner);
   const env = { ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: owner, ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' };
-  const deps = new Map([['cloudflare:workers', { env }], ['@/lib/fund-store', { database: () => db, requestUser: requestAuth.requestUser }]]);
+  const deps = new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],['cloudflare:workers', { env }], ['@/lib/fund-store', { database: () => db, requestUser: requestAuth.requestUser }]]);
   for (const name of ['sky-agent-requirements', 'request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
     deps.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
   const authority = loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/authority.ts', import.meta.url), deps);

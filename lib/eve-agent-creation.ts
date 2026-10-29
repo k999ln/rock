@@ -1,5 +1,6 @@
 import { parseSkyAgentSettings, type SkyAgentSettings, type SkyLibraryAgent } from './sky-agent-library.ts';
 import { readOwnerScope } from './owner-intent.ts';
+import { selectedCommunityRequestHeaders } from './community-key-client.ts';
 
 /** Settings are sent only to the owner API; browser pending storage contains only a digest. */
 export type EveAgentCreation = { ownerScope: string; id: string; settings: SkyAgentSettings };
@@ -94,6 +95,7 @@ export async function createEveAgent(fetcher: Fetcher, request: EveAgentCreation
   try {
     response = await fetcher('/api/sky/agents', { method: 'PUT', headers: {
       'Content-Type': 'application/json', 'X-Rock-Owner-Scope': request.ownerScope,
+      ...(settings.origin?.source?.schema==='rockstaros.eve-post-source/1' ? selectedCommunityRequestHeaders(settings.origin.source.post.communityId) : {}),
     }, body: JSON.stringify({ id: request.id, revision: 0, settings, create: true }) });
   } catch { return reconcileEveAgentCreation(fetcher, pending, storage); }
   // A timeout or duplicate conflict can follow a write committed upstream,

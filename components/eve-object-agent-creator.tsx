@@ -28,6 +28,7 @@ export default function EveObjectAgentCreator({ replies = [], threadId = 'new' }
   const inFlight = useRef(false);
   const [replySelection, setReplySelection] = useState<{ id: string; original: string; edited: string; generation: number; source?: EveSourcePin } | null>(null);
   const [importedSource, setImportedSource] = useState<ReplySource | null>(null);
+  const [accessInvalidated,setAccessInvalidated] = useState(false);
   const committedReplies = useRef<ReplySource[]>([]);
   const generation = useRef(0);
   const mounted = useRef(false);
@@ -38,10 +39,22 @@ export default function EveObjectAgentCreator({ replies = [], threadId = 'new' }
       return { ...reply, generation: previous?.generation ?? ++generation.current };
     });
   }, [replies]);
+  useEffect(() => {
+    if(typeof window==='undefined' || typeof window.addEventListener!=='function')return;
+    const changed=()=>{
+      if(!committedReplies.current.some(reply=>reply.source?.schema==='rockstaros.eve-post-source/1'))return;
+      // An ephemeral generation, never a key or persisted authority. This also
+      // fences owner/digest awaits when a key is changed and then restored.
+      committedReplies.current=committedReplies.current.map(reply=>reply.source?.schema==='rockstaros.eve-post-source/1'?{...reply,generation:++generation.current}:reply);
+      setAccessInvalidated(true);setReplySelection(null);setError('投稿の閲覧条件が変わりました。回答を選び直して下書きを確認してください。');
+    };
+    window.addEventListener('rockstar-community-changed',changed);window.addEventListener('storage',changed);
+    return ()=>{window.removeEventListener('rockstar-community-changed',changed);window.removeEventListener('storage',changed);};
+  },[]);
   function sourceCurrent(source: ReplySource) {
     return mounted.current && committedReplies.current.some(reply => reply.id === source.id && reply.text === source.text && reply.generation === source.generation && JSON.stringify(reply.source) === JSON.stringify(source.source));
   }
-  const importedCurrent = !importedSource || replies.some(reply => reply.id === importedSource.id && reply.text === importedSource.text);
+  const importedCurrent = !importedSource || !accessInvalidated && replies.some(reply=>reply.id===importedSource.id && reply.text===importedSource.text);
   async function importReply() {
     if (!owner || !replySelection || busy || uncertain || inFlight.current) return;
     const selection = replySelection, source = { id: selection.id, text: selection.original, generation: selection.generation, ...(selection.source ? {source:selection.source}: {}) };
@@ -55,7 +68,7 @@ export default function EveObjectAgentCreator({ replies = [], threadId = 'new' }
       const origin = await makeEveAgentOrigin(threadId,selection.id,selection.original,selection.source);
       if (!sourceCurrent(source)) throw new Error('元の回答が変わりました。選び直してください。');
       const settings = { ...eveAgentDraftFromReply(selection.edited), origin };
-      setImportedSource(source); setDraft(settings);
+      setAccessInvalidated(false);setImportedSource(source); setDraft(settings);
     } catch (reason) { setError(reason instanceof Error ? reason.message : '回答から下書きを作れませんでした。'); }
     finally { inFlight.current = false; setBusy(false); }
   }
@@ -122,7 +135,7 @@ export default function EveObjectAgentCreator({ replies = [], threadId = 'new' }
   return <details className="zema-workflow-details">
     <summary>自分の担当を作る</summary>
     {saved ? <section aria-label="担当の保存結果"><p>{saved.name}を保存しました。保存だけでは仕事やToolは実行されません。</p>
-      {saved.origin && <p>下書きの由来: 回答 {saved.origin.replyId}{saved.origin.source ? ` · ${saved.origin.source.key} · 保存元の版 ${saved.origin.source.revision}` : ' · 出典の記録なし'}。権限や検収の証明ではありません。</p>}
+      {saved.origin && <p>下書きの由来: 回答 {saved.origin.replyId}{saved.origin.source ? ` · ${saved.origin.source.key}${saved.origin.source.schema==='rockstaros.eve-source/1' ? ` · 保存元の版 ${saved.origin.source.revision}` : ' · 選択した投稿の内容記録'}` : ' · 出典の記録なし'}。権限や検収の証明ではありません。</p>}
       <SkyAgentCapabilityReview agent={saved} onSaved={setSaved} />
       <Link href="/sky/agents">担当の設定を開く</Link></section>
       : uncertain && pending && !draft ? <section aria-label="担当の保存結果を照合"><p>保存途中だった担当があります。先に同じ担当の結果を確認してください。</p><button type="button" disabled={busy} onClick={() => void reconcile()}>同じ担当の保存結果を照合</button></section>

@@ -1,0 +1,187 @@
+{
+  "schema": "rockstaros.eve-post-source-acl/1",
+  "baseMain": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+  "goalContract": {
+    "revision": "POSTACL-v1",
+    "project": "jennifer-zema",
+    "responsibleSi": "jennifer-work-manager",
+    "primaryOwner": "ROCK",
+    "primarySquad": "O5",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "B05",
+      "SKY21"
+    ],
+    "goal": "Exact selected social post/reply with live ACL and source validation through existing Eve-to-Agent persistence",
+    "intent": "Use only the selected readable post, prevent stale/private source adoption, preserve existing Job and owner contracts",
+    "scope": [
+      "public post and keyed-community reply",
+      "exact content/attachment/author/community/reply/time hash",
+      "live ACL SELECT and create INSERT",
+      "current-key-only headers",
+      "async selection/key ABA fences",
+      "legacy provenance/unknown response recovery"
+    ],
+    "outOfScope": [
+      "upstream streaming",
+      "actual model/provider",
+      "composed Agent graph",
+      "device/wholeOS acceptance",
+      "publication/deployment/bulk616",
+      "main integration"
+    ],
+    "successCriteria": [
+      "selected post only, explicit load/edit/send/save",
+      "delete/content/attachment/owner/member/key/revocation/archive changes reject",
+      "atomic source+ACL at save",
+      "no unrelated keys/content stored or transmitted",
+      "two synthetic role flows through existing Smith/Job/result/reload",
+      "independent final hashes, full verify, Git preservation, final exact-head CI"
+    ],
+    "assumptions": [
+      "existing social/profile/community tables and key client are authoritative",
+      "post digest is a snapshot, not a fabricated upstream revision",
+      "COLOMBIA awaiting-source/unbound"
+    ],
+    "unresolved": [
+      "actual model/provider and upstream ingestion are separate acceptances"
+    ]
+  },
+  "implementationState": "implemented_independently_reviewed_host_scoped",
+  "verification": {
+    "independentReview": {
+      "result": "PASS_SCOPED",
+      "reviewer": "post_acl_review",
+      "report": "docs/evidence/development-execution/eve-post-source-independent-review.json",
+      "reportSha256": "1db838269185bea3f96cf9afdd4fac8bb243ae9ef4edc76949466916e9813312",
+      "reviewedProductionFiles": 13,
+      "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+      "independentTestsPassed": 221,
+      "failed": 0,
+      "skipped": 0,
+      "mustFixRemaining": 0,
+      "atomicPredicateSensitivityCases": 4
+    },
+    "fullVerify": {
+      "passed": true,
+      "exitCode": 0,
+      "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "logSha256": "349019d574f0de68fc85c7874dcc1e42feb49dbae7e4c6c9dc00f0d35c5cda5f",
+      "nodeTests": {
+        "tests": 3632,
+        "passed": 3628,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 4
+      },
+      "includes": [
+        "baseline/design/project checks",
+        "typecheck/product lint",
+        "all Node/Chrome/SDK loopback regressions",
+        "archive closure",
+        "build/web assets",
+        "Work API1678 assertions and CSV storage",
+        "mission/work/bot checks"
+      ],
+      "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+      "evidenceLevel": "macOS host; synthetic/local loopback; no actual inference/provider/physical acceptance"
+    },
+    "finalHeadCi": "pending exact pushed-head CI; final PR description is authoritative after receipt successor",
+    "browser": {
+      "evidenceLevel": "isolated Chrome / SQLite / synthetic Eve / real local SDK and Connector loopback",
+      "report": "docs/evidence/development-execution/eve-post-source-browser-acceptance.json",
+      "reportSha256": "3d72f61162b68690cfac401450e51ecc5de7ca19514c041f5e6d90615308b2eb",
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "flows": [
+        "selected public post -> line counter",
+        "selected keyed-community reply -> integer sum"
+      ],
+      "authority": "local preview only; unavailable authority test calls no Tool",
+      "modelResponse": "explicit synthetic fixture, no actual inference"
+    },
+    "targetedRoot": {
+      "clientCreatorRoutePassed": 40,
+      "priorAndNewClientPassed": 65,
+      "consolidatedInitial": {
+        "tests": 105,
+        "passed": 99,
+        "failed": 6,
+        "reason": "sandbox denied localhost listen; exactly six failing loopback cases passed with authorized loopback retry"
+      },
+      "loopbackRetryPassed": 6,
+      "typecheck": "passed",
+      "lint": "passed"
+    },
+    "spider": {
+      "changedFilesCoverageLimited": true,
+      "productionOnly": {
+        "files": 13,
+        "coverageLimited": false,
+        "categories": [
+          "data",
+          "identity",
+          "network"
+        ],
+        "recommendedChecks": [
+          "database-and-storage-boundaries",
+          "identity-and-authorization-boundaries",
+          "network-and-outbound-boundaries"
+        ]
+      },
+      "meaning": "metadata prioritization only; actual ACL/atomic/persistence/network boundaries exercised by independent tests and repository CI"
+    },
+    "ciAttempts": [
+      {
+        "sha": "58d96f87065aa4641968d2623710ca784128599e",
+        "pullRequest": 304,
+        "failedCheck": "SPIDER / secrets",
+        "jobId": 123752045235,
+        "url": "https://github.com/k999ln/rock/actions/runs/40960601510/job/123752045235",
+        "rule": "generic-api-key",
+        "findings": 2,
+        "classification": "false positives on public file SHA256 in source manifests, not credentials",
+        "sourceFile": "lib/community-key-client.ts",
+        "repair": "Unambiguous sourceFiles path/sha256 array on fresh-base successor; retain original history and scanner policy."
+      }
+    ],
+    "metadataReencodingReview": {
+      "report": "docs/evidence/development-execution/eve-post-source-metadata-review.json",
+      "sha256": "fd26f072f852a0c8ba87e93412b8dfd49693b33c82c5110ed9f2149d66390ece",
+      "result": "PASS_SCOPED",
+      "sourceUnchanged": true
+    }
+  },
+  "git": {
+    "branch": "codex/eve-post-acl-delivery-20261029",
+    "mainMerged": false,
+    "adoptedFromCommit": "58d96f87065aa4641968d2623710ca784128599e",
+    "supersededPr": "https://github.com/k999ln/rock/pull/304",
+    "historyPreservation": "Original branch and PR304 retain original reviewed implementation and false-positive CI. Fresh branch starts at same verified main, adopts identical13 source bytes, and changes receipt encoding only. No shared history rewritten; scanner policy unchanged."
+  },
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "actualModelAccepted": false,
+    "physicalAccepted": false,
+    "wholeEveAccepted": false
+  },
+  "nextOwner": "Web/O5",
+  "reproduce": [
+    "node --experimental-strip-types --test tests/eve-post-source-store.test.mjs tests/eve-post-source-api.test.mjs tests/eve-post-source-client.test.mjs tests/eve-agent-creation-ui.test.mjs",
+    "node --experimental-strip-types --test tests/eve-smith-mii-browser.test.mjs",
+    "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify"
+  ],
+  "recovery": "Source/ACL failure: choose current visible post again, explicitly reload/edit and save. Lost acknowledgement: exact owner/id/settings-digest GET readback, no second POST/PUT or ID. Legacy saved origin is immutable historical context, not current access.",
+  "remaining": [
+    "upstream/live timeline ingestion",
+    "actual model/provider acceptance",
+    "composed Agent graph and all-route acceptance",
+    "physical mii/Pixel/full OS",
+    "main integration separately"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "rockstaros.post-acl-metadata-reencoding-review/1",
+  "task": "POSTACL-v1",
+  "reviewer": "/root/post_acl_review",
+  "result": "PASS_SCOPED_NO_MUST_FIX",
+  "mustFix": [],
+  "baseMain": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+  "reviewedBranch": "codex/eve-post-acl-delivery-20261029",
+  "preservedOriginalCommit": "58d96f87065aa4641968d2623710ca784128599e",
+  "preservedOriginalBranch": "codex/eve-post-acl-provenance-20261029",
+  "preservedOriginalPr": 304,
+  "sourceFiles": [
+    {
+      "path": "app/api/eve/source-context/route.ts",
+      "sha256": "771e57be430117e8e02b3c632fb5435a81b4e0abb6d37c207418279ee7bf3a16"
+    },
+    {
+      "path": "app/api/sky/agents/route.ts",
+      "sha256": "9269f713f51504b5cb699fb44113f23acc835307b05ce4325869dc7f29dbba33"
+    },
+    {
+      "path": "components/eve-object-agent-creator.tsx",
+      "sha256": "cf72eb18b732667192f2f3b86f95e6a90e1450c106fac4ec57c03c383527029d"
+    },
+    {
+      "path": "components/eve-source-handoff.tsx",
+      "sha256": "039dfa8c62780c4aa7f6ab27fa3e003527ccb3cc9c25291d50caa7af8284e8a2"
+    },
+    {
+      "path": "components/sky-social-timeline.tsx",
+      "sha256": "c45acdf223edb4ee30c57040de2daf207c99625bd3112da7bdb23ce5a3a77a4f"
+    },
+    {
+      "path": "lib/community-key-client.ts",
+      "sha256": "cf8dfbf2a3a394813f1dcbdb668a857a7bcfc6272058ee348edc27dbc419da31"
+    },
+    {
+      "path": "lib/eve-agent-creation.ts",
+      "sha256": "157e17eb979007a178de473808cb01520a492207ed8d7996e9b7afa0a89901d9"
+    },
+    {
+      "path": "lib/eve-post-source-store.ts",
+      "sha256": "db31e60911a85fc3af76bdc26fc80681f8a8393f6c6f92ed1a9815967fed2dc7"
+    },
+    {
+      "path": "lib/eve-source-client.ts",
+      "sha256": "9653fd5dbf95742e0fd7bd3020201203ddfa5f0a4b99bb7fcb87f3519e55d73d"
+    },
+    {
+      "path": "lib/eve-source-context-store.ts",
+      "sha256": "12f1a94e51a21ddfa310af23cbe22ce9fdbbcebc8b3d71ef5ed4c2094f519b64"
+    },
+    {
+      "path": "lib/eve-source-context.ts",
+      "sha256": "6f2fd385c0ab61ee7d0a0a88fbb10232e4d7c04530c0ed7a181d527f4fd0f9c9"
+    },
+    {
+      "path": "lib/sky-agent-library-store.ts",
+      "sha256": "8e8994a59d412a6beade362ca2d521b38ab9c71fb3a4ac0bd0e23cd970db12f7"
+    },
+    {
+      "path": "lib/use-eve-source-handoff.ts",
+      "sha256": "8a37e9a922dc96f5577b96671def726f3f15cda7af7baac0061388b75eef148e"
+    }
+  ],
+  "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+  "manifestReencoding": {
+    "entries": 13,
+    "form": "sourceFiles array of {path,sha256}",
+    "uniqueComplete": true,
+    "actualSourceMatchesOriginalReviewAndCommit": true,
+    "originalReviewSha256": "aa495861b3a8e8ae079ad0d5122a532db57f2a8ed00985fdafff50a20a042f77",
+    "originalBrowserPacketSha256": "92044e6d12c2352a9891bddb3a103567a1c4c062cc90b60ddb7af8e232c69037",
+    "newReviewReportSha256": "1db838269185bea3f96cf9afdd4fac8bb243ae9ef4edc76949466916e9813312",
+    "newBrowserReportSha256": "3d72f61162b68690cfac401450e51ecc5de7ca19514c041f5e6d90615308b2eb",
+    "meaning": "Representation only. Reconstruct sorted path→fileSHA256 map before aggregate calculation; no review/test result or source byte changes."
+  },
+  "ciFailure": {
+    "sha": "58d96f87065aa4641968d2623710ca784128599e",
+    "check": "SPIDER / secrets",
+    "jobId": 123752045235,
+    "findings": 2,
+    "classification": "exact public source-file SHA256 treated as generic-api-key because old manifest property name contained key",
+    "actualFileHashVerified": true,
+    "resolution": "new clean-base commit adopts same implementation and typed manifest without failed ancestor; old branch/PR/failure preserved",
+    "scannerPolicyUnchanged": true
+  },
+  "progress": {
+    "threeObjectsEqual": true,
+    "mainMerged": false,
+    "wholeUnitAccepted": false
+  },
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "fixedVendorUnchanged": true,
+  "forbiddenFileUntouched": true,
+  "limitations": [
+    "Fresh branch not committed/pushed at this checkpoint",
+    "Successor final exact-head CI still required",
+    "No main integration or publication/deployment acceptance"
+  ]
+}
