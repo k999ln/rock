@@ -1,0 +1,90 @@
+{
+  "schema": "rockstaros.pr301-main-integration/1",
+  "recordedAt": "2026-10-29",
+  "repository": "k999ln/rock",
+  "pullRequest": 301,
+  "gitOwner": "Git / CI / Operations (ROCK; R04 primaryH1)",
+  "goal": "Normal merge of verified PR301 into latest main, verify same merge SHA CI, preserve progress/handoff and all publication holds",
+  "inputs": {
+    "mainBefore": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+    "reviewedPrHead": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+    "prHeadChecksPassed": 7,
+    "newerMainPaths": 23,
+    "sharedPaths": [
+      "data/project-status.json",
+      "project.md"
+    ],
+    "runtimeAndTestOverlap": false
+  },
+  "preflight": {
+    "report": "docs/evidence/development-execution/pr301-git-preflight.json",
+    "sha256": "067e8dcf8c8318a23a36514acaa6095de2cc2cab059cfe3c81cfaafee56af9f7",
+    "result": "GO_CONDITIONAL_NO_SOURCE_MUST_FIX",
+    "conditionsSatisfied": "candidate full verify and base main7CI passed before expected-head merge"
+  },
+  "candidate": {
+    "commit": "b0ee748692c1d46714e74804607c35adadf5fe7c",
+    "tree": "1c109259b1d71bd7b73c5a0aad7f4a86a9fca3d0",
+    "fullVerifyPassed": true,
+    "nodeTests": {
+      "tests": 3587,
+      "passed": 3583,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 4
+    },
+    "verifyLogSha256": "7fc7e7277e1f5f28ab123cf42413673bf433a886c2b7915a33e3d9bc132939d2"
+  },
+  "normalMerge": {
+    "method": "merge",
+    "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+    "parents": [
+      "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+      "2601b78d1f632f3bce58384b80218d7d92cc709e"
+    ],
+    "tree": "1c109259b1d71bd7b73c5a0aad7f4a86a9fca3d0",
+    "matchesValidatedCandidate": true
+  },
+  "sourceReview": {
+    "productionFiles": 21,
+    "aggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+    "evidence": "docs/evidence/development-execution/eve-selected-source-independent-review.json"
+  },
+  "mergeCi": {
+    "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+    "status": "success",
+    "checksPassed": 6,
+    "workflowRunsPassed": 4,
+    "receipt": "docs/evidence/development-execution/eve-selected-source-main-ci.json",
+    "receiptSha256": "554956d3f207efd69aebc0202939ac369d32e766c91edb3eb0e463210385b8e1"
+  },
+  "metadataDelivery": {
+    "branch": "codex/pr301-main-merge-record-20261029",
+    "scope": "merge/CI evidence and progress/handoff only",
+    "finalReadback": "followup PR description records its normal merge and latest-main CI without mutating the tested source"
+  },
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "actualModelOrDeviceAccepted": false,
+    "wholeEveAccepted": false
+  },
+  "preservedMainQuality": {
+    "qualityAccepted": false,
+    "defaultAdopted": false,
+    "physicalWholeLoopAccepted": false,
+    "nativePhoneInferenceAccepted": false
+  },
+  "postmergeGitReview": {
+    "report": "docs/evidence/development-execution/pr301-postmerge-git-review.json",
+    "sha256": "d46918f058cc50c004960c699ca51d24b865b4229517a9c8ade27e854b39e226",
+    "result": "PASS_GIT_UNION_CI_PENDING"
+  },
+  "completionScope": "PR301 source/runtime host integration and exact merge SHA CI accepted; metadata-only followup and its main CI are recorded in followup PR description.",
+  "metadataReview": {
+    "report": "docs/evidence/development-execution/pr301-final-metadata-independent-review.json",
+    "sha256": "a4cf1fef66da43f39992dbe7d121f1bc963c2c5fdaf1393720aa02b64bc5cfda",
+    "result": "PASS_SCOPED_NO_MUST_FIX"
+  }
+}

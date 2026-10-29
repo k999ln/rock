@@ -58,9 +58,13 @@ main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致
 
 既存A2A APIへ本人scopeとjob IDを追加し、miiソフト画面から上限・予約・利用量記録を明示読取する。観測・本人・job不一致と通信断は未確認とし、MCP料金・請求確定・実行許可に使わない。合成ブラウザと本人違い／期限／再送競合を含む54試験成功。独立検収でUI fixture不足と古いエラー残存を修正。別owner予算行の拒否と、owner hash照合中の観測喪失も確認。全verify初回は新テスト宣言lintで停止し修正、旧基点全verifyは3384成功・0失敗・4skip。main 91bd8bec取込み後の初回は既存Tool期限fixtureで1件失敗し単独23成功、全体再実行は3384成功・0失敗・4skip。Git/head/main CIは未完了。[証拠](docs/evidence/development-execution/mii-budget-readback.json)。PR264 head CI成功、main 6e494267の同SHA6check成功。担当付き仕事の作成前Tool／入力／費用確認は別候補で検収中。実mii・実account・Provider・実課金は未受入。
 
-### 選んだ出典・Eve回答から担当保存（2026-10-29 / O5・ROCK）
+### 選んだ出典・Eve回答から担当保存（2026-10-29 / O5・Git・ROCK）
 
-Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 基点main `3563d9a807568a474b34ce61f9a16de9cb3c231e`。独立検収で送信待機中の取消・会話/URL変更、非同期後の期限/時計、出典拒否のunknown固定を修正。独立検収PASS_SCOPED、全verify成功（Node3587/3583pass/0fail/4skip・build/API/mission完了）。PC固定CLIの終了観測/killpg競合も限定修正し、Python21/追加guard6と配布ZIP2件のbyte照合を独立受入。過去の失敗原因を未計測で断定せず[証拠](docs/evidence/development-execution/eve-selected-source-agent.json)へ保持する。Home複数カードの選択順序も共通ticketで固定し、新しい選択の失敗や旧CTA書込でも古い応答を復活させない。独立66件と負荷反復10回成功。[PR301](https://github.com/k999ln/rock/pull/301)へGit保存済み。初回CIのUI fixture待機2件は実非同期完了待ちへ修正し、独立27件・負荷160件・修正後全verify成功。修正head `0cc7d4cd`の同一SHA CI7/7成功を[保存](docs/evidence/development-execution/eve-selected-source-ci.json)。記録更新後の最終headはPR301の説明とChecksで再確認する。main未統合・公開/配備/616一括公開保留。合成回答・host範囲であり、実モデル/上流同期/投稿本文/Agent graph/全経路/実機は未受入。公開・配備・616件一括公開は保留。
+Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合して未送信入力へ明示読込し、送信前にも再確認。タブ内の共通ticketで複数カードの選択順序を守り、元回答hashと任意source pinは権限ではない本人確認履歴として保存する。
+
+[PR301](https://github.com/k999ln/rock/pull/301)の最終head `2601b78d`（CI7/7）を、最新main `10e443a8`へ通常mergeし、main `2922422c`となった。独立Git検収で23pathのmain追加と検収済み21sourceを保全し、品質FAIL・非default・実機未受入の既存記録を維持。統合treeは全verify成功候補と完全一致し、統合SHAのCI6check/4workflowが全成功。[統合証拠](docs/evidence/development-execution/eve-selected-source-main-integration.json)／[main CI](docs/evidence/development-execution/eve-selected-source-main-ci.json)。
+
+候補全verifyはNode3587/3583pass/0fail/4skip、build/API/missionを含む。初回fixture待機のCI2failと修正、PC終了競合の原失敗原因未確定を履歴へ保持する。記録のみの後続通常統合と最新main CIは後続PRの説明から再照合する。次はexact投稿ACL/由来の有限開発。実モデル/上流同期/投稿本文/Agent graph/全経路/実機は未受入、wholeEve/95unit完了へ加算しない。公開・配備・616件一括公開は保留。
 
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 

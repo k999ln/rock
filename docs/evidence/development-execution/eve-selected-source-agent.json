@@ -182,7 +182,7 @@
     "tabSelectionOrdering": "module-shared opaque current selection ticket, begun synchronously before first await; previous shared slot removed with readback; guarded write and navigation; legacy writers supersede; no persistence or authority"
   },
   "verification": {
-    "state": "git_preserved_independent_full_verify_and_same_sha_ci_pass_host_scoped",
+    "state": "main_integrated_independent_full_verify_same_merge_sha_ci_pass_host_scoped",
     "independentReview": {
       "result": "PASS_SCOPED",
       "reviewer": "eve_gap_review",
@@ -391,16 +391,25 @@
       "stressRuns": 20,
       "stressTestsPassed": 160,
       "delayedRealDigestOracle": "old fixture reproduces readiness failures; corrected fixture8/8pass under same35ms delay"
+    },
+    "mergeCi": {
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "status": "success",
+      "checksPassed": 6,
+      "workflowsPassed": 4,
+      "evidence": "docs/evidence/development-execution/eve-selected-source-main-ci.json"
     }
   },
   "git": {
     "branch": "codex/eve-selected-context-20261029",
     "pullRequest": "https://github.com/k999ln/rock/pull/301",
-    "mainMerged": false,
+    "mainMerged": true,
     "branchSaved": true,
     "implementationCommit": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
     "currentHeadReference": "https://github.com/k999ln/rock/pull/301",
-    "finalHeadCiReference": "PR301 description and current-head checks, verified after metadata receipt commit"
+    "finalHeadCiReference": "PR301 description and current-head checks, verified after metadata receipt commit",
+    "mainMergeSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+    "mergeEvidence": "docs/evidence/development-execution/eve-selected-source-main-integration.json"
   },
   "remaining": [
     "Upstream/live timeline and exact social-post provenance",

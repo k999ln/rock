@@ -307,7 +307,9 @@
       ],
       "upstreamOrModelAttested": false,
       "wholeEveAccepted": false,
-      "ciEvidence": "docs/evidence/development-execution/eve-selected-source-ci.json"
+      "ciEvidence": "docs/evidence/development-execution/eve-selected-source-ci.json",
+      "mainIntegrationEvidence": "docs/evidence/development-execution/eve-selected-source-main-integration.json",
+      "mainCiEvidence": "docs/evidence/development-execution/eve-selected-source-main-ci.json"
     }
   },
   "latestRockstarOsDesign": {

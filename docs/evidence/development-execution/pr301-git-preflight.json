@@ -1,0 +1,181 @@
+{
+  "schema": "rockstaros.pr301-git-preflight/1",
+  "task": "G301-v1",
+  "responsible": "Operations Bot / Git workstream10 / ROCK",
+  "recordedAtUtc": "2026-10-29 20:58:03 UTC",
+  "result": "GO_CONDITIONAL_NO_SOURCE_MUST_FIX",
+  "mustFix": [],
+  "repository": "k999ln/rock",
+  "pullRequest": 301,
+  "prHead": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+  "latestMain": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+  "commonAncestor": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+  "localValidationCommit": "b0ee748692c1d46714e74804607c35adadf5fe7c",
+  "expectedMergeTree": "1c109259b1d71bd7b73c5a0aad7f4a86a9fca3d0",
+  "localValidationParents": [
+    "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+    "2601b78d1f632f3bce58384b80218d7d92cc709e"
+  ],
+  "comparison": {
+    "prChangedPaths": 65,
+    "newMainChangedPaths": 23,
+    "newMainInsertions": 1128,
+    "newMainDeletions": 103,
+    "sharedPaths": [
+      "data/project-status.json",
+      "project.md"
+    ],
+    "runtimeOrTestOverlap": [],
+    "localMergeConflict": false
+  },
+  "review": {
+    "result": "PASS_SCOPED",
+    "productionFiles": 21,
+    "productionAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+    "allProductionBytesMatch": true,
+    "mainDisjointPathsPreservedByteForByte": 21,
+    "allMainStatusKeysPreservedExceptUpdatedAt": true,
+    "prEveSelectedSourceAgentObjectPreserved": true,
+    "mainProjectAddedLinesPreserved": 3,
+    "qualityRecoveryPreserved": {
+      "qualityAccepted": false,
+      "defaultAdopted": false,
+      "physicalWholeLoopAccepted": false,
+      "nativePhoneInferenceAccepted": false,
+      "status": "reviewed_implementation_main_and_same_sha_ci_complete_quality_fail"
+    },
+    "originalIndependentReport": "docs/evidence/development-execution/eve-selected-source-independent-review.json",
+    "metadataIndependentReport": "docs/evidence/development-execution/eve-selected-source-final-metadata-review.json"
+  },
+  "github": {
+    "mergeable": true,
+    "mergeableState": "clean",
+    "prHeadChecks": [
+      {
+        "name": "CodeQL",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+        "url": "https://github.com/k999ln/rock/runs/123722096560"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40951706018/job/123721234447"
+      },
+      {
+        "name": "verify",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40951706376/job/123721234378"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40951706018/job/123721233921"
+      },
+      {
+        "name": "SPIDER / repair regressions",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40951705773/job/123721233550"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40951705784/job/123721233165"
+      },
+      {
+        "name": "SPIDER / production web security measurement",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40951705773/job/123721233075"
+      }
+    ],
+    "latestMainChecksAtCapture": [
+      {
+        "name": "SPIDER / production web security measurement",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+        "url": "https://github.com/k999ln/rock/actions/runs/40952641735/job/123724472729"
+      },
+      {
+        "name": "prototype",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+        "url": "https://github.com/k999ln/rock/actions/runs/40952641821/job/123724472312"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+        "url": "https://github.com/k999ln/rock/actions/runs/40952641642/job/123724472293"
+      },
+      {
+        "name": "SPIDER / repair regressions",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+        "url": "https://github.com/k999ln/rock/actions/runs/40952641735/job/123724472209"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+        "url": "https://github.com/k999ln/rock/actions/runs/40952641737/job/123724472029"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "status": "completed",
+        "conclusion": "success",
+        "headSha": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+        "url": "https://github.com/k999ln/rock/actions/runs/40952641642/job/123724471740"
+      },
+      {
+        "name": "verify",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+        "url": "https://github.com/k999ln/rock/actions/runs/40952641707/job/123724471447"
+      }
+    ],
+    "baseCiQualification": "At capture,5 succeeded; verify and prototype still running. Parent subsequently reports prototype succeeded and verify pending. Do not mark full baseline CI green until a fresh read confirms it."
+  },
+  "mergeConditions": [
+    "Current main still equals10e443a854a83d29c962aff6cf0599cdbe86a5e3; otherwise re-audit its delta.",
+    "PR head still equals2601b78d1f632f3bce58384b80218d7d92cc709e; use expected_head_sha in GitHub merge.",
+    "Latest main own verify/prototype and other checks complete successfully.",
+    "Local union candidate full npm run verify exits0; no actual model/provider/device execution.",
+    "Use normal merge commit only; no squash/rebase/force. No source correction or mandatory branch resync is indicated by this disjoint delta.",
+    "After GitHub merge, independently confirm both parents and tree1c109259b1d71bd7b73c5a0aad7f4a86a9fca3d0 before accepting the union.",
+    "Wait for all merge-SHA checks; then record progress/handoff with source-only/model-quality/physical boundaries retained."
+  ],
+  "requiredValidation": {
+    "premerge": "Parent-running full npm run verify on local union candidate; main baseline same-SHA CI completion; PR final C same-SHA7/7 already independently read.",
+    "postmerge": "Exact new merge SHA CI including verify, CodeQL and SPIDER; run task/mission/design checks for any metadata-only followup and verify its final SHA separately."
+  },
+  "limitations": [
+    "This report independently checks Git union, source hashes and current evidence, not product-wide acceptance.",
+    "Local candidate full verify was still running at report capture; its result remains parent responsibility.",
+    "Historical CodeQL neutral intermediate state is not success; final PR head7 checks independently observed completed/success.",
+    "Forbidden docs/evidence/eve-execution-si.json was neither read, copied nor hashed."
+  ],
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  }
+}
