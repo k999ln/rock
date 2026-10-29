@@ -725,7 +725,7 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
-mii合成入力の追加能力について、未対応・未確認を拒否し既存成果を保持する候補はLinuxブラウザ2件・独立検収・CIに成功し、CodeQL警告を修正後PR283をmain 7007b0beへ統合。同SHA CIの初回と再試行は最初のChrome隔離profileが100回の起動待ち内に開始せず失敗。起動待ちを上限300回へ変更した候補は前headでブラウザ2件・CI成功、最終headの検証は未了。原因は未確定。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
+mii合成入力の追加能力について、未対応・未確認を拒否し既存成果を保持する候補はLinuxブラウザ2件・独立検収・CIに成功し、CodeQL警告を修正後PR283をmain 7007b0beへ統合。同SHA CIの初回と再試行は最初のChrome隔離profileが100回の起動待ち内に開始せず失敗。起動待ちを上限300回へ変更したPR284を独立検収とCI成功後main 8e5bbdb2へ統合し、同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-browser-startup-main-ci.json)。元の失敗原因は未確定。記録PR285の別のCIではブラウザ検査対象が遷移中に閉じたため失敗し、明示的な画面移動の完了待ち候補を検証中。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
 
 同じ合成mii仕事とworkerの遠隔取消応答喪失・予約保持・署名済使用額の精算と再送防止の縦断候補を追加。独立source検収済み、Worker試験・CI未実行。実機・実provider・実課金の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-remote-cancel.json)。
 

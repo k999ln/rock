@@ -7,12 +7,15 @@
   },
   "miiRequiredCapabilities": {
     "owner": "ROCK",
-    "status": "main_integrated_ci_two_failures_startup_candidate_passed_prior_head",
+    "status": "main_integrated_startup_fix_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
-    "next": "Confirm exact-head CI and independent review of startup candidate; initial main failures and cause remain recorded.",
+    "next": "Review navigation-event synchronization candidate after evidence PR browser CDP failure; confirm exact-head CI. Prior Chrome failures and root cause remain recorded.",
     "pullRequest": 283,
     "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
-    "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb"
+    "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb",
+    "startupFixPr": 284,
+    "startupFixMergeSha": "8e5bbdb25e78261d1916bc97ab318a053593385d",
+    "startupFixCiEvidence": "docs/evidence/development-execution/mii-browser-startup-main-ci.json"
   },
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",
