@@ -1,0 +1,36 @@
+{
+  "schema": "rockstaros.sdk-dist-release/1",
+  "state": "candidate_independent_test_pass_pr_pending",
+  "baseMain": "1ff203a85610095621bec716996af74f380eb967",
+  "sha256": {
+    "toolkits/sky-tool-sdk/build.mjs": "cd6cf79f76fe6ed7853100e3233819b29d3181825cd0c871ec3d9bb6c1e07d17",
+    "toolkits/sky-tool-sdk/package.json": "9cda1330d3c5258563312213393bce3bb2ee19cb95aa3225c03c7abced42f197",
+    "toolkits/sky-tool-sdk/README.md": "d36aefbbf474c49ee97f059f4bd7aa1e9428b220c326c59cef2be7d606af5865",
+    "toolkits/sky-tool-sdk/bin/create-sky-tool.mjs": "2628ca512b853d56c75760ba57a1019b156a5be572362b308bbc7be23e32f42a",
+    "scripts/package-sky-tool-sdk.py": "2ed61cbfd3a236579012e281186074a3d5cf64be4acc5282e4273d815394dab7",
+    "public/toolkits/rockstaros-sky-tool-sdk-0.1.5.tgz": "1662cb73047fe337a5957518f02fa84eeff1dceb1010cbfa7f15678d65ca9219",
+    "tests/sky-sdk-dist-integration.test.mjs": "015fcc95c16028682ffc04abe4f6fceca238a1266a251be132249ce67f4ffcc6",
+    "tests/sky-sdk-prepack.test.mjs": "ad01b00fc5bbe3bf649fabc99614ccd7d32dc068dcea9f50379122c4544d9129",
+    "tests/sky-studio-chat.test.mjs": "7e2756eee76450c762b8b0351e51946ba98d7e1abf0c41e38a0db6aad3337f49",
+    "components/rock-studio.tsx": "d9e560f0a2957a4d092a4a755a44fbca64afdde2435fb0b6b21fc989d7e6a4e6",
+    "tests/sky-sdk-archive-determinism.test.mjs": "c215bf1bf790f6c734b29bcacabbd03778109fdc3186db5525e1fe5ce676bbc6"
+  },
+  "legacyArchiveSha256": {
+    "0.1.3": "5ee84a4d158096b0965b08c71e1fbcf2cfcaa6b9046ce7e6994fb178bdce4c57",
+    "0.1.4": "aa82db15f5a5b480844efd5ddbc2d556dde18ea318d2c0254c34de0535e63cbe"
+  },
+  "independentTest": {
+    "scope": "offline SDK dist, canonical gzip, prepack and Studio; synthetic localhost",
+    "passed": 7,
+    "failed": 0,
+    "logSha256": "b7afc796581021bd87370642962b758d73814215b4ca41b03b433fbd0a07c571",
+    "archiveParity": "Mac Python 3.9 and 3.15 --check passed; Linux CI pending"
+  },
+  "limits": "Default npm pack invokes prepack; --ignore-scripts bypasses it. Bundled sample uses relative src import; test explicitly changes it to package root to exercise dist. No inference, actual provider, physical device, publication or general sandbox assurance. Fixed gzip stored blocks avoid compressor-version choices; CRC detects accidental corruption and is not an author signature. Empty and exactly 65535 byte single-block boundaries were not exercised by fixture.",
+  "next": "Final independent review and exact-head CI, then merge and merge-SHA CI.",
+  "ciHistory": {
+    "initialHead": "ee3153cc6759bfccf32238260dd7b19b784ce0f8",
+    "attempt1": "verify failed synthetic Eve supervisor timeout; log SHA256 83726f6778021dd9fc7c023aab6982aa2eb61c1c18d83bd7853f37194f9875f2",
+    "attempt2": "Node tests passed but sdk:package:check failed on Linux archive byte mismatch; log SHA256 09d82bc3764ea492a6b52a5ed3dce0f093c5d7dc734aef9ef25c0119bf8dc397"
+  }
+}

@@ -45,7 +45,7 @@ const packageJson = {
   private: true,
   type: 'module',
   scripts: { start: 'node index.mjs' },
-  dependencies: { '@rockstaros/sky-tool-sdk': '^0.1.4' },
+  dependencies: { '@rockstaros/sky-tool-sdk': '^0.1.5' },
 };
 
 const index = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
