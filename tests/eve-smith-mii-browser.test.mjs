@@ -331,6 +331,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const address = await evaluate('location.href'), query = new URL(address).searchParams;
     const saved = sqlite.prepare('SELECT id, payload FROM work_jobs').all(); assert.equal(saved.length, 1);
     const job = JSON.parse(saved[0].payload);
+    let originalObservationHash;
     assert.equal(query.get('workJob'), saved[0].id); assert.equal(job.agentBinding.agentId, query.get('agent'));
     assert.equal(job.agentBinding.agentRevision, Number(query.get('agentRevision')));
     if (localAuthority) {
@@ -349,6 +350,14 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.ok(exported.manifest.files.some(file => file.name === 'tool-execution-reviews.json'));
       assert.ok(exported.html.includes(attempt.executionReviewDigest));
       assert.ok(!exported.html.includes(attempt.capabilityHash));
+      originalObservationHash = createHash('sha256').update(job.toolObservations[0].text, 'utf8').digest('hex');
+      const marker = '<pre data-export-file="tool-observations.json">', start = exported.html.indexOf(marker);
+      assert.ok(start >= 0);
+      const escaped = exported.html.slice(start + marker.length).split('</pre>')[0];
+      const raw = escaped.replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&amp;', '&');
+      const entry = exported.manifest.files.find(file => file.name === 'tool-observations.json');
+      assert.equal(createHash('sha256').update(JSON.parse(raw)[0].text, 'utf8').digest('hex'), originalObservationHash);
+      assert.equal(createHash('sha256').update(raw, 'utf8').digest('hex'), entry.sha256);
 
       assert.equal(job.toolObservations[0].verification, 'client_observed_unverified');
       assert.match(job.toolObservations[0].text, /"lines"\s*:\s*3/);
@@ -361,6 +370,11 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'same job after reload');
     if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*3/);
     if (localAuthority) {
+      const reloaded = JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload);
+      assert.equal(createHash('sha256').update(reloaded.toolObservations[0].text, 'utf8').digest('hex'), originalObservationHash);
+      const miiText = await evaluate(`([...document.querySelector('[aria-label="miiから見た同じ仕事"]').querySelectorAll('div')].find(e=>e.querySelector('p')?.textContent.includes('保存された観測'))?.querySelector('pre')?.textContent)`);
+      assert.equal(typeof miiText, 'string');
+      assert.equal(createHash('sha256').update(miiText, 'utf8').digest('hex'), originalObservationHash);
       await wait(`document.querySelector('[aria-label="保存されたToolの応答"]')?.textContent.includes('lines')`, 'same persisted result in Eve workbench');
       assert.match(await evaluate(`document.querySelector('[aria-label="保存されたToolの応答"]').textContent`), /"lines"\s*:\s*3/);
       await wait(`document.querySelector('[aria-label="作成時と実行時の確認履歴"]')?.textContent.includes('作成時からの変更: 入力')`, 'persisted input-change history after reload');
@@ -469,6 +483,39 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       const row=JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(sent.id).payload);
       assert.equal(row.agentBinding.creationReview.inputSha256,sent.creationReview.inputSha256);
       assert.equal(row.toolAttempts,undefined);assert.equal(connectorExecuteCalls,calls);
+    }
+    if (localAuthority) {
+      // A third, user-authored purpose requests capabilities not declared by
+      // either synthetic Tool. Saving the role must not make or run a job.
+      const jobsBefore = sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n;
+      const createsBefore = creationRequests.length, callsBefore = connectorExecuteCalls;
+      const claimsBefore = requests.filter(r => r.path.endsWith('/tool-observations/claim')).length;
+      await devtools.call('Page.navigate', { url: base });
+      await wait('document.body?.innerText.includes("自分の担当を作る")', 'unsupported Eve role');
+      await click('自分の担当を作る');
+      await input('担当の名前', '画像説明担当'); await input('何を手伝う担当ですか', '画像の内容を説明する');
+      await input('受け取るもの', 'image'); await input('期待する成果', 'caption');
+      await click('内容を確認'); await click('確認して保存');
+      await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'unsupported Smith review');
+      await input('必要な入力項目', 'image'); await input('必要な成果項目', 'caption');
+      await input('Tool', packageKey); await input('実行先', 'pc');
+      await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'unsupported requirements saved');
+      await wait('document.body.innerText.includes("入力「image」は宣言で確認できません") && document.body.innerText.includes("成果「caption」は宣言で確認できません")', 'unsupported abilities reported');
+      assert.equal(await evaluate(`!![...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ担当で仕事の確認へ進む'))`), false);
+      const rows = sqlite.prepare('SELECT id, settings FROM sky_agent_settings WHERE owner_user_id=?').all(owner);
+      const saved = rows.map(row => ({ id: row.id, settings: JSON.parse(row.settings) })).find(row => row.settings.name === '画像説明担当');
+      assert.ok(saved); assert.match(saved.settings.instructions, /画像の内容を説明する/);
+      assert.deepEqual(saved.settings.requirements.inputFields, ['image']); assert.deepEqual(saved.settings.requirements.outputFields, ['caption']);
+      const reread = await fetch(`${base}/api/sky/agents?id=${encodeURIComponent(saved.id)}`);
+      const rereadBody = await reread.json(); assert.equal(reread.status, 200); assert.equal(rereadBody.ownerScope, scope);
+      assert.equal(rereadBody.agent.id, saved.id); assert.match(rereadBody.agent.instructions, /画像の内容を説明する/);
+      assert.deepEqual(rereadBody.agent.requirements.inputFields, ['image']);
+      assert.deepEqual(rereadBody.agent.requirements.outputFields, ['caption']);
+      assert.equal(rereadBody.agent.requirements.packageKey, packageKey); assert.equal(rereadBody.agent.requirements.executionTarget, 'pc');
+      assert.ok(Number.isSafeInteger(rereadBody.agent.revision) && rereadBody.agent.revision > 0);
+      assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n, jobsBefore);
+      assert.equal(creationRequests.length, createsBefore); assert.equal(connectorExecuteCalls, callsBefore);
+      assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, claimsBefore);
     }
     // The registry approval and account identity are synthetic. This does not
     // establish physical mii, real provider billing, or independent Tool safety.
