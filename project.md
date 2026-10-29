@@ -1,3 +1,7 @@
+### 準備済みPixel・eSIMの最新main再検証（2026-10-29 / G04・ROCK）
+
+Pixelのobserver試験PR261をmain aaab99e1へ統合、head全7check成功。待機上限・停止・未完了表示を直接検証しworker不変。独立host診断27成功/1skip、親process3成功/1 Linux skip。eSIMのESIM-04修正はPR248で採用済みのsource3 hash一致、既存setup込み88/88成功。host全verifyは3380件中3376成功/0失敗/4skip、初回sandbox待受拒否と通常権限再実行の区別を保持。[限定再検証記録](docs/evidence/development-execution/pixel-esim-prepared-work-main-merge.json)。Pixel統合後の同SHA6check/4workflowも全成功。記録込み全verify初回の既存PC終了確認/bot削除失敗は保持し、各単独再実行と全体再実行（3376成功/0失敗/4skip）が成功。実機・全OS・parent DB/Broker freshness・実provider/実課金・一般公開は未受入。
+
 ### Eve担当保存の応答不明と再送照合（2026-10-29 / ROCK・Sky）
 
 HTTP 408後にChromeが同一IDを再送して409となると、保存済みでも保留が消える反例を合成環境で確認。408と409は本人・ID・revision・設定を再読取し、不一致や読取失敗はunknownで維持する。独立検収11試験と35ケース、Chromeの同一body再送・他owner・誤内容を確認。旧基点cb77654d全verifyは3364成功・0失敗・4skip。新基点e79461ecの初回はローカル待受権限で停止、権限付き初回は既存Tool期限試験1件失敗（単独再実行成功）、全体再実行は3376成功・0失敗・4skip、buildと各check完了。実サービス・他ブラウザ・端末は未検証。[証拠](docs/evidence/development-execution/eve-create-408-409-reconciliation.json)。PR259 head 6a1f9747の全CI成功、通常merge main 53a61fd6の同SHA6checkも成功。実認証・端末・本番の受入は別途必要。
@@ -12,7 +16,7 @@ HTTP 408後にChromeが同一IDを再送して409となると、保存済みで�
 
 ### Pixel診断observer試験の時間依存修正（2026-10-29 / Android・ROCK）
 
-進捗PR260の統合main 317766a7初回CIで既存observer試験が0.203906秒となり0.2秒閾値を超過。同じSHAの再実行は成功し初回失敗は保持。終了待ちの指定0.05秒・停止Event・未完了状態を直接検証し、実callback停止中の復帰はwatchdog付きで確認する試験候補を作成。旧試験は診断保存0.25秒遅延で失敗し、候補は無期限join・待機上限変更を検出。独立Mac診断27pass/1skip、親process3pass/1 Linux skip。worker・実機は変更しない。[証拠](docs/evidence/development-execution/pixel-observer-join-fixture.json)。独立差分照合で対象1件の置換と1件追加、残る26件の不変を確認。全verify初回は別の既存bot試験の一時directory削除ENOTEMPTYで1件失敗（単独11成功）、全体再実行は3376成功・0失敗・4skip。Linux head/main CIとGit保存は未完了。
+進捗PR260の統合main 317766a7初回CIで既存observer試験が0.203906秒となり0.2秒閾値を超過。同じSHAの再実行は成功し初回失敗は保持。終了待ちの指定0.05秒・停止Event・未完了状態を直接検証し、実callback停止中の復帰はwatchdog付きで確認する試験候補を作成。旧試験は診断保存0.25秒遅延で失敗し、候補は無期限join・待機上限変更を検出。独立Mac診断27pass/1skip、親process3pass/1 Linux skip。worker・実機は変更しない。[証拠](docs/evidence/development-execution/pixel-observer-join-fixture.json)。独立差分照合で対象1件の置換と1件追加、残る26件の不変を確認。全verify初回は別の既存bot試験の一時directory削除ENOTEMPTYで1件失敗（単独11成功）、全体再実行は3376成功・0失敗・4skip。PR261 head 54c36545の全7check、通常merge main aaab99e1の同SHA6check/4workflowが成功。
 
 ### Pixel診断positive fixtureの保存完了同期（2026-10-28 / G04・ROCK）
 

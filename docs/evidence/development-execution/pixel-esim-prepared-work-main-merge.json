@@ -114,5 +114,108 @@
     "wholeOSAccepted": false,
     "P02Complete": false,
     "rawProofsPublished": false
+  },
+  "currentMainRevalidation": {
+    "recordedAt": "2026-10-29T03:42:20.654037+00:00",
+    "baseMain": "aaab99e19ed3c5c11176b1706bc1c5c93b68fca0",
+    "primaryWorkstream": "Git / CI / Operations",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "G04",
+      "OS10",
+      "SIM01"
+    ],
+    "scope": "Prepared Pixel diagnostic fixture and existing eSIM ESIM-04 input snapshot regression; no new device or provider execution",
+    "pixel": {
+      "pr": 261,
+      "head": "54c3654553339a3ee0dee3ce1b380154e83eec8b",
+      "merge": "aaab99e19ed3c5c11176b1706bc1c5c93b68fca0",
+      "headCISuccess": 7,
+      "mainCI": "6 checks and 4 workflows completed successfully at exact merge SHA",
+      "headLinuxVerify": {
+        "total": 3380,
+        "pass": 3375,
+        "fail": 0,
+        "skip": 5
+      },
+      "headLinuxLogSha256": "63d906e1f2acfa0f4964c9ec4d19e412e26b915911f548d7f4a6050a02a505a0",
+      "headAndMergeTreeIdentical": true,
+      "independentReview": "Read changed tests and runtime contract, independently executed diagnostic 27 pass/1 skip and parent 3 pass/1 Linux-only skip; existing source review and negative controls retained",
+      "workerChanged": false,
+      "mainLinuxVerify": {
+        "total": 3380,
+        "pass": 3375,
+        "fail": 0,
+        "skip": 5
+      },
+      "mainLinuxLogSha256": "5d91334e9a5ff9dbb0759e12a446a0f4ab44ab3027385b1494bcd9ce604c032d"
+    },
+    "esim": {
+      "sourcePR": 248,
+      "sourceMain": "b5c1ea1809d9c8387e572deb7176a5191aa70379",
+      "existingSource3HashesMatched": true,
+      "focusedTests": 88,
+      "pass": 88,
+      "fail": 0,
+      "skip": 0,
+      "command": "node --experimental-strip-types --test tests/rockstar-service-attachment.test.mjs tests/rockstar-service-setup.test.mjs",
+      "logSha256": "4e5a181cc8793a33948bf4df7c1b895d7e230810c15a35558c25ae7cf99e13a0",
+      "newImplementationNeeded": false,
+      "parentDatabaseFreshnessAccepted": false
+    },
+    "localFullVerify": {
+      "exitCode": 0,
+      "total": 3380,
+      "pass": 3376,
+      "fail": 0,
+      "skip": 4,
+      "logSha256": "e9375e97c5d04a714ff7de934214d83a8e37657c3a907625843fa39ccf9ee8f3",
+      "qualification": "PR261 tree is byte-identical to merge tree; host verification only"
+    },
+    "environmentIncidents": [
+      "Initial host diagnostics: sandbox Unix socket EPERM, same candidate permitted rerun passed",
+      "Initial full verify: sandbox localhost listen EPERM, permitted full rerun exit0"
+    ],
+    "wholeUnitAccepted": false,
+    "wholeOSAccepted": false,
+    "physicalAccepted": false,
+    "realProviderAccepted": false,
+    "realBillingAccepted": false,
+    "publicDeployment": false,
+    "remainingGates": [
+      "Pixel actual device/full OS, recovery and production reconnect remain separately unaccepted",
+      "eSIM parent DB/Broker atomic authority freshness and retained-data lifecycle gates remain independent",
+      "Real issuer/carrier/provider, payment, production D1 and public launch remain unaccepted"
+    ],
+    "bulk616": "HELD",
+    "metadataVerificationHistory": {
+      "firstFinalVerify": {
+        "exitCode": 1,
+        "total": 3380,
+        "pass": 3374,
+        "fail": 2,
+        "skip": 4,
+        "logSha256": "8f8908e8437ac7caf74813a2f1ef45e6d13f1df94196d2169f74e99bf696c7e7",
+        "failures": [
+          "Existing mr-pc-adapter: two Python child returncode assertions in oversized-output cases (one Node test)",
+          "Existing project-bot-context: ENOTEMPTY temporary-directory cleanup"
+        ]
+      },
+      "focusedReruns": {
+        "bot": {
+          "pass": 11,
+          "fail": 0,
+          "logSha256": "d5770fd7e11968d877979f7385b61c3de2e7b15c68bb5fedf00fc5f765d21f1c"
+        },
+        "pcAdapter": {
+          "nodePass": 1,
+          "fail": 0,
+          "logSha256": "524c14e2247b46ae063d5bcf605859c6785cb64d247302b21558c2f678096797"
+        }
+      },
+      "cause": "Not established; source and assertions unchanged",
+      "next": "Same-candidate full rerun exit0: 3380 total / 3376 pass / 0 fail / 4 skip; build/API/mission/work/bot complete",
+      "fullRerunLogSha256": "bfa3cb995090fbf47367f9f231ee747d16c5e1b8e629a7d058e221b5fa777602"
+    }
   }
 }
