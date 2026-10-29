@@ -1,4 +1,10 @@
 {
+  "miiWorkerUnknownDraft": {
+    "owner": "ROCK",
+    "status": "draft_untested",
+    "evidence": "docs/evidence/development-execution/mii-worker-unknown-draft.json",
+    "next": "Run targeted Cloudflare Worker test with local ports after the shared resource window; repair failures, then independent review, full verify and exact-head CI before any merge."
+  },
   "sdkDeclaredExample": {
     "owner": "ROCK",
     "status": "independent_review_full_verify_pass_integration_pending",
