@@ -26,5 +26,13 @@
   "gitAndCI": "pending",
   "independentReview": "PASS_SCOPED: independent reviewer found missing UI formatter fixture and stale error after retry; repaired. Then confirmed owner row hash, owner/parent/job, observation and serial checks, and UI cost semantics; 52 adapter/UI and 2 browser tests passed. Additional deterministic observation-loss-during-owner-digest fixture passed after review.",
   "fullVerifyLogSha256": "5dd7d60dca18df375cd6d69475488f4034941cd42a6fdebe60de598a833c7d67",
-  "initialLintFailureLogSha256": "c73cd594a1500f6f3a018b671894f70aae7d44d8274cdcfca9dd79e96f74213a"
+  "initialLintFailureLogSha256": "c73cd594a1500f6f3a018b671894f70aae7d44d8274cdcfca9dd79e96f74213a",
+  "mergedBaseVerification": {
+    "main": "91bd8bec1606c391ffdfe83ca6dad7b9582ec298",
+    "first": "3383 pass, 1 failure, 4 skip: existing work-tool-observations review-expiry fixture had no capability token under load",
+    "firstLogSha256": "2b4e346b9b478fea239f5e17d40345c7e3190cfaf8a4fcb2fdfe7f56f7613a22",
+    "focusedRerun": "23 pass, 0 fail",
+    "fullRerun": "3384 pass, 0 fail, 4 skip; build/API/mission/work/bot complete",
+    "fullRerunLogSha256": "0d205aafbccc4396efb269eebcade1970e95c87904403f5594a9b29199f63f09"
+  }
 }

@@ -24,7 +24,7 @@ PR255はhead7check/4workflow成功でmain76b327c2へ通常統合したが、main
 
 ### mii同一仕事の委任予算読取候補（2026-10-29 / Android・ROCK）
 
-既存A2A APIへ本人scopeとjob IDを追加し、miiソフト画面から上限・予約・利用量記録を明示読取する。観測・本人・job不一致と通信断は未確認とし、MCP料金・請求確定・実行許可に使わない。合成ブラウザと本人違い／期限／再送競合を含む54試験成功。独立検収でUI fixture不足と古いエラー残存を修正。別owner予算行の拒否と、owner hash照合中の観測喪失も確認。全verify初回は新テスト宣言lintで停止し修正、最終全verifyは3384成功・0失敗・4skip。Git/head/main CIは未完了。[証拠](docs/evidence/development-execution/mii-budget-readback.json)。担当付き仕事の作成前Tool／入力／費用確認は別候補で開発中。実mii・実account・Provider・実課金は未受入。
+既存A2A APIへ本人scopeとjob IDを追加し、miiソフト画面から上限・予約・利用量記録を明示読取する。観測・本人・job不一致と通信断は未確認とし、MCP料金・請求確定・実行許可に使わない。合成ブラウザと本人違い／期限／再送競合を含む54試験成功。独立検収でUI fixture不足と古いエラー残存を修正。別owner予算行の拒否と、owner hash照合中の観測喪失も確認。全verify初回は新テスト宣言lintで停止し修正、旧基点全verifyは3384成功・0失敗・4skip。main 91bd8bec取込み後の初回は既存Tool期限fixtureで1件失敗し単独23成功、全体再実行は3384成功・0失敗・4skip。Git/head/main CIは未完了。[証拠](docs/evidence/development-execution/mii-budget-readback.json)。担当付き仕事の作成前Tool／入力／費用確認は別候補で開発中。実mii・実account・Provider・実課金は未受入。
 
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 
