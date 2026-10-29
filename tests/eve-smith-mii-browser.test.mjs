@@ -4,14 +4,14 @@ import { build } from 'esbuild';
 import { DatabaseSync } from 'node:sqlite';
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRouteFixture } from './route-fixture.mjs';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
-import { createDeclaredFixtureTools, fixturePermissions } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
+import { createAuthorWorkspace } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
 import { parseSkyToolPackage, skyToolPackageKey, skyToolPackageSha256 } from '../lib/sky-tool-package.ts';
 import { skyPackageSchemaSha256 } from '../lib/sky-package-runtime.ts';
 import { createConnector } from '../toolkits/sky-mcp-connector/server.mjs';
@@ -87,7 +87,10 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     for (const name of ['a2a-authorization', 'a2a-price-quote', 'a2a-usage-receipt', 'jennifer-execution-store', 'jennifer-amc-execution', 'a2a-agent-directory', 'sky-tool-package-store', 'sky-package-runtime-binding', 'sky-package-runtime-binding-store'])
       deps.set(`@/lib/${name}`, {});
     deps.set('@/lib/a2a-parent-controller', await import('../lib/a2a-parent-controller.ts'));
-    deps.set('@/lib/rockstar-device-link', { requestRockstarUser: async () => owner });
+    deps.set('@/lib/rockstar-device-link', { requestRockstarUser: async () => authenticatedOwner });
+    deps.set('@/lib/sky-owner-export', await import('../lib/sky-owner-export.ts'));
+    deps.set('@/lib/sky-owner-export.server', await import('../lib/sky-owner-export.server.ts'));
+    const exportRoute = loadRouteFixture(new URL('../app/api/sky/exports/[id]/route.ts', import.meta.url), deps);
     const authority = loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/authority.ts', import.meta.url), deps);
     deps.set('@/app/api/work-jobs/tool-observations/authority', authority);
     const routes = {
@@ -97,6 +100,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       '/api/work-jobs/tool-observations': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/route.ts', import.meta.url), deps),
       '/api/work-jobs/tool-observations/claim': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/claim/route.ts', import.meta.url), deps),
     };
+    const { createLineCounter: createDeclaredFixtureTools, examplePermissions: fixturePermissions } = await createAuthorWorkspace(dir);
     const app = createDeclaredFixtureTools({ publicMcpUrl: 'https://example.invalid/mcp', skyUrl: 'https://example.invalid', localToolDirectory: path.join(dir, 'discovery'),
       developerToken: 'fixture-token-not-a-credential', fetch: async () => { throw new Error('EXTERNAL_NETWORK_FORBIDDEN'); }, logger: { warn() {} } });
     const packages = await Promise.all(app.manifests().map(async raw => {
@@ -125,6 +129,12 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
         }
         if (url.pathname === '/api/sky/tool-registry' || url.pathname === '/api/rockstar/entitlements') {
           res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end(JSON.stringify(url.pathname.endsWith('tool-registry') ? registry : entitlements));
+        }
+        const exportId = url.pathname.match(/^\/api\/sky\/exports\/([^/]+)$/)?.[1];
+        if (exportId && req.method === 'GET') {
+          const headers = new Headers(req.headers); headers.set('oai-authenticated-user-id', authenticatedOwner);
+          const result = await exportRoute.GET(new Request(url, { headers }), { params: Promise.resolve({ id: exportId }) });
+          res.writeHead(result.status, Object.fromEntries(result.headers)); return res.end(await result.text());
         }
         if (!routes[url.pathname]?.[req.method]) { res.writeHead(404, { 'Content-Type': 'application/json' }); return res.end('{}'); }
         const chunks = []; for await (const chunk of req) chunks.push(chunk);
@@ -521,6 +531,47 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       const entry = exported.manifest.files.find(file => file.name === 'tool-observations.json');
       assert.equal(createHash('sha256').update(JSON.parse(raw)[0].text, 'utf8').digest('hex'), originalObservationHash);
       assert.equal(createHash('sha256').update(raw, 'utf8').digest('hex'), entry.sha256);
+
+      // The real mii link downloads the owner-scoped server export; compare the
+      // saved observation bytes, not the enclosing HTML's timestamped hash.
+      const downloads = path.join(dir, 'downloads'); await mkdir(downloads);
+      await devtools.call('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: downloads });
+      const exportPath = `/api/sky/exports/${job.id}?revision=${job.revision}`;
+      const changesBeforeExport = sqlite.prepare('SELECT total_changes() AS n').get().n;
+      authenticatedOwner = 'local-preview:other-owner';
+      try { assert.equal((await fetch(base + exportPath)).status, 404); }
+      finally { authenticatedOwner = owner; }
+      assert.ok(job.revision > 0);
+      assert.equal((await fetch(`${base}/api/sky/exports/${job.id}?revision=${job.revision - 1}`)).status, 409);
+      assert.equal((await fetch(`${base}/api/sky/exports/${job.id}?revision=${job.revision + 1}`)).status, 409);
+      assert.deepEqual(await readdir(downloads), []);
+      assert.equal(await evaluate(`document.querySelector('a[download][href=${js(exportPath)}]')?.getAttribute('href')`), exportPath);
+      await evaluate(`document.querySelector('a[download][href=${js(exportPath)}]').click()`);
+      let names = [];
+      for (let i = 0; i < 100; i++) {
+        names = await readdir(downloads);
+        if (names.some(name => name.endsWith('.html'))) break;
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+      const htmlFiles = names.filter(name => name.endsWith('.html'));
+      assert.equal(htmlFiles.length, 1, 'the real link must finish one HTML download');
+      const downloaded = await readFile(path.join(downloads, htmlFiles[0]), 'utf8');
+      const unescape = value => value.replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&amp;', '&');
+      const extract = marker => {
+        const start = downloaded.indexOf(marker); assert.ok(start >= 0, `missing ${marker}`);
+        return unescape(downloaded.slice(start + marker.length).split('</pre>')[0]);
+      };
+      const downloadedManifest = JSON.parse(extract('<pre id="export-manifest">'));
+      const downloadedRaw = extract('<pre data-export-file="tool-observations.json">');
+      const downloadedEntry = downloadedManifest.files.find(file => file.name === 'tool-observations.json');
+      assert.equal(downloadedManifest.scope.jobId, job.id); assert.equal(downloadedManifest.scope.revision, job.revision);
+      assert.equal(createHash('sha256').update(JSON.parse(downloadedRaw)[0].text, 'utf8').digest('hex'), originalObservationHash);
+      assert.equal(JSON.parse(downloadedRaw)[0].verification, 'client_observed_unverified');
+      assert.equal(createHash('sha256').update(downloadedRaw, 'utf8').digest('hex'), downloadedEntry.sha256);
+      assert.equal(Buffer.byteLength(downloadedRaw), downloadedEntry.byteLength);
+      assert.ok(!downloaded.includes(attempt.capabilityHash)); assert.ok(!downloaded.includes(resources.connectorToken));
+      assert.equal(sqlite.prepare('SELECT total_changes() AS n').get().n, changesBeforeExport);
+      assert.deepEqual(JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload), job);
 
       assert.equal(job.toolObservations[0].verification, 'client_observed_unverified');
       assert.match(job.toolObservations[0].text, /"lines"\s*:\s*3/);

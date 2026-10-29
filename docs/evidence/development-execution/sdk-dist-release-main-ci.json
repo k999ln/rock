@@ -1,0 +1,51 @@
+{
+  "schema": "rockstaros.main-ci-evidence/1",
+  "pullRequest": 292,
+  "mergeSha": "2fe3ea469de87a0999f7e97a75cb7a67c664b76c",
+  "checks": [
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40877787878/job/123465688799",
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40877788048/job/123465687924",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40877788048/job/123465687700",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40877788102/job/123465679846",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40877788102/job/123465679365",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40877787880/job/123465678638",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40877787936/job/123460994127",
+      "name": "public-fixture-tests",
+      "status": "completed"
+    }
+  ],
+  "history": "Initial merge checks were cancelled by later main pushes; cancelled workflows were rerun on the same SHA.",
+  "scope": "host synthetic SDK dist and archive; no real provider or device acceptance"
+}

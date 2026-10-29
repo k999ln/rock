@@ -13,7 +13,7 @@ import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { defaultSkyAgentSettings } from '../lib/sky-agent-library.ts';
 import { reviewSkyAgentRequirements } from '../lib/sky-agent-requirements.ts';
 import { skyToolPackageKey, skyToolPackageSha256, parseSkyToolPackage } from '../lib/sky-tool-package.ts';
-import { createDeclaredFixtureTools, fixturePermissions } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
+import { createAuthorWorkspace } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
 import { workToolExecutionReviewDigest } from '../lib/workflow.ts';
 import { createConnector } from '../toolkits/sky-mcp-connector/server.mjs';
 import { createMiiWorkAdapter } from '../lib/mii-work-adapter.ts';
@@ -22,6 +22,7 @@ import { buildSkyOwnerExport } from '../lib/sky-owner-export.ts';
 void test('two owner-defined roles use distinct SDK Tool schemas through authenticated jobs, export and mii readback without inference', { timeout: 15000 }, async t => {
   const dir = await mkdtemp(join(tmpdir(), 'rock-eve-smith-mii-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
+  const { createLineCounter: createDeclaredFixtureTools, examplePermissions: fixturePermissions } = await createAuthorWorkspace(dir);
   const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
   for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(name => name.endsWith('.sql') && !name.startsWith('._')).sort())
     sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));

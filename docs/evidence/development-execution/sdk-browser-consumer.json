@@ -1,0 +1,26 @@
+{
+  "schema": "rockstaros.sdk-browser-consumer/1",
+  "state": "candidate_independent_test_pass_pr_pending",
+  "baseMain": "a749b6233a0e1f8d56c96fb9483d39630c723d7f",
+  "sha256": {
+    "tests/eve-smith-mii-browser.test.mjs": "1b2544aa44abbe62029d4ba160eac7682576ac8d11b76e29a6da97626050155a",
+    "tests/fixtures/eve-smith-mii-browser/declared-tools.mjs": "fecddbdea7334dfaa5c462aa13ac4eb23f7a4d4edc1ce96b82ec0d99712723dd",
+    "public/toolkits/rockstaros-sky-tool-sdk-0.1.5.tgz": "1662cb73047fe337a5957518f02fa84eeff1dceb1010cbfa7f15678d65ca9219",
+    "tests/eve-smith-mii-platform-integration.test.mjs": "2b12491aa9aac1b5006ed9f22055627d1a4b3a78dd055300c1e313c1cdc75d8c"
+  },
+  "scenario": "Unpack actual SDK 0.1.5, run its CLI for an empty synthetic author workspace, copy SDK offline, explicitly change sample import from relative source to package root, assert it resolves to dist, and use actual Eve/Smith browser UI, Connector, job and mii readback for two roles and unsupported third. The mii link downloads through the real export route; original observation and manifest hashes are checked, old and future revisions and another owner are rejected via synthetic HTTP, and the database remains unchanged.",
+  "independentTest": {
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "a2aafc27423e484470baa00beb981c1038baadd099e861739053fbd3299cc2dc",
+    "scope": "Mac isolated Chrome and platform integration, local synthetic authority and localhost"
+  },
+  "limits": "SDK copied by fixture, not npm install in this browser run; source sample unchanged until explicit author edit. Account, entitlement and review synthetic; some service and device links stubbed. No real provider, payment, physical device, model inference, Sky output center download or general network isolation accepted. Initial author run required generated private module before browser build; independent rerun did not reproduce that setup failure.",
+  "next": "Final review, exact-head CI, main merge and merge-SHA CI.",
+  "ciHistory": {
+    "head": "ba515313a9a477b27ecd9b43fbe7b4c81879db7d",
+    "result": "verify failed: existing integration test imported removed fixture export; corrected consumer to shared workspace helper",
+    "failedLogSha256": "a6f7e1d09b8e4d3f3bb8d6969b6dc3972e5d245b149e8d2a2593f1810177879e"
+  }
+}

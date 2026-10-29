@@ -179,7 +179,8 @@
         "tests/eve-smith-mii-browser.test.mjs",
         "tests/eve-smith-mii-platform-integration.test.mjs",
         "tests/sky-studio-chat.test.mjs",
-        "tests/sky-sdk-author-workspace-integration.test.mjs"
+        "tests/sky-sdk-author-workspace-integration.test.mjs",
+        "tests/fixtures/eve-smith-mii-browser/declared-tools.mjs"
       ],
       "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
       "scope": "unpacked SDK sample with synthetic local authority; no publication or general sandbox acceptance",
@@ -198,7 +199,8 @@
         ],
         "evidence": "docs/evidence/development-execution/sdk-dist-release.json",
         "scope": "offline synthetic candidate; default pack builds dist; sample import changed explicitly; no provider or device acceptance"
-      }
+      },
+      "browserConsumerEvidence": "docs/evidence/development-execution/sdk-browser-consumer.json"
     },
     "requiredActionCapabilities": {
       "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",

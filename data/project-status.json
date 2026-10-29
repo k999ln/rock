@@ -12426,20 +12426,34 @@
   },
   "sdkDistRelease": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/sdk-dist-release.json",
-    "next": "Independent final candidate review, exact-head CI, merge and merge-SHA CI."
+    "next": "Actual provider, physical device and publication remain separately unaccepted.",
+    "pullRequest": 292,
+    "mergeSha": "2fe3ea469de87a0999f7e97a75cb7a67c664b76c",
+    "mainCiEvidence": "docs/evidence/development-execution/sdk-dist-release-main-ci.json"
   },
   "miiWorkerTwoConsumers": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-two-consumers.json",
-    "next": "Exact-head CI and independent final review; actual distributed journal, physical mii, remote provider and Wallet remain separate."
+    "next": "Physical mii, distributed journal, actual provider and Wallet remain separately unaccepted.",
+    "pullRequest": 293,
+    "mergeSha": "692a59e0ec1cf210db41e13440e5e8380f2599c8",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-two-consumers-main-ci.json"
   },
   "eveSupervisorSignal": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/eve-signal-supervisor.json",
-    "next": "Independent review, exact-head Linux CI, merge and same-SHA CI. Actual model and descendant process-group remain unaccepted."
+    "next": "Real training, descendant process group and hard isolation remain separately unaccepted.",
+    "mergeSha": "a749b6233a0e1f8d56c96fb9483d39630c723d7f",
+    "mainCiEvidence": "docs/evidence/development-execution/eve-signal-supervisor-main-ci.json"
+  },
+  "sdkBrowserConsumer": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/sdk-browser-consumer.json",
+    "next": "Exact-head CI, independent final review, merge and merge-SHA CI; real identity/provider/device remain separate."
   }
 }
