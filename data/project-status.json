@@ -1,10 +1,20 @@
 {
+  "miiWorkerUnknownDraft": {
+    "owner": "ROCK",
+    "status": "draft_independent_ci_reproduced_exact_head_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-unknown-draft.json",
+    "next": "Confirm exact-head CI and independent metadata review. Local test, remote cancellation response loss and signed receipt remain separate.",
+    "pullRequest": 282
+  },
   "miiShortLeaseBrowser": {
     "owner": "ROCK",
-    "status": "draft_ci_failure_readiness_fix_unverified",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
-    "next": "Run exact-head browser and full CI after Package-binding readiness fix; independently review before merge.",
-    "pullRequest": 281
+    "next": "Physical mii and output remain separate.",
+    "pullRequest": 281,
+    "mergeSha": "ad9c0bcb25c4c3ad9e55ebc3c766a60dcd5e6c60",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-short-lease-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "sdkDeclaredExample": {
     "owner": "ROCK",
