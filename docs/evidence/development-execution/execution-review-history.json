@@ -1,0 +1,96 @@
+{
+  "schema": "rockstaros.execution-review-history/1",
+  "baseMain": "94f0d9db3b78c36f4216deacce204099149b971b",
+  "status": "independent_review_full_verify_pass_integration_pending",
+  "reviewedR2AggregateSha256": "70adcf6a31f6cd0009ac8b364941271d45532ec2efebabcbf37e74918ec886c0",
+  "reviewedR2SourceSha256": {
+    "app/api/work-jobs/tool-observations/claim/route.ts": "304202e1f74dc10730837c6fda2705be98ecba4d81596aee087312a31063de1b",
+    "app/api/work-jobs/tool-observations/route.ts": "5168de2f57c9edf5cd8e6184ef4b441755ac9f68c93936bd8d929e1ed6cfb0fc",
+    "components/agent-tool-job-runner.tsx": "58fc2eae372df7a9cc9b84feb6a6c1d2f78c410dc9fdd4538f5024221463eb18",
+    "components/mcp-bot-runner.tsx": "748d731aaf6e50b18a3b78bdb69b657ba351699baeee560b0227312f5940466e",
+    "components/workbench.tsx": "8eeab91938a831af11054a00e5ea6d8b29380da2c29f22a8dd22f13aaf44cfea",
+    "lib/mcp-hub.ts": "bb0fe5c6a3de5dc0c163a842b35f474e085ff1fd43e04a7522ac6d9f243f7203",
+    "lib/sky-owner-export.ts": "4cca0c0b6c1d413e7e18224bc9bf2d461c3f5721deecc79500db6aa92e70a00d",
+    "lib/workflow.ts": "134875b546d9fc5e7cc1798cb04d19fe67ade52d13e863d13037de639e0b790e",
+    "public/toolkits/sky-mcp-connector.zip": "5d39e7e0db835b970a3323e2660f42107b0b7a83c4da2cc7cb57cd9f0ef43f01",
+    "tests/agent-tool-job-runner-ui.test.mjs": "ac9ef198911e56db0e7f59addcc4ede5b03a291a173b551ceaa57b4804830f45",
+    "tests/eve-smith-mii-browser.test.mjs": "b144e11b48122ef0d9d00cffe4aa9fca4b72bafc1ea9bc7014a3942d66787c58",
+    "tests/mcp-job-claim-connector.test.mjs": "f7a5023c01bb17dc1b0f92b486402eab7a82de8b828e7dc8bb916584e042da20",
+    "tests/sky-owner-export.test.mjs": "fca3c3efeb2dea857ec085845365648cdd598a322f1cf98874cf6eb1d0295a61",
+    "tests/work-tool-execution-review-required.test.mjs": "4199cb2ba3bfe69f366e6693427a099bd5d457fcdbf22343bf6c81f7540ecd8e",
+    "tests/work-tool-observations-route.test.mjs": "5ed50029540e37c9af9c5091d650a4265b6868bfeced6d04fed463e063dc6863",
+    "toolkits/sky-mcp-connector/server.mjs": "991c6c956600bd1ebd2bdb6f1a09aaf0c4ef5817bff1089b8e882f9282bf65fe"
+  },
+  "integratedSourceSha256": {
+    "app/api/work-jobs/tool-observations/claim/route.ts": "304202e1f74dc10730837c6fda2705be98ecba4d81596aee087312a31063de1b",
+    "app/api/work-jobs/tool-observations/route.ts": "5168de2f57c9edf5cd8e6184ef4b441755ac9f68c93936bd8d929e1ed6cfb0fc",
+    "components/agent-tool-job-runner.tsx": "58fc2eae372df7a9cc9b84feb6a6c1d2f78c410dc9fdd4538f5024221463eb18",
+    "components/mcp-bot-runner.tsx": "748d731aaf6e50b18a3b78bdb69b657ba351699baeee560b0227312f5940466e",
+    "components/workbench.tsx": "8eeab91938a831af11054a00e5ea6d8b29380da2c29f22a8dd22f13aaf44cfea",
+    "lib/mcp-hub.ts": "bb0fe5c6a3de5dc0c163a842b35f474e085ff1fd43e04a7522ac6d9f243f7203",
+    "lib/sky-owner-export.ts": "4cca0c0b6c1d413e7e18224bc9bf2d461c3f5721deecc79500db6aa92e70a00d",
+    "lib/workflow.ts": "134875b546d9fc5e7cc1798cb04d19fe67ade52d13e863d13037de639e0b790e",
+    "public/toolkits/sky-mcp-connector.zip": "5d39e7e0db835b970a3323e2660f42107b0b7a83c4da2cc7cb57cd9f0ef43f01",
+    "tests/agent-tool-job-runner-ui.test.mjs": "ac9ef198911e56db0e7f59addcc4ede5b03a291a173b551ceaa57b4804830f45",
+    "tests/eve-smith-mii-browser.test.mjs": "e3470f76abc8bc3a4cbbefea82e15d92e0b24aba7cdc93c42d576a9249aacf42",
+    "tests/mcp-job-claim-connector.test.mjs": "f7a5023c01bb17dc1b0f92b486402eab7a82de8b828e7dc8bb916584e042da20",
+    "tests/sky-owner-export.test.mjs": "fca3c3efeb2dea857ec085845365648cdd598a322f1cf98874cf6eb1d0295a61",
+    "tests/work-tool-execution-review-required.test.mjs": "4199cb2ba3bfe69f366e6693427a099bd5d457fcdbf22343bf6c81f7540ecd8e",
+    "tests/work-tool-observations-route.test.mjs": "6c159d1fe3c779308ff5860e28557d43ae0b452f44aa64d233bd3af210b530c5",
+    "toolkits/sky-mcp-connector/server.mjs": "991c6c956600bd1ebd2bdb6f1a09aaf0c4ef5817bff1089b8e882f9282bf65fe"
+  },
+  "browserMerge": "Independently reviewed three-way merge preserves Smith schema acknowledgment, startup wait and execution-review/mii input-change tests.",
+  "implementation": [
+    "A creation-reviewed new job requires an executionReview at both begin and claim; old jobs retain legacy gate and missing record.",
+    "Snapshot binds owner/job/Agent/Package/manifest to Connector approval context and non-verified pricing declarations.",
+    "Capability digest and actual Connector context are checked during one-time claim; cancellation and claim are serialized.",
+    "Creation review stays unchanged; history and owner export show changed fields or not_recorded without capability secrets."
+  ],
+  "independentReview": {
+    "r1": "Rejected: new reviewed job accepted review-free old begin and claim.",
+    "r2": "PASS_SCOPED; reproduced rejection and reviewed legacy compatibility, 54 API/UI/export and 4 isolated browser/Connector cases.",
+    "merge": "Browser test and review-expiry fixture were separately three-way merged and independently reviewed; the remaining 14 r2 source files match."
+  },
+  "combinedValidation": {
+    "command": "node --test tests/eve-smith-mii-browser.test.mjs tests/work-tool-execution-review-required.test.mjs tests/work-tool-observations-route.test.mjs tests/agent-tool-job-runner-ui.test.mjs tests/sky-owner-export.test.mjs tests/mcp-job-claim-connector.test.mjs",
+    "tests": 58,
+    "pass": 58,
+    "fail": 0,
+    "localLogPath": "/private/tmp/rock-f3-combined-regression-20261029.log",
+    "localLogSha256": "5b53e8428d573080698734764dea15e13a98bbbb1bd7e6d5db219ee851a21a92",
+    "scope": "Before the test-only clock fixture update; runtime and browser sources unchanged."
+  },
+  "initialFailure": "A non-escalated combined run aborted within the local Node native callback; separate and 56-case loopback re-run passed. The first full verify later failed when a claim test lacked an operation capability. Its 300ms expiry begins before asynchronous setup, so premature expiry is a plausible cause but the original log does not prove it. The test-only controlled-clock merge was independently reviewed; the subsequent fullVerify recorded below passed.",
+  "limits": [
+    "Snapshot and pricing are user-confirmed/provider-declared; no verified price, execution grant or verified receipt is implied.",
+    "UNKNOWN and stop after claim are not resolved by this change.",
+    "Production account authority, physical Pixel/mii, real provider and paid usage remain unaccepted.",
+    "PR/head/main CI pending."
+  ],
+  "reviewExpiryFixture": {
+    "change": "Test-only deterministic SQLite clock replaces real-time 300ms pre-setup deadline. Checks validity before begin/claim and expiry at SQL commit, with a negative mutation of the expiry condition.",
+    "tests": 29,
+    "pass": 29,
+    "fail": 0,
+    "localLogPath": "/private/tmp/rock-f3-expiry-combined-20261029.log",
+    "localLogSha256": "bbb45e40e11de0fa2e85be27b9a5a577b22ac96446c80f1b54cac18182a06be7",
+    "sourceCandidateSha256": "aa1fda2e1682ff1b735f728b427d778fedc4c55da1de553b969798c3a81a835f",
+    "independentReview": "PASS_SCOPED: 29/29 independently rerun; test-only SQL-clock mutation detects missing commit-time expiry for begin and claim."
+  },
+  "fullVerify": {
+    "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+    "exitCode": 0,
+    "mainSuite": {
+      "tests": 3417,
+      "pass": 3413,
+      "fail": 0,
+      "skipped": 4
+    },
+    "browser": {
+      "pass": 2,
+      "fail": 0
+    },
+    "localLogPath": "/private/tmp/rock-f3-execution-full-verify-fixed-20261029.log",
+    "localLogSha256": "835862a9e07e754194f43af3165851c4c7d06f182873b5db9a84c56ee8273484"
+  }
+}

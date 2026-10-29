@@ -15,7 +15,9 @@ import { createLineCounter } from '../toolkits/sky-tool-sdk/examples/line-counte
 import { parseSkyToolPackage, skyToolPackageKey, skyToolPackageSha256 } from '../lib/sky-tool-package.ts';
 import { skyPackageSchemaSha256 } from '../lib/sky-package-runtime.ts';
 import { createConnector } from '../toolkits/sky-mcp-connector/server.mjs';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
+import { workToolExecutionReviewDigest } from '../lib/workflow.ts';
+import { buildSkyOwnerExport } from '../lib/sky-owner-export.ts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const fixture = path.join(root, 'tests/fixtures/eve-smith-mii-browser');
@@ -307,7 +309,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('取得時点の委任予算')`, 'same-job budget');
     assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /MCP Toolの料金や請求確定額ではありません/);
 
-    await input('miiへの合成テキスト', 'one\ntwo'); await click('同じ仕事のTool確認へ渡す');
+    await input('miiへの合成テキスト', 'one\ntwo\nthree'); await click('同じ仕事のTool確認へ渡す');
     await click('実行内容を確認'); await click('追跡喪失を模擬');
     assert.equal(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('取得時点の委任予算') ?? false`), false);
     await click('内容を承認して実行');
@@ -325,7 +327,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     }
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'same job');
-    if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*2/);
+    if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*3/);
     const address = await evaluate('location.href'), query = new URL(address).searchParams;
     const saved = sqlite.prepare('SELECT id, payload FROM work_jobs').all(); assert.equal(saved.length, 1);
     const job = JSON.parse(saved[0].payload);
@@ -333,8 +335,23 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     assert.equal(job.agentBinding.agentRevision, Number(query.get('agentRevision')));
     if (localAuthority) {
       assert.equal(job.toolAttempts.length, 1); assert.equal(job.toolObservations.length, 1);
+      const attempt = job.toolAttempts[0], review = attempt.executionReview;
+      const digest = args => createHash('sha256').update(JSON.stringify(args)).digest('hex');
+      assert.equal(job.agentBinding.creationReview.inputSha256, digest({text:'one\ntwo'}));
+      assert.equal(attempt.inputSha256, digest({text:'one\ntwo\nthree'}));
+      assert.notEqual(job.agentBinding.creationReview.inputSha256, attempt.inputSha256);
+      assert.equal(review.approvalContext.inputSha256, attempt.inputSha256);
+      assert.equal(review.ownerScope, await ownerScopeFor(owner)); assert.equal(review.jobId, job.id);
+      assert.equal(review.agentId, job.agentBinding.agentId); assert.equal(review.packageKey, packageKey);
+      assert.equal(attempt.executionReviewDigest, await workToolExecutionReviewDigest(review));
+      assert.equal(attempt.creationRelation.state, 'changed'); assert.deepEqual(attempt.creationRelation.changedFields, ['input']);
+      const exported = await buildSkyOwnerExport({ job, budget:null, reservations:[],cloud:[],agents:[] });
+      assert.ok(exported.manifest.files.some(file => file.name === 'tool-execution-reviews.json'));
+      assert.ok(exported.html.includes(attempt.executionReviewDigest));
+      assert.ok(!exported.html.includes(attempt.capabilityHash));
+
       assert.equal(job.toolObservations[0].verification, 'client_observed_unverified');
-      assert.match(job.toolObservations[0].text, /"lines"\s*:\s*2/);
+      assert.match(job.toolObservations[0].text, /"lines"\s*:\s*3/);
       assert.deepEqual(claimContracts, [{ inputSchemaSha256: await skyPackageSchemaSha256(manifest.io.inputSchema),
         outputSchemaSha256: await skyPackageSchemaSha256(manifest.io.outputSchema), transport: 'local_http' }]);
     }
@@ -342,10 +359,11 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii after reload');
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'same job after reload');
-    if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*2/);
+    if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*3/);
     if (localAuthority) {
       await wait(`document.querySelector('[aria-label="保存されたToolの応答"]')?.textContent.includes('lines')`, 'same persisted result in Eve workbench');
-      assert.match(await evaluate(`document.querySelector('[aria-label="保存されたToolの応答"]').textContent`), /"lines"\s*:\s*2/);
+      assert.match(await evaluate(`document.querySelector('[aria-label="保存されたToolの応答"]').textContent`), /"lines"\s*:\s*3/);
+      await wait(`document.querySelector('[aria-label="作成時と実行時の確認履歴"]')?.textContent.includes('作成時からの変更: 入力')`, 'persisted input-change history after reload');
     }
     assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n, 1);
     assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, localAuthority ? 1 : 0);

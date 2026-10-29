@@ -1,4 +1,4 @@
-import type { WorkJob } from './workflow.ts';
+import { parseWorkAgentCreationReview, storedWorkToolExecutionReview, type WorkJob } from './workflow.ts';
 import type { A2ADelegation, A2AParentBudget, A2ABudgetReservation, A2AUsageReceiptRecord } from './a2a-delegation-store.ts';
 import type { RemoteAiTextRecord } from './remote-ai-text-store.ts';
 import { agentOutputText, skyAppSections } from './sky-output-presenter.ts';
@@ -169,6 +169,25 @@ export async function buildSkyOwnerExport(snapshot: OwnerExportSnapshot, exporte
         ? `本人が選んだZoomの表示文章をローカルLLM ${result.model!.name} で整理。会議の全記録・投稿・会議操作の証拠ではありません。`
         : '制限付きtext処理。実Zoom操作・外部実作業の証拠ではありません。',
       result?.body ?? 'この仕事には保存された連携成果がありません。');
+  }
+  if (job.agentBinding?.creationReview || job.toolAttempts?.length) {
+    let creation = null;
+    const attempts = [];
+    try {
+      if (job.agentBinding?.creationReview) creation = { agentId: job.agentBinding.agentId,
+        agentRevision: job.agentBinding.agentRevision, requestDigest: job.agentBinding.requestDigest,
+        review: parseWorkAgentCreationReview(job.agentBinding.creationReview) };
+      for (const attempt of job.toolAttempts ?? []) {
+        const review = await storedWorkToolExecutionReview(job, attempt);
+        attempts.push({ attemptId: attempt.id, state: attempt.state, startedAt: attempt.startedAt,
+          claimedAt: attempt.claimedAt ?? null, stopRequestedAt: attempt.stopRequestedAt ?? null,
+          observationId: attempt.observationId ?? null, record: review ? 'client_confirmed_provider_declared' : 'not_recorded',
+          review, reviewDigest: review ? attempt.executionReviewDigest : null,
+          creationRelation: review ? attempt.creationRelation : null });
+      }
+    } catch { throw new SkyOwnerExportError('INVALID_ARTIFACT'); }
+    await addJson('tool-execution-reviews.json', { creation, attempts });
+    warnings.push('作成時と実行直前の条件は別の記録です。未記録は確認済みとせず、提供者の料金申告を確定料金や実行権限とは扱いません。');
   }
   if (job.toolObservations?.length) {
     if (job.toolObservations.length > 20 || job.toolObservations.some(item =>

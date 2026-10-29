@@ -3,7 +3,7 @@ import { readBoundedStream } from '@/lib/bounded-stream';
 import { OWNER_SCOPE_HEADER, readOwnerScope, rejectChangedOwner } from '@/lib/owner-intent';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
-import { newWorkToolCapability, objectInput, workId, workToolCapabilityHash, WorkError, type WorkJob, type WorkToolAttempt, type WorkToolObservation } from '@/lib/workflow';
+import { storedWorkToolExecutionReview, parseWorkToolExecutionReview, workToolExecutionReviewDigest, workToolCreationRelation, newWorkToolCapability, objectInput, workId, workToolCapabilityHash, WorkError, type WorkJob, type WorkToolAttempt, type WorkToolObservation } from '@/lib/workflow';
 
 const MAX_BODY_BYTES = 64_000;
 const MAX_TEXT_BYTES = 8_192;
@@ -30,9 +30,9 @@ async function body(request: Request) {
   catch { throw new WorkError('入力の形式を確認してください。'); }
 }
 
-type AttemptInput = Pick<WorkToolAttempt, 'id' | 'packageKey' | 'manifestSha256' | 'connectorId' | 'toolName' | 'inputSha256'>;
+type AttemptInput = Pick<WorkToolAttempt, 'id' | 'packageKey' | 'manifestSha256' | 'connectorId' | 'toolName' | 'inputSha256' | 'executionReview'>;
 function attempt(value: unknown): AttemptInput {
-  const input = objectInput(value, ['id', 'packageKey', 'manifestSha256', 'connectorId', 'toolName', 'inputSha256']);
+  const input = objectInput(value, ['id', 'packageKey', 'manifestSha256', 'connectorId', 'toolName', 'inputSha256', 'executionReview']);
   const id = workId(input.id);
   if (typeof input.packageKey !== 'string' || input.packageKey.length > 205 ||
       !/^[a-z0-9]+(?:[.-][a-z0-9]+)+@(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(input.packageKey) ||
@@ -42,9 +42,14 @@ function attempt(value: unknown): AttemptInput {
       typeof input.toolName !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(input.toolName))
     throw new WorkError('Tool、接続先と入力の形式を確認してください。');
   return { id, packageKey: input.packageKey, manifestSha256: input.manifestSha256,
-    connectorId: input.connectorId, toolName: input.toolName, inputSha256: input.inputSha256 };
+    connectorId: input.connectorId, toolName: input.toolName, inputSha256: input.inputSha256,
+    ...(Object.hasOwn(input, 'executionReview') ? { executionReview: parseWorkToolExecutionReview(input.executionReview) } : {}) };
 }
-function sameAttempt(saved: WorkToolAttempt, expected: AttemptInput) {
+function sameAttempt(saved: WorkToolAttempt, expected: AttemptInput, reviewDigest?: string) {
+  if ((Object.hasOwn(saved, 'executionReview') || Object.hasOwn(saved, 'executionReviewDigest') || Object.hasOwn(saved, 'creationRelation')) !== Boolean(expected.executionReview) || saved.executionReviewDigest !== reviewDigest) return false;
+  if (expected.executionReview) {
+    try { if (JSON.stringify(parseWorkToolExecutionReview(saved.executionReview)) !== JSON.stringify(expected.executionReview)) return false; } catch { return false; }
+  }
   return saved.schema === 'rockstaros.work-tool-attempt/1' && saved.id === expected.id &&
     saved.packageKey === expected.packageKey && saved.manifestSha256 === expected.manifestSha256 &&
     saved.connectorId === expected.connectorId && saved.toolName === expected.toolName && saved.inputSha256 === expected.inputSha256;
@@ -90,8 +95,14 @@ export async function POST(request: Request) {
     if (input.action === 'begin') {
       if (Object.keys(input).length !== 4 || !Object.hasOwn(input, 'attempt')) throw new WorkError('開始内容を確認してください。');
       const expected = attempt(input.attempt), prior = attempts.find(row => row.id === expected.id);
+      const review = expected.executionReview, reviewDigest = review ? await workToolExecutionReviewDigest(review) : undefined;
+      // Jobs created with an explicit creation review require an execution
+      // review even for old-client replays; never retrofit a legacy pending grant.
+      if (Object.hasOwn(binding, 'creationReview') && !review)
+        throw new WorkError('この仕事には実行直前の条件確認が必要です。', 409);
       if (prior) {
-        if (!sameAttempt(prior, expected)) throw new WorkError('同じ実行IDに異なる内容があります。', 409);
+        if (!sameAttempt(prior, expected, reviewDigest)) throw new WorkError('同じ実行IDに異なる内容があります。', 409);
+        if (review) await storedWorkToolExecutionReview(current, prior);
         return json({ job: current, saved: false }); // A readback, never a new admission.
       }
       // Do not strand a new pending attempt when dispatch cannot be authorized.
@@ -101,17 +112,39 @@ export async function POST(request: Request) {
       if (attempts.length || observations.length) throw new WorkError('前の実行状態を照合するまで新しい実行を開始できません。', 409);
       if (current.revision !== input.revision) throw new WorkError('仕事が更新されました。読み直して確認してください。', 409);
       if (current.status !== 'active') throw new WorkError('この仕事では新しい実行を開始できません。', 409);
-      const nowMs = Date.now(), now = new Date(nowMs).toISOString(), expiresAt = nowMs + CAPABILITY_TTL_MS;
+      let reviewedManifest: string | undefined;
+      if (review) {
+        const c = review.approvalContext, remaining = c.expiresAt - Date.now();
+        if (review.ownerScope !== readOwnerScope(request.headers.get(OWNER_SCOPE_HEADER)) || review.jobId !== jobId ||
+            review.jobRevision !== current.revision || review.agentId !== binding.agentId || review.agentRevision !== binding.agentRevision ||
+            review.packageKey !== expected.packageKey || review.manifestSha256 !== expected.manifestSha256 ||
+            c.connectorId !== expected.connectorId || c.toolName !== expected.toolName || c.inputSha256 !== expected.inputSha256 ||
+            remaining <= 0 || remaining > 5 * 60_000) throw new WorkError('実行確認の本人・仕事・入力・期限が変わりました。', 409);
+        const row = await db.prepare('SELECT manifest FROM sky_tool_packages WHERE package_key = ? AND manifest_sha256 = ? AND status = ?')
+          .bind(expected.packageKey, expected.manifestSha256, 'verified').first<{ manifest: string }>();
+        if (!row) throw new WorkError('実行確認のPackageを読み直してください。', 409);
+        const manifest = JSON.parse(row.manifest);
+        if (manifest.pricing?.model !== 'free' || manifest.pricing.note !== review.packagePricing.note ||
+            !manifest.capabilities?.executionTargets?.includes('pc') ||
+            !((manifest.adapter?.connectionType === 'mcp_stdio' && c.transport === 'stdio') ||
+              (manifest.adapter?.connectionType === 'mcp_streamable_http' && c.transport === 'local_http')))
+          throw new WorkError('実行確認の実行先・料金申告が変わりました。', 409);
+        reviewedManifest = row.manifest;
+      }
+      const nowMs = Date.now(), now = new Date(nowMs).toISOString();
+      const expiresAt = Math.min(nowMs + CAPABILITY_TTL_MS, review?.approvalContext.expiresAt ?? Infinity);
       const token = newWorkToolCapability();
       const capabilityHash = await workToolCapabilityHash({ owner: user, jobId, attemptId: expected.id,
-        inputSha256: expected.inputSha256, expiresAt, token });
+        inputSha256: expected.inputSha256, expiresAt, token, executionReviewDigest: reviewDigest });
       const entry: WorkToolAttempt = { schema: 'rockstaros.work-tool-attempt/1', ...expected, state: 'pending',
-        startedAt: now, capabilityHash, capabilityExpiresAt: expiresAt };
+        startedAt: now, capabilityHash, capabilityExpiresAt: expiresAt,
+        ...(review ? { executionReviewDigest: reviewDigest, creationRelation: workToolCreationRelation(binding, review) } : {}) };
       const next = { ...current, revision: current.revision + 1, updatedAt: now, toolAttempts: [...attempts, entry] };
       // Atomically require the same owner, job revision and enabled Agent revision.
       // This records an intent fence; it is not a Tool grant or authority token.
       const updated = await db.prepare(`UPDATE work_jobs SET payload = ?, revision = ?, updated_at = ?
-        WHERE id = ? AND user_id = ? AND revision = ? AND EXISTS (
+        WHERE id = ? AND user_id = ? AND revision = ?
+          ${!review ? `AND json_type(payload, '$.agentBinding.creationReview') IS NULL` : ''} AND EXISTS (
           SELECT 1 FROM sky_agent_settings a WHERE a.owner_user_id = ? AND a.id = ? AND a.revision = ?
             AND json_extract(a.settings, '$.enabled') = 1
             AND json_extract(a.settings, '$.requirements.packageKey') = ?
@@ -121,12 +154,18 @@ export async function POST(request: Request) {
         ) AND EXISTS (SELECT 1 FROM sky_tool_packages p WHERE p.package_key = ? AND p.manifest_sha256 = ? AND p.status = 'verified'
           AND EXISTS (SELECT 1 FROM sky_tool_package_reviews r WHERE r.package_key = p.package_key
             AND r.manifest_sha256 = p.manifest_sha256 AND r.decision = 'verified'
-            AND (r.expires_at IS NULL OR r.expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))))`)
+            AND (r.expires_at IS NULL OR r.expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))))
+          ${review ? `AND payload = ? AND ? > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+            AND EXISTS (SELECT 1 FROM sky_tool_packages p WHERE p.package_key = ? AND p.manifest_sha256 = ? AND p.manifest = ?)` : ''}`)
         .bind(JSON.stringify(next), next.revision, next.updatedAt, jobId, user, current.revision,
-          user, binding.agentId, binding.agentRevision, expected.packageKey, expected.packageKey, expected.manifestSha256).run();
+          user, binding.agentId, binding.agentRevision, expected.packageKey, expected.packageKey, expected.manifestSha256,
+          ...(review ? [JSON.stringify(current), review.approvalContext.expiresAt, expected.packageKey, expected.manifestSha256, reviewedManifest!] : [])).run();
       if (updated.meta.changes === 1) return json({ job: next, saved: true, operationCapability: { token, expiresAt } });
       const latest = await store.get(user, jobId), committed = latest?.toolAttempts?.find(row => row.id === expected.id);
-      if (committed && sameAttempt(committed, expected)) return json({ job: latest, saved: false });
+      if (latest && committed && sameAttempt(committed, expected, reviewDigest)) {
+        if (review) await storedWorkToolExecutionReview(latest, committed);
+        return json({ job: latest, saved: false });
+      }
       throw new WorkError('担当または仕事が更新されました。読み直して確認してください。', 409);
     }
 

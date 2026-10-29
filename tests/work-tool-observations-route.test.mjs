@@ -11,6 +11,7 @@ import { defaultSkyAgentSettings } from '../lib/sky-agent-library.ts';
 import { skyAgentLibraryStore } from '../lib/sky-agent-library-store.ts';
 import * as auth from '../lib/request-auth.ts';
 import { createSkyToolPackageDraft, skyToolPackageSha256 } from '../lib/sky-tool-package.ts';
+import { workToolExecutionReviewDigest, storedWorkToolExecutionReview } from '../lib/workflow.ts';
 import { skyPackageSchemaSha256 } from '../lib/sky-package-runtime.ts';
 
 async function setup(t, persistent = false, authorityAvailable = true, reviewExpiresAt = null) {
@@ -19,10 +20,12 @@ async function setup(t, persistent = false, authorityAvailable = true, reviewExp
   const sqlite = new DatabaseSync(dbPath); t.after(() => { sqlite.close(); if (dir) rmSync(dir, { recursive: true, force: true }); });
   for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql') && !f.startsWith('._')).sort())
     sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
-  const db = { beforeRun: null, afterRun: null, prepare(sql) { return { bind(...args) { return {
-    async first() { return sqlite.prepare(sql).get(...args) ?? null; },
-    async all() { return { results: sqlite.prepare(sql).all(...args) }; },
-    async run() { db.beforeRun?.(sql, args); const changes = Number(sqlite.prepare(sql).run(...args).changes); db.afterRun?.(sql, args); return { meta: { changes } }; },
+  const db = { beforeRun: null, afterRun: null, sqlForTest: null, prepare(sql) {
+    const statement = db.sqlForTest ? db.sqlForTest(sql) : sql;
+    return { bind(...args) { return {
+    async first() { return sqlite.prepare(statement).get(...args) ?? null; },
+    async all() { return { results: sqlite.prepare(statement).all(...args) }; },
+    async run() { db.beforeRun?.(sql, args); const changes = Number(sqlite.prepare(statement).run(...args).changes); db.afterRun?.(sql, args); return { meta: { changes } }; },
   }; } }; } };
   const ownerId = authorityAvailable === 'real' ? 'local-preview:fixture' : 'alice';
   const baseOrigin = authorityAvailable === 'real' ? 'http://localhost:3000' : 'https://fixture.invalid';
@@ -59,8 +62,10 @@ async function setup(t, persistent = false, authorityAvailable = true, reviewExp
   // Test-only verified registry row and review; this is not a production trust assertion.
   sqlite.prepare(`INSERT INTO sky_tool_packages (package_key,tool_id,version,user_id,manifest,manifest_sha256,status,created_at,updated_at,published_at)
     VALUES (?,?,?,?,?,?,?,?,?,?)`).run('dev.fixture.counter@1.0.0', 'dev.fixture.counter', '1.0.0', 'fixture-author', JSON.stringify(manifest), manifestSha256, 'verified', Date.now(), Date.now(), Date.now());
+  const review = typeof reviewExpiresAt === 'function' ? reviewExpiresAt(sqlite)
+    : { reviewedAt: Date.now(), expiresAt: reviewExpiresAt };
   sqlite.prepare(`INSERT INTO sky_tool_package_reviews (id,package_key,manifest_sha256,reviewer_id,decision,checks_json,evidence_json,notes,reviewed_at,expires_at)
-    VALUES (?,?,?,?,?,?,?,?,?,?)`).run(randomUUID(), 'dev.fixture.counter@1.0.0', manifestSha256, 'fixture-reviewer', 'verified', '{}', '{}', '', Date.now(), reviewExpiresAt);
+    VALUES (?,?,?,?,?,?,?,?,?,?)`).run(randomUUID(), 'dev.fixture.counter@1.0.0', manifestSha256, 'fixture-reviewer', 'verified', '{}', '{}', '', review.reviewedAt, review.expiresAt);
   const attempt = () => ({ id: randomUUID(), packageKey: 'dev.fixture.counter@1.0.0', manifestSha256,
     connectorId: 'fixture-connector', toolName: 'count', inputSha256: 'b'.repeat(64) });
   const result = () => ({ id: randomUUID(), text: '合成した結果: 3' });
@@ -335,23 +340,100 @@ void test('begin atomically requires the selected Agent package and pc execution
   }
 });
 
+/** Freeze only this SQLite connection's SQL clock, after setup imports/migrations.
+ * The function is intentionally NOT deterministic: each statement must observe
+ * an explicit advance. No runtime source, global Date or immutable row changes. */
+async function expiringReviewFixture(t) {
+  const clock = { now: 0, expiry: 0, reads: 0 };
+  const f = await setup(t, false, true, sqlite => {
+    clock.now = Date.now(); clock.expiry = clock.now + 1000;
+    sqlite.function('julianday', value => {
+      assert.equal(value, 'now'); clock.reads++;
+      return clock.now / 86400000 + 2440587.5;
+    });
+    return { reviewedAt: clock.now, expiresAt: clock.expiry };
+  });
+  const reviewActive = () => Number(f.sqlite.prepare(`SELECT COUNT(*) AS n FROM sky_tool_package_reviews
+    WHERE decision = 'verified' AND expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)`).get().n);
+  assert.equal(reviewActive(), 1, 'Review must start valid, independently of setup duration');
+  const expire = () => { clock.now = clock.expiry + 1000; assert.equal(reviewActive(), 0); };
+  return { ...f, clock, reviewActive, expire };
+}
+function assertExpiryRefused(phase, response, job) {
+  assert.equal(response.status, phase === 'begin' ? 409 : 403, `${phase}: expired review must deny at commit`);
+  assert.equal(job.revision, phase === 'begin' ? 0 : 1);
+  if (phase === 'claim') assert.equal(job.toolAttempts[0].state, 'pending');
+  else assert.equal(job.toolAttempts?.length ?? 0, 0);
+}
+
 void test('package or review revocation during begin or claim blocks atomic commit', async t => {
   for (const phase of ['begin', 'claim']) for (const revoked of ['package', 'review', 'agentTarget']) {
-    const expiry = revoked === 'review' ? Date.now() + 300 : null;
-    const f = await setup(t, false, true, expiry), spec = f.attempt();
+    const f = revoked === 'review' ? await expiringReviewFixture(t) : await setup(t), spec = f.attempt();
     const started = phase === 'claim' ? await f.begin(f.job.id, 0, spec) : null;
+    if (started) {
+      assert.equal(started.status, 200, `${phase}: admission must succeed before revocation`);
+      assert.ok(started.body.operationCapability?.token, 'Established admission must return its capability');
+    }
+    let atCommit = false;
     f.db.beforeRun = sql => {
       if (!sql.includes('UPDATE work_jobs SET payload')) return;
-      f.db.beforeRun = null;
+      f.db.beforeRun = null; atCommit = true;
       if (revoked === 'package') f.sqlite.prepare("UPDATE sky_tool_packages SET status = 'revoked' WHERE package_key = ?").run(spec.packageKey);
-      if (revoked === 'review') while (Date.now() <= expiry + 10) { /* exercise expiry at commit */ }
+      if (revoked === 'review') {
+        assert.equal(f.reviewActive(), 1, 'Still valid immediately before UPDATE');
+        f.expire();
+        if (started) assert.ok(f.clock.now < started.body.operationCapability.expiresAt,
+          'Only the review expires; do not confuse capability expiry with this regression');
+      }
       if (revoked === 'agentTarget') f.sqlite.prepare("UPDATE sky_agent_settings SET settings = json_set(settings, '$.requirements.executionTarget', 'cloud') WHERE owner_user_id = ? AND id = ?").run('alice', f.role.id);
     };
     const response = phase === 'begin' ? await f.begin(f.job.id, 0, spec) : await f.claim(f.job.id, spec, started.body.operationCapability);
-    assert.equal(response.status, phase === 'begin' ? 409 : 403, `${phase}: ${revoked}`);
+    assert.equal(atCommit, true, `${phase}: ${revoked} must reach the UPDATE boundary`);
     const job = (await f.call(f.work, 'GET')).body.jobs[0];
-    assert.equal(job.revision, phase === 'begin' ? 0 : 1);
-    if (phase === 'claim') assert.equal(job.toolAttempts[0].state, 'pending');
+    assertExpiryRefused(phase, response, job);
+  }
+});
+
+void test('frozen review clock permits admission and claim before explicit expiry', async t => {
+  const f = await expiringReviewFixture(t), spec = f.attempt();
+  const started = await f.begin(f.job.id, 0, spec);
+  assert.equal(started.status, 200); assert.equal(started.body.saved, true);
+  assert.ok(started.body.operationCapability?.token);
+  assert.equal(f.reviewActive(), 1);
+  const claimed = await f.claim(f.job.id, spec, started.body.operationCapability);
+  assert.equal(claimed.status, 200); assert.equal(claimed.body.claimed, true);
+  const job = (await f.call(f.work, 'GET')).body.jobs[0];
+  assert.equal(job.revision, 2); assert.equal(job.toolAttempts[0].state, 'claimed');
+  assert.equal(f.reviewActive(), 1); assert.ok(f.clock.reads > 0);
+});
+
+void test('negative fixture without commit-time review expiry is detected by the same rejection oracle', async t => {
+  for (const phase of ['begin', 'claim']) {
+    const f = await expiringReviewFixture(t), spec = f.attempt();
+    const started = phase === 'claim' ? await f.begin(f.job.id, 0, spec) : null;
+    if (started) { assert.equal(started.status, 200); assert.ok(started.body.operationCapability?.token); }
+    let transformed = 0, atCommit = false;
+    f.db.sqlForTest = sql => {
+      if (!sql.includes('UPDATE work_jobs SET payload')) return sql;
+      const expiry = "AND (r.expires_at IS NULL OR r.expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))";
+      assert.equal(sql.split(expiry).length, 2, 'Mutate exactly one review-expiry clause; keep every other gate');
+      transformed++;
+      return sql.replace(expiry, '');
+    };
+    f.db.beforeRun = sql => {
+      if (!sql.includes('UPDATE work_jobs SET payload')) return;
+      f.db.beforeRun = null; atCommit = true;
+      assert.equal(f.reviewActive(), 1); f.expire();
+      if (started) assert.ok(f.clock.now < started.body.operationCapability.expiresAt);
+    };
+    const response = phase === 'begin' ? await f.begin(f.job.id, 0, spec) : await f.claim(f.job.id, spec, started.body.operationCapability);
+    assert.equal(atCommit, true); assert.equal(transformed, 1); assert.equal(f.reviewActive(), 0);
+    assert.equal(response.status, 200, 'Missing only the SQL expiry clause wrongly permits commit');
+    const job = (await f.call(f.work, 'GET')).body.jobs[0];
+    assert.equal(job.revision, phase === 'begin' ? 1 : 2);
+    assert.throws(() => assertExpiryRefused(phase, response, job), assert.AssertionError,
+      'The unchanged security oracle must fail for the old SQL condition');
+    t.diagnostic(`${phase}: old SQL commits after review expiry; rejection oracle detects the mutation`);
   }
 });
 
@@ -413,4 +495,101 @@ void test('real preview gate permits isolated free local host dispatch end to en
   const claimed = await f.claim(f.job.id, spec, started.body.operationCapability);
   assert.equal(claimed.status, 200); assert.equal(claimed.body.jobRevision, 2);
   assert.equal((await f.claim(f.job.id, spec, started.body.operationCapability)).status, 403);
+});
+
+function reviewed(f, patch = {}) {
+  const spec = f.attempt();
+  spec.executionReview = {
+    schema: 'rockstaros.work-tool-execution-review/1', ownerScope: f.scope, jobId: f.job.id,
+    jobRevision: f.job.revision, agentId: f.role.id, agentRevision: f.role.revision,
+    packageKey: spec.packageKey, manifestSha256: spec.manifestSha256,
+    packagePricing: { model: 'free', note: '料金と外部実費は開発者が公開前に確認してください。', declaration: 'provider_unverified' },
+    approvalContext: { schema: 'rockstaros.mcp-approval-context/1', connectorId: spec.connectorId, toolName: spec.toolName,
+      transport: 'stdio', toolDigest: 'd'.repeat(64), inputSha256: spec.inputSha256, payloadDigest: 'e'.repeat(64),
+      expiresAt: Date.now() + 240_000, pricing: { model: 'free', note: 'provider fixture', declaration: 'provider_unverified' } },
+    ...patch,
+  };
+  return spec;
+}
+const reviewClaim = async spec => ({ executionReviewDigest: await workToolExecutionReviewDigest(spec.executionReview),
+  executionContext: spec.executionReview.approvalContext });
+
+void test('explicit execution review binds one-use begin and claim; legacy absence stays missing', async t => {
+  const f = await setup(t), spec = reviewed(f), origin = structuredClone(f.job.agentBinding);
+  const begin = await f.begin(f.job.id, 0, spec);
+  assert.equal(begin.status, 200, JSON.stringify(begin.body));
+  const attempt = begin.body.job.toolAttempts[0];
+  assert.deepEqual(begin.body.job.agentBinding, origin);
+  assert.deepEqual(attempt.executionReview, spec.executionReview);
+  assert.equal(attempt.executionReviewDigest, await workToolExecutionReviewDigest(spec.executionReview));
+  assert.equal(attempt.creationRelation.state, 'not_recorded');
+  assert.deepEqual(await storedWorkToolExecutionReview(begin.body.job, attempt), spec.executionReview);
+  const replay = await f.begin(f.job.id, 0, spec);
+  assert.equal(replay.status, 200); assert.equal(replay.body.saved, false); assert.equal(replay.body.operationCapability, undefined);
+  assert.equal((await f.begin(f.job.id, 0, { ...spec, executionReview: undefined })).status, 409);
+  const cap = begin.body.operationCapability, extra = await reviewClaim(spec);
+  assert.equal((await f.claim(f.job.id, spec, cap)).status, 403); // no silent downgrade
+  for (const key of ['toolDigest', 'payloadDigest', 'inputSha256', 'toolName', 'connectorId', 'expiresAt', 'pricing']) {
+    const context = { ...extra.executionContext, [key]: key === 'expiresAt' ? Date.now() + 10_000 : key === 'pricing'
+      ? { ...extra.executionContext.pricing, note: 'changed' } : 'f'.repeat(64) };
+    assert.equal((await f.claim(f.job.id, spec, cap, { ...extra, executionContext: context })).status, 403, key);
+  }
+  assert.equal((await f.claim(f.job.id, spec, cap, { ...extra, executionReviewDigest: 'a'.repeat(64) })).status, 403);
+  const claim = await f.claim(f.job.id, spec, cap, extra);
+  assert.equal(claim.status, 200); assert.equal(claim.body.executionReviewDigest, extra.executionReviewDigest);
+  assert.equal((await f.claim(f.job.id, spec, cap, extra)).status, 403);
+  const saved = await f.observe(f.job.id, 2, spec.id, f.result());
+  assert.deepEqual(saved.body.job.toolAttempts[0].executionReview, spec.executionReview);
+  assert.deepEqual(saved.body.job.agentBinding, origin);
+  assert.ok(!JSON.stringify(saved.body.job).includes(cap.token));
+});
+
+void test('unknown, stale or mismatched reviews never strand a pending attempt', async t => {
+  const f = await setup(t), good = reviewed(f);
+  const cases = [
+    { ...good.executionReview, extra: true }, { ...good.executionReview, schema: 'future/2' },
+    { ...good.executionReview, ownerScope: 'owner-v1:' + 'f'.repeat(64) },
+    { ...good.executionReview, jobId: randomUUID() }, { ...good.executionReview, jobRevision: 1 },
+    { ...good.executionReview, agentId: randomUUID() }, { ...good.executionReview, agentRevision: 2 },
+    { ...good.executionReview, manifestSha256: 'f'.repeat(64) },
+    { ...good.executionReview, packagePricing: { ...good.executionReview.packagePricing, note: 'changed' } },
+    ...[{ expiresAt: Date.now() - 1 }, { expiresAt: Date.now() + 600_000 }, { transport: 'remote_http' },
+      { inputSha256: 'c'.repeat(64) }, { toolName: 'different' }, { toolDigest: 'not-a-hash' },
+      { pricing: { model: 'paid', note: '', declaration: 'provider_unverified' } }].map(c => ({
+        ...good.executionReview, approvalContext: { ...good.executionReview.approvalContext, ...c } })),
+  ];
+  for (const review of cases) {
+    const r = await f.begin(f.job.id, 0, { ...good, executionReview: review });
+    assert.ok([400,409].includes(r.status), JSON.stringify({ review, r }));
+  }
+  assert.equal((await f.call(f.work, 'GET')).body.jobs[0].toolAttempts?.length ?? 0, 0);
+  assert.equal((await f.begin(f.job.id, 0, good)).status, 200);
+});
+
+void test('stored review mutation before claim and within commit is rejected', async t => {
+  for (const timing of ['before', 'commit']) {
+    const f = await setup(t), spec = reviewed(f), started = await f.begin(f.job.id, 0, spec);
+    assert.equal(started.status, 200);
+    const mutate = () => {
+      const row = f.sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(f.job.id);
+      const payload = JSON.parse(row.payload);
+      payload.toolAttempts[0].executionReview.approvalContext.pricing.note = 'mutated stored declaration';
+      f.sqlite.prepare('UPDATE work_jobs SET payload=? WHERE id=?').run(JSON.stringify(payload), f.job.id);
+    };
+    if (timing === 'before') mutate(); else f.db.beforeRun = sql => { if (sql.startsWith('UPDATE work_jobs')) { f.db.beforeRun = null; mutate(); } };
+    assert.equal((await f.claim(f.job.id, spec, started.body.operationCapability, await reviewClaim(spec))).status, 403, timing);
+    const job = (await f.call(f.work, 'GET')).body.jobs[0];
+    assert.equal(job.toolAttempts[0].state, 'pending');
+    await assert.rejects(storedWorkToolExecutionReview(job, job.toolAttempts[0]));
+  }
+});
+
+void test('explicit review claim concurrency grants once; cancellation preserves immutable review', async t => {
+  const f = await setup(t), spec = reviewed(f), started = await f.begin(f.job.id, 0, spec), extra = await reviewClaim(spec);
+  const results = await Promise.all([f.claim(f.job.id, spec, started.body.operationCapability, extra), f.claim(f.job.id, spec, started.body.operationCapability, extra)]);
+  assert.deepEqual(results.map(r => r.status).sort((a,b) => a-b), [200,403]);
+  const cancelled = await f.call(f.work, 'PATCH', { jobId:f.job.id, revision:2, command:{id:randomUUID(),action:'cancel'} }, {scope:f.scope});
+  assert.equal(cancelled.status, 200); assert.equal(cancelled.body.job.toolAttempts[0].state, 'stop_requested');
+  assert.deepEqual(cancelled.body.job.toolAttempts[0].executionReview, spec.executionReview);
+  assert.equal((await f.claim(f.job.id, spec, started.body.operationCapability, extra)).status, 403);
 });

@@ -497,6 +497,8 @@ Smithの照合は、担当にないTool必須入力を不足、schema不明を�
 
 担当付き新規仕事は、Tool・実行先・実入力・未検証の料金申告を本人が確認した後に作成する。確認の期限と本人・版・digestを保存境界まで検査し、応答不明では同じIDを読取照合する。旧clientのjobに確認済みを捏造せず、client観測を実行権限や検証済み価格と扱わない。[契約](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)／[証拠](evidence/development-execution/f3-creation-disclosure.json)。
 
+作成時確認のある新jobでは実行直前のsnapshotを既存の一回承認・begin・claimに結び、owner/Agent/Package/Tool/入力/未検証価格の変更を履歴とexportで別表示する。新jobで旧形式の省略を拒否し、旧jobの旧形式は未記録として互換を保つ。snapshotは実行権限・確定料金・検証済みreceiptではなく、claim後停止とUNKNOWNは別に扱う。[契約・証拠](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+
 miiソフト画面は同じ本人・仕事の既存A2A予算を明示読取し、上限・予約・利用量記録を取得時点として分けて表示する。期限切れ・観測喪失・本人／job違いでは未確認とし、MCP料金や請求確定額へ昇格しない。[契約](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)／[証拠](evidence/development-execution/mii-budget-readback.json)。
 
 miiの合成文章入力を既存Tool確認へ渡すconsumerを追加。30秒観測と入力世代を再照合し、期限・追跡喪失・入力修正で失効する。送信前拒否とclaim後の停止未確認を分け、保存した未検証応答をEveの仕事にも表示する。[検証証拠](evidence/development-execution/mii-synthetic-input.json)。

@@ -9,6 +9,7 @@ import * as packageApi from '../lib/sky-tool-package.ts';
 import * as runtime from '../lib/sky-package-runtime.ts';
 import * as intent from '../lib/owner-intent.ts';
 import * as access from '../lib/rockstar-service-package-access.ts';
+import * as workflow from '../lib/workflow.ts';
 
 const compile = path => ts.transpileModule(readFileSync(new URL(path, import.meta.url), 'utf8'), {
   compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS },
@@ -24,11 +25,11 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   const agent = { id: '2e762de5-1f39-4a8a-95f9-03f8910b1630', revision: 1, name: '担当', instructions: '作業',
     provider: 'local-model', model: 'fixture-model', enabled: true, source: 'personal', sourceTool: null, updatedAt: 0,
     requirements: { inputFields: [], outputFields: [], packageKey, executionTarget: 'pc' } };
-  const server = { id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { server: { version: '1' }, tools: [{ name: 'op',
+  const server = { id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { toolDigest: 'e'.repeat(64), server: { version: '1' }, tools: [{ name: 'op',
     description: 'fixture', inputSchema: manifest.io.inputSchema, outputSchema: manifest.io.outputSchema, pricing: { model: 'free', note: '' } }] } };
   const registry = { packages: [{ packageKey, manifest, manifestSha256, status: 'verified', installable: true }] };
   const entitlements = { ownerScope: owner, entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: [{ packageKey, state: 'ready' }] } }] };
-  const initialJob = { id: 'job-fixture', revision: 1, status: 'active', events: [], agentBinding: { agentId: agent.id, agentRevision: 1 }, toolAttempts: [], toolObservations: [] };
+  const initialJob = { id: '57db941f-2e01-40a5-a9f4-c9dca6a23cb6', revision: 1, status: 'active', events: [], agentBinding: { schema: 'rockstaros.work-agent-binding/1', agentId: agent.id, agentRevision: 1, requestDigest: 'a'.repeat(64) }, toolAttempts: [], toolObservations: [] };
   let savedJob = structuredClone(initialJob), displayedJob = structuredClone(initialJob), scope = owner, current = true;
   let beginGate = null, beginFailure = '', staleAfterBegin = false, changedAgent = false, changedEntitlementOwner = false;
   const capability = { token: 'x'.repeat(43), expiresAt: Date.now() + 60_000 };
@@ -38,15 +39,23 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
     useRef(initial) { const list = slots[component], i = cursor++; return list[i] ??= { current: initial }; },
     useMemo(fn) { cursor++; return fn(); },
   };
+  function approval(args) {
+    const expiresAt = Date.now() + 300_000;
+    return { approvalToken: 'fixture-token', summary: 'fixture', expiresAt: new Date(expiresAt).toISOString(),
+      executionContext: { schema: 'rockstaros.mcp-approval-context/1', connectorId: server.id, toolName: 'op',
+        transport: server.transport, toolDigest: server.passport.toolDigest,
+        inputSha256: createHash('sha256').update(JSON.stringify(args)).digest('hex'), payloadDigest: 'f'.repeat(64),
+        expiresAt, pricing: { model: 'free', note: '', declaration: 'provider_unverified' } } };
+  }
   const mcp = { listMcpConnections: async () => [server], disconnectMcp: async () => {},
-    prepareMcpTool: async (serverId, name, args) => { events.push({ kind: 'prepare', serverId, name, args }); return { approvalToken: 'fixture-token', summary: 'fixture' }; },
+    prepareMcpTool: async (serverId, name, args) => { events.push({ kind: 'prepare', serverId, name, args }); return approval(args); },
     executeApprovedMcpTool: async (serverId, name, args, token) => { events.push({ kind: 'execute', serverId, name, args, token }); return { text: '結果' }; },
   };
   async function fetch(url, options = {}) {
     if (url === 'http://fixture-connector/servers') return Response.json({ servers: [server] });
     if (url === 'http://fixture-connector/servers/s/prepare') {
       const body = JSON.parse(options.body); events.push({ kind: 'prepare', name: body.name, args: body.arguments });
-      return Response.json({ approvalToken: 'fixture-token', summary: 'fixture' });
+      return Response.json(approval(body.arguments));
     }
     if (url === 'http://fixture-connector/servers/s/execute') {
       const body = JSON.parse(options.body); events.push({ kind: 'connector-request', body });
@@ -66,7 +75,7 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
         return Response.json({ error: 'job_claim_unknown', message: '仕事の実行許可を確認できません。' }, { status: 409 });
       }
       savedJob = { ...savedJob, revision: savedJob.revision + 1, toolAttempts: [{ ...attempt, state: 'claimed', claimedRevision: savedJob.revision + 1 }] };
-      const jobClaim = { jobId: gate.jobId, attemptId: gate.attemptId, inputSha256: digest, jobRevision: savedJob.revision };
+      const jobClaim = { executionReviewDigest: gate.executionReviewDigest, jobId: gate.jobId, attemptId: gate.attemptId, inputSha256: digest, jobRevision: savedJob.revision };
       if (stopAfterClaim) {
         savedJob = { ...savedJob, revision: savedJob.revision + 1, status: 'cancelled',
           events: [{ command: { id: 'cancel-fixture', action: 'cancel' } }],
@@ -89,7 +98,7 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
         if (beginFailure === 'network') throw new Error('fixture response lost');
         if (beginFailure === 'server') return Response.json({ error: '保存結果不明' }, { status: 503 });
         if (beginFailure === 'malformed') return Response.json({ saved: true });
-        savedJob = { ...savedJob, revision: savedJob.revision + 1, toolAttempts: [{ ...body.attempt, state: 'pending' }] };
+        savedJob = { ...savedJob, revision: savedJob.revision + 1, toolAttempts: [{ ...body.attempt, state: 'pending', executionReviewDigest: await workflow.workToolExecutionReviewDigest(body.attempt.executionReview), creationRelation: workflow.workToolCreationRelation(savedJob.agentBinding, body.attempt.executionReview) }] };
         if (staleAfterBegin) current = false;
         const operationCapability = beginFailure === 'expired' ? { ...capability, expiresAt: Date.now() - 1 }
           : beginFailure === 'invalid-token' ? { ...capability, token: 'invalid' }
@@ -107,7 +116,7 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   }
   const jsx = { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
   const icons = new Proxy({}, { get: (_, name) => String(name) });
-  const modules = { react, 'react/jsx-runtime': jsx, 'lucide-react': icons, '@/lib/mcp-hub': mcp,
+  const modules = { '@/lib/workflow': workflow, react, 'react/jsx-runtime': jsx, 'lucide-react': icons, '@/lib/mcp-hub': mcp,
     '@/lib/mcp-tool-result': { describeMcpToolResult: value => ({ ok: true, text: value.text }) },
     '@/lib/sky-agent-requirements': requirements, '@/lib/sky-tool-package': packageApi,
     '@/lib/sky-package-runtime': runtime, '@/lib/owner-intent': intent, '@/lib/rockstar-service-package-access': access };
@@ -121,7 +130,7 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   const Parent = load(parentSource).default;
   function render() {
     component = 'parent'; cursor = 0;
-    const outer = Parent({ server, toolName: 'op', task: '作業', packageKey, manifestSha256, job: displayedJob, ownerScope: owner,
+    const outer = Parent({ server, toolName: 'op', task: '作業', packageKey, manifestSha256, packagePricingNote: manifest.pricing.note, job: displayedJob, ownerScope: owner,
       agentReference: { id: agent.id, revision: 1 }, isCurrent: () => current, onJob: j => { displayedJob = j; }, onRunningChange: value => { running = value; } });
     function expand(node) {
       if (Array.isArray(node)) return node.map(expand);
@@ -155,6 +164,10 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   render();
   return { events, click, flush, render, button, waitForBegin: () => waitFor(() => events.some(e => e.kind === 'begin'), 'paused begin'), text: () => text(tree), pauseBegin() { return beginGate = deferred(); },
     failBegin(mode) { beginFailure = mode; }, switchOwner() { scope = 'owner-v1:' + 'c'.repeat(64); }, changeAgent() { changedAgent = true; }, switchEntitlementOwner() { changedEntitlementOwner = true; },
+    refreshJobRevision() { savedJob = { ...savedJob, revision:savedJob.revision+1 }; displayedJob = savedJob; render(); },
+    changeToolDigest() { server.passport.toolDigest = 'f'.repeat(64); },
+    changeToolPricing() { server.passport.tools[0].pricing.note = 'changed provider note'; },
+    changePackagePricing() { manifest.pricing.note = 'changed package note'; },
     changeJobRevision() { savedJob = { ...savedJob, revision: savedJob.revision + 1 }; },
     revokeAfterBegin() { staleAfterBegin = true; },
     changeInput(value) { const area = nodes(tree).find(n => n.type === 'textarea' && n.props['aria-label'] === 'MCP toolのJSON引数'); area.props.onChange({ target: { value } }); render(); },
@@ -168,9 +181,9 @@ void test('explicit approval waits for saved same-job begin and a second fresh c
   assert.deepEqual(h.events.map(e => e.kind), ['prepare', 'begin']);
   gate.resolve(); await h.flush();
   assert.deepEqual(h.events.map(e => e.kind), ['prepare', 'begin', 'connector-request', 'claim', 'execute', 'observe']);
-  assert.equal(h.events[1].body.jobId, 'job-fixture'); assert.equal(h.events[1].body.revision, 1);
+  assert.equal(h.events[1].body.jobId, '57db941f-2e01-40a5-a9f4-c9dca6a23cb6'); assert.equal(h.events[1].body.revision, 1);
   const operationGate = h.events.find(e => e.kind === 'connector-request').body.jobGate;
-  assert.equal(operationGate.jobId, 'job-fixture'); assert.equal(operationGate.attemptId, h.events[1].body.attempt.id);
+  assert.equal(operationGate.jobId, '57db941f-2e01-40a5-a9f4-c9dca6a23cb6'); assert.equal(operationGate.attemptId, h.events[1].body.attempt.id);
   assert.equal(operationGate.agentRevision, 1); assert.match(operationGate.token, /^[A-Za-z0-9_-]{43}$/);
   assert.equal(h.events.find(e => e.kind === 'claim').digest, h.events[1].body.attempt.inputSha256);
   assert.equal(h.events.find(e => e.kind === 'observe').body.revision, 3);
@@ -248,4 +261,27 @@ void test('stop arriving after an accepted claim does not claim the actual Tool 
   assert.deepEqual(h.events.map(e => e.kind), ['prepare', 'begin', 'connector-request', 'claim', 'stop-requested', 'execute', 'observe']);
   assert.match(h.text(), /同じ仕事に保存しました/);
   assert.match(h.text(), /独立確認されていません/);
+});
+
+void test('changed Tool version or provider pricing after approval refuses begin', async () => {
+  for (const method of ['changeToolDigest', 'changeToolPricing', 'changePackagePricing']) {
+    const h = harness(); await h.click('実行内容を確認'); h[method]();
+    await h.click('内容を承認して実行');
+    assert.deepEqual(h.events.map(e => e.kind), ['prepare'], method);
+  }
+});
+void test('changed Tool or pricing while begin waits remains fenced without dispatch', async () => {
+  for (const method of ['changeToolDigest', 'changeToolPricing', 'changePackagePricing']) {
+    const h = harness(); await h.click('実行内容を確認'); const gate = h.pauseBegin();
+    await h.click('内容を承認して実行'); h[method](); gate.resolve(); await h.flush();
+    assert.deepEqual(h.events.map(e => e.kind), ['prepare', 'begin'], method);
+    assert.equal(h.button('実行内容を確認').props.disabled, true);
+  }
+});
+
+void test('refreshing job target after prepare cannot silently rebuild the pinned review', async () => {
+  const h = harness(); await h.click('実行内容を確認'); h.refreshJobRevision();
+  assert.equal(h.button('内容を承認して実行').props.disabled, true);
+  assert.match(h.text(), /実行条件の記録を照合できません/);
+  assert.deepEqual(h.events.map(e => e.kind), ['prepare']);
 });

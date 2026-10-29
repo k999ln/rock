@@ -186,6 +186,76 @@ export type WorkAgentBinding = {
   requestDigest: string;
   creationReview?: WorkAgentCreationReview;
 };
+/** Non-secret projection of a Connector's existing one-use approval.
+ * Provider declarations and client confirmation are not billing or authority. */
+export type WorkToolApprovalContext = {
+  schema: 'rockstaros.mcp-approval-context/1'; connectorId: string; toolName: string;
+  transport: 'stdio' | 'local_http'; toolDigest: string; inputSha256: string;
+  payloadDigest: string; expiresAt: number;
+  pricing: { model: 'free'; note: string; declaration: 'provider_unverified' };
+};
+export type WorkToolExecutionReview = {
+  schema: 'rockstaros.work-tool-execution-review/1';
+  ownerScope: string; jobId: string; jobRevision: number; agentId: string; agentRevision: number;
+  packageKey: string; manifestSha256: string;
+  packagePricing: { model: 'free'; note: string; declaration: 'provider_unverified' };
+  approvalContext: WorkToolApprovalContext;
+};
+export type WorkToolCreationRelation = {
+  state: 'unchanged' | 'changed' | 'not_recorded'; changedFields: string[];
+  creationRequestDigest: string | null;
+};
+export function parseWorkToolApprovalContext(value: unknown): WorkToolApprovalContext {
+  const v = objectInput(value, ['schema','connectorId','toolName','transport','toolDigest','inputSha256','payloadDigest','expiresAt','pricing']);
+  const p = objectInput(v.pricing, ['model','note','declaration']);
+  const id = (x: unknown) => typeof x === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(x);
+  const hash = (x: unknown) => typeof x === 'string' && /^[a-f0-9]{64}$/.test(x);
+  if (v.schema !== 'rockstaros.mcp-approval-context/1' || !id(v.connectorId) || !id(v.toolName) ||
+      !['stdio','local_http'].includes(String(v.transport)) || !hash(v.toolDigest) || !hash(v.inputSha256) || !hash(v.payloadDigest) ||
+      !Number.isSafeInteger(v.expiresAt) || Number(v.expiresAt) < 1 || p.model !== 'free' ||
+      p.declaration !== 'provider_unverified' || typeof p.note !== 'string' || p.note.length > 2000)
+    throw new WorkError('実行確認のTool・入力・料金申告を読み直してください。');
+  return { schema: 'rockstaros.mcp-approval-context/1', connectorId: v.connectorId as string, toolName: v.toolName as string,
+    transport: v.transport as 'stdio' | 'local_http', toolDigest: v.toolDigest as string, inputSha256: v.inputSha256 as string,
+    payloadDigest: v.payloadDigest as string, expiresAt: v.expiresAt as number,
+    pricing: { model: 'free', note: p.note, declaration: 'provider_unverified' } };
+}
+export function parseWorkToolExecutionReview(value: unknown): WorkToolExecutionReview {
+  const v = objectInput(value, ['schema','ownerScope','jobId','jobRevision','agentId','agentRevision','packageKey','manifestSha256','packagePricing','approvalContext']);
+  const p = objectInput(v.packagePricing, ['model','note','declaration']);
+  if (v.schema !== 'rockstaros.work-tool-execution-review/1' || typeof v.ownerScope !== 'string' || !/^owner-v1:[a-f0-9]{64}$/.test(v.ownerScope) || !Number.isSafeInteger(v.jobRevision) || Number(v.jobRevision) < 0 ||
+      typeof v.agentId !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,119}$/.test(v.agentId) ||
+      !Number.isSafeInteger(v.agentRevision) || Number(v.agentRevision) < 1 ||
+      typeof v.packageKey !== 'string' || v.packageKey.length > 205 ||
+      !/^[a-z0-9]+(?:[.-][a-z0-9]+)+@(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(v.packageKey) ||
+      typeof v.manifestSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(v.manifestSha256) || p.model !== 'free' ||
+      p.declaration !== 'provider_unverified' || typeof p.note !== 'string' || p.note.length > 2000)
+    throw new WorkError('本人・仕事・担当・Packageの実行確認を読み直してください。');
+  return { schema: 'rockstaros.work-tool-execution-review/1', ownerScope: v.ownerScope, jobId: workId(v.jobId),
+    jobRevision: v.jobRevision as number, agentId: v.agentId, agentRevision: v.agentRevision as number,
+    packageKey: v.packageKey, manifestSha256: v.manifestSha256,
+    packagePricing: { model: 'free', note: p.note, declaration: 'provider_unverified' },
+    approvalContext: parseWorkToolApprovalContext(v.approvalContext) };
+}
+export async function workToolExecutionReviewDigest(value: WorkToolExecutionReview): Promise<string> {
+  const raw = JSON.stringify(parseWorkToolExecutionReview(value));
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+  return [...new Uint8Array(hash)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
+/** Compare semantic conditions, excluding expiry/nonce. Never invent old input text. */
+export function workToolCreationRelation(binding: WorkAgentBinding | undefined, review: WorkToolExecutionReview): WorkToolCreationRelation {
+  const origin = binding?.creationReview ? parseWorkAgentCreationReview(binding.creationReview) : undefined, c = review.approvalContext;
+  if (!origin) return { state: 'not_recorded', changedFields: [], creationRequestDigest: binding?.requestDigest ?? null };
+  const values: Record<string, [unknown, unknown]> = {
+    owner: [origin.ownerScope, review.ownerScope], Agent: [origin.agentId+':'+origin.agentRevision, review.agentId+':'+review.agentRevision],
+    Package: [origin.packageKey, review.packageKey], manifest: [origin.manifestSha256, review.manifestSha256],
+    connector: [origin.serverId, c.connectorId], Tool: [origin.toolName, c.toolName], transport: [origin.transport, c.transport],
+    ToolDigest: [origin.toolDigest, c.toolDigest], input: [origin.inputSha256, c.inputSha256],
+    PackagePricing: [origin.pricing.packageNote, review.packagePricing.note], runtimePricing: [origin.pricing.runtimeNote, c.pricing.note],
+  };
+  const changedFields = Object.entries(values).filter(([, [a,b]]) => a !== b).map(([key]) => key);
+  return { state: changedFields.length ? 'changed' : 'unchanged', changedFields, creationRequestDigest: binding!.requestDigest };
+}
 /** A fenced client attempt; even an observed response is not a verified remote terminal state. */
 export type WorkToolAttempt = {
   schema: 'rockstaros.work-tool-attempt/1';
@@ -197,6 +267,9 @@ export type WorkToolAttempt = {
   inputSha256: string;
   state: 'pending' | 'claimed' | 'cancelled_before_claim' | 'stop_requested' | 'observed_unverified';
   startedAt: string;
+  executionReview?: WorkToolExecutionReview;
+  executionReviewDigest?: string;
+  creationRelation?: WorkToolCreationRelation;
   capabilityHash?: string;
   capabilityExpiresAt?: number;
   claimedAt?: string;
@@ -204,13 +277,29 @@ export type WorkToolAttempt = {
   stopRequestedAt?: string;
   observationId?: string;
 };
+/** Integrity check for stored history/export, never an execution grant. Expiry
+ * remains readable as historical data; admission/claim enforce live deadlines. */
+export async function storedWorkToolExecutionReview(job: WorkJob, attempt: WorkToolAttempt): Promise<WorkToolExecutionReview | null> {
+  if (!Object.hasOwn(attempt, 'executionReview') && !Object.hasOwn(attempt, 'executionReviewDigest')) {
+    if (Object.hasOwn(attempt, 'creationRelation')) throw new WorkError('実行確認の形式を照合できません。', 409);
+    return null;
+  }
+  const r = parseWorkToolExecutionReview(attempt.executionReview), c = r.approvalContext;
+  if (await workToolExecutionReviewDigest(r) !== attempt.executionReviewDigest || r.jobId !== job.id ||
+      r.agentId !== job.agentBinding?.agentId || r.agentRevision !== job.agentBinding.agentRevision ||
+      r.jobRevision >= job.revision || r.packageKey !== attempt.packageKey || r.manifestSha256 !== attempt.manifestSha256 ||
+      c.connectorId !== attempt.connectorId || c.toolName !== attempt.toolName || c.inputSha256 !== attempt.inputSha256 ||
+      JSON.stringify(attempt.creationRelation) !== JSON.stringify(workToolCreationRelation(job.agentBinding, r)))
+    throw new WorkError('保存された実行確認の内容を照合できません。', 409);
+  return r;
+}
 /** Ephemeral capability for a single claim. Only the hash is persisted. */
 export async function workToolCapabilityHash(value: {
-  owner: string; jobId: string; attemptId: string; inputSha256: string; expiresAt: number; token: string;
+  owner: string; jobId: string; attemptId: string; inputSha256: string; expiresAt: number; token: string; executionReviewDigest?: string;
 }) {
   const encoded = new TextEncoder().encode(JSON.stringify([
     'rockstaros.work-tool-claim/1', value.owner, value.jobId, value.attemptId,
-    value.inputSha256, value.expiresAt, value.token,
+    value.inputSha256, value.expiresAt, value.token, ...(value.executionReviewDigest ? [value.executionReviewDigest] : []),
   ]));
   const hash = await crypto.subtle.digest('SHA-256', encoded);
   return Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');

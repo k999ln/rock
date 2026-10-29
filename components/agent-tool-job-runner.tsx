@@ -8,7 +8,7 @@ import { parseSkyToolPackage, type SkyToolPackage } from '@/lib/sky-tool-package
 import { includedRockstarServicePackageKeys } from '@/lib/rockstar-service-package-access';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import type { SkyLibraryAgent } from '@/lib/sky-agent-library';
-import type { WorkJob } from '@/lib/workflow';
+import { parseWorkToolExecutionReview, workToolExecutionReviewDigest, workToolCreationRelation, type WorkToolExecutionReview, type WorkJob } from '@/lib/workflow';
 
 type RegistryItem = { packageKey: string; manifestSha256: string; status: string; installable: boolean; manifest: SkyToolPackage };
 const sha256 = async (value: string) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)))]
@@ -16,12 +16,12 @@ const sha256 = async (value: string) => [...new Uint8Array(await crypto.subtle.d
 
 /** Existing MCP runner attached to one saved, owner-authorized work job. */
 export default function AgentToolJobRunner({ server, toolName, task, packageKey, manifestSha256, job,
-  ownerScope, agentReference, isCurrent, onJob, onRunningChange }: {
+  ownerScope, agentReference, packagePricingNote, isCurrent, onJob, onRunningChange }: {
   server: McpConnection; toolName: string; task: string; packageKey: string; manifestSha256: string;
-  job: WorkJob; ownerScope: string; agentReference: { id: string; revision: number };
+  job: WorkJob; packagePricingNote: string; ownerScope: string; agentReference: { id: string; revision: number };
   isCurrent: () => boolean; onJob: (job: WorkJob) => void; onRunningChange: (running: boolean) => void;
 }) {
-  const active = useRef<{ id: string; revision: number; inputSha256: string } | null>(null);
+  const active = useRef<{ id: string; revision: number; inputSha256: string; executionReviewDigest: string } | null>(null);
   const [busy, setBusy] = useState(false), [message, setMessage] = useState('');
   const [result, setResult] = useState('');
   const [localFence, setLocalFence] = useState(false);
@@ -30,7 +30,7 @@ export default function AgentToolJobRunner({ server, toolName, task, packageKey,
   // unresolved attempts remain fenced until a future authoritative reconciliation.
   const fenced = Boolean(job.toolAttempts?.length) || localFence;
 
-  async function fresh(revision: number) {
+  async function fresh(revision: number, review?: WorkToolExecutionReview) {
     if (!isCurrent()) throw new Error('本人または仕事が変わりました。');
     const [agentResponse, jobsResponse, registryResponse, entitlementResponse, servers] = await Promise.all([
       fetch(`/api/sky/agents?id=${encodeURIComponent(agentReference.id)}`, { cache: 'no-store' }),
@@ -61,22 +61,39 @@ export default function AgentToolJobRunner({ server, toolName, task, packageKey,
     if (reviewSkyAgentRequirements(agent.agent.requirements, [{ ...pkg, manifest }], servers).state !== 'candidate' ||
         !compatibleLocalPackageRuntimes(manifest, servers).some(candidate => candidate.server.id === server.id && candidate.tool.name === toolName))
       throw new Error('実行先とToolの入出力を再確認してください。');
+    if (manifest.pricing.note !== packagePricingNote) throw new Error('Packageの料金申告が変わりました。');
+    if (review) {
+      const c = review.approvalContext;
+      const candidate = compatibleLocalPackageRuntimes(manifest, servers).find(item => item.server.id === server.id && item.tool.name === toolName);
+      if (!candidate || candidate.server.passport?.toolDigest !== c.toolDigest || candidate.server.transport !== c.transport ||
+          candidate.tool.pricing.note !== c.pricing.note || c.expiresAt <= Date.now())
+        throw new Error('Tool版・接続先・料金申告・期限が変わりました。再確認してください。');
+    }
   }
 
-  async function begin(input: { serverId: string; toolName: string; args: Record<string, unknown> }) {
+  async function begin(input: { serverId: string; toolName: string; args: Record<string, unknown>; executionReview?: WorkToolExecutionReview }) {
     if (!bound || fenced || busy || !isCurrent() || input.serverId !== server.id || input.toolName !== toolName)
       throw new Error('同じ仕事と実行先を確認してください。');
     setBusy(true); setMessage(''); setResult('');
     const id = crypto.randomUUID();
     try {
-      await fresh(job.revision);
+      const review = parseWorkToolExecutionReview(input.executionReview);
+      if (review.ownerScope !== ownerScope || review.jobId !== job.id || review.jobRevision !== job.revision ||
+          review.agentId !== agentReference.id || review.agentRevision !== agentReference.revision ||
+          review.packageKey !== packageKey || review.manifestSha256 !== manifestSha256 || review.packagePricing.note !== packagePricingNote)
+        throw new Error('同じ仕事の実行確認を読み直してください。');
+      await fresh(job.revision, review);
       const digest = await sha256(JSON.stringify(input.args));
-      if (!isCurrent()) throw new Error('入力の観測または本人・仕事が変わりました。');
+      if (!isCurrent() || review.approvalContext.inputSha256 !== digest || review.approvalContext.connectorId !== server.id ||
+          review.approvalContext.toolName !== toolName || review.approvalContext.expiresAt <= Date.now())
+        throw new Error('入力の観測または本人・仕事が変わりました。');
+      const reviewDigest = await workToolExecutionReviewDigest(review);
+      if (!isCurrent() || review.approvalContext.expiresAt <= Date.now()) throw new Error('実行確認が失効しました。');
       setLocalFence(true);
       const response = await fetch('/api/work-jobs/tool-observations', { method: 'POST', headers: {
         'Content-Type': 'application/json', [OWNER_SCOPE_HEADER]: ownerScope,
       }, body: JSON.stringify({ action: 'begin', jobId: job.id, revision: job.revision, attempt: {
-        id, packageKey, manifestSha256, connectorId: server.id, toolName, inputSha256: digest,
+        id, packageKey, manifestSha256, connectorId: server.id, toolName, inputSha256: digest, executionReview: review,
       } }) });
       const body = await response.json() as { job?: WorkJob; saved?: boolean; error?: string; operationCapability?: { token?: unknown; expiresAt?: unknown } };
       const attempt = body.job?.toolAttempts?.find(item => item.id === id);
@@ -84,17 +101,19 @@ export default function AgentToolJobRunner({ server, toolName, task, packageKey,
           body.job.agentBinding?.agentId !== agentReference.id || body.job.agentBinding.agentRevision !== agentReference.revision ||
           !attempt || attempt.state !== 'pending' || attempt.packageKey !== packageKey || attempt.manifestSha256 !== manifestSha256 ||
           attempt.connectorId !== server.id || attempt.toolName !== toolName || attempt.inputSha256 !== digest ||
+          attempt.executionReviewDigest !== reviewDigest || JSON.stringify(attempt.executionReview) !== JSON.stringify(review) ||
+          JSON.stringify(attempt.creationRelation) !== JSON.stringify(workToolCreationRelation(job.agentBinding, review)) ||
           typeof body.operationCapability?.token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(body.operationCapability.token) ||
           !Number.isSafeInteger(body.operationCapability.expiresAt) || Number(body.operationCapability.expiresAt) <= Date.now())
         throw new Error(body.error || '実行前の保存を確認できません。同じ仕事を読み直してください。');
-      active.current = { id, revision: body.job.revision, inputSha256: digest };
+      active.current = { id, revision: body.job.revision, inputSha256: digest, executionReviewDigest: reviewDigest };
       if (isCurrent()) onJob(body.job);
       // Revocation may happen while the start record is being committed.
       // Failure here leaves the record fenced and dispatches no Tool.
-      await fresh(body.job.revision);
+      await fresh(body.job.revision, review);
       if (!isCurrent()) throw new Error('本人または仕事が変わりました。');
       return { jobId: job.id, attemptId: id, agentId: agentReference.id, agentRevision: agentReference.revision,
-        ownerScope, token: body.operationCapability.token };
+        ownerScope, token: body.operationCapability.token, executionReviewDigest: reviewDigest };
     } catch (reason) {
       setMessage(reason instanceof Error ? reason.message : '実行前の状態を確認できません。');
       throw reason;
@@ -103,7 +122,7 @@ export default function AgentToolJobRunner({ server, toolName, task, packageKey,
   function claimed(claim: McpJobClaim) {
     const attempt = active.current;
     if (!attempt || claim.jobId !== job.id || claim.attemptId !== attempt.id || claim.inputSha256 !== attempt.inputSha256 ||
-        claim.jobRevision !== attempt.revision + 1) throw new Error('仕事の実行状態を確認できません。');
+        claim.jobRevision !== attempt.revision + 1 || claim.executionReviewDigest !== attempt.executionReviewDigest) throw new Error('仕事の実行状態を確認できません。');
     active.current = { ...attempt, revision: claim.jobRevision };
   }
   async function observed(outcome: { ok: boolean; text: string }) {
@@ -143,6 +162,8 @@ export default function AgentToolJobRunner({ server, toolName, task, packageKey,
   return <section aria-label="同じ仕事でToolを使う">
     <p>本人の担当と同じ仕事へ結び、実行前に記録します。Toolの結果は本人が確認するまで未検証です。</p>
     <McpBotRunner server={server} request={task} fixedToolName={toolName} executionDisabled={!bound || fenced || busy}
+      executionDisclosure={{ ownerScope, jobId: job.id, jobRevision: job.revision, agentId: agentReference.id,
+        agentRevision: agentReference.revision, packageKey, manifestSha256, packagePricingNote, binding: job.agentBinding }}
       beforeExecute={begin} onJobClaim={claimed} onOutcome={outcome => { void observed(outcome); }} onRunningChange={onRunningChange} />
     {fenced && !message && <p>この仕事には未照合の実行があります。自動で再実行しません。</p>}
     {message && <p role="alert">{message}</p>}
