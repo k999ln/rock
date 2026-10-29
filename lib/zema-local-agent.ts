@@ -52,6 +52,12 @@ export type ZemaLocalAgentPlanner = (input: {
   step: number;
 }) => Promise<string>;
 
+// Emitted by the local executor, never inferred from model or Tool text.
+export type ZemaLocalAgentToolObservation = Readonly<{
+  step: number;
+  tool: ZemaLocalAgentTool;
+} & ({ outcome: 'completed' } | { outcome: 'needs_review'; errorCode: string })>;
+
 export class ZemaLocalAgentError extends Error {
   readonly code: string;
   readonly status: number;
@@ -227,6 +233,10 @@ export async function runZemaLocalAgent(input: {
   context?: string;
   planner: ZemaLocalAgentPlanner;
   maxSteps?: number;
+  onToolObservation?: (
+    observation: ZemaLocalAgentToolObservation,
+    artifact: Readonly<ZemaLocalAgentArtifact>,
+  ) => void;
 }): Promise<ZemaLocalAgentResult> {
   const request = boundedText(input.request, MAX_REQUEST_CHARS, 'INVALID_AGENT_REQUEST');
   const context = input.context === undefined
@@ -264,6 +274,7 @@ export async function runZemaLocalAgent(input: {
     const callKey = JSON.stringify([reply.tool, reply.arguments]);
     if (calls.has(callKey)) throw new ZemaLocalAgentError('REPEATED_TOOL_CALL');
     calls.add(callKey);
+    let observation: ZemaLocalAgentToolObservation;
     try {
       const artifact = executeZemaLocalAgentTool(reply.tool, reply.arguments);
       artifacts.push(artifact);
@@ -274,6 +285,7 @@ export async function runZemaLocalAgent(input: {
         outcome: 'completed',
         summary: reply.reason,
       });
+      observation = { step, tool: reply.tool, outcome: 'completed' };
     } catch (error) {
       if (!(error instanceof ZemaLocalAgentError)) throw error;
       artifacts.push({ tool: reply.tool, content: JSON.stringify({ error: error.code }) });
@@ -284,7 +296,13 @@ export async function runZemaLocalAgent(input: {
         outcome: 'needs_review',
         summary: '入力不足または許可外の引数を拒否',
       });
+      observation = { step, tool: reply.tool, outcome: 'needs_review', errorCode: error.code };
     }
+    // Observer failures remain terminal; they cannot become recoverable Tool errors.
+    input.onToolObservation?.(
+      Object.freeze(observation),
+      Object.freeze({ ...artifacts[artifacts.length - 1] }),
+    );
   }
   throw new ZemaLocalAgentError('AGENT_STEP_LIMIT');
 }
