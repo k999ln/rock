@@ -12488,8 +12488,8 @@
   },
   "hostPlatformFinalAudit": {
     "owner": "ROCK",
-    "status": "pass_scoped_host_synthetic_audit_integration_pending",
+    "status": "pass_scoped_host_synthetic",
     "evidence": "docs/evidence/development-execution/host-platform-final-audit.json",
-    "next": "Independent audit of evidence documentation, exact-head CI, merge and merge-SHA CI. Physical and production acceptance separate."
+    "next": "Check evidence documentation exact-head and merge-SHA CI independently; physical and production acceptance remain separate."
   }
 }

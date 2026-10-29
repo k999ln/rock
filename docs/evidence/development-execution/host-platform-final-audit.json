@@ -102,6 +102,6 @@
   "independentBrowserLogSha256": "82378a6d29dbcdc2e27a7909eaf181a2bbf24577d3670775d0342d7caaf303db",
   "prHeadVerifyLogSha256": "4ec52040fa32a86ca9056f1ffe4203de5e591faa9858380acf4e029e0b593ef7",
   "limitations": "Host synthetic identity, entitlement, signatures and provider. SDK Tool executes locally; remote delegation is separate on same job. Workflow is invoked by test. Remote cancellation is separately confirmed. Individual failure cases are covered by distinct fixtures. No physical mii/Pixel, real provider, actual payment, general sandbox, physical stop or production authority accepted. Software output lease timer/clock limits remain.",
-  "remaining": "Final audit evidence documentation integration and its own exact-head/main CI. Physical and production acceptances remain outside this host scope.",
+  "remaining": "Evidence documentation exact-head and merge-SHA CI are checked independently. Physical and production acceptances remain outside this host scope.",
   "mainCiEvidence": "docs/evidence/development-execution/eve-sdk-delegation-d1-main-ci.json"
 }
