@@ -1,3 +1,7 @@
+### Pixel保存済AI照合の未確認記録（2026-10-28 / Android・ROCK）
+
+本人の追加許可を受けた担当者が既存の「保存済みAIを照合する」を1回操作し、画面は「照合・準備の結果は未確認」と報告した。[最小証拠](docs/evidence/development-execution/pixel-inventory-unconfirmed.json)は要約の独立読取り評価に限る。モデル/仕事/接続内容・秘密情報・画面/raw状態を保存せず、通信有無とデータ全体の前後は未照合、取得・準備・モデル/仕事/接続・実機/OS受入は未成立。Git担当の追加端末操作は0。基点main8566573dはmii PR255とfixture PR256を保持し、各同SHA全CI成功を別証拠で確認済み。今回は記録のみの別PRとし、新しいGit/head/main同SHA全CIはこれから確認する。
+
 ### Pixel診断positive fixtureの保存完了同期（2026-10-28 / G04・ROCK）
 
 PR255はhead7check/4workflow成功でmain76b327c2へ通常統合したが、main初回verifyが既存Pixel診断試験のexitKind欠落で停止した。任意診断の非待機lockへ観測writerが競合し、正常fixtureの300ms固定待ちは保存完了を保証しなかった。observer fsync800ms遅延で元試験の同じKeyErrorを再現。fixture子終了をfirst output診断保存ackへ同期し、同じ遅延1/1と診断27中26pass/1historical skipが成功。実worker・停止/期限・権限と元assertionを変更しない。[証拠](docs/evidence/development-execution/pixel-diagnostic-fixture-order.json)。次は独立検収、Git/PRとhead/main同SHA全CI。元main失敗は保存し、同SHA rerunは1回だけ実行中。実機操作・推論・有料接続なし。

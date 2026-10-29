@@ -11899,5 +11899,25 @@
     "runtimeChanged": false,
     "physicalAccepted": false,
     "next": "Independent test/metadata review, normal Git/PR, exacthead allCI, normalmerge and sameSHA allCI; preserve failure attempts."
+  },
+  "pixelInventoryUnconfirmed": {
+    "recordedAt": "2026-10-29T00:16:59.091509+00:00",
+    "primaryWorkstream": "07-android-device-local-ai",
+    "primaryOwner": "ROCK",
+    "status": "operator_reported_inventory_attempt_unconfirmed",
+    "evidence": "docs/evidence/development-execution/pixel-inventory-unconfirmed.json",
+    "attemptsReported": 1,
+    "inventoryOrJobOrConnectionAccepted": false,
+    "externalCommunication": "unknown",
+    "fullPrePostStateCompared": false,
+    "runtimeChanged": false,
+    "physicalOrOsAcceptance": false,
+    "validatedBaseMain": {
+      "sha": "8566573d52a278770f53879a6b05acec60a489ef",
+      "checksSuccess": 6,
+      "workflowsSuccess": 4,
+      "scope": "prior mii/fixture Git acceptance only, not inventory acceptance"
+    },
+    "next": "Save reviewed minimal evidence separately in Git; exacthead and normalmerge sameSHA allCI; keep result UNKNOWN and no additional device action."
   }
 }

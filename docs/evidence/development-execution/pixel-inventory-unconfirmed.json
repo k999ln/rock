@@ -1,0 +1,33 @@
+{
+  "schema": "rockstaros.pixel-inventory-unconfirmed/1",
+  "recordedAt": "2026-10-29T00:16:59.091509+00:00",
+  "device": "Pixel 10 GL066 / frankel",
+  "sourceSummarySha256": "f82d777f3cdcfb9af716420581451e778cfad84999f0f8b00a797cc7139c6551",
+  "provenance": "Operator-reported existing screen observation; Git reviewer inspected summary only and did not reoperate the device.",
+  "authorizedScope": "One tap of existing saved-AI inventory control; no preparation or retry.",
+  "reportedTapCount": 1,
+  "reportedScreenOutcome": "照合・準備の結果は未確認",
+  "assessment": {
+    "inventoryConfirmed": false,
+    "jobStateConfirmed": false,
+    "connectionConfirmed": false,
+    "externalCommunication": "unknown; may have occurred",
+    "fullPrePostDeviceDataCompared": false,
+    "deviceStateUnchangedConfirmed": false,
+    "modelOrDeviceOrOsAcceptanceGranted": false
+  },
+  "recordExclusions": [
+    "model inventory contents",
+    "job contents",
+    "connection or account details",
+    "secrets and credentials",
+    "screenshots and raw device state"
+  ],
+  "additionalDeviceOperationsByGit": 0,
+  "limits": [
+    "This records an unconfirmed attempt, not successful inventory or preparation.",
+    "No inference, retrieval, installation or configuration result is established by this observation.",
+    "No absence of network communication or complete data preservation is established.",
+    "No automatic preparation, retry or new device permission follows from this record."
+  ]
+}
