@@ -1,9 +1,14 @@
 {
   "miiOutputLease": {
     "owner": "ROCK",
-    "status": "independent_review_full_verify_pass_integration_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-output-lease.json",
-    "next": "Save PR and confirm same-head and merge SHA CI; physical output remains unaccepted."
+    "next": "Keep JS timer limitations and physical mii output/stop separate; continue owner-specified capability matching.",
+    "pullRequest": 272,
+    "prHead": "21342d35f57f589702cb26974e9492825a8c6a37",
+    "mergeSha": "3f3fa56de55cc0b623c4f4b98629a6f8791b1de0",
+    "mergeChecks": "6 of 6 completed successfully",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-output-lease-main-ci.json"
   },
   "miiA2aUncertainBudget": {
     "owner": "ROCK",
