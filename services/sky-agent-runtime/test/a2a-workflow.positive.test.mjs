@@ -284,6 +284,7 @@ async function miiWorkerFixture(parentId) {
     agentRevision: 1, requestDigest: 'a'.repeat(64) };
   await workStore(env.DB).create(owner, job);
   const scope = await ownerScopeFor(owner);
+  let journalClaims = 0, journalWinners = 0;
   const journal = {
     async read(key) {
       const row = await env.DB.prepare('SELECT payload FROM mii_test_cancel_journal WHERE owner_scope=? AND job_id=?')
@@ -291,8 +292,10 @@ async function miiWorkerFixture(parentId) {
       return row ? JSON.parse(row.payload) : null;
     },
     async claim(record) {
+      journalClaims++;
       const result = await env.DB.prepare('INSERT INTO mii_test_cancel_journal VALUES(?,?,?) ON CONFLICT DO NOTHING')
         .bind(record.ownerScope, record.jobId, JSON.stringify(record)).run();
+      if (result.meta.changes === 1) journalWinners++;
       return result.meta.changes === 1 ? 'claimed' : 'occupied';
     },
     async settle(record) {
@@ -326,6 +329,7 @@ async function miiWorkerFixture(parentId) {
     return adapter;
   };
   return { job, scope, create, dropNextCancel() { dropCancel = true; }, patchCount: () => patches,
+    journalCounts: () => ({ claims: journalClaims, winners: journalWinners }),
     switchOwner(value) { activeOwner = value; },
     reference: { jobId: job.id, ownerScope: scope, revision: job.revision, sceneRevision: 1,
       agentId: 'fixture-role', agentRevision: 1 } };
@@ -1297,14 +1301,22 @@ it('reconciles lost remote cancellation and signed usage for the same mii work o
     } finally { await workflow.dispose(); }
   };
   assert.deepEqual(await run('dispatch'), { outcome: 'task_received', state: 'working', usageOutcome: 'missing' });
-  const first = makeAdapter();
-  const initial = await first.readExisting(mii.reference);
+  const first = makeAdapter(), concurrent = makeAdapter(2);
+  const [initial, concurrentInitial] = await Promise.all([
+    first.readExisting(mii.reference), concurrent.readExisting(mii.reference),
+  ]);
   assert.equal(initial.job.id, parent); assert.equal((await first.readBudget()).budget.reservedMinor, 50);
+  assert.equal(concurrentInitial.job.id, parent); assert.equal(concurrentInitial.job.revision, initial.job.revision);
   // The mii action stops only the local plan. Remote cancellation is a separate explicit operation.
   mii.dropNextCancel();
-  const local = await first.cancelPlan({ commandId: crypto.randomUUID(), jobId: parent, revision: initial.job.revision, confirmed: true });
-  assert.equal(local.state, 'unknown'); assert.equal(local.remoteStop, 'unconfirmed'); first.close();
-  const resumed = makeAdapter(2);
+  const local = await Promise.all([first, concurrent].map(adapter => adapter.cancelPlan({
+    commandId: crypto.randomUUID(), jobId: parent, revision: initial.job.revision, confirmed: true,
+  })));
+  for (const result of local) { assert.equal(result.state, 'unknown'); assert.equal(result.remoteStop, 'unconfirmed'); }
+  assert.deepEqual(mii.journalCounts(), { claims: 2, winners: 1 });
+  assert.equal(mii.patchCount(), 1);
+  first.close(); concurrent.close();
+  const resumed = makeAdapter(3);
   const restored = await resumed.readExisting(mii.reference);
   assert.equal(restored.job.status, 'cancelled'); assert.equal(restored.cancelReconciliation, 'clear');
   assert.equal((await resumed.readBudget()).budget.reservedMinor, 50); assert.equal(mii.patchCount(), 1);

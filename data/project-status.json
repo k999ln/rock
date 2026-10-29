@@ -12429,5 +12429,11 @@
     "status": "candidate_independent_test_pass_pr_pending",
     "evidence": "docs/evidence/development-execution/sdk-dist-release.json",
     "next": "Independent final candidate review, exact-head CI, merge and merge-SHA CI."
+  },
+  "miiWorkerTwoConsumers": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-two-consumers.json",
+    "next": "Exact-head CI and independent final review; actual distributed journal, physical mii, remote provider and Wallet remain separate."
   }
 }
