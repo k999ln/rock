@@ -366,7 +366,9 @@
       "directMainTaskRefs": [],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "docs/evidence/development-execution/eve-selected-source-agent.json"
+      ]
     },
     {
       "id": "EVE-06",
@@ -590,7 +592,9 @@
       "directMainTaskRefs": [],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "docs/evidence/development-execution/eve-selected-source-agent.json"
+      ]
     },
     {
       "id": "EVE-15",
@@ -616,7 +620,9 @@
       ],
       "phaseGateRefs": [],
       "wholeUnitAccepted": false,
-      "currentOverlayRefs": []
+      "currentOverlayRefs": [
+        "docs/evidence/development-execution/eve-selected-source-agent.json"
+      ]
     },
     {
       "id": "OS-01",
@@ -2579,5 +2585,19 @@
     "productionDeployment": false,
     "wholeUnitAccepted": false,
     "independentAdoptionReviewSha256": "515b2516e5aa46cf91bc7513e08fcad3bed5dc0980739eaa9571726b9af94e7b"
+  },
+  "eveSelectedSourceAgent": {
+    "owner": "ROCK",
+    "primarySquad": "O5",
+    "status": "independent_and_full_verify_pass_ready_for_git_ci",
+    "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+    "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
+    "next": "Commit/push PR and exact final-head CI. Remaining upstream/social/model/composition/physical acceptance stays separate.",
+    "wholeUnitAccepted": false,
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "independentReview": "docs/evidence/development-execution/eve-selected-source-independent-review.json",
+    "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde"
   }
 }

@@ -1,3 +1,4 @@
+import { HOME_INTENT_KEY } from './home-intent.ts';
 export const ZEMA_CHAT_SESSION_KEY = 'rockstaros.zema-chat-sessions.v1';
 export const SKY_ZEMA_HANDOFF_KEY = 'rockstaros.sky-zema-handoff.v1';
 type PrivateStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
@@ -35,7 +36,7 @@ export function clearZemaPrivateSession(storage?: Pick<Storage, 'getItem' | 'rem
   let target: Pick<Storage, 'getItem' | 'removeItem'>;
   try { target = storage ?? window.sessionStorage; } catch { return false; }
   let cleared = true;
-  for (const key of [ZEMA_CHAT_SESSION_KEY, SKY_ZEMA_HANDOFF_KEY]) {
+  for (const key of [ZEMA_CHAT_SESSION_KEY, SKY_ZEMA_HANDOFF_KEY, HOME_INTENT_KEY]) {
     try { target.removeItem(key); } catch { cleared = false; }
     try { if (target.getItem(key) !== null) cleared = false; } catch { cleared = false; }
   }

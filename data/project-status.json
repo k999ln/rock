@@ -1335,7 +1335,7 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-10-27",
+  "updatedAt": "2026-10-29",
   "milestone": "RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する",
   "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。",
   "tasks": [
@@ -12491,5 +12491,19 @@
     "status": "pass_scoped_host_synthetic",
     "evidence": "docs/evidence/development-execution/host-platform-final-audit.json",
     "next": "Check evidence documentation exact-head and merge-SHA CI independently; physical and production acceptance remain separate."
+  },
+  "eveSelectedSourceAgent": {
+    "owner": "ROCK",
+    "primarySquad": "O5",
+    "status": "independent_and_full_verify_pass_ready_for_git_ci",
+    "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+    "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
+    "next": "Commit/push PR and exact final-head CI. Remaining upstream/social/model/composition/physical acceptance stays separate.",
+    "wholeUnitAccepted": false,
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "independentReview": "docs/evidence/development-execution/eve-selected-source-independent-review.json",
+    "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde"
   }
 }

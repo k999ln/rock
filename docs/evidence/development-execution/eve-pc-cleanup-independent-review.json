@@ -1,0 +1,77 @@
+{
+  "schema": "rockstaros.pc-cleanup-owned-exit-race-review/1",
+  "reviewer": "/root/eve_gap_review",
+  "recordedAt": "2026-10-29T19:58:29.694090+00:00",
+  "result": "PASS_SCOPED",
+  "mustFix": [],
+  "scope": "Darwin-only PermissionError race when exact unreaped owned child exits between initial waitid and owned-group signal; not proof of historical fullverify failure cause.",
+  "sourceSha256": {
+    "toolkits/mr/pc_citations.py": "267f88e8b20e282d0c60e9df4222c44000be248aa371ce65f0447087f098c632",
+    "tests/mr_pc_adapter.py": "1d6ac0027273ae944c55193f289778c5f1bae7a46e2b9b167584c026be7337b2",
+    "tests/mr-pc-adapter.test.mjs": "33653f8e1a6535f9cbc9542a2f7ddb16e6fbc738590bcaa319b5ba3feab69fab"
+  },
+  "archive": {
+    "path": "public/toolkits/mr-toolkit.zip",
+    "sha256": "e49918a514c691771a651024c9e2b6258a6d0ae8c3ad769dcb9d082cc9e94a46",
+    "allEntriesByteEqualToCurrentSources": true,
+    "entries": 19,
+    "noExtraOrDuplicateEntries": true,
+    "vendorUnchangedFromBase": true,
+    "vendorSha256": {
+      "vendor/mr/LICENSE": "6cf38019109830262ffd5a3e1dca12e6e972c9750d2a68f99d5494d173960fac",
+      "vendor/mr/application_eligibility.py": "bb1c79986ee20ed6a2f7304fbe09936cccc019397ff855a3fc112095902825f7",
+      "vendor/mr/citation-strip.py": "ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13",
+      "vendor/mr/deliverable_verifier.py": "74b30ee9442467d96f6bfc488c0d70421e7624490068daa62ef6a62bf45830c3",
+      "vendor/mr/make-free-version.py": "4f045a4e54456c687eec190d7650b75a3b00281a466a635c57523e26cce16be9",
+      "vendor/mr/provenance.json": "e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f"
+    }
+  },
+  "securityReview": [
+    "No new executable, argv, shell, network, filesystem input or permission introduced. Existing fixed source/hash/root restrictions and resource limits preserved.",
+    "After PermissionError, bypass only Darwin + fresh waitid P_PID exactchild WNOWAIT exit + exact group membership subset of unreaped leader; no poll/reap before ownership-sensitive checks.",
+    "Running child, extra member, unsupported platform, waitid ownership loss and inventory failure remain errors; no alternate group, PID or signal retry.",
+    "Reap and final empty-group check still execute; pipe closure and cleanup-uncertainty poison remain."
+  ],
+  "checks": [
+    {
+      "command": "node --experimental-strip-types --test tests/mr-pc-adapter.test.mjs",
+      "nodeTests": 1,
+      "pythonTests": 21,
+      "passed": true,
+      "log": "/private/tmp/eve-pc-cleanup-independent-node.log",
+      "logSha256": "270450a6bf4c23a2f3a5d5e6e1e3cf29f487b475232866b140b39c24f5b79744"
+    },
+    {
+      "command": "python3 -B -W error::ResourceWarning /private/tmp/eve-pc-cleanup-independent-guards.py",
+      "passed": true,
+      "tests": 6,
+      "actualSignals": 0,
+      "log": "/private/tmp/eve-pc-cleanup-independent-guards.log",
+      "logSha256": "ac3c52ee8c054622431ae9b95d7c1fa9c09608c59fac1b552e99ddcc7821965e",
+      "testSourceSha256": "5d2a0b0796cbc1dd6b48d8710a0da981bafe7a8d98a980df82bfaad15614f584",
+      "cases": [
+        "fresh exit/exact group",
+        "running",
+        "lost child ownership",
+        "inventory failure",
+        "extra group member",
+        "Linux"
+      ]
+    }
+  ],
+  "counterexample": {
+    "log": "/private/tmp/eve-mr-permission-race-before-fix.log",
+    "logSha256": "dfdb09f062a932df78cc6232d2e4fa3011fea1b1da08fcd7423d39e7cc2999e0",
+    "workerEvidenceReviewed": true,
+    "meaning": "Deterministic real ownedchild exit then synthetic Darwin PermissionError reproduces old code failure. Historical fullverify swallowed original exception; do not claim identified actual original cause."
+  },
+  "limits": [
+    "Scoped real macOS host test and synthetic OS-error mechanism probes; no Linux realkernel or all future cleanup races acceptance",
+    "Fullverify7/Git/CI remain root responsibility"
+  ],
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  }
+}

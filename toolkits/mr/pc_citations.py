@@ -143,6 +143,16 @@ def _cleanup_process(process):
                 os.killpg(process.pid, signal.SIGKILL)
             except ProcessLookupError:
                 pass
+            except PermissionError:
+                # The leader can exit after the first waitid but before killpg.
+                # Darwin may then reject the zombie-only group. Retain the
+                # unreaped owned PID and recheck both exit and exact membership;
+                # any live child, extra member, inventory error or other OS
+                # remains an unconfirmed cleanup failure.
+                if (sys.platform != 'darwin' or
+                        os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is None or
+                        not _darwin_group_members(process.pid) <= {process.pid}):
+                    raise
         deadline = time.monotonic() + CLEANUP_SECONDS
         process.wait(timeout=max(.01, deadline - time.monotonic()))
         while time.monotonic() < deadline:

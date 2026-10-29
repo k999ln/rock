@@ -38,7 +38,8 @@ void test('discovery posts reuse actual owner Add APIs and never imply Tool exec
   assert.match(source, /SkyOptionalFeatures/);
   assert.match(source, /queueSkyZemaHandoff\(/);
   assert.match(source, /thread=\$\{encodeURIComponent\(handoff.id\)\}/);
-  assert.match(source, /writeHomeIntent\(/);
+  assert.match(source, /sourceHandoff\.prepare\(/);
+  assert.match(source, /p.enabled && p.kind === entry.kind && p.resource === entry.resource/);
   assert.match(source, /v.tool !== tool.id/);
   assert.match(source, /Array.isArray\(v\)/);
   assert.doesNotMatch(

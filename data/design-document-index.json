@@ -282,7 +282,32 @@
       "evidence": "docs/evidence/development-execution/eve-sdk-delegation-d1.json",
       "scope": "synthetic UI approval and separate remote delegation on same SDK-observed job; no real authority or provider"
     },
-    "finalAuditEvidence": "docs/evidence/development-execution/host-platform-final-audit.json"
+    "finalAuditEvidence": "docs/evidence/development-execution/host-platform-final-audit.json",
+    "selectedSourceAgent": {
+      "authority": "docs/rockstaros-complete-design.md#選んだ出典とeve回答から担当を保存する",
+      "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
+      "implementation": [
+        "lib/eve-source-context.ts",
+        "lib/eve-source-context-store.ts",
+        "lib/eve-source-client.ts",
+        "lib/eve-agent-origin.ts",
+        "lib/eve-agent-proposal.ts",
+        "components/eve-source-handoff.tsx",
+        "components/sky-chat-workspace.tsx",
+        "app/api/eve/source-context/route.ts"
+      ],
+      "tests": [
+        "tests/eve-agent-origin-store.test.mjs",
+        "tests/eve-source-rejection-api.test.mjs",
+        "tests/eve-source-context.test.mjs",
+        "tests/eve-source-handoff-ui.test.mjs",
+        "tests/eve-source-handoff-hook.test.mjs",
+        "tests/eve-agent-creation-ui.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
+      ],
+      "upstreamOrModelAttested": false,
+      "wholeEveAccepted": false
+    }
   },
   "latestRockstarOsDesign": {
     "authority": "docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve",
@@ -2296,6 +2321,19 @@
         "tests": [
           "tests/sky-nfc-columbia.test.mjs"
         ]
+      },
+      "pcCleanupExitRace": {
+        "authority": "docs/pc-citations-adapter.md",
+        "implementation": [
+          "toolkits/mr/pc_citations.py"
+        ],
+        "tests": [
+          "tests/mr_pc_adapter.py",
+          "tests/mr-pc-adapter.test.mjs"
+        ],
+        "distribution": "public/toolkits/mr-toolkit.zip",
+        "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
+        "arbitraryProcessAuthorityAdded": false
       }
     },
     {

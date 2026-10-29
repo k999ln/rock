@@ -1,3 +1,4 @@
+import { parseEveSourcePin, type EveSourcePin } from './eve-source-context.ts';
 import { catalog } from './catalog.ts';
 import {
   isTextModelProvider,
@@ -30,6 +31,7 @@ export type ZemaChatMessage = {
   text: string;
   tool?: string;
   suggestedTool?: string;
+  source?: EveSourcePin;
 };
 
 export type ZemaChatSession = {
@@ -55,6 +57,7 @@ export type ZemaChatSession = {
 function validMessage(value: unknown): value is ZemaChatMessage {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const message = value as Partial<ZemaChatMessage>;
+  if (Object.hasOwn(message,'source')) { try { parseEveSourcePin(message.source); } catch { return false; } }
   return (
     typeof message.id === 'string' &&
     message.id.length <= 100 &&

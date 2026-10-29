@@ -20,7 +20,7 @@
 | 同時実行 | MCPプロセス全体で1件。実行中の追加呼び出しを拒否。自動retryなし |
 | 回収 | leaderをwaitid(WNOWAIT)で保持し、同じprocess groupの子孫を終了してからreap。確認できなければpoisonにし、次の処理を起動しない |
 
-macOSの `os.waitid` はPython 3.13で追加されたため、従来の3.10条件とは異なる。[Python公式ドキュメント](https://docs.python.org/3/library/os.html#os.waitid)。Darwinのzombieだけを含むgroupへのkillpgがEPERMになる場合は、libprocの該当process groupの構成を確認してからleaderをreapする。
+macOSの `os.waitid` はPython 3.13で追加されたため、従来の3.10条件とは異なる。[Python公式ドキュメント](https://docs.python.org/3/library/os.html#os.waitid)。Darwinのzombieだけを含むgroupへのkillpgがEPERMになる場合は、libprocの該当process groupの構成を確認してからleaderをreapする。 最初の終了観測後にleaderが終了してkillpgがPermissionErrorとなった競合でも、同じ未回収の子の終了をwaitid(WNOWAIT)で再観測し、同じgroupにleader以外がいないことを確認した場合に限ってreapへ進む。実行中・別member・非Darwin・観測失敗は引き続き回収未確認として拒否し、権限やsignal対象を広げない。
 
 MCPの入力・出力schema（`structuredContent.output`）と4商品名は維持する。引用商品の入力上限は従来の100,000文字から上記UTF-8バイト上限へ縮小する。安全な有限診断だけを返し、原稿・子プロセスstderr・一時パスはエラーへ含めない。MCP終了要求はRPCが捕捉するSystemExitを避け、KeyboardInterruptで回収へ進む。spawn中のSIGINT/TERMは親がPopenを所有するまで保留し、その後に処理する。workerは継承した当該signal maskを解除する。
 
@@ -48,6 +48,8 @@ python3 scripts/package-mr.py
 ```
 
 受入出力先は新規directoryに限定し、report.jsonに実行環境、実PID、ソースと観測wrapperのhash、各出力hash、ソース不変性を残す。原稿は公開の合成fixtureだけを保存する。隔離candidateではmacOS（Python 3.14.7）とLinux（Python 3.13）の実19件がPASS、skip/ResourceWarningなし。macOSソース版・zip展開版とLinuxソース版の受入reportはすべて155バイト完全一致。既存を含むNode試験54件もPASS、skipなし。これらはローカル結果でありGitHub CIや公開済みの主張ではない。環境別reportを統合時の検証記録へ併記する。`npm test` に同じ負例群を含めるため、将来のCIで失敗やskipを成功に換算しない。
+
+現行候補では上記競合を実子プロセスとDarwin相当のPermissionErrorで決定的に再現し、修正後のPython 3.15/3.14各21試験で確認する。初回全体試験の例外原文は捕捉されておらず、過去の失敗原因そのものを確定したとは扱わない。[今回の証拠](evidence/development-execution/eve-selected-source-agent.json)。配布zipは`python3 scripts/package-mr.py`で再生成し、固定vendor原本とCLI/workerを保持する。
 
 ## PC側で完了しない範囲
 

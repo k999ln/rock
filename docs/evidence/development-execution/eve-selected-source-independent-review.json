@@ -1,0 +1,357 @@
+{
+  "schema": "rockstaros.eve-selected-source-independent-review/1",
+  "reviewer": "/root/eve_gap_review",
+  "recordedAt": "2026-10-29T20:22:52.621724+00:00",
+  "root": "/private/tmp/rock-eve-five-hour-20261029",
+  "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+  "result": "PASS_SCOPED",
+  "mustFix": [],
+  "scope": "20 production files: selected saved model/dataset/space context, one-shot explicit composer load, selected Eve reply import, owner-confirmed immutable provenance, existing Agent/Job contracts; host/synthetic acceptance only; one additional PC adapter regression repair independently reviewed separately; fixed vendor unchanged",
+  "productionFileCount": 21,
+  "sourceSha256": {
+    "app/api/eve/source-context/route.ts": "99931a900b1f79f6c1af670045912a7e36d72a92074bda774fa4b2c002a11378",
+    "app/api/sky/agents/route.ts": "ed32721c1f61898b6d0b0fde3e30811a4bab24a471839891c7407c1a20aa087a",
+    "components/eve-object-agent-creator.tsx": "d5557f905078df6297dbca8e16234df4d76d149be86560fd39954d872ddbf8d7",
+    "components/eve-source-handoff.tsx": "45d1d6e5e2a89ffd4bbeb536b5fc8293353f55b7680fa6833c4758ee7a586e69",
+    "components/sky-chat-workspace.tsx": "913d2e62c301df63a2c60ec53a18542d96775afb3b48853abef4493e3b05f5e8",
+    "components/sky-discovery-feed.tsx": "57dd91cd715314035ef8653ce259280d6589906a61f921b19b6e9513615b6720",
+    "components/sky-information-market.tsx": "65719272deac444c416dcad05bff620b1868858d59aa6704db9913bc22b87b5c",
+    "components/sky-social-timeline.tsx": "2fd8c361136751af7a43839c706bd59872ee91a35754b4f9dff99580a3d1e1d4",
+    "lib/eve-agent-creation.ts": "1e489ec9203cd568d3bd6a573c30276167e49d6811f18c5395e650cd260f508f",
+    "lib/eve-agent-origin.ts": "937967fc06c3190a31340d84ee075595a6ede7e951738e90fcff199c6e0323ed",
+    "lib/eve-agent-proposal.ts": "7a04eb1b13559c64f01415d30cf1bba53a0577b3750d52f5c49fd7ab6c90a45a",
+    "lib/eve-source-client.ts": "e0f667322ad826714e5bd3d42946571d9f6606a7a7400894533653a1f4df450d",
+    "lib/eve-source-context-store.ts": "a607ede24bbbd374d411c03f64956368d15255e5dea1e6e1dcbe99825948af76",
+    "lib/eve-source-context.ts": "b064ce6e9a3da528e51ea807f31b9f1982e6a3bcff49992561ba9bc5ab5914cb",
+    "lib/home-intent.ts": "a82f6c2b77c6a0f26df41dcb0538432ef0be971a2850cbc3d736af76d14f2658",
+    "lib/sky-agent-library-store.ts": "fbb9807ea99180f6db5aa8521e4e08819b9aa03e11292ded88c61203db383a91",
+    "lib/sky-agent-library.ts": "21d7570ae4b72bfbbbdf543eb58b6db272adbeca969404486ca6550d3dffcc33",
+    "lib/use-eve-source-handoff.ts": "815d93ee6f64eec5023867cf779daf8a608eeac9a35adfb1398a19406db70bd6",
+    "lib/zema-chat-session.ts": "5ca3bdb607e42f61b68e124a68b83b9f7590d2df67349a9540058d954c6d5ab8",
+    "lib/zema-private-storage.ts": "c16fbcf47e05de43f70c18b0095736cd73a821f3da770fdc76d8bd50aa26486b",
+    "toolkits/mr/pc_citations.py": "267f88e8b20e282d0c60e9df4222c44000be248aa371ce65f0447087f098c632"
+  },
+  "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+  "fixedFindings": [
+    {
+      "id": "review-async-send",
+      "issue": "source validation introduced asynchronous gap before chat cancellation controller; internal reset/unmount or source clear could revive stale send",
+      "resolution": "immediate cancellable sourceCheck + submission generation; expected pin object required at second validation; hook lifecycle cancellation"
+    },
+    {
+      "id": "review-route-identity",
+      "issue": "external URL identity changes with unchanged empty thread escaped internal reset path",
+      "resolution": "committed route layout fence covers Tool/Agent/revision/work/thread; own send-created thread preserved; tests exercise direct URL changes"
+    },
+    {
+      "id": "review-source-rejection",
+      "issue": "definitive source rejection409 retained unknown pending indefinitely",
+      "resolution": "typed EVE_SOURCE_CHANGED only pre-write/no-same-ID-commit source failure; generic duplicate409 still exact owner/id/digest readback; actual route+SQLite+helper regression"
+    },
+    {
+      "id": "review-prefill-estimate",
+      "issue": "source prefill bypassed draft-change estimate invalidation",
+      "resolution": "handoff now uses existing updateDraft"
+    }
+  ],
+  "checks": [
+    {
+      "name": "consolidated independent targeted regressions",
+      "passed": true,
+      "tests": 175,
+      "skipped": 0,
+      "log": "/private/tmp/eve-selected-source-independent-consolidated-final.log",
+      "logSha256": "84fddc32b80d3a2b601ff42df2e5960c1dcd2655e4620647440dbf00d77d0670",
+      "files": [
+        "tests/eve-agent-origin-store.test.mjs",
+        "tests/eve-source-rejection-api.test.mjs",
+        "tests/eve-agent-creation.test.mjs",
+        "tests/eve-agent-creation-ui.test.mjs",
+        "tests/eve-agent-proposal.test.mjs",
+        "tests/eve-source-context.test.mjs",
+        "tests/eve-source-handoff-hook.test.mjs",
+        "tests/eve-source-handoff-ui.test.mjs",
+        "tests/home-intent.test.mjs",
+        "tests/sky-chat-session-recovery.test.mjs",
+        "tests/zema-private-storage.test.mjs",
+        "tests/sky-agent-library.test.mjs",
+        "tests/sky-agent-capability-contract.test.mjs",
+        "tests/sky-agent-contract-api.test.mjs",
+        "tests/sky-agent-capability-review-ui.test.mjs",
+        "tests/eve-smith-mii-claim-race.test.mjs",
+        "tests/eve-smith-mii-platform-integration.test.mjs"
+      ],
+      "snapshotNote": "Executed before later source-hook visibility repair; affected hook/chat tests re-executed on final manifest in visibilityFollowup. Do not claim initial broad run alone proves final exact candidate."
+    },
+    {
+      "name": "actual isolated Chrome/real SDK/Connector loopback",
+      "passed": true,
+      "tests": 2,
+      "skipped": 0,
+      "log": "/private/tmp/eve-selected-source-independent-browser.log",
+      "logSha256": "e83602c97c07afdb404979ce60f5e5302fb75cf699b984e046fb9a48ae4adce8",
+      "command": "node --experimental-strip-types --test tests/eve-smith-mii-browser.test.mjs",
+      "note": "local-preview authority positive path; production-unavailable negative path calls no Tool; answers synthetic",
+      "snapshotNote": "Executed before later source-hook visibility repair; affected hook/chat tests re-executed on final manifest in visibilityFollowup. Do not claim initial broad run alone proves final exact candidate."
+    },
+    {
+      "name": "atomic predicate sensitivity negative experiment",
+      "passed": true,
+      "expectedFailedRaceSubtests": 6,
+      "log": "/private/tmp/eve-agent-origin-atomic-negative.log",
+      "note": "temporary adapter strips source EXISTS; all6 read-to-INSERT source race tests detect missing rejection; no production mutation"
+    },
+    {
+      "name": "owned independent fixture lint",
+      "passed": true,
+      "command": "node_modules/.bin/oxlint tests/eve-agent-origin-store.test.mjs tests/eve-source-rejection-api.test.mjs"
+    },
+    {
+      "name": "git diff --check",
+      "passed": true
+    }
+  ],
+  "environmentNote": "First consolidated run hit sandbox EPERM on127.0.0.1 platform fixture; rerun with approved synthetic-loopback capability passed175. No product defect inferred from EPERM.",
+  "metadataReview": {
+    "coherent": true,
+    "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
+    "notes": [
+      "scope excludes social body/private keys/upstream streaming and actual inference",
+      "source means owner-saved metadata snapshot; upstream revision null stays unknown",
+      "origin is owner-confirmed history, not server model attestation",
+      "wholeEve/wholeUnits/paid/physical false and all publication holds retained",
+      "verification/Git/CI remain explicitly pending at review time; root must update after actual results"
+    ]
+  },
+  "ownedTestFiles": [
+    "tests/eve-agent-origin-store.test.mjs",
+    "tests/eve-source-rejection-api.test.mjs"
+  ],
+  "limitations": [
+    "Full npm run verify is being run independently by root; not claimed by this report",
+    "Git commit/PR/head CI not accepted until exact SHA is checked",
+    "No actual model/provider/network-loss/physical device/production authority acceptance",
+    "Current saved-resource metadata is checked, not upstream continuous freshness",
+    "Only selected saved-resource attachments are passed from timeline; exact post/reply ACL and content provenance remain unfinished",
+    "Single reply provenance does not complete composed-Agent graph or all-route recovery",
+    "Ordinary ambiguous conflicts retain existing unknown reconciliation contract"
+  ],
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "supersedes": {
+    "reportSha256": "51747ddeca4a7d13dbcd0113dcae59cf5596a6d84badc39eef737d91ddd17d68",
+    "sourceAggregateSha256": "49747cb97f3f853b0cb7291fbc140ac7eea9dbe06575ba8a81c0f3622db3e48a",
+    "preservedReport": "/private/tmp/eve-selected-source-independent-review-initial.json"
+  },
+  "postReviewChanges": {
+    "paths": [
+      "components/eve-source-handoff.tsx",
+      "components/sky-chat-workspace.tsx"
+    ],
+    "reviewResult": "PASS_SCOPED",
+    "reason": [
+      "source hook cleanup aborts lifecycle controller, which is included in every in-flight apply/validation signal; selectionRef=null also fences validation; removing cleanup ref generation mutation does not revive any continuation",
+      "refreshConnectedMcp callback now includes stable React state setter dependency; no change to refresh generation cancellation or authority"
+    ],
+    "testsPassed": 46,
+    "testsSkipped": 0,
+    "log": "/private/tmp/eve-selected-source-independent-lint-repair-regression.log",
+    "logSha256": "aa817a741441b1d4a9b50b47f6130034bbf20cfd81971ab15537d7ed450ef0dd",
+    "command": "node --experimental-strip-types --test tests/eve-source-handoff-ui.test.mjs tests/eve-source-handoff-hook.test.mjs tests/sky-chat-session-recovery.test.mjs",
+    "lintPassed": true,
+    "lintCommand": "node_modules/.bin/oxlint components/eve-source-handoff.tsx components/sky-chat-workspace.tsx"
+  },
+  "fixtureCompatibilityFollowup": {
+    "reviewResult": "PASS_SCOPED",
+    "productionManifestUnchanged": true,
+    "previousReportSha256": "f8cc463c3f6331b76be3cf49aae4fec3a3e98d3ccd37e9ac93be102288fbe892",
+    "changedTestSha256": {
+      "tests/sky-chat-mcp-recovery.test.mjs": "9ee16735e7fc70b492c09f1205edf6eb6d3aabaf19010a877e6d8d5a56501302",
+      "tests/zema-chat-session.test.mjs": "1d35d52060444984a74a9d660dea13d5e0b2fc3686eab1ce6029f978e2fdee65"
+    },
+    "notes": [
+      "Existing MCP assertions unchanged; added source-hook no-context stub and effect mapping required by new imports/layout route fence. Source-specific negative tests remain in separate hook/chat suites.",
+      "Zema cleanup assertion expands to require HOME_INTENT_KEY removal alongside prior two keys; failure behavior and quarantine assertions retained."
+    ],
+    "testCommand": "node --experimental-strip-types --test tests/sky-chat-mcp-recovery.test.mjs tests/zema-chat-session.test.mjs",
+    "testsPassed": 18,
+    "testsSkipped": 0,
+    "log": "/private/tmp/eve-independent-fullverify-fixture-repairs-final.log",
+    "logSha256": "67d3ca4d494ce68e54085422b8c26ba96dec1c3cc8166683ac0fb96f29f6f764",
+    "lintPassed": true,
+    "fullVerifyFailuresReportedByRoot": {
+      "run": 3,
+      "nodeTests": 3576,
+      "passed": 3560,
+      "failed": 12,
+      "skipped": 4,
+      "causes": "old shared symlink dependency realpath/unifont2;9 old MCP harness missing import/effect shim;1 old cleanup expected two keys",
+      "acceptance": "This scoped followup confirms repaired fixture suites only. Fullverify retry remains root responsibility; initial fullverify failure is not erased."
+    },
+    "lintLog": "/private/tmp/eve-independent-fullverify-fixture-lint-final.log",
+    "lintLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lintRepair": "Replaced unbound effect-method assignment with (fn,deps)=>react.useEffect(fn,deps); test assertions unchanged."
+  },
+  "visibilityFollowup": {
+    "reviewResult": "PASS_SCOPED",
+    "previousReportSha256": "3cb1ec4b2695f73cf4866c98507616dad5e5f897e445af8b9ea4c670c38ab29f",
+    "preservedPreviousReport": "/private/tmp/eve-selected-source-independent-review-before-visibility.json",
+    "changedProductionPaths": [
+      "components/eve-source-handoff.tsx"
+    ],
+    "fixed": "Hide handoff/selection/error/loading immediately when route or enabled identity differs, and clear route-bound state on observed route transitions so A→B→A cannot revive consumed old context before reset frames. Existing generation and lifecycle signals remain.",
+    "findingBeforeRepair": "Bare visibleKey guard passed A→B but failed A→B→A; peer counterexample is preserved rather than erased.",
+    "counterexampleLog": "/private/tmp/eve-source-handoff-route-aba-counterexample.log",
+    "counterexampleLogSha256": "00b0092d331cb56cc8e8a1ed573fd5a48b9d5edd85927cbd5a4f9c3d3df6a33c",
+    "testsPassed": 49,
+    "testsSkipped": 0,
+    "command": "node --experimental-strip-types --test tests/eve-source-handoff-ui.test.mjs tests/eve-source-handoff-hook.test.mjs tests/sky-chat-session-recovery.test.mjs",
+    "log": "/private/tmp/eve-selected-source-visibility-aba-independent.log",
+    "logSha256": "6ed7fec3f30474d1ffc5d07eca5718cc56fa24fa43c93d6dc883eeb6cd58eec6",
+    "lintPassed": true,
+    "peerReviewPacket": "/private/tmp/eve-context-ui-independent-review.json",
+    "peerReviewSha256": "f73d47b7203fe358db12563126a2d6533134b03066105ffd17b9b6eafb36fa45",
+    "peerCombinedTests": 58,
+    "browserWaitRepairReview": "Bounded third source-GET wait before checking receiving button avoids matching previous-render button; all security/result assertions retained. Earlier independent Chrome2 log is from pre-visibility source; final exact candidate broad verification and CI remain root responsibility.",
+    "browserTestSha256": "605ada16507fea070aae3887f17d5e7ec1e62ff42537b556cf8de0b4fb295e15",
+    "fullVerify4ReportedByRoot": {
+      "nodeTests": 3576,
+      "passed": 3571,
+      "failed": 1,
+      "skipped": 4,
+      "remainingFailure": "browser wait matched old handoff button before receiving requestAnimationFrame; bounded third-GET wait repair inspected; root fullverify rerun pending"
+    },
+    "peerReviewNote": "Current peer packet includes same-source test-only semantic-wait followup; earlier source45d repair and negativeABA are retained."
+  },
+  "finalTestFixtureFollowup": {
+    "reviewResult": "PASS_SCOPED",
+    "previousReportSha256": "7cb662fbaf38d8dfa16a9f6657602afd14f1af7433bc1ba80ea32af0fb6f2303",
+    "productionManifestUnchanged": true,
+    "testSha256": {
+      "tests/eve-source-handoff-ui.test.mjs": "0e5281fb4a11b184060e761f63cedf3afe9c7f8be8c1222ecb9ecac185e4c613",
+      "tests/eve-source-handoff-hook.test.mjs": "1264d17fbf7c873ecc1b3c449d49b7d5ec4561fd80f9b4910b44d2e678edfef1",
+      "tests/eve-smith-mii-browser.test.mjs": "605ada16507fea070aae3887f17d5e7ec1e62ff42537b556cf8de0b4fb295e15",
+      "tests/eve-sdk-delegation-d1-browser.test.mjs": "1e00962c3c4a47172c8b0171f66c607dd0d29902763dd79a08f0db0979a9512a"
+    },
+    "reviewNotes": [
+      "Hook harnesses wait for actual checks/WebCrypto/pending frames plus checkingfalse, or intentionally unresolved HTTP hold; bounded5second diagnostics retain failure rather than fixed event-loop turn assumption. Initial ready and held-request assumptions strengthened.",
+      "Immediate pre-frame route and ABA assertions still run without flush; no condition or expected result weakened.",
+      "SDK browser input waits for enabled owner-bound field. New fixed expected job.title assertion and exact saved WorkJobID/title restore prevent dynamic title selection from masking lost owner input.",
+      "Earlier browser thirdGET wait retains explicit no-auto-fill/save, owner/revision/disabled rejection and same-job assertions."
+    ],
+    "independentAffectedCommand": "node --experimental-strip-types --test tests/eve-source-handoff-ui.test.mjs tests/eve-source-handoff-hook.test.mjs tests/eve-source-context.test.mjs tests/home-intent.test.mjs tests/sky-chat-session-recovery.test.mjs",
+    "independentAffectedTests": 58,
+    "independentSkipped": 0,
+    "independentLog": "/private/tmp/eve-selected-source-final-fixture-independent.log",
+    "independentLogSha256": "3197936a62ff56965a6ac4b49f24cdedc921bc7ed596db483a6fdbcf07e84af6",
+    "lintPassed": true,
+    "lintLog": "/private/tmp/eve-selected-source-final-fixture-independent-lint.log",
+    "lintLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "peerReviewPacket": "/private/tmp/eve-context-ui-independent-review.json",
+    "peerReviewSha256": "f73d47b7203fe358db12563126a2d6533134b03066105ffd17b9b6eafb36fa45",
+    "peerReportedStressRuns": {
+      "passed": 10,
+      "runs": 10,
+      "maxConcurrent": 4,
+      "computeChildren": 2,
+      "childrenTerminated": true
+    },
+    "peerNegativeOraclesReviewed": {
+      "abaDetected": true,
+      "postAwaitExpiryDetected": true,
+      "productionMutation": false
+    },
+    "workerBrowserEvidenceReviewed": {
+      "log": "/private/tmp/eve-sdk-delegation-concurrent-readiness.log",
+      "logSha256": "6b81e6058870c80875a89ff576859d7d697b6aefb3b6be364f0cad7e61231c0a",
+      "testsPassed": 3,
+      "note": "Worker executed SDK D1 browser1 and Eve/Smith/Connector browser2 concurrently on current frozen production. Reviewer inspected log and testdiffs; these3 are worker-run, not an independently repeated browser execution."
+    },
+    "acceptanceLimit": "Fullverify6 currently running by root; no fullverify/Git/CI acceptance claimed here."
+  },
+  "eveSourceAggregateSha256": "7060ec81447efc71af50ddf654de8c34f53279cf09b7fd6661da9034bdb62cea",
+  "eveProductionFileCount": 20,
+  "pcCleanupSupplement": {
+    "reviewResult": "PASS_SCOPED",
+    "reviewPacket": "/private/tmp/eve-pc-cleanup-independent-review.json",
+    "reviewPacketSha256": "622397e492a80374eaea1ce27322de5736e384d4f1ab92140b3b2ca6cdd527b6",
+    "reason": "Fullverify exposed matching feasible owned-child cleanup race; historical exception cause not proven. Narrow Darwin PermissionError fresh-owned-exit/exactgroup repair; independent21Python+6guardprobes and archive closure.",
+    "productionFile": "toolkits/mr/pc_citations.py",
+    "sourceSha256": "267f88e8b20e282d0c60e9df4222c44000be248aa371ce65f0447087f098c632",
+    "archivePath": "public/toolkits/mr-toolkit.zip",
+    "archiveSha256": "e49918a514c691771a651024c9e2b6258a6d0ae8c3ad769dcb9d082cc9e94a46",
+    "all19ArchiveEntriesByteEqual": true,
+    "fixedVendor6Unchanged": true,
+    "publicationOrDeployment": false,
+    "finalBroadVerificationAndCi": "not claimed; root pending"
+  },
+  "mcpArchiveClosure": {
+    "result": "PASS",
+    "recordedAt": "2026-10-29T20:13:38.075179+00:00",
+    "previousReviewPacketSha256": "240eac120c283949460d68c0a61be4048abca5aca206464896e4261b45e03888",
+    "archivePath": "public/toolkits/sky-mcp-connector.zip",
+    "archiveSha256": "8c51dffc66dca63aacc75b4524f67549cf8470de8ccd44c40983463d3b1d4c5c",
+    "sourceRoots": [
+      "toolkits/sky-mcp-connector",
+      "toolkits/spider-guard",
+      "toolkits/mr",
+      "toolkits/fashion-brand-ops"
+    ],
+    "entries": 70,
+    "allEntriesByteEqualToCurrentSource": true,
+    "noDuplicateOrExtraOrStaleEntries": true,
+    "modesDatesAndCompressionMatchPackagingContract": true,
+    "includesExactReviewedPcAdapter": true,
+    "reviewed21ProductionManifestUnchanged": false,
+    "mrArchiveUnchanged": true,
+    "note": "Artifact-only regeneration closes second distribution copy of repaired PC adapter. Does not establish publication/deployment/CI. Fullverify8 remains root-run pending.",
+    "snapshotNote": "All4packaging source roots and ZIP unchanged; subsequent3rootlib changes re-reviewed in sharedHomeQueueFollowup. Earlier entire21sourceunchanged statement applied only at that previous closure checkpoint."
+  },
+  "previousProductionSnapshot": {
+    "reportSha256": "1d21bf3dd99d5c23a02e27ac215d5eabdcf179b4aebb621cd6c5c6faad43d3a1",
+    "sourceAggregateSha256": "d2f1ecd28c884b55461c9dcb01c64290be5d840ef29c559ad63dafea46484672",
+    "eveSourceAggregateSha256": "b4d91f3a26269cd2988ff9f77a5cf10fccd3301039918780d213fa9bb89df2d9",
+    "note": "Historical pre-shared-slot source review; root fullverify8 passed on that snapshot, not final current3libchanges."
+  },
+  "sharedHomeQueueFollowup": {
+    "result": "PASS_SCOPED",
+    "changedPaths": [
+      "lib/eve-source-client.ts",
+      "lib/home-intent.ts",
+      "lib/use-eve-source-handoff.ts"
+    ],
+    "meaning": "Tab/module ordering token only; no owner identity, persisted permission, authority or new storage contract.",
+    "reviewNotes": [
+      "Shared opaque exactidentity permit created synchronously before first await; oldslot removal verified before any lookup",
+      "Permit checked after source hashing/read and at write; legacy writers invalidate earlier source choices while retaining setter-only compatibility",
+      "Hook checks permit again after awaited write completion before navigation; superseded older lookup settles busy without overwriting or navigating",
+      "Actual shared module/storage two-hook tests exercise newer success, newer failure, legacy supersession, and microtask newerwrite between earlier write/navigation; no fake isolated globals hiding race"
+    ],
+    "independentTestsPassed": 66,
+    "independentFailed": 0,
+    "independentSkipped": 0,
+    "command": "node --experimental-strip-types --test tests/eve-source-handoff-ui.test.mjs tests/eve-source-handoff-hook.test.mjs tests/eve-source-context.test.mjs tests/home-intent.test.mjs tests/sky-chat-session-recovery.test.mjs",
+    "log": "/private/tmp/eve-selected-source-shared-slot-independent.log",
+    "logSha256": "1469d0dc83d5c217e2b1973a75496a3b74558ef7c15ed2fa4f94b054b397db89",
+    "lintPassed": true,
+    "lintLog": "/private/tmp/eve-selected-source-shared-slot-independent-lint.log",
+    "lintLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "peerReviewPacket": "/private/tmp/eve-context-ui-independent-review.json",
+    "peerReviewSha256": "3ed840b9b9f70d1919eedfd591c7b6c7964b9f590d5ad8baec53820ea1fef8ee",
+    "peerOwned22StressRuns": "10/10 under4testprocesses+2CPUchildren; childrenterminated, per reviewed peerpacket",
+    "peerNegativeOracle": "Removing pre-navigation permit check detects stale navigation regression; production unchanged in experiment",
+    "testSha256": {
+      "tests/eve-source-context.test.mjs": "27cb0d63a87001351dedaaa8a4c6b4c2e55f65ff4db7deb33251566d2e00417d",
+      "tests/eve-source-handoff-hook.test.mjs": "4e6e1e0f0b5b412a007aa59769c68fe7a9bf6cd1e73e3bbe004f567e8374cae3",
+      "tests/eve-source-handoff-ui.test.mjs": "0e5281fb4a11b184060e761f63cedf3afe9c7f8be8c1222ecb9ecac185e4c613"
+    },
+    "artifactsUnchanged": {
+      "public/toolkits/mr-toolkit.zip": "e49918a514c691771a651024c9e2b6258a6d0ae8c3ad769dcb9d082cc9e94a46",
+      "public/toolkits/sky-mcp-connector.zip": "8c51dffc66dca63aacc75b4524f67549cf8470de8ccd44c40983463d3b1d4c5c"
+    },
+    "rootVerificationStatus": "Frozen fullverify9 running; previous fullverify8 is historical. Final exacthead CI/Git not claimed by this review."
+  }
+}

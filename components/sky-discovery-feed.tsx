@@ -17,7 +17,7 @@ import { skyToolDescription, skyToolEnvironment } from '@/lib/sky-tool-ui';
 import { skyOptionalFeatures } from '@/lib/sky-feature-additions';
 import type { HfEntry } from '@/lib/sky-huggingface';
 import { useSkyHub } from '@/lib/use-sky-hub';
-import { writeHomeIntent } from '@/lib/home-intent';
+import { useEveSourceHandoff } from '@/lib/use-eve-source-handoff';
 import { queueSkyZemaHandoff } from '@/lib/sky-zema-handoff';
 import type { SkyConnection } from '@/lib/operations';
 import SkyOptionalFeatures from './sky-optional-features';
@@ -59,6 +59,7 @@ export default function SkyDiscoveryFeed({
   const [retry, setRetry] = useState(0),
     [connectionsReady, setConnectionsReady] = useState(false),
     [connectionError, setConnectionError] = useState('');
+  const sourceHandoff = useEveSourceHandoff(() => router.push('/chat'), setError);
   const pending = useRef(false);
   useEffect(() => {
     const c = new AbortController();
@@ -169,17 +170,10 @@ export default function SkyDiscoveryFeed({
     }
   }
   function prepareModel(entry: HfEntry) {
-    try {
-      writeHomeIntent(
-        window.sessionStorage,
-        `Skyで追加した「${entry.resource}」を使いたい。種類: ${entry.kind}\n配布元: ${entry.metadata.sourceUrl}\nlicense・導入状況・実行先・必要費用を確認して、使える手順から進めて。`,
-      );
-      router.push('/chat');
-    } catch {
-      setError(
-        '依頼を引き継げませんでした。入力をコピーしてEveへ渡してください。',
-      );
-    }
+    const plugin = hub.plugins.find(p => p.enabled && p.kind === entry.kind && p.resource === entry.resource);
+    if (!plugin) { setError('自分のSkyへ追加してから選んでください。'); return; }
+    void sourceHandoff.prepare(plugin,
+      `Skyで追加した「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した配布元の版: ${plugin.metadata.revision ?? '未確認'}\nlicense・導入状況・実行先・必要費用を確認して、担当の案を作って。`);
   }
   function prepareTool(tool: Automation) {
     try {
@@ -324,7 +318,7 @@ export default function SkyDiscoveryFeed({
                 <Check size={14} />
                 追加済み
               </span>
-              <button onClick={() => prepareModel(entry)}>
+              <button disabled={sourceHandoff.preparing} onClick={() => prepareModel(entry)}>
                 Eveで使う準備 <ArrowUpRight size={15} />
               </button>
             </>

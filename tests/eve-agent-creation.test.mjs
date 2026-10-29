@@ -236,3 +236,21 @@ void test('pending includes optional declarations and reconciles a lost real-rou
   const mismatchStorage = storage(); reserveEveAgentPending(mismatchStorage, pending);
   assert.equal((await reconcileEveAgentCreation(async () => json({ ownerScope: scopeA, agent: exact }), pending, mismatchStorage)).state, 'unknown');
 });
+
+void test('final pre-send guard rejects after digest without reserving or dispatching', async () => {
+  const store = storage(); let sends = 0, guards = 0;
+  await assert.rejects(createEveAgent(async () => { sends++; return json({ agent: saved }); }, request, pending, store,
+    () => { guards++; throw new Error('source changed'); }), /source changed/);
+  assert.equal(guards, 1); assert.equal(sends, 0); assert.equal(store.rows.size, 0);
+});
+void test('final pre-send guard is followed by one owner-bound dispatch and preserves optional settings', async () => {
+  const attachment = { schema: 'sky.object-attachment/1', objectName: '合成対象', input: 'sensor', output: 'signal' };
+  const requirements = { inputFields: ['text'], outputFields: ['lines'], packageKey: 'dev.fixture.tool@1.0.0', executionTarget: 'pc' };
+  const req = { ...request, settings: { ...settings, attachment, requirements } };
+  const record = await prepareEveAgentPending(req), store = storage(), events = [];
+  const result = await createEveAgent(async (_url, init) => {
+    events.push('dispatch'); const body = JSON.parse(init.body); assert.deepEqual(body.settings, req.settings);
+    return json({ agent: { ...saved, ...req.settings } });
+  }, req, record, store, () => { events.push('guard'); assert.equal(store.rows.size, 0); });
+  assert.equal(result.state, 'saved'); assert.deepEqual(events, ['guard', 'dispatch']);
+});

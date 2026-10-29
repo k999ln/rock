@@ -2,6 +2,8 @@ Local Agent APIの保存済みAgent設定不一致は、既存の拒否を保ち
 
 開発の全体窓口はRoot、保存・統合はGitへ集約します。次の新規作業はOS（料金・請求、Wallet、Game、eSIMの既存要件を含む）・Eve・Smith・miiを優先し、既存95unitの残件を保持します。着手済みProは検収・保存・統合まで閉じ、OSに含まれる上記要件を一律後回しにせず、専門ownerと共通契約を再利用します。非金融GameはWallet完成待ちにしません。その他の範囲外の独立拡張は後回しです。[現行運用](docs/workstreams/10-git-ci-operations.md#four-lane-priority-20261028)。
 
+Skyで追加したモデル・データ・アプリは「Eveで使う準備」から出典を確認し、「依頼を入力欄へ読み込む」で編集して送信できます。Eveの回答は「自分の担当を作る」から選び、役割を編集して確認保存します。取込だけでは送信・保存・実行されません。Tool・権限・費用はSmithと既存の実行確認で別に確かめます。
+
 Proの保存済み仕事は、WorkJob IDを確認して共通の本人画面へ開く[限定再開入口](docs/rockstaros-complete-design.md#pro-existing-job-resume)を用意しています。形式確認は存在・所有・実行同意の確認ではなく、現在の本人一覧外の古い仕事をexact GETで取得する機能は未実装です。
 
 共有service accessの開発・検証は[全11lane portfolio](data/development-portfolio.json)と[Git運用](docs/workstreams/10-git-ci-operations.md#portfolio-delivery-20261028)を入口にします。eSIM/Pixelの回線・本人利用権・OS/client状態は独立し、現在のhost検査を実機/本番の合格へ換算しません。
@@ -483,7 +485,7 @@ Mini/ProのWebソースは [sites/avocado-mini](sites/avocado-mini/) に共通�
 実装の承認・受入gate、次の作業、検証結果は [project.md](project.md)、[進捗JSON](data/project-status.json)、[作業分野](docs/workstreams/README.md)を確認してください。[全タスクの進捗](project.md#全taskの作業進捗)も参照できます。作業数は製品の完成率を表しません。GitHub保存、mainへの統合、各サイトの配備は別に記録します。
 
 <!-- project-overview:start -->
-Updated: 2026-10-27 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-10-29 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## 権利と公開・実機の境界

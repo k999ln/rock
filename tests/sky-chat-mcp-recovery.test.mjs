@@ -30,7 +30,9 @@ function harness() {
   const jsx = (type, props) => ({ type, props });
   const noop = () => {};
   const session = { id: 'fixture-thread', toolId: 'mcp:initial', createdAt: 1, messages: [], activeRequest: { id: 'fixture-request', text: 'Synthetic request', toolId: 'mcp:initial' }, workflowStatus: 'ready', outcome: null };
+  react.useLayoutEffect=(fn,deps)=>react.useEffect(fn,deps);
   const modules = {
+    '@/components/eve-source-handoff': {useEveSourceContext:()=>({validate:async()=>undefined,clear:()=>{}})},
     '@/lib/sky-agent-library': { skyAgentSystem },
     '@/lib/history-navigation-guard': historyNavigation,
     'react': react,

@@ -18,9 +18,28 @@ const session = (patch = {}) => ({ version: 1, id, toolId: 'rockstar-amc', creat
   activeRequest: { id: 'request-1', text: 'Synthetic retained brief', toolId: 'rockstar-amc' },
   workflowStatus: 'ready', outcome: null, ...patch });
 
-function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pendingHandoff = null, storageFails = false, routerThrows = false, remote = false, auto = false } = {}) {
-  const slots = [], effects = [], requests = [], routes = [], consumed = [], estimates = [], selections = [];
+function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pendingHandoff = null, storageFails = false, routerThrows = false, remote = false, auto = false, source = false } = {}) {
+  const slots = [], effects = [], layouts = [], requests = [], routes = [], consumed = [], estimates = [], selections = [];
   let routingConfig = null;
+  const sourcePin = { ownerScope: 'owner-v1:' + 'a'.repeat(64), source: { schema: 'rockstaros.eve-source/1', key: 'dataset:fixture/source', revision: 1, metadataSha256: 'b'.repeat(64) } };
+  let selectedSource = source ? sourcePin : null, holdSourceValidation = false, pendingSourceValidation;
+  const sourceValidations = [], sourceClears = [];
+  const sourceContext = {
+    async validate(expected, signal) {
+      sourceValidations.push({ expected, signal });
+      const captured = selectedSource;
+      if (holdSourceValidation) {
+        pendingSourceValidation = Promise.withResolvers(); await pendingSourceValidation.promise;
+        // Deliberately allow a late snapshot even after an abort. The workspace
+        // must fence its own continuation rather than trust transport cancellation.
+        return captured;
+      }
+      if (expected && expected !== selectedSource) throw new Error('出典の選択が変わりました。');
+      if (signal?.aborted) throw new Error('source validation aborted');
+      return selectedSource ?? undefined;
+    },
+    clear() { selectedSource = null; sourceClears.push(true); },
+  };
   const values = new Map([[sessions.ZEMA_CHAT_SESSION_KEY, JSON.stringify(saved)]]);
   if (pendingHandoff) values.set(handoffs.SKY_ZEMA_HANDOFF_KEY, JSON.stringify(pendingHandoff));
   const storage = { getItem: (k) => values.get(k) ?? null, setItem(k, v) { if (storageFails) throw Error('fixture quota'); values.set(k, v); }, removeItem: (k) => values.delete(k) };
@@ -36,10 +55,12 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
     useMemo(fn, deps) { const i = cursor++; if (!slots[i] || changed(slots[i].deps, deps)) slots[i] = { value: fn(), deps }; return slots[i].value; },
     useCallback(fn, deps) { return react.useMemo(() => fn, deps); },
     useEffect(fn, deps) { const i = cursor++; if (!slots[i] || changed(slots[i].deps, deps)) { const previous = slots[i]; slots[i] = { deps }; effects.push(() => { previous?.cleanup?.(); slots[i].cleanup = fn(); }); } },
+    useLayoutEffect(fn, deps) { const i = cursor++; if (!slots[i] || changed(slots[i].deps, deps)) { const previous = slots[i]; slots[i] = { deps }; layouts.push(() => { previous?.cleanup?.(); slots[i].cleanup = fn(); }); } },
   };
   const jsx = (type, props) => ({ type, props });
   const noop = () => {};
   const modules = {
+    '@/components/eve-source-handoff': { useEveSourceContext: () => sourceContext, EveSourceHandoff: 'EveSourceHandoff' },
     '@/lib/sky-agent-library': { skyAgentSystem },
     react, 'react/jsx-runtime': { jsx, jsxs: jsx },
     'next/dynamic': { default: (load) => String(load).includes('amc-tool-runner') ? 'AMC' : 'Workbench' },
@@ -97,7 +118,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
   }
   modules['@/components/use-sky-chat-session'] = compile('components/use-sky-chat-session.ts');
   const component = compile('components/sky-chat-workspace.tsx', '\nexports.Authenticated = AuthenticatedSkyChatWorkspace;').Authenticated;
-  function render() { cursor = 0; tree = component({ executionBlocked: false, accessState: 'ready', setNeedsSignin: noop }); effects.splice(0).forEach((effect) => effect()); }
+  function render() { cursor = 0; tree = component({ executionBlocked: false, accessState: 'ready', setNeedsSignin: noop }); layouts.splice(0).forEach((effect) => effect()); effects.splice(0).forEach((effect) => effect()); }
   function nodes(node, result = []) { if (Array.isArray(node)) node.forEach((x) => nodes(x, result)); else if (node && typeof node === 'object') { result.push(node); if (node.type !== 'Dialog' || node.props.open) nodes(node.props?.children, result); } return result; }
   function text(node) { return typeof node === 'string' || typeof node === 'number' ? String(node) : Array.isArray(node) ? node.map(text).join('') : node && typeof node === 'object' ? text(node.type === 'Dialog' && !node.props.open ? null : node.props?.children) : ''; }
   async function flush() { for (let i = 0; i < 6; i++) { await new Promise((resolve) => setImmediate(resolve)); if (mounted) render(); } }
@@ -116,7 +137,10 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
   function submit() { nodes(tree).find((x) => x.type === 'form' && x.props.onSubmit).props.onSubmit({ preventDefault() {} }); }
   async function send(brief) { input(brief); submit(); render(); await flush(); }
   render();
-  return { flush, routes, requests, estimates, selections, values, consumed, input, submit, render, window, nodes: () => nodes(tree), text: () => text(tree), conversation: () => text(nodes(tree).find(n => n.props?.className === "sky-chat-messages")), click, send,
+  return { flush, routes, requests, estimates, selections, values, consumed, input, submit, render, window, sourcePin, sourceValidations, sourceClears,
+    holdSourceValidation() { holdSourceValidation = true; },
+    releaseSourceValidation() { assert.ok(pendingSourceValidation); holdSourceValidation = false; pendingSourceValidation.resolve(); },
+    clearSource() { const panel = nodes(tree).find(node => node.type === 'EveSourceHandoff'); assert.ok(panel); panel.props.context.clear(); render(); }, nodes: () => nodes(tree), text: () => text(tree), conversation: () => text(nodes(tree).find(n => n.props?.className === "sky-chat-messages")), click, send,
     consentCloud() { const label=nodes(tree).find(n=>n.type==='label'&&text(n).includes('今回の会話で無料Cloud'));nodes(label).find(n=>n.type==='input').props.onChange({target:{checked:true}});render(); },
     stored: () => sessions.readZemaChatSessions(storage),
     async shellLink(href, options = {}) {
@@ -420,4 +444,106 @@ void test('an Agent reference stays with its own thread and does not leak to a p
   assert.deepEqual(h.stored().find(s => s.id === id).agent, agent);
   assert.equal(h.requests.length, 0);
   h.unmount();
+});
+
+
+void test('reset or unmount during first source validation cannot select a model or revive stale conversation', async () => {
+  for (const replacement of ['new-chat', 'mode', 'unmount']) {
+    const h = harness({ query: 'tool=sky-auto', auto: true, source: true }); await h.flush();
+    h.holdSourceValidation(); await h.send('Source validation must not survive reset');
+    assert.equal(h.sourceValidations.length, 1); assert.equal(h.selections.length, 0); assert.equal(h.requests.length, 0);
+    const pendingSignal = h.sourceValidations[0].signal;
+    assert.ok(pendingSignal instanceof AbortSignal); assert.equal(pendingSignal.aborted, false);
+    if (replacement === 'new-chat') {
+      await h.click('新しい会話'); await h.click('未保存の入力を破棄して進む');
+      assert.ok(h.sourceClears.length > 0);
+    } else if (replacement === 'mode') {
+      await h.choose('mr-citations'); assert.ok(h.sourceClears.length > 0);
+    } else h.unmount();
+    assert.equal(pendingSignal.aborted, true, replacement);
+    h.releaseSourceValidation(); await h.flush();
+    assert.equal(h.selections.length, 0, replacement); assert.equal(h.requests.length, 0, replacement); assert.equal(h.estimates.length, 0, replacement);
+    assert.ok(!h.conversation().includes('Source validation must not survive reset'), replacement);
+    assert.equal(h.writes(), 0, replacement);
+    assert.equal(h.stored().length, 0, replacement);
+  }
+});
+
+void test('clearing source during model selection requires the original pin and prevents inference or a source-tagged reply', async () => {
+  const h = harness({ query: 'tool=sky-auto', auto: true, source: true }); await h.flush();
+  await h.send('Pinned source request');
+  assert.equal(h.sourceValidations.length, 1); assert.equal(h.sourceValidations[0].expected, undefined);
+  assert.equal(h.selections.length, 1); assert.equal(h.requests.length, 0);
+  h.clearSource(); assert.equal(h.sourceClears.length, 1);
+  h.selections[0].resolve({ ok: true, json: async () => ({ selection: { provider: 'ollama', model: 'fixture', reason: 'fixture selection' } }) });
+  await h.flush();
+  assert.equal(h.sourceValidations.length, 2);
+  assert.equal(h.requests.length, 0, 'cleared source must block actual inference dispatch'); assert.equal(h.estimates.length, 0);
+  assert.equal(h.sourceValidations[1].expected, h.sourcePin, 'post-selection validation must demand the originally captured object');
+  assert.equal(h.sourceValidations[1].signal, h.sourceValidations[0].signal, 'both checks share the cancellable send context');
+  assert.ok(!h.conversation().includes('Pinned source request')); assert.equal(h.stored().length, 0);
+  assert.match(h.text(), /出典の選択が変わりました/);
+  const creator = h.nodes().find(node => Array.isArray(node.props?.replies));
+  assert.ok(!creator || creator.props.replies.length === 0, 'no stale source-tagged assistant reply may reach the creator');
+});
+
+void test('unchanged selected source passes both checks and tags only its returned synthetic reply', async () => {
+  const h = harness({ query: 'tool=sky-auto', auto: true, source: true }); await h.flush();
+  await h.send('Current pinned request');
+  h.selections[0].resolve({ ok: true, json: async () => ({ selection: { provider: 'ollama', model: 'fixture', reason: 'fixture selection' } }) });
+  await h.flush(); assert.equal(h.sourceValidations.length, 2); assert.equal(h.sourceValidations[1].expected, h.sourcePin);
+  assert.equal(h.requests.length, 1);
+  h.requests[0].resolve({ ok: true, json: async () => ({ text: 'Synthetic response from current source' }) }); await h.flush();
+  assert.match(h.conversation(), /Synthetic response from current source/);
+  const creator = h.nodes().find(node => Array.isArray(node.props?.replies));
+  assert.ok(creator); assert.equal(creator.props.replies.length, 1); assert.deepEqual(creator.props.replies[0].source, h.sourcePin.source);
+});
+
+
+void test('external URL changes during source validation abort before model selection without a reset handler', async () => {
+  for (const nextQuery of ['tool=mr-citations', '', 'tool=sky-auto&view=work',
+    'tool=sky-auto&agent=11111111-1111-4111-8111-111111111111&agentRevision=1',
+    'tool=sky-auto&agentRevision=2', `tool=sky-auto&thread=${id}`]) {
+    const h = harness({ query: 'tool=sky-auto', auto: true, source: true }); await h.flush();
+    h.holdSourceValidation(); await h.send('Old URL source request');
+    assert.equal(h.sourceValidations.length, 1); const signal = h.sourceValidations[0].signal;
+    assert.equal(signal.aborted, false);
+    await h.navigate(nextQuery); // Direct URL update: no choose/resetConversation call.
+    assert.equal(h.sourceClears.length, 0, 'the fixture must not invoke the reset handler');
+    h.releaseSourceValidation(); await h.flush();
+    assert.equal(h.selections.length, 0, nextQuery); assert.equal(signal.aborted, true, nextQuery); assert.equal(h.requests.length, 0, nextQuery); assert.equal(h.estimates.length, 0, nextQuery);
+    assert.ok(!h.conversation().includes('Old URL source request')); assert.equal(h.stored().length, 0);
+    h.unmount();
+  }
+});
+
+void test('external Tool URL change during model selection cannot infer or attach an old source reply', async () => {
+  const h = harness({ query: 'tool=sky-auto', auto: true, source: true }); await h.flush();
+  await h.send('Old selected-model request');
+  assert.equal(h.sourceValidations.length, 1); assert.equal(h.selections.length, 1);
+  const signal = h.selections[0].signal; assert.equal(signal.aborted, false);
+  await h.navigate('tool=mr-citations'); // Both old and new requestedThreadId are empty.
+  assert.equal(h.sourceClears.length, 0);
+  h.selections[0].resolve({ ok: true, json: async () => ({ selection: { provider: 'ollama', model: 'fixture-old', reason: 'obsolete selection' } }) });
+  await h.flush();
+  assert.equal(h.requests.length, 0); assert.equal(h.estimates.length, 0);
+  assert.equal(signal.aborted, true);
+  assert.equal(h.sourceValidations.length, 1, 'an invalidated URL must not continue to another source check');
+  assert.ok(!h.conversation().includes('Old selected-model request')); assert.ok(!h.text().includes('obsolete selection'));
+  assert.equal(h.stored().length, 0);
+});
+
+void test('the send-created thread URL preserves its own current inference and source reply', async () => {
+  const h = harness({ query: 'tool=sky-auto', auto: true, source: true }); await h.flush();
+  await h.send('Current own-thread request');
+  h.selections[0].resolve({ ok: true, json: async () => ({ selection: { provider: 'ollama', model: 'fixture-current', reason: 'current selection' } }) });
+  await h.flush(); assert.equal(h.requests.length, 1);
+  const ownRoute = h.routes.find(route => route.includes('thread=')); assert.ok(ownRoute);
+  const signal = h.requests[0].signal;
+  await h.navigate(new URL(ownRoute, 'https://fixture.invalid').search.slice(1));
+  assert.equal(signal.aborted, false, 'the request owns the new thread route');
+  h.requests[0].resolve({ ok: true, json: async () => ({ text: 'Own-thread synthetic answer' }) }); await h.flush();
+  assert.match(h.conversation(), /Own-thread synthetic answer/);
+  const creator = h.nodes().find(node => Array.isArray(node.props?.replies));
+  assert.ok(creator); assert.deepEqual(creator.props.replies.at(-1).source, h.sourcePin.source);
 });

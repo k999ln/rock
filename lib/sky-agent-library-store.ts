@@ -1,3 +1,5 @@
+import { eveSourceContext } from './eve-source-context-store.ts';
+import { sameEveSource } from './eve-source-context.ts';
 import { catalog } from './catalog.ts';
 import { defaultSkyAgentSettings, parseSkyAgentSettings, skyAgentId, skyAgentSystem, SkyAgentLibraryError, type SkyLibraryAgent } from './sky-agent-library.ts';
 
@@ -41,10 +43,35 @@ export function skyAgentLibraryStore(db: Database, owner: string) {
         throw new SkyAgentLibraryError('新しい型・処理能力・permission・scope条件を確認できる画面で変更してください。',409);
       settings = { ...settings, requirements:{ ...settings.requirements, contract:before.requirements.contract } };
     }
+    // Provenance is immutable history, not an execution or model attestation.
+    // Old editors omit it; their saves must retain it even if the source is now unavailable.
+    if (before?.origin) {
+      if (settings.origin && JSON.stringify(settings.origin) !== JSON.stringify(before.origin))
+        throw new SkyAgentLibraryError('保存済みの下書きの由来は変更できません。',409);
+      settings = { ...settings, origin:before.origin };
+    } else if (!create && settings.origin) {
+      throw new SkyAgentLibraryError('既存の担当へ過去の由来を追加できません。',409);
+    }
+    let sourceRow: {key:string;revision:number;metadata:string} | null = null;
+    if (create && settings.origin?.source) {
+      try {
+        const context = await eveSourceContext(db,owner,settings.origin.source.key);
+        if (!sameEveSource(context.source,settings.origin.source)) throw new Error('changed');
+        sourceRow = {key:context.plugin.key,revision:context.plugin.revision,metadata:JSON.stringify(context.plugin.metadata)};
+      } catch { throw new SkyAgentLibraryError('出典が変わったか確認できません。Skyから選び直してください。',409,'EVE_SOURCE_CHANGED'); }
+    }
     const now = Date.now();
     const result = revision === 0
-      ? await db.prepare('INSERT INTO sky_agent_settings(owner_user_id,id,source_tool,settings,revision,created_at,updated_at) SELECT ?,?,?,?,1,?,? WHERE (SELECT COUNT(*) FROM sky_agent_settings WHERE owner_user_id=?)<100 ON CONFLICT(owner_user_id,id) DO NOTHING').bind(owner,id,before?.sourceTool ?? null,JSON.stringify(settings),now,now,owner).run()
+      ? await db.prepare('INSERT INTO sky_agent_settings(owner_user_id,id,source_tool,settings,revision,created_at,updated_at) SELECT ?,?,?,?,1,?,? WHERE (SELECT COUNT(*) FROM sky_agent_settings WHERE owner_user_id=?)<100 AND (? IS NULL OR EXISTS(SELECT 1 FROM sky_hub_plugins WHERE owner_user_id=? AND plugin_key=? AND revision=? AND metadata=? AND enabled=1)) ON CONFLICT(owner_user_id,id) DO NOTHING').bind(owner,id,before?.sourceTool ?? null,JSON.stringify(settings),now,now,owner,sourceRow?.key ?? null,owner,sourceRow?.key ?? null,sourceRow?.revision ?? null,sourceRow?.metadata ?? null).run()
       : await db.prepare('UPDATE sky_agent_settings SET settings=?,revision=revision+1,updated_at=? WHERE owner_user_id=? AND id=? AND revision=?').bind(JSON.stringify(settings),now,owner,id,revision).run();
+    if (result.meta.changes !== 1 && create && sourceRow && !(await get(id))) {
+      // A duplicate may already have committed: keep its ambiguous 409 readback.
+      // A now-stale source makes this attempt and same-pin replays unable to insert.
+      try {
+        const current = await eveSourceContext(db,owner,sourceRow.key);
+        if (!sameEveSource(current.source,settings.origin!.source!)) throw new Error('changed');
+      } catch { throw new SkyAgentLibraryError('出典が変わりました。Skyから選び直してください。',409,'EVE_SOURCE_CHANGED'); }
+    }
     if (result.meta.changes !== 1) throw new SkyAgentLibraryError('設定が更新されています。再読込して確認してください。', 409);
     return (await get(id))!;
   }

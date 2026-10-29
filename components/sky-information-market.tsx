@@ -21,7 +21,7 @@ import {
 } from '@/lib/sky-hub';
 import type { HfEntry } from '@/lib/sky-huggingface';
 import { SkyNotice } from '@/components/sky-feedback';
-import { writeHomeIntent } from '@/lib/home-intent';
+import { useEveSourceHandoff } from '@/lib/use-eve-source-handoff';
 import { skyAgentEvePath, type SkyLibraryAgent } from '@/lib/sky-agent-library';
 import styles from './sky-information-market.module.css';
 
@@ -43,6 +43,7 @@ export default function SkyInformationMarket({
     [busy, setBusy] = useState(''),
     [source, setSource] = useState('https://x.com/huggingface'),
     [consent, setConsent] = useState(false);
+  const sourceHandoff = useEveSourceHandoff(() => router.push('/chat'), setError);
   const [agents, setAgents] = useState<SkyLibraryAgent[]>([]);
   const [showAll, setShowAll] = useState(false);
   const catalogRequest = useRef<AbortController | null>(null);
@@ -140,17 +141,8 @@ export default function SkyInformationMarket({
     }
   }
   function askEve(plugin: SkyHubPlugin) {
-    try {
-      writeHomeIntent(
-        window.sessionStorage,
-        `Skyで追加した「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した版: ${plugin.metadata.revision ?? '未確認'}\n実行先・導入状況・license・必要費用を確認し、この環境で使える手順から進めて。未導入や未接続なら、その準備を先に示して。`,
-      );
-      router.push('/chat');
-    } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : 'Eveへ渡せませんでした。',
-      );
-    }
+    void sourceHandoff.prepare(plugin,
+      `Skyで追加した「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した配布元の版: ${plugin.metadata.revision ?? '未確認'}\n実行先・導入状況・license・必要費用を確認して、担当の案を作って。未導入や未接続なら準備を先に示して。`);
   }
   const added = plugins.filter((p) => p.enabled && p.kind !== 'x');
   return (
@@ -248,7 +240,7 @@ export default function SkyInformationMarket({
                     </p>
                     <div className={styles.cardActions}>
                       {plugin?.enabled ? (
-                        <button onClick={() => askEve(plugin)}>
+                        <button disabled={sourceHandoff.preparing} onClick={() => askEve(plugin)}>
                           Eveで使う準備 <ArrowRight size={15} />
                         </button>
                       ) : (
@@ -320,7 +312,7 @@ export default function SkyInformationMarket({
                 <article key={p.key}>
                   <strong>{p.resource}</strong>
                   <span>配布元の版を保存 · 実行準備は別確認</span>
-                  <button onClick={() => askEve(p)}>
+                  <button disabled={sourceHandoff.preparing} onClick={() => askEve(p)}>
                     Eveで使う準備 <ArrowRight size={14} />
                   </button>
                   <button

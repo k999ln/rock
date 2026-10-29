@@ -32,6 +32,8 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 
 ### Eve・Smith・miiの同じ仕事
 
+Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 保存境界の原子照合と旧editor互換は[詳細契約](../rockstaros-complete-design.md#選んだ出典とeve回答から担当を保存する)、[証拠](../evidence/development-execution/eve-selected-source-agent.json)を参照。上流更新・投稿本文のACL再確認・実Provider・物理受入は別。
+
 SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。
 
 利用者はEveで担当の名前、目的、入力と期待成果、Agent設定を確認して本人別に保存する。Smithは本人が確認した構造化能力をPackageの版・入出力・実行先と照合し、不足や未確認を残す。OSは既存Agent ID/revisionと既存work jobを結び、MCPで確認した正確な引数に一回の操作を発行する。miiソフトadapterは同じowner/job/Agentを読戻し、表示を権限移転と扱わない。

@@ -338,6 +338,8 @@ Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのS
 
 ### 本人が作る担当の能力照合とSDK Tool
 
+Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 必要能力・permission/scopeの明示、実Tool選択、一回承認は引き続き別の既存gate。[出典・保存・失敗/復旧・11項目契約](rockstaros-complete-design.md#選んだ出典とeve回答から担当を保存する)。
+
 SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。
 
 Eveの担当設定に、本人が編集する必要入力・成果・Package・実行先を任意の版付き項目として追加する。SmithはverifiedなPackageと入出力schema、接続されたPC Tool、利用権表示を照合し、不足・未確認を区別する。宣言と候補表示は実行許可ではない。旧担当の編集では新しい能力項目を保持し、版競合時は書き換えない。 既存の対象物attachment（対象名・希望入出力）も同じ担当に保持し、旧設定画面の省略で消去しない。これは希望条件であり、Smithが実接続や権限の保証と扱わない。 ConnectorのTool申告は有限の観測期限を持ち、本人は対象・版・観測時刻と期限を確認する。失効・変更・時計逆行・再観測失敗は未確認とし、実行を自動再送しない。
@@ -1069,7 +1071,7 @@ Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したた
 - 完了: 同じ入力から同じ出力、重複URL、CRLF、code、絵文字fixtureが一致する。
 - 失敗: size、timeout、原本hash不一致、未知入力を拒否する。
 
-正本: [PC citations adapter](pc-citations-adapter.md)、`toolkits/mr/pc_citations.py`、Android `article-tool`。
+正本: [PC citations adapter](pc-citations-adapter.md)、`toolkits/mr/pc_citations.py`、Android `article-tool`。 Darwinの終了観測とkillpgの競合時も、同じ未回収の子の終了とgroup memberを再確認する。実行中・追加member・観測不能では拒否を維持し、出力・3秒処理/2秒回収・固定CLI・原本hashを変更しない。
 
 ## 12. 納品記録の照合
 
