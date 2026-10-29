@@ -152,3 +152,87 @@ void test('HTTP 409 after transport replay reconciles only the original owner an
     assert.equal(readEveAgentPending(store, scopeA) === null, expected === 'saved');
   }
 });
+
+void test('Agent route preserves an older attachment and requirements when old settings editor saves only five fields', async t => {
+  const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
+  for (const f of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
+    sql.exec(readFileSync(new URL(`../drizzle/${f}`, import.meta.url), 'utf8'));
+  const db = { prepare(query) { return { bind(...args) { return {
+    async all() { return { results: sql.prepare(query).all(...args) }; },
+    async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },
+  }; } }; } };
+  class OperationError extends Error { constructor(message, status) { super(message); this.status = status; } }
+  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([
+    ['@/lib/fund-store', { database: () => db, requestUser: async request => request.headers.get('x-test-owner') }],
+    ['@/lib/operations', { OperationError }], ['@/lib/owner-intent', ownerIntent], ['@/lib/sky-agent-library-store', agentStore], ['@/lib/sky-agent-library', library],
+  ]));
+  const attachment = { schema: 'sky.object-attachment/1', objectName: '合成対象', input: 'sensor', output: 'signal' };
+  const requirements = { inputFields: ['value'], outputFields: ['summary'], packageKey: 'dev.fixture.tool@1.0.0', executionTarget: 'pc' };
+  const original = { ...settings, provider: 'openai', model: 'fixture-model-v2', attachment, requirements };
+  sql.prepare('INSERT INTO sky_agent_settings(owner_user_id,id,source_tool,settings,revision,created_at,updated_at) VALUES(?,?,?,?,?,?,?)')
+    .run('owner-a', id, null, JSON.stringify(original), 1, 1, 1);
+  const request = (method, owner, payload, exact = false) => new Request(`https://fixture.invalid/api/sky/agents${exact ? `?id=${id}` : ''}`, {
+    method, headers: { origin: 'https://fixture.invalid', 'x-test-owner': owner, 'content-type': 'application/json' },
+    ...(payload ? { body: JSON.stringify(payload) } : {}),
+  });
+  const edit = { id, revision: 1, settings: { name: '編集', instructions: '新しい指示', enabled: true, provider: 'openai', model: 'fixture-model-v2' } };
+  assert.equal((await route.PUT(request('PUT', 'owner-b', edit))).status, 404);
+  assert.equal((await route.PUT(request('PUT', 'owner-a', edit))).status, 200);
+  assert.equal((await route.PUT(request('PUT', 'owner-a', edit))).status, 409);
+  const response = await route.GET(request('GET', 'owner-a', null, true)), result = await response.json();
+  assert.equal(result.ownerScope, scopeA); assert.equal(result.agent.id, id); assert.equal(result.agent.revision, 2);
+  assert.equal(result.agent.provider, 'openai'); assert.equal(result.agent.model, 'fixture-model-v2');
+  assert.deepEqual(result.agent.attachment, attachment); assert.deepEqual(result.agent.requirements, requirements);
+  assert.equal((await route.GET(request('GET', 'owner-b', null, true))).status, 404);
+});
+
+void test('pending includes optional declarations and reconciles a lost real-route response only on exact readback', async t => {
+  const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
+  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
+    sql.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  const db = { prepare(query) { return { bind(...args) { return {
+    async all() { return { results: sql.prepare(query).all(...args) }; },
+    async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },
+  }; } }; } };
+  class OperationError extends Error { constructor(message, status) { super(message); this.status = status; } }
+  const route = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), new Map([
+    ['@/lib/fund-store', { database: () => db, requestUser: async request => request.headers.get('x-test-owner') }],
+    ['@/lib/operations', { OperationError }], ['@/lib/owner-intent', ownerIntent], ['@/lib/sky-agent-library-store', agentStore], ['@/lib/sky-agent-library', library],
+  ]));
+  const attachment = { schema: 'sky.object-attachment/1', objectName: '合成対象', input: 'sensor', output: 'signal' };
+  const requirements = { inputFields: ['value'], outputFields: ['summary'], packageKey: 'dev.fixture.tool@1.0.0', executionTarget: 'pc' };
+  const full = { ...settings, attachment, requirements }, input = { ownerScope: scopeA, id, settings: full };
+  const prepared = await prepareEveAgentPending(input), journal = storage();
+  assert.notEqual(prepared.settingsSha256, pending.settingsSha256);
+  const transport = async (url, init = {}) => {
+    const response = await route[init.method ?? 'GET'](new Request(`https://fixture.invalid${url}`, {
+      ...init, headers: { ...init.headers, origin: 'https://fixture.invalid', 'x-test-owner': 'owner-a' },
+    }));
+    if (init.method === 'PUT') { assert.equal(response.status, 200); throw new Error('lost committed response'); }
+    return response;
+  };
+  const result = await createEveAgent(transport, input, prepared, journal);
+  assert.equal(result.state, 'saved'); assert.deepEqual(result.agent.attachment, attachment); assert.deepEqual(result.agent.requirements, requirements);
+  const exact = result.agent;
+  for (const changed of [
+    { ...exact, attachment: { ...attachment, objectName: '差替' } },
+    { ...exact, requirements: { ...requirements, packageKey: 'dev.other.tool@1.0.0' } },
+    (({ attachment: _ignored, ...rest }) => rest)(exact),
+    (({ requirements: _ignored, ...rest }) => rest)(exact),
+  ]) {
+    const pendingStorage = storage(); reserveEveAgentPending(pendingStorage, prepared);
+    const actual = await reconcileEveAgentCreation(async (url, init) => {
+      const response = await transport(url, init); const body = await response.json();
+      return json({ ...body, agent: changed }); // Corrupt only the real route's readback.
+    }, prepared, pendingStorage);
+    assert.equal(actual.state, 'unknown'); assert.deepEqual(readEveAgentPending(pendingStorage, scopeA), prepared);
+  }
+  // Old schema-1 records use the original five-field bytes and still recover.
+  const bytes = new TextEncoder().encode(JSON.stringify(settings));
+  const oldSha = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), b => b.toString(16).padStart(2, '0')).join('');
+  assert.equal(pending.settingsSha256, oldSha);
+  const oldStorage = storage(); reserveEveAgentPending(oldStorage, pending);
+  assert.equal((await reconcileEveAgentCreation(async () => json({ ownerScope: scopeA, agent: saved }), pending, oldStorage)).state, 'saved');
+  const mismatchStorage = storage(); reserveEveAgentPending(mismatchStorage, pending);
+  assert.equal((await reconcileEveAgentCreation(async () => json({ ownerScope: scopeA, agent: exact }), pending, mismatchStorage)).state, 'unknown');
+});

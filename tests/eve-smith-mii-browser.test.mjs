@@ -287,7 +287,44 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'saved requirements');
     await confirmSchema();
     await click('同じ担当で仕事の確認へ進む');
-    await wait('document.body.innerText.includes("仕事の名前")', 'real workbench'); await input('仕事の名前', 'fixture仕事');
+    await wait('document.body.innerText.includes("仕事の名前")', 'real workbench');
+    // Keep this a real Eve-created role and real Sky settings screen. Seed only
+    // synthetic provider/model and attachment through the same owner-bound API.
+    const workbenchUrl = await evaluate('location.href');
+    const agentId = new URL(workbenchUrl).searchParams.get('agent');
+    const readAgent = async () => {
+      const response = await fetch(`${base}/api/sky/agents?id=${encodeURIComponent(agentId)}`);
+      assert.equal(response.status, 200); return response.json();
+    };
+    const before = await readAgent(); assert.equal(before.ownerScope, scope);
+    const { name, instructions, enabled, requirements } = before.agent;
+    const attachment = { schema: 'sky.object-attachment/1', objectName: '合成対象', input: 'sensor', output: 'signal' };
+    const seeded = await fetch(`${base}/api/sky/agents`, { method: 'PUT', headers: { Origin: base, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: agentId, revision: before.agent.revision,
+        settings: { name, instructions, enabled, requirements, attachment, provider: 'openai', model: 'fixture-model-v2' } }) });
+    assert.equal(seeded.status, 200); const seededAgent = (await seeded.json()).agent;
+    await evaluate(`history.pushState({}, '', '/sky/agents'); dispatchEvent(new Event('fixture-navigation'))`);
+    await wait('document.body.innerText.includes("追加したエージェント") && document.body.innerText.includes("fixture担当")', 'Sky role list');
+    await click('fixture担当'); await input('名前', 'fixture編集担当'); await input('役割・指示', '名前と指示だけを編集');
+    await click('設定を保存'); await wait('document.body.innerText.includes("設定を保存しました")', 'Sky settings saved');
+    const after = await readAgent();
+    assert.equal(after.ownerScope, scope); assert.equal(after.agent.id, agentId);
+    assert.equal(after.agent.revision, seededAgent.revision + 1); assert.equal(after.agent.name, 'fixture編集担当');
+    assert.equal(after.agent.instructions, '名前と指示だけを編集');
+    assert.equal(after.agent.provider, 'openai'); assert.equal(after.agent.model, 'fixture-model-v2');
+    assert.deepEqual(after.agent.requirements, requirements); assert.deepEqual(after.agent.attachment, attachment);
+    await navigateAndWait('Page.reload');
+    await wait('document.body.innerText.includes("fixture編集担当")', 'Sky list after reload');
+    await click('fixture編集担当');
+    await wait(`(()=>{const labels=[...document.querySelectorAll('label')];return labels.find(x=>x.textContent.includes('モデルの接続先'))?.querySelector('select')?.value==='openai' && labels.find(x=>x.textContent.includes('モデルID'))?.querySelector('input')?.value==='fixture-model-v2'})()`, 'saved provider and model after reload');
+    const reloaded = await readAgent();
+    assert.equal(reloaded.ownerScope, scope); assert.equal(reloaded.agent.id, agentId); assert.equal(reloaded.agent.revision, after.agent.revision);
+    assert.equal(reloaded.agent.provider, 'openai'); assert.equal(reloaded.agent.model, 'fixture-model-v2');
+    assert.deepEqual(reloaded.agent.requirements, requirements); assert.deepEqual(reloaded.agent.attachment, attachment);
+    const resume = new URL(workbenchUrl); resume.searchParams.set('agentRevision', String(after.agent.revision));
+    await evaluate(`history.pushState({}, '', ${JSON.stringify(resume.pathname + resume.search)}); dispatchEvent(new Event('fixture-navigation'))`);
+    await wait('document.body.innerText.includes("仕事の名前")', 'same workbench after settings edit');
+    await input('仕事の名前', 'fixture仕事');
     assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
     assert.equal(creationRequests.length,0);
     await confirmDraft('行数確認',{text:'one\ntwo'});

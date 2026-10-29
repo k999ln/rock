@@ -260,6 +260,8 @@ miiソフト試用の「追加の必要能力」には、例 `{"executor":["mode
 
 作者向けSDK 0.1.4の非推論作例は、配布archiveを展開して能力宣言とToolの接続を試せます。[作例と設定手順](toolkits/sky-tool-sdk/README.md#非推論の追加例)。宣言は実行権限ではなく、公開や課金を開始しません。
 
+既存担当に保存された対象物・希望入出力の設定は、Skyの設定画面で名前や役割を編集しても保持されます。これは実機接続や実行許可ではありません。[互換契約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+
 担当の能力確認では、項目名に加えて「期待する入力型」「期待する成果型」をJSON object（例 `{"text":"string"}`）で入力し、「必要な処理能力ID」をJSON配列、「許容permissionとscope」を `[{"permission":"network","scopes":["origin:example"]}]` のように明示します。「使用する接続と操作」で実Toolを選び、Toolと実行先を選択して宣言を照合・保存します。空欄は未指定、`{}` と `[]` は明示した空条件です。対象が必要なpermissionのscopeが空なら未確認になります。旧担当は新条件を本人が設定するまで未確認です。これは提供者の宣言の照合であり、権限・安全性・料金の保証ではありません。実行には別の確認と承認が必要です。[照合契約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
 
 Eveの資料付き依頼はPR232でmainへ限定採用した2〜4資料対応です。「資料を追加」「資料Nを外す」で準備し、合計8,000文字以内で保存・復元・見積比較します。2資料の既存保存は互換維持。3・4資料は新版形式で、生成・課金は開始しません。[契約と残gate](docs/rockstaros-complete-design.md#eve-multi-material)。
