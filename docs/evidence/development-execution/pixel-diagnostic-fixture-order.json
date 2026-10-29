@@ -1,0 +1,49 @@
+{
+  "schema": "rockstaros.pixel-diagnostic-fixture-order/1",
+  "baseMain": "76b327c28b37385234104a2781be6fc62fb8bb2b",
+  "primaryWorkstream": "10-git-ci-operations",
+  "primaryOwner": "ROCK",
+  "taskId": "G04",
+  "problem": "PR255 main first verify failed before npmverify: normal fixture read run.exitKind while optional output observer held nonblocking diagnostics lock. Fixed300ms sleep did not establish first diagnostic write completion.",
+  "sourceTest": "tests/test_pixel_worker_diagnostics.py",
+  "sourceTestSha256": "4fa5c9c30edc87de9f8ca3c1f4ffc4a23c2caf30fa99f0df19d0806e306ba43f",
+  "productionWorkerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+  "productionWorkerByteUnchanged": true,
+  "change": "Test-only synthetic child waits for first committed output diagnostic acknowledgement instead of sleeping300ms; original normal exit/CPU/hash/privacy/limits assertions retained. No production diagnostics/stop/deadline/authority change.",
+  "negativeControl": {
+    "operation": "delay observer-thread fsync by800ms; no real inference",
+    "oldFixture": "KeyError exitKind, same failure as main attempt1",
+    "logSha256": "147e9d7fcccadc11916a124cb1b406c5f4738d6e3b2a541909c93ac81bbeef89"
+  },
+  "positiveControl": {
+    "sameDelay": "PASS1/1 after synchronization",
+    "logSha256": "b8520e9088261e2641c737f8a5d4f940bcd96d0a2852dd8e89c2766174790b92"
+  },
+  "hostDiagnostics": {
+    "tests": 27,
+    "pass": 26,
+    "skip": 1,
+    "fail": 0,
+    "skipReason": "prior historical worker not supplied; not a new success",
+    "logSha256": "3e40cb621ffc55c996dd2d3166ef4a49d52c016b7d7500f6595530bbad143b01"
+  },
+  "hostLinuxParentTests": "4 tests:3pass1skip on Darwin; actual Linux parent-death case skipped; all4 Linux CI required",
+  "priorMainFailure": {
+    "sha": "76b327c28b37385234104a2781be6fc62fb8bb2b",
+    "run": 40792285334,
+    "attempt": 1,
+    "job": 123180160550,
+    "logSha256": "7549ebf640a6464a5ee15946851b43e72debbdcdae4938faf07d7f16854c14f4",
+    "result": "27tests1error1skip; npmverify not reached"
+  },
+  "samePriorShaRetry": "attempt2 requested once; preserves attempt1 failure; pending",
+  "review": "independent final test/metadata review pending",
+  "GitSaved": false,
+  "mainIntegrated": false,
+  "sameHeadAndMergeCI": "pending",
+  "limits": [
+    "Host fixture only; not Pixel device or native OS acceptance",
+    "Optional production diagnostics may still be unavailable under contention; no stronger durability promise introduced",
+    "No model run, new provider, paid action, device operation or public deployment"
+  ]
+}

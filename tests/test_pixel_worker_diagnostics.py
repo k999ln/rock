@@ -78,13 +78,18 @@ class DiagnosticsTest(unittest.TestCase):
 
     def test_real_fixture_stdout_exit_cpu_and_input_hash_without_authority(self):
         empty_observed = self.root / 'fixture-empty-observed'
+        output_observed = self.root / 'fixture-output-observed'
         self.binary.write_text(
             '#!' + sys.executable + '\nimport pathlib,sys,time\n'
             'ready=pathlib.Path(' + repr(str(empty_observed)) + ')\n'
             'until=time.monotonic()+3\n'
             'while not ready.exists() and time.monotonic()<until: time.sleep(.01)\n'
             'if not ready.exists(): raise RuntimeError("fixture empty observation not confirmed")\n'
-            'print(' + repr(PRIVATE) + ',flush=True)\ntime.sleep(.3)\n')
+            'print(' + repr(PRIVATE) + ',flush=True)\n'
+            'output_ready=pathlib.Path(' + repr(str(output_observed)) + ')\n'
+            'until=time.monotonic()+3\n'
+            'while not output_ready.exists() and time.monotonic()<until: time.sleep(.01)\n'
+            'if not output_ready.exists(): raise RuntimeError("fixture output observation not confirmed")\n')
         self.binary.chmod(0o700)
         self.pin()
         # This normal-case fixture requires an actual empty-file sample before stdout.
@@ -94,9 +99,19 @@ class DiagnosticsTest(unittest.TestCase):
             original_sample(observer)
             if observer.first is None and observer.last_empty is not None:
                 empty_observed.touch(mode=0o600, exist_ok=True)
+        # The optional writer never waits for its lock. Synchronize this positive
+        # fixture with its first committed output sample before allowing child exit;
+        # fixed sleeps cannot establish completion under slow I/O or scheduling.
+        original_diagnostic = w.diagnostic
+        def diagnostic_then_release_exit(path, section, fields):
+            saved = original_diagnostic(path, section, fields)
+            if saved and section == 'output' and fields.get('firstObservedMonotonicNs') is not None:
+                output_observed.touch(mode=0o600, exist_ok=True)
+            return saved
         # Host fixture only. Real Linux parent-death behavior has a separate test.
         with patch.object(w, 'prepare_child', side_effect=lambda cpu, parent: w.limits(cpu)), \
-                patch.object(w.OutputObservation, 'sample', sample_then_release_stdout):
+                patch.object(w.OutputObservation, 'sample', sample_then_release_stdout), \
+                patch.object(w, 'diagnostic', diagnostic_then_release_exit):
             result = w.run(self.data())
         self.assertEqual(result['text'], PRIVATE)
         d = self.read()
