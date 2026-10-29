@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.smith-tool-observation-freshness/1",
-  "state": "draft_independent_tests_local_browser_pass_final_ci_pending",
+  "state": "main_integrated_same_sha_ci_pass_host_scoped",
   "base": "9a7c2a9c8a72b97a5197cf8a5eb1191a43838ba2",
   "sourceSha256": {
     "components/sky-agent-capability-review.tsx": "24a4bb68b08ae899eb091c35fa53b3d5d802b02ae32eb039490613d52d1db149",
@@ -21,10 +21,14 @@
   "independentReview": "Two reviewers found freshness, clock, stale UI and async load risks; fixes re-reviewed no remaining P1/P2. Independent synthetic Connector/SDK 44/44, freshness 15/15, final UI/runtime 78/78; final UI log SHA256 943e89f9f9df630ca65da923f1cfc7ceeece66bdd6bba181c855f6e393858cfd.",
   "initialFailure": "Local sandbox denied synthetic loopback listener; rerun with permitted loopback succeeded.",
   "distribution": "Connector ZIP regenerated locally; package-sky-mcp.py --check and independent source/ZIP hash agreement passed.",
-  "limits": "Exact-head Linux browser and CI pending; local synthetic Mac browser only. Snapshot is provider declaration, not truth, safety, authority or guaranteed behavior after observation; real provider/device/paid use unaccepted. A claimed attempt remains fenced if an observation expires after claim; no automatic resend. Clock history is process-scoped; all approvals may need reapproval after rollback.",
-  "next": "Run exact-head Linux browser and full CI, then final independent review.",
+  "limits": "Exact-head Linux browser and merge-SHA CI passed in synthetic host. Snapshot is provider declaration, not truth, safety, authority or guaranteed behavior after observation; real provider/device/paid use unaccepted. A claimed attempt remains fenced if an observation expires after claim; no automatic resend. Clock history is process-scoped; all approvals may need reapproval after rollback.",
+  "next": "Actual provider behavior, physical devices and paid execution remain separate.",
   "priorIndependentUiTestSha256": "abe08509831803ae853a76272b2d0c2120b10996c00c71f0dd3f331ec3b54e36",
   "initialCiFailure": "PR289 head a272c163 verify failed lint: refreshPending was declared let although never reassigned. Changed declaration to const, with no test behavior change; targeted UI 11/11 and oxlint passed. Final exact-head CI pending.",
   "browserEvidence": "Isolated Mac Chrome localhost fixture final 2/2 success, log SHA256 4d6f1b6af533807ef86c29bbb0d928ee0020b0684781d322efa2bd3a23aa4030; reviewer inspected log/source but execution-time hash not embedded. Exact-head CI required.",
-  "failedAttempts": "First PR head failed test lint; second head CI both browser cases timed out on old expiry message. Local first run lacked generated module; later attempts exposed absent disabled checkbox, remount selection, delayed identity and prepare race. Fixed UI readiness and fixture sequencing; final local browser 2/2. These earlier failures remain history."
+  "failedAttempts": "First PR head failed test lint; second head CI both browser cases timed out on old expiry message. Local first run lacked generated module; later attempts exposed absent disabled checkbox, remount selection, delayed identity and prepare race. Fixed UI readiness and fixture sequencing; final local browser 2/2. These earlier failures remain history.",
+  "pr": 289,
+  "prHead": "3ae642751790c6aeb5deb43dce4fa8bb5e68fd7b",
+  "mergeSha": "130804ccc4473ce9105e617cc5a6b86583afc75e",
+  "mainCiEvidence": "docs/evidence/development-execution/smith-tool-observation-main-ci.json"
 }

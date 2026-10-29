@@ -731,7 +731,9 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 偽grant・receiptを含む合成成果を実Workerが非信頼artifactとして保持し、不正署名の使用額を拒否して同じ仕事の予約を保持する候補。別担当が対象1件を独立再実行して成功（他14件は選択外）。実Provider・モデル・端末や全権限行の不変は未検証。[候補証拠](docs/evidence/development-execution/worker-untrusted-result.json)。
 
-SmithのTool観測を明示再確認し、期限・時計逆行・宣言変化で実行前に止める候補。合成Connector/SDK 44件・鮮度15件とUI/runtime 77件は別担当が独立再実行して成功。初回CIはlint、次のCIはブラウザ期限表示で失敗。読込遅延時の再確認UIとfixtureを修正後、独立UI/runtime 78件・隔離Macブラウザ2件成功。最終Linux CIは未了、提供者申告は実権限や安全保証ではない。[候補証拠](docs/evidence/development-execution/smith-tool-observation-freshness.json)。
+SDK配布archiveのCLIから隔離workspaceを作り、非推論sampleと作者宣言を組み込んで、実Connector・同じ仕事・mii読戻し・export builder・同一承認再送拒否へつなぐ合成試験を追加。別担当も独立再実行し成功。初回候補CIは既存Eve合成停止試験8秒timeout、原因未確定のまま同SHA再試行成功。PR290をmain 3197e824へ統合し、同SHA CI確認中。公開・実端末・実Providerは別受入。[候補証拠](docs/evidence/development-execution/sdk-author-workspace-integration.json)。
+
+SmithのTool観測を明示再確認し、期限・時計逆行・宣言変化で実行前に止める候補。合成Connector/SDK 44件・鮮度15件とUI/runtime 77件は別担当が独立再実行して成功。初回CIはlint、次のCIはブラウザ期限表示で失敗。読込遅延時の再確認UIとfixtureを修正後、独立UI/runtime 78件・隔離Macブラウザ2件成功。PR289をmain 130804ccへ統合し、同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/smith-tool-observation-main-ci.json)。提供者申告は実権限や安全保証ではない。[候補証拠](docs/evidence/development-execution/smith-tool-observation-freshness.json)。
 
 Pixel 10の既存RockstarOS画面で保存済みAI照合を1回操作したが結果は未確認。状態再照会後も同じ表示で、準備・取得の成功は確認できない。元ブラウザへ戻し、画面のみ独立検収。[限定証拠](docs/evidence/development-execution/pixel-saved-ai-lookup-unconfirmed.json)。
 

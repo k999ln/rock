@@ -178,10 +178,12 @@
       "tests": [
         "tests/eve-smith-mii-browser.test.mjs",
         "tests/eve-smith-mii-platform-integration.test.mjs",
-        "tests/sky-studio-chat.test.mjs"
+        "tests/sky-studio-chat.test.mjs",
+        "tests/sky-sdk-author-workspace-integration.test.mjs"
       ],
       "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
-      "scope": "unpacked SDK sample with synthetic local authority; no publication or general sandbox acceptance"
+      "scope": "unpacked SDK sample with synthetic local authority; no publication or general sandbox acceptance",
+      "authorWorkspaceEvidence": "docs/evidence/development-execution/sdk-author-workspace-integration.json"
     },
     "requiredActionCapabilities": {
       "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
