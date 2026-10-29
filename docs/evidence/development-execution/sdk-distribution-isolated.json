@@ -1,0 +1,68 @@
+{
+  "schema": "rockstaros.sdk-package-distribution-evidence/1",
+  "scope": "offline source-package and synthetic manifest inspection only",
+  "targetMain": "924121e1ea1870fec5ed9a1076721ba7731a1f46",
+  "definition": {
+    "name": "@rockstaros/sky-tool-sdk",
+    "version": "0.1.3",
+    "rootExport": "./src/index.mjs",
+    "buildScript": null,
+    "distPresent": false
+  },
+  "pack": {
+    "command": "npm pack --ignore-scripts --offline with isolated cache and empty explicit npm configuration",
+    "exitCode": 0,
+    "tgzSha256": "5ee84a4d158096b0965b08c71e1fbcf2cfcaa6b9046ce7e6994fb178bdce4c57",
+    "filesSha256": {
+      "package.json": "6c2359fc2670117f7fbdbe2606faa42910e5f1761a150640ff2a72ec840c7aa6",
+      "README.md": "3e757ccb50c645015bb0dca8081309384119a060cfcaa39e57591c3803cd755b",
+      "bin/create-sky-tool.mjs": "38c78c116270dd59c2666af31c5517ba98c6c3ea98a284f964cc4c0f9fc9537f",
+      "src/index.mjs": "31efa650a70d5b5e258735c2aa2fe8b12848d360fc899ec53b55e971c3efbbfd",
+      "examples/line-counter.mjs": "89ad01600c3690eec9cb2a93876ef9635ac6e7f883c809686c6513124a68ab6e",
+      "examples/minimal.mjs": "ed1e28325039f8d4651e021aadda85c4c7ce3878d932ffe89ba0c4a2d3bd774d"
+    },
+    "filesMatchSourceAndArchive": true
+  },
+  "consumer": {
+    "rootPackageImport": "createSkyToolApp",
+    "resolvedEntry": "src/index.mjs",
+    "sample": "examples/line-counter.mjs read from extracted package by path",
+    "samplePublicSubpath": "not exported; ERR_PACKAGE_PATH_NOT_EXPORTED",
+    "manifests": [
+      {
+        "id": "com.example.line-counter.count-lines",
+        "version": "1.0.0",
+        "sha256": "c5bd19db38230879902fc24271fb6ff6b1568d0c718a494cfdc00c37dc4c41aa",
+        "inputRequired": [
+          "text"
+        ],
+        "outputProperties": [
+          "lines"
+        ]
+      },
+      {
+        "id": "com.example.line-counter.add-integers",
+        "version": "1.0.0",
+        "sha256": "e0f028c3904d24a433ca74768d4b8ff00e7c0989deb29e558bf8d8d43c750c26",
+        "inputRequired": [
+          "left",
+          "right"
+        ],
+        "outputProperties": [
+          "sum"
+        ]
+      }
+    ],
+    "exitCode": 0
+  },
+  "review": "Independent read-only review matched six archive members, package import, synthetic manifests and recorded hashes. Selected Node API network guard is not proof of OS-wide, native, subprocess or DNS isolation.",
+  "limits": [
+    "No SDK dist build is defined or claimed",
+    "No author CLI startup, publication, real account, Provider, model, device or production acceptance",
+    "Synthetic .invalid URLs and test-only token were used; no credential copied"
+  ],
+  "evidenceLogSha256": {
+    "review/npm-pack.stdout.json": "425468466a5ed2fce9ecd590870521ca3668e2ff2b010f8b68c1d4bf88ea70fd",
+    "review/package-import-result.json": "4a7d2a81eea204cf6eb8ff098cad25bb9fbf8bf0ac1f5284f8d392a77ff08e51"
+  }
+}

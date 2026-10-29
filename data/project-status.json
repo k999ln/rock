@@ -1,4 +1,10 @@
 {
+  "sdkDistributionReadback": {
+    "status": "offline_package_import_independently_reviewed",
+    "evidence": "docs/evidence/development-execution/sdk-distribution-isolated.json",
+    "scope": "main SDK src export and synthetic sample manifest; not dist build or public package subpath",
+    "next": "Preserve local preview and real provider/device/publication holds."
+  },
   "f3BrowserFixtureCleanup": {
     "status": "independent_review_full_verify_pass_git_ci_pending",
     "evidence": "docs/evidence/development-execution/f3-handoff-browser-cleanup.json",
