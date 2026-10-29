@@ -1,10 +1,19 @@
 {
+  "miiRequiredCapabilities": {
+    "owner": "ROCK",
+    "status": "draft_browser_pass_codeql_fix_ci_pending",
+    "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
+    "next": "Verify CDP argument fix in browser and CodeQL at exact head; independent review before merge."
+  },
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",
-    "status": "draft_independent_ci_reproduced_exact_head_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-unknown-draft.json",
-    "next": "Confirm exact-head CI and independent metadata review. Local test, remote cancellation response loss and signed receipt remain separate.",
-    "pullRequest": 282
+    "next": "Remote cancellation response loss and signed settlement in same mii consumer remain separate.",
+    "pullRequest": 282,
+    "mergeSha": "effbf9d6d1e912c6d8348b3b5e297d2358be6473",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-unknown-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "miiShortLeaseBrowser": {
     "owner": "ROCK",

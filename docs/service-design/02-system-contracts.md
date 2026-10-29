@@ -52,6 +52,8 @@ miiソフト試用の表示は読取時の観測世代と期限に結び、期�
 
 同じ合成仕事に既存A2A委任storeとmii読取を接続した試験では、送信結果不明・取消未確認中は予約をheldのまま維持し、送信前失敗への不正な巻戻しを拒否する。miiのローカル取消応答消失はjournalから同じjobを照合し、未確定なら自動再送しない。別の合成terminal caseでは内部receiptの並行再読込を一回の精算に保つ。storeへの合成遷移であり、実transport・署名検証・native Wallet・遠隔/物理停止の成立を示さない。[証拠](../evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
+miiソフト試用の合成入力では、利用者がhost/executor/outputの追加必要能力IDをJSONで明示できる。観測したdescriptorのfalseは不足、未宣言・null・旧descriptorなしは未確認として入力を渡さず、保存済み仕事・成果の読取は維持する。条件変更は旧入力guardを失効し、別端末やCloudへの自動fallbackをしない。プレビューのmodel.inference・audio.render・space.renderは合成宣言で未対応を示すもので、実機の性能・権限・有無の証明ではない。[候補証拠](../evidence/development-execution/mii-required-capabilities.json)。
+
 miiの合成入力は「同じ仕事を確認」→文章入力→「同じ仕事のTool確認へ渡す」→既存MCPの内容確認と一回承認の順に進む。観測は30秒以内のboot/place/scene/sequenceへ結び、停止journal不明・未解決試行・別担当・未対応runtimeでは入力を渡さない。合成観測は権限ではなく、既存runnerが本人・job revision・Agent版・Package/利用権を読み直し、Connectorがprepare済み引数とserver claimを検査する。新しいDBや実行経路は作らない。
 
 追跡喪失、取り外し、再起動、scene変更、期限切れ、時刻逆行、入力/実行先変更は旧入力を失効する。観測開始時刻より後でも、同じ観測内の直前照合時刻から巻き戻れば失効する。再接続や時計の復帰で復活させず、新しい読戻しと明示入力を必要とする。begin送信中の失効は保存されたpendingを残してTool送信を拒否する。既にConnectorへ送った要求やclaim済み処理の取消・物理停止を保証せず、後着の応答は同じ仕事へ未検証で保存しEveとmiiから読む。応答不明・保存不明では自動再送しない。4表示条件（板・膜なし、少ない表示部、上下を含む全範囲、まぶしくしない）と単体利用は維持し、このソフト試用を光学・センサー・実機の成立証拠にしない。

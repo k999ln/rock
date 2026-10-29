@@ -23,8 +23,8 @@ function fixtureJob() {
   return job;
 }
 function harness(job = fixtureJob()) {
-  const owner = 'owner-v1:' + 'b'.repeat(64), slots = [], effects = [], reads = [], cancels = [], accepted = [], events = [], staged = [];
-  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, waitCancel = null, valid = false, inputAvailable = true, budgetFailure = false;
+  const owner = 'owner-v1:' + 'b'.repeat(64), slots = [], effects = [], reads = [], cancels = [], accepted = [], events = [], staged = [], guardRequests = [];
+  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, waitCancel = null, valid = false, inputAvailable = true, budgetFailure = false, guardError = null;
   let now = Date.now(), readLeaseMs = 30000;
   class FixtureDate extends Date { static now() { return now; } }
   const timers = new Map(); let nextTimer = 0;
@@ -40,7 +40,7 @@ function harness(job = fixtureJob()) {
   const adapter = {
     observe(value) { valid = true; events.push({ action: 'observe', value }); },
     disconnect() { valid = false; events.push({ action: 'disconnect' }); }, close() { valid = false; events.push({ action: 'close' }); },
-    createInputGuard() { return () => valid; },
+    createInputGuard(required) { guardRequests.push(required); if (guardError) throw new Error(guardError); return () => valid; },
     async readExisting(reference) { reads.push(reference); if (waitRead) return waitRead.promise;
       return { job: currentJob, agentBinding: 'verified', executorBinding: 'unverified',
         hardwareAccepted: false, executionAuthorized: false, observationExpiresAt: now + readLeaseMs, cancelReconciliation: 'clear' }; },
@@ -64,10 +64,12 @@ function harness(job = fixtureJob()) {
   const button = name => nodes(tree).find(value => value.type === 'button' && text(value).includes(name));
   async function flush() { for (let i = 0; i < 4; i++) { await new Promise(resolve => setImmediate(resolve)); render(); } }
   render();
-  return { staged, reads, cancels, accepted, events, button, render, flush, html: () => renderToStaticMarkup(tree),
+  return { staged, reads, cancels, accepted, events, guardRequests, button, render, flush, html: () => renderToStaticMarkup(tree),
     click(name) { const value = button(name); assert.ok(value && !value.props.disabled, name); value.props.onClick(); render(); },
     check() { const input = nodes(tree).find(value => value.type === 'input'); assert.ok(input); input.props.onChange({ target: { checked: true } }); render(); },
     type(value) { nodes(tree).find(n => n.type === 'textarea').props.onChange({ target: { value } }); render(); },
+    requireCapabilities(value) { nodes(tree).filter(n => n.type === 'textarea')[1].props.onChange({ target: { value } }); render(); },
+    failGuard(code) { guardError = code; },
     availability(value) { inputAvailable = value; render(); },
     deferRead() { waitRead = deferred(); return waitRead; }, deferCancel() { waitCancel = deferred(); return waitCancel; },
     unmount() { for (const slot of slots) slot?.cleanup?.(); },
@@ -77,6 +79,23 @@ function harness(job = fixtureJob()) {
     expireBudget() { now += 30_000; const callbacks = [...timers.values()]; timers.clear(); for (const callback of callbacks) callback(); render(); },
     setOwner(value) { currentOwner = value; render(); }, setJob(value) { currentJob = value; render(); } };
 }
+
+void test('missing or unconfirmed action capability blocks staging while saved output remains visible', async () => {
+  const job = fixtureJob(); job.freeCloud = { text:'保存済み', state:'unconfirmed' };
+  const h = harness(job); h.click('miiから同じ仕事を確認'); await h.flush(); h.type('合成入力');
+  h.requireCapabilities('{"output":["audio.render"]}'); h.failGuard('MII_CAPABILITY_MISSING');
+  h.click('同じ仕事のTool確認へ渡す');
+  assert.equal(JSON.stringify(h.guardRequests.at(-1)), JSON.stringify({output:['audio.render']}));
+  assert.equal(h.staged.length,0); assert.match(h.html(), /必要能力は不足/); assert.match(h.html(), /保存済み/);
+  h.failGuard('MII_CAPABILITIES_UNCONFIRMED'); h.click('同じ仕事のTool確認へ渡す');
+  assert.equal(h.staged.length,0); assert.match(h.html(), /必要能力は未確認/); assert.match(h.html(), /保存済み/);
+  h.requireCapabilities('{broken'); h.failGuard(null); h.click('同じ仕事のTool確認へ渡す');
+  assert.equal(h.staged.length,0); assert.match(h.html(), /必要能力のJSONを確認/);
+  h.requireCapabilities('{}'); h.click('同じ仕事のTool確認へ渡す');
+  assert.equal(h.staged.length,1); assert.equal(h.staged[0].isCurrent(),true);
+  h.requireCapabilities('{"executor":["model.inference"]}');
+  assert.equal(h.staged[0].isCurrent(),false, 'changing requirements fences already staged input');
+});
 
 void test('mii software preview shows the same objective, verified role, saved output, unverified Tool observation, cost and export', async () => {
   const job = fixtureJob();
