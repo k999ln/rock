@@ -36,6 +36,8 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 
 Smithは担当が列挙していないToolの必須入力を不足、schemaを確認できない場合を未確認とする。明示された空object schemaは無入力として扱える。入出力schemaの型と必須項目を表示し、本人が担当の希望と照らして確認した後に仕事の確認画面へ進む。確認は本人・担当版・要件・Packageに結び、取消、変更、期限切れ、読直しで無効化する。非同期照合中の取消と再確認は別の操作であり、古い遷移を復活させない。項目名と接続を決定的に照合するが、本人が期待する型の構造化保存・自動照合や自由文の意味理解は行わない。schema表示の確認を実行権限やToolの安全性にしない。[独立検収・試験](../evidence/development-execution/smith-schema-confirmation.json)。
 
+合成ブラウザ縦断では、異なる二つの担当に加え、未対応の入力・成果を指定する第三担当を保存して同じ本人として読戻し、不足表示後にjob作成・Tool呼出・claimが増えないことを確認する。同じ仕事の合成成果本文は保存、mii再接続画面、再読込、本人exportでhashを照合する。実機・本番の受入には転用しない。[証拠](../evidence/development-execution/eve-smith-unmatched-hash-browser.json)。
+
 保存と失敗: jobに操作ID・Tool版・入力hash・未確認の応答を残す。60秒の一回限りcapabilityはhashのみjobへ保存し、応答消失を自動再送しない。Connectorは対象引数、現在のschema・実行先、serverの一回claimを確認後にToolを呼ぶ。取消先勝ちならclaimを拒否し、claim先勝ち後の取消は停止要求として残して実行先の停止を未確認とする。claim後の不可逆作用を取消済みと表示しない。表示した成果はclient観測であり署名済みreceiptではない。
 
 今回の実行authorityは既存local-preview ID、明示したscope非強制、loopback、cookieや別credentialなしの開発環境に限定する。verified Package、freeの提供者申告、schema一致は未知Tool全体の安全性や実料金を保証しない。通常account/eSIMの実行authority・実mii入力/物理停止・有料実行/費用照合は別の実装と受入が必要。owner切替・旧版・失効・不明応答・停止競合・再接続、2種の入力出力と未対応能力を同じ候補で試験する。

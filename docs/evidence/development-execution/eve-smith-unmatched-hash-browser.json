@@ -1,0 +1,36 @@
+{
+  "schema": "rockstaros.eve-smith-unmatched-hash-browser/1",
+  "baseCandidate": "8d0d98690be32247ccadf781b27723b074e6a3dc",
+  "status": "independent_review_full_verify_pass_integration_pending",
+  "source": {
+    "path": "tests/eve-smith-mii-browser.test.mjs",
+    "sha256": "a68e6808cc8ddd928517d1c9386d89e55676a444c55ed88f1a8241536dd58585"
+  },
+  "validation": {
+    "command": "node --test tests/eve-smith-mii-browser.test.mjs",
+    "pass": 2,
+    "fail": 0,
+    "localLogPath": "/private/tmp/rock-f5-unmatched-browser-r3-20261029.log",
+    "localLogSha256": "91668c2d4b142fdf6c907d47d424bb984db1b8a0df4f65e5f62e8e3f9d6e2d90",
+    "independentReview": "PASS_SCOPED for third-role UI/API and separate read review of mii full-text hash assertions; independent prior run covered earlier test version.",
+    "fullVerify": {
+      "exitCode": 0,
+      "tests": 3417,
+      "pass": 3413,
+      "fail": 0,
+      "skipped": 4,
+      "localLogPath": "/private/tmp/rock-f5-full-verify-20261029.log",
+      "localLogSha256": "70dd2e56667d7abf6ddab8c684f182f8a8cd8d01669c0a31f4f7dc64b5b57fe0"
+    }
+  },
+  "observed": [
+    "A third owner-authored role requests image and caption, saves both fields and purpose, and is read back via existing Agent API with the same synthetic owner.",
+    "Smith reports those fields missing from the selected Tool; no additional job creation, Connector call or claim occurs.",
+    "The same synthetic job observation text matches by SHA-256 at initial storage, mii screen after reload, database readback, and owner export; the exported JSON matches its manifest hash."
+  ],
+  "limits": [
+    "Fixture uses synthetic local preview identity, two deterministic SDK Tools and isolated localhost authority.",
+    "This adds test evidence only; no product runtime change, physical mii/Pixel, real account, provider or bill acceptance.",
+    "PR/head/main CI pending."
+  ]
+}

@@ -1,9 +1,18 @@
 {
-  "executionReviewHistory": {
+  "eveSmithUnmatchedBrowser": {
     "owner": "ROCK",
     "status": "independent_review_full_verify_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/eve-smith-unmatched-hash-browser.json",
+    "next": "Save PR and confirm head and merge SHA CI."
+  },
+  "executionReviewHistory": {
+    "owner": "ROCK",
+    "status": "main_integrated_same_sha_ci_pending",
     "evidence": "docs/evidence/development-execution/execution-review-history.json",
-    "next": "Save PR, verify exact head CI, merge and check same merge SHA CI."
+    "next": "Confirm all merge SHA CI; normal-account authority, actual costs and physical devices remain open.",
+    "pullRequest": 269,
+    "prHead": "8d0d98690be32247ccadf781b27723b074e6a3dc",
+    "mergeSha": "2aeb926de5b70eb93555762b1660eafe69799f50"
   },
   "smithSchemaConfirmation": {
     "owner": "ROCK",
