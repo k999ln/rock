@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.pixel-live-connection-investigation/1",
-  "status": "public_timeline_news_unavailable_under_investigation",
+  "status": "site_candidate_reviewed_not_deployed",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "device": "Pixel 10 frankel",
   "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
@@ -31,8 +31,24 @@
     "Full typecheck failed in the local Site checkout because generated private-content and the stripe dependency were unavailable. No Site version was saved or deployed.",
     "Without network access, the missing dependency was obtained from the existing local package cache into an isolated directory and the generated private-content module was produced locally. Full TypeScript check and build passed for the local Site candidate.",
     "The follow-on local Site commit 2fc3a3f adds a visible pending/failed account-check message and prevents opening work results before identity is confirmed. Targeted tests 25/25, focused lint and TypeScript check passed. Device display, production behavior and the effect on layout shifting are not yet verified.",
-    "Production news logs still include canceled requests and the previous HTTP 503; no new provider or production site request was initiated by this inspection."
+    "Production news logs still include canceled requests and the previous HTTP 503; no new provider or production site request was initiated by this inspection.",
+    "Owner requested functionality, mobile UI and UX improvements, preserving all existing work, model and connection state without inference.",
+    "Public Site remained version 120 at inspection. Pixel foreground showed a separate local development test tab; no screen interaction or new reverse mapping was performed in this investigation.",
+    "Site source candidate commit 60524bf787940fc3b0ee8313e4ba7ef730305e06 fixes scoped result guidance, owner/thread selection generations, and historical news fallback with original timestamps. It uses at most 14-day saved snapshots as explicitly stale; it does not establish current news delivery.",
+    "Independent reviewer found and drove fixes for stale cross-thread results, A-to-B-to-A response races, article-level stale timestamps, and preference for newer last-good data. Reviewer matched the saved commit and independently reran 57 focused tests successfully.",
+    "Focused lint, typecheck, build and 57 targeted tests succeeded locally. Real React race integration, corrected Pixel rendering, production deployment and live provider recovery remain unverified.",
+    "Required root npm run verify did not pass: initial default OpenSSL was too old, then sandbox rejected loopback, then an isolated cached dependency overlay permitted execution. The last run reported 3507 tests, 3494 pass, 9 fail and 4 skipped. Failures included dependency patch/version resolution and the Eve/Smith D1 delegation test; later verify stages did not run.",
+    "The isolated root dependency overlay was removed and the original node_modules symlink restored. The exact Site candidate 60524bf subsequently passed focused lint, TypeScript and build; this does not supersede the failed root verify."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Diagnose news delivery with existing provider, independently review both local Site candidate commits, verify mobile behavior with isolated fixtures, and only then prepare any publication. Keep all existing data and connections."
+  "next": "Resolve root regression failures in an isolated environment, perform real React race/mobile checks, investigate existing provider failure, and verify the candidate on Pixel before considering publication.",
+  "siteCandidate": {
+    "base": "bad2809956a347192707e25be57fda451a6c1a5f",
+    "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
+    "patch": "docs/evidence/development-execution/pixel-site-ux-candidate.patch",
+    "patchSha256": "5ae785d9fb12d922c17f76ba1823d64fd8e29d9bf1b1952c94c8d1b27a3c3889",
+    "review": "PASS_SCOPED; 57 independent targeted tests; no device or production acceptance",
+    "rollback": "Site version 120 remains deployed; do not deploy candidate before matching source, data preservation, rollback and verification gates.",
+    "patchApply": "Use git apply --unidiff-zero --check on the exact base, then git apply --unidiff-zero; verify the source commit and base before use."
+  }
 }

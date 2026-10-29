@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "public_timeline_news_unavailable_under_investigation",
+    "status": "site_candidate_reviewed_not_deployed",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Review and test local Site candidate commits on mobile; diagnose news delivery. Candidate is not deployed and existing data must be preserved."
+    "next": "Resolve failed root verify, verify candidate in real mobile UI and investigate existing news provider; candidate not deployed."
   }
 }

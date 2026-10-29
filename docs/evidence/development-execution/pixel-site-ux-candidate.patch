@@ -1,0 +1,316 @@
+diff --git a/app/api/news/feed/route.ts b/app/api/news/feed/route.ts
+index 658b6c0..f6c4913 100644
+--- a/app/api/news/feed/route.ts
++++ b/app/api/news/feed/route.ts
+@@ -8,0 +9 @@ import {
++  newsSnapshotUsable,
+@@ -90 +91,7 @@ export async function GET(request?: Request) {
+-    if (lastGood && now - Date.parse(lastGood.fetchedAt) < 60 * 60_000) {
++    const fallback = !topic || topic === 'world' ? seed : liveSeed;
++    const articles = !topic
++      ? fallback.articles
++      : cachedNewsForTopic(fallback.articles, topic);
++    const fallbackUsable = articles.length > 0 && newsSnapshotUsable(fallback.fetchedAt, now);
++    if (lastGood && lastGood.articles.length > 0 && newsSnapshotUsable(lastGood.fetchedAt, now)
++      && (!fallbackUsable || Date.parse(lastGood.fetchedAt) >= Date.parse(fallback.fetchedAt))) {
+@@ -102,8 +109 @@ export async function GET(request?: Request) {
+-    const fallback = !topic || topic === 'world' ? seed : liveSeed;
+-    const articles = !topic
+-      ? fallback.articles
+-      : cachedNewsForTopic(fallback.articles, topic);
+-    if (
+-      articles.length &&
+-      now - Date.parse(fallback.fetchedAt) < 24 * 60 * 60_000
+-    ) {
++    if (fallbackUsable) {
+diff --git a/components/eve-sync-workspace.module.css b/components/eve-sync-workspace.module.css
+index b93db9d..aed53f2 100644
+--- a/components/eve-sync-workspace.module.css
++++ b/components/eve-sync-workspace.module.css
+@@ -17,0 +18 @@
++.resultsGuidance{display:block;margin:0 0 16px;max-width:65ch;color:var(--muted);font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+diff --git a/components/eve-sync-workspace.tsx b/components/eve-sync-workspace.tsx
+index 325dcfe..019ebb1 100644
+--- a/components/eve-sync-workspace.tsx
++++ b/components/eve-sync-workspace.tsx
+@@ -2,0 +3 @@ import {runtimeEveTextExport} from '@/lib/eve-runtime-export';
++import {eveResultsGuidance,eveResultsScopeVerified,eveResultsResponseCurrent} from '@/lib/eve-results-guidance';
+@@ -122,0 +124 @@ export default function EveSyncWorkspace({
++  const [resultsScope, setResultsScope] = useState<{owner:string;thread:string}|null>(null);
+@@ -123,0 +126 @@ export default function EveSyncWorkspace({
++    selectionEpoch = useRef(0),
+@@ -132,0 +136 @@ export default function EveSyncWorkspace({
++        const runtimeEpoch = selectionEpoch.current;
+@@ -171,0 +176 @@ export default function EveSyncWorkspace({
++          selectionEpoch.current++;
+@@ -208 +213 @@ export default function EveSyncWorkspace({
+-        if (activeThread.current === runtimeThread) {
++        if (eveResultsResponseCurrent(runtimeThread,activeThread.current,runtimeEpoch,selectionEpoch.current)) {
+@@ -210,0 +216 @@ export default function EveSyncWorkspace({
++          setResultsScope(runtime.data && !runtime.data.recovery ? {owner:sync.ownerUserId,thread:runtimeThread} : null);
+@@ -213,0 +220 @@ export default function EveSyncWorkspace({
++          setResultsScope(null);
+@@ -221,0 +229 @@ export default function EveSyncWorkspace({
++        const threadEpoch = selectionEpoch.current;
+@@ -232 +240 @@ export default function EveSyncWorkspace({
+-            if (live && activeThread.current === id) {
++            if (live && eveResultsResponseCurrent(id,activeThread.current,threadEpoch,selectionEpoch.current)) {
+@@ -262,0 +271 @@ export default function EveSyncWorkspace({
++            selectionEpoch.current++;
+@@ -267,0 +277 @@ export default function EveSyncWorkspace({
++            setResultsScope(null);
+@@ -355,0 +366,2 @@ export default function EveSyncWorkspace({
++    selectionEpoch.current++;
++    const chosenEpoch = selectionEpoch.current;
+@@ -356,0 +369 @@ export default function EveSyncWorkspace({
++    setResultsScope(null);
+@@ -370 +383 @@ export default function EveSyncWorkspace({
+-          activeThread.current === id &&
++          eveResultsResponseCurrent(id,activeThread.current,chosenEpoch,selectionEpoch.current) &&
+@@ -434,0 +448 @@ export default function EveSyncWorkspace({
++        selectionEpoch.current++;
+@@ -435,0 +450 @@ export default function EveSyncWorkspace({
++        setResultsScope(null);
+@@ -642 +657 @@ export default function EveSyncWorkspace({
+-            <button type="button" onClick={()=>{setModeOverride('work');requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));}}><ListChecks size={17}/>仕事と成果</button>
++            <button type="button" disabled={signedIn!==true} title={signedIn===null?'アカウントと仕事を確認しています':signedIn===false?'サインイン後に仕事を確認できます':undefined} onClick={()=>{setModeOverride('work');requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));}}><ListChecks size={17}/>仕事と成果</button>
+@@ -643,0 +659 @@ export default function EveSyncWorkspace({
++          {signedIn===null && <output className={styles.resultsGuidance}>{message?'仕事と成果を確認できません。接続を確認してください。':'仕事と成果を確認しています。'}</output>}
+@@ -824,0 +841,12 @@ export default function EveSyncWorkspace({
++              {(() => {
++                const guidance = eveResultsGuidance({
++                  online,
++                  runtimeNotice,
++                  hasVisibleResults: jobs.some((j) => !selected || j.threadId === selected)
++                    || runtimeJobs.some((j) => !selected || j.threadId === selected)
++                    || runtimePending.some((p) => !selected || p.threadId === selected),
++                  selectedThread: Boolean(selected),
++                  scopeVerified: eveResultsScopeVerified(resultsScope,connectionOwner,selected),
++                });
++                return guidance && <output className={styles.resultsGuidance}>{guidance}</output>;
++              })()}
+diff --git a/components/sky-social-timeline.tsx b/components/sky-social-timeline.tsx
+index 17ea25e..f18312f 100644
+--- a/components/sky-social-timeline.tsx
++++ b/components/sky-social-timeline.tsx
+@@ -645 +645,2 @@ export default function SkySocialTimeline({
+-              媒体の原文 · GDELT検出{item.stale ? ' · 前回取得分' : ''}
++              媒体の原文 · GDELT検出{item.stale ? ' · 保存済み・最新ではありません' : ''}
++              {item.stale && item.staleFetchedAt && Number.isFinite(Date.parse(item.staleFetchedAt)) && ` · 取得日時 ${new Date(item.staleFetchedAt).toLocaleString('ja-JP')}`}
+@@ -1031 +1032 @@ export default function SkySocialTimeline({
+-              {!live ? '自動更新を停止中' : continuous.newsError || liveError ? '一部の配信元を確認できません' : continuous.newsLoading && !continuous.items.length ? '新着を確認中' : '自動更新中'}
++              {!live ? '自動更新を停止中' : continuous.newsError || liveError ? '一部の配信元を確認できません' : continuous.stale ? '保存済みの記事を表示中' : continuous.newsLoading && !continuous.items.length ? '新着を確認中' : '自動更新中'}
+@@ -1078,2 +1079,4 @@ export default function SkySocialTimeline({
+-                ? '接続待ちのため、前回のニュースを見出しの言葉で絞り込んでいます。'
+-                : 'ニュースは前回取得分を表示しています。'}
++                ? '配信元を確認できないため、保存済みの記事を見出しの言葉で絞り込んでいます。'
++                : '配信元を確認できないため、保存済みの記事を表示しています。'}
++              {' '}最新ではありません。
++              {continuous.fetchedAt && Number.isFinite(Date.parse(continuous.fetchedAt)) && ` 取得日時: ${new Date(continuous.fetchedAt).toLocaleString('ja-JP')}`}
+diff --git a/components/use-sky-continuous-feed.ts b/components/use-sky-continuous-feed.ts
+index 497dc9c..20ca78f 100644
+--- a/components/use-sky-continuous-feed.ts
++++ b/components/use-sky-continuous-feed.ts
+@@ -17 +17 @@ export type ContinuousItem = FeedCandidate &
+-    | { kind: 'news'; article: EveNewsLink; stale: boolean }
++    | { kind: 'news'; article: EveNewsLink; stale: boolean; staleFetchedAt?: string }
+@@ -87,0 +88 @@ export function useSkyContinuousFeed(
++          staleFetchedAt: news!.staleFetchedAt?.[article.id],
+diff --git a/lib/eve-news-feed.ts b/lib/eve-news-feed.ts
+index baf374b..6e2ddfc 100644
+--- a/lib/eve-news-feed.ts
++++ b/lib/eve-news-feed.ts
+@@ -13,0 +14,6 @@ export const EVE_NEWS_PROVIDER = 'GDELT DOC 2.0';
++/** Bounded, explicitly stale recovery; future and invalid timestamps are rejected. */
++export function newsSnapshotUsable(fetchedAt: string, now: number) {
++  const at = Date.parse(fetchedAt);
++  return Number.isFinite(at) && at <= now && now - at < 14 * 24 * 60 * 60_000;
++}
++
+diff --git a/lib/eve-results-guidance.ts b/lib/eve-results-guidance.ts
+new file mode 100644
+index 0000000..e3e88b8
+--- /dev/null
++++ b/lib/eve-results-guidance.ts
+@@ -0,0 +1,23 @@
++export function eveResultsGuidance(input: {
++  online: boolean;
++  runtimeNotice: string;
++  hasVisibleResults: boolean;
++  selectedThread: boolean;
++  scopeVerified: boolean;
++}): string {
++  if (!input.online) return '接続を確認できません。保存済みの仕事の状態は未確認です。';
++  if (input.hasVisibleResults) return '';
++  if (input.runtimeNotice) return '一部の実行先を確認できません。仕事がないとは判断できません。';
++  if (!input.scopeVerified) return 'この会話と本人の端末報告を確認中です。保存済みの仕事の状態は未確認です。';
++  return input.selectedThread
++    ? '現在読み込んだ端末報告に、この会話の仕事はありません。保存済み履歴は別に確認できます。'
++    : '現在読み込んだ端末報告に仕事はありません。保存済み履歴やCloudの依頼・成果は別に確認できます。';
++}
++
++export function eveResultsScopeVerified(snapshot: { owner: string; thread: string } | null, owner: string, thread: string) {
++  return Boolean(owner && snapshot && snapshot.owner === owner && snapshot.thread === thread);
++}
++
++export function eveResultsResponseCurrent(startThread: string, currentThread: string, startEpoch: number, currentEpoch: number) {
++  return startThread === currentThread && startEpoch === currentEpoch;
++}
+diff --git a/lib/sky-continuous-news.ts b/lib/sky-continuous-news.ts
+index 6d3e4e8..1438c1e 100644
+--- a/lib/sky-continuous-news.ts
++++ b/lib/sky-continuous-news.ts
+@@ -10,0 +11 @@ export type ContinuousNewsFeed = {
++  staleFetchedAt?: Record<string, string>;
+@@ -36,0 +38,6 @@ export function mergeNewsCandidates(
++  const staleTimes = new Map(Object.entries(previous?.staleFetchedAt ?? {}));
++  if (previous?.stale) {
++    for (const article of previous.articles) {
++      if (!staleTimes.has(article.id)) staleTimes.set(article.id, previous.fetchedAt);
++    }
++  }
+@@ -38,2 +45,7 @@ export function mergeNewsCandidates(
+-    if (incoming.stale) staleIds.add(article.id);
+-    else staleIds.delete(article.id);
++    if (incoming.stale) {
++      staleIds.add(article.id);
++      staleTimes.set(article.id, incoming.staleFetchedAt?.[article.id] ?? incoming.fetchedAt);
++    } else {
++      staleIds.delete(article.id);
++      staleTimes.delete(article.id);
++    }
+@@ -56,0 +69 @@ export function mergeNewsCandidates(
++    staleFetchedAt: Object.fromEntries(buffer.filter((item) => staleIds.has(item.article.id) && staleTimes.has(item.article.id)).map((item) => [item.article.id, staleTimes.get(item.article.id)!])),
+diff --git a/tests/eve-news-feed.test.mjs b/tests/eve-news-feed.test.mjs
+index 8297b63..600854f 100644
+--- a/tests/eve-news-feed.test.mjs
++++ b/tests/eve-news-feed.test.mjs
+@@ -6,0 +7 @@ import {
++  newsSnapshotUsable,
+@@ -8,0 +10,8 @@ import {
++void test('bounded fallback permits clearly stale snapshots but rejects invalid, future, and expired dates', () => {
++  const now = Date.parse('2026-10-29T12:00:00Z');
++  assert.equal(newsSnapshotUsable('2026-10-22T00:35:25.702Z', now), true);
++  assert.equal(newsSnapshotUsable('2026-10-15T12:00:00Z', now), false);
++  assert.equal(newsSnapshotUsable('2026-10-30T00:00:00Z', now), false);
++  assert.equal(newsSnapshotUsable('invalid', now), false);
++});
++
+diff --git a/tests/eve-news-offline-route.test.mjs b/tests/eve-news-offline-route.test.mjs
+new file mode 100644
+index 0000000..0cb9aed
+--- /dev/null
++++ b/tests/eve-news-offline-route.test.mjs
+@@ -0,0 +1,43 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFileSync } from 'node:fs';
++import { runInNewContext } from 'node:vm';
++import ts from 'typescript';
++import * as feed from '../lib/eve-news-feed.ts';
++const source=readFileSync(new URL('../app/api/news/feed/route.ts',import.meta.url),'utf8');
++const seed=JSON.parse(readFileSync(new URL('../data/eve-news-seed-20261021.json',import.meta.url),'utf8'));
++const liveSeed=JSON.parse(readFileSync(new URL('../data/sky-live-news-seed.json',import.meta.url),'utf8'));
++function route(input, fetcher=async()=>{throw Error('offline fixture');}){
++ const clock=typeof input==='number'?{now:input}:input;
++ const exports={}; class ClockDate extends Date { constructor(...args){super(...(args.length?args:[clock.now]));} static now(){return clock.now;} }
++ const compiled=ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,esModuleInterop:true}}).outputText;
++ runInNewContext(compiled,{exports,URL,AbortSignal,Date:ClockDate,fetch:fetcher,require(name){
++  if(name==='next/server')return {NextResponse:{json:(body,options={})=>({body,status:options.status??200,headers:options.headers})}};
++  if(name==='@/lib/eve-news-feed')return feed;
++  if(name==='@/data/eve-news-seed-20261021.json')return seed;
++  if(name==='@/data/sky-live-news-seed.json')return liveSeed;
++  throw Error('unexpected dependency');
++ }}); return exports.GET;
++}
++void test('provider outage returns bounded historical snapshot marked stale and preserves its original time',async()=>{
++ const get=route(Date.parse('2026-10-29T12:00:00Z'));
++ const result=await get({url:'https://fixture.invalid/api/news/feed?topic=all'});
++ assert.equal(result.status,200);assert.equal(result.body.stale,true);
++ assert.equal(result.body.fetchedAt,liveSeed.fetchedAt);assert.ok(result.body.articles.length);
++});
++void test('a recent successful response remains preferred over a week-old snapshot during outage',async()=>{
++ const clock={now:Date.parse('2026-10-29T10:00:00Z')};let fail=false;
++ const get=route(clock,async()=>{if(fail)throw Error('offline fixture');return {ok:true,json:async()=>({articles:[{url:'https://publisher.invalid/story',title:'A fixture story',seendate:'20261029T090000Z'}]})};});
++ const req={url:'https://fixture.invalid/api/news/feed?topic=all'};
++ const fresh=await get(req);assert.equal(fresh.body.stale,false);
++ clock.now+=2*60*60_000;fail=true;
++ const recovered=await get(req);
++ assert.equal(recovered.status,200);assert.equal(recovered.body.stale,true);
++ assert.equal(recovered.body.fetchedAt,fresh.body.fetchedAt);
++ assert.equal(recovered.body.articles[0].url,'https://publisher.invalid/story');
++});
++void test('provider outage cannot turn an expired historical snapshot into current news',async()=>{
++ const get=route(Date.parse('2026-11-10T12:00:00Z'));
++ const result=await get({url:'https://fixture.invalid/api/news/feed?topic=all'});
++ assert.equal(result.status,503);assert.equal(result.body.articles,undefined);
++});
+diff --git a/tests/eve-results-guidance.test.mjs b/tests/eve-results-guidance.test.mjs
+new file mode 100644
+index 0000000..a622873
+--- /dev/null
++++ b/tests/eve-results-guidance.test.mjs
+@@ -0,0 +1,27 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { eveResultsGuidance, eveResultsScopeVerified, eveResultsResponseCurrent } from '../lib/eve-results-guidance.ts';
++
++test('result guidance never describes an unknown connection as an empty account', () => {
++  const base = { online: true, runtimeNotice: '', hasVisibleResults: false, selectedThread: false, scopeVerified: true };
++  assert.match(eveResultsGuidance({ ...base, online: false }), /未確認/);
++  assert.match(eveResultsGuidance({ ...base, runtimeNotice: 'unavailable' }), /判断できません/);
++  assert.match(eveResultsGuidance({ ...base, scopeVerified: false }), /未確認/);
++  assert.match(eveResultsGuidance(base), /現在読み込んだ端末報告/);
++  assert.match(eveResultsGuidance({ ...base, selectedThread: true }), /この会話/);
++  assert.equal(eveResultsGuidance({ ...base, hasVisibleResults: true }), '');
++});
++
++test('an old response or another owner cannot verify the current conversation', () => {
++  const old = { owner: 'owner-a', thread: 'thread-a' };
++  assert.equal(eveResultsScopeVerified(old, 'owner-a', 'thread-b'), false);
++  assert.equal(eveResultsScopeVerified(old, 'owner-b', 'thread-a'), false);
++  assert.equal(eveResultsScopeVerified(null, 'owner-a', 'thread-a'), false);
++  assert.equal(eveResultsScopeVerified(old, 'owner-a', 'thread-a'), true);
++});
++
++test('A to B to A never accepts the older A response', () => {
++  assert.equal(eveResultsResponseCurrent('A', 'B', 1, 2), false);
++  assert.equal(eveResultsResponseCurrent('A', 'A', 1, 3), false);
++  assert.equal(eveResultsResponseCurrent('A', 'A', 3, 3), true);
++});
+diff --git a/tests/eve-runtime-work-port.test.mjs b/tests/eve-runtime-work-port.test.mjs
+index 1fa4854..205a9f0 100644
+--- a/tests/eve-runtime-work-port.test.mjs
++++ b/tests/eve-runtime-work-port.test.mjs
+@@ -113 +113 @@ void test('the browser thread query discovers an old job hidden by other convers
+- const source=readFileSync(new URL('../components/eve-sync-workspace.tsx',import.meta.url),'utf8');assert.match(source,/const runtimeThread = activeThread\.current/);assert.match(source,/encodeURIComponent\(runtimeThread\)/);assert.match(source,/if \(activeThread\.current === runtimeThread\)/);
++ const source=readFileSync(new URL('../components/eve-sync-workspace.tsx',import.meta.url),'utf8');assert.match(source,/const runtimeThread = activeThread\.current/);assert.match(source,/encodeURIComponent\(runtimeThread\)/);assert.match(source,/eveResultsResponseCurrent\(runtimeThread,activeThread\.current,runtimeEpoch,selectionEpoch\.current\)/);
+diff --git a/tests/sky-continuous-feed.test.mjs b/tests/sky-continuous-feed.test.mjs
+index cf8d3c4..c7709ff 100644
+--- a/tests/sky-continuous-feed.test.mjs
++++ b/tests/sky-continuous-feed.test.mjs
+@@ -89,0 +90,2 @@ void test('existing news updates replace metadata, and late arrivals remain disc
++  assert.equal(next.staleFetchedAt.old, new Date(now).toISOString());
++  assert.equal(next.staleFetchedAt.late, undefined);
+@@ -107,0 +110 @@ void test('existing news updates replace metadata, and late arrivals remain disc
++  assert.equal(repeated.staleFetchedAt.old, new Date(now).toISOString());
+diff --git a/tests/smis-eve-workbench.test.mjs b/tests/smis-eve-workbench.test.mjs
+index 95f4287..47df224 100644
+--- a/tests/smis-eve-workbench.test.mjs
++++ b/tests/smis-eve-workbench.test.mjs
+@@ -9,0 +10 @@ import * as connections from '../lib/sky-eve-connections.ts';
++import * as resultsGuidance from '../lib/eve-results-guidance.ts';
+@@ -17 +18 @@ function harness(path,{initial={},params=new URLSearchParams(),fetcher=async()=>
+- const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false},window:{addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
++ const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false},window:{addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='@/lib/eve-results-guidance')return resultsGuidance;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
+@@ -59,0 +61,10 @@ void test('Eve tab changes preserve pinned URL context and a new agent link open
++
++void test('work results navigation waits for account verification and then becomes available',()=>{
++ const checking=harness('components/eve-sync-workspace.tsx');
++ let view=checking.render();
++ assert.equal(button(view,'仕事と成果').props.disabled,true);
++ assert.match(text(view),/仕事と成果を確認しています/);
++ const ready=harness('components/eve-sync-workspace.tsx',{initial:{19:true}});
++ view=ready.render();
++ assert.equal(button(view,'仕事と成果').props.disabled,false);
++});
