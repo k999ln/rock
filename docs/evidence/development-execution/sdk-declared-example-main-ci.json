@@ -1,0 +1,61 @@
+{
+  "schema": "rockstaros.sdk-declared-example-main-ci/1",
+  "pullRequest": 276,
+  "head": "6fc80f2a5ef11bd5b50e6b4459b668d286b06333",
+  "mergeSha": "c53ffad64e3502af9e853b73134fc1430176649a",
+  "mergeChecks": [
+    {
+      "conclusion": "success",
+      "name": "Dependabot",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "Dependabot",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "Dependabot",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "Dependabot",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    }
+  ],
+  "rawRecordSha256": "4a116ee0dc9aab1905cc386c073f4a0b0936318ed19bd8af5234be8e296ffcad",
+  "priorEvidence": "docs/evidence/development-execution/sdk-declared-example.json",
+  "scope": "host synthetic examples; no real provider, external publication, physical device or OS permission acceptance"
+}

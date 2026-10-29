@@ -6,11 +6,24 @@
     "next": "Confirm exact-head CI and independent metadata review. Local test, remote cancellation response loss and signed receipt remain separate.",
     "pullRequest": 282
   },
+  "miiShortLeaseBrowser": {
+    "owner": "ROCK",
+    "status": "main_integrated_merge_ci_pending",
+    "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
+    "next": "Confirm merge SHA CI; physical mii remains separate.",
+    "pullRequest": 281,
+    "mergeSha": "ad9c0bcb25c4c3ad9e55ebc3c766a60dcd5e6c60"
+  },
   "sdkDeclaredExample": {
     "owner": "ROCK",
-    "status": "independent_review_full_verify_pass_integration_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
-    "next": "Verify exact archive and complete independent review, full verify, Git CI; real author/provider/device acceptance remains separate."
+    "next": "Real author, provider, device and permission enforcement remain separate.",
+    "pullRequest": 276,
+    "prHead": "6fc80f2a5ef11bd5b50e6b4459b668d286b06333",
+    "mergeSha": "c53ffad64e3502af9e853b73134fc1430176649a",
+    "mergeChecks": "10 of 10 completed successfully",
+    "mainCiEvidence": "docs/evidence/development-execution/sdk-declared-example-main-ci.json"
   },
   "miiPortableReadDescriptors": {
     "owner": "ROCK",
