@@ -97,6 +97,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const registry = { packages };
     const entitlements = { ownerScope: scope, entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: packages.map(p => ({ packageKey: p.packageKey, state: 'ready' })) } }] };
     const requests = [], claimContracts = [];
+    let pausedReply = null;
     const http = createServer(async (req, res) => {
       try {
         const url = new URL(req.url, `http://${req.headers.host}`); requests.push({ path: url.pathname, method: req.method });
@@ -113,7 +114,12 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
           claimContracts.push({ inputSchemaSha256: claim.inputSchemaSha256, outputSchemaSha256: claim.outputSchemaSha256, transport: claim.transport });
         }
         const input = new Request(url, { method: req.method, headers, ...(body.length ? { body } : {}) });
-        const output = await routes[url.pathname][req.method](input); res.writeHead(output.status, { 'Content-Type': 'application/json' }); res.end(await output.text());
+        const output = await routes[url.pathname][req.method](input);
+        const pause = pausedReply;
+        if (pause && url.pathname.endsWith(pause.route) && JSON.parse(body.toString('utf8')).action !== 'observe') {
+          pause.hit = true; await pause.promise;
+        }
+        res.writeHead(output.status, { 'Content-Type': 'application/json' }); res.end(await output.text());
       } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: String(e) })); }
     });
     await new Promise((resolve, reject) => { http.once('error', reject); http.listen(0, '127.0.0.1', resolve); });
@@ -155,7 +161,13 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
     const input = async (label, value) => { const a = js(label), v = js(value); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
       await evaluate(`(()=>{const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(${a})).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,${v});e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`); };
-    await wait('document.body.innerText.includes("自分の担当を作る")', 'Eve'); await click('自分の担当を作る');
+    await wait('document.body.innerText.includes("自分の担当を作る")', 'Eve');
+    // This permission is confined to the disposable test origin/profile. Product
+    // code never requests it and must reject input when its journal is unavailable.
+    await devtools.call('Browser.grantPermissions', { origin: base, permissions: ['durableStorage'] });
+    assert.equal(await evaluate('navigator.storage.persist()'), true);
+    assert.equal(await evaluate('navigator.storage.persisted()'), true);
+    await click('自分の担当を作る');
     await input('担当の名前', 'fixture担当'); await input('何を手伝う担当ですか', '文章の行数を確認'); await input('受け取るもの', 'text'); await input('期待する成果', 'lines');
     await click('内容を確認'); await click('確認して保存');
     await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'Smith');
@@ -163,8 +175,16 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'saved requirements');
     await click('同じ担当で仕事の確認へ進む');
     await wait('document.body.innerText.includes("仕事の名前")', 'real workbench'); await input('仕事の名前', 'fixture仕事'); await click('仕事を作成');
-    await input('互換runtime/toolを選択', '0'); await input('このruntimeへ渡す依頼', 'one\ntwo');
-    await click('実行内容を確認'); await click('内容を承認して実行');
+    await input('互換runtime/toolを選択', '0');
+    await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
+    await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'mii input readback');
+    await input('miiへの合成テキスト', 'one\ntwo'); await click('同じ仕事のTool確認へ渡す');
+    await click('実行内容を確認'); await click('追跡喪失を模擬'); await click('内容を承認して実行');
+    await wait('document.body.innerText.includes("同じ仕事と実行先を確認してください")', 'stale mii input rejected');
+    assert.equal(connectorExecuteCalls, 0); assert.equal(requests.filter(r => r.path.endsWith('/tool-observations')).length, 0);
+    await click('miiから同じ仕事を確認');
+    await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'mii reconnect readback');
+    await click('同じ仕事のTool確認へ渡す'); await click('実行内容を確認'); await click('内容を承認して実行');
     if (localAuthority) {
       await wait('document.body.innerText.includes("Tool画面で受け取った内容を同じ仕事に保存しました")', 'saved Tool observation');
     } else {
@@ -172,7 +192,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.equal(connectorExecuteCalls, 0);
       t.diagnostic('Production dispatch authority is unavailable: the Tool was not called and no result acceptance is claimed.');
     }
-    await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii'); await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
+    await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'same job');
     if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*2/);
     const address = await evaluate('location.href'), query = new URL(address).searchParams;
@@ -192,6 +212,10 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'same job after reload');
     if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*2/);
+    if (localAuthority) {
+      await wait(`document.querySelector('[aria-label="保存されたToolの応答"]')?.textContent.includes('lines')`, 'same persisted result in Eve workbench');
+      assert.match(await evaluate(`document.querySelector('[aria-label="保存されたToolの応答"]').textContent`), /"lines"\s*:\s*2/);
+    }
     assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n, 1);
     assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, localAuthority ? 1 : 0);
     assert.equal(requests.filter(r => r.path.endsWith('/tool-observations')).length, localAuthority ? 2 : 1);
@@ -236,6 +260,42 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'second same job after reload');
       assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"sum"\s*:\s*11/);
       assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n, 2); assert.equal(connectorExecuteCalls, 2);
+    }
+    if (localAuthority) {
+      // Delay the real API response after commit. A lost observation cannot undo
+      // an already claimed operation; it can fence a begin before dispatch.
+      for (const mode of ['edit-during-begin', 'lost-during-begin', 'lost-after-claim']) {
+        await input('仕事の名前', mode); await click('仕事を作成');
+        await input('互換runtime/toolを選択', '0');
+        await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
+        await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, mode + ' read');
+        await input('miiへの合成テキスト', 'synthetic addition'); await click('同じ仕事のTool確認へ渡す');
+        await click('実行内容を確認');
+        let release;
+        const pause = { route: mode === 'lost-after-claim' ? '/tool-observations/claim' : '/tool-observations',
+          hit: false, promise: new Promise(resolve => { release = resolve; }) };
+        pausedReply = pause;
+        const callsBefore = connectorExecuteCalls;
+        await click('内容を承認して実行');
+        for (let i = 0; i < 500 && !pause.hit; i++) await new Promise(resolve => setTimeout(resolve, 10));
+        assert.equal(pause.hit, true, mode + ' API paused');
+        if (mode === 'edit-during-begin') await input('このruntimeへ渡す依頼', 'replacement');
+        else await click('追跡喪失を模擬');
+        pausedReply = null; release();
+        // Workbench's running state clears only when the original async runner
+        // settles, even if an input edit remounted its UI.
+        await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes('仕事の名前'))?.querySelector('input:not(:disabled)')`, mode + ' execution settled');
+        await click('miiから同じ仕事を確認');
+        await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('${mode === 'lost-after-claim' ? '画面で応答を観測しました' : '試行を記録済み'}')`, mode + ' reconciliation');
+        const id = new URL(await evaluate('location.href')).searchParams.get('workJob');
+        const current = JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(id).payload);
+        assert.equal(current.toolAttempts.length, 1);
+        assert.equal(connectorExecuteCalls, callsBefore + (mode === 'lost-after-claim' ? 1 : 0));
+        assert.equal(current.toolAttempts[0].state, mode === 'lost-after-claim' ? 'observed_unverified' : 'pending');
+        assert.equal(current.toolObservations?.length ?? 0, mode === 'lost-after-claim' ? 1 : 0);
+        const disabled = await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ仕事のTool確認へ渡す'))).disabled`);
+        assert.equal(disabled, true, 'unresolved attempt cannot be resubmitted');
+      }
     }
     // The registry approval and account identity are synthetic. This does not
     // establish physical mii, real provider billing, or independent Tool safety.

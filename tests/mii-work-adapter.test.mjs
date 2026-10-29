@@ -401,3 +401,54 @@ void test('mii adapter reads and cancels the same owner-bound Agent job through 
   assert.equal(raceRead.job.revision, 3); assert.equal(raceRead.cancelReconciliation, 'clear');
   assert.equal(raceRead.job.toolAttempts[0].state, 'stop_requested');
 });
+
+void test('input fence is invalidated by scene/place/boot changes, lost tracking, detach and reconnect', async t => {
+  for (const patch of [{ sceneRevision: 2 }, { placeEpoch: 2 }, { bootId: 'boot-2' }, { tracking: 'lost' }, { attached: false }]) {
+    const f = await fixture(t); await f.adapter.readExisting(f.reference);
+    const guard = f.adapter.createInputGuard(); assert.equal(guard(), true);
+    f.adapter.observe(observation({ sequence: 2, ...patch })); assert.equal(guard(), false);
+    f.adapter.disconnect(); assert.equal(guard(), false);
+    assert.equal(f.calls.filter(call => call.method !== 'GET').length, 0);
+  }
+});
+
+void test('input fence expires, rejects a regressed clock and cannot be renewed by rereading', async t => {
+  const f = await fixture(t); let time = at;
+  const a = createMiiWorkAdapter({ fetchImpl: f.fetchImpl, now: () => time, journal: f.journal });
+  a.observe(observation()); await a.readExisting(f.reference); const guard = a.createInputGuard();
+  assert.equal(guard(), true); time = at - 1; assert.equal(guard(), false);
+  time = at; assert.equal(guard(), false);
+  a.observe(observation({ sequence: 2 })); await a.readExisting(f.reference); const freshGuard = a.createInputGuard();
+  time = at + 10000; assert.equal(freshGuard(), false); time = at + 5000; assert.equal(freshGuard(), false);
+  time = at + 10000; assert.equal(guard(), false); assert.throws(() => a.createInputGuard());
+  a.observe(observation({ sequence: 3, observedAt: time, expiresAt: time + 10000 }));
+  await a.readExisting(f.reference); const validAgain = a.createInputGuard(); assert.equal(validAgain(), true); assert.equal(guard(), false);
+  time = NaN; assert.equal(validAgain(), false); time = at + 10000; assert.equal(validAgain(), false);
+});
+
+void test('input requires same bound agent, active clean job and reconciled cancellation', async t => {
+  for (const patch of [{ status: 'cancelled' }, { toolAttempts: [{ id: randomUUID(), state: 'pending' }] }]) {
+    const f = await fixture(t); f.setJob({ ...f.job, ...patch }); await f.adapter.readExisting(f.reference);
+    assert.throws(() => f.adapter.createInputGuard(), /MII_INPUT_UNAVAILABLE/);
+  }
+  const f = await fixture(t); await f.adapter.readExisting(f.reference); const guard = f.adapter.createInputGuard();
+  f.setJob({ ...f.job, agentBinding: { ...f.job.agentBinding, agentId: 'other-agent' } });
+  await assert.rejects(f.adapter.readExisting(f.reference)); assert.equal(guard(), false);
+  f.setJob({ ...f.job, agentBinding: { ...f.job.agentBinding, agentId: f.reference.agentId } });
+  await f.adapter.readExisting(f.reference); f.setMode('network-loss');
+  assert.equal((await f.adapter.cancelPlan({ commandId: randomUUID(), jobId: f.job.id, revision: f.job.revision, confirmed: true })).state, 'unknown');
+  await f.adapter.readExisting(f.reference); assert.throws(() => f.adapter.createInputGuard(), /MII_INPUT_UNAVAILABLE/);
+});
+
+void test('input fence rejects a backwards clock even within the original valid observation window', async t => {
+  const f = await fixture(t); let time = at;
+  const adapter = createMiiWorkAdapter({ fetchImpl: f.fetchImpl, now: () => time, journal: f.journal });
+  adapter.observe(observation()); await adapter.readExisting(f.reference);
+  const guard = adapter.createInputGuard();
+  time = at + 5000; assert.equal(guard(), true);
+  time = at + 4000; assert.equal(guard(), false);
+  time = at + 6000; assert.equal(guard(), false, 'clock recovery cannot revive the old input');
+  adapter.observe(observation({ sequence: 2, observedAt: time, expiresAt: time + 10000 }));
+  await adapter.readExisting(f.reference); assert.equal(adapter.createInputGuard()(), true);
+  assert.equal(guard(), false);
+});

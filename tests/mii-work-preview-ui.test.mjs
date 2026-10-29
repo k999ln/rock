@@ -21,8 +21,8 @@ function fixtureJob() {
   return job;
 }
 function harness(job = fixtureJob()) {
-  const owner = 'owner-v1:' + 'b'.repeat(64), slots = [], effects = [], reads = [], cancels = [], accepted = [], events = [];
-  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null;
+  const owner = 'owner-v1:' + 'b'.repeat(64), slots = [], effects = [], reads = [], cancels = [], accepted = [], events = [], staged = [];
+  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, valid = false, inputAvailable = true;
   const changed = (a, b) => !a || a.length !== b.length || a.some((value, index) => !Object.is(value, b[index]));
   const react = {
     useState(initial) { const i = cursor++; if (!slots[i]) { const slot = { value: typeof initial === 'function' ? initial() : initial };
@@ -33,8 +33,9 @@ function harness(job = fixtureJob()) {
   };
   react.useLayoutEffect = (...args) => react.useEffect(...args);
   const adapter = {
-    observe(value) { events.push({ action: 'observe', value }); },
-    disconnect() { events.push({ action: 'disconnect' }); }, close() { events.push({ action: 'close' }); },
+    observe(value) { valid = true; events.push({ action: 'observe', value }); },
+    disconnect() { valid = false; events.push({ action: 'disconnect' }); }, close() { valid = false; events.push({ action: 'close' }); },
+    createInputGuard() { return () => valid; },
     async readExisting(reference) { reads.push(reference); if (waitRead) return waitRead.promise;
       return { job: currentJob, agentBinding: 'verified', executorBinding: 'unverified',
         hardwareAccepted: false, executionAuthorized: false, cancelReconciliation: 'clear' }; },
@@ -46,7 +47,7 @@ function harness(job = fixtureJob()) {
   const exports = {};
   runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; }, crypto: { randomUUID }, Date });
   function render() { cursor = 0; tree = exports.default({ job: currentJob, ownerScope: currentOwner,
-    onRead: value => { accepted.push(value); currentJob = value; } }); while (effects.length) effects.shift()(); }
+    onRead: value => { accepted.push(value); currentJob = value; }, inputAvailable, onInput: input => staged.push(input) }); while (effects.length) effects.shift()(); }
   function nodes(node, out = []) { if (Array.isArray(node)) node.forEach(value => nodes(value, out));
     else if (node && typeof node === 'object') { out.push(node); nodes(node.props?.children, out); } return out; }
   const text = node => typeof node === 'string' || typeof node === 'number' ? String(node) :
@@ -54,9 +55,11 @@ function harness(job = fixtureJob()) {
   const button = name => nodes(tree).find(value => value.type === 'button' && text(value).includes(name));
   async function flush() { for (let i = 0; i < 4; i++) { await new Promise(resolve => setImmediate(resolve)); render(); } }
   render();
-  return { reads, cancels, accepted, events, button, render, flush, html: () => renderToStaticMarkup(tree),
+  return { staged, reads, cancels, accepted, events, button, render, flush, html: () => renderToStaticMarkup(tree),
     click(name) { const value = button(name); assert.ok(value && !value.props.disabled, name); value.props.onClick(); render(); },
     check() { const input = nodes(tree).find(value => value.type === 'input'); assert.ok(input); input.props.onChange({ target: { checked: true } }); render(); },
+    type(value) { nodes(tree).find(n => n.type === 'textarea').props.onChange({ target: { value } }); render(); },
+    availability(value) { inputAvailable = value; render(); },
     deferRead() { waitRead = deferred(); return waitRead; },
     setOwner(value) { currentOwner = value; render(); }, setJob(value) { currentJob = value; render(); } };
 }
@@ -142,4 +145,29 @@ void test('plan cancellation is explicit and its reply leaves external and physi
   assert.equal(h.button('計画取消を依頼').props.disabled, true); h.check(); h.click('計画取消を依頼'); await h.flush();
   assert.equal(h.cancels.length, 1); assert.equal(h.cancels[0].confirmed, true);
   assert.match(h.html(), /実行先や物理機器が停止したかは未確認/);
+});
+
+void test('synthetic text stages the same job without bypassing approval; accepted revisions do not invalidate its fence', async () => {
+  const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush(); h.type('one\ntwo');
+  h.click('同じ仕事のTool確認へ渡す'); assert.equal(h.staged.length, 1); const input = h.staged[0];
+  assert.equal(input.text, 'one\ntwo'); assert.equal(input.isCurrent(), true); assert.equal(h.cancels.length, 0);
+  const job = h.accepted[0]; input.onJob({ ...job, revision: job.revision + 1 }); h.render();
+  assert.equal(input.isCurrent(), true); assert.equal(h.accepted.at(-1).revision, job.revision + 1);
+  h.type('changed'); assert.equal(input.isCurrent(), false);
+});
+
+for (const button of ['追跡喪失を模擬', '取り外しを模擬', '再起動を模擬', 'scene変更を模擬']) void test(`mii ${button} requires a new explicit read and input`, async () => {
+  const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush(); h.type('synthetic'); h.click('同じ仕事のTool確認へ渡す');
+  const old = h.staged[0]; h.click(button); assert.equal(old.isCurrent(), false);
+  assert.equal(h.button('同じ仕事のTool確認へ渡す').props.disabled, true);
+  h.click('miiから同じ仕事を確認'); await h.flush(); assert.equal(old.isCurrent(), false);
+  h.click('同じ仕事のTool確認へ渡す'); assert.equal(h.staged[1].isCurrent(), true);
+});
+
+void test('unsupported capability, external revision and different owner invalidate staged mii text', async () => {
+  const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush(); h.type('synthetic'); h.click('同じ仕事のTool確認へ渡す');
+  const old = h.staged[0]; h.availability(false); assert.equal(old.isCurrent(), false);
+  assert.equal(h.button('同じ仕事のTool確認へ渡す').props.disabled, true);
+  h.setJob({ ...h.accepted[0], revision: h.accepted[0].revision + 1 }); assert.equal(old.isCurrent(), false);
+  h.setOwner('owner-v1:' + 'f'.repeat(64)); assert.equal(old.isCurrent(), false);
 });

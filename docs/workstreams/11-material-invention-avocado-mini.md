@@ -32,6 +32,8 @@ ROCK/M1は既存adapterを使うlocal Broker/AP入口・有限scheduler/停止�
 
 ## R5の現行入口
 
+MINI01/M1のソフト入力具体化: 合成テキストを既存Agent/job/MCPへ渡し、Eveから同じ応答を確認する。主担当はmii入力、共有runner/仕事契約の変更は鮮度再照合と表示に限定。[契約](../service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)と[証拠](../evidence/development-execution/mii-synthetic-input.json)。4表示条件、単体利用、実機未受入を保持する。
+
 2026-10-25の本人指示で、Miniのカメラ追跡・ジェスチャー入力を追加する。最初は手指の選択/移動/回転/停止を端末内で推定し、VIEW_ONLY候補として扱う。Eveの好み予測、本人の明示feedback、Smithの操作許可を分ける。単眼の画面座標を精密3D/全空間追跡の合格にせず、旧四方向契約や物理/金融承認を迂回しない。Mini単体と表示4条件を維持する。 [カメラ入力契約](../../systems/rock-star-os/targets/avocado-mini/gesture/README.md)。
 
 内蔵衛星modem・antenna・保護付き電池pack/セル・回線契約の[候補比較と実機試験準備](../avocado-mini-r5/satellite-hardware-trial-plan.md)を追加。9770の一般IP、9704のIMT、NB-NTNのUDP主体通信を区別し、共有許諾・網側hard cap・同一閉箱の収納/電源/熱を採用前条件とする。初期地域は日本と米国、用途はsi・メッセージ・小さなファイルに本人確定（2026-10-25）。9704/NB-NTNの小容量通信を優先比較し、国別profileで受け入れる。数値目標・機種/契約は未確定、購入/契約/無線送信/実機合格は未実施。単体携帯、端末/通信量/料金上限と表示4条件を維持。 ROCKはadapter/台帳、JOINTは同一実機のRF/電源/熱、EXTERNALは部品/回線条件、OWNERは地域/用途/費用と実施を確定する。

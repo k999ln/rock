@@ -11852,5 +11852,38 @@
       "fail": 0,
       "skip": 3
     }
+  },
+  "miiSyntheticInput": {
+    "date": "2026-10-28",
+    "taskId": "MINI01",
+    "primarySquad": "M1",
+    "baseMain": "e9433589ada56b783d8164960e6fce26dc2b38c4",
+    "status": "central_source_review_and_full_verify_pass_final_metadata_pending",
+    "evidence": "docs/evidence/development-execution/mii-synthetic-input.json",
+    "scope": "isolated synthetic text through existing MCP/job contract",
+    "mainIntegrated": false,
+    "remoteCiVerified": false,
+    "physicalAccepted": false,
+    "next": "independent final19 metadata comparison, Git save and exactHEAD/allmergeSHA CI",
+    "verification": "Original author80/full3364 success; central final81/81 and full3365/3361pass0fail4skip; initial PC adapter failure retained",
+    "integrationReview": {
+      "original80": "PASS",
+      "partialClockRollback": "original fails negative control; clock patch independent PASS_SCOPED; final81/81",
+      "finalFullVerify": {
+        "exitCode": 0,
+        "rootNode": {
+          "tests": 3365,
+          "pass": 3361,
+          "fail": 0,
+          "skip": 4
+        },
+        "logSha256": "ec6b012530bb4c5783b86c057a2cca83a2d997fadd57655b2feffd056dcb96ed",
+        "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "runtime": "Node26.12.1; defaultPython3.15; OpenSSL3; same environment as retained first failure",
+        "remainingStages": "build/API/mission/work/bot all completed"
+      }
+    },
+    "pixelObservationEvidence": "docs/evidence/development-execution/pixel-visual-readback-20261028.json",
+    "pixelObservationAcceptance": false
   }
 }

@@ -1,0 +1,136 @@
+{
+  "schema": "rockstaros.mii-synthetic-input/1",
+  "baseMain": "e9433589ada56b783d8164960e6fce26dc2b38c4",
+  "date": "2026-10-28",
+  "taskId": "MINI01",
+  "primarySquad": "M1",
+  "status": "central_source_review_and_full_verify_pass_final_metadata_pending",
+  "scope": "isolated loopback synthetic owner, deterministic SDK tools, existing Agent/job/approval/Connector contracts",
+  "sourceHashes": {
+    "components/agent-tool-job-runner.tsx": "e8ad28a894964f39192834dd01da79e86605723845c3f8e1fa141370cd57c855",
+    "components/mii-work-preview.tsx": "0b8bb73e8391164253c7bedb385acfede401bbb05e2f49f1bba08bb08590948b",
+    "components/workbench.tsx": "27b5bd4f82310254c91ea9cac2662414e48888577ee032aa0a51a08567d70cb0",
+    "lib/mii-work-adapter.ts": "18c5086d83b87b270f54d8e6ec8648d6f1b88967ffa44cd8dcfebdb6ca3c5d3f",
+    "tests/eve-smith-mii-browser.test.mjs": "3b1cd6ba1bb7bea560f806edc9e0789f6e276b0fc64c6fd04b5029ff9c19c468",
+    "tests/mii-work-adapter.test.mjs": "afd0997d49a2cb983cd68a6948fb9e51520df3563147a5b1df8fa63937776916",
+    "tests/mii-work-preview-ui.test.mjs": "96c8c61a1ec6776dffcb198f437395149aae2ae2a350f75bbfc9f82803920374"
+  },
+  "mainIntegrated": false,
+  "remoteCiVerified": false,
+  "physicalAccepted": false,
+  "inferenceCalls": 0,
+  "paidActions": 0,
+  "existingDataChanged": false,
+  "preserved": [
+    "single-device use",
+    "no plates or membranes",
+    "few display parts",
+    "all directions including above and below",
+    "non-dazzling output",
+    "existing job storage and authority gates",
+    "separate dirty hardware design worktree"
+  ],
+  "tests": [
+    {
+      "command": "node --experimental-strip-types --test tests/eve-smith-mii-browser.test.mjs tests/mii-work-adapter.test.mjs tests/mii-work-preview-ui.test.mjs tests/agent-tool-job-runner-ui.test.mjs tests/work-tool-observations-route.test.mjs tests/mcp-job-claim-connector.test.mjs",
+      "result": "PASS 80/80 including real isolated Chrome, APIs and Connector",
+      "logSha256": "ce7890e7b75852ac6e89ad44bfc398eac5a5c5209f6ff7558a99616eb86d206c"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "result": "PASS exit0; main Node suite 3364 tests, 3360 pass, 0 fail, 4 skip; build/API/mission/work/bot completed",
+      "logSha256": "c6c804c722dc4c0a3f0bd0cac0d346c5bc79f94d93497cc0d1f7a9ba9d430d05",
+      "scope": "Original pre-central-clock-repair local source; not final repaired full verification or remote CI"
+    }
+  ],
+  "delayedBrowserCases": [
+    "mii tracking loss before begin: no admission or Tool call",
+    "runtime text edited while begin response paused: pending committed, no Tool dispatch",
+    "tracking lost while begin response paused: pending committed, no Tool dispatch",
+    "tracking lost after server claim committed: one execution and unverified observation preserved; no claimed physical stop",
+    "Eve workbench and mii reread the same result after reload"
+  ],
+  "review": {
+    "reviewer": "mii_input_review",
+    "result": "two findings fixed; final compiler-compatible UI adjustment requires integration review",
+    "findings": [
+      "expiry/clock regression revived stale guard; now irreversibly invalidated",
+      "runtime text edit left old async runner current; now synchronously advances input epoch"
+    ],
+    "verification": "independent 77 local tests plus 1 host Connector test passed; author delayed browser scenarios passed afterwards",
+    "finalSourceIndependentlyReviewed": false,
+    "finalAdjustment": "refs updated in layout effect, rendered epoch carried by state; no setState in effect; invalid clock is fail-closed"
+  },
+  "failureHistory": [
+    {
+      "scope": "initial browser",
+      "result": "2 failures: disposable origin lacked persistent storage; product correctly refused input. Fixture now grants durableStorage only to its disposable origin; real IndexedDB used."
+    },
+    {
+      "scope": "first delayed browser",
+      "result": "test waited for create button despite empty title; wait now uses enabled title field governed by running state"
+    },
+    {
+      "scope": "independent connector in sandbox",
+      "result": "Node native assertion abort; separate host Connector run passed 1/1"
+    },
+    {
+      "scope": "first full verify",
+      "result": "failed React compiler lint; corrected render-time refs/effect state/dependency without suppressing rules",
+      "logSha256": "60387af9db2fa3f9eb1d3c763e02ae5da2434912f98b785a13bb53f20d1048e1"
+    },
+    {
+      "scope": "central first fullverify",
+      "result": "3365total3360pass1fail4skip; unchanged PC adapter child cleanup returncode wasNone in two oversized-output Python subcases. Cause not established; no adapter/assertion/deadline changed.",
+      "logSha256": "e22df7d0b213f02b3aa03a934abb40d2f017acc841e6d651d4c38b84f744de6f",
+      "followup": "Same-source isolated defaultPython3.15 andPython3.14 bothpass; fullverify same-environment retry exit0 recorded separately."
+    }
+  ],
+  "limits": [
+    "normal account/eSIM dispatch authority is not implemented",
+    "client-observed Tool output is not a signed success receipt",
+    "already submitted/claimed work cannot be revoked by a browser freshness guard alone",
+    "physical tracking, optical display, stop, billing and provider acceptance remain unverified",
+    "no new DB or automatic retry; pending and UNKNOWN require reconciliation"
+  ],
+  "git": "Integration candidate remains uncommitted/unpushed; Git/HEAD CI/normal main merge/merge SHA CI pending separately.",
+  "integrationReview": {
+    "reviewer": "central Git independent from original source author",
+    "originalFinalSource": "80/80 including real isolated Chrome; original18 hashes all matched",
+    "finding": "Clock can move backwards inside valid observation window without falling below observedAt; original guard accepted it.",
+    "negativeControl": "Added partial-rollback regression fails against original candidate true!==false; log saved outside Git",
+    "repair": "Remember last checked time within current observation; any checked time regression permanently invalidates that observation. Fresh observation/read required.",
+    "repairedRelatedTests": "55/55 PASS; final real Chrome/API/Connector81/81 PASS; counts overlap",
+    "metadata": "mii section heading restored before existing Smith section; unrelated paragraph preserved",
+    "pixelObservation": "pixel-visual-readback-20261028.json records unknown external communication, unconfirmed connection and incomplete before/after comparison; no physical acceptance",
+    "finalFixedCandidateReview": "source reviewed; final19 metadata packet awaiting independent comparison",
+    "clockPatchIndependentReview": {
+      "decision": "PASS_SCOPED",
+      "reviewer": "independent integration coordinator",
+      "reviewedAt": "2026-10-28T23:52:48.439602+00:00",
+      "sourceHashes": {
+        "lib/mii-work-adapter.ts": "18c5086d83b87b270f54d8e6ec8648d6f1b88967ffa44cd8dcfebdb6ca3c5d3f",
+        "tests/mii-work-adapter.test.mjs": "afd0997d49a2cb983cd68a6948fb9e51520df3563147a5b1df8fa63937776916"
+      },
+      "findings": [],
+      "assessment": "Observed backward wall-clock movement invalidates the observation and its generation; recovering the wall clock cannot revive the old guard. A new observation requires a new read. The regression test covers these boundaries.",
+      "limits": [
+        "A clock regression occurring entirely between checks is not observable by this mechanism; no real-time monotonic clock or hardware safety guarantee is claimed.",
+        "This review covers the clock patch and its test only; complete candidate, full verify and CI remain separate."
+      ]
+    },
+    "fullVerify": {
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3365,
+        "pass": 3361,
+        "fail": 0,
+        "skip": 4
+      },
+      "logSha256": "ec6b012530bb4c5783b86c057a2cca83a2d997fadd57655b2feffd056dcb96ed",
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "runtime": "Node26.12.1; defaultPython3.15; OpenSSL3; same environment as retained first failure",
+      "remainingStages": "build/API/mission/work/bot all completed"
+    }
+  }
+}

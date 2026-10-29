@@ -1,0 +1,56 @@
+{
+  "schema": "rockstaros.pixel-visual-readback-independent-assessment/1",
+  "sourceObservationSha256": "c5f2d715f62141c660547822f59e20e0b029f947f73423345271abd669102687",
+  "recordedAt": "2026-10-28T23:24:54.611515+00:00",
+  "device": {
+    "model": "Pixel 10",
+    "sku": "GL066",
+    "codename": "frankel"
+  },
+  "observationScope": "Author-reported existing Shell screen and scrolling only; no device commands or independent physical re-execution by Git reviewer.",
+  "reportedObservations": {
+    "shellApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
+    "matchesPriorAcceptedApk": true,
+    "shellScreenObserved": true,
+    "syncScreenStatus": "connection could not be confirmed",
+    "syncServiceForegroundObserved": true,
+    "forwardMappingsObserved": 0,
+    "reverseMappingsObserved": 0,
+    "afterVisualCheck": {
+      "shellApkMatchesPriorAccepted": true,
+      "forwardMappings": 0,
+      "reverseMappings": 0,
+      "shellActivityForeground": true
+    }
+  },
+  "reportedActions": {
+    "existingShellOpened": true,
+    "screenScrolled": true,
+    "modelInferenceInvoked": false,
+    "apkInstalled": false,
+    "deviceResetOrFlash": false,
+    "forwardOrReverseChanged": false,
+    "defaultLaunchOpenedExistingBrowser": true,
+    "externalPageCommunication": "unknown; not verified",
+    "syncServiceStopOrRestartCommandSent": false,
+    "deviceSettingsChangeCommandSent": false
+  },
+  "assessment": {
+    "limitedScreenObservationRecorded": true,
+    "sameJobOrOutputReadbackAccepted": false,
+    "syncConnectivityAccepted": false,
+    "unchangedFullDeviceStateAccepted": false,
+    "noExternalCommunicationEstablished": false,
+    "reason": "Default launch opened existing browser; external communication is unknown. Sync connection was not confirmed. No pre-launch baseline or complete before/after service/data comparison exists. Matching APK and0 forwarding mappings alone do not establish device-state preservation.",
+    "newHostImplementationInstalledOnPixel": false,
+    "pixelOSOrPhysicalAcceptance": false
+  },
+  "limits": [
+    "No same-job or output readback was established in this screen test",
+    "No before/after full device data or service-state comparison",
+    "New PR254 host implementation was not installed on Pixel",
+    "No Pixel OS or physical device acceptance claimed",
+    "No baseline taken before launching the screen; no claim of a complete before/after data or connection-state audit."
+  ],
+  "followup": "Keep device and connection state unverified. Any future observation requires its own bounded before/after baseline and authorized operator; do not infer permission for new device operations."
+}

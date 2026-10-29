@@ -38,7 +38,7 @@ import { compatibleLocalPackageRuntimes } from '@/lib/sky-package-runtime';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import type { McpConnection } from '@/lib/mcp-hub';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
-import MiiWorkPreview from '@/components/mii-work-preview';
+import MiiWorkPreview, { type MiiWorkInput } from '@/components/mii-work-preview';
 import AgentToolJobRunner from '@/components/agent-tool-job-runner';
 import { WorkbenchCloudText, WorkbenchCloudTextDeleteDialog, useWorkbenchCloudText } from '@/components/workbench-cloud-text';
 import { Textarea } from '@/components/ui/textarea';
@@ -553,6 +553,13 @@ export default function Workbench({
     setDelegationQuote(null); setDelegationQuoteConsent(false);
   }
 
+  const toolInputEpoch = useRef(0);
+  const [runnerInputEpoch, setRunnerInputEpoch] = useState(0);
+  function invalidateToolInput() {
+    const epoch = ++toolInputEpoch.current;
+    setRunnerInputEpoch(epoch);
+  }
+  const [miiInput, setMiiInput] = useState<MiiWorkInput | null>(null);
   const handoffPackage = handoffPackageResult?.packageKey === initialPackageKey
     ? handoffPackageResult.package ?? null : null;
   const handoffPackageState = !initialPackageKey ? 'none'
@@ -1650,6 +1657,7 @@ export default function Workbench({
                   <label>互換runtime/toolを選択
                     <select value={selectedPackageRuntimeCandidate ? packageRuntimeCandidates.findIndex(({ server, tool }) => server.id === selectedPackageRuntimeCandidate.server.id && tool.name === selectedPackageRuntimeCandidate.tool.name).toString() : ''}
                       onChange={(event) => {
+                        invalidateToolInput();
                         if (!event.target.value) { setSelectedPackageRuntime(null); return; }
                         const candidate = packageRuntimeCandidates[Number(event.target.value)];
                         if (!candidate) { setSelectedPackageRuntime(null); return; }
@@ -1661,16 +1669,16 @@ export default function Workbench({
                   </label>
                   {selectedPackageRuntimeCandidate && <>
                     <label>このruntimeへ渡す依頼
-                      <textarea rows={3} maxLength={4_000} value={localPackageTask} onChange={(event) => setLocalPackageTask(event.target.value)} placeholder="このPackage機能で行う具体的な依頼" />
+                      <textarea rows={3} maxLength={4_000} value={localPackageTask} onChange={(event) => { invalidateToolInput(); setMiiInput(null); setLocalPackageTask(event.target.value); }} placeholder="このPackage機能で行う具体的な依頼" />
                     </label>
                     {agentRequired ? selected && ownerScope && agentReference && localPackageTask.trim() &&
                       selected.agentBinding?.agentId === agentReference.id && selected.agentBinding.agentRevision === agentReference.revision ?
-                      <AgentToolJobRunner key={`${ownerScope}:${selected.id}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}`}
+                      <AgentToolJobRunner key={`${ownerScope}:${selected.id}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}:${miiInput?.id ?? 'direct'}:${runnerInputEpoch}`}
                         server={selectedPackageRuntimeCandidate.server} toolName={selectedPackageRuntimeCandidate.tool.name} task={localPackageTask}
                         packageKey={handoffPackage.packageKey} manifestSha256={handoffPackage.manifestSha256} job={selected}
-                        ownerScope={ownerScope} agentReference={agentReference} isCurrent={() => currentOwner.current === ownerScope && selectedIdRef.current === selected.id}
-                        onJob={accept} onRunningChange={setRunning} /> : <p>この担当に結びついた仕事を作成または選択し、依頼内容を入力してください。</p>
-                      : <McpBotRunner key={`${handoffPackage.packageKey}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}`}
+                        ownerScope={ownerScope} agentReference={agentReference} isCurrent={() => toolInputEpoch.current === runnerInputEpoch && currentOwner.current === ownerScope && selectedIdRef.current === selected.id && (!miiInput || miiInput.isCurrent())}
+                        onJob={miiInput ? miiInput.onJob : accept} onRunningChange={setRunning} /> : <p>この担当に結びついた仕事を作成または選択し、依頼内容を入力してください。</p>
+                      : <McpBotRunner key={`${handoffPackage.packageKey}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}:${miiInput?.id ?? 'direct'}:${runnerInputEpoch}`}
                         server={selectedPackageRuntimeCandidate.server} request={localPackageTask} fixedToolName={selectedPackageRuntimeCandidate.tool.name} executionDisabled={!ownerScope || !localPackageTask.trim()} />}
 
                   </>}
@@ -1801,7 +1809,17 @@ export default function Workbench({
                   <h2>{selected.title}</h2>
                   <span>{stateNames[selected.status]}</span>
                 </div>
-                {ownerScope && selected.agentBinding && <MiiWorkPreview key={`${ownerScope}:${selected.id}`} job={selected} ownerScope={ownerScope} onRead={accept} />}
+                {!!selected.toolObservations?.length && <section aria-label="保存されたToolの応答">
+                  <h3>この仕事に保存したToolの応答</h3>
+                  <p>画面で受け取った未検証の応答です。実行成功・料金・実行先の停止を保証しません。</p>
+                  {selected.toolObservations.map(observation => <div key={observation.id}>
+                    <p>{observation.toolName}</p><pre>{observation.text}</pre>
+                  </div>)}
+                </section>}
+                {ownerScope && selected.agentBinding && <MiiWorkPreview key={`${ownerScope}:${selected.id}:${handoffPackage?.manifestSha256 ?? ""}:${selectedPackageRuntimeCandidate?.server.id ?? ""}:${selectedPackageRuntimeCandidate?.tool.name ?? ""}`} job={selected} ownerScope={ownerScope} onRead={accept}
+                  inputAvailable={Boolean(agentRequired && agentReference && selected.agentBinding.agentId === agentReference.id &&
+                    selected.agentBinding.agentRevision === agentReference.revision && selectedPackageRuntimeCandidate && handoffPackageState === 'ready')}
+                  onInput={input => { invalidateToolInput(); setMiiInput(input); setLocalPackageTask(input.text); }} />}
                 {selected.coordination && (
                   <section className="work-notice" aria-label="Jennifer leaf task">
                     <strong>Jennifer → Zema leaf task</strong>

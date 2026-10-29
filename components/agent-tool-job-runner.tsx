@@ -71,6 +71,7 @@ export default function AgentToolJobRunner({ server, toolName, task, packageKey,
     try {
       await fresh(job.revision);
       const digest = await sha256(JSON.stringify(input.args));
+      if (!isCurrent()) throw new Error('入力の観測または本人・仕事が変わりました。');
       setLocalFence(true);
       const response = await fetch('/api/work-jobs/tool-observations', { method: 'POST', headers: {
         'Content-Type': 'application/json', [OWNER_SCOPE_HEADER]: ownerScope,
