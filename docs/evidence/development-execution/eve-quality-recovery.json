@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.eve-quality-recovery/1",
-  "capturedAtUtc": "2026-10-29T20:11:56.291673+00:00",
-  "scope": "Corrected-loss/full-integration retraining, independent comparison and physical Pixel review completed; model quality FAIL. Source/progress integration and same-SHA CI are tracked separately.",
+  "capturedAtUtc": "2026-10-29T20:42:12.229177+00:00",
+  "scope": "Corrected-loss/full-integration retraining, independent comparison and physical Pixel review completed. Reviewed implementation and result records integrated via PR300; actual same-main-SHA CI verified. Model quality remains FAIL.",
   "owner": "O3/ROCK/AI02",
   "inputMainSha": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "priorRun": {
@@ -177,15 +177,101 @@
       "logSha256": "3d04ca5a40c583da77809f4b77639c8387ac62d822f1221feed2a437a2292b2b",
       "scope": "Reviewed final source plus completed result metadata; later verification-result fields receive lightweight metadata checks."
     },
-    "gitSaved": false,
-    "mainIntegrated": false,
-    "sameShaCI": "pending",
+    "gitSaved": true,
+    "mainIntegrated": true,
+    "sameShaCI": {
+      "sha": "4c0b056b76541ab7b81a97bd7d0498feff4cae3b",
+      "status": "all_completed_success",
+      "verifiedAtUtc": "2026-10-29T20:41:15.874590+00:00",
+      "checkCount": 7,
+      "workflowCount": 5,
+      "checks": [
+        {
+          "name": "verify",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243297/job/123716457495"
+        },
+        {
+          "name": "prototype",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243340/job/123712645176"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243326/job/123712644953"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243326/job/123712644715"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243382/job/123712644434"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243289/job/123712644193"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243289/job/123712643856"
+        }
+      ],
+      "workflows": [
+        {
+          "name": "SPIDER repair regressions",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243326"
+        },
+        {
+          "name": "SPIDER repository security",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243382"
+        },
+        {
+          "name": "SPIDER CodeQL security",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243289"
+        },
+        {
+          "name": "Rock star Android prototype",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243340"
+        },
+        {
+          "name": "Rock star verification",
+          "conclusion": "success",
+          "url": "https://github.com/k999ln/rock/actions/runs/40949243297"
+        }
+      ]
+    },
     "deploymentPerformed": false,
-    "gitStatusQualification": "Git flags describe this precommit evidence snapshot. Subsequent PR/main/same-merge-SHA checks are recorded in the final Git receipt and GitHub; no self-referential evidence commit chain."
+    "gitStatusQualification": "Implementation main acceptance is verified here. This one metadata-only progress closure retains those actual facts; the closure commit/merge CI itself is recorded separately in the final Git receipt and GitHub without a recursive evidence commit chain.",
+    "implementationPrUrl": "https://github.com/k999ln/rock/pull/300",
+    "implementationSourceSha": "e821433381e978f922891e24397bf9bf8399539b",
+    "implementationMainSha": "4c0b056b76541ab7b81a97bd7d0498feff4cae3b",
+    "verificationAttempts": {
+      "attempt1": {
+        "result": "failure",
+        "url": "https://github.com/k999ln/rock/actions/runs/40949243297/attempts/1",
+        "reason": "Unchanged SDK browser fixture navigation timeout; same test passed on PR source."
+      },
+      "attempt2": {
+        "result": "success",
+        "url": "https://github.com/k999ln/rock/actions/runs/40949243297/attempts/2",
+        "sameSha": true,
+        "sourceChanged": false
+      }
+    }
   },
   "wholeAI02Complete": false,
   "productionAccepted": false,
-  "next": "Candidate quality remains FAIL/default nonadoption; improve task completion and independently test unverified Pixel boundaries in future AI02 work. Complete PR/main/same-SHA CI for this reviewed source snapshot.",
+  "next": "Improve semantic task completion and independently evaluate phone interaction P95, owner A/B, P07 maximum-three-repair boundary and retention/generalization within a new bounded AI02 quality experiment. Current candidate remains quality FAIL and nondefault; native/whole-OS/production acceptance remains open. Excluded sealed/retention sources remain unopened unless explicitly rescoped.",
   "sessionFinalAccounting": {
     "confirmedOptimizerUpdates": 56,
     "chargedTrainingWallSeconds": 65.52848104199802,
