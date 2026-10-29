@@ -36,6 +36,7 @@ const MAX_CURSOR_BYTES = 1_024;
 const REQUEST_TIMEOUT_MS = 15_000;
 const CALL_TIMEOUT_MS = 60_000;
 const APPROVAL_TTL_MS = 5 * 60_000;
+const OBSERVATION_TTL_MS = 30_000;
 const MAX_APPROVALS = 10_000;
 const ORIGINS = new Set([
   PILOT_ORIGIN,
@@ -599,6 +600,7 @@ export class McpHub {
     this.approvalSecret = randomBytes(32);
     this.nextId = 1;
     this.localIds = new Set();
+    this.lastWallClock = Date.now();
   }
   syncLocal(specs) {
     const next = new Set(specs.map((spec) => spec.id));
@@ -623,16 +625,25 @@ export class McpHub {
     }
     this.localIds = next;
   }
+  clockNow() {
+    const now = Date.now();
+    if (now < this.lastWallClock) {
+      this.approvals.clear();
+      for (const entry of this.entries.values()) if (entry.observationClock) entry.observationClock.invalid = true;
+    }
+    this.lastWallClock = now;
+    return now;
+  }
   list() {
-    return [...this.entries.values()].map(({ spec, passport, state }) => ({
-      id: spec.id,
-      name: spec.name,
-      description: spec.description,
-      transport: spec.transport,
-      state,
-      toolCount: passport?.tools.length ?? null,
-      passport,
-    }));
+    this.clockNow();
+    return [...this.entries.values()].map(entry => {
+      const { spec, state } = entry;
+      // Never project an expired, invalidated, or in-flight snapshot to a new
+      // consumer: its in-memory rollback history may have been lost on reload.
+      const passport = this.observationFresh(entry) ? entry.passport : null;
+      return { id: spec.id, name: spec.name, description: spec.description,
+        transport: spec.transport, state, toolCount: passport?.tools.length ?? null, passport };
+    });
   }
   close() {
     for (const entry of this.entries.values())
@@ -669,12 +680,66 @@ export class McpHub {
     return this.entry(id).spec.pilot && method === 'tools/list'
       ? pilotToolList(response.result) : response.result;
   }
+  async observeTools(id, entry, assertCurrent) {
+    const tools = [];
+    const seenCursors = new Set();
+    let pages = 0;
+    let cursor;
+    do {
+      assertCurrent();
+      const listed = await this.rpc(
+        id,
+        'tools/list',
+        cursor === undefined ? {} : { cursor },
+      );
+      assertCurrent();
+      if (!Array.isArray(listed.tools))
+        fail('tools/listの応答が不正です。', 502, 'invalid_tools');
+      tools.push(...listed.tools);
+      cursor = listed.nextCursor;
+      if (tools.length > MAX_TOOLS)
+        fail('MCPの機能数が上限を超えています。', 409, 'too_many_tools');
+      pages++;
+      if (cursor !== undefined) {
+        if (typeof cursor !== 'string' || !cursor.length ||
+            Buffer.byteLength(cursor, 'utf8') > MAX_CURSOR_BYTES || seenCursors.has(cursor))
+          fail('tools/listの継続cursorが不正です。', 502, 'invalid_tools_cursor');
+        // Empty pages still consume the same bounded discovery budget.
+        if (pages >= MAX_TOOL_PAGES)
+          fail('MCPの機能一覧のページ数が上限を超えています。', 409, 'too_many_tool_pages');
+        seenCursors.add(cursor);
+      }
+    } while (cursor !== undefined);
+    const safeTools = tools.map((tool) => ({
+      name: cleanText(tool?.name, 'tool名', 128),
+      title: typeof tool.title === 'string' ? tool.title.slice(0, 160) : null,
+      description:
+        typeof tool.description === 'string'
+          ? tool.description.slice(0, 500)
+          : '',
+      inputSchema:
+        tool.inputSchema && typeof tool.inputSchema === 'object'
+          ? tool.inputSchema
+          : { type: 'object' },
+      ...(tool.outputSchema && typeof tool.outputSchema === 'object' && !Array.isArray(tool.outputSchema)
+        ? { outputSchema: tool.outputSchema }
+        : {}),
+      pricing: this.pricingFor(entry, tool),
+      approval: 'required',
+    }));
+    return safeTools;
+  }
   async connect(id) {
     const entry = this.entry(id);
     const attempt = Symbol('MCP connection attempt');
-    entry.connectionAttempt = attempt;
+    let lastConnectionWall = this.clockNow();
+    entry.connectionAttempt = attempt; entry.observationAttempt = null;
+    entry.observationInProgress = false; entry.observationClock = null;
     const current = () => this.entries.get(id) === entry && entry.connectionAttempt === attempt;
     const assertCurrent = () => {
+      const now = this.clockNow();
+      if (now < lastConnectionWall) fail('MCP接続中に時刻が変わりました。再接続してください。', 409, 'observation_clock_changed');
+      lastConnectionWall = now;
       if (!current())
         fail('MCP接続が変更されました。再接続してください。', 409, 'connection_superseded');
     };
@@ -703,51 +768,8 @@ export class McpHub {
         method: 'notifications/initialized',
       });
       assertCurrent();
-      const tools = [];
-      const seenCursors = new Set();
-      let pages = 0;
-      let cursor;
-      do {
-        const listed = await this.rpc(
-          id,
-          'tools/list',
-          cursor === undefined ? {} : { cursor },
-        );
-        assertCurrent();
-        if (!Array.isArray(listed.tools))
-          fail('tools/listの応答が不正です。', 502, 'invalid_tools');
-        tools.push(...listed.tools);
-        cursor = listed.nextCursor;
-        if (tools.length > MAX_TOOLS)
-          fail('MCPの機能数が上限を超えています。', 409, 'too_many_tools');
-        pages++;
-        if (cursor !== undefined) {
-          if (typeof cursor !== 'string' || !cursor.length ||
-              Buffer.byteLength(cursor, 'utf8') > MAX_CURSOR_BYTES || seenCursors.has(cursor))
-            fail('tools/listの継続cursorが不正です。', 502, 'invalid_tools_cursor');
-          // Empty pages still consume the same bounded discovery budget.
-          if (pages >= MAX_TOOL_PAGES)
-            fail('MCPの機能一覧のページ数が上限を超えています。', 409, 'too_many_tool_pages');
-          seenCursors.add(cursor);
-        }
-      } while (cursor !== undefined);
-      const safeTools = tools.map((tool) => ({
-        name: cleanText(tool?.name, 'tool名', 128),
-        title: typeof tool.title === 'string' ? tool.title.slice(0, 160) : null,
-        description:
-          typeof tool.description === 'string'
-            ? tool.description.slice(0, 500)
-            : '',
-        inputSchema:
-          tool.inputSchema && typeof tool.inputSchema === 'object'
-            ? tool.inputSchema
-            : { type: 'object' },
-        ...(tool.outputSchema && typeof tool.outputSchema === 'object' && !Array.isArray(tool.outputSchema)
-          ? { outputSchema: tool.outputSchema }
-          : {}),
-        pricing: this.pricingFor(entry, tool),
-        approval: 'required',
-      }));
+      const safeTools = await this.observeTools(id, entry, assertCurrent);
+      const observedAt = this.clockNow();
       entry.passport = {
         server: {
           name: String(initialized.serverInfo?.name ?? entry.spec.name).slice(
@@ -764,8 +786,12 @@ export class McpHub {
         tools: safeTools,
         toolDigest: digest(safeTools),
         connectedAt: new Date().toISOString(),
+        observationId: randomUUID(),
+        observedAt,
+        observationExpiresAt: observedAt + OBSERVATION_TTL_MS,
       };
       entry.state = 'connected';
+      this.rememberObservation(entry);
       return entry.passport;
     } catch (error) {
       // A prior failure cannot downgrade a newer connection or undo a stop.
@@ -795,7 +821,8 @@ export class McpHub {
   }
   disconnect(id) {
     const entry = this.entry(id);
-    entry.connectionAttempt = null;
+    entry.connectionAttempt = null; entry.observationAttempt = null;
+    entry.observationInProgress = false; entry.observationClock = null;
     entry.transport.reset();
     entry.passport = null;
     entry.state = 'available';
@@ -805,10 +832,59 @@ export class McpHub {
     this.approvals.clear();
     return { id, state: entry.state };
   }
+  rememberObservation(entry) {
+    entry.observationClock = { id: entry.passport.observationId, last: entry.passport.observedAt,
+      deadline: performance.now() + OBSERVATION_TTL_MS, invalid: false };
+  }
+  observationFresh(entry) {
+    const value = entry.passport, clock = entry.observationClock, now = this.clockNow();
+    if (!value || !clock || clock.id !== value.observationId || entry.observationInProgress) return false;
+    if (now < clock.last || now < value.observedAt || now >= value.observationExpiresAt || performance.now() >= clock.deadline ||
+        (entry.transport instanceof StdioTransport && (!entry.transport.process || entry.transport.process.exitCode !== null || entry.transport.process.stdin.destroyed)))
+      clock.invalid = true;
+    clock.last = Math.max(now, clock.last);
+    return !clock.invalid;
+  }
+  async refresh(id) {
+    const entry = this.entry(id), connectionAttempt = entry.connectionAttempt;
+    if (entry.state !== 'connected' || !entry.passport || !connectionAttempt)
+      fail('先にMCPへ接続してください。', 409, 'not_connected');
+    const previous = entry.passport, observation = Symbol('tool observation');
+    let lastObservationWall = this.clockNow();
+    entry.observationAttempt = observation; entry.observationInProgress = true;
+    const assertCurrent = () => {
+      const now = this.clockNow();
+      if (now < lastObservationWall) fail('Tool観測中に時刻が変わりました。再確認してください。', 409, 'observation_clock_changed');
+      lastObservationWall = now;
+      if (this.entries.get(id) !== entry || entry.connectionAttempt !== connectionAttempt ||
+          entry.observationAttempt !== observation || entry.state !== 'connected' || entry.passport !== previous ||
+          (entry.transport instanceof StdioTransport && (!entry.transport.process || entry.transport.process.exitCode !== null || entry.transport.process.stdin.destroyed)))
+        fail('Toolの観測が変更されました。読み直してください。', 409, 'observation_superseded');
+    };
+    try {
+      const tools = await this.observeTools(id, entry, assertCurrent);
+      assertCurrent();
+      if (digest(tools) !== previous.toolDigest) {
+        this.approvals.clear(); entry.passport = null; entry.state = 'error';
+        fail('Toolの宣言が変わりました。接続と承認を読み直してください。', 409, 'tool_observation_changed');
+      }
+      const now = this.clockNow();
+      entry.passport = { ...previous, tools, observationId: randomUUID(), observedAt: now, observationExpiresAt: now + OBSERVATION_TTL_MS };
+      entry.observationInProgress = false; this.rememberObservation(entry);
+      return entry.passport;
+    } catch (error) {
+      if (this.entries.get(id) === entry && entry.connectionAttempt === connectionAttempt && entry.observationAttempt === observation) {
+        this.approvals.clear(); entry.passport = null; entry.state = 'error'; entry.observationInProgress = false;
+      }
+      throw error;
+    }
+  }
   prepare(id, name, args) {
     const entry = this.entry(id);
     if (!entry.passport || entry.state !== 'connected')
       fail('先にMCPへ接続してください。', 409, 'not_connected');
+    if (!this.observationFresh(entry))
+      fail('Toolの観測が期限切れです。再確認してください。', 409, 'tool_observation_expired');
     const tool = entry.passport.tools.find(
       (candidate) => candidate.name === name,
     );
@@ -830,7 +906,7 @@ export class McpHub {
     assertMcpOutbound(entry.spec, {
       method: 'tools/call', params: { name, arguments: args },
     });
-    const now = Date.now();
+    const now = this.clockNow();
     for (const [nonce, approval] of this.approvals)
       if (approval.used || approval.expiresAt <= now)
         this.approvals.delete(nonce);
@@ -852,7 +928,7 @@ export class McpHub {
       .update(`${nonce}:${payloadDigest}:${expiresAt}`)
       .digest('hex');
     const token = `${nonce}.${expiresAt}.${signature}`;
-    this.approvals.set(nonce, { payloadDigest, expiresAt, used: false });
+    this.approvals.set(nonce, { payloadDigest, expiresAt, issuedAt: now, lastWall: now, deadline: performance.now() + APPROVAL_TTL_MS, used: false });
     return {
       approvalToken: token,
       executionContext: { schema: 'rockstaros.mcp-approval-context/1', connectorId: id, toolName: name,
@@ -868,6 +944,16 @@ export class McpHub {
       approvalRequired: true,
     };
   }
+  approvalFresh(nonce, approval, inFlight = false) {
+    if (!approval || (approval.used && !inFlight) || this.approvals.get(nonce) !== approval) return false;
+    const now = this.clockNow();
+    if (this.approvals.get(nonce) !== approval || !Number.isSafeInteger(approval.lastWall) || now < approval.lastWall || now >= approval.expiresAt ||
+        !Number.isFinite(approval.deadline) || performance.now() >= approval.deadline) {
+      this.approvals.delete(nonce); return false;
+    }
+    approval.lastWall = now;
+    return true;
+  }
   async execute(id, name, args, token, confirmed, beforeCall) {
     if (confirmed !== true || typeof token !== 'string')
       fail('この操作には内容確認と承認が必要です。', 403, 'approval_required');
@@ -877,10 +963,8 @@ export class McpHub {
       .update(`${nonce}:${approval?.payloadDigest ?? ''}:${expires}`)
       .digest('hex');
     if (
-      !approval ||
-      approval.used ||
+      !this.approvalFresh(nonce, approval) ||
       Number(expires) !== approval.expiresAt ||
-      Date.now() > approval.expiresAt ||
       !supplied ||
       supplied.length !== expected.length ||
       !timingSafeEqual(Buffer.from(supplied), Buffer.from(expected))
@@ -889,6 +973,10 @@ export class McpHub {
     const entry = this.entry(id);
     if (!entry.passport || entry.state !== 'connected')
       fail('先にMCPへ接続してください。', 409, 'not_connected');
+    if (digest({ id, name, args, toolDigest: entry.passport.toolDigest }) !== approval.payloadDigest)
+      fail('承認後に操作内容が変わりました。', 409, 'approval_mismatch');
+    assertMcpOutbound(entry.spec, { method: 'tools/call', params: { name, arguments: args } });
+    await this.refresh(id);
     const tool = entry.passport.tools.find(candidate => candidate.name === name);
     if (beforeCall && (!tool || tool.pricing.model !== 'free' || !['stdio', 'local_http'].includes(entry.spec.transport) ||
         !tool.inputSchema || typeof tool.inputSchema !== 'object' || !tool.outputSchema || typeof tool.outputSchema !== 'object'))
@@ -901,12 +989,15 @@ export class McpHub {
     });
     if (payloadDigest !== approval.payloadDigest)
       fail('承認後に操作内容が変わりました。', 409, 'approval_mismatch');
+    if (!this.approvalFresh(nonce, approval) || !this.observationFresh(entry))
+      fail('承認またはTool観測が期限切れです。', 409, 'tool_observation_expired');
     // A previously issued exact approval cannot bypass the current data guard.
     assertMcpOutbound(entry.spec, {
       method: 'tools/call', params: { name, arguments: args },
     });
     approval.used = true;
-    const connectionAttempt = entry.connectionAttempt;
+    const connectionAttempt = entry.connectionAttempt, observationAttempt = entry.observationAttempt;
+    const observedProcess = entry.transport instanceof StdioTransport ? entry.transport.process : null;
     try {
       // Job-bound operations must obtain their one-use authority at the sink,
       // after validating the connector approval and before calling the Tool.
@@ -917,8 +1008,11 @@ export class McpHub {
       if (beforeCall) await beforeCall({ transport: entry.spec.transport,
         inputSchemaSha256: digest(tool.inputSchema), outputSchemaSha256: digest(tool.outputSchema), executionContext });
       const current = this.entry(id);
-      if (Date.now() > approval.expiresAt || current !== entry || current.connectionAttempt !== connectionAttempt || current.state !== 'connected' ||
-          current.passport?.toolDigest !== executionContext.toolDigest || current.spec.transport !== executionContext.transport)
+      if (!this.approvalFresh(nonce, approval, true) || current !== entry || current.connectionAttempt !== connectionAttempt || current.state !== 'connected' ||
+          current.passport?.toolDigest !== executionContext.toolDigest || current.spec.transport !== executionContext.transport ||
+          current.observationAttempt !== observationAttempt ||
+          (current.transport instanceof StdioTransport && (current.transport.process !== observedProcess || !observedProcess || observedProcess.exitCode !== null || observedProcess.stdin.destroyed)) ||
+          !this.observationFresh(current))
         fail('承認後にToolまたは期限が変わりました。再送せず照合してください。', 409, 'approval_mismatch');
       return await this.rpc(
         id,
@@ -1095,7 +1189,7 @@ export async function createConnector({
       if (request.method === 'GET' && request.url === '/servers')
         return send(response, 200, { servers: hub.list() }, origin);
       const match = request.url?.match(
-        /^\/servers\/([a-z0-9][a-z0-9-]{0,63})\/(connect|disconnect|mcp|prepare|execute)$/,
+        /^\/servers\/([a-z0-9][a-z0-9-]{0,63})\/(connect|disconnect|mcp|refresh|prepare|execute)$/,
       );
       if (request.method === 'POST' && match) {
         const [, id, action] = match,
@@ -1111,13 +1205,21 @@ export async function createConnector({
           if (canonical(input) !== '{}') fail('停止requestを確認してください。');
           return send(response, 200, hub.disconnect(id), origin);
         }
-        if (action === 'prepare')
+        if (action === 'refresh') {
+          if (canonical(input) !== '{}') fail('確認requestを確認してください。');
+          return send(response, 200, { passport: await hub.refresh(id) }, origin);
+        }
+        if (action === 'prepare') {
+          // Refuse sensitive input before any upstream observation.
+          assertMcpOutbound(hub.entry(id).spec, { method: 'tools/call', params: { name: input.name, arguments: input.arguments ?? {} } });
+          await hub.refresh(id);
           return send(
             response,
             200,
             hub.prepare(id, input.name, input.arguments ?? {}),
             origin,
           );
+        }
         if (action === 'execute') {
           let jobClaim;
           const beforeCall = input.jobGate === undefined ? undefined : async toolContract => {

@@ -338,7 +338,7 @@ Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのS
 
 ### 本人が作る担当の能力照合とSDK Tool
 
-Eveの担当設定に、本人が編集する必要入力・成果・Package・実行先を任意の版付き項目として追加する。SmithはverifiedなPackageと入出力schema、接続されたPC Tool、利用権表示を照合し、不足・未確認を区別する。宣言と候補表示は実行許可ではない。旧担当の編集では新しい能力項目を保持し、版競合時は書き換えない。 既存の対象物attachment（対象名・希望入出力）も同じ担当に保持し、旧設定画面の省略で消去しない。これは希望条件であり、Smithが実接続や権限の保証と扱わない。
+Eveの担当設定に、本人が編集する必要入力・成果・Package・実行先を任意の版付き項目として追加する。SmithはverifiedなPackageと入出力schema、接続されたPC Tool、利用権表示を照合し、不足・未確認を区別する。宣言と候補表示は実行許可ではない。旧担当の編集では新しい能力項目を保持し、版競合時は書き換えない。 既存の対象物attachment（対象名・希望入出力）も同じ担当に保持し、旧設定画面の省略で消去しない。これは希望条件であり、Smithが実接続や権限の保証と扱わない。 ConnectorのTool申告は有限の観測期限を持ち、本人は対象・版・観測時刻と期限を確認する。失効・変更・時計逆行・再観測失敗は未確認とし、実行を自動再送しない。
 
 必要入力にないToolの必須入力は不足、入出力schemaの不明は未確認とし、明示された空object schemaと区別する。schemaの型・必須項目を本人が確認して画面を進める。本人・担当版・要件・Package・期限に結ぶローカル確認は取消・編集で失効し、取消後の再確認では古い非同期遷移を再開しない。本人が構造化して指定した入出力型・能力ID・許容permission/scope・接続先をPackageと実Tool双方の宣言に照合する。宣言の欠落は未確認、矛盾は不足とし、begin・claimでも再確認する。旧clientからの条件消失を防ぎ、自然文は解釈しない。宣言照合は実行承認でも安全性保証でもない。[試験・独立検収](evidence/development-execution/smith-schema-confirmation.json)／[能力条件の独立検収・試験](evidence/development-execution/smith-declared-capability-matching.json)。
 

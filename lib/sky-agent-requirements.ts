@@ -1,7 +1,7 @@
 import type { SkyToolPackage } from './sky-tool-package.ts';
 import type { McpConnection } from './mcp-hub.ts';
 import { SKY_PERMISSIONS, type SkyPermission } from './sky-submission.ts';
-import { compatibleLocalPackageRuntimes } from './sky-package-runtime.ts';
+import { compatibleLocalPackageRuntimes, isFreshMcpObservation } from './sky-package-runtime.ts';
 
 /** A user's requested connection, not an execution grant or a claim of capability. */
 export type SkyAgentRequirements = {
@@ -85,6 +85,8 @@ export function reviewSkyAgentRequirements(requirements: SkyAgentRequirements, p
   const server = servers.find(item => item.id === selected.serverId);
   if (!server || server.state !== 'connected' || !server.passport)
     return { state:'unconfirmed',issues:['選択した実Toolの接続を読み直してください。'],candidates:[] };
+  if (!isFreshMcpObservation(server.passport))
+    return { state:'unconfirmed', issues:['選択した実Toolの観測が未確認または期限切れです。'], candidates:[] };
   const tool = server.passport.tools.find(item => item.name === selected.toolName);
   if (!tool) return {state:'missing',issues:['選択した実Toolが現在の接続にありません。'],candidates:[]};
   const actual = readSkyToolCapabilityDeclaration(tool.inputSchema);

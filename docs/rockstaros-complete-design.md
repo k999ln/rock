@@ -485,6 +485,8 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 
 ### Eve・Smith・miiの自由な担当と同じ仕事
 
+SmithのTool照合は、接続済み宣言の観測ID・時刻・有限期限を本人確認と結び、Connectorがprepareとclaim前に再観測する。宣言変化、接続変更、期限・時計逆行・再観測失敗で古い承認を使用せず、claim済みは既存の未確認fenceを保持する。実Providerの正直さや観測後の振る舞い、実権限・課金を保証しない。[契約・試験](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+
 既存Agentの対象物attachmentは `sky.object-attachment/1` の対象名・希望入力・希望出力であり、ファイル添付や実接続・認可とは別。既存5項目、attachment、requirementsを厳格に扱い、古いeditorの省略による消去を防ぐ。保存応答不明時のEve照合は指定済みattachment/requirementsの欠落・差替を拒否し、旧5項目pendingも継続する。合成SQLiteと実UIの検証を実データ・実端末の受入としない。[証拠](evidence/development-execution/eve-agent-attachment-preservation.json)。
 
 目的と体験: 用途を決め打ちせず、本人がEveで担当の目的・入力・期待成果を保存し、Smithで必要能力と実行先候補を照合する。既存仕事のowner、担当ID/revision、job ID、入力hashとTool版を結び、miiソフト画面でも同じ仕事と保存された成果を読む。追加SDK Toolは同じ契約で参加する。

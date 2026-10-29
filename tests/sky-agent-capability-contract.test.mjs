@@ -14,7 +14,7 @@ function fixture() {
     outputSchema:{type:'object',additionalProperties:false,required:['lines'],properties:{lines:{type:'integer'}}}};
   const pkg={packageKey:skyToolPackageKey(manifest),manifest:parseSkyToolPackage(manifest),status:'verified',installable:true};
   const tool={name:'count_lines',title:'Count lines',description:'Non-inference declaration fixture',inputSchema:structuredClone(manifest.io.inputSchema),outputSchema:structuredClone(manifest.io.outputSchema),pricing:{model:'free',note:'fixture'},approval:'required'};
-  const server={id:'fixture-local',name:'Fixture local',description:'',transport:'stdio',state:'connected',toolCount:1,passport:{server:{name:'fixture',version:'1'},protocolVersion:'2025-11-25',capabilities:{tools:{}},tools:[tool],toolDigest:'a'.repeat(64),connectedAt:'2026-10-29T00:00:00Z'}};
+  const server={id:'fixture-local',name:'Fixture local',description:'',transport:'stdio',state:'connected',toolCount:1,passport:{observationId:crypto.randomUUID(),observedAt:Date.now(),observationExpiresAt:Date.now()+29_000,server:{name:'fixture',version:'1'},protocolVersion:'2025-11-25',capabilities:{tools:{}},tools:[tool],toolDigest:'a'.repeat(64),connectedAt:'2026-10-29T00:00:00Z'}};
   const requirements={inputFields:['text'],outputFields:['lines'],packageKey:pkg.packageKey,executionTarget:'pc',contract:{
     schema:'rockstaros.agent-tool-expectation/1',inputTypes:{text:'string'},outputTypes:{lines:'integer'},capabilityIds:['fixture.count-lines'],
     allowedPermissions:structuredClone(declaration.permissions),runtime:{serverId:server.id,toolName:tool.name}}};
@@ -174,5 +174,15 @@ void test('malformed provider required declarations cannot produce a confirmed c
 void test('expected field types must be primitive type names, not coercible JSON arrays',()=>{
   const f=fixture();for(const type of [['string'],['integer'],[],null,42,true]) {
     assert.throws(()=>parseSkyAgentToolExpectation({...f.requirements.contract,inputTypes:{text:type}}),JSON.stringify(type));
+  }
+});
+
+void test('missing, expired and future Tool observation is unconfirmed, not a declaration mismatch', () => {
+  for (const mode of ['missing', 'expired', 'future']) {
+    const f = fixture(), now = Date.now();
+    if (mode === 'missing') delete f.server.passport.observationId;
+    if (mode === 'expired') { f.server.passport.observedAt = now - 31_000; f.server.passport.observationExpiresAt = now - 1; }
+    if (mode === 'future') { f.server.passport.observedAt = now + 1_000; f.server.passport.observationExpiresAt = now + 2_000; }
+    assert.equal(reviewSkyAgentRequirements(f.requirements, [f.pkg], [f.server]).state, 'unconfirmed');
   }
 });
