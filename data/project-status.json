@@ -1,21 +1,25 @@
 {
   "miiWorkerRemoteCancel": {
     "owner": "ROCK",
-    "status": "draft_source_review_pass_unexecuted",
+    "status": "draft_independent_ci_reproduced_final_head_pending",
     "evidence": "docs/evidence/development-execution/mii-worker-remote-cancel.json",
-    "next": "Run real Worker fixture in CI, independently reproduce and review before merge."
+    "next": "Check final candidate CI and independent review after merging current main.",
+    "pullRequest": 286
   },
   "miiRequiredCapabilities": {
     "owner": "ROCK",
     "status": "main_integrated_startup_fix_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
-    "next": "Review navigation-event synchronization candidate after evidence PR browser CDP failure; confirm exact-head CI. Prior Chrome failures and root cause remain recorded.",
+    "next": "Prior browser failure causes remain undetermined; physical and production authority remain separate.",
     "pullRequest": 283,
     "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
     "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb",
     "startupFixPr": 284,
     "startupFixMergeSha": "8e5bbdb25e78261d1916bc97ab318a053593385d",
-    "startupFixCiEvidence": "docs/evidence/development-execution/mii-browser-startup-main-ci.json"
+    "startupFixCiEvidence": "docs/evidence/development-execution/mii-browser-startup-main-ci.json",
+    "navigationFixPr": 285,
+    "navigationFixMergeSha": "594739d49401a105ba1be8df38914c53a12eeb5f",
+    "navigationFixCiEvidence": "docs/evidence/development-execution/mii-browser-navigation-main-ci.json"
   },
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",
