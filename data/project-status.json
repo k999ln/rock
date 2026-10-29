@@ -1,4 +1,11 @@
 {
+  "pixelObserverJoinFixture": {
+    "owner": "ROCK",
+    "status": "independent_review_and_full_verify_rerun_pass_git_ci_pending",
+    "evidence": "docs/evidence/development-execution/pixel-observer-join-fixture.json",
+    "scope": "test-only; no worker or device change",
+    "next": "Save reviewed test-only candidate, then Linux head/main CI; retain initial failed main and unrelated local cleanup failure."
+  },
   "eveCreateReconciliation": {
     "owner": "ROCK",
     "status": "main_integrated_same_sha_ci_pass_host_scoped",

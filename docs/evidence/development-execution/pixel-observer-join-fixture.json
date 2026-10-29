@@ -1,0 +1,24 @@
+{
+  "schema": "rockstaros.pixel-observer-join-fixture/1",
+  "baseMain": "317766a7af6cee9ab0748c83eb5be2f6b051a293",
+  "scope": "test-only host fixture; worker unchanged",
+  "failure": "Merge CI attempt 1 failed existing 0.2s end-to-end fixture at 0.203906s; diagnostic persistence and scheduling are included in that elapsed measurement. Same-SHA attempt 2 completed successfully; the original failure is retained.",
+  "ciFailureLogSha256": "8896eaee9dd0d8cd584ea650471bd8e68f7f153a9811d2fb4a3f0cd9af08092c",
+  "sourceSha256": "ed7a545303b6d4aac7476c2e3efc3ee6c6bb56348fecf6ffedeb96a6476cecb5",
+  "workerUnchangedSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+  "testEvidence": "Directly checks stop event before join(timeout=0.05), incomplete output if observer remains alive, and callback-release-independent completion using a watchdog and finally cleanup. 0.25s delayed diagnostic causes old fixture to fail; indefinite join and 0.2s join mutants are rejected.",
+  "validation": "Author focused 2/2, 10 repetitions 20/20; independent macOS diagnostic suite 27 pass/1 skip and parent suite 3 pass/1 Linux-only skip. Sandbox first rejected Unix sockets; permitted run passed.",
+  "limits": [
+    "No hard wall-clock guarantee for full finish including synchronous fsync",
+    "Linux CI and physical Pixel not yet validated",
+    "No runtime, data or device change"
+  ],
+  "gitAndCI": "candidate; head and merge CI pending",
+  "independentReview": "Integrator read candidate diff and compared AST: exactly one existing test changed, one added, 26 other tests unchanged; compared test and worker hashes and independently ran diagnostic and parent suites.",
+  "fullVerify": {
+    "first": "3375 pass, 1 failure, 4 skip: existing project-bot-context cleanup ENOTEMPTY; log SHA256 ae3ad315615de738f31128e08f825e4e588428bf0ab5bb1f718c40fb8fc6ba85",
+    "focusedRerun": "11 pass, 0 fail",
+    "fullRerun": "3376 pass, 0 fail, 4 skip; build and repository checks complete",
+    "fullRerunLogSha256": "225ac5be80b9c93926b4db4026407c615da00233e56c7c7388e2c1dfe12968b3"
+  }
+}
