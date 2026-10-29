@@ -12479,8 +12479,17 @@
   },
   "eveSdkDelegationD1": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/eve-sdk-delegation-d1.json",
-    "next": "Final independent review, exact-head CI, main merge and merge-SHA CI."
+    "next": "Actual identity, provider, billing and physical device remain separate.",
+    "pullRequest": 298,
+    "mergeSha": "a603dec97539af8ef597b92e8950273552bf9120",
+    "mainCiEvidence": "docs/evidence/development-execution/eve-sdk-delegation-d1-main-ci.json"
+  },
+  "hostPlatformFinalAudit": {
+    "owner": "ROCK",
+    "status": "pass_scoped_host_synthetic_audit_integration_pending",
+    "evidence": "docs/evidence/development-execution/host-platform-final-audit.json",
+    "next": "Independent audit of evidence documentation, exact-head CI, merge and merge-SHA CI. Physical and production acceptance separate."
   }
 }
