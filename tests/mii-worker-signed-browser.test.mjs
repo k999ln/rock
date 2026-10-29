@@ -74,7 +74,7 @@ void test('two mii tabs, lost remote cancellation and signed usage share the sam
     const result=await selected[req.method](new Request(url,{method:req.method,headers,...(body.length?{body}: {})}));
     if(req.method==='PATCH'){patches++;patchBodies.push(JSON.parse(body.toString('utf8')));if(result.status===200)lost++;}
     res.writeHead(result.status,{'content-type':'application/json'});res.end(await result.text());
-  }catch(error){res.writeHead(500);res.end(String(error));}});
+  }catch(error){t.diagnostic(`fixture relay failed: ${String(error)}`);res.writeHead(500);res.end('Fixture request failed');}});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise(resolve=>{server.close(resolve);server.closeAllConnections();}));
   const base=`http://127.0.0.1:${server.address().port}`, profile=join(dir,'chrome');
   const child=spawn(chrome,['--headless=new','--disable-gpu','--no-first-run','--disable-background-networking','--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1',`--user-data-dir=${profile}`,'--remote-debugging-port=0','about:blank'],{stdio:'ignore'});
