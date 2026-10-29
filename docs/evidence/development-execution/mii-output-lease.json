@@ -1,0 +1,48 @@
+{
+  "schema": "rockstaros.mii-output-lease/1",
+  "baseMain": "0064d20883398313f6a5006ed538fc93f2d195c2",
+  "status": "independent_review_full_verify_pass_integration_pending",
+  "sourceSha256": {
+    "components/mii-work-preview.tsx": "f35ae4e29cf74c6037c1f1fe97d14a08d5f9952ccc68256eb05aee5dc7ddc851",
+    "tests/mii-work-preview-ui.test.mjs": "7394b53cd50826dd1a43a564f8409495e3fe3d885d98e4a5a2c501f93d760d84",
+    "tests/eve-smith-mii-browser.test.mjs": "16fcbc2e57299002602bab32d35ef239567b3b61cb4a176b3f8a07aa25c590c0"
+  },
+  "observed": [
+    "Synthetic mii readback is tied to observation generation and expiry; timeout, observed clock rollback, tracking/detach/boot/scene invalidation, owner/job change and unmount fence old output.",
+    "Stop request hides current output and fences input before awaiting its result; old replies cannot replace a newer context. Saved job/result are not deleted, and an explicit read is needed to display them again.",
+    "A missing compatible Tool fences input without preventing an explicitly read saved output."
+  ],
+  "validation": {
+    "targeted": {
+      "tests": 61,
+      "pass": 61,
+      "fail": 0,
+      "localLogPath": "/private/tmp/rock-mii-output-lease-r2-targeted-20261029.log",
+      "localLogSha256": "b9bcd6c03bfaaa604143edcfd6586efc98509742f76a285048172d2bb7241a20"
+    },
+    "browser": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "localLogPath": "/private/tmp/rock-mii-output-lease-r2-browser-20261029.log",
+      "localLogSha256": "0f29352ddd37cfd9459ba32f94198cda648737773b728e438f2d737101678be0"
+    },
+    "independentReview": "PASS_SCOPED: source hashes, 61 tests, prior deadline and unmount negative controls; real browser independently read, executed by coordinator.",
+    "firstBrowserFailure": "The first test expected a space in serialized JSON; actual returned output was correct but compact. The assertion was made whitespace tolerant and rerun successfully.",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "tests": 3428,
+      "pass": 3424,
+      "fail": 0,
+      "skipped": 4,
+      "localLogPath": "/private/tmp/rock-mii-output-lease-full-verify-20261029.log",
+      "localLogSha256": "d89e14b25f01735baf7d1636f8c81671474e991983d26c36423ee27d78b697a6"
+    }
+  },
+  "limits": [
+    "This is a JavaScript software-preview lease checked by a timer and focus/visibility events. Background scheduling delay and short clock reversal followed by restoration cannot be ruled out.",
+    "No independent hardware display lease, optical behavior, physical/remote stop, real account or production provider acceptance.",
+    "Git/CI remain pending."
+  ]
+}

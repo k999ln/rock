@@ -501,6 +501,8 @@ Smithの照合は、担当にないTool必須入力を不足、schema不明を�
 
 miiソフト画面は同じ本人・仕事の既存A2A予算を明示読取し、上限・予約・利用量記録を取得時点として分けて表示する。期限切れ・観測喪失・本人／job違いでは未確認とし、MCP料金や請求確定額へ昇格しない。[契約](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)／[証拠](evidence/development-execution/mii-budget-readback.json)。
 
+miiソフト試用は観測の世代・期限を表示にも結び、失効・停止要求時に旧表示を隠す。保存結果は消去せず明示読直しで戻す。JS timerと画面復帰イベントに依存し、実機の独立output leaseや物理停止の保証ではない。[契約・証拠](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+
 miiの合成文章入力を既存Tool確認へ渡すconsumerを追加。30秒観測と入力世代を再照合し、期限・追跡喪失・入力修正で失効する。送信前拒否とclaim後の停止未確認を分け、保存した未検証応答をEveの仕事にも表示する。[検証証拠](evidence/development-execution/mii-synthetic-input.json)。
 
 Smith/MCPの[Package権限参照fixture](sky-tools-complete-design.md#work-tool-package-authority-fixture)は9項目の保存参照を同一job CASへ相関させるhost契約だけを検査する。本番WorkJob/発行root/通常account・eSIM実行authorityには接続せず、既存gateを開かない。

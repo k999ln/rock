@@ -1,9 +1,19 @@
 {
-  "miiA2aUncertainBudget": {
+  "miiOutputLease": {
     "owner": "ROCK",
     "status": "independent_review_full_verify_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/mii-output-lease.json",
+    "next": "Save PR and confirm same-head and merge SHA CI; physical output remains unaccepted."
+  },
+  "miiA2aUncertainBudget": {
+    "owner": "ROCK",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-a2a-uncertain-budget.json",
-    "next": "Save PR, verify same-head CI, merge and verify merge SHA CI; physical/provider/Wallet remain unaccepted."
+    "next": "Real transport, provider signatures, native Wallet and physical stopping remain unaccepted.",
+    "pullRequest": 271,
+    "prHead": "84fe1ff354a7b8d1c9458c850cf17ff7ad0f50f6",
+    "mergeSha": "0064d20883398313f6a5006ed538fc93f2d195c2",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "eveSmithUnmatchedBrowser": {
     "owner": "ROCK",
