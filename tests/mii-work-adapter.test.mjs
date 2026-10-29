@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createMiiWorkAdapter } from '../lib/mii-work-adapter.ts';
+import { describeAdapter } from '../lib/rockstar-adapters.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { createWorkJob, applyWorkCommand } from '../lib/workflow.ts';
 import { skyAgentLibraryStore } from '../lib/sky-agent-library-store.ts';
@@ -18,6 +19,32 @@ const at = 1000;
 const observation = (patch = {}) => ({ bootId: 'boot-1', placeEpoch: 1, sequence: 1,
   sceneRevision: 1, observedAt: at, expiresAt: at + 10000, attached: true, tracking: 'tracked', ...patch });
 const deferred = () => { let resolve; const promise = new Promise(r => { resolve = r; }); return { resolve, promise }; };
+
+void test('supplied preview descriptors fence the real same-job reader without granting authority', async t => {
+  const f = await fixture(t); let clock = at;
+  const declared = () => ({
+    host: describeAdapter('fixture-host','host','linux',{'work.owner-scoped-read':true},at),
+    executor: describeAdapter('fixture-reader','executor','web',{'work.read':true},at),
+    output: describeAdapter('fixture-output','output','web',{'output.text':true},at),
+  });
+  let descriptors = declared();
+  descriptors.output.expiresAt = at + 1000;
+  const adapter = createMiiWorkAdapter({ fetchImpl:f.fetchImpl, journal:f.journal, now:()=>clock, descriptors:()=>descriptors });
+  adapter.observe(observation());
+  const read = await adapter.readExisting(f.reference);
+  assert.equal(read.job.id,f.job.id);assert.equal(read.executionAuthorized,false);assert.equal(read.hardwareAccepted,false);
+  assert.equal(read.observationExpiresAt,at+1000);
+  const legacy = await f.adapter.readExisting(f.reference);
+  assert.equal(legacy.observationExpiresAt,at+10000);
+  const guard = adapter.createInputGuard();assert.equal(guard(),true);
+  clock = at + 1000;assert.equal(guard(),false);
+  await assert.rejects(adapter.readExisting(f.reference),/MII_OBSERVATION_UNAVAILABLE/);
+  clock = at;descriptors=declared();descriptors.output.capabilities['output.text']=null;
+  assert.throws(()=>adapter.observe(observation({sequence:2})),/CAPABILITY_UNAVAILABLE/);
+  await assert.rejects(adapter.readExisting(f.reference),/MII_OBSERVATION_UNAVAILABLE/);
+  descriptors=declared();descriptors.executor.role='output';
+  assert.throws(()=>adapter.observe(observation({sequence:3})),/ADAPTER_ROLE_MISMATCH/);
+});
 
 async function durableJournal(t) {
   const dir = await mkdtemp(join(tmpdir(), 'mii-journal-fixture-'));

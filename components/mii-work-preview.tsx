@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createMiiWorkAdapter, type MiiWorkReadback, type MiiBudgetReadback } from '@/lib/mii-work-adapter';
 import { formatCurrencyMinor } from '@/lib/currency-format';
 import { createMiiIndexedDbJournal } from '@/lib/mii-indexeddb-journal';
+import { describeMiiPreviewRead } from '@/lib/mii-preview-descriptors';
 import type { WorkJob } from '@/lib/workflow';
 
 export type MiiWorkInput = {
@@ -90,13 +91,15 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
     const epoch = ++leaseEpoch.current;
     setCurrent(null); setBudget(null); setConfirmed(false); setBusy(true); setMessage('');
     try {
-      adapter.current ??= createMiiWorkAdapter({ journal: createMiiIndexedDbJournal() });
+      adapter.current ??= createMiiWorkAdapter({ journal: createMiiIndexedDbJournal(), descriptors: describeMiiPreviewRead });
       boot.current ||= `preview-${crypto.randomUUID()}`;
       const now = Date.now(); observationExpiry.current = now + 30_000;
       adapter.current.observe({ bootId: boot.current, placeEpoch: place.current, sequence: ++sequence.current, sceneRevision: scene.current,
         observedAt: now, expiresAt: now + 30_000, attached: true, tracking: 'tracked' });
       const result = await adapter.current.readExisting({ jobId: job.id, ownerScope, revision: job.revision,
         sceneRevision: scene.current, agentId: job.agentBinding.agentId, agentRevision: job.agentBinding.agentRevision });
+      if (!Number.isSafeInteger(result.observationExpiresAt)) throw new Error('MII_OBSERVATION_UNAVAILABLE');
+      observationExpiry.current = Math.min(observationExpiry.current, result.observationExpiresAt);
       const acceptedAt = Date.now();
       if (activeContext.current !== requestedContext || leaseEpoch.current !== epoch || acceptedAt < now || acceptedAt >= observationExpiry.current) return;
       setCurrent({ context: context(result.job, ownerScope), value: result, epoch,

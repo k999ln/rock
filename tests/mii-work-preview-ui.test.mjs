@@ -8,6 +8,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import ts from 'typescript';
 import { createWorkJob } from '../lib/workflow.ts';
 import { formatCurrencyMinor } from '../lib/currency-format.ts';
+import { describeMiiPreviewRead } from '../lib/mii-preview-descriptors.ts';
 
 const require = createRequire(import.meta.url);
 const source = readFileSync(new URL('../components/mii-work-preview.tsx', import.meta.url), 'utf8');
@@ -24,7 +25,7 @@ function fixtureJob() {
 function harness(job = fixtureJob()) {
   const owner = 'owner-v1:' + 'b'.repeat(64), slots = [], effects = [], reads = [], cancels = [], accepted = [], events = [], staged = [];
   let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, waitCancel = null, valid = false, inputAvailable = true, budgetFailure = false;
-  let now = Date.now();
+  let now = Date.now(), readLeaseMs = 30000;
   class FixtureDate extends Date { static now() { return now; } }
   const timers = new Map(); let nextTimer = 0;
   const changed = (a, b) => !a || a.length !== b.length || a.some((value, index) => !Object.is(value, b[index]));
@@ -42,7 +43,7 @@ function harness(job = fixtureJob()) {
     createInputGuard() { return () => valid; },
     async readExisting(reference) { reads.push(reference); if (waitRead) return waitRead.promise;
       return { job: currentJob, agentBinding: 'verified', executorBinding: 'unverified',
-        hardwareAccepted: false, executionAuthorized: false, cancelReconciliation: 'clear' }; },
+        hardwareAccepted: false, executionAuthorized: false, observationExpiresAt: now + readLeaseMs, cancelReconciliation: 'clear' }; },
     async readBudget() { if (budgetFailure) throw new Error('unavailable'); return { jobId: currentJob.id, jobRevision: currentJob.revision, readAt: Date.now(), budget: { currency: 'USD', budgetLimitMinor: 1000, reservedMinor: 200, settledMinor: 300, revision: 1, updatedAt: 1 } }; },
     async cancelPlan(request) { cancels.push(request); if (waitCancel) return waitCancel.promise;
       return { state: 'plan_cancelled', remoteStop: 'unconfirmed', physicalStop: 'unconfirmed' }; },
@@ -50,6 +51,7 @@ function harness(job = fixtureJob()) {
   const modules = { react, 'react/jsx-runtime': require('react/jsx-runtime'),
     '@/lib/mii-work-adapter': { createMiiWorkAdapter: () => adapter },
     '@/lib/mii-indexeddb-journal': { createMiiIndexedDbJournal: () => ({}) },
+    '@/lib/mii-preview-descriptors': { describeMiiPreviewRead },
     '@/lib/currency-format': { formatCurrencyMinor } };
   const exports = {};
   runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; }, crypto: { randomUUID }, Date: FixtureDate, setTimeout: callback => { const key = ++nextTimer; timers.set(key, callback); return key; }, clearTimeout: key => timers.delete(key) });
@@ -70,7 +72,7 @@ function harness(job = fixtureJob()) {
     deferRead() { waitRead = deferred(); return waitRead; }, deferCancel() { waitCancel = deferred(); return waitCancel; },
     unmount() { for (const slot of slots) slot?.cleanup?.(); },
     budgetFailure(value) { budgetFailure = value; },
-    advance(ms) { now += ms; }, timers() { return [...timers.values()]; },
+    advance(ms) { now += ms; }, readLease(ms) { readLeaseMs = ms; }, timers() { return [...timers.values()]; },
     fireTimers() { const callbacks = [...timers.values()]; timers.clear(); for (const callback of callbacks) callback(); render(); },
     expireBudget() { now += 30_000; const callbacks = [...timers.values()]; timers.clear(); for (const callback of callbacks) callback(); render(); },
     setOwner(value) { currentOwner = value; render(); }, setJob(value) { currentJob = value; render(); } };
@@ -93,6 +95,25 @@ void test('mii software preview shows the same objective, verified role, saved o
   assert.ok(html.includes(`/api/sky/exports/${job.id}?revision=${job.revision}`));
   assert.equal(h.reads.length, 1); assert.equal(h.reads[0].jobId, job.id); assert.equal(h.reads[0].agentRevision, 4);
   assert.deepEqual(h.cancels, []);
+});
+
+void test('shorter host declaration expiry hides output but keeps the saved job', async () => {
+  const job = fixtureJob(), h = harness(job); h.readLease(1000);
+  h.click('miiから同じ仕事を確認'); await h.flush();
+  assert.match(h.html(), /利用者が自分で決めた依頼/);
+  h.advance(1000); h.fireTimers();
+  assert.doesNotMatch(h.html(), /利用者が自分で決めた依頼/);
+  assert.equal(h.accepted.length,1); assert.equal(h.accepted[0].id,job.id);
+});
+void test('an invalid expiry is refused and a longer declaration cannot extend the UI lease', async () => {
+  const invalid = harness(); invalid.readLease(Number.NaN);
+  invalid.click('miiから同じ仕事を確認'); await invalid.flush();
+  assert.equal(invalid.accepted.length,0); assert.doesNotMatch(invalid.html(), /利用者が自分で決めた依頼/);
+  const long = harness(); long.readLease(60000);
+  long.click('miiから同じ仕事を確認'); await long.flush();
+  assert.match(long.html(), /利用者が自分で決めた依頼/);
+  long.advance(30000); long.fireTimers();
+  assert.doesNotMatch(long.html(), /利用者が自分で決めた依頼/);
 });
 
 void test('pending Tool status, prior Sky and composition results, and missing costs are distinct from success', async () => {

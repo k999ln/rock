@@ -1,9 +1,20 @@
 {
+  "miiPortableReadDescriptors": {
+    "owner": "ROCK",
+    "status": "independent_review_full_verify_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/mii-portable-read-descriptors.json",
+    "next": "Complete independent review, full verify and Git CI; physical hardware and runtime permission remain unaccepted."
+  },
   "smithDeclaredCapability": {
     "owner": "ROCK",
-    "status": "candidate_scoped_review_pass_integration_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/smith-declared-capability-matching.json",
-    "next": "Run full verify on fixed candidate, preserve main evidence, then save and confirm same-head CI; actual permissions, providers and devices remain unaccepted."
+    "next": "Physical device, actual Provider declarations and OS permission enforcement remain separate.",
+    "pullRequest": 274,
+    "prHead": "632eac6a8a56122e76f3ece084388454227dae2a",
+    "mergeSha": "5a85a5238ce607bdc974e2a7122b781e0d459d2a",
+    "mergeChecks": "6 of 6 completed successfully",
+    "mainCiEvidence": "docs/evidence/development-execution/smith-declared-capability-main-ci.json"
   },
   "miiOutputLease": {
     "owner": "ROCK",

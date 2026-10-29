@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros.mii-portable-read-descriptors/1",
+  "base": "5a85a5238ce607bdc974e2a7122b781e0d459d2a",
+  "source": "User-directed existing local workspace source; creator and license unspecified",
+  "sourceSha256": "67b6c166fb1a9d193510fb7d07f324c72ac0bd0eb8824fd21fbdd44db850077c",
+  "implementationSha256": {
+    "lib/rockstar-adapters.ts": "67b6c166fb1a9d193510fb7d07f324c72ac0bd0eb8824fd21fbdd44db850077c",
+    "lib/mii-work-adapter.ts": "e53f2cedb229ba9c15d3935cc42989b750a8b04fd842ea95777872ef289b6cfa",
+    "lib/mii-preview-descriptors.ts": "6903a39f2d3586b182b254444f340f30c6de21f3ca4ea8c5564afa2b89282ed1",
+    "components/mii-work-preview.tsx": "ce3c261d53bdbacba6cec07bda6fab7f1a4fa4c682a504af2ffb62fb5743c5f7"
+  },
+  "tests": "Actual same-job adapter checks supplied short and legacy expiries separately from synthetic React stub tests of expiry, NaN and 30-second cap; the short-expiry path is not a single end-to-end adapter-to-React fixture. 60 related tests and 58 lease tests passed.",
+  "review": "independent review PASS_SCOPED",
+  "scope": "host-provided declarations are snapshots; legacy path retained; preview declarations synthetic; no identity, authority or physical acceptance",
+  "inference": false,
+  "actualDevice": false
+}
