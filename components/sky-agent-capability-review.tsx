@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
 import { readOwnerScope, OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
@@ -31,7 +31,14 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   const [dirty, setDirty] = useState(false);
   const [uncertain, setUncertain] = useState(false);
   const [fresh, setFresh] = useState(false);
+  const [reviewedSchema, setReviewedSchema] = useState('');
+  const reviewRef = useRef({ key: '', confirmed: false, deadline: 0, generation: 0 });
   const wanted = useMemo(() => ({ ...requirements, inputFields: lines(inputText), outputFields: lines(outputText) }), [requirements, inputText, outputText]);
+  const selectedPackage = packages.find(item => item.packageKey === wanted.packageKey);
+  // This is a local acknowledgement of displayed declarations, not authority.
+  // Bind it to the Agent, exact requirements and full Package; any change clears it.
+  const schemaReviewKey = selectedPackage && fresh && owner ? JSON.stringify({ owner, id: current.id, revision: current.revision,
+    wanted, package: selectedPackage }) : '';
   const review = useMemo(() => {
     try { return reviewSkyAgentRequirements(wanted, packages, servers); }
     catch { return { state: 'missing' as const, issues: ['必要な入力と成果の項目を確認してください。'], candidates: [] }; }
@@ -39,7 +46,8 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
 
   useEffect(() => {
     const controller = new AbortController();
-    queueMicrotask(() => { if (!controller.signal.aborted) { setFresh(false); setOwner(''); setPackages([]); setServers(null); setEntitlements(null); } });
+    const activeReview = reviewRef.current;
+    queueMicrotask(() => { if (!controller.signal.aborted) { reviewRef.current.generation++; reviewRef.current.confirmed = false; reviewRef.current.deadline = 0; setFresh(false); setReviewedSchema(''); setOwner(''); setPackages([]); setServers(null); setEntitlements(null); } });
     void (async () => {
       try {
         const identity = await fetch(`/api/sky/agents?id=${encodeURIComponent(agent.id)}`, { cache: 'no-store', signal: controller.signal });
@@ -60,21 +68,22 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
         const last = await check.json() as { agent?: SkyLibraryAgent; ownerScope?: unknown };
         if (!check.ok || last.ownerScope !== first.ownerScope || last.agent?.id !== agent.id || last.agent.revision !== agent.revision)
           throw new Error('本人または担当が変わりました。画面を読み直してください。');
-        if (!controller.signal.aborted) { setOwner(first.ownerScope as string); setPackages(parsed); setServers(connected); setEntitlements(allowed); setFresh(true); }
+        if (!controller.signal.aborted) { reviewRef.current.deadline = Date.now() + 30_000; setOwner(first.ownerScope as string); setPackages(parsed); setServers(connected); setEntitlements(allowed); setFresh(true); }
       } catch (reason) {
         if (!controller.signal.aborted) { setFresh(false); setError(reason instanceof Error ? reason.message : '担当とToolを確認できません。'); }
       }
     })();
-    return () => controller.abort();
+    return () => { activeReview.generation++; activeReview.confirmed = false; activeReview.deadline = 0; controller.abort(); };
   }, [agent.id, agent.revision]);
   useEffect(() => {
     if (!fresh) return;
-    const timer = window.setTimeout(() => setFresh(false), 30_000);
+    const timer = window.setTimeout(() => { reviewRef.current.generation++; reviewRef.current.confirmed = false; reviewRef.current.deadline = 0; setFresh(false); setReviewedSchema(''); }, 30_000);
     return () => window.clearTimeout(timer);
   }, [fresh]);
 
   async function openWork() {
-    if (!fresh || !owner || dirty || uncertain || saving || review.state !== 'candidate') return;
+    if (!fresh || !owner || dirty || uncertain || saving || review.state !== 'candidate' || !schemaReviewKey || reviewedSchema !== schemaReviewKey) return;
+    const generation = reviewRef.current.generation;
     setSaving(true); setError('');
     try {
       // Revalidate the same authenticated owner, Agent revision, reviewed Package,
@@ -100,6 +109,8 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
       const connected = await listMcpConnections();
       if (reviewSkyAgentRequirements(wanted, actual, connected).state !== 'candidate') throw new Error('実行先の接続または能力が変わりました。読み直してください。');
       await checkAgent();
+      if (reviewRef.current.generation !== generation || !reviewRef.current.confirmed || reviewRef.current.key !== schemaReviewKey || Date.now() >= reviewRef.current.deadline)
+        throw new Error('確認が変更または期限切れになりました。内容を読み直してください。');
       router.push(`/chat?${new URLSearchParams({ agent: current.id, agentRevision: String(current.revision), package: wanted.packageKey, view: 'work' })}`);
     } catch (reason) {
       setFresh(false); setError(reason instanceof Error ? reason.message : '接続を確認できません。読み直してください。');
@@ -108,6 +119,7 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
 
   async function save() {
     if (!owner || saving || uncertain) return;
+    reviewRef.current.generation++; reviewRef.current.confirmed = false;
     setSaving(true); setError(''); setNotice('');
     try {
       const response = await fetch('/api/sky/agents', { method: 'PUT', headers: {
@@ -148,18 +160,26 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   return <section aria-label="担当の必要な能力">
     <h3>この担当に必要な入力・成果・Tool</h3>
     <p>希望を設定し、宣言と接続を照合します。項目名の一致は値の妥当性や成果の保証ではありません。保存は実行や権限の承認ではありません。</p>
-    <label>必要な入力項目（1行に1項目）<textarea value={inputText} onChange={event => { setInputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
-    <label>必要な成果項目（1行に1項目）<textarea value={outputText} onChange={event => { setOutputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
-    <label>Tool<select value={requirements.packageKey} onChange={event => { setRequirements(value => ({ ...value, packageKey: event.target.value })); setDirty(true); }}>
+    <label>必要な入力項目（1行に1項目）<textarea value={inputText} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setInputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
+    <label>必要な成果項目（1行に1項目）<textarea value={outputText} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setOutputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
+    <label>Tool<select value={requirements.packageKey} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setRequirements(value => ({ ...value, packageKey: event.target.value })); setDirty(true); }}>
       <option value="">選択してください</option>{packages.map(item => <option key={item.packageKey} value={item.packageKey}>{item.manifest.name} · {item.manifest.version} ({item.status})</option>)}
     </select></label>
-    <label>実行先<select value={requirements.executionTarget} onChange={event => { setRequirements(value => ({ ...value, executionTarget: event.target.value as SkyAgentRequirements['executionTarget'] })); setDirty(true); }}>
+    <label>実行先<select value={requirements.executionTarget} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setRequirements(value => ({ ...value, executionTarget: event.target.value as SkyAgentRequirements['executionTarget'] })); setDirty(true); }}>
       <option value="">選択してください</option><option value="device_local">端末内</option><option value="pc">PC</option><option value="cloud">Cloud</option>
     </select></label>
+    {selectedPackage && <div>
+      <p>Toolの宣言です。目的文から必要な項目や型を自動で読み取っていません。空欄も含め、担当の希望と照らしてください。</p>
+      <p>入力の型・必須項目</p><pre>{JSON.stringify(selectedPackage.manifest.io.inputSchema, null, 2)}</pre>
+      <p>成果の型・項目</p><pre>{JSON.stringify(selectedPackage.manifest.io.outputSchema, null, 2)}</pre>
+      <label><input type="checkbox" checked={Boolean(schemaReviewKey) && reviewedSchema === schemaReviewKey}
+        onChange={event => { reviewRef.current.generation++; reviewRef.current.key = schemaReviewKey; reviewRef.current.confirmed = event.target.checked && Boolean(schemaReviewKey) && !dirty && !uncertain; setReviewedSchema(event.target.checked ? schemaReviewKey : ''); }} />
+        入力と成果の宣言を、担当の希望と自分で確認しました</label>
+    </div>}
     <output>{!fresh ? '接続情報は未確認または期限切れです。画面を読み直してください。' : wanted.packageKey && entitlements && !entitlements.has(wanted.packageKey) ? 'このToolの利用権を確認できません。' : review.issues.join(' ')}</output>
     {review.candidates.map(candidate => <p key={`${candidate.serverId}:${candidate.toolName}`}>{candidate.serverName} · {candidate.toolName}</p>)}
     <button type="button" disabled={!owner || saving || !dirty || uncertain} onClick={() => void save()}>{saving ? '保存しています…' : '必要な能力を保存'}</button>
     {notice && <output>{notice}</output>}{error && <p role="alert">{error}</p>}
-    {!dirty && !uncertain && fresh && entitlements?.has(wanted.packageKey) && review.state === 'candidate' && <button type="button" disabled={saving} onClick={() => void openWork()}>同じ担当で仕事の確認へ進む</button>}
+    {!dirty && !uncertain && fresh && entitlements?.has(wanted.packageKey) && review.state === 'candidate' && <button type="button" disabled={saving || !schemaReviewKey || reviewedSchema !== schemaReviewKey} onClick={() => void openWork()}>同じ担当で仕事の確認へ進む</button>}
   </section>;
 }

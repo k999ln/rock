@@ -340,6 +340,8 @@ Cloud確定usageの取込とStripe test adapterを追加。合成usage 1 USDのS
 
 Eveの担当設定に、本人が編集する必要入力・成果・Package・実行先を任意の版付き項目として追加する。SmithはverifiedなPackageと入出力schema、接続されたPC Tool、利用権表示を照合し、不足・未確認を区別する。宣言と候補表示は実行許可ではない。旧担当の編集では新しい能力項目を保持し、版競合時は書き換えない。
 
+必要入力にないToolの必須入力は不足、入出力schemaの不明は未確認とし、明示された空object schemaと区別する。schemaの型・必須項目を本人が確認して画面を進める。本人・担当版・要件・Package・期限に結ぶローカル確認は取消・編集で失効し、取消後の再確認では古い非同期遷移を再開しない。期待する型の構造化指定と自動照合、自然文の解釈は未実装であり、確認は実行承認でも安全性保証でもない。[試験・独立検収](evidence/development-execution/smith-schema-confirmation.json)。
+
 実行時は対象Agent/job/入力/Toolの版を記録し、一回だけ本人承認を受ける。Connectorは実際のschema digest・free申告・transportと仕事側の短命claimを照合する。停止がclaimに先行した場合は実行を拒否し、claimが先の場合は停止未確認として扱う。結果は同じ仕事のclient観測として保存し、Tool成功のreceiptや費用確定に置き換えない。`toolkits/sky-tool-sdk/examples/line-counter.mjs`の二つの決定的処理はSDK追加例で、catalog審査や一般Toolの安全性の証拠ではない。
 
 miiからの合成文章も同じrunnerへ渡し、観測だけでprepare・本人承認・claimを省略しない。入力や実行先の変更時に旧runnerの非同期処理も世代照合で拒否する。既に送信済みの処理は同じjobへ照合し、物理停止とは区別する。

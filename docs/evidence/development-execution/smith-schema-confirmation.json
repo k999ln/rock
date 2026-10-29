@@ -1,0 +1,56 @@
+{
+  "schema": "rockstaros.smith-requirements-schema-review/1",
+  "baseMain": "751ba1bc0502efcec98280b43d2c123b482d8993",
+  "status": "independent_review_scoped_pass_integration_pending",
+  "sourceSha256": {
+    "lib/sky-agent-requirements.ts": "79fdf9de89d928dd5e2a8a5603c5f88ccf70963c1057af862e92f33c46dd384a",
+    "components/sky-agent-capability-review.tsx": "bbe86a818f9bbab76bef23bbbb751d95bdf43e57cd248df3ba24d77712d1149a",
+    "tests/sky-agent-requirements.test.mjs": "e5dba7681ce6c94abb8f41e7e58568bc1cdc6912a253a639c41b502dbd4eaa2b",
+    "tests/sky-agent-capability-review-ui.test.mjs": "5e7b1b937ad440a110bc975bdc291b6d74107773c6e41bce91e2cace284765aa",
+    "tests/eve-smith-mii-browser.test.mjs": "eae3b41ad7b477c78cf70e447ff33e98c257ddbc99e7ea7e628d9f528e2a813e"
+  },
+  "findingsBeforeFix": [
+    "Required extra input was omitted from requested fields yet candidate was shown.",
+    "Unknown empty schema was treated as matching absent requirements.",
+    "Confirmation cancellation and re-check could revive a pending navigation."
+  ],
+  "behavior": [
+    "Additional required input missing from declared requirements produces missing.",
+    "Unknown schemas produce unconfirmed; explicit empty object schemas remain usable.",
+    "Displayed input/output schemas and explicit local acknowledgement precede navigation; changing inputs, acknowledgement, owner/Agent context or freshness invalidates an in-flight navigation.",
+    "Final recheck uses same review generation and real-time expiry; declarations are not grants or verified outcomes."
+  ],
+  "validation": {
+    "targetedTests": "9 passed",
+    "browser": "2 passed in isolated Chrome; real local Connector with synthetic authority and unavailable-authority cases",
+    "lintProduct": "passed",
+    "typecheck": "passed",
+    "independentReview": "PASS_SCOPED on source candidate; separate fixture reproduced re-check race before fix and confirmed no navigation after fix",
+    "browserStartupFixture": "The full-suite run reported an exception at the initial wait without its detailed cause. The wait now tolerates document.body being absent while preserving its success condition and timeout; the original cause remains unconfirmed.",
+    "verifyInitialFailures": [
+      "Default system OpenSSL was not version 3; signing tests stopped.",
+      "OpenSSL 3 rerun reached tests: two failures from isolated checkout dependency layout and one exception at browser startup with cause unconfirmed. Dependencies were copied locally and the startup wait was hardened; targeted dependency tests 13/13 passed."
+    ],
+    "fullVerify": {
+      "exitCode": 0,
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "mainSuite": {
+        "tests": 3400,
+        "pass": 3396,
+        "fail": 0,
+        "skipped": 4
+      },
+      "isolatedBrowser": {
+        "pass": 2,
+        "fail": 0
+      },
+      "localLogPath": "/private/tmp/rock-f2-schema-verify-fixed-20261029.log",
+      "localLogSha256": "4f755f9fdf805bd7f691cc1ce94df6baa7c02425ce643adaa1ac771cfca249ae"
+    }
+  },
+  "limits": [
+    "Expected field types are not separately persisted as structured user requirements and are not automatically matched; user reviews declared schemas.",
+    "No natural-language interpretation, model inference, physical device, actual provider, charge or production authority acceptance.",
+    "Git integration and same-SHA CI remain pending at time of recording."
+  ]
+}

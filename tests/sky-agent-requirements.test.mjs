@@ -32,6 +32,23 @@ void test('review preserves explicitly requested fields and never turns a declar
   assert.throws(() => parseSkyAgentRequirements({ ...needs(), grant: true }));
 });
 
+void test('a Tool that needs additional inputs is not a match for the declared requirements', () => {
+  const item = pkg();
+  item.manifest.io.inputSchema = { type: 'object', properties: { text: { type: 'integer' }, secret: { type: 'string' } }, required: ['text', 'secret'] };
+  item.manifest.io.outputSchema = { type: 'object', properties: { count: { type: 'string' } } };
+  const result = reviewSkyAgentRequirements(needs(), [item], [server()]);
+  assert.equal(result.state, 'missing');
+  assert.match(result.issues.join(' '), /必須入力「secret」/);
+  assert.deepEqual(result.candidates, []);
+});
+
+void test('an unknown schema is not a confirmed empty schema', () => {
+  const item = pkg(); item.manifest.io = { inputSchema: {}, outputSchema: {} };
+  const result = reviewSkyAgentRequirements({ ...needs(), inputFields: [], outputFields: [] }, [item], [server()]);
+  assert.equal(result.state, 'unconfirmed');
+  assert.deepEqual(result.candidates, []);
+});
+
 void test('owner-scoped settings persist requirements, retain them through old editors, and reject stale revision', async t => {
   const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
   for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())

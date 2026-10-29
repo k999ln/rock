@@ -188,6 +188,10 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
     const input = async (label, value) => { const a = js(label), v = js(value); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
       await evaluate(`(()=>{const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(${a})).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,${v});e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`); };
+    const confirmSchema = async () => {
+      await wait(`!![...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ担当で仕事の確認へ進む'))`, 'fresh Smith review');
+      await evaluate(`document.querySelector('section[aria-label="担当の必要な能力"] input[type="checkbox"]').click()`);
+    };
     const setArgs = async args => {
       await wait(`!!document.querySelector('[aria-label="MCP toolのJSON引数"]')`, 'creation arguments');
       await evaluate(`(()=>{const e=document.querySelector('[aria-label="MCP toolのJSON引数"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,${JSON.stringify(JSON.stringify(args))});e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
@@ -205,7 +209,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
         !!document.querySelector('[aria-label="同じ仕事でToolを使う"]') && !document.body.innerText.includes('作成結果が未確認')`,
         'new job persisted before editing execution arguments');
     };
-    await wait('document.body.innerText.includes("自分の担当を作る")', 'Eve');
+    await wait('document.body?.innerText.includes("自分の担当を作る")', 'Eve');
     // This permission is confined to the disposable test origin/profile. Product
     // code never requests it and must reject input when its journal is unavailable.
     await devtools.call('Browser.grantPermissions', { origin: base, permissions: ['durableStorage'] });
@@ -217,6 +221,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'Smith');
     await input('必要な入力項目', 'text'); await input('必要な成果項目', 'lines'); await input('Tool', packageKey); await input('実行先', 'pc');
     await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'saved requirements');
+    await confirmSchema();
     await click('同じ担当で仕事の確認へ進む');
     await wait('document.body.innerText.includes("仕事の名前")', 'real workbench'); await input('仕事の名前', 'fixture仕事');
     assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
@@ -359,6 +364,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await input('必要な入力項目', 'left\nright'); await input('必要な成果項目', 'sum');
       await input('Tool', packages[1].packageKey); await input('実行先', 'pc');
       await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'second requirements saved');
+      await confirmSchema();
       await click('同じ担当で仕事の確認へ進む');
       await wait('document.body.innerText.includes("仕事の名前")', 'second workbench');
       await input('仕事の名前', '合計fixture仕事'); await confirmDraft('二つの整数を合計',{left:4,right:7}); await createAndWait();

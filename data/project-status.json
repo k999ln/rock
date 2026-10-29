@@ -1,4 +1,10 @@
 {
+  "smithSchemaConfirmation": {
+    "owner": "ROCK",
+    "status": "independent_review_full_verify_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/smith-schema-confirmation.json",
+    "next": "Save and integrate after same-head CI; structured user type matching and production/device acceptance remain open."
+  },
   "sdkDistributionReadback": {
     "status": "offline_package_import_independently_reviewed",
     "evidence": "docs/evidence/development-execution/sdk-distribution-isolated.json",
