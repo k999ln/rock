@@ -3800,9 +3800,10 @@
         "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
         "android/automation/src/main/java/dev/rock/automation/ModelProfileOperationLock.java",
         "scripts/check-os-contracts.mjs",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/evidence/development-execution/eve-quality-recovery.json"
       ],
-      "nextAction": "Signed model manifest/staging and activation coordinator exist in current source. Compile and accept exact profile swap plus old-job restart on equipped Android CI/device; production trust/catalogue and hardware acceptance remain open.",
+      "nextAction": "Signed model manifest/staging and activation coordinator exist in current source. Compile and accept exact profile swap plus old-job restart on equipped Android CI/device; production trust/catalogue and hardware acceptance remain open. Eve corrected-loss/full-input quality recovery is tracked separately in docs/evidence/development-execution/eve-quality-recovery.json; current48-update candidate remains quality FAIL (A0/20,C1/20; physical Pixel0/8), scoped source/semantic reviews complete, final repository verification passed; Git/main/same-SHA CI tracked separately after this snapshot.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",
@@ -12422,6 +12423,81 @@
       "pass": 3468,
       "fail": 0,
       "skip": 4
+    },
+    "snapshotQualification": "Prior run snapshot retained. Current quality-recovery follow-up is recorded below; prior candidate/unknown/failed evidence is not replaced.",
+    "qualityRecovery": {
+      "status": "implementation_retraining_comparison_pixel_independent_review_complete_quality_fail_git_pending",
+      "primaryOwner": "ROCK",
+      "primarySquad": "O3",
+      "taskRefs": [
+        "AI02"
+      ],
+      "inputMainSha": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+      "evidence": "docs/evidence/development-execution/eve-quality-recovery.json",
+      "candidateId": "eve-recovery-final",
+      "adapterSha256": "35bb0433ea708b2bc5a60d5c9617638515040eed2f696872b9ea1df79cf427b8",
+      "candidateUpdates": 48,
+      "separateProbeUpdates": 8,
+      "sessionConfirmedUpdates": 56,
+      "trainingWallSecondsCharged": 65.52848104199802,
+      "trainingSequenceSlotsCharged": 43008,
+      "validationBatches": 8,
+      "validationSequenceSlots": 6144,
+      "comparison": {
+        "plannedTasksPerArm": 20,
+        "A": {
+          "acceptedTransportRuns": 1,
+          "semanticTaskComplete": 0,
+          "contentCorrectSupported": 1,
+          "semanticUnavailable": 19,
+          "strictSchemaPassed": 2,
+          "generationAttemptDenominator": 21
+        },
+        "C": {
+          "acceptedTransportRuns": 4,
+          "semanticTaskComplete": 1,
+          "contentCorrectSupported": 1,
+          "wrongOrUnsupportedAcceptedAnswers": 3,
+          "semanticUnavailable": 16,
+          "strictSchemaPassed": 4,
+          "generationAttemptDenominator": 20
+        },
+        "allComparisonGenerationAttempts": 41,
+        "backendUntilJournalFinishP95Seconds": {
+          "A": 6.364,
+          "C": 17.086
+        },
+        "latencyQualification": "Backend journal finish, not full-Pixel interaction latency. Failed tasks remain in planned denominators.",
+        "independentMeaningJudgment": true,
+        "qualityVerdict": "FAIL",
+        "retentionEvaluated": false,
+        "sealedEvaluationExecuted": false,
+        "comparisonSummarySha256": "81d3fac0bb21de8e1157c4bab9a7d6d94e651aafb2b63e44aef523891c3342a9"
+      },
+      "qualityAccepted": false,
+      "defaultAdopted": false,
+      "physicalWholeLoopAccepted": false,
+      "pixelStatus": "completed_scoped_quality_fail",
+      "nativePhoneInferenceAccepted": false,
+      "fullVerifyPassed": true,
+      "gitHubSaved": false,
+      "mainIntegrated": false,
+      "sameShaCISucceeded": false,
+      "next": "Candidate quality remains FAIL/default nonadoption; improve task completion and independently test unverified Pixel boundaries in future AI02 work. Complete PR/main/same-SHA CI for this reviewed source snapshot.",
+      "pixelPrimaryTaskComplete": 0,
+      "pixelPrimaryDenominator": 8,
+      "pixelUniqueJobs": 13,
+      "generationAttempts": 72,
+      "generationRequestedOutputTokens": 18432,
+      "pixelUnknownCharged": 1,
+      "finalSourceIndependentReview": "PASS_SCOPED_NO_OPEN_P1_P2_FOUND",
+      "fullVerifyMainTests": {
+        "tests": 3507,
+        "pass": 3503,
+        "fail": 0,
+        "skip": 4
+      },
+      "gitStatusQualification": "Git flags describe this precommit evidence snapshot. Subsequent PR/main/same-merge-SHA checks are recorded in the final Git receipt and GitHub; no self-referential evidence commit chain."
     }
   },
   "sdkDistRelease": {

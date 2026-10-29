@@ -8,7 +8,7 @@ from pathlib import Path
 import sqlite3
 import time
 
-CAPS = {'teacher': (32, 1200), 'comparison': (120, 256), 'pixel': (30, 256)}
+CAPS = {'teacher': (32, 1200), 'comparison': (120, 256), 'pixel': (30, 256), 'diagnostic': (20, 256)}
 
 
 def canonical(value):
@@ -22,9 +22,15 @@ class Budget:
     def __init__(self, root):
         self.root = Path(root)
         self.session = json.loads((self.root/'session.json').read_text())
+        self.generation_limits=self.session.get('generationLimits',{'categories':{k:(0 if k=='diagnostic' else v[0]) for k,v in CAPS.items()},'totalCalls':182,'requestedOutputTokens':76800})
+        limits=self.generation_limits
+        if not isinstance(limits,dict) or set(limits)!={'categories','totalCalls','requestedOutputTokens'} or not isinstance(limits['categories'],dict) or set(limits['categories'])!=set(CAPS):raise BudgetError('invalid generation limits')
+        if any(type(n) is not int or not 0<=n<=CAPS[k][0] for k,n in limits['categories'].items()) or type(limits['totalCalls']) is not int or not 1<=limits['totalCalls']<=182 or type(limits['requestedOutputTokens']) is not int or not 1<=limits['requestedOutputTokens']<=76800:raise BudgetError('generation limits exceed hard caps')
         self.db = sqlite3.connect(self.root/'runtime.sqlite', timeout=5)
         self.db.execute('PRAGMA journal_mode=WAL')
         self.db.executescript('''
+          CREATE TABLE IF NOT EXISTS budget_configuration (
+            id INTEGER PRIMARY KEY CHECK(id=1), generation_limits TEXT NOT NULL);
           CREATE TABLE IF NOT EXISTS calls (
             id TEXT PRIMARY KEY, payload TEXT NOT NULL, category TEXT NOT NULL,
             cap INTEGER NOT NULL, started REAL NOT NULL, state TEXT NOT NULL,
@@ -33,6 +39,8 @@ class Budget:
             id TEXT PRIMARY KEY, reserved_updates INTEGER NOT NULL,
             completed_updates INTEGER NOT NULL DEFAULT 0, started REAL NOT NULL,
             state TEXT NOT NULL DEFAULT 'running', elapsed REAL NOT NULL DEFAULT 0);
+          CREATE TABLE IF NOT EXISTS training_allocations (
+            id TEXT PRIMARY KEY, max_sequence INTEGER NOT NULL);
           CREATE TABLE IF NOT EXISTS validation (
             id TEXT PRIMARY KEY, run_id TEXT NOT NULL, stage TEXT NOT NULL,
             reserved_batches INTEGER NOT NULL, completed_batches INTEGER NOT NULL DEFAULT 0,
@@ -41,6 +49,14 @@ class Budget:
             run_id TEXT PRIMARY KEY, charged_updates INTEGER NOT NULL,
             charged_seconds REAL NOT NULL, receipt_sha TEXT NOT NULL, receipt TEXT NOT NULL);
         ''')
+        previous=self.db.execute('SELECT generation_limits FROM budget_configuration WHERE id=1').fetchone()
+        if previous:
+            old=json.loads(previous[0])
+            if any(limits['categories'][k]>old['categories'][k] for k in CAPS) or limits['totalCalls']>old['totalCalls'] or limits['requestedOutputTokens']>old['requestedOutputTokens']:
+                self.db.close();raise BudgetError('persisted generation limits cannot increase')
+        self.db.execute('INSERT OR REPLACE INTO budget_configuration VALUES (1,?)',(canonical(limits),))
+        # Legacy reservations were all512; retain those charges during migration.
+        self.db.execute('INSERT OR IGNORE INTO training_allocations SELECT id,512 FROM training')
         self.db.commit()
 
     def check_time(self, reserve_seconds=0):
@@ -72,7 +88,7 @@ class Budget:
             self.check_time(120)
             count = self.db.execute('SELECT COUNT(*) FROM calls WHERE category=?', (category,)).fetchone()[0]
             total, requested = self.db.execute('SELECT COUNT(*),COALESCE(SUM(cap),0) FROM calls').fetchone()
-            if count >= CAPS[category][0] or total >= 182 or requested+cap > 76800:
+            if count >= self.generation_limits['categories'][category] or total >= self.generation_limits['totalCalls'] or requested+cap > self.generation_limits['requestedOutputTokens']:
                 raise BudgetError('generation budget exhausted')
             first = self.db.execute('SELECT MIN(started) FROM calls WHERE category=?', (category,)).fetchone()[0]
             if first is not None and time.time()-first >= 1800 and category in ['teacher','comparison']:
@@ -88,17 +104,21 @@ class Budget:
             if actual_tokens is not None and (type(actual_tokens) is not int or not 0 <= actual_tokens <= row[1]): raise BudgetError('invalid token accounting')
             self.db.execute('UPDATE calls SET state=?,result=?,actual_tokens=? WHERE id=?', (state,canonical(result),actual_tokens,call_id))
 
-    def reserve_training(self, run_id, updates):
-        if type(updates) is not int or not 1 <= updates <= 128: raise BudgetError('invalid optimizer limit')
+    def reserve_training(self, run_id, updates, max_sequence=512):
+        if type(updates) is not int or not 1 <= updates <= 128 or type(max_sequence) is not int or not 1<=max_sequence<=768: raise BudgetError('invalid optimizer/sequence limit')
         with self.transaction():
             self.check_time(1800)
             planned=self.db.execute('SELECT reserved_updates,completed_updates,state FROM training WHERE id=?',(run_id,)).fetchone()
             if planned and planned==(updates,0,'planned'):
+                sequence=self.db.execute('SELECT max_sequence FROM training_allocations WHERE id=?',(run_id,)).fetchone()
+                if max_sequence!=(sequence[0] if sequence else 512):raise BudgetError('planned training sequence conflict')
                 self.db.execute("UPDATE training SET state='running',started=? WHERE id=?",(time.time(),run_id));return
             used, elapsed = self.db.execute('SELECT COALESCE(SUM(COALESCE(r.charged_updates,t.reserved_updates)),0),COALESCE(SUM(COALESCE(r.charged_seconds,t.elapsed)),0) FROM training t LEFT JOIN training_reconciliations r ON t.id=r.run_id').fetchone()
-            if used+updates > 128 or elapsed >= 1800: raise BudgetError('training budget exhausted')
+            slots=self.db.execute('SELECT COALESCE(SUM(COALESCE(r.charged_updates,t.reserved_updates)*COALESCE(a.max_sequence,512)),0) FROM training t LEFT JOIN training_reconciliations r ON t.id=r.run_id LEFT JOIN training_allocations a ON t.id=a.id').fetchone()[0]
+            if used+updates > 128 or elapsed >= 1800 or slots+updates*max_sequence>65536: raise BudgetError('training budget exhausted')
             if self.db.execute("SELECT COUNT(*) FROM training WHERE state IN ('running','planned')").fetchone()[0]: raise BudgetError('training run pending')
             self.db.execute('INSERT INTO training(id,reserved_updates,started) VALUES (?,?,?)',(run_id,updates,time.time()))
+            self.db.execute('INSERT INTO training_allocations VALUES (?,?)',(run_id,max_sequence))
 
     def training_progress(self, run_id, updates, elapsed, finished=False):
         with self.transaction():
@@ -120,15 +140,19 @@ class Budget:
     def snapshot(self):
         calls = [dict(zip(['category','state','attempts','requestedTokens','knownOutputTokens','unknownOutputs'],r)) for r in self.db.execute('SELECT category,state,COUNT(*),SUM(cap),SUM(actual_tokens),SUM(actual_tokens IS NULL) FROM calls GROUP BY category,state')]
         training = [dict(zip(['id','reservedUpdates','completedUpdates','started','state','elapsedSeconds'],r)) for r in self.db.execute('SELECT * FROM training')]
+        sequences=dict(self.db.execute('SELECT id,max_sequence FROM training_allocations'))
         reconciliations=[dict(zip(['runId','chargedUpdates','chargedSeconds','receiptSha256','receipt'],r)) for r in self.db.execute('SELECT * FROM training_reconciliations')]
         by_id={r['runId']:r for r in reconciliations}
         for row in training:
+            row['maxSequence']=sequences.get(row['id'],512)
             rec=by_id.get(row['id']);row['chargedUpdatesUpperBound']=rec['chargedUpdates'] if rec else row['reservedUpdates'];row['chargedWallSeconds']=rec['chargedSeconds'] if rec else row['elapsedSeconds']
         validation=[dict(zip(['id','runId','stage','reservedBatches','completedBatches','maxSequence','state'],r)) for r in self.db.execute('SELECT * FROM validation')]
         return {'calls':calls,'training':training,'trainingReconciliations':reconciliations,'teacherForcedValidation':validation,
           'confirmedOptimizerUpdates':sum(r['completedUpdates'] for r in training),
           'optimizerUpdatesUpperBoundCharged':sum(r['chargedUpdatesUpperBound'] for r in training),
-          'trainingWallSecondsCharged':sum(r['chargedWallSeconds'] for r in training)}
+          'trainingWallSecondsCharged':sum(r['chargedWallSeconds'] for r in training),
+          'trainingTokenSlotsUpperBoundCharged':sum(r['chargedUpdatesUpperBound']*r['maxSequence'] for r in training),
+          'generationLimits':self.generation_limits}
 
     def reconcile_training(self,receipt_path):
         """Offline independent-review reconciliation, never exposed to the model/UI.
@@ -153,6 +177,8 @@ class Budget:
             raise BudgetError('reaped worker/per-update callback preconditions absent')
         with self.transaction():
             row=self.db.execute('SELECT reserved_updates,completed_updates,state FROM training WHERE id=?',(receipt['runId'],)).fetchone()
+            allocation=self.db.execute('SELECT max_sequence FROM training_allocations WHERE id=?',(receipt['runId'],)).fetchone()
+            if allocation and allocation[0]!=512:raise BudgetError('legacy reconciliation proof only covers512-token runs')
             if not row or row[0]!=receipt['originalReservedUpdates'] or row[1]!=receipt['confirmedUpdates'] or type(receipt['maximumUpdates']) is not int or receipt['maximumUpdates']!=row[1]+1 or receipt['maximumUpdates']>row[0]:raise BudgetError('interruption update upper bound inconsistent')
             seconds=receipt['wallSeconds']
             if type(seconds) not in [int,float] or not math.isfinite(seconds) or seconds!=supervisor['elapsedSeconds'] or seconds<0:raise BudgetError('full supervisor time required')
@@ -166,11 +192,13 @@ class Budget:
             next_run=receipt.get('nextRun')
             if not isinstance(next_run,dict) or set(next_run)!={'id','updates'} or not isinstance(next_run['id'],str) or not 1<=len(next_run['id'])<=100 or type(next_run['updates']) is not int or not 1<=next_run['updates']<=8:raise BudgetError('reviewed bounded next run required')
             used,elapsed=self.db.execute('SELECT SUM(COALESCE(r.charged_updates,t.reserved_updates)),SUM(COALESCE(r.charged_seconds,t.elapsed)) FROM training t LEFT JOIN training_reconciliations r ON t.id=r.run_id').fetchone()
-            if used+next_run['updates']>128 or elapsed>=1800 or self.db.execute("SELECT COUNT(*) FROM training WHERE state IN ('running','planned')").fetchone()[0]:raise BudgetError('next run cannot fit atomic reconciled budget')
+            slots=self.db.execute('SELECT COALESCE(SUM(COALESCE(r.charged_updates,t.reserved_updates)*COALESCE(a.max_sequence,512)),0) FROM training t LEFT JOIN training_reconciliations r ON t.id=r.run_id LEFT JOIN training_allocations a ON t.id=a.id').fetchone()[0]
+            if used+next_run['updates']>128 or slots+next_run['updates']*512>65536 or elapsed>=1800 or self.db.execute("SELECT COUNT(*) FROM training WHERE state IN ('running','planned')").fetchone()[0]:raise BudgetError('next run cannot fit atomic reconciled budget')
             self.db.execute("INSERT INTO training(id,reserved_updates,started,state) VALUES (?,?,?,'planned')",(next_run['id'],next_run['updates'],time.time()))
+            self.db.execute('INSERT INTO training_allocations VALUES (?,512)',(next_run['id'],))
 
     def reserve_validation(self,run_id,stage,batches=8,max_sequence=512):
-        if stage not in ['before','after'] or type(batches) is not int or not 1<=batches<=8 or type(max_sequence) is not int or not 1<=max_sequence<=512: raise BudgetError('invalid validation allocation')
+        if stage not in ['before','after'] or type(batches) is not int or not 1<=batches<=8 or type(max_sequence) is not int or not 1<=max_sequence<=768: raise BudgetError('invalid validation allocation')
         key=run_id+':'+stage
         with self.transaction():
             self.check_time()

@@ -60,6 +60,13 @@ def schema_counts(decisions,attempts):
     return {'passed':sum(decisions),'failedVisible':len(decisions)-sum(decisions),
       'unavailable':attempts-len(decisions),'allAttemptDenominator':attempts,'visibleDecisions':len(decisions)}
 
+def system_distribution(root):
+    manifest=root/'training'/'manifest.json'
+    if not manifest.exists():return 'training/integration system distribution unavailable: no saved training manifest'
+    value=json.loads(manifest.read_text()).get('systemDistributionDifference')
+    if not isinstance(value,str) or not value.strip():return 'training/integration system distribution unavailable: manifest has no description'
+    return 'Saved training manifest system distribution: '+value
+
 def summarize(root,adjudication=None):
     corpus=root/'observed-v3'/'development.jsonl'
     tasks={x['id']:x for x in map(json.loads,corpus.read_text().splitlines())}
@@ -115,7 +122,7 @@ def summarize(root,adjudication=None):
         'All failed/unknown/not-started/duplicate and unavailable judgments retained in planned denominators',
         'Backend duration ends at journal finish and excludes final worker cleanup/Pixel UI refresh; it is not full phone interaction latency',
         'No sealed test or retention generation authorized in this initial experiment',
-        'training compact system differs from integration full Zema planner system; both arms share integration context',
+        system_distribution(root),
         'repair first-step error is a scripted matched fault through the real executor; remaining decisions are model-generated']}
     return record
 

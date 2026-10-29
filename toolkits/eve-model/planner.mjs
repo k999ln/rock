@@ -8,15 +8,15 @@ export const sameBinding=(a,b)=>a&&b&&Object.keys(a).sort().join('|')===Object.k
 const fatalError=message=>Object.assign(Error(message),{fatal:true});
 
 export class Planner {
-  constructor({python,root,base,expectedBinding}) {this.config={python,root,base};this.expectedBinding=expectedBinding;this.child=null;this.pending=null;this.ready=null;this.halted=false;this.stopReason=null;this.stopIntent=null;this.stopPromise=null;}
+  constructor({python,root,base,expectedBinding,candidateRoot}) {this.config={python,root,base,candidateRoot};this.expectedBinding=expectedBinding;this.child=null;this.pending=null;this.ready=null;this.halted=false;this.stopReason=null;this.stopIntent=null;this.stopPromise=null;}
   async start() {
     if(this.halted)throw fatalError('experiment halted after fatal model/resource error; no automatic retry');
     if (this.child) return this.ready;
     this.stopReason=null;
     this.stopIntent=null;this.stopPromise=null;
-    const {python,root,base}=this.config;
+    const {python,root,base,candidateRoot}=this.config;
     const log=fs.openSync(path.join(root,'inference-worker.log'),'a',0o600);
-    const child=spawn(python,[fileURLToPath(new URL('./model_worker.py',import.meta.url)),'--root',root,'--base',base],
+    const child=spawn(python,[fileURLToPath(new URL('./model_worker.py',import.meta.url)),'--root',root,'--base',base,...(candidateRoot?['--candidate-root',candidateRoot]:[])],
       {stdio:['pipe','pipe',log],env:{...process.env,HF_HUB_OFFLINE:'1',TRANSFORMERS_OFFLINE:'1',HF_HUB_DISABLE_TELEMETRY:'1'}});
     fs.closeSync(log);this.child=child;
     this.ready=new Promise((resolve,reject)=>{
