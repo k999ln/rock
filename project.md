@@ -22,9 +22,17 @@ HTTP 408後にChromeが同一IDを再送して409となると、保存済みで�
 
 PR255はhead7check/4workflow成功でmain76b327c2へ通常統合したが、main初回verifyが既存Pixel診断試験のexitKind欠落で停止した。任意診断の非待機lockへ観測writerが競合し、正常fixtureの300ms固定待ちは保存完了を保証しなかった。observer fsync800ms遅延で元試験の同じKeyErrorを再現。fixture子終了をfirst output診断保存ackへ同期し、同じ遅延1/1と診断27中26pass/1historical skipが成功。実worker・停止/期限・権限と元assertionを変更しない。[証拠](docs/evidence/development-execution/pixel-diagnostic-fixture-order.json)。次は独立検収、Git/PRとhead/main同SHA全CI。元main失敗は保存し、同SHA rerunは1回だけ実行中。実機操作・推論・有料接続なし。
 
+### 隔離Chrome試験の後片付け（2026-10-29 / ROCK）
+
+F3の統合後進捗記録の全verifyで、一時Chrome profile削除時にENOTEMPTYが発生しブラウザ試験1件が失敗。試験結果表示後も自分の試験processが残ったため、そのprocessだけ停止し初回ログを保存。mkdtemp配下の削除に一時エラー時の限定再試行を追加し、失敗が続けば試験は失敗する。runtime・assertionは不変、独立Chrome2/2成功。[証拠](docs/evidence/development-execution/f3-handoff-browser-cleanup.json)。全verify再実行は3392成功・0失敗・4skip。Git/head/main CIは未完了。
+
+### portable runtimeの隔離buildと配布入口（2026-10-29 / ROCK）
+
+main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致。隔離copyを既存esbuildでbuildし、公開4入口importと合成19試験が成功。独立読取でhashを照合。[証拠](docs/evidence/development-execution/portable-runtime-isolated-build.json)。Nodeの通信guardは検査対象のimport/testに限りOS全体遮断ではない。対象source32件を比較し、元worktree全体の不変は主張しない。main採用・実機・実account・実モデル・Node22実行は未受入。必要なsubsetの採用は別途検収する。
+
 ### 担当付き仕事の作成前確認（2026-10-29 / ROCK・Sky）
 
-未達だったF3の作成順序を修正し、現行Agent画面はTool・runtime・具体的入力・未検証料金申告を確認してからjobを作る。本人・Agent版・Package版・入力digestを固定し、期限と版をAPI・SQL保存境界で検査。未送信と応答不明を分離し、不明時は同じ本人・ID・digestをGET照合、未存在を自動再送しない。旧clientの保存互換と別の実行承認を維持。旧候補の期限切れと通信断迂回を実画面で再現し修正、独立r3は関連66/66・Chrome2/2成功。mii予算と併せた67試験成功。統合候補も独立35/35成功。全verify初回はVM依存欠落84件とURL不足1件で失敗しfixtureを修正、既存assertionと未確認POST拒否を保全して全verify再実行は3392成功・0失敗・4skip。Git/head/main CIは未完了。確認記録は実行権限・独立検証済み価格ではなく、通常account・実機・本番課金は未受入。[証拠](docs/evidence/development-execution/f3-creation-disclosure.json)。
+未達だったF3の作成順序を修正し、現行Agent画面はTool・runtime・具体的入力・未検証料金申告を確認してからjobを作る。本人・Agent版・Package版・入力digestを固定し、期限と版をAPI・SQL保存境界で検査。未送信と応答不明を分離し、不明時は同じ本人・ID・digestをGET照合、未存在を自動再送しない。旧clientの保存互換と別の実行承認を維持。旧候補の期限切れと通信断迂回を実画面で再現し修正、独立r3は関連66/66・Chrome2/2成功。mii予算と併せた67試験成功。統合候補も独立35/35成功。全verify初回はVM依存欠落84件とURL不足1件で失敗しfixtureを修正、既存assertionと未確認POST拒否を保全して全verify再実行は3392成功・0失敗・4skip。PR265 head 06f43126の全CI成功、main 924121e1の同SHA6check成功。確認記録は実行権限・独立検証済み価格ではなく、通常account・実機・本番課金は未受入。[証拠](docs/evidence/development-execution/f3-creation-disclosure.json)。
 
 ### mii同一仕事の委任予算読取候補（2026-10-29 / Android・ROCK）
 

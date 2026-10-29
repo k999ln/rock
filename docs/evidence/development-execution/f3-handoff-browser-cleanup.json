@@ -1,0 +1,13 @@
+{
+  "schema": "rockstaros.f3-handoff-browser-cleanup/1",
+  "scope": "test-only temporary Chrome profile cleanup",
+  "baseMain": "924121e1ea1870fec5ed9a1076721ba7731a1f46",
+  "failure": "Full verify reported ENOTEMPTY when removing isolated Chrome profile. The already-reported browser-test process remained alive, preventing the runner from exiting; the specific test process launched by this verification was terminated. Final runner summary: 3391 pass, 1 fail, 4 skip.",
+  "initialLogSha256": "a8d7ede56a767f604ee2e513aecd51414d8dd2424efb42b16a44a33aaf8c191e",
+  "fix": "Node rm retries transient errors at most 10 times with 200ms incremental delay; path remains the same mkdtemp-created fixture directory. No runtime or test assertion changed; a persistent deletion failure still fails.",
+  "testSha256": "cba747adb4d82c84d0e8f9c1cf28d5dc8c38a176100614cfefb5b70dbc404c26",
+  "review": "Independent read-only review PASS_SCOPED; independently reran both isolated browser cases successfully. No proof that every child process always exits.",
+  "fullVerify": "3392 pass, 0 fail, 4 skip; build, API and repository checks complete",
+  "realDeviceOrServiceAccepted": false,
+  "fullVerifyLogSha256": "a5b3589494c7bf22ddd272753d722382b80851cca1cd057d3384df50eb2eaa9b"
+}

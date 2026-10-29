@@ -1,10 +1,25 @@
 {
+  "f3BrowserFixtureCleanup": {
+    "status": "independent_review_full_verify_pass_git_ci_pending",
+    "evidence": "docs/evidence/development-execution/f3-handoff-browser-cleanup.json",
+    "scope": "isolated browser test cleanup only",
+    "next": "Save candidate and confirm head/main CI; no runtime or device change."
+  },
+  "portableRuntimeIsolatedBuild": {
+    "status": "isolated_build_and_import_independent_review_pass_source_not_adopted",
+    "evidence": "docs/evidence/development-execution/portable-runtime-isolated-build.json",
+    "next": "Adopt only a separately reviewed necessary subset if needed; no main, physical device or production acceptance inferred."
+  },
   "f3CreationDisclosure": {
     "owner": "ROCK",
-    "status": "independent_review_full_verify_pass_git_ci_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/f3-creation-disclosure.json",
     "scope": "new Agent UI synthetic preview; no new execution grant or verified price",
-    "next": "Review final fixture and evidence, then Git, head CI, main merge and same SHA CI."
+    "next": "Preserve legacy client compatibility and local-preview boundary; normal account authority, verified pricing and physical mii remain unaccepted.",
+    "pullRequest": 265,
+    "prHead": "06f43126f7a5a2dd785ebb6ed044f7440776067d",
+    "mergeSha": "924121e1ea1870fec5ed9a1076721ba7731a1f46",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "miiBudgetReadback": {
     "owner": "ROCK",

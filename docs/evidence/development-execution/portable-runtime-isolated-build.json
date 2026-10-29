@@ -1,0 +1,40 @@
+{
+  "schema": "rockstaros.portable-runtime-isolated-build-evidence/1",
+  "scope": "local unmerged source copy; host build and import only; not main adoption",
+  "package": "@rockstaros/runtime 1.0.0-dev.7",
+  "sourcePinDocumentSha256": "2135f03647f956d2ad211336e06157098400e56f1e4e297b37c8bbfe2846405f",
+  "sourcePins": {
+    "packages/rockstaros-runtime/package.json": "a4d69a082fec139890814341ff7b74b9a7cfc00080e259f3576a57ed8066756b",
+    "packages/rockstaros-runtime/src/index.mjs": "dc7b278dfe1130a6c92127478345a623a2c4d1f47114a9d33e253591dd46d261",
+    "packages/rockstaros-runtime/src/executor.mjs": "77bfd688e83b668db20dcc12852a67b4e7ef7afbc135082b2b7f3d29305ef24b",
+    "lib/rockstar-adapters.ts": "67b6c166fb1a9d193510fb7d07f324c72ac0bd0eb8824fd21fbdd44db850077c",
+    "lib/mini-spatial-workflow.ts": "4ae69f0666fa7b5a24777cc912c83a8c864654ca56376780d113ad639086488e",
+    "contracts/rockstaros-portable-runtime.json": "e28def335d3955e2ef368c13847373fdce1a8510f92bf0fff479596463d78a72",
+    "contracts/avocado-mini-spatial-runtime.json": "8659b7a4afdb68e3a0abcc65b0419a7849b288c208e9dfc202ec0c42f3e1fbbf",
+    "contracts/avocado-mini-supervisor.json": "fb4b6a08f55f8467ba1b8a7ebb5eca8c1255b5a96d60feccf528314ec8718155"
+  },
+  "snapshot": "32 copied source files and 28 build inputs matched their recorded hashes; matching concerns these files only, not the whole original worktree",
+  "buildArtifactsSha256": {
+    "packages/rockstaros-runtime/dist/build-inputs.json": "1e764021ee417670b878934e58c875b5027f3e1eeb00bfab1b41a301ec525207",
+    "packages/rockstaros-runtime/dist/doctor.mjs": "515813db19704f29d7653893fc479e06332aa84d0278400494fe2b504ea16e0f",
+    "packages/rockstaros-runtime/dist/host-cli.mjs": "953eee78b74fd954765e536af9e5b3393db44f946fbc7eecf356752dd47ae0a4",
+    "packages/rockstaros-runtime/dist/index.mjs": "58988226d00c01d0565ab24b706af86501123653564fbdb0c131d3dc25691ec3",
+    "packages/rockstaros-runtime/dist/linux-manager-executor.mjs": "f5e9224492df175434c49835191584cabe2bc13e76962d2ed1c24878e5630149",
+    "packages/rockstaros-runtime/dist/node-host.mjs": "c73b52e8af05eacca31ee973b5151097bd53ba8e70c06cc2df4341a894483a8b",
+    "packages/rockstaros-runtime/dist/runtime-manifest.json": "e28def335d3955e2ef368c13847373fdce1a8510f92bf0fff479596463d78a72",
+    "packages/rockstaros-runtime/dist/service-host.mjs": "da3b2463e5c67194a8eded2564d78195ed06a7a0d41c3c98812aa1d3c905f0ce"
+  },
+  "result": "local esbuild build exit 0; four public export imports exit 0; 19 selected mock-based tests pass; independent read-only review matched pins, build outputs and log hashes",
+  "auditLogSha256": {
+    "review/export-smoke.log": "c4aa49eac35289a7d763903ba89b44fcf4514f00a1dfe02629979a49a9ed7378",
+    "review/export-import-result.json": "b83e7a0af1c46eddf591ad6b6fe92c8fea30ff4c56d20ae2a50781f8204ca6c2",
+    "review/safe-tests.log": "65babb2469189b76f02338731a70d01936a2084a0ad4e60d13ea7a46d0df22a0"
+  },
+  "limits": [
+    "Source is not adopted on main",
+    "Node network guards apply to selected import/tests; OS-wide, subprocess and DNS isolation not proven; build reviewed separately",
+    "No host CLI startup, credential vault, Ollama, real account, device or provider accepted",
+    "Node 22 is build target, not a tested Node 22 execution"
+  ],
+  "gitAndCI": "evidence-only candidate pending"
+}
