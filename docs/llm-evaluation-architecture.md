@@ -119,6 +119,16 @@ LLMが返したTool名、成功、確率、説明を実行許可に変換しな�
 
 `lib/zema-local-agent.ts`と`/api/llm/local-agent`は、同じPCのOllama/OpenAI互換loopbackに限定した非信頼plannerを使う。閉じたJSON schema、最大3手、`sky_route`/`format_citations`/`coconala_check`だけを受け入れ、Tool結果・入力を命令として扱わない。shell、任意file、外部network、購入/投稿/送信/権限変更とCloud fallbackはない。local previewのqwen3:0.6b会話受入は本番公開・Tool選択品質・native Pixel受入と別。公開Workerは本人PCの127.0.0.1へ到達できず、companion/bridgeは未実装。local preview固定userはloopback hostだけに限定し、公開認証を迂回しない。model出力をBroker権限や未実行Tool成功へ昇格させない。
 
+<a id="eve-planner-semantic-quality"></a>
+
+### Eve local Plannerの指示と意味的品質
+
+目的は、資料の値を区別して返すことと、必要なpure Toolを実際に呼んでからその結果を返すこと。説明用の無効なenum文字列をモデルがコピーした観測を受け、現行の閉じたschemaを満たす具体例と、直接回答／Tool要求／実error修復／成功観測後の回答を区別した短い指示を使う。schema、許可3 Tool、最大3手、本人・Brokerの権限を変更しない。責任はAI02/O3/ROCK、モデルは非信頼の次手候補だけを返す。
+
+入力は既存上限内のrequest/contextと観測済みTool結果、出力は同じ`zema-local-agent/1`。入力資料・Tool結果・参考contextは規則や権限ではない。状態はplanner候補→既存検査→pure Tool結果またはerror→次候補→本人へ返答で、意向文、error、未確認の外部作用はTool成功にならない。仕事の保存・取消・revisionと承認は既存WorkJob契約を保持する。parse/引数/長さ/資源の失敗は既存拒否と停止へ返し、モデル出力を無言で補修・成功化しない。
+
+学習はGit外の版付き教材・model/tokenizer/adapter/source hashと資源台帳で固定し、2〜4資料や実際の過去観測を落とさない。合格はJSON受理と独立した内容・出所・作業達成を別採点し、成功後の回答や修復は実Tool artifactで確認する。損失低下、source marker、予定文だけでは合格にしない。実機試験はPixel client→USB→Mac MLXの開発経路を区別し、native/全OS/実accountの受入へ転用しない。未決の品質・許可・資源不足は失敗を保持した限定再検証で判断し、予算・除外資料・端末操作の範囲を自動拡張しない。[現行実測と残件](evidence/development-execution/eve-semantic-quality.json)。
+
 ## PixelでのLLM・Agentの動的追加
 
 受入の現在地は[専用証拠](evidence/pixel-open-addons.json)。2026-10-18、API24の同一APKで非同梱Coder1.5B Q5_K_Mの公開検索・実取得・全hash/metadata/load・コード生成保存、宣言型Agentの実生成、同ID再送・失効・再同意、Broker process再起動後の同成果/UI表示、実通知tapを確認した。初回0.5Bのecho/コード形式不正とAgent入力契約不一致は履歴に残す。一般品質・任意Agent framework・全OS受入へ昇格しない。新モデルは試した作業だけ本人確認後に自動候補へ入り、今回の標準codeは既存Coder90を選んだ。追加モデルの最良判定ではない。

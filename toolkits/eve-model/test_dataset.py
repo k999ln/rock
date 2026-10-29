@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
 import dataset
 
@@ -14,12 +15,24 @@ class DataTests(unittest.TestCase):
     def test_split_before_variants_and_counts(self):
         with tempfile.TemporaryDirectory() as td:
             p = Path(td)/'corpus'
-            report = dataset.build(p)
+            original=dataset.make_task
+            def allowed_task(family,*args,**kwargs):
+                self.assertNotEqual(family[1],'test','excluded test rows must not be constructed')
+                return original(family,*args,**kwargs)
+            builtin_range=range
+            def allowed_range(*args):
+                self.assertNotEqual(args,(80,),'excluded retention generator must not run')
+                return builtin_range(*args)
+            with mock.patch.object(dataset,'make_task',side_effect=allowed_task),mock.patch.object(dataset,'range',allowed_range,create=True):
+                report = dataset.build(p,splits=['train','validation','development'])
             self.assertEqual({k: v['records'] for k, v in report['files'].items()},
-                             {'train.jsonl': 240, 'validation.jsonl': 120, 'test.jsonl': 120, 'development.jsonl': 20, 'retention.jsonl': 80})
-            self.assertEqual(len(report['familySplits']), 12)
+                             {'train.jsonl':240,'validation.jsonl':120,'development.jsonl':20})
+            self.assertEqual(len(report['familySplits']),9)
+            self.assertEqual(len({f[0]:f[1] for f in dataset.FAMILIES}),12)
+            self.assertEqual(report['requestedSplits'],['train','validation','development'])
+            self.assertFalse((p/'test.jsonl').exists());self.assertFalse((p/'retention.jsonl').exists())
             self.assertFalse(report['teacherDistillationPerformed'])
-            with self.assertRaises(ValueError): dataset.build(p)
+            with self.assertRaises(ValueError): dataset.build(p,splits=['train','validation','development'])
 
     def test_tampered_source_rejected(self):
         self.row['materials'][0]['text'] += 'changed'

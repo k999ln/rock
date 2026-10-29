@@ -14,14 +14,18 @@
 <script>
 'use strict';
 const initial=new URLSearchParams(location.search);let initialCase=initial.get('case');
-const el=id=>document.getElementById(id);let state=null,current=localStorage.getItem('eve-development-operation')||null,starting=false;
+const el=id=>document.getElementById(id);let state=null,current=localStorage.getItem('eve-development-operation')||null,starting=false,appliedSelectionRevision=0;
 if(['A','C'].includes(initial.get('arm')))el('arm').value=initial.get('arm');
 if(['none','lost_response','delay_result','unavailable'].includes(initial.get('fault')))el('fault').value=initial.get('fault');
 async function api(url,data){const response=await fetch(url,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});const value=await response.json();if(!response.ok)throw Error(value.error||'request rejected');return value;}
 function showSource(){const task=state?.cases.find(x=>x.id===el('case').value);el('source').textContent=task?JSON.stringify(task,null,2):'';}
 function statusText(record){if(!record)return '実行権限のない開発試験';if(record.state==='cancelled')return record.stopReceipt?'停止済み':'停止要求済み（終了確認中）';if(record.state==='unknown')return '結果不明。保存状態を確認してください';if(record.state==='failed')return '失敗: '+(record.error||'回答なし');if(record.state==='completed')return record.result?.text||'回答を保存済み（未検収）';return '処理中';}
+function applySelection(selection){
+ if(!selection||!Number.isSafeInteger(selection.revision)||selection.revision<=appliedSelectionRevision||!state.cases.some(x=>x.id===selection.caseId)||!['A','C'].includes(selection.arm)||!['none','lost_response','delay_result','unavailable'].includes(selection.fault))return false;
+ el('case').value=selection.caseId;el('arm').value=selection.arm;el('fault').value=selection.fault;appliedSelectionRevision=selection.revision;return true;
+}
 async function refresh(){state=await api('/api/state');el('identity').textContent='候補 '+state.binding.adapterSha256.slice(0,16)+' / 元モデル '+state.binding.baseSha256.slice(0,16)+' / 出力上限256、全体120秒';
- const selected=el('case').value;if(!el('case').options.length)for(const task of state.cases){const option=document.createElement('option');option.value=task.id;option.textContent=task.id;el('case').append(option);}if(selected)el('case').value=selected;if(initialCase&&state.cases.some(x=>x.id===initialCase))el('case').value=initialCase;initialCase=null;showSource();
+ const selected=el('case').value;if(!el('case').options.length)for(const task of state.cases){const option=document.createElement('option');option.value=task.id;option.textContent=task.id;el('case').append(option);}if(selected)el('case').value=selected;if(initialCase&&state.cases.some(x=>x.id===initialCase))el('case').value=initialCase;initialCase=null;applySelection(state.selection);showSource();
  if(state.active){current=state.active;localStorage.setItem('eve-development-operation',current);}
  const latest=state.runs[0];el('status').textContent=(state.lastProbe?'資料上限: '+(state.lastProbe.rejected?'拒否':'拒否を確認できません')+' / モデル呼出し '+state.lastProbe.modelCalls+'\n':'')+(state.group?'比較 '+state.group.completed+'/'+state.group.total+' ('+state.group.state+')\n':'接続済み\n')+(latest?latest.arm+' / '+latest.state+'\n':'')+statusText(latest);el('run').disabled=starting||Boolean(state.active)||state.group?.state==='running'||state.modelHalted;el('results').replaceChildren();
  for(const record of state.runs.slice(0,3)){const article=document.createElement('article'),h=document.createElement('h2'),pre=document.createElement('pre');h.textContent=record.caseId+' / '+record.arm+' / '+record.state;pre.textContent=JSON.stringify({operationId:record.id,jobStatus:record.job.status,revision:record.job.revision,state:record.state,answer:record.result?.text,error:record.error,steps:record.result?.steps,lateOutputRejected:record.lateOutputRejected,stopReceipt:record.stopReceipt,qualityAccepted:record.qualityAccepted},null,2);article.append(h,pre);el('results').append(article);}}

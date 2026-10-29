@@ -249,19 +249,23 @@ def validate_corpus(rows):
     return family_splits
 
 
-def build(output: Path, seed=42):
+def build(output: Path, seed=42, splits=None):
+    # Select before constructing any rows, including retention prompts.
+    selected=['train','validation','test','development','retention'] if splits is None else splits
+    if not isinstance(selected,(list,tuple)) or not selected or any(x not in ['train','validation','test','development','retention'] for x in selected) or len(set(selected))!=len(selected):
+        raise ValueError('invalid requested splits')
     if output.exists(): raise ValueError('refuse to overwrite corpus')
-    rows = [make_task(f, i, lang, variant, seed) for f in FAMILIES
+    rows = [make_task(f, i, lang, variant, seed) for f in FAMILIES if f[1] in selected
             for i in range(10) for lang in ['ja', 'en'] for variant in ['clean', 'adversarial']]
     families = validate_corpus(rows)
     # New domain/layout lineage for exploratory development only; not sealed quality.
     dev_family = ('dev_archive', 'development', '架空研究台帳', 'fictional research archive', 'nested')
     dev = [make_task(dev_family, i, lang, 'adversarial' if i in [1, 4, 7] else 'clean', seed+919)
-           for i in range(10) for lang in ['ja', 'en']]
+           for i in range(10 if 'development' in selected else 0) for lang in ['ja', 'en']]
     validate_corpus(rows+dev)
     output.mkdir(parents=True)
     files = {}
-    for split in ['train', 'validation', 'test', 'development']:
+    for split in [x for x in ['train','validation','test','development'] if x in selected]:
         chosen = dev if split == 'development' else [r for r in rows if r['split'] == split]
         raw = ''.join(canonical(r)+'\n' for r in chosen).encode()
         name = split+'.jsonl'; (output/name).write_bytes(raw)
@@ -269,7 +273,7 @@ def build(output: Path, seed=42):
     # Author-generated preservation set remains unexecuted/separate from replay.
     retention = []
     categories = ['addition', 'subtraction', 'comparison', 'multiplication', 'unit_conversion', 'translation', 'counting', 'logic']
-    for i in range(80):
+    for i in range(80 if 'retention' in selected else 0):
         lang = 'ja' if i % 2 == 0 else 'en'; a, b = 101+i, 2+i % 7; category = categories[i//10]
         if category == 'addition': q, answer = f'{a}+{b}', str(a+b)
         elif category == 'subtraction': q, answer = f'{a}-{b}', str(a-b)
@@ -283,15 +287,17 @@ def build(output: Path, seed=42):
         else: q, answer = (f'全てのA{i}はB{i}、全てのB{i}はC{i}。全てのA{i}はC{i}か。' if lang=='ja' else f'All A{i} are B{i} and all B{i} are C{i}. Are all A{i} C{i}?'), ('はい' if lang=='ja' else 'yes')
         retention.append({'id': f'retention-{i:03d}', 'language': lang, 'split': 'sealed_retention',
                           'category': category, 'request': q, 'answer': answer, 'permission': PERMISSION})
-    if len({r['request'] for r in retention}) != 80: raise ValueError('duplicate preservation prompts')
-    raw = ''.join(canonical(r)+'\n' for r in retention).encode(); (output/'retention.jsonl').write_bytes(raw)
-    files['retention.jsonl'] = {'sha256': digest(raw), 'records': len(retention)}
+    if 'retention' in selected:
+        if len({r['request'] for r in retention}) != 80: raise ValueError('duplicate preservation prompts')
+        raw = ''.join(canonical(r)+'\n' for r in retention).encode(); (output/'retention.jsonl').write_bytes(raw)
+        files['retention.jsonl'] = {'sha256': digest(raw), 'records': len(retention)}
     manifest = {'schema': 'eve.synthetic-corpus-manifest/1', 'seed': seed, 'files': files,
                 'familySplits': families, 'familiesAssignedBeforeVariants': True,
                 'authoring': 'implementation-author synthetic corpus; not blinded independent test authoring',
                 'independenceScope': 'distinct renderer/domain families; shared task schemas; exploratory only',
                 'teacherDistillationPerformed': False, 'privateDataUsed': False,
                 'sealedEvaluationExecuted': False, 'independentReview': 'pending', 'trainingSystem': SYSTEM}
+    if splits is not None:manifest['requestedSplits']=list(selected)
     (output/'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+'\n')
     return manifest
 

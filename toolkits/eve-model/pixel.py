@@ -12,6 +12,7 @@ import shlex
 import subprocess
 import time
 import urllib.request
+import urllib.error
 import urllib.parse
 import uuid
 import xml.etree.ElementTree as ET
@@ -140,6 +141,42 @@ def inspect_ui(root):
     candidate=json.loads((root/'candidate-manifest.json').read_text())
     return raw,validate_ui(raw,candidate['adapterSha256'][:16],c)
 
+def selection_visible(tree,case_id,arm,fault):
+    labels={'case':case_id,'arm':{'A':'A: 元モデル','C':'C: 学習済みEve'}[arm],'fault':{'none':'通常','lost_response':'合成障害: 受付応答を失う','delay_result':'合成障害: 結果の保存を5秒遅延','unavailable':'合成障害: モデル利用不可'}[fault]}
+    for element_id,label in labels.items():
+        # Chromium exposes observed HTML selects as View; older surfaces use
+        # Spinner. Exact element identity is required for either representation.
+        nodes=[node for node in tree.iter('node') if node.get('package')==BROWSER and node.get('resource-id')==element_id]
+        if len(nodes)!=1:return False
+        node=nodes[0]
+        if node.get('class') not in ['android.view.View','android.widget.Spinner'] or node.get('enabled')!='true' or node.get('text')!=label or node.get('visible-to-user')=='false':return False
+        bounds=re.fullmatch(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]',node.get('bounds',''))
+        if not bounds:return False
+        x1,y1,x2,y2=map(int,bounds.groups())
+        if x1>=x2 or y1>=y2:return False
+    return True
+
+def select_fixture(root,case_id,arm='C',fault='none'):
+    # Existing foreground/URL/candidate/overlay guard must pass before API use.
+    inspect_ui(root)
+    if not isinstance(case_id,str) or not re.fullmatch('[A-Za-z0-9_-]{1,100}',case_id) or arm not in ['A','C'] or fault not in ['none','lost_response','delay_result','unavailable']:raise ValueError('invalid fixed fixture selection')
+    c=credentials(root);origin=f'http://127.0.0.1:{PORT}'
+    def request(endpoint,payload=None):
+        headers={'Cookie':'eve_dev='+c['token'],'Origin':origin}
+        if payload is not None:headers['Content-Type']='application/json'
+        req=urllib.request.Request(origin+endpoint,data=json.dumps(payload).encode() if payload is not None else None,headers=headers,method='POST' if payload is not None else 'GET')
+        try:
+            with urllib.request.urlopen(req,timeout=5) as response:return json.loads(response.read(2*1024**2))
+        except (urllib.error.URLError,OSError,ValueError):raise ValueError('fixture controller request failed; details withheld') from None
+    result=request('/api/select',{'caseId':case_id,'arm':arm,'fault':fault});selection=result.get('selection',{})
+    if set(selection)!={'revision','caseId','arm','fault'} or type(selection['revision']) is not int or selection['revision']<1 or (selection['caseId'],selection['arm'],selection['fault'])!=(case_id,arm,fault) or type(result.get('modelCalls')) is not int or result.get('modelCalls')!=0 or type(result.get('jobsCreated')) is not int or result.get('jobsCreated')!=0:raise ValueError('fixture preset response mismatch')
+    for attempt in range(6):
+        _,tree=inspect_ui(root);backend=request('/api/state')
+        if backend.get('selection')!=selection or backend.get('active') or (backend.get('group') or {}).get('state')=='running':raise ValueError('fixture preset changed or an owned job started during confirmation')
+        if selection_visible(tree,case_id,arm,fault):return {'selected':True,'revision':selection['revision'],'caseId':case_id,'arm':arm,'fault':fault,'uiConfirmed':True,'modelCalls':0,'jobsCreated':0,'openedNewTab':False}
+        if attempt<5:time.sleep(1)
+    raise ValueError('exact visible fixture selection not confirmed; do not run')
+
 def capture(root,case_id):
     if not re.fullmatch('[A-Za-z0-9_-]{1,80}',case_id):raise ValueError('invalid evidence identity')
     raw,tree=inspect_ui(root);directory=root/'pixel';directory.mkdir(exist_ok=True)
@@ -178,11 +215,12 @@ def cleanup(root):
     return {'removed':False,'reason':'mapping ownership inactive; nothing removed'}
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('action',choices=['connect','open','capture','tap','cleanup']);p.add_argument('--case');p.add_argument('--text')
+    p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('action',choices=['connect','open','select','capture','tap','cleanup']);p.add_argument('--case');p.add_argument('--text')
     p.add_argument('--arm',choices=['A','C']);p.add_argument('--fault',choices=['none','lost_response','delay_result','unavailable'])
     a=p.parse_args()
     if a.action=='connect':result=connect(a.root)
     elif a.action=='open':result=open_client(a.root,a.case,a.arm,a.fault)
+    elif a.action=='select':result=select_fixture(a.root,a.case,a.arm or 'C',a.fault or 'none')
     elif a.action=='capture':result=capture(a.root,a.case)
     elif a.action=='tap':result=tap(a.root,a.text)
     else:result=cleanup(a.root)

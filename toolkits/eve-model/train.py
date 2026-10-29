@@ -8,9 +8,9 @@ import signal
 import sys
 import time
 from budget import Budget
-from manifest import OFFLINE,admission,atomic_json
+from manifest import OFFLINE,admission,atomic_json,sha
 from profiles import PROFILES,profile,require_decision,runtime_problem
-from train_worker import RUN_IDS,CANDIDATE_NAMES
+from train_worker import RUN_IDS,CANDIDATE_NAMES,validate_recipe,semantic_update_decision
 
 def stop_owned(child,grace=5):
     if child.poll() is None:
@@ -64,16 +64,45 @@ def supervise_owned(command,root,limit,log_name='training.log',grace=5,profile_n
       'resourceSamples':samples,'minimumAvailablePagesBytes':min_available,'maximumVmPressureLevel':max_pressure,'samplingSeconds':1}
     return record
 
-def run(root,base,data,updates,profile_name='standard',run_id='eve-qlora-v1',candidate_name='candidate-v1',reuse_before=None):
+def reviewed_startup_binding(root,data,budget):
+    """One reviewed retry of a denied, never-started semantic probe only."""
+    run_id='eve-semantic-probe';original=root/('training-admission-'+run_id+'.json')
+    if json.loads(original.read_text()).get('admitted') is not False:raise ValueError('original probe admission must be false')
+    # Any reservation (even zero completed updates) or execution evidence denies reuse.
+    for table,column in [('training','id'),('training_allocations','id'),('training_reconciliations','run_id'),('validation','run_id')]:
+        if budget.db.execute('SELECT COUNT(*) FROM '+table+' WHERE '+column+'=?',(run_id,)).fetchone()[0]:raise ValueError('probe already has training or validation state')
+    records=['training-supervisor-'+run_id+'.json','training-supervisor.json','training-progress-'+run_id+'.json','training-progress.json','candidate-manifest-'+run_id+'.json','candidate-manifest.json','validation-'+run_id+'.json','training-'+run_id+'.log','training.log','probe-v1','candidate-v1','candidate-v2']
+    if any((root/name).exists() for name in records):raise ValueError('probe already has execution evidence')
+    review_path=root/'TRAINING_STARTUP_RESUMPTION_REVIEW.json';decision_path=root/'training-startup-resumption-decision.json';protocol_path=root/'training-protocol.json'
+    review=json.loads(review_path.read_text());decision=json.loads(decision_path.read_text());protocol_sha=sha(protocol_path)
+    if review.get('schema')!='eve.training-startup-resumption-review/1' or review.get('permitted') is not True or review.get('runId')!=run_id or review.get('trainingProtocolSha256')!=protocol_sha:raise ValueError('current independent startup review required')
+    binding={'runId':run_id,'originalAdmissionSha256':sha(original),'reviewSha256':sha(review_path),'dataManifestSha256':sha(data/'manifest.json'),'trainingProtocolSha256':protocol_sha}
+    if decision.get('schema')!='eve.training-startup-resumption-decision/1' or decision.get('status')!='adopted' or decision.get('onceOnly') is not True or any(decision.get(key)!=value for key,value in binding.items()):raise ValueError('bound one-time startup decision required')
+    return {**binding,'decisionSha256':sha(decision_path),'originalAdmissionFile':original.name,'reviewFile':review_path.name,'decisionFile':decision_path.name,'startupAdmissionFile':'training-admission-'+run_id+'-reviewed1.json','onceOnly':True}
+
+def run(root,base,data,updates,profile_name='standard',run_id='eve-qlora-v1',candidate_name='candidate-v1',reuse_before=None,startup_resumption=False):
+    if type(startup_resumption) is not bool:raise ValueError('startup resumption must be an explicit boolean')
+    if startup_resumption and (run_id,updates,profile_name,candidate_name,reuse_before)!=('eve-semantic-probe',8,'matched-768-v1','probe-v1',None):raise ValueError('reviewed startup resumption is semantic-probe-only')
+    if run_id.startswith('eve-semantic-'):
+        validate_recipe(updates,profile_name,run_id,candidate_name,reuse_before)
+        if run_id=='eve-semantic-final':
+            decision=semantic_update_decision(root,data)
+            if updates!=decision['selectedUpdates']:raise ValueError('final updates differ from preregistered resource decision')
+            atomic_json(root/'semantic-update-decision.json',decision)
     b=Budget(root); b.check_time(1800)
     require_decision(root,profile_name)
+    admission_path=root/('training-admission-'+run_id+('-reviewed1' if startup_resumption else '')+'.json')
+    if startup_resumption and admission_path.exists():raise FileExistsError('reviewed startup attempt already consumed')
+    resumption=reviewed_startup_binding(root,data,b) if startup_resumption else None
     # Exclusive creation reserves this run's evidence before querying resources.
     # A partial write/query failure is an unstarted-attempt record, not reusable.
     # No child may start until the complete snapshot is flushed and fsynced.
-    with (root/('training-admission-'+run_id+'.json')).open('x',encoding='utf8') as evidence:
+    with admission_path.open('x',encoding='utf8') as evidence:
         check=admission(root,profile_name)
+        if resumption:check={**check,'startupResumption':resumption}
         json.dump(check,evidence,ensure_ascii=False,sort_keys=True,indent=2)
         evidence.write('\n');evidence.flush();os.fsync(evidence.fileno())
+    if resumption and reviewed_startup_binding(root,data,b)!=resumption:raise ValueError('startup approval/evidence changed during fresh gate')
     atomic_json(root/'training-admission.json',check)
     if not check['admitted']: raise ValueError('memory/disk admission failed; no optimizer step started')
     if not 1<=updates<=128: raise ValueError('updates out of bounds')
@@ -88,6 +117,8 @@ def run(root,base,data,updates,profile_name='standard',run_id='eve-qlora-v1',can
     source_hashes={name:__import__('hashlib').sha256(Path(__file__).with_name(name).read_bytes()).hexdigest() for name in ['train.py','train_worker.py','completion_loss.py','budget.py','manifest.py','profiles.py']}
     record=supervise_owned(command,root,limit,log_name='training-'+run_id+'.log',profile_name=profile_name)
     record['runId']=run_id;record['ownedCommand']=command;record['sourceHashesAtLaunch']=source_hashes
+    record['startupAdmissionFile']=admission_path.name
+    if resumption:record['startupResumption']=resumption
     atomic_json(root/('training-supervisor-'+run_id+'.json'),record)
     try:b.charge_training_wall(run_id,record['elapsedSeconds'])
     except BaseException as error:
@@ -103,5 +134,6 @@ def run(root,base,data,updates,profile_name='standard',run_id='eve-qlora-v1',can
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--base',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--updates',type=int,default=128)
     p.add_argument('--profile',choices=list(PROFILES),default='standard')
-    p.add_argument('--run-id',choices=RUN_IDS,default='eve-qlora-v1');p.add_argument('--candidate-name',choices=CANDIDATE_NAMES,default='candidate-v1');p.add_argument('--reuse-before',choices=['eve-qlora-v1','eve-recovery-probe'])
-    a=p.parse_args();print(json.dumps(run(a.root,a.base,a.data,a.updates,a.profile,a.run_id,a.candidate_name,a.reuse_before)))
+    p.add_argument('--run-id',choices=RUN_IDS,default='eve-qlora-v1');p.add_argument('--candidate-name',choices=CANDIDATE_NAMES,default='candidate-v1');p.add_argument('--reuse-before',choices=['eve-qlora-v1','eve-recovery-probe','eve-semantic-probe'])
+    p.add_argument('--reviewed-startup-resumption',action='store_true')
+    a=p.parse_args();print(json.dumps(run(a.root,a.base,a.data,a.updates,a.profile,a.run_id,a.candidate_name,a.reuse_before,a.reviewed_startup_resumption)))
