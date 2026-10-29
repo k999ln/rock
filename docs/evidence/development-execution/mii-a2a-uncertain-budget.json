@@ -1,0 +1,41 @@
+{
+  "schema": "rockstaros.mii-a2a-uncertain-budget/1",
+  "baseMain": "dad4fd149a85ca747fabd980ee6aa78551c23a07",
+  "status": "independent_review_full_verify_pass_integration_pending",
+  "source": {
+    "path": "tests/mii-a2a-uncertain-budget-integration.test.mjs",
+    "sha256": "234ae6913391c458add1bf4833c40c2099c26b8f344182bdfbbe4ec76083c4b4"
+  },
+  "validation": {
+    "targetedTests": 67,
+    "pass": 67,
+    "fail": 0,
+    "localLogPath": "/private/tmp/rock-mii-a2a-recovery-targeted-r3-20261029.log",
+    "localLogSha256": "ada4d477225c9853571241e286f3dca472896032a9a881ce22b0da1bec7d8fea",
+    "independentReview": "PASS_SCOPED: final source 3/3 independently rerun; r2 negative fixture disabling pending-cancel fence failed as expected; r3 preflight-release rejection independently checked.",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "tests": 3420,
+      "pass": 3416,
+      "fail": 0,
+      "skipped": 4,
+      "localLogPath": "/private/tmp/rock-mii-a2a-integrated-verify-20261029.log",
+      "localLogSha256": "743e297449844bd667d43e5c13f94b924ff3cc57c1861685e00f04ceb8c14fc3"
+    }
+  },
+  "observed": [
+    "Actual work API, A2A delegation GET/store and mii adapter share one synthetic owner/job/SQLite; file journal persists local cancel intent.",
+    "After synthetic send becomes indeterminate, repeated dispatch and pre-send-failure release are rejected, and held reservation remains visible through mii.",
+    "Synthetic remote cancellation is cancel_unconfirmed. Local mii cancellation with lost reply is reconciled from the same job; a request lost before commit remains pending and cannot be automatically resent. Neither proves remote stop.",
+    "Concurrent local store claims admit one; in a separate terminal scenario two simultaneous identical synthetic receipts settle one internal ledger record and a different receipt conflicts.",
+    "Owner change prevents mii readback."
+  ],
+  "limits": [
+    "Remote send and cancellation states are injected through the actual store, not the actual worker or a real transport.",
+    "The store assumes receipt verification before invocation; fixture signature is not verified and does not establish provider authenticity or actual charges.",
+    "This A2A budget ledger is distinct from MCP Tool pricing and from native Wallet; no real funds, provider or physical device is used.",
+    "Concurrent calls use one in-process SQLite fixture, not distributed production contention.",
+    "This does not prove automatic reconciliation or physical/remote stop. Git/CI remain pending."
+  ]
+}

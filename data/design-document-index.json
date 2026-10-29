@@ -60,10 +60,12 @@
       "tests": [
         "tests/mii-budget-readback.test.mjs",
         "tests/mii-work-preview-ui.test.mjs",
-        "tests/eve-smith-mii-browser.test.mjs"
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/mii-a2a-uncertain-budget-integration.test.mjs"
       ],
       "evidence": "docs/evidence/development-execution/mii-budget-readback.json",
-      "scope": "same owner/job read-only A2A budget snapshot; no MCP cost, invoice, execution authority or physical acceptance"
+      "scope": "same owner/job read-only A2A budget snapshot; no MCP cost, invoice, execution authority or physical acceptance",
+      "uncertainBudgetEvidence": "docs/evidence/development-execution/mii-a2a-uncertain-budget.json"
     },
     "creationDisclosure": {
       "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",

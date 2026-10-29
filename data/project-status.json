@@ -1,18 +1,29 @@
 {
-  "eveSmithUnmatchedBrowser": {
+  "miiA2aUncertainBudget": {
     "owner": "ROCK",
     "status": "independent_review_full_verify_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/mii-a2a-uncertain-budget.json",
+    "next": "Save PR, verify same-head CI, merge and verify merge SHA CI; physical/provider/Wallet remain unaccepted."
+  },
+  "eveSmithUnmatchedBrowser": {
+    "owner": "ROCK",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/eve-smith-unmatched-hash-browser.json",
-    "next": "Save PR and confirm head and merge SHA CI."
+    "next": "Keep synthetic-preview scope; physical devices and production remain unaccepted.",
+    "pullRequest": 270,
+    "prHead": "525c54dd47f8f45d7c3525fc5476f6ac166336d0",
+    "mergeSha": "dad4fd149a85ca747fabd980ee6aa78551c23a07",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "executionReviewHistory": {
     "owner": "ROCK",
-    "status": "main_integrated_same_sha_ci_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/execution-review-history.json",
-    "next": "Confirm all merge SHA CI; normal-account authority, actual costs and physical devices remain open.",
+    "next": "Normal-account authority, actual costs, UNKNOWN final reconciliation and physical devices remain open.",
     "pullRequest": 269,
     "prHead": "8d0d98690be32247ccadf781b27723b074e6a3dc",
-    "mergeSha": "2aeb926de5b70eb93555762b1660eafe69799f50"
+    "mergeSha": "2aeb926de5b70eb93555762b1660eafe69799f50",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "smithSchemaConfirmation": {
     "owner": "ROCK",
