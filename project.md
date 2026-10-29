@@ -715,9 +715,11 @@ Eveで自由に担当を作り、SmithでToolと実行先を照合し、同じ�
 
 Smithの入力照合候補は追加必須入力と不明schemaを区別し、本人へschemaを表示して確認取消・期限・再確認の競合を拒否する。PR268をmain 94f0d9dbへ統合し同SHAの全6 CIが成功。期待型の構造化・自動照合、通常accountと実機は別途必要。[証拠](docs/evidence/development-execution/smith-schema-confirmation.json)。
 
-実行直前の確認を既存attempt・Connector一回承認・claimと同じ仕事の履歴/exportへ結ぶ候補は、旧job互換と新jobの省略拒否を独立検収し、main Smith修正とのcombined試験58/58に成功。修正後の全verifyは3413成功・0失敗・4skip。PR269をmain 2aeb926dへ統合し、同SHA CIは確認中。価格申告は未検証、実機と本番accountは別受入。[証拠](docs/evidence/development-execution/execution-review-history.json)。
+実行直前の確認を既存attempt・Connector一回承認・claimと同じ仕事の履歴/exportへ結ぶ候補は、旧job互換と新jobの省略拒否を独立検収し、main Smith修正とのcombined試験58/58に成功。修正後の全verifyは3413成功・0失敗・4skip。PR269をmain 2aeb926dへ統合し、同SHA CI全6件が成功。価格申告は未検証、実機と本番accountは別受入。[証拠](docs/evidence/development-execution/execution-review-history.json)。
 
-未対応能力を持つ第三担当の保存・読戻し・不足表示と非実行、および同じ成果のmii画面・再読込・exportでのhash一致を合成ブラウザで確認、独立検収と全verifyを通過。Git統合・CIは未完了。[証拠](docs/evidence/development-execution/eve-smith-unmatched-hash-browser.json)。
+未対応能力を持つ第三担当の保存・読戻し・不足表示と非実行、および同じ成果のmii画面・再読込・exportでのhash一致を合成ブラウザで確認、PR270をmain dad4fd14へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/eve-smith-unmatched-hash-browser.json)。
+
+同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。全verifyは3416成功・0失敗・4skip、Git統合・CIは未完了。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
 1. main統合済みの設計・入口を対象実装branchへ同期し、元dirty候補の未回収差分と同一公開artifactの受入を比較する。PR #112/#115/#116/#117/#118は既にmain適用済みで、旧文書を復活させない。実NFC・所属/枠・有料Provider・任意claim本番受入は別gateとする。
 2. [横断契約と12受入](docs/service-design/06-consistency-contracts.md)の順で、realm/owner/root/leaf/成果相関 → 状態投影と親取消fence → account期間/Goal予算・価格/pass/後払いadapter → 真正reviewer/Receipt → grant/削除journal/鍵喪失復旧 → authority epoch/機器適合を既存fixtureへ接続する。
