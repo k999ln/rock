@@ -21,10 +21,12 @@ const deferred = () => { let resolve; const promise = new Promise(r => { resolve
 
 function harness({ realConnector = true, cancelBeforeConnector = false, claimFailure = '', responseMismatch = '', stopAfterClaim = false } = {}) {
   const manifest = packageApi.createSkyToolPackageDraft({ sourceKind: 'github', sourceUrl: 'https://github.com/example/tool', developerName: 'Example', developerId: 'example', license: 'MIT' });
+  const declaration={schema:'rockstaros.tool-capability/1',capabilityIds:['fixture.process'],permissions:manifest.capabilities.permissions.map(permission=>({permission,scopes:permission==='network'?['origin:fixture']:[]}))};
+  manifest.io.inputSchema['x-rockstaros-tool-contract']=declaration;
   const packageKey = packageApi.skyToolPackageKey(manifest), manifestSha256 = 'b'.repeat(64), owner = 'owner-v1:' + 'a'.repeat(64);
   const agent = { id: '2e762de5-1f39-4a8a-95f9-03f8910b1630', revision: 1, name: '担当', instructions: '作業',
     provider: 'local-model', model: 'fixture-model', enabled: true, source: 'personal', sourceTool: null, updatedAt: 0,
-    requirements: { inputFields: [], outputFields: [], packageKey, executionTarget: 'pc' } };
+    requirements: { inputFields: [], outputFields: [], packageKey, executionTarget: 'pc',contract:{schema:'rockstaros.agent-tool-expectation/1',inputTypes:{},outputTypes:{},capabilityIds:['fixture.process'],allowedPermissions:declaration.permissions,runtime:{serverId:'s',toolName:'op'}} } };
   const server = { id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { toolDigest: 'e'.repeat(64), server: { version: '1' }, tools: [{ name: 'op',
     description: 'fixture', inputSchema: manifest.io.inputSchema, outputSchema: manifest.io.outputSchema, pricing: { model: 'free', note: '' } }] } };
   const registry = { packages: [{ packageKey, manifest, manifestSha256, status: 'verified', installable: true }] };

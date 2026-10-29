@@ -6,7 +6,7 @@ import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
 import { readOwnerScope, OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { includedRockstarServicePackageKeys } from '@/lib/rockstar-service-package-access';
 import { parseSkyToolPackage } from '@/lib/sky-tool-package';
-import { reviewSkyAgentRequirements, type RequirementsPackage, type SkyAgentRequirements } from '@/lib/sky-agent-requirements';
+import { parseSkyAgentRequirements, reviewSkyAgentRequirements, type RequirementsPackage, type SkyAgentRequirements } from '@/lib/sky-agent-requirements';
 import type { SkyLibraryAgent } from '@/lib/sky-agent-library';
 
 const empty = (): SkyAgentRequirements => ({ inputFields: [], outputFields: [], packageKey: '', executionTarget: '' });
@@ -22,6 +22,12 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   const [requirements, setRequirements] = useState<SkyAgentRequirements>(agent.requirements ?? empty());
   const [inputText, setInputText] = useState((agent.requirements?.inputFields ?? []).join('\n'));
   const [outputText, setOutputText] = useState((agent.requirements?.outputFields ?? []).join('\n'));
+  const initialContract = agent.requirements?.contract;
+  const [inputTypesText,setInputTypesText] = useState(initialContract?.inputTypes === undefined ? '' : JSON.stringify(initialContract.inputTypes));
+  const [outputTypesText,setOutputTypesText] = useState(initialContract?.outputTypes === undefined ? '' : JSON.stringify(initialContract.outputTypes));
+  const [capabilitiesText,setCapabilitiesText] = useState(initialContract?.capabilityIds === undefined ? '' : JSON.stringify(initialContract.capabilityIds));
+  const [permissionsText,setPermissionsText] = useState(initialContract?.allowedPermissions === undefined ? '' : JSON.stringify(initialContract.allowedPermissions));
+  const [runtimeText,setRuntimeText] = useState(initialContract?.runtime ? JSON.stringify([initialContract.runtime.serverId,initialContract.runtime.toolName]) : '');
   const [packages, setPackages] = useState<RequirementsPackage[]>([]);
   const [servers, setServers] = useState<McpConnection[] | null>(null);
   const [entitlements, setEntitlements] = useState<Set<string> | null>(null);
@@ -33,16 +39,29 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   const [fresh, setFresh] = useState(false);
   const [reviewedSchema, setReviewedSchema] = useState('');
   const reviewRef = useRef({ key: '', confirmed: false, deadline: 0, generation: 0 });
-  const wanted = useMemo(() => ({ ...requirements, inputFields: lines(inputText), outputFields: lines(outputText) }), [requirements, inputText, outputText]);
+  const desired = useMemo(() => {
+    try {
+      const contract:Record<string,unknown> = {schema:'rockstaros.agent-tool-expectation/1'};
+      for(const [key,text] of [['inputTypes',inputTypesText],['outputTypes',outputTypesText],['capabilityIds',capabilitiesText],['allowedPermissions',permissionsText]])
+        if(text.trim())contract[key]=JSON.parse(text);
+      if(runtimeText){const [serverId,toolName]=JSON.parse(runtimeText);contract.runtime={serverId,toolName};}
+      const hasContract=Boolean(requirements.contract)||Object.keys(contract).length>1;
+      return { wanted:parseSkyAgentRequirements({...requirements,inputFields:lines(inputText),outputFields:lines(outputText),...(hasContract?{contract}:{})}),error:'' };
+    } catch(reason) { return {wanted:null,error:reason instanceof Error?reason.message:'条件の形式を確認してください。'}; }
+  },[requirements,inputText,outputText,inputTypesText,outputTypesText,capabilitiesText,permissionsText,runtimeText]);
+  const wanted = desired.wanted ?? requirements;
+  const runtimeStamp = (connections:readonly McpConnection[]|null) => JSON.stringify(connections?.filter(s=>s.id===wanted.contract?.runtime?.serverId).map(s=>({id:s.id,transport:s.transport,digest:s.passport?.toolDigest,state:s.state})));
+
+  const reviewedRuntimeStamp=runtimeStamp(servers);
   const selectedPackage = packages.find(item => item.packageKey === wanted.packageKey);
   // This is a local acknowledgement of displayed declarations, not authority.
   // Bind it to the Agent, exact requirements and full Package; any change clears it.
-  const schemaReviewKey = selectedPackage && fresh && owner ? JSON.stringify({ owner, id: current.id, revision: current.revision,
-    wanted, package: selectedPackage }) : '';
+  const schemaReviewKey = selectedPackage && fresh && owner && !desired.error ? JSON.stringify({ owner, id: current.id, revision: current.revision,
+    wanted, package: selectedPackage, runtime:reviewedRuntimeStamp }) : '';
   const review = useMemo(() => {
-    try { return reviewSkyAgentRequirements(wanted, packages, servers); }
+    try { return desired.error ? {state:'missing' as const,issues:[desired.error],candidates:[]} : reviewSkyAgentRequirements(wanted, packages, servers); }
     catch { return { state: 'missing' as const, issues: ['必要な入力と成果の項目を確認してください。'], candidates: [] }; }
-  }, [wanted, packages, servers]);
+  }, [wanted, packages, servers, desired.error]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -107,6 +126,7 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
       if (!entitlementResponse.ok || entitlement.ownerScope !== owner || !includedRockstarServicePackageKeys(entitlement).has(wanted.packageKey))
         throw new Error('このToolの利用権を確認できません。');
       const connected = await listMcpConnections();
+      if(runtimeStamp(connected)!==reviewedRuntimeStamp)throw new Error('選択した実Toolの版・接続が変わりました。');
       if (reviewSkyAgentRequirements(wanted, actual, connected).state !== 'candidate') throw new Error('実行先の接続または能力が変わりました。読み直してください。');
       await checkAgent();
       if (reviewRef.current.generation !== generation || !reviewRef.current.confirmed || reviewRef.current.key !== schemaReviewKey || Date.now() >= reviewRef.current.deadline)
@@ -119,6 +139,7 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
 
   async function save() {
     if (!owner || saving || uncertain) return;
+    if (desired.error || !desired.wanted) { setError(desired.error); return; }
     reviewRef.current.generation++; reviewRef.current.confirmed = false;
     setSaving(true); setError(''); setNotice('');
     try {
@@ -160,12 +181,23 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
   return <section aria-label="担当の必要な能力">
     <h3>この担当に必要な入力・成果・Tool</h3>
     <p>希望を設定し、宣言と接続を照合します。項目名の一致は値の妥当性や成果の保証ではありません。保存は実行や権限の承認ではありません。</p>
-    <label>必要な入力項目（1行に1項目）<textarea value={inputText} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setInputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
-    <label>必要な成果項目（1行に1項目）<textarea value={outputText} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setOutputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
-    <label>Tool<select value={requirements.packageKey} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setRequirements(value => ({ ...value, packageKey: event.target.value })); setDirty(true); }}>
+    <label>必要な入力項目（1行に1項目）<textarea disabled={saving||uncertain} value={inputText} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setInputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
+    <label>必要な成果項目（1行に1項目）<textarea disabled={saving||uncertain} value={outputText} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setOutputText(event.target.value); setDirty(true); }} maxLength={1295} /></label>
+    <p>型・処理能力ID・許容permissionとscopeを明示します。空欄は未指定、空の配列やobjectは明示した空条件です。scopeは完全一致で照合し、自由文から推測しません。</p>
+    {([
+      ['期待する入力型（JSON）',inputTypesText,setInputTypesText],
+      ['期待する成果型（JSON）',outputTypesText,setOutputTypesText],
+      ['必要な処理能力ID（JSON）',capabilitiesText,setCapabilitiesText],
+      ['許容permissionとscope（JSON）',permissionsText,setPermissionsText],
+    ] as const).map(([label,value,setValue])=><label key={label}>{label}<textarea value={value} maxLength={6000} disabled={saving||uncertain}
+      onChange={event=>{reviewRef.current.generation++;reviewRef.current.confirmed=false;setValue(event.target.value);setDirty(true);}} /></label>)}
+    <label>使用する接続と操作<select value={runtimeText} disabled={saving||uncertain} onChange={event=>{reviewRef.current.generation++;reviewRef.current.confirmed=false;setRuntimeText(event.target.value);setDirty(true);}}>
+      <option value="">未指定</option>{servers?.flatMap(server=>server.passport?.tools.map(tool=><option key={server.id+':'+tool.name} value={JSON.stringify([server.id,tool.name])}>{server.name} · {tool.name}</option>)??[])}
+    </select></label>
+    <label>Tool<select disabled={saving||uncertain} value={requirements.packageKey} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setRequirements(value => ({ ...value, packageKey: event.target.value })); setDirty(true); }}>
       <option value="">選択してください</option>{packages.map(item => <option key={item.packageKey} value={item.packageKey}>{item.manifest.name} · {item.manifest.version} ({item.status})</option>)}
     </select></label>
-    <label>実行先<select value={requirements.executionTarget} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setRequirements(value => ({ ...value, executionTarget: event.target.value as SkyAgentRequirements['executionTarget'] })); setDirty(true); }}>
+    <label>実行先<select disabled={saving||uncertain} value={requirements.executionTarget} onChange={event => { reviewRef.current.generation++; reviewRef.current.confirmed = false; setRequirements(value => ({ ...value, executionTarget: event.target.value as SkyAgentRequirements['executionTarget'] })); setDirty(true); }}>
       <option value="">選択してください</option><option value="device_local">端末内</option><option value="pc">PC</option><option value="cloud">Cloud</option>
     </select></label>
     {selectedPackage && <div>
@@ -176,7 +208,7 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
         onChange={event => { reviewRef.current.generation++; reviewRef.current.key = schemaReviewKey; reviewRef.current.confirmed = event.target.checked && Boolean(schemaReviewKey) && !dirty && !uncertain; setReviewedSchema(event.target.checked ? schemaReviewKey : ''); }} />
         入力と成果の宣言を、担当の希望と自分で確認しました</label>
     </div>}
-    <output>{!fresh ? '接続情報は未確認または期限切れです。画面を読み直してください。' : wanted.packageKey && entitlements && !entitlements.has(wanted.packageKey) ? 'このToolの利用権を確認できません。' : review.issues.join(' ')}</output>
+    <output>{desired.error || (!fresh ? '接続情報は未確認または期限切れです。画面を読み直してください。' : wanted.packageKey && entitlements && !entitlements.has(wanted.packageKey) ? 'このToolの利用権を確認できません。' : review.issues.join(' '))}</output>
     {review.candidates.map(candidate => <p key={`${candidate.serverId}:${candidate.toolName}`}>{candidate.serverName} · {candidate.toolName}</p>)}
     <button type="button" disabled={!owner || saving || !dirty || uncertain} onClick={() => void save()}>{saving ? '保存しています…' : '必要な能力を保存'}</button>
     {notice && <output>{notice}</output>}{error && <p role="alert">{error}</p>}

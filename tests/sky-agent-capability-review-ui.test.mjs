@@ -16,13 +16,15 @@ function harness(extraRequired = false) {
   const manifest = packageApi.createSkyToolPackageDraft({ sourceKind: 'github', sourceUrl: 'https://github.com/example/tool', developerName: 'Example', developerId: 'example', license: 'MIT' });
   if (extraRequired) manifest.io = { inputSchema: { type: 'object', properties: { text: { type: 'integer' }, secret: { type: 'string' } }, required: ['text', 'secret'] },
     outputSchema: { type: 'object', properties: { count: { type: 'string' } } } };
+  const declaration={schema:'rockstaros.tool-capability/1',capabilityIds:['fixture.process'],permissions:manifest.capabilities.permissions.map(permission=>({permission,scopes:permission==='network'?['origin:fixture']:[]}))};
+  manifest.io.inputSchema[requirements.SKY_TOOL_CONTRACT_ANNOTATION]=declaration;
   const packageKey = packageApi.skyToolPackageKey(manifest);
   const item = { packageKey, manifest, manifestSha256: 'b'.repeat(64), status: 'verified', installable: true };
   const owner = 'owner-v1:' + 'a'.repeat(64);
   const initial = { id: '2e762de5-1f39-4a8a-95f9-03f8910b1630', revision: 1, name: '担当', instructions: '作業',
     provider: 'local-model', model: 'fixture-model', enabled: true, source: 'personal', sourceTool: null,
-    updatedAt: 0, requirements: { inputFields: extraRequired ? ['text'] : [], outputFields: extraRequired ? ['count'] : [], packageKey, executionTarget: 'pc' } };
-  const servers = [{ id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { tools: [{ name: 'op',
+    updatedAt: 0, requirements: { inputFields: extraRequired ? ['text'] : [], outputFields: extraRequired ? ['count'] : [], packageKey, executionTarget: 'pc', contract:{schema:'rockstaros.agent-tool-expectation/1',inputTypes:extraRequired?{text:'integer'}:{},outputTypes:extraRequired?{count:'string'}:{},capabilityIds:['fixture.process'],allowedPermissions:declaration.permissions,runtime:{serverId:'s',toolName:'op'}} } };
+  const servers = [{ id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { toolDigest:'d'.repeat(64), tools: [{ name: 'op',
     inputSchema: manifest.io.inputSchema, outputSchema: manifest.io.outputSchema, pricing: { model: 'free' } }] } }];
   const entitlements = { ownerScope: owner, entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: [{ packageKey, state: 'ready' }] } }] };
   const slots = [], effects = [], pushes = [], writes = [], timers = [];
@@ -60,8 +62,11 @@ function harness(extraRequired = false) {
     unconfirmSchema() { const node = nodes(tree).find(n => n.type === 'input' && n.props.type === 'checkbox'); assert.ok(node); node.props.onChange({ target: { checked: false } }); render(); },
     holdRegistry() { registryHeld = true; }, releaseRegistry() { assert.ok(releaseRegistry); registryHeld = false; releaseRegistry(); },
     begin(name) { const node = button(name); assert.ok(node && !node.props.disabled, name); node.props.onClick(); render(); },
+    changeRuntime() { servers[0].passport.toolDigest='e'.repeat(64); },
+    changePermission() { servers[0].passport.tools[0].inputSchema=structuredClone(manifest.io.inputSchema); servers[0].passport.tools[0].inputSchema[requirements.SKY_TOOL_CONTRACT_ANNOTATION].permissions.push({permission:'external_account',scopes:['account:other']}); },
     revoke() { revoked = true; }, switchOwner() { account = 'owner-v1:' + 'c'.repeat(64); }, switchEntitlementOwner() { entitlements.ownerScope = 'owner-v1:' + 'c'.repeat(64); }, malformedWrite() { malformedWrite = true; },
     expire() { timers.at(-1)?.(); render(); },
+    changeCondition(label,value) { const field=nodes(tree).find(n=>n.type==='label'&&text(n).includes(label));nodes(field).find(n=>n.type==='textarea').props.onChange({target:{value}});render(); },
     changeInput(value) { const field = nodes(tree).find(n => n.type === 'textarea'); field.props.onChange({ target: { value } }); render(); },
     async click(name) { const node = button(name); assert.ok(node && !node.props.disabled, name); node.props.onClick(); render(); await flush(); },
   };
@@ -108,4 +113,14 @@ void test('revocation, expiry or editing while registry lookup is pending preven
     assert.equal(h.pushes.length, 0, action);
     assert.match(h.text(), /確認が変更または期限切れ/);
   }
+});
+
+void test('new explicit condition changes invalidate acknowledgement; unspecified and empty stay distinct',async()=>{
+ const h=harness();await h.flush();h.confirmSchema();h.changeCondition('許容permissionとscope','[]');
+ assert.equal(h.button('同じ担当で仕事の確認へ進む'),undefined);assert.match(h.text(),/許容されていません/);
+ h.changeCondition('許容permissionとscope','');assert.match(h.text(),/未指定/);
+});
+void test('runtime digest or explicit permission changes after acknowledgement cannot navigate',async()=>{
+ for(const change of ['changeRuntime','changePermission']){const h=harness();await h.flush();h.confirmSchema();h[change]();
+ await h.click('同じ担当で仕事の確認へ進む');assert.equal(h.pushes.length,0);assert.match(h.text(),/変わりました/);}
 });

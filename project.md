@@ -713,6 +713,8 @@ Pixel 10 GL066 / frankelは確定対象。試験署名APKの非破壊再起動23
 
 Eveで自由に担当を作り、SmithでToolと実行先を照合し、同じ仕事をmiiの合成画面から読むlocal-preview候補は範囲限定の独立検収と全verifyに合格した。[設計・責任と制約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)、[試験と残件](docs/evidence/development-execution/eve-smith-mii-host-preview.json)。次はGit保存・main統合・同SHA CIをそれぞれ確認する。実account/eSIM、実mii/Pixel、実費と公開は別受入。
 
+Smithの本人指定型・能力ID・permission/scope・実Toolの版付き宣言照合を統合候補へ追加。schema未宣言と対象scope不明を未確認としてbegin/claimでも拒否し、旧jobの互換を維持。合成fixtureと独立検収に限定し、実権限・Provider・実機は未受入。[証拠](docs/evidence/development-execution/smith-declared-capability-matching.json)。
+
 Smithの入力照合候補は追加必須入力と不明schemaを区別し、本人へschemaを表示して確認取消・期限・再確認の競合を拒否する。PR268をmain 94f0d9dbへ統合し同SHAの全6 CIが成功。期待型の構造化・自動照合、通常accountと実機は別途必要。[証拠](docs/evidence/development-execution/smith-schema-confirmation.json)。
 
 実行直前の確認を既存attempt・Connector一回承認・claimと同じ仕事の履歴/exportへ結ぶ候補は、旧job互換と新jobの省略拒否を独立検収し、main Smith修正とのcombined試験58/58に成功。修正後の全verifyは3413成功・0失敗・4skip。PR269をmain 2aeb926dへ統合し、同SHA CI全6件が成功。価格申告は未検証、実機と本番accountは別受入。[証拠](docs/evidence/development-execution/execution-review-history.json)。

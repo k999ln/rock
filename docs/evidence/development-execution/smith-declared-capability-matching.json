@@ -1,0 +1,32 @@
+{
+  "schema": "rockstaros.smith-declared-capability-matching/1",
+  "base": "3f3fa56de55cc0b623c4f4b98629a6f8791b1de0",
+  "sourceBase": "0064d20883398313f6a5006ed538fc93f2d195c2",
+  "sourceAggregateSha256": "24f0c5fb4c2a2c9baeb8e6412ec3eda86ed17177e871fe6922c6c82f73275893",
+  "productionSha256": {
+    "app/api/work-jobs/tool-observations/claim/route.ts": "1b96bc36d5af818b0ebaf92b9e06bb8a56684be14b33b52c2e27c5e1294fa95b",
+    "app/api/work-jobs/tool-observations/route.ts": "70d516bf801ce33f5dfc4e3308ac68c22ac78fa9a7419046a97b531cb3a58e36",
+    "components/sky-agent-capability-review.tsx": "f246129897e7922dc27997c18003373e48b4fa579c87844c30bab57de5848c24",
+    "lib/sky-agent-library-store.ts": "4ebd644a8184e8f9b814a7d67b235a3a106ec480e57f98beb70f061744657e50",
+    "lib/sky-agent-requirements.ts": "dfc212bf0e0104a1b9190571d603fa8d0bdb63ae27d2ee4abbb6b8e362b1b507"
+  },
+  "integratedBrowserSha256": "fec7a45678219f7a5b193a829f688d3d1289cd04b3b9529bfed3d100f6703880",
+  "sourceReview": "bounded independent review; integrated candidate subject to separate review",
+  "targetedTestCount": 183,
+  "targetedTestResult": "passed",
+  "scope": "Synthetic local owner and Tool declarations; provider honesty, enforced OS scope, production pricing, Pixel and physical mii not accepted",
+  "modelInference": false,
+  "actualDevice": false,
+  "repair": "Independent review found Package admission allowed missing object properties with empty fields; corrected in shared predicate and tested direct begin and claim, including older-begin pending fixture.",
+  "repairTests": {
+    "count": 33,
+    "result": "passed",
+    "independentReview": "PASS_SCOPED"
+  },
+  "legacyUi": "Existing roles without the new contract remain unconfirmed in the new review UI until owner explicitly configures it; old job read/API semantics remain separate.",
+  "scopeRepair": "network/external_account/selected_files/financial_action with empty provider scopes are unconfirmed; no claim that OS enforces scope",
+  "uiFixtureAndDependencyRegression": {
+    "count": 11,
+    "result": "passed"
+  }
+}

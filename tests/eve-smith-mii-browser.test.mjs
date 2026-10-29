@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRouteFixture } from './route-fixture.mjs';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
-import { createLineCounter } from '../toolkits/sky-tool-sdk/examples/line-counter.mjs';
+import { createDeclaredFixtureTools, fixturePermissions } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
 import { parseSkyToolPackage, skyToolPackageKey, skyToolPackageSha256 } from '../lib/sky-tool-package.ts';
 import { skyPackageSchemaSha256 } from '../lib/sky-package-runtime.ts';
 import { createConnector } from '../toolkits/sky-mcp-connector/server.mjs';
@@ -76,7 +76,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const env = { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false', ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: localAuthority ? owner : 'local-preview:another-fixture' };
     const deps = new Map([['cloudflare:workers', { env }],
       ['@/lib/fund-store', { database: () => db, requestUser: async () => authenticatedOwner }]]);
-    for (const name of ['request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
+    for (const name of ['sky-agent-requirements', 'request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
       deps.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
     for (const name of ['a2a-authorization', 'a2a-price-quote', 'a2a-usage-receipt', 'jennifer-execution-store', 'jennifer-amc-execution', 'a2a-agent-directory', 'sky-tool-package-store', 'sky-package-runtime-binding', 'sky-package-runtime-binding-store'])
       deps.set(`@/lib/${name}`, {});
@@ -91,7 +91,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       '/api/work-jobs/tool-observations': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/route.ts', import.meta.url), deps),
       '/api/work-jobs/tool-observations/claim': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/claim/route.ts', import.meta.url), deps),
     };
-    const app = createLineCounter({ publicMcpUrl: 'https://example.invalid/mcp', skyUrl: 'https://example.invalid', localToolDirectory: path.join(dir, 'discovery'),
+    const app = createDeclaredFixtureTools({ publicMcpUrl: 'https://example.invalid/mcp', skyUrl: 'https://example.invalid', localToolDirectory: path.join(dir, 'discovery'),
       developerToken: 'fixture-token-not-a-credential', fetch: async () => { throw new Error('EXTERNAL_NETWORK_FORBIDDEN'); }, logger: { warn() {} } });
     const packages = await Promise.all(app.manifests().map(async raw => {
       const manifest = parseSkyToolPackage(raw), packageKey = skyToolPackageKey(manifest), manifestSha256 = await skyToolPackageSha256(manifest);
@@ -222,6 +222,24 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await click('内容を確認'); await click('確認して保存');
     await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'Smith');
     await input('必要な入力項目', 'text'); await input('必要な成果項目', 'lines'); await input('Tool', packageKey); await input('実行先', 'pc');
+    await input('期待する入力型',JSON.stringify({text:'string'}));await input('期待する成果型',JSON.stringify({lines:'integer'}));
+    await input('必要な処理能力ID',JSON.stringify(['fixture.count-lines']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
+    await input('使用する接続と操作',JSON.stringify([sdk.localId,'count_lines']));
+    // Exercise explicit user intent in real UI before any capability save/dispatch.
+    await input('期待する入力型',JSON.stringify({text:'integer'}));
+    await wait('document.body.innerText.includes("型が一致しません")','explicit input type contradiction');
+    await input('期待する入力型',JSON.stringify({text:'string'}));
+    await input('許容permissionとscope','');
+    await wait('document.body.innerText.includes("permission・scopeが未指定")','unspecified permission remains unconfirmed');
+    await input('許容permissionとscope','[]');
+    await wait('document.body.innerText.includes("許容されていません")','explicit empty permission rejects provider use');
+    await input('許容permissionとscope',JSON.stringify(fixturePermissions));
+    await input('使用する接続と操作',JSON.stringify([sdk.localId,'add_integers']));
+    await wait('document.body.innerText.includes("実Toolに処理能力ID")','different actual Tool is not a candidate');
+    await input('使用する接続と操作',JSON.stringify([sdk.localId,'count_lines']));
+    await wait('document.body.innerText.includes("宣言条件が一致しました")','explicit selected Tool matches');
+    assert.equal(requests.filter(r=>r.path.endsWith('/tool-observations')).length,0);
+
     await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'saved requirements');
     await confirmSchema();
     await click('同じ担当で仕事の確認へ進む');
@@ -402,6 +420,9 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'second Smith review');
       await input('必要な入力項目', 'left\nright'); await input('必要な成果項目', 'sum');
       await input('Tool', packages[1].packageKey); await input('実行先', 'pc');
+      await input('期待する入力型',JSON.stringify({left:'integer',right:'integer'}));await input('期待する成果型',JSON.stringify({sum:'integer'}));
+      await input('必要な処理能力ID',JSON.stringify(['fixture.add-integers']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
+      await input('使用する接続と操作',JSON.stringify([sdk.localId,'add_integers']));
       await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'second requirements saved');
       await confirmSchema();
       await click('同じ担当で仕事の確認へ進む');

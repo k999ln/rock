@@ -129,6 +129,24 @@
       ],
       "evidence": "docs/evidence/development-execution/mii-output-lease.json",
       "scope": "synthetic mii preview output; JS timer/visibility based, not physical stop"
+    },
+    "declaredCapabilityMatching": {
+      "serviceContract": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "implementation": [
+        "lib/sky-agent-requirements.ts",
+        "lib/sky-agent-library-store.ts",
+        "components/sky-agent-capability-review.tsx",
+        "app/api/work-jobs/tool-observations/route.ts",
+        "app/api/work-jobs/tool-observations/claim/route.ts"
+      ],
+      "tests": [
+        "tests/sky-agent-capability-contract.test.mjs",
+        "tests/sky-agent-contract-api.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/eve-smith-mii-platform-integration.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/smith-declared-capability-matching.json",
+      "scope": "explicit owner requirements and provider-declared metadata only; no authority or model inference"
     }
   },
   "latestRockstarOsDesign": {
