@@ -1,0 +1,110 @@
+{
+  "schema": "rockstaros.pr301-merge-ci/1",
+  "repository": "k999ln/rock",
+  "pullRequest": 301,
+  "mergeSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+  "observedAtUtc": "2026-10-29 21:07:14 UTC",
+  "checks": [
+    {
+      "name": "SPIDER / repair regressions",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "id": 123728992913,
+      "url": "https://github.com/k999ln/rock/actions/runs/40953927978/job/123728992913",
+      "completedAt": "2026-10-29T21:01:00Z"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "id": 123728992748,
+      "url": "https://github.com/k999ln/rock/actions/runs/40953928071/job/123728992748",
+      "completedAt": "2026-10-29T21:01:40Z"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "id": 123728992653,
+      "url": "https://github.com/k999ln/rock/actions/runs/40953927978/job/123728992653",
+      "completedAt": "2026-10-29T21:01:29Z"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "id": 123728992450,
+      "url": "https://github.com/k999ln/rock/actions/runs/40953927981/job/123728992450",
+      "completedAt": "2026-10-29T21:03:16Z"
+    },
+    {
+      "name": "verify",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "id": 123728992163,
+      "url": "https://github.com/k999ln/rock/actions/runs/40953928037/job/123728992163",
+      "completedAt": "2026-10-29T21:05:40Z"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "id": 123728992118,
+      "url": "https://github.com/k999ln/rock/actions/runs/40953927981/job/123728992118",
+      "completedAt": "2026-10-29T21:02:35Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": 40953928071,
+      "name": "SPIDER repository security",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "event": "push",
+      "url": "https://github.com/k999ln/rock/actions/runs/40953928071"
+    },
+    {
+      "id": 40953927978,
+      "name": "SPIDER repair regressions",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "event": "push",
+      "url": "https://github.com/k999ln/rock/actions/runs/40953927978"
+    },
+    {
+      "id": 40953927981,
+      "name": "SPIDER CodeQL security",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "event": "push",
+      "url": "https://github.com/k999ln/rock/actions/runs/40953927981"
+    },
+    {
+      "id": 40953928037,
+      "name": "Rock star verification",
+      "status": "completed",
+      "result": "success",
+      "sha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "event": "push",
+      "url": "https://github.com/k999ln/rock/actions/runs/40953928037"
+    }
+  ],
+  "allSucceeded": true,
+  "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+  "metadataSuccessorPolicy": "The metadata-only followup is normally merged and its latest main SHA CI is independently read back; exact final result is recorded in the followup PR and PR301 descriptions without another file mutation.",
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "wholeEveAccepted": false
+}

@@ -12659,10 +12659,10 @@
   "eveSelectedSourceAgent": {
     "owner": "ROCK",
     "primarySquad": "O5",
-    "status": "git_preserved_independent_full_verify_same_sha_ci_pass_host_scoped",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
     "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
-    "next": "Git owner can compare PR301 with current main for separately authorized normal integration. Next development: exact social-post ACL/provenance; upstream updates, actual model/provider, composition graph and physical acceptance remain separate.",
+    "next": "Preserve this merge/CI record by metadata-only normal integration, then exact social-post ACL/provenance is the next bounded development item. Upstream updates, actual model/provider, composition graph and physical acceptance remain separate.",
     "wholeUnitAccepted": false,
     "publication": "HOLD",
     "deployment": "HOLD",
@@ -12675,6 +12675,10 @@
     "verifiedCiHead": "0cc7d4cd020887767ab51e087c91f24955438e8f",
     "ciEvidence": "docs/evidence/development-execution/eve-selected-source-ci.json",
     "finalHeadReadback": "https://github.com/k999ln/rock/pull/301",
-    "mainMerged": false
+    "mainMerged": true,
+    "mainMergeSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+    "mergeEvidence": "docs/evidence/development-execution/eve-selected-source-main-integration.json",
+    "mergeCiEvidence": "docs/evidence/development-execution/eve-selected-source-main-ci.json",
+    "mergeChecks": "6 checks / 4 workflows completed successfully"
   }
 }

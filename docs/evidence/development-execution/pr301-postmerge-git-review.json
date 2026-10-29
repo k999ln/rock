@@ -1,0 +1,100 @@
+{
+  "schema": "rockstaros.pr301-postmerge-git-review/1",
+  "task": "G301-v1",
+  "reviewer": "Operations Bot / Git workstream10 / ROCK",
+  "result": "PASS_GIT_UNION_CI_PENDING",
+  "mustFix": [],
+  "pullRequest": {
+    "merged": true,
+    "mergedAt": "2026-10-29T20:59:57Z",
+    "mergeSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+    "head": "2601b78d1f632f3bce58384b80218d7d92cc709e",
+    "url": "https://github.com/k999ln/rock/pull/301"
+  },
+  "mergeCommit": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+  "parents": [
+    "10e443a854a83d29c962aff6cf0599cdbe86a5e3",
+    "2601b78d1f632f3bce58384b80218d7d92cc709e"
+  ],
+  "tree": "1c109259b1d71bd7b73c5a0aad7f4a86a9fca3d0",
+  "expectedLocalCandidateTreeMatches": true,
+  "normalMergeConfirmed": true,
+  "sourceFiles": 21,
+  "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+  "allSourceBlobHashesMatched": true,
+  "mainTopLevelStatusPreservedExceptUpdatedAt": true,
+  "selectedSourceAgentObjectPreserved": true,
+  "qualityRecoveryPreserved": true,
+  "qualityAccepted": false,
+  "defaultAdopted": false,
+  "physicalWholeLoopAccepted": false,
+  "nativePhoneInferenceAccepted": false,
+  "wholeUnitAccepted": false,
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "ci": {
+    "state": "pending",
+    "checks": [
+      {
+        "name": "SPIDER / repair regressions",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40953927978/job/123728992913"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40953928071/job/123728992748"
+      },
+      {
+        "name": "SPIDER / production web security measurement",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40953927978/job/123728992653"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40953927981/job/123728992450"
+      },
+      {
+        "name": "verify",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40953928037/job/123728992163"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "status": "in_progress",
+        "conclusion": null,
+        "headSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+        "url": "https://github.com/k999ln/rock/actions/runs/40953927981/job/123728992118"
+      }
+    ],
+    "qualification": "Fresh independent GitHub capture had six in-progress checks. This is not same-SHA CI acceptance; await all final merge-SHA checks."
+  },
+  "metadataFollowup": {
+    "required": true,
+    "reason": "Merged source metadata correctly retains premerge mainMerged=false; parent-owned metadata-only closure must record actual merge and final CI when complete, preserving independent qualityRecovery and holds."
+  },
+  "parentReportedCandidateFullVerify": {
+    "exitCode": 0,
+    "log": "/private/tmp/pr301-main-candidate-verify.log",
+    "qualification": "Result reported by parent; Git tree and source preservation independently verified here."
+  },
+  "limitations": [
+    "No source or Git mutations performed.",
+    "Forbidden docs/evidence/eve-execution-si.json was not read, copied or hashed.",
+    "This accepts Git union/source preservation only; no model quality, provider, device or production acceptance."
+  ]
+}
