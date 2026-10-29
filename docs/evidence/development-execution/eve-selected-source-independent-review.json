@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros.eve-selected-source-independent-review/1",
   "reviewer": "/root/eve_gap_review",
-  "recordedAt": "2026-10-29T20:22:52.621724+00:00",
+  "recordedAt": "2026-10-29T20:35:17.280704+00:00",
   "root": "/private/tmp/rock-eve-five-hour-20261029",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "result": "PASS_SCOPED",
@@ -353,5 +353,38 @@
       "public/toolkits/sky-mcp-connector.zip": "8c51dffc66dca63aacc75b4524f67549cf8470de8ccd44c40983463d3b1d4c5c"
     },
     "rootVerificationStatus": "Frozen fullverify9 running; previous fullverify8 is historical. Final exacthead CI/Git not claimed by this review."
+  },
+  "creatorCiFixtureFollowup": {
+    "result": "PASS_SCOPED",
+    "fixturePath": "tests/eve-agent-creation-ui.test.mjs",
+    "fixtureSha256": "73f9aee38d9751f4783fdcde99555a8aece25ff479679cf3870e71d7660c6426",
+    "baselinePath": "/private/tmp/eve-agent-creation-ui-pr301-base.mjs",
+    "baselineSha256": "4fb5de5aa78302802257708d82b7644c1b798fb5b69e227586b7bf5733cfb63d",
+    "source21ManifestUnchanged": true,
+    "zipArtifactsUnchanged": true,
+    "reviewNotes": [
+      "Eight normal/owner/source generation/import race/final digest tests preserve all dispatch/storage/state assertions. Import readiness and savebutton draft existence are stronger explicit preconditions.",
+      "Five-second semantic settlement tracks actual fetch/json/origin/WebCrypto/pending/create/reconcile through completion; only explicitly entered held ownerGET is an intentional pause.",
+      "Final digest race still waits for actual second helper digest and releases only after source removal/unmount. No production edits."
+    ],
+    "independentTestsPassed": 27,
+    "independentFailed": 0,
+    "independentSkipped": 0,
+    "command": "node --experimental-strip-types --test tests/eve-agent-creation-ui.test.mjs tests/eve-agent-creation.test.mjs tests/eve-agent-proposal.test.mjs",
+    "log": "/private/tmp/eve-creator-ci-fixture-integrated-independent.log",
+    "logSha256": "92e16cc9955a27f07eb146bbcaca610085bee44e545ec1ed150c37334de3c992",
+    "lintPassed": true,
+    "lintLog": "/private/tmp/eve-creator-ci-fixture-integrated-independent-lint.log",
+    "lintLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "peerReviewPacket": "/private/tmp/eve-creator-fixture-independent-review.json",
+    "peerReviewSha256": "1aaeb093f2d3fb784da35a6c62645b50b8b364e7b1556867a54a76ddfc6b4dd0",
+    "initialCiFailureReportedByRoot": {
+      "pr": 301,
+      "headPrefix": "5a8b7b25",
+      "verify": "two creator UI fixture readiness failures",
+      "otherSixChecks": "passed",
+      "note": "Historical failed head remains recorded; corrected head CI must be checked separately."
+    },
+    "rootVerificationStatus": "Fullverify10 running; no corrected-head CI acceptance claimed by this review."
   }
 }

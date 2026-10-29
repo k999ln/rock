@@ -16,7 +16,8 @@ const compiled = ts.transpileModule(readFileSync(new URL('../components/eve-obje
 const scope = 'owner-v1:' + 'a'.repeat(64);
 const originalReplies = [{ id: 'reply', text: 'Imported role text' }];
 function harness() {
-  let replies = originalReplies, tree, cursor = 0, account = scope, held = false, hold;
+  let replies = originalReplies, tree, cursor = 0, account = scope, held = false, hold, activeAsync = 0;
+  const observed = fn => async (...args) => { activeAsync++; try { return await fn(...args); } finally { activeAsync--; } };
   const slots = [], layouts = [], effects = [], puts = [], rows = new Map();
   const storage = { getItem: k => rows.get(k) ?? null, setItem: (k, v) => rows.set(k, v), removeItem: k => rows.delete(k) };
   const same = (a, b) => a?.length === b?.length && a.every((v, i) => v === b[i]);
@@ -33,17 +34,24 @@ function harness() {
     useRef(initial) { const i = cursor++; return slots[i] ??= { current: initial }; },
     useEffect(fn, deps) { effect(fn, deps, effects); }, useLayoutEffect(fn, deps) { effect(fn, deps, layouts); },
   };
-  async function fetch(_url, init = {}) {
-    if (init.method === 'PUT') { const body = JSON.parse(init.body); puts.push(body);
-      return Response.json({ agent: { ...body.settings, id: body.id, revision: 1, source: 'personal', sourceTool: null, updatedAt: 0 } }); }
-    if (held) { hold = Promise.withResolvers(); await hold.promise; }
-    return Response.json({ ownerScope: account });
+  function json(value) {
+    const response = Response.json(value);
+    response.json = observed(response.json.bind(response));
+    return response;
   }
+  const fetch = observed(async (_url, init = {}) => {
+    if (init.method === 'PUT') { const body = JSON.parse(init.body); puts.push(body);
+      return json({ agent: { ...body.settings, id: body.id, revision: 1, source: 'personal', sourceTool: null, updatedAt: 0 } }); }
+    if (held) { hold = Promise.withResolvers(); await hold.promise; }
+    return json({ ownerScope: account });
+  });
   const jsx = (type, props) => ({ type, props });
   const modules = { react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' },
-    '@/lib/eve-agent-origin': origin, '@/lib/eve-agent-proposal': proposal, '@/lib/sky-agent-library': library,
+    '@/lib/eve-agent-origin': { ...origin, makeEveAgentOrigin: observed(origin.makeEveAgentOrigin) }, '@/lib/eve-agent-proposal': proposal, '@/lib/sky-agent-library': library,
     '@/components/sky-agent-capability-review': { default: 'Smith' }, '@/lib/owner-intent': owner,
-    '@/lib/llm-providers': providers, '@/lib/eve-agent-creation': creation };
+    '@/lib/llm-providers': providers, '@/lib/eve-agent-creation': { ...creation,
+      prepareEveAgentPending: observed(creation.prepareEveAgentPending), createEveAgent: observed(creation.createEveAgent),
+      reconcileEveAgentCreation: observed(creation.reconcileEveAgentCreation) } };
   const exports = {};
   runInNewContext(compiled, { exports, fetch, crypto, AbortController, sessionStorage: storage,
     require: name => { assert.ok(modules[name], name); return { __esModule: true, ...modules[name] }; } });
@@ -52,25 +60,47 @@ function harness() {
   const text = n => typeof n === 'string' ? n : Array.isArray(n) ? n.map(text).join('') : n?.props ? text(n.props.children) : '';
   const button = label => nodes(tree).find(n => n.type === 'button' && text(n) === label);
   function input(label, value) { const field = nodes(nodes(tree).find(n => n.type === 'label' && text(n).startsWith(label))).find(n => ['input', 'textarea', 'select'].includes(n.type)); assert.ok(field, label); field.props.onChange({ target: { value } }); render(); }
-  async function flush() { for (let i = 0; i < 12; i++) { await new Promise(r => setImmediate(r)); render(); } }
+  const draftText = () => nodes(tree).find(n => n.type === 'textarea' && n.props.maxLength === 1200)?.props.value;
+  async function until(predicate, label) {
+    const deadline = performance.now() + 5000;
+    do {
+      await new Promise(r => setImmediate(r)); render();
+      if (predicate()) return;
+    } while (performance.now() < deadline);
+    assert.fail(`${label}: activeAsync=${activeAsync}; UI=${text(tree)}`);
+  }
+  async function flush() {
+    // Held owner reads are intentional race staging. Other asynchronous
+    // work, including actual WebCrypto origin and pending digests, must finish.
+    await until(() => (held && hold) || activeAsync === 0, 'creator did not settle');
+  }
+  function saveButton() {
+    assert.notEqual(draftText(), undefined, `confirmed draft must be ready: ${text(tree)}`);
+    const node = button('確認して保存'); assert.ok(node, `save confirmation must exist: ${text(tree)}`); return node;
+  }
   render();
-  return { flush, render, button, input, puts, rows, text: () => text(tree),
-    async import() { input('下書きに使う回答', 'reply'); button('回答から下書きを作る').props.onClick(); await flush(); },
+  return { flush, until, render, button, saveButton, input, puts, rows, text: () => text(tree),
+    async import() {
+      input('下書きに使う回答', 'reply');
+      const action = button('回答から下書きを作る'); assert.ok(action && !action.props.disabled, 'reply import must be ready');
+      action.props.onClick(); await flush();
+      assert.notEqual(draftText(), undefined, `reply import must produce a draft, not a terminal error: ${text(tree)}`);
+    },
     beginImport() { input('下書きに使う回答', 'reply'); button('回答から下書きを作る').props.onClick(); render(); },
     changeReplies(value) { replies = value; render(); },
     changeOwner() { account = 'owner-v1:' + 'b'.repeat(64); },
-    pause() { held = true; }, release() { held = false; assert.ok(hold); hold.resolve(); },
+    pause() { held = true; hold = undefined; }, release() { held = false; assert.ok(hold); hold.resolve(); },
     unmount() { slots.forEach(slot => slot.cleanup?.()); },
     manual() { input('担当の名前', 'Manual role'); input('何を手伝う担当ですか', 'Manual purpose'); input('受け取るもの', 'Manual input'); input('期待する成果', 'Manual output'); },
     submitManual() { nodes(tree).find(n => n.type === 'form').props.onSubmit({ preventDefault() {} }); render(); },
-    draftText: () => nodes(tree).find(n => n.type === 'textarea' && n.props.maxLength === 1200)?.props.value,
+    draftText,
   };
 }
 
 void test('selected reply becomes editable draft without save or execution, then confirmed save', async () => {
   const h = harness(); await h.flush(); await h.import();
   assert.equal(h.draftText(), 'Imported role text'); assert.equal(h.puts.length, 0); assert.equal(h.rows.size, 0);
-  h.input('役割・入力・期待する成果', 'Owner-edited role'); h.button('確認して保存').props.onClick(); await h.flush();
+  h.input('役割・入力・期待する成果', 'Owner-edited role'); h.saveButton().props.onClick(); await h.flush();
   assert.equal(h.puts.length, 1); assert.equal(h.puts[0].settings.instructions, 'Owner-edited role');
   assert.equal(Object.keys(h.puts[0].settings).length, 6); assert.match(h.text(), /保存しました/);
   assert.equal(h.puts[0].settings.origin.replyId,'reply');
@@ -98,13 +128,13 @@ void test('manual preparation is blocked while selected reply import is pending'
   assert.equal(h.draftText(), undefined); h.release(); await h.flush(); assert.equal(h.draftText(), 'Imported role text');
 });
 void test('owner changes before save never dispatch a write', async () => {
-  const h = harness(); await h.flush(); await h.import(); h.changeOwner(); h.button('確認して保存').props.onClick(); await h.flush();
+  const h = harness(); await h.flush(); await h.import(); h.changeOwner(); h.saveButton().props.onClick(); await h.flush();
   assert.equal(h.puts.length, 0); assert.equal(h.rows.size, 0); assert.match(h.text(), /本人が変わりました/);
 });
 void test('removed source disables saving; restored source still cannot dispatch', async () => {
   const h = harness(); await h.flush(); await h.import(); h.changeReplies([]); h.render();
-  assert.equal(h.button('確認して保存').props.disabled, true);
-  h.changeReplies(originalReplies); h.render(); h.button('確認して保存').props.onClick(); await h.flush();
+  assert.equal(h.saveButton().props.disabled, true);
+  h.changeReplies(originalReplies); h.render(); h.saveButton().props.onClick(); await h.flush();
   assert.equal(h.puts.length, 0); assert.equal(h.rows.size, 0);
 });
 void test('source change or unmount during final digest prevents PUT and pending reservation', async t => {
@@ -117,8 +147,8 @@ void test('source change or unmount during final digest prevents PUT and pending
       if (++count === 2) { pause = Promise.withResolvers(); await pause.promise; }
       return original(...args);
     });
-    h.button('確認して保存').props.onClick();
-    for (let i = 0; i < 100 && !pause; i++) await new Promise(r => setTimeout(r, 1));
+    h.saveButton().props.onClick();
+    await h.until(() => Boolean(pause), 'final helper digest did not reach its deliberate hold');
     assert.ok(pause, 'final helper digest reached');
     if (action === 'source') h.changeReplies([]); else h.unmount();
     pause.resolve(); await h.flush(); mock.mock.restore();

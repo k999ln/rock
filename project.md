@@ -56,7 +56,7 @@ main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致
 
 ### 選んだ出典・Eve回答から担当保存（2026-10-29 / O5・ROCK）
 
-Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 基点main `3563d9a807568a474b34ce61f9a16de9cb3c231e`。独立検収で送信待機中の取消・会話/URL変更、非同期後の期限/時計、出典拒否のunknown固定を修正。独立検収PASS_SCOPED、全verify成功（Node3587/3583pass/0fail/4skip・build/API/mission完了）。PC固定CLIの終了観測/killpg競合も限定修正し、Python21/追加guard6と配布ZIP2件のbyte照合を独立受入。過去の失敗原因を未計測で断定せず[証拠](docs/evidence/development-execution/eve-selected-source-agent.json)へ保持する。Home複数カードの選択順序も共通ticketで固定し、新しい選択の失敗や旧CTA書込でも古い応答を復活させない。独立66件と負荷反復10回成功。Git/最終head CIが次。合成回答・host範囲であり、実モデル/上流同期/投稿本文/Agent graph/全経路/実機は未受入。公開・配備・616件一括公開は保留。
+Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 基点main `3563d9a807568a474b34ce61f9a16de9cb3c231e`。独立検収で送信待機中の取消・会話/URL変更、非同期後の期限/時計、出典拒否のunknown固定を修正。独立検収PASS_SCOPED、全verify成功（Node3587/3583pass/0fail/4skip・build/API/mission完了）。PC固定CLIの終了観測/killpg競合も限定修正し、Python21/追加guard6と配布ZIP2件のbyte照合を独立受入。過去の失敗原因を未計測で断定せず[証拠](docs/evidence/development-execution/eve-selected-source-agent.json)へ保持する。Home複数カードの選択順序も共通ticketで固定し、新しい選択の失敗や旧CTA書込でも古い応答を復活させない。独立66件と負荷反復10回成功。[PR301](https://github.com/k999ln/rock/pull/301)へGit保存済み。初回CIのUI fixture待機2件は実非同期完了待ちへ修正し、独立27件・負荷160件・修正後全verify成功。現在の最終head CI確認が次。合成回答・host範囲であり、実モデル/上流同期/投稿本文/Agent graph/全経路/実機は未受入。公開・配備・616件一括公開は保留。
 
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 

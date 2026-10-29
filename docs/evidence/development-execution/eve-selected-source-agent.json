@@ -182,12 +182,12 @@
     "tabSelectionOrdering": "module-shared opaque current selection ticket, begun synchronously before first await; previous shared slot removed with readback; guarded write and navigation; legacy writers supersede; no persistence or authority"
   },
   "verification": {
-    "state": "independent_and_final_full_verify_pass_ready_for_git_ci",
+    "state": "git_saved_fixture_repaired_full_verify_pass_corrected_head_ci_pending",
     "independentReview": {
       "result": "PASS_SCOPED",
       "reviewer": "eve_gap_review",
       "report": "docs/evidence/development-execution/eve-selected-source-independent-review.json",
-      "reportSha256": "0f6fe946bc37ce59faaaeb8e9e3b359876c6f85ff8e730d8f0e35874dde9f662",
+      "reportSha256": "028dcac119059b0449ece38e9e1644565374a759661ae51c1b2f2614dc2971d0",
       "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
       "initialConsolidatedTests": 175,
       "browserTests": 2,
@@ -218,7 +218,7 @@
         "skipped": 4
       },
       "sourceAggregateAtRun": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
-      "logSha256": "bae5d33cf671c7ac85d8a687a49d80b640c0ec02801bfacdeb67fdd6e3f7a39c",
+      "logSha256": "270322db6786de685e2b648269dbc365d4dfbf7d3153f7c87b5af6e3ed14175c",
       "includes": [
         "all metadata/design checks",
         "all Node regressions and Chrome loopback",
@@ -230,7 +230,11 @@
       ],
       "environment": "macOS Node26.12.1/Python3.15/existing OpenSSL3; skips remain separate; no real model/provider/physical acceptance"
     },
-    "headCi": "pending_Git_preservation",
+    "headCi": {
+      "head": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+      "result": "verify_failed_two_ui_fixture_readiness_tests",
+      "history": "docs/evidence/development-execution/eve-selected-source-ci-history.json"
+    },
     "attempts": [
       {
         "command": "npm run verify",
@@ -350,7 +354,7 @@
       "mcpArchiveSha256": "8c51dffc66dca63aacc75b4524f67549cf8470de8ccd44c40983463d3b1d4c5c",
       "mcpArchiveEntriesVerified": 70
     },
-    "finalCandidateFullVerify": "passed",
+    "finalCandidateFullVerify": "passed_after_ci_fixture_repair",
     "historicalSuccessfulVerifyBeforeSharedQueueRepair": {
       "passed": true,
       "exitCode": 0,
@@ -373,13 +377,27 @@
       ],
       "environment": "macOS Python3.15/OpenSSL3/Node26.12.1; skipped tests remain separate; real model/provider/device not accepted",
       "sourceAggregateAtRun": "d2f1ecd28c884b55461c9dcb01c64290be5d840ef29c559ad63dafea46484672"
+    },
+    "creatorCiFixtureRepair": {
+      "file": "tests/eve-agent-creation-ui.test.mjs",
+      "sha256": "73f9aee38d9751f4783fdcde99555a8aece25ff479679cf3870e71d7660c6426",
+      "productionChanged": false,
+      "independentReview": "docs/evidence/development-execution/eve-creator-fixture-independent-review.json",
+      "reviewSha256": "1aaeb093f2d3fb784da35a6c62645b50b8b364e7b1556867a54a76ddfc6b4dd0",
+      "independentTests": 27,
+      "stressRuns": 20,
+      "stressTestsPassed": 160,
+      "delayedRealDigestOracle": "old fixture reproduces readiness failures; corrected fixture8/8pass under same35ms delay"
     }
   },
   "git": {
     "branch": "codex/eve-selected-context-20261029",
-    "commit": "pending",
-    "pullRequest": "pending",
-    "mainMerged": false
+    "pullRequest": "https://github.com/k999ln/rock/pull/301",
+    "mainMerged": false,
+    "branchSaved": true,
+    "implementationCommit": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+    "currentHeadReference": "https://github.com/k999ln/rock/pull/301",
+    "finalHeadCiReference": "PR301 description and current-head checks, verified after metadata receipt commit"
   },
   "remaining": [
     "Finish final independent review/full verify/Git/exact-head CI for candidate",
