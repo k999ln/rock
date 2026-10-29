@@ -1,0 +1,220 @@
+{
+  "schema": "eve.semantic-quality-progress/1",
+  "status": "scoped_reviews_complete_quality_failed_repo_and_main_pending",
+  "owner": "ROCK/O3/AI02",
+  "inputMainSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+  "previousRunPreserved": true,
+  "previousCandidateQuality": "FAIL base0/20,candidate1/20,physical primary0/8",
+  "observedCauses": [
+    "Literal invalid enum example copied in failed model output",
+    "No successful Tool observation to final response training rows",
+    "Previous48 updates traversed48/240 rows and only1 combine row"
+  ],
+  "notConfirmed": [
+    "capacity/update sufficiency",
+    "prompt-only causal improvement",
+    "new candidate quality"
+  ],
+  "newModelCalls": 80,
+  "newTrainingUpdates": 80,
+  "protocolStatus": "Scoped independent source/training/semantics/operational reviews complete; full repository validation and main integration pending",
+  "qualityAccepted": false,
+  "defaultAdopted": false,
+  "wholeAI02Complete": false,
+  "productionAccepted": false,
+  "next": "Remove answer-content instruction placeholders, rebuild exact-serving-system curriculum, and preregister a fresh bounded candidate/evaluation before any next model run. Retain current qualityFAIL/nondefault. WholeAI02/native/fullOS/retention/production acceptance remain open.",
+  "diagnosticRawSchema": [
+    {
+      "system": "old",
+      "arm": "A",
+      "planned": 5,
+      "observed": 5,
+      "strictSchema": 1,
+      "completeGeneration": 5,
+      "toolArgumentsAccepted": 0
+    },
+    {
+      "system": "old",
+      "arm": "C",
+      "planned": 5,
+      "observed": 5,
+      "strictSchema": 1,
+      "completeGeneration": 2,
+      "toolArgumentsAccepted": 0
+    },
+    {
+      "system": "current",
+      "arm": "A",
+      "planned": 5,
+      "observed": 5,
+      "strictSchema": 4,
+      "completeGeneration": 5,
+      "toolArgumentsAccepted": 0
+    },
+    {
+      "system": "current",
+      "arm": "C",
+      "planned": 5,
+      "observed": 5,
+      "strictSchema": 0,
+      "completeGeneration": 1,
+      "toolArgumentsAccepted": 0
+    }
+  ],
+  "diagnosticQualification": "Changing this entire system message, including language/length and examples, improved base strict-schema output on these5 observed tasks; unchanged failed adapter did not improve. No isolated effect of a single phrase, Tool-loop completion or generalization established.",
+  "startupRecovery": {
+    "firstAttemptModelCalls": 0,
+    "oneIndependentlyReviewedManualResumption": true,
+    "originalFailurePreserved": true
+  },
+  "curriculumReview": {
+    "inputDuplicationFoundBeforeTraining": 1,
+    "correctedBeforeTraining": true,
+    "trainRows": 60,
+    "uniqueTrainRows": 60,
+    "validationRows": 4,
+    "trainValidationOverlap": 0,
+    "all60RowsActuallySeen": true,
+    "noCurrentCDAfterGoldOmission": true
+  },
+  "training": {
+    "candidateUpdates": 72,
+    "resourceProbeUpdates": 8,
+    "chargedTrainingSlots": 61440,
+    "validationBatches": 8,
+    "validationSlots": 6144,
+    "candidateManifestSha256": "2e2374f29589eded348174cb7dd7ee18b8d5dcff691d9550054c49b6474b4c7e",
+    "adapterSha256": "cc9e936dcca27b7b37f09c987d64cf187f46fcae27ce31eaac11ddf7aec68c08",
+    "beforeLoss": 1.1240204572677612,
+    "afterLoss": 0.6023532152175903,
+    "lossIsQualityAcceptance": false
+  },
+  "comparison": {
+    "plannedPerArm": 20,
+    "A": {
+      "taskComplete": 0,
+      "acceptedJobs": 17,
+      "strictSchemaPassed": 9,
+      "generationAttempts": 20,
+      "falseSuccess": 3
+    },
+    "C": {
+      "taskComplete": 1,
+      "acceptedJobs": 5,
+      "strictSchemaPassed": 10,
+      "generationAttempts": 24,
+      "falseSuccess": 1
+    },
+    "semanticIndependentlyReviewed": true,
+    "retentionEvaluated": false,
+    "sealedEvaluationExecuted": false
+  },
+  "incidents": [
+    "Diagnostic outer admission rejection initially followed by unintended Node launch; inner gate blocked before model import. Original failure and one independently reviewed manual resumption preserved.",
+    "Probe parent admission rejection consumed no updates; one independently reviewed manual startup resumption succeeded. No automatic retries.",
+    "One broad software unit-test invocation accidentally generated temporary120test/80retention fixtures without reading frozen originals or model use. Tests now select safe splits before generation; incident retained.",
+    "Pixel preflight Spinner-class assumption rejected selection before any Pixel model call. Actual guarded View IDs supported by tight ID/text/class/enabled/bounds checks and independent source/physical confirmation.",
+    "Private late-control review-file assert failed while review was saving; separate shell command still started selection. Root interrupted before Run, independently verifiable additional calls/jobs0. Subsequent launch checks/review/adoption and child dispatch share one gated Python process; original incident retained."
+  ],
+  "pixel": {
+    "route": "Pixel browser -> owned USB localhost -> Mac MLX",
+    "nativeInference": false,
+    "plannedPrimary": 10,
+    "taskComplete": 0,
+    "acceptedFinalAnswers": 1,
+    "strictSchemaPassed": 2,
+    "primaryGenerationAttempts": 11,
+    "allPixelGenerationAttempts": 16,
+    "unknownCallsCharged": 1,
+    "independentCoconalaTasks": 2,
+    "independentCoconalaTaskComplete": 0,
+    "qualityAccepted": false,
+    "controls": {
+      "reload": "saved operations/results/call count unchanged",
+      "doubleTap": "two observed taps created one operation",
+      "ownedStop": "same owned operation cancelled, owned worker termination receipt",
+      "lostResponse": "same operation state recovered without regeneration; answer still incomplete",
+      "unavailable": "zero model calls",
+      "oversize": "rejected, zero model calls",
+      "recovery": "inference resumed; answer still INCOMPLETE_MODEL_REPLY",
+      "lateResult": "valid completed respond observed before stop; cancelled, late output rejected, result absent; exact success-delay branch entry unproven"
+    },
+    "firstLateControl": "incomplete answer did not reach success-only delay; original failure retained, one independently reviewed separate control",
+    "cleanup": {
+      "usbRemoved": true,
+      "listenerRemaining": false,
+      "ownedWorkersRemaining": false,
+      "leaseReturned": true,
+      "testPageLeftOpen": true,
+      "bulkTabOperation": false
+    }
+  },
+  "budget": {
+    "generationAttempts": 80,
+    "requestedOutputTokens": 20480,
+    "diagnostic": 20,
+    "comparison": 44,
+    "pixel": 16,
+    "unknownCharged": 1,
+    "teacher": 0,
+    "optimizerUpdates": 80,
+    "trainingSlots": 61440,
+    "validationBatches": 8,
+    "validationSlots": 6144,
+    "ledgerReset": false,
+    "newDownloadsOrPaidCalls": false
+  },
+  "residualFindings": [
+    "System answer-instruction placeholder copied into actual replies; remove in next explicitly frozen same-system training/evaluation protocol.",
+    "Gold assistant JSON33..90 tokens (max92 with template ending);13 comparison outputs used256 with repetition, so raising output limit is not an evidenced repair.",
+    "Fact/unit alignment, hallucinated name, repeated/unallowed Tool and content-losing repair persist. Capacity/update sufficiency is not proven as root cause."
+  ],
+  "evidenceHashes": {
+    "semantic-data-independent-review.json": "28463e6a350e6f9e4c5a901295b3004a48e7b920386b5279e9c262076dbe46ff",
+    "TRAINING_SOURCE_REVIEW.json": "1bf794aa045aee0b94051eff7c82edb83d5acd2492c5911588f37ebe4a86a930",
+    "CANDIDATE_ARTIFACT_REVIEW.json": "524756ecb3a2cd5ca33bd7990685bb20f37eb0e8fd9b05c299212e7bc3cad3b8",
+    "semantic-adjudication.json": "814a67a1d06764ca734613af679f4da3a04e997fdc9071d1474866f7812e0ee6",
+    "RESIDUAL_QUALITY_REVIEW.json": "9c126e3630d43cb27a66dcadd6347abd67666de67b1777db70bd0b48fb6d4d13",
+    "PIXEL_CONTROLLER_VIEW_FIX_REVIEW.json": "5f4f76936a8ce9930fb3b8675b9dfd099b58aeefbdd582826fa757af35e18e74",
+    "PIXEL_PRIMARY_SEMANTIC_REVIEW.json": "35a26d7852fa6b3a77654325b9b31780f8763deb575a5cd9ed3452481d03931c",
+    "LATE_CONTROL_CORRECTION_REVIEW.json": "c26b9011445fc8cda746be08562c6cc0ac4d8c0f33bc97ec623c30efa51eb71d",
+    "LATE_CONTROL_V3_REVIEW.json": "49f7c4e96de9adf460bb40cb5b1c22cc67965ee9253c7facbc0793250e5e28ab",
+    "comparison-final.json": "0380edb4d06f4e76b199e84cacee4d9eab4112f1b753f8d629309a9ec4322b0a",
+    "run-final-budget.json": "ad241a3f3227871e4689ac85f35815e67c67bbfc70d1712a34d8bb6b933b6a88",
+    "PIXEL_FINAL_OPERATIONAL_REVIEW.json": "4103a7163c0c51d30fb62992dd24ca01feeabffe9098ef3db1dcc4005fdae258"
+  },
+  "excludedDataQualification": "Frozen excluded originals and protected execution evidence were never read/copied/hashed. Temporary software unit fixture generation incident is retained and not represented as zero generation; no use in model training or evaluation.",
+  "git": {
+    "sourceBranch": "codex/eve-semantic-quality",
+    "inputMainSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+    "sourceMainIntegrated": false,
+    "sameShaCiConfirmed": false,
+    "progressMainIntegrated": false
+  },
+  "independentAcceptance": {
+    "source": "PASS_SCOPED, no openP1/P2 reported",
+    "trainingArtifact": "PASS_SCOPED identity and accounting",
+    "formalSemanticQuality": "FAIL1/20 candidate",
+    "pixelPrimarySemanticQuality": "FAIL0/10",
+    "pixelOperations": "PASS_SCOPED with listed limits",
+    "wholeAI02": false,
+    "nativeInference": false,
+    "production": false
+  },
+  "unacceptedPhysicalBoundaries": [
+    "exact success-delay branch entry",
+    "whole phone P95 interaction latency",
+    "physical owner A/B isolation",
+    "P07 maximum3step repair boundary",
+    "native Pixel inference/fullOS",
+    "retention/generalization"
+  ],
+  "repositoryChecks": {
+    "projectUpdate": "PASS",
+    "missionUpdate": "PASS",
+    "missionCheck": "PASS",
+    "designAndResearchCheck": "PASS",
+    "spiderRiskPlan": "deep profile, prioritized existing boundary reviews; not vulnerability-free certification",
+    "fullVerify": "pending after latest-main synchronization"
+  }
+}

@@ -3803,7 +3803,7 @@
         "docs/evidence/pr-consolidation-20261005.json",
         "docs/evidence/development-execution/eve-quality-recovery.json"
       ],
-      "nextAction": "Signed model manifest/staging and activation coordinator exist in current source. Compile and accept exact profile swap plus old-job restart on equipped Android CI/device; production trust/catalogue and hardware acceptance remain open. Eve corrected-loss/full-input quality recovery is tracked separately in docs/evidence/development-execution/eve-quality-recovery.json; current48-update candidate remains quality FAIL (A0/20,C1/20; physical Pixel0/8), scoped source/semantic reviews complete, final repository verification passed and implementation PR300/main4c0b056b has all7 checks/5 workflows successful on the same SHA. Next: improve semantic quality and independently test the remaining phone/retention boundaries; keep candidate nondefault.",
+      "nextAction": "Signed model manifest/staging and activation coordinator exist in current source. Compile and accept exact profile swap plus old-job restart on equipped Android CI/device; production trust/catalogue and hardware acceptance remain open. Eve corrected-loss/full-input quality recovery is tracked separately in docs/evidence/development-execution/eve-quality-recovery.json; current48-update candidate remains quality FAIL (A0/20,C1/20; physical Pixel0/8), scoped source/semantic reviews complete, final repository verification passed and implementation PR300/main4c0b056b has all7 checks/5 workflows successful on the same SHA. Next: improve semantic quality and independently test the remaining phone/retention boundaries; keep candidate nondefault. New owner-requested semantic-quality repair is diagnosing the recorded failures; see docs/evidence/development-execution/eve-semantic-quality.json. No new model quality acceptance.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",
@@ -12572,6 +12572,20 @@
           }
         ]
       }
+    },
+    "semanticQuality": {
+      "status": "scoped_reviews_complete_quality_failed_repo_and_main_pending",
+      "inputMainSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
+      "evidence": "docs/evidence/development-execution/eve-semantic-quality.json",
+      "priorCandidatePreserved": true,
+      "qualityAccepted": false,
+      "defaultAdopted": false,
+      "next": "Remove answer-content instruction placeholders, rebuild exact-serving-system curriculum, and preregister a fresh bounded candidate/evaluation before any next model run. Retain current qualityFAIL/nondefault. WholeAI02/native/fullOS/retention/production acceptance remain open.",
+      "newTrainingUpdates": 80,
+      "candidateTaskComplete": 1,
+      "candidatePlanned": 20,
+      "pixelTaskComplete": 0,
+      "pixelPlanned": 10
     }
   },
   "sdkDistRelease": {

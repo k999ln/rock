@@ -16,6 +16,10 @@ export function validateRun(input,cases) {
   if(!exact(input,['operationId','caseId','arm','category','fault'])||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(input.operationId)||!cases.has(input.caseId)||!['A','C'].includes(input.arm)||!['pixel','comparison'].includes(input.category)||!['none','lost_response','delay_result','unavailable'].includes(input.fault))throw Error('invalid bounded test request');
   return input;
 }
+export function validateSelection(input,cases) {
+  if(!exact(input,['caseId','arm','fault'])||!cases.has(input.caseId)||!['A','C'].includes(input.arm)||!['none','lost_response','delay_result','unavailable'].includes(input.fault))throw Error('invalid bounded fixture selection');
+  return input;
+}
 async function body(req) {
   const chunks=[];let size=0;
   for await(const chunk of req){size+=chunk.length;if(size>2048)throw Error('request too large');chunks.push(chunk);}
@@ -59,14 +63,18 @@ export async function createBridge({root,base,python,port=18749,planner:injected
   if(fs.existsSync(functional)){
     const fixture=fs.readFileSync(functional,'utf8'),manifest=JSON.parse(fs.readFileSync(path.join(root,'functional-v1','manifest.json'),'utf8'));
     if(sha(fixture)!==manifest.extraSha256||manifest.sourceDevelopmentSha256!==sha(raw))throw Error('functional fixture identity mismatch');
-    const extra=fixture.trim().split('\n').map(JSON.parse);
-    if(extra.length!==1||extra[0].id!=='dev_archive-01-ja-clean'||cases.has(extra[0].id))throw Error('unexpected physical control');
-    cases.set(extra[0].id,extra[0]);
+    const extra=fixture.trim().split('\n').map(JSON.parse),legacy=manifest.schema==='eve.physical-functional-fixtures/1';
+    const expected=legacy?['dev_archive-01-ja-clean']:['dev_archive-01-ja-clean','functional-coco-ja-20','functional-coco-en-80'];
+    if(!legacy&&manifest.schema!=='eve.physical-functional-fixtures/2')throw Error('unknown functional fixture schema');
+    if(manifest.records!==expected.length||extra.length!==expected.length||new Set(extra.map(x=>x.id)).size!==expected.length||extra.some(x=>!expected.includes(x.id)||cases.has(x.id)))throw Error('unexpected physical controls');
+    if(!legacy&&(!Array.isArray(manifest.caseIds)||manifest.caseIds.length!==3||new Set(manifest.caseIds).size!==3||manifest.caseIds.some(id=>!expected.includes(id))||manifest.trainingUse!==false||manifest.teacherCalls!==0))throw Error('invalid three-case functional manifest');
+    for(const task of extra)cases.set(task.id,task);
   }
   const credentialsFile=path.join(root,'bridge-credentials.json');
   const credentials=loadBridgeCredentials(credentialsFile,port);
   const journal=new Journal(path.join(root,'client-jobs.sqlite'),credentials.owner);
   const planner=injectedPlanner??new Planner({root,base,python,expectedBinding:binding});
+  let selection={revision:0,caseId:null,arm:'C',fault:'none'};
   let active=null,group=null,closing=false,lastProbe=null,busy=false,activeCompletion=Promise.resolve(),groupCompletion=Promise.resolve();
   const safeEnd=Date.parse(session.deadlineAt)-900000;
   const checkTime=()=>{if(Date.now()>=safeEnd||closing)throw Error('session safe-stop boundary');};
@@ -148,7 +156,13 @@ export async function createBridge({root,base,python,port=18749,planner:injected
       }
       const cookie=req.headers.cookie?.split(';').map(x=>x.trim()).find(x=>x.startsWith('eve_dev='))?.slice(8);
       if(!constant(cookie,credentials.token))return json(401,{error:'development session required'});
-      if(req.method==='GET'&&url.pathname==='/api/state')return json(200,{binding,group,active,lastProbe,modelHalted:Boolean(planner.halted),runs:journal.list(),cases:[...cases.values()].map(({id,request,materials})=>({id,request,materials}))});
+      if(req.method==='GET'&&url.pathname==='/api/state')return json(200,{binding,group,active,lastProbe,selection,modelHalted:Boolean(planner.halted),runs:journal.list(),cases:[...cases.values()].map(({id,request,materials})=>({id,request,materials}))});
+      if(req.method==='POST'&&url.pathname==='/api/select'){
+        const input=validateSelection(await body(req),cases);
+        if(active||busy||group?.state==='running')throw Error('cannot select while an owned job is active');
+        selection={revision:selection.revision+1,caseId:input.caseId,arm:input.arm,fault:input.fault};
+        return json(200,{selection,modelCalls:0,jobsCreated:0});
+      }
       if(req.method==='GET'&&url.pathname==='/api/run-status'){
         const record=journal.get(url.searchParams.get('id'));return json(record?200:404,record??{error:'job not found'});
       }

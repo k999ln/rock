@@ -3965,5 +3965,26 @@
     "providerOrDeviceAccepted": false,
     "mainIntegrated": false,
     "publicDeployment": false
+  },
+  "evePlannerSemanticQuality": {
+    "authority": "docs/llm-evaluation-architecture.md#eve-planner-semantic-quality",
+    "serviceContract": "docs/service-design/02-system-contracts.md",
+    "implementation": [
+      "lib/zema-local-agent.ts",
+      "toolkits/eve-model/prepare_semantic.mjs"
+    ],
+    "tests": [
+      "tests/zema-local-agent.test.mjs",
+      "toolkits/eve-model/test_diagnose.mjs",
+      "toolkits/eve-model/test_semantic.mjs"
+    ],
+    "evidence": "docs/evidence/development-execution/eve-semantic-quality.json",
+    "schemaAndToolAllowlistUnchanged": true,
+    "modelResultIsAuthority": false,
+    "newExecutionPermission": false,
+    "qualityAccepted": false,
+    "wholeAI02Accepted": false,
+    "nativeInferenceAccepted": false,
+    "productionAccepted": false
   }
 }

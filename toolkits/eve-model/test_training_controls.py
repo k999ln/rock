@@ -14,7 +14,7 @@ from unittest.mock import patch
 from manifest import finite_metric
 import train
 from train import supervise_owned
-from train_worker import reuse_validation,train_with_explicit_loss
+from train_worker import reuse_validation,train_with_explicit_loss,validate_recipe,semantic_update_decision,coverage_receipt,observed_semantic_batches
 from completion_loss import LOSS_ID,assistant_only_loss,checked_batches
 from budget import Budget
 
@@ -137,6 +137,10 @@ class TrainingControlTests(unittest.TestCase):
             self.assertEqual(value['val_dataset'],[]);self.assertIs(value['training_callback'],callback)
             self.assertEqual((value['args'].max_seq_length,value['args'].steps_per_save),(768,1));self.assertTrue(calls['frozen']);self.assertEqual(calls['seed'],42)
             self.assertEqual(json.loads((Path(td)/'candidate/adapter_config.json').read_text())['completion_loss_id'],LOSS_ID)
+            custom=lambda *a,**kw:iter(())
+            args.adapter_path=str(Path(td)/'candidate2')
+            train_with_explicit_loss(args,model,[['synthetic']],callback,custom)
+            self.assertIs(calls['training']['iterate_batches'],custom)
 
     def test_run_admission_is_saved_per_run_before_spawn_and_latest_stays_compatible(self):
         with tempfile.TemporaryDirectory() as td:
@@ -225,5 +229,163 @@ class TrainingControlTests(unittest.TestCase):
             (Path(td)/'training.log').touch()
             with self.assertRaises(FileExistsError): supervise_owned([],Path(td),60)
         for sig,handler in previous.items(): self.assertIs(signal.getsignal(sig),handler)
+
+
+    def test_separate_semantic_recipe_preserves_recovery_and_rejects_incomplete_curriculum_updates(self):
+        self.assertTrue(validate_recipe(8,'matched-768-v1','eve-semantic-probe','probe-v1',None))
+        for n in [64,72]:self.assertFalse(validate_recipe(n,'matched-768-v1','eve-semantic-final','candidate-v1','eve-semantic-probe'))
+        self.assertFalse(validate_recipe(48,'matched-768-v1','eve-recovery-final','candidate-v1','eve-recovery-probe'))
+        for n,profile_name,reuse in [(48,'matched-768-v1','eve-semantic-probe'),(64,'standard','eve-semantic-probe'),(64,'matched-768-v1','eve-recovery-probe')]:
+            with self.assertRaises(ValueError):validate_recipe(n,profile_name,'eve-semantic-final','candidate-v1',reuse)
+
+    def test_semantic_resource_rule_uses_bound_completed_probe_and_no_quality(self):
+        from profiles import profile
+        from manifest import sha
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);data=root/'data';data.mkdir();(data/'manifest.json').write_text('{}')
+            sources={n:sha(Path(__file__).with_name(n)) for n in ['train.py','train_worker.py','completion_loss.py','budget.py','dataset.py','manifest.py','profiles.py','prepare_training.py','prepare_semantic.mjs','prepare_integration.mjs']}
+            probe={'candidateId':'eve-semantic-probe','status':'resource_probe_not_quality_candidate','recipe':{'updates':8,'completionLossId':LOSS_ID},'trainingDataManifestSha256':sha(data/'manifest.json'),'memoryProfile':profile('matched-768-v1'),'trainingSourceHashes':sources}
+            (root/'training-supervisor-eve-semantic-probe.json').write_text(json.dumps({'runId':'eve-semantic-probe','exitCode':0,'stopReason':None}))
+            path=root/'candidate-manifest-eve-semantic-probe.json'
+            def write(first,interval):
+                value={**probe,'trainingHistory':[{'iteration':i+1,'elapsedSeconds':first+i*interval,'train_loss':999999} for i in range(8)]};path.write_text(json.dumps(value));return value
+            write(3,1);self.assertEqual(semantic_update_decision(root,data)['selectedUpdates'],72)
+            write(3,1.05);self.assertEqual(semantic_update_decision(root,data)['selectedUpdates'],64)
+            write(10,1.1)
+            with self.assertRaisesRegex(ValueError,'neither64nor72'):semantic_update_decision(root,data)
+            bad=write(3,1);bad['trainingHistory'][2]['elapsedSeconds']=True;path.write_text(json.dumps(bad))
+            with self.assertRaisesRegex(ValueError,'numeric'):semantic_update_decision(root,data)
+            bad=write(3,1);bad['trainingSourceHashes']={**sources,'train_worker.py':'changed'};path.write_text(json.dumps(bad))
+            with self.assertRaisesRegex(ValueError,'source changed'):semantic_update_decision(root,data)
+            write(3,1);(data/'manifest.json').write_text('{"changed":true}')
+            with self.assertRaisesRegex(ValueError,'binding'):semantic_update_decision(root,data)
+
+    def test_semantic_completed_coverage_cannot_claim_epoch_from_duplicates_or_unreported_rows(self):
+        rows=[{'id':str(i),'taskKind':str(i%10),'language':'ja' if i%2 else 'en','variant':'clean','stage':'first_step' if i<40 else 'after_success'} for i in range(60)]
+        before=coverage_receipt(rows,[str(i) for i in range(59)]);self.assertFalse(before['firstEpochAllRowsSeen'])
+        full=coverage_receipt(rows,[str(i) for i in range(60)]+['0']*4);self.assertTrue(full['firstEpochAllRowsSeen']);self.assertEqual(full['uniqueCompletedRows'],60)
+        self.assertFalse(coverage_receipt(rows,['0']*60+[str(i) for i in range(60)])['firstEpochAllRowsSeen'])
+        with self.assertRaises(ValueError):coverage_receipt(rows,['unknown'])
+        with self.assertRaises(ValueError):coverage_receipt(rows[:-1],[])
+
+    def test_observed_semantic_batches_match_exact_real_tokens_and_reject_unbound_or_empty_before_update(self):
+        class Array:
+            def __init__(self,data):self.data=data
+            @property
+            def shape(self):return (len(self.data),len(self.data[0]))
+            def tolist(self):return self.data
+        known={((7,8,9),2):'row'};observed=[]
+        def source(*a,**kw):yield Array([[7,8,9,0,0]]),Array([[2,3]])
+        self.assertEqual(len(list(observed_semantic_batches(known,observed,_iterator=source))),1);self.assertEqual(observed,['row'])
+        with self.assertRaisesRegex(ValueError,'does not match'):list(observed_semantic_batches({},[],_iterator=source))
+        def empty(*a,**kw):yield Array([[7,8,9,0,0]]),Array([[3,3]])
+        rejected=[]
+        with self.assertRaisesRegex(ValueError,'empty'):list(observed_semantic_batches(known,rejected,_iterator=empty))
+        self.assertEqual(rejected,[])
+
+    def test_supervisor_rejects_smaller_semantic_final_before_admission_or_child(self):
+        with tempfile.TemporaryDirectory() as td,patch.object(train,'semantic_update_decision',return_value={'selectedUpdates':72}),patch.object(train,'Budget') as budget,patch.object(train,'admission') as admission,patch.object(train,'supervise_owned') as child:
+            with self.assertRaisesRegex(ValueError,'preregistered'):train.run(Path(td),Path(td),Path(td),64,'matched-768-v1','eve-semantic-final','candidate-v1','eve-semantic-probe')
+            budget.assert_not_called();admission.assert_not_called();child.assert_not_called()
+
+
+    def startup_fixture(self,root):
+        from manifest import sha
+        run_id='eve-semantic-probe';data=root/'data';data.mkdir();(data/'manifest.json').write_text('{"bound":"synthetic"}')
+        (root/'session.json').write_text(json.dumps({'deadlineMonotonicSeconds':time.monotonic()+18000}))
+        budget=Budget(root);budget.db.close()
+        def owned_budget(*args,**kwargs):
+            value=Budget(*args,**kwargs);self.addCleanup(value.db.close);return value
+        budget_patch=patch.object(train,'Budget',side_effect=owned_budget);budget_patch.start();self.addCleanup(budget_patch.stop)
+        original=b'{"admitted":false,"marker":"original-denied-start"}\n';(root/('training-admission-'+run_id+'.json')).write_bytes(original)
+        (root/'training-protocol.json').write_text('{"recipe":"fixed semantic probe8"}')
+        review={'schema':'eve.training-startup-resumption-review/1','permitted':True,'runId':run_id,'trainingProtocolSha256':sha(root/'training-protocol.json')}
+        (root/'TRAINING_STARTUP_RESUMPTION_REVIEW.json').write_text(json.dumps(review))
+        decision={'schema':'eve.training-startup-resumption-decision/1','status':'adopted','onceOnly':True,'runId':run_id,'originalAdmissionSha256':sha(root/('training-admission-'+run_id+'.json')),'reviewSha256':sha(root/'TRAINING_STARTUP_RESUMPTION_REVIEW.json'),'dataManifestSha256':sha(data/'manifest.json'),'trainingProtocolSha256':sha(root/'training-protocol.json')}
+        (root/'training-startup-resumption-decision.json').write_text(json.dumps(decision));return data,original
+
+    def test_reviewed_startup_once_preserves_original_and_records_the_actual_admission_file(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);data,original=self.startup_fixture(root);original_path=root/'training-admission-eve-semantic-probe.json';reviewed=root/'training-admission-eve-semantic-probe-reviewed1.json'
+            def supervisor(*a,**kw):
+                self.assertEqual(original_path.read_bytes(),original);self.assertTrue(reviewed.read_bytes().endswith(b'\n'))
+                self.assertEqual(json.loads(reviewed.read_text())['startupResumption']['originalAdmissionSha256'],hashlib.sha256(original).hexdigest())
+                return {'exitCode':0,'stopReason':None,'elapsedSeconds':0.01}
+            with patch.object(train,'require_decision'),patch.object(train,'admission',return_value={'admitted':True}),patch.object(train,'supervise_owned',side_effect=supervisor) as child:
+                receipt=train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True);self.assertEqual(child.call_count,1)
+            self.assertEqual(receipt['startupAdmissionFile'],reviewed.name);self.assertEqual(receipt['startupResumption']['originalAdmissionSha256'],hashlib.sha256(original).hexdigest());before=reviewed.read_bytes()
+            for resume in [True,False]:
+                with patch.object(train,'require_decision'),patch.object(train,'admission') as query,patch.object(train,'supervise_owned') as child:
+                    with self.assertRaises(FileExistsError):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,resume)
+                    query.assert_not_called();child.assert_not_called()
+            self.assertEqual(original_path.read_bytes(),original);self.assertEqual(reviewed.read_bytes(),before)
+
+    def test_reviewed_startup_is_probe_only_and_requires_strict_original_false(self):
+        for recipe in [('eve-semantic-final',64,'matched-768-v1','candidate-v1','eve-semantic-probe'),('eve-recovery-probe',8,'matched-768-v1','probe-v1',None),('eve-semantic-probe',8,'standard','probe-v1',None)]:
+            with patch.object(train,'Budget') as budget,patch.object(train,'admission') as query,patch.object(train,'supervise_owned') as child:
+                with self.assertRaisesRegex(ValueError,'probe-only'):train.run(Path('/unused'),Path('/unused'),Path('/unused'),recipe[1],recipe[2],recipe[0],recipe[3],recipe[4],True)
+                budget.assert_not_called();query.assert_not_called();child.assert_not_called()
+        for value in [True,0,None,'false']:
+            with tempfile.TemporaryDirectory() as td:
+                root=Path(td);data,_=self.startup_fixture(root);(root/'training-admission-eve-semantic-probe.json').write_text(json.dumps({'admitted':value}))
+                with patch.object(train,'require_decision'),patch.object(train,'admission') as query,patch.object(train,'supervise_owned') as child:
+                    with self.assertRaisesRegex(ValueError,'must be false'):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
+                    query.assert_not_called();child.assert_not_called()
+                self.assertFalse((root/'training-admission-eve-semantic-probe-reviewed1.json').exists())
+
+    def test_reviewed_startup_rejects_any_record_or_reserved_training_row_even_zero_updates(self):
+        cases=['training-supervisor-eve-semantic-probe.json','training-progress-eve-semantic-probe.json','candidate-manifest-eve-semantic-probe.json','training-eve-semantic-probe.log','probe-v1','training-row','allocation-row','validation-row']
+        for case in cases:
+            with self.subTest(case=case),tempfile.TemporaryDirectory() as td:
+                root=Path(td);data,original=self.startup_fixture(root)
+                if case.endswith('-row'):
+                    budget=Budget(root)
+                    if case=='training-row':budget.db.execute('INSERT INTO training(id,reserved_updates,completed_updates,started,state) VALUES (?,8,0,0,"planned")',('eve-semantic-probe',))
+                    elif case=='allocation-row':budget.db.execute('INSERT INTO training_allocations VALUES (?,768)',('eve-semantic-probe',))
+                    else:budget.db.execute('INSERT INTO validation(id,run_id,stage,reserved_batches,completed_batches,max_sequence) VALUES ("before",?,"before",4,0,768)',('eve-semantic-probe',))
+                    budget.db.commit();budget.db.close()
+                elif case=='probe-v1':(root/case).mkdir()
+                else:(root/case).write_text('{}')
+                with patch.object(train,'require_decision'),patch.object(train,'admission') as query,patch.object(train,'supervise_owned') as child:
+                    with self.assertRaisesRegex(ValueError,'already has'):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
+                    query.assert_not_called();child.assert_not_called()
+                self.assertEqual((root/'training-admission-eve-semantic-probe.json').read_bytes(),original)
+
+    def test_reviewed_startup_requires_adopted_hash_bound_review_protocol_and_data(self):
+        for changed in ['review','protocol','data','decision']:
+            with self.subTest(changed=changed),tempfile.TemporaryDirectory() as td:
+                root=Path(td);data,_=self.startup_fixture(root)
+                if changed=='review':
+                    path=root/'TRAINING_STARTUP_RESUMPTION_REVIEW.json';value=json.loads(path.read_text());value['permitted']=False;path.write_text(json.dumps(value))
+                elif changed=='protocol':(root/'training-protocol.json').write_text('{"changed":true}')
+                elif changed=='data':(data/'manifest.json').write_text('{"changed":true}')
+                else:
+                    path=root/'training-startup-resumption-decision.json';value=json.loads(path.read_text());value['onceOnly']=False;path.write_text(json.dumps(value))
+                with patch.object(train,'require_decision'),patch.object(train,'admission') as query,patch.object(train,'supervise_owned') as child:
+                    with self.assertRaises(ValueError):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
+                    query.assert_not_called();child.assert_not_called()
+
+    def test_reviewed_startup_fresh_denial_consumes_the_only_slot_without_starting_child(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);data,original=self.startup_fixture(root);path=root/'training-admission-eve-semantic-probe-reviewed1.json'
+            with patch.object(train,'require_decision'),patch.object(train,'admission',return_value={'admitted':False,'marker':'fresh-denied'}),patch.object(train,'supervise_owned') as child:
+                with self.assertRaisesRegex(ValueError,'admission failed'):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
+                child.assert_not_called()
+            snapshot=path.read_bytes();self.assertFalse(json.loads(snapshot)['admitted']);self.assertEqual(json.loads(snapshot)['startupResumption']['startupAdmissionFile'],path.name)
+            with patch.object(train,'require_decision'),patch.object(train,'admission') as query,patch.object(train,'supervise_owned') as child:
+                with self.assertRaises(FileExistsError):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
+                query.assert_not_called();child.assert_not_called()
+            self.assertEqual(path.read_bytes(),snapshot);self.assertEqual((root/'training-admission-eve-semantic-probe.json').read_bytes(),original)
+
+    def test_reviewed_startup_fsync_failure_is_unstarted_and_cannot_reuse_slot(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);data,original=self.startup_fixture(root);path=root/'training-admission-eve-semantic-probe-reviewed1.json'
+            with patch.object(train,'require_decision'),patch.object(train,'admission',return_value={'admitted':True}),patch.object(train.os,'fsync',side_effect=OSError('synthetic fsync failure')),patch.object(train,'supervise_owned') as child:
+                with self.assertRaisesRegex(OSError,'fsync failure'):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
+                child.assert_not_called()
+            self.assertTrue(path.exists());self.assertEqual((root/'training-admission-eve-semantic-probe.json').read_bytes(),original)
+            with patch.object(train,'require_decision'),patch.object(train,'admission') as query,patch.object(train,'supervise_owned') as child:
+                with self.assertRaises(FileExistsError):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
+                query.assert_not_called();child.assert_not_called()
 
 if __name__=='__main__':unittest.main()

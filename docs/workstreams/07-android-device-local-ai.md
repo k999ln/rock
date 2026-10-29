@@ -397,6 +397,10 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 
 Pixelの同candidate試験は所有者間lease確認後のMac-hosted USB localhost経路で完了し、独立意味検収は品質0/8でFAIL。13jobの別制御5件には停止2件、lost-response/復旧unknown回答を含み、oversize0call・二重tap1operation・reload保存不変も確認。session生成72attempt/18432要求token、Pixel11中unknown1は保守課金。所有server/child/listener/USB mapping終了・lease返却済み。test tab一括closeは自動審査拒否で残し、phone P95/owner A-B/P07最大3修復境界は未検証。source独立検収はopen P1/P2なしのscoped PASSで、native inference/full OS/本番受入には加算しない。最終全verifyは主回帰3503pass/0fail/4skipとbuildを含めexit0。実装・進捗は[PR300](https://github.com/k999ln/rock/pull/300)でmain `4c0b056b76541ab7b81a97bd7d0498feff4cae3b`へ統合済み。同SHA実7check/5workflow全successを2026-10-29 20:41:15 UTCに確認し、公開要約へCI URLを保存した。既存SDK browser fixture待機のattempt1失敗と、source不変のattempt2成功を両方保持する。次は意味的品質改善とphone P95/owner A-B/P07最大3修復境界/保持評価の独立検証で、候補は非採用。この一度のmetadata同期自体のmerge/CIは最終Git receiptで別記する。検証入口は `node --test tests/eve-model-toolkit.test.mjs`、`npm run project:update`、`npm run mission:check`、最終 `npm run verify`。原本・教材・weights・raw実機資料はGit外、公開物は最小集計とhashのみ。probe開始snapshot欠落は履歴上残し、今後のrun別admission保存をexclusive creation/fsyncで拒否・並行時も上書きしないsource修正として検収した。
 
+### Eveの意味的品質の原因修正と再評価
+
+既存AI02/O3/ROCKで、有効なenum例と直接回答・実error修復・成功Tool後の応答教材を整備し、60教材を全件通るfresh-base72更新＋probe8更新を実行した。学習61440slots・validation6144slots、生成80attempt/20480要求token（unknown1を保守計上）。独立検収は比較A0/20・C1/20、Pixel primary0/10（独立coconala2件を含む）で品質FAIL・非default。gold出力は最大90tokensで、256上限の超過13件は反復による。例文コピー・事実/単位対応・Tool修復の失敗を残し、容量/更新不足を確定原因としない。実機はMac推論の合成localhost経路で、View選択欄の厳密確認、reload不変・二重tap1operation・所有停止・拒否0callを確認し、通常復帰後も回答品質はFAIL。完了生成観測後の停止と結果不在は確認したが、内部5秒遅延分岐への到達は未証明。原失敗・一時unit fixture生成・0call起動手順事故を保持し、所有server/worker/USBを終了して端末操作枠を返却した。次のmodel runは回答例placeholder除去と同system教材を新しい事前計画で検証し、保持評価/phone P95/owner A-B/最大3修復境界/native/fullOSは別未受入。検証とGit反映の正本は[現工程の証拠](../evidence/development-execution/eve-semantic-quality.json)。
+
 ## Mini本体SIMによる独立通信（2026-10-05）
 
 利用者指定により[Mini cellular設計](../avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。

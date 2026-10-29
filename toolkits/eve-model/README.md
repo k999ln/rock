@@ -48,14 +48,14 @@ The separate CPU-only audit of installed MLX-LM0.32.2 confirmed one extra traili
 
 The current runner uses an explicit assistant-only loss: for real token length `N` and prompt-prefix offset `O`, supervised target indices are `O <= s < N`. The first answer and genuine closing tokens remain supervised; every prompt/padding target is excluded. All source rows and every actual batch are checked before the compiled optimizer. The cached MLX environment is not patched. Historical candidates trained with MLX-LM0.32.2's inclusive default remain unchanged and are not relabelled as corrected.
 
-For a separately invoked recovery session, prepare the original integration system and planner prompt from the existing pure Zema runtime:
+For the prior separately invoked recovery recipe, prepare the integration system and planner prompt from the existing pure Zema runtime:
 
 ```sh
 node toolkits/eve-model/prepare_integration.mjs "$EVE_OBSERVED" "$EVE_RUN/integration-chats"
 "$EVE_PY" toolkits/eve-model/prepare_training.py --corpus "$EVE_OBSERVED" --base "$EVE_BASE" --output "$EVE_RUN/training" --integration-chats "$EVE_RUN/integration-chats"
 ```
 
-This path retains all240 original train tasks, complete2–4 source text and exact gold decisions. It selects four declared validation records, balanced Japanese/English and including three/four-source and repair cases. Repair observes only the actual earlier pure-Tool rejection. No sealed data, model generation or future observation is used in preparation. The measured train maximum739 and validation maximum686 fit768 tokens without dropping facts or truncation. The four validation records share a renderer family and do not establish broad generalization.
+This path retains all240 original train tasks, complete2–4 source text and exact gold decisions. It selects four declared validation records, balanced Japanese/English and including three/four-source and repair cases. Repair observes only the actual earlier pure-Tool rejection. No sealed data, model generation or future observation is used in preparation. At the prior recovery source snapshot, the measured train maximum739 and validation maximum686 fit768 tokens without dropping facts or truncation. The four validation records share a renderer family and do not establish broad generalization.
 
 The independently reviewed `matched-768-v1` profile uses one final layer/rank4/scale8, sequence768, the same3.25GiB admission/2GiB runtime floor,2GiB RSS/1.75GiB Metal guards,1.5GiB MLX guideline,64MiB cache and100-second active cutoff within120 seconds. A successful small resource probe and fresh admission are required; the longer sequence is not assumed safe from an earlier512-token peak. Each new training run saves its own admission snapshot before spawning the child, while retaining the legacy latest snapshot. Older overwritten evidence cannot be reconstructed by this change.
 
@@ -71,6 +71,31 @@ The resource probe has8 updates and no global candidate publication. Four same-b
 
 `diagnose.mjs` supports a separately frozen raw20-cell system/old-weight diagnostic. It reads the original candidate and compact-system training source without changing their files, charges the new run's diagnostic pool and holds the same full integration user prompt fixed across systems. These single decisions are not Tool-loop task acceptance. The formal comparison retains all20 tasks per arm and its own pool; host initiation is recorded as supporting evidence and does not replace physical Pixel cases.
 
+## Semantic-quality repair
+
+The previous48-update run traversed only48 of240 examples (including one count/duration synthesis example), and its240 examples contained no successful Tool-observation→final-response trajectory. The original serving instructions also contained explanatory strings such as `ja または en` which an actual failed reply copied literally. These are recorded coverage/instruction defects; save/load or loss-mask failure was not established by the CPU trace reconstruction. A prompt-only20-cell ablation holds the same five USER prompts and reference weights fixed. Raw schema success is not Tool-loop completion.
+
+`prepare_semantic.mjs` selects40 representative first decisions across the six existing training families, ten task types, both languages and both clean/adversarial variants. It adds12 actual successful-Tool follow-ups, plus four separately authored `coconala_check` positives and their four actual follow-ups. The60 rows retain complete inputs and past errors, order the schema/action/Tool before arguments, and reject duplicate captured train/validation inputs. The standalone positives use distinct domain/seed text rather than mixing another task's intent. Their values and outputs are not claims about real applications, compliance or revenue. Four selected validation rows use heldout source families and distinct captured inputs; shared authored schemas do not establish real-world generalization. The final reviewed preparation measured625/592 maximum train/validation tokens within768.
+
+```sh
+node toolkits/eve-model/prepare_semantic.mjs "$EVE_ALLOWED_OBSERVED" "$EVE_RUN/semantic-chats"
+"$EVE_PY" toolkits/eve-model/prepare_training.py --corpus "$EVE_ALLOWED_OBSERVED" --base "$EVE_BASE" --output "$EVE_RUN/training" --semantic-chats "$EVE_RUN/semantic-chats"
+```
+
+The new `eve-semantic-probe` keeps8 updates separate from the quality candidate. A fresh `eve-semantic-final` requires64 or72 updates chosen only by the frozen resource formula `firstReportElapsed + N*maxAdjacentInterval +15 <=90` from the completed probe, choosing the largest qualifying N; if neither qualifies, stop. It preserves the matched768 memory/stop profile and completed bound before-loss reuse. Maximum probe+final reservations are80 updates/61,440 training slots and8 validation batches/6,144 slots. Actual optimizer reports identify completed curriculum rows; a final run must cover all60 distinct rows in its first epoch. A CPU schedule prediction is not reported as actual optimizer coverage.
+
+```sh
+"$EVE_PY" toolkits/eve-model/train.py --root "$EVE_RUN" --base "$EVE_BASE" --data "$EVE_RUN/training" --updates 8 --profile matched-768-v1 --run-id eve-semantic-probe --candidate-name probe-v1
+# Compute and freeze the resource-only update decision after a successful probe.
+"$EVE_PY" toolkits/eve-model/train.py --root "$EVE_RUN" --base "$EVE_BASE" --data "$EVE_RUN/training" --updates "$EVE_SELECTED_UPDATES" --profile matched-768-v1 --run-id eve-semantic-final --candidate-name candidate-v1 --reuse-before eve-semantic-probe
+```
+
+The gated diagnostic operator entry is `diagnose_start.py --root ... --base ... --python ... --candidate-root ...`. A failed fresh admission raises before any Node child is started; startup evidence is write-once. The separately reviewed semantic diagnostic checks all five input hashes and both system hashes before creating the Planner. A manual startup-only resumption requires its actual review/decision/protocol/failure hashes, no existing call ledger, a different fixed output and new attempt IDs; it never rewrites the first failure or creates an automatic fatal retry.
+
+A broad unit test initially generated temporary synthetic test/retention fixtures in this session. Their fixed originals were not opened and the temporary contents were not used for learning or model evaluation. That incident remains recorded; generation is not claimed to be zero. `dataset.build(..., splits=[...])` now selects allowed families before constructing rows, and the unit suite uses train/validation/development only, with guards against constructing test/retention rows. The full original corpus-build command above includes excluded splits and must not be used during an excluded-data session. Semantic preparation reads only the named existing train/validation files. Keep old run data, sealed/retention sources and private device/credential bindings outside this work.
+
+The recorded semantic run completed probe8 plus fresh final72 updates, traversed all60 rows, and reduced mean loss over the same four validation rows from1.1240 to0.6024. Independent completion remained A0/20, C1/20 and physical primary0/10, so this candidate is rejected and nondefault. Target outputs are33–90 tokens, while13 comparison generations repeated until256; a larger output limit is not an evidenced fix. Preserve all failures, the source/incident receipts and the limited late-stop claim; use a new preregistered same-system experiment for the remaining answer-placeholder and semantic defects. See [the current evidence](../../docs/evidence/development-execution/eve-semantic-quality.json).
+
 ## Pixel client route
 
 After candidate creation and independent bridge review:
@@ -80,6 +105,8 @@ node toolkits/eve-model/server.mjs "$EVE_RUN" "$EVE_BASE" "$EVE_PY"
 ```
 
 It binds only127.0.0.1:18749. `pixel.py --root "$EVE_RUN" connect` binds the authorized USB target with a private salted serial digest and uses `reverse --no-rebind`; an existing unowned mapping is refused. `open` requires a successfully saved candidate, `capture --case ID` and `tap --text LABEL` require the exact localhost normal test page, and `cleanup` removes only an active owned mapping before revoking its ownership record. Notifications, tab switcher, URL editing and unknown overlays are refused. Saved XML contains only the browser subtree. Keep the nonce fragment and mode0600 external credential file outside Git; the page clears the fragment and checks the bounded session, Host, Origin, JSON size and fixed script CSP. Preserve Terminal input, existing jobs, apps, models, keys and other mappings. Do not install/clear/flash/reboot the device for this test.
+
+Open the authorized test page once, then use `python3 toolkits/eve-model/pixel.py --root "$EVE_RUN" select --case CASE_ID --arm C --fault none` between cases. Selection is authenticated and idle-only, creates no job and calls no model. Require `uiConfirmed=true` before separately pressing Run. The helper matches each exact `case`/`arm`/`fault` element ID, selected text, enabled state and visible bounds on the observed Android View or legacy Spinner; generic result text does not count. Failure means no Run, no fallback opening more tabs. The optional physical fixture schema2 binds the three fixed extra IDs by file/source hashes; they never enter the20-case comparison.
 
 The page labels the actual route: **Pixel browser → USB localhost → Mac MLX**. It reuses existing `prepareEveTextJob`, WorkJob preparation/cancel reducers and `runZemaLocalAgent` with the existing three pure Tools and three-step terminal rules. Its synthetic owner journal is separate from production accounts. A model response does not complete the saved WorkJob or approve its content.
 

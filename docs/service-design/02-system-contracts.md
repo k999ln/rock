@@ -178,6 +178,8 @@ BYOKはProvider資格情報と原価負担の選択であり、account本人性�
 
 端末内LLMは非信頼planner、cloud generatorとJevは明示接続する処理役/評価役。全modelの結果はadvisoryで、本人承認・Tool成功・Wallet確定へ昇格しない。[LLM正本](../llm-evaluation-architecture.md)を維持し、対応端末のlocal能力を全機種必須にしない。
 
+Eveの有限local Plannerでは、有効なenum例と直接回答／Tool要求／実error修復／成功観測後の返答を区別する指示を使う。意向文やerrorを成功にせず、同じ閉じたschema・3 Tool・最大3手・既存保存/権限を維持する。[目的・入出力・状態・失敗復旧・学習記録・承認・合格](../llm-evaluation-architecture.md#eve-planner-semantic-quality)と実測を参照し、モデル品質の合格は別検収とする。
+
 非金融のGame/創作/Material digital twinは同じAsset・provenance・jobへ接続する。GTAは版・server・権限を固定したadapter、交換はRQ13、作者SDKはRQ14、物質の実操作は外部lab、rocketstarは独立制御と安全系のgateを通す。plan、simulation、表示、物理成功を別に記録する。
 
 ### Game/ATMと作者SDKの独立条件
