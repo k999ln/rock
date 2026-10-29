@@ -1,0 +1,43 @@
+{
+  "schema": "rockstaros.mii-output-lease-main-ci/1",
+  "pullRequest": 272,
+  "head": "21342d35f57f589702cb26974e9492825a8c6a37",
+  "headChecks": "7 of 7 completed successfully",
+  "mergeSha": "3f3fa56de55cc0b623c4f4b98629a6f8791b1de0",
+  "mergeChecks": [
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    }
+  ],
+  "localCheckRecordPath": "/private/tmp/pr272-merge-checks-20261029.json",
+  "localCheckRecordSha256": "0f90f76e4d57321292896e5e3566cbe64743bb8c6acef09596d9884ccb763e24",
+  "priorEvidence": "docs/evidence/development-execution/mii-output-lease.json",
+  "scope": "Synthetic software preview; source evidence is unchanged. JS scheduling, real hardware, physical stopping, real accounts and providers remain separately unaccepted."
+}
