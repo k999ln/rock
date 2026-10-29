@@ -7,7 +7,10 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 from manifest import finite_metric
+import train
+from train import supervise_owned
 
 class TrainingControlTests(unittest.TestCase):
     def test_nonfinite_losses_are_rejected(self):
@@ -37,5 +40,67 @@ class TrainingControlTests(unittest.TestCase):
                     try:parent.wait(timeout=8)
                     except subprocess.TimeoutExpired:parent.kill();parent.wait(timeout=5)
                 parent.stderr.close()
+
+    def test_signal_during_poll_is_not_swallowed_and_handlers_are_restored(self):
+        previous={sig:signal.getsignal(sig) for sig in (signal.SIGTERM,signal.SIGINT)}
+        for selected in (signal.SIGTERM,signal.SIGINT):
+            with self.subTest(signal=selected), tempfile.TemporaryDirectory() as td:
+                original=os.waitpid
+                delivered=False
+                def during_poll(pid,flags):
+                    nonlocal delivered
+                    if flags == os.WNOHANG and not delivered:
+                        delivered=True
+                        os.kill(os.getpid(),selected)
+                    return original(pid,flags)
+                if hasattr(subprocess,'_del_safe'):
+                    injector=patch.object(subprocess._del_safe,'waitpid',during_poll)
+                else:
+                    original_poll=subprocess.Popen._internal_poll
+                    def poll(child,*args,**kwargs):
+                        return original_poll(child,*args,_waitpid=during_poll,**kwargs)
+                    injector=patch.object(subprocess.Popen,'_internal_poll',poll)
+                with injector:
+                    result=supervise_owned([sys.executable,'-c','import time;time.sleep(60)'],Path(td),60)
+                self.assertTrue(delivered)
+                self.assertIn('InterruptedError',result['stopReason'])
+                self.assertLess(result['elapsedSeconds'],5)
+                with self.assertRaises(ProcessLookupError): os.kill(result['ownedChildPid'],0)
+                for sig,handler in previous.items(): self.assertIs(signal.getsignal(sig),handler)
+
+    def test_signal_during_child_start_is_retained_and_child_reaped(self):
+        original=subprocess.Popen
+        delivered=False
+        def start(*args,**kwargs):
+            nonlocal delivered
+            child=original(*args,**kwargs)
+            if not delivered:
+                delivered=True
+                os.kill(os.getpid(),signal.SIGTERM)
+            return child
+        with tempfile.TemporaryDirectory() as td, patch.object(subprocess,'Popen',start):
+            result=supervise_owned([sys.executable,'-c','import time;time.sleep(60)'],Path(td),60)
+        self.assertTrue(delivered)
+        self.assertIn('InterruptedError',result['stopReason'])
+        with self.assertRaises(ProcessLookupError): os.kill(result['ownedChildPid'],0)
+
+    def test_signal_during_cleanup_is_not_reported_as_success(self):
+        original=train.stop_owned
+        def stop(child,grace):
+            os.kill(os.getpid(),signal.SIGTERM)
+            return original(child,grace)
+        previous=signal.getsignal(signal.SIGTERM)
+        with tempfile.TemporaryDirectory() as td, patch.object(train,'stop_owned',stop):
+            result=supervise_owned([sys.executable,'-c','pass'],Path(td),60)
+        self.assertIn('InterruptedError',result['stopReason'])
+        self.assertIs(signal.getsignal(signal.SIGTERM),previous)
+        with self.assertRaises(ProcessLookupError): os.kill(result['ownedChildPid'],0)
+
+    def test_handlers_restored_when_log_cannot_be_created(self):
+        previous={sig:signal.getsignal(sig) for sig in (signal.SIGTERM,signal.SIGINT)}
+        with tempfile.TemporaryDirectory() as td:
+            (Path(td)/'training.log').touch()
+            with self.assertRaises(FileExistsError): supervise_owned([],Path(td),60)
+        for sig,handler in previous.items(): self.assertIs(signal.getsignal(sig),handler)
 
 if __name__=='__main__':unittest.main()

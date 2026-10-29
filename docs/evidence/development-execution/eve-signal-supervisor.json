@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros.eve-signal-supervisor/1",
+  "state": "candidate_independent_test_pass_pr_pending",
+  "sha256": {
+    "toolkits/eve-model/train.py": "f86d851e96eab1a639960d8b015b5a7499295ddc3ac0aa9bd9aa2ed5ba16ed76",
+    "toolkits/eve-model/test_training_controls.py": "7f8667b2941dd0edb19ee74cf0ba755424035988fddd63c6b554ffba84ac5821"
+  },
+  "observed": "PR290 and PR292 initial CI failed in the existing synthetic supervisor termination test after 8 seconds. Exact causes of those CI failures are not established. A deterministic synthetic injection reproduced lost SIGTERM during Popen.poll: InterruptedError is an OSError caught by subprocess.",
+  "change": "Retain first stop signal in a flag, observe it around owned-child lifecycle, stop and reap the owned child, and restore previous signal handlers.",
+  "independentTest": {
+    "passed": 6,
+    "failed": 0,
+    "logSha256": "f837e8db59f2d943dfcc5481b8ab53d1b2414bb3b547968f492bd509ea6ab981",
+    "initialSandboxFailure": "5/6 in sandbox, cause not established by the captured log; initial log SHA256 1509cce9fa165d4194f73d94d611e00ade69cf84e0a3dc3c1a3dd0182140f390. Successful rerun with allowed local process access, log SHA256 f837e8db59f2d943dfcc5481b8ab53d1b2414bb3b547968f492bd509ea6ab981."
+  },
+  "limits": "Synthetic local subprocess only. Linux CI pending; no inference, model training, Pixel, external provider, descendant process-group or hard isolation acceptance."
+}
