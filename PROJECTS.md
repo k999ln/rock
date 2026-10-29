@@ -143,7 +143,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録36件すべてを上に記載。ready 14件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 13ディレクトリを下表で分類。Tool実装、SDK、connector、エージェント定義、試験fixture、PAPER試作を区別 |
+| [`toolkits/`](toolkits/) | 各ディレクトリを下表と補足で分類。Tool実装、SDK、connector、エージェント定義、試験fixture、学習・PAPER試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -153,6 +153,8 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 ## 実装・配備単位
 
 次の表は同じチームを支えるソースや配備物の場所です。`toolkits/`の行をチームから独立した製品一覧としては扱いません。
+
+Eveのローカルモデル開発は[`toolkits/eve-model/`](toolkits/eve-model/)へ置きます。[開発手順](toolkits/eve-model/README.md)は合成教材、MLX LoRA、上限台帳、PixelブラウザーからMacへ接続する開発試験を扱います。独立したcatalog Tool、品質合格、Pixel本体での推論受入とは区別します。
 
 | 単位 | 対象と境界 | ソース | 担当・検証の入口 |
 | --- | --- | --- | --- |

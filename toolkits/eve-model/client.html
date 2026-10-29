@@ -1,0 +1,36 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eve 開発実機テスト</title>
+<style>body{font:16px system-ui;margin:18px;max-width:850px;background:#101722;color:#eaf1fa}h1{font-size:24px}button,select{font:inherit;padding:12px;margin:5px 0;border-radius:8px}button{background:#b8e7de;color:#102127;border:0}button:disabled{opacity:.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#1c2838;padding:12px;border-radius:8px}label{display:block;margin:10px 0}#status{color:#b8e7de;white-space:pre-wrap;max-height:80px;overflow:auto;font-size:14px}.warning{color:#ffdd9a}article{border-top:1px solid #485665;margin-top:18px;padding-top:12px}</style>
+<h1>Eve 開発実機テスト</h1>
+<details><summary class="warning">Pixel → USB → Mac MLXの開発試験</summary><p>Pixel本体での推論・製品の完成受入ではありません。合成資料専用、外部送信・実課金なし。</p></details>
+<p id="identity">候補を確認中</p><p id="status">接続中</p>
+<label>比較候補 <select id="arm"><option value="C">C: 学習済みEve</option><option value="A">A: 元モデル</option></select></label>
+<label>合成課題 <select id="case"></select></label>
+<label>試験条件 <select id="fault"><option value="none">通常</option><option value="lost_response">合成障害: 受付応答を失う</option><option value="delay_result">合成障害: 結果の保存を5秒遅延</option><option value="unavailable">合成障害: モデル利用不可</option></select></label>
+<button id="run">この課題を実行</button> <button id="stop">現在の試験を停止</button>
+<p><button id="compare">A/C比較を20課題ずつ実行</button> <button id="reload">保存済み結果を再読込</button></p>
+<p><button id="oversize">資料上限の拒否を確認</button></p>
+<details><summary>合成資料を見る</summary><pre id="source"></pre></details><main id="results"></main>
+<script>
+'use strict';
+const initial=new URLSearchParams(location.search);let initialCase=initial.get('case');
+const el=id=>document.getElementById(id);let state=null,current=localStorage.getItem('eve-development-operation')||null,starting=false;
+if(['A','C'].includes(initial.get('arm')))el('arm').value=initial.get('arm');
+if(['none','lost_response','delay_result','unavailable'].includes(initial.get('fault')))el('fault').value=initial.get('fault');
+async function api(url,data){const response=await fetch(url,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});const value=await response.json();if(!response.ok)throw Error(value.error||'request rejected');return value;}
+function showSource(){const task=state?.cases.find(x=>x.id===el('case').value);el('source').textContent=task?JSON.stringify(task,null,2):'';}
+function statusText(record){if(!record)return '実行権限のない開発試験';if(record.state==='cancelled')return record.stopReceipt?'停止済み':'停止要求済み（終了確認中）';if(record.state==='unknown')return '結果不明。保存状態を確認してください';if(record.state==='failed')return '失敗: '+(record.error||'回答なし');if(record.state==='completed')return record.result?.text||'回答を保存済み（未検収）';return '処理中';}
+async function refresh(){state=await api('/api/state');el('identity').textContent='候補 '+state.binding.adapterSha256.slice(0,16)+' / 元モデル '+state.binding.baseSha256.slice(0,16)+' / 出力上限256、全体120秒';
+ const selected=el('case').value;if(!el('case').options.length)for(const task of state.cases){const option=document.createElement('option');option.value=task.id;option.textContent=task.id;el('case').append(option);}if(selected)el('case').value=selected;if(initialCase&&state.cases.some(x=>x.id===initialCase))el('case').value=initialCase;initialCase=null;showSource();
+ if(state.active){current=state.active;localStorage.setItem('eve-development-operation',current);}
+ const latest=state.runs[0];el('status').textContent=(state.lastProbe?'資料上限: '+(state.lastProbe.rejected?'拒否':'拒否を確認できません')+' / モデル呼出し '+state.lastProbe.modelCalls+'\n':'')+(state.group?'比較 '+state.group.completed+'/'+state.group.total+' ('+state.group.state+')\n':'接続済み\n')+(latest?latest.arm+' / '+latest.state+'\n':'')+statusText(latest);el('run').disabled=starting||Boolean(state.active)||state.group?.state==='running'||state.modelHalted;el('results').replaceChildren();
+ for(const record of state.runs.slice(0,3)){const article=document.createElement('article'),h=document.createElement('h2'),pre=document.createElement('pre');h.textContent=record.caseId+' / '+record.arm+' / '+record.state;pre.textContent=JSON.stringify({operationId:record.id,jobStatus:record.job.status,revision:record.job.revision,state:record.state,answer:record.result?.text,error:record.error,steps:record.result?.steps,lateOutputRejected:record.lateOutputRejected,stopReceipt:record.stopReceipt,qualityAccepted:record.qualityAccepted},null,2);article.append(h,pre);el('results').append(article);}}
+async function act(action){try{await action();await refresh();}catch(error){el('status').textContent=error.message;}}
+el('case').onchange=showSource;
+el('run').onclick=async()=>{if(starting||state?.active)return;starting=true;el('run').disabled=true;try{await act(async()=>{current=crypto.randomUUID();localStorage.setItem('eve-development-operation',current);try{await api('/api/run',{operationId:current,caseId:el('case').value,arm:el('arm').value,category:'pixel',fault:el('fault').value});}catch(error){el('status').textContent='応答不明。同じIDの保存状態を照合します。';await api('/api/run-status?id='+encodeURIComponent(current));}});}finally{starting=false;await act(refresh);}};
+el('stop').onclick=()=>act(async()=>{if(current)await api('/api/stop',{operationId:current});else throw Error('停止する試験を選んでください');});
+el('compare').onclick=()=>act(async()=>{await api('/api/compare',{});});
+el('reload').onclick=()=>act(refresh);
+el('oversize').onclick=()=>act(async()=>{const value=await api('/api/probe',{kind:'oversize'});el('status').textContent=JSON.stringify(value);});
+(async()=>{try{const nonce=location.hash.slice(1);history.replaceState(null,'','/');if(nonce)await api('/api/session',{nonce});await refresh();setInterval(()=>act(refresh),2000);}catch(error){el('status').textContent=error.message;}})();
+</script></html>
