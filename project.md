@@ -8,7 +8,7 @@ Pixelのobserver試験PR261をmain aaab99e1へ統合、head全7check成功。待
 
 ### Eve合成supervisorの停止信号保持（2026-10-29 / ROCK）
 
-停止signalがsubprocess poll中に消失する競合を合成再現。停止要求を保持してowned childを終了・回収し、元handlerを復元する候補を作成した。独立6/6成功、初回sandboxのps拒否と通常権限再実行を区別。[証拠](docs/evidence/development-execution/eve-signal-supervisor.json)。PR290・292のCI Timeoutとの因果は未確定。Linux CI・Git統合は未完了。実モデル、子孫group、端末、hard isolationは未受入。
+停止signalがsubprocess poll中に消失する競合を合成再現。停止要求を保持してowned childを終了・回収し、元handlerを復元する候補を作成した。独立6/6成功、初回sandboxの1件失敗（原因未確定）と通常権限再実行を区別。[証拠](docs/evidence/development-execution/eve-signal-supervisor.json)。PR290・292のCI Timeoutとの因果は未確定。Linux CI・Git統合は未完了。実モデル、子孫group、端末、hard isolationは未受入。
 
 ### Eve担当保存の応答不明と再送照合（2026-10-29 / ROCK・Sky）
 

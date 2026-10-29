@@ -11,7 +11,7 @@
     "passed": 6,
     "failed": 0,
     "logSha256": "f837e8db59f2d943dfcc5481b8ab53d1b2414bb3b547968f492bd509ea6ab981",
-    "initialSandboxFailure": "5/6 due /bin/ps EPERM; successful rerun with allowed local process access, log SHA256 1509cce9fa165d4194f73d94d611e00ade69cf84e0a3dc3c1a3dd0182140f390"
+    "initialSandboxFailure": "5/6 in sandbox; the captured log does not establish the cause. Successful rerun with allowed local process access, log SHA256 1509cce9fa165d4194f73d94d611e00ade69cf84e0a3dc3c1a3dd0182140f390"
   },
   "limits": "Synthetic local subprocess only. Linux CI pending; no inference, model training, Pixel, external provider, descendant process-group or hard isolation acceptance."
 }
