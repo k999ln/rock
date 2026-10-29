@@ -1,0 +1,13 @@
+{
+  "schema": "rockstaros.sdk-author-workspace-integration/1",
+  "state": "draft_independently_reproduced_ci_pending",
+  "base": "130804ccc4473ce9105e617cc5a6b86583afc75e",
+  "testSha256": "b6f1b5a69cdea72f6c484dcd1409628719eb96b35678291ce3e0367b0360776a",
+  "archive": "public/toolkits/rockstaros-sky-tool-sdk-0.1.4.tgz",
+  "archiveSha256": "aa82db15f5a5b480844efd5ddbc2d556dde18ea318d2c0254c34de0535e63cbe",
+  "connectorSha256": "601ce971c138367520d6cb429163a4bf0a1349c26aff5f59c0d72e79ed8bbba5",
+  "scenario": "Unpack distributed archive in temp; run its CLI into new empty workspace; offline copy same SDK, explicitly add sample and author declarations; real validator, synthetic review/owner/entitlement, actual connector approval, two non-inference tools, same work route/mii and export builder hash; Connector rejects replay of the same approval; no additional claim request or tool call.",
+  "independentReview": "Initial review found missing same-token replay and cleanup; fixed. Independent reviewer reran 1/1 against merged main with new connector; log SHA256 a5f68bb880783564da44da68fa9a179a9c8749501e1cfa44c3f871a9a281cc3c.",
+  "limits": "Synthetic identity, review, entitlement and loopback; injected SDK callback fetch terminates locally but no process-wide egress enforcement proven. Export builder is direct, not UI download. No package manager install, publication, external provider, physical device, paid use or inference.",
+  "next": "Run full verify at exact PR head and final independent review."
+}
