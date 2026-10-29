@@ -306,7 +306,8 @@
         "tests/eve-smith-mii-browser.test.mjs"
       ],
       "upstreamOrModelAttested": false,
-      "wholeEveAccepted": false
+      "wholeEveAccepted": false,
+      "ciEvidence": "docs/evidence/development-execution/eve-selected-source-ci.json"
     }
   },
   "latestRockstarOsDesign": {

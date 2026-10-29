@@ -18,7 +18,7 @@ ROCKは既存compositionの無料資料保存を担当。2素材＋goalのcodec/
 
 ## 選んだ出典・Eve回答から担当保存（EVE-05/14/15の限定範囲）
 
-主担当05/ROCK・O5、Git保存10。main `3563d9a807568a474b34ce61f9a16de9cb3c231e`基点。Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 独立検収と全verify・最終head CIは[候補証拠](../evidence/development-execution/eve-selected-source-agent.json)に段階別記録。未受入は上流継続同期・exact投稿ACL・実Provider/実機・Agent graph・全経路。通常PRでGit保存し、公開・配備・616件一括公開は保留。次は最終同head CIと残件に対応する担当/受入を確認する。
+主担当05/ROCK・O5、Git保存10。main `3563d9a807568a474b34ce61f9a16de9cb3c231e`基点。Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 独立検収と全verify・最終head CIは[候補証拠](../evidence/development-execution/eve-selected-source-agent.json)に段階別記録。未受入は上流継続同期・exact投稿ACL・実Provider/実機・Agent graph・全経路。通常PRでGit保存し、公開・配備・616件一括公開は保留。PR301修正head `0cc7d4cd`のCI7/7成功を保存し、記録のみの後続headもPRの説明/Checksで再照合する。次は別途許可されたmain通常統合と、exact投稿ACL/由来の個別開発。
 
 
 ## SMITH-01 処理中の同頁スキップ導線（SKY21 / O5 / ROCK）

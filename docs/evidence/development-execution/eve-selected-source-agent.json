@@ -182,7 +182,7 @@
     "tabSelectionOrdering": "module-shared opaque current selection ticket, begun synchronously before first await; previous shared slot removed with readback; guarded write and navigation; legacy writers supersede; no persistence or authority"
   },
   "verification": {
-    "state": "git_saved_fixture_repaired_full_verify_pass_corrected_head_ci_pending",
+    "state": "git_preserved_independent_full_verify_and_same_sha_ci_pass_host_scoped",
     "independentReview": {
       "result": "PASS_SCOPED",
       "reviewer": "eve_gap_review",
@@ -231,9 +231,12 @@
       "environment": "macOS Node26.12.1/Python3.15/existing OpenSSL3; skips remain separate; no real model/provider/physical acceptance"
     },
     "headCi": {
-      "head": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
-      "result": "verify_failed_two_ui_fixture_readiness_tests",
-      "history": "docs/evidence/development-execution/eve-selected-source-ci-history.json"
+      "verifiedHead": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "passed": 7,
+      "total": 7,
+      "receipt": "docs/evidence/development-execution/eve-selected-source-ci.json",
+      "history": "docs/evidence/development-execution/eve-selected-source-ci-history.json",
+      "finalHeadReference": "PR301 description records receipt-successor head after its same-SHA CI readback"
     },
     "attempts": [
       {
@@ -400,7 +403,6 @@
     "finalHeadCiReference": "PR301 description and current-head checks, verified after metadata receipt commit"
   },
   "remaining": [
-    "Finish final independent review/full verify/Git/exact-head CI for candidate",
     "Upstream/live timeline and exact social-post provenance",
     "Actual model/provider/normal production authority",
     "Composed-Agent graph and all-route recovery",

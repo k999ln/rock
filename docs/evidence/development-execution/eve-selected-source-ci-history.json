@@ -83,9 +83,18 @@
       ],
       "diagnostic": "Both failed because save button was undefined before asynchronous draft preparation settled; fixed-turn UI fixture readiness is being repaired. Production source manifest is unchanged.",
       "verifyJobUrl": "https://github.com/k999ln/rock/actions/runs/40948908167/job/123711453819"
+    },
+    {
+      "head": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "result": "success",
+      "sourceManifestUnchanged": true,
+      "fixtureCorrection": "actual asynchronous preparation readiness, independent27/27,20stressruns160cases, old/new delayed-digest oracle",
+      "receipt": "docs/evidence/development-execution/eve-selected-source-ci.json",
+      "passedChecks": 7,
+      "totalChecks": 7
     }
   ],
-  "finalHeadVerification": "pending corrected fixture and new head checks",
+  "finalHeadVerification": "Receipt-only successor exact current-head result is recorded in PR301 description after its checks complete.",
   "holds": {
     "publication": "HOLD",
     "deployment": "HOLD",
