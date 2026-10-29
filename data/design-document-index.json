@@ -272,6 +272,15 @@
       ],
       "evidence": "docs/evidence/development-execution/mii-worker-signed-browser.json",
       "scope": "synthetic approval/remote signature, real workflow and two browser tabs; no real provider or device"
+    },
+    "sdkSameJobDelegation": {
+      "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "tests": [
+        "tests/eve-sdk-delegation-d1-browser.test.mjs",
+        "tests/fixtures/eve-sdk-delegation-d1/synthetic-a2a.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/eve-sdk-delegation-d1.json",
+      "scope": "synthetic UI approval and separate remote delegation on same SDK-observed job; no real authority or provider"
     }
   },
   "latestRockstarOsDesign": {

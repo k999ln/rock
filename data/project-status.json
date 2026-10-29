@@ -12461,14 +12461,26 @@
   },
   "miiWorkerSharedD1": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-shared-d1.json",
-    "next": "Exact-head CI, independent final review, merge and merge-SHA CI; remote receipt remains separate."
+    "next": "Remote receipt and real devices remain separately scoped.",
+    "pullRequest": 296,
+    "mergeSha": "f73ec4bc92b67995a879f4a363321b23cf9cb9bb",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-shared-d1-main-ci.json"
   },
   "miiWorkerSignedBrowser": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-signed-browser.json",
-    "next": "Exact-head CI and final independent review; actual authority, provider, billing and device remain separate."
+    "next": "Real provider, payment and physical device remain separately unaccepted.",
+    "pullRequest": 297,
+    "mergeSha": "8be9005d8405d7d47b7122d71a0b193cdcedb559",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-signed-browser-main-ci.json"
+  },
+  "eveSdkDelegationD1": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/eve-sdk-delegation-d1.json",
+    "next": "Final independent review, exact-head CI, main merge and merge-SHA CI."
   }
 }
