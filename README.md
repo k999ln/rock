@@ -258,7 +258,7 @@ eSIMは本人用Cloud Sky・Eve・Linuxサービスへの入口です。OS binar
 
 miiソフト試用の「追加の必要能力」には、例 `{"executor":["model.inference"],"output":["audio.render"]}` のように能力IDを指定できます。空欄なら追加条件なし。観測宣言が不足または未確認なら入力を渡さず、保存済みの仕事は引き続き読めます。宣言は実行承認や実機の証明ではありません。
 
-作者向けSDK 0.1.4の非推論作例は、配布archiveを展開して能力宣言とToolの接続を試せます。[作例と設定手順](toolkits/sky-tool-sdk/README.md#非推論の追加例)。宣言は実行権限ではなく、公開や課金を開始しません。
+作者向けSDK 0.1.5の非推論作例は、配布archiveを展開して能力宣言とToolの接続を試せます。通常のpackはdistをbuildし、旧0.1.3・0.1.4 archiveも維持します。[作例と設定手順](toolkits/sky-tool-sdk/README.md#非推論の追加例)。宣言は実行権限ではなく、公開や課金を開始しません。
 
 既存担当に保存された対象物・希望入出力の設定は、Skyの設定画面で名前や役割を編集しても保持されます。これは実機接続や実行許可ではありません。[互換契約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
 

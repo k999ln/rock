@@ -1,10 +1,13 @@
 {
   "workerUntrustedResult": {
     "owner": "ROCK",
-    "status": "draft_prior_full_ci_pass_merged_head_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/worker-untrusted-result.json",
-    "next": "Confirm merged final head exact CI and independent review before merge.",
-    "pullRequest": 291
+    "next": "Production authority, other result consumers and real providers remain separate.",
+    "pullRequest": 291,
+    "mergeSha": "1ff203a85610095621bec716996af74f380eb967",
+    "mainCiEvidence": "docs/evidence/development-execution/worker-untrusted-result-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "sdkAuthorWorkspaceIntegration": {
     "owner": "ROCK",
@@ -12420,5 +12423,17 @@
       "fail": 0,
       "skip": 4
     }
+  },
+  "sdkDistRelease": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/sdk-dist-release.json",
+    "next": "Independent final candidate review, exact-head CI, merge and merge-SHA CI."
+  },
+  "miiWorkerTwoConsumers": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-two-consumers.json",
+    "next": "Exact-head CI and independent final review; actual distributed journal, physical mii, remote provider and Wallet remain separate."
   }
 }

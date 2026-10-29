@@ -1,0 +1,31 @@
+{
+  "schema": "rockstaros.eve-smith-mii-independent-completion-audit/1",
+  "scope": "candidate dc5f3868; PR 292/293 not merged at audit time",
+  "conclusion": "incomplete; host synthetic evidence with missing or indirect conditions",
+  "requirements": {
+    "F1": "Eve browser and owner/revision/legacy attachment tests exist; preservation of actual existing user model and work data not independently established.",
+    "F2": "Structured capability matching and freshness shown in synthetic UI; declared scope and price do not establish real OS authority or provider price.",
+    "F3": "Existing workflow and claim race tests show synthetic unknown/stop; client-observed result is unverified and real authority/fees/remote stop are separate.",
+    "F4": "mii software adapter reads the same synthetic identity/job/output and rejects stale observation; physical mii and credential transition unaccepted.",
+    "F5": "Two differentiated roles and unsupported requirement rejection follow the same browser/connector/save path with synthetic authority.",
+    "A": "SDK dist candidate uses offline package root after explicit sample import modification; candidate unmerged; integrated result/export uses synthetic authority.",
+    "B": "Negative scope/owner/version/schema/binding and forged result checks exist in multiple fixtures, not a single unified real consumer scenario.",
+    "C": "Synthetic browser observes same job and output; old epoch/scene rejection separately tested.",
+    "D": "Adapter and output lease tests cover software detach/tracking/expiry; physical and remote stop not established.",
+    "E": "Distinct ACK-loss and two-consumer synthetic scenarios exist; unknown task ID cannot be used to invent remote cancellation; distributed consumers and production reservation remain unaccepted.",
+    "F": "Synthetic text-only capability and unsupported requirement rejection supported without automatic fallback.",
+    "G": "Legacy agent/attachment and SDK archives tested separately; full live user data and all legacy reader compatibility not established."
+  },
+  "references": [
+    "tests/eve-smith-mii-browser.test.mjs",
+    "tests/eve-agent-creation.test.mjs",
+    "tests/sky-agent-contract-api.test.mjs",
+    "tests/sky-agent-library.test.mjs",
+    "tests/sky-sdk-dist-integration.test.mjs",
+    "tests/mii-work-adapter.test.mjs",
+    "tests/eve-smith-mii-claim-race.test.mjs",
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+    "docs/evidence/development-execution/eve-smith-mii-host-preview.json"
+  ],
+  "limits": "Independent read-only source audit; no GitHub CI recheck, test execution, device access, inference or production acceptance."
+}
