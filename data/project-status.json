@@ -12435,11 +12435,12 @@
   },
   "miiWorkerTwoConsumers": {
     "owner": "ROCK",
-    "status": "main_integrated_merge_ci_rerun_in_progress",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-two-consumers.json",
-    "next": "Merge-SHA CI was cancelled after later main pushes; rerun is in progress.",
+    "next": "Physical mii, distributed journal, actual provider and Wallet remain separately unaccepted.",
     "pullRequest": 293,
-    "mergeSha": "692a59e0ec1cf210db41e13440e5e8380f2599c8"
+    "mergeSha": "692a59e0ec1cf210db41e13440e5e8380f2599c8",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-two-consumers-main-ci.json"
   },
   "eveSupervisorSignal": {
     "owner": "ROCK",

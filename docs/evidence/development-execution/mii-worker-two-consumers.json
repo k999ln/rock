@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.mii-worker-two-consumers/1",
-  "state": "main_integrated_merge_ci_rerun_pending",
+  "state": "main_integrated_same_sha_ci_pass_host_scoped",
   "testSha256": "c40ca4a21f3e8be48c0622dbb0802f339a8a8886a00102b2e4dcf00f13c2466f",
   "testConfigSha256": "9bbff3cfb20c915c89a6c2734ddb03bb4d8c762b545faa0e22bca54181848275",
   "scenario": "Two mii adapters read the same synthetic owner/job/revision and issue concurrent local cancel commands. Shared synthetic D1 journal records two claims, one winner and one PATCH. Lost local cancel response leaves both unknown with remote stop unconfirmed; reconnect retains reservation. Explicit remote cancel response loss, invalid signature, valid synthetic signed usage and one settlement follow on the same job.",
@@ -13,6 +13,7 @@
   },
   "independentReview": "Source review found no P1/P2; Promise.all does not enforce an internal overlap barrier.",
   "limits": "Same-process adapters and synthetic journal, identity and remote peer, not distributed devices, actual network, mii physical stop or production Wallet. Remote send ACK loss with unknown task ID is covered separately and remains held; it cannot be combined with remote cancellation without legitimate task identity. No inference, external provider or actual payment.",
-  "next": "Merge-SHA CI was cancelled after later main pushes; rerun after earlier SHA finishes.",
-  "mergeSha": "692a59e0ec1cf210db41e13440e5e8380f2599c8"
+  "next": "Physical mii, distributed journal, actual provider and Wallet remain separately unaccepted.",
+  "mergeSha": "692a59e0ec1cf210db41e13440e5e8380f2599c8",
+  "mainCiEvidence": "docs/evidence/development-execution/mii-worker-two-consumers-main-ci.json"
 }
