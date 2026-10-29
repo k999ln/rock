@@ -413,6 +413,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     }
     await devtools.call('Page.reload');
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii after reload');
+    await wait(`!!document.querySelector('[aria-label="ローカルMCP runtimeへのPackage capability binding"]')`, 'package binding settled after reload');
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'same job after reload');
     if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*3/);
@@ -471,6 +472,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, 2); assert.equal(connectorExecuteCalls, 2);
       await devtools.call('Page.reload');
       await wait('document.body.innerText.includes("mii連携のソフト試用")', 'second mii after reload');
+      await wait(`!!document.querySelector('[aria-label="ローカルMCP runtimeへのPackage capability binding"]')`, 'second package binding settled after reload');
       await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
       await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'second same job after reload');
       assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"sum"\s*:\s*11/);
