@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.pixel-live-connection-investigation/1",
-  "status": "in_progress_bridge_restart_connection_unconfirmed",
+  "status": "partial_local_browser_eve_readback_app_link_unresolved",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "device": "Pixel 10 frankel",
   "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
@@ -14,8 +14,13 @@
     "Before restart, the Terminal command systemctl is-active sky-private.service sky-android-bridge.service displayed active for both services.",
     "At user request, sudo -n systemctl restart sky-android-bridge.service returned to the prompt without an error message; its exit status was not captured.",
     "After the restart command, the existing Android app still displayed connection unconfirmed and preparation result unconfirmed.",
-    "A read-only post-restart service status command was recalled and visually checked; automatic approval rejected sending Enter, so no post-restart service status was observed."
+    "A read-only post-restart service status command was recalled and visually checked; automatic approval rejected sending Enter, so no post-restart service status was observed.",
+    "After explicit owner approval, systemctl is-active reported active for both sky-private.service and sky-android-bridge.service after the bridge restart.",
+    "Read-only privileged journal showed bridge service lifecycle events; no connection failure cause was established.",
+    "One tap of the existing Pixel synchronization start control did not immediately clear the app connection-unconfirmed message.",
+    "The existing app Eve link opened localhost:5199/os/eve/... and returned the existing local server error indicating the operation is unavailable.",
+    "Opening existing http://127.0.0.1:5199/ in the Pixel browser displayed the local Sky interface. Its Eve control displayed previously saved work and results; no content or identifiers are recorded here."
   ],
-  "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. No post-restart status or recovery established.",
-  "next": "Safely verify post-restart service state and diagnose the remaining connection failure without replaying unknown preparation or interrupting existing jobs."
+  "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact.",
+  "next": "Investigate app-to-Eve endpoint configuration and synchronization contract while preserving existing forwarding, jobs and model state; verify the appropriate matching source and target before changing either."
 }

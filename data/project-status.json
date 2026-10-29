@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "in_progress_bridge_restart_connection_unconfirmed",
+    "status": "partial_local_browser_eve_readback_app_link_unresolved",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Verify post-restart bridge state and diagnose the still-unconfirmed connection without replaying preparation or interrupting existing jobs."
+    "next": "Investigate the app Eve endpoint and synchronization contract; preserve existing forwarding, jobs and model state."
   }
 }
