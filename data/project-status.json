@@ -12435,5 +12435,11 @@
     "status": "candidate_independent_test_pass_pr_pending",
     "evidence": "docs/evidence/development-execution/mii-worker-two-consumers.json",
     "next": "Exact-head CI and independent final review; actual distributed journal, physical mii, remote provider and Wallet remain separate."
+  },
+  "eveSupervisorSignal": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/eve-signal-supervisor.json",
+    "next": "Independent review, exact-head Linux CI, merge and same-SHA CI. Actual model and descendant process-group remain unaccepted."
   }
 }

@@ -95,6 +95,8 @@ model推論先とAgent/Tool runnerを分離する。PixelのHomeの通常値は�
 
 ## 3. Local plannerの契約
 
+Eve開発用supervisorは停止信号を保持し、所有する子processを終了・回収して以前のhandlerを復元する候補を合成試験で検証する。これは子孫process全体の停止、実training、端末やhard isolationの受入ではない。[証拠](evidence/development-execution/eve-signal-supervisor.json)。
+
 2026-10-16のPixel実装は[署名済catalog・導入・再読込み・Jennifer有限計画](native-os-integration.md#pixel-local-jennifer)を既存v4 handoffへ接続する。Platform API v1とruntime Binder v4は別の版範囲。debug catalogは署名済み2候補、production catalogは空。2026-10-17、固定候補`6c9a3083`とQwen2.5 1.5BでPixel 10 GL066のHome→実v4計画→実2 Tool→確認待ち成果物保存を64.625秒の試験で確認した。生成文は主題に沿うが短く、依頼した構成や出典未調査表示を満たさず一般品質は未受入。機能・内容・全OSの受入を分ける。
 
 
