@@ -251,6 +251,16 @@
       "distribution": "public/toolkits/sky-mcp-connector.zip",
       "evidence": "docs/evidence/development-execution/smith-tool-observation-freshness.json",
       "scope": "synthetic connected declaration freshness and fail-closed approval; not provider truth, production authority, or physical acceptance"
+    },
+    "sharedTwoTabWorker": {
+      "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "tests": [
+        "tests/mii-worker-shared-d1.test.mjs",
+        "tests/fixtures/mii-worker-shared/workflow-wrapper.mjs",
+        "tests/fixtures/mii-worker-shared/mii-ui.tsx"
+      ],
+      "evidence": "docs/evidence/development-execution/mii-worker-shared-d1.json",
+      "scope": "synthetic owner, shared D1 and actual two-tab IndexedDB; remote cancellation and settlement separate"
     }
   },
   "latestRockstarOsDesign": {

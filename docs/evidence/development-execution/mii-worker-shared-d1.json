@@ -1,0 +1,22 @@
+{
+  "schema": "rockstaros.mii-worker-shared-d1/1",
+  "state": "candidate_independent_test_pass_pr_pending",
+  "baseMain": "21b75a617f4fa49daa26e6eaac9f877d167f7b28",
+  "sha256": {
+    "tests/mii-worker-shared-d1.test.mjs": "75e1d1ee7f1287be9800f7ee83005e2f712ab36560d86085029e040a2f17ca0e",
+    "tests/fixtures/mii-worker-shared/workflow-wrapper.mjs": "1da72c91ba6065593af2569fb4746c1f24b48d217901fbea6691ed06d8f298db",
+    "tests/fixtures/mii-worker-shared/mii-ui.tsx": "c02fc53b75ee839eeabb9da70bc9918e738f2046ca11692c790254ea73c291ad"
+  },
+  "scenario": "Two isolated Chrome tabs use actual mii UI, same owner/job/revision, IndexedDB strict transactions, actual work route, and one Miniflare D1 shared with actual A2A Workflow. Synthetic owner approval holds reservation 5. Simulated lost response and socket disconnect retain unknown, one cancellation event and held reservation. The actual Workflow reports no_remote_task and zero remote send/cancel claims.",
+  "replay": "In disconnect case the test explicitly resends the identical command to the actual route and asserts one event, same job and held reservation. Natural transport retry is a separate environment-dependent observation; the independent run observed three requests but does not prove the sender or general behavior.",
+  "independentTest": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "df76b8cc6de769a1280e10c1b9fe876be0089666c7b9718f7887c190f39337e3",
+    "scope": "Mac isolated Chrome and synthetic localhost/D1"
+  },
+  "history": "Initial fixture rejected synthetic storage persistence, then a fixture parent did not reflect readback; both corrected. A socket disconnect exposed repeated identical transport requests; original single-send expectation was not valid.",
+  "limits": "Persistent storage permission is stubbed; actual IndexedDB strict transaction is used. Synthetic identity, approval and local process shared D1. Remote send, remote cancel loss and signed usage settlement are not connected in this fixture; those are separate Worker tests. No physical mii, production provider, actual billing, model inference, real power-loss or general network isolation acceptance.",
+  "next": "Final independent review, exact-head CI, merge and merge-SHA CI; explore a legitimate shared synthetic remote authority without inventing task IDs."
+}
