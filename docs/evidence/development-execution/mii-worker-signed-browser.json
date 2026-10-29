@@ -1,0 +1,22 @@
+{
+  "schema": "rockstaros.mii-worker-signed-browser/1",
+  "state": "candidate_independent_test_pass_pr_pending",
+  "baseCandidate": "df130d5dcf0e594ffe05447010dde01dae8e9e81",
+  "sha256": {
+    "tests/mii-worker-signed-dispatch.test.mjs": "307454af41fcc2835b65b0bf7761ce7c3d16c6a9d02bd5b0fb21f80dc0b76866",
+    "tests/mii-worker-signed-browser.test.mjs": "03b43f1fc6d7da5aa5bac6a64eba9b1854494bca2c9f829c7ec3a3130bbfa0bc",
+    "tests/fixtures/mii-worker-signed/seed.mjs": "e1087926cd95f0e7201ee8ad7086da30629eec0d5dea25864c02d6cc2c4d5b89",
+    "tests/fixtures/mii-worker-signed/outbound.ts": "2b24527fa70052c7ac83bc11849c847fcfb668e4e576bc13c9925834562f6b6a"
+  },
+  "scenario": "One synthetic owner/job and D1 across actual Worker dispatch, response-derived remote task ID and two mii browser tabs using actual IndexedDB; local cancellation response loss yields unknown and held reservation. A separate explicit store request causes remote cancel response loss; invalid signature is rejected, valid synthetic signed usage settles once and replay does not duplicate it.",
+  "miiBudget": "Actual delegation GET and same mii UI show reserved USD 0.50 and settled usage USD 0.11 with labels; synthetic minor units.",
+  "independentTest": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "4460cddee83598f8f3319664fdba14de43b63d91fcdaf27274d3e7b96d15dc6a",
+    "scope": "isolated Chrome, local Miniflare, synthetic owner and remote service"
+  },
+  "limits": "Approval and signing identity are synthetic test seed; remote cancellation is separately requested, not automatically initiated by mii UI. Persistent storage grant is stubbed, actual IndexedDB strict transaction used. No physical mii, real provider, actual payment, Wallet production, real network loss or inference acceptance. Local response loss here is synthetic; socket disconnect is covered separately by predecessor.",
+  "next": "Final independent review, exact-head CI, merge and merge-SHA CI."
+}

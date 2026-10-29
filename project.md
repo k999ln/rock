@@ -56,6 +56,8 @@ main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致
 
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 
+同一合成D1/本人/jobで実Workerのremote応答由来task、実mii 2 tabの停止応答消失・予約保持、別途明示のremote取消応答消失、不正署名拒否、署名usage一度精算・replay抑止を縦断。miiで予約0.50と確定記録0.11を読戻し、独立2/2成功。[証拠](docs/evidence/development-execution/mii-worker-signed-browser.json)。本人承認・署名鍵・remoteはfixture、実provider・課金・物理miiは未受入。候補のPR/CI/統合は未完了。
+
 同一合成D1に実mii UIの2 tab・IndexedDB strict・work route・A2A Workflowを接続。停止応答消失やsocket切断で同jobの取消1件と予約5保持、同commandの明示再送でも同一結果を独立4/4確認。[証拠](docs/evidence/development-execution/mii-worker-shared-d1.json)。Chromeの自然再送回数は環境依存の観測であり固定保証しない。storage許可はfixture、Workflowはtaskなし判定まで。遠隔取消・署名usage精算は別fixtureのまま、実機・実provider未受入。候補のPR/CI/main統合は未完了。
 
 同一jobの2 mii adapterが並行停止する合成Worker試験でjournalは2回のclaim・1勝者、PATCH1回、両者unknownを確認。再読込後の予約保持、別途remote取消応答喪失、偽署名拒否と署名usage一度精算を同じjobで保持。独立1/1成功。[証拠](docs/evidence/development-execution/mii-worker-two-consumers.json)。同process・合成authority/providerであり物理停止・実networkは未受入。remote送信ACK喪失でtask ID不明の場合は同じremote取消を送れず、別試験で保留する。PR293の同head CI成功、main 692a59e0へ統合。統合後CIは後続pushで一部cancelされたが同SHA再実行6/6成功。[統合CI](docs/evidence/development-execution/mii-worker-two-consumers-main-ci.json)。
