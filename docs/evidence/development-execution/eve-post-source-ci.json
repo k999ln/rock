@@ -1,0 +1,116 @@
+{
+  "schema": "rockstaros.eve-post-source-ci/1",
+  "repository": "k999ln/rock",
+  "pullRequest": 305,
+  "verifiedHead": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+  "observedAtUtc": "2026-10-29 21:59:28 UTC",
+  "checks": [
+    {
+      "id": 123755535195,
+      "name": "CodeQL",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/runs/123755535195"
+    },
+    {
+      "id": 123754606228,
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346204/job/123754606228"
+    },
+    {
+      "id": 123754605727,
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346204/job/123754605727"
+    },
+    {
+      "id": 123754605708,
+      "name": "verify",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346216/job/123754605708"
+    },
+    {
+      "id": 123754605484,
+      "name": "SPIDER / production web security measurement",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346226/job/123754605484"
+    },
+    {
+      "id": 123754605276,
+      "name": "SPIDER / secrets",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346207/job/123754605276"
+    },
+    {
+      "id": 123754605191,
+      "name": "SPIDER / repair regressions",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346226/job/123754605191"
+    }
+  ],
+  "workflows": [
+    {
+      "id": 40961346207,
+      "name": "SPIDER repository security",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346207",
+      "event": "pull_request"
+    },
+    {
+      "id": 40961346226,
+      "name": "SPIDER repair regressions",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346226",
+      "event": "pull_request"
+    },
+    {
+      "id": 40961346204,
+      "name": "SPIDER CodeQL security",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346204",
+      "event": "pull_request"
+    },
+    {
+      "id": 40961346216,
+      "name": "Rock star verification",
+      "status": "completed",
+      "result": "success",
+      "sha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346216",
+      "event": "pull_request"
+    }
+  ],
+  "allSucceeded": true,
+  "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+  "independentReadback": {
+    "reportSha256": "e990cad038cab9d2c822a63d43683a2851d3c17c90459d64f16197f5844238b0"
+  },
+  "successorPolicy": "This receipt/progress-only successor is verified on its own exact pushed head. PR305 description records final head and CI without another source mutation.",
+  "mainMerged": false,
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "wholeEveAccepted": false
+}

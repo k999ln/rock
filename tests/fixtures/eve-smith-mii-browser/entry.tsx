@@ -2,12 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import EveObjectAgentCreator from '../../../components/eve-object-agent-creator';
 import { EveSourceHandoff, useEveSourceContext } from '../../../components/eve-source-handoff';
-import { queueEveSourceIntent, readEveSourceSelection } from '../../../lib/eve-source-client';
+import { queueEveSourceIntent, queueEvePostIntent, readEveSourceSelection } from '../../../lib/eve-source-client';
 import type { EveSourcePin } from '../../../lib/eve-source-context';
 import Workbench from '../../../components/workbench';
 import SkyAgentLibrary from '../../../components/sky-agent-library';
+import { setCommunityKeyProfile, saveCommunityKey } from '../../../lib/community-key-client';
+import type { SkySocialPost } from '../../../lib/sky-social';
 import type { McpConnection } from '../../../lib/mcp-hub';
 
+const selectedFixture = window as Window & { __fixturePostMode?: boolean; __fixturePosts?: Record<string,SkySocialPost>; __fixtureCommunity?: {profileId:string;communityId:string;accessKey:string;unrelatedId:string;unrelatedKey:string} };
+if(selectedFixture.__fixturePostMode && selectedFixture.__fixtureCommunity) {
+  const keys=selectedFixture.__fixtureCommunity;
+  setCommunityKeyProfile(keys.profileId); saveCommunityKey(keys.communityId,{accessKey:keys.accessKey}); saveCommunityKey(keys.unrelatedId,{accessKey:keys.unrelatedKey});
+}
 function SyntheticEve() {
   const [thread, setThread] = useState(0), [draft, setDraft] = useState(''), [mode, setMode] = useState('counter');
   const [error, setError] = useState('');
@@ -16,9 +23,15 @@ function SyntheticEve() {
   const context = useEveSourceContext(true, threadId);
   async function queue(role: string) {
     try {
+      if(selectedFixture.__fixturePostMode) {
+        const post=selectedFixture.__fixturePosts?.[role]; if(!post)throw new Error('selected fixture post missing');
+        await queueEvePostIntent(sessionStorage,post);
+      } else {
       const key = role === 'counter' ? 'dataset:fixture/counter' : 'space:fixture/summer';
       const current = await readEveSourceSelection(key);
+      if(!current.plugin)throw new Error('selected fixture resource missing');
       await queueEveSourceIntent(sessionStorage, current.plugin, role === 'counter' ? '選んだデータの文章行数を確認したい' : '選んだアプリで整数を合計したい');
+      }
       setMode(role); setThread(value => value + 1); setDraft(''); setReplies([]); setError('');
     } catch (reason) { setError(String(reason)); }
   }

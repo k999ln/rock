@@ -1,0 +1,99 @@
+{
+  "testSha256": {
+    "tests/eve-smith-mii-browser.test.mjs": "af06ac22b5418ffbc5798a83c8e0e822fd5f52c8e0b1e58d711707ba68e528ba",
+    "tests/fixtures/eve-smith-mii-browser/entry.tsx": "54a6a4934de99aab760bd9759e49e0219a3332549fb04536dce2831b047744e9"
+  },
+  "schema": "rockstaros.post-acl-browser-acceptance/1",
+  "task": "POSTACL-v1",
+  "worker": "post_acl_browser",
+  "baseline": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+  "result": "PASS_HOST_SYNTHETIC",
+  "tests": 3,
+  "passed": 3,
+  "failed": 0,
+  "skipped": 0,
+  "sourceChangesDuringAllThreeRun": [],
+  "logs": {
+    "/private/tmp/post-acl-browser-first.log": "ac5fba8bbac1b6b84569f4d10637f636aa75d19357190f637ca313ecd86f2570",
+    "/private/tmp/post-acl-browser-all-three.log": "96c3f52815d63dbd97a4e8487da1428bb9fb60e31baa2e30b6745d0282f62176"
+  },
+  "cases": [
+    "existing saved-resource local authority two-role flow",
+    "existing unavailable authority no Tool calls",
+    "new exact public post + keyed community reply through two role/Smith/Tool/Job/result/reload flow"
+  ],
+  "negativeChecks": [
+    "public post content changed after queue",
+    "public post deleted after queue",
+    "authenticated owner changed after queue",
+    "stale post Agent PUT rejects no row",
+    "key revoked after queue rejects reply apply",
+    "only selected community key ID sent on source/Agent paths",
+    "no parent or unrelated post body/key text in composer"
+  ],
+  "limits": [
+    "Synthetic model replies only; real local SDK/Connector with preview authority",
+    "No actual provider or physical-device/production acceptance",
+    "No live streaming or publication/deployment/bulk616"
+  ],
+  "forbiddenFileUntouched": true,
+  "sourceFiles": [
+    {
+      "path": "app/api/eve/source-context/route.ts",
+      "sha256": "771e57be430117e8e02b3c632fb5435a81b4e0abb6d37c207418279ee7bf3a16"
+    },
+    {
+      "path": "app/api/sky/agents/route.ts",
+      "sha256": "9269f713f51504b5cb699fb44113f23acc835307b05ce4325869dc7f29dbba33"
+    },
+    {
+      "path": "components/eve-object-agent-creator.tsx",
+      "sha256": "cf72eb18b732667192f2f3b86f95e6a90e1450c106fac4ec57c03c383527029d"
+    },
+    {
+      "path": "components/eve-source-handoff.tsx",
+      "sha256": "039dfa8c62780c4aa7f6ab27fa3e003527ccb3cc9c25291d50caa7af8284e8a2"
+    },
+    {
+      "path": "components/sky-social-timeline.tsx",
+      "sha256": "c45acdf223edb4ee30c57040de2daf207c99625bd3112da7bdb23ce5a3a77a4f"
+    },
+    {
+      "path": "lib/community-key-client.ts",
+      "sha256": "cf8dfbf2a3a394813f1dcbdb668a857a7bcfc6272058ee348edc27dbc419da31"
+    },
+    {
+      "path": "lib/eve-agent-creation.ts",
+      "sha256": "157e17eb979007a178de473808cb01520a492207ed8d7996e9b7afa0a89901d9"
+    },
+    {
+      "path": "lib/eve-post-source-store.ts",
+      "sha256": "db31e60911a85fc3af76bdc26fc80681f8a8393f6c6f92ed1a9815967fed2dc7"
+    },
+    {
+      "path": "lib/eve-source-client.ts",
+      "sha256": "9653fd5dbf95742e0fd7bd3020201203ddfa5f0a4b99bb7fcb87f3519e55d73d"
+    },
+    {
+      "path": "lib/eve-source-context-store.ts",
+      "sha256": "12f1a94e51a21ddfa310af23cbe22ce9fdbbcebc8b3d71ef5ed4c2094f519b64"
+    },
+    {
+      "path": "lib/eve-source-context.ts",
+      "sha256": "6f2fd385c0ab61ee7d0a0a88fbb10232e4d7c04530c0ed7a181d527f4fd0f9c9"
+    },
+    {
+      "path": "lib/sky-agent-library-store.ts",
+      "sha256": "8e8994a59d412a6beade362ca2d521b38ab9c71fb3a4ac0bd0e23cd970db12f7"
+    },
+    {
+      "path": "lib/use-eve-source-handoff.ts",
+      "sha256": "8a37e9a922dc96f5577b96671def726f3f15cda7af7baac0061388b75eef148e"
+    }
+  ],
+  "manifestEncoding": {
+    "format": "sourceFiles array; aggregate remains SHA256 of sorted path-to-digest JSON",
+    "previousReportSha256": "92044e6d12c2352a9891bddb3a103567a1c4c062cc90b60ddb7af8e232c69037",
+    "reason": "separate path label from file digest; exact source bytes unchanged; original report retained in PR304 commit58d96f87"
+  }
+}

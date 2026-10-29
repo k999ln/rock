@@ -44,6 +44,13 @@ export function communityRequestHeaders() {
       values[id] = r.accessKey;
   return { 'x-rock-community-keys': JSON.stringify(values) };
 }
+/** Send only the selected community's access key; never its recovery key. */
+export function selectedCommunityRequestHeaders(id: string | null): Record<string,string> {
+  if (!id) return {};
+  const record = read()[id];
+  if (!/^[a-f0-9-]{36}$/.test(id) || !record || !/^[a-f0-9]{64}$/.test(record.accessKey)) return {};
+  return { 'x-rock-community-keys': JSON.stringify({ [id]: record.accessKey }) };
+}
 export function prepareCommunityKey(id: string, creator = false) {
   const current = read()[id],
     record = {

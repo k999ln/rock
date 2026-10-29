@@ -1,0 +1,101 @@
+{
+  "schema": "rockstaros.post-acl-preserved-head-independent-review/1",
+  "task": "POSTACL-v1",
+  "reviewer": "/root/post_acl_review",
+  "result": "PASS_SCOPED_EXACT_HEAD_CI",
+  "observedAtUtc": "2026-10-29 21:59:13 UTC",
+  "pullRequest": 305,
+  "headSha": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+  "baseMain": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+  "mainMerged": false,
+  "checks": [
+    {
+      "id": 123755535195,
+      "name": "CodeQL",
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/runs/123755535195"
+    },
+    {
+      "id": 123754606228,
+      "name": "SPIDER CodeQL (python)",
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346204/job/123754606228"
+    },
+    {
+      "id": 123754605727,
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346204/job/123754605727"
+    },
+    {
+      "id": 123754605708,
+      "name": "verify",
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346216/job/123754605708"
+    },
+    {
+      "id": 123754605484,
+      "name": "SPIDER / production web security measurement",
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346226/job/123754605484"
+    },
+    {
+      "id": 123754605276,
+      "name": "SPIDER / secrets",
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346207/job/123754605276"
+    },
+    {
+      "id": 123754605191,
+      "name": "SPIDER / repair regressions",
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40961346226/job/123754605191"
+    }
+  ],
+  "allSevenChecksSucceeded": true,
+  "history": {
+    "headParentIsBase": true,
+    "failedOriginalCommit": "58d96f87065aa4641968d2623710ca784128599e",
+    "failedOriginalNotAncestor": true,
+    "originalBranchPreserved": true,
+    "originalPr304ClosedSuperseded": true,
+    "originalFailureLinkedInPr304": true,
+    "scannerPolicyUnchanged": true
+  },
+  "sourceReview": {
+    "productionFiles": 13,
+    "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+    "unchangedSinceIndependentReviewAndFullVerify": true,
+    "metadataReencodingReview": "docs/evidence/development-execution/eve-post-source-metadata-review.json",
+    "metadataReencodingReviewSha256": "fd26f072f852a0c8ba87e93412b8dfd49693b33c82c5110ed9f2149d66390ece"
+  },
+  "progress": {
+    "threeObjectsEqual": true,
+    "mainMerged": false,
+    "wholeUnitAccepted": false
+  },
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "limitations": [
+    "Receipt-successor commit not yet created; its own final exact-head CI remains required",
+    "Main integration is not authorized in this run",
+    "Actual model/provider, upstream streaming, graph, physical/wholeEve acceptance remains separate"
+  ]
+}

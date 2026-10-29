@@ -1,3 +1,5 @@
+import * as postCommunityAccess from '../lib/community-access.ts';
+import * as postSkySocial from '../lib/sky-social.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomUUID } from 'node:crypto';
@@ -31,8 +33,8 @@ async function setup(t, persistent = false, authorityAvailable = true, reviewExp
   const ownerId = authorityAvailable === 'real' ? 'local-preview:fixture' : 'alice';
   const baseOrigin = authorityAvailable === 'real' ? 'http://localhost:3000' : 'https://fixture.invalid';
   const config = { ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: ownerId, ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' };
-  const realGate = loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/authority.ts', import.meta.url), new Map([['cloudflare:workers', { env: config }], ['@/lib/request-auth', auth]]));
-  const dependencies = new Map([
+  const realGate = loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/authority.ts', import.meta.url), new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],['cloudflare:workers', { env: config }], ['@/lib/request-auth', auth]]));
+  const dependencies = new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],
     ['@/app/api/work-jobs/tool-observations/authority', authorityAvailable === 'real' ? realGate : { dispatchAuthorityAvailable: () => authorityAvailable }],
     ['cloudflare:workers', { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' } }],
     ['@/lib/fund-store', { database: () => db, requestUser: auth.requestUser }],

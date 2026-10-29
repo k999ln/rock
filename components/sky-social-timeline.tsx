@@ -579,6 +579,9 @@ export default function SkySocialTimeline({
                 {expanded[post.id] ? '表示を減らす' : 'さらに表示'}
               </button>
             )}
+            <button type="button" disabled={sourceHandoff.preparing} onClick={() => void sourceHandoff.preparePost(post)}>
+              この{post.replyTo ? '返信' : '投稿'}をEveで使う準備 <ArrowUpRight size={15} />
+            </button>
             {post.attachment && (
               <div className={styles.shared}>
                 <small>

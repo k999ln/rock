@@ -310,6 +310,26 @@
       "ciEvidence": "docs/evidence/development-execution/eve-selected-source-ci.json",
       "mainIntegrationEvidence": "docs/evidence/development-execution/eve-selected-source-main-integration.json",
       "mainCiEvidence": "docs/evidence/development-execution/eve-selected-source-main-ci.json"
+    },
+    "postSourceAcl": {
+      "authority": "docs/rockstaros-complete-design.md#選んだ出典とeve回答から担当を保存する",
+      "evidence": "docs/evidence/development-execution/eve-post-source-acl.json",
+      "implementation": [
+        "lib/eve-source-context.ts",
+        "lib/eve-post-source-store.ts",
+        "lib/eve-source-context-store.ts",
+        "lib/eve-source-client.ts",
+        "lib/sky-agent-library-store.ts",
+        "components/sky-social-timeline.tsx"
+      ],
+      "tests": [
+        "tests/eve-post-source-store.test.mjs",
+        "tests/eve-post-source-api.test.mjs",
+        "tests/eve-post-source-client.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
+      ],
+      "acceptance": "host-scoped independent221 and isolated3browser cases; full verify passed; preservedhead7CI passed; receipt successor finalhead readback in PR305",
+      "ciEvidence": "docs/evidence/development-execution/eve-post-source-ci.json"
     }
   },
   "latestRockstarOsDesign": {
