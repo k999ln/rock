@@ -3,7 +3,7 @@
   "state": "candidate_independent_test_pass_pr_pending",
   "baseMain": "21b75a617f4fa49daa26e6eaac9f877d167f7b28",
   "sha256": {
-    "tests/mii-worker-shared-d1.test.mjs": "75e1d1ee7f1287be9800f7ee83005e2f712ab36560d86085029e040a2f17ca0e",
+    "tests/mii-worker-shared-d1.test.mjs": "a8541bdf18a992b1838d42f263826ad4f392ff7eca86c57f7afc8ee29916048b",
     "tests/fixtures/mii-worker-shared/workflow-wrapper.mjs": "1da72c91ba6065593af2569fb4746c1f24b48d217901fbea6691ed06d8f298db",
     "tests/fixtures/mii-worker-shared/mii-ui.tsx": "c02fc53b75ee839eeabb9da70bc9918e738f2046ca11692c790254ea73c291ad"
   },
@@ -13,10 +13,10 @@
     "passed": 4,
     "failed": 0,
     "skipped": 0,
-    "logSha256": "df76b8cc6de769a1280e10c1b9fe876be0089666c7b9718f7887c190f39337e3",
+    "logSha256": "d0d4b737666153802b07d2422cd493faf2f5952b647ab88e00cb7b97be2e6878",
     "scope": "Mac isolated Chrome and synthetic localhost/D1"
   },
-  "history": "Initial fixture rejected synthetic storage persistence, then a fixture parent did not reflect readback; both corrected. A socket disconnect exposed repeated identical transport requests; original single-send expectation was not valid.",
+  "history": "Initial fixture rejected synthetic storage persistence, then a fixture parent did not reflect readback; both corrected. A socket disconnect exposed repeated identical transport requests; original single-send expectation was not valid. Initial PR head df130d5d CodeQL reported two medium alerts for stack traces in fixture HTTP responses; fixed responses to generic text and retained details only in test diagnostics. Fixed 500 receipt is source-reviewed but not deliberately triggered in the four tests; new-head CodeQL pending.",
   "limits": "Persistent storage permission is stubbed; actual IndexedDB strict transaction is used. Synthetic identity, approval and local process shared D1. Remote send, remote cancel loss and signed usage settlement are not connected in this fixture; those are separate Worker tests. No physical mii, production provider, actual billing, model inference, real power-loss or general network isolation acceptance.",
   "next": "Final independent review, exact-head CI, merge and merge-SHA CI; explore a legitimate shared synthetic remote authority without inventing task IDs."
 }
