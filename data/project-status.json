@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "site_candidate_reviewed_not_deployed",
+    "status": "v121_eve_candidate_reviewed_fixture_pixel_verified_not_deployed",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Resolve failed root verify, verify candidate in real mobile UI and investigate existing news provider; candidate not deployed."
+    "next": "Review exact v121-based candidate and restoration procedure; production and real-account verification remain outstanding."
   }
 }

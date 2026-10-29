@@ -1,0 +1,212 @@
+diff --git a/components/eve-sync-workspace.module.css b/components/eve-sync-workspace.module.css
+index b93db9d..aed53f2 100644
+--- a/components/eve-sync-workspace.module.css
++++ b/components/eve-sync-workspace.module.css
+@@ -17,0 +18 @@
++.resultsGuidance{display:block;margin:0 0 16px;max-width:65ch;color:var(--muted);font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+diff --git a/components/eve-sync-workspace.tsx b/components/eve-sync-workspace.tsx
+index 325dcfe..019ebb1 100644
+--- a/components/eve-sync-workspace.tsx
++++ b/components/eve-sync-workspace.tsx
+@@ -2,0 +3 @@ import {runtimeEveTextExport} from '@/lib/eve-runtime-export';
++import {eveResultsGuidance,eveResultsScopeVerified,eveResultsResponseCurrent} from '@/lib/eve-results-guidance';
+@@ -122,0 +124 @@ export default function EveSyncWorkspace({
++  const [resultsScope, setResultsScope] = useState<{owner:string;thread:string}|null>(null);
+@@ -123,0 +126 @@ export default function EveSyncWorkspace({
++    selectionEpoch = useRef(0),
+@@ -132,0 +136 @@ export default function EveSyncWorkspace({
++        const runtimeEpoch = selectionEpoch.current;
+@@ -171,0 +176 @@ export default function EveSyncWorkspace({
++          selectionEpoch.current++;
+@@ -208 +213 @@ export default function EveSyncWorkspace({
+-        if (activeThread.current === runtimeThread) {
++        if (eveResultsResponseCurrent(runtimeThread,activeThread.current,runtimeEpoch,selectionEpoch.current)) {
+@@ -210,0 +216 @@ export default function EveSyncWorkspace({
++          setResultsScope(runtime.data && !runtime.data.recovery ? {owner:sync.ownerUserId,thread:runtimeThread} : null);
+@@ -213,0 +220 @@ export default function EveSyncWorkspace({
++          setResultsScope(null);
+@@ -221,0 +229 @@ export default function EveSyncWorkspace({
++        const threadEpoch = selectionEpoch.current;
+@@ -232 +240 @@ export default function EveSyncWorkspace({
+-            if (live && activeThread.current === id) {
++            if (live && eveResultsResponseCurrent(id,activeThread.current,threadEpoch,selectionEpoch.current)) {
+@@ -262,0 +271 @@ export default function EveSyncWorkspace({
++            selectionEpoch.current++;
+@@ -267,0 +277 @@ export default function EveSyncWorkspace({
++            setResultsScope(null);
+@@ -355,0 +366,2 @@ export default function EveSyncWorkspace({
++    selectionEpoch.current++;
++    const chosenEpoch = selectionEpoch.current;
+@@ -356,0 +369 @@ export default function EveSyncWorkspace({
++    setResultsScope(null);
+@@ -370 +383 @@ export default function EveSyncWorkspace({
+-          activeThread.current === id &&
++          eveResultsResponseCurrent(id,activeThread.current,chosenEpoch,selectionEpoch.current) &&
+@@ -434,0 +448 @@ export default function EveSyncWorkspace({
++        selectionEpoch.current++;
+@@ -435,0 +450 @@ export default function EveSyncWorkspace({
++        setResultsScope(null);
+@@ -642 +657 @@ export default function EveSyncWorkspace({
+-            <button type="button" onClick={()=>{setModeOverride('work');requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));}}><ListChecks size={17}/>仕事と成果</button>
++            <button type="button" disabled={signedIn!==true} title={signedIn===null?'アカウントと仕事を確認しています':signedIn===false?'サインイン後に仕事を確認できます':undefined} onClick={()=>{setModeOverride('work');requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));}}><ListChecks size={17}/>仕事と成果</button>
+@@ -643,0 +659 @@ export default function EveSyncWorkspace({
++          {signedIn===null && <output className={styles.resultsGuidance}>{message?'仕事と成果を確認できません。接続を確認してください。':'仕事と成果を確認しています。'}</output>}
+@@ -824,0 +841,12 @@ export default function EveSyncWorkspace({
++              {(() => {
++                const guidance = eveResultsGuidance({
++                  online,
++                  runtimeNotice,
++                  hasVisibleResults: jobs.some((j) => !selected || j.threadId === selected)
++                    || runtimeJobs.some((j) => !selected || j.threadId === selected)
++                    || runtimePending.some((p) => !selected || p.threadId === selected),
++                  selectedThread: Boolean(selected),
++                  scopeVerified: eveResultsScopeVerified(resultsScope,connectionOwner,selected),
++                });
++                return guidance && <output className={styles.resultsGuidance}>{guidance}</output>;
++              })()}
+diff --git a/lib/eve-results-guidance.ts b/lib/eve-results-guidance.ts
+new file mode 100644
+index 0000000..e3e88b8
+--- /dev/null
++++ b/lib/eve-results-guidance.ts
+@@ -0,0 +1,23 @@
++export function eveResultsGuidance(input: {
++  online: boolean;
++  runtimeNotice: string;
++  hasVisibleResults: boolean;
++  selectedThread: boolean;
++  scopeVerified: boolean;
++}): string {
++  if (!input.online) return '接続を確認できません。保存済みの仕事の状態は未確認です。';
++  if (input.hasVisibleResults) return '';
++  if (input.runtimeNotice) return '一部の実行先を確認できません。仕事がないとは判断できません。';
++  if (!input.scopeVerified) return 'この会話と本人の端末報告を確認中です。保存済みの仕事の状態は未確認です。';
++  return input.selectedThread
++    ? '現在読み込んだ端末報告に、この会話の仕事はありません。保存済み履歴は別に確認できます。'
++    : '現在読み込んだ端末報告に仕事はありません。保存済み履歴やCloudの依頼・成果は別に確認できます。';
++}
++
++export function eveResultsScopeVerified(snapshot: { owner: string; thread: string } | null, owner: string, thread: string) {
++  return Boolean(owner && snapshot && snapshot.owner === owner && snapshot.thread === thread);
++}
++
++export function eveResultsResponseCurrent(startThread: string, currentThread: string, startEpoch: number, currentEpoch: number) {
++  return startThread === currentThread && startEpoch === currentEpoch;
++}
+diff --git a/tests/eve-results-guidance.test.mjs b/tests/eve-results-guidance.test.mjs
+new file mode 100644
+index 0000000..7bae749
+--- /dev/null
++++ b/tests/eve-results-guidance.test.mjs
+@@ -0,0 +1,27 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { eveResultsGuidance, eveResultsScopeVerified, eveResultsResponseCurrent } from '../lib/eve-results-guidance.ts';
++
++void test('result guidance never describes an unknown connection as an empty account', () => {
++  const base = { online: true, runtimeNotice: '', hasVisibleResults: false, selectedThread: false, scopeVerified: true };
++  assert.match(eveResultsGuidance({ ...base, online: false }), /未確認/);
++  assert.match(eveResultsGuidance({ ...base, runtimeNotice: 'unavailable' }), /判断できません/);
++  assert.match(eveResultsGuidance({ ...base, scopeVerified: false }), /未確認/);
++  assert.match(eveResultsGuidance(base), /現在読み込んだ端末報告/);
++  assert.match(eveResultsGuidance({ ...base, selectedThread: true }), /この会話/);
++  assert.equal(eveResultsGuidance({ ...base, hasVisibleResults: true }), '');
++});
++
++void test('an old response or another owner cannot verify the current conversation', () => {
++  const old = { owner: 'owner-a', thread: 'thread-a' };
++  assert.equal(eveResultsScopeVerified(old, 'owner-a', 'thread-b'), false);
++  assert.equal(eveResultsScopeVerified(old, 'owner-b', 'thread-a'), false);
++  assert.equal(eveResultsScopeVerified(null, 'owner-a', 'thread-a'), false);
++  assert.equal(eveResultsScopeVerified(old, 'owner-a', 'thread-a'), true);
++});
++
++void test('A to B to A never accepts the older A response', () => {
++  assert.equal(eveResultsResponseCurrent('A', 'B', 1, 2), false);
++  assert.equal(eveResultsResponseCurrent('A', 'A', 1, 3), false);
++  assert.equal(eveResultsResponseCurrent('A', 'A', 3, 3), true);
++});
+diff --git a/tests/eve-runtime-work-port.test.mjs b/tests/eve-runtime-work-port.test.mjs
+index 1fa4854..205a9f0 100644
+--- a/tests/eve-runtime-work-port.test.mjs
++++ b/tests/eve-runtime-work-port.test.mjs
+@@ -113 +113 @@ void test('the browser thread query discovers an old job hidden by other convers
+- const source=readFileSync(new URL('../components/eve-sync-workspace.tsx',import.meta.url),'utf8');assert.match(source,/const runtimeThread = activeThread\.current/);assert.match(source,/encodeURIComponent\(runtimeThread\)/);assert.match(source,/if \(activeThread\.current === runtimeThread\)/);
++ const source=readFileSync(new URL('../components/eve-sync-workspace.tsx',import.meta.url),'utf8');assert.match(source,/const runtimeThread = activeThread\.current/);assert.match(source,/encodeURIComponent\(runtimeThread\)/);assert.match(source,/eveResultsResponseCurrent\(runtimeThread,activeThread\.current,runtimeEpoch,selectionEpoch\.current\)/);
+diff --git a/tests/fixtures/pixel-eve-ui/README.md b/tests/fixtures/pixel-eve-ui/README.md
+new file mode 100644
+index 0000000..f3cc0bb
+--- /dev/null
++++ b/tests/fixtures/pixel-eve-ui/README.md
+@@ -0,0 +1,5 @@
++# Isolated Eve UI fixture
++
++This uses the real Eve React component with stubbed child components and synthetic owner, history, runtime, and device responses. All application `fetch` calls are intercepted and other endpoints fail; no model is invoked. It is not a production account, a whole-site rendering, or Pixel device acceptance.
++
++From the Site source checkout, run `./node_modules/.bin/vite --config tests/fixtures/pixel-eve-ui/vite.config.mjs`. Open the printed loopback URL in a separate browser tab at 411 × 923 CSS pixels. Select Fixture A, click “次の応答を保留”, wait until “応答保留中”, then select Fixture B and Fixture A. Release the held response and verify that the current results remain unconfirmed until a new poll completes. Check “仕事と成果” after the poll. Reset the viewport, close only the test tab, and stop the owned Vite process afterwards. The fixture does not test a real account, saved work, actual phone, or the full production page styling.
+diff --git a/tests/fixtures/pixel-eve-ui/index.html b/tests/fixtures/pixel-eve-ui/index.html
+new file mode 100644
+index 0000000..77f4d9e
+--- /dev/null
++++ b/tests/fixtures/pixel-eve-ui/index.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="ja"><head><meta name="viewport" content="width=device-width,initial-scale=1"/><meta charset="utf-8"/><title>隔離されたEve UI検証</title></head><body><div id="root"></div><script type="module" src="/main.jsx"></script></body></html>
+diff --git a/tests/fixtures/pixel-eve-ui/main.jsx b/tests/fixtures/pixel-eve-ui/main.jsx
+new file mode 100644
+index 0000000..f2641bd
+--- /dev/null
++++ b/tests/fixtures/pixel-eve-ui/main.jsx
+@@ -0,0 +1,19 @@
++import React from 'react';
++import {createRoot} from 'react-dom/client';
++import Eve from '@fixture-eve';
++let deferred=null, holdNext=false, serial=0;
++const json=x=>({ok:true,json:async()=>x});
++const session=(id,content)=>({ownerUserId:'fixture-owner',session:{id,messages:[{id:'m',side:'me',text:content}]},before:null});
++window.fetch=async (url)=>{
++ const u=new URL(url,location.origin);
++ if(u.pathname==='/api/eve/history'&&u.searchParams.has('id')){const id=u.searchParams.get('id');return json(session(id,`fixture-${id}-${++serial}`));}
++ if(u.pathname==='/api/eve/history')return json({ownerUserId:'fixture-owner',items:[session('A','Fixture A'),session('B','Fixture B')],cursor:null});
++ if(u.pathname==='/api/eve/device-sync')return json({ownerUserId:'fixture-owner',jobs:[],devices:[]});
++ if(u.pathname==='/api/eve/runtime'){
++  if(holdNext){holdNext=false;return await new Promise(resolve=>{deferred=()=>resolve(json({ownerUserId:'fixture-owner',devices:[],executions:[],pending:[]}));window.dispatchEvent(new Event('fixture-held')); });}
++  return json({ownerUserId:'fixture-owner',devices:[],executions:[],pending:[]});
++ }
++ throw Error('fixture denies all other requests');
++};
++function Controls(){const [held,setHeld]=React.useState(false);React.useEffect(()=>{const f=()=>setHeld(true);window.addEventListener('fixture-held',f);return()=>window.removeEventListener('fixture-held',f)},[]);return <div style={{padding:12,background:'#e8f1e8'}}><strong>隔離fixture・ネットワーク送信なし</strong><output>{held?'応答保留中':'待機中'}</output><button onClick={()=>{holdNext=true}}>次の応答を保留</button><button onClick={()=>{if(deferred){deferred();deferred=null;setHeld(false)}}}>保留した応答を返す</button></div>}
++createRoot(document.getElementById('root')).render(<><Controls/><Eve/></>);
+diff --git a/tests/fixtures/pixel-eve-ui/vite.config.mjs b/tests/fixtures/pixel-eve-ui/vite.config.mjs
+new file mode 100644
+index 0000000..822b6fd
+--- /dev/null
++++ b/tests/fixtures/pixel-eve-ui/vite.config.mjs
+@@ -0,0 +1,8 @@
++import { defineConfig } from 'vite';
++import { realpathSync } from 'node:fs';
++import { resolve } from 'node:path';
++const fixture=import.meta.dirname;
++const site=resolve(fixture,'../../..');
++const component=resolve(site,'components/eve-sync-workspace.tsx');
++const stubs=new Set(['./eve-runtime-interaction','./eve-runtime-archive','./eve-agent-composer','./workbench','./eve-news-workspace','./eve-tool-workspace','./sky-agent-eve-profile','./sky-free-cloud-panel','./workspace-shell','./sky-agent-library','next/link','next/navigation','@/lib/eve-runtime-export','@/lib/eve-studio-navigation','@/lib/eve-runtime-work-port','@/lib/eve-purpose-runtime-work-port','@/lib/sky-eve-connections']);
++export default defineConfig({root:fixture,server:{host:'127.0.0.1',port:18371,strictPort:true,fs:{allow:[fixture,site,realpathSync(resolve(site,'node_modules'))]}},plugins:[{name:'fixture-stubs',enforce:'pre',resolveId(id,importer){if(id==='@fixture-eve')return component;if(id==='@/lib/eve-results-guidance')return resolve(site,'lib/eve-results-guidance.ts');if(importer===component&&stubs.has(id))return '\0fixture:'+id;},load(id){if(!id.startsWith('\0fixture:'))return;const k=id.slice(9);if(k==='next/navigation')return `const p=new URLSearchParams();export function useSearchParams(){return p}`;if(k==='next/link')return `import React from 'react';export default function Link(p){return React.createElement('a',p,p.children)}`;if(k==='./workspace-shell')return `import React from 'react';export default function Shell(p){return React.createElement('main',null,p.children)}`;if(k==='./sky-agent-eve-profile')return `export default function Stub(){return null} export function useSkyAgentProfileRequested(){return false} export function useSkyAgentProfileKey(){return ''}`;if(k==='@/lib/sky-eve-connections')return `export const skyEveSelectionTargetKey=()=>'',skyEveExecutionTargets=()=>[],skyEveSelectionMatches=()=>false,skyEveDevicePath=()=>'',skyEveDeviceState=()=>null,skyEveConsentKey=()=>'',skyEveTargetKey=()=>'',isEveRuntimePresence=()=>false;`;if(k.startsWith('@/lib/'))return `export const runtimeEveTextExport=()=>{},eveAgentConversationPath=()=>'',runtimeEvePendingKey=()=>'',runtimeEveRestorableWork=()=>[],purposeEvePendingKey=()=>'';`;return `export default function Stub(){return null}`;}}]});
+diff --git a/tests/smis-eve-workbench.test.mjs b/tests/smis-eve-workbench.test.mjs
+index 95f4287..47df224 100644
+--- a/tests/smis-eve-workbench.test.mjs
++++ b/tests/smis-eve-workbench.test.mjs
+@@ -9,0 +10 @@ import * as connections from '../lib/sky-eve-connections.ts';
++import * as resultsGuidance from '../lib/eve-results-guidance.ts';
+@@ -17 +18 @@ function harness(path,{initial={},params=new URLSearchParams(),fetcher=async()=>
+- const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false},window:{addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
++ const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false},window:{addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='@/lib/eve-results-guidance')return resultsGuidance;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
+@@ -59,0 +61,10 @@ void test('Eve tab changes preserve pinned URL context and a new agent link open
++
++void test('work results navigation waits for account verification and then becomes available',()=>{
++ const checking=harness('components/eve-sync-workspace.tsx');
++ let view=checking.render();
++ assert.equal(button(view,'仕事と成果').props.disabled,true);
++ assert.match(text(view),/仕事と成果を確認しています/);
++ const ready=harness('components/eve-sync-workspace.tsx',{initial:{19:true}});
++ view=ready.render();
++ assert.equal(button(view,'仕事と成果').props.disabled,false);
++});
