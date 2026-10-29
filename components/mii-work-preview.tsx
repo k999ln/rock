@@ -17,13 +17,15 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   const adapter = useRef<ReturnType<typeof createMiiWorkAdapter> | null>(null);
   const boot = useRef(''); const sequence = useRef(0), observationExpiry = useRef(0);
   const place = useRef(1), scene = useRef(1), inputEpoch = useRef(0);
+  const leaseEpoch = useRef(0);
   const [text, setText] = useState('');
   const available = useRef(inputAvailable);
   const context = (value: WorkJob, owner: string) => `${owner}\0${value.id}\0${value.revision}\0${value.agentBinding?.agentId ?? ''}\0${value.agentBinding?.agentRevision ?? ''}`;
   const currentContext = context(job, ownerScope);
   const activeContext = useRef(currentContext);
   const lastContext = useRef(currentContext);
-  const [current, setCurrent] = useState<{ context: string; value: MiiWorkReadback } | null>(null);
+  const [current, setCurrent] = useState<{ context: string; value: MiiWorkReadback; epoch: number;
+    issuedAt: number; expiresAt: number; clock: { last: number } } | null>(null);
   const [busy, setBusy] = useState(false), [confirmed, setConfirmed] = useState(false), [message, setMessage] = useState('');
   const [budget, setBudget] = useState<{ context: string; expiresAt: number; value: MiiBudgetReadback } | null>(null);
   const [renderContext, setRenderContext] = useState(currentContext);
@@ -33,28 +35,59 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
     setRenderContext(currentContext);
     if (current?.context !== currentContext) { setCurrent(null); setBudget(null); setConfirmed(false); setMessage(''); setText(''); }
   }
-  useEffect(() => () => { adapter.current?.close(); }, []);
+  useEffect(() => {
+    const lease = leaseEpoch, input = inputEpoch, ownedAdapter = adapter;
+    return () => { lease.current++; input.current++; ownedAdapter.current?.close(); };
+  }, []);
   useEffect(() => {
     if (!budget) return;
     const timer = setTimeout(() => setBudget(current => current === budget ? null : current), Math.max(0, Math.min(30_000, budget.expiresAt - Date.now())));
     return () => clearTimeout(timer);
   }, [budget]);
+  useEffect(() => {
+    if (!current) return;
+    let timer: ReturnType<typeof setTimeout>;
+    let closed = false;
+    const check = () => {
+      if (closed || leaseEpoch.current !== current.epoch) return;
+      clearTimeout(timer);
+      const now = Date.now();
+      if (!Number.isSafeInteger(now) || now < current.issuedAt || now < current.clock.last || now >= current.expiresAt) {
+        leaseEpoch.current++; inputEpoch.current++; adapter.current?.disconnect();
+        setCurrent(value => value?.epoch === current.epoch ? null : value);
+        setBudget(null); setConfirmed(false);
+        setMessage('観測期限が切れたか時計が変わりました。同じ仕事を読み直してください。');
+        return;
+      }
+      current.clock.last = now;
+      timer = setTimeout(check, Math.min(1_000, current.expiresAt - now));
+    };
+    timer = setTimeout(check, Math.max(0, Math.min(1_000, current.expiresAt - Date.now())));
+    if (typeof document !== 'undefined') document.addEventListener('visibilitychange', check);
+    if (typeof window !== 'undefined') window.addEventListener('focus', check);
+    return () => { closed = true; clearTimeout(timer);
+      if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', check);
+      if (typeof window !== 'undefined') window.removeEventListener('focus', check); };
+  }, [current]);
   useLayoutEffect(() => {
     activeContext.current = currentContext;
     if (lastContext.current === currentContext) return;
     lastContext.current = currentContext;
     if (current?.context === currentContext) return;
+    leaseEpoch.current++; inputEpoch.current++;
     adapter.current?.disconnect();
   }, [currentContext, current]);
   useLayoutEffect(() => {
     available.current = inputAvailable;
-    if (!inputAvailable) { inputEpoch.current++; adapter.current?.disconnect(); }
+    // Tool availability fences input, not the independent saved-output view.
+    if (!inputAvailable) inputEpoch.current++;
   }, [inputAvailable]);
   const visible = current?.context === currentContext ? current.value : null;
 
   async function read() {
     if (busy || !job.agentBinding) return;
     const requestedContext = activeContext.current;
+    const epoch = ++leaseEpoch.current;
     setCurrent(null); setBudget(null); setConfirmed(false); setBusy(true); setMessage('');
     try {
       adapter.current ??= createMiiWorkAdapter({ journal: createMiiIndexedDbJournal() });
@@ -64,26 +97,28 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
         observedAt: now, expiresAt: now + 30_000, attached: true, tracking: 'tracked' });
       const result = await adapter.current.readExisting({ jobId: job.id, ownerScope, revision: job.revision,
         sceneRevision: scene.current, agentId: job.agentBinding.agentId, agentRevision: job.agentBinding.agentRevision });
-      if (activeContext.current !== requestedContext) return;
-      setCurrent({ context: context(result.job, ownerScope), value: result }); setConfirmed(false); onRead(result.job);
+      const acceptedAt = Date.now();
+      if (activeContext.current !== requestedContext || leaseEpoch.current !== epoch || acceptedAt < now || acceptedAt >= observationExpiry.current) return;
+      setCurrent({ context: context(result.job, ownerScope), value: result, epoch,
+        issuedAt: now, expiresAt: observationExpiry.current, clock: { last: acceptedAt } }); setConfirmed(false); onRead(result.job);
       setMessage(result.cancelReconciliation === 'pending' ? '停止要求の結果が未確認です。同じ仕事を照合してください。' :
         result.cancelReconciliation === 'unavailable' ? '仕事は読めました。停止記録の保存先は利用できません。' : '同じ担当と仕事を読み直しました。');
-    } catch { if (activeContext.current === requestedContext) { setCurrent(null); setMessage('本人・担当・仕事の状態を確認できません。元の画面で確認してください。'); } }
+    } catch { if (activeContext.current === requestedContext && leaseEpoch.current === epoch) { setCurrent(null); setMessage('本人・担当・仕事の状態を確認できません。元の画面で確認してください。'); } }
     finally { setBusy(false); }
   }
   async function readBudget() {
     if (busy || !visible || !adapter.current) return;
-    const requestedContext = activeContext.current, expiresAt = observationExpiry.current;
+    const requestedContext = activeContext.current, expiresAt = observationExpiry.current, epoch = current?.epoch;
     setBudget(null); setMessage(''); setBusy(true);
     try {
       const result = await adapter.current.readBudget();
-      if (activeContext.current !== requestedContext || Date.now() >= expiresAt) return;
+      if (activeContext.current !== requestedContext || leaseEpoch.current !== epoch || Date.now() >= expiresAt) return;
       setBudget({ context: requestedContext, expiresAt, value: result });
-    } catch { if (activeContext.current === requestedContext) setMessage('同じ仕事の委任予算を確認できません。金額は推測しません。'); }
+    } catch { if (activeContext.current === requestedContext && leaseEpoch.current === epoch) setMessage('同じ仕事の委任予算を確認できません。金額は推測しません。'); }
     finally { setBusy(false); }
   }
   function invalidateInput(kind: 'tracking' | 'detach' | 'boot' | 'scene') {
-    inputEpoch.current++;
+    leaseEpoch.current++; inputEpoch.current++;
     adapter.current?.disconnect();
     if (kind === 'boot') { boot.current = ''; sequence.current = 0; }
     if (kind === 'detach') place.current++;
@@ -106,7 +141,7 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
               next.agentBinding?.agentRevision !== sourceJob.agentBinding?.agentRevision) return;
           acceptedContext = context(next, owner);
           activeContext.current = acceptedContext;
-          setCurrent({ context: acceptedContext, value: { ...visible, job: next } }); onRead(next);
+          setCurrent(value => value && current && value.epoch === current.epoch ? { ...value, context: acceptedContext, value: { ...visible, job: next } } : value); onRead(next);
         } });
       setMessage('同じ仕事のTool確認画面へ入力を渡しました。上の実行内容と引数を確認し、今回の実行を承認してください。観測期限は読み取りから30秒です。');
     } catch { setMessage('入力の観測または仕事の状態が古くなりました。同じ仕事を読み直してください。'); }
@@ -114,16 +149,18 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   async function cancel() {
     if (busy || !visible || !confirmed || !adapter.current) return;
     const requestedContext = activeContext.current;
+    const epoch = ++leaseEpoch.current;
+    inputEpoch.current++; setCurrent(null); setBudget(null); setConfirmed(false);
+    setMessage('停止要求の結果を確認しています。実行先や物理機器の停止は未確認です。');
     setBusy(true);
     try {
       const result = await adapter.current.cancelPlan({ commandId: crypto.randomUUID(), jobId: visible.job.id,
         revision: visible.job.revision, confirmed: true });
-      if (activeContext.current !== requestedContext) return;
-      setCurrent(null); setConfirmed(false);
+      if (activeContext.current !== requestedContext || leaseEpoch.current !== epoch) return;
       setMessage(result.state === 'plan_cancelled'
         ? '計画の取消を受け付けました。実行先や物理機器が停止したかは未確認です。同じ仕事を読み直してください。'
         : '停止要求の結果は未確認です。同じ仕事を読み直してください。');
-    } catch { if (activeContext.current === requestedContext) setMessage('停止記録を保存できないか、停止の確認が必要です。同じ仕事を読み直してください。'); }
+    } catch { if (activeContext.current === requestedContext && leaseEpoch.current === epoch) setMessage('停止記録を保存できないか、停止の確認が必要です。同じ仕事を読み直してください。'); }
     finally { setBusy(false); }
   }
   return <details className="work-notice">

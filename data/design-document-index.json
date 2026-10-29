@@ -118,6 +118,17 @@
       ],
       "evidence": "docs/evidence/development-execution/execution-review-history.json",
       "scope": "synthetic preview, existing one-time authority, no verified billing or physical acceptance"
+    },
+    "outputLease": {
+      "implementation": [
+        "components/mii-work-preview.tsx"
+      ],
+      "tests": [
+        "tests/mii-work-preview-ui.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/mii-output-lease.json",
+      "scope": "synthetic mii preview output; JS timer/visibility based, not physical stop"
     }
   },
   "latestRockstarOsDesign": {

@@ -719,7 +719,9 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 未対応能力を持つ第三担当の保存・読戻し・不足表示と非実行、および同じ成果のmii画面・再読込・exportでのhash一致を合成ブラウザで確認、PR270をmain dad4fd14へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/eve-smith-unmatched-hash-browser.json)。
 
-同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。全verifyは3416成功・0失敗・4skip、Git統合・CIは未完了。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
+同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
+
+miiソフト画面の期限切れ・停止要求時に古い表示を失効し、保存成果は明示的読直しで再表示する候補は、対象61件・隔離ブラウザ2件と独立検収に成功。JS timerの限界・物理停止は別受入。全verifyは3424成功・0失敗・4skip、Git・CIは未完了。[証拠](docs/evidence/development-execution/mii-output-lease.json)。
 
 1. main統合済みの設計・入口を対象実装branchへ同期し、元dirty候補の未回収差分と同一公開artifactの受入を比較する。PR #112/#115/#116/#117/#118は既にmain適用済みで、旧文書を復活させない。実NFC・所属/枠・有料Provider・任意claim本番受入は別gateとする。
 2. [横断契約と12受入](docs/service-design/06-consistency-contracts.md)の順で、realm/owner/root/leaf/成果相関 → 状態投影と親取消fence → account期間/Goal予算・価格/pass/後払いadapter → 真正reviewer/Receipt → grant/削除journal/鍵喪失復旧 → authority epoch/機器適合を既存fixtureへ接続する。

@@ -363,6 +363,13 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.match(job.toolObservations[0].text, /"lines"\s*:\s*3/);
       assert.deepEqual(claimContracts, [{ inputSchemaSha256: await skyPackageSchemaSha256(manifest.io.inputSchema),
         outputSchemaSha256: await skyPackageSchemaSha256(manifest.io.outputSchema), transport: 'local_http' }]);
+      await evaluate('window.__fixtureClockOffset=31000');
+      await wait(`!document.querySelector('[aria-label="miiから見た同じ仕事"]') && document.body.innerText.includes('観測期限が切れたか時計が変わりました')`, 'expired mii output hidden');
+      await evaluate('window.__fixtureClockOffset=0');
+      assert.equal(await evaluate(`!!document.querySelector('[aria-label="miiから見た同じ仕事"]')`), false);
+      assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload).toolObservations[0].text, job.toolObservations[0].text);
+      await click('miiから同じ仕事を確認');
+      await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'explicit reread restores saved result');
     }
     await devtools.call('Page.reload');
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii after reload');

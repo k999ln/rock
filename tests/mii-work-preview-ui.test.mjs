@@ -23,7 +23,9 @@ function fixtureJob() {
 }
 function harness(job = fixtureJob()) {
   const owner = 'owner-v1:' + 'b'.repeat(64), slots = [], effects = [], reads = [], cancels = [], accepted = [], events = [], staged = [];
-  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, valid = false, inputAvailable = true, budgetFailure = false;
+  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, waitCancel = null, valid = false, inputAvailable = true, budgetFailure = false;
+  let now = Date.now();
+  class FixtureDate extends Date { static now() { return now; } }
   const timers = new Map(); let nextTimer = 0;
   const changed = (a, b) => !a || a.length !== b.length || a.some((value, index) => !Object.is(value, b[index]));
   const react = {
@@ -42,14 +44,15 @@ function harness(job = fixtureJob()) {
       return { job: currentJob, agentBinding: 'verified', executorBinding: 'unverified',
         hardwareAccepted: false, executionAuthorized: false, cancelReconciliation: 'clear' }; },
     async readBudget() { if (budgetFailure) throw new Error('unavailable'); return { jobId: currentJob.id, jobRevision: currentJob.revision, readAt: Date.now(), budget: { currency: 'USD', budgetLimitMinor: 1000, reservedMinor: 200, settledMinor: 300, revision: 1, updatedAt: 1 } }; },
-    async cancelPlan(request) { cancels.push(request); return { state: 'plan_cancelled', remoteStop: 'unconfirmed', physicalStop: 'unconfirmed' }; },
+    async cancelPlan(request) { cancels.push(request); if (waitCancel) return waitCancel.promise;
+      return { state: 'plan_cancelled', remoteStop: 'unconfirmed', physicalStop: 'unconfirmed' }; },
   };
   const modules = { react, 'react/jsx-runtime': require('react/jsx-runtime'),
     '@/lib/mii-work-adapter': { createMiiWorkAdapter: () => adapter },
     '@/lib/mii-indexeddb-journal': { createMiiIndexedDbJournal: () => ({}) },
     '@/lib/currency-format': { formatCurrencyMinor } };
   const exports = {};
-  runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; }, crypto: { randomUUID }, Date, setTimeout: callback => { const key = ++nextTimer; timers.set(key, callback); return key; }, clearTimeout: key => timers.delete(key) });
+  runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; }, crypto: { randomUUID }, Date: FixtureDate, setTimeout: callback => { const key = ++nextTimer; timers.set(key, callback); return key; }, clearTimeout: key => timers.delete(key) });
   function render() { cursor = 0; tree = exports.default({ job: currentJob, ownerScope: currentOwner,
     onRead: value => { accepted.push(value); currentJob = value; }, inputAvailable, onInput: input => staged.push(input) }); while (effects.length) effects.shift()(); }
   function nodes(node, out = []) { if (Array.isArray(node)) node.forEach(value => nodes(value, out));
@@ -64,8 +67,12 @@ function harness(job = fixtureJob()) {
     check() { const input = nodes(tree).find(value => value.type === 'input'); assert.ok(input); input.props.onChange({ target: { checked: true } }); render(); },
     type(value) { nodes(tree).find(n => n.type === 'textarea').props.onChange({ target: { value } }); render(); },
     availability(value) { inputAvailable = value; render(); },
-    deferRead() { waitRead = deferred(); return waitRead; },
-    budgetFailure(value) { budgetFailure = value; }, expireBudget() { for (const callback of timers.values()) callback(); timers.clear(); render(); },
+    deferRead() { waitRead = deferred(); return waitRead; }, deferCancel() { waitCancel = deferred(); return waitCancel; },
+    unmount() { for (const slot of slots) slot?.cleanup?.(); },
+    budgetFailure(value) { budgetFailure = value; },
+    advance(ms) { now += ms; }, timers() { return [...timers.values()]; },
+    fireTimers() { const callbacks = [...timers.values()]; timers.clear(); for (const callback of callbacks) callback(); render(); },
+    expireBudget() { now += 30_000; const callbacks = [...timers.values()]; timers.clear(); for (const callback of callbacks) callback(); render(); },
     setOwner(value) { currentOwner = value; render(); }, setJob(value) { currentJob = value; render(); } };
 }
 
@@ -187,5 +194,71 @@ void test('budget failure then successful read removes the old error and invalid
 void test('budget snapshot expires instead of remaining visible', async () => {
   const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush();
   h.click('委任予算を読み直す'); await h.flush(); assert.match(h.html(), /取得時点の委任予算/);
-  h.expireBudget(); assert.doesNotMatch(h.html(), /取得時点の委任予算/); assert.match(h.html(), /委任予算は未確認/);
+  h.expireBudget(); assert.doesNotMatch(h.html(), /取得時点の委任予算/); assert.match(h.html(), /観測期限が切れたか時計が変わりました/);
+});
+
+void test('expired observation hides output without deleting the job and requires a fresh read', async () => {
+  const job = fixtureJob(); job.freeCloud = { text: '保存された成果', state: 'unconfirmed' };
+  const h = harness(job); h.click('miiから同じ仕事を確認'); await h.flush();
+  assert.match(h.html(), /保存された成果/); h.advance(30_000); h.fireTimers();
+  assert.doesNotMatch(h.html(), /保存された成果/); assert.equal(job.freeCloud.text, '保存された成果');
+  assert.equal(h.reads.length, 1); h.click('miiから同じ仕事を確認'); await h.flush();
+  assert.equal(h.reads.length, 2); assert.match(h.html(), /保存された成果/);
+});
+
+void test('stop request immediately hides output and fences staged input even while response is unknown', async () => {
+  const job = fixtureJob(); job.freeCloud = { text: '保存された成果', state: 'unconfirmed' };
+  const h = harness(job); h.click('miiから同じ仕事を確認'); await h.flush();
+  h.type('合成入力'); h.click('同じ仕事のTool確認へ渡す'); const staged = h.staged[0];
+  h.check(); const pending = h.deferCancel(); h.click('計画取消を依頼');
+  assert.doesNotMatch(h.html(), /保存された成果/); assert.equal(staged.isCurrent(), false);
+  assert.match(h.html(), /停止要求の結果を確認しています/); assert.equal(job.freeCloud.text, '保存された成果');
+  pending.resolve({ state: 'unknown' }); await h.flush(); assert.match(h.html(), /停止要求の結果は未確認/);
+  assert.doesNotMatch(h.html(), /保存された成果/);
+});
+
+void test('a delayed stop reply cannot replace a newer owner or invalidated observation', async () => {
+  for (const change of ['owner', 'tracking']) {
+    const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush(); h.check();
+    const pending = h.deferCancel(); h.click('計画取消を依頼');
+    if (change === 'owner') h.setOwner('owner-v1:' + 'd'.repeat(64)); else h.click('追跡喪失を模擬');
+    pending.resolve({ state: 'plan_cancelled' }); await h.flush();
+    assert.doesNotMatch(h.html(), /計画の取消を受け付けました/);
+    assert.doesNotMatch(h.html(), /利用者が自分で決めた依頼/);
+    if (change === 'tracking') assert.match(h.html(), /観測を失効しました/);
+  }
+});
+
+void test('late read past the lease cannot display its result', async () => {
+  const job = fixtureJob(), h = harness(job), pending = h.deferRead();
+  h.click('miiから同じ仕事を確認'); h.advance(30_000);
+  pending.resolve({ job, agentBinding: 'verified', executorBinding: 'unverified', cancelReconciliation: 'clear' });
+  await h.flush(); assert.equal(h.accepted.length, 0); assert.doesNotMatch(h.html(), /利用者が自分で決めた依頼/);
+});
+
+void test('unmount fences a delayed read before it can update the parent', async () => {
+  const job = fixtureJob(), h = harness(job), pending = h.deferRead();
+  h.click('miiから同じ仕事を確認'); h.unmount();
+  pending.resolve({ job, agentBinding: 'verified', executorBinding: 'unverified', cancelReconciliation: 'clear' });
+  await new Promise(resolve => setImmediate(resolve)); assert.equal(h.accepted.length, 0);
+});
+
+void test('an old expiry callback cannot erase a newly read observation', async () => {
+  const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush(); const old = h.timers();
+  h.click('追跡喪失を模擬'); h.click('miiから同じ仕事を確認'); await h.flush();
+  for (const callback of old) callback(); h.render();
+  assert.match(h.html(), /利用者が自分で決めた依頼/); assert.equal(h.reads.length, 2);
+});
+
+void test('lack of a compatible Tool does not hide an explicitly read saved output', async () => {
+  const job = fixtureJob(); job.freeCloud = { text: '保存済み', state: 'unconfirmed' };
+  const h = harness(job); h.availability(false); h.click('miiから同じ仕事を確認'); await h.flush();
+  assert.match(h.html(), /保存済み/); assert.equal(h.button('同じ仕事のTool確認へ渡す').props.disabled, true);
+});
+
+void test('clock rollback invalidates the current output rather than extending its lease', async () => {
+  const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush();
+  h.advance(2_000); h.fireTimers(); assert.match(h.html(), /利用者が自分で決めた依頼/);
+  h.advance(-1_000); h.fireTimers(); assert.doesNotMatch(h.html(), /利用者が自分で決めた依頼/);
+  assert.match(h.html(), /観測期限が切れたか時計が変わりました/);
 });
