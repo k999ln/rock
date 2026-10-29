@@ -30,7 +30,8 @@ function canonical(settings: SkyAgentSettings) {
   // Optional declarations are included only when present and are never grants.
   return JSON.stringify({ name: value.name, instructions: value.instructions, provider: value.provider, model: value.model, enabled: value.enabled,
     ...(value.requirements ? { requirements: value.requirements } : {}),
-    ...(value.attachment ? { attachment: value.attachment } : {}) });
+    ...(value.attachment ? { attachment: value.attachment } : {}),
+    ...(value.origin ? { origin:value.origin } : {}) });
 }
 async function digest(settings: SkyAgentSettings) {
   const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical(settings)));
@@ -64,7 +65,8 @@ async function matches(candidate: SkyLibraryAgent | undefined, pending: EveAgent
   if (!candidate || candidate.id !== pending.id || candidate.revision !== 1 || candidate.source !== 'personal' || candidate.sourceTool !== null) return false;
   try { return await digest({ name: candidate.name, instructions: candidate.instructions, provider: candidate.provider, model: candidate.model, enabled: candidate.enabled,
     ...(Object.hasOwn(candidate, 'requirements') ? { requirements: candidate.requirements } : {}),
-    ...(Object.hasOwn(candidate, 'attachment') ? { attachment: candidate.attachment } : {}) }) === pending.settingsSha256; }
+    ...(Object.hasOwn(candidate, 'attachment') ? { attachment: candidate.attachment } : {}),
+    ...(Object.hasOwn(candidate, 'origin') ? { origin:candidate.origin } : {}) }) === pending.settingsSha256; }
   catch { return false; }
 }
 /** Reconcile only with an authenticated read of the exact owner, ID and settings. */
@@ -81,9 +83,12 @@ export async function reconcileEveAgentCreation(fetcher: Fetcher, pending: EveAg
   return unknownResult();
 }
 /** Persist the owner-bound digest before sending; 408 and 409 require readback; other explicit 4xx is rejected. */
-export async function createEveAgent(fetcher: Fetcher, request: EveAgentCreation, pending: EveAgentPending, storage: PendingStorage): Promise<EveAgentCreationResult> {
+export async function createEveAgent(fetcher: Fetcher, request: EveAgentCreation, pending: EveAgentPending, storage: PendingStorage, beforeSend?: () => void): Promise<EveAgentCreationResult> {
   const settings = parseSkyAgentSettings(request.settings);
   if (JSON.stringify(await prepareEveAgentPending(request)) !== JSON.stringify(pending)) throw new Error('担当の保存内容を確認してください。');
+  // The final asynchronous digest has completed. Recheck the live source before
+  // reserving a journal entry or sending an owner-bound write.
+  beforeSend?.();
   reserveEveAgentPending(storage, pending);
   let response: Response;
   try {
@@ -93,6 +98,15 @@ export async function createEveAgent(fetcher: Fetcher, request: EveAgentCreation
   } catch { return reconcileEveAgentCreation(fetcher, pending, storage); }
   // A timeout or duplicate conflict can follow a write committed upstream,
   // including a transport replay. Resolve by the original owner and ID.
+  if (response.status === 409) {
+    try {
+      const failure = await response.clone().json() as {code?:unknown;error?:unknown};
+      if (failure.code === 'EVE_SOURCE_CHANGED') {
+        clearPending(storage,pending);
+        return {state:'rejected',error:typeof failure.error==='string'?failure.error:'出典が変わりました。Skyから選び直してください。'};
+      }
+    } catch { /* An unreadable or uncertain conflict still requires exact readback. */ }
+  }
   if (response.status === 408 || response.status === 409 || response.status >= 500)
     return reconcileEveAgentCreation(fetcher, pending, storage);
   if (!response.ok) {

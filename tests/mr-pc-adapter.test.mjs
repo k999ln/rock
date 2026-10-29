@@ -7,7 +7,7 @@ void test('PC citations runs the real fixed CLI with bounded failure and cleanup
     encoding: 'utf8', timeout: 45000, maxBuffer: 1024 * 1024,
   });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stderr, /Ran 19 tests/);
+  assert.match(result.stderr, /Ran 21 tests/);
   assert.match(result.stderr, /\nOK\s*$/);
   assert.doesNotMatch(result.stderr, /ResourceWarning:|Exception ignored|skipped=/);
 });

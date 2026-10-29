@@ -2,6 +2,7 @@
 import { skyAgentSystem, type SkyLibraryAgent } from '@/lib/sky-agent-library';
 import { EveHistoryPanel } from '@/components/eve-history-panel';
 import EveObjectAgentCreator from '@/components/eve-object-agent-creator';
+import { EveSourceHandoff, useEveSourceContext } from '@/components/eve-source-handoff';
 
 import { zemaPrivateStorageBlocked, subscribeZemaPrivateStorage } from '@/lib/zema-private-storage';
 import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-draft';
@@ -9,6 +10,7 @@ import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-d
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -418,6 +420,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const [fundSnapshot, setFundSnapshot] = useState<FundSnapshot | null>(null);
   const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
+  const sourceContext = useEveSourceContext(!workView && !requestedAgentId && !requestedThreadId, JSON.stringify([preferredTool,requestedThreadId,requestedAgentId,requestedAgentRevision,workView]));
   const [draft, setDraft] = useState('');
   const draftRef = useRef('');
   const [running, setRunning] = useState(false);
@@ -484,7 +487,20 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const chatAbortRef = useRef<AbortController | null>(null);
   const activeChatThreadRef = useRef('');
   const submissionRef = useRef(false);
+  const submissionGeneration = useRef(0);
   const estimateAbortRef = useRef<AbortController | null>(null);
+  const committedRoute = useRef({preferredTool,requestedThreadId,requestedAgentId,requestedAgentRevision,workView});
+  useLayoutEffect(() => {
+    const previous=committedRoute.current;
+    const modeChanged=previous.preferredTool!==preferredTool || previous.requestedAgentId!==requestedAgentId || previous.requestedAgentRevision!==requestedAgentRevision || previous.workView!==workView;
+    if(modeChanged || previous.requestedThreadId!==requestedThreadId && activeChatThreadRef.current!==requestedThreadId) {
+      ++submissionGeneration.current;
+      chatAbortRef.current?.abort();estimateAbortRef.current?.abort();
+      submissionRef.current=false;
+    }
+    committedRoute.current={preferredTool,requestedThreadId,requestedAgentId,requestedAgentRevision,workView};
+  },[preferredTool,requestedThreadId,requestedAgentId,requestedAgentRevision,workView]);
+
   const invalidateRemoteEstimate = useCallback(() => {
     if (estimateAbortRef.current) {
       estimateAbortRef.current.abort();
@@ -504,8 +520,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       if (previous) setChatLoading(false);
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [preferredTool, requestedThreadId, workView]);
+  }, [preferredTool, requestedThreadId, requestedAgentId, requestedAgentRevision, workView]);
   useEffect(() => () => {
+    ++submissionGeneration.current;
     chatAbortRef.current?.abort();
     estimateAbortRef.current?.abort();
     submissionRef.current = false;
@@ -538,7 +555,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     void listMcpConnections()
       .then((servers) => { if (current()) setMcpServers(servers); })
       .catch(() => { if (current()) setMcpServers([]); });
-  }, []);
+  }, [setMcpServers]);
   const hasActiveJob = jobs.some(
     (job) => job.status === 'queued' || job.status === 'running',
   );
@@ -707,13 +724,13 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   }, [messages, coordinationPlan]);
 
   useEffect(() => {
-    if (chatAbortRef.current && activeChatThreadRef.current !== requestedThreadId) {
+    if (chatAbortRef.current && (chatAbortRef.current.signal.aborted || activeChatThreadRef.current !== requestedThreadId)) {
       chatAbortRef.current.abort();
       chatAbortRef.current = null;
       submissionRef.current = false;
       setChatLoading(false);
     }
-  }, [requestedThreadId]);
+  }, [preferredTool, requestedThreadId, requestedAgentId, requestedAgentRevision, workView]);
 
   const connectedApps = useMemo(
     () =>
@@ -850,6 +867,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   }
 
   function resetConversation(toolId: string, resetRequestTime: boolean, preserveDraft = false) {
+    ++submissionGeneration.current;
+    sourceContext.clear();
     chatAbortRef.current?.abort();
     chatAbortRef.current = null;
     submissionRef.current = false;
@@ -1284,6 +1303,15 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     }
     if (!confirmAmcReplacement(() => { void sendMessage(event); })) return;
     submissionRef.current = true;
+    const sourceCheck = new AbortController();
+    chatAbortRef.current = sourceCheck;
+    activeChatThreadRef.current = requestedThreadId;
+    const sendGeneration = ++submissionGeneration.current;
+    const sendCurrent = () => !sourceCheck.signal.aborted && submissionGeneration.current === sendGeneration;
+    let requestSource;
+    try { requestSource = await sourceContext.validate(undefined,sourceCheck.signal); }
+    catch (reason) { if (!sendCurrent()) return; submissionRef.current = false; setError(reason instanceof Error ? reason.message : '出典を確認してください。'); return; }
+    if (!sendCurrent()) return;
     let requestProvider = textProvider;
     let requestModel = activeAgent?.model || providerRouting.textGenerationModel || textProviderDefinition.defaultModel;
     if (!activeAgent && !requestedJenniferPlan && !isAmc && providerRouting.textSelectionMode !== 'manual') {
@@ -1298,20 +1326,25 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           signal: AbortSignal.any([selectionController.signal, AbortSignal.timeout(10000)]),
         });
         const result = await response.json() as { selection?: { provider: string; model: string; reason: string }; error?: string };
-        if (selectionController.signal.aborted) return;
+        if (selectionController.signal.aborted || !sendCurrent()) return;
         if (!response.ok || !result.selection || !isTextModelProvider(result.selection.provider))
           throw new Error(result.error || 'モデルを選択できませんでした。');
         requestProvider = result.selection.provider;
         requestModel = result.selection.model;
         setModelSelectionNote(`${textModelProviderDefinition(requestProvider).name} / ${requestModel}: ${result.selection.reason}`);
       } catch (reason) {
-        if (selectionController.signal.aborted) return;
+        if (selectionController.signal.aborted || !sendCurrent()) return;
         setError(reason instanceof Error ? reason.message : 'モデルを選択できませんでした。');
         submissionRef.current = false;
         setChatLoading(false);
         return;
       }
     }
+    if (requestSource) {
+      try { await sourceContext.validate(requestSource,sourceCheck.signal); }
+      catch (reason) { if (!sendCurrent()) return; submissionRef.current = false; setChatLoading(false); setError(reason instanceof Error ? reason.message : '出典を確認してください。'); return; }
+    }
+    if (!sendCurrent()) return;
     if (!toolId && !routedRole && !requestedJenniferPlan && !isAmc && requestProvider !== 'pollinations' && textModelProviderDefinition(requestProvider).locality === 'remote') {
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
@@ -1457,9 +1490,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       }).then((answer) => {
         if (controller.signal.aborted) return;
         setMessages((current) => conversational
-          ? [...current, { id: `${id}-reply`, side: 'sky', text: answer, tool: toolId }]
+          ? [...current, { id: `${id}-reply`, side: 'sky', text: answer, tool: toolId, ...(requestSource ? {source:requestSource.source}: {}) }]
           : current.map((message) => message.id === `${id}-route`
-            ? { ...message, text: answer }
+            ? { ...message, text: answer, ...(requestSource ? {source:requestSource.source}: {}) }
             : message));
       }).catch((reason) => {
         if (controller.signal.aborted) return;
@@ -2460,7 +2493,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               <div ref={messagesEndRef} aria-hidden="true" />
             </div>
 
-            <EveObjectAgentCreator />
+            <EveSourceHandoff context={sourceContext} onDraft={updateDraft} />
+            <EveObjectAgentCreator key={threadId || 'new'} threadId={threadId || 'new'} replies={displayMessages.filter(message => message.side === 'sky').map(message => ({id:message.id,text:message.text,...(message.source ? {source:message.source}: {})}))} />
             <form className="sky-chat-composer" onSubmit={sendMessage}>
               {error && <p role="alert">{error}</p>}
               <div className="sky-chat-composer-box">

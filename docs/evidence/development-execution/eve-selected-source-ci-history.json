@@ -1,0 +1,103 @@
+{
+  "schema": "rockstaros.eve-pr-ci-history/1",
+  "repository": "k999ln/rock",
+  "pullRequest": 301,
+  "attempts": [
+    {
+      "head": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+      "result": "failure",
+      "checks": [
+        {
+          "name": "CodeQL",
+          "status": "completed",
+          "result": "success",
+          "sha": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+          "id": 123712522609,
+          "url": "https://github.com/k999ln/rock/runs/123712522609",
+          "completedAt": "2026-10-29T20:27:41Z"
+        },
+        {
+          "name": "SPIDER / secrets",
+          "status": "completed",
+          "result": "success",
+          "sha": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+          "id": 123711455640,
+          "url": "https://github.com/k999ln/rock/actions/runs/40948908274/job/123711455640",
+          "completedAt": "2026-10-29T20:27:11Z"
+        },
+        {
+          "name": "SPIDER / repair regressions",
+          "status": "completed",
+          "result": "success",
+          "sha": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+          "id": 123711455280,
+          "url": "https://github.com/k999ln/rock/actions/runs/40948908187/job/123711455280",
+          "completedAt": "2026-10-29T20:26:28Z"
+        },
+        {
+          "name": "SPIDER CodeQL (python)",
+          "status": "completed",
+          "result": "success",
+          "sha": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+          "id": 123711455133,
+          "url": "https://github.com/k999ln/rock/actions/runs/40948908282/job/123711455133",
+          "completedAt": "2026-10-29T20:28:00Z"
+        },
+        {
+          "name": "SPIDER / production web security measurement",
+          "status": "completed",
+          "result": "success",
+          "sha": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+          "id": 123711454806,
+          "url": "https://github.com/k999ln/rock/actions/runs/40948908187/job/123711454806",
+          "completedAt": "2026-10-29T20:26:51Z"
+        },
+        {
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "completed",
+          "result": "success",
+          "sha": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+          "id": 123711454654,
+          "url": "https://github.com/k999ln/rock/actions/runs/40948908282/job/123711454654",
+          "completedAt": "2026-10-29T20:27:46Z"
+        },
+        {
+          "name": "verify",
+          "status": "completed",
+          "result": "failure",
+          "sha": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+          "id": 123711453819,
+          "url": "https://github.com/k999ln/rock/actions/runs/40948908167/job/123711453819",
+          "completedAt": "2026-10-29T20:29:23Z"
+        }
+      ],
+      "verifySummary": {
+        "tests": 3587,
+        "passed": 3582,
+        "failed": 2,
+        "skipped": 3
+      },
+      "failures": [
+        "tests/eve-agent-creation-ui.test.mjs:104 removed source disables saving; restored source still cannot dispatch",
+        "tests/eve-agent-creation-ui.test.mjs:110 source change or unmount during final digest prevents PUT and pending reservation"
+      ],
+      "diagnostic": "Both failed because save button was undefined before asynchronous draft preparation settled; fixed-turn UI fixture readiness is being repaired. Production source manifest is unchanged.",
+      "verifyJobUrl": "https://github.com/k999ln/rock/actions/runs/40948908167/job/123711453819"
+    },
+    {
+      "head": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "result": "success",
+      "sourceManifestUnchanged": true,
+      "fixtureCorrection": "actual asynchronous preparation readiness, independent27/27,20stressruns160cases, old/new delayed-digest oracle",
+      "receipt": "docs/evidence/development-execution/eve-selected-source-ci.json",
+      "passedChecks": 7,
+      "totalChecks": 7
+    }
+  ],
+  "finalHeadVerification": "Receipt-only successor exact current-head result is recorded in PR301 description after its checks complete.",
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  }
+}

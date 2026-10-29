@@ -1,5 +1,6 @@
 """Real POSIX subprocess regressions; fault workers are explicit test fixtures."""
 from contextlib import ExitStack
+import errno
 import hashlib
 import importlib.util
 import json
@@ -135,6 +136,78 @@ class PCAdapterTests(unittest.TestCase):
                     self.adapter.run_citations('private input')
                 self.assertNotIn('PRIVATE', str(raised.exception))
                 self.assert_clean()
+
+    def test_cleanup_rechecks_owned_child_after_darwin_permission_exit_race(self):
+        # The child cannot exit until the exact owned-group signal attempt.
+        # WNOWAIT then observes its real exit without releasing the PID/group.
+        process = subprocess.Popen([sys.executable, '-I', '-B', '-c', 'import os; os.read(0, 1)'],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+        self.children.append(process)
+        original_waitid = os.waitid
+        snapshots, signals, inventories = [], [], []
+        def waitid(*args):
+            self.assertEqual(args[0:2], (os.P_PID, process.pid))
+            result = original_waitid(*args); snapshots.append(result); return result
+        def killpg(group, number):
+            self.assertEqual((group, number), (process.pid, signal.SIGKILL))
+            signals.append((group, number))
+            process.stdin.write(b'x'); process.stdin.flush()
+            self.assertIsNotNone(original_waitid(os.P_PID, process.pid, os.WEXITED | os.WNOWAIT))
+            raise PermissionError(errno.EPERM, 'synthetic Darwin zombie-only group')
+        def members(group):
+            self.assertEqual(group, process.pid); inventories.append(group)
+            return {process.pid} if process.returncode is None else set()
+        try:
+            with mock.patch.object(self.adapter, 'sys', types.SimpleNamespace(platform='darwin')), \
+                 mock.patch.object(os, 'waitid', waitid), mock.patch.object(os, 'killpg', killpg), \
+                 mock.patch.object(self.adapter, '_darwin_group_members', members):
+                self.adapter._cleanup_process(process)
+            self.assertEqual(process.returncode, 0)
+            self.assertIsNone(snapshots[0], 'leader was running at the first cleanup check')
+            self.assertIsNotNone(snapshots[1], 'permission error requires a fresh owned-child exit check')
+            self.assertEqual(signals, [(process.pid, signal.SIGKILL)])
+            self.assertGreaterEqual(len(inventories), 2)
+            self.assert_clean()
+        finally:
+            process.stdin.close()
+            # The injected signal waits for this specific child to exit. Reap
+            # it even when the pre-fix implementation raises PermissionError.
+            process.wait(timeout=3)
+            process.stdout.close(); process.stderr.close()
+
+    def test_cleanup_permission_error_stays_closed_without_exact_exit_and_group(self):
+        for condition in ('running', 'other-member', 'unsupported-platform'):
+            with self.subTest(condition=condition):
+                process = subprocess.Popen([sys.executable, '-I', '-B', '-c', 'import os; os.read(0, 1)'],
+                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+                original_waitid, original_killpg = os.waitid, os.killpg
+                signals = []
+                def killpg(group, number):
+                    self.assertEqual((group, number), (process.pid, signal.SIGKILL))
+                    signals.append((group, number))
+                    if condition != 'running':
+                        process.stdin.write(b'x'); process.stdin.flush()
+                        self.assertIsNotNone(original_waitid(os.P_PID, process.pid, os.WEXITED | os.WNOWAIT))
+                    raise PermissionError(errno.EPERM, 'synthetic unconfirmed process group')
+                def members(group):
+                    self.assertEqual(group, process.pid)
+                    return {process.pid, os.getpid()}
+                try:
+                    platform = 'linux' if condition == 'unsupported-platform' else 'darwin'
+                    with mock.patch.object(self.adapter, 'sys', types.SimpleNamespace(platform=platform)), \
+                         mock.patch.object(os, 'killpg', killpg), \
+                         mock.patch.object(self.adapter, '_darwin_group_members', members):
+                        with self.assertRaises(PermissionError):
+                            self.adapter._cleanup_process(process)
+                    self.assertIsNone(process.returncode, 'unconfirmed ownership/group state must not be suppressed')
+                    self.assertEqual(signals, [(process.pid, signal.SIGKILL)], 'never signal an unknown group or retry')
+                    self.assertTrue(process.stdout.closed and process.stderr.closed)
+                finally:
+                    # Only the test's own unreaped child can remain blocked.
+                    if original_waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is None:
+                        original_killpg(process.pid, signal.SIGKILL)
+                    process.wait(timeout=3); process.stdin.close()
+                    process.stdout.close(); process.stderr.close()
 
     def test_invalid_utf8_and_nonzero_exit_are_safe_failures(self):
         for body in ("import os; os.write(1,b'\\xff')", "import sys; print('PRIVATE',file=sys.stderr); sys.exit(8)"):

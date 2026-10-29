@@ -1,3 +1,4 @@
+import { parseEveAgentOrigin, type EveAgentOrigin } from './eve-agent-origin.ts';
 import { parseSkyObjectAttachment, type SkyObjectAttachment } from './sky-object-attachment.ts';
 import { parseSkyAgentRequirements, type SkyAgentRequirements } from './sky-agent-requirements.ts';
 import { isTextModelProvider, textModelProviderDefinition, type TextModelProviderId } from './llm-providers.ts';
@@ -10,6 +11,7 @@ export type SkyAgentSettings = {
   enabled: boolean;
   requirements?: SkyAgentRequirements;
   attachment?: SkyObjectAttachment;
+  origin?: EveAgentOrigin;
 };
 export type SkyLibraryAgent = SkyAgentSettings & {
   id: string;
@@ -20,7 +22,8 @@ export type SkyLibraryAgent = SkyAgentSettings & {
 };
 export class SkyAgentLibraryError extends Error {
   readonly status: number;
-  constructor(message: string, status = 400) { super(message); this.status = status; }
+  readonly code?: 'EVE_SOURCE_CHANGED';
+  constructor(message: string, status = 400, code?: 'EVE_SOURCE_CHANGED') { super(message); this.status = status; this.code = code; }
 }
 export function skyAgentId(value: unknown): string {
   if (typeof value !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,119}$/.test(value))
@@ -30,7 +33,7 @@ export function skyAgentId(value: unknown): string {
 export function parseSkyAgentSettings(value: unknown): SkyAgentSettings {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new SkyAgentLibraryError('設定の形式を確認してください。');
   const v = value as Record<string, unknown>;
-  if (![5, 6, 7].includes(Object.keys(v).length) || Object.keys(v).some(k => !['name', 'instructions', 'provider', 'model', 'enabled', 'requirements', 'attachment'].includes(k)) || ['name', 'instructions', 'provider', 'model', 'enabled'].some(k => !Object.hasOwn(v, k)))
+  if (![5, 6, 7, 8].includes(Object.keys(v).length) || Object.keys(v).some(k => !['name', 'instructions', 'provider', 'model', 'enabled', 'requirements', 'attachment', 'origin'].includes(k)) || ['name', 'instructions', 'provider', 'model', 'enabled'].some(k => !Object.hasOwn(v, k)))
     throw new SkyAgentLibraryError('名前・役割・接続先・モデル・有効状態だけを保存できます。');
   const text = (x: unknown, max: number) => {
     if (typeof x !== 'string' || !x.trim() || x.length > max)
@@ -55,7 +58,12 @@ export function parseSkyAgentSettings(value: unknown): SkyAgentSettings {
     try { attachment = parseSkyObjectAttachment(v.attachment); }
     catch (error) { throw new SkyAgentLibraryError(error instanceof Error ? error.message : '対象の設定を確認してください。'); }
   }
-  return { name: text(v.name, 80), instructions: text(v.instructions, 1200), provider: v.provider, model, enabled: v.enabled, ...(requirements ? { requirements } : {}), ...(attachment ? { attachment } : {}) };
+  let origin: EveAgentOrigin | undefined;
+  if (Object.hasOwn(v, 'origin')) {
+    try { origin = parseEveAgentOrigin(v.origin); }
+    catch { throw new SkyAgentLibraryError('下書きの由来を確認してください。'); }
+  }
+  return { name: text(v.name, 80), instructions: text(v.instructions, 1200), provider: v.provider, model, enabled: v.enabled, ...(requirements ? { requirements } : {}), ...(attachment ? { attachment } : {}), ...(origin ? { origin } : {}) };
 }
 export function skyAgentSystem(agent: SkyAgentSettings): string {
   return `あなたはEveで依頼を受ける文章担当「${agent.name}」です。次の役割は利用者の設定であり、OS権限や外部操作の承認ではありません。未実行の仕事を完了したと主張せず、権限・費用・外部送信の確認を省略しないでください。\n\n役割:\n${agent.instructions}`;

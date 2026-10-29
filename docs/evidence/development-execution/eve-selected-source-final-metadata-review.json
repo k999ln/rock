@@ -1,0 +1,106 @@
+{
+  "schema": "rockstaros.eve-final-metadata-review/1",
+  "reviewer": "/root/eve_gap_review",
+  "recordedAt": "2026-10-29T20:43:28.861609+00:00",
+  "result": "PASS_SCOPED",
+  "mustFix": [],
+  "verifiedHead": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+  "liveGitHubCheckRunsIndependentlyRead": true,
+  "checkCount": 7,
+  "allSameShaCompletedSuccess": true,
+  "receiptMatchesLiveCheckIdsNamesShaStatusResultUrlsTimestamps": true,
+  "checks": [
+    {
+      "name": "CodeQL",
+      "id": 123718394797,
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/runs/123718394797",
+      "completedAt": "2026-10-29T20:38:56Z"
+    },
+    {
+      "name": "verify",
+      "id": 123717142594,
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530631/job/123717142594",
+      "completedAt": "2026-10-29T20:41:04Z"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "id": 123717142532,
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530406/job/123717142532",
+      "completedAt": "2026-10-29T20:39:28Z"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "id": 123717142313,
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530369/job/123717142313",
+      "completedAt": "2026-10-29T20:37:51Z"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "id": 123717141901,
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530369/job/123717141901",
+      "completedAt": "2026-10-29T20:37:28Z"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "id": 123717141833,
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530406/job/123717141833",
+      "completedAt": "2026-10-29T20:39:00Z"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "id": 123717141483,
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "status": "completed",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530416/job/123717141483",
+      "completedAt": "2026-10-29T20:38:04Z"
+    }
+  ],
+  "initialFailedHeadRetained": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+  "initialFailedVerifyCount": 2,
+  "source21ManifestUnchanged": true,
+  "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+  "archiveHashesUnchanged": true,
+  "localFullVerifyLogHashMatchesRecordedEvidence": true,
+  "pathSha256": {
+    "docs/evidence/development-execution/eve-selected-source-ci.json": "0446898b6e429ad1c13774215e33b9fbeda0e38e29416420218b2bbbd7f6ef8f",
+    "docs/evidence/development-execution/eve-selected-source-ci-history.json": "cb56429eb80a6779613421e99c7f50aa1269c67a791127b2e2f0511e2f10dfd4",
+    "docs/evidence/development-execution/eve-selected-source-agent.json": "6b1d278275220b1201d1ff874e7e7b9a3f1befcd1c4b5fc31841f09c91eb525d",
+    "docs/evidence/development-execution/eve-selected-source-independent-review.json": "028dcac119059b0449ece38e9e1644565374a759661ae51c1b2f2614dc2971d0",
+    "data/project-status.json": "3830b57b881eaca6882a110817f1440f534cd9527371dd4109f8a3f5c0c6ee5d",
+    "data/development-source-handoff.json": "9830982f79aa36f17cc0c6f2532897b3723ce28746824d3d05deec65c0cba445",
+    "data/development-unit-progress.json": "3f4b5d0b6bffef5f6628581c38b7190d192a74c4440d73d4e67c7ad852fe6f68",
+    "data/design-document-index.json": "477cefdabddf966d0c98925c7f9cb173ce28524d03e886a959b20485d71a210a",
+    "project.md": "e8ec9710578b4923f4f7216d465ce91d9ed3e69830af89875bf5df238aeeddaf",
+    "docs/workstreams/05-web-pwa-sites.md": "cd0aa7b835c01fdb7c79681152e3a4ffad9ca849a3ec24b4c69dd7ba1e077bb2",
+    "docs/workstreams/10-git-ci-operations.md": "ff2be6ca3cac71e258004097e4914fd66a210fcb98189c2396fe2879adc7232d"
+  },
+  "mainMerged": false,
+  "wholeEveAccepted": false,
+  "wholeUnitsAccepted": false,
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "acceptanceScope": "Confirms tested implementation/fixture head B0cc7d4cd and coherent pre-successor metadata only. Metadata-only successor C is not committed/tested yet in this review.",
+  "remainingFinalStep": "Root commits metadata successor C, reads exact currenthead7checks, and writes final SHA/result to PR301 description. No false claim that B CI is C CI; receipt policy explicitly separates them."
+}

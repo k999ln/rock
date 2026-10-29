@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { writeHomeIntent } from '@/lib/home-intent';
+import { useEveSourceHandoff } from '@/lib/use-eve-source-handoff';
 import {
   ArrowUpRight,
   ArrowLeft,
@@ -132,6 +133,7 @@ export default function SkySocialTimeline({
     sequence = useRef(0);
   const hub = useSkyHub();
   const router = useRouter();
+  const sourceHandoff = useEveSourceHandoff(() => router.push('/chat'), setError);
   useEffect(() => {
     if (!notice) return;
     const timer = window.setTimeout(() => setNotice(''), 6000);
@@ -315,15 +317,17 @@ export default function SkySocialTimeline({
     }
   }
   function prepareAttachment(attachment: SkySocialAttachment) {
-    try {
-      writeHomeIntent(
-        window.sessionStorage,
-        `Skyの投稿から追加した「${attachment.resource}」を使いたい。種類: ${attachment.kind}。導入状況・license・実行先・必要費用を確認して使う準備を進めて。`,
-      );
-      router.push('/chat');
-    } catch {
-      setError('Eveへ引き継げませんでした。もう一度お試しください。');
+    if (['model','dataset','space'].includes(attachment.kind)) {
+      const plugin = hub.plugins.find(p => p.enabled && p.kind === attachment.kind && p.resource === attachment.resource);
+      if (!plugin) { setError('追加済みの出典を確認してください。'); return; }
+      void sourceHandoff.prepare(plugin,
+        `Skyの投稿で選んだ添付リソース「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した配布元の版: ${plugin.metadata.revision ?? '未確認'}\n導入状況・license・実行先・必要費用を確認して、担当の案を作って。投稿本文は引き継いでいません。`);
+      return;
     }
+    try {
+      writeHomeIntent(window.sessionStorage, `Skyで追加した担当「${attachment.resource}」を使いたい。設定と実行先・権限・必要費用を確認して。`);
+      router.push('/chat');
+    } catch { setError('Eveへ引き継げませんでした。もう一度お試しください。'); }
   }
   // Existing connection API uses PUT; preserve its authority and entitlement checks.
   async function addAgent(id: string) {
@@ -611,7 +615,7 @@ export default function SkySocialTimeline({
                     <>
                       <small>自分のSkyに追加済み</small>
                       <button
-                        onClick={() => prepareAttachment(post.attachment!)}
+                        disabled={sourceHandoff.preparing} onClick={() => prepareAttachment(post.attachment!)}
                       >
                         Eveで使う準備 <ArrowUpRight size={15} />
                       </button>

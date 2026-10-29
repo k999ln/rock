@@ -5,7 +5,7 @@ import { skyAgentId, SkyAgentLibraryError } from '@/lib/sky-agent-library';
 import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 const json = (v: unknown, status = 200) => Response.json(v, { status, headers: { 'Cache-Control': 'no-store' } });
 function failure(e: unknown) {
-  if (e instanceof SkyAgentLibraryError || e instanceof OperationError) return json({ error: e.message }, e.status);
+  if (e instanceof SkyAgentLibraryError || e instanceof OperationError) return json({ error: e.message, ...(e instanceof SkyAgentLibraryError && e.code ? {code:e.code}: {}) }, e.status);
   if (e instanceof Error && e.message === 'UNAUTHORIZED') return json({ error: 'サインインすると自分のエージェントを管理できます。' }, 401);
   if (e instanceof Error && e.message === 'ORIGIN') return json({ error: 'このサイトから操作してください。' }, 403);
   return json({ error: 'エージェントを読み書きできません。接続を確認して再試行してください。' }, 503);

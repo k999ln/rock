@@ -1,0 +1,422 @@
+{
+  "schema": "rockstaros.eve-selected-source-agent/1",
+  "recordedAt": "2026-10-29",
+  "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+  "goalContract": {
+    "project": "jennifer-zema",
+    "responsibleSi": "jennifer-work-manager",
+    "primaryOwner": "ROCK",
+    "primarySquad": "O5",
+    "workstream": "Web / PWA / Sites",
+    "contextualTasks": [
+      "B05",
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "units": [
+      "EVE-05",
+      "EVE-14",
+      "EVE-15"
+    ],
+    "goal": "Explicit selected saved resource -> Eve composer -> assistant reply -> owner-edited Agent -> existing Smith/Job/result/recovery contracts",
+    "intent": "Make a reusable role from an Eve response without manual re-entry, silently using stale sources, or acquiring execution authority.",
+    "budget": "five-hour wall-clock development budget; no paid provider or external inference",
+    "scope": [
+      "restore one-shot selected request reception",
+      "owner-bound saved hub metadata snapshots",
+      "explicit assistant reply import",
+      "immutable owner-confirmed reply/source provenance",
+      "reuse existing two-role Smith/Job/Connector result and recovery flow"
+    ],
+    "outOfScope": [
+      "upstream streaming or continuous feed ingestion",
+      "social post body/private community source validation",
+      "actual model/provider acceptance",
+      "composed-Agent dependency graph",
+      "media/computer-use/physical OS acceptance",
+      "publication/deployment/bulk616"
+    ],
+    "acceptance": [
+      "no send or save from context import alone",
+      "source/owner changes rejected before load and send",
+      "reply change/unmount/route cancellation cannot resume old send or save",
+      "source changes rejected atomically at Agent INSERT",
+      "source rejection resolves without permanent unknown journal",
+      "duplicate/uncertain writes reconcile same owner/id/settings digest",
+      "legacy requirements/attachment/origin preserved",
+      "two different synthetic-role flows preserve same-job results",
+      "independent review, full verify and exact pushed-head CI"
+    ]
+  },
+  "baselineEvidence": {
+    "mainChecks": "six completed success checks verified via GitHub check-runs",
+    "previousPromptSnapshot": "6ce983649a3a5ffa3a9278a515383b709b6d823e was historical; current main rechecked",
+    "historicalCandidate": "/private/tmp/rock-eve-output-agent-20261029; owned delta selectively adopted without replacing current F2/mii/attachment code"
+  },
+  "gapInventory": [
+    {
+      "id": "reply-import",
+      "cause": "main creator had manual role fields, no assistant reply input",
+      "paths": [
+        "components/sky-chat-workspace.tsx",
+        "components/eve-object-agent-creator.tsx"
+      ],
+      "result": "implemented_current_candidate",
+      "acceptance": "explicit reply selection, edited draft, confirmed owner save"
+    },
+    {
+      "id": "request-reception",
+      "cause": "home-intent writer existed without a production consumer",
+      "paths": [
+        "lib/home-intent.ts",
+        "components/eve-source-handoff.tsx"
+      ],
+      "result": "implemented_current_candidate",
+      "acceptance": "one-shot explicit composer load; no auto-send or silent input replacement"
+    },
+    {
+      "id": "selected-resource-freshness",
+      "cause": "handoff held only text/timestamp",
+      "paths": [
+        "app/api/eve/source-context/route.ts",
+        "lib/eve-source-context-store.ts",
+        "components/sky-chat-workspace.tsx"
+      ],
+      "result": "implemented_for_owner_saved_model_dataset_space",
+      "acceptance": "owner/key/local revision/metadata digest and ten-minute handoff age; checks both sides async boundaries"
+    },
+    {
+      "id": "reply-source-lineage",
+      "cause": "strict Agent settings lacked provenance",
+      "paths": [
+        "lib/eve-agent-origin.ts",
+        "lib/sky-agent-library-store.ts",
+        "lib/eve-agent-creation.ts"
+      ],
+      "result": "implemented_owner_confirmed_history_only",
+      "acceptance": "immutable origin, original reply digest, optional source pin, atomic source predicate, legacy preservation"
+    },
+    {
+      "id": "smith-compatibility",
+      "cause": "reused current main F2; no parallel matcher needed",
+      "result": "existing_contract_preserved",
+      "acceptance": "explicit input/output/capability/permission/scope/actual Tool declarations; missing vs contradictory kept separate"
+    },
+    {
+      "id": "mii-input-output",
+      "cause": "reused merged portable declarations and expiry fixes",
+      "result": "existing_host_contract_preserved",
+      "remaining": "real device/host observations and physical output remain separate"
+    },
+    {
+      "id": "same-job-execution-result",
+      "cause": "existing agentBinding and creation/execution review already support pinned Job",
+      "result": "reused_and_regression_tested_with_two_synthetic_roles",
+      "remaining": "normal production account authority/provider acceptance not granted"
+    },
+    {
+      "id": "unknown-stop-recovery",
+      "result": "existing_begin_claim_and_same_id_readback_preserved",
+      "remaining": "uniform acceptance across every Eve route remains unaccepted"
+    },
+    {
+      "id": "continuous-timeline-updates",
+      "result": "not_implemented_in_this_scope",
+      "remaining": "existing focus/manual/pagination refresh and relative-time timer are not upstream streaming; decide source adapter and owner delivery contract"
+    },
+    {
+      "id": "social-post-provenance",
+      "result": "not_implemented_in_this_scope",
+      "remaining": "only selected saved-resource attachment is handed over; no post body/community key copied; exact post/reply access revalidation needs separate existing social API work"
+    },
+    {
+      "id": "actual-model-provider",
+      "result": "unverified_in_this_run",
+      "remaining": "browser answers synthetic and explicitly labelled; actual inference requires existing consent/provider/account/budget gates"
+    },
+    {
+      "id": "composed-agent-versions",
+      "result": "partial_single_reply_history_only",
+      "remaining": "composition graph, dependency version and transitive permissions need separate contracts/review"
+    },
+    {
+      "id": "media-and-computer-use",
+      "result": "not_changed",
+      "remaining": "reuse existing typed artifact and bounded external adapter contracts; no all-media completion"
+    },
+    {
+      "id": "os-and-physical",
+      "result": "not_changed",
+      "remaining": "Pixel/full OS/mii acceptance requires same-device/image evidence and existing OWNER gates"
+    },
+    {
+      "id": "pc-owned-child-cleanup-race",
+      "cause": "existing Darwin leader exit can race initial waitid and killpg; PermissionError escaped before wait/reap",
+      "implementation": "toolkits/mr/pc_citations.py",
+      "scope": "same owned unreaped child; fresh exit and exact group check only; live child/extra member/nonDarwin/error remain rejected",
+      "result": "implemented_independently_reviewed_host_scoped",
+      "evidence": "deterministic original-source race fails; Python3.15 and3.14 current21 tests pass; original fullsuite exception was swallowed so historical cause unconfirmed",
+      "fixedVendorUnchanged": true,
+      "distribution": "public/toolkits/mr-toolkit.zip"
+    },
+    {
+      "id": "cross-widget-latest-selection",
+      "cause": "separate Home widget hook instances share one tab handoff slot; older read could overwrite newer source before async navigation unmount",
+      "reproduction": "two instances in same module/VM/shared storage; B resolves before A; old source both overwrites and navigates",
+      "scope": "opaque latest-selection guard for all home-intent writers; no authority added",
+      "result": "implemented_independent_affected_tests_pass",
+      "automaticExecutionObserved": false
+    }
+  ],
+  "contracts": {
+    "sourcePin": "rockstaros.eve-source/1",
+    "agentOrigin": "rockstaros.eve-agent-origin/1",
+    "proposal": "rockstaros.eve-agent-proposal/1",
+    "sourceMeaning": "current owner-saved metadata snapshot, not upstream freshness/authenticity/safety; upstream metadata revision may remain null",
+    "originMeaning": "owner-confirmed historical reference, not server-attested model output; survives source loss and legacy editor saves",
+    "modelText": "untrusted editable role proposal; cannot set permissions/budget/grants/verification",
+    "atomicSave": "owner/key/revision/exact metadata/enabled EXISTS predicate at INSERT; immutable existing origins",
+    "rejectionRecovery": "only EVE_SOURCE_CHANGED proves this source-bound create rejected; ordinary409/lost acknowledgement still exact-owner/id/digest readback",
+    "storage": "existing owner-scoped Agent settings JSON and revision CAS; tab handoff/chat TTL10min; original reply text not duplicated in provenance; signout cleanup includes home-intent",
+    "tabSelectionOrdering": "module-shared opaque current selection ticket, begun synchronously before first await; previous shared slot removed with readback; guarded write and navigation; legacy writers supersede; no persistence or authority"
+  },
+  "verification": {
+    "state": "git_preserved_independent_full_verify_and_same_sha_ci_pass_host_scoped",
+    "independentReview": {
+      "result": "PASS_SCOPED",
+      "reviewer": "eve_gap_review",
+      "report": "docs/evidence/development-execution/eve-selected-source-independent-review.json",
+      "reportSha256": "028dcac119059b0449ece38e9e1644565374a759661ae51c1b2f2614dc2971d0",
+      "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+      "initialConsolidatedTests": 175,
+      "browserTests": 2,
+      "afterLintRepairAffectedTests": 46,
+      "mustFixRemaining": 0,
+      "testOnlyCompatibilityRepairTests": 18,
+      "afterVisibilityAndAbaRepairAffectedTests": 49,
+      "peerCombinedTests": 58,
+      "finalTestOnlyAffectedTests": 58,
+      "workerConcurrentBrowserTests": 3,
+      "fixtureLoadRepeats": {
+        "runs": 10,
+        "passed": 10,
+        "negativeOraclesDetected": 2
+      },
+      "productionFiles": 21,
+      "finalSharedQueueAffectedTests": 66
+    },
+    "fullVerify": {
+      "passed": true,
+      "exitCode": 0,
+      "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "nodeTests": {
+        "tests": 3587,
+        "passed": 3583,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 4
+      },
+      "sourceAggregateAtRun": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+      "logSha256": "270322db6786de685e2b648269dbc365d4dfbf7d3153f7c87b5af6e3ed14175c",
+      "includes": [
+        "all metadata/design checks",
+        "all Node regressions and Chrome loopback",
+        "deterministic package closure",
+        "Mini and public preview tests",
+        "Web build and bundle/asset closure",
+        "Work API and CSV storage",
+        "mission/work/bot checks"
+      ],
+      "environment": "macOS Node26.12.1/Python3.15/existing OpenSSL3; skips remain separate; no real model/provider/physical acceptance"
+    },
+    "headCi": {
+      "verifiedHead": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "passed": 7,
+      "total": 7,
+      "receipt": "docs/evidence/development-execution/eve-selected-source-ci.json",
+      "history": "docs/evidence/development-execution/eve-selected-source-ci-history.json",
+      "finalHeadReference": "PR301 description records receipt-successor head after its same-SHA CI readback"
+    },
+    "attempts": [
+      {
+        "command": "npm run verify",
+        "passed": false,
+        "reason": "host default LibreSSL; release signing fixture requires OpenSSL3",
+        "logSha256": "f046af96d104c4915a70499afc5d618e03ac4f5549e0aee3efcbea053bf8619a"
+      },
+      {
+        "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "passed": false,
+        "reason": "two React lint diagnostics; corrected cleanup generation increment and callback dependency; re-review pending",
+        "logSha256": "45c63cb21bc226376709697eff1bd090128eb2d9bc0a06f7e7fa142945def67f"
+      },
+      {
+        "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "passed": false,
+        "nodeTests": {
+          "tests": 3576,
+          "passed": 3560,
+          "failed": 12,
+          "skipped": 4
+        },
+        "reason": "two failures from reused node_modules realpath/standalone Mini dependencies; nine MCP harness missing new hook mapping/layout shim; one old cleanup assertion missing HOME_INTENT_KEY. Dedicated lockfile npm ci and test-only compatibility updates fixed targeted31/31; no production source changes.",
+        "logSha256": "ea2530c10f066addab99438459022316199925a224f82f25f7a91b19adba9f6a"
+      },
+      {
+        "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "passed": false,
+        "nodeTests": {
+          "tests": 3576,
+          "passed": 3571,
+          "failed": 1,
+          "skipped": 4
+        },
+        "reason": "browser fixture observed previous enabled apply button under a new key before receiving hook third GET/rAF. Fixture now waits for actual third GET; product separately hides stale handoff immediately when key changes. Standalone corrected browser2/2 passes, affected hook/chat46/46 pass; independent re-review pending.",
+        "logSha256": "25534e5e5f8778b501d73919e3c7b8f159aa731b4f7e6fa1f0ef450d12326763"
+      },
+      {
+        "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "passed": false,
+        "acceptedAsFinalSourceProof": false,
+        "nodeTests": {
+          "tests": 3579,
+          "passed": 3572,
+          "failed": 3,
+          "skipped": 4
+        },
+        "reason": "run started before final visibility/ABA source correction; UI fixture validation timing and existing SDK/delegation browser title timeout require fixture diagnosis. Final frozen-source full verify still required.",
+        "logSha256": "816e3305501d8b49eea0fa6f6769160b062c107b814550e6d28edb7daf7a6849"
+      },
+      {
+        "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "passed": false,
+        "nodeTests": {
+          "tests": 3579,
+          "passed": 3574,
+          "failed": 1,
+          "skipped": 4
+        },
+        "reason": "Eve/source/browser tests passed; existing mr-pc-adapter oversized-output cleanup observed returncode=None. Independent standalone Python3.15 all19pass. Investigating deterministic Darwin child-exits-between-observe-and-kill EPERM race; original swallowed cleanup exception was not captured, so exact original cause remains inferred.",
+        "logSha256": "bd5d5cd39f030bcbbd99cf4e608522289df039f9fb32de08b929fb95bb4004ee"
+      },
+      {
+        "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "passed": false,
+        "nodeTests": {
+          "tests": 3579,
+          "passed": 3575,
+          "failed": 0,
+          "skipped": 4
+        },
+        "reason": "all Node tests passed; MCP archive check detected that its bundled MR adapter also needed regeneration after PC cleanup repair. Regenerated existing deterministic Sky MCP ZIP; source unchanged.",
+        "logSha256": "724e2d71e1dca466b54dd451e7a7a36e5a6bb2bb0a8fd1745c20d8314751f768"
+      }
+    ],
+    "spider": {
+      "wholeChangedCoverageLimited": true,
+      "reason": "large existing documentation exceeds metadata content budget",
+      "productionOnly": {
+        "files": 21,
+        "coverageLimited": false,
+        "categories": [
+          "data",
+          "execution",
+          "finance",
+          "identity",
+          "network"
+        ],
+        "reportSha256": "be6d0eb08bc266a13f543eefaed04db0f3ed7b5e51dbd00d1fec6441c80d4f65"
+      },
+      "acceptance": "metadata prioritization only; corresponding owner/storage/network/replay checks exercised by independent tests and full verify; CI includes repository secret/CodeQL checks"
+    },
+    "environment": {
+      "node": "26.12.1",
+      "openssl": "existing /opt/homebrew/opt/openssl@3/bin selected for host signing fixtures",
+      "dependencies": "npm ci in isolated root and sites/avocado-mini, shared dependencies unchanged",
+      "targetedEnvironmentAndFixtureRepair": {
+        "passed": 31,
+        "failed": 0
+      }
+    },
+    "pcCleanupRepair": {
+      "status": "PASS_SCOPED",
+      "historicalFailureCause": "unconfirmed; deterministic feasible matching race reproduced",
+      "originalRegressionTests": 19,
+      "currentRegressionTests": 21,
+      "python315": "21 passed",
+      "python314": "21 passed",
+      "zipRegenerated": true,
+      "arbitrarySignalsOrPrivilegesAdded": false,
+      "independentReport": "docs/evidence/development-execution/eve-pc-cleanup-independent-review.json",
+      "independentReportSha256": "622397e492a80374eaea1ce27322de5736e384d4f1ab92140b3b2ca6cdd527b6",
+      "independentGuardProbes": 6,
+      "archiveEntriesVerified": 19,
+      "fixedVendorFilesUnchanged": 6,
+      "archiveSha256": "e49918a514c691771a651024c9e2b6258a6d0ae8c3ad769dcb9d082cc9e94a46",
+      "mcpArchiveSha256": "8c51dffc66dca63aacc75b4524f67549cf8470de8ccd44c40983463d3b1d4c5c",
+      "mcpArchiveEntriesVerified": 70
+    },
+    "finalCandidateFullVerify": "passed_after_ci_fixture_repair",
+    "historicalSuccessfulVerifyBeforeSharedQueueRepair": {
+      "passed": true,
+      "exitCode": 0,
+      "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "nodeTests": {
+        "tests": 3579,
+        "passed": 3575,
+        "failed": 0,
+        "skipped": 4
+      },
+      "logSha256": "e1d31ac1df1e9f52b84bdf2aa6885a3f5086622412ddacc40de15b3ef4711520",
+      "includes": [
+        "required metadata/design/security boundary checks",
+        "Node regressions including real Chrome loopback",
+        "all deterministic package checks",
+        "Mini/public-preview/build",
+        "Web bundle and asset closure",
+        "Work API and CSV storage",
+        "mission/work/bot checks"
+      ],
+      "environment": "macOS Python3.15/OpenSSL3/Node26.12.1; skipped tests remain separate; real model/provider/device not accepted",
+      "sourceAggregateAtRun": "d2f1ecd28c884b55461c9dcb01c64290be5d840ef29c559ad63dafea46484672"
+    },
+    "creatorCiFixtureRepair": {
+      "file": "tests/eve-agent-creation-ui.test.mjs",
+      "sha256": "73f9aee38d9751f4783fdcde99555a8aece25ff479679cf3870e71d7660c6426",
+      "productionChanged": false,
+      "independentReview": "docs/evidence/development-execution/eve-creator-fixture-independent-review.json",
+      "reviewSha256": "1aaeb093f2d3fb784da35a6c62645b50b8b364e7b1556867a54a76ddfc6b4dd0",
+      "independentTests": 27,
+      "stressRuns": 20,
+      "stressTestsPassed": 160,
+      "delayedRealDigestOracle": "old fixture reproduces readiness failures; corrected fixture8/8pass under same35ms delay"
+    }
+  },
+  "git": {
+    "branch": "codex/eve-selected-context-20261029",
+    "pullRequest": "https://github.com/k999ln/rock/pull/301",
+    "mainMerged": false,
+    "branchSaved": true,
+    "implementationCommit": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+    "currentHeadReference": "https://github.com/k999ln/rock/pull/301",
+    "finalHeadCiReference": "PR301 description and current-head checks, verified after metadata receipt commit"
+  },
+  "remaining": [
+    "Upstream/live timeline and exact social-post provenance",
+    "Actual model/provider/normal production authority",
+    "Composed-Agent graph and all-route recovery",
+    "Physical mii/Pixel/full OS acceptance"
+  ],
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "paidOrProductionAccepted": false,
+    "physicalAccepted": false,
+    "wholeEveAccepted": false,
+    "wholeUnitsAccepted": false
+  },
+  "startedAt": "2026-10-29T19:20:37Z",
+  "budgetHours": 5
+}

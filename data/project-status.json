@@ -1335,7 +1335,7 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-10-27",
+  "updatedAt": "2026-10-29",
   "milestone": "RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する",
   "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。",
   "tasks": [
@@ -12641,5 +12641,26 @@
     "status": "pass_scoped_host_synthetic",
     "evidence": "docs/evidence/development-execution/host-platform-final-audit.json",
     "next": "Check evidence documentation exact-head and merge-SHA CI independently; physical and production acceptance remain separate."
+  },
+  "eveSelectedSourceAgent": {
+    "owner": "ROCK",
+    "primarySquad": "O5",
+    "status": "git_preserved_independent_full_verify_same_sha_ci_pass_host_scoped",
+    "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+    "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
+    "next": "Git owner can compare PR301 with current main for separately authorized normal integration. Next development: exact social-post ACL/provenance; upstream updates, actual model/provider, composition graph and physical acceptance remain separate.",
+    "wholeUnitAccepted": false,
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "independentReview": "docs/evidence/development-execution/eve-selected-source-independent-review.json",
+    "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+    "pullRequest": "https://github.com/k999ln/rock/pull/301",
+    "implementationHead": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+    "ciHistory": "docs/evidence/development-execution/eve-selected-source-ci-history.json",
+    "verifiedCiHead": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+    "ciEvidence": "docs/evidence/development-execution/eve-selected-source-ci.json",
+    "finalHeadReadback": "https://github.com/k999ln/rock/pull/301",
+    "mainMerged": false
   }
 }

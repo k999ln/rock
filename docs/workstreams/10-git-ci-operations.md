@@ -123,6 +123,11 @@ PR186通常merge後main23ad170c起点のBilling/eSIM/Wallet pure subsetは[採�
 
 # Git / CI / Operations
 
+## 選んだ出典・Eve回答から担当保存（EVE-05/14/15の限定範囲）
+
+Git担当10、実装05/ROCK・O5。main `3563d9a807568a474b34ce61f9a16de9cb3c231e`基点。Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 独立検収と全verify・最終head CIは[候補証拠](../evidence/development-execution/eve-selected-source-agent.json)に段階別記録。未受入は上流継続同期・exact投稿ACL・実Provider/実機・Agent graph・全経路。通常PRでGit保存し、公開・配備・616件一括公開は保留。PR301修正head `0cc7d4cd`のCI7/7成功を保存し、記録のみの後続headもPRの説明/Checksで再照合する。次は別途許可されたmain通常統合と、exact投稿ACL/由来の個別開発。
+
+
 ## eSIM ready復旧試験とMini設計同期のmain限定採用（SIM01・MAT15・G04 / ROCK）
 
 現行受入: PR240/head b860929cをmain c3c4845cへ通常統合。head全7CI・同mergeSHA全6CI成功、Linux全verify3075件/3073pass/0fail/2skip、別段階の実Linux親寿命4件成功。host最終全verify3075件/3072pass/0fail/3skip・build/API成功。初回Mini依存失敗、cache待機失敗と1回の診断済みretry、旧03CIのprocESRCH失敗を保持し、成功や恒久修正に置換しない。PDF58頁はGit外、本文/renderer/画像と試験source7件は受入head/main同byte。証拠 docs/evidence/development-execution/esim-mini-ready-design-main-current.json。実機・実回線/実課金・全体受入・616一括公開の保留は不変。以下は候補作成時の履歴である。

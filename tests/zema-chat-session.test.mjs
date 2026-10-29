@@ -243,6 +243,6 @@ void test('unavailable chat storage does not prevent handoff cleanup', () => {
     removed.push(key);
     if (key === ZEMA_CHAT_SESSION_KEY) throw new Error('unavailable');
   }}));
-  assert.deepEqual(removed, [ZEMA_CHAT_SESSION_KEY, 'rockstaros.sky-zema-handoff.v1']);
+  assert.deepEqual(removed, [ZEMA_CHAT_SESSION_KEY, 'rockstaros.sky-zema-handoff.v1', 'rockstaros.home.intent.v1']);
   assert.equal(clearZemaPrivateSession(memoryStorage()), true);
 });

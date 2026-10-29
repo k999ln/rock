@@ -16,6 +16,11 @@ ROCKは既存compositionの無料資料保存を担当。2素材＋goalのcodec/
 
 # Web / PWA / Sites
 
+## 選んだ出典・Eve回答から担当保存（EVE-05/14/15の限定範囲）
+
+主担当05/ROCK・O5、Git保存10。main `3563d9a807568a474b34ce61f9a16de9cb3c231e`基点。Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 独立検収と全verify・最終head CIは[候補証拠](../evidence/development-execution/eve-selected-source-agent.json)に段階別記録。未受入は上流継続同期・exact投稿ACL・実Provider/実機・Agent graph・全経路。通常PRでGit保存し、公開・配備・616件一括公開は保留。PR301修正head `0cc7d4cd`のCI7/7成功を保存し、記録のみの後続headもPRの説明/Checksで再照合する。次は別途許可されたmain通常統合と、exact投稿ACL/由来の個別開発。
+
+
 ## SMITH-01 処理中の同頁スキップ導線（SKY21 / O5 / ROCK）
 
 main3bb基点。処理中の全anchor抑止が既存skip linkまで無効にする反例を修復し、`#workspace-main`だけを許可。他移動/consumer guard、auth/owner/料金/job/保存を変更しない。局所10pass、actual React/Chrome合成390/1280の旧反例と新focus/route抑止/draft保持を確認。source/metadata独立検収PASS・指摘0、host全verify2994/2991pass/0fail/3skip。Git担当の最新main保全/Git保存/最終同head CIが次。実running/auth composer/physical keyboard/inset/zoom/twoowner/native/公開、wholeSMITHは未受入。[証拠](../evidence/development-execution/smith-running-skip-link.json)。公開/配備/616一括公開保留、原PR203 receiptは不変。

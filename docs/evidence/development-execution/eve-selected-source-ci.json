@@ -1,0 +1,80 @@
+{
+  "schema": "rockstaros.same-sha-ci/1",
+  "repository": "k999ln/rock",
+  "pullRequest": "https://github.com/k999ln/rock/pull/301",
+  "verifiedHead": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+  "observedAtUtc": "2026-10-29 20:41:34 UTC",
+  "checks": [
+    {
+      "name": "CodeQL",
+      "status": "completed",
+      "result": "success",
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "id": 123718394797,
+      "url": "https://github.com/k999ln/rock/runs/123718394797",
+      "completedAt": "2026-10-29T20:38:56Z"
+    },
+    {
+      "name": "verify",
+      "status": "completed",
+      "result": "success",
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "id": 123717142594,
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530631/job/123717142594",
+      "completedAt": "2026-10-29T20:41:04Z"
+    },
+    {
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed",
+      "result": "success",
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "id": 123717142532,
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530406/job/123717142532",
+      "completedAt": "2026-10-29T20:39:28Z"
+    },
+    {
+      "name": "SPIDER / production web security measurement",
+      "status": "completed",
+      "result": "success",
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "id": 123717142313,
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530369/job/123717142313",
+      "completedAt": "2026-10-29T20:37:51Z"
+    },
+    {
+      "name": "SPIDER / repair regressions",
+      "status": "completed",
+      "result": "success",
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "id": 123717141901,
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530369/job/123717141901",
+      "completedAt": "2026-10-29T20:37:28Z"
+    },
+    {
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed",
+      "result": "success",
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "id": 123717141833,
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530406/job/123717141833",
+      "completedAt": "2026-10-29T20:39:00Z"
+    },
+    {
+      "name": "SPIDER / secrets",
+      "status": "completed",
+      "result": "success",
+      "sha": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+      "id": 123717141483,
+      "url": "https://github.com/k999ln/rock/actions/runs/40950530416/job/123717141483",
+      "completedAt": "2026-10-29T20:38:04Z"
+    }
+  ],
+  "allSucceeded": true,
+  "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+  "receiptSuccessorPolicy": "This file pins the tested implementation/fixture head. The receipt-only successor is checked again, and its exact current-head result is recorded in PR301 description without another source mutation.",
+  "finalHeadReference": "https://github.com/k999ln/rock/pull/301",
+  "mainMerged": false,
+  "publication": "HOLD",
+  "deployment": "HOLD",
+  "bulk616": "HOLD"
+}

@@ -271,7 +271,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     const js = value => JSON.stringify(value);
     const click = async label => { const x = js(label); await wait(`!![...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)`, label);
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
-    const input = async (label, value) => { const a = js(label); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
+    const input = async (label, value) => { const a = js(label); await wait(`(()=>{const e=[...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select');return !!e&&!e.disabled;})()`, `${label} enabled`);
       const target = await devtools.call('Runtime.evaluate', { expression: 'window' });
       const result = await devtools.call('Runtime.callFunctionOn', { objectId: target.result.objectId,
         functionDeclaration: `function(label,value){const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(label)).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,value);e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}`,
@@ -489,6 +489,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     assert.equal(connectorExecuteCalls, 1);
     const rows=await db.prepare('SELECT user_id,id,payload,revision FROM work_jobs').all(); assert.equal(rows.results.length,1);
     const row=rows.results[0], job=JSON.parse(row.payload), originalHash=createHash('sha256').update(job.toolObservations[0].text,'utf8').digest('hex');
+    assert.equal(job.title, 'fixture仕事', 'enabled owner input must retain the explicitly entered title');
     assert.equal(row.user_id,owner);assert.equal(row.id,job.id);assert.equal(row.revision,job.revision);
     assert.equal(job.status,'active');assert.ok(!job.skyApp?.result);
     assert.equal(job.agentBinding.agentId,new URL(await evaluate('location.href')).searchParams.get('agent'));
@@ -524,7 +525,11 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     assert.equal((await agentsResponse.json()).agents[0].id,candidate.id);
     const sameJobUrl=new URL(await evaluate('location.href'));sameJobUrl.searchParams.delete('package');
     await navigateAndWait('Page.navigate',{url:sameJobUrl.href});
-    await click('fixture仕事');
+    // The persisted parent is identified by its ID, not an assumed display
+    // title. Owner-bound fields may still be disabled when a fresh view mounts.
+    assert.equal(new URL(await evaluate('location.href')).searchParams.get('workJob'), job.id);
+    await wait(`document.querySelector('.work-detail-heading h2')?.textContent === ${JSON.stringify(job.title)}`, 'exact saved parent title restored');
+    await click(job.title);
     await wait('document.body.innerText.includes("合成Agent")','synthetic Agent candidate loaded');
     assert.equal(new URL(await evaluate('location.href')).searchParams.get('workJob'),job.id);
     await click('このAgentを選ぶ');await input('依頼内容','合成の依頼');

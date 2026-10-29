@@ -1467,5 +1467,26 @@
     "publicDeployment": false,
     "bulk616": "HOLD"
   },
-  "latestAcceptedProEvePixelReadback": "docs/evidence/development-execution/pro-eve-pixel-main-current.json"
+  "latestAcceptedProEvePixelReadback": "docs/evidence/development-execution/pro-eve-pixel-main-current.json",
+  "eveSelectedSourceAgent": {
+    "owner": "ROCK",
+    "primarySquad": "O5",
+    "status": "git_preserved_independent_full_verify_same_sha_ci_pass_host_scoped",
+    "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+    "evidence": "docs/evidence/development-execution/eve-selected-source-agent.json",
+    "next": "Git owner can compare PR301 with current main for separately authorized normal integration. Next development: exact social-post ACL/provenance; upstream updates, actual model/provider, composition graph and physical acceptance remain separate.",
+    "wholeUnitAccepted": false,
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD",
+    "independentReview": "docs/evidence/development-execution/eve-selected-source-independent-review.json",
+    "sourceAggregateSha256": "048f40162b4ddbc3795a634fddd5bc7dbc36cf94fcf26c426bc40408a1d44dde",
+    "pullRequest": "https://github.com/k999ln/rock/pull/301",
+    "implementationHead": "5a8b7b2509c21ca4e7e0959f3c709bcc6f0d288d",
+    "ciHistory": "docs/evidence/development-execution/eve-selected-source-ci-history.json",
+    "verifiedCiHead": "0cc7d4cd020887767ab51e087c91f24955438e8f",
+    "ciEvidence": "docs/evidence/development-execution/eve-selected-source-ci.json",
+    "finalHeadReadback": "https://github.com/k999ln/rock/pull/301",
+    "mainMerged": false
+  }
 }
