@@ -3,13 +3,19 @@
   "base": "c53ffad64e3502af9e853b73134fc1430176649a",
   "state": "draft_untested",
   "sourceSha256": {
-    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "4357b86227c9051b391ef6ef02163fe04ac720de8786c439e7d3a115184f55fa",
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "df5cfe22c46f56098febf2efe58e6d9ca1d255a05f4070b3fbefb87882413ae0",
     "services/sky-agent-runtime/vitest.config.ts": "340a9ff6e5201c61d00fd295ff31ba7d15a1ed0c54ff19e51bbc0a2592b79afd"
   },
   "intent": "Link the real workflow response-loss fixture and existing work/delegation routes with the same synthetic mii job and held reservation; explicit remote cancellation remains a separate request.",
   "limits": "Not executed; fixture identity, transport, D1 journal and provider are synthetic. Local stop is not remote or physical stop. No signed terminal receipt or real provider/physical acceptance is asserted.",
-  "review": "source-only preliminary review; exact final test requires independent review",
+  "review": "source-only preliminary review; exact repaired test and CI require independent review",
   "next": "Run targeted Cloudflare Worker test with local ports after the shared resource window; repair failures, then independent review, full verify and exact-head CI before any merge.",
   "inference": false,
-  "actualDevice": false
+  "actualDevice": false,
+  "initialCiFailure": {
+    "head": "40d4807005dbfc31e59bf3f9385beeb15d2bd1b2",
+    "run": 40846116619,
+    "reason": "workerd Request rejects redirect:error in the local relay; the fixture now uses manual redirect and explicitly rejects 3xx. The fix is not yet tested.",
+    "logSha256": "84cb4b6241931103d7470ae28c54427692ee9832b0590cedcb5b51ad40bf192d"
+  }
 }

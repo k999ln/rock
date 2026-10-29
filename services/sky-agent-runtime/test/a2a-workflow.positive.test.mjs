@@ -306,9 +306,12 @@ async function miiWorkerFixture(parentId) {
     const headers = new Headers(init.headers);
     headers.set('origin', 'https://fixture.invalid');
     headers.set('oai-authenticated-user-id', owner);
-    const request = new Request('https://fixture.invalid' + path, { ...init, headers });
+    // workerd Request does not implement redirect:'error'. This local relay
+    // invokes handlers directly and rejects redirects explicitly instead.
+    const request = new Request('https://fixture.invalid' + path, { ...init, headers, redirect: 'manual' });
     const route = path.startsWith('/api/work-jobs') ? workRoute : delegationRoute;
     const response = await route[init.method](request);
+    if (response.status >= 300 && response.status < 400) throw new Error('fixture refuses redirect');
     if (path === '/api/work-jobs' && init.method === 'PATCH') {
       patches++;
       if (dropCancel) { dropCancel = false; throw new Error('fixture lost local cancellation response'); }
