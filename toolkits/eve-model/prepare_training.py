@@ -9,18 +9,34 @@ from manifest import OFFLINE,base_identity,sha,atomic_json
 
 def sha_text(value):return __import__('hashlib').sha256(value.encode()).hexdigest()
 
+SEMANTIC_CHAT_TEMPLATE_SHA256='d5495a1e5db0611132a97e46a65dbb64a642a499421228b9c8b93229097fa9a4'
+
+def render_semantic_chat(messages,tools=None,add_generation_prompt=False,return_dict=False):
+    """Render only the pinned Qwen plain-text system/user[/assistant] branch."""
+    if tools is not None or return_dict is not False or type(add_generation_prompt) is not bool:
+        raise ValueError('semantic CPU tokenizer supports plain captured messages only')
+    if not isinstance(messages,list) or len(messages) not in (2,3):
+        raise ValueError('semantic CPU tokenizer requires captured prefix or full row')
+    roles=['system','user'] if add_generation_prompt else ['system','user','assistant']
+    if len(messages)!=len(roles):raise ValueError('semantic prefix/full role shape mismatch')
+    for message,role in zip(messages,roles):
+        if not isinstance(message,dict) or set(message)!= {'role','content'} or message['role']!=role or not isinstance(message['content'],str):
+            raise ValueError('semantic CPU tokenizer requires plain role/content messages')
+    text=''.join('<|im_start|>'+m['role']+'\n'+m['content']+'<|im_end|>\n' for m in messages)
+    return text+('<|im_start|>assistant\n' if add_generation_prompt else '')
+
 def semantic_tokenizer(base):
-    # Explicit CPU-only path: importing transformers may import installed MLX.
+    # No model runtime or template execution: this supports one pinned plain branch.
     from tokenizers import Tokenizer
-    from jinja2 import Environment
     config=json.loads((base/'tokenizer_config.json').read_text())
+    template=config.get('chat_template')
+    if not isinstance(template,str) or sha_text(template)!=SEMANTIC_CHAT_TEMPLATE_SHA256:
+        raise ValueError('unsupported semantic chat template')
     class CpuTokenizer:
-        chat_template=config['chat_template']
+        chat_template=template
         backend=Tokenizer.from_file(str(base/'tokenizer.json'))
-        template=Environment().from_string(chat_template)
         def apply_chat_template(self,messages,tools=None,add_generation_prompt=False,return_dict=False):
-            if tools or return_dict:raise ValueError('semantic CPU tokenizer supports plain captured messages only')
-            text=self.template.render(messages=messages,tools=None,add_generation_prompt=add_generation_prompt)
+            text=render_semantic_chat(messages,tools,add_generation_prompt,return_dict)
             return self.backend.encode(text,add_special_tokens=False).ids
     return CpuTokenizer()
 

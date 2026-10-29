@@ -221,6 +221,22 @@
     "spiderRiskPlan": "deep profile, prioritized existing boundary reviews; not vulnerability-free certification",
     "fullVerify": {
       "exitCode": 0,
+      "postEvaluationCiHardening": true,
+      "sourceChangesManifestSha256": "923c57b463f554067fb7df5f666b320ce57a03177160ba871e9595b84da998f0",
+      "mainSuite": {
+        "tests": 3587,
+        "pass": 3583,
+        "fail": 0,
+        "skip": 4
+      },
+      "buildApiMissionWorkBot": "PASS",
+      "logSha256": "805118087b500a611779f46ba42b4440b22db7d4f7bf9c593d50a6801ad0c9b0",
+      "qualification": "Fresh full verification after all five approved CI-hardening source/test changes and provenance metadata. This verification-result-only metadata update is followed by project/mission/design checks; source remains identical."
+    },
+    "scopedSecretPatternCheck": "No matches in high-confidence literal credential patterns over28 current owned paths. Gitleaks binary unavailable; history scanner not invoked. Not full vulnerability or credential certification.",
+    "synchronizedMainSha": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+    "priorFullVerify": {
+      "exitCode": 0,
       "checkedHead": "d39c099783c41f2afcda4d5dc36929e1af4d8d4f",
       "mainSuite": {
         "tests": 3587,
@@ -230,12 +246,64 @@
       },
       "buildApiMissionWorkBot": "PASS",
       "logSha256": "471caefde8328d842d928c1ec6fd3dab5e08686e044279c9520351af86a5ef37",
-      "qualification": "Full verification ran after latest-main metadata synchronization. Subsequent verification-result metadata is checked with project/mission/design consistency; source unchanged."
-    },
-    "scopedSecretPatternCheck": "No matches in high-confidence literal credential patterns over28 current owned paths. Gitleaks binary unavailable; history scanner not invoked. Not full vulnerability or credential certification.",
-    "synchronizedMainSha": "bf86f9ee83d7af5af8174f89a40d4514411935a9"
+      "qualification": "Historical verification of checkpoint d39c before the post-evaluation CI source hardening; a fresh full verification is required for the hardened source."
+    }
   },
   "newModelCallsMeaning": "80 charged generation attempts, including79 completed output attempts and1 unknown conservatively charged attempt; not80 successful plans or tasks.",
   "completedOutputAttempts": 79,
-  "unknownChargedAttempts": 1
+  "unknownChargedAttempts": 1,
+  "postEvaluationCiHardening": {
+    "failedSourceHead": "99e8579d23c4810fb06d4c668cd34bdf4b6fece1",
+    "pullRequest": 306,
+    "failedCheckUrl": "https://github.com/k999ln/rock/runs/123795461753",
+    "newHighAlerts": 3,
+    "fixes": [
+      "Replace general Jinja execution with a pinned plain-chat renderer and strict message shapes",
+      "Use actual exclusive diagnostic output creation without a prior existence check",
+      "Match uppercase and mixed-case script tags in the client-selection test fixture"
+    ],
+    "changedSources": [
+      {
+        "path": "toolkits/eve-model/prepare_training.py",
+        "beforeSha256": "5f85e241a5742795a3d9368c90a40748dbf9022df9c837e3e48046448b297370",
+        "afterSha256": "e85cda559d8956d24198176e3e1d36e22e840557c7d5a563a696e9a9dee06268"
+      },
+      {
+        "path": "toolkits/eve-model/diagnose.mjs",
+        "beforeSha256": "45e3ff8cd705ff927fc6fe5a5fea8f0e39b6ffd0bcfb3e1733306d77a54f9eea",
+        "afterSha256": "5eea7d01c163421d3e7df4db2a826464bd9ff2d727d6753578ad4d9a3b530e4a"
+      },
+      {
+        "path": "toolkits/eve-model/test_bridge.mjs",
+        "beforeSha256": "3a7a38483f4a7bfa2d71855ea7a4a9eb6f63fef8f465fdc29ce6ef605c936f36",
+        "afterSha256": "280eaee34f12669db96afa6a3579aea5c8e0558e2b710ce35ac9fae46e795d55"
+      },
+      {
+        "path": "toolkits/eve-model/test_diagnose.mjs",
+        "beforeSha256": "e0ab0f9027b0436d50f475f384fa54447bac8b212985e760c2c8ec7b1ad8dc75",
+        "afterSha256": "ce0fd935ea4bb4dff73f4c541e019334a5ac86a795a52b833ede79909ee884fd"
+      },
+      {
+        "path": "toolkits/eve-model/test_training_controls.py",
+        "beforeSha256": "0330202d810fc610b9ae7d5815f3c47a407465d81cbee7e4617b7af577a687fb",
+        "afterSha256": "5c5feaff649a68c504303bddfbc327710744ff4c9c3f79d9b77bc75e808dd47c"
+      }
+    ],
+    "cpuParity": {
+      "rows": 64,
+      "fullVectorsEqual": 64,
+      "prefixVectorsEqual": 64,
+      "offsetsEqual": 64,
+      "vectorsSha256": "42b016ce12d9bcbd7ae92edb0cd8ce39dea5e6370184968927d724b145cf5301",
+      "receiptSha256": "ee3e094ee9630f3f2e10ddcd24c62432a9a35d3943c8826c11a60380f8b9a67f"
+    },
+    "cpuChecks": {
+      "trainingControls": 26,
+      "nodeDiagnosticAndBridge": 27,
+      "failures": 0
+    },
+    "newModelCalls": 0,
+    "trainingAndEvaluationArtifactsChanged": false,
+    "qualification": "Post-evaluation preparation/diagnostic/test hardening only. Historical training, source-freeze and physical review hashes remain as recorded; the new source was not used for that training or evaluation. CodeQL alert titles alone do not demonstrate XSS, overwrite or CSP bypass and are not semantic-quality causes."
+  }
 }

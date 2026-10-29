@@ -257,7 +257,8 @@ test('three-case functional manifest is exact and never expands the20-case A/C c
  }
 });
 test('client applies a new preset after URL/options only, and same-revision polling cannot run or reset selection',()=>{
- const html=fs.readFileSync(new URL('./client.html',import.meta.url),'utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+ const html=fs.readFileSync(new URL('./client.html',import.meta.url),'utf8'),extractScript=value=>value.match(/<script>([\s\S]*?)<\/script>/i)[1],script=extractScript(html);
+ assert.equal(extractScript('<SCRIPT>fixture</SCRIPT>'),'fixture');assert.equal(extractScript('<ScRiPt>mixed</sCrIpT>'),'mixed');
  const helper=script.slice(script.indexOf('function applySelection('),script.indexOf('async function refresh('));assert.ok(helper);assert.doesNotMatch(helper,/\/api\/run|\.click|dispatchEvent/);
  assert.ok(script.indexOf('initialCase=null;applySelection(state.selection)')>script.indexOf("el('case').append(option)"));
  let runs=0;const controls={case:{value:'url-preset'},arm:{value:'C'},fault:{value:'none'},run:{onclick:()=>{runs++;}}};

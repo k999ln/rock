@@ -70,8 +70,9 @@ export async function diagnose({root,base,python,candidateRoot,prepare=integrati
  const planned=[];
  for(const id of protocol.diagnostics.tasks)for(const system of Object.keys(systems))for(const arm of ['A','C'])planned.push({id:`${attempt.prefix}:${id}:${system}:${arm}`,caseId:id,system,arm,state:'not_started'});
  if(planned.length!==20)throw Error('fixed20 diagnostic decisions required');
- const out=path.join(root,attempt.output);if(fs.existsSync(out))throw Error('refuse diagnostic overwrite/retry');
- const result={schema:'eve.raw-system-weight-diagnostics/1',startedAt:new Date().toISOString(),groupSecondsLimit:1200,protocolSha256:sha(fs.readFileSync(path.join(root,'protocol.json'))),binding,compactSystemSha256:sha(compact),placement:'Mac MLX supporting raw diagnostic; not physical Tool-loop acceptance',rawDecisionsOnly:true,taskComplete:null,reviewedManualResumption:resumption,rows:planned};fs.writeFileSync(out,JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+ const out=path.join(root,attempt.output);
+ const result={schema:'eve.raw-system-weight-diagnostics/1',startedAt:new Date().toISOString(),groupSecondsLimit:1200,protocolSha256:sha(fs.readFileSync(path.join(root,'protocol.json'))),binding,compactSystemSha256:sha(compact),placement:'Mac MLX supporting raw diagnostic; not physical Tool-loop acceptance',rawDecisionsOnly:true,taskComplete:null,reviewedManualResumption:resumption,rows:planned};
+ try{fs.writeFileSync(out,JSON.stringify(result,null,2)+'\n',{flag:'wx'});}catch(error){if(error.code==='EEXIST')throw Error('refuse diagnostic overwrite/retry');throw error;}
  const planner=plannerFactory({root,base,python,candidateRoot,expectedBinding:binding});const cutoff=Date.now()+1200000;
  try{for(const row of planned){
    const task=tasks.find(t=>t.id===row.caseId);if(!task)throw Error('unknown fixed diagnostic task');

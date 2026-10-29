@@ -388,4 +388,24 @@ class TrainingControlTests(unittest.TestCase):
                 with self.assertRaises(FileExistsError):train.run(root,root/'base',data,8,'matched-768-v1','eve-semantic-probe','probe-v1',None,True)
                 query.assert_not_called();child.assert_not_called()
 
+class SemanticPlainRendererTests(unittest.TestCase):
+    def test_exact_plain_text_and_prefix_preserve_metacharacters_unicode_and_empty_content(self):
+        from prepare_training import render_semantic_chat
+        for text in ['<script>&"\' 日本語 😀\nline','']:
+            prefix=[{'role':'system','content':text},{'role':'user','content':text}]
+            expected='<|im_start|>system\n'+text+'<|im_end|>\n<|im_start|>user\n'+text+'<|im_end|>\n'
+            self.assertEqual(render_semantic_chat(prefix,add_generation_prompt=True),expected+'<|im_start|>assistant\n')
+            self.assertEqual(render_semantic_chat(prefix+[{'role':'assistant','content':text}]),expected+'<|im_start|>assistant\n'+text+'<|im_end|>\n')
+
+    def test_unsupported_messages_and_options_are_rejected(self):
+        from prepare_training import render_semantic_chat,semantic_tokenizer
+        full=[{'role':'system','content':'s'},{'role':'user','content':'u'},{'role':'assistant','content':'a'}]
+        for messages,options in [(full,{'tools':[]}),(full,{'tools':{}}),(full,{'return_dict':True}),(full,{'add_generation_prompt':1}),(full,{'add_generation_prompt':True}),(full[:2],{}),([],{}),([*full[:2],{'role':'tool','content':'a'}],{}),([*full[:2],{'role':'assistant','content':None}],{}),([*full[:2],{'role':'assistant','content':'a','tool_calls':[]}],{})]:
+            with self.subTest(messages=messages,options=options),self.assertRaises(ValueError):render_semantic_chat(messages,**options)
+        # The template identity gate precedes backend loading, without tokenizers dependency.
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);(root/'tokenizer_config.json').write_text(json.dumps({'chat_template':'unsupported'}))
+            with patch.dict(sys.modules,{'tokenizers':types.SimpleNamespace(Tokenizer=types.SimpleNamespace(from_file=lambda _:self.fail('unsupported template reached backend'))) }):
+                with self.assertRaisesRegex(ValueError,'unsupported semantic chat template'):semantic_tokenizer(root)
+
 if __name__=='__main__':unittest.main()

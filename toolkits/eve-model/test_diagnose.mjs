@@ -48,6 +48,16 @@ test('the actual diagnostic driver rejects the last mismatched input before Plan
     plannerFactory:()=>{plannerConstructions++;throw Error('must not construct');}}),/reviewed prompt/);
   assert.equal(plannerConstructions,0);assert.equal(fs.existsSync(path.join(root,'runtime.sqlite')),false);assert.equal(fs.existsSync(path.join(root,'diagnostics.json')),false);
   await assert.rejects(reviewedDiagnosticInputs({...p,diagnostics:{...p.diagnostics,tasks:['a','b','c','d','d']}},root,tasks,prepare),/five unique/);
+  const out=path.join(root,'diagnostics.json'),original='original evidence\n';
+  const options={root,candidateRoot:candidate,base:'must-not-load',python:'must-not-spawn',prepare,plannerFactory:()=>{plannerConstructions++;throw Error('must not construct');}};
+  fs.writeFileSync(out,original);await assert.rejects(diagnose(options),/refuse diagnostic overwrite\/retry/);assert.equal(fs.readFileSync(out,'utf8'),original);assert.equal(plannerConstructions,0);fs.unlinkSync(out);
+  // A competing creator wins immediately before the exclusive publication; never overwrite it.
+  const write=fs.writeFileSync;let raced=false;
+  try{fs.writeFileSync=(file,data,opts)=>{if(file===out&&opts?.flag==='wx'&&!raced){raced=true;write(file,original,{flag:'wx'});}return write(file,data,opts);};
+   await assert.rejects(diagnose(options),/refuse diagnostic overwrite\/retry/);
+  }finally{fs.writeFileSync=write;}
+  assert.equal(raced,true);assert.equal(fs.readFileSync(out,'utf8'),original);assert.equal(plannerConstructions,0);assert.equal(fs.existsSync(path.join(root,'runtime.sqlite')),false);
+
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
 
