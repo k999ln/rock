@@ -9,7 +9,8 @@ import sys
 import time
 from budget import Budget
 from manifest import OFFLINE,admission,atomic_json
-from profiles import profile,require_decision,runtime_problem
+from profiles import PROFILES,profile,require_decision,runtime_problem
+from train_worker import RUN_IDS,CANDIDATE_NAMES
 
 def stop_owned(child,grace=5):
     if child.poll() is None:
@@ -66,7 +67,14 @@ def supervise_owned(command,root,limit,log_name='training.log',grace=5,profile_n
 def run(root,base,data,updates,profile_name='standard',run_id='eve-qlora-v1',candidate_name='candidate-v1',reuse_before=None):
     b=Budget(root); b.check_time(1800)
     require_decision(root,profile_name)
-    check=admission(root,profile_name);atomic_json(root/'training-admission.json',check)
+    # Exclusive creation reserves this run's evidence before querying resources.
+    # A partial write/query failure is an unstarted-attempt record, not reusable.
+    # No child may start until the complete snapshot is flushed and fsynced.
+    with (root/('training-admission-'+run_id+'.json')).open('x',encoding='utf8') as evidence:
+        check=admission(root,profile_name)
+        json.dump(check,evidence,ensure_ascii=False,sort_keys=True,indent=2)
+        evidence.write('\n');evidence.flush();os.fsync(evidence.fileno())
+    atomic_json(root/'training-admission.json',check)
     if not check['admitted']: raise ValueError('memory/disk admission failed; no optimizer step started')
     if not 1<=updates<=128: raise ValueError('updates out of bounds')
     policy=profile(profile_name)
@@ -77,7 +85,7 @@ def run(root,base,data,updates,profile_name='standard',run_id='eve-qlora-v1',can
     if limit<=0: raise ValueError('no training time remains')
     command=[sys.executable,str(Path(__file__).with_name('train_worker.py')),'--root',str(root),'--base',str(base),'--data',str(data),'--updates',str(updates),'--profile',profile_name,'--run-id',run_id,'--candidate-name',candidate_name]
     if reuse_before:command+=['--reuse-before',reuse_before]
-    source_hashes={name:__import__('hashlib').sha256(Path(__file__).with_name(name).read_bytes()).hexdigest() for name in ['train.py','train_worker.py','budget.py','manifest.py','profiles.py']}
+    source_hashes={name:__import__('hashlib').sha256(Path(__file__).with_name(name).read_bytes()).hexdigest() for name in ['train.py','train_worker.py','completion_loss.py','budget.py','manifest.py','profiles.py']}
     record=supervise_owned(command,root,limit,log_name='training-'+run_id+'.log',profile_name=profile_name)
     record['runId']=run_id;record['ownedCommand']=command;record['sourceHashesAtLaunch']=source_hashes
     atomic_json(root/('training-supervisor-'+run_id+'.json'),record)
@@ -94,6 +102,6 @@ def run(root,base,data,updates,profile_name='standard',run_id='eve-qlora-v1',can
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--base',type=Path,required=True);p.add_argument('--data',type=Path,required=True);p.add_argument('--updates',type=int,default=128)
-    p.add_argument('--profile',choices=['standard','small-memory-v1','bounded-warning-hypothesis-v1'],default='standard')
-    p.add_argument('--run-id',choices=['eve-qlora-v1','eve-qlora-v2'],default='eve-qlora-v1');p.add_argument('--candidate-name',choices=['candidate-v1','candidate-v2'],default='candidate-v1');p.add_argument('--reuse-before',choices=['eve-qlora-v1'])
+    p.add_argument('--profile',choices=list(PROFILES),default='standard')
+    p.add_argument('--run-id',choices=RUN_IDS,default='eve-qlora-v1');p.add_argument('--candidate-name',choices=CANDIDATE_NAMES,default='candidate-v1');p.add_argument('--reuse-before',choices=['eve-qlora-v1','eve-recovery-probe'])
     a=p.parse_args();print(json.dumps(run(a.root,a.base,a.data,a.updates,a.profile,a.run_id,a.candidate_name,a.reuse_before)))

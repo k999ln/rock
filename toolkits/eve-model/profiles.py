@@ -16,6 +16,11 @@ PROFILES={
    'runtimeAvailableFloorBytes':2*GIB,'allowWarning':True,'trainingChildWallLimitSeconds':120,'maxTrainingUpdates':8,
    'rssLimitBytes':2*GIB,'metalPeakLimitBytes':int(1.75*GIB),'mlxGuidelineBytes':int(1.5*GIB),
    'cacheLimitBytes':64*1024**2,'numLayers':2,'loraRank':4,'loraScale':8.0,'maxSequence':512},
+ 'matched-768-v1': {'id':'matched-768-v1','minimumAvailableBytes':int(3.25*GIB),
+   'runtimeAvailableFloorBytes':2*GIB,'allowWarning':True,'trainingChildWallLimitSeconds':120,'maxTrainingUpdates':72,
+   'rssLimitBytes':2*GIB,'metalPeakLimitBytes':int(1.75*GIB),'mlxGuidelineBytes':int(1.5*GIB),
+   'cacheLimitBytes':64*1024**2,'numLayers':1,'loraRank':4,'loraScale':8.0,'maxSequence':768,
+   'validationBatchesPerStage':4},
 }
 
 def profile(name):
@@ -26,7 +31,10 @@ def require_decision(root,name):
     if name=='standard': return None
     p=Path(root)/'resource-profile-decision.json'
     doc=json.loads(p.read_text())
-    if doc.get('schema')!='eve.resource-profile-decision/1' or doc.get('profileId')!=name or doc.get('status')!='adopted' or doc.get('originalStandardGateAccepted') is not False or not isinstance(doc.get('reason'),str) or not doc['reason'].strip():
+    legacy=doc.get('schema')=='eve.resource-profile-decision/1' and doc.get('profileId')==name
+    adopted=doc.get('adoptedProfiles')
+    current=doc.get('schema')=='eve.resource-profile-decision/2' and isinstance(adopted,list) and bool(adopted) and all(isinstance(x,str) and x in PROFILES and x!='standard' for x in adopted) and len(adopted)==len(set(adopted)) and name in adopted
+    if not (legacy or current) or doc.get('status')!='adopted' or doc.get('originalStandardGateAccepted') is not False or not isinstance(doc.get('reason'),str) or not doc['reason'].strip():
         raise ValueError('explicit reduced-profile decision missing')
     return p
 

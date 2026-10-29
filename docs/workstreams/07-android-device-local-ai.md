@@ -391,6 +391,12 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 主担当ROCK。既存AI02のmodel交換/版固定とは分けた研究工程。hostのrandom-init学習、再開一致、推論APIを検証し、Mini実機・export・cloud・本学習はJOINT/OWNER条件待ち。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](../avokado-llm-pretraining.md)を参照。
 
 
+## AI02: Eveのloss境界と入力長の品質回復
+
+2026-10-29、ROCK/O3の既存AI02内で、前回の候補/台帳/失敗を保持した新しいMac学習工程を実施。実回答tokenの排他的末尾境界と更新前batch検査、2〜4資料のfull integration入力（train240最大739/選定validation4最大686）を768token以内で保持する。1layer/rank4の別profileは以前のRSS/Metal/available-page guardを維持し、4GiB標準gateやhard isolation合格へ読み替えない。資源probe8＋fresh final48＝56更新、43008学習slots、validation4前/4後＝6144slots。保存adapter35bb0433の意味的完全達成はA0/20・C1/20で品質FAIL/既定非採用。同4validation行のloss低下は一般品質ではなく、transport受理A1/C4と意味的成功を分ける。[実測・独立検収・残件](../evidence/development-execution/eve-quality-recovery.json)。
+
+Pixelの同candidate試験は所有者間lease確認後のMac-hosted USB localhost経路で完了し、独立意味検収は品質0/8でFAIL。13jobの別制御5件には停止2件、lost-response/復旧unknown回答を含み、oversize0call・二重tap1operation・reload保存不変も確認。session生成72attempt/18432要求token、Pixel11中unknown1は保守課金。所有server/child/listener/USB mapping終了・lease返却済み。test tab一括closeは自動審査拒否で残し、phone P95/owner A-B/P07最大3修復境界は未検証。source独立検収はopen P1/P2なしのscoped PASSで、native inference/full OS/本番受入には加算しない。最終全verifyは主回帰3503pass/0fail/4skipとbuildを含めexit0。Git保存・main統合・同一SHA CIはこのsnapshot後のGit receipt/GitHubで別記録する。検証入口は `node --test tests/eve-model-toolkit.test.mjs`、`npm run project:update`、`npm run mission:check`、最終 `npm run verify`。原本・教材・weights・raw実機資料はGit外、公開物は最小集計とhashのみ。probe開始snapshot欠落は履歴上残し、今後のrun別admission保存をexclusive creation/fsyncで拒否・並行時も上書きしないsource修正として検収した。
+
 ## Mini本体SIMによる独立通信（2026-10-05）
 
 利用者指定により[Mini cellular設計](../avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。

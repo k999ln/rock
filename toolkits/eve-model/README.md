@@ -38,11 +38,38 @@ The separately reviewed `bounded-warning-hypothesis-v1` permits OS warning level
 "$EVE_PY" toolkits/eve-model/train.py --root "$EVE_RUN" --base "$EVE_BASE" --data "$EVE_RUN/training-v4" --updates 128 --profile standard
 ```
 
-All runs share a durable128-update/1800-second reservation. Unknown updates stay charged and interrupted runs are not automatically resumed. An offline independently reviewed synchronous-callback proof may release only updates proved impossible, retaining the original reservation/history and one possible unrecorded update; the same transaction reserves the explicitly reviewed next run. Full supervisor wall time is charged. Each update and validation stage is saved immediately. Validation is explicitly8 batches before and8 after; an empty library validation dataset disables MLX-LM's otherwise automatic first/final-iteration evaluation. A completed same-base validation may be reused without rerunning it; a lost scalar remains unavailable. Prompt loss is masked, batch size1, sequence512, seed42, Adam1e-4 and gradient checkpointing. The actual generated LoRA config is checked against the selected profile. Nonfinite losses and final adapter values are rejected; no separate pre-update gradient-finiteness guarantee is claimed.
+All runs share a durable128-update/1800-second reservation. Unknown updates stay charged and interrupted runs are not automatically resumed. An offline independently reviewed synchronous-callback proof may release only updates proved impossible, retaining the original reservation/history and one possible unrecorded update; the same transaction reserves the explicitly reviewed next run. Full supervisor wall time is charged. Each update and validation stage is saved immediately. Validation is explicitly8 batches before and8 after; an empty library validation dataset disables MLX-LM's otherwise automatic first/final-iteration evaluation. A completed same-base validation is reused only with the exact current loss/source/runtime/data binding and a persisted finite scalar. Historical lost scalars and the old inclusive-mask baseline are rejected by the corrected runner. Prompt loss is masked, batch size1, sequence512, seed42, Adam1e-4 and gradient checkpointing. The actual generated LoRA config is checked against the selected profile. Nonfinite losses and final adapter values are rejected; no separate pre-update gradient-finiteness guarantee is claimed.
 
 The supervisor owns only its child, propagates SIGTERM/SIGINT, then uses terminate→bounded wait→kill→wait. Full receipts and adapter weights remain in the run directory.
 
 The separate CPU-only audit of installed MLX-LM0.32.2 confirmed one extra trailing padding target (token ID0, `!`) in all240 training and8 validation rows, with normal prefixes and unchanged historical integration-request hashes. This observation does not establish the cause of repeated-schema output. The saved failed candidate, its runtime and recipe remain unchanged. A future independently reviewed loss-boundary fix, frozen protocol and fresh training/comparison are required; this candidate is not a corrected model. The existing16 teacher-forced validation batches are already consumed, and this session performs no further model trial. Audit review SHA256: `5213d9f73c6f18ed3519bbd3e7f943af61dab01490c8e4c3200e20ca737b916f`.
+
+## Matched-input quality recovery
+
+The current runner uses an explicit assistant-only loss: for real token length `N` and prompt-prefix offset `O`, supervised target indices are `O <= s < N`. The first answer and genuine closing tokens remain supervised; every prompt/padding target is excluded. All source rows and every actual batch are checked before the compiled optimizer. The cached MLX environment is not patched. Historical candidates trained with MLX-LM0.32.2's inclusive default remain unchanged and are not relabelled as corrected.
+
+For a separately invoked recovery session, prepare the original integration system and planner prompt from the existing pure Zema runtime:
+
+```sh
+node toolkits/eve-model/prepare_integration.mjs "$EVE_OBSERVED" "$EVE_RUN/integration-chats"
+"$EVE_PY" toolkits/eve-model/prepare_training.py --corpus "$EVE_OBSERVED" --base "$EVE_BASE" --output "$EVE_RUN/training" --integration-chats "$EVE_RUN/integration-chats"
+```
+
+This path retains all240 original train tasks, complete2–4 source text and exact gold decisions. It selects four declared validation records, balanced Japanese/English and including three/four-source and repair cases. Repair observes only the actual earlier pure-Tool rejection. No sealed data, model generation or future observation is used in preparation. The measured train maximum739 and validation maximum686 fit768 tokens without dropping facts or truncation. The four validation records share a renderer family and do not establish broad generalization.
+
+The independently reviewed `matched-768-v1` profile uses one final layer/rank4/scale8, sequence768, the same3.25GiB admission/2GiB runtime floor,2GiB RSS/1.75GiB Metal guards,1.5GiB MLX guideline,64MiB cache and100-second active cutoff within120 seconds. A successful small resource probe and fresh admission are required; the longer sequence is not assumed safe from an earlier512-token peak. Each new training run saves its own admission snapshot before spawning the child, while retaining the legacy latest snapshot. Older overwritten evidence cannot be reconstructed by this change.
+
+A v2 resource decision may explicitly adopt the two named fixed profiles for old-reference diagnostics and new training. Old profile definitions are frozen for original candidate binding. Session `generationLimits` only restrict the hard ceilings. The recovery allocation is diagnostic20, comparison120, Pixel30, teacher0:170 calls/43,520 requested output tokens. Old sessions retain diagnostic0 by default. Durable training slots include legacy512 allocations and unknown reservations; total limits remain128 updates/65,536 training slots and16 validation batches/8,192 validation slots.
+
+The resource probe has8 updates and no global candidate publication. Four same-base BEFORE validation batches can be reused only with matching base/data/template/loss/source/runtime/profile bindings and a persisted finite scalar. A fresh-base final run uses a preregistered resource-only choice from72/48/16 updates and four AFTER batches. It does not resume the probe's weights or choose a model from quality outputs. Dataset/source changes reject before-loss reuse. New-vs-old learning is a bundled recipe change; the loss fix alone is not established as the cause of any quality difference.
+
+```sh
+"$EVE_PY" toolkits/eve-model/train.py --root "$EVE_RUN" --base "$EVE_BASE" --data "$EVE_RUN/training" --updates 8 --profile matched-768-v1 --run-id eve-recovery-probe --candidate-name probe-v1
+# Freeze the resource-only final-update decision before the fresh-base run.
+"$EVE_PY" toolkits/eve-model/train.py --root "$EVE_RUN" --base "$EVE_BASE" --data "$EVE_RUN/training" --updates 48 --profile matched-768-v1 --run-id eve-recovery-final --candidate-name candidate-v1 --reuse-before eve-recovery-probe
+```
+
+`diagnose.mjs` supports a separately frozen raw20-cell system/old-weight diagnostic. It reads the original candidate and compact-system training source without changing their files, charges the new run's diagnostic pool and holds the same full integration user prompt fixed across systems. These single decisions are not Tool-loop task acceptance. The formal comparison retains all20 tasks per arm and its own pool; host initiation is recorded as supporting evidence and does not replace physical Pixel cases.
 
 ## Pixel client route
 

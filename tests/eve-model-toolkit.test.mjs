@@ -12,7 +12,7 @@ void test('Eve model toolkit controls use synthetic data and no model/Pixel',()=
   try{
     for(const [command,args] of [
       ['python3',['-m','unittest','discover','-s','toolkits/eve-model','-p','test_*.py','-v']],
-      [process.execPath,['--test','toolkits/eve-model/test_bridge.mjs']],
+      [process.execPath,['--test','toolkits/eve-model/test_bridge.mjs','toolkits/eve-model/test_integration.mjs']],
     ]){
       const result=spawnSync(command,args,{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:1024*1024,
         env:{...process.env,PYTHONPYCACHEPREFIX:temporary}});

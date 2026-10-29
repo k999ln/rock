@@ -13,6 +13,20 @@ class ProfileTests(unittest.TestCase):
             with self.assertRaises(FileNotFoundError):require_decision(td,p['id'])
             Path(td,'resource-profile-decision.json').write_text(json.dumps({'schema':'eve.resource-profile-decision/1','profileId':p['id'],'status':'adopted','originalStandardGateAccepted':False,'reason':'explicit reduced development profile'}))
             self.assertTrue(require_decision(td,p['id']))
+    def test_matched_profile_and_multi_profile_decision_are_explicit(self):
+        p=profile('matched-768-v1');old=profile('bounded-warning-hypothesis-v1')
+        self.assertEqual((p['maxSequence'],p['numLayers'],p['maxTrainingUpdates'],p['validationBatchesPerStage']),(768,1,72,4))
+        for field in ['rssLimitBytes','metalPeakLimitBytes','mlxGuidelineBytes','minimumAvailableBytes','runtimeAvailableFloorBytes']:
+            self.assertEqual(p[field],old[field])
+        self.assertEqual(old['maxSequence'],512)
+        with tempfile.TemporaryDirectory() as td:
+            path=Path(td,'resource-profile-decision.json')
+            doc={'schema':'eve.resource-profile-decision/2','adoptedProfiles':[old['id'],p['id']],'status':'adopted','originalStandardGateAccepted':False,'reason':'reviewed finite matching-input profile'}
+            path.write_text(json.dumps(doc));self.assertTrue(require_decision(td,p['id']));self.assertTrue(require_decision(td,old['id']))
+            for ids in [[p['id'],p['id']],[{}],['invented']]:
+                path.write_text(json.dumps({**doc,'adoptedProfiles':ids}))
+                with self.assertRaises(ValueError):require_decision(td,p['id'])
+
     def test_pressure_low_available_memory_and_peak_stop(self):
         p=profile('small-memory-v1');base=self.sample();self.assertIsNone(runtime_problem(base,p))
         for change in [{'vmPressureLevel':2},{'vmPressureLevel':4},{'freeInactiveSpeculativeBytes':511*1024**2},{'macOSFreePercent':9},{'diskFreeBytes':11*GIB}]:

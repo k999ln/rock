@@ -1,7 +1,21 @@
 import unittest
-from evaluate import contains,cs_label,validate_judgments,schema_counts
+import json
+import tempfile
+from pathlib import Path
+from evaluate import contains,cs_label,validate_judgments,schema_counts,system_distribution
 
 class EvaluationTests(unittest.TestCase):
+    def test_system_distribution_uses_each_runs_saved_manifest(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            self.assertIn('unavailable',system_distribution(root))
+            (root/'training').mkdir()
+            for description in ['training uses compact Eve SYSTEM; integration uses existing full Zema planner system.',
+                                'none: original integration system and planner prompt including actual past repair observation']:
+                (root/'training'/'manifest.json').write_text(json.dumps({'systemDistributionDifference':description}))
+                self.assertEqual(system_distribution(root),'Saved training manifest system distribution: '+description)
+            (root/'training'/'manifest.json').write_text('{}')
+            self.assertIn('unavailable',system_distribution(root))
     def test_missing_outputs_remain_in_schema_denominator(self):
         self.assertEqual(schema_counts([True,False],4),{'passed':1,'failedVisible':1,'unavailable':2,'allAttemptDenominator':4,'visibleDecisions':2})
         with self.assertRaises(ValueError):schema_counts([True],0)

@@ -1,0 +1,203 @@
+{
+  "schema": "rockstaros.eve-quality-recovery/1",
+  "capturedAtUtc": "2026-10-29T20:11:56.291673+00:00",
+  "scope": "Corrected-loss/full-integration retraining, independent comparison and physical Pixel review completed; model quality FAIL. Source/progress integration and same-SHA CI are tracked separately.",
+  "owner": "O3/ROCK/AI02",
+  "inputMainSha": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+  "priorRun": {
+    "evidence": "docs/evidence/development-execution/eve-mac-five-hour-candidate-progress.json",
+    "snapshotsWeightsLedgerPreserved": true,
+    "toolkitPr": 288,
+    "mainIntegrationSha": "449cd8689e9c480a24e2ef83e78c3b54cbd15963",
+    "sameShaCISucceeded": true,
+    "qualification": "Prior public snapshot retains its write-time pending fields; actual prior Git completion is a separate observed milestone, not old candidate quality acceptance."
+  },
+  "corrections": {
+    "lossId": "eve.assistant-only-exclusive-end/1",
+    "supervisedTokenIndices": "offset <= target_index < real_length; all rows and actual batches checked before compiled optimizer",
+    "input": "Same integration system/user framing as serving;240 train rows and4 selected validation rows retain source facts/gold,768 maximum; no truncation",
+    "maxTrainTokens": 739,
+    "maxSelectedValidationTokens": 686,
+    "resourceProfile": "matched-768-v1",
+    "resourceQualification": "1 last layer/rank4/scale8, warning-admitting experimental profile with unchanged RSS2GiB/Metal1.75GiB/start3.25GiB/runtime-floor2GiB. Original standard4GiB gate not accepted; sampled monitoring, not hard isolation.",
+    "admissionEvidenceFix": "Future run-specific admission uses exclusive creation before query and dump/flush/fsync before child; existing/same-ID race cannot replace evidence. This source-only correction follows the actual training; missing historical probe-start snapshot was not reconstructed."
+  },
+  "candidate": {
+    "id": "eve-recovery-final",
+    "adapterSha256": "35bb0433ea708b2bc5a60d5c9617638515040eed2f696872b9ea1df79cf427b8",
+    "candidateManifestSha256": "0ef1b36117bc69a66a35c64e597232cf62d859efea1405b3ce4edb296ba00e29",
+    "baseModel": "mlx-community/Qwen2.5-1.5B-Instruct-4bit",
+    "baseWeightSha256": "0979f33d1bc58afcf696d13f57977644e7b11a6f0eec3e631d8e9463d18c0717",
+    "freshBaseUpdates": 48,
+    "probeUpdatesSeparate": 8,
+    "sequenceLength": 768,
+    "lastLayers": 1,
+    "rank": 4,
+    "learningRate": 0.0001,
+    "teacherDistillationPerformed": false,
+    "defaultAdopted": false
+  },
+  "accountingAtTrainingCompletion": {
+    "confirmedOptimizerUpdates": 56,
+    "chargedTrainingWallSeconds": 65.52848104199802,
+    "chargedTrainingTokenSlots": 43008,
+    "validationBatches": 8,
+    "validationTokenSlots": 6144,
+    "teacherCalls": 0,
+    "diagnosticCalls": 20,
+    "scope": "Captured training-completion ledger; later comparison/Pixel counters are separate and not inferred from this snapshot."
+  },
+  "validation": {
+    "beforeLoss": 1.27980637550354,
+    "afterLoss": 0.5197728276252747,
+    "beforeBatches": 4,
+    "afterBatches": 4,
+    "qualification": "Same four selected validation rows, base-before execution reused by exact binding; does not establish task quality or generalization."
+  },
+  "comparison": {
+    "plannedTasksPerArm": 20,
+    "A": {
+      "acceptedTransportRuns": 1,
+      "semanticTaskComplete": 0,
+      "contentCorrectSupported": 1,
+      "semanticUnavailable": 19,
+      "strictSchemaPassed": 2,
+      "generationAttemptDenominator": 21
+    },
+    "C": {
+      "acceptedTransportRuns": 4,
+      "semanticTaskComplete": 1,
+      "contentCorrectSupported": 1,
+      "wrongOrUnsupportedAcceptedAnswers": 3,
+      "semanticUnavailable": 16,
+      "strictSchemaPassed": 4,
+      "generationAttemptDenominator": 20
+    },
+    "allComparisonGenerationAttempts": 41,
+    "backendUntilJournalFinishP95Seconds": {
+      "A": 6.364,
+      "C": 17.086
+    },
+    "latencyQualification": "Backend journal finish, not full-Pixel interaction latency. Failed tasks remain in planned denominators.",
+    "independentMeaningJudgment": true,
+    "qualityVerdict": "FAIL",
+    "retentionEvaluated": false,
+    "sealedEvaluationExecuted": false,
+    "comparisonSummarySha256": "81d3fac0bb21de8e1157c4bab9a7d6d94e651aafb2b63e44aef523891c3342a9"
+  },
+  "independentReviews": {
+    "protocol-initial-review.json": {
+      "sha256": "4ebb75291d914af2bbfed29aa05297725ffd279e458c70debcd1157d5ae97f3e",
+      "verdict": "PASS_PROTOCOL_DATA_SCOPED_PENDING_RUNTIME_SOURCE_REVIEW"
+    },
+    "runtime-preexecution-review.json": {
+      "sha256": "49718f5d0eba97385b7d5989ca37eacbb7949a1b3fb0386a85a15b5d844aadbd",
+      "verdict": "PASS_SCOPED_SOURCE_CPU_PREEXECUTION"
+    },
+    "candidate-review.json": {
+      "sha256": "029386f761eafbe2eb0d6e2fb7f889180dca71eba412fd86d90f3222f6223ce3",
+      "verdict": "PASS_SCOPED_TRAINED_ARTIFACT_AND_ACCOUNTING"
+    },
+    "admission-fix-review-v2.json": {
+      "sha256": "85ff3896023e7098e8084cccf6d0f436244b0eaa469761c3e0867ff5416c154c",
+      "verdict": "PASS_SCOPED_SOURCE_CPU"
+    },
+    "final-source-independent-review.json": {
+      "sha256": "fbc6c50087d15bdfc743138f61d224cbdf0c3dd6b6f1ddb28a566b722bf98df6",
+      "verdict": {
+        "sourceSafety": "PASS_SCOPED_NO_OPEN_P1_P2_FOUND",
+        "candidateArtifact": "PASS_SCOPED_PREVIOUS_CPU_REVIEW_RETAINED",
+        "modelQuality": "FAIL",
+        "physicalPixel": "PENDING_SEPARATE_REVIEW",
+        "nativeInference": "NOT_RUN",
+        "releaseOrProductionAcceptance": false
+      }
+    },
+    "pixel-semantic-review.json": {
+      "sha256": "581e7c911b0b7a8f3dd0c5621cbfeef11906c46294080f61e92ce61d675a1d00",
+      "verdict": "FINAL_SCOPED_SEMANTIC_REVIEW_COMPLETE"
+    },
+    "pixel-final-independent-review.json": {
+      "sha256": "6d1848d8ea1c8ad44bafdf855601dc9e82e53f3ad4e54ccef7b40dcfb830f77f",
+      "verdict": {
+        "physicalEvidenceReview": "COMPLETE_SCOPED",
+        "wholePixelAcceptance": "FAIL",
+        "modelQuality": "FAIL",
+        "sourceSafety": "NO_NEW_BLOCKING_P1_P2_IDENTIFIED_IN_REVIEWED_EVIDENCE",
+        "nativeInferenceAccepted": false,
+        "productionAccountOrNativeOsAcceptance": false
+      }
+    }
+  },
+  "pixel": {
+    "status": "SCOPED_TEST_AND_INDEPENDENT_SEMANTIC_REVIEW_COMPLETE_QUALITY_FAIL",
+    "placement": "Physical Pixel client through owned USB localhost to Mac MLX",
+    "adapterSha256": "35bb0433ea708b2bc5a60d5c9617638515040eed2f696872b9ea1df79cf427b8",
+    "uniqueJournalJobs": 13,
+    "primaryQualityAttempts": 8,
+    "primarySemanticTaskComplete": 0,
+    "separateControlJobs": 5,
+    "cancelledStopControls": 2,
+    "lateOutputRejected": true,
+    "lostResponseAcceptedUnknown": 1,
+    "syntheticUnavailableModelCalls": 0,
+    "recoveryAcceptedUnknown": 1,
+    "oversizeModelCalls": 0,
+    "doubleTapOperations": 1,
+    "reloadSameJobResultPreserved": true,
+    "wholePixelAccepted": false,
+    "nativeInferenceAccepted": false,
+    "cleanup": {
+      "serverGracefullyExited": true,
+      "modelChildren": 0,
+      "listenerRemaining": false,
+      "ownedUsbMappingRemoved": true,
+      "osLeaseReturned": true,
+      "testTabsCloseVerified": false,
+      "multipleTabCleanupAutomaticReviewRejected": true,
+      "remainingTestTabsLeftUntouched": true
+    },
+    "notVerified": [
+      "phone interaction P95",
+      "owner A/B comparison",
+      "P07 max-three-repair boundary"
+    ],
+    "manualResumption": "One independently reviewed manual resumption after pre-start resource rejection; original failure retained; same candidate/profile and remaining budget.",
+    "physicalEvidenceReview": "COMPLETE_SCOPED",
+    "controlEvidenceQualification": "P08-P10 scoped controls include post-run owner tap attestation; no phone end-to-end latency or owner A/B acceptance."
+  },
+  "verification": {
+    "finalSourceIndependentReview": "PASS_SCOPED_NO_OPEN_P1_P2_FOUND",
+    "finalFullVerify": {
+      "exitCode": 0,
+      "mainTests": 3507,
+      "pass": 3503,
+      "fail": 0,
+      "skip": 4,
+      "logSha256": "3d04ca5a40c583da77809f4b77639c8387ac62d822f1221feed2a437a2292b2b",
+      "scope": "Reviewed final source plus completed result metadata; later verification-result fields receive lightweight metadata checks."
+    },
+    "gitSaved": false,
+    "mainIntegrated": false,
+    "sameShaCI": "pending",
+    "deploymentPerformed": false,
+    "gitStatusQualification": "Git flags describe this precommit evidence snapshot. Subsequent PR/main/same-merge-SHA checks are recorded in the final Git receipt and GitHub; no self-referential evidence commit chain."
+  },
+  "wholeAI02Complete": false,
+  "productionAccepted": false,
+  "next": "Candidate quality remains FAIL/default nonadoption; improve task completion and independently test unverified Pixel boundaries in future AI02 work. Complete PR/main/same-SHA CI for this reviewed source snapshot.",
+  "sessionFinalAccounting": {
+    "confirmedOptimizerUpdates": 56,
+    "chargedTrainingWallSeconds": 65.52848104199802,
+    "trainingSequenceSlots": 43008,
+    "validationBatches": 8,
+    "validationSequenceSlots": 6144,
+    "generationAttempts": 72,
+    "diagnosticAttempts": 20,
+    "comparisonAttempts": 41,
+    "pixelAttempts": 11,
+    "requestedOutputTokens": 18432,
+    "pixelCompletedOutputAttempts": 10,
+    "pixelUnknownAttemptsConservativelyCharged": 1
+  }
+}

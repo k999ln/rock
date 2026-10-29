@@ -16,9 +16,10 @@ from profiles import profile,require_decision,worker_failure
 from watchdog import start_watchdog
 from model_output import allowed_output
 
-def run(root,base):
+def run(root,base,candidate_root=None):
     os.environ.update(OFFLINE)
-    candidate=json.loads((root/'candidate-manifest.json').read_text())
+    candidate_root=candidate_root or root
+    candidate=json.loads((candidate_root/'candidate-manifest.json').read_text())
     policy=profile(candidate['memoryProfile']['id'])
     if candidate['memoryProfile']!=policy: raise ValueError('candidate resource profile mismatch')
     require_decision(root,policy['id'])
@@ -31,11 +32,11 @@ def run(root,base):
     budget=Budget(root); identity=base_identity(base)
     if candidate['base']!=identity: raise ValueError('candidate/base mismatch')
     if not re.fullmatch(r'candidate-v[12]',candidate.get('adapterDirectory','')):raise ValueError('invalid fixed candidate directory')
-    adapter=root/candidate['adapterDirectory']
+    adapter=candidate_root/candidate['adapterDirectory']
     if sha(adapter/'adapters.safetensors')!=candidate['adapterSha256'] or sha(adapter/'adapter_config.json')!=candidate['adapterConfigSha256']:
         raise ValueError('candidate adapter changed')
     binding={'baseSha256':identity['files']['model.safetensors'],'adapterSha256':candidate['adapterSha256'],
-      'tokenizerSha256':identity['files']['tokenizer.json'],'candidateManifestSha256':sha(root/'candidate-manifest.json')}
+      'tokenizerSha256':identity['files']['tokenizer.json'],'candidateManifestSha256':sha(candidate_root/'candidate-manifest.json')}
     model=tokenizer=None; loaded=None
     mx.set_memory_limit(policy['mlxGuidelineBytes']);mx.set_cache_limit(policy['cacheLimitBytes'])
     print(canonical({'ready':True,'binding':binding}),flush=True)
@@ -87,4 +88,5 @@ def run(root,base):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--base',type=Path,required=True)
-    a=p.parse_args();run(a.root,a.base)
+    p.add_argument('--candidate-root',type=Path)
+    a=p.parse_args();run(a.root,a.base,a.candidate_root)
