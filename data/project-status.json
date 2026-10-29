@@ -3,7 +3,7 @@
     "owner": "ROCK",
     "status": "main_integrated_startup_fix_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
-    "next": "Investigate prior Chrome startup root cause if it recurs; physical device and production authority remain separate.",
+    "next": "Review navigation-event synchronization candidate after evidence PR browser CDP failure; confirm exact-head CI. Prior Chrome failures and root cause remain recorded.",
     "pullRequest": 283,
     "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
     "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb",

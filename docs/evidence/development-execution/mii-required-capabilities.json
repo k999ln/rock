@@ -28,5 +28,12 @@
     "priorHeadVerify": "GitHub run 40855431016 job 123385072910 passed; both Linux browser cases ran; no causal proof of startup root cause",
     "logSha256": "61054a94a3484d0ed8baf7f1ce0e92462097f308c628b7812360c7077ef44ec0",
     "next": "Recheck metadata-updated exact head and independently review before merge."
+  },
+  "evidencePrFailure": "PR 285 head e0935500 verify failed: local-authority browser CDP reported Inspected target navigated or closed; unavailable-authority browser passed. No root cause established.",
+  "navigationCandidate": {
+    "testSha256": "ac228bdd4b8db8d0477099681f5a9d3c65a33bc63022bb9bba7fe9f5dcf237b0",
+    "scope": "Wait for a changed top-frame loader and matching lifecycle load on explicitly requested reload/navigate; bound command and load together, check navigate response; no automatic replay of user input or execution.",
+    "state": "unverified; CI and independent review pending",
+    "review": "Independent review identified unhandled timeout and non-specific load-event risks; candidate revised, re-review and CI pending."
   }
 }
