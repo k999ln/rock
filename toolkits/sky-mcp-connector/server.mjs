@@ -855,6 +855,10 @@ export class McpHub {
     this.approvals.set(nonce, { payloadDigest, expiresAt, used: false });
     return {
       approvalToken: token,
+      executionContext: { schema: 'rockstaros.mcp-approval-context/1', connectorId: id, toolName: name,
+        transport: entry.spec.transport, toolDigest: entry.passport.toolDigest,
+        inputSha256: createHash('sha256').update(JSON.stringify(args)).digest('hex'), payloadDigest, expiresAt,
+        pricing: { ...tool.pricing, declaration: 'provider_unverified' } },
       expiresAt: new Date(expiresAt).toISOString(),
       server: entry.spec.name,
       tool: tool.title || tool.name,
@@ -902,11 +906,20 @@ export class McpHub {
       method: 'tools/call', params: { name, arguments: args },
     });
     approval.used = true;
+    const connectionAttempt = entry.connectionAttempt;
     try {
       // Job-bound operations must obtain their one-use authority at the sink,
       // after validating the connector approval and before calling the Tool.
+      const executionContext = { schema: 'rockstaros.mcp-approval-context/1', connectorId: id, toolName: name,
+        transport: entry.spec.transport, toolDigest: entry.passport.toolDigest,
+        inputSha256: createHash('sha256').update(JSON.stringify(args)).digest('hex'), payloadDigest, expiresAt: approval.expiresAt,
+        pricing: { ...tool.pricing, declaration: 'provider_unverified' } };
       if (beforeCall) await beforeCall({ transport: entry.spec.transport,
-        inputSchemaSha256: digest(tool.inputSchema), outputSchemaSha256: digest(tool.outputSchema) });
+        inputSchemaSha256: digest(tool.inputSchema), outputSchemaSha256: digest(tool.outputSchema), executionContext });
+      const current = this.entry(id);
+      if (Date.now() > approval.expiresAt || current !== entry || current.connectionAttempt !== connectionAttempt || current.state !== 'connected' ||
+          current.passport?.toolDigest !== executionContext.toolDigest || current.spec.transport !== executionContext.transport)
+        fail('承認後にToolまたは期限が変わりました。再送せず照合してください。', 409, 'approval_mismatch');
       return await this.rpc(
         id,
         'tools/call',
@@ -935,9 +948,10 @@ async function claimJobOperation(origin, gate, connectorId, toolName, args, tool
   if (!(url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname))) ||
       url.username || url.password || url.pathname !== '/' || url.search || url.hash ||
       !gate || typeof gate !== 'object' || Array.isArray(gate) ||
-      Object.keys(gate).sort().join(',') !== 'agentId,agentRevision,attemptId,jobId,ownerScope,token' ||
+      !['agentId,agentRevision,attemptId,jobId,ownerScope,token', 'agentId,agentRevision,attemptId,executionReviewDigest,jobId,ownerScope,token'].includes(Object.keys(gate).sort().join(',')) ||
       !['agentId', 'attemptId', 'jobId', 'ownerScope', 'token'].every(key => typeof gate[key] === 'string' && gate[key].length > 0 && gate[key].length <= 256) ||
-      !Number.isSafeInteger(gate.agentRevision) || gate.agentRevision < 1)
+      !Number.isSafeInteger(gate.agentRevision) || gate.agentRevision < 1 ||
+      (gate.executionReviewDigest !== undefined && !/^[a-f0-9]{64}$/.test(gate.executionReviewDigest)))
     fail('仕事の実行許可を確認できません。', 403, 'job_claim_invalid');
   const inputSha256 = createHash('sha256').update(JSON.stringify(args)).digest('hex');
   let result;
@@ -945,7 +959,9 @@ async function claimJobOperation(origin, gate, connectorId, toolName, args, tool
     const response = await fetch(new URL('/api/work-jobs/tool-observations/claim', url), {
       method: 'POST', redirect: 'error', signal: AbortSignal.timeout(10_000),
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ ...gate, connectorId, toolName, inputSha256, ...toolContract }),
+      body: JSON.stringify({ ...gate, connectorId, toolName, inputSha256,
+        transport: toolContract.transport, inputSchemaSha256: toolContract.inputSchemaSha256, outputSchemaSha256: toolContract.outputSchemaSha256,
+        ...(gate.executionReviewDigest ? { executionContext: toolContract.executionContext } : {}) }),
     });
     if (!response.ok || !response.body) throw new Error('claim rejected');
     const reader = response.body.getReader(); let size = 0; const chunks = [];
@@ -957,9 +973,11 @@ async function claimJobOperation(origin, gate, connectorId, toolName, args, tool
     result = JSON.parse(Buffer.concat(chunks).toString('utf8'));
   } catch { fail('仕事の実行許可を確認できません。再送せず状態を照合してください。', 409, 'job_claim_unknown'); }
   if (!result || result.claimed !== true || result.jobId !== gate.jobId || result.attemptId !== gate.attemptId ||
-      result.inputSha256 !== inputSha256 || !Number.isSafeInteger(result.jobRevision) || result.jobRevision < 1)
+      result.inputSha256 !== inputSha256 || !Number.isSafeInteger(result.jobRevision) || result.jobRevision < 1 ||
+      (gate.executionReviewDigest !== undefined && result.executionReviewDigest !== gate.executionReviewDigest))
     fail('仕事の実行許可が一致しません。', 409, 'job_claim_mismatch');
-  return { jobId: result.jobId, attemptId: result.attemptId, inputSha256, jobRevision: result.jobRevision };
+  return { jobId: result.jobId, attemptId: result.attemptId, inputSha256, jobRevision: result.jobRevision,
+    ...(gate.executionReviewDigest ? { executionReviewDigest: result.executionReviewDigest } : {}) };
 }
 
 async function body(request) {

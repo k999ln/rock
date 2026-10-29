@@ -94,6 +94,28 @@
       ],
       "evidence": "docs/evidence/development-execution/smith-schema-confirmation.json",
       "scope": "local user review of declarations; no inference or execution grant"
+    },
+    "executionReviewHistory": {
+      "serviceContract": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "implementation": [
+        "lib/workflow.ts",
+        "components/agent-tool-job-runner.tsx",
+        "components/mcp-bot-runner.tsx",
+        "components/workbench.tsx",
+        "app/api/work-jobs/tool-observations/route.ts",
+        "app/api/work-jobs/tool-observations/claim/route.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "lib/sky-owner-export.ts"
+      ],
+      "tests": [
+        "tests/work-tool-execution-review-required.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/work-tool-observations-route.test.mjs",
+        "tests/mcp-job-claim-connector.test.mjs",
+        "tests/sky-owner-export.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/execution-review-history.json",
+      "scope": "synthetic preview, existing one-time authority, no verified billing or physical acceptance"
     }
   },
   "latestRockstarOsDesign": {

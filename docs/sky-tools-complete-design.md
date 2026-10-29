@@ -344,6 +344,8 @@ Eveの担当設定に、本人が編集する必要入力・成果・Package・�
 
 実行時は対象Agent/job/入力/Toolの版を記録し、一回だけ本人承認を受ける。Connectorは実際のschema digest・free申告・transportと仕事側の短命claimを照合する。停止がclaimに先行した場合は実行を拒否し、claimが先の場合は停止未確認として扱う。結果は同じ仕事のclient観測として保存し、Tool成功のreceiptや費用確定に置き換えない。`toolkits/sky-tool-sdk/examples/line-counter.mjs`の二つの決定的処理はSDK追加例で、catalog審査や一般Toolの安全性の証拠ではない。
 
+作成時確認付き新jobは、本人・担当版・Package・Connector承認・Tool/入力digestと提供者の未検証料金申告を実行直前のsnapshotとして既存attemptへ保存し、beginとclaimで照合する。元の作成時確認は変更せず、差分は履歴と本人exportで表示する。旧jobは旧形式を維持して未記録と扱い、新jobでは旧形式による省略を拒否する。snapshotは権限・料金確定・Tool成功の証明ではない。[証拠](evidence/development-execution/execution-review-history.json)。
+
 miiからの合成文章も同じrunnerへ渡し、観測だけでprepare・本人承認・claimを省略しない。入力や実行先の変更時に旧runnerの非同期処理も世代照合で拒否する。既に送信済みの処理は同じjobへ照合し、物理停止とは区別する。
 
 <a id="work-tool-package-authority-fixture"></a>

@@ -118,3 +118,34 @@ void test('client-observed Tool output remains exact, independently unverified a
   assert.equal(saved[0].secret, undefined); assert.match(manifest.warnings.join(' '), /独立検証されていません/);
   assert.doesNotMatch(html, /<image|not-exported-extra/);
 });
+
+void test('execution conditions export separately, preserve missing legacy and never export claim secrets', async () => {
+  const { workToolExecutionReviewDigest } = await import('../lib/workflow.ts');
+  const input = fixture(), job = input.job;
+  job.revision = 2;
+  job.agentBinding = { schema: 'rockstaros.work-agent-binding/1', agentId: 'fixture-agent', agentRevision: 1, requestDigest: 'c'.repeat(64) };
+  const review = { schema: 'rockstaros.work-tool-execution-review/1', ownerScope: 'owner-v1:' + 'a'.repeat(64),
+    jobId: job.id, jobRevision: 0, agentId: 'fixture-agent', agentRevision: 1, packageKey: 'dev.fixture.counter@1.0.0', manifestSha256: 'b'.repeat(64),
+    packagePricing: { model: 'free', note: 'Package provider claim', declaration: 'provider_unverified' },
+    approvalContext: { schema: 'rockstaros.mcp-approval-context/1', connectorId: 'fixture', toolName: 'count', transport: 'stdio',
+      toolDigest: 'd'.repeat(64), inputSha256: 'e'.repeat(64), payloadDigest: 'f'.repeat(64), expiresAt: 1,
+      pricing: { model: 'free', note: 'Tool provider claim', declaration: 'provider_unverified' } } };
+  const attempt = { schema: 'rockstaros.work-tool-attempt/1', id: 'a2222222-2222-4222-8222-222222222222',
+    packageKey: review.packageKey, manifestSha256: review.manifestSha256, connectorId:'fixture', toolName:'count',
+    inputSha256: 'e'.repeat(64), state:'claimed', startedAt:'2026-10-18T12:00:00Z', capabilityHash:'never-export-capability-hash',
+    executionReview: review, executionReviewDigest: await workToolExecutionReviewDigest(review),
+    creationRelation: { state:'not_recorded', changedFields:[], creationRequestDigest:'c'.repeat(64) } };
+  job.toolAttempts = [attempt];
+  const exported = await buildSkyOwnerExport(input);
+  const records = JSON.parse(file(exported.html, 'tool-execution-reviews.json'));
+  assert.equal(records.creation, null); assert.equal(records.attempts[0].record,'client_confirmed_provider_declared');
+  assert.deepEqual(records.attempts[0].review, review); // expired history remains readable
+  assert.doesNotMatch(exported.html, /never-export-capability-hash/);
+  attempt.executionReview.approvalContext.pricing.note = 'tampered';
+  await assert.rejects(buildSkyOwnerExport(input), error => error.code === 'INVALID_ARTIFACT');
+  delete attempt.executionReview; delete attempt.executionReviewDigest; delete attempt.creationRelation;
+  const legacy = JSON.parse(file((await buildSkyOwnerExport(input)).html, 'tool-execution-reviews.json'));
+  assert.equal(legacy.attempts[0].record, 'not_recorded'); assert.equal(legacy.attempts[0].review, null);
+  attempt.creationRelation = { state:'unchanged', changedFields:[], creationRequestDigest:'c'.repeat(64) };
+  await assert.rejects(buildSkyOwnerExport(input), error => error.code === 'INVALID_ARTIFACT');
+});

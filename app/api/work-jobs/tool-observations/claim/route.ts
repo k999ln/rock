@@ -5,7 +5,7 @@ import { readBoundedStream } from '@/lib/bounded-stream';
 import { ownerScopeFor, readOwnerScope } from '@/lib/owner-intent';
 import { database } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
-import { objectInput, workId, workToolCapabilityHash } from '@/lib/workflow';
+import { parseWorkToolApprovalContext, parseWorkToolExecutionReview, workToolExecutionReviewDigest, workToolCreationRelation, objectInput, workId, workToolCapabilityHash } from '@/lib/workflow';
 
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
 const deny = () => json({ error: '実行状態を確認できません。' }, 403);
@@ -25,8 +25,10 @@ export async function POST(request: Request) {
     if (!reader) return deny();
     const bytes = await readBoundedStream(reader, 4096, () => new Error('INVALID_CLAIM'));
     const input = objectInput(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)) as unknown,
-      ['jobId', 'attemptId', 'agentId', 'agentRevision', 'ownerScope', 'inputSha256', 'connectorId', 'toolName', 'token', 'inputSchemaSha256', 'outputSchemaSha256', 'transport']);
-    if (Object.keys(input).length !== 12 ||
+      ['jobId', 'attemptId', 'agentId', 'agentRevision', 'ownerScope', 'inputSha256', 'connectorId', 'toolName', 'token', 'inputSchemaSha256', 'outputSchemaSha256', 'transport', 'executionReviewDigest', 'executionContext']);
+    const hasReview = Object.hasOwn(input, 'executionReviewDigest') || Object.hasOwn(input, 'executionContext');
+    if ((Object.keys(input).length !== (hasReview ? 14 : 12)) ||
+        (hasReview && (typeof input.executionReviewDigest !== 'string' || !/^[a-f0-9]{64}$/.test(input.executionReviewDigest))) ||
         typeof input.inputSchemaSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(input.inputSchemaSha256) ||
         typeof input.outputSchemaSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(input.outputSchemaSha256) ||
         !['stdio', 'local_http'].includes(String(input.transport)) || typeof input.agentId !== 'string' ||
@@ -50,15 +52,28 @@ export async function POST(request: Request) {
         target.inputSha256 !== input.inputSha256 || target.connectorId !== input.connectorId || target.toolName !== input.toolName ||
         typeof target.capabilityHash !== 'string' || !Number.isSafeInteger(target.capabilityExpiresAt) ||
         Number(target.capabilityExpiresAt) <= Date.now()) return deny();
+    const targetHasReview = Object.hasOwn(target, 'executionReview') || Object.hasOwn(target, 'executionReviewDigest') || Object.hasOwn(target, 'creationRelation');
+    if (targetHasReview !== hasReview || (Object.hasOwn(binding, 'creationReview') && !hasReview)) return deny();
+    const review = hasReview ? parseWorkToolExecutionReview(target.executionReview) : undefined;
+    const executionDigest = review ? await workToolExecutionReviewDigest(review) : undefined;
+    if (review && (executionDigest !== target.executionReviewDigest || executionDigest !== input.executionReviewDigest ||
+        review.ownerScope !== input.ownerScope || review.jobId !== jobId || review.jobRevision + 1 !== current.revision ||
+        review.agentId !== binding.agentId || review.agentRevision !== binding.agentRevision ||
+        review.packageKey !== target.packageKey || review.manifestSha256 !== target.manifestSha256 ||
+        review.approvalContext.connectorId !== target.connectorId || review.approvalContext.toolName !== target.toolName ||
+        review.approvalContext.inputSha256 !== target.inputSha256 || review.approvalContext.transport !== input.transport ||
+        review.approvalContext.expiresAt <= Date.now() ||
+        JSON.stringify(parseWorkToolApprovalContext(input.executionContext)) !== JSON.stringify(review.approvalContext) ||
+        JSON.stringify(target.creationRelation) !== JSON.stringify(workToolCreationRelation(binding, review)))) return deny();
     const expected = await workToolCapabilityHash({ owner: ownerRow.owner, jobId, attemptId,
-      inputSha256: input.inputSha256, expiresAt: target.capabilityExpiresAt!, token: input.token });
+      inputSha256: input.inputSha256, expiresAt: target.capabilityExpiresAt!, token: input.token, executionReviewDigest: executionDigest });
     if (!equalDigest(expected, target.capabilityHash)) return deny();
     const packageRow = await db.prepare('SELECT manifest FROM sky_tool_packages WHERE package_key = ? AND manifest_sha256 = ? AND status = ?')
       .bind(target.packageKey, target.manifestSha256, 'verified').first<{ manifest: string }>();
     if (!packageRow || typeof packageRow.manifest !== 'string') return deny();
     const manifest = parseSkyToolPackage(JSON.parse(packageRow.manifest));
     if (skyToolPackageKey(manifest) !== target.packageKey || await skyToolPackageSha256(manifest) !== target.manifestSha256 ||
-        manifest.pricing.model !== 'free' || !manifest.capabilities.executionTargets.includes('pc') ||
+        manifest.pricing.model !== 'free' || (review && manifest.pricing.note !== review.packagePricing.note) || !manifest.capabilities.executionTargets.includes('pc') ||
         !((manifest.adapter.connectionType === 'mcp_stdio' && input.transport === 'stdio') ||
           (manifest.adapter.connectionType === 'mcp_streamable_http' && input.transport === 'local_http')) ||
         await skyPackageSchemaSha256(manifest.io.inputSchema) !== input.inputSchemaSha256 ||
@@ -80,10 +95,17 @@ export async function POST(request: Request) {
         AND EXISTS (SELECT 1 FROM sky_tool_packages p WHERE p.package_key = ? AND p.manifest_sha256 = ? AND p.manifest = ? AND p.status = 'verified'
           AND EXISTS (SELECT 1 FROM sky_tool_package_reviews r WHERE r.package_key = p.package_key
             AND r.manifest_sha256 = p.manifest_sha256 AND r.decision = 'verified'
-            AND (r.expires_at IS NULL OR r.expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))))`)
+            AND (r.expires_at IS NULL OR r.expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))))
+        ${!review ? `AND json_type(payload, '$.agentBinding.creationReview') IS NULL` : ''}
+        ${review ? `AND payload = ? AND EXISTS (SELECT 1 FROM json_each(work_jobs.payload, '$.toolAttempts') a
+          WHERE json_extract(a.value, '$.id') = ? AND json_extract(a.value, '$.state') = 'pending'
+            AND json_extract(a.value, '$.executionReviewDigest') = ?
+            AND json_extract(a.value, '$.executionReview') = json(?)
+            AND json_extract(a.value, '$.creationRelation') = json(?))` : ''}`)
       .bind(JSON.stringify(next), next.revision, next.updatedAt, jobId, ownerRow.owner, current.revision,
-        target.capabilityExpiresAt, ownerRow.owner, binding.agentId, binding.agentRevision, target.packageKey, target.packageKey, target.manifestSha256, packageRow.manifest).run();
+        target.capabilityExpiresAt, ownerRow.owner, binding.agentId, binding.agentRevision, target.packageKey, target.packageKey, target.manifestSha256, packageRow.manifest,
+        ...(review ? [JSON.stringify(current), target.id, executionDigest!, JSON.stringify(review), JSON.stringify(target.creationRelation)] : [])).run();
     if (update.meta.changes !== 1) return deny();
-    return json({ claimed: true, jobId, attemptId, inputSha256: input.inputSha256, jobRevision: next.revision });
+    return json({ claimed: true, jobId, attemptId, inputSha256: input.inputSha256, jobRevision: next.revision, ...(review ? { executionReviewDigest: executionDigest } : {}) });
   } catch { return deny(); }
 }

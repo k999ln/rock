@@ -1,5 +1,6 @@
 'use client';
 
+import { parseWorkToolApprovalContext, parseWorkToolExecutionReview, workToolCreationRelation, type WorkAgentBinding, type WorkToolApprovalContext } from '@/lib/workflow';
 import { useMemo, useRef, useState } from 'react';
 import {
   CheckCircle2,
@@ -86,6 +87,10 @@ function argsFor(tool: McpToolPassport | undefined, request: string) {
   return JSON.stringify(args, null, 2);
 }
 
+function requireLiveExecutionReview(review: ReturnType<typeof parseWorkToolExecutionReview> | undefined) {
+  if (review && review.approvalContext.expiresAt <= Date.now()) throw new Error('実行確認が失効しました。');
+}
+
 export function McpBotRunner({
   server,
   request,
@@ -98,6 +103,7 @@ export function McpBotRunner({
   fixedToolName,
   executionDisabled = false,
   onCreationReview,
+  executionDisclosure,
 }: {
   server: McpConnection;
   request: string;
@@ -105,10 +111,12 @@ export function McpBotRunner({
   onStatusChange?: (status: ParentRunState) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onDisconnected?: () => void;
-  beforeExecute?: (input: { serverId: string; toolName: string; args: Record<string, unknown> }) => Promise<McpJobGate | void>;
+  beforeExecute?: (input: { serverId: string; toolName: string; args: Record<string, unknown>; executionReview?: ReturnType<typeof parseWorkToolExecutionReview> }) => Promise<McpJobGate | void>;
   onJobClaim?: (claim: McpJobClaim) => void;
   fixedToolName?: string;
   executionDisabled?: boolean;
+  executionDisclosure?: { ownerScope: string; jobId: string; jobRevision: number; agentId: string; agentRevision: number;
+    packageKey: string; manifestSha256: string; packagePricingNote: string; binding?: WorkAgentBinding };
   /** Disclosure only: never call tools/execute in this mode or reuse its approval. */
   onCreationReview?: (input: { args: Record<string, unknown>; pricingNote: string } | null) => Promise<void> | void;
 }) {
@@ -124,15 +132,34 @@ export function McpBotRunner({
   );
   const [direction, setDirection] = useState(request);
   const [argsText, setArgsText] = useState(() => argsFor(initialTool, request));
-  const [approval, setApproval] = useState<McpApproval | null>(null);
+  const [approval, setApproval] = useState<(McpApproval & { executionReview?: ReturnType<typeof parseWorkToolExecutionReview> }) | null>(null);
   const [state, setState] = useState<RunState>('ready');
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
   const [disconnecting, setDisconnecting] = useState(false);
   const executionInFlight = useRef(false);
+  const inputGeneration = useRef(0);
+  function reviewFor(context: WorkToolApprovalContext) {
+    if (!executionDisclosure || context.connectorId !== server.id || context.toolName !== selectedTool?.name ||
+        context.toolDigest !== server.passport?.toolDigest || context.transport !== server.transport ||
+        context.pricing.note !== selectedTool.pricing.note) throw new Error('実行条件が変わりました。再確認してください。');
+    const { binding: _binding, packagePricingNote, ...target } = executionDisclosure;
+    return parseWorkToolExecutionReview({ schema: 'rockstaros.work-tool-execution-review/1', ...target,
+      packagePricing: { model: 'free', note: packagePricingNote, declaration: 'provider_unverified' }, approvalContext: context });
+  }
+  const preparedReview = (() => {
+    if (!approval?.executionContext || !approval.executionReview || !executionDisclosure) return null;
+    try {
+      const pinned = parseWorkToolExecutionReview(approval.executionReview);
+      const current = reviewFor(parseWorkToolApprovalContext(approval.executionContext));
+      return JSON.stringify(pinned) === JSON.stringify(current) ? pinned : null;
+    } catch { return null; }
+  })();
+  const originRelation = preparedReview ? workToolCreationRelation(executionDisclosure?.binding, preparedReview) : null;
   const directExecutionAllowed = selectedTool?.pricing.model === 'free';
 
   function changeTool(value: string) {
+    inputGeneration.current++;
     const next = tools.find((tool) => tool.name === value);
     void onCreationReview?.(null);
     setToolName(value);
@@ -144,6 +171,7 @@ export function McpBotRunner({
   }
 
   function applyDirection() {
+    inputGeneration.current++;
     void onCreationReview?.(null);
     setArgsText(argsFor(selectedTool, direction));
     setApproval(null);
@@ -168,13 +196,26 @@ export function McpBotRunner({
     if (!selectedTool) return;
     setError('');
     setResult('');
+    const generation = inputGeneration.current;
     try {
+      const args = parseArgs();
       const next = await prepareMcpTool(
         server.id,
         selectedTool.name,
-        parseArgs(),
+        args,
       );
-      setApproval(next);
+      let executionReview: ReturnType<typeof parseWorkToolExecutionReview> | undefined;
+      if (executionDisclosure) {
+        const context = parseWorkToolApprovalContext(next.executionContext);
+        executionReview = reviewFor(context);
+        const inputHash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(args))))]
+          .map(byte => byte.toString(16).padStart(2, '0')).join('');
+        if (context.inputSha256 !== inputHash || context.expiresAt <= Date.now() ||
+            Date.parse(next.expiresAt) !== context.expiresAt) throw new Error('実行確認の入力・期限を照合できません。');
+        next.executionContext = context;
+      }
+      if (inputGeneration.current !== generation) throw new Error('確認中に入力が変わりました。');
+      setApproval({ ...next, ...(executionReview ? { executionReview } : {}) });
       setState('approval');
       onStatusChange?.('ready');
     } catch (reason) {
@@ -206,6 +247,9 @@ export function McpBotRunner({
   async function execute() {
     if (onCreationReview) return;
     if (!selectedTool || !approval || state === 'running' || executionInFlight.current) return;
+    if (executionDisclosure && !preparedReview) { setError('実行確認を照合できません。Connectorを読み直してください。'); return; }
+    const generation = inputGeneration.current;
+    const executionReview = preparedReview ?? undefined;
     executionInFlight.current = true;
     setError('');
     setState('running');
@@ -215,7 +259,11 @@ export function McpBotRunner({
       // Pin the exact input before the durable job-admission hook. Editing while
       // that hook waits must not change the input covered by the approval.
       const args = parseArgs();
-      const jobGate = await beforeExecute?.({ serverId: server.id, toolName: selectedTool.name, args });
+      requireLiveExecutionReview(executionReview);
+      const jobGate = await beforeExecute?.({ serverId: server.id, toolName: selectedTool.name, args, executionReview });
+      requireLiveExecutionReview(executionReview);
+      if (generation !== inputGeneration.current)
+        throw new Error('確認後に入力または期限が変わりました。再送せず照合してください。');
       if (beforeExecute && !jobGate) throw new Error('仕事の実行許可を確認できません。');
       const value = await executeApprovedMcpTool(
         server.id,
@@ -310,7 +358,7 @@ export function McpBotRunner({
             disabled={state === 'running'}
             maxLength={4000}
             value={direction}
-            onChange={(event) => { if (onCreationReview) { void onCreationReview(null); setApproval(null); } setDirection(event.target.value); }}
+            onChange={(event) => { inputGeneration.current++; if (onCreationReview) { void onCreationReview(null); setApproval(null); } setDirection(event.target.value); }}
             placeholder="次の実行で変えたい方向を伝える"
           />
         </label>
@@ -334,7 +382,7 @@ export function McpBotRunner({
           spellCheck={false}
           value={argsText}
           onChange={(event) => {
-            void onCreationReview?.(null);
+            inputGeneration.current++; void onCreationReview?.(null);
             setArgsText(event.target.value);
             setApproval(null);
             setState('ready');
@@ -342,6 +390,7 @@ export function McpBotRunner({
         />
       </details>
 
+      {approval && executionDisclosure && !preparedReview && <p role="alert">実行条件の記録を照合できません。Connectorを読み直してください。</p>}
       {approval && (
         <output className="mcp-bot-approval">
           <ShieldCheck size={18} />
@@ -351,6 +400,18 @@ export function McpBotRunner({
             {onCreationReview && <><p>この具体的な入力で仕事を作成します。実行時の承認は別途必要です。</p>
               <pre aria-label="作成前に確認する具体的な入力">{argsText}</pre>
               <p>提供元の料金申告: {approval.pricing.note}</p></>}
+            {preparedReview && <section aria-label="この実行で確認する条件">
+              <p>作成時との比較: {originRelation?.state === 'changed' ? `変更あり（${originRelation.changedFields.join('・')}）` :
+                originRelation?.state === 'unchanged' ? '同じ条件' : '作成時の確認記録なし'}</p>
+              <p>対象: {executionDisclosure?.jobId} · Package: {preparedReview.packageKey}</p>
+              <p>接続先: {server.name} · Tool: {preparedReview.approvalContext.toolName}</p>
+              <pre aria-label="実行直前に確認する具体的な入力">{argsText}</pre>
+              <p>Package料金申告: {preparedReview.packagePricing.note}</p>
+              <p>Tool料金申告: {preparedReview.approvalContext.pricing.note}</p>
+              <details><summary>条件の参照情報</summary><p>manifest: {preparedReview.manifestSha256}</p>
+                <p>Tool版: {preparedReview.approvalContext.toolDigest}</p><p>入力: {preparedReview.approvalContext.inputSha256}</p></details>
+              <p>今回はこの入力と条件を1回確認します。提供元申告は独立検証した料金や実行権限ではありません。</p>
+            </section>}
             <small>料金条件: 提供元申告「実行ごとの追加料金なし」。この申告はRockstarが独立検証した料金見積ではありません。</small>
             <small>確認後の引数変更や再利用は拒否されます。</small>
           </div>
@@ -359,7 +420,7 @@ export function McpBotRunner({
 
       <div className="mcp-bot-actions">
         {approval ? (
-          <button type="button" className="black-button" disabled={executionDisabled || state === 'running'} onClick={() => void (onCreationReview ? confirmCreation() : execute())}>
+          <button type="button" className="black-button" disabled={executionDisabled || state === 'running' || Boolean(executionDisclosure && !preparedReview)} onClick={() => void (onCreationReview ? confirmCreation() : execute())}>
             {state === 'running' ? (
               <LoaderCircle className="sky-chat-spin" size={16} />
             ) : (

@@ -1,9 +1,19 @@
 {
-  "smithSchemaConfirmation": {
+  "executionReviewHistory": {
     "owner": "ROCK",
     "status": "independent_review_full_verify_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/execution-review-history.json",
+    "next": "Save PR, verify exact head CI, merge and check same merge SHA CI."
+  },
+  "smithSchemaConfirmation": {
+    "owner": "ROCK",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/smith-schema-confirmation.json",
-    "next": "Save and integrate after same-head CI; structured user type matching and production/device acceptance remain open."
+    "next": "Structured user type matching, normal account authority and physical device acceptance remain open.",
+    "pullRequest": 268,
+    "prHead": "a8f58fcd561823c21283116e4f9253c2365dea4f",
+    "mergeSha": "94f0d9db3b78c36f4216deacce204099149b971b",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "sdkDistributionReadback": {
     "status": "offline_package_import_independently_reviewed",

@@ -9,7 +9,7 @@ import {
   type WorkCommand,
   type WorkPlan,
   type WorkAgentCreationReview,
-  createWorkJob, workAgentCreationRequestDigest,
+  createWorkJob, workAgentCreationRequestDigest, storedWorkToolExecutionReview, type WorkToolExecutionReview,
 } from '@/lib/workflow';
 import { type RunRecorder } from '@/lib/device';
 import { matchesA2ADelegationRecovery } from '@/lib/a2a-delegation-recovery';
@@ -332,6 +332,38 @@ function WorkPlanEditor({
       ) : <p>手順の記録後は計画を固定します。</p>}
     </section>
   );
+}
+function ToolExecutionHistory({ job }: { job: WorkJob }) {
+  const stamp = JSON.stringify({ id: job.id, revision: job.revision, binding: job.agentBinding, attempts: job.toolAttempts });
+  const [checked, setChecked] = useState<{ stamp: string; rows: Array<{ id: string; review: WorkToolExecutionReview | null; invalid: boolean }> } | null>(null);
+  useEffect(() => {
+    let current = true;
+    void Promise.all((job.toolAttempts ?? []).map(async attempt => {
+      try { return { id: attempt.id, review: await storedWorkToolExecutionReview(job, attempt), invalid: false }; }
+      catch { return { id: attempt.id, review: null, invalid: true }; }
+    })).then(rows => { if (current) setChecked({ stamp, rows }); });
+    return () => { current = false; };
+  }, [job, stamp]);
+  const labels: Record<string, string> = { input: '入力', owner: '本人', Agent: '担当', Package: 'Package', manifest: 'Package版',
+    connector: '接続先', Tool: 'Tool', transport: '実行先', ToolDigest: 'Tool版', PackagePricing: 'Package料金申告', runtimePricing: 'Tool料金申告' };
+  return <section aria-label="作成時と実行時の確認履歴">
+    <h3>作成時と実行時の確認</h3>
+    <p>{job.agentBinding?.creationReview ? '作成時の確認は作成時点の記録として保持しています。' : '作成時の条件確認は記録されていません。'}</p>
+    {!job.toolAttempts?.length && <p>実行直前の条件確認はまだ保存されていません。</p>}
+    {checked?.stamp !== stamp ? <p>実行確認の記録を照合中です。</p> : checked.rows.map(row => {
+      const attempt = job.toolAttempts?.find(item => item.id === row.id);
+      if (row.invalid) return <p key={row.id} role="alert">実行確認の内容を照合できません。確認済みとは扱いません。</p>;
+      if (!row.review) return <p key={row.id}>実行直前の条件記録なし（旧形式）。後から確認済みには変更しません。</p>;
+      const review = row.review, relation = attempt!.creationRelation!;
+      return <div key={row.id}><p>{review.approvalContext.toolName} · 実行前の確認記録</p>
+        <p>作成時からの変更: {relation.state === 'changed' ? relation.changedFields.map(field => labels[field] ?? field).join('・') :
+          relation.state === 'unchanged' ? '同じ条件' : '作成時の確認記録なし'}</p>
+        <p>Package料金申告: {review.packagePricing.note} · Tool料金申告: {review.approvalContext.pricing.note}</p>
+        <details><summary>保存された実行条件</summary><pre>{JSON.stringify(review, null, 2)}</pre></details>
+      </div>;
+    })}
+    <p>保存記録と提供者申告の照合です。実行権限・実行成功・確定料金を意味しません。</p>
+  </section>;
 }
 async function request<T>(method = 'GET', value?: unknown, ownerScope?: string, exactId?: string, beforeSend?: () => void): Promise<T> {
   const init: RequestInit = {
@@ -1845,7 +1877,7 @@ export default function Workbench({
                       selected.agentBinding?.agentId === agentReference.id && selected.agentBinding.agentRevision === agentReference.revision ?
                       <AgentToolJobRunner key={`${ownerScope}:${selected.id}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}:${miiInput?.id ?? 'direct'}:${runnerInputEpoch}`}
                         server={selectedPackageRuntimeCandidate.server} toolName={selectedPackageRuntimeCandidate.tool.name} task={localPackageTask}
-                        packageKey={handoffPackage.packageKey} manifestSha256={handoffPackage.manifestSha256} job={selected}
+                        packageKey={handoffPackage.packageKey} manifestSha256={handoffPackage.manifestSha256} packagePricingNote={packageRuntimeManifest.pricing.note} job={selected}
                         ownerScope={ownerScope} agentReference={agentReference} isCurrent={() => toolInputEpoch.current === runnerInputEpoch && currentOwner.current === ownerScope && selectedIdRef.current === selected.id && (!miiInput || miiInput.isCurrent())}
                         onJob={miiInput ? miiInput.onJob : accept} onRunningChange={setRunning} /> : <p>この担当に結びついた仕事を作成または選択し、依頼内容を入力してください。</p>
                       : <McpBotRunner key={`${handoffPackage.packageKey}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}:${miiInput?.id ?? 'direct'}:${runnerInputEpoch}`}
@@ -1979,6 +2011,7 @@ export default function Workbench({
                   <h2>{selected.title}</h2>
                   <span>{stateNames[selected.status]}</span>
                 </div>
+                {(selected.agentBinding || Boolean(selected.toolAttempts?.length)) && <ToolExecutionHistory job={selected} />}
                 {!!selected.toolObservations?.length && <section aria-label="保存されたToolの応答">
                   <h3>この仕事に保存したToolの応答</h3>
                   <p>画面で受け取った未検証の応答です。実行成功・料金・実行先の停止を保証しません。</p>
