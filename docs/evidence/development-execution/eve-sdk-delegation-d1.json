@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.eve-sdk-delegation-d1/1",
-  "state": "candidate_independent_test_pass_pr_pending",
+  "state": "main_integrated_same_sha_ci_pass_host_scoped",
   "baseMain": "8be9005d8405d7d47b7122d71a0b193cdcedb559",
   "sha256": {
     "tests/eve-sdk-delegation-d1-browser.test.mjs": "901c960ddefda3d80725a357abbc9ece84bc25a636fdee79d440be31c3ab91ef",
@@ -14,7 +14,9 @@
     "logSha256": "82378a6d29dbcdc2e27a7909eaf181a2bbf24577d3670775d0342d7caaf303db",
     "scope": "isolated Chrome and local Miniflare synthetic authority"
   },
-  "history": "Initial fixture had a D1 column typo; corrected. Expanded UI initially timed out before explicit job selection; selecting the job fixed the fixture. These earlier failures were reported by the author, not independently reproduced. Initial PR head 9a7e37e8 CodeQL reported four medium alerts for fixture dynamic script construction. The candidate replaces HTML interpolation with no-store JSON and dynamic script expressions with fixed CDP functions and value arguments. New-head CodeQL pending. Initial head verify passed including the same-job browser test; log SHA256 ec136cdc91b0351bf3c8840050631a9ef5d697a6e97ac002e6022357bf221564. It was not accepted because of the four CodeQL alerts.",
+  "history": "Initial fixture had a D1 column typo; corrected. Expanded UI initially timed out before explicit job selection; selecting the job fixed the fixture. These earlier failures were reported by the author, not independently reproduced. Initial PR head 9a7e37e8 CodeQL reported four medium alerts for fixture dynamic script construction. The candidate replaces HTML interpolation with no-store JSON and dynamic script expressions with fixed CDP functions and value arguments. New-head CodeQL reported no new alerts; exact-head and merge-SHA CI passed. Initial head verify passed including the same-job browser test; log SHA256 ec136cdc91b0351bf3c8840050631a9ef5d697a6e97ac002e6022357bf221564. It was not accepted because of the four CodeQL alerts.",
   "limits": "SDK Tool executes locally; separate remote delegation on same job is not remote SDK execution. Identity, entitlement, signer, quote, remote service and some guard/device links are synthetic; Workflow invocation is initiated by test. Durable storage grant is granted by test CDP; actual IndexedDB API is used, not a physical power-loss guarantee. Local response loss is synthetic; real socket-loss case tested separately. No real provider, actual billing, physical device, model inference or general network isolation acceptance. Fixture context endpoint is unauthenticated localhost carrying only synthetic token; it is not production credential protection.",
-  "next": "Final independent review, exact-head CI, main merge and merge-SHA CI."
+  "next": "Real identity, provider, billing, physical devices and remote SDK execution remain separate.",
+  "mergeSha": "a603dec97539af8ef597b92e8950273552bf9120",
+  "mainCiEvidence": "docs/evidence/development-execution/eve-sdk-delegation-d1-main-ci.json"
 }

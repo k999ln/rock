@@ -281,7 +281,8 @@
       ],
       "evidence": "docs/evidence/development-execution/eve-sdk-delegation-d1.json",
       "scope": "synthetic UI approval and separate remote delegation on same SDK-observed job; no real authority or provider"
-    }
+    },
+    "finalAuditEvidence": "docs/evidence/development-execution/host-platform-final-audit.json"
   },
   "latestRockstarOsDesign": {
     "authority": "docs/rockstaros-complete-design.md#redesign-thread-home-sky-eve",

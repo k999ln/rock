@@ -1,0 +1,107 @@
+{
+  "schema": "rockstaros.host-platform-final-audit/1",
+  "auditedMain": "a603dec97539af8ef597b92e8950273552bf9120",
+  "assessment": "PASS_SCOPED_HOST_SYNTHETIC_MAIN_CI_PASS",
+  "method": "Independent read-only review of implemented consumers, contract and representative tests; independent Chrome run and exact PR-head CI logs separately referenced.",
+  "requirements": {
+    "F1": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/sky-agent-library.test.mjs",
+        "tests/sky-agent-contract-api.test.mjs"
+      ]
+    },
+    "F2": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "lib/sky-agent-requirements.ts",
+        "components/sky-agent-capability-review.tsx",
+        "tests/sky-agent-requirements.test.mjs",
+        "tests/agent-tool-job-runner-ui.test.mjs"
+      ]
+    },
+    "F3": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-sdk-delegation-d1-browser.test.mjs",
+        "tests/eve-smith-mii-claim-race.test.mjs"
+      ]
+    },
+    "F4": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/mii-work-adapter.test.mjs"
+      ]
+    },
+    "F5": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-smith-mii-browser.test.mjs"
+      ]
+    },
+    "A": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/sky-sdk-dist-integration.test.mjs"
+      ]
+    },
+    "B": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/agent-tool-job-runner-ui.test.mjs",
+        "tests/sky-package-runtime-binding-dispatch.test.mjs",
+        "tests/sky-agent-contract-api.test.mjs",
+        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs"
+      ]
+    },
+    "C": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/mii-work-adapter.test.mjs"
+      ]
+    },
+    "D": {
+      "assessment": "PASS_SCOPED_SOFTWARE_LEASE",
+      "evidence": [
+        "tests/mii-work-adapter.test.mjs",
+        "docs/evidence/development-execution/mii-output-lease.json"
+      ]
+    },
+    "E": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-sdk-delegation-d1-browser.test.mjs",
+        "tests/eve-smith-mii-claim-race.test.mjs",
+        "tests/mii-worker-shared-d1.test.mjs",
+        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs"
+      ]
+    },
+    "F": {
+      "assessment": "PASS_SCOPED",
+      "evidence": [
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/mii-work-adapter.test.mjs"
+      ]
+    },
+    "G": {
+      "assessment": "PASS_SCOPED_REPRESENTATIVE_EXISTING_CONTRACTS",
+      "evidence": [
+        "tests/sky-agent-library.test.mjs",
+        "tests/sky-agent-contract-api.test.mjs",
+        "tests/mii-work-adapter.test.mjs",
+        "tests/sky-owner-export.test.mjs",
+        "tests/sky-studio-chat.test.mjs"
+      ]
+    }
+  },
+  "candidateEvidence": "docs/evidence/development-execution/eve-sdk-delegation-d1.json",
+  "independentBrowserLogSha256": "82378a6d29dbcdc2e27a7909eaf181a2bbf24577d3670775d0342d7caaf303db",
+  "prHeadVerifyLogSha256": "4ec52040fa32a86ca9056f1ffe4203de5e591faa9858380acf4e029e0b593ef7",
+  "limitations": "Host synthetic identity, entitlement, signatures and provider. SDK Tool executes locally; remote delegation is separate on same job. Workflow is invoked by test. Remote cancellation is separately confirmed. Individual failure cases are covered by distinct fixtures. No physical mii/Pixel, real provider, actual payment, general sandbox, physical stop or production authority accepted. Software output lease timer/clock limits remain.",
+  "remaining": "Evidence documentation exact-head and merge-SHA CI are checked independently. Physical and production acceptances remain outside this host scope.",
+  "mainCiEvidence": "docs/evidence/development-execution/eve-sdk-delegation-d1-main-ci.json"
+}

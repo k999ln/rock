@@ -56,7 +56,9 @@ main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致
 
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 
-Eve・Smith実UIでSDK Tool観測を保存した同一合成owner/job/D1へ、実Workbenchで別remote delegationの署名見積・Broker証明・明示承認を通し、Worker dispatch、mii 2 tab停止不明、別途明示remote取消不明、不正署名拒否・usage一度精算・画面読戻しを接続。SDK観測原文hashを保持し独立Chrome 1/1成功。[証拠](docs/evidence/development-execution/eve-sdk-delegation-d1.json)。SDK自体のremote実行ではなく、本人・署名・providerは合成。PR298初回headでCodeQLがfixture script動的値にmedium 4件を指摘し、JSONとCDP値渡しに修正。独立再実行1/1成功、新head CIと統合は未完了。
+独立最終監査はF1〜F5/A〜Gを対象既存契約と合成host範囲でPASS_SCOPEDと判定。[監査](docs/evidence/development-execution/host-platform-final-audit.json)。別remote delegationとlocal SDKを混同せず、全第三者sandbox・実本人/課金/provider・物理mii/Pixelを合格へ転用しない。監査記録のGitとCIは各候補SHAで別途確認する。
+
+Eve・Smith実UIでSDK Tool観測を保存した同一合成owner/job/D1へ、実Workbenchで別remote delegationの署名見積・Broker証明・明示承認を通し、Worker dispatch、mii 2 tab停止不明、別途明示remote取消不明、不正署名拒否・usage一度精算・画面読戻しを接続。SDK観測原文hashを保持し独立Chrome 1/1成功。[証拠](docs/evidence/development-execution/eve-sdk-delegation-d1.json)。SDK自体のremote実行ではなく、本人・署名・providerは合成。PR298初回headでCodeQLがfixture script動的値にmedium 4件を指摘し、JSONとCDP値渡しに修正。独立再実行1/1・最終head CI成功、CodeQL新規alert 0。main a603dec9統合後同SHA CI6/6成功。[統合CI](docs/evidence/development-execution/eve-sdk-delegation-d1-main-ci.json)。
 
 同一合成D1/本人/jobで実Workerのremote応答由来task、実mii 2 tabの停止応答消失・予約保持、別途明示のremote取消応答消失、不正署名拒否、署名usage一度精算・replay抑止を縦断。miiで予約0.50と確定記録0.11を読戻し、独立2/2成功。[証拠](docs/evidence/development-execution/mii-worker-signed-browser.json)。本人承認・署名鍵・remoteはfixture、実provider・課金・物理miiは未受入。PR297はmain 8be9005dへ統合し同SHA CI6/6成功。[統合CI](docs/evidence/development-execution/mii-worker-signed-browser-main-ci.json)。
 
