@@ -713,7 +713,7 @@ Pixel 10 GL066 / frankelは確定対象。試験署名APKの非破壊再起動23
 
 Eveで自由に担当を作り、SmithでToolと実行先を照合し、同じ仕事をmiiの合成画面から読むlocal-preview候補は範囲限定の独立検収と全verifyに合格した。[設計・責任と制約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)、[試験と残件](docs/evidence/development-execution/eve-smith-mii-host-preview.json)。次はGit保存・main統合・同SHA CIをそれぞれ確認する。実account/eSIM、実mii/Pixel、実費と公開は別受入。
 
-SDK 0.1.4配布archiveから展開した二つの非推論作例を、Smith宣言照合・既存Connector・同じ仕事とmiiソフト読戻しで試験し、独立検収と全体verifyに成功した候補。旧配布版は保持し、宣言を権限や安全保証にしない。[証拠](docs/evidence/development-execution/sdk-declared-example.json)。
+SDK 0.1.4配布archiveから展開した二つの非推論作例を、Smith宣言照合・既存Connector・同じ仕事とmiiソフト読戻しで試験し、独立検収と全体verifyに成功。PR276をmain c53ffad6へ統合し同SHA全10 CI成功。[統合CI](docs/evidence/development-execution/sdk-declared-example-main-ci.json)。旧配布版は保持し、宣言を権限や安全保証にしない。[証拠](docs/evidence/development-execution/sdk-declared-example.json)。
 
 Smithの本人指定型・能力ID・permission/scope・実Toolの版付き宣言照合を統合候補へ追加。schema未宣言と対象scope不明を未確認としてbegin/claimでも拒否し、旧jobの互換を維持。合成fixtureと独立検収に限定し、実権限・Provider・実機は未受入。PR274をmain 5a85a523へ統合し同SHA全6 CI成功。[証拠](docs/evidence/development-execution/smith-declared-capability-matching.json)／[統合CI](docs/evidence/development-execution/smith-declared-capability-main-ci.json)。
 
@@ -725,7 +725,7 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
-miiソフト画面と実adapterをつないだ隔離ブラウザで、合成hostの短い期限・保存済みjob保持・明示読直しを試験する候補。[証拠](docs/evidence/development-execution/mii-short-lease-browser.json)。物理miiは未受入。
+miiソフト画面と実adapterをつないだ隔離ブラウザで、合成hostの短い期限・保存済みjob保持・明示読直しを試験するPR281ドラフト。接続option待機修正後のbrowser 2/2成功、全verify再実行は未了。[証拠](docs/evidence/development-execution/mii-short-lease-browser.json)。物理miiは未受入。
 
 mii読取adapterにhost提供descriptorの能力・版・最短期限の照合を追加する候補は対象試験・独立検収・全体verifyに成功。PR275をmain 6ce98364へ統合し同SHA全6 CI成功。[統合CI](docs/evidence/development-execution/mii-portable-read-main-ci.json)。合成画面と同じ仕事の読戻しを使い、宣言は本人・権限・実機受入にしない。[証拠](docs/evidence/development-execution/mii-portable-read-descriptors.json)。
 
