@@ -72,7 +72,7 @@ function fixture(t) {
       '@/lib/rockstar-service-access': { rockstarServiceScopeAllowed, missingRockstarServiceScope },
       'cloudflare:workers': { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' } },
     };
-    runInNewContext(code, { exports, Response, Error, SyntaxError, TextEncoder, TextDecoder, crypto: webcrypto,
+    runInNewContext(code, { exports, Response, URL, Error, SyntaxError, TextEncoder, TextDecoder, crypto: webcrypto,
       require: (id) => { assert.ok(Object.hasOwn(modules, id), id); return modules[id]; },
     });
     return exports;

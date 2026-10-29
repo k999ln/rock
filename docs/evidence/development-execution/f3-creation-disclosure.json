@@ -1,0 +1,28 @@
+{
+  "schema": "rockstaros.f3-creation-disclosure/1",
+  "baseMain": "6e4942670b350f94ed15345840526327dbdbd5d3",
+  "scope": "synthetic host preview; existing and legacy jobs retained; no real provider, fee, device or inference",
+  "sourceSha256": {
+    "app/api/work-jobs/route.ts": "cfb97e440091310fd71f5463abae3358835ee1363cbf97cdb2335ac685ad46fd",
+    "components/mcp-bot-runner.tsx": "372c6d510b4f0559075934bbde796f2bfcd27308dff1b0ffc436cb2b237ef10f",
+    "components/workbench.tsx": "a657fbd086c41f20cdcc970067e7385e1d11882dfd8236381b28f8922eb3b87a",
+    "lib/work-store.ts": "f3a15e27277e387662b962d87dd38ee5312c6ad52e97ecdb1efabe8552481bd6",
+    "lib/workflow.ts": "de7d52c43509d781e821a1c9b8a0df0b4d1b5838c219318723e1f004045f9cd3",
+    "tests/eve-smith-mii-browser.test.mjs": "fa3db5b3042ff1b3af228c83a4f90de575d694e3453be8c7208d934ae26dcbd8",
+    "tests/work-agent-binding-route.test.mjs": "6688c55b0c79be2ac11dd6cd7fa7e7f8564e65cc532ef6110eec5665ff370d77",
+    "tests/workbench-cloud-text.test.mjs": "c25d4e3d2c2d4616716e6bd8dd99dcfa872c10f6c7e9f4a48a1e9358f83a9963",
+    "tests/workbench-owner-recovery.test.mjs": "2e6397392aae3932e21f640be91c6f5d6250d73e3f38ee83144c8cac03cdb441",
+    "tests/workplan-reconcile.test.mjs": "07f9939c7daf5db5f669b2a87c5150757c78436fb50d2f581493317d2d33f415"
+  },
+  "independentReview": "Original candidate: two must-fix findings: expiry during async recheck and retry after pre-POST failure. R2 repaired and independently passed 65 related tests and 2 browser tests. R3 React/lint changes independently passed 66 related tests and 2 browser tests; final combined browser retains mii budget coverage and requires independent recheck. The F3 r3 plus mii budget combined candidate independently passed 35 tests including two isolated browser cases.",
+  "behavior": "New Agent UI confirms Tool, target, JSON input and unverified provider pricing before job creation. Immutable disclosure is owner/Agent/Package/runtime/input digest bound; confirmation expires. The server checks Agent and Package/review and creation deadline at SQL write. POST uncertainty is reconciled by same owner/ID/digest GET; absent record never causes automatic replay. A renewed identical confirmation may retry the same ID. Execution requires separate existing one-time approval and claim. Old clients without disclosure retain compatibility and are not labelled confirmed.",
+  "limitations": [
+    "Client-observed disclosure is not a server-issued execution grant, independently verified price, or physical consent",
+    "normal account/eSIM authority and paid execution remain blocked",
+    "mii physical device and provider effects not accepted"
+  ],
+  "validation": "Combined focused 67 pass; full verify first had 85 failures: 84 UI VM fixtures lacked the newly imported sky-tool-package and one WorkPlan VM lacked URL. Fixture dependencies were fixed without weakening legacy identity/ID/revision checks; F3 unconfirmed new Agent UI asserts disabled/no POST. Focused UI fixtures 85 pass and WorkPlan 8 pass. Full verify rerun: 3392 pass, 0 fail, 4 skip; build/API/mission/work/bot complete.",
+  "gitAndCI": "pending",
+  "initialFullVerifyLogSha256": "0b8391983ebfaa3c973ff1a0ee724d65c297ed32672a0fac2441e8644b273d54",
+  "fullVerifyRerunLogSha256": "a2cd93c84652837774622a228e351df8d93ec3d34cb4bcd87c96d9ac90a2ab95"
+}

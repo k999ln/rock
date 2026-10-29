@@ -133,12 +133,58 @@ export type WorkCommand =
   | { id: string; action: 'complete'; note: string }
   | { id: string; action: 'amc_event'; event: AmcEvent }
   | { id: string; action: 'cancel' };
+/** A client-observed creation disclosure, never a verified price or execution grant.
+ * Old clients/jobs omit this versioned field and retain their original contract. */
+export type WorkAgentCreationReview = {
+  schema: 'rockstaros.work-agent-creation-review/1';
+  ownerScope: string; agentId: string; agentRevision: number;
+  packageKey: string; manifestSha256: string;
+  serverId: string; toolName: string; transport: 'stdio' | 'local_http'; toolDigest: string;
+  inputSha256: string;
+  pricing: { model: 'free'; packageNote: string; runtimeNote: string; declaration: 'provider_unverified' };
+};
+export function parseWorkAgentCreationReview(value: unknown): WorkAgentCreationReview {
+  const row = objectInput(value, ['schema','ownerScope','agentId','agentRevision','packageKey','manifestSha256',
+    'serverId','toolName','transport','toolDigest','inputSha256','pricing']);
+  const pricing = objectInput(row.pricing, ['model','packageNote','runtimeNote','declaration']);
+  const text = (value: unknown, max: number) => {
+    if (typeof value !== 'string' || value.length === 0 || value.length > max) return false;
+    // Only inspect UTF-16 units for C0 controls; never split or rewrite text.
+    for (let i = 0; i < value.length; i++) if (value.charCodeAt(i) < 32) return false;
+    return true;
+  };
+  if (row.schema !== 'rockstaros.work-agent-creation-review/1' || !text(row.ownerScope, 120) ||
+      !text(row.agentId, 120) || !Number.isSafeInteger(row.agentRevision) || Number(row.agentRevision) < 1 ||
+      !text(row.packageKey, 200) || !text(row.serverId, 120) || !text(row.toolName, 120) ||
+      !['stdio','local_http'].includes(String(row.transport)) ||
+      ![row.manifestSha256,row.toolDigest,row.inputSha256].every(v => typeof v === 'string' && /^[a-f0-9]{64}$/.test(v)) ||
+      pricing.model !== 'free' || pricing.declaration !== 'provider_unverified' ||
+      ![pricing.packageNote,pricing.runtimeNote].every(v => typeof v === 'string' && v.length <= 2000))
+    throw new WorkError('仕事の作成前確認をやり直してください。');
+  return { schema: row.schema, ownerScope: row.ownerScope as string, agentId: row.agentId as string,
+    agentRevision: row.agentRevision as number, packageKey: row.packageKey as string,
+    manifestSha256: row.manifestSha256 as string, serverId: row.serverId as string,
+    toolName: row.toolName as string, transport: row.transport as 'stdio' | 'local_http',
+    toolDigest: row.toolDigest as string, inputSha256: row.inputSha256 as string,
+    pricing: { model: 'free', packageNote: pricing.packageNote as string, runtimeNote: pricing.runtimeNote as string,
+      declaration: 'provider_unverified' } };
+}
+/** Same immutable intent on the UI, create API and read-only reconciliation.
+ * Renewal deadlines are deliberately not part of this digest. */
+export async function workAgentCreationRequestDigest(job: Pick<WorkJob, 'id' | 'title' | 'templateId' | 'plan' | 'coordination'>,
+  agentRef: { id: string; revision: number }, creationReview?: WorkAgentCreationReview): Promise<string> {
+  const value = { id: job.id, title: job.title, templateId: job.templateId, plan: job.plan,
+    coordination: job.coordination ?? null, agentRef, ...(creationReview ? { creationReview } : {}) };
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(value)));
+  return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
 /** Immutable provenance of the owner's saved role at job creation. It does not grant execution authority. */
 export type WorkAgentBinding = {
   schema: 'rockstaros.work-agent-binding/1';
   agentId: string;
   agentRevision: number;
   requestDigest: string;
+  creationReview?: WorkAgentCreationReview;
 };
 /** A fenced client attempt; even an observed response is not a verified remote terminal state. */
 export type WorkToolAttempt = {

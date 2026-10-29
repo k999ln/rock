@@ -38,6 +38,8 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 
 今回の実行authorityは既存local-preview ID、明示したscope非強制、loopback、cookieや別credentialなしの開発環境に限定する。verified Package、freeの提供者申告、schema一致は未知Tool全体の安全性や実料金を保証しない。通常account/eSIMの実行authority・実mii入力/物理停止・有料実行/費用照合は別の実装と受入が必要。owner切替・旧版・失効・不明応答・停止競合・再接続、2種の入力出力と未対応能力を同じ候補で試験する。
 
+担当付き新規仕事の現行画面は、Tool・実行先・具体的なJSON入力・提供者の未検証料金申告を表示し、本人確認の後にjobを作る。確認記録は本人scope・Agent版・Package manifest・runtime・入力hashを結ぶclient観測であり、実行権限や検証済み料金ではない。確認は短命で、条件変更・本人切替・期限切れで失効し、APIと保存SQLで版と期限を再検査する。POST結果不明は同じ本人・ID・不変digestをGETで照合し、未存在でも自動再送しない。再書込みは同じ内容の新しい確認が必要。旧形式job／clientの保存互換を維持し、確認記録がないものを確認済みと見せない。実行時には既存の別の一回承認・claimが必要。[証拠](../evidence/development-execution/f3-creation-disclosure.json)。
+
 miiソフト画面の委任予算は、同じ本人・job IDを付けた既存A2A読取を明示操作で照合する。APIは本人scopeと対象job IDを返し、adapterは一致、数値、通貨、観測期限、並行読取と対象revisionを検査する。読取不能・本人違い・失効は未確認、記録なしは取得時点の記録なしと表示し、再接続で自動実行しない。上限・予約・利用量記録は取得日時付きの委任予算であり、MCP Tool料金や請求確定額ではない。30秒表示制限はソフト画面のみで、background timer・実機・実請求の受入ではない。[証拠](../evidence/development-execution/mii-budget-readback.json)。
 
 miiの合成入力は「同じ仕事を確認」→文章入力→「同じ仕事のTool確認へ渡す」→既存MCPの内容確認と一回承認の順に進む。観測は30秒以内のboot/place/scene/sequenceへ結び、停止journal不明・未解決試行・別担当・未対応runtimeでは入力を渡さない。合成観測は権限ではなく、既存runnerが本人・job revision・Agent版・Package/利用権を読み直し、Connectorがprepare済み引数とserver claimを検査する。新しいDBや実行経路は作らない。

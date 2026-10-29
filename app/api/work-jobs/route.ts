@@ -8,6 +8,8 @@ import { skyAgentLibraryStore } from '@/lib/sky-agent-library-store';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import {
   createWorkJob,
+  parseWorkAgentCreationReview,
+  workAgentCreationRequestDigest,
   applyWorkCommand,
   objectInput,
   parseWorkCommand,
@@ -55,7 +57,10 @@ async function body(request: Request) {
 export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
-    return json({ jobs: await workStore(database()).list(user, true), ownerScope: await ownerScopeFor(user) });
+    const id = new URL(request.url).searchParams.get('id');
+    const store = workStore(database());
+    const exact = id === null ? null : await store.get(user, workId(id));
+    return json({ jobs: id === null ? await store.list(user, true) : exact ? [exact] : [], ownerScope: await ownerScopeFor(user) });
   } catch (error) {
     return rejected(request, error);
   }
@@ -90,14 +95,24 @@ export async function POST(request: Request) {
     }
     const raw = await body(request);
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new WorkError('入力項目を確認してください。');
-    const { agentRef: reference, ...workInput } = raw as Record<string, unknown>;
+    const { agentRef: reference, creationReview: reviewInput, creationInput, creationReviewExpiresAt, ...workInput } = raw as Record<string, unknown>;
+    const hasReview = Object.hasOwn(raw, 'creationReview');
+    if (hasReview !== Object.hasOwn(raw, 'creationInput') || hasReview !== Object.hasOwn(raw, 'creationReviewExpiresAt')) throw new WorkError('作成前確認と入力を確認してください。');
     const hasReference = Object.hasOwn(raw, 'agentRef');
     const ref = hasReference ? agentReference(reference) : null;
+    const creationReview = hasReview ? parseWorkAgentCreationReview(reviewInput) : undefined;
+    if (creationReview && (!ref || creationReview.ownerScope !== await ownerScopeFor(user) ||
+        creationReview.agentId !== ref.id || creationReview.agentRevision !== ref.revision ||
+        !creationInput || typeof creationInput !== 'object' || Array.isArray(creationInput) ||
+        await requestDigest(creationInput) !== creationReview.inputSha256))
+      throw new WorkError('作成前確認の本人・担当・入力が変わりました。', 409);
+    if (hasReview && (!Number.isSafeInteger(creationReviewExpiresAt) || Number(creationReviewExpiresAt) < 1))
+      throw new WorkError('作成前確認の有効期限を確認してください。');
     const candidate = createWorkJob(workInput);
     if (ref) candidate.agentBinding = {
       schema: 'rockstaros.work-agent-binding/1', agentId: ref.id, agentRevision: ref.revision,
-      requestDigest: await requestDigest({ id: candidate.id, title: candidate.title, templateId: candidate.templateId,
-        plan: candidate.plan, coordination: candidate.coordination ?? null, agentRef: ref }),
+      requestDigest: await workAgentCreationRequestDigest(candidate, ref, creationReview),
+      ...(creationReview ? { creationReview } : {}),
     };
     if (candidate.templateId === 'sky-citation-agent') throw new WorkError('Skyの出典整理Agent画面から実行してください。');
     if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
@@ -111,6 +126,7 @@ export async function POST(request: Request) {
         existing.agentBinding.requestDigest === candidate.agentBinding.requestDigest);
     // A lost create response is reconciled by the same owner, ID and immutable intent.
     // This is a readback of the old snapshot, not a fresh execution authorization.
+    let reviewedManifest: string | undefined;
     if (candidate.agentBinding) {
       const existing = await store.get(user, candidate.id);
       if (existing) {
@@ -120,6 +136,26 @@ export async function POST(request: Request) {
       const agent = await skyAgentLibraryStore(db, user).get(candidate.agentBinding.agentId);
       if (!agent || !agent.enabled || agent.revision !== candidate.agentBinding.agentRevision)
         throw new WorkError('本人の担当と最新の版を確認してください。', 409);
+      if (creationReview) {
+        const remaining = Number(creationReviewExpiresAt) - Date.now();
+        if (remaining <= 0 || remaining > 30_000) throw new WorkError('作成前確認の期限が切れました。確認をやり直してください。', 409);
+        if (agent.requirements?.packageKey !== creationReview.packageKey || agent.requirements.executionTarget !== 'pc')
+          throw new WorkError('担当のToolと実行先を確認してください。', 409);
+        const row = await db.prepare(`SELECT p.manifest FROM sky_tool_packages p
+          WHERE p.package_key = ? AND p.manifest_sha256 = ? AND p.status = 'verified'
+          AND EXISTS (SELECT 1 FROM sky_tool_package_reviews r WHERE r.package_key = p.package_key
+            AND r.manifest_sha256 = p.manifest_sha256 AND r.decision = 'verified'
+            AND (r.expires_at IS NULL OR r.expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)))`)
+          .bind(creationReview.packageKey, creationReview.manifestSha256).first<{ manifest: string }>();
+        if (!row) throw new WorkError('Toolの版または審査状態が変わりました。', 409);
+        const manifest = JSON.parse(row.manifest);
+        if (manifest.pricing?.model !== 'free' || manifest.pricing.note !== creationReview.pricing.packageNote ||
+            !manifest.capabilities?.executionTargets?.includes('pc') ||
+            !((manifest.adapter?.connectionType === 'mcp_stdio' && creationReview.transport === 'stdio') ||
+              (manifest.adapter?.connectionType === 'mcp_streamable_http' && creationReview.transport === 'local_http')))
+          throw new WorkError('Toolの実行先と料金申告を確認してください。', 409);
+        reviewedManifest = row.manifest;
+      }
     }
     const existingJennifer = candidate.coordination
       ? await store.findJenniferTaskJob(user, candidate.coordination)
@@ -129,7 +165,7 @@ export async function POST(request: Request) {
       return json({ job: existingJennifer, created: false });
     }
     let saved = null;
-    try { saved = candidate.agentBinding ? await store.createAgentBound(user, candidate) : await store.create(user, candidate); }
+    try { saved = candidate.agentBinding ? await store.createAgentBound(user, candidate, reviewedManifest, creationReviewExpiresAt as number | undefined) : await store.create(user, candidate); }
     catch (error) {
       if (!candidate.coordination) throw error;
     }

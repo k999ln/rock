@@ -22,9 +22,13 @@ HTTP 408後にChromeが同一IDを再送して409となると、保存済みで�
 
 PR255はhead7check/4workflow成功でmain76b327c2へ通常統合したが、main初回verifyが既存Pixel診断試験のexitKind欠落で停止した。任意診断の非待機lockへ観測writerが競合し、正常fixtureの300ms固定待ちは保存完了を保証しなかった。observer fsync800ms遅延で元試験の同じKeyErrorを再現。fixture子終了をfirst output診断保存ackへ同期し、同じ遅延1/1と診断27中26pass/1historical skipが成功。実worker・停止/期限・権限と元assertionを変更しない。[証拠](docs/evidence/development-execution/pixel-diagnostic-fixture-order.json)。次は独立検収、Git/PRとhead/main同SHA全CI。元main失敗は保存し、同SHA rerunは1回だけ実行中。実機操作・推論・有料接続なし。
 
+### 担当付き仕事の作成前確認（2026-10-29 / ROCK・Sky）
+
+未達だったF3の作成順序を修正し、現行Agent画面はTool・runtime・具体的入力・未検証料金申告を確認してからjobを作る。本人・Agent版・Package版・入力digestを固定し、期限と版をAPI・SQL保存境界で検査。未送信と応答不明を分離し、不明時は同じ本人・ID・digestをGET照合、未存在を自動再送しない。旧clientの保存互換と別の実行承認を維持。旧候補の期限切れと通信断迂回を実画面で再現し修正、独立r3は関連66/66・Chrome2/2成功。mii予算と併せた67試験成功。統合候補も独立35/35成功。全verify初回はVM依存欠落84件とURL不足1件で失敗しfixtureを修正、既存assertionと未確認POST拒否を保全して全verify再実行は3392成功・0失敗・4skip。Git/head/main CIは未完了。確認記録は実行権限・独立検証済み価格ではなく、通常account・実機・本番課金は未受入。[証拠](docs/evidence/development-execution/f3-creation-disclosure.json)。
+
 ### mii同一仕事の委任予算読取候補（2026-10-29 / Android・ROCK）
 
-既存A2A APIへ本人scopeとjob IDを追加し、miiソフト画面から上限・予約・利用量記録を明示読取する。観測・本人・job不一致と通信断は未確認とし、MCP料金・請求確定・実行許可に使わない。合成ブラウザと本人違い／期限／再送競合を含む54試験成功。独立検収でUI fixture不足と古いエラー残存を修正。別owner予算行の拒否と、owner hash照合中の観測喪失も確認。全verify初回は新テスト宣言lintで停止し修正、旧基点全verifyは3384成功・0失敗・4skip。main 91bd8bec取込み後の初回は既存Tool期限fixtureで1件失敗し単独23成功、全体再実行は3384成功・0失敗・4skip。Git/head/main CIは未完了。[証拠](docs/evidence/development-execution/mii-budget-readback.json)。担当付き仕事の作成前Tool／入力／費用確認は別候補で開発中。実mii・実account・Provider・実課金は未受入。
+既存A2A APIへ本人scopeとjob IDを追加し、miiソフト画面から上限・予約・利用量記録を明示読取する。観測・本人・job不一致と通信断は未確認とし、MCP料金・請求確定・実行許可に使わない。合成ブラウザと本人違い／期限／再送競合を含む54試験成功。独立検収でUI fixture不足と古いエラー残存を修正。別owner予算行の拒否と、owner hash照合中の観測喪失も確認。全verify初回は新テスト宣言lintで停止し修正、旧基点全verifyは3384成功・0失敗・4skip。main 91bd8bec取込み後の初回は既存Tool期限fixtureで1件失敗し単独23成功、全体再実行は3384成功・0失敗・4skip。Git/head/main CIは未完了。[証拠](docs/evidence/development-execution/mii-budget-readback.json)。PR264 head CI成功、main 6e494267の同SHA6check成功。担当付き仕事の作成前Tool／入力／費用確認は別候補で検収中。実mii・実account・Provider・実課金は未受入。
 
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 

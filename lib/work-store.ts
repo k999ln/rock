@@ -118,9 +118,11 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
       return get(user, job.id);
     },
     /** Bind only if the saved owner's enabled role is still the selected revision at insertion. */
-    async createAgentBound(user: string, job: WorkJob) {
+    async createAgentBound(user: string, job: WorkJob, reviewedManifest?: string, reviewExpiresAt?: number) {
       const binding = job.agentBinding;
       if (!binding) throw new Error('WORK_AGENT_BINDING_REQUIRED');
+      const review = binding.creationReview;
+      if (review && (!reviewedManifest || !Number.isSafeInteger(reviewExpiresAt))) throw new Error('WORK_CREATION_REVIEW_REQUIRED');
       await db.prepare(`INSERT INTO work_jobs (id, user_id, payload, revision, updated_at)
         SELECT ?, ?, ?, ?, ? WHERE EXISTS (
           SELECT 1 FROM sky_agent_settings a
@@ -129,9 +131,22 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
             AND (a.source_tool IS NULL OR EXISTS (
               SELECT 1 FROM sky_connections c WHERE c.user_id = a.owner_user_id AND c.tool = a.source_tool
             ))
-        ) ON CONFLICT(id) DO NOTHING`)
+        ) ${review ? `AND ? > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+          AND ? <= CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER) + 30000
+          AND EXISTS (SELECT 1 FROM sky_agent_settings a
+          WHERE a.owner_user_id = ? AND a.id = ? AND a.revision = ?
+            AND json_extract(a.settings, '$.requirements.packageKey') = ?
+            AND json_extract(a.settings, '$.requirements.executionTarget') = 'pc')
+          AND EXISTS (SELECT 1 FROM sky_tool_packages p WHERE p.package_key = ? AND p.manifest_sha256 = ?
+            AND p.manifest = ? AND p.status = 'verified'
+            AND EXISTS (SELECT 1 FROM sky_tool_package_reviews r WHERE r.package_key = p.package_key
+              AND r.manifest_sha256 = p.manifest_sha256 AND r.decision = 'verified'
+              AND (r.expires_at IS NULL OR r.expires_at > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER))))` : ''}
+        ON CONFLICT(id) DO NOTHING`)
         .bind(job.id, user, JSON.stringify(job), job.revision, job.updatedAt,
-          user, binding.agentId, binding.agentRevision).run();
+          user, binding.agentId, binding.agentRevision,
+          ...(review ? [reviewExpiresAt!,reviewExpiresAt!,user,binding.agentId,binding.agentRevision,review.packageKey,
+            review.packageKey,review.manifestSha256,reviewedManifest!] : [])).run();
       return get(user, job.id);
     },
     async update(user: string, job: WorkJob, previousRevision: number) {
