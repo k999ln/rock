@@ -65,7 +65,8 @@
       ],
       "evidence": "docs/evidence/development-execution/mii-budget-readback.json",
       "scope": "same owner/job read-only A2A budget snapshot; no MCP cost, invoice, execution authority or physical acceptance",
-      "uncertainBudgetEvidence": "docs/evidence/development-execution/mii-a2a-uncertain-budget.json"
+      "uncertainBudgetEvidence": "docs/evidence/development-execution/mii-a2a-uncertain-budget.json",
+      "untrustedResultEvidence": "docs/evidence/development-execution/worker-untrusted-result.json"
     },
     "creationDisclosure": {
       "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",

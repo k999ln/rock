@@ -1,4 +1,10 @@
 {
+  "workerUntrustedResult": {
+    "owner": "ROCK",
+    "status": "draft_independent_targeted_pass_ci_pending",
+    "evidence": "docs/evidence/development-execution/worker-untrusted-result.json",
+    "next": "Run full Worker suite and exact-head CI; independent final review."
+  },
   "smithToolObservationFreshness": {
     "owner": "ROCK",
     "status": "draft_independent_tests_local_browser_pass_final_ci_pending",
