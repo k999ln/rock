@@ -47,7 +47,10 @@ function cdp(url) {
     const { resolve, reject } = requests.get(item.id); requests.delete(item.id);
     if (item.error) reject(new Error(item.error.message)); else resolve(item.result);
   } });
-  return { open, close: () => socket.close(), async call(method, params = {}) {
+  return { open, close: () => socket.close(), onMessage: listener => {
+    const handler = event => listener(JSON.parse(event.data)); socket.addEventListener('message', handler);
+    return () => socket.removeEventListener('message', handler);
+  }, async call(method, params = {}) {
     await open; const id = ++sequence; const promise = new Promise((resolve, reject) => requests.set(id, { resolve, reject }));
     socket.send(JSON.stringify({ id, method, params })); return promise;
   } };
@@ -186,6 +189,38 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const tab = await (await fetch(`http://127.0.0.1:${port}/json/new?${encodeURIComponent(base)}`, { method: 'PUT' })).json();
     const devtools = cdp(tab.webSocketDebuggerUrl); t.after(() => devtools.close()); await devtools.open;
     await devtools.call('Runtime.enable');
+    await devtools.call('Page.enable');
+    await devtools.call('Page.setLifecycleEventsEnabled', { enabled: true });
+    const navigateAndWait = async (method, params = {}) => {
+      const bounded = async promise => {
+        let timer;
+        try { return await Promise.race([promise, new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error('browser navigation did not finish')), 15000);
+        })]); } finally { clearTimeout(timer); }
+      };
+      const previous = (await bounded(devtools.call('Page.getFrameTree'))).frameTree.frame;
+      let loader, unsubscribe;
+      const loadedLoaders = new Set();
+      const loaded = new Promise(resolve => {
+        const complete = () => { if (loader && loadedLoaders.has(loader)) resolve(loader); };
+        unsubscribe = devtools.onMessage(event => {
+          if (event.method === 'Page.frameNavigated' && event.params.frame.id === previous.id &&
+              event.params.frame.loaderId !== previous.loaderId) { loader = event.params.frame.loaderId; complete(); }
+          if (event.method === 'Page.lifecycleEvent' && event.params.frameId === previous.id &&
+              event.params.name === 'load' && event.params.loaderId !== previous.loaderId) {
+            loadedLoaders.add(event.params.loaderId); complete();
+          }
+        });
+      });
+      try {
+        const [response, loadedLoader] = await bounded(Promise.all([devtools.call(method, params), loaded]));
+        if (response.errorText || (method === 'Page.navigate' &&
+            (response.frameId !== previous.id || response.loaderId !== loadedLoader))) {
+          throw new Error('browser navigation response did not match loaded frame');
+        }
+      }
+      finally { unsubscribe(); }
+    };
     const evaluate = async expression => { const result = await devtools.call('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); return result.result.value; };
     async function wait(expression, label) { for (let i = 0; i < 120; i++) { if (await evaluate(expression)) return; const errors = await evaluate('window.__fixtureErrors'); if (errors?.length) throw new Error(`browser error: ${JSON.stringify(errors)} lines ${JSON.stringify(bundleLines.slice(errors[0][2] - 4, errors[0][2] + 1))}`); await new Promise(r => setTimeout(r, 100)); } throw new Error(`browser timeout: ${label}; ${JSON.stringify(await evaluate('({href:location.href, ready:document.readyState, text:document.body?.innerText, errors:window.__fixtureErrors})'))}`); }
@@ -438,7 +473,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await click('miiから同じ仕事を確認');
       await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'reread after short lease');
     }
-    await devtools.call('Page.reload');
+    await navigateAndWait('Page.reload');
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii after reload');
     await wait(`!!document.querySelector('[aria-label="ローカルMCP runtimeへのPackage capability binding"]')`, 'package binding settled after reload');
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
@@ -462,7 +497,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     if (localAuthority) {
       // The second role has a different purpose, Package, input/output schema
       // and Tool, but uses the same real UI, routes, Connector and mii adapter.
-      await devtools.call('Page.navigate', { url: base });
+      await navigateAndWait('Page.navigate', { url: base });
       await wait('document.body.innerText.includes("自分の担当を作る")', 'second Eve role'); await click('自分の担当を作る');
       await input('担当の名前', '合計担当'); await input('何を手伝う担当ですか', '二つの整数を合計');
       await input('受け取るもの', 'left と right'); await input('期待する成果', 'sum');
@@ -497,7 +532,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.deepEqual(claimContracts[1], { inputSchemaSha256: await skyPackageSchemaSha256(packages[1].manifest.io.inputSchema),
         outputSchemaSha256: await skyPackageSchemaSha256(packages[1].manifest.io.outputSchema), transport: 'local_http' });
       assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, 2); assert.equal(connectorExecuteCalls, 2);
-      await devtools.call('Page.reload');
+      await navigateAndWait('Page.reload');
       await wait('document.body.innerText.includes("mii連携のソフト試用")', 'second mii after reload');
       await wait(`!!document.querySelector('[aria-label="ローカルMCP runtimeへのPackage capability binding"]')`, 'second package binding settled after reload');
       await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
@@ -570,7 +605,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       const jobsBefore = sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n;
       const createsBefore = creationRequests.length, callsBefore = connectorExecuteCalls;
       const claimsBefore = requests.filter(r => r.path.endsWith('/tool-observations/claim')).length;
-      await devtools.call('Page.navigate', { url: base });
+      await navigateAndWait('Page.navigate', { url: base });
       await wait('document.body?.innerText.includes("自分の担当を作る")', 'unsupported Eve role');
       await click('自分の担当を作る');
       await input('担当の名前', '画像説明担当'); await input('何を手伝う担当ですか', '画像の内容を説明する');
