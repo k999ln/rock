@@ -307,6 +307,8 @@ Eveは「話して終わり」にせず、その会話から依頼した仕事�
 
 - [仕事の状態遷移](lib/workflow.ts)
 
+- [Eveモデルの学習・比較・Pixelクライアント試験用toolkit](toolkits/eve-model/README.md)（開発用。品質・Pixel本体での推論は別受入）
+
 ### 現在の開発状況
 
 PR213はmain `2a9828b2`へ通常統合済みで、採用head全7CIと同mergeSHAの製品CI6件成功を確認しました。[統合証拠](docs/evidence/development-execution/esim-eve-ui-main-merge.json)。 保存資料のEve料金見積では、各単価の「100万token当たり」を1回だけ表示します。見積・上限比較・有効期限の扱いは従来どおりで、この画面から有料実行は開始しません。

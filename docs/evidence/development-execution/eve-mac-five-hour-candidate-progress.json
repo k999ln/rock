@@ -1,0 +1,363 @@
+{
+  "schema": "rockstaros.eve-mac-development-candidate-progress/1",
+  "capturedAtUtc": "2026-10-29T11:10:22.614580+00:00",
+  "scope": "Scoped implementation/source/evidence review and owned cleanup complete; candidate quality and whole-Pixel acceptance failed. Corrected full repository verify passed; Git/source commit, remote CI and main adoption remain pending.",
+  "baseMain": "c53ffad64e3502af9e853b73134fc1430176649a",
+  "owner": "O3/ROCK/AI02",
+  "session": {
+    "startedAtUtc": "2026-10-29T07:02:49.516425Z",
+    "deadlineAtUtc": "2026-10-29T12:02:49.516425Z",
+    "generationStopBeforeUtc": "2026-10-29T11:47:00Z",
+    "priorResearchStage0SmokeExcluded": true
+  },
+  "candidate": {
+    "id": "eve-qlora-v2",
+    "baseModel": "mlx-community/Qwen2.5-1.5B-Instruct-4bit",
+    "baseRevision": "8b403126fc14f14cfc99bb4cfa72ecbc129ea677",
+    "baseWeightSha256": "0979f33d1bc58afcf696d13f57977644e7b11a6f0eec3e631d8e9463d18c0717",
+    "adapterSha256": "b7f68b546f35f434d6b09a56557c0aeb2aec70815200cae90bdda5e6a2a74724",
+    "adapterParameters": 329728,
+    "nonzeroLoraBArrays": 14,
+    "loraBArrays": 14,
+    "updates": 8,
+    "freshBaseNotResumed": true,
+    "baseFilesUnchangedVerifiedByAuthor": true,
+    "supervisorFullWallSeconds": 10.371316542004934,
+    "saveAndAdapterHashReadbackVerified": true
+  },
+  "budget": {
+    "confirmedOptimizerUpdates": 16,
+    "unknownOptimizerUpdatesMaximum": 1,
+    "chargedUpdatesUpperBound": 17,
+    "allTrainingWallSecondsCharged": 28.681461208005203,
+    "originalStoppedRunPreserved": true,
+    "originalReservedUpdates": 128,
+    "impossibleReservationReleasedSeparately": 119,
+    "reconciliationReview": "PASS_SCOPED",
+    "candidateContainsOnlyItsOwn8Updates": true,
+    "finalInferenceTotals": {
+      "teacherCalls": 0,
+      "comparisonCalls": 41,
+      "baselineCalls": 21,
+      "candidateCalls": 20,
+      "additionalPixelCalls": 15,
+      "pixelCompletedOutputAttempts": 13,
+      "pixelUnknownStoppedAttempts": 2,
+      "allCallsCharged": 56,
+      "requestedOutputTokensCharged": 14336,
+      "unknownAttemptsRemainCharged": true,
+      "completedOutputDoesNotMeanSuccessfulAnswer": true,
+      "modelInferenceFinishedOwnerReported": true,
+      "comparisonSummarySha256": "4312ae9ee7973771748176b857f8ff6d58fcca50ef2c0a776531be1eedd86f88"
+    }
+  },
+  "validation": {
+    "beforeBatches": 8,
+    "beforeScalar": null,
+    "beforeScalarStatus": "unavailable after prior worker interruption; not invented or rerun",
+    "afterBatches": 8,
+    "afterScalarLoss": 0.9591794013977051,
+    "notComparableBeforeAfterScalarEvidence": true
+  },
+  "resourceProfile": {
+    "id": "bounded-warning-hypothesis-v1",
+    "proposedStartAvailableGiB": 3.25,
+    "runtimeAvailableFloorGiB": 2,
+    "childWallEnvelopeSeconds": 120,
+    "maximumUpdates": 8,
+    "allowsWarningUnderSeparateHypothesis": true,
+    "originalStandard4GiBGateAccepted": false,
+    "hardIsolation": false,
+    "independentReview": "Author reports Astra PASS_SCOPED for code and saved artifact under this separate profile; not general hardware safety or quality acceptance"
+  },
+  "pixelOwnerReported": {
+    "placement": "Pixel client via USB to same Mac MLX candidate",
+    "candidateOpenedAndHashDisplayed": true,
+    "actualGenerationsObserved": 1,
+    "firstAdaptedOutput": "repetitive;256-token length termination; incomplete and rejected",
+    "successfulResponsesCountedFromThisProbe": 0,
+    "formalBaseAdapted20By2Comparison": "completed exploratory comparison; A0/20 and C0/20 task completion; candidate quality test failed",
+    "nativePhoneInferencePerformed": false,
+    "rawDeviceStatePublished": false,
+    "functionalCases": "Final10-case report: P01/P02/P06/P08/P09/P10 PASS scoped; P03/P04/P05/P07 FAIL; engineering route PASS_SCOPED, whole-Pixel FAIL",
+    "pixelBudgetAttemptsAtComparisonCapture": 15,
+    "caseResults": {
+      "P01": {
+        "status": "scoped_observed",
+        "scope": "connection and target preflight",
+        "finalReportVerdict": "PASS"
+      },
+      "P02": {
+        "status": "scoped_observed",
+        "scope": "same candidate display; Pixel client to Mac inference only",
+        "finalReportVerdict": "PASS"
+      },
+      "P03": {
+        "status": "failed",
+        "scope": "content answer",
+        "finalReportVerdict": "FAIL"
+      },
+      "P04": {
+        "status": "failed",
+        "scope": "content answer",
+        "finalReportVerdict": "FAIL"
+      },
+      "P05": {
+        "status": "failed",
+        "scope": "content answer",
+        "finalReportVerdict": "FAIL"
+      },
+      "P06": {
+        "status": "scoped_pass_per_final_report",
+        "scope": "Final10-case report supersedes earlier handoff omission; not a semantic quality acceptance",
+        "finalReportVerdict": "PASS"
+      },
+      "P07": {
+        "status": "not_demonstrated",
+        "scope": "Successful repair and reaching3-step boundary unproven",
+        "finalReportVerdict": "FAIL"
+      },
+      "P08": {
+        "status": "scoped_pass_owner_reported",
+        "reloadAdditionalGenerations": 0,
+        "existingRecordsFullyPreserved": 52,
+        "finalReportVerdict": "PASS"
+      },
+      "P09": {
+        "status": "scoped_pass_owner_reported",
+        "sameCandidateOwnedWorkerStopConfirmed": true,
+        "validBaselineResponseDelayedSaveCancelledAndLateRejected": true,
+        "doubleTapOperations": 1,
+        "finalReportVerdict": "PASS"
+      },
+      "P10": {
+        "status": "scoped_pass_owner_reported",
+        "overlimitAndUnavailableAdditionalCalls": 0,
+        "recoveryReached": true,
+        "finalReportVerdict": "PASS"
+      }
+    },
+    "independentPhysicalRecheck": {
+      "verdict": "PASS_SCOPED_owner_reported",
+      "scope": "Fixed cancelled-status UI and previously hidden overlimit refusal; not model quality or fullOS acceptance"
+    },
+    "finalReport": {
+      "sha256": "d6ee6170f82376d3aef018fd9da06fca27affaccf6e08aeca1cbdfec217979da",
+      "caseVerdicts": {
+        "P01": "PASS",
+        "P02": "PASS",
+        "P03": "FAIL",
+        "P04": "FAIL",
+        "P05": "FAIL",
+        "P06": "PASS",
+        "P07": "FAIL",
+        "P08": "PASS",
+        "P09": "PASS",
+        "P10": "PASS"
+      },
+      "engineeringRoute": "PASS_SCOPED",
+      "candidateQuality": "FAIL",
+      "wholePixel": "FAIL",
+      "nativeOS": "NOT_RUN",
+      "production": "NOT_RUN",
+      "cleanup": "Owned cleanup complete: normal server exit;0 modelworkers/activejobs; owned USB mapping removed;17 validated test tabs closed; other surfaces untouched"
+    },
+    "finalIndependentCaseVerdicts": {
+      "P01": "PASS_SCOPED",
+      "P02": "PASS",
+      "P03": "FAIL",
+      "P04": "FAIL",
+      "P05": "FAIL",
+      "P06": "PASS_SCOPED",
+      "P07": "FAIL",
+      "P08": "PASS_SCOPED",
+      "P09": "PASS_SCOPED",
+      "P10": "PASS_SCOPED"
+    },
+    "reviewScopeLimits": [
+      "P01 non-destructive inventory, not private key/model cryptographic preservation audit",
+      "P06 rejected output not promoted to success; useful semantic unknown-response quality unproven",
+      "P08 reload52records/0generation and doubletap1operation; no successful candidate answer artifact to reopen",
+      "P09 late valid reply cancellation was baseline A under synthetic delayed save, not a successful candidate C answer",
+      "P10 rejection/recovery route only; answer quality and native OS restore not accepted"
+    ]
+  },
+  "acceptance": {
+    "candidateSaved": true,
+    "qualityAccepted": false,
+    "formalComparisonComplete": true,
+    "wholePixelAccepted": false,
+    "nativeOsAccepted": false,
+    "productionAccepted": false,
+    "mainIntegrated": false,
+    "publicDeployment": false,
+    "finalSourceIndependentReviewComplete": true,
+    "fullVerifyPassed": true,
+    "gitHubSaved": false,
+    "wholePixelAssessment": "FAIL",
+    "engineeringRouteAssessment": "PASS_SCOPED",
+    "implementationSafetyReview": "PASS_SCOPED_NO_OPEN_P1_FOUND",
+    "ownedCleanupComplete": true
+  },
+  "verificationHistory": {
+    "initialFullVerify": "Stopped at sky:check because PROJECTS.md lacked development toolkit entry; author preparing bounded entry update. Full verify not passed for this candidate yet.",
+    "syntheticControlResults": "Earlier owner-reported synthetic controls remain separate from model/physical results",
+    "finalFullVerify": {
+      "status": "passed_corrected_run",
+      "initialIncidents": [
+        "Existing sky:check lacked development toolkit entry; source owner added bounded entry",
+        "OpenSSL3 missing from PATH; rerun with explicit existing toolchain path",
+        "Wrapper lint type findings; source owner corrected and focused tests passed"
+      ],
+      "qualification": "Author exit0 receipt matched to independently parsed log totals and completed build/API/mission/work/bot tail; original failures retained.",
+      "exitCode": 0,
+      "rootNodeTests": {
+        "total": 3467,
+        "pass": 3463,
+        "fail": 0,
+        "skip": 4
+      },
+      "logSha256": "ed211abcfbb8a18de1947dbb1115f161b1df90d4755f3403d759015e8b8e3b4e"
+    }
+  },
+  "next": "Metadata frozen for author exact-source commit/push/draft PR. Then hand off to Git integrator for guarded main integration and exact-head/main CI under separate authorization. Preserve quality FAIL/wholePixel FAIL and all original failed/unknown cases; do not install candidate as default.",
+  "formalDevelopmentComparison": {
+    "plannedTasksPerArm": 20,
+    "arms": {
+      "A": {
+        "acceptedTaskExecutions": 1,
+        "failedTaskExecutions": 19,
+        "strictSchema": {
+          "passed": 2,
+          "failedVisible": 19,
+          "unavailable": 0,
+          "allAttemptDenominator": 21,
+          "visibleDecisions": 21
+        },
+        "semantic": {
+          "contentCorrect": {
+            "true": 1,
+            "false": 0,
+            "unavailable": 19,
+            "plannedDenominator": 20
+          },
+          "evidenceSupported": {
+            "true": 1,
+            "false": 0,
+            "unavailable": 19,
+            "plannedDenominator": 20
+          },
+          "taskComplete": {
+            "true": 0,
+            "false": 20,
+            "unavailable": 0,
+            "plannedDenominator": 20
+          },
+          "falseSuccess": {
+            "true": 0,
+            "false": 1,
+            "unavailable": 19,
+            "plannedDenominator": 20
+          }
+        }
+      },
+      "C": {
+        "acceptedTaskExecutions": 0,
+        "failedTaskExecutions": 20,
+        "strictSchema": {
+          "passed": 0,
+          "failedVisible": 20,
+          "unavailable": 0,
+          "allAttemptDenominator": 20,
+          "visibleDecisions": 20
+        },
+        "semantic": {
+          "contentCorrect": {
+            "true": 0,
+            "false": 0,
+            "unavailable": 20,
+            "plannedDenominator": 20
+          },
+          "evidenceSupported": {
+            "true": 0,
+            "false": 0,
+            "unavailable": 20,
+            "plannedDenominator": 20
+          },
+          "taskComplete": {
+            "true": 0,
+            "false": 20,
+            "unavailable": 0,
+            "plannedDenominator": 20
+          },
+          "falseSuccess": {
+            "true": 0,
+            "false": 0,
+            "unavailable": 20,
+            "plannedDenominator": 20
+          }
+        }
+      }
+    },
+    "candidateFailureModesOwnerReported": {
+      "lengthTerminatedRepetitiveSchema": 18,
+      "invalidPlans": 2
+    },
+    "comparisonGenerationAttempts": 41,
+    "schemaDenominator": "All generation attempts, not20 planned tasks: A21/C20",
+    "taskDenominator": "All20 planned tasks per arm; unavailable semantics remain unavailable",
+    "reviewScope": "Independent source-and-trace semantic adjudication of40 task results, separate from author; no model/physical acceptance",
+    "sourceEvidenceHashes": {
+      "comparisonSummarySha256": "4312ae9ee7973771748176b857f8ff6d58fcca50ef2c0a776531be1eedd86f88",
+      "semanticAdjudicationSha256": "8159741562f358b7017685accafa9ef74ea88fe87c5d1cd39a0760e3b115a020"
+    },
+    "baselineAcceptedAnswerQualification": "One content-correct and evidence-supported answer omitted required source IDs; task complete remains0/20",
+    "retentionEvaluated": false,
+    "retentionDelta": null,
+    "sealedEvaluationExecuted": false,
+    "qualityAssessment": "failed_for_this_saved_candidate_on_this_exploratory_development_test",
+    "qualityImprovementAccepted": false
+  },
+  "finalInferenceAccounting": {
+    "teacherCalls": 0,
+    "comparisonCalls": 41,
+    "baselineCalls": 21,
+    "candidateCalls": 20,
+    "additionalPixelCalls": 15,
+    "pixelCompletedOutputAttempts": 13,
+    "pixelUnknownStoppedAttempts": 2,
+    "allCallsCharged": 56,
+    "requestedOutputTokensCharged": 14336,
+    "unknownAttemptsRemainCharged": true,
+    "completedOutputDoesNotMeanSuccessfulAnswer": true,
+    "modelInferenceFinishedOwnerReported": true,
+    "comparisonSummarySha256": "4312ae9ee7973771748176b857f8ff6d58fcca50ef2c0a776531be1eedd86f88"
+  },
+  "independentFinalReview": {
+    "sha256": "35c3f83abc7e9197481c10350cfcf87812199cf2436584c756b2ef3789b16b1a",
+    "reviewStatus": "COMPLETE_SCOPED",
+    "implementationSafetyReview": "PASS_SCOPED_NO_OPEN_P1_FOUND",
+    "overallAcceptance": "FAIL_QUALITY_AND_WHOLE_PIXEL",
+    "qualityAccepted": false,
+    "wholePixelAccepted": false,
+    "reviewedSourceHashesMatched": 29,
+    "pixelEvidenceHashesMatched": 54,
+    "focusedSyntheticControlsIndependentlyRerun": true,
+    "fullVerifyIndependentlyRerunByReviewer": false,
+    "remoteExactShaCICertified": false,
+    "qualification": "No open P1 found in scoped review; not a general safety/quality/OS acceptance guarantee."
+  },
+  "ownedCleanup": {
+    "receiptSha256": "dc434bd7ce27b49e1109af086d9853a24fc6af5f569036b8eac14a160fde4597",
+    "ownedServerNormalExitConfirmed": true,
+    "ownedModelWorkersRemaining": 0,
+    "activeJobs": 0,
+    "ownedUsbMappingRemoved": true,
+    "ownedValidatedTestTabsClosed": 17,
+    "initialProbeAlreadyClosed": true,
+    "otherProcessesMappingsTabsUntouched": true,
+    "stoppedWhenOwnedTabNotConfirmed": true,
+    "OSDeviceLeaseReturnedOwnerReported": true,
+    "rawPidSerialNonceUrlsOrPrivatePathsPublished": false
+  }
+}
