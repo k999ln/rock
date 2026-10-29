@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros.pixel-live-connection-investigation/1",
+  "status": "in_progress_service_state_unconfirmed",
+  "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
+  "device": "Pixel 10 frankel",
+  "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
+  "apkComparison": "matches previously recorded guard physical test APK; previous Linux test candidate was restored, not evidence of current Linux version",
+  "observations": [
+    "Existing app displays connection unconfirmed and saved AI lookup/preparation result unconfirmed; preparation disabled.",
+    "Android Network permission for owner is granted.",
+    "Existing Android EvePixelHostService is foreground; that alone does not establish a working Linux connection.",
+    "Android loopback has a 5199 listener; static GET probe returned zero response bytes. A listener does not establish a healthy service.",
+    "Existing Terminal opened with an empty shell prompt. Automated input duplicated characters; a later unexecuted malformed command was deleted and empty prompt visually confirmed. Initial command-entry attempt occurred during app transition and its delivery/result was not confirmed."
+  ],
+  "limits": "Read-only inspection and UI navigation only; no deliberate model inference, model download, app installation, service restart, connection-setting change or job execution. Existing data and connection contents were not comprehensively compared. Guest service state and cause of connection failure are unconfirmed.",
+  "next": "Await owner execution of read-only systemctl is-active for sky-private.service and sky-android-bridge.service; inspect results before any recovery. Do not retry unknown preparation or stop/restart an existing service without verifying impact."
+}

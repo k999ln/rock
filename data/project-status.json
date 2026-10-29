@@ -12491,5 +12491,11 @@
     "status": "pass_scoped_host_synthetic",
     "evidence": "docs/evidence/development-execution/host-platform-final-audit.json",
     "next": "Check evidence documentation exact-head and merge-SHA CI independently; physical and production acceptance remain separate."
+  },
+  "pixelLiveConnectionInvestigation": {
+    "owner": "ROCK",
+    "status": "in_progress_service_state_unconfirmed",
+    "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
+    "next": "Read guest service state without changing existing data or connection settings; resolve unknown before any recovery."
   }
 }

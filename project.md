@@ -559,6 +559,10 @@ Pixel旧package f3b345の物理証拠16点・helper4・画面3をGitが独立照
 着手・判断: 利用者の明示依頼で旧06dac1bbのCodeQL Highを修正。主担当07 / ROCK、統合10。同FD限定読込とpointer/receipt/親directoryの同一性再確認、7追加回帰を実装。対象26成功、旧実装で反例失敗を確認。検証完了: 対象26/Python6+23、lint/design/project/package、全verify成功（root2924件/2921成功/3Macskip）。OpenSSL3選択前とsandbox loopback制限の失敗は証拠に保持。次: 新HEAD push後のCodeQL含む全CI、検収JSON更新。実機・追加推論0、Rootregistry/616保全は非操作。元のmissing-module/hostskip/neutral→High履歴は保持。
 
 
+### Pixel実利用に向けた接続診断（2026-10-29 / Android・ROCK）
+
+接続Pixelの既存APK hashは過去実機検収のAPKと一致。Android側同期serviceはforeground・Network許可済みだが、アプリは接続/保存済みAIを未確認と表示。Android loopback 5199には待受がある一方、静的GETは応答0 bytes。Terminal自動入力は文字重複したため、未実行の誤入力を消し、Linux側service状態の読取を本人に依頼中。[限定記録](docs/evidence/development-execution/pixel-live-connection-investigation.json)。追加推論・意図的な仕事実行・モデル取得・service再起動・接続設定変更なし。全データの前後一致と障害原因は未確認。
+
 ### Pixel cache-only/更新fence main候補（2026-10-25 / G04）
 
 着手: Pro207通常main0dを基点に、sourceb1b0の独立検収済み9source/testを同hash採用。主担当10/source07、既存taskはreceipt参照。判断: 元receipt2608とportableのhashを分け、c9c795独立PASS/mustfix0・host99pass3skip/独立80pass1skip・Root11payload+aux3closureを保持。追加CI1pathは承認済みの独立synthetic stepだけでPython6+23をLinux上に配線。通常private module generatorでtypeを検証し、元missing-module失敗を成功へ換算しない。次: 対象Node/Python/lint/type/package/project/design/scanner、DraftPR exactpayload、最終head Linux Python各suiteと実npmverify/全CI、独立metadata検収。実機soleOSのleaseを維持、Gitの端末操作0。ロック解除待ちや旧physicalを今回合格にしない。RootHEAD/index/archive・残616公開保留。根拠 docs/evidence/development-execution/pixel-cache-main-adoption.json。
