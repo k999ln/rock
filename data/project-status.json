@@ -1,9 +1,12 @@
 {
   "miiRequiredCapabilities": {
     "owner": "ROCK",
-    "status": "draft_browser_pass_codeql_fix_ci_pending",
+    "status": "main_integrated_ci_two_failures_startup_candidate_passed_prior_head",
     "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
-    "next": "Verify CDP argument fix in browser and CodeQL at exact head; independent review before merge."
+    "next": "Confirm exact-head CI and independent review of startup candidate; initial main failures and cause remain recorded.",
+    "pullRequest": 283,
+    "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
+    "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb"
   },
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",

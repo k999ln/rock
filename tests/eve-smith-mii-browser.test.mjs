@@ -54,7 +54,7 @@ function cdp(url) {
 }
 
 for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Smith, real Connector and ${localAuthority ? 'local preview authority' : 'unavailable authority'}`,
-  { timeout: 60000, skip: !existsSync(chrome) && 'ROCK_TEST_CHROME must point to an installed Chrome/Chromium' }, async t => {
+  { timeout: 90000, skip: !existsSync(chrome) && 'ROCK_TEST_CHROME must point to an installed Chrome/Chromium' }, async t => {
     const dir = await mkdtemp(path.join(tmpdir(), 'rock-browser-fixture-'));
     const resources = { child: null, server: null, connectorUrl: '', connectorToken: '' };
     t.after(async () => {
@@ -177,8 +177,9 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const profile = path.join(dir, 'chrome');
     resources.child = spawn(chrome, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-background-networking',
       '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1', `--user-data-dir=${profile}`, '--remote-debugging-port=0', 'about:blank'], { stdio: 'ignore' });
-    let port; for (let i = 0; i < 100; i++) {
+    let port; for (let i = 0; i < 300; i++) {
       try { port = Number((await readFile(path.join(profile, 'DevToolsActivePort'), 'utf8')).split('\n')[0]); if (port > 0) break; } catch { /* Chrome has not published its port yet. */ }
+      if (resources.child.exitCode !== null || resources.child.signalCode !== null) break;
       await new Promise(r => setTimeout(r, 100));
     }
     assert.ok(port, 'isolated Chrome profile did not start');
