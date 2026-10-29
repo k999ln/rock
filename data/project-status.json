@@ -1,17 +1,20 @@
 {
   "workerUntrustedResult": {
     "owner": "ROCK",
-    "status": "draft_independent_targeted_pass_ci_pending",
+    "status": "draft_prior_full_ci_pass_merged_head_pending",
     "evidence": "docs/evidence/development-execution/worker-untrusted-result.json",
-    "next": "Run full Worker suite and exact-head CI; independent final review."
+    "next": "Confirm merged final head exact CI and independent review before merge.",
+    "pullRequest": 291
   },
   "sdkAuthorWorkspaceIntegration": {
     "owner": "ROCK",
-    "status": "main_integrated_merge_ci_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/sdk-author-workspace-integration.json",
-    "next": "Confirm merge SHA CI; earlier candidate supervisor timeout cause undetermined.",
+    "next": "Earlier candidate supervisor timeout cause undetermined; external and physical acceptance separate.",
     "pullRequest": 290,
-    "mergeSha": "3197e82491d7b67b4b6c5f8f90e51b48c92fde74"
+    "mergeSha": "3197e82491d7b67b4b6c5f8f90e51b48c92fde74",
+    "mainCiEvidence": "docs/evidence/development-execution/sdk-author-workspace-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "smithToolObservationFreshness": {
     "owner": "ROCK",

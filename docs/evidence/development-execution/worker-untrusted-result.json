@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.worker-untrusted-result/1",
-  "state": "draft_independent_targeted_pass_ci_pending",
+  "state": "draft_prior_full_ci_pass_merged_head_pending",
   "base": "130804ccc4473ce9105e617cc5a6b86583afc75e",
   "sourceSha256": {
     "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "c462b9abf9dc4e12cbb93cc1cbcefa82f8065ad317ff24b7ba4841ec9ff86ca2",
@@ -9,5 +9,7 @@
   "scenario": "Synthetic remote result text contains forged grant and receipt; separate metadata carries a modified signed receipt. Actual Worker stores encrypted artifact, rejects invalid usage signature, preserves same owner/job reservation and zero settlement; selected entitlement, broker authorization and delegation row counts do not increase.",
   "independentReview": "Independent targeted Worker run: 1 pass, 14 unselected skipped; log SHA256 8d48e00f4c4627d657b3612dd0d2c8bed0eb83abc2b489716f58753671bbf876.",
   "limits": "Synthetic remote response, signing key, owner, database and mii adapter; no model inference, real provider or physical device. Row counts do not prove unchanged existing rows or every permission table; other consumers of text are not proven safe.",
-  "next": "Run full Worker suite and exact-head CI; independent final review before integration."
+  "next": "Confirm merged final head exact CI and independent review before integration.",
+  "priorHead": "c037d877627fb9a92e58c57f300e35c27738576d",
+  "priorHeadCi": "7/7 passed, Worker file 15/15 and 16/16 total. Verify log SHA256 6ae0cac7896480350030a6e9d6cc8a9ac7089292d97c3ca55db4272f62887a39."
 }

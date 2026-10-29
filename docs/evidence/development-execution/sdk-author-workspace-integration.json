@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.sdk-author-workspace-integration/1",
-  "state": "draft_independently_reproduced_ci_pending",
+  "state": "main_integrated_same_sha_ci_pass_host_scoped",
   "base": "130804ccc4473ce9105e617cc5a6b86583afc75e",
   "testSha256": "b6f1b5a69cdea72f6c484dcd1409628719eb96b35678291ce3e0367b0360776a",
   "archive": "public/toolkits/rockstaros-sky-tool-sdk-0.1.4.tgz",
@@ -9,5 +9,10 @@
   "scenario": "Unpack distributed archive in temp; run its CLI into new empty workspace; offline copy same SDK, explicitly add sample and author declarations; real validator, synthetic review/owner/entitlement, actual connector approval, two non-inference tools, same work route/mii and export builder hash; Connector rejects replay of the same approval; no additional claim request or tool call.",
   "independentReview": "Initial review found missing same-token replay and cleanup; fixed. Independent reviewer reran 1/1 against merged main with new connector; log SHA256 a5f68bb880783564da44da68fa9a179a9c8749501e1cfa44c3f871a9a281cc3c.",
   "limits": "Synthetic identity, review, entitlement and loopback; injected SDK callback fetch terminates locally but no process-wide egress enforcement proven. Export builder is direct, not UI download. No package manager install, publication, external provider, physical device, paid use or inference.",
-  "next": "Run full verify at exact PR head and final independent review."
+  "next": "Earlier candidate supervisor timeout cause remains undetermined; package manager install, UI export, physical/production acceptance remain separate.",
+  "pr": 290,
+  "prHead": "14dfb8e3f391f39824728ac5c3009b1090d21bde",
+  "mergeSha": "3197e82491d7b67b4b6c5f8f90e51b48c92fde74",
+  "candidateCi": "First verify failed existing synthetic Eve supervisor shutdown test: parent did not exit in 8 seconds; cause undetermined. Same SHA attempt 2 verify passed, SDK test and synthetic Eve test ran. Logs SHA256 a8c46c5fec2c67537eb12de9f556f6e08270ba67a3d6c5079ecb07bf36a0d548 (failure) and 29ed8ff9bed0d7a7ad9e2c6aec84f2982be7acfa07185bb7d935bc6f8b32f084 (retry).",
+  "mainCiEvidence": "docs/evidence/development-execution/sdk-author-workspace-main-ci.json"
 }
