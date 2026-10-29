@@ -1,9 +1,9 @@
 {
   "miiRequiredCapabilities": {
     "owner": "ROCK",
-    "status": "draft_targeted_pass_source_review_browser_ci_pending",
+    "status": "draft_browser_pass_codeql_fix_ci_pending",
     "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
-    "next": "Run real browser and full verify in exact-head CI; final independent review before merge."
+    "next": "Verify CDP argument fix in browser and CodeQL at exact head; independent review before merge."
   },
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",

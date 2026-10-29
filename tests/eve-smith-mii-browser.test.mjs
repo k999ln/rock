@@ -191,8 +191,12 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const js = value => JSON.stringify(value);
     const click = async label => { const x = js(label); await wait(`!![...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)`, label);
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
-    const input = async (label, value) => { const a = js(label), v = js(value); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
-      await evaluate(`(()=>{const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(${a})).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,${v});e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`); };
+    const input = async (label, value) => { const a = js(label); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
+      const target = await devtools.call('Runtime.evaluate', { expression: 'window' });
+      const result = await devtools.call('Runtime.callFunctionOn', { objectId: target.result.objectId,
+        functionDeclaration: `function(label,value){const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(label)).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,value);e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}`,
+        arguments: [{ value: label }, { value }], returnByValue: true });
+      if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); };
     const confirmSchema = async () => {
       await wait(`!![...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ担当で仕事の確認へ進む'))`, 'fresh Smith review');
       await evaluate(`document.querySelector('section[aria-label="担当の必要な能力"] input[type="checkbox"]').click()`);
