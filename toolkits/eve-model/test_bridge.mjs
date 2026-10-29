@@ -6,7 +6,8 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import http from 'node:http';
-import {createBridge,validateRun} from './server.mjs';
+import {spawnSync} from 'node:child_process';
+import {createBridge,validateRun,loadBridgeCredentials,bridgeContentSecurityPolicy} from './server.mjs';
 import {Journal} from './journal.mjs';
 import {Planner} from './planner.mjs';
 
@@ -29,10 +30,13 @@ async function fixture(planner,withPhysicalControl=false) {
  }
  const original=planner.generate;
  planner.generate=async(...args)=>{const result=await original(...args);return {...result,binding:result.binding??bridge.binding};};
+ // Known synthetic credentials are fixture inputs, never file-derived data sent
+ // over the transport. The server still exercises its real private-file loader.
+ const credentials={owner:'synthetic-'+crypto.randomUUID(),nonce:'1'.repeat(64),token:'2'.repeat(64),port};
+ fs.writeFileSync(path.join(root,'bridge-credentials.json'),JSON.stringify(credentials),{mode:0o600,flag:'wx'});
  const bridge=await createBridge({root,base:'/synthetic-unused',python:'/synthetic-unused',port,planner});
  await new Promise((resolve,reject)=>{bridge.server.once('error',reject);bridge.server.listen(port,'127.0.0.1',resolve);});
  const target='http://127.0.0.1:'+bridge.server.address().port;
- const credentials=JSON.parse(fs.readFileSync(bridge.credentialsFile,'utf8'));
  const headers={Host:'127.0.0.1:'+port,Origin:'http://127.0.0.1:'+port,'Content-Type':'application/json'};
  const session=await fetch(target+'/api/session',{method:'POST',headers,body:JSON.stringify({nonce:credentials.nonce})});
  if(session.status!==200){const details=await session.text();await bridge.close();throw Error('test session: '+details);}
@@ -168,4 +172,42 @@ test('resource exit75 after a result remains fatal during normal_job_end cleanup
  fs.writeFileSync(shim,script,{mode:0o700});const p=new Planner({python:shim,root:dir,base:dir,expectedBinding:binding});
  try{const result=await p.generate({id:'synthetic-75'},1000);assert.equal(result.raw,'synthetic permitted output');await p.stop('normal_job_end');assert.equal(p.halted,true);await assert.rejects(p.start(),/halted/);}
  finally{await p.stop('owner_stop');fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('credential identity is pinned to a private regular file without following links',()=>{
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'eve-credential-unit-'));
+ try{
+  const file=path.join(root,'credentials.json');const created=loadBridgeCredentials(file,19999);
+  assert.deepEqual(loadBridgeCredentials(file,19999),created);
+  assert.equal(fs.statSync(file).mode&0o777,0o600);
+  assert.throws(()=>loadBridgeCredentials(file,19998),/port mismatch/);
+  const link=path.join(root,'link.json');fs.symlinkSync(file,link);
+  assert.throws(()=>loadBridgeCredentials(link,19999));
+  assert.deepEqual(loadBridgeCredentials(file,19999),created);
+  const hardlink=path.join(root,'hardlink.json');fs.linkSync(file,hardlink);
+  assert.throws(()=>loadBridgeCredentials(file,19999),/private owned/);
+  fs.unlinkSync(hardlink);fs.chmodSync(file,0o644);
+  assert.throws(()=>loadBridgeCredentials(file,19999),/private owned/);
+  assert.equal(fs.statSync(file).mode&0o777,0o644);
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
+test('CSP binds uppercase and mixed-case script tags and refuses ambiguous templates',()=>{
+ const script='globalThis.synthetic=1;';
+ const expected=crypto.createHash('sha256').update(script).digest('base64');
+ for(const html of ['<script>'+script+'</script>','<SCRIPT>'+script+'</SCRIPT>','<ScRiPt>'+script+'</sCrIpT>'])assert.ok(bridgeContentSecurityPolicy(html).includes("script-src 'sha256-"+expected+"'"));
+ assert.throws(()=>bridgeContentSecurityPolicy('<p>none</p>'),/exactly one/);
+ assert.throws(()=>bridgeContentSecurityPolicy('<script>a</script><SCRIPT>b</SCRIPT>'),/exactly one/);
+});
+
+test('an existing credential FIFO is rejected without waiting for a writer',()=>{
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'eve-credential-fifo-unit-'));
+ try{
+  const fifo=path.join(root,'credentials.json');
+  const made=spawnSync('mkfifo',['-m','600',fifo],{encoding:'utf8',timeout:2000});
+  assert.equal(made.status,0,String(made.error??made.stderr));
+  const script='import assert from "node:assert/strict";import {loadBridgeCredentials} from '+JSON.stringify(new URL('./server.mjs',import.meta.url).href)+';assert.throws(()=>loadBridgeCredentials(process.argv[1],19999),/private owned/);';
+  const child=spawnSync(process.execPath,['--input-type=module','--eval',script,fifo],{encoding:'utf8',timeout:2000});
+  assert.equal(child.error,undefined,String(child.error));
+  assert.equal(child.status,0,child.stderr);
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
 });

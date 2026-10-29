@@ -20,6 +20,7 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   const place = useRef(1), scene = useRef(1), inputEpoch = useRef(0);
   const leaseEpoch = useRef(0);
   const [text, setText] = useState('');
+  const [requiredText, setRequiredText] = useState('');
   const available = useRef(inputAvailable);
   const context = (value: WorkJob, owner: string) => `${owner}\0${value.id}\0${value.revision}\0${value.agentBinding?.agentId ?? ''}\0${value.agentBinding?.agentRevision ?? ''}`;
   const currentContext = context(job, ownerScope);
@@ -34,7 +35,7 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   if (renderInputAvailable !== inputAvailable) { setRenderInputAvailable(inputAvailable); setBudget(null); }
   if (renderContext !== currentContext) {
     setRenderContext(currentContext);
-    if (current?.context !== currentContext) { setCurrent(null); setBudget(null); setConfirmed(false); setMessage(''); setText(''); }
+    if (current?.context !== currentContext) { setCurrent(null); setBudget(null); setConfirmed(false); setMessage(''); setText(''); setRequiredText(''); }
   }
   useEffect(() => {
     const lease = leaseEpoch, input = inputEpoch, ownedAdapter = adapter;
@@ -132,7 +133,8 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
   function stageInput() {
     if (busy || !visible || !onInput || !inputAvailable || !text.trim() || text.length > 4000) return;
     try {
-      const guard = adapter.current!.createInputGuard(), epoch = ++inputEpoch.current;
+      const required = requiredText.trim() ? JSON.parse(requiredText) as unknown : undefined;
+      const guard = adapter.current!.createInputGuard(required), epoch = ++inputEpoch.current;
       const sourceJob = visible.job, owner = ownerScope;
       let acceptedContext = activeContext.current;
       const isCurrent = () => available.current && inputEpoch.current === epoch &&
@@ -147,7 +149,16 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
           setCurrent(value => value && current && value.epoch === current.epoch ? { ...value, context: acceptedContext, value: { ...visible, job: next } } : value); onRead(next);
         } });
       setMessage('同じ仕事のTool確認画面へ入力を渡しました。上の実行内容と引数を確認し、今回の実行を承認してください。観測期限は読み取りから30秒です。');
-    } catch { setMessage('入力の観測または仕事の状態が古くなりました。同じ仕事を読み直してください。'); }
+    } catch (error) {
+      const code = error && typeof error === 'object' && 'message' in error ? String(error.message) : '';
+      setMessage(code === 'MII_CAPABILITY_MISSING'
+        ? '指定した必要能力は不足しています。入力を渡しません。保存済みの仕事は読めます。'
+        : code === 'MII_CAPABILITIES_UNCONFIRMED'
+        ? '指定した必要能力は未確認です。入力を渡しません。保存済みの仕事は読めます。'
+        : code === 'MII_CAPABILITY_REQUIREMENTS_INVALID' || error instanceof SyntaxError
+          ? '必要能力のJSONを確認してください。入力を渡しません。'
+          : '入力の観測または仕事の状態が古くなりました。同じ仕事を読み直してください。');
+    }
   }
   async function cancel() {
     if (busy || !visible || !confirmed || !adapter.current) return;
@@ -174,6 +185,10 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
       <p>音声の代わりに文章を入力します。選んだ互換Toolへ同じ仕事で渡し、実行には別途承認が必要です。</p>
       <label>miiへの合成テキスト<textarea maxLength={4000} value={text}
         onChange={event => { inputEpoch.current++; setText(event.target.value); }} /></label>
+      <label>追加の必要能力（JSON、任意）<textarea maxLength={2048} value={requiredText}
+        placeholder={'例: {"executor":["model.inference"],"output":["audio.render"]}'}
+        onChange={event => { inputEpoch.current++; setRequiredText(event.target.value); setMessage(''); }} /></label>
+      <p>host・executor・outputごとの能力IDを指定できます。空欄は追加条件なしです。宣言の照合は権限や実機の証明ではありません。</p>
       <button type="button" disabled={busy || !visible || !inputAvailable || !text.trim() || visible.job.status !== 'active' ||
         visible.cancelReconciliation !== 'clear' || Boolean(visible.job.toolAttempts?.length)} onClick={stageInput}>同じ仕事のTool確認へ渡す</button>
       {!inputAvailable && <p>先にこの担当の互換runtime/toolを選んでください。対応しない能力へは渡せません。</p>}

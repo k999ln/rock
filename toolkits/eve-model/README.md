@@ -42,6 +42,8 @@ All runs share a durable128-update/1800-second reservation. Unknown updates stay
 
 The supervisor owns only its child, propagates SIGTERM/SIGINT, then uses terminate→bounded wait→kill→wait. Full receipts and adapter weights remain in the run directory.
 
+The separate CPU-only audit of installed MLX-LM0.32.2 confirmed one extra trailing padding target (token ID0, `!`) in all240 training and8 validation rows, with normal prefixes and unchanged historical integration-request hashes. This observation does not establish the cause of repeated-schema output. The saved failed candidate, its runtime and recipe remain unchanged. A future independently reviewed loss-boundary fix, frozen protocol and fresh training/comparison are required; this candidate is not a corrected model. The existing16 teacher-forced validation batches are already consumed, and this session performs no further model trial. Audit review SHA256: `5213d9f73c6f18ed3519bbd3e7f943af61dab01490c8e4c3200e20ca737b916f`.
+
 ## Pixel client route
 
 After candidate creation and independent bridge review:

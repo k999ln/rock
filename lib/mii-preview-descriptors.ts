@@ -4,7 +4,7 @@ import { describeAdapter } from './rockstar-adapters.ts';
 export function describeMiiPreviewRead(now = Date.now()) {
   return {
     host: describeAdapter('mii-preview-host', 'host', 'web', { 'work.owner-scoped-read': true }, now),
-    executor: describeAdapter('mii-preview-reader', 'executor', 'web', { 'work.read': true }, now),
-    output: describeAdapter('mii-preview-text', 'output', 'web', { 'output.text': true }, now),
+    executor: describeAdapter('mii-preview-reader', 'executor', 'web', { 'work.read': true, 'model.inference': false }, now),
+    output: describeAdapter('mii-preview-text', 'output', 'web', { 'output.text': true, 'audio.render': false, 'space.render': false }, now),
   };
 }

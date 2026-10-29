@@ -217,7 +217,24 @@
         "fail": 0,
         "skip": 4
       },
-      "logSha256": "ed211abcfbb8a18de1947dbb1115f161b1df90d4755f3403d759015e8b8e3b4e"
+      "logSha256": "ed211abcfbb8a18de1947dbb1115f161b1df90d4755f3403d759015e8b8e3b4e",
+      "inputBase": "c53ffad64e3502af9e853b73134fc1430176649a"
+    },
+    "mainSyncVerifyBeforeSecurity": {
+      "base": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+      "exitCode": 0,
+      "total": 3469,
+      "pass": 3465,
+      "fail": 0,
+      "skip": 4,
+      "scope": "Pre-security-fix snapshot; final security-fixed candidate requires revalidation"
+    },
+    "securityFixedFirstFullVerify": {
+      "exitCode": 1,
+      "failure": "Existing project-bot-context temporary-directory cleanup ENOTEMPTY",
+      "cause": "Not established; not changed by this security patch",
+      "logSha256": "bdb751a934ad079d95efe6b68d81c137da13d061f9f27a3c9be0647b4091e2a5",
+      "next": "Targeted bot11/11 and full same-source rerun exit0; original failure retained"
     }
   },
   "next": "Metadata frozen for author exact-source commit/push/draft PR. Then hand off to Git integrator for guarded main integration and exact-head/main CI under separate authorization. Preserve quality FAIL/wholePixel FAIL and all original failed/unknown cases; do not install candidate as default.",
@@ -359,5 +376,76 @@
     "stoppedWhenOwnedTabNotConfirmed": true,
     "OSDeviceLeaseReturnedOwnerReported": true,
     "rawPidSerialNonceUrlsOrPrivatePathsPublished": false
-  }
+  },
+  "GitIntegration": {
+    "pr": 288,
+    "url": "https://github.com/k999ln/rock/pull/288",
+    "originalSourceHead": "2d11f54521e1c0c5f636d5bdc399c5fb5cd81a5b",
+    "synchronizedMain": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+    "mainChangedPaths": 25,
+    "mainAdvancedCommits": 33,
+    "overlap": [
+      "README.md",
+      "data/project-status.json",
+      "project.md"
+    ],
+    "mergedBothProgressSides": true,
+    "reviewed29SourceHashesPreserved": false,
+    "protectedRawOriginal": "existence metadata only; no content fetched/read/hashed/copied",
+    "syncVerification": {
+      "exitCode": 0,
+      "base": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+      "nodeTests": {
+        "total": 3469,
+        "pass": 3465,
+        "fail": 0,
+        "skip": 4
+      },
+      "logSha256": "56e935356e0a21dd12b7d012b8b18d2b5e6cf6b851869db142ab73d4374f8009",
+      "initialBotCleanupFailurePreserved": true
+    },
+    "headCI": "pending for post-sync commit",
+    "mainIntegrated": false,
+    "preSecuritySyncPreserved29ReviewedSourceHashes": true,
+    "securityPatchPaths": [
+      "toolkits/eve-model/server.mjs",
+      "toolkits/eve-model/test_bridge.mjs"
+    ],
+    "securityFindings": {
+      "originalHead": "2d11f54521e1c0c5f636d5bdc399c5fb5cd81a5b",
+      "CodeQL": {
+        "high": 2,
+        "medium": 1
+      },
+      "scope": [
+        "credential filesystem check/use race",
+        "case-sensitive script extraction",
+        "file-derived synthetic test nonce outbound"
+      ]
+    },
+    "securityFix": "Exclusive/no-follow descriptor credentials with fstat/private-file validation and nonblocking special-file refusal; case-insensitive exact-script CSP hashing; known in-memory synthetic test auth values",
+    "securityIndependentReview": {
+      "verdict": "PASS_SCOPED",
+      "mustFixCount": 0,
+      "receiptSha256": "d6613a871baded5f8e8e936e6ae279454c2aa873f4c0a77ba69e18c552ccbec9",
+      "reviewedSourceHashes": {
+        "toolkits/eve-model/server.mjs": "c3eb1d1b9e648bad15b21ceef31727eb8509762342ed55e4537df5c2d416da9f",
+        "toolkits/eve-model/test_bridge.mjs": "f9f3fa2a30d1d105d54ad9d12add1a857d2025e8e8cfde43f72994a30a30efc3"
+      },
+      "scope": "Synthetic host security difference review only; no new physical/model acceptance"
+    },
+    "securityVerification": "Focused synthetic controls passed; final full verify and same-head CodeQL pending",
+    "physicalEvidenceQualification": "Original source/candidate physical report preserved at author head; these two later security-fix files were not re-exercised on Pixel, and do not receive new physical acceptance."
+  },
+  "followUpHypotheses": [
+    {
+      "observation": "CPU-only audit confirmed one extra trailing padding target ID0(!) in all240train/8validation rows of installed MLX-LM0.32.2; prefixes normal and historical request hashes matched",
+      "reviewVerdict": "CONFIRMED_CPU_ONLY_OBSERVATION",
+      "reviewSha256": "5213d9f73c6f18ed3519bbd3e7f943af61dab01490c8e4c3200e20ca737b916f",
+      "causality": "Schema repetition causality not proven",
+      "next": "Separately reviewed explicit loss boundary, frozen protocol and fresh retraining/comparison; no large runner/loss patch or new trial in this integration",
+      "frozenCandidateCorrected": false,
+      "teacherForcedValidationAlreadyConsumed": 16
+    }
+  ]
 }

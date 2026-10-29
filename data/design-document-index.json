@@ -159,10 +159,12 @@
       "tests": [
         "tests/mii-work-adapter.test.mjs",
         "tests/mii-work-preview-ui.test.mjs",
-        "tests/eve-smith-mii-browser.test.mjs"
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/fixtures/eve-smith-mii-browser/mii-preview-descriptors.ts"
       ],
       "evidence": "docs/evidence/development-execution/mii-portable-read-descriptors.json",
-      "scope": "declared read-only capability snapshot, not identity or hardware authority"
+      "scope": "declared read-only capability snapshot, not identity or hardware authority",
+      "browserEvidence": "docs/evidence/development-execution/mii-short-lease-browser.json"
     },
     "sdkDeclaredExample": {
       "authority": "docs/sky-tool-sdk.md",
@@ -179,6 +181,21 @@
       ],
       "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
       "scope": "unpacked SDK sample with synthetic local authority; no publication or general sandbox acceptance"
+    },
+    "requiredActionCapabilities": {
+      "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "implementation": [
+        "lib/mii-work-adapter.ts",
+        "lib/mii-preview-descriptors.ts",
+        "components/mii-work-preview.tsx"
+      ],
+      "tests": [
+        "tests/mii-work-adapter.test.mjs",
+        "tests/mii-work-preview-ui.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
+      "scope": "explicit owner-defined action capability IDs; missing or unconfirmed refuses staging, read-only job remains available, no authority grant"
     }
   },
   "latestRockstarOsDesign": {

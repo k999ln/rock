@@ -8,6 +8,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createMiiWorkAdapter } from '../lib/mii-work-adapter.ts';
 import { describeAdapter } from '../lib/rockstar-adapters.ts';
+import { describeMiiPreviewRead } from '../lib/mii-preview-descriptors.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { createWorkJob, applyWorkCommand } from '../lib/workflow.ts';
 import { skyAgentLibraryStore } from '../lib/sky-agent-library-store.ts';
@@ -19,6 +20,31 @@ const at = 1000;
 const observation = (patch = {}) => ({ bootId: 'boot-1', placeEpoch: 1, sequence: 1,
   sceneRevision: 1, observedAt: at, expiresAt: at + 10000, attached: true, tracking: 'tracked', ...patch });
 const deferred = () => { let resolve; const promise = new Promise(r => { resolve = r; }); return { resolve, promise }; };
+
+void test('explicit unavailable action capabilities do not hide saved work or fall back', async t => {
+  const f = await fixture(t), declarations = describeMiiPreviewRead(at);
+  const adapter = createMiiWorkAdapter({ fetchImpl: f.fetchImpl, journal: f.journal, now: () => at, descriptors: () => declarations });
+  adapter.observe(observation());
+  const first = await adapter.readExisting(f.reference);
+  assert.equal(first.job.id, f.job.id); assert.equal(adapter.createInputGuard()(), true);
+  assert.equal(adapter.createInputGuard({output:['output.text']})(), true);
+  const before = f.calls.length;
+  for (const requested of [{executor:['model.inference']},{output:['audio.render']},{output:['space.render']}])
+    assert.throws(() => adapter.createInputGuard(requested), /MII_CAPABILITY_MISSING/);
+  assert.throws(() => adapter.createInputGuard({output:['unknown.capability']}), /MII_CAPABILITIES_UNCONFIRMED/);
+  assert.throws(() => adapter.createInputGuard({host:['unknown.capability'],output:['audio.render']}), /MII_CAPABILITY_MISSING/);
+  assert.throws(() => adapter.createInputGuard({output:'audio.render'}), /MII_CAPABILITY_REQUIREMENTS_INVALID/);
+  assert.equal(f.calls.length, before, 'capability rejection must not dispatch or fall back');
+  const reread = await adapter.readExisting(f.reference); assert.equal(reread.job.id, first.job.id);
+  declarations.output.capabilities['audio.render'] = true;
+  assert.throws(() => adapter.createInputGuard({output:['audio.render']}), /MII_CAPABILITY_MISSING/, 'provider mutation cannot change a prior observation');
+  await f.adapter.readExisting(f.reference);
+  assert.throws(() => f.adapter.createInputGuard({executor:['model.inference']}), /MII_CAPABILITIES_UNCONFIRMED/, 'legacy reader cannot invent capability declarations');
+  const unknown = describeMiiPreviewRead(at); unknown.output.capabilities['nullable.output'] = null;
+  const other = createMiiWorkAdapter({ fetchImpl:f.fetchImpl, journal:f.journal, now:()=>at, descriptors:()=>unknown });
+  other.observe(observation()); await other.readExisting(f.reference);
+  assert.throws(() => other.createInputGuard({output:['nullable.output']}), /MII_CAPABILITIES_UNCONFIRMED/);
+});
 
 void test('supplied preview descriptors fence the real same-job reader without granting authority', async t => {
   const f = await fixture(t); let clock = at;

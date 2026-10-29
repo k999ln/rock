@@ -1,0 +1,39 @@
+{
+  "schema": "rockstaros.mii-worker-unknown-draft/1",
+  "base": "c53ffad64e3502af9e853b73134fc1430176649a",
+  "state": "previous_head_independent_ci_reproduced_exact_head_pending",
+  "sourceSha256": {
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "df5cfe22c46f56098febf2efe58e6d9ca1d255a05f4070b3fbefb87882413ae0",
+    "services/sky-agent-runtime/vitest.config.ts": "340a9ff6e5201c61d00fd295ff31ba7d15a1ed0c54ff19e51bbc0a2592b79afd"
+  },
+  "intent": "Link the real workflow response-loss fixture and existing work/delegation routes with the same synthetic mii job and held reservation; explicit remote cancellation remains a separate request.",
+  "limits": "Synthetic identity, provider transport, seeded Agent binding and D1 journal. The local cancel response loss is not remote cancellation response loss; separate remote cancel without a task ID remains unconfirmed. No signed terminal receipt, real provider, physical stop or production acceptance is asserted.",
+  "review": "source-only preliminary review; exact repaired test and CI require independent review",
+  "next": "Confirm exact new head CI and independently review metadata. A local targeted test has not been run; remote cancellation response loss and signed terminal receipt remain separate.",
+  "inference": false,
+  "actualDevice": false,
+  "initialCiFailure": {
+    "head": "40d4807005dbfc31e59bf3f9385beeb15d2bd1b2",
+    "run": 40846116619,
+    "reason": "workerd Request rejects redirect:error in the local relay; the fixture now uses manual redirect and explicitly rejects 3xx. The fix is not yet tested.",
+    "logSha256": "84cb4b6241931103d7470ae28c54427692ee9832b0590cedcb5b51ad40bf192d"
+  },
+  "ciVerification": {
+    "head": "405048b292e858a948366333e999da94a7debf61",
+    "run": 40846607347,
+    "job": 123355526551,
+    "checks": "7 of 7 passed, CodeQL no new alerts",
+    "workerTestFile": "13 tests passed; 2 worker test files / 14 tests passed",
+    "logSha256": "9a8d698ccc45810eef7a9895dc2685d68dfa99977e55b9e3ec7cc84d5119551b",
+    "review": "independent bounded review passed; no independent local test was run"
+  },
+  "independentReproduction": {
+    "head": "33ffc985a6c17c2e627ecbbdf664e739a7817f9c",
+    "run": 40847737598,
+    "attempt": 2,
+    "job": 123362621298,
+    "result": "independent reviewer reran full verify on GitHub; target Worker file 13 tests, 2 Worker files/14 tests passed",
+    "logSha256": "e1d8c62fd46443f9101b64a44d8004d965983fac9eadaa9402f3f02625aaa0e4",
+    "localTest": "not run; shared Mac resources preserved"
+  }
+}

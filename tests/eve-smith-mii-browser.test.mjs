@@ -21,12 +21,15 @@ import { buildSkyOwnerExport } from '../lib/sky-owner-export.ts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const fixture = path.join(root, 'tests/fixtures/eve-smith-mii-browser');
-const chrome = process.env.ROCK_TEST_CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const chromeCandidates = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable', '/usr/bin/chromium', '/usr/bin/chromium-browser'];
+const chrome = process.env.ROCK_TEST_CHROME || chromeCandidates.find(existsSync) || chromeCandidates[0];
 
 async function compile() {
   const result = await build({ entryPoints: [path.join(fixture, 'entry.tsx')], bundle: true, write: false,
     platform: 'browser', jsx: 'automatic', logLevel: 'silent', plugins: [{ name: 'fixture-adapters', setup(build) {
       build.onResolve({ filter: /^@\/lib\/device$/ }, args => args.importer.endsWith('/lib/mcp-hub.ts') ? { path: path.join(fixture, 'device.ts') } : undefined);
+      build.onResolve({ filter: /^@\/lib\/mii-preview-descriptors$/ }, () => ({ path: path.join(fixture, 'mii-preview-descriptors.ts') }));
       build.onResolve({ filter: /^@\// }, args => build.resolve('./' + args.path.slice(2), { resolveDir: root, kind: args.kind }));
       build.onResolve({ filter: /^next\/link$/ }, () => ({ path: path.join(fixture, 'next-link.tsx') }));
       build.onResolve({ filter: /^next\/navigation$/ }, () => ({ path: path.join(fixture, 'navigation.ts') }));
@@ -44,14 +47,17 @@ function cdp(url) {
     const { resolve, reject } = requests.get(item.id); requests.delete(item.id);
     if (item.error) reject(new Error(item.error.message)); else resolve(item.result);
   } });
-  return { open, close: () => socket.close(), async call(method, params = {}) {
+  return { open, close: () => socket.close(), onMessage: listener => {
+    const handler = event => listener(JSON.parse(event.data)); socket.addEventListener('message', handler);
+    return () => socket.removeEventListener('message', handler);
+  }, async call(method, params = {}) {
     await open; const id = ++sequence; const promise = new Promise((resolve, reject) => requests.set(id, { resolve, reject }));
     socket.send(JSON.stringify({ id, method, params })); return promise;
   } };
 }
 
 for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Smith, real Connector and ${localAuthority ? 'local preview authority' : 'unavailable authority'}`,
-  { timeout: 60000, skip: !existsSync(chrome) && 'ROCK_TEST_CHROME must point to an installed Chrome/Chromium' }, async t => {
+  { timeout: 90000, skip: !existsSync(chrome) && 'ROCK_TEST_CHROME must point to an installed Chrome/Chromium' }, async t => {
     const dir = await mkdtemp(path.join(tmpdir(), 'rock-browser-fixture-'));
     const resources = { child: null, server: null, connectorUrl: '', connectorToken: '' };
     t.after(async () => {
@@ -174,22 +180,59 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const profile = path.join(dir, 'chrome');
     resources.child = spawn(chrome, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-background-networking',
       '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1', `--user-data-dir=${profile}`, '--remote-debugging-port=0', 'about:blank'], { stdio: 'ignore' });
-    let port; for (let i = 0; i < 100; i++) {
+    let port; for (let i = 0; i < 300; i++) {
       try { port = Number((await readFile(path.join(profile, 'DevToolsActivePort'), 'utf8')).split('\n')[0]); if (port > 0) break; } catch { /* Chrome has not published its port yet. */ }
+      if (resources.child.exitCode !== null || resources.child.signalCode !== null) break;
       await new Promise(r => setTimeout(r, 100));
     }
     assert.ok(port, 'isolated Chrome profile did not start');
     const tab = await (await fetch(`http://127.0.0.1:${port}/json/new?${encodeURIComponent(base)}`, { method: 'PUT' })).json();
     const devtools = cdp(tab.webSocketDebuggerUrl); t.after(() => devtools.close()); await devtools.open;
     await devtools.call('Runtime.enable');
+    await devtools.call('Page.enable');
+    await devtools.call('Page.setLifecycleEventsEnabled', { enabled: true });
+    const navigateAndWait = async (method, params = {}) => {
+      const bounded = async promise => {
+        let timer;
+        try { return await Promise.race([promise, new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error('browser navigation did not finish')), 15000);
+        })]); } finally { clearTimeout(timer); }
+      };
+      const previous = (await bounded(devtools.call('Page.getFrameTree'))).frameTree.frame;
+      let loader, unsubscribe;
+      const loadedLoaders = new Set();
+      const loaded = new Promise(resolve => {
+        const complete = () => { if (loader && loadedLoaders.has(loader)) resolve(loader); };
+        unsubscribe = devtools.onMessage(event => {
+          if (event.method === 'Page.frameNavigated' && event.params.frame.id === previous.id &&
+              event.params.frame.loaderId !== previous.loaderId) { loader = event.params.frame.loaderId; complete(); }
+          if (event.method === 'Page.lifecycleEvent' && event.params.frameId === previous.id &&
+              event.params.name === 'load' && event.params.loaderId !== previous.loaderId) {
+            loadedLoaders.add(event.params.loaderId); complete();
+          }
+        });
+      });
+      try {
+        const [response, loadedLoader] = await bounded(Promise.all([devtools.call(method, params), loaded]));
+        if (response.errorText || (method === 'Page.navigate' &&
+            (response.frameId !== previous.id || response.loaderId !== loadedLoader))) {
+          throw new Error('browser navigation response did not match loaded frame');
+        }
+      }
+      finally { unsubscribe(); }
+    };
     const evaluate = async expression => { const result = await devtools.call('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); return result.result.value; };
     async function wait(expression, label) { for (let i = 0; i < 120; i++) { if (await evaluate(expression)) return; const errors = await evaluate('window.__fixtureErrors'); if (errors?.length) throw new Error(`browser error: ${JSON.stringify(errors)} lines ${JSON.stringify(bundleLines.slice(errors[0][2] - 4, errors[0][2] + 1))}`); await new Promise(r => setTimeout(r, 100)); } throw new Error(`browser timeout: ${label}; ${JSON.stringify(await evaluate('({href:location.href, ready:document.readyState, text:document.body?.innerText, errors:window.__fixtureErrors})'))}`); }
     const js = value => JSON.stringify(value);
     const click = async label => { const x = js(label); await wait(`!![...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)`, label);
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
-    const input = async (label, value) => { const a = js(label), v = js(value); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
-      await evaluate(`(()=>{const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(${a})).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,${v});e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`); };
+    const input = async (label, value) => { const a = js(label); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
+      const target = await devtools.call('Runtime.evaluate', { expression: 'window' });
+      const result = await devtools.call('Runtime.callFunctionOn', { objectId: target.result.objectId,
+        functionDeclaration: `function(label,value){const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(label)).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,value);e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));}`,
+        arguments: [{ value: label }, { value }], returnByValue: true });
+      if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); };
     const confirmSchema = async () => {
       await wait(`!![...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ担当で仕事の確認へ進む'))`, 'fresh Smith review');
       await evaluate(`document.querySelector('section[aria-label="担当の必要な能力"] input[type="checkbox"]').click()`);
@@ -221,6 +264,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await input('担当の名前', 'fixture担当'); await input('何を手伝う担当ですか', '文章の行数を確認'); await input('受け取るもの', 'text'); await input('期待する成果', 'lines');
     await click('内容を確認'); await click('確認して保存');
     await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'Smith');
+    await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));const id=window.__fixtureServers?.[0]?.id;return !!l && !!id && [...l.querySelectorAll('option')].some(o=>o.value===JSON.stringify([id,'count_lines']));})()`, 'Smith connection loaded');
     await input('必要な入力項目', 'text'); await input('必要な成果項目', 'lines'); await input('Tool', packageKey); await input('実行先', 'pc');
     await input('期待する入力型',JSON.stringify({text:'string'}));await input('期待する成果型',JSON.stringify({lines:'integer'}));
     await input('必要な処理能力ID',JSON.stringify(['example.count-lines']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
@@ -327,7 +371,29 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('取得時点の委任予算')`, 'same-job budget');
     assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /MCP Toolの料金や請求確定額ではありません/);
 
-    await input('miiへの合成テキスト', 'one\ntwo\nthree'); await click('同じ仕事のTool確認へ渡す');
+    await input('miiへの合成テキスト', 'one\ntwo\nthree');
+    const runtimeTask = `(()=>{const label=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('このruntimeへ渡す依頼'));return label?.querySelector('textarea')?.value;})()`;
+    const runtimeBefore = await evaluate(runtimeTask);
+    assert.equal(typeof runtimeBefore, 'string'); assert.notEqual(runtimeBefore, 'one\ntwo\nthree');
+    const payloadBeforeCapabilities = sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(firstJobId).payload;
+    for (const requirement of [{executor:['model.inference']},{output:['audio.render']},{output:['space.render']}]) {
+      await input('追加の必要能力', JSON.stringify(requirement));
+      await click('同じ仕事のTool確認へ渡す');
+      await wait('document.body.innerText.includes("指定した必要能力は不足しています")', 'required capability refused');
+      assert.equal(connectorExecuteCalls, 0);
+      assert.equal(requests.filter(r => r.path.endsWith('/tool-observations')).length, 0);
+      assert.equal(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(firstJobId).payload, payloadBeforeCapabilities);
+      assert.equal(await evaluate(runtimeTask), runtimeBefore);
+      assert.ok(await evaluate(`!!document.querySelector('[aria-label="miiから見た同じ仕事"]')`));
+    }
+    await input('追加の必要能力', JSON.stringify({output:['unknown.custom']}));
+    await click('同じ仕事のTool確認へ渡す');
+    await wait('document.body.innerText.includes("指定した必要能力は未確認です")', 'unknown required capability refused');
+    assert.equal(connectorExecuteCalls, 0);
+    assert.equal(requests.filter(r => r.path.endsWith('/tool-observations')).length, 0);
+    assert.equal(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(firstJobId).payload, payloadBeforeCapabilities);
+    assert.equal(await evaluate(runtimeTask), runtimeBefore);
+    await input('追加の必要能力', ''); await click('同じ仕事のTool確認へ渡す');
     await click('実行内容を確認'); await click('追跡喪失を模擬');
     assert.equal(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('取得時点の委任予算') ?? false`), false);
     await click('内容を承認して実行');
@@ -388,9 +454,28 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload).toolObservations[0].text, job.toolObservations[0].text);
       await click('miiから同じ仕事を確認');
       await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'explicit reread restores saved result');
+      // Real component + real adapter receive a shorter host descriptor. The
+      // saved job remains intact when its output lease expires.
+      await evaluate('window.__fixtureMiiTtl=1000');
+      const payloadBeforeShort = sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload;
+      const readsBeforeShort = requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length;
+      await click('miiから同じ仕事を確認');
+      for (let i=0; i<200 && requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length === readsBeforeShort; i++)
+        await new Promise(resolve => setTimeout(resolve, 10));
+      assert.equal(requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length, readsBeforeShort + 1);
+      await wait(`document.body.innerText.includes('同じ担当と仕事を読み直しました') && ![...document.querySelectorAll('button')].find(e=>e.textContent.includes('miiから同じ仕事を確認'))?.disabled`, 'short descriptor fresh read completes');
+      await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'short descriptor read');
+      await evaluate('window.__fixtureClockOffset=1500;document.dispatchEvent(new Event("visibilitychange"))');
+      await wait(`!document.querySelector('[aria-label="miiから見た同じ仕事"]')`, 'short descriptor expiry hides output');
+      assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload).toolObservations[0].text, job.toolObservations[0].text);
+      assert.equal(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload, payloadBeforeShort);
+      await evaluate('window.__fixtureClockOffset=0;delete window.__fixtureMiiTtl');
+      await click('miiから同じ仕事を確認');
+      await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'reread after short lease');
     }
-    await devtools.call('Page.reload');
+    await navigateAndWait('Page.reload');
     await wait('document.body.innerText.includes("mii連携のソフト試用")', 'mii after reload');
+    await wait(`!!document.querySelector('[aria-label="ローカルMCP runtimeへのPackage capability binding"]')`, 'package binding settled after reload');
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'same job after reload');
     if (localAuthority) assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"lines"\s*:\s*3/);
@@ -412,12 +497,13 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     if (localAuthority) {
       // The second role has a different purpose, Package, input/output schema
       // and Tool, but uses the same real UI, routes, Connector and mii adapter.
-      await devtools.call('Page.navigate', { url: base });
+      await navigateAndWait('Page.navigate', { url: base });
       await wait('document.body.innerText.includes("自分の担当を作る")', 'second Eve role'); await click('自分の担当を作る');
       await input('担当の名前', '合計担当'); await input('何を手伝う担当ですか', '二つの整数を合計');
       await input('受け取るもの', 'left と right'); await input('期待する成果', 'sum');
       await click('内容を確認'); await click('確認して保存');
       await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'second Smith review');
+      await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));const id=window.__fixtureServers?.[0]?.id;return !!l && !!id && [...l.querySelectorAll('option')].some(o=>o.value===JSON.stringify([id,'add_integers']));})()`, 'second Smith connection loaded');
       await input('必要な入力項目', 'left\nright'); await input('必要な成果項目', 'sum');
       await input('Tool', packages[1].packageKey); await input('実行先', 'pc');
       await input('期待する入力型',JSON.stringify({left:'integer',right:'integer'}));await input('期待する成果型',JSON.stringify({sum:'integer'}));
@@ -446,8 +532,9 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       assert.deepEqual(claimContracts[1], { inputSchemaSha256: await skyPackageSchemaSha256(packages[1].manifest.io.inputSchema),
         outputSchemaSha256: await skyPackageSchemaSha256(packages[1].manifest.io.outputSchema), transport: 'local_http' });
       assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, 2); assert.equal(connectorExecuteCalls, 2);
-      await devtools.call('Page.reload');
+      await navigateAndWait('Page.reload');
       await wait('document.body.innerText.includes("mii連携のソフト試用")', 'second mii after reload');
+      await wait(`!!document.querySelector('[aria-label="ローカルMCP runtimeへのPackage capability binding"]')`, 'second package binding settled after reload');
       await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
       await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'second same job after reload');
       assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /"sum"\s*:\s*11/);
@@ -518,7 +605,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       const jobsBefore = sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n;
       const createsBefore = creationRequests.length, callsBefore = connectorExecuteCalls;
       const claimsBefore = requests.filter(r => r.path.endsWith('/tool-observations/claim')).length;
-      await devtools.call('Page.navigate', { url: base });
+      await navigateAndWait('Page.navigate', { url: base });
       await wait('document.body?.innerText.includes("自分の担当を作る")', 'unsupported Eve role');
       await click('自分の担当を作る');
       await input('担当の名前', '画像説明担当'); await input('何を手伝う担当ですか', '画像の内容を説明する');

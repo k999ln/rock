@@ -48,9 +48,11 @@ Smithは担当が列挙していないToolの必須入力を不足、schemaを�
 
 miiソフト画面の委任予算は、同じ本人・job IDを付けた既存A2A読取を明示操作で照合する。APIは本人scopeと対象job IDを返し、adapterは一致、数値、通貨、観測期限、並行読取と対象revisionを検査する。読取不能・本人違い・失効は未確認、記録なしは取得時点の記録なしと表示し、再接続で自動実行しない。上限・予約・利用量記録は取得日時付きの委任予算であり、MCP Tool料金や請求確定額ではない。30秒表示制限はソフト画面のみで、background timer・実機・実請求の受入ではない。[証拠](../evidence/development-execution/mii-budget-readback.json)。
 
-miiソフト試用の表示は読取時の観測世代と期限に結び、期限・追跡喪失・取り外し・boot/scene変更・本人/仕事切替・停止要求で旧表示と入力を失効する。保存成果は消さず、明示的な読直しで再表示する。時計巻戻りや古いtimer/応答、unmount後の遅延読取で旧内容を復活させない。表示期限の検知はJS timerとfocus/visibility eventに依存し、background遅延・短時間の時計巻戻りの完全検知や独立した実機出力leaseは保証しない。[証拠](../evidence/development-execution/mii-output-lease.json)。 hostがread-only接続にhost/executor/outputの宣言を供給する場合、有限版・必要能力・最短期限を照合し、検証済み期限を読戻しと表示に伝える。宣言は観測時のsnapshotで、期限前の変更はhost側の再観測・切断通知が必要。宣言は本人確認・実行権限・機器実在を証明しない。従来のdescriptorなし経路は旧client互換として残す。[試験](../evidence/development-execution/mii-portable-read-descriptors.json)。
+miiソフト試用の表示は読取時の観測世代と期限に結び、期限・追跡喪失・取り外し・boot/scene変更・本人/仕事切替・停止要求で旧表示と入力を失効する。保存成果は消さず、明示的な読直しで再表示する。時計巻戻りや古いtimer/応答、unmount後の遅延読取で旧内容を復活させない。表示期限の検知はJS timerとfocus/visibility eventに依存し、background遅延・短時間の時計巻戻りの完全検知や独立した実機出力leaseは保証しない。[証拠](../evidence/development-execution/mii-output-lease.json)。 hostがread-only接続にhost/executor/outputの宣言を供給する場合、有限版・必要能力・最短期限を照合し、検証済み期限を読戻しと表示に伝える。宣言は観測時のsnapshotで、期限前の変更はhost側の再観測・切断通知が必要。宣言は本人確認・実行権限・機器実在を証明しない。従来のdescriptorなし経路は旧client互換として残す。[試験](../evidence/development-execution/mii-portable-read-descriptors.json)。 合成hostが短い出力期限を渡す場合は実adapter・React画面・同じ保存jobの隔離ブラウザ一体試験で、期限切れ表示と原本保持・明示読直しを確認する。物理表示や実hostの観測ではない。[試験](../evidence/development-execution/mii-short-lease-browser.json)。
 
 同じ合成仕事に既存A2A委任storeとmii読取を接続した試験では、送信結果不明・取消未確認中は予約をheldのまま維持し、送信前失敗への不正な巻戻しを拒否する。miiのローカル取消応答消失はjournalから同じjobを照合し、未確定なら自動再送しない。別の合成terminal caseでは内部receiptの並行再読込を一回の精算に保つ。storeへの合成遷移であり、実transport・署名検証・native Wallet・遠隔/物理停止の成立を示さない。[証拠](../evidence/development-execution/mii-a2a-uncertain-budget.json)。
+
+miiソフト試用の合成入力では、利用者がhost/executor/outputの追加必要能力IDをJSONで明示できる。観測したdescriptorのfalseは不足、未宣言・null・旧descriptorなしは未確認として入力を渡さず、保存済み仕事・成果の読取は維持する。条件変更は旧入力guardを失効し、別端末やCloudへの自動fallbackをしない。プレビューのmodel.inference・audio.render・space.renderは合成宣言で未対応を示すもので、実機の性能・権限・有無の証明ではない。[候補証拠](../evidence/development-execution/mii-required-capabilities.json)。
 
 miiの合成入力は「同じ仕事を確認」→文章入力→「同じ仕事のTool確認へ渡す」→既存MCPの内容確認と一回承認の順に進む。観測は30秒以内のboot/place/scene/sequenceへ結び、停止journal不明・未解決試行・別担当・未対応runtimeでは入力を渡さない。合成観測は権限ではなく、既存runnerが本人・job revision・Agent版・Package/利用権を読み直し、Connectorがprepare済み引数とserver claimを検査する。新しいDBや実行経路は作らない。
 

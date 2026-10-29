@@ -1,0 +1,36 @@
+{
+  "schema": "rockstaros.mii-short-lease-browser/1",
+  "baseCandidate": "6fc80f2a5ef11bd5b50e6b4459b668d286b06333",
+  "sourceSha256": {
+    "tests/eve-smith-mii-browser.test.mjs": "167872fa02337ca8083348df72b5afd425a564bcb0f2908ade7cc6b61085b9e1",
+    "tests/fixtures/eve-smith-mii-browser/mii-preview-descriptors.ts": "4576c9d6f9a0aeaa2e737db68119f5d7fc60b8900a7f48492fe8eea4d66775fb"
+  },
+  "results": "Prior head 36702df3: both Linux browser cases passed and compared stored observation text only. Head b78afc33 added a full-job assertion: its local-authority case passed, but unavailable-authority case timed out after reload. This candidate adds a Package-binding readiness wait; exact-head browser and CI remain pending. The earlier 30-second negative-control result predates these changes.",
+  "limits": "Synthetic host declaration, test-controlled clock and local preview authority; no physical mii, hardware lease, real providers or production account acceptance",
+  "inference": false,
+  "actualDevice": false,
+  "initialFullVerify": "Full verify had one browser failure while Tool remained unselected: 3461 passed, 1 failed, 4 skipped. Selecting before connection options loaded is a plausible cause, not uniquely proven by the log. The fixture now waits for the selected option; targeted browser 2/2 passed. Full verify after this repair is pending.",
+  "staticAnalysis": "Head 82bd5703 had two medium CodeQL alerts in dynamic test expressions. Head 666f8c1e removed interpolation, and later head 36702df3 reported no new alerts. The current candidate adds a job-payload assertion; its exact-head CI is pending.",
+  "ciHistory": {
+    "head": "666f8c1e51f948de2f4834671cd2cd6fc30615e4",
+    "checks": "7 of 7 passed, CodeQL no new alerts",
+    "targetBrowser": "both cases skipped: default Chrome path was Mac-only",
+    "logSha256": "d18b6ba790ee29838a669005b28c590441333b06e59802e7f83b897bb5b8f00e"
+  },
+  "browserCiPreviousHead": {
+    "head": "36702df3afc53bae6cb16847b95feebdbdaad799",
+    "run": 40847998163,
+    "job": 123360142462,
+    "result": "7 checks passed, CodeQL no new alerts, two Linux browser cases ran and passed",
+    "logSha256": "a3dd3a13420c0a7e528d5ff9dbca581b9a3d3ef8aabc646966a6b54bc60e367b",
+    "limit": "the TTL test compared stored observation text, not the complete job payload"
+  },
+  "ciJobAssertionFailure": {
+    "head": "b78afc33ee11f7d75656566ea096d9f42f5eb050",
+    "run": 40848970478,
+    "result": "local-authority browser passed; unavailable-authority browser timed out on mii read after reload",
+    "cause": "The captured UI showed the mii section closed after Package binding loaded. A possible remount during asynchronous binding is addressed by waiting for binding before opening; the log does not prove a unique cause.",
+    "logSha256": "9622aa332d0ec40f77fd42a1a335756da0d53b6751301546488764ea6fd806e5",
+    "repair": "Wait for Package runtime binding section before opening mii after each reload; new candidate untested."
+  }
+}

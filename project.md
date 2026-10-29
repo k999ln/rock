@@ -4,7 +4,7 @@ Pixelのobserver試験PR261をmain aaab99e1へ統合、head全7check成功。待
 
 ### Eve Mac限定検収/cleanup完了・品質/wholePixel FAIL・Git待ち（2026-10-29 / AI02・O3・ROCK）
 
-新candidateはfresh-base8更新/adapter SHA b7f68b54、セッション16確定＋不明最大1=charged upper17、学習wall28.681秒。モデル推論は終了しteacher0、正式比較41calls（A21/C20）、追加Pixel15（13 completed-output＋2 unknown停止）で計56calls/14336要求outputを計上、unknownも保持しcompleted-outputを回答成功と混ぜない。A/C課題完了とも0/20、schema A2/21・C0/20で候補品質FAILを維持。Pixel P01/P02は接続/同candidate表示、P08はreload追加生成0・既存52record完全保持、P09は同candidate所有worker停止とA有効回答の遅延保存取消/late拒否・doubletap1operation、P10はoverlimit/unavailable追加0callsと復旧到達の限定実測。cancelledを処理中と表示するUI・上限拒否非表示は修正され、作者報告の独立物理再検収PASS。P03〜05内容失敗、P07repair/3step未実証、最終10ケース報告でP06も限定PASSを確認。個別PASSはP01/P02/P06/P08/P09/P10、FAILはP03/P04/P05/P07。経路PASS_SCOPEDとwholePixel/候補品質FAILを分け、native OSは未実行。[公開集計](docs/evidence/development-execution/eve-mac-five-hour-candidate-progress.json)。全verifyは入口不足・OpenSSL3 PATH不足・wrapper型lint指摘の履歴を保持し、修正focused PASS後の全verifyはexit0、Node3467件中3463成功/0失敗/4skip、build/API/mission/work/bot完了。既存OpenSSL3 PATHを明示し、ログhashを公開要約へ固定した。最終独立reviewはCOMPLETE_SCOPED、implementationSafety=PASS_SCOPED_NO_OPEN_P1_FOUND、overall=FAIL_QUALITY_AND_WHOLE_PIXEL。review SHA35c3f83a、source29hash/pixel54hash一致、P2修正の物理再検収PASSを確認。owned server正常終了、modelworker0/activejob0、ownedUSB削除、検証したowned試験tab17閉鎖、他process/接続/画面は維持。作者はOSlease返却済みと報告。metadataを固定し作者のexact source commit/push/draft PRへ渡す段階で、GitHub/main/同SHA CIは未実施、Git担当はstage/commit/mergeしていない。
+新candidateはfresh-base8更新/adapter SHA b7f68b54、セッション16確定＋不明最大1=charged upper17、学習wall28.681秒。モデル推論は終了しteacher0、正式比較41calls（A21/C20）、追加Pixel15（13 completed-output＋2 unknown停止）で計56calls/14336要求outputを計上、unknownも保持しcompleted-outputを回答成功と混ぜない。A/C課題完了とも0/20、schema A2/21・C0/20で候補品質FAILを維持。Pixel P01/P02は接続/同candidate表示、P08はreload追加生成0・既存52record完全保持、P09は同candidate所有worker停止とA有効回答の遅延保存取消/late拒否・doubletap1operation、P10はoverlimit/unavailable追加0callsと復旧到達の限定実測。cancelledを処理中と表示するUI・上限拒否非表示は修正され、作者報告の独立物理再検収PASS。P03〜05内容失敗、P07repair/3step未実証、最終10ケース報告でP06も限定PASSを確認。個別PASSはP01/P02/P06/P08/P09/P10、FAILはP03/P04/P05/P07。経路PASS_SCOPEDとwholePixel/候補品質FAILを分け、native OSは未実行。[公開集計](docs/evidence/development-execution/eve-mac-five-hour-candidate-progress.json)。全verifyは入口不足・OpenSSL3 PATH不足・wrapper型lint指摘の履歴を保持し、修正focused PASS後の全verifyはexit0、Node3467件中3463成功/0失敗/4skip、build/API/mission/work/bot完了。既存OpenSSL3 PATHを明示し、ログhashを公開要約へ固定した。最終独立reviewはCOMPLETE_SCOPED、implementationSafety=PASS_SCOPED_NO_OPEN_P1_FOUND、overall=FAIL_QUALITY_AND_WHOLE_PIXEL。review SHA35c3f83a、source29hash/pixel54hash一致、P2修正の物理再検収PASSを確認。owned server正常終了、modelworker0/activejob0、ownedUSB削除、検証したowned試験tab17閉鎖、他process/接続/画面は維持。作者はOSlease返却済みと報告。作者が固定34ファイルをhead2d11f545でGitHub保存しdraft PR288を作成。最新main bbc9a359の33commit/25pathを通常mergeで同期準備し、README/project/status両側の追記とmain全進捗を保持、独立review済みsource29hashも不変。同期直後の全verifyは3469件/3465成功/0失敗/4skip。元headのCodeQLでhigh2/medium1（credential競合・CSP抽出case・合成testのfile由来送信）が判明し、server/testの2pathを修正、FIFO非待機回帰も追加。独立差分検収・最終全verify/新head CodeQL/main同SHA CIはこれから。旧29source/物理証拠のうち、この2pathは新sourceの物理受入へ転用しない。実験toolkitの採用と品質FAIL候補の採用は別とする。
 
 ### Eve担当保存の応答不明と再送照合（2026-10-29 / ROCK・Sky）
 
@@ -717,7 +717,7 @@ Pixel 10 GL066 / frankelは確定対象。試験署名APKの非破壊再起動23
 
 Eveで自由に担当を作り、SmithでToolと実行先を照合し、同じ仕事をmiiの合成画面から読むlocal-preview候補は範囲限定の独立検収と全verifyに合格した。[設計・責任と制約](docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)、[試験と残件](docs/evidence/development-execution/eve-smith-mii-host-preview.json)。次はGit保存・main統合・同SHA CIをそれぞれ確認する。実account/eSIM、実mii/Pixel、実費と公開は別受入。
 
-SDK 0.1.4配布archiveから展開した二つの非推論作例を、Smith宣言照合・既存Connector・同じ仕事とmiiソフト読戻しで試験し、独立検収と全体verifyに成功した候補。旧配布版は保持し、宣言を権限や安全保証にしない。[証拠](docs/evidence/development-execution/sdk-declared-example.json)。
+SDK 0.1.4配布archiveから展開した二つの非推論作例を、Smith宣言照合・既存Connector・同じ仕事とmiiソフト読戻しで試験し、独立検収と全体verifyに成功。PR276をmain c53ffad6へ統合し同SHA全10 CI成功。[統合CI](docs/evidence/development-execution/sdk-declared-example-main-ci.json)。旧配布版は保持し、宣言を権限や安全保証にしない。[証拠](docs/evidence/development-execution/sdk-declared-example.json)。
 
 Smithの本人指定型・能力ID・permission/scope・実Toolの版付き宣言照合を統合候補へ追加。schema未宣言と対象scope不明を未確認としてbegin/claimでも拒否し、旧jobの互換を維持。合成fixtureと独立検収に限定し、実権限・Provider・実機は未受入。PR274をmain 5a85a523へ統合し同SHA全6 CI成功。[証拠](docs/evidence/development-execution/smith-declared-capability-matching.json)／[統合CI](docs/evidence/development-execution/smith-declared-capability-main-ci.json)。
 
@@ -728,6 +728,14 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 未対応能力を持つ第三担当の保存・読戻し・不足表示と非実行、および同じ成果のmii画面・再読込・exportでのhash一致を合成ブラウザで確認、PR270をmain dad4fd14へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/eve-smith-unmatched-hash-browser.json)。
 
 同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
+
+mii合成入力の追加能力について、未対応・未確認を拒否し既存成果を保持する候補はLinuxブラウザ2件・独立検収・CIに成功し、CodeQL警告を修正後PR283をmain 7007b0beへ統合。同SHA CIの初回と再試行は最初のChrome隔離profileが100回の起動待ち内に開始せず失敗。起動待ちを上限300回へ変更したPR284を独立検収とCI成功後main 8e5bbdb2へ統合し、同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-browser-startup-main-ci.json)。元の失敗原因は未確定。記録PR285の別のCIではブラウザ検査対象が遷移中に閉じたため失敗し、明示的な画面移動の完了待ちPR285を独立検収後main 594739d4へ統合し、同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-browser-navigation-main-ci.json)。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
+
+同じ合成mii仕事とworkerの遠隔取消応答喪失・予約保持・署名済使用額の精算と再送防止の縦断候補を追加。候補headはWorker 14件を含むCI成功、同SHAの独立再実行も成功。最新main取込み後のhead CIは未了。実機・実provider・実課金の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-remote-cancel.json)。
+
+実workerの送信応答不明と同じjobのmii読戻し・ローカル取消応答不明・予約保持を結ぶ合成試験は独立検収とCI成功後、PR282をmain effbf9d6へ統合。同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-worker-unknown-main-ci.json)。ローカル試験は未了。遠隔停止・実Provider・物理端末の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-unknown-draft.json)。
+
+miiソフト画面と実adapterをつないだ隔離ブラウザで合成hostの期限切れ・同じjob保持・明示読直しを試験し、独立検収後PR281をmain ad9c0bcbへ統合。統合後の同SHA CI全6件成功。物理miiは未受入。[統合CI](docs/evidence/development-execution/mii-short-lease-main-ci.json)。[証拠](docs/evidence/development-execution/mii-short-lease-browser.json)。
 
 mii読取adapterにhost提供descriptorの能力・版・最短期限の照合を追加する候補は対象試験・独立検収・全体verifyに成功。PR275をmain 6ce98364へ統合し同SHA全6 CI成功。[統合CI](docs/evidence/development-execution/mii-portable-read-main-ci.json)。合成画面と同じ仕事の読戻しを使い、宣言は本人・権限・実機受入にしない。[証拠](docs/evidence/development-execution/mii-portable-read-descriptors.json)。
 

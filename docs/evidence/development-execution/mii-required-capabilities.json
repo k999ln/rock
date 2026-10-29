@@ -1,0 +1,43 @@
+{
+  "schema": "rockstaros.mii-required-capabilities/1",
+  "state": "main_integrated_merge_ci_pending",
+  "base": "effbf9d6d1e912c6d8348b3b5e297d2358be6473",
+  "sourceSha256": {
+    "lib/mii-work-adapter.ts": "7289809def3bed851c43af338b9bfb3a7481f5f32709464b9eb8535a706a67a4",
+    "lib/mii-preview-descriptors.ts": "265db655fb7d9c597d1ee7cf972b2f336a2e476f6cbe317f6457d3c1027376a9",
+    "components/mii-work-preview.tsx": "e1d596cb039c5f2d72b40b19adab3ff4c53ba3bcd384fdce4a01c0ecbb2fc023",
+    "tests/mii-work-adapter.test.mjs": "b504681b15653a7b8f43efed86acf59ee889fd06fe96fe4e59d89490b6a24419",
+    "tests/mii-work-preview-ui.test.mjs": "662c34ba9dc66c1c5a9a73567d1156a15d7bc09635d6d07a99622ce36bc66bdd",
+    "tests/eve-smith-mii-browser.test.mjs": "50c4263221cc21e956c649837e72e4a74a4ae838f3e1c465a935f6b2c041f7ca"
+  },
+  "tests": "Final PR head: 7 checks passed; verify ran both real Linux browser cases, 3465 passed, 0 failed and 3 other skipped. Model/audio/space/unknown refusal kept runtime input and persisted job unchanged with no connector execution.",
+  "limits": "Explicit capability declaration snapshot only, not OS permission, device capability or real hardware proof. Legacy readers preserve old path; explicit requirements without descriptors fail unconfirmed. No fallback.",
+  "next": "Confirm same merge SHA CI, then retain separate physical, actual provider and authority acceptance.",
+  "inference": false,
+  "actualDevice": false,
+  "initialFailure": "One UI mock assertion initially failed because JSON values originated in another VM realm; comparing serialized JSON values fixed the assertion and the targeted tests then passed.",
+  "review": "Independent final source, artifact hash, CI and browser log review found no P1/P2. Earlier CodeQL medium warning fixed; final head reported no new alerts.",
+  "codeqlInitialAlert": "Head 233a035a reported one medium improper code sanitization alert in test input helper; no production code exposure asserted.",
+  "pr": 283,
+  "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
+  "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb",
+  "mainCiInitialFailure": "Merge SHA 7007b0be verify attempts 1 and 2 failed: first isolated Chrome profile did not start within 100 polls. Second browser passed on attempt 2. Cause not established.",
+  "browserStartupCandidate": {
+    "priorHead": "df7e32e8",
+    "browserTestSha256": "8f9288cc5b40ae9346f4bafc16371cccb501cc5f7eec89480f11f86e57f42254",
+    "priorHeadVerify": "GitHub run 40855431016 job 123385072910 passed; both Linux browser cases ran; no causal proof of startup root cause",
+    "logSha256": "61054a94a3484d0ed8baf7f1ce0e92462097f308c628b7812360c7077ef44ec0",
+    "next": "Recheck metadata-updated exact head and independently review before merge."
+  },
+  "evidencePrFailure": "PR 285 head e0935500 verify failed: local-authority browser CDP reported Inspected target navigated or closed; unavailable-authority browser passed. No root cause established.",
+  "navigationCandidate": {
+    "testSha256": "24da5b019a6d690894657b7118364cee1740c64dfc4029fbcbac467b8d4cacc7",
+    "scope": "Wait for a changed top-frame loader and matching lifecycle load on explicitly requested reload/navigate; bound command and load together, check navigate response; no automatic replay of user input or execution.",
+    "state": "main_integrated_same_sha_ci_pass",
+    "review": "Independent source review found timeout and event specificity issues; matching loader events and deadlines covering both command and load added; re-review and CI pending.",
+    "pr": 285,
+    "prHead": "17d43ed76bc7a6d7320b1bd06776b9565dcd826b",
+    "mergeSha": "594739d49401a105ba1be8df38914c53a12eeb5f",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-browser-navigation-main-ci.json"
+  }
+}

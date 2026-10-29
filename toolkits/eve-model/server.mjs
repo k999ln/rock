@@ -21,6 +21,31 @@ async function body(req) {
   for await(const chunk of req){size+=chunk.length;if(size>2048)throw Error('request too large');chunks.push(chunk);}
   return JSON.parse(Buffer.concat(chunks).toString('utf8'));
 }
+// Open once with exclusive creation or a non-following read; never check a path
+// and subsequently use it as if its identity were unchanged.
+export function loadBridgeCredentials(file,port) {
+  if(fs.constants.O_NOFOLLOW===undefined)throw Error('non-following file opens required');
+  let fd,created=false;
+  try {fd=fs.openSync(file,fs.constants.O_RDWR|fs.constants.O_CREAT|fs.constants.O_EXCL|fs.constants.O_NOFOLLOW,0o600);created=true;}
+  catch(error){if(error.code!=='EEXIST')throw error;fd=fs.openSync(file,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW|fs.constants.O_NONBLOCK);}
+  try {
+    const info=fs.fstatSync(fd);
+    if(!info.isFile()||info.nlink!==1||(info.mode&0o077)!==0||
+      (typeof process.getuid==='function'&&info.uid!==process.getuid()))throw Error('private owned credential file required');
+    let credentials;
+    if(created){credentials={owner:'synthetic-'+crypto.randomUUID(),nonce:crypto.randomBytes(32).toString('hex'),token:crypto.randomBytes(32).toString('hex'),port};fs.writeFileSync(fd,JSON.stringify(credentials));fs.fsyncSync(fd);}
+    else {try{credentials=JSON.parse(fs.readFileSync(fd,'utf8'));}catch{throw Error('invalid bridge credentials');}}
+    if(!exact(credentials,['owner','nonce','token','port'])||typeof credentials.owner!=='string'||
+      !/^synthetic-[0-9a-f-]{36}$/.test(credentials.owner)||!['nonce','token'].every(k=>typeof credentials[k]==='string'&&/^[0-9a-f]{64}$/.test(credentials[k]))||credentials.port!==port)throw Error('invalid bridge credentials or test session port mismatch');
+    return credentials;
+  }finally{fs.closeSync(fd);}
+}
+export function bridgeContentSecurityPolicy(html) {
+  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)];
+  if(scripts.length!==1)throw Error('exactly one inline client script required');
+  const digest=crypto.createHash('sha256').update(scripts[0][1]).digest('base64');
+  return `default-src 'none'; script-src 'sha256-${digest}'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'`;
+}
 export async function createBridge({root,base,python,port=18749,planner:injectedPlanner}) {
   const session=JSON.parse(fs.readFileSync(path.join(root,'session.json'),'utf8'));
   const candidate=JSON.parse(fs.readFileSync(path.join(root,'candidate-manifest.json'),'utf8'));
@@ -39,11 +64,7 @@ export async function createBridge({root,base,python,port=18749,planner:injected
     cases.set(extra[0].id,extra[0]);
   }
   const credentialsFile=path.join(root,'bridge-credentials.json');
-  let credentials;
-  if(fs.existsSync(credentialsFile))credentials=JSON.parse(fs.readFileSync(credentialsFile,'utf8'));
-  else{credentials={owner:'synthetic-'+crypto.randomUUID(),nonce:crypto.randomBytes(32).toString('hex'),token:crypto.randomBytes(32).toString('hex'),port};fs.writeFileSync(credentialsFile,JSON.stringify(credentials),{mode:0o600,flag:'wx'});}
-  if(credentials.port!==port)throw Error('test session port mismatch');
-  fs.chmodSync(credentialsFile,0o600);
+  const credentials=loadBridgeCredentials(credentialsFile,port);
   const journal=new Journal(path.join(root,'client-jobs.sqlite'),credentials.owner);
   const planner=injectedPlanner??new Planner({root,base,python,expectedBinding:binding});
   let active=null,group=null,closing=false,lastProbe=null,busy=false,activeCompletion=Promise.resolve(),groupCompletion=Promise.resolve();
@@ -110,8 +131,7 @@ export async function createBridge({root,base,python,port=18749,planner:injected
     return current;
   }
   const html=fs.readFileSync(fileURLToPath(new URL('./client.html',import.meta.url)),'utf8');
-  const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
-  const csp=`default-src 'none'; script-src 'sha256-${crypto.createHash('sha256').update(script).digest('base64')}'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'`;
+  const csp=bridgeContentSecurityPolicy(html);
   const server=http.createServer(async(req,res)=>{
     const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(data));};
     res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Content-Security-Policy',csp);

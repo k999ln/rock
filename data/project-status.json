@@ -1,9 +1,56 @@
 {
+  "miiWorkerRemoteCancel": {
+    "owner": "ROCK",
+    "status": "draft_independent_ci_reproduced_final_head_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-remote-cancel.json",
+    "next": "Check final candidate CI and independent review after merging current main.",
+    "pullRequest": 286
+  },
+  "miiRequiredCapabilities": {
+    "owner": "ROCK",
+    "status": "main_integrated_startup_fix_same_sha_ci_pass_host_scoped",
+    "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
+    "next": "Prior browser failure causes remain undetermined; physical and production authority remain separate.",
+    "pullRequest": 283,
+    "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
+    "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb",
+    "startupFixPr": 284,
+    "startupFixMergeSha": "8e5bbdb25e78261d1916bc97ab318a053593385d",
+    "startupFixCiEvidence": "docs/evidence/development-execution/mii-browser-startup-main-ci.json",
+    "navigationFixPr": 285,
+    "navigationFixMergeSha": "594739d49401a105ba1be8df38914c53a12eeb5f",
+    "navigationFixCiEvidence": "docs/evidence/development-execution/mii-browser-navigation-main-ci.json"
+  },
+  "miiWorkerUnknownDraft": {
+    "owner": "ROCK",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
+    "evidence": "docs/evidence/development-execution/mii-worker-unknown-draft.json",
+    "next": "Remote cancellation response loss and signed settlement in same mii consumer remain separate.",
+    "pullRequest": 282,
+    "mergeSha": "effbf9d6d1e912c6d8348b3b5e297d2358be6473",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-unknown-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
+  },
+  "miiShortLeaseBrowser": {
+    "owner": "ROCK",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
+    "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
+    "next": "Physical mii and output remain separate.",
+    "pullRequest": 281,
+    "mergeSha": "ad9c0bcb25c4c3ad9e55ebc3c766a60dcd5e6c60",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-short-lease-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
+  },
   "sdkDeclaredExample": {
     "owner": "ROCK",
-    "status": "independent_review_full_verify_pass_integration_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
-    "next": "Verify exact archive and complete independent review, full verify, Git CI; real author/provider/device acceptance remains separate."
+    "next": "Real author, provider, device and permission enforcement remain separate.",
+    "pullRequest": 276,
+    "prHead": "6fc80f2a5ef11bd5b50e6b4459b668d286b06333",
+    "mergeSha": "c53ffad64e3502af9e853b73134fc1430176649a",
+    "mergeChecks": "10 of 10 completed successfully",
+    "mainCiEvidence": "docs/evidence/development-execution/sdk-declared-example-main-ci.json"
   },
   "miiPortableReadDescriptors": {
     "owner": "ROCK",
@@ -12120,7 +12167,7 @@
     "pixelMainWorkflowSuccess": 4
   },
   "eveMacFiveHourCandidateDevelopment": {
-    "status": "scoped_final_review_and_cleanup_complete_quality_wholePixel_failed_metadata_frozen_Git_pending",
+    "status": "bbc_main_security_fixed_host_verify_pass_next_main_delta_pending",
     "primaryOwner": "ROCK",
     "primarySquad": "O3",
     "taskRefs": [
@@ -12140,9 +12187,9 @@
     "physicalWholeLoopAccepted": false,
     "nativePhoneInferenceAccepted": false,
     "fullVerifyPassed": true,
-    "gitHubSaved": false,
+    "gitHubSaved": true,
     "mainIntegrated": false,
-    "next": "Metadata frozen for author exact-source commit/push/draft PR. Then hand off to Git integrator for guarded main integration and exact-head/main CI under separate authorization. Preserve quality FAIL/wholePixel FAIL and all original failed/unknown cases; do not install candidate as default.",
+    "next": "Complete independent security difference review, final full verify, new-head CodeQL/CI; preserve quality/wholePixel FAIL and historical physical source binding. Then toolkit-only main merge and exact-main CI.",
     "qualityAssessment": "failed_current_candidate_development_test",
     "developmentComparison": {
       "plannedTasksPerArm": 20,
@@ -12294,6 +12341,33 @@
       "rawPidSerialNonceUrlsOrPrivatePathsPublished": false
     },
     "finalSourceIndependentReviewComplete": true,
-    "implementationSafetyReview": "PASS_SCOPED_NO_OPEN_P1_FOUND"
+    "implementationSafetyReview": "PASS_SCOPED_NO_OPEN_P1_FOUND",
+    "pullRequest": 288,
+    "originalSourceHead": "2d11f54521e1c0c5f636d5bdc399c5fb5cd81a5b",
+    "synchronizedMain": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+    "latestMainSyncVerifyPassed": true,
+    "securityPatchPaths": [
+      "toolkits/eve-model/server.mjs",
+      "toolkits/eve-model/test_bridge.mjs"
+    ],
+    "securityIndependentReview": {
+      "verdict": "PASS_SCOPED",
+      "mustFixCount": 0,
+      "receiptSha256": "d6613a871baded5f8e8e936e6ae279454c2aa873f4c0a77ba69e18c552ccbec9",
+      "reviewedSourceHashes": {
+        "toolkits/eve-model/server.mjs": "c3eb1d1b9e648bad15b21ceef31727eb8509762342ed55e4537df5c2d416da9f",
+        "toolkits/eve-model/test_bridge.mjs": "f9f3fa2a30d1d105d54ad9d12add1a857d2025e8e8cfde43f72994a30a30efc3"
+      },
+      "scope": "Synthetic host security difference review only; no new physical/model acceptance"
+    },
+    "knownNextExperimentIssue": {
+      "observation": "CPU-only audit confirmed one extra trailing padding target ID0(!) in all240train/8validation rows of installed MLX-LM0.32.2; prefixes normal and historical request hashes matched",
+      "reviewVerdict": "CONFIRMED_CPU_ONLY_OBSERVATION",
+      "reviewSha256": "5213d9f73c6f18ed3519bbd3e7f943af61dab01490c8e4c3200e20ca737b916f",
+      "causality": "Schema repetition causality not proven",
+      "next": "Separately reviewed explicit loss boundary, frozen protocol and fresh retraining/comparison; no large runner/loss patch or new trial in this integration",
+      "frozenCandidateCorrected": false,
+      "teacherForcedValidationAlreadyConsumed": 16
+    }
   }
 }
