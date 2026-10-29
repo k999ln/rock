@@ -5,9 +5,9 @@
     "tests/eve-smith-mii-browser.test.mjs": "1e52a64dde3be6734fabd97743b8f142314e065ea1f808565f2afd7065eab2c9",
     "tests/fixtures/eve-smith-mii-browser/mii-preview-descriptors.ts": "4576c9d6f9a0aeaa2e737db68119f5d7fc60b8900a7f48492fe8eea4d66775fb"
   },
-  "results": "Two isolated browser cases passed; local-authority case uses the SDK 0.1.4 archive, real mii adapter and React, synthetic host output expiry and clock advancement. Same stored job result remains unchanged and requires explicit reread. New GET and completion are verified before advancing the clock. A separate mutation extending the descriptor to 30 seconds failed specifically at short-expiry output hiding.",
+  "results": "Two isolated browser cases passed; local-authority case uses the SDK 0.1.4 archive, real mii adapter and React, synthetic host output expiry and clock advancement. Same stored job result remains unchanged and requires explicit reread. New GET and completion are verified before advancing the clock. A separate mutation on the preceding test revision extended the descriptor to 30 seconds and failed specifically at short-expiry output hiding; the mutation was not rerun after the option-wait change.",
   "limits": "Synthetic host declaration, test-controlled clock and local preview authority; no physical mii, hardware lease, real providers or production account acceptance",
   "inference": false,
   "actualDevice": false,
-  "initialFullVerify": "Full verify had one browser failure when the test selected before connection options loaded: 3461 passed, 1 failed, 4 skipped. The fixture now waits for the selected connection option; targeted browser 2/2 passed. Full verify after this repair is pending."
+  "initialFullVerify": "Full verify had one browser failure while Tool remained unselected: 3461 passed, 1 failed, 4 skipped. Selecting before connection options loaded is a plausible cause, not uniquely proven by the log. The fixture now waits for the selected option; targeted browser 2/2 passed. Full verify after this repair is pending."
 }
