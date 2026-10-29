@@ -30,7 +30,8 @@ function harness(extraRequired = false) {
   const entitlements = { ownerScope: owner, entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: [{ packageKey, state: 'ready' }] } }] };
   const slots = [], effects = [], pushes = [], writes = [], timers = [];
   let cursor = 0, tree, account = owner, revoked = false, malformedWrite = false, releaseRegistry;
-  let registryHeld = false, refreshHeld = false, refreshFails = false, refreshPending = [], holdFinal = false, readsWhileHeld = 0, releaseAgent;
+  const refreshPending = [];
+  let registryHeld = false, refreshHeld = false, refreshFails = false, holdFinal = false, readsWhileHeld = 0, releaseAgent;
   const changed = (a, b) => !a || a.length !== b.length || a.some((v, i) => !Object.is(v, b[i]));
   const react = {
     useState(initialValue) { const i = cursor++; if (!slots[i]) { const x = { value: typeof initialValue === 'function' ? initialValue() : initialValue }; x.set = value => { x.value = typeof value === 'function' ? value(x.value) : value; }; slots[i] = x; } return [slots[i].value, slots[i].set]; },

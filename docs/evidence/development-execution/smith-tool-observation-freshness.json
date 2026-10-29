@@ -13,7 +13,7 @@
     "tests/eve-smith-mii-browser.test.mjs": "8c7595fb19c7299037d6271e338a852e08e8a61a7e7581948dab18ffb27e8816",
     "tests/mcp-spider-guard.test.mjs": "d450b65e5a57cc2d2ea81acb88684b94124c1491d090143c6ac17b5954807c55",
     "tests/sky-agent-capability-contract.test.mjs": "0dd830ab593af97564acc89df27185d3145f159c3d174277661a260622b05e69",
-    "tests/sky-agent-capability-review-ui.test.mjs": "a4f8f53a931a35e971142dbdc26c694a28a607fc55890ff0430346d33c767b5d",
+    "tests/sky-agent-capability-review-ui.test.mjs": "abe08509831803ae853a76272b2d0c2120b10996c00c71f0dd3f331ec3b54e36",
     "tests/sky-package-runtime.test.mjs": "533baaa869d7d5ffae17e6105e07add4a93326f4f7dbf22c82b1250ed48ed2eb",
     "tests/mcp-tool-observation-freshness.test.mjs": "eba22829dcff9622fd2cd69383c0e001818d3856afa1a25bb41c4eabb2f07042"
   },
@@ -22,5 +22,7 @@
   "initialFailure": "Local sandbox denied synthetic loopback listener; rerun with permitted loopback succeeded.",
   "distribution": "Connector ZIP regenerated locally; package-sky-mcp.py --check and independent source/ZIP hash agreement passed.",
   "limits": "Real browser and exact-head CI pending. Snapshot is provider declaration, not truth, safety, authority or guaranteed behavior after observation; real provider/device/paid use unaccepted. A claimed attempt remains fenced if an observation expires after claim; no automatic resend. Clock history is process-scoped; all approvals may need reapproval after rollback.",
-  "next": "Review merged main and evidence, then run browser and full verify at exact head."
+  "next": "Review merged main and evidence, then run browser and full verify at exact head.",
+  "priorIndependentUiTestSha256": "a4f8f53a931a35e971142dbdc26c694a28a607fc55890ff0430346d33c767b5d",
+  "initialCiFailure": "PR289 head a272c163 verify failed lint: refreshPending was declared let although never reassigned. Changed declaration to const, with no test behavior change; targeted UI 11/11 and oxlint passed. Final exact-head CI pending."
 }
