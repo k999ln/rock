@@ -50,6 +50,8 @@ main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致
 
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 
+同一jobの2 mii adapterが並行停止する合成Worker試験でjournalは2請求・1勝者、PATCH1回、両者unknownを確認。再読込後の予約保持、別途remote取消応答喪失、偽署名拒否と署名usage一度精算を同じjobで保持。独立1/1成功。[証拠](docs/evidence/development-execution/mii-worker-two-consumers.json)。同process・合成authority/providerであり物理停止・実networkは未受入。remote送信ACK喪失でtask ID不明の場合は同じremote取消を送れず、別試験で保留する。PR・CI・main統合は未完了。
+
 着手: main e9433589を基点にclean作業枠を使用し、別worktreeのハード設計を保全。合成文章を既存runnerへ渡し、owner/job/Agent/Tool/一回承認/Connector claimを再利用する。判断: 30秒観測・入力世代で未送信を拒否、begin後pendingとclaim後応答を同じjobへ照合する。独立検収で時計巻戻しによるguard復活と入力編集中の旧非同期処理を修正した。局所80/80と全verify成功（Node3364/3360pass/0fail/4skip、build/APIを含む）。初回lint失敗と修正、source hashは[証拠](docs/evidence/development-execution/mii-synthetic-input.json)。最終React規約対応後の中央独立80/80は合格。実機/光学/推論/実課金なし、main統合・CI未確認。次は固定候補をGit担当の独立統合へ渡す。 中央の独立実行80/80後、観測有効期間内の部分的時計巻戻りを追加再現し、最終照合時刻を保持して旧観測を不可逆に失効させた。修正後関連55/55・実Chrome/Connector81/81、時計patchの別担当独立PASS_SCOPED。中央全verify初回は未変更PC adapterの終了確認1件で失敗、同一sourceの単独Python3.15/3.14と同条件全体再実行は成功（3365/3361pass/0fail/4skip、build/API/mission/work/bot完了）。初回失敗を保持し、最終19ファイルmetadata検収とGit/head/main CIは未完了。Pixelの別scope観察はブラウザ自動起動・外部通信不明・同期接続未確認・前後比較不足のため実機合格に数えない。
 
 ### Smith Local Agent設定拒否応答の有限採用開始（2026-10-28 / SMITH-02・SKY21・ROCK）
