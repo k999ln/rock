@@ -1,10 +1,14 @@
 {
   "eveCreateReconciliation": {
     "owner": "ROCK",
-    "status": "independently_reviewed_git_ci_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/eve-create-408-409-reconciliation.json",
     "scope": "synthetic owner and local host browser fixture",
-    "next": "Save reviewed candidate, verify head CI and main SHA CI; real service and devices unverified."
+    "next": "Retain synthetic-host scope; real accounts, devices and production execution remain unverified.",
+    "pullRequest": 259,
+    "prHead": "6a1f974706136a25c2d8e0bcf267cf941c88eac6",
+    "mergeSha": "53a61fd6bb7f4eebd394cbe8e91ffac582d07392",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "eveSmithMiiHostPreviewCandidate": {
     "owner": "ROCK",
@@ -11935,7 +11939,7 @@
       "SKY21"
     ],
     "primaryOwner": "ROCK/O5",
-    "status": "fixture_source_independent_pass_full_verify_pass_fixed_metadata_git_pending",
+    "status": "fixture_main_integrated_same_sha_ci_pass",
     "evidence": "docs/evidence/development-execution/smith-mcp-package-authority-contract.json",
     "originalFocusedTests": "32pass; contract borrow negative thenfailed1vs0",
     "repairedFocusedTests": "35pass0fail0skip",
@@ -11945,7 +11949,7 @@
     "productionConsumer": false,
     "normalAccountEsimAuthorityAccepted": false,
     "wholeSmithAccepted": false,
-    "next": "Independent fixed11 metadata comparison, pinned scanner, Git/head allCI, normalmainmerge/sameSHA allCI. Fixture consistency only; productionroot unbound and all normalaccount/eSIM/provider holds unchanged.",
+    "next": "Fixture only; production issuer/root, entitlement and atomic Broker binding remain unresolved.",
     "fullVerify": {
       "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
       "exitCode": 0,
@@ -11958,6 +11962,10 @@
       "logSha256": "ab826df64f0e58c67bd5a88c9e46d06f5981b35d971aa135735fa3f896ca70e2",
       "remainingStages": "build/API/mission/work/bot completed",
       "scope": "host fixtures only; no production authority, new model/provider/device/fee action"
-    }
+    },
+    "pullRequest": 258,
+    "prHead": "811eeb4541f8e053e5f7fcffb6ba6e6bb77611e0",
+    "mergeSha": "e79461ec33167f96f54d58f1a7938b45d694a3b4",
+    "mergeChecks": "6 of 6 completed successfully"
   }
 }
