@@ -1,0 +1,95 @@
+{
+  "schema": "rockstaros.eve-decision-eval-stage0/1",
+  "status": "implemented_locally_verified_pending_git",
+  "primaryOwner": "ROCK",
+  "workstream": "02-sky-mcp",
+  "taskRefs": [
+    "EVE-11",
+    "AI02",
+    "AI05",
+    "SKY21"
+  ],
+  "baseMain": "e79461ec33167f96f54d58f1a7938b45d694a3b4",
+  "branch": "codex/eve-decision-eval-stage0",
+  "purpose": "Deterministic harness preflight before future distillation/prompt/memory comparisons. No model improvement is measured.",
+  "sourceSha256": {
+    "lib/zema-local-agent.ts": "e40eeeb447492de4e86839f0f9a0f7f730df5c577175a3f80dac3351c932e8aa",
+    "lib/eve-decision-eval.ts": "c984c39db9f8967f0cf170df279dea884a230fdfeb40478e8ae0f29ed9f877cf",
+    "scripts/eve-decision-eval.mjs": "1dd7afd21041d9c6a9c66e5038167bc37f491e090456e6f1b66dd5c24b357701",
+    "tests/eve-decision-eval.test.mjs": "0b7b216b74af099cf6b460b5bdebbddae4b887173c39ae89ccf52905622ab46f",
+    "data/fixtures/eve-decision-eval/stage0.json": "1353e00b8ea8438d2a2a97e5d1a655f1a197d1a2a959212a181dd3c53b42c2b5",
+    "docs/llm-evaluation-architecture.md": "e77b4e335ea4c8db7fc24c6455ce6d82d0f43ba956e15f33d6af174c02b4471f",
+    "README.md": "3d0a6cfc44bb5d316afa77c23a01182d28ef81a3a22e9f40b13e49429b88b7a2"
+  },
+  "implementation": [
+    "Optional synchronous immutable executor observation and artifact copy; parser/duplicate checks and observer errors remain terminal; default planner request unchanged.",
+    "Fixed11synthetic JA/EN control cases run through existing3pureTools/3steps;18scriptedplannercalls.",
+    "All-attempt/planned/not-started accounting, strictchecklist ID/boolean validation, partialartifacts onterminal errors, per-run state, unknownusage null.",
+    "No model/HTTP/paid adapter or dynamic fixture/plugin loading inCLI; no extra Tool, OScomponent, schema, migration or authority lane."
+  ],
+  "verification": [
+    {
+      "command": "node --experimental-strip-types --test tests/eve-decision-eval.test.mjs tests/zema-local-agent.test.mjs",
+      "result": "21/21pass, including independent rerun"
+    },
+    {
+      "command": "node --experimental-strip-types scripts/eve-decision-eval.mjs",
+      "result": "11controls pass;18fakecalls;0modelcalls;completedPlannerCases6 != controlPasses11"
+    },
+    {
+      "command": "node --experimental-strip-types scripts/eve-decision-eval.mjs --max-planner-calls 1",
+      "result": "exit1;1attempted/10notstarted;budget_exhausted; incomplete"
+    },
+    {
+      "command": "npm run typecheck -- --incremental false",
+      "result": "pass; initialsandbox generated-directory write refusal resolved with normal isolated generator"
+    },
+    {
+      "command": "npm run lint:product",
+      "result": "pass"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/dependency-security.test.mjs tests/undici-dependency-security.test.mjs",
+      "result": "13/13pass after isolatedcopy"
+    },
+    {
+      "command": "PATH=\"/opt/homebrew/opt/openssl@3/bin:$PATH\" NEXT_TELEMETRY_DISABLED=1 npm run verify",
+      "result": "exit0 after isolateddependencycopy. MainNode3393tests/3389pass/0fail/4skip; type/lint/build/asset/API/mission/work/botgatespassed. Firstattempt2dependency-resolutionfailures retainedas environmentdiagnosis, notsilentlyremoved.",
+      "log": "/private/tmp/eve-decision-eval-verify-isolated.log"
+    },
+    {
+      "command": "git diff --check",
+      "result": "pass; reviewed7source/doc hashes stable afterfullverify"
+    }
+  ],
+  "dependencies": {
+    "source": "Existing /private/tmp/rock-execution-control-20261028 root andMini dependencies",
+    "lockAndManifestMatch": true,
+    "nonOptionalVersionMetadataMatches": true,
+    "reuse": "APFS localclone withrelativevendorlinks, not shared symlink; no download or package/lock change"
+  },
+  "independentReview": {
+    "reviewer": "/root/eve_eval_review",
+    "policy": "EVE-11 fallbackWithoutRiskChange, gpt-6.1-sol/medium",
+    "decision": "PASS_SCOPED",
+    "tests": "21/21 independently rerun",
+    "finding": "Matching a budget_exhausted oracle could incorrectly mark complete",
+    "resolution": "Exclude budget_exhausted from run completeness; regression test reproduces original false-complete, now false",
+    "remainingInReviewedScope": []
+  },
+  "evidenceBoundary": {
+    "modelCalls": 0,
+    "trainingRun": false,
+    "modelQualityAccepted": false,
+    "physicalDeviceAccepted": false,
+    "statefulPermissionAccepted": false,
+    "externalEffectAccepted": false,
+    "published": false,
+    "gitHubSaved": false,
+    "mainIntegrated": false
+  },
+  "next": [
+    "Gitowner: preserveexactpatch, refreshmain, save smallbranch/PR and checksameSHA CI; localpassisnotremoteCI.",
+    "Futuremodelpilot needs exactInstructavailability, template/tokenizer/schema/neutralmatch, sealedfamily/preservationdata, finite resource approval andseparate review. No automatictraining/modeldownload/paidexecution."
+  ]
+}

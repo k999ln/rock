@@ -315,6 +315,21 @@ Jev呼出しにはリクエスト単位の`zeroDataRetention: true`を指定す�
 - Jev不合格や低確率は本人へのreview signalにできるが、既存成果を削除・非公開化・再実行しない。
 - 自動gateへ使う場合はgolden fixture、誤判定率、threshold版、再現性、human override、rollbackを別受入する。
 
+## Eveの判断評価：Stage0合成control（AI02・AI05・SKY21 / ROCK）
+
+蒸留・教訓・記憶の比較に先立ち、採点器と既存pure plannerの失敗境界を検査する開発用基盤である。
+実行は `node --experimental-strip-types scripts/eve-decision-eval.mjs`。
+`--max-planner-calls 1` で予算打切りを再現でき、未完了時は終了コード1になる。
+正本fixtureは `data/fixtures/eve-decision-eval/stage0.json`、局所試験は
+`node --experimental-strip-types --test tests/eve-decision-eval.test.mjs tests/zema-local-agent.test.mjs`。
+
+- **目的・責任**：ROCKが11個の合成controlと厳密なoracleを管理する。scripted応答を既存の3 Tool・最大3 stepへ通し、モデルや外部Providerを呼ばない。利用者の仕事を作る機能ではなく、新しい仕事台帳・権限・Toolを追加しない。
+- **入出力**：固定fixtureのJA/EN、2資料、質問、不正plan、未対応Tool、引数修正、偽失敗本文、重複、step上限、合成timeoutを入力する。stdoutにcase/family/言語、全attempt、未開始、呼出し数、実観測、oracle/prompt/rawのdigest、検査結果と計測時間をJSON出力する。JSON構文と既存parser受入を分け、parser受入を引数の意味・権限・外部効果の成功としない。
+- **信頼境界**：`onToolObservation`は内部の任意callback。実Tool実行器が生成したstep/tool/outcome/errorCodeとartifactの凍結copyを返す。本文のerror風文字列から回復可能性を推測しない。parser・重複判定・通常Tool例外・observer例外は従来どおりterminal。既存API、既定prompt、Tool、retry、step上限は変えず、callbackを公開requestへ接続しない。
+- **状態・保存**：runごとの状態をメモリに閉じ、同時runで呼出し数や観測を共有しない。terminal時の部分artifactを保持し、予算到達後は次の呼出しを開始しない。未開始や打切りを集計から消さず、期待した予算停止がoracleと一致してもrunを完了にしない。自動保存やprivate原稿の取り込みは行わず、必要ならstdoutをGit管理外の検証ログへ保存する。
+- **検査・復旧**：judgeは事前のID集合に対し一つずつbooleanを要求し、欠落・重複・未知ID・truthy値をunavailableへ戻す。未知usage/費用はnull。誤oracleで失敗する負例、immutable copy、default不変、terminal境界、予算停止、並行分離を局所試験する。修正後は同じ固定controlを再実行し、モデル品質点へ換算しない。
+- **合格範囲・次段階**：`complete`は全controlの一致と打切りなしを意味し、モデル改善・stateful本人/予算/停止・外部作用・Pixel受入ではない。モデル比較には別途、固定artifact/runtime/template、等長中立対照、semantic-family分割、保持試験、全費用、実行許可と独立検収が必要。課金、学習、model取得、RPA、公開はこのcommandから実行しない。候補を無効化すれば既存defaultループを使い続けられる。
+
 ## 8. 完了と呼ばない範囲
 
 Jevのroute、UI、catalog、rubric、receiptは実装済みである。ただしAPI key設定、provider sandbox、privacy審査、料金上限、本番受入は未完了で、Jevを追加してもlocal plannerの交換、Sky Memory、外部作用reconciliation、AOSP imageは完成しない。

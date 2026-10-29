@@ -439,6 +439,8 @@ Miniと同じWebソース内にあります。
 
 ## 開発と検証
 
+Eveの開発用Stage0評価は `node --experimental-strip-types scripts/eve-decision-eval.mjs` で実行します。モデルを呼ばない11合成controlです。結果は採点/停止境界の検査で、モデル品質の合格ではありません。[詳細](docs/llm-evaluation-architecture.md)。
+
 [eSIM復旧試験・Mini設計の現行受入](docs/evidence/development-execution/esim-mini-ready-design-main-current.json)はPR240/main c3c4845cへ通常統合済みです。head7/main6CI成功、Linux3075試験失敗0。PDF58頁はGit外、実開通/実課金・光学/PCB・実機/全体受入・公開は別gateです。
 
 [eSIM ready復旧試験](docs/evidence/development-execution/esim-ready-recovery-review.json)は `node --experimental-strip-types --test tests/rockstar-service-setup.test.mjs` で実行します。制御中断後のSQLite再open試験で、実開通・実課金の受入ではありません。
