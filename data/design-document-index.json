@@ -261,6 +261,17 @@
       ],
       "evidence": "docs/evidence/development-execution/mii-worker-shared-d1.json",
       "scope": "synthetic owner, shared D1 and actual two-tab IndexedDB; remote cancellation and settlement separate"
+    },
+    "signedTwoTabWorker": {
+      "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "tests": [
+        "tests/mii-worker-signed-dispatch.test.mjs",
+        "tests/mii-worker-signed-browser.test.mjs",
+        "tests/fixtures/mii-worker-signed/seed.mjs",
+        "tests/fixtures/mii-worker-signed/outbound.ts"
+      ],
+      "evidence": "docs/evidence/development-execution/mii-worker-signed-browser.json",
+      "scope": "synthetic approval/remote signature, real workflow and two browser tabs; no real provider or device"
     }
   },
   "latestRockstarOsDesign": {

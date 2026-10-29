@@ -12464,5 +12464,11 @@
     "status": "candidate_independent_test_pass_pr_pending",
     "evidence": "docs/evidence/development-execution/mii-worker-shared-d1.json",
     "next": "Exact-head CI, independent final review, merge and merge-SHA CI; remote receipt remains separate."
+  },
+  "miiWorkerSignedBrowser": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-signed-browser.json",
+    "next": "Exact-head CI and final independent review; actual authority, provider, billing and device remain separate."
   }
 }
