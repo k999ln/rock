@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.mii-worker-signed-browser/1",
-  "state": "candidate_independent_test_pass_pr_pending",
+  "state": "main_integrated_same_sha_ci_pass_host_scoped",
   "baseCandidate": "df130d5dcf0e594ffe05447010dde01dae8e9e81",
   "sha256": {
     "tests/mii-worker-signed-dispatch.test.mjs": "307454af41fcc2835b65b0bf7761ce7c3d16c6a9d02bd5b0fb21f80dc0b76866",
@@ -18,5 +18,7 @@
     "scope": "isolated Chrome, local Miniflare, synthetic owner and remote service"
   },
   "limits": "Approval and signing identity are synthetic test seed; remote cancellation is separately requested, not automatically initiated by mii UI. Persistent storage grant is stubbed, actual IndexedDB strict transaction used. No physical mii, real provider, actual payment, Wallet production, real network loss or inference acceptance. Local response loss here is synthetic; socket disconnect is covered separately by predecessor. Fixture HTTP exception response is fixed text; source reviewed but fixed 500 response not deliberately triggered by these tests.",
-  "next": "Final independent review, exact-head CI, merge and merge-SHA CI."
+  "next": "Actual authority, physical device, provider and payment remain separately unaccepted.",
+  "mergeSha": "8be9005d8405d7d47b7122d71a0b193cdcedb559",
+  "mainCiEvidence": "docs/evidence/development-execution/mii-worker-signed-browser-main-ci.json"
 }

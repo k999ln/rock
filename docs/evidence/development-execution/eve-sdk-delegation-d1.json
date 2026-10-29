@@ -1,0 +1,20 @@
+{
+  "schema": "rockstaros.eve-sdk-delegation-d1/1",
+  "state": "candidate_independent_test_pass_pr_pending",
+  "baseMain": "8be9005d8405d7d47b7122d71a0b193cdcedb559",
+  "sha256": {
+    "tests/eve-sdk-delegation-d1-browser.test.mjs": "a2e6f992d07375e32d8dd626b91327bd0c1ee52ce0d088c031c1f9fa7a455da2",
+    "tests/fixtures/eve-sdk-delegation-d1/synthetic-a2a.mjs": "e898c9908ad44f4aa1629c69933faf165c2058fe3c4eadf47da533d8c6b9128f"
+  },
+  "scenario": "Actual Eve/Smith UI creates same synthetic owner/job in shared D1; SDK 0.1.5 local Connector observation is saved. Same job is selected in Workbench without package context for a separate remote delegation; signed synthetic quote and Broker proof go through actual verification and explicit UI approval. Actual Worker dispatch receives task ID from synthetic remote response. Actual mii UI two tabs and IndexedDB share same job; synthetic local response loss, explicitly confirmed remote cancellation response loss, invalid signature rejection, held reservation, one valid signed usage settlement and mii readback are checked. SDK observation text hash and job/owner/agent binding remain bound.",
+  "independentTest": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "69957dccd853cde38c0b6661a3be327d2942c9214c0bf9572d29fcf3563b28f5",
+    "scope": "isolated Chrome and local Miniflare synthetic authority"
+  },
+  "history": "Initial fixture had a D1 column typo; corrected. Expanded UI initially timed out before explicit job selection; selecting the job fixed the fixture. These earlier failures were reported by the author, not independently reproduced.",
+  "limits": "SDK Tool executes locally; separate remote delegation on same job is not remote SDK execution. Identity, entitlement, signer, quote, remote service and some guard/device links are synthetic; Workflow invocation is initiated by test. Durable storage grant is granted by test CDP; actual IndexedDB API is used, not a physical power-loss guarantee. Local response loss is synthetic; real socket-loss case tested separately. No real provider, actual billing, physical device, model inference or general network isolation acceptance.",
+  "next": "Final independent review, exact-head CI, main merge and merge-SHA CI."
+}
