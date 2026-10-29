@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { compatibleLocalPackageRuntimes } from '../lib/sky-package-runtime.ts';
+import { compatibleLocalPackageRuntimes, isFreshMcpObservation } from '../lib/sky-package-runtime.ts';
 import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
 
 const packageManifest = (change = {}) => ({
@@ -13,7 +13,7 @@ const packageManifest = (change = {}) => ({
 
 const serverFor = (overrides = {}) => ({
   id: 'local-mcp', name: 'Local MCP', description: '', transport: 'stdio', state: 'connected',
-  passport: { tools: [{
+  passport: { observationId: crypto.randomUUID(), observedAt: Date.now(), observationExpiresAt: Date.now() + 29_000, tools: [{
     name: 'execute_capability', title: 'Execute capability', description: '',
     inputSchema: { additionalProperties: false, properties: {}, type: 'object' },
     outputSchema: { additionalProperties: true, properties: {}, type: 'object' },
@@ -59,4 +59,34 @@ void test('SDK local HTTP runtime is a candidate only for matching local transpo
   assert.equal(compatibleLocalPackageRuntimes(original, [localServer]).length, 0);
   const mismatched = { ...localServer, passport: { tools: [{ ...localServer.passport.tools[0], outputSchema: { type: 'object', properties: { wrong: { type: 'string' } } } }] } };
   assert.equal(compatibleLocalPackageRuntimes(local, [mismatched]).length, 0);
+});
+
+void test('unobserved, future, expired and excessive observation windows cannot be candidates', () => {
+  const manifest = packageManifest(), base = serverFor(), now = Date.now();
+  for (const stamp of [
+    { observedAt: undefined, observationExpiresAt: undefined },
+    { observedAt: now + 1_000, observationExpiresAt: now + 2_000 },
+    { observedAt: now - 31_000, observationExpiresAt: now - 1 },
+    { observedAt: now - 1, observationExpiresAt: now + 60_000 },
+  ]) assert.deepEqual(compatibleLocalPackageRuntimes(manifest, [{ ...base, passport: { ...base.passport, ...stamp } }]), []);
+});
+
+void test('clock rollback and expiration cannot revive a previously observed passport, including copied readbacks', () => {
+  const passport = { ...serverFor().passport, observationId: crypto.randomUUID(), observedAt: 1_000, observationExpiresAt: 31_000 };
+  assert.equal(isFreshMcpObservation(passport, 1_000), true);
+  assert.equal(isFreshMcpObservation({ ...passport }, 3_000), true);
+  assert.equal(isFreshMcpObservation({ ...passport }, 2_000), false);
+  assert.equal(isFreshMcpObservation({ ...passport }, 4_000), false);
+  const next = { ...passport, observationId: crypto.randomUUID() };
+  assert.equal(isFreshMcpObservation(next, 31_000), false);
+  assert.equal(isFreshMcpObservation({ ...next }, 2_000), false);
+  assert.equal(isFreshMcpObservation({ ...next, observationId: crypto.randomUUID() }, 2_000), true);
+});
+
+void test('rollback noticed by another observation invalidates the previous passport', () => {
+  const base = serverFor().passport, first = { ...base, observationId: crypto.randomUUID(), observedAt: 1_000, observationExpiresAt: 30_000 };
+  const second = { ...base, observationId: crypto.randomUUID(), observedAt: 1_000, observationExpiresAt: 30_000 };
+  assert.equal(isFreshMcpObservation(first, 1_000), true);
+  assert.equal(isFreshMcpObservation(second, 3_000), true);
+  assert.equal(isFreshMcpObservation(first, 2_000), false);
 });

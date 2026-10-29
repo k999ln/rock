@@ -27,7 +27,7 @@ function harness({ realConnector = true, cancelBeforeConnector = false, claimFai
   const agent = { id: '2e762de5-1f39-4a8a-95f9-03f8910b1630', revision: 1, name: '担当', instructions: '作業',
     provider: 'local-model', model: 'fixture-model', enabled: true, source: 'personal', sourceTool: null, updatedAt: 0,
     requirements: { inputFields: [], outputFields: [], packageKey, executionTarget: 'pc',contract:{schema:'rockstaros.agent-tool-expectation/1',inputTypes:{},outputTypes:{},capabilityIds:['fixture.process'],allowedPermissions:declaration.permissions,runtime:{serverId:'s',toolName:'op'}} } };
-  const server = { id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { toolDigest: 'e'.repeat(64), server: { version: '1' }, tools: [{ name: 'op',
+  const server = { id: 's', name: 'PC', state: 'connected', transport: 'stdio', passport: { observationId: crypto.randomUUID(), observedAt: Date.now(), observationExpiresAt: Date.now() + 29_000, toolDigest: 'e'.repeat(64), server: { version: '1' }, tools: [{ name: 'op',
     description: 'fixture', inputSchema: manifest.io.inputSchema, outputSchema: manifest.io.outputSchema, pricing: { model: 'free', note: '' } }] } };
   const registry = { packages: [{ packageKey, manifest, manifestSha256, status: 'verified', installable: true }] };
   const entitlements = { ownerScope: owner, entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: [{ packageKey, state: 'ready' }] } }] };

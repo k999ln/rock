@@ -598,6 +598,35 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       const row=JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(sent.id).payload);
       assert.equal(row.agentBinding.creationReview.inputSha256,sent.creationReview.inputSha256);
       assert.equal(row.toolAttempts,undefined);assert.equal(connectorExecuteCalls,calls);
+      // The SDK is real and connected to the real Connector. Corrupt only a
+      // subsequent tools/list response to model a declaration changing after
+      // approval; no provider or model is contacted.
+      await input('互換runtime/toolを選択', '0');
+      await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
+      await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'changed declaration same job');
+      await input('miiへの合成テキスト', 'synthetic addition'); await click('同じ仕事のTool確認へ渡す');
+      await click('実行内容を確認');
+      const claimBefore = requests.filter(r => r.path.endsWith('/tool-observations/claim')).length;
+      let toolCalls = 0;
+      const originalRpc = connector.hub.rpc.bind(connector.hub);
+      connector.hub.rpc = async (id, method, ...rest) => {
+        if (method === 'tools/call') toolCalls++;
+        const result = await originalRpc(id, method, ...rest);
+        if (method !== 'tools/list' || id !== sdk.localId) return result;
+        const changed = structuredClone(result);
+        changed.tools[0].inputSchema = { ...changed.tools[0].inputSchema, 'x-fixture-changed': true };
+        return changed;
+      };
+      try {
+        await click('内容を承認して実行');
+        await wait('document.body.innerText.includes("Toolの宣言が変わりました")', 'changed Tool blocked');
+        assert.equal(requests.filter(r => r.path.endsWith('/tool-observations/claim')).length, claimBefore);
+        assert.equal(toolCalls, 0);
+        const read = await fetch(`${base}/api/work-jobs?id=${encodeURIComponent(sent.id)}`);
+        assert.equal(read.status, 200); const body = await read.json();
+        assert.equal(body.ownerScope, scope); assert.equal(body.jobs.length, 1); assert.equal(body.jobs[0].id, sent.id);
+        assert.equal(body.jobs[0].toolAttempts?.[0]?.state, 'pending');
+      } finally { connector.hub.rpc = originalRpc; }
     }
     if (localAuthority) {
       // A third, user-authored purpose requests capabilities not declared by

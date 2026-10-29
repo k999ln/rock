@@ -28,6 +28,9 @@ export type McpConnectionPassport = {
   tools: McpToolPassport[];
   toolDigest: string;
   connectedAt: string;
+  observationId?: string;
+  observedAt?: number;
+  observationExpiresAt?: number;
 };
 
 export type McpConnection = {
@@ -107,6 +110,13 @@ export async function connectMcp(serverId: string) {
   const data = await connector<{ passport: McpConnectionPassport }>(
     `/servers/${encodeURIComponent(serverId)}/connect`,
     { method: 'POST', body: '{}' },
+  );
+  return data.passport;
+}
+
+export async function refreshMcpObservation(serverId: string) {
+  const data = await connector<{ passport: McpConnectionPassport }>(
+    `/servers/${encodeURIComponent(serverId)}/refresh`, { method: 'POST', body: '{}' },
   );
   return data.passport;
 }

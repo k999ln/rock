@@ -25,16 +25,21 @@ function canonical(value) {
 
 function bindFixture(hub, id, names = ['summarize']) {
   const entry = hub.entry(id);
-  entry.state = 'connected';
-  entry.passport = {
-    tools: names.map(name => ({ name, title: name, pricing: { model: 'free' } })),
-    toolDigest: 'a'.repeat(64),
-  };
+  entry.state = 'connected'; entry.connectionAttempt = Symbol('fixture');
+  const raw = names.map(name => ({ name, title: name, inputSchema: { type: 'object' },
+    _meta: { 'rockstaros.dev/pricing': { model: 'free', note: 'fixture' } } }));
+  const tools = names.map(name => ({ name, title: name, description: '', inputSchema: { type: 'object' },
+    pricing: { model: 'free', note: 'fixture' }, approval: 'required' }));
+  const now = Date.now();
+  entry.passport = { tools, toolDigest: createHash('sha256').update(canonical(tools)).digest('hex'),
+    observationId: randomUUID(), observedAt: now, observationExpiresAt: now + 30_000 };
+  hub.rememberObservation(entry);
   const calls = [];
-  entry.transport.request = async message => {
+  entry.transport = { reset() {}, async request(message) {
+    if (message.method === 'tools/list') return { jsonrpc: '2.0', id: message.id, result: { tools: raw } };
     calls.push(message);
     return { jsonrpc: '2.0', id: message.id, result: { content: [{ type: 'text', text: 'processed' }] } };
-  };
+  } };
   return calls;
 }
 
@@ -45,7 +50,7 @@ function legacyApproval(hub, id, name, args) {
     id, name, args, toolDigest: hub.entry(id).passport.toolDigest,
   })).digest('hex');
   const nonce = randomUUID(), expiresAt = Date.now() + 60_000;
-  hub.approvals.set(nonce, { payloadDigest, expiresAt, used: false });
+  hub.approvals.set(nonce, { payloadDigest, expiresAt, issuedAt: Date.now(), lastWall: Date.now(), deadline: performance.now() + 60_000, used: false });
   const signature = createHmac('sha256', hub.approvalSecret)
     .update(`${nonce}:${payloadDigest}:${expiresAt}`).digest('hex');
   return `${nonce}.${expiresAt}.${signature}`;
