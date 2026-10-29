@@ -1,10 +1,20 @@
 {
+  "f3CreationDisclosure": {
+    "owner": "ROCK",
+    "status": "independent_review_full_verify_pass_git_ci_pending",
+    "evidence": "docs/evidence/development-execution/f3-creation-disclosure.json",
+    "scope": "new Agent UI synthetic preview; no new execution grant or verified price",
+    "next": "Review final fixture and evidence, then Git, head CI, main merge and same SHA CI."
+  },
   "miiBudgetReadback": {
     "owner": "ROCK",
     "workstream": "Android / Device / Local AI",
-    "status": "independent_review_full_verify_pass_git_ci_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-budget-readback.json",
-    "next": "Save fixed candidate, confirm head and merge SHA CI. MCP cost, physical mii and real account remain unaccepted."
+    "next": "Real account, paid costs, physical mii and background timer behavior remain unverified.",
+    "pullRequest": 264,
+    "mergeSha": "6e4942670b350f94ed15345840526327dbdbd5d3",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "pixelObserverJoinFixture": {
     "owner": "ROCK",

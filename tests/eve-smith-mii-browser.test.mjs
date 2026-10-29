@@ -69,9 +69,10 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       async run() { return { meta: { changes: Number(sqlite.prepare(sql).run(...args).changes) } }; },
     }; } }; } };
     const owner = 'local-preview:eve-browser-fixture', scope = await ownerScopeFor(owner);
+    let authenticatedOwner = owner;
     const env = { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false', ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: localAuthority ? owner : 'local-preview:another-fixture' };
     const deps = new Map([['cloudflare:workers', { env }],
-      ['@/lib/fund-store', { database: () => db, requestUser: async () => owner }]]);
+      ['@/lib/fund-store', { database: () => db, requestUser: async () => authenticatedOwner }]]);
     for (const name of ['request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
       deps.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
     for (const name of ['a2a-authorization', 'a2a-price-quote', 'a2a-usage-receipt', 'jennifer-execution-store', 'jennifer-amc-execution', 'a2a-agent-directory', 'sky-tool-package-store', 'sky-package-runtime-binding', 'sky-package-runtime-binding-store'])
@@ -102,24 +103,44 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const registry = { packages };
     const entitlements = { ownerScope: scope, entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: packages.map(p => ({ packageKey: p.packageKey, state: 'ready' })) } }] };
     const requests = [], claimContracts = [];
-    let pausedReply = null;
+    let pausedReply = null, pausedRegistry = null, pausedExactGet = null, failExactGetOnce = false,
+      dropCreateBeforeCommit = false, loseCreateReply = true;
+    const creationRequests = [];
     const http = createServer(async (req, res) => {
       try {
         const url = new URL(req.url, `http://${req.headers.host}`); requests.push({ path: url.pathname, method: req.method });
         if (url.pathname === '/bundle.js') { res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' }); return res.end(bundle); }
-        if (!url.pathname.startsWith('/api/')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(`<div id="root"></div><script>window.__fixtureErrors=[];window.onerror=(...args)=>window.__fixtureErrors.push(args.slice(0,4));window.__fixtureServers=${JSON.stringify([resources.server])};window.__fixtureConnectorUrl=${JSON.stringify(resources.connectorUrl)};window.__fixtureConnectorToken=${JSON.stringify(resources.connectorToken)}</script><script src="/bundle.js"></script>`); }
+        if (!url.pathname.startsWith('/api/')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(`<div id="root"></div><script>window.__fixtureErrors=[];window.__fixtureClockOffset=0;const fixtureNow=Date.now.bind(Date);Date.now=()=>fixtureNow()+window.__fixtureClockOffset;window.onerror=(...args)=>window.__fixtureErrors.push(args.slice(0,4));window.__fixtureServers=${JSON.stringify([resources.server])};window.__fixtureConnectorUrl=${JSON.stringify(resources.connectorUrl)};window.__fixtureConnectorToken=${JSON.stringify(resources.connectorToken)}</script><script src="/bundle.js"></script>`); }
+        if (url.pathname === '/api/sky/tool-registry' && pausedRegistry) {
+          const pause = pausedRegistry; pause.hit = true; await pause.promise;
+        }
         if (url.pathname === '/api/sky/tool-registry' || url.pathname === '/api/rockstar/entitlements') {
           res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end(JSON.stringify(url.pathname.endsWith('tool-registry') ? registry : entitlements));
         }
         if (!routes[url.pathname]?.[req.method]) { res.writeHead(404, { 'Content-Type': 'application/json' }); return res.end('{}'); }
         const chunks = []; for await (const chunk of req) chunks.push(chunk);
-        const body = Buffer.concat(chunks), headers = new Headers(req.headers); headers.set('oai-authenticated-user-id', owner);
+        const body = Buffer.concat(chunks), headers = new Headers(req.headers); headers.set('oai-authenticated-user-id', authenticatedOwner);
         if (url.pathname.endsWith('/tool-observations/claim')) {
           const claim = JSON.parse(body.toString('utf8'));
           claimContracts.push({ inputSchemaSha256: claim.inputSchemaSha256, outputSchemaSha256: claim.outputSchemaSha256, transport: claim.transport });
         }
+        if (url.pathname === '/api/work-jobs' && req.method === 'POST') creationRequests.push(JSON.parse(body.toString('utf8')));
+        if (url.pathname === '/api/work-jobs' && req.method === 'GET' && url.searchParams.has('id') && failExactGetOnce) {
+          failExactGetOnce=false;res.writeHead(503,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'Synthetic pre-send identity GET failure'}));
+        }
+        if (url.pathname === '/api/work-jobs' && req.method === 'POST' && dropCreateBeforeCommit) {
+          dropCreateBeforeCommit=false;res.writeHead(503,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'Synthetic uncertain POST without commit'}));
+        }
         const input = new Request(url, { method: req.method, headers, ...(body.length ? { body } : {}) });
         const output = await routes[url.pathname][req.method](input);
+        if(url.pathname === '/api/work-jobs' && req.method === 'GET' && url.searchParams.has('id') && pausedExactGet) {
+          const pause=pausedExactGet;
+          if(--pause.remaining===0){pause.hit=true;await pause.promise;}
+        }
+        if (url.pathname === '/api/work-jobs' && req.method === 'POST' && output.status === 201 && loseCreateReply) {
+          loseCreateReply = false; res.writeHead(503, { 'Content-Type':'application/json' });
+          return res.end(JSON.stringify({error:'Synthetic lost create acknowledgement; reconcile same ID'}));
+        }
         const pause = pausedReply;
         if (pause && url.pathname.endsWith(pause.route) && JSON.parse(body.toString('utf8')).action !== 'observe') {
           pause.hit = true; await pause.promise;
@@ -166,6 +187,23 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
     const input = async (label, value) => { const a = js(label), v = js(value); await wait(`!![...document.querySelectorAll('label')].find(e=>e.textContent.includes(${a}))?.querySelector('input,textarea,select')`, label);
       await evaluate(`(()=>{const e=[...document.querySelectorAll('label')].find(x=>x.textContent.includes(${a})).querySelector('input,textarea,select');const p=e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:e.tagName==='SELECT'?HTMLSelectElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(p,'value').set.call(e,${v});e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`); };
+    const setArgs = async args => {
+      await wait(`!!document.querySelector('[aria-label="MCP toolのJSON引数"]')`, 'creation arguments');
+      await evaluate(`(()=>{const e=document.querySelector('[aria-label="MCP toolのJSON引数"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,${JSON.stringify(JSON.stringify(args))});e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+    };
+    const confirmDraft = async (task, args) => {
+      await input('互換runtime/toolを選択','0'); await input('このruntimeへ渡す依頼',task);
+      await setArgs(args);
+      await click('仕事の作成前に条件を確認'); await click('この条件を確認して仕事の作成へ進む');
+      await wait('document.body.innerText.includes("仕事の作成前確認済み")','creation disclosure saved');
+    };
+    const createAndWait = async () => {
+      const previous = new URL(await evaluate('location.href')).searchParams.get('workJob');
+      await click('仕事を作成');
+      await wait(`new URL(location.href).searchParams.get('workJob') !== ${JSON.stringify(previous)} &&
+        !!document.querySelector('[aria-label="同じ仕事でToolを使う"]') && !document.body.innerText.includes('作成結果が未確認')`,
+        'new job persisted before editing execution arguments');
+    };
     await wait('document.body.innerText.includes("自分の担当を作る")', 'Eve');
     // This permission is confined to the disposable test origin/profile. Product
     // code never requests it and must reject input when its journal is unavailable.
@@ -179,8 +217,81 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await input('必要な入力項目', 'text'); await input('必要な成果項目', 'lines'); await input('Tool', packageKey); await input('実行先', 'pc');
     await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'saved requirements');
     await click('同じ担当で仕事の確認へ進む');
-    await wait('document.body.innerText.includes("仕事の名前")', 'real workbench'); await input('仕事の名前', 'fixture仕事'); await click('仕事を作成');
-    await input('互換runtime/toolを選択', '0');
+    await wait('document.body.innerText.includes("仕事の名前")', 'real workbench'); await input('仕事の名前', 'fixture仕事');
+    assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
+    assert.equal(creationRequests.length,0);
+    await confirmDraft('行数確認',{text:'one\ntwo'});
+    await input('仕事の名前','changed creation title');
+    await wait(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`,'committed condition change revokes disclosure');
+    await input('仕事の名前','fixture仕事');
+    await wait(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`,'A-B-A must not revive prior disclosure');
+    assert.equal(creationRequests.length,0);
+    await confirmDraft('行数確認',{text:'one\ntwo'});
+    await setArgs({text:'changed before creation'});
+    await wait(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`,'edit requires new disclosure');
+    // Edit exact JSON while the fresh Package response is in flight. A late
+    // success must not restore the revoked creation confirmation.
+    await click('仕事の作成前に条件を確認');
+    let releaseRegistry;
+    const reviewPause = { hit:false, promise:new Promise(resolve=>{releaseRegistry=resolve;}) };
+    pausedRegistry=reviewPause;
+    await click('この条件を確認して仕事の作成へ進む');
+    for(let i=0;i<500&&!reviewPause.hit;i++) await new Promise(resolve=>setTimeout(resolve,10));
+    assert.equal(reviewPause.hit,true);
+    await setArgs({text:'edited while confirmation waits'});
+    pausedRegistry=null;releaseRegistry();
+    await wait('document.body.innerText.includes("入力または本人が変わりました")','late confirmation denied after edit');
+    assert.equal(creationRequests.length,0);
+    assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
+    entitlements.ownerScope='wrong-owner';
+    await click('仕事の作成前に条件を確認');await click('この条件を確認して仕事の作成へ進む');
+    await wait('document.body.innerText.includes("本人・担当・利用権・Toolの版が変わりました")','wrong owner disclosure denied');
+    assert.equal(creationRequests.length,0);entitlements.ownerScope=scope;
+    // Expiry during each asynchronous fence must leave zero create POSTs.
+    await confirmDraft('行数確認',{text:'one\ntwo'});
+    let releaseExpiry;
+    const expiryPause={hit:false,promise:new Promise(resolve=>{releaseExpiry=resolve;})};pausedRegistry=expiryPause;
+    await click('仕事を作成');
+    for(let i=0;i<500&&!expiryPause.hit;i++)await new Promise(resolve=>setTimeout(resolve,10));
+    assert.equal(expiryPause.hit,true);await evaluate('window.__fixtureClockOffset=31000');
+    pausedRegistry=null;releaseExpiry();
+    await wait('document.body.innerText.includes("作成前確認が失効したか条件が変わりました")','expiry during runtime/entitlement recheck');
+    assert.equal(creationRequests.length,0);await evaluate('window.__fixtureClockOffset=0');
+    await confirmDraft('行数確認',{text:'one\ntwo'});
+    let releaseOwnerExpiry;
+    const ownerExpiry={remaining:2,hit:false,promise:new Promise(resolve=>{releaseOwnerExpiry=resolve;})};pausedExactGet=ownerExpiry;
+    await click('仕事を作成');
+    for(let i=0;i<500&&!ownerExpiry.hit;i++)await new Promise(resolve=>setTimeout(resolve,10));
+    assert.equal(ownerExpiry.hit,true);await evaluate('window.__fixtureClockOffset=31000');
+    pausedExactGet=null;releaseOwnerExpiry();
+    await wait('document.body.innerText.includes("作成前確認が失効したか条件が変わりました")','expiry after final owner GET');
+    assert.equal(creationRequests.length,0);await evaluate('window.__fixtureClockOffset=0');
+    // A failed pre-send identity read is not an uncertain-write exemption.
+    await confirmDraft('行数確認',{text:'one\ntwo'});failExactGetOnce=true;
+    await click('仕事を作成');await wait('document.body.innerText.includes("Synthetic pre-send identity GET failure")','failed pre-send GET');
+    assert.equal(creationRequests.length,0);
+    assert.equal(await evaluate(`!![...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ作成内容で結果を確認'))`),false);
+    await evaluate('window.__fixtureClockOffset=31000');
+    assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
+    await evaluate('window.__fixtureClockOffset=0');
+    entitlements.ownerScope='changed-after-unsent-get';
+    await click('仕事の作成前に条件を確認');await click('この条件を確認して仕事の作成へ進む');
+    await wait('document.body.innerText.includes("本人・担当・利用権・Toolの版が変わりました")','retry after failed GET rechecks entitlement');
+    assert.equal(creationRequests.length,0);entitlements.ownerScope=scope;
+    await confirmDraft('行数確認',{text:'one\ntwo'});
+    assert.equal(connectorExecuteCalls,0,'pre-creation review never executes a Tool');
+    await click('仕事を作成');
+    await wait('document.body.innerText.includes("Synthetic lost create acknowledgement")','lost create acknowledgement');
+    assert.equal(creationRequests.length,1);assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM work_jobs').get().n,1);
+    authenticatedOwner='local-preview:other-browser-owner';
+    await click('同じ作成内容で結果を確認');
+    await wait('document.body.innerText.includes("保存を始めたアカウントと異なります")','different owner readback rejected');
+    assert.equal(creationRequests.length,1);assert.equal(sqlite.prepare('SELECT COUNT(*) n FROM work_jobs').get().n,1);
+    authenticatedOwner=owner;await evaluate('window.__fixtureClockOffset=31000');
+    await click('同じ作成内容で結果を確認');
+    await wait('document.body.innerText.includes("mii連携のソフト試用")','expired same-ID GET-only readback');
+    assert.equal(creationRequests.length,1,'uncertain committed POST is recovered by GET, never resent');
+    assert.equal(connectorExecuteCalls,0);await evaluate('window.__fixtureClockOffset=0');
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'mii input readback');
     const firstJobId = sqlite.prepare('SELECT id FROM work_jobs WHERE user_id = ?').get(owner).id;
@@ -249,7 +360,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await click('必要な能力を保存'); await wait('document.body.innerText.includes("必要な能力を保存しました")', 'second requirements saved');
       await click('同じ担当で仕事の確認へ進む');
       await wait('document.body.innerText.includes("仕事の名前")', 'second workbench');
-      await input('仕事の名前', '合計fixture仕事'); await click('仕事を作成');
+      await input('仕事の名前', '合計fixture仕事'); await confirmDraft('二つの整数を合計',{left:4,right:7}); await createAndWait();
       await input('互換runtime/toolを選択', '0'); await input('このruntimeへ渡す依頼', '二つの整数を合計');
       await wait(`!!document.querySelector('[aria-label="MCP toolのJSON引数"]')`, 'second Tool arguments');
       await evaluate(`(()=>{const e=document.querySelector('[aria-label="MCP toolのJSON引数"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,'{"left":4,"right":7}');e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
@@ -279,7 +390,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       // Delay the real API response after commit. A lost observation cannot undo
       // an already claimed operation; it can fence a begin before dispatch.
       for (const mode of ['edit-during-begin', 'lost-during-begin', 'lost-after-claim']) {
-        await input('仕事の名前', mode); await click('仕事を作成');
+        await input('仕事の名前', mode); await confirmDraft('二つの整数を合計',{left:4,right:7}); await createAndWait();
         await input('互換runtime/toolを選択', '0');
         await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
         await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, mode + ' read');
@@ -310,6 +421,29 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
         const disabled = await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('同じ仕事のTool確認へ渡す'))).disabled`);
         assert.equal(disabled, true, 'unresolved attempt cannot be resubmitted');
       }
+    }
+    if(localAuthority) {
+      const before=creationRequests.length,calls=connectorExecuteCalls;
+      await input('仕事の名前','unknown missing row');await confirmDraft('二つの整数を合計',{left:4,right:7});
+      dropCreateBeforeCommit=true;await click('仕事を作成');
+      await wait('document.body.innerText.includes("Synthetic uncertain POST without commit")','uncommitted uncertain POST');
+      const sent=creationRequests.at(-1);assert.equal(creationRequests.length,before+1);
+      await click('同じ作成内容で結果を確認');
+      await wait('document.body.innerText.includes("同じ作成条件を新しく確認")','missing ID requires new confirmation');
+      assert.equal(creationRequests.length,before+1);
+      await confirmDraft('二つの整数を合計',{left:8,right:7});
+      await click('同じ作成内容で結果を確認');
+      await wait('document.body.innerText.includes("作成前確認が失効したか条件が変わりました")','changed intent cannot replace uncertain write');
+      assert.equal(creationRequests.length,before+1);
+      await confirmDraft('二つの整数を合計',{left:4,right:7});
+      await click('同じ作成内容で結果を確認');
+      await wait('document.body.innerText.includes("mii連携のソフト試用") && !document.body.innerText.includes("作成結果が未確認")','same-intent new confirmation');
+      assert.equal(creationRequests.length,before+2);assert.equal(creationRequests.at(-1).id,sent.id);
+      assert.deepEqual(creationRequests.at(-1).creationReview,sent.creationReview);
+      assert.deepEqual(creationRequests.at(-1).creationInput,sent.creationInput);
+      const row=JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(sent.id).payload);
+      assert.equal(row.agentBinding.creationReview.inputSha256,sent.creationReview.inputSha256);
+      assert.equal(row.toolAttempts,undefined);assert.equal(connectorExecuteCalls,calls);
     }
     // The registry approval and account identity are synthetic. This does not
     // establish physical mii, real provider billing, or independent Tool safety.

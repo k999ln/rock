@@ -64,6 +64,22 @@
       ],
       "evidence": "docs/evidence/development-execution/mii-budget-readback.json",
       "scope": "same owner/job read-only A2A budget snapshot; no MCP cost, invoice, execution authority or physical acceptance"
+    },
+    "creationDisclosure": {
+      "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "implementation": [
+        "app/api/work-jobs/route.ts",
+        "components/mcp-bot-runner.tsx",
+        "components/workbench.tsx",
+        "lib/work-store.ts",
+        "lib/workflow.ts"
+      ],
+      "tests": [
+        "tests/work-agent-binding-route.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/f3-creation-disclosure.json",
+      "scope": "client-observed same-owner creation disclosure, not execution authority, verified price or old-client migration"
     }
   },
   "latestRockstarOsDesign": {

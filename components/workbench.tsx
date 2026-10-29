@@ -1,6 +1,6 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Check, Play, Plus, RefreshCw } from 'lucide-react';
 import {
@@ -8,6 +8,8 @@ import {
   type WorkJob,
   type WorkCommand,
   type WorkPlan,
+  type WorkAgentCreationReview,
+  createWorkJob, workAgentCreationRequestDigest,
 } from '@/lib/workflow';
 import { type RunRecorder } from '@/lib/device';
 import { matchesA2ADelegationRecovery } from '@/lib/a2a-delegation-recovery';
@@ -35,8 +37,8 @@ import { includedRockstarServicePackageKeys } from '@/lib/rockstar-service-packa
 import { rockstarPackageHandoffMessage, type RockstarPackageHandoff } from '@/lib/rockstar-package-handoff';
 import { buildA2AResultHandoffPrompt } from '@/lib/a2a-result-handoff';
 import { compatibleLocalPackageRuntimes } from '@/lib/sky-package-runtime';
-import type { SkyToolPackage } from '@/lib/sky-tool-package';
-import type { McpConnection } from '@/lib/mcp-hub';
+import { parseSkyToolPackage, type SkyToolPackage } from '@/lib/sky-tool-package';
+import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
 import MiiWorkPreview, { type MiiWorkInput } from '@/components/mii-work-preview';
 import AgentToolJobRunner from '@/components/agent-tool-job-runner';
@@ -60,7 +62,7 @@ const stateNames = {
 type Update = { jobId: string; revision: number; command: WorkCommand };
 type JenniferTaskJobCoordination = NonNullable<WorkJob['coordination']>;
 type PendingUpdate = Update & { ownerScope: string };
-type Creation = { ownerScope: string; id: string; title: string; templateId: string; plan?: Pick<WorkPlan, 'schemaVersion' | 'objective'>; agentRef?: { id: string; revision: number } };
+type Creation = { confirmationState?: 'readback' | 'needs_confirmation'; requestDigest?: string; creationReview?: WorkAgentCreationReview; creationInput?: Record<string, unknown>; ownerScope: string; id: string; title: string; templateId: string; plan?: Pick<WorkPlan, 'schemaVersion' | 'objective'>; agentRef?: { id: string; revision: number } };
 type RunnerDraft = { key: string; ownerScope: string; jobId: string; stepId: string; snapshot: Partial<MrToolRunnerState> };
 type Delegation = {
   id: string;
@@ -331,8 +333,8 @@ function WorkPlanEditor({
     </section>
   );
 }
-async function request<T>(method = 'GET', value?: unknown, ownerScope?: string): Promise<T> {
-  const response = await fetch('/api/work-jobs', {
+async function request<T>(method = 'GET', value?: unknown, ownerScope?: string, exactId?: string, beforeSend?: () => void): Promise<T> {
+  const init: RequestInit = {
     method,
     cache: 'no-store',
     redirect: 'manual',
@@ -343,7 +345,9 @@ async function request<T>(method = 'GET', value?: unknown, ownerScope?: string):
           body: JSON.stringify(value),
         }
       : {}),
-  });
+  };
+  beforeSend?.();
+  const response = await fetch(exactId ? `/api/work-jobs?id=${encodeURIComponent(exactId)}` : '/api/work-jobs', init);
   if (response.status === 401 || response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400))
     throw new OperationRequestError('サインインを確認してください。', 401);
   const data = (await response.json()) as T & { error?: string; code?: string };
@@ -576,6 +580,75 @@ export default function Workbench({
     ? packageRuntimeCandidates.find(({ server, tool }) =>
       server.id === selectedPackageRuntime.serverId && tool.name === selectedPackageRuntime.toolName) ?? null
     : null;
+  const [creationDisclosure, setCreationDisclosure] = useState<{
+    fingerprint: string; review: WorkAgentCreationReview; args: Record<string, unknown>; expiresAt: number;
+  } | null>(null);
+  const creationFingerprint = JSON.stringify({ ownerScope, agentReference, title, templateId,
+    handoffPackage, localPackageTask, runtime: selectedPackageRuntimeCandidate });
+  const creationReviewGeneration = useRef(0);
+  const creationFingerprintRef = useRef(creationFingerprint);
+  const [previousCreationFingerprint, setPreviousCreationFingerprint] = useState(creationFingerprint);
+  // Guarded adjustment of this component's state discards the old confirmation
+  // before rendering new conditions, including an A -> B -> A edit sequence.
+  if (previousCreationFingerprint !== creationFingerprint) {
+    setPreviousCreationFingerprint(creationFingerprint);
+    setCreationDisclosure(null);
+  }
+  // Only committed UI conditions may update the asynchronous freshness fence.
+  // An abandoned concurrent render must not publish its fingerprint to a ref.
+  useLayoutEffect(() => {
+    creationFingerprintRef.current = creationFingerprint;
+    creationReviewGeneration.current++;
+  }, [creationFingerprint]);
+  useEffect(() => {
+    if (!creationDisclosure) return;
+    const timer = window.setTimeout(() => setCreationDisclosure(null), Math.max(0, creationDisclosure.expiresAt - Date.now()));
+    return () => window.clearTimeout(timer);
+  }, [creationDisclosure]);
+  const creationConfirmed = creationDisclosure?.fingerprint === creationFingerprint;
+  async function recheckCreation(review: WorkAgentCreationReview) {
+    const [agents, registry, entitlements, servers] = await Promise.all([
+      fetch(`/api/sky/agents?id=${encodeURIComponent(review.agentId)}`, { cache: 'no-store' }),
+      fetch('/api/sky/tool-registry', { cache: 'no-store' }),
+      fetch('/api/rockstar/entitlements', { cache: 'no-store' }), listMcpConnections(),
+    ]);
+    if (!agents.ok || !registry.ok || !entitlements.ok) throw new Error('本人・担当・Tool・利用権を読み直してください。');
+    const a = await agents.json() as { ownerScope?: string; agent?: { id: string; revision: number; enabled: boolean; requirements?: { packageKey: string; executionTarget: string } } };
+    const p = await registry.json() as { packages?: { packageKey: string; manifestSha256: string; status: string; installable: boolean; manifest: SkyToolPackage }[] };
+    const e = await entitlements.json() as { ownerScope?: string };
+    const pkg = p.packages?.find((item: { packageKey: string; manifestSha256: string }) =>
+      item.packageKey === review.packageKey && item.manifestSha256 === review.manifestSha256);
+    if (a.ownerScope !== review.ownerScope || e.ownerScope !== review.ownerScope ||
+        a.agent?.id !== review.agentId || a.agent.revision !== review.agentRevision || !a.agent.enabled ||
+        a.agent.requirements?.packageKey !== review.packageKey || a.agent.requirements.executionTarget !== 'pc' ||
+        !includedRockstarServicePackageKeys(e).has(review.packageKey) || !pkg || pkg.status !== 'verified' || !pkg.installable)
+      throw new Error('本人・担当・利用権・Toolの版が変わりました。作成前確認をやり直してください。');
+    const manifest = parseSkyToolPackage(pkg.manifest);
+    if (manifest.pricing.note !== review.pricing.packageNote || !compatibleLocalPackageRuntimes(manifest, servers).some(({ server, tool }) =>
+        server.id === review.serverId && tool.name === review.toolName && server.transport === review.transport &&
+        server.passport?.toolDigest === review.toolDigest && tool.pricing.note === review.pricing.runtimeNote))
+      throw new Error('実行先・入力形式・料金申告が変わりました。作成前確認をやり直してください。');
+  }
+  async function confirmCreation(input: { args: Record<string, unknown>; pricingNote: string } | null) {
+    const generation = ++creationReviewGeneration.current;
+    setCreationDisclosure(null);
+    if (!input || !ownerScope || !agentReference || !handoffPackage || !packageRuntimeManifest || !selectedPackageRuntimeCandidate) return;
+    const fingerprint = creationFingerprint, candidate = selectedPackageRuntimeCandidate;
+    const args = structuredClone(input.args);
+    if (new TextEncoder().encode(JSON.stringify(args)).byteLength > 8000) throw new Error('作成前確認の入力は8 KB以下にしてください。');
+    const inputSha256 = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(args))))]
+      .map(byte => byte.toString(16).padStart(2, '0')).join('');
+    const review: WorkAgentCreationReview = { schema: 'rockstaros.work-agent-creation-review/1', ownerScope,
+      agentId: agentReference.id, agentRevision: agentReference.revision,
+      packageKey: handoffPackage.packageKey, manifestSha256: handoffPackage.manifestSha256,
+      serverId: candidate.server.id, toolName: candidate.tool.name,
+      transport: candidate.server.transport as 'stdio' | 'local_http', toolDigest: candidate.server.passport!.toolDigest,
+      inputSha256, pricing: { model: 'free', packageNote: packageRuntimeManifest.pricing.note,
+        runtimeNote: input.pricingNote, declaration: 'provider_unverified' } };
+    await recheckCreation(review);
+    if (creationReviewGeneration.current !== generation || creationFingerprintRef.current !== fingerprint || currentOwner.current !== ownerScope) throw new Error('入力または本人が変わりました。');
+    setCreationDisclosure({ fingerprint, review, args, expiresAt: Date.now() + 30_000 });
+  }
   const fullDelegationMessage = useMemo(() => {
     const task = delegationForm.message.trim();
     if (!task) return task;
@@ -629,8 +702,10 @@ export default function Workbench({
         summary: item.manifest.summary!,
       };
       setHandoffPackageResult({ packageKey: initialPackageKey, state: 'ready', package: handoff, manifest: item.manifest });
-      setTitle((current) => current || `${handoff.name}のクラウドAgent依頼`);
-      setTemplateId('cloud-agent');
+      if (!selectedIdRef.current && !creation.current) {
+        setTitle((current) => current || `${handoff.name}のクラウドAgent依頼`);
+        setTemplateId('cloud-agent');
+      }
     }).catch((cause: unknown) => {
       if (cause instanceof Error && cause.name === 'AbortError') return;
       setHandoffPackageResult({ packageKey: initialPackageKey, state: 'unavailable' });
@@ -934,7 +1009,94 @@ export default function Workbench({
   const accept = useCallback((job: WorkJob) => {
     setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
   }, []);
+  function acceptCreated(job: WorkJob, operation: Creation) {
+    accept(job); selectJob(job.id, operation.ownerScope); setRunnerStep(null);
+    setNote('', operation.ownerScope); setTitle('', operation.ownerScope);
+    invalidateGameDraft(false); gameInputRef.current = { source: '', instruction: '' }; setGameInput(gameInputRef.current);
+    creation.current = null; setPendingCreation(null); setCreationDisclosure(null);
+  }
+  async function createConfirmedAgentJob() {
+    if (createInFlight.current || updateInFlight.current || busy || gamePrepareFlight.current) return;
+    const previous = creation.current, disclosure = creationDisclosure;
+    if (!previous && (!ownsCurrentInput() || !ownerScope || !ready || !agentReference)) { setError(OWNER_CHECK_REQUIRED); return; }
+    const operation: Creation = previous ?? { ownerScope: ownerScope!, id: crypto.randomUUID(), title: title.trim(), templateId,
+      agentRef: { ...agentReference! }, ...(disclosure ? { creationReview: disclosure.review, creationInput: disclosure.args } : {}),
+      ...(gameDraftRef.current && gameDraftRef.current.ownerScope === ownerScope && gameDraftRef.current.title === title.trim() &&
+        gameDraftRef.current.templateId === templateId ? { plan: { ...gameDraftRef.current.plan } } : {}) };
+    const generation = creationReviewGeneration.current;
+    const requireFresh = () => {
+      if (!disclosure || !operation.creationReview || disclosure.expiresAt <= Date.now() ||
+          disclosure.fingerprint !== creationFingerprintRef.current || generation !== creationReviewGeneration.current ||
+          currentOwner.current !== operation.ownerScope ||
+          JSON.stringify(disclosure.review) !== JSON.stringify(operation.creationReview) ||
+          JSON.stringify(disclosure.args) !== JSON.stringify(operation.creationInput))
+        throw new Error('作成前確認が失効したか条件が変わりました。新しく確認してください。まだ新規送信していません。');
+    };
+    // An uncertain write may always be read, even after its creation disclosure expires.
+    if (!previous) {
+      try { requireFresh(); } catch (error) { setCreationDisclosure(null); setError((error as Error).message); return; }
+    }
+    createInFlight.current = true; listGeneration.current++; setLoading(false); setBusy(true); setError('');
+    let attemptedWrite = false;
+    try {
+      const input = { id: operation.id, title: operation.title, templateId: operation.templateId,
+        ...(operation.plan ? { plan: operation.plan } : {}), agentRef: operation.agentRef!,
+        creationReview: operation.creationReview!, creationInput: operation.creationInput! };
+      const expectedDigest = await workAgentCreationRequestDigest(createWorkJob({ id: input.id, title: input.title,
+        templateId: input.templateId, ...(input.plan ? { plan: input.plan } : {}) }), input.agentRef, input.creationReview);
+      if (operation.requestDigest && operation.requestDigest !== expectedDigest) throw new Error('元の作成依頼を照合できません。');
+      const readExisting = async () => {
+        const identity = readWorkJobs(await request<unknown>('GET', undefined, undefined, operation.id));
+        const status = pendingOwnerStatus(operation.ownerScope, identity.ownerScope);
+        if (status === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
+        if (status === 'changed') throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
+        setOwnerScope(identity.ownerScope); setReady(true);
+        const found = identity.jobs.find(job => job.id === operation.id);
+        if (!found) return null;
+        if (found.agentBinding?.agentId !== operation.agentRef!.id ||
+            found.agentBinding.agentRevision !== operation.agentRef!.revision ||
+            found.agentBinding.requestDigest !== expectedDigest ||
+            JSON.stringify(found.agentBinding.creationReview) !== JSON.stringify(operation.creationReview))
+          throw new Error('同じIDの依頼digestが一致しません。新規送信せず照合してください。');
+        return found;
+      };
+      const existing = await readExisting();
+      if (existing) { acceptCreated(existing, operation); return; }
+      if (previous && operation.confirmationState !== 'needs_confirmation') {
+        const waiting = { ...operation, requestDigest: expectedDigest, confirmationState: 'needs_confirmation' as const };
+        creation.current = waiting; setPendingCreation(waiting); setCreationDisclosure(null);
+        throw new Error('このIDの保存はまだ確認できません。同じ作成条件を新しく確認してから照合してください。自動再送しません。');
+      }
+      requireFresh();
+      await recheckCreation(operation.creationReview!);
+      requireFresh(); // Includes time elapsed in the remote reads.
+      const raced = await readExisting();
+      if (raced) { acceptCreated(raced, operation); return; }
+      requireFresh(); // Includes time elapsed in the final owner/ID read.
+      const job = readWorkJobResponse(await request<unknown>('POST', {
+        ...input, creationReviewExpiresAt: disclosure!.expiresAt,
+      }, operation.ownerScope, undefined, () => {
+        // Serialization is complete. No await separates this fence from fetch.
+        requireFresh();
+        attemptedWrite = true;
+        const sent = { ...operation, requestDigest: expectedDigest, confirmationState: 'readback' as const };
+        creation.current = sent; setPendingCreation(sent);
+      }));
+      if (job.id !== operation.id || job.agentBinding?.requestDigest !== expectedDigest ||
+          JSON.stringify(job.agentBinding.creationReview) !== JSON.stringify(operation.creationReview))
+        throw new Error('保存結果を照合できません。同じIDを読み直してください。');
+      acceptCreated(job, operation);
+    } catch (error) {
+      // A failed pre-send read never acquires an uncertain-write exemption.
+      if (!attemptedWrite) setCreationDisclosure(null);
+      if (error instanceof OperationRequestError && (error.status === 401 || error.code === OWNER_CHANGED)) {
+        setOwnerScope(null); setReady(false); setJobs([]); setSelectedId(''); selectedIdRef.current = '';
+      }
+      setError(error instanceof Error ? error.message : '作成結果を照合してください。');
+    } finally { createInFlight.current = false; setBusy(false); }
+  }
   async function create() {
+    if (agentRequired) return createConfirmedAgentJob();
     if ((!creation.current && (gameDraft !== gameDraftRef.current || gameInput !== gameInputRef.current)) || gamePrepareFlight.current || createInFlight.current || updateInFlight.current || busy || (!creation.current && !ownsCurrentInput())) return;
     if (!creation.current && (!ownerScope || !ready)) { setError(OWNER_CHECK_REQUIRED); return; }
     if (!creation.current && agentRequired && !agentReference) { setError('担当の最新版を確認してから仕事を作成してください。'); return; }
@@ -1595,6 +1757,7 @@ export default function Workbench({
           </div>
         )}
         {pendingCreation && <section className="work-notice" aria-label="仕事の作成結果の確認">
+          {pendingCreation.confirmationState === 'needs_confirmation' && <p>同じIDの保存をまだ確認できません。元のTool・実行先・入力・料金申告を再確認してください。別の条件には置き換えません。</p>}
           <p>作成結果が未確認です。最初のアカウントで、同じ仕事ID・名前・進め方を確認します。別アカウントには再送しません。</p>
           <p>作成結果を確認するか、保留を解除してから別の画面へ移動してください。サインインは別タブで行えます。</p>
           <p>{pendingOwnerStatus(pendingCreation.ownerScope, ownerScope) === 'changed' ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
@@ -1602,7 +1765,7 @@ export default function Workbench({
           <button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button>
           <button disabled={busy || loading || (pendingOwnerStatus(pendingCreation.ownerScope, ownerScope) === 'changed')} onClick={() => void create()}>同じ作成内容で結果を確認</button>
           <p>保留を解除しても保存済みの仕事は削除されません。元のアカウントで結果を確認してから、新しく保存してください。入力は保持します。</p>
-          <button disabled={busy || pendingCreation.ownerScope !== ownerScope} onClick={() => { if (!ownsCurrentInput() || createInFlight.current || creation.current !== pendingCreation || pendingCreation.ownerScope !== ownerScope) return; creation.current = null; setPendingCreation(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+          <button disabled={busy || pendingCreation.ownerScope !== ownerScope || Boolean(pendingCreation.creationReview)} onClick={() => { if (!ownsCurrentInput() || createInFlight.current || creation.current !== pendingCreation || pendingCreation.ownerScope !== ownerScope) return; creation.current = null; setPendingCreation(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
         </section>}
         {hasRetainedDrafts && !pendingCreation && <section className="work-notice" aria-label="仕事の未保存入力">
           <p>{hasPrivateDraft ? '未保存の入力をこのアカウントで保持しています。別の画面へ移動する前に保存するか、入力を破棄してください。保存済みの仕事は変更しません。' : '別のアカウントで入力した未保存の内容を非表示で保持しています。入力したアカウントへ接続し直すと復元できます。'}</p>
@@ -1671,7 +1834,14 @@ export default function Workbench({
                     <label>このruntimeへ渡す依頼
                       <textarea rows={3} maxLength={4_000} value={localPackageTask} onChange={(event) => { invalidateToolInput(); setMiiInput(null); setLocalPackageTask(event.target.value); }} placeholder="このPackage機能で行う具体的な依頼" />
                     </label>
-                    {agentRequired ? selected && ownerScope && agentReference && localPackageTask.trim() &&
+                    {agentRequired && title.trim() ? <>
+                      <p>作成前にTool・実行先・具体的な引数と提供者申告の料金を確認してください。確認は30秒で失効し、条件変更で取り消します。実行承認は作成後に別途必要です。</p>
+                      <p>Package料金申告: {packageRuntimeManifest.pricing.model} · {packageRuntimeManifest.pricing.note}（独立検証なし）</p>
+                      <McpBotRunner key={`creation:${creationFingerprint}`} server={selectedPackageRuntimeCandidate.server}
+                        request={localPackageTask} fixedToolName={selectedPackageRuntimeCandidate.tool.name}
+                        executionDisabled={busy || loading || pending !== null || !localPackageTask.trim() || Boolean(pendingCreation && pendingCreation.confirmationState !== 'needs_confirmation')} onCreationReview={confirmCreation} onDisconnected={() => { void confirmCreation(null); }} />
+                      {creationConfirmed && <output>仕事の作成前確認済み。入力・料金申告の確認記録だけを保存します。</output>}
+                    </> : agentRequired ? selected && ownerScope && agentReference && localPackageTask.trim() &&
                       selected.agentBinding?.agentId === agentReference.id && selected.agentBinding.agentRevision === agentReference.revision ?
                       <AgentToolJobRunner key={`${ownerScope}:${selected.id}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}:${miiInput?.id ?? 'direct'}:${runnerInputEpoch}`}
                         server={selectedPackageRuntimeCandidate.server} toolName={selectedPackageRuntimeCandidate.tool.name} task={localPackageTask}
@@ -1745,7 +1915,7 @@ export default function Workbench({
           </label>
           <button
             className="work-primary"
-            disabled={!ready || loading || locked || gamePreparing || !title.trim()}
+            disabled={!ready || loading || locked || gamePreparing || !title.trim() || (agentRequired && !creationConfirmed)}
             onClick={() => void create()}
           >
             <Plus size={17} /> 仕事を作成

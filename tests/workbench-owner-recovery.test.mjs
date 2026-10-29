@@ -322,9 +322,11 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
     'rockstar-package-handoff',
     'a2a-result-handoff',
     'sky-package-runtime',
+    'sky-tool-package',
     'jennifer-execution-reports',
   ])
     modules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
+  modules['@/lib/mcp-hub'] = loadRouteFixture(new URL('lib/mcp-hub.ts', root), new Map([['@/lib/device', {}]]));
   const compiled = ts.transpileModule(
     readFileSync(new URL('components/workbench.tsx', root), 'utf8'),
     {
@@ -1547,9 +1549,9 @@ void test('lazy Delivery auth loss invalidates a parent read captured before401'
  assert.equal(h.find('button','このToolの入力・結果を破棄'),undefined,'older read cannot make private draft discardable after auth loss');
 });
 
-void test('Workbench sends the selected saved Agent revision through the real owner-scoped job API', async (t) => {
+void test('legacy Workbench sends the selected saved Agent revision through the real owner-scoped job API', async (t) => {
   const agentId = randomUUID();
-  const h = await setup(t, { componentProps: { agentRequired: true, agentReference: { id: agentId, revision: 1 } } });
+  const h = await setup(t, { componentProps: { agentRequired: false, agentReference: { id: agentId, revision: 1 } } });
   const { skyAgentLibraryStore } = await import('../lib/sky-agent-library-store.ts');
   const { defaultSkyAgentSettings } = await import('../lib/sky-agent-library.ts');
   await skyAgentLibraryStore(h.db, 'alice').save(agentId, 0, defaultSkyAgentSettings('本人の担当', '用途を自由に設定'), true);
@@ -1567,7 +1569,7 @@ void test('Workbench sends the selected saved Agent revision through the real ow
 void test('Workbench does not create an unbound job while the selected Agent cannot be verified', async (t) => {
   const h = await setup(t, { componentProps: { agentRequired: true, agentReference: null } });
   h.render(); await h.flush(); h.input('未確認の担当');
-  await h.click('仕事を作成');
+  const button = h.find('button', '仕事を作成');
+  assert.equal(button.props.disabled, true);
   assert.equal(h.requests.filter(request => request.method === 'POST').length, 0);
-  assert.match(h.text(), /担当の最新版を確認/);
 });

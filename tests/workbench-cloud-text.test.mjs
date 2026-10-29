@@ -6,6 +6,7 @@ import ts from 'typescript';
 import { createWorkJob } from '../lib/workflow.ts';
 import { remoteAiTextRequestDigest } from '../lib/remote-ai-text-request.ts';
 import * as remoteTextClient from '../lib/remote-ai-text-client.ts';
+import { loadRouteFixture } from './route-fixture.mjs';
 const { RemoteAiTextClientError } = remoteTextClient;
 
 const root = new URL('../', import.meta.url);
@@ -64,8 +65,9 @@ async function harness({ onRemote, budget = null, records = [], executionAvailab
     '@/lib/operations-client': { OperationRequestError: class extends Error {} },
     '@/lib/remote-ai-text-client': { ...remoteTextClient, remoteAiTextRequest: trackedRemote },
   };
-  for (const name of ['workflow', 'work-job-view','owner-intent','pending-owner-intent','a2a-delegation-recovery','currency-format','remote-ai-text-request','rockstar-service-package-access','rockstar-package-handoff','a2a-result-handoff','sky-package-runtime','jennifer-execution-reports'])
+  for (const name of ['workflow', 'work-job-view','owner-intent','pending-owner-intent','a2a-delegation-recovery','currency-format','remote-ai-text-request','rockstar-service-package-access','rockstar-package-handoff','a2a-result-handoff','sky-package-runtime','sky-tool-package','jennifer-execution-reports'])
     modules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
+  modules['@/lib/mcp-hub'] = loadRouteFixture(new URL('lib/mcp-hub.ts', root), new Map([['@/lib/device', {}]]));
   function compile(path) {
     const exports = {};
     const compiled = ts.transpileModule(readFileSync(new URL(path, root), 'utf8'), { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText;

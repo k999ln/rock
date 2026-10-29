@@ -97,6 +97,7 @@ export function McpBotRunner({
   onJobClaim,
   fixedToolName,
   executionDisabled = false,
+  onCreationReview,
 }: {
   server: McpConnection;
   request: string;
@@ -108,6 +109,8 @@ export function McpBotRunner({
   onJobClaim?: (claim: McpJobClaim) => void;
   fixedToolName?: string;
   executionDisabled?: boolean;
+  /** Disclosure only: never call tools/execute in this mode or reuse its approval. */
+  onCreationReview?: (input: { args: Record<string, unknown>; pricingNote: string } | null) => Promise<void> | void;
 }) {
   const tools = useMemo(
     () => (server.passport?.tools ?? []).filter((tool) => !fixedToolName || tool.name === fixedToolName),
@@ -131,6 +134,7 @@ export function McpBotRunner({
 
   function changeTool(value: string) {
     const next = tools.find((tool) => tool.name === value);
+    void onCreationReview?.(null);
     setToolName(value);
     setArgsText(argsFor(next, direction));
     setApproval(null);
@@ -140,6 +144,7 @@ export function McpBotRunner({
   }
 
   function applyDirection() {
+    void onCreationReview?.(null);
     setArgsText(argsFor(selectedTool, direction));
     setApproval(null);
     setResult('');
@@ -182,7 +187,24 @@ export function McpBotRunner({
     }
   }
 
+  async function confirmCreation() {
+    if (!onCreationReview || !approval || !selectedTool || executionDisabled) return;
+    setError('');
+    try {
+      if (!Number.isFinite(Date.parse(approval.expiresAt)) || Date.parse(approval.expiresAt) <= Date.now() || approval.toolId !== selectedTool.name ||
+          approval.pricing.model !== 'free' || approval.pricing.declaration !== 'provider_unverified' ||
+          approval.pricing.note !== selectedTool.pricing.note) throw new Error('料金申告と入力を読み直してください。');
+      await onCreationReview({ args: parseArgs(), pricingNote: approval.pricing.note });
+      // A creation disclosure is not the one-use execution consent.
+      setApproval(null); setState('ready');
+    } catch (reason) {
+      setApproval(null); void onCreationReview(null);
+      setError(reason instanceof Error ? reason.message : '作成前確認をやり直してください。');
+    }
+  }
+
   async function execute() {
+    if (onCreationReview) return;
     if (!selectedTool || !approval || state === 'running' || executionInFlight.current) return;
     executionInFlight.current = true;
     setError('');
@@ -288,7 +310,7 @@ export function McpBotRunner({
             disabled={state === 'running'}
             maxLength={4000}
             value={direction}
-            onChange={(event) => setDirection(event.target.value)}
+            onChange={(event) => { if (onCreationReview) { void onCreationReview(null); setApproval(null); } setDirection(event.target.value); }}
             placeholder="次の実行で変えたい方向を伝える"
           />
         </label>
@@ -312,6 +334,7 @@ export function McpBotRunner({
           spellCheck={false}
           value={argsText}
           onChange={(event) => {
+            void onCreationReview?.(null);
             setArgsText(event.target.value);
             setApproval(null);
             setState('ready');
@@ -323,8 +346,11 @@ export function McpBotRunner({
         <output className="mcp-bot-approval">
           <ShieldCheck size={18} />
           <div>
-            <strong>1回だけ実行します</strong>
-            <p>{approval.summary}</p>
+            <strong>{onCreationReview ? '作成前の条件確認（まだ実行しません）' : '1回だけ実行します'}</strong>
+            <p>{onCreationReview ? `実行先: ${server.name} · Tool: ${approval.tool}` : approval.summary}</p>
+            {onCreationReview && <><p>この具体的な入力で仕事を作成します。実行時の承認は別途必要です。</p>
+              <pre aria-label="作成前に確認する具体的な入力">{argsText}</pre>
+              <p>提供元の料金申告: {approval.pricing.note}</p></>}
             <small>料金条件: 提供元申告「実行ごとの追加料金なし」。この申告はRockstarが独立検証した料金見積ではありません。</small>
             <small>確認後の引数変更や再利用は拒否されます。</small>
           </div>
@@ -333,17 +359,17 @@ export function McpBotRunner({
 
       <div className="mcp-bot-actions">
         {approval ? (
-          <button type="button" className="black-button" disabled={executionDisabled || state === 'running'} onClick={() => void execute()}>
+          <button type="button" className="black-button" disabled={executionDisabled || state === 'running'} onClick={() => void (onCreationReview ? confirmCreation() : execute())}>
             {state === 'running' ? (
               <LoaderCircle className="sky-chat-spin" size={16} />
             ) : (
               <Play size={16} />
             )}
-            {state === 'running' ? '実行中…' : '内容を承認して実行'}
+            {state === 'running' ? '実行中…' : onCreationReview ? 'この条件を確認して仕事の作成へ進む' : '内容を承認して実行'}
           </button>
         ) : (
           <button type="button" className="black-button" onClick={() => void prepare()} disabled={!directExecutionAllowed || executionDisabled}>
-            <ShieldCheck size={16} /> 実行内容を確認
+            <ShieldCheck size={16} /> {onCreationReview ? '仕事の作成前に条件を確認' : '実行内容を確認'}
           </button>
         )}
         <button
