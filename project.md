@@ -727,7 +727,9 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 既存Agentの対象物attachmentと新しいrequirementsを共存・旧editorの省略時にも保持し、Eveの結果不明照合で両値を検査する候補。独立検収後の合成SQLite・実route試験22件を別担当が再実行して成功。実ブラウザ・CIは未実施。実端末・接続・権限の証明ではない。[候補証拠](docs/evidence/development-execution/eve-agent-attachment-preservation.json)。
 
-mii合成入力の追加能力について、未対応・未確認を拒否し既存成果を保持する候補はLinuxブラウザ2件・独立検収・CIに成功し、CodeQL警告を修正後PR283をmain 7007b0beへ統合。同SHA CIの初回と再試行は最初のChrome隔離profileが100回の起動待ち内に開始せず失敗。起動待ちを上限300回へ変更したPR284を独立検収とCI成功後main 8e5bbdb2へ統合し、同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-browser-startup-main-ci.json)。元の失敗原因は未確定。記録PR285の別のCIではブラウザ検査対象が遷移中に閉じたため失敗し、明示的な画面移動の完了待ち候補を検証中。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
+mii合成入力の追加能力について、未対応・未確認を拒否し既存成果を保持する候補はLinuxブラウザ2件・独立検収・CIに成功し、CodeQL警告を修正後PR283をmain 7007b0beへ統合。同SHA CIの初回と再試行は最初のChrome隔離profileが100回の起動待ち内に開始せず失敗。起動待ちを上限300回へ変更したPR284を独立検収とCI成功後main 8e5bbdb2へ統合し、同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-browser-startup-main-ci.json)。元の失敗原因は未確定。記録PR285の別のCIではブラウザ検査対象が遷移中に閉じたため失敗し、明示的な画面移動の完了待ちPR285を独立検収後main 594739d4へ統合し、同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-browser-navigation-main-ci.json)。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
+
+同じ合成mii仕事とworkerの遠隔取消応答喪失・予約保持・署名済使用額の精算と再送防止の縦断試験は独立再現とCI成功後、PR286をmain bbc9a359へ統合。同SHA CI確認中。実機・実provider・実課金の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-remote-cancel.json)。
 
 実workerの送信応答不明と同じjobのmii読戻し・ローカル取消応答不明・予約保持を結ぶ合成試験は独立検収とCI成功後、PR282をmain effbf9d6へ統合。同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-worker-unknown-main-ci.json)。ローカル試験は未了。遠隔停止・実Provider・物理端末の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-unknown-draft.json)。
 

@@ -1,0 +1,44 @@
+{
+  "schema": "rockstaros.main-ci-evidence/1",
+  "pullRequest": 285,
+  "mergeSha": "594739d49401a105ba1be8df38914c53a12eeb5f",
+  "checks": [
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40860016232/job/123400574446",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40860016326/job/123400574423",
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40860016096/job/123400574134",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40860016232/job/123400573933",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40860016096/job/123400573904",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40860016105/job/123400573615",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    }
+  ],
+  "scope": "synthetic host browser navigation; prior Chrome/CDP failure causes remain undetermined and physical acceptance is separate"
+}

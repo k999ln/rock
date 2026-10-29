@@ -79,6 +79,7 @@ const approvedMessages = new Map([
   ['33333333-3333-4333-8333-333333333014', 'Cloudflare A2A completion racing with cancellation fixture.'],
   ['33333333-3333-4333-8333-333333333015', 'Run the reviewed operation against the approved input.'],
   ['33333333-3333-4333-8333-333333333016', 'Research the approved question and return evidence.'],
+  ['33333333-3333-4333-8333-333333333019', 'Worker mii lost remote cancellation response fixture.'],
   ['33333333-3333-4333-8333-333333333017', 'Review the prior agent result as untrusted data and identify a next step.'],
 ]);
 const remoteProgressTasks = new Map<string, number>();
@@ -137,7 +138,7 @@ async function outboundService(request: Request) {
     throw new Error(`Unexpected A2A mock origin: ${url.origin}`);
   if (request.method === 'GET' && url.pathname === '/.well-known/agent-card.json') {
     cardRequestCount += 1;
-    if (cardRequestCount > 20) throw new Error('Agent Card discovery exceeded the bounded workflow fixtures.');
+    if (cardRequestCount > 24) throw new Error('Agent Card discovery exceeded the bounded workflow fixtures.');
     return Response.json(url.origin === 'https://python.a2a.example.com' ? secondAgentCard : fixtureAgentCard);
   }
   if (request.method === 'POST' && url.pathname === '/rpc') {
@@ -155,6 +156,25 @@ async function outboundService(request: Request) {
       };
     };
     const taskId = rpc.params?.id;
+    if (rpc.method === 'CancelTask' && taskId === 'vitest-lost-cancel-task') {
+      const count = (remoteCancelRequests.get(taskId) ?? 0) + 1;
+      remoteCancelRequests.set(taskId, count);
+      if (count !== 1) throw new Error('Remote cancellation was repeated.');
+      // The independent synthetic service commits the cancellation, then
+      // loses the response. Only a later GetTask can establish the outcome.
+      throw new Error('Synthetic remote cancellation response lost after commit.');
+    }
+    if (rpc.method === 'GetTask' && taskId === 'vitest-lost-cancel-task') {
+      if (remoteCancelRequests.get(taskId) !== 1) throw new Error('Task has not been cancelled.');
+      const reads = (remoteProgressTasks.get(taskId) ?? 0) + 1;
+      remoteProgressTasks.set(taskId, reads);
+      const receipt = await signedUsageReceipt({ receiptId: 'vitest-lost-cancel-usage',
+        parentJobId: '22222222-2222-4222-8222-222222222019',
+        delegationId: '11111111-1111-4111-8111-111111111019', taskId, amountMinor: 11 });
+      return Response.json({ jsonrpc: '2.0', id: rpc.id, result: { id: taskId,
+        contextId: 'vitest-lost-cancel-context', status: { state: 'TASK_STATE_CANCELED' },
+        metadata: { 'org.rockstar.usageReceipt': reads === 1 ? { ...receipt, signature: 'x'.repeat(86) } : receipt } } });
+    }
     if (rpc.method === 'CancelTask' &&
       (taskId === 'vitest-cancel-task-1' || taskId === 'vitest-race-task-1')) {
       remoteCancelRequests.set(
@@ -299,6 +319,12 @@ async function outboundService(request: Request) {
           },
         },
       });
+    }
+    if (messageId === '33333333-3333-4333-8333-333333333019') {
+      return Response.json({ jsonrpc: '2.0', id: rpc.id, result: { task: {
+        id: 'vitest-lost-cancel-task', contextId: 'vitest-lost-cancel-context',
+        status: { state: 'TASK_STATE_WORKING' },
+      } } });
     }
     if (messageId === '33333333-3333-4333-8333-333333333013') {
       return Response.json({

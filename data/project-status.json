@@ -5,17 +5,28 @@
     "evidence": "docs/evidence/development-execution/eve-agent-attachment-preservation.json",
     "next": "Run exact-head browser and full CI, then independent final review before merge."
   },
+  "miiWorkerRemoteCancel": {
+    "owner": "ROCK",
+    "status": "main_integrated_merge_ci_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-remote-cancel.json",
+    "next": "Confirm same merge SHA CI; actual provider, network and physical mii remain separate.",
+    "pullRequest": 286,
+    "mergeSha": "bbc9a3591d52d3357910c96fa6223db9c88441e4"
+  },
   "miiRequiredCapabilities": {
     "owner": "ROCK",
     "status": "main_integrated_startup_fix_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
-    "next": "Review navigation-event synchronization candidate after evidence PR browser CDP failure; confirm exact-head CI. Prior Chrome failures and root cause remain recorded.",
+    "next": "Prior browser failure causes remain undetermined; physical and production authority remain separate.",
     "pullRequest": 283,
     "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
     "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb",
     "startupFixPr": 284,
     "startupFixMergeSha": "8e5bbdb25e78261d1916bc97ab318a053593385d",
-    "startupFixCiEvidence": "docs/evidence/development-execution/mii-browser-startup-main-ci.json"
+    "startupFixCiEvidence": "docs/evidence/development-execution/mii-browser-startup-main-ci.json",
+    "navigationFixPr": 285,
+    "navigationFixMergeSha": "594739d49401a105ba1be8df38914c53a12eeb5f",
+    "navigationFixCiEvidence": "docs/evidence/development-execution/mii-browser-navigation-main-ci.json"
   },
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",
