@@ -1,0 +1,26 @@
+{
+  "schema": "rockstaros.eve-agent-attachment-preservation/1",
+  "state": "draft_prior_browser_ci_pass_final_head_pending",
+  "base": "594739d49401a105ba1be8df38914c53a12eeb5f",
+  "sourceSha256": {
+    "lib/sky-object-attachment.ts": "a14cd67c2a8685e027ae3dcc3e0d9f033f91c2d6f1b49cc53d1682579ee8a366",
+    "lib/sky-agent-library.ts": "b4e294a6334888279ae52fdcf5c06ed6bbad68896697715b1f706f113258f785",
+    "lib/sky-agent-library-store.ts": "ebc36d294286769c4c7545ccad072507e6e0e7b379e68ed276e693b8a29abc91",
+    "lib/eve-agent-creation.ts": "5ae20809dd7e6621e6c283e970166de4cfef436fec8f696900fef01971cdcbc1",
+    "tests/sky-agent-library.test.mjs": "7f74808d6fc540a8af50273260b0a746413eb0192cc8b56db851084c10d54b64",
+    "tests/eve-agent-creation.test.mjs": "b225f451c31639eb3afa357874d93eee8da7cc72732a1edf43a6c0ce3ff9d773",
+    "tests/eve-smith-mii-browser.test.mjs": "ae82e904804723f05a33ded6a87bcf4cc93accc42c8ca91824124e6fc198e54b",
+    "tests/fixtures/eve-smith-mii-browser/entry.tsx": "7bbcf93327e8619062102d9cb935666ae77c21e7379804d621d019f540e24303"
+  },
+  "reusedLocalSource": {
+    "path": "/Users/kaiya/Documents/ChatGPT/avokdo/lib/sky-object-attachment.ts",
+    "sha256": "a14cd67c2a8685e027ae3dcc3e0d9f033f91c2d6f1b49cc53d1682579ee8a366",
+    "authorAndLicense": "not independently established; existing user-supplied workspace source, no change to original"
+  },
+  "independentReview": "Two P2 issues (pending digest and browser reload) corrected; source re-review no P1/P2. Independent isolated SQLite and injected actual route test rerun passed 22/22.",
+  "command": "NODE_PATH=/Users/kaiya/Documents/ChatGPT/avokdo/node_modules node --experimental-strip-types --test --test-reporter=dot tests/sky-agent-library.test.mjs tests/eve-agent-creation.test.mjs",
+  "limits": "Synthetic owner/SQLite and route fixture only; browser CI pending. Object attachment is desired input/output, not a file, physical connection, permission, or proof of real existing data. No model inference.",
+  "next": "Verify exact final head after merge of main and independent review.",
+  "priorHead": "01eeaae1ad19c3c53a3df10b40a484655e5810e1",
+  "priorHeadCi": "7 checks passed, verify job 123407299703 executed both Linux browser cases. Log SHA256 441a9dd670fc838d35d98884d76121bfd5f096dc2a1b95e751f2e8c07019aa1a."
+}

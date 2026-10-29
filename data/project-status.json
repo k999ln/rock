@@ -1,10 +1,26 @@
 {
+  "pixelSavedAiLookup": {
+    "owner": "ROCK",
+    "status": "physical_lookup_unconfirmed",
+    "evidence": "docs/evidence/development-execution/pixel-saved-ai-lookup-unconfirmed.json",
+    "next": "Investigate existing sync/connection and unconfirmed state without resending preparation or altering existing data."
+  },
+  "eveAgentAttachmentPreservation": {
+    "owner": "ROCK",
+    "status": "draft_prior_browser_ci_pass_final_head_pending",
+    "evidence": "docs/evidence/development-execution/eve-agent-attachment-preservation.json",
+    "next": "Confirm final merged-main candidate exact-head CI and independent review before merge.",
+    "pullRequest": 287
+  },
   "miiWorkerRemoteCancel": {
     "owner": "ROCK",
-    "status": "draft_independent_ci_reproduced_final_head_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-remote-cancel.json",
-    "next": "Check final candidate CI and independent review after merging current main.",
-    "pullRequest": 286
+    "next": "Real provider, actual network loss, billing and physical mii remain separate.",
+    "pullRequest": 286,
+    "mergeSha": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-remote-cancel-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "miiRequiredCapabilities": {
     "owner": "ROCK",
