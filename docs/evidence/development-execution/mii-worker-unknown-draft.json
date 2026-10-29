@@ -1,15 +1,15 @@
 {
   "schema": "rockstaros.mii-worker-unknown-draft/1",
   "base": "c53ffad64e3502af9e853b73134fc1430176649a",
-  "state": "draft_untested",
+  "state": "prior_head_ci_verified_current_metadata_pending",
   "sourceSha256": {
     "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "df5cfe22c46f56098febf2efe58e6d9ca1d255a05f4070b3fbefb87882413ae0",
     "services/sky-agent-runtime/vitest.config.ts": "340a9ff6e5201c61d00fd295ff31ba7d15a1ed0c54ff19e51bbc0a2592b79afd"
   },
   "intent": "Link the real workflow response-loss fixture and existing work/delegation routes with the same synthetic mii job and held reservation; explicit remote cancellation remains a separate request.",
-  "limits": "Not executed; fixture identity, transport, D1 journal and provider are synthetic. Local stop is not remote or physical stop. No signed terminal receipt or real provider/physical acceptance is asserted.",
+  "limits": "Synthetic identity, provider transport, seeded Agent binding and D1 journal. The local cancel response loss is not remote cancellation response loss; separate remote cancel without a task ID remains unconfirmed. No signed terminal receipt, real provider, physical stop or production acceptance is asserted.",
   "review": "source-only preliminary review; exact repaired test and CI require independent review",
-  "next": "Run targeted Cloudflare Worker test with local ports after the shared resource window; repair failures, then independent review, full verify and exact-head CI before any merge.",
+  "next": "Run exact new head CI and targeted local test when shared resource window permits; independently review the exact head before merge.",
   "inference": false,
   "actualDevice": false,
   "initialCiFailure": {
@@ -17,5 +17,14 @@
     "run": 40846116619,
     "reason": "workerd Request rejects redirect:error in the local relay; the fixture now uses manual redirect and explicitly rejects 3xx. The fix is not yet tested.",
     "logSha256": "84cb4b6241931103d7470ae28c54427692ee9832b0590cedcb5b51ad40bf192d"
+  },
+  "ciVerification": {
+    "head": "405048b292e858a948366333e999da94a7debf61",
+    "run": 40846607347,
+    "job": 123355526551,
+    "checks": "7 of 7 passed, CodeQL no new alerts",
+    "workerTestFile": "13 tests passed; 2 worker test files / 14 tests passed",
+    "logSha256": "9a8d698ccc45810eef7a9895dc2685d68dfa99977e55b9e3ec7cc84d5119551b",
+    "review": "independent bounded review passed; no independent local test was run"
   }
 }

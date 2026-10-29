@@ -725,7 +725,7 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
-実workerの送信応答不明と同じjobのmii読戻し・ローカル取消応答不明・予約保持を結ぶ合成試験を準備中。初回CIはworkerdのredirect:error非対応で失敗し、テストrelayを修正した候補は再実行待ち。遠隔停止・実Provider・物理端末の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-unknown-draft.json)。
+実workerの送信応答不明と同じjobのmii読戻し・ローカル取消応答不明・予約保持を結ぶ合成試験を準備中。初回CIはworkerdのredirect:error非対応で失敗し、テストrelay修正後の前headは実workerを含むCI 7件が成功。記録更新後のheadと独立local試験は未了。遠隔停止・実Provider・物理端末の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-unknown-draft.json)。
 
 mii読取adapterにhost提供descriptorの能力・版・最短期限の照合を追加する候補は対象試験・独立検収・全体verifyに成功。PR275をmain 6ce98364へ統合し同SHA全6 CI成功。[統合CI](docs/evidence/development-execution/mii-portable-read-main-ci.json)。合成画面と同じ仕事の読戻しを使い、宣言は本人・権限・実機受入にしない。[証拠](docs/evidence/development-execution/mii-portable-read-descriptors.json)。
 
