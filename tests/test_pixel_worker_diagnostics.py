@@ -519,27 +519,72 @@ finally:
                         (path / 'diagnostics.json').unlink(missing_ok=True)
                         (path / 'diagnostics.lock').unlink(missing_ok=True)
 
+    def test_observer_finish_sets_stop_before_exact_bounded_join(self):
+        # Verify the wait budget directly, without timing filesystem durability.
+        observer = w.OutputObservation.__new__(w.OutputObservation)
+        observer.path = w.job_dir(KEY)
+        observer.done = threading.Event()
+        calls = []
+        class SuspendedThread:
+            def join(thread, *, timeout):
+                self.assertTrue(observer.done.is_set())
+                calls.append(('join', timeout))
+            def is_alive(thread):
+                calls.append(('is_alive',))
+                return True
+        observer.thread = SuspendedThread()
+        with patch.object(w, 'diagnostic', return_value=True) as diagnostic:
+            observer.finish(True)
+        self.assertEqual(calls, [('join', 0.05), ('is_alive',)])
+        diagnostic.assert_called_once_with(observer.path, 'output', {
+            'available': False, 'complete': False,
+            'reason': 'observer_not_finished_without_waiting'})
+
     def test_observer_join_is_bounded_when_optional_callback_is_suspended(self):
         path = w.job_dir(KEY)
         (path / 'output.txt').write_bytes(b'fixture output')
         (path / 'output.txt').chmod(0o600)
-        entered, release = threading.Event(), threading.Event()
-        original = w.diagnostic
-        def suspended(*args, **kwargs):
-            if threading.current_thread() is not threading.main_thread():
+        entered, release, finished = threading.Event(), threading.Event(), threading.Event()
+        errors, unavailable = [], []
+        def suspended(path, section, fields):
+            if 'firstObservedMonotonicNs' in fields:
                 entered.set()
-                release.wait(2)
-            return original(*args, **kwargs)
+                release.wait()
+            if fields.get('reason') == 'observer_not_finished_without_waiting':
+                unavailable.append(dict(fields))
+            return True
+        # Keep actual threads/join, but exclude optional disk writes from the
+        # synchronization contract. Two seconds is a harness watchdog, not an SLA.
         with patch.object(w, 'diagnostic', side_effect=suspended):
             observer = w.OutputObservation(path)
-            self.assertTrue(entered.wait(1))
-            started = time.monotonic()
-            observer.finish(True)
-            self.assertLess(time.monotonic() - started, .2)
-            self.assertFalse(self.read()['output']['available'])
-            release.set()
-            observer.thread.join(1)
+            finisher = None
+            def finish():
+                try:
+                    observer.finish(True)
+                except BaseException as error:
+                    errors.append(error)
+                finally:
+                    finished.set()
+            try:
+                self.assertTrue(entered.wait(2), 'Exercise the suspended callback')
+                finisher = threading.Thread(target=finish, daemon=True)
+                finisher.start()
+                self.assertTrue(finished.wait(2), 'finish must return before callback release')
+                self.assertEqual(errors, [])
+                self.assertFalse(release.is_set())
+                self.assertTrue(observer.done.is_set())
+                self.assertTrue(observer.thread.is_alive())
+                self.assertEqual(unavailable, [{'available': False, 'complete': False,
+                    'reason': 'observer_not_finished_without_waiting'}])
+            finally:
+                release.set()
+                observer.done.set()
+                observer.thread.join(2)
+                if finisher is not None:
+                    finisher.join(2)
             self.assertFalse(observer.thread.is_alive())
+            if finisher is not None:
+                self.assertFalse(finisher.is_alive())
 
     def test_separate_process_held_diagnostic_lock_does_not_delay_spawn_or_deadline(self):
         path = w.job_dir(KEY)
