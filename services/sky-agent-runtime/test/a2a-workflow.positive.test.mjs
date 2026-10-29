@@ -13,6 +13,12 @@ import {
 } from '../../../lib/a2a-broker-authorization.ts';
 import { decryptA2AArtifact, encryptA2AInput } from '../../../lib/a2a-input-crypto.ts';
 import { buildA2AResultHandoffPrompt } from '../../../lib/a2a-result-handoff.ts';
+import { createMiiWorkAdapter } from '../../../lib/mii-work-adapter.ts';
+import { ownerScopeFor } from '../../../lib/owner-intent.ts';
+import { createWorkJob } from '../../../lib/workflow.ts';
+import { workStore } from '../../../lib/work-store.ts';
+import * as workRoute from '../../../app/api/work-jobs/route.ts';
+import * as delegationRoute from '../../../app/api/sky/a2a-delegations/route.ts';
 
 const targetOrigin = 'https://a2a.example.com';
 const owner = 'vitest-owner';
@@ -262,6 +268,66 @@ async function seedApprovedDelegation(selected = {}) {
     `INSERT INTO agent_delegation_broker_authorizations (delegation_id, owner_user_id, device_ref, authority_id, key_id, proof_json, expires_at, created_at) VALUES (${[selectedDelegationId, owner, deviceRef, authorityId, keyId, JSON.stringify(proof), proof.expiresAt, now].map(sql).join(',')})`,
   ];
   for (const statement of statements) await env.DB.prepare(statement).run();
+}
+
+/** A local test relay invokes the real work and delegation routes over the
+ * worker's D1 binding. Its owner header and journal are synthetic fixtures. */
+async function miiWorkerFixture(parentId) {
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS work_jobs (
+    id TEXT PRIMARY KEY, user_id TEXT NOT NULL, payload TEXT NOT NULL,
+    revision INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL)`).run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS mii_test_cancel_journal (
+    owner_scope TEXT NOT NULL, job_id TEXT NOT NULL, payload TEXT NOT NULL,
+    PRIMARY KEY(owner_scope,job_id))`).run();
+  const job = createWorkJob({ id: parentId, title: 'Workerと同じ合成仕事', templateId: 'article' });
+  job.agentBinding = { schema: 'rockstaros.work-agent-binding/1', agentId: 'fixture-role',
+    agentRevision: 1, requestDigest: 'a'.repeat(64) };
+  await workStore(env.DB).create(owner, job);
+  const scope = await ownerScopeFor(owner);
+  const journal = {
+    async read(key) {
+      const row = await env.DB.prepare('SELECT payload FROM mii_test_cancel_journal WHERE owner_scope=? AND job_id=?')
+        .bind(key.ownerScope, key.jobId).first();
+      return row ? JSON.parse(row.payload) : null;
+    },
+    async claim(record) {
+      const result = await env.DB.prepare('INSERT INTO mii_test_cancel_journal VALUES(?,?,?) ON CONFLICT DO NOTHING')
+        .bind(record.ownerScope, record.jobId, JSON.stringify(record)).run();
+      return result.meta.changes === 1 ? 'claimed' : 'occupied';
+    },
+    async settle(record) {
+      const result = await env.DB.prepare('DELETE FROM mii_test_cancel_journal WHERE owner_scope=? AND job_id=? AND payload=?')
+        .bind(record.ownerScope, record.jobId, JSON.stringify(record)).run();
+      return result.meta.changes === 1;
+    },
+  };
+  let dropCancel = false, patches = 0;
+  const fetchImpl = async (path, init) => {
+    const headers = new Headers(init.headers);
+    headers.set('origin', 'https://fixture.invalid');
+    headers.set('oai-authenticated-user-id', owner);
+    // workerd Request does not implement redirect:'error'. This local relay
+    // invokes handlers directly and rejects redirects explicitly instead.
+    const request = new Request('https://fixture.invalid' + path, { ...init, headers, redirect: 'manual' });
+    const route = path.startsWith('/api/work-jobs') ? workRoute : delegationRoute;
+    const response = await route[init.method](request);
+    if (response.status >= 300 && response.status < 400) throw new Error('fixture refuses redirect');
+    if (path === '/api/work-jobs' && init.method === 'PATCH') {
+      patches++;
+      if (dropCancel) { dropCancel = false; throw new Error('fixture lost local cancellation response'); }
+    }
+    return response;
+  };
+  const create = (sequence = 1) => {
+    const adapter = createMiiWorkAdapter({ fetchImpl, journal });
+    const observedAt = Date.now();
+    adapter.observe({ bootId: 'worker-fixture', placeEpoch: sequence, sequence, sceneRevision: 1,
+      observedAt, expiresAt: observedAt + 30_000, attached: true, tracking: 'tracked' });
+    return adapter;
+  };
+  return { job, scope, create, dropNextCancel() { dropCancel = true; }, patchCount: () => patches,
+    reference: { jobId: job.id, ownerScope: scope, revision: job.revision, sceneRevision: 1,
+      agentId: 'fixture-role', agentRevision: 1 } };
 }
 
 beforeEach(async () => {
@@ -1045,6 +1111,12 @@ it('holds an ambiguous remote send and does not replay it after Workflow restart
     budgetLimitMinor: 25,
     parentBudgetLimitMinor: 25,
   });
+  const mii = await miiWorkerFixture(uncertainParentJobId);
+  // The actual reservation trigger must update the parent pool; do not repair
+  // fixture accounting manually or conceal a missing/doubled reservation.
+  const seededPool = await a2aDelegationStore(env.DB).getBudget(owner, uncertainParentJobId);
+  assert.equal(seededPool.reservedMinor, 25);
+  assert.equal(seededPool.revision, 1);
 
   const instanceId = `a2a-uncertain-${crypto.randomUUID()}`;
   const workflow = await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW, instanceId);
@@ -1073,6 +1145,27 @@ it('holds an ambiguous remote send and does not replay it after Workflow restart
       .bind(uncertainDelegationId, owner).first();
     assert.equal(claims.count, 1);
 
+    // Read and cancel the very same parent through the real HTTP route handlers
+    // and mii adapter. Dropping the local reply must not claim remote stop or
+    // release the remote worker reservation.
+    const firstMii = mii.create();
+    const sameJob = await firstMii.readExisting(mii.reference);
+    assert.equal(sameJob.job.id, uncertainParentJobId);
+    assert.equal((await firstMii.readBudget()).budget.reservedMinor, 25);
+    mii.dropNextCancel();
+    const stop = await firstMii.cancelPlan({ commandId: crypto.randomUUID(), jobId: uncertainParentJobId,
+      revision: sameJob.job.revision, confirmed: true });
+    assert.equal(stop.state, 'unknown'); assert.equal(stop.remoteStop, 'unconfirmed');
+    firstMii.close();
+    const reconnectedMii = mii.create(2);
+    const restored = await reconnectedMii.readExisting(mii.reference);
+    assert.equal(restored.job.id, uncertainParentJobId);
+    assert.equal(restored.job.status, 'cancelled');
+    assert.equal(restored.cancelReconciliation, 'clear');
+    assert.equal((await reconnectedMii.readBudget()).budget.reservedMinor, 25);
+    assert.equal(mii.patchCount(), 1);
+    reconnectedMii.close();
+
     const durableInstance = await env.A2A_DELEGATION_WORKFLOW.get(instanceId);
     await durableInstance.restart();
     await workflow.waitForStatus('complete');
@@ -1091,6 +1184,36 @@ it('holds an ambiguous remote send and does not replay it after Workflow restart
     assert.equal(reservation.reservedMinor, 25);
     assert.equal(reservation.settledMinor, null);
     assert.equal(reservation.state, 'held');
+
+    // Remote cancellation is a separate, explicit operation. With no task ID
+    // after an ambiguous send, reconciliation must not invent a cancellation
+    // or release the reservation.
+    const store = a2aDelegationStore(env.DB);
+    const remoteRequested = await store.requestCancel(owner, uncertainDelegationId);
+    assert.equal(remoteRequested.state, 'cancel_requested');
+    const reconcileId = `a2a-no-task-${crypto.randomUUID()}`;
+    const reconcile = await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW, reconcileId);
+    try {
+      await env.A2A_DELEGATION_WORKFLOW.create({ id: reconcileId,
+        params: { ownerUserId: owner, delegationId: uncertainDelegationId, operation: 'reconcile' } });
+      await reconcile.waitForStatus('complete');
+      assert.deepEqual(await reconcile.getOutput(), { outcome: 'no_remote_task' });
+      assert.equal((await store.getBudgetReservation(owner, uncertainDelegationId)).state, 'held');
+      assert.equal((await store.get(owner, uncertainDelegationId)).state, 'cancel_requested');
+      const pool = await store.getBudget(owner, uncertainParentJobId);
+      assert.equal(pool.reservedMinor, 25); assert.equal(pool.settledMinor, 0);
+      const cancelClaims = await env.DB.prepare(`SELECT COUNT(*) AS count FROM agent_delegation_events
+        WHERE delegation_id=? AND owner_user_id=? AND event_type='remote_cancel_claimed'`)
+        .bind(uncertainDelegationId, owner).first();
+      assert.equal(cancelClaims.count, 0);
+      const sendClaims = await env.DB.prepare(`SELECT COUNT(*) AS count FROM agent_delegation_events
+        WHERE delegation_id=? AND owner_user_id=? AND event_type='remote_send_claimed'`)
+        .bind(uncertainDelegationId, owner).first();
+      assert.equal(sendClaims.count, 1);
+      const receipts = await env.DB.prepare('SELECT COUNT(*) AS count FROM a2a_usage_receipts WHERE delegation_id=? AND owner_user_id=?')
+        .bind(uncertainDelegationId, owner).first();
+      assert.equal(receipts.count, 0);
+    } finally { await reconcile.dispose(); }
   } finally {
     await workflow.dispose();
   }

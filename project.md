@@ -725,9 +725,11 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 同じ合成jobのmiiとA2A内部台帳で、送信不明・取消応答喪失・再接続時の予約保持と一回精算を試験し独立検収。実transport・署名・native Wallet・遠隔/物理停止は未受入。PR271をmain 0064d208へ統合し、同SHA CI全6件が成功。[証拠](docs/evidence/development-execution/mii-a2a-uncertain-budget.json)。
 
-mii合成入力で利用者が追加能力を明示し、未対応・未確認を拒否して既存成果は読める候補。軽量60試験は成功、独立検収・実ブラウザ・全CIは未了。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
+mii合成入力の追加能力について、未対応・未確認を拒否し既存成果を保持する候補はLinuxブラウザ2件とCIに成功したが、新規CodeQL警告を修正し再検証する。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
 
-miiソフト画面と実adapterをつないだ隔離ブラウザで、合成hostの短い期限・保存済みjob保持・明示読直しを試験するPR281ドラフト。前々headのLinux browser 2/2は成功。job全体比較を追加したheadは本人体験側は成功したが、権限なし側でreload後にmii読取待ちがtimeout。Package bindingの読込待ちを追加した候補は再検証待ち。[証拠](docs/evidence/development-execution/mii-short-lease-browser.json)。物理miiは未受入。
+実workerの送信応答不明と同じjobのmii読戻し・ローカル取消応答不明・予約保持を結ぶ合成試験は独立検収とCI成功後、PR282をmain effbf9d6へ統合。同SHA CIは確認中。ローカル試験は未了。遠隔停止・実Provider・物理端末の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-unknown-draft.json)。
+
+miiソフト画面と実adapterをつないだ隔離ブラウザで合成hostの期限切れ・同じjob保持・明示読直しを試験し、独立検収後PR281をmain ad9c0bcbへ統合。統合後の同SHA CI全6件成功。物理miiは未受入。[統合CI](docs/evidence/development-execution/mii-short-lease-main-ci.json)。[証拠](docs/evidence/development-execution/mii-short-lease-browser.json)。
 
 mii読取adapterにhost提供descriptorの能力・版・最短期限の照合を追加する候補は対象試験・独立検収・全体verifyに成功。PR275をmain 6ce98364へ統合し同SHA全6 CI成功。[統合CI](docs/evidence/development-execution/mii-portable-read-main-ci.json)。合成画面と同じ仕事の読戻しを使い、宣言は本人・権限・実機受入にしない。[証拠](docs/evidence/development-execution/mii-portable-read-descriptors.json)。
 

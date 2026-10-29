@@ -5,12 +5,23 @@
     "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
     "next": "Run real browser and full verify in exact-head CI; final independent review before merge."
   },
+  "miiWorkerUnknownDraft": {
+    "owner": "ROCK",
+    "status": "main_integrated_merge_ci_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-unknown-draft.json",
+    "next": "Confirm merge SHA CI; remote cancellation loss and signed receipt with same mii remain separate.",
+    "pullRequest": 282,
+    "mergeSha": "effbf9d6d1e912c6d8348b3b5e297d2358be6473"
+  },
   "miiShortLeaseBrowser": {
     "owner": "ROCK",
-    "status": "draft_ci_failure_readiness_fix_unverified",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
-    "next": "Run exact-head browser and full CI after Package-binding readiness fix; independently review before merge.",
-    "pullRequest": 281
+    "next": "Physical mii and output remain separate.",
+    "pullRequest": 281,
+    "mergeSha": "ad9c0bcb25c4c3ad9e55ebc3c766a60dcd5e6c60",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-short-lease-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "sdkDeclaredExample": {
     "owner": "ROCK",

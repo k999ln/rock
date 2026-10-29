@@ -413,6 +413,7 @@ async function outboundService(request: Request) {
 }
 
 export default defineConfig({
+  resolve: { alias: { '@': repository } },
   test: {
     include: ['services/sky-agent-runtime/test/**/*.test.mjs'],
     pool: 'forks',
