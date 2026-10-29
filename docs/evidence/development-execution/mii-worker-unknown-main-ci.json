@@ -1,0 +1,44 @@
+{
+  "schema": "rockstaros.main-ci-evidence/1",
+  "pullRequest": 282,
+  "mergeSha": "effbf9d6d1e912c6d8348b3b5e297d2358be6473",
+  "checks": [
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40852840242/job/123376340219",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40852840242/job/123376340158",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40852840014/job/123376339690",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40852840014/job/123376339366",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40852839947/job/123376338750",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40852839852/job/123376338178",
+      "name": "verify",
+      "status": "completed"
+    }
+  ],
+  "scope": "synthetic worker transport and mii readback; remote cancellation response loss, signed settlement in mii, physical and production acceptance remain separate"
+}

@@ -7,11 +7,13 @@
   },
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",
-    "status": "main_integrated_merge_ci_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-unknown-draft.json",
-    "next": "Confirm merge SHA CI; remote cancellation loss and signed receipt with same mii remain separate.",
+    "next": "Remote cancellation response loss and signed settlement in same mii consumer remain separate.",
     "pullRequest": 282,
-    "mergeSha": "effbf9d6d1e912c6d8348b3b5e297d2358be6473"
+    "mergeSha": "effbf9d6d1e912c6d8348b3b5e297d2358be6473",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-unknown-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "miiShortLeaseBrowser": {
     "owner": "ROCK",
