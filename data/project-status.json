@@ -1,4 +1,10 @@
 {
+  "eveAgentAttachmentPreservation": {
+    "owner": "ROCK",
+    "status": "draft_targeted_independently_reproduced_browser_pending",
+    "evidence": "docs/evidence/development-execution/eve-agent-attachment-preservation.json",
+    "next": "Run exact-head browser and full CI, then independent final review before merge."
+  },
   "miiRequiredCapabilities": {
     "owner": "ROCK",
     "status": "main_integrated_startup_fix_same_sha_ci_pass_host_scoped",

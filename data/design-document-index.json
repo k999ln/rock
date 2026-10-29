@@ -196,6 +196,23 @@
       ],
       "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
       "scope": "explicit owner-defined action capability IDs; missing or unconfirmed refuses staging, read-only job remains available, no authority grant"
+    },
+    "objectAttachmentPreservation": {
+      "authority": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
+      "implementation": [
+        "lib/sky-object-attachment.ts",
+        "lib/sky-agent-library.ts",
+        "lib/sky-agent-library-store.ts",
+        "lib/eve-agent-creation.ts",
+        "components/sky-agent-library.tsx"
+      ],
+      "tests": [
+        "tests/sky-agent-library.test.mjs",
+        "tests/eve-agent-creation.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/eve-agent-attachment-preservation.json",
+      "scope": "legacy object intent and requirements preservation; no physical connection, file attachment or grant"
     }
   },
   "latestRockstarOsDesign": {

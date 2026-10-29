@@ -26,8 +26,11 @@ function validPending(value: unknown, scope: string): value is EveAgentPending {
 }
 function canonical(settings: SkyAgentSettings) {
   const value = parseSkyAgentSettings(settings);
-  // This creation flow saves exactly these five fields; no grant or credential.
-  return JSON.stringify({ name: value.name, instructions: value.instructions, provider: value.provider, model: value.model, enabled: value.enabled });
+  // Preserve the original five-field digest byte-for-byte for old pending records.
+  // Optional declarations are included only when present and are never grants.
+  return JSON.stringify({ name: value.name, instructions: value.instructions, provider: value.provider, model: value.model, enabled: value.enabled,
+    ...(value.requirements ? { requirements: value.requirements } : {}),
+    ...(value.attachment ? { attachment: value.attachment } : {}) });
 }
 async function digest(settings: SkyAgentSettings) {
   const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical(settings)));
@@ -59,7 +62,9 @@ function clearPending(storage: PendingStorage, pending: EveAgentPending) {
 }
 async function matches(candidate: SkyLibraryAgent | undefined, pending: EveAgentPending): Promise<boolean> {
   if (!candidate || candidate.id !== pending.id || candidate.revision !== 1 || candidate.source !== 'personal' || candidate.sourceTool !== null) return false;
-  try { return await digest({ name: candidate.name, instructions: candidate.instructions, provider: candidate.provider, model: candidate.model, enabled: candidate.enabled }) === pending.settingsSha256; }
+  try { return await digest({ name: candidate.name, instructions: candidate.instructions, provider: candidate.provider, model: candidate.model, enabled: candidate.enabled,
+    ...(Object.hasOwn(candidate, 'requirements') ? { requirements: candidate.requirements } : {}),
+    ...(Object.hasOwn(candidate, 'attachment') ? { attachment: candidate.attachment } : {}) }) === pending.settingsSha256; }
   catch { return false; }
 }
 /** Reconcile only with an authenticated read of the exact owner, ID and settings. */

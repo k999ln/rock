@@ -485,6 +485,8 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 
 ### Eve・Smith・miiの自由な担当と同じ仕事
 
+既存Agentの対象物attachmentは `sky.object-attachment/1` の対象名・希望入力・希望出力であり、ファイル添付や実接続・認可とは別。既存5項目、attachment、requirementsを厳格に扱い、古いeditorの省略による消去を防ぐ。保存応答不明時のEve照合は指定済みattachment/requirementsの欠落・差替を拒否し、旧5項目pendingも継続する。合成SQLiteと実UIの検証を実データ・実端末の受入としない。[証拠](evidence/development-execution/eve-agent-attachment-preservation.json)。
+
 目的と体験: 用途を決め打ちせず、本人がEveで担当の目的・入力・期待成果を保存し、Smithで必要能力と実行先候補を照合する。既存仕事のowner、担当ID/revision、job ID、入力hashとTool版を結び、miiソフト画面でも同じ仕事と保存された成果を読む。追加SDK Toolは同じ契約で参加する。
 
 責任と入出力: ROCKは既存Agent/workflow/API、ローカルConnectorとmii表示adapterを担当し、EXTERNALはTool作者の実装、JOINTは実デバイスとサービス、OWNERは設定・選択・明示承認を担う。利用者入力とschema宣言を受け、照合候補・不足・仕事の状態・未検証成果を返す。Toolの宣言とmodel出力を権限へ昇格させない。
