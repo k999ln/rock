@@ -33,7 +33,11 @@
   "navigationCandidate": {
     "testSha256": "24da5b019a6d690894657b7118364cee1740c64dfc4029fbcbac467b8d4cacc7",
     "scope": "Wait for a changed top-frame loader and matching lifecycle load on explicitly requested reload/navigate; bound command and load together, check navigate response; no automatic replay of user input or execution.",
-    "state": "unverified; CI and independent review pending",
-    "review": "Independent source review found timeout and event specificity issues; matching loader events and deadlines covering both command and load added; re-review and CI pending."
+    "state": "main_integrated_same_sha_ci_pass",
+    "review": "Independent source review found timeout and event specificity issues; matching loader events and deadlines covering both command and load added; re-review and CI pending.",
+    "pr": 285,
+    "prHead": "17d43ed76bc7a6d7320b1bd06776b9565dcd826b",
+    "mergeSha": "594739d49401a105ba1be8df38914c53a12eeb5f",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-browser-navigation-main-ci.json"
   }
 }

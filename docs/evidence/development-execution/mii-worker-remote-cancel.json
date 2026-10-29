@@ -1,0 +1,16 @@
+{
+  "schema": "rockstaros.mii-worker-remote-cancel/1",
+  "state": "draft_independent_ci_reproduced_final_head_pending",
+  "base": "8e5bbdb25e78261d1916bc97ab318a053593385d",
+  "sourceSha256": {
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "cc124d7a8c01ac602c34668940e9b32f69a432fd06da743fe21e4df802da007e",
+    "services/sky-agent-runtime/vitest.config.ts": "11e30bfaec717291b6561d881e0d99f6f8de08f49a329d9b65b9391e7d55e4f8"
+  },
+  "scenario": "Synthetic worker service binding loses remote cancel response after modeled acceptance; same mii job local stop and re-read, held reservation, bad signed usage rejection, later signed usage settlement and replay, owner isolation and single claims.",
+  "independentReview": "Source review passed P1/P2; independent rerun same SHA GitHub Actions attempt 2 job 123401720203 passed Worker 14 and total 15 tests. Log SHA256 00507516b113ca8dcaf0ce60b474c3a95020c94d34ecf9512f1f39a7eaf7417f. Local test not run.",
+  "command": "npm run sky:a2a:workflow:positive -- --testNamePattern='reconciles lost remote cancellation and signed usage for the same mii work once'",
+  "limits": "No physical mii, real provider, actual network loss, production billing or model inference. Synthetic remote commit and keys; exact assertions need CI confirmation.",
+  "next": "Confirm final merged-main candidate exact-head CI and final independent review before integration.",
+  "priorHead": "d94b70c7affa9f4e39a3df9ff5ef4e3a6e218f6a",
+  "priorHeadCi": "7/7 success; verify run 40859455232 job 123398663571, Worker 14 and related total 15 tests passed."
+}
