@@ -2,6 +2,8 @@
 
 最終更新: 2026-10-03
 
+2026-10-29配布候補: SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。 [証拠](evidence/development-execution/sdk-dist-release.json)。
+
 2026-10-29候補: SDK 0.1.4の2非推論作例は、型と本人指定能力を照合するためinputSchemaへ版付き能力ID・permission/scope宣言を含める。StudioとCLIは同版を参照し、0.1.3以前のarchiveは保持する。SDK配布物から隔離フォルダーへ展開した作例を同じ本人・仕事・Connector・miiソフト読戻しで試験する。宣言の一致は本人の実行承認・権限強制・安全性・実料金を保証しない。Git保存はregistry公開ではない。[証拠](evidence/development-execution/sdk-declared-example.json)。
 
 2026-10-03更新: SDK 0.1.3は、PC内MCPへ不正な非ASCII認証値が届いた際のprocess停止を防ぐ。Studioの導入URLとCLIが生成する依存の最小版を0.1.3へ揃え、配布tgzの5ファイルを同じrepository sourceと照合する。旧版archiveは保持する。今回のGit保存はnpm公開や稼働中Toolの自動更新ではない。

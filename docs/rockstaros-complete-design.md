@@ -485,6 +485,8 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 
 ### Eve・Smith・miiの自由な担当と同じ仕事
 
+SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。
+
 SmithのTool照合は、接続済み宣言の観測ID・時刻・有限期限を本人確認と結び、Connectorがprepareとclaim前に再観測する。宣言変化、接続変更、期限・時計逆行・再観測失敗で古い承認を使用せず、claim済みは既存の未確認fenceを保持する。実Providerの正直さや観測後の振る舞い、実権限・課金を保証しない。[契約・試験](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
 
 既存Agentの対象物attachmentは `sky.object-attachment/1` の対象名・希望入力・希望出力であり、ファイル添付や実接続・認可とは別。既存5項目、attachment、requirementsを厳格に扱い、古いeditorの省略による消去を防ぐ。保存応答不明時のEve照合は指定済みattachment/requirementsの欠落・差替を拒否し、旧5項目pendingも継続する。合成SQLiteと実UIの検証を実データ・実端末の受入としない。[証拠](evidence/development-execution/eve-agent-attachment-preservation.json)。
