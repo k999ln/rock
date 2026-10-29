@@ -193,7 +193,8 @@
         ],
         "tests": [
           "tests/sky-sdk-dist-integration.test.mjs",
-          "tests/sky-sdk-prepack.test.mjs"
+          "tests/sky-sdk-prepack.test.mjs",
+          "tests/sky-sdk-archive-determinism.test.mjs"
         ],
         "evidence": "docs/evidence/development-execution/sdk-dist-release.json",
         "scope": "offline synthetic candidate; default pack builds dist; sample import changed explicitly; no provider or device acceptance"
