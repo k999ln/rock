@@ -1,10 +1,18 @@
 {
+  "sdkAuthorWorkspaceIntegration": {
+    "owner": "ROCK",
+    "status": "draft_independently_reproduced_ci_pending",
+    "evidence": "docs/evidence/development-execution/sdk-author-workspace-integration.json",
+    "next": "Run exact-head CI, then independent final review before merge."
+  },
   "smithToolObservationFreshness": {
     "owner": "ROCK",
-    "status": "draft_independent_tests_local_browser_pass_final_ci_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/smith-tool-observation-freshness.json",
-    "next": "Confirm exact-head Linux browser and full CI, then independent final review.",
-    "pullRequest": 289
+    "next": "Provider truth, production authority, paid use and physical devices remain separate.",
+    "pullRequest": 289,
+    "mergeSha": "130804ccc4473ce9105e617cc5a6b86583afc75e",
+    "mainCiEvidence": "docs/evidence/development-execution/smith-tool-observation-main-ci.json"
   },
   "pixelSavedAiLookup": {
     "owner": "ROCK",
