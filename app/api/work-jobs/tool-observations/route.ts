@@ -1,3 +1,6 @@
+import { parseSkyAgentSettings } from '@/lib/sky-agent-library';
+import { reviewSkyAgentPackageContract } from '@/lib/sky-agent-requirements';
+import { parseSkyToolPackage } from '@/lib/sky-tool-package';
 import { dispatchAuthorityAvailable } from '@/app/api/work-jobs/tool-observations/authority';
 import { readBoundedStream } from '@/lib/bounded-stream';
 import { OWNER_SCOPE_HEADER, readOwnerScope, rejectChangedOwner } from '@/lib/owner-intent';
@@ -96,6 +99,12 @@ export async function POST(request: Request) {
       if (Object.keys(input).length !== 4 || !Object.hasOwn(input, 'attempt')) throw new WorkError('開始内容を確認してください。');
       const expected = attempt(input.attempt), prior = attempts.find(row => row.id === expected.id);
       const review = expected.executionReview, reviewDigest = review ? await workToolExecutionReviewDigest(review) : undefined;
+      const roleRow = await db.prepare('SELECT settings FROM sky_agent_settings WHERE owner_user_id = ? AND id = ? AND revision = ?')
+        .bind(user,binding.agentId,binding.agentRevision).first<{settings:string}>();
+      const roleRequirements = roleRow ? parseSkyAgentSettings(JSON.parse(roleRow.settings)).requirements : undefined;
+      const contractRequirements = roleRequirements?.contract ? roleRequirements : undefined;
+      if (contractRequirements && !review) throw new WorkError('新しい能力条件の実行確認が必要です。',409);
+
       // Jobs created with an explicit creation review require an execution
       // review even for old-client replays; never retrofit a legacy pending grant.
       if (Object.hasOwn(binding, 'creationReview') && !review)
@@ -123,7 +132,12 @@ export async function POST(request: Request) {
         const row = await db.prepare('SELECT manifest FROM sky_tool_packages WHERE package_key = ? AND manifest_sha256 = ? AND status = ?')
           .bind(expected.packageKey, expected.manifestSha256, 'verified').first<{ manifest: string }>();
         if (!row) throw new WorkError('実行確認のPackageを読み直してください。', 409);
-        const manifest = JSON.parse(row.manifest);
+        const manifest = parseSkyToolPackage(JSON.parse(row.manifest));
+        if (contractRequirements) {
+          const check = reviewSkyAgentPackageContract(contractRequirements,manifest), runtime=contractRequirements.contract!.runtime;
+          if (check.state !== 'candidate' || runtime?.serverId !== c.connectorId || runtime.toolName !== c.toolName)
+            throw new WorkError('Packageと選択実Toolの型・処理能力・permission・scope条件が一致しません。',409);
+        }
         if (manifest.pricing?.model !== 'free' || manifest.pricing.note !== review.packagePricing.note ||
             !manifest.capabilities?.executionTargets?.includes('pc') ||
             !((manifest.adapter?.connectionType === 'mcp_stdio' && c.transport === 'stdio') ||
@@ -149,6 +163,7 @@ export async function POST(request: Request) {
             AND json_extract(a.settings, '$.enabled') = 1
             AND json_extract(a.settings, '$.requirements.packageKey') = ?
             AND json_extract(a.settings, '$.requirements.executionTarget') = 'pc'
+            ${contractRequirements ? `AND a.settings = ?` : ''}
             AND (a.source_tool IS NULL OR EXISTS (SELECT 1 FROM sky_connections c
               WHERE c.user_id = a.owner_user_id AND c.tool = a.source_tool))
         ) AND EXISTS (SELECT 1 FROM sky_tool_packages p WHERE p.package_key = ? AND p.manifest_sha256 = ? AND p.status = 'verified'
@@ -158,7 +173,7 @@ export async function POST(request: Request) {
           ${review ? `AND payload = ? AND ? > CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
             AND EXISTS (SELECT 1 FROM sky_tool_packages p WHERE p.package_key = ? AND p.manifest_sha256 = ? AND p.manifest = ?)` : ''}`)
         .bind(JSON.stringify(next), next.revision, next.updatedAt, jobId, user, current.revision,
-          user, binding.agentId, binding.agentRevision, expected.packageKey, expected.packageKey, expected.manifestSha256,
+          user, binding.agentId, binding.agentRevision, expected.packageKey, ...(contractRequirements ? [roleRow!.settings] : []), expected.packageKey, expected.manifestSha256,
           ...(review ? [JSON.stringify(current), review.approvalContext.expiresAt, expected.packageKey, expected.manifestSha256, reviewedManifest!] : [])).run();
       if (updated.meta.changes === 1) return json({ job: next, saved: true, operationCapability: { token, expiresAt } });
       const latest = await store.get(user, jobId), committed = latest?.toolAttempts?.find(row => row.id === expected.id);

@@ -1,3 +1,5 @@
+import { parseSkyAgentSettings } from '@/lib/sky-agent-library';
+import { reviewSkyAgentPackageContract } from '@/lib/sky-agent-requirements';
 import { parseSkyToolPackage, skyToolPackageKey, skyToolPackageSha256 } from '@/lib/sky-tool-package';
 import { skyPackageSchemaSha256 } from '@/lib/sky-package-runtime';
 import { dispatchAuthorityAvailable } from '@/app/api/work-jobs/tool-observations/authority';
@@ -52,6 +54,11 @@ export async function POST(request: Request) {
         target.inputSha256 !== input.inputSha256 || target.connectorId !== input.connectorId || target.toolName !== input.toolName ||
         typeof target.capabilityHash !== 'string' || !Number.isSafeInteger(target.capabilityExpiresAt) ||
         Number(target.capabilityExpiresAt) <= Date.now()) return deny();
+    const roleRow = await db.prepare('SELECT settings FROM sky_agent_settings WHERE owner_user_id = ? AND id = ? AND revision = ?')
+      .bind(ownerRow.owner,binding.agentId,binding.agentRevision).first<{settings:string}>();
+    const roleRequirements = roleRow ? parseSkyAgentSettings(JSON.parse(roleRow.settings)).requirements : undefined;
+    const contractRequirements = roleRequirements?.contract ? roleRequirements : undefined;
+    if (contractRequirements && !hasReview) return deny();
     const targetHasReview = Object.hasOwn(target, 'executionReview') || Object.hasOwn(target, 'executionReviewDigest') || Object.hasOwn(target, 'creationRelation');
     if (targetHasReview !== hasReview || (Object.hasOwn(binding, 'creationReview') && !hasReview)) return deny();
     const review = hasReview ? parseWorkToolExecutionReview(target.executionReview) : undefined;
@@ -72,6 +79,11 @@ export async function POST(request: Request) {
       .bind(target.packageKey, target.manifestSha256, 'verified').first<{ manifest: string }>();
     if (!packageRow || typeof packageRow.manifest !== 'string') return deny();
     const manifest = parseSkyToolPackage(JSON.parse(packageRow.manifest));
+    if (contractRequirements) {
+      const check=reviewSkyAgentPackageContract(contractRequirements,manifest),runtime=contractRequirements.contract!.runtime;
+      if (check.state !== 'candidate' || runtime?.serverId !== input.connectorId || runtime.toolName !== input.toolName) return deny();
+    }
+
     if (skyToolPackageKey(manifest) !== target.packageKey || await skyToolPackageSha256(manifest) !== target.manifestSha256 ||
         manifest.pricing.model !== 'free' || (review && manifest.pricing.note !== review.packagePricing.note) || !manifest.capabilities.executionTargets.includes('pc') ||
         !((manifest.adapter.connectionType === 'mcp_stdio' && input.transport === 'stdio') ||
@@ -90,6 +102,7 @@ export async function POST(request: Request) {
           WHERE a.owner_user_id = ? AND a.id = ? AND a.revision = ? AND json_extract(a.settings, '$.enabled') = 1
             AND json_extract(a.settings, '$.requirements.packageKey') = ?
             AND json_extract(a.settings, '$.requirements.executionTarget') = 'pc'
+            ${contractRequirements ? `AND a.settings = ?` : ''}
             AND (a.source_tool IS NULL OR EXISTS (SELECT 1 FROM sky_connections c
               WHERE c.user_id = a.owner_user_id AND c.tool = a.source_tool)))
         AND EXISTS (SELECT 1 FROM sky_tool_packages p WHERE p.package_key = ? AND p.manifest_sha256 = ? AND p.manifest = ? AND p.status = 'verified'
@@ -103,7 +116,7 @@ export async function POST(request: Request) {
             AND json_extract(a.value, '$.executionReview') = json(?)
             AND json_extract(a.value, '$.creationRelation') = json(?))` : ''}`)
       .bind(JSON.stringify(next), next.revision, next.updatedAt, jobId, ownerRow.owner, current.revision,
-        target.capabilityExpiresAt, ownerRow.owner, binding.agentId, binding.agentRevision, target.packageKey, target.packageKey, target.manifestSha256, packageRow.manifest,
+        target.capabilityExpiresAt, ownerRow.owner, binding.agentId, binding.agentRevision, target.packageKey, ...(contractRequirements ? [roleRow!.settings] : []), target.packageKey, target.manifestSha256, packageRow.manifest,
         ...(review ? [JSON.stringify(current), target.id, executionDigest!, JSON.stringify(review), JSON.stringify(target.creationRelation)] : [])).run();
     if (update.meta.changes !== 1) return deny();
     return json({ claimed: true, jobId, attemptId, inputSha256: input.inputSha256, jobRevision: next.revision, ...(review ? { executionReviewDigest: executionDigest } : {}) });

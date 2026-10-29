@@ -1,4 +1,10 @@
 {
+  "smithDeclaredCapability": {
+    "owner": "ROCK",
+    "status": "candidate_scoped_review_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/smith-declared-capability-matching.json",
+    "next": "Run full verify on fixed candidate, preserve main evidence, then save and confirm same-head CI; actual permissions, providers and devices remain unaccepted."
+  },
   "miiOutputLease": {
     "owner": "ROCK",
     "status": "main_integrated_same_sha_ci_pass_host_scoped",

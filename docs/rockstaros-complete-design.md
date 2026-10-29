@@ -489,7 +489,7 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 
 責任と入出力: ROCKは既存Agent/workflow/API、ローカルConnectorとmii表示adapterを担当し、EXTERNALはTool作者の実装、JOINTは実デバイスとサービス、OWNERは設定・選択・明示承認を担う。利用者入力とschema宣言を受け、照合候補・不足・仕事の状態・未検証成果を返す。Toolの宣言とmodel出力を権限へ昇格させない。
 
-Smithの照合は、担当にないTool必須入力を不足、schema不明を未確認として扱い、型・必須項目の宣言を本人へ示す。確認の撤回・編集・期限失効は保留中の遷移も無効化する。空のobject schemaは確認可能である。期待する型の構造化保存・自動照合や目的文の意味理解は未実装で、表示確認は権限ではない。[契約・証拠](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
+Smithの照合は、担当にないTool必須入力を不足、schema不明を未確認として扱い、型・必須項目の宣言を本人へ示す。確認の撤回・編集・期限失効は保留中の遷移も無効化する。空のobject schemaは確認可能である。本人が明示した入出力型・能力ID・許容permission/scope・接続先はPackageと実Tool双方の宣言に照合し、欠落は未確認、矛盾は不足とする。beginとclaimで再確認し、旧clientで条件が消える変更は拒否する。目的文の意味理解はせず、宣言照合は権限ではない。[契約・証拠](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
 
 状態・保存・復旧: 仕事の版付き操作はpending→claimed→client観測未検証、またはclaim前取消／claim後停止要求に分ける。Connectorの一回claimと仕事の取消をCASで競合させ、応答消失時は自動再実行しない。結果は既存仕事に残してexportし、切断後は同一IDを読戻す。短命capabilityの原文や既存credentialを仕事・exportへ保存しない。mii合成観測は期限・boot・epoch・sceneを検査し、実機校正や物理停止を証明しない。
 

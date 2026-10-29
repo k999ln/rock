@@ -13,7 +13,8 @@ import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { defaultSkyAgentSettings } from '../lib/sky-agent-library.ts';
 import { reviewSkyAgentRequirements } from '../lib/sky-agent-requirements.ts';
 import { skyToolPackageKey, skyToolPackageSha256, parseSkyToolPackage } from '../lib/sky-tool-package.ts';
-import { createLineCounter } from '../toolkits/sky-tool-sdk/examples/line-counter.mjs';
+import { createDeclaredFixtureTools, fixturePermissions } from './fixtures/eve-smith-mii-browser/declared-tools.mjs';
+import { workToolExecutionReviewDigest } from '../lib/workflow.ts';
 import { createConnector } from '../toolkits/sky-mcp-connector/server.mjs';
 import { createMiiWorkAdapter } from '../lib/mii-work-adapter.ts';
 import { buildSkyOwnerExport } from '../lib/sky-owner-export.ts';
@@ -35,7 +36,7 @@ void test('two owner-defined roles use distinct SDK Tool schemas through authent
     ['@/lib/fund-store', { database: () => db, requestUser: requestAuth.requestUser }],
     ['@/lib/request-auth', requestAuth],
   ]);
-  for (const name of ['bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
+  for (const name of ['sky-agent-library', 'sky-agent-requirements', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
     modules.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
   modules.set('@/app/api/work-jobs/tool-observations/authority', loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/authority.ts', import.meta.url), modules));
   const agents = loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), modules);
@@ -59,7 +60,7 @@ void test('two owner-defined roles use distinct SDK Tool schemas through authent
     method, headers: { Origin: authorityOrigin, 'Content-Type': 'application/json', 'oai-authenticated-user-id': owner,
       ...(method === 'GET' ? {} : { 'X-Rock-Owner-Scope': scope }) }, ...(method === 'GET' ? {} : { body: JSON.stringify(body) }),
   }));
-  const app = createLineCounter({ localToolDirectory: join(dir, 'discovery'), publicMcpUrl: 'https://example.invalid/mcp',
+  const app = createDeclaredFixtureTools({ localToolDirectory: join(dir, 'discovery'), publicMcpUrl: 'https://example.invalid/mcp',
     skyUrl: 'https://example.invalid', developerToken: 'synthetic-test-token-not-a-credential',
     fetch: async () => { throw new Error('EXTERNAL_NETWORK_FORBIDDEN'); }, logger: { warn() {} } });
   const manifests = app.manifests().map(parseSkyToolPackage);
@@ -115,7 +116,7 @@ void test('two owner-defined roles use distinct SDK Tool schemas through authent
   ];
   for (const { name, purpose, package: pkg, toolName, inputFields, outputFields, args, expected } of scenarios) {
     const { packageKey, manifestSha256 } = pkg;
-    const requirements = { inputFields, outputFields, packageKey, executionTarget: 'pc' };
+    const requirements = { inputFields, outputFields, packageKey, executionTarget: 'pc',contract:{schema:'rockstaros.agent-tool-expectation/1',inputTypes:toolName==='count_lines'?{text:'string'}:{left:'integer',right:'integer'},outputTypes:toolName==='count_lines'?{lines:'integer'}:{sum:'integer'},capabilityIds:[toolName==='count_lines'?'fixture.count-lines':'fixture.add-integers'],allowedPermissions:fixturePermissions,runtime:{serverId:sdk.localId,toolName}} };
     const review = reviewSkyAgentRequirements(requirements, packages, servers);
     assert.equal(review.state, 'candidate');
     assert.deepEqual(review.candidates.map(candidate => candidate.toolName), [toolName]);
@@ -134,12 +135,14 @@ void test('two owner-defined roles use distinct SDK Tool schemas through authent
     assert.equal(job.agentBinding.agentId, agentId);
     const prepared = await (await mcp(`/servers/${sdk.localId}/prepare`, 'POST', { name: toolName, arguments: args })).json();
     const attempt = { id: randomUUID(), packageKey, manifestSha256, connectorId: sdk.localId,
-      toolName, inputSha256: createHash('sha256').update(JSON.stringify(args)).digest('hex') };
+      toolName, inputSha256: createHash('sha256').update(JSON.stringify(args)).digest('hex'),
+      executionReview:{schema:'rockstaros.work-tool-execution-review/1',ownerScope:scope,jobId,jobRevision:job.revision,agentId,agentRevision:agent.revision,
+        packageKey,manifestSha256,packagePricing:{model:'free',note:pkg.manifest.pricing.note,declaration:'provider_unverified'},approvalContext:prepared.executionContext} };
     const begun = await call(observations, '/api/work-jobs/tool-observations', 'POST', { action: 'begin', jobId, revision: job.revision, attempt });
     assert.equal(begun.status, 200); const beginBody = await begun.json(); assert.equal(beginBody.saved, true); job = beginBody.job;
     const executed = await mcp(`/servers/${sdk.localId}/execute`, 'POST', { name: toolName, arguments: args,
       approvalToken: prepared.approvalToken, confirmed: true, jobGate: { jobId, attemptId: attempt.id, agentId,
-        agentRevision: agent.revision, ownerScope: scope, token: beginBody.operationCapability.token } });
+        agentRevision: agent.revision, ownerScope: scope, token: beginBody.operationCapability.token, executionReviewDigest:await workToolExecutionReviewDigest(attempt.executionReview) } });
     assert.equal(executed.status, 200); const execution = await executed.json();
     assert.equal(execution.jobClaim.attemptId, attempt.id); assert.equal(execution.jobClaim.inputSha256, attempt.inputSha256);
     job = { ...job, revision: execution.jobClaim.jobRevision }; const structured = execution.result.structuredContent;

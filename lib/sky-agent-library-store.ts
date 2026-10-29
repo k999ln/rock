@@ -33,6 +33,12 @@ export function skyAgentLibraryStore(db: Database, owner: string) {
     // Older editors submit only the original five fields. Preserve requirements
     // rather than silently erasing them; a current editor may explicitly clear them.
     if (before?.requirements && !Object.hasOwn(input as object, 'requirements')) settings = { ...settings, requirements: before.requirements };
+    if (before?.requirements?.contract && settings.requirements && !Object.hasOwn(settings.requirements,'contract')) {
+      const { contract: _contract, ...legacy } = before.requirements;
+      if (JSON.stringify(settings.requirements) !== JSON.stringify(legacy))
+        throw new SkyAgentLibraryError('新しい型・処理能力・permission・scope条件を確認できる画面で変更してください。',409);
+      settings = { ...settings, requirements:{ ...settings.requirements, contract:before.requirements.contract } };
+    }
     const now = Date.now();
     const result = revision === 0
       ? await db.prepare('INSERT INTO sky_agent_settings(owner_user_id,id,source_tool,settings,revision,created_at,updated_at) SELECT ?,?,?,?,1,?,? WHERE (SELECT COUNT(*) FROM sky_agent_settings WHERE owner_user_id=?)<100 ON CONFLICT(owner_user_id,id) DO NOTHING').bind(owner,id,before?.sourceTool ?? null,JSON.stringify(settings),now,now,owner).run()

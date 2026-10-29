@@ -19,13 +19,13 @@ const server = () => ({ id: 'fixture-server', name: 'Fixture', transport: 'stdio
 
 void test('review preserves explicitly requested fields and never turns a declaration into authorization', () => {
   const review = reviewSkyAgentRequirements(needs(), [pkg()], [server()]);
-  assert.equal(review.state, 'candidate');
-  assert.deepEqual(review.candidates.map(x => x.toolName), ['count']);
-  assert.match(review.issues[0], /本人承認/);
+  assert.equal(review.state, 'unconfirmed');
+  assert.deepEqual(review.candidates, []);
+  assert.match(review.issues[0], /未指定/);
   assert.equal(reviewSkyAgentRequirements({ ...needs(), outputFields: ['summary'] }, [pkg()], [server()]).state, 'missing');
   assert.equal(reviewSkyAgentRequirements(needs(), [pkg()], null).state, 'unconfirmed');
   assert.equal(reviewSkyAgentRequirements(needs(), [{ ...pkg(), installable: false }], [server()]).state, 'unavailable');
-  assert.equal(reviewSkyAgentRequirements(needs(), [pkg()], [{ ...server(), state: 'available' }]).state, 'unavailable');
+  assert.equal(reviewSkyAgentRequirements(needs(), [pkg()], [{ ...server(), state: 'available' }]).state, 'unconfirmed');
   assert.equal(reviewSkyAgentRequirements({ ...needs(), executionTarget: 'cloud' }, [pkg()], [server()]).state, 'missing');
   assert.equal(reviewSkyAgentRequirements({ ...needs(), packageKey: '' }, [pkg()], [server()]).state, 'needs_selection');
   assert.throws(() => parseSkyAgentRequirements({ ...needs(), inputFields: ['x', 'x'] }));

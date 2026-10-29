@@ -36,7 +36,7 @@ async function setup(t, persistent = false, authorityAvailable = true, reviewExp
     ['cloudflare:workers', { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' } }],
     ['@/lib/fund-store', { database: () => db, requestUser: auth.requestUser }],
   ]);
-  for (const name of ['bounded-stream', 'owner-intent', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
+  for (const name of ['sky-agent-library', 'sky-agent-requirements', 'bounded-stream', 'owner-intent', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
     dependencies.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
   const work = loadRouteFixture(new URL('../app/api/work-jobs/route.ts', import.meta.url), dependencies);
   const observations = loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/route.ts', import.meta.url), dependencies);
