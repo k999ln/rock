@@ -4,12 +4,20 @@ import { createMiiWorkAdapter, type MiiWorkReadback } from '@/lib/mii-work-adapt
 import { createMiiIndexedDbJournal } from '@/lib/mii-indexeddb-journal';
 import type { WorkJob } from '@/lib/workflow';
 
+export type MiiWorkInput = {
+  id: string; text: string; isCurrent: () => boolean; onJob: (job: WorkJob) => void;
+};
+
 /** Software preview only. A real mii supplies its own authenticated host and sensors. */
-export default function MiiWorkPreview({ job, ownerScope, onRead }: {
+export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, inputAvailable = false }: {
   job: WorkJob; ownerScope: string; onRead: (job: WorkJob) => void;
+  onInput?: (input: MiiWorkInput) => void; inputAvailable?: boolean;
 }) {
   const adapter = useRef<ReturnType<typeof createMiiWorkAdapter> | null>(null);
   const boot = useRef(''); const sequence = useRef(0);
+  const place = useRef(1), scene = useRef(1), inputEpoch = useRef(0);
+  const [text, setText] = useState('');
+  const available = useRef(inputAvailable);
   const context = (value: WorkJob, owner: string) => `${owner}\0${value.id}\0${value.revision}\0${value.agentBinding?.agentId ?? ''}\0${value.agentBinding?.agentRevision ?? ''}`;
   const currentContext = context(job, ownerScope);
   const activeContext = useRef(currentContext);
@@ -19,7 +27,7 @@ export default function MiiWorkPreview({ job, ownerScope, onRead }: {
   const [renderContext, setRenderContext] = useState(currentContext);
   if (renderContext !== currentContext) {
     setRenderContext(currentContext);
-    if (current?.context !== currentContext) { setCurrent(null); setConfirmed(false); setMessage(''); }
+    if (current?.context !== currentContext) { setCurrent(null); setConfirmed(false); setMessage(''); setText(''); }
   }
   useEffect(() => () => { adapter.current?.close(); }, []);
   useLayoutEffect(() => {
@@ -29,6 +37,10 @@ export default function MiiWorkPreview({ job, ownerScope, onRead }: {
     if (current?.context === currentContext) return;
     adapter.current?.disconnect();
   }, [currentContext, current]);
+  useLayoutEffect(() => {
+    available.current = inputAvailable;
+    if (!inputAvailable) { inputEpoch.current++; adapter.current?.disconnect(); }
+  }, [inputAvailable]);
   const visible = current?.context === currentContext ? current.value : null;
 
   async function read() {
@@ -39,16 +51,45 @@ export default function MiiWorkPreview({ job, ownerScope, onRead }: {
       adapter.current ??= createMiiWorkAdapter({ journal: createMiiIndexedDbJournal() });
       boot.current ||= `preview-${crypto.randomUUID()}`;
       const now = Date.now();
-      adapter.current.observe({ bootId: boot.current, placeEpoch: 1, sequence: ++sequence.current, sceneRevision: 1,
+      adapter.current.observe({ bootId: boot.current, placeEpoch: place.current, sequence: ++sequence.current, sceneRevision: scene.current,
         observedAt: now, expiresAt: now + 30_000, attached: true, tracking: 'tracked' });
       const result = await adapter.current.readExisting({ jobId: job.id, ownerScope, revision: job.revision,
-        sceneRevision: 1, agentId: job.agentBinding.agentId, agentRevision: job.agentBinding.agentRevision });
+        sceneRevision: scene.current, agentId: job.agentBinding.agentId, agentRevision: job.agentBinding.agentRevision });
       if (activeContext.current !== requestedContext) return;
       setCurrent({ context: context(result.job, ownerScope), value: result }); setConfirmed(false); onRead(result.job);
       setMessage(result.cancelReconciliation === 'pending' ? '停止要求の結果が未確認です。同じ仕事を照合してください。' :
         result.cancelReconciliation === 'unavailable' ? '仕事は読めました。停止記録の保存先は利用できません。' : '同じ担当と仕事を読み直しました。');
     } catch { if (activeContext.current === requestedContext) { setCurrent(null); setMessage('本人・担当・仕事の状態を確認できません。元の画面で確認してください。'); } }
     finally { setBusy(false); }
+  }
+  function invalidateInput(kind: 'tracking' | 'detach' | 'boot' | 'scene') {
+    inputEpoch.current++;
+    adapter.current?.disconnect();
+    if (kind === 'boot') { boot.current = ''; sequence.current = 0; }
+    if (kind === 'detach') place.current++;
+    if (kind === 'scene') scene.current++;
+    setCurrent(null); setConfirmed(false);
+    setMessage('観測を失効しました。再接続だけでは実行を再開しません。既に送った処理が停止したかは未確認です。同じ仕事を読み直してください。');
+  }
+  function stageInput() {
+    if (busy || !visible || !onInput || !inputAvailable || !text.trim() || text.length > 4000) return;
+    try {
+      const guard = adapter.current!.createInputGuard(), epoch = ++inputEpoch.current;
+      const sourceJob = visible.job, owner = ownerScope;
+      let acceptedContext = activeContext.current;
+      const isCurrent = () => available.current && inputEpoch.current === epoch &&
+        activeContext.current === acceptedContext && guard();
+      onInput({ id: crypto.randomUUID(), text: text.trim(), isCurrent,
+        onJob: next => {
+          if (!isCurrent() || next.id !== sourceJob.id || next.revision <= sourceJob.revision ||
+              next.agentBinding?.agentId !== sourceJob.agentBinding?.agentId ||
+              next.agentBinding?.agentRevision !== sourceJob.agentBinding?.agentRevision) return;
+          acceptedContext = context(next, owner);
+          activeContext.current = acceptedContext;
+          setCurrent({ context: acceptedContext, value: { ...visible, job: next } }); onRead(next);
+        } });
+      setMessage('同じ仕事のTool確認画面へ入力を渡しました。上の実行内容と引数を確認し、今回の実行を承認してください。観測期限は読み取りから30秒です。');
+    } catch { setMessage('入力の観測または仕事の状態が古くなりました。同じ仕事を読み直してください。'); }
   }
   async function cancel() {
     if (busy || !visible || !confirmed || !adapter.current) return;
@@ -69,6 +110,20 @@ export default function MiiWorkPreview({ job, ownerScope, onRead }: {
     <summary>mii連携のソフト試用</summary>
     <p>合成入力による文章表示の試用です。センサー・座標・校正や実際のmii・音声・空間表示・物理停止は確認していません。</p>
     <button type="button" disabled={busy || !job.agentBinding} onClick={() => void read()}>miiから同じ仕事を確認</button>
+    {onInput && <>
+      <p>音声の代わりに文章を入力します。選んだ互換Toolへ同じ仕事で渡し、実行には別途承認が必要です。</p>
+      <label>miiへの合成テキスト<textarea maxLength={4000} value={text}
+        onChange={event => { inputEpoch.current++; setText(event.target.value); }} /></label>
+      <button type="button" disabled={busy || !visible || !inputAvailable || !text.trim() || visible.job.status !== 'active' ||
+        visible.cancelReconciliation !== 'clear' || Boolean(visible.job.toolAttempts?.length)} onClick={stageInput}>同じ仕事のTool確認へ渡す</button>
+      {!inputAvailable && <p>先にこの担当の互換runtime/toolを選んでください。対応しない能力へは渡せません。</p>}
+      <div aria-label="mii観測の失効を試す">
+        <button type="button" onClick={() => invalidateInput('tracking')}>追跡喪失を模擬</button>
+        <button type="button" onClick={() => invalidateInput('detach')}>取り外しを模擬</button>
+        <button type="button" onClick={() => invalidateInput('boot')}>再起動を模擬</button>
+        <button type="button" onClick={() => invalidateInput('scene')}>scene変更を模擬</button>
+      </div>
+    </>}
     {visible && <section aria-label="miiから見た同じ仕事">
       <p>{visible.job.title} · 版 {visible.job.revision} · {visible.job.status === 'cancelled' ? '計画取消（実行先の停止は未確認）' : visible.job.status}</p>
       <h3>依頼内容</h3><p>{typeof visible.job.plan?.objective === 'string' ? visible.job.plan.objective : '保存された依頼内容を確認できません。'}</p>

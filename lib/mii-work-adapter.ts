@@ -88,7 +88,7 @@ export function createMiiWorkAdapter(options: {
 }) {
   const fetchImpl = options.fetchImpl ?? fetch, now = options.now ?? Date.now;
   let latest: MiiObservation | null = null, lastSequence = -1, generation = 0, readSerial = 0, closed = false;
-  let lastBoot: string | null = null, lastEpoch = -1, detachedEpoch = -1;
+  let lastBoot: string | null = null, lastEpoch = -1, detachedEpoch = -1, observationClock = -1;
   const seenBoots = new Set<string>();
   let readback: { generation: number; reference: MiiWorkReference; job: WorkJob;
     cancelReconciliation: MiiWorkReadback['cancelReconciliation'] } | null = null;
@@ -97,7 +97,7 @@ export function createMiiWorkAdapter(options: {
   let busy = false;
   const usedCommands = new Set<string>();
   const fail = (code: string): never => { throw new Error(code); };
-  const invalidate = () => { generation++; readSerial++; latest = null; readback = null; };
+  const invalidate = () => { generation++; readSerial++; latest = null; readback = null; observationClock = -1; };
   function observe(value: MiiObservation) {
     // Every new observation invalidates in-flight actions and prior readback.
     invalidate();
@@ -119,7 +119,13 @@ export function createMiiWorkAdapter(options: {
     latest = { ...value };
   }
   function current() {
-    if (closed || !latest || latest.expiresAt <= now()) return fail('MII_OBSERVATION_UNAVAILABLE');
+    const time = now();
+    if (closed || !latest || !integer(time) || time < observationClock || latest.observedAt > time || latest.expiresAt <= time) {
+      // Clock correction cannot resurrect an observation once expiry or clock
+      // regression has been observed. A new observation and read are required.
+      invalidate(); return fail('MII_OBSERVATION_UNAVAILABLE');
+    }
+    observationClock = time;
     return generation;
   }
   function check(g: number) {
@@ -197,6 +203,19 @@ export function createMiiWorkAdapter(options: {
       agentBinding, executorBinding: 'unverified', hardwareAccepted: false, executionAuthorized: false, cancelReconciliation };
   }
   /** Explicit owner operation: cancel the local plan only; never start/retry work. */
+  /** A local freshness fence only, never a credential or Tool permission.
+   * The existing runner must still recheck owner/job/agent/Package and claim.
+   * Accepted job revisions do not renew the observation's finite lifetime. */
+  function createInputGuard(): () => boolean {
+    const g = current(), snapshot = readback;
+    if (!snapshot || snapshot.generation !== g || snapshot.job.status !== 'active' ||
+        !snapshot.reference.agentId || snapshot.cancelReconciliation !== 'clear' ||
+        snapshot.job.toolAttempts?.length) return fail('MII_INPUT_UNAVAILABLE');
+    return () => {
+      try { check(g); return readback === snapshot && !busy && !uncertain.has(journalKey(snapshot.reference.ownerScope, snapshot.job.id)); }
+      catch { return false; }
+    };
+  }
   async function cancelPlan(input: { commandId: string; jobId: string; revision: number; confirmed: boolean }): Promise<MiiPlanCancelResult> {
     if (input.confirmed !== true) return fail('MII_CONFIRMATION_REQUIRED');
     const commandId = workId(input.commandId), jobId = workId(input.jobId), g = current();
@@ -222,7 +241,7 @@ export function createMiiWorkAdapter(options: {
       check(g);
       const response = await fetchImpl('/api/work-jobs', { method: 'PATCH', credentials: 'same-origin',
         cache: 'no-store', redirect: 'error', headers: { 'Content-Type': 'application/json', [OWNER_SCOPE_HEADER]: ref.ownerScope }, body: JSON.stringify(body) });
-      if (g !== generation || !latest || latest.expiresAt <= now()) return stopResult('unknown');
+      if (g !== generation || !latest || latest.observedAt > now() || latest.expiresAt <= now()) return stopResult('unknown');
       if (!response.ok) {
         if (response.status >= 400 && response.status < 500) return stopResult('rejected');
         return stopResult('unknown');
@@ -236,5 +255,5 @@ export function createMiiWorkAdapter(options: {
     } catch { return stopResult('unknown'); }
     finally { busy = false; }
   }
-  return { observe, readExisting, cancelPlan, disconnect() { invalidate(); }, close() { closed = true; invalidate(); } };
+  return { observe, readExisting, createInputGuard, cancelPlan, disconnect() { invalidate(); }, close() { closed = true; invalidate(); } };
 }

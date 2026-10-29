@@ -1,3 +1,7 @@
+### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
+
+着手: main e9433589を基点にclean作業枠を使用し、別worktreeのハード設計を保全。合成文章を既存runnerへ渡し、owner/job/Agent/Tool/一回承認/Connector claimを再利用する。判断: 30秒観測・入力世代で未送信を拒否、begin後pendingとclaim後応答を同じjobへ照合する。独立検収で時計巻戻しによるguard復活と入力編集中の旧非同期処理を修正した。局所80/80と全verify成功（Node3364/3360pass/0fail/4skip、build/APIを含む）。初回lint失敗と修正、source hashは[証拠](docs/evidence/development-execution/mii-synthetic-input.json)。最終React規約対応後の中央独立80/80は合格。実機/光学/推論/実課金なし、main統合・CI未確認。次は固定候補をGit担当の独立統合へ渡す。 中央の独立実行80/80後、観測有効期間内の部分的時計巻戻りを追加再現し、最終照合時刻を保持して旧観測を不可逆に失効させた。修正後関連55/55・実Chrome/Connector81/81、時計patchの別担当独立PASS_SCOPED。中央全verify初回は未変更PC adapterの終了確認1件で失敗、同一sourceの単独Python3.15/3.14と同条件全体再実行は成功（3365/3361pass/0fail/4skip、build/API/mission/work/bot完了）。初回失敗を保持し、最終19ファイルmetadata検収とGit/head/main CIは未完了。Pixelの別scope観察はブラウザ自動起動・外部通信不明・同期接続未確認・前後比較不足のため実機合格に数えない。
+
 ### Smith Local Agent設定拒否応答の有限採用開始（2026-10-28 / SMITH-02・SKY21・ROCK）
 
 PR252/main0dcbbf6の全7check/5workflowとLinux3246/3244pass/0fail/2skip、Android compile/emulator/trial成功を閉じ、別実質batchに最小readback同梱。Smith source3をbyte不変採用し、authorbase c3a9と最新mainのroute旧本文/隣接API/store/workflow/locks互換を確認。元から拒否された6設定不一致のstatus/code/message/no-storeを揃えるだけで新権限ではない。Root source独立PASS/実8、中央関連28成功。全verify3254/3251pass/0fail/3hostskip・build/API1678/CSV385成功。次はRoot最終metadata→Git/HEAD/main同SHA CI。実認証UI/Provider/端末/運転中race/wholeSMITH02は未受入。元95/393/14・優先4系統/OS横断要件・616/OS08拒否境界を維持。
