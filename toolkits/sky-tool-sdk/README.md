@@ -62,6 +62,8 @@ await sky.start({ port: 8787 });
 
 [`examples/line-counter.mjs`](examples/line-counter.mjs)には、文章の行数を数えるToolと二つの整数を足すToolがあります。どちらも決定的な処理です。`createLineCounter()`は定義を作るだけで、登録・公開・起動はしません。作者はこの例を参考に、Tool名、入出力Schema、副作用、料金、handlerを自分の処理に合わせて変更できます。個別ToolのIDをOSの仕事処理へ追加する必要はありません。
 
+作例の`inputSchema`には、版付き`x-rockstaros-tool-contract`で必要な能力IDとpermission・scopeを明示しています。`count_lines`は`example.count-lines`、`add_integers`は`example.add-integers`です。作者は自分のToolの実際の処理と接続先に合わせて能力ID・permission・完全一致する対象scopeを設定してください。network等の対象が必要な権限でscopeが空の場合は未確認です。Smithでは期待する入出力型・能力ID・許容permission/scopeと実Toolを指定して照合します。Packageと実Toolで宣言が一致しても、実行権限・安全性・提供者の申告・料金が検証されたことにはなりません。
+
 隔離した一時ディレクトリと合成の登録情報を使い、SDKのローカルMCPとConnector、明示承認、既存の仕事、miiソフトウェア読戻しをまとめて確認する場合は、リポジトリのルートで次を実行します。
 
 ```sh

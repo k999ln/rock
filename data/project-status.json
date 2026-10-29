@@ -1,9 +1,20 @@
 {
-  "miiPortableReadDescriptors": {
+  "sdkDeclaredExample": {
     "owner": "ROCK",
     "status": "independent_review_full_verify_pass_integration_pending",
+    "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
+    "next": "Verify exact archive and complete independent review, full verify, Git CI; real author/provider/device acceptance remains separate."
+  },
+  "miiPortableReadDescriptors": {
+    "owner": "ROCK",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-portable-read-descriptors.json",
-    "next": "Complete independent review, full verify and Git CI; physical hardware and runtime permission remain unaccepted."
+    "next": "Physical output, real host declarations and OS permissions remain separately unaccepted.",
+    "pullRequest": 275,
+    "prHead": "63dbee1c60dc7d2d361b19544d1e0c5c04fe8635",
+    "mergeSha": "6ce983649a3a5ffa3a9278a515383b709b6d823e",
+    "mergeChecks": "6 of 6 completed successfully",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-portable-read-main-ci.json"
   },
   "smithDeclaredCapability": {
     "owner": "ROCK",

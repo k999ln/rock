@@ -1,0 +1,41 @@
+{
+  "schema": "rockstaros.mii-portable-read-main-ci/1",
+  "pullRequest": 275,
+  "head": "63dbee1c60dc7d2d361b19544d1e0c5c04fe8635",
+  "mergeSha": "6ce983649a3a5ffa3a9278a515383b709b6d823e",
+  "mergeChecks": [
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    }
+  ],
+  "rawRecordSha256": "63fc87cfa9b4c9ef76ca452d84eb194006537b14358a86cf99b025dcb08939f0",
+  "priorEvidence": "docs/evidence/development-execution/mii-portable-read-descriptors.json",
+  "scope": "host software declarations; no physical or authorization acceptance"
+}

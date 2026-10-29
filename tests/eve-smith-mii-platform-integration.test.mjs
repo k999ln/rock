@@ -116,7 +116,7 @@ void test('two owner-defined roles use distinct SDK Tool schemas through authent
   ];
   for (const { name, purpose, package: pkg, toolName, inputFields, outputFields, args, expected } of scenarios) {
     const { packageKey, manifestSha256 } = pkg;
-    const requirements = { inputFields, outputFields, packageKey, executionTarget: 'pc',contract:{schema:'rockstaros.agent-tool-expectation/1',inputTypes:toolName==='count_lines'?{text:'string'}:{left:'integer',right:'integer'},outputTypes:toolName==='count_lines'?{lines:'integer'}:{sum:'integer'},capabilityIds:[toolName==='count_lines'?'fixture.count-lines':'fixture.add-integers'],allowedPermissions:fixturePermissions,runtime:{serverId:sdk.localId,toolName}} };
+    const requirements = { inputFields, outputFields, packageKey, executionTarget: 'pc',contract:{schema:'rockstaros.agent-tool-expectation/1',inputTypes:toolName==='count_lines'?{text:'string'}:{left:'integer',right:'integer'},outputTypes:toolName==='count_lines'?{lines:'integer'}:{sum:'integer'},capabilityIds:[toolName==='count_lines'?'example.count-lines':'example.add-integers'],allowedPermissions:fixturePermissions,runtime:{serverId:sdk.localId,toolName}} };
     const review = reviewSkyAgentRequirements(requirements, packages, servers);
     assert.equal(review.state, 'candidate');
     assert.deepEqual(review.candidates.map(candidate => candidate.toolName), [toolName]);

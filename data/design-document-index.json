@@ -163,6 +163,22 @@
       ],
       "evidence": "docs/evidence/development-execution/mii-portable-read-descriptors.json",
       "scope": "declared read-only capability snapshot, not identity or hardware authority"
+    },
+    "sdkDeclaredExample": {
+      "authority": "docs/sky-tool-sdk.md",
+      "toolDesign": "docs/sky-tools-complete-design.md#本人が作る担当の能力照合とsdk-tool",
+      "implementation": [
+        "toolkits/sky-tool-sdk/examples/line-counter.mjs",
+        "components/rock-studio.tsx",
+        "public/toolkits/rockstaros-sky-tool-sdk-0.1.4.tgz"
+      ],
+      "tests": [
+        "tests/eve-smith-mii-browser.test.mjs",
+        "tests/eve-smith-mii-platform-integration.test.mjs",
+        "tests/sky-studio-chat.test.mjs"
+      ],
+      "evidence": "docs/evidence/development-execution/sdk-declared-example.json",
+      "scope": "unpacked SDK sample with synthetic local authority; no publication or general sandbox acceptance"
     }
   },
   "latestRockstarOsDesign": {
@@ -1228,7 +1244,7 @@
       "localSdkAuthenticationBoundary": {
         "document": "docs/sky-tool-sdk.md",
         "implementation": "toolkits/sky-tool-sdk/src/index.mjs",
-        "distributionPackage": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+        "distributionPackage": "public/toolkits/rockstaros-sky-tool-sdk-0.1.4.tgz",
         "distributionBoundary": "versioned local package and Studio install link; source byte parity required, no registry publication",
         "comparison": "UTF-8 byte length equality before timingSafeEqual on the same buffers",
         "malformedCredentialOutcome": "401 before body parsing or handler; process remains available",
@@ -2622,7 +2638,7 @@
         "entity": "sky_zema_and_tools",
         "contract": "localSdkAuthenticationBoundary",
         "decision": "restored_current_invariants",
-        "adjustment": "Current package remains 0.1.3. Buffer byte length is checked before timingSafeEqual, preceding readJson; test verifies process survival and legitimate follow-up requests.",
+        "adjustment": "At this historical restoration the package was 0.1.3; the current integration candidate is 0.1.4. Buffer byte length is checked before timingSafeEqual, preceding readJson; test verifies process survival and legitimate follow-up requests.",
         "historicalFieldsNotRestored": []
       },
       {
