@@ -56,7 +56,8 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       if (resources.child && resources.child.exitCode === null && resources.child.signalCode === null) {
         const exited = new Promise(resolve => resources.child.once('exit', resolve)); resources.child.kill('SIGTERM'); await exited;
       }
-      await rm(dir, { recursive: true, force: true });
+      // Retry transient ENOTEMPTY during cleanup of the isolated Chromium profile.
+    await rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
     });
     const bundle = await compile();
     const bundleLines = new TextDecoder().decode(bundle).split('\n');
