@@ -1,9 +1,9 @@
 {
   "smithToolObservationFreshness": {
     "owner": "ROCK",
-    "status": "draft_lint_fix_targeted_pass_final_ci_pending",
+    "status": "draft_independent_tests_local_browser_pass_final_ci_pending",
     "evidence": "docs/evidence/development-execution/smith-tool-observation-freshness.json",
-    "next": "Run final exact-head browser and CI after fixing first-head lint failure; independent final review.",
+    "next": "Confirm exact-head Linux browser and full CI, then independent final review.",
     "pullRequest": 289
   },
   "pixelSavedAiLookup": {

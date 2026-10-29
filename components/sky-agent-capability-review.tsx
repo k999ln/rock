@@ -222,7 +222,9 @@ export default function SkyAgentCapabilityReview({ agent, onSaved }: {
       <p>接続先が申告した宣言の観測です。安全性・権限・処理成功の保証ではありません。</p>
     </div>}
     {wanted.contract?.runtime?.serverId && !observationFresh && <output>実Toolの観測が未確認または期限切れです。接続済みのToolを再確認してください。</output>}
-    {wanted.contract?.runtime?.serverId && <button type="button" disabled={saving || uncertain} onClick={() => {
+    {wanted.contract?.runtime?.serverId && (!fresh || !owner || selectedServer?.state !== 'connected') &&
+      <p>本人・担当・選択した接続先の確認が整ってから、実Toolを再確認できます。</p>}
+    {wanted.contract?.runtime?.serverId && <button type="button" disabled={!fresh || !owner || selectedServer?.state !== 'connected' || saving || uncertain} onClick={() => {
       const id = wanted.contract!.runtime!.serverId, selectedOwner = owner, selectedRuntime = runtimeText;
       const selectedAgent = current.id, selectedRevision = current.revision;
       const generation = ++refreshRef.current.generation;

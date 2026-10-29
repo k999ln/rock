@@ -13,7 +13,7 @@ const source = readFileSync(new URL('../components/sky-agent-capability-review.t
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022,
   jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText;
 
-function harness(extraRequired = false) {
+function harness(extraRequired = false, holdInitial = false) {
   const manifest = packageApi.createSkyToolPackageDraft({ sourceKind: 'github', sourceUrl: 'https://github.com/example/tool', developerName: 'Example', developerId: 'example', license: 'MIT' });
   if (extraRequired) manifest.io = { inputSchema: { type: 'object', properties: { text: { type: 'integer' }, secret: { type: 'string' } }, required: ['text', 'secret'] },
     outputSchema: { type: 'object', properties: { count: { type: 'string' } } } };
@@ -32,6 +32,7 @@ function harness(extraRequired = false) {
   let cursor = 0, tree, account = owner, revoked = false, malformedWrite = false, releaseRegistry;
   const refreshPending = [];
   let registryHeld = false, refreshHeld = false, refreshFails = false, holdFinal = false, readsWhileHeld = 0, releaseAgent;
+  let initialHeld = holdInitial, releaseInitial;
   const changed = (a, b) => !a || a.length !== b.length || a.some((v, i) => !Object.is(v, b[i]));
   const react = {
     useState(initialValue) { const i = cursor++; if (!slots[i]) { const x = { value: typeof initialValue === 'function' ? initialValue() : initialValue }; x.set = value => { x.value = typeof value === 'function' ? value(x.value) : value; }; slots[i] = x; } return [slots[i].value, slots[i].set]; },
@@ -40,7 +41,7 @@ function harness(extraRequired = false) {
     useEffect(fn, deps) { const i = cursor++; if (!slots[i] || changed(slots[i].deps, deps)) { const old = slots[i]; slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
   };
   async function fetch(url, options = {}) {
-    if (url.startsWith('/api/sky/agents?id=')) { if (holdFinal && ++readsWhileHeld === 2) await new Promise(resolve => { releaseAgent = resolve; }); return Response.json({ ownerScope: account, agent: initial }); }
+    if (url.startsWith('/api/sky/agents?id=')) { if (initialHeld) await new Promise(resolve => { releaseInitial = resolve; }); if (holdFinal && ++readsWhileHeld === 2) await new Promise(resolve => { releaseAgent = resolve; }); return Response.json({ ownerScope: account, agent: initial }); }
     if (url === '/api/sky/tool-registry') { if (registryHeld) await new Promise(resolve => { releaseRegistry = resolve; }); return Response.json({ packages: [{ ...item, ...(revoked ? { status: 'revoked', installable: false } : {}) }] }); }
     if (url === '/api/rockstar/entitlements') return Response.json(entitlements);
     if (url === '/api/sky/agents' && options.method === 'PUT') { writes.push(options); return Response.json(malformedWrite ? {} : { agent: initial }); }
@@ -66,8 +67,11 @@ function harness(extraRequired = false) {
     holdRegistry() { registryHeld = true; }, releaseRegistry() { assert.ok(releaseRegistry); registryHeld = false; releaseRegistry(); },
     begin(name) { const node = button(name); assert.ok(node && !node.props.disabled, name); node.props.onClick(); render(); },
     changeRuntime() { servers[0].passport.toolDigest='e'.repeat(64); },
+    disconnectRuntime() { servers[0].state = 'available'; render(); },
+    reconnectRuntime() { servers[0].state = 'connected'; render(); },
     expireObservation() { servers[0].passport.observationExpiresAt=Date.now()-1; render(); },
     selectRuntime(value) { const field=nodes(tree).find(n=>n.type==='label' && text(n).includes('使用する接続と操作')); nodes(field).find(n=>n.type==='select').props.onChange({target:{value}}); render(); },
+    releaseInitial() { assert.ok(releaseInitial); initialHeld = false; releaseInitial(); },
     holdRefresh() { refreshHeld = true; }, failRefresh() { refreshFails = true; },
     resolveRefresh(index) { refreshPending[index].resolve({ ...servers[0].passport, observationId: crypto.randomUUID(), observedAt: Date.now(), observationExpiresAt: Date.now() + 29_000 }); },
     holdFinalAgent() { holdFinal = true; readsWhileHeld = 0; }, releaseFinalAgent() { assert.ok(releaseAgent); holdFinal = false; releaseAgent(); },
@@ -172,4 +176,19 @@ void test('Smith identifies the observed Tool, declared version and UTC lease wi
   assert.match(h.text(), /安全性・権限・処理成功の保証ではありません/);
   assert.equal(h.checkbox().props.disabled, false); h.expireObservation();
   assert.equal(h.checkbox().props.disabled, true);
+});
+
+void test('Tool re-observation waits for owner, Agent and connection readback before it can start', async () => {
+  const h = harness(false, true); await h.flush();
+  assert.equal(h.button('選択した実Toolを再確認').props.disabled, true);
+  assert.match(h.text(), /本人・担当・選択した接続先の確認が整ってから/);
+  h.releaseInitial(); await h.flush();
+  assert.equal(h.button('選択した実Toolを再確認').props.disabled, false);
+  h.disconnectRuntime();
+  assert.equal(h.button('選択した実Toolを再確認').props.disabled, true);
+  assert.match(h.text(), /本人・担当・選択した接続先の確認が整ってから/);
+  h.reconnectRuntime();
+  await h.click('選択した実Toolを再確認');
+  assert.match(h.text(), /宣言条件が一致しました/);
+  assert.equal(h.pushes.length, 0);
 });
