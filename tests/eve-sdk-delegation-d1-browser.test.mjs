@@ -1,3 +1,5 @@
+import * as postCommunityAccess from '../lib/community-access.ts';
+import * as postSkySocial from '../lib/sky-social.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { build } from 'esbuild';
@@ -85,7 +87,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     }
     let authenticatedOwner = owner;
     const env = { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false', ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: localAuthority ? owner : 'local-preview:another-fixture' };
-    const deps = new Map([['cloudflare:workers', { env }],
+    const deps = new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],['cloudflare:workers', { env }],
       ['@/lib/fund-store', { database: () => db, requestUser: async () => authenticatedOwner }]]);
     for (const name of ['sky-agent-requirements', 'request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
       deps.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));

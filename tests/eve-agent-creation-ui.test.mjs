@@ -53,7 +53,8 @@ function harness() {
       prepareEveAgentPending: observed(creation.prepareEveAgentPending), createEveAgent: observed(creation.createEveAgent),
       reconcileEveAgentCreation: observed(creation.reconcileEveAgentCreation) } };
   const exports = {};
-  runInNewContext(compiled, { exports, fetch, crypto, AbortController, sessionStorage: storage,
+  const window = new EventTarget();
+  runInNewContext(compiled, { exports, fetch, crypto, AbortController, sessionStorage: storage, window,
     require: name => { assert.ok(modules[name], name); return { __esModule: true, ...modules[name] }; } });
   function render() { cursor = 0; tree = exports.default({ replies }); layouts.splice(0).forEach(fn => fn()); effects.splice(0).forEach(fn => fn()); }
   function nodes(n, out = []) { if (Array.isArray(n)) n.forEach(x => nodes(x, out)); else if (n && typeof n === 'object') { out.push(n); nodes(n.props?.children, out); } return out; }
@@ -89,6 +90,7 @@ function harness() {
     beginImport() { input('下書きに使う回答', 'reply'); button('回答から下書きを作る').props.onClick(); render(); },
     changeReplies(value) { replies = value; render(); },
     changeOwner() { account = 'owner-v1:' + 'b'.repeat(64); },
+    changeAccess() { window.dispatchEvent(new Event('rockstar-community-changed')); render(); },
     pause() { held = true; hold = undefined; }, release() { held = false; assert.ok(hold); hold.resolve(); },
     unmount() { slots.forEach(slot => slot.cleanup?.()); },
     manual() { input('担当の名前', 'Manual role'); input('何を手伝う担当ですか', 'Manual purpose'); input('受け取るもの', 'Manual input'); input('期待する成果', 'Manual output'); },
@@ -154,4 +156,22 @@ void test('source change or unmount during final digest prevents PUT and pending
     pause.resolve(); await h.flush(); mock.mock.restore();
     assert.equal(h.puts.length, 0, action); assert.equal(h.rows.size, 0, action);
   }
+});
+const postReply = { id:'reply',text:'Imported post role',source:{schema:'rockstaros.eve-post-source/1',key:'post:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',metadataSha256:'a'.repeat(64),post:{id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',authorId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',communityId:null,replyTo:null,createdAt:100}} };
+void test('post access change invalidates imported draft but keeps text for explicit reimport; legacy replies stay usable',async()=>{
+ const h=harness();await h.flush();h.changeReplies([postReply]);await h.import();const text=h.draftText();
+ h.changeAccess();h.changeAccess();assert.equal(h.draftText(),text);assert.equal(h.saveButton().props.disabled,true);
+ h.saveButton().props.onClick();await h.flush();assert.equal(h.puts.length,0);assert.equal(h.rows.size,0);
+ h.button('入力へ戻る').props.onClick();h.render();await h.import();assert.equal(h.saveButton().props.disabled,false);
+ const legacy=harness();await legacy.flush();await legacy.import();legacy.changeAccess();assert.equal(legacy.saveButton().props.disabled,false);
+});
+void test('post key/profile change during import owner read never revives an old reply draft',async()=>{
+ const h=harness();await h.flush();h.changeReplies([postReply]);h.pause();h.beginImport();await h.flush();h.changeAccess();h.release();await h.flush();
+ assert.equal(h.draftText(),undefined);assert.equal(h.puts.length,0);assert.equal(h.rows.size,0);
+});
+void test('post access ABA during final pending digest fences PUT and journal reservation',async t=>{
+ const h=harness();await h.flush();h.changeReplies([postReply]);await h.import();const original=crypto.subtle.digest.bind(crypto.subtle);let count=0,pause;
+ const mock=t.mock.method(crypto.subtle,'digest',async(...args)=>{if(++count===2){pause=Promise.withResolvers();await pause.promise;}return original(...args);});
+ h.saveButton().props.onClick();await h.until(()=>Boolean(pause),'final digest hold');h.changeAccess();h.changeAccess();pause.resolve();await h.flush();mock.mock.restore();
+ assert.equal(h.puts.length,0);assert.equal(h.rows.size,0);
 });

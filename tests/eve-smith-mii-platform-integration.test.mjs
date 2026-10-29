@@ -1,3 +1,5 @@
+import * as postCommunityAccess from '../lib/community-access.ts';
+import * as postSkySocial from '../lib/sky-social.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomUUID, createHash } from 'node:crypto';
@@ -32,7 +34,7 @@ void test('two owner-defined roles use distinct SDK Tool schemas through authent
     async run() { return { meta: { changes: Number(sqlite.prepare(sql).run(...args).changes) } }; },
   }; } }; } };
   const ownerId = 'local-preview:fixture-owner';
-  const modules = new Map([
+  const modules = new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],
     ['cloudflare:workers', { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false', ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: ownerId } }],
     ['@/lib/fund-store', { database: () => db, requestUser: requestAuth.requestUser }],
     ['@/lib/request-auth', requestAuth],

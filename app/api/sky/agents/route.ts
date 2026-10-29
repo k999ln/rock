@@ -1,3 +1,5 @@
+import { communityKeysHeader } from '@/lib/community-access';
+import { SkySocialError } from '@/lib/sky-social';
 import { database, requestUser } from '@/lib/fund-store';
 import { OperationError } from '@/lib/operations';
 import { skyAgentLibraryStore } from '@/lib/sky-agent-library-store';
@@ -5,7 +7,7 @@ import { skyAgentId, SkyAgentLibraryError } from '@/lib/sky-agent-library';
 import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 const json = (v: unknown, status = 200) => Response.json(v, { status, headers: { 'Cache-Control': 'no-store' } });
 function failure(e: unknown) {
-  if (e instanceof SkyAgentLibraryError || e instanceof OperationError) return json({ error: e.message, ...(e instanceof SkyAgentLibraryError && e.code ? {code:e.code}: {}) }, e.status);
+  if (e instanceof SkyAgentLibraryError || e instanceof OperationError || e instanceof SkySocialError) return json({ error: e.message, ...(e instanceof SkyAgentLibraryError && e.code ? {code:e.code}: {}) }, e.status);
   if (e instanceof Error && e.message === 'UNAUTHORIZED') return json({ error: 'サインインすると自分のエージェントを管理できます。' }, 401);
   if (e instanceof Error && e.message === 'ORIGIN') return json({ error: 'このサイトから操作してください。' }, 403);
   return json({ error: 'エージェントを読み書きできません。接続を確認して再試行してください。' }, 503);
@@ -48,6 +50,8 @@ export async function PUT(request: Request) {
     catch { throw new SkyAgentLibraryError('保存する設定を確認してください。'); }
     if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(k => !['id','revision','settings','create'].includes(k)) ||
       (input.create !== undefined && typeof input.create !== 'boolean')) throw new SkyAgentLibraryError('保存する設定を確認してください。');
-    return json({ agent: await skyAgentLibraryStore(database(), owner).save(skyAgentId(input.id), input.revision as number, input.settings, input.create === true) });
+    const settings=input.settings as {origin?:{source?:{schema?:unknown}}}|undefined;
+    const keys=input.create===true && settings?.origin?.source?.schema==='rockstaros.eve-post-source/1' ? communityKeysHeader(request) : {};
+    return json({ agent: await skyAgentLibraryStore(database(), owner, keys).save(skyAgentId(input.id), input.revision as number, input.settings, input.create === true) });
   } catch (e) { return failure(e); }
 }

@@ -1169,7 +1169,8 @@
       "intent": "Explicit selected saved-resource context and Eve response become an owner-edited confirmed role; no authority from model output or source metadata.",
       "contract": "docs/service-design/02-system-contracts.md#eve-smith-miiの同じ仕事",
       "upstreamContinuousSyncAccepted": false,
-      "physicalOrProviderAccepted": false
+      "physicalOrProviderAccepted": false,
+      "postSourceContract": "rockstaros.eve-post-source/1; exact selected post/reply live ACL and immutable content digest; no keys in provenance"
     }
   },
   "baseApps": [

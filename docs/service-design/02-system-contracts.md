@@ -32,7 +32,7 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 
 ### Eve・Smith・miiの同じ仕事
 
-Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 保存境界の原子照合と旧editor互換は[詳細契約](../rockstaros-complete-design.md#選んだ出典とeve回答から担当を保存する)、[証拠](../evidence/development-execution/eve-selected-source-agent.json)を参照。上流更新・投稿本文のACL再確認・実Provider・物理受入は別。
+Eveの回答を明示選択して編集可能な担当案へ取り込み、既存の本人別APIで確認保存する。Skyの追加済みmodel/dataset/spaceは本人・local版・metadata digestを照合してから未送信入力へ明示読込し、送信前にも再確認する。Agentには元回答hashと任意の保存元pinを本人確認履歴として保持する。履歴を実モデル応答・安全性・権限の証明としない。 投稿・返信は「この投稿をEveで使う準備」から1件を選び、本文と添付のdigest・投稿者・コミュニティー・返信先を固定して、現在の本人と閲覧権限を再確認する。専用鍵は選択先1件だけを同一サイトの出典確認・担当保存APIへ送り、引継ぎ・由来・モデル入力には保存しない。 保存境界の原子照合と旧editor互換は[詳細契約](../rockstaros-complete-design.md#選んだ出典とeve回答から担当を保存する)、[証拠](../evidence/development-execution/eve-selected-source-agent.json)を参照。上流更新・実Provider・物理受入は別。
 
 SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。
 

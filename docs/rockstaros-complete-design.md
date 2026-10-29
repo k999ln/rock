@@ -487,17 +487,17 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 
 #### 選んだ出典とEve回答から担当を保存する
 
-1. **目的と利用者**: Skyで選んだ追加済みリソースについてEveへ依頼し、回答を編集可能な担当へ保存する。用途は固定しない。
+1. **目的と利用者**: Skyで選んだ追加済みリソースまたは投稿・返信1件についてEveへ依頼し、回答を編集可能な担当へ保存する。用途は固定しない。
 2. **体験**: model/dataset/spaceの「Eveで使う準備」→本人別出典の照合→「依頼を入力欄へ読み込む」→本人が編集・送信→回答選択→役割下書き→確認保存→既存Smith・同じJob。取込だけで送信・保存・実行しない。既存入力を置換する操作は明示する。
 3. **責任**: ROCK/O5がUI・API・保存・競合拒否を担当。OWNERが本文・担当案・接続先・実行を確認。Provider/作者の真正性・実性能はEXTERNAL/JOINTで別受入。
-4. **入出力と版**: `rockstaros.eve-source/1`は本人保存のhub key/local revision/metadata SHA256、`rockstaros.eve-agent-origin/1`はthread/reply ID・元回答SHA256と任意source。配布元revisionがnullなら未確認のまま。任意のgrantやbudgetは提案JSONで拒否する。
+4. **入出力と版**: `rockstaros.eve-source/1`は本人保存のhub key/local revision/metadata SHA256、`rockstaros.eve-post-source/1`はpost keyと本文・添付・投稿者・community・replyTo・createdAtのdigest/識別子（投稿の更新版を捏造しない）、`rockstaros.eve-agent-origin/1`はthread/reply ID・元回答SHA256と任意source。配布元revisionがnullなら未確認のまま。任意のgrantやbudgetは提案JSONで拒否する。
 5. **状態と失敗**: 出典確認→明示読込→未送信→回答→編集案→保存。本人・版変更、無効化、期限・時計逆行、取消、unmount、会話・URL変更で古い非同期処理を拒否する。
-6. **保存と復旧**: 既存Agent settings JSON/revision CASを使用し、作成時は出典のowner/key/revision/metadata/enabledをINSERTのSQL条件で再確認。originは不変履歴として残し、旧editorの省略で消さない。tab引継ぎ・会話は既存10分、signoutで引継ぎも消去する。 同じHome上の複数カードはタブ内の一時的な選択ticketを共有し、新しい選択開始時に旧引継ぎslotを確認付きで消去する。取得後の書込と画面遷移直前に同じticketを照合し、後から来た旧応答や、新しい取得失敗後の旧選択復活を拒否する。旧形式の引継ぎ文の書込も待機中の選択を無効化する。ticketは永続化せず、本人・権限・実行の証明にしない。
+6. **保存と復旧**: 既存Agent settings JSON/revision CASを使用し、作成時は出典のowner/key/revision/metadata/enabledをINSERTのSQL条件で再確認。投稿は現在の本人→profile、参加、該当専用鍵hash、revoked=0、archive=0と正確な投稿行をSELECTとINSERTそれぞれの同一SQL条件で確認し、事前に得た許可IDの一覧を権限として使わない。originは不変履歴として残し、旧editorの省略で消さない。tab引継ぎ・会話は既存10分、signoutで引継ぎも消去する。 同じHome上の複数カードはタブ内の一時的な選択ticketを共有し、新しい選択開始時に旧引継ぎslotを確認付きで消去する。取得後の書込と画面遷移直前に同じticketを照合し、後から来た旧応答や、新しい取得失敗後の旧選択復活を拒否する。旧形式の引継ぎ文の書込も待機中の選択を無効化する。ticketは永続化せず、本人・権限・実行の証明にしない。
 7. **不明と再送**: 出典変更の確実な拒否だけを`EVE_SOURCE_CHANGED`で区別しpendingを解除する。通常409・応答消失は同じ本人/ID/設定digestを読戻し、自動で別IDへ再送しない。offline時は未確認として止める。
 8. **互換・更新**: 旧5項目、requirements、attachment、旧pending digestを保つ。出典が消えても保存済み履歴は読める。既存担当へ由来を後付け・差替しない。rollbackは保存originを理解できる版を使用し、無断削除しない。
-9. **安全と承認**: 出典は現在の本人保存metadataとの一致だけ。上流の最新性、モデル実生成、license適合、安全、権限、料金を保証しない。既存Broker/Wallet/Provider、作成・実行確認、一回begin/claimを維持する。投稿添付のリソースのみを渡し、投稿本文・community鍵は転送しない。
+9. **安全と承認**: 出典は本人保存metadata、または選択した投稿snapshotと現在の閲覧権限の照合だけ。上流の最新性、モデル実生成、license適合、安全、権限、料金を保証しない。既存Broker/Wallet/Provider、作成・実行確認、一回begin/claimを維持する。投稿CTAでは選択した投稿・返信の本文とその添付だけを未送信の依頼へ渡す。親投稿・他投稿・反応・community名は渡さない。専用鍵は該当communityの1件だけを同一サイトの出典確認・保存APIへ送る。鍵を引継ぎ、Agent由来、会話、Providerへ渡さない。鍵・profileの切替/消去/storageイベントでは待機中の読取と読込済み選択を失効し、A→B→Aでも旧応答を復活させない。保存後に出典が消えても履歴は保持するが、再利用権限の証明にはしない。
 10. **合格環境**: 合成回答を明示した隔離Chrome/SQLite/実SDK・Connectorで異なる2担当と同一Job成果を確認。独立負例は本人・出典変更、SQL保存競合、取消、時計、unknown、旧editor保持を対象とする。[候補証拠](evidence/development-execution/eve-selected-source-agent.json)。実Provider・実mii/Pixel・全OSや本番には転用しない。
-11. **未決定**: 上流timelineの継続更新、投稿本文/返信のexact ACL・削除再確認、実モデル同候補、Agent掛け合わせgraph、全経路の復旧、物理受入は個別担当・同候補試験で決める。公開・配備・616件一括公開は保留。
+11. **未決定**: 投稿本文/返信のexact ACL・削除再確認は今回のhost候補で扱い、上流timelineの継続更新、実モデル同候補、Agent掛け合わせgraph、全経路の復旧、物理受入は個別担当・同候補試験で決める。公開・配備・616件一括公開は保留。
 
 SDK 0.1.5候補は通常のpack時にdist入口を生成し、Studioと作者雛形を同版へ揃える。旧0.1.3/0.1.4 archiveは保持する。作者がsampleのimportをpackage入口に変更した合成localhost・offline試験でdist経由を検証し、元の同梱sampleはsourceを相対参照する。--ignore-scripts時は自動build保証外。宣言は権限・安全・実料金の保証ではなく、実Provider・実機・registry公開は未受入。
 

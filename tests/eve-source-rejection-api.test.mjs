@@ -1,3 +1,5 @@
+import * as postCommunityAccess from '../lib/community-access.ts';
+import * as postSkySocial from '../lib/sky-social.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
@@ -20,7 +22,7 @@ async function fixture(t) {
     async run(){db.beforeRun?.(sql,args);return{meta:{changes:Number(sqlite.prepare(sql).run(...args).changes)}};},
   };}};}};
   class OperationError extends Error { constructor(message,status){super(message);this.status=status;} }
-  const route=loadRouteFixture(new URL('../app/api/sky/agents/route.ts',import.meta.url),new Map([
+  const route=loadRouteFixture(new URL('../app/api/sky/agents/route.ts',import.meta.url),new Map([['@/lib/community-access',postCommunityAccess],['@/lib/sky-social',postSkySocial],
     ['@/lib/fund-store',{database:()=>db,requestUser:async r=>r.headers.get('x-test-owner')}],
     ['@/lib/operations',{OperationError}],['@/lib/owner-intent',ownerIntent],
     ['@/lib/sky-agent-library-store',agentStore],['@/lib/sky-agent-library',library],

@@ -46,6 +46,17 @@ export function useEveSourceContext(enabled:boolean,threadKey:string) {
     });
     return ()=>{selectionRef.current=null;cancelAnimationFrame(frame);controller.abort();};
   },[enabled,threadKey]);
+  useEffect(()=>{
+    if(typeof window==='undefined' || typeof window.addEventListener!=='function')return;
+    const changed=()=>{
+      const source=selectionRef.current?.source ?? handoff?.context?.source;
+      if(source?.schema!=='rockstaros.eve-post-source/1')return;
+      ++generation.current;invalid.current=true;operation.current?.abort();
+      setHandoff(null);setChecking(false);setError('投稿の閲覧条件が変わりました。Skyから選び直してください。');
+    };
+    window.addEventListener('rockstar-community-changed',changed);window.addEventListener('storage',changed);
+    return ()=>{window.removeEventListener('rockstar-community-changed',changed);window.removeEventListener('storage',changed);};
+  },[handoff]);
   async function apply(onDraft:(text:string)=>void) {
     if(!enabled || visibleKey!==threadKey || !handoff || checking || !lifecycle.current || lifecycle.current.signal.aborted)return;
     const intent=handoff,run=++generation.current,controller=new AbortController();
@@ -92,7 +103,7 @@ export function EveSourceHandoff({context,onDraft}:{context:ReturnType<typeof us
   return <section aria-label="SkyからEveへの引継ぎ">
     {context.checking && <output>選んだ出典を確認しています…</output>}
     {context.handoff && <><p>Skyで選んだ依頼です。入力へ読み込み、編集してから送信してください。既存の未送信入力は読み込み時に置き換わります。</p><pre>{context.handoff.text}</pre><button type="button" disabled={context.checking} onClick={()=>void context.apply(onDraft)}>依頼を入力欄へ読み込む</button></>}
-    {context.selection && <p>選択した出典: {context.selection.plugin.resource} · 配布元の版: {context.selection.plugin.metadata.revision ?? '未確認'}。保存した情報との一致を送信前に再確認します。</p>}
+    {context.selection && <p>{context.selection.plugin ? `選択した出典: ${context.selection.plugin.resource} · 配布元の版: ${context.selection.plugin.metadata.revision ?? '未確認'}。保存した情報との一致を送信前に再確認します。` : `選択した投稿: ${context.selection.post?.id}。投稿本文・添付・閲覧権限を送信前に再確認します。`}</p>}
     {context.error && <p role="alert">{context.error}</p>}
     <button type="button" onClick={context.clear}>出典の引継ぎを取り消す</button>
   </section>;
