@@ -97,3 +97,30 @@ void test('optional feature settings reject unknown grants and concurrent stale 
   assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
   assert.equal((await features.list()).find(f => f.id === 'market').revision, 1);
 });
+
+void test('legacy object attachment coexists with requirements and survives old editor, owner and revision boundaries', async t => {
+  const { sqlite, db, store } = fixture(t), id = randomUUID();
+  const attachment = { schema: 'sky.object-attachment/1', objectName: '合成の対象', input: 'sensor', output: 'signal' };
+  const requirements = { inputFields: ['value'], outputFields: ['summary'], packageKey: 'dev.fixture.tool@1.0.0', executionTarget: 'pc',
+    contract: { schema: 'rockstaros.agent-tool-expectation/1', capabilityIds: ['fixture:read'], allowedPermissions: [] } };
+  const old = { ...settings(), provider: 'openai', model: 'fixture-model-v2', attachment };
+  // Historical local records were written before main understood attachment.
+  sqlite.prepare('INSERT INTO sky_agent_settings(owner_user_id,id,source_tool,settings,revision,created_at,updated_at) VALUES(?,?,?,?,?,?,?)')
+    .run('fixture-owner', id, null, JSON.stringify(old), 1, 1, 1);
+  assert.deepEqual((await store.list())[0].attachment, attachment);
+  assert.equal(await skyAgentLibraryStore(db, 'another-owner').get(id), null);
+  const adopted = await store.save(id, 1, { ...old, requirements });
+  assert.equal(adopted.revision, 2); assert.deepEqual(adopted.attachment, attachment); assert.deepEqual(adopted.requirements, requirements);
+  const legacy = { name: '編集後', instructions: '編集した指示', provider: old.provider, model: old.model, enabled: true };
+  const saved = await store.save(id, 2, legacy);
+  assert.equal(saved.id, id); assert.equal(saved.revision, 3); assert.equal(saved.provider, old.provider); assert.equal(saved.model, old.model);
+  assert.deepEqual(saved.attachment, attachment); assert.deepEqual(saved.requirements, requirements);
+  await assert.rejects(store.save(id, 2, legacy), { status: 409 });
+  await assert.rejects(skyAgentLibraryStore(db, 'another-owner').save(id, 3, legacy), { status: 404 });
+  assert.deepEqual(await store.get(id), saved);
+  for (const bad of [{ ...attachment, executionAuthorized: true }, { ...attachment, grant: true },
+    { ...attachment, schema: 'sky.object-attachment/2' }, { ...attachment, input: 'root' }]) {
+    await assert.rejects(store.save(id, 3, { ...legacy, attachment: bad }), { status: 400 });
+  }
+  assert.equal((await store.get(id)).revision, 3);
+});

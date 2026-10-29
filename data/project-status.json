@@ -1,10 +1,26 @@
 {
+  "pixelSavedAiLookup": {
+    "owner": "ROCK",
+    "status": "physical_lookup_unconfirmed",
+    "evidence": "docs/evidence/development-execution/pixel-saved-ai-lookup-unconfirmed.json",
+    "next": "Investigate existing sync/connection and unconfirmed state without resending preparation or altering existing data."
+  },
+  "eveAgentAttachmentPreservation": {
+    "owner": "ROCK",
+    "status": "draft_prior_browser_ci_pass_final_head_pending",
+    "evidence": "docs/evidence/development-execution/eve-agent-attachment-preservation.json",
+    "next": "Confirm final merged-main candidate exact-head CI and independent review before merge.",
+    "pullRequest": 287
+  },
   "miiWorkerRemoteCancel": {
     "owner": "ROCK",
-    "status": "draft_independent_ci_reproduced_final_head_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/mii-worker-remote-cancel.json",
-    "next": "Check final candidate CI and independent review after merging current main.",
-    "pullRequest": 286
+    "next": "Real provider, actual network loss, billing and physical mii remain separate.",
+    "pullRequest": 286,
+    "mergeSha": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+    "mainCiEvidence": "docs/evidence/development-execution/mii-worker-remote-cancel-main-ci.json",
+    "mergeChecks": "6 of 6 completed successfully"
   },
   "miiRequiredCapabilities": {
     "owner": "ROCK",
@@ -12167,7 +12183,7 @@
     "pixelMainWorkflowSuccess": 4
   },
   "eveMacFiveHourCandidateDevelopment": {
-    "status": "bbc_main_security_fixed_host_verify_pass_next_main_delta_pending",
+    "status": "latest9a_main_synced_security_review_full_verify_pass_final_head_CI_pending",
     "primaryOwner": "ROCK",
     "primarySquad": "O3",
     "taskRefs": [
@@ -12189,7 +12205,7 @@
     "fullVerifyPassed": true,
     "gitHubSaved": true,
     "mainIntegrated": false,
-    "next": "Complete independent security difference review, final full verify, new-head CodeQL/CI; preserve quality/wholePixel FAIL and historical physical source binding. Then toolkit-only main merge and exact-main CI.",
+    "next": "Final synchronized source commit/push; require actual completed final-head CodeQL and CI, then toolkit-only main merge and exact-main CI. Preserve quality/wholePixel FAIL and historical physical-source boundary.",
     "qualityAssessment": "failed_current_candidate_development_test",
     "developmentComparison": {
       "plannedTasksPerArm": 20,
@@ -12344,7 +12360,7 @@
     "implementationSafetyReview": "PASS_SCOPED_NO_OPEN_P1_FOUND",
     "pullRequest": 288,
     "originalSourceHead": "2d11f54521e1c0c5f636d5bdc399c5fb5cd81a5b",
-    "synchronizedMain": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+    "synchronizedMain": "9a7c2a9c8a72b97a5197cf8a5eb1191a43838ba2",
     "latestMainSyncVerifyPassed": true,
     "securityPatchPaths": [
       "toolkits/eve-model/server.mjs",
@@ -12368,6 +12384,13 @@
       "next": "Separately reviewed explicit loss boundary, frozen protocol and fresh retraining/comparison; no large runner/loss patch or new trial in this integration",
       "frozenCandidateCorrected": false,
       "teacherForcedValidationAlreadyConsumed": 16
+    },
+    "securityFixedPublishedHead": "8e2442dca",
+    "latestMainSyncNodeTests": {
+      "total": 3472,
+      "pass": 3468,
+      "fail": 0,
+      "skip": 4
     }
   }
 }

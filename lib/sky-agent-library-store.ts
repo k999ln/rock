@@ -32,6 +32,8 @@ export function skyAgentLibraryStore(db: Database, owner: string) {
     if (before && before.revision !== revision) throw new SkyAgentLibraryError('別の画面で設定が変更されました。入力を残したまま、最新の設定を確認してください。', 409);
     // Older editors submit only the original five fields. Preserve requirements
     // rather than silently erasing them; a current editor may explicitly clear them.
+    // Legacy editors do not know attachment; omission cannot erase it.
+    if (before?.attachment && !Object.hasOwn(input as object, 'attachment')) settings = { ...settings, attachment: before.attachment };
     if (before?.requirements && !Object.hasOwn(input as object, 'requirements')) settings = { ...settings, requirements: before.requirements };
     if (before?.requirements?.contract && settings.requirements && !Object.hasOwn(settings.requirements,'contract')) {
       const { contract: _contract, ...legacy } = before.requirements;

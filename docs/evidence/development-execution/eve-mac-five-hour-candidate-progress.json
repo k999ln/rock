@@ -434,8 +434,23 @@
       },
       "scope": "Synthetic host security difference review only; no new physical/model acceptance"
     },
-    "securityVerification": "Focused synthetic controls passed; final full verify and same-head CodeQL pending",
-    "physicalEvidenceQualification": "Original source/candidate physical report preserved at author head; these two later security-fix files were not re-exercised on Pixel, and do not receive new physical acceptance."
+    "securityVerification": "Independent host difference PASS_SCOPED and latest9a combined full verify exit0; final-head remote CodeQL/CI pending",
+    "physicalEvidenceQualification": "Original source/candidate physical report preserved at author head; these two later security-fix files were not re-exercised on Pixel, and do not receive new physical acceptance.",
+    "additionalLatestMainSync": {
+      "from": "bbc9a3591d52d3357910c96fa6223db9c88441e4",
+      "to": "9a7c2a9c8a72b97a5197cf8a5eb1191a43838ba2",
+      "changedPaths": 19,
+      "automaticMergePreservedBothSides": true,
+      "runtimeSecurityFixesUnchanged": true,
+      "localFullVerify": {
+        "exitCode": 0,
+        "total": 3472,
+        "pass": 3468,
+        "fail": 0,
+        "skip": 4,
+        "logSha256": "f4b3ff42df4bcf5fa98927ee771e5d614f56de058c66f20e5926ba7385163b1b"
+      }
+    }
   },
   "followUpHypotheses": [
     {
