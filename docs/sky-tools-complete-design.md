@@ -344,6 +344,19 @@ Eveの担当設定に、本人が編集する必要入力・成果・Package・�
 
 miiからの合成文章も同じrunnerへ渡し、観測だけでprepare・本人承認・claimを省略しない。入力や実行先の変更時に旧runnerの非同期処理も世代照合で拒否する。既に送信済みの処理は同じjobへ照合し、物理停止とは区別する。
 
+<a id="work-tool-package-authority-fixture"></a>
+#### Package権限参照とjob CASのfixture契約（本番未接続）
+
+目的・体験: 将来の承認済み操作が保存した本人/契約/Package/manifest/権限版を維持し、別契約や新しい権限版を古い仕事へ借用しない。これはhost整合試験で、通常account/eSIMを使える機能ではない。
+
+責任・入出力: ROCK/O5（SMITH-02・SKY07・SKY21）は`lib/work-tool-package-authority-contract.ts`の9項目parserと固定parameterized SQLを管理する。入力はschema、authorityId/revision、ownerUserId、issuerId/claimId/offerId、packageKey/manifestSha256。fixture jobの`toolPackageAuthorityReference`へ同じ9項目を保存し、SQL自体が型/過不足・row owner・操作Package pinsを同じ`UPDATE work_jobs`内で照合する。出力はEXISTS条件とbindingsまたはnullで、認証済みowner/id/revision・active/pendingのCASは呼出側が別途維持する。このslotは本番WorkJob schemaへ追加していない。
+
+状態・保存: active/revoked/supersededと期限、正のsafe revisionをfixture SQLiteへ保存し、close/reopenを検査する。`tests/fixtures/work-tool-package-authority.sql`だけに表を定義し、本番migration・発行/更新/失効APIはない。rootは`unbound_fixture_only`で、本番の発行主体/信頼証明は未確定。
+
+失敗・復旧: owner、契約、Package、manifest、権限版の不一致、失効/期限切れ/削除、取消、既存claimは同じSQL更新を失敗させる。authority ID/revisionが同じでも、差し替えた契約を保存済みjobへ借用させない。旧WorkJobの読取り/取消を維持し、参照のないjobへのfixture claimを拒否する。照合不能を新しいjobや再送で解消せず、元のjobを読む。
+
+承認・合格条件・未決: SQL一致は発行者の正当性、本人認証、service scope/session、Agent/Package review、Connectorの一回承認、価格/予算、実Tool成功を証明しない。元32試験で見逃した契約借用を再現し、修正後35fixture（型/9項目・DB再open・取消/再送・旧job）を確認する。実concurrent D1、認証UI/Connector/Provider/課金は未受入。正当な発行/更新/失効主体とoffer→Package pinの証明、現在の信頼revisionとの原子的接続を別設計・独立検収で決めるまで本番gateを開かない。[証拠](evidence/development-execution/smith-mcp-package-authority-contract.json)。
+
 有限範囲は本人設定済みのloopback local-previewと合成Tool。実account/eSIMの権限・有料Toolの見積/予約/usage・外部Providerと実機は未受入。別owner・期限切れ・旧版・schema変更・失効・取消競合・不明応答を拒否または未確認とする。詳細は[共通契約](service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)。
 
 本人の2026-10-15指示により、Skyはcloud Agentと導入したlocal LLMの双方を選ぶ入口とする。modelの推論先とAgent runnerを区別し、端末内/cloud/明示した工程ごとの組合せ、必要な導入・接続・データ送信・費用・準備状態を示す。Zemaは選んだ経路の仕事/成果/費用を保持し、Brokerは権限/予算/承認を強制する。使えない時の自動fallbackは行わず選び直す。[詳細契約・現在地・未実行SC01〜05](llm-evaluation-architecture.md#skyでmodelとagent実行先を選ぶ)に従い、6 adapterの定義と本番接続を区別する。

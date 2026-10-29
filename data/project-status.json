@@ -11919,5 +11919,38 @@
       "scope": "prior mii/fixture Git acceptance only, not inventory acceptance"
     },
     "next": "Save reviewed minimal evidence separately in Git; exacthead and normalmerge sameSHA allCI; keep result UNKNOWN and no additional device action."
+  },
+  "smithMcpPackageAuthorityContract": {
+    "baseMain": "cb77654dd27f130127eb111d1cc0a16a7369c456",
+    "unitRefs": [
+      "SMITH-02",
+      "SKY07",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK/O5",
+    "status": "fixture_source_independent_pass_full_verify_pass_fixed_metadata_git_pending",
+    "evidence": "docs/evidence/development-execution/smith-mcp-package-authority-contract.json",
+    "originalFocusedTests": "32pass; contract borrow negative thenfailed1vs0",
+    "repairedFocusedTests": "35pass0fail0skip",
+    "productionIssuerRoot": "UNBOUND",
+    "runtimeGateChanged": false,
+    "productionMigration": false,
+    "productionConsumer": false,
+    "normalAccountEsimAuthorityAccepted": false,
+    "wholeSmithAccepted": false,
+    "next": "Independent fixed11 metadata comparison, pinned scanner, Git/head allCI, normalmainmerge/sameSHA allCI. Fixture consistency only; productionroot unbound and all normalaccount/eSIM/provider holds unchanged.",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3377,
+        "pass": 3373,
+        "fail": 0,
+        "skip": 4
+      },
+      "logSha256": "ab826df64f0e58c67bd5a88c9e46d06f5981b35d971aa135735fa3f896ca70e2",
+      "remainingStages": "build/API/mission/work/bot completed",
+      "scope": "host fixtures only; no production authority, new model/provider/device/fee action"
+    }
   }
 }
