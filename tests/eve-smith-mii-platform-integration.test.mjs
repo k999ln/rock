@@ -156,10 +156,25 @@ void test('two owner-defined roles use distinct SDK Tool schemas through authent
     const ref = { jobId, ownerScope: scope, revision: job.revision, sceneRevision: 1, agentId, agentRevision: agent.revision };
     const readback = await adapter.readExisting(ref);
     assert.equal(readback.agentBinding, 'verified'); assert.equal(readback.job.toolObservations[0].text, result);
+    const originalResultHash = createHash('sha256').update(result, 'utf8').digest('hex');
     adapter.disconnect(); adapter.observe({ bootId: 'synthetic-mii', placeEpoch: 2, sequence: 2, sceneRevision: 1, observedAt: 1000, expiresAt: 2000, attached: true, tracking: 'tracked' });
-    assert.equal((await adapter.readExisting(ref)).job.id, jobId); adapter.close();
+    const reconnected = await adapter.readExisting(ref);
+    assert.equal(reconnected.job.id, jobId);
+    assert.equal(createHash('sha256').update(reconnected.job.toolObservations[0].text, 'utf8').digest('hex'), originalResultHash);
+    adapter.close();
     const exported = await buildSkyOwnerExport({ job, agents: [], cloud: [], budget: null, reservations: [] });
     assert.ok(exported.manifest.files.some(file => file.name === 'tool-observations.json'));
+    const start = exported.html.indexOf('<pre data-export-file="tool-observations.json">');
+    assert.ok(start >= 0);
+    const rest = exported.html.slice(start + '<pre data-export-file="tool-observations.json">'.length);
+    const raw = rest.slice(0, rest.indexOf('</pre>')).replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&amp;', '&');
+    const exportedObservation = JSON.parse(raw)[0];
+    const manifestEntry = exported.manifest.files.find(file => file.name === 'tool-observations.json');
+    assert.equal(exportedObservation.text, result);
+    assert.equal(createHash('sha256').update(exportedObservation.text, 'utf8').digest('hex'), originalResultHash);
+    assert.equal(createHash('sha256').update(raw, 'utf8').digest('hex'), manifestEntry.sha256);
+    assert.equal(Buffer.byteLength(raw, 'utf8'), manifestEntry.byteLength);
+
     assert.ok(exported.html.includes(result.replaceAll('"', '&quot;')));
     const denied = await call(jobs, '/api/work-jobs', 'GET', undefined, 'another-owner');
     assert.equal((await denied.json()).jobs.some(row => row.id === jobId), false);

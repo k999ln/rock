@@ -31,7 +31,7 @@ void test('creates exactly once, with owner precondition and saved role only', a
 });
 void test('explicit 4xx is never changed into a successful reconciliation', async () => {
   let calls = 0; const store = storage();
-  const result = await createEveAgent(async () => { calls++; return json({ error: 'changed' }, 409); }, request, pending, store);
+  const result = await createEveAgent(async () => { calls++; return json({ error: 'changed' }, 400); }, request, pending, store);
   assert.equal(readEveAgentPending(store, scopeA), null);
   assert.deepEqual(result, { state: 'rejected', error: 'changed' }); assert.equal(calls, 1);
 });
@@ -114,4 +114,41 @@ void test('agent API binds authenticated owner and retains previous client/CAS b
   assert.equal(response.status, 200);
   assert.equal((await agentStore.skyAgentLibraryStore(db, 'owner-a').get(otherId)).instructions, other.instructions);
   assert.equal((await agentStore.skyAgentLibraryStore(db, 'owner-a').get(id)).name, 'updated');
+});
+
+void test('HTTP 408 retains uncertainty until exact same-owner readback', async () => {
+  const store = storage(); let putCalls = 0, getCalls = 0;
+  const result = await createEveAgent(async (_url, init) => {
+    if (init?.method === 'PUT') { putCalls++; return json({ error: 'timeout' }, 408); }
+    getCalls++; return json({}, 404);
+  }, request, pending, store);
+  assert.equal(result.state, 'unknown');
+  assert.equal(putCalls, 1); assert.equal(getCalls, 1);
+  assert.deepEqual(readEveAgentPending(store, scopeA), pending);
+  const different = await prepareEveAgentPending({ ...request, id: '22222222-2222-4222-8222-222222222222' });
+  await assert.rejects(createEveAgent(async () => { throw Error('must not send'); }, { ...request, id: different.id }, different, store));
+});
+
+void test('HTTP 408 accepts only same-owner same-id confirmed readback', async () => {
+  for (const [owner, expected] of [[scopeA, 'saved'], [scopeB, 'unknown']]) {
+    const store = storage(); let puts = 0, reads = 0;
+    const result = await createEveAgent(async (_url, init) => {
+      if (init?.method === 'PUT') { puts++; return json({ error: 'timeout' }, 408); }
+      reads++; return json({ ownerScope: owner, agent: saved });
+    }, request, pending, store);
+    assert.equal(result.state, expected); assert.equal(puts, 1); assert.equal(reads, 1);
+    assert.equal(readEveAgentPending(store, scopeA) === null, expected === 'saved');
+  }
+});
+
+void test('HTTP 409 after transport replay reconciles only the original owner and exact saved role', async () => {
+  for (const [owner, agent, status, expected] of [[scopeA, saved, 200, 'saved'], [scopeB, saved, 200, 'unknown'], [scopeA, { ...saved, instructions: 'different' }, 200, 'unknown'], [scopeA, null, 404, 'unknown']]) {
+    const store = storage(); let puts = 0, reads = 0;
+    const result = await createEveAgent(async (_url, init) => {
+      if (init?.method === 'PUT') { puts++; return json({ error: 'conflict' }, 409); }
+      reads++; return json({ ownerScope: owner, agent }, status);
+    }, request, pending, store);
+    assert.equal(result.state, expected); assert.equal(puts, 1); assert.equal(reads, 1);
+    assert.equal(readEveAgentPending(store, scopeA) === null, expected === 'saved');
+  }
 });

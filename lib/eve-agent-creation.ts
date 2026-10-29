@@ -75,7 +75,7 @@ export async function reconcileEveAgentCreation(fetcher: Fetcher, pending: EveAg
   } catch { /* Failed read or storage cleanup does not prove resolution. */ }
   return unknownResult();
 }
-/** Persist the owner-bound digest before sending; explicit 4xx remains rejected. */
+/** Persist the owner-bound digest before sending; 408 and 409 require readback; other explicit 4xx is rejected. */
 export async function createEveAgent(fetcher: Fetcher, request: EveAgentCreation, pending: EveAgentPending, storage: PendingStorage): Promise<EveAgentCreationResult> {
   const settings = parseSkyAgentSettings(request.settings);
   if (JSON.stringify(await prepareEveAgentPending(request)) !== JSON.stringify(pending)) throw new Error('担当の保存内容を確認してください。');
@@ -86,7 +86,10 @@ export async function createEveAgent(fetcher: Fetcher, request: EveAgentCreation
       'Content-Type': 'application/json', 'X-Rock-Owner-Scope': request.ownerScope,
     }, body: JSON.stringify({ id: request.id, revision: 0, settings, create: true }) });
   } catch { return reconcileEveAgentCreation(fetcher, pending, storage); }
-  if (response.status >= 500) return reconcileEveAgentCreation(fetcher, pending, storage);
+  // A timeout or duplicate conflict can follow a write committed upstream,
+  // including a transport replay. Resolve by the original owner and ID.
+  if (response.status === 408 || response.status === 409 || response.status >= 500)
+    return reconcileEveAgentCreation(fetcher, pending, storage);
   if (!response.ok) {
     let error = '保存できませんでした。入力を確認してください。';
     try { const data = await response.json() as { error?: unknown }; if (typeof data.error === 'string') error = data.error; } catch { /* retain rejection */ }
