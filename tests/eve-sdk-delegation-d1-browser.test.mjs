@@ -139,7 +139,11 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
       try {
         const url = new URL(req.url, `http://${req.headers.host}`); requests.push({ path: url.pathname, method: req.method });
         if (url.pathname === '/bundle.js') { res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' }); return res.end(bundle); }
-        if (!url.pathname.startsWith('/api/')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(`<div id="root"></div><script>window.__fixtureErrors=[];window.__fixtureClockOffset=0;const fixtureNow=Date.now.bind(Date);Date.now=()=>fixtureNow()+window.__fixtureClockOffset;window.onerror=(...args)=>window.__fixtureErrors.push(args.slice(0,4));window.__fixtureServers=${JSON.stringify([resources.server])};window.__fixtureConnectorUrl=${JSON.stringify(resources.connectorUrl)};window.__fixtureConnectorToken=${JSON.stringify(resources.connectorToken)}</script><script src="/bundle.js"></script>`); }
+        if (url.pathname === '/fixture-context') {
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+          return res.end(JSON.stringify({ servers:[resources.server], connectorUrl:resources.connectorUrl, connectorToken:resources.connectorToken }));
+        }
+        if (!url.pathname.startsWith('/api/')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end('<div id="root"></div><script>window.__fixtureErrors=[];window.__fixtureClockOffset=0;const fixtureNow=Date.now.bind(Date);Date.now=()=>fixtureNow()+window.__fixtureClockOffset;window.onerror=(...args)=>window.__fixtureErrors.push(args.slice(0,4));fetch("/fixture-context",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("fixture context unavailable");return r.json()}).then(c=>{window.__fixtureServers=c.servers;window.__fixtureConnectorUrl=c.connectorUrl;window.__fixtureConnectorToken=c.connectorToken;const s=document.createElement("script");s.src="/bundle.js";document.body.appendChild(s)}).catch(e=>window.__fixtureErrors.push([String(e)]))</script>'); }
         if (url.pathname === '/api/sky/tool-registry' && pausedRegistry) {
           const pause = pausedRegistry; pause.hit = true; await pause.promise;
         }
@@ -257,6 +261,12 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     };
     const evaluate = async expression => { const result = await devtools.call('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); return result.result.value; };
+    const callWithValues = async (functionDeclaration, ...values) => {
+      const target = await devtools.call('Runtime.evaluate', { expression:'window' });
+      const result = await devtools.call('Runtime.callFunctionOn', { objectId:target.result.objectId,
+        functionDeclaration, arguments:values.map(value=>({value})), returnByValue:true, awaitPromise:true });
+      if(result.exceptionDetails)throw new Error(result.exceptionDetails.text);return result.result.value;
+    };
     async function wait(expression, label) { for (let i = 0; i < 120; i++) { if (await evaluate(expression)) return; const errors = await evaluate('window.__fixtureErrors'); if (errors?.length) throw new Error(`browser error: ${JSON.stringify(errors)} lines ${JSON.stringify(bundleLines.slice(errors[0][2] - 4, errors[0][2] + 1))}`); await new Promise(r => setTimeout(r, 100)); } throw new Error(`browser timeout: ${label}; ${JSON.stringify(await evaluate('({href:location.href, ready:document.readyState, text:document.body?.innerText, errors:window.__fixtureErrors})'))}`); }
     const js = value => JSON.stringify(value);
     const click = async label => { const x = js(label); await wait(`!![...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)`, label);
@@ -273,7 +283,11 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     };
     const setArgs = async args => {
       await wait(`!!document.querySelector('[aria-label="MCP toolのJSON引数"]')`, 'creation arguments');
-      await evaluate(`(()=>{const e=document.querySelector('[aria-label="MCP toolのJSON引数"]');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,${JSON.stringify(JSON.stringify(args))});e.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+      const target = await devtools.call('Runtime.evaluate', { expression:'window' });
+      const result = await devtools.call('Runtime.callFunctionOn', { objectId:target.result.objectId,
+        functionDeclaration:'function(value){const e=document.querySelector(\'[aria-label="MCP toolのJSON引数"]\');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,\'value\').set.call(e,value);e.dispatchEvent(new Event(\'input\',{bubbles:true}));}',
+        arguments:[{value:JSON.stringify(args)}],returnByValue:true });
+      if(result.exceptionDetails)throw new Error(result.exceptionDetails.text);
     };
     const confirmDraft = async (task, args) => {
       await input('互換runtime/toolを選択','0'); await input('このruntimeへ渡す依頼',task);
@@ -349,7 +363,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     assert.equal(reloaded.agent.provider, 'openai'); assert.equal(reloaded.agent.model, 'fixture-model-v2');
     assert.deepEqual(reloaded.agent.requirements, requirements); assert.deepEqual(reloaded.agent.attachment, attachment);
     const resume = new URL(workbenchUrl); resume.searchParams.set('agentRevision', String(after.agent.revision));
-    await evaluate(`history.pushState({}, '', ${JSON.stringify(resume.pathname + resume.search)}); dispatchEvent(new Event('fixture-navigation'))`);
+    await callWithValues("function(url){history.pushState({},'',url);dispatchEvent(new Event('fixture-navigation'));}",resume.pathname+resume.search);
     await wait('document.body.innerText.includes("仕事の名前")', 'same workbench after settings edit');
     await input('仕事の名前', 'fixture仕事');
     assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
@@ -406,8 +420,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
       assert.ok(resources.server.passport.observedAt <= Date.now() && resources.server.passport.observationExpiresAt > Date.now());
       assert.ok(resources.server.passport.observationExpiresAt - resources.server.passport.observedAt <= 30_000);
       assert.equal(creationRequests.length, requestsBefore);
-      await evaluate(`window.__fixtureServers=${JSON.stringify([resources.server])}`);
-      await evaluate(`history.pushState({}, '', ${JSON.stringify(target.pathname + target.search)}); dispatchEvent(new Event('fixture-navigation'))`);
+      await callWithValues("function(servers,url){window.__fixtureServers=servers;history.pushState({},'',url);dispatchEvent(new Event('fixture-navigation'));}",[resources.server],target.pathname+target.search);
       if (target.searchParams.has('workJob')) {
         await wait('document.body.innerText.includes("mii連携のソフト試用")', 'same saved job after explicit observation');
       } else {
