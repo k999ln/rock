@@ -1,4 +1,10 @@
 {
+  "smithToolObservationFreshness": {
+    "owner": "ROCK",
+    "status": "draft_independently_reproduced_browser_pending",
+    "evidence": "docs/evidence/development-execution/smith-tool-observation-freshness.json",
+    "next": "Confirm final merged-main exact-head browser and CI, with independent review."
+  },
   "pixelSavedAiLookup": {
     "owner": "ROCK",
     "status": "physical_lookup_unconfirmed",
@@ -7,10 +13,12 @@
   },
   "eveAgentAttachmentPreservation": {
     "owner": "ROCK",
-    "status": "draft_prior_browser_ci_pass_final_head_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/eve-agent-attachment-preservation.json",
-    "next": "Confirm final merged-main candidate exact-head CI and independent review before merge.",
-    "pullRequest": 287
+    "next": "Real existing data and physical/production authority remain separate.",
+    "pullRequest": 287,
+    "mergeSha": "9a7c2a9c8a72b97a5197cf8a5eb1191a43838ba2",
+    "mainCiEvidence": "docs/evidence/development-execution/eve-agent-attachment-main-ci.json"
   },
   "miiWorkerRemoteCancel": {
     "owner": "ROCK",

@@ -1,0 +1,26 @@
+{
+  "schema": "rockstaros.smith-tool-observation-freshness/1",
+  "state": "draft_independently_reproduced_browser_pending",
+  "base": "9a7c2a9c8a72b97a5197cf8a5eb1191a43838ba2",
+  "sourceSha256": {
+    "components/sky-agent-capability-review.tsx": "70a37298d09aefb364f32f4afea67cfde3cadb9d342d95cfa226643d1075e068",
+    "lib/mcp-hub.ts": "e1875285b67dc9ebc3f5623e8cc3e672614afc23a475d1fb2945e82039ace77f",
+    "lib/sky-agent-requirements.ts": "7aec7434be2fd0c941b5a31a858c5b3a539fe76a11a0122f9cecb7ce524e294d",
+    "lib/sky-package-runtime.ts": "6ea62772a136052b37872cd48736eac768bbe4d88f92d4c2be7f975f8cf590a9",
+    "toolkits/sky-mcp-connector/server.mjs": "601ce971c138367520d6cb429163a4bf0a1349c26aff5f59c0d72e79ed8bbba5",
+    "public/toolkits/sky-mcp-connector.zip": "cac5aaa02b585bbb53ed002680f6551efb23263af11785a62c56cf2a4aa52849",
+    "tests/agent-tool-job-runner-ui.test.mjs": "8639fbfebfc71163010572116df2c88d8861fdec8d79fc80c3de91fdb72adc82",
+    "tests/eve-smith-mii-browser.test.mjs": "8c7595fb19c7299037d6271e338a852e08e8a61a7e7581948dab18ffb27e8816",
+    "tests/mcp-spider-guard.test.mjs": "d450b65e5a57cc2d2ea81acb88684b94124c1491d090143c6ac17b5954807c55",
+    "tests/sky-agent-capability-contract.test.mjs": "0dd830ab593af97564acc89df27185d3145f159c3d174277661a260622b05e69",
+    "tests/sky-agent-capability-review-ui.test.mjs": "a4f8f53a931a35e971142dbdc26c694a28a607fc55890ff0430346d33c767b5d",
+    "tests/sky-package-runtime.test.mjs": "533baaa869d7d5ffae17e6105e07add4a93326f4f7dbf22c82b1250ed48ed2eb",
+    "tests/mcp-tool-observation-freshness.test.mjs": "eba22829dcff9622fd2cd69383c0e001818d3856afa1a25bb41c4eabb2f07042"
+  },
+  "observation": "Bounded re-observation of connected synthetic Tool declarations; 30 second wall and monotonic lifetime, observation generation, explicit refresh and fail-closed missing/expired/rollback; unchanged jobs remain readable.",
+  "independentReview": "Two independent reviewers found UI and Connector P2 cases; revised source re-review found no P1/P2. Independent tests: synthetic localhost Connector/SDK 44/44 and freshness 15/15, UI/runtime 77/77; logs SHA256 9ac535afe42ffe8a9f30faea14b5d34eac0786dd71fe280713d915f90f5ec9e9, f312f7565a7b9163ff76c89f7cb73f8068df357efba34699d9d8bc6da2562097 and 456355034c73b6d4253718c501652b3418170ab5e14cdfd5eda92f52dba810dc.",
+  "initialFailure": "Local sandbox denied synthetic loopback listener; rerun with permitted loopback succeeded.",
+  "distribution": "Connector ZIP regenerated locally; package-sky-mcp.py --check and independent source/ZIP hash agreement passed.",
+  "limits": "Real browser and exact-head CI pending. Snapshot is provider declaration, not truth, safety, authority or guaranteed behavior after observation; real provider/device/paid use unaccepted. A claimed attempt remains fenced if an observation expires after claim; no automatic resend. Clock history is process-scoped; all approvals may need reapproval after rollback.",
+  "next": "Review merged main and evidence, then run browser and full verify at exact head."
+}
