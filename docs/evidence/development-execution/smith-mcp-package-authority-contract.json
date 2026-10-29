@@ -1,0 +1,204 @@
+{
+  "schema": "rockstaros.smith-mcp-package-authority-contract/1",
+  "recordedAt": "2026-10-29T01:25:11.820910+00:00",
+  "baseMain": "cb77654dd27f130127eb111d1cc0a16a7369c456",
+  "baseSameShaCI": {
+    "checks": 6,
+    "allSuccess": true,
+    "verifiedAtTaskStart": true
+  },
+  "unit": "SMITH-02 / SKY07 / SKY21",
+  "owner": "ROCK / O5",
+  "status": "FIXTURE_SOURCE_INDEPENDENT_PASS_FULL_VERIFY_PASS_FINAL_METADATA_GIT_PENDING",
+  "productionDispatchReady": false,
+  "source3": [
+    {
+      "path": "lib/work-tool-package-authority-contract.ts",
+      "sha256": "fb9c9d29aef0087648dae6b5e141dfd3731785bce6a808da63e4374c3dd31f6f"
+    },
+    {
+      "path": "tests/fixtures/work-tool-package-authority.sql",
+      "sha256": "d14f040c8b8cb5b489c49a86497d93c22132a12ccd6afc547cb3c623300c21f6"
+    },
+    {
+      "path": "tests/work-tool-package-authority-contract.test.mjs",
+      "sha256": "4f5ee3d5f76d683a400c3a0a31ac594d85e7efd6d8ce570a20fca7e0a584ad3b"
+    }
+  ],
+  "protectedBaseEqual": [
+    {
+      "path": "app/api/work-jobs/tool-observations/authority.ts",
+      "sha256": "d69427a4517ca5560968eb5cbcb39ee87edaa646cc4b340befc212232a701ea9"
+    },
+    {
+      "path": "app/api/work-jobs/tool-observations/route.ts",
+      "sha256": "f51450120401dc051c5d43136d405293cda73f41d0d4aba95c306221948d5f87"
+    },
+    {
+      "path": "app/api/work-jobs/tool-observations/claim/route.ts",
+      "sha256": "fe87b6d6174b7a366031cf8807e1def76895c006e6b11b9b36bb80369fe60042"
+    },
+    {
+      "path": "lib/workflow.ts",
+      "sha256": "166a8d5acf3c2da06678f206f4472b120f4a8f7f49000fc16c99a1a90b8d82db"
+    },
+    {
+      "path": "tests/work-tool-observations-route.test.mjs",
+      "sha256": "20504a68e7fa38d0e9a309fe21ac8750bdcd2e280d0f41e1e7cd18b4409e684c"
+    }
+  ],
+  "contract": {
+    "purpose": "Persist exact owner/service-contract/Package/manifest/revision references and check current consistency in the same SQL UPDATE that performs the job claim CAS. This is not issuance or dispatch authority.",
+    "experience": "A future authorized operation keeps the exact saved permission revision. Removal/revocation/replacement blocks the old job; it does not borrow another same-owner Package grant or auto-upgrade to a new version.",
+    "responsibility": "ROCK implements strict reference parsing and fixture-only row coherence. The identity of a legitimate issuer/updater/revoker and their trust proof remains unresolved; no production writer is implemented.",
+    "input": "Exact nine-field input reference and fixture-only server job payload.toolPackageAuthorityReference with exactly9 correctly typed fields; SQL itself correlates schema, authority/revision, owner, issuer/claim/offer, Package/manifest and operation pins to the unaliased work_jobs row. This slot is not added to production WorkJob schema.",
+    "output": "Parameterized correlated EXISTS SQL+bindings or null. Valid inside unaliased UPDATE work_jobs; caller still owns authenticated owner/id/revision and active/pending CAS. Row coherence is not execution permission.",
+    "states": "Fixture active / revoked / superseded, explicit expiry, positive safe revision. Test-only writers use revision CAS and increment on change; old saved references cannot consume new revisions.",
+    "persistence": "Dedicated fixture SQL creates work_tool_package_authorities after existing migrations. File close/reopen preserves grant and job references. No production migration or automatic config import.",
+    "failure": "Owner/contract/Package/manifest/reference mismatch, missing/revoked/superseded/expired grant or parent contract, stale job/reference, and cancellation lose the same UPDATE with zero job revision change.",
+    "recovery": "Read back the original job/claim. A consumed or cancelled claim cannot replay. A legitimate new revision needs a separately stored new job reference; no silent upgrade or result-unknown resend.",
+    "approval": "Root status remains unbound_fixture_only; SQL schema accepts fixture_only roots and rejects invented verified/production roots. Authenticated owner, verified issuance root, current service scopes/session, Agent state, Connector exact one-use approval, Package review and pricing/budget checks remain separate required gates.",
+    "acceptance": "Central original32 pass; old saved job could borrow refreshed issuer/claim/offer under same authority ID/revision (actual1expected0). Repaired12new+23existing=35pass/0fail/0skip, including direct SQL correlation and legacy real WorkJob read/cancel. Corrected source3 separately independentlyPASS_SCOPED and full hostverify3377/3373pass0fail4skip completed. Fixed11 metadata/Git/head/main CI remain pending. Production gate remains byte-identical and closed.",
+    "undecidedResolution": "Integration owner must bind who may issue/update/revoke exact Package grants, what trusted evidence links an offer to Package/manifest pins, which authoritative revision store invalidates in-flight grants, and how this composes atomically with actual authenticated session/Agent/service/price/Broker state. No operator display configuration or signature is promoted by this contract."
+  },
+  "fixtureCoverage": {
+    "newTests": 12,
+    "existingRouteTests": 23,
+    "combinedTests": 35,
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0,
+    "command": "node --test --test-reporter=tap tests/work-tool-package-authority-contract.test.mjs tests/work-tool-observations-route.test.mjs",
+    "proofs": [
+      "Exact reference survives SQLite close/reopen; one claim CAS, no replay.",
+      "Separate valid same-owner Package grant cannot replace the saved job Package.",
+      "Owner/issuer/claim/offer/Package/manifest/authority revision mismatch denies.",
+      "Post-read authority deletion/revocation/supersession/expiry/owner/Package/manifest or parent contract revocation/expiry/owner/offer change denies same job CAS.",
+      "Competing grant writers serialize on expected revision; old job cannot use a new reference revision; fresh explicitly bound job can use fixture revision2.",
+      "Claim vs cancellation serialize on one job revision.",
+      "Malformed reference/range/field shapes reject; fixture schema refuses verified/production root states.",
+      "Actual baseline authority module still denies account and eSIM requests.",
+      "Refreshed valid same-owner contract cannot replace all9 saved reference fields even when authority ID/revision are reused.",
+      "SQL itself rejects mismatched row owner, every saved reference field, wrong types/extra keys without relying on caller prechecks.",
+      "Legacy actual WorkJob without fixture reference retains serialized bytes and normal workflow cancellation; fixture claim is denied."
+    ],
+    "limits": "Synthetic fixture rows are seeded directly. No signed issuer proof, real purchase, account session, actual MCP Tool, remote Provider, paid call or actual D1 issuance is claimed. Interleaving orders are simulated on SQLite; actual concurrent D1 issuer/dispatch and real effects remain unaccepted."
+  },
+  "checks": {
+    "typecheckExit": 0,
+    "lintExit": 0,
+    "spiderExit": 0,
+    "diffCheckExit": 0,
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3377,
+        "pass": 3373,
+        "fail": 0,
+        "skip": 4
+      },
+      "logSha256": "ab826df64f0e58c67bd5a88c9e46d06f5981b35d971aa135735fa3f896ca70e2",
+      "remainingStages": "build/API/mission/work/bot completed",
+      "scope": "host fixtures only; no production authority, new model/provider/device/fee action"
+    },
+    "sameShaCI": "Git not yet saved; head and normal merge SHA CI pending",
+    "priorAuthorChecksScope": "typecheck/lint/spider exits above describe original author source; final corrected source checked by fullverify separately"
+  },
+  "history": {
+    "scopeOnlyPrototype": "Implemented and tested, then rejected after per-Package negative reproduced unauthorized admission; source-only scope opening was removed.",
+    "rejectedPrototypeManifest": "/private/tmp/smith-mcp-account-scope-prototype-rejected-20261028/manifest.json",
+    "rejectedPrototypeManifestSha256": "85c100d205c23c7f22038368459309d6419fe5906ccc8a5ce39301544bfe94be",
+    "negative": "Scope-only prototype200 vs required503, testexit1; same negative on baseline gate exit0.",
+    "initialContractFixtureFailure": "INSERT placeholder count15 vs14 caused6 fixture setup failures; corrected, not a product defect.",
+    "initialContractLintFailure": "Control-character regex rejected by lint; replaced with explicit character-code validation.",
+    "earlierInvestigationPacket": "/private/tmp/smith-mcp-account-authority-packet-20261028.json",
+    "earlierInvestigationPacketSha256": "0e7b66aea8573abfc5cd3df4481f0e464ead22ca9f9165a49652f1e12b322e09",
+    "centralIndependentFinding": "Original32 reproducedPASS but saved job stored no issuer/claim/offer. Updated valid contract under same authorityId/revision plus refreshed caller ref admitted old job1expected0. SQL now binds every typed stored field in same UPDATE; original negative retained outsideGit.",
+    "centralCorrectionFailures": [
+      "Negative fixture first hit duplicateclaim-code uniqueconstraint; corrected before real1vs0 counterexample.",
+      "First central SQLmap edit had an invalid literal newline in join and failed parsing; fixed before passing35. No successful run claimed for that edit."
+    ]
+  },
+  "evidence": {
+    "focused32": {
+      "path": "/private/tmp/smith-mcp-package-contract-tests-final.log",
+      "sha256": "607e8f78b9d2c18f7b8ce61c34eca03a42977e25ee501cd1512bfc6d95f5d0b3"
+    },
+    "typecheck": {
+      "path": "/private/tmp/smith-mcp-package-contract-typecheck-final.log",
+      "sha256": "a1fd51f31ba691d8dbb0c227467e01ef3d959fece13f2623e70db3c7e8ab0fa9"
+    },
+    "lint": {
+      "path": "/private/tmp/smith-mcp-package-contract-lint-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "spider": {
+      "path": "/private/tmp/smith-mcp-package-contract-spider.log",
+      "sha256": "3a4928271b55f3643d6a14298077608696fb4f9b1fce7724d5bf1915c835e091"
+    },
+    "scopePrototypePackageNegative": {
+      "path": "/private/tmp/smith-mcp-account-package-authority-counterexample.log",
+      "sha256": "fc5915f5155bb9cf7e59a559b6d020ff15ab72ed4cb0b4d5e7f9c34bd573ac0b"
+    },
+    "basePackageNegative": {
+      "path": "/private/tmp/smith-mcp-account-package-baseline-closed.log",
+      "sha256": "5cddfe7f1d411320390b55138d42bab10fc1927773eeee2894b26148a77a15b3"
+    },
+    "base73Regression": {
+      "path": "/private/tmp/smith-mcp-account-authority-fixtures-unrestricted-20261028.log",
+      "sha256": "4f6fc6b7c12ec0d950f1890279bf06ee170c3cf4c38d22916d8133c55d5a0ebb"
+    }
+  },
+  "centralHandoff": {
+    "exactAdoptionScope": [
+      "lib/work-tool-package-authority-contract.ts",
+      "tests/fixtures/work-tool-package-authority.sql",
+      "tests/work-tool-package-authority-contract.test.mjs",
+      "docs/evidence/development-execution/smith-mcp-package-authority-contract.json"
+    ],
+    "runtimeGateChanges": 0,
+    "productionMigration": false,
+    "issuerOrRevocationApi": false,
+    "sharedStatusDesignREADMEChanges": false,
+    "proposal": "Fixture-only correlated contract, not account/eSIM dispatch; retain issuerroot UNBOUND and all production holds.",
+    "next": "Separate independent review of parser/schema/fixture CAS; central full verify/Git save/sameSHA CI; only a later root-approved contract can add production issuance and runtime integration."
+  },
+  "holds": {
+    "bulk616": "HOLD",
+    "publication": false,
+    "deployment": false,
+    "realProvider": false,
+    "realFunds": false,
+    "deviceOperation": false,
+    "modelInference": false,
+    "modelDownload": false,
+    "secretStorage": false
+  },
+  "centralReview": {
+    "sourceReviewPacket": "central-source-review-request.json outsideGit",
+    "original32LogSha256": "a40b6d243e78df04f59f6b3528cd5c52eec543ea02b9baf8f8e2e4e5404307a4",
+    "counterexampleLogSha256": "7f0681388a86c6d37979c6aa623e2e108c11d373ea475d368120046b03a201b0",
+    "repaired35LogSha256": "889b26a14d64f103365ce0cf2842fd754238303dd4f863a79de4c97d365fbc41",
+    "correctedSourceIndependentReview": {
+      "decision": "PASS_SCOPED",
+      "reviewSha256": "a4a72abd40541333e51a4b90ddad2199382f62e40786afdbeecc55fb19e6faa2",
+      "scope": "corrected3source/fixturecontract only; production root/auth/runtime remain unbound/unimplemented"
+    },
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootNode": {
+        "tests": 3377,
+        "pass": 3373,
+        "fail": 0,
+        "skip": 4
+      },
+      "logSha256": "ab826df64f0e58c67bd5a88c9e46d06f5981b35d971aa135735fa3f896ca70e2",
+      "remainingStages": "build/API/mission/work/bot completed",
+      "scope": "host fixtures only; no production authority, new model/provider/device/fee action"
+    },
+    "productionConsumer": "none; imports only in fixture tests",
+    "finalMetadataReview": "pending fixed11"
+  }
+}

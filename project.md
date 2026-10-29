@@ -1,3 +1,7 @@
+### Smith/MCPのPackage権限参照fixture（2026-10-28 / SMITH-02・SKY07・SKY21・ROCK/O5）
+
+基点main cb77654dから作者4ファイルをhash一致で採用、元32試験は中央独立でも成功。しかし同じauthority ID/revisionへ契約を差し替えた参照を古いjobが借用する反例1vs0を確認した。9項目の型/過不足とrow owner・操作PackageをSQL自身で同一job CASへ相関させ、修正後35/35と旧WorkJobの読取り/取消を確認。[契約](docs/sky-tools-complete-design.md#work-tool-package-authority-fixture)・[証拠](docs/evidence/development-execution/smith-mcp-package-authority-contract.json)。fixture-onlyで本番rootはUNBOUND、production migration/consumer/gate変更なし。正当な発行/更新/失効主体と実認証・Agent/承認/価格/Brokerの原子的接続は未確定。修正source3は別担当独立PASS_SCOPED、全verifyは3377件中3373pass/0fail/4skip、build/API/mission/work/bot完了。次は固定11metadataの独立照合とpinnedscanner、Git/PR/head/main同SHA全CI。scope-only開放の不採用、中央setup/syntax初回失敗も履歴を保持する。実eSIM/通常account許可・Provider・モデル・課金・端末・公開の新規受入なし。
+
 ### Pixel保存済AI照合の未確認記録（2026-10-28 / Android・ROCK）
 
 本人の追加許可を受けた担当者が既存の「保存済みAIを照合する」を1回操作し、画面は「照合・準備の結果は未確認」と報告した。[最小証拠](docs/evidence/development-execution/pixel-inventory-unconfirmed.json)は要約の独立読取り評価に限る。モデル/仕事/接続内容・秘密情報・画面/raw状態を保存せず、通信有無とデータ全体の前後は未照合、取得・準備・モデル/仕事/接続・実機/OS受入は未成立。Git担当の追加端末操作は0。基点main8566573dはmii PR255とfixture PR256を保持し、各同SHA全CI成功を別証拠で確認済み。今回は記録のみの別PRとし、新しいGit/head/main同SHA全CIはこれから確認する。

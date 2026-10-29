@@ -42,6 +42,10 @@ miiの合成入力は「同じ仕事を確認」→文章入力→「同じ仕�
 
 追跡喪失、取り外し、再起動、scene変更、期限切れ、時刻逆行、入力/実行先変更は旧入力を失効する。観測開始時刻より後でも、同じ観測内の直前照合時刻から巻き戻れば失効する。再接続や時計の復帰で復活させず、新しい読戻しと明示入力を必要とする。begin送信中の失効は保存されたpendingを残してTool送信を拒否する。既にConnectorへ送った要求やclaim済み処理の取消・物理停止を保証せず、後着の応答は同じ仕事へ未検証で保存しEveとmiiから読む。応答不明・保存不明では自動再送しない。4表示条件（板・膜なし、少ない表示部、上下を含む全範囲、まぶしくしない）と単体利用は維持し、このソフト試用を光学・センサー・実機の成立証拠にしない。
 
+#### Package参照のfixture整合
+
+[Package権限fixtureの詳細](../sky-tools-complete-design.md#work-tool-package-authority-fixture)は、保存した9項目の権限参照と操作Package pinsをSQL自身が同じjob CASへ相関させる。callerが読み直した別契約を同じauthority ID/revisionへ差し替えても旧jobには使わせない。これは整合だけの未信頼fixtureで、本番発行root/本人認証/一回承認/予算を提供しない。既存WorkJob schema・migration・本番dispatch gateは変更せず、古いjobの読取り/取消を維持する。
+
 ## 3. IDと入力の契約
 
 一回の操作を、認証principal由来のowner、project/job ID、表示revision、operation/idempotency ID、Tool/Agentと版、入力digest、実行先、同意scope、見積/予算、期限へ結ぶ。外部APIではそのschemaで定義されたfieldだけを送り、この概念一覧をそのまま新API payloadにはしない。

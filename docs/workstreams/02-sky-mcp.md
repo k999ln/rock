@@ -242,3 +242,7 @@ SKY07/WEB01: 無料Cloudの待機自動続行は[LLM設計](../llm-evaluation-ar
 
 
 SKY07/SKY21・OS11連携: Pixelでの公開GGUFと宣言型local-text Agentの動的追加は[共通admission契約](../llm-evaluation-architecture.md#pixelでのllmagentの動的追加)と[実機証拠](../evidence/pixel-open-addons.json)。ROCKはowner/unlock/同意/固定版/hash/資源/失効、配布元は定義と重みを担当。作者署名と本人pinを区別し、発見だけで実行せず、新モデルは試験後の作業別auto候補化。Web Cloud/MCP/任意Agent frameworkの受入へ転用しない。
+
+## SmithのPackage権限参照fixture（SMITH-02・SKY07・SKY21 / ROCK・O5）
+
+[詳細契約](../sky-tools-complete-design.md#work-tool-package-authority-fixture)と[証拠](../evidence/development-execution/smith-mcp-package-authority-contract.json)を入口にする。元32試験では契約借用を見逃したため、9項目の保存参照・owner・PackageをSQL自身でjob CASへ相関させ、修正後35fixtureと旧WorkJob互換を検査する。実行許可ではなく、本番root/発行者/現行sessionと原子的なBroker接続は未確定。本番migrationやgate変更はない。検証: `node --experimental-strip-types --test tests/work-tool-package-authority-contract.test.mjs tests/work-tool-observations-route.test.mjs`、`npm run design:check`、`npm run verify`と同一head/merge SHA CI。

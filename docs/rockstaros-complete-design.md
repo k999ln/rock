@@ -495,6 +495,8 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 
 miiの合成文章入力を既存Tool確認へ渡すconsumerを追加。30秒観測と入力世代を再照合し、期限・追跡喪失・入力修正で失効する。送信前拒否とclaim後の停止未確認を分け、保存した未検証応答をEveの仕事にも表示する。[検証証拠](evidence/development-execution/mii-synthetic-input.json)。
 
+Smith/MCPの[Package権限参照fixture](sky-tools-complete-design.md#work-tool-package-authority-fixture)は9項目の保存参照を同一job CASへ相関させるhost契約だけを検査する。本番WorkJob/発行root/通常account・eSIM実行authorityには接続せず、既存gateを開かない。
+
 指定チャットの設計をRockstarOS本体の大元とする。以下のHome、Sky、Eve、利用者作成OS版を共通runtime上に置く。旧Buildroot/QEMU等の成果は適合した部分を再利用し、Pixel全OS受入とQEMU Developer Previewは別々に記録する。
 
 目的と体験: Homeを投稿そのものの画面とし、ニュース、モデル、Agent、Tool、任意Wallet/Market、共有OS版を同じ発見経路から扱う。情報投稿は出典・取得日時・提供元・権利状態、機能投稿は作者・版・互換・料金・権限を示す。投稿から詳細、追加、設定、Eve下書きへ進む。追加、購入、仕事実行、外部送信、課金は別の本人承認と状態遷移を持つ。
