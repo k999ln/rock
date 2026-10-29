@@ -1,4 +1,10 @@
 {
+  "miiRequiredCapabilities": {
+    "owner": "ROCK",
+    "status": "draft_targeted_pass_review_pending",
+    "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
+    "next": "Independent review, real browser integration, full verify and exact-head CI before merge."
+  },
   "miiShortLeaseBrowser": {
     "owner": "ROCK",
     "status": "draft_ci_failure_readiness_fix_unverified",

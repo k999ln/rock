@@ -1,7 +1,7 @@
 import { readBoundedStream } from './bounded-stream.ts';
 import { ownerScopeFor, readOwnerScope, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { applyWorkCommand, workId, type WorkJob } from './workflow.ts';
-import { negotiateCapabilityAdapters } from './rockstar-adapters.ts';
+import { negotiateCapabilityAdapters, parseAdapterDescriptor } from './rockstar-adapters.ts';
 
 /** A host observation, never a proof of hardware, owner identity or consent. */
 export type MiiObservation = {
@@ -30,6 +30,24 @@ export type MiiPlanCancelResult = {
   /** Cancelling the local plan does not prove remote or physical stop. */
   remoteStop: 'unconfirmed'; physicalStop: 'unconfirmed';
 };
+
+/** Explicit action requirements, never an authority or a hardware verdict. */
+export type MiiActionRequirements = { host: string[]; executor: string[]; output: string[] };
+export function parseMiiActionRequirements(value: unknown): MiiActionRequirements {
+  if (value === undefined) return { host: [], executor: [], output: [] };
+  if (!value || typeof value !== 'object' || Array.isArray(value) ||
+      Object.keys(value).some(key => !['host','executor','output'].includes(key)))
+    throw new Error('MII_CAPABILITY_REQUIREMENTS_INVALID');
+  const input = value as Record<string, unknown>;
+  const fields = (key: string): string[] => {
+    const items = input[key] === undefined ? [] : input[key];
+    if (!Array.isArray(items) || items.length > 15 || items.some(item => typeof item !== 'string' ||
+        !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(item)) || new Set(items).size !== items.length)
+      throw new Error('MII_CAPABILITY_REQUIREMENTS_INVALID');
+    return [...items];
+  };
+  return { host: fields('host'), executor: fields('executor'), output: fields('output') };
+}
 
 /** Host-owned journal: claim must atomically create and durably sync before
  * resolving; settle must compare the entire record and durably remove it.
@@ -98,6 +116,7 @@ export function createMiiWorkAdapter(options: {
   const fetchImpl = options.fetchImpl ?? fetch, now = options.now ?? Date.now;
   let latest: MiiObservation | null = null, lastSequence = -1, generation = 0, readSerial = 0, budgetSerial = 0, closed = false;
   let lastBoot: string | null = null, lastEpoch = -1, detachedEpoch = -1, observationClock = -1;
+  let descriptorSnapshot: { host: unknown; executor: unknown; output: unknown } | null = null;
   const seenBoots = new Set<string>();
   let readback: { generation: number; reference: MiiWorkReference; job: WorkJob;
     cancelReconciliation: MiiWorkReadback['cancelReconciliation'] } | null = null;
@@ -106,16 +125,18 @@ export function createMiiWorkAdapter(options: {
   let busy = false;
   const usedCommands = new Set<string>();
   const fail = (code: string): never => { throw new Error(code); };
-  const invalidate = () => { generation++; readSerial++; latest = null; readback = null; observationClock = -1; };
+  const invalidate = () => { generation++; readSerial++; latest = null; readback = null; descriptorSnapshot = null; observationClock = -1; };
   function observe(value: MiiObservation) {
     // Every new observation invalidates in-flight actions and prior readback.
     invalidate();
     let descriptorExpiry = Number.MAX_SAFE_INTEGER;
+    let snapshot: typeof descriptorSnapshot = null;
     if (options.descriptors) {
-      const declared = options.descriptors();
+      const declared = structuredClone(options.descriptors());
       const match = negotiateCapabilityAdapters(declared.host, declared.executor, declared.output,
         { host: ['work.owner-scoped-read'], executor: ['work.read'], output: ['output.text'] }, now());
       descriptorExpiry = match.expiresAt;
+      snapshot = declared;
     }
     if (closed || !object(value) || !id(value.bootId) || !integer(value.placeEpoch) ||
         !integer(value.sequence) || !integer(value.sceneRevision) || !integer(value.observedAt) ||
@@ -133,6 +154,7 @@ export function createMiiWorkAdapter(options: {
     if (!value.attached) { detachedEpoch = value.placeEpoch; return; }
     if (value.tracking !== 'tracked') return;
     latest = { ...value, expiresAt: Math.min(value.expiresAt, descriptorExpiry) };
+    descriptorSnapshot = snapshot;
   }
   function current() {
     const time = now();
@@ -253,11 +275,36 @@ export function createMiiWorkAdapter(options: {
   /** A local freshness fence only, never a credential or Tool permission.
    * The existing runner must still recheck owner/job/agent/Package and claim.
    * Accepted job revisions do not renew the observation's finite lifetime. */
-  function createInputGuard(): () => boolean {
+  function createInputGuard(requirements?: unknown): () => boolean {
+    const requested = parseMiiActionRequirements(requirements);
     const g = current(), snapshot = readback;
     if (!snapshot || snapshot.generation !== g || snapshot.job.status !== 'active' ||
         !snapshot.reference.agentId || snapshot.cancelReconciliation !== 'clear' ||
         snapshot.job.toolAttempts?.length) return fail('MII_INPUT_UNAVAILABLE');
+    if (requested.host.length || requested.executor.length || requested.output.length) {
+      if (!descriptorSnapshot) return fail('MII_CAPABILITIES_UNCONFIRMED');
+      try {
+        let missing = false, unconfirmed = false;
+        for (const role of ['host','executor','output'] as const) {
+          const declaration = parseAdapterDescriptor(descriptorSnapshot[role], now());
+          for (const capability of requested[role]) {
+            if (declaration.capabilities[capability] === false) missing = true;
+            else if (declaration.capabilities[capability] !== true) unconfirmed = true;
+          }
+        }
+        if (missing) return fail('MII_CAPABILITY_MISSING');
+        if (unconfirmed) return fail('MII_CAPABILITIES_UNCONFIRMED');
+        negotiateCapabilityAdapters(descriptorSnapshot.host, descriptorSnapshot.executor, descriptorSnapshot.output, {
+          host: [...new Set(['work.owner-scoped-read', ...requested.host])],
+          executor: [...new Set(['work.read', ...requested.executor])],
+          output: [...new Set(['output.text', ...requested.output])],
+        }, now());
+      } catch (error) {
+        if (error instanceof Error && ['MII_CAPABILITY_MISSING','MII_CAPABILITIES_UNCONFIRMED'].includes(error.message)) throw error;
+        return fail('MII_CAPABILITIES_UNCONFIRMED');
+      }
+      check(g);
+    }
     return () => {
       try { check(g); return readback === snapshot && !busy && !uncertain.has(journalKey(snapshot.reference.ownerScope, snapshot.job.id)); }
       catch { return false; }
