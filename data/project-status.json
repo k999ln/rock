@@ -1,9 +1,9 @@
 {
   "miiShortLeaseBrowser": {
     "owner": "ROCK",
-    "status": "draft_linux_browser_detection_unverified",
+    "status": "draft_job_payload_assertion_unverified",
     "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
-    "next": "Confirm exact-head CI executes both browser cases using an existing browser; run local browser independently when resources permit, then review and merge.",
+    "next": "Confirm exact-head CI runs both browser cases and complete independent review; preserve physical and production limits.",
     "pullRequest": 281
   },
   "sdkDeclaredExample": {

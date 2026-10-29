@@ -395,6 +395,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       // Real component + real adapter receive a shorter host descriptor. The
       // saved job remains intact when its output lease expires.
       await evaluate('window.__fixtureMiiTtl=1000');
+      const payloadBeforeShort = sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload;
       const readsBeforeShort = requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length;
       await click('miiから同じ仕事を確認');
       for (let i=0; i<200 && requests.filter(r => r.path === '/api/work-jobs' && r.method === 'GET').length === readsBeforeShort; i++)
@@ -405,6 +406,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await evaluate('window.__fixtureClockOffset=1500;document.dispatchEvent(new Event("visibilitychange"))');
       await wait(`!document.querySelector('[aria-label="miiから見た同じ仕事"]')`, 'short descriptor expiry hides output');
       assert.equal(JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload).toolObservations[0].text, job.toolObservations[0].text);
+      assert.equal(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(job.id).payload, payloadBeforeShort);
       await evaluate('window.__fixtureClockOffset=0;delete window.__fixtureMiiTtl');
       await click('miiから同じ仕事を確認');
       await wait(`/"lines"\\s*:\\s*3/.test(document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent ?? '')`, 'reread after short lease');
