@@ -1,4 +1,5 @@
 import { readBoundedStream } from '@/lib/bounded-stream';
+import { ownerScopeFor } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
 import {
   a2aDelegationStore,
@@ -118,6 +119,8 @@ export async function GET(request: Request) {
     });
     const liveUsage = await Promise.all(delegations.map((delegation) => store.getLatestLiveUsageSnapshot(owner, delegation.id)));
     return json({
+      ownerScope: await ownerScopeFor(owner),
+      parentJobId,
       delegations: delegations.map((delegation, index) => {
         const snapshot = liveUsage[index];
         let liveUsageSnapshot: unknown = null;

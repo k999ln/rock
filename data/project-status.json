@@ -1,4 +1,11 @@
 {
+  "miiBudgetReadback": {
+    "owner": "ROCK",
+    "workstream": "Android / Device / Local AI",
+    "status": "independent_review_full_verify_pass_git_ci_pending",
+    "evidence": "docs/evidence/development-execution/mii-budget-readback.json",
+    "next": "Save fixed candidate, confirm head and merge SHA CI. MCP cost, physical mii and real account remain unaccepted."
+  },
   "pixelObserverJoinFixture": {
     "owner": "ROCK",
     "status": "PR261_main_integrated_same_sha_ci_pass",

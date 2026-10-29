@@ -74,11 +74,16 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       ['@/lib/fund-store', { database: () => db, requestUser: async () => owner }]]);
     for (const name of ['request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
       deps.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
+    for (const name of ['a2a-authorization', 'a2a-price-quote', 'a2a-usage-receipt', 'jennifer-execution-store', 'jennifer-amc-execution', 'a2a-agent-directory', 'sky-tool-package-store', 'sky-package-runtime-binding', 'sky-package-runtime-binding-store'])
+      deps.set(`@/lib/${name}`, {});
+    deps.set('@/lib/a2a-parent-controller', await import('../lib/a2a-parent-controller.ts'));
+    deps.set('@/lib/rockstar-device-link', { requestRockstarUser: async () => owner });
     const authority = loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/authority.ts', import.meta.url), deps);
     deps.set('@/app/api/work-jobs/tool-observations/authority', authority);
     const routes = {
       '/api/sky/agents': loadRouteFixture(new URL('../app/api/sky/agents/route.ts', import.meta.url), deps),
       '/api/work-jobs': loadRouteFixture(new URL('../app/api/work-jobs/route.ts', import.meta.url), deps),
+      '/api/sky/a2a-delegations': loadRouteFixture(new URL('../app/api/sky/a2a-delegations/route.ts', import.meta.url), deps),
       '/api/work-jobs/tool-observations': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/route.ts', import.meta.url), deps),
       '/api/work-jobs/tool-observations/claim': loadRouteFixture(new URL('../app/api/work-jobs/tool-observations/claim/route.ts', import.meta.url), deps),
     };
@@ -178,8 +183,17 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await input('互換runtime/toolを選択', '0');
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'mii input readback');
+    const firstJobId = sqlite.prepare('SELECT id FROM work_jobs WHERE user_id = ?').get(owner).id;
+    sqlite.prepare('INSERT INTO agent_delegation_budget_pools (owner_user_id,parent_job_id,currency,budget_limit_minor,reserved_minor,settled_minor,revision,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?)')
+      .run(owner, firstJobId, 'USD', 1000, 200, 300, 1, Date.now(), Date.now());
+    await click('委任予算を読み直す');
+    await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('取得時点の委任予算')`, 'same-job budget');
+    assert.match(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]').textContent`), /MCP Toolの料金や請求確定額ではありません/);
+
     await input('miiへの合成テキスト', 'one\ntwo'); await click('同じ仕事のTool確認へ渡す');
-    await click('実行内容を確認'); await click('追跡喪失を模擬'); await click('内容を承認して実行');
+    await click('実行内容を確認'); await click('追跡喪失を模擬');
+    assert.equal(await evaluate(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('取得時点の委任予算') ?? false`), false);
+    await click('内容を承認して実行');
     await wait('document.body.innerText.includes("同じ仕事と実行先を確認してください")', 'stale mii input rejected');
     assert.equal(connectorExecuteCalls, 0); assert.equal(requests.filter(r => r.path.endsWith('/tool-observations')).length, 0);
     await click('miiから同じ仕事を確認');

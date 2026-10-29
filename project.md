@@ -22,6 +22,10 @@ HTTP 408後にChromeが同一IDを再送して409となると、保存済みで�
 
 PR255はhead7check/4workflow成功でmain76b327c2へ通常統合したが、main初回verifyが既存Pixel診断試験のexitKind欠落で停止した。任意診断の非待機lockへ観測writerが競合し、正常fixtureの300ms固定待ちは保存完了を保証しなかった。observer fsync800ms遅延で元試験の同じKeyErrorを再現。fixture子終了をfirst output診断保存ackへ同期し、同じ遅延1/1と診断27中26pass/1historical skipが成功。実worker・停止/期限・権限と元assertionを変更しない。[証拠](docs/evidence/development-execution/pixel-diagnostic-fixture-order.json)。次は独立検収、Git/PRとhead/main同SHA全CI。元main失敗は保存し、同SHA rerunは1回だけ実行中。実機操作・推論・有料接続なし。
 
+### mii同一仕事の委任予算読取候補（2026-10-29 / Android・ROCK）
+
+既存A2A APIへ本人scopeとjob IDを追加し、miiソフト画面から上限・予約・利用量記録を明示読取する。観測・本人・job不一致と通信断は未確認とし、MCP料金・請求確定・実行許可に使わない。合成ブラウザと本人違い／期限／再送競合を含む54試験成功。独立検収でUI fixture不足と古いエラー残存を修正。別owner予算行の拒否と、owner hash照合中の観測喪失も確認。全verify初回は新テスト宣言lintで停止し修正、旧基点全verifyは3384成功・0失敗・4skip。main 91bd8bec取込み後の初回は既存Tool期限fixtureで1件失敗し単独23成功、全体再実行は3384成功・0失敗・4skip。Git/head/main CIは未完了。[証拠](docs/evidence/development-execution/mii-budget-readback.json)。担当付き仕事の作成前Tool／入力／費用確認は別候補で開発中。実mii・実account・Provider・実課金は未受入。
+
 ### mii合成入力から同じ仕事のMCP実行へ（2026-10-28 / MINI01・M1）
 
 着手: main e9433589を基点にclean作業枠を使用し、別worktreeのハード設計を保全。合成文章を既存runnerへ渡し、owner/job/Agent/Tool/一回承認/Connector claimを再利用する。判断: 30秒観測・入力世代で未送信を拒否、begin後pendingとclaim後応答を同じjobへ照合する。独立検収で時計巻戻しによるguard復活と入力編集中の旧非同期処理を修正した。局所80/80と全verify成功（Node3364/3360pass/0fail/4skip、build/APIを含む）。初回lint失敗と修正、source hashは[証拠](docs/evidence/development-execution/mii-synthetic-input.json)。最終React規約対応後の中央独立80/80は合格。実機/光学/推論/実課金なし、main統合・CI未確認。次は固定候補をGit担当の独立統合へ渡す。 中央の独立実行80/80後、観測有効期間内の部分的時計巻戻りを追加再現し、最終照合時刻を保持して旧観測を不可逆に失効させた。修正後関連55/55・実Chrome/Connector81/81、時計patchの別担当独立PASS_SCOPED。中央全verify初回は未変更PC adapterの終了確認1件で失敗、同一sourceの単独Python3.15/3.14と同条件全体再実行は成功（3365/3361pass/0fail/4skip、build/API/mission/work/bot完了）。初回失敗を保持し、最終19ファイルmetadata検収とGit/head/main CIは未完了。Pixelの別scope観察はブラウザ自動起動・外部通信不明・同期接続未確認・前後比較不足のため実機合格に数えない。

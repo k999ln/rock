@@ -7,6 +7,7 @@ import { runInNewContext } from 'node:vm';
 import { renderToStaticMarkup } from 'react-dom/server';
 import ts from 'typescript';
 import { createWorkJob } from '../lib/workflow.ts';
+import { formatCurrencyMinor } from '../lib/currency-format.ts';
 
 const require = createRequire(import.meta.url);
 const source = readFileSync(new URL('../components/mii-work-preview.tsx', import.meta.url), 'utf8');
@@ -22,7 +23,8 @@ function fixtureJob() {
 }
 function harness(job = fixtureJob()) {
   const owner = 'owner-v1:' + 'b'.repeat(64), slots = [], effects = [], reads = [], cancels = [], accepted = [], events = [], staged = [];
-  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, valid = false, inputAvailable = true;
+  let cursor = 0, tree, currentJob = job, currentOwner = owner, waitRead = null, valid = false, inputAvailable = true, budgetFailure = false;
+  const timers = new Map(); let nextTimer = 0;
   const changed = (a, b) => !a || a.length !== b.length || a.some((value, index) => !Object.is(value, b[index]));
   const react = {
     useState(initial) { const i = cursor++; if (!slots[i]) { const slot = { value: typeof initial === 'function' ? initial() : initial };
@@ -39,13 +41,15 @@ function harness(job = fixtureJob()) {
     async readExisting(reference) { reads.push(reference); if (waitRead) return waitRead.promise;
       return { job: currentJob, agentBinding: 'verified', executorBinding: 'unverified',
         hardwareAccepted: false, executionAuthorized: false, cancelReconciliation: 'clear' }; },
+    async readBudget() { if (budgetFailure) throw new Error('unavailable'); return { jobId: currentJob.id, jobRevision: currentJob.revision, readAt: Date.now(), budget: { currency: 'USD', budgetLimitMinor: 1000, reservedMinor: 200, settledMinor: 300, revision: 1, updatedAt: 1 } }; },
     async cancelPlan(request) { cancels.push(request); return { state: 'plan_cancelled', remoteStop: 'unconfirmed', physicalStop: 'unconfirmed' }; },
   };
   const modules = { react, 'react/jsx-runtime': require('react/jsx-runtime'),
     '@/lib/mii-work-adapter': { createMiiWorkAdapter: () => adapter },
-    '@/lib/mii-indexeddb-journal': { createMiiIndexedDbJournal: () => ({}) } };
+    '@/lib/mii-indexeddb-journal': { createMiiIndexedDbJournal: () => ({}) },
+    '@/lib/currency-format': { formatCurrencyMinor } };
   const exports = {};
-  runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; }, crypto: { randomUUID }, Date });
+  runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; }, crypto: { randomUUID }, Date, setTimeout: callback => { const key = ++nextTimer; timers.set(key, callback); return key; }, clearTimeout: key => timers.delete(key) });
   function render() { cursor = 0; tree = exports.default({ job: currentJob, ownerScope: currentOwner,
     onRead: value => { accepted.push(value); currentJob = value; }, inputAvailable, onInput: input => staged.push(input) }); while (effects.length) effects.shift()(); }
   function nodes(node, out = []) { if (Array.isArray(node)) node.forEach(value => nodes(value, out));
@@ -61,6 +65,7 @@ function harness(job = fixtureJob()) {
     type(value) { nodes(tree).find(n => n.type === 'textarea').props.onChange({ target: { value } }); render(); },
     availability(value) { inputAvailable = value; render(); },
     deferRead() { waitRead = deferred(); return waitRead; },
+    budgetFailure(value) { budgetFailure = value; }, expireBudget() { for (const callback of timers.values()) callback(); timers.clear(); render(); },
     setOwner(value) { currentOwner = value; render(); }, setJob(value) { currentJob = value; render(); } };
 }
 
@@ -77,7 +82,7 @@ void test('mii software preview shows the same objective, verified role, saved o
   assert.match(html, /保存された担当との一致:.*確認済み/); assert.match(html, /実行端末と機器の状態は未確認/);
   assert.match(html, /試用Tool.*実行成功は独立確認されていません/);
   assert.match(html, /保存済みの本人成果/); assert.match(html, /&lt;script&gt;untrusted&lt;\/script&gt;/);
-  assert.match(html, /費用はこの画面では照合していません/); assert.match(html, /Agent成果本文は含まれません/);
+  assert.match(html, /委任予算は未確認/); assert.match(html, /MCP Toolの料金や請求確定額ではありません/); assert.match(html, /Agent成果本文は含まれません/);
   assert.ok(html.includes(`/api/sky/exports/${job.id}?revision=${job.revision}`));
   assert.equal(h.reads.length, 1); assert.equal(h.reads[0].jobId, job.id); assert.equal(h.reads[0].agentRevision, 4);
   assert.deepEqual(h.cancels, []);
@@ -170,4 +175,17 @@ void test('unsupported capability, external revision and different owner invalid
   assert.equal(h.button('同じ仕事のTool確認へ渡す').props.disabled, true);
   h.setJob({ ...h.accepted[0], revision: h.accepted[0].revision + 1 }); assert.equal(old.isCurrent(), false);
   h.setOwner('owner-v1:' + 'f'.repeat(64)); assert.equal(old.isCurrent(), false);
+});
+
+void test('budget failure then successful read removes the old error and invalidation hides the snapshot', async () => {
+  const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush();
+  h.budgetFailure(true); h.click('委任予算を読み直す'); await h.flush(); assert.match(h.html(), /委任予算を確認できません/);
+  h.budgetFailure(false); h.click('委任予算を読み直す'); await h.flush();
+  assert.match(h.html(), /取得時点の委任予算/); assert.doesNotMatch(h.html(), /委任予算を確認できません/);
+  h.click('追跡喪失を模擬'); assert.doesNotMatch(h.html(), /取得時点の委任予算/);
+});
+void test('budget snapshot expires instead of remaining visible', async () => {
+  const h = harness(); h.click('miiから同じ仕事を確認'); await h.flush();
+  h.click('委任予算を読み直す'); await h.flush(); assert.match(h.html(), /取得時点の委任予算/);
+  h.expireBudget(); assert.doesNotMatch(h.html(), /取得時点の委任予算/); assert.match(h.html(), /委任予算は未確認/);
 });

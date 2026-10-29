@@ -38,6 +38,8 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 
 今回の実行authorityは既存local-preview ID、明示したscope非強制、loopback、cookieや別credentialなしの開発環境に限定する。verified Package、freeの提供者申告、schema一致は未知Tool全体の安全性や実料金を保証しない。通常account/eSIMの実行authority・実mii入力/物理停止・有料実行/費用照合は別の実装と受入が必要。owner切替・旧版・失効・不明応答・停止競合・再接続、2種の入力出力と未対応能力を同じ候補で試験する。
 
+miiソフト画面の委任予算は、同じ本人・job IDを付けた既存A2A読取を明示操作で照合する。APIは本人scopeと対象job IDを返し、adapterは一致、数値、通貨、観測期限、並行読取と対象revisionを検査する。読取不能・本人違い・失効は未確認、記録なしは取得時点の記録なしと表示し、再接続で自動実行しない。上限・予約・利用量記録は取得日時付きの委任予算であり、MCP Tool料金や請求確定額ではない。30秒表示制限はソフト画面のみで、background timer・実機・実請求の受入ではない。[証拠](../evidence/development-execution/mii-budget-readback.json)。
+
 miiの合成入力は「同じ仕事を確認」→文章入力→「同じ仕事のTool確認へ渡す」→既存MCPの内容確認と一回承認の順に進む。観測は30秒以内のboot/place/scene/sequenceへ結び、停止journal不明・未解決試行・別担当・未対応runtimeでは入力を渡さない。合成観測は権限ではなく、既存runnerが本人・job revision・Agent版・Package/利用権を読み直し、Connectorがprepare済み引数とserver claimを検査する。新しいDBや実行経路は作らない。
 
 追跡喪失、取り外し、再起動、scene変更、期限切れ、時刻逆行、入力/実行先変更は旧入力を失効する。観測開始時刻より後でも、同じ観測内の直前照合時刻から巻き戻れば失効する。再接続や時計の復帰で復活させず、新しい読戻しと明示入力を必要とする。begin送信中の失効は保存されたpendingを残してTool送信を拒否する。既にConnectorへ送った要求やclaim済み処理の取消・物理停止を保証せず、後着の応答は同じ仕事へ未検証で保存しEveとmiiから読む。応答不明・保存不明では自動再送しない。4表示条件（板・膜なし、少ない表示部、上下を含む全範囲、まぶしくしない）と単体利用は維持し、このソフト試用を光学・センサー・実機の成立証拠にしない。
