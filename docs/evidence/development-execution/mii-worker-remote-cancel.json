@@ -1,0 +1,14 @@
+{
+  "schema": "rockstaros.mii-worker-remote-cancel/1",
+  "state": "draft_source_review_pass_unexecuted",
+  "base": "8e5bbdb25e78261d1916bc97ab318a053593385d",
+  "sourceSha256": {
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs": "cc124d7a8c01ac602c34668940e9b32f69a432fd06da743fe21e4df802da007e",
+    "services/sky-agent-runtime/vitest.config.ts": "11e30bfaec717291b6561d881e0d99f6f8de08f49a329d9b65b9391e7d55e4f8"
+  },
+  "scenario": "Synthetic worker service binding loses remote cancel response after modeled acceptance; same mii job local stop and re-read, held reservation, bad signed usage rejection, later signed usage settlement and replay, owner isolation and single claims.",
+  "independentReview": "Source-only review passed P1/P2; actual test not run.",
+  "command": "npm run sky:a2a:workflow:positive -- --testNamePattern='reconciles lost remote cancellation and signed usage for the same mii work once'",
+  "limits": "No physical mii, real provider, actual network loss, production billing or model inference. Synthetic remote commit and keys; exact assertions need CI confirmation.",
+  "next": "Run actual Worker tests in CI, inspect failure and independently reproduce before integration."
+}

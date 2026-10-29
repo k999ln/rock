@@ -1,4 +1,10 @@
 {
+  "miiWorkerRemoteCancel": {
+    "owner": "ROCK",
+    "status": "draft_source_review_pass_unexecuted",
+    "evidence": "docs/evidence/development-execution/mii-worker-remote-cancel.json",
+    "next": "Run real Worker fixture in CI, independently reproduce and review before merge."
+  },
   "miiRequiredCapabilities": {
     "owner": "ROCK",
     "status": "main_integrated_ci_two_failures_startup_candidate_passed_prior_head",

@@ -727,6 +727,8 @@ Smithの入力照合候補は追加必須入力と不明schemaを区別し、本
 
 mii合成入力の追加能力について、未対応・未確認を拒否し既存成果を保持する候補はLinuxブラウザ2件・独立検収・CIに成功し、CodeQL警告を修正後PR283をmain 7007b0beへ統合。同SHA CIの初回と再試行は最初のChrome隔離profileが100回の起動待ち内に開始せず失敗。起動待ちを上限300回へ変更した候補は前headでブラウザ2件・CI成功、最終headの検証は未了。原因は未確定。[証拠](docs/evidence/development-execution/mii-required-capabilities.json)。実機・権限は未受入。
 
+同じ合成mii仕事とworkerの遠隔取消応答喪失・予約保持・署名済使用額の精算と再送防止の縦断候補を追加。独立source検収済み、Worker試験・CI未実行。実機・実provider・実課金の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-remote-cancel.json)。
+
 実workerの送信応答不明と同じjobのmii読戻し・ローカル取消応答不明・予約保持を結ぶ合成試験は独立検収とCI成功後、PR282をmain effbf9d6へ統合。同SHA CI全6件成功。[統合CI](docs/evidence/development-execution/mii-worker-unknown-main-ci.json)。ローカル試験は未了。遠隔停止・実Provider・物理端末の受入ではない。[候補証拠](docs/evidence/development-execution/mii-worker-unknown-draft.json)。
 
 miiソフト画面と実adapterをつないだ隔離ブラウザで合成hostの期限切れ・同じjob保持・明示読直しを試験し、独立検収後PR281をmain ad9c0bcbへ統合。統合後の同SHA CI全6件成功。物理miiは未受入。[統合CI](docs/evidence/development-execution/mii-short-lease-main-ci.json)。[証拠](docs/evidence/development-execution/mii-short-lease-browser.json)。

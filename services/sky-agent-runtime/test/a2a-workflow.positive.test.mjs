@@ -301,11 +301,11 @@ async function miiWorkerFixture(parentId) {
       return result.meta.changes === 1;
     },
   };
-  let dropCancel = false, patches = 0;
+  let dropCancel = false, patches = 0, activeOwner = owner;
   const fetchImpl = async (path, init) => {
     const headers = new Headers(init.headers);
     headers.set('origin', 'https://fixture.invalid');
-    headers.set('oai-authenticated-user-id', owner);
+    headers.set('oai-authenticated-user-id', activeOwner);
     // workerd Request does not implement redirect:'error'. This local relay
     // invokes handlers directly and rejects redirects explicitly instead.
     const request = new Request('https://fixture.invalid' + path, { ...init, headers, redirect: 'manual' });
@@ -326,6 +326,7 @@ async function miiWorkerFixture(parentId) {
     return adapter;
   };
   return { job, scope, create, dropNextCancel() { dropCancel = true; }, patchCount: () => patches,
+    switchOwner(value) { activeOwner = value; },
     reference: { jobId: job.id, ownerScope: scope, revision: job.revision, sceneRevision: 1,
       agentId: 'fixture-role', agentRevision: 1 } };
 }
@@ -1272,3 +1273,76 @@ it('recovers terminal artifacts and delayed signed usage without reopening, rese
     GROUP BY event_type`).bind(id).all();
   assert.deepEqual(claims.results, [{ eventType: 'remote_send_claimed', count: 1 }]);
 });
+
+it('reconciles lost remote cancellation and signed usage for the same mii work once', async () => {
+  const id = '11111111-1111-4111-8111-111111111019';
+  const parent = '22222222-2222-4222-8222-222222222019';
+  await seedApprovedDelegation({ delegationId: id, parentJobId: parent,
+    messageId: '33333333-3333-4333-8333-333333333019',
+    message: 'Worker mii lost remote cancellation response fixture.', budgetLimitMinor: 50, parentBudgetLimitMinor: 80 });
+  const mii = await miiWorkerFixture(parent), store = a2aDelegationStore(env.DB);
+  const adapters = [];
+  const makeAdapter = sequence => { const adapter = mii.create(sequence); adapters.push(adapter); return adapter; };
+  try {
+  const run = async (operation, expectedStatus = 'complete', selectedOwner = owner) => {
+    const instanceId = `a2a-mii-cancel-${crypto.randomUUID()}`;
+    const workflow = await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW, instanceId);
+    try {
+      await workflow.modify(async modifier => {
+        await modifier.disableRetryDelays([{ name: operation === 'dispatch' ? 'discover-approved-agent' : 'discover-agent-for-reconciliation' }]);
+      });
+      await env.A2A_DELEGATION_WORKFLOW.create({ id: instanceId, params: { ownerUserId: selectedOwner, delegationId: id, operation } });
+      await workflow.waitForStatus(expectedStatus);
+      return expectedStatus === 'complete' ? await workflow.getOutput() : null;
+    } finally { await workflow.dispose(); }
+  };
+  assert.deepEqual(await run('dispatch'), { outcome: 'task_received', state: 'working', usageOutcome: 'missing' });
+  const first = makeAdapter();
+  const initial = await first.readExisting(mii.reference);
+  assert.equal(initial.job.id, parent); assert.equal((await first.readBudget()).budget.reservedMinor, 50);
+  // The mii action stops only the local plan. Remote cancellation is a separate explicit operation.
+  mii.dropNextCancel();
+  const local = await first.cancelPlan({ commandId: crypto.randomUUID(), jobId: parent, revision: initial.job.revision, confirmed: true });
+  assert.equal(local.state, 'unknown'); assert.equal(local.remoteStop, 'unconfirmed'); first.close();
+  const resumed = makeAdapter(2);
+  const restored = await resumed.readExisting(mii.reference);
+  assert.equal(restored.job.status, 'cancelled'); assert.equal(restored.cancelReconciliation, 'clear');
+  assert.equal((await resumed.readBudget()).budget.reservedMinor, 50); assert.equal(mii.patchCount(), 1);
+  mii.switchOwner('other-owner');
+  await assert.rejects(resumed.readExisting(mii.reference), /MII_OWNER_OR_RESPONSE_MISMATCH/);
+  mii.switchOwner(owner);
+  await resumed.readExisting(mii.reference);
+  assert.deepEqual(await run('reconcile', 'complete', 'other-owner'), { outcome: 'no_remote_task' });
+  assert.equal((await store.requestCancel(owner, id)).state, 'cancel_requested');
+  await run('reconcile', 'errored');
+  assert.equal((await store.get(owner, id)).state, 'cancel_unconfirmed');
+  assert.equal((await store.getBudgetReservation(owner, id)).state, 'held');
+  assert.equal((await resumed.readBudget()).budget.reservedMinor, 50);
+  assert.deepEqual(await run('reconcile'), { outcome: 'task_reconciled', state: 'remote_cancelled', usageOutcome: 'rejected' });
+  assert.equal((await store.getBudgetReservation(owner, id)).state, 'held');
+  assert.equal(await store.getUsageReceipt(owner, id), null);
+  assert.deepEqual(await run('reconcile'), { outcome: 'task_reconciled', state: 'remote_cancelled', usageOutcome: 'settled' });
+  const budget = await resumed.readBudget();
+  assert.equal(budget.jobId, parent); assert.equal(budget.budget.reservedMinor, 0); assert.equal(budget.budget.settledMinor, 11);
+  assert.equal((await store.getBudgetReservation(owner, id)).settledMinor, 11);
+  const receipt = await store.getUsageReceipt(owner, id);
+  assert.equal(receipt.providerReference, 'vitest-lost-cancel-usage');
+  const replay = await store.settleUsageReceipt(owner, id, JSON.parse(receipt.receiptJson));
+  assert.equal(replay.reservation.settledMinor, 11);
+  await assert.rejects(store.settleUsageReceipt('other-owner', id, JSON.parse(receipt.receiptJson)),
+    error => error.code === 'invalid_usage_receipt');
+  assert.equal(await store.get('other-owner', id), null);
+  assert.equal(await store.getBudget('other-owner', parent), null);
+  const count = await env.DB.prepare('SELECT COUNT(*) AS n FROM a2a_usage_receipts WHERE owner_user_id=? AND delegation_id=?').bind(owner, id).first();
+  assert.equal(count.n, 1);
+  assert.deepEqual(await run('reconcile'), { outcome: 'not_dispatchable' });
+  assert.equal((await resumed.readBudget()).budget.settledMinor, 11);
+  const claims = await env.DB.prepare("SELECT COUNT(*) AS n FROM agent_delegation_events WHERE owner_user_id=? AND delegation_id=? AND event_type='remote_cancel_claimed'").bind(owner, id).first();
+  assert.equal(claims.n, 1); assert.equal(mii.patchCount(), 1);
+  const sends = await env.DB.prepare("SELECT COUNT(*) AS n FROM agent_delegation_events WHERE owner_user_id=? AND delegation_id=? AND event_type='remote_send_claimed'").bind(owner, id).first();
+  assert.equal(sends.n, 1);
+  } finally {
+    mii.switchOwner(owner);
+    for (const adapter of adapters) adapter.close();
+  }
+}, 30_000);
