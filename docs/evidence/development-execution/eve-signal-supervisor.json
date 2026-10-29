@@ -13,7 +13,7 @@
     "logSha256": "f837e8db59f2d943dfcc5481b8ab53d1b2414bb3b547968f492bd509ea6ab981",
     "initialSandboxFailure": "5/6 in sandbox, cause not established by the captured log; initial log SHA256 1509cce9fa165d4194f73d94d611e00ade69cf84e0a3dc3c1a3dd0182140f390. Successful rerun with allowed local process access, log SHA256 f837e8db59f2d943dfcc5481b8ab53d1b2414bb3b547968f492bd509ea6ab981."
   },
-  "limits": "Synthetic local subprocess only. Linux CI pending; no inference, model training, Pixel, external provider, descendant process-group or hard isolation acceptance.",
+  "limits": "Synthetic local subprocess only. Linux merge-SHA CI passed; no inference, model training, Pixel, external provider, descendant process-group or hard isolation acceptance.",
   "mergeSha": "a749b6233a0e1f8d56c96fb9483d39630c723d7f",
   "mainCiEvidence": "docs/evidence/development-execution/eve-signal-supervisor-main-ci.json"
 }

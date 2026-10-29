@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.sdk-dist-release/1",
-  "state": "candidate_independent_test_pass_pr_pending",
+  "state": "main_integrated_merge_ci_rerun_in_progress",
   "baseMain": "1ff203a85610095621bec716996af74f380eb967",
   "sha256": {
     "toolkits/sky-tool-sdk/build.mjs": "cd6cf79f76fe6ed7853100e3233819b29d3181825cd0c871ec3d9bb6c1e07d17",
@@ -24,13 +24,14 @@
     "passed": 7,
     "failed": 0,
     "logSha256": "b7afc796581021bd87370642962b758d73814215b4ca41b03b433fbd0a07c571",
-    "archiveParity": "Mac Python 3.9 and 3.15 --check passed; Linux CI pending"
+    "archiveParity": "Mac Python 3.9 and 3.15 --check passed; Linux PR-head CI passed; merge-SHA rerun in progress"
   },
   "limits": "Default npm pack invokes prepack; --ignore-scripts bypasses it. Bundled sample uses relative src import; test explicitly changes it to package root to exercise dist. No inference, actual provider, physical device, publication or general sandbox assurance. Fixed gzip stored blocks avoid compressor-version choices; CRC detects accidental corruption and is not an author signature. Empty and exactly 65535 byte single-block boundaries were not exercised by fixture.",
-  "next": "Final independent review and exact-head CI, then merge and merge-SHA CI.",
+  "next": "Merge-SHA CI was cancelled after later main pushes and is being rerun; verify outcome before marking success.",
   "ciHistory": {
     "initialHead": "ee3153cc6759bfccf32238260dd7b19b784ce0f8",
     "attempt1": "verify failed synthetic Eve supervisor timeout; log SHA256 83726f6778021dd9fc7c023aab6982aa2eb61c1c18d83bd7853f37194f9875f2",
     "attempt2": "Node tests passed but sdk:package:check failed on Linux archive byte mismatch; log SHA256 09d82bc3764ea492a6b52a5ed3dce0f093c5d7dc734aef9ef25c0119bf8dc397"
-  }
+  },
+  "mergeSha": "2fe3ea469de87a0999f7e97a75cb7a67c664b76c"
 }
