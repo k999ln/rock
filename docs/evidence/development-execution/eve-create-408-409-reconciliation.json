@@ -1,0 +1,31 @@
+{
+  "schema": "rockstaros.eve-create-reconciliation/1",
+  "baseMain": "cb77654dd27f130127eb111d1cc0a16a7369c456",
+  "scope": "host synthetic owner and browser fixture only",
+  "sourceSha256": {
+    "lib/eve-agent-creation.ts": "6b44d92e4cb1ed04fb3255315bfdc80f853e47f22cf42a91a700b1d9778b9dc8",
+    "tests/eve-agent-creation.test.mjs": "6dff54d3646dfa68f58e6c75e2040afd67e13c0f5087548796f764878cb9b64b",
+    "tests/eve-smith-mii-platform-integration.test.mjs": "4b14b96336f75044a5f51b9fae362326780523157a4e98725c5bbdce2a9d79ba"
+  },
+  "failure": "HTTP 408 after commit can cause Chrome HTTP/1.1 transport replay of same ID and body; resulting 409 previously cleared pending despite an existing saved role.",
+  "fix": "On 408 or 409 reconcile original owner, ID, revision and settings; retain unknown on absence or mismatch. Other explicit 4xx remain rejected.",
+  "independentReview": {
+    "status": "PASS_SCOPED",
+    "mustFix": 0,
+    "targetTestsPassed": 11,
+    "additionalCasesPassed": 35,
+    "browser": "One click and one JS PUT produced two wire PUTs with same ID and body; committed row then 408 and replay 409. Exact readback saved; wrong owner and content remained unknown after reload."
+  },
+  "verification": {
+    "fullVerify": "Prior base cb77654d candidate: exit 0; root Node 3364 passed, 0 failed, 4 skipped; build and repository checks completed",
+    "integration": "Synthetic two-tool results retain same SHA through mii reconnect and export.",
+    "integratedBase": "e79461ec: sandbox attempt stopped at local listen EPERM. Elevated first full run failed one existing timing-sensitive Tool review expiry test (3375 passed, 4 skipped; log SHA256 bda3b4214b1ef2255850506eb20d39ce857ae2bf40001f53e28273ae2360c2e4). Targeted rerun passed. Elevated full rerun exit 0: 3376 passed, 0 failed, 4 skipped; build and repository checks passed; log SHA256 618c7a235b94bb7336b100009e7ad02083e18cefb420661cdb46c9227c704fc8."
+  },
+  "notVerified": [
+    "real account or service",
+    "other browsers and HTTP protocols",
+    "physical mii or Pixel OS",
+    "production deployment"
+  ],
+  "gitAndCI": "pending"
+}

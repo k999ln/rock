@@ -1,3 +1,7 @@
+### Eve担当保存の応答不明と再送照合（2026-10-29 / ROCK・Sky）
+
+HTTP 408後にChromeが同一IDを再送して409となると、保存済みでも保留が消える反例を合成環境で確認。408と409は本人・ID・revision・設定を再読取し、不一致や読取失敗はunknownで維持する。独立検収11試験と35ケース、Chromeの同一body再送・他owner・誤内容を確認。旧基点cb77654d全verifyは3364成功・0失敗・4skip。新基点e79461ecの初回はローカル待受権限で停止、権限付き初回は既存Tool期限試験1件失敗（単独再実行成功）、全体再実行は3376成功・0失敗・4skip、buildと各check完了。実サービス・他ブラウザ・端末は未検証。[証拠](docs/evidence/development-execution/eve-create-408-409-reconciliation.json)。次は固定候補のGit保存・CI・main同SHA確認。
+
 ### Smith/MCPのPackage権限参照fixture（2026-10-28 / SMITH-02・SKY07・SKY21・ROCK/O5）
 
 基点main cb77654dから作者4ファイルをhash一致で採用、元32試験は中央独立でも成功。しかし同じauthority ID/revisionへ契約を差し替えた参照を古いjobが借用する反例1vs0を確認した。9項目の型/過不足とrow owner・操作PackageをSQL自身で同一job CASへ相関させ、修正後35/35と旧WorkJobの読取り/取消を確認。[契約](docs/sky-tools-complete-design.md#work-tool-package-authority-fixture)・[証拠](docs/evidence/development-execution/smith-mcp-package-authority-contract.json)。fixture-onlyで本番rootはUNBOUND、production migration/consumer/gate変更なし。正当な発行/更新/失効主体と実認証・Agent/承認/価格/Brokerの原子的接続は未確定。修正source3は別担当独立PASS_SCOPED、全verifyは3377件中3373pass/0fail/4skip、build/API/mission/work/bot完了。次は固定11metadataの独立照合とpinnedscanner、Git/PR/head/main同SHA全CI。scope-only開放の不採用、中央setup/syntax初回失敗も履歴を保持する。実eSIM/通常account許可・Provider・モデル・課金・端末・公開の新規受入なし。

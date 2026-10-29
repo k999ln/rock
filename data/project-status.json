@@ -1,4 +1,11 @@
 {
+  "eveCreateReconciliation": {
+    "owner": "ROCK",
+    "status": "independently_reviewed_git_ci_pending",
+    "evidence": "docs/evidence/development-execution/eve-create-408-409-reconciliation.json",
+    "scope": "synthetic owner and local host browser fixture",
+    "next": "Save reviewed candidate, verify head CI and main SHA CI; real service and devices unverified."
+  },
   "eveSmithMiiHostPreviewCandidate": {
     "owner": "ROCK",
     "workstream": "Android / Device / Local AI with shared Sky and workflow contracts",
