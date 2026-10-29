@@ -1,19 +1,20 @@
 {
   "schema": "rockstaros.mii-required-capabilities/1",
-  "state": "draft_targeted_pass_review_pending",
-  "base": "c53ffad64e3502af9e853b73134fc1430176649a",
+  "state": "draft_targeted_pass_source_review_browser_ci_pending",
+  "base": "ad9c0bcb25c4c3ad9e55ebc3c766a60dcd5e6c60",
   "sourceSha256": {
     "lib/mii-work-adapter.ts": "7289809def3bed851c43af338b9bfb3a7481f5f32709464b9eb8535a706a67a4",
     "lib/mii-preview-descriptors.ts": "265db655fb7d9c597d1ee7cf972b2f336a2e476f6cbe317f6457d3c1027376a9",
     "components/mii-work-preview.tsx": "e1d596cb039c5f2d72b40b19adab3ff4c53ba3bcd384fdce4a01c0ecbb2fc023",
     "tests/mii-work-adapter.test.mjs": "b504681b15653a7b8f43efed86acf59ee889fd06fe96fe4e59d89490b6a24419",
-    "tests/mii-work-preview-ui.test.mjs": "662c34ba9dc66c1c5a9a73567d1156a15d7bc09635d6d07a99622ce36bc66bdd"
+    "tests/mii-work-preview-ui.test.mjs": "662c34ba9dc66c1c5a9a73567d1156a15d7bc09635d6d07a99622ce36bc66bdd",
+    "tests/eve-smith-mii-browser.test.mjs": "f74199dd7dd381c28c4fa8d05bc5c1bf1ef7e9f9ea5f5d9dad5a0e7902ffb062"
   },
-  "tests": "60 targeted tests passed: real adapter and mock React hooks separately; explicit false takes precedence over null/absent, true is accepted, and edited conditions fence staged input. Real-browser integration and full verify are pending.",
+  "tests": "60 targeted tests passed: real adapter and mock React hooks separately. Browser test for model, audio, space and unknown requirements added but not executed; full verify pending.",
   "limits": "Explicit capability declaration snapshot only, not OS permission, device capability or real hardware proof. Legacy readers preserve old path; explicit requirements without descriptors fail unconfirmed. No fallback.",
   "next": "Independent review, real browser integration, full verify and exact-head CI before merge.",
   "inference": false,
   "actualDevice": false,
   "initialFailure": "One UI mock assertion initially failed because JSON values originated in another VM realm; comparing serialized JSON values fixed the assertion and the targeted tests then passed.",
-  "review": "independent source review: first two P2 findings fixed; final browser integration pending"
+  "review": "Independent source review found no remaining P1/P2; browser execution and exact-head final review pending."
 }

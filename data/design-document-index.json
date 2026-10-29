@@ -191,7 +191,8 @@
       ],
       "tests": [
         "tests/mii-work-adapter.test.mjs",
-        "tests/mii-work-preview-ui.test.mjs"
+        "tests/mii-work-preview-ui.test.mjs",
+        "tests/eve-smith-mii-browser.test.mjs"
       ],
       "evidence": "docs/evidence/development-execution/mii-required-capabilities.json",
       "scope": "explicit owner-defined action capability IDs; missing or unconfirmed refuses staging, read-only job remains available, no authority grant"
