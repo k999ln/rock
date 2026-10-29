@@ -1,9 +1,9 @@
 {
   "miiWorkerUnknownDraft": {
     "owner": "ROCK",
-    "status": "draft_previous_head_ci_pass_exact_head_pending",
+    "status": "draft_independent_ci_reproduced_exact_head_pending",
     "evidence": "docs/evidence/development-execution/mii-worker-unknown-draft.json",
-    "next": "Targeted local and exact-head CI after metadata update; independently review. Remote cancel response loss and signed receipt remain separate.",
+    "next": "Confirm exact-head CI and independent metadata review. Local test, remote cancellation response loss and signed receipt remain separate.",
     "pullRequest": 282
   },
   "sdkDeclaredExample": {
