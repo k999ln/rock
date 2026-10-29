@@ -1,9 +1,9 @@
 {
   "miiShortLeaseBrowser": {
     "owner": "ROCK",
-    "status": "draft_pr_targeted_pass_full_verify_pending",
+    "status": "draft_codeql_fix_unverified",
     "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
-    "next": "Rerun full npm run verify after the connection-option readiness fix; review exact head and its CI before merging. Preserve physical/production limits.",
+    "next": "Run targeted browser and full verify after the CodeQL test-expression change; independently inspect new CodeQL alerts and exact-head CI before merging.",
     "pullRequest": 281
   },
   "sdkDeclaredExample": {

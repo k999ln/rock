@@ -222,7 +222,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await input('担当の名前', 'fixture担当'); await input('何を手伝う担当ですか', '文章の行数を確認'); await input('受け取るもの', 'text'); await input('期待する成果', 'lines');
     await click('内容を確認'); await click('確認して保存');
     await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'Smith');
-    await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));return !!l && [...l.querySelectorAll('option')].some(o=>o.value===${js(JSON.stringify([sdk.localId,'count_lines']))});})()`, 'Smith connection loaded');
+    await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));const id=window.__fixtureServers?.[0]?.id;return !!l && !!id && [...l.querySelectorAll('option')].some(o=>o.value===JSON.stringify([id,'count_lines']));})()`, 'Smith connection loaded');
     await input('必要な入力項目', 'text'); await input('必要な成果項目', 'lines'); await input('Tool', packageKey); await input('実行先', 'pc');
     await input('期待する入力型',JSON.stringify({text:'string'}));await input('期待する成果型',JSON.stringify({lines:'integer'}));
     await input('必要な処理能力ID',JSON.stringify(['example.count-lines']));await input('許容permissionとscope',JSON.stringify(fixturePermissions));
@@ -436,7 +436,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       await input('受け取るもの', 'left と right'); await input('期待する成果', 'sum');
       await click('内容を確認'); await click('確認して保存');
       await wait('document.body.innerText.includes("この担当に必要な入力・成果・Tool")', 'second Smith review');
-      await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));return !!l && [...l.querySelectorAll('option')].some(o=>o.value===${js(JSON.stringify([sdk.localId,'add_integers']))});})()`, 'second Smith connection loaded');
+      await wait(`(()=>{const l=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('使用する接続と操作'));const id=window.__fixtureServers?.[0]?.id;return !!l && !!id && [...l.querySelectorAll('option')].some(o=>o.value===JSON.stringify([id,'add_integers']));})()`, 'second Smith connection loaded');
       await input('必要な入力項目', 'left\nright'); await input('必要な成果項目', 'sum');
       await input('Tool', packages[1].packageKey); await input('実行先', 'pc');
       await input('期待する入力型',JSON.stringify({left:'integer',right:'integer'}));await input('期待する成果型',JSON.stringify({sum:'integer'}));
