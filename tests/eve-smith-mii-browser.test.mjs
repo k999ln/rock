@@ -21,7 +21,9 @@ import { buildSkyOwnerExport } from '../lib/sky-owner-export.ts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const fixture = path.join(root, 'tests/fixtures/eve-smith-mii-browser');
-const chrome = process.env.ROCK_TEST_CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const chromeCandidates = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable', '/usr/bin/chromium', '/usr/bin/chromium-browser'];
+const chrome = process.env.ROCK_TEST_CHROME || chromeCandidates.find(existsSync) || chromeCandidates[0];
 
 async function compile() {
   const result = await build({ entryPoints: [path.join(fixture, 'entry.tsx')], bundle: true, write: false,

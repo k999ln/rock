@@ -2,13 +2,19 @@
   "schema": "rockstaros.mii-short-lease-browser/1",
   "baseCandidate": "6fc80f2a5ef11bd5b50e6b4459b668d286b06333",
   "sourceSha256": {
-    "tests/eve-smith-mii-browser.test.mjs": "337df32c501a88378d72770366e44c18e3554613fd26b8c612deeb1ad34ed71b",
+    "tests/eve-smith-mii-browser.test.mjs": "24b101b530343f83cdab77ed56b73848cd52baa4a2d74b5d313f772ada28eea1",
     "tests/fixtures/eve-smith-mii-browser/mii-preview-descriptors.ts": "4576c9d6f9a0aeaa2e737db68119f5d7fc60b8900a7f48492fe8eea4d66775fb"
   },
-  "results": "Prior head 82bd5703: two isolated browser cases passed; the local-authority case uses the SDK 0.1.4 archive, real mii adapter and React, synthetic host output expiry and clock advancement. A fresh GET and completed read precede clock advancement; the same stored result is unchanged and restored only by explicit reread. On a prior test revision, extending the descriptor to 30 seconds failed at short-expiry output hiding; that mutation was not rerun after the option-wait change. Current source after the CodeQL fix has not yet passed targeted browser, full verify or CI.",
+  "results": "Prior head 82bd5703: two isolated Mac browser cases passed, with the real mii adapter and React, synthetic host expiry and clock. A fresh GET and completed read precede clock advancement; saved result remains unchanged and requires explicit reread. A 30-second mutation on an earlier revision failed at short-expiry hiding. Head 666f8c1e passed Linux CI but both target browser cases skipped because the default path was Mac-only. The new candidate detects existing Linux browsers without downloading; targeted browser, full verify and CI on the new head remain pending.",
   "limits": "Synthetic host declaration, test-controlled clock and local preview authority; no physical mii, hardware lease, real providers or production account acceptance",
   "inference": false,
   "actualDevice": false,
   "initialFullVerify": "Full verify had one browser failure while Tool remained unselected: 3461 passed, 1 failed, 4 skipped. Selecting before connection options loaded is a plausible cause, not uniquely proven by the log. The fixture now waits for the selected option; targeted browser 2/2 passed. Full verify after this repair is pending.",
-  "staticAnalysis": "CI on head 82bd5703 succeeded but reported two new medium CodeQL alerts for dynamically generated test expressions. The candidate removes SDK-ID interpolation and reads the ID inside the browser; fixed head test and CI remain pending."
+  "staticAnalysis": "Head 82bd5703 had two medium CodeQL alerts in dynamic test expressions. Head 666f8c1e removed the interpolation, and CodeQL reported no new alerts. The new candidate changes browser detection and its exact-head CI is pending.",
+  "ciHistory": {
+    "head": "666f8c1e51f948de2f4834671cd2cd6fc30615e4",
+    "checks": "7 of 7 passed, CodeQL no new alerts",
+    "targetBrowser": "both cases skipped: default Chrome path was Mac-only",
+    "logSha256": "d18b6ba790ee29838a669005b28c590441333b06e59802e7f83b897bb5b8f00e"
+  }
 }

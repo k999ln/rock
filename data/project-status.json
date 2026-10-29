@@ -1,9 +1,9 @@
 {
   "miiShortLeaseBrowser": {
     "owner": "ROCK",
-    "status": "draft_codeql_fix_unverified",
+    "status": "draft_linux_browser_detection_unverified",
     "evidence": "docs/evidence/development-execution/mii-short-lease-browser.json",
-    "next": "Run targeted browser and full verify after the CodeQL test-expression change; independently inspect new CodeQL alerts and exact-head CI before merging.",
+    "next": "Confirm exact-head CI executes both browser cases using an existing browser; run local browser independently when resources permit, then review and merge.",
     "pullRequest": 281
   },
   "sdkDeclaredExample": {
