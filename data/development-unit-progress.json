@@ -2620,7 +2620,7 @@
       "B05",
       "SKY21"
     ],
-    "status": "independent_full_verify_pass_host_scoped_git_ci_pending",
+    "status": "git_preserved_independent_full_verify_same_sha_ci_pass_host_scoped",
     "baseMain": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
     "evidence": "docs/evidence/development-execution/eve-post-source-acl.json",
     "wholeUnitAccepted": false,
@@ -2628,9 +2628,14 @@
     "deployment": "HOLD",
     "bulk616": "HOLD",
     "mainMerged": false,
-    "next": "Git preservation and exact final-head CI; normal main integration is a separate followup. Next product gap: upstream refresh/ingestion delivery contract; model/provider/graph/physical acceptance remains separate.",
+    "next": "Git owner can compare PR305 final reviewed head with latest main for separately authorized normal integration. Upstream refresh/ingestion is the next product gap; model/provider/graph/physical acceptance remains separate.",
     "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
     "independentReview": "docs/evidence/development-execution/eve-post-source-independent-review.json",
-    "supersededPr": "https://github.com/k999ln/rock/pull/304"
+    "supersededPr": "https://github.com/k999ln/rock/pull/304",
+    "branch": "codex/eve-post-acl-delivery-20261029",
+    "pullRequest": "https://github.com/k999ln/rock/pull/305",
+    "verifiedCiHead": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+    "ciEvidence": "docs/evidence/development-execution/eve-post-source-ci.json",
+    "finalHeadReadback": "https://github.com/k999ln/rock/pull/305"
   }
 }

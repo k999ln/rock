@@ -60,7 +60,7 @@ main未採用の既存runtime sourceは固定pin8件とbuild入力28件が一致
 
 ### 投稿・返信のACLと出典確認（O5・ROCK）
 
-基点main `bf86f9ee83d7af5af8174f89a40d4514411935a9`。投稿・返信1件の本文・添付と本人/閲覧権限を固定・再照合してEveへ明示読込し、既存担当保存の原子SQL条件で再確認する。rootがclient/UI/共有資料、server workerがACL/保存、別reviewerが独立検収を担当。独立検収PASS（独立221件・0fail/skip、13source hash一致）、合成Eve/隔離Chrome/実local SDKとConnectorで投稿→行数/鍵付き返信→合計の2役を含む3ケース成功。全verifyはNode3632件/3628pass/0fail/4skip、build/API/missionを含め成功。[証拠](docs/evidence/development-execution/eve-post-source-acl.json)へ初回sandbox loopback拒否と許可済み再試験も区別して保存。Git/最終headCIは次段階で、main未統合・実モデル/上流同期/Agent graph/実機/全体完成へ加算しない。公開・配備・616件一括公開は保留。
+基点main `bf86f9ee83d7af5af8174f89a40d4514411935a9`。投稿・返信1件の本文・添付と本人/閲覧権限を固定・再照合してEveへ明示読込し、既存担当保存の原子SQL条件で再確認する。rootがclient/UI/共有資料、server workerがACL/保存、別reviewerが独立検収を担当。独立検収PASS（独立221件・0fail/skip、13source hash一致）、合成Eve/隔離Chrome/実local SDKとConnectorで投稿→行数/鍵付き返信→合計の2役を含む3ケース成功。全verifyはNode3632件/3628pass/0fail/4skip、build/API/missionを含め成功。[証拠](docs/evidence/development-execution/eve-post-source-acl.json)へ初回sandbox loopback拒否と許可済み再試験も区別して保存。[PR305](https://github.com/k999ln/rock/pull/305)へ保存し、head `eb170a3e`の同SHA CI7check/4workflow全成功を[保存](docs/evidence/development-execution/eve-post-source-ci.json)。元PR304/commitは保持し、検収記録のファイルhash2件の秘密値誤検出をpath/digest配列の表記で解消。source13・scanner policy・履歴は不変、再検収済み。記録更新後の最終headとCIはPR305説明で再照合する。次はGit担当の最新main比較・別途許可後の通常統合。main未統合・実モデル/上流同期/Agent graph/実機/全体完成へ加算しない。公開・配備・616件一括公開は保留。
 
 ### 選んだ出典・Eve回答から担当保存（2026-10-29 / O5・Git・ROCK）
 

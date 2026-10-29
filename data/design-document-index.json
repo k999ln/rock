@@ -328,7 +328,8 @@
         "tests/eve-post-source-client.test.mjs",
         "tests/eve-smith-mii-browser.test.mjs"
       ],
-      "acceptance": "selected social post/reply snapshot with live account/profile/member/key predicates; host/fixture only; runtime and CI evidence remains staged"
+      "acceptance": "host-scoped independent221 and isolated3browser cases; full verify passed; preservedhead7CI passed; receipt successor finalhead readback in PR305",
+      "ciEvidence": "docs/evidence/development-execution/eve-post-source-ci.json"
     }
   },
   "latestRockstarOsDesign": {

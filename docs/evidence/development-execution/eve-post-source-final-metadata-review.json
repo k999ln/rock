@@ -1,0 +1,51 @@
+{
+  "schema": "rockstaros.post-acl-final-metadata-independent-review/1",
+  "task": "POSTACL-v1",
+  "reviewer": "/root/post_acl_review",
+  "result": "PASS_SCOPED_NO_MUST_FIX",
+  "mustFix": [],
+  "reviewedBase": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+  "reviewedBranch": "codex/eve-post-acl-delivery-20261029",
+  "scope": "Uncommitted CI receipt/progress-only successor; no production or test edits",
+  "checks": {
+    "actualCI": {
+      "head": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "checkCount": 7,
+      "workflowCount": 4,
+      "allCompletedSuccess": true,
+      "idsNamesShaStatusResultsUrlsMatchGitHub": true,
+      "receipt": "docs/evidence/development-execution/eve-post-source-ci.json",
+      "receiptSha256": "c4f8b3b145af10e41a3391ff449a630ed5f77bbb43b5905b6f788f2cac6aae05"
+    },
+    "productionFiles": 13,
+    "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
+    "sourceUnchanged": true,
+    "threeProgressObjectsEqual": true,
+    "otherTopLevelProgressKeysUnchanged": true,
+    "receiptAndPreservedReviewHashesValid": true,
+    "diffCheckPassed": true,
+    "metadataOnly": true
+  },
+  "historicalAttempt": {
+    "head": "58d96f87065aa4641968d2623710ca784128599e",
+    "completed": true,
+    "successChecks": 6,
+    "failedChecks": 1,
+    "failedName": "SPIDER / secrets",
+    "publicSourceDigestFalsePositive": true,
+    "failedBranchAndPr304Preserved": true,
+    "scannerPolicyUnchanged": true
+  },
+  "claimBoundary": "Only preserved Eb head CI accepted. Successor own exact pushed-head CI still required and final PR305 readback records that result without another source mutation.",
+  "mainMerged": false,
+  "wholeUnitAccepted": false,
+  "holds": {
+    "publication": "HOLD",
+    "deployment": "HOLD",
+    "bulk616": "HOLD"
+  },
+  "actualModelOrProviderAccepted": false,
+  "physicalAccepted": false,
+  "wholeEveAccepted": false,
+  "forbiddenFileUntouched": true
+}

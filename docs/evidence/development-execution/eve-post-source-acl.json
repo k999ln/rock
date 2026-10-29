@@ -48,7 +48,7 @@
       "actual model/provider and upstream ingestion are separate acceptances"
     ]
   },
-  "implementationState": "implemented_independently_reviewed_host_scoped",
+  "implementationState": "git_preserved_independent_full_verify_same_sha_ci_pass_host_scoped",
   "verification": {
     "independentReview": {
       "result": "PASS_SCOPED",
@@ -87,7 +87,16 @@
       "sourceAggregateSha256": "d19f200d3f1878e25cbd8fee496ae590ac201899653d2795929b815d5aa2bd25",
       "evidenceLevel": "macOS host; synthetic/local loopback; no actual inference/provider/physical acceptance"
     },
-    "finalHeadCi": "pending exact pushed-head CI; final PR description is authoritative after receipt successor",
+    "finalHeadCi": {
+      "verifiedHead": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+      "checksPassed": 7,
+      "workflowRunsPassed": 4,
+      "receipt": "docs/evidence/development-execution/eve-post-source-ci.json",
+      "receiptSha256": "c4f8b3b145af10e41a3391ff449a630ed5f77bbb43b5905b6f788f2cac6aae05",
+      "preservedHeadIndependentReview": "docs/evidence/development-execution/eve-post-source-preserved-head-review.json",
+      "preservedHeadReviewSha256": "e990cad038cab9d2c822a63d43683a2851d3c17c90459d64f16197f5844238b0",
+      "successorReadback": "PR305 description and exact-current-head checks; metadata-only receipt successor has its own final-head CI"
+    },
     "browser": {
       "evidenceLevel": "isolated Chrome / SQLite / synthetic Eve / real local SDK and Connector loopback",
       "report": "docs/evidence/development-execution/eve-post-source-browser-acceptance.json",
@@ -145,7 +154,8 @@
         "findings": 2,
         "classification": "false positives on public file SHA256 in source manifests, not credentials",
         "sourceFile": "lib/community-key-client.ts",
-        "repair": "Unambiguous sourceFiles path/sha256 array on fresh-base successor; retain original history and scanner policy."
+        "repair": "Unambiguous sourceFiles path/sha256 array on fresh-base successor; retain original history and scanner policy.",
+        "otherSixChecks": "completed/success including full verify"
       }
     ],
     "metadataReencodingReview": {
@@ -153,6 +163,12 @@
       "sha256": "fd26f072f852a0c8ba87e93412b8dfd49693b33c82c5110ed9f2149d66390ece",
       "result": "PASS_SCOPED",
       "sourceUnchanged": true
+    },
+    "finalMetadataReview": {
+      "report": "docs/evidence/development-execution/eve-post-source-final-metadata-review.json",
+      "sha256": "5b48db035dc669dd5234eb755d62ae6a09b458febd44cc9d1874ea2a2efbb8e2",
+      "result": "PASS_SCOPED_NO_MUST_FIX",
+      "productionSourceUnchanged": true
     }
   },
   "git": {
@@ -160,7 +176,11 @@
     "mainMerged": false,
     "adoptedFromCommit": "58d96f87065aa4641968d2623710ca784128599e",
     "supersededPr": "https://github.com/k999ln/rock/pull/304",
-    "historyPreservation": "Original branch and PR304 retain original reviewed implementation and false-positive CI. Fresh branch starts at same verified main, adopts identical13 source bytes, and changes receipt encoding only. No shared history rewritten; scanner policy unchanged."
+    "historyPreservation": "Original branch and PR304 retain original reviewed implementation and false-positive CI. Fresh branch starts at same verified main, adopts identical13 source bytes, and changes receipt encoding only. No shared history rewritten; scanner policy unchanged.",
+    "pullRequest": "https://github.com/k999ln/rock/pull/305",
+    "branchSaved": true,
+    "preservedSourceCommit": "eb170a3ee048d8c2d698754dcc55ead689d07e2b",
+    "finalHeadReference": "https://github.com/k999ln/rock/pull/305"
   },
   "holds": {
     "publication": "HOLD",
