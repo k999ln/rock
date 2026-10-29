@@ -100,3 +100,22 @@
 .os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px}.os-header .os-brand img{width:34px;height:34px;flex-basis:34px}
 
 .os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-current-app{display:none}}
+
+/* One workspace frame for request, results, connections and settings. */
+.rock-workspace.rock-workspace { --os-content:1120px; padding-bottom:calc(92px + env(safe-area-inset-bottom)); }
+.rock-workspace .rock-main-column-full { width:100%; max-width:1120px; margin-inline:auto; }
+.rock-workspace .os-header-inner { padding-inline:24px; }
+.rock-workspace .rock-main { padding:24px 32px 32px; max-width:1120px; }
+.rock-workspace .os-shell-navigation.os-shell-navigation { display:grid; grid-template-columns:repeat(var(--os-navigation-count,3),minmax(0,1fr)); position:fixed; inset:auto 0 0; margin-inline:auto; width:min(100%,680px); height:calc(var(--os-shell-navigation-height) + env(safe-area-inset-bottom)); padding:0 0 env(safe-area-inset-bottom); z-index:90; background:var(--os-shell-bg); border-top:1px solid var(--os-shell-line); }
+.rock-workspace .os-shell-navigation.os-shell-navigation a { flex-direction:column; gap:4px; border-radius:0; font-size:11px; min-height:var(--os-shell-navigation-height); }
+.os-flow-navigation { display:flex; gap:6px; padding:10px 24px; border-bottom:1px solid var(--os-shell-line); background:var(--os-shell-panel); overflow-x:auto; }
+.os-flow-navigation a { min-height:48px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 17px; border:1px solid transparent; border-radius:12px; font-size:13px; line-height:1.4; color:var(--os-shell-muted); text-decoration:none; white-space:nowrap; }
+.os-flow-navigation a[aria-current='page'] { color:var(--os-shell-accent); background:#e5eadc; }
+.os-flow-navigation a:focus-visible { outline:2px solid var(--os-shell-focus); outline-offset:-2px; }
+.os-flow-navigation a[aria-disabled='true'] { opacity:.45; pointer-events:none; }
+.rock-workspace :is(button,input,select,summary) { scroll-margin-top:140px; }
+@media(max-width:600px) { .rock-workspace .rock-main{padding:20px 16px}.rock-workspace .os-header-inner{padding-inline:16px}.os-flow-navigation{padding:8px 12px;gap:4px}.os-flow-navigation a{padding:10px 11px;gap:6px;font-size:12px;flex:1}.os-flow-navigation a svg{width:16px;flex-shrink:0} }
+body:has(.rock-workspace) { background:var(--os-shell-bg); color:var(--os-shell-text); color-scheme:light; }
+html:has(.rock-workspace) { background:#f6f4ef; color-scheme:light; }
+.rock-workspace .os-header{position:sticky;top:0}.os-flow-navigation{position:sticky;top:60px;z-index:25}@media(max-width:1279px){.os-flow-navigation{top:56px}}
+.rock-tool-dialog .black-button{background:var(--os-shell-accent);color:var(--os-shell-accent-ink);min-height:48px}

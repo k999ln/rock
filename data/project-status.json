@@ -10074,7 +10074,7 @@
   },
   "osHomeNewsRecovery": {
     "date": "2026-10-29",
-    "status": "verified_ready_for_publication",
+    "status": "published_readback_verified",
     "owner": "ROCK",
     "taskIds": [
       "HOME01",
@@ -10093,6 +10093,29 @@
       "coreSkipped": 1,
       "targetedAfterRefinement": 26,
       "typecheck": "passed"
+    },
+    "publishedVersion": 121,
+    "publishedSource": "6cb3fb01ed75fd346f71241e1aed6bc49456bdec"
+  },
+  "osWorkspaceUiUx": {
+    "date": "2026-10-29",
+    "status": "verified_ready_for_publication",
+    "owner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "OS10"
+    ],
+    "evidence": [
+      "docs/evidence/os-workspace-ui-ux.json"
+    ],
+    "next": "Complete mobile and deep-link UI QA, full verify/build, publish existing Site and read back canonical domain; GitHub integration separate.",
+    "verification": {
+      "fullVerifyExit": 0,
+      "corePassed": 2619,
+      "coreSkipped": 1,
+      "apiAssertions": 1621,
+      "assetMissing": 0
     }
   }
 }

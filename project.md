@@ -905,3 +905,10 @@ Eve→smis→Pixel/Webの実行一周（WEB04/HOME01/SKY21/OS10）: 会話で確
 公開v120を専用sourceへ取得。固定RSS二経路とGDELT復旧・日時出典区別、3つの仕事入口、PC/狭幅配置と空白削減を実装中。対象14試験とtypecheck成功。外部RSS単体実取得38件、local Workerと公開readbackは検証中。D1/仕事/料金/権限/保存/停止を保持し、GitHub main統合とは分ける。
 
 OSホーム修正の検証完了: npm run verify exit0（2613pass/1skip/0fail、API1621、CSV385、asset220 missing0）。話題0件と通信障害の区別を追補し26試験/typecheck成功。PC/390px・能力dialog往復・RSS実取得を確認。正式Sitesへの保存・公開と実domain読戻しを次に実施、GitHubmain/native/DB変更は対象外。
+
+### 2026-10-29 Eve・成果・接続・設定のUI/UX
+公開v121正規sourceを同期し、Eve/成果のhash切替・未送信保護、共通作業nav、接続404修正、設定/接続詳細/診断の配色と操作を実装。型/lintと関連20/38試験、local未送信入力の往復/移動取消保持を確認。次は390px/深いrouteと全verify/build/公開readback。データ/権限/実行/販売gate、GitHubmainを変更しない。
+
+Eve/成果/接続/権限詳細/設定/診断を390pxで確認し横溢れなし。依頼↔成果の文章保持、別route移動取消での保持、接続管理dialog、設定から復旧への到達を確認。既存backend未設定のlocalでは接続失敗/再確認表示を検証。関連46試験合格。診断wrapperをテストharnessへ追加し、既存restore/reset/async fenceの回帰を維持。最終verifyと公開readbackを継続する。
+
+UI/UX最終候補の全verify exit0: 2620件/2619pass/1skip/0fail、API1621、CSV385、asset222 missing0。Eve未送信入力の保持/移動取消は実component試験とCUAで確認。接続/診断/backupのAPI・安全境界は維持。既存Site v121/publicのまま次版を保存・配備し、正式domainで各画面を読戻す。GitHubmain統合・新しい端末承認/復元/実行は今回行わない。

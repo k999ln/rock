@@ -56,10 +56,11 @@ export default function SkyNetwork() {
   }
   const connected=connection==='connected'&&!access.executionBlocked;
   const DeviceIcon=hint?.mobile?Smartphone:Laptop;
-  return <div className={frame.frame}><WorkspaceShell title="smis · 接続" tone="sky" hideTopActions contentClassName={styles.shell}>
+  return <div className={frame.frame}><WorkspaceShell title="接続の詳細" hideTopActions contentClassName={styles.shell}>
     <div className={styles.page}>
       <SkyNavigation active="network" />
-      <header className={styles.header}><p className={styles.eyebrow}>CONNECTIONS</p><h1>つないで、すぐに。</h1><p>端末に合った使い方を、smisが案内します。</p></header>
+      <Link href="/connect/service" className={styles.textButton}>← 接続の選択へ戻る</Link>
+      <header className={styles.header}><p className={styles.eyebrow}>CONNECTIONS</p><h1>接続と権限を確認する</h1><p>この端末の接続と、外部サービスへの許可を確認できます。</p></header>
       <ExecutionSignin state={access.accessState}/>
       <section className={styles.device} aria-label="この端末">
         <div className={styles.deviceIcon}><DeviceIcon size={34} strokeWidth={1.3}/></div>
@@ -70,8 +71,8 @@ export default function SkyNetwork() {
       <div className={styles.routes}>
         <section className={styles.route}>
           <div className={styles.row}><Globe2 size={22} strokeWidth={1.4}/><span className={styles.tag}>追加の端末設定なし</span></div>
-          <h2>ブラウザで使う</h2><p>Web対応のツールは、このまま。実行履歴と仕事はZemaで確認できます。</p>
-          <Link className={hint?.mobile?styles.primary:styles.secondary} href="/chat?view=work">Zemaで仕事を確認 <ArrowRight size={16}/></Link>
+          <h2>ブラウザで使う</h2><p>Web対応のツールは、このまま。依頼・進捗・成果はEveで確認できます。</p>
+          <Link className={hint?.mobile?styles.primary:styles.secondary} href="/os/eve#eve-work-results">Eveで仕事と成果を確認 <ArrowRight size={16}/></Link>
         </section>
         <section className={`${styles.route} ${!hint?.mobile?styles.recommended:''}`}>
           <div className={styles.row}><Laptop size={22} strokeWidth={1.4}/><span className={styles.tag}>{connected?'接続確認済み':hint?.mobile?'PCがあるときに':'この端末に合わせて案内'}</span></div>

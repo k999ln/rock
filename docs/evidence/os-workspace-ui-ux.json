@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-29",
+  "baseVersion": 121,
+  "baseSource": "6cb3fb01ed75fd346f71241e1aed6bc49456bdec",
+  "scope": "Eve, work/results, connection selection, device authorization, network/provider settings, settings and system maintenance UI",
+  "productionFinding": "/connect/service returned 404; settings navigation stacked vertically; Eve composer behind optional features; work/results buried; fake appearance-edit link",
+  "localChecks": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "focusedNavigationTests": 20,
+    "deviceAuthorizationAndClaimTests": 38,
+    "draftAcrossResults": "retained",
+    "cancelCrossRouteNavigation": "retained",
+    "newConnectRoute": "rendered",
+    "settingsSingleMain": true,
+    "focusedLatest": 46,
+    "mobileWidths": {
+      "eve": 390,
+      "results": 390,
+      "connectionSelection": 390,
+      "networkDetails": 390,
+      "settings": 390,
+      "diagnostics": 390
+    },
+    "allMeasuredHorizontalOverflow": false,
+    "providerDialogReadable": true,
+    "deviceAuthorizationRealApproval": "not performed",
+    "localBackend": "private encryption/runtime setup absent; error/retry states tested; actual owner readback remains publication check",
+    "navigationAndDraftGuard": "actual component tests preserve pinned query and draft across results; cancel discard keeps original text"
+  },
+  "preserved": [
+    "Jobs and encrypted owner storage",
+    "thread/query/model revision pins",
+    "permission/budget/stop controls",
+    "D1/R2/MCP manifest",
+    "device/claim approval APIs and original readback",
+    "original 3-service navigation"
+  ],
+  "publication": "pending",
+  "fullVerify": {
+    "exit": 0,
+    "coreTests": 2620,
+    "passed": 2619,
+    "skipped": 1,
+    "failed": 0,
+    "apiAssertions": 1621,
+    "csvAssertions": 385,
+    "assetReferences": 222,
+    "assetMissing": 0
+  },
+  "githubMainIntegrated": false,
+  "regressionChanges": "Existing source label assertions updated for new Eve buttons; diagnostic UI harness gained transparent shared-shell stub. Original restore/reset/async fencing assertions passed.",
+  "observedGithubMain": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
+  "postVerifyDisclosure": {
+    "purchaseClaimVisibleByDefault": true,
+    "focusedTests": 36,
+    "failed": 0
+  }
+}

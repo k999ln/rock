@@ -34,6 +34,8 @@ import {
 } from '@/lib/sky-eve-connections';
 import styles from './eve-sync-workspace.module.css';
 import WorkspaceShell from './workspace-shell';
+import {guardHistoryNavigation} from '@/lib/history-navigation-guard';
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {useSearchParams} from 'next/navigation';
 import SkyAgentLibrary from './sky-agent-library';
 import {Bot, Code2, MessageCircle, ListChecks, PanelLeft} from 'lucide-react';
@@ -66,6 +68,7 @@ const label = (s: string) =>
     cancelled: '停止済み',
   })[s] ?? s;
 const subscribeNewsSourceRequest=()=>()=>{};
+const subscribeWorkspaceView=(changed:()=>void)=>{window.addEventListener('hashchange',changed);window.addEventListener('popstate',changed);return()=>{window.removeEventListener('hashchange',changed);window.removeEventListener('popstate',changed);};};
 export default function EveSyncWorkspace({
   initialThreadId = '',
   initialSelection = { kind: 'none' },
@@ -73,6 +76,8 @@ export default function EveSyncWorkspace({
   initialThreadId?: string;
   initialSelection?: SkyEveSelection;
 }) {
+  const resultsView=useSyncExternalStore(subscribeWorkspaceView,()=>window.location.hash==='#eve-work-results',()=>false);
+  const composeRequested=useSyncExternalStore(subscribeWorkspaceView,()=>window.location.hash==='#eve-compose',()=>false);
   const profileRequested=useSkyAgentProfileRequested();
   const profileKey=useSkyAgentProfileKey();
   const [toolAgentSelection,setToolAgentSelection]=useState<SkyAgentProfileSelection|null>(null);
@@ -80,7 +85,8 @@ export default function EveSyncWorkspace({
   const workbenchQuery=search.toString();
   const [modeOverride,setModeOverrideValue]=useState<{query:string;mode:'work'|'build'}|null>(null);
   const setModeOverride=(mode:'work'|'build')=>setModeOverrideValue({query:workbenchQuery,mode});
-  const workbenchMode=(modeOverride?.query===workbenchQuery?modeOverride.mode:null)??(search.get('view')==='build'?'build':'work');
+  const workbenchMode=resultsView||composeRequested?'work':(modeOverride?.query===workbenchQuery?modeOverride.mode:null)??(search.get('view')==='build'?'build':'work');
+  useEffect(()=>{if(resultsView){const frame=requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));return()=>cancelAnimationFrame(frame);}},[resultsView,workbenchQuery]);
   const [historyOpen,setHistoryOpen]=useState(false);
   const [buildVisited,setBuildVisited]=useState(search.get('view')==='build');
   useEffect(()=>{if(workbenchMode!=='build'||buildVisited)return;const frame=requestAnimationFrame(()=>setBuildVisited(true));return()=>cancelAnimationFrame(frame);},[workbenchMode,buildVisited]);
@@ -117,6 +123,16 @@ export default function EveSyncWorkspace({
   const [stoppingRuntime, setStoppingRuntime] = useState('');
   const account = useRef(''),
     expanded = useRef(false);
+  const [leaveTarget,setLeaveTarget]=useState<{href?:string;resume?:()=>void}|null>(null);
+  const discardingDraft=useRef(false);
+  const hasUnsentDraft=Boolean(input.trim());
+  useEffect(()=>{
+    if(!hasUnsentDraft)return;
+    const warn=(event:BeforeUnloadEvent)=>{if(!discardingDraft.current)event.preventDefault();};
+    const release=guardHistoryNavigation(window,resume=>{if(discardingDraft.current)return false;setLeaveTarget({resume});return true;});
+    window.addEventListener('beforeunload',warn);
+    return()=>{release();window.removeEventListener('beforeunload',warn);};
+  },[hasUnsentDraft]);
   const [connectionOwner, setConnectionOwner] = useState('');
   const toolAgent=toolAgentSelection?.ownerUserId===connectionOwner&&toolAgentSelection.key===profileKey?toolAgentSelection.agent:undefined;
   const [observedAt, setObservedAt] = useState(0);
@@ -362,6 +378,7 @@ export default function EveSyncWorkspace({
     setConsent(false);
     operation.current = null;
     history.replaceState(null, '', conversationPath(id));
+    window.dispatchEvent(new Event('hashchange'));
     void api<EveHistoryItem & { ownerUserId: string }>(
       '/api/eve/history?id=' + id,
     )
@@ -600,14 +617,21 @@ export default function EveSyncWorkspace({
     }
   }
   return (
-    <WorkspaceShell title="Eve" hideTopActions hideAccountAccess contentClassName="eve-sync-main">
+    <WorkspaceShell title="Eve" hideTopActions hideAccountAccess running={busy} contentClassName="eve-sync-main" onClickCapture={event=>{
+      if(busy||!hasUnsentDraft||discardingDraft.current||event.button!==0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;
+      const link=(event.target as Element).closest('a[href]');
+      if(!link||link.getAttribute('target')==='_blank'||link.hasAttribute('download'))return;
+      const target=new URL(link.getAttribute('href')!,window.location.href);
+      if(target.pathname===window.location.pathname&&target.search===window.location.search&&target.origin===window.location.origin)return;
+      event.preventDefault();setLeaveTarget({href:target.href});
+    }}>
       <div className={styles.app}>
         <aside className={styles.sidebar} data-open={historyOpen || undefined}>
           <button className={styles.historyClose} type="button" onClick={()=>setHistoryOpen(false)}>履歴を閉じる</button>
           <Link href="/os" className={styles.brand}>
             RockstarOS
           </Link>
-          <h1>Eve</h1>
+          <h2>Eve</h2>
           <p>いつでも、同じ続きから。</p>
           <button onClick={fresh}>＋ 新しい会話</button>
           <nav aria-label="Eveの会話">
@@ -633,23 +657,26 @@ export default function EveSyncWorkspace({
         </aside>
         <section className={styles.desk}>
           <div className={styles.studioHeader}>
-            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h2>{workbenchMode==='build'?'エージェントを作る':'つくる仕事を、ここから。'}</h2><p>目的を決め、担当と実行先を確認。承認・停止・成果まで、この仕事で。</p></div>
+            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h1>{resultsView?'仕事と成果':workbenchMode==='build'?'エージェントを作る':'Eveに依頼する'}</h1><p>目的を決め、担当と実行先を確認。承認・停止・成果まで、この仕事で。</p></div>
             <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>会話の履歴</button>
           </div>
           <nav className={styles.workbenchTabs} aria-label="Eveの作業を切り替える">
-            <button type="button" aria-pressed={workbenchMode==='build'} onClick={()=>{setBuildVisited(true);setModeOverride('build');}}><Code2 size={17}/>エージェントを作る</button>
-            <button type="button" aria-pressed={workbenchMode==='work'} onClick={()=>setModeOverride('work')}><MessageCircle size={17}/>実行・相談</button>
-            <button type="button" onClick={()=>{setModeOverride('work');requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));}}><ListChecks size={17}/>仕事と成果</button>
+            <button type="button" aria-pressed={workbenchMode==='build'} onClick={()=>{if(resultsView||composeRequested){window.history.replaceState(null,'',window.location.pathname+window.location.search);window.dispatchEvent(new Event('hashchange'));}setBuildVisited(true);setModeOverride('build');}}><Code2 size={17}/>担当を作る</button>
+            <button type="button" aria-pressed={workbenchMode==='work'&&!resultsView} onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}><MessageCircle size={17}/>依頼する</button>
+            <button type="button" aria-pressed={resultsView} onClick={()=>{setModeOverride('work');window.location.hash='eve-work-results';}}><ListChecks size={17}/>仕事と成果</button>
           </nav>
+          {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
           <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><EveAgentComposer {...composerProps}/><details><summary>設定を編集して作る・保存済みの担当を管理する</summary><SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/></details></>}</div>
           <div hidden={workbenchMode!=='work'} className={styles.workContent}>
+          <div hidden={resultsView} id="eve-compose" className={styles.composeView}>
           <div hidden={profileRequested} className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
-          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
+          <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner} ownerUserId={connectionOwner} onSelection={setToolAgentSelection}/>}
           {signedIn===true&&connectionOwner&&profileRequested&&toolAgent&&<EveAgentComposer key={connectionOwner+':'+profileKey} {...composerProps} agent={toolAgent}/>}
           {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setAgentWorkOpen(event.currentTarget.open)}><summary>Agentへ仕事を任せる</summary>{agentWorkOpen&&<Workbench key={connectionOwner} embedded/>}</details>}
           {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
+</details>
           <header>
             <div>
               <span className={styles.eyebrow}>YOUR CONTINUOUS WORKSPACE</span>
@@ -662,9 +689,10 @@ export default function EveSyncWorkspace({
                 ? 'アカウントの履歴'
                 : signedIn === false
                   ? 'サインイン待ち'
-                  : '接続を確認中'}
+                  : message&&!online?'接続の再確認が必要':'接続を確認中'}
             </span>
           </header>
+          </div>
           {signedIn === false ? (
             <div className={styles.welcome}>
               <h3>Pixelでも、Webでも、同じEve。</h3>
@@ -682,8 +710,10 @@ export default function EveSyncWorkspace({
             </div>
           ) : (
             <>
+              <div hidden={resultsView}>
               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
                 <h3>何を作り、進めたいですか？</h3>
+                {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
                 <details className={styles.executionSettings} open={!device||!agent||!selectionMatches}><summary>実行先・担当・基盤モデルを確認する</summary>
                 <div className={styles.modelIdentity} aria-label="使用するLLM">
                   <div>
@@ -761,6 +791,7 @@ export default function EveSyncWorkspace({
                   value={input}
                   maxLength={2000}
                   onChange={(e) => {
+                    discardingDraft.current=false;
                     setInput(e.target.value);
                     setConsent(false);
                   }}
@@ -814,14 +845,17 @@ export default function EveSyncWorkspace({
                 ))}
                 {!item && (
                   <div className={styles.welcome}>
-                    <h3>画面を変えても、同じ続きから。</h3>
+                    <h3>依頼も、続きの会話もここから。</h3>
                     <p>
-                      左の履歴を開くか、依頼を書いて始めます。接続した実行先から、同じ会話へ成果が届きます。画面を閉じた後の継続は実行先の状態によります。
+                      「会話の履歴」を開くか、上の依頼欄に書いて始めます。接続した実行先から、同じ会話へ成果が届きます。画面を閉じた後の継続は実行先の状態によります。
                     </p>
                   </div>
                 )}
               </div>
-              <h3 id="eve-work-results" className={styles.resultsTitle}>仕事と成果</h3>
+              </div>
+              <section hidden={!resultsView} id="eve-work-results" className={styles.resultsView} aria-labelledby="eve-results-title">
+              <div className={styles.resultsHeader}><h2 id="eve-results-title">{selected?'この会話の仕事と成果':'保存した仕事と成果'}</h2><p>進捗を確認し、成果を開く・保存する。受領待ちや停止の照合もここで確認できます。</p><button type="button" onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}>依頼画面に戻る</button><nav aria-label="ほかの実行先の仕事と成果"><button type="button" onClick={()=>{setCloudHistoryOpen(true);window.location.hash='eve-compose';setModeOverride('work');}}>Cloudの仕事と成果</button><button type="button" onClick={()=>{setToolExpanded(true);window.location.hash='eve-compose';setModeOverride('work');}}>Toolの仕事と成果</button></nav></div>
+              {signedIn===null?<output>{message&&!online?'仕事を取得できません。上の「接続を再確認」から再試行できます。':'仕事を確認しています…'}</output>:!jobs.some(j=>!selected||j.threadId===selected)&&!runtimeJobs.some(j=>!selected||j.threadId===selected)&&!runtimePending.some(j=>!selected||j.threadId===selected)?<div className={styles.resultsEmpty}><h3>{selected?'この会話の仕事はまだありません':'保存した仕事はまだありません'}</h3><p>依頼を準備し、担当と実行先を確認すると、同じ会話で進捗と成果を確認できます。</p><button type="button" onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}>新しい依頼を準備する</button></div>:null}
               <div className={styles.results}>
                 {jobs
                   .filter((j) => !selected || j.threadId === selected)
@@ -928,6 +962,7 @@ export default function EveSyncWorkspace({
                     </article>
                   ))}
               </div>
+              </section>
               {runtimeNotice && (
                 <output className={styles.notice}>{runtimeNotice}</output>
               )}
@@ -939,6 +974,7 @@ export default function EveSyncWorkspace({
           </div>
         </section>
       </div>
+      <Dialog open={Boolean(leaveTarget)} onOpenChange={open=>{if(!open)setLeaveTarget(null);}}><DialogContent className="rock-tool-dialog"><DialogTitle>未送信の依頼があります</DialogTitle><DialogDescription>この画面を離れると、入力中の依頼文が失われます。依頼・成果画面の切り替えでは保持されます。接続や設定を確認したい場合は、元の画面を残して別タブで開けます。</DialogDescription><div className={styles.leaveActions}><button type="button" onClick={()=>setLeaveTarget(null)}>入力を残して戻る</button>{leaveTarget?.href&&<a href={leaveTarget.href} target="_blank" rel="noopener noreferrer" onClick={()=>setLeaveTarget(null)}>別タブで開く</a>}<button type="button" onClick={()=>{const target=leaveTarget;discardingDraft.current=true;setInput('');setConsent(false);setLeaveTarget(null);requestAnimationFrame(()=>{if(target?.href)window.location.assign(target.href);else target?.resume?.();});}}>未送信の依頼を破棄して移動</button></div></DialogContent></Dialog>
     </WorkspaceShell>
   );
 }

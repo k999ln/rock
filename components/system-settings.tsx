@@ -88,7 +88,7 @@ export default function SystemSettings() {
 
   return (
     <WorkspaceShell title="設定" hideTopActions>
-      <main className={styles.page}>
+      <div className={styles.page}>
         <div className={styles.content}>
           <section className={styles.hero}>
             <span>
@@ -96,8 +96,8 @@ export default function SystemSettings() {
             </span>
             <div>
               <small>RockstarOS</small>
-              <h1>この端末を整える</h1>
-              <p>接続・権限・保存・更新の状態を、ここで確認できます。</p>
+              <h1>設定</h1>
+              <p>アカウント、接続、保存と復旧。必要な項目から確認できます。</p>
             </div>
           </section>
 
@@ -124,11 +124,11 @@ export default function SystemSettings() {
 
           <SettingsGroup title="自分のOS">
             <SettingLink
-              href="/?edit=1"
+              href="/"
               icon={<Palette />}
               tone="purple"
-              title="ホーム画面と外観"
-              detail="壁紙・色・アイコン・並び順"
+              title="ホームを開く"
+              detail="依頼・仕事と成果・能力の入口"
             />
             <SettingButton
               icon={<Download />}
@@ -137,6 +137,7 @@ export default function SystemSettings() {
               detail={
                 standalone ? 'アプリとして起動中' : 'iPhone / PCへ追加する手順'
               }
+              expanded={installOpen}
               onClick={() => setInstallOpen((open) => !open)}
             />
             {installOpen && (
@@ -155,18 +156,18 @@ export default function SystemSettings() {
               onClick={() => setDeviceOpen(true)}
             />
             <SettingLink
-              href="/sky/network"
+              href="/os/sky/network"
               icon={<Router />}
               tone="cyan"
               title="アプリごとの接続・権限"
               detail="MCP、実行場所、許可を確認"
             />
             <SettingLink
-              href="/sky"
+              href="/#sky-manage"
               icon={<Cloud />}
               tone="sky"
-              title="smisアプリ管理"
-              detail="探す・接続する・掲載する"
+              title="追加した能力を管理"
+              detail="Agent・モデル・Toolの設定"
             />
           </SettingsGroup>
 
@@ -180,10 +181,11 @@ export default function SystemSettings() {
                 detail="自分の実行履歴を開く"
               />
             ) : (
-              <SettingRow
+              <SettingLink
+                href="/account"
                 icon={<UserRound />}
                 tone="orange"
-                title="利用者アカウント"
+                title="アカウントを確認"
                 detail={accountLabel}
               />
             )}
@@ -194,7 +196,7 @@ export default function SystemSettings() {
               detail="外観は端末内、実行記録は本人アカウント"
             />
             <SettingLink
-              href="/sky/network"
+              href="/os/sky/network"
               icon={<LockKeyhole />}
               tone="red"
               title="プライバシーと許可"
@@ -243,7 +245,7 @@ export default function SystemSettings() {
             <DeviceConnection />
           </DialogContent>
         </Dialog>
-      </main>
+      </div>
     </WorkspaceShell>
   );
 }
@@ -342,9 +344,10 @@ function SettingButton({
   title,
   detail,
   onClick,
-}: SettingProps & { onClick: () => void }) {
+  expanded,
+}: SettingProps & { onClick: () => void; expanded?: boolean }) {
   return (
-    <button className={styles.item} onClick={onClick}>
+    <button className={styles.item} onClick={onClick} aria-expanded={expanded}>
       <IconBox tone={tone}>{icon}</IconBox>
       <SettingCopy title={title} detail={detail} />
       <ArrowRight size={17} />

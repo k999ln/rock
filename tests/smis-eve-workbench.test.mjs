@@ -10,11 +10,11 @@ import * as connections from '../lib/sky-eve-connections.ts';
 import { smisStorageFixtureTables } from './helpers/smis-storage-fixture.mjs';
 import { skyAgentLibraryStore } from '../lib/sky-agent-library-store.ts';
 const read = path => readFileSync(new URL('../'+path,import.meta.url),'utf8');
-function harness(path,{initial={},params=new URLSearchParams(),fetcher=async()=>{throw Error('unexpected fetch');}}={}) {
+function harness(path,{initial={},params=new URLSearchParams(),fetcher=async()=>{throw Error('unexpected fetch');},liveSnapshots=false}={}) {
  const state=[],refs=[],effects=[],frames=[],events=new Map();let cursor=0,refCursor=0,effectCursor=0;
  const jsx=(type,props)=>({type,props:props??{}});
- const react={useState(value){const index=cursor++;if(!(index in state))state[index]=index in initial?initial[index]:typeof value==='function'?value():value;return[state[index],next=>{state[index]=typeof next==='function'?next(state[index]):next;}];},useRef(value){return refs[refCursor++]??={current:value};},useCallback:fn=>fn,useSyncExternalStore:(_subscribe,_get,server)=>server(),useEffect(fn){if(!(effectCursor in effects))effects[effectCursor]={fn,ran:false};effectCursor++;}};
- const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false},window:{addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
+ const react={useState(value){const index=cursor++;if(!(index in state))state[index]=index in initial?initial[index]:typeof value==='function'?value():value;return[state[index],next=>{state[index]=typeof next==='function'?next(state[index]):next;}];},useRef(value){return refs[refCursor++]??={current:value};},useCallback:fn=>fn,useSyncExternalStore:(_subscribe,get,server)=>liveSnapshots?get():server(),useEffect(fn){if(!(effectCursor in effects))effects[effectCursor]={fn,ran:false};effectCursor++;}};
+ const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false},window:{location:new URL('https://fixture.test/os/eve?'+params.toString()),history:{replaceState(){}},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{...props,children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
  function expand(node){if(Array.isArray(node))return node.flatMap(expand);if(!node||typeof node!=='object')return[node];if(node.props.hidden)return[];if(typeof node.type==='function')return expand(node.type(node.props));return[{...node,props:{...node.props,children:expand(node.props.children)}}];}
  return{render(props={}){cursor=refCursor=effectCursor=0;return expand(exports.default(props));},async effects(){for(const e of effects)if(!e.ran){e.ran=true;e.fn();}for(const fn of frames.splice(0))fn();await flush();}};
 }
@@ -52,8 +52,26 @@ void test('Eve tab changes preserve pinned URL context and a new agent link open
  const params=new URLSearchParams({device:'fixture-device',thread:'fixture-thread'});
  const app=harness('components/eve-sync-workspace.tsx',{params});
  const before=params.toString();
- button(app.render(),'エージェントを作る').props.onClick();
- assert.equal(button(app.render(),'エージェントを作る').props['aria-pressed'],true);assert.equal(params.toString(),before);
+ button(app.render(),'担当を作る').props.onClick();
+ assert.equal(button(app.render(),'担当を作る').props['aria-pressed'],true);assert.equal(params.toString(),before);
  params.delete('device');params.set('agent','fixture-saved-agent');params.set('agentRevision','1');
- assert.equal(button(app.render(),'実行・相談').props['aria-pressed'],true);
+ assert.equal(button(app.render(),'依頼する').props['aria-pressed'],true);
+});
+
+void test('actual Eve keeps its unsent request through results and blocks cross-route loss until explicit choice',()=>{
+ const app=harness('components/eve-sync-workspace.tsx',{liveSnapshots:true});
+ const input=()=>nodes(app.render()).find(n=>n.type==='textarea'&&n.props['aria-label']==='続きの依頼');
+ input().props.onChange({target:{value:'Synthetic unsent request'}});
+ button(app.render(),'仕事と成果').props.onClick();
+ assert.equal(input()?.props.value,undefined);
+ button(app.render(),'依頼画面に戻る').props.onClick();
+ assert.equal(input().props.value,'Synthetic unsent request');
+ let blocked=false;
+ const workspace=nodes(app.render()).find(n=>n.type==='workspace');
+ workspace.props.onClickCapture({button:0,target:{closest:()=>({getAttribute:key=>key==='href'?'/settings':null,hasAttribute:()=>false})},preventDefault(){blocked=true;}});
+ assert.equal(blocked,true);
+ assert.ok(nodes(app.render()).some(n=>n.props.open===true&&n.props.onOpenChange));
+ button(app.render(),'入力を残して戻る').props.onClick();
+ assert.equal(input().props.value,'Synthetic unsent request');
+ assert.equal(nodes(app.render()).some(n=>n.props.open===true&&n.props.onOpenChange),false);
 });

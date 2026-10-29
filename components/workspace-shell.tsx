@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode, type MouseEventHandler } from 'react';
 import Link from 'next/link';
 import OSHeader from './os-header';
+import WorkspaceFlowNavigation from './workspace-flow-navigation';
 import OsAccountAccess from './os-account-access';
 import { ArrowUpRight, Cable, CircleHelp } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
@@ -100,6 +101,7 @@ export default function WorkspaceShell({
             </div>
           )}
         </OSHeader>}
+        {!standaloneSky && <WorkspaceFlowNavigation running={running} />}
         {!standaloneSky && !hideAccountAccess && title === 'Eve' && <OsAccountAccess />}
         <main
           id="workspace-main"

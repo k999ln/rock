@@ -3147,5 +3147,24 @@
       "tests/public-news-provider.test.mjs"
     ],
     "nativeAcceptanceChanged": false
+  },
+  "osWorkspaceUiUx": {
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "OS10"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#webのeve成果接続設定を通すuiux2026-10-29",
+    "toolAuthority": "docs/sky-tools-complete-design.md#webのeve成果接続設定を通すuiux2026-10-29",
+    "source": [
+      "components/workspace-flow-navigation.tsx",
+      "components/eve-sync-workspace.tsx",
+      "app/connect/service/page.tsx",
+      "components/system-settings.tsx",
+      "components/sky-network.tsx",
+      "components/system-maintenance.tsx",
+      "tests/workspace-flow-navigation.test.mjs"
+    ],
+    "nativeAcceptanceChanged": false
   }
 }
