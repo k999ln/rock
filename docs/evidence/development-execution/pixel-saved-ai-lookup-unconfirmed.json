@@ -1,0 +1,19 @@
+{
+  "schema": "rockstaros.pixel-saved-ai-lookup-observation/1",
+  "observedDate": "2026-10-29",
+  "device": "Pixel 10",
+  "app": "dev.rock.shell 0.1.0; existing installation",
+  "method": "ADB opened existing Activity, viewed screen, tapped saved-AI lookup once, tapped status-recheck once; returned original Vanadium Activity to foreground. No inference or intentional model acquisition, installation, setting change or preparation resend.",
+  "before": "Sync window ended; saved AI not checked; prepare and stop preparation disabled.",
+  "afterLookup": "Lookup/preparation result unconfirmed; preparation/stop disabled. UI says acquisition will not occur and advises recheck without resending.",
+  "afterRecheck": "Same visible screen as after lookup (identical capture hash); recheck completion is not established.",
+  "screenSha256": [
+    "6a26d2229707885fad0f646f9b676398e10e0c9509bbbc3495856a047d57adbc",
+    "f3350da853222cb13bc525d337f292c2802c2540195127af1ccf386aa627b5ee",
+    "f3350da853222cb13bc525d337f292c2802c2540195127af1ccf386aa627b5ee"
+  ],
+  "screens": "Ephemeral local /private/tmp screenshots, not included in Git.",
+  "independentReview": "Separate reviewer inspected three screens: displayed unconfirmed and disabled states corroborated. Screens alone do not establish tap counts, no network/acquisition, device identity, app version, foreground restore or unchanged existing data.",
+  "limitations": "No claim of successful lookup, prepared model, same-job execution, mii hardware, physical OS or full data preservation verification; no data or credentials inventoried.",
+  "next": "Investigate why status remains unconfirmed without retrying preparation or changing existing connection/data."
+}
