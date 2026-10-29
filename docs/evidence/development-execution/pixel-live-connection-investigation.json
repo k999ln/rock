@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.pixel-live-connection-investigation/1",
-  "status": "partial_local_browser_eve_readback_app_link_unresolved",
+  "status": "public_timeline_news_unavailable_under_investigation",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "device": "Pixel 10 frankel",
   "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
@@ -19,8 +19,13 @@
     "Read-only privileged journal showed bridge service lifecycle events; no connection failure cause was established.",
     "One tap of the existing Pixel synchronization start control did not immediately clear the app connection-unconfirmed message.",
     "The existing app Eve link opened localhost:5199/os/eve/... and returned the existing local server error indicating the operation is unavailable.",
-    "Opening existing http://127.0.0.1:5199/ in the Pixel browser displayed the local Sky interface. Its Eve control displayed previously saved work and results; no content or identifiers are recorded here."
+    "Opening existing http://127.0.0.1:5199/ in the Pixel browser displayed the local Sky interface. Its Eve control displayed previously saved work and results; no content or identifiers are recorded here.",
+    "The owner identified the desired interface as the existing avoado.si browser timeline, not the Android app screen or local Sky browser page.",
+    "Pixel timeline eventually displayed the post composer and an empty-post message while news reported that some sources could not be confirmed and automatic retry would occur; an empty UI is not proof existing data was deleted.",
+    "The matching public Site reports version 120 and source bad2809956a347192707e25be57fda451a6c1a5f. Recent site logs include news requests canceled near 22 seconds and one HTTP 503 after about 10 seconds. The cause of the upstream failure was not established.",
+    "The public source has a 10-second provider timeout and accepts fallback snapshots only if younger than 24 hours; bundled snapshots dated October 21 and 22 were expired at observation.",
+    "Existing news parser and continuous feed fixture tests passed 18/18 on the checked public source; this does not demonstrate live feed recovery or mobile layout acceptance."
   ],
-  "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact.",
-  "next": "Investigate app-to-Eve endpoint configuration and synchronization contract while preserving existing forwarding, jobs and model state; verify the appropriate matching source and target before changing either."
+  "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
+  "next": "Diagnose the existing news provider outage and reproduce any reported mobile layout defect against Site version 120. Do not infer data loss from empty posts or introduce unapproved new external services."
 }
