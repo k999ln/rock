@@ -561,7 +561,7 @@ Pixel旧package f3b345の物理証拠16点・helper4・画面3をGitが独立照
 
 ### Pixel実利用に向けた接続診断（2026-10-29 / Android・ROCK）
 
-接続Pixelの既存APK hashは過去実機検収のAPKと一致。Android側同期serviceはforeground・Network許可済みだが、アプリは接続/保存済みAIを未確認と表示。Android loopback 5199には待受がある一方、静的GETは応答0 bytes。Terminal自動入力は文字重複したため、未実行の誤入力を消し、Linux側service状態の読取を本人に依頼中。[限定記録](docs/evidence/development-execution/pixel-live-connection-investigation.json)。追加推論・意図的な仕事実行・モデル取得・service再起動・接続設定変更なし。全データの前後一致と障害原因は未確認。
+接続Pixelの既存APK hashは過去実機検収のAPKと一致。Android側同期serviceはforeground・Network許可済みだが、アプリは接続/保存済みAIを未確認と表示。Android loopback 5199には待受がある一方、静的GETは応答0 bytes。Linux側のSky本体と橋渡しは再起動前にともにactive。本人の再起動指示を受け橋渡しだけを再起動し、エラー表示なくpromptへ戻ったが終了コードは未取得。アプリは引き続き接続未確認。再起動後の状態確認は自動承認審査でEnterが拒否され未実施。[限定記録](docs/evidence/development-execution/pixel-live-connection-investigation.json)。追加推論・意図的な仕事実行・モデル取得・Sky本体再起動・接続設定変更なし。全データの前後一致と障害原因は未確認。
 
 ### Pixel cache-only/更新fence main候補（2026-10-25 / G04）
 

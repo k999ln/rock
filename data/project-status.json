@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "in_progress_service_state_unconfirmed",
+    "status": "in_progress_bridge_restart_connection_unconfirmed",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Read guest service state without changing existing data or connection settings; resolve unknown before any recovery."
+    "next": "Verify post-restart bridge state and diagnose the still-unconfirmed connection without replaying preparation or interrupting existing jobs."
   }
 }
