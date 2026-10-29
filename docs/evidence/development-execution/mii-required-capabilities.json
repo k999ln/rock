@@ -21,5 +21,12 @@
   "pr": 283,
   "prHead": "af53507c43f5a4ad06a9aeb076e9778b8ca29966",
   "mergeSha": "7007b0becd2a90b32de66c011e55e1513d954afb",
-  "mainCiInitialFailure": "Merge SHA 7007b0be verify attempt 1 failed: isolated Chrome profile did not start within 100 polls; other 5 checks passed. Cause not established. Same-SHA failed-job retry requested; a bounded 300-poll test-only adjustment is proposed separately."
+  "mainCiInitialFailure": "Merge SHA 7007b0be verify attempts 1 and 2 failed: first isolated Chrome profile did not start within 100 polls. Second browser passed on attempt 2. Cause not established.",
+  "browserStartupCandidate": {
+    "priorHead": "df7e32e8",
+    "browserTestSha256": "8f9288cc5b40ae9346f4bafc16371cccb501cc5f7eec89480f11f86e57f42254",
+    "priorHeadVerify": "GitHub run 40855431016 job 123385072910 passed; both Linux browser cases ran; no causal proof of startup root cause",
+    "logSha256": "61054a94a3484d0ed8baf7f1ce0e92462097f308c628b7812360c7077ef44ec0",
+    "next": "Recheck metadata-updated exact head and independently review before merge."
+  }
 }
