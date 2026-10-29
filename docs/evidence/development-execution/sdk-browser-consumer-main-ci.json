@@ -1,0 +1,44 @@
+{
+  "schema": "rockstaros.main-ci-evidence/1",
+  "pullRequest": 295,
+  "mergeSha": "21b75a617f4fa49daa26e6eaac9f877d167f7b28",
+  "checks": [
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40882790705/job/123478474064",
+      "name": "SPIDER / secrets",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40882790475/job/123478470000",
+      "name": "SPIDER CodeQL (python)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40882790354/job/123478469765",
+      "name": "SPIDER / production web security measurement",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40882790475/job/123478469474",
+      "name": "SPIDER CodeQL (javascript-typescript)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40882790354/job/123478469030",
+      "name": "SPIDER / repair regressions",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "html_url": "https://github.com/k999ln/rock/actions/runs/40882790405/job/123478468453",
+      "name": "verify",
+      "status": "completed"
+    }
+  ],
+  "scope": "synthetic browser and SDK workspace; no real provider, device or payment"
+}

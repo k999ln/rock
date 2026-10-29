@@ -12452,8 +12452,17 @@
   },
   "sdkBrowserConsumer": {
     "owner": "ROCK",
-    "status": "candidate_independent_test_pass_pr_pending",
+    "status": "main_integrated_same_sha_ci_pass_host_scoped",
     "evidence": "docs/evidence/development-execution/sdk-browser-consumer.json",
-    "next": "Exact-head CI, independent final review, merge and merge-SHA CI; real identity/provider/device remain separate."
+    "next": "Real provider, device and Sky output center remain separate.",
+    "pullRequest": 295,
+    "mergeSha": "21b75a617f4fa49daa26e6eaac9f877d167f7b28",
+    "mainCiEvidence": "docs/evidence/development-execution/sdk-browser-consumer-main-ci.json"
+  },
+  "miiWorkerSharedD1": {
+    "owner": "ROCK",
+    "status": "candidate_independent_test_pass_pr_pending",
+    "evidence": "docs/evidence/development-execution/mii-worker-shared-d1.json",
+    "next": "Exact-head CI, independent final review, merge and merge-SHA CI; remote receipt remains separate."
   }
 }
