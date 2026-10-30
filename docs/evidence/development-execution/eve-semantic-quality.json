@@ -17,7 +17,7 @@
   ],
   "newModelCalls": 80,
   "newTrainingUpdates": 80,
-  "protocolStatus": "Scoped source/training/semantic/operational reviews, post-evaluation CI hardening and full repository verification complete. PR306 is merged into main51b38983 with all actual same-SHA CI successful; this metadata delivery is confirmed by the external final Git receipt.",
+  "protocolStatus": "Scoped source/training/semantic/operational reviews, post-evaluation CI hardening and full repository verification complete. PR306 is merged into main51b38983 with all actual same-SHA CI successful; this metadata checkpoint does not assert its own merge or CI. Any eventual containing main merge and exact-SHA CI must be confirmed by the external final GIT_FINAL_RECEIPT.json.",
   "qualityAccepted": false,
   "defaultAdopted": false,
   "wholeAI02Complete": false,
@@ -270,7 +270,7 @@
     ],
     "sourceHeadCiCheckCount": 8,
     "sourceHeadCiWorkflowCount": 5,
-    "metadataDelivery": "This record is carried by this metadata change; its containing main merge and exact-SHA CI are confirmed in the external final GIT_FINAL_RECEIPT.json.",
+    "metadataDelivery": "This record is carried by this metadata change. Any eventual containing main merge and exact-SHA CI must be confirmed by the external final GIT_FINAL_RECEIPT.json; this checkpoint does not assert either.",
     "selfShaEmbedded": false
   },
   "independentAcceptance": {
@@ -399,7 +399,7 @@
     "localHistoryScanPerformed": false,
     "credentialRead": false,
     "realBinaryLocalVerification": "unavailable; structural tests and independently reviewed provenance are separate from pending real CI",
-    "actualNewHeadCiVerified": false,
-    "qualification": "The prior four-metadata-only review binds4afd0284. The policy repair expands this same closure PR and requires a new independent review and actual same-head CI before merge; this is not a new model experiment."
+    "qualification": "The prior four-metadata-only review binds4afd0284. The policy repair expands this same closure PR and requires a new independent review and actual same-head CI before merge; this is not a new model experiment.",
+    "newHeadCiConfirmation": "Any eventual successful checks and containing main merge SHA must be confirmed by the external final GIT_FINAL_RECEIPT.json; this checkpoint does not assert either."
   }
 }
