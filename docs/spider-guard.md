@@ -63,6 +63,8 @@ GitHub と同じ PR head `a85a25e`、control commit `b6ab1988`、Gitleaks 8.30.1
 
 2026-10-16、Pixelモデルcatalogと候補証拠の`tokenizerSha256`がgeneric-api-keyに検出された。同じ値は公式固定GGUFのtokenizer metadataのSHA-256として再計算済みで、credentialではない。policyはその一つのliteralと二つのexact pathのANDだけを追加し、出典をpublic-value-provenance.jsonへ記録する。変更値・別path・本物のsecretに対する検出は維持し、実Gitleaks 8.30.1の既存16回帰を再実行した。scanner本体を変更せず、新しいpolicyを含む不変commitへcontrol refを更新する。runtime実機の合格とは別のCI修復である。[候補証拠](evidence/pixel-local-jennifer.json)。
 
+2026-10-29、Eveの進捗同期PR307の秘密検査は、CPU比較receipt名とそのSHA-256をgeneric-api-key候補として検出した。外部receiptを再計算し、64教材の全文/prefix128配列・応答開始位置の一致結果を示す公開digestだと確認した。例外は `docs/evidence/development-execution/eve-semantic-quality.json` のその一つのexact literalとのANDだけで、変更値・別path・同pathの新credentialは対象外とする。scanner本体・既存例外・default検出rule・固定binaryは維持する。policy/provenanceを先に独立検収・commitし、その不変commitへworkflowのcontrol refを更新して再検査する。元の4afd0284失敗は保持する。ローカルで実binary未確認なら構造検査と実Gitleaks検査を区別し、実検査の成功を先に宣言しない。
+
 ## GitHub上でrockを検査する
 
 利用者の追加指示により、`k999ln/rock`そのものをActionsで検査し、GitHubのPR check、実行summary、Security画面へ結果を表示する。ローカル画面への貼り付けは不要。

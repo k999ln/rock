@@ -100,6 +100,26 @@ class PolicyStructureTests(unittest.TestCase):
             self.assertTrue(record["classification"])
             self.assertTrue(record["evidence"])
 
+    def test_eve_cpu_receipt_exception_is_one_exact_path_and_literal(self):
+        expected_path = "docs/evidence/development-execution/eve-semantic-quality.json"
+        entries = [(value, paths) for value, paths in reviewed_public_entries()
+                   if expected_path in paths]
+        self.assertEqual(len(entries), 1)
+        value, paths = entries[0]
+        self.assertEqual(paths, [expected_path])
+        self.assertEqual(hashlib.sha256(value.encode()).hexdigest(),
+                         "aa3a02d87a6981a7059991d9cdad4e57445de49e78e53f1e72b0cb3835760229")
+        policy = tomllib.loads(POLICY.read_text())
+        rule = next(r for r in policy["rules"] if r["id"] == "generic-api-key")
+        allowed = next(a for a in rule["allowlists"] if a["description"] == "public-artifact-digest aa3a02d87a69")
+        literal_match = lambda pattern, text: re.fullmatch(pattern.replace(r"\z", r"\Z"), text) is not None
+        pair = lambda path, text: literal_match(allowed["paths"][0], path) and literal_match(allowed["regexes"][0], text)
+        self.assertTrue(pair(expected_path, value))
+        for path, text in [(expected_path + ".copy", value), ("other.json", value),
+                           (expected_path, value[:-1] + ("0" if value[-1] != "0" else "1")),
+                           (expected_path, value + "\n"), (expected_path, "new-synthetic-value")]:
+            self.assertFalse(pair(path, text))
+
     def test_reviewed_public_fixture_bytes_have_not_changed(self):
         self.assertEqual(hashlib.sha256((ROOT / PEM_PATH).read_bytes()).hexdigest(),
                          "c4932a9b6b97423b249a53e58d706f820185467464699038ed7ca5b29815ba03")
@@ -202,6 +222,20 @@ class RealScannerPolicyTests(unittest.TestCase):
         copies = {path + ".unreviewed": source for path in expected_paths}
         self.assertEqual(self.scan(copies, "", return_locations=True),
                          {(path, 1) for path in copies})
+
+    def test_eve_cpu_receipt_pair_keeps_copies_and_new_values_detectable(self):
+        expected_path = "docs/evidence/development-execution/eve-semantic-quality.json"
+        value, paths = next((v, p) for v, p in reviewed_public_entries() if expected_path in p)
+        self.assertEqual(paths, [expected_path])
+        source = json.dumps({"CI_FIX_TOKEN_PARITY.json": value}) + "\n"
+        self.assertEqual(self.scan(expected_path, source, policy=False, return_locations=True), {(expected_path, 1)})
+        self.assertEqual(self.scan(expected_path, source, return_locations=True), set())
+        copied = expected_path + ".copy"
+        self.assertEqual(self.scan(copied, source, return_locations=True), {(copied, 1)})
+        changed = "spider-canary-" + hashlib.sha256(b"new Eve receipt replacement").hexdigest()
+        self.assertEqual(self.scan(expected_path, json.dumps({"CI_FIX_TOKEN_PARITY.json": changed}), return_locations=True), {(expected_path, 1)})
+        canary = "gh" + "p_" + hashlib.sha256(b"new Eve allowed-path provider canary").hexdigest()[:36]
+        self.assertIn("github-pat", self.scan(expected_path, json.dumps({"providerCredential": canary})))
 
     def test_public_pem_is_detected_by_defaults_and_only_exact_path_is_allowed(self):
         source = (ROOT / PEM_PATH).read_text()

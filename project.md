@@ -12,7 +12,7 @@ Pixelのobserver試験PR261をmain aaab99e1へ統合、head全7check成功。待
 
 ### Eveの意味的品質改善（2026-10-29 / AI02・O3・ROCK）
 
-実験基点main2922422cを土台に、無効なenum説明例、成功Tool後の応答教材不足、48/240の限定coverageを修正。60教材全件を通ったfresh-base72更新と資源probe8更新を実施。独立内容検収は元モデル0/20・候補1/20、Pixel primary0/10（独立coconala2件を含む）で品質未合格・非default。実機はPixel→USB→Mac MLX経路で、再読込不変、二重tap1operation、所有停止、拒否0callと再推論を確認。停止後結果不在は確認したが内部遅延分岐到達は未証明。80生成attempt・61440学習slots、unknown1を保守計上。起動/選択の失敗と一時unit fixture生成を保持。main bf86f9eeの資料更新を両側保全で同期し、全verifyはNode3587中3583pass/0fail/4skip、build/API/mission/work/botまでexit0。生成80件は79完了出力＋unknown1の保守課金attemptであり、課題達成80件ではない。source/進捗のPR・main統合・同SHA CIは以後に確認する。[工程と結果](docs/evidence/development-execution/eve-semantic-quality.json)。AI02全体は進行中。
+実験基点main2922422cを土台に、無効なenum説明例、成功Tool後の応答教材不足、48/240の限定coverageを修正。60教材全件を通ったfresh-base72更新と資源probe8更新を実施。独立内容検収は元モデル0/20・候補1/20、Pixel primary0/10（独立coconala2件を含む）で品質未合格・非default。実機はPixel→USB→Mac MLX経路で、再読込不変、二重tap1operation、所有停止、拒否0callと再推論を確認。停止後結果不在は確認したが内部遅延分岐到達は未証明。80生成attempt・61440学習slots、unknown1を保守計上。起動/選択の失敗と一時unit fixture生成を保持。main bf86f9eeの資料更新を両側保全で同期し、全verifyはNode3587中3583pass/0fail/4skip、build/API/mission/work/botまでexit0。生成80件は79完了出力＋unknown1の保守課金attemptであり、課題達成80件ではない。[PR306](https://github.com/k999ln/rock/pull/306)をmain `51b3898356324304bcd84724b2df544e668057bf`へ統合し、2026-10-29T23:54:04.356431+00:00に同SHAの実7check/5workflow全successを確認した。学習後のCI指摘3件は限定修正・独立検収・全verifyを通し、64教材の全文/prefix128token配列と応答開始位置が完全一致した。旧学習source/weights/実機証拠は保持し、新sourceで再学習・再実機受入したとはしない。この一度の進捗記録同期自体のmain mergeと同SHA CIは、外部の最終Git receiptで確認する。[工程と結果](docs/evidence/development-execution/eve-semantic-quality.json)。AI02全体は進行中。
 
 ### Eve合成supervisorの停止信号保持（2026-10-29 / ROCK）
 

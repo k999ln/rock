@@ -3803,7 +3803,7 @@
         "docs/evidence/pr-consolidation-20261005.json",
         "docs/evidence/development-execution/eve-quality-recovery.json"
       ],
-      "nextAction": "Signed model manifest/staging and activation coordinator exist in current source. Compile and accept exact profile swap plus old-job restart on equipped Android CI/device; production trust/catalogue and hardware acceptance remain open. Eve corrected-loss/full-input quality recovery is tracked separately in docs/evidence/development-execution/eve-quality-recovery.json; current48-update candidate remains quality FAIL (A0/20,C1/20; physical Pixel0/8), scoped source/semantic reviews complete, final repository verification passed and implementation PR300/main4c0b056b has all7 checks/5 workflows successful on the same SHA. Next: improve semantic quality and independently test the remaining phone/retention boundaries; keep candidate nondefault. New semantic-quality experiment completed probe8 plus fresh-base72 updates; formal taskComplete A0/20,C1/20 and Pixel primary0/10 remain qualityFAIL/nondefault. Next: remove answer-content placeholders, rebuild an exact serving-system curriculum and preregister a fresh bounded protocol before any next model run. See docs/evidence/development-execution/eve-semantic-quality.json; wholeAI02/native/production acceptance remains open.",
+      "nextAction": "Signed model manifest/staging and activation coordinator exist in current source. Compile and accept exact profile swap plus old-job restart on equipped Android CI/device; production trust/catalogue and hardware acceptance remain open. Eve corrected-loss/full-input quality recovery is tracked separately in docs/evidence/development-execution/eve-quality-recovery.json; current48-update candidate remains quality FAIL (A0/20,C1/20; physical Pixel0/8), scoped source/semantic reviews complete, final repository verification passed and implementation PR300/main4c0b056b has all7 checks/5 workflows successful on the same SHA. Next: improve semantic quality and independently test the remaining phone/retention boundaries; keep candidate nondefault. New semantic-quality experiment completed probe8 plus fresh-base72 updates; formal taskComplete A0/20,C1/20 and Pixel primary0/10 remain qualityFAIL/nondefault. Next: remove answer-content placeholders, rebuild an exact serving-system curriculum and preregister a fresh bounded protocol before any next model run. Source and progress are merged by PR306/main51b38983 with all7 same-SHA checks/5 workflows successful; post-evaluation CI hardening preserves all64 full/prefix inputs and training artifacts. This metadata checkpoint does not assert its own merge or CI; any eventual containing main merge and exact-SHA CI require the external final GIT_FINAL_RECEIPT.json. See docs/evidence/development-execution/eve-semantic-quality.json; wholeAI02/native/production acceptance remains open. Excluded sealed/retention sources remain unopened unless explicitly rescoped.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",
@@ -12574,7 +12574,7 @@
       }
     },
     "semanticQuality": {
-      "status": "scoped_reviews_and_repository_verify_complete_quality_fail_pr_pending",
+      "status": "source_main_ci_verified_quality_fail",
       "inputMainSha": "2922422cb328e9cd4f3fded1a411156e35377b3e",
       "evidence": "docs/evidence/development-execution/eve-semantic-quality.json",
       "priorCandidatePreserved": true,
@@ -12587,10 +12587,20 @@
       "pixelTaskComplete": 0,
       "pixelPlanned": 10,
       "repositoryVerificationPassed": true,
-      "repositoryVerifyHead": "d39c099783c41f2afcda4d5dc36929e1af4d8d4f",
+      "repositoryVerifyHead": "51b3898356324304bcd84724b2df544e668057bf",
       "synchronizedMainSha": "bf86f9ee83d7af5af8174f89a40d4514411935a9",
       "completedOutputAttempts": 79,
-      "unknownChargedAttempts": 1
+      "unknownChargedAttempts": 1,
+      "sourcePullRequest": 306,
+      "sourceMainSha": "51b3898356324304bcd84724b2df544e668057bf",
+      "sameShaCiConfirmed": true,
+      "mainCiCheckCount": 7,
+      "mainCiWorkflowCount": 5,
+      "mainCiVerifiedAtUtc": "2026-10-29T23:54:04.356431+00:00",
+      "priorRepositoryVerifyHead": "d39c099783c41f2afcda4d5dc36929e1af4d8d4f",
+      "repositoryVerificationKind": "Exact-main-SHA GitHub CI plus post-hardening local full verification",
+      "metadataDelivery": "This record is carried by this metadata change. Any eventual containing main merge and exact-SHA CI must be confirmed by the external final GIT_FINAL_RECEIPT.json; this checkpoint does not assert either.",
+      "selfShaEmbedded": false
     }
   },
   "sdkDistRelease": {
