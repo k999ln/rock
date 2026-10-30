@@ -386,5 +386,20 @@
     "fixedSourceHead": "74c8f22d7e852c2b0d0b8cda3f62fe10897480b4",
     "actualNewHeadAllChecksSuccessful": true,
     "independentReviewSha256": "63047166a21852f49a1123c788f238fddfb3ba8d21414414878776f6edcedd99"
+  },
+  "closurePublicDigestPolicyRepair": {
+    "failedHeadSha": "4afd0284340381cfa28ae319ea6646d0a4a9bf53",
+    "failedCheckId": 123805413973,
+    "failedRunUrl": "https://github.com/k999ln/rock/actions/runs/40976408067",
+    "classification": "recomputed nonsecret CPU parity receipt SHA-256, matched after TOKEN in the receipt filename",
+    "exceptionScope": "generic-api-key rule: exact evidence path AND exact one literal only",
+    "candidateSha256": "aa3a02d87a6981a7059991d9cdad4e57445de49e78e53f1e72b0cb3835760229",
+    "scannerBodyAndDefaultRulesUnchanged": true,
+    "oldPolicyEntriesUnchanged": true,
+    "localHistoryScanPerformed": false,
+    "credentialRead": false,
+    "realBinaryLocalVerification": "unavailable; structural tests and independently reviewed provenance are separate from pending real CI",
+    "actualNewHeadCiVerified": false,
+    "qualification": "The prior four-metadata-only review binds4afd0284. The policy repair expands this same closure PR and requires a new independent review and actual same-head CI before merge; this is not a new model experiment."
   }
 }

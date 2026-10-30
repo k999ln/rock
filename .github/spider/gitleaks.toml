@@ -1239,3 +1239,11 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/development\-execution/mini\-08\-access\-review\.json|docs/evidence/development\-execution/mini\-08\-access\-adapters\.json)\z''']
 regexes = ['''\A9a3c17e9ed54e358c8408c1ed190b22ed979e996adc0fabc28a67572ca95a0f1\z''']
+
+# Recomputed CPU parity receipt digest; one exact evidence path AND literal only.
+[[rules.allowlists]]
+description = "public-artifact-digest aa3a02d87a69"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/development\-execution/eve\-semantic\-quality\.json)\z''']
+regexes = ['''\Aee3e094ee9630f3f2e10ddcd24c62432a9a35d3943c8826c11a60380f8b9a67f\z''']

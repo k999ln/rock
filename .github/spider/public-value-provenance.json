@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 172,
+  "distinctValues": 173,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 64,
+    "public-artifact-digest": 65,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -2431,6 +2431,20 @@
         ]
       },
       "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "aa3a02d87a6981a7059991d9cdad4e57445de49e78e53f1e72b0cb3835760229",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of external CI_FIX_TOKEN_PARITY.json: CPU-only equality of all64 full/prefix token arrays and assistant offsets,128 vectors,0 model calls. This is an integrity digest, not a credential. Exact path AND exact literal value only. Historical scan counts and reviewedHead remain unchanged.",
+      "source": {
+        "commit": "4afd0284340381cfa28ae319ea6646d0a4a9bf53",
+        "path": "docs/evidence/development-execution/eve-semantic-quality.json",
+        "line": 187,
+        "field": [
+          "/evidenceHashes/CI_FIX_TOKEN_PARITY.json"
+        ]
+      },
+      "exactPathCount": 1
     }
   ],
   "supplementalReviews": [
@@ -2482,6 +2496,16 @@
       ],
       "basis": "Three recomputed public source digests in Mini receipts. Exact path AND literal value only; historical occurrence count and reviewedHead unchanged.",
       "policySha256": "20a78d9250599e8c474f787a2bb709538a105cf05b1cb930f4a59127e836b20a"
+    },
+    {
+      "head": "4afd0284340381cfa28ae319ea6646d0a4a9bf53",
+      "recordedOn": "2026-10-29",
+      "addedDistinctValues": 1,
+      "exactPaths": [
+        "docs/evidence/development-execution/eve-semantic-quality.json"
+      ],
+      "basis": "One recomputed nonsecret CPU receipt digest. Changed value, copied path and new credential remain detectable; no history scan or broad digest/path exclusion.",
+      "policySha256": "c1e85033ec4679a017a0d8bf63388c19c80c008f7e02ba5127b534572d2c6d52"
     }
   ],
   "integratedReview": {
