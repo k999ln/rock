@@ -165,6 +165,49 @@ void test('Mini proxy preserves the browser hostname and does not forward Sky id
   assert.equal(response.headers.has('set-cookie'), false);
 });
 
+void test('MATOU public aliases redirect temporarily without capturing adjacent or mutable paths', async () => {
+  let skyCalls = 0;
+  let miniCalls = 0;
+  const app = withMiniSite(
+    { fetch: async () => { skyCalls++; return new Response('sky'); } },
+    async () => { miniCalls++; return new Response('mini'); },
+  );
+
+  for (const [path, destination] of [
+    ['/MATOU', '/'],
+    ['/MATOU/', '/'],
+    ['/MATOU/giving', '/giving'],
+    ['/MATOU/giving/', '/giving/'],
+    ['/MATOU/story', '/story'],
+    ['/MATOU/story/', '/story/'],
+  ]) {
+    for (const method of ['GET', 'HEAD']) {
+      const response = await app.fetch(new Request(`https://avoado.si${path}?source=outreach`, { method }));
+      assert.equal(response.status, 302, `${method} ${path}`);
+      assert.equal(
+        response.headers.get('location'),
+        `https://matou-kimono-closet.noellesugar1.chatgpt.site${destination}?source=outreach`,
+      );
+      assert.equal(response.headers.get('cache-control'), 'no-store');
+    }
+  }
+
+  assert.equal(skyCalls, 0);
+  assert.equal(miniCalls, 0);
+
+  const adjacent = await app.fetch(new Request('https://avoado.si/MATOUx'));
+  assert.equal(await adjacent.text(), 'mini');
+  const privatePath = await app.fetch(new Request('https://avoado.si/MATOU/api/session'));
+  assert.equal(await privatePath.text(), 'mini');
+  const mutation = await app.fetch(new Request('https://avoado.si/MATOU', {
+    method: 'POST',
+    headers: { origin: 'https://avoado.si' },
+    body: '{}',
+  }));
+  assert.equal(await mutation.text(), 'mini');
+  assert.equal(miniCalls, 3);
+});
+
 void test('cross-origin Mini mutation is rejected before upstream dispatch', async () => {
   let calls = 0;
   const app = withMiniSite({ fetch: () => new Response('sky') }, async () => {
