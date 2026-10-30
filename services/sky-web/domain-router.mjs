@@ -2,6 +2,15 @@ const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 const MINI_PUBLIC_HOST = 'avoado.si';
 const COLUMBIA_HOST = 'columbia.avoado.si';
 const GENERATED_SITE_SUFFIX = '.chatgpt.site';
+const MATOU_ORIGIN = 'https://matou-kimono-closet.noellesugar1.chatgpt.site';
+const MATOU_PUBLIC_ALIASES = new Map([
+  ['/MATOU', '/'],
+  ['/MATOU/', '/'],
+  ['/MATOU/giving', '/giving'],
+  ['/MATOU/giving/', '/giving/'],
+  ['/MATOU/story', '/story'],
+  ['/MATOU/story/', '/story/'],
+]);
 
 const JENNIFER_PRIVATE_API_PREFIXES = [
   '/api/jennifer',
@@ -195,6 +204,18 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
       }
       if (source.hostname !== MINI_PUBLIC_HOST)
         return skyWorker.fetch(request, env, context);
+      const matouPath = MATOU_PUBLIC_ALIASES.get(path);
+      if (matouPath && ['GET', 'HEAD'].includes(request.method)) {
+        const destination = new URL(matouPath, MATOU_ORIGIN);
+        destination.search = source.search;
+        return new Response(null, {
+          status: 302,
+          headers: {
+            location: destination.href,
+            'cache-control': 'no-store',
+          },
+        });
+      }
       if (path === '/sw.js')
         return new Response(
           'self.addEventListener("install", event => event.waitUntil(self.skipWaiting()));',
