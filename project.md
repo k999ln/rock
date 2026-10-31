@@ -912,3 +912,10 @@ OSホーム修正の検証完了: npm run verify exit0（2613pass/1skip/0fail、
 Eve/成果/接続/権限詳細/設定/診断を390pxで確認し横溢れなし。依頼↔成果の文章保持、別route移動取消での保持、接続管理dialog、設定から復旧への到達を確認。既存backend未設定のlocalでは接続失敗/再確認表示を検証。関連46試験合格。診断wrapperをテストharnessへ追加し、既存restore/reset/async fenceの回帰を維持。最終verifyと公開readbackを継続する。
 
 UI/UX最終候補の全verify exit0: 2620件/2619pass/1skip/0fail、API1621、CSV385、asset222 missing0。Eve未送信入力の保持/移動取消は実component試験とCUAで確認。接続/診断/backupのAPI・安全境界は維持。既存Site v121/publicのまま次版を保存・配備し、正式domainで各画面を読戻す。GitHubmain統合・新しい端末承認/復元/実行は今回行わない。
+
+
+## 2026-10-30 — エディトリアルなOS UI
+本人の「ELLEのようなファッション誌の雰囲気」という明示指示で、Web/UX（ROCK、既存osWorkspaceUiUx）を白地・墨色・細い罫線・明朝/serif見出しへ変更。ホーム、Eve、仕事と成果、接続、設定、診断と既存接続dialogを対象とし、生成り/淡緑/丸いカードを廃止。本文・入力はsans-serif、操作は48pxを保持し、選択状態は罫線と文字で表示。虹色ロゴ・起動演出、本人保存、未送信保護、権限/料金/停止/APIとnative gateは維持。外部フォント/画像/依存は追加しない。失敗・復旧・承認の業務状態は既存UI UX契約を継承。GitHub main観測は1daf5c340f23fb40e52289d276cd5ec1ca271fa0、Sites元sourceは2c101e5d5eddd2ebfb569c121ef094c06c30ea9eで区別。
+合格条件: PC/390pxで横溢れなし、主要画面とnavigationを操作確認、npm run verify/design:check、同一sourceのSites配備成功。公開確認は配備後の外部証拠へ記録。復旧は直前のSites版へのrollback、端末データは変更しない。
+
+検証記録: 型検査・design:check・build合格。共通tokens/contrast/navigation 10試験合格。PC/390pxで主要画面と成果切替を確認。npm run verifyは既存配信ルーターservices/sky-web/domain-router.mjsと過去security証拠のhash不一致で停止（今回そのファイルの差分なし）。同一source公開後の読戻しはチャット成果物のpublication JSONへ残す。native gate/本人データ変更なし。

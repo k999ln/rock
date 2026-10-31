@@ -17,7 +17,7 @@
   height: 40px;
   flex: 0 0 auto;
   border: 1px solid rgba(195, 225, 240, 0.34);
-  border-radius: 12px;
+  border-radius:0;
   color: #c3e1f0;
   background: rgba(195, 225, 240, 0.08);
 }
@@ -42,7 +42,7 @@
 .tabs button span {
   padding: 2px 7px;
   border: 1px solid #3b5261;
-  border-radius: 999px;
+  border-radius:0;
   color: #afc9d9;
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -90,7 +90,7 @@
   gap: 8px;
   min-height: 40px;
   padding: 0 15px;
-  border-radius: 999px;
+  border-radius:0;
   color: #10202b;
   background: #c3e1f0;
   font-size: 14px;
@@ -126,7 +126,7 @@
   overflow: hidden;
   padding: 0 !important;
   border: 1px solid #2e3c47 !important;
-  border-radius: 22px !important;
+  border-radius:0;
   color: #f1f4ee;
   background: #10171e !important;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.68) !important;
@@ -180,7 +180,7 @@
   min-height: 30px;
   padding: 4px 10px;
   border: 1px solid #38505f;
-  border-radius: 999px;
+  border-radius:0;
   color: #c3e1f0;
   font-size: 13px;
 }
@@ -222,7 +222,7 @@
   bottom: -1px;
   left: 20%;
   height: 2px;
-  border-radius: 2px 2px 0 0;
+  border-radius:0;
   background: #c3e1f0;
   content: '';
 }
@@ -248,7 +248,7 @@
   gap: 12px;
   padding: 16px;
   border: 1px solid #2e3c47;
-  border-radius: 15px;
+  border-radius:0;
   background: #0e161e;
 }
 
@@ -264,7 +264,7 @@
   gap: 11px;
   padding: 12px;
   border: 1px solid #2e3c47;
-  border-radius: 12px;
+  border-radius:0;
   background: #151f29;
 }
 
@@ -273,7 +273,7 @@
   place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius:0;
   color: #c3e1f0;
   background: rgba(195, 225, 240, 0.08);
 }
@@ -315,7 +315,7 @@
   min-height: 34px;
   padding: 0 11px;
   border: 1px solid #587486;
-  border-radius: 999px;
+  border-radius:0;
   color: #deeff8;
   font-size: 12px;
 }
@@ -328,7 +328,7 @@
 .serverEmpty {
   padding: 14px;
   border: 1px dashed #3b4b58;
-  border-radius: 10px;
+  border-radius:0;
   color: #a0b1bc;
   font-size: 12px;
   line-height: 1.6;
@@ -336,7 +336,7 @@
 
 .connectionMessage {
   padding: 10px 12px;
-  border-radius: 9px;
+  border-radius:0;
   color: #d2e4ef;
   background: #1a2b37;
   font-size: 12px;
@@ -346,7 +346,7 @@
 .errorMessage {
   padding: 12px;
   border: 1px solid #714238;
-  border-radius: 10px;
+  border-radius:0;
   color: #ffc1b6;
   background: #39231f;
   font-size: 13px;
@@ -381,7 +381,7 @@
   flex: 0 0 auto;
   padding: 4px 7px;
   border: 1px solid #38505f;
-  border-radius: 999px;
+  border-radius:0;
   color: #afc9d9;
   font-size: 11px;
   font-weight: 750;
@@ -404,7 +404,7 @@
   min-height: 94px;
   padding: 13px;
   border: 1px solid #2e3c47;
-  border-radius: 13px;
+  border-radius:0;
   color: #e9ede6;
   background: #141e28;
   text-align: left;
@@ -436,7 +436,7 @@
   place-items: center;
   width: 34px;
   height: 34px;
-  border-radius: 9px;
+  border-radius:0;
   color: #c3e1f0;
   background: rgba(195, 225, 240, 0.08);
 }
@@ -465,7 +465,7 @@
   grid-column: 1 / -1;
   width: fit-content;
   padding: 3px 7px;
-  border-radius: 999px;
+  border-radius:0;
   font-size: 11px;
   font-weight: 720;
 }
@@ -486,7 +486,7 @@
   gap: 13px;
   padding: 16px;
   border: 1px solid #2e3c47;
-  border-radius: 14px;
+  border-radius:0;
   background: #141e28;
 }
 
@@ -497,7 +497,7 @@
   width: 42px;
   height: 42px;
   flex: 0 0 auto;
-  border-radius: 12px;
+  border-radius:0;
   color: #a8bcca;
   background: #1e2a35;
 }
@@ -539,7 +539,7 @@
   min-width: 0;
   padding: 16px;
   border: 1px solid #2e3c47;
-  border-radius: 14px;
+  border-radius:0;
   background: #121b24;
 }
 
@@ -575,7 +575,7 @@
 .primaryAction {
   width: fit-content;
   min-height: 44px;
-  border-radius: 12px;
+  border-radius:0;
 }
 
 .boundaryNote {
@@ -599,7 +599,7 @@
   gap: 12px;
   padding: 14px;
   border: 1px solid #2e3c47;
-  border-radius: 13px;
+  border-radius:0;
   background: #141e28;
 }
 
@@ -608,7 +608,7 @@
   place-items: center;
   width: 38px;
   height: 38px;
-  border-radius: 10px;
+  border-radius:0;
   color: #c3e1f0;
   background: rgba(195, 225, 240, 0.08);
 }
@@ -635,7 +635,7 @@
   max-width: 100%;
   overflow-wrap: anywhere;
   padding: 5px 7px;
-  border-radius: 7px;
+  border-radius:0;
   color: #b9cbd7;
   background: #1d2a35;
   font-size: 12px;
@@ -732,5 +732,5 @@
 
 .dialog :global([data-slot='dialog-close']) { z-index: 2; color: #edf3f7; }
 .serverList button:focus-visible { outline: 2px solid #c3e1f0; outline-offset: 3px; }
-.dialog.dialog{color:var(--os-shell-text);background:var(--os-shell-panel)!important;border-color:var(--os-shell-line)}.dialogHeader{background:var(--os-shell-panel);border-color:var(--os-shell-line)}.dialogMark,.serverIcon,.targetIcon,.toolIcon{color:var(--os-shell-accent);background:var(--os-shell-raised)}.dialogTitleRow h2{color:var(--os-shell-text);font-weight:650}.dialogTitleRow p{color:var(--os-shell-muted)!important;font-size:14px!important}.policyBadges span,.policyBadges .liveOff,.policyBadges .liveOn{color:var(--os-shell-muted);border-color:var(--os-shell-line);background:var(--os-shell-raised)}.tabs{border-color:var(--os-shell-line)}.tabs button{color:var(--os-shell-muted);min-height:48px;font-size:14px}.tabs button span{color:var(--os-shell-muted)}.tabs button[aria-selected='true']{color:var(--os-shell-accent)}.tabs button[aria-selected='true']::after{background:var(--os-shell-accent)}.serverSection,.serverList article,.targetCard,.currentState,.installSteps li,.toolList article{background:var(--os-shell-bg);border-color:var(--os-shell-line);color:var(--os-shell-text)}.serverList strong,.sectionHeading strong,.currentState strong,.installSteps strong,.toolList strong{color:var(--os-shell-text)}.serverList :is(p,small),.serverEmpty,.sectionHeading :is(p,span),.targetCopy small,.currentState p,.installSteps p,.boundaryNote,.toolList p,.toolFooter p{color:var(--os-shell-muted);font-size:13px;line-height:1.8}.serverList button,.targetCard,.primaryAction,.toolFooter button{min-height:48px;font-size:14px}.serverList button{color:var(--os-shell-accent)}.connectionMessage{background:var(--os-shell-raised);color:var(--os-shell-muted);font-size:14px;line-height:1.8}.errorMessage{color:#a3433d;background:#f8ebe7}.targetCard:not(:disabled):hover,.targetSelected{background:var(--os-shell-raised);border-color:#315b4d}.targetReady,.targetPending,.stateOff{color:var(--os-shell-muted);background:var(--os-shell-raised)}.stateOn,.primaryAction,.toolFooter button{color:var(--os-shell-accent-ink);background:var(--os-shell-accent)}.installSteps li>span{color:var(--os-shell-accent)}.toolList code{color:var(--os-shell-muted);background:var(--os-shell-raised)}.dialog :global([data-slot='dialog-close']){color:var(--os-shell-text)}
-.primaryAction:hover,.toolFooter button:hover{background:#264b3f}
+.dialog.dialog{color:var(--os-shell-text);background:var(--os-shell-panel)!important;border-color:var(--os-shell-line)}.dialogHeader{background:var(--os-shell-panel);border-color:var(--os-shell-line)}.dialogMark,.serverIcon,.targetIcon,.toolIcon{color:var(--os-shell-accent);background:var(--os-shell-raised)}.dialogTitleRow h2{color:var(--os-shell-text);font-weight:650}.dialogTitleRow p{color:var(--os-shell-muted)!important;font-size:14px!important}.policyBadges span,.policyBadges .liveOff,.policyBadges .liveOn{color:var(--os-shell-muted);border-color:var(--os-shell-line);background:var(--os-shell-raised)}.tabs{border-color:var(--os-shell-line)}.tabs button{color:var(--os-shell-muted);min-height:48px;font-size:14px}.tabs button span{color:var(--os-shell-muted)}.tabs button[aria-selected='true']{color:var(--os-shell-accent)}.tabs button[aria-selected='true']::after{background:var(--os-shell-accent)}.serverSection,.serverList article,.targetCard,.currentState,.installSteps li,.toolList article{background:var(--os-shell-bg);border-color:var(--os-shell-line);color:var(--os-shell-text)}.serverList strong,.sectionHeading strong,.currentState strong,.installSteps strong,.toolList strong{color:var(--os-shell-text)}.serverList :is(p,small),.serverEmpty,.sectionHeading :is(p,span),.targetCopy small,.currentState p,.installSteps p,.boundaryNote,.toolList p,.toolFooter p{color:var(--os-shell-muted);font-size:13px;line-height:1.8}.serverList button,.targetCard,.primaryAction,.toolFooter button{min-height:48px;font-size:14px}.serverList button{color:var(--os-shell-accent)}.connectionMessage{background:var(--os-shell-raised);color:var(--os-shell-muted);font-size:14px;line-height:1.8}.errorMessage{color:#a3433d;background:#f8ebe7}.targetCard:not(:disabled):hover,.targetSelected{background:var(--os-shell-raised);border-color:#151515}.targetReady,.targetPending,.stateOff{color:var(--os-shell-muted);background:var(--os-shell-raised)}.stateOn,.primaryAction,.toolFooter button{color:var(--os-shell-accent-ink);background:var(--os-shell-accent)}.installSteps li>span{color:var(--os-shell-accent)}.toolList code{color:var(--os-shell-muted);background:var(--os-shell-raised)}.dialog :global([data-slot='dialog-close']){color:var(--os-shell-text)}
+.primaryAction:hover,.toolFooter button:hover{background:#333333}

@@ -10117,5 +10117,39 @@
       "apiAssertions": 1621,
       "assetMissing": 0
     }
+  },
+  "osEditorialUi": {
+    "date": "2026-10-30",
+    "primaryOwner": "ROCK",
+    "status": "verified_ready_for_publication",
+    "userInstruction": "ELLEのようなファッション誌の雰囲気",
+    "scope": [
+      "Home",
+      "Eve",
+      "results",
+      "connections",
+      "settings",
+      "diagnostics"
+    ],
+    "design": "docs/rockstaros-complete-design.md",
+    "preserved": [
+      "rainbow logo",
+      "owner data",
+      "draft guard",
+      "execution and approval contracts"
+    ],
+    "verification": [
+      "npm run verify",
+      "390px browser QA",
+      "Sites deployment readback"
+    ],
+    "checks": {
+      "typecheck": "pass",
+      "designCheck": "pass",
+      "build": "pass; final helper rebuild required after token completion",
+      "navigationContrast": "10 pass",
+      "browser": "PC settings/Eve/home and 390px home/Eve/results/connection/settings/diagnostics; no horizontal overflow",
+      "verify": "blocked at pre-existing release-security domain-router evidence hash mismatch; no current edit to router"
+    }
   }
 }

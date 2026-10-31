@@ -113,7 +113,7 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  border-radius: 4px;
+  border-radius:0;
   background: var(--tl-blue);
 }
 .timelineTop .topIcon {
@@ -160,7 +160,7 @@
   overflow: auto;
   background: #16181c;
   border: 1px solid var(--tl-line);
-  border-radius: 16px;
+  border-radius:0;
   padding: 12px;
   display: grid;
   gap: 4px;
@@ -171,7 +171,7 @@
   gap: 12px;
   width: 100%;
   padding: 12px;
-  border-radius: 30px;
+  border-radius:0;
   text-align: left;
 }
 .sidebar > button[aria-pressed='true'] {
@@ -301,7 +301,7 @@
   background: #eff3f4;
   color: #0f1419;
   padding: 8px 17px;
-  border-radius: 24px;
+  border-radius:0;
   font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
@@ -331,7 +331,7 @@
   background: #000;
   border: 1px solid #536471;
   color: var(--tl-text);
-  border-radius: 5px;
+  border-radius:0;
   padding: 12px;
   margin-top: 7px;
 }
@@ -447,7 +447,7 @@
   width: 210px;
   background: #16181c;
   border: 1px solid #536471;
-  border-radius: 12px;
+  border-radius:0;
   overflow: hidden;
 }
 .postMenu button {
@@ -493,7 +493,7 @@
   min-width: 36px;
   min-height: 36px;
   padding: 6px 8px;
-  border-radius: 24px;
+  border-radius:0;
   color: inherit;
   font-size: 12px;
   white-space: nowrap;
@@ -525,7 +525,7 @@
   flex-direction: column;
   gap: 8px;
   border: 1px solid var(--tl-line);
-  border-radius: 16px;
+  border-radius:0;
   padding: 16px;
   margin: 12px 0;
   overflow: hidden;
@@ -587,7 +587,7 @@
 .communityForm button,
 .communityIntro button {
   padding: 10px 14px;
-  border-radius: 24px;
+  border-radius:0;
   border: 1px solid #536471;
   margin: 5px 6px 5px 0;
   font-size: 13px;
@@ -634,7 +634,7 @@
   align-self: start;
   justify-self: start;
   padding: 10px 24px;
-  border-radius: 30px;
+  border-radius:0;
   text-decoration: none;
   font-size: 14px;
   font-weight: 700;
@@ -796,30 +796,30 @@
   line-height: 20px;
   white-space: pre-wrap;
   user-select: text;
-  border-radius: 0;
+  border-radius:0;
 }
 .shell button.postText:hover {
   background: transparent;
 }
 .shell .topTabs > button {
-  border-radius: 0;
+  border-radius:0;
 }
 .shell .post footer {
   background: transparent;
   padding: 0;
   border: 0;
-  border-radius: 0;
+  border-radius:0;
 }
 .shell .composer footer {
   background: transparent;
   padding: 8px 0 0;
-  border-radius: 0;
+  border-radius:0;
 }
 .shell .post .actions {
   margin: 5px -8px 0;
 }
 .shell .post .actions button {
-  border-radius: 24px;
+  border-radius:0;
 }
 .shell .post .postText {
   letter-spacing: normal;
@@ -835,7 +835,7 @@
   transform: translateX(-50%);
   width: max-content;
   max-width: calc(100vw - 32px);
-  border-radius: 8px;
+  border-radius:0;
   z-index: 100;
   line-height: 1.6;
 }
@@ -869,11 +869,11 @@
 
 /* RockstarOS Home: paper, forest and bronze; the compact social contract stays shared. */
 .shell[data-full-home='true'] {
-  --tl-bg: #fffdf8;
-  --tl-text: #252b28;
-  --tl-muted: var(--os-shell-muted, #626e65);
-  --tl-line: #dedfd6;
-  --tl-blue: #315b4d;
+  --tl-bg: #ffffff;
+  --tl-text: #151515;
+  --tl-muted: var(--os-shell-muted, #595959);
+  --tl-line: #d8d8d8;
+  --tl-blue: #151515;
   color-scheme: light;
 }
 .shell[data-full-home='true'] .timelineTop {
@@ -883,21 +883,21 @@
   gap: 6px;
 }
 .shell[data-full-home='true'] .topTabs {
-  background: #eceee5;
-  border: 1px solid #e1e5d9;
-  border-radius: 14px;
+  background: #f4f4f4;
+  border: 1px solid #d8d8d8;
+  border-radius:0;
   padding: 4px;
   gap: 4px;
 }
 .shell[data-full-home='true'] .topTabs > button {
   height: 38px;
-  border-radius: 10px;
+  border-radius:0;
   font-size: 14px;
 }
 .shell[data-full-home='true'] .topTabs > button[aria-selected='true'] {
-  background: #fffdf8;
+  background: #ffffff;
   box-shadow: 0 1px 5px #193b2110;
-  color: #315b4d;
+  color: #151515;
 }
 .shell[data-full-home='true'] .topTabs > button[aria-selected='true']:after {
   display: none;
@@ -907,55 +907,55 @@
   color: var(--tl-muted);
 }
 .shell[data-full-home='true'] .post:hover {
-  background: #f6f7ef;
+  background: #fafafa;
 }
 .shell[data-full-home='true'] .avatar,
 .shell[data-full-home='true'] .composerAvatar {
-  background: #e7ebdf;
-  color: #315b4d;
+  background: #f4f4f4;
+  color: #151515;
 }
 .shell[data-full-home='true'] .postMenu > div,
 .shell[data-full-home='true'] .sidebar {
-  background: #fffdf8;
-  border-color: #b7c0b4;
+  background: #ffffff;
+  border-color: #bdbdbd;
   box-shadow: 0 8px 30px #25332615;
 }
 .shell[data-full-home='true'] .shell button:hover {
-  background: #e8eddf;
+  background: #f4f4f4;
 }
 .shell[data-full-home='true'] .composer textarea::placeholder {
-  color: #9b9d91;
+  color: #777777;
 }
 .shell[data-full-home='true'] .sendControls > button {
-  background: #315b4d;
-  color: #fffdf8;
-  border-radius: 12px;
+  background: #151515;
+  color: #ffffff;
+  border-radius:0;
 }
 .shell[data-full-home='true'] .sendControls > button:hover:not(:disabled) {
-  background: #26483c;
+  background: #333333;
 }
 .shell[data-full-home='true'] .shared {
-  border-radius: 12px;
-  background: #f7f7ef;
-  border-color: #dce2d3;
+  border-radius:0;
+  background: #fafafa;
+  border-color: #d8d8d8;
 }
 .shell[data-full-home='true'] .welcome > a,
 .shell[data-full-home='true'] .welcome > button {
-  background: #315b4d;
-  color: #fffdf8;
+  background: #151515;
+  color: #ffffff;
 }
 .shell[data-full-home='true'] .communityForm p,
 .shell[data-full-home='true'] .communityIntro p {
-  color: #697566;
+  color: #595959;
 }
 .shell[data-full-home='true'] input:not([type='checkbox']),
 .shell[data-full-home='true'] select,
 .shell[data-full-home='true'] .communityForm textarea {
-  background: #fffdf8;
-  border-color: #b7c0b4;
+  background: #ffffff;
+  border-color: #bdbdbd;
 }
 .shell[data-full-home='true'] .notice {
-  background: #315b4d;
+  background: #151515;
 }
 .shell[data-full-home='true'] .actions button:nth-child(3):hover {
   color: #b1644c;
@@ -965,7 +965,7 @@
   color: #b1644c;
 }
 .shell[data-full-home='true'] .actions .reposted {
-  color: #4d7860;
+  color: #151515;
 }
 .shell[data-full-home='true'] .error {
   background: #f8ebe5;
@@ -989,7 +989,7 @@
   margin-left: auto;
   font-size: 11px;
   border: 1px solid var(--tl-line);
-  border-radius: 20px;
+  border-radius:0;
   padding: 0 12px;
   min-height: 28px;
   letter-spacing: 0;
@@ -1016,7 +1016,7 @@
 }
 .topicChips button {
   border: 1px solid var(--tl-line);
-  border-radius: 20px;
+  border-radius:0;
   padding: 0 12px;
   min-height: 32px;
   white-space: nowrap;
@@ -1055,7 +1055,7 @@
   justify-content: center;
   gap: 7px;
   margin: 10px auto;
-  border-radius: 24px;
+  border-radius:0;
   padding: 8px 18px;
   background: var(--tl-blue);
   color: var(--tl-bg);
@@ -1125,7 +1125,7 @@
 }
 .feedEnd button {
   border: 1px solid var(--tl-line);
-  border-radius: 22px;
+  border-radius:0;
   padding: 0 16px;
 }
 .discoveryMore {

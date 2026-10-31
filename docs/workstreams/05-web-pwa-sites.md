@@ -306,3 +306,8 @@ Source readback追加：現行public v111のproject/version/source/deploymentを
 設定は項目の意味・実action・読みやすさを揃え、未実装の壁紙編集に見えるリンクを実Home入口の説明へ変更。接続先/権限/アカウントの実画面を保持し、診断・暗号化backup/復元は機能を変えず共通frame/配色へ。診断0件を稼働成功として表示しない。診断/公開/UI合格をnative・本人接続・実機/課金合格へ昇格しない。
 
 合格: 現URLとhash深いリンク、未送信文章の往復と移動取消の保持、接続/設定/診断/権限の実到達、390pxの横溢れなし、既存権限/停止/利用権の回帰、型/lint/verify/buildと実公開読戻し。失敗時は入力と既存状態を保ち、未確定の実行を自動再試行しない。未決は既存contractを保つ表示修正で解消する。
+
+
+## 2026-10-30 — エディトリアルなOS UI
+本人の「ELLEのようなファッション誌の雰囲気」という明示指示で、Web/UX（ROCK、既存osWorkspaceUiUx）を白地・墨色・細い罫線・明朝/serif見出しへ変更。ホーム、Eve、仕事と成果、接続、設定、診断と既存接続dialogを対象とし、生成り/淡緑/丸いカードを廃止。本文・入力はsans-serif、操作は48pxを保持し、選択状態は罫線と文字で表示。虹色ロゴ・起動演出、本人保存、未送信保護、権限/料金/停止/APIとnative gateは維持。外部フォント/画像/依存は追加しない。失敗・復旧・承認の業務状態は既存UI UX契約を継承。GitHub main観測は1daf5c340f23fb40e52289d276cd5ec1ca271fa0、Sites元sourceは2c101e5d5eddd2ebfb569c121ef094c06c30ea9eで区別。
+合格条件: PC/390pxで横溢れなし、主要画面とnavigationを操作確認、npm run verify/design:check、同一sourceのSites配備成功。公開確認は配備後の外部証拠へ記録。復旧は直前のSites版へのrollback、端末データは変更しない。

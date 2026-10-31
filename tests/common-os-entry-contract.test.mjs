@@ -16,7 +16,7 @@ const contrast = (a, b) => {
   return (values[1] + 0.05) / (values[0] + 0.05);
 };
 
-void test('Home default tokens and workspace frame keep the same ivory, green and bronze values', () => {
+void test('Home default tokens and workspace frame keep the same white, ink and focus values', () => {
   const defaults = read('app/os-design-tokens.css');
   const frame = read('app/os-shell.css');
   for (const name of ['bg', 'panel', 'raised', 'line', 'text', 'muted', 'accent', 'accent-ink', 'focus']) {
@@ -24,8 +24,8 @@ void test('Home default tokens and workspace frame keep the same ivory, green an
     assert.ok(expected, `Frame token missing: ${name}`);
     assert.equal(token(defaults, `os-${name}`), expected, `${name} changes between Home and an OS workspace`);
   }
-  assert.equal(token(frame, 'os-shell-accent'), '#315b4d');
-  assert.equal(token(frame, 'os-shell-focus'), '#a9754f');
+  assert.equal(token(frame, 'os-shell-accent'), '#151515');
+  assert.equal(token(frame, 'os-shell-focus'), '#215ac2');
   assert.match(read('components/home-screen.module.css'), /--home-accent: var\(--os-accent\)/);
 });
 
@@ -39,7 +39,7 @@ void test('canonical frame text and focus colors retain their minimum contrast o
   }
   for (const path of ['components/home-screen.module.css', 'components/sky-social-timeline.module.css']) {
     const source = read(path);
-    assert.match(source, /--tl-muted: var\(--os-shell-muted, #626e65\)/);
+    assert.match(source, /--tl-muted: var\(--os-shell-muted, #595959\)/);
     assert.doesNotMatch(source, /#778077/);
   }
 });
