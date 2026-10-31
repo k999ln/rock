@@ -638,8 +638,16 @@ export default function EveSyncWorkspace({
             RockstarOS
           </Link>
           <h2>Eve</h2>
-          <p>会話の履歴</p>
           <button disabled={busy} onClick={()=>{if(hasUnsentDraft&&!discardingDraft.current)setLeaveTarget({resume:fresh});else fresh();}}>＋ 新しい会話</button>
+          <div className={styles.sidebarLinks} aria-label="Eveのメニュー">
+            <Link href="/os/eve?mode=tool-work">smisのToolを使う</Link>
+            <Link href="/sky">smis・MCPを開く</Link>
+            <Link href="/os/eve#eve-work-results">仕事と成果</Link>
+            <Link href="/connect/device">端末を接続・解除</Link>
+            <Link href="/#sky-manage">担当とLLMを管理</Link>
+            <Link href="/#sky">能力を追加</Link>
+          </div>
+          <p>会話の履歴</p>
           <nav aria-label="Eveの会話">
             {threads.map((t) => (
               <button
@@ -659,12 +667,6 @@ export default function EveSyncWorkspace({
               </button>
             )}
           </nav>
-          <Link href="/connect/device">端末を接続・解除</Link>
-          <Link href="/os/eve?mode=tool-work">smisのToolを使う</Link>
-          <Link href="/sky">smis・MCPを開く</Link>
-          <Link href="/os/eve#eve-work-results">仕事と成果</Link>
-          <Link href="/#sky-manage">担当とLLMを管理</Link>
-          <Link href="/#sky">能力を追加</Link>
         </aside>
         <section className={styles.desk}>
           <div className={styles.studioHeader}>
@@ -690,9 +692,6 @@ export default function EveSyncWorkspace({
 </div>}
 {signedIn !== false && (
               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
-                <div className={styles.requestStarters} aria-label="依頼を書き始める">
-                  {[{label:'調べる',icon:Search,text:'調べたいこと：\n知りたい内容と、出典が必要な範囲：'},{label:'まとめる',icon:FileText,text:'まとめたい内容：\n用途と、希望する長さ：'},{label:'作る',icon:Sparkles,text:'作りたいもの：\n目的と、必要な成果：'}].map(item=><button key={item.label} type="button" disabled={busy||Boolean(input.trim())} onClick={()=>{setInput(item.text);setConsent(false);document.querySelector<HTMLTextAreaElement>('textarea[aria-label="続きの依頼"]')?.focus();}}><item.icon size={20}/><span>{item.label}</span></button>)}
-                </div>
                 <textarea
                   disabled={busy}
                   aria-label="続きの依頼"
@@ -706,6 +705,9 @@ export default function EveSyncWorkspace({
                   }}
                   rows={4}
                 />
+                <div className={styles.requestStarters} aria-label="依頼を書き始める">
+                  {[{label:'調べる',icon:Search,text:'調べたいこと：\n知りたい内容と、出典が必要な範囲：'},{label:'まとめる',icon:FileText,text:'まとめたい内容：\n用途と、希望する長さ：'},{label:'作る',icon:Sparkles,text:'作りたいもの：\n目的と、必要な成果：'}].map(item=><button key={item.label} type="button" disabled={busy||Boolean(input.trim())} onClick={()=>{setInput(item.text);setConsent(false);document.querySelector<HTMLTextAreaElement>('textarea[aria-label="続きの依頼"]')?.focus();}}><item.icon size={16}/><span>{item.label}</span></button>)}
+                </div>
                 {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
 
                 {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
