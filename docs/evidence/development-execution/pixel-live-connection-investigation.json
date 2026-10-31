@@ -72,7 +72,7 @@
     "User released Pixel after the read-only checks. No manual service restart, model download, connection change or existing data deletion was performed in this check. Full data identity was not verified."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Implement a same-owner, same-job MCP-to-Linux execution adapter using existing broker and explicit authority/approval; no production authority issuer is currently bound and Linux worker currently reports text capability only. Validate a non-inference Tool locally and on permitted hardware with recovery, no duplicate dispatch and explicit output checks. Resolve v123 Web security hash mismatch using a compatible local Worker, then rerun full verification and independently review before deployment. Unified Eve/MCP conversation remains incomplete.",
+  "next": "Implement same-owner, same-job MCP-to-Linux execution via existing broker with explicit authority and approval; production authority is not bound and Pixel worker reports text capability only. Complete safe non-inference output validation and real-account/data-preservation and public delivery gates before deployment. Unified Eve/MCP conversation remains incomplete.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -150,5 +150,15 @@
       "65977acde25b55bbb4c41e85b26b3414726ef117c5e41f7e1f061cba1ab35e6f"
     ],
     "screenshots": "private local temporary evidence; image contents not committed"
+  },
+  "siteCandidateV123FinalLocalSecurity": {
+    "base": "2c101e5d5eddd2ebfb569c121ef094c06c30ea9e",
+    "commit": "8cdf0f5",
+    "patch": "docs/evidence/development-execution/pixel-site-v123-verified-candidate.patch",
+    "patchSha256": "718376b94f62eb313a580cad6dc2ea0a9ce0b30693ab3b9bb39874b0d471789b",
+    "verify": "npm run verify exit 0 using locally installed OpenSSL 3 and permitted loopback; final release:check and 42 release/security tests passed",
+    "localSecurity": "Final production build served on loopback by wrangler with existing cached workerd 1.20261001.1; eight routes and eight headers passed; independent reviewer matched raw, build, router, wrapper, tracked diff and evidence hashes. Historical evidence retained.",
+    "review": "PASS_SCOPED; local evidence only; validator does not automatically recalculate raw/build hashes",
+    "limits": "Site remains at v123; public delivery gate blocked; no real-account or Pixel candidate acceptance; MCP and Linux end-to-end unresolved."
   }
 }

@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "v123_mcp_front_scoped_physical_worker_text_only_security_pending",
+    "status": "v123_candidate_local_verify_and_security_scoped_pass_public_gate_blocked",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Independently review physical text-capability evidence; implement exact-owner/job/approval MCP-to-Linux adapter without opening unbound authority; resolve v123 Worker/security evidence and validate before publication."
+    "next": "Complete real-account preservation and public delivery gates, implement and validate same-owner/job MCP-to-Linux non-inference output with existing authority and approval; do not claim completion or deploy on local evidence alone."
   }
 }
