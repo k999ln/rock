@@ -30,7 +30,7 @@ void test('panel switching and closing preserve the editor and timeline; keyboar
   assert.match(home, /hidden=\{view\s*!==\s*'manage'\}/);
   assert.match(home, /hidden=\{view\s*!==\s*'discover'\}/);
   assert.doesNotMatch(dialog, /open\s*&&\s*children/);
-  assert.match(home, /key=\{view\s*===\s*'discover'\s*\|\|\s*view\s*===\s*'manage'\s*\?\s*'home'\s*:\s*view\}/);
+  assert.match(home, /key=\{view\s*===\s*'communities'\s*\?\s*'communities'\s*:\s*'timeline'\}/);
   assert.match(dialog, /onCancel=/);
   assert.match(dialog, /node\.showModal\(\)/);
   for (const text of ['role="tablist"', 'role="tab"', 'aria-selected', 'ArrowLeft', 'ArrowRight', 'Home', 'End']) assert.ok(dialog.includes(text), text);

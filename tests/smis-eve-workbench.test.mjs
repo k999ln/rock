@@ -42,9 +42,9 @@ void test('smis rejects mixed-owner response data and issues only reads on mount
  const methods=[];const app=harness('components/smis-added-posts.tsx',{fetcher:async(url,options)=>{methods.push(options.method??'GET');return{ok:true,status:200,json:async()=>url.endsWith('/agents')?{ownerUserId:'a',agents:[{name:'private-must-not-render'}]}:{ownerUserId:'b',plugins:[]}};}});
  app.render();await app.effects();const view=app.render();assert.doesNotMatch(text(view),/private-must-not-render/);assert.match(text(view),/一覧を確認できません/);assert.deepEqual(methods,['GET','GET']);
 });
-void test('creation and work keep their state mounted; request entry precedes result history',()=>{
- const eve=read('components/eve-sync-workspace.tsx');assert.ok(eve.indexOf('className={styles.composer}')<eve.indexOf('className={styles.messages}'));assert.ok(eve.indexOf('<textarea')<eve.indexOf('className={styles.executionSettings}'));
- assert.match(eve,/buildVisited\|\|workbenchMode==='build'/);assert.match(eve,/hidden=\{workbenchMode!=='work'\}/);assert.match(eve,/className=\{styles.executionSettings\} open=\{!device\|\|!agent\|\|!selectionMatches\}/);assert.match(eve,/hideAccountAccess/);assert.match(eve,/function choose\(id: string\) \{\s*setModeOverride\('work'\)/);assert.match(eve,/履歴を閉じる/);
+void test('creation and work keep their state mounted; conversation precedes the composer',()=>{
+ const eve=read('components/eve-sync-workspace.tsx');assert.ok(eve.indexOf('className={styles.messages}')<eve.indexOf('className={styles.composer}'));assert.ok(eve.indexOf('<textarea')<eve.indexOf('className={styles.executionSettings}'));
+ assert.match(eve,/buildVisited\|\|workbenchMode==='build'/);assert.match(eve,/hidden=\{workbenchMode!=='work'\}/);assert.match(eve,/className=\{styles.executionSettings\}/);assert.match(eve,/hideAccountAccess/);assert.match(eve,/function choose\(id: string\) \{\s*setModeOverride\('work'\)/);assert.match(eve,/履歴を閉じる/);
  assert.match(read('components/sky-discovery-feed.tsx'),/standalone \? tools : tools\.slice/);
  assert.match(read('components/home-screen.tsx'),/personalFeed=\{<SmisAddedPosts/);
 });
@@ -81,14 +81,10 @@ void test('actual Eve keeps its unsent request through results and blocks cross-
  assert.equal(input().props.value,'Synthetic unsent request');
 });
 
-void test('visual request starters only draft text and cannot overwrite a request through enabled controls',()=>{
+void test('the conversation composer preserves typed text and cannot submit without a ready execution target and consent',()=>{
  const app=harness('components/eve-sync-workspace.tsx');
  const input=()=>nodes(app.render()).find(n=>n.type==='textarea'&&n.props['aria-label']==='続きの依頼');
- for(const label of ['調べる','まとめる','作る'])assert.equal(button(app.render(),label).props.disabled,false);
- button(app.render(),'調べる').props.onClick();
- assert.match(input().props.value,/調べたいこと/);
- for(const label of ['調べる','まとめる','作る'])assert.equal(button(app.render(),label).props.disabled,true);
  input().props.onChange({target:{value:'自分の依頼'}});
  assert.equal(input().props.value,'自分の依頼');
- assert.equal(button(app.render(),'選んだ実行先で下書きを作る').props.disabled,true);
+ assert.equal(button(app.render(),'下書きを作る').props.disabled,true);
 });

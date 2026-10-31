@@ -2,3 +2,6 @@
 .tabs{display:flex;gap:8px;margin:20px 0;position:sticky;top:-24px;z-index:2;background:#fffdf8;padding:12px 0;border-bottom:1px solid #dedfd4}.tabs button[aria-selected="true"]{background:#315b48;color:#fffdf8}.dialog>[hidden]{display:none}
 
 .dialog{max-width:920px}.dialog>header h2{font-size:24px;letter-spacing:0}.dialog>header button,.tabs button{min-height:48px}.dialog>p{max-width:65ch;line-height:1.7}
+.dialog>header{position:sticky;top:-24px;z-index:4;padding:10px 0;background:#fffdf8;border-bottom:1px solid #eceee7}
+.tabs{top:42px}
+@media(max-width:600px){.dialog>header{top:-18px}.tabs{top:48px}}

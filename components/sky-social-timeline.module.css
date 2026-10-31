@@ -91,6 +91,9 @@
   flex: 1;
   min-width: 0;
 }
+.returnToTimeline{display:inline-flex;align-items:center;gap:8px;margin:10px 0;padding:9px 12px;border:1px solid #e2e4df;border-radius:9px;background:#fff;color:#303b35;font:inherit;font-size:13px;cursor:pointer}
+.returnToTimeline:hover{background:#f4f6f2}
+.returnToTimeline:focus-visible{outline:3px solid #215ac2;outline-offset:2px}
 .topTabs > button {
   position: relative;
   flex: 1;

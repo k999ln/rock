@@ -106,6 +106,12 @@ export default function SkySocialTimeline({
     [signedOut, setSignedOut] = useState(false);
   const [clock, setClock] = useState(0);
   useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setMode(current => initialView === 'bookmarks' ? 'bookmarks' : current === 'bookmarks' ? 'recommended' : current);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [initialView]);
+  useEffect(() => {
     const tick = () => setClock(Date.now());
     tick();
     const timer = window.setInterval(tick, 60000);
@@ -608,6 +614,17 @@ export default function SkySocialTimeline({
         : 'smooth',
     });
   }
+  function returnToTimeline(next: 'recommended' | 'following' = 'recommended') {
+    setMode(next);
+    setCommunityId('');
+    setThreadId('');
+    setManagement(false);
+    // Home keeps this timeline mounted between bookmarks and the feed, so
+    // navigating back does not discard an unsent input.
+    if (typeof window !== 'undefined' && window.location.hash === '#bookmarks') {
+      window.location.hash = 'timeline';
+    }
+  }
   function relativeTime(time: number) {
     const minutes = Math.max(0, Math.floor((clock - time) / 60000));
     return minutes < 1
@@ -1012,20 +1029,14 @@ export default function SkySocialTimeline({
             <button
               role="tab"
               aria-selected={mode === 'recommended'}
-              onClick={() => {
-                setMode('recommended');
-                setThreadId('');
-              }}
+              onClick={() => returnToTimeline('recommended')}
             >
               {fullHome ? 'あなたへ' : 'おすすめ'}
             </button>
             <button
               role="tab"
               aria-selected={mode === 'following'}
-              onClick={() => {
-                setMode('following');
-                setThreadId('');
-              }}
+              onClick={() => returnToTimeline('following')}
             >
               {fullHome ? 'つながり' : 'フォロー中'}
             </button>
@@ -1063,6 +1074,7 @@ export default function SkySocialTimeline({
           </button>
         )}
       </div>
+      {mode === 'bookmarks' && !communityPage && !threadId && <button type="button" className={styles.returnToTimeline} onClick={() => returnToTimeline()}><ArrowLeft size={16} />タイムラインに戻る</button>}
       {continuousEnabled && (
         <div className={styles.liveControls}>
           <div className={styles.liveLine}>
@@ -1251,11 +1263,9 @@ export default function SkySocialTimeline({
                 </div>
               </div>
               <button
-                aria-pressed={!communityId}
+                aria-pressed={!communityId && mode !== 'bookmarks'}
                 onClick={() => {
-                  setCommunityId('');
-                  setThreadId('');
-                  setManagement(false);
+                  returnToTimeline();
                 }}
               >
                 すべての投稿

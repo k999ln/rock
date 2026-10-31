@@ -106,3 +106,32 @@ void test('OS home preserves the timeline and shared header while adding environ
   assert.match(css, /\.os-header-actions\s*\{\s*display:\s*flex/);
   assert.match(read('components/home-screen.module.css'), /\.home \.layout\s*\{\s*display:\s*block/);
 });
+void test('returning from bookmarks restores the timeline without discarding a draft', () => {
+  const app = harness('bookmarks');
+  let view = app.render();
+  const input = nodes(view).find(node => node.type === 'textarea' && node.props.id === 'sky-post');
+  assert.ok(input);
+  input.props.onChange({ target: { value: '未送信の下書き' } });
+  view = app.render();
+  const back = nodes(view).find(node => node.type === 'button' && text(node).includes('タイムラインに戻る'));
+  assert.ok(back);
+  back.props.onClick();
+  view = app.render();
+  assert.equal(nodes(view).find(node => node.type === 'textarea' && node.props.id === 'sky-post').props.value, '未送信の下書き');
+  assert.equal(nodes(view).find(node => node.props.role === 'tab' && text(node) === 'あなたへ').props['aria-selected'], true);
+});
+void test('the all posts option exits bookmarks as well as the settings panel', () => {
+  const app = harness('home');
+  let view = app.render();
+  nodes(view).find(node => node.props['aria-label'] === 'タイムラインの設定とコミュニティー').props.onClick();
+  view = app.render();
+  nodes(view).find(node => node.type === 'button' && text(node).trim() === 'ブックマーク').props.onClick();
+  view = app.render();
+  assert.ok(nodes(view).some(node => node.type === 'button' && text(node).includes('タイムラインに戻る')));
+  nodes(view).find(node => node.props['aria-label'] === 'タイムラインの設定とコミュニティー').props.onClick();
+  view = app.render();
+  nodes(view).find(node => node.type === 'button' && text(node).trim() === 'すべての投稿').props.onClick();
+  view = app.render();
+  assert.equal(nodes(view).find(node => node.props.role === 'tab' && text(node) === 'あなたへ').props['aria-selected'], true);
+  assert.equal(nodes(view).some(node => node.props['aria-label'] === '設定を閉じる'), false);
+});

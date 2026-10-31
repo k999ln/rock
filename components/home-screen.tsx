@@ -111,6 +111,8 @@ export default function HomeScreen() {
           return;
         const anchor = (event.target as Element).closest('a[href]');
         if (!anchor) return;
+        const menu = anchor.closest<HTMLDetailsElement>('details[data-home-menu]');
+        if (menu) menu.open = false;
         const target = new URL(
           anchor.getAttribute('href')!,
           window.location.href,
@@ -142,7 +144,7 @@ export default function HomeScreen() {
                 <Link href={route('/#sky')} aria-label="追加・管理">
                   <Plus size={21} />
                 </Link>
-                <details>
+                <details data-home-menu>
                   <summary aria-label="その他のメニュー">
                     <MoreHorizontal size={22} />
                   </summary>
@@ -159,7 +161,6 @@ export default function HomeScreen() {
                     <Link href={route('/campus')}>Campus</Link>
                     <Link href={route('/connect')}>利用環境をつなぐ</Link>
                     <Link href={route('/settings')}>設定</Link>
-                    <Link href="/test">開発者向け出力テスト</Link>
                     {enabled('wallet') && (
                       <Link href={route('/wallet')}>Wallet</Link>
                     )}
@@ -273,7 +274,7 @@ export default function HomeScreen() {
               </section>
             ) : (
               <SkySocialTimeline
-                key={view === 'discover' || view === 'manage' ? 'home' : view}
+                key={view === 'communities' ? 'communities' : 'timeline'}
                 fullHome
                 personalFeed={<SmisAddedPosts />}
                 initialView={

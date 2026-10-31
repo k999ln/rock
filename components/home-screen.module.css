@@ -457,6 +457,9 @@
   border-radius:0;
   box-shadow: 0 4px 30px #0008;
   padding: 6px;
+  max-height: min(70dvh, 600px);
+  max-width: calc(100vw - 24px);
+  overflow-y: auto;
 }
 .mobileActions nav > a {
   display: flex;
