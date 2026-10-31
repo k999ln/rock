@@ -69,3 +69,5 @@
 .sidebar>a:not(.brand){font-size:12px;min-height:40px}
 .resultsHeader h2{font:600 19px/1.5 system-ui,sans-serif}
 @media(max-width:720px){.app{display:flex;min-height:0}.desk{padding:20px 16px 32px}.studioHeader{flex-wrap:wrap;gap:12px;margin-bottom:16px;padding:0}.studioHeader h1{font-size:22px}.studioHeader p{font-size:12px}.headerActions{width:100%;justify-content:space-between}.composer{padding:18px}.composer textarea{min-height:128px}.composer footer{flex-direction:column;align-items:stretch}.sidebar[data-open='true']{inset:60px 0 0 auto;width:min(92vw,360px);border-radius:0;box-shadow:-12px 0 40px #0002;z-index:100}.sidebar nav{max-height:none;flex:1}.sidebar nav button{min-height:64px}.app .historyToggle{display:inline-flex}}
+
+.sidebar nav button{display:block;max-height:none;min-height:60px;height:auto}.historyTitle{display:block;line-height:1.6;max-height:3.2em;overflow:hidden;overflow-wrap:anywhere}

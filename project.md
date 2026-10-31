@@ -926,3 +926,5 @@ UI/UX最終候補の全verify exit0: 2620件/2619pass/1skip/0fail、API1621、CS
 受入: PC/390pxでEve textareaが初期viewport内、本文にfixed navigationなし、履歴/成果/設定/担当作成の往復と未送信保護、ニュースの正常/失敗/再取得状態を確認。失敗の詳細は折り畳み、前回記事と現在取得を区別。復旧は直前Sites版、保存/API契約は互換。GitHub main観測1daf5c340f23fb40e52289d276cd5ec1ca271fa0、Sites元b642310723d807358b7d8bca8e3e42198a828263。未完了のrelease証拠不整合やnative gateをWeb配備の合格へ換算しない。
 
 検証: typecheck/design:check合格、関連42テスト合格（未送信の成果往復・離脱取消・新規会話保護を含む）。PC/390px確認、mobile入力欄top314/bottom450、fixed nav0、横溢れなし。npm run verifyは前版からのservices/sky-web/domain-router.mjsとsecurity実測証拠のhash不一致で停止。今回router差分なし。公開候補のbuildは公式helperで実施し、公開読戻しはチャット成果物のpublication JSONへ保存する。一般native/金融gateとGitHub main統合は非対象。
+
+公開125の実読戻しで、履歴ボタン自身のline-clampが一部ブラウザで末尾行を途中表示すると判明。本文spanを独立した2行高の領域にし、paddingから切り分けて修正。125を最終受入とせず、次の同一source版で再読戻しする。

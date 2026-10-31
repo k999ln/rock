@@ -644,7 +644,7 @@ export default function EveSyncWorkspace({
                 disabled={busy}
                 onClick={() => {if(hasUnsentDraft&&!discardingDraft.current)setLeaveTarget({resume:()=>choose(t.session.id)});else choose(t.session.id);}}
               >
-                {t.session.messages[0]?.text.slice(0, 55) || '保存した会話'}
+                <span className={styles.historyTitle}>{t.session.messages[0]?.text.slice(0, 55) || '保存した会話'}</span>
               </button>
             ))}
             {historyCursor && (
