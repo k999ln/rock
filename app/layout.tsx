@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'RockstarOS',
   },
-  icons: { icon: '/brand/rainbow-icon-64.png', apple: '/brand/rainbow-logo-192.png' },
+  icons: { icon: '/brand/rainbow-icon-transparent.svg', apple: '/brand/rainbow-logo-192.png' },
 };
 export const viewport: Viewport = {
   width: 'device-width',
