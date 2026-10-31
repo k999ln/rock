@@ -982,11 +982,9 @@ export default function SkySocialTimeline({
       data-timeline-skin="x"
       aria-labelledby="sky-social-title"
     >
-      <header className={styles.heading}>
-        <h2 id="sky-social-title">
-          {communityPage ? 'コミュニティー' : 'ニュースとつながり'}
-        </h2>
-      </header>
+      {!communityPage && <header className={styles.heading}>
+        <h2 id="sky-social-title">ニュースとつながり</h2>
+      </header>}
       <div className={styles.timelineTop}>
         {communityPage ? (
           <div className={styles.threadHeading}>
@@ -1004,7 +1002,7 @@ export default function SkySocialTimeline({
                 <ArrowLeft size={20} />
               </button>
             )}
-            <strong>
+            <strong id="sky-social-title">
               {selected?.name || lockedCommunity?.name || 'コミュニティー'}
             </strong>
           </div>
@@ -1180,12 +1178,18 @@ export default function SkySocialTimeline({
           <Radio size={15} /> 新着 {continuous.pending} 件を見る
         </button>
       )}
-      {error && (
+      {error && (communityPage ? (
+        <div className={styles.error} role="alert">
+          <strong>コミュニティーを読み込めませんでした</strong>
+          <p>{error}</p>
+          <button disabled={loading} onClick={() => void load()}>もう一度読み込む</button>
+        </div>
+      ) : (
         <details className={styles.error}>
           <summary>コミュニティーの読み込みを確認できません</summary>
           <p>{error}</p><button disabled={loading} onClick={() => void load()}>再読み込み</button>
         </details>
-      )}
+      ))}
       {notice && <output className={styles.notice}>{notice}</output>}
       {signedOut ? (
         <div className={styles.welcome}>

@@ -136,8 +136,8 @@ export default function HomeScreen() {
         <main className={styles.main} id="home-content">
           <span className={styles.srOnly}>RockstarOS ホーム</span>
           <div className={styles.mobileHeader}>
-            <OSHeader title="Noah" hideNavigation>
-              <div className={styles.mobileActions}>
+            <OSHeader title="Noah" hideNavigation={view !== 'communities'}>
+              {view !== 'communities' && <div className={styles.mobileActions}>
                 <Link href="/os/eve">
                   Eve <MessageCircle size={20} />
                 </Link>
@@ -169,13 +169,13 @@ export default function HomeScreen() {
                     )}
                   </nav>
                 </details>
-              </div>
+              </div>}
             </OSHeader>
-      <OsAppNavigation
+      {view !== 'communities' && <OsAppNavigation
         className={`${styles.mobileNav} os-home-navigation`}
         aria-label="RockstarOSの主要サービス"
-        active={view === 'communities' ? 'communities' : 'stream'}
-      />
+        active="stream"
+      />}
           </div>
           {view === 'home' && (
             <section

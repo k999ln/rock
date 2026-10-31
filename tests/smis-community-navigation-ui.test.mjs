@@ -5,15 +5,15 @@ import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 
 const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
-function harness(initialView, communities = []) {
+function harness(initialView, communities = [], { error = '' } = {}) {
   const state = [], refs = [];
   let cursor = 0, refCursor = 0;
   const jsx = (type, props) => ({ type, props: props ?? {} });
   const mockReact = {
     useState(initial) {
       const index = cursor++;
-      if (!(index in state)) state[index] = index === 0
-        ? { profile: { id: 'fixture', name: 'Fixture' }, communities, posts: initialView === 'communities' ? [{ id: 'global-post-must-not-render', community: null }] : [], cursor: null }
+      if (!(index in state)) state[index] = index === 5 && error ? error : index === 4 && error ? false : index === 0
+        ? { profile: error ? null : { id: 'fixture', name: 'Fixture' }, communities, posts: initialView === 'communities' ? [{ id: 'global-post-must-not-render', community: null }] : [], cursor: null }
         : typeof initial === 'function' ? initial() : initial;
       return [state[index], next => { state[index] = typeof next === 'function' ? next(state[index]) : next; }];
     },
@@ -73,6 +73,15 @@ void test('community tab starts with the directory and never renders the global 
   assert.match(text(view), /招待鍵で参加する/);
   assert.equal(nodes(view).some(node => node.props.role === 'feed' || node.type === 'external-feed'), false);
   assert.equal(nodes(view).some(node => node.props['aria-label'] === 'タイムラインの切替'), false);
+  assert.equal(nodes(view).filter(node => node.props.id === 'sky-social-title').length, 1);
+});
+void test('community load failure clearly offers retry without showing an empty directory', () => {
+  const view = harness('communities', [], { error: '読み込みを確認できません' }).render();
+  const alert = nodes(view).find(node => node.props.role === 'alert');
+  assert.ok(alert);
+  assert.match(text(alert), /コミュニティーを読み込めませんでした/);
+  assert.ok(nodes([alert]).some(node => node.type === 'button' && text(node) === 'もう一度読み込む' && !node.props.disabled));
+  assert.equal(nodes(view).some(node => node.props['aria-label'] === 'コミュニティーの一覧'), false);
 });
 void test('selecting a community opens its own feed and the back button restores the directory', () => {
   const app = harness('communities', [community]);

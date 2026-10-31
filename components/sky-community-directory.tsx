@@ -16,9 +16,8 @@ export default function SkyCommunityDirectory({
 }) {
   return <section className={styles.directory} aria-labelledby="community-directory-title">
     <header>
-      <span className={styles.eyebrow}>YOUR PLACES</span>
       <h2 id="community-directory-title">あなたのコミュニティー</h2>
-      <p>仲間とルールや道具を選んで、自分たちの場所をつくろう。</p>
+      <p>参加している場所を開くか、新しく作成できます。</p>
       <div className={styles.actions}>
         <button type="button" disabled={busy} onClick={onCreate}><Plus size={18} />コミュニティーを作る</button>
         <button type="button" disabled={busy} onClick={onJoin}><KeyRound size={18} />招待鍵で参加する</button>
@@ -38,8 +37,8 @@ export default function SkyCommunityDirectory({
       </button>)}
       {!communities.length && <div className={styles.empty}>
         <Users size={32} />
-        <h3>最初の場所を、ここから。</h3>
-        <p>新しく作るか、仲間から受け取った招待鍵で参加できます。</p>
+        <h3>参加中のコミュニティーはありません</h3>
+        <p>新しく作るか、招待鍵を使って参加できます。</p>
       </div>}
     </div>
   </section>;
