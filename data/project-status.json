@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "v121_sync_candidate_reviewed_v122_published_reconciliation_pending",
+    "status": "v123_eve_first_candidate_awaiting_security_evidence_and_physical_loop",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Reconcile reviewed Eve candidate with deployed v122, then verify exact result and safe Pixel window; production and real-account acceptance remain outstanding."
+    "next": "Review v123 candidate and resolve existing source/security-evidence mismatch, then verify the marketplace-to-OS-Linux work/result contract with non-inference fixtures; physical and production acceptance remain outstanding."
   }
 }

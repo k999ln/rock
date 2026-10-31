@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.pixel-live-connection-investigation/1",
-  "status": "v121_sync_candidate_reviewed_v122_published_reconciliation_pending",
+  "status": "v123_eve_first_candidate_awaiting_security_evidence_and_physical_loop",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "device": "Pixel 10 frankel",
   "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
@@ -52,10 +52,15 @@
     "Independent reviewer assessed the tracked diff fe105d971859b28f88ef0afd213cd6d678944768a898364f5f19a89a75088094 PASS_SCOPED, independently ran 35 related tests and treated fixture observations as operator-reported. The committed diff hash matches that review.",
     "Candidate full npm run verify succeeded with isolated exact offline dependencies: 2619 tests, 2618 passed, 1 skipped, zero failed, all stages exit zero. Focused suite passed 56 tests.",
     "On recheck Site v122 source 7b6a1ea9a5e7a88f9f4855ef4ab456f5c644f34c had a successful deployment. It was created outside this work. The v121 candidate was not deployed and must be reconciled with v122; its v121 rollback is not the current version.",
-    "Pixel was connected and foreground browser showed a separate localhost work screen. To avoid disturbing it, no Pixel interaction or new candidate Pixel test was performed."
+    "Pixel was connected and foreground browser showed a separate localhost work screen. To avoid disturbing it, no Pixel interaction or new candidate Pixel test was performed.",
+    "User clarified that the core objective is smis marketplace and Agent/MCP connection through OS Linux to the desired output, with Eve as the main experience.",
+    "Site v123 source 2c101e5d5eddd2ebfb569c121ef094c06c30ea9e was obtained in an isolated checkout. Eve-first visual candidate 3452c7851c3392c784d44a712260d859157aa1c6 changes the home entries and shared logo presentation; it does not change execution, saved data or connection contracts.",
+    "Candidate build, typecheck, targeted six tests and lint succeeded. Real home React component with synthetic timeline/children and application fetch disabled was observed at desktop and 411x923. Four link destinations were asserted; actual production, authenticated account and Pixel were not tested.",
+    "npm run verify stopped at release:check: the existing Web security response evidence hash for services/sky-web/domain-router.mjs does not match the unmodified v123 base source; no release success or current response proof is claimed.",
+    "OS MCP broker 33 tests and MCP client/connector/result 54 tests passed on local synthetic fixtures. These do not establish the marketplace-to-Pixel-Linux end-to-end path or output quality. The prior 2026-10-17 physical local model and two Tools produced an artifact but content quality was not accepted."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Read and reconcile the current v122 source before preparing a new candidate; rerun scoped tests and independent review on the exact result. Confirm a safe Pixel window and verify the actual Site version, target connection and news; no production deployment has been performed by this work.",
+  "next": "Independently review the v123 candidate and resolve Web security evidence using the current source without replacing fixed history, then verify the exact candidate before any deployment. Establish an explicitly scoped non-inference marketplace/Agent/MCP -> OS Linux -> same job/result integration and independently validate on the permitted hardware path; real model output quality remains unverified without explicit authorization.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -85,5 +90,14 @@
     "review": "PASS_SCOPED, independent 35 tests; operator-observed Mac fixture assertions",
     "verify": "npm run verify exit 0; 2619 tests, 2618 pass, 1 skip, 0 fail",
     "limitations": "v121 base is superseded by deployed v122; no final candidate Pixel, real-account or production verification."
+  },
+  "siteCandidateV123EveFirst": {
+    "base": "2c101e5d5eddd2ebfb569c121ef094c06c30ea9e",
+    "commit": "3452c7851c3392c784d44a712260d859157aa1c6",
+    "patch": "docs/evidence/development-execution/pixel-site-v123-eve-home-candidate.patch",
+    "patchSha256": "cc561ded2e0a52720151ef9199f07bce37c232b9e5767f5ff4f1c415ad1255b2",
+    "checks": "build, typecheck, focused lint, 6 targeted tests pass; synthetic UI desktop and 411x923; four existing routes asserted",
+    "release": "npm run verify failed at release:check on existing v123 router security evidence mismatch. Not deployed.",
+    "mcp": "33 host broker and 54 connector tests pass with synthetic local data only; no real device or provider."
   }
 }

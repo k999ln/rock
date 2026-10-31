@@ -1,0 +1,93 @@
+diff --git a/app/os-shell.css b/app/os-shell.css
+index 2f7b3c4..57aebb4 100644
+--- a/app/os-shell.css
++++ b/app/os-shell.css
+@@ -98 +98 @@
+-.os-header .os-brand img{background:#fff;border-radius:6px;filter:none}
++.os-header .os-brand img{background:transparent;border-radius:0;filter:none;mix-blend-mode:multiply}
+@@ -100 +100 @@
+-.os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px}.os-header .os-brand img{width:34px;height:34px;flex-basis:34px}
++.os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px;letter-spacing:-.045em;font-weight:700}.os-header .os-brand img{width:42px;height:42px;flex-basis:42px}
+@@ -102 +102 @@
+-.os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-current-app{display:none}}
++.os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-brand img{width:38px;height:38px;flex-basis:38px}.os-header .os-current-app{display:none}}
+diff --git a/components/home-screen.module.css b/components/home-screen.module.css
+index 3716e53..351e30b 100644
+--- a/components/home-screen.module.css
++++ b/components/home-screen.module.css
+@@ -630 +630 @@
+-  grid-template-columns: 1.15fr 1fr 1fr;
++  grid-template-columns: repeat(4, minmax(0, 1fr));
+@@ -663,0 +664,4 @@
++.entryActions a:focus-visible {
++  outline: 2px solid var(--os-shell-focus, #a9754f);
++  outline-offset: 3px;
++}
+@@ -744,0 +749,3 @@
++  .entryActions {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
+diff --git a/components/home-screen.tsx b/components/home-screen.tsx
+index 37d77a4..dd1d057 100644
+--- a/components/home-screen.tsx
++++ b/components/home-screen.tsx
+@@ -15,0 +16 @@ import {
++  Sparkles,
+@@ -180 +181 @@ export default function HomeScreen() {
+-                <p className={styles.eyebrow}>YOUR WORKSPACE</p>
++                <p className={styles.eyebrow}>EVE / YOUR WORKSPACE</p>
+@@ -182 +183 @@ export default function HomeScreen() {
+-                  思いつきから、
++                  Eveと、やりたいことを
+@@ -184 +185 @@ export default function HomeScreen() {
+-                  次の仕事へ。
++                  形にしよう。
+@@ -186 +187 @@ export default function HomeScreen() {
+-                <p>依頼も、続きの仕事も。ここから始める。</p>
++                <p>相談する、担当を作る、仕事を進める。あなたの続きもここから。</p>
+@@ -194,0 +196,6 @@ export default function HomeScreen() {
++                <Link href="/os/eve?view=build">
++                  <Sparkles size={24} />
++                  <strong>自分の担当を作る</strong>
++                  <span>目的に合わせてエージェントを作る。</span>
++                  <ArrowUpRight size={20} />
++                </Link>
+diff --git a/tests/fixtures/eve-home-preview/README.md b/tests/fixtures/eve-home-preview/README.md
+new file mode 100644
+index 0000000..8111ffd
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/README.md
+@@ -0,0 +1,3 @@
++# Isolated Eve-first home preview
++
++Run `./node_modules/.bin/vite --config tests/fixtures/eve-home-preview/vite.config.mjs` and open the reported loopback URL. This renders the real home, OS header and navigation with synthetic timeline and connection children; all application fetch calls are rejected. Verify the four Eve entry destinations and inspect desktop and narrow layouts. This is not production, a real account, a real timeline, Pixel hardware, an MCP connection, or an execution test. Stop the owned Vite server after use.
+diff --git a/tests/fixtures/eve-home-preview/index.html b/tests/fixtures/eve-home-preview/index.html
+new file mode 100644
+index 0000000..53d694f
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/index.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>隔離ホーム表示</title></head><body><div id="root"></div><script type="module" src="/main.jsx"></script></body></html>
+diff --git a/tests/fixtures/eve-home-preview/main.jsx b/tests/fixtures/eve-home-preview/main.jsx
+new file mode 100644
+index 0000000..9d453e9
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/main.jsx
+@@ -0,0 +1,6 @@
++import React from 'react';
++import {createRoot} from 'react-dom/client';
++import Home from '@fixture-home';
++import '../../..//app/os-shell.css';
++window.fetch=async()=>{throw new Error('network disabled in fixture')};
++createRoot(document.getElementById('root')).render(<Home/>);
+diff --git a/tests/fixtures/eve-home-preview/vite.config.mjs b/tests/fixtures/eve-home-preview/vite.config.mjs
+new file mode 100644
+index 0000000..5459578
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/vite.config.mjs
+@@ -0,0 +1,5 @@
++import {defineConfig} from 'vite';
++import {resolve} from 'node:path';
++const root=import.meta.dirname, site=resolve(root,'../../..'), home=resolve(site,'components/home-screen.tsx');
++const children=new Set(['./sky-social-timeline','./smis-added-posts','./sky-discovery-dialog','./sky-x-account','./sky-timeline-connector','./sky-information-market','./sky-discovery-feed','./sky-agent-library']);
++export default defineConfig({root,publicDir:resolve(site,'public'),server:{host:'127.0.0.1',port:18396,strictPort:true,fs:{allow:[site]}},plugins:[{name:'synthetic-ui',enforce:'pre',resolveId(id,importer){if(id==='@fixture-home')return home;if(id==='next/link'||id==='next/image'||id==='next/navigation'||id==='@/lib/use-sky-features')return '\0stub:'+id;if(importer===home&&children.has(id))return '\0stub:'+id;if(id==='@/lib/os-navigation')return resolve(site,'lib/os-navigation.ts');if(id.startsWith('@/'))return resolve(site,id.slice(2));},load(id){if(!id.startsWith('\0stub:'))return;let k=id.slice(6);if(k==='next/navigation')return `export const usePathname=()=>'/';`;if(k==='next/link')return `import React from 'react'; export default function Link({children,href,...p}){return React.createElement('a',{...p,href:typeof href==='string'?href:'#'},children)}`;if(k==='next/image')return `import React from 'react';export default function Image({unoptimized,...p}){return React.createElement('img',p)}`;if(k==='@/lib/use-sky-features')return `export function useSkyFeatures(){return {enabled:()=>false}}`;if(k==='./sky-timeline-connector')return `export const useTimelineConnector=()=>({});export const SkyTimelineConnector=()=>null,SkyMcpTimeline=()=>null;`;if(k==='./sky-x-account')return `export default function X(){return null} export function SkyXAccountConnection(){return null}`;if(k==='./sky-information-market')return `export function SkyNewsConnections(){return null}`;if(k==='./sky-social-timeline')return `import React from 'react';export default function Timeline(){return React.createElement('section',{style:{padding:'24px 0',borderTop:'1px solid #ddd'}},'smis タイムライン（合成表示）')}`;return `export default function Stub(){return null}`}}]});
