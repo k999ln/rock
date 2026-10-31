@@ -38,7 +38,7 @@ import {guardHistoryNavigation} from '@/lib/history-navigation-guard';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {useSearchParams} from 'next/navigation';
 import SkyAgentLibrary from './sky-agent-library';
-import {Bot, PanelLeft, Search, FileText, Sparkles, Send, CheckCircle2} from 'lucide-react';
+import {Bot, PanelLeft, Send, CheckCircle2} from 'lucide-react';
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const controller = new AbortController();
@@ -646,10 +646,12 @@ export default function EveSyncWorkspace({
             <Link href="/os/eve?mode=tool-work">smisのToolを使う</Link>
             <Link href="/sky">smis・MCPを開く</Link>
             <Link href="/os/eve#eve-work-results">仕事と成果</Link>
-            <Link href="/connect/device">端末を接続・解除</Link>
-            <Link href="/settings">設定</Link>
-            <Link href="/#sky-manage">担当とLLMを管理</Link>
-            <Link href="/#sky">能力を追加</Link>
+            <details><summary>設定・管理</summary>
+              <Link href="/connect/device">端末を接続・解除</Link>
+              <Link href="/settings">設定</Link>
+              <Link href="/#sky-manage">担当とLLMを管理</Link>
+              <Link href="/#sky">能力を追加</Link>
+            </details>
           </div>
           <p>会話の履歴</p>
           <nav aria-label="Eveの会話">
@@ -674,7 +676,7 @@ export default function EveSyncWorkspace({
         </aside>
         <section className={styles.desk}>
           <div className={styles.studioHeader}>
-            <div><h1>{resultsView?'仕事と成果':workbenchMode==='build'?'担当を作る':'Eve'}</h1><p>{resultsView?'進捗と保存した成果を確認。':workbenchMode==='build'?'役割を決め、保存して仕事へ。':'依頼を書く。条件を確かめて、仕事を進める。'}</p></div>
+            <div><h1>{resultsView?'仕事と成果':workbenchMode==='build'?'担当を作る':'Eve'}</h1></div>
             <div className={styles.headerActions}>
               <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>会話の履歴</button>
               {workbenchMode==='build'?<button type="button" onClick={()=>{setModeOverride('work');window.location.hash='eve-compose';}}>依頼に戻る</button>:<button type="button" onClick={()=>{if(resultsView||composeRequested){window.history.replaceState(null,'',window.location.pathname+window.location.search);window.dispatchEvent(new Event('hashchange'));}setBuildVisited(true);setModeOverride('build');}}>担当を作る</button>}
@@ -692,14 +694,14 @@ export default function EveSyncWorkspace({
     <p>{m.text}</p>
     {m.side !== 'me' && m.text.includes('Tool: mr-citations') && m.text.includes('端末内の固定処理') && <p className={styles.historyCorrection}>過去の表示の訂正：この固定引用処理はサイト側で実行されました。Pixel内での実行を示すものではありません。</p>}
   </article>)}
-  {!item && <div className={styles.welcome}><h3>今日は何を進めますか？</h3><p>下の入力欄から依頼できます。実行前に接続先と内容を確認します。</p></div>}
+  {!item && <div className={styles.welcome}><h3>今日は何を進めますか？</h3></div>}
 </div>}
 {signedIn !== false && (
               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
                 <textarea
                   disabled={busy}
                   aria-label="続きの依頼"
-                  placeholder="作りたいもの、直したいところ、必要な成果を具体的に書いてください。"
+                  placeholder="Eveに依頼する"
                   value={input}
                   maxLength={2000}
                   onChange={(e) => {
@@ -709,9 +711,6 @@ export default function EveSyncWorkspace({
                   }}
                   rows={4}
                 />
-                <div className={styles.requestStarters} aria-label="依頼を書き始める">
-                  {[{label:'調べる',icon:Search,text:'調べたいこと：\n知りたい内容と、出典が必要な範囲：'},{label:'まとめる',icon:FileText,text:'まとめたい内容：\n用途と、希望する長さ：'},{label:'作る',icon:Sparkles,text:'作りたいもの：\n目的と、必要な成果：'}].map(item=><button key={item.label} type="button" disabled={busy||Boolean(input.trim())} onClick={()=>{setInput(item.text);setConsent(false);document.querySelector<HTMLTextAreaElement>('textarea[aria-label="続きの依頼"]')?.focus();}}><item.icon size={16}/><span>{item.label}</span></button>)}
-                </div>
                 {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
 
                 {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
@@ -815,12 +814,11 @@ export default function EveSyncWorkspace({
                     disabled={!ready || !consent || !input.trim() || busy}
                     onClick={() => void send()}
                   >
-                    <Send size={18} aria-hidden="true"/>{busy ? '依頼を保存中…' : '選んだ実行先で下書きを作る'}
+                    <Send size={18} aria-hidden="true"/>{busy ? '依頼を保存中…' : '下書きを作る'}
                   </button>
                 </footer>
               </section>
 )}
-          <div hidden={profileRequested} className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
           <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner} ownerUserId={connectionOwner} onSelection={setToolAgentSelection}/>}

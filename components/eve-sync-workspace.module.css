@@ -104,6 +104,8 @@
 .sidebar>p{margin:18px 12px 5px;color:#818181;font-size:11px;letter-spacing:0}
 .sidebarLinks{display:flex;flex-direction:column;gap:2px;padding-bottom:4px;border-bottom:1px solid #e8e8e8}
 .sidebarLinks a{display:flex;align-items:center;min-height:38px;padding:7px 12px;border-radius:9px;text-decoration:none;font-size:13px;color:#343434}
+.sidebarLinks details>summary{display:flex;align-items:center;min-height:38px;padding:7px 12px;border-radius:9px;cursor:pointer;font-size:13px;color:#343434}
+.sidebarLinks details>summary:hover{background:#ededed}.sidebarLinks details>a{padding-left:22px;color:#666}
 .sidebar nav{max-height:40dvh;min-height:0}
 .sidebar nav button{border-radius:9px;font-size:12px;min-height:42px;line-height:1.45;padding:8px 12px}
 .sidebar nav button[aria-current='page']{background:#eaeaea;border-color:transparent;box-shadow:none}
