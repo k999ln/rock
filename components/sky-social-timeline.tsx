@@ -619,6 +619,8 @@ export default function SkySocialTimeline({
     setCommunityId('');
     setThreadId('');
     setManagement(false);
+    setCommunityForm(false);
+    setJoinForm(false);
     // Home keeps this timeline mounted between bookmarks and the feed, so
     // navigating back does not discard an unsent input.
     if (typeof window !== 'undefined' && window.location.hash === '#bookmarks') {
@@ -1066,7 +1068,7 @@ export default function SkySocialTimeline({
         {!communityPage && (
           <button
             className={styles.topIcon}
-            aria-label="タイムラインの設定とコミュニティー"
+            aria-label="投稿・保存・コミュニティー"
             aria-expanded={management}
             onClick={() => setManagement((v) => !v)}
           >
@@ -1233,7 +1235,7 @@ export default function SkySocialTimeline({
               hidden={!management || communityPage}
             >
               <div className={styles.panelHeading}>
-                <strong>タイムラインの設定</strong>
+                <strong>投稿・保存・コミュニティー</strong>
                 <button
                   aria-label="設定を閉じる"
                   onClick={() => setManagement(false)}

@@ -123,15 +123,31 @@ void test('returning from bookmarks restores the timeline without discarding a d
 void test('the all posts option exits bookmarks as well as the settings panel', () => {
   const app = harness('home');
   let view = app.render();
-  nodes(view).find(node => node.props['aria-label'] === 'タイムラインの設定とコミュニティー').props.onClick();
+  nodes(view).find(node => node.props['aria-label'] === '投稿・保存・コミュニティー').props.onClick();
   view = app.render();
   nodes(view).find(node => node.type === 'button' && text(node).trim() === 'ブックマーク').props.onClick();
   view = app.render();
   assert.ok(nodes(view).some(node => node.type === 'button' && text(node).includes('タイムラインに戻る')));
-  nodes(view).find(node => node.props['aria-label'] === 'タイムラインの設定とコミュニティー').props.onClick();
+  nodes(view).find(node => node.props['aria-label'] === '投稿・保存・コミュニティー').props.onClick();
   view = app.render();
   nodes(view).find(node => node.type === 'button' && text(node).trim() === 'すべての投稿').props.onClick();
   view = app.render();
   assert.equal(nodes(view).find(node => node.props.role === 'tab' && text(node) === 'あなたへ').props['aria-selected'], true);
   assert.equal(nodes(view).some(node => node.props['aria-label'] === '設定を閉じる'), false);
+});
+void test('returning to all posts closes the invitation form but preserves its draft', () => {
+  const app = harness('home');
+  const find = (view, label) => nodes(view).find(node => node.type === 'button' && text(node).trim() === label);
+  nodes(app.render()).find(node => node.props['aria-label'] === '投稿・保存・コミュニティー').props.onClick();
+  find(app.render(), '招待鍵で参加する').props.onClick();
+  let field = nodes(app.render()).find(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵'));
+  assert.ok(field);
+  field.props.onChange({ target: { value: 'synthetic-invitation-draft' } });
+  nodes(app.render()).find(node => node.props['aria-label'] === '投稿・保存・コミュニティー').props.onClick();
+  find(app.render(), 'すべての投稿').props.onClick();
+  assert.equal(nodes(app.render()).some(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵')), false);
+  nodes(app.render()).find(node => node.props['aria-label'] === '投稿・保存・コミュニティー').props.onClick();
+  find(app.render(), '招待鍵で参加する').props.onClick();
+  field = nodes(app.render()).find(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵'));
+  assert.equal(field.props.value, 'synthetic-invitation-draft');
 });

@@ -16,7 +16,7 @@ export default async function ConnectDevicePage({
 }) {
   const params = await searchParams;
   const initialCode = Array.isArray(params.user_code) ? params.user_code[0] ?? '' : params.user_code ?? '';
-  return <WorkspaceShell title="接続" hideTopActions hideAccountAccess><div className={styles.page}>
+  return <WorkspaceShell title="接続" hideTopActions hideAccountAccess hideFlowNavigation><div className={styles.page}>
     <Link href="/connect/service" className={styles.back}>← 接続の選択へ戻る</Link>
     <div className={styles.deviceArea}><RockstarDeviceAuthorization initialCode={initialCode} /></div>
     <Link href="/os/eve">接続後はEveで仕事を始める →</Link>
