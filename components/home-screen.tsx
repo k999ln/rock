@@ -138,7 +138,7 @@ export default function HomeScreen() {
           <div className={styles.mobileHeader}>
             <OSHeader title="smis" hideNavigation>
               <div className={styles.mobileActions}>
-                <Link href={route('/chat')}>
+                <Link href="/os/eve">
                   Eve <MessageCircle size={20} />
                 </Link>
                 <Link href={route('/#sky')} aria-label="追加・管理">

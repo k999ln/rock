@@ -12,6 +12,14 @@ void test('Home and Eve retain the same three destinations independent of option
   assert.doesNotMatch(read('components/os-app-navigation.tsx'), /useSkyFeatures|WalletCards|ChartNoAxesCombined/);
 });
 
+void test('the Eve tab always opens Eve, including from settings and connection pages', () => {
+  const eve = osNavigationItems.find(item => item.id === 'eve');
+  for (const path of ['/', '/os/eve', '/settings', '/connect', '/sky/help', '/wallet']) {
+    assert.equal(osRouteHref(path, eve.href), '/os/eve');
+    assert.equal(osRouteHref(path, eve.href, true), '/os/eve');
+  }
+});
+
 void test('public OS navigation uses the main domain and localhost preserves existing routes', () => {
   for (const path of ['/','/chat','/os','/os/eve','/os/sky/agents']) {
     assert.equal(osRouteHref(path,'/'),'/');
