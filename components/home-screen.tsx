@@ -183,31 +183,23 @@ export default function HomeScreen() {
               aria-labelledby="os-home-title"
             >
               <div className={styles.entryIntro}>
-                <p className={styles.eyebrow}>YOUR WORKSPACE</p>
-                <h1 id="os-home-title">
-                  思いつきから、
-                  <br />
-                  次の仕事へ。
-                </h1>
-                <p>依頼も、続きの仕事も。ここから始める。</p>
+                <h1 id="os-home-title">Eve</h1>
+                <p>何を進めますか？</p>
               </div>
               <nav className={styles.entryActions} aria-label="仕事の主な操作">
                 <Link className={styles.primaryEntry} href="/os/eve">
                   <MessageCircle size={25} />
                   <strong>Eveに依頼する</strong>
-                  <span>やりたいことを伝え、計画を確かめる。</span>
                   <ArrowUpRight size={20} />
                 </Link>
                 <Link href="/os/eve#eve-work-results">
                   <FolderOpen size={24} />
                   <strong>仕事と成果を開く</strong>
-                  <span>進捗・承認・保存した成果へ。</span>
                   <ArrowUpRight size={20} />
                 </Link>
                 <Link href="/connect/service">
                   <Cable size={24} />
                   <strong>利用環境をつなぐ</strong>
-                  <span>端末とサービスの接続を確認。</span>
                   <ArrowUpRight size={20} />
                 </Link>
               </nav>

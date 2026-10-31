@@ -828,3 +828,17 @@
 .home .mobileNav a{display:inline-flex;flex-direction:row;gap:8px;min-height:48px;font-size:12px;padding:8px 0;box-shadow:none}.home .mobileNav a[aria-current='page']{background:transparent;border-bottom:2px solid #151515}.home .mobileNav a svg{width:18px;height:18px}
 .workspaceAside h2{font:600 17px/1.5 system-ui,sans-serif}.workspaceAside section{padding:20px 0}
 @media(max-width:600px){.home .layout{padding-bottom:24px}.home .mobileNav{padding-inline:20px;gap:24px}.entryIntro h1{font-size:28px}.workEntry{padding-top:24px}.entryActions{gap:0}.entryActions a{padding:16px 0}.entryActions strong{font-size:16px}.home .mobileActions>a:first-child{font-size:12px}}
+
+/* A compact work entry leaves the feed and the user's own content in view. */
+.workEntry{padding:28px 0 24px}
+.entryIntro h1{font-size:24px;letter-spacing:-.02em;margin:0 0 4px}
+.entryIntro>p:last-child{margin:0 0 18px;color:#595959}
+.entryActions{display:flex;flex-wrap:wrap;gap:8px;border:0}
+.entryActions a,.entryActions a.primaryEntry{position:static;display:inline-flex;flex-direction:row;align-items:center;gap:8px;min-height:44px;margin:0;padding:10px 14px;border:1px solid #dedede;border-radius:8px;background:#fff;color:#1a1a1a}
+.entryActions a.primaryEntry{background:#202020;border-color:#202020;color:#fff}
+.entryActions a>svg:first-child{width:18px;height:18px}
+.entryActions a>svg:last-child{position:static;width:15px;height:15px}
+.entryActions strong{font:600 14px/1.4 system-ui,sans-serif}
+.entryActions a:hover{background:#f5f5f5}
+.entryActions a.primaryEntry:hover{background:#3a3a3a}
+@media(max-width:540px){.entryActions{gap:8px}.entryActions a,.entryActions a.primaryEntry{padding:10px 12px;border:1px solid #dedede}.entryActions a.primaryEntry{border-color:#202020}.entryActions a>svg:first-child{grid-row:auto}.entryActions strong{font-size:14px}}
