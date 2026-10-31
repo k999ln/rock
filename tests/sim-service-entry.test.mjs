@@ -60,11 +60,12 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(onboarding, /SIM[ /]+eSIM|physical SIM|物理SIM/i);
   assert.match(launch, /redirect\('\/os'\)/);
   assert.match(accountEntry, /ChatGPTアカウントは必要ありません/);
+  assert.match(accountEntry, /Noah/);
   assert.match(onboarding, /Web版を使うためにSIM\/eSIMを購入する必要はありません/);
   assert.doesNotMatch(launch, /href="\/sky\/esim"/);
   for (const source of [onboarding, accountEntry]) {
     assert.match(source, /RockstarOS/);
-    assert.match(source, /smis/);
+    assert.match(source, /Noah|smis/);
     assert.match(source, /Eve/);
   }
   assert.match(marketing, /AVOKADO \/ SPATIAL EXPERIENCES/);
@@ -155,7 +156,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(home, /<OsAppNavigation/);
   assert.match(home, /<SkySocialTimeline/);
   assert.match(home, /href=\{route\('\/#sky'\)\}/);
-  assert.match(home, /href=\{route\('\/chat'\)\}/);
+  assert.match(home, /href="\/os\/eve"/);
   assert.match(home, /href=\{route\('\/#sky-manage'\)\}/);
   assert.match(read('lib/os-navigation.ts'), /href: '\/#communities'/);
   assert.doesNotMatch(home, /href="\/work"><Bot/);

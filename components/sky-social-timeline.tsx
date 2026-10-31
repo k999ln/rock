@@ -1469,7 +1469,7 @@ export default function SkySocialTimeline({
               )}
               {joinForm && <section className={styles.communityForm} aria-labelledby="join-title">
                 <h3 id="join-title">コミュニティーに参加</h3>
-                <p>招待リンクを貼るか、招待ファイルを選んでください。個人用鍵や復旧鍵は共有しないでください。</p>
+                <p>招待リンクを貼るか、招待ファイルを選んでください。QRコードは端末のカメラで開くこともできます。個人用鍵や復旧鍵は共有しないでください。</p>
                 <label>
                   招待リンク
                   <textarea ref={inviteInput} value={invitationText} maxLength={2000}
@@ -1484,6 +1484,23 @@ export default function SkySocialTimeline({
                     if (!file) return;
                     if (file.size > 2000) { setInviteError('招待ファイルのサイズを確認してください。'); return; }
                     void file.text().then(value => { setInvitationText(value); setInviteError(''); setInvite(null); setInvitePreview(null); }).catch(() => setInviteError('招待ファイルを読み込めませんでした。'));
+                  }} />
+                </label>
+                <label>QRコードの画像を選ぶ
+                  <input type="file" accept="image/*" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const Detector = (window as Window & { BarcodeDetector?: new (options: { formats: string[] }) => { detect: (image: ImageBitmap) => Promise<Array<{ rawValue: string }>> } }).BarcodeDetector;
+                    if (!Detector) { setInviteError('このブラウザでは画像からQRコードを読み取れません。端末のカメラで開くか、招待リンクを貼り付けてください。'); return; }
+                    if (file.size > 5_000_000) { setInviteError('QRコード画像は5MB以下にしてください。'); return; }
+                    void (async () => {
+                      const image = await createImageBitmap(file);
+                      try {
+                        const codes = await new Detector({ formats: ['qr_code'] }).detect(image);
+                        if (codes.length !== 1 || !codes[0].rawValue || codes[0].rawValue.length > 2000) throw new Error();
+                        setInvitationText(codes[0].rawValue); setInviteError(''); setInvite(null); setInvitePreview(null);
+                      } finally { image.close(); }
+                    })().catch(() => setInviteError('QRコードを読み取れませんでした。画像を確認するか、招待リンクを貼り付けてください。'));
                   }} />
                 </label>
                 <div className={styles.formActions}>

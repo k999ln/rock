@@ -32,5 +32,5 @@ void test('smis home never presents Jev Router registration as a working connect
   assert.match(home, /if \(tool\.id === 'jev-router'\) \{\s*setSelected\(null\);\s*router\.push\('\/sky\/tools\/jev-router'\)/);
   assert.match(home, /skyToolUiState\(tool, \{ fashionConnected, connectedTools, pcConnected, service \}\)/);
   assert.match(home, /selected\.id === 'jev-router' \? \(/);
-  assert.match(home, /本体はsmisに未接続です/);
+  assert.match(home, /本体はNoahに未接続です/);
 });

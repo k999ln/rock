@@ -28,7 +28,7 @@ function harness(initialView, communities = [], { error = '' } = {}) {
     const code = ts.transpileModule(read(path), { compilerOptions: {
       target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX,
     } }).outputText;
-    runInNewContext(code, { exports, URL, URLSearchParams, crypto, require(name) {
+    runInNewContext(code, { exports, URL, URLSearchParams, crypto, window: { location: { hash: '' } }, require(name) {
       if (name === 'react') return mockReact;
       if (name === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment: 'fragment' };
       if (name === 'next/link') return { default: 'a' };
@@ -192,4 +192,13 @@ void test('invalid invitation is reported next to the field without losing the d
   assert.equal(alert.props.role, 'alert');
   assert.match(text(alert), /招待リンク/);
   assert.doesNotMatch(text(view), /コミュニティーを読み込めませんでした/);
+});
+
+void test('QR image upload offers a fallback when the browser cannot scan it', () => {
+  const app = harness('communities');
+  nodes(app.render()).find(node => node.type === 'button' && text(node) === '招待鍵で参加する').props.onClick();
+  const qr = nodes(app.render()).find(node => node.type === 'input' && node.props.accept === 'image/*');
+  assert.ok(qr);
+  qr.props.onChange({ target: { files: [{ size: 100 }] } });
+  assert.match(text(app.render()), /端末のカメラで開くか、招待リンクを貼り付け/);
 });

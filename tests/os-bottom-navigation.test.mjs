@@ -21,7 +21,7 @@ void test('the actual navigation renders exactly its destinations, visible label
  const tree=exports.default({}),links=tree.props.children;
  assert.equal(tree.props.style['--os-navigation-count'],links.length);assert.equal(links.length,3);
  assert.deepEqual(Array.from(links,l=>l.props['data-os-destination']),['stream','eve','communities']);
- assert.deepEqual(Array.from(links,l=>l.props.children[1].props.children),['smis','Eve','コミュニティー']);
+ assert.deepEqual(Array.from(links,l=>l.props.children[1].props.children),['Noah','Eve','コミュニティー']);
  assert.equal(links[2].props['aria-current'],'page');assert.equal(links[1].props.href,'/os/eve');
 });
 void test('all bottom-navigation widths reserve Home space and use opaque, readable three-item layout',()=>{
