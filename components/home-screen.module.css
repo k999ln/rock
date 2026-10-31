@@ -447,6 +447,8 @@
   display: none;
 }
 .mobileActions nav {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   right: 0;
   top: 38px;
@@ -467,7 +469,10 @@
   font-size: 14px;
   color: #151515;
   min-height: 44px;
+  align-items: center;
+  justify-content: flex-start;
 }
+.mobileActions nav > span { display: block; padding: 12px 16px; white-space: nowrap; }
 .mobileActions nav > a:hover {
   background: #f4f4f4;
 }

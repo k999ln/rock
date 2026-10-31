@@ -99,8 +99,10 @@ void test('directory creation and invitation controls open existing forms withou
   const app = harness('communities');
   nodes(app.render()).find(node => node.type === 'button' && text(node) === 'コミュニティーを作る').props.onClick();
   assert.ok(nodes(app.render()).some(node => node.type === 'form' && text(node).includes('新しいコミュニティー')));
+  assert.equal(nodes(app.render()).some(node => node.props['aria-label'] === 'コミュニティーの一覧'), false);
+  nodes(app.render()).find(node => node.type === 'button' && text(node) === '閉じる').props.onClick();
   nodes(app.render()).find(node => node.type === 'button' && text(node) === '招待鍵で参加する').props.onClick();
-  assert.ok(nodes(app.render()).some(node => node.type === 'details' && node.props.open && text(node).includes('受け取った招待鍵')));
+  assert.ok(nodes(app.render()).some(node => node.type === 'section' && node.props['aria-labelledby'] === 'join-title'));
 });
 void test('OS home preserves the timeline and shared header while adding environment shortcuts', () => {
   const view = harness('home').render();
@@ -166,12 +168,28 @@ void test('the invitation form can be closed and reopened without losing typed t
   const openMenu = () => nodes(app.render()).find(node => node.props['aria-label'] === '投稿・保存・コミュニティー').props.onClick();
   openMenu();
   find(app.render(), '招待鍵で参加する').props.onClick();
-  let form = nodes(app.render()).find(node => node.type === 'details' && text(node).includes('受け取った招待鍵'));
+  let form = nodes(app.render()).find(node => node.type === 'section' && node.props['aria-labelledby'] === 'join-title');
   nodes([form]).find(node => node.type === 'textarea').props.onChange({ target: { value: 'draft' } });
-  form = nodes(app.render()).find(node => node.type === 'details' && text(node).includes('受け取った招待鍵'));
+  form = nodes(app.render()).find(node => node.type === 'section' && node.props['aria-labelledby'] === 'join-title');
   find([form], '閉じる').props.onClick();
   assert.equal(nodes(app.render()).some(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵')), false);
   openMenu();
   find(app.render(), '招待鍵で参加する').props.onClick();
   assert.equal(nodes(app.render()).find(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵')).props.value, 'draft');
+});
+
+void test('invalid invitation is reported next to the field without losing the draft', async () => {
+  const app = harness('communities');
+  nodes(app.render()).find(node => node.type === 'button' && text(node) === '招待鍵で参加する').props.onClick();
+  let field = nodes(app.render()).find(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵'));
+  field.props.onChange({ target: { value: '{invalid' } });
+  await nodes(app.render()).find(node => node.type === 'button' && text(node) === '招待を確認する').props.onClick();
+  const view = app.render();
+  field = nodes(view).find(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵'));
+  assert.equal(field.props.value, '{invalid');
+  assert.equal(field.props['aria-invalid'], true);
+  const alert = nodes(view).find(node => node.props.id === field.props['aria-describedby']);
+  assert.equal(alert.props.role, 'alert');
+  assert.match(text(alert), /招待リンク/);
+  assert.doesNotMatch(text(view), /コミュニティーを読み込めませんでした/);
 });

@@ -17,7 +17,7 @@ export default function SkyCommunityDirectory({
   return <section className={styles.directory} aria-labelledby="community-directory-title">
     <header>
       <h2 id="community-directory-title">あなたのコミュニティー</h2>
-      <p>参加している場所を開くか、新しく作成できます。</p>
+      <p>仲間と投稿を共有する場所です。会話履歴や認証情報は共有されません。</p>
       <div className={styles.actions}>
         <button type="button" disabled={busy} onClick={onCreate}><Plus size={18} />コミュニティーを作る</button>
         <button type="button" disabled={busy} onClick={onJoin}><KeyRound size={18} />招待鍵で参加する</button>

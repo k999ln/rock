@@ -136,7 +136,7 @@ export function SkyXAccountConnection() {
           href="/signin-with-chatgpt?return_to=%2F%23news-plugins"
           target="_top"
         >
-          smisにサインインしてつなぐ
+          Noahにサインインしてつなぐ
         </a>
       ) : !data ? (
         <p>
@@ -157,7 +157,7 @@ export function SkyXAccountConnection() {
             自分のXを無料で読む <ArrowUpRight size={14} />
           </a>
           <small>
-            本人のX画面を別画面で開きます。smis内への自動取り込みはまだ接続されていません。
+            本人のX画面を別画面で開きます。Noah内への自動取り込みはまだ接続されていません。
           </small>
           <details>
             <summary>運営向けの接続設定</summary>
@@ -185,7 +185,7 @@ export function SkyXAccountConnection() {
               {busy ? '更新中…' : '投稿をホームへ読み込む'}
             </button>
             <button disabled={busy} onClick={() => void act('disconnect')}>
-              smisでの連携を停止
+              Noahでの連携を停止
             </button>
             <Link href="/#timeline">ストリームを見る</Link>
           </div>
@@ -196,7 +196,7 @@ export function SkyXAccountConnection() {
             </small>
           )}
           <small>
-            停止するとsmis内の認可情報と取得済み本文を消し、新たな読取りを止めます。X側のアプリ権限も外す場合は、Xの「連携しているアプリ」で解除できます。
+            停止するとNoah内の認可情報と取得済み本文を消し、新たな読取りを止めます。X側のアプリ権限も外す場合は、Xの「連携しているアプリ」で解除できます。
           </small>
         </>
       ) : (
@@ -208,7 +208,7 @@ export function SkyXAccountConnection() {
               onChange={(e) => setConfirmed(e.target.checked)}
             />
             <span>
-              プロフィールとフォロー中の投稿を読み取り、自分専用のsmisへ表示することを確認しました。投稿・いいね・DM・フォローの変更は許可しません。
+              プロフィールとフォロー中の投稿を読み取り、自分専用のNoahへ表示することを確認しました。投稿・いいね・DM・フォローの変更は許可しません。
             </span>
           </label>
           <p>

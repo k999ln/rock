@@ -75,13 +75,14 @@ export default function HomeScreen() {
         event.preventDefault();
         window.location.hash = 'sky';
       }
-      if (
-        event.key === 'Escape' &&
-        !['INPUT', 'TEXTAREA', 'SELECT'].includes(
-          (event.target as HTMLElement)?.tagName,
-        )
-      )
-        window.location.hash = 'timeline';
+      if (event.key === 'Escape') {
+        const menu = document.querySelector<HTMLDetailsElement>('details[data-home-menu][open]');
+        if (menu) {
+          event.preventDefault();
+          menu.open = false;
+          menu.querySelector<HTMLElement>('summary')?.focus();
+        }
+      }
     };
     window.addEventListener('hashchange', sync);
     window.addEventListener('popstate', sync);

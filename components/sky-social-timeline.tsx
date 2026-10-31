@@ -175,6 +175,14 @@ export default function SkySocialTimeline({
     ),
     [invitePreview, setInvitePreview] = useState<SkyCommunity | null>(null),
     [inviteUrl, setInviteUrl] = useState('');
+  const [inviteError, setInviteError] = useState('');
+  const nameInput = useRef<HTMLInputElement>(null);
+  const inviteInput = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (!communityForm && !joinForm) return;
+    const frame = requestAnimationFrame(() => (communityForm ? nameInput.current : inviteInput.current)?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [communityForm, joinForm]);
   const postId = useRef(''),
     newCommunityId = useRef(''),
     sequence = useRef(0);
@@ -336,11 +344,12 @@ export default function SkySocialTimeline({
         id = hash.get('community'),
         token = hash.get('invite');
       if (id && token) {
-        setInvite({ id, token });
+        setInvitationText(JSON.stringify({ schema: 'rockstar-community-invite/1', communityId: id, token }));
+        setJoinForm(true);
         window.history.replaceState(
           null,
           '',
-          window.location.pathname + window.location.search + '#timeline',
+          window.location.pathname + window.location.search + '#communities',
         );
       } else if (id) setCommunityId(id);
     });
@@ -363,6 +372,45 @@ export default function SkySocialTimeline({
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : '保存できませんでした。');
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function previewInvitation() {
+    if (busy) return;
+    setInviteError('');
+    setInvitePreview(null);
+    setInvite(null);
+    setAcceptedRules(false);
+    let candidate: { id: string; token: string };
+    try {
+      const input = invitationText.trim();
+      if (input.startsWith('{')) {
+        const v = JSON.parse(input);
+        if (v.schema !== 'rockstar-community-invite/1' || typeof v.communityId !== 'string' || typeof v.token !== 'string') throw new Error();
+        candidate = { id: v.communityId, token: v.token };
+      } else {
+        const url = new URL(input, window.location.origin);
+        if (url.origin !== window.location.origin) throw new Error();
+        const hash = new URLSearchParams(url.hash.slice(1));
+        candidate = { id: hash.get('community') || '', token: hash.get('invite') || '' };
+      }
+      if (!candidate.id || !candidate.token || candidate.token.length > 100) throw new Error();
+    } catch {
+      setInviteError('招待リンクまたは招待ファイルの内容を確認してください。');
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await request<{ community: SkyCommunity }>('/api/sky/social', { action: 'previewInvite', ...candidate });
+      setInvite(candidate);
+      setInvitePreview(result.community);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : '';
+      const hasStatus = Boolean(e && typeof e === 'object' && 'status' in e);
+      setInviteError(message === '有効な招待が必要です。'
+        ? 'この招待は無効か、すでに失効しています。新しい招待を依頼してください。'
+        : hasStatus && message ? message : '通信できませんでした。接続を確認して、もう一度お試しください。');
     } finally {
       setBusy(false);
     }
@@ -1191,6 +1239,11 @@ export default function SkySocialTimeline({
         </details>
       ))}
       {notice && <output className={styles.notice}>{notice}</output>}
+      {communityDirectory && !error && !loading && refreshedAt > 0 && (
+        <output className={styles.communityStatus}>
+          更新しました · 参加中 {data.communities.length}件 · {new Date(refreshedAt).toLocaleTimeString('ja-JP')}
+        </output>
+      )}
       {signedOut ? (
         <div className={styles.welcome}>
           <Users size={28} />
@@ -1338,7 +1391,7 @@ export default function SkySocialTimeline({
               <Link href="/#sky-manage">担当とLLMを設定 →</Link>
             </aside>
             <div className={styles.stream}>
-              {communityDirectory && (
+              {communityDirectory && !communityForm && !joinForm && (
                 <SkyCommunityDirectory
                   communities={data.communities}
                   busy={busy}
@@ -1372,8 +1425,9 @@ export default function SkySocialTimeline({
                 >
                   <h3>新しいコミュニティー</h3>
                   <label>
-                    名前
+                    名前（必須） · {name.length}/60
                     <input
+                      ref={nameInput}
                       required
                       maxLength={60}
                       value={name}
@@ -1381,7 +1435,7 @@ export default function SkySocialTimeline({
                     />
                   </label>
                   <label>
-                    どんな場所？
+                    説明（任意） · {description.length}/300
                     <textarea
                       maxLength={300}
                       value={description}
@@ -1389,13 +1443,13 @@ export default function SkySocialTimeline({
                     />
                   </label>
                   <label>
-                    参加ルール
+                    参加ルール（必須） · {rules.length}/500
                     <textarea
                       required
                       maxLength={500}
                       value={rules}
                       onChange={(e) => setRules(e.target.value)}
-                      placeholder="この場所で大切にすること"
+                      placeholder="例：相手を尊重し、共有前に確認する"
                     />
                   </label>
                   <p>
@@ -1403,7 +1457,7 @@ export default function SkySocialTimeline({
                   </p>
                   <p>会話履歴・認証情報・支払権限は共有されません。</p>
                   <div>
-                    <button disabled={busy}>作成する</button>
+                    <button className={styles.formPrimary} disabled={busy}>作成する</button>
                     <button
                       type="button"
                       onClick={() => setCommunityForm(false)}
@@ -1413,48 +1467,30 @@ export default function SkySocialTimeline({
                   </div>
                 </form>
               )}
-              <details
-                className={styles.communityForm}
-                hidden={!joinForm}
-                open={joinForm}
-                onToggle={(e) => setJoinForm(e.currentTarget.open)}
-              >
-                <summary>招待鍵で参加する</summary>
+              {joinForm && <section className={styles.communityForm} aria-labelledby="join-title">
+                <h3 id="join-title">コミュニティーに参加</h3>
+                <p>招待リンクを貼るか、招待ファイルを選んでください。個人用鍵や復旧鍵は共有しないでください。</p>
                 <label>
-                  受け取った招待鍵
-                  <textarea
-                    value={invitationText}
-                    maxLength={2000}
-                    onChange={(e) => setInvitationText(e.target.value)}
-                    placeholder="管理者から受け取った招待鍵のJSON"
-                  />
+                  招待リンク
+                  <textarea ref={inviteInput} value={invitationText} maxLength={2000}
+                    aria-invalid={Boolean(inviteError)} aria-describedby={inviteError ? 'invitation-error' : undefined}
+                    onChange={(e) => { setInvitationText(e.target.value); setInviteError(''); setInvitePreview(null); setInvite(null); }}
+                    placeholder="招待リンクまたは招待鍵を貼り付け" />
                 </label>
-                <button
-                  disabled={busy || !invitationText.trim()}
-                  onClick={() => {
-                    try {
-                      const v = JSON.parse(invitationText);
-                      if (
-                        v.schema !== 'rockstar-community-invite/1' ||
-                        typeof v.communityId !== 'string' ||
-                        typeof v.token !== 'string'
-                      )
-                        throw new Error();
-                      setInvite({ id: v.communityId, token: v.token });
-                      setInvitePreview(null);
-                      setAcceptedRules(false);
-                      setInvitationText('');
-                    } catch {
-                      setError('招待鍵のJSONを確認してください。');
-                    }
-                  }}
-                >
-                  招待を確認する
-                </button>
-                <button type="button" onClick={() => setJoinForm(false)}>
-                  閉じる
-                </button>
-              </details>
+                {inviteError && <p id="invitation-error" role="alert" className={styles.formError}>{inviteError}</p>}
+                <label>招待ファイルを選ぶ
+                  <input type="file" accept=".json,application/json,text/plain" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 2000) { setInviteError('招待ファイルのサイズを確認してください。'); return; }
+                    void file.text().then(value => { setInvitationText(value); setInviteError(''); setInvite(null); setInvitePreview(null); }).catch(() => setInviteError('招待ファイルを読み込めませんでした。'));
+                  }} />
+                </label>
+                <div className={styles.formActions}>
+                  <button type="button" className={styles.formPrimary} disabled={busy || !invitationText.trim()} onClick={() => void previewInvitation()}>招待を確認する</button>
+                  <button type="button" onClick={() => { setJoinForm(false); setInvite(null); setInvitePreview(null); setInviteError(''); }}>閉じる</button>
+                </div>
+              </section>}
               {lockedCommunity && (
                 <CommunityOsWorkbench
                   key={lockedCommunity.id}
@@ -1507,6 +1543,8 @@ export default function SkySocialTimeline({
                             () => {
                               setInvite(null);
                               setInvitePreview(null);
+                              setInvitationText('');
+                              setJoinForm(false);
                               setNotice('参加しました。');
                             },
                           )
@@ -1553,13 +1591,8 @@ export default function SkySocialTimeline({
                                     id: string;
                                     token: string;
                                   };
-                                  setInviteUrl(
-                                    JSON.stringify({
-                                      schema: 'rockstar-community-invite/1',
-                                      communityId: v.id,
-                                      token: v.token,
-                                    }),
-                                  );
+                                  const fragment = new URLSearchParams({ community: v.id, invite: v.token });
+                                  setInviteUrl(`${window.location.origin}/#${fragment.toString()}`);
                                 },
                               )
                             }
