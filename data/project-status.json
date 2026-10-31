@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "eve_light_candidate_scoped_verified_creator_guard_and_sync_block_release",
+    "status": "eve_retry_and_prefetch_candidate_verified_creator_guard_blocks_publication",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Fix creator unsaved/busy protection and v123 synchronization freshness; validate actual account and Pixel without inference before public release."
+    "next": "Fix agent creation draft and in-flight save protection; then validate real owner and Pixel without inference and complete public delivery gates."
   }
 }

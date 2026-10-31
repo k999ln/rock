@@ -1,0 +1,1233 @@
+diff --git a/app/os-shell.css b/app/os-shell.css
+index 2f7b3c4..8850d2a 100644
+--- a/app/os-shell.css
++++ b/app/os-shell.css
+@@ -95,11 +95,11 @@
+   background: var(--os-shell-panel);
+ }
+ 
+-.os-header .os-brand img{background:#fff;border-radius:6px;filter:none}
++.os-header .os-brand img{background:transparent;border-radius:0;filter:none;mix-blend-mode:multiply}
+ 
+-.os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px}.os-header .os-brand img{width:34px;height:34px;flex-basis:34px}
++.os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px;letter-spacing:-.045em;font-weight:700}.os-header .os-brand img{width:42px;height:42px;flex-basis:42px}
+ 
+-.os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-current-app{display:none}}
++.os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-brand img{width:38px;height:38px;flex-basis:38px}.os-header .os-current-app{display:none}}
+ 
+ /* One workspace frame for request, results, connections and settings. */
+ .rock-workspace.rock-workspace { --os-content:1120px; padding-bottom:calc(92px + env(safe-area-inset-bottom)); }
+@@ -117,5 +117,7 @@
+ @media(max-width:600px) { .rock-workspace .rock-main{padding:20px 16px}.rock-workspace .os-header-inner{padding-inline:16px}.os-flow-navigation{padding:8px 12px;gap:4px}.os-flow-navigation a{padding:10px 11px;gap:6px;font-size:12px;flex:1}.os-flow-navigation a svg{width:16px;flex-shrink:0} }
+ body:has(.rock-workspace) { background:var(--os-shell-bg); color:var(--os-shell-text); color-scheme:light; }
+ html:has(.rock-workspace) { background:#f6f4ef; color-scheme:light; }
++.rock-workspace.rock-conversation-layout { --os-shell-bg:#fff; --os-shell-text:#202123; --os-shell-muted:#68706d; --os-shell-line:#e7e7e7; min-height:100dvh; padding:0; background:#fff; }
++.rock-conversation-layout .rock-main-column-full,.rock-conversation-layout .rock-main.eve-sync-main { width:100%; max-width:none; margin:0; padding:0; }
+ .rock-workspace .os-header{position:sticky;top:0}.os-flow-navigation{position:sticky;top:60px;z-index:25}@media(max-width:1279px){.os-flow-navigation{top:56px}}
+ .rock-tool-dialog .black-button{background:var(--os-shell-accent);color:var(--os-shell-accent-ink);min-height:48px}
+diff --git a/components/eve-sync-workspace.module.css b/components/eve-sync-workspace.module.css
+index 02b502b..a3812fb 100644
+--- a/components/eve-sync-workspace.module.css
++++ b/components/eve-sync-workspace.module.css
+@@ -24,3 +24,19 @@
+ .leaveActions{display:flex;gap:12px;flex-wrap:wrap}.leaveActions :is(button,a){min-height:48px;display:inline-flex;align-items:center;padding:12px 16px;border:1px solid var(--os-shell-line);border-radius:12px;background:var(--os-shell-panel);color:var(--os-shell-text);font-size:14px;line-height:1.5}.leaveActions button:last-child{color:#93433a}
+ 
+ .resultsHeader nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.resultsHeader nav button{min-height:48px;font-size:13px}
++
++/* Keep the existing Tool workspace behind the same navigation treatment. */
++.app .workbenchTabs a{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 12px;border-radius:11px;color:inherit;font-size:14px;line-height:1.4;text-align:center;text-decoration:none;white-space:nowrap}
++.app .workbenchTabs a:hover{background:#fffdf8}
++.backendNotice{margin:-12px 0 20px;color:var(--muted);font-size:13px;line-height:1.65}
++@media(max-width:720px){.app .workbenchTabs a{font-size:13px;padding:10px 6px;gap:5px}}
++
++/* Conversation-first layout: existing history, consent and execution controls remain intact. */
++.app{min-height:100dvh;grid-template-columns:260px minmax(0,1fr);background:#fff;color:#202123;font:15px/1.6 system-ui,sans-serif}
++.sidebar{position:sticky;top:0;height:100dvh;overflow:auto;padding:22px 14px;background:#f7f7f8;border:0;gap:4px}
++.sidebar .brand{padding:8px 10px 18px;font-size:19px}.sidebar h2{display:none}.sidebar button,.sidebar>a:not(.brand){min-height:42px;padding:9px 11px;border:0;background:transparent;color:#303331;font-size:14px;text-decoration:none;text-align:left}.sidebar button:hover,.sidebar>a:not(.brand):hover{background:#ececee}.sidebar nav{flex:1;max-height:none;margin:18px 0;gap:3px}.sidebar nav button{border-radius:9px}.sidebar nav .current{background:#e6e6e7;border:0}
++.desk{width:100%;max-width:none;min-height:100dvh;margin:0;padding:0 24px 24px;align-self:stretch}.studioHeader{position:sticky;top:0;z-index:2;margin:0;padding:13px 2px;background:#fff;align-items:center}.studioHeader h1{margin:0;font-size:20px;letter-spacing:-.02em}.studioHeader .eyebrow,.studioHeader p{display:none}.workbenchTabs{max-width:760px;margin:12px auto;border:0;padding:0;background:transparent;justify-content:center;gap:5px}.app .workbenchTabs button,.app .workbenchTabs a{flex:0 1 auto;min-height:40px;padding:8px 12px;font-size:13px;border-radius:10px}.app .workbenchTabs button[aria-pressed='true']{background:#f2f2f2;box-shadow:none;color:#202123}.backendNotice{max-width:760px;margin:0 auto 12px;font-size:12px}.workContent{max-width:760px;margin:auto}.composeView .targetSummary{margin:0;padding:7px 0;font-size:12px}.extraWork{font-size:12px}.extraWork>summary{min-height:38px}.composeView>header{display:none}.conversationBody{display:flex;flex-direction:column;min-height:calc(100dvh - 245px)}.conversationBody .messages{order:0;flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding:20px 0}.conversationBody .messages .welcome{margin:auto;text-align:center}.conversationBody .messages .welcome h3{font-size:clamp(24px,3vw,30px);letter-spacing:-.03em}.conversationBody .messages .welcome p{max-width:52ch}.conversationBody .composer{order:1;margin:0 0 18px;padding:16px 18px;border:1px solid #ddd;border-radius:24px;background:#f7f7f8;box-shadow:0 2px 8px #0000000a}.composer h3{font-size:14px;margin:0 0 6px}.composer textarea{min-height:64px;padding:4px 0;background:transparent}.executionSettings{background:white}.composer footer{border-color:#e1e1e1}.app .primary{background:#202123;border-radius:22px}.messages article{border:0;background:transparent}.messages .me{max-width:80%;background:#f3f3f3}.messages .reply{padding-left:0}.connection{background:#f4f4f4}
++@media(max-width:720px){.app{display:flex;min-height:100dvh}.desk{padding:0 16px calc(16px + env(safe-area-inset-bottom))}.studioHeader{min-height:58px}.studioHeader h1{font-size:19px;margin:0}.studioHeader .historyToggle{order:-1}.workbenchTabs{justify-content:flex-start;flex-wrap:nowrap;margin:5px 0 8px}.app .workbenchTabs button,.app .workbenchTabs a{flex:none;font-size:12px}.backendNotice{margin:0 0 8px}.conversationBody{min-height:calc(100dvh - 240px)}.conversationBody .composer{padding:14px;border-radius:22px}.conversationBody .messages .welcome h3{font-size:24px}.sidebar[data-open='true']{inset:0 auto 0 0;width:min(85vw,320px);height:100dvh;border-radius:0;z-index:100}.sidebar .brand{display:block}.sidebar nav{max-height:none}.app .historyClose{min-height:40px}.app .historyToggle{min-height:40px}}
++.composer h3{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.composer .preparationHelp{padding:8px 10px;margin:5px 0;background:#eee;font-size:12px}.composer .preparationHelp a{min-height:32px}.composer .executionSettings{padding:4px 10px;margin:8px 0}.composer .executionSettings>summary{min-height:32px}.composer .consent{padding:2px 0;margin:6px 0;font-size:12px}.composer footer{padding-top:8px}.signedOutConversation{min-height:calc(100dvh - 240px);display:flex;flex-direction:column}.signedOutConversation .welcome{margin:auto;text-align:center}.signedOutConversation .welcome h3{font-size:28px}.signedOutComposer{display:flex;align-items:center;gap:12px;padding:14px 18px;margin-bottom:18px;background:#f7f7f8;border:1px solid #ddd;border-radius:24px}.app .signedOutComposer textarea{flex:1;min-width:0;min-height:50px;resize:none;background:transparent;border:0;padding:10px 0}.signedOutComposer .primary{flex-shrink:0}
++.sidebar .workbenchTabs{display:flex;flex-direction:column;align-items:stretch;overflow:visible;flex:0 0 auto;margin:8px 0;padding:0;width:100%;gap:3px}.app .sidebar .workbenchTabs button,.app .sidebar .workbenchTabs a{flex:none;justify-content:flex-start;width:100%;min-height:42px;padding:9px 11px;text-align:left;font-size:14px}.sidebar .backendNotice{margin:4px 10px 8px;font-size:11px;line-height:1.5;color:#68706d}.sidebar nav[aria-label='Eveの会話']{margin:14px 0;flex:1 1 auto}.signedOutConversation{min-height:calc(100dvh - 100px)}.conversationBody{min-height:calc(100dvh - 180px)}
++.conversationBody{min-height:max(320px,calc(100dvh - 300px))}@media(max-width:720px){.conversationBody{min-height:max(300px,calc(100dvh - 250px))}}
+diff --git a/components/eve-sync-workspace.tsx b/components/eve-sync-workspace.tsx
+index c0f9387..d71fa0c 100644
+--- a/components/eve-sync-workspace.tsx
++++ b/components/eve-sync-workspace.tsx
+@@ -1,18 +1,11 @@
+ 'use client';
+ import {runtimeEveTextExport} from '@/lib/eve-runtime-export';
+-import EveRuntimeInteraction from './eve-runtime-interaction';
+-import EveRuntimeArchive from './eve-runtime-archive';
+-import EveAgentComposer from './eve-agent-composer';
+ import {eveAgentConversationPath} from '@/lib/eve-studio-navigation';
+ import {runtimeEvePendingKey,runtimeEveRestorableWork} from '@/lib/eve-runtime-work-port';
+ import {purposeEvePendingKey} from '@/lib/eve-purpose-runtime-work-port';
+-import Workbench from './workbench';
+-import EveNewsWorkspace from './eve-news-workspace';
+-import EveToolWorkspace from './eve-tool-workspace';
+-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
++import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
+ import Link from 'next/link';
+ import SkyAgentEveProfile,{useSkyAgentProfileRequested,useSkyAgentProfileKey,type SkyAgentProfileSelection} from './sky-agent-eve-profile';
+-import SkyFreeCloudPanel from './sky-free-cloud-panel';
+ import type { EveHistoryItem } from '@/lib/eve-history';
+ import type { EveDeviceJob } from '@/lib/eve-device-sync';
+ import type {
+@@ -35,10 +28,20 @@ import {
+ import styles from './eve-sync-workspace.module.css';
+ import WorkspaceShell from './workspace-shell';
+ import {guardHistoryNavigation} from '@/lib/history-navigation-guard';
++import {createEveSyncPoller,settleEveSyncReads} from '@/lib/eve-sync-poller';
+ import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+ import {useSearchParams} from 'next/navigation';
+-import SkyAgentLibrary from './sky-agent-library';
+ import {Bot, Code2, MessageCircle, ListChecks, PanelLeft} from 'lucide-react';
++import LazyWorkspaceSection from './lazy-workspace-section';
++
++const loadEveRuntimeInteraction = () => import('./eve-runtime-interaction');
++const loadEveRuntimeArchive = () => import('./eve-runtime-archive');
++const loadEveAgentComposer = () => import('./eve-agent-composer');
++const loadWorkbench = () => import('./workbench');
++const loadEveNewsWorkspace = () => import('./eve-news-workspace');
++const loadEveToolWorkspace = () => import('./eve-tool-workspace');
++const loadSkyFreeCloudPanel = () => import('./sky-free-cloud-panel');
++const loadSkyAgentLibrary = () => import('./sky-agent-library');
+ 
+ async function api<T>(path: string, init?: RequestInit): Promise<T> {
+   const controller = new AbortController();
+@@ -72,9 +75,15 @@ const subscribeWorkspaceView=(changed:()=>void)=>{window.addEventListener('hashc
+ export default function EveSyncWorkspace({
+   initialThreadId = '',
+   initialSelection = { kind: 'none' },
++  active = true,
++  onReveal,
++  onActivityChange,
+ }: {
+   initialThreadId?: string;
+   initialSelection?: SkyEveSelection;
++  active?: boolean;
++  onReveal?: () => void;
++  onActivityChange?: (activity: {dirty:boolean;busy:boolean}) => void;
+ }) {
+   const resultsView=useSyncExternalStore(subscribeWorkspaceView,()=>window.location.hash==='#eve-work-results',()=>false);
+   const composeRequested=useSyncExternalStore(subscribeWorkspaceView,()=>window.location.hash==='#eve-compose',()=>false);
+@@ -89,6 +98,7 @@ export default function EveSyncWorkspace({
+   useEffect(()=>{if(resultsView){const frame=requestAnimationFrame(()=>document.getElementById('eve-work-results')?.scrollIntoView({block:'start'}));return()=>cancelAnimationFrame(frame);}},[resultsView,workbenchQuery]);
+   const [historyOpen,setHistoryOpen]=useState(false);
+   const [buildVisited,setBuildVisited]=useState(search.get('view')==='build');
++  const [libraryVisited,setLibraryVisited]=useState(false);
+   useEffect(()=>{if(workbenchMode!=='build'||buildVisited)return;const frame=requestAnimationFrame(()=>setBuildVisited(true));return()=>cancelAnimationFrame(frame);},[workbenchMode,buildVisited]);
+   const [cloudHistoryOpen,setCloudHistoryOpen]=useState(false);
+   const [agentWorkOpen,setAgentWorkOpen]=useState(false);
+@@ -117,6 +127,11 @@ export default function EveSyncWorkspace({
+     [busy, setBusy] = useState(false),
+     [online, setOnline] = useState(false),
+     [historyCursor, setHistoryCursor] = useState<string | null>(null);
++  const [previousActive, setPreviousActive] = useState(active);
++  if (previousActive !== active) {
++    setPreviousActive(active);
++    if (!active) setOnline(false);
++  }
+   const [runtimeJobs, setRuntimeJobs] = useState<EveRuntimeExecution[]>([]),
+     [runtimePending, setRuntimePending] = useState<EveRuntimePending[]>([]),
+     [runtimeNotice, setRuntimeNotice] = useState('');
+@@ -126,6 +141,7 @@ export default function EveSyncWorkspace({
+   const [leaveTarget,setLeaveTarget]=useState<{href?:string;resume?:()=>void}|null>(null);
+   const discardingDraft=useRef(false);
+   const hasUnsentDraft=Boolean(input.trim());
++  useEffect(() => { onActivityChange?.({dirty:hasUnsentDraft,busy}); }, [onActivityChange,hasUnsentDraft,busy]);
+   useEffect(()=>{
+     if(!hasUnsentDraft)return;
+     const warn=(event:BeforeUnloadEvent)=>{if(!discardingDraft.current)event.preventDefault();};
+@@ -133,33 +149,46 @@ export default function EveSyncWorkspace({
+     window.addEventListener('beforeunload',warn);
+     return()=>{release();window.removeEventListener('beforeunload',warn);};
+   },[hasUnsentDraft]);
++  useEffect(() => {
++    if (active || (!hasUnsentDraft && !busy)) return;
++    const protectHiddenDraft = (event: MouseEvent) => {
++      if (discardingDraft.current || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey || !(event.target instanceof Element)) return;
++      const link = event.target.closest('a[href]');
++      if (!link || link.getAttribute('target') === '_blank' || link.hasAttribute('download')) return;
++      const target = new URL(link.getAttribute('href')!, window.location.href);
++      if (target.origin === window.location.origin && target.pathname === window.location.pathname && target.search === window.location.search) return;
++      event.preventDefault();
++      event.stopPropagation();
++      onReveal?.();
++      if (busy) { setMessage('処理中です。結果を確認するまでこの画面を開いてください。'); return; }
++      setLeaveTarget({href: target.href});
++    };
++    document.addEventListener('click', protectHiddenDraft, true);
++    return () => document.removeEventListener('click', protectHiddenDraft, true);
++  }, [active, hasUnsentDraft, busy, onReveal]);
+   const [connectionOwner, setConnectionOwner] = useState('');
+   const toolAgent=toolAgentSelection?.ownerUserId===connectionOwner&&toolAgentSelection.key===profileKey?toolAgentSelection.agent:undefined;
+   const [observedAt, setObservedAt] = useState(0);
+   const activeThread = useRef(initialThreadId),
++    selectionEpoch = useRef(0),
++    connectionEpoch = useRef(0),
+     operation = useRef<{ id: string; key: string } | null>(null);
+-  useEffect(() => {
++  useLayoutEffect(() => {
++    if (!active) return;
+     let live = true;
+-    let fetching = false;
+     const load = async () => {
+-      if (fetching || document.hidden || !navigator.onLine) return;
+-      fetching = true;
++      const startedConnectionEpoch = connectionEpoch.current;
+       try {
+         const runtimeThread = activeThread.current;
++        const runtimeEpoch = selectionEpoch.current;
+         const runtimeLoad = api<{
+           ownerUserId: string;
+           devices: EveRuntimePresence[];
+           executions: EveRuntimeExecution[];
+           pending: EveRuntimePending[];
+           recovery?: {state:'paused'};
+-        }>('/api/eve/runtime' + (runtimeThread ? '?threadId=' + encodeURIComponent(runtimeThread) : '')).then(
+-          (data) => ({ data, error: null }),
+-          (error) => ({
+-            data: null,
+-            error: error as Error & { status?: number },
+-          }),
+-        );
+-        const [history, sync, runtime] = await Promise.all([
++        }>('/api/eve/runtime' + (runtimeThread ? '?threadId=' + encodeURIComponent(runtimeThread) : ''));
++        const [history, sync, runtime] = await settleEveSyncReads(
+           api<{
+             ownerUserId: string;
+             items: EveHistoryItem[];
+@@ -171,8 +200,8 @@ export default function EveSyncWorkspace({
+             devices: EveExecutionPresence[];
+           }>('/api/eve/device-sync'),
+           runtimeLoad,
+-        ]);
+-        if (!live) return;
++        );
++        if (!live || startedConnectionEpoch !== connectionEpoch.current || !navigator.onLine || document.hidden) return false;
+         if (
+           runtime.error?.status === 401 ||
+           (runtime.data && runtime.data.ownerUserId !== history.ownerUserId) ||
+@@ -185,6 +214,9 @@ export default function EveSyncWorkspace({
+           account.current && account.current !== sync.ownerUserId,
+         );
+         if (ownerChanged) {
++          selectionEpoch.current++;
++          setRuntimeJobs([]);
++          setRuntimePending([]);
+           expanded.current = false;
+           setTargetId('');
+           setAgentId('');
+@@ -221,20 +253,23 @@ export default function EveSyncWorkspace({
+         setDevices([...sync.devices, ...(runtime.data?.devices ?? [])]);
+         // A response for the previously selected conversation must not replace
+         // this conversation's saved jobs. The next poll reads its own thread.
+-        if (activeThread.current === runtimeThread) {
+-          setRuntimeJobs(runtime.data?.executions ?? []);
+-          setRuntimePending(runtime.data?.pending ?? []);
++        if (activeThread.current === runtimeThread && selectionEpoch.current === runtimeEpoch) {
++          if (runtime.data) {
++            setRuntimeJobs(runtime.data.executions);
++            setRuntimePending(runtime.data.pending);
++          }
+         } else {
+           setRuntimeJobs([]);
+           setRuntimePending([]);
+         }
+         setRuntimeNotice(
+           runtime.data?.recovery?.state==='paused' ? '端末実行は保存復旧の照合中です。配送と停止確認を保留しています。' : runtime.error
+-            ? '追加した実行先を確認できません。接続を確認してください。'
++            ? '実行先を確認できません。表示中の仕事は前回取得した情報で、現在の状態は未確認です。'
+             : '',
+         );
+         setSignedIn(true);
+         const id = activeThread.current;
++        const threadEpoch = selectionEpoch.current;
+         if (id) {
+           try {
+             const t = await api<EveHistoryItem & { ownerUserId: string }>(
+@@ -245,7 +280,7 @@ export default function EveSyncWorkspace({
+                 new Error('アカウントを再確認してください。'),
+                 { status: 401 },
+               );
+-            if (live && activeThread.current === id) {
++            if (live && startedConnectionEpoch === connectionEpoch.current && navigator.onLine && !document.hidden && activeThread.current === id && selectionEpoch.current === threadEpoch) {
+               setItem((old) =>
+                 old?.session.id === id
+                   ? {
+@@ -272,8 +307,9 @@ export default function EveSyncWorkspace({
+             if ((e as { status?: number }).status !== 404) throw e;
+           }
+         }
++        return !runtime.error;
+       } catch (e) {
+-        if (live) {
++        if (live && startedConnectionEpoch === connectionEpoch.current && navigator.onLine && !document.hidden) {
+           setOnline(false);
+           if ((e as { status?: number }).status === 401) {
+             setSignedIn(false);
+@@ -286,30 +322,34 @@ export default function EveSyncWorkspace({
+           } else
+             setMessage(e instanceof Error ? e.message : '同期できません。');
+         }
+-      } finally {
+-        fetching = false;
++        return false;
+       }
+     };
+-    void load();
+-    const timer = setInterval(() => void load(), 4000);
+-    const clock = setInterval(() => setObservedAt(Date.now()), 1000);
+-    const offline = () => setOnline(false);
++    const poller = createEveSyncPoller({run:load,canRun:()=>live&&!document.hidden&&navigator.onLine});
++    poller.wake();
++    const offline = () => { connectionEpoch.current++; setOnline(false); };
+     const resume = () => {
++      connectionEpoch.current++;
++      if (document.hidden || !navigator.onLine) { setOnline(false); return; }
+       setObservedAt(Date.now());
+-      void load();
++      poller.wake();
+     };
+     document.addEventListener('visibilitychange', resume);
+     window.addEventListener('online', resume);
+     window.addEventListener('offline', offline);
+     return () => {
+       live = false;
+-      clearInterval(timer);
+-      clearInterval(clock);
++      poller.stop();
+       document.removeEventListener('visibilitychange', resume);
+       window.removeEventListener('online', resume);
+       window.removeEventListener('offline', offline);
+     };
+-  }, []);
++  }, [active]);
++  useEffect(() => {
++    if (!active || (!devices.length && !runtimePending.length)) return;
++    const clock = setInterval(() => setObservedAt(Date.now()), 1000);
++    return () => clearInterval(clock);
++  }, [active, devices.length, runtimePending.length]);
+   const executionTargets = skyEveExecutionTargets(devices, targetId);
+   const device = executionTargets.find(
+       (d) => skyEveTargetKey(d) === (targetId || (executionTargets[0] ? skyEveTargetKey(executionTargets[0]) : '')),
+@@ -369,6 +409,8 @@ export default function EveSyncWorkspace({
+     setModeOverride('work');
+     setHistoryOpen(false);
+     const owner = account.current;
++    const chosenEpoch = ++selectionEpoch.current;
++    const chosenConnectionEpoch = connectionEpoch.current;
+     activeThread.current = id;
+     setRuntimeJobs([]);
+     setRuntimePending([]);
+@@ -385,6 +427,8 @@ export default function EveSyncWorkspace({
+       .then((t) => {
+         if (
+           activeThread.current === id &&
++          selectionEpoch.current === chosenEpoch &&
++          connectionEpoch.current === chosenConnectionEpoch && navigator.onLine && !document.hidden &&
+           account.current === owner &&
+           t.ownerUserId === owner
+         ) {
+@@ -449,6 +493,7 @@ export default function EveSyncWorkspace({
+       let thread = selected;
+       if (!thread) {
+         thread = crypto.randomUUID();
++        selectionEpoch.current++;
+         activeThread.current = thread;
+         setSelected(thread);
+         history.replaceState(null, '', conversationPath(thread));
+@@ -617,23 +662,34 @@ export default function EveSyncWorkspace({
+     }
+   }
+   return (
+-    <WorkspaceShell title="Eve" hideTopActions hideAccountAccess running={busy} contentClassName="eve-sync-main" onClickCapture={event=>{
++    <WorkspaceShell title="Eve" conversationLayout hideTopActions hideAccountAccess running={busy} contentClassName="eve-sync-main" onClickCapture={event=>{
+       if(busy||!hasUnsentDraft||discardingDraft.current||event.button!==0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;
+       const link=(event.target as Element).closest('a[href]');
+       if(!link||link.getAttribute('target')==='_blank'||link.hasAttribute('download'))return;
+       const target=new URL(link.getAttribute('href')!,window.location.href);
+-      if(target.pathname===window.location.pathname&&target.search===window.location.search&&target.origin===window.location.origin)return;
++      const samePage=target.pathname===window.location.pathname&&target.search===window.location.search&&target.origin===window.location.origin;
++      const homeHashLeavesEve=(window.location.pathname==='/'||window.location.pathname==='/os')&&target.hash!==''&&!['#eve-compose','#eve-work-results'].includes(target.hash);
++      if(samePage&&!homeHashLeavesEve)return;
+       event.preventDefault();setLeaveTarget({href:target.href});
+     }}>
+       <div className={styles.app}>
+         <aside className={styles.sidebar} data-open={historyOpen || undefined}>
+           <button className={styles.historyClose} type="button" onClick={()=>setHistoryOpen(false)}>履歴を閉じる</button>
+-          <Link href="/os" className={styles.brand}>
++          <Link prefetch={false} href="/os" className={styles.brand}>
+             RockstarOS
+           </Link>
+           <h2>Eve</h2>
+-          <p>いつでも、同じ続きから。</p>
+           <button onClick={fresh}>＋ 新しい会話</button>
++          <Link prefetch={false} href="/os#timeline">smis</Link>
++          <Link prefetch={false} href="/#sky">マーケットプレイス</Link>
++          <Link prefetch={false} href="/account">アカウント</Link>
++          <nav className={styles.workbenchTabs} aria-label="Eveの作業を切り替える">
++            <button type="button" aria-pressed={workbenchMode==='build'} onClick={()=>{if(resultsView||composeRequested){window.history.replaceState(null,'',window.location.pathname+window.location.search);window.dispatchEvent(new Event('hashchange'));}setBuildVisited(true);setModeOverride('build');setHistoryOpen(false);}}><Code2 size={17}/>担当を作る</button>
++            <button type="button" aria-pressed={workbenchMode==='work'&&!resultsView} onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');setHistoryOpen(false);}}><MessageCircle size={17}/>依頼する</button>
++            <button type="button" aria-pressed={resultsView} onClick={()=>{setModeOverride('work');window.location.hash='eve-work-results';setHistoryOpen(false);}}><ListChecks size={17}/>仕事と成果</button>
++            <Link prefetch={false} href="/os/eve?mode=tools" title="別のMCP・Tool会話を開く">smisのMCP・Tool</Link>
++          </nav>
++          <p className={styles.backendNotice}>MCP・Toolは現在別の会話画面で開きます。パスキーが必要な場合があります。保存済みの元の会話は、戻って履歴から選べます。</p>
+           <nav aria-label="Eveの会話">
+             {threads.map((t) => (
+               <button
+@@ -650,32 +706,27 @@ export default function EveSyncWorkspace({
+               </button>
+             )}
+           </nav>
+-          <Link href="/connect/device">端末を接続・解除</Link>
+-          <Link href="/os/eve?mode=tool-work">smisのToolを使う</Link>
+-          <Link href="/#sky-manage">担当とLLMを管理</Link>
+-          <Link href="/#sky">能力を追加</Link>
++          <Link prefetch={false} href="/connect/device">端末を接続・解除</Link>
++          <Link prefetch={false} href="/os/eve?mode=tool-work">smisのToolを使う</Link>
++          <Link prefetch={false} href="/#sky-manage">担当とLLMを管理</Link>
++          <Link prefetch={false} href="/#sky">能力を追加</Link>
+         </aside>
+         <section className={styles.desk}>
+           <div className={styles.studioHeader}>
+-            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h1>{resultsView?'仕事と成果':workbenchMode==='build'?'エージェントを作る':'Eveに依頼する'}</h1><p>目的を決め、担当と実行先を確認。承認・停止・成果まで、この仕事で。</p></div>
+-            <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>会話の履歴</button>
++            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h1>{resultsView?'仕事と成果':workbenchMode==='build'?'エージェントを作る':'Eve'}</h1><p>目的を決め、担当と実行先を確認。承認・停止・成果まで、この仕事で。</p></div>
++            <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>メニュー・履歴</button>
+           </div>
+-          <nav className={styles.workbenchTabs} aria-label="Eveの作業を切り替える">
+-            <button type="button" aria-pressed={workbenchMode==='build'} onClick={()=>{if(resultsView||composeRequested){window.history.replaceState(null,'',window.location.pathname+window.location.search);window.dispatchEvent(new Event('hashchange'));}setBuildVisited(true);setModeOverride('build');}}><Code2 size={17}/>担当を作る</button>
+-            <button type="button" aria-pressed={workbenchMode==='work'&&!resultsView} onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}><MessageCircle size={17}/>依頼する</button>
+-            <button type="button" aria-pressed={resultsView} onClick={()=>{setModeOverride('work');window.location.hash='eve-work-results';}}><ListChecks size={17}/>仕事と成果</button>
+-          </nav>
+-          {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
+-          <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><EveAgentComposer {...composerProps}/><details><summary>設定を編集して作る・保存済みの担当を管理する</summary><SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/></details></>}</div>
++          {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link prefetch={false} href="/connect/service">接続の設定を開く</Link></div>}
++          <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><LazyWorkspaceSection load={loadEveAgentComposer} componentProps={composerProps}/><details onToggle={event=>{if(event.currentTarget.open)setLibraryVisited(true);}}><summary>設定を編集して作る・保存済みの担当を管理する</summary>{libraryVisited&&<LazyWorkspaceSection key={connectionOwner||'account-pending'} load={loadSkyAgentLibrary} componentProps={{embedded:true,creator:true}}/>}</details></>}</div>
+           <div hidden={workbenchMode!=='work'} className={styles.workContent}>
+           <div hidden={resultsView} id="eve-compose" className={styles.composeView}>
+           <div hidden={profileRequested} className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
+-          <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
+-          {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
++          <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<LazyWorkspaceSection key={connectionOwner} load={loadEveToolWorkspace} componentProps={{threadId:selected,onThread:choose}}/>}</details>}
++          {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<LazyWorkspaceSection key={`${connectionOwner}:${selected}`} load={loadEveNewsWorkspace} componentProps={{threadId:selected,onThread:choose}}/>}</details>}
+           {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner} ownerUserId={connectionOwner} onSelection={setToolAgentSelection}/>}
+-          {signedIn===true&&connectionOwner&&profileRequested&&toolAgent&&<EveAgentComposer key={connectionOwner+':'+profileKey} {...composerProps} agent={toolAgent}/>}
+-          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setAgentWorkOpen(event.currentTarget.open)}><summary>Agentへ仕事を任せる</summary>{agentWorkOpen&&<Workbench key={connectionOwner} embedded/>}</details>}
+-          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
++          {signedIn===true&&connectionOwner&&profileRequested&&toolAgent&&<LazyWorkspaceSection key={connectionOwner+':'+profileKey} load={loadEveAgentComposer} componentProps={{...composerProps,agent:toolAgent}}/>}
++          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setAgentWorkOpen(event.currentTarget.open)}><summary>Agentへ仕事を任せる</summary>{agentWorkOpen&&<LazyWorkspaceSection key={connectionOwner} load={loadWorkbench} componentProps={{embedded:true}}/>}</details>}
++          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<LazyWorkspaceSection key={connectionOwner} load={loadSkyFreeCloudPanel} componentProps={{}}/>}</details>}
+ </details>
+           <header>
+             <div>
+@@ -694,27 +745,41 @@ export default function EveSyncWorkspace({
+           </header>
+           </div>
+           {signedIn === false ? (
+-            <div className={styles.welcome}>
+-              <h3>Pixelでも、Webでも、同じEve。</h3>
++            <div className={styles.signedOutConversation}><div className={styles.welcome}>
++              <h3>今日は何をしますか？</h3>
+               <p>
+                 会話・選んだ仕事・成果をアカウントへ保存します。サインインした後、接続する端末に表示されたコードを承認してください。
+               </p>
+-              <Link
++              </div><div className={styles.signedOutComposer}><textarea aria-label="サインイン後に依頼を入力" placeholder="Eveにメッセージを送る" disabled /><Link
+                 className={styles.primary}
+                 prefetch={false}
+                 href="/account?returnTo=%2Fos%2Feve"
+                 target="_top"
+               >
+                 サインインして始める
+-              </Link>
++              </Link></div>
+             </div>
+           ) : (
+             <>
+-              <div hidden={resultsView}>
++              <div hidden={resultsView} className={styles.conversationBody}>
+               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
+                 <h3>何を作り、進めたいですか？</h3>
+-                {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
+-                <details className={styles.executionSettings} open={!device||!agent||!selectionMatches}><summary>実行先・担当・基盤モデルを確認する</summary>
++                <textarea
++                  disabled={busy}
++                  aria-label="続きの依頼"
++                  placeholder="作りたいもの、直したいところ、必要な成果を具体的に書いてください。"
++                  value={input}
++                  maxLength={2000}
++                  onChange={(e) => {
++                    discardingDraft.current=false;
++                    onActivityChange?.({dirty:Boolean(e.target.value.trim()),busy});
++                    setInput(e.target.value);
++                    setConsent(false);
++                  }}
++                  rows={3}
++                />
++                {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link prefetch={false} href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
++                <details className={styles.executionSettings}><summary>実行先・担当・基盤モデルを確認する</summary>
+                 <div className={styles.modelIdentity} aria-label="使用するLLM">
+                   <div>
+                     <span>使用するLLM</span>
+@@ -784,19 +849,6 @@ export default function EveSyncWorkspace({
+                   </label>
+                 </div>
+                 </details>
+-                <textarea
+-                  disabled={busy}
+-                  aria-label="続きの依頼"
+-                  placeholder="作りたいもの、直したいところ、必要な成果を具体的に書いてください。"
+-                  value={input}
+-                  maxLength={2000}
+-                  onChange={(e) => {
+-                    discardingDraft.current=false;
+-                    setInput(e.target.value);
+-                    setConsent(false);
+-                  }}
+-                  rows={3}
+-                />
+                 <label className={styles.consent}>
+                   <input
+                     type="checkbox"
+@@ -819,7 +871,7 @@ export default function EveSyncWorkspace({
+                           '接続した実行先で、使う担当のモデルを準備してください。')}
+                   </span>
+                   {signedIn === true && !selectionMatches && (
+-                    <Link href="/sky/devices">smisで接続した担当を選び直す</Link>
++                    <Link prefetch={false} href="/sky/devices">smisで接続した担当を選び直す</Link>
+                   )}
+                   <button
+                     className={styles.primary}
+@@ -845,9 +897,9 @@ export default function EveSyncWorkspace({
+                 ))}
+                 {!item && (
+                   <div className={styles.welcome}>
+-                    <h3>依頼も、続きの会話もここから。</h3>
++                    <h3>今日は何をしますか？</h3>
+                     <p>
+-                      「会話の履歴」を開くか、上の依頼欄に書いて始めます。接続した実行先から、同じ会話へ成果が届きます。画面を閉じた後の継続は実行先の状態によります。
++                      下に入力するか、会話の履歴から続きを開きます。
+                     </p>
+                   </div>
+                 )}
+@@ -855,7 +907,7 @@ export default function EveSyncWorkspace({
+               </div>
+               <section hidden={!resultsView} id="eve-work-results" className={styles.resultsView} aria-labelledby="eve-results-title">
+               <div className={styles.resultsHeader}><h2 id="eve-results-title">{selected?'この会話の仕事と成果':'保存した仕事と成果'}</h2><p>進捗を確認し、成果を開く・保存する。受領待ちや停止の照合もここで確認できます。</p><button type="button" onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}>依頼画面に戻る</button><nav aria-label="ほかの実行先の仕事と成果"><button type="button" onClick={()=>{setCloudHistoryOpen(true);window.location.hash='eve-compose';setModeOverride('work');}}>Cloudの仕事と成果</button><button type="button" onClick={()=>{setToolExpanded(true);window.location.hash='eve-compose';setModeOverride('work');}}>Toolの仕事と成果</button></nav></div>
+-              {signedIn===null?<output>{message&&!online?'仕事を取得できません。上の「接続を再確認」から再試行できます。':'仕事を確認しています…'}</output>:!jobs.some(j=>!selected||j.threadId===selected)&&!runtimeJobs.some(j=>!selected||j.threadId===selected)&&!runtimePending.some(j=>!selected||j.threadId===selected)?<div className={styles.resultsEmpty}><h3>{selected?'この会話の仕事はまだありません':'保存した仕事はまだありません'}</h3><p>依頼を準備し、担当と実行先を確認すると、同じ会話で進捗と成果を確認できます。</p><button type="button" onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}>新しい依頼を準備する</button></div>:null}
++              {signedIn===null?<output>{message&&!online?'仕事を取得できません。上の「接続を再確認」から再試行できます。':'仕事を確認しています…'}</output>:!runtimeNotice&&!jobs.some(j=>!selected||j.threadId===selected)&&!runtimeJobs.some(j=>!selected||j.threadId===selected)&&!runtimePending.some(j=>!selected||j.threadId===selected)?<div className={styles.resultsEmpty}><h3>{selected?'この会話の仕事はまだありません':'保存した仕事はまだありません'}</h3><p>依頼を準備し、担当と実行先を確認すると、同じ会話で進捗と成果を確認できます。</p><button type="button" onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}>新しい依頼を準備する</button></div>:null}
+               <div className={styles.results}>
+                 {jobs
+                   .filter((j) => !selected || j.threadId === selected)
+@@ -966,8 +1018,8 @@ export default function EveSyncWorkspace({
+               {runtimeNotice && (
+                 <output className={styles.notice}>{runtimeNotice}</output>
+               )}
+-              {signedIn===true&&connectionOwner&&selected&&<EveRuntimeArchive key={connectionOwner+':'+selected} owner={connectionOwner} threadId={selected} api={api} current={runtimeCurrent}/>}
+-              {!profileRequested && signedIn === true && (runtimeBinding||creationBinding) && <EveRuntimeInteraction key={creationBinding?purposeEvePendingKey(creationBinding):runtimeEvePendingKey(runtimeBinding!)} savedWork={runtimeBinding?runtimeEveRestorableWork(runtimeBinding,{ownerUserId:connectionOwner,pending:runtimePending,executions:runtimeJobs}):[]} binding={runtimeBinding} creation={creationBinding} api={api} selectedConnected={ready&&!busy} creationConnected={creationReady&&!busy} supportsPurpose={supportsPurpose} current={runtimeCurrent} />}
++              {signedIn===true&&connectionOwner&&selected&&<LazyWorkspaceSection key={connectionOwner+':'+selected} load={loadEveRuntimeArchive} componentProps={{owner:connectionOwner,threadId:selected,api,current:runtimeCurrent}}/>}
++              {!profileRequested && signedIn === true && (runtimeBinding||creationBinding) && <LazyWorkspaceSection key={creationBinding?purposeEvePendingKey(creationBinding):runtimeEvePendingKey(runtimeBinding!)} load={loadEveRuntimeInteraction} componentProps={{savedWork:runtimeBinding?runtimeEveRestorableWork(runtimeBinding,{ownerUserId:connectionOwner,pending:runtimePending,executions:runtimeJobs}):[],binding:runtimeBinding,creation:creationBinding,api,selectedConnected:ready&&!busy,creationConnected:creationReady&&!busy,supportsPurpose,current:runtimeCurrent}} />}
+             </>
+           )}
+           {message && <output className={styles.notice}>{message}</output>}
+diff --git a/components/home-screen.module.css b/components/home-screen.module.css
+index 3716e53..351e30b 100644
+--- a/components/home-screen.module.css
++++ b/components/home-screen.module.css
+@@ -627,7 +627,7 @@
+ }
+ .entryActions {
+   display: grid;
+-  grid-template-columns: 1.15fr 1fr 1fr;
++  grid-template-columns: repeat(4, minmax(0, 1fr));
+   gap: 12px;
+ }
+ .entryActions a {
+@@ -661,6 +661,10 @@
+ .entryActions a:hover {
+   background: #eeeee6;
+ }
++.entryActions a:focus-visible {
++  outline: 2px solid var(--os-shell-focus, #a9754f);
++  outline-offset: 3px;
++}
+ .entryActions a.primaryEntry {
+   background: #315b4d;
+   border-color: #315b4d;
+@@ -742,6 +746,9 @@
+   .entryActions a {
+     padding: 18px;
+   }
++  .entryActions {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
+   .entryActions strong {
+     font-size: 15px;
+   }
+diff --git a/components/home-screen.tsx b/components/home-screen.tsx
+index 37d77a4..f663c84 100644
+--- a/components/home-screen.tsx
++++ b/components/home-screen.tsx
+@@ -1,5 +1,5 @@
+ 'use client';
+-import { lazy, Suspense, useEffect, useState } from 'react';
++import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+ import Link from 'next/link';
+ import { usePathname } from 'next/navigation';
+ import OSHeader from './os-header';
+@@ -13,6 +13,7 @@ import {
+   Layers,
+   Cable,
+   FolderOpen,
++  Sparkles,
+ } from 'lucide-react';
+ import SkySocialTimeline from './sky-social-timeline';
+ 
+@@ -27,10 +28,12 @@ import {
+ import { SkyNewsConnections } from './sky-information-market';
+ import { useSkyFeatures } from '@/lib/use-sky-features';
+ import styles from './home-screen.module.css';
++import EveSyncWorkspace from './eve-sync-workspace';
+ 
+ const SkyDiscoveryFeed = lazy(() => import('./sky-discovery-feed'));
+ const SkyAgentLibrary = lazy(() => import('./sky-agent-library'));
+ type View =
++  | 'eve'
+   | 'home'
+   | 'discover'
+   | 'manage'
+@@ -39,6 +42,7 @@ type View =
+   | 'communities';
+ function viewForHash(fragment: string): View {
+   const hash = fragment.replace(/^#/, '');
++  if (!hash || hash === 'eve-compose' || hash === 'eve-work-results') return 'eve';
+   return (
+     skyHomePanelForHash('#' + hash) ??
+     (hash === 'news-plugins' || hash === 'external-sources'
+@@ -58,13 +62,21 @@ export default function HomeScreen() {
+     osRouteHref(pathname, href, process.env.NODE_ENV === 'development');
+   const homePath = route('/');
+   const timelineReceiver = useTimelineConnector();
+-  const [view, setView] = useState<View>('home');
++  const [view, setView] = useState<View>('eve');
++  const eveActivity = useRef({dirty:false,busy:false});
++  const [navigationWarning, setNavigationWarning] = useState('');
+   const [panelVisited, setPanelVisited] = useState(false);
+   const [featureOnly, setFeatureOnly] = useState(false);
+   const { enabled } = useSkyFeatures();
+   useEffect(() => {
+     const sync = () => {
+       const next = viewForHash(window.location.hash);
++      if (next !== 'eve' && (eveActivity.current.dirty || eveActivity.current.busy)) {
++        window.history.replaceState(null, '', window.location.pathname + window.location.search + '#eve-compose');
++        setView('eve');
++        setNavigationWarning(eveActivity.current.busy ? '処理中です。結果を確認してから移動してください。' : '未送信の依頼があります。移動するには依頼を確認してください。');
++        return;
++      }
+       setView(next);
+       if (next === 'discover' || next === 'manage') setPanelVisited(true);
+       setFeatureOnly(window.location.hash === '#optional-features');
+@@ -77,6 +89,8 @@ export default function HomeScreen() {
+       }
+       if (
+         event.key === 'Escape' &&
++        window.location.hash !== '' &&
++        !['#eve-compose', '#eve-work-results'].includes(window.location.hash) &&
+         !['INPUT', 'TEXTAREA', 'SELECT'].includes(
+           (event.target as HTMLElement)?.tagName,
+         )
+@@ -95,6 +109,9 @@ export default function HomeScreen() {
+     };
+   }, []);
+   return (
++    <>
++    <div hidden={view !== 'eve'}>{navigationWarning && <div role="alert">{navigationWarning} <button type="button" onClick={() => setNavigationWarning('')}>閉じる</button></div>}<EveSyncWorkspace active={view === 'eve'} onActivityChange={activity => { eveActivity.current = activity; }} onReveal={() => { window.history.replaceState(null, '', window.location.pathname + window.location.search + '#eve-compose'); setView('eve'); }} /></div>
++    {view !== 'eve' && (
+     <div
+       className={styles.home}
+       data-sky-home
+@@ -177,13 +194,13 @@ export default function HomeScreen() {
+               aria-labelledby="os-home-title"
+             >
+               <div className={styles.entryIntro}>
+-                <p className={styles.eyebrow}>YOUR WORKSPACE</p>
++                <p className={styles.eyebrow}>EVE / YOUR WORKSPACE</p>
+                 <h1 id="os-home-title">
+-                  思いつきから、
++                  Eveと、やりたいことを
+                   <br />
+-                  次の仕事へ。
++                  形にしよう。
+                 </h1>
+-                <p>依頼も、続きの仕事も。ここから始める。</p>
++                <p>相談する、担当を作る、仕事を進める。あなたの続きもここから。</p>
+               </div>
+               <nav className={styles.entryActions} aria-label="仕事の主な操作">
+                 <Link className={styles.primaryEntry} href="/os/eve">
+@@ -192,6 +209,12 @@ export default function HomeScreen() {
+                   <span>やりたいことを伝え、計画を確かめる。</span>
+                   <ArrowUpRight size={20} />
+                 </Link>
++                <Link href="/os/eve?view=build">
++                  <Sparkles size={24} />
++                  <strong>自分の担当を作る</strong>
++                  <span>目的に合わせてエージェントを作る。</span>
++                  <ArrowUpRight size={20} />
++                </Link>
+                 <Link href="/os/eve#eve-work-results">
+                   <FolderOpen size={24} />
+                   <strong>仕事と成果を開く</strong>
+@@ -321,5 +344,7 @@ export default function HomeScreen() {
+         active={view === 'communities' ? 'communities' : 'stream'}
+       />
+     </div>
++    )}
++    </>
+   );
+ }
+diff --git a/components/lazy-workspace-section.tsx b/components/lazy-workspace-section.tsx
+new file mode 100644
+index 0000000..f7de94d
+--- /dev/null
++++ b/components/lazy-workspace-section.tsx
+@@ -0,0 +1,27 @@
++'use client';
++
++import { createElement, useEffect, useState, type ComponentType } from 'react';
++
++type Props<P extends object> = {
++  load: () => Promise<{ default: ComponentType<P> }>;
++  componentProps: P;
++};
++
++/** Handle loading failures without intercepting a mounted work component's lifecycle. */
++export default function LazyWorkspaceSection<P extends object>({load, componentProps}: Props<P>) {
++  const [View, setView] = useState<ComponentType<P> | null>(null);
++  const [failed, setFailed] = useState(false);
++  const [attempt, setAttempt] = useState(0);
++  useEffect(() => {
++    let active = true;
++    void Promise.resolve().then(load).then(module => {
++      if (active) setView(() => module.default);
++    }).catch(() => {
++      if (active) setFailed(true);
++    });
++    return () => { active = false; };
++  }, [load, attempt]);
++  if (failed) return <div role="alert">この画面を読み込めませんでした。会話の入力はこのまま残っています。接続を確かめて再試行してください。繰り返す場合は、未送信の入力を控えてからページを再読み込みしてください。 <button type="button" onClick={() => { setFailed(false); setAttempt(value => value + 1); }}>もう一度読み込む</button></div>;
++  if (!View) return <output>読み込んでいます…</output>;
++  return createElement(View, componentProps);
++}
+diff --git a/components/sky-chat-workspace.tsx b/components/sky-chat-workspace.tsx
+index 652e62e..864803d 100644
+--- a/components/sky-chat-workspace.tsx
++++ b/components/sky-chat-workspace.tsx
+@@ -1676,6 +1676,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
+             </div>
+           ) : <span className="zema-auto-label">ツールは依頼に合わせて選択</span>}
+           <nav aria-label="Jenniferナビゲーション">
++            {searchParams.get('mode') === 'tools' && (
++              <Link href="/os/eve" aria-label="Eveに戻り、保存済みの会話を履歴から開く">
++                <MessageCircle size={18} />
++                <span>Eveに戻る</span>
++              </Link>
++            )}
+             <Link href="/" aria-label="ホームへ戻る">
+               <House size={18} />
+               <span>ホーム</span>
+diff --git a/components/workspace-shell.tsx b/components/workspace-shell.tsx
+index 853efc1..6597f35 100644
+--- a/components/workspace-shell.tsx
++++ b/components/workspace-shell.tsx
+@@ -22,6 +22,7 @@ export default function WorkspaceShell({
+   standaloneSky = false,
+   standaloneHomeHref = '/sky',
+   tone,
++  conversationLayout = false,
+ }: {
+   children: ReactNode;
+   title: string;
+@@ -34,6 +35,7 @@ export default function WorkspaceShell({
+   standaloneSky?: boolean;
+   standaloneHomeHref?: string;
+   tone?: 'sky';
++  conversationLayout?: boolean;
+ }) {
+   useEffect(() => {
+     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
+@@ -59,7 +61,7 @@ export default function WorkspaceShell({
+           event.preventDefault();
+       }}
+       data-os-frame
+-      className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
++      className={`rock-workspace${conversationLayout ? ' rock-conversation-layout' : ''}${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
+       data-running={running ? 'true' : 'false'}
+       aria-busy={running}
+     >
+@@ -67,7 +69,7 @@ export default function WorkspaceShell({
+         メインコンテンツへ
+       </a>
+       <div className="rock-main-column rock-main-column-full">
+-        {standaloneSky ? <header className={skyStyles.standaloneHeader}>
++        {!conversationLayout && (standaloneSky ? <header className={skyStyles.standaloneHeader}>
+           <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="smis home">avocado <span>/ smis</span></Link>
+           <Link href="/sky/help" className={skyStyles.standaloneHelp}>使い方と対応環境 <ArrowUpRight size={14} /></Link>
+         </header> : <OSHeader title={title} running={running}>
+@@ -100,8 +102,8 @@ export default function WorkspaceShell({
+               )}
+             </div>
+           )}
+-        </OSHeader>}
+-        {!standaloneSky && <WorkspaceFlowNavigation running={running} />}
++        </OSHeader>)}
++        {!standaloneSky && !conversationLayout && <WorkspaceFlowNavigation running={running} />}
+         {!standaloneSky && !hideAccountAccess && title === 'Eve' && <OsAccountAccess />}
+         <main
+           id="workspace-main"
+@@ -110,7 +112,7 @@ export default function WorkspaceShell({
+         >
+           {children}
+         </main>
+-        <div className="rock-bottom-note">
++        {!conversationLayout && <div className="rock-bottom-note">
+           <span>{tone === 'sky' ? 'smis' : PRODUCT_RELEASE_NAME}</span>
+           <Link
+             href={
+@@ -120,7 +122,7 @@ export default function WorkspaceShell({
+           >
+             対応環境と既知の制限 <ArrowUpRight size={13} />
+           </Link>
+-        </div>
++        </div>}
+       </div>
+     </div>
+   );
+diff --git a/data/release-readiness.json b/data/release-readiness.json
+index 9353334..fb74be4 100644
+--- a/data/release-readiness.json
++++ b/data/release-readiness.json
+@@ -71,7 +71,8 @@
+             "public/_headers",
+             "scripts/check-web-security-response.mjs",
+             "tests/web-security-policy.test.mjs",
+-            "docs/evidence/launch/web-security-local-20260917.json"
++            "docs/evidence/launch/web-security-local-20260917.json",
++            "docs/evidence/launch/web-security-local-20261030.json"
+           ]
+         },
+         {
+@@ -134,7 +135,8 @@
+             "scripts/check-web-security-response.mjs",
+             "tests/web-security-policy.test.mjs",
+             "docs/evidence/launch/web-security-local-20260917.json",
+-            "docs/evidence/work-composition-development.json"
++            "docs/evidence/work-composition-development.json",
++            "docs/evidence/launch/web-security-local-20261030.json"
+           ],
+           "acceptanceScope": "Source policy and local production responses only; current public delivery is a separate required gate."
+         },
+diff --git a/docs/evidence/launch/web-security-local-20261030.json b/docs/evidence/launch/web-security-local-20261030.json
+new file mode 100644
+index 0000000..3007ac3
+--- /dev/null
++++ b/docs/evidence/launch/web-security-local-20261030.json
+@@ -0,0 +1,70 @@
++{
++  "schema": "rockstaros-web-security-response-evidence/1",
++  "observedAt": "2026-10-31T02:26:14Z",
++  "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
++  "server": {
++    "runtime": "wrangler-local",
++    "origin": "http://127.0.0.1:8787",
++    "productionBuild": true,
++    "assetsBinding": "ASSETS",
++    "assetsRunWorkerFirst": true,
++    "workerdVersion": "1.20261001.1",
++    "workerdSource": "existing local npm cache, extracted to isolated temporary directory",
++    "workerdBinarySha256": "3fd4b350cebf887265a20222fc530b21d843791266476199d16968600fa01922",
++    "wranglerVersion": "4.122.0"
++  },
++  "sourceCommit": "c1e72d851b4e8ab5140bb9491307d26f08578166",
++  "sourceDirty": true,
++  "measurement": {
++    "nodeVersion": "v26.12.1",
++    "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
++    "rawResultSha256": "5a31bba7c17732d7d5dce113cb98ab9cad8276df4dd3016875bf57510595c0ba",
++    "builtApplicationSha256": "87338079048985078a621adaaaa457454a3e8091a959a74eb5063da4a0755e11",
++    "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
++    "outerRouterSha256": "a0c2e25f736ecc7faa44b4eeb377e06adbd9c94063a6078792bc4d980f4ef216"
++  },
++  "inputs": {
++    "services/sky-web/domain-router.mjs": "a0c2e25f736ecc7faa44b4eeb377e06adbd9c94063a6078792bc4d980f4ef216",
++    "scripts/stage-sky-domain-router.mjs": "0075f6292660f61565425eadc2f32694b62d852b6435e4436a8f15c20e5d8a4a",
++    "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
++    "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
++    "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
++    "scripts/check-web-security-response.mjs": "5d09335b743331650d8b6e155a6312ddf695ef7847516dcd0d5436708103100a",
++    "public/sw.js": "61bf56942d09187409b76a57526271e54183aa2165ed27e1d776d4a2bf7989bb",
++    "app/manifest.ts": "28bc2519b70bd751fd2223f60ebc38c1b165c33e92670b14abeffd99e116cc4c",
++    "public/rock-icon-192.png": "3a8f750e40b79713f055a5ec5485ab7db04878744f3301bff34aa4b579abd8c0",
++    "public/rock-icon-512.png": "c6a0cf9b9faf023da925ab29081b41be18eedf212bb673d2d6a5b17bb47393dc",
++    "public/rock-icon-maskable.svg": "114f7f18e620c02d8272db9b647d91f9c820e8113955ec166c4c072602f63206"
++  },
++  "result": {
++    "schema": "rockstaros-web-security-response-check/1",
++    "status": "PASS",
++    "baseOrigin": "http://127.0.0.1:8787",
++    "universalHeaders": 8,
++    "routes": [
++      "/",
++      "/sky",
++      "/sw.js",
++      "/manifest.webmanifest",
++      "/rock-icon-192.png",
++      "/rock-icon-512.png",
++      "/rock-icon-maskable.svg",
++      "/_next/static/chunks/index-DFFSjAO9.js"
++    ]
++  },
++  "boundary": {
++    "sitesDeploymentVerified": false,
++    "canonicalPublicSwRuntimeAccepted": false,
++    "nextAction": "同一候補の公開配備、認証とデータ保持を別途検証する。"
++  },
++  "historicalEvidence": "docs/evidence/launch/web-security-local-20260917.json",
++  "sourceChanges": {
++    "trackedDiffSha256": "0ec4acede641276e5e663bb60bc7e4bad1d6839f653550cc3eb35f0e879dc83a",
++    "trackedPaths": [
++      "data/release-readiness.json",
++      "scripts/release-readiness-lib.mjs"
++    ],
++    "untrackedEvidencePath": "docs/evidence/launch/web-security-local-20261030.json",
++    "note": "Build and response measurement used these tracked changes; evidence itself is not a build input."
++  }
++}
+diff --git a/lib/eve-sync-poller.ts b/lib/eve-sync-poller.ts
+new file mode 100644
+index 0000000..b6a2e7e
+--- /dev/null
++++ b/lib/eve-sync-poller.ts
+@@ -0,0 +1,42 @@
++/** Poll only one read at a time. Failed reads back off; an explicit wake retries now. */
++export function createEveSyncPoller(options: {
++  run: () => Promise<boolean>;
++  canRun: () => boolean;
++  schedule?: (callback: () => void, delay: number) => ReturnType<typeof setTimeout>;
++  cancel?: (timer: ReturnType<typeof setTimeout>) => void;
++}) {
++  const schedule = options.schedule ?? ((callback, delay) => setTimeout(callback, delay));
++  const cancel = options.cancel ?? (timer => clearTimeout(timer));
++  let timer: ReturnType<typeof setTimeout> | undefined;
++  let stopped = false, running = false, wakePending = false, failures = 0;
++  const tick = async () => {
++    if (stopped || running || !options.canRun()) return;
++    running = true;
++    let success = false;
++    try { success = await options.run(); } catch { success = false; }
++    running = false;
++    if (stopped) return;
++    failures = success ? 0 : Math.min(failures + 1, 3);
++    if (wakePending) { wakePending = false; void tick(); return; }
++    timer = schedule(() => { timer = undefined; void tick(); }, Math.min(4000 * 2 ** failures, 30000));
++  };
++  const wake = () => {
++    if (timer !== undefined) { cancel(timer); timer = undefined; }
++    if (running) { wakePending = true; return; }
++    void tick();
++  };
++  return { wake, stop() { stopped = true; if (timer !== undefined) cancel(timer); } };
++}
++/** Wait for the entire read batch, even when one endpoint fails early. */
++export async function settleEveSyncReads<A, B, C>(a: Promise<A>, b: Promise<B>, c: Promise<C>): Promise<[A, B, {data:C|null;error:(Error & {status?:number})|null}]> {
++  const [first, second, third] = await Promise.allSettled([a, b, c] as const);
++  const unauthorized = [first, second, third].find(result => result.status === 'rejected' && (result.reason as {status?:number})?.status === 401);
++  if (unauthorized?.status === 'rejected') throw unauthorized.reason;
++  if (first.status === 'rejected') throw first.reason;
++  if (second.status === 'rejected') throw second.reason;
++  const runtime = third.status === 'fulfilled'
++    ? {data:third.value,error:null}
++    : {data:null,error:third.reason instanceof Error ? third.reason as Error & {status?:number} : new Error('実行先を確認できません。')};
++  return [first.value, second.value, runtime];
++}
++
+diff --git a/scripts/release-readiness-lib.mjs b/scripts/release-readiness-lib.mjs
+index 885ebe5..b735eda 100644
+--- a/scripts/release-readiness-lib.mjs
++++ b/scripts/release-readiness-lib.mjs
+@@ -1042,7 +1042,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
+   ) {
+     fail(label + ': static asset用_headerがsecurity policy正本と不一致です');
+   }
+-  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260917.json';
++  const localEvidencePath = 'docs/evidence/launch/web-security-local-20261030.json';
+   const localEvidence = readJson(resolve(root, localEvidencePath));
+   const localInputs = {
+     'services/sky-web/domain-router.mjs': sha256(readFileSync(resolve(root, 'services/sky-web/domain-router.mjs'))),
+diff --git a/tests/eve-runtime-work-port.test.mjs b/tests/eve-runtime-work-port.test.mjs
+index 1fa4854..689d1ab 100644
+--- a/tests/eve-runtime-work-port.test.mjs
++++ b/tests/eve-runtime-work-port.test.mjs
+@@ -110,7 +110,7 @@ void test('the browser thread query discovers an old job hidden by other convers
+  for(let i=0;i<51;i++)await f.enqueue({threadId:crypto.randomUUID()});
+  const global=await f.api('/api/eve/runtime');assert.equal(global.pending.some(p=>p.id===f.reference.id),false);
+  const scoped=await f.api('/api/eve/runtime?threadId='+encodeURIComponent(f.binding.threadId));assert.deepEqual(scoped.pending.map(p=>p.id),[f.reference.id]);
+- const source=readFileSync(new URL('../components/eve-sync-workspace.tsx',import.meta.url),'utf8');assert.match(source,/const runtimeThread = activeThread\.current/);assert.match(source,/encodeURIComponent\(runtimeThread\)/);assert.match(source,/if \(activeThread\.current === runtimeThread\)/);
++ const source=readFileSync(new URL('../components/eve-sync-workspace.tsx',import.meta.url),'utf8');assert.match(source,/const runtimeThread = activeThread\.current/);assert.match(source,/encodeURIComponent\(runtimeThread\)/);assert.match(source,/if \(activeThread\.current === runtimeThread && selectionEpoch\.current === runtimeEpoch\)/);
+ });
+ 
+ void test('saved runtime pages cover equal-time IDs beyond50, include outcomes, and bind owner/thread cursor',async t=>{
+diff --git a/tests/eve-sync-poller.test.mjs b/tests/eve-sync-poller.test.mjs
+new file mode 100644
+index 0000000..5166aa0
+--- /dev/null
++++ b/tests/eve-sync-poller.test.mjs
+@@ -0,0 +1,68 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {createEveSyncPoller,settleEveSyncReads} from '../lib/eve-sync-poller.ts';
++
++const flush = () => new Promise(resolve => setImmediate(resolve));
++function timers() {
++  let next = 0;
++  const pending = new Map();
++  return {
++    pending,
++    schedule(fn, delay) { const id=++next; pending.set(id,{fn,delay}); return id; },
++    cancel(id) { pending.delete(id); },
++    fire() { const [id, task]=pending.entries().next().value; pending.delete(id); task.fn(); return task.delay; },
++  };
++}
++
++void test('failed reads back off and a successful read restores the normal cadence', async () => {
++  const t=timers(); let calls=0;
++  const p=createEveSyncPoller({schedule:(fn,delay)=>t.schedule(fn,delay),cancel:id=>t.cancel(id),canRun:()=>true,run:async()=>++calls>=5});
++  p.wake(); await flush();
++  for (const delay of [8000,16000,30000,30000]) { assert.equal(t.fire(),delay); await flush(); }
++  assert.equal(calls,5);
++  assert.equal(t.fire(),4000); await flush();
++  p.stop(); assert.equal(t.pending.size,0);
++});
++
++void test('explicit wake retries promptly, never overlaps a read, and stop prevents later scheduling', async () => {
++  const t=timers(); let calls=0, resolve;
++  const p=createEveSyncPoller({schedule:(fn,delay)=>t.schedule(fn,delay),cancel:id=>t.cancel(id),canRun:()=>true,run:()=>{ calls++; return new Promise(r=>{resolve=r;}); }});
++  p.wake(); p.wake(); assert.equal(calls,1);
++  resolve(false); await flush(); assert.equal(calls,2); assert.equal(t.pending.size,0);
++  resolve(false); await flush(); assert.equal(t.pending.size,1);
++  p.wake(); assert.equal(calls,3); assert.equal(t.pending.size,0);
++  p.stop(); resolve(true); await flush(); assert.equal(t.pending.size,0);
++});
++
++void test('hidden or offline state stays idle until a wake after reconnection', async () => {
++  const t=timers(); let allowed=false, calls=0;
++  const p=createEveSyncPoller({schedule:(fn,delay)=>t.schedule(fn,delay),cancel:id=>t.cancel(id),canRun:()=>allowed,run:async()=>{calls++;return true;}});
++  p.wake(); await flush(); assert.equal(calls,0); assert.equal(t.pending.size,0);
++  allowed=true; p.wake(); await flush(); assert.equal(calls,1);
++  allowed=false; t.fire(); await flush(); assert.equal(calls,1); assert.equal(t.pending.size,0);
++  allowed=true; p.wake(); await flush(); assert.equal(calls,2); p.stop();
++});
++
++void test('an early endpoint failure does not finish a read batch while another endpoint is still running', async () => {
++  let resolveSlow, settled=false;
++  const slow=new Promise(resolve=>{resolveSlow=resolve;});
++  const batch=settleEveSyncReads(Promise.reject(new Error('503')),slow,Promise.resolve('runtime'));
++  const handled=batch.catch(error=>{settled=true;return error;});
++  await flush(); assert.equal(settled,false);
++  resolveSlow('device'); const error=await handled;
++  assert.equal(error.message,'503');
++});
++
++void test('an authentication failure wins over simultaneous service failures', async () => {
++  const unavailable=Object.assign(new Error('unavailable'),{status:503});
++  const unauthorized=Object.assign(new Error('sign in again'),{status:401});
++  await assert.rejects(settleEveSyncReads(Promise.reject(unavailable),Promise.resolve('device'),Promise.reject(unauthorized)),error=>error===unauthorized);
++  await assert.rejects(settleEveSyncReads(Promise.reject(unavailable),Promise.reject(unauthorized),Promise.resolve('runtime')),error=>error===unauthorized);
++});
++
++void test('runtime outage is reported as unknown rather than as an empty successful response', async () => {
++  const unavailable=Object.assign(new Error('unavailable'),{status:503});
++  const [history,device,runtime]=await settleEveSyncReads(Promise.resolve('history'),Promise.resolve('device'),Promise.reject(unavailable));
++  assert.equal(history,'history'); assert.equal(device,'device');
++  assert.equal(runtime.data,null); assert.equal(runtime.error,unavailable);
++});
+diff --git a/tests/fixtures/eve-home-preview/README.md b/tests/fixtures/eve-home-preview/README.md
+new file mode 100644
+index 0000000..8111ffd
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/README.md
+@@ -0,0 +1,3 @@
++# Isolated Eve-first home preview
++
++Run `./node_modules/.bin/vite --config tests/fixtures/eve-home-preview/vite.config.mjs` and open the reported loopback URL. This renders the real home, OS header and navigation with synthetic timeline and connection children; all application fetch calls are rejected. Verify the four Eve entry destinations and inspect desktop and narrow layouts. This is not production, a real account, a real timeline, Pixel hardware, an MCP connection, or an execution test. Stop the owned Vite server after use.
+diff --git a/tests/fixtures/eve-home-preview/index.html b/tests/fixtures/eve-home-preview/index.html
+new file mode 100644
+index 0000000..53d694f
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/index.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>隔離ホーム表示</title></head><body><div id="root"></div><script type="module" src="/main.jsx"></script></body></html>
+diff --git a/tests/fixtures/eve-home-preview/main.jsx b/tests/fixtures/eve-home-preview/main.jsx
+new file mode 100644
+index 0000000..9d453e9
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/main.jsx
+@@ -0,0 +1,6 @@
++import React from 'react';
++import {createRoot} from 'react-dom/client';
++import Home from '@fixture-home';
++import '../../..//app/os-shell.css';
++window.fetch=async()=>{throw new Error('network disabled in fixture')};
++createRoot(document.getElementById('root')).render(<Home/>);
+diff --git a/tests/fixtures/eve-home-preview/vite.config.mjs b/tests/fixtures/eve-home-preview/vite.config.mjs
+new file mode 100644
+index 0000000..5459578
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/vite.config.mjs
+@@ -0,0 +1,5 @@
++import {defineConfig} from 'vite';
++import {resolve} from 'node:path';
++const root=import.meta.dirname, site=resolve(root,'../../..'), home=resolve(site,'components/home-screen.tsx');
++const children=new Set(['./sky-social-timeline','./smis-added-posts','./sky-discovery-dialog','./sky-x-account','./sky-timeline-connector','./sky-information-market','./sky-discovery-feed','./sky-agent-library']);
++export default defineConfig({root,publicDir:resolve(site,'public'),server:{host:'127.0.0.1',port:18396,strictPort:true,fs:{allow:[site]}},plugins:[{name:'synthetic-ui',enforce:'pre',resolveId(id,importer){if(id==='@fixture-home')return home;if(id==='next/link'||id==='next/image'||id==='next/navigation'||id==='@/lib/use-sky-features')return '\0stub:'+id;if(importer===home&&children.has(id))return '\0stub:'+id;if(id==='@/lib/os-navigation')return resolve(site,'lib/os-navigation.ts');if(id.startsWith('@/'))return resolve(site,id.slice(2));},load(id){if(!id.startsWith('\0stub:'))return;let k=id.slice(6);if(k==='next/navigation')return `export const usePathname=()=>'/';`;if(k==='next/link')return `import React from 'react'; export default function Link({children,href,...p}){return React.createElement('a',{...p,href:typeof href==='string'?href:'#'},children)}`;if(k==='next/image')return `import React from 'react';export default function Image({unoptimized,...p}){return React.createElement('img',p)}`;if(k==='@/lib/use-sky-features')return `export function useSkyFeatures(){return {enabled:()=>false}}`;if(k==='./sky-timeline-connector')return `export const useTimelineConnector=()=>({});export const SkyTimelineConnector=()=>null,SkyMcpTimeline=()=>null;`;if(k==='./sky-x-account')return `export default function X(){return null} export function SkyXAccountConnection(){return null}`;if(k==='./sky-information-market')return `export function SkyNewsConnections(){return null}`;if(k==='./sky-social-timeline')return `import React from 'react';export default function Timeline(){return React.createElement('section',{style:{padding:'24px 0',borderTop:'1px solid #ddd'}},'smis タイムライン（合成表示）')}`;return `export default function Stub(){return null}`}}]});
+diff --git a/tests/fixtures/eve-mcp-preview/README.md b/tests/fixtures/eve-mcp-preview/README.md
+new file mode 100644
+index 0000000..7269a8d
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/README.md
+@@ -0,0 +1,3 @@
++# Isolated Eve/MCP navigation fixture
++
++Run `./node_modules/.bin/vite --config tests/fixtures/eve-mcp-preview/vite.config.mjs`. It mounts the real Eve React component and forwards its navigation capture handler to a simplified shell. The owner, history and device responses are synthetic, application fetch calls not explicitly stubbed are denied, and no model is invoked. Child components and shell are stubs; this does not exercise the real MCP screen, device, production UI, live account or end-to-end execution. Use a separate tab; close only that tab and stop the owned Vite process afterward.
+diff --git a/tests/fixtures/eve-mcp-preview/index.html b/tests/fixtures/eve-mcp-preview/index.html
+new file mode 100644
+index 0000000..77f4d9e
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/index.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="ja"><head><meta name="viewport" content="width=device-width,initial-scale=1"/><meta charset="utf-8"/><title>隔離されたEve UI検証</title></head><body><div id="root"></div><script type="module" src="/main.jsx"></script></body></html>
+diff --git a/tests/fixtures/eve-mcp-preview/main.jsx b/tests/fixtures/eve-mcp-preview/main.jsx
+new file mode 100644
+index 0000000..64b1ffb
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/main.jsx
+@@ -0,0 +1,30 @@
++import React from 'react';
++import {createRoot} from 'react-dom/client';
++import Eve from '@fixture-eve';
++import LazyWorkspaceSection from '../../../components/lazy-workspace-section.tsx';
++let deferred=null, holdNext=false, failHistoryNext=false, authFailureNext=false, serial=0, fixtureOnline=true;
++let syntheticJob=false, runtimeUnavailable=false, mixedAuthFailure=false;
++Object.defineProperty(navigator,'onLine',{configurable:true,get:()=>fixtureOnline});
++const json=x=>({ok:true,json:async()=>x});
++const session=(id,content)=>({ownerUserId:'fixture-owner',session:{id,messages:[{id:'m',side:'me',text:content}]},before:null});
++window.fetch=async (url)=>{
++ const u=new URL(url,location.origin);
++ if(u.pathname==='/api/eve/history'&&u.searchParams.has('id')){const id=u.searchParams.get('id');return json(session(id,`fixture-${id}-${++serial}`));}
++ if(u.pathname==='/api/eve/history'&&u.searchParams.has('cursor'))return {ok:false,status:500,json:async()=>({error:'合成した履歴操作エラー'})};
++ if(u.pathname==='/api/eve/history'){if(mixedAuthFailure)return {ok:false,status:503,json:async()=>({error:'fixture unavailable'})};if(authFailureNext){return {ok:false,status:401,json:async()=>({error:'fixture auth'})};}if(failHistoryNext){failHistoryNext=false;throw new DOMException('fixture abort','AbortError');}return json({ownerUserId:'fixture-owner',items:[session('A','Fixture A'),session('B','Fixture B')],cursor:'fixture-next'});}
++ if(u.pathname==='/api/eve/device-sync')return mixedAuthFailure?{ok:false,status:401,json:async()=>({error:'fixture auth'})}:json({ownerUserId:'fixture-owner',jobs:[],devices:[]});
++ if(u.pathname==='/api/eve/runtime'){
++  if(runtimeUnavailable)return {ok:false,status:503,json:async()=>({error:'fixture runtime unavailable'})};
++  if(holdNext){holdNext=false;return await new Promise(resolve=>{deferred=()=>resolve(json({ownerUserId:'fixture-owner',devices:[],executions:[],pending:[]}));window.dispatchEvent(new Event('fixture-held')); });}
++  const job={id:'fixture-job',threadId:'A',deviceId:'fixture-device',input:'fixture input',request:{agent:{name:'Fixture担当'},model:{id:'fixture-model',scheme:'fixture',sha256:'fixture'}},report:{state:'review',text:'fixture result'},usage:{resources:'fixture',subscription:'fixture'},updatedAt:Date.now()};
++  return json({ownerUserId:'fixture-owner',devices:[],executions:syntheticJob?[job]:[],pending:[]});
++ }
++ throw Error('fixture denies all other requests');
++};
++function Controls(){const [held,setHeld]=React.useState(false);React.useEffect(()=>{const f=()=>setHeld(true);window.addEventListener('fixture-held',f);return()=>window.removeEventListener('fixture-held',f)},[]);return <div style={{padding:12,background:'#e8f1e8'}}><strong>隔離fixture・ネットワーク送信なし</strong><output>{held?'応答保留中':'待機中'}</output><button onClick={()=>{syntheticJob=true;window.dispatchEvent(new Event('online'));}}>合成仕事を表示</button><button onClick={()=>{runtimeUnavailable=true;window.dispatchEvent(new Event('online'));}}>実行先を503にする</button><button onClick={()=>{mixedAuthFailure=true;window.dispatchEvent(new Event('online'));}}>401と503を同時にする</button><button onClick={()=>{mixedAuthFailure=false;runtimeUnavailable=false;window.dispatchEvent(new Event('online'));}}>合成接続を回復</button><button onClick={()=>{holdNext=true}}>次の応答を保留</button><button onClick={()=>{if(deferred){deferred();deferred=null;setHeld(false)}}}>保留した応答を返す</button><button onClick={()=>{failHistoryNext=true}}>次の同期を失敗</button><button onClick={()=>{fixtureOnline=false;window.dispatchEvent(new Event('offline'));}}>通信断を通知</button><button onClick={()=>{fixtureOnline=true;window.dispatchEvent(new Event('online'));}}>再接続を通知</button><button onClick={()=>{authFailureNext=true}}>認証を失敗させる</button><button onClick={()=>{authFailureNext=false}}>認証を回復</button></div>}
++let lazyAttempts=0;
++const loadRetryFixture=()=>++lazyAttempts===1?Promise.reject(new Error('intentional fixture failure')):Promise.resolve({default:()=> <output>隔離した遅延画面を復旧しました</output>});
++function LazyFailureFixture(){const [open,setOpen]=React.useState(false);return <section><button onClick={()=>setOpen(true)}>遅延読込の失敗を試す</button>{open&&<LazyWorkspaceSection load={loadRetryFixture} componentProps={{}}/>}</section>}
++const loadRealModule=()=>import('./recoverable-screen.jsx');
++function ModuleFailureFixture(){const [open,setOpen]=React.useState(false);return <section><button onClick={()=>setOpen(true)}>実モジュールの取得失敗を試す</button>{open&&<LazyWorkspaceSection load={loadRealModule} componentProps={{}}/>}</section>}
++createRoot(document.getElementById('root')).render(<><Controls/><LazyFailureFixture/><ModuleFailureFixture/><Eve/></>);
+diff --git a/tests/fixtures/eve-mcp-preview/recoverable-screen.jsx b/tests/fixtures/eve-mcp-preview/recoverable-screen.jsx
+new file mode 100644
+index 0000000..4e9aee8
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/recoverable-screen.jsx
+@@ -0,0 +1,2 @@
++import React from 'react';
++export default function RecoverableScreen(){return <output>実モジュールを読み込みました</output>}
+diff --git a/tests/fixtures/eve-mcp-preview/vite.config.mjs b/tests/fixtures/eve-mcp-preview/vite.config.mjs
+new file mode 100644
+index 0000000..e76712f
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/vite.config.mjs
+@@ -0,0 +1,8 @@
++import { defineConfig } from 'vite';
++import { realpathSync } from 'node:fs';
++import { resolve } from 'node:path';
++const fixture=import.meta.dirname;
++const site=resolve(fixture,'../../..');
++const component=resolve(site,'components/eve-sync-workspace.tsx');
++const stubs=new Set(['./eve-runtime-interaction','./eve-runtime-archive','./eve-agent-composer','./workbench','./eve-news-workspace','./eve-tool-workspace','./sky-agent-eve-profile','./sky-free-cloud-panel','./workspace-shell','./sky-agent-library','next/link','next/navigation','@/lib/eve-runtime-export','@/lib/eve-studio-navigation','@/lib/eve-runtime-work-port','@/lib/eve-purpose-runtime-work-port','@/lib/sky-eve-connections']);
++export default defineConfig({root:fixture,server:{host:'127.0.0.1',port:18371,strictPort:true,fs:{allow:[fixture,site,realpathSync(resolve(site,'node_modules'))]}},plugins:[{name:'fixture-fail-once',configureServer(server){let fail=true;server.middlewares.use((req,res,next)=>{if(fail&&req.url?.split('?')[0]==='/recoverable-screen.jsx'){fail=false;res.statusCode=503;res.end('fixture unavailable');return;}next();});}},{name:'fixture-stubs',enforce:'pre',resolveId(id,importer){if(id==='@fixture-eve')return component;if(id==='@/lib/eve-results-guidance')return resolve(site,'lib/eve-results-guidance.ts');if(id==='@/lib/eve-sync-poller')return resolve(site,'lib/eve-sync-poller.ts');if(id==='@/lib/history-navigation-guard')return resolve(site,'lib/history-navigation-guard.ts');if(id==='@/components/ui/dialog')return '\0fixture-dialog';if(importer===component&&stubs.has(id))return '\0fixture:'+id;},load(id){if(id==='\0fixture-dialog')return `import React from 'react';export function Dialog({open,children}){return open?React.createElement('div',null,children):null}export function DialogContent({children}){return React.createElement('div',null,children)}export function DialogTitle({children}){return React.createElement('h2',null,children)}export function DialogDescription({children}){return React.createElement('p',null,children)}`;if(!id.startsWith('\0fixture:'))return;const k=id.slice(9);if(k==='next/navigation')return `const p=new URLSearchParams();export function useSearchParams(){return p}`;if(k==='next/link')return `import React from 'react';export default function Link(p){return React.createElement('a',p,p.children)}`;if(k==='./workspace-shell')return `import React from 'react';export default function Shell(p){return React.createElement('main',{onClickCapture:p.onClickCapture},p.children)}`;if(k==='./sky-agent-eve-profile')return `export default function Stub(){return null} export function useSkyAgentProfileRequested(){return false} export function useSkyAgentProfileKey(){return ''}`;if(k==='@/lib/sky-eve-connections')return `export const skyEveSelectionTargetKey=()=>'',skyEveExecutionTargets=()=>[],skyEveSelectionMatches=()=>false,skyEveDevicePath=()=>'',skyEveDeviceState=()=>null,skyEveConsentKey=()=>'',skyEveTargetKey=()=>'',isEveRuntimePresence=()=>false;`;if(k.startsWith('@/lib/'))return `export const runtimeEveTextExport=()=>{},eveAgentConversationPath=()=>'',runtimeEvePendingKey=()=>'',runtimeEveRestorableWork=()=>[],purposeEvePendingKey=()=>'';`;return `export default function Stub(){return null}`;}}]});
+diff --git a/tests/sky-chat-session-recovery.test.mjs b/tests/sky-chat-session-recovery.test.mjs
+index 24e40e7..83a7626 100644
+--- a/tests/sky-chat-session-recovery.test.mjs
++++ b/tests/sky-chat-session-recovery.test.mjs
+@@ -359,6 +359,27 @@ void test('header navigation protects an unsent draft while skip links, download
+   assert.equal(h.routes.at(-1), '/');
+ });
+ 
++void test('returning from the MCP view protects an unsent request', async () => {
++  const h = harness({ query: 'mode=tools' }); await h.flush();
++  assert.ok(h.nodes().some((n) => n.type === 'a' && n.props.href === '/os/eve' && n.props['aria-label'] === 'Eveに戻り、保存済みの会話を履歴から開く'));
++  h.input('Synthetic MCP draft');
++  const event = await h.shellLink('/os/eve');
++  assert.equal(event.defaultPrevented, true);
++  assert.ok(h.text().includes('未送信の依頼があります'));
++  await h.click('入力を続ける');
++  assert.equal(h.nodes().find((n) => n.type === 'textarea').props.value, 'Synthetic MCP draft');
++  assert.equal(h.routes.length, 0);
++});
++
++void test('returning from the MCP view is blocked while the existing work is running', async () => {
++  const h = harness({ saved: [session()], query: `mode=tools&tool=rockstar-amc&thread=${id}` }); await h.flush();
++  h.nodes().find((n) => n.type === 'AMC').props.onRunningChange(true); await h.flush();
++  const event = await h.shellLink('/os/eve');
++  assert.equal(event.defaultPrevented, true);
++  assert.equal(h.routes.length, 0);
++  assert.ok(h.nodes().some((n) => n.type === 'AMC'));
++});
++
+ 
+ void test('discard confirmation names both unsent composer text and unsaved AMC work', async () => {
+   const h = harness({ saved: [session()] }); await h.flush();
+diff --git a/tests/smis-eve-workbench.test.mjs b/tests/smis-eve-workbench.test.mjs
+index dd6acb6..ec2871a 100644
+--- a/tests/smis-eve-workbench.test.mjs
++++ b/tests/smis-eve-workbench.test.mjs
+@@ -14,6 +14,7 @@ function harness(path,{initial={},params=new URLSearchParams(),fetcher=async()=>
+  const state=[],refs=[],effects=[],frames=[],events=new Map();let cursor=0,refCursor=0,effectCursor=0;
+  const jsx=(type,props)=>({type,props:props??{}});
+  const react={useState(value){const index=cursor++;if(!(index in state))state[index]=index in initial?initial[index]:typeof value==='function'?value():value;return[state[index],next=>{state[index]=typeof next==='function'?next(state[index]):next;}];},useRef(value){return refs[refCursor++]??={current:value};},useCallback:fn=>fn,useSyncExternalStore:(_subscribe,get,server)=>liveSnapshots?get():server(),useEffect(fn){if(!(effectCursor in effects))effects[effectCursor]={fn,ran:false};effectCursor++;}};
++ react.useLayoutEffect=fn=>react.useEffect(fn);
+  const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false},window:{location:new URL('https://fixture.test/os/eve?'+params.toString()),history:{replaceState(){}},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{...props,children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
+  function expand(node){if(Array.isArray(node))return node.flatMap(expand);if(!node||typeof node!=='object')return[node];if(node.props.hidden)return[];if(typeof node.type==='function')return expand(node.type(node.props));return[{...node,props:{...node.props,children:expand(node.props.children)}}];}
+  return{render(props={}){cursor=refCursor=effectCursor=0;return expand(exports.default(props));},async effects(){for(const e of effects)if(!e.ran){e.ran=true;e.fn();}for(const fn of frames.splice(0))fn();await flush();}};
+@@ -43,7 +44,7 @@ void test('smis rejects mixed-owner response data and issues only reads on mount
+ });
+ void test('creation and work keep their state mounted; request entry precedes result history',()=>{
+  const eve=read('components/eve-sync-workspace.tsx');assert.ok(eve.indexOf('className={styles.composer}')<eve.indexOf('className={styles.messages}'));
+- assert.match(eve,/buildVisited\|\|workbenchMode==='build'/);assert.match(eve,/hidden=\{workbenchMode!=='work'\}/);assert.match(eve,/className=\{styles.executionSettings\} open=\{!device\|\|!agent\|\|!selectionMatches\}/);assert.match(eve,/hideAccountAccess/);assert.match(eve,/function choose\(id: string\) \{\s*setModeOverride\('work'\)/);assert.match(eve,/履歴を閉じる/);
++ assert.match(eve,/buildVisited\|\|workbenchMode==='build'/);assert.match(eve,/hidden=\{workbenchMode!=='work'\}/);assert.match(eve,/className=\{styles.executionSettings\}/);assert.match(eve,/className=\{styles.preparationHelp\}/);assert.match(eve,/disabled=\{!ready \|\| !consent \|\| !input.trim\(\) \|\| busy\}/);assert.match(eve,/hideAccountAccess/);assert.match(eve,/function choose\(id: string\) \{\s*setModeOverride\('work'\)/);assert.match(eve,/履歴を閉じる/);
+  assert.match(read('components/sky-discovery-feed.tsx'),/standalone \? tools : tools\.slice/);
+  assert.match(read('components/home-screen.tsx'),/personalFeed=\{<SmisAddedPosts/);
+ });
+@@ -74,4 +75,11 @@ void test('actual Eve keeps its unsent request through results and blocks cross-
+  button(app.render(),'入力を残して戻る').props.onClick();
+  assert.equal(input().props.value,'Synthetic unsent request');
+  assert.equal(nodes(app.render()).some(n=>n.props.open===true&&n.props.onOpenChange),false);
++ const mcp=nodes(app.render()).find(n=>n.type==='a'&&n.props.href==='/os/eve?mode=tools');
++ assert.ok(mcp,'MCP entry must use the existing Tool chat');
++ let blockedMcp=false;
++ workspace.props.onClickCapture({button:0,target:{closest:()=>({getAttribute:key=>key==='href'?mcp.props.href:null,hasAttribute:()=>false})},preventDefault(){blockedMcp=true;}});
++ assert.equal(blockedMcp,true,'switching to MCP must protect an unsent request');
++ button(app.render(),'入力を残して戻る').props.onClick();
++ assert.equal(input().props.value,'Synthetic unsent request');
+ });

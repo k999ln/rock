@@ -72,7 +72,7 @@
     "User released Pixel after the read-only checks. No manual service restart, model download, connection change or existing data deletion was performed in this check. Full data identity was not verified."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Fix creator draft/busy state propagation and v123 selection/sync freshness before publication; preserve model, jobs, data and connection. Validate actual account and Pixel without inference, then verify public delivery gate.",
+  "next": "Fix agent creation draft and in-flight save protection; independently review, exercise real-account preservation and Pixel without inference, then meet public delivery gates before publication.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -183,5 +183,18 @@
     "checks": "npm run verify exit 0 with existing OpenSSL 3 and loopback; main Node suite 2622 pass, 0 fail, 1 skip; 31 focused tests pass. Real React synthetic fixture: failed module fetch (503) followed by same-URL retry succeeded and separate Eve draft remained.",
     "review": "PASS_SCOPED; exact tracked diff and new file hashes matched independently; reviewer independently ran 31 stubbed tests; browser scenario operator-observed.",
     "limitations": "No real account or Pixel performance measurement; no production deployment; previously identified creator unsaved input and v123 synchronization hazards remain. MCP is separate conversation."
+  },
+  "eveResponsiveCandidate": {
+    "base": "2c101e5d5eddd2ebfb569c121ef094c06c30ea9e",
+    "parent": "eb9401ecbc14cefbbe708d32cb589594b2dda4b4",
+    "commit": "c5cf918",
+    "patch": "docs/evidence/development-execution/pixel-site-v123-eve-responsive-candidate.patch",
+    "patchSha256": "46d5c892e3ef44c00be2f7e006c660ba5a290ce4cfe3c70c330a3045f80d52af",
+    "observedIssue": "Prior isolated preview issued three 503 API reads every four seconds; device-free state also advanced a one-second React clock.",
+    "change": "A single batch settles before next read. Failed batches retry at 8,16,30 seconds; normal success retains four seconds; manual/reconnect wake is retained even during a read; no clock when no devices or pending runtime work. Eve navigation links disable prefetch.",
+    "correctness": "401 outranks concurrent 503; same owner/thread runtime observations persist as explicitly unconfirmed on runtime 503; changed owner clears them; connection and selection generations reject older responses.",
+    "checks": "Isolated copy npm run verify exit 0, main Node suite 2629 tests, 2628 pass, 0 fail, 1 skip. Synthetic real-React fixture confirmed job read, runtime 503 retains stale-labeled job, concurrent 401/503 shows sign-in, recovery restores job. Browser against isolated build confirmed normal draft guard and no account/device chunks fetched before click in that observation.",
+    "review": "PASS_SCOPED, exact diff and new file hashes independently checked; reviewer reran 32 relevant tests. Browser observations and complete verify are operator-observed.",
+    "limits": "Local preview only, no actual owner/Pixel/perceived speed or public deployment; existing agent creation draft protection remains a publication blocker."
   }
 }
