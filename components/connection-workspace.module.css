@@ -22,3 +22,4 @@
 .deviceArea section h1{font-family:Georgia, "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho", serif;font-weight:500;font-size:clamp(30px,4vw,44px)}
 @media(max-width:600px){.heading h1{font-size:36px}.cards{gap:20px}.panel{padding:20px 0}}
 
+.heading{margin:0 0 24px;padding-bottom:20px}.heading>span{display:none}.heading h1{font:650 26px/1.45 system-ui,sans-serif;letter-spacing:-.035em;margin:0 0 10px}.cards strong{font:600 20px/1.5 system-ui,sans-serif}.cards>a{padding:20px 0;gap:8px}.page h2{font-size:16px}.panel{padding:20px 0}.deviceArea section h1{font:650 26px/1.5 system-ui,sans-serif}

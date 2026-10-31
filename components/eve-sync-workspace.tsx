@@ -632,14 +632,17 @@ export default function EveSyncWorkspace({
             RockstarOS
           </Link>
           <h2>Eve</h2>
-          <p>いつでも、同じ続きから。</p>
-          <button onClick={fresh}>＋ 新しい会話</button>
+          <p>会話の履歴</p>
+          <button disabled={busy} onClick={()=>{if(hasUnsentDraft&&!discardingDraft.current)setLeaveTarget({resume:fresh});else fresh();}}>＋ 新しい会話</button>
           <nav aria-label="Eveの会話">
             {threads.map((t) => (
               <button
                 className={selected === t.session.id ? styles.current : ''}
                 key={t.session.id}
-                onClick={() => choose(t.session.id)}
+                title={t.session.messages[0]?.text || '保存した会話'}
+                aria-current={selected === t.session.id ? 'page' : undefined}
+                disabled={busy}
+                onClick={() => {if(hasUnsentDraft&&!discardingDraft.current)setLeaveTarget({resume:()=>choose(t.session.id)});else choose(t.session.id);}}
               >
                 {t.session.messages[0]?.text.slice(0, 55) || '保存した会話'}
               </button>
@@ -657,62 +660,35 @@ export default function EveSyncWorkspace({
         </aside>
         <section className={styles.desk}>
           <div className={styles.studioHeader}>
-            <div><span className={styles.eyebrow}>EVE / WORKSPACE</span><h1>{resultsView?'仕事と成果':workbenchMode==='build'?'エージェントを作る':'Eveに依頼する'}</h1><p>目的を決め、担当と実行先を確認。承認・停止・成果まで、この仕事で。</p></div>
-            <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>会話の履歴</button>
+            <div><h1>{resultsView?'仕事と成果':workbenchMode==='build'?'担当を作る':'Eve'}</h1><p>{resultsView?'進捗と保存した成果を確認。':workbenchMode==='build'?'役割を決め、保存して仕事へ。':'依頼を書く。条件を確かめて、仕事を進める。'}</p></div>
+            <div className={styles.headerActions}>
+              <button className={styles.historyToggle} aria-expanded={historyOpen} onClick={()=>setHistoryOpen(v=>!v)}><PanelLeft size={18}/>会話の履歴</button>
+              {workbenchMode==='build'?<button type="button" onClick={()=>{setModeOverride('work');window.location.hash='eve-compose';}}>依頼に戻る</button>:<button type="button" onClick={()=>{if(resultsView||composeRequested){window.history.replaceState(null,'',window.location.pathname+window.location.search);window.dispatchEvent(new Event('hashchange'));}setBuildVisited(true);setModeOverride('build');}}>担当を作る</button>}
+            </div>
           </div>
-          <nav className={styles.workbenchTabs} aria-label="Eveの作業を切り替える">
-            <button type="button" aria-pressed={workbenchMode==='build'} onClick={()=>{if(resultsView||composeRequested){window.history.replaceState(null,'',window.location.pathname+window.location.search);window.dispatchEvent(new Event('hashchange'));}setBuildVisited(true);setModeOverride('build');}}><Code2 size={17}/>担当を作る</button>
-            <button type="button" aria-pressed={workbenchMode==='work'&&!resultsView} onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}><MessageCircle size={17}/>依頼する</button>
-            <button type="button" aria-pressed={resultsView} onClick={()=>{setModeOverride('work');window.location.hash='eve-work-results';}}><ListChecks size={17}/>仕事と成果</button>
-          </nav>
-          {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
+
+          {(resultsView||workbenchMode==='build')&&!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
           <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><EveAgentComposer {...composerProps}/><details><summary>設定を編集して作る・保存済みの担当を管理する</summary><SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/></details></>}</div>
           <div hidden={workbenchMode!=='work'} className={styles.workContent}>
           <div hidden={resultsView} id="eve-compose" className={styles.composeView}>
-          <div hidden={profileRequested} className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
-          <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
-          {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
-          {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner} ownerUserId={connectionOwner} onSelection={setToolAgentSelection}/>}
-          {signedIn===true&&connectionOwner&&profileRequested&&toolAgent&&<EveAgentComposer key={connectionOwner+':'+profileKey} {...composerProps} agent={toolAgent}/>}
-          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setAgentWorkOpen(event.currentTarget.open)}><summary>Agentへ仕事を任せる</summary>{agentWorkOpen&&<Workbench key={connectionOwner} embedded/>}</details>}
-          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
-</details>
-          <header>
-            <div>
-              <span className={styles.eyebrow}>YOUR CONTINUOUS WORKSPACE</span>
-              <h2>
-                {selected ? 'この会話の続き' : '新しい仕事'}
-              </h2>
-            </div>
-            <span className={styles.connection}>
-              {signedIn
-                ? 'アカウントの履歴'
-                : signedIn === false
-                  ? 'サインイン待ち'
-                  : message&&!online?'接続の再確認が必要':'接続を確認中'}
-            </span>
-          </header>
-          </div>
-          {signedIn === false ? (
-            <div className={styles.welcome}>
-              <h3>Pixelでも、Webでも、同じEve。</h3>
-              <p>
-                会話・選んだ仕事・成果をアカウントへ保存します。サインインした後、接続する端末に表示されたコードを承認してください。
-              </p>
-              <Link
-                className={styles.primary}
-                prefetch={false}
-                href="/account?returnTo=%2Fos%2Feve"
-                target="_top"
-              >
-                サインインして始める
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div hidden={resultsView}>
+{signedIn !== false && (
               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
-                <h3>何を作り、進めたいですか？</h3>
+                <h3>何を進めますか？</h3>
+                <textarea
+                  disabled={busy}
+                  aria-label="続きの依頼"
+                  placeholder="作りたいもの、直したいところ、必要な成果を具体的に書いてください。"
+                  value={input}
+                  maxLength={2000}
+                  onChange={(e) => {
+                    discardingDraft.current=false;
+                    setInput(e.target.value);
+                    setConsent(false);
+                  }}
+                  rows={4}
+                />
+                {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
+
                 {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
                 <details className={styles.executionSettings} open={!device||!agent||!selectionMatches}><summary>実行先・担当・基盤モデルを確認する</summary>
                 <div className={styles.modelIdentity} aria-label="使用するLLM">
@@ -784,19 +760,6 @@ export default function EveSyncWorkspace({
                   </label>
                 </div>
                 </details>
-                <textarea
-                  disabled={busy}
-                  aria-label="続きの依頼"
-                  placeholder="作りたいもの、直したいところ、必要な成果を具体的に書いてください。"
-                  value={input}
-                  maxLength={2000}
-                  onChange={(e) => {
-                    discardingDraft.current=false;
-                    setInput(e.target.value);
-                    setConsent(false);
-                  }}
-                  rows={3}
-                />
                 <label className={styles.consent}>
                   <input
                     type="checkbox"
@@ -830,6 +793,50 @@ export default function EveSyncWorkspace({
                   </button>
                 </footer>
               </section>
+)}
+          <div hidden={profileRequested} className={styles.targetSummary}><Bot size={20}/><div><strong>{agent?.name??'担当を選んで始める'}</strong><span>{device?.name??'まだ実行先が選ばれていません'} · {ready?'接続・準備済み':'実行前に接続を確認'}</span></div></div>
+          <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
+          {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
+          {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner} ownerUserId={connectionOwner} onSelection={setToolAgentSelection}/>}
+          {signedIn===true&&connectionOwner&&profileRequested&&toolAgent&&<EveAgentComposer key={connectionOwner+':'+profileKey} {...composerProps} agent={toolAgent}/>}
+          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setAgentWorkOpen(event.currentTarget.open)}><summary>Agentへ仕事を任せる</summary>{agentWorkOpen&&<Workbench key={connectionOwner} embedded/>}</details>}
+          {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
+</details>
+          <header>
+            <div>
+              <span className={styles.eyebrow}>YOUR CONTINUOUS WORKSPACE</span>
+              <h2>
+                {selected ? 'この会話の続き' : '新しい仕事'}
+              </h2>
+            </div>
+            <span className={styles.connection}>
+              {signedIn
+                ? 'アカウントの履歴'
+                : signedIn === false
+                  ? 'サインイン待ち'
+                  : message&&!online?'接続の再確認が必要':'接続を確認中'}
+            </span>
+          </header>
+          </div>
+          {signedIn === false ? (
+            <div className={styles.welcome}>
+              <h3>Pixelでも、Webでも、同じEve。</h3>
+              <p>
+                会話・選んだ仕事・成果をアカウントへ保存します。サインインした後、接続する端末に表示されたコードを承認してください。
+              </p>
+              <Link
+                className={styles.primary}
+                prefetch={false}
+                href="/account?returnTo=%2Fos%2Feve"
+                target="_top"
+              >
+                サインインして始める
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div hidden={resultsView}>
+
               <div className={styles.messages} aria-live="polite">
                 {item?.before && (
                   <button onClick={() => void more()}>以前の発言を読む</button>

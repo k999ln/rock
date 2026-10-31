@@ -10151,5 +10151,44 @@
       "browser": "PC settings/Eve/home and 390px home/Eve/results/connection/settings/diagnostics; no horizontal overflow",
       "verify": "blocked at pre-existing release-security domain-router evidence hash mismatch; no current edit to router"
     }
+  },
+  "osTaskFirstUx": {
+    "date": "2026-10-31",
+    "primaryOwner": "ROCK",
+    "task": "osWorkspaceUiUx",
+    "status": "verified_ready_for_publication",
+    "userInstruction": "ELLE means sophisticated UX, not a font",
+    "design": "docs/rockstaros-complete-design.md",
+    "scope": [
+      "Eve request-first",
+      "history",
+      "navigation",
+      "home",
+      "settings",
+      "connection",
+      "diagnostics",
+      "news recovery"
+    ],
+    "preserved": [
+      "owner data",
+      "query pins",
+      "consent",
+      "budget",
+      "stop",
+      "runtime gates"
+    ],
+    "checks": {
+      "typecheck": "passed",
+      "focused": "42 passed",
+      "browser390": "input top314/bottom450, no overflow; results roundtrip and leave-cancel retain draft",
+      "publicNews": "HTTP200,39 articles observed; social unsigned401 expected",
+      "design": "passed",
+      "verify": "blocked at pre-existing release-security domain-router evidence hash mismatch",
+      "browser": "PC and 390px input visible initially; results roundtrip, leave-cancel and new-conversation guard preserve draft; settings/home have no fixed navigation overlay"
+    },
+    "remaining": [
+      "official helper build",
+      "native Sites deployment and readback"
+    ]
   }
 }

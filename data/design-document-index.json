@@ -3192,5 +3192,42 @@
       "390px browser QA",
       "Sites deployment readback"
     ]
+  },
+  "osTaskFirstUx": {
+    "date": "2026-10-31",
+    "primaryOwner": "ROCK",
+    "task": "osWorkspaceUiUx",
+    "status": "implemented_verifying",
+    "userInstruction": "ELLE means sophisticated UX, not a font",
+    "design": "docs/rockstaros-complete-design.md",
+    "scope": [
+      "Eve request-first",
+      "history",
+      "navigation",
+      "home",
+      "settings",
+      "connection",
+      "diagnostics",
+      "news recovery"
+    ],
+    "preserved": [
+      "owner data",
+      "query pins",
+      "consent",
+      "budget",
+      "stop",
+      "runtime gates"
+    ],
+    "checks": {
+      "typecheck": "passed",
+      "focused": "42 passed",
+      "browser390": "input top314/bottom450, no overflow; results roundtrip and leave-cancel retain draft",
+      "publicNews": "HTTP200,39 articles observed; social unsigned401 expected"
+    },
+    "remaining": [
+      "npm run verify",
+      "build",
+      "native Sites deployment and readback"
+    ]
   }
 }

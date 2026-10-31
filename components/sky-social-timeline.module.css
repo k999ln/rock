@@ -1303,3 +1303,5 @@
   font-weight: 650;
   letter-spacing: 0;
 }
+.newsConnection,.error{font-size:12px;line-height:1.7;border:0;border-bottom:1px solid var(--tl-line);background:transparent;padding:12px 16px;display:block}.newsConnection summary,.error summary{cursor:pointer;min-height:32px;display:list-item;color:var(--tl-muted)}.newsConnection button,.error button{min-height:44px;margin:8px 12px 0 0}.newsConnection p,.error p{font-size:12px;overflow-wrap:anywhere}
+.shell[data-full-home='true'] .error,.shell .newsConnection{background:transparent;border:0;border-bottom:1px solid var(--tl-line);color:var(--tl-muted);display:block;padding:12px 16px}.shell .newsConnection>summary,.shell .error>summary{font-size:12px;font-weight:400}.shell .newsConnection button,.shell .error button{min-height:44px}

@@ -170,6 +170,11 @@ export default function HomeScreen() {
                 </details>
               </div>
             </OSHeader>
+      <OsAppNavigation
+        className={`${styles.mobileNav} os-home-navigation`}
+        aria-label="RockstarOSの主要サービス"
+        active={view === 'communities' ? 'communities' : 'stream'}
+      />
           </div>
           {view === 'home' && (
             <section
@@ -315,11 +320,7 @@ export default function HomeScreen() {
           </div>
         </main>
       </div>
-      <OsAppNavigation
-        className={`${styles.mobileNav} os-home-navigation`}
-        aria-label="RockstarOSの主要サービス"
-        active={view === 'communities' ? 'communities' : 'stream'}
-      />
+
     </div>
   );
 }

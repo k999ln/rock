@@ -63,3 +63,9 @@
 .itemCopy strong{font-weight:600}.boundary{border-top:1px solid var(--os-line);padding-top:20px}
 @media(max-width:560px){.health>div{border-right:0;border-bottom:1px solid var(--os-line);padding:14px 0}.health>div:last-child{border-bottom:0}.group{margin-top:30px}.hero h1{font-size:40px}}
 
+
+/* Settings is a working index, with a compact identity and scannable groups. */
+.hero{padding-bottom:20px}.hero h1{font:650 26px/1.4 system-ui,sans-serif;margin:0 0 8px;letter-spacing:-.035em}.hero small{display:none}.hero p{font-size:13px}
+.health{margin:0}.health>div{padding:14px 18px}.health>div>span{margin-bottom:6px;width:24px;height:24px}.group h2{font-size:13px;letter-spacing:0;margin-bottom:10px}.item{min-height:72px;padding:12px 0}.itemCopy strong{font-size:14px}.itemCopy small{font-size:12px}.boundary{font-size:11px}
+@media(min-width:850px){.content{gap:24px}}
+@media(max-width:560px){.hero h1{font-size:24px}.health>div{padding:10px 0}.group{margin-top:24px}.item{min-height:72px}}

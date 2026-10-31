@@ -60,3 +60,4 @@
 .device,.route{border:0;border-top:1px solid var(--os-shell-text);border-bottom:1px solid var(--os-shell-line);background:#fff}
 .route{padding:24px 0}.deviceIcon{background:transparent}.route h2{font-family:Georgia, "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho", serif;font-weight:500;font-size:28px}
 
+.header{padding:8px 0 20px}.header h1{font:650 26px/1.5 system-ui,sans-serif}.route h2{font:600 20px/1.5 system-ui,sans-serif}

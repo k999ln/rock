@@ -817,3 +817,11 @@
 .workspaceAside h2{font-family:Georgia, "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho", serif;font-size:24px;font-weight:500}
 @media(max-width:600px){.workEntry{padding-top:32px}.entryIntro h1{font-size:38px}.entryActions{gap:0}.entryActions a{padding:22px 0;border-bottom:1px solid #d8d8d8}.entryActions a:last-child{border-bottom:0}}
 
+
+/* Clear task hierarchy and a header-level global navigation. */
+.home .layout{padding-bottom:32px}.workEntry{padding:28px 0 24px}.entryIntro h1{font:600 clamp(28px,3.3vw,40px)/1.4 system-ui,sans-serif;letter-spacing:-.045em;margin:8px 0 12px}.entryIntro>p:last-child{font-size:14px;margin-bottom:24px}.eyebrow{font-size:10px}
+.entryActions{gap:24px}.entryActions strong{font:600 17px/1.5 system-ui,sans-serif}.entryActions a{padding:20px 0;gap:8px}.entryActions a.primaryEntry{border-top:2px solid #151515;margin-top:-1px}.entryActions span{font-size:12px}
+.home .mobileNav{position:static;inset:auto;width:100%;height:auto;display:flex;gap:24px;justify-content:flex-start;padding:0 32px;border:0;border-top:1px solid var(--tl-line);background:#fff;margin:0}
+.home .mobileNav a{display:inline-flex;flex-direction:row;gap:8px;min-height:48px;font-size:12px;padding:8px 0;box-shadow:none}.home .mobileNav a[aria-current='page']{background:transparent;border-bottom:2px solid #151515}.home .mobileNav a svg{width:18px;height:18px}
+.workspaceAside h2{font:600 17px/1.5 system-ui,sans-serif}.workspaceAside section{padding:20px 0}
+@media(max-width:600px){.home .layout{padding-bottom:24px}.home .mobileNav{padding-inline:20px;gap:24px}.entryIntro h1{font-size:28px}.workEntry{padding-top:24px}.entryActions{gap:0}.entryActions a{padding:16px 0}.entryActions strong{font-size:16px}.home .mobileActions>a:first-child{font-size:12px}}

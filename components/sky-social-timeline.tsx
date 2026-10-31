@@ -1122,15 +1122,12 @@ export default function SkySocialTimeline({
             <output className={styles.feedStatus}>{liveError}</output>
           )}
           {continuous.newsError && (
-            <div className={styles.newsConnection}>
-              <span>ニュースを再接続しています。</span>
-              <button onClick={continuous.retry}>再接続</button>
-              <details>
-                <summary>接続状況</summary>
-                <p>{continuous.newsError}</p>
-                <a href="/#news-plugins">配信元を確認</a>
-              </details>
-            </div>
+            <details className={styles.newsConnection}>
+              <summary>{continuous.items.length ? 'ニュースの更新を確認できません' : 'ニュースを取得できません'}</summary>
+              <p>{continuous.newsError}</p>
+              <button disabled={continuous.newsLoading} onClick={continuous.retry}>{continuous.newsLoading?'確認中…':'もう一度取得する'}</button>
+              <a href="/#news-plugins">配信元を確認</a>
+            </details>
           )}
           {continuous.newsEmpty && (
             <output className={styles.feedStatus}>
@@ -1169,10 +1166,10 @@ export default function SkySocialTimeline({
         </button>
       )}
       {error && (
-        <p className={styles.error} role="alert">
-          {error}
-          <button onClick={() => void load()}>再読み込み</button>
-        </p>
+        <details className={styles.error}>
+          <summary>コミュニティーの読み込みを確認できません</summary>
+          <p>{error}</p><button disabled={loading} onClick={() => void load()}>再読み込み</button>
+        </details>
       )}
       {notice && <output className={styles.notice}>{notice}</output>}
       {signedOut ? (
@@ -1191,7 +1188,7 @@ export default function SkySocialTimeline({
           <LoaderCircle size={22} className={styles.spinning} />
           読み込み中
         </output>
-      ) : !data.profile ? (
+      ) : !data.profile && error ? null : !data.profile ? (
         <form
           className={styles.welcome}
           onSubmit={(e) => {

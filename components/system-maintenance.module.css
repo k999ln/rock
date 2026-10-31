@@ -73,3 +73,4 @@
 .section>h2{font-size:12px;letter-spacing:.1em}
 
 .overviewIcon{box-shadow:none;background:#f4f4f4;color:#151515}.actions>button>span:first-child{background:#151515!important;color:white}
+.overview h1{font:650 26px/1.4 system-ui,sans-serif}.overview{padding-bottom:20px}.overview small{font-size:10px}.overviewIcon{width:44px;height:44px}.checks article,.actions>button,.gates article{min-height:72px}

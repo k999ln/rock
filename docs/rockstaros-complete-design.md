@@ -1086,3 +1086,8 @@ Eveの制作画面では、確認した目的を文章担当へ保存し、選�
 ## 2026-10-30 — エディトリアルなOS UI
 本人の「ELLEのようなファッション誌の雰囲気」という明示指示で、Web/UX（ROCK、既存osWorkspaceUiUx）を白地・墨色・細い罫線・明朝/serif見出しへ変更。ホーム、Eve、仕事と成果、接続、設定、診断と既存接続dialogを対象とし、生成り/淡緑/丸いカードを廃止。本文・入力はsans-serif、操作は48pxを保持し、選択状態は罫線と文字で表示。虹色ロゴ・起動演出、本人保存、未送信保護、権限/料金/停止/APIとnative gateは維持。外部フォント/画像/依存は追加しない。失敗・復旧・承認の業務状態は既存UI UX契約を継承。GitHub main観測は1daf5c340f23fb40e52289d276cd5ec1ca271fa0、Sites元sourceは2c101e5d5eddd2ebfb569c121ef094c06c30ea9eで区別。
 合格条件: PC/390pxで横溢れなし、主要画面とnavigationを操作確認、npm run verify/design:check、同一sourceのSites配備成功。公開確認は配備後の外部証拠へ記録。復旧は直前のSites版へのrollback、端末データは変更しない。
+
+
+## 2026-10-31 — 入力から始まるOS UX
+本人は「ELLEっぽさ」はフォントでなく洗練された情報設計・操作性と明示。Web/UX（ROCK、osWorkspaceUiUx）の順序を依頼入力→実行先/担当/モデル→個別同意→送信へ変更。Eveの巨大見出しと重複3tabをやめ、共通Eve/成果導線と担当作成actionへ整理。詳細Tool/Cloud/ニュース、会話はフォーム後に残す。既存owner/query/revision/予算/停止/同意/保存protocolは維持。履歴は2行省略・全題title・選択状態・独立scroll・未送信時の切替確認を備える。本文を覆うfixed dockを廃止し、3つのglobal入口はheaderへ。ホーム/設定/接続/診断はコンパクトな見出しと同じ48px操作。白地/細罫線/余白/虹色logoを維持し、書体への依存をやめる。ニュースAPIの現在の正常取得を確認し、失敗時は実状に合う詳細/再取得を表示。social読込失敗を新規profile未設定に換算しない。データ削除/課金/実行/権限変更は行わない。
+受入: PC/390pxでEve textareaが初期viewport内、本文にfixed navigationなし、履歴/成果/設定/担当作成の往復と未送信保護、ニュースの正常/失敗/再取得状態を確認。失敗の詳細は折り畳み、前回記事と現在取得を区別。復旧は直前Sites版、保存/API契約は互換。GitHub main観測1daf5c340f23fb40e52289d276cd5ec1ca271fa0、Sites元b642310723d807358b7d8bca8e3e42198a828263。未完了のrelease証拠不整合やnative gateをWeb配備の合格へ換算しない。

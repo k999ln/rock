@@ -134,3 +134,20 @@ html:has(.rock-workspace) { background:#ffffff; color-scheme:light; }
 .rock-workspace .rock-bottom-note { background:#fff; }
 @media(max-width:600px){.os-header-row{min-height:64px}.os-header .os-brand{font-size:25px}.os-flow-navigation{top:64px;gap:0;justify-content:space-between;padding-inline:16px}.os-flow-navigation a{flex:0 1 auto;min-height:52px;font-size:11px}.rock-workspace .rock-main{padding-top:28px}}
 
+
+/* Task-first chrome: navigation participates in layout, never covers content. */
+:root{--os-shell-navigation-height:48px}
+.rock-workspace.rock-workspace,[data-sky-home]{padding-bottom:env(safe-area-inset-bottom)}
+.rock-workspace .rock-main{padding:24px 32px 32px}
+.os-header-inner{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.os-header-row{flex:1;min-height:64px}
+.os-header .os-brand{font-family:inherit;font-size:21px;font-weight:650;letter-spacing:-.045em}
+.os-header .os-header-inner>.os-shell-navigation.os-shell-navigation{position:static;inset:auto;display:flex;flex:0 0 auto;width:auto;height:auto;border:0;padding:0;gap:4px;background:transparent;margin:0}
+.os-header .os-shell-navigation.os-shell-navigation a{flex-direction:row;gap:7px;min-height:48px;padding:8px 12px;font-size:12px;box-shadow:none}
+.os-header .os-shell-navigation a svg{width:18px;height:18px}
+.os-header .os-shell-navigation a[aria-current='page']{text-decoration:underline;text-underline-offset:8px;background:transparent}
+.os-flow-navigation{position:static;top:auto;padding:0 24px;gap:24px;background:#fafafa}
+.os-flow-navigation a{min-height:48px}
+.rock-workspace :is(button,input,select,summary){scroll-margin-top:80px;scroll-margin-bottom:24px}
+@media(max-width:600px){.rock-workspace .rock-main{padding:20px 16px}.os-header-inner{gap:4px;flex-wrap:nowrap}.os-header-row{min-height:60px;gap:8px}.os-header .os-brand{font-size:17px;gap:6px}.os-header .os-brand img{width:26px;height:26px;flex-basis:26px}.os-header .os-shell-navigation.os-shell-navigation a{flex-direction:column;gap:2px;min-width:44px;padding:4px;font-size:9px}.os-flow-navigation{gap:0;justify-content:space-between;padding-inline:16px}.os-flow-navigation a{font-size:11px;flex:0 1 auto;min-height:48px}.os-current-app{display:none}}
+.os-flow-navigation{position:sticky;top:64px;z-index:25}@media(max-width:600px){.os-flow-navigation{top:60px}}
