@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "v123_candidate_local_verify_and_security_scoped_pass_public_gate_blocked",
+    "status": "eve_chat_shell_candidate_needs_creator_draft_and_sync_freshness_guards",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Complete real-account preservation and public delivery gates, implement and validate same-owner/job MCP-to-Linux non-inference output with existing authority and approval; do not claim completion or deploy on local evidence alone."
+    "next": "Protect all creator and agent settings drafts across hash and router navigation; port v121 sync freshness guards; rerun full verification and real-account/public delivery gates before deployment."
   }
 }

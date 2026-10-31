@@ -72,7 +72,7 @@
     "User released Pixel after the read-only checks. No manual service restart, model download, connection change or existing data deletion was performed in this check. Full data identity was not verified."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Implement same-owner, same-job MCP-to-Linux execution via existing broker with explicit authority and approval; production authority is not bound and Pixel worker reports text capability only. Complete safe non-inference output validation and real-account/data-preservation and public delivery gates before deployment. Unified Eve/MCP conversation remains incomplete.",
+  "next": "Propagate all creator and agent settings dirty/busy state through the parent before allowing navigation; verify intent remains unchanged on cancel and exercise real React hash/back/button routes. Port and independently test earlier selection/sync freshness guards on v123. Rerun full verification and real-account/publish gates before deploying. MCP remains a separate conversation and is not an integrated Linux execution.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -160,5 +160,15 @@
     "localSecurity": "Final production build served on loopback by wrangler with existing cached workerd 1.20261001.1; eight routes and eight headers passed; independent reviewer matched raw, build, router, wrapper, tracked diff and evidence hashes. Historical evidence retained.",
     "review": "PASS_SCOPED; local evidence only; validator does not automatically recalculate raw/build hashes",
     "limits": "Site remains at v123; public delivery gate blocked; no real-account or Pixel candidate acceptance; MCP and Linux end-to-end unresolved."
+  },
+  "eveChatShellCandidate": {
+    "base": "2c101e5d5eddd2ebfb569c121ef094c06c30ea9e",
+    "commit": "598e1b3",
+    "patch": "docs/evidence/development-execution/pixel-site-v123-eve-chat-shell-candidate.patch",
+    "patchSha256": "e4b89f671621578869d4f9216389ce6a2910769df05f8f1e05bea1a5582eb2aa",
+    "scope": "Eve-first root, sidebar navigation, centered conversation and bottom composer. MCP link still opens a separate existing conversation.",
+    "checks": "typecheck, focused lint, production build and 31 targeted tests pass; local actual UI and synthetic navigation fixture observed. Full verify was interrupted for subsequent edits and has not passed for this candidate.",
+    "review": "NEEDS_CHANGES: independent reviewer found agent creator input and unsaved agent settings do not propagate dirty state to the parent, so a hash transition and sibling router.push can lose input. Separately v123 base lacks earlier v121 selection and sync freshness guards; no earlier acceptance is transferred.",
+    "status": "not deployed; public v123 remains unchanged; no real account, Pixel, MCP Linux end-to-end or production acceptance."
   }
 }
