@@ -72,7 +72,7 @@
     "User released Pixel after the read-only checks. No manual service restart, model download, connection change or existing data deletion was performed in this check. Full data identity was not verified."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Propagate all creator and agent settings dirty/busy state through the parent before allowing navigation; verify intent remains unchanged on cancel and exercise real React hash/back/button routes. Port and independently test earlier selection/sync freshness guards on v123. Rerun full verification and real-account/publish gates before deploying. MCP remains a separate conversation and is not an integrated Linux execution.",
+  "next": "Fix creator draft/busy state propagation and v123 selection/sync freshness before publication; preserve model, jobs, data and connection. Validate actual account and Pixel without inference, then verify public delivery gate.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -170,5 +170,18 @@
     "checks": "typecheck, focused lint, production build and 31 targeted tests pass; local actual UI and synthetic navigation fixture observed. Full verify was interrupted for subsequent edits and has not passed for this candidate.",
     "review": "NEEDS_CHANGES: independent reviewer found agent creator input and unsaved agent settings do not propagate dirty state to the parent, so a hash transition and sibling router.push can lose input. Separately v123 base lacks earlier v121 selection and sync freshness guards; no earlier acceptance is transferred.",
     "status": "not deployed; public v123 remains unchanged; no real account, Pixel, MCP Linux end-to-end or production acceptance."
+  },
+  "eveLightCandidate": {
+    "base": "2c101e5d5eddd2ebfb569c121ef094c06c30ea9e",
+    "previousCandidate": "598e1b3",
+    "commit": "eb9401e",
+    "patch": "docs/evidence/development-execution/pixel-site-v123-eve-light-candidate.patch",
+    "patchSha256": "09c6856ea347f0de62e26fc07165954ba28c6efa1e1f6873323930bb8e4260cb",
+    "staticEveDependencyBytesBefore": 1104323,
+    "staticEveDependencyBytesAfter": 613841,
+    "measurement": "Build manifest static dependency files, uncompressed bytes; not elapsed time, transfer size, or total of deferred modules.",
+    "checks": "npm run verify exit 0 with existing OpenSSL 3 and loopback; main Node suite 2622 pass, 0 fail, 1 skip; 31 focused tests pass. Real React synthetic fixture: failed module fetch (503) followed by same-URL retry succeeded and separate Eve draft remained.",
+    "review": "PASS_SCOPED; exact tracked diff and new file hashes matched independently; reviewer independently ran 31 stubbed tests; browser scenario operator-observed.",
+    "limitations": "No real account or Pixel performance measurement; no production deployment; previously identified creator unsaved input and v123 synchronization hazards remain. MCP is separate conversation."
   }
 }

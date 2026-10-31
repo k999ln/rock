@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "eve_chat_shell_candidate_needs_creator_draft_and_sync_freshness_guards",
+    "status": "eve_light_candidate_scoped_verified_creator_guard_and_sync_block_release",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Protect all creator and agent settings drafts across hash and router navigation; port v121 sync freshness guards; rerun full verification and real-account/public delivery gates before deployment."
+    "next": "Fix creator unsaved/busy protection and v123 synchronization freshness; validate actual account and Pixel without inference before public release."
   }
 }
