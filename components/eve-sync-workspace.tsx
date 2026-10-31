@@ -822,21 +822,6 @@ export default function EveSyncWorkspace({
           {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setAgentWorkOpen(event.currentTarget.open)}><summary>Agentへ仕事を任せる</summary>{agentWorkOpen&&<Workbench key={connectionOwner} embedded/>}</details>}
           {signedIn===true && connectionOwner && !profileRequested && <details onToggle={event=>setCloudHistoryOpen(event.currentTarget.open)}><summary>Cloudの依頼・成果を開く</summary>{cloudHistoryOpen&&<SkyFreeCloudPanel key={connectionOwner}/>}</details>}
 </details>
-          <header>
-            <div>
-              <span className={styles.eyebrow}>YOUR CONTINUOUS WORKSPACE</span>
-              <h2>
-                {selected ? 'この会話の続き' : '新しい仕事'}
-              </h2>
-            </div>
-            <span className={styles.connection}>
-              {signedIn
-                ? 'アカウントの履歴'
-                : signedIn === false
-                  ? 'サインイン待ち'
-                  : message&&!online?'接続の再確認が必要':'接続を確認中'}
-            </span>
-          </header>
           </div>
           {signedIn === false ? (
             <div className={styles.welcome}>
@@ -968,8 +953,8 @@ export default function EveSyncWorkspace({
               {runtimeNotice && (
                 <output className={styles.notice}>{runtimeNotice}</output>
               )}
-              {signedIn===true&&connectionOwner&&selected&&<EveRuntimeArchive key={connectionOwner+':'+selected} owner={connectionOwner} threadId={selected} api={api} current={runtimeCurrent}/>}
-              {!profileRequested && signedIn === true && (runtimeBinding||creationBinding) && <EveRuntimeInteraction key={creationBinding?purposeEvePendingKey(creationBinding):runtimeEvePendingKey(runtimeBinding!)} savedWork={runtimeBinding?runtimeEveRestorableWork(runtimeBinding,{ownerUserId:connectionOwner,pending:runtimePending,executions:runtimeJobs}):[]} binding={runtimeBinding} creation={creationBinding} api={api} selectedConnected={ready&&!busy} creationConnected={creationReady&&!busy} supportsPurpose={supportsPurpose} current={runtimeCurrent} />}
+              {signedIn===true&&connectionOwner&&selected&&<details className={styles.secondaryControls}><summary>過去の担当・モデルの成果</summary><EveRuntimeArchive key={connectionOwner+':'+selected} owner={connectionOwner} threadId={selected} api={api} current={runtimeCurrent}/></details>}
+              {!profileRequested && signedIn === true && (runtimeBinding||creationBinding) && <details className={styles.secondaryControls}><summary>担当・音声操作と以前の端末実行</summary><EveRuntimeInteraction key={creationBinding?purposeEvePendingKey(creationBinding):runtimeEvePendingKey(runtimeBinding!)} savedWork={runtimeBinding?runtimeEveRestorableWork(runtimeBinding,{ownerUserId:connectionOwner,pending:runtimePending,executions:runtimeJobs}):[]} binding={runtimeBinding} creation={creationBinding} api={api} selectedConnected={ready&&!busy} creationConnected={creationReady&&!busy} supportsPurpose={supportsPurpose} current={runtimeCurrent} /></details>}
             </>
           )}
           {message && <output className={styles.notice}>{message}</output>}

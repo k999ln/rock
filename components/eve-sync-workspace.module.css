@@ -88,4 +88,10 @@
 .requestStarters button{border-radius:999px}
 .app .primary{border-radius:999px}
 .sidebar nav .current{border-radius:10px}
+.secondaryControls{border-top:1px solid var(--line);padding:0;color:var(--ink)}
+.secondaryControls>summary{cursor:pointer;padding:14px 4px;font-size:14px;font-weight:600}
+.secondaryControls>section{padding:4px 12px 18px;font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+.secondaryControls h2,.secondaryControls h3{font-size:17px;line-height:1.5;margin:12px 0}
+.secondaryControls p{margin:8px 0;color:var(--muted)}
+.secondaryControls select,.secondaryControls button{max-width:100%;white-space:normal}
 @media(max-width:720px){.messages{max-height:34dvh}.messages article{max-width:95%}.composer{padding:16px;border-radius:20px}.composer textarea{min-height:88px}}
