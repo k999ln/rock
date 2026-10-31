@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  applicationName: 'smis',
+  applicationName: 'Noah',
   manifest: '/os/sky/manifest.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'smis',
+    title: 'Noah',
   },
 };
 
