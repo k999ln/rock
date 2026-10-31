@@ -23,3 +23,8 @@
 @media(max-width:600px){.heading h1{font-size:36px}.cards{gap:20px}.panel{padding:20px 0}}
 
 .heading{margin:0 0 24px;padding-bottom:20px}.heading>span{display:none}.heading h1{font:650 26px/1.45 system-ui,sans-serif;letter-spacing:-.035em;margin:0 0 10px}.cards strong{font:600 20px/1.5 system-ui,sans-serif}.cards>a{padding:20px 0;gap:8px}.page h2{font-size:16px}.panel{padding:20px 0}.deviceArea section h1{font:650 26px/1.5 system-ui,sans-serif}
+.deviceArea form > label:not([hidden]) { color: #404040; font-weight: 600; }
+.deviceArea form input:not([type='checkbox']) { color: #202123; background: #fff; border: 1px solid #b8b8b8; border-radius: 8px; }
+.deviceArea section ul { list-style: none; margin: 0; padding: 0; }
+.deviceArea section li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 14px 0; border-top: 1px solid #e5e5e5; }
+.deviceArea section li button { margin-left: auto; min-height: 44px; padding: 8px 12px; border-radius: 8px; }
