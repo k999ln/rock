@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 const steps = [
   ['アカウントでサインインする', 'いまのブラウザや対応アプリから利用します。Web版を使うためにSIM/eSIMを購入する必要はありません。'],
-  ['smisで利用できるToolを選ぶ', 'smisで機能と利用条件を確認し、Eveへ依頼を渡します。購入済みサービスの署名済み購入claimがある場合だけ、下の登録からRockstar IDへ利用権を結び付けます。'],
+  ['Noahで利用できるToolを選ぶ', 'Noahで機能と利用条件を確認し、Eveへ依頼を渡します。購入済みサービスの署名済み購入claimがある場合だけ、下の登録からRockstar IDへ利用権を結び付けます。'],
   ['端末で開いて、仕事を依頼する', '確認済み端末だけRockstarOS導入へ進み、その他は既存OSのアプリまたはブラウザを使います。見積と上限を承認したCloud作業は端末がオフラインでも続き、再接続後に進捗・結果・明細を受け取れます。'],
 ];
 
@@ -53,7 +53,7 @@ export default function ConnectPage() {
         </div>
         <div className={legacy.esimPlanList}>
           <div className={legacy.esimPlanCard}><strong>購入・通信開通</strong><span>購入チャネルと通信事業者が提供します。回線状態はRockstarOSサービス利用権とは別に確認します。</span></div>
-          <div className={legacy.esimPlanCard}><strong>RockstarOSサービス利用権</strong><span>smis・Eve・Agentは同じアカウントで利用します。既存の購入claimがある場合は、その利用権を確認します。</span></div>
+          <div className={legacy.esimPlanCard}><strong>RockstarOSサービス利用権</strong><span>Noah・Eve・Agentは同じアカウントで利用します。既存の購入claimがある場合は、その利用権を確認します。</span></div>
           <div className={legacy.esimPlanCard}><strong>端末への導入</strong><span>対応機種は署名済みOS、それ以外は既存OSのアプリまたはブラウザを使います。</span></div>
           <Link className={legacy.esimPlanCard} href="/sky"><strong>smisを開く</strong><span> AgentやToolを探す <ArrowRight size={15} /></span></Link>
           <Link className={legacy.esimPlanCard} href="/os/eve"><strong>Eveを開く</strong><span> 相談・進捗・成果をまとめて確認する <ArrowRight size={15} /></span></Link>
