@@ -47,7 +47,7 @@ void test('smis makes execution destinations and unfinished OAuth boundaries exp
 
   assert.match(center, /接続先を選ぶ/);
   assert.match(center, /このPC/);
-  assert.match(center, /smis Cloud/);
+  assert.match(center, /Noah Cloud/);
   assert.match(center, /提供者のMCP/);
   assert.match(center, /disabled={!available}/);
   assert.match(center, /OAuthが必要な接続先は権限確認と接続証跡が揃うまで/);

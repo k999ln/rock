@@ -7,7 +7,7 @@ void test('Home and Eve retain the same three destinations independent of option
   assert.deepEqual(osNavigationItems.map(x => x.id), ['stream','eve','communities']);
   const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
   for (const path of ['components/home-screen.tsx','components/os-header.tsx']) assert.match(read(path), /<OsAppNavigation/);
-  assert.match(read('components/home-screen.tsx'), /<OSHeader title="smis" hideNavigation>/);
+  assert.match(read('components/home-screen.tsx'), /<OSHeader title="Noah" hideNavigation>/);
   assert.match(read('components/eve-sync-workspace.tsx'), /<WorkspaceShell title="Eve"/);
   assert.doesNotMatch(read('components/os-app-navigation.tsx'), /useSkyFeatures|WalletCards|ChartNoAxesCombined/);
 });

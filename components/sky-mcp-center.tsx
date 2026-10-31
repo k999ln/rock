@@ -39,8 +39,8 @@ const connectionTargets = [
   },
   {
     id: 'sky-cloud',
-    name: 'smis Cloud',
-    detail: '常時動くsmis管理の実行先',
+    name: 'Noah Cloud',
+    detail: '常時動くNoah管理の実行先',
     note: '準備中',
     ready: false,
     recommended: false,
@@ -236,7 +236,7 @@ export default function SkyMcpCenter({
                 <Network size={21} />
               </span>
               <div>
-                <DialogTitle>smis MCP</DialogTitle>
+                <DialogTitle>Noah MCP</DialogTitle>
                 <DialogDescription>
                   自動化ごとのMCPを、共通Connectorから安全に接続します。
                 </DialogDescription>
@@ -291,7 +291,7 @@ export default function SkyMcpCenter({
                 <div className={styles.sectionHeading}>
                   <div>
                     <strong>接続先を選ぶ</strong>
-                    <p>MCPごとの推奨先をsmisが表示し、対応先だけ選べます。</p>
+                    <p>MCPごとの推奨先をNoahが表示し、対応先だけ選べます。</p>
                   </div>
                   <span>STEP 1</span>
                 </div>
@@ -348,7 +348,7 @@ export default function SkyMcpCenter({
                   </strong>
                   <p>
                     {connected
-                      ? 'smisのツール画面から、対応する自動化を実行できます。'
+                      ? 'Noahのツール画面から、対応する自動化を実行できます。'
                       : '追加アカウント・APIキー・有料契約は必要ありません。'}
                   </p>
                 </div>
@@ -439,7 +439,7 @@ export default function SkyMcpCenter({
                 <li>
                   <span>3</span>
                   <div>
-                    <strong>smisから接続を確認</strong>
+                    <strong>Noahから接続を確認</strong>
                     <p>Connectorと登録済みMCPの検出まで自動で確認します。</p>
                   </div>
                 </li>
@@ -452,7 +452,7 @@ export default function SkyMcpCenter({
 
               <p className={styles.boundaryNote}>
                 SDKで起動したPC内Tool、登録済みのstdio MCPとStreamable HTTP
-                MCPに対応します。秘密情報はsmisへ渡さず、OAuthが必要な接続先は権限確認と接続証跡が揃うまで実行できません。
+                MCPに対応します。秘密情報はNoahへ渡さず、OAuthが必要な接続先は権限確認と接続証跡が揃うまで実行できません。
               </p>
             </div>
           ) : (

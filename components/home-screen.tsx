@@ -136,7 +136,7 @@ export default function HomeScreen() {
         <main className={styles.main} id="home-content">
           <span className={styles.srOnly}>RockstarOS ホーム</span>
           <div className={styles.mobileHeader}>
-            <OSHeader title="smis" hideNavigation>
+            <OSHeader title="Noah" hideNavigation>
               <div className={styles.mobileActions}>
                 <Link href="/os/eve">
                   Eve <MessageCircle size={20} />

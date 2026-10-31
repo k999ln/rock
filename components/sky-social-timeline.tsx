@@ -427,7 +427,7 @@ export default function SkySocialTimeline({
         enabled: true,
         revision: existing?.revision ?? 0,
       });
-      setNotice('自分のsmisに追加しました。実行と費用の確認はEveへ。');
+      setNotice('自分のNoahに追加しました。実行と費用の確認はEveへ。');
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
     } finally {
@@ -438,7 +438,7 @@ export default function SkySocialTimeline({
     try {
       writeHomeIntent(
         window.sessionStorage,
-        `smisの投稿から追加した「${attachment.resource}」を使いたい。種類: ${attachment.kind}。導入状況・license・実行先・必要費用を確認して使う準備を進めて。`,
+        `Noahの投稿から追加した「${attachment.resource}」を使いたい。種類: ${attachment.kind}。導入状況・license・実行先・必要費用を確認して使う準備を進めて。`,
       );
       router.push('/chat');
     } catch {
@@ -458,7 +458,7 @@ export default function SkySocialTimeline({
       const v = (await r.json()) as { error?: string };
       if (!r.ok) throw new Error(v.error ?? '追加できませんでした。');
       setNotice(
-        '自分のsmisに追加しました。「担当とLLMを設定」からEveへ渡せます。',
+        '自分のNoahに追加しました。「担当とLLMを設定」からEveへ渡せます。',
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
@@ -877,7 +877,7 @@ export default function SkySocialTimeline({
                   ) ? (
                   attachmentAdded ? (
                     <>
-                      <small>自分のsmisに追加済み</small>
+                      <small>自分のNoahに追加済み</small>
                       <button
                         onClick={() => prepareAttachment(post.attachment!)}
                       >
@@ -894,7 +894,7 @@ export default function SkySocialTimeline({
                       }
                     >
                       <Plus size={15} />
-                      自分のsmisに追加
+                      自分のNoahに追加
                     </button>
                   )
                 ) : (
@@ -1208,7 +1208,7 @@ export default function SkySocialTimeline({
             void act({ action: 'profile', name: publicName });
           }}
         >
-          <h3>smisで使う公開名を決めよう。</h3>
+          <h3>Noahで使う公開名を決めよう。</h3>
           <p>
             アカウントのメールアドレスは公開しません。ここで設定した名前が投稿に表示されます。
           </p>
@@ -1221,7 +1221,7 @@ export default function SkySocialTimeline({
               onChange={(e) => setPublicName(e.target.value)}
             />
           </label>
-          <button disabled={busy || loading}>smisを始める</button>
+          <button disabled={busy || loading}>Noahを始める</button>
         </form>
       ) : (
         <>
@@ -1259,7 +1259,7 @@ export default function SkySocialTimeline({
                 </span>
                 <div>
                   <strong>{data.profile.name}</strong>
-                  <small>あなたのsmis</small>
+                  <small>あなたのNoah</small>
                 </div>
               </div>
               <button
@@ -1658,7 +1658,7 @@ export default function SkySocialTimeline({
                             <option value="model">LLM・モデル</option>
                             <option value="dataset">データセット</option>
                             <option value="space">Spaces</option>
-                            <option value="agent">smisの公開Agent・Tool</option>
+                            <option value="agent">Noahの公開Agent・Tool</option>
                             <option value="work">作品のURL</option>
                             <option value="edition">OS構成の共有URL</option>
                             <option value="news">ニュースのURL</option>
@@ -1721,7 +1721,7 @@ export default function SkySocialTimeline({
                           <small title="Eveの会話は自動共有されません。">
                             {data.thread?.community || selected
                               ? 'メンバーのみ'
-                              : 'smisに公開'}
+                              : 'Noahに公開'}
                           </small>
                         </div>
                         <div className={styles.sendControls}>
@@ -1789,7 +1789,7 @@ export default function SkySocialTimeline({
                           ? '保存した投稿'
                           : communityPage
                             ? `${selected?.name || 'コミュニティー'}の投稿`
-                            : 'smisの投稿'
+                            : 'Noahの投稿'
                     }
                     aria-busy={loading}
                   >

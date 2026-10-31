@@ -138,7 +138,7 @@ export default function SkyDiscoveryFeed({
         enabled: true,
         revision: old?.revision ?? 0,
       });
-      setNotice('自分のsmisに保存しました。Eveで実行先と使い方を確認できます。');
+      setNotice('自分のNoahに保存しました。Eveで実行先と使い方を確認できます。');
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
     } finally {
@@ -162,7 +162,7 @@ export default function SkyDiscoveryFeed({
         throw new Error(v.error || '追加できませんでした。');
       setConnections((old) => [...old.filter((c) => c.tool !== v.tool), v]);
       setNotice(
-        '自分のsmisに追加しました。担当とLLMの設定、Eveへの依頼へ進めます。',
+        '自分のNoahに追加しました。担当とLLMの設定、Eveへの依頼へ進めます。',
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
@@ -175,7 +175,7 @@ export default function SkyDiscoveryFeed({
     try {
       writeHomeIntent(
         window.sessionStorage,
-        `smisで追加した「${entry.resource}」を使いたい。種類: ${entry.kind}\n配布元: ${entry.metadata.sourceUrl}\nlicense・導入状況・実行先・必要費用を確認して、使える手順から進めて。`,
+        `Noahで追加した「${entry.resource}」を使いたい。種類: ${entry.kind}\n配布元: ${entry.metadata.sourceUrl}\nlicense・導入状況・実行先・必要費用を確認して、使える手順から進めて。`,
       );
       router.push('/chat');
     } catch {
@@ -236,7 +236,7 @@ export default function SkyDiscoveryFeed({
           <Sparkles size={21} />
         </span>
         <div className={styles.byline}>
-          <strong>smis カタログ</strong>
+          <strong>Noah カタログ</strong>
           <span>· Agent / Tool</span>
         </div>
         <h3>{tool.name}</h3>
@@ -276,7 +276,7 @@ export default function SkyDiscoveryFeed({
               onClick={() => void addTool(tool)}
             >
               <Plus size={15} />
-              自分のsmisに追加
+              自分のNoahに追加
             </button>
           )}
         </div>
@@ -306,10 +306,10 @@ export default function SkyDiscoveryFeed({
         <p>
           {entry.metadata.task ||
             (entry.kind === 'space'
-              ? '公開アプリを自分のsmisへ。'
+              ? '公開アプリを自分のNoahへ。'
               : entry.kind === 'dataset'
-                ? 'データセットを自分のsmisへ。'
-                : '自分の制作に合うモデルを、smisから。')}
+                ? 'データセットを自分のNoahへ。'
+                : '自分の制作に合うモデルを、Noahから。')}
         </p>
         <div className={styles.metadata}>
           <span>{entry.metadata.license || 'license要確認'}</span>
@@ -319,7 +319,7 @@ export default function SkyDiscoveryFeed({
           )}
         </div>
         <p className={styles.note}>
-          検索・追加のsmis手数料0。実行先・利用条件・外部実費は別途確認します。
+          検索・追加のNoah手数料0。実行先・利用条件・外部実費は別途確認します。
         </p>
         <div className={styles.actions}>
           {added ? (
@@ -338,7 +338,7 @@ export default function SkyDiscoveryFeed({
               onClick={() => void addModel(entry)}
             >
               <Plus size={15} />
-              {busy === entry.resource ? '追加しています…' : '自分のsmisに追加'}
+              {busy === entry.resource ? '追加しています…' : '自分のNoahに追加'}
             </button>
           )}
           <a
@@ -360,7 +360,7 @@ export default function SkyDiscoveryFeed({
     <section
       className={styles.feed}
       data-native-discovery
-      aria-label={standalone ? 'smisを見つける' : 'おすすめの能力と機能'}
+      aria-label={standalone ? 'Noahを見つける' : 'おすすめの能力と機能'}
     >
       {standalone && (
         <>

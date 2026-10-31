@@ -842,3 +842,9 @@
 .entryActions a:hover{background:#f5f5f5}
 .entryActions a.primaryEntry:hover{background:#3a3a3a}
 @media(max-width:540px){.entryActions{gap:8px}.entryActions a,.entryActions a.primaryEntry{padding:10px 12px;border:1px solid #dedede}.entryActions a.primaryEntry{border-color:#202020}.entryActions a>svg:first-child{grid-row:auto}.entryActions strong{font-size:14px}}
+
+/* Keep Eve and the other main destinations available while reading the feed. */
+@media(max-width:720px){
+  .home .mobileHeader{position:sticky;top:0;z-index:20;background:#fff}
+  .home :global(#timeline){scroll-margin-top:120px}
+}

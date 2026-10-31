@@ -99,7 +99,7 @@ void test('OS home preserves the timeline and shared header while adding environ
   assert.equal(nodes(view).some(node => node.props['aria-label'] === 'コミュニティーの一覧'), false);
   const home = read('components/home-screen.tsx'), css = read('app/os-shell.css');
   assert.doesNotMatch(home, /<OsAccountAccess|fetch\('\/api\/work-jobs'/);
-  assert.match(home, /<OSHeader title="smis"/);
+  assert.match(home, /<OSHeader title="Noah"/);
   assert.match(home, /aria-label="自分の環境"/);
   assert.match(home, /aria-label="仕事の主な操作"/);
   assert.match(css, /\.os-header-row\s*\{\s*display:\s*flex/);

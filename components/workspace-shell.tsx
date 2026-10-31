@@ -70,7 +70,7 @@ export default function WorkspaceShell({
       </a>
       <div className="rock-main-column rock-main-column-full">
         {standaloneSky ? <header className={skyStyles.standaloneHeader}>
-          <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="smis home">avocado <span>/ smis</span></Link>
+          <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="Noah home">avocado <span>/ Noah</span></Link>
           <Link href="/sky/help" className={skyStyles.standaloneHelp}>使い方と対応環境 <ArrowUpRight size={14} /></Link>
         </header> : <OSHeader title={title} running={running}>
           {!hideTopActions && (
@@ -113,7 +113,7 @@ export default function WorkspaceShell({
           {children}
         </main>
         <div className="rock-bottom-note">
-          <span>{tone === 'sky' ? 'smis' : PRODUCT_RELEASE_NAME}</span>
+          <span>{tone === 'sky' ? 'Noah' : PRODUCT_RELEASE_NAME}</span>
           <Link
             href={
               tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'

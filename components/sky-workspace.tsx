@@ -115,58 +115,58 @@ const providers: Record<
   { name: string; handle: string; initial: string }
 > = {
   'rockstar-csv-cleanup': {
-    name: 'smis CSV自動化役',
+    name: 'Noah CSV自動化役',
     handle: '@sky_csv',
     initial: '表',
   },
   'mercari-revenue': {
-    name: 'smis 販売収益化役',
+    name: 'Noah 販売収益化役',
     handle: '@sky_income',
     initial: '売',
   },
   'fashion-brand-ops': {
-    name: 'smis ブランド運営役',
+    name: 'Noah ブランド運営役',
     handle: '@sky_brand',
     initial: '服',
   },
   'rockstar-ip-studio': {
-    name: 'smis IP Studio',
+    name: 'Noah IP Studio',
     handle: '@sky_ip',
     initial: 'IP',
   },
-  coconala: { name: 'smis 案件判断役', handle: '@sky_case', initial: '案' },
+  coconala: { name: 'Noah 案件判断役', handle: '@sky_case', initial: '案' },
   'mr-free-article': {
-    name: 'smis 記事編集役',
+    name: 'Noah 記事編集役',
     handle: '@sky_editor',
     initial: '編',
   },
   'mr-citations': {
-    name: 'smis 出典整理役',
+    name: 'Noah 出典整理役',
     handle: '@sky_sources',
     initial: '出',
   },
   'mr-delivery': {
-    name: 'smis 納品確認役',
+    name: 'Noah 納品確認役',
     handle: '@sky_delivery',
     initial: '納',
   },
   'rockstar-ledger': {
-    name: 'smis サブスク顧問',
+    name: 'Noah サブスク顧問',
     handle: '@sky_subscriptions',
     initial: '顧',
   },
   'rockstar-legal-intake': {
-    name: 'smis 法務受付',
+    name: 'Noah 法務受付',
     handle: '@sky_legal',
     initial: '法',
   },
   'rockstar-patent-assistant': {
-    name: 'smis 特許アシスタント',
+    name: 'Noah 特許アシスタント',
     handle: '@sky_patent',
     initial: '特',
   },
   'jev-evaluation': {
-    name: 'smis Jev品質評価',
+    name: 'Noah Jev品質評価',
     handle: '@sky_jev',
     initial: '評',
   },
@@ -182,7 +182,7 @@ function providerFor(tool: Automation) {
   return (
     providers[tool.id] ??
     skyToolLabelFor(tool.id) ?? {
-      name: 'smis ツール案内',
+      name: 'Noah ツール案内',
       handle: '@sky_tools',
       initial: 'M',
     }
@@ -845,16 +845,16 @@ export default function SkyWorkspace({
   return (
     <WorkspaceShell
       running={running}
-      title="smis"
+      title="Noah"
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
       {campusId && (
-        <section aria-label="大学別smis" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
+        <section aria-label="大学別Noah" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
           <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>SKY · {CAMPUSES[campusId].name.toUpperCase()}</p>
-          <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の smis</h2>
+          <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Noah</h2>
           <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
-          <nav aria-label="大学別smisの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
+          <nav aria-label="大学別Noahの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
             <Link href="/sky/marketplace" style={{color: 'white'}}>Agentを探す</Link>
             <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
             <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
@@ -863,7 +863,7 @@ export default function SkyWorkspace({
           </nav>
         </section>
       )}
-      <nav aria-label="smisの主要画面">
+      <nav aria-label="Noahの主要画面">
         <Link className="sky-marketplace-link" href="/sky/devices">接続した担当・実行先</Link>
         <Link className="sky-marketplace-link" href="/sky/agents/citations">
           出典整理Agentを使う · 無料
@@ -879,7 +879,7 @@ export default function SkyWorkspace({
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
           <header className="sky-feed-header">
             <div className="sky-store-title">
-              <span>smis</span>
+              <span>Noah</span>
               <h1 id="sky-feed-title">アプリ</h1>
             </div>
             <Tabs
@@ -888,7 +888,7 @@ export default function SkyWorkspace({
             >
               <TabsList
                 className="sky-feed-tabs sky-feed-mode-tabs"
-                aria-label="smis Timelineの表示"
+                aria-label="Noah Timelineの表示"
               >
                 {feedModes.map((item) => (
                   <TabsTrigger key={item.value} value={item.value}>
@@ -927,7 +927,7 @@ export default function SkyWorkspace({
                 <span>{searchOpen ? '閉じる' : '検索'}</span>
               </button>
               <button
-                aria-label="smisにツールを掲載"
+                aria-label="Noahにツールを掲載"
                 className="sky-header-action"
                 onClick={() => setPublishOpen(true)}
               >
@@ -968,7 +968,7 @@ export default function SkyWorkspace({
               <Search size={18} />
               <input
                 type="search"
-                aria-label="smisを検索"
+                aria-label="Noahを検索"
                 placeholder="ツール名・できることで検索"
                 value={query}
                 ref={searchInput}
@@ -991,27 +991,27 @@ export default function SkyWorkspace({
             </div>
             <div className="sky-assistant-body">
               <h2 id="sky-assistant-title" className="sr-only">
-                smisに頼む
+                Noahに頼む
               </h2>
               <form className="sky-assistant-composer" onSubmit={submitRequest}>
                 <input
                   value={requestText}
                   onChange={(event) => setRequestText(event.target.value)}
                   placeholder="何をしてほしい？"
-                  aria-label="smisへの依頼"
+                  aria-label="Noahへの依頼"
                   maxLength={skyRequestLimit(
                     routeSkyRequest(requestText)?.toolId,
                   )}
                 />
                 <button
                   disabled={!requestText.trim()}
-                  aria-label="smisへ依頼を送る"
+                  aria-label="Noahへ依頼を送る"
                 >
                   <Send size={18} />
                   <span>送信</span>
                 </button>
               </form>
-              <div className="sky-role-list" aria-label="smisの役割">
+              <div className="sky-role-list" aria-label="Noahの役割">
                 {skyRoles
                   .filter(
                     (role) => allRolesOpen || quickRoleIds.has(role.toolId),
@@ -1092,7 +1092,7 @@ export default function SkyWorkspace({
                         <Network size={22} strokeWidth={1.7} />
                       </span>
                       <span>
-                        <small>smis SDK</small>
+                        <small>Noah SDK</small>
                         <strong>{server.name}</strong>
                       </span>
                     </div>
@@ -1166,7 +1166,7 @@ export default function SkyWorkspace({
                             <BadgeCheck
                               className="sky-role-verified"
                               size={16}
-                              aria-label="smisで利用可能"
+                              aria-label="Noahで利用可能"
                             />
                           )}
                           <span>{provider.handle}</span>
@@ -1290,7 +1290,7 @@ export default function SkyWorkspace({
               <BrainCircuit size={22} />
             </span>
             <div>
-              <p className="rock-eyebrow">smis Phoenix</p>
+              <p className="rock-eyebrow">Noah Phoenix</p>
               <DialogTitle className="rock-dialog-title">
                 おすすめの学習
               </DialogTitle>
@@ -1415,7 +1415,7 @@ export default function SkyWorkspace({
               {selected.id === 'jev-router' ? (
                 <div className="sky-candidate-state">
                   <p>
-                    本体はsmisに未接続です。登録は実行や接続の完了ではありません。
+                    本体はNoahに未接続です。登録は実行や接続の完了ではありません。
                   </p>
                   <Link href="/sky/tools/jev-router">導入条件を見る</Link>
                 </div>
@@ -1445,7 +1445,7 @@ export default function SkyWorkspace({
                     </div>
                   )}
                   <div className="sky-candidate-state">
-                    smisへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
+                    Noahへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
                     <span>依頼はZemaへ引き継ぐ</span>
                   </div>
                   {needsSignin ? (
@@ -1454,12 +1454,12 @@ export default function SkyWorkspace({
                     <div className="sky-connect-complete">
                       <CheckCircle2 size={22} />
                       <div>
-                        <strong>smis登録済み</strong>
+                        <strong>Noah登録済み</strong>
                         <span>
                           {selected.runner === 'candidate-local'
-                            ? 'smisの共通ジョブ受付と、外部接続なしのローカル確認器が利用できます。'
+                            ? 'Noahの共通ジョブ受付と、外部接続なしのローカル確認器が利用できます。'
                             : selected.id === 'rockstar-ip-studio'
-                              ? '接続済みのIP Studioをsmisから開けます。'
+                              ? '接続済みのIP StudioをNoahから開けます。'
                               : '専用画面で実行器の接続と状態を確認できます。'}
                         </span>
                       </div>
@@ -1489,14 +1489,14 @@ export default function SkyWorkspace({
                         ? '確認中…'
                         : connectionBusy
                           ? '登録中…'
-                          : '1タップでsmisに登録'}
+                          : '1タップでNoahに登録'}
                     </button>
                   )}
                 </>
               ) : selected.integration === 'fashion-brand-ops' ? (
                 <>
                   <DialogDescription className="rock-dialog-description">
-                    PCの接続アプリへ1クリックで接続し、41操作をsmisから利用できます。
+                    PCの接続アプリへ1クリックで接続し、41操作をNoahから利用できます。
                   </DialogDescription>
                   <FashionBrandOpsRunner />
                 </>
@@ -1542,7 +1542,7 @@ export default function SkyWorkspace({
                       <CheckCircle2 size={22} />
                       <div>
                         <strong>接続済み</strong>
-                        <span>次からはsmisでアプリを選ぶだけです。</span>
+                        <span>次からはNoahでアプリを選ぶだけです。</span>
                       </div>
                       <button
                         onClick={() => openConnectedTool(selected, lastRequest)}
@@ -1566,7 +1566,7 @@ export default function SkyWorkspace({
                         ? '確認中…'
                         : connectionBusy
                           ? '接続中…'
-                          : '1タップでsmisに接続'}
+                          : '1タップでNoahに接続'}
                     </button>
                   )}
 
@@ -1648,7 +1648,7 @@ export default function SkyWorkspace({
 
       <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
         <DialogContent className="sky-publish-dialog">
-          <DialogTitle className="sr-only">smisにツールを掲載</DialogTitle>
+          <DialogTitle className="sr-only">Noahにツールを掲載</DialogTitle>
           <DialogDescription className="sr-only">
             自動化ツールの接続、権限、料金、提供元を申請します。
           </DialogDescription>

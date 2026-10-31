@@ -1,7 +1,7 @@
 export type OsNavigationId = 'stream' | 'eve' | 'communities';
 
 export const osNavigationItems = [
-  { id: 'stream', href: '/#timeline', label: 'smis' },
+  { id: 'stream', href: '/#timeline', label: 'Noah' },
   { id: 'eve', href: '/os/eve', label: 'Eve' },
   { id: 'communities', href: '/#communities', label: 'コミュニティー' },
 ] as const;

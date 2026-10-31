@@ -646,8 +646,8 @@ export default function EveSyncWorkspace({
           <h2>Eve</h2>
           <button disabled={busy} onClick={()=>{if(hasUnsentDraft&&!discardingDraft.current)setLeaveTarget({resume:fresh});else fresh();}}>＋ 新しい会話</button>
           <div className={styles.sidebarLinks} aria-label="Eveのメニュー">
-            <Link href="/os/eve?mode=tool-work">smisのToolを使う</Link>
-            <Link href="/sky">smis・MCPを開く</Link>
+            <Link href="/os/eve?mode=tool-work">NoahのToolを使う</Link>
+            <Link href="/sky">Noah・MCPを開く</Link>
             <Link href="/os/eve#eve-work-results">仕事と成果</Link>
             <details><summary>設定・管理</summary>
               <Link href="/connect/device">端末を接続・解除</Link>
@@ -802,14 +802,14 @@ export default function EveSyncWorkspace({
                 <footer>
                   <span>
                     {signedIn === null ? 'アカウントと実行先を確認しています…' : !selectionMatches
-                      ? 'smisで選んだ担当かAIが変わったか、接続が解除されています。内容を確認して選び直してください。'
+                      ? 'Noahで選んだ担当かAIが変わったか、接続が解除されています。内容を確認して選び直してください。'
                       : ready
                         ? '選んだ実行先は接続・準備済みです'
                         : (connectionState?.label ??
                           '接続した実行先で、使う担当のモデルを準備してください。')}
                   </span>
                   {signedIn === true && !selectionMatches && (
-                    <Link href="/sky/devices">smisで接続した担当を選び直す</Link>
+                    <Link href="/sky/devices">Noahで接続した担当を選び直す</Link>
                   )}
                   {signedIn === true && selectionMatches && !ready && <Link href="/connect/service">接続状態を確認する</Link>}
                   <button
@@ -822,7 +822,7 @@ export default function EveSyncWorkspace({
                 </footer>
               </section>
 )}
-          <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>smisのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
+          <details className={styles.extraWork} open={toolOpen||newsWorkOpen||agentWorkOpen||cloudHistoryOpen||profileRequested||undefined}><summary>Tool・ニュース・Cloudで仕事を進める</summary>          {signedIn===true && connectionOwner && <details open={toolOpen} onToggle={event=>setToolExpanded(event.currentTarget.open)}><summary>NoahのToolで仕事を進める</summary>{toolOpen&&<EveToolWorkspace key={connectionOwner} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <details open={newsWorkOpen} onToggle={event=>setNewsWorkOpen(event.currentTarget.open)}><summary>ニュースの草稿と資料を確認</summary>{newsWorkOpen&&<EveNewsWorkspace key={`${connectionOwner}:${selected}`} threadId={selected} onThread={choose}/>}</details>}
           {signedIn===true && connectionOwner && <SkyAgentEveProfile key={connectionOwner} ownerUserId={connectionOwner} onSelection={setToolAgentSelection}/>}
           {signedIn===true&&connectionOwner&&profileRequested&&toolAgent&&<EveAgentComposer key={connectionOwner+':'+profileKey} {...composerProps} agent={toolAgent}/>}

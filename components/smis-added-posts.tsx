@@ -36,13 +36,13 @@ export default function SmisAddedPosts() {
     ...collection.agents.map(agent => ({ key: 'agent:' + agent.id, agent, plugin: null })),
     ...collection.plugins.map(plugin => ({ key: plugin.key, agent: null, plugin })),
   ] : [];
-  return <section className={styles.stream} aria-label="自分のsmisに追加したもの">
+  return <section className={styles.stream} aria-label="自分のNoahに追加したもの">
     <article className={styles.intro}>
-      <div><span className={styles.kicker}>YOUR SMIS</span><h2>見つける。作る。使ってみる。</h2><p>LLM・エージェント・Tool・ニュース。これまで追加したものも、ここから。</p></div>
+      <div><span className={styles.kicker}>YOUR NOAH</span><h2>見つける。作る。使ってみる。</h2><p>LLM・エージェント・Tool・ニュース。これまで追加したものも、ここから。</p></div>
       <div className={styles.actions}><Link href="/os/eve?view=build"><Plus size={16} />Eveでエージェントを作る</Link><Link href="/#sky">追加できるものを見る <ArrowUpRight size={15}/></Link></div>
     </article>
     {state === 'loading' && <output className={styles.note}>追加済みの担当と接続を確認しています…</output>}
-    {state === 'signed-out' && <p className={styles.note}><Link href="/account?returnTo=%2F%23timeline">ログインして自分のsmisを開く</Link></p>}
+    {state === 'signed-out' && <p className={styles.note}><Link href="/account?returnTo=%2F%23timeline">ログインして自分のNoahを開く</Link></p>}
     {state === 'error' && <div className={styles.note}>一覧を確認できません。<button type="button" onClick={() => setRetry(v=>v+1)}><RefreshCw size={14}/>再読み込み</button></div>}
     {(expanded ? entries : entries.slice(0, 3)).map(({ key, agent, plugin }) => <article key={key} className={styles.post}>
       <span className={styles.icon}>{agent ? <Bot size={21}/> : <Box size={21}/>}</span>
