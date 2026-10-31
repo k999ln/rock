@@ -1067,12 +1067,13 @@ export default function SkySocialTimeline({
         </button>
         {!communityPage && (
           <button
-            className={styles.topIcon}
+            className={`${styles.topIcon} ${styles.menuButton}`}
             aria-label="投稿・保存・コミュニティー"
             aria-expanded={management}
             onClick={() => setManagement((v) => !v)}
           >
             <SlidersHorizontal size={18} />
+            <span>メニュー</span>
           </button>
         )}
       </div>
@@ -1445,6 +1446,9 @@ export default function SkySocialTimeline({
                   }}
                 >
                   招待を確認する
+                </button>
+                <button type="button" onClick={() => setJoinForm(false)}>
+                  閉じる
                 </button>
               </details>
               {lockedCommunity && (

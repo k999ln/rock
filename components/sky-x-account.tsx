@@ -126,7 +126,7 @@ export function SkyXAccountConnection() {
       <header>
         <span className={styles.mark}>𝕏</span>
         <div>
-          <h2>いつもの情報を、自分のsmisへ。</h2>
+          <h2>いつもの情報を、自分のNoahへ。</h2>
           <p>Xのフォロー中を、このストリームで読む。</p>
         </div>
       </header>
@@ -239,7 +239,7 @@ export default function SkyXAccountTimeline() {
           <Cable size={20} />
         </span>
         <div>
-          <strong>いつもの情報を、自分のsmisへ。</strong>
+          <strong>いつもの情報を、自分のNoahへ。</strong>
           <p>API・MCPの配信元を追加。</p>
         </div>
         <Link href="/#news-plugins">

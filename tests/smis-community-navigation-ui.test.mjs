@@ -151,3 +151,18 @@ void test('returning to all posts closes the invitation form but preserves its d
   field = nodes(app.render()).find(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵'));
   assert.equal(field.props.value, 'synthetic-invitation-draft');
 });
+void test('the invitation form can be closed and reopened without losing typed text', () => {
+  const app = harness('home');
+  const find = (view, label) => nodes(view).find(node => node.type === 'button' && text(node).trim() === label);
+  const openMenu = () => nodes(app.render()).find(node => node.props['aria-label'] === '投稿・保存・コミュニティー').props.onClick();
+  openMenu();
+  find(app.render(), '招待鍵で参加する').props.onClick();
+  let form = nodes(app.render()).find(node => node.type === 'details' && text(node).includes('受け取った招待鍵'));
+  nodes([form]).find(node => node.type === 'textarea').props.onChange({ target: { value: 'draft' } });
+  form = nodes(app.render()).find(node => node.type === 'details' && text(node).includes('受け取った招待鍵'));
+  find([form], '閉じる').props.onClick();
+  assert.equal(nodes(app.render()).some(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵')), false);
+  openMenu();
+  find(app.render(), '招待鍵で参加する').props.onClick();
+  assert.equal(nodes(app.render()).find(node => node.type === 'textarea' && node.props.placeholder?.includes('招待鍵')).props.value, 'draft');
+});
