@@ -1,0 +1,218 @@
+diff --git a/app/os-shell.css b/app/os-shell.css
+index 2f7b3c4..57aebb4 100644
+--- a/app/os-shell.css
++++ b/app/os-shell.css
+@@ -98 +98 @@
+-.os-header .os-brand img{background:#fff;border-radius:6px;filter:none}
++.os-header .os-brand img{background:transparent;border-radius:0;filter:none;mix-blend-mode:multiply}
+@@ -100 +100 @@
+-.os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px}.os-header .os-brand img{width:34px;height:34px;flex-basis:34px}
++.os-header .os-header-actions :is(a,button,summary){min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center}.os-header .os-brand{min-height:48px;letter-spacing:-.045em;font-weight:700}.os-header .os-brand img{width:42px;height:42px;flex-basis:42px}
+@@ -102 +102 @@
+-.os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-current-app{display:none}}
++.os-header .os-brand-product{display:inline}.os-header .os-brand-context{display:none}@media(max-width:600px){.os-header .os-brand{font-size:17px;gap:8px}.os-header .os-brand img{width:38px;height:38px;flex-basis:38px}.os-header .os-current-app{display:none}}
+diff --git a/components/eve-sync-workspace.module.css b/components/eve-sync-workspace.module.css
+index 02b502b..de2d652 100644
+--- a/components/eve-sync-workspace.module.css
++++ b/components/eve-sync-workspace.module.css
+@@ -26,0 +27,6 @@
++
++/* Keep the existing Tool workspace behind the same navigation treatment. */
++.app .workbenchTabs a{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 12px;border-radius:11px;color:inherit;font-size:14px;line-height:1.4;text-align:center;text-decoration:none;white-space:nowrap}
++.app .workbenchTabs a:hover{background:#fffdf8}
++.backendNotice{margin:-12px 0 20px;color:var(--muted);font-size:13px;line-height:1.65}
++@media(max-width:720px){.app .workbenchTabs a{font-size:13px;padding:10px 6px;gap:5px}}
+diff --git a/components/eve-sync-workspace.tsx b/components/eve-sync-workspace.tsx
+index c0f9387..a2f95ed 100644
+--- a/components/eve-sync-workspace.tsx
++++ b/components/eve-sync-workspace.tsx
+@@ -666,0 +667 @@ export default function EveSyncWorkspace({
++            <Link href="/os/eve?mode=tools" title="別のMCP・Tool会話を開く">MCP・Toolを選ぶ</Link>
+@@ -667,0 +669 @@ export default function EveSyncWorkspace({
++          <p className={styles.backendNotice}>MCP・Toolは現在別の会話画面で開きます。パスキーが必要な場合があります。保存済みの元の会話は、戻って履歴から選べます。</p>
+diff --git a/components/home-screen.module.css b/components/home-screen.module.css
+index 3716e53..351e30b 100644
+--- a/components/home-screen.module.css
++++ b/components/home-screen.module.css
+@@ -630 +630 @@
+-  grid-template-columns: 1.15fr 1fr 1fr;
++  grid-template-columns: repeat(4, minmax(0, 1fr));
+@@ -663,0 +664,4 @@
++.entryActions a:focus-visible {
++  outline: 2px solid var(--os-shell-focus, #a9754f);
++  outline-offset: 3px;
++}
+@@ -744,0 +749,3 @@
++  .entryActions {
++    grid-template-columns: repeat(2, minmax(0, 1fr));
++  }
+diff --git a/components/home-screen.tsx b/components/home-screen.tsx
+index 37d77a4..dd1d057 100644
+--- a/components/home-screen.tsx
++++ b/components/home-screen.tsx
+@@ -15,0 +16 @@ import {
++  Sparkles,
+@@ -180 +181 @@ export default function HomeScreen() {
+-                <p className={styles.eyebrow}>YOUR WORKSPACE</p>
++                <p className={styles.eyebrow}>EVE / YOUR WORKSPACE</p>
+@@ -182 +183 @@ export default function HomeScreen() {
+-                  思いつきから、
++                  Eveと、やりたいことを
+@@ -184 +185 @@ export default function HomeScreen() {
+-                  次の仕事へ。
++                  形にしよう。
+@@ -186 +187 @@ export default function HomeScreen() {
+-                <p>依頼も、続きの仕事も。ここから始める。</p>
++                <p>相談する、担当を作る、仕事を進める。あなたの続きもここから。</p>
+@@ -194,0 +196,6 @@ export default function HomeScreen() {
++                <Link href="/os/eve?view=build">
++                  <Sparkles size={24} />
++                  <strong>自分の担当を作る</strong>
++                  <span>目的に合わせてエージェントを作る。</span>
++                  <ArrowUpRight size={20} />
++                </Link>
+diff --git a/components/sky-chat-workspace.tsx b/components/sky-chat-workspace.tsx
+index 652e62e..864803d 100644
+--- a/components/sky-chat-workspace.tsx
++++ b/components/sky-chat-workspace.tsx
+@@ -1678,0 +1679,6 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
++            {searchParams.get('mode') === 'tools' && (
++              <Link href="/os/eve" aria-label="Eveに戻り、保存済みの会話を履歴から開く">
++                <MessageCircle size={18} />
++                <span>Eveに戻る</span>
++              </Link>
++            )}
+diff --git a/tests/fixtures/eve-home-preview/README.md b/tests/fixtures/eve-home-preview/README.md
+new file mode 100644
+index 0000000..8111ffd
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/README.md
+@@ -0,0 +1,3 @@
++# Isolated Eve-first home preview
++
++Run `./node_modules/.bin/vite --config tests/fixtures/eve-home-preview/vite.config.mjs` and open the reported loopback URL. This renders the real home, OS header and navigation with synthetic timeline and connection children; all application fetch calls are rejected. Verify the four Eve entry destinations and inspect desktop and narrow layouts. This is not production, a real account, a real timeline, Pixel hardware, an MCP connection, or an execution test. Stop the owned Vite server after use.
+diff --git a/tests/fixtures/eve-home-preview/index.html b/tests/fixtures/eve-home-preview/index.html
+new file mode 100644
+index 0000000..53d694f
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/index.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>隔離ホーム表示</title></head><body><div id="root"></div><script type="module" src="/main.jsx"></script></body></html>
+diff --git a/tests/fixtures/eve-home-preview/main.jsx b/tests/fixtures/eve-home-preview/main.jsx
+new file mode 100644
+index 0000000..9d453e9
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/main.jsx
+@@ -0,0 +1,6 @@
++import React from 'react';
++import {createRoot} from 'react-dom/client';
++import Home from '@fixture-home';
++import '../../..//app/os-shell.css';
++window.fetch=async()=>{throw new Error('network disabled in fixture')};
++createRoot(document.getElementById('root')).render(<Home/>);
+diff --git a/tests/fixtures/eve-home-preview/vite.config.mjs b/tests/fixtures/eve-home-preview/vite.config.mjs
+new file mode 100644
+index 0000000..5459578
+--- /dev/null
++++ b/tests/fixtures/eve-home-preview/vite.config.mjs
+@@ -0,0 +1,5 @@
++import {defineConfig} from 'vite';
++import {resolve} from 'node:path';
++const root=import.meta.dirname, site=resolve(root,'../../..'), home=resolve(site,'components/home-screen.tsx');
++const children=new Set(['./sky-social-timeline','./smis-added-posts','./sky-discovery-dialog','./sky-x-account','./sky-timeline-connector','./sky-information-market','./sky-discovery-feed','./sky-agent-library']);
++export default defineConfig({root,publicDir:resolve(site,'public'),server:{host:'127.0.0.1',port:18396,strictPort:true,fs:{allow:[site]}},plugins:[{name:'synthetic-ui',enforce:'pre',resolveId(id,importer){if(id==='@fixture-home')return home;if(id==='next/link'||id==='next/image'||id==='next/navigation'||id==='@/lib/use-sky-features')return '\0stub:'+id;if(importer===home&&children.has(id))return '\0stub:'+id;if(id==='@/lib/os-navigation')return resolve(site,'lib/os-navigation.ts');if(id.startsWith('@/'))return resolve(site,id.slice(2));},load(id){if(!id.startsWith('\0stub:'))return;let k=id.slice(6);if(k==='next/navigation')return `export const usePathname=()=>'/';`;if(k==='next/link')return `import React from 'react'; export default function Link({children,href,...p}){return React.createElement('a',{...p,href:typeof href==='string'?href:'#'},children)}`;if(k==='next/image')return `import React from 'react';export default function Image({unoptimized,...p}){return React.createElement('img',p)}`;if(k==='@/lib/use-sky-features')return `export function useSkyFeatures(){return {enabled:()=>false}}`;if(k==='./sky-timeline-connector')return `export const useTimelineConnector=()=>({});export const SkyTimelineConnector=()=>null,SkyMcpTimeline=()=>null;`;if(k==='./sky-x-account')return `export default function X(){return null} export function SkyXAccountConnection(){return null}`;if(k==='./sky-information-market')return `export function SkyNewsConnections(){return null}`;if(k==='./sky-social-timeline')return `import React from 'react';export default function Timeline(){return React.createElement('section',{style:{padding:'24px 0',borderTop:'1px solid #ddd'}},'smis タイムライン（合成表示）')}`;return `export default function Stub(){return null}`}}]});
+diff --git a/tests/fixtures/eve-mcp-preview/README.md b/tests/fixtures/eve-mcp-preview/README.md
+new file mode 100644
+index 0000000..7269a8d
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/README.md
+@@ -0,0 +1,3 @@
++# Isolated Eve/MCP navigation fixture
++
++Run `./node_modules/.bin/vite --config tests/fixtures/eve-mcp-preview/vite.config.mjs`. It mounts the real Eve React component and forwards its navigation capture handler to a simplified shell. The owner, history and device responses are synthetic, application fetch calls not explicitly stubbed are denied, and no model is invoked. Child components and shell are stubs; this does not exercise the real MCP screen, device, production UI, live account or end-to-end execution. Use a separate tab; close only that tab and stop the owned Vite process afterward.
+diff --git a/tests/fixtures/eve-mcp-preview/index.html b/tests/fixtures/eve-mcp-preview/index.html
+new file mode 100644
+index 0000000..77f4d9e
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/index.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="ja"><head><meta name="viewport" content="width=device-width,initial-scale=1"/><meta charset="utf-8"/><title>隔離されたEve UI検証</title></head><body><div id="root"></div><script type="module" src="/main.jsx"></script></body></html>
+diff --git a/tests/fixtures/eve-mcp-preview/main.jsx b/tests/fixtures/eve-mcp-preview/main.jsx
+new file mode 100644
+index 0000000..ac32dce
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/main.jsx
+@@ -0,0 +1,21 @@
++import React from 'react';
++import {createRoot} from 'react-dom/client';
++import Eve from '@fixture-eve';
++let deferred=null, holdNext=false, failHistoryNext=false, authFailureNext=false, serial=0, fixtureOnline=true;
++Object.defineProperty(navigator,'onLine',{configurable:true,get:()=>fixtureOnline});
++const json=x=>({ok:true,json:async()=>x});
++const session=(id,content)=>({ownerUserId:'fixture-owner',session:{id,messages:[{id:'m',side:'me',text:content}]},before:null});
++window.fetch=async (url)=>{
++ const u=new URL(url,location.origin);
++ if(u.pathname==='/api/eve/history'&&u.searchParams.has('id')){const id=u.searchParams.get('id');return json(session(id,`fixture-${id}-${++serial}`));}
++ if(u.pathname==='/api/eve/history'&&u.searchParams.has('cursor'))return {ok:false,status:500,json:async()=>({error:'合成した履歴操作エラー'})};
++ if(u.pathname==='/api/eve/history'){if(authFailureNext){return {ok:false,status:401,json:async()=>({error:'fixture auth'})};}if(failHistoryNext){failHistoryNext=false;throw new DOMException('fixture abort','AbortError');}return json({ownerUserId:'fixture-owner',items:[session('A','Fixture A'),session('B','Fixture B')],cursor:'fixture-next'});}
++ if(u.pathname==='/api/eve/device-sync')return json({ownerUserId:'fixture-owner',jobs:[],devices:[]});
++ if(u.pathname==='/api/eve/runtime'){
++  if(holdNext){holdNext=false;return await new Promise(resolve=>{deferred=()=>resolve(json({ownerUserId:'fixture-owner',devices:[],executions:[],pending:[]}));window.dispatchEvent(new Event('fixture-held')); });}
++  return json({ownerUserId:'fixture-owner',devices:[],executions:[],pending:[]});
++ }
++ throw Error('fixture denies all other requests');
++};
++function Controls(){const [held,setHeld]=React.useState(false);React.useEffect(()=>{const f=()=>setHeld(true);window.addEventListener('fixture-held',f);return()=>window.removeEventListener('fixture-held',f)},[]);return <div style={{padding:12,background:'#e8f1e8'}}><strong>隔離fixture・ネットワーク送信なし</strong><output>{held?'応答保留中':'待機中'}</output><button onClick={()=>{holdNext=true}}>次の応答を保留</button><button onClick={()=>{if(deferred){deferred();deferred=null;setHeld(false)}}}>保留した応答を返す</button><button onClick={()=>{failHistoryNext=true}}>次の同期を失敗</button><button onClick={()=>{fixtureOnline=false;window.dispatchEvent(new Event('offline'));}}>通信断を通知</button><button onClick={()=>{fixtureOnline=true;window.dispatchEvent(new Event('online'));}}>再接続を通知</button><button onClick={()=>{authFailureNext=true}}>認証を失敗させる</button><button onClick={()=>{authFailureNext=false}}>認証を回復</button></div>}
++createRoot(document.getElementById('root')).render(<><Controls/><Eve/></>);
+diff --git a/tests/fixtures/eve-mcp-preview/vite.config.mjs b/tests/fixtures/eve-mcp-preview/vite.config.mjs
+new file mode 100644
+index 0000000..d03a02c
+--- /dev/null
++++ b/tests/fixtures/eve-mcp-preview/vite.config.mjs
+@@ -0,0 +1,8 @@
++import { defineConfig } from 'vite';
++import { realpathSync } from 'node:fs';
++import { resolve } from 'node:path';
++const fixture=import.meta.dirname;
++const site=resolve(fixture,'../../..');
++const component=resolve(site,'components/eve-sync-workspace.tsx');
++const stubs=new Set(['./eve-runtime-interaction','./eve-runtime-archive','./eve-agent-composer','./workbench','./eve-news-workspace','./eve-tool-workspace','./sky-agent-eve-profile','./sky-free-cloud-panel','./workspace-shell','./sky-agent-library','next/link','next/navigation','@/lib/eve-runtime-export','@/lib/eve-studio-navigation','@/lib/eve-runtime-work-port','@/lib/eve-purpose-runtime-work-port','@/lib/sky-eve-connections']);
++export default defineConfig({root:fixture,server:{host:'127.0.0.1',port:18371,strictPort:true,fs:{allow:[fixture,site,realpathSync(resolve(site,'node_modules'))]}},plugins:[{name:'fixture-stubs',enforce:'pre',resolveId(id,importer){if(id==='@fixture-eve')return component;if(id==='@/lib/eve-results-guidance')return resolve(site,'lib/eve-results-guidance.ts');if(id==='@/lib/history-navigation-guard')return resolve(site,'lib/history-navigation-guard.ts');if(id==='@/components/ui/dialog')return '\0fixture-dialog';if(importer===component&&stubs.has(id))return '\0fixture:'+id;},load(id){if(id==='\0fixture-dialog')return `import React from 'react';export function Dialog({open,children}){return open?React.createElement('div',null,children):null}export function DialogContent({children}){return React.createElement('div',null,children)}export function DialogTitle({children}){return React.createElement('h2',null,children)}export function DialogDescription({children}){return React.createElement('p',null,children)}`;if(!id.startsWith('\0fixture:'))return;const k=id.slice(9);if(k==='next/navigation')return `const p=new URLSearchParams();export function useSearchParams(){return p}`;if(k==='next/link')return `import React from 'react';export default function Link(p){return React.createElement('a',p,p.children)}`;if(k==='./workspace-shell')return `import React from 'react';export default function Shell(p){return React.createElement('main',{onClickCapture:p.onClickCapture},p.children)}`;if(k==='./sky-agent-eve-profile')return `export default function Stub(){return null} export function useSkyAgentProfileRequested(){return false} export function useSkyAgentProfileKey(){return ''}`;if(k==='@/lib/sky-eve-connections')return `export const skyEveSelectionTargetKey=()=>'',skyEveExecutionTargets=()=>[],skyEveSelectionMatches=()=>false,skyEveDevicePath=()=>'',skyEveDeviceState=()=>null,skyEveConsentKey=()=>'',skyEveTargetKey=()=>'',isEveRuntimePresence=()=>false;`;if(k.startsWith('@/lib/'))return `export const runtimeEveTextExport=()=>{},eveAgentConversationPath=()=>'',runtimeEvePendingKey=()=>'',runtimeEveRestorableWork=()=>[],purposeEvePendingKey=()=>'';`;return `export default function Stub(){return null}`;}}]});
+diff --git a/tests/sky-chat-session-recovery.test.mjs b/tests/sky-chat-session-recovery.test.mjs
+index 24e40e7..83a7626 100644
+--- a/tests/sky-chat-session-recovery.test.mjs
++++ b/tests/sky-chat-session-recovery.test.mjs
+@@ -361,0 +362,21 @@ void test('header navigation protects an unsent draft while skip links, download
++void test('returning from the MCP view protects an unsent request', async () => {
++  const h = harness({ query: 'mode=tools' }); await h.flush();
++  assert.ok(h.nodes().some((n) => n.type === 'a' && n.props.href === '/os/eve' && n.props['aria-label'] === 'Eveに戻り、保存済みの会話を履歴から開く'));
++  h.input('Synthetic MCP draft');
++  const event = await h.shellLink('/os/eve');
++  assert.equal(event.defaultPrevented, true);
++  assert.ok(h.text().includes('未送信の依頼があります'));
++  await h.click('入力を続ける');
++  assert.equal(h.nodes().find((n) => n.type === 'textarea').props.value, 'Synthetic MCP draft');
++  assert.equal(h.routes.length, 0);
++});
++
++void test('returning from the MCP view is blocked while the existing work is running', async () => {
++  const h = harness({ saved: [session()], query: `mode=tools&tool=rockstar-amc&thread=${id}` }); await h.flush();
++  h.nodes().find((n) => n.type === 'AMC').props.onRunningChange(true); await h.flush();
++  const event = await h.shellLink('/os/eve');
++  assert.equal(event.defaultPrevented, true);
++  assert.equal(h.routes.length, 0);
++  assert.ok(h.nodes().some((n) => n.type === 'AMC'));
++});
++
+diff --git a/tests/smis-eve-workbench.test.mjs b/tests/smis-eve-workbench.test.mjs
+index dd6acb6..324dd62 100644
+--- a/tests/smis-eve-workbench.test.mjs
++++ b/tests/smis-eve-workbench.test.mjs
+@@ -76,0 +77,7 @@ void test('actual Eve keeps its unsent request through results and blocks cross-
++ const mcp=nodes(app.render()).find(n=>n.type==='a'&&n.props.href==='/os/eve?mode=tools');
++ assert.ok(mcp,'MCP entry must use the existing Tool chat');
++ let blockedMcp=false;
++ workspace.props.onClickCapture({button:0,target:{closest:()=>({getAttribute:key=>key==='href'?mcp.props.href:null,hasAttribute:()=>false})},preventDefault(){blockedMcp=true;}});
++ assert.equal(blockedMcp,true,'switching to MCP must protect an unsent request');
++ button(app.render(),'入力を残して戻る').props.onClick();
++ assert.equal(input().props.value,'Synthetic unsent request');

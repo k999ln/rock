@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.pixel-live-connection-investigation/1",
-  "status": "v123_eve_first_candidate_awaiting_security_evidence_and_physical_loop",
+  "status": "v123_eve_mcp_navigation_scoped_candidate_physical_and_security_pending",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "device": "Pixel 10 frankel",
   "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
@@ -59,10 +59,15 @@
     "npm run verify stopped at release:check: the existing Web security response evidence hash for services/sky-web/domain-router.mjs does not match the unmodified v123 base source; no release success or current response proof is claimed.",
     "OS MCP broker 33 tests and MCP client/connector/result 54 tests passed on local synthetic fixtures. These do not establish the marketplace-to-Pixel-Linux end-to-end path or output quality. The prior 2026-10-17 physical local model and two Tools produced an artifact but content quality was not accepted.",
     "Independent reviewer verified exact commit 3452c7851c3392c784d44a712260d859157aa1c6 PASS_SCOPED and independently passed 3 navigation tests; production Eve routes resolve to the same /os/eve. No account, Pixel or production acceptance.",
-    "Separate npm test completed with 2621 tests: 2606 pass, 14 fail, 1 skip. All 14 reported failures are release-readiness assertions encountering the existing v123 Web security evidence mismatch. No release pass is claimed."
+    "Separate npm test completed with 2621 tests: 2606 pass, 14 fail, 1 skip. All 14 reported failures are release-readiness assertions encountering the existing v123 Web security evidence mismatch. No release pass is claimed.",
+    "User prioritized the real smis -> MCP -> OS Linux -> desired output loop, requested a chat-like Eve front and the same front for MCP while keeping backend boundaries, preserving existing data and connections and avoiding inference.",
+    "Current public /os/eve?mode=tools presented Jennifer private access and a passkey prompt. No passkey was entered and no authenticated MCP call or model inference was performed. Existing Eve and Tool chat are separate conversations; the candidate says so and does not claim shared job or automatic return.",
+    "Candidate c1e72d851b4e8ab5140bb9491307d26f08578166 adds Eve/MCP navigation, separate-conversation guidance and preserves unsent/running-work guards. Independent reviewer rechecked tracked diff 177783197d072e8a7c1f4743a5f9becfbdfbb4ee7aa2539b245023bfebe96fee and fixture file hashes, PASS_SCOPED with 31 independent tests. Synthetic real React Eve input-to-MCP navigation was observed to show the guard and retain the draft. This is not same-front integration or end-to-end MCP execution.",
+    "The v123 preexisting domain-router hash mismatch blocks npm run verify. Source-level security and router tests passed 21. A local production Worker attempt failed because configured compatibility date 2026-10-01 exceeds installed workerd supported 2026-08-18; no local response measurement or production security acceptance is claimed. Isolated local state from the attempt was backed up and preserved.",
+    "Pixel was unlocked and Terminal showed an empty prompt. Automatic entry duplicated characters, so no command was submitted; the unexecuted input was deleted and empty prompt visually confirmed. Actual current service status and MCP path remain unobserved pending manual read-only status."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Independently review the v123 candidate and resolve Web security evidence using the current source without replacing fixed history, then verify the exact candidate before any deployment. Establish an explicitly scoped non-inference marketplace/Agent/MCP -> OS Linux -> same job/result integration and independently validate on the permitted hardware path; real model output quality remains unverified without explicit authorization.",
+  "next": "Resolve existing v123 security evidence mismatch with a compatible local Worker without changing the historical fixed evidence, then run full verify and independently review the exact deploy candidate. Align the existing MCP connector and the Pixel Linux execution authority and verify a single owner/job/approval/output with a non-inference Tool; do not open the production authority gate without bound issuer/revocation. Terminal auto-input is unsafe; use verified manual read-only status. Unified Eve/MCP conversation and production/Pixel end-to-end acceptance remain incomplete.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -103,5 +108,14 @@
     "mcp": "33 host broker and 54 connector tests pass with synthetic local data only; no real device or provider.",
     "review": "PASS_SCOPED, independently checked exact commit and 3 navigation tests; no real account, Pixel or production acceptance",
     "tests": "npm test: 2621 tests, 2606 pass, 14 fail, 1 skip; all reported failures are release-readiness assertions encountering existing v123 security-evidence mismatch"
+  },
+  "siteCandidateV123McpFront": {
+    "base": "2c101e5d5eddd2ebfb569c121ef094c06c30ea9e",
+    "commit": "c1e72d851b4e8ab5140bb9491307d26f08578166",
+    "patch": "docs/evidence/development-execution/pixel-site-v123-mcp-front-candidate.patch",
+    "patchSha256": "151692b3a6a8996c7393771863c8c8971e683db8ab4a9ac9fdc6b600b09f0b0e",
+    "review": "PASS_SCOPED; 31 independent navigation/draft tests; synthetic React draft guard observed separately",
+    "checks": "typecheck and focused lint passed before final explanatory copy; final exact candidate build passed; source router/security 21 tests passed; full verify blocked on existing evidence hash mismatch",
+    "limits": "not deployed; MCP screen remains separate and can require passkey; no OS Linux/MCP integrated run or real output acceptance."
   }
 }

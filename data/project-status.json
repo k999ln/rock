@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "v123_eve_first_candidate_awaiting_security_evidence_and_physical_loop",
+    "status": "v123_eve_mcp_navigation_scoped_candidate_physical_and_security_pending",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Review v123 candidate and resolve existing source/security-evidence mismatch, then verify the marketplace-to-OS-Linux work/result contract with non-inference fixtures; physical and production acceptance remain outstanding."
+    "next": "Resolve compatible local Worker/security evidence, then full verify and exact-source review; connect MCP authority to Pixel Linux with a non-inference Tool, keeping existing account, jobs and data. Shared conversation and physical/production acceptance remain incomplete."
   }
 }
