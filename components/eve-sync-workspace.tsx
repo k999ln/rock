@@ -56,6 +56,9 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
         status: r.status,
       });
     return d;
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error('接続の確認に時間がかかっています。しばらくしてから確認してください。');
+    throw error;
   } finally {
     clearTimeout(timer);
   }
@@ -623,7 +626,7 @@ export default function EveSyncWorkspace({
     }
   }
   return (
-    <WorkspaceShell title="Eve" hideTopActions hideAccountAccess running={busy} contentClassName="eve-sync-main" onClickCapture={event=>{
+    <WorkspaceShell title="Eve" hideTopActions hideAccountAccess hideFlowNavigation running={busy} contentClassName="eve-sync-main" onClickCapture={event=>{
       if(busy||!hasUnsentDraft||discardingDraft.current||event.button!==0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;
       const link=(event.target as Element).closest('a[href]');
       if(!link||link.getAttribute('target')==='_blank'||link.hasAttribute('download'))return;
@@ -644,6 +647,7 @@ export default function EveSyncWorkspace({
             <Link href="/sky">smis・MCPを開く</Link>
             <Link href="/os/eve#eve-work-results">仕事と成果</Link>
             <Link href="/connect/device">端末を接続・解除</Link>
+            <Link href="/settings">設定</Link>
             <Link href="/#sky-manage">担当とLLMを管理</Link>
             <Link href="/#sky">能力を追加</Link>
           </div>

@@ -19,6 +19,7 @@ export default function WorkspaceShell({
   running = false,
   hideTopActions = false,
   hideAccountAccess = false,
+  hideFlowNavigation = false,
   standaloneSky = false,
   standaloneHomeHref = '/sky',
   tone,
@@ -31,6 +32,7 @@ export default function WorkspaceShell({
   running?: boolean;
   hideTopActions?: boolean;
   hideAccountAccess?: boolean;
+  hideFlowNavigation?: boolean;
   standaloneSky?: boolean;
   standaloneHomeHref?: string;
   tone?: 'sky';
@@ -101,7 +103,7 @@ export default function WorkspaceShell({
             </div>
           )}
         </OSHeader>}
-        {!standaloneSky && <WorkspaceFlowNavigation running={running} />}
+        {!standaloneSky && !hideFlowNavigation && <WorkspaceFlowNavigation running={running} />}
         {!standaloneSky && !hideAccountAccess && title === 'Eve' && <OsAccountAccess />}
         <main
           id="workspace-main"
