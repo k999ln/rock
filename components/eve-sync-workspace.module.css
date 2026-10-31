@@ -78,7 +78,7 @@
 
 /* Keep the conversation and composer together; execution details stay available below. */
 .desk{width:min(920px,100%);margin:0 auto}
-.messages{padding:8px 0 18px}
+.messages{padding:8px 0 18px;max-height:min(42dvh,480px);overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 .messages article{border:0;border-radius:20px;padding:14px 18px;max-width:min(85%,680px);line-height:1.75}
 .messages .me{background:#f2f2f2}
 .messages .reply{background:transparent;padding-left:0}
@@ -88,4 +88,4 @@
 .requestStarters button{border-radius:999px}
 .app .primary{border-radius:999px}
 .sidebar nav .current{border-radius:10px}
-@media(max-width:720px){.messages article{max-width:95%}.composer{padding:16px;border-radius:20px}.composer textarea{min-height:88px}}
+@media(max-width:720px){.messages{max-height:34dvh}.messages article{max-width:95%}.composer{padding:16px;border-radius:20px}.composer textarea{min-height:88px}}

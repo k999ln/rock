@@ -104,6 +104,12 @@ export default function EveSyncWorkspace({
     [item, setItem] = useState<EveHistoryItem | null>(null),
     [jobs, setJobs] = useState<EveDeviceJob[]>([]),
     [devices, setDevices] = useState<EveExecutionPresence[]>([]);
+  const conversationRef = useRef<HTMLDivElement>(null);
+  const conversationId = item?.session.id;
+  useEffect(() => {
+    const conversation = conversationRef.current;
+    if (conversation && conversationId) conversation.scrollTop = conversation.scrollHeight;
+  }, [selected, conversationId]);
   const [input, setInput] = useState(''),
     [targetId, setTargetId] = useState(skyEveSelectionTargetKey(initialSelection)),
     [agentId, setAgentId] = useState(
@@ -673,7 +679,7 @@ export default function EveSyncWorkspace({
           <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><EveAgentComposer {...composerProps}/><details><summary>設定を編集して作る・保存済みの担当を管理する</summary><SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/></details></>}</div>
           <div hidden={workbenchMode!=='work'} className={styles.workContent}>
           <div hidden={resultsView} id="eve-compose" className={styles.composeView}>
-{signedIn !== false && <div className={styles.messages} aria-label="会話" aria-live="polite">
+{signedIn !== false && <div ref={conversationRef} className={styles.messages} role="log" aria-label="会話" aria-live="polite">
   {item?.before && <button onClick={() => void more()}>以前の発言を読む</button>}
   {item?.session.messages.map((m) => <article key={m.id} className={m.side === 'me' ? styles.me : styles.reply}>
     <span>{m.side === 'me' ? 'あなた' : 'Eve'}</span>
