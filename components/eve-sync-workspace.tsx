@@ -107,6 +107,7 @@ export default function EveSyncWorkspace({
     [item, setItem] = useState<EveHistoryItem | null>(null),
     [jobs, setJobs] = useState<EveDeviceJob[]>([]),
     [devices, setDevices] = useState<EveExecutionPresence[]>([]);
+  const [unavailableConversation, setUnavailableConversation] = useState('');
   const conversationRef = useRef<HTMLDivElement>(null);
   const conversationId = item?.session.id;
   useEffect(() => {
@@ -255,6 +256,7 @@ export default function EveSyncWorkspace({
                 { status: 401 },
               );
             if (live && activeThread.current === id) {
+              setUnavailableConversation('');
               setItem((old) =>
                 old?.session.id === id
                   ? {
@@ -279,6 +281,7 @@ export default function EveSyncWorkspace({
             }
           } catch (e) {
             if ((e as { status?: number }).status !== 404) throw e;
+            if (live && activeThread.current === id) setUnavailableConversation(id);
           }
         }
       } catch (e) {
@@ -694,7 +697,7 @@ export default function EveSyncWorkspace({
     <p>{m.text}</p>
     {m.side !== 'me' && m.text.includes('Tool: mr-citations') && m.text.includes('端末内の固定処理') && <p className={styles.historyCorrection}>過去の表示の訂正：この固定引用処理はサイト側で実行されました。Pixel内での実行を示すものではありません。</p>}
   </article>)}
-  {!item && <div className={styles.welcome}><h3>今日は何を進めますか？</h3></div>}
+  {!item && <div className={styles.welcome}>{selected ? <><h3>{unavailableConversation === selected ? '会話を確認できません' : '会話を確認しています'}</h3><p>表示されない場合は、接続と会話の履歴を確認してください。</p></> : <h3>今日は何を進めますか？</h3>}</div>}
 </div>}
 {signedIn !== false && (
               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
