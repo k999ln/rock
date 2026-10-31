@@ -655,6 +655,8 @@ export default function EveSyncWorkspace({
           </nav>
           <Link href="/connect/device">端末を接続・解除</Link>
           <Link href="/os/eve?mode=tool-work">smisのToolを使う</Link>
+          <Link href="/sky">smis・MCPを開く</Link>
+          <Link href="/os/eve#eve-work-results">仕事と成果</Link>
           <Link href="/#sky-manage">担当とLLMを管理</Link>
           <Link href="/#sky">能力を追加</Link>
         </aside>
@@ -671,9 +673,17 @@ export default function EveSyncWorkspace({
           <div hidden={workbenchMode!=='build'} className={styles.buildPane}>{(buildVisited||workbenchMode==='build')&&<><EveAgentComposer {...composerProps}/><details><summary>設定を編集して作る・保存済みの担当を管理する</summary><SkyAgentLibrary key={connectionOwner||'account-pending'} embedded creator/></details></>}</div>
           <div hidden={workbenchMode!=='work'} className={styles.workContent}>
           <div hidden={resultsView} id="eve-compose" className={styles.composeView}>
+{signedIn !== false && <div className={styles.messages} aria-label="会話" aria-live="polite">
+  {item?.before && <button onClick={() => void more()}>以前の発言を読む</button>}
+  {item?.session.messages.map((m) => <article key={m.id} className={m.side === 'me' ? styles.me : styles.reply}>
+    <span>{m.side === 'me' ? 'あなた' : 'Eve'}</span>
+    <p>{m.text}</p>
+    {m.side !== 'me' && m.text.includes('Tool: mr-citations') && m.text.includes('端末内の固定処理') && <p className={styles.historyCorrection}>過去の表示の訂正：この固定引用処理はサイト側で実行されました。Pixel内での実行を示すものではありません。</p>}
+  </article>)}
+  {!item && <div className={styles.welcome}><h3>今日は何を進めますか？</h3><p>下の入力欄から依頼できます。実行前に接続先と内容を確認します。</p></div>}
+</div>}
 {signedIn !== false && (
               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
-                <div className={styles.requestHeading}><h3>何を進めますか？</h3><span>依頼 → 確認 → 送信</span></div>
                 <div className={styles.requestStarters} aria-label="依頼を書き始める">
                   {[{label:'調べる',icon:Search,text:'調べたいこと：\n知りたい内容と、出典が必要な範囲：'},{label:'まとめる',icon:FileText,text:'まとめたい内容：\n用途と、希望する長さ：'},{label:'作る',icon:Sparkles,text:'作りたいもの：\n目的と、必要な成果：'}].map(item=><button key={item.label} type="button" disabled={busy||Boolean(input.trim())} onClick={()=>{setInput(item.text);setConsent(false);document.querySelector<HTMLTextAreaElement>('textarea[aria-label="続きの依頼"]')?.focus();}}><item.icon size={20}/><span>{item.label}</span></button>)}
                 </div>
@@ -693,7 +703,7 @@ export default function EveSyncWorkspace({
                 {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
 
                 {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
-                <details className={styles.executionSettings} open={!device||!agent||!selectionMatches}><summary><span className={styles.connectionVisual} data-ready={ready}><Bot size={20}/><span>実行先・担当・基盤モデルを確認する<small>{device?.name??'接続が必要です'}{agent?` · ${agent.name}`:' · 担当を選ぶ'}</small></span>{ready&&<CheckCircle2 size={18}/>}</span></summary>
+                <details className={styles.executionSettings}><summary><span className={styles.connectionVisual} data-ready={ready}><Bot size={20}/><span>実行先・担当・基盤モデルを確認する<small>{device?.name??'接続が必要です'}{agent?` · ${agent.name}`:' · 担当を選ぶ'}</small></span>{ready&&<CheckCircle2 size={18}/>}</span></summary>
                 <div className={styles.modelIdentity} aria-label="使用するLLM">
                   <div>
                     <span>使用するLLM</span>
@@ -787,6 +797,7 @@ export default function EveSyncWorkspace({
                   {signedIn === true && !selectionMatches && (
                     <Link href="/sky/devices">smisで接続した担当を選び直す</Link>
                   )}
+                  {signedIn === true && selectionMatches && !ready && <Link href="/connect/service">接続状態を確認する</Link>}
                   <button
                     className={styles.primary}
                     disabled={!ready || !consent || !input.trim() || busy}
@@ -838,31 +849,6 @@ export default function EveSyncWorkspace({
             </div>
           ) : (
             <>
-              <div hidden={resultsView}>
-
-              <div className={styles.messages} aria-live="polite">
-                {item?.before && (
-                  <button onClick={() => void more()}>以前の発言を読む</button>
-                )}
-                {item?.session.messages.map((m) => (
-                  <article
-                    key={m.id}
-                    className={m.side === 'me' ? styles.me : styles.reply}
-                  >
-                    <span>{m.side === 'me' ? 'あなた' : 'Eve'}</span>
-                    <p>{m.text}</p>
-                  </article>
-                ))}
-                {!item && (
-                  <div className={styles.welcome}>
-                    <h3>依頼も、続きの会話もここから。</h3>
-                    <p>
-                      「会話の履歴」を開くか、上の依頼欄に書いて始めます。接続した実行先から、同じ会話へ成果が届きます。画面を閉じた後の継続は実行先の状態によります。
-                    </p>
-                  </div>
-                )}
-              </div>
-              </div>
               <section hidden={!resultsView} id="eve-work-results" className={styles.resultsView} aria-labelledby="eve-results-title">
               <div className={styles.resultsHeader}><h2 id="eve-results-title">{selected?'この会話の仕事と成果':'保存した仕事と成果'}</h2><p>進捗を確認し、成果を開く・保存する。受領待ちや停止の照合もここで確認できます。</p><button type="button" onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}>依頼画面に戻る</button><nav aria-label="ほかの実行先の仕事と成果"><button type="button" onClick={()=>{setCloudHistoryOpen(true);window.location.hash='eve-compose';setModeOverride('work');}}>Cloudの仕事と成果</button><button type="button" onClick={()=>{setToolExpanded(true);window.location.hash='eve-compose';setModeOverride('work');}}>Toolの仕事と成果</button></nav></div>
               {signedIn===null?<output>{message&&!online?'仕事を取得できません。上の「接続を再確認」から再試行できます。':'仕事を確認しています…'}</output>:!jobs.some(j=>!selected||j.threadId===selected)&&!runtimeJobs.some(j=>!selected||j.threadId===selected)&&!runtimePending.some(j=>!selected||j.threadId===selected)?<div className={styles.resultsEmpty}><h3>{selected?'この会話の仕事はまだありません':'保存した仕事はまだありません'}</h3><p>依頼を準備し、担当と実行先を確認すると、同じ会話で進捗と成果を確認できます。</p><button type="button" onClick={()=>{window.location.hash='eve-compose';setModeOverride('work');}}>新しい依頼を準備する</button></div>:null}

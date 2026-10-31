@@ -75,3 +75,17 @@
 /* Visual touch controls draft only; sending still requires all original gates. */
 .requestHeading{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.requestHeading>span{font-size:10px;color:var(--muted);white-space:nowrap}.requestStarters{display:flex;gap:8px;margin:4px 0 12px}.requestStarters button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 16px;font-size:13px;background:#fafafa}.requestStarters button:hover:enabled{background:#ededed;border-color:#151515}.requestStarters button:disabled{opacity:.4}.connectionVisual{display:flex;align-items:center;gap:10px;min-width:0}.connectionVisual>span{display:grid;gap:4px;min-width:0}.connectionVisual small{font-size:11px;color:var(--muted);font-weight:400;overflow-wrap:anywhere}.connectionVisual[data-ready='true']>svg:last-child{color:#176d51}.app .primary{display:inline-flex;align-items:center;justify-content:center;gap:10px}.executionSettings>summary{list-style:none}.executionSettings>summary:after{content:'＋';margin-left:auto}.executionSettings[open]>summary:after{content:'−'}.executionSettings>summary{display:flex;align-items:center;gap:8px}.requestStarters button:focus-visible{outline:2px solid var(--os-shell-focus);outline-offset:2px}
 @media(max-width:600px){.requestHeading>span{font-size:9px}.requestStarters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.requestStarters button{padding:10px 4px;min-height:56px;font-size:12px}.requestStarters button svg{width:21px;height:21px}.composer textarea{min-height:110px}.connectionVisual{gap:8px}.connectionVisual>span{font-size:12px}.executionSettings>summary{min-height:60px}.headerActions button{min-height:48px}.app .primary{min-height:52px}}
+
+/* Keep the conversation and composer together; execution details stay available below. */
+.desk{width:min(920px,100%);margin:0 auto}
+.messages{padding:8px 0 18px}
+.messages article{border:0;border-radius:20px;padding:14px 18px;max-width:min(85%,680px);line-height:1.75}
+.messages .me{background:#f2f2f2}
+.messages .reply{background:transparent;padding-left:0}
+.messages .historyCorrection{font-size:12px;color:#755b1c;background:#fff8e6;padding:10px 12px;border-radius:8px}
+.composer{border:1px solid #d5d5d5;border-radius:22px;box-shadow:0 3px 14px #0000000c}
+.composer textarea{min-height:90px}
+.requestStarters button{border-radius:999px}
+.app .primary{border-radius:999px}
+.sidebar nav .current{border-radius:10px}
+@media(max-width:720px){.messages article{max-width:95%}.composer{padding:16px;border-radius:20px}.composer textarea{min-height:88px}}
