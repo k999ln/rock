@@ -149,3 +149,41 @@
 .app{min-height:calc(100dvh - 74px)}
 .messages{max-height:min(30dvh,320px)}
 @media(max-width:720px){.messages{max-height:28dvh}}
+
+/* Keep conversation readable and the composer easy to find at every width. */
+.app{background:#fff;color:#202123}
+.desk{width:min(850px,100%);padding:20px clamp(20px,4vw,44px) 48px}
+.studioHeader{margin-bottom:16px;padding:0;min-height:44px}
+.studioHeader h1{font-size:18px;letter-spacing:0}
+.headerActions button{min-height:40px;background:transparent;border-color:transparent;border-radius:8px}
+.headerActions button:hover{background:#f3f3f3}
+.messages{max-height:min(38dvh,420px);padding:0 2px 16px}
+.messages article{max-width:min(88%,680px);line-height:1.7}
+.welcome{max-width:none;padding:48px 0 32px;text-align:center}
+.welcome h3{font-size:22px;font-weight:600;letter-spacing:-.025em}
+.composer{padding:16px 18px 12px;border-color:#d8d8d8;border-radius:18px;box-shadow:0 2px 10px #00000008}
+.composer textarea{min-height:84px;max-height:32dvh;padding:4px 2px 12px;resize:vertical}
+.composer textarea:focus-visible{outline:2px solid #215ac2;outline-offset:2px}
+.composer .notice{margin:4px 0 8px;border-left:2px solid #6b7280;padding:8px 10px;font-size:12px}
+.composer .notice p{margin:0 0 5px}
+.executionSettings{padding:6px 0;border-top:1px solid #ededed}
+.executionSettings>summary{min-height:36px}
+.consent{padding:6px 0;color:#555}
+.composer footer{display:flex;flex-wrap:wrap;flex-direction:row;align-items:center;padding-top:6px}
+.composer footer>span{flex:1 1 220px;min-width:0}
+.composer footer .primary{margin-left:auto;min-height:40px}
+.extraWork,.secondaryControls{background:transparent;border-color:#e8e8e8}
+.extraWork>summary,.secondaryControls>summary{min-height:42px;font-size:13px}
+@media(max-width:720px){
+ .desk{padding:14px 16px 36px}
+ .studioHeader{flex-wrap:nowrap;gap:8px}
+ .studioHeader h1{font-size:17px}
+ .headerActions{width:auto;gap:2px}
+ .headerActions button{font-size:12px;padding:8px}
+ .messages{max-height:32dvh}
+ .welcome{padding:32px 0 24px}
+ .welcome h3{font-size:20px}
+ .composer{padding:14px;border-radius:16px}
+ .composer textarea{min-height:76px;font-size:16px}
+ .composer footer>span{flex-basis:100%}
+}

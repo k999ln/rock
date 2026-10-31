@@ -793,8 +793,8 @@ export default function EveSyncWorkspace({
                     checked={consent}
                     onChange={(e) => setConsent(e.target.checked)}
                   />
-                  この会話の一部と依頼を「{device?.name ?? '選んだ実行先'}
-                  」へ渡し、本人のモデルで下書きを作る。クラウド使用料0円。
+                  会話の一部と依頼を「{device?.name ?? '選んだ実行先'}
+                  」に送り、本人のモデルで下書きします。クラウド使用料0円。
                   {device && isEveRuntimePresence(device)
                     ? '出力上限256トークン。'
                     : ''}
