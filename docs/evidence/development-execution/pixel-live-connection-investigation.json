@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros.pixel-live-connection-investigation/1",
-  "status": "v123_eve_mcp_navigation_scoped_candidate_physical_and_security_pending",
+  "status": "v123_mcp_front_scoped_physical_worker_text_only_security_pending",
   "baseMain": "3563d9a807568a474b34ce61f9a16de9cb3c231e",
   "device": "Pixel 10 frankel",
   "installedApkSha256": "c47759632f38135bbbd9388df5def0bb542d6a54f9d51c27779f89be403ad6ec",
@@ -64,10 +64,15 @@
     "Current public /os/eve?mode=tools presented Jennifer private access and a passkey prompt. No passkey was entered and no authenticated MCP call or model inference was performed. Existing Eve and Tool chat are separate conversations; the candidate says so and does not claim shared job or automatic return.",
     "Candidate c1e72d851b4e8ab5140bb9491307d26f08578166 adds Eve/MCP navigation, separate-conversation guidance and preserves unsent/running-work guards. Independent reviewer rechecked tracked diff 177783197d072e8a7c1f4743a5f9becfbdfbb4ee7aa2539b245023bfebe96fee and fixture file hashes, PASS_SCOPED with 31 independent tests. Synthetic real React Eve input-to-MCP navigation was observed to show the guard and retain the draft. This is not same-front integration or end-to-end MCP execution.",
     "The v123 preexisting domain-router hash mismatch blocks npm run verify. Source-level security and router tests passed 21. A local production Worker attempt failed because configured compatibility date 2026-10-01 exceeds installed workerd supported 2026-08-18; no local response measurement or production security acceptance is claimed. Isolated local state from the attempt was backed up and preserved.",
-    "Pixel was unlocked and Terminal showed an empty prompt. Automatic entry duplicated characters, so no command was submitted; the unexecuted input was deleted and empty prompt visually confirmed. Actual current service status and MCP path remain unobserved pending manual read-only status."
+    "Pixel was unlocked and Terminal showed an empty prompt. Automatic entry duplicated characters, so no command was submitted; the unexecuted input was deleted and empty prompt visually confirmed. Actual current service status and MCP path remain unobserved pending manual read-only status.",
+    "With owner authorization, Pixel Terminal was unlocked and foreground. The two read-only systemctl is-active results for sky-private.service and sky-android-bridge.service were both active. Existing jobs and models directory names appeared in the listing; this is not a byte-for-byte data comparison.",
+    "The initial automated command entry duplicated characters; it was not submitted and was cleared. Individually delayed key events then produced the correct read-only commands, visually checked before Enter. Terminal ended at an empty prompt.",
+    "A read-only SHA-256 of installed sky-private/worker.py was c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917, equal to the inspected current-main toolkits/sky-linux-local/worker.py. Running its capabilities action produced linux-text-capability/1 on Linux/aarch64, maximum 1024 output tokens and 120000ms deadline; no model preparation, inference or job was started.",
+    "The listed sky-private/app/toolkits directory contained sky-linux-local; its listed contents did not identify an MCP connector. This bounded directory listing does not prove no MCP is installed elsewhere or accessible through another endpoint. The reported text capability does not establish MCP execution.",
+    "User released Pixel after the read-only checks. No manual service restart, model download, connection change or existing data deletion was performed in this check. Full data identity was not verified."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Resolve existing v123 security evidence mismatch with a compatible local Worker without changing the historical fixed evidence, then run full verify and independently review the exact deploy candidate. Align the existing MCP connector and the Pixel Linux execution authority and verify a single owner/job/approval/output with a non-inference Tool; do not open the production authority gate without bound issuer/revocation. Terminal auto-input is unsafe; use verified manual read-only status. Unified Eve/MCP conversation and production/Pixel end-to-end acceptance remain incomplete.",
+  "next": "Review the bounded physical evidence independently. Implement a same-owner, same-job MCP-to-Linux execution adapter using existing broker and explicit authority/approval; no production authority issuer is currently bound and Linux worker currently reports text capability only. Validate a non-inference Tool locally and on permitted hardware with recovery, no duplicate dispatch and explicit output checks. Resolve v123 Web security hash mismatch using a compatible local Worker, then rerun full verification and independently review before deployment. Unified Eve/MCP conversation remains incomplete.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -117,5 +122,25 @@
     "review": "PASS_SCOPED; 31 independent navigation/draft tests; synthetic React draft guard observed separately",
     "checks": "typecheck and focused lint passed before final explanatory copy; final exact candidate build passed; source router/security 21 tests passed; full verify blocked on existing evidence hash mismatch",
     "limits": "not deployed; MCP screen remains separate and can require passkey; no OS Linux/MCP integrated run or real output acceptance."
+  },
+  "pixelMcpReadOnly20261030": {
+    "serviceStatus": [
+      "active",
+      "active"
+    ],
+    "services": [
+      "sky-private.service",
+      "sky-android-bridge.service"
+    ],
+    "workerSha256": "c6a4cb0d77330994fc31fee3bb47bea81d2931150b79c3a43b4c04a53329d917",
+    "workerSource": "toolkits/sky-linux-local/worker.py at 1daf5c340f23fb40e52289d276cd5ec1ca271fa0",
+    "capability": "rockstaros.linux-text-capability/1",
+    "platform": "linux",
+    "architecture": "aarch64",
+    "inference": false,
+    "mcpExecutionObserved": false,
+    "fullDataIdentityCompared": false,
+    "terminal": "empty prompt after read-only checks",
+    "review": "pending independent review"
   }
 }

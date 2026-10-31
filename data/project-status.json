@@ -12494,8 +12494,8 @@
   },
   "pixelLiveConnectionInvestigation": {
     "owner": "ROCK",
-    "status": "v123_eve_mcp_navigation_scoped_candidate_physical_and_security_pending",
+    "status": "v123_mcp_front_scoped_physical_worker_text_only_security_pending",
     "evidence": "docs/evidence/development-execution/pixel-live-connection-investigation.json",
-    "next": "Resolve compatible local Worker/security evidence, then full verify and exact-source review; connect MCP authority to Pixel Linux with a non-inference Tool, keeping existing account, jobs and data. Shared conversation and physical/production acceptance remain incomplete."
+    "next": "Independently review physical text-capability evidence; implement exact-owner/job/approval MCP-to-Linux adapter without opening unbound authority; resolve v123 Worker/security evidence and validate before publication."
   }
 }
