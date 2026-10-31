@@ -5,3 +5,6 @@
 .dialog>header{position:sticky;top:-24px;z-index:4;padding:10px 0;background:#fffdf8;border-bottom:1px solid #eceee7}
 .tabs{top:42px}
 @media(max-width:600px){.dialog>header{top:-18px}.tabs{top:48px}}
+.dialog[open]{display:flex;flex-direction:column;overflow:hidden}
+.dialog>header,.dialog>p,.tabs{flex:none;position:static}
+.body{min-height:0;overflow-y:auto;overscroll-behavior:contain}

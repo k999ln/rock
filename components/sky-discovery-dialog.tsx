@@ -11,5 +11,5 @@ export default function SkyDiscoveryDialog({open,mode,onModeChange,onClose,child
   <button id="sky-add-tab" type="button" role="tab" tabIndex={mode==='discover'?0:-1} aria-selected={mode==='discover'} aria-controls="sky-add-panel" onClick={()=>onModeChange('discover')}>探して追加</button>
   <button id="sky-manage-tab" type="button" role="tab" tabIndex={mode==='manage'?0:-1} aria-selected={mode==='manage'} aria-controls="sky-manage-panel" onClick={()=>onModeChange('manage')}>追加済み・設定</button>
  </div>
- {children}</dialog>;
+ <div className={styles.body}>{children}</div></dialog>;
 }

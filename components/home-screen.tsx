@@ -1,5 +1,5 @@
 'use client';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import OSHeader from './os-header';
@@ -59,12 +59,26 @@ export default function HomeScreen() {
   const homePath = route('/');
   const timelineReceiver = useTimelineConnector();
   const [view, setView] = useState<View>('home');
+  const viewRef = useRef<View>('home');
+  const lastHash = useRef('#timeline');
+  const [panelOriginView, setPanelOriginView] = useState<View>('home');
+  const panelOrigin = useRef<{view: View; hash: string; scroll: number; focus: HTMLElement | null}>({view:'home', hash:'#timeline', scroll:0, focus:null});
+  function rememberOrigin(next: View, focus?: HTMLElement | null, hash = window.location.hash) {
+    const current = viewRef.current;
+    if ((next === 'discover' || next === 'manage') && current !== 'discover' && current !== 'manage') {
+      panelOrigin.current = {view:current, hash:hash || '#timeline', scroll:window.scrollY, focus:focus ?? (document.activeElement as HTMLElement | null)};
+      setPanelOriginView(current);
+    }
+    viewRef.current = next;
+  }
   const [panelVisited, setPanelVisited] = useState(false);
   const [featureOnly, setFeatureOnly] = useState(false);
   const { enabled } = useSkyFeatures();
   useEffect(() => {
     const sync = () => {
       const next = viewForHash(window.location.hash);
+      rememberOrigin(next, undefined, lastHash.current);
+      lastHash.current = window.location.hash;
       setView(next);
       if (next === 'discover' || next === 'manage') setPanelVisited(true);
       setFeatureOnly(window.location.hash === '#optional-features');
@@ -124,6 +138,7 @@ export default function HomeScreen() {
           target.hash
         ) {
           const next = viewForHash(target.hash);
+          rememberOrigin(next, anchor instanceof HTMLElement ? anchor : null);
           setView(next);
           if (next === 'discover' || next === 'manage') setPanelVisited(true);
           setFeatureOnly(target.hash === '#optional-features');
@@ -213,8 +228,14 @@ export default function HomeScreen() {
               window.location.hash = mode === 'manage' ? 'sky-manage' : 'sky';
             }}
             onClose={() => {
-              window.location.hash = 'timeline';
-              setView('home');
+              const origin = panelOrigin.current;
+              viewRef.current = origin.view;
+              window.location.hash = origin.hash;
+              setView(origin.view);
+              requestAnimationFrame(() => {
+                window.scrollTo({top:origin.scroll, behavior:'instant'});
+                if (origin.focus?.isConnected) origin.focus.focus({preventScroll:true});
+              });
             }}
           >
             {panelVisited && (
@@ -267,11 +288,11 @@ export default function HomeScreen() {
               </section>
             ) : (
               <SkySocialTimeline
-                key={view === 'communities' ? 'communities' : 'timeline'}
+                key={(view === 'discover' || view === 'manage' ? panelOriginView : view) === 'communities' ? 'communities' : 'timeline'}
                 fullHome
                 personalFeed={<SmisAddedPosts />}
                 initialView={
-                  view === 'discover' || view === 'manage' ? 'home' : view
+                  view === 'discover' || view === 'manage' ? (panelOriginView === 'communities' ? 'communities' : 'home') : view
                 }
                 externalFeed={
                   <>

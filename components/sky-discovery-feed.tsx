@@ -312,6 +312,7 @@ export default function SkyDiscoveryFeed({
                 : '自分の制作に合うモデルを、Noahから。')}
         </p>
         <div className={styles.metadata}>
+          {entry.kind === 'model' && <span>端末への適合は未確認</span>}
           <span>{entry.metadata.license || 'license要確認'}</span>
           {entry.metadata.gated && <span>配布元の利用申請が必要</span>}
           {entry.metadata.downloads !== null && (
@@ -371,7 +372,7 @@ export default function SkyDiscoveryFeed({
             <Search size={19} />
             <input
               id="sky-discovery-search"
-              aria-label="モデル・Agent・Toolを検索"
+              aria-label={`${filter === 'all' ? 'Agent・Tool・モデル' : labels.find(item => item.id === filter)?.label ?? '選択中の種類'}を検索`}
               placeholder="例：出典、CSV、契約、ゲーム"
               maxLength={80}
               value={draft}
@@ -379,6 +380,7 @@ export default function SkyDiscoveryFeed({
             />
             <button>検索</button>
           </form>
+          <p className={styles.note}>検索対象：{filter === 'all' ? 'Agent・Tool・モデル' : labels.find(item => item.id === filter)?.label}。データやアプリなど別の種類は切り替えて検索できます。</p>
           <label className={styles.availability}><input type="checkbox" checked={showCandidates} onChange={event=>setShowCandidates(event.target.checked)} />準備中・導入候補も表示</label><p className={styles.note}>「実行器あり」は接続・本人認証・料金条件の確認を省略できる意味ではありません。</p><nav className={styles.filters} aria-label="投稿の種類">
             {labels.map((tab) => (
               <button
