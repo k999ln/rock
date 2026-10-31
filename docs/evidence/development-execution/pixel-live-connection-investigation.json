@@ -57,7 +57,9 @@
     "Site v123 source 2c101e5d5eddd2ebfb569c121ef094c06c30ea9e was obtained in an isolated checkout. Eve-first visual candidate 3452c7851c3392c784d44a712260d859157aa1c6 changes the home entries and shared logo presentation; it does not change execution, saved data or connection contracts.",
     "Candidate build, typecheck, targeted six tests and lint succeeded. Real home React component with synthetic timeline/children and application fetch disabled was observed at desktop and 411x923. Four link destinations were asserted; actual production, authenticated account and Pixel were not tested.",
     "npm run verify stopped at release:check: the existing Web security response evidence hash for services/sky-web/domain-router.mjs does not match the unmodified v123 base source; no release success or current response proof is claimed.",
-    "OS MCP broker 33 tests and MCP client/connector/result 54 tests passed on local synthetic fixtures. These do not establish the marketplace-to-Pixel-Linux end-to-end path or output quality. The prior 2026-10-17 physical local model and two Tools produced an artifact but content quality was not accepted."
+    "OS MCP broker 33 tests and MCP client/connector/result 54 tests passed on local synthetic fixtures. These do not establish the marketplace-to-Pixel-Linux end-to-end path or output quality. The prior 2026-10-17 physical local model and two Tools produced an artifact but content quality was not accepted.",
+    "Independent reviewer verified exact commit 3452c7851c3392c784d44a712260d859157aa1c6 PASS_SCOPED and independently passed 3 navigation tests; production Eve routes resolve to the same /os/eve. No account, Pixel or production acceptance.",
+    "Separate npm test completed with 2621 tests: 2606 pass, 14 fail, 1 skip. All 14 reported failures are release-readiness assertions encountering the existing v123 Web security evidence mismatch. No release pass is claimed."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
   "next": "Independently review the v123 candidate and resolve Web security evidence using the current source without replacing fixed history, then verify the exact candidate before any deployment. Establish an explicitly scoped non-inference marketplace/Agent/MCP -> OS Linux -> same job/result integration and independently validate on the permitted hardware path; real model output quality remains unverified without explicit authorization.",
@@ -98,6 +100,8 @@
     "patchSha256": "cc561ded2e0a52720151ef9199f07bce37c232b9e5767f5ff4f1c415ad1255b2",
     "checks": "build, typecheck, focused lint, 6 targeted tests pass; synthetic UI desktop and 411x923; four existing routes asserted",
     "release": "npm run verify failed at release:check on existing v123 router security evidence mismatch. Not deployed.",
-    "mcp": "33 host broker and 54 connector tests pass with synthetic local data only; no real device or provider."
+    "mcp": "33 host broker and 54 connector tests pass with synthetic local data only; no real device or provider.",
+    "review": "PASS_SCOPED, independently checked exact commit and 3 navigation tests; no real account, Pixel or production acceptance",
+    "tests": "npm test: 2621 tests, 2606 pass, 14 fail, 1 skip; all reported failures are release-readiness assertions encountering existing v123 security-evidence mismatch"
   }
 }
