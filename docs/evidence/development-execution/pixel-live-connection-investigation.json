@@ -72,7 +72,7 @@
     "User released Pixel after the read-only checks. No manual service restart, model download, connection change or existing data deletion was performed in this check. Full data identity was not verified."
   ],
   "limits": "Only the Android bridge was intentionally restarted; Sky job manager was not intentionally restarted. No deliberate inference, model download, installation, new job execution, deletion or connection-setting change. Existing data and connection contents were not comprehensively compared; restart may briefly interrupt communication. Browser readback does not prove app synchronization, new job execution, full platform acceptance, or that all existing work is intact. Public timeline inspection and log access were read-only; no site deployment, news provider request initiated by this diagnostic, or data modification.",
-  "next": "Review the bounded physical evidence independently. Implement a same-owner, same-job MCP-to-Linux execution adapter using existing broker and explicit authority/approval; no production authority issuer is currently bound and Linux worker currently reports text capability only. Validate a non-inference Tool locally and on permitted hardware with recovery, no duplicate dispatch and explicit output checks. Resolve v123 Web security hash mismatch using a compatible local Worker, then rerun full verification and independently review before deployment. Unified Eve/MCP conversation remains incomplete.",
+  "next": "Implement a same-owner, same-job MCP-to-Linux execution adapter using existing broker and explicit authority/approval; no production authority issuer is currently bound and Linux worker currently reports text capability only. Validate a non-inference Tool locally and on permitted hardware with recovery, no duplicate dispatch and explicit output checks. Resolve v123 Web security hash mismatch using a compatible local Worker, then rerun full verification and independently review before deployment. Unified Eve/MCP conversation remains incomplete.",
   "siteCandidate": {
     "base": "bad2809956a347192707e25be57fda451a6c1a5f",
     "commit": "60524bf787940fc3b0ee8313e4ba7ef730305e06",
@@ -141,6 +141,14 @@
     "mcpExecutionObserved": false,
     "fullDataIdentityCompared": false,
     "terminal": "empty prompt after read-only checks",
-    "review": "pending independent review"
+    "review": "PASS_SCOPED; independent image readback: both services active, root worker hash matches, capability is reported text-only; no model, MCP or job success, no data equality claim",
+    "screenshotsSha256": [
+      "4c65cdb1424e88675bc14a17d932d2bc896a56b1e07a040a07d070ef61915fb5",
+      "8cef89c1724cad6d2db27c71657c00d1ae03f9672d125df0388d4b44901ddac9",
+      "2f1ccb595a473b31b128f16ff27cd2d9b3e27cc94fce4a6d23503c1fc28d669f",
+      "b1c8eeb261188e41a7c706fdd1532ad884a6fe423c5a2f7c1725b85467a35b10",
+      "65977acde25b55bbb4c41e85b26b3414726ef117c5e41f7e1f061cba1ab35e6f"
+    ],
+    "screenshots": "private local temporary evidence; image contents not committed"
   }
 }
