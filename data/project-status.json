@@ -10190,5 +10190,35 @@
       "official helper build",
       "native Sites deployment and readback"
     ]
+  },
+  "releaseEvidenceMobileUx": {
+    "date": "2026-10-31",
+    "primaryOwner": "ROCK",
+    "task": "osWorkspaceUiUx",
+    "status": "verified_ready_for_publication",
+    "design": "docs/rockstaros-complete-design.md",
+    "securityEvidence": "docs/evidence/launch/web-security-local-20260917.json",
+    "recorder": "scripts/record-web-security-evidence.mjs",
+    "mobile": [
+      "labelled icon navigation",
+      "draft-only starters",
+      "connection state"
+    ],
+    "checks": {
+      "HTTP": "8 headers/8 routes pass",
+      "baseline": "pass",
+      "release": "pass; real unsupported release gates remain blocked",
+      "component": "13 tests pass",
+      "browser": "unavailable; native pipe closed",
+      "fullVerify": "exit 0: 2621 pass, 1 skip, 0 fail",
+      "API": "1621 assertions pass",
+      "CSV": "385 assertions pass",
+      "freshBuildHTTP": "8 routes/8 headers pass after runtime restart"
+    },
+    "remaining": [
+      "Sites deployment and HTTP readback",
+      "mobile visual QA when browser bridge recovers"
+    ],
+    "evidence": "docs/evidence/release-mobile-ux.json"
   }
 }

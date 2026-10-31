@@ -1,0 +1,36 @@
+{
+  "scope": "Source/Web regression; not physical or financial launch acceptance",
+  "observedAt": "2026-10-31T05:29:02.758878+00:00",
+  "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+  "exitCode": 0,
+  "logSha256": "d1574afa4fea9ab1b142e76b4d723194780de2dd5df716afc2e973678f638581",
+  "tests": {
+    "total": 2622,
+    "pass": 2621,
+    "fail": 0,
+    "skip": 1
+  },
+  "apiAssertions": 1621,
+  "csvAssertions": 385,
+  "security": {
+    "evidence": "docs/evidence/launch/web-security-local-20260917.json",
+    "headers": 8,
+    "routes": 8,
+    "status": "PASS"
+  },
+  "mobileComponentTests": {
+    "pass": 13,
+    "fail": 0,
+    "draftOnly": true,
+    "noOverwrite": true,
+    "sendGatesPreserved": true
+  },
+  "browserQa": {
+    "status": "unavailable",
+    "reason": "native pipe closed; reset/reconnect attempt did not recover; no visual tap/screenshot acceptance claimed"
+  },
+  "githubMainObserved": "1daf5c340f23fb40e52289d276cd5ec1ca271fa0",
+  "githubMainIntegrated": false,
+  "releaseGatesPromoted": false,
+  "publication": "recorded separately after native deployment"
+}

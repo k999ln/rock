@@ -1649,3 +1649,9 @@ Eveの制作画面では、確認した目的を文章担当へ保存し、選�
 ## 2026-10-31 — 入力から始まるOS UX
 本人は「ELLEっぽさ」はフォントでなく洗練された情報設計・操作性と明示。Web/UX（ROCK、osWorkspaceUiUx）の順序を依頼入力→実行先/担当/モデル→個別同意→送信へ変更。Eveの巨大見出しと重複3tabをやめ、共通Eve/成果導線と担当作成actionへ整理。詳細Tool/Cloud/ニュース、会話はフォーム後に残す。既存owner/query/revision/予算/停止/同意/保存protocolは維持。履歴は2行省略・全題title・選択状態・独立scroll・未送信時の切替確認を備える。本文を覆うfixed dockを廃止し、3つのglobal入口はheaderへ。ホーム/設定/接続/診断はコンパクトな見出しと同じ48px操作。白地/細罫線/余白/虹色logoを維持し、書体への依存をやめる。ニュースAPIの現在の正常取得を確認し、失敗時は実状に合う詳細/再取得を表示。social読込失敗を新規profile未設定に換算しない。データ削除/課金/実行/権限変更は行わない。
 受入: PC/390pxでEve textareaが初期viewport内、本文にfixed navigationなし、履歴/成果/設定/担当作成の往復と未送信保護、ニュースの正常/失敗/再取得状態を確認。失敗の詳細は折り畳み、前回記事と現在取得を区別。復旧は直前Sites版、保存/API契約は互換。GitHub main観測1daf5c340f23fb40e52289d276cd5ec1ca271fa0、Sites元b642310723d807358b7d8bca8e3e42198a828263。未完了のrelease証拠不整合やnative gateをWeb配備の合格へ換算しない。
+
+
+## 2026-10-31 — リリース証拠再実測と携帯の視覚操作
+ROCK/Web主担当（既存osWorkspaceUiUx）、本人の全体検証依頼により、旧visual基準と現UIの差を明示指示へ同期。forest/bronzeを白/墨色/focus青へ更新し、tokensと検査を同時変更する。HTTP証拠はrecord-web-security-evidence.mjsが実応答検査に成功した場合だけ入力hash・buildhash・実行時刻と共に更新する。失敗時に前回証拠を上書きしない。以前の測定はGitとsupersedesで追える。セキュリティ条件、実機/金融/署名/一般ローンチgateは弱めない。全体検証の署名fixtureは既存OpenSSL3をPATHへ指定する（システムLibreSSLは要件を満たさない）。
+携帯版はアイコン＋ラベルの58px以上の4入口、選択枠、56pxの「調べる/まとめる/作る」依頼テンプレート、実行先・担当・接続済みチェックと展開記号を備える。テンプレートは空欄時だけ入力を補助し、既存入力を上書きせず、同意・実行は行わない。本人のモデル・権限・費用・停止契約、入力保護は保持。入出力は依頼下書きのみ、保存/認証/APIは既存、失敗時は原入力保持と再確認、復旧は前版Sites。
+受入: baseline/release/verify、template部品試験、現build HTTP8経路、携帯実画面（ブラウザ基盤停止時は未検証と明示）。source/GitHub main/公開/実機受入を区別する。

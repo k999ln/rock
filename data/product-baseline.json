@@ -1260,12 +1260,12 @@
       "/studio",
       "workspace_shell"
     ],
-    "background": "near_black",
+    "background": "white",
     "productHomeAppearance": "light_scroll_product_showcase",
-    "accent": "forest_green_bronze",
-    "headline": "heavy_display_latin",
-    "metadata": "monospace_uppercase",
-    "primaryControl": "rounded_high_contrast",
+    "accent": "ink_on_white",
+    "headline": "compact_task_hierarchy",
+    "metadata": "readable_secondary_labels",
+    "primaryControl": "high_contrast_touch_target",
     "studioPrimarySurface": "sdk_code_installation",
     "homePrimaryApps": [
       "sky",
@@ -1286,7 +1286,16 @@
     ],
     "businessFunctionalityChanged": false,
     "interactionFunctionalityImproved": true,
-    "previousAccent": "ice_blue"
+    "previousAccent": "forest_green_bronze",
+    "ownerDirection": "2026-10-31: ELLE means refined information architecture and visual mobile controls, not typography",
+    "tokens": {
+      "bg": "#ffffff",
+      "panel": "#ffffff",
+      "text": "#151515",
+      "muted": "#595959",
+      "accent": "#151515",
+      "focus": "#215ac2"
+    }
   },
   "systemMaintenance": {
     "route": "/settings/system",

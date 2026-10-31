@@ -101,7 +101,8 @@
     "postinstall": "node scripts/generate-private-modules.mjs",
     "private:generate": "node scripts/generate-private-modules.mjs",
     "private:check": "node scripts/private-files.mjs check",
-    "research:check": "node --experimental-strip-types scripts/check-ecosystem-research.mjs"
+    "research:check": "node --experimental-strip-types scripts/check-ecosystem-research.mjs",
+    "web:security:record": "node scripts/record-web-security-evidence.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

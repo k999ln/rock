@@ -3229,5 +3229,31 @@
       "build",
       "native Sites deployment and readback"
     ]
+  },
+  "releaseEvidenceMobileUx": {
+    "date": "2026-10-31",
+    "primaryOwner": "ROCK",
+    "task": "osWorkspaceUiUx",
+    "status": "verifying",
+    "design": "docs/rockstaros-complete-design.md",
+    "securityEvidence": "docs/evidence/launch/web-security-local-20260917.json",
+    "recorder": "scripts/record-web-security-evidence.mjs",
+    "mobile": [
+      "labelled icon navigation",
+      "draft-only starters",
+      "connection state"
+    ],
+    "checks": {
+      "HTTP": "8 headers/8 routes pass",
+      "baseline": "pass",
+      "release": "pass; real unsupported release gates remain blocked",
+      "component": "13 tests pass",
+      "browser": "unavailable; native pipe closed"
+    },
+    "remaining": [
+      "full verify",
+      "final build HTTP readback",
+      "Sites publication"
+    ]
   }
 }

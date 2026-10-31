@@ -1196,10 +1196,14 @@ export function validateBaseline(
       data.visualSystem?.surfaces?.includes('/rockstaros') &&
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
-      data.visualSystem?.accent === 'forest_green_bronze' &&
-      data.visualSystem?.previousAccent === 'ice_blue' &&
-      osFrameSource.includes('--os-shell-accent: #315b4d') &&
-      osFrameSource.includes('--os-shell-focus: #a9754f') &&
+      data.visualSystem?.accent === 'ink_on_white' &&
+      data.visualSystem?.previousAccent === 'forest_green_bronze' &&
+      osFrameSource.includes('--os-shell-accent: #151515') &&
+      data.visualSystem?.tokens?.accent === '#151515' &&
+      data.visualSystem?.tokens?.bg === '#ffffff' &&
+      osFrameSource.includes('--os-shell-bg: #ffffff') &&
+      osFrameSource.includes('--os-shell-focus: #215ac2') &&
+      data.visualSystem?.tokens?.focus === '#215ac2' &&
       data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&

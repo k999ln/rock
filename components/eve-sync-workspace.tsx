@@ -38,7 +38,7 @@ import {guardHistoryNavigation} from '@/lib/history-navigation-guard';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {useSearchParams} from 'next/navigation';
 import SkyAgentLibrary from './sky-agent-library';
-import {Bot, Code2, MessageCircle, ListChecks, PanelLeft} from 'lucide-react';
+import {Bot, PanelLeft, Search, FileText, Sparkles, Send, CheckCircle2} from 'lucide-react';
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const controller = new AbortController();
@@ -673,7 +673,10 @@ export default function EveSyncWorkspace({
           <div hidden={resultsView} id="eve-compose" className={styles.composeView}>
 {signedIn !== false && (
               <section hidden={profileRequested} className={styles.composer} aria-label="Eveへ依頼">
-                <h3>何を進めますか？</h3>
+                <div className={styles.requestHeading}><h3>何を進めますか？</h3><span>依頼 → 確認 → 送信</span></div>
+                <div className={styles.requestStarters} aria-label="依頼を書き始める">
+                  {[{label:'調べる',icon:Search,text:'調べたいこと：\n知りたい内容と、出典が必要な範囲：'},{label:'まとめる',icon:FileText,text:'まとめたい内容：\n用途と、希望する長さ：'},{label:'作る',icon:Sparkles,text:'作りたいもの：\n目的と、必要な成果：'}].map(item=><button key={item.label} type="button" disabled={busy||Boolean(input.trim())} onClick={()=>{setInput(item.text);setConsent(false);document.querySelector<HTMLTextAreaElement>('textarea[aria-label="続きの依頼"]')?.focus();}}><item.icon size={20}/><span>{item.label}</span></button>)}
+                </div>
                 <textarea
                   disabled={busy}
                   aria-label="続きの依頼"
@@ -690,7 +693,7 @@ export default function EveSyncWorkspace({
                 {!online&&message&&<div className={styles.notice} role="alert"><p>接続を確認できません。入力中の依頼はこの画面に保持しています。</p><button type="button" onClick={()=>window.dispatchEvent(new Event('online'))}>接続を再確認</button><Link href="/connect/service">接続の設定を開く</Link></div>}
 
                 {signedIn===true&&(!device||!agent)&&<div className={styles.preparationHelp}><p>{!device?'実行先を接続すると、依頼を送れるようになります。依頼文は先に書いておけます。':'担当を選ぶと、使用するモデルと実行条件を確認できます。'}</p><Link href={!device?'/connect/service':'/#sky-manage'}>{!device?'実行先を接続する':'担当を管理する'} →</Link></div>}
-                <details className={styles.executionSettings} open={!device||!agent||!selectionMatches}><summary>実行先・担当・基盤モデルを確認する</summary>
+                <details className={styles.executionSettings} open={!device||!agent||!selectionMatches}><summary><span className={styles.connectionVisual} data-ready={ready}><Bot size={20}/><span>実行先・担当・基盤モデルを確認する<small>{device?.name??'接続が必要です'}{agent?` · ${agent.name}`:' · 担当を選ぶ'}</small></span>{ready&&<CheckCircle2 size={18}/>}</span></summary>
                 <div className={styles.modelIdentity} aria-label="使用するLLM">
                   <div>
                     <span>使用するLLM</span>
@@ -789,7 +792,7 @@ export default function EveSyncWorkspace({
                     disabled={!ready || !consent || !input.trim() || busy}
                     onClick={() => void send()}
                   >
-                    {busy ? '依頼を保存中…' : '選んだ実行先で下書きを作る'}
+                    <Send size={18} aria-hidden="true"/>{busy ? '依頼を保存中…' : '選んだ実行先で下書きを作る'}
                   </button>
                 </footer>
               </section>

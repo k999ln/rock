@@ -302,9 +302,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   );
 });
 
-void test('the visual baseline preserves the current shared forest-green and bronze frame', () => {
-  assert.equal(source.visualSystem.accent, 'forest_green_bronze');
-  assert.equal(source.visualSystem.previousAccent, 'ice_blue');
+void test('the visual baseline preserves the current owner-approved white and ink frame', () => {
+  assert.equal(source.visualSystem.accent, 'ink_on_white');
+  assert.equal(source.visualSystem.previousAccent, 'forest_green_bronze');
   const oldTheme = structuredClone(source);
   oldTheme.visualSystem.accent = 'ice_blue';
   assert.throws(() => validateBaseline(oldTheme), /共通visual system/);

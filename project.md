@@ -928,3 +928,11 @@ UI/UX最終候補の全verify exit0: 2620件/2619pass/1skip/0fail、API1621、CS
 検証: typecheck/design:check合格、関連42テスト合格（未送信の成果往復・離脱取消・新規会話保護を含む）。PC/390px確認、mobile入力欄top314/bottom450、fixed nav0、横溢れなし。npm run verifyは前版からのservices/sky-web/domain-router.mjsとsecurity実測証拠のhash不一致で停止。今回router差分なし。公開候補のbuildは公式helperで実施し、公開読戻しはチャット成果物のpublication JSONへ保存する。一般native/金融gateとGitHub main統合は非対象。
 
 公開125の実読戻しで、履歴ボタン自身のline-clampが一部ブラウザで末尾行を途中表示すると判明。本文spanを独立した2行高の領域にし、paddingから切り分けて修正。125を最終受入とせず、次の同一source版で再読戻しする。
+
+
+## 2026-10-31 — リリース証拠再実測と携帯の視覚操作
+ROCK/Web主担当（既存osWorkspaceUiUx）、本人の全体検証依頼により、旧visual基準と現UIの差を明示指示へ同期。forest/bronzeを白/墨色/focus青へ更新し、tokensと検査を同時変更する。HTTP証拠はrecord-web-security-evidence.mjsが実応答検査に成功した場合だけ入力hash・buildhash・実行時刻と共に更新する。失敗時に前回証拠を上書きしない。以前の測定はGitとsupersedesで追える。セキュリティ条件、実機/金融/署名/一般ローンチgateは弱めない。全体検証の署名fixtureは既存OpenSSL3をPATHへ指定する（システムLibreSSLは要件を満たさない）。
+携帯版はアイコン＋ラベルの58px以上の4入口、選択枠、56pxの「調べる/まとめる/作る」依頼テンプレート、実行先・担当・接続済みチェックと展開記号を備える。テンプレートは空欄時だけ入力を補助し、既存入力を上書きせず、同意・実行は行わない。本人のモデル・権限・費用・停止契約、入力保護は保持。入出力は依頼下書きのみ、保存/認証/APIは既存、失敗時は原入力保持と再確認、復旧は前版Sites。
+受入: baseline/release/verify、template部品試験、現build HTTP8経路、携帯実画面（ブラウザ基盤停止時は未検証と明示）。source/GitHub main/公開/実機受入を区別する。
+
+全体検証完了: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 終了0、主要2621合格/1skip/0失敗、API1621/CSV385合格。最新buildでHTTP8経路/8headerを再測定して証拠同期、release:check合格。証拠: docs/evidence/release-mobile-ux.json。携帯テンプレートの下書き/上書き防止/送信gateは部品13試験で確認。ブラウザ基盤native pipe切断のため携帯実画面QAだけ未検証、成功に数えない。Sites公開後は別の配備証拠へ記録する。
