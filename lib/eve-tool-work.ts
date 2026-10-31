@@ -80,7 +80,7 @@ export function eveToolWorkStore(db: Pick<D1Database, 'prepare' | 'batch'>, owne
     const failure = binding.pendingFailure;
     const failedChecks = failure ? job.composition?.artifacts[failure.stepId]?.checks.filter(c => !c.passed) ?? [] : [];
     const failureSummary = failure ? `未解決の工程: ${failure.stepId} / ${failure.code} / ${failure.repairable ? '限定修正可能' : '完成条件を保った自動修正は不可'}\n${failedChecks.map(c => `未達の完成条件: ${c.name} — ${c.detail}`).join('\n')}\n` : '';
-    const result = `Eveの仕事: ${job.id}\n状態: ${state}\n担当: ${binding.planner === 'validated-llm-candidate/1' ? 'LLM候補を検証した引用整形' : job.eveTool?.planning && !['adopted', 'recipe'].includes(job.eveTool.planning.status) ? '計画を確認中・Tool未実行' : '決定的な引用整形'}\nTool: mr-citations (${MR_COMMIT})\nToolのクラウド利用料: 0円（端末内の固定処理）\n${planner ? `${planner}\n` : ''}${failureSummary}${job.eveTool?.verification?.checks.map(c => `${c.passed ? '合格' : '要確認'}: ${c.name} — ${c.detail}`).join('\n') ?? '独立検査は未完了'}${output ? `\n\n${output}` : ''}`;
+    const result = `Eveの仕事: ${job.id}\n状態: ${state}\n担当: ${binding.planner === 'validated-llm-candidate/1' ? 'LLM候補を検証した引用整形' : job.eveTool?.planning && !['adopted', 'recipe'].includes(job.eveTool.planning.status) ? '計画を確認中・Tool未実行' : '決定的な引用整形'}\nTool: mr-citations (${MR_COMMIT})\n実行先: サイト側の固定処理（Pixel内Linuxではありません）\n${planner ? `${planner}\n` : ''}${failureSummary}${job.eveTool?.verification?.checks.map(c => `${c.passed ? '合格' : '要確認'}: ${c.name} — ${c.detail}`).join('\n') ?? '独立検査は未完了'}${output ? `\n\n${output}` : ''}`;
     const messages = [
       { id: `tool-goal-${job.id}`, side: 'me' as const, text: job.plan.objective },
       { id: `tool-result-${job.id}`, side: 'sky' as const, text: result, tool: 'mr-citations' },

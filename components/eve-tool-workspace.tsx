@@ -135,7 +135,8 @@ export default function EveToolWorkspace({ threadId, onThread }: { threadId: str
   }
   return <section className={styles.panel} aria-label="EveからsmisのToolを実行">
     <h3>smisのToolで仕事を進める</h3>
-    <p>引用整形 → リンク先の保持を検査 → 保存。外部送信・Cloud呼出はなく、クラウド利用料は0円です。記事の事実確認は含みません。</p>
+    <p>素材をこのサイトに送って本人用の仕事に保存し、サイト側の固定処理で引用を整形します。固定手順ではモデルを呼び出しません。Pixel内Linuxでの処理や記事の事実確認は含みません。</p>
+    {current && <p>以前の会話に「端末内」と表示されていても、この引用整形はサイト側の固定処理です。保存済みの会話は変更していません。</p>}
     <label>目的<input value={objective} maxLength={1000} disabled={busy} onChange={e => { setObjective(e.target.value); }} /></label>
     <label>引用を含む原稿<textarea value={source} maxLength={10000} rows={5} disabled={busy} onChange={e => { setSource(e.target.value); }} placeholder="本文。（出典: [資料](https://example.com/source)）" /></label>
     <label><input type="checkbox" checked={consent} disabled={busy} onChange={e => setConsent(e.target.checked)} />本人用の仕事に素材・成果を保存する。秘密情報は含めません。</label>

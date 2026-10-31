@@ -32,6 +32,7 @@ void test('Eve invokes the existing Tool, independently checks URLs, saves the s
   assert.equal(thread.remember, false);
   assert.equal(thread.session.messages.length, 2);
   assert.match(thread.session.messages[1].text, /検査済み・完了/);
+  assert.match(thread.session.messages[1].text, /実行先: サイト側の固定処理（Pixel内Linuxではありません）/);
   assert.match(thread.session.messages[1].text, new RegExp(job.id));
   assert.match(thread.session.messages[1].text, /https:\/\/example.com\/evidence/);
   const raw = f.sql.prepare('SELECT envelope FROM eve_messages').all();
