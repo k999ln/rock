@@ -41,3 +41,12 @@ void test('an empty MCP response cannot become a successful result', () => {
       text: 'MCPは成果本文を返しませんでした。',
     });
 });
+
+void test('malformed error flags cannot be presented as a successful result', () => {
+  for (const flag of ['true', 'false', null, 0, 1, {}, []]) {
+    assert.deepEqual(
+      describeMcpToolResult({ isError: flag, content: [{ type: 'text', text: 'result' }] }),
+      { ok: false, text: 'MCPの応答形式を確認できません。実行結果を照合してください。' },
+    );
+  }
+});

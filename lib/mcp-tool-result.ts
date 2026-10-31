@@ -17,6 +17,8 @@ export function describeMcpToolResult(value: unknown): {
     content?: unknown;
     structuredContent?: unknown;
   };
+  if (result.isError !== undefined && typeof result.isError !== 'boolean')
+    return { ok: false, text: 'MCPの応答形式を確認できません。実行結果を照合してください。' };
   const failed = result.isError === true;
   const content = Array.isArray(result.content)
     ? (result.content as McpContent[])
