@@ -35,10 +35,10 @@ flowchart TB
     HP[hardware profile: mii / phone / pro / pixel-native]
   end
   subgraph SV[サービス層 — ユーザーに見えるのは Eve だけ]
-    E[Eve 会話→Goal] --> N[Noa 道具・Agent をつなぐ] --> A[AMC 工程・担当・合格条件] --> J[Jev 独立評価]
+    E[Eve 会話→Goal] --> N[Noa 道具・Agent をつなぐ] --> A[AMC 工程・担当・合格条件] --> WK[Work · Job · Receipt 実行] --> J[Jev 独立評価]
     SK[Sky 市場] <--> N
-    W[Wallet 天引き・精算]
-    SP[Spider 巡回検査]
+    WK --> B[Broker 本人の承認・予算] --> W[Wallet 天引き・精算]
+    SP[Spider 巡回検査] -.-> WK
   end
   P --> OS
   HW --> OS --> SV
@@ -57,43 +57,9 @@ flowchart TB
 
 配布できるものは **eSIM** — [03-esim.md](docs/structure/03-esim.md)。GB を売らず、RockstarOS の鍵付き回線を月額で。
 
-## 3. 内側の部品（コードの名前）
+## 3. 名前
 
-```mermaid
-flowchart LR
-  subgraph 入口
-    EVE[Eve<br/>lib/eve-*]
-  end
-  subgraph 判断
-    NOA[Noa 旧Smith<br/>lib/eve-agent-*]
-    AMC[AMC 旧Jennifer吸収<br/>lib/amc-*, lib/jennifer-*]
-    JEV[Jev<br/>lib/jev-*]
-  end
-  subgraph 実行
-    WORK[Work/Job/Receipt 旧Zema<br/>lib/work-*, lib/workflow.ts]
-    BRK[Broker<br/>lib/a2a-broker-*, agent-control-plane]
-    WAL[Wallet<br/>lib/wallet*, settlement, services/sky-billing]
-  end
-  subgraph 市場
-    SKY[Sky<br/>lib/sky-*, services/sky-*]
-  end
-  subgraph 基盤
-    ROS[RockstarOS<br/>lib/rockstar-*, systems/rock-star-os, android/, os/]
-    ESIM[eSIM<br/>app/api/esim, lib/esim-*]
-    MII[mii<br/>targets/mii, lib/mii-*, lib/game-*]
-  end
-  SPI[Spider<br/>lib/spider-*, toolkits/spider-guard]
-  EVE --> NOA --> AMC --> WORK --> JEV
-  NOA <--> SKY
-  WORK --> BRK --> WAL
-  ROS --- EVE
-  ESIM --- ROS
-  MII --- ROS
-  SPI -.-> 判断
-  SPI -.-> 実行
-```
-
-名前の正本と旧名の対応は [06-naming.md](docs/structure/06-naming.md)。
+内側の名前（Eve / Noa / AMC / Jev / Spider / Sky / Work / Broker / Wallet）とコードの場所は下の表。正本と旧名の対応は [06-naming.md](docs/structure/06-naming.md)。
 
 ## 4. フォルダ地図（直すときはこの行だけ開く）
 
