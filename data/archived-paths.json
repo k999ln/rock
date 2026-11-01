@@ -985,7 +985,9 @@
     "docs/spec-history.md",
     "docs/sim-service-entitlement-claims.md",
     "components/avocado-turntable.tsx",
-    "components/avocado-turntable.module.css"
+    "components/avocado-turntable.module.css",
+    "project.md",
+    "PROJECTS.md"
   ],
   "restoreCommits": {
     "docs/product.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
@@ -1000,7 +1002,9 @@
     "docs/spec-history.md": "210272144f401938b03525ee64024b7346b558e9",
     "docs/sim-service-entitlement-claims.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
     "components/avocado-turntable.tsx": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
-    "components/avocado-turntable.module.css": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb"
+    "components/avocado-turntable.module.css": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "project.md": "1daf5c340f23fb40e52289d276cd5ec1ca271fa0",
+    "PROJECTS.md": "1daf5c340f23fb40e52289d276cd5ec1ca271fa0"
   },
   "cleanupBatches": [
     {
@@ -1040,5 +1044,11 @@
       ],
       "reason": "Keep obsolete proposal deleted during PR112 main refresh; latest approved public Home/Sky URLs transferred to current baseline and service contracts."
     }
-  ]
+  ],
+  "relocated": {
+    "project.md": "archive/root-snapshot-20261029/project.md",
+    "PROJECTS.md": "archive/root-snapshot-20261029/PROJECTS.md",
+    "README.md (2026-10-29版)": "archive/root-snapshot-20261029/README.md",
+    "AGENTS.md (2026-10-29版)": "archive/root-snapshot-20261029/AGENTS.md"
+  }
 }

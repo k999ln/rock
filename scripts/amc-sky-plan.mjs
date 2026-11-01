@@ -5,6 +5,9 @@ export const skyReferencePaths = {
   'lib/db.ts': 'lib/fund-store.ts',
   'lib/schema.ts': 'db/schema.ts',
   'wrangler.jsonc': 'wrangler.local.jsonc',
+  // 2026-11-02 構造整理: ルート文書を archive へ移動（内容は不変）
+  'project.md': 'archive/root-snapshot-20261029/project.md',
+  'PROJECTS.md': 'archive/root-snapshot-20261029/PROJECTS.md',
 };
 
 export function validateSkyPlan(plan, goal) {

@@ -20,6 +20,8 @@
   "runtimeInputPathCorrections": {
     "lib/db.ts": "lib/fund-store.ts",
     "lib/schema.ts": "db/schema.ts",
-    "wrangler.jsonc": "wrangler.local.jsonc"
+    "wrangler.jsonc": "wrangler.local.jsonc",
+    "project.md": "archive/root-snapshot-20261029/project.md",
+    "PROJECTS.md": "archive/root-snapshot-20261029/PROJECTS.md"
   }
 }

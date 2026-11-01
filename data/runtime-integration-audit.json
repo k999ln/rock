@@ -131,7 +131,7 @@
     "main_contract_preserved_or_change_adapted": [
       ".gitignore",
       "AGENTS.md",
-      "PROJECTS.md",
+      "archive/root-snapshot-20261029/PROJECTS.md",
       "README.md",
       "android/shell/src/aosp/AndroidManifest.xml",
       "android/shell/src/main/AndroidManifest.xml",
@@ -250,7 +250,7 @@
       "lib/zema-chat-session.ts",
       "package-lock.json",
       "package.json",
-      "project.md",
+      "archive/root-snapshot-20261029/project.md",
       "public/rock-icon-maskable.svg",
       "public/sw.js",
       "scripts/check-csv-storage.mjs",

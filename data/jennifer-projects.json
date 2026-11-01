@@ -22,7 +22,7 @@
       "managerLabel": "OS担当si",
       "taskPrefixes": ["AI", "BRD", "DSP", "LCH", "N", "OS", "RLS", "SIM", "V", "VER"],
       "dependsOn": ["spider-security"],
-      "sourceRefs": ["PROJECTS.md", "docs/rockstaros-complete-design.md", "docs/workstreams/06-native-qemu-release.md", "docs/workstreams/07-android-device-local-ai.md"]
+      "sourceRefs": ["archive/root-snapshot-20261029/PROJECTS.md", "docs/rockstaros-complete-design.md", "docs/workstreams/06-native-qemu-release.md", "docs/workstreams/07-android-device-local-ai.md"]
     },
     {
       "id": "hardware",
@@ -32,7 +32,7 @@
       "managerLabel": "ハードウェア担当si",
       "taskPrefixes": ["MAT", "MINI", "PRO"],
       "dependsOn": ["rockstaros-core", "spider-security"],
-      "sourceRefs": ["PROJECTS.md", "docs/avocado-mini-r5/README.md", "docs/avokado-pro-pc-design.md", "docs/workstreams/11-material-invention-avocado-mini.md"]
+      "sourceRefs": ["archive/root-snapshot-20261029/PROJECTS.md", "docs/avocado-mini-r5/README.md", "docs/avokado-pro-pc-design.md", "docs/workstreams/11-material-invention-avocado-mini.md"]
     },
     {
       "id": "rocketstar",
@@ -42,7 +42,7 @@
       "managerLabel": "rocketstar担当si",
       "taskPrefixes": ["RKT"],
       "dependsOn": ["rockstaros-core", "hardware", "spider-security"],
-      "sourceRefs": ["PROJECTS.md", "docs/rocketstar-design/README.md"]
+      "sourceRefs": ["archive/root-snapshot-20261029/PROJECTS.md", "docs/rocketstar-design/README.md"]
     },
     {
       "id": "jennifer-zema",
@@ -82,7 +82,7 @@
       "managerLabel": "事業・Wallet担当si",
       "taskPrefixes": ["BIL", "BIZ", "CSV", "DX", "FB", "FND", "GM", "GX", "MKT", "SPN", "WLT"],
       "dependsOn": ["jennifer-zema", "spider-security"],
-      "sourceRefs": ["PROJECTS.md", "docs/workstreams/03-wallet-billing-providers.md", "docs/workstreams/08-game-market-fund.md", "docs/workstreams/09-business-pilots.md"]
+      "sourceRefs": ["archive/root-snapshot-20261029/PROJECTS.md", "docs/workstreams/03-wallet-billing-providers.md", "docs/workstreams/08-game-market-fund.md", "docs/workstreams/09-business-pilots.md"]
     },
     {
       "id": "governance-release",
@@ -92,7 +92,7 @@
       "managerLabel": "統合・公開担当si",
       "taskPrefixes": ["B", "D", "DB", "DOC", "G", "ORG", "R"],
       "dependsOn": ["spider-security"],
-      "sourceRefs": ["AGENTS.md", "PROJECTS.md", "docs/README.md", "data/project-status.json"]
+      "sourceRefs": ["AGENTS.md", "archive/root-snapshot-20261029/PROJECTS.md", "docs/README.md", "data/project-status.json"]
     }
   ]
 }

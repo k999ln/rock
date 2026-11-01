@@ -185,7 +185,7 @@
       "evidence": [
         "docs/mission-control.md",
         "data/mission-control.json",
-        "PROJECTS.md",
+        "archive/root-snapshot-20261029/PROJECTS.md",
         "docs/rockstaros-design-portal.md",
         "data/project-status.json",
         "docs/evidence/spider-locked-dependency-restore.json",
@@ -210,7 +210,7 @@
         "references": [
           "docs/mission-control.md",
           "data/mission-control.json",
-          "PROJECTS.md",
+          "archive/root-snapshot-20261029/PROJECTS.md",
           "docs/rockstaros-design-portal.md",
           "data/project-status.json"
         ],

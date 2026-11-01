@@ -3860,7 +3860,7 @@
         "docs/product-baseline.md",
         "docs/sky-tool-sdk.md",
         "docs/sky-billing.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ],
       "writePaths": [
         "docs/evidence/sky-launch/s11-01.json"
@@ -3947,7 +3947,7 @@
         "docs/product-baseline.md",
         "docs/sky-tool-sdk.md",
         "docs/sky-billing.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ],
       "writePaths": [
         "docs/evidence/sky-launch/s11-02.json"
@@ -4037,7 +4037,7 @@
         "docs/product-baseline.md",
         "docs/sky-tool-sdk.md",
         "docs/sky-billing.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ],
       "writePaths": [
         "docs/evidence/sky-launch/s11-03.json"
