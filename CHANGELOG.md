@@ -9,7 +9,7 @@
 - docs/mii/design/00〜13: mii 設計書 V1（Tower 4本＋Hub 別体、本数可変 1→4→8、基準部屋 4.5×4.5m、Node 寸法、Gen1 運動視差投影、同期・電源、ソフト構成、校正、受入条件、BOM 構造、試作計画）。
 
 - mainの旧状態をブランチ `archive/pre-restructure-20261102-main-1daf5c3` に保存（復元用）。
-- README.md を内側向けの構造地図に書き直し。旧READMEは archive/root-snapshot-20261029/README.md。
+- README.md の前半を内側向けの構造地図に書き直し。後半に旧READMEの製品説明（Mini/OS/Eve/Sky/Pro、写真・設計・コードの場所・開発状況）を全文残した。旧README原本は archive/root-snapshot-20261029/README.md。
 - AGENTS.md を100行以内に書き直し。旧AGENTSは archive/root-snapshot-20261029/AGENTS.md。
 - project.md / PROJECTS.md を archive/root-snapshot-20261029/ へ移動。
 - docs/structure/ に正本の設計入口を新設。codex/tasks/ にCodex向け指示書を新設。
