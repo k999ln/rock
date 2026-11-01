@@ -2,7 +2,7 @@
   {
     "squad": "H1",
     "paths": [
-      "PROJECTS.md",
+      "archive/root-snapshot-20261029/PROJECTS.md",
       "data/mission-control.json",
       "data/project-status.json",
       ".github/workflows/",

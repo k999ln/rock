@@ -9,7 +9,7 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 void test('RockstarOS service entry remains separate from the selected Mini/Pro product homepage', () => {
   const marketing = read('sites/avocado-mini/src/pages/index.astro');
   const onboarding = read('app/connect/page.tsx');
-  const projectMap = read('PROJECTS.md');
+  const projectMap = read('archive/root-snapshot-20261029/PROJECTS.md');
   const claimUI = read('components/rockstar-entitlement-claim.tsx');
   const offerProfiles = read('lib/rockstar-service-offers.ts');
   const offerProfileTests = read('tests/rockstar-service-offers.test.mjs');

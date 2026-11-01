@@ -3562,7 +3562,7 @@
       "status": "done",
       "dependsOn": [],
       "evidence": [
-        "PROJECTS.md",
+        "archive/root-snapshot-20261029/PROJECTS.md",
         "README.md",
         "docs/rockstaros-product-system-map.md",
         "docs/workstreams/README.md",
@@ -3580,7 +3580,7 @@
         "docs/mission-control.md",
         "data/mission-control.json",
         "scripts/check-mission-control.mjs",
-        "PROJECTS.md"
+        "archive/root-snapshot-20261029/PROJECTS.md"
       ]
     },
     {
@@ -4709,7 +4709,7 @@
         "docs/workstreams/05-web-pwa-sites.md",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/main.js",
-        "project.md",
+        "archive/root-snapshot-20261029/project.md",
         "sites/avocado-mini/src/pages/rockstaros/index.astro",
         "sites/avocado-mini/astro.config.mjs",
         "sites/avocado-mini/src/pages/rocket-star/index.astro",
@@ -4770,7 +4770,7 @@
         "sites/avocado-mini/public/downloads/avocadoMini-R5-integrated-design.pdf",
         "docs/evidence/avocado-mini-site-r5.json",
         "docs/workstreams/05-web-pwa-sites.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ]
     },
     {
@@ -4791,7 +4791,7 @@
         "sites/avocado-mini/tests/astro-build.test.mjs",
         "sites/avocado-mini/tests/preorder.test.mjs",
         "docs/workstreams/05-web-pwa-sites.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ]
     },
     {
@@ -4812,7 +4812,7 @@
         "sites/avocado-mini/public/sitemap.xml",
         "docs/evidence/avocado-mini-site-r5.json",
         "docs/workstreams/05-web-pwa-sites.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ]
     },
     {
@@ -4828,7 +4828,7 @@
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/tests/astro-build.test.mjs",
         "docs/evidence/avocado-mini-site-e3-restoration.json",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ]
     },
     {
@@ -5374,7 +5374,7 @@
       "status": "done",
       "dependsOn": [],
       "evidence": [
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ]
     },
     {
@@ -5458,7 +5458,7 @@
         "R06"
       ],
       "evidence": [
-        "project.md",
+        "archive/root-snapshot-20261029/project.md",
         "docs/validation.md",
         "docs/deployment-integration.md"
       ]
@@ -7101,7 +7101,7 @@
       "evidence": [
         "data/project-status.json",
         "docs/workstreams/07-android-device-local-ai.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ],
       "recoveredFrom": {
         "sourceCommit": "b37c52a6e813b9c76d87ef7aad37277c6375fb15",
@@ -7121,7 +7121,7 @@
         "package.json",
         "tests/verify-coverage.test.mjs",
         "docs/workstreams/05-web-pwa-sites.md",
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ],
       "recoveredFrom": {
         "sourceCommit": "846f3950ec79b1029290c82605896e9ec98ead26",
@@ -7988,7 +7988,7 @@
       "priorChecksPassed": 8,
       "priorVerifyRun": 37512489543,
       "conflicts": [
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ],
       "resolution": "Retain both progress sections; preserve all upstream runtime/features, portableAddons and main nextAction",
       "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
@@ -8027,7 +8027,7 @@
       "priorChecksPassed": 7,
       "priorVerifyRun": 37574887322,
       "conflicts": [
-        "project.md"
+        "archive/root-snapshot-20261029/project.md"
       ],
       "resolution": "Preserve main reading guide, title, all restored history and ordered sections plus the complete existing cache progress section. Global nextAction and unrelated status unchanged.",
       "cacheSourceTestsWorkflowAndLicenseUnchanged": true,

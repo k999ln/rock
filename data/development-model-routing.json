@@ -827,7 +827,7 @@
           "docs/evidence/development-execution/all-lanes-main-handoff-summary.json",
           "scripts/check-development-execution.mjs",
           "tests/development-execution-gates.test.mjs",
-          "project.md",
+          "archive/root-snapshot-20261029/project.md",
           "data/project-status.json",
           "README.md",
           "data/development-portfolio.json",
