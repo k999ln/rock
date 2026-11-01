@@ -20,3 +20,7 @@
 
 ## やらないこと
 - 個々の check script の中身の変更。
+
+## 既知の日付依存テスト（先に直す）
+
+- tests/sky-recurring-sandbox.test.mjs「real LLM reserve and final send are fenced on nonpayment, and restored after readback」: fixture の `start=Date.UTC(2026,9,1)` に対し lib/sky-recurring-sandbox.ts の `replacePaymentMethod` 等が `Date.now()` を使うため、2026-11 以降に落ちる（main でも同じ）。`now` を引数で注入できるようにし、テストは固定時刻を渡す。
