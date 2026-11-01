@@ -9,3 +9,7 @@
 ## 合格条件
 - `ls systems/rock-star-os/targets` が `mii` を含み `avocado-mini` を含まない。
 - 2 つの check が通る。
+
+## 入力
+
+設計書 docs/mii/design/ の 03 §4（三形態）、06（配線・電源）、07 §6（本数可変）。

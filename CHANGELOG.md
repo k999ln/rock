@@ -6,6 +6,8 @@
 
 ## 2026-11-02 — 構造整理（Fable / Noelle）
 
+- docs/mii/design/00〜13: mii 設計書 V1（Tower 4本＋Hub 別体、本数可変 1→4→8、基準部屋 4.5×4.5m、Node 寸法、Gen1 運動視差投影、同期・電源、ソフト構成、校正、受入条件、BOM 構造、試作計画）。
+
 - mainの旧状態をブランチ `archive/pre-restructure-20261102-main-1daf5c3` に保存（復元用）。
 - README.md を内側向けの構造地図に書き直し。旧READMEは archive/root-snapshot-20261029/README.md。
 - AGENTS.md を100行以内に書き直し。旧AGENTSは archive/root-snapshot-20261029/AGENTS.md。
