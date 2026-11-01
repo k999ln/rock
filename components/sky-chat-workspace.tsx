@@ -350,13 +350,13 @@ export default function SkyChatWorkspace() {
   useEffect(() => {
     if (access.accessState === 'signin' && jenniferAccessState === 'ready') void refreshJenniferAccess();
   }, [access.accessState, jenniferAccessState, refreshJenniferAccess]);
-  if (jenniferAccessState !== 'ready') return <WorkspaceShell title="Jennifer" hideTopActions>
+  if (jenniferAccessState !== 'ready') return <WorkspaceShell title="Noah" hideTopActions>
     <JenniferAccess access={jenniferAccess} />
   </WorkspaceShell>;
   return <>
     {!storageBlocked && (admitted || access.accessState === 'ready') && access.accessState !== 'signin' &&
       <div hidden={access.executionBlocked}><AuthenticatedSkyChatWorkspace {...access} portfolioAccess={jenniferAccess.portfolioAccess} /></div>}
-    {(access.executionBlocked || storageBlocked) && <WorkspaceShell title="Jennifer">
+    {(access.executionBlocked || storageBlocked) && <WorkspaceShell title="Noah">
       <ExecutionSignin state={access.accessState === 'signin' ? 'checking' : access.accessState} />
       {storageBlocked && <section role="alert" aria-label="会話の保存領域を確認">
         <p>前の会話と引き継ぎデータを消去できませんでした。古い内容の読み込みを止めています。</p>
@@ -1665,7 +1665,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           <div className="zema-room-heading">
             <div>
               <span>AVOKADO / JENNIFER · ZEMA WORK CONTROL · ROCKSTAROS</span>
-              <h1>Jennifer</h1>
+              <h1>Noah</h1>
               <strong className="zema-jennifer-lead">Chief of Staff · Zemaが実行を管理</strong>
             </div>
           </div>

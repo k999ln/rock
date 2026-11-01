@@ -249,7 +249,7 @@ export default function HomeScreen() {
                   <Suspense fallback={<output>能力を読み込んでいます…</output>}>
                     <SkyDiscoveryFeed
                       key={featureOnly ? 'features' : 'discover'}
-                      initialFilter={featureOnly ? 'features' : 'agent'}
+                      initialFilter={featureOnly ? 'features' : 'all'}
                       standalone
                       embedded
                     />

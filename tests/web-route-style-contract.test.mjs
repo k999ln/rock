@@ -199,7 +199,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
     /<Workbench embedded cloudDraft=\{cloudWorkDraft\} initialPackageKey=\{preferredPackage\} packageRuntimeServers=\{mcpServers\} \/>/,
   );
   assert.match(chat, /<ChatLiveProgress/);
-  assert.match(chat, /<h1>Jennifer<\/h1>/);
+  assert.match(chat, /<h1>Noah<\/h1>/);
   assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);
   assert.match(chat, /Zemaが実行を管理/);
   assert.match(chat, /Zemaの実行計画を開く/);
