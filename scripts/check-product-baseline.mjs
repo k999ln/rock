@@ -1512,7 +1512,7 @@ export function validateBaseline(
   for (const file of [
     'AGENTS.md',
     'README.md',
-    'project.md',
+    'archive/root-snapshot-20261029/project.md',
     'docs/service-design/README.md',
     'docs/service-design/02-system-contracts.md',
     'docs/service-design/06-consistency-contracts.md',

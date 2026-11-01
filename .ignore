@@ -1,0 +1,10 @@
+# ripgrep / fd / Codex の既定検索から外す（git には残る。復元可能）
+# 歴史・証拠・スナップショット。読むときは --no-ignore を付ける。
+archive/
+docs/evidence/
+docs/merge-loss-audit-20261007/
+workspaces/
+toolkits/mr/
+vendor/mr/
+drizzle-legacy/
+CHANGELOG.md

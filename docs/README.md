@@ -1,5 +1,7 @@
 # docs/ — 現行設計の読み方
 
+> **2026-11-02**: 設計の正本は [structure/](structure/00-overview.md)（00 全体像 / 01 mii / 02 RockstarOS / 03 eSIM / 04 Eve·Noa·AMC·Sky / 05 事業 / 06 名前 / 07 決定表 / 08 PDF指摘 / 09 リポ地図）。以下の既存文書と矛盾したら structure/ が勝つ。eSIM は「通信＋si利用権bundle」から「RockstarOS の鍵付き回線（GBを売らない）」へ再定義（structure/03）。Jennifer は AMC へ統合、Smith は Noa、avocadoMini は mii（structure/06）。
+
 更新: 2026-10-13。最初に[サービス統合設計](service-design/README.md)を読む。旧仕様と現行仕様を並べて選ばせず、一つの製品体験と各契約の責任から説明する。
 
 ## まず通信・OS・siクラウドの土台から読む

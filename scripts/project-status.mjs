@@ -122,7 +122,7 @@ const targets = [
     },
   },
   {
-    name: 'project.md',
+    name: 'archive/root-snapshot-20261029/project.md',
     transform: (source) =>
       replaceMarkedBlock(source, 'project-status', block, 'project.md'),
   },

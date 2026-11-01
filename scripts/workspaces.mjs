@@ -204,7 +204,7 @@ export function renderWorkspaces(model) {
     '',
     '`data/workspaces.json` は場所と確認コマンドだけを保持し、taskの担当を再定義しません。新規taskは進捗JSONとMission Controlの一意なtaskAssignmentsへ追加します。作業部屋はproject／mission同期から自動再生成され、`npm run verify` にも整合検査を含めます。',
     '',
-    '[責任分界](../docs/workstreams/00-responsibility-boundaries.md) · [作業分野別の受入・検証](../docs/workstreams/README.md) · [製品別ガイド](../PROJECTS.md)',
+    '[責任分界](../docs/workstreams/00-responsibility-boundaries.md) · [作業分野別の受入・検証](../docs/workstreams/README.md) · [製品別ガイド](../archive/root-snapshot-20261029/PROJECTS.md)',
     '',
   );
   output.set('workspaces/README.md', intro.join('\n'));

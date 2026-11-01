@@ -72,7 +72,7 @@ requireValue(
   `native内蔵Toolは6種類です（実際: ${toolKinds.size}）`,
 );
 
-const projectGuide = read('PROJECTS.md');
+const projectGuide = read('archive/root-snapshot-20261029/PROJECTS.md');
 requireValue(
   projectGuide.includes('si自動化チームのTool'),
   'プロジェクト別ガイドにToolチームの入口がありません',
