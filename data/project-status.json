@@ -12893,7 +12893,7 @@
     "runtimeImplemented": false,
     "githubSaved": false,
     "mainIntegrated": false,
-    "next": "See chapter23: company-sender and Soracom contact completion, then exact regulatory/provider/antenna/power originals and physical acceptance",
+    "next": "See chapter23: complete Soracom contact fields; company Quectel inquiry delivered; await regulatory/provider/antenna/power originals and physical acceptance",
     "powerSelection": "Waveshare UPS Module 3S / P28A x3 / manufacturer 12.6V2A charger",
     "verification": {
       "p3Static": "PASS_STATIC_ONLY_WITH_OPEN_RELEASE_CONDITIONS",
@@ -12924,15 +12924,16 @@
     "physicalAccepted": false,
     "revision": "P3.1",
     "authority": "docs/mii/design/23-japan-procurement.md",
-    "vendorMessagesSent": 1,
+    "vendorMessagesSent": 2,
     "companySenderRequested": true,
-    "companySenderReady": false,
+    "companySenderReady": true,
     "soracomSent": false,
     "procurementReleased": false,
     "providerConformanceAccepted": false,
     "verification": "P3/P2 static PASS; PDF6 visually reviewed; design:check/project:update/added-link/diff/hash PASS; full verify exit0 after localhost sandbox retry",
-    "next": "Finish company-mail sender setup and Soracom required contact fields; send authorized inquiry; obtain certificate/antenna/power originals, revise affected wiring, then physical P3-A01..07",
-    "companySenderStatus": "Zoho sign-in reports account identifier not found; primary login/webmail requested",
-    "soracomFormPrepared": true
+    "next": "Complete Soracom required company/department/phone fields and send authorized inquiry; obtain certificate/antenna/power originals, revise affected wiring, then physical P3-A01..07",
+    "companySenderStatus": "Authenticated company Zoho sender used; Quectel contact correction and repeated technical inquiry sent, Sent body and Delivered status verified",
+    "soracomFormPrepared": true,
+    "quectelCompanyFollowupSent": true
   }
 }

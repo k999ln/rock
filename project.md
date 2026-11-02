@@ -70,4 +70,10 @@ P3検証: 静的配線/電力枠・既存P2照合・`npm run design:check`・`gi
 
 Skyloのmodem電源断/detach制限により通常route切替でmodem OFFする前提を撤回。日本Wi-Fiの初期profileはJP/2.4GHz/20MHz/ch1〜11、RFは純正。23章でQuectel候補の端子/5V範囲とYECN028AAの225mm外形衝突を明示し、全部品調達HOLDを保持。本人が2社への技術問い合わせを承認、Quectelへ1件送信/SENT読戻し済み。その後の会社メール指定を反映し、会社送信環境の確認とSoracom会社名/部署/電話の入力は未完了。個人情報/本文はGit外。
 
-検証: P3静的整合PASS、PDF6頁すべて表示確認、design:check PASS。npm run verifyは最初127.0.0.1待受EPERMで停止、同一検証を待受可能な環境で再実行してexit0（root3597/3593pass/0fail/4skip、API1678、CSV385、Web asset264/missing0）。ログは /private/tmp/mii-p3-review/full-verify-unrestricted.log。最終metadataはproject:update/design:check/diff/追加リンク/hashも照合済み。会社メールはZohoログインでアカウント未検出、別名かログイン先を本人に確認中。Soracomは返信先・本文・型番を入力済み、送信未実施。実機/回線/同居RF/日本NTN証明/最大電流は未受入。local保存、GitHub未push、main未統合。
+検証: P3静的整合PASS、PDF6頁すべて表示確認、design:check PASS。npm run verifyは最初127.0.0.1待受EPERMで停止、同一検証を待受可能な環境で再実行してexit0（root3597/3593pass/0fail/4skip、API1678、CSV385、Web asset264/missing0）。ログは /private/tmp/mii-p3-review/full-verify-unrestricted.log。最終metadataはproject:update/design:check/diff/追加リンク/hashも照合済み。Soracomは返信先・本文・型番を入力済み、送信未実施。実機/回線/同居RF/日本NTN証明/最大電流は未受入。local保存、GitHub未push、main未統合。
+
+### 会社メールへの訂正と実送信（2026-11-02）
+
+本人が会社アドレスの綴りを訂正し、Chromeで開いた認証済みZohoを使用。Quectelへ同じ照会の再送と今後の会社返信先指定を実施し、送信済み本文と「配信済み」表示を確認。会社送信環境の確認は完了、旧アドレスのアカウント未検出は解消。Soracomの返信先も訂正済みだが、会社名・部署名・電話番号の本人回答待ちで未送信。送信本文/メールURL/連絡先はGit外に保存。共通OS・部品・配線は変更せず、技術回答待ちと調達HOLDを維持する。
+
+会社連絡更新の検証: `npm run project:update`、`npm run design:check`、差分整合とsource hash/連絡先Git除外を確認。ハード/OSコードは変更なし、全verifyは直前P3.1のexit0を参照し、今回の連絡状態変更の検査と区別する。
