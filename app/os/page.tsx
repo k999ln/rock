@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import HomeScreen from '@/components/home-screen';
+import OsHomeEntry from '@/components/os-home-entry';
 
 export const metadata: Metadata = {
   title: 'RockstarOS — ニュースとsmisのタイムライン',
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function OsHomePage() {
-  return <HomeScreen />;
+  return <OsHomeEntry />;
 }

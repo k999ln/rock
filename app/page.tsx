@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import ColumbiaFeed from '@/app/sky/campus/[campusId]/columbia-feed';
-import HomeScreen from '@/components/home-screen';
+import OsHomeEntry from '@/components/os-home-entry';
 import { campusForHost } from '@/lib/campus-host';
 
 const homeMetadata: Metadata = {
@@ -28,5 +28,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   if ((await requestedCampus()) === 'columbia') return <ColumbiaFeed />;
-  return <HomeScreen />;
+  return <OsHomeEntry />;
 }

@@ -20,7 +20,7 @@ export default function OSHeader({
   hideNavigation?: boolean;
 }) {
   const pathname = usePathname();
-  const homeHref = osRouteHref(pathname, '/', process.env.NODE_ENV === 'development');
+  const homeHref = osRouteHref(pathname, '/os/eve', process.env.NODE_ENV === 'development');
   return (
     <header
       className="os-header"
