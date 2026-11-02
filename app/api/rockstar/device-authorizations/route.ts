@@ -1,5 +1,5 @@
 import { database } from '@/lib/fund-store';
-import { rockstarDeviceLinkStore } from '@/lib/rockstar-device-link';
+import { rockstarDeviceLinkStore, negotiatedDeviceBinding, deviceAuthorizationResponse } from '@/lib/rockstar-device-link';
 
 const json = (value: unknown, status = 200) => Response.json(value, {
   status,
@@ -21,20 +21,21 @@ export async function POST(request: Request) {
     const origin = request.headers.get('Origin');
     if (origin && origin !== new URL(request.url).origin) return json({ error: 'origin_rejected' }, 403);
     const input = await body(request);
+    const bound = negotiatedDeviceBinding(request.headers.get('X-Rockstar-Device-Binding'));
     const store = rockstarDeviceLinkStore(database());
     if (input.action === 'begin' && Object.keys(input).every((key) => ['action', 'deviceName'].includes(key))) {
       const authorization = await store.begin(input.deviceName);
       return json({
-        ...authorization,
+        ...deviceAuthorizationResponse(authorization, bound),
         verificationUri: `${new URL(request.url).origin}/connect/device`,
         verificationUriComplete: `${new URL(request.url).origin}/connect/device?user_code=${authorization.userCode}`,
       }, 201);
     }
     if (input.action === 'poll' && Object.keys(input).length === 2 && typeof input.deviceCode === 'string')
-      return json(await store.poll(input.deviceCode));
+      return json(deviceAuthorizationResponse(await store.poll(input.deviceCode), bound));
     return json({ error: 'invalid_device_authorization_request' }, 400);
   } catch (error) {
-    if (error instanceof SyntaxError || (error instanceof Error && ['BODY_INVALID', 'CONTENT_TYPE'].includes(error.message)))
+    if (error instanceof SyntaxError || (error instanceof Error && ['BODY_INVALID', 'CONTENT_TYPE', 'DEVICE_BINDING_INVALID'].includes(error.message)))
       return json({ error: 'invalid_device_authorization_request' }, 400);
     if (error instanceof Error && error.message === 'BODY_TOO_LARGE') return json({ error: 'request_too_large' }, 413);
     if (error instanceof Error && error.message === 'DEVICE_CODE_INVALID') return json({ error: 'invalid_device_code' }, 400);

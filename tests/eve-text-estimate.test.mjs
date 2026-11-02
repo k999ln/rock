@@ -27,8 +27,8 @@ async function savedJob(count = 2) {
 
 async function fixture(t, count = 2) {
   const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter(n => n.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
+  for (const name of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(n => n.endsWith('.sql')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${name}`, import.meta.url), 'utf8'));
   const state = { onRateRead: null, onJobRead: null, jobReads: 0, scope: true, binds: [], providerFetches: 0, agentCalls: 0 };
   t.mock.method(globalThis, 'fetch', async () => { state.providerFetches++; throw Error('No external request in an estimate'); });
   const db = { prepare(sql) { return { bind(...args) { return {

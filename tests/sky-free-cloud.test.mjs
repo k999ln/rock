@@ -136,3 +136,43 @@ void test('wake requires a fresh signature and fixed body',async()=>{
  const request=body=>new Request('https://example.test/api/llm/free-cloud/tick',{method:'POST',headers:{'x-sky-time':stamp,'x-sky-signature':sig},body});
  assert.equal(await verifyWake(request('{}'),key),true);assert.equal(await verifyWake(request('{"owner":"other"}'),key),false);assert.equal(await verifyWake(request('{}'),key,Number(stamp)+120001),false);assert.equal(await verifyWake(request('{}'),'wrong'),false);
 });
+
+void test('owner role survives queue, worker resume and same-id replay without changing execution rights',async t=>{
+ const db=setup(t),{skyAgentLibraryStore}=await import('../lib/sky-agent-library-store.ts');
+ const {freeCloudTextHttp}=await import('../lib/sky-free-cloud-http.ts');
+ const {backgroundJobs,tickBackground}=await import('../lib/sky-free-cloud-background.ts');
+ const profile=await skyAgentLibraryStore(db,'owner').save(crypto.randomUUID(),0,{name:'合成担当',instructions:'合成の依頼を短くまとめる',provider:'pollinations',model:'openai-fast',enabled:true},true);
+ const id=crypto.randomUUID(),runtime={SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner',SKY_FREE_CLOUD_BACKGROUND_ENABLED:'true'};let sends=0;
+ const fetcher=async(url,init)=>{if(url.endsWith('/models'))return catalog();sends++;assert.ok(JSON.parse(init.body).messages[0].content.includes(profile.instructions));return Response.json({id:'synthetic-profile',model:'fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Synthetic role result'}}],usage:{prompt_tokens:1,completion_tokens:1,total_tokens:2}});};
+ const body={id,prompt:'合成依頼',provider:profile.provider,model:profile.model,agentId:profile.id,agentRevision:profile.revision,consent:true,background:true};
+ const response=await freeCloudTextHttp(new Request('https://fixture.invalid/api/llm/free-cloud',{method:'POST',body:JSON.stringify(body)}),db,'owner',runtime,fetcher);assert.equal(response.status,202);assert.equal(sends,0);
+ const queued=await workStore(db).get('owner',id);assert.deepEqual(queued.freeCloud.agentBinding,{id:profile.id,revision:1});
+ await tickBackground(db,runtime,async()=>Date.now(),fetcher);const saved=await workStore(db).get('owner',id);assert.equal(saved.freeCloud.state,'completed');assert.equal(saved.status,'review');assert.equal(sends,1);
+ assert.deepEqual((await backgroundJobs(db,'owner'))[0].agentBinding,{id:profile.id,revision:1});assert.deepEqual(await backgroundJobs(db,'other-owner'),[]);
+ await tickBackground(db,runtime,async()=>Date.now(),fetcher);assert.equal(sends,1);
+});
+
+void test('new unsupported model reports pre-send refusal and never creates or dispatches a job',async t=>{
+ const db=setup(t),{freeCloudTextHttp}=await import('../lib/sky-free-cloud-http.ts');let sends=0;
+ const request=new Request('https://fixture.invalid/api/llm/free-cloud',{method:'POST',body:JSON.stringify({id:crypto.randomUUID(),model:'not-in-free-catalog',prompt:'Synthetic',consent:true})});
+ const response=await freeCloudTextHttp(request,db,'owner',{SKY_FREE_CLOUD_ENABLED:'true',SKY_FREE_CLOUD_OWNER_ID:'owner'},async(url)=>{if(url.endsWith('/models'))return catalog();sends++;throw Error('must not send');});
+ assert.equal(response.status,409);assert.equal((await response.json()).preSend,true);assert.equal(sends,0);assert.deepEqual(await workStore(db).list('owner'),[]);
+});
+
+void test('stored counters survive queue reopen; replay reads same observation and never re-sends',async t=>{
+ const db=setup(t),{backgroundJobs}=await import('../lib/sky-free-cloud-background.ts');let sends=0;
+ const input={...request(db,async(url)=>{if(url.endsWith('/models'))return catalog();sends++;return Response.json({id:'counter-fixture',model:'reported-fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Synthetic'}}],usage:{prompt_tokens:6,completion_tokens:4,total_tokens:10,prompt_tokens_details:{cached_tokens:2},completion_tokens_details:{reasoning_tokens:1}}});})};
+ await runFreeCloudText({...input,enqueue:true});await runFreeCloudText(input);const rows=await backgroundJobs(db,'owner');const observed=rows[0].metering;assert.equal(observed.providerId,'pollinations');assert.equal(observed.resourceId,input.model);assert.equal(observed.reportedResourceId,'reported-fixture');assert.equal(observed.metrics.find(m=>m.meter==='cached_input_tokens').quantity,2);assert.equal(observed.metrics.find(m=>m.meter==='reasoning_output_tokens').quantity,1);assert.equal(observed.amountMinor,null);assert.equal(observed.invoiceVerified,false);assert.equal(observed.developerPayment.status,'contract_not_bound');
+ await runFreeCloudText(input);assert.equal(sends,1);assert.deepEqual((await backgroundJobs(db,'owner'))[0].metering,observed);assert.deepEqual(await backgroundJobs(db,'another-owner'),[]);
+ const row=await workStore(db).get('owner',input.id);assert.equal('prompt' in row.freeCloud.metering,false);
+});
+
+void test('a rejected completion preserves counter evidence and same-id recovery never sends again',async t=>{
+ const {backgroundJobs}=await import('../lib/sky-free-cloud-background.ts');
+ const db=setup(t);let sends=0;
+ const input=request(db,async url=>{if(url.endsWith('/models'))return catalog();sends++;return Response.json({id:'counter-invalid',model:'reported-fixture',user_tier:'anonymous',choices:[{finish_reason:'stop',message:{content:'Synthetic output',tool_calls:[]}}],usage:{prompt_tokens:2,completion_tokens:3,total_tokens:5,prompt_tokens_details:{cached_tokens:4}}});});
+ await runFreeCloudText({...input,enqueue:true});await assert.rejects(runFreeCloudText(input),/使用量の内訳/);
+ const stored=await workStore(db).get('owner',input.id);assert.equal(stored.freeCloud.state,'unconfirmed');assert.equal(stored.freeCloud.metering.status,'invalid');assert.equal(stored.freeCloud.chargeMinor,undefined);assert.equal(stored.freeCloud.text,undefined);
+ const recovered=(await backgroundJobs(db,'owner')).find(j=>j.id===input.id);assert.equal(recovered.metering.status,'invalid');assert.equal(recovered.metering.amountMinor,null);assert.equal(recovered.metering.metrics.find(m=>m.meter==='cached_input_tokens').quantity,4);
+ assert.deepEqual(await backgroundJobs(db,'other'),[]);await runFreeCloudText(input);assert.equal(sends,1);
+});

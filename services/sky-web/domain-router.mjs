@@ -1,7 +1,54 @@
+// Keep outer-router responses under the same policy as application responses.
+// The exact values are checked against data/web-security-policy.json.
+const UNIVERSAL_RESPONSE_HEADERS = Object.freeze({
+  "Content-Security-Policy": "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "Referrer-Policy": "no-referrer",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Permissions-Policy": "bluetooth=(), camera=(), geolocation=(), hid=(), microphone=(), payment=(), serial=(), usb=()"
+});
+
+// This is the existing /_next/static/* policy, independent of _headers parsing.
+async function fetchBuildAsset(request, assets) {
+  const response = await assets.fetch(request);
+  const headers = new Headers(response.headers);
+  if ([200, 206, 304].includes(response.status) &&
+      !headers.has('set-cookie') &&
+      !/\b(?:private|no-store)\b/i.test(headers.get('cache-control') || ''))
+    headers.set('cache-control', 'public, max-age=31536000, immutable');
+  return new Response(response.body, {
+    status: response.status, statusText: response.statusText, headers,
+  });
+}
+
+function secureResponse(response) {
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(UNIVERSAL_RESPONSE_HEADERS))
+    headers.set(name, value);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+    ...(response.webSocket ? { webSocket: response.webSocket } : {}),
+  });
+}
+
 const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 const MINI_PUBLIC_HOST = 'avoado.si';
 const COLUMBIA_HOST = 'columbia.avoado.si';
 const GENERATED_SITE_SUFFIX = '.chatgpt.site';
+const MATOU_ORIGIN = 'https://matou-kimono-closet.noellesugar1.chatgpt.site';
+const MATOU_PUBLIC_ALIASES = new Map([
+  ['/MATOU', '/'],
+  ['/MATOU/', '/'],
+  ['/MATOU/giving', '/giving'],
+  ['/MATOU/giving/', '/giving/'],
+  ['/MATOU/story', '/story'],
+  ['/MATOU/story/', '/story/'],
+]);
 
 const JENNIFER_PRIVATE_API_PREFIXES = [
   '/api/jennifer',
@@ -18,6 +65,7 @@ const SKY_PREFIXES = [
   '/_next',
   '/api',
   '/activity',
+  '/account',
   '/chat',
   '/coconala-team',
   '/connect',
@@ -35,6 +83,8 @@ const SKY_PREFIXES = [
   '/work',
   '/zema',
   '/manifest.webmanifest',
+  '/company-mark.png',
+  '/brand',
   '/rock-icon-',
   '/loop-icon-',
   '/toolkits',
@@ -44,6 +94,11 @@ const isPath = (path, prefix) =>
   path === prefix || path.startsWith(`${prefix}/`);
 const usesCanonicalSkyPrefix = (hostname) =>
   hostname === MINI_PUBLIC_HOST || hostname.endsWith(`.${MINI_PUBLIC_HOST}`);
+// Shared OS navigation uses /os/sky on the isolated local preview as well.
+// This changes routing only; authentication and allowed origins remain enforced.
+const supportsOsSkyAlias = (hostname) =>
+  usesCanonicalSkyPrefix(hostname) ||
+  ['localhost', '127.0.0.1', '[::1]'].includes(hostname);
 const isJenniferPrivateApi = (path) =>
   JENNIFER_PRIVATE_API_PREFIXES.some((prefix) => isPath(path, prefix));
 const isJenniferPrivateUi = (path) =>
@@ -144,7 +199,7 @@ async function canonicalManifest(response, path) {
   const campus = path.match(
     /^\/os\/sky\/campus\/(nyu|fit|columbia|fordham|johnjay)(?:\/|$)/,
   );
-  const manifest = campus
+  const manifest = path === '/' ? '/manifest.webmanifest' : campus
     ? `/os/sky/campus/${campus[1]}/manifest.webmanifest`
     : isPath(path, '/os/sky')
       ? '/os/sky/manifest.webmanifest'
@@ -164,10 +219,33 @@ async function canonicalManifest(response, path) {
 }
 
 export function withMiniSite(skyWorker, upstreamFetch = fetch) {
-  return {
+  const routedWorker = {
     fetch(request, env, context) {
       const source = new URL(request.url);
       const path = source.pathname;
+      // Owner-approved retirement of duplicate screens; keep installation guidance.
+      if (source.hostname === MINI_PUBLIC_HOST) {
+        const matouPath = MATOU_PUBLIC_ALIASES.get(path);
+        if (matouPath && ['GET', 'HEAD'].includes(request.method)) {
+          const destination = new URL(matouPath, MATOU_ORIGIN);
+          destination.search = source.search;
+          return new Response(null, {
+            status: 302,
+            headers: {
+              location: destination.href,
+              'cache-control': 'no-store',
+            },
+          });
+        }
+        const retired = new Map([['/rockstaros', '/os'], ['/rockstaros/crowdfunding', '/os']]);
+        const destination = path.replace(/\/$/, '') === '/avocado-mini' ? 'https://avocadomini.si/' : path.replace(/\/$/, '') === '/studio' ? '/os/sky/publish' : retired.get(path.replace(/\/$/, ''));
+        if (destination && ['GET', 'HEAD'].includes(request.method)) {
+          const target = new URL(destination, source);
+          if (target.origin === source.origin) target.search = source.search;
+          return Response.redirect(target.href, 308);
+        }
+        if (isPath(path, '/rockstaros/guide')) return skyWorker.fetch(request, env, context);
+      }
       if (source.hostname.endsWith(GENERATED_SITE_SUFFIX) &&
           (isJenniferPrivateUi(path) || isJenniferPrivateApi(path))) {
         if (['GET', 'HEAD'].includes(request.method) && isJenniferPrivateUi(path)) {
@@ -183,11 +261,17 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
       const columbiaDestination = columbiaSkyDestination(source);
       if (columbiaDestination && ['GET', 'HEAD'].includes(request.method))
         return Response.redirect(columbiaDestination, 307);
-      if (usesCanonicalSkyPrefix(source.hostname) && isPath(path, '/sky')) {
+      // Worker-first delivery must serve build assets through the configured
+      // binding; the framework treats already-built static requests as missing.
+      // Keep all other routes and methods under their existing application rules.
+      if (path.startsWith('/_next/static/') &&
+          ['GET', 'HEAD'].includes(request.method) && env?.ASSETS?.fetch)
+        return fetchBuildAsset(request, env.ASSETS);
+      if (supportsOsSkyAlias(source.hostname) && isPath(path, '/sky')) {
         source.pathname = `/os${path}`;
         return Response.redirect(source.href, 308);
       }
-      if (usesCanonicalSkyPrefix(source.hostname) && isPath(path, '/os/sky')) {
+      if (supportsOsSkyAlias(source.hostname) && isPath(path, '/os/sky')) {
         source.pathname = path.slice(3);
         return Promise.resolve(
           skyWorker.fetch(new Request(source, request), env, context),
@@ -201,11 +285,13 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
           {
             headers: {
               'content-type': 'application/javascript; charset=utf-8',
-              'cache-control': 'no-store',
+              'cache-control': 'no-cache, no-store, must-revalidate',
+              'Service-Worker-Allowed': '/',
             },
           },
         );
-      if (path === '/os')
+      // Main domain runs WebOS; /os remains compatible with existing devices.
+      if (path === '/' || path === '/os')
         return Promise.resolve(skyWorker.fetch(request, env, context)).then(
           (response) => canonicalManifest(response, path),
         );
@@ -215,6 +301,14 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
     },
     scheduled(event, env, context) {
       return skyWorker.scheduled?.(event, env, context);
+    },
+  };
+  return {
+    async fetch(request, env, context) {
+      return secureResponse(await routedWorker.fetch(request, env, context));
+    },
+    scheduled(event, env, context) {
+      return routedWorker.scheduled(event, env, context);
     },
   };
 }

@@ -1,5 +1,6 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
@@ -13,8 +14,7 @@ import * as transform from '../lib/csv-transform.ts';
 function fixture(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter((n) => n.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const objects = new Map();
   let heldEvent = null;
   let failedEvent = null, loseCompletion = false, failPut = null, completionReadFailures = 0, readFailures = 0, claimReadFailures = 0;

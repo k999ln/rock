@@ -23,8 +23,8 @@ const model = { schema: 'sky.local-model/1', id: 'fixture.model', name: 'Fixture
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter(n => n.endsWith('.sql') && !n.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'));
+  for (const name of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(n => n.endsWith('.sql') && !n.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/' + name, import.meta.url), 'utf8'));
   const db = { sqlite, beforeRead: null, afterCommit: null, afterRun: null, batches: 0, writes: 0 };
   class Statement {
     constructor(sql, values = []) { this.sql = sql; this.values = values; }
@@ -265,7 +265,7 @@ void test('owner response: actual local D1 owner/version/byte predicates withhol
       compatibilityDate: '2026-08-18', d1Databases: ['DB'] }));
     try {
       const db = await mf.getD1Database('DB');
-      for (const sql of readFileSync(new URL('../drizzle/0030_sky_linux_service.sql', import.meta.url), 'utf8').split('--> statement-breakpoint'))
+      for (const sql of readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/0030_sky_linux_service.sql', import.meta.url), 'utf8').split('--> statement-breakpoint'))
         await db.prepare(sql.trim()).run();
       const now = Date.now(), key = 'workspace:' + await sha256Hex('buyer');
       const w = await linux.createLinuxWorkspace('buyer', 'device', 'order', terms, 'live', now);

@@ -1,0 +1,108 @@
+{
+  "schema": "rockstar.sites-owner-workspace-recovery/1",
+  "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+  "reason": "Published 0026-0028 timestamps are below 0025 watermark and can be skipped by Drizzle upgrades.",
+  "published": [
+    {
+      "tag": "0020_main_legacy_columns",
+      "when": 1792555200000,
+      "sha256": "2d3ffd062e700158c145614e0e76d949ab0f1339f8f41e826c73196b85e9bf09"
+    },
+    {
+      "tag": "0021_sites_schema_convergence",
+      "when": 1792555200001,
+      "sha256": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a"
+    },
+    {
+      "tag": "0022_sky_recurring_send_guard",
+      "when": 1792555200002,
+      "sha256": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33"
+    },
+    {
+      "tag": "0023_jennifer_schema_guard",
+      "when": 1792555200003,
+      "sha256": "a230ea4414b321daaa1d7d6156b172f82d431ba9e943bcf472d20f8b6fe6e0ea"
+    },
+    {
+      "tag": "0024_remote_ai_send_claims_recovery",
+      "when": 1792555200004,
+      "sha256": "a8a76b732f26d119fb88cac858aad40f4eda121795348594bac37f5226c1f0ea"
+    },
+    {
+      "tag": "0025_remote_ai_send_claims_watermark",
+      "when": 4102444800000,
+      "sha256": "e6fc8fa70c98de774a11554a0742e3f81f9edbaee57e7f44ba5f8ce0820ede44"
+    },
+    {
+      "tag": "0026_eve_account_sync",
+      "when": 1792582356589,
+      "sha256": "9185b080b17bd9198b6b2b0bb50028021187c65bba3b6bd3fc36c1ea0cf1efac"
+    },
+    {
+      "tag": "0027_os_timeline",
+      "when": 1792582356590,
+      "sha256": "d78a07c000fbe6bbc09711a695b240dcca13c1dbfc2e0ef1f5497023ba9b4fa0"
+    },
+    {
+      "tag": "0028_rockstar_accounts",
+      "when": 1792582356591,
+      "sha256": "b73721a45c57517a766f7009f0e5b2109f03b1563ff619b7f396598ba30f4562"
+    },
+    {
+      "tag": "0029_rockstar_password_accounts",
+      "when": 4102444800001,
+      "sha256": "e983d21d6a713f20af31f9245d94d8c60345e0b79259d5aa16c6e61273ee9e84"
+    },
+    {
+      "tag": "0030_sky_agent_settings",
+      "when": 4102444800002,
+      "sha256": "3a36bbb6b8dda573bfdb6eb3c9366470cc8c8f55be324a27162bcba7e0e8f26b"
+    }
+  ],
+  "recovery": {
+    "tag": "0031_owner_workspace_schema_recovery",
+    "when": 4102444800003,
+    "sha256": "532ab9779c5f7786c6b933056de7ff7c3b103d1290ce9054fa11c046d757a789",
+    "sourceFiles": [
+      "0026_eve_account_sync.sql",
+      "0027_os_timeline.sql",
+      "0028_rockstar_accounts.sql"
+    ],
+    "tables": [
+      "eve_conversations",
+      "eve_device_commands",
+      "eve_device_jobs",
+      "eve_device_presence",
+      "eve_memory_terms",
+      "eve_messages",
+      "sky_feature_additions",
+      "sky_hub_plugins",
+      "sky_x_feed_state",
+      "sky_communities",
+      "sky_community_members",
+      "sky_social_follows",
+      "sky_social_posts",
+      "sky_social_profiles",
+      "sky_community_editions",
+      "sky_community_installs",
+      "sky_community_keys",
+      "sky_social_reactions",
+      "sky_x_accounts",
+      "sky_x_oauth_states",
+      "rockstar_account_enrollments",
+      "rockstar_account_rate_limits",
+      "rockstar_accounts"
+    ],
+    "guards": {
+      "sky_communities": [
+        "recovery_hash",
+        "os_revision",
+        "post_mode"
+      ],
+      "sky_social_posts": [
+        "reply_to"
+      ]
+    }
+  },
+  "notEmptyDatabaseBootstrap": true
+}

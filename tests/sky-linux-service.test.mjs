@@ -489,11 +489,11 @@ void test('Ed25519 receipts are mode/role/workspace bound and tampering does not
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
+  for (const name of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url))
     .filter((n) => n.endsWith('.sql') && !n.startsWith('._'))
     .sort())
     sqlite.exec(
-      readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'),
+      readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/' + name, import.meta.url), 'utf8'),
     );
   class Statement {
     constructor(sql, values = []) {

@@ -10,7 +10,10 @@ import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { drizzle } from 'drizzle-orm/d1';
 import { migrate } from 'drizzle-orm/d1/migrator';
 
-const folder = new URL('../drizzle/', import.meta.url).pathname;
+// The main Site package intentionally replaces root drizzle with drizzle-main.
+// Keep all historical Columbia assertions against the exact published fixture;
+// current main migration bytes/upgrade behavior remain separately exercised below.
+const folder = new URL('../tests/fixtures/sites-columbia-migrations/', import.meta.url).pathname;
 const mainFolder = new URL('../drizzle-main/', import.meta.url).pathname;
 const legacyFolder = new URL('../drizzle-legacy/pre-site-bridge/', import.meta.url).pathname;
 const names = readdirSync(folder)
@@ -23,6 +26,20 @@ const hashLegacy = (name) => createHash('sha256').update(readLegacy(name)).diges
 const journal = JSON.parse(
   readFileSync(folder + 'meta/_journal.json', 'utf8'),
 ).entries;
+await test('the historical lineage fixture matches every pinned published byte and cannot be regenerated in a main package',()=>{
+  const proof=JSON.parse(readFileSync(folder+'provenance.json','utf8'));
+  assert.equal(proof.sourceCommit,'686fd5ab78015f6d8dc29030bfd4f76fb912a920');
+  assert.equal(Object.keys(proof.filesSha256).length,10);
+  for(const [name,sha] of Object.entries(proof.filesSha256))
+    assert.equal(createHash('sha256').update(readFileSync(folder+name)).digest('hex'),sha,name);
+  const actual=JSON.parse(readFileSync(mainFolder+'meta/_journal.json','utf8'));
+  const blocked=spawnSync(process.execPath,['scripts/generate-site-d1-bridge.mjs','--write'],{cwd:new URL('..',import.meta.url),encoding:'utf8'});
+  assert.equal(blocked.status,1); assert.match(blocked.stderr,/must not rewrite the immutable Columbia/);
+  assert.deepEqual(JSON.parse(readFileSync(mainFolder+'meta/_journal.json','utf8')),actual);
+  for(const [name,sha] of Object.entries(proof.filesSha256))
+    assert.equal(createHash('sha256').update(readFileSync(folder+name)).digest('hex'),sha,name);
+});
+
 const original = {
   '0000_previous_havok.sql':
     '7372800f2fef3867abfdb3775079f39cbda1502e14ffa2265e4fedb102916c63',
@@ -40,7 +57,7 @@ await test('local production start applies the published migrations before servi
   assert.match(viteConfig, /siteMigrationsDirectoryFor\(siteProjectId\)/);
   assert.match(viteConfig, /migrations_dir: siteMigrationsDirectory/);
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-  assert.match(packageJson.scripts.build, /stage-sky-domain-router\.mjs && node scripts\/stage-sites-migration-lineage\.mjs$/);
+  assert.match(packageJson.scripts.build, /stage-sky-domain-router\.mjs && node scripts\/stage-sites-migration-lineage\.mjs(?: && node scripts\/stage-public-asset-retirements\.mjs)?$/);
   assert.equal(packageJson.scripts['site:prepare-package'], 'node scripts/prepare-sites-package-lineage.mjs');
   const agentRuntimeConfig = readFileSync(
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
@@ -141,7 +158,7 @@ await test('the forward Web bridge tolerates objects left by an earlier partial 
   ).get());
 });
 
-await test('Sites deploys only the consolidated root bridge after the recorded history', () => {
+await test('the immutable published Columbia fixture keeps its consolidated bridge after the recorded history', () => {
   assert.deepEqual(names, [
     '0013_sky_provider_connections.sql',
     '0014_jennifer_execution_integrity.sql',
@@ -152,17 +169,6 @@ await test('Sites deploys only the consolidated root bridge after the recorded h
     '0019_sky_hosted_monthly.sql',
     '0020_sites_schema_convergence.sql',
     '0021_sky_recurring_send_guard.sql',
-    '0022_sky_agent_settings.sql',
-    '0023_sky_optional_features.sql',
-    '0024_sky_hub_plugins.sql',
-    '0025_sky_x_feed_state.sql',
-    '0026_sky_communities.sql',
-    '0027_community_os_keys.sql',
-    '0028_sky_timeline_interactions.sql',
-    '0029_sky_x_account_oauth.sql',
-    '0030_sky_linux_service.sql',
-    '0031_rockstar_service_setup.sql',
-    '0032_eve_durable_history.sql',
   ]);
   assert.match(read('0013_sky_provider_connections.sql'), /CREATE TABLE IF NOT EXISTS `sky_provider_connections`/);
   assert.doesNotMatch(read('0013_sky_provider_connections.sql'), /^ALTER TABLE/m);
@@ -224,7 +230,13 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0023_jennifer_schema_guard.sql',
     '0024_remote_ai_send_claims_recovery.sql',
     '0025_remote_ai_send_claims_watermark.sql',
-    '0026_home_eve_linux_runtime.sql',
+    '0026_eve_account_sync.sql',
+    '0027_os_timeline.sql',
+    '0028_rockstar_accounts.sql',
+    '0029_rockstar_password_accounts.sql',
+    '0030_sky_agent_settings.sql',
+    '0031_owner_workspace_schema_recovery.sql',
+    '0032_eve_runtime_presence.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -471,7 +483,7 @@ await test('fresh and current production D1 databases converge without losing re
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 129);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 108);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history === 'current') {
@@ -532,5 +544,6 @@ await test('fresh and current production D1 databases converge without losing re
   ).first());
   assert.equal(Number((await db.prepare(
     'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
-  ).first()).created_at), 4102444800000);
+  ).first()).created_at), 4102444800004);
+  assert.equal(JSON.parse(readFileSync(mainFolder+'meta/_journal.json', 'utf8')).entries.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
 });

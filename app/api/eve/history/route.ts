@@ -19,10 +19,11 @@ async function handle(request:Request,method:'GET'|'PUT'|'POST'|'DELETE') {
     const keys=eveHistoryKeys((env as unknown as {EVE_HISTORY_KEYRING?:string}).EVE_HISTORY_KEYRING);
     const binding = await eveHistoryOwnerBinding(owner, keys);
     if (method !== 'GET' && request.headers.get('x-rock-eve-owner') !== binding) throw new EveHistoryError('アカウントが変わりました。履歴を読み直してから保存してください。', 409);
-    const store=eveHistoryStore(database(),owner,keys),query=new URL(request.url).searchParams;
+    const store=eveHistoryStore(database(),owner,keys,true),query=new URL(request.url).searchParams;
     if(method==='GET') {
       const id=query.get('id');
-      return json(id?await store.get(eveThreadId(id),Number(query.get('before')??0)):await store.list(query.get('cursor')??''),200,binding);
+      const result=id?await store.get(eveThreadId(id),Number(query.get('before')??0)):await store.list(query.get('cursor')??'');
+      return json({...result,ownerUserId:owner},200,binding);
     }
     const value=await input(request);
     if(method==='PUT')return json(await store.save(value));

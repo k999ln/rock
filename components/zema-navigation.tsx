@@ -5,7 +5,7 @@ const destinations = [
   { id: 'chat', href: '/chat', label: '会話', Icon: MessageCircle },
   { id: 'library', href: '/zema/library', label: 'ライブラリ', Icon: Grid2X2 },
   { id: 'work', href: '/chat?view=work', label: '仕事', Icon: ListChecks },
-  { id: 'sky', href: '/sky', label: 'Skyで探す', Icon: Store },
+  { id: 'sky', href: '/sky', label: 'smisで探す', Icon: Store },
 ] as const;
 export default function ZemaNavigation({
   active,

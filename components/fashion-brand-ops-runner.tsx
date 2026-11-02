@@ -198,7 +198,7 @@ export function FashionBrandOpsRunner({ onOutcome }: {
       const result = await connectFashionMcp();
       setConnected(true);
       setMessage(
-        `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
+        `${result.toolCount}個の専用操作を確認しました。smisから実行できます。`,
       );
       onOutcome?.({ ok: true, text: `PCのブランド運営MCPに接続しました。${result.toolCount}機能を確認しました。個別操作の成功は各実行結果で確認してください。` });
       void refreshCandidates();
@@ -207,7 +207,7 @@ export function FashionBrandOpsRunner({ onOutcome }: {
       setConnected(fashionMcpConnected());
       const message = error instanceof Error
         ? error.message
-        : 'Sky接続アプリを起動してから、もう一度お試しください。';
+        : 'smis接続アプリを起動してから、もう一度お試しください。';
       setMessage(message);
       onOutcome?.({ ok: false, text: message });
     } finally {
@@ -541,14 +541,14 @@ export function FashionBrandOpsRunner({ onOutcome }: {
           <li>
             <a href="/toolkits/fashion-brand-ops-connector.zip" download>
               <Download size={14} />
-              Sky接続アプリをダウンロード
+              smis接続アプリをダウンロード
             </a>
           </li>
           <li>展開したフォルダの「RockstarOS Sky接続.command」を開きます。</li>
           <li>
             .env.exampleを参考に、利用するProviderだけを安全な秘密情報保管先へ設定します。
           </li>
-          <li>Skyへ戻り「ワンクリックで接続」を押します。</li>
+          <li>smisへ戻り「ワンクリックで接続」を押します。</li>
         </ol>
         <p>
           接続先はこのPC（{FASHION_MCP_URL}

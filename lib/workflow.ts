@@ -1,3 +1,4 @@
+import type {SkyUsageObservation} from './sky-usage-observation.ts';
 import {
   parseCompositionPlan, reviseComposition, capabilityFor, runnableCompositionNodes,
   COMPOSITION_TEXT_LIMIT, type CompositionState, type CompositionArtifact,
@@ -325,12 +326,25 @@ export type WorkJob = {
   toolAttempts?: WorkToolAttempt[];
   toolObservations?: WorkToolObservation[];
   agentBinding?: WorkAgentBinding;
-  freeCloud?: {requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'|'queued'|'cancelled'; source:string; backgroundPrompt?:string; backgroundConsent?:boolean; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   skyApp?: SkyAppBinding;
+  eveTool?: {
+    schema: 'eve.tool-work/1'; threadId: string; requestSha256: string;
+    sourceSha256: string; planner: 'deterministic-citations/1' | 'validated-llm-candidate/1';
+    planSha256?: string; outputStepId?: string;
+    plannerCandidate?: { sha256: string; origin: 'untrusted-submitted-candidate'; modelLabel: string | null };
+    planning?: import('./eve-planner-state.ts').EvePlannerState;
+    repairCount?: number;
+    pendingFailure?: { stepId: string; code: 'output_limit' | 'verification_failed' | 'adapter_failed'; repairable: boolean };
+    failures?: { stepId: string; commandId: string; code: string; at: string; planSha256: string }[];
+    verification?: { outputSha256: string; checkedAt: string; checks: { name: string; passed: boolean; detail: string }[] };
+  };
+
+  freeCloud?: {metering?:SkyUsageObservation;agentBinding?:{id:string;revision:number};requestDigest:string; model:string; state:'prepared'|'sending'|'completed'|'unconfirmed'|'waiting'|'queued'|'cancelled'; source:string; backgroundPrompt?:string; backgroundConsent?:boolean; retryAt?:number; retryDeadline?:number; attempts?:number; autoContinue?:boolean; text?:string; providerResponseId?:string; reportedModel?:string; inputTokens?:number; outputTokens?:number; chargeMinor?:0; error?:string};
   composition?: CompositionState;
   id: string;
   title: string;
   templateId: string;
+  eveNews?: import('./eve-news-work.ts').EveNewsWorkState;
   plan: WorkPlan;
   revision: number;
   status: 'active' | 'review' | 'completed' | 'cancelled';
@@ -400,6 +414,11 @@ export function normalizeWorkJob(job: WorkJob): WorkJob {
     if (job.skyApp.result) parseSkyAppResult(job.skyApp.result, job.id, request);
     return job;
   }
+  if (job.templateId === 'eve-news') {
+    if (job.eveNews?.schema !== 'eve.news-work/1' || job.steps.length !== 2 || job.steps[0].id !== 'sources' || job.steps[1].id !== 'draft') throw new WorkError('ニュース草稿の保存形式を確認してください。');
+    return job;
+  }
+
   if (job.templateId === 'composition') {
     validateCompositionJob(job);
     return job;
@@ -727,6 +746,8 @@ export function applyWorkCommand(
   now = new Date().toISOString(),
 ): WorkJob {
   const command = parseWorkCommand(value);
+  if (job.eveNews && command.action !== 'cancel') throw new WorkError('ニュース草稿は専用の参照検査を使ってください。掲載・真偽確認の完了にはできません。',409);
+  if (job.eveTool?.planning?.commands.some(c => c.id === command.id)) throw new WorkError('同じ操作IDを別の操作へ使えません。', 409);
   if (job.templateId === 'composition' && !['complete', 'cancel'].includes(command.action))
     throw new WorkError('組み合わせの計画・実行は専用画面から行ってください。', 409);
   const duplicate = job.events.find((event) => event.command.id === command.id);
@@ -878,6 +899,7 @@ export function updateComposedWork(
   update: { id: string; fingerprint: string; revision: number } & (
     { action: 'revise'; plan: unknown } |
     { action: 'clear' } |
+    { action: 'fail'; stepId: string } |
     { action: 'save_recipe'; name: string } |
     { action: 'delete_recipe' } |
     { action: 'run'; stepId: string; source: string; result: CompositionArtifact }
@@ -904,6 +926,10 @@ export function updateComposedWork(
     composition = { ...job.composition };
     delete composition.recipe;
   } else if (update.action === 'revise') composition = reviseComposition(job.composition, parseCompositionPlan(update.plan));
+  else if (update.action === 'fail') {
+    if (job.status !== 'active' || !runnableCompositionNodes(job.composition).some(node => node.id === update.stepId)) throw new WorkError('失敗を記録できる工程ではありません。', 409);
+    composition = { ...job.composition };
+  }
   else {
     if (job.status !== 'active' || !runnableCompositionNodes(job.composition).some((node) => node.id === update.stepId))
       throw new WorkError('実行できる手順ではありません。計画と入力元を確認してください。', 409);
@@ -936,4 +962,75 @@ function validateCompositionJob(job: WorkJob) {
   const allPassed = job.steps.every((step) => step.passed);
   if (!state.materialCleared && ((job.status === 'active' && allPassed) || (['review', 'completed'].includes(job.status) && !allPassed)))
     throw new WorkError('仕事の状態と成果が一致しません。');
+}
+
+/** Only the authenticated News adapter imports untrusted drafts; no generic record can certify them. */
+export function createEveNewsJob(id: string, state: NonNullable<WorkJob['eveNews']>, now = new Date().toISOString()): WorkJob {
+  return {id:workId(id),title:boundedText(state.packet.topic.slice(0,120),120),templateId:'eve-news',eveNews:state,
+    plan:{schemaVersion:1,objective:boundedText(state.packet.topic,1000),approvalGates:[]},revision:0,status:'active',events:[],createdAt:now,updatedAt:now,
+    steps:[{id:'sources',title:'資料の日時・重複・訂正参照を検査',tool:'eve-news-source-audit',runner:'news-review',passed:false},{id:'draft',title:'草稿と主張台帳の対応を検査',tool:'eve-news-draft-audit',runner:'news-review',passed:false}]};
+}
+export function recordEveNewsAudit(job: WorkJob, audit: import('./eve-news-audit.ts').NewsAudit, revision: number, commandId: string, durationMs: number): WorkJob {
+  if (!job.eveNews || job.status==='cancelled' || job.status==='completed' || revision!==job.revision) throw new WorkError('保存したニュース仕事を読み直してください。',409);
+  if (job.events.length>=200) throw new WorkError('ニュース仕事の操作上限に達しました。',409);
+  const sourcePassed=audit.checks.filter(check=>['unique_source_urls','source_times','correction_references'].includes(check.id)).every(check=>check.passed),draftPassed=audit.checks.every(check=>check.passed);
+  return {...job,events:[...job.events,{at:audit.checkedAt,command:{id:commandId,action:'record',stepId:'draft',tool:'eve-news-draft-audit',transport:'browser',outcome:draftPassed?'passed':'needs_review',sample:false,durationMs}}],eveNews:{...job.eveNews,audit},steps:job.steps.map(step=>({...step,passed:step.id==='sources'?sourcePassed:draftPassed})),status:draftPassed?'review':'active',revision:job.revision+1,updatedAt:audit.checkedAt};
+}
+
+/** Owner-supplied revision of a failed draft. Source packet and initial request identity stay fixed. */
+export function reviseEveNewsDraft(job: WorkJob, draft: import('./eve-news-audit.ts').NewsDraft, reason: string, hash: string, revision: number, commandId: string): WorkJob {
+  const news=job.eveNews, now=new Date().toISOString();
+  if(!news||!['active','review'].includes(job.status)||revision!==job.revision||!news.audit)throw new WorkError('検査済みの停止していない草稿だけ修正できます。',409);
+  if(news.repairAttempts?.some(attempt=>attempt.state==='sending'&&attempt.leaseUntil>Date.now()))throw new WorkError('モデル修正の結果を確認してください。進行中の草稿は置き換えられません。',409);
+  if((news.revisions?.length??0)>=2||job.events.length>=200)throw new WorkError('この仕事の修正上限（2回）に達しました。元の資料と検査結果を確認してください。',409);
+  if(JSON.stringify({...news.draft,generatedAt:'',modelProfileIdAndHash:''})===JSON.stringify({...draft,generatedAt:'',modelProfileIdAndHash:''}))throw new WorkError('草稿が変更されていません。');
+  const entry={draft:news.draft,audit:news.audit,replacedAt:now,reason,commandId,replacementSha256:hash};
+  const {audit:_audit,...rest}=news;
+  return {...job,eveNews:{...rest,draft,revisions:[...news.revisions??[],entry]},status:'active',steps:job.steps.map(step=>({...step,passed:false})),revision:job.revision+1,updatedAt:now,
+    events:[...job.events,{at:now,command:{id:commandId,action:'record',stepId:'draft',tool:'eve-news-draft-revision',transport:'browser',outcome:'needs_review',sample:false,durationMs:0}}]};
+}
+
+/** Append rights-scoped sources while preserving the exact previous source/draft/audit basis. */
+export function appendEveNewsSources(job:WorkJob,packet:import('./eve-news-audit.ts').NewsPacket,draft:import('./eve-news-audit.ts').NewsDraft,reason:string,hash:string,revision:number,commandId:string):WorkJob {
+ const news=job.eveNews,now=new Date().toISOString();
+ if(!news||!['active','review'].includes(job.status)||job.revision!==revision)throw new WorkError('停止していない同じニュース仕事へ追加してください。',409);
+ if((news.sourceRevisions?.length??0)>=3||job.events.length>=200)throw new WorkError('資料追加の上限（3回）に達しました。',409);
+ if(news.repairAttempts?.some(a=>a.state==='sending'&&a.leaseUntil>Date.now()))throw new WorkError('実行中モデルの結果を確認してから資料を追加してください。',409);
+ if(packet.jobId!==news.packet.jobId||packet.topic!==news.packet.topic||packet.sources.length<=news.packet.sources.length||packet.sources.length>12||JSON.stringify(packet.sources.slice(0,news.packet.sources.length))!==JSON.stringify(news.packet.sources))throw new WorkError('元の資料は変更せず、新しい資料を追加してください。',409);
+ for(const key of ['headline','articleText','claimLedger','unresolvedQuestions','modelProfileIdAndHash','generatedAt'] as const)if(JSON.stringify(draft[key])!==JSON.stringify(news.draft[key]))throw new WorkError('資料追加では本文や主張を変更できません。',409);
+ const {audit:_audit,...rest}=news;
+ const entry={packet:news.packet,draft:news.draft,...(news.audit?{audit:news.audit}:{}),replacedAt:now,reason,commandId,replacementSha256:hash};
+ return {...job,eveNews:{...rest,packet,draft,sourceRevisions:[...news.sourceRevisions??[],entry]},status:'active',steps:job.steps.map(step=>({...step,passed:false})),revision:job.revision+1,updatedAt:now,events:[...job.events,{at:now,command:{id:commandId,action:'record',stepId:'sources',tool:'eve-news-source-addition',transport:'browser',outcome:'needs_review',sample:false,durationMs:0}}]};
+}
+
+/** Purpose-bound dataset preparation permission; never a training or publication grant. */
+export function recordEveNewsLearningConsent(job:WorkJob,consent:import('./eve-news-learning.ts').NewsLearningConsent,revision:number):WorkJob{
+ const news=job.eveNews;if(!news||job.revision!==revision)throw new WorkError('仕事の版が変わりました。読み直してください。',409);
+ const grants=(news.learningConsents??[]).filter(c=>c.status==='granted'),latest=news.learningConsents?.at(-1);
+ if(consent.status==='granted'){
+  if(!['active','review'].includes(job.status)||grants.length>=10||job.events.length>=200)throw new WorkError('この仕事では準備同意を追加できません。',409);
+  if(latest?.status==='granted'&&latest.dataSha256===consent.dataSha256&&latest.split===consent.split)throw new WorkError('この対象への同意は保存済みです。',409);
+ }
+ const consentHistory=consent.status==='withdrawn'&&latest?.status==='withdrawn'?[...news.learningConsents!.slice(0,-1),consent]:[...news.learningConsents??[],consent];
+ const event={at:consent.at,command:{id:consent.commandId,action:'record' as const,stepId:'sources',tool:'eve-news-learning-preparation-consent',transport:'browser' as const,outcome:'needs_review' as const,sample:false,durationMs:0}};
+ return {...job,eveNews:{...news,learningConsents:consentHistory},revision:job.revision+1,updatedAt:consent.at,events:job.events.length<200?[...job.events,event]:job.events};
+}
+
+/** Server-only repair observation, including late usage after owner stop. */
+export function recordEveNewsRepair(job: WorkJob, attempts: NonNullable<NonNullable<WorkJob['eveNews']>['repairAttempts']>): WorkJob {
+  if(!job.eveNews)throw new WorkError('ニュース仕事を確認してください。',409);
+  return {...job,eveNews:{...job.eveNews,repairAttempts:attempts},revision:job.revision+1,updatedAt:new Date().toISOString()};
+}
+
+/** Trusted server planner transition, before any Tool effects, under WorkJob CAS. */
+export function updateEveToolPlanner(job: WorkJob, state: NonNullable<NonNullable<WorkJob['eveTool']>['planning']>, commandId: string, fingerprint: string, plan?: import('./work-composition.ts').CompositionPlan): WorkJob {
+  if (!job.eveTool?.planning || !job.composition || job.status !== 'active' || job.composition.operations.length || Object.keys(job.composition.artifacts).length) throw new WorkError('実行前の計画作成だけを変更できます。', 409);
+  const next = plan ? updateComposedWork(job, { id: commandId, fingerprint, revision: job.revision, action: 'revise', plan }) : { ...job, revision: job.revision + 1, updatedAt: new Date().toISOString() };
+  return { ...next, eveTool: { ...job.eveTool, planning: state } };
+}
+
+/** Server observation only: terminal job/plan/budget are preserved even for late usage. */
+export function recordEvePlannerObservation(job: WorkJob, state: NonNullable<NonNullable<WorkJob['eveTool']>['planning']>): WorkJob {
+  if (!job.eveTool?.planning || state.attempts.length !== job.eveTool.planning.attempts.length || state.attempts.some((a, i) => a.id !== job.eveTool!.planning!.attempts[i].id)) throw new WorkError('保存済みの計画試行へ観測を接続してください。', 409);
+  return { ...job, eveTool: { ...job.eveTool, planning: state }, revision: job.revision + 1, updatedAt: new Date().toISOString() };
 }

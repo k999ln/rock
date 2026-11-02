@@ -15,8 +15,8 @@ function storage() {
 const row = agent => ({ version: 1, id, toolId: 'mr-citations', createdAt: 1000, messages: [], activeRequest: null, workflowStatus: 'ready', outcome: null, ...(agent ? { agent } : {}) });
 function database(t) {
   const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
-    sql.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  for (const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
+    sql.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url), 'utf8'));
   const db = { prepare(query) { return { bind(...args) { return {
     async all() { return { results: sql.prepare(query).all(...args) }; },
     async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },

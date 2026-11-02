@@ -11,7 +11,7 @@ void test('saved Agent references preserve IDs, exact revision and optional sour
   ]) {
     const before = structuredClone(reference);
     const link = new URL(skyAgentEvePath(reference), 'https://fixture.invalid');
-    assert.equal(link.pathname, '/chat');
+    assert.equal(link.pathname, '/os/eve');
     assert.equal(link.searchParams.get('agent'), reference.id);
     assert.equal(link.searchParams.get('agentRevision'), String(reference.revision));
     assert.equal(link.searchParams.get('tool'), reference.sourceTool ?? null);

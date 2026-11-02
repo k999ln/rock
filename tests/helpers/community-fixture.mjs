@@ -17,10 +17,10 @@ export function communityFixture(t) {
     '0022_sky_agent_settings.sql',
   ])
     sql.exec(
-      readFileSync(new URL(`../../drizzle/${file}`, import.meta.url), 'utf8'),
+      readFileSync(new URL(`../../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url), 'utf8'),
     );
   const initial = readFileSync(
-    new URL('../../drizzle/0013_sky_provider_connections.sql', import.meta.url),
+    new URL('../../drizzle-legacy/github-main-before-avoado-alignment/drizzle/0013_sky_provider_connections.sql', import.meta.url),
     'utf8',
   );
   sql.exec(initial.match(/CREATE TABLE IF NOT EXISTS `sky_connections`[\s\S]*?;/)[0]);

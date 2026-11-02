@@ -1,0 +1,10 @@
+{
+  "schema": "rockstaros-historical-site-identity/1",
+  "scope": "historical_owner_private_identity_not_current_public_project",
+  "project_id": "appgprj_6aa444b6e6508191a19f16405d0be927",
+  "observedAt": "2026-09-13T13:18:39Z",
+  "audit": "data/sites-owner-preview-audit.json",
+  "auditSha256": "dc25434c9f447c347d60172dc716ba32936b11fab4917a19ef5c2896a33b58ab",
+  "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+  "currentPublicAccepted": false
+}

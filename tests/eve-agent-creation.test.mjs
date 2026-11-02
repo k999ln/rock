@@ -84,7 +84,7 @@ void test('corrupt or another-owner pending cannot be overwritten', () => {
 });
 void test('agent API binds authenticated owner and retains previous client/CAS behavior', async t => {
   const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
-  for (const f of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort()) sql.exec(readFileSync(new URL(`../drizzle/${f}`, import.meta.url), 'utf8'));
+  for (const f of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort()) sql.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${f}`, import.meta.url), 'utf8'));
   const db = { prepare(query) { return { bind(...args) { return {
     async all() { return { results: sql.prepare(query).all(...args) }; },
     async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },
@@ -155,8 +155,8 @@ void test('HTTP 409 after transport replay reconciles only the original owner an
 
 void test('Agent route preserves an older attachment and requirements when old settings editor saves only five fields', async t => {
   const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
-  for (const f of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
-    sql.exec(readFileSync(new URL(`../drizzle/${f}`, import.meta.url), 'utf8'));
+  for (const f of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
+    sql.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${f}`, import.meta.url), 'utf8'));
   const db = { prepare(query) { return { bind(...args) { return {
     async all() { return { results: sql.prepare(query).all(...args) }; },
     async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },
@@ -188,8 +188,8 @@ void test('Agent route preserves an older attachment and requirements when old s
 
 void test('pending includes optional declarations and reconciles a lost real-route response only on exact readback', async t => {
   const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
-    sql.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  for (const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(f => f.endsWith('.sql')).sort())
+    sql.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url), 'utf8'));
   const db = { prepare(query) { return { bind(...args) { return {
     async all() { return { results: sql.prepare(query).all(...args) }; },
     async run() { return { meta: { changes: Number(sql.prepare(query).run(...args).changes) } }; },

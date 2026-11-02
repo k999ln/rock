@@ -78,7 +78,7 @@ export function DeviceConnection({ connectionBlocked = false }: { connectionBloc
               ? 'もう一度接続を確認'
               : 'このPCを接続'}
         </button>
-        {connectionBlocked && <output>Skyへのサインインを確認してください。閉じてサインインすると、この画面から接続を再確認できます。</output>}
+        {connectionBlocked && <output>smisへのサインインを確認してください。閉じてサインインすると、この画面から接続を再確認できます。</output>}
         <details>
           <summary>自動準備が使えない環境の接続手順</summary>
           <ol className="device-install-steps">
@@ -98,7 +98,7 @@ export function DeviceConnection({ connectionBlocked = false }: { connectionBloc
                   className="black-button device-download"
                 >
                   <Download size={16} />
-                  Sky MCP Connectorをダウンロード
+                  smis MCP Connectorをダウンロード
                 </a>
               </div>
             </li>
@@ -127,7 +127,7 @@ export function DeviceConnection({ connectionBlocked = false }: { connectionBloc
               <div>
                 <h2>この画面から接続を確認</h2>
                 <p>
-                  Skyが共通Connectorを確認します。その後、MCP画面から各自動化をワンタップ接続できます。
+                  smisが共通Connectorを確認します。その後、MCP画面から各自動化をワンタップ接続できます。
                 </p>
               </div>
             </li>
@@ -143,7 +143,7 @@ export function DeviceConnection({ connectionBlocked = false }: { connectionBloc
             <strong>{connected ? 'このPCは接続済み' : 'PC未接続'}</strong>
             <p>
               {connected
-                ? 'Skyの対応ツールからMCP実行できます。'
+                ? 'smisの対応ツールからMCP実行できます。'
                 : '「このPCを接続」で準備を確認します。自動準備に対応しない環境では下の接続手順を開いてください。'}
             </p>
           </div>

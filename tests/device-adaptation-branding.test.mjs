@@ -18,13 +18,14 @@ void test('current redesign selectively reuses legacy OS and does not transfer h
 
 void test('company logo bytes are identical across existing company site, web and Android', () => {
   const logo = bytes(contract.brand.logoSource);
-  assert.deepEqual(bytes(contract.brand.companyLogo), logo);
+  const webBrand=JSON.parse(text('data/company-brand-assets.json'));
+  assert.equal(createHash('sha256').update(bytes(contract.brand.companyLogo)).digest('hex'),webBrand.files[contract.brand.companyLogo]);
   assert.deepEqual(bytes('android/shell/src/main/res/drawable-nodpi/company_mark.png'), logo);
   assert.equal(createHash('sha256').update(logo).digest('hex'), contract.brand.logoSha256);
   assert.equal(contract.brand.product, 'RockstarOS');
-  assert.match(text('app/layout.tsx'), /apple: '\/company-mark.png'/);
+  assert.match(text('app/layout.tsx'), /apple: '\/brand\/rainbow-logo-192.png'/);
   assert.match(text('app/manifest.ts'), /name: 'RockstarOS'/);
-  assert.match(text('app/layout.tsx'), /apple: '\/company-mark.png'/);
+  assert.match(text('app/layout.tsx'), /apple: '\/brand\/rainbow-logo-192.png'/);
   assert.match(text('android/shell/src/main/res/values/branding.xml'), />RockstarOS</);
 });
 

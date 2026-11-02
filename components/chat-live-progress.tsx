@@ -319,7 +319,7 @@ export default function ChatLiveProgress({
   const selectedJobName =
     selectedTool?.name ??
     (selectedJob ? toolNames.get(selectedJob.tool) : null) ??
-    'Sky Tool';
+    'smis Tool';
 
   if (!selectedJob && !selectedCsvJob && !fund) return null;
   const busy =

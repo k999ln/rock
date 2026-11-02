@@ -32,6 +32,7 @@ export async function GET(request: Request) {
         url.searchParams.get('community') ?? '',
         url.searchParams.get('cursor') ?? '',
         url.searchParams.get('thread') ?? '',
+        url.searchParams.get('check') ?? '',
       ),
     );
   } catch (error) {

@@ -40,6 +40,7 @@ function load(data, options = {}) {
   const transparent = ({ children }) =>
     React.createElement('div', {}, children);
   const modules = {
+    '@/components/workspace-shell': transparent,
     react: options.react ?? React,
     'react/jsx-runtime': jsxRuntime,
     'lucide-react': Object.fromEntries(icons.map((name) => [name, () => null])),

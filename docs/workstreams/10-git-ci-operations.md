@@ -415,3 +415,7 @@ main927ac79aを基点に、独立検収済みeSIM source/tests3とWebOps source/
 ## 任意診断のpositive fixtureと保存完了の同期
 
 G04/ROCKは[Pixel診断fixture証拠](../evidence/development-execution/pixel-diagnostic-fixture-order.json)で、固定sleepを保存完了の根拠にしない。実workerの非待機diagnostics/停止/期限は変更せず、正常fixtureの子終了をfirst outputの保存ackへ同期する。旧mainの失敗attempt・遅延反例と修正後を別に保持し、Python診断27件とLinux親終了4件、head/merge同SHA全CIを記録する。host skipをLinux・実機合格にしない。
+
+### G04 / WEB04: avoado.si の公開履歴と main の照合
+
+2026-11-02の明示指示により、main `7bbb4b27` と既存avoado公開v141 `c4ab58b2` を統合する。公開sourceは独立履歴だったため、両実コミットを親にした内容解決済みmergeで保存する。mainの本人・Tool revision・承認・成果readbackを維持し、公開版のEve/Noah・アカウント・暗号化会話・runtimeを合わせる。公開SQLは `data/avoado-published-migration-lineage.json`、旧mainの保全証拠は `drizzle-legacy/github-main-before-avoado-alignment/provenance.json`。本番schema変更はない。合格条件は `npm run verify`、同一PR HEADのCI、通常merge後のmain SHAとSites保存version source SHAの一致、主要UIの読戻し。保存/merge/公開の状態は `data/project-status.json#eveNoahMainAlignment` に分けて記録する。復旧はSitesの直前成功v141へ戻す（sourceとversionを再確認）、GitHubは通常revert PRを使いforce pushしない。

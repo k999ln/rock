@@ -6,8 +6,21 @@ import { DatabaseSync } from 'node:sqlite';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = join(root, 'services/sky-web/migrations');
-const output = join(root, 'drizzle/0013_sky_provider_connections.sql');
+const rootOutput = join(root, 'drizzle/0013_sky_provider_connections.sql');
+const mainPackage = existsSync(join(root, 'drizzle/0020_main_legacy_columns.sql'));
+const fixtureDirectory = join(root, 'tests/fixtures/sites-columbia-migrations');
+const output = mainPackage ? join(fixtureDirectory, '0013_sky_provider_connections.sql') : rootOutput;
 const write = process.argv.includes('--write');
+if (mainPackage) {
+  if (write) throw new Error('A main Site package must not rewrite the immutable Columbia regression fixture');
+  const proof = JSON.parse(readFileSync(join(fixtureDirectory, 'provenance.json'), 'utf8'));
+  if (proof.sourceCommit !== '686fd5ab78015f6d8dc29030bfd4f76fb912a920') throw new Error('Unexpected Columbia fixture source');
+  for (const [name, hash] of Object.entries(proof.filesSha256)) {
+    if (!/^(?:[0-9]{4}_[a-z0-9_]+\.sql|meta\/_journal\.json)$/.test(name) ||
+        createHash('sha256').update(readFileSync(join(fixtureDirectory, name))).digest('hex') !== hash)
+      throw new Error('Published Columbia fixture changed: ' + name);
+  }
+}
 
 const sqlite = new DatabaseSync(':memory:');
 const split = (sql) =>

@@ -6,7 +6,7 @@ import { xTimelineUrl,hfResource,xTimelineMetadata,X_TIMELINE_CONSENT } from '..
 import { searchHuggingFace,huggingFaceMetadata } from '../lib/sky-huggingface.ts';
 import { skyHubStore } from '../lib/sky-hub-store.ts';
 const metadata={ title:'fixture/model',sourceUrl:'https://huggingface.co/fixture/model',revision:'a'.repeat(40),license:'apache-2.0',task:'text-generation',downloads:1,likes:2,gated:false,sdk:null,skyFeeMinor:0 };
-function fixture(t){const sqlite=new DatabaseSync(':memory:');t.after(()=>sqlite.close());sqlite.exec(readFileSync(new URL('../drizzle/0024_sky_hub_plugins.sql',import.meta.url),'utf8'));const db={prepare(sql){return{bind(...args){return{async all(){return{results:sqlite.prepare(sql).all(...args)};},async run(){return{meta:{changes:Number(sqlite.prepare(sql).run(...args).changes)}};}};}};}};return{db,store:skyHubStore(db,'fixture-owner')};}
+function fixture(t){const sqlite=new DatabaseSync(':memory:');t.after(()=>sqlite.close());sqlite.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/0024_sky_hub_plugins.sql',import.meta.url),'utf8'));const db={prepare(sql){return{bind(...args){return{async all(){return{results:sqlite.prepare(sql).all(...args)};},async run(){return{meta:{changes:Number(sqlite.prepare(sql).run(...args).changes)}};}};}};}};return{db,store:skyHubStore(db,'fixture-owner')};}
 void test('X source validation permits only canonical public profiles or lists',()=>{
  assert.equal(xTimelineUrl('https://twitter.com/HuggingFace/'),'https://x.com/huggingface');
  assert.equal(xTimelineUrl('https://x.com/i/lists/123'),'https://x.com/i/lists/123');

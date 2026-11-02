@@ -1,0 +1,85 @@
+{
+  "schema": "sky-usage-public-integration-evidence/1",
+  "recordedAt": "2026-10-22T07:23:18.992981+00:00",
+  "status": "source_checked_package_and_publication_pending",
+  "primaryWorkstream": "Sky / MCP",
+  "primaryOwner": "ROCK",
+  "primarySquad": "O5",
+  "taskIds": [
+    "SKY21",
+    "BIL02",
+    "AI02",
+    "AI05"
+  ],
+  "sourceBase": "0ba30dd6a3030f89c3b9aa7f51ce755920be501d",
+  "sourceSha256": {
+    "lib/sky-usage-observation.ts": "a1a3d9df5b309314ff8c8983f2b4057bd10c20a15f997e1ac085d6e7891f629e",
+    "components/sky-usage-details.tsx": "373bbcf9e1de4a298131770231e3e7510b8b57770a3a6915d4affa109cdf40fb",
+    "components/sky-free-cloud-panel.tsx": "853501e466a847837765dc3c7d8a39ead3acbd336a62bd05a5039080c8d14d61",
+    "lib/llm-providers.ts": "46653cf4d2f0550bd68f57aa1140c6ef45c3d3feac7c0ae09687017c07a4b19a",
+    "lib/remote-ai-text-client.ts": "5d4233874cf00dcce120bff502bb7d27ee8de3941d9bffbff7377357523f8c38",
+    "lib/remote-ai-text-http.ts": "295c2dba60efbbd1c7b4d6e8e5ded018719e64edaf9c3788a16ab8225f8831d4",
+    "app/api/sky/a2a-delegations/route.ts": "fb8f5079ff89d9e052a35e86842de9db898839c5d69e788e7c9ef02e9d5f2c97",
+    "app/api/llm/local-agent/route.ts": "e709ceedbc591bbaf41f0f0f8336302879e81f01c5bbf5d41cca6a2d5d5faf82",
+    "lib/sky-free-cloud.ts": "e193d9726a2bc6dcce3fa63bb9e037ec16a3f5fd0fb388409ae32d04516536d2",
+    "lib/sky-free-cloud-http.ts": "463905210c28886bf98523d37b07e249b3b4de1b816228cbeb63a7dd41cafb6c",
+    "lib/sky-free-cloud-background.ts": "dd168f66ca55981e98676f37747439efa5b1e34a9d91d665191cfbb75153bf3d",
+    "lib/workflow.ts": "395a950321a81ff2c0dd0e1692b2b89b6a61dac11fd206a44e63afa7bd861ed2",
+    "components/sky-chat-workspace.tsx": "814699dbaa400dacd6db63c04fd9cd9605d6bce04be2550764b0b02e039f9b1d",
+    "components/workbench.tsx": "c509705d590d3e4b9a08639dfc32ad50742c333e37179c4bfbde41b50512134c",
+    "components/workbench-cloud-text.tsx": "767b7681ecb80b8495f07093380ce6e58df082f90cc673d8e88d77f94f9b16a7",
+    "components/eve-news-timeline.tsx": "547aaa534910859783068aeeb3200e833e253d8524d75c4358c9bf4a3e674a47",
+    "components/eve-news-timeline.module.css": "a89d0a3371737554737e4a6f2cd5d783b491d9b13a5e98450a54a3c068e9163e",
+    "tests/sky-usage-observation.test.mjs": "1a0df91746cf3b2de6b862aec1f58c54903414c1a3b89c3de57a4b2086ff1e67",
+    "tests/sky-free-cloud.test.mjs": "48b408bf799b90874313f66a7d0ee7f764d0f1e7f20f9d779a2da0111d72af5e",
+    "tests/workbench-cloud-text.test.mjs": "9c3dcc2ab77892a60fe4a7fd4f677c932866d2ec5d0ceb2b05de2800ac5339cf"
+  },
+  "rootCommonSha256": {
+    "lib/sky-usage-observation.ts": "a1a3d9df5b309314ff8c8983f2b4057bd10c20a15f997e1ac085d6e7891f629e",
+    "components/sky-usage-details.tsx": "373bbcf9e1de4a298131770231e3e7510b8b57770a3a6915d4affa109cdf40fb"
+  },
+  "checks": {
+    "sourceFocused": {
+      "passed": 65,
+      "failed": 0,
+      "log": "/private/tmp/rock-usage-source-focused-v111.log"
+    },
+    "rootFocused": {
+      "passed": 20,
+      "failed": 0,
+      "log": "/private/tmp/rock-usage-root-focused-v111.log"
+    },
+    "sourceLint": {
+      "exitCode": 0
+    },
+    "sourceTypecheck": {
+      "exitCode": 0
+    }
+  },
+  "acceptedLocalScope": [
+    "provider-specific counter display",
+    "retained free Cloud job observation",
+    "legacy omitted counters remain null",
+    "invalid completion observation preserved in unconfirmed job",
+    "same-id recovery never resends",
+    "owner isolation",
+    "existing approval/guard/digest/queue preserved"
+  ],
+  "publicDeployed": false,
+  "browserUiAccepted": false,
+  "browserState": "CUA listTabs native pipe closed; reset plus getState reports no surfaces/startup failed. No browser bypass attempted.",
+  "newModelCalls": 0,
+  "newDeviceGrant": false,
+  "paidCalls": 0,
+  "gpuRented": false,
+  "paymentsOrPayouts": 0,
+  "newLedger": false,
+  "newMigration": false,
+  "remaining": [
+    "same-source package/deployment and owner UI readback",
+    "U02 durable multi-provider attempts/rate/budget/invoice",
+    "U03 author contract/payment",
+    "pre-existing Source financial 9 failures separate",
+    "all remaining Core and hardware gates"
+  ]
+}

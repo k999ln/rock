@@ -1,17 +1,13 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { operations, OperationError } from '../lib/operations.ts';
 
 function fixture() {
   const sqlite = new DatabaseSync(':memory:');
-  for (const name of readdirSync(new URL('../drizzle', import.meta.url))
-    .filter((n) => n.endsWith('.sql'))
-    .sort())
-    sqlite.exec(
-      readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'),
-    );
+  applySourceSandboxSchema(sqlite);
   let now = Date.parse('2026-09-05T12:00:00Z');
   const db = {
     prepare(sql) {

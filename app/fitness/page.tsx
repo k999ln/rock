@@ -1,8 +1,8 @@
 import SkyFitnessPlugin from '@/components/sky-fitness-plugin';
 
 export const metadata = {
-  title: 'マイプラン · Fitness × Sky',
-  description: 'Sky Agentの保存済み成果をFitnessアプリで表示する。',
+  title: 'マイプラン · Fitness × smis',
+  description: 'smis Agentの保存済み成果をFitnessアプリで表示する。',
 };
 
 export default async function FitnessPage({

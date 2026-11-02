@@ -1419,15 +1419,6 @@
       "responsibility": "ROCK",
       "acceptance": "残60分の実作業記録・引用/件数監査・強い対照との実験を別実施。正常・否定・通信断・失効・復旧を同一artifactで受け入れる。",
       "historicalExisting": "docs/rockstaros-research-integration.md"
-    },
-    {
-      "id": "RQ50",
-      "title": "現行mainの追加要望を保持",
-      "existing": "docs/product-baseline.md",
-      "missing": "本統合で新たな受入を推測しない",
-      "priority": "retain-main",
-      "responsibility": "ROCK",
-      "acceptance": "現行baselineと同一の要求IDを保持し、該当gateの証拠で確認"
     }
   ],
   "implementationOrder": [
@@ -1444,5 +1435,16 @@
     "Production key custody and cross-device recovery",
     "Actual hardware and full-image signing/flash/recovery gates",
     "Author/provider sandbox and public UGC operation"
+  ],
+  "sourceExtensions": [
+    {
+      "id": "RQ50",
+      "title": "現行mainの追加要望を保持",
+      "existing": "docs/product-baseline.md",
+      "missing": "本統合で新たな受入を推測しない",
+      "priority": "retain-main",
+      "responsibility": "ROCK",
+      "acceptance": "現行baselineと同一の要求IDを保持し、該当gateの証拠で確認"
+    }
   ]
 }

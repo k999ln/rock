@@ -10,7 +10,7 @@ function failure(error: unknown) {
   if(error instanceof Error && error.message==='ORIGIN') return json({error:'このサイトから操作してください。'},403);
   return json({error:'追加した項目を確認できません。再読み込みしてください。'},503);
 }
-export async function GET(request:Request) { try{return json({plugins:await skyHubStore(database(),await requestUser(request)).list()});}catch(error){return failure(error);} }
+export async function GET(request:Request) { try{const owner=await requestUser(request);return json({ownerUserId:owner,plugins:await skyHubStore(database(),owner).list()});}catch(error){return failure(error);} }
 export async function PUT(request:Request) { try{
   if(request.headers.get('origin')!==new URL(request.url).origin) throw new Error('ORIGIN');
   const owner=await requestUser(request);

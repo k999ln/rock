@@ -82,7 +82,7 @@ function FeatureCard({
         <div>
           <span>
             {timeline
-              ? 'Sky · 機能の紹介'
+              ? 'Noah · 機能の紹介'
               : addition?.enabled
                 ? 'ADDED TO YOUR OS'
                 : 'MAKE IT YOURS'}
@@ -145,10 +145,10 @@ function FeatureCard({
               : timeline
                 ? settingsOpen
                   ? 'この設定で追加'
-                  : '自分のSkyに追加'
+                  : '自分のNoahに追加'
                 : openAfterAdd
                   ? '追加して開く'
-                  : 'Skyから追加する'}
+                  : 'Noahから追加する'}
           </button>
         )}
       </div>
@@ -174,7 +174,7 @@ export default function SkyOptionalFeatures({
     <section
       className={timeline ? styles.feed : styles.panel}
       id={only ? `optional-feature-${only}` : 'optional-features'}
-      aria-label={timeline ? 'Skyの追加機能' : undefined}
+      aria-label={timeline ? 'Noahの追加機能' : undefined}
       aria-labelledby={timeline ? undefined : 'sky-optional-title'}
     >
       <header hidden={timeline}>
@@ -231,7 +231,7 @@ export function SkyFeatureGate({
   return (
     <WorkspaceShell title={feature === 'wallet' ? 'Wallet' : 'Market'}>
       <div className={styles.gate}>
-        <Link href="/sky#optional-features">Skyの追加機能へ</Link>
+        <Link href="/sky#optional-features">Noahの追加機能へ</Link>
         {state === 'error' && (
           <button onClick={() => void refresh()}>追加状態をもう一度確認</button>
         )}

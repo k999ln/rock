@@ -6,19 +6,20 @@ void test('Home is the native timeline frontend with preserved optional navigati
   const home = read('components/home-screen.tsx');
   assert.match(home, /data-sky-home/);
   assert.match(home, /<SkySocialTimeline/);
-  assert.match(home, /<SkyPublicXTimeline/);
+  assert.match(home, /<SkyXAccountTimeline/);
   assert.match(home, /fullHome/);
-  assert.match(home, /discovery=\{<SkyDiscoveryFeed/);
+  assert.match(home, /<SkyDiscoveryDialog/);
+  assert.match(home, /<SkyDiscoveryFeed/);
   assert.doesNotMatch(
     home,
     /<SkyHomeTimeline|<SkyInformationMarket|<SkyWorkspace|<SkyOptionalFeatures|styles\.hero|iframe/,
   );
   assert.match(
     home,
-    /enabled\(app.href === '\/wallet' \? 'wallet' : 'market'\)/,
+    /enabled\('wallet'\)/,
   );
   for (const hash of [
-    'catalog',
+    'sky',
     'optional-features',
     'news-plugins',
     'bookmarks',
@@ -27,8 +28,8 @@ void test('Home is the native timeline frontend with preserved optional navigati
     assert.ok(home.includes(hash), hash);
   assert.match(home, /onClickCapture/);
   assert.match(home, /addEventListener\('popstate'/);
-  assert.match(home, /src="\/company-mark.png"/);
-  assert.match(home, /\/api\/work-jobs/);
+  assert.match(read('components/os-header.tsx'), /rainbow-logo-96.png/);
+  assert.match(home, /\/os\/eve#eve-work-results/);
 });
 void test('discovery posts reuse actual owner Add APIs and never imply Tool execution', () => {
   const source = read('components/sky-discovery-feed.tsx');

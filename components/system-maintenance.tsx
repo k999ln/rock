@@ -1,5 +1,6 @@
 'use client';
 
+import WorkspaceShell from '@/components/workspace-shell';
 import {
   Activity,
   AlertCircle,
@@ -429,7 +430,7 @@ export default function SystemMaintenance() {
   }
 
   return (
-    <main className={styles.page}>
+    <WorkspaceShell title="システム診断" hideTopActions hideAccountAccess><div className={styles.page}>
       <header className={styles.topbar}>
         <nav className={styles.topbarLinks} aria-label="戻る">
           <Link href="/" aria-label="ホームへ戻る"><House size={19} /></Link>
@@ -446,7 +447,7 @@ export default function SystemMaintenance() {
           <span className={styles.overviewIcon}><Activity /></span>
           <div>
             <small>WEB / PWA</small>
-            <h1>{running ? '診断中' : blockedCount === 0 ? '稼働できます' : '確認が必要です'}</h1>
+            <h1>{running ? '診断中' : !checks.length ? '診断を準備しています' : blockedCount === 0 ? '診断結果' : '確認が必要です'}</h1>
             <p>{readyCount} / {checks.length} 項目が利用可能。この端末の実測結果です。</p>
           </div>
         </section>
@@ -604,7 +605,7 @@ export default function SystemMaintenance() {
           <DialogClose className={styles.cancelBackup}>キャンセル</DialogClose>
         </DialogContent>
       </Dialog>
-    </main>
+    </div></WorkspaceShell>
   );
 }
 

@@ -44,8 +44,8 @@ function database(t) {
   const sqlite = new DatabaseSync(file), second = new DatabaseSync(file);
   for (const c of [sqlite, second]) c.exec('PRAGMA busy_timeout=5000');
   t.after(() => { second.close(); sqlite.close(); rmSync(directory, {recursive:true, force:true}); });
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter(name => name.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'));
+  for (const name of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(name => name.endsWith('.sql')).sort())
+    sqlite.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/' + name, import.meta.url), 'utf8'));
   return { db:client(sqlite), sqlite, second, file };
 }
 

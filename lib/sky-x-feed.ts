@@ -2,7 +2,7 @@ import { xTimelineUrl } from './sky-hub.ts';
 
 export type XPost = { id: string; text: string; author: string; name: string; createdAt: string; url: string };
 export type XFeedSettings = { token: string; sources: string[]; dailyRequests: number } | null;
-export type XFeedSnapshot = { mode:'api'; posts:XPost[]; fetchedAt:number; retryAt:number; status:string };
+export type XFeedSnapshot = { mode:'api'|'embed'; posts:XPost[]; fetchedAt:number; retryAt:number; status:string };
 type Database = Pick<D1Database,'prepare'>;
 type Row = { payload:string; remote_user_id:string|null; fetched_at:number; next_refresh_at:number; retry_after:number; error_code:string|null };
 const GLOBAL='__api__',FRESH_MS=15*60_000,RETENTION_MS=24*60*60_000;

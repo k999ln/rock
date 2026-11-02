@@ -18,8 +18,8 @@ void test('catalog candidates stay explicitly unconnected on every Sky surface',
 
 void test('Jev Router remains PC CLI only even when a Sky registration record exists', () => {
   const router = tool('jev-router');
-  assert.equal(skyToolUiState(router).label, 'Sky未接続・PC CLIのみ');
-  assert.equal(skyToolUiState(router, { connectedTools: [router.id] }).label, 'Sky未接続・PC CLIのみ');
+  assert.equal(skyToolUiState(router).label, 'Noah未接続・PC CLIのみ');
+  assert.equal(skyToolUiState(router, { connectedTools: [router.id] }).label, 'Noah未接続・PC CLIのみ');
   assert.equal(skyToolDetailActionLabel(router), '導入条件を見る');
 });
 

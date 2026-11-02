@@ -17,8 +17,8 @@ async function setup(t, persistent = false, authorityAvailable = true, reviewExp
   const dir = persistent ? mkdtempSync(join(tmpdir(), 'work-attempt-test-')) : null;
   const dbPath = dir ? join(dir, 'fixture.sqlite') : ':memory:';
   const sqlite = new DatabaseSync(dbPath); t.after(() => { sqlite.close(); if (dir) rmSync(dir, { recursive: true, force: true }); });
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(f => f.endsWith('.sql') && !f.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  for (const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(f => f.endsWith('.sql') && !f.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url), 'utf8'));
   const db = { beforeRun: null, afterRun: null, prepare(sql) { return { bind(...args) { return {
     async first() { return sqlite.prepare(sql).get(...args) ?? null; },
     async all() { return { results: sqlite.prepare(sql).all(...args) }; },

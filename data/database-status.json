@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-29",
+  "updatedAt": "2026-11-02",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 191,
+    "tableCount": 200,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。"
   },
   "webSchema": {
-    "tableCount": 119,
+    "tableCount": 128,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -50,8 +50,12 @@
       "esim_provider_profile_bindings",
       "esim_provider_webhook_inbox",
       "eve_conversations",
+      "eve_device_commands",
+      "eve_device_jobs",
+      "eve_device_presence",
       "eve_memory_terms",
       "eve_messages",
+      "eve_runtime_presence",
       "fund_plans",
       "jennifer_passkey_challenges",
       "jennifer_passkey_credentials",
@@ -75,6 +79,11 @@
       "remote_ai_text_send_claims",
       "rockstar_a2a_broker_devices",
       "rockstar_a2a_broker_enrollment_challenges",
+      "rockstar_account_enrollments",
+      "rockstar_account_passwords",
+      "rockstar_account_rate_limits",
+      "rockstar_account_sessions",
+      "rockstar_accounts",
       "rockstar_device_authorizations",
       "rockstar_device_sessions",
       "rockstar_entitlement_events",
@@ -140,13 +149,25 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 20,
-    "latestMigration": "0032_eve_durable_history.sql",
+    "sourceOnlyTables": [
+      "rockstar_service_setups",
+      "sky_linux_service_documents",
+      "sky_linux_service_receipts"
+    ],
+    "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
+    "migrationCount": 13,
+    "latestMigration": "0032_eve_runtime_presence.sql",
     "accidentalDuplicateCount": 0,
-    "publishedConvergenceDeclarations": 92,
+    "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
     "skyReviewGuardCount": 2,
     "migrationJournalMatches": true,
+    "initialization": "synthetic_restored_main_schema",
+    "recoveredPublishedTimestamps": [
+      "0026_eve_account_sync",
+      "0027_os_timeline",
+      "0028_rockstar_accounts"
+    ],
     "domains": [
       {
         "id": "core",
@@ -155,8 +176,12 @@
           "book_records",
           "devices",
           "eve_conversations",
+          "eve_device_commands",
+          "eve_device_jobs",
+          "eve_device_presence",
           "eve_memory_terms",
           "eve_messages",
+          "eve_runtime_presence",
           "fund_plans",
           "jennifer_passkey_challenges",
           "jennifer_passkey_credentials",
@@ -170,11 +195,16 @@
           "remote_ai_text_executions",
           "remote_ai_text_inputs",
           "remote_ai_text_send_claims",
+          "rockstar_account_enrollments",
+          "rockstar_account_passwords",
+          "rockstar_account_rate_limits",
+          "rockstar_account_sessions",
+          "rockstar_accounts",
           "tool_controls",
           "tool_runs",
           "work_jobs"
         ],
-        "tableCount": 21
+        "tableCount": 30
       },
       {
         "id": "sky",
@@ -345,8 +375,12 @@
         "esim_provider_profile_bindings",
         "esim_provider_webhook_inbox",
         "eve_conversations",
+        "eve_device_commands",
+        "eve_device_jobs",
+        "eve_device_presence",
         "eve_memory_terms",
         "eve_messages",
+        "eve_runtime_presence",
         "fund_plans",
         "jennifer_passkey_challenges",
         "jennifer_passkey_credentials",
@@ -370,6 +404,11 @@
         "remote_ai_text_send_claims",
         "rockstar_a2a_broker_devices",
         "rockstar_a2a_broker_enrollment_challenges",
+        "rockstar_account_enrollments",
+        "rockstar_account_passwords",
+        "rockstar_account_rate_limits",
+        "rockstar_account_sessions",
+        "rockstar_accounts",
         "rockstar_device_authorizations",
         "rockstar_device_sessions",
         "rockstar_entitlement_events",
@@ -435,8 +474,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0032_eve_durable_history.sql",
-      "tableCount": 119,
+      "expectedAppliedThrough": "0032_eve_runtime_presence.sql",
+      "tableCount": 128,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

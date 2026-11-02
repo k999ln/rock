@@ -569,14 +569,14 @@ export default function WorkCompositionWorkspace({ mode = 'compose' }: { mode?: 
   const privateVisible = Boolean(owner);
   const signinState = owner ? 'ready' : loading ? 'checking' : accessState === 'signin' ? 'signin' : 'unavailable';
 
-  return <WorkspaceShell title={mode === 'eve-text' ? 'Eve · 資料付き依頼を保存' : 'Zema · 仕事を組み立てる'} running={busy}>
+  return <WorkspaceShell title={mode === 'eve-text' ? 'Eve · 資料付き依頼を保存' : 'Eve · 仕事を組み立てる'} running={busy}>
     <div className={styles.workspace}>
       <div className={styles.intro}><div><h1>{mode === 'eve-text' ? '2〜4つの資料と依頼を、ひとつの仕事へ。' : '目的から、仕事を組み立てる。'}</h1>
         <p>素材を整え、完成条件を検査し、成果を保存。使った手順はレシピにして、次の素材でも使えます。</p>
         <p className={styles.note}>接続済みの文章・CSV処理を使います。提案はキーワードによる手順の下書きです。外部siの自律実行や事実確認は行いません。</p>
-      </div><Link href="/chat?view=work">Zemaの仕事へ</Link></div>
+      </div><Link href="/chat?view=work">Eveの仕事へ</Link></div>
       {toolEntry.state === 'unavailable' && <div className={`${styles.notice} ${styles.error}`} role="alert">{toolEntry.message}</div>}
-      {toolEntry.state === 'ready' && !memory.selected && !draft.recipeRef && (!owner || draft.nodes[0]?.tool === toolEntry.toolId) && <p className={styles.notice}>Skyで選んだTool：{toolEntry.name}。目的・素材・完成条件を入力し、処理と検査の手順を確認してください。選択だけでは実行しません。</p>}
+      {toolEntry.state === 'ready' && !memory.selected && !draft.recipeRef && (!owner || draft.nodes[0]?.tool === toolEntry.toolId) && <p className={styles.notice}>Noahで選んだTool：{toolEntry.name}。目的・素材・完成条件を入力し、処理と検査の手順を確認してください。選択だけでは実行しません。</p>}
       {mode === 'eve-text' && <p className={styles.notice}>ここでは資料付き依頼を保存します。モデル生成・完成草稿はまだ利用できません。原文は変更せず、未保存の入力はタブを閉じると失われます。</p>}
       {mode === 'eve-text' && readingEve && <button type="button" onClick={invalidateEveFiles}>ファイル読込を取り消す</button>}
       <ExecutionSignin state={signinState} />

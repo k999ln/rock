@@ -58,7 +58,7 @@ function fixture(t) {
     '0029_sky_x_account_oauth.sql',
   ])
     sql.exec(
-      readFileSync(new URL('../drizzle/' + file, import.meta.url), 'utf8'),
+      readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/' + file, import.meta.url), 'utf8'),
     );
   const prepare = (q, args = []) => ({
     bind(...v) {

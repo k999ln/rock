@@ -57,9 +57,9 @@ export default function ConversationDiagramWorkspace() {
     setNotice(`段落${active.index + 1}のSVGを保存しました。`);
   }
 
-  return <WorkspaceShell title="Sky" contentClassName={styles.shell} tone="sky">
+  return <WorkspaceShell title="smis" contentClassName={styles.shell} tone="sky">
     <div className={styles.page}>
-      <nav className={styles.breadcrumb}><Link href="/sky">Sky</Link><span>/</span><Link href="/sky/marketplace">Tool</Link><span>/</span>会話図解 · Visual Scribe</nav>
+      <nav className={styles.breadcrumb}><Link href="/sky">smis</Link><span>/</span><Link href="/sky/marketplace">Tool</Link><span>/</span>会話図解 · Visual Scribe</nav>
       <header className={styles.header}>
         <p>VISUAL SCRIBE · BROWSER ONLY</p>
         <h1>話したことを、<br />段落ごとの流れにする。</h1>

@@ -21,7 +21,7 @@ export default function AmcWorkspace({ language = 'ja', cardEntry = false }: { l
       >
         <div className={styles.page}>
           <nav className={frame.navigation} aria-label="Zemaナビゲーション">
-            <Link href="/chat">会話</Link><Link href="/work">仕事</Link><Link href="/zema/amc" aria-current="page">AMC</Link><Link href="/sky/marketplace">Skyで探す</Link>
+            <Link href="/chat">会話</Link><Link href="/work">仕事</Link><Link href="/zema/amc" aria-current="page">AMC</Link><Link href="/sky/marketplace">smisで探す</Link>
           </nav>
           <AmcToolRunner />
           <details

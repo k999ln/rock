@@ -1,7 +1,7 @@
 import SkyOutputCenter from '@/components/sky-output-center';
 
 export const metadata = {
-  title: '成果 · Sky',
+  title: '成果 · smis',
   description: '保存済みAgent成果を確認し、対応アプリへ渡す。',
 };
 

@@ -92,12 +92,12 @@ const rankingReason = {
   history: 'Based on your recommendation history',
   available: 'Available now',
   curated: 'Selected for Columbia students',
-  candidate: 'New on Sky',
+  candidate: 'New on smis',
 } as const;
 
 const feedCopy = {
   'mr-citations': {
-    author: 'Sky Research Desk',
+    author: 'smis Research Desk',
     handle: '@sky_citations · 12m',
     description:
       'Bring paper and article links together, remove duplicates, and turn them into a clean Sources section.',
@@ -110,7 +110,7 @@ const feedCopy = {
     art: 'linear-gradient(135deg, #f4eee8, #e7eef3)',
   },
   'rockstar-amc': {
-    author: 'Sky Planning Desk',
+    author: 'smis Planning Desk',
     handle: '@sky_amc · 1h',
     description:
       'Turn a goal into a reviewable plan with clear work, milestones, and check points.',
@@ -123,7 +123,7 @@ const feedCopy = {
     art: 'linear-gradient(135deg, #e2f2fb, #d9ecf5)',
   },
   'rockstar-patent-assistant': {
-    author: 'Sky Invention Desk',
+    author: 'smis Invention Desk',
     handle: '@sky_patents · 3h',
     description:
       'Structure an idea into an invention assessment and an English draft packet for your next review.',
@@ -495,12 +495,12 @@ export default function ColumbiaFeed() {
   return (
     <main lang="en" className={styles.page}>
       <div className={styles.shell}>
-        <aside className={styles.leftRail} aria-label="Primary Sky navigation">
-          <Link className={styles.sideBrand} href={`${SKY_MAIN}/os/sky`} aria-label="Sky home">
+        <aside className={styles.leftRail} aria-label="Primary smis navigation">
+          <Link className={styles.sideBrand} href={`${SKY_MAIN}/os/sky`} aria-label="smis home">
             <Sparkles size={29} strokeWidth={1.8} aria-hidden="true" />
-            <span>Sky</span>
+            <span>smis</span>
           </Link>
-          <nav className={styles.sideNav} aria-label="Sky sections">
+          <nav className={styles.sideNav} aria-label="smis sections">
             <Link href="/sky/campus/columbia" aria-current="page">
               <Home size={25} fill="currentColor" aria-hidden="true" />
               <span>Home</span>
@@ -524,7 +524,7 @@ export default function ColumbiaFeed() {
           </nav>
           <a className={styles.askButton} href="#sky-request">
             <Sparkles size={20} aria-hidden="true" />
-            <span>Ask Sky</span>
+            <span>Ask smis</span>
           </a>
           <button
             type="button"
@@ -541,13 +541,13 @@ export default function ColumbiaFeed() {
           </button>
         </aside>
 
-        <section className={styles.centerColumn} aria-label="Sky tool feed">
+        <section className={styles.centerColumn} aria-label="smis tool feed">
           <header className={styles.topbar}>
-            <Link className={styles.home} href={`${SKY_MAIN}/os/sky`} aria-label="Sky home">
+            <Link className={styles.home} href={`${SKY_MAIN}/os/sky`} aria-label="smis home">
               <House size={28} strokeWidth={1.8} />
             </Link>
             <div className={styles.brand}>
-              <strong>Sky</strong>
+              <strong>smis</strong>
               <span>Columbia students</span>
             </div>
             <button
@@ -608,12 +608,12 @@ export default function ColumbiaFeed() {
                 value={request}
                 onChange={(event) => setRequest(event.target.value)}
                 placeholder="What are you working on?"
-                aria-label="Tell Sky what you are working on"
+                aria-label="Tell smis what you are working on"
               />
               <button
                 type="submit"
                 disabled={!request.trim()}
-                aria-label="Find the right Sky tool"
+                aria-label="Find the right smis tool"
               >
                 <Send size={21} strokeWidth={1.8} />
               </button>
@@ -629,7 +629,7 @@ export default function ColumbiaFeed() {
             <section
               className={styles.feed}
               aria-label={
-                mode === 'saved' ? 'Saved Sky tools' : 'Recommended Sky tools'
+                mode === 'saved' ? 'Saved smis tools' : 'Recommended smis tools'
               }
             >
               {visibleTools.map((tool, index) => {
@@ -668,7 +668,7 @@ export default function ColumbiaFeed() {
                         <BadgeCheck
                           className={styles.verified}
                           size={18}
-                          aria-label="Available on Sky"
+                          aria-label="Available on smis"
                         />
                         <span className={styles.handle}>{copy.handle}</span>
                         <button
@@ -764,14 +764,14 @@ export default function ColumbiaFeed() {
           </footer>
         </section>
 
-        <aside className={styles.rightRail} aria-label="Sky discovery">
+        <aside className={styles.rightRail} aria-label="smis discovery">
           <form className={styles.railSearch} onSubmit={submitRequest}>
             <Search size={20} aria-hidden="true" />
             <input
               value={request}
               onChange={(event) => setRequest(event.target.value)}
-              placeholder="Search Sky"
-              aria-label="Search Sky tools"
+              placeholder="Search smis"
+              aria-label="Search smis tools"
             />
             <button type="submit" disabled={!request.trim()}>
               Go
@@ -799,7 +799,7 @@ export default function ColumbiaFeed() {
             })}
           </section>
           <section className={styles.railPanel} aria-labelledby="desk-heading">
-            <h2 id="desk-heading">Sky desks</h2>
+            <h2 id="desk-heading">smis desks</h2>
             {entry.tools.map((tool) => {
               const copy = feedCopy[tool.id as keyof typeof feedCopy];
               return (
@@ -850,7 +850,7 @@ export default function ColumbiaFeed() {
           </p>
         </aside>
 
-        <nav className={styles.bottomNav} aria-label="Sky navigation">
+        <nav className={styles.bottomNav} aria-label="smis navigation">
           <Link className={styles.active} href="/sky/campus/columbia">
             <Home size={24} fill="currentColor" />
             <span>Home</span>
@@ -979,7 +979,7 @@ export default function ColumbiaFeed() {
               </button>
             </header>
             <p>
-              Sky learns from qualified views, details, launches, saves,
+              smis learns from qualified views, details, launches, saves,
               connections, completions, and failures to reorder these tools for
               you. It never stores your request text, Zema conversations,
               generated results, raw scrolling, or a device ID.

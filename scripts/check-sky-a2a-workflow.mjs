@@ -1,3 +1,4 @@
+import { sourceSandboxRestoreSql } from './sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import { generateKeyPairSync, sign } from 'node:crypto';
@@ -348,21 +349,16 @@ try {
     ),
   };
   writeFileSync(configPath, JSON.stringify(baseConfig, null, 2));
-  // A fresh D1 database can need more than the ordinary query budget on a busy host.
-  // Keep this bounded separately; seed/read queries retain the 30-second limit.
-  const migrationStartedAt = performance.now();
+  // This Sites lineage upgrades an existing DB. Runtime boundary fixtures use
+  // an empty restored current schema; migration upgrades have separate D1 tests.
+  const restorePath = join(temporary, 'source-restored-schema.sql');
+  writeFileSync(restorePath, sourceSandboxRestoreSql());
+  const restoreStartedAt = performance.now();
   runWrangler([
-    'd1',
-    'migrations',
-    'apply',
-    'site-creator-d1',
-    '--local',
-    '--persist-to',
-    state,
-    '--config',
-    configPath,
+    'd1', 'execute', 'site-creator-d1', '--local', '--persist-to', state,
+    '--config', configPath, '--file', restorePath,
   ], { timeout: 120_000 });
-  console.log(`Local D1 migrations completed in ${Math.round(performance.now() - migrationStartedAt)}ms`);
+  console.log(`Local synthetic restored schema prepared in ${Math.round(performance.now() - restoreStartedAt)}ms; not production migration acceptance`);
   await seedFixtureRows(fixtures);
   await startServer();
 

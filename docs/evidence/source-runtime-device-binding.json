@@ -1,0 +1,534 @@
+{
+  "schema": "rockstaros.source-runtime-device-binding/1",
+  "recordedAt": "2026-10-22T17:44:20.758670+00:00",
+  "status": "negotiated_source_worker_and_sdk_accepted_new_native_execution_pending",
+  "tasks": [
+    "OS10",
+    "DSP01",
+    "SKY21",
+    "WEB06"
+  ],
+  "responsibility": {
+    "primary": "ROCK / Android Device Local AI",
+    "sourcePrimarySquad": "O6",
+    "joint": [
+      "same public candidate runtime",
+      "exact Pixel Native/AVF",
+      "new actual owner Node grant"
+    ]
+  },
+  "sourceHead": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+  "sourceSha256": {
+    "lib/rockstar-device-link.ts": "687e4a6d44c212f5d8cd0565d33aaf9da60a851c777d839e32f4ecc315d980bc",
+    "app/api/rockstar/device-authorizations/route.ts": "18e550c9cd46ef83240173ec37aaac7aed29d0f7e0e4a73b2bffdb9fc4bad9fa",
+    "app/api/rockstar/device-authorizations/approve/route.ts": "5ab2be21f40ad4e999918d0ba4ef3577ec80f97a70b18d3b9968982f755fd0c1",
+    "app/api/eve/runtime/route.ts": "19b94737fd8b3c67ba7bb4fe3049bd73dc7629b88d5124b1ae81f6747b6fba43",
+    "lib/eve-runtime-sync.ts": "ada1b30f53296008ab98087840f50fbcc97312dae542728b5a510f0c7afc48d9",
+    "lib/rockstar-linked-execution.ts": "e2cb89e26a771541e65529bdd8fa0ab291203d90a435462581659de3d1648635",
+    "lib/rockstar-adapters.ts": "647e80a21533d9b93a1d4749c4481419ff4e8a3be82f1c2dc989bb1928419e07",
+    "lib/eve-history.ts": "1b6e2afc1d02867df435bb92cfdc6e3f86a2ed6e2da6dca2b93f579aa49e64f8",
+    "scripts/check-work-api.mjs": "e9c86113dd464cc05c909d85a0d69bdcf65e895cee558ab6e85b5945df82402d",
+    "scripts/runtime-device-api-acceptance.mjs": "07036c8852a94a7c288768379e5e6224cef6188e5da430e72a43696264e86371",
+    "scripts/sky-monthly-sandbox-db.mjs": "73f6e77674477659a1cd8e4c76fa3f310feaf426835571fd06f49ec617806b90",
+    "drizzle-main/meta/_journal.json": "bc6f9cf10da3d23a2a8faf760a869e61448543487b9b6ceb02df9ea189187ecd",
+    "scripts/device-binding-api-acceptance.mjs": "697aa6da3943f249f13a0ca7b7ea136e82403199604bafa729698b56e2011c67",
+    "tests/device-link-response.test.mjs": "5d8d7a7e5a73a9b509d395c8201ad5ac0fe6838a3cc54035ae6f4113f2c45c95"
+  },
+  "rootDeviceLinkSha256": "687e4a6d44c212f5d8cd0565d33aaf9da60a851c777d839e32f4ecc315d980bc",
+  "rootSourceDeviceLinkIdentical": true,
+  "changes": [
+    "begin declares exact owner-device/v1",
+    "authorized deviceId matches the actually inserted session row",
+    "owner denial distinct from consumed access_denied, no new grant on denial",
+    "actual Source Worker common runtime presence/claim/authorize/report/ack and encrypted history test coverage"
+  ],
+  "checks": {
+    "sdkInitialSandboxFailure": {
+      "exitCode": 1,
+      "scope": "SDK 59pass/1EPERM failure on loopback host-package test",
+      "log": "/private/tmp/rock-device-binding-sdk-7-tests.log"
+    },
+    "finalSourceVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "node": {
+        "total": 2420,
+        "pass": 2419,
+        "fail": 0,
+        "skip": 1
+      },
+      "apiAssertions": 1506,
+      "csvAssertions": 385,
+      "assets": {
+        "references": 214,
+        "missing": 0
+      },
+      "log": "/private/tmp/rock-source-binding-negotiated-full-verify.log",
+      "scope": "actual local workerd/D1/R2 with synthetic gateway users, restored schema and synthetic reports; not public or inference"
+    },
+    "finalRootVerify": {
+      "exitCode": 0,
+      "node": {
+        "total": 1406,
+        "pass": 1405,
+        "fail": 0,
+        "skip": 1
+      },
+      "apiAssertions": 2059,
+      "csvAssertions": 113,
+      "assets": {
+        "references": 212,
+        "missing": 0
+      },
+      "log": "/private/tmp/rock-root-binding-negotiated-full-verify.log",
+      "scope": "Observed shared dirty tree, not same-SHA CI or frozen proof for concurrent unrelated code"
+    },
+    "sdk": {
+      "version": "1.0.0-dev.7",
+      "sha256": "80c98adceb2ead74560e1f353575a8ce3cdd3469f5f05ffd4806533dd29947b4",
+      "privateCandidate": "runtime-host-dev7-final",
+      "files": 10,
+      "everyPackagedFileMatchesCurrentSource": true,
+      "tests": 60,
+      "pass": 60,
+      "exitCode": 0,
+      "log": "/private/tmp/rock-device-binding-sdk-7-tests-approved.log",
+      "buildLog": "/private/tmp/rock-runtime-sdk-dev7-build.log",
+      "publicPublished": false
+    },
+    "nativeHost": {
+      "exitCode": 0,
+      "pass": 1,
+      "log": "/private/tmp/rock-native-host-negotiated.log"
+    },
+    "finalResponse": {
+      "schema": "rockstaros.source-binding-response/1",
+      "at": "2026-10-22T17:40:57.473870+00:00",
+      "workerSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+      "applicationSha256": "e753fa291afb3da8cce15a73c1b205c300083505b7c04715a0017e766aa7c880",
+      "headersFileAbsent": true,
+      "localIdentityDisabled": true,
+      "logicalOrigin": "https://avoado.si",
+      "transport": "loopback-only actual local Worker/ASSETS; Wrangler rewrites logical-origin redirects to local transport",
+      "canonicalPublicRedirectAccepted": false,
+      "responses": [
+        {
+          "path": "/",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "no-store, must-revalidate",
+          "location": null,
+          "etag": null,
+          "bodySha256": "8453a5c1dbb72817dce23e6c9d8d57c5ab0c699f542859da84d9e3469853b87e",
+          "missingHeaders": []
+        },
+        {
+          "path": "/sky",
+          "method": "GET",
+          "status": 308,
+          "cacheControl": null,
+          "location": "http://127.0.0.1:8798/os/sky",
+          "etag": null,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        },
+        {
+          "path": "/sw.js",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "no-cache, no-store, must-revalidate",
+          "location": null,
+          "etag": null,
+          "bodySha256": "538fbb6a9aa568cb06e800cad36f5772899b1fb98d3ed010af8e28b352ddac1e",
+          "missingHeaders": []
+        },
+        {
+          "path": "/manifest.webmanifest",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "no-cache, must-revalidate",
+          "location": null,
+          "etag": null,
+          "bodySha256": "7e8200a3bdcad18beee3610a9a18fbc1b515621490a0fa234919e55927f170b1",
+          "missingHeaders": []
+        },
+        {
+          "path": "/rock-icon-192.png",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=0, must-revalidate",
+          "location": null,
+          "etag": "\"c884f15c924866359eadbaee3ca3f599\"",
+          "bodySha256": "9d983523d02ba07ff74ff3d57e4b92dc023d5b575986272f77baf95aa0688741",
+          "missingHeaders": []
+        },
+        {
+          "path": "/rock-icon-512.png",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=0, must-revalidate",
+          "location": null,
+          "etag": "\"7510d44dd7e382642fe2ba71be1bb8f4\"",
+          "bodySha256": "6efdeff98fdfd19a31451732a8b862f64dc137fea07e33545b6f7345dcedf18a",
+          "missingHeaders": []
+        },
+        {
+          "path": "/rock-icon-maskable.svg",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=0, must-revalidate",
+          "location": null,
+          "etag": "\"742b557e4c193cd27a2e1061a269576a\"",
+          "bodySha256": "1aad586f5be04ab99609546bf3c8837de76346819e90a1dfdb7d430f9eaac735",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/chunks/index-DRvO-Mgh.js",
+          "method": "GET",
+          "status": 200,
+          "cacheControl": "public, max-age=31536000, immutable",
+          "location": null,
+          "etag": "\"a0565e0b8e688a8c0845fcd02d0f2a3c\"",
+          "bodySha256": "ea8d0e01453e0827ad774eb16e1b89b388d84dbe4df8d39d85434738e98298ef",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/missing-fixture.js",
+          "method": "GET",
+          "status": 404,
+          "cacheControl": null,
+          "location": null,
+          "etag": null,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        },
+        {
+          "path": "/api/eve/runtime",
+          "method": "GET",
+          "status": 401,
+          "cacheControl": "no-store",
+          "location": null,
+          "etag": null,
+          "bodySha256": "d82f0b847c16e0ef15b9994b0478429ca9bfe8ab64101ce3546886c76dfc5499",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/chunks/index-DRvO-Mgh.js",
+          "method": "HEAD",
+          "status": 200,
+          "cacheControl": "public, max-age=31536000, immutable",
+          "location": null,
+          "etag": "\"a0565e0b8e688a8c0845fcd02d0f2a3c\"",
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        },
+        {
+          "path": "/_next/static/chunks/index-DRvO-Mgh.js",
+          "method": "GET",
+          "status": 304,
+          "cacheControl": "public, max-age=31536000, immutable",
+          "location": null,
+          "etag": "\"a0565e0b8e688a8c0845fcd02d0f2a3c\"",
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "missingHeaders": []
+        }
+      ],
+      "jsByteMatched": true,
+      "publicChanged": false,
+      "realInference": 0
+    }
+  },
+  "acceptedContract": {
+    "sameRuntimeJobAndThread": true,
+    "historyMessages": 2,
+    "repeatEnqueueAndReportNoDuplicate": true,
+    "conflictingClaimRejected": true,
+    "encryptedReplicaChecked": true,
+    "workerRestartRetainsReportAndHistory": true,
+    "deviceCannotBrowserApproveOrEnqueue": true,
+    "revokedDeviceRejected": true,
+    "lateRevokedReportRejected": true,
+    "ownerCanReadRetainedResult": true,
+    "legacyQueueEmpty": true,
+    "newApplicationTables": 0,
+    "newMigrations": 0
+  },
+  "remaining": [
+    "Prepare/review updated guest software and same Native candidate, then existing Pixel grant real common ABI job/thread/artifact, Android TLS/Keystore/AVF, restart/stop/UNKNOWN; installed old APK read is separate",
+    "Source official save/deploy/readback after current explicit publication authorization; new actual owner Node enrollment remains separate",
+    "Legacy Android consume-response uncertainty is not repaired by response projection; no broader enrollment/recovery acceptance claimed",
+    "Remaining complete master CORE/RQ/research/SI/usage/financial/hardware requirements"
+  ],
+  "boundaries": {
+    "newActualOwnerGrants": 0,
+    "realInference": 0,
+    "physicalChanged": false,
+    "publicChanged": false,
+    "sourceSavedViaSites": false,
+    "savedToGitHub": false,
+    "mergedToMain": false,
+    "payments": 0,
+    "wholeGoalComplete": false
+  },
+  "buildInputSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+  "buildArchive": {
+    "schema": "rockstaros.source-negotiated-binding-archive/1",
+    "path": "/private/tmp/rockstaros-device-binding-negotiated-build.tar.gz",
+    "sha256": "cbee9a70d180114402d1b185470da463553bd8f700645d7b74f7c8e9b6b3e904",
+    "files": 823,
+    "sqlFiles": 12,
+    "allCurrentDistBytesMatched": true,
+    "workerSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+    "applicationSha256": "e753fa291afb3da8cce15a73c1b205c300083505b7c04715a0017e766aa7c880",
+    "allSqlMatchSourceLineage": true,
+    "macMetadataFiles": 0,
+    "priorArchivesPreserved": true,
+    "officialSitesSaveOrDeploy": false
+  },
+  "pixelExistingAccountPreflight": {
+    "scope": "Existing installed APK24b443c0 read-only HTTPS runtime inspection and existing legacy mTLS status. NOT the new Native common controller/client/guest ABI, presence or execution.",
+    "installedMainSha256": "24b443c0333a6c2a0dc0236be1af17abec4eaf111b814202c35236170c8322c2",
+    "firstAttempt": {
+      "startedAt": "2026-10-22T17:22:16.492284+00:00",
+      "newInference": 0,
+      "newGrants": 0,
+      "mainUpdated": false,
+      "testApkSha256": "242263bc8a327dea5a34546d0e225009c24a68f6ee67f10b46c99c2440d1a035",
+      "authorizedDevices": 1,
+      "unlocked": true,
+      "instrumentationPassed": false,
+      "status": "test_failed",
+      "originalTestRestored": true,
+      "mainApkUnchanged": true,
+      "finishedAt": "2026-10-22T17:22:41.791824+00:00"
+    },
+    "firstAttemptCause": "Legacy Linux bridge timed out before public runtime GET; private log /private/tmp/rock-pixel-runtime-readiness.log",
+    "normalTerminalLaunch": {
+      "at": "2026-10-22T17:24:48.665519+00:00",
+      "normalTerminalLaunchExitCode": 0,
+      "settingsChanged": false,
+      "vmRestartRequested": false,
+      "dataCleared": false
+    },
+    "finalAttempt": {
+      "startedAt": "2026-10-22T17:25:22.353364+00:00",
+      "newInference": 0,
+      "newGrants": 0,
+      "mainUpdated": false,
+      "testApkSha256": "c638c7cfbff10be016b37dc844947c85468445c528e70fd64bca2210b71798fd",
+      "authorizedDevices": 1,
+      "unlocked": true,
+      "instrumentationPassed": true,
+      "proof": {
+        "schema": "rockstaros.pixel-runtime-readiness/1",
+        "accepted": true,
+        "observedAt": 1792689932899,
+        "runtimeApiConfirmed": true,
+        "existingOwnerDeviceBindingConfirmed": true,
+        "pendingRuntimeCommands": 0,
+        "linuxConfirmed": true,
+        "mainPortableCandidateInstalled": false,
+        "newInference": 0,
+        "newGrants": 0,
+        "newPresence": 0,
+        "newClaims": 0,
+        "keyAliasesUnchanged": true,
+        "jobsRetained": 26,
+        "modelsRetained": 2,
+        "agentsRetained": 6,
+        "linuxPhase": "stopped"
+      },
+      "status": "passed",
+      "originalTestRestored": true,
+      "mainApkUnchanged": true,
+      "finishedAt": "2026-10-22T17:25:36.182060+00:00"
+    },
+    "testArtifact": {
+      "testApkSha256": "c638c7cfbff10be016b37dc844947c85468445c528e70fd64bca2210b71798fd",
+      "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+      "sourceSha256": "aa50e12ffd4421dbd44ea0af605d74186e58792e1e8bfe8e9460d160519ef007",
+      "mainInstalled": false
+    },
+    "androidBuildLint": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-pixel-runtime-readiness-build-2.log"
+    },
+    "linuxExecutionReady": false,
+    "linuxState": "stopped",
+    "settingsChangedByThisTask": false,
+    "screenPowerSettingObserved": "15, preserved; another user-authorized thread changed this before preflight",
+    "newNativeCandidateInstalled": false
+  },
+  "github": {
+    "at": "2026-10-22T17:21:04.979Z",
+    "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "branch": "codex/esim-cloud-access",
+    "mainChecks": {
+      "state": "PASS",
+      "total": 14,
+      "allSuccessful": true
+    },
+    "branchChecks": {
+      "state": "PASS",
+      "total": 1,
+      "allSuccessful": true
+    },
+    "liveMetadataVerified": true,
+    "dirtyCodeCI": false,
+    "sourceReviewComplete": false
+  },
+  "beforeNegotiationSnapshot": {
+    "sourceSha256": {
+      "lib/rockstar-device-link.ts": "b12754f79fcc4b289af025a53fd105789da1450e06cd7a3f814cc17f5b100e76",
+      "app/api/rockstar/device-authorizations/route.ts": "a01ad7fdc24cc09a926460cbdf8349c22e8356e31bfd8b1f28cbf75b9d83d309",
+      "app/api/rockstar/device-authorizations/approve/route.ts": "5ab2be21f40ad4e999918d0ba4ef3577ec80f97a70b18d3b9968982f755fd0c1",
+      "app/api/eve/runtime/route.ts": "19b94737fd8b3c67ba7bb4fe3049bd73dc7629b88d5124b1ae81f6747b6fba43",
+      "lib/eve-runtime-sync.ts": "ada1b30f53296008ab98087840f50fbcc97312dae542728b5a510f0c7afc48d9",
+      "lib/rockstar-linked-execution.ts": "e2cb89e26a771541e65529bdd8fa0ab291203d90a435462581659de3d1648635",
+      "lib/rockstar-adapters.ts": "647e80a21533d9b93a1d4749c4481419ff4e8a3be82f1c2dc989bb1928419e07",
+      "lib/eve-history.ts": "1b6e2afc1d02867df435bb92cfdc6e3f86a2ed6e2da6dca2b93f579aa49e64f8",
+      "scripts/check-work-api.mjs": "ae098fd71b26bac922d9984b5b6a944a3b60baf7110410088d9de98391c0250c",
+      "scripts/runtime-device-api-acceptance.mjs": "07036c8852a94a7c288768379e5e6224cef6188e5da430e72a43696264e86371",
+      "scripts/sky-monthly-sandbox-db.mjs": "73f6e77674477659a1cd8e4c76fa3f310feaf426835571fd06f49ec617806b90",
+      "drizzle-main/meta/_journal.json": "bc6f9cf10da3d23a2a8faf760a869e61448543487b9b6ceb02df9ea189187ecd"
+    },
+    "checks": {
+      "sourceBuild": {
+        "exitCode": 0,
+        "log": "/private/tmp/rock-source-device-binding-build.log"
+      },
+      "sourceTypeLint": {
+        "exitCode": 0,
+        "log": "/private/tmp/rock-source-device-binding-lint.log"
+      },
+      "sourceApi": {
+        "exitCode": 0,
+        "assertions": 1476,
+        "previousAssertions": 1381,
+        "log": "/private/tmp/rock-source-device-binding-api.log",
+        "environment": "actual local workerd/D1 with restored synthetic schema and production Source bundle; synthetic gateway users and manually constructed report, no real model"
+      },
+      "sourceFullVerify": {
+        "exitCode": 0,
+        "node": {
+          "total": 2419,
+          "pass": 2418,
+          "fail": 0,
+          "skip": 1
+        },
+        "apiAssertions": 1476,
+        "csvAssertions": 385,
+        "assets": {
+          "references": 214,
+          "missing": 0
+        },
+        "log": "/private/tmp/rock-source-device-binding-full-verify.log",
+        "scope": "Retained local Source; actual workerd/D1/R2 synthetic restored schema, not public or real inference"
+      },
+      "rootFullVerify": {
+        "status": "pending"
+      }
+    },
+    "archive": {
+      "schema": "rockstaros.source-device-binding-build-archive/1",
+      "sha256": "d49746b7d84efb3bd0a27a2292e707f1d8a11163b43558ebc82d9df5f34ea247",
+      "path": "/private/tmp/rockstaros-device-binding-reviewed-build.tar.gz",
+      "files": 823,
+      "sqlFiles": 12,
+      "allCurrentDistBytesMatched": true,
+      "workerSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+      "allSqlMatchSourceLineage": true,
+      "assetWorkerFirst": true,
+      "macMetadataFiles": 0,
+      "oldArchivePreserved": true,
+      "officialSitesSaveOrDeploy": false,
+      "sourceHeadUnchanged": true
+    },
+    "legacyEnrollmentAccepted": false,
+    "reason": "Existing strict RockstarDeviceAuthorizationFlow rejects unconditional extra sessionBinding/deviceId/reason; discovered by source inspection before publication"
+  },
+  "sdkVersion": "1.0.0-dev.7",
+  "sdkSha256": {
+    "packages/rockstaros-runtime/src/index.mjs": "68258401cd7d2031ff446b4e9ad5cf13a5141c439196b4b002d9302e3c5b82b9",
+    "packages/rockstaros-runtime/package.json": "a4d69a082fec139890814341ff7b74b9a7cfc00080e259f3576a57ed8066756b",
+    "packages/rockstaros-runtime/test/runtime.test.mjs": "f3df91a3baaec348c3b0b5a790efff9a18b2e0c2ca5b4696f0699409334a232f",
+    "packages/rockstaros-runtime/test/helpers/node-service-fixture.mjs": "d95253f73312584f99c09785838d16237998e4c4cc0dffba5ae7ef28b5b2bbbc",
+    "packages/rockstaros-runtime/README.md": "32805e5857f2ef27a4dcae31b541ef34f76b2dbfcb77c9e3c471ffd429fcf920"
+  },
+  "compatibility": {
+    "requestHeader": "X-Rockstar-Device-Binding: owner-device/v1",
+    "legacyDefault": "Original exact response fields retained; strict Android parser unchanged",
+    "invalidHeader": "Rejected400 before code/session creation",
+    "newSdk": "Negotiates only begin/poll, body unchanged, no credential on registration requests",
+    "oldServer": "No binding declaration means host stops before browser approval or token consumption"
+  },
+  "buildArchiveCurrent": true,
+  "headerResponseAttempt": {
+    "accepted": false,
+    "log": "/private/tmp/rock-source-binding-response-server.log",
+    "reason": "Local Wrangler redirect rewriting differs from the direct logical-origin assertion; product canonical policy unchanged; repeat with explicit transport scope"
+  },
+  "nativeHostRegression": {
+    "schema": "rockstaros.native-host-http-proof/1",
+    "sourceSha256": {
+      "toolkits/sky-linux-local/common-ui-src/EvePortableCommands.java": "8cdc36f566db20ed6b87b116bf925005eb8cd8885b184066b74f94ac10f29994",
+      "toolkits/sky-linux-local/common-ui-src/EvePortableClaimJournal.java": "9efb1646b25039cb01a8c45a74442a23021ea86fbebf7c2462fb0a85b7caf186",
+      "toolkits/sky-linux-local/common-ui-src/PixelPortableBridgeProtocol.java": "25a19faecb3309a094087e43042f38e2a67c6599e1473abbb687bf256a94adf6",
+      "toolkits/sky-linux-local/common-ui-src/EvePortableController.java": "2b0621d93821f0a6022f5fe356c2e338811c356688408013d58911506b678d80",
+      "toolkits/sky-linux-local/common-ui-src/EvePortableHttpClient.java": "9c323a0d29b834ad5433aefe3682e4ed4e4cf9ae196f4df52f0de730a6fac722",
+      "toolkits/sky-linux-local/owner-host-tests/dev/rock/shell/EvePortableHostProbe.java": "b0c92d40d0e53a8c285cab547fa6440355489315b0921adccc53409702331fe4",
+      "scripts/check-pixel-native-host.mjs": "f0eb2b85ac9c1d8af02aa0fb645d0230f24c57712f3738996a0d564d03a87f42",
+      "packages/rockstaros-runtime/test/helpers/node-service-fixture.mjs": "d95253f73312584f99c09785838d16237998e4c4cc0dffba5ae7ef28b5b2bbbc"
+    },
+    "actualTls": true,
+    "jdkOriginHeaderCompatibility": true,
+    "fixtureTrustConfinedToChildJvms": true,
+    "actualDeviceAuthStore": true,
+    "actualSqliteFile": true,
+    "actualProductionManager": true,
+    "managerChild": "synthetic; no real inference",
+    "nativeJvmProcesses": 3,
+    "abruptJvmKills": 1,
+    "serverAndDatabaseRestarts": 1,
+    "managerRestarts": 1,
+    "lostReportResponses": 1,
+    "fixtureGenerationCalls": 2,
+    "scopedStops": 1,
+    "savedJobs": 1,
+    "historyMessages": 2,
+    "sameJobAndHistory": true,
+    "outputSha256": "6b17505fd2449493cda6d8f77010662bd2e583938e4f1525e7f9f0fbc502ff33",
+    "redirectFollowed": false,
+    "untrustedContentTypeAccepted": false,
+    "revokedResultPublished": false,
+    "apiRequests": 25,
+    "physicalAccepted": false,
+    "androidTlsAccepted": false,
+    "publicAccepted": false,
+    "realInference": 0,
+    "newActualOwnerGrants": 0,
+    "payments": 0
+  },
+  "nativeToSourceWorkerCombinedAccepted": false,
+  "applicationSha256": "e753fa291afb3da8cce15a73c1b205c300083505b7c04715a0017e766aa7c880",
+  "sdkArtifact": {
+    "version": "1.0.0-dev.7",
+    "sha256": "80c98adceb2ead74560e1f353575a8ce3cdd3469f5f05ffd4806533dd29947b4",
+    "privateCandidate": "runtime-host-dev7-final",
+    "files": 10,
+    "everyPackagedFileMatchesCurrentSource": true,
+    "tests": 60,
+    "pass": 60,
+    "exitCode": 0,
+    "log": "/private/tmp/rock-device-binding-sdk-7-tests-approved.log",
+    "buildLog": "/private/tmp/rock-runtime-sdk-dev7-build.log",
+    "publicPublished": false
+  },
+  "failureNotes": [
+    "Initial unconditional binding fields would break the unchanged strict legacy Android parser; not published, replaced by negotiated projection and exact legacy Worker tests",
+    "SDK test initial EPERM on loopback was rerun unchanged in authorized local environment, all60 pass",
+    "First npm pack could not write protected default npm cache; no archive existed, retried with task-private cache, no chmod/chown/global cache changes",
+    "First no-headers measurement wrongly expected direct logical Location through Wrangler local proxy. Revised measurement asserts the observed exact local transport redirect and explicitly does not claim public canonical redirect acceptance."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros.sites-legacy-lineage-fixture/1",
+  "sourceCommit": "686fd5ab78015f6d8dc29030bfd4f76fb912a920",
+  "role": "immutable synthetic regression fixture; never a main Site deployment directory",
+  "filesSha256": {
+    "0013_sky_provider_connections.sql": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a",
+    "0014_jennifer_execution_integrity.sql": "688e4bff912c6db47ee5554a5b993e93be7c718c794ef5033b13202522337907",
+    "0015_jennifer_passkey_access.sql": "31f8be9a8cb9dbadce24fd008fadcdeaec41abb7071c189b5bc5db0b4c99a73c",
+    "0016_sky_monthly_sandbox.sql": "fe52954e0d69340905210be5f1bfa7da23d3e9937c592275b3aaf5c67ec62b78",
+    "0017_sky_cloud_monthly_test.sql": "09563f40add9e5173fd7fa64358bec39cc67bbac59828abdfd2d1b755a38cd39",
+    "0018_sky_recurring_sandbox.sql": "d64bd1fac2938c54965749e21c62d67a4fd3bf7db3f7947f33ff53a6240354f6",
+    "0019_sky_hosted_monthly.sql": "9f244cd985e5583b324a5e9d155fd04bacdb1677aa877c03712a3ce436d29377",
+    "0020_sites_schema_convergence.sql": "db96fe071310e514a156109bfbe18566c1b8385fa1716558df5c36c60fecac2a",
+    "0021_sky_recurring_send_guard.sql": "e8486dfcb3c90fd2c5cc7b68cea4c441fe831d2da2797031d3427f8076a3fd33",
+    "meta/_journal.json": "4a2145497786deaf8f0d383ce19983149451adc7ca0278584a78f13bfd3ca63c"
+  }
+}

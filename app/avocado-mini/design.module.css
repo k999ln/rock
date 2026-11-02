@@ -1,0 +1,42 @@
+/* Scope R5 copy to the shared OS palette; legacy campaign CSS assumes dark backgrounds. */
+.r5Landing.r5Landing {
+  --ink: var(--os-text, #252b28);
+  --muted: var(--os-muted, #626e65);
+  --acid: var(--os-accent, #315b4d);
+  color: var(--os-text, #252b28);
+  background: var(--os-bg, #f6f4ef);
+}
+
+.r5Landing.r5Landing header {
+  background: var(--os-panel, #fffdf8);
+  border-color: var(--os-line, #dedfd6);
+}
+
+.r5Landing.r5Landing header span {
+  color: var(--os-text, #252b28);
+}
+
+.r5Landing .intro > .bodyCopy,
+.r5Landing .serviceInfo > p {
+  color: var(--os-muted, #626e65);
+}
+
+.r5Landing .intro > .eyebrow {
+  color: var(--os-accent, #315b4d);
+}
+
+.r5Landing .intro > .notice {
+  color: var(--os-text, #252b28);
+  background: var(--os-panel, #fffdf8);
+  border-color: var(--os-line, #dedfd6);
+}
+
+.r5Landing.r5Landing footer {
+  color: var(--os-muted, #626e65);
+  border-color: var(--os-line, #dedfd6);
+}
+
+.r5Landing a:focus-visible {
+  outline: 2px solid var(--os-focus, #a9754f);
+  outline-offset: 4px;
+}

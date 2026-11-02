@@ -1,0 +1,103 @@
+{
+  "schema": "rockstar.source-regression-repair/1",
+  "status": "local_source_full_verify_and_same_build_response_browser_passed_public_and_pixel_pending",
+  "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+  "scope": "Retained Source bootstrap/UI harness plus additive owner-workspace schema recovery and canonical schema inventory; published SQL bytes/times and public deployment unchanged.",
+  "ownerWorkspaceRecovery": {
+    "manifest": "data/sites-owner-workspace-recovery.json",
+    "localD1Tests": 6,
+    "passed": 6,
+    "publicDeployed": false,
+    "existingDataPreserved": true,
+    "emptyMainDatabaseSupported": false
+  },
+  "checks": {
+    "originalFinance16Passed": 16,
+    "schemaFixturesPassed": 17,
+    "fullSourceNode": {
+      "total": 2394,
+      "pass": 2376,
+      "fail": 17,
+      "cancelled": 0,
+      "skip": 1,
+      "exitCode": 1,
+      "log": "/private/tmp/rock-source-common-ui-node-candidate-final.log",
+      "failureGroups": {
+        "avocado-r5-docs.test.mjs": 2,
+        "product-baseline.test.mjs": 2,
+        "release-readiness.test.mjs": 13
+      },
+      "testTimeoutsChanged": false
+    },
+    "fullSourceVerify": {
+      "exitCode": 1,
+      "stage": "project:check",
+      "reason": "AMC02 historical evidence missing"
+    }
+  },
+  "publicChanged": false,
+  "realStripeCalls": 0,
+  "paidProviderCalls": 0,
+  "newDeviceGrants": 0,
+  "wholeGoalComplete": false,
+  "siteLineageRepair": {
+    "status": "focused_27_passed_build_passed_other_regressions_remain",
+    "legacyFixtureSource": "686fd5ab78015f6d8dc29030bfd4f76fb912a920",
+    "legacySqlFiles": 9,
+    "journalFiles": 1,
+    "wrongSiteReproduced": 2,
+    "focusedPass": 27,
+    "buildExitCode": 0,
+    "typecheckExitCode": 0,
+    "lintProductExitCode": 0,
+    "mainSqlFilesPackaged": 12,
+    "sqlAndJournalByteMatch": true,
+    "productionDatabaseWrites": 0,
+    "fullNode": {
+      "total": 2387,
+      "pass": 2361,
+      "fail": 25,
+      "cancelled": 0,
+      "skip": 1,
+      "exitCode": 1
+    },
+    "fullVerify": {
+      "exitCode": 1,
+      "stage": "project:check",
+      "reason": "AMC02 historical evidence missing"
+    },
+    "legacyAssertions": "original fresh/current, filename/Drizzle, row retention and SQL byte assertions preserved; main inventory/watermark explicitly extended to 0031"
+  },
+  "commonUiAlignment": {
+    "evidence": "docs/evidence/common-os-entry-alignment.json",
+    "focusedPass": 70,
+    "typecheck": 0,
+    "lintProduct": 0,
+    "build": 0,
+    "publicChanged": false
+  },
+  "recordedAt": "2026-10-22T12:45:51.228827+00:00",
+  "currentReadiness": {
+    "evidence": "docs/evidence/source-readiness-alignment.json",
+    "finalVerify": {
+      "exitCode": 0,
+      "nodeTotal": 2404,
+      "nodePass": 2403,
+      "nodeFail": 0,
+      "nodeCancelled": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 1381,
+      "csvAssertions": 385,
+      "webAssets": 214,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-source-readiness-mini-final-verify.log",
+      "scope": "Retained local Sites Source candidate; synthetic restored D1/Worker/R2, not public or financial acceptance."
+    },
+    "legacy17Resolved": true,
+    "publicChanged": false,
+    "newSqlMigrationsInReadinessFollowup": 0,
+    "productionAccepted": false,
+    "pixelSyncAccepted": false,
+    "wholeGoalComplete": false
+  }
+}

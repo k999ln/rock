@@ -72,7 +72,8 @@ requireValue(
   `native内蔵Toolは6種類です（実際: ${toolKinds.size}）`,
 );
 
-const projectGuide = read('archive/root-snapshot-20261029/PROJECTS.md');
+// Keep the archived inventory immutable; current additions live in the maintained structure guide.
+const projectGuide = read('archive/root-snapshot-20261029/PROJECTS.md') + '\n' + read('docs/structure/04-eve-noa-amc-sky.md');
 requireValue(
   projectGuide.includes('si自動化チームのTool'),
   'プロジェクト別ガイドにToolチームの入口がありません',

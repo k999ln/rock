@@ -76,7 +76,7 @@ export default function EsimCatalog({ initialCatalog, initialError }: {
       <Link href="/connect" className={styles.back}><ArrowLeft size={15} /> 利用開始案内へ戻る</Link>
       <header className={styles.header}>
         <div><span className={styles.eyebrow}>ROCKSTAROS SERVICE ACCESS</span><h1>RockstarOS利用用 SIM / eSIM</h1>
-          <p>RockstarOSとSky、Zema、Agentを使い始めるための回線プランを案内します。SIM購入にはサービス利用権を含める設計です。物理SIMとeSIMを複数チャネルで提供する計画で、このページはそのうちeSIM条件を扱います。</p>
+          <p>RockstarOSとsmis、Zema、Agentを使い始めるための回線プランを案内します。SIM購入にはサービス利用権を含める設計です。物理SIMとeSIMを複数チャネルで提供する計画で、このページはそのうちeSIM条件を扱います。</p>
           <p>SIM/eSIM内でRockstarOSが動くわけではありません。OS導入が確認できる対応端末ではOS版へ、それ以外は既存OSアプリまたはブラウザ版へ案内します。</p>
         </div>
         <button className={styles.secondary} type="button" onClick={() => void refresh()} disabled={loading}>
@@ -116,7 +116,7 @@ export default function EsimCatalog({ initialCatalog, initialError }: {
                 <span>({item.reviewState === 'active' ? '審査有効' : '現在は利用不可'})</span>
                 {item.summary && <span> — {item.summary}</span>}
               </li>)}</ul>
-              <p className={styles.esimDeviceNote}>ここに示すのは初期候補です。端末への導入、利用権、実行許可を確認したものではありません。別のAgent/Toolは後からSkyで追加できます。</p>
+              <p className={styles.esimDeviceNote}>ここに示すのは初期候補です。端末への導入、利用権、実行許可を確認したものではありません。別のAgent/Toolは後からsmisで追加できます。</p>
             </div>
             {plan.installPrerequisites.length > 0 && <div><strong>導入前提</strong><ul>{plan.installPrerequisites.map((item) => <li key={item}>{item}</li>)}</ul></div>}
             <button className={styles.secondary} type="button" disabled aria-disabled="true">契約準備中 — 購入できません</button>

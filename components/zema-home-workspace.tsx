@@ -15,7 +15,7 @@ function toolHref(tool: (typeof catalog)[number]) {
 }
 
 function roleFor(tool: (typeof catalog)[number]) {
-  return skyToolLabelFor(tool.id)?.role ?? 'Skyアプリ';
+  return skyToolLabelFor(tool.id)?.role ?? 'smisアプリ';
 }
 
 export default function ZemaHomeWorkspace() {
@@ -30,7 +30,7 @@ export default function ZemaHomeWorkspace() {
             <p>Botを選ぶと、そのツール専用の画面が開きます。</p>
           </div>
           <Link className="zema-home-sky-link" href="/sky">
-            <Grid2X2 size={16} /> Skyでアプリを管理
+            <Grid2X2 size={16} /> smisでアプリを管理
           </Link>
         </header>
 

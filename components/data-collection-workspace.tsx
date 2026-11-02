@@ -56,7 +56,7 @@ export default function DataCollectionWorkspace() {
     <Link href="/">← RockstarOS Home</Link>
     <header><p className={styles.eyebrow}>SELECTED DATA</p><h1>必要なデータを、手元に回収。</h1><p>選んだファイルとメモを、暗号化した一つのファイルにまとめます。この画面の処理は端末内で完結します。</p></header>
     <section className={styles.panel} aria-labelledby="collection-title"><h2 id="collection-title">1. 回収するものを選ぶ</h2>
-      <p>最大20ファイル、メモを含めて合計2 MiB。SkyやLLMの成果は、各画面でダウンロードしたものを選べます。</p>
+      <p>最大20ファイル、メモを含めて合計2 MiB。smisやLLMの成果は、各画面でダウンロードしたものを選べます。</p>
       <label>ファイル<input aria-label="回収するファイル" type="file" multiple disabled={busy} onChange={event => { setFiles(Array.from(event.target.files ?? [])); event.target.value = ''; setError(''); }} /></label>
       {files.length > 0 && <ul className={styles.list}>{files.map((file, index) => <li key={`${index}-${file.name}`}><span>{file.name} · {size(file.size)}</span><button disabled={busy} onClick={() => setFiles(current => current.filter((_, i) => i !== index))}>選択から外す</button></li>)}</ul>}
       <label>メモ<textarea rows={4} maxLength={65536} disabled={busy} value={note} onChange={event => setNote(event.target.value)} placeholder="一緒に残したい内容" /></label>
@@ -76,7 +76,7 @@ export default function DataCollectionWorkspace() {
       {restored && <div><p>保存日: {new Date(restored.createdAt).toLocaleString('ja-JP')}</p>{restored.note && <pre className={styles.note}>{restored.note}</pre>}<ul className={styles.list}>{restored.files.map(file => <li key={file.id}><span>{file.name} · {size(file.size)}</span><button onClick={() => download(Uint8Array.from(collectedFileBytes(file)).buffer, file.name)}>ファイルを取り出す</button></li>)}</ul>{restored.note && <button onClick={() => download(restored.note, 'rockstar-note.txt')}>メモを取り出す</button>}</div>}
     </section>
     <output aria-live="polite">{message}</output>{error && <p role="alert">{error}</p>}
-    <div className={styles.actions}><button onClick={clear}>画面内のデータを消去</button><Link href="/add">追加機能を管理</Link><Link href="/chat?view=work">Sky・LLMの仕事と成果</Link></div>
+    <div className={styles.actions}><button onClick={clear}>画面内のデータを消去</button><Link href="/add">追加機能を管理</Link><Link href="/chat?view=work">smis・LLMの仕事と成果</Link></div>
     <p className={styles.hint}>再読込すると、保存前の選択内容と復元した内容は消えます。回収ファイルとパスフレーズは本人が管理してください。</p>
   </main>;
 }

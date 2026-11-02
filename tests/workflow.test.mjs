@@ -1,8 +1,9 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import {
   createWorkJob,
   applyWorkCommand,
@@ -199,12 +200,7 @@ void test('invalid inputs, unknown fields and mutation after cancellation are re
 void test('real SQLite persists jobs per user and prevents concurrent overwrites', async (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url))
-    .filter((name) => name.endsWith('.sql') && !name.startsWith('._'))
-    .sort())
-    sqlite.exec(
-      readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'),
-    );
+  applySourceSandboxSchema(sqlite);
   const store = workStore({
     prepare(sql) {
       return {

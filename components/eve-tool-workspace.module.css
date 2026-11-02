@@ -1,0 +1,10 @@
+.panel { border: 1px solid var(--os-border, #bbb); border-radius: 16px; padding: 1rem; margin: 1rem 0; display: grid; gap: .7rem; }
+.panel h3, .panel h4, .panel p { margin: 0; }
+.panel label { display: grid; gap: .35rem; }
+.panel label:has(input[type='checkbox']) { display: flex; align-items: start; }
+.panel input:not([type='checkbox']), .panel textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--os-border, #aaa); border-radius: 8px; padding: .65rem; background: var(--os-surface, white); color: inherit; font: inherit; }
+.actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.panel button { padding: .55rem .8rem; cursor: pointer; }
+.panel button:disabled { cursor: default; opacity: .55; }
+.panel article { display: grid; gap: .7rem; border-top: 1px solid var(--os-border, #bbb); padding-top: 1rem; overflow-wrap: anywhere; }
+.result { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 28rem; overflow: auto; font: inherit; }

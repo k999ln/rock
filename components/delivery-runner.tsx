@@ -132,7 +132,7 @@ export function DeliveryRunner({
       }
       const message =
         e instanceof TypeError
-          ? 'このPCの実行機能に接続できませんでした。Skyの接続設定を確認してください。'
+          ? 'このPCの実行機能に接続できませんでした。smisの接続設定を確認してください。'
           : e instanceof Error
             ? e.message
             : '入力を確認してください。';

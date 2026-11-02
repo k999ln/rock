@@ -171,6 +171,7 @@ export function skySocialStore(
     communityId = '',
     cursor = '',
     threadId = '',
+    checkIds = '',
   ): Promise<SkySocialState> {
     if (!['recommended', 'following', 'bookmarks'].includes(mode))
       throw new SkySocialError('タイムラインの種類を確認してください。');
@@ -187,22 +188,50 @@ export function skySocialStore(
     if (communityId && !allowed.includes(communityId))
       throw new SkySocialError('このコミュニティーの専用鍵が必要です。', 403);
     let after: [number, number, string] | null = null;
+    let snapshotAt = Date.now();
     if (cursor) {
       try {
         if (cursor.length > 160) throw new Error();
         const v = JSON.parse(cursor);
         if (
           !Array.isArray(v) ||
-          v.length !== 3 ||
+          (v.length !== 3 && v.length !== 4) ||
           !Number.isSafeInteger(v[0]) ||
           !Number.isSafeInteger(v[1])
         )
           throw new Error();
+        if (v.length === 4) {
+          if (
+            !Number.isSafeInteger(v[3]) ||
+            v[3] > snapshotAt + 60_000 ||
+            v[3] < snapshotAt - 7 * 86_400_000
+          )
+            throw new Error();
+          snapshotAt = v[3];
+        }
         after = [v[0], v[1], socialId(v[2])];
       } catch {
         throw new SkySocialError('続きの位置を確認してください。');
       }
     }
+    if (
+      checkIds.length > 7_400 ||
+      (checkIds && checkIds.split(',').length > 200)
+    )
+      throw new SkySocialError('確認する投稿が多すぎます。');
+    const checkedIds = checkIds
+      ? [...new Set(checkIds.split(',').map(socialId))]
+      : [];
+    const visibleIds = checkedIds.length
+      ? (
+          await db
+            .prepare(
+              `${visibleSql} AND s.id IN (SELECT value FROM json_each(?))`,
+            )
+            .bind(p.id, JSON.stringify(allowed), JSON.stringify(checkedIds))
+            .all<PostRow>()
+        ).results.map((row) => row.id)
+      : [];
     const communities = await db
       .prepare(
         `SELECT c.*,EXISTS(SELECT 1 FROM sky_community_members m WHERE m.community_id=c.id AND m.profile_id=?) AS member,(SELECT COUNT(*) FROM sky_community_members WHERE community_id=c.id) AS members FROM sky_communities c WHERE archived_at=0 AND (owner_id=? OR EXISTS(SELECT 1 FROM sky_community_members m WHERE m.community_id=c.id AND m.profile_id=?)) ORDER BY member DESC,created_at DESC,id DESC LIMIT 100`,
@@ -227,7 +256,9 @@ export function skySocialStore(
       args.push(communityId);
     }
     const affinity =
-      mode === 'recommended' && !thread ? 'following*2+joined' : '0';
+      mode === 'recommended' && !thread
+        ? `following*8+joined*5+CAST(MAX(0,72-CAST((${snapshotAt}-created_at)/3600000 AS INTEGER))/6 AS INTEGER)`
+        : '0';
     const selection = thread
       ? ''
       : mode === 'following'
@@ -247,13 +278,19 @@ export function skySocialStore(
       last = page.at(-1);
     return {
       profile: p,
+      ...(checkedIds.length ? { checkedIds, visibleIds } : {}),
       communities: communities.results.map((c) =>
         communityView(c, allowed.includes(c.id)),
       ),
       posts: page.map((r) => postView(r, p)),
       cursor:
         rows.results.length > 20 && last
-          ? JSON.stringify([last.affinity, last.created_at, last.id])
+          ? JSON.stringify([
+              last.affinity,
+              last.created_at,
+              last.id,
+              snapshotAt,
+            ])
           : null,
       thread: thread ? postView(thread, p) : null,
     };

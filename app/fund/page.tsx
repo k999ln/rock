@@ -9,7 +9,7 @@ export default function FundPage() {
       <div className="legacy-return">
         <nav aria-label="戻る">
           <Link href="/">⌂ ホーム</Link>
-          <Link href="/sky">← Skyに戻る</Link>
+          <Link href="/sky">← smisに戻る</Link>
         </nav>
         <span>自律形成 · 収益料金は動線確定まで保留中</span>
       </div>

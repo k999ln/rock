@@ -10,14 +10,14 @@
     "dev": "vinext dev",
     "sky:monthly:sandbox": "node --experimental-strip-types scripts/start-sky-monthly-sandbox.mjs",
     "prebuild": "node scripts/local-web-state.mjs && node scripts/generate-private-modules.mjs",
-    "build": "vinext build && node scripts/stage-sky-domain-router.mjs && node scripts/stage-sites-migration-lineage.mjs",
+    "build": "vinext build && node scripts/stage-sky-domain-router.mjs && node scripts/stage-sites-migration-lineage.mjs && node scripts/stage-public-asset-retirements.mjs",
     "site:prepare-package": "node scripts/prepare-sites-package-lineage.mjs",
     "start": "node scripts/start-local-web.mjs",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx components/*.ts services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",
     "format": "oxfmt",
     "pretest": "node scripts/generate-private-modules.mjs",
-    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test": "node --experimental-strip-types --test --test-concurrency=2 tests/*.test.mjs",
     "test:api": "node scripts/check-work-api.mjs && node scripts/check-csv-storage.mjs",
     "test:fashion-brand-ops": "npm --prefix toolkits/fashion-brand-ops test",
     "mcp:connector": "node toolkits/sky-mcp-connector/server.mjs",
@@ -107,7 +107,8 @@
     "test:meme-intelligence": "npm --prefix toolkits/meme-intelligence-sandbox test",
     "test:avocado-farm": "npm --prefix toolkits/avocado-farm-sandbox test",
     "game:bridge": "node --experimental-strip-types toolkits/fivem-bridge/server.mjs",
-    "sky:linux:pixel:build": "node scripts/build-sky-linux-pixel.mjs"
+    "sky:linux:pixel:build": "node scripts/build-sky-linux-pixel.mjs",
+    "web:security:record": "node scripts/record-web-security-evidence.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

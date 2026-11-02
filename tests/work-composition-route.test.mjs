@@ -1,6 +1,7 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { stripTypeScriptTypes } from 'node:module';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
@@ -39,12 +40,7 @@ const plan = () =>
 async function setup(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
-    .filter((n) => n.endsWith('.sql') && !n.startsWith('._'))
-    .sort())
-    sqlite.exec(
-      readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'),
-    );
+  applySourceSandboxSchema(sqlite);
   const db = {
     sqlite,
     beforeRun: null,

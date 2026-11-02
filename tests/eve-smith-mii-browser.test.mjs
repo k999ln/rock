@@ -31,8 +31,12 @@ async function compile() {
       build.onResolve({ filter: /^@\/lib\/device$/ }, args => args.importer.endsWith('/lib/mcp-hub.ts') ? { path: path.join(fixture, 'device.ts') } : undefined);
       build.onResolve({ filter: /^@\/lib\/mii-preview-descriptors$/ }, () => ({ path: path.join(fixture, 'mii-preview-descriptors.ts') }));
       build.onResolve({ filter: /^@\// }, args => build.resolve('./' + args.path.slice(2), { resolveDir: root, kind: args.kind }));
+      build.onResolve({ filter: /^next\/image$/ }, () => ({ path: path.join(fixture, 'next-image.tsx') }));
       build.onResolve({ filter: /^next\/link$/ }, () => ({ path: path.join(fixture, 'next-link.tsx') }));
       build.onResolve({ filter: /^next\/navigation$/ }, () => ({ path: path.join(fixture, 'navigation.ts') }));
+      // Server-only crypto may be discovered through unused shared exports; executing it in this client fixture must fail.
+      build.onResolve({filter:/^node:(crypto|buffer)$/},()=>({path:'server-only',namespace:'server-only'}));
+      build.onLoad({filter:/.*/,namespace:'server-only'},()=>({contents:"const denied=()=>{throw Error('SERVER_CRYPTO_IN_BROWSER')}; export const scrypt=denied,timingSafeEqual=denied,Buffer=new Proxy({}, {get:denied});",loader:'js'}));
       build.onResolve({ filter: /^cloudflare:workers$/ }, () => ({ path: 'env', namespace: 'fixture' }));
       build.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: 'export const env={}', loader: 'js' }));
       build.onLoad({ filter: /\.css$/ }, () => ({ contents: 'export default {}', loader: 'js' }));
@@ -70,8 +74,8 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const bundle = await compile();
     const bundleLines = new TextDecoder().decode(bundle).split('\n');
     const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
-    for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(n => n.endsWith('.sql') && !n.startsWith('._')).sort())
-      sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+    for (const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(n => n.endsWith('.sql') && !n.startsWith('._')).sort())
+      sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url), 'utf8'));
     const db = { prepare(sql) { return { bind(...args) { return {
       async first() { return sqlite.prepare(sql).get(...args) ?? null; },
       async all() { return { results: sqlite.prepare(sql).all(...args) }; },
@@ -129,6 +133,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     const http = createServer(async (req, res) => {
       try {
         const url = new URL(req.url, `http://${req.headers.host}`); requests.push({ path: url.pathname, method: req.method });
+        if (url.pathname === '/brand/rainbow-boot.js') { res.writeHead(200, {'Content-Type':'application/javascript'}); return res.end(readFileSync(path.join(root,'public/brand/rainbow-boot.js'))); }
         if (url.pathname === '/bundle.js') { res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' }); return res.end(bundle); }
         if (!url.pathname.startsWith('/api/')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(`<div id="root"></div><script>window.__fixtureErrors=[];window.__fixtureClockOffset=0;const fixtureNow=Date.now.bind(Date);Date.now=()=>fixtureNow()+window.__fixtureClockOffset;window.onerror=(...args)=>window.__fixtureErrors.push(args.slice(0,4));window.__fixtureServers=${JSON.stringify([resources.server])};window.__fixtureConnectorUrl=${JSON.stringify(resources.connectorUrl)};window.__fixtureConnectorToken=${JSON.stringify(resources.connectorToken)}</script><script src="/bundle.js"></script>`); }
         if (url.pathname === '/api/sky/tool-registry' && pausedRegistry) {
@@ -376,7 +381,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     assert.equal(seeded.status, 200); const seededAgent = (await seeded.json()).agent;
     await evaluate(`history.pushState({}, '', '/sky/agents'); dispatchEvent(new Event('fixture-navigation'))`);
     await wait('document.body.innerText.includes("追加したエージェント") && document.body.innerText.includes("fixture担当")', 'Sky role list');
-    await click('fixture担当'); await input('名前', 'fixture編集担当'); await input('役割・指示', '名前と指示だけを編集');
+    await click('fixture担当'); await input('名前', 'fixture編集担当'); await input('何をしてほしい？', '名前と指示だけを編集');
     await click('設定を保存'); await wait('document.body.innerText.includes("設定を保存しました")', 'Sky settings saved');
     const after = await readAgent();
     assert.equal(after.ownerScope, scope); assert.equal(after.agent.id, agentId);

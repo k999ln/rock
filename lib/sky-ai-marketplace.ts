@@ -18,7 +18,8 @@ const presetLabel = new Map<string, string>(
 
 /** LLMs are first-class Sky Market entries; Sky Broker is their MCP route. */
 export const skyAiMarketplaceEntries: readonly SkyAiMarketplaceEntry[] =
-  textModelProviders.map((provider) => ({
+  // Dedicated free Cloud requires its own service; generic MCP generation is not ready.
+  textModelProviders.filter(provider=>provider.id!=='pollinations').map((provider) => ({
     ...provider,
     marketplaceId: `llm-${provider.id}`,
     category: 'LLM',

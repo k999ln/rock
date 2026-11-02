@@ -10,6 +10,7 @@ import {
   type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
+import NoahNavigation from './noah-navigation';
 import SkyCodeTimeline from '@/components/sky-code-timeline';
 import SkyToolOverview from '@/components/sky-tool-overview';
 import { skyToolUiState, type SkyToolUiContext } from '@/lib/sky-tool-ui';
@@ -115,58 +116,58 @@ const providers: Record<
   { name: string; handle: string; initial: string }
 > = {
   'rockstar-csv-cleanup': {
-    name: 'Sky CSV自動化役',
+    name: 'Noah CSV自動化役',
     handle: '@sky_csv',
     initial: '表',
   },
   'mercari-revenue': {
-    name: 'Sky 販売収益化役',
+    name: 'Noah 販売収益化役',
     handle: '@sky_income',
     initial: '売',
   },
   'fashion-brand-ops': {
-    name: 'Sky ブランド運営役',
+    name: 'Noah ブランド運営役',
     handle: '@sky_brand',
     initial: '服',
   },
   'rockstar-ip-studio': {
-    name: 'Sky IP Studio',
+    name: 'Noah IP Studio',
     handle: '@sky_ip',
     initial: 'IP',
   },
-  coconala: { name: 'Sky 案件判断役', handle: '@sky_case', initial: '案' },
+  coconala: { name: 'Noah 案件判断役', handle: '@sky_case', initial: '案' },
   'mr-free-article': {
-    name: 'Sky 記事編集役',
+    name: 'Noah 記事編集役',
     handle: '@sky_editor',
     initial: '編',
   },
   'mr-citations': {
-    name: 'Sky 出典整理役',
+    name: 'Noah 出典整理役',
     handle: '@sky_sources',
     initial: '出',
   },
   'mr-delivery': {
-    name: 'Sky 納品確認役',
+    name: 'Noah 納品確認役',
     handle: '@sky_delivery',
     initial: '納',
   },
   'rockstar-ledger': {
-    name: 'Sky サブスク顧問',
+    name: 'Noah サブスク顧問',
     handle: '@sky_subscriptions',
     initial: '顧',
   },
   'rockstar-legal-intake': {
-    name: 'Sky 法務受付',
+    name: 'Noah 法務受付',
     handle: '@sky_legal',
     initial: '法',
   },
   'rockstar-patent-assistant': {
-    name: 'Sky 特許アシスタント',
+    name: 'Noah 特許アシスタント',
     handle: '@sky_patent',
     initial: '特',
   },
   'jev-evaluation': {
-    name: 'Sky Jev品質評価',
+    name: 'Noah Jev品質評価',
     handle: '@sky_jev',
     initial: '評',
   },
@@ -182,7 +183,7 @@ function providerFor(tool: Automation) {
   return (
     providers[tool.id] ??
     skyToolLabelFor(tool.id) ?? {
-      name: 'Sky ツール案内',
+      name: 'Noah ツール案内',
       handle: '@sky_tools',
       initial: 'M',
     }
@@ -221,7 +222,7 @@ function actionLabel(
   if (tool.runner === 'delivery-local')
     return pcConnected ? '納品確認を開く' : 'PCを接続';
   if (tool.launchPath) return '今すぐ使う';
-  if (connectedTools.includes(tool.id)) return 'Zemaで依頼';
+  if (connectedTools.includes(tool.id)) return 'Eveの仕事管理で依頼';
   return '接続して使う';
 }
 
@@ -735,7 +736,7 @@ export default function SkyWorkspace({
     }
     setSelected(null);
     router.push(
-      `/chat?tool=${encodeURIComponent(tool.id)}&thread=${encodeURIComponent(threadId)}`,
+      `/os/eve?mode=tools&tool=${encodeURIComponent(tool.id)}&thread=${encodeURIComponent(threadId)}`,
     );
   }
 
@@ -812,7 +813,7 @@ export default function SkyWorkspace({
     setRoutedTool(tool);
     setRouteMessage(
       tool.id === 'rockstar-amc'
-        ? 'AMCをZemaで開きます。Goalと意図の確認後に計画を保存できます。si実作業は開始しません。'
+        ? 'AMCをEveの仕事管理で開きます。Goalと意図の確認後に計画を保存できます。si実作業は開始しません。'
         : `${roleFor(tool)}が進めます。専用画面を開いて、入力・実行・結果確認を行えます。`,
     );
   }
@@ -845,25 +846,27 @@ export default function SkyWorkspace({
   return (
     <WorkspaceShell
       running={running}
-      title="Sky"
+      title="Noah"
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
+      <NoahNavigation active="tools" />
       {campusId && (
-        <section aria-label="大学別Sky" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
-          <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>SKY · {CAMPUSES[campusId].name.toUpperCase()}</p>
-          <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Sky</h2>
+        <section aria-label="大学別Noah" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
+          <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>NOAH · {CAMPUSES[campusId].name.toUpperCase()}</p>
+          <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Noah</h2>
           <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
-          <nav aria-label="大学別Skyの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
+          <nav aria-label="大学別Noahの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
             <Link href="/sky/marketplace" style={{color: 'white'}}>Agentを探す</Link>
             <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
             <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
             <Link href="/sky/network" style={{color: 'white'}}>接続を管理</Link>
-            <Link href="/chat" style={{color: 'white'}}>Jenniferに相談</Link>
+            <Link href="/os/eve" style={{color: 'white'}}>Eveに相談</Link>
           </nav>
         </section>
       )}
-      <nav aria-label="Skyの主要画面">
+      <nav aria-label="Noahの主要画面">
+        <Link className="sky-marketplace-link" href="/sky/devices">接続した担当・実行先</Link>
         <Link className="sky-marketplace-link" href="/sky/agents/citations">
           出典整理Agentを使う · 無料
         </Link>
@@ -878,7 +881,7 @@ export default function SkyWorkspace({
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
           <header className="sky-feed-header">
             <div className="sky-store-title">
-              <span>Sky</span>
+              <span>Noah</span>
               <h1 id="sky-feed-title">アプリ</h1>
             </div>
             <Tabs
@@ -887,7 +890,7 @@ export default function SkyWorkspace({
             >
               <TabsList
                 className="sky-feed-tabs sky-feed-mode-tabs"
-                aria-label="Sky Timelineの表示"
+                aria-label="Noah Timelineの表示"
               >
                 {feedModes.map((item) => (
                   <TabsTrigger key={item.value} value={item.value}>
@@ -926,7 +929,7 @@ export default function SkyWorkspace({
                 <span>{searchOpen ? '閉じる' : '検索'}</span>
               </button>
               <button
-                aria-label="Skyにツールを掲載"
+                aria-label="Noahにツールを掲載"
                 className="sky-header-action"
                 onClick={() => setPublishOpen(true)}
               >
@@ -967,7 +970,7 @@ export default function SkyWorkspace({
               <Search size={18} />
               <input
                 type="search"
-                aria-label="Skyを検索"
+                aria-label="Noahを検索"
                 placeholder="ツール名・できることで検索"
                 value={query}
                 ref={searchInput}
@@ -990,27 +993,27 @@ export default function SkyWorkspace({
             </div>
             <div className="sky-assistant-body">
               <h2 id="sky-assistant-title" className="sr-only">
-                Skyに頼む
+                Noahに頼む
               </h2>
               <form className="sky-assistant-composer" onSubmit={submitRequest}>
                 <input
                   value={requestText}
                   onChange={(event) => setRequestText(event.target.value)}
                   placeholder="何をしてほしい？"
-                  aria-label="Skyへの依頼"
+                  aria-label="Noahへの依頼"
                   maxLength={skyRequestLimit(
                     routeSkyRequest(requestText)?.toolId,
                   )}
                 />
                 <button
                   disabled={!requestText.trim()}
-                  aria-label="Skyへ依頼を送る"
+                  aria-label="Noahへ依頼を送る"
                 >
                   <Send size={18} />
                   <span>送信</span>
                 </button>
               </form>
-              <div className="sky-role-list" aria-label="Skyの役割">
+              <div className="sky-role-list" aria-label="Noahの役割">
                 {skyRoles
                   .filter(
                     (role) => allRolesOpen || quickRoleIds.has(role.toolId),
@@ -1091,7 +1094,7 @@ export default function SkyWorkspace({
                         <Network size={22} strokeWidth={1.7} />
                       </span>
                       <span>
-                        <small>Sky SDK</small>
+                        <small>Noah SDK</small>
                         <strong>{server.name}</strong>
                       </span>
                     </div>
@@ -1165,7 +1168,7 @@ export default function SkyWorkspace({
                             <BadgeCheck
                               className="sky-role-verified"
                               size={16}
-                              aria-label="Skyで利用可能"
+                              aria-label="Noahで利用可能"
                             />
                           )}
                           <span>{provider.handle}</span>
@@ -1289,14 +1292,14 @@ export default function SkyWorkspace({
               <BrainCircuit size={22} />
             </span>
             <div>
-              <p className="rock-eyebrow">Sky Phoenix</p>
+              <p className="rock-eyebrow">Noah Phoenix</p>
               <DialogTitle className="rock-dialog-title">
                 おすすめの学習
               </DialogTitle>
             </div>
           </div>
           <DialogDescription className="rock-dialog-description">
-            表示、詳細、保存、接続、実行の選択から、それぞれの行動確率を学習します。依頼文、Zemaの会話、成果本文、端末IDは保存しません。
+            表示、詳細、保存、接続、実行の選択から、それぞれの行動確率を学習します。依頼文、Eveの仕事管理の会話、成果本文、端末IDは保存しません。
           </DialogDescription>
           <div className="sky-learning-status" aria-live="polite">
             <div>
@@ -1319,7 +1322,7 @@ export default function SkyWorkspace({
             </div>
           </div>
           <p className="sky-learning-boundary">
-            ランキングだけを変えます。Toolの実行許可、課金、購入、ZemaのJobは作りません。
+            ランキングだけを変えます。Toolの実行許可、課金、購入、Eveの仕事管理のJobは作りません。
           </p>
           <div className="sky-learning-actions">
             <button
@@ -1414,7 +1417,7 @@ export default function SkyWorkspace({
               {selected.id === 'jev-router' ? (
                 <div className="sky-candidate-state">
                   <p>
-                    本体はSkyに未接続です。登録は実行や接続の完了ではありません。
+                    本体はNoahに未接続です。登録は実行や接続の完了ではありません。
                   </p>
                   <Link href="/sky/tools/jev-router">導入条件を見る</Link>
                 </div>
@@ -1444,8 +1447,8 @@ export default function SkyWorkspace({
                     </div>
                   )}
                   <div className="sky-candidate-state">
-                    Skyへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
-                    <span>依頼はZemaへ引き継ぐ</span>
+                    Noahへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
+                    <span>依頼はEveの仕事管理へ引き継ぐ</span>
                   </div>
                   {needsSignin ? (
                     <ExecutionSignin />
@@ -1453,12 +1456,12 @@ export default function SkyWorkspace({
                     <div className="sky-connect-complete">
                       <CheckCircle2 size={22} />
                       <div>
-                        <strong>Sky登録済み</strong>
+                        <strong>Noah登録済み</strong>
                         <span>
                           {selected.runner === 'candidate-local'
-                            ? 'Skyの共通ジョブ受付と、外部接続なしのローカル確認器が利用できます。'
+                            ? 'Noahの共通ジョブ受付と、外部接続なしのローカル確認器が利用できます。'
                             : selected.id === 'rockstar-ip-studio'
-                              ? '接続済みのIP StudioをSkyから開けます。'
+                              ? '接続済みのIP StudioをNoahから開けます。'
                               : '専用画面で実行器の接続と状態を確認できます。'}
                         </span>
                       </div>
@@ -1488,14 +1491,14 @@ export default function SkyWorkspace({
                         ? '確認中…'
                         : connectionBusy
                           ? '登録中…'
-                          : '1タップでSkyに登録'}
+                          : '1タップでNoahに登録'}
                     </button>
                   )}
                 </>
               ) : selected.integration === 'fashion-brand-ops' ? (
                 <>
                   <DialogDescription className="rock-dialog-description">
-                    PCの接続アプリへ1クリックで接続し、41操作をSkyから利用できます。
+                    PCの接続アプリへ1クリックで接続し、41操作をNoahから利用できます。
                   </DialogDescription>
                   <FashionBrandOpsRunner />
                 </>
@@ -1541,7 +1544,7 @@ export default function SkyWorkspace({
                       <CheckCircle2 size={22} />
                       <div>
                         <strong>接続済み</strong>
-                        <span>次からはSkyでアプリを選ぶだけです。</span>
+                        <span>次からはNoahでアプリを選ぶだけです。</span>
                       </div>
                       <button
                         onClick={() => openConnectedTool(selected, lastRequest)}
@@ -1565,7 +1568,7 @@ export default function SkyWorkspace({
                         ? '確認中…'
                         : connectionBusy
                           ? '接続中…'
-                          : '1タップでSkyに接続'}
+                          : '1タップでNoahに接続'}
                     </button>
                   )}
 
@@ -1647,7 +1650,7 @@ export default function SkyWorkspace({
 
       <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
         <DialogContent className="sky-publish-dialog">
-          <DialogTitle className="sr-only">Skyにツールを掲載</DialogTitle>
+          <DialogTitle className="sr-only">Noahにツールを掲載</DialogTitle>
           <DialogDescription className="sr-only">
             自動化ツールの接続、権限、料金、提供元を申請します。
           </DialogDescription>

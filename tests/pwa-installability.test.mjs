@@ -16,6 +16,7 @@ function pngSize(path) {
 void test('PWA identity uses RockstarOS while navigation stays on the compatibility root scope', () => {
   const value = manifest();
   assert.equal(value.name, 'RockstarOS');
+  assert.match(value.description, /^NoahとEve/);
   assert.equal(value.short_name, 'RockstarOS');
   assert.equal(value.id, '/');
   assert.equal(value.start_url, '/');
@@ -42,6 +43,7 @@ void test('PWA provides exact install icons and an opaque full-bleed maskable ic
   assert.equal(maskable?.type, 'image/svg+xml');
   const source = readFileSync(resolve(root, `public${maskable.src}`), 'utf8');
   assert.match(source, /width="1024" height="1024"/);
-  assert.match(source, /<rect width="24" height="24" fill="#d6eead"\/>/);
+  assert.match(source, /<rect width="1024" height="1024" fill="white"\/>/);
+  assert.match(source, /<image x="128" y="128" width="768" height="768"/);
   assert.doesNotMatch(source, /<rect[^>]+\brx=/);
 });

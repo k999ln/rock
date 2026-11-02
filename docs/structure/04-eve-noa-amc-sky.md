@@ -1,6 +1,6 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
-## 1. 一周の流れ（ユーザーには Eve しか見えない）
+## 1. 一周の流れ（公開入口は Eve と Noah）
 
 ```mermaid
 sequenceDiagram
@@ -39,7 +39,7 @@ sequenceDiagram
 | **Broker** | 本人の承認・予算・端末権限を実行に渡す門番 | 承認、予算枠 | — |
 | **Wallet** | 残高・予約・台帳・精算・天引き | お金 | 仕事の判断 |
 
-**内部構造として AMC / Eve / Noa を一つに潰さない**（本人の指示）。ユーザーに見せる名前だけ Eve に揃える。ウェイクワードは「ヘイ、エヴァ」（議事録 10-27）。
+**内部構造として AMC / Eve / Noa を一つに潰さない**（本人の指示）。公開UIでは Eve と Noah を表示し、NoahからEveへ選択したTool・記事・担当を渡す。ウェイクワードは「ヘイ、エヴァ」（議事録 10-27）。
 
 注: 議事録 10-07 の「ジェニファーが最上位（データ許可）、下にプロジェクト管理・データ管理・データ探索の3人」は、この表では Jennifer＝AMC、3人＝AMC 内の役割（.codex/agents の amc / amc-worker / amc-reviewer）として読む。Jennifer を AMC に吸収するのは 2026-11-02 の整理での判断で、本人の確認待ち。
 
@@ -87,3 +87,7 @@ sequenceDiagram
 - Sky は「市場」であり、Noa の検索先。手数料は 05-business.md（当面 0〜低率、まず流通量）。
 - 他人の Agent を使うときの権限は Broker が本人に確認。Sky は価格と評価だけ出す。
 - MCP / A2A / SDK は Sky の接続口。toolkits/, services/sky-agent-runtime, systems/rock-star-os/docs/TOOL-SDK.md が実体。
+
+## Eve News のローカル下書き補助
+
+`toolkits/eve-news/` は出典packetからローカルOllamaの下書きを作る既存公開系統の補助CLI。`draft.mjs` は入力・出力schemaと実行前後のモデルdigestを検証し、不一致は失敗にする。`news-core.mjs` はWebと同じ根拠制約を共有する。モデルの文章を事実・公開承認・仕事の成功へ昇格させず、出典と未検証箇所を保持してEveへ渡す。実行には本人端末のモデル設定が必要で、今回のmain統合は新規ダウンロードや外部送信を実行しない。検証は `tests/eve-news-core.test.mjs` と関連 `tests/eve-news-*.test.mjs`。

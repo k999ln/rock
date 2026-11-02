@@ -1,0 +1,146 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1789884503747,
+      "tag": "0013_sky_provider_connections",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791907200000,
+      "tag": "0014_jennifer_execution_integrity",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791999443299,
+      "tag": "0015_jennifer_passkey_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1792080000000,
+      "tag": "0016_sky_monthly_sandbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1792080000001,
+      "tag": "0017_sky_cloud_monthly_test",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1792200000000,
+      "tag": "0018_sky_recurring_sandbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1792262293555,
+      "tag": "0019_sky_hosted_monthly",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1792555200000,
+      "tag": "0020_sites_schema_convergence",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1792555200001,
+      "tag": "0021_sky_recurring_send_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1792555200002,
+      "tag": "0022_sky_agent_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1792555200003,
+      "tag": "0023_sky_optional_features",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1792555200004,
+      "tag": "0024_sky_hub_plugins",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1792555200005,
+      "tag": "0025_sky_x_feed_state",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1792555200006,
+      "tag": "0026_sky_communities",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1792555200007,
+      "tag": "0027_community_os_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1792555200008,
+      "tag": "0028_sky_timeline_interactions",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1792555200009,
+      "tag": "0029_sky_x_account_oauth",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1792555200027,
+      "tag": "0030_sky_linux_service",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1792555200028,
+      "tag": "0031_rockstar_service_setup",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1792555200029,
+      "tag": "0032_eve_durable_history",
+      "breakpoints": true
+    }
+  ]
+}

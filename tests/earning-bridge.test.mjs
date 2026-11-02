@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import {
@@ -48,7 +49,8 @@ class TestD1 {
   constructor(migrations, batchReturnsRows = false) {
     this.database = new DatabaseSync(':memory:');
     this.batchReturnsRows = batchReturnsRows;
-    for (const migration of migrations) this.database.exec(migration);
+    if (migrations === undefined) applySourceSandboxSchema(this.database);
+    else for (const migration of migrations) this.database.exec(migration);
   }
   prepare(sql) {
     return new Statement(this.database, sql);
@@ -73,12 +75,6 @@ class TestD1 {
   }
 }
 
-const webMigrations = readdirSync(new URL('../drizzle', import.meta.url))
-  .filter((name) => name.endsWith('.sql'))
-  .sort()
-  .map((name) =>
-    readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'),
-  );
 const billingMigrations = [
   '0001_billing.sql',
   '0002_earnings_settlement.sql',
@@ -134,7 +130,7 @@ async function signedRequest(value, secret = providerSecret) {
 }
 
 void test('legacy fee fixture: completed Tool -> provider receipt -> Wallet is exact and idempotent', async () => {
-  const web = new TestD1(webMigrations, true);
+  const web = new TestD1(undefined, true);
   const billing = new TestD1(billingMigrations);
   const now = Date.now();
   const store = operations(web, 'alice', () => now);
@@ -233,7 +229,7 @@ void test('legacy fee fixture: completed Tool -> provider receipt -> Wallet is e
 });
 
 void test('bridge rejects unsigned, sample, unfinished and mismatched receipts', async () => {
-  const web = new TestD1(webMigrations, true);
+  const web = new TestD1(undefined, true);
   const now = Date.now();
   const store = operations(web, 'alice', () => now);
   let sent = 0;

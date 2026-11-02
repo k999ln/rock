@@ -209,7 +209,7 @@ export default function SkyOutputCenter({
   }
 
   return <WorkspaceShell
-    title={campusId ? `${CAMPUSES[campusId].shortName} Sky` : 'Sky'}
+    title={campusId ? `${CAMPUSES[campusId].shortName} smis` : 'smis'}
     contentClassName={styles.shell}
     tone="sky"
   >

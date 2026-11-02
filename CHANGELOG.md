@@ -4,6 +4,11 @@
 
 書き方: 新しい日付を上に足す。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
 
+## 2026-11-02 — avoado.si と GitHub main のソース統合（G04 / WEB04）
+
+- 公開v141のEve / Noah導線・会話・本人性runtimeをmainの権限/承認/成果契約と統合。両方のGit履歴を保持し、通常PRで同一sourceの公開へ進める。
+- 公開SQLは [固定ハッシュ](data/avoado-published-migration-lineage.json) のまま。旧main SQLは [保全先](drizzle-legacy/github-main-before-avoado-alignment/README.md) へ分離。検証と未完事項は [進捗](project.md)。
+
 ## 2026-11-01 — miiの声・指先入力（PR #311）
 
 - MINI01/M1: 同じ仕事の依頼内容を声/2D指先で選択・確認・CAS保存・再読込。料金fixtureの過去日付を修正。検証・未受入範囲は [記録](data/mii-spatial-input-validation.json)。[PR #311](https://github.com/k999ln/rock/pull/311)へ保存。固定sourceは独立検収済み。HEAD CI・main統合後の同一SHA CIは確認中。

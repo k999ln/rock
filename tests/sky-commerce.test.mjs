@@ -1,6 +1,7 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
 import { createHash, createHmac } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { handleSkyCommerce } from '../lib/sky-commerce.ts';
@@ -14,9 +15,7 @@ const runtime = {
   SKY_STRIPE_WEBHOOK_SECRET: 'whsec_CommerceFixtureOnly',
   SKY_PAYMENT_ORIGIN: origin,
 };
-const migrations = readdirSync(new URL('../drizzle/', import.meta.url))
-  .filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort()
-  .map((name) => readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
+
 
 class Statement {
   constructor(sqlite, sql, values = []) { Object.assign(this, { sqlite, sql, values }); }
@@ -32,7 +31,7 @@ class Statement {
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const migration of migrations) sqlite.exec(migration);
+  applySourceSandboxSchema(sqlite);
   return {
     sqlite,
     prepare(sql) { return new Statement(sqlite, sql); },

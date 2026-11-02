@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { SkyPurchases } from '@/components/sky-commerce';
 
 export const metadata: Metadata = {
-  title: '購入したツール — Sky Market',
+  title: '購入したツール — smis Market',
   description: '購入したsi・自動化ツールの支払い状況と接続先を確認する。',
 };
 

@@ -11,6 +11,7 @@ import * as handoffs from '../lib/sky-zema-handoff.ts';
 import * as providers from '../lib/llm-providers.ts';
 import * as remoteClient from '../lib/remote-ai-text-client.ts';
 import * as currency from '../lib/currency-format.ts';
+import * as usageObservation from '../lib/sky-usage-observation.ts';
 
 const id = 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee';
 const session = (patch = {}) => ({ version: 1, id, toolId: 'rockstar-amc', createdAt: Date.now(),
@@ -76,6 +77,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       return { state: { config: routingConfig }, session: { edit(next) { routingConfig = next; } } };
     } },
     '@/lib/currency-format': currency,
+    '@/lib/sky-usage-observation': usageObservation,
     '@/lib/remote-ai-text-client': { ...remoteClient, remoteAiTextRequest(path, method, body, _timeout, fetchImpl) { const pending = Promise.withResolvers(); estimates.push({ ...pending, path, method, body }); if (fetchImpl) void fetchImpl(path, { method, signal: new AbortController().signal }); return pending.promise; } },
     '@/lib/llm-providers': providers,
     '@/lib/sky-zema-handoff': { ...handoffs, consumeSkyZemaHandoff(tool, _storage, _now, thread) { consumed.push({ tool, thread }); return handoffs.consumeSkyZemaHandoff(tool, storage, undefined, thread); } },
@@ -93,6 +95,8 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       createJenniferExecutionGoal: noop,
       createJenniferTaskJobCoordination: noop,
     },
+    './eve-tool-handoff': {default:'ToolHandoff'},
+    '@/lib/eve-noah-navigation': {},
     '@/components/ui/textarea': { Textarea: 'textarea' },
     '@/components/ui/dialog': { Dialog: 'Dialog', DialogContent: 'DialogContent', DialogTitle: 'DialogTitle', DialogDescription: 'DialogDescription' },
   };
@@ -117,6 +121,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
     runInNewContext(compiled + suffix, { ...context, exports }, { filename: path }); return exports;
   }
   modules['@/components/use-sky-chat-session'] = compile('components/use-sky-chat-session.ts');
+  modules['./sky-usage-details'] = compile('components/sky-usage-details.tsx');
   const component = compile('components/sky-chat-workspace.tsx', '\nexports.Authenticated = AuthenticatedSkyChatWorkspace;').Authenticated;
   function render() { cursor = 0; tree = component({ executionBlocked: false, accessState: 'ready', setNeedsSignin: noop }); layouts.splice(0).forEach((effect) => effect()); effects.splice(0).forEach((effect) => effect()); }
   function nodes(node, result = []) { if (Array.isArray(node)) node.forEach((x) => nodes(x, result)); else if (node && typeof node === 'object') { result.push(node); if (node.type !== 'Dialog' || node.props.open) nodes(node.props?.children, result); } return result; }
@@ -128,7 +133,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       defaultPrevented: false, propagationStopped: false,
       preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.propagationStopped = true; } };
     // Real React capture runs before the Link's own click handler.
-    nodes(tree).find((x) => x.props?.title === 'Jennifer').props.onClickCapture(event);
+    nodes(tree).find((x) => x.props?.title === 'Eve').props.onClickCapture(event);
     if (!event.propagationStopped) n.props.onClick?.(event);
     if (n.type === 'a' && !event.defaultPrevented && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) routes.push(n.props.href);
     render(); await flush();
@@ -147,7 +152,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       const event = { target: new FixtureElement({ href, ...options }), button: 0,
         defaultPrevented: false, propagationStopped: false,
         preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.propagationStopped = true; } };
-      nodes(tree).find((x) => x.props?.title === 'Jennifer').props.onClickCapture(event);
+      nodes(tree).find((x) => x.props?.title === 'Eve').props.onClickCapture(event);
       render(); await flush(); return event;
     },
     unmount() { mounted = false; slots.forEach((slot) => slot?.cleanup?.()); },
@@ -205,7 +210,7 @@ void test('dirty AMC blocks mode reset until explicit discard and keeps the save
   await h.choose('mr-citations'); assert.ok(h.text().includes('AMCに未保存の入力があります')); assert.equal(h.routes.length, 0);
   await h.click('入力を続ける'); assert.ok(h.nodes().find((n) => n.type === 'AMC'));
   await h.choose('mr-citations'); await h.click('未保存の入力を破棄して進む');
-  assert.equal(h.routes.at(-1), '/chat?tool=mr-citations'); assert.equal(h.nodes().filter((n) => n.type === 'AMC').length, 0); assert.equal(h.stored()[0].id, id);
+  assert.equal(h.routes.at(-1), '/os/eve?mode=tools&tool=mr-citations'); assert.equal(h.nodes().filter((n) => n.type === 'AMC').length, 0); assert.equal(h.stored()[0].id, id);
 });
 
 void test('mode reset aborts the active conversation and ignores its late answer', async () => {
@@ -350,7 +355,7 @@ void test('new-chat discard resets the current session after real capture and bu
   assert.equal(h.nodes().find((n) => n.type === 'textarea').props.value, '');
   assert.ok(!h.nodes().some((n) => n.type === 'AMC'));
   assert.ok(!h.conversation().includes('Synthetic retained brief'));
-  assert.equal(h.routes.at(-1), '/chat');
+  assert.equal(h.routes.at(-1), '/os/eve?mode=tools');
   assert.equal(h.stored()[0].id, id);
 });
 

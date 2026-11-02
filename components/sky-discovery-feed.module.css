@@ -310,3 +310,7 @@
     scroll-behavior: auto !important;
   }
 }
+
+.search input,.search button,.filters button,.actions :is(a,button),.details summary{min-height:48px}.search input{font-size:16px}.filters{display:flex;overflow:auto;gap:6px;scrollbar-width:thin}.filters button{flex-shrink:0}.heading h1{font-size:24px;letter-spacing:0}.post h3{line-height:1.5}
+
+.availability{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 16px;font-size:13px}.availability input{width:20px;height:20px}

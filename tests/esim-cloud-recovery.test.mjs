@@ -1,10 +1,11 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import * as boundedStream from '../lib/bounded-stream.ts';
 import * as skyAgentLibraryStore from '../lib/sky-agent-library-store.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHash, randomUUID } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { createRequire } from 'node:module';
 import { runInNewContext } from 'node:vm';
@@ -89,12 +90,7 @@ function cloudRoute(f) {
 async function fixture(t, { reviewDurationMs = null } = {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
-    .filter((name) => name.endsWith('.sql'))
-    .sort())
-    sqlite.exec(
-      readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'),
-    );
+  applySourceSandboxSchema(sqlite);
   const db = {
     prepare(sql) {
       const statement = sqlite.prepare(sql);

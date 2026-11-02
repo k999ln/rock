@@ -1,3 +1,4 @@
+import {observeLlmUsage} from './sky-usage-observation.ts';
 import { LlmProviderError, textModelProviderDefinition } from './llm-providers.ts';
 import { RemoteAiGuardError } from './remote-ai-guard.ts';
 import { RemoteAiTextStoreError, type RemoteAiTextRecord } from './remote-ai-text-store.ts';
@@ -33,6 +34,17 @@ export function remoteAiTextPublicRecord(record: RemoteAiTextRecord) {
   return {
     ...rest,
     rateCard,
+    metering: {
+      ...observeLlmUsage('openai', { usage: record.usage ? {
+        input_tokens: record.usage.inputTokens, output_tokens: record.usage.outputTokens,
+        total_tokens: record.usage.totalTokens,
+        input_tokens_details: { cached_tokens: record.usage.cachedInputTokens },
+      } : null }),
+      resourceId: card.modelId, reportedResourceId: typeof record.observation?.model === 'string' ? record.observation.model : null,
+      currency: card.currency, amountMinor: priced ? record.settledMinor : null,
+      pricingVersion: priced ? card.pricingVersion : null,
+      providerReference: record.providerResponseId,
+    },
     spending: {
       status: priced ? 'itemized_usage_priced' : held ? 'usage_not_yet_final' : 'not_running',
       currency: record.quote.ceiling.currency,

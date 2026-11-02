@@ -8,8 +8,8 @@ export async function GET(_request: Request, {params}: {params: Promise<{campusI
   return Response.json({
     ...osManifest(),
     id: `/os/sky/campus/${campusId}`,
-    name: `${campus.shortName} Sky`,
-    short_name: `${campus.shortName} Sky`,
+    name: `${campus.shortName} smis`,
+    short_name: `${campus.shortName} smis`,
     start_url: `/os/sky/campus/${campusId}/hub`,
     scope: '/os/sky/',
     description: campus.description,

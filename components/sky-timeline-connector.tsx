@@ -192,18 +192,18 @@ export function SkyTimelineConnector({ receiver }: { receiver: Receiver }) {
         </span>
         <div>
           <h2>つないだ情報が、ここに流れる。</h2>
-          <p>SkyはAPI・MCPの受け皿。投稿の供給元を選べます。</p>
+          <p>smisはAPI・MCPの受け皿。投稿の供給元を選べます。</p>
         </div>
       </header>
       <p>
-        Skyに追加した配信元から、自分専用のストリームへ受け取ります。アカウントの接続は、利用する配信元で認可します。
+        smisに追加した配信元から、自分専用のストリームへ受け取ります。アカウントの接続は、利用する配信元で認可します。
       </p>
       {r.error && <SkyNotice message={r.error} className={styles.error} />}
       <div className={styles.buttons}>
         <button disabled={r.busy} onClick={() => void r.run('scan')}>
           接続済みMCPを確認
         </button>
-        <Link href="/sky/network">Skyで接続先を追加</Link>
+        <Link href="/sky/network">smisで接続先を追加</Link>
       </div>
       {r.scanned && !r.servers.length && (
         <p>

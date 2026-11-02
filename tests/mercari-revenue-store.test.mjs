@@ -1,7 +1,8 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
-import { readdirSync, readFileSync } from 'node:fs';
+
 import {
   createMercariRevenuePlan,
   transitionMercariRevenuePlan,
@@ -47,12 +48,7 @@ const input = (id) => ({
 void test('D1-compatible store isolates owners and rejects stale writes', async (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url))
-    .filter((name) => name.endsWith('.sql') && !name.startsWith('._'))
-    .sort())
-    sqlite.exec(
-      readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'),
-    );
+  applySourceSandboxSchema(sqlite);
   const alice = mercariRevenueStore(database(sqlite), 'alice');
   const bob = mercariRevenueStore(database(sqlite), 'bob');
   const plan = createMercariRevenuePlan(
@@ -75,8 +71,7 @@ void test('D1-compatible store isolates owners and rejects stale writes', async 
 void test('create retry compares immutable input and preserves later state after a lost response', async (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const store = mercariRevenueStore(database(sqlite), 'alice');
   const value = input('123e4567-e89b-42d3-a456-426614174001');
   const first = createMercariRevenuePlan(value, '2026-10-11T10:00:00.000Z');
@@ -95,8 +90,7 @@ void test('create retry compares immutable input and preserves later state after
 void test('concurrent identical create retries return one saved record', async (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const store = mercariRevenueStore(database(sqlite), 'alice');
   const plan = createMercariRevenuePlan(input('123e4567-e89b-42d3-a456-426614174002'));
   const saved = await Promise.all([store.create(plan), store.create(plan)]);

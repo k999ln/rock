@@ -4,7 +4,8 @@ import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { loadRouteFixture } from './route-fixture.mjs';
 import { requestUser } from '../lib/request-auth.ts';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import { createTeamCase, applyTeamAction, teamMoney } from '../lib/coconala-team.ts';
 import { coconalaTeamStore } from '../lib/coconala-team-store.ts';
 
@@ -64,10 +65,7 @@ function setup(t) {
     // Native Sky initializes from this exact idempotent schema in the Worker.
     for (const statement of JSON.parse(readFileSync(hostedSchema, 'utf8'))) sqlite.exec(statement);
   } else {
-    for (const file of readdirSync(new URL('../drizzle/', import.meta.url))
-      .filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort())
-      for (const statement of readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8')
-        .split('--> statement-breakpoint').filter((sql) => sql.trim())) sqlite.exec(statement);
+    applySourceSandboxSchema(sqlite);
   }
   const db = {
     prepare(sql) {

@@ -131,12 +131,12 @@ export default function RevenueWalletWorkspace() {
               </div>
               <div className="revenue-wallet-hero-side">
                 <p>
-                  検証済みのSky収益とファンド分配だけが、ここへ確定されます。
+                  検証済みのsmis収益とファンド分配だけが、ここへ確定されます。
                 </p>
                 <div>
                   <Link href="/sky">
                     <Sparkles size={17} />
-                    Skyを開く
+                    smisを開く
                   </Link>
                   <Link href="/fund">
                     ファンド
@@ -159,7 +159,7 @@ export default function RevenueWalletWorkspace() {
                       <Bot size={19} />
                     </span>
                     <div>
-                      <p>Sky収益</p>
+                      <p>smis収益</p>
                       <strong>接続待ち</strong>
                       <small>Providerで入金確認後に反映</small>
                     </div>
@@ -210,7 +210,7 @@ export default function RevenueWalletWorkspace() {
                       <span>1</span>
                       <div>
                         <strong>仕事・販売</strong>
-                        <small>Skyまたはファンドで収益が発生</small>
+                        <small>smisまたはファンドで収益が発生</small>
                       </div>
                     </li>
                     <li>

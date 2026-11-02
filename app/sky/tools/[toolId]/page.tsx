@@ -19,12 +19,12 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const cardEntry = query.lang === 'en' && query.entry === 'columbia-card';
   if (cardEntry) {
     const cardTool = SKY_CAMPUS_ENTRIES.columbia.tools.find((item) => item.id === toolId);
-    if (cardTool) return { title: `${cardTool.title} — Sky for Columbia students`, description: cardTool.description };
+    if (cardTool) return { title: `${cardTool.title} — smis for Columbia students`, description: cardTool.description };
   }
   if (query.lang === 'en' && englishTitles[toolId])
-    return { title: `${englishTitles[toolId]} — Sky`, description: 'English Sky tool workspace.' };
+    return { title: `${englishTitles[toolId]} — smis`, description: 'English smis tool workspace.' };
   const tool = catalog.find((item) => item.id === toolId);
-  return { title: tool ? `${tool.name} — Sky` : 'Sky Tool — avocadoOS' };
+  return { title: tool ? `${tool.name} — smis` : 'smis Tool — avocadoOS' };
 }
 
 export default async function SkyToolPage({

@@ -185,7 +185,7 @@ export function PatentAssistantRunner({
         });
         setNeedsSignin(tracked.needsSignin);
         setNotice(tracked.warning || (saveHistory
-          ? '端末内で書類ドラフトを作成し、本文を含まない実行履歴をSkyに保存しました。'
+          ? '端末内で書類ドラフトを作成し、本文を含まない実行履歴をsmisに保存しました。'
           : '端末内で予備評価と書類ドラフトを作成しました。通信は行っていません。'));
         onOutcome?.({ ok: true, text: '端末内で予備評価と書類ドラフトを作成しました。出願・提出はしていません。内容はこのカードで確認してください。' });
       } catch {
@@ -274,7 +274,7 @@ export function PatentAssistantRunner({
         </header>
         <div className="legal-agent-boundaries">
           <span>
-            <ShieldCheck size={15} /> 入力はSkyに保存しません
+            <ShieldCheck size={15} /> 入力はsmisに保存しません
           </span>
           <span>
             <FileCheck2 size={15} /> 提出前に人の承認が必要です
@@ -545,7 +545,7 @@ export function PatentAssistantRunner({
               onChange={(event) => setReviewed(event.target.checked)}
             />
             <span>
-              内容を確認しました。これは専門家レビュー前のドラフトで、Skyが提出を代行しないことを理解しました。
+              内容を確認しました。これは専門家レビュー前のドラフトで、smisが提出を代行しないことを理解しました。
             </span>
           </label>
           <button

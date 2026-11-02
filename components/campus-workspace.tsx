@@ -700,7 +700,7 @@ export default function CampusWorkspace({
           <small>Campus</small>
         </Link>
         <div className={styles.toplinks}>
-          <Link href="/sky">Sky</Link>
+          <Link href="/sky">smis</Link>
           <Link href="/chat">Jennifer</Link>
           <Link href="/wallet" aria-label="Wallet">
             <WalletCards size={17} />
@@ -1778,7 +1778,7 @@ function Tags({
               <option value="">Legacy Campus destination</option>
               {campus.id === 'columbia' && (
                 <option value="/sky/campus/columbia">
-                  Sky for Columbia students
+                  smis for Columbia students
                 </option>
               )}
             </select>
