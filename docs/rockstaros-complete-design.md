@@ -1550,3 +1550,7 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 2026-11-02、本人の「osの中身は一緒」を[14章](mii/design/14-common-os.md)へ反映。目的は同じ仕事を声/指先/画面から確認・保存・再開すること。ROCKはWorkJob、owner、revision/command、権限/予算/Receiptを共通で管理し、EXTERNALは部品/BSP、JOINTは実機、OWNERは構成/予算/本人承認を担う。入力は候補、出力はjob/revisionと校正/leaseに束縛する。保存結果はevent読戻し、応答不明は自動再送せず照合、競合は保全して再確認、物理停止は独立ACK/測定で判断する。端末間・offline・光学をsource/fixture合格へ昇格しない。[BOM/接続/電力](mii/design/15-prototype-spec.md)、[合格条件と未決定の閉じ方](mii/design/16-prototype-acceptance.md)、[相談資料](mii/design/17-component-evaluation-brief.md)を同じ設計系列とする。
 
 2026-11-02の追加指示により[18章](mii/design/18-parts-wiring.md)へP0b（M4 Mac＋BRIO 500）とP1a（Pi 5＋SC0715）の選定型番、9系統の端子間配線、組立順、印刷図を追加した。仕事・本人性・権限・予算・保存は共通。Piはセンサー取り込みhostであり独立した仕事台帳を持たない。LAN camera adapter、日本語ASR実動作、2台同期、製品光学は未受入。製造/購入/実機通電は未実施。
+
+2026-11-02の本人による本体設計指示を[19章 HW1](mii/design/19-body-hardware.md)に反映。4 Tower（OAK-D Pro W PoE＋Teensy 4.1、mic/radar/温度/SE）と専用AGX Orin Hub、PoE/10GbE、DP→TK710STiを型番・端子・配線で固定した。18章は開発用検証装置。入力は校正/lease/信頼状態を持つ候補、変更は既存WorkJob/Broker/owner/revision/予算/保存を通す。CAMとMCUが別endpointであるためSEだけで全経路認証済みとしない。firmware watchdog、再接続旧frame拒否、同一job保存復旧をHW-A05/06で受入れ、物理/製造/光学は別gate。汎用モジュールの実装差と未達条件は19章§8で閉じる。
+
+[20章 HW1-COM1](mii/design/20-connectivity.md)で本体の外部通信を追補。USB31000S/J33のWANをsensor J17から分離し、既存tethering/controller・LinuxPacketGate・AP/NetworkQuota・MessageAdapter/Serviceを再利用する。SIM登録と本人利用権、配送とTool完了、通信費とAI費を分け、切断/再起動時は旧grant/有料jobの自動再送を拒否する。LTE/SIM・Wi-Fi radio・衛星modem/provider、可搬core/電池は未選定または未受入で、COM-A01〜06を同一実機で確認する。

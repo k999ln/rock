@@ -1,5 +1,7 @@
 # 04 Hub
 
+**今回組むHubは[19章 HW1](19-body-hardware.md)。** NVIDIA Jetson AGX Orin 64GB Developer Kit＋980 PRO 1TB＋USW-Pro-24-PoEを選定。J17=10GbE、J18=DisplayPort、J24=付属PSU。以下のOrin NX・250×200×60mm・HDMI2系統は小型製品の目標で、HW1の現品仕様ではない。
+
 ## 1. 役割と二層構造
 
 ```text

@@ -1,5 +1,7 @@
 # 12 BOM の構造（価格は書かない）
 
+**本人の追加指示で、本体HW1の選定品を[19章](19-body-hardware.md)へ確定した。** 以下は製品要求/候補の記録。発注用の型番・数量・端子はHW1 BOMを使い、両者を混載しない。価格・在庫・実機受入・量産releaseは未確定。
+
 価格・ロット単価・工場は後（本人の指示）。ここは**何が要るか**と候補の列だけ。RFQ は codex/tasks/20。
 
 ## 1. Node（Column）
@@ -34,9 +36,9 @@ Puck: Head＋天井金具＋化粧リング。Slot: Head（NIR 1 本＋RGB）＋
 | 区分 | 部品 |
 | --- | --- |
 | 演算 | Jetson Orin NX 16 GB 級モジュール＋キャリア基板、NVMe 1 TB |
-| 通信 | PoE+ スイッチ IC（4 ポート、PTP 対応）、2.5GbE、Wi-Fi 6/BT、WAN RJ45 |
+| 通信 | 製品目標: 4 Node PoE、PTP、10GbE等の十分な集約経路、Wi-Fi/BT、WAN。HW1は19章 |
 | 表示 | HDMI 2.1 ×2、Sync out、Display Bus 予備コネクタ |
-| 電源 | AC アダプタ 120 W、PoE 給電電源 |
+| 電源 | 旧120W仮置きは不使用。HW1は400W PoE枠のPSE＋Jetson付属PSU＋表示電源を別計上 |
 | 機構 | 筐体 250×200×60、ファン、壁掛け金具 |
 
 Pro: x86＋dGPU（avokado Pro と共通基板）、PoE+ 8 ポート、HDMI ×4、10GbE。

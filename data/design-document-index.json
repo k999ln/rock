@@ -4010,13 +4010,20 @@
       "docs/mii/design/16-prototype-acceptance.md",
       "docs/mii/design/17-component-evaluation-brief.md",
       "docs/mii/design/18-parts-wiring.md",
-      "docs/mii/design/wiring/bom.json"
+      "docs/mii/design/wiring/bom.json",
+      "docs/mii/design/19-body-hardware.md",
+      "docs/mii/design/body-hw1/bom-netlist.json",
+      "docs/mii/design/20-connectivity.md",
+      "docs/mii/design/body-hw1/communications.json"
     ],
     "decision": "osの中身は一緒",
     "status": "design_only",
     "newRuntimeImplemented": false,
     "physicalAccepted": false,
     "manufacturingReleased": false,
-    "wiringRevision": "W1"
+    "wiringRevision": "HW1",
+    "developmentRigRevision": "W1",
+    "bodyScope": "4 Towers + dedicated Hub + display; hardware design only",
+    "communicationsRevision": "HW1-COM1"
   }
 }

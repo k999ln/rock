@@ -1,5 +1,7 @@
 # 03 Spatial Node（Tower）のハードウェア
 
+**製品目標と今回の組立品を区別する。** [19章 HW1](19-body-hardware.md)ではOAK-D Pro W PoE A00574＋Teensy 4.1＋SPH0645LM4H×2＋SEN0623＋SE/温度＋USW-Flexを選定。head/baseの包絡を拡張した固定治具で組む。以下の寸法、850nm、120Hz、radar TDMは製品目標であり、選定部品で全て満たした状態ではない。
+
 ## 1. 寸法（Column 形態、基準）
 
 | 部位 | 寸法 | 根拠 |

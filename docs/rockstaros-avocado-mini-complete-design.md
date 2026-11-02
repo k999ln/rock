@@ -849,3 +849,7 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 2026-11-02の本人回答「osの中身は一緒」による設計追補。[14章](mii/design/14-common-os.md)が目的・体験・責任・入出力・状態・保存・失敗/復旧・承認・未決定、[15章](mii/design/15-prototype-spec.md)がBOM/接続/電力、[16章](mii/design/16-prototype-acceptance.md)が合格条件、[17章](mii/design/17-component-evaluation-brief.md)が部品評価相談を定義する。既存job/store/Brokerを再利用し、OSをハード別に複製しない。室内Tower＋Hubと単体携帯の構成差はC-01、Gen1投影と板膜なし・少数・上下全域・低眩しさの差はC-02として保持。今回の回答は構成/表示条件の撤回ではない。新runtime・物理試験・製造release・問い合わせ送信は未実施。
 
 2026-11-02の追加指示により[18章](mii/design/18-parts-wiring.md)へP0b（M4 Mac＋BRIO 500）とP1a（Pi 5＋SC0715）の選定型番、9系統の端子間配線、組立順、印刷図を追加した。仕事・本人性・権限・予算・保存は共通。Piはセンサー取り込みhostであり独立した仕事台帳を持たない。LAN camera adapter、日本語ASR実動作、2台同期、製品光学は未受入。製造/購入/実機通電は未実施。
+
+2026-11-02の本人による本体設計指示を[19章 HW1](mii/design/19-body-hardware.md)に反映。4 Tower（OAK-D Pro W PoE＋Teensy 4.1、mic/radar/温度/SE）と専用AGX Orin Hub、PoE/10GbE、DP→TK710STiを型番・端子・配線で固定した。18章は開発用検証装置。入力は校正/lease/信頼状態を持つ候補、変更は既存WorkJob/Broker/owner/revision/予算/保存を通す。CAMとMCUが別endpointであるためSEだけで全経路認証済みとしない。firmware watchdog、再接続旧frame拒否、同一job保存復旧をHW-A05/06で受入れ、物理/製造/光学は別gate。汎用モジュールの実装差と未達条件は19章§8で閉じる。
+
+[20章 HW1-COM1](mii/design/20-connectivity.md)で本体の外部通信を追補。USB31000S/J33のWANをsensor J17から分離し、既存tethering/controller・LinuxPacketGate・AP/NetworkQuota・MessageAdapter/Serviceを再利用する。SIM登録と本人利用権、配送とTool完了、通信費とAI費を分け、切断/再起動時は旧grant/有料jobの自動再送を拒否する。LTE/SIM・Wi-Fi radio・衛星modem/provider、可搬core/電池は未選定または未受入で、COM-A01〜06を同一実機で確認する。

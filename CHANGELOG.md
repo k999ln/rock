@@ -231,3 +231,8 @@ Offline apply now requires an owned private0700 parent for both source copy and 
 
 開発の現在primaryはmiiの成立判断1件です。実行queueと所有・証拠段階は[data/development-model-routing.json](data/development-model-routing.json)のcurrentExecution、運用と残gateは[Git作業入口](docs/workstreams/10-git-ci-operations.md#execution-recovery-20261028)を参照してください。`npm run mission:check`は宣言の矛盾を拒否しますが、実GitHub/物理受入の証明は独立検収で確認します。
 
+## 2026-11-02 — mii本体 HW1の組立設計
+
+4 Tower＋専用Hub＋表示部の選定BOM、12信号/電源ネット、14接続系統、6枚の印刷図を19章へ追加。18章のMac/Pi構成は開発用検証装置と明記。共通OS契約を保持し、既製モジュールとの差分、firmware/adapter、同期・閉箱・光学の未受入を記録。購入・実通電・公開は未実施。
+
+同日の通信参照指示で20章HW1-COM1を追加。専用有線WANの型番とJ33配線を選定し、mii既存LTE/SIM・Wi-Fi・衛星・携帯・費用/復旧を本体設計へ接続。PDFは7枚、radio/provider/携帯は未受入。

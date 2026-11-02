@@ -1,5 +1,7 @@
 # 06 同期・通信・電源
 
+**組立配線の正本は[19章 HW1](19-body-hardware.md)。** Tower内で1GbE cameraと100Mbps controlを分け、4本を10GbEでHubへ集約。bt/60W入力のUSW-Flexを4台使用する。HW1はPTP精度・4本HW trigger・8ch位相・radar TDMを未実装/未受入とし、以下の同期目標と混同しない。
+
 ## 1. 同期（二重構成）
 
 | 仕組み | 役割 | 目標 |

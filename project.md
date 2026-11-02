@@ -24,3 +24,17 @@
 
 - W1検証完了: `npm run project:update`、全`npm run verify`はexit0（3597件中3593成功/0失敗/4skip、Web assets264/欠落0、API1678、CSV385、mission/work/bot合格）。BOM14点/9接続の本文一致、19文書の相対リンク欠落0、PDF3ページの抽出/目視、帯域計算、diff checkを確認。要約/文書hashは `data/mii-prototype-wiring-validation.json`、全ログはGit外 `/private/tmp/mii-wiring-verify.log`。
 - 保存区分: 本作業branchで文書・生成sourceをlocal保存。PDFはGit外の再生成artifact。GitHub保存・main統合は未実施。
+
+## mii本体HW1（2026-11-02・着手）
+
+本人の訂正を受け、18章W1はMacを使う開発用検証装置と明示し、本体設計の完成から除外する。本体は現行構造の4 Tower＋専用Hub＋差替表示部。共通OSの仕事/権限/保存は維持し、組立可能なモジュールと配線・機構・電力を19章へ具体化する。製品目標との差、光学4条件、未実装adapter、未実機受入を明記する。外部購入・契約・問い合わせ・端末書込は実施しない。
+
+- HW1設計判断: OAK-D Pro W PoE A00574、Teensy 4.1＋I2S mic×2/SEN0623/SE/温度をTowerへ、USW-Flexのbt入力からcamera/controlへ分配。AGX Orin 64GB Dev Kit＋1TB SSDを専用Hub、4本を10GbE集約、TK710STiへDP→HDMI出力。全31 BOM行・12ネット・14接続系統、6枚の図面を作成。
+- 次の作業（W1再開メモより優先）: HW-A01受領/導通確認、HW-A05試験firmware、共通OS adapter。同じ仕事の実入力/停止/保存復旧へ進む。元の小型寸法/120Hz/8ch同期/radar TDM/C-01携帯/C-02表示は未受入。
+- 検証開始: `python3 docs/mii/design/body-hw1/check.py`の静的整合はPASS。PDF6ページをrenderして全頁目視、全体図の線を別配線として分離。repository全verifyはこの後に実行し、物理試験とは別記する。
+
+- 追加指示: 「RockstarOS｜通信・Web・運用」とmii通信設計を照合。20章と通信BOMに有線WANのUSB31000S/J33を追加し、LTE/IoT SIM・Wi-Fi AP・日米衛星・offline/費用・携帯C-01を保持。印刷図は全7枚。実radio/provider/可搬coreは未受入。
+- 初回全verifyは既存Eveモデルtoolkitのchild PIDファイル読取り競合で1件失敗（空文字のint変換）。本体変更とは別に記録し、該当テスト単独と全体再試行で再現性を確認する。ログ `/private/tmp/mii-body-verify.log` を保持。
+
+- HW1最終検証: 全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、Web assets264/欠落0、API1678、CSV385、build/mission/work/bot合格）。初回Eve子PID競合→該当単独pass→全体passを別記。最後のMCU着脱socket追記は静的照合・PDF再生成/該当頁目視・metadata/design/link/diff再照合で確認。詳細は `data/mii-body-hardware-validation.json`。
+- 保存: `codex/mii-prototype-design-20261102`へlocal保存。PDFはGit外の再生成artifact、source/BOM/設計書はGit対象。GitHub保存・main統合・購入・開通・通電・OS/firmware書込は未実施。

@@ -219,3 +219,9 @@ PRO-02の固定linkはsource workstream05/ROCKで受入れ、[Pro詳細](../rock
 ## 共通OSに接続するmii実機試作設計（2026-11-02）
 
 MAT15／OS10／MINI01・MINI02の設計担当ROCK。[設計入口](../mii/design/00-README.md)14〜17章へ共通OS、BOM/端子条件、帯域/電力、A01〜12とO01〜04、部品提供相談資料を追加。既存taskの完了判定は変更しない。EXTERNALは部品/driver、JOINTは同一実機で入力・停止・復旧・光学、OWNERは筐体/予算/試験対象/提供条件。検証は `npm run project:update`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。結果は `data/mii-prototype-design-validation.json`、再開はroot `project.md`。18章でM4 Mac＋BRIOのP0b、Pi 5＋SC0715のP1aを選定し、端子間配線を具体化。次は現物/BOM版の照合→W-A01〜04→共通OS一周。実施状況は `data/mii-prototype-wiring-validation.json`。projector型番、Pi初期接続、Node adapter、同期/光学の未受入を維持する。
+
+### mii本体HW1の配線（2026-11-02）
+
+同じMAT15・MINI01/02・OS10、ROCK主担当で[19章](../mii/design/19-body-hardware.md)を追加。18章は開発用検証装置、本体は4 Tower＋専用Hub＋表示部。EXTERNAL=部品/driver、JOINT=同一実機の組立/測定、OWNER=設置/対象/予算を維持。次はHW-A01の受領/導通とHW-A05の試験firmware、続いて共通OS adapter。静的照合は `python3 docs/mii/design/body-hw1/check.py`、図面は同directoryの `render.py`、repoは `npm run verify`。証拠は `data/mii-body-hardware-validation.json`。120Hz/8ch位相/radar TDM/閉箱/光学は未受入。
+
+通信追加は[20章](../mii/design/20-connectivity.md)。MAT15主担当、MINI-08・NET01・SIM01との接続で、Web接続/UIの証拠と実回線/無線受入を分ける。専用有線WANの2部品/2接続を追加、LTE/Wi-Fi/衛星の既存要件は保持しCOM-A01〜06で追跡。

@@ -1,5 +1,7 @@
 # mii 設計書 V1（Tower 4本＋Hub フル構成、本数可変）
 
+**最新の本体組立設計は[19章 HW1](19-body-hardware.md)。** 4 Tower＋専用Jetson Hub＋表示部の型番、12ネット、14接続系統、本体6枚＋通信1枚の印刷配線図を定義。[20章 通信](20-connectivity.md)でLTE・Wi-Fi・衛星の既存設計と外部WAN配線を対応付ける。OSは14章の共通契約を維持する。18章は開発用検証装置で、本体設計と区別する。HW1はモジュール組立設計まで、実機・firmware/adapter・閉箱・製造・光学は未受入。
+
 版: V1.0 / 2026-11-02 / 著者: Fable（Noelle 指示）
 状態: **設計入力（Design Input）**。寸法・性能目標・受入条件を固定し、試作とRFQに渡す。製造図・部品確定・法規適合・実機合格を意味しない。
 上位: [docs/structure/01-mii.md](../../structure/01-mii.md)（構造の決定）。本書はその下の設計書。
@@ -13,9 +15,9 @@
 
 既存01〜13章の数値は設計目標で実測結果ではない。電源/集約帯域の訂正は06/15章、保存・認証・停止の具体契約は14章を使う。製品最終部品、pinout、PCB、実機受入は未確定。
 
-## V1.2追補 - 型番と組立配線（2026-11-02）
+## V1.2追補 - 開発用検証装置の配線（2026-11-02）
 
-[18章 型番・端子・配線](18-parts-wiring.md)で、手持ちM4 Macを使うP0bと、Pi 5＋Global Shutter CameraのP1aを選定。14点のBOMと9系統の接続、3ページの印刷図を追加した。P1aは同期前の1台立上げであり、2台同期・製品Tower・光学の受入は別。組立/通電は未実施。
+[18章 開発用検証装置](18-parts-wiring.md)で、手持ちM4 Macを使うP0bと、Pi 5＋Global Shutter CameraのP1aを選定。14点のBOMと9系統の接続、3ページの印刷図を追加した。P1aは同期前の1台立上げであり、2台同期・製品Tower・光学の受入は別。組立/通電は未実施。
 
 ## 0. 本人の指示（2026-11-02）で固定したこと
 
@@ -76,7 +78,9 @@ Gen1 では ③④ の代わりに市販の投影エンジンを Hub に直結�
 | 15 | [15-prototype-spec.md](15-prototype-spec.md) | 試作BOM、接続表、帯域・電力・機構固定条件 |
 | 16 | [16-prototype-acceptance.md](16-prototype-acceptance.md) | 実機一周、故障・再開、表示4条件、記録票 |
 | 17 | [17-component-evaluation-brief.md](17-component-evaluation-brief.md) | メーカーへ相談する概要と評価品・数量（未送信） |
-| 18 | [18-parts-wiring.md](18-parts-wiring.md) | Mac・BRIO・Pi 5・GS cameraの型番、端子、配線、組立/起動手順 |
+| 18 | [18-parts-wiring.md](18-parts-wiring.md) | 開発用検証装置: Mac・BRIO・Pi 5・GS camera（mii本体ではない） |
+| 19 | [19-body-hardware.md](19-body-hardware.md) | 本体HW1: 4 Tower＋専用Hub、選定BOM、電源/端子/配線、組立と受入 |
+| 20 | [20-connectivity.md](20-connectivity.md) | 通信: 専用有線WAN、既存LTE/SIM・Wi-Fi・衛星、切断/保存/予算と携帯構成との差 |
 
 ## 3. 用語
 

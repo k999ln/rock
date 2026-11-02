@@ -73,5 +73,6 @@
     "Two-camera synchronization and full four-Node product networking",
     "Projector exact model/EDID and C-01 chassis / C-02 four optical conditions"
   ],
-  "status": "design_validated_physical_not_run"
+  "status": "design_validated_physical_not_run",
+  "historicalScope": "W1 development-rig snapshot at local commit 114d1da4. Later chapter labeling and HW1 body edits have separate validation; these hashes are not current-head assertions."
 }

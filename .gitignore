@@ -71,3 +71,5 @@ replay_pid*.log
 
 # Reproducible mii assembly drawings; renderer and BOM are versioned.
 /output/pdf/mii-prototype-wiring.pdf
+
+/output/pdf/mii-body-hw1-wiring.pdf
