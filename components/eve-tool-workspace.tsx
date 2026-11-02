@@ -133,8 +133,8 @@ export default function EveToolWorkspace({ threadId, onThread }: { threadId: str
     catch (e) { setNotice(e instanceof Error ? e.message : '再読込してください。'); }
     finally { setBusy(false); }
   }
-  return <section className={styles.panel} aria-label="EveからsmisのToolを実行">
-    <h3>smisのToolで仕事を進める</h3>
+  return <section className={styles.panel} aria-label="EveからNoahのToolを実行">
+    <h3>NoahのToolで仕事を進める</h3>
     <p>素材をこのサイトに送って本人用の仕事に保存し、サイト側の固定処理で引用を整形します。固定手順ではモデルを呼び出しません。Pixel内Linuxでの処理や記事の事実確認は含みません。</p>
     {current && <p>以前の会話に「端末内」と表示されていても、この引用整形はサイト側の固定処理です。保存済みの会話は変更していません。</p>}
     <label>目的<input value={objective} maxLength={1000} disabled={busy} onChange={e => { setObjective(e.target.value); }} /></label>

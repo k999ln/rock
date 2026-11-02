@@ -10255,6 +10255,7 @@
     "evidence": "docs/evidence/eve-noah-navigation-repair.json",
     "publicAcceptance": "pending",
     "realExecutionAcceptance": false,
-    "validation": "npm run verify exit0;2641pass/1skip/0fail;workAPI1621/CSV385;local390px,Tool/news/account/navigation checked;public pending"
+    "validation": "npm run verify exit0;2641pass/1skip/0fail;workAPI1621/CSV385;local390px,Tool/news/account/navigation checked;public pending",
+    "followup": "v140 live readback passed navigation checks; child labels and Tool-mode common menu repaired; 39 targeted/typecheck/lint passed; final publish pending"
   }
 }

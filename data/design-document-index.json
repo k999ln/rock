@@ -3272,7 +3272,12 @@
       "components/eve-sync-workspace.tsx",
       "components/sky-agent-library.tsx",
       "components/rockstar-account.tsx",
-      "tests/eve-noah-navigation.test.mjs"
+      "tests/eve-noah-navigation.test.mjs",
+      "components/workspace-flow-navigation.tsx",
+      "components/eve-tool-workspace.tsx",
+      "components/sky-free-cloud-panel.tsx",
+      "lib/sky-tool-ui.ts",
+      "lib/sky-feed-ranking.ts"
     ],
     "publicAcceptance": "pending",
     "nativeAcceptanceChanged": false

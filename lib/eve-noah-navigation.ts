@@ -32,3 +32,14 @@ export function newsSourceNavigation(query: string) {
     return { href: url.href, title: (params.get('sourceTitle') || url.hostname).slice(0, 240) };
   } catch { return null; }
 }
+
+/** Tool workspace uses a query view; the regular Eve workspace uses hashes. */
+export function eveWorkspaceNavigation(query: string) {
+  const params = new URLSearchParams(query);
+  if (params.get('mode') !== 'tools') return { compose: '#eve-compose', results: '#eve-work-results', workView: false };
+  const workView = params.get('view') === 'work';
+  params.delete('view');
+  const compose = eveToolPath(params);
+  params.set('view', 'work');
+  return { compose, results: eveToolPath(params), workView };
+}

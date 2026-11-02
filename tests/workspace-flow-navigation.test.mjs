@@ -3,13 +3,15 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
 import ts from 'typescript';
+import * as eveNavigation from '../lib/eve-noah-navigation.ts';
 const source=readFileSync(new URL('../components/workspace-flow-navigation.tsx',import.meta.url),'utf8');
-function navigation(path,hash='',running=false){
+function navigation(path,hash='',running=false,query=''){
  const exports={},jsx=(type,props)=>({type,props});
  const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText;
  runInNewContext(code,{exports,require(name){
+  if(name==='@/lib/eve-noah-navigation')return eveNavigation;
   if(name==='next/link')return {default:'a'};
-  if(name==='next/navigation')return {usePathname:()=>path};
+  if(name==='next/navigation')return {usePathname:()=>path,useSearchParams:()=>new URLSearchParams(query)};
   if(name==='react')return {useSyncExternalStore:(_subscribe,snapshot)=>snapshot()};
   if(name==='react/jsx-runtime')return {jsx,jsxs:jsx};
   if(name==='lucide-react')return {MessageCircle:'message',ListChecks:'list',Cable:'cable',Settings:'settings'};
@@ -39,4 +41,16 @@ void test('connection and settings have deterministic return paths and current s
 });
 void test('pending workspace saves mark all cross-screen links unavailable',()=>{
  const items=navigation('/os/eve','',true);assert.ok(items.every(item=>item.props['aria-disabled']===true));
+});
+
+void test('Tool workspace menu switches query views without losing selected Tool or conversation',()=>{
+ const items=navigation('/os/eve','',false,'mode=tools&tool=rockstar-spider&thread=fixture&view=work');
+ assert.equal(items[1].props['aria-current'],'page');
+ for(const item of items.slice(0,2)){
+  const url=new URL(item.props.href,'https://avoado.si');
+  assert.equal(url.searchParams.get('tool'),'rockstar-spider');
+  assert.equal(url.searchParams.get('thread'),'fixture');
+ }
+ assert.equal(new URL(items[0].props.href,'https://avoado.si').searchParams.has('view'),false);
+ assert.equal(new URL(items[1].props.href,'https://avoado.si').searchParams.get('view'),'work');
 });

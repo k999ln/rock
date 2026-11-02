@@ -24,5 +24,19 @@
     "csvStorage": 385
   },
   "verificationScope": "isolated Sites source, not shared root runtime or native acceptance",
-  "rootIntegration": "source patch retained; shared root has 12 overlapping conflicts, no runtime files overwritten"
+  "rootIntegration": "source patch retained; shared root has 12 overlapping conflicts, no runtime files overwritten",
+  "followup": {
+    "reason": "Public v140 readback found child-panel labels and the Tool-mode shared work menu still needed alignment",
+    "changes": [
+      "Eve Cloud / Noah Tool labels and catalog explanations",
+      "Tool-mode work/compose query retains Tool and thread"
+    ],
+    "checks": [
+      "39 targeted assertions passed",
+      "typecheck passed",
+      "lint:product passed"
+    ],
+    "fullVerifyBase": "v140 / 4ae434ab850a9c9150a03a0d8964de1aced0bf76 exit0",
+    "publicAcceptance": "v140 routes verified; final follow-up deployment pending"
+  }
 }

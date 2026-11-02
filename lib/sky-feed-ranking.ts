@@ -106,7 +106,7 @@ function rankOne(
         : available
           ? (['available', '今使える'] as const)
           : curatedToolIds.has(tool.id)
-            ? (['curated', 'Skyのおすすめ'] as const)
+            ? (['curated', 'Noahのおすすめ'] as const)
             : (['candidate', '新しい候補'] as const);
 
   return { tool, score, reasonCode, reason, prediction };

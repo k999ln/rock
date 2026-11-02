@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { eveToolPath, accountReturnNavigation, newsSourceNavigation } from '../lib/eve-noah-navigation.ts';
+import { eveToolPath, eveWorkspaceNavigation, accountReturnNavigation, newsSourceNavigation } from '../lib/eve-noah-navigation.ts';
 
 void test('legacy Tool handoffs keep selected Tool, conversation, package and setup through canonical Eve navigation', () => {
   const query = new URLSearchParams({tool:'rockstar-spider',thread:crypto.randomUUID(),package:'fixture/package',view:'work',workJob:'job-1',setup:'passkey'});
@@ -26,4 +26,16 @@ void test('news original links accept only credential-free HTTPS and bound displ
   for(const href of ['javascript:alert(1)','data:text/html,test','http://example.com','https://user:secret@example.com','/relative','invalid']) {
     assert.equal(newsSourceNavigation(new URLSearchParams({newsSource:href}).toString()),null);
   }
+});
+
+void test('Tool workspace menu preserves Tool and thread while switching work and compose views', () => {
+  const links = eveWorkspaceNavigation('mode=tools&tool=rockstar-spider&thread=fixture&view=work');
+  assert.equal(links.workView, true);
+  const results = new URL(links.results, 'https://avoado.si');
+  assert.equal(results.pathname, '/os/eve');
+  assert.equal(results.searchParams.get('tool'), 'rockstar-spider');
+  assert.equal(results.searchParams.get('thread'), 'fixture');
+  assert.equal(results.searchParams.get('view'), 'work');
+  assert.equal(new URL(links.compose, 'https://avoado.si').searchParams.has('view'), false);
+  assert.deepEqual(eveWorkspaceNavigation('thread=fixture'), { compose: '#eve-compose', results: '#eve-work-results', workView: false });
 });
