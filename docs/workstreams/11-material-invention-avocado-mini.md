@@ -239,3 +239,5 @@ MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrate
 本人が住宅・店舗／ビルの「全部」を対象に指定。[24章](../mii/design/24-fire-alarm.md)、[要件と未受入条件](../../data/mii-fire-alarm-design.json)。MAT15／JOINT主担当、OS10・MINI-08・NET01に接続。ROCKは独立性の設計と共通OSの読取・保存・通知、EXTERNALはOEM完成形と検定、JOINTは感知・音響・電源・熱／RF・受信機・建物受入、OWNERは対象物件・予算。次は用途別OEM方式とF-G01〜03の条件確定後に正式端子配線。検証は `npm run baseline:check`、`npm run design:check`、`npm run verify` と24章F-A01〜07。設計保存を認定・施工・実機合格にしない。最新main参照9393ed97は読取確認のみで、本branchは未push／未統合。mainへ反映する前に差分を再同期する。
 
 通信2社への照会は[23章](../mii/design/23-japan-procurement.md)でQuectel会社メール配信済み・Soracomフォーム受付済み。消防機器OEMへの問い合わせは今回未送信。
+
+F2：[後付けハード25章](../mii/design/25-retrofit-fire-hardware.md)、[BOM/netlist](../mii/design/fire-f2/bom-netlist.json)、5頁PDF生成元を追加。住宅用接点→絶縁USBを具体化し、施設接続制限、一般ビルOEM head、USB全通信電源をHOLD。新規建物配線・AC100V直結・天井内工事なしを設計入力に追加。次はF-E01〜05と対象物件の機器対応表。静的検証は `python3 docs/mii/design/fire-f2/check.py`、PDFは同dirの `render.py`。実機・検定・設備受入は未実施。

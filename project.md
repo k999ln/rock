@@ -87,3 +87,9 @@ Soracom送信完了: 本人の会社名・電話番号回答を反映し、部�
 最新GitHub main参照9393ed97fc0333ed3a26be49c86b87fd21254b50を読取確認。作業branchはlocal04de8646起点、remote同名branchなし、CIの新規確認は未実施。公開・購入・新たな外部問い合わせ・施工なし。次は24章F-G01〜03のOEM／対象物件条件と正式図面の照合。main統合前にはmainとの差分を同期する。
 
 F1検証完了: project:update、baseline:check、design:check、profile/gate/リンク/JSON整合、diff checkはPASS。全verifyはOpenSSL 3を指定した最終実行でexit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web asset264/欠落0）。初回OpenSSL環境不一致、次回の既存Eve PID読取競合と単独再試験PASSを記録し、テスト／runtimeを変更していない。詳細はdata/mii-fire-alarm-design.json、全ログはGit外。消防認定・製造・現物・施工受入はすべて未実施。
+
+## mii後付け消防ハード F2（2026-11-02）
+
+本人が工事不要の後付けを追加指定。MAT15／JOINTを維持し、新規建物配線・AC100V直結・天井内工事なしを要件化。25章、19行BOM・8接続、5頁PDF生成元、hardware profile、静的照合を作成。住宅用NOHMI FSKJ226系＋FSOJ001B-S→Phidgets1018_3/3060_0を評価選定。施設用S4はメーカー接続制限、ビルは完成mii head未確定。全通信同時USB給電は余裕なしでHOLD。
+
+GitHub main9393ed97fc0333ed3a26be49c86b87fd21254b50を再読取、同名remote branchなし。作業起点33f3c533e、未push／未統合、同一SHA CI未確認。新規の問い合わせ・購入・施工なし。次はF-E01〜05、OEM完成形、対象物件のhead/base/受信機対応表。F2検証は静的19部品/8接続、PDF5頁目視、リンク・baseline・design、全verify exit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web264/欠落0）。物理・検定・施工試験はNOT_RUN。全ログは /private/tmp/mii-fire-f2-verify.log。

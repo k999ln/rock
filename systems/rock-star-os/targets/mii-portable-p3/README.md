@@ -13,3 +13,5 @@
 検査: `python3 docs/mii/design/portable-p3/check.py`。印刷図: 同dir `render.py`。R01〜04とP3-A01〜07を同一hardware/firmware/OS imageで閉じるまで利用可能と表示しない。
 
 PiSugar＋SC0218/DDR候補は公差/過渡不整合で除去済。R04には新UPSの指定charger銘板/セル/過渡/温度の受領・実機検査を含む。
+
+消防入力を追加する評価差分は[mii-fire-f2](../mii-fire-f2/README.md)。青USB3下段を使用し、追加100mAの受入枠で全USB1.2Aとなるため全通信同時給電はHOLD。P3単体のNC表と区別し、F2初回はmodem/GNSS未接続。

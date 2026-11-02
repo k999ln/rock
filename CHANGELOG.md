@@ -1,3 +1,7 @@
+## 2026-11-02 — mii後付け消防ハード F2
+
+[25章](docs/mii/design/25-retrofit-fire-hardware.md)に新規配線工事不要の条件、評価用型番・実端子・5頁配線図sourceを追加。住宅連携試作、施設接続制限、一般ビルOEM・全通信電源HOLDを区別。共通OS不変、local branch・PR未作成。
+
 ## 2026-11-02 — miiの火災警報機能
 
 [24章](docs/mii/design/24-fire-alarm.md)と要件・設計台帳へ、住宅・施設両方の代替目標、独立警報、固定部と可搬部、検定／設備／実機gateを追加。共通OS不変、実機・認定は未完了。local branch、PR未作成。

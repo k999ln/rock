@@ -3152,6 +3152,8 @@
     "commonOsUnchanged": true,
     "authority": "docs/mii/design/24-fire-alarm.md",
     "replacementAccepted": false,
-    "existingRequirementsPreserved": true
+    "existingRequirementsPreserved": true,
+    "retrofitRequirement": "No new building wiring, hardwired AC100V work, or ceiling access construction; certified final assemblies and site-compatible mounts/interfaces required",
+    "hardwareAuthority": "docs/mii/design/25-retrofit-fire-hardware.md"
   }
 }

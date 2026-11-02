@@ -12947,7 +12947,7 @@
       "NET01"
     ],
     "primaryOwner": "JOINT",
-    "status": "design_input_accepted_certification_and_engineering_pending",
+    "status": "retrofit_evaluation_wiring_prepared_final_product_and_power_pending",
     "authority": "docs/mii/design/24-fire-alarm.md",
     "data": "data/mii-fire-alarm-design.json",
     "commonOsUnchanged": true,
@@ -12957,12 +12957,18 @@
     "replacementAccepted": false,
     "githubSaved": false,
     "mainIntegrated": false,
-    "next": "Select applicable OEM/certification configurations and site conditions; confirm F-G01..03 and exact pin-to-pin diagrams before physical F-A01..07",
+    "next": "Close F-E01..05: contact compatibility, complete power, existing mount fit, facility permission, OEM final head and certification",
     "verification": {
+      "status": "PASS_DESIGN_AND_REPOSITORY_ONLY",
       "designAndBaseline": "PASS",
+      "staticParts": 19,
+      "staticConnections": 8,
+      "pdfVisualPages": 5,
       "repositoryVerifyExitCode": 0,
       "physical": "NOT_RUN",
       "details": "data/mii-fire-alarm-design.json"
-    }
+    },
+    "revision": "F2",
+    "hardwareAuthority": "docs/mii/design/25-retrofit-fire-hardware.md"
   }
 }

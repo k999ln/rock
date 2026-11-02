@@ -4023,7 +4023,12 @@
       "systems/rock-star-os/targets/mii-portable-p3/README.md",
       "docs/mii/design/23-japan-procurement.md",
       "docs/mii/design/24-fire-alarm.md",
-      "data/mii-fire-alarm-design.json"
+      "data/mii-fire-alarm-design.json",
+      "docs/mii/design/25-retrofit-fire-hardware.md",
+      "docs/mii/design/fire-f2/bom-netlist.json",
+      "docs/mii/design/fire-f2/check.py",
+      "docs/mii/design/fire-f2/render.py",
+      "systems/rock-star-os/targets/mii-fire-f2/README.md"
     ],
     "decision": "osの中身は一緒",
     "status": "design_only",
@@ -4049,9 +4054,14 @@
     "runtimeAuthority": "docs/rockstaros-complete-design.md#mii-fire-alarm-common-os",
     "documents": [
       "docs/mii/design/24-fire-alarm.md",
-      "data/mii-fire-alarm-design.json"
+      "data/mii-fire-alarm-design.json",
+      "docs/mii/design/25-retrofit-fire-hardware.md",
+      "docs/mii/design/fire-f2/bom-netlist.json",
+      "docs/mii/design/fire-f2/check.py",
+      "docs/mii/design/fire-f2/render.py",
+      "systems/rock-star-os/targets/mii-fire-f2/README.md"
     ],
-    "status": "DESIGN_INPUT_ONLY",
+    "status": "EVALUATION_WIRING_PREPARED_FINAL_PRODUCT_HELD",
     "runtimeImplemented": false,
     "certificationAccepted": false,
     "physicalAccepted": false,

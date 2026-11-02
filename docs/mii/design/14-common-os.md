@@ -91,3 +91,5 @@ Spatial Coreが追跡を失ったら、危険な古い視点の投影を続け�
 ## 9. 火災警報機能との接続
 
 [24章](24-fire-alarm.md)の住宅・施設用miiも、この共通OSを使用する。追加能力は消防機器側の状態読取りと補助通知であり、独立する検知・現場警報をJob／LLM／本人ログイン／予算承認待ちにしない。通知先・外部送信・費用は既存契約を使い、通知停止と現場警報停止を分ける。火災・故障・通信鮮度は独立に保持し、既読・配送・再起動を警報解除へ置換しない。消防機器側への書込みAPIは初版に設けない。実adapter・検定・物理受入は未完了。
+
+F2の実入力境界は[25章](25-retrofit-fire-hardware.md)と[mii-fire-f2 profile](../../../systems/rock-star-os/targets/mii-fire-f2/README.md)。FSOJ001B-Sの1a接点は群単位のcontact_closedのみを提供し、発報室・fault・lowBatteryはunknownのまま。接点開放を警報解除へ換算しない。Phidget22診断と共通OS adapterの実装受入は別で、後者は未実装。

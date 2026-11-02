@@ -1,13 +1,14 @@
 {
   "schema": "mii-fire-alarm-design/v1",
-  "revision": "F1",
+  "revision": "F2",
   "date": "2026-11-02",
   "authority": "docs/mii/design/24-fire-alarm.md",
   "userIntent": {
     "feature": "火災報知器と同じ部類にしてその機能もつけて、火災報知器の代替えもしてくれる一品に",
     "scopeAnswer": "全部",
     "scopeQuestion": "住宅用の火災警報器、または店舗・ビルの自動火災報知設備",
-    "commonOsUnchanged": true
+    "commonOsUnchanged": true,
+    "retrofit": "家庭やビルにある火災報知器の基準をクリアした上で工事せず取り付ける"
   },
   "profiles": [
     {
@@ -32,7 +33,7 @@
   "architecture": {
     "fixedFireAssembly": "Dedicated sensing, alarm path, power supervision and required interconnection remain installed",
     "detachableCore": "Existing mii common runtime and P3 connectivity; no primary fire-alarm power dependency",
-    "fireToCore": "Read-only fault-isolated status adapter; manufacturer interface and pinout pending",
+    "fireToCore": "JP-H contact via 1018_3 / 3060_0 isolation; F-E01 and F-E02 acceptance pending",
     "coreToFireCommands": [],
     "localAlarmDependenciesExcluded": [
       "RockstarOS boot or availability",
@@ -67,7 +68,16 @@
     "fireAssemblyPinout": null,
     "approvedReceiverCombinations": [],
     "firePowerBudget": null,
-    "finalDimensions": null
+    "finalDimensions": null,
+    "evaluationBomAndPinout": "docs/mii/design/fire-f2/bom-netlist.json",
+    "installation": "No new building wiring / hardwired AC100V / ceiling access construction; compatible existing mounts only",
+    "initialContactCapabilities": {
+      "contactClosed": true,
+      "zoneIdentity": false,
+      "fault": false,
+      "lowBattery": false,
+      "openMeansHealthy": false
+    }
   },
   "gates": [
     {
@@ -177,7 +187,7 @@
     }
   ],
   "release": {
-    "status": "DESIGN_INPUT_ONLY",
+    "status": "EVALUATION_WIRING_PREPARED_FINAL_PRODUCT_HELD",
     "runtimeImplemented": false,
     "fireBomReleased": false,
     "fireWiringReleased": false,
@@ -187,9 +197,56 @@
     "replacementAccepted": false,
     "manufacturingReleased": false,
     "purchaseExecuted": false,
-    "fireVendorContacted": false
+    "fireVendorContacted": false,
+    "benchDiagramPrepared": true,
+    "noNewWiringRequirement": true,
+    "allRadioAndFirePowerAccepted": false
   },
-  "verification": {
+  "git": {
+    "baseLocalCommit": "33f3c533ee82fd9d52848c767e952e4a0ef00069",
+    "observedRemoteMain": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
+    "remoteBranchExists": false,
+    "sameShaCiVerified": false,
+    "githubSaved": false,
+    "mainIntegrated": false
+  },
+  "sourceHashes": {
+    "docs/mii/design/24-fire-alarm.md": "f98c258bdae8e1cdf4d7e7370584fdc57d953364d6c05e4596c2c18839ce3eb6",
+    "docs/mii/design/14-common-os.md": "a5b0d2b709078647566a253952ace3a7ea18361477ee111beae8ed82d57b51a6",
+    "docs/product-baseline.md": "0190ea09d3a517881a7615df4783e84f037a2c629773767439f5c461b1007f31",
+    "data/product-baseline.json": "782a4416ee5c9fac83c41e59535902b9f7bc12ac02556edc2324af7f2d12e3c7",
+    "docs/rockstaros-avocado-mini-complete-design.md": "63fb9943137db35b5cd40405533f7c98a7591a8af5a8e3bee43a80229d5d0248",
+    "docs/rockstaros-complete-design.md": "90cf9911c48aae0137c39e29ef851927f4aacbd7af3b5443c2e6830aa7fedfa2",
+    "docs/mii/design/25-retrofit-fire-hardware.md": "ae38eefb8247e316638d5cbdb52c61f75755d1a8f958c826e50715a63ea72837",
+    "docs/mii/design/fire-f2/bom-netlist.json": "c593cc74d67606436112eb3b515d752d52aa3a8e8942ef664c2c175eef71c150",
+    "docs/mii/design/fire-f2/render.py": "726785c316327460228f41d9d53119323ea987fe7614341c4dad89311fbf4618",
+    "docs/mii/design/fire-f2/check.py": "ecba0b7c3356846d9a160c47d23c6167a0ea403474206030703f5033a82bff67",
+    "systems/rock-star-os/targets/mii-fire-f2/README.md": "1aa0eff648ac4a90d8d38b74cea2b1268d6a9258771bd9f07186fa23547b686d"
+  },
+  "hardwareAuthority": "docs/mii/design/25-retrofit-fire-hardware.md",
+  "engineeringGates": [
+    {
+      "id": "F-E01",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-E02",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-E03",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-E04",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-E05",
+      "status": "OPEN"
+    }
+  ],
+  "previousVerificationF1": {
     "status": "PASS_DESIGN_AND_REPOSITORY_ONLY",
     "scope": "Documentation and metadata validation; not certification or physical fire-alarm testing",
     "commands": {
@@ -226,20 +283,45 @@
     ],
     "physical": "NOT_RUN"
   },
-  "git": {
-    "baseLocalCommit": "04de8646c936e7e1c372031788c32c421bc9660b",
-    "observedRemoteMain": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
-    "remoteBranchExists": false,
-    "sameShaCiVerified": false,
-    "githubSaved": false,
-    "mainIntegrated": false
-  },
-  "sourceHashes": {
-    "docs/mii/design/24-fire-alarm.md": "6a2f590413e98e69bae79b5c7574159e38885455d16e79800f53f29f6ce3e6fb",
-    "docs/mii/design/14-common-os.md": "c04a93d91194cce98c1908250b7e8c2dd40b5d0762100280cda29298abfd1c02",
-    "docs/product-baseline.md": "18c3d160b394608415ca45b01ff2077cbf30ad621af578bf1d9b30b5795ccc16",
-    "data/product-baseline.json": "fd0c5bafb8b935431e572c3183652a8821bbf52c374024954c9fbc3f98003222",
-    "docs/rockstaros-avocado-mini-complete-design.md": "c154358dc925dc270375a3c12a10a407fd630230ef39db1bbf1d3ccda831d342",
-    "docs/rockstaros-complete-design.md": "a9d426acb065986e0611f4207a9295d2e0c4982fd6d1dbed3bd033427097453d"
+  "verification": {
+    "status": "PASS_DESIGN_AND_REPOSITORY_ONLY",
+    "commands": {
+      "project:update": "PASS",
+      "baseline:check": "PASS",
+      "design:check": "PASS",
+      "fireF2Static": "PASS_19_PARTS_8_CONNECTIONS",
+      "localLinks": "PASS",
+      "pdfVisual": "PASS_5_PAGES",
+      "diffCheck": "PASS",
+      "fullVerifyExitCode": 0
+    },
+    "artifact": {
+      "pdf": "output/pdf/mii-fire-f2-wiring.pdf",
+      "sha256": "bbdc124312dc5000c08b44bd91d0b1ac4179e66ab2a107f9cae211ffaeb32995",
+      "pages": 5,
+      "offPageCharacters": 0,
+      "visualInspectedPages": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "physical": "NOT_RUN",
+    "scope": "Static documentation/netlist/PDF and repository checks; no certification or physical testing",
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "rootTests": 3597,
+      "rootPass": 3593,
+      "rootFail": 0,
+      "rootSkipped": 4,
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "webAssetReferences": 264,
+      "missingWebAssets": 0,
+      "log": "/private/tmp/mii-fire-f2-verify.log",
+      "logSha256": "b238ec7fdcba487cede780b93836a2b4996bc5bf34d33b9dbcc9aca720309803"
+    }
   }
 }

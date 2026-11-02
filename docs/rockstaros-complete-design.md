@@ -1568,3 +1568,5 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 ### miiの火災警報機能と共通runtime
 
 [火災警報設計24章](mii/design/24-fire-alarm.md)は住宅・店舗／ビルを対象に追加するhardware profileであり、RockstarOSを別OSへ分岐しない。消防機器側の検知・現場警報・設備連動をruntimeから独立させ、OSは読取専用状態adapter、既存の保存／本人性／通知同意／予算を使う。火災・故障・通信未確認は併存し、画面の既読・job取消・account失効を警報解除へ転用しない。遠隔通知は補助で、監視の代わりではない。実adapterと各用途の消防機器・設備受入は未完了。
+
+mii消防F2：後付けの型番・端子と電源条件は[25章](mii/design/25-retrofit-fire-hardware.md)、[hardware profile](../systems/rock-star-os/targets/mii-fire-f2/README.md)。共通runtimeは維持。初号接点入力は群単位contact_closedだけで、zone/fault/lowBatteryを推測補完しない。完成品検定・runtime adapter・実機受入は未完了。

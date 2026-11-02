@@ -476,4 +476,4 @@ mii本体HW1の配線図: `python3 docs/mii/design/body-hw1/render.py` → `outp
 
 可搬miiの通信Coreは[22章 P3](docs/mii/design/22-integrated-radio.md)でLTE/衛星共用Murata・Wi-Fi・GNSS・電池を一式に選定。P3.1ではアプリ経路とmodem網維持を分離、共通OSは同じ。充電DC5521と任意RJ45を外す。印刷図は `python3 docs/mii/design/portable-p3/render.py` → `output/pdf/mii-portable-p3-wiring.pdf`（6枚、reportlab＋日本語font）、整合確認は `python3 docs/mii/design/portable-p3/check.py`。条件付き図面で、同居RF/日本NTN適合/kit antenna/USB給電契約・実機は未受入。[23章の調達判定・照会状況](docs/mii/design/23-japan-procurement.md)で日本向け条件を照会する。全部品の一括購入は回答待ち。P2は前案として保持。
 
-miiの追加商品要件は[24章 火災警報機能](docs/mii/design/24-fire-alarm.md)。住宅・店舗／ビルの両方を対象に、独立した固定警報部と着脱できる共通OS部を設計する。現在は設計入力で、消防機器側の実端子配線・検定・施工受入は未完了。
+miiの追加商品要件は[24章 火災警報機能](docs/mii/design/24-fire-alarm.md)。住宅・店舗／ビルの両方を対象に、独立した固定警報部と着脱できる共通OS部を設計する。[25章の後付けハード設計](docs/mii/design/25-retrofit-fire-hardware.md)に部品型番・住宅用接点／絶縁USB配線・検定／設置条件をまとめた。新規建物配線・AC100V直結・天井内工事なしを目標にする。完成品検定・ビルOEM head・全通信同時電力・施工受入は未完了。評価図は `python3 docs/mii/design/fire-f2/render.py`、静的照合は `python3 docs/mii/design/fire-f2/check.py`。

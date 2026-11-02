@@ -167,3 +167,7 @@ LTE/NTNは同じ送信系であり同時2接続ではない。Wi-Fiとのantenna
 8. **P3-A07 共通OS**: 同じjobの作成/承認/停止/保存/再起動/読戻し、固定workerとの二重実行0。光学C-02/音声入出力は別。P3にはmic/speaker/空中表示を新規搭載していない。
 
 現在はR01〜R04未完了、P3-A01〜07すべてNOT_RUN。静的検査/PDF/全repository検査の結果は [validation JSON](../../../data/mii-integrated-radio-validation.json) に記録する。購入/契約/開通/OS書込/無線送信/main統合は未実施。
+
+## 消防入力F2との電力境界
+
+[25章](25-retrofit-fire-hardware.md)のUSB入力を追加する場合、本章でNCだった青USB3下段を使用する評価差分となる。本章のP3単体netlistは維持する。追加host受入枠100mAでは全USB合計1.2Aとなり余裕がなく、全通信＋消防入力の同時接続はHOLD。初回F-Hはmodem/GNSSを未接続として入力を評価。R04とF-E02の最大・突入・列挙・温度の実測後に全構成を改版する。消防部の電源をP3や感知器回線へ分岐しない。
