@@ -853,3 +853,7 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 2026-11-02の本人による本体設計指示を[19章 HW1](mii/design/19-body-hardware.md)に反映。4 Tower（OAK-D Pro W PoE＋Teensy 4.1、mic/radar/温度/SE）と専用AGX Orin Hub、PoE/10GbE、DP→TK710STiを型番・端子・配線で固定した。18章は開発用検証装置。入力は校正/lease/信頼状態を持つ候補、変更は既存WorkJob/Broker/owner/revision/予算/保存を通す。CAMとMCUが別endpointであるためSEだけで全経路認証済みとしない。firmware watchdog、再接続旧frame拒否、同一job保存復旧をHW-A05/06で受入れ、物理/製造/光学は別gate。汎用モジュールの実装差と未達条件は19章§8で閉じる。
 
 [20章 HW1-COM1](mii/design/20-connectivity.md)で本体の外部通信を追補。USB31000S/J33のWANをsensor J17から分離し、既存tethering/controller・LinuxPacketGate・AP/NetworkQuota・MessageAdapter/Serviceを再利用する。SIM登録と本人利用権、配送とTool完了、通信費とAI費を分け、切断/再起動時は旧grant/有料jobの自動再送を拒否する。LTE/SIM・Wi-Fi radio・衛星modem/provider、可搬core/電池は未選定または未受入で、COM-A01〜06を同一実機で確認する。
+
+### 可搬mii P2の通信・電池・dock
+
+[21章](mii/design/21-portable-connectivity.md)と[hardware profile](../systems/rock-star-os/targets/mii-portable-p2/README.md)でPi4B 4GB、PiSugar 3 Plus、SIM7080G/FXP14、内蔵Wi-Fi、RockBLOCK9704-ANTを選定。12 BOM行・11接続・9論理ネット、7枚の印刷図で配線を定義。Coreを取り外すとき外す線は外部USB-C給電と任意RJ45だけ。重い空間演算は固定workerへ、仕事/権限/料金/保存は同じ共通OSに残す。LTEはCat-M1、衛星は有限IMT message、STA/APは初号で同時使用しない。電源枠2.68A/USB1.0Aは測定前の設計値、電池区画を開放して充電する。9704-ANTの同居/地域適合、回線、実adapter、電源/熱/包絡、P2-A01〜08は未受入。C-01は構成選定済・物理未受入、C-02表示4条件は維持。

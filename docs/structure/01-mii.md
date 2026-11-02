@@ -1,5 +1,7 @@
 # 01 mii — 建築に埋め込む RockstarOS 端末の構造（2026-11-02）
 
+**最新追補: 可搬P2。** 本人の追加指示により[21章](../mii/design/21-portable-connectivity.md)へ、取り外すCoreに共通OS・保存・電池・LTE/Wi-Fi/衛星を集める構成を選定した。以下の4 Tower＋別Hubは固定HW1の構成。P2と併用するとき固定AGXは任意の空間演算worker、唯一の常用runtimeの場所は可搬Coreとなる。TowerへOSを4コピーしない。P2の物理/無線同居/回線/光学受入は未完了。
+
 出典: 議事録（2026-08〜10）、「3Dプロジェクション技術説明」チャット全文（2026-10）、AVOKADO Issue01 PDF（Kaiya、2026-10）。
 この文書は**構造**を決める。寸法・性能・校正・受入条件の設計書は [docs/mii/design/](../mii/design/00-README.md)（V1、2026-11-02）。原価・工場・ロット単価は後（Codex task 20 が調べる）。
 
@@ -7,7 +9,7 @@
 
 - 眼鏡・ヘッドセット・画面を**使わない**。部屋そのものが3D世界になる。壁・床・家具・人の体に像が出る。
 - 用途は全部入り: 遊び（家具を足場にするアクション、狭い部屋でのオープンワールド、軸切替、人間テトリス、チェス、床ライト、遠隔ツイスター・剣道）、体（ヨガ・ダンス・バレエ・ゴルフの正しい姿勢を体に投影して矯正、介護・見守り）、学び（分子・物理の波・三角関数・立体図形の切断、医学部の人体）、仕事（工場の保守手順を現物に重ねる、研修）。
-- **avocadoOS（=RockstarOS）の機能は全部入る**。mii は「空間用の別OS」ではなく、RockstarOS の目・耳・空間I/O。Eve / Noa / AMC / Jev / Sky / Wallet / Work / Memory / 権限 は Hub 側で全部動く。
+- **avocadoOS（=RockstarOS）の機能は全部入る**。mii は「空間用の別OS」ではなく、RockstarOS の目・耳・空間I/O。Eve / Noa / AMC / Jev / Sky / Wallet / Work / Memory / 権限 は固定HW1ではHub、可搬P2ではCoreを常用runtime側とし、対応能力をprofileで分ける。
 - 一人用の完成度を優先し、複数人は「部屋ごとに一人」の遠隔同時プレイで実現する（頭追跡の運動視差は一人に対して完璧、複数人同室は後の世代）。
 - 建築に埋め込む（PDF Issue01）: 置き型ではなく、天井・壁・柱・プールサイドに**最初から**入る。「部屋が si を持っている」状態。
 
@@ -33,7 +35,7 @@ flowchart TB
 | 層 | 役割 | 何が入るか | 変えるか |
 | --- | --- | --- | --- |
 | **Tower ×4** | 感覚器官。部屋の形・体の3D・目の位置を取る | global-shutter/NIR camera、IR照明、mmWave候補、ハード同期、小さなMCU、secure identity、温度/電源監視、**光学ヘッド**（表示層の出口） | 筐体は建築に合わせて変える（下記）。中身は共通 |
-| **Hub** | 脳。RockstarOS が動く唯一の場所 | RockstarOS runtime、Jev、local LLM、Vision/Spatial AI、3D fusion、Game runtime、Memory、Tools/MCP、Wallet、権限 | 共通。Pro と同じ基板系列を使える |
+| **Hub（固定HW1）** | HW1の脳。P2併用時は可搬Coreから依頼される空間演算worker | RockstarOS runtime、Jev、local LLM、Vision/Spatial AI、3D fusion、Game runtime、Memory、Tools/MCP、Wallet、権限 | 共通。Pro と同じ基板系列を使える |
 | **表示層** | 視覚世界を現実に返す器官 | Tier A〜D（下記） | **世代で差し替える**。Core は変えない |
 
 **Tower に OS を4コピー入れない。** Tower は安く、Hub に集める。これが「4つで3万円」の表示目標を壊さない唯一の構造。

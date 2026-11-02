@@ -1,6 +1,6 @@
 # mii 設計書 V1（Tower 4本＋Hub フル構成、本数可変）
 
-**最新の本体組立設計は[19章 HW1](19-body-hardware.md)。** 4 Tower＋専用Jetson Hub＋表示部の型番、12ネット、14接続系統、本体6枚＋通信1枚の印刷配線図を定義。[20章 通信](20-connectivity.md)でLTE・Wi-Fi・衛星の既存設計と外部WAN配線を対応付ける。OSは14章の共通契約を維持する。18章は開発用検証装置で、本体設計と区別する。HW1はモジュール組立設計まで、実機・firmware/adapter・閉箱・製造・光学は未受入。
+**最新は[21章 可搬P2](21-portable-connectivity.md)。** LTE・Wi-Fi・衛星の型番/端子、電池、ドック着脱を12 BOM行・11接続・9論理ネット、全7枚の配線図に具体化した。取り外すCoreへ共通OS・保存・全radio・電池を残す。[19章 HW1](19-body-hardware.md)は固定4 Tower＋専用Hub＋表示部、[20章](20-connectivity.md)は通信契約の整理として保持する。18章は開発用検証装置。P2の回線開通/adapter/電源・熱/RF同居/光学/実機受入は未完了。
 
 版: V1.0 / 2026-11-02 / 著者: Fable（Noelle 指示）
 状態: **設計入力（Design Input）**。寸法・性能目標・受入条件を固定し、試作とRFQに渡す。製造図・部品確定・法規適合・実機合格を意味しない。
@@ -97,3 +97,7 @@ Gen1 では ③④ の代わりに市販の投影エンジンを Hub に直結�
 2. Gen1 の投影エンジンを「別売りの箱」にするか「Hub に内蔵」するか（05 章は別箱を推奨）。
 3. mii の名前（商標。docs/structure/08 §3）。
 4. 本物の空中像（Gen2）に進む判断時期（Gen1 の没入評価＝11 章の受入 D-4 の結果で決める）。
+
+## 可搬通信を組む入口
+
+[21章](21-portable-connectivity.md) → [BOM・端子netlist](portable-p2/bom-netlist.json) → `python3 docs/mii/design/portable-p2/check.py` → `python3 docs/mii/design/portable-p2/render.py`。PDFはGit外の `output/pdf/mii-portable-p2-wiring.pdf`。C-01は構成選定済・物理受入待ち、C-02の表示4条件は継続。

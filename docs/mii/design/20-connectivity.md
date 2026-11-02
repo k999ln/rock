@@ -1,5 +1,7 @@
 # 20 miiの通信 — 本体配線と既存の通信・Web・運用設計
 
+**後続設計: [21章 可搬P2](21-portable-connectivity.md)。** 本章は固定HW1の設計時点を保持する。後続の本人指示でPi4/電池/LTE/Wi-Fi/9704-ANTを可搬Coreへ選定した。本章の「可搬core/radio未選定」はP2については更新済み。C-01はP2構成選定・実機受入待ち、RF同居/回線/adapter/光学は未受入。
+
 2026-11-02 / HW1-COM1 / MAT15・MINI-08・NET01・SIM01 / 主担当 Material Invention・ROCK。
 
 本人が指定した [RockstarOS｜通信・Web・運用](codex://threads/01a16c30-a468-7681-923d-3a8bd7871587) の直近16 turnと、現在の通信正本を照合した。チャットのWeb接続/UI/配備検証を、miiの無線モデム・回線開通・実機合格へ転用しない。本章は[19章の本体配線](19-body-hardware.md)に外部通信を接続する。共通OSと既存の通信制御を再利用する。

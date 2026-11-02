@@ -473,3 +473,5 @@ Updated: 2026-11-02 / 393 task records (32 parents, 192 children, 169 standalone
 開発用検証装置（本体ではない）の配線図: `python3 docs/mii/design/wiring/render-wiring.py --output output/pdf/mii-prototype-wiring.pdf`（reportlabと日本語fontが必要）。選定品14点、端子間接続9系統。Mac以外の所持と実機受入は未確認。
 
 mii本体HW1の配線図: `python3 docs/mii/design/body-hw1/render.py` → `output/pdf/mii-body-hw1-wiring.pdf`（reportlabと日本語fontが必要）。[19章](docs/mii/design/19-body-hardware.md)の4 Tower＋専用Hub＋表示部、31 BOM行・12ネット・14接続系統と、[通信20章](docs/mii/design/20-connectivity.md)のWAN追加2部品/2接続を全7枚にまとめる。静的照合は `python3 docs/mii/design/body-hw1/check.py`。実機通電、firmware/adapter、閉箱と光学は未受入。
+
+可搬miiの通信Coreを組む設計は[21章 P2](docs/mii/design/21-portable-connectivity.md)。Pi4B/電池/LTE/Wi-Fi/衛星を持ち出す一式へ選定し、USB-C給電と任意RJ45を外す。配線図は `python3 docs/mii/design/portable-p2/render.py` → `output/pdf/mii-portable-p2-wiring.pdf`（全7枚、reportlabと日本語fontが必要）、整合確認は `python3 docs/mii/design/portable-p2/check.py`。実通電/共通OS移植/回線/RF同居は未受入。

@@ -38,3 +38,14 @@
 
 - HW1最終検証: 全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、Web assets264/欠落0、API1678、CSV385、build/mission/work/bot合格）。初回Eve子PID競合→該当単独pass→全体passを別記。最後のMCU着脱socket追記は静的照合・PDF再生成/該当頁目視・metadata/design/link/diff再照合で確認。詳細は `data/mii-body-hardware-validation.json`。
 - 保存: `codex/mii-prototype-design-20261102`へlocal保存。PDFはGit外の再生成artifact、source/BOM/設計書はGit対象。GitHub保存・main統合・購入・開通・通電・OS/firmware書込は未実施。
+
+## 可搬mii P2（2026-11-02・着手）
+
+本人指示でLTE・Wi-Fi・衛星の型番/端子と、取り外して単体通信する本体の電源・ドック配線を具体化する。共通OS契約を維持し、可搬側に演算/保存/本人性/通信/電池を配置する。HW1のTowerセンサー4本へOSを複製せず、固定側の演算は任意の拡張とする設計を検討。通信機能の型番選定と回線契約/開通/実機受入を分け、購入・無線送信・端末書込は行わない。
+
+- P2判断: Pi4B 4GBを可搬Core、PiSugar3 Plus電池、Waveshare17693/SIM7080G＋FXP14、内蔵Wi-Fi、RockBLOCK9704-ANTを選定。12 BOM行・11接続・9論理ネット、全7頁PDFとhardware profileを追加。共通OSは同じ契約。C-01は構成選定済・物理未受入へ進め、固定AGXはP2で任意workerとする。
+- 残条件: P2 adapter/実OS受入、RF同居と日本LTE/日米衛星の条件、電源枠2.68A/USB1.0Aの実測、PSU→UPS入力最大5.2V、電池区画開放での充電、包絡/熱/持続。部品選定を送信可能・量産可能としない。次はP2-A01/02準備とadapter、同居/回線条件の確定。
+- 検証中: P2静的照合PASS、PDF7頁render/全頁目視済み。再現は `python3 docs/mii/design/portable-p2/check.py`、同dir `render.py`、`npm run project:update`、`npm run design:check`、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。
+
+- P2検証完了: 全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、build、Web assets264/欠落0、API1678、CSV385、mission/work/bot合格）。P2と既存HW1の静的照合PASS、相対リンク14文書/欠落0、PDF7頁目視（最終Wi-Fi型番追記後4頁を再確認）。詳細 `data/mii-portable-hardware-validation.json`、ログ `/private/tmp/mii-portable-verify.log`。
+- 保存区分: source/BOM/設計書/要約は独立local branch、PDFはGit外。GitHub保存・main統合・購入・開通・通電・無線送信・OS書込み未実施。最終のWi-Fi型番追記/進捗metadata更新はtargeted static/design/project/diff確認で閉じ、runtimeコードは変更していない。

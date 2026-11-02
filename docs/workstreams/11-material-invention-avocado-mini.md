@@ -225,3 +225,7 @@ MAT15／OS10／MINI01・MINI02の設計担当ROCK。[設計入口](../mii/design
 同じMAT15・MINI01/02・OS10、ROCK主担当で[19章](../mii/design/19-body-hardware.md)を追加。18章は開発用検証装置、本体は4 Tower＋専用Hub＋表示部。EXTERNAL=部品/driver、JOINT=同一実機の組立/測定、OWNER=設置/対象/予算を維持。次はHW-A01の受領/導通とHW-A05の試験firmware、続いて共通OS adapter。静的照合は `python3 docs/mii/design/body-hw1/check.py`、図面は同directoryの `render.py`、repoは `npm run verify`。証拠は `data/mii-body-hardware-validation.json`。120Hz/8ch位相/radar TDM/閉箱/光学は未受入。
 
 通信追加は[20章](../mii/design/20-connectivity.md)。MAT15主担当、MINI-08・NET01・SIM01との接続で、Web接続/UIの証拠と実回線/無線受入を分ける。専用有線WANの2部品/2接続を追加、LTE/Wi-Fi/衛星の既存要件は保持しCOM-A01〜06で追跡。
+
+### 可搬mii P2 — LTE/Wi-Fi/衛星とdock
+
+MAT15主担当ROCK、MINI-08・NET01・SIM01・OS10との接続。[21章](../mii/design/21-portable-connectivity.md)で12 BOM行・11接続・9論理ネットを選定。EXTERNALは部品rev/driver/RF/回線条件、JOINTは同一Coreの着脱/電源/通信/保存、OWNERは機材・回線・試験環境/予算。次はP2-A01/02準備とP2 adapter、9704-ANT同居・国内carrier条件の確定。検証: `python3 docs/mii/design/portable-p2/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。結果は `data/mii-portable-hardware-validation.json`。静的図面は物理/RF/OS/光学受入と別。共通OSと既存通信台帳を再利用する。

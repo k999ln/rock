@@ -126,5 +126,7 @@
     "docs/structure/07-decisions-from-minutes.md": "abd8ab3e38db8674074324d03dac8cdb1d42ffcdca48a79930a3b11c4f6f7b35",
     "docs/workstreams/11-material-invention-avocado-mini.md": "f6548a2081ce30f5ac9b195026c33e4acfe2acf1d136829b5f295d3668515919",
     "project.md": "51e440f8924fd6995f546154a8b51798daf29eff79609a511d6632b23e20bdaa"
-  }
+  },
+  "snapshotLocalCommit": "da176838",
+  "historicalSnapshotNote": "HW1/HW1-COM1 validation at local commit da176838. fileSha256 is historical, not the current P2 tree. P2 selection is recorded separately in data/mii-portable-hardware-validation.json."
 }

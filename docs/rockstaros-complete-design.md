@@ -1554,3 +1554,7 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 2026-11-02の本人による本体設計指示を[19章 HW1](mii/design/19-body-hardware.md)に反映。4 Tower（OAK-D Pro W PoE＋Teensy 4.1、mic/radar/温度/SE）と専用AGX Orin Hub、PoE/10GbE、DP→TK710STiを型番・端子・配線で固定した。18章は開発用検証装置。入力は校正/lease/信頼状態を持つ候補、変更は既存WorkJob/Broker/owner/revision/予算/保存を通す。CAMとMCUが別endpointであるためSEだけで全経路認証済みとしない。firmware watchdog、再接続旧frame拒否、同一job保存復旧をHW-A05/06で受入れ、物理/製造/光学は別gate。汎用モジュールの実装差と未達条件は19章§8で閉じる。
 
 [20章 HW1-COM1](mii/design/20-connectivity.md)で本体の外部通信を追補。USB31000S/J33のWANをsensor J17から分離し、既存tethering/controller・LinuxPacketGate・AP/NetworkQuota・MessageAdapter/Serviceを再利用する。SIM登録と本人利用権、配送とTool完了、通信費とAI費を分け、切断/再起動時は旧grant/有料jobの自動再送を拒否する。LTE/SIM・Wi-Fi radio・衛星modem/provider、可搬core/電池は未選定または未受入で、COM-A01〜06を同一実機で確認する。
+
+### 可搬mii P2への共通OS適用
+
+本人の最新指示を[21章](mii/design/21-portable-connectivity.md)へ反映。Pi4/SD/PiSugar/LTE/Wi-Fi/衛星を持ち出すCoreへ集約し、固定AGXは任意workerとする。既存のWorkJob、Broker、owner/revision、費用予約、保存/復旧を共有し、SIM登録やIMT配送ACKを本人性/Tool完了へ昇格しない。電源/I2C/link状態→停止/保存/旧grant失効、PPP/AP→既存packet/quota gate、9704 USB→既存message bridgeをP2 adapterの境界とする。I2C読取不能はunknown、有料fallbackは明示許可、再接続は同じjob/request IDで照会。部品/端子の選定は完了した設計作業で、P2 BSP/adapter/実機受入は未完了。P2-A01〜08を同一実機で確認し、RF同居条件は送信前に解決する。

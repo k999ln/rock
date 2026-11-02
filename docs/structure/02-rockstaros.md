@@ -62,3 +62,7 @@ flowchart LR
 ## 2026-11-02 — miiの実機化に向けた共通OS契約
 
 本人の「osの中身は一緒」を[共通OSと実機接続](../mii/design/14-common-os.md)へ具体化した。同じWorkJob/本人/revision/予算/保存・停止照合を使い、hardware profileが入出力・電源・通信・校正・資源を受け持つ。kernel/image/driverまで同一とはせず、各機種の導入と復旧は別受入。今回runtime実装/実機受入は追加していない。
+
+### 可搬mii P2 hardware profile
+
+[targets/mii-portable-p2](../../systems/rock-star-os/targets/mii-portable-p2/README.md)を追加。Pi4＋電池＋LTE/Wi-Fi/衛星を可搬側に選定し、詳細配線は[21章](../mii/design/21-portable-connectivity.md)。OSの仕事/権限/保存/課金は共通のまま、BSP・I/O・電源・通信・演算/表示上限だけを分ける。固定AGXの空間演算は任意workerで、Coreと二重に仕事を実行しない。新profileは設計のみ、P2 image/adapter/実機/回線/RFは未受入。

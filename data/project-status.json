@@ -12813,5 +12813,50 @@
     "communications": "Wired WAN via J33/USB31000S selected; existing LTE/SIM, Wi-Fi AP, JP-US satellite and portable core requirements retained; RF/provider/portable acceptance incomplete",
     "localDocumentationSaved": true,
     "verification": "Static net/BOM/power/bandwidth/WAN isolation checks PASS; PDF7 rendered/inspected; full npm run verify exit0 after one existing child PID race, targeted retry PASS. Runtime/physical/provider tests not added."
+  },
+  "miiPortableHardware": {
+    "date": "2026-11-02",
+    "status": "design_validated_physical_not_run",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "MINI-08",
+      "NET01",
+      "SIM01",
+      "OS10"
+    ],
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "baseLocalCommit": "da176838",
+    "scope": "portable mii core with common OS, LTE, Wi-Fi, satellite, battery and dock wiring",
+    "physicalAccepted": false,
+    "purchased": false,
+    "carrierActivated": false,
+    "manufacturingReleased": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "revision": "P2",
+    "parts": 12,
+    "connections": 11,
+    "logicalNets": 9,
+    "documents": [
+      "docs/mii/design/21-portable-connectivity.md",
+      "docs/mii/design/portable-p2/bom-netlist.json"
+    ],
+    "profile": "systems/rock-star-os/targets/mii-portable-p2/README.md",
+    "runtimeImplemented": false,
+    "rfColocationAccepted": false,
+    "nextActions": [
+      "P2-A01/02 physical preparation and measured power limits",
+      "Implement P2 battery/detach, PPP/AP and satellite adapters using existing contracts",
+      "Resolve 9704-ANT colocation and JP LTE carrier/regional RF conditions before transmission"
+    ],
+    "validation": "data/mii-portable-hardware-validation.json",
+    "checks": {
+      "staticDesign": "PASS",
+      "fullVerify": "PASS",
+      "pdfPages": 7,
+      "visualReview": "ALL_7_PAGES",
+      "physical": "NOT_RUN"
+    }
   }
 }

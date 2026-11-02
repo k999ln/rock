@@ -1,3 +1,7 @@
+## 2026-11-02 — 可搬mii P2
+
+LTE/Wi-Fi/衛星と電池を可搬Coreへ選定し、[21章](docs/mii/design/21-portable-connectivity.md)・型番付きBOM/端子netlist・7頁配線図source・hardware profileを追加。共通OSを維持。実機/RF/回線未受入、local branchのみ、PR未作成。
+
 ## 2026-11-02
 
 - mii 18章にM4 Macを使うP0bとPi 5＋GS CameraのP1aを追加。型番付きBOM、9系統の端子間接続、3ページの配線図と組立手順を作成。共通OSを維持、組立/通電/購入は未実施。
