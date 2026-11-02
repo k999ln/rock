@@ -3125,5 +3125,17 @@
       "gesture is not physical/financial/sharing approval"
     ],
     "physicalAccepted": false
+  },
+  "miiSpatialEditDecision": {
+    "date": "2026-11-01",
+    "taskId": "MINI01",
+    "primarySquad": "M1",
+    "baseMain": "06f29961",
+    "authority": "docs/avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit",
+    "validation": "data/mii-spatial-input-validation.json",
+    "status": "locally_verified_awaiting_git_integration",
+    "scope": "WorkJob objective only; local speech capability and 2D fingertip adapters; CAS/event readback",
+    "physicalAccepted": false,
+    "mainIntegrated": false
   }
 }

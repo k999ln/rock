@@ -52,6 +52,7 @@ function harness(job = fixtureJob()) {
     '@/lib/mii-work-adapter': { createMiiWorkAdapter: () => adapter },
     '@/lib/mii-indexeddb-journal': { createMiiIndexedDbJournal: () => ({}) },
     '@/lib/mii-preview-descriptors': { describeMiiPreviewRead },
+    '@/components/mii-spatial-editor': { __esModule: true, default: () => null },
     '@/lib/currency-format': { formatCurrencyMinor } };
   const exports = {};
   runInNewContext(compiled, { exports, require: name => { assert.ok(modules[name], name); return modules[name]; }, crypto: { randomUUID }, Date: FixtureDate, setTimeout: callback => { const key = ++nextTimer; timers.set(key, callback); return key; }, clearTimeout: key => timers.delete(key) });

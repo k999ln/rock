@@ -4,6 +4,10 @@
 
 書き方: 新しい日付を上に足す。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
 
+## 2026-11-01 — miiの声・指先入力（統合候補）
+
+- MINI01/M1: 同じ仕事の依頼内容を声/2D指先で選択・確認・CAS保存・再読込。料金fixtureの過去日付を修正。検証・未受入範囲は [記録](data/mii-spatial-input-validation.json)。PR/main/CIはGit担当と確認中。
+
 ## 2026-11-02 — 構造整理（Fable / Noelle）
 
 - docs/mii/design/00〜13: mii 設計書 V1（Tower 4本＋Hub 別体、本数可変 1→4→8、基準部屋 4.5×4.5m、Node 寸法、Gen1 運動視差投影、同期・電源、ソフト構成、校正、受入条件、BOM 構造、試作計画）。

@@ -14,6 +14,8 @@ Miniの目的は暮らしとまちづくりへの貢献。家庭・地域施設�
 
 ## 一式を開く
 
+[メタバース研究を反映した空間設計v0.11と声・指先の限定実装](spatial-computer-use-design.md#voice-point-edit)を参照。研究17項目とソフト受入の範囲、実機の未達を分ける。
+
 - [閲覧用PDF — 51ページ](package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf)
 - [編集用Word](package/avocadoMini_RockstarOS_R5_Integrated_Design.docx)
 - [全文Markdown](package/integrated_design.md)

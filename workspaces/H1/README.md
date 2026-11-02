@@ -10,7 +10,7 @@
 
 ## 触る場所・読む資料
 
-- [PROJECTS.md](../../PROJECTS.md)
+- [archive/root-snapshot-20261029/PROJECTS.md](../../archive/root-snapshot-20261029/PROJECTS.md)
 - [data/mission-control.json](../../data/mission-control.json)
 - [data/project-status.json](../../data/project-status.json)
 - [.github/workflows/](../../.github/workflows)

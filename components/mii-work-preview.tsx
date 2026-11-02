@@ -4,6 +4,7 @@ import { createMiiWorkAdapter, type MiiWorkReadback, type MiiBudgetReadback } fr
 import { formatCurrencyMinor } from '@/lib/currency-format';
 import { createMiiIndexedDbJournal } from '@/lib/mii-indexeddb-journal';
 import { describeMiiPreviewRead } from '@/lib/mii-preview-descriptors';
+import MiiSpatialEditor from '@/components/mii-spatial-editor';
 import type { WorkJob } from '@/lib/workflow';
 
 export type MiiWorkInput = {
@@ -201,6 +202,9 @@ export default function MiiWorkPreview({ job, ownerScope, onRead, onInput, input
     </>}
     {visible && <section aria-label="miiから見た同じ仕事">
       <p>{visible.job.title} · 版 {visible.job.revision} · {visible.job.status === 'cancelled' ? '計画取消（実行先の停止は未確認）' : visible.job.status}</p>
+      {visible.job.status === 'active' && visible.cancelReconciliation === 'clear' && !(visible.job.toolAttempts?.length) &&
+        <MiiSpatialEditor key={`${ownerScope}:${visible.job.id}:${visible.job.revision}:${current?.epoch}`} job={visible.job} ownerScope={ownerScope}
+          guard={() => adapter.current!.createInputGuard()} onRead={onRead} />}
       <h3>依頼内容</h3><p>{typeof visible.job.plan?.objective === 'string' ? visible.job.plan.objective : '保存された依頼内容を確認できません。'}</p>
       <h3>担当</h3>
       <p>担当ID: {visible.job.agentBinding?.agentId ?? '未確認'} · 版 {visible.job.agentBinding?.agentRevision ?? '未確認'}。

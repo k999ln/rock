@@ -485,6 +485,8 @@ Miniは暮らし・まちづくりへの入口、Proは独立したAI専用PCと
 
 ### Eve・Smith・miiの自由な担当と同じ仕事
 
+[声・指先の依頼内容編集](avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit)は既存WorkJobのedit_plan/CAS/eventを再利用する。入力源は承認ではなく、単一final発話→対象/本文確認→明示保存→同じcommandのGET照合。Tool試行開始後のplan編集も拒否する。別DB・外部処理・課金は追加しない。
+
 #### 選んだ出典とEve回答から担当を保存する
 
 1. **目的と利用者**: Skyで選んだ追加済みリソースについてEveへ依頼し、回答を編集可能な担当へ保存する。用途は固定しない。

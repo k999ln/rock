@@ -32,6 +32,8 @@ ROCK/M1は既存adapterを使うlocal Broker/AP入口・有限scheduler/停止�
 
 ## R5の現行入口
 
+MINI01/M1の[声・指先による依頼内容の修正・保存・再開](../avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit)を実装・試験する。責任はROCK。Tool/料金gate・単体利用・表示4条件を保持。MAT15の物理光学/精密3Dとは独立したソフト検証。
+
 MINI01/M1のソフト入力具体化: 合成テキストを既存Agent/job/MCPへ渡し、Eveから同じ応答を確認する。主担当はmii入力、共有runner/仕事契約の変更は鮮度再照合と表示に限定。[契約](../service-design/02-system-contracts.md#eve-smith-miiの同じ仕事)と[証拠](../evidence/development-execution/mii-synthetic-input.json)。4表示条件、単体利用、実機未受入を保持する。
 
 2026-10-25の本人指示で、Miniのカメラ追跡・ジェスチャー入力を追加する。最初は手指の選択/移動/回転/停止を端末内で推定し、VIEW_ONLY候補として扱う。Eveの好み予測、本人の明示feedback、Smithの操作許可を分ける。単眼の画面座標を精密3D/全空間追跡の合格にせず、旧四方向契約や物理/金融承認を迂回しない。Mini単体と表示4条件を維持する。 [カメラ入力契約](../../systems/rock-star-os/targets/avocado-mini/gesture/README.md)。

@@ -311,3 +311,36 @@ void test('work route isolates owners and rejects stale or interleaved updates w
   assert.equal(conflict.status, 409);
   assert.deepEqual(await f.jobs.get('alice', job.id), winner);
 });
+
+void test('mii edit uses the real owner route and CAS event, survives lost response, and resumes without replay',async t=>{
+ const {createMiiPlanEditor}=await import('../lib/mii-plan-edit.ts');
+ const {ownerScopeFor}=await import('../lib/owner-intent.ts');
+ const h=await setup(t),job=await h.create('alice','article'),ownerScope=await ownerScopeFor('alice');
+ let patches=0,drop=true,observed=true;
+ const fetcher=async(url,options={})=>{
+  const method=options.method??'GET';const response=await h.route[method](new Request('https://fixture.invalid'+url,{...options,headers:{...options.headers,'x-fixture-user':'alice'}}));
+  if(method==='PATCH'){patches++;observed=false;if(drop){drop=false;throw Error('lost ack');}}
+  return response;
+ };
+ const editor=createMiiPlanEditor({job,ownerScope,fetcher,current:()=>true,canSave:()=>observed});
+ const saved=await editor.save('声と指先で変更した依頼',true);
+ assert.equal(saved.state,'saved');assert.equal(saved.job.plan.objective,'声と指先で変更した依頼');assert.equal(saved.job.events.length,1);
+ assert.equal((await editor.reconcile()).state,'saved');assert.equal(patches,1);
+ await assert.rejects(editor.save('duplicate',true));assert.equal(patches,1);
+ const restarted=await h.jobs.get('alice',job.id);assert.equal(restarted.plan.objective,saved.job.plan.objective);assert.equal(restarted.revision,job.revision+1);
+ const fresh=createMiiPlanEditor({job:restarted,ownerScope,fetcher,current:()=>true});assert.equal((await fresh.save('再開後の新しい依頼',true)).state,'saved');
+});
+void test('mii edit rejects changed owner, concurrent version, missing confirmation and lost observation',async t=>{
+ const {createMiiPlanEditor}=await import('../lib/mii-plan-edit.ts');const {ownerScopeFor}=await import('../lib/owner-intent.ts');
+ const h=await setup(t),job=await h.create('alice','article'),ownerScope=await ownerScopeFor('alice');let calls=0;
+ const fetcher=async(url,options={})=>{calls++;return h.route[options.method??'GET'](new Request('https://fixture.invalid'+url,{...options,headers:{...options.headers,'x-fixture-user':'alice'}}));};
+ for(const [confirmed,current] of [[false,true],[true,false]]){const e=createMiiPlanEditor({job,ownerScope,fetcher,current:()=>current});await assert.rejects(e.save('changed',confirmed));}assert.equal(calls,0);
+ const stale=createMiiPlanEditor({job,ownerScope,fetcher,current:()=>true});await h.call('PATCH',patch(job,edit('other tab')));
+ const result=await stale.save('old edit',true);assert.equal(result.state,'conflict');assert.equal(result.job.plan.objective,'other tab');
+ const wrong=createMiiPlanEditor({job:result.job,ownerScope:await ownerScopeFor('bob'),fetcher,current:()=>true});assert.equal((await wrong.save('foreign',true)).state,'unknown');assert.equal((await h.jobs.get('alice',job.id)).plan.objective,'other tab');
+});
+void test('a Tool attempt created before plan mutation prevents mii and ordinary edits on the server',async t=>{
+ const h=await setup(t),job=await h.create('alice','article');job.toolAttempts=[{id:randomUUID(),state:'pending'}];
+ await h.jobs.update('alice',job,job.revision);
+ const result=await h.call('PATCH',patch(job,edit('race')));assert.equal(result.status,409);assert.equal((await h.jobs.get('alice',job.id)).plan.objective,job.plan.objective);
+});

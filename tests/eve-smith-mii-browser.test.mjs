@@ -515,6 +515,36 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await click('mii連携のソフト試用'); await click('miiから同じ仕事を確認');
     await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('確認済み')`, 'mii input readback');
     const firstJobId = sqlite.prepare('SELECT id FROM work_jobs WHERE user_id = ?').get(owner).id;
+    // Real React UI and owner-scoped SQLite route, with synthetic camera/ASR adapters.
+    // No physical hand, microphone, model inference or optical acceptance is claimed.
+    await evaluate(`window.__miiOriginals={Worker:window.Worker,bitmap:window.createImageBitmap,play:HTMLMediaElement.prototype.play,media:Object.getOwnPropertyDescriptor(navigator,'mediaDevices')};
+      window.__miiHands=[{landmarks:Array.from({length:21},()=>({x:.5,y:.65,z:0}))}];
+      window.Worker=class {postMessage(data){setTimeout(()=>this.onmessage?.({data:data.type==='init'?{type:'ready'}:{type:'frame',id:data.id,timestampMs:data.timestampMs,hands:window.__miiHands}}),0)}terminate(){this.onmessage=null}};
+      window.createImageBitmap=async()=>({close(){}});HTMLMediaElement.prototype.play=async function(){Object.defineProperty(this,'readyState',{value:2,configurable:true})};
+      Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>new MediaStream()}});`);
+    await click('カメラで指先を選択');
+    await wait(`document.querySelector('[aria-label="声と指先で依頼内容を編集"]')?.textContent.includes('依頼内容を選択中')`, 'camera fingertip target');
+    await evaluate('window.__miiHands=[window.__miiHands[0],window.__miiHands[0]]');
+    await wait(`!document.querySelector('[aria-label="声と指先で依頼内容を編集"]')?.textContent.includes('依頼内容を選択中')`, 'two hands refuse target');
+    await click('入力を停止');
+    await evaluate(`window.Worker=window.__miiOriginals.Worker;window.createImageBitmap=window.__miiOriginals.bitmap;HTMLMediaElement.prototype.play=window.__miiOriginals.play;
+      delete navigator.mediaDevices;if(window.__miiOriginals.media)Object.defineProperty(navigator,'mediaDevices',window.__miiOriginals.media);
+      window.SpeechRecognition=class {processLocally=false;static async available(){return 'available'}start(){if(!this.processLocally)throw Error('remote ASR forbidden');setTimeout(()=>this.onresult?.({results:[{isFinal:true,length:1,0:{transcript:'これを「庭のある家のサイトを作る」に変更して'}}]}),0)}abort(){}};`);
+    await click('依頼内容を選択：');await click('端末内の声で入力');
+    await wait(`[...document.querySelectorAll('label')].find(x=>x.textContent.includes('変更する本文'))?.querySelector('textarea')?.value.includes('庭のある家')`, 'local speech transcript');
+    await click('変更内容を確認');await click('入力を停止');
+    assert.equal(await evaluate(`!!document.querySelector('[aria-label="原本変更の確認"]')`),false);
+    const beforeSpatial=JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(firstJobId).payload);
+    await click('依頼内容を選択：');await click('変更内容を確認');
+    await evaluate(`[...document.querySelectorAll('label')].find(x=>x.textContent.includes('この本文で依頼内容を保存する')).querySelector('input').click()`);
+    await click('修正を保存');
+    await wait(`!document.querySelector('[aria-label="原本変更の確認"]')`, 'spatial save readback');
+    const afterSpatial=JSON.parse(sqlite.prepare('SELECT payload FROM work_jobs WHERE id=?').get(firstJobId).payload);
+    assert.equal(afterSpatial.plan.objective,'庭のある家のサイトを作る');assert.equal(afterSpatial.revision,beforeSpatial.revision+1);
+    assert.equal(afterSpatial.events.filter(e=>e.command.action==='edit_plan').length,1);
+    assert.equal(connectorExecuteCalls,0,'editing a plan never executes a Tool');
+    await click('miiから同じ仕事を確認');
+    await wait(`document.querySelector('[aria-label="miiから見た同じ仕事"]')?.textContent.includes('庭のある家のサイトを作る')`, 'saved spatial objective');
     sqlite.prepare('INSERT INTO agent_delegation_budget_pools (owner_user_id,parent_job_id,currency,budget_limit_minor,reserved_minor,settled_minor,revision,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?)')
       .run(owner, firstJobId, 'USD', 1000, 200, 300, 1, Date.now(), Date.now());
     await click('委任予算を読み直す');

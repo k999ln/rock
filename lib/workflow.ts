@@ -780,7 +780,7 @@ export function applyWorkCommand(
   if (job.status === 'completed' || job.status === 'cancelled')
     throw new WorkError('終了した仕事には記録を追加できません。', 409);
   if (command.action === 'edit_plan') {
-    if (job.status !== 'active' || job.events.some((event) => event.command.action === 'record'))
+    if (job.status !== 'active' || job.toolAttempts?.length || job.events.some((event) => event.command.action === 'record'))
       throw new WorkError('計画は最初の手順を始める前だけ編集できます。', 409);
     if (job.events.length >= 200)
       throw new WorkError('計画の更新履歴上限に達しました。', 409);

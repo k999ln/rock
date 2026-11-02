@@ -65,8 +65,8 @@ void test('two mii tabs, lost remote cancellation and signed usage share the sam
   let patches=0, lost=0; const patchBodies=[];
   const server=createServer(async(req,res)=>{try {
     const url=new URL(req.url,`http://${req.headers.host}`);
-    if(url.pathname==='/bundle.js'){res.writeHead(200,{'content-type':'application/javascript'});return res.end(ui.outputFiles[0].contents);}
-    if(url.pathname==='/'){res.writeHead(200,{'content-type':'text/html'});return res.end(`<div id="root"></div><script>window.fixture=${JSON.stringify({job,ownerScope})};const originalFetch=window.fetch.bind(window);window.fetch=async(...args)=>{const result=await originalFetch(...args);if(args[1]?.method==='PATCH'&&result.ok)throw new TypeError('synthetic lost response after commit');return result}</script><script src="/bundle.js"></script>`);}
+    if(url.pathname==='/bundle.js'){res.writeHead(200,{'content-type':'application/javascript; charset=utf-8'});return res.end(ui.outputFiles[0].contents);}
+    if(url.pathname==='/'){res.writeHead(200,{'content-type':'text/html; charset=utf-8'});return res.end(`<div id="root"></div><script>window.__miiErrors=[];addEventListener("error",e=>window.__miiErrors.push(e.message));window.fixture=${JSON.stringify({job,ownerScope})};const originalFetch=window.fetch.bind(window);window.fetch=async(...args)=>{const result=await originalFetch(...args);if(args[1]?.method==='PATCH'&&result.ok)throw new TypeError('synthetic lost response after commit');return result}</script><script src="/bundle.js"></script>`);}
     if(url.pathname!=='/api/work-jobs' && url.pathname!=='/api/sky/a2a-delegations'){res.writeHead(404);return res.end();}
     const chunks=[];for await(const chunk of req)chunks.push(chunk);
     const body=Buffer.concat(chunks), headers=new Headers(req.headers); headers.set('origin',url.origin);
@@ -87,7 +87,7 @@ void test('two mii tabs, lost remote cancellation and signed usage share the sam
     const evalJs=async expression=>{const result=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(result.exceptionDetails)throw Error(result.exceptionDetails.text);return result.result.value;};
     t.after(()=>socket.close());return evalJs;};
   const [a,b]=await Promise.all([openTab(),openTab()]);
-  const wait=async(fn,expr)=>{for(let i=0;i<120;i++){if(await fn(expr))return;await new Promise(resolve=>setTimeout(resolve,50));}throw Error(`timeout ${expr}: ${await fn('document.body.innerText')}`);};
+  const wait=async(fn,expr)=>{for(let i=0;i<120;i++){if(await fn(expr))return;await new Promise(resolve=>setTimeout(resolve,50));}throw Error(`timeout ${expr}: ${await fn('JSON.stringify({text:document.body.innerText,errors:window.__miiErrors})')}`);};
   for(const tab of [a,b]){await wait(tab,'!!document.querySelector("summary")');
     // Simulate only the unavailable headless persistent-storage grant; the
     // IndexedDB strict transaction and the two tab contexts remain real.
