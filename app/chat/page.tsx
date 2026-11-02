@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import SkyChatWorkspace from '@/components/sky-chat-workspace';
 
 export const metadata: Metadata = {
-  title: 'Noah — RockstarOS',
+  title: 'Eve — RockstarOS',
   description: 'Jenniferがプロジェクトを整理し、担当siへ配り、Zemaの証拠と完了をまとめる本人用ワークスペース。',
 };
 

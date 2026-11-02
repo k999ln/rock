@@ -112,7 +112,7 @@ void test("Jennifer is the visible coordinator while Zema remains the work syste
   assert.match(chat, /ZEMA WORK CONTROL/);
   assert.match(chat, /管理するプロジェクト/);
   assert.match(chat, /Jenniferは割当と確認を行い/);
-  assert.match(chat, /<h1>Noah<\/h1>/);
+  assert.match(chat, /<h1>Eve<\/h1>/);
   assert.match(chat, /jennifer-project-list/);
   assert.match(chat, /あなたはJenniferです/);
   assert.match(chat, /Jenniferの中で動く/);
