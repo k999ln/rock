@@ -1562,3 +1562,9 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 ### 可搬mii P3への共通OS適用
 
 [22章](mii/design/22-integrated-radio.md)はP2の後継条件付き設計。目的は固定Hub/phone回線中継なしで同じjobの有限通信を持ち出すこと。ROCKは既存message/Broker/保存契約にserial socket、GNSS、アプリrouteとmodem網維持、UPS/dock着脱を接続、EXTERNALはkit/FW/antenna/回線、JOINTはRF・電源・同一実機、OWNERは機材/回線/予算を担う。入力は国・位置・subscription・RAT・電源状態、出力は既存jobに紐付く認証message/未確認状態。SIM ready/登録/配送ACKを本人性や仕事完了にしない。位置不明/予算切れ/USB再列挙では旧世代grantを閉じ、LOCALへ退避して同じIDで照会。GNSS位置原文やcredentialをGitへ残さない。明示許可のない有料fallbackは拒否。初号NTNは静止・小容量UDP、Wi-Fiとの同時共有は対象外。R01〜04のメーカー/認証回答とP3-A01〜07の物理証拠で未決を閉じる。P3.1は[23章](mii/design/23-japan-procurement.md)の調達再確認に従い、通常route変更のmodem電源断を撤回。LOCALでも網制御送信が停止したとはみなさず、維持費/正式停止が予算契約と両立するまで接続しない。新OS契約/台帳を作らず、P3 adapter/runtime実装・実機通信は未完了。
+
+<a id="mii-fire-alarm-common-os"></a>
+
+### miiの火災警報機能と共通runtime
+
+[火災警報設計24章](mii/design/24-fire-alarm.md)は住宅・店舗／ビルを対象に追加するhardware profileであり、RockstarOSを別OSへ分岐しない。消防機器側の検知・現場警報・設備連動をruntimeから独立させ、OSは読取専用状態adapter、既存の保存／本人性／通知同意／予算を使う。火災・故障・通信未確認は併存し、画面の既読・job取消・account失効を警報解除へ転用しない。遠隔通知は補助で、監視の代わりではない。実adapterと各用途の消防機器・設備受入は未完了。

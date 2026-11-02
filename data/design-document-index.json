@@ -4021,7 +4021,9 @@
       "docs/mii/design/22-integrated-radio.md",
       "docs/mii/design/portable-p3/bom-netlist.json",
       "systems/rock-star-os/targets/mii-portable-p3/README.md",
-      "docs/mii/design/23-japan-procurement.md"
+      "docs/mii/design/23-japan-procurement.md",
+      "docs/mii/design/24-fire-alarm.md",
+      "data/mii-fire-alarm-design.json"
     ],
     "decision": "osの中身は一緒",
     "status": "design_only",
@@ -4041,5 +4043,18 @@
       "R04"
     ],
     "providerConformanceAccepted": false
+  },
+  "miiFireAlarm": {
+    "authority": "docs/rockstaros-avocado-mini-complete-design.md#mii-fire-alarm",
+    "runtimeAuthority": "docs/rockstaros-complete-design.md#mii-fire-alarm-common-os",
+    "documents": [
+      "docs/mii/design/24-fire-alarm.md",
+      "data/mii-fire-alarm-design.json"
+    ],
+    "status": "DESIGN_INPUT_ONLY",
+    "runtimeImplemented": false,
+    "certificationAccepted": false,
+    "physicalAccepted": false,
+    "replacementAccepted": false
   }
 }

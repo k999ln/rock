@@ -1,3 +1,7 @@
+## 2026-11-02 — miiの火災警報機能
+
+[24章](docs/mii/design/24-fire-alarm.md)と要件・設計台帳へ、住宅・施設両方の代替目標、独立警報、固定部と可搬部、検定／設備／実機gateを追加。共通OS不変、実機・認定は未完了。local branch、PR未作成。
+
 ## 2026-11-02 — 可搬mii P3.1 調達条件の再確認
 
 [22章](docs/mii/design/22-integrated-radio.md)のWi-Fi時modem電源断前提をSkylo要件に合わせて撤回し、[23章](docs/mii/design/23-japan-procurement.md)へ日本向け認証・代替kit端子・antenna外形・給電の照合と2社への送信前確認文を追加。共通OS不変、調達/実機は未release。local branchのみ、PR未作成。

@@ -12937,5 +12937,32 @@
     "quectelCompanyFollowupSent": true,
     "vendorsContacted": 2,
     "soracomReceipt": "Official form accepted; confirmation page observed"
+  },
+  "miiFireAlarm": {
+    "date": "2026-11-02",
+    "taskIds": [
+      "MAT15",
+      "OS10",
+      "MINI-08",
+      "NET01"
+    ],
+    "primaryOwner": "JOINT",
+    "status": "design_input_accepted_certification_and_engineering_pending",
+    "authority": "docs/mii/design/24-fire-alarm.md",
+    "data": "data/mii-fire-alarm-design.json",
+    "commonOsUnchanged": true,
+    "runtimeImplemented": false,
+    "certificationAccepted": false,
+    "physicalAccepted": false,
+    "replacementAccepted": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "Select applicable OEM/certification configurations and site conditions; confirm F-G01..03 and exact pin-to-pin diagrams before physical F-A01..07",
+    "verification": {
+      "designAndBaseline": "PASS",
+      "repositoryVerifyExitCode": 0,
+      "physical": "NOT_RUN",
+      "details": "data/mii-fire-alarm-design.json"
+    }
   }
 }

@@ -3139,5 +3139,19 @@
     "mainIntegrated": false,
     "pullRequest": "https://github.com/k999ln/rock/pull/311",
     "sourceCommit": "14474ce3450d91c860d44c10e1d3d91e2c74800e"
+  },
+  "miiFireAlarmIntent": {
+    "date": "2026-11-02",
+    "source": "Explicit user request in mii chat; scope answer: 全部",
+    "decision": "Add fire detection and alarm to mii and target replacement in both housing and shops/buildings",
+    "scope": [
+      "JP-H residential",
+      "JP-S eligible small facilities",
+      "JP-B building fire alarm systems"
+    ],
+    "commonOsUnchanged": true,
+    "authority": "docs/mii/design/24-fire-alarm.md",
+    "replacementAccepted": false,
+    "existingRequirementsPreserved": true
   }
 }

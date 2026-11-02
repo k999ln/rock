@@ -1,0 +1,245 @@
+{
+  "schema": "mii-fire-alarm-design/v1",
+  "revision": "F1",
+  "date": "2026-11-02",
+  "authority": "docs/mii/design/24-fire-alarm.md",
+  "userIntent": {
+    "feature": "火災報知器と同じ部類にしてその機能もつけて、火災報知器の代替えもしてくれる一品に",
+    "scopeAnswer": "全部",
+    "scopeQuestion": "住宅用の火災警報器、または店舗・ビルの自動火災報知設備",
+    "commonOsUnchanged": true
+  },
+  "profiles": [
+    {
+      "id": "JP-H",
+      "purpose": "Residential fire alarm replacement at each required installation location",
+      "approvalScope": "Completed residential alarm including sensing, local alarm, power, enclosure and any interconnection",
+      "accepted": false
+    },
+    {
+      "id": "JP-S",
+      "purpose": "Eligible small-facility automatic fire alarm equipment",
+      "approvalScope": "Facility eligibility, specified linked detectors and complete system configuration; no automatic transfer from residential approval",
+      "accepted": false
+    },
+    {
+      "id": "JP-B",
+      "purpose": "Shop and building fire detection with compatible approved receiver and required equipment",
+      "approvalScope": "Detector, base, receiver, signaling appliances, circuits, power and site acceptance for each supported configuration",
+      "accepted": false
+    }
+  ],
+  "architecture": {
+    "fixedFireAssembly": "Dedicated sensing, alarm path, power supervision and required interconnection remain installed",
+    "detachableCore": "Existing mii common runtime and P3 connectivity; no primary fire-alarm power dependency",
+    "fireToCore": "Read-only fault-isolated status adapter; manufacturer interface and pinout pending",
+    "coreToFireCommands": [],
+    "localAlarmDependenciesExcluded": [
+      "RockstarOS boot or availability",
+      "LLM inference",
+      "account login or entitlement",
+      "Wi-Fi, LTE or satellite availability",
+      "cloud or paid-notification budget",
+      "detachable-core battery and user power switch"
+    ],
+    "fireStatusFields": [
+      "deviceId",
+      "profile",
+      "zone",
+      "sourceSequence",
+      "observedAt",
+      "freshness",
+      "fire",
+      "fault",
+      "lowBattery",
+      "maintenance",
+      "test"
+    ],
+    "statusRules": [
+      "Fire and fault may coexist",
+      "Stale or missing data is unknown, not normal",
+      "Acknowledged UI or delivered notification is not alarm reset",
+      "An alarm-only contact does not prove detector health",
+      "Reboot preserves last observed alarm history until reconciled"
+    ],
+    "remoteNotifications": "Supplemental, consented and budget-limited; not required building signaling or automatic 119 dispatch",
+    "fireAssemblyPartNumbers": null,
+    "fireAssemblyPinout": null,
+    "approvedReceiverCombinations": [],
+    "firePowerBudget": null,
+    "finalDimensions": null
+  },
+  "gates": [
+    {
+      "id": "F-G01",
+      "name": "Classification and site scope",
+      "owner": "JOINT",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-G02",
+      "name": "Final product approval and manufacturer configuration",
+      "owner": "EXTERNAL",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-G03",
+      "name": "Independence, power, interfaces and wiring",
+      "owner": "JOINT",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-G04",
+      "name": "Detection, sound and environmental qualification",
+      "owner": "JOINT",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-G05",
+      "name": "Building installation and maintenance acceptance",
+      "owner": "JOINT",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-G06",
+      "name": "Common OS status and notification adapter",
+      "owner": "ROCK",
+      "status": "OPEN"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "F-A01",
+      "case": "Independent local fire alarm",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "F-A02",
+      "case": "Power faults and detachable core removal",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "F-A03",
+      "case": "Detection in final enclosure and worst-case operation",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "F-A04",
+      "case": "Approved building or residential interconnection",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "F-A05",
+      "case": "State authenticity, freshness and recovery",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "F-A06",
+      "case": "Supplemental notification failures and limits",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "F-A07",
+      "case": "Maintenance, testing and replacement",
+      "status": "NOT_RUN"
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://www.jfeii.or.jp/activity/",
+      "scope": "Approval and production conformity process; covered equipment classes"
+    },
+    {
+      "id": "S2",
+      "url": "https://www.fdma.go.jp/relocation/html/life/yobou_contents/qa/",
+      "scope": "Residential sensing, warning and installation"
+    },
+    {
+      "id": "S3",
+      "url": "https://www.fdma.go.jp/laws/tutatsu/items/20240329_yobou3.pdf",
+      "scope": "2024 equipment testing amendment; recheck current requirements before site design"
+    },
+    {
+      "id": "S4",
+      "url": "https://laws.e-gov.go.jp/law/417M60000008011",
+      "scope": "Residential alarm regulation entry; full current text review incomplete"
+    },
+    {
+      "id": "S4-B",
+      "url": "https://laws.e-gov.go.jp/law/356M50000008017",
+      "scope": "Detector/transmitter regulation entry; full current text review incomplete"
+    },
+    {
+      "id": "S5",
+      "url": "https://www.jfeii.or.jp/learn/alarm/",
+      "scope": "Maintenance and replacement"
+    }
+  ],
+  "release": {
+    "status": "DESIGN_INPUT_ONLY",
+    "runtimeImplemented": false,
+    "fireBomReleased": false,
+    "fireWiringReleased": false,
+    "certificationAccepted": false,
+    "siteAccepted": false,
+    "physicalAccepted": false,
+    "replacementAccepted": false,
+    "manufacturingReleased": false,
+    "purchaseExecuted": false,
+    "fireVendorContacted": false
+  },
+  "verification": {
+    "status": "PASS_DESIGN_AND_REPOSITORY_ONLY",
+    "scope": "Documentation and metadata validation; not certification or physical fire-alarm testing",
+    "commands": {
+      "project:update": "PASS",
+      "baseline:check": "PASS",
+      "design:check": "PASS",
+      "scopeGateLinkConsistency": "PASS",
+      "diffCheck": "PASS",
+      "fullVerifyExitCode": 0
+    },
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "rootTests": 3597,
+      "rootPass": 3593,
+      "rootFail": 0,
+      "rootSkipped": 4,
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "webAssetReferences": 264,
+      "missingWebAssets": 0,
+      "log": "/private/tmp/mii-fire-verify-final.log",
+      "logSha256": "10c81298b7c0b6356e8a00274157ded164974504e48072a33fba17fa8349b749"
+    },
+    "earlierAttempts": [
+      {
+        "log": "/private/tmp/mii-fire-verify.log",
+        "result": "OpenSSL 3 absent from selected PATH; rerun with required installed version"
+      },
+      {
+        "log": "/private/tmp/mii-fire-verify-openssl3.log",
+        "result": "Existing Eve synthetic-child test read empty PID file; targeted rerun and subsequent full run passed; no runtime/test changes",
+        "targetedLog": "/private/tmp/mii-fire-eve-retry.log"
+      }
+    ],
+    "physical": "NOT_RUN"
+  },
+  "git": {
+    "baseLocalCommit": "04de8646c936e7e1c372031788c32c421bc9660b",
+    "observedRemoteMain": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
+    "remoteBranchExists": false,
+    "sameShaCiVerified": false,
+    "githubSaved": false,
+    "mainIntegrated": false
+  },
+  "sourceHashes": {
+    "docs/mii/design/24-fire-alarm.md": "6a2f590413e98e69bae79b5c7574159e38885455d16e79800f53f29f6ce3e6fb",
+    "docs/mii/design/14-common-os.md": "c04a93d91194cce98c1908250b7e8c2dd40b5d0762100280cda29298abfd1c02",
+    "docs/product-baseline.md": "18c3d160b394608415ca45b01ff2077cbf30ad621af578bf1d9b30b5795ccc16",
+    "data/product-baseline.json": "fd0c5bafb8b935431e572c3183652a8821bbf52c374024954c9fbc3f98003222",
+    "docs/rockstaros-avocado-mini-complete-design.md": "c154358dc925dc270375a3c12a10a407fd630230ef39db1bbf1d3ccda831d342",
+    "docs/rockstaros-complete-design.md": "a9d426acb065986e0611f4207a9295d2e0c4982fd6d1dbed3bd033427097453d"
+  }
+}

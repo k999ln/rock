@@ -79,3 +79,11 @@ Skyloのmodem電源断/detach制限により通常route切替でmodem OFFする�
 会社連絡更新の検証: `npm run project:update`、`npm run design:check`、差分整合とsource hash/連絡先Git除外を確認。ハード/OSコードは変更なし、全verifyは直前P3.1のexit0を参照し、今回の連絡状態変更の検査と区別する。
 
 Soracom送信完了: 本人の会社名・電話番号回答を反映し、部署は指定がないため「未指定」と明示。会社返信先で公式フォームを送信し、受付完了画面を確認した。2社とも技術回答待ち。Quectelの初回個人送信＋会社訂正再送とSoracomフォームの計3送信を、2社への照会として記録する。次は23章§5の回答受領・原本照合と条件が閉じた部分の配線更新。共通OS・調達HOLD・実機未受入を維持する。
+
+## mii火災警報機能 F1（2026-11-02）
+
+本人が火災警報器の代替機能を追加し、住宅／店舗・ビルの対象に「全部」と指定。MAT15／JOINT主担当、OS10・MINI-08・NET01。共通OSを保持し、住宅用／特定小規模施設用／一般建物用を24章へ定義。固定消防機器側の独立した検知・警報・予備電源・連動と、取り外せるmiiの読取／通知を分ける。部品／端子・完成品検定・建物設備受入は未完了、P3通信の合格へ混同しない。
+
+最新GitHub main参照9393ed97fc0333ed3a26be49c86b87fd21254b50を読取確認。作業branchはlocal04de8646起点、remote同名branchなし、CIの新規確認は未実施。公開・購入・新たな外部問い合わせ・施工なし。次は24章F-G01〜03のOEM／対象物件条件と正式図面の照合。main統合前にはmainとの差分を同期する。
+
+F1検証完了: project:update、baseline:check、design:check、profile/gate/リンク/JSON整合、diff checkはPASS。全verifyはOpenSSL 3を指定した最終実行でexit0（root3597件/3593pass/0fail/4skip、API1678、CSV385、Web asset264/欠落0）。初回OpenSSL環境不一致、次回の既存Eve PID読取競合と単独再試験PASSを記録し、テスト／runtimeを変更していない。詳細はdata/mii-fire-alarm-design.json、全ログはGit外。消防認定・製造・現物・施工受入はすべて未実施。

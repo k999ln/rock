@@ -104,4 +104,8 @@ Gen1 では ③④ の代わりに市販の投影エンジンを Hub に直結�
 
 ## 可搬P3を再開する入口
 
-[22章](22-integrated-radio.md) → [BOM/netlist](portable-p3/bom-netlist.json) → `python3 docs/mii/design/portable-p3/check.py` → `python3 docs/mii/design/portable-p3/render.py`。PDFはGit外 `output/pdf/mii-portable-p3-wiring.pdf`（6頁）。[23章の送信前確認文](23-japan-procurement.md)でR01〜04の原本回答を取得して必要箇所を改版し、P3-A01〜07へ進む。共通OS/光学C-02は同じ。
+[22章](22-integrated-radio.md) → [BOM/netlist](portable-p3/bom-netlist.json) → `python3 docs/mii/design/portable-p3/check.py` → `python3 docs/mii/design/portable-p3/render.py`。PDFはGit外 `output/pdf/mii-portable-p3-wiring.pdf`（6頁）。[23章の照会状況](23-japan-procurement.md)でR01〜04の原本回答を取得して必要箇所を改版し、P3-A01〜07へ進む。共通OS/光学C-02は同じ。
+
+## 火災警報器・設備の代替を目指す追加設計
+
+[24章 火災警報機能を備えるmii](24-fire-alarm.md)は、本人の「全部」という対象指定に基づき住宅・特定小規模施設・店舗／ビルを含める。共通OSを維持し、固定する消防機器側と着脱できる演算・通信部、用途別の検定、受信機等の設備一式を設計する。現在は設計入力で、消防機器側の型番／実端子配線・完成品検定・建物受入は未完了。既存警報器を外して試作miiへ置き換える段階ではない。

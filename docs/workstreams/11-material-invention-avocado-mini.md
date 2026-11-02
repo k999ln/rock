@@ -232,4 +232,10 @@ MAT15主担当ROCK、MINI-08・NET01・SIM01・OS10との接続。[21章](../mii
 
 ### 可搬mii P3 — P2より優先する次の作業
 
-MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrated-radio.md)、17 BOM行/18接続/11ネット。EXTERNALの回答とJOINTの確認でR01同居RF/R02国別機器・回線/R03antenna実品/R04USB電力契約を閉じる。OWNERは予算・機材/契約。購入未実施。本人承認後にQuectelへ1件送信、Soracomは会社連絡先待ち。P3.1の[23章](../mii/design/23-japan-procurement.md)に2社への送信前確認文。Skylo電源断制限を反映し、アプリ経路の排他をRF排他とみなさない。回答後、必要な配線を改版してP3-A01〜07。検証: `python3 docs/mii/design/portable-p3/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。記録は `data/mii-integrated-radio-validation.json`。共通OSと既存通信adapterを再利用し、P3実機/光学未合格を保持。
+MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrated-radio.md)、17 BOM行/18接続/11ネット。EXTERNALの回答とJOINTの確認でR01同居RF/R02国別機器・回線/R03antenna実品/R04USB電力契約を閉じる。OWNERは予算・機材/契約。購入未実施。本人承認後にQuectelへ会社メールで訂正再送し配信済み、Soracomも公式フォーム受付済み。P3.1の[23章](../mii/design/23-japan-procurement.md)に2社への照会内容と送信状況。Skylo電源断制限を反映し、アプリ経路の排他をRF排他とみなさない。回答後、必要な配線を改版してP3-A01〜07。検証: `python3 docs/mii/design/portable-p3/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。記録は `data/mii-integrated-radio-validation.json`。共通OSと既存通信adapterを再利用し、P3実機/光学未合格を保持。
+
+### miiの火災警報器代替設計（2026-11-02）
+
+本人が住宅・店舗／ビルの「全部」を対象に指定。[24章](../mii/design/24-fire-alarm.md)、[要件と未受入条件](../../data/mii-fire-alarm-design.json)。MAT15／JOINT主担当、OS10・MINI-08・NET01に接続。ROCKは独立性の設計と共通OSの読取・保存・通知、EXTERNALはOEM完成形と検定、JOINTは感知・音響・電源・熱／RF・受信機・建物受入、OWNERは対象物件・予算。次は用途別OEM方式とF-G01〜03の条件確定後に正式端子配線。検証は `npm run baseline:check`、`npm run design:check`、`npm run verify` と24章F-A01〜07。設計保存を認定・施工・実機合格にしない。最新main参照9393ed97は読取確認のみで、本branchは未push／未統合。mainへ反映する前に差分を再同期する。
+
+通信2社への照会は[23章](../mii/design/23-japan-procurement.md)でQuectel会社メール配信済み・Soracomフォーム受付済み。消防機器OEMへの問い合わせは今回未送信。

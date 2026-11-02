@@ -1,3 +1,7 @@
+## 2026-11-02 miiの火災警報機能と代替対象
+
+本人の明示指示により、miiは火災警報器の機能を備え、住宅と店舗・ビルの両方で既存の警報器／感知器・設備を代替できる商品を目指す。対象を問う回答は「全部」。[追加設計](mii/design/24-fire-alarm.md)で住宅用、特定小規模施設用、一般建物用を分け、同じRockstarOSに独立する消防機器側を接続する。持出し後も設置場所の監視を残し、OS停止・回線断・課金停止で現場警報を止めない。既存RQと通信・表示条件は保持し、完成品検定・設備構成・施工／保守受入が済んだ用途で代替する。現行試作機の認定・実機合格を意味しない。機械可読の追加意図は `miiFireAlarmIntent`。
+
 ## 2026-10-24 — MINI-02有限joint-allocation採用（要件/domain変更なし）
 
 main2.08/RQ01〜50、AMC/material/compose/gridと4要求を保持。排他的pose/共有sourceの有限同時割当だけを採用し、実光学/低眩しさ/全域/実同時viewer/停止/製造は未受入。[詳細](rockstaros-avocado-mini-complete-design.md#mini02-finite-joint-allocation)／[採用証拠](evidence/development-execution/mini-02-joint-main-adoption.json)。
