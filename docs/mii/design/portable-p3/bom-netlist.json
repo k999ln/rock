@@ -1,7 +1,7 @@
 {
-  "revision": "P3",
+  "revision": "P3.1",
   "date": "2026-11-02",
-  "status": "conditional_design_not_procurement_or_rf_release",
+  "status": "procurement_hold_provider_conformance_and_r01_r04_open",
   "commonOs": "docs/mii/design/14-common-os.md",
   "profile": "systems/rock-star-os/targets/mii-portable-p3/README.md",
   "physicalAccepted": false,
@@ -28,11 +28,12 @@
     "SIM": "https://docs.soracom.io/en/services/air/sim-types",
     "NTN": "https://docs.soracom.io/en/services/satellite",
     "NTN-CONFIG": "https://docs.soracom.io/en/services/satellite/configuration",
-    "NTN-JP": "https://changelog.soracom.io/ja/jp/posts/ntn-satellite-service-subscription-plannt1-now-available-in-japan/",
+    "NTN-JP": "https://changelog.soracom.io/ja/wei-xing-tong-xin-sabisu-ntn-dui-ying-no-plannt1-gari-ben-demoli-yong-dekiruyouninarimasita-314ddm",
     "UPS-WIKI": "https://www.waveshare.com/wiki/UPS_Module_3S",
     "UPS-MANUAL": "https://www.airsupplylab.com/images/Learn/RaspberryPi/L00/waveshare_23884/resources/UPS_Module_3S_Manual.pdf",
     "BAT": "https://www.molicel.com/wp-content/uploads/INR18650P28A_1.3_Product-Data-Sheet-of-INR-18650-P28A-80093.pdf",
-    "C-I2C": "https://www.adafruit.com/product/266"
+    "C-I2C": "https://www.adafruit.com/product/266",
+    "SKYLO-CONFORMANCE": "https://www.skylo.tech/knowledge-base/device-conformance-document"
   },
   "parts": [
     {
@@ -524,16 +525,24 @@
     "rejectedPower": "PiSugar + SC0218 or DDR-15G-5; input tolerance/overshoot conflict. Removed from P3 wiring."
   },
   "modes": {
-    "LOCAL": [],
-    "WIFI": [
-      "wifi"
-    ],
-    "LTE": [
-      "lte"
-    ],
-    "NTN": [
-      "ntn"
-    ]
+    "LOCAL": {
+      "applicationRoute": null,
+      "modem": "maintain_existing_approved_session_or_not_started"
+    },
+    "WIFI": {
+      "applicationRoute": "wifi",
+      "modem": "maintain_existing_approved_session"
+    },
+    "LTE": {
+      "applicationRoute": "lte",
+      "wifi": "off",
+      "modem": "provider_approved_tn_session"
+    },
+    "NTN": {
+      "applicationRoute": "ntn",
+      "wifi": "off",
+      "modem": "provider_approved_ntn_session"
+    }
   },
   "ntn": {
     "provider": "Soracom / Skylo",
@@ -566,12 +575,12 @@
     {
       "id": "R01",
       "status": "OPEN",
-      "condition": "host co-location and country RF evaluation"
+      "condition": "host co-location including Wi-Fi plus modem control-plane transmissions; country RF evaluation"
     },
     {
       "id": "R02",
       "status": "OPEN",
-      "condition": "JP NTN device approval / regional band-fw-carrier / subscription"
+      "condition": "JP NTN certificates, band-fw-carrier, subscription, Skylo attach/stop/TN priority and bounded maintenance cost"
     },
     {
       "id": "R03",
@@ -624,5 +633,43 @@
       "totalMaxA": 1.2,
       "note": "factory board link only; never bridge with external wire"
     }
-  ]
+  ],
+  "providerConformanceAccepted": false,
+  "procurementReleased": false,
+  "radioPolicy": {
+    "applicationRouteIsRfExclusion": false,
+    "normalRouteChangePowersModemOff": false,
+    "normalRouteChangeSendsDetach": false,
+    "wifiModemControlPlaneOverlapPossible": true,
+    "providerProcedureConfirmed": false,
+    "admissionRequiresMaintenanceBudgetAndShutdownProcedure": true,
+    "thermalFaultRequiresWholeDeviceSafeStop": true,
+    "terrestrialPriorityRequired": true,
+    "sharedAntennaTerrestrialCheckSeconds": 600,
+    "longMessageIntervalCheckBeforeNextMessage": true
+  },
+  "procurementReview": "docs/mii/design/23-japan-procurement.md",
+  "wifiJapan": {
+    "country": "JP",
+    "bandGHz": 2.4,
+    "channelWidthMHz": 20,
+    "channels": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "bluetooth": false,
+    "antennaModified": false,
+    "physicalMarkingChecked": false,
+    "certificateBodyReadbackComplete": false,
+    "complianceIndex": "https://pip.raspberrypi.com/categories/547"
+  }
 }

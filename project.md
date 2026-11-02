@@ -61,3 +61,13 @@ P3最終判断: LTE/NTN共用Murata EVK（Soracom4573326593342）、BU-353N5、W
 P3検証: 静的配線/電力枠・既存P2照合・`npm run design:check`・`git diff --check`はPASS。6頁PDFは全頁目視済。全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、API1678、CSV385、Web assets264/欠落0）。全verify後の電源再選定/文書/図面script更新はtargeted検査で確認し、runtimeコード変更なし。詳細 `data/mii-integrated-radio-validation.json`、全ログはGit外 `/private/tmp/mii-integrated-radio-verify.log`。
 
 保存区分: 独立local branchの設計source/BOM/profile/要約。PDFはGit外で再生成可能。GitHub保存・main統合・購入・契約・開通・通電・無線送信・OS flash未実施。次の担当は22章§7の4条件への原本回答を取り込み、§8の同一Core試験を行う。OSを再選択する必要はない。
+
+## 可搬mii P3の調達条件再確認（2026-11-02・着手）
+
+本人指示によりR01無線同居/R02日本NTN/R03アンテナ/R04給電を公開原本と国内販売・運用条件で再確認し、必要なら構成を再選定する。主担当MAT15/ROCK、MINI-08・NET01・SIM01・OS10。共通OSは保持。最新mainは7bbb4b27、作業起点49bb6f5e。実際の購入・契約・問い合わせ送信・実機作業は行わず、調達できる構成と未取得の許可/証拠を分ける。
+
+### P3.1 判断変更・検証
+
+Skyloのmodem電源断/detach制限により通常route切替でmodem OFFする前提を撤回。日本Wi-Fiの初期profileはJP/2.4GHz/20MHz/ch1〜11、RFは純正。23章でQuectel候補の端子/5V範囲とYECN028AAの225mm外形衝突を明示し、全部品調達HOLDを保持。本人が2社への技術問い合わせを承認、Quectelへ1件送信/SENT読戻し済み。その後の会社メール指定を反映し、会社送信環境の確認とSoracom会社名/部署/電話の入力は未完了。個人情報/本文はGit外。
+
+検証: P3静的整合PASS、PDF6頁すべて表示確認、design:check PASS。npm run verifyは最初127.0.0.1待受EPERMで停止、同一検証を待受可能な環境で再実行してexit0（root3597/3593pass/0fail/4skip、API1678、CSV385、Web asset264/missing0）。ログは /private/tmp/mii-p3-review/full-verify-unrestricted.log。最終metadataはproject:update/design:check/diff/追加リンク/hashも照合済み。会社メールはZohoログインでアカウント未検出、別名かログイン先を本人に確認中。Soracomは返信先・本文・型番を入力済み、送信未実施。実機/回線/同居RF/日本NTN証明/最大電流は未受入。local保存、GitHub未push、main未統合。

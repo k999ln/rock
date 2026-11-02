@@ -1,10 +1,12 @@
 # 22 可搬mii P3 — 同一本体のLTE・Wi-Fi・衛星、成立条件と改訂配線
 
-2026-11-02 / MAT15・MINI-08・NET01・SIM01・OS10 / 主担当ROCK・Material Invention。
+2026-11-02・調達再確認版 P3.1 / MAT15・MINI-08・NET01・SIM01・OS10 / 主担当ROCK・Material Invention。
 
-**P3は、共通OS・電池・Wi-Fi・LTE/衛星共用モデム・測位を一緒に持ち出す設計。初号は通信方式を切り替えて使う。** 固定Hub、PC、スマホの回線中継は必要としない。P2の別体LTE＋Iridiumはこの構成では取り外す。図面は [BOM/netlist](portable-p3/bom-netlist.json)、`output/pdf/mii-portable-p3-wiring.pdf`。共通OSは [14章](14-common-os.md)のまま。
+**P3は、共通OS・電池・Wi-Fi・LTE/衛星共用モデム・測位を一緒に持ち出す設計。アプリの通信経路を選択し、modemの電源・網維持は別管理する。** 固定Hub、PC、スマホの回線中継は必要としない。P2の別体LTE＋Iridiumはこの構成では取り外す。図面は [BOM/netlist](portable-p3/bom-netlist.json)、`output/pdf/mii-portable-p3-wiring.pdf`。共通OSは [14章](14-common-os.md)のまま。
 
 **現在は条件付き組立設計。送信可能な完成品・最終調達図ではない。** 電気的な接続と選定品を具体化した一方、EVKのUSB給電条件、同居RF、地域別認証、アンテナの実品仕様が公開資料だけでは閉じていない。これらを後述のR01〜R04で閉じるまで、全部品を買えば確実に通信するとは案内しない。実機もサービス契約も未取得であり、実通信の証拠はない。
+
+**P3.1訂正**: Skyloの接続要件に照らし、旧版の「Wi-Fi時modem OFFによる排他送信」を撤回した。日本の提供条件・代替品の端子・メーカー確認文は[23章](23-japan-procurement.md)。アプリ経路の選択は電波の排他保証ではない。全部品の一括調達は回答待ち。
 
 ## 1. 今回確認できたことと設計変更
 
@@ -14,11 +16,11 @@
 | LTE＋衛星 | Murata **LBAD0XX1SC-005**はLTE-MとNB-IoT NTN。**LBAD0XX1SC-DMSB-EVK-B**が対応評価kit | 1 modem / 1 SIM socket / 共用RF端子へ統合。LTEとNTNは排他RAT切替 |
 | 日本のサービス | Soracomの2026年7月更新でplanNT1の日本利用開始を確認。古い英語概要の国一覧には日本がまだない | 日本を一律「未提供」としない。ただしサービス開始と当該機器の日本適合を分離 |
 | 日本の機器適合 | Murata 1SC-005 datasheet v1.1の表11.1は、TELEC **003-180242をCat-M/NB側**に記載し、NTN欄は「-」 | **日本NTN送信の承認は未確認**。既存TELEC番号を衛星へ転用しない。更新証明/適用band/firmwareをR02で取得 |
-| Wi-Fi同居 | MurataのHardware Design Guidelinesは、人体20cm以内または他送信機同居では追加FCC/IC評価が必要になり得ると明記 | 同時送信は初号機能外。それでも完成miiのRF確認は必要。20cmは人体との距離で、アンテナ間距離ではない |
+| Wi-Fi同居 | MurataのHardware Design Guidelinesは、人体20cm以内または他送信機同居では追加FCC/IC評価が必要になり得ると明記 | Wi-Fi使用中もmodemの網維持送信が起こり得る。完成miiの同居・同時送信条件を確認する。20cmは人体との距離で、アンテナ間距離ではない |
 | 位置情報 | NTNは端末の位置が必要。スマホ位置の固定値では持ち出せない | **GlobalSat BU-353N5**を追加。Coreが実測GNSSから位置を供給、衛星は初号では静止設置時に限定 |
 | 充電電圧 | SC0218の公差、DDR-15G-5の過渡をPiSugar入力上限内と保証できない | **PiSugarと独自dock変換器を除去**。Waveshare UPS Module 3S＋指定12.6V充電器＋P28A×3へ変更 |
 
-出典: [9704設置](https://docs.groundcontrol.com/iot/rockblock-9704/installation)、[Murata製造元datasheet（正規販売店掲載）p22–23](https://www.mouser.lt/pdfDocs/2LBADXX01SC-005_Data_Sheet_v11.pdf)、[Soracom日本開始](https://changelog.soracom.io/ja/jp/posts/ntn-satellite-service-subscription-plannt1-now-available-in-japan/)、[Murata作成Hardware Design Guidelines 2024-07-16 §6.1／FCC公開提出資料のミラー](https://device.report/m/057f20c41558e18e66dc2bc34f1b099ccb3dc7134bbc931d8361367f00fa1626)。ミラーの解説を認証根拠にせず、文書の著者・版・対象FCC IDを照合した。最新grant原本/完成hostへの適用確認はR01に残す。
+出典: [9704設置](https://docs.groundcontrol.com/iot/rockblock-9704/installation)、[Murata製造元datasheet（正規販売店掲載）p22–23](https://www.mouser.lt/pdfDocs/2LBADXX01SC-005_Data_Sheet_v11.pdf)、[Soracom日本開始](https://changelog.soracom.io/ja/wei-xing-tong-xin-sabisu-ntn-dui-ying-no-plannt1-gari-ben-demoli-yong-dekiruyouninarimasita-314ddm)、[Murata作成Hardware Design Guidelines 2024-07-16 §6.1／FCC公開提出資料のミラー](https://device.report/m/057f20c41558e18e66dc2bc34f1b099ccb3dc7134bbc931d8361367f00fa1626)。ミラーの解説を認証根拠にせず、文書の著者・版・対象FCC IDを照合した。最新grant原本/完成hostへの適用確認はR01に残す。
 
 ## 2. 一台分の選定部品
 
@@ -103,19 +105,24 @@ Core接続前にdummy loadで定常・起動・負荷除去・充電着脱を確
 
 ## 5. 通信・SIM・アンテナを同居させる条件
 
-| mode | 有効な送信機 | 初号での用途 |
+| アプリ経路 | 無線側の扱い | 初号での用途 |
 | --- | --- | --- |
-| LOCAL | なし | 保存済job照会、queue保持。回線不明/予算不明時の復帰先 |
-| WIFI | Wi-Fiのみ、Bluetooth OFF、LTE/NTN OFF | 既知APへのSTAかローカル操作用AP。STA/AP同時は対象外 |
-| LTE | Murata LTE-Mのみ、Wi-Fi/BT OFF | 有限のデータ/制御。初号はmodem内socket→共通message adapter。Linuxの一般WAN/PPPはこの設計では未受入 |
-| NTN | 同じMurataのNB-IoT NTNのみ、Wi-Fi/BT OFF | 屋外・空が見える場所へ置き、GNSSを得て小容量UDP。手持ち/歩行中/室内での通信は未受入 |
+| LOCAL | 新規アプリ送信なし。接続中modemの網維持は別状態 | queue/保存結果。無送信保証が必要な全体停止は別の手順 |
+| WIFI | Wi-Fi STAまたはAP、BT OFF。modemの給電・網維持を継続する案 | 既知AP通信またはローカル操作。modem制御面との同居評価が必要 |
+| LTE | LTE-M socket、Wi-Fi/BTは停止する案 | 有限message。Linux一般WAN/PPPは未受入 |
+| NTN | 共用modemのNB-IoT NTN、Wi-Fi/BTは停止する案 | 屋外静止、GNSSから位置を得て小容量UDP |
 
-**Wi-Fi AP→LTE/衛星hotspotの同時中継はP3初号には含めない。** Wi-Fiで操作を予約してから無線を止め、本体だけでLTE/衛星送信する。Bluetoothを除外しても2radio hostの適合確認は省略できない。停止/再起動/driver異常で二重送信しない実装と測定をR01に含める。RF-offのsoftware応答を物理遮断証明にしない。許可未取得の組合せでは物理的にEVK USBを抜いて有線管理し、無線試験は適合条件が整った段階で行う。
+**旧P3の「modemをOFFにすれば同時送信ゼロ」という前提は撤回。** Skylo conformance §2.4.4のdetach/電源断制限に合わせ、アプリのrouteとmodemの給電・網維持状態を分ける。Wi-Fi AP→LTE/衛星hotspotは初号用途外だが、網制御送信はアプリ送信の停止後も起こり得る。R01の同居評価を時間分割で代替しない。通常route変更にCFUN=0やUSB抜去を使わない。
+
+Skylo §2.4.2の地上網優先と再探索周期をproviderのsubscription手順へ統合する。接続状態の維持費/制御通信を含めた承認範囲と、本人停止・予算到達・低電池・故障による終了方法はR02の回答で確定する。**無断課金を許す例外は設けない**。費用上限と正式停止手順が両立しない間はサービスを開始しない。物理的な異常時は保存可能な範囲で本体全体を安全停止し、ネットワーク条件を理由に通電を続けない。実装/適合受入前のEVKは無給電を保持する。
+
+根拠: [Skylo conformance §2.4.2/2.4.4](https://www.skylo.tech/knowledge-base/device-conformance-document)。許可された省電力状態や例外を推測せず、[23章の確認文](23-japan-procurement.md)で適用範囲を取得する。
 
 LTE/NTNは同じ送信系であり同時2接続ではない。Wi-Fiとのantennaは共用しない。KITのSMA antennaはLTE-Mと実施国のNTN bandに対応する必要がある。Pi基板antennaは無改造。樹脂面の端にRF、反対側にWi-Fi、上面にGNSSを割り当てるが、任意の20mm離隔を認証済みと呼ばない。電池・fan・USB shield・金属ねじ・ケーブル束から離し、GNSS受信低下とLTE/NTNの受信感度を同一配置で測る。アンテナ込み200mm外形が不成立なら筐体を再設計する。
 
 ### 地域別の初期profile
 
+- **日本のWi-Fi**: country=JP、初号は2.4GHz/20MHz/ch1〜11、BT OFF。基板antennaは無改造、純正RF firmware/CLMを使い、実国不明時は無効。5GHz屋外利用を初号へ含めない。表示・board revision・適用証明書を現物照合する。
 - **日本**: plan01s標準カードへplanX1（KDDI LTE-M用）とplanNT1を追加する設計。国内LTE-M band/端末承認は現物/契約で照合。日本NTNの提供開始は確認済み、**当該1SCのNTN国内認証とband/firmwareはR02未解決**。Skylo旧guideのB255記載を最新日本運用の確定値へ昇格しない。
 - **米国**: 同じplan01sカードのLTE-M対応網とplanNT1を使う設計。Soracom現行設定guideはNTN B23を指定する一方、Skyloの古いguideにはUS B255がある。**採用SIM providerの最新地域設定を優先**し、exact firmware/antenna/FCC grantを照合。B255へ勝手にfallbackしない。
 - FCC/ICでの20cm separationを設置条件の出発点にするが、20cm離せば同居確認不要とはしない。日本へそのまま転用せず、国ごとの条件を記録する。国外/不明国ではNTNを無効にする。
@@ -124,29 +131,29 @@ LTE/NTNは同じ送信系であり同時2接続ではない。Wi-Fiとのantenna
 
 ## 6. Coreだけで送れるためのadapter契約
 
-仕事・owner・revision・権限・使用額は14章の既存契約。新しい台帳/一般root APIを作らない。Piはaccount正本のcacheを持ち、固定AGXは任意worker。BSP/driver、電池/detach、serial socket、GNSS、radio排他をこのhardware profileの実装差とする。現時点でP3 adapterは**未実装/未実機受入**。
+仕事・owner・revision・権限・使用額は14章の既存契約。新しい台帳/一般root APIを作らない。Piはaccount正本のcacheを持ち、固定AGXは任意worker。BSP/driver、電池/detach、serial socket、GNSS、アプリrouteとmodem網状態の管理をこのhardware profileの実装差とする。現時点でP3 adapterは**未実装/未実機受入**。
 
-1. 起動時はLOCAL。USB ID/board revision/`ATI`/firmware、SIMの識別hash、国profile、UPS状態を読取。IMSI/鍵の原文はログやGitへ残さない。
+1. 起動時はアプリroute=LOCAL。R01〜04の適合manifestが未成立ならmodem sessionを開始しない。USB ID/board revision/`ATI`/firmware、SIMの識別hash、国profile、UPS状態を読取。IMSI/鍵の原文はログやGitへ残さない。
 2. 既存Brokerで通信mode・宛先・料金上限・期限を確認。NTNでは最大**UDP payload 1,024bytes（暗号化/認証envelope込み）**、再送最大2回、TTL15分を初号値にする。providerの上限1,200bytes以内。制御/確認にも通信費があり、payloadだけで請求見積を確定しない。
-3. Wi-Fi/BTを停止し、既存socketを閉じて世代更新。**RAT切替とSIM subscription切替は別操作**。planNT1追加は他subscriptionの自動切替にも影響する。planNT1の配信ready確認後、provider定義のCSIMコマンドで選択し、`AT+CIMI`を期待IMSIとローカル照合する。readyは開通/通信合格ではない。
-4. CSIMに`CFUN=1`が必要な場合があるため、常時RF-offのまま切替できるとは仮定しない。Wi-Fi停止→地域/予算確認→必要なmodem機能ON→subscription選択→modem offline→RAT/band設定→網登録、の順。エラー/serial再列挙では状態unknown、旧grantを復活させない。
+3. LTE/NTN経路へ入る際はWi-Fi/BTを停止し、既存アプリsocketを閉じて世代更新。detachやmodem電源断は通常のroute切替に使わない。**RAT切替とSIM subscription切替は別操作**。planNT1追加は他subscriptionの自動切替にも影響する。planNT1の配信ready確認後、provider定義のCSIMコマンドで選択し、`AT+CIMI`を期待IMSIとローカル照合する。readyは開通/通信合格ではない。
+4. 設定guideのCSIM/CFUN例とSkyloのattach方針を併用する正式手順は未取得。コマンド列を確定済み実装として使わない。初期化・RAT/profile変更・終了の各手順をproviderと確定する。エラー/serial再列挙ではアプリ状態unknown、旧grantを復活させない。網維持送信が止まったとは表示しない。
 5. GNSS USBからchecksum正常のGGA/RMCを取得。初号は有効fix、age≤30秒、HDOP≤2、速度≤0.5m/sを10秒継続したことを**設計上の静止条件**とする（精度保証ではない）。実際の緯度/経度/高度をmodemへ供給。高度の基準はprovider/firmware仕様で確定し、GGA MSLとellipsoidを混同しない。位置不明/移動検知ではNTN送信を止める。
-6. modem offlineで`AT%PDNSET=1,"soracom.io","IP"`、NTN RAT/国別band/位置を設定する。静止位置の`AT%NTNCFG`を使う際は毎回実測位置へ更新し、例示都市の座標をコピペしない。受領firmwareで内部GNSS/静的指定の競合がないことを確認する。
+6. 初期APN候補は`AT%PDNSET=1,"soracom.io","IP"`。NTN RAT/国別band/位置はprovider承認手順で設定し、通常route切替のたびにofflineへ落とす旧手順は廃止する。静止位置の`AT%NTNCFG`を使う際は毎回実測位置へ更新し、例示都市の座標をコピペしない。受領firmwareで内部GNSS/静的指定の競合がないことを確認する。
 7. 網登録1/5とRATを確認→有限UDPで自社受信口へ送る。**NTNのTCP/HTTP/MQTT/SMSは初号対象外**。UDPはそれだけでは暗号化も相互認証もない。既存認証message envelope、replay防止、許可宛先をadapterで実装する。Soracom Harvestの201は配送検証であり、仕事完了ではない。初回試験は秘密を含まないfixtureに限定する。
 8. peer ACKのrequest ID/世代/署名を照合して既存jobへ保存。不明時は同じID照会、二重実行しない。subscription/RAT変更でTLS/UDP sessionは維持できない前提。復帰時のWi-Fiも自動有料fallbackも、承認範囲を超えて開始しない。
 
 現行tetheringの`controller.py`、`LinuxPacketGate`、`NetworkQuota`、`message_adapter.py`/`message_service.py`を再利用する。NTNを任意Web用のIP routerへ開放しない。無線が通ることと、共通OSの署名済BSP/本人性/保存復旧が合格することは別。
 
-## 7. 購入・送信前に閉じる4条件（確認票、未送信）
+## 7. 購入・無線送信前に閉じる4条件（技術照会中）
 
 | ID | 誰が・何を確認するか | 必要な回答/証拠、閉じ方 |
 | --- | --- | --- |
-| **R01 同居RF** | JOINT: Murata/認証試験担当 | exact EVK/fw＋Pi4 CYW43455を同一180×160mm樹脂frameへ、排他送信、人体20cm以上で使う配置図に対する適用grant/追加試験。国別文書・測定記録が必要。Wi-Fiとの同時送信を将来追加するなら別評価 |
-| **R02 地域/回線** | EXTERNAL＋OWNER | 日本NTN認証番号・band/firmware/antenna条件、米国B23の該当grant、Skylo/provider開通対象、LTE-M網・SIM profile・APN・単価/上限。古いTELEC表/coverage mapだけでは閉じない |
+| **R01 同居RF** | JOINT: Murata/認証試験担当 | exact EVK/fw＋Pi4 CYW43455の同一frameに対する適用grant/追加試験。Wi-Fiとmodem網維持の同時送信を含む。人体距離は国別に確認、国別文書・測定記録が必要 |
+| **R02 地域/回線** | EXTERNAL＋OWNER | 日本NTN認証番号・band/firmware/antenna条件、米国B23の該当grant、Skylo/provider開通対象、LTE-M網・SIM profile・APN・単価/上限、Skylo attach/終了/地上網優先と予算停止の両立。古いTELEC表/coverage mapだけでは閉じない |
 | **R03 kit実品** | EXTERNAL＋ROCK | SKU 4573326593342がNTN版、付属SMA antennaのMPN/利得/対応band/寸法、USBコネクタ・board revision・FW。納入仕様が違えばこの図を改版、代替を勝手に認めない |
 | **R04 電力** | EXTERNAL＋JOINT | UART0 USB給電の最大/突入/列挙前電流と許可host、必要なら正式外部給電回路。指定charger/セル適合、dummy load→実機でPi3A/USB1.2A枠、始動/scan/送信/負荷除去時のrailを測る。全体brownout/逆流なし、USB契約内を証明 |
 
-この表を問い合わせに使える粒度まで作ったが、外部への送信はしていない。必要な回答がない間は「同居可能と確認済み」にしない。公開資料が不足したための残条件であり、本人が再度OSを選び直す必要はない。
+[23章](23-japan-procurement.md)にSoracom/Quectelへの照会項目と送信状況を記録した。本人の承認後、Quectelへ1件送信済み、Soracomは会社連絡先の入力待ち。必要な回答がない間は「同居可能と確認済み」にしない。公開資料が不足したための残条件であり、本人が再度OSを選び直す必要はない。
 
 ## 8. 組立・試験の順序
 
@@ -155,7 +162,7 @@ LTE/NTNは同じ送信系であり同時2接続ではない。Wi-Fiとのantenna
 3. **P3-A02 機構**: antenna/USB余長/冷却込みの外形実測、保持、電池点検口。200mm以下、冷却/アンテナを塞がない。設計枠の寸法だけで合格にしない。
 4. **P3-A03 GNSS**: phone/PC/LANなしで位置取得、stale/移動/不正NMEAで送信許可が閉じる。静止→位置変化→再測位を試験。GNSS受信のみを衛星送信成功にしない。
 5. **P3-A04 radio**: R01〜04合格後、Wi-Fi/LTE/NTNを別々に往復。国/firmware/SIM/antenna/OS image同一組を記録。登録成功、UDP受信、認証ACK、既存job保存の4段階を分ける。
-6. **P3-A05 切替・費用**: Wi-Fi→LTE→NTN→Wi-Fiで無許可送信0、同時送信0、無断課金0。ACK喪失/serial断/予算切れ/位置不明/期限切れで二重実行0。NTN→Wi-Fi後も未知状態を成功へ丸めない。
+6. **P3-A05 切替・費用**: Wi-Fi→LTE→NTN→Wi-Fiで無許可アプリ送信0、無断課金0。modem網維持中のWi-Fi同居とproviderのattach/地上網優先手順を検証し、通常route変更でdetach/電源断しない。ACK喪失/serial断/予算切れ/位置不明/期限切れで二重実行0。NTN→Wi-Fi後も未知状態を成功へ丸めない。
 7. **P3-A06 単体**: dock powerとRJ45を10回外す。boot ID継続、保存欠落0、旧grant復活0。PC/phone/routerを使わず電池＋LTE/衛星で有限往復。同一profileで1時間以上、20%で新規有料要求停止、10%で保存shutdown。時間は目標で実績ではない。
 8. **P3-A07 共通OS**: 同じjobの作成/承認/停止/保存/再起動/読戻し、固定workerとの二重実行0。光学C-02/音声入出力は別。P3にはmic/speaker/空中表示を新規搭載していない。
 

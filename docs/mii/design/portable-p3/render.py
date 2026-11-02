@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P3 printable assembly drawings. No device access; BOM/netlist is authoritative."""
+"""P3.1 printable assembly drawings. No device access; BOM/netlist is authoritative."""
 import argparse
 import json
 from pathlib import Path
@@ -54,16 +54,16 @@ def table(x,top,width,rows,ratios,sty='small'):
 
 def head(page,title,subtitle):
  c.setFillColor(INK);c.rect(0,H-112,W,112,fill=1,stroke=0)
- label(40,H-39,'mii  /  PORTABLE CORE  /  P3',12,white)
+ label(40,H-39,'mii  /  PORTABLE CORE  /  P3.1',12,white)
  label(40,H-77,title,24,white)
  para(40,H-130,W-80,subtitle)
  c.setStrokeColor(MUTED);c.setLineWidth(.4);c.line(40,40,W-40,40)
- label(40,23,'2026-11-02  |  条件付き設計・R01〜04未解決  |  正本: 22-integrated-radio.md + portable-p3/bom-netlist.json',8,MUTED)
+ label(40,23,'2026-11-02  |  調達HOLD・R01〜04未解決  |  正本: 22-integrated-radio.md + portable-p3/bom-netlist.json',8,MUTED)
  label(W-115,23,f'{page} / 6',9,MUTED)
 
 def nextpage():c.showPage()
 
-head(1,'同じ本体で切り替える LTE / Wi-Fi / 衛星','電池・共通OS・全radio・GNSSを一緒に持ち出す。LTE/衛星は共用modem。初号は排他送信。RF/USB電力の条件が閉じるまで最終調達・送信承認図ではない。')
+head(1,'同じ本体で切り替える LTE / Wi-Fi / 衛星','電池・共通OS・全radio・GNSSを一緒に持ち出す。LTE/衛星は共用modem。アプリ経路とmodem網維持を分離。RF/USB電力の条件が閉じるまで最終調達・送信承認図ではない。')
 c.setStrokeColor(BLUE);c.setDash(6,4);c.roundRect(385,150,755,500,12);c.setDash()
 label(406,625,'取り外す mii Core 一式',17,BLUE)
 box(40,450,280,180,'固定dock / 指定charger',['UPS Module 3S用 12.6V 2A','DC5521を外すと単体運転','指定charger付属optionを選択','銘板・極性・国別表示は受領照合','電池区画を開放して監視充電'],POWER)
@@ -102,13 +102,13 @@ box(510,130,630,130,'RF / SIM',['kit付属NTN antenna → 主RF SMA。RP-SMAやG
 para(40,220,390,'USB1Aという設計枠はUSB2 bus-power許可ではない。EVKの最大/列挙前電流とhost条件が判明するまでは通電releaseしない。外部5Vの二重給電やYケーブルは禁止。','small')
 para(40,90,W-80,'USB上限を超える場合は、メーカー指定の外部給電・逆流防止回路で改版する。既存公開資料から未知のheader番号を推測していない。SMA/USB/電池/電源端子の変更は無通電で行う。','small')
 nextpage()
-head(4,'同一本体で使う条件 / 国・SIM・排他送信','同居と同時送信は別条件。初号は3通信方式を切り替える。時間分割だけで認証要件を満たすと判断しない。')
-rows=[['mode','送信するradio','単体での役割'],['LOCAL','なし','queue / 保存結果保持。unknown時の戻り先'],['WIFI','CYW43455だけ / BT OFF','STAまたはAP。LTE/衛星への同時hotspotなし'],['LTE','Murata LTE-Mだけ / Wi-Fi OFF','有限socket message。PPP/一般WANは未受入'],['NTN','同じMurataのNB-IoT NTNだけ','屋外・静止・GNSS条件成立後の有限UDP']]
-table(40,660,W-80,rows,[.13,.34,.53])
-box(40,245,530,205,'地域 / 認証',['Soracom: 2026年7月に日本planNT1提供開始','Murata v1.1: TELEC003-180242はCat-M/NB側','NTN日本欄は - → 更新証明が必要 (R02)','米国NTN: Soracom現行guideはB23','古いSkylo US=B255例を混用しない','人体20cm以内/他送信機同居は追加評価対象'],AMBER)
-box(620,245,520,205,'位置 / 保存 / 費用',['GNSS age≤30s / HDOP≤2 / 有効fix','速度≤0.5m/sを10s継続: 初号の静止判定','位置/高度基準をfirmwareに合わせて更新','UDP≤1024B（認証envelope込）/ 再送≤2','TTL15分 / byteと料金を事前予約','ACKは配送。共通jobの完了とは別'])
-para(40,190,W-80,'planNT1追加はsubscription自動切替にも影響する。SIM配信ready→明示profile選択→IMSI照合→RAT/band切替→登録→UDP往復→認証ACK→同じjob保存。CSIMにCFUN=1が必要な場合があり、常時RF-offで切替可能とは仮定しない。','small')
-para(40,125,W-80,'NTNは一般Web/video/hotspotではない。TCP/HTTP/MQTT/SMSは初号対象外。UDPは暗号化・認証を提供しないため、既存message envelopeと許可宛先をadapterで実装する。切断・位置不明・国不明・予算切れでは有料送信を閉じる。','small')
+head(4,'接続維持と経路選択 / P3.1訂正','Wi-Fi時modem OFFの前提を撤回。通常route変更でdetach/電源断をしない。網維持中のWi-Fi同居条件を確認する。')
+rows=[['アプリroute','modem / Wi-Fi','単体での役割'],['LOCAL','アプリ停止 / modem網維持は別状態','queue保持。物理的な無送信を意味しない'],['WIFI','Wi-Fi + modem制御面の重複があり得る','STAまたはAP / BT OFF / hotspot用途外'],['LTE','modem地上網 / Wi-Fi OFF案','有限socket message / PPP一般WANは未受入'],['NTN','modem衛星網 / Wi-Fi OFF案','屋外静止・有効GNSS・有限UDP']]
+table(40,660,W-80,rows,[.13,.39,.48])
+box(40,250,530,200,'日本 / 認証 / 調達HOLD',['planNT1日本提供は確認 / 利用は窓口申込み','Murata v1.1のTELEC番号はNTNの証明ではない','日本の周波数・FW・指定antenna原本が必要','BG770A-SN-TE-B-KITは代替照会候補','YECN028AAは225mm → 200mm外形と衝突','候補を現BOMへ自動置換しない'],AMBER)
+box(620,250,520,200,'provider要件と共通OS',['Skylo: detach / 本体動作中modem OFFに制限','地上網優先 / 共用RFは10分周期等で再確認','維持費と正式停止を予算契約へ収める','不明の間は接続を開始しない','GNSS / 静止 / UDP1024B / 再送2回 / TTL15分','ACKは配送、仕事完了ではない'])
+para(40,195,W-80,'通常の経路変更でCFUN=0やUSB抜去を行う旧手順は廃止。SIM subscription切替・初期化・終了の正式手順は回答待ち。本人停止・低電池・予算到達の契約を弱めず、異常時は本体全体を安全停止する。','small')
+para(40,125,W-80,'根拠: skylo.tech/knowledge-base/device-conformance-document §2.4。詳細・Soracom/Quectel確認文: 23-japan-procurement.md。認証・antenna・給電条件の原本回答後に最終部品と配線をreleaseする。通信/実機受入は未実施。','small')
 nextpage()
 head(5,'選定部品表 / Core 1台と固定dock','単品MPN非公開の付属antenna/cableはkit SKUで指定。antennaの実品仕様はR03、USB給電はR04。未確認の型番を作らない。')
 rows=[['ID','型番 / variant','端子・備考']]
@@ -117,9 +117,9 @@ h=table(40,660,W-80,rows,[.11,.40,.49],sty='tiny')
 para(40,660-h-20,W-80,'固定側は指定chargerと任意LAN。本体側はCORE / UPS / P28A×3 / 全通信部品 / fan / SW / C-IN / C-PWR / C-I2C。MECHは加工品番号。kit付属品は単品MPNを推測せずkit内容で固定。購入/契約/開通は未実施。','small')
 nextpage()
 head(6,'release条件 / 組立・単体受入','静的整合PASSは、実機動作・RF適合・製造releaseを意味しない。R01〜R04を閉じてからP3-A01〜07を同一実機で記録する。')
-rows=[['条件','閉じるための証拠','現在'],['R01','Pi4 + 1SC同居host、排他制御、国別RF/人体距離、必要追加試験','OPEN'],['R02','日本NTN認証・band・FW、米国grant、LTE-M網/SIM/APN/料金上限','OPEN'],['R03','exact kit、SMA antenna MPN/gain/bands/寸法、FW/board rev','OPEN'],['R04','EVK USB電力契約、指定charger/セル、5V過渡/逆流/接点温度','OPEN']]
+rows=[['条件','閉じるための証拠','現在'],['R01','Pi4 + modem網維持/Wi-Fi同居、国別RF/人体距離、必要追加試験','OPEN'],['R02','日本NTN認証・band/FW、回線料金、provider接続維持/停止手順','OPEN'],['R03','exact kit、SMA antenna MPN/gain/bands/寸法、FW/board rev','OPEN'],['R04','EVK USB電力契約、指定charger/セル、5V過渡/逆流/接点温度','OPEN']]
 table(40,660,W-80,rows,[.10,.75,.15])
-rows=[['受入','同じCoreで確認すること','現在'],['P3-A01','電源dummy load → Core → GNSS → R04解決後EVK、波形/温度','NOT_RUN'],['P3-A02','antenna/cable込み200mm外形、保持/放熱/監視充電','NOT_RUN'],['P3-A03','単体GNSS、stale/移動/不正NMEAで許可を閉じる','NOT_RUN'],['P3-A04','国/fw/SIM/OS同一組のWi-Fi/LTE/NTN往復、認証ACKとjob保存','NOT_RUN'],['P3-A05','排他切替、予算/期限/切断/ACK喪失、無断課金・二重実行0','NOT_RUN'],['P3-A06','dock10回着脱、phone/PC/LANなしで単体通信、1時間目標','NOT_RUN'],['P3-A07','共通OSの承認/停止/保存/再起動/読戻し、光学C-02は別','NOT_RUN']]
+rows=[['受入','同じCoreで確認すること','現在'],['P3-A01','電源dummy load → Core → GNSS → R04解決後EVK、波形/温度','NOT_RUN'],['P3-A02','antenna/cable込み200mm外形、保持/放熱/監視充電','NOT_RUN'],['P3-A03','単体GNSS、stale/移動/不正NMEAで許可を閉じる','NOT_RUN'],['P3-A04','国/fw/SIM/OS同一組のWi-Fi/LTE/NTN往復、認証ACKとjob保存','NOT_RUN'],['P3-A05','経路/網状態を分離、正式停止、無断課金・二重実行0','NOT_RUN'],['P3-A06','dock10回着脱、phone/PC/LANなしで単体通信、1時間目標','NOT_RUN'],['P3-A07','共通OSの承認/停止/保存/再起動/読戻し、光学C-02は別','NOT_RUN']]
 table(40,440,W-80,rows,[.10,.75,.15])
-para(40,125,W-80,'設計正本: docs/mii/design/22-integrated-radio.md。再生成: python3 docs/mii/design/portable-p3/render.py。静的検査: 同dir check.py。次の担当は4条件の原本回答を取得して必要箇所を改版する。今回、外部問い合わせ・調達・開通・無線送信・OS flashは行っていない。','small')
+para(40,125,W-80,'設計正本: docs/mii/design/22-integrated-radio.md。再生成: python3 docs/mii/design/portable-p3/render.py。静的検査: 同dir check.py。次の担当は4条件の原本回答を取得して必要箇所を改版する。調達・開通・無線送信・OS flashは未実施。問い合わせの送信状況は23章を参照。','small')
 c.save();print(str(out))

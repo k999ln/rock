@@ -232,4 +232,4 @@ MAT15主担当ROCK、MINI-08・NET01・SIM01・OS10との接続。[21章](../mii
 
 ### 可搬mii P3 — P2より優先する次の作業
 
-MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrated-radio.md)、17 BOM行/18接続/11ネット。EXTERNALの回答とJOINTの確認でR01同居RF/R02国別機器・回線/R03antenna実品/R04USB電力契約を閉じる。OWNERは予算・機材/契約。購入・問い合わせ送信は未実施。次にP3-A01〜07。検証: `python3 docs/mii/design/portable-p3/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。記録は `data/mii-integrated-radio-validation.json`。共通OSと既存通信adapterを再利用し、P3実機/光学未合格を保持。
+MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrated-radio.md)、17 BOM行/18接続/11ネット。EXTERNALの回答とJOINTの確認でR01同居RF/R02国別機器・回線/R03antenna実品/R04USB電力契約を閉じる。OWNERは予算・機材/契約。購入未実施。本人承認後にQuectelへ1件送信、Soracomは会社連絡先待ち。P3.1の[23章](../mii/design/23-japan-procurement.md)に2社への送信前確認文。Skylo電源断制限を反映し、アプリ経路の排他をRF排他とみなさない。回答後、必要な配線を改版してP3-A01〜07。検証: `python3 docs/mii/design/portable-p3/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。記録は `data/mii-integrated-radio-validation.json`。共通OSと既存通信adapterを再利用し、P3実機/光学未合格を保持。

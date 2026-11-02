@@ -69,4 +69,4 @@ flowchart LR
 
 ### 可搬mii P3 hardware profile（P2の後継設計）
 
-[targets/mii-portable-p3](../../systems/rock-star-os/targets/mii-portable-p3/README.md)と[22章](../mii/design/22-integrated-radio.md)へMurata LTE/NTN共用・USB GNSS・3S UPSと指定chargerを選定。仕事/権限/予算/保存は共通。排他radio/位置条件/serial socket/UPSがadapter境界。R01〜04、実機、BSPは未受入。部品認証をhost合格へ転用しない。
+[targets/mii-portable-p3](../../systems/rock-star-os/targets/mii-portable-p3/README.md)と[22章](../mii/design/22-integrated-radio.md)へMurata LTE/NTN共用・USB GNSS・3S UPSと指定chargerを選定。仕事/権限/予算/保存は共通。アプリroute・modem網維持/位置条件/serial socket/UPSがadapter境界。通常route変更でmodemを電源断する旧前提は撤回。R01〜04、実機、BSPは未受入。部品認証をhost合格へ転用しない。

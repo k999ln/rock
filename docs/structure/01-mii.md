@@ -1,6 +1,6 @@
 # 01 mii — 建築に埋め込む RockstarOS 端末の構造（2026-11-02）
 
-**最新追補: 可搬P3。** [22章](../mii/design/22-integrated-radio.md)でCoreへ共通OS・電池・LTE/NTN共用Murata・Wi-Fi・GNSSを集約。Wi-Fi/LTE/NTNは初号で排他。9704同居問題を避ける再選定だが、完成hostのRF、日本NTN適合、antenna、USB電力契約は未解決。P2は前案、固定4 Tower＋別HubはHW1として保持し、可搬Coreと併用する固定AGXは任意worker。光学C-02は継続。
+**最新追補: 可搬P3。** [22章](../mii/design/22-integrated-radio.md)でCoreへ共通OS・電池・LTE/NTN共用Murata・Wi-Fi・GNSSを集約。P3.1はアプリ経路とmodem網維持を分離し、電源断によるRF排他前提を撤回。[23章](../mii/design/23-japan-procurement.md)の日本調達判定・確認文を追加。9704同居問題を避ける再選定だが、完成hostのRF、日本NTN適合、antenna、USB電力契約は未解決。P2は前案、固定4 Tower＋別HubはHW1として保持し、可搬Coreと併用する固定AGXは任意worker。光学C-02は継続。
 
 出典: 議事録（2026-08〜10）、「3Dプロジェクション技術説明」チャット全文（2026-10）、AVOKADO Issue01 PDF（Kaiya、2026-10）。
 この文書は**構造**を決める。寸法・性能・校正・受入条件の設計書は [docs/mii/design/](../mii/design/00-README.md)（V1、2026-11-02）。原価・工場・ロット単価は後（Codex task 20 が調べる）。

@@ -12861,7 +12861,7 @@
   },
   "miiPortableRfIntegration": {
     "date": "2026-11-02",
-    "status": "conditional_design_static_checked_physical_open",
+    "status": "procurement_hold_design_static_checked",
     "owner": "ROCK",
     "taskIds": [
       "MAT15",
@@ -12871,12 +12871,12 @@
       "OS10"
     ],
     "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
-    "baseLocalCommit": "4f79aded",
+    "baseLocalCommit": "49bb6f5e",
     "commonOsUnchanged": true,
     "physicalAccepted": false,
     "providerActivated": false,
     "rfColocationAccepted": false,
-    "revision": "P3",
+    "revision": "P3.1",
     "authority": "docs/mii/design/22-integrated-radio.md",
     "validation": "data/mii-integrated-radio-validation.json",
     "parts": 17,
@@ -12893,15 +12893,46 @@
     "runtimeImplemented": false,
     "githubSaved": false,
     "mainIntegrated": false,
-    "next": "Resolve manufacturer RF/JP approval/antenna/USB power contracts, revise if needed, then P3-A01 through P3-A07",
+    "next": "See chapter23: company-sender and Soracom contact completion, then exact regulatory/provider/antenna/power originals and physical acceptance",
     "powerSelection": "Waveshare UPS Module 3S / P28A x3 / manufacturer 12.6V2A charger",
     "verification": {
       "p3Static": "PASS_STATIC_ONLY_WITH_OPEN_RELEASE_CONDITIONS",
       "p2RegressionStatic": "PASS",
       "designCheck": "PASS",
       "fullVerifyExitCode": 0,
-      "fullVerifyScope": "Executed this turn; subsequent power design/doc/script edits checked with targeted checks, no runtime code changed",
+      "fullVerifyScope": "P3.1: npm run verify exit0 in local-listen-capable environment; final metadata receives targeted checks; no runtime code changed",
       "physical": "NOT_RUN"
-    }
+    },
+    "providerConformanceAccepted": false
+  },
+  "miiPortableProcurementReview": {
+    "date": "2026-11-02",
+    "status": "design_revised_vendor_response_and_company_contact_pending",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "MINI-08",
+      "NET01",
+      "SIM01",
+      "OS10"
+    ],
+    "baseLocalCommit": "49bb6f5e",
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "commonOsUnchanged": true,
+    "purchaseExecuted": false,
+    "vendorMessageSent": true,
+    "physicalAccepted": false,
+    "revision": "P3.1",
+    "authority": "docs/mii/design/23-japan-procurement.md",
+    "vendorMessagesSent": 1,
+    "companySenderRequested": true,
+    "companySenderReady": false,
+    "soracomSent": false,
+    "procurementReleased": false,
+    "providerConformanceAccepted": false,
+    "verification": "P3/P2 static PASS; PDF6 visually reviewed; design:check/project:update/added-link/diff/hash PASS; full verify exit0 after localhost sandbox retry",
+    "next": "Finish company-mail sender setup and Soracom required contact fields; send authorized inquiry; obtain certificate/antenna/power originals, revise affected wiring, then physical P3-A01..07",
+    "companySenderStatus": "Zoho sign-in reports account identifier not found; primary login/webmail requested",
+    "soracomFormPrepared": true
   }
 }

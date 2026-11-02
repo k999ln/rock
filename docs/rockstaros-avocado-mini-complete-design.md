@@ -860,4 +860,4 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 
 ### 可搬mii P3の無線統合
 
-最新の[22章](mii/design/22-integrated-radio.md)は、同一CoreにPi4、Waveshare 3S UPS/P28A、Murata LTE/NTN共用kit、Wi-Fi、USB GNSSを持つ条件付き配線。固定dockは指定12.6V charger、DC5521と任意RJ45を外す。役割/仕事の契約は共通OS14章、入出力・切替・位置・予算・保存/失敗/復旧は22章§6。ROCK/EXTERNAL/JOINT/OWNERの責任は§7に分離。R01同居RF/R02地域回線/R03kit antenna/R04USB電力を閉じてからP3-A01〜07を実測する。P2の9704同居を未確認のまま採用せず、200mm外形/光学C-02も未実証として保持。部品/文書合格を単体通信・量産合格にしない。
+最新の[22章](mii/design/22-integrated-radio.md)は、同一CoreにPi4、Waveshare 3S UPS/P28A、Murata LTE/NTN共用kit、Wi-Fi、USB GNSSを持つ条件付き配線。固定dockは指定12.6V charger、DC5521と任意RJ45を外す。役割/仕事の契約は共通OS14章、入出力・切替・位置・予算・保存/失敗/復旧は22章§6。ROCK/EXTERNAL/JOINT/OWNERの責任は§7に分離。R01同居RF/R02地域回線/R03kit antenna/R04USB電力を閉じてからP3-A01〜07を実測する。P2の9704同居を未確認のまま採用せず、200mm外形/光学C-02も未実証として保持。P3.1の[23章](mii/design/23-japan-procurement.md)で日本適合/給電の再確認と代替kit端子表を追加。Skyloの接続維持要件によりWi-Fi時modem OFF前提を撤回し、同居評価を必須にする。部品/文書合格を単体通信・量産合格にしない。

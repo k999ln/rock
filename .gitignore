@@ -77,3 +77,6 @@ replay_pid*.log
 /output/pdf/mii-portable-p2-wiring.pdf
 
 /output/pdf/mii-portable-p3-wiring.pdf
+
+# Private outbound inquiry drafts and delivery receipts.
+/output/inquiries/

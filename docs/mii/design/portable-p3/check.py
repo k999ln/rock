@@ -42,7 +42,16 @@ assert p['chargeEnclosureOpenRequired'] and not p['manufacturerMaxima']
 assert not p['powerTransientVerified'] and not p['unattendedChargeAccepted']
 assert seen['UPS.header.2']=='I2C_SDA' and seen['UPS.header.1']=='I2C_SCL'
 assert seen['UPS.header.5']=='GND' and seen['CORE.J8.9']=='GND'
-assert all(len(v)<=1 for v in x['modes'].values())
+assert set(x['modes'])=={'LOCAL','WIFI','LTE','NTN'}
+assert not x['radioPolicy']['applicationRouteIsRfExclusion']
+assert not x['radioPolicy']['normalRouteChangePowersModemOff']
+assert not x['radioPolicy']['normalRouteChangeSendsDetach']
+assert x['radioPolicy']['wifiModemControlPlaneOverlapPossible']
+assert x['radioPolicy']['admissionRequiresMaintenanceBudgetAndShutdownProcedure']
+assert x['radioPolicy']['terrestrialPriorityRequired']
+assert x['radioPolicy']['sharedAntennaTerrestrialCheckSeconds']<=600
+assert not x['radioPolicy']['providerProcedureConfirmed']
+assert not x['providerConformanceAccepted'] and not x['procurementReleased']
 assert x['ntn']['payloadIncludingEnvelopeMaxBytes']<=x['ntn']['providerUdpPayloadMaxBytes']
 assert x['ntn']['gnssRequired'] and x['ntn']['stationaryRequired']
 for k in ['physicalAccepted','runtimeImplemented','rfColocationAccepted','japanNtnDeviceAccepted','usbPowerContractAccepted','manufacturingReleased']:assert x[k] is False

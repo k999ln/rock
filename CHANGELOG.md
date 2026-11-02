@@ -1,3 +1,7 @@
+## 2026-11-02 — 可搬mii P3.1 調達条件の再確認
+
+[22章](docs/mii/design/22-integrated-radio.md)のWi-Fi時modem電源断前提をSkylo要件に合わせて撤回し、[23章](docs/mii/design/23-japan-procurement.md)へ日本向け認証・代替kit端子・antenna外形・給電の照合と2社への送信前確認文を追加。共通OS不変、調達/実機は未release。local branchのみ、PR未作成。
+
 ## 2026-11-02 — 可搬mii P3
 
 [22章](docs/mii/design/22-integrated-radio.md)にLTE/NTN共用kit・GNSS・3S UPS/指定chargerの条件付き配線と国別RF/電力条件を追加。17 BOM行/18接続/11ネット/6頁図面source。OS共通、R01〜04と実機は未完了。local branchのみ、PR未作成。
