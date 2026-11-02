@@ -1,5 +1,6 @@
 # 21 可搬mii P2 — LTE・Wi-Fi・衛星と着脱電源の組立設計
 
+**改訂先は[22章 P3](22-integrated-radio.md)。** 本章はP2履歴。9704同居問題と電源公差を受け、P3でmodem/GNSS/dockを見直した。旧P2を同居送信できる完成設計として扱わない。
 2026-11-02 / P2 / MAT15・MINI-08・NET01・SIM01・OS10 / 主担当 Material Invention・ROCK。
 
 **取り外すのは、OS・保存・電池・3種類の通信を持つCore一式。** ドックに電池やWANモデムを残さない。本人の最新指示を受け、19〜20章の「可搬core/radio未選定」から本章の選定へ進めた。部品表と端子間の組立配線は本章と [BOM/netlist](portable-p2/bom-netlist.json)、印刷図は `output/pdf/mii-portable-p2-wiring.pdf`。これは可搬通信のモジュール試作設計であり、実機で通信できたという報告ではない。

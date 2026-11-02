@@ -1,0 +1,185 @@
+{
+  "date": "2026-11-02",
+  "revision": "P3",
+  "status": "conditional_design_static_checked_not_build_or_rf_release",
+  "branch": "codex/mii-prototype-design-20261102",
+  "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "baseLocalCommit": "4f79aded",
+  "scope": "Detachable common-OS Core with shared LTE/NTN modem, onboard Wi-Fi, GNSS, manufacturer 3S UPS and specified charger; initial radios used exclusively",
+  "commonOsUnchanged": true,
+  "runtimeImplemented": false,
+  "physicalAccepted": false,
+  "rfColocationAccepted": false,
+  "japanNtnDeviceAccepted": false,
+  "usbPowerContractAccepted": false,
+  "manufacturingReleased": false,
+  "staticDesign": {
+    "result": "PASS_STATIC_ONLY_WITH_OPEN_RELEASE_CONDITIONS",
+    "parts": 17,
+    "connections": 18,
+    "logicalNets": 11,
+    "designA": 2.78,
+    "usbDesignA": 1.1,
+    "upsMarginA": 2.22,
+    "piInputMarginA": 0.22,
+    "usbMarginA": 0.1,
+    "openReleaseConditions": 4,
+    "physicalAccepted": false,
+    "usbPowerContractAccepted": false
+  },
+  "openConditions": [
+    {
+      "id": "R01",
+      "status": "OPEN",
+      "condition": "host co-location and country RF evaluation"
+    },
+    {
+      "id": "R02",
+      "status": "OPEN",
+      "condition": "JP NTN device approval / regional band-fw-carrier / subscription"
+    },
+    {
+      "id": "R03",
+      "status": "OPEN",
+      "condition": "exact kit and antenna MPN-gain-bands-size"
+    },
+    {
+      "id": "R04",
+      "status": "OPEN",
+      "condition": "EVK USB power contract; supplied UPS charger identity, 5V transients, cell matching, temperature and cable acceptance"
+    }
+  ],
+  "physicalAcceptance": [
+    {
+      "id": "P3-A01",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A02",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A03",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A04",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A05",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A06",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A07",
+      "status": "NOT_RUN"
+    }
+  ],
+  "power": {
+    "chosen": "Waveshare UPS Module 3S + specified 12.6V2A charger + Molicel INR-18650-P28A x3",
+    "rejected": "PiSugar + SC0218/DDR due input tolerance/transient mismatch; M35A current limit and PiJuice output limit do not fit",
+    "evidence": "Waveshare manufacturer interface figures pp11-13 visually read; Molicel v1.3 charge/length checked",
+    "unattendedChargeAccepted": false,
+    "sealedProductAccepted": false,
+    "temperatureProtectionVerified": false,
+    "waveformsMeasured": false
+  },
+  "verification": {
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "rootTests": 3597,
+      "rootPass": 3593,
+      "rootFail": 0,
+      "rootSkipped": 4,
+      "apiAssertions": 1678,
+      "csvAssertions": 385,
+      "webAssets": 264,
+      "missingWebAssets": 0,
+      "log": "/private/tmp/mii-integrated-radio-verify.log",
+      "logSha256": "4a374a0856ec27547f0358012ed56e03f79c935e7a2f25116facfc9bee7b0256",
+      "scopeNote": "Executed this turn. Later UPS reselection changed design/BOM/render/check scripts and metadata only; final changes received targeted checks. This does not validate physical power, RF, driver, or runtime."
+    },
+    "targeted": [
+      {
+        "command": "python3 docs/mii/design/portable-p3/check.py",
+        "exitCode": 0
+      },
+      {
+        "command": "python3 docs/mii/design/portable-p2/check.py",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run design:check",
+        "exitCode": 0
+      },
+      {
+        "command": "npm run project:update",
+        "exitCode": 0
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      }
+    ],
+    "links": {
+      "documents": 14,
+      "missing": [],
+      "result": "PASS"
+    }
+  },
+  "pdf": {
+    "path": "output/pdf/mii-portable-p3-wiring.pdf",
+    "pages": 6,
+    "sha256": "6ff4249a7808593364f0cb230e59cb1d559def45de6b40416c7c4e5c50fa0707",
+    "visualReview": "all 6 final pages viewed after UPS reselection; no clipping/overlap observed",
+    "gitTracked": false,
+    "regenerate": "python3 docs/mii/design/portable-p3/render.py"
+  },
+  "sourceConfidence": {
+    "manufacturerDocuments": "Murata module datasheet, Murata hardware guidelines (FCC document mirror), Waveshare maker-authored PDF mirror and official indexed product, Molicel official v1.3",
+    "serviceDocuments": "Soracom current service/configuration + Japan July 2026 announcement; older Skylo band examples not substituted for current provider configuration",
+    "unresolved": "exact host grant/co-location, Japan NTN device certificate/fw/band, supplied antenna MPN/gain/bands, EVK USB power/host conditions, charger label and physical acceptance"
+  },
+  "externalActions": {
+    "purchase": false,
+    "vendorMessageSent": false,
+    "contract": false,
+    "simActivation": false,
+    "radioTransmission": false,
+    "osFlash": false,
+    "githubPush": false,
+    "mainMerge": false
+  },
+  "next": [
+    "Get exact R01-R04 manufacturer/provider/certification responses using chapter 22 section 7; revise the affected drawing if required.",
+    "Implement hardware profile adapters using existing common runtime contracts, then execute P3-A01 through P3-A07 on the same unit/image/firmware."
+  ],
+  "sourceHashes": {
+    ".gitignore": "a3f2e7da6d39ff486ee6561a5c4b5cce1e569d14e14b743c5a9407051fafe09b",
+    "CHANGELOG.md": "4971c0c2cb26933cfc3f426c25da013a26e932697f2d11c2a1d5bb1b09b25991",
+    "README.md": "cc4b7bdacf3af6ba32f4643cfacfefaf85bb395d573b07964f2febe18ab8baa7",
+    "data/design-document-index.json": "f0609e408aa3d8af847dad009dd3b7982455d445a7dd23120b543f2d56b96854",
+    "data/mii-portable-hardware-validation.json": "5bddbb87cbb8fc124904553446c531d3fd159f7e5c9aa09ee3aa95b5b552e5da",
+    "data/project-status.json": "a8b7f33bd2e308a416d226f69a9e5669d101fb22b85ece34bbf02253a406eab1",
+    "docs/mii/design/00-README.md": "ad2e107c64df4129e4ff0d9d333a889f39a01f0b44b3e8a83c680e5b3a6a76f2",
+    "docs/mii/design/21-portable-connectivity.md": "f2fbecccfe51b8a07590f7097754933ede26aae0eac9c3a9d19603ae277a8749",
+    "docs/mii/design/22-integrated-radio.md": "ba994e25a2c2e33e1dfbde0fa2df046aa43b08f9bff337a667ed62906124d46f",
+    "docs/mii/design/portable-p3/bom-netlist.json": "890281863bea82d4de05762994704dc8f461279cf2faa4b974662d837e841bc6",
+    "docs/mii/design/portable-p3/check.py": "848bf7ed3d06468b21e292df082caa380992c788f1bfb36554f3c2e1239bd0b6",
+    "docs/mii/design/portable-p3/render.py": "79a7addd610a36fe5cb9874d912ee3c413ab2d2b349c1634f8cf7b4b571e0f25",
+    "docs/rockstaros-avocado-mini-complete-design.md": "8cb08ca0f1803949c5a39325264483ef5695fe4eba66d01f725ec1787c918dd7",
+    "docs/rockstaros-complete-design.md": "9a53f13db71433014bbe74a218a78b29754faa1d9cac6b808fbbdcefd20af834",
+    "docs/structure/01-mii.md": "5ab0f64d16be70bdfefabdac762795eb1373699494a4f36aa38e9948b3d5a455",
+    "docs/structure/02-rockstaros.md": "be48070f5e3f1c136d03e944cf29a4338115a66b2b2323b497f53d98e42d0a52",
+    "docs/structure/07-decisions-from-minutes.md": "5da1c7cd424426edc256926daa4b8adb8f97175e4123be787c9844d8d3898b48",
+    "docs/workstreams/11-material-invention-avocado-mini.md": "f3ad1fea4a118499b55087e80358892a3615873cc47629d35774431fef89dd30",
+    "project.md": "bdd6699c57ab6968b23526405d1cd35433541ca36c04be0774dafdc268695b48",
+    "systems/rock-star-os/targets/mii-portable-p2/README.md": "bec0cc598b836ef81761abf3b4a9d8241d808e610173378ccf0a2c1af6945828",
+    "systems/rock-star-os/targets/mii-portable-p3/README.md": "f17e3434971f8a539d2ad204c7950845726ebf3d4bef942885b7cf6d47efda43"
+  }
+}

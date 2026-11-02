@@ -12858,5 +12858,50 @@
       "visualReview": "ALL_7_PAGES",
       "physical": "NOT_RUN"
     }
+  },
+  "miiPortableRfIntegration": {
+    "date": "2026-11-02",
+    "status": "conditional_design_static_checked_physical_open",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "MINI-08",
+      "NET01",
+      "SIM01",
+      "OS10"
+    ],
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "baseLocalCommit": "4f79aded",
+    "commonOsUnchanged": true,
+    "physicalAccepted": false,
+    "providerActivated": false,
+    "rfColocationAccepted": false,
+    "revision": "P3",
+    "authority": "docs/mii/design/22-integrated-radio.md",
+    "validation": "data/mii-integrated-radio-validation.json",
+    "parts": 17,
+    "connections": 18,
+    "logicalNets": 11,
+    "releaseConditionsOpen": [
+      "R01",
+      "R02",
+      "R03",
+      "R04"
+    ],
+    "japanNtnDeviceAccepted": false,
+    "usbPowerContractAccepted": false,
+    "runtimeImplemented": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "Resolve manufacturer RF/JP approval/antenna/USB power contracts, revise if needed, then P3-A01 through P3-A07",
+    "powerSelection": "Waveshare UPS Module 3S / P28A x3 / manufacturer 12.6V2A charger",
+    "verification": {
+      "p3Static": "PASS_STATIC_ONLY_WITH_OPEN_RELEASE_CONDITIONS",
+      "p2RegressionStatic": "PASS",
+      "designCheck": "PASS",
+      "fullVerifyExitCode": 0,
+      "fullVerifyScope": "Executed this turn; subsequent power design/doc/script edits checked with targeted checks, no runtime code changed",
+      "physical": "NOT_RUN"
+    }
   }
 }

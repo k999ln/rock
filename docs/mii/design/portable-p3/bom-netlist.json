@@ -1,0 +1,628 @@
+{
+  "revision": "P3",
+  "date": "2026-11-02",
+  "status": "conditional_design_not_procurement_or_rf_release",
+  "commonOs": "docs/mii/design/14-common-os.md",
+  "profile": "systems/rock-star-os/targets/mii-portable-p3/README.md",
+  "physicalAccepted": false,
+  "runtimeImplemented": false,
+  "rfColocationAccepted": false,
+  "japanNtnDeviceAccepted": false,
+  "usbPowerContractAccepted": false,
+  "manufacturingReleased": false,
+  "commonOsUnchanged": true,
+  "sources": {
+    "PI": "https://www.raspberrypi.com/products/raspberry-pi-4-model-b/",
+    "POWER": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
+    "UPS": "https://www.waveshare.com/product/ups-module-3s.htm",
+    "SAT-INSTALL": "https://docs.groundcontrol.com/iot/rockblock-9704/installation",
+    "SD": "https://www.samsung.com/us/memory-storage/memory-card/pro-endurance-adapter-microsdxc-64gb-sku-mb-mj64ka-am/",
+    "FAN": "https://datasheets.raspberrypi.org/case-fan/case-fan-product-brief.pdf",
+    "C-LAN": "https://media.startech.com/cms/pdfs/nlbl-2m-cat6a-patch_datasheet.pdf",
+    "WIFI": "https://pip.raspberrypi.com/categories/685-app-notes-guides-whitepapers/documents/RP-003475-WP/Transitioning-from-Pi-3-to-Pi-4.pdf",
+    "EVK": "https://store.soracom.io/product/murata-type-1sc-ntn-evaluation-kit-global-connect-sim/",
+    "MODULE": "https://www.mouser.lt/pdfDocs/2LBADXX01SC-005_Data_Sheet_v11.pdf",
+    "RF-GUIDE": "https://device.report/m/057f20c41558e18e66dc2bc34f1b099ccb3dc7134bbc931d8361367f00fa1626",
+    "SKYLO": "https://www.skylo.tech/skylo-ecosystem-get-started-article/getting-started-murata-module",
+    "GNSS": "https://www.globalsat.com.tw/files/User%20Manual-BU-353N5_BR-355N5%20V1.1_20240905.pdf",
+    "SIM": "https://docs.soracom.io/en/services/air/sim-types",
+    "NTN": "https://docs.soracom.io/en/services/satellite",
+    "NTN-CONFIG": "https://docs.soracom.io/en/services/satellite/configuration",
+    "NTN-JP": "https://changelog.soracom.io/ja/jp/posts/ntn-satellite-service-subscription-plannt1-now-available-in-japan/",
+    "UPS-WIKI": "https://www.waveshare.com/wiki/UPS_Module_3S",
+    "UPS-MANUAL": "https://www.airsupplylab.com/images/Learn/RaspberryPi/L00/waveshare_23884/resources/UPS_Module_3S_Manual.pdf",
+    "BAT": "https://www.molicel.com/wp-content/uploads/INR18650P28A_1.3_Product-Data-Sheet-of-INR-18650-P28A-80093.pdf",
+    "C-I2C": "https://www.adafruit.com/product/266"
+  },
+  "parts": [
+    {
+      "id": "CORE",
+      "model": "Raspberry Pi 4 Model B 4GB",
+      "quantity": 1,
+      "connector": "J8 / USB2-A x2 / SD / Wi-Fi内蔵",
+      "sources": [
+        "PI",
+        "WIFI",
+        "POWER"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "MODEM",
+      "model": "Murata LBAD0XX1SC-DMSB-EVK-B",
+      "quantity": 1,
+      "connector": "SKU4573326593342 / UART0 Mini-B / SMA / 3FF",
+      "sources": [
+        "EVK",
+        "MODULE",
+        "SKYLO"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "RF-ANT",
+      "model": "4573326593342付属NTN用antenna",
+      "quantity": 1,
+      "connector": "主RF SMA / 単品MPN・band・gainはR03",
+      "sources": [
+        "EVK"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "SIM",
+      "model": "Soracom plan01s標準IoT SIM＋planNT1、国内LTE用planX1",
+      "quantity": 1,
+      "connector": "同梱3FF / subscription未開通",
+      "sources": [
+        "SIM",
+        "NTN-CONFIG"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "GNSS",
+      "model": "GlobalSat BU-353N5",
+      "quantity": 1,
+      "connector": "直付USB-A / 内蔵patch / 4800 8N1",
+      "sources": [
+        "GNSS"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "C-MODEM",
+      "model": "Murata EVK付属USB-A–Mini-Bケーブル",
+      "quantity": 1,
+      "connector": "付属2本のうち1本だけUART0へ",
+      "sources": [
+        "SKYLO"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "SD",
+      "model": "Samsung MB-MJ64KA/AM",
+      "quantity": 1,
+      "connector": "microSDXC64GB",
+      "sources": [
+        "SD"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "FAN",
+      "model": "Raspberry Pi 4 Case Fan（純正3線型）",
+      "quantity": 1,
+      "connector": "赤J8-4 / 黒J8-6 / 青J8-8",
+      "sources": [
+        "FAN"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "MECH",
+      "model": "MII-P3-MECH-01",
+      "quantity": 1,
+      "connector": "180x160x90配置枠 / 電池開放・RF保持",
+      "sources": [
+        "DESIGN"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "C-LAN",
+      "model": "StarTech NLBL-2M-CAT6A-PATCH",
+      "quantity": 1,
+      "connector": "RJ45 data only",
+      "sources": [
+        "C-LAN"
+      ],
+      "travels": false,
+      "optional": true
+    },
+    {
+      "id": "UPS",
+      "model": "Waveshare UPS Module 3S",
+      "quantity": 1,
+      "connector": "INPUT / 5V / SWITCH / 2x4 I2C header",
+      "sources": [
+        "UPS",
+        "UPS-MANUAL"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "BAT",
+      "model": "Molicel INR-18650-P28A",
+      "quantity": 3,
+      "connector": "新品同一lot 3本 / 3S holder / 65.2mm",
+      "sources": [
+        "BAT"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "PSU",
+      "model": "UPS Module 3S指定12.6V 2A充電器",
+      "quantity": 1,
+      "connector": "charger付属option / DC5521 / 国別銘板照合",
+      "sources": [
+        "UPS"
+      ],
+      "travels": false,
+      "optional": false
+    },
+    {
+      "id": "C-IN",
+      "model": "UPS Module 3S付属DC5521–XH2.54",
+      "quantity": 1,
+      "connector": "約15cm / INPUT専用 / 加工しない",
+      "sources": [
+        "UPS"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "C-PWR",
+      "model": "UPS Module 3S付属XH2.54–Type-C",
+      "quantity": 1,
+      "connector": "約20cm / 5V端子→Pi USB-C / BAT端子不可",
+      "sources": [
+        "UPS"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "SW",
+      "model": "UPS Module 3S付属self-lock switch",
+      "quantity": 1,
+      "connector": "XH2.54 / 約15cm / SWITCH専用",
+      "sources": [
+        "UPS"
+      ],
+      "travels": true,
+      "optional": false
+    },
+    {
+      "id": "C-I2C",
+      "model": "Adafruit 266",
+      "quantity": 1,
+      "connector": "F-F 2.54mm 28AWG 約150mm / 3線使用",
+      "sources": [
+        "C-I2C"
+      ],
+      "travels": true,
+      "optional": false
+    }
+  ],
+  "connections": [
+    {
+      "id": "U01",
+      "fromEndpoint": "CORE.USB2.upper",
+      "toEndpoint": "MODEM.UART0",
+      "assembly": "C-MODEM",
+      "remainsWhenUndocked": true,
+      "condition": "R04 USB power contract unresolved"
+    },
+    {
+      "id": "U02",
+      "fromEndpoint": "GNSS.USB_A",
+      "toEndpoint": "CORE.USB2.lower",
+      "assembly": "GNSS",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "R01",
+      "fromEndpoint": "RF-ANT.SMA",
+      "toEndpoint": "MODEM.mainSMA",
+      "assembly": "RF-ANT",
+      "remainsWhenUndocked": true,
+      "condition": "R03 antenna specification unresolved"
+    },
+    {
+      "id": "SIM01",
+      "fromEndpoint": "SIM.3FF",
+      "toEndpoint": "MODEM.SIM",
+      "assembly": "SIM",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "F01",
+      "fromEndpoint": "CORE.J8.4",
+      "toEndpoint": "FAN.red",
+      "assembly": "FAN",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "F02",
+      "fromEndpoint": "CORE.J8.6",
+      "toEndpoint": "FAN.black",
+      "assembly": "FAN",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "F03",
+      "fromEndpoint": "CORE.J8.8",
+      "toEndpoint": "FAN.blue",
+      "assembly": "FAN",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "S01",
+      "fromEndpoint": "SD.contacts",
+      "toEndpoint": "CORE.microSD",
+      "assembly": "SD",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "E01",
+      "fromEndpoint": "CORE.RJ45",
+      "toEndpoint": "OWNER.LAN",
+      "assembly": "C-LAN",
+      "remainsWhenUndocked": false,
+      "condition": null
+    },
+    {
+      "id": "P01",
+      "fromEndpoint": "PSU.DC5521",
+      "toEndpoint": "C-IN.DC5521",
+      "assembly": "PSU",
+      "remainsWhenUndocked": false,
+      "condition": "manufacturer kit orientation/polarity; power tests not run"
+    },
+    {
+      "id": "P02",
+      "fromEndpoint": "C-IN.XH",
+      "toEndpoint": "UPS.INPUT",
+      "assembly": "C-IN",
+      "remainsWhenUndocked": true,
+      "condition": "manufacturer kit orientation/polarity; power tests not run"
+    },
+    {
+      "id": "P03a",
+      "fromEndpoint": "UPS.5V",
+      "toEndpoint": "C-PWR.XH",
+      "assembly": "C-PWR",
+      "remainsWhenUndocked": true,
+      "condition": "manufacturer kit orientation/polarity; power tests not run"
+    },
+    {
+      "id": "P03b",
+      "fromEndpoint": "C-PWR.TypeC",
+      "toEndpoint": "CORE.USB_C",
+      "assembly": "C-PWR",
+      "remainsWhenUndocked": true,
+      "condition": "manufacturer kit orientation/polarity; power tests not run"
+    },
+    {
+      "id": "P04",
+      "fromEndpoint": "SW.XH",
+      "toEndpoint": "UPS.SWITCH",
+      "assembly": "SW",
+      "remainsWhenUndocked": true,
+      "condition": "manufacturer kit orientation/polarity; power tests not run"
+    },
+    {
+      "id": "P05",
+      "fromEndpoint": "BAT.cells",
+      "toEndpoint": "UPS.holders",
+      "assembly": "BAT",
+      "remainsWhenUndocked": true,
+      "condition": "manufacturer kit orientation/polarity; power tests not run"
+    },
+    {
+      "id": "I01",
+      "fromEndpoint": "UPS.header.2",
+      "toEndpoint": "CORE.J8.3",
+      "assembly": "C-I2C",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "I02",
+      "fromEndpoint": "UPS.header.1",
+      "toEndpoint": "CORE.J8.5",
+      "assembly": "C-I2C",
+      "remainsWhenUndocked": true,
+      "condition": null
+    },
+    {
+      "id": "I03",
+      "fromEndpoint": "UPS.header.5",
+      "toEndpoint": "CORE.J8.9",
+      "assembly": "C-I2C",
+      "remainsWhenUndocked": true,
+      "condition": null
+    }
+  ],
+  "nets": [
+    {
+      "name": "12V6_CHARGE",
+      "nominalV": 12.6,
+      "endpoints": [
+        "PSU.center",
+        "C-IN.center",
+        "UPS.INPUT.+"
+      ]
+    },
+    {
+      "name": "GND",
+      "nominalV": 0,
+      "endpoints": [
+        "CORE.J8.6",
+        "FAN.black",
+        "CORE.U0.4",
+        "MODEM.UART0.5",
+        "CORE.U1.4",
+        "GNSS.USB.4",
+        "PSU.sleeve",
+        "C-IN.sleeve",
+        "UPS.INPUT.-",
+        "UPS.5V.-",
+        "CORE.USB_C.GND",
+        "UPS.header.5",
+        "CORE.J8.9"
+      ]
+    },
+    {
+      "name": "5V_SYSTEM",
+      "nominalV": 5,
+      "endpoints": [
+        "CORE.J8.4",
+        "FAN.red",
+        "UPS.5V.+",
+        "CORE.USB_C.VBUS"
+      ]
+    },
+    {
+      "name": "I2C_SDA",
+      "nominalV": 3.3,
+      "endpoints": [
+        "CORE.J8.3",
+        "UPS.header.2"
+      ]
+    },
+    {
+      "name": "I2C_SCL",
+      "nominalV": 3.3,
+      "endpoints": [
+        "CORE.J8.5",
+        "UPS.header.1"
+      ]
+    },
+    {
+      "name": "FAN_CONTROL",
+      "nominalV": 3.3,
+      "endpoints": [
+        "CORE.J8.8",
+        "FAN.blue"
+      ]
+    },
+    {
+      "name": "MODEM_DM",
+      "nominalV": 3.3,
+      "endpoints": [
+        "CORE.U0.2",
+        "MODEM.UART0.2"
+      ]
+    },
+    {
+      "name": "MODEM_DP",
+      "nominalV": 3.3,
+      "endpoints": [
+        "CORE.U0.3",
+        "MODEM.UART0.3"
+      ]
+    },
+    {
+      "name": "GNSS_DM",
+      "nominalV": 3.3,
+      "endpoints": [
+        "CORE.U1.2",
+        "GNSS.USB.2"
+      ]
+    },
+    {
+      "name": "GNSS_DP",
+      "nominalV": 3.3,
+      "endpoints": [
+        "CORE.U1.3",
+        "GNSS.USB.3"
+      ]
+    },
+    {
+      "name": "5V_USB_HOST",
+      "nominalV": 5,
+      "endpoints": [
+        "CORE.U0.1",
+        "MODEM.UART0.1",
+        "CORE.U1.1",
+        "GNSS.USB.1"
+      ]
+    }
+  ],
+  "nc": [
+    "CORE.USB3",
+    "UPS.BAT",
+    "UPS.header.3",
+    "UPS.header.4",
+    "UPS.header.6",
+    "UPS.header.7",
+    "UPS.header.8",
+    "MODEM.UART1",
+    "MODEM.external5V",
+    "MODEM.GPIO",
+    "MODEM.GNSS",
+    "MODEM.UART0.4"
+  ],
+  "power": {
+    "upsOutputMaxA": 5,
+    "piInputDesignMaxA": 3,
+    "usbTotalMaxA": 1.2,
+    "loadsA": {
+      "core": 1.5,
+      "modemUsb": 1.0,
+      "gnssUsb": 0.1,
+      "fan": 0.18
+    },
+    "manufacturerMaxima": false,
+    "chargeNominalV": 12.6,
+    "chargerRatedA": 2,
+    "cellChargeV": 4.2,
+    "cellStandardChargeA": 2.8,
+    "seriesCells": 3,
+    "cellMaxLengthMm": 65.2,
+    "holderLengthLimitMm": 67,
+    "chargeEnclosureOpenRequired": true,
+    "batteryCapacityMah": 2800,
+    "assumedBatteryNominalV": 10.8,
+    "assumedEfficiency": 0.85,
+    "assumedUsableFraction": 0.8,
+    "powerTransientVerified": false,
+    "unattendedChargeAccepted": false,
+    "sealedProductAccepted": false,
+    "rejectedPower": "PiSugar + SC0218 or DDR-15G-5; input tolerance/overshoot conflict. Removed from P3 wiring."
+  },
+  "modes": {
+    "LOCAL": [],
+    "WIFI": [
+      "wifi"
+    ],
+    "LTE": [
+      "lte"
+    ],
+    "NTN": [
+      "ntn"
+    ]
+  },
+  "ntn": {
+    "provider": "Soracom / Skylo",
+    "payloadIncludingEnvelopeMaxBytes": 1024,
+    "providerUdpPayloadMaxBytes": 1200,
+    "maxRetries": 2,
+    "ttlSeconds": 900,
+    "gnssRequired": true,
+    "gnssMaxAgeSeconds": 30,
+    "stationaryRequired": true,
+    "staticSpeedLimitMps": 0.5,
+    "staticWindowSeconds": 10,
+    "usBandCandidate": 23,
+    "japanBand": null,
+    "automaticPaidFallback": false,
+    "phoneRequired": false
+  },
+  "mechanics": {
+    "allocationMm": [
+      180,
+      160,
+      90
+    ],
+    "maximumEnvelopeTargetMm": 200,
+    "antennaIncludedInEnvelopeVerified": false,
+    "personSeparationStartingPointMm": 200,
+    "rfSpacingCertified": false
+  },
+  "releaseConditions": [
+    {
+      "id": "R01",
+      "status": "OPEN",
+      "condition": "host co-location and country RF evaluation"
+    },
+    {
+      "id": "R02",
+      "status": "OPEN",
+      "condition": "JP NTN device approval / regional band-fw-carrier / subscription"
+    },
+    {
+      "id": "R03",
+      "status": "OPEN",
+      "condition": "exact kit and antenna MPN-gain-bands-size"
+    },
+    {
+      "id": "R04",
+      "status": "OPEN",
+      "condition": "EVK USB power contract; supplied UPS charger identity, 5V transients, cell matching, temperature and cable acceptance"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "P3-A01",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A02",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A03",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A04",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A05",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A06",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P3-A07",
+      "status": "NOT_RUN"
+    }
+  ],
+  "netScope": "External regulated power / USB / I2C only; protected cell series and SWITCH are intact manufacturer assemblies, not rewired nets.",
+  "internalLinks": [
+    {
+      "component": "CORE",
+      "fromNet": "5V_SYSTEM",
+      "toNet": "5V_USB_HOST",
+      "via": "Pi USB host current-limited power switch",
+      "totalMaxA": 1.2,
+      "note": "factory board link only; never bridge with external wire"
+    }
+  ]
+}

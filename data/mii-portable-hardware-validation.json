@@ -110,5 +110,10 @@
     "docs/workstreams/11-material-invention-avocado-mini.md": "a7dd7e62a43316fd874c3220a29b3c15628acf1341c5263b4923e7329c9d9b47",
     "project.md": "d6ace5e152d132e9e55c7cad8458cf1c05002c67182db1c518cbc6c548dbf661",
     "systems/rock-star-os/targets/mii-portable-p2/README.md": "55064c8faa61f412960a57dc572bd5ec137ca5368e8631971075f627ee9c12bc"
+  },
+  "historicalSnapshot": {
+    "localCommit": "4f79aded",
+    "supersededBy": "data/mii-integrated-radio-validation.json",
+    "note": "P2 hashes refer to commit 4f79aded; P3 changes links/metadata, not P2 physical acceptance"
   }
 }

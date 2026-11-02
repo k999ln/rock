@@ -857,3 +857,7 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 ### 可搬mii P2の通信・電池・dock
 
 [21章](mii/design/21-portable-connectivity.md)と[hardware profile](../systems/rock-star-os/targets/mii-portable-p2/README.md)でPi4B 4GB、PiSugar 3 Plus、SIM7080G/FXP14、内蔵Wi-Fi、RockBLOCK9704-ANTを選定。12 BOM行・11接続・9論理ネット、7枚の印刷図で配線を定義。Coreを取り外すとき外す線は外部USB-C給電と任意RJ45だけ。重い空間演算は固定workerへ、仕事/権限/料金/保存は同じ共通OSに残す。LTEはCat-M1、衛星は有限IMT message、STA/APは初号で同時使用しない。電源枠2.68A/USB1.0Aは測定前の設計値、電池区画を開放して充電する。9704-ANTの同居/地域適合、回線、実adapter、電源/熱/包絡、P2-A01〜08は未受入。C-01は構成選定済・物理未受入、C-02表示4条件は維持。
+
+### 可搬mii P3の無線統合
+
+最新の[22章](mii/design/22-integrated-radio.md)は、同一CoreにPi4、Waveshare 3S UPS/P28A、Murata LTE/NTN共用kit、Wi-Fi、USB GNSSを持つ条件付き配線。固定dockは指定12.6V charger、DC5521と任意RJ45を外す。役割/仕事の契約は共通OS14章、入出力・切替・位置・予算・保存/失敗/復旧は22章§6。ROCK/EXTERNAL/JOINT/OWNERの責任は§7に分離。R01同居RF/R02地域回線/R03kit antenna/R04USB電力を閉じてからP3-A01〜07を実測する。P2の9704同居を未確認のまま採用せず、200mm外形/光学C-02も未実証として保持。部品/文書合格を単体通信・量産合格にしない。

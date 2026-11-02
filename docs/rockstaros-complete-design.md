@@ -1558,3 +1558,7 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 ### 可搬mii P2への共通OS適用
 
 本人の最新指示を[21章](mii/design/21-portable-connectivity.md)へ反映。Pi4/SD/PiSugar/LTE/Wi-Fi/衛星を持ち出すCoreへ集約し、固定AGXは任意workerとする。既存のWorkJob、Broker、owner/revision、費用予約、保存/復旧を共有し、SIM登録やIMT配送ACKを本人性/Tool完了へ昇格しない。電源/I2C/link状態→停止/保存/旧grant失効、PPP/AP→既存packet/quota gate、9704 USB→既存message bridgeをP2 adapterの境界とする。I2C読取不能はunknown、有料fallbackは明示許可、再接続は同じjob/request IDで照会。部品/端子の選定は完了した設計作業で、P2 BSP/adapter/実機受入は未完了。P2-A01〜08を同一実機で確認し、RF同居条件は送信前に解決する。
+
+### 可搬mii P3への共通OS適用
+
+[22章](mii/design/22-integrated-radio.md)はP2の後継条件付き設計。目的は固定Hub/phone回線中継なしで同じjobの有限通信を持ち出すこと。ROCKは既存message/Broker/保存契約にserial socket、GNSS、radio排他、UPS/detachを接続、EXTERNALはkit/FW/antenna/回線、JOINTはRF・電源・同一実機、OWNERは機材/回線/予算を担う。入力は国・位置・subscription・RAT・電源状態、出力は既存jobに紐付く認証message/未確認状態。SIM ready/登録/配送ACKを本人性や仕事完了にしない。位置不明/予算切れ/USB再列挙では旧世代grantを閉じ、LOCALへ退避して同じIDで照会。GNSS位置原文やcredentialをGitへ残さない。明示許可のない有料fallbackは拒否。初号NTNは静止・小容量UDP、Wi-Fiとの同時共有は対象外。R01〜04のメーカー/認証回答とP3-A01〜07の物理証拠で未決を閉じる。新OS契約/台帳を作らず、P3 adapter/runtime実装・実機通信は未完了。

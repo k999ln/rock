@@ -4017,7 +4017,10 @@
       "docs/mii/design/body-hw1/communications.json",
       "docs/mii/design/21-portable-connectivity.md",
       "docs/mii/design/portable-p2/bom-netlist.json",
-      "systems/rock-star-os/targets/mii-portable-p2/README.md"
+      "systems/rock-star-os/targets/mii-portable-p2/README.md",
+      "docs/mii/design/22-integrated-radio.md",
+      "docs/mii/design/portable-p3/bom-netlist.json",
+      "systems/rock-star-os/targets/mii-portable-p3/README.md"
     ],
     "decision": "osの中身は一緒",
     "status": "design_only",
@@ -4028,7 +4031,13 @@
     "developmentRigRevision": "W1",
     "bodyScope": "4 Towers + dedicated Hub + display; hardware design only",
     "communicationsRevision": "HW1-COM1",
-    "portableRevision": "P2",
-    "portableScope": "portable common runtime, battery, LTE-M, onboard Wi-Fi and IMT satellite; RF/physical not accepted"
+    "portableRevision": "P3",
+    "portableScope": "conditional integrated LTE/NTN modem, onboard Wi-Fi, GNSS, 3S UPS and specified charger; R01-R04 open; common OS unchanged",
+    "portableReleaseConditions": [
+      "R01",
+      "R02",
+      "R03",
+      "R04"
+    ]
   }
 }

@@ -66,3 +66,7 @@ flowchart LR
 ### 可搬mii P2 hardware profile
 
 [targets/mii-portable-p2](../../systems/rock-star-os/targets/mii-portable-p2/README.md)を追加。Pi4＋電池＋LTE/Wi-Fi/衛星を可搬側に選定し、詳細配線は[21章](../mii/design/21-portable-connectivity.md)。OSの仕事/権限/保存/課金は共通のまま、BSP・I/O・電源・通信・演算/表示上限だけを分ける。固定AGXの空間演算は任意workerで、Coreと二重に仕事を実行しない。新profileは設計のみ、P2 image/adapter/実機/回線/RFは未受入。
+
+### 可搬mii P3 hardware profile（P2の後継設計）
+
+[targets/mii-portable-p3](../../systems/rock-star-os/targets/mii-portable-p3/README.md)と[22章](../mii/design/22-integrated-radio.md)へMurata LTE/NTN共用・USB GNSS・3S UPSと指定chargerを選定。仕事/権限/予算/保存は共通。排他radio/位置条件/serial socket/UPSがadapter境界。R01〜04、実機、BSPは未受入。部品認証をhost合格へ転用しない。

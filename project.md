@@ -49,3 +49,15 @@
 
 - P2検証完了: 全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、build、Web assets264/欠落0、API1678、CSV385、mission/work/bot合格）。P2と既存HW1の静的照合PASS、相対リンク14文書/欠落0、PDF7頁目視（最終Wi-Fi型番追記後4頁を再確認）。詳細 `data/mii-portable-hardware-validation.json`、ログ `/private/tmp/mii-portable-verify.log`。
 - 保存区分: source/BOM/設計書/要約は独立local branch、PDFはGit外。GitHub保存・main統合・購入・開通・通電・無線送信・OS書込み未実施。最終のWi-Fi型番追記/進捗metadata更新はtargeted static/design/project/diff確認で閉じ、runtimeコードは変更していない。
+
+## 可搬mii P3（2026-11-02・着手）
+
+本人指示で衛星/LTE/Wi-Fiの同一本体利用条件をメーカー資料・地域条件で再照合し、必要ならP2の部品/電源/配線を見直す。共通OSを保持。主担当MAT15/ROCK、MINI-08・NET01・SIM01・OS10。P2の未確認条件を再掲するだけにせず、使える構成と前提・実際の阻害要因を区別して詰める。購入/契約/問い合わせ送信/OS書込み/無線送信は実施しない。
+
+P3最終判断: LTE/NTN共用Murata EVK（Soracom4573326593342）、BU-353N5、Waveshare UPS Module 3S＋指定12.6V2A charger＋P28A×3を選定。17 BOM行/18接続/11外部論理ネット、設計2.78A/USB1.10A。Wi-Fi/LTE/NTNは排他。日本planNT1サービス開始と当該moduleの日本NTN適合を分離。R01同居RF/R02地域適合/R03antenna/R04USB電力と受領・過渡・温度検査は未解決。共通OSは同じ、P3 BSP/adapter/実機は未受入。
+
+電源判断の理由: SC0218公差とDDR-15G-5報告overshoot5.6%はPiSugarの上限に不整合。PiSugar/独自dock回路を除去し、メーカー3S保護/均等化/5V出力と指定chargerへ変更。P28Aの標準充電2.8A・65.2mmをkit2A/67mm未満と照合、M35Aは現行1.7A上限のため不採用。初号は監視・開放充電、閉筐体/無人充電は未受入。次は22章R01〜04の原本回答とP3-A01〜07。
+
+P3検証: 静的配線/電力枠・既存P2照合・`npm run design:check`・`git diff --check`はPASS。6頁PDFは全頁目視済。全 `npm run verify` exit0（root3597件中3593pass/0fail/4skip、API1678、CSV385、Web assets264/欠落0）。全verify後の電源再選定/文書/図面script更新はtargeted検査で確認し、runtimeコード変更なし。詳細 `data/mii-integrated-radio-validation.json`、全ログはGit外 `/private/tmp/mii-integrated-radio-verify.log`。
+
+保存区分: 独立local branchの設計source/BOM/profile/要約。PDFはGit外で再生成可能。GitHub保存・main統合・購入・契約・開通・通電・無線送信・OS flash未実施。次の担当は22章§7の4条件への原本回答を取り込み、§8の同一Core試験を行う。OSを再選択する必要はない。

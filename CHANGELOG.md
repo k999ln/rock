@@ -1,3 +1,7 @@
+## 2026-11-02 — 可搬mii P3
+
+[22章](docs/mii/design/22-integrated-radio.md)にLTE/NTN共用kit・GNSS・3S UPS/指定chargerの条件付き配線と国別RF/電力条件を追加。17 BOM行/18接続/11ネット/6頁図面source。OS共通、R01〜04と実機は未完了。local branchのみ、PR未作成。
+
 ## 2026-11-02 — 可搬mii P2
 
 LTE/Wi-Fi/衛星と電池を可搬Coreへ選定し、[21章](docs/mii/design/21-portable-connectivity.md)・型番付きBOM/端子netlist・7頁配線図source・hardware profileを追加。共通OSを維持。実機/RF/回線未受入、local branchのみ、PR未作成。

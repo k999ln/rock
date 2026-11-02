@@ -229,3 +229,7 @@ MAT15／OS10／MINI01・MINI02の設計担当ROCK。[設計入口](../mii/design
 ### 可搬mii P2 — LTE/Wi-Fi/衛星とdock
 
 MAT15主担当ROCK、MINI-08・NET01・SIM01・OS10との接続。[21章](../mii/design/21-portable-connectivity.md)で12 BOM行・11接続・9論理ネットを選定。EXTERNALは部品rev/driver/RF/回線条件、JOINTは同一Coreの着脱/電源/通信/保存、OWNERは機材・回線・試験環境/予算。次はP2-A01/02準備とP2 adapter、9704-ANT同居・国内carrier条件の確定。検証: `python3 docs/mii/design/portable-p2/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。結果は `data/mii-portable-hardware-validation.json`。静的図面は物理/RF/OS/光学受入と別。共通OSと既存通信台帳を再利用する。
+
+### 可搬mii P3 — P2より優先する次の作業
+
+MAT15/ROCK、MINI-08・NET01・SIM01・OS10。[22章](../mii/design/22-integrated-radio.md)、17 BOM行/18接続/11ネット。EXTERNALの回答とJOINTの確認でR01同居RF/R02国別機器・回線/R03antenna実品/R04USB電力契約を閉じる。OWNERは予算・機材/契約。購入・問い合わせ送信は未実施。次にP3-A01〜07。検証: `python3 docs/mii/design/portable-p3/check.py`、同dir `render.py`、`npm run design:check`、`npm run verify`。記録は `data/mii-integrated-radio-validation.json`。共通OSと既存通信adapterを再利用し、P3実機/光学未合格を保持。

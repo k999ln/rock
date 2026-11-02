@@ -1,5 +1,6 @@
 # mii-portable-p2 hardware profile（設計のみ）
 
+**後継の条件付き設計は[mii-portable-p3](../mii-portable-p3/README.md)。** 本P2は履歴として保持する。
 正本: [mii設計21章](../../../../docs/mii/design/21-portable-connectivity.md)。共通OSの既存runtimeを動かす可搬通信Coreのprofile。ドライバ/boot imageをこの変更で実装・受入したものではない。
 
 | 項目 | 選定/上限 |

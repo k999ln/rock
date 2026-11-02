@@ -1,6 +1,6 @@
-# mii 設計書 V1（Tower 4本＋Hub フル構成、本数可変）
+# mii 設計書 — 共通OS・可搬Core・固定Tower/Hub
 
-**最新は[21章 可搬P2](21-portable-connectivity.md)。** LTE・Wi-Fi・衛星の型番/端子、電池、ドック着脱を12 BOM行・11接続・9論理ネット、全7枚の配線図に具体化した。取り外すCoreへ共通OS・保存・全radio・電池を残す。[19章 HW1](19-body-hardware.md)は固定4 Tower＋専用Hub＋表示部、[20章](20-connectivity.md)は通信契約の整理として保持する。18章は開発用検証装置。P2の回線開通/adapter/電源・熱/RF同居/光学/実機受入は未完了。
+**最新は[22章 可搬P3](22-integrated-radio.md)。** LTE/NTNをMurata1SCへ統合、GNSS追加、3S UPS/P28A×3と指定12.6V充電器へ改版。17 BOM行・18接続・11論理ネット、6枚の条件付き配線図。Wi-Fiとの同居RF、日本NTN機器適合、kit antenna、USB給電契約はR01〜04として未解決。実機/開通/共通OS adapterは未受入。[21章 P2](21-portable-connectivity.md)は前案、19〜20章は固定HW1として保持。
 
 版: V1.0 / 2026-11-02 / 著者: Fable（Noelle 指示）
 状態: **設計入力（Design Input）**。寸法・性能目標・受入条件を固定し、試作とRFQに渡す。製造図・部品確定・法規適合・実機合格を意味しない。
@@ -101,3 +101,7 @@ Gen1 では ③④ の代わりに市販の投影エンジンを Hub に直結�
 ## 可搬通信を組む入口
 
 [21章](21-portable-connectivity.md) → [BOM・端子netlist](portable-p2/bom-netlist.json) → `python3 docs/mii/design/portable-p2/check.py` → `python3 docs/mii/design/portable-p2/render.py`。PDFはGit外の `output/pdf/mii-portable-p2-wiring.pdf`。C-01は構成選定済・物理受入待ち、C-02の表示4条件は継続。
+
+## 可搬P3を再開する入口
+
+[22章](22-integrated-radio.md) → [BOM/netlist](portable-p3/bom-netlist.json) → `python3 docs/mii/design/portable-p3/check.py` → `python3 docs/mii/design/portable-p3/render.py`。PDFはGit外 `output/pdf/mii-portable-p3-wiring.pdf`（6頁）。R01〜04の回答を取得して必要なら改版し、P3-A01〜07へ進む。共通OS/光学C-02は同じ。
