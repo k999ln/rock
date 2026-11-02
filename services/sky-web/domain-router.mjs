@@ -285,6 +285,18 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
       }
       if (source.hostname !== MINI_PUBLIC_HOST)
         return skyWorker.fetch(request, env, context);
+      const matouPath = MATOU_PUBLIC_ALIASES.get(path);
+      if (matouPath && ['GET', 'HEAD'].includes(request.method)) {
+        const destination = new URL(matouPath, MATOU_ORIGIN);
+        destination.search = source.search;
+        return new Response(null, {
+          status: 302,
+          headers: {
+            location: destination.href,
+            'cache-control': 'no-store',
+          },
+        });
+      }
       if (path === '/sw.js')
         return new Response(
           'self.addEventListener("install", event => event.waitUntil(self.skipWaiting()));',
