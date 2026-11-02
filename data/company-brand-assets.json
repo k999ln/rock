@@ -1,0 +1,22 @@
+{
+  "schema": "rockstaros.company-brand-assets/1",
+  "source": "public/brand/rockstaros-logo-source.png",
+  "sourceSha256": "520b8ca375bb8d533055f6ab884532d30a204e42774fabd13d756c36f0045045",
+  "derivation": "Exact owner-supplied square rainbow original, resized without redrawing; PNG-backed SVG containers",
+  "files": {
+    "public/company-mark.png": "c6a0cf9b9faf023da925ab29081b41be18eedf212bb673d2d6a5b17bb47393dc",
+    "public/rock-icon-512.png": "c6a0cf9b9faf023da925ab29081b41be18eedf212bb673d2d6a5b17bb47393dc",
+    "public/rock-icon-192.png": "3a8f750e40b79713f055a5ec5485ab7db04878744f3301bff34aa4b579abd8c0",
+    "public/favicon.svg": "2f27fbb249acd6c79fe7d8d8b9d7005f40734c118412ab181b7c2584655ac09b",
+    "public/company-mark-192.svg": "2f27fbb249acd6c79fe7d8d8b9d7005f40734c118412ab181b7c2584655ac09b",
+    "public/rock-icon-maskable.svg": "114f7f18e620c02d8272db9b647d91f9c820e8113955ec166c4c072602f63206",
+    "public/loop-icon-192.png": "3a8f750e40b79713f055a5ec5485ab7db04878744f3301bff34aa4b579abd8c0",
+    "public/loop-icon-512.png": "c6a0cf9b9faf023da925ab29081b41be18eedf212bb673d2d6a5b17bb47393dc",
+    "public/loop-icon.svg": "2f27fbb249acd6c79fe7d8d8b9d7005f40734c118412ab181b7c2584655ac09b",
+    "public/brand/rainbow-icon-64.png": "d75fb2953f66ed74ea195c4291f792a0e1119d69652a14379a0325a2d5ed3786",
+    "public/brand/rainbow-logo-96.png": "95bc5d1f421eb3f7087531d78e5fc7e13d583f5830fe539c8791a74de49a6ae8"
+  },
+  "publicDeployed": false,
+  "pixelInstalled": false,
+  "scope": "Current avoado.si Web/PWA only; native and other product deployments remain separate"
+}

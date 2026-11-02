@@ -1,6 +1,7 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { DatabaseSync } from 'node:sqlite';
 import {
   acknowledgeEsimInstallMaterial,
@@ -23,8 +24,7 @@ const profile = {
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter((value) => value.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   sqlite.prepare(`INSERT INTO esim_provider_orders
     (sky_order_id,provider,owner_user_id,package_key,manifest_sha256,pricing_snapshot_json,pricing_snapshot_sha256,provider_bundle_name,
      quote_digest,quote_total,quote_currency,state,provider_order_reference,profile_digest,created_at,updated_at)

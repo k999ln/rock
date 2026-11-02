@@ -19,9 +19,9 @@ export default function RockstarAddons() {
   }
   return <main className={styles.page}>
     <Link href="/">← RockstarOS Home</Link>
-    <header><p className={styles.eyebrow}>ROCKSTAROS ADD</p><h1>必要な機能を、いまの端末に。</h1><p>Sky・データ回収・LLMを、同じホームから開けます。追加状態はこのブラウザーに保存します。</p></header>
+    <header><p className={styles.eyebrow}>ROCKSTAROS ADD</p><h1>必要な機能を、いまの端末に。</h1><p>smis・データ回収・LLMを、同じホームから開けます。追加状態はこのブラウザーに保存します。</p></header>
     <div className={styles.grid}>
-      <section className={styles.card}><span className={styles.badge}>標準機能</span><h2>Sky</h2><p>Agentやツールを探して、自分の環境につなぐ。</p><Link className={styles.primary} href="/sky">Skyを開く →</Link></section>
+      <section className={styles.card}><span className={styles.badge}>標準機能</span><h2>smis</h2><p>Agentやツールを探して、自分の環境につなぐ。</p><Link className={styles.primary} href="/sky">smisを開く →</Link></section>
       {optionalAddons.map(addon => <section key={addon.id} className={styles.card}><span className={styles.badge}>{enabled === null ? (error ? '保存を確認できません' : '確認中') : enabled.includes(addon.id) ? 'ホームに追加済み' : '追加できる機能'}</span><h2>{addon.name}</h2><p>{addon.description}</p><button className={styles.primary} disabled={enabled === null} onClick={() => toggle(addon.id)}>{enabled?.includes(addon.id) ? 'ホームから外す' : 'ホームに追加'}</button>{enabled?.includes(addon.id) && <Link href={addon.href}>{addon.name}を開く →</Link>}</section>)}
     </div>
     {error && <p role="alert">{error}</p>}

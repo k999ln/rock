@@ -69,7 +69,7 @@ export default function SkyConnectionCenter({
         <header className={styles.header} ref={headingRef} tabIndex={-1}>
           <div className={styles.headerMark}><Link2 size={19} /></div>
           <div>
-            <DialogTitle>Skyの接続管理</DialogTitle>
+            <DialogTitle>smisの接続管理</DialogTitle>
             <DialogDescription>保存した表示名や接続先は次回から再利用します。OAuth・実行接続は別途必要です。</DialogDescription>
           </div>
         </header>

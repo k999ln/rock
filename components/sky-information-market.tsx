@@ -1,4 +1,6 @@
 'use client';
+import SkyXTimeline from '@/components/sky-x-timeline';
+import SkySocialTimeline from '@/components/sky-social-timeline';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway. */
 import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
@@ -9,6 +11,7 @@ import {
   Check,
   Cloud,
   Database,
+  Newspaper,
   Plus,
   Search,
   Sparkles,
@@ -25,6 +28,71 @@ import { useEveSourceHandoff } from '@/lib/use-eve-source-handoff';
 import { skyAgentEvePath, type SkyLibraryAgent } from '@/lib/sky-agent-library';
 import styles from './sky-information-market.module.css';
 
+export function SkyHomeTimeline() {
+  return (
+    <>
+      <SkySocialTimeline />
+      <details className={styles.panel}>
+        <summary>接続した外部ニュース・X</summary>
+        <SkyExternalSources />
+      </details>
+    </>
+  );
+}
+function SkyExternalSources() {
+  const { plugins, state } = useSkyHub();
+  const [allSources, setAllSources] = useState(false);
+  const sources = plugins.filter(
+    (p) =>
+      p.kind === 'x' && p.enabled && p.consentVersion === X_TIMELINE_CONSENT,
+  );
+  return (
+    <section
+      className={styles.panel}
+      id="external-sources"
+      aria-labelledby="sky-timeline-title"
+    >
+      <header className={styles.sectionHeading}>
+        <div>
+          <span>CONNECTED SOURCES</span>
+          <h2 id="sky-timeline-title">外部の配信元</h2>
+          <p>Xのフォロー・おすすめ投稿の取り込みは未接続です。</p>
+        </div>
+        <a href="#news-plugins">
+          配信元を追加 <Plus size={16} />
+        </a>
+      </header>
+      {state === 'loading' ? (
+        <output>配信元を確認しています…</output>
+      ) : sources.length ? (
+        <div className={styles.timelines}>
+          {sources.slice(0, allSources ? 100 : 3).map((p) => (
+            <SkyXTimeline key={p.key} plugin={p} />
+          ))}
+        </div>
+      ) : (
+        <div className={styles.empty}>
+          <Newspaper size={27} />
+          <p>
+            {state === 'error'
+              ? '配信元を確認できません。再読み込みしてください。'
+              : state === 'signed-out'
+                ? 'サインインすると、自分の配信元をホームに保存できます。'
+                : '好きなXの公開アカウント・リストを追加すると、投稿がここに表示されます。'}
+          </p>
+          <a href="#news-plugins">
+            Xを追加する <ArrowRight size={15} />
+          </a>
+        </div>
+      )}
+      {sources.length > 3 && (
+        <button onClick={() => setAllSources((v) => !v)}>
+          {allSources ? '配信元を少なく表示' : 'ほかの配信元を表示'}
+        </button>
+      )}
+    </section>
+  );
+}
 export function SkyNewsConnections() {
   return <SkyInformationMarket onlyNews />;
 }

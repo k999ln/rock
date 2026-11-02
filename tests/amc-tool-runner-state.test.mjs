@@ -235,7 +235,7 @@ async function openSaved(h, job) {
   assert.match(h.text(), /private owner goal/);
 }
 
-void test('AMC restores Sky launch and command center, saves only the explicit unapproved starter', async () => {
+void test('AMC restores smis launch and command center, saves only the explicit unapproved starter', async () => {
   const h = harness();
   assert.ok(h.find(CommandCenter));
   assert.equal(h.find(SkyLaunch)?.props.disabled, true);
@@ -243,7 +243,7 @@ void test('AMC restores Sky launch and command center, saves only the explicit u
   assert.equal(h.requests[0].options.method, undefined);
   await h.respond(0, 200, { jobs: [] });
   const launch = h.find(SkyLaunch);
-  assert.ok(launch, 'Sky launch component must remain connected');
+  assert.ok(launch, 'smis launch component must remain connected');
   assert.equal(launch.props.disabled, false);
   launch.props.onSave(skyStarterGoal);
   const request = h.requests[1];
@@ -257,7 +257,7 @@ void test('AMC restores Sky launch and command center, saves only the explicit u
   assert.equal(body.importGoal.eventLog.length, 0);
 });
 
-void test('AMC Sky plan approval requires confirmation and keeps the current revision and exact criteria', () => {
+void test('AMC smis plan approval requires confirmation and keeps the current revision and exact criteria', () => {
   const records = [];
   const goal = copy(skyStarterGoal);
   const h = harness('ManualRecord', {
@@ -297,7 +297,7 @@ void test('AMC Sky plan approval requires confirmation and keeps the current rev
 });
 
 for (const status of ['pending', 'running', 'submitted', 'blocked', 'done']) {
-  void test(`AMC Sky ${status} record hides operations requiring the unavailable trusted observer`, () => {
+  void test(`AMC smis ${status} record hides operations requiring the unavailable trusted observer`, () => {
     const goal = copy(skyStarterGoal);
     goal.state = 'active';
     for (const task of goal.tasks) {
@@ -372,11 +372,11 @@ void test('AMC board filters actual canonical records without showing an exclude
   if (!expected.length) assert.match(h.text(), /該当するタスクがありません/);
 });
 
-void test('AMC command center follows the displayed Sky starter instead of an unrelated saved goal', async () => {
+void test('AMC command center follows the displayed smis starter instead of an unrelated saved goal', async () => {
   const h = harness(),
     job = savedJob();
   await openSaved(h, job);
-  h.find('button', (node) => text(node) === 'Skyローンチ').props.onClick();
+  h.find('button', (node) => text(node) === 'smisローンチ').props.onClick();
   h.render();
   const command = h.find(CommandCenter);
   assert.equal(command.props.goal, skyStarterGoal);
@@ -385,14 +385,14 @@ void test('AMC command center follows the displayed Sky starter instead of an un
   h.render();
   assert.equal(h.find(SkyLaunch).props.initialTaskId, 'S0-02');
   assert.equal(
-    h.find('button', (node) => text(node) === 'Skyローンチ').props[
+    h.find('button', (node) => text(node) === 'smisローンチ').props[
       'aria-pressed'
     ],
     true,
   );
 });
 
-void test('AMC unsaved request preview task does not open an unrelated Sky task', async () => {
+void test('AMC unsaved request preview task does not open an unrelated smis task', async () => {
   const h = harness('AmcToolRunner', { initialText: '管理アプリを作成して' });
   await h.respond(0, 200, { jobs: [] });
   h.change(h.field('-intent'), '自分の計画を管理する');
@@ -409,7 +409,7 @@ void test('AMC unsaved request preview task does not open an unrelated Sky task'
   assert.equal(h.find(SkyLaunch).props.initialTaskId, 'S0-01');
 });
 
-void test('Sky launch empty status filter hides excluded task details and directives', () => {
+void test('smis launch empty status filter hides excluded task details and directives', () => {
   const goal = copy(skyStarterGoal);
   goal.skyDirectives = [
     {
@@ -441,7 +441,7 @@ void test('Sky launch empty status filter hides excluded task details and direct
   );
 });
 
-void test('Sky launch filter selects a matching task and keeps filtering when selecting another match', () => {
+void test('smis launch filter selects a matching task and keeps filtering when selecting another match', () => {
   const goal = copy(skyStarterGoal);
   for (const task of goal.tasks)
     if (['S0-02', 'S0-03'].includes(task.id)) task.status = 'done';
@@ -458,7 +458,7 @@ void test('Sky launch filter selects a matching task and keeps filtering when se
   assert.ok(h.find('h3', (node) => text(node).startsWith('S0-03')));
 });
 
-void test('Sky launch cross-squad task links clear a filter that excludes their destination', () => {
+void test('smis launch cross-squad task links clear a filter that excludes their destination', () => {
   const h = harness('SkyLaunch', { disabled: false, onSave() {} });
   h.change(h.field('-filter'), 'done');
   h.find('button', (node) => text(node) === 'S10-01').props.onClick();

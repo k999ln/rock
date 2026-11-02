@@ -39,7 +39,7 @@ const mrHubCandidates = ([
   ['sales-objection-reply-builder', '商談返信・見積り支援', '販売・収益化', '正式な商品条件から返信文と確認事項を作る既存Service Cell。', '返信生成実行器を接続する'],
   ['user-interview-synthesizer', '顧客インタビュー分析', '市場・商品設計', '発言をテーマ、根拠、仮説と次の検証に整理する既存Service Cell。', '発言と分析結果を結ぶ実行器を接続する'],
   ['calendar-coordination', '予定・カレンダー連携', '生活・予定', '既存Coreの予定解釈とカレンダー連携処理。', '本人のアカウント接続と権限確認を行う'],
-  ['telegram-notifications', 'Telegram通知・承認', '通知・連絡', '既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。', '本人確認済みBotと送信範囲を接続する'],
+  ['telegram-notifications', 'Telegram通知・承認', '通知・連絡', '既存Botの依頼受付、通知、進捗確認をEveの仕事につなぐ処理。', '本人確認済みBotと送信範囲を接続する'],
   ['producthunt-discovery', '外部ツール候補の発見', '市場・商品設計', 'Product Hunt公式API向けの候補検索処理。', 'API利用条件と商用許諾を確認する'],
 ] as const).map(([id, name, category, description, next]) => ({
   id, name, category, description,
@@ -107,7 +107,7 @@ const catalogEntries = [
     id: 'rockstar-amc',
     name: 'AMC · Goalと部隊の進捗',
     category: '計画・進捗管理',
-    description: '作りたいものとGoal・意図から計画を準備し、部隊・作業・確認待ちをZemaで管理します。',
+    description: '作りたいものとGoal・意図から計画を準備し、部隊・作業・確認待ちをEveで管理します。',
     source: 'avocadoOS built-in',
     launchPath: '/zema/amc',
     environment: 'Sky / Zema / 保存・再開にはサインイン必須',

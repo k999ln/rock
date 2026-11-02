@@ -1247,3 +1247,136 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/development\-execution/eve\-semantic\-quality\.json)\z''']
 regexes = ['''\Aee3e094ee9630f3f2e10ddcd24c62432a9a35d3943c8826c11a60380f8b9a67f\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 767a923a0076"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:data/avoado\-published\-migration\-lineage\.json)\z''']
+regexes = ['''\Ae983d21d6a713f20af31f9245d94d8c60345e0b79259d5aa16c6e61273ee9e84\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 4c817caf9230"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/source\-readiness\-alignment\.json)\z''']
+regexes = ['''\A7e2222d6d53c33df8d4bb975b6af208fa15e6b6c178fba1614efcbc66a57e140\z''']
+
+[[rules.allowlists]]
+description = "public-source-commit dc978ef3bea4"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:data/archived\-paths\.json)\z''']
+regexes = ['''\A7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest f3f755dbc389"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/common\-os\-entry\-alignment\.json)\z''']
+regexes = ['''\Abb01ef8b2cd0275deb9cf013423cacb7e6e014fc17e370ba49219593f3929ed4\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest f0e944b34546"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/source\-runtime\-device\-binding\.json)\z''']
+regexes = ['''\Ae9c86113dd464cc05c909d85a0d69bdcf65e895cee558ab6e85b5945df82402d\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest e2299419b548"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/source\-runtime\-device\-binding\.json)\z''']
+regexes = ['''\A07036c8852a94a7c288768379e5e6224cef6188e5da430e72a43696264e86371\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 8abd230eaff5"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/source\-runtime\-device\-binding\.json)\z''']
+regexes = ['''\A697aa6da3943f249f13a0ca7b7ea136e82403199604bafa729698b56e2011c67\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 352b48b7f5ec"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/source\-runtime\-device\-binding\.json)\z''']
+regexes = ['''\Aae098fd71b26bac922d9984b5b6a944a3b60baf7110410088d9de98391c0250c\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 0141b9abccd0"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rockstar\-runtime\-host\-ui\.json)\z''']
+regexes = ['''\A9d044ae51d9167b422742802da382972f94caff49e7601aa552a16cbffe964f6\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 0e1bc60ff33d"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:drizzle\-legacy/github\-main\-before\-avoado\-alignment/provenance\.json|tests/fixtures/sites\-columbia\-migrations/provenance\.json)\z''']
+regexes = ['''\A31f8be9a8cb9dbadce24fd008fadcdeaec41abb7071c189b5bc5db0b4c99a73c\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest a72d91a418e2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:drizzle\-legacy/github\-main\-before\-avoado\-alignment/provenance\.json)\z''']
+regexes = ['''\A5bb541d9c015b5c3d943dcefedd116477f0511d4cd62188d5cf9c9a01e5a9a77\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 4fdd8116142f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:drizzle\-legacy/github\-main\-before\-avoado\-alignment/provenance\.json)\z''']
+regexes = ['''\A9704474da9ca02fece582a4d44b2eef26b0ebb8aad33495691e50c12ae6f91b6\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 32c673525a76"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rockstar\-independent\-account\.json)\z''']
+regexes = ['''\A5a3d6b87346bc19fc80c6665d2b3f8dcf1695d857655b0def98d086f3ddeb18f\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest f7b0468cb42f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rockstar\-independent\-account\.json)\z''']
+regexes = ['''\A080fac362ec88b67998f2381a9e165dfbe96af9a67a96268da81d069887021fb\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest de28223ef80b"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rockstar\-independent\-account\.json)\z''']
+regexes = ['''\Aa35bf62d65a2bdd6ab71d23de3f1e3e59ad153a8dad96a41e4a21e6738a3fce8\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest c1a87b943863"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rockstar\-independent\-account\.json)\z''']
+regexes = ['''\A63b9c4f5f920f964ae19433b6e464d6e335a932fbd6941a83623e2f65d8fcc23\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 0d27b3b13712"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rockstar\-independent\-account\.json)\z''']
+regexes = ['''\Aac6a369b95e823ed44a83d1eba6f8ecf484faabd9174348842d1bfa1e3b8c855\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 39d2dac72f9c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rockstar\-independent\-account\.json)\z''']
+regexes = ['''\A47cd95f5d806be9285af1926b462606b73b97835b82e6e1db38ee48ddc21147d\z''']
+
+[[rules.allowlists]]
+description = "synthetic-handoff-fixture c47c5fb1543c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:tests/avocado\-handoff\.test\.mjs)\z''']
+regexes = ['''\A3f2d610a\-9c27\-4f06\-b3dc\-01e7fb7a731c\z''']

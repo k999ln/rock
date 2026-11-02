@@ -1,0 +1,180 @@
+{
+  "recordedAt": "2026-10-23T08:35:54.044315+00:00",
+  "status": "full_checks_pass_native_entry_accepted_public_pending",
+  "taskIds": [
+    "HOME01",
+    "WEB04",
+    "SKY21",
+    "OS10"
+  ],
+  "primaryOwner": "ROCK",
+  "authority": "Human explicitly requests new logo and tabs on public/Pixel, correction of the broken header, smis-only timeline, distinct communities and smis display name",
+  "workstream": "docs/workstreams/05-web-pwa-sites.md",
+  "changes": [
+    "self-contained horizontal header",
+    "single-column smis timeline without permanent sidebars or account banner",
+    "three equal labeled destinations on every Home width",
+    "separate community directory with existing create/invite/key gates",
+    "community feed excludes global posts and external feed",
+    "smis display text; lowercase sky paths/API/schema unchanged",
+    "same-signer native logo and three public origin links"
+  ],
+  "tests": {
+    "focused": {
+      "pass": 27,
+      "fail": 0,
+      "log": "/private/tmp/rock-smis-community-final-focused.log"
+    },
+    "publicFullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "nodeTests": 2532,
+      "nodePassed": 2531,
+      "nodeSkipped": 1,
+      "nodeFailed": 0,
+      "apiAssertions": 1582,
+      "csvAssertions": 385,
+      "assetReferences": 213,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-visual-public-verify4.log",
+      "scope": "public Source checkout; after full gate only manifest display names and documentary acceptance updated; target manifest/type/build checks follow"
+    },
+    "nativeBuild": "/private/tmp/rock-brand-tabs-native-statusbar-build.log"
+  },
+  "public": {
+    "beforeVersion": 115,
+    "target": "https://avoado.si",
+    "deployed": false,
+    "sourceBase": "ac24bc0d20dc41804cfc45c8663d4769af6bfc67",
+    "checkout": "/Users/kaiya/.codex-work/visualizations/2026/10/18/01a14d54-daee-7c30-87a8-faea84641a40/brand-tabs-publication",
+    "scope": "only visual release from current public Source; unrelated model/native integration remains in its retained checkout"
+  },
+  "physicalPixel": {
+    "target": "Pixel10/GL066/frankel",
+    "installed": true,
+    "dataErased": false,
+    "flash": false,
+    "newSigningKey": false,
+    "actualScreenAccepted": true,
+    "acceptedScope": "native common entry logo, three equal labeled links, status-bar contrast; not Web timeline/browser navigation",
+    "apkSha256": "f069a21c09532470cd1e84b47b76e9727ee9101945fa2dc9f82ccf7a0f7101a8",
+    "readbackSha256": "f069a21c09532470cd1e84b47b76e9727ee9101945fa2dc9f82ccf7a0f7101a8",
+    "signerSha256": "6a8b2ed9d983857be9b2210f281d91db2ccece54c83fdd8e59329cf27132a810",
+    "protectedFiles": 45,
+    "allPriorProtectedHashesMatch": true,
+    "instrumentationTests": 1,
+    "instrumentationPassed": 1,
+    "screenshot": "/Users/kaiya/Documents/ChatGPT/avokdo/work/brand-tabs-pixel/brand-tabs-physical-final.png",
+    "webBrowserUiAccepted": false
+  },
+  "actualBrowserAccepted": false,
+  "uiConnection": "CUA native pipe startup failed/closed; no browser or app surfaces returned",
+  "next": "Package and publish the bounded visual candidate, update local preview, read back public assets, then actual Web UI acceptance when CUA is restored or user provides the screen. Physical module experiment remains private.",
+  "findings": [
+    {
+      "issue": "Logo/title/actions stacked vertically",
+      "cause": "Home loaded shared chrome without workspace token stylesheet that formerly supplied flex rules",
+      "fix": "self-contained header row/brand/actions sizing in app/os-shell.css"
+    },
+    {
+      "issue": "Bottom buttons covered content and had unequal widths",
+      "cause": "fixed navigation lacked matching reserve and a shared count-based grid across widths",
+      "fix": "opaque three-column shell navigation, shared safe-area reserve and visible labels"
+    },
+    {
+      "issue": "Community tab repeated global timeline",
+      "cause": "shared timeline mode retained global feed on the community route",
+      "fix": "separate directory and community-scoped posts with existing invitation keys"
+    },
+    {
+      "issue": "Home showed old sidebars and extra catalog sections",
+      "cause": "legacy three-column layout and automatic discovery below the feed remained rendered",
+      "fix": "single-column stream; explicit add/manage dialog"
+    },
+    {
+      "issue": "Sky display text survived in install metadata",
+      "cause": "earlier display-label migration covered TSX but not manifest TS routes",
+      "fix": "smis manifest description and Campus install names; compatibility IDs/paths preserved"
+    }
+  ],
+  "referencedThread": {
+    "id": "01a14ff2-50d6-75d1-bf5f-aadcf37e934e",
+    "title": "smis",
+    "meaning": "Eve creates a role, smis connects available tools/devices/sensors, common OS executes/saves/stops",
+    "physicalModuleGeneralLaunch": false
+  },
+  "workbenchFollowup": {
+    "status": "final_source_full_pass_publication_pending",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "publicBaseVersion": 116,
+    "publicBaseCommit": "48cf8b095ec7db99f67dd0774a07f8cb9aa7a638",
+    "evidence": "docs/evidence/os-visual-release.json#workbenchFollowup",
+    "design": "docs/sky-tools-complete-design.md#smis-eve-workbench",
+    "publicDeployed": false,
+    "actualUiAccepted": false,
+    "physicalAccepted": false,
+    "scope": "existing marketplace content, private saved-resource posts, Eve role builder and execution-screen usability; preserve owner/revision/budget/stop boundaries",
+    "recordedAt": "2026-10-23T09:40:53.599762+00:00",
+    "changes": [
+      "smis private saved-resource posts",
+      "restore missing existing hub GET/PUT route and store in public Source",
+      "all Tool cards in explicit discovery",
+      "Eve creation/work modes with retained state",
+      "natural-language deterministic settings draft, reviewed model and existing owner-bound save",
+      "request input before history/results; collapsed selection details and mobile history"
+    ],
+    "checks": {
+      "focusedPass": 15,
+      "focusedFail": 0,
+      "log": "/private/tmp/rock-smis-eve-focused4.log",
+      "typecheck": 0,
+      "lint": 0,
+      "sourceFullVerify": {
+        "exitCode": 0,
+        "tests": 2543,
+        "pass": 2542,
+        "skip": 1,
+        "fail": 0,
+        "apiAssertions": 1617,
+        "csvAssertions": 385,
+        "assetReferences": 214,
+        "missingAssets": 0,
+        "log": "/private/tmp/rock-smis-eve-public-verify5.log"
+      },
+      "navigationGuard": {
+        "pass": 5,
+        "scope": "synthetic component interactions; unchanged pinned query and new agent link resets view override"
+      },
+      "localSecurityReadback": {
+        "pass": true,
+        "routes": 8,
+        "headers": 8,
+        "evidence": "docs/evidence/launch/web-security-local-20260917.json",
+        "publicSecurityAccepted": false
+      },
+      "rootChecks": {
+        "typecheckExitCode": 0,
+        "lintExitCode": 0,
+        "focusedPass": 5,
+        "apiAssertions": 2152,
+        "csvAssertions": 113,
+        "fullAttempt": "unit1682/1681pass/1skip then zero asset references at audit; subsequent retry225/missing0 and API remainder passed; whole-tree frozen full-pass not claimed",
+        "log": "/private/tmp/rock-smis-eve-root-verify.log"
+      }
+    },
+    "newMigration": false,
+    "externalInferenceCalls": 0,
+    "knownLimits": [
+      "Actual browser UI remains unaccepted because CUA native pipe is closed",
+      "Native Pixel whole loop not newly accepted by this UI change",
+      "Agent settings creation is distinct from arbitrary-code build and from successful inference",
+      "Previously observed public SW static header mismatch remains a separate Web/Security gate"
+    ],
+    "next": "Official Source save/package/deploy, public asset readback, retain private owner/data and native selection contracts."
+  }
+}

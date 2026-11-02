@@ -124,8 +124,17 @@ jobs:
           export MINIFLARE_REGISTRY_PATH="$RUNNER_TEMP/spider-web-registry"
           wrangler=(node "$(node scripts/spider-web-runtime.mjs cli)")
           state="$RUNNER_TEMP/spider-web-state"
-          "${wrangler[@]}" d1 migrations apply site-creator-d1 --local \
-            --config dist/server/wrangler.json --persist-to "$state"
+          # The published lineage upgrades an existing DB, not an empty one.
+          # Headers are measured against a local synthetic schema, never production data.
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          import { sourceSandboxRestoreSql } from './scripts/sky-monthly-sandbox-db.mjs';
+          writeFileSync(join(process.env.RUNNER_TEMP, 'spider-web-schema.sql'), sourceSandboxRestoreSql());
+          NODE
+          "${wrangler[@]}" d1 execute site-creator-d1 --local \
+            --config dist/server/wrangler.json --persist-to "$state" \
+            --file "$RUNNER_TEMP/spider-web-schema.sql"
           "${wrangler[@]}" dev --local --ip 127.0.0.1 --port 8787 \
             --config dist/server/wrangler.json --persist-to "$state" \
             > "$RUNNER_TEMP/spider-web-server.log" 2>&1 &

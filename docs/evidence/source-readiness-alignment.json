@@ -1,0 +1,425 @@
+{
+  "schema": "rockstaros.source-readiness-alignment/1",
+  "recordedAt": "2026-10-22T12:47:46.659894+00:00",
+  "status": "local_source_full_verify_and_same_build_response_browser_passed_public_and_pixel_pending",
+  "taskIds": [
+    "WEB04",
+    "WEB06",
+    "SKY21"
+  ],
+  "primaryOwner": "ROCK",
+  "scope": [
+    "CORE05",
+    "CORE08",
+    "CORE09",
+    "CORE12"
+  ],
+  "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+  "masterPromptSha256": "1648603cd535a386c0eaea81f047e23f484e1d5c7ff32206addbf30e7e7a8eec",
+  "checks": {
+    "sourceSecurityMeasurement": {
+      "schema": "rockstaros-web-security-response-evidence/1",
+      "observedAt": "2026-10-22T12:47:22Z",
+      "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
+      "server": {
+        "runtime": "wrangler-local",
+        "origin": "http://127.0.0.1:8787",
+        "productionBuild": true
+      },
+      "sourceCommit": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+      "sourceDirty": true,
+      "measurement": {
+        "nodeVersion": "v26.0.0",
+        "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
+        "builtApplicationSha256": "08f74c235ef41e48cf9a8b66747ec17e6ef0536afac4d202d4598a17ea5445b9",
+        "outerRouterSha256": "eba9acf718d716258f84307a5dcce73dfb5f21524ceb29262a7460678853669f",
+        "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+        "rawResultSha256": "b060ea3fabbc94b0292bbba168419a2d40b06de18555d545c6431f6d5f4a8e09"
+      },
+      "inputs": {
+        "services/sky-web/domain-router.mjs": "eba9acf718d716258f84307a5dcce73dfb5f21524ceb29262a7460678853669f",
+        "scripts/stage-sky-domain-router.mjs": "9a55f70f7a67a3144dde05bed21ad1649c80995e873ba3a710e2cc9ae47a45bc",
+        "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
+        "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
+        "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
+        "scripts/check-web-security-response.mjs": "5d09335b743331650d8b6e155a6312ddf695ef7847516dcd0d5436708103100a",
+        "public/sw.js": "c9875ac4218849512f66bbf986f54414c3dd833bd47fb3e7fdd77fd1f5993691",
+        "app/manifest.ts": "4917c016974a8dd65f4b8c71afce2b435c9ebc06eab999c986d940a05009326c",
+        "public/rock-icon-192.png": "9d983523d02ba07ff74ff3d57e4b92dc023d5b575986272f77baf95aa0688741",
+        "public/rock-icon-512.png": "6efdeff98fdfd19a31451732a8b862f64dc137fea07e33545b6f7345dcedf18a",
+        "public/rock-icon-maskable.svg": "1aad586f5be04ab99609546bf3c8837de76346819e90a1dfdb7d430f9eaac735"
+      },
+      "result": {
+        "status": "PASS",
+        "universalHeaders": 8,
+        "routes": [
+          "/",
+          "/sky",
+          "/sw.js",
+          "/manifest.webmanifest",
+          "/rock-icon-192.png",
+          "/rock-icon-512.png",
+          "/rock-icon-maskable.svg",
+          "/_next/static/chunks/index-R0ATH3PL.js"
+        ]
+      },
+      "boundary": {
+        "sitesDeploymentVerified": false,
+        "canonicalPublicSwRuntimeAccepted": false,
+        "canonicalPublicSwUnitContractAccepted": true,
+        "nextAction": "同一Source/buildの公開候補で認証/redirect/独自SW/API拒否を再読取りし、公開配備・本人データ・一般ローンチの各gateを別に受け入れる。"
+      },
+      "supersedes": {
+        "observedAt": "2026-10-21T02:30:52Z",
+        "sha256": "eea0656ca3f0b14ed124131502ad393705cf7b35c2b6e19919672fd6f4d6b0df",
+        "sourceCommit": "70a8c8eb7e1364f0042285f27dd688a1167fe86f",
+        "immutableSourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf"
+      },
+      "extraObservation": {
+        "attempt": "Host header set to avoado.si while transport remains loopback",
+        "outcome": "Wrangler served the ordinary asset SW, not the canonical outer branch; no public runtime acceptance claimed"
+      },
+      "previousMeasuredCandidate": {
+        "observedAt": "2026-10-22T12:00:37Z",
+        "sha256": "4f117eac8bfb1d5ca9cc54b7e80b9be7540a6aaf28780072c953df623dc8cb5e",
+        "measurement": {
+          "nodeVersion": "v26.0.0",
+          "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
+          "builtApplicationSha256": "08f74c235ef41e48cf9a8b66747ec17e6ef0536afac4d202d4598a17ea5445b9",
+          "outerRouterSha256": "eba9acf718d716258f84307a5dcce73dfb5f21524ceb29262a7460678853669f",
+          "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
+          "rawResultSha256": "c4dd5da99c7333ebad49ebb5915c2fe8d0cc9f2b325191e09b99cfcfde286b22"
+        }
+      },
+      "alternatePortMeasurement": {
+        "origin": "http://127.0.0.1:8796",
+        "observedAt": "2026-10-22T12:43:36Z",
+        "sha256": "b26205c95147d83f3ab1a6dc61df59c6eb9618cc62c88de9358c080a86ca06be",
+        "rawResultSha256": "c4dd5da99c7333ebad49ebb5915c2fe8d0cc9f2b325191e09b99cfcfde286b22",
+        "acceptedByPinnedReadinessValidator": false
+      }
+    },
+    "releaseReadiness": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0,
+      "log": "/private/tmp/rock-source-readiness-after-security.log"
+    },
+    "baselineBefore": {
+      "oldFailure": "read retired components/avocado-turntable.tsx; obsolete E3 payload/theme conditions",
+      "oldConfirmedRequirements": 50,
+      "canonicalNow": 49,
+      "extensionPreserved": "skyComputeGrid"
+    },
+    "masterExtensionNegativeBefore": {
+      "exitCode": 1,
+      "log": "/private/tmp/rock-source-master-extension-before.log"
+    },
+    "currentBaselineReadinessFocus": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-source-baseline-readiness-final-focus.log"
+    },
+    "domainStageBefore": {
+      "tests": 2,
+      "pass": 1,
+      "fail": 1,
+      "source": "Original Source HEAD stager in isolated temporary fixture",
+      "log": "/private/tmp/rock-domain-stage-source-original-before.log"
+    },
+    "domainStageAndRouterFocus": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-outer-security-stage-focus-source.log"
+    },
+    "routerStreamingAndReadinessFocus": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-source-readiness-all-focus.log"
+    },
+    "sourceType": {
+      "exitCode": 0
+    },
+    "sourceLintProduct": {
+      "exitCode": 0
+    },
+    "sourceBuildBeforeMiniText": {
+      "exitCode": 0
+    },
+    "projectUpdateAfterOriginalSqlRelocation": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-source-evidence-relocation-project.log"
+    },
+    "sourceVerifyBeforeMiniContrast": {
+      "exitCode": 0,
+      "nodeTotal": 2403,
+      "nodePass": 2402,
+      "nodeSkip": 1,
+      "apiAssertions": 1381,
+      "csvAssertions": 385,
+      "webAssets": 213,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-source-readiness-full-verify-final.log"
+    },
+    "sourceVerifyFinal": {
+      "exitCode": 0,
+      "nodeTotal": 2404,
+      "nodePass": 2403,
+      "nodeFail": 0,
+      "nodeCancelled": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 1381,
+      "csvAssertions": 385,
+      "webAssets": 214,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-source-readiness-mini-final-verify.log",
+      "scope": "Retained local Sites Source candidate; synthetic restored D1/Worker/R2, not public or financial acceptance."
+    },
+    "rootVerifyFinal": {
+      "exitCode": 0,
+      "nodeTotal": 1344,
+      "nodePass": 1343,
+      "nodeFail": 0,
+      "nodeSkip": 1,
+      "apiAssertions": 2018,
+      "csvAssertions": 113,
+      "webAssets": 212,
+      "missingAssets": 0,
+      "log": "/private/tmp/rock-root-readiness-full-verify-final.log",
+      "scope": "Observed command in shared dirty checkout; not a frozen CI proof for unrelated concurrent edits."
+    },
+    "currentIdentityReadinessFocus": {
+      "exitCode": 0,
+      "tests": 63,
+      "pass": 63,
+      "log": "/private/tmp/rock-source-readiness-current-all-focus.log"
+    },
+    "restoredSchema": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "log": "/private/tmp/rock-source-api-restored-bootstrap-focus.log",
+      "tableCount": 134,
+      "runtimeMigrationAcceptance": false
+    },
+    "a2aWorkflow": {
+      "exitCode": 0,
+      "log": "/private/tmp/rock-source-restored-a2a-workflow.log",
+      "restoredSchemaPrecondition": true,
+      "remoteSendClaims": 0,
+      "scheduledDispatchAccepted": false
+    },
+    "miniContrastFocus": {
+      "exitCode": 0,
+      "tests": 10,
+      "pass": 10,
+      "log": "/private/tmp/rock-source-mini-contrast-focus.log"
+    },
+    "postEvidenceMetadata": {
+      "root": {
+        "projectCheck": 0,
+        "designCheck": 0,
+        "diffCheck": 0
+      },
+      "source": {
+        "projectCheck": 0,
+        "baselineCheck": 0,
+        "designCheck": 0,
+        "releaseReadinessTests": 0,
+        "releaseReadinessCli": 0,
+        "diffCheck": 0
+      },
+      "logs": [
+        "/private/tmp/rock-root-readiness-meta-check.log",
+        "/private/tmp/rock-source-readiness-meta-check.log",
+        "/private/tmp/rock-source-readiness-release-pinned-final.log",
+        "/private/tmp/rock-source-readiness-cli-final.log"
+      ]
+    }
+  },
+  "evidenceRelocation": {
+    "taskId": "AMC02",
+    "originalPath": "drizzle/0014_jennifer_execution_integrity.sql",
+    "retainedEvidencePath": "tests/fixtures/sites-columbia-migrations/0014_jennifer_execution_integrity.sql",
+    "sourceCommit": "686fd5ab78015f6d8dc29030bfd4f76fb912a920",
+    "sha256": "688e4bff912c6db47ee5554a5b993e93be7c718c794ef5033b13202522337907",
+    "reason": "Main package replaces active root drizzle with main lineage; immutable legacy fixture preserves the original SQL for historical regression only.",
+    "newRuntimeAcceptance": false
+  },
+  "financialRuntimeChanged": false,
+  "newSqlMigrations": 0,
+  "sourceSha256": {
+    "services/sky-web/domain-router.mjs": "eba9acf718d716258f84307a5dcce73dfb5f21524ceb29262a7460678853669f",
+    "scripts/stage-sky-domain-router.mjs": "9a55f70f7a67a3144dde05bed21ad1649c80995e873ba3a710e2cc9ae47a45bc",
+    "scripts/check-web-security-response.mjs": "5d09335b743331650d8b6e155a6312ddf695ef7847516dcd0d5436708103100a",
+    "scripts/release-readiness-lib.mjs": "f916676d4135745c25696030d9eaf889c034f76b4c3985a998e50d7c021d1250",
+    "scripts/check-product-baseline.mjs": "6bf483171d1a782cdc379e609064ed1948911bb6cb8f629d4a172903ca6911ce",
+    "data/product-baseline.json": "ae7e4ad6abbf960b9d145023af9a6f91d869d7292192aff752406dca37b1a210",
+    "data/project-status.json": "08634e3130c3cd52a2614e05690966b3a08934a8ca6af73f9e614630458b4c6c",
+    "app/avocado-mini/page.tsx": "a402d7539c83cdfdc9e80bed0f7d32d2444cdbb7c54d176d8624b216d60e525a",
+    "tests/sky-domain-router.test.mjs": "1443b4a52b9c843c0120030ada4bd772c14fa7824b8b4a8834c2bb96636f313e",
+    "tests/sky-domain-staging.test.mjs": "9bb821aef52fc7f7c34ea805eedef7c89f5ffb1417efb175cc769727e79ba526",
+    "tests/product-baseline.test.mjs": "1f30611db4cec439440f225b9528badbf0c23a1fe5a6a3d7e67d131c94d5bf4a",
+    "scripts/check-ecosystem-research.mjs": "b46bf14e784c6490629ba070f74007dcbd37e4f958f140f7749f078d2ae39201",
+    "scripts/check-work-api.mjs": "7e2222d6d53c33df8d4bb975b6af208fa15e6b6c178fba1614efcbc66a57e140",
+    "scripts/check-csv-storage.mjs": "6657bfbb52020c2c086f51e02d64a7d257aafb37c05fe72605caee6c7cfc520d",
+    "scripts/check-sky-a2a-workflow.mjs": "4b5480122525f22b366661911d3bbd4143d7a55114037bcea5c739021192da89",
+    "scripts/sky-monthly-sandbox-db.mjs": "73f6e77674477659a1cd8e4c76fa3f310feaf426835571fd06f49ec617806b90",
+    "data/ecosystem-research.json": "84468e75be6694b2e473fd53b90644e16c56b37f86e5bec14fe84a6ade40327f",
+    "data/release-readiness.json": "c8997c661e56fb5768b58e49b8727f637a2844face3e4db83decb9b3d47de583",
+    "data/sites-historical-owner-hosting.json": "569e355bf46b727234d547d26efd23d69d0b068aef6940e8d448350d40c74e17",
+    "app/avocado-mini/design.module.css": "f9e87ab55b83649ea2954ed49c1eae2015f0a9338da32d94d80fb0c1124ccfe4",
+    "tests/release-readiness.test.mjs": "d2535eec44abf09af0ccc969cc443082b2acaae63628d4f750539f3369bfa196",
+    "tests/sky-monthly-sandbox-bootstrap.test.mjs": "9be21897a95d2cabb6616ef5e4c73c81e7a28de05941f2708fd76572d64f1b87",
+    "tests/avocado-r5-docs.test.mjs": "a7052feca8d497a123e567c9a53dce306d7641cdeea35dd27974757f9aa7026d",
+    "docs/prompts/rockstaros-common-core-development.md": "1648603cd535a386c0eaea81f047e23f484e1d5c7ff32206addbf30e7e7a8eec",
+    "PROJECTS.md": "2696b0a60ce936dd9ae1dcbcec270e93b2bf0737ce8f93cbf541733c85c7fff5",
+    "AGENTS.md": "8a80e48033c526662118f0f33ca7e47744c3505f1143e9c4fbe1c06db369af9c",
+    "data/design-document-index.json": "fe06ab8b8dc87d2d594316988864ed38089881533840b8617bf6f3334529511e",
+    "docs/rockstaros-complete-design.md": "734b855dc5ff181cf4e50043c6e4da580a982c38fd4ec21853be5d6c08f15190",
+    "docs/sky-tools-complete-design.md": "098dd5870920ec890befb8f7938bffdbb7d6f1d9030bb9dc5eade35027c71703",
+    "docs/workstreams/05-web-pwa-sites.md": "afa11d46743c848914b51eb065ffdeaf3489e1f89e0004c1ec6b1924279295f5",
+    "docs/service-design/07-ecosystem-strategy-and-data.md": "3ea0965debf6174dec2d6252492596eb3f67a1abae05e4fc4e00a372636ffa5b",
+    "docs/evidence/launch/web-security-local-20260917.json": "5d11fbc5bb6629fbc2981c489abbf9ba22d0189ddfbf5c2cc44ab90fec1ede2e",
+    "db/schema.ts": "9f2d3bececa124d0d5121bff873be931847acf72a8cfb31bd663aedf0ffa0c38"
+  },
+  "rootScope": "Matching router contract + unit test only; Root does not use Sites stage script. Root response checker kept byte-identical to its recorded evidence.",
+  "initialHarnessErrors": [
+    {
+      "case": "Root stage test fixture",
+      "outcome": "Setup tried to read absent Sites-only stage script; corrected scope to Source only. No Root stage pipeline added."
+    },
+    {
+      "case": "canonical Host header attempt",
+      "outcome": "Wrangler retained local asset routing; branch assertion failed. No public runtime pass claimed."
+    },
+    {
+      "case": "Alternate local measurement port",
+      "outcome": "Eight responses passed at 8796 but strict readiness requires 8787. Same final build measured again at 8787; rule unchanged.",
+      "failedLog": "/private/tmp/rock-source-readiness-release-final.log",
+      "correctedLog": "/private/tmp/rock-source-readiness-release-pinned-final.log"
+    },
+    {
+      "case": "Final diff whitespace",
+      "outcome": "Source db/schema.ts had one extra blank EOF line. Removed only that blank line; database:check and git diff --check then passed. No SQL/type definition change.",
+      "failedLog": "/private/tmp/rock-source-readiness-preserved-final.log",
+      "correctedLogs": [
+        "/private/tmp/rock-source-readiness-whitespace-database.log",
+        "/private/tmp/rock-source-readiness-diffcheck-clean.log"
+      ]
+    }
+  ],
+  "publicChanged": false,
+  "currentPublicVersionUnchanged": 111,
+  "newDeviceGrants": 0,
+  "pixelChanged": false,
+  "actualBilling": 0,
+  "newPaidProviderCalls": 0,
+  "wholeGoalComplete": false,
+  "remaining": [
+    "Public v111 header gaps on /sky, /sw.js and JS asset: validate platform asset routing and same deployed candidate; public runtime gate remains blocked",
+    "Unlocked Pixel saved-test acceptance for existing-account replicas, history and foreground synchronization; no main APK reinstall/baseline refresh needed",
+    "Common ABI, durable background work, source/body/biometric protection, production metering/contracts/invoice/collection/author settlement and remaining CORE/RQ/research/SI/U conditions",
+    "GitHub preservation/main integration and appropriate exact-version deployment acceptance remain separate"
+  ],
+  "failedVerifyAttempts": [
+    {
+      "exitCode": 1,
+      "stage": "current public project mismatch",
+      "log": "/private/tmp/rock-source-readiness-full-verify.log"
+    },
+    {
+      "exitCode": 1,
+      "stage": "ecosystem 50/49 coverage mismatch",
+      "log": "/private/tmp/rock-source-readiness-full-verify-current-identity.log"
+    },
+    {
+      "exitCode": 1,
+      "stage": "PROJECTS retained toolkit guide missing",
+      "log": "/private/tmp/rock-source-readiness-full-verify-canonical49.log"
+    },
+    {
+      "exitCode": 1,
+      "stage": "Workflow empty D1 missing agent_delegations",
+      "log": "/private/tmp/rock-source-readiness-full-verify-guide.log"
+    },
+    {
+      "exitCode": 1,
+      "stage": "Mini Astro dependency absent",
+      "log": "/private/tmp/rock-source-readiness-full-verify-restored.log"
+    },
+    {
+      "exitCode": 1,
+      "stage": "API empty D1 missing agent_delegations",
+      "log": "/private/tmp/rock-source-readiness-full-verify-dependencies.log"
+    }
+  ],
+  "browser": {
+    "environment": "local Source production build with synthetic loopback owner only",
+    "origin": "http://127.0.0.1:8796",
+    "miniRoute": "/avocado-mini",
+    "textReadBack": [
+      "設置時の外部給電",
+      "取り外して使うときの携帯電源",
+      "電池方式は未選定",
+      "価格は未確定",
+      "実機試験・製造・一般販売は未承認"
+    ],
+    "directOsLink": "/os",
+    "destinationReadBack": "http://127.0.0.1:8796/os",
+    "beforeScreenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/18/01a14d54-daee-7c30-87a8-faea84641a40/source-mini-readiness-final.png",
+    "afterScreenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/18/01a14d54-daee-7c30-87a8-faea84641a40/source-mini-readiness-contrast-final.png",
+    "beforeScreenshotSha256": "551c6c7223a3cb81abe8cd9899d49f4b169e97ca3856496cc4e70be9313d9647",
+    "afterScreenshotSha256": "87322fef32201fc1c2332717b50cf38581222fa6b8ac52ba06eccf470388f0db",
+    "visualResult": "Body and notice readable on shared ivory/green/bronze palette; exact accepted copy and OS entry preserved",
+    "newAccountOrGrants": 0,
+    "providerOrModelRun": 0,
+    "publicAcceptance": false,
+    "ownedPreviewStopped": true,
+    "ownedTabsClosed": true
+  },
+  "pixelFollowup": {
+    "watch": {
+      "startedAt": "2026-10-22T12:30:19.153229+00:00",
+      "status": "unlock_not_observed",
+      "newInference": 0,
+      "newGrants": 0,
+      "finishedAt": "2026-10-22T12:35:21.943876+00:00"
+    },
+    "readback": {
+      "observedAt": "2026-10-22T12:42:23.018816+00:00",
+      "connected": true,
+      "keyguardShowing": true,
+      "inputRestricted": true,
+      "screenOff": true,
+      "hashes": {
+        "dev.rock.shell": "24b443c0333a6c2a0dc0236be1af17abec4eaf111b814202c35236170c8322c2",
+        "dev.rock.shell.test": "d21e9442aab5661bfe65bd6fa2db58fda46598e04d3fd0596ce03cd3afdb1483"
+      },
+      "foregroundHostRunning": false,
+      "instrumentationRunInThisReadback": false,
+      "privateCredentialRead": false,
+      "dataMutationPerformed": false
+    },
+    "instrumentationRun": false,
+    "accountSyncAccepted": false
+  },
+  "publicMetadataEvidence": "docs/evidence/sites-current-public-observation.json",
+  "localCandidateReadyForFurtherIntegration": true,
+  "afterFullVerifyChanges": {
+    "runtimeBehaviorChanged": false,
+    "changes": [
+      "progress/design/README/evidence metadata",
+      "one extra blank EOF line removed from retained Source db/schema.ts"
+    ],
+    "checks": [
+      "project:check",
+      "baseline:check",
+      "design:check",
+      "39 release-readiness tests",
+      "release readiness CLI",
+      "database:check",
+      "git diff --check"
+    ],
+    "frozenGitCiClaim": false
+  },
+  "snapshotRole": "historical_local_candidate_before_source_asset_security_followup",
+  "latestAssetSecurityFollowup": "docs/evidence/source-asset-security.json"
+}

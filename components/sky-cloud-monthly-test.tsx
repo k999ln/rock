@@ -9,11 +9,11 @@ export default function SkyCloudMonthlyTest(){
  const [data,setData]=useState<Snapshot>({invoices:[],sources:[],items:[]});const [busy,setBusy]=useState(false);const [message,setMessage]=useState('');
  async function read(){const res=await fetch('/api/sky/cloud-monthly-test/account',{cache:'no-store'});const value=await res.json() as Snapshot;if(!res.ok)throw new Error(value.error??'読み込めません。');return value;}
  useEffect(()=>{let active=true;void read().then(value=>{if(active)setData(value);}).catch(error=>{if(active)setMessage(String(error));});return()=>{active=false;};},[]);
- async function act(body:unknown){setBusy(true);setMessage('');try{const res=await fetch('/api/sky/cloud-monthly-test/account',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const result=await res.json() as {error?:string};if(!res.ok)throw new Error(result.error??'結果不明です。');setData(await read());setMessage('Stripe testとSkyの状態を更新しました。');}catch(error){setMessage(String(error));}finally{setBusy(false);}}
+ async function act(body:unknown){setBusy(true);setMessage('');try{const res=await fetch('/api/sky/cloud-monthly-test/account',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const result=await res.json() as {error?:string};if(!res.ok)throw new Error(result.error??'結果不明です。');setData(await read());setMessage('Stripe testとsmisの状態を更新しました。');}catch(error){setMessage(String(error));}finally{setBusy(false);}}
  const style={padding:10,margin:8,borderRadius:8,border:'1px solid #64748b',cursor:'pointer'};
  const amount=(minor:number,currency:string)=>new Intl.NumberFormat('ja-JP',{style:'currency',currency}).format(currency==='JPY'?minor:minor/100);
  return <main style={{maxWidth:900,margin:'40px auto',padding:24,fontFamily:'system-ui',background:'#f8fafc',color:'#172033'}}>
- <p>Sky / Cloud使用量とStripe test</p><h1>使用量から、月次請求へ</h1><p><strong>本番課金は無効です。</strong> Stripe sandboxへの請求を作成します。保存済み使用量にはfixtureも含められるため、この画面だけでは実Cloud実行を証明しません。</p>
+ <p>smis / Cloud使用量とStripe test</p><h1>使用量から、月次請求へ</h1><p><strong>本番課金は無効です。</strong> Stripe sandboxへの請求を作成します。保存済み使用量にはfixtureも含められるため、この画面だけでは実Cloud実行を証明しません。</p>
  <SkyPlanEstimate/>
  <button style={style} disabled={busy} onClick={()=>void read().then(setData).catch(error=>setMessage(String(error)))}>最新状態を再取得</button><output>{busy?'処理中…':message}</output>
  <h2>1. 確定済みCloud使用量</h2>{data.sources.length===0&&<p>使用量はまだありません。既存のAgent実行・予算承認・最終usage照合を完了してください。</p>}
@@ -24,6 +24,6 @@ export default function SkyCloudMonthlyTest(){
  {invoice.hosted_invoice_url&&<a href={invoice.hosted_invoice_url} target="_blank" rel="noreferrer">Stripeのテスト請求書を開く</a>}
  </article>)}
  <h2>使用明細</h2><ul>{data.items.map(item=><li key={item.source_id}>{item.provider_id} · {amount(item.amount_minor,item.currency)} · 価格版 {item.pricing_version}</li>)}</ul>
- <p>今月の締めもテストとして操作できます。Stripeには月次合計を送り、個別usageと原稿はSky側に保持します。</p>
+ <p>今月の締めもテストとして操作できます。Stripeには月次合計を送り、個別usageと原稿はsmis側に保持します。</p>
  </main>;
 }

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
@@ -36,7 +37,8 @@ void test('legacy install roots stay on the service worker without proxying URL 
   assert.equal(upstream.length, 4);
 });
 
-void test('Sky, assets and APIs stay native while Mini keeps its home and preorder paths', () => {
+void test('Sky assets and APIs stay native while Mini keeps preorder paths', () => {
+  assert.equal(routesToSky('/company-mark.png'), true);
   for (const path of [
     '/sky',
     '/sky/outputs',
@@ -163,6 +165,49 @@ void test('Mini proxy preserves the browser hostname and does not forward Sky id
     'https://avoado.si/preorder/confirm/',
   );
   assert.equal(response.headers.has('set-cookie'), false);
+});
+
+void test('MATOU public aliases redirect temporarily without capturing adjacent or mutable paths', async () => {
+  let skyCalls = 0;
+  let miniCalls = 0;
+  const app = withMiniSite(
+    { fetch: async () => { skyCalls++; return new Response('sky'); } },
+    async () => { miniCalls++; return new Response('mini'); },
+  );
+
+  for (const [path, destination] of [
+    ['/MATOU', '/'],
+    ['/MATOU/', '/'],
+    ['/MATOU/giving', '/giving'],
+    ['/MATOU/giving/', '/giving/'],
+    ['/MATOU/story', '/story'],
+    ['/MATOU/story/', '/story/'],
+  ]) {
+    for (const method of ['GET', 'HEAD']) {
+      const response = await app.fetch(new Request(`https://avoado.si${path}?source=outreach`, { method }));
+      assert.equal(response.status, 302, `${method} ${path}`);
+      assert.equal(
+        response.headers.get('location'),
+        `https://matou-kimono-closet.noellesugar1.chatgpt.site${destination}?source=outreach`,
+      );
+      assert.equal(response.headers.get('cache-control'), 'no-store');
+    }
+  }
+
+  assert.equal(skyCalls, 0);
+  assert.equal(miniCalls, 0);
+
+  const adjacent = await app.fetch(new Request('https://avoado.si/MATOUx'));
+  assert.equal(await adjacent.text(), 'mini');
+  const privatePath = await app.fetch(new Request('https://avoado.si/MATOU/api/session'));
+  assert.equal(await privatePath.text(), 'mini');
+  const mutation = await app.fetch(new Request('https://avoado.si/MATOU', {
+    method: 'POST',
+    headers: { origin: 'https://avoado.si' },
+    body: '{}',
+  }));
+  assert.equal(await mutation.text(), 'mini');
+  assert.equal(miniCalls, 3);
 });
 
 void test('cross-origin Mini mutation is rejected before upstream dispatch', async () => {
@@ -324,3 +369,167 @@ void test('OS and Sky documents point to their own install manifests', async () 
     /href="\/os\/sky\/campus\/nyu\/manifest\.webmanifest"/,
   );
 });
+
+void test('retired duplicate OS pages redirect before Mini proxy and preserve the guide', async () => {
+ let proxied=0;const app=withMiniSite({fetch:async()=>new Response('native-guide')},async()=>{proxied++;return new Response('mini');});
+ for(const path of ['/rockstaros','/rockstaros/','/rockstaros/crowdfunding']) {const r=await app.fetch(new Request(`https://avoado.si${path}?entry=legacy`));assert.equal(r.status,308);assert.equal(r.headers.get('location'),'https://avoado.si/os?entry=legacy');}
+ assert.equal(await(await app.fetch(new Request('https://avoado.si/rockstaros/guide'))).text(),'native-guide');assert.equal(proxied,0);
+});
+
+void test('main-domain root runs WebOS and preserves the existing authenticated request', async () => {
+  const request = new Request('https://avoado.si/', {headers: {cookie: 'fixture-session=1'}});
+  let observed;
+  const app = withMiniSite({fetch: async (value) => {observed = value; return new Response('webos-home');}}, async () => {throw new Error('Root must not proxy Mini');});
+  const result = await app.fetch(request, {}, {});
+  assert.equal(result.status, 200);
+  assert.equal(await result.text(), 'webos-home');
+  assert.equal(observed, request);
+  assert.equal(observed.headers.get('cookie'), 'fixture-session=1');
+});
+
+void test('local common OS links preserve canonical Sky aliases and request ownership', async () => {
+  for (const host of ['localhost:8796', '127.0.0.1:8796', '[::1]:8796']) {
+    const seen = [];
+    const app = withMiniSite({ fetch: async (request) => {
+      seen.push(request);
+      return Response.json({ path: new URL(request.url).pathname });
+    } }, () => { throw new Error('Local Sky must not proxy to Mini'); });
+    const response = await app.fetch(new Request(`http://${host}/os/sky/agents?source=common-nav`, {
+      headers: { cookie: 'synthetic-local-session=1' },
+    }));
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).path, '/sky/agents');
+    assert.equal(seen[0].url, `http://${host}/sky/agents?source=common-nav`);
+    assert.equal(seen[0].headers.get('cookie'), 'synthetic-local-session=1');
+    const redirect = await app.fetch(new Request(`http://${host}/sky/agents?revision=2`));
+    assert.equal(redirect.status, 308);
+    assert.equal(redirect.headers.get('location'), `http://${host}/os/sky/agents?revision=2`);
+    const post = new Request(`http://${host}/os/sky/agents`, { method: 'POST',
+      headers: { origin: `http://${host}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ synthetic: true }),
+    });
+    await app.fetch(post);
+    assert.equal(seen.at(-1).headers.get('origin'), `http://${host}`);
+    assert.equal(seen.at(-1).method, 'POST');
+    assert.deepEqual(await seen.at(-1).json(), { synthetic: true });
+  }
+});
+
+void test('every outer OS route enforces the exact source security policy, including redirects and errors', async () => {
+  const policy = JSON.parse(readFileSync(new URL('../data/web-security-policy.json', import.meta.url), 'utf8'));
+  const app = withMiniSite({ fetch: request => new Response('synthetic', {
+    status: new URL(request.url).searchParams.has('fail') ? 503 : 200,
+    headers: { 'content-type': 'text/plain', 'cache-control': 'private, no-store' },
+  }) }, () => new Response('mini', { headers: { 'content-type': 'text/html' } }));
+  for (const [url, expectedStatus] of [
+    ['https://avoado.si/sky', 308],
+    ['https://avoado.si/rockstaros', 308],
+    ['https://avoado.si/sw.js', 200],
+    ['https://avoado.si/os/eve?fail=1', 503],
+    ['https://avoado.si/api/eve/history', 200],
+    ['https://columbia.avoado.si/api/work-jobs', 409],
+    ['https://fixture.chatgpt.site/api/work-jobs', 409],
+    ['https://avoado.si/preorder/', 200],
+  ]) {
+    const response = await app.fetch(new Request(url));
+    assert.equal(response.status, expectedStatus, url);
+    for (const [key, value] of Object.entries(policy.universalHeaders))
+      assert.equal(response.headers.get(key), value, `${url} ${key}`);
+  }
+  const worker = await app.fetch(new Request('https://avoado.si/sw.js'));
+  assert.equal(worker.headers.get('cache-control'), policy.routeHeaders['/sw.js']['Cache-Control']);
+  assert.equal(worker.headers.get('Service-Worker-Allowed'), '/');
+  const privateResponse = await app.fetch(new Request('https://avoado.si/api/eve/history'));
+  assert.equal(privateResponse.headers.get('cache-control'), 'private, no-store');
+});
+
+void test('outer response protection retains restrictive export CSP and enforces the shared policy as well', async () => {
+  const exportPolicy = "default-src 'none'; sandbox; form-action 'none'; frame-ancestors 'none'";
+  const app = withMiniSite({ fetch: () => new Response('<pre>synthetic result</pre>', { headers: {
+    'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
+    'content-disposition': 'attachment; filename="result.html"', 'content-security-policy': exportPolicy,
+  } }) });
+  const response = await app.fetch(new Request('https://avoado.si/api/sky/exports/fixture'));
+  const policy = JSON.parse(readFileSync(new URL('../data/web-security-policy.json', import.meta.url), 'utf8'));
+  assert.equal(response.headers.get('content-security-policy'), `${exportPolicy}, ${policy.universalHeaders['Content-Security-Policy']}`);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  assert.match(response.headers.get('content-disposition'), /^attachment;/);
+  assert.equal(await response.text(), '<pre>synthetic result</pre>');
+});
+
+void test('outer response protection preserves streaming bodies and private cache semantics', async () => {
+  let writer;
+  const stream = new ReadableStream({ start(controller) { writer = controller; } });
+  const app = withMiniSite({ fetch: () => new Response(stream, { headers: {
+    'content-type': 'text/event-stream', 'cache-control': 'private, no-store',
+    'x-request-id': 'synthetic-stream-1', 'content-security-policy': 'unsafe-source-value',
+  } }) });
+  const response = await app.fetch(new Request('https://avoado.si/api/sky/stream'));
+  assert.equal(response.headers.get('cache-control'), 'private, no-store');
+  assert.equal(response.headers.get('x-request-id'), 'synthetic-stream-1');
+  assert.equal(response.body.locked, false);
+  const reader = response.body.getReader();
+  const pending = reader.read();
+  writer.enqueue(new TextEncoder().encode('data: synthetic\n\n'));
+  assert.equal(new TextDecoder().decode((await pending).value), 'data: synthetic\n\n');
+  writer.close();
+  assert.equal((await reader.read()).done, true);
+});
+
+void test('public build assets use the configured asset binding and preserve content and cache metadata', async () => {
+  const observed = [];
+  const app = withMiniSite({ fetch: () => new Response('framework missing static', {status:404}) });
+  const env = { ASSETS: { async fetch(request) {
+    observed.push(request);
+    return new Response(request.method === 'HEAD' ? null : 'fixture-js', {status:200, headers:{
+      'content-type':'application/javascript', 'cache-control':'public, max-age=31536000, immutable', etag:'"asset-fixture"',
+    }});
+  } } };
+  for (const method of ['GET','HEAD']) {
+    const request = new Request('https://avoado.si/_next/static/chunks/fixture.js?version=1', {method,headers:{'if-none-match':'"prior"'}});
+    const response = await app.fetch(request, env, {});
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), method === 'HEAD' ? '' : 'fixture-js');
+    assert.equal(response.headers.get('etag'), '"asset-fixture"');
+    assert.equal(response.headers.get('cache-control'), 'public, max-age=31536000, immutable');
+    assert.equal(response.headers.get('content-type'), 'application/javascript');
+    assert.equal(observed.at(-1), request);
+    assert.equal(observed.at(-1).headers.get('if-none-match'), '"prior"');
+    assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+  }
+});
+
+void test('asset binding never becomes a generic API, method, image optimizer or Mini proxy', async () => {
+  let assets = 0, sky = 0, mini = 0;
+  const app = withMiniSite({fetch:()=>{sky++; return new Response('app');}}, ()=>{mini++;return new Response('mini');});
+  const env = {ASSETS:{fetch:()=>{assets++;return new Response('asset');}}};
+  for (const path of ['/api/eve/history','/_next/image?url=synthetic','/_next/static%2Fapi','/_next/static/../../api/eve/history'])
+    assert.equal(await(await app.fetch(new Request('https://avoado.si'+path),env,{})).text(), 'app');
+  assert.equal(await(await app.fetch(new Request('https://avoado.si/_next/static/chunks/fixture.js',{method:'POST',body:'synthetic'}),env,{})).text(),'app');
+  assert.equal(await(await app.fetch(new Request('https://avoado.si/_astro/mini.css'),env,{})).text(),'mini');
+  assert.equal(await(await app.fetch(new Request('https://avoado.si/_next/static/chunks/fixture.js'),{},{})).text(),'app');
+  assert.equal(assets,0); assert.equal(sky,6); assert.equal(mini,1);
+});
+
+void test('build asset cache policy covers successful reads but never promotes private, cookie or missing responses', async () => {
+  const policy = JSON.parse(readFileSync(new URL('../data/web-security-policy.json', import.meta.url), 'utf8'));
+  const app = withMiniSite({fetch:()=>new Response('unreachable')});
+  for (const [status, cache, cookie, expected] of [
+    [200,'public, max-age=0, must-revalidate',false,policy.routeHeaders['/_next/static/*']['Cache-Control']],
+    [206,'public, max-age=0, must-revalidate',false,policy.routeHeaders['/_next/static/*']['Cache-Control']],
+    [304,'public, max-age=0, must-revalidate',false,policy.routeHeaders['/_next/static/*']['Cache-Control']],
+    [200,'private, no-store',false,'private, no-store'],
+    [200,'no-store',false,'no-store'],
+    [200,'public, max-age=0',true,'public, max-age=0'],
+    [404,'public, max-age=0',false,'public, max-age=0'],
+  ]) {
+    const headers = {'cache-control':cache,etag:'"fixed-asset"','x-fixture':'retained'};
+    if (cookie) headers['set-cookie']='fixture=synthetic';
+    const response = await app.fetch(new Request('https://avoado.si/_next/static/chunks/fixture.js'),{ASSETS:{fetch:()=>new Response(status===304?null:'fixture',{status,headers})}},{});
+    assert.equal(response.status,status); assert.equal(response.headers.get('cache-control'),expected);
+    assert.equal(response.headers.get('etag'),'"fixed-asset"'); assert.equal(response.headers.get('x-fixture'),'retained');
+    assert.equal(await response.text(),status===304?'':'fixture');
+  }
+});
+
+void test('retired duplicate presentations use canonical product domains and retain same-origin Studio query state',async()=>{const app=withMiniSite({fetch:()=>new Response('app')},()=>new Response('mini'));const mini=await app.fetch(new Request('https://avoado.si/avocado-mini?private=do-not-forward'),{},{});assert.equal(mini.status,308);assert.equal(mini.headers.get('location'),'https://avocadomini.si/');const studio=await app.fetch(new Request('https://avoado.si/studio?tool=fixture'),{},{});assert.equal(studio.status,308);assert.equal(studio.headers.get('location'),'https://avoado.si/os/sky/publish?tool=fixture');});

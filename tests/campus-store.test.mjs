@@ -1,7 +1,8 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { build } from 'esbuild';
 import { CampusError, campusTagId, safeRelativeCampusDestination } from '../lib/campus.ts';
 import { loadRouteFixture } from './route-fixture.mjs';
@@ -10,7 +11,7 @@ const { campusStore } = await import('data:text/javascript;base64,' + Buffer.fro
 function fixture(t, beforeRun = async () => {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync('drizzle').filter((name) => name.endsWith('.sql')).sort()) sqlite.exec(readFileSync('drizzle/' + name, 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const db = { prepare(sql) {
     const statement = sqlite.prepare(sql); let args = [];
     return { bind(...values) { args = values; return this; },

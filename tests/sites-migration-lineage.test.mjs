@@ -89,3 +89,50 @@ await test('main packaging replaces the plugin default instead of mixing lineage
     'main-20',
   );
 });
+
+for (const operation of [syncSitesMigrationLineage, syncSitesPackageSourceLineage]) {
+  await test(`${operation.name} rejects a main package used for Columbia before replacing files`, async t => {
+    const root=await mkdtemp(join(tmpdir(),'sites-wrong-lineage-'));
+    t.after(async()=>{const {rm}=await import('node:fs/promises');await rm(root,{recursive:true,force:true});});
+    await mkdir(join(root,'drizzle'),{recursive:true});
+    await mkdir(join(root,'dist/.openai/drizzle'),{recursive:true});
+    await writeFile(join(root,'drizzle/0020_main_legacy_columns.sql'),'main-only');
+    await writeFile(join(root,'drizzle/0021_sites_schema_convergence.sql'),'main-21');
+    await writeFile(join(root,'dist/.openai/drizzle/owner-artifact.txt'),'keep-existing-output');
+    await assert.rejects(()=>operation({root,projectId:COLUMBIA_SITE_PROJECT_ID}),/main.*Columbia|Columbia.*main/);
+    assert.equal(await readFile(join(root,'drizzle/0020_main_legacy_columns.sql'),'utf8'),'main-only');
+    assert.equal(await readFile(join(root,'dist/.openai/drizzle/owner-artifact.txt'),'utf8'),'keep-existing-output');
+  });
+}
+
+await test('a matching Columbia source still packages its own unchanged lineage',async t=>{
+  const root=await mkdtemp(join(tmpdir(),'sites-columbia-source-'));
+  t.after(async()=>{const {rm}=await import('node:fs/promises');await rm(root,{recursive:true,force:true});});
+  await mkdir(join(root,'drizzle/meta'),{recursive:true});
+  await writeFile(join(root,'drizzle/0013_sky_provider_connections.sql'),'columbia-13');
+  await writeFile(join(root,'drizzle/0020_sites_schema_convergence.sql'),'columbia-20');
+  await writeFile(join(root,'drizzle/meta/_journal.json'),'{"entries":[]}');
+  const source=await syncSitesPackageSourceLineage({root,projectId:COLUMBIA_SITE_PROJECT_ID});
+  const bundle=await syncSitesMigrationLineage({root,projectId:COLUMBIA_SITE_PROJECT_ID});
+  assert.deepEqual(source.sqlFiles,['0013_sky_provider_connections.sql','0020_sites_schema_convergence.sql']);
+  assert.deepEqual(bundle.sqlFiles,source.sqlFiles);
+  assert.equal(await readFile(join(root,'dist/.openai/drizzle/0013_sky_provider_connections.sql'),'utf8'),'columbia-13');
+  assert.equal(await readFile(join(root,'dist/.openai/drizzle/meta/_journal.json'),'utf8'),'{"entries":[]}');
+});
+
+await test('an absent or mixed main source cannot erase an existing package',async t=>{
+  const root=await mkdtemp(join(tmpdir(),'sites-main-source-'));
+  t.after(async()=>{const {rm}=await import('node:fs/promises');await rm(root,{recursive:true,force:true});});
+  await mkdir(join(root,'drizzle-main'),{recursive:true});
+  await mkdir(join(root,'dist/.openai/drizzle'),{recursive:true});
+  await writeFile(join(root,'dist/.openai/drizzle/keep.sql'),'existing-build');
+  for(const mixed of [false,true]){
+    if(mixed){
+      await writeFile(join(root,'drizzle-main/0013_sky_provider_connections.sql'),'wrong-site');
+      await writeFile(join(root,'drizzle-main/0020_main_legacy_columns.sql'),'main');
+      await writeFile(join(root,'drizzle-main/0021_sites_schema_convergence.sql'),'main');
+    }
+    await assert.rejects(()=>syncSitesMigrationLineage({root,projectId:CANONICAL_MAIN_SITE_PROJECT_ID}),/absent or mixes/);
+    assert.equal(await readFile(join(root,'dist/.openai/drizzle/keep.sql'),'utf8'),'existing-build');
+  }
+});

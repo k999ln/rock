@@ -115,11 +115,11 @@ void test('environment preparation cannot open a billable window or create an em
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
+  for (const name of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url))
     .filter((x) => /^\d.*\.sql$/.test(x))
     .sort())
     sqlite.exec(
-      readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'),
+      readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/' + name, import.meta.url), 'utf8'),
     );
   function statement(sql, values = []) {
     return {
@@ -465,11 +465,11 @@ void test('provision resumes one persisted canonical workspace after interrupted
     const handle = new TestD1(path, { migrate: false });
     handles.push(handle);
     if (migrate)
-      for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
+      for (const name of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url))
         .filter((name) => /^\d.*\.sql$/.test(name))
         .sort())
         handle.database.exec(
-          readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'),
+          readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/' + name, import.meta.url), 'utf8'),
         );
     const db = {
       prepare(sql) {
@@ -636,9 +636,9 @@ void test('ready activation resumes once after its receipt is saved and SQLite i
     const db = new TestD1(path, { migrate: false });
     handles.push(db);
     if (migrate)
-      for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
+      for (const name of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url))
         .filter((name) => /^\d.*\.sql$/.test(name)).sort())
-        db.database.exec(readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'));
+        db.database.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/' + name, import.meta.url), 'utf8'));
     const workspaceRow = () => db.database.prepare(
       "SELECT * FROM sky_linux_service_documents WHERE owner_user_id='owner' AND kind='workspace'",
     ).get();

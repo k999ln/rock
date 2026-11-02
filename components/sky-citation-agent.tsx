@@ -81,9 +81,9 @@ export default function SkyCitationAgent() {
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  return <WorkspaceShell title="Sky" contentClassName={styles.shell} tone="sky">
+  return <WorkspaceShell title="smis" contentClassName={styles.shell} tone="sky">
     <main className={styles.page}>
-      <nav className={styles.breadcrumb}><Link href="/sky">Sky</Link><span>/</span><Link href="/sky/marketplace">Agent</Link><span>/</span>出典整理</nav>
+      <nav className={styles.breadcrumb}><Link href="/sky">smis</Link><span>/</span><Link href="/sky/marketplace">Agent</Link><span>/</span>出典整理</nav>
       <header className={styles.header}>
         <p>FIRST-PARTY AGENT · FREE</p>
         <h1>出典を整えて、成果として残す。</h1>
@@ -106,15 +106,15 @@ export default function SkyCitationAgent() {
             ブラウザで実行する
           </button>
           {result && !result.jobId && <button className={styles.save} type="button" disabled={busy} onClick={() => void save()}>
-            {busy ? '保存を確認中…' : 'Skyに成果を保存する'}
+            {busy ? '保存を確認中…' : 'smisに成果を保存する'}
           </button>}
-          {signIn && <p role="alert" className={styles.notice}>Skyへの保存には<Link href="/signin-with-chatgpt?return_to=%2Fos%2Fsky%2Fagents%2Fcitations" target="_blank" rel="noopener noreferrer">サインイン</Link>が必要です。結果はこの画面に残ります。</p>}
+          {signIn && <p role="alert" className={styles.notice}>smisへの保存には<Link href="/signin-with-chatgpt?return_to=%2Fos%2Fsky%2Fagents%2Fcitations" target="_blank" rel="noopener noreferrer">サインイン</Link>が必要です。結果はこの画面に残ります。</p>}
           {error && <p role="alert" className={styles.notice}>{error}</p>}
         </section>
         <section className={styles.panel} aria-label="Agentの成果">
-          <div className={styles.panelHead}><span>02 / 成果</span><strong>{result ? (result.jobId ? 'Skyに保存済み' : 'この画面のみ・未保存') : '実行待ち'}</strong></div>
+          <div className={styles.panelHead}><span>02 / 成果</span><strong>{result ? (result.jobId ? 'smisに保存済み' : 'この画面のみ・未保存') : '実行待ち'}</strong></div>
           {result ? <>
-            <p className={styles.meta}>出典リンク {result.output.sourceCount}件 · {result.jobId ? '本人のSky成果へ保存しました' : '再読み込みすると結果は消えます。保存にはサインインが必要です'}</p>
+            <p className={styles.meta}>出典リンク {result.output.sourceCount}件 · {result.jobId ? '本人のsmis成果へ保存しました' : '再読み込みすると結果は消えます。保存にはサインインが必要です'}</p>
             <pre className={styles.output}>{result.output.text}</pre>
             {result.output.warnings.map((warning) => <p className={styles.warning} key={warning}>{warning}</p>)}
             <div className={styles.actions}>

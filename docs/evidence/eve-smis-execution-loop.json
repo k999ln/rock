@@ -1,0 +1,141 @@
+{
+  "recordedAt": "2026-10-23T10:31:08.567740+00:00",
+  "taskIds": [
+    "WEB04",
+    "HOME01",
+    "SKY21",
+    "OS10"
+  ],
+  "status": "implementation_integrated_actual_browser_and_pixel_loop_pending",
+  "contract": {
+    "path": "Eve purpose review -> personal library -> same-ID agent preparation -> exact presence readback -> bounded local text execution -> account draft -> smis reuse",
+    "sameAgentOnReuse": true,
+    "revisionAndOwnerFenced": true,
+    "modelDownloadsOnRegistration": false,
+    "arbitraryShell": false,
+    "cloudFallback": false,
+    "outputTokenLimit": 256,
+    "creationDefinition": "confirmed purpose becomes a deterministic text role; model inference produces the draft, not a new trained model or arbitrary software"
+  },
+  "checks": {
+    "focusedTests": {
+      "tests": 58,
+      "pass": 58,
+      "fail": 0,
+      "scope": "synthetic route/SQLite/library/preparation/core; no actual inference"
+    },
+    "fullVerify": {
+      "status": "passed",
+      "exitCode": 0,
+      "log": "/private/tmp/eve-smis-public-verify-final.log",
+      "tests": 2603,
+      "pass": 2602,
+      "skip": 1,
+      "fail": 0,
+      "workApiAssertions": 1621,
+      "csvAssertions": 385,
+      "assetReferences": 218,
+      "missingAssets": 0,
+      "finalNavigationFocused": {
+        "tests": 10,
+        "pass": 10,
+        "fail": 0
+      },
+      "finalTypecheck": "passed"
+    },
+    "focusedLatest": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "scope": "navigation and stored-agent registration fixtures; not real UI/model"
+    },
+    "root": {
+      "fullVerifyExitCode": 0,
+      "log": "/private/tmp/eve-smis-root-verify.log",
+      "tests": 1688,
+      "pass": 1687,
+      "skip": 1,
+      "fail": 0,
+      "workApiAssertions": 2152,
+      "csvAssertions": 113,
+      "finalFocused": {
+        "tests": 10,
+        "pass": 10,
+        "fail": 0
+      },
+      "typecheck": "passed",
+      "scope": "shared root full invocation succeeded; focused navigation changes and final typecheck also passed; not claimed a fixed publication candidate"
+    },
+    "compiledWire": {
+      "status": "passed",
+      "assertions": 169,
+      "scope": "copied compiled Worker, real D1/auth/library/queue, actual native Java preparation HTTP/TLS/private Unix bridge and production Linux manager with synthetic child output; not browser/Android/real model/physical acceptance",
+      "workerInventorySha256": "45bce2062374951bb8c81d03bd581d1c89640ae4379b1ebf96d1556dd476d308",
+      "nativeRegistrationWire": true,
+      "restartPreservedHistoryAndExecution": true,
+      "unknownStopWaitedForReceipt": true,
+      "externalCalls": 0,
+      "realModelCalls": 0,
+      "physicalAccepted": false,
+      "payments": 0,
+      "log": "/private/tmp/eve-smis-compiled-wire2.log",
+      "firstAttempt": {
+        "log": "/private/tmp/eve-smis-compiled-wire.log",
+        "reason": "Source-specific restored schema flag was omitted; fixed invocation passed. Not a production migration acceptance."
+      }
+    }
+  },
+  "actualAcceptance": {
+    "browser": false,
+    "pixelModelInference": false,
+    "sameAccountTwoClients": false,
+    "resultReceivedOnWebAndPixel": false,
+    "publicDeployment": false
+  },
+  "blockers": [
+    "CUA native pipe closed even after owner reopened Eve; no alternate UI automation used",
+    "Pixel Linux and owner sync stopped at initial read-only observation; owner start requested"
+  ],
+  "nextAction": "Validate source, publish exact candidate, inspect existing guest preparation support and actual inference without replacing keys/state/models; then perform the same-account Eve/smis loop on both clients. Never convert synthetic acceptance to physical/UI success.",
+  "nativePreflight": {
+    "recordedAt": "2026-10-23T10:40:50.820091+00:00",
+    "readOnlyTestApkBuild": "passed",
+    "testApkInstalled": true,
+    "mainApkUpdatedThisTurn": false,
+    "preflight": {
+      "test": "EveOneLoopPreflightTest.inspectExistingRuntime",
+      "run": 1,
+      "pass": 0,
+      "fail": 1,
+      "reason": "Owner unlock required",
+      "unlocked": false,
+      "existingKeysAndPairing": true,
+      "accountLinkedWhileLocked": false,
+      "credentialsExported": false,
+      "inferenceStarted": false
+    },
+    "guestCandidate": {
+      "manifestSha256": "0b7a37e59a299d06d650e3919d4b34678b5db2ed32f244101da401d815f6ed52",
+      "installed": false,
+      "runtimeBridgeTests": {
+        "tests": 29,
+        "pass": 29,
+        "fail": 0,
+        "log": "/private/tmp/eve-smis-pixel-runtime-focused2.log"
+      }
+    },
+    "browserTool": {
+      "available": false,
+      "error": "native pipe closed before response",
+      "reopenAndRuntimeResetTried": true
+    },
+    "installedMainApkSha256": "f069a21c09532470cd1e84b47b76e9727ee9101945fa2dc9f82ccf7a0f7101a8"
+  },
+  "gitReadback": {
+    "main": "7304e449cd7938b098b0b1ce481a06501db8d795",
+    "branch": "codex/esim-cloud-access",
+    "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "githubSavedThisTurn": false,
+    "mainIntegratedThisTurn": false
+  }
+}

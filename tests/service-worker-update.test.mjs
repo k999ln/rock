@@ -157,21 +157,17 @@ void test('a closed sender cannot authorize activation using an origin supplied 
 });
 
 void test('activation keeps only the selected shell cache and removes prior RockstarOS generations', async () => {
-  const harness = workerHarness([
-    'loop-app-v3',
-    'rockstaros-shell-v3',
-    'rockstaros-shell-v4',
-    'rockstaros-shell-v5',
-    'another-product-cache',
-  ]);
+  const match = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8').match(/const CACHE = '([^']+)';/);
+  assert.ok(match);
+  const selected = match[1];
+  const previous = ['loop-app-v3', 'rockstaros-shell-v1', 'rockstaros-shell-v3', 'rockstaros-shell-v4'].filter(name => name !== selected);
+  const harness = workerHarness([...previous, selected, 'another-product-cache']);
   let work;
   harness.listeners.get('activate')({ waitUntil(value) { work = value; } });
   await Promise.resolve(work);
-  assert.deepEqual(harness.deleted.sort((left, right) => left.localeCompare(right)), [
-    'loop-app-v3',
-    'rockstaros-shell-v3',
-    'rockstaros-shell-v4',
-  ]);
+  assert.deepEqual(harness.deleted.sort((left, right) => left.localeCompare(right)), previous.sort((left, right) => left.localeCompare(right)));
+  assert.ok(!harness.deleted.includes(selected));
+  assert.ok(!harness.deleted.includes('another-product-cache'));
 });
 
 void test('API, sign-in/out and foreign-origin requests are never intercepted by the PWA cache', () => {

@@ -8,8 +8,8 @@
 | --- | --- | --- | --- |
 | **avokado** | 会社・ブランド | — | avocado, AVOKADO（大文字はロゴ表記のみ可） |
 | **mii** | 建築・暮らしに埋め込む物理端末 | avocadomini.si（将来 mii.si を検討） | avocadoMini, avocado mini, Mini, R5（R5は設計世代の番号として内部で残す） |
-| **Eve** | 話しかける相手。依頼→仕事→成果の窓口 | eve.si（PDF Issue01の表記。現行の総合入口 avoado.si との統合は未決） | Zema（旧名。仕事の実行層の意味で内部名に残す）, イブ |
-| **Sky** | Agent・Tool・情報を見つけて接続する場所 | avoado.si/sky | スカイ |
+| **Eve** | 話しかける相手。依頼→仕事→成果の窓口 | avoado.si/os/eve（eve.si は過去PDFの表記） | Zema（旧名。仕事の実行層の意味で内部名に残す）, イブ |
+| **Noah** | 情報・Agent・Tool・コミュニティを見つけてEveへ渡す公開入口 | avoado.si/#timeline | Jennifer, Smith, Sky, smis（公開画面の旧名） |
 | **RockstarOS** | どのハードでも同じ実行基盤。端末名として表示してよい | — | Rockstar OS, Rock, rock, rocketstar（別物: docs/rocketstar-design は旧設計資料）, dev.rock（内部識別子として残す） |
 | **Pro** | AI専用PC（今は構造整理の対象外） | avocadopro.si | avocado Pro, avokadoPro |
 
@@ -42,3 +42,5 @@
 1. 表示文字列と設計書 → 先に直す（Codex task 03）。
 2. コード識別子（`smith`, `jennifer`, `avocado-mini`）→ 別タスクで、import全置換＋テスト通過を条件に直す（Codex task 04）。旧名は型エイリアスで1世代残す。
 3. 外部ID（API path、D1 table、enum、環境変数）→ 変えない。変える場合は互換レイヤーと移行手順を同じPRに入れる。
+
+公開UIはEveとNoah。内部Noaと公開Noahを同一の識別子変更として扱わず、API・保存契約は維持する。

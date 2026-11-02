@@ -40,24 +40,24 @@ export default function AmcSkyLaunch({ disabled, onSave, savedGoal, initialTaskI
     const found = plan.tasks.find((item) => item.id === id);
     if (found) { setSquadId(found.squadId); setStatusFilter('all'); setTaskId(id); }
   }
-  return <section aria-label="Sky完全ローンチ専用計画">
-    <p role="note">このmainにはSky計画の参照入力が{integration.missingInputs.length}件未統合です。計画は準備用で、該当任務の実行前に入力の統合・照合が必要です。</p>
+  return <section aria-label="smis完全ローンチ専用計画">
+    <p role="note">このmainにはsmis計画の参照入力が{integration.missingInputs.length}件未統合です。計画は準備用で、該当任務の実行前に入力の統合・照合が必要です。</p>
     <div className={styles.sectionHeading}>
       <div><p className={styles.eyebrow}>SKY LAUNCH / PLAN {plan.revision}</p>
-        <h2>Skyを、ローンチできる状態へ。</h2></div>
+        <h2>smisを、ローンチできる状態へ。</h2></div>
       <span className={styles.badge}>受入前</span>
     </div>
     <p>{plan.goal}</p>
     <p className={styles.muted}>12部隊・36件のローンチ準備＋公開後確認1件。原本を保持し、SKY-DIR-002の具体指示を別版で表示します。{progress ? ` 本人の保存済みGoal：${progress.id} / revision ${progress.revision}` : " 原本を閲覧中です。本人の進捗は保存したGoalを選択してください。"}</p>
     <div className={styles.metrics}>
-      <div><strong>12</strong><span>Sky専用の部隊</span></div>
+      <div><strong>12</strong><span>smis専用の部隊</span></div>
       <div><strong>{progress?.tasks.filter(t=>t.status==='done').length ?? 0} / 36</strong><span>{progress ? '本人の受入記録' : '原本の受入記録'}</span></div>
       <div><strong>未検証</strong><span>実Provider・本番</span></div>
       <div><strong>手動照合</strong><span>他担当・共有仕様の更新</span></div>
     </div>
     <p className={styles.warning}>既存コードや過去のテスト成功を、今回のローンチ受入へ繰り越していません。サーバーの最新観測接続は未設定です。着手・提出・検収のAPIは自己申告を拒否し、実行を止めます。</p>
     <div className={styles.actions}>
-      <button type="button" className={styles.primary} disabled={disabled} onClick={() => onSave(skyStarterGoal)}>Sky専用Goalを未承認で保存</button>
+      <button type="button" className={styles.primary} disabled={disabled} onClick={() => onSave(skyStarterGoal)}>smis専用Goalを未承認で保存</button>
       <span className={styles.muted}>本人用の記録を作成。si実行・公開・課金は始まりません。</span>
     </div>
     <p className={styles.label}>最初に確認する作業</p>
@@ -84,7 +84,7 @@ export default function AmcSkyLaunch({ disabled, onSave, savedGoal, initialTaskI
         {[['all','すべて'],['pending','未着手'],['running','進行中'],['blocked','前提・判断待ち'],['stale','指示失効'],['submitted','未検収'],['done','検収済み']].map(([v,l])=><option key={v} value={v}>{l}</option>)}
       </select>
       {!owned.length && <p>この部隊には該当する作業がありません。</p>}
-      <label className={styles.label} htmlFor={`${uid}-task`}>Skyの担当作業</label>
+      <label className={styles.label} htmlFor={`${uid}-task`}>smisの担当作業</label>
       <select id={`${uid}-task`} value={visibleId} disabled={!task} onChange={(event) => setTaskId(event.target.value)}>
         {owned.map((item) => <option key={item.id} value={item.id}>{item.id} · {item.title}</option>)}
       </select>

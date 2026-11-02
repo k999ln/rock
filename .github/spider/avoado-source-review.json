@@ -1,0 +1,420 @@
+{
+  "reviewedHead": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+  "totalFindings": 44,
+  "distinctValues": 19,
+  "records": [
+    {
+      "candidateSha256": "767a923a0076a130204d7965126da18653e46f2d146a630c4fd75efbbf45515b",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "data/avoado-published-migration-lineage.json",
+        "line": 15,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "data/avoado-published-migration-lineage.json"
+      ],
+      "fields": [
+        "drizzle-main/0029_rockstar_password_accounts.sql",
+        "drizzle/0029_rockstar_password_accounts.sql"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "68ddda758908d4a39c01b2ac514e33be0a627397",
+        "path": "drizzle-main/0029_rockstar_password_accounts.sql"
+      }
+    },
+    {
+      "candidateSha256": "4c817caf92309f13600389d543a25c08840cf256e654194e718a9f9d670d5c02",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/source-readiness-alignment.json",
+        "line": 261,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "docs/evidence/source-readiness-alignment.json"
+      ],
+      "fields": [
+        "scripts/check-work-api.mjs"
+      ],
+      "evidence": {
+        "method": "historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history",
+        "recomputed": false,
+        "boundary": "Classification of an integrity field, not independent acceptance of the historical measurement"
+      }
+    },
+    {
+      "candidateSha256": "dc978ef3bea4109f34a607e5abeedc2b65062a06bd2ca64cafb37117cdda6974",
+      "classification": "public-source-commit",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "data/archived-paths.json",
+        "line": 1028,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "data/archived-paths.json"
+      ],
+      "fields": [
+        "drizzle/0015_jennifer_passkey_access.sql",
+        "drizzle/0027_community_os_keys.sql",
+        "drizzle/0029_sky_x_account_oauth.sql"
+      ],
+      "evidence": {
+        "method": "existing Git commit; each archived path verified at this commit",
+        "commit": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6"
+      }
+    },
+    {
+      "candidateSha256": "f3f755dbc3896642a32d540ec64f9a6efa3d034e972e6991bc283bff5ce124ec",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/common-os-entry-alignment.json",
+        "line": 146,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "docs/evidence/common-os-entry-alignment.json"
+      ],
+      "fields": [
+        "app/os-design-tokens.css"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "eddf2dca5565baaec1c938c5ab7c51d10f3c54e6",
+        "path": "app/os-design-tokens.css"
+      }
+    },
+    {
+      "candidateSha256": "f0e944b3454651c049591e0b833e9eb745b674ef3d4327c564f60660f389ab34",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/source-runtime-device-binding.json",
+        "line": 30,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "docs/evidence/source-runtime-device-binding.json"
+      ],
+      "fields": [
+        "scripts/check-work-api.mjs"
+      ],
+      "evidence": {
+        "method": "historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history",
+        "recomputed": false,
+        "boundary": "Classification of an integrity field, not independent acceptance of the historical measurement"
+      }
+    },
+    {
+      "candidateSha256": "e2299419b5488da50106604f002ba5e59a22be1a04d115cdbe909ac510c3c8a9",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/source-runtime-device-binding.json",
+        "line": 31,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "docs/evidence/source-runtime-device-binding.json"
+      ],
+      "fields": [
+        "scripts/runtime-device-api-acceptance.mjs"
+      ],
+      "evidence": {
+        "method": "historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history",
+        "recomputed": false,
+        "boundary": "Classification of an integrity field, not independent acceptance of the historical measurement"
+      }
+    },
+    {
+      "candidateSha256": "8abd230eaff56705611ae95c4276b21b6bdfba90bf556dffb439aa1d483e8f9b",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/source-runtime-device-binding.json",
+        "line": 34,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "docs/evidence/source-runtime-device-binding.json"
+      ],
+      "fields": [
+        "scripts/device-binding-api-acceptance.mjs"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "9f240e2a563a5b8fc987f069e12467603c2fd0c1",
+        "path": "scripts/device-binding-api-acceptance.mjs"
+      }
+    },
+    {
+      "candidateSha256": "352b48b7f5ec736fd8f39d9f4c080810598c492b9e3147a6b9aaaf6f6f2d9168",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/source-runtime-device-binding.json",
+        "line": 391,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "docs/evidence/source-runtime-device-binding.json"
+      ],
+      "fields": [
+        "scripts/check-work-api.mjs"
+      ],
+      "evidence": {
+        "method": "historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history",
+        "recomputed": false,
+        "boundary": "Classification of an integrity field, not independent acceptance of the historical measurement"
+      }
+    },
+    {
+      "candidateSha256": "0141b9abccd02fb198b4df6ed8d824518fe9b3ce156a2b5520d5dbe0dcec02cb",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/rockstar-runtime-host-ui.json",
+        "line": 45,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "docs/evidence/rockstar-runtime-host-ui.json"
+      ],
+      "fields": [
+        "packages/rockstaros-runtime/src/credential-vault.mjs"
+      ],
+      "evidence": {
+        "method": "historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history",
+        "recomputed": false,
+        "boundary": "Classification of an integrity field, not independent acceptance of the historical measurement"
+      }
+    },
+    {
+      "candidateSha256": "0e1bc60ff33dfc94677d079ad344002265704b9c8cd068d07e19092e8d85546f",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
+        "line": 7,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
+        "tests/fixtures/sites-columbia-migrations/provenance.json"
+      ],
+      "fields": [
+        "0015_jennifer_passkey_access.sql",
+        "drizzle/0015_jennifer_passkey_access.sql"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "6304fb59408c01f443ad5b8fa83cd4f19d1fdcdb",
+        "path": "drizzle-legacy/github-main-before-avoado-alignment/drizzle/0015_jennifer_passkey_access.sql"
+      }
+    },
+    {
+      "candidateSha256": "a72d91a418e27915f4243a134f7fe1eaa1497f7ff01ed13099e1c7de64a52d53",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
+        "line": 19,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "drizzle-legacy/github-main-before-avoado-alignment/provenance.json"
+      ],
+      "fields": [
+        "drizzle/0027_community_os_keys.sql"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "3185e1e014cdb2c46f1cdd54e0a4c29b337ded64",
+        "path": "drizzle-legacy/github-main-before-avoado-alignment/drizzle/0027_community_os_keys.sql"
+      }
+    },
+    {
+      "candidateSha256": "4fdd8116142f386e82ec2b53f2b2dcdecc762b9734e798248706a1475dd2b59f",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
+        "line": 21,
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46"
+      },
+      "exactPaths": [
+        "drizzle-legacy/github-main-before-avoado-alignment/provenance.json"
+      ],
+      "fields": [
+        "drizzle/0029_sky_x_account_oauth.sql"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "b75050db5f4266da6a94b61361082e385b265960",
+        "path": "drizzle-legacy/github-main-before-avoado-alignment/drizzle/0029_sky_x_account_oauth.sql"
+      }
+    },
+    {
+      "candidateSha256": "32c673525a76fe806df7246f5ecc48546b5c63f3aff2a1cd79fec0d39e8897ab",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/rockstar-independent-account.json",
+        "line": 20,
+        "commit": "250ff2223e80b594648248c8a4ebafc825ccffec"
+      },
+      "exactPaths": [
+        "docs/evidence/rockstar-independent-account.json"
+      ],
+      "fields": [
+        "lib/jennifer-passkey.ts"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "a713230b61bf93ab9a0fd011c7be3674064602da",
+        "path": "lib/jennifer-passkey.ts"
+      }
+    },
+    {
+      "candidateSha256": "f7b0468cb42fc124aba7c4141a5892f66c3b2c391819beb4745e1f0de8a4db29",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/rockstar-independent-account.json",
+        "line": 29,
+        "commit": "250ff2223e80b594648248c8a4ebafc825ccffec"
+      },
+      "exactPaths": [
+        "docs/evidence/rockstar-independent-account.json"
+      ],
+      "fields": [
+        "scripts/check-rockstar-account-api.mjs"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "58f3dc1245195006a2d67940ac429e366b4534de",
+        "path": "scripts/check-rockstar-account-api.mjs"
+      }
+    },
+    {
+      "candidateSha256": "de28223ef80b7695a71bb2d6a264789ea82c85d0a5e879451469edf6f967edaf",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/rockstar-independent-account.json",
+        "line": 20,
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798"
+      },
+      "exactPaths": [
+        "docs/evidence/rockstar-independent-account.json"
+      ],
+      "fields": [
+        "lib/jennifer-passkey.ts"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "8c524c5d66d5caa556a8937339d7c4137d1b0371",
+        "path": "lib/jennifer-passkey.ts"
+      }
+    },
+    {
+      "candidateSha256": "c1a87b943863be63857ddd47491d78d5a093bfefa4adad3e42bdc2c3b354e24e",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/rockstar-independent-account.json",
+        "line": 21,
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798"
+      },
+      "exactPaths": [
+        "docs/evidence/rockstar-independent-account.json"
+      ],
+      "fields": [
+        "lib/request-auth.ts"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "dc4500433e47197bc1e880abfc187199272a9cab",
+        "path": "lib/request-auth.ts"
+      }
+    },
+    {
+      "candidateSha256": "0d27b3b13712dcefb793eb3387054d7b4c205004f67d37c15159ca4da8dcc6d4",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/rockstar-independent-account.json",
+        "line": 22,
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798"
+      },
+      "exactPaths": [
+        "docs/evidence/rockstar-independent-account.json"
+      ],
+      "fields": [
+        "lib/passkey-browser.ts"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "7dd170a2ed58b0751a680872f4f854a3d0c04058",
+        "path": "lib/passkey-browser.ts"
+      }
+    },
+    {
+      "candidateSha256": "39d2dac72f9ca81bb37239ca738c99386652a831d020889008dc34d64d566d28",
+      "classification": "public-artifact-digest",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "docs/evidence/rockstar-independent-account.json",
+        "line": 27,
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798"
+      },
+      "exactPaths": [
+        "docs/evidence/rockstar-independent-account.json"
+      ],
+      "fields": [
+        "components/os-account-access.tsx"
+      ],
+      "evidence": {
+        "method": "sha256 of reachable named source blob",
+        "recomputed": true,
+        "blob": "5b8522f8ad921aa0e48c51a39971701835a113d5",
+        "path": "components/os-account-access.tsx"
+      }
+    },
+    {
+      "candidateSha256": "c47c5fb1543c62cce962938ba5d208e2b5f413860061ec9a94248370a4986ac7",
+      "classification": "synthetic-handoff-fixture",
+      "source": {
+        "rule": "generic-api-key",
+        "file": "tests/avocado-handoff.test.mjs",
+        "line": 5,
+        "commit": "2d0b589537804bd10088d56478e4a9afd4697574"
+      },
+      "exactPaths": [
+        "tests/avocado-handoff.test.mjs"
+      ],
+      "fields": [
+        "token"
+      ],
+      "evidence": {
+        "method": "literal UUID used only by pure parser/envelope unit tests; no external request or authentication"
+      }
+    }
+  ]
+}

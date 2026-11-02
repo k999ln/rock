@@ -14,8 +14,8 @@ import * as requestAuth from '../lib/request-auth.ts';
 
 async function fixture(t) {
   const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
-  for (const path of readdirSync(new URL('../drizzle/', import.meta.url)).filter(path => path.endsWith('.sql') && !path.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${path}`, import.meta.url), 'utf8'));
+  for (const path of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(path => path.endsWith('.sql') && !path.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${path}`, import.meta.url), 'utf8'));
   const db = { beforeRun: null, prepare(sql) { return { bind(...args) { return {
     async first() { return sqlite.prepare(sql).get(...args) ?? null; },
     async all() { return { results: sqlite.prepare(sql).all(...args) }; },

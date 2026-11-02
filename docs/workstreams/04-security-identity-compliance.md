@@ -110,3 +110,7 @@ SDKのOAuth issuer結合修正は既存Dependabot PR #89を継続する。lock h
 ## Canonical Memoryのcipher失敗（AI03 / SYS02、2026-10-11）
 
 ROCK／O3・O1。host storeのseal失敗がProvider例外をそのまま返し、open失敗の例外連鎖が内容を通常tracebackへ含める問題を合成cipherで再現した。固定エラーと連鎖抑止へ統一し、失敗した暗号化は旧revision・projectionを維持する。追加3回帰は修正前1 failure / 2 errors、修正後Memory storeとBroker façadeの16試験が成功。fixture cipherの境界確認であり、暗号強度、実OS鍵、端末受入ではない。[記憶契約](../ai-memory-architecture.md)。
+
+### G04 / WEB04: avoado sourceの履歴統合
+
+PR #312で公開履歴が加わったことによる44候補を [個別分類](../../.github/spider/avoado-source-review.json) に記録。19値のうち12のsource digestはGit blobから再計算、5はhistorical receiptのsource-file hash欄（元bytes未発見なので歴史測定の合格証拠にはしない）、1は実在Git commit、1は外部送信のない純粋parser試験UUID。既定ruleと全履歴を維持し、値ANDpathの完全一致だけを追加。実Gitleaks12試験で変更値・別pathを検出。固定controlのpinはこの分類と試験を保存した実commitへ更新する。

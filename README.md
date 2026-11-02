@@ -466,5 +466,9 @@ Mini/Pro の Web は [sites/avocado-mini](sites/avocado-mini/) に共通で置�
 
 <sub>進捗 JSON の自動要約（`npm run project:update` が書き換える。読まなくてよい）</sub>
 <!-- project-overview:start -->
-Updated: 2026-10-29 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
+Updated: 2026-11-02 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
+
+### avoado.si のEveとNoah
+
+[Noah](https://avoado.si/#timeline)で記事・Tool・担当を選び、[Eve](https://avoado.si/os/eve)へ渡して仕事と成果を確認します。旧 `/chat` は選択内容を保ってEveへ移動します。公開先は既存avoadoサイト。公開SQLは `drizzle/` と `drizzle-main/`、旧mainのSQLは `drizzle-legacy/github-main-before-avoado-alignment/` に保全し自動適用しません。

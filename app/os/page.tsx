@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import HomeScreen from '@/components/home-screen';
+import OsHomeEntry from '@/components/os-home-entry';
 
 export const metadata: Metadata = {
-  title: 'ホーム — RockstarOS',
-  description: 'Sky、Zema、Wallet、Market、Fundを開くRockstarOSホーム画面。',
+  title: 'RockstarOS — ニュースとsmisのタイムライン',
+  description: '取得したニュースの元記事リンクをsmisのタイムラインと一緒に表示します。',
 };
 
-export default function RockstarOSHome() {
-  return <HomeScreen />;
+export default function OsHomePage() {
+  return <OsHomeEntry />;
 }

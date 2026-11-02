@@ -91,7 +91,7 @@ void test("saved plans reject escalated authority and invalid dependencies", () 
   );
 });
 
-void test("Jennifer is the visible coordinator while Zema remains the work system", () => {
+void test("Eve is the visible coordinator while the existing work system retains execution authority", () => {
   assert.deepEqual(
     jenniferResponsibilities.map(({ id }) => id),
     ["project-lead", "data-librarian", "research", "analysis", "delivery"],
@@ -108,14 +108,14 @@ void test("Jennifer is the visible coordinator while Zema remains the work syste
     resolve(import.meta.dirname, "../components/sky-chat-workspace.tsx"),
     "utf8",
   );
-  assert.match(chat, /Chief of Staff · Zemaが実行を管理/);
-  assert.match(chat, /ZEMA WORK CONTROL/);
+  assert.match(chat, /Eveの仕事と成果/);
+  assert.match(chat, /EVE WORK CONTROL/);
   assert.match(chat, /管理するプロジェクト/);
-  assert.match(chat, /Jenniferは割当と確認を行い/);
-  assert.match(chat, /<h1>Jennifer<\/h1>/);
+  assert.match(chat, /Eveは割当と確認を行い/);
+  assert.match(chat, /<h1>Eve<\/h1>/);
   assert.match(chat, /jennifer-project-list/);
-  assert.match(chat, /あなたはJenniferです/);
-  assert.match(chat, /Jenniferの中で動く/);
-  assert.match(chat, /実行・承認・利用明細・停止はZema/);
+  assert.match(chat, /あなたはEveです/);
+  assert.match(chat, /Eveの中で動く/);
+  assert.match(chat, /実行・承認・利用明細・停止はEveの仕事管理/);
   assert.doesNotMatch(chat, /あなたはZemaです/);
 });

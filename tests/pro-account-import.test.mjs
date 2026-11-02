@@ -19,7 +19,7 @@ function dbAdapter(sqlite) {
 }
 function fixture(t) {
   const folder = mkdtempSync(join(tmpdir(), 'pro-import-')); const path = join(folder, 'fixture.sqlite');
-  const sqlite = new DatabaseSync(path); sqlite.exec(readFileSync(new URL('../drizzle/0032_eve_durable_history.sql', import.meta.url), 'utf8'));
+  const sqlite = new DatabaseSync(path); sqlite.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/0032_eve_durable_history.sql', import.meta.url), 'utf8'));
   const second = new DatabaseSync(path); t.after(() => { second.close(); sqlite.close(); rmSync(folder, { recursive: true, force: true }); });
   const db = dbAdapter(sqlite), other = dbAdapter(second);
   const authenticate = async request => { const token = request.headers.get('authorization');

@@ -119,12 +119,12 @@ export default function RockStudio() {
         </div>
       </header>
 
-      <section className="studio-code-workspace" aria-label="Sky SDK組み込み">
+      <section className="studio-code-workspace" aria-label="smis SDK組み込み">
         <div className="studio-code-main">
           <div className="studio-code-intro">
             <p className="studio-chat-kicker">ADD SKY TO YOUR TOOL</p>
             <h1>このコードを、<br />あなたのツールに付ける。</h1>
-            <p>起動すると、このPCのSky一覧へ自動で追加されます。公開登録する場合だけ、公開MCP URLと開発者キーを設定します。PC内で使う間は入力・出力や利用記録をSky Cloudへ送りません。</p>
+            <p>起動すると、このPCのsmis一覧へ自動で追加されます。公開登録する場合だけ、公開MCP URLと開発者キーを設定します。PC内で使う間は入力・出力や利用記録をsmis Cloudへ送りません。</p>
           </div>
 
           <div className="studio-install-row">
@@ -155,7 +155,7 @@ export default function RockStudio() {
             <div className="studio-setup-number">03</div>
             <span className="studio-setup-icon"><KeyRound size={18} /></span>
             <h2>開発者キー（公開時のみ）</h2>
-            <p>PC内だけで試す場合は不要です。公開時はコードにSky URL、公開MCP URL、環境変数のキーを追加します。</p>
+            <p>PC内だけで試す場合は不要です。公開時はコードにsmis URL、公開MCP URL、環境変数のキーを追加します。</p>
             {developerToken ? (
               <div className="studio-token-result">
                 <code>{environmentLine}</code>
@@ -179,14 +179,14 @@ export default function RockStudio() {
           <div className="studio-setup-card">
             <div className="studio-setup-number">04</div>
             <span className="studio-setup-icon"><PackagePlus size={18} /></span>
-            <h2>起動すればOSのSky一覧に追加</h2>
+            <h2>起動すればOSのsmis一覧に追加</h2>
             <ul>
               <li><Check size={14} />PC内Connectorが自動検出</li>
-              <li><Check size={14} />Skyの一覧から接続して実行</li>
+              <li><Check size={14} />smisの一覧から接続して実行</li>
               <li><Check size={14} />公開URL設定時はPackageを登録</li>
               <li><Check size={14} />公開登録時に匿名の利用実績を記録</li>
             </ul>
-            <Link href="/sky"><Activity size={15} />Skyの一覧を確認<ExternalLink size={13} /></Link>
+            <Link href="/sky"><Activity size={15} />smisの一覧を確認<ExternalLink size={13} /></Link>
           </div>
 
           <div className="studio-safety-note">

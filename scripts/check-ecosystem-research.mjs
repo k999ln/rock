@@ -91,9 +91,11 @@ for (const x of report.sources) {
 }
 
 covers(identities(report.requirementCoverage, 'RQ'), baseline.requirements, 'RQ');
+covers(identities(report.sourceExtensionCoverage, 'Source extensions'), baseline.sourceCompatibilityExtensions.retained.map(x => x.formerRequirementId), 'Source extensions');
+assert.equal(report.scope.sourceExtensionCount, baseline.sourceCompatibilityExtensions.retained.length);
 covers(identities(report.domainCoverage, 'domains'), index.systemDomains.map((x) => x.id), 'domains');
 covers(identities(report.toolCoverage, 'catalog'), catalog.map((x) => x.id), 'catalog');
-for (const rows of [report.requirementCoverage, report.domainCoverage, report.toolCoverage])
+for (const rows of [report.requirementCoverage, report.sourceExtensionCoverage, report.domainCoverage, report.toolCoverage])
   for (const x of rows) refs(x.systemIds, systems, x.id);
 for (const x of report.toolCoverage) {
   const current = catalog.find((tool) => tool.id === x.id);

@@ -1,3 +1,4 @@
+import {observeLlmUsage} from './sky-usage-observation.ts';
 import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import { applyWorkCommand, createWorkJob, WorkError, type WorkJob } from './workflow.ts';
 import { workStore } from './work-store.ts';
@@ -6,6 +7,7 @@ import type { ModelCandidate } from './sky-model-routing.ts';
 
 const ORIGIN = 'https://text.pollinations.ai';
 export const CLASSIC_FREE_SOURCE = 'https://raw.githubusercontent.com/pollinations/pollinations/master/APIDOCS.md';
+export class FreeCloudPreSendError extends WorkError {}
 export type FreeCloudRuntime = { SKY_FREE_CLOUD_ENABLED?: string; SKY_FREE_CLOUD_OWNER_ID?: string };
 type DB = Pick<D1Database, 'prepare' | 'batch'>;
 export function freeCloudEnabled(runtime: FreeCloudRuntime, owner: string) {
@@ -23,7 +25,7 @@ export async function discoverFreeCloudModels(fetcher: typeof fetch = fetch): Pr
 }
 
 export async function runFreeCloudText(input: {
-  db: DB; owner: string; id: string; prompt: string; model: string;
+  db: DB; owner: string; id: string; prompt: string; model: string; agentBinding?: {id:string;revision:number};
   consent: boolean; runtime: FreeCloudRuntime; fetcher?: typeof fetch; clock?: () => number; autoContinue?: boolean; enqueue?: boolean; retryClock?: () => number;
 }) {
   if (!freeCloudEnabled(input.runtime, input.owner) || input.consent !== true)
@@ -31,7 +33,7 @@ export async function runFreeCloudText(input: {
   if (!/^[a-zA-Z0-9-]{1,100}$/.test(input.id) || !input.prompt.trim() || input.prompt.length > 12000)
     throw new WorkError('依頼の形式を確認してください。', 400);
   assertSafeOutbound({ prompt: input.prompt });
-  const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify({model:input.model,prompt:input.prompt})))), b=>b.toString(16).padStart(2,'0')).join('');
+  const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify({model:input.model,prompt:input.prompt,...(input.agentBinding?{agentBinding:input.agentBinding}:{})})))), b=>b.toString(16).padStart(2,'0')).join('');
   const store = workStore(input.db);
   const retryNow=input.retryClock ?? Date.now;
   const saved = await store.get(input.owner, input.id);
@@ -48,9 +50,12 @@ export async function runFreeCloudText(input: {
   if (plan.reason !== 'available') throw new WorkError(`Skyプランで停止しています: ${plan.reason}`,403);
   const fetcher = input.fetcher ?? fetch;
   const candidates = await discoverFreeCloudModels(fetcher);
-  if (!candidates.some(m=>m.model===input.model)) throw new WorkError('選択モデルは現在の無料対象ではありません。',409);
+  if (!candidates.some(m=>m.model===input.model)) {
+    if(!saved)throw new FreeCloudPreSendError('選択モデルは現在の無料対象ではありません。',409);
+    throw new WorkError('選択モデルは現在の無料対象ではありません。',409);
+  }
   const fresh = createWorkJob({id:input.id,templateId:'free-cloud-text',title:'無料Cloudの文章生成'});
-  fresh.freeCloud = { requestDigest:digest, model:input.model, state:input.enqueue?'queued':'prepared', source:CLASSIC_FREE_SOURCE,backgroundPrompt:input.enqueue?input.prompt:undefined,backgroundConsent:input.enqueue===true, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
+  fresh.freeCloud = { agentBinding:input.agentBinding,requestDigest:digest, model:input.model, state:input.enqueue?'queued':'prepared', source:CLASSIC_FREE_SOURCE,backgroundPrompt:input.enqueue?input.prompt:undefined,backgroundConsent:input.enqueue===true, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
   const created = saved ?? await store.create(input.owner,fresh);
   if (!created || created.freeCloud?.requestDigest!==digest) throw new WorkError('依頼IDが競合しています。',409);
   if(input.enqueue)return created;
@@ -58,6 +63,7 @@ export async function runFreeCloudText(input: {
   const claimed: WorkJob = {...created,revision:created.revision+1,updatedAt:new Date().toISOString(),freeCloud:{...created.freeCloud,state:'sending',attempts:(created.freeCloud.attempts??0)+1,retryAt:undefined,error:undefined}};
   // Existing owner/revision CAS is the one-time send claim; a crash leaves an uncertain job, not a retry.
   if (!await store.update(input.owner,claimed,created.revision)) return (await store.get(input.owner,input.id))!;
+  let observedUsage: ReturnType<typeof observeLlmUsage> | undefined;
   try {
     const currentPlan = await skyRecurringUsage(input.db,input.owner,(input.clock ?? Date.now)());
     if (currentPlan.reason!=='available') throw new WorkError(`Skyプランで停止しています: ${currentPlan.reason}`,403);
@@ -90,6 +96,7 @@ export async function runFreeCloudText(input: {
         : 'Cloudの実行結果を確認できません。',response.status);
     }
     const body = await response.json() as {id?: unknown; model?: unknown; user_tier?: unknown; choices?: {finish_reason?: unknown;message?: {content?: unknown;tool_calls?: unknown}}[]; usage?:{prompt_tokens?:unknown;completion_tokens?:unknown;total_tokens?:unknown}};
+    observedUsage={...observeLlmUsage('pollinations',body),resourceId:input.model};
     const choice=body.choices?.[0], usage=body.usage;
     if (body.user_tier!=='anonymous' || choice?.finish_reason!=='stop' ||
       (choice.message?.tool_calls !== undefined && (!Array.isArray(choice.message.tool_calls) || choice.message.tool_calls.length!==0)) || typeof choice.message?.content!=='string' || !choice.message.content.trim() || choice.message.content.length>24000 ||
@@ -97,13 +104,15 @@ export async function runFreeCloudText(input: {
       !usage || !Number.isSafeInteger(usage.prompt_tokens) || !Number.isSafeInteger(usage.completion_tokens) ||
       (usage.prompt_tokens as number)<0 || (usage.completion_tokens as number)<0 || usage.total_tokens!==(usage.prompt_tokens as number)+(usage.completion_tokens as number))
       throw new WorkError('Cloudの完了・使用量を確認できません。再送せず確認してください。',502);
+    const metering=observedUsage;
+    if(metering.status==='invalid')throw new WorkError('使用量の内訳を照合できません。再送せず確認してください。',502);
     const completed = applyWorkCommand(claimed,{id:crypto.randomUUID(),action:'record',stepId:'generate',tool:'sky-free-cloud-text',transport:'browser',outcome:'passed',sample:false,durationMs:Math.max(0,Date.now()-startedAt)},claimed.revision);
-    completed.freeCloud={...claimed.freeCloud!,state:'completed',text:choice.message.content,providerResponseId:body.id,reportedModel:body.model,
+    completed.freeCloud={...claimed.freeCloud!,state:'completed',metering,text:choice.message.content,providerResponseId:body.id,reportedModel:body.model,
       inputTokens:usage.prompt_tokens as number,outputTokens:usage.completion_tokens as number,chargeMinor:0};
     if (!await store.update(input.owner,completed,claimed.revision)) throw new WorkError('成果の保存を確認できません。再送せず確認してください。',409);
     return completed; // Work remains in review; model output is not Tool success or user approval.
   } catch(error) {
-    const uncertain:WorkJob={...claimed,revision:claimed.revision+1,updatedAt:new Date().toISOString(),freeCloud:{...claimed.freeCloud!,state:'unconfirmed',error:error instanceof WorkError ? error.message : 'Cloud実行の結果が不明です。再送しません。'}};
+    const uncertain:WorkJob={...claimed,revision:claimed.revision+1,updatedAt:new Date().toISOString(),freeCloud:{...claimed.freeCloud!,state:'unconfirmed',...(observedUsage?{metering:observedUsage}:{}),error:error instanceof WorkError ? error.message : 'Cloud実行の結果が不明です。再送しません。'}};
     await store.update(input.owner,uncertain,claimed.revision);
     throw error;
   }

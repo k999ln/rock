@@ -1,7 +1,8 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { DatabaseSync } from 'node:sqlite';
 import { bindEsimGoIssuedProfile, esimGoProfileDigest, persistEsimGoWebhook, readEsimGoV3Request, verifyEsimGoV3Body } from '../lib/esimgo-webhook.ts';
 import { createEsimGoV25Client, EsimGoProviderError, issuePaidSkyEsimGoProfile, reconcilePaidSkyEsimGoProfile } from '../lib/esimgo-provider.ts';
@@ -31,8 +32,7 @@ async function testPricingSnapshot(manifestSha256, version = 'fixture-v1') {
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter((n) => n.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   return {
     sqlite,
     prepare(sql) {

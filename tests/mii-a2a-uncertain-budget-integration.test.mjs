@@ -16,8 +16,8 @@ import { loadRouteFixture } from './route-fixture.mjs';
 
 function database(t) {
   const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(x => x.endsWith('.sql') && !x.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  for (const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(x => x.endsWith('.sql') && !x.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url), 'utf8'));
   return { sqlite, prepare(sql) { return { bind(...values) { return {
     async first() { return sqlite.prepare(sql).get(...values) ?? null; },
     async all() { return { results: sqlite.prepare(sql).all(...values) }; },
@@ -47,7 +47,7 @@ async function setup(t) {
     ['@/lib/fund-store', { database: () => db, requestUser: requestAuth.requestUser }],
     ['@/lib/rockstar-device-link', { requestRockstarUser: async request => request.headers.get('oai-authenticated-user-id') }],
   ]);
-  for (const name of ['bounded-stream', 'owner-intent', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library-store', 'a2a-parent-controller'])
+  for (const name of ['sky-usage-observation', 'bounded-stream', 'owner-intent', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library-store', 'a2a-parent-controller'])
     dependencies.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
   const delegationPath = new URL('../app/api/sky/a2a-delegations/route.ts', import.meta.url);
   const workPath = new URL('../app/api/work-jobs/route.ts', import.meta.url);

@@ -15,7 +15,7 @@ function fixture(t, mode = 'root') {
     mkdirSync(join(dir, 'meta'), { recursive: true });
     const entries = pairs.map((p, idx) => ({idx,tag:p[index],when:100+idx}));
     writeFileSync(join(dir, 'meta/_journal.json'), JSON.stringify({ entries }));
-    for (const pair of pairs) writeFileSync(join(dir, pair[index]+'.sql'), readFileSync(new URL('../drizzle/'+pair[1]+'.sql',import.meta.url)));
+    for (const pair of pairs) writeFileSync(join(dir, pair[index]+'.sql'), readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/'+pair[1]+'.sql',import.meta.url)));
   }
   const databasePath = join(root, 'copy.sqlite');
   const db = new DatabaseSync(databasePath);

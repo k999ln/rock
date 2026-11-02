@@ -1,0 +1,23 @@
+{
+  "source": "1b65413cda03e8dfad686601416687c598a99cc8",
+  "files": [
+    {
+      "path": "drizzle/0016_sky_monthly_sandbox.sql",
+      "sha256": "fe52954e0d69340905210be5f1bfa7da23d3e9937c592275b3aaf5c67ec62b78"
+    },
+    {
+      "path": "drizzle/0017_sky_cloud_monthly_test.sql",
+      "sha256": "09563f40add9e5173fd7fa64358bec39cc67bbac59828abdfd2d1b755a38cd39"
+    },
+    {
+      "path": "drizzle/0018_sky_recurring_sandbox.sql",
+      "sha256": "7560003271cc4e43e6a0e447c90a9e28b564d0f0a47933559e45686e1ec44b36"
+    },
+    {
+      "path": "drizzle/0019_sky_hosted_monthly.sql",
+      "sha256": "3519e01d49d93e05ff21808b858efa1a0dfd0adce7220bffacc2145a5cbdf626"
+    }
+  ],
+  "transform": "CREATE TABLE/TRIGGER/UNIQUE INDEX: add IF NOT EXISTS only",
+  "fixtureSha256": "211ec0013d66de21a8f9f8cb958869348aac86be28eafaa4cbb015c2f66981ca"
+}

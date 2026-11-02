@@ -14,7 +14,7 @@
 ## 2. 名前
 
 - 正本は `docs/structure/06-naming.md`。外: avokado / mii / Eve / Sky / RockstarOS / Pro。内: Eve, Noa（旧Smith）, AMC（旧Jennifer を吸収）, Jev, Spider, Sky, Work/Job/Receipt（旧Zema）, Broker, Wallet, Game。
-- ユーザーに見せる名前は Eve だけ。他は内部名。AI の表記は si。
+- avoado.si の公開サービス名は最新の本人指示により Eve と Noah。他は内部名。AI の表記は si。
 - 旧名が本文にあったら task 03/04 の手順で直す。API path・D1 table・enum・環境変数は変えない。
 
 ## 3. 設計の変え方

@@ -314,7 +314,7 @@ export function McpBotRunner({
   }
 
   if (!server.passport || server.state !== 'connected')
-    return <p>このMCPは接続されていません。Skyで接続を確認してください。</p>;
+    return <p>このMCPは接続されていません。smisで接続を確認してください。</p>;
 
   return (
     <section className="mcp-bot-runner" aria-label={`${server.name}の管理`}>

@@ -1,12 +1,14 @@
-import type { ZemaChatMessage, ZemaChatSession } from './zema-chat-session.ts';
 import { isTextModelProvider } from './llm-providers.ts';
-const isSkyToolId = (value: unknown): value is string => typeof value === 'string' && /^[a-z0-9][a-z0-9:.-]{0,119}$/.test(value);
+import type { ZemaChatMessage, ZemaChatSession } from './zema-chat-session.ts';
+import { isSkyToolId } from '../public-release/rockstaros/packages/sky-zema-core/src/handoff.js';
 
 export class EveHistoryError extends Error {
   readonly status: number;
   constructor(message: string, status = 400) { super(message); this.status = status; }
 }
 export type EveHistoryKeys = { current: string; keys: Record<string, string> };
+/** Internal projection guard, never part of the client save payload. */
+export type EveWorkProjectionFence = { jobId: string; revision: number; kind?: 'tool' | 'agent' | 'news' };
 export type EveHistoryItem = { session: ZemaChatSession; revision: number; remember: boolean; before: number | null };
 export type EveMemorySource = { threadId: string; messageId: string; text: string; updatedAt: number; toolId:string; agent?:{id:string;revision:number} };
 type Statement = D1PreparedStatement;
@@ -89,7 +91,7 @@ export function eveSearchWords(input: string, limit = 240) {
   return [...words];
 }
 
-export function eveHistoryStore(db: Database, owner: string, keys: EveHistoryKeys) {
+export function eveHistoryStore(db: Database, owner: string, keys: EveHistoryKeys, deviceReplicas = false) {
   const derived = new Map<string, Promise<CryptoKey>>();
   async function key(id: string, purpose: 'encrypt'|'search') {
     const cacheId = `${id}:${purpose}`;
@@ -135,17 +137,22 @@ export function eveHistoryStore(db: Database, owner: string, keys: EveHistoryKey
     const header = await unpack(row);
     return {session:{...header,activeRequest:null,messages:await Promise.all(messages.results.toReversed().map(m=>decrypt<ZemaChatMessage>(m.envelope,`message:${id}:${m.message_id}`)))},revision:row.revision,remember:row.remember===1,before:messages.results.length===100?messages.results.at(-1)!.seq:null};
   }
-  async function save(input: unknown): Promise<{revision:number}> {
+  async function save(input: unknown, workFence?: EveWorkProjectionFence): Promise<{revision:number}> {
     const {session,revision,remember}=eveHistoryInput(input),id=session.id;
+    if (workFence && (!uuid.test(workFence.jobId) || !Number.isSafeInteger(workFence.revision) || workFence.revision < 0)) throw new EveHistoryError('仕事の参照と版を確認してください。');
     const before=await thread(id);if(before?.deleted_at)throw new EveHistoryError('削除済みの会話は再保存できません。新しい会話を作成してください。',410);
     if ((before?.revision??0)!==revision) throw new EveHistoryError('別端末で会話が更新されています。読み直してから続きを保存してください。',409);
     const previous=before?await unpack(before):null;
     const title=previous?.messages[0]??session.messages.find(m=>m.side==='me');
     const header={...session,messages:title?[{...title,text:title.text.slice(0,160)}]:[],activeRequest:null};
     const envelope=await encrypt(header,`thread:${id}`),token=crypto.randomUUID(),now=Date.now();
+    const fencePath = workFence?.kind === 'agent' ? 'eveAgent' : workFence?.kind === 'news' ? 'eveNews' : 'eveTool';
+    const fenceSchema = workFence?.kind === 'agent' ? 'eve.agent-work/1' : workFence?.kind === 'news' ? 'eve.news-work/1' : 'eve.tool-work/1';
+    const fenceSql=workFence?` AND EXISTS(SELECT 1 FROM work_jobs WHERE user_id=? AND id=? AND revision=? AND json_extract(payload,'$.${fencePath}.threadId')=? AND json_extract(payload,'$.${fencePath}.schema')='${fenceSchema}')`:'';
+    const fenceArgs=workFence?[owner,workFence.jobId,workFence.revision,id]:[];
     const statements:Statement[]=[
-      db.prepare('INSERT INTO eve_conversations(owner_id,id,revision,remember,envelope,updated_at,save_token) VALUES(?,?,0,?,?,?,?) ON CONFLICT(owner_id,id) DO NOTHING').bind(owner,id,Number(remember),envelope,now,''),
-      db.prepare('UPDATE eve_conversations SET revision=revision+1,remember=?,envelope=?,updated_at=?,save_token=? WHERE owner_id=? AND id=? AND revision=?').bind(Number(remember),envelope,now,token,owner,id,revision),
+      db.prepare('INSERT INTO eve_conversations(owner_id,id,revision,remember,envelope,updated_at,save_token) SELECT ?,?,0,?,?,?,? WHERE 1=1'+fenceSql+' ON CONFLICT(owner_id,id) DO NOTHING').bind(owner,id,Number(remember),envelope,now,'',...fenceArgs),
+      db.prepare('UPDATE eve_conversations SET revision=revision+1,remember=?,envelope=?,updated_at=?,save_token=? WHERE owner_id=? AND id=? AND revision=? AND deleted_at=0'+fenceSql).bind(Number(remember),envelope,now,token,owner,id,revision,...fenceArgs),
     ];
     for (const message of session.messages) {
       const encrypted=await encrypt(message,`message:${id}:${message.id}`);
@@ -180,13 +187,21 @@ export function eveHistoryStore(db: Database, owner: string, keys: EveHistoryKey
       db.prepare('UPDATE eve_conversations SET save_token=? WHERE owner_id=? AND id=? AND revision=?').bind(token,owner,id,revision),
       db.prepare('DELETE FROM eve_memory_terms WHERE owner_id=? AND thread_id=? AND EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND save_token=?)').bind(owner,id,owner,id,token),
       db.prepare('DELETE FROM eve_messages WHERE owner_id=? AND thread_id=? AND EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND save_token=?)').bind(owner,id,owner,id,token),
+      ...(deviceReplicas?[
+        db.prepare('DELETE FROM eve_device_jobs WHERE owner_id=? AND thread_id=? AND EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND save_token=?)').bind(owner,id,owner,id,token),
+        db.prepare('DELETE FROM eve_device_commands WHERE owner_id=? AND thread_id=? AND EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND save_token=?)').bind(owner,id,owner,id,token),
+      ]:[]),
       db.prepare("UPDATE eve_conversations SET deleted_at=?,revision=revision+1,envelope='{}',save_token='' WHERE owner_id=? AND id=? AND save_token=?").bind(Date.now(),owner,id,token),
     ]);
     if(result[0].meta.changes!==1)throw new EveHistoryError('別端末で更新されています。',409);
   }
-  return {list,get,save,recall,remove};
+  // Internal replicas use the same owner-bound encryption/key rotation. These are
+  // server-only helpers, never fields accepted by the conversational HTTP API.
+  const sealRecord = (value:unknown, scope:string) => encrypt(value, `replica:${scope}`);
+  const unsealRecord = <T>(value:string, scope:string) => decrypt<T>(value, `replica:${scope}`);
+  async function assertWritable(id:string){if((await thread(id))?.deleted_at)throw new EveHistoryError('削除済みの会話には同期しません。',410);}
+  return {list,get,save,recall,remove,sealRecord,unsealRecord,assertWritable};
 }
-
 
 /** Opaque account binding, not an authentication credential or execution grant. */
 export async function eveHistoryOwnerBinding(owner: string, keys: EveHistoryKeys) {

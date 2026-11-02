@@ -1,3 +1,4 @@
+import { sourceSandboxRestoreStatements } from './sky-monthly-sandbox-db.mjs';
 // Loopback Worker/D1/R2 regression. Synthetic users, no payments or providers.
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
@@ -70,10 +71,10 @@ async function artifacts(job, user=alice) {
 try {
   copyWorkerBuildFixture(join(root,'dist'),join(temporary,'dist'));
   await start();
-  // Canonical builds apply the append-only migration chain before admission.
-  for (const file of readdirSync(join(root,'drizzle')).filter(f=>f.endsWith('.sql') && !f.startsWith('._')).sort())
-    for (const sql of readFileSync(join(root,'drizzle',file),'utf8').split('--> statement-breakpoint').filter(s=>s.trim()))
-      await db.prepare(sql).run();
+  // Local storage protocol checks use a synthetic restored schema, not a claim
+  // that the existing-production-only 0020 migration bootstraps an empty D1.
+  for (const sql of sourceSandboxRestoreStatements())
+    await db.prepare(sql).run();
   await call('/api/csv-jobs',{user:null,status:401});
   await call('/api/csv-jobs',{method:'POST',body:{},requestOrigin:'https://invalid.example',status:403});
 

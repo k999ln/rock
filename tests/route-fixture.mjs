@@ -1,3 +1,4 @@
+import * as skyUsageObservation from '../lib/sky-usage-observation.ts';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -16,6 +17,7 @@ export function loadRouteFixture(source, dependencies) {
     exports, Error, TypeError, SyntaxError, Response, Request, URL, TextDecoder,
     TextEncoder, Uint8Array, crypto, structuredClone,
     require(name) {
+      if(name==='@/lib/sky-usage-observation'&&!dependencies.has(name))return skyUsageObservation;
       assert.ok(dependencies.has(name), `unmapped route dependency: ${name}`);
       return dependencies.get(name);
     },

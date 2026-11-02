@@ -1335,7 +1335,7 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-10-29",
+  "updatedAt": "2026-11-02",
   "milestone": "RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する",
   "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。",
   "tasks": [
@@ -12709,5 +12709,30 @@
     "mainIntegrated": false,
     "pullRequest": "https://github.com/k999ln/rock/pull/311",
     "sourceCommit": "14474ce3450d91c860d44c10e1d3d91e2c74800e"
+  },
+  "eveNoahMainAlignment": {
+    "status": "ci_fixes_verifying",
+    "taskIds": [
+      "G04",
+      "WEB04"
+    ],
+    "sourcePublic": "c4ab58b29d702abb03790fdca0a8ff708563bbd7",
+    "sourceMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "branch": "codex/align-avoado-public-main-20261102",
+    "authority": "User explicitly requested main merge and same-source publication",
+    "migration": "Published SQL byte-preserved; old main history retained offline; no production schema change",
+    "next": "Commit resolved union with both real histories; full verify and exact-SHA CI; normal PR merge; publish and read back the same main SHA",
+    "verification": {
+      "typecheck": "pass",
+      "design": "pass",
+      "officialSitesBuild": "pass",
+      "browserOwnerToolJobFixtures": "3 passed",
+      "migrationAndReleaseReadiness": "41 passed",
+      "fullRegression": "3927 total:3923 pass,0 fail,4 environmental skips",
+      "api": "1918 work +385 CSV assertions passed after CSP correction",
+      "spiderPolicy": "12 real-scanner policy tests passed; whole reachable history0 candidates under19 exact reviewed public values",
+      "pending": "Final commit verify and CI; normal merge; same-main-SHA publication"
+    },
+    "pullRequest": "https://github.com/k999ln/rock/pull/312"
   }
 }

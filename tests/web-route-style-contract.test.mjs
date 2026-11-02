@@ -68,7 +68,7 @@ void test('module-styled home, Campus and settings keep their stylesheet binding
   assert.match(settings, /<WorkspaceShell title="設定" hideTopActions>/);
 });
 
-void test('Sky Home has its own post timeline theme while other OS surfaces retain the common shell', () => {
+void test('primary apps share the current OS tokens and preserve reduced motion', () => {
   const homeStyles = readFileSync(
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
@@ -87,10 +87,10 @@ void test('Sky Home has its own post timeline theme while other OS surfaces reta
   );
   assert.match(workspace, /RockstarOS 1\.0 — unified app surfaces/);
   assert.match(workspace, /avokado OS: the product's graphite shell/);
-  assert.match(homeStyles, /\.home \{[\s\S]*--tl-bg: #f6f4ef/);
-  assert.match(homeStyles, /\.home \{[\s\S]*--tl-blue: #315b4d/);
-  assert.match(csvStyles, /\.primary \{[\s\S]*#172631/);
-  assert.match(settingsStyles, /\.itemIcon \{[\s\S]*#bedce6/);
+  assert.match(homeStyles, /\.home \{[\s\S]*--home-accent: var\(--os-accent\)/);
+  assert.match(homeStyles, /prefers-reduced-motion: reduce/);
+  assert.match(csvStyles, /\.primary \{[\s\S]*var\(--os-/);
+  assert.match(settingsStyles, /\.itemIcon \{[\s\S]*var\(--os-/);
   assert.doesNotMatch(sky, /showSidebar/);
 });
 
@@ -111,17 +111,33 @@ void test('Sky feed stays explainable and hands work to the existing Zema path',
   assert.doesNotMatch(sky, /rankSkyFeed\([^)]*requestText/);
 });
 
-void test('Sky Home uses native posts and keeps Work and CSV in their own flows', () => {
-  const home = readFileSync(resolve(root, 'components/home-screen.tsx'), 'utf8');
-  const homeStyles = readFileSync(resolve(root, 'components/home-screen.module.css'), 'utf8');
-  for (const route of ['/chat', '/campus', '/wallet', '/market', '/settings'])
-    assert.match(home, new RegExp(`href: '${route}'`));
+void test('OS home keeps Work and CSV inside Sky without fake device telemetry', () => {
+  const home = readFileSync(
+    resolve(root, 'components/home-screen.tsx'),
+    'utf8',
+  );
+  const homeStyles = readFileSync(
+    resolve(root, 'components/home-screen.module.css'),
+    'utf8',
+  );
+  const navigation = readFileSync(resolve(root, 'lib/os-navigation.ts'), 'utf8');
+  for (const route of ['/#timeline', '/#sky', '/chat', '/#communities', '/campus', '/wallet', '/market', '/settings']) {
+    assert.ok((home + navigation).includes("'" + route + "'"), `${route} is missing from the shared frame`);
+  }
+  assert.doesNotMatch(home, /href: '\/work'/);
+  assert.doesNotMatch(home, /href: '\/csv'/);
+  assert.match(home, /DEVELOPER\s+PREVIEW/);
   assert.match(home, /<SkySocialTimeline/);
-  assert.match(home, /<SkyDiscoveryFeed/);
-  assert.match(home, /\/api\/work-jobs/);
-  assert.doesNotMatch(home, /href: '\/work'|href: '\/csv'|iframe/);
+  assert.match(home, /<SkyDiscoveryDialog/);
+  assert.doesNotMatch(home, /discovery=\{<SkyDiscoveryFeed/);
+  assert.doesNotMatch(home, /<SkyInformationMarket|<SkyOptionalFeatures|styles\.hero/);
   assert.doesNotMatch(home, /BatteryFull|\bWifi\b|\bSignal\b/);
-  assert.match(homeStyles, /grid-template-columns: 260px minmax\(0, 600px\) minmax\(0, 350px\)/);
+  assert.match(home, /event.key === 'Escape'/);
+  assert.match(home, /data-sky-home/);
+  assert.match(
+    homeStyles,
+    /grid-template-columns:\s*repeat\(\s*var\(--os-navigation-count, 3\),\s*minmax\(0, 1fr\)\s*\)/,
+  );
 });
 
 void test('workspace shell stays sidebar-free and preserves running-state affordances', () => {
@@ -131,7 +147,7 @@ void test('workspace shell stays sidebar-free and preserves running-state afford
   );
   assert.doesNotMatch(shell, /Sidebar|rock-sidebar|rock-navigation/);
   assert.match(shell, /rock-main-column rock-main-column-full/);
-  assert.match(shell, /className="rock-home-link"/);
+  assert.match(shell, /<OSHeader title=\{title\} running=\{running\}/);
   assert.match(shell, /aria-disabled=\{running \|\| undefined\}/);
   assert.match(workspace, /data-running='true'/);
 });
@@ -177,16 +193,16 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.doesNotMatch(sky, /href="\/csv"/);
   assert.match(catalog, /id: 'rockstar-csv-cleanup'/);
   assert.match(routing, /label: 'CSV自動化役'/);
-  assert.match(chat, /href="\/chat\?view=work"/);
+  assert.match(chat, /href="\/os\/eve\?mode=tools&view=work"/);
   assert.match(
     chat,
     /<Workbench embedded cloudDraft=\{cloudWorkDraft\} initialPackageKey=\{preferredPackage\} packageRuntimeServers=\{mcpServers\} agentRequired=\{Boolean\(requestedAgentId\)\} agentReference=\{activeAgent \? \{ id: activeAgent\.id, revision: activeAgent\.revision \} : null\} \/>/,
   );
   assert.match(chat, /<ChatLiveProgress/);
-  assert.match(chat, /<h1>Jennifer<\/h1>/);
+  assert.match(chat, /<h1>Eve<\/h1>/);
   assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);
-  assert.match(chat, /Zemaが実行を管理/);
-  assert.match(chat, /Zemaの実行計画を開く/);
+  assert.match(chat, /Eveの仕事と成果/);
+  assert.match(chat, /Eveの仕事管理の実行計画を開く/);
   assert.match(chat, /useSkyChatSession\(/);
   const chatSession = readFileSync(
     resolve(root, 'components/use-sky-chat-session.ts'),
@@ -199,7 +215,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(chat, /SKY_ZEMA_JOB_EVENT/);
   assert.match(chat, /className="sky-chat-launch-tool"/);
   assert.match(sky, /queueSkyZemaHandoff\(tool\.id, request\)/);
-  assert.match(sky, /Zemaへ引き継ぐ/);
+  assert.match(sky, /Eveの仕事管理へ引き継ぐ/);
   assert.match(chat, /setInterval\(refresh, hasActiveJob \? 3_000 : 15_000\)/);
   assert.match(chat, /setInterval\(refresh, 30_000\)/);
   const liveProgress = readFileSync(
@@ -246,7 +262,7 @@ void test('Zema keeps the composer in view and explains a selected candidate bef
     /const \[allBotsOpen, setAllBotsOpen\] = useState\(false\)/,
   );
   assert.match(chat, /ツールと会話を検索/);
-  assert.match(chat, /AVOKADO \/ JENNIFER/);
+  assert.match(chat, /AVOKADO \/ EVE/);
   assert.match(chat, /jennifer-project-list/);
   assert.match(chat, /jennifer-flow-card/);
 });
@@ -256,7 +272,7 @@ void test('routes inside the OS keep a direct OS home affordance', () => {
     [
       'workspace shell',
       'components/workspace-shell.tsx',
-      /className="rock-home-link"[\s\S]{0,120}aria-label="ホームへ戻る"/,
+      /<OSHeader title=\{title\} running=\{running\}/,
     ],
     [
       'mobile chat command bar',
@@ -281,7 +297,7 @@ void test('routes inside the OS keep a direct OS home affordance', () => {
     [
       'legacy fund',
       'app/fund/legacy/page.tsx',
-      /<Link href="\/">⌂ ホーム<\/Link>/,
+      /redirect\('\/fund'\)/,
     ],
     [
       'rock studio',
@@ -295,7 +311,7 @@ void test('routes inside the OS keep a direct OS home affordance', () => {
   }
 });
 
-void test('public product and install guide stay outside the OS home', () => {
+void test('retired product forwards to the OS while the installation guide remains available', () => {
   const product = readFileSync(
     resolve(root, 'app/rockstaros/page.tsx'),
     'utf8',
@@ -305,10 +321,10 @@ void test('public product and install guide stay outside the OS home', () => {
     'utf8',
   );
   assert.doesNotMatch(product, /href="\/"/);
-  assert.match(product, /href="\/rockstaros\/guide"/);
+  assert.match(product, /redirect\('\/os'\)/);
   assert.match(
     guide,
-    /<Link href="\/rockstaros" className=\{styles\.brand\} aria-label="製品ホームへ戻る"/,
+    /<Link href="\/os" className=\{styles\.brand\} aria-label="RockstarOS ホームへ戻る"/,
   );
 });
 

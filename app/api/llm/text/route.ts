@@ -1,3 +1,6 @@
+import { runEvePlannerInference } from '@/lib/eve-planner-inference';
+import { eveHistoryKeys, EveHistoryError } from '@/lib/eve-history';
+import { WorkError } from '@/lib/workflow';
 import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
 import { bindSkyAgentLlmInput } from '@/lib/sky-agent-library-store';
 import { SkyAgentLibraryError } from '@/lib/sky-agent-library';
@@ -64,6 +67,7 @@ export async function POST(request: Request) {
       throw new LlmProviderError('INVALID_ENDPOINT', 400);
 
     const runtimeEnv = env as unknown as {
+      EVE_HISTORY_KEYRING?: string;
       SKY_REMOTE_LLM_ENABLED?: string;
       SKY_LLM_COMPATIBLE_BASE_URL?: string;
       OPENAI_API_KEY?: string;
@@ -90,6 +94,7 @@ export async function POST(request: Request) {
       ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
       : runtimeEnv;
     const remote = isRemoteLlmRequest(provider, requestEnv);
+    if (value.evePlanner !== undefined && (remote || provider !== 'ollama')) throw new WorkError('この計画作成は端末内Ollamaのみ対応しています。', 403);
     if (remote && value.consent !== true)
       throw new LlmProviderError('EXPLICIT_REMOTE_CONSENT_REQUIRED', 403);
     if (remote && runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
@@ -135,6 +140,7 @@ export async function POST(request: Request) {
       }, { status: 202, headers: noStoreHeaders });
     }
 
+    if (value.evePlanner !== undefined) return Response.json(await runEvePlannerInference(db, owner, eveHistoryKeys(runtimeEnv.EVE_HISTORY_KEYRING), value.evePlanner, value.model, requestEnv), { headers: noStoreHeaders });
     const result = await generateText(
       {
         provider,
@@ -151,6 +157,7 @@ export async function POST(request: Request) {
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {
     if (error instanceof SkyAgentLibraryError) return Response.json({ code: 'AGENT_SETTINGS_CHANGED', error: error.message }, { status: error.status, headers: noStoreHeaders });
+    if (error instanceof WorkError || error instanceof EveHistoryError) return Response.json({ error: error.message }, { status: error.status, headers: noStoreHeaders });
     if (error instanceof RemoteAiTextStoreError) return remoteAiTextHttpError(error);
     if (error instanceof SensitiveDataBlockedError)
       return Response.json(

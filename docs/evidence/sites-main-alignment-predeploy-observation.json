@@ -1,0 +1,57 @@
+{
+  "schema": "rockstaros-sites-current-public-observation/1",
+  "observedAt": "2026-11-02T11:11:04Z",
+  "site": {
+    "id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "title": "RockstarOS — 自分のSI環境を、どこからでも",
+    "slug": "sky-marketplace",
+    "status": "active",
+    "latest_version_number": 141,
+    "current_live_url": "https://avoado.si",
+    "access_mode": "public",
+    "updated_at": "2026-11-02T10:02:22.794379+00:00"
+  },
+  "version": {
+    "id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_d60fd96683f0819197a825d4d81233ba",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "version_number": 141,
+    "source": {
+      "commit_sha": "c4ab58b29d702abb03790fdca0a8ff708563bbd7"
+    },
+    "deployment_id": "appgdep_6ae85f762b208191a6ed71e3023633ed"
+  },
+  "deployment": {
+    "id": "appgdep_6ae85f762b208191a6ed71e3023633ed",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "status": "succeeded",
+    "type": "publish",
+    "version_id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_d60fd96683f0819197a825d4d81233ba",
+    "updated_at": "2026-11-02T10:02:22.750012+00:00",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "failure_message": null
+  },
+  "readOnly": true,
+  "currentPublicSite": {
+    "observedAt": "2026-11-02T11:11:04Z",
+    "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "url": "https://avoado.si",
+    "providerUrl": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "version": 141,
+    "sourceCommit": "c4ab58b29d702abb03790fdca0a8ff708563bbd7",
+    "access": "public",
+    "deployed": true,
+    "versionId": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_d60fd96683f0819197a825d4d81233ba",
+    "deploymentId": "appgdep_6ae85f762b208191a6ed71e3023633ed",
+    "mainMerged": false,
+    "authenticatedProductionAcceptance": "not_run_in_this_metadata_readback",
+    "commercialCloudAgents": "not_accepted",
+    "physicalOsRelease": "not_accepted"
+  },
+  "deliveryAcceptance": {
+    "status": "not_accepted",
+    "reason": "Read-only metadata confirms v141 before the authorized main/source alignment. Full production security, authenticated journey, billing and physical OS acceptance remain separate."
+  },
+  "newDeployment": false,
+  "newAccessGrant": false,
+  "publicSourceChanged": false
+}

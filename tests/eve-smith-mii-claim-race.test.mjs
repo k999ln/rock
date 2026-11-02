@@ -23,8 +23,8 @@ async function fixture(t, { blockTool = false, loseClaimResponse = false } = {})
   const entered = deferred(), release = deferred();
   let handlerCalls = 0, claimCalls = 0;
   t.after(() => { release.resolve(); sqlite.close(); return rm(dir, { recursive: true, force: true }); });
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(name => name.endsWith('.sql') && !name.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  for (const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(name => name.endsWith('.sql') && !name.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url), 'utf8'));
   const db = { prepare(sql) { return { bind(...args) { return {
     async first() { return sqlite.prepare(sql).get(...args) ?? null; },
     async all() { return { results: sqlite.prepare(sql).all(...args) }; },

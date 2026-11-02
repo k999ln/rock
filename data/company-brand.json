@@ -1,0 +1,19 @@
+{
+  "schema": "rockstaros.company-brand/1",
+  "revision": 3,
+  "authority": "Owner explicitly requests the attached rainbow logo across all three published sites on 2026-10-25",
+  "source": "public/brand/rockstaros-logo-source.png",
+  "sourceSha256": "520b8ca375bb8d533055f6ab884532d30a204e42774fabd13d756c36f0045045",
+  "width": 1254,
+  "height": 1254,
+  "description": "Owner supplied six rainbow outlined petals and central loop on white",
+  "scope": [
+    "RockstarOS",
+    "smis (formerly Sky)",
+    "Eve",
+    "avocadoMini",
+    "avocadoPro"
+  ],
+  "previousMark": "Navy flower and silver metallic marks retired from current Web branding",
+  "handling": "Preserve supplied pixels, colors, shape and aspect ratio. Square resizes only. This update covers three Web sites, not a rebuilt or installed native OS."
+}

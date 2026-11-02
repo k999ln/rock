@@ -61,7 +61,7 @@ function harness(initial = a) {
   async function paste(value) { find('textarea').props.onChange({ target: { value: JSON.stringify(value) } }); await flush(); }
   async function importFile(text, size = 120) { const input = nodes(tree).find((x) => x.type === 'input' && x.props.type === 'file'); input.props.onChange({ currentTarget: { files: text ? [{ size, text }] : [], value: 'fixture.json' } }); await flush(); }
   async function submit() { await find('form').props.onSubmit({ preventDefault() {} }); await flush(); }
-  render(); return { posts, requests, replies, controllers, deadlines, text: () => text(tree), signinLink: () => nodes(tree).find((x) => x.props?.href?.startsWith('/signin-with-chatgpt')).props, readback, flush, paste, importFile, submit, input: () => find('textarea').props.value, disabled: () => find('button').props.disabled };
+  render(); return { posts, requests, replies, controllers, deadlines, text: () => text(tree), signinLink: () => nodes(tree).find((x) => x.props?.href?.startsWith('/account?returnTo=')).props, readback, flush, paste, importFile, submit, input: () => find('textarea').props.value, disabled: () => find('button').props.disabled };
 }
 void test('pasted purchase data replaces a previously loaded claim link', async () => { const h = harness(); await h.flush(); await h.paste(c); await h.submit(); assert.equal(h.posts[0].claim.offerId, c.claim.offerId); });
 void test('selected purchase file replaces a previously loaded claim link', async () => { const h = harness(); await h.flush(); await h.importFile(async () => JSON.stringify(b)); await h.submit(); assert.equal(h.posts[0].claim.offerId, b.claim.offerId); });
@@ -126,6 +126,7 @@ for (const entitlement of ['invalid', { alreadyClaimed: 'false' }, null]) void t
 for (const status of [401, 302]) void test(`claim authentication loss (${status}) replaces prior purchase actions with sign-in`, async () => {
   const h = harness(); await h.flush(); h.replies.push({ status, body: { error: 'unauthorized' } });
   await h.submit(); assert.ok(h.text().includes('サインインして続ける'));
+  assert.equal(h.signinLink().href, '/account?returnTo=%2Fconnect');
   assert.equal(h.signinLink().target, '_blank');
   assert.equal(h.signinLink().rel, 'noopener noreferrer');
   assert.ok(!h.text().includes('このRockstar IDに登録'));

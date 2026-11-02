@@ -2,6 +2,8 @@
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import SkyUsageDetails from './sky-usage-details';
+import type {SkyUsageObservation} from '@/lib/sky-usage-observation';
 import { Check, Play, Plus, RefreshCw } from 'lucide-react';
 import {
   workflowTemplates,
@@ -65,6 +67,7 @@ type PendingUpdate = Update & { ownerScope: string };
 type Creation = { confirmationState?: 'readback' | 'needs_confirmation'; requestDigest?: string; creationReview?: WorkAgentCreationReview; creationInput?: Record<string, unknown>; ownerScope: string; id: string; title: string; templateId: string; plan?: Pick<WorkPlan, 'schemaVersion' | 'objective'>; agentRef?: { id: string; revision: number } };
 type RunnerDraft = { key: string; ownerScope: string; jobId: string; stepId: string; snapshot: Partial<MrToolRunnerState> };
 type Delegation = {
+  usageStatement?:SkyUsageObservation|null;
   id: string;
   parentJobId: string;
   predecessorDelegationId: string | null;
@@ -260,7 +263,7 @@ function a2aParentControllerStateName(state: A2AParentControllerSnapshot['state'
 }
 function a2aParentControllerNextAction(action: A2AParentControllerSnapshot['nextAction']) {
   const labels: Record<A2AParentControllerSnapshot['nextAction'], string> = {
-    choose_agent: 'SkyからAgentを選んで依頼を作成してください。',
+    choose_agent: 'smisからAgentを選んで依頼を作成してください。',
     approve_each_paid_task: '各有料依頼の条件・見積・上限を確認し、実行を個別に承認してください。',
     wait_for_cloud_dispatch: '受付済みの同じ依頼の状態を待ってください。再送は不要です。',
     monitor_same_tasks: '既存の依頼IDの進捗を確認してください。新しい依頼を重複送信しないでください。',
@@ -1761,7 +1764,7 @@ export default function Workbench({
     <div className={`work-shell${embedded ? ' is-chat-managed' : ''}`}>
       <div className="work-body">
         {!embedded && (
-          <nav className="rock-view-nav" aria-label="Skyの仕事と履歴">
+          <nav className="rock-view-nav" aria-label="smisの仕事と履歴">
             <Link href="/work" aria-current="page">
               手順のある仕事
             </Link>
@@ -2090,7 +2093,7 @@ export default function Workbench({
                       }}
                     >
                       <h3>別のエージェントへ委任する</h3>
-                      <p>公開HTTPS originを入力してAgent Cardを取得し、Skyに自分の候補として保存できます。</p>
+                      <p>公開HTTPS originを入力してAgent Cardを取得し、smisに自分の候補として保存できます。</p>
                       <p>親jobあたり最大8件、同時に4件までです。現在はRockstarOSから外部Agentへの一段委任のみ対応し、Agentによる自動再委任は許可しません。</p>
                       <label>
                         Agent Cardを探す
@@ -2104,7 +2107,7 @@ export default function Workbench({
                       <button type="button" disabled={delegationBusy || !agentOrigin.trim()} onClick={() => void discoverAgent()}>
                         Agent Cardを取得して候補に追加
                       </button>
-                      <div className="work-a2a-agent-list" aria-label="Skyに保存したエージェント候補">
+                      <div className="work-a2a-agent-list" aria-label="smisに保存したエージェント候補">
                         {a2aAgents.map((agent) => {
                           let skills: Array<{ name: string }> = [];
                           try {
@@ -2196,7 +2199,7 @@ export default function Workbench({
                         </div>
                       )}
                       <p className="work-delegation-price-note">署名付き見積がない、有効期限が切れた、または条件が変わった仕事は承認へ進めません。実行中のProvider meterと最終請求照合は別の記録で確認します。</p>
-                      <p>期限は作成から24時間です。発見・比較はSky側で確認済みのAgent Cardを使ってください。</p>
+                      <p>期限は作成から24時間です。発見・比較はsmis側で確認済みのAgent Cardを使ってください。</p>
                       <label className="work-offline-consent">
                         <input type="checkbox" checked={delegationForm.continueWhileDeviceOffline} onChange={(event) => setDelegationForm((current) => ({ ...current, continueWhileDeviceOffline: event.target.checked }))} />
                         <span>受付・承認後、この仕事を端末が圏外またはアプリ終了中も、表示した予算と期限の範囲でクラウド上で続けることを許可します。</span>
@@ -2392,6 +2395,7 @@ export default function Workbench({
                               ) : <p>署名済み確定receiptはまだ届いていません。暫定meterと予約上限は実際の確定請求額として扱いません。</p>}
                             </section>
                           )}
+                          {delegation.usageStatement&&<SkyUsageDetails observation={delegation.usageStatement}/>}
                           {delegation.artifactsCaptured !== 1 && delegation.remoteTaskId && (
                             <small>成果を相手側から照合中です。停止状態や成果の取得を完了とは扱いません。</small>
                           )}

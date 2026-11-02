@@ -18,9 +18,9 @@ export async function GET(request: Request) {
     if (id !== null) {
       const agent = await store.get(skyAgentId(id));
       if (!agent) throw new SkyAgentLibraryError('エージェントが見つかりません。', 404);
-      return json({ agent, ownerScope: await ownerScopeFor(owner) });
+      return json({ agent, ownerUserId: owner, ownerScope: await ownerScopeFor(owner) });
     }
-    return json({ agents: await store.list(), ownerScope: await ownerScopeFor(owner) });
+    return json({ agents: await store.list(), ownerUserId: owner, ownerScope: await ownerScopeFor(owner) });
   }
   catch (e) { return failure(e); }
 }
@@ -32,6 +32,8 @@ export async function PUT(request: Request) {
     // Preserve the existing optional owner-intent precondition for old clients.
     const changed = await rejectChangedOwner(request, owner);
     if (changed) return changed;
+    const expectedOwners=[request.headers.get("X-smis-Owner"),request.headers.get("X-sky-Owner")];
+    if(expectedOwners.some(expectedOwner=>expectedOwner!==null&&expectedOwner!==owner))throw new SkyAgentLibraryError("アカウントが変わりました。画面を開き直してください。",409);
     const reader = request.body?.getReader();
     if (!reader) throw new SkyAgentLibraryError('保存する設定を確認してください。');
     const chunks: Uint8Array[] = []; let size = 0;

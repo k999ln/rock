@@ -154,6 +154,11 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
           <button disabled={busy} onClick={() => void revoke(session.id)}>接続を解除</button>
         </li>)}
       </ul>}
+      <details><summary>接続してもEveを使えない場合</summary>
+        <p>この一覧で確認できるのはアカウントとの接続です。端末の応答、実行サービス、モデルの準備はここでは未確認です。</p>
+        <ol><li>同じアカウントでサインインしているか確認します。</li><li>端末を起動し、端末側の同期状態を確認します。</li><li>Eveで実行先と準備済みモデルを確認します。</li></ol>
+        <Link href="/os/eve">Eveで実行先を確認</Link>
+      </details>
     </section>}
   </>;
 }

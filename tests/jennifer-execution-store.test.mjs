@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import registrySource from '../data/jennifer-knowledge.json' with { type: 'json' };
@@ -16,14 +16,7 @@ import { createWorkJob } from '../lib/workflow.ts';
 function makeDb(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  sqlite.exec(`CREATE TABLE work_jobs (
-    id text PRIMARY KEY NOT NULL,
-    user_id text NOT NULL,
-    payload text NOT NULL,
-    revision integer NOT NULL,
-    updated_at text NOT NULL
-  )`);
-  sqlite.exec(readFileSync(new URL('../drizzle/0014_jennifer_execution_integrity.sql', import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const db = {
     prepare(sql) {
       return {

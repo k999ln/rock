@@ -2067,3 +2067,60 @@ export const skyXAccounts = sqliteTable('sky_x_accounts', {
 export const skyXOAuthStates = sqliteTable('sky_x_oauth_states', {
   stateHash:text('state_hash').primaryKey(),ownerId:text('owner_id').notNull(),cookieHash:text('cookie_hash').notNull(),verifier:text('verifier').notNull(),accountRevision:integer('account_revision').notNull(),expiresAt:integer('expires_at').notNull(),usedAt:integer('used_at').notNull().default(0),
 }, t=>[index('sky_x_oauth_owner_expiry').on(t.ownerId,t.expiresAt)]);
+
+export const eveDeviceJobs = sqliteTable('eve_device_jobs', {
+  ownerId:text('owner_id').notNull(),jobId:text('job_id').notNull(),threadId:text('thread_id').notNull(),deviceId:text('device_id').notNull(),
+  revision:integer('revision').notNull(),digest:text('digest').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},table=>[uniqueIndex('idx_eve_device_job_owner_id').on(table.ownerId,table.jobId),index('idx_eve_device_jobs_thread').on(table.ownerId,table.threadId,table.updatedAt)]);
+
+export const eveDevicePresence = sqliteTable('eve_device_presence', {
+  ownerId:text('owner_id').notNull(),deviceId:text('device_id').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_eve_device_presence_owner_id').on(t.ownerId,t.deviceId)]);
+// Common runtime observations coexist with legacy Pixel sync; neither is an execution grant.
+
+export const eveRuntimePresence = sqliteTable('eve_runtime_presence', {
+  ownerId:text('owner_id').notNull(),deviceId:text('device_id').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_eve_runtime_presence_owner_id').on(t.ownerId,t.deviceId)]);
+
+export const eveDeviceCommands = sqliteTable('eve_device_commands', {
+  ownerId:text('owner_id').notNull(),id:text('id').notNull(),deviceId:text('device_id').notNull(),threadId:text('thread_id').notNull(),
+  digest:text('digest').notNull(),envelope:text('envelope').notNull(),state:text('state').notNull(),createdAt:integer('created_at').notNull(),expiresAt:integer('expires_at').notNull(),
+},t=>[uniqueIndex('idx_eve_device_command_owner_id').on(t.ownerId,t.id),index('idx_eve_device_command_pending').on(t.ownerId,t.deviceId,t.state)]);
+
+
+
+export const rockstarAccounts = sqliteTable('rockstar_accounts', {
+  userId: text('user_id').primaryKey(),
+  recoverySha256: text('recovery_sha256').notNull().unique(),
+  revision: integer('revision').notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, t => [check('rockstar_account_recovery_hash', sql`length(${t.recoverySha256}) = 64`), check('rockstar_account_revision', sql`${t.revision} >= 1`)]);
+
+
+export const rockstarAccountEnrollments = sqliteTable('rockstar_account_enrollments', {
+  id: text('id').primaryKey(), userId: text('user_id'), mode: text('mode').notNull(),
+  bindingSha256: text('binding_sha256').notNull(), origin: text('origin').notNull(),
+  recoverySha256: text('recovery_sha256'), expectedRevision: integer('expected_revision').notNull().default(0), createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(), consumedAt: integer('consumed_at'), completionNonce: text('completion_nonce'),
+}, t => [check('rockstar_account_enrollment_mode', sql`${t.mode} IN ('signup','add','recover','login')`),
+  check('rockstar_account_enrollment_binding', sql`length(${t.bindingSha256}) = 64`), index('idx_rockstar_account_enrollment_expiry').on(t.expiresAt)]);
+
+
+export const rockstarAccountRateLimits = sqliteTable('rockstar_account_rate_limits', {
+  requestKey: text('request_key').notNull(), window: integer('window').notNull(), attempts: integer('attempts').notNull(),
+}, t => [primaryKey({ columns: [t.requestKey, t.window] }), check('rockstar_account_rate_attempts', sql`${t.attempts} > 0`)]);
+
+
+export const rockstarAccountPasswords = sqliteTable('rockstar_account_passwords', {
+  userId: text('user_id').primaryKey(), handle: text('handle').notNull().unique(),
+  salt: text('salt').notNull(), verifier: text('verifier').notNull(), accountRevision: integer('account_revision').notNull(),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, t => [check('rockstar_password_verifier', sql`length(${t.verifier}) = 64`), check('rockstar_password_revision', sql`${t.accountRevision} >= 1`)]);
+
+
+export const rockstarAccountSessions = sqliteTable('rockstar_account_sessions', {
+  id: text('id').primaryKey(), userId: text('user_id').notNull(), accountRevision: integer('account_revision').notNull(),
+  tokenSha256: text('token_sha256').notNull().unique(), createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(), lastUsedAt: integer('last_used_at').notNull(), revokedAt: integer('revoked_at'),
+}, t => [index('idx_rockstar_account_session_owner').on(t.userId), check('rockstar_account_session_hash', sql`length(${t.tokenSha256}) = 64`)]);

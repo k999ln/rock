@@ -1,6 +1,7 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+
 import { DatabaseSync } from 'node:sqlite';
 import { createEsimPricingSnapshot, parseEsimServerPlanCatalog } from '../lib/esim-plan-catalog.ts';
 import { reconcileKnownEsimProviderOrders } from '../lib/esim-reconciliation-worker.ts';
@@ -12,8 +13,7 @@ const apiKey = 'provider-api-key-fixture';
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter((entry) => entry.endsWith('.sql')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   return {
     sqlite,
     prepare(sql) {

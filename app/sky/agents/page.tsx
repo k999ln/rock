@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
-import SkyAgentLibrary from '@/components/sky-agent-library';
-export const metadata: Metadata = { title: '追加したエージェント — Sky', robots: { index: false, follow: false } };
-export default function Page() { return <SkyAgentLibrary />; }
+import { redirect } from 'next/navigation';
+/** Saved management links keep opening the same owner library, inside Home. */
+export default function Page() { redirect('/#sky-manage'); }

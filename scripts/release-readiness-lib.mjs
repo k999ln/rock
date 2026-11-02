@@ -1042,9 +1042,11 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
   ) {
     fail(label + ': static asset用_headerがsecurity policy正本と不一致です');
   }
-  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260917.json';
+  const localEvidencePath = 'docs/evidence/launch/web-security-main-alignment-20261102.json';
   const localEvidence = readJson(resolve(root, localEvidencePath));
   const localInputs = {
+    'services/sky-web/domain-router.mjs': sha256(readFileSync(resolve(root, 'services/sky-web/domain-router.mjs'))),
+    'scripts/stage-sky-domain-router.mjs': sha256(readFileSync(resolve(root, 'scripts/stage-sky-domain-router.mjs'))),
     'data/web-security-policy.json': sha256(readFileSync(resolve(root, 'data/web-security-policy.json'))),
     'public/_headers': sha256(readFileSync(resolve(root, 'public/_headers'))),
     'next.config.ts': sha256(readFileSync(resolve(root, 'next.config.ts'))),
@@ -1111,11 +1113,28 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
   return { status: 'PASS_SOURCE_POLICY', headers: Object.keys(expectedWebSecurityHeaders).length };
 }
 
-export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webSecurityPolicy }) {
+export function validateOwnerPrivateSitesAudit({ root, audit, hosting, readiness, webSecurityPolicy }) {
   const label = '本人限定Sites監査';
   if (audit?.schema !== 'rockstaros-owner-private-sites-audit/1') fail(label + ': schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(audit.observedAt || '')) {
     fail(label + ': UTC観測時刻が必要です');
+  }
+  const historicalOwnerScope = readiness.policy?.ownerPrivateSitesAuditScope ===
+    'historical_owner_private_delivery_not_current_public_project';
+  let auditHosting = hosting;
+  if (historicalOwnerScope) {
+    const identityPath = 'data/sites-historical-owner-hosting.json';
+    const identity = readJson(resolve(root, identityPath));
+    if (readiness.policy?.ownerPrivateSitesHosting !== identityPath ||
+        identity.schema !== 'rockstaros-historical-site-identity/1' ||
+        identity.scope !== 'historical_owner_private_identity_not_current_public_project' ||
+        identity.audit !== 'data/sites-owner-preview-audit.json' ||
+        identity.auditSha256 !== sha256(readFileSync(resolve(root, identity.audit))) ||
+        identity.project_id !== audit.site?.projectId || identity.currentPublicAccepted !== false ||
+        hosting?.project_id !== readiness.currentSiteObservation?.projectId ||
+        identity.project_id === hosting?.project_id)
+      fail(label + ': 歴史的な本人限定Siteと現行公開Siteの境界が不一致です');
+    auditHosting = identity;
   }
   const site = audit.site || {};
   const version = audit.latestVersion || {};
@@ -1124,7 +1143,7 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webS
   const deploymentSecurity = audit.deploymentSecurity || {};
   const claims = audit.claims || {};
   if (
-    site.projectId !== hosting?.project_id ||
+    site.projectId !== auditHosting?.project_id ||
     site.status !== 'active' ||
     site.currentUserRole !== 'owner' ||
     site.accessMode !== 'custom' ||
@@ -1169,7 +1188,8 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webS
   const current = target?.gates.find(({ id }) => id === 'latest-approved-source-sync');
   if (
     readiness.policy?.ownerPrivateSitesAudit !== 'data/sites-owner-preview-audit.json' ||
-    readiness.policy?.ownerPrivateSitesHosting !== '.openai/hosting.json' ||
+    readiness.policy?.ownerPrivateSitesHosting !== (historicalOwnerScope ? 'data/sites-historical-owner-hosting.json' : '.openai/hosting.json') ||
+    (historicalOwnerScope && secure?.acceptanceScope !== 'Historical owner-private delivery only; not the current public Site or general release.') ||
     secure?.status !== 'pass' ||
     !secure.evidence?.includes('data/sites-owner-preview-audit.json')
   ) {
@@ -1402,6 +1422,7 @@ export function validateReleaseReadiness({
   const webSecurityResult = validateWebSecurityPolicy({ root, policy: webSecurityPolicy, readiness });
   const currentPublicResult = validateCurrentPublicSiteObservation({ root, readiness, hosting: sitesHosting });
   const sitesResult = validateOwnerPrivateSitesAudit({
+    root,
     audit: sitesAudit,
     hosting: sitesHosting,
     readiness,
@@ -1452,23 +1473,32 @@ export function validateReleaseReadiness({
 export function validateCurrentPublicSiteObservation({ root, readiness, hosting }) {
   const label = '現在の公開Site受入';
   const observation = readiness.currentSiteObservation;
-  const evidencePath = 'docs/evidence/work-composition-development.json';
-  if (!observation || observation.evidence !== evidencePath || !existsSync(resolve(root, evidencePath)))
+  const evidencePath = observation?.evidence;
+  if (!observation || !['docs/evidence/sites-current-public-observation.json', 'docs/evidence/sites-main-alignment-predeploy-observation.json'].includes(evidencePath) || !existsSync(resolve(root, evidencePath)))
     fail(label + ': 現行観測とrepository内の独立した根拠が必要です');
-  const evidence = JSON.parse(readFileSync(resolve(root, evidencePath), 'utf8'));
+  const evidence = readJson(resolve(root, evidencePath));
   const actual = evidence.currentPublicSite;
-  if (evidence.schema !== 'rockstaros-work-composition-development/1' || !actual ||
+  const site = evidence.site, version = evidence.version, deployment = evidence.deployment;
+  if (evidence.schema !== 'rockstaros-sites-current-public-observation/1' || !actual || !site || !version || !deployment ||
       !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(observation.observedAt || '') ||
       !Number.isSafeInteger(observation.version) || observation.version < 1 ||
       !/^[a-f0-9]{40}$/.test(observation.sourceCommit || '') ||
       observation.projectId !== hosting?.project_id || !observation.projectId ||
       observation.access !== 'public' || observation.deployed !== true ||
-      ['observedAt', 'version', 'sourceCommit', 'access', 'deployed'].some((key) => observation[key] !== actual[key]))
+      ['observedAt', 'projectId', 'version', 'sourceCommit', 'access', 'deployed'].some(key => observation[key] !== actual[key]) ||
+      site.id !== actual.projectId || site.access_mode !== actual.access || site.latest_version_number !== actual.version ||
+      version.project_id !== site.id || version.version_number !== actual.version || version.source?.commit_sha !== actual.sourceCommit ||
+      version.id !== actual.versionId || version.deployment_id !== actual.deploymentId ||
+      deployment.project_id !== site.id || deployment.version_id !== version.id || deployment.id !== version.deployment_id ||
+      deployment.status !== 'succeeded' || deployment.type !== 'publish' || evidence.readOnly !== true ||
+      evidence.newDeployment !== false || evidence.newAccessGrant !== false)
     fail(label + ': 同じproject/version/SHA/accessの公開観測ではありません');
-  let url;
-  try { url = new URL(actual.url); } catch { fail(label + ': 公開URLが不正です'); }
-  if (url.protocol !== 'https:' || !url.hostname.endsWith('.chatgpt.site'))
-    fail(label + ': HTTPSのSites公開URLが必要です');
+  let canonical, provider;
+  try { canonical = new URL(actual.url); provider = new URL(actual.providerUrl); } catch { fail(label + ': 公開URLが不正です'); }
+  if (canonical.protocol !== 'https:' || provider.protocol !== 'https:' || !provider.hostname.endsWith('.chatgpt.site') ||
+      actual.url !== site.current_live_url || actual.providerUrl !== deployment.url ||
+      canonical.username || canonical.password || canonical.search || canonical.hash)
+    fail(label + ': HTTPSの同一Site公開URLが必要です');
   const target = readiness.targets.find(({ id }) => id === 'web-pwa-public-preview');
   const sourcePolicy = target?.gates.find(({ id }) => id === 'web-security-policy');
   const gate = target?.gates.find(({ id }) => id === 'current-public-delivery-readback');
@@ -1476,13 +1506,8 @@ export function validateCurrentPublicSiteObservation({ root, readiness, hosting 
     fail(label + ': source/local policyと公開runtime受入の範囲を分けてください');
   if (gate?.required !== true || !gate.evidence?.includes(evidencePath))
     fail(label + ': 同一公開候補の必須runtime gateと観測根拠が必要です');
-  // This evidence records delivery blockers and an unaccepted authenticated
-  // journey. Marking its summary or gate as pass cannot create missing receipts.
-  // A future accepted candidate needs an independently validated runtime report.
-  if (!evidence.deliveryBlockers?.staticHeaders ||
-      typeof actual.authenticatedProductionAcceptance !== 'string' ||
-      !actual.authenticatedProductionAcceptance.startsWith('not_run') ||
-      evidence.deliveryBlockers.staticHeaders.status !== 'external_supported_capability_not_confirmed')
+  if (typeof actual.authenticatedProductionAcceptance !== 'string' || !actual.authenticatedProductionAcceptance.startsWith('not_run') ||
+      evidence.deliveryAcceptance?.status !== 'not_accepted')
     fail(label + ': 現行の未受入観測を独立runtime受入receiptへ置き換える検証が必要です');
   if (gate.status !== 'blocked')
     fail(label + ': 静的配信と本番本人経路が未受入のためblockedが必要です');

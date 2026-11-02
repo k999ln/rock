@@ -71,7 +71,7 @@ export function skyAgentSystem(agent: SkyAgentSettings): string {
 export function skyAgentEvePath(agent: Pick<SkyLibraryAgent, 'id' | 'revision' | 'sourceTool'>): string {
   const query = new URLSearchParams({ agent: agent.id, agentRevision: String(agent.revision) });
   if (agent.sourceTool) query.set('tool', agent.sourceTool);
-  return `/chat?${query}`;
+  return `/os/eve?${query}`;
 }
 export function defaultSkyAgentSettings(name: string, instructions: string): SkyAgentSettings {
   return { name, instructions, provider: 'local-model', model: textModelProviderDefinition('local-model').defaultModel, enabled: true };

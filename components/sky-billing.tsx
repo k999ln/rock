@@ -172,7 +172,7 @@ export function SkyBilling() {
             <li>
               <span>1</span>
               <div>
-                <strong>Skyで自動化を使う</strong>
+                <strong>smisで自動化を使う</strong>
                 <small>仕事と実行結果を記録</small>
               </div>
             </li>
@@ -266,7 +266,7 @@ export function SkyBilling() {
             <dd>{amount(settlement?.operatingCostMinor)}</dd>
           </div>
           <div>
-            <dt>過去に計上されたSky利用料</dt>
+            <dt>過去に計上されたsmis利用料</dt>
             <dd>{amount(settlement?.skyFeeMinor)}</dd>
           </div>
         </dl>
@@ -274,7 +274,7 @@ export function SkyBilling() {
         <div className="wallet-simple-policy">
           <ShieldCheck size={17} />
           <span>
-            Skyの利用者向け収益料金は保留中です。料金と回収動線が決まるまで新たに計上しません。
+            smisの利用者向け収益料金は保留中です。料金と回収動線が決まるまで新たに計上しません。
           </span>
         </div>
       </section>
@@ -326,11 +326,11 @@ export function SkyBilling() {
               <CircleCheck size={18} />
             </span>
             <div>
-              <strong>次は、Skyで自動化を選ぶ</strong>
+              <strong>次は、smisで自動化を選ぶ</strong>
               <p>確認済みの売上が発生すると、ここに入金履歴が残ります。</p>
             </div>
             <Link href="/">
-              Skyを開く
+              smisを開く
               <ArrowRight size={16} />
             </Link>
           </div>

@@ -534,7 +534,7 @@
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/evidence/service-design-rebuild.json",
-  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
+  "nextPrompt": "docs/prompts/rockstaros-common-core-development.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/service-design/06-consistency-contracts.md",
   "amcGoalOrchestration": {
@@ -1201,9 +1201,9 @@
   ],
   "homeExperience": {
     "defaultRoute": "/",
-    "skyRoute": "/sky",
+    "skyRoute": "/",
     "returnPolicy": "os_routes_return_to_os_home_public_routes_return_to_product_home",
-    "workspaceNavigation": "sky_timeline_shell_with_responsive_primary_navigation",
+    "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
     "smartphoneLayout": {
       "supportedCssWidthPx": [
         320,
@@ -1214,8 +1214,7 @@
       "minimumPrimaryTouchTargetPx": 44,
       "pageHorizontalOverflow": "forbidden"
     },
-    "visualBasis": "native_post_timeline",
-    "legacyPreferences": "prior_launcher_preferences_preserved_in_device_storage_not_exposed_on_new_home",
+    "visualBasis": "native_post_information_marketplace_shared_os_frame",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
     "customizable": [
@@ -1241,13 +1240,14 @@
       "sanitized_diagnostic_export",
       "allowlisted_device_reset",
       "release_readiness"
-    ]
+    ],
+    "legacySkyRoute": "/sky"
   },
   "launchPage": {
     "domainSeparation": {
       "productSite": "separate_public_domain",
-      "productSiteUrl": "https://avocadomini.si",
-      "productSiteDeployment": "public_reference_site_custom_domain_https_verified",
+      "productSiteUrl": "https://avocadomini.noellesugar1.chatgpt.site",
+      "productSiteDeployment": "public_sites_deployment_succeeded_custom_domain_pending",
       "productSiteSource": "sites/avocado-mini",
       "productSiteRoutes": [
         "/",
@@ -1258,24 +1258,24 @@
       "osWebAudience": "owner_only",
       "osSiteAccessStatus": "pending_owner_account_connection",
       "requestedCustomDomain": "avocadomini.si",
-      "customDomainStatus": "active_ssl_active",
-      "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
-      "productSiteReferenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
-      "productSitePresentation": "user_selected_mini_pro_public_site",
-      "productSiteFallbackUrl": "https://avocadomini.noellesugar1.chatgpt.site"
+      "customDomainStatus": "pending_dns_and_tls_validation",
+      "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site"
     },
-    "route": "/rockstaros",
-    "role": "public_account_service_home",
-    "osHomeRoute": "/",
+    "route": "/os",
+    "role": "canonical_os_workspace_entry",
+    "osHomeRoute": "/os",
     "installGuideRoute": "/rockstaros/guide",
-    "directOsHomeLink": false,
-    "serviceDetailsLocation": "public_service_home",
-    "primaryAction": "start_service_onboarding",
-    "secondaryAction": "view_avocado_mini_device",
+    "directOsHomeLink": true,
+    "serviceDetailsLocation": "service_settings_and_connect",
+    "primaryAction": "open_os_workspace",
+    "secondaryAction": "connect_account_or_device",
     "publicDownloadFallback": "/connect",
     "visualDirection": "light_product_showcase_with_scroll_tower",
     "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable",
-    "hardwareProgramRoute": "/avocado-mini"
+    "hardwareProgramRoute": "/avocado-mini",
+    "previousRoute": "/rockstaros",
+    "hardwareCanonicalOrigin": "https://avocadomini.si",
+    "hardwareCanonicalReason": "Owner 2026-10-25 requests retiring duplicate product presentation and canonical product domains; old /avocado-mini remains a permanent redirect, all R5 acceptance/price gates preserved."
   },
   "visualSystem": {
     "surfaces": [
@@ -1284,14 +1284,12 @@
       "/studio",
       "workspace_shell"
     ],
-    "background": "near_black",
+    "background": "white",
     "productHomeAppearance": "light_scroll_product_showcase",
-    "accent": "ice_blue",
-    "skyHomeAccent": "forest_green",
-    "skyHomeAppearance": "light_native_post_timeline",
-    "headline": "heavy_display_latin",
-    "metadata": "monospace_uppercase",
-    "primaryControl": "rounded_high_contrast",
+    "accent": "ink_on_white",
+    "headline": "compact_task_hierarchy",
+    "metadata": "readable_secondary_labels",
+    "primaryControl": "high_contrast_touch_target",
     "studioPrimarySurface": "sdk_code_installation",
     "homePrimaryApps": [
       "sky",
@@ -1311,7 +1309,17 @@
       "mobile_header_overflow"
     ],
     "businessFunctionalityChanged": false,
-    "interactionFunctionalityImproved": true
+    "interactionFunctionalityImproved": true,
+    "previousAccent": "forest_green_bronze",
+    "ownerDirection": "2026-10-31: ELLE means refined information architecture and visual mobile controls, not typography",
+    "tokens": {
+      "bg": "#ffffff",
+      "panel": "#ffffff",
+      "text": "#151515",
+      "muted": "#595959",
+      "accent": "#151515",
+      "focus": "#215ac2"
+    }
   },
   "systemMaintenance": {
     "route": "/settings/system",
@@ -1517,8 +1525,7 @@
     "RQ46",
     "RQ47",
     "RQ48",
-    "RQ49",
-    "RQ50"
+    "RQ49"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -3139,5 +3146,134 @@
     "mainIntegrated": false,
     "pullRequest": "https://github.com/k999ln/rock/pull/311",
     "sourceCommit": "14474ce3450d91c860d44c10e1d3d91e2c74800e"
+  },
+  "previousNextPrompt": "docs/prompts/rock-current-next-20261002.md",
+  "osVisualDirection20261023": {
+    "authority": "latest explicit user instruction",
+    "displayName": "smis",
+    "home": "timeline only; optional add/manage via explicit controls",
+    "communities": "separate directory and selected community feed",
+    "internalCompatibility": "keep sky paths/API/schema"
+  },
+  "obsoletePageCleanup": {
+    "recordedAt": "2026-10-21",
+    "authority": "Owner explicitly requested removing unused avoado.si pages and chose old/duplicate page cleanup",
+    "canonicalOs": "/os",
+    "canonicalEve": "/os/eve",
+    "approved": true,
+    "strategy": "retire obsolete UI through redirects; preserve existing owner data and backend APIs",
+    "redirects": {
+      "/zema/compose": "/os/eve",
+      "/zema/library": "/os/sky/agents",
+      "/zema/amc": "/amc",
+      "/fund/legacy": "/fund",
+      "/rockstaros": "/os",
+      "/rockstaros/crowdfunding": "/os"
+    },
+    "retained": [
+      "Sky",
+      "Eve",
+      "Wallet",
+      "Market",
+      "Game",
+      "avocadoMini",
+      "avocadoPro",
+      "/rockstaros/guide"
+    ]
+  },
+  "companyLogo20261023": {
+    "schema": "rockstaros.company-brand/1",
+    "revision": 3,
+    "authority": "Owner explicitly requests the attached rainbow logo across all three published sites on 2026-10-25",
+    "source": "public/brand/rockstaros-logo-source.png",
+    "sourceSha256": "520b8ca375bb8d533055f6ab884532d30a204e42774fabd13d756c36f0045045",
+    "width": 1254,
+    "height": 1254,
+    "description": "Owner supplied six rainbow outlined petals and central loop on white",
+    "scope": [
+      "RockstarOS",
+      "smis (formerly Sky)",
+      "Eve",
+      "avocadoMini",
+      "avocadoPro"
+    ],
+    "previousMark": "Navy flower and silver metallic marks retired from current Web branding",
+    "handling": "Preserve supplied pixels, colors, shape and aspect ratio. Square resizes only. This update covers three Web sites, not a rebuilt or installed native OS."
+  },
+  "smisEveWorkbench20261023": {
+    "status": "implementation_focused_pass_full_checks_pending",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "publicBaseVersion": 116,
+    "publicBaseCommit": "48cf8b095ec7db99f67dd0774a07f8cb9aa7a638",
+    "evidence": "docs/evidence/os-visual-release.json#workbenchFollowup",
+    "design": "docs/sky-tools-complete-design.md#smis-eve-workbench",
+    "publicDeployed": false,
+    "actualUiAccepted": false,
+    "physicalAccepted": false,
+    "scope": "existing marketplace content, private saved-resource posts, Eve role builder and execution-screen usability; preserve owner/revision/budget/stop boundaries",
+    "reason": "Latest explicit human requests in this chat; restores existing content and simplifies Eve creation/execution UI"
+  },
+  "eveSmisExecutionLoopRequirement20261023": {
+    "source": "本人の明示依頼: Eveとの会話でエージェントを作り、smisに追加し、PixelでもWebでも実行して成果を受け取るところまで実際に一周確認する。",
+    "requirements": [
+      "会話入力から役割を確認し、本人用Agentへ保存する",
+      "smisから同じAgent IDとrevisionで利用できる",
+      "承認済み端末と準備済みモデルだけに登録・実行する",
+      "Web/Pixelの同一accountでJobと成果を再読込する",
+      "fixture/API/ビルドと実UI・実モデル・実機の受入を分ける"
+    ],
+    "design": "docs/rockstaros-complete-design.md#smis-eve-workbench",
+    "evidence": "docs/evidence/eve-smis-execution-loop.json"
+  },
+  "sourceCompatibilityExtensions": {
+    "canonicalAuthority": "Owner master prompt dated 2026-10-22; Root RQ01-RQ49",
+    "canonicalRequirementCount": 49,
+    "retained": [
+      {
+        "formerRequirementId": "RQ50",
+        "feature": "Sky Compute Grid",
+        "contract": "skyComputeGrid",
+        "status": "retained_source_extension_not_deleted_or_promoted_to_public_acceptance",
+        "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf"
+      }
+    ],
+    "financialHoldsPreserved": true
+  },
+  "eveModelIdentityAndTraining": {
+    "recordedAt": "2026-10-21",
+    "taskIds": [
+      "WEB04",
+      "OS10",
+      "AI02",
+      "AI05"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "implementing_display_training_not_started",
+    "authority": "docs/rockstaros-complete-design.md#eve-cross-device-sync",
+    "trainingRequirements": "docs/llm-evaluation-architecture.md#eve-training-prerequisites",
+    "source": [
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css"
+    ],
+    "modelWeightsCreated": false,
+    "trainingStarted": false,
+    "publicDeployment": null
+  },
+  "eveNoahUiNavigation": {
+    "date": "2026-11-02",
+    "source": "owner requested all seven audited navigation fixes; only Eve and Noah are current",
+    "products": [
+      "Eve",
+      "Noah"
+    ],
+    "contract": "docs/rockstaros-complete-design.md#eve-noah-navigation",
+    "requirementsChanged": false,
+    "authAndExecutionGatesPreserved": true,
+    "githubMainIntegration": "in_progress"
   }
 }

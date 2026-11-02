@@ -216,7 +216,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
       </p>}
     {cloud && <section className={styles.esimMaterial} aria-label="専用クラウドへのアクセス">
       <h4><ShieldCheck size={16} /> RockstarOSクラウドアクセス</h4>
-      <output>{cloud.state === 'active' ? 'アクセスキーは有効です。Skyで、契約に含まれる機能を使えます。'
+      <output>{cloud.state === 'active' ? 'アクセスキーは有効です。smisで、契約に含まれる機能を使えます。'
         : cloud.state === 'revoked' ? 'アクセスキーを停止しました。利用期間内であれば再発行できます。'
         : cloud.state === 'expired' ? 'アクセスキーの期限が切れました。利用期間内であれば再発行できます。'
         : cloud.state === 'suspended' ? '現在の利用条件を確認できないため、クラウドアクセスを停止しています。'
@@ -235,7 +235,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
           disabled={pending !== null} onClick={() => void manageCloud('revoke')}>アクセスキーを停止</button>}
       </div>
       {cloud.state === 'active' && <div className={styles.esimLinks}>
-        <Link className={styles.secondary} href="/sky">Skyを開く</Link>
+        <Link className={styles.secondary} href="/sky">smisを開く</Link>
         <Link className={styles.secondary} href="/work">依頼・進捗・費用を見る</Link>
       </div>}
       <p className={styles.subtle}>クラウド作業の料金は実行前の見積・上限・承認で確認します。携帯電話料金との合算請求は未対応です。</p>

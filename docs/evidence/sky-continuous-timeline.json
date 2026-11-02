@@ -1,0 +1,59 @@
+{
+  "schema": "sky.continuous-timeline-evidence/1",
+  "recordedAt": "2026-10-22T00:38:13.121898+00:00",
+  "status": "implementation_tests_passed_public_pending",
+  "primaryWorkstream": "Web / PWA / Sites",
+  "responsibility": {
+    "ROCK": [
+      "ranking",
+      "paging",
+      "live refresh",
+      "key visibility"
+    ],
+    "EXTERNAL": [
+      "GDELT",
+      "API/MCP providers"
+    ],
+    "JOINT": [
+      "public UI real feed"
+    ],
+    "OWNER": [
+      "provider choices",
+      "permissions"
+    ]
+  },
+  "taskIds": [
+    "HOME01",
+    "WEB04",
+    "SKY21"
+  ],
+  "rootTests": {
+    "passed": 28,
+    "failed": 0,
+    "log": "/private/tmp/rock-dynamic-timeline-tests.log"
+  },
+  "ranking": {
+    "batch": 12,
+    "window": 200,
+    "freshnessWeight": 14,
+    "topicWeight": 6,
+    "topicCap": 18,
+    "followWeight": 8,
+    "communityWeight": 5,
+    "sourcePenalty": 8,
+    "exploreEvery": 5
+  },
+  "realProvider": {
+    "httpStatus": 200,
+    "rawArticles": 80,
+    "parsedArticles": 73,
+    "fallback": "data/sky-live-news-seed.json",
+    "fallbackSha256": "642b8152d52775c269ddaa4cf5fc6a93dd7ae573520531ada3de3654a23dbd24"
+  },
+  "sourcePublication": null,
+  "publicBrowser": null,
+  "xPersonalFeedAccepted": false,
+  "fullOsAccepted": false,
+  "biometricVaultAccepted": false,
+  "rootGitCommit": false
+}

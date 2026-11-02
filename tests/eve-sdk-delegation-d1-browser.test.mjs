@@ -29,8 +29,12 @@ async function compile() {
       build.onResolve({ filter: /^@\/lib\/device$/ }, args => args.importer.endsWith('/lib/mcp-hub.ts') ? { path: path.join(fixture, 'device.ts') } : undefined);
       build.onResolve({ filter: /^@\/lib\/mii-preview-descriptors$/ }, () => ({ path: path.join(fixture, 'mii-preview-descriptors.ts') }));
       build.onResolve({ filter: /^@\// }, args => build.resolve('./' + args.path.slice(2), { resolveDir: root, kind: args.kind }));
+      build.onResolve({ filter: /^next\/image$/ }, () => ({ path: path.join(fixture, 'next-image.tsx') }));
       build.onResolve({ filter: /^next\/link$/ }, () => ({ path: path.join(fixture, 'next-link.tsx') }));
       build.onResolve({ filter: /^next\/navigation$/ }, () => ({ path: path.join(fixture, 'navigation.ts') }));
+      // Server-only crypto may be discovered through unused shared exports; executing it in this client fixture must fail.
+      build.onResolve({filter:/^node:(crypto|buffer)$/},()=>({path:'server-only',namespace:'server-only'}));
+      build.onLoad({filter:/.*/,namespace:'server-only'},()=>({contents:"const denied=()=>{throw Error('SERVER_CRYPTO_IN_BROWSER')}; export const scrypt=denied,timingSafeEqual=denied,Buffer=new Proxy({}, {get:denied});",loader:'js'}));
       build.onResolve({ filter: /^cloudflare:workers$/ }, () => ({ path: 'env', namespace: 'fixture' }));
       build.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: 'export const env={}', loader: 'js' }));
       build.onLoad({ filter: /\.css$/ }, () => ({ contents: 'export default {}', loader: 'js' }));
@@ -79,8 +83,8 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
       serviceBindings:{A2A_TEST_OUTBOUND:synthetic.remoteFetch},script:workerSource.outputFiles[0].text }));
     t.after(() => worker.dispose());
     const db = await worker.getD1Database('DB');
-    for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(n => n.endsWith('.sql') && !n.startsWith('._')).sort()) {
-      const contents=readFileSync(new URL(`../drizzle/${file}`, import.meta.url),'utf8');
+    for (const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(n => n.endsWith('.sql') && !n.startsWith('._')).sort()) {
+      const contents=readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url),'utf8');
       for (const statement of contents.split('--> statement-breakpoint')) if(statement.trim()) await db.prepare(statement.trim()).run();
     }
     let authenticatedOwner = owner;
@@ -138,6 +142,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     const http = createServer(async (req, res) => {
       try {
         const url = new URL(req.url, `http://${req.headers.host}`); requests.push({ path: url.pathname, method: req.method });
+        if (url.pathname === '/brand/rainbow-boot.js') { res.writeHead(200, {'Content-Type':'application/javascript'}); return res.end(readFileSync(path.join(root,'public/brand/rainbow-boot.js'))); }
         if (url.pathname === '/bundle.js') { res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' }); return res.end(bundle); }
         if (url.pathname === '/fixture-context') {
           res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
@@ -346,7 +351,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     assert.equal(seeded.status, 200); const seededAgent = (await seeded.json()).agent;
     await evaluate(`history.pushState({}, '', '/sky/agents'); dispatchEvent(new Event('fixture-navigation'))`);
     await wait('document.body.innerText.includes("追加したエージェント") && document.body.innerText.includes("fixture担当")', 'Sky role list');
-    await click('fixture担当'); await input('名前', 'fixture編集担当'); await input('役割・指示', '名前と指示だけを編集');
+    await click('fixture担当'); await input('名前', 'fixture編集担当'); await input('何をしてほしい？', '名前と指示だけを編集');
     await click('設定を保存'); await wait('document.body.innerText.includes("設定を保存しました")', 'Sky settings saved');
     const after = await readAgent();
     assert.equal(after.ownerScope, scope); assert.equal(after.agent.id, agentId);

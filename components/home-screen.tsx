@@ -1,29 +1,24 @@
 'use client';
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import OSHeader from './os-header';
+import OsAppNavigation from './os-app-navigation';
+import { osRouteHref, skyHomePanelForHash } from '@/lib/os-navigation';
 import {
-  Radio,
-  Search,
   MessageCircle,
-  Layers2,
-  Users,
-  Bookmark,
-  Settings2,
   Plus,
-  ArrowUpRight,
-  WalletCards,
-  ChartNoAxesCombined,
-  Newspaper,
-  GraduationCap,
   MoreHorizontal,
+  ArrowUpRight,
+  Layers,
   Cable,
-  type LucideIcon,
+  FolderOpen,
 } from 'lucide-react';
 import SkySocialTimeline from './sky-social-timeline';
-import SkyDiscoveryFeed from './sky-discovery-feed';
+
+import SmisAddedPosts from './smis-added-posts';
+import SkyDiscoveryDialog from './sky-discovery-dialog';
 import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
-import SkyPublicXTimeline from './sky-public-x-timeline';
 import {
   useTimelineConnector,
   SkyTimelineConnector,
@@ -31,122 +26,98 @@ import {
 } from './sky-timeline-connector';
 import { SkyNewsConnections } from './sky-information-market';
 import { useSkyFeatures } from '@/lib/use-sky-features';
-import type { WorkJob } from '@/lib/workflow';
 import styles from './home-screen.module.css';
-import OsAppNavigation from './os-app-navigation';
 
-type View = 'home' | 'discover' | 'sources' | 'bookmarks' | 'communities';
-const apps: { href: string; name: string; Icon: LucideIcon; view?: View }[] = [
-  { href: '/#timeline', name: 'Sky', Icon: Radio, view: 'home' },
-  { href: '/#catalog', name: '見つける', Icon: Search, view: 'discover' },
-  { href: '/chat', name: 'Eve', Icon: MessageCircle },
-  { href: '/sky/agents', name: '自分のSky', Icon: Layers2 },
-  {
-    href: '/#communities',
-    name: 'コミュニティー',
-    Icon: Users,
-    view: 'communities',
-  },
-  {
-    href: '/#bookmarks',
-    name: 'ブックマーク',
-    Icon: Bookmark,
-    view: 'bookmarks',
-  },
-  { href: '/wallet', name: 'Wallet', Icon: WalletCards },
-  { href: '/market', name: 'Market', Icon: ChartNoAxesCombined },
-  { href: '/campus', name: 'Campus', Icon: GraduationCap },
-  { href: '/settings', name: '設定', Icon: Settings2 },
-];
+const SkyDiscoveryFeed = lazy(() => import('./sky-discovery-feed'));
+const SkyAgentLibrary = lazy(() => import('./sky-agent-library'));
+type View =
+  | 'home'
+  | 'discover'
+  | 'manage'
+  | 'sources'
+  | 'bookmarks'
+  | 'communities';
 function viewForHash(fragment: string): View {
   const hash = fragment.replace(/^#/, '');
-  return hash === 'catalog' || hash === 'optional-features'
-    ? 'discover'
-    : hash === 'news-plugins' || hash === 'external-sources'
+  return (
+    skyHomePanelForHash('#' + hash) ??
+    (hash === 'news-plugins' || hash === 'external-sources'
       ? 'sources'
-      : hash === 'bookmarks' || hash === 'communities'
-        ? hash
-        : 'home';
+      : hash === 'bookmarks' ||
+          hash === 'communities' ||
+          hash.startsWith('community=')
+        ? hash === 'bookmarks'
+          ? 'bookmarks'
+          : 'communities'
+        : 'home')
+  );
 }
 export default function HomeScreen() {
+  const pathname = usePathname();
+  const route = (href: string) =>
+    osRouteHref(pathname, href, process.env.NODE_ENV === 'development');
+  const homePath = route('/');
   const timelineReceiver = useTimelineConnector();
   const [view, setView] = useState<View>('home');
-  const [navigationHash, setNavigationHash] = useState('');
-  const [query, setQuery] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const viewRef = useRef<View>('home');
+  const lastHash = useRef('#timeline');
+  const [panelOriginView, setPanelOriginView] = useState<View>('home');
+  const panelOrigin = useRef<{view: View; hash: string; scroll: number; focus: HTMLElement | null}>({view:'home', hash:'#timeline', scroll:0, focus:null});
+  function rememberOrigin(next: View, focus?: HTMLElement | null, hash = window.location.hash) {
+    const current = viewRef.current;
+    if ((next === 'discover' || next === 'manage') && current !== 'discover' && current !== 'manage') {
+      panelOrigin.current = {view:current, hash:hash || '#timeline', scroll:window.scrollY, focus:focus ?? (document.activeElement as HTMLElement | null)};
+      setPanelOriginView(current);
+    }
+    viewRef.current = next;
+  }
+  const [panelVisited, setPanelVisited] = useState(false);
   const [featureOnly, setFeatureOnly] = useState(false);
-  const [jobs, setJobs] = useState<WorkJob[]>([]);
   const { enabled } = useSkyFeatures();
   useEffect(() => {
     const sync = () => {
-      setView(viewForHash(window.location.hash));
-      setNavigationHash(window.location.hash);
+      const next = viewForHash(window.location.hash);
+      rememberOrigin(next, undefined, lastHash.current);
+      lastHash.current = window.location.hash;
+      setView(next);
+      if (next === 'discover' || next === 'manage') setPanelVisited(true);
       setFeatureOnly(window.location.hash === '#optional-features');
     };
     const frame = requestAnimationFrame(sync);
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        window.location.hash = 'catalog';
+        window.location.hash = 'sky';
       }
-      if (
-        event.key === 'Escape' &&
-        !['INPUT', 'TEXTAREA', 'SELECT'].includes(
-          (event.target as HTMLElement)?.tagName,
-        )
-      )
-        window.location.hash = 'timeline';
+      if (event.key === 'Escape') {
+        const menu = document.querySelector<HTMLDetailsElement>('details[data-home-menu][open]');
+        if (menu) {
+          event.preventDefault();
+          menu.open = false;
+          menu.querySelector<HTMLElement>('summary')?.focus();
+        }
+      }
     };
     window.addEventListener('hashchange', sync);
     window.addEventListener('popstate', sync);
     window.addEventListener('keydown', onKey);
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
-    const controller = new AbortController();
-    void fetch('/api/work-jobs', {
-      cache: 'no-store',
-      signal: controller.signal,
-    })
-      .then(async (r) =>
-        r.ok ? ((await r.json()) as { jobs: WorkJob[] }) : null,
-      )
-      .then((v) => {
-        if (!controller.signal.aborted && Array.isArray(v?.jobs))
-          setJobs(
-            v.jobs
-              .slice()
-              .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-              .slice(0, 3),
-          );
-      })
-      .catch(() => {});
     return () => {
       cancelAnimationFrame(frame);
-      controller.abort();
       window.removeEventListener('hashchange', sync);
       window.removeEventListener('popstate', sync);
       window.removeEventListener('keydown', onKey);
     };
   }, []);
-  function search(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSearchQuery(query.trim());
-    window.location.hash = 'catalog';
-    setView('discover');
-  }
-  const visibleApps = apps.filter(
-    (app) =>
-      (app.href !== '/wallet' && app.href !== '/market') ||
-      enabled(app.href === '/wallet' ? 'wallet' : 'market'),
-  );
   return (
     <div
       className={styles.home}
       data-sky-home
-      data-os-bottom-navigation-host="home"
+      data-os-frame
       data-timeline-skin="x"
       onClickCapture={(event) => {
+          if (event.defaultPrevented) return;
         if (
-          event.defaultPrevented ||
           event.button !== 0 ||
           event.metaKey ||
           event.ctrlKey ||
@@ -156,17 +127,21 @@ export default function HomeScreen() {
           return;
         const anchor = (event.target as Element).closest('a[href]');
         if (!anchor || (anchor.getAttribute('target') && anchor.getAttribute('target') !== '_self')) return;
+        const menu = anchor.closest<HTMLDetailsElement>('details[data-home-menu]');
+        if (menu) menu.open = false;
         const target = new URL(
           anchor.getAttribute('href')!,
           window.location.href,
         );
         if (
           target.origin === window.location.origin &&
-          target.pathname === '/' &&
+          target.pathname === homePath &&
           target.hash
         ) {
-          setView(viewForHash(target.hash));
-          setNavigationHash(target.hash);
+          const next = viewForHash(target.hash);
+          rememberOrigin(next, anchor instanceof HTMLElement ? anchor : null);
+          setView(next);
+          if (next === 'discover' || next === 'manage') setPanelVisited(true);
           setFeatureOnly(target.hash === '#optional-features');
         }
       }}
@@ -175,214 +150,193 @@ export default function HomeScreen() {
         ホームの内容へ
       </a>
       <div className={styles.layout}>
-        <aside className={styles.navigation} aria-label="RockstarOS">
-          <div className={styles.navInner}>
-            <Link
-              className={styles.brand}
-              href="/#timeline"
-              aria-label="RockstarOS ホーム"
-            >
-              <Image
-                src="/company-mark.png"
-                alt=""
-                width={32}
-                height={32}
-                unoptimized
-              />
-              <span>RockstarOS</span>
-            </Link>
-            <nav aria-label="主要メニュー">
-              {visibleApps.map(({ href, name, Icon, view: target }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  aria-current={target === view ? 'page' : undefined}
-                  aria-label={name}
-                >
-                  <Icon size={26} strokeWidth={target === view ? 2.5 : 1.7} />
-                  <span>{name}</span>
-                </Link>
-              ))}
-            </nav>
-            <button
-              className={styles.postButton}
-              onClick={() => {
-                window.location.hash = 'timeline';
-                window.setTimeout(() => {
-                  document.getElementById('sky-post')?.focus();
-                }, 0);
-              }}
-            >
-              <Plus size={22} />
-              <span>ポストする</span>
-            </button>
-            <Link className={styles.access} href="/connect">
-              <Cable size={21} />
-              <span>利用環境をつなぐ</span>
-            </Link>
-            <span className={styles.preview}>DEVELOPER PREVIEW</span>
-          </div>
-        </aside>
         <main className={styles.main} id="home-content">
-          <h1 className={styles.srOnly}>Sky ホーム</h1>
-          <header className={styles.mobileHeader}>
-            <Link href="/#timeline" aria-label="RockstarOS ホーム">
-              <Image
-                src="/company-mark.png"
-                alt=""
-                width={25}
-                height={25}
-                unoptimized
-              />
-              <strong>Sky</strong>
-            </Link>
-            <div className={styles.mobileActions}>
-              <Link href="/chat">
-                Eve <MessageCircle size={20} />
-              </Link>
-              <details>
-                <summary aria-label="その他のメニュー">
-                  <MoreHorizontal size={22} />
-                </summary>
-                <nav aria-label="追加メニュー">
-                  <Link href="/#catalog">見つける</Link>
-                  <Link href="/sky/agents">自分のSky</Link>
-                  <Link href="/#bookmarks">ブックマーク</Link>
-                  <Link href="/#news-plugins">ニュースの配信元</Link>
-                  <Link href="/#optional-features">機能を追加</Link>
-                  <Link href="/campus">Campus</Link>
-                  <Link href="/connect">利用環境をつなぐ</Link>
-                  <Link href="/settings">設定</Link>
-                  {enabled('wallet') && <Link href="/wallet">Wallet</Link>}
-                  {enabled('market') && <Link href="/market">Market</Link>}
-                </nav>
-              </details>
-            </div>
-          </header>
-          {view === 'discover' ? (
-            <SkyDiscoveryFeed
-              key={`${featureOnly ? 'features' : 'discover'}:${searchQuery}`}
-              query={searchQuery}
-              initialFilter={featureOnly ? 'features' : 'all'}
-              standalone
-            />
-          ) : view === 'sources' ? (
-            <section className={styles.sources}>
-              <header className={styles.pageTitle}>
-                <h1>配信元をつなぐ</h1>
-                <Link href="/#timeline">ホームへ</Link>
-              </header>
-              <SkyTimelineConnector receiver={timelineReceiver} />
-              <details className={styles.providerSettings}>
-                <summary>個別APIの接続設定（任意）</summary>
-                <SkyXAccountConnection />
-              </details>
-              <SkyNewsConnections />
-            </section>
-          ) : (
-            <SkySocialTimeline
-              key={view}
-              fullHome
-              initialView={view}
-              discovery={<SkyDiscoveryFeed />}
-              externalFeed={
-                <>
-                  <SkyMcpTimeline receiver={timelineReceiver} />
-                  <SkyXAccountTimeline />
-                  <SkyPublicXTimeline />
-                </>
-              }
-            />
-          )}
-        </main>
-        <aside className={styles.explore} aria-label="発見と自分の仕事">
-          <div className={styles.exploreInner}>
-            <form className={styles.search} onSubmit={search}>
-              <Search size={20} />
-              <input
-                aria-label="Skyを検索"
-                placeholder="Skyを検索"
-                maxLength={80}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-              <button type="submit" aria-label="検索する">
-                <ArrowUpRight size={18} />
-              </button>
-            </form>
-            <section className={styles.sideSection}>
-              <h2>今日、何をつくる？</h2>
-              <p>見つけた力を追加して、Eveと形に。</p>
-              <Link href="/chat" className={styles.eveLink}>
-                Eveに依頼する <ArrowUpRight size={17} />
-              </Link>
-            </section>
-            <section className={styles.sideSection}>
-              <h2>自分のSky</h2>
-              <Link href="/sky/agents">
-                <Layers2 size={20} />
-                <span>
-                  <strong>AgentとLLM</strong>
-                  <small>追加した担当・モデル・設定</small>
-                </span>
-              </Link>
-              <Link href="/#news-plugins">
-                <Newspaper size={20} />
-                <span>
-                  <strong>ニュースの配信元</strong>
-                  <small>好きな情報をつなぐ</small>
-                </span>
-              </Link>
-              <Link href="/#optional-features">
-                <Plus size={20} />
-                <span>
-                  <strong>機能を追加</strong>
-                  <small>Wallet・Marketを自分のOSへ</small>
-                </span>
-              </Link>
-            </section>
-            <section className={styles.sideSection}>
-              <h2>仕事と成果</h2>
-              {jobs.map((job) => (
-                <Link
-                  key={job.id}
-                  href={`/chat?view=work&workJob=${encodeURIComponent(job.id)}`}
-                >
-                  <span>
-                    <strong>{job.title}</strong>
-                    <small>
-                      {
-                        (
-                          {
-                            active: '進行中',
-                            review: '確認待ち',
-                            completed: '完了',
-                            cancelled: '取消済み',
-                          } as const
-                        )[job.status]
-                      }
-                    </small>
-                  </span>
-                  <ArrowUpRight size={16} />
+          <span className={styles.srOnly}>RockstarOS ホーム</span>
+          <div className={styles.mobileHeader}>
+            <OSHeader title="Noah" activeNavigation={view === 'communities' ? 'communities' : 'stream'} hideNavigation={view !== 'communities'}>
+              {view !== 'communities' && <div className={styles.mobileActions}>
+                <Link href="/os/eve">
+                  Eve <MessageCircle size={20} />
                 </Link>
-              ))}
-              <Link href="/chat?view=work">
-                {jobs.length
-                  ? 'すべての仕事をEveで見る'
-                  : 'Eveで進捗と成果を見る'}{' '}
-                <ArrowUpRight size={16} />
-              </Link>
-            </section>
-            <footer className={styles.footer}>
-              <Link href="/campus">Campus</Link>
-              <Link href="/connect">利用環境</Link>
-              <Link href="/settings">設定</Link>
-              <span>RockstarOS 1.0 · Developer Preview</span>
-            </footer>
+                <Link href={route('/#sky')} aria-label="追加・管理">
+                  <Plus size={21} />
+                </Link>
+                <details data-home-menu>
+                  <summary aria-label="その他のメニュー">
+                    <MoreHorizontal size={22} />
+                  </summary>
+                  <nav aria-label="追加メニュー">
+                    <Link href="/os/eve?view=build">
+                      Eveでエージェントを作る
+                    </Link>
+                    <Link href={route('/#sky-manage')}>担当とLLMを管理</Link>
+                    <Link href="/account">アカウント</Link>
+                    <span className={styles.preview}>DEVELOPER PREVIEW</span>
+                    <Link href={route('/#bookmarks')}>ブックマーク</Link>
+                    <Link href={route('/#news-plugins')}>ニュースの配信元</Link>
+                    <Link href={route('/#optional-features')}>機能を追加</Link>
+                    <Link href={route('/campus')}>Campus</Link>
+                    <Link href={route('/connect')}>利用環境をつなぐ</Link>
+                    <Link href={route('/settings')}>設定</Link>
+                    {enabled('wallet') && (
+                      <Link href={route('/wallet')}>Wallet</Link>
+                    )}
+                    {enabled('market') && (
+                      <Link href={route('/market')}>Market</Link>
+                    )}
+                  </nav>
+                </details>
+              </div>}
+            </OSHeader>
+      {view !== 'communities' && <OsAppNavigation
+        className={`${styles.mobileNav} os-home-navigation`}
+        aria-label="RockstarOSの主要サービス"
+        active="stream"
+      />}
           </div>
-        </aside>
+          {view === 'home' && (
+            <section
+              className={styles.workEntry}
+              aria-labelledby="os-home-title"
+            >
+              <div className={styles.entryIntro}>
+                <h1 id="os-home-title">Eve</h1>
+                <p>何を進めますか？</p>
+              </div>
+              <nav className={styles.entryActions} aria-label="仕事の主な操作">
+                <Link className={styles.primaryEntry} href="/os/eve">
+                  <MessageCircle size={25} />
+                  <strong>Eveに依頼する</strong>
+                  <ArrowUpRight size={20} />
+                </Link>
+                <Link href="/os/eve#eve-work-results">
+                  <FolderOpen size={24} />
+                  <strong>仕事と成果を開く</strong>
+                  <ArrowUpRight size={20} />
+                </Link>
+                <Link href="/connect/service">
+                  <Cable size={24} />
+                  <strong>利用環境をつなぐ</strong>
+                  <ArrowUpRight size={20} />
+                </Link>
+              </nav>
+            </section>
+          )}
+          <SkyDiscoveryDialog
+            open={view === 'discover' || view === 'manage'}
+            mode={view === 'manage' ? 'manage' : 'discover'}
+            onModeChange={(mode) => {
+              window.location.hash = mode === 'manage' ? 'sky-manage' : 'sky';
+            }}
+            onClose={() => {
+              const origin = panelOrigin.current;
+              viewRef.current = origin.view;
+              window.location.hash = origin.hash;
+              setView(origin.view);
+              requestAnimationFrame(() => {
+                window.scrollTo({top:origin.scroll, behavior:'instant'});
+                if (origin.focus?.isConnected) origin.focus.focus({preventScroll:true});
+              });
+            }}
+          >
+            {panelVisited && (
+              <>
+                <section
+                  id="sky-add-panel"
+                  role="tabpanel"
+                  aria-labelledby="sky-add-tab"
+                  hidden={view !== 'discover'}
+                >
+                  <Suspense fallback={<output>能力を読み込んでいます…</output>}>
+                    <SkyDiscoveryFeed
+                      key={featureOnly ? 'features' : 'discover'}
+                      initialFilter={featureOnly ? 'features' : 'all'}
+                      standalone
+                      embedded
+                    />
+                  </Suspense>
+                </section>
+                <section
+                  id="sky-manage-panel"
+                  role="tabpanel"
+                  aria-labelledby="sky-manage-tab"
+                  hidden={view !== 'manage'}
+                >
+                  <Suspense
+                    fallback={
+                      <output>担当とLLMの設定を読み込んでいます…</output>
+                    }
+                  >
+                    <SkyAgentLibrary embedded />
+                  </Suspense>
+                </section>
+              </>
+            )}
+          </SkyDiscoveryDialog>
+          <div className={styles.workspaceGrid} data-os-home-view={view}>
+            {view === 'sources' ? (
+              <section className={styles.sources}>
+                <header className={styles.pageTitle}>
+                  <h1>配信元をつなぐ</h1>
+                  <Link href={route('/#timeline')}>ホームへ</Link>
+                </header>
+                <SkyTimelineConnector receiver={timelineReceiver} />
+                <details className={styles.providerSettings}>
+                  <summary>個別APIの接続設定（任意）</summary>
+                  <SkyXAccountConnection />
+                </details>
+                <SkyNewsConnections />
+              </section>
+            ) : (
+              <SkySocialTimeline
+                key={(view === 'discover' || view === 'manage' ? panelOriginView : view) === 'communities' ? 'communities' : 'timeline'}
+                fullHome
+                personalFeed={<SmisAddedPosts />}
+                initialView={
+                  view === 'discover' || view === 'manage' ? (panelOriginView === 'communities' ? 'communities' : 'home') : view
+                }
+                externalFeed={
+                  <>
+                    <SkyMcpTimeline receiver={timelineReceiver} />
+                    <SkyXAccountTimeline />
+                  </>
+                }
+              />
+            )}
+            {view === 'home' && (
+              <aside className={styles.workspaceAside} aria-label="自分の環境">
+                <section>
+                  <Layers size={23} />
+                  <h2>使える能力を、増やす。</h2>
+                  <p>Agent・モデル・Toolを選んで、自分の仕事へ。</p>
+                  <Link href={route('/#sky')}>
+                    能力を探す <ArrowUpRight size={17} />
+                  </Link>
+                  <Link href={route('/#sky-manage')}>
+                    追加した能力を管理 <ArrowUpRight size={17} />
+                  </Link>
+                </section>
+                <section>
+                  <h2>自分の環境</h2>
+                  <Link href="/account">
+                    アカウント <ArrowUpRight size={17} />
+                  </Link>
+                  <Link href="/connect/service">
+                    端末・サービス接続 <ArrowUpRight size={17} />
+                  </Link>
+                  <Link href={route('/settings')}>
+                    設定 <ArrowUpRight size={17} />
+                  </Link>
+                </section>
+                <p className={styles.entryNote}>
+                  実行前に、担当・権限・費用上限をEveで確認できます。
+                </p>
+              </aside>
+            )}
+          </div>
+        </main>
       </div>
-      <OsAppNavigation activeHash={navigationHash} />
+
     </div>
   );
 }

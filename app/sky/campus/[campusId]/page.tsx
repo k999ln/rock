@@ -13,9 +13,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (entry) return { title: entry.heading, description: entry.description };
   if (CAMPUS_IDS.includes(campusId as CampusId)) {
     const campus = CAMPUSES[campusId as CampusId];
-    return { title: `${campus.shortName} · Sky`, description: campus.description };
+    return { title: `${campus.shortName} · smis`, description: campus.description };
   }
-  return { title: 'Sky Campus' };
+  return { title: 'smis Campus' };
 }
 
 export default async function SkyCampusPage({ params }: Props) {

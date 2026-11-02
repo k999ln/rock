@@ -54,6 +54,8 @@ export type SkySocialState = {
   communities: SkyCommunity[];
   posts: SkySocialPost[];
   cursor: string | null;
+  checkedIds?: string[];
+  visibleIds?: string[];
   thread?: SkySocialPost | null;
 };
 const uuid =

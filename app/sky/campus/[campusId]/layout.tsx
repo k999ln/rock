@@ -6,9 +6,9 @@ export async function generateMetadata({params}: {params: Promise<{campusId: str
   if (!CAMPUS_IDS.includes(campusId as CampusId)) return {};
   const campus = CAMPUSES[campusId as CampusId];
   return {
-    applicationName: `${campus.shortName} Sky`,
+    applicationName: `${campus.shortName} smis`,
     manifest: `/os/sky/campus/${campusId}/manifest.webmanifest`,
-    appleWebApp: {capable: true, title: `${campus.shortName} Sky`, statusBarStyle: 'default'},
+    appleWebApp: {capable: true, title: `${campus.shortName} smis`, statusBarStyle: 'default'},
   };
 }
 

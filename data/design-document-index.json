@@ -4000,5 +4000,700 @@
     "scope": "WorkJob objective only; local speech capability and 2D fingertip adapters; CAS/event readback",
     "physicalAccepted": false,
     "mainIntegrated": false
+  },
+  "publicDesignCleanup": {
+    "authority": "docs/rockstaros-complete-design.md#公開webの入口原稿配布物の整理",
+    "miniProAuthority": "docs/rockstaros-avocado-mini-complete-design.md",
+    "toolAuthority": "docs/sky-tools-complete-design.md",
+    "source": [
+      "components/home-screen.tsx",
+      "components/sky-discovery-feed.tsx",
+      "components/eve-sync-workspace.tsx"
+    ],
+    "nativeAcceptanceChanged": false
+  },
+  "sharedOsFrame": {
+    "status": "local_candidate_alignment",
+    "generalLaunchAccepted": false,
+    "candidateAlignment": {
+      "design": "docs/rockstaros-complete-design.md#common-os-entry-alignment",
+      "source": [
+        "app/os-design-tokens.css",
+        "app/os-shell.css",
+        "app/rockstaros/guide/page.tsx",
+        "components/rockstar-entitlement-claim.tsx",
+        "services/sky-web/domain-router.mjs"
+      ],
+      "tests": [
+        "tests/common-os-entry-contract.test.mjs",
+        "tests/sky-domain-router.test.mjs"
+      ],
+      "status": "local_ui_and_focus_passed_root_verify_passed_source_17_failures_remain",
+      "evidence": "docs/evidence/common-os-entry-alignment.json",
+      "publicChanged": false
+    },
+    "homeAddManage": {
+      "status": "published_v112_owner_ui_accepted",
+      "authority": "2026-10-22 owner says /#catalog and /os/sky/agents are redundant, screenshot points to their separate bottom tabs",
+      "documents": [
+        "docs/rockstaros-complete-design.md#home-add-manage",
+        "docs/sky-tools-complete-design.md#home-add-manage"
+      ],
+      "sources": [
+        "app/sky/agents/page.tsx",
+        "components/eve-sync-workspace.tsx",
+        "components/home-screen.module.css",
+        "components/home-screen.tsx",
+        "components/os-app-navigation.tsx",
+        "components/sky-agent-eve-profile.tsx",
+        "components/sky-agent-library.module.css",
+        "components/sky-agent-library.tsx",
+        "components/sky-discovery-dialog.module.css",
+        "components/sky-discovery-dialog.tsx",
+        "components/sky-discovery-feed.tsx",
+        "components/sky-information-market.tsx",
+        "components/sky-social-timeline.tsx",
+        "lib/os-navigation.ts",
+        "tests/common-os-entry-contract.test.mjs",
+        "tests/home-sky-panel.test.mjs",
+        "tests/os-shell-navigation.test.mjs"
+      ],
+      "evidence": "docs/evidence/home-add-manage.json",
+      "primaryNavigation": [
+        "stream",
+        "eve",
+        "communities"
+      ],
+      "publicAccepted": true,
+      "publicVersion": 112,
+      "sourceCommit": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3"
+    }
+  },
+  "osVisualRelease": {
+    "status": "full_checks_pass_native_entry_accepted_public_pending",
+    "evidence": "docs/evidence/os-visual-release.json",
+    "design": "docs/rockstaros-complete-design.md",
+    "source": [
+      "components/home-screen.tsx",
+      "components/os-header.tsx",
+      "components/os-app-navigation.tsx",
+      "components/sky-social-timeline.tsx",
+      "components/sky-community-directory.tsx",
+      "app/os-shell.css"
+    ],
+    "tests": [
+      "tests/smis-community-navigation-ui.test.mjs",
+      "tests/os-bottom-navigation.test.mjs"
+    ],
+    "publicChanged": false,
+    "pixelChanged": true
+  },
+  "rainbowWebBrand20261025": {
+    "authority": "docs/rockstaros-complete-design.md#nonblocking-rainbow-boot",
+    "source": [
+      "public/brand/rainbow-boot.js",
+      "components/os-header.tsx",
+      "app/layout.tsx"
+    ],
+    "scope": "Header-only decorative light trails, incremental original-logo reveal; no app/input/navigation gate; Web only",
+    "tests": "tests/rainbow-boot.test.mjs"
+  },
+  "homeTimelineFrontend": {
+    "continuousFeed": {
+      "authority": "docs/rockstaros-complete-design.md#sky-continuous-timeline",
+      "toolAuthority": "docs/sky-tools-complete-design.md#sky-continuous-timeline",
+      "source": [
+        "lib/sky-continuous-ranking.ts",
+        "components/use-sky-continuous-feed.ts",
+        "components/sky-social-timeline.tsx",
+        "app/api/news/feed/route.ts",
+        "lib/sky-social-store.ts",
+        "lib/sky-continuous-news.ts",
+        "components/use-sky-feed-reveal.ts",
+        "tests/sky-continuous-feed.test.mjs"
+      ],
+      "evidence": "docs/evidence/sky-continuous-timeline.json",
+      "status": "local_verified_public_pending"
+    }
+  },
+  "osTaskFirstUx": {
+    "date": "2026-10-31",
+    "primaryOwner": "ROCK",
+    "task": "osWorkspaceUiUx",
+    "status": "implemented_verifying",
+    "userInstruction": "ELLE means sophisticated UX, not a font",
+    "design": "docs/rockstaros-complete-design.md",
+    "scope": [
+      "Eve request-first",
+      "history",
+      "navigation",
+      "home",
+      "settings",
+      "connection",
+      "diagnostics",
+      "news recovery"
+    ],
+    "preserved": [
+      "owner data",
+      "query pins",
+      "consent",
+      "budget",
+      "stop",
+      "runtime gates"
+    ],
+    "checks": {
+      "typecheck": "passed",
+      "focused": "42 passed",
+      "browser390": "input top314/bottom450, no overflow; results roundtrip and leave-cancel retain draft",
+      "publicNews": "HTTP200,39 articles observed; social unsigned401 expected"
+    },
+    "remaining": [
+      "npm run verify",
+      "build",
+      "native Sites deployment and readback"
+    ]
+  },
+  "independentRockstarAccount": {
+    "status": "implementation_candidate",
+    "authority": "docs/rockstaros-complete-design.md#independent-rockstar-account",
+    "skyDesign": "docs/sky-tools-complete-design.md#independent-rockstar-account",
+    "prompt": "docs/prompts/rockstaros-common-core-development.md",
+    "taskIds": [
+      "WEB04",
+      "OS10",
+      "SKY21"
+    ],
+    "newPublicRegistrationAccepted": false,
+    "runtimePaths": [
+      "lib/rockstar-account.ts",
+      "lib/jennifer-passkey.ts",
+      "lib/request-auth.ts",
+      "app/api/os/access/route.ts",
+      "app/account/page.tsx",
+      "components/rockstar-account.tsx"
+    ],
+    "rootMigrations": [
+      "drizzle/0077_jennifer_passkey_base.sql",
+      "drizzle/0078_rockstar_accounts.sql"
+    ],
+    "siteMigration": "Sites source: drizzle-main/0028_rockstar_accounts.sql",
+    "physicalAccepted": false,
+    "publicAccepted": false
+  },
+  "eveNewsSourceIntegration": {
+    "status": "local_candidate_validation_in_progress",
+    "baselineVersion": 112,
+    "baselineSource": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3",
+    "authority": [
+      "docs/rockstaros-complete-design.md#eve-newsの公開source統合候補",
+      "docs/sky-tools-complete-design.md#eve-newsの公開source統合候補"
+    ],
+    "source": [
+      "app/api/eve/news-work/route.ts",
+      "components/eve-news-workspace.tsx",
+      "lib/eve-news-work.ts",
+      "lib/workflow.ts",
+      "lib/work-store.ts",
+      "lib/eve-history.ts"
+    ],
+    "trainingStarted": false,
+    "publicDeployed": false
+  },
+  "crossProviderUsage": {
+    "authority": "docs/sky-billing.md#cross-provider-usage-observation",
+    "evidence": "docs/evidence/sky-usage-public-integration.json",
+    "publicIntegrationEvidence": "docs/evidence/sky-usage-public-integration.json",
+    "publicDeployed": false,
+    "developerPayoutEnabled": false,
+    "gpuRented": false
+  },
+  "pixelTargetSelection": {
+    "status": "local_candidate_verification_pending",
+    "tasks": [
+      "OS10",
+      "DSP01",
+      "SKY21",
+      "HOME01"
+    ],
+    "design": [
+      "docs/rockstaros-complete-design.md",
+      "docs/sky-tools-complete-design.md"
+    ],
+    "sources": [
+      "lib/sky-eve-connections.ts",
+      "components/eve-sync-workspace.tsx",
+      "components/sky-device-agent-connections.tsx",
+      "tests/sky-eve-connections.test.mjs"
+    ],
+    "evidence": "docs/evidence/pixel-target-selection.json",
+    "publicAccepted": false,
+    "sameDeviceContractsMergedForDisplayOnly": true
+  },
+  "eveToolSourceIntegration": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#eveから既存sky-toolを実行するsource候補",
+      "docs/sky-tools-complete-design.md#eveから既存sky-toolを実行するsource候補"
+    ],
+    "source": [
+      "app/api/eve/tool-work/route.ts",
+      "components/eve-tool-workspace.tsx",
+      "components/eve-sync-workspace.tsx",
+      "lib/eve-tool-work.ts",
+      "lib/eve-planner-inference.ts",
+      "lib/eve-planner-state.ts",
+      "lib/eve-plan-candidate.ts"
+    ],
+    "status": "v113_merged_typecheck_and_focused37_passed_full_ui_pending",
+    "publicDeployed": false,
+    "evidence": "docs/evidence/eve-source-integration.json",
+    "v113Adaptation": {
+      "status": "v113_merged_typecheck_and_focused37_passed_full_ui_pending",
+      "baseVersion": 113,
+      "baseSource": "1f4d3904b3d62113673577b4fd52c068bd08afd3",
+      "previousBaseVersion": 112,
+      "upstreamChangedFiles": 13,
+      "unresolvedConflicts": 0,
+      "focusedTests": 37,
+      "typecheck": "passed",
+      "sourceGuardsSameBytes": [
+        "components/home-screen.tsx",
+        "components/sky-device-agent-connections.tsx",
+        "lib/sky-eve-connections.ts",
+        "tests/sky-eve-connections.test.mjs",
+        ".openai/hosting.json",
+        "lib/request-auth.ts",
+        "lib/rockstar-service-access.ts",
+        "lib/fund-store.ts"
+      ],
+      "fullAccepted": false,
+      "uiAccepted": false,
+      "saved": false,
+      "deployed": false
+    }
+  },
+  "sourceReadinessAlignment": {
+    "design": "docs/rockstaros-complete-design.md#source-readiness-alignment",
+    "source": [
+      "services/sky-web/domain-router.mjs",
+      "scripts/stage-sky-domain-router.mjs",
+      "scripts/check-web-security-response.mjs",
+      "scripts/check-product-baseline.mjs"
+    ],
+    "tests": [
+      "tests/sky-domain-router.test.mjs",
+      "tests/sky-domain-staging.test.mjs",
+      "tests/product-baseline.test.mjs"
+    ],
+    "status": "local_source_full_verify_and_same_build_response_browser_passed_public_and_pixel_pending",
+    "evidence": "docs/evidence/source-readiness-alignment.json",
+    "publicChanged": false,
+    "retainedSiteSource": {
+      "sourceBase": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+      "paths": [
+        "scripts/stage-sky-domain-router.mjs",
+        "scripts/check-web-security-response.mjs",
+        "scripts/check-product-baseline.mjs",
+        "scripts/release-readiness-lib.mjs",
+        "scripts/check-ecosystem-research.mjs",
+        "scripts/sky-monthly-sandbox-db.mjs",
+        "scripts/check-sky-a2a-workflow.mjs",
+        "scripts/check-work-api.mjs",
+        "scripts/check-csv-storage.mjs",
+        "app/avocado-mini/page.tsx",
+        "app/avocado-mini/design.module.css"
+      ],
+      "tests": [
+        "tests/sky-domain-staging.test.mjs",
+        "tests/product-baseline.test.mjs",
+        "tests/release-readiness.test.mjs",
+        "tests/sky-monthly-sandbox-bootstrap.test.mjs",
+        "tests/avocado-r5-docs.test.mjs"
+      ],
+      "integrationPatch": "docs/evidence/sky-source-regression-repair.patch"
+    },
+    "publicMetadataEvidence": "docs/evidence/sites-current-public-observation.json"
+  },
+  "sourceRuntimeDeviceBinding": {
+    "tasks": [
+      "OS10",
+      "DSP01",
+      "SKY21",
+      "WEB06"
+    ],
+    "design": [
+      "docs/rockstaros-complete-design.md#source-runtime-device-binding",
+      "docs/sky-tools-complete-design.md#source-runtime-device-binding"
+    ],
+    "source": [
+      "lib/rockstar-device-link.ts",
+      "app/api/rockstar/device-authorizations/route.ts",
+      "app/api/rockstar/device-authorizations/approve/route.ts",
+      "app/api/eve/runtime/route.ts",
+      "lib/eve-runtime-sync.ts",
+      "lib/rockstar-linked-execution.ts",
+      "lib/rockstar-adapters.ts",
+      "lib/eve-history.ts",
+      "scripts/check-work-api.mjs",
+      "scripts/runtime-device-api-acceptance.mjs",
+      "scripts/sky-monthly-sandbox-db.mjs",
+      "drizzle-main/meta/_journal.json",
+      "scripts/device-binding-api-acceptance.mjs",
+      "tests/device-link-response.test.mjs"
+    ],
+    "sourceOnlyAcceptanceHelper": true,
+    "evidence": "docs/evidence/source-runtime-device-binding.json",
+    "status": "negotiated_source_worker_and_sdk_accepted_new_native_execution_pending",
+    "actualSourceWorkerContractAccepted": true,
+    "realInferenceAccepted": false,
+    "publicAccepted": false,
+    "sameCandidatePixelAccepted": false,
+    "existingPixelRuntimeReadOnlyAccepted": true,
+    "negotiatedExtension": "X-Rockstar-Device-Binding: owner-device/v1",
+    "legacyStrictResponsePreserved": true,
+    "sdkVersion": "1.0.0-dev.7"
+  },
+  "smisEveWorkbench": {
+    "status": "final_source_full_pass_publication_pending",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "publicBaseVersion": 116,
+    "publicBaseCommit": "48cf8b095ec7db99f67dd0774a07f8cb9aa7a638",
+    "evidence": "docs/evidence/os-visual-release.json#workbenchFollowup",
+    "design": "docs/sky-tools-complete-design.md#smis-eve-workbench",
+    "publicDeployed": false,
+    "actualUiAccepted": false,
+    "physicalAccepted": false,
+    "scope": "existing marketplace content, private saved-resource posts, Eve role builder and execution-screen usability; preserve owner/revision/budget/stop boundaries",
+    "sources": [
+      "components/smis-added-posts.tsx",
+      "components/sky-agent-library.tsx",
+      "components/eve-sync-workspace.tsx",
+      "app/api/sky/hub/route.ts"
+    ],
+    "tests": [
+      "tests/smis-eve-workbench.test.mjs",
+      "tests/sky-hub.test.mjs",
+      "scripts/smis-eve-api-acceptance.mjs"
+    ],
+    "sourceFullVerifyExitCode": 0,
+    "sourceNodePass": 2542,
+    "sourceNodeSkip": 1,
+    "sourceApiAssertions": 1617,
+    "sourceCsvAssertions": 385
+  },
+  "eveRuntimeOwnerStop": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#eve-runtime-owner-stop",
+      "docs/sky-tools-complete-design.md#eve-runtime-owner-stop"
+    ],
+    "source": [
+      "lib/eve-runtime-sync.ts",
+      "lib/eve-device-replicas.ts",
+      "app/api/eve/runtime/route.ts",
+      "components/eve-sync-workspace.tsx",
+      "tests/eve-runtime-stop.test.mjs",
+      "scripts/runtime-device-api-acceptance.mjs"
+    ],
+    "status": "local_owner_stop_candidate_not_shipped",
+    "physicalAccepted": false,
+    "publicChanged": false
+  },
+  "eveCrossDeviceSync": {
+    "recordedAt": "2026-10-21",
+    "taskIds": [
+      "OS10",
+      "SKY21",
+      "WEB04"
+    ],
+    "primaryWorkstream": "Web/PWA/Sites",
+    "owner": "ROCK",
+    "documents": [
+      "docs/rockstaros-complete-design.md#eve-cross-device-sync",
+      "docs/sky-tools-complete-design.md#eve-cross-device-sync"
+    ],
+    "sources": [
+      "lib/eve-device-sync.ts",
+      "lib/eve-history.ts",
+      "lib/sky-linux-record.ts",
+      "app/api/eve/device-sync/route.ts",
+      "app/os/eve/page.tsx",
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css",
+      "toolkits/sky-linux-local/android-account-sync.patch"
+    ],
+    "contract": "same owner/thread/job; encrypted linked-device-report; explicit pinned continuation; no money or execution permission from a model",
+    "status": "host_api_build_passed_public_and_physical_acceptance_pending",
+    "publicEntry": "https://avoado.si/os/eve",
+    "generalLaunchAllowed": false,
+    "productionBillingAccepted": false
+  },
+  "sourceOwnerWorkspaceRecovery": {
+    "scope": "Retained canonical main Sites Source only; no Root migration replacement or public DB change",
+    "requirementIds": [
+      "CORE01",
+      "CORE06",
+      "CORE08",
+      "CORE09"
+    ],
+    "taskIds": [
+      "WEB04",
+      "SKY21",
+      "BIL02"
+    ],
+    "migration": "drizzle-main/0031_owner_workspace_schema_recovery.sql (Source only)",
+    "evidence": "docs/evidence/sky-source-regression-repair.json#ownerWorkspaceRecovery",
+    "status": "local_D1_acceptance_in_progress_public_not_deployed",
+    "contracts": [
+      "Published SQL and times immutable",
+      "restored main DB prerequisite",
+      "owner data preserved",
+      "incompatible existing columns reject before watermark acceptance"
+    ],
+    "packageLineageProtection": {
+      "status": "local_focused_27_passed_full_source_25_failures_remain",
+      "source": "scripts/sites-migration-lineage.mjs (retained main Site Source)",
+      "legacyFixtureSource": "686fd5ab78015f6d8dc29030bfd4f76fb912a920",
+      "legacyAssertionsRetained": true,
+      "rejectsWrongSiteBeforeMutation": true,
+      "publishedMainSqlChanged": false
+    }
+  },
+  "portableRuntimeHostUI": {
+    "status": "public_existing_owner_selector_readback_accepted_new_host_execution_pending",
+    "authority": "docs/rockstaros-complete-design.md#portable-runtime-host-ui",
+    "skyDesign": "docs/sky-tools-complete-design.md#portable-runtime-host-ui",
+    "sourcePaths": [
+      "lib/eve-device-replicas.ts",
+      "lib/eve-device-sync.ts",
+      "lib/rockstar-adapters.ts",
+      "lib/rockstar-linked-execution.ts",
+      "lib/eve-runtime-sync.ts",
+      "lib/sky-eve-connections.ts",
+      "app/api/eve/runtime/route.ts",
+      "app/os/eve/page.tsx",
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css",
+      "components/sky-device-agent-connections.tsx",
+      "components/sky-connected-runtime.tsx",
+      "components/sky-device-agent-connections.module.css",
+      "app/sky/devices/page.tsx",
+      "components/sky-workspace.tsx",
+      "lib/sky-linux-record.ts"
+    ],
+    "evidence": "docs/evidence/rockstar-runtime-host-ui.json",
+    "publicAccepted": false,
+    "newActualMacGrant": false,
+    "newPixelProtocolAccepted": false,
+    "ownerUiReadbackAccepted": true
+  },
+  "releaseEvidenceMobileUx": {
+    "date": "2026-10-31",
+    "primaryOwner": "ROCK",
+    "task": "osWorkspaceUiUx",
+    "status": "verifying",
+    "design": "docs/rockstaros-complete-design.md",
+    "securityEvidence": "docs/evidence/launch/web-security-local-20260917.json",
+    "recorder": "scripts/record-web-security-evidence.mjs",
+    "mobile": [
+      "labelled icon navigation",
+      "draft-only starters",
+      "connection state"
+    ],
+    "checks": {
+      "HTTP": "8 headers/8 routes pass",
+      "baseline": "pass",
+      "release": "pass; real unsupported release gates remain blocked",
+      "component": "13 tests pass",
+      "browser": "unavailable; native pipe closed"
+    },
+    "remaining": [
+      "full verify",
+      "final build HTTP readback",
+      "Sites publication"
+    ]
+  },
+  "osEditorialUi": {
+    "date": "2026-10-30",
+    "primaryOwner": "ROCK",
+    "status": "implemented_pending_verification",
+    "userInstruction": "ELLEのようなファッション誌の雰囲気",
+    "scope": [
+      "Home",
+      "Eve",
+      "results",
+      "connections",
+      "settings",
+      "diagnostics"
+    ],
+    "design": "docs/rockstaros-complete-design.md",
+    "preserved": [
+      "rainbow logo",
+      "owner data",
+      "draft guard",
+      "execution and approval contracts"
+    ],
+    "verification": [
+      "npm run verify",
+      "390px browser QA",
+      "Sites deployment readback"
+    ]
+  },
+  "eveNoahNavigationRepair": {
+    "taskIds": [
+      "WEB04",
+      "HOME01",
+      "SKY21"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#eve-noah-navigation",
+    "toolAuthority": "docs/sky-tools-complete-design.md#eve-noah-navigation",
+    "source": [
+      "lib/eve-noah-navigation.ts",
+      "components/eve-tool-handoff.tsx",
+      "components/noah-navigation.tsx",
+      "components/eve-sync-workspace.tsx",
+      "components/sky-agent-library.tsx",
+      "components/rockstar-account.tsx",
+      "tests/eve-noah-navigation.test.mjs",
+      "components/workspace-flow-navigation.tsx",
+      "components/eve-tool-workspace.tsx",
+      "components/sky-free-cloud-panel.tsx",
+      "lib/sky-tool-ui.ts",
+      "lib/sky-feed-ranking.ts"
+    ],
+    "publicAcceptance": "pending",
+    "nativeAcceptanceChanged": false
+  },
+  "eveToolConversationFence": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#eve-tool作成時の会話削除競合",
+      "docs/sky-tools-complete-design.md#eve-tool作成時の会話削除競合"
+    ],
+    "source": [
+      "lib/eve-tool-work.ts",
+      "lib/work-store.ts",
+      "tests/eve-tool-work.test.mjs"
+    ],
+    "status": "focused_pass_v113_full_pending",
+    "publicDeployed": false
+  },
+  "evePlannerStructuredOutput": {
+    "authority": [
+      "docs/rockstaros-complete-design.md#計画用モデルへの構造化出力の指示",
+      "docs/sky-tools-complete-design.md#計画用モデルへの構造化出力の指示"
+    ],
+    "source": [
+      "lib/eve-plan-candidate.ts",
+      "lib/eve-planner-inference.ts",
+      "tests/eve-planner-inference.test.mjs"
+    ],
+    "status": "live_local_single_case_empty_http_usage_and_full_accepted_not_published",
+    "publicDeployed": false,
+    "localTimeoutMs": 40000,
+    "emptyResponseUsage": "trusted normalized Ollama report preserved; no candidate/result/payment authority"
+  },
+  "osHomeNewsRecovery": {
+    "taskIds": [
+      "HOME01",
+      "WEB04"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#osホームの仕事入口とニュース復旧2026-10-29",
+    "toolAuthority": "docs/sky-tools-complete-design.md#osホームの仕事入口とニュース復旧2026-10-29",
+    "source": [
+      "components/home-screen.tsx",
+      "components/sky-social-timeline.tsx",
+      "lib/public-news-provider.ts",
+      "app/api/news/feed/route.ts",
+      "tests/public-news-provider.test.mjs"
+    ],
+    "nativeAcceptanceChanged": false
+  },
+  "eveSmisExecutionLoop": {
+    "taskIds": [
+      "WEB04",
+      "HOME01",
+      "SKY21",
+      "OS10"
+    ],
+    "status": "implementation_integrated_actual_browser_and_pixel_loop_pending",
+    "evidence": "docs/evidence/eve-smis-execution-loop.json",
+    "scope": "purpose conversation / saved smis agent / pinned registration / account runtime draft",
+    "actualAcceptance": {
+      "browser": false,
+      "pixelModelInference": false,
+      "sameAccountTwoClients": false,
+      "resultReceivedOnWebAndPixel": false,
+      "publicDeployment": false
+    }
+  },
+  "sourceAssetSecurity": {
+    "design": "docs/rockstaros-complete-design.md#source-asset-security",
+    "status": "local_verified_source_save_and_public_deploy_awaiting_explicit_approval",
+    "taskIds": [
+      "WEB04",
+      "WEB06"
+    ],
+    "retainedSiteSource": {
+      "base": "6f32e4d55fc1eecb156bffba8f8e8fdaba1a1caf",
+      "source": [
+        "scripts/stage-sky-domain-router.mjs",
+        "scripts/check-sites-package.py"
+      ],
+      "tests": [
+        "tests/sky-domain-staging.test.mjs",
+        "tests/sky-asset-routing.test.mjs",
+        "tests/sites-package.test.mjs"
+      ]
+    },
+    "publicChanged": false,
+    "source": [
+      "services/sky-web/domain-router.mjs"
+    ],
+    "tests": [
+      "tests/sky-domain-router.test.mjs"
+    ],
+    "evidence": "docs/evidence/source-asset-security.json"
+  },
+  "eveModelIdentityAndTraining": {
+    "recordedAt": "2026-10-21",
+    "taskIds": [
+      "WEB04",
+      "OS10",
+      "AI02",
+      "AI05"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "implementing_display_training_not_started",
+    "authority": "docs/rockstaros-complete-design.md#eve-cross-device-sync",
+    "trainingRequirements": "docs/llm-evaluation-architecture.md#eve-training-prerequisites",
+    "source": [
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css"
+    ],
+    "modelWeightsCreated": false,
+    "trainingStarted": false,
+    "publicDeployment": null
+  },
+  "osWorkspaceUiUx": {
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "OS10"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#webのeve成果接続設定を通すuiux2026-10-29",
+    "toolAuthority": "docs/sky-tools-complete-design.md#webのeve成果接続設定を通すuiux2026-10-29",
+    "source": [
+      "components/workspace-flow-navigation.tsx",
+      "components/eve-sync-workspace.tsx",
+      "app/connect/service/page.tsx",
+      "components/system-settings.tsx",
+      "components/sky-network.tsx",
+      "components/system-maintenance.tsx",
+      "tests/workspace-flow-navigation.test.mjs"
+    ],
+    "nativeAcceptanceChanged": false
   }
 }

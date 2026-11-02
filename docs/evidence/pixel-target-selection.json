@@ -1,0 +1,36 @@
+{
+  "schema": "rockstaros.pixel-target-selection-source/1",
+  "at": "2026-10-22T22:18:32.395885+00:00",
+  "baseSourceCommit": "160ff13d6373daac7b89c1fd3bf3150ce2d9feb3",
+  "runtimeSha256": {
+    "lib/sky-eve-connections.ts": "cd522ef403c2cb4151de8f98c8648b6415aa474bd38a2f27aac5b08eb6b8f52a",
+    "components/eve-sync-workspace.tsx": "86339f5bac6b0d20d30e5f5edcfb6c14804f2224368539026323011c7a56f7ac",
+    "components/sky-device-agent-connections.tsx": "7a745c5ac435d6715ba12cd64148d98b921d07f6f9f9b39ddfbaa1921f1129c8",
+    "tests/sky-eve-connections.test.mjs": "34e56867a7d9eb6f5101bee4bcf81142562f47af2d898f7d5a344b7e2ee9cd51"
+  },
+  "rootFocusedPass": 11,
+  "isolatedEnvironmentFocusedPass": 67,
+  "miniBuildAndTestsPass": 25,
+  "previousNodeRun": {
+    "total": 2433,
+    "pass": 2432,
+    "fail": 0,
+    "skip": 1,
+    "fullExitCode": 127,
+    "cause": "Missing nested Astro dependency after Node gate; pinned dependency tree now restored."
+  },
+  "nativeRootApk": {
+    "sha256": "5abb9d02ddbb9b202522cbef5acc6768724d8e77c5f6091acce911e41d14b68d",
+    "physicalTests": 3,
+    "sourceNativeBundledUpdated": false
+  },
+  "sameBuildUiAccepted": false,
+  "wholeVerifyAccepted": false,
+  "publicAccepted": false,
+  "newJobs": 0,
+  "newInference": 0,
+  "newCharges": 0,
+  "newDeviceGrants": 0,
+  "apiOrDatabaseChanged": false,
+  "fullGoalComplete": false
+}

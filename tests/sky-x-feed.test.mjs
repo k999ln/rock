@@ -7,7 +7,7 @@ const source='https://x.com/huggingface',token='fixture-not-a-real-token';
 const settings={token,sources:[source,'https://x.com/fixture'],dailyRequests:8};
 const publicUser={data:{id:'123',username:'huggingface',name:'Fixture public author',protected:false}};
 const posts={data:[{id:'456',author_id:'123',created_at:'2026-10-20T12:00:00Z',text:'Synthetic fixture; never a live X post.'}]};
-function fixture(t){const sqlite=new DatabaseSync(':memory:');t.after(()=>sqlite.close());sqlite.exec(readFileSync(new URL('../drizzle/0025_sky_x_feed_state.sql',import.meta.url),'utf8'));const db={prepare(sql){return{bind(...args){return{async first(){return sqlite.prepare(sql).get(...args)??null;},async run(){return{meta:{changes:Number(sqlite.prepare(sql).run(...args).changes)}};}};}};}};return{db,sqlite};}
+function fixture(t){const sqlite=new DatabaseSync(':memory:');t.after(()=>sqlite.close());sqlite.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/0025_sky_x_feed_state.sql',import.meta.url),'utf8'));const db={prepare(sql){return{bind(...args){return{async first(){return sqlite.prepare(sql).get(...args)??null;},async run(){return{meta:{changes:Number(sqlite.prepare(sql).run(...args).changes)}};}};}};}};return{db,sqlite};}
 void test('X API is disabled unless credentials, approved sources and bounded call limits are explicitly configured',()=>{
  assert.equal(xFeedSettings({}),null);assert.equal(xFeedSettings({SKY_X_BEARER_TOKEN:token}),null);
  const env={SKY_X_API_APPROVED:'1',SKY_X_BEARER_TOKEN:token,SKY_X_API_SOURCES:JSON.stringify([source]),SKY_X_MAX_REQUESTS_PER_DAY:'2'};

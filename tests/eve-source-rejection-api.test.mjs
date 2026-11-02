@@ -13,8 +13,8 @@ import { createEveAgent,prepareEveAgentPending,readEveAgentPending } from '../li
 
 async function fixture(t) {
   const sqlite=new DatabaseSync(':memory:');t.after(()=>sqlite.close());
-  for(const file of readdirSync(new URL('../drizzle/',import.meta.url)).filter(f=>f.endsWith('.sql')&&!f.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`,import.meta.url),'utf8'));
+  for(const file of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/',import.meta.url)).filter(f=>f.endsWith('.sql')&&!f.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`,import.meta.url),'utf8'));
   const db={beforeRun:null,prepare(sql){return{bind(...args){return{
     async all(){return{results:sqlite.prepare(sql).all(...args)};},
     async run(){db.beforeRun?.(sql,args);return{meta:{changes:Number(sqlite.prepare(sql).run(...args).changes)}};},

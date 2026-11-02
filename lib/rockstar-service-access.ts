@@ -1,4 +1,4 @@
-import { requestUsesEsimCloudIdentity } from './request-auth.ts';
+import { requestUsesEsimCloudIdentity } from './request-identity-hint.ts';
 import { rockstarEntitlementStore } from './rockstar-entitlement-claim.ts';
 import { esimCloudAccessStore, esimCloudRequestToken } from './esim-cloud-access.ts';
 

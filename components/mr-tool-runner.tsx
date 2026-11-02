@@ -707,7 +707,7 @@ function MrToolRunnerCore({
           )}
           <Textarea aria-label="生成結果" readOnly rows={8} value={output} />
           <span className="subnote">
-            「この端末に保存」でSkyから開き直せます。別端末で使う場合はMarkdownファイルを保存してください。
+            「この端末に保存」でsmisから開き直せます。別端末で使う場合はMarkdownファイルを保存してください。
           </span>
         </div>
       )}

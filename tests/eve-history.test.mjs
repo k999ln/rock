@@ -8,7 +8,7 @@ const keys={current:'fixture1',keys:{fixture1:'12'.repeat(32)}};
 const id='11111111-1111-4111-8111-111111111111';
 const second='22222222-2222-4222-8222-222222222222';
 function fixture(t){
- const sqlite=new DatabaseSync(':memory:');t.after(()=>sqlite.close());sqlite.exec(readFileSync(new URL('../drizzle/0032_eve_durable_history.sql',import.meta.url),'utf8'));
+ const sqlite=new DatabaseSync(':memory:');t.after(()=>sqlite.close());sqlite.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/0032_eve_durable_history.sql',import.meta.url),'utf8'));
  const prepare=(sql,args=[])=>({bind(...values){return prepare(sql,values);},async first(){return sqlite.prepare(sql).get(...args)??null;},async all(){return{results:sqlite.prepare(sql).all(...args)};},async run(){return{meta:{changes:Number(sqlite.prepare(sql).run(...args).changes)}};}});
  const db={prepare,async batch(statements){sqlite.exec('BEGIN');try{const result=[];for(const statement of statements)result.push(await statement.run());sqlite.exec('COMMIT');return result;}catch(error){sqlite.exec('ROLLBACK');throw error;}}};
  return {sqlite,db,store:(owner='fixture-owner')=>eveHistoryStore(db,owner,keys)};

@@ -1,0 +1,24 @@
+{
+  "schema": "rockstaros-public-asset-retirements/1",
+  "authority": "Owner explicitly approved review-driven public-distribution cleanup on 2026-10-25",
+  "files": [
+    {
+      "path": "rockstaros/avocado-mini-kit-p0.png",
+      "sourceSha256": "dd0968bfa937d2a2eac16a0ffdf2d289521f3595e9644de9e2fd1b60a3850f83",
+      "bytes": 1607215,
+      "reason": "Retired duplicate Mini presentation; source/evidence retained, canonical product at avocadomini.si"
+    },
+    {
+      "path": "rockstaros/avocado-mini-concept.png",
+      "sourceSha256": "2e39364f315deda0bcbe0b344d65173153802a26c6cd9279a2f6080c7d89881c",
+      "bytes": 1650989,
+      "reason": "Retired duplicate Mini presentation; source/evidence retained, canonical product at avocadomini.si"
+    },
+    {
+      "path": "rockstaros/avocado-mini-tower-concept.png",
+      "sourceSha256": "08d5d1f1c3545953179576456ddb6d53a6b314ecbd1c7022a4ac50fe9d1380e2",
+      "bytes": 1654109,
+      "reason": "Retired duplicate Mini presentation; source/evidence retained, canonical product at avocadomini.si"
+    }
+  ]
+}

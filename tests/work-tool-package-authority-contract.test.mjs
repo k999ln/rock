@@ -12,7 +12,7 @@ import * as auth from '../lib/request-auth.ts';
 const reference={schema:WORK_TOOL_PACKAGE_AUTHORITY_REFERENCE_SCHEMA,authorityId:'fixture-grant',revision:1,ownerUserId:'alice',issuerId:'fixture-issuer',claimId:'fixture-claim',offerId:'fixture-offer',packageKey:'dev.fixture.counter@1.0.0',manifestSha256:'a'.repeat(64)};
 function fixture(t,file=':memory:'){
  const db=new DatabaseSync(file);t.after(()=>{if(db.isOpen)db.close();});
- for(const f of readdirSync(new URL('../drizzle/',import.meta.url)).filter(f=>f.endsWith('.sql')).sort())db.exec(readFileSync(new URL('../drizzle/'+f,import.meta.url),'utf8'));
+ for(const f of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/',import.meta.url)).filter(f=>f.endsWith('.sql')).sort())db.exec(readFileSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/'+f,import.meta.url),'utf8'));
  db.exec(readFileSync(new URL('./fixtures/work-tool-package-authority.sql',import.meta.url),'utf8'));
  const now=Date.now();
  db.prepare('INSERT INTO rockstar_service_entitlements(issuer_id,claim_id,owner_user_id,offer_id,purchase_reference_sha256,claim_code_sha256,form_factor,scopes_json,issuer_key_id,claim_signature,status,claimed_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').run('fixture-issuer','fixture-claim','alice','fixture-offer','b'.repeat(64),'c'.repeat(64),'service_only','["sky","zema"]','fixture-key','not-a-production-signature','active',now-1000,now+60000);

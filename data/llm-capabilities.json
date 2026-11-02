@@ -353,5 +353,34 @@
         "backupRecipeRestoreAccepted": "host_and_isolated_Android_SQLite_only"
       }
     }
+  },
+  "eveNewsModel": {
+    "id": "eve-news-1.0",
+    "status": "designed_not_implemented",
+    "authority": "docs/llm-evaluation-architecture.md#eve-news-1-0",
+    "machineContract": "data/eve-news-model.json",
+    "baseModelSelected": false,
+    "trainedWeightsCreated": false,
+    "politicalNeutralityValidated": false,
+    "publicNewsAccepted": false,
+    "evidenceReviewEvaluation": {
+      "suite": "eve.news-evidence-fixtures/1",
+      "fixtureSha256": "6ecba5195a85e43eab5cbae96cb9aa3fefc485426955fd337e20bc014e2d91d2",
+      "evidence": "docs/evidence/eve-execution-si.json#SI07_newsEvidenceModelSuite",
+      "scope": "8 owner-authored fictional source-relation cases; not general knowledge/truth/political neutrality",
+      "profiles": [
+        {
+          "name": "qwen2.5:1.5b",
+          "digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+          "cases": 8,
+          "criteriaPassed": 2,
+          "fixtureCriteriaPassed": false,
+          "automaticReviewerAccepted": false,
+          "politicalNeutralityValidated": false
+        }
+      ],
+      "selectionAdvice": "Do not infer News review suitability from catalog presence or unrelated planner benchmarks. This measured candidate did not pass the scoped suite.",
+      "recordedAt": "2026-10-22T18:39:11.503Z"
+    }
   }
 }

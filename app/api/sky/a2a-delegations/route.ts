@@ -1,3 +1,4 @@
+import {observeStoredAgentUsage} from '@/lib/sky-usage-observation';
 import { readBoundedStream } from '@/lib/bounded-stream';
 import { ownerScopeFor } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
@@ -117,6 +118,7 @@ export async function GET(request: Request) {
       budget,
       reservations,
     });
+    const finalUsage=await Promise.all(delegations.map(delegation=>store.getUsageReceipt(owner,delegation.id)));
     const liveUsage = await Promise.all(delegations.map((delegation) => store.getLatestLiveUsageSnapshot(owner, delegation.id)));
     return json({
       ownerScope: await ownerScopeFor(owner),
@@ -125,7 +127,7 @@ export async function GET(request: Request) {
         const snapshot = liveUsage[index];
         let liveUsageSnapshot: unknown = null;
         try { liveUsageSnapshot = snapshot ? JSON.parse(snapshot.snapshotJson) : null; } catch { liveUsageSnapshot = null; }
-        return { ...delegation, liveUsageSnapshot: snapshot ? {
+        return { ...delegation, usageStatement:finalUsage[index]?observeStoredAgentUsage(finalUsage[index]):null, liveUsageSnapshot: snapshot ? {
           sequence: snapshot.sequence,
           providerId: snapshot.providerId,
           currency: snapshot.currency,

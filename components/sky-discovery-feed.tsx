@@ -37,10 +37,12 @@ const labels: { id: Filter; label: string }[] = [
 /** Native discovery rows. Catalog metadata is not represented as an authored social post. */
 export default function SkyDiscoveryFeed({
   standalone = false,
+  embedded = false,
   query = '',
   initialFilter = 'all',
 }: {
   standalone?: boolean;
+  embedded?: boolean;
   query?: string;
   initialFilter?: Filter;
 }) {
@@ -60,6 +62,7 @@ export default function SkyDiscoveryFeed({
     [connectionsReady, setConnectionsReady] = useState(false),
     [connectionError, setConnectionError] = useState('');
   const sourceHandoff = useEveSourceHandoff(() => router.push('/chat'), setError);
+  const [showCandidates, setShowCandidates] = useState(false);
   const pending = useRef(false);
   useEffect(() => {
     const c = new AbortController();
@@ -136,7 +139,7 @@ export default function SkyDiscoveryFeed({
         enabled: true,
         revision: old?.revision ?? 0,
       });
-      setNotice('自分のSkyに保存しました。Eveで実行先と使い方を確認できます。');
+      setNotice('自分のNoahに保存しました。Eveで実行先と使い方を確認できます。');
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
     } finally {
@@ -160,7 +163,7 @@ export default function SkyDiscoveryFeed({
         throw new Error(v.error || '追加できませんでした。');
       setConnections((old) => [...old.filter((c) => c.tool !== v.tool), v]);
       setNotice(
-        '自分のSkyに追加しました。担当とLLMの設定、Eveへの依頼へ進めます。',
+        '自分のNoahに追加しました。担当とLLMの設定、Eveへの依頼へ進めます。',
       );
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加できませんでした。');
@@ -171,9 +174,9 @@ export default function SkyDiscoveryFeed({
   }
   function prepareModel(entry: HfEntry) {
     const plugin = hub.plugins.find(p => p.enabled && p.kind === entry.kind && p.resource === entry.resource);
-    if (!plugin) { setError('自分のSkyへ追加してから選んでください。'); return; }
+    if (!plugin) { setError('自分のNoahへ追加してから選んでください。'); return; }
     void sourceHandoff.prepare(plugin,
-      `Skyで追加した「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した配布元の版: ${plugin.metadata.revision ?? '未確認'}\nlicense・導入状況・実行先・必要費用を確認して、担当の案を作って。`);
+      `Noahで追加した「${plugin.resource}」を使いたい。種類: ${plugin.kind}\n配布元: ${plugin.metadata.sourceUrl}\n確認した配布元の版: ${plugin.metadata.revision ?? '未確認'}\nlicense・導入状況・実行先・必要費用を確認して、担当の案を作って。`);
   }
   function prepareTool(tool: Automation) {
     try {
@@ -192,6 +195,7 @@ export default function SkyDiscoveryFeed({
     .filter(
       (t) =>
         (standalone || suggestions.includes(t.id)) &&
+        (!standalone || showCandidates || t.status === 'ready') &&
         (!search ||
           `${t.name} ${t.description} ${t.category}`
             .toLowerCase()
@@ -226,7 +230,7 @@ export default function SkyDiscoveryFeed({
           <Sparkles size={21} />
         </span>
         <div className={styles.byline}>
-          <strong>Sky カタログ</strong>
+          <strong>Noah カタログ</strong>
           <span>· Agent / Tool</span>
         </div>
         <h3>{tool.name}</h3>
@@ -255,7 +259,7 @@ export default function SkyDiscoveryFeed({
                 <Check size={14} />
                 追加済み
               </span>
-              <Link href="/sky/agents">担当とLLMを設定</Link>
+              <Link href="/#sky-manage">担当とLLMを設定</Link>
               <button onClick={() => prepareTool(tool)}>
                 Eveに依頼 <ArrowUpRight size={15} />
               </button>
@@ -266,7 +270,7 @@ export default function SkyDiscoveryFeed({
               onClick={() => void addTool(tool)}
             >
               <Plus size={15} />
-              自分のSkyに追加
+              自分のNoahに追加
             </button>
           )}
         </div>
@@ -296,12 +300,13 @@ export default function SkyDiscoveryFeed({
         <p>
           {entry.metadata.task ||
             (entry.kind === 'space'
-              ? '公開アプリを自分のSkyへ。'
+              ? '公開アプリを自分のNoahへ。'
               : entry.kind === 'dataset'
-                ? 'データセットを自分のSkyへ。'
-                : '自分の制作に合うモデルを、Skyから。')}
+                ? 'データセットを自分のNoahへ。'
+                : '自分の制作に合うモデルを、Noahから。')}
         </p>
         <div className={styles.metadata}>
+          {entry.kind === 'model' && <span>端末への適合は未確認</span>}
           <span>{entry.metadata.license || 'license要確認'}</span>
           {entry.metadata.gated && <span>配布元の利用申請が必要</span>}
           {entry.metadata.downloads !== null && (
@@ -309,7 +314,7 @@ export default function SkyDiscoveryFeed({
           )}
         </div>
         <p className={styles.note}>
-          検索・追加のSky手数料0。実行先・利用条件・外部実費は別途確認します。
+          検索・追加のNoah手数料0。実行先・利用条件・外部実費は別途確認します。
         </p>
         <div className={styles.actions}>
           {added ? (
@@ -328,7 +333,7 @@ export default function SkyDiscoveryFeed({
               onClick={() => void addModel(entry)}
             >
               <Plus size={15} />
-              {busy === entry.resource ? '追加しています…' : '自分のSkyに追加'}
+              {busy === entry.resource ? '追加しています…' : '自分のNoahに追加'}
             </button>
           )}
           <a
@@ -350,27 +355,27 @@ export default function SkyDiscoveryFeed({
     <section
       className={styles.feed}
       data-native-discovery
-      aria-label={standalone ? 'Skyを見つける' : 'おすすめの能力と機能'}
+      aria-label={standalone ? 'Noahを見つける' : 'おすすめの能力と機能'}
     >
       {standalone && (
         <>
-          <header className={styles.heading}>
-            <h1>見つける</h1>
-            <Link href="/#timeline">ホームへ</Link>
-          </header>
+          {!embedded && <header className={styles.heading}><h1>能力を見つける</h1><Link href="/#timeline">ホームへ</Link></header>}
+          {connectionError && <p className={styles.note}>接続状態を確認できないため、追加を停止しています。<Link href="/account">本人のアカウントを確認</Link><button onClick={()=>setRetry(value=>value+1)}>再確認</button></p>}
+          <p className={styles.note}>目的の言葉で探して、接続・料金・実行先を確認します。モデルやデータは種類を切り替えて表示できます。</p>
           <form className={styles.search} onSubmit={submit}>
             <Search size={19} />
             <input
               id="sky-discovery-search"
-              aria-label="モデル・Agent・Toolを検索"
-              placeholder="モデル・Agent・Toolを検索"
+              aria-label={`${filter === 'all' ? 'Agent・Tool・モデル' : labels.find(item => item.id === filter)?.label ?? '選択中の種類'}を検索`}
+              placeholder="例：出典、CSV、契約、ゲーム"
               maxLength={80}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
             />
             <button>検索</button>
           </form>
-          <nav className={styles.filters} aria-label="投稿の種類">
+          <p className={styles.note}>検索対象：{filter === 'all' ? 'Agent・Tool・モデル' : labels.find(item => item.id === filter)?.label}。データやアプリなど別の種類は切り替えて検索できます。</p>
+          <label className={styles.availability}><input type="checkbox" checked={showCandidates} onChange={event=>setShowCandidates(event.target.checked)} />準備中・導入候補も表示</label><p className={styles.note}>「実行器あり」は接続・本人認証・料金条件の確認を省略できる意味ではありません。</p><nav className={styles.filters} aria-label="投稿の種類">
             {labels.map((tab) => (
               <button
                 key={tab.id}
@@ -387,9 +392,9 @@ export default function SkyDiscoveryFeed({
       {notice && <output className={styles.notice}>{notice}</output>}
       {(filter === 'all' || filter === 'agent') && (
         <>
-          {tools.slice(0, 1).map(renderTool)}
-          {filter === 'agent' && tools.slice(1).map(renderTool)}
-          {connectionError && (
+          {(standalone ? tools : tools.slice(0, 1)).map(renderTool)}
+          {!standalone && filter === 'agent' && tools.slice(1).map(renderTool)}
+          {connectionError && !standalone && (
             <p className={styles.note}>
               {connectionError}{' '}
               <button onClick={() => setRetry((v) => v + 1)}>
@@ -421,14 +426,14 @@ export default function SkyDiscoveryFeed({
         </>
       )}
       {showFeature('market') && <SkyOptionalFeatures timeline only="market" />}
-      {filter === 'all' && tools.slice(1).map(renderTool)}
+      {!standalone && filter === 'all' && tools.slice(1).map(renderTool)}
       {standalone && !catalogLoading && !hasResults && search && (
         <p className={styles.note}>
           一致する項目がありません。検索語や種類を変えてください。
         </p>
       )}
       {!standalone && (
-        <Link className={styles.more} href="/#catalog">
+        <Link className={styles.more} href="/#sky">
           もっと見つける <ArrowUpRight size={16} />
         </Link>
       )}

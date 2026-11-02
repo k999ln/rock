@@ -4,7 +4,7 @@ import './mercari.css';
 
 export const metadata: Metadata = {
   title: 'メルカリ収益スターター — RockstarOS',
-  description: '出品準備から検証済み収益までを安全に管理するSkyツール。',
+  description: '出品準備から検証済み収益までを安全に管理するsmisツール。',
 };
 
 export default function MercariRevenuePage() {

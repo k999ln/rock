@@ -378,8 +378,8 @@ void test('atomic journal claim prevents two adapters from dispatching two cance
 
 void test('mii adapter reads and cancels the same owner-bound Agent job through the actual work API handler', async t => {
   const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
-  for (const path of readdirSync(new URL('../drizzle/', import.meta.url)).filter(x => x.endsWith('.sql') && !x.startsWith('._')).sort())
-    sqlite.exec(readFileSync(new URL(`../drizzle/${path}`, import.meta.url), 'utf8'));
+  for (const path of readdirSync(new URL('../drizzle-legacy/github-main-before-avoado-alignment/drizzle/', import.meta.url)).filter(x => x.endsWith('.sql') && !x.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${path}`, import.meta.url), 'utf8'));
   const db = { prepare(sql) { return { bind(...args) { return {
     async first() { return sqlite.prepare(sql).get(...args) ?? null; },
     async all() { return { results: sqlite.prepare(sql).all(...args) }; },

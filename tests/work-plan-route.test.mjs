@@ -1,6 +1,7 @@
+import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { stripTypeScriptTypes } from 'node:module';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
@@ -9,15 +10,13 @@ import { workStore } from '../lib/work-store.ts';
 import { applyWorkCommand, createWorkJob } from '../lib/workflow.ts';
 
 const routeSource = readFileSync(new URL('../app/api/work-jobs/route.ts', import.meta.url), 'utf8');
-const migrations = readdirSync(new URL('../drizzle/', import.meta.url))
-  .filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort();
+
 const dataModule = (source) => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
 
 function makeDb(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const name of migrations)
-    sqlite.exec(readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
+  applySourceSandboxSchema(sqlite);
   const db = {
     sqlite, beforeRun: null,
     prepare(sql) {
