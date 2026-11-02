@@ -182,7 +182,7 @@
     "CHANGELOG.md": "13121bcf2f074910f04dfcfde2d28029d3ed21f408136ed342b0f97aefca8854",
     "README.md": "7e1da07efeec60fc68f2e018a4c84b4bd40fcff4b0462234d3c89f2c8728ace6",
     "data/design-document-index.json": "c315cd8f49a68a4b330c4ede04366b7b339794edddf72aa2396982c42a06f16e",
-    "data/project-status.json": "6070b84da0092144b825072fb33678e1656dd924d7e8151a236257a6c8595b0a",
+    "data/project-status.json": "1038af941f9cd070257b62785c16dddfd9808d1ac17c83616192277386d256a0",
     "docs/mii/design/00-README.md": "4912c786ac4ba32f485f516fdf329dd9e3a4331e8cbae6e7c577879e788c82fc",
     "docs/mii/design/22-integrated-radio.md": "6dd644c97bbe036408dc4631f96413d3b27b5375c4ef7868db9e8a587408e612",
     "docs/mii/design/portable-p3/bom-netlist.json": "20f6a0c8935045d905eff334ea499ed1849022416fe8619b3f6c89d6265f3577",
@@ -194,9 +194,9 @@
     "docs/structure/02-rockstaros.md": "b288b3bcbc107ff89bb6ac460b65ca38471a5021ff1cc62d572ea71eac818b12",
     "docs/structure/07-decisions-from-minutes.md": "377f857c71964741ca06932797b7d8b5fe1ad2a2938b150e1e67dfdcb1dd463f",
     "docs/workstreams/11-material-invention-avocado-mini.md": "499e983c9d336121b7dfbc9ac48bbc4d9c4093ab0c7960ae4c817ef20871a80b",
-    "project.md": "b2dc2b1e4a966b47de850b6236f9a507e82a6a7b530c117365184da482d182cd",
+    "project.md": "0222ea1f6c895f8d27eae4894281822d20dce7b122579a5d4a3fdeff3990cdaf",
     "systems/rock-star-os/targets/mii-portable-p3/README.md": "f9f92e075b44a1eeaa3282065fa43d5205aea0b02f13a919b42922835774e896",
-    "docs/mii/design/23-japan-procurement.md": "9137da145cbc81832888ced67dea8c95362362270ce9c28f4ab05dbe6bcb2d94"
+    "docs/mii/design/23-japan-procurement.md": "a616b555f28d26ed7e0a34f623d638c3cca6fbe480c27e9889f726f6aeb416b5"
   },
   "priorRevisionEvidence": {
     "revision": "P3",
@@ -228,7 +228,7 @@
   },
   "correspondenceUpdate": {
     "date": "2026-11-02",
-    "scope": "Company sender correction and Quectel delivery readback; Soracom required contact data pending. Hardware/runtime unchanged.",
+    "scope": "Company Quectel delivery and Soracom official form acceptance verified; both technical responses pending. Hardware/runtime unchanged.",
     "physical": "NOT_RUN",
     "validation": "project:update/design:check/diff/source-hash/contact-exclusion PASS; prior full verify retained, no runtime changes"
   }
