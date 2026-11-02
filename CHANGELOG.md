@@ -4,9 +4,9 @@
 
 書き方: 新しい日付を上に足す。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
 
-## 2026-11-01 — miiの声・指先入力（統合候補）
+## 2026-11-01 — miiの声・指先入力（PR #311）
 
-- MINI01/M1: 同じ仕事の依頼内容を声/2D指先で選択・確認・CAS保存・再読込。料金fixtureの過去日付を修正。検証・未受入範囲は [記録](data/mii-spatial-input-validation.json)。PR/main/CIはGit担当と確認中。
+- MINI01/M1: 同じ仕事の依頼内容を声/2D指先で選択・確認・CAS保存・再読込。料金fixtureの過去日付を修正。検証・未受入範囲は [記録](data/mii-spatial-input-validation.json)。[PR #311](https://github.com/k999ln/rock/pull/311)へ保存。固定sourceは独立検収済み。HEAD CI・main統合後の同一SHA CIは確認中。
 
 ## 2026-11-02 — 構造整理（Fable / Noelle）
 

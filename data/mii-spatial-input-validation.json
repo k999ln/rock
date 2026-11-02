@@ -5,7 +5,7 @@
   "baseMain": "06f29961464cfed0b2e63b4e034272d05726fdff",
   "authority": "docs/avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit",
   "validation": "data/mii-spatial-input-validation.json",
-  "status": "locally_verified_awaiting_git_integration",
+  "status": "github_saved_pr311_ci_pending",
   "scope": "WorkJob objective only; local speech capability and 2D fingertip adapters; CAS/event readback",
   "physicalAccepted": false,
   "mainIntegrated": false,
@@ -94,7 +94,11 @@
   "independentReview": {
     "thread": "codex://threads/01a16c23-d327-7401-b994-05796b175cce",
     "result": "PASS_SCOPED; no required fixes; independent focal 42/42 then 24/24; final fixed hash comparison remains with Git owner",
-    "physicalAcceptance": false
+    "physicalAcceptance": false,
+    "finalHashComparison": "PASS: frozen 33/33 source and handoff files matched; all preliminary/addendum source hashes matched final version",
+    "manifestSha256": "b803772c9b4fe5048ec57eff568da106f7032e5ad3c34a4dd295384d0e3e4d18"
   },
-  "next": "Git owner: verify fixed manifest and source hashes, PR/HEAD CI, merge to main, verify same merge SHA CI. Preserve standalone intent and all four display requirements; physical input/optics remain unaccepted."
+  "next": "Git owner: verify fixed manifest and source hashes, PR/HEAD CI, merge to main, verify same merge SHA CI. Preserve standalone intent and all four display requirements; physical input/optics remain unaccepted.",
+  "pullRequest": "https://github.com/k999ln/rock/pull/311",
+  "sourceCommit": "14474ce3450d91c860d44c10e1d3d91e2c74800e"
 }

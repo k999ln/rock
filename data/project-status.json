@@ -12703,9 +12703,11 @@
     "baseMain": "06f29961",
     "authority": "docs/avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit",
     "validation": "data/mii-spatial-input-validation.json",
-    "status": "locally_verified_awaiting_git_integration",
+    "status": "github_saved_pr311_ci_pending",
     "scope": "WorkJob objective only; local speech capability and 2D fingertip adapters; CAS/event readback",
     "physicalAccepted": false,
-    "mainIntegrated": false
+    "mainIntegrated": false,
+    "pullRequest": "https://github.com/k999ln/rock/pull/311",
+    "sourceCommit": "14474ce3450d91c860d44c10e1d3d91e2c74800e"
   }
 }
