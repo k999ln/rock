@@ -1655,3 +1655,21 @@ Eveの制作画面では、確認した目的を文章担当へ保存し、選�
 ROCK/Web主担当（既存osWorkspaceUiUx）、本人の全体検証依頼により、旧visual基準と現UIの差を明示指示へ同期。forest/bronzeを白/墨色/focus青へ更新し、tokensと検査を同時変更する。HTTP証拠はrecord-web-security-evidence.mjsが実応答検査に成功した場合だけ入力hash・buildhash・実行時刻と共に更新する。失敗時に前回証拠を上書きしない。以前の測定はGitとsupersedesで追える。セキュリティ条件、実機/金融/署名/一般ローンチgateは弱めない。全体検証の署名fixtureは既存OpenSSL3をPATHへ指定する（システムLibreSSLは要件を満たさない）。
 携帯版はアイコン＋ラベルの58px以上の4入口、選択枠、56pxの「調べる/まとめる/作る」依頼テンプレート、実行先・担当・接続済みチェックと展開記号を備える。テンプレートは空欄時だけ入力を補助し、既存入力を上書きせず、同意・実行は行わない。本人のモデル・権限・費用・停止契約、入力保護は保持。入出力は依頼下書きのみ、保存/認証/APIは既存、失敗時は原入力保持と再確認、復旧は前版Sites。
 受入: baseline/release/verify、template部品試験、現build HTTP8経路、携帯実画面（ブラウザ基盤停止時は未検証と明示）。source/GitHub main/公開/実機受入を区別する。
+
+
+<a id="eve-noah-navigation"></a>
+## Eve・Noahの画面間引継ぎ（WEB04 / HOME01 / SKY21）
+
+2026-11-02の本人指示で監査R01〜R07を修正する。現行の主体はEveとNoahのみ。旧Jennifer/Sky/Zema/smisの内部識別子・API・保存形式は互換保持し、画面の第三の製品名には使わない。
+
+1. 目的: Noahで見つけた能力・記事をEveへ渡し、同じ仕事の成果と戻り先を見失わない。
+2. 利用体験: Noahのホーム／探して追加／ライブラリ／Tool一覧／端末・担当／接続を共通ナビでつなぐ。Eveにはメニューと常時見える仕事と成果・Tool・Noahへの入口を置く。
+3. 責任: ROCK/O5が画面・URL・focusを担当。EXTERNALは配信/認証、JOINTは実job/成果/共有、OWNERは権限・費用・実参加の承認。認証と実行許可は変更しない。
+4. 入力: Tool/thread/package/workJob等の既存query、選択担当とmodel pin、newsSource/title/seenAt/stale、同一originのreturnTo。URLは表示・選択の情報であり権限ではない。
+5. 出力: Toolは既存 /os/eve?mode=tools を正規入口とする。旧 /chat は全queryを保持して転送。本人確認前にも選択Toolと理由・Noahへ戻るリンクを表示し、パスキー設定の復帰URLにも選択を保持する。
+6. 状態: 成果一覧 #eve-work-results、Cloud #eve-cloud-results、Tool #eve-tool-results、資料 #eve-news-work を区別。指定欄を展開してfocus/scrollし、同じ会話・選択担当のqueryを維持。管理の成果リンクは成果一覧へ直接進む。
+7. 保存: 新たなDB・権限・課金・モデル実行は追加しない。既存owner別保存・revision・未送信入力の離脱確認・一時handoffを保持する。URL選択を保存成功と表示しない。
+8. 失敗: 接続不能・暗号化設定なし・未認証では既存の停止状態を維持。未確認Tool、危険な記事URL、外部/再帰returnToは安全な案内へ戻す。元記事の外部リンクは資格情報なしHTTPSに限定する。
+9. 復旧: アカウントの既定はNoah。設定・接続・Eve由来は安全なreturnToと行き先に合う文言を使う。公開問題は直前の同Site保存版へ戻し、保存済みの仕事や認証を削除しない。
+10. 承認: 記事の受取とTool選択だけで推論・投稿・外部送信を始めない。本人確認・資料保存・実行・費用の既存承認を維持。
+11. 合格条件: 旧Tool入口のTool/thread保持と認証継続、Cloud/Tool成果の展開と同会話保持、管理成果への直行、設定/Noahの正しい戻り、ニュースの初期表示/原文/復帰、Noah内の一貫したナビ、390pxのメニューと成果入口を同じ配備artifactで確認。実行/保存/共有の一周は別受入。未決定のストア全体再構成や実機対応をこの導線修正で完成扱いしない。

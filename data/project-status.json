@@ -10231,5 +10231,30 @@
     "sourceBase": "f18bc82e2cf7dcc0f6d0d66d30f7101bcda0c541",
     "scope": "Non-blocking header light trails; preserve rainbow logo and Eve execution contracts",
     "verification": "docs/evidence/boot-animation-refactor.json"
+  },
+  "eveNoahNavigationRepair": {
+    "date": "2026-11-02",
+    "status": "verified_candidate",
+    "workstream": "Web",
+    "owner": "ROCK/O5",
+    "taskIds": [
+      "WEB04",
+      "HOME01",
+      "SKY21"
+    ],
+    "baseSha": "edfc0c4d396963457e8e5a92f7548448caf21bbc",
+    "findings": [
+      "R01",
+      "R02",
+      "R03",
+      "R04",
+      "R05",
+      "R06",
+      "R07"
+    ],
+    "evidence": "docs/evidence/eve-noah-navigation-repair.json",
+    "publicAcceptance": "pending",
+    "realExecutionAcceptance": false,
+    "validation": "npm run verify exit0;2641pass/1skip/0fail;workAPI1621/CSV385;local390px,Tool/news/account/navigation checked;public pending"
   }
 }

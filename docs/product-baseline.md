@@ -1,3 +1,5 @@
+> 2026-11-02明示更新: 現行UIはEveとNoahの2つ。監査R01〜R07の導線・旧表示を修正し、認証・保存・実行権限は維持する。詳細は[画面間引継ぎ](rockstaros-complete-design.md#eve-noah-navigation)。RQ01〜RQ49と既存gateは変更しない。
+
 ## 2026-10-31 — 明示されたUX方針と現行検証の同期
 本人の指示により、ELLEの意味を洗練された情報設計と視覚的な携帯操作とする。旧forest green/bronzeとnear blackを現行paletteの合格条件にせず、白/墨色/青いfocusの実値と本人の入力→確認→同意→送信を検査する。RQ・料金・権限・実機/native/金融gateは変更しない。リリース証拠は現行ビルドで実測して更新し、過去の合格を流用しない。
 

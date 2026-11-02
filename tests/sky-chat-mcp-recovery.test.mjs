@@ -5,6 +5,7 @@ import test from 'node:test';
 import ts from 'typescript';
 import * as usageObservation from '../lib/sky-usage-observation.ts';
 import * as currency from '../lib/currency-format.ts';
+import * as eveNavigation from '../lib/eve-noah-navigation.ts';
 import * as historyNavigation from '../lib/history-navigation-guard.ts';
 
 const source = readFileSync(new URL('../components/sky-chat-workspace.tsx', import.meta.url), 'utf8');
@@ -32,6 +33,8 @@ function harness() {
   const noop = () => {};
   const session = { id: 'fixture-thread', toolId: 'mcp:initial', createdAt: 1, messages: [], activeRequest: { id: 'fixture-request', text: 'Synthetic request', toolId: 'mcp:initial' }, workflowStatus: 'ready', outcome: null };
   const modules = {
+    '@/lib/eve-noah-navigation': eveNavigation,
+    './eve-tool-handoff': { default: 'EveToolHandoff' },
     '@/lib/sky-usage-observation': usageObservation,
     '@/lib/currency-format': currency,
     '@/lib/history-navigation-guard': historyNavigation,

@@ -1,3 +1,5 @@
+> 最新の画面方針（2026-11-02）: 本人の明示訂正に従い、現行の主体はEveとNoah。旧製品名を含む以下の履歴より、[画面間引継ぎ契約](../rockstaros-complete-design.md#eve-noah-navigation)を優先する。API/schemaと保存形式の互換性は保持する。
+
 # avocado サービス統合設計
 
 ## RockstarOSへの統合と各サービスの単体利用

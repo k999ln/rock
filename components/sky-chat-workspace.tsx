@@ -60,6 +60,8 @@ import {
   useExecutionAccess,
 } from '@/components/execution-access';
 import { JenniferAccess, useJenniferAccess } from '@/components/jennifer-access';
+import EveToolHandoff from './eve-tool-handoff';
+import { eveToolPath } from '@/lib/eve-noah-navigation';
 import {
   operationRequest,
   OperationRequestError,
@@ -191,9 +193,9 @@ const quickRequests = [
 
 function conversationIdentityFor(tool: Automation | null) {
   if (tool) {
-    return `あなたはJenniferの中で動く${tool.name}専門siです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。実行・承認・利用明細・停止はZemaが管理します。`;
+    return `あなたはEveの中で動く${tool.name}専門siです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。実行・承認・利用明細・停止はEveの仕事管理で確認します。`;
   }
-  return 'あなたはJenniferです。利用者の目的を日本語で自然に整理し、必要なときだけsmisの能力やプロジェクト担当siを案内してください。実行していない作業を完了したと主張せず、実行・承認・利用明細・停止はZemaの既存契約で管理されると説明してください。';
+  return 'あなたはEveです。利用者の目的を日本語で自然に整理し、必要なときだけNoahの能力やプロジェクト担当siを案内してください。実行していない作業を完了したと主張せず、実行・承認・利用明細・停止はEveの仕事管理の既存契約で管理されると説明してください。';
 }
 
 function jenniferStateLabel(state: string | undefined) {
@@ -248,7 +250,7 @@ function roleFor(tool: Automation) {
   return (
     skyRoles.find((role) => role.toolId === tool.id)?.label ??
     skyToolLabelFor(tool.id)?.role ??
-    'smisアプリ'
+    'Noahアプリ'
   );
 }
 
@@ -286,7 +288,7 @@ function botStateLabel(tool: Automation, latest: Job | undefined) {
   }
   if (tool.runner === 'jev-evaluation' && !latest)
     return '外部siの接続確認が必要';
-  return latest ? jobMessage(latest) : 'smis登録済み';
+  return latest ? jobMessage(latest) : 'Noah登録済み';
 }
 
 function responseFor(
@@ -294,7 +296,7 @@ function responseFor(
   routedRole: SkyRole | null,
 ) {
   if (tool?.status === 'candidate' && tool.runner !== 'candidate-local')
-    return `${roleFor(tool)}はsmisに登録済みですが、実行器の接続待ちです。下のカードから接続方法を確認できます。`;
+    return `${roleFor(tool)}はNoahに登録済みですが、実行器の接続待ちです。下のカードから接続方法を確認できます。`;
   if (tool?.status === 'candidate' && tool.runner === 'candidate-local')
     return tool.origin === 'mr'
       ? `${roleFor(tool)}でローカル下書きを作れます。元サービス、端末、送信先には接続しません。`
@@ -302,8 +304,8 @@ function responseFor(
   if (tool)
     return `${roleFor(tool)}で進めます。下の処理カードで必要な入力を確認できます。`;
   if (routedRole)
-    return `${routedRole.label}はまだ接続されていません。smisで接続すると、次からはここで頼めます。`;
-  return '担当を選べませんでした。smisで接続状態を確認してください。';
+    return `${routedRole.label}はまだ接続されていません。Noahで接続すると、次からはここで頼めます。`;
+  return '担当を選べませんでした。Noahで接続状態を確認してください。';
 }
 
 function readableChatResult(markdown: string) {
@@ -335,6 +337,7 @@ function jenniferEffectLabel(effect: JenniferTaskEffect) {
 }
 
 export default function SkyChatWorkspace() {
+  const handoffQuery = useSearchParams();
   const access = useExecutionAccess();
   const jenniferAccess = useJenniferAccess();
   const jenniferAccessState = jenniferAccess.state;
@@ -351,7 +354,8 @@ export default function SkyChatWorkspace() {
     if (access.accessState === 'signin' && jenniferAccessState === 'ready') void refreshJenniferAccess();
   }, [access.accessState, jenniferAccessState, refreshJenniferAccess]);
   if (jenniferAccessState !== 'ready') return <WorkspaceShell title="Eve" hideTopActions>
-    <JenniferAccess access={jenniferAccess} />
+    <EveToolHandoff authenticationRequired />
+    <JenniferAccess access={jenniferAccess} returnPath={eveToolPath(handoffQuery.toString())} />
   </WorkspaceShell>;
   return <>
     {!storageBlocked && (admitted || access.accessState === 'ready') && access.accessState !== 'signin' &&
@@ -379,7 +383,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const response = await fetch('/api/jennifer/access', { method: 'DELETE' });
       if (!response.ok) return;
       clearZemaPrivateSession();
-      window.location.assign('/chat');
+      window.location.assign('/os/eve?mode=tools');
     } finally {
       setSigningOutJennifer(false);
     }
@@ -563,7 +567,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           setError(
             reason instanceof Error
               ? reason.message
-              : 'Zemaを読み込めませんでした。',
+              : 'Eveの仕事管理を読み込めませんでした。',
           );
       })
       .finally(() => {
@@ -854,7 +858,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     // Preserve the existing distinction: mode changes retain the request time
     // until the new route restores it; a new chat resets it immediately.
     resetConversation(toolId, false, true);
-    router.replace(`/chat?tool=${encodeURIComponent(toolId)}`, { scroll: false });
+    router.replace(`/os/eve?mode=tools&tool=${encodeURIComponent(toolId)}`, { scroll: false });
   }
 
   function startNewChat() {
@@ -862,7 +866,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     resetConversation(AUTO_MODE, true);
     setError('');
     closeSidebarOnSmallScreen();
-    router.push('/chat');
+    router.push('/os/eve?mode=tools');
   }
 
   function changeProviderRoute(field: string, value: string) {
@@ -923,7 +927,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const goalPayload = await goalResponse.json() as { job?: WorkJob | null; projection?: JenniferExecutionState['projection']; error?: string };
       const jobsPayload = await jobsResponse.json() as { jobs?: WorkJob[]; error?: string };
       if (!goalResponse.ok)
-        throw new Error(goalPayload.error || 'JenniferのGoalを読み込めませんでした。');
+        throw new Error(goalPayload.error || 'EveのGoalを読み込めませんでした。');
       if (!jobsResponse.ok)
         throw new Error(jobsPayload.error || '担当siの仕事を読み込めませんでした。');
       const rootJob = goalPayload.job?.amcGoal ? goalPayload.job : null;
@@ -945,7 +949,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     } catch (cause) {
       setJenniferExecution((current) => ({ ...current, loading: false }));
       setJenniferExecutionError(
-        cause instanceof Error ? cause.message : 'Jenniferの実行状態を確認できませんでした。',
+        cause instanceof Error ? cause.message : 'Eveの実行状態を確認できませんでした。',
       );
       return null;
     }
@@ -990,7 +994,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   function restoreJenniferGoal(job: WorkJob) {
     const reference = job.amcGoal?.coordinationRef as { planSnapshot?: unknown } | undefined;
     if (!isJenniferCoordinationPlan(reference?.planSnapshot)) {
-      setJenniferExecutionError('この旧Jennifer記録には再構成用snapshotがありません。読み取り履歴として確認してください。');
+      setJenniferExecutionError('この旧形式の記録には再構成用snapshotがありません。読み取り履歴として確認してください。');
       return;
     }
     setCoordinationPlan(reference.planSnapshot);
@@ -1017,7 +1021,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       });
       const payload = await response.json() as { job?: WorkJob; error?: string };
       if (!response.ok || !payload.job?.amcGoal)
-        throw new Error(payload.error || 'GoalをZemaへ保存できませんでした。');
+        throw new Error(payload.error || 'GoalをEveの仕事管理へ保存できませんでした。');
       jenniferGoalSubmission.current = null;
       await refreshJenniferExecution(coordinationPlan);
     } catch (cause) {
@@ -1040,7 +1044,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (!coordinationPlan || !rootJob?.amcGoal || jenniferExecutionBusy) return;
     const pending = jenniferMutationSubmission.current;
     if (pending && (pending.jobId !== rootJob.id || pending.operation !== operation)) {
-      setJenniferExecutionError('前のJennifer操作の結果が未確認です。同じ操作を再試行してから別の操作へ進んでください。');
+      setJenniferExecutionError('前のEve操作の結果が未確認です。同じ操作を再試行してから別の操作へ進んでください。');
       return;
     }
     setJenniferExecutionBusy(true);
@@ -1064,14 +1068,14 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const payload = await response.json() as { job?: WorkJob; error?: string };
       if (!response.ok) {
         jenniferMutationSubmission.current = null;
-        throw new Error(payload.error || 'Jenniferの操作をZemaへ保存できませんでした。');
+        throw new Error(payload.error || '操作を仕事の記録へ保存できませんでした。');
       }
       if (!payload.job?.amcGoal)
-        throw new Error('Jenniferの操作結果を確認できませんでした。同じ操作を再試行してください。');
+        throw new Error('Eveの操作結果を確認できませんでした。同じ操作を再試行してください。');
       jenniferMutationSubmission.current = null;
       await refreshJenniferExecution(coordinationPlan);
     } catch (cause) {
-      setJenniferExecutionError(cause instanceof Error ? cause.message : 'Jenniferの操作結果を確認できませんでした。');
+      setJenniferExecutionError(cause instanceof Error ? cause.message : 'Eveの操作結果を確認できませんでした。');
     } finally { setJenniferExecutionBusy(false); }
   }
 
@@ -1081,7 +1085,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       !jenniferRevisionDraft.trim() || jenniferExecutionBusy) return;
     const pending = jenniferMutationSubmission.current;
     if (pending && (pending.jobId !== rootJob.id || pending.operation !== 'revise')) {
-      setJenniferExecutionError('前のJennifer操作の結果が未確認です。同じ操作を再試行してから計画を変更してください。');
+      setJenniferExecutionError('前のEve操作の結果が未確認です。同じ操作を再試行してから計画を変更してください。');
       return;
     }
     const revisedPlan = pending?.plan ?? createJenniferCoordinationPlan(
@@ -1155,7 +1159,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         });
         const payload = await response.json() as { job?: WorkJob; error?: string };
         if (!response.ok || !payload.job)
-          throw new Error(payload.error || '担当si用のZema jobを作成できませんでした。');
+          throw new Error(payload.error || '担当用の仕事を作成できませんでした。');
         taskJob = payload.job;
       }
       const prompt = buildJenniferDispatchPrompt(goal, task.id);
@@ -1172,7 +1176,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
             : task.squadId,
         delegationRole: 'worker',
       });
-      router.push(`/chat?view=work&workJob=${encodeURIComponent(taskJob.id)}`);
+      router.push(`/os/eve?mode=tools&view=work&workJob=${encodeURIComponent(taskJob.id)}`);
     } catch (cause) {
       setJenniferExecutionError(
         cause instanceof Error ? cause.message : '担当siへの実行準備を作れませんでした。',
@@ -1296,7 +1300,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (!requestedJenniferPlan && !isAmc && requestProvider !== 'pollinations' && textModelProviderDefinition(requestProvider).locality === 'remote') {
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
-        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Jennifer'}: ${message.text}`)
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Eve'}: ${message.text}`)
         .join('\n\n');
       const estimatePrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
@@ -1363,7 +1367,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       ...(requestedJenniferPlan ? [{
         id: `${id}-route`,
         side: 'sky',
-        text: 'Jenniferが複数工程の進め方を整理しました。これは提案だけで、データ閲覧・Tool実行・承認・完了判定は行っていません。',
+        text: 'Eveが複数工程の進め方を整理しました。これは提案だけで、データ閲覧・Tool実行・承認・完了判定は行っていません。',
       } as ChatEntry] : !conversational ? [{
         id: `${id}-route`,
         side: 'sky',
@@ -1397,7 +1401,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       setChatLoading(true);
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
-        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Jennifer'}: ${message.text}`)
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Eve'}: ${message.text}`)
         .join('\n\n');
       const selectedToolPrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
@@ -1458,9 +1462,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                 ? 'ローカルAgentを安全上限で停止しました。依頼を小さく分けてください。Cloudへはフォールバックしません。'
             : 'Local LLMブリッジに接続できませんでした。設定したループバックURLのサーバーを起動してください。Cloudへはフォールバックしません。'
           : code === 'REMOTE_LLM_DISABLED'
-            ? '外部モデルはサーバー側で無効です。smisの接続管理とサーバー設定を確認してください。'
+            ? '外部モデルはサーバー側で無効です。Noahの接続管理とサーバー設定を確認してください。'
             : code === 'MISSING_PROVIDER_CREDENTIAL' || code === 'MISSING_PROVIDER_ENDPOINT'
-              ? '文章モデルの接続設定が不足しています。smisの接続管理を確認してください。'
+              ? '文章モデルの接続設定が不足しています。Noahの接続管理を確認してください。'
               : '文章モデルから返答を受け取れませんでした。接続状態を確認して再送してください。';
         setMessages((current) => conversational
           ? [...current, { id: `${id}-reply`, side: 'sky', text: detail, tool: toolId }]
@@ -1492,7 +1496,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           messages: nextMessages, activeRequest: nextRequest, workflowStatus: 'ready', outcome: null,
           coordination: requestedJenniferPlan,
         });
-        router.replace(`/chat?tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
+        router.replace(`/os/eve?mode=tools&tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
       } catch { /* Keep the conversation available in this tab if storage or navigation is blocked. */ }
     }
   }
@@ -1514,7 +1518,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     const latest = [...jobs].filter((job) => job.tool === id).sort((a, b) => b.createdAt - a.createdAt)[0];
     const current = activeRequest?.toolId === id;
     const result = [...messages].reverse().find((message) => message.tool === id && message.id.startsWith('result-'));
-    return <ToolCharacterDetails id={id} size={size} name={tool?.name ?? server?.name ?? 'Jennifer'}
+    return <ToolCharacterDetails id={id} size={size} name={tool?.name ?? server?.name ?? 'Eve'}
       description={tool?.description ?? server?.description ?? '会話しながら、やりたいことを整理して接続済みの道具につなぎます。'}
       status={current ? (workflowStatus === 'running' ? '処理中' : workflowStatus === 'completed' ? '結果があります' : workflowStatus === 'failed' ? '確認が必要です' : '入力・実行の確認待ち') : latest ? `直近の仕事：${jobMessage(latest)}` : tool?.status === 'candidate' ? '本体の接続待ち' : 'この会話ではまだ作業を始めていません'}
       result={result?.text}
@@ -1524,7 +1528,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
 
   return (
     <WorkspaceShell
-      title="Jennifer"
+      title="Eve"
       contentClassName="sky-chat-page"
       running={running}
         onClickCapture={(event) => {
@@ -1541,6 +1545,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           }
         }}
     >
+      <EveToolHandoff />
       <Dialog open={!!amcReplacement} onOpenChange={(open) => { if (!open) setAmcReplacement(null); }}>
         <DialogContent>
           <DialogTitle>{amcReplacement?.draft ? amcReplacement.amc ? '未送信の依頼とAMCの未保存入力があります' : '未送信の依頼があります' : 'AMCに未保存の入力があります'}</DialogTitle>
@@ -1557,21 +1562,21 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       </Dialog>
       <section
         className={`sky-chat-simple zema-grok-shell${sidebarOpen ? '' : ' is-sidebar-collapsed'}${!workView && displayMessages.length === 0 ? ' is-empty' : ''}`}
-        aria-label="Jenniferスレッド"
+        aria-label="Eveスレッド"
 
         >
-        <aside className="zema-sidebar" aria-label="Jenniferのプロジェクトと専門si">
+        <aside className="zema-sidebar" aria-label="Eveのプロジェクトと専門si">
           <div className="zema-sidebar-top">
-            <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">J</span><strong>Jennifer <small>CHIEF OF STAFF</small></strong></div>
+            <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">E</span><strong>Eve <small>CHIEF OF STAFF</small></strong></div>
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
-          <Link className="zema-new-chat" data-zema-new-chat href="/chat" onClick={(event) => {
+          <Link className="zema-new-chat" data-zema-new-chat href="/os/eve?mode=tools" onClick={(event) => {
             if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
             event.preventDefault(); startNewChat();
           }}><Plus size={17} /> <span>新しい会話</span></Link>
           <label className="zema-history-search"><span className="sr-only">ツールと会話を検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="ツール・会話を検索" /></label>
           <div className="zema-sidebar-section-title jennifer-sidebar-section-title"><span>プロジェクト</span><span>{portfolioAccess ? jenniferProjectPortfolio.projects.length : 0}</span></div>
-          <div className="jennifer-project-list" aria-label="Jenniferが管理するプロジェクト">
+          <div className="jennifer-project-list" aria-label="Eveが管理するプロジェクト">
             <button
               type="button"
               className={`jennifer-project-row${selectedJenniferProjectId === JENNIFER_AUTO_PROJECT ? ' is-current' : ''}`}
@@ -1579,8 +1584,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               disabled={selectedToolId !== AUTO_MODE || running || chatLoading}
               onClick={() => selectJenniferProject(JENNIFER_AUTO_PROJECT)}
             >
-              <span className="jennifer-project-mark" aria-hidden="true">J</span>
-              <span className="jennifer-project-copy"><strong>全体・自動判定</strong><small>Jennifer portfolio</small></span>
+              <span className="jennifer-project-mark" aria-hidden="true">E</span>
+              <span className="jennifer-project-copy"><strong>全体・自動判定</strong><small>Eve portfolio</small></span>
             </button>
             {visibleProjects.map((project) => (
               <button
@@ -1654,19 +1659,19 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           <div className="zema-history-list">
             {visibleThreads.length === 0 ? <p className="zema-history-empty">会話はまだありません</p> : visibleThreads.map((session) => {
               const title = session.messages.find((message) => message.side === 'me')?.text || '新しい会話';
-              return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
+              return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/os/eve?mode=tools&tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>成果ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>smisで能力を追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>Zema · 仕事を管理</span></Link><Link href="/zema/amc"><Sparkles size={16} /><span>仕事の実行計画</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Jenniferを閉じる'}</span></button></div>
+          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>成果ライブラリ</span></Link><Link href="/#sky"><Grid2X2 size={16} /><span>Noahで能力を追加</span></Link><Link href="/os/eve?mode=tools&view=work"><ListChecks size={16} /><span>Eveの仕事管理 · 仕事を管理</span></Link><Link href="/zema/amc"><Sparkles size={16} /><span>仕事の実行計画</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link><button type="button" disabled={signingOutJennifer} onClick={() => void signOutJennifer()}><LogOut size={16} /><span>{signingOutJennifer ? '終了中…' : 'Eveを閉じる'}</span></button></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div className="zema-room-heading">
             <div>
-              <span>AVOKADO / JENNIFER · ZEMA WORK CONTROL · ROCKSTAROS</span>
+              <span>AVOKADO / EVE · EVE WORK CONTROL · ROCKSTAROS</span>
               <h1>Eve</h1>
-              <strong className="zema-jennifer-lead">Chief of Staff · Zemaが実行を管理</strong>
+              <strong className="zema-jennifer-lead">対話・依頼・成果</strong>
             </div>
           </div>
           {selectedTool || selectedMcpServer ? (
@@ -1675,32 +1680,32 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               <div><small>選択中のツール</small><strong>{selectedTool?.name ?? selectedMcpServer?.name}</strong></div>
             </div>
           ) : <span className="zema-auto-label">ツールは依頼に合わせて選択</span>}
-          <nav aria-label="Jenniferナビゲーション">
+          <nav aria-label="Eveナビゲーション">
             <Link href="/" aria-label="ホームへ戻る">
               <House size={18} />
               <span>ホーム</span>
             </Link>
-            <Link href="/sky" aria-label="smisでアプリを見る">
+            <Link href="/#sky" aria-label="Noahでアプリを見る">
               <Grid2X2 size={19} />
-              <span>smis</span>
+              <span>Noah</span>
             </Link>
             <Link
-              href="/chat"
+              href="/os/eve?mode=tools"
               aria-current={!workView ? 'page' : undefined}
-              aria-label="Jenniferの会話を開く"
+              aria-label="Eveの会話を開く"
             >
               <MessageCircle size={18} />
               <span>会話</span>
             </Link>
             <Link
-              href="/chat?view=work"
+              href="/os/eve?mode=tools&view=work"
               aria-current={workView ? 'page' : undefined}
-              aria-label="Zemaの仕事管理を開く"
+              aria-label="Eveの仕事と成果を開く"
             >
               <ListChecks size={18} />
               <span>仕事</span>
             </Link>
-            <Link href="/zema/amc" aria-label="Zemaの実行計画を開く"><Sparkles size={18} /><span>実行計画</span></Link>
+            <Link href="/zema/amc" aria-label="Eveの仕事管理の実行計画を開く"><Sparkles size={18} /><span>実行計画</span></Link>
           </nav>
         </header>
 
@@ -1711,8 +1716,8 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           >
             <header>
               <div>
-                <small>ZEMA WORK CONTROL</small>
-                <h2 id="chat-work-title">Zemaの仕事をJenniferから管理</h2>
+                <small>EVE WORK CONTROL</small>
+                <h2 id="chat-work-title">Eveの仕事と成果</h2>
               </div>
               <p>
                 作成、手順の実行、確認、中止、結果の記録をここに集約します。
@@ -1725,7 +1730,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               <div className="sky-chat-job-heading">
                 <div>
                   <h3 id="chat-job-title">ツールの実行</h3>
-                  <p>受付、実行中、結果、停止をZema内で確認します。</p>
+                  <p>受付、実行中、結果、停止をEveの仕事管理内で確認します。</p>
                 </div>
                 <span>{jobs.length}件</span>
               </div>
@@ -1768,7 +1773,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                           job.status,
                         ) && (
                           <Link
-                            href={`/chat?tool=${encodeURIComponent(job.tool)}`}
+                            href={`/os/eve?mode=tools&tool=${encodeURIComponent(job.tool)}`}
                           >
                             <RotateCcw size={14} /> もう一度指示
                           </Link>
@@ -1782,7 +1787,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
             <Workbench embedded cloudDraft={cloudWorkDraft} initialPackageKey={preferredPackage} packageRuntimeServers={mcpServers} />
           </section>
         ) : loading ? (
-          <div className="sky-chat-centered">Jenniferを読み込んでいます…</div>
+          <div className="sky-chat-centered">Eveを読み込んでいます…</div>
         ) : (
           <>
             <div
@@ -1794,11 +1799,11 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               {executionBlocked && (
                 <output className="zema-plan-connection">
                   <div>
-                    <strong>Jenniferの計画整理は使えます</strong>
+                    <strong>Eveの計画整理は使えます</strong>
                     <p>
                       {accessState === 'checking'
-                        ? 'Zemaの実行接続を確認中です。ゴール整理と実行計画はこのまま利用できます。'
-                        : 'ゴール整理と実行計画は端末内で使えます。Tool実行・仕事・利用明細はZemaの接続確認後に利用できます。'}
+                        ? 'Eveの仕事管理の実行接続を確認中です。ゴール整理と実行計画はこのまま利用できます。'
+                        : 'ゴール整理と実行計画は端末内で使えます。Tool実行・仕事・利用明細はEveの仕事管理の接続確認後に利用できます。'}
                     </p>
                   </div>
                   <button
@@ -1813,24 +1818,24 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               {displayMessages.length > 0 && <div className="sky-chat-day">今日</div>}
               {displayMessages.length === 0 && (
                 <section className="zema-empty" aria-labelledby="zema-empty-title">
-                  <span className="zema-empty-kicker">JENNIFER · CHIEF OF STAFF</span>
+                  <span className="zema-empty-kicker">EVE · CHIEF OF STAFF</span>
                   <h2 id="zema-empty-title">{selectedTool ? 'やりたいことを、ひと言から。' : 'プロジェクト全体を、ここから。'}</h2>
                   <p className="zema-empty-lead">{selectedTool || selectedMcpServer
                     ? '依頼を整理し、使える範囲と次の手順をこの会話で確認できます。'
-                    : 'Jenniferに目的を話してください。ゴールと成功条件へ整理し、Zemaの実行計画からプロジェクト担当siと専門siへつなぎます。'}</p>
-                  {!selectedTool && !selectedMcpServer && <div className="jennifer-flow-card" aria-label="JenniferからZemaへの仕事の流れ">
+                    : 'Eveに目的を話してください。ゴールと成功条件へ整理し、Eveの仕事管理の実行計画からプロジェクト担当siと専門siへつなぎます。'}</p>
+                  {!selectedTool && !selectedMcpServer && <div className="jennifer-flow-card" aria-label="Eveの仕事の流れ">
                     <div className="jennifer-flow-steps">
-                      <span><strong>Jennifer</strong><small>目的を整理</small></span>
+                      <span><strong>Eve</strong><small>目的を整理</small></span>
                       <ArrowRight size={15} aria-hidden="true" />
-                      <span><strong>Zema / AMC</strong><small>仕事へ分解</small></span>
+                      <span><strong>Eveの仕事管理 / AMC</strong><small>仕事へ分解</small></span>
                       <ArrowRight size={15} aria-hidden="true" />
                       <span><strong>プロジェクトsi</strong><small>全体を担当</small></span>
                       <ArrowRight size={15} aria-hidden="true" />
                       <span><strong>専門si</strong><small>作業を実行</small></span>
                       <ArrowRight size={15} aria-hidden="true" />
-                      <span><strong>Jennifer</strong><small>成果を統合</small></span>
+                      <span><strong>Eve</strong><small>成果を統合</small></span>
                     </div>
-                    <p>Zemaは進捗、承認、利用明細、証拠、検収、停止、履歴を管理します。実行・承認・検収はそれぞれ別に確認できます。</p>
+                    <p>Eveの仕事管理は進捗、承認、利用明細、証拠、検収、停止、履歴を管理します。実行・承認・検収はそれぞれ別に確認できます。</p>
                   </div>}
                   {selectedTool && (
                     <div className="zema-empty-next">
@@ -1874,11 +1879,11 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   >
                     {message.side === 'sky' && characterDetails(message.tool ?? 'zema', 48)}
                     <div>
-                      {message.side === 'sky' && <small>Jennifer</small>}
+                      {message.side === 'sky' && <small>Eve</small>}
                       <p className="zema-message-text">{message.text}</p>
                       {message.side === 'sky' && message.suggestedTool && (
-                        <Link className="sky-chat-inline-action" href="/sky">
-                          smisで接続する
+                        <Link className="sky-chat-inline-action" href="/#sky">
+                          Noahで接続する
                         </Link>
                       )}
                     </div>
@@ -1887,13 +1892,13 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               })}
 
               {!coordinationPlan && savedJenniferGoals.length > 0 && (
-                <section className="zema-jennifer-card" aria-label="保存済みJennifer Goals">
+                <section className="zema-jennifer-card" aria-label="保存済みEve Goals">
                   <header>
                     <span className="zema-jennifer-mark" aria-hidden="true"><Sparkles size={18} /></span>
-                    <div><small>ZEMA DURABLE HISTORY</small><h2>保存済みJennifer Goals</h2></div>
+                    <div><small>EVE SAVED HISTORY</small><h2>保存済みEve Goals</h2></div>
                     <strong>{savedJenniferGoals.length}件</strong>
                   </header>
-                  <p className="zema-jennifer-intro">一時保存ではなく、Zemaの実行計画・利用明細・実行台帳から再開します。</p>
+                  <p className="zema-jennifer-intro">一時保存ではなく、Eveの仕事管理の実行計画・利用明細・実行台帳から再開します。</p>
                   <ol className="zema-jennifer-steps">
                     {savedJenniferGoals.slice(0, 12).map((job, index) => <li key={job.id}>
                       <span>{index + 1}</span><div><strong>{job.title}</strong>
@@ -1916,9 +1921,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       <Sparkles size={18} />
                     </span>
                     <div>
-                      <small>JENNIFER COORDINATION</small>
+                      <small>EVE COORDINATION</small>
                       <h2 id={`jennifer-plan-${coordinationPlan.id}`}>
-                        Jenniferの進め方
+                        Eveの進め方
                       </h2>
                     </div>
                     <strong>
@@ -1929,7 +1934,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                           : jenniferExecution.rootJob?.amcGoal?.state === 'paused'
                             ? '一時停止中'
                         : jenniferExecution.rootJob?.amcGoal
-                          ? 'Zema実行管理中'
+                          ? 'Eveの仕事管理実行管理中'
                           : jenniferExecution.loading
                             ? '保存状態を確認中'
                             : 'ゴール確認待ち'}
@@ -1939,11 +1944,11 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     {coordinationPlan.project
                       ? `${coordinationPlan.project.displayName}を${coordinationPlan.project.managerLabel}が担当します。`
                       : '全体依頼を複数工程に分けました。'}
-                    Jenniferは割当と確認を行い、実行・承認・利用明細はZemaと既存Brokerが管理します。
+                    Eveは割当と確認を行い、実行・承認・利用明細はEveの仕事管理と既存Brokerが管理します。
                   </p>
-                  <section className="zema-jennifer-goal" aria-label="Jenniferが言語化したGoal">
+                  <section className="zema-jennifer-goal" aria-label="Eveが言語化したGoal">
                     <small>
-                      ゴールと成功条件 · {jenniferExecution.rootJob?.amcGoal ? 'ZEMA永続保存済み' : '草案未保存'}
+                      ゴールと成功条件 · {jenniferExecution.rootJob?.amcGoal ? 'Eveに保存済み' : '草案未保存'}
                     </small>
                     <h3>{coordinationPlan.amc.goalContract.goal}</h3>
                     <p>{coordinationPlan.amc.goalContract.intent}</p>
@@ -1983,7 +1988,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                         disabled={jenniferExecutionBusy || jenniferExecution.loading}
                         onClick={() => void confirmJenniferGoal()}
                       >
-                        草案をZemaへ保存（まだ実行しない）
+                        草案をEveの仕事管理へ保存（まだ実行しない）
                       </button>
                     )}
                     {jenniferExecution.rootJob?.amcGoal?.state === 'draft' && (
@@ -2002,7 +2007,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     )}
                   </section>
                   {jenniferExecution.projection?.plan && (
-                    <section className="zema-jennifer-goal" aria-label="Jennifer実行制御">
+                    <section className="zema-jennifer-goal" aria-label="Eve実行制御">
                       <small>計画 第{jenniferExecution.projection.plan.revision}版 · {jenniferStateLabel(jenniferExecution.projection.plan.state)}</small>
                       <h3>実行制御と費用</h3>
                       {jenniferExecution.projection.costs.length === 0 ? <p>委任費用はまだありません。</p> : (
@@ -2036,11 +2041,11 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   )}
                   <details className="zema-jennifer-breakdown" open>
                       <summary>
-                        仕事の実行計画（Zema / AMC） ·{' '}
+                        仕事の実行計画（Eveの仕事管理 / AMC） ·{' '}
                         {coordinationPlan.amc.nodes.filter(({ kind }) => kind === 'task').length}件
                       </summary>
                       <p>
-                        ゴールから逆算し、必要な専門担当を作業単位で割り当てます。担当は実行時だけ起動し、報告はZemaへ戻します。
+                        ゴールから逆算し、必要な専門担当を作業単位で割り当てます。担当は実行時だけ起動し、報告はEveの仕事管理へ戻します。
                       </p>
                       <ol>
                         {coordinationPlan.amc.nodes
@@ -2068,7 +2073,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                               <small>
                                 {node.ownerRole} · 前提{' '}
                                 {node.dependsOn.length ? node.dependsOn.join(', ') : 'なし'}
-                                {task ? ` · Zema: ${jenniferStateLabel(task.status)}` : ''}
+                                {task ? ` · Eveの仕事管理: ${jenniferStateLabel(task.status)}` : ''}
                               </small>
                               <details>
                                 <summary>参照するコードと合格条件</summary>
@@ -2082,7 +2087,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                                 </ul>
                               </details>
                               {taskJob ? (
-                                <Link href={`/chat?view=work&workJob=${encodeURIComponent(taskJob.id)}`}>
+                                <Link href={`/os/eve?mode=tools&view=work&workJob=${encodeURIComponent(taskJob.id)}`}>
                                   担当siのjobを開く <ArrowRight size={14} aria-hidden="true" />
                                 </Link>
                               ) : ready ? (
@@ -2109,7 +2114,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                           <small>
                             {step.target.kind === 'amc'
                               ? 'AMCでGoal候補を準備'
-                              : '既存のsmis Tool / A2A Agentから選択'}
+                              : '既存のNoah Tool / A2A Agentから選択'}
                             {' · '}
                             {jenniferDataLabel(step.dataClass)}
                             {' · '}
@@ -2129,9 +2134,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     <p>{coordinationPlan.completionRule}</p>
                   </details>
                   {jenniferExecution.report && (
-                    <section className="zema-jennifer-goal" aria-label="Jenniferの統合報告">
-                      <small>JENNIFER FINAL INTEGRATION · {jenniferStateLabel(jenniferExecution.report.overallStatus)}</small>
-                      <h3>Jenniferの統合報告</h3>
+                    <section className="zema-jennifer-goal" aria-label="Eveの統合報告">
+                      <small>EVE FINAL INTEGRATION · {jenniferStateLabel(jenniferExecution.report.overallStatus)}</small>
+                      <h3>Eveの統合報告</h3>
                       <p>{jenniferExecution.report.summary}</p>
                       {jenniferExecution.report.completed.length > 0 && (
                         <details>
@@ -2247,7 +2252,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                   {activeTool && activeTool.id !== 'rockstar-amc' && (
                     <details className="sky-chat-provider-routing">
                       <summary>ツールの接続設定</summary>
-                      <p>この設定はZemaの会話・案内に適用されます。候補ツールのローカル確認・下書き処理は外部Providerを呼びません。</p>
+                      <p>この設定はEveの仕事管理の会話・案内に適用されます。候補ツールのローカル確認・下書き処理は外部Providerを呼びません。</p>
                       <div className="sky-chat-provider-grid">
                         {providerRoutingFields.map((field) => (
                           <label key={field.id}>
@@ -2337,7 +2342,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                         <div>
                           <strong>{activeTool.name}</strong>
                           <p>
-                            smis登録済みです。実行器をこのPCのsmis SDKへ接続すると、同じ入力をZemaから実行できます。
+                            Noah登録済みです。実行器をこのPCのNoah SDKへ接続すると、同じ入力をEveの仕事管理から実行できます。
                           </p>
                         </div>
                         <Link href="/studio">
@@ -2349,7 +2354,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                         <div>
                           <strong>{activeTool.name}</strong>
                           <p>
-                            専用画面で入力と実行条件を確認します。開始後の状態と結果はZemaへ戻って確認できます。
+                            専用画面で入力と実行条件を確認します。開始後の状態と結果はEveの仕事管理へ戻って確認できます。
                           </p>
                         </div>
                         <Link href={activeTool.launchPath}>
@@ -2415,7 +2420,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       />
                     ) : (
                       <p>
-                        この担当の実行画面は準備中です。接続状態と対応環境をsmisで確認してください。
+                        この担当の実行画面は準備中です。接続状態と対応環境をNoahで確認してください。
                       </p>
                     )}
                   </div>
@@ -2442,7 +2447,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       ? `${roleFor(selectedTool)}への依頼`
                       : selectedMcpServer
                         ? `${selectedMcpServer.name}への指示`
-                        : 'Jenniferへの依頼'
+                        : 'Eveへの依頼'
                   }
                   placeholder={selectedTool ? 'このツールでやりたいことを入力…' : '何を進めたいですか？'}
                 />
@@ -2574,7 +2579,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     onChange={(event) => chooseMode(event.target.value)}
                   >
                     <option value={AUTO_MODE}>自動で選ぶ</option>
-                    {modeApps.length > 0 && <optgroup label="smis Tool">
+                    {modeApps.length > 0 && <optgroup label="Noah Tool">
                       {modeApps.map((tool) => <option key={tool.id} value={tool.id}>{roleFor(tool)} · {tool.name}</option>)}
                     </optgroup>}
                     {connectedMcpServers.length > 0 && <optgroup label="このPCのMCP">
@@ -2582,7 +2587,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                     </optgroup>}
                   </select>
                 </label>
-                <Link href="/sky" className="zema-add-tool" aria-label="smisでツールを追加">
+                <Link href="/#sky" className="zema-add-tool" aria-label="Noahでツールを追加">
                   <Plus size={15} /> <span>ツールを追加</span>
                 </Link>
                 <span className="zema-composer-tip">Enterで送信 · Shift+Enterで改行</span>

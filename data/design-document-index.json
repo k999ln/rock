@@ -3256,5 +3256,25 @@
       "final build HTTP readback",
       "Sites publication"
     ]
+  },
+  "eveNoahNavigationRepair": {
+    "taskIds": [
+      "WEB04",
+      "HOME01",
+      "SKY21"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#eve-noah-navigation",
+    "toolAuthority": "docs/sky-tools-complete-design.md#eve-noah-navigation",
+    "source": [
+      "lib/eve-noah-navigation.ts",
+      "components/eve-tool-handoff.tsx",
+      "components/noah-navigation.tsx",
+      "components/eve-sync-workspace.tsx",
+      "components/sky-agent-library.tsx",
+      "components/rockstar-account.tsx",
+      "tests/eve-noah-navigation.test.mjs"
+    ],
+    "publicAcceptance": "pending",
+    "nativeAcceptanceChanged": false
   }
 }

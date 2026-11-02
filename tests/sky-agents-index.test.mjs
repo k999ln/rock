@@ -13,7 +13,7 @@ void test('Saved Sky Agents index opens owner management inside Home', () => {
   assert.match(library, /parseSkyAgentSettings\(settings\)/);
   assert.match(library, /settings\.provider/);
   assert.match(library, /settings\.model/);
-  assert.match(library, /href="\/os\/eve"/);
+  assert.match(library, /href="\/os\/eve#eve-work-results"/);
   assert.match(library, /この担当の新しい依頼は停止中です/);
   assert.match(library, /保存できませんでした。入力は残っています/);
 });

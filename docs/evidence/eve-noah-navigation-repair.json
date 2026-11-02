@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-02",
+  "status": "verified_candidate",
+  "baseVersion": 139,
+  "baseSha": "edfc0c4d396963457e8e5a92f7548448caf21bbc",
+  "scope": "R01-R07 route/display/context repairs",
+  "authenticationChanged": false,
+  "realWorkSubmitted": false,
+  "publicAcceptance": "pending",
+  "localChecks": {
+    "targetedBehavior": "48 passed; additional canonical-route/MCP recovery contracts passed",
+    "coreSuite": {
+      "tests": 2642,
+      "pass": 2641,
+      "skip": 1,
+      "fail": 0
+    },
+    "lint": "passed",
+    "mobile": "390x844: menu/quick links visible; horizontal overflow 0",
+    "tool": "legacy /chat redirects to mode=tools retaining tool/thread; selected SPIDER and Eve gate visible",
+    "news": "headline, original link and focused receipt banner visible; sign-in return query covered by regression",
+    "verify": "npm run verify exit 0",
+    "workApi": 1621,
+    "csvStorage": 385
+  },
+  "verificationScope": "isolated Sites source, not shared root runtime or native acceptance",
+  "rootIntegration": "source patch retained; shared root has 12 overlapping conflicts, no runtime files overwritten"
+}

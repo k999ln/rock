@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import NoahNavigation from './noah-navigation';
 import WorkspaceShell from './workspace-shell';
 import SkyDeviceAgentConnections from './sky-device-agent-connections';
 import styles from './sky-device-agent-connections.module.css';
@@ -43,6 +44,7 @@ export default function SkyConnectedRuntime() {
   }, []);
   return (
     <WorkspaceShell title="Noah" hideTopActions contentClassName={styles.content}>
+      <NoahNavigation active="devices" />
       <section
         style={{
           maxWidth: 1040,
@@ -57,7 +59,7 @@ export default function SkyConnectedRuntime() {
             color: 'var(--os-muted)',
           }}
         >
-          SKY / CONNECTED CAPABILITIES
+          NOAH / CONNECTED CAPABILITIES
         </p>
         <h1>接続した担当と、実行先。</h1>
         <p>
@@ -69,7 +71,7 @@ export default function SkyConnectedRuntime() {
         >
           <Link href="/os/eve">Eveで続きを見る</Link>
           <Link href="/connect/device">端末の追加・解除</Link>
-          <Link href="/sky">Noahへ戻る</Link>
+          <Link href="/#sky-manage">Noahのライブラリへ戻る</Link>
         </nav>
         {status === 'loading' && <p>接続した能力を確認しています…</p>}
         {status === 'signed_out' && (

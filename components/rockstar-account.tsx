@@ -1,4 +1,6 @@
 'use client';
+import { useSearchParams } from 'next/navigation';
+import { accountReturnNavigation } from '@/lib/eve-noah-navigation';
 /* oxlint-disable next/no-html-link-for-pages -- Legacy identity recovery uses top-level navigation. */
 /* oxlint-disable next/no-img-element -- Existing static company mark. */
 import { useEffect, useState } from 'react';
@@ -32,15 +34,8 @@ function message(value: unknown) {
   };
   return messages[code] || (code.includes('CHALLENGE') ? '確認が期限切れか、使用済みです。最初からやり直してください。' : '認証を完了できませんでした。入力と通信状態を確認してお試しください。');
 }
-function returnPath() {
-  const value = new URLSearchParams(window.location.search).get('returnTo');
-  if (value && /^\/(?!\/)/.test(value) && !/[\\\r\n]/.test(value) && value.length < 2048) {
-    const url = new URL(value, window.location.origin);
-    if (url.origin === window.location.origin && !url.pathname.startsWith('/account')) return url.pathname + url.search + url.hash;
-  }
-  return '/';
-}
 export default function RockstarAccount() {
+  const returnNavigation = accountReturnNavigation(useSearchParams().toString());
   const [access, setAccess] = useState<Access | null>(null);
   const [mode, setMode] = useState<Mode>('signup');
   const [kind, setKind] = useState<'password' | 'passkey'>('password');
@@ -108,7 +103,7 @@ export default function RockstarAccount() {
     finally { setBusy(false); }
   }
   return <main className={styles.page}>
-    <nav className={styles.top}><Link href="/"><img src="/brand/rainbow-logo-96.png" alt="" width="28" height="28" />RockstarOS</Link><Link href="/os/eve">Eve</Link></nav>
+    <nav className={styles.top}><Link href="/"><img src="/brand/rainbow-logo-96.png" alt="" width="28" height="28" />RockstarOS</Link><Link href="/#timeline">Noah</Link><Link href="/os/eve">Eve</Link><Link href={returnNavigation.href}>{returnNavigation.label}</Link></nav>
     <section className={styles.card} aria-labelledby="account-title" aria-busy={busy}>
       <p className={styles.eyebrow}>YOUR OWN SPACE</p>
       <h1 id="account-title">{complete || configured ? '自分のNoahとEveへ。' : mode === 'login' ? 'おかえりなさい。' : mode === 'recover' ? '続きを、取り戻そう。' : '登録して、はじめよう。'}</h1>
@@ -117,13 +112,13 @@ export default function RockstarAccount() {
         <h2>復旧コードを安全な場所に保存</h2><p>ログイン方法を失ったときに必要です。一度だけ表示します。パスワード管理アプリなどへ保存し、チャットや投稿には送らないでください。</p>
         <textarea aria-label="復旧コード" value={recoveryCode} readOnly rows={3} spellCheck={false} />
         <label><input type="checkbox" checked={saved} onChange={e => setSaved(e.target.checked)} />復旧コードを保存しました</label>
-        <button className={styles.primary} disabled={!saved} onClick={() => window.location.assign(returnPath())}>Noahへ進む</button>
+        <button className={styles.primary} disabled={!saved} onClick={() => window.location.assign(returnNavigation.href)}>{returnNavigation.label}</button>
       </div> : complete ? <div className={styles.success}>
         <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#e6eee2" /><path d="m15 26 7 7 15-15" fill="none" stroke="#285541" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        <h2>準備できました。</h2><p>同じアカウントで、続きから使えます。</p><button className={styles.primary} onClick={() => window.location.assign(returnPath())}>Noahへ進む</button>
+        <h2>準備できました。</h2><p>同じアカウントで、続きから使えます。</p><button className={styles.primary} onClick={() => window.location.assign(returnNavigation.href)}>{returnNavigation.label}</button>
       </div> : <div className={styles.step} key={kind + ':' + mode}>
         {!signedIn && <div className={styles.tabs} aria-label="登録方法"><button disabled={busy} aria-pressed={mode === 'signup'} onClick={() => change('signup')}>新規登録</button><button disabled={busy} aria-pressed={mode === 'login'} onClick={() => change('login')}>ログイン</button></div>}
-        {signedIn && configured && mode === 'add' && kind === 'password' ? <div className={styles.success}><p>ログインID：<strong>@{access?.passwordLogin?.handle}</strong></p><button className={styles.primary} onClick={() => window.location.assign(returnPath())}>Noahへ進む</button></div> : <form onSubmit={e => { e.preventDefault(); void authenticate(); }} className={styles.form}>
+        {signedIn && configured && mode === 'add' && kind === 'password' ? <div className={styles.success}><p>ログインID：<strong>@{access?.passwordLogin?.handle}</strong></p><button className={styles.primary} onClick={() => window.location.assign(returnNavigation.href)}>{returnNavigation.label}</button></div> : <form onSubmit={e => { e.preventDefault(); void authenticate(); }} className={styles.form}>
           {mode === 'recover' && <div className={styles.recovery}><label>保存した復旧コード<input type="password" autoComplete="off" required value={recoveryInput} onChange={e => setRecoveryInput(e.target.value)} /></label><label><input type="checkbox" required checked={confirmRevoke} onChange={e => setConfirmRevoke(e.target.checked)} />古いログイン方法と端末接続を解除して復旧する</label><p>会話・仕事・成果は保持します。Pixelなどの端末は、復旧後に接続し直せます。</p></div>}
           {enteringPassword && <><label>ユーザーID<input name="username" type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} required pattern="[A-Za-z0-9][A-Za-z0-9_]{2,31}" minLength={3} maxLength={32} value={handle} onChange={e => setHandle(e.target.value)} placeholder="your_name" /><small>英数字と_で3〜32文字</small></label><label>{mode === 'recover' ? '新しいパスワード' : 'パスワード'}<input name="password" type="password" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} required minLength={15} maxLength={128} value={secret} onChange={e => setSecret(e.target.value)} placeholder="15文字以上" /></label>{mode !== 'login' && <label>パスワードをもう一度<input name="password-confirmation" type="password" autoComplete="new-password" required minLength={15} maxLength={128} value={confirmation} onChange={e => setConfirmation(e.target.value)} /></label>}</>}
           {kind === 'passkey' && <p className={styles.hint}>{supported ? 'この端末のパスキー、または別の対応端末で本人確認します。' : 'このブラウザではパスキーを使えません。ユーザーIDとパスワードへ切り替えてください。'}</p>}

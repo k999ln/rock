@@ -2,6 +2,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
+import NoahNavigation from './noah-navigation';
 import { ArrowRight, ArrowUpRight, Bot, Check, ChevronRight, Cloud, Plus, RefreshCw, Search, Settings2 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
 import SkyOwnedAgents from '@/components/sky-owned-agents';
@@ -122,16 +123,17 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
   const definition = textModelProviderDefinition(settings.provider);
   const Heading = embedded ? 'h3' : 'h1';
   const content = <div className={styles.page} data-sky-agent-management data-eve-builder={creator || undefined}>
+      {!creator && <NoahNavigation active="library" />}
       <header className={styles.hero}>
-        <div><Link className={styles.back} href="/#timeline">smis <ChevronRight size={13} /> マイエージェント</Link>
+        <div><Link className={styles.back} href="/#timeline">Noah <ChevronRight size={13} /> マイエージェント</Link>
           <p className={styles.eyebrow}>YOUR AGENTS, YOUR WAY</p><Heading>{creator ? 'アイデアを、使える担当へ。' : 'あなたのエージェント。'}</Heading>
           <p>やってほしいことに合う担当を作り、使うSIや端末につなぎます。依頼と成果の確認はEveで進められます。</p></div>
         <button className={styles.primary} onClick={() => open(null)} disabled={loading || busy || dirty || signedOut}><Plus size={17} /> エージェントを作る</button>
       </header>
       <nav className={styles.links} aria-label="エージェントの管理">
         <span><Bot size={17} /> 追加したエージェント <strong>{loading ? '—' : agents.length}</strong></span>
-        <Link href="/#sky">smis Market <ArrowUpRight size={15} /></Link>
-        <Link href="/os/eve">Eveの仕事と成果 <ArrowUpRight size={15} /></Link>
+        <Link href="/#sky">Noah Market <ArrowUpRight size={15} /></Link>
+        <Link href="/os/eve#eve-work-results">Eveの仕事と成果 <ArrowUpRight size={15} /></Link>
       </nav>
       {!publicRuntime && <details><summary>購入と利用権の状態を確認</summary><SkyOwnedAgents /></details>}
       {signedOut && <div className={styles.notice}><p>自分のエージェントと設定を表示するにはサインインしてください。</p><a href={creator ? "/account?returnTo=%2Fos%2Feve%3Fview%3Dbuild" : "/account?returnTo=%2Fsky%2Fagents"} target="_top">サインイン <ArrowRight size={16} /></a></div>}
@@ -144,24 +146,24 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
           {loading && <p aria-live="polite">追加済みの担当を読み込んでいます…</p>}
           {!loading && !signedOut && !visible.length && <div className={styles.empty}><Bot size={32} strokeWidth={1.4} /><h3>{query ? '一致する担当がありません' : '最初のエージェントを作ろう。'}</h3><p>{query ? '名前やモデルを変えて検索してください。' : '用途を選ぶところから始められます。接続済みToolの担当もここに並びます。'}</p></div>}
           <div className={styles.list}>{visible.map(agent => <button key={agent.id} className={styles.agent} aria-pressed={selected?.id === agent.id} disabled={busy || dirty} onClick={() => open(agent)}>
-            <span className={styles.avatar}><Bot size={22} /></span><span className={styles.agentCopy}><strong>{agent.name}</strong><small>{agent.model}</small><span>{agent.source === 'personal' ? '自分の担当' : 'smisで追加したTool'} · {agent.enabled ? 'Eveで選択可' : '利用停止中'}</span></span><ChevronRight size={16} />
+            <span className={styles.avatar}><Bot size={22} /></span><span className={styles.agentCopy}><strong>{agent.name}</strong><small>{agent.model}</small><span>{agent.source === 'personal' ? '自分の担当' : 'Noahで追加したTool'} · {agent.enabled ? 'Eveで選択可' : '利用停止中'}</span></span><ChevronRight size={16} />
           </button>)}</div>
-          <p className={styles.boundary}>ここにはsmisに保存した担当が並びます。接続した端末の担当は下で確認できます。接続先の稼働と費用は、Eveで依頼する前に確認します。</p>
+          <p className={styles.boundary}>ここにはNoahに保存した担当が並びます。接続した端末の担当は下で確認できます。接続先の稼働と費用は、Eveで依頼する前に確認します。</p>
         </section>
         <section ref={editorRef} className={styles.editor} aria-labelledby="agent-settings-title">
           {!selected && !creating ? <div className={styles.welcome}><Settings2 size={32} strokeWidth={1.3} /><h2 id="agent-settings-title">使い方まで、あなたに合わせる。</h2><p>やってほしいことを選んで作るか、左の担当を選んで設定できます。</p><button disabled={signedOut} onClick={() => open(null)}>エージェントを作る <Plus size={16} /></button></div> : <form onSubmit={e => void save(e)}>
-            <div className={styles.editorHeading}><div><p className={styles.eyebrow}>{selected?.source === 'sky-tool' ? 'ADDED FROM SMIS' : 'YOUR PERSONAL AGENT'}</p><h2 id="agent-settings-title">{creating ? selected?.sourceTool ? 'Toolの担当を設定' : '新しいエージェント' : 'エージェントの設定'}</h2></div><Settings2 size={21} /></div>
+            <div className={styles.editorHeading}><div><p className={styles.eyebrow}>{selected?.source === 'sky-tool' ? 'ADDED FROM NOAH' : 'YOUR PERSONAL AGENT'}</p><h2 id="agent-settings-title">{creating ? selected?.sourceTool ? 'Toolの担当を設定' : '新しいエージェント' : 'エージェントの設定'}</h2></div><Settings2 size={21} /></div>
             {creating && <ol className={styles.steps} aria-label="作成の手順">
               {['役割', 'モデル', '確認'].map((label, index) => <li key={label} aria-current={creationStep === index ? 'step' : undefined}><span>{index + 1}</span>{label}</li>)}
             </ol>}
             <fieldset disabled={busy || loading || signedOut}>
               {(!creating || creationStep === 0) && <>
-              {creating && !selected?.sourceTool && <div className={styles.toolChoice}><h3>smis Toolを使うなら</h3><p>接続済みToolを選ぶと、そのTool専用の担当として設定できます。</p><div>{agents.filter(agent => agent.source === 'sky-tool').slice(0, 4).map(agent => <button type="button" key={agent.id} onClick={() => startToolSetup(agent)}>{agent.name} <ArrowRight size={14} /></button>)}</div><Link href="/#sky">smisでToolを探す <ArrowUpRight size={14} /></Link></div>}
+              {creating && !selected?.sourceTool && <div className={styles.toolChoice}><h3>Noah Toolを使うなら</h3><p>接続済みToolを選ぶと、そのTool専用の担当として設定できます。</p><div>{agents.filter(agent => agent.source === 'sky-tool').slice(0, 4).map(agent => <button type="button" key={agent.id} onClick={() => startToolSetup(agent)}>{agent.name} <ArrowRight size={14} /></button>)}</div><Link href="/#sky">NoahでToolを探す <ArrowUpRight size={14} /></Link></div>}
               {creating && creator && !selected && <div className={styles.idea}><label>どんな働きを作りたい？<textarea rows={3} maxLength={1000} value={idea} placeholder="例：資料から出典付きで要点をまとめるエージェント" onChange={e=>setIdea(e.target.value)}/></label><button type="button" disabled={busy||!idea.trim()} onClick={prepareIdea}>担当の下書きにする</button><p>入力から編集できる設定を作ります。保存や作成だけで、推論・外部操作・課金は始まりません。</p></div>}
               {creating && <div className={styles.starters}><h3>まず、何を任せたい？</h3><p>近いものを選んでから、名前や役割を書き換えられます。</p><div className={styles.starterGrid}>{starters.map(starter => <button type="button" key={starter.id} aria-pressed={starterId === starter.id} onClick={() => applyStarter(starter)}><strong>{starter.title}</strong><span>{starter.detail}</span></button>)}</div></div>}
               <label>名前<input required maxLength={80} value={settings.name} placeholder="例：文章を整える担当" onChange={e => change('name', e.target.value)} /></label>
               <label>何をしてほしい？<textarea required maxLength={1200} rows={4} value={settings.instructions} placeholder="例：資料の出典を示し、要点と分からない点を分けて返す" onChange={e => change('instructions', e.target.value)} /></label>
-              {creating && <p className={styles.boundary}>{selected?.sourceTool ? 'この担当は接続済みのsmis Toolを使います。実行前に権限と費用を別に確認します。' : 'Toolを選ばずに作る場合、Toolの実行権限は付きません。'}</p>}
+              {creating && <p className={styles.boundary}>{selected?.sourceTool ? 'この担当は接続済みのNoah Toolを使います。実行前に権限と費用を別に確認します。' : 'Toolを選ばずに作る場合、Toolの実行権限は付きません。'}</p>}
               </>}
               {(!creating || creationStep === 1) && <>
               <div className={styles.modelBox}><h3><Cloud size={17} /> {selected?.sourceTool ? 'Eveで依頼を整理するLLM' : 'Eveの基盤モデル'}</h3>
@@ -175,7 +177,7 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
               </div>
               </>}
               {(!creating || creationStep === 2) && <>
-              {creating && <div className={styles.review}><h3>保存前に確認</h3><dl><div><dt>名前</dt><dd>{settings.name}</dd></div><div><dt>役割</dt><dd>{settings.instructions}</dd></div><div><dt>Eveの基盤モデル</dt><dd>{definition.name} · {settings.model}</dd></div><div><dt>Tool</dt><dd>{selected?.sourceTool ? selected.name : '未接続。必要ならsmisで追加'}</dd></div></dl><p>{selected?.sourceTool ? '保存すると接続済みToolの担当設定が自分の一覧に記録されます。' : '保存すると自分の一覧に追加されます。'}Eveへ依頼するまで仕事は始まりません。接続先の利用可否、外部送信、費用は依頼時に確認します。</p></div>}
+              {creating && <div className={styles.review}><h3>保存前に確認</h3><dl><div><dt>名前</dt><dd>{settings.name}</dd></div><div><dt>役割</dt><dd>{settings.instructions}</dd></div><div><dt>Eveの基盤モデル</dt><dd>{definition.name} · {settings.model}</dd></div><div><dt>Tool</dt><dd>{selected?.sourceTool ? selected.name : '未接続。必要ならNoahで追加'}</dd></div></dl><p>{selected?.sourceTool ? '保存すると接続済みToolの担当設定が自分の一覧に記録されます。' : '保存すると自分の一覧に追加されます。'}Eveへ依頼するまで仕事は始まりません。接続先の利用可否、外部送信、費用は依頼時に確認します。</p></div>}
               <label className={styles.check}><input type="checkbox" checked={settings.enabled} onChange={e => change('enabled',e.target.checked)} /> Eveでこのエージェントを選べるようにする</label>
               <p className={styles.boundary}>停止しても過去の仕事・成果は残ります。進行中の仕事を止める操作はEveで行います。</p>
               </>}
@@ -183,7 +185,7 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
             <div className={styles.actions}>
               {creating && creationStep > 0 && <button type="button" disabled={busy} onClick={() => { setCreationStep(step => Math.max(step - 1, 0) as 0 | 1 | 2); setError(''); }}>戻る</button>}
               {creating && creationStep < 2 ? <button type="button" className={styles.primary} disabled={busy || loading || signedOut} onClick={nextCreationStep}>次へ <ArrowRight size={16} /></button> : <button type="button" className={styles.primary} disabled={busy || loading || signedOut || (!dirty && !creating)} onClick={e => void save(e)}>{busy ? '保存しています…' : creating ? selected?.sourceTool ? 'Tool担当を保存' : 'エージェントを作成' : '設定を保存'}</button>}
-              {selected && !creating && !dirty && <Link href="/#timeline">smisで確認する <ArrowRight size={17}/></Link>}
+              {selected && !creating && !dirty && <Link href="/#timeline">Noahで確認する <ArrowRight size={17}/></Link>}
               {selected && !creating && !dirty && selected.enabled && <Link className={styles.eve} href={skyAgentEvePath(selected)}>Eveに依頼する <ArrowRight size={17} /></Link>}
               {dirty && <button type="button" disabled={busy} onClick={() => open(selected)}>変更を破棄</button>}
             </div>
@@ -193,5 +195,5 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
       </div>
       {ownerUserId && (creator ? <details className={styles.deviceDetails}><summary>Pixelなどの接続を確認する</summary><SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId}/></details> : <SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId} />)}
     </div>;
-  return embedded ? content : <WorkspaceShell title="自分のsmis">{content}</WorkspaceShell>;
+  return embedded ? content : <WorkspaceShell title="自分のNoah">{content}</WorkspaceShell>;
 }

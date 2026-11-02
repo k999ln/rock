@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Fingerprint, KeyRound, LockKeyhole, ShieldCheck } from 'lucide-react';
 import { requestExecutionAccessCheck } from './execution-access';
+import { eveToolPath } from '@/lib/eve-noah-navigation';
 
 type AccessState = 'checking' | 'ready' | 'setup' | 'signed-out' | 'unavailable';
 type AccessStatus = {
@@ -61,7 +62,7 @@ function message(error: unknown) {
   if (code.includes('COUNTER')) return 'このパスキーの安全性を確認できませんでした。復旧から新しいパスキーを登録してください。';
   if (code.includes('CHALLENGE')) return '確認の有効時間が切れました。もう一度パスキーを開いてください。';
   if (code.includes('USER_VERIFICATION')) return '端末のロック解除による本人確認が必要です。';
-  return 'Jenniferのパスキーを確認できませんでした。通信を確認して、もう一度お試しください。';
+  return 'Eveのパスキーを確認できませんでした。通信を確認して、もう一度お試しください。';
 }
 
 export function useJenniferAccess() {
@@ -88,7 +89,7 @@ export function useJenniferAccess() {
   return { state, recovery, portfolioAccess, error, setError, setState, refresh };
 }
 
-export function JenniferAccess({ access }: { access: ReturnType<typeof useJenniferAccess> }) {
+export function JenniferAccess({ access, returnPath = '/os/eve?mode=tools' }: { access: ReturnType<typeof useJenniferAccess>; returnPath?: string }) {
   const [busy, setBusy] = useState(false);
   const supported = typeof window !== 'undefined' && Boolean(window.PublicKeyCredential && navigator.credentials);
 
@@ -150,29 +151,31 @@ export function JenniferAccess({ access }: { access: ReturnType<typeof useJennif
   }
 
   if (access.state === 'ready') return null;
-  const returnTo = '/chat?setup=passkey';
+  const returnQuery = new URLSearchParams(returnPath.split('?')[1] ?? '');
+  returnQuery.set('setup', 'passkey');
+  const returnTo = eveToolPath(returnQuery);
   return <section className="jennifer-access" aria-labelledby="jennifer-access-title">
     <div className="jennifer-access-mark" aria-hidden="true"><Fingerprint /></div>
-    <p className="jennifer-access-kicker">JENNIFER · PRIVATE ACCESS</p>
-    <h1 id="jennifer-access-title">Jenniferを開く</h1>
+    <p className="jennifer-access-kicker">EVE · PRIVATE ACCESS</p>
+    <h1 id="jennifer-access-title">Eveを開く</h1>
     <p className="jennifer-access-lead">
-      プロジェクト、担当si、Zemaの証拠は本人の領域です。この端末のパスキーで開きます。
+      プロジェクト、担当si、Eveの仕事管理の証拠は本人の領域です。この端末のパスキーで開きます。
     </p>
     <div className="jennifer-access-points" aria-label="保護内容">
       <span><LockKeyhole size={16} /> パスワードを保存しない</span>
       <span><ShieldCheck size={16} /> 端末のロック解除で確認</span>
       <span><KeyRound size={16} /> 30日ごとに再確認</span>
     </div>
-      {access.state === 'checking' ? <output>この端末のJennifer Accessを確認しています…</output> : <>
+      {access.state === 'checking' ? <output>この端末のEve Accessを確認しています…</output> : <>
       {!supported && <p role="alert" className="jennifer-access-error">このブラウザはパスキーに対応していません。対応ブラウザで開いてください。</p>}
       {access.state !== 'setup' && <button className="jennifer-access-primary" type="button" disabled={busy || !supported} onClick={() => void authenticate()}>
         <Fingerprint size={19} /> {busy ? 'パスキーを確認中…' : 'パスキーで開く'}
       </button>}
       {access.state === 'setup' && <button className="jennifer-access-primary" type="button" disabled={busy || !supported} onClick={() => void register()}>
-        <KeyRound size={19} /> {busy ? 'パスキーを登録中…' : access.recovery ? '新しいパスキーへ置き換える' : 'この端末にJenniferを登録'}
+        <KeyRound size={19} /> {busy ? 'パスキーを登録中…' : access.recovery ? '新しいパスキーへ置き換える' : 'この端末にEveを登録'}
       </button>}
       {access.state === 'setup' && access.recovery && <p className="jennifer-access-recovery-warning">
-        復旧として新しいパスキーを登録します。登録が完了すると、紛失した端末を含む以前のJenniferパスキーとセッションはすべて失効します。
+        復旧として新しいパスキーを登録します。登録が完了すると、紛失した端末を含む以前のEveパスキーとセッションはすべて失効します。
       </p>}
       {access.error && <p role="alert" className="jennifer-access-error">{access.error}</p>}
       {access.state === 'signed-out' && <div className="jennifer-access-recovery">
@@ -182,7 +185,7 @@ export function JenniferAccess({ access }: { access: ReturnType<typeof useJennif
       </div>}
       {access.state === 'unavailable' && <button type="button" className="jennifer-access-secondary" onClick={() => void access.refresh()}>接続を再確認</button>}
     </>}
-    <small>Jenniferは確認なしに外部送信・公開・支払い・認証変更を実行しません。</small>
+    <small>Eveは確認なしに外部送信・公開・支払い・認証変更を実行しません。</small>
   </section>;
 }
 

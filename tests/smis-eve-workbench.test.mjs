@@ -7,6 +7,7 @@ import ts from 'typescript';
 import * as library from '../lib/sky-agent-library.ts';
 import * as providers from '../lib/llm-providers.ts';
 import * as connections from '../lib/sky-eve-connections.ts';
+import * as navigation from '../lib/eve-noah-navigation.ts';
 import { smisStorageFixtureTables } from './helpers/smis-storage-fixture.mjs';
 import { skyAgentLibraryStore } from '../lib/sky-agent-library-store.ts';
 const read = path => readFileSync(new URL('../'+path,import.meta.url),'utf8');
@@ -15,7 +16,7 @@ function harness(path,{initial={},params=new URLSearchParams(),fetcher=async()=>
  const jsx=(type,props)=>({type,props:props??{}});
  const react={useState(value){const index=cursor++;if(!(index in state))state[index]=index in initial?initial[index]:typeof value==='function'?value():value;return[state[index],next=>{state[index]=typeof next==='function'?next(state[index]):next;}];},useRef(value){return refs[refCursor++]??={current:value};},useCallback:fn=>fn,useSyncExternalStore:(_subscribe,get,server)=>liveSnapshots?get():server(),useEffect(fn){if(!(effectCursor in effects))effects[effectCursor]={fn,ran:false};effectCursor++;}};
  const location=new URL('https://fixture.test/os/eve?'+params.toString());
- const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false,querySelector:()=>null},window:{location,history:{replaceState(){}},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{...props,children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
+ const exports={};runInNewContext(ts.transpileModule(read(path),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,fetch:fetcher,crypto,URL,URLSearchParams,AbortController,Event,document:{hidden:false,querySelector:()=>null},window:{location,history:{replaceState(){},pushState(_state,_title,hash){location.hash=hash;}},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),dispatchEvent:event=>events.get(event.type)?.()},requestAnimationFrame:fn=>{frames.push(fn);return frames.length;},cancelAnimationFrame(){},require(name){if(name==='react')return react;if(name==='react/jsx-runtime')return{jsx,jsxs:jsx,Fragment:'fragment'};if(name==='next/link')return{default:'a'};if(name==='next/navigation')return{useSearchParams:()=>params};if(name==='@/lib/sky-eve-connections')return connections;if(name==='./sky-agent-eve-profile')return{default:'agent-profile',useSkyAgentProfileKey:()=>[params.get('agent'),params.get('agentRevision')].join(':'),useSkyAgentProfileRequested:()=>params.has('agent')||params.has('agentRevision')};if(name==='./sky-agent-library')return{default:'builder-panel'};if(name==='./workspace-shell')return{default:props=>jsx('workspace',{...props,children:props.children})};if(name==='lucide-react')return new Proxy({},{get:(_,key)=>String(key)});if(name==='@/lib/eve-noah-navigation')return navigation;if(name==='@/lib/sky-agent-library')return library;if(name==='@/lib/llm-providers')return providers;if(name.endsWith('.module.css'))return{default:new Proxy({},{get:(_,key)=>String(key)})};return{default:()=>null,SkyNotice:({message})=>jsx('output',{children:message})};}});
  function expand(node){if(Array.isArray(node))return node.flatMap(expand);if(!node||typeof node!=='object')return[node];if(node.props.hidden)return[];if(typeof node.type==='function')return expand(node.type(node.props));return[{...node,props:{...node.props,children:expand(node.props.children)}}];}
  return{navigateHash(value){location.hash=value;},render(props={}){cursor=refCursor=effectCursor=0;return expand(exports.default(props));},async effects(){for(const e of effects)if(!e.ran){e.ran=true;e.fn();}for(const fn of frames.splice(0))fn();await flush();}};
 }
@@ -44,7 +45,7 @@ void test('smis rejects mixed-owner response data and issues only reads on mount
 });
 void test('creation and work keep their state mounted; conversation precedes the composer',()=>{
  const eve=read('components/eve-sync-workspace.tsx');assert.ok(eve.indexOf('className={styles.messages}')<eve.indexOf('className={styles.composer}'));assert.ok(eve.indexOf('<textarea')<eve.indexOf('className={styles.executionSettings}'));
- assert.match(eve,/buildVisited\|\|workbenchMode==='build'/);assert.match(eve,/hidden=\{workbenchMode!=='work'\}/);assert.match(eve,/className=\{styles.executionSettings\}/);assert.match(eve,/hideAccountAccess/);assert.match(eve,/function choose\(id: string\) \{\s*setModeOverride\('work'\)/);assert.match(eve,/履歴を閉じる/);
+ assert.match(eve,/buildVisited\|\|workbenchMode==='build'/);assert.match(eve,/hidden=\{workbenchMode!=='work'\}/);assert.match(eve,/className=\{styles.executionSettings\}/);assert.match(eve,/hideAccountAccess/);assert.match(eve,/function choose\(id: string\) \{\s*setModeOverride\('work'\)/);assert.match(eve,/メニューを閉じる/);
  assert.match(read('components/sky-discovery-feed.tsx'),/standalone \? tools : tools\.slice/);
  assert.match(read('components/home-screen.tsx'),/personalFeed=\{<SmisAddedPosts/);
 });
@@ -87,4 +88,32 @@ void test('the conversation composer preserves typed text and cannot submit with
  input().props.onChange({target:{value:'自分の依頼'}});
  assert.equal(input().props.value,'自分の依頼');
  assert.equal(button(app.render(),'下書きを作る').props.disabled,true);
+});
+
+void test('Cloud and Tool result actions open the intended panel without dropping thread or selected agent',()=>{
+ const params=new URLSearchParams({thread:'12345678-1234-1234-1234-123456789012',agent:'saved-agent',agentRevision:'7'});
+ const app=harness('components/eve-sync-workspace.tsx',{params,liveSnapshots:true,initial:{20:true,29:'fixture-owner'}});
+ const before=params.toString();
+ app.navigateHash('#eve-work-results');
+ button(app.render(),'Cloudの仕事と成果').props.onClick();
+ let view=app.render();
+ assert.equal(nodes(view).find(n=>n.props.id==='eve-cloud-results')?.props.open,true);
+ assert.equal(params.toString(),before);
+ app.navigateHash('#eve-work-results');
+ button(app.render(),'Toolの仕事と成果').props.onClick();
+ view=app.render();
+ assert.equal(nodes(view).find(n=>n.props.id==='eve-tool-results')?.props.open,true);
+ assert.equal(params.toString(),before);
+});
+void test('incoming news is visible with its original link and survives the account return path',()=>{
+ const params=new URLSearchParams({newsSource:'https://example.com/story',sourceTitle:'選んだ記事',sourceSeenAt:'2026-11-02T08:00:00Z',sourceStale:'false'});
+ const app=harness('components/eve-sync-workspace.tsx',{params,liveSnapshots:true,initial:{20:false}});
+ const view=app.render();
+ const banner=nodes(view).find(n=>n.props.id==='eve-news-handoff');
+ assert.match(text(banner),/選んだ記事/);
+ assert.ok(nodes(view).some(n=>n.type==='a'&&n.props.href==='https://example.com/story'&&n.props.rel.includes('noopener')));
+ const account=nodes(view).find(n=>n.type==='a'&&n.props.href?.startsWith('/account?returnTo='));
+ const back=new URL(new URL(account.props.href,'https://fixture.test').searchParams.get('returnTo'),'https://fixture.test');
+ assert.equal(back.pathname,'/os/eve');
+ for(const [key,value] of params)assert.equal(back.searchParams.get(key),value);
 });

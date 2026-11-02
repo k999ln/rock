@@ -1109,3 +1109,21 @@ ROCKは描画とcleanupを担当。入力は時刻、ロゴ寸法、動きの設
 初回→読み込み→描画→終了の有限状態。画像失敗、contextなし、設定変更、非表示、pagehide、ロゴ除去、操作、6.8秒終了/8.5秒安全timeoutではRAF/timer/ResizeObserver/listenerを解除し、遅い画像完了も再開しない。動きを減らす場合と同sessionの再訪は描画しない。保存不能でもEveを妨げず終了可能。追加権限・費用・外部送信はない。
 
 合格条件は5件の制御時計/描画回帰、携帯幅で演出終了前に入力できること、画面幅超過なし、完了後のcanvas撤去、公開artifact読戻し。物理携帯のGPU/電池測定とは区別する。未知の機種性能は実測し、さらに必要ならpath数を調整する。native/実課金/一般ローンチgateは保持する。
+
+
+<a id="eve-noah-navigation"></a>
+## Eve・Noahの画面間引継ぎ（WEB04 / HOME01 / SKY21）
+
+2026-11-02の本人指示で監査R01〜R07を修正する。現行の主体はEveとNoahのみ。旧Jennifer/Sky/Zema/smisの内部識別子・API・保存形式は互換保持し、画面の第三の製品名には使わない。
+
+1. 目的: Noahで見つけた能力・記事をEveへ渡し、同じ仕事の成果と戻り先を見失わない。
+2. 利用体験: Noahのホーム／探して追加／ライブラリ／Tool一覧／端末・担当／接続を共通ナビでつなぐ。Eveにはメニューと常時見える仕事と成果・Tool・Noahへの入口を置く。
+3. 責任: ROCK/O5が画面・URL・focusを担当。EXTERNALは配信/認証、JOINTは実job/成果/共有、OWNERは権限・費用・実参加の承認。認証と実行許可は変更しない。
+4. 入力: Tool/thread/package/workJob等の既存query、選択担当とmodel pin、newsSource/title/seenAt/stale、同一originのreturnTo。URLは表示・選択の情報であり権限ではない。
+5. 出力: Toolは既存 /os/eve?mode=tools を正規入口とする。旧 /chat は全queryを保持して転送。本人確認前にも選択Toolと理由・Noahへ戻るリンクを表示し、パスキー設定の復帰URLにも選択を保持する。
+6. 状態: 成果一覧 #eve-work-results、Cloud #eve-cloud-results、Tool #eve-tool-results、資料 #eve-news-work を区別。指定欄を展開してfocus/scrollし、同じ会話・選択担当のqueryを維持。管理の成果リンクは成果一覧へ直接進む。
+7. 保存: 新たなDB・権限・課金・モデル実行は追加しない。既存owner別保存・revision・未送信入力の離脱確認・一時handoffを保持する。URL選択を保存成功と表示しない。
+8. 失敗: 接続不能・暗号化設定なし・未認証では既存の停止状態を維持。未確認Tool、危険な記事URL、外部/再帰returnToは安全な案内へ戻す。元記事の外部リンクは資格情報なしHTTPSに限定する。
+9. 復旧: アカウントの既定はNoah。設定・接続・Eve由来は安全なreturnToと行き先に合う文言を使う。公開問題は直前の同Site保存版へ戻し、保存済みの仕事や認証を削除しない。
+10. 承認: 記事の受取とTool選択だけで推論・投稿・外部送信を始めない。本人確認・資料保存・実行・費用の既存承認を維持。
+11. 合格条件: 旧Tool入口のTool/thread保持と認証継続、Cloud/Tool成果の展開と同会話保持、管理成果への直行、設定/Noahの正しい戻り、ニュースの初期表示/原文/復帰、Noah内の一貫したナビ、390pxのメニューと成果入口を同じ配備artifactで確認。実行/保存/共有の一周は別受入。未決定のストア全体再構成や実機対応をこの導線修正で完成扱いしない。

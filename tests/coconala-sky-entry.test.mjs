@@ -14,7 +14,7 @@ void test('Sky exposes one Coconala Tool with both the order workflow and pre-ap
 
   const sky = source('components/sky-workspace.tsx');
   assert.match(sky, /queueSkyZemaHandoff\(tool\.id, request\)/);
-  assert.match(sky, /`\/chat\?tool=\$\{encodeURIComponent\(tool\.id\)\}/);
+  assert.match(sky, /`\/os\/eve\?mode=tools&tool=\$\{encodeURIComponent\(tool\.id\)\}/);
 
   const toolPage = source('components/sky-tool-workspace.tsx');
   assert.match(toolPage, /if \(workspace && toolId === 'coconala'\) return <CoconalaTeamWorkspace workspace=\{workspace\}/);

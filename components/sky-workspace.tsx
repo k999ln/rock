@@ -10,6 +10,7 @@ import {
   type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
+import NoahNavigation from './noah-navigation';
 import SkyCodeTimeline from '@/components/sky-code-timeline';
 import SkyToolOverview from '@/components/sky-tool-overview';
 import { skyToolUiState, type SkyToolUiContext } from '@/lib/sky-tool-ui';
@@ -221,7 +222,7 @@ function actionLabel(
   if (tool.runner === 'delivery-local')
     return pcConnected ? '納品確認を開く' : 'PCを接続';
   if (tool.launchPath) return '今すぐ使う';
-  if (connectedTools.includes(tool.id)) return 'Zemaで依頼';
+  if (connectedTools.includes(tool.id)) return 'Eveの仕事管理で依頼';
   return '接続して使う';
 }
 
@@ -735,7 +736,7 @@ export default function SkyWorkspace({
     }
     setSelected(null);
     router.push(
-      `/chat?tool=${encodeURIComponent(tool.id)}&thread=${encodeURIComponent(threadId)}`,
+      `/os/eve?mode=tools&tool=${encodeURIComponent(tool.id)}&thread=${encodeURIComponent(threadId)}`,
     );
   }
 
@@ -812,7 +813,7 @@ export default function SkyWorkspace({
     setRoutedTool(tool);
     setRouteMessage(
       tool.id === 'rockstar-amc'
-        ? 'AMCをZemaで開きます。Goalと意図の確認後に計画を保存できます。si実作業は開始しません。'
+        ? 'AMCをEveの仕事管理で開きます。Goalと意図の確認後に計画を保存できます。si実作業は開始しません。'
         : `${roleFor(tool)}が進めます。専用画面を開いて、入力・実行・結果確認を行えます。`,
     );
   }
@@ -849,9 +850,10 @@ export default function SkyWorkspace({
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
+      <NoahNavigation active="tools" />
       {campusId && (
         <section aria-label="大学別Noah" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
-          <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>SKY · {CAMPUSES[campusId].name.toUpperCase()}</p>
+          <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>NOAH · {CAMPUSES[campusId].name.toUpperCase()}</p>
           <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Noah</h2>
           <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
           <nav aria-label="大学別Noahの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
@@ -859,7 +861,7 @@ export default function SkyWorkspace({
             <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
             <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
             <Link href="/sky/network" style={{color: 'white'}}>接続を管理</Link>
-            <Link href="/chat" style={{color: 'white'}}>Jenniferに相談</Link>
+            <Link href="/os/eve" style={{color: 'white'}}>Eveに相談</Link>
           </nav>
         </section>
       )}
@@ -1297,7 +1299,7 @@ export default function SkyWorkspace({
             </div>
           </div>
           <DialogDescription className="rock-dialog-description">
-            表示、詳細、保存、接続、実行の選択から、それぞれの行動確率を学習します。依頼文、Zemaの会話、成果本文、端末IDは保存しません。
+            表示、詳細、保存、接続、実行の選択から、それぞれの行動確率を学習します。依頼文、Eveの仕事管理の会話、成果本文、端末IDは保存しません。
           </DialogDescription>
           <div className="sky-learning-status" aria-live="polite">
             <div>
@@ -1320,7 +1322,7 @@ export default function SkyWorkspace({
             </div>
           </div>
           <p className="sky-learning-boundary">
-            ランキングだけを変えます。Toolの実行許可、課金、購入、ZemaのJobは作りません。
+            ランキングだけを変えます。Toolの実行許可、課金、購入、Eveの仕事管理のJobは作りません。
           </p>
           <div className="sky-learning-actions">
             <button
@@ -1446,7 +1448,7 @@ export default function SkyWorkspace({
                   )}
                   <div className="sky-candidate-state">
                     Noahへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
-                    <span>依頼はZemaへ引き継ぐ</span>
+                    <span>依頼はEveの仕事管理へ引き継ぐ</span>
                   </div>
                   {needsSignin ? (
                     <ExecutionSignin />

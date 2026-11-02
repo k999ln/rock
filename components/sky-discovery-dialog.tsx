@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useRef,type ReactNode} from 'react';
 import styles from './sky-discovery-dialog.module.css';
+import NoahNavigation from './noah-navigation';
 export default function SkyDiscoveryDialog({open,mode,onModeChange,onClose,children}:{open:boolean;mode:'discover'|'manage';onModeChange:(mode:'discover'|'manage')=>void;onClose:()=>void;children:ReactNode}){
  const dialog=useRef<HTMLDialogElement>(null);
  useEffect(()=>{const node=dialog.current;if(!node)return;if(open&&!node.open)node.showModal();else if(!open&&node.open)node.close();},[open]);
@@ -11,5 +12,5 @@ export default function SkyDiscoveryDialog({open,mode,onModeChange,onClose,child
   <button id="sky-add-tab" type="button" role="tab" tabIndex={mode==='discover'?0:-1} aria-selected={mode==='discover'} aria-controls="sky-add-panel" onClick={()=>onModeChange('discover')}>探して追加</button>
   <button id="sky-manage-tab" type="button" role="tab" tabIndex={mode==='manage'?0:-1} aria-selected={mode==='manage'} aria-controls="sky-manage-panel" onClick={()=>onModeChange('manage')}>追加済み・設定</button>
  </div>
- <div className={styles.body}>{children}</div></dialog>;
+ <div className={styles.body}>{mode==='discover'&&<NoahNavigation active="discover" />}{children}</div></dialog>;
 }

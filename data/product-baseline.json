@@ -3134,5 +3134,16 @@
     ],
     "design": "docs/rockstaros-complete-design.md#smis-eve-workbench",
     "evidence": "docs/evidence/eve-smis-execution-loop.json"
+  },
+  "eveNoahUiNavigation": {
+    "date": "2026-11-02",
+    "source": "owner requested all seven audited navigation fixes; only Eve and Noah are current",
+    "products": [
+      "Eve",
+      "Noah"
+    ],
+    "contract": "docs/rockstaros-complete-design.md#eve-noah-navigation",
+    "requirementsChanged": false,
+    "authAndExecutionGatesPreserved": true
   }
 }

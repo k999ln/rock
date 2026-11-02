@@ -189,3 +189,5 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [削除台帳](../data/archived-paths.json)と[復元手順](git-consolidation.md) — 役目を終えた旧仕様・重複文書・作業ログは現行ツリーへ再掲せずGit履歴から読む。
 
 新しい情報は該当する正本・workstreamへ統合する。不要な重複分冊や日付付き入口を増やさず、移動・削除では参照・索引・検査・復元commitを同時更新する。
+
+- 記録: [Eve・Noahの導線修正](evidence/eve-noah-navigation-repair.json)。R01〜R07と公開受入の境界。

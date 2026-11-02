@@ -193,7 +193,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.doesNotMatch(sky, /href="\/csv"/);
   assert.match(catalog, /id: 'rockstar-csv-cleanup'/);
   assert.match(routing, /label: 'CSV自動化役'/);
-  assert.match(chat, /href="\/chat\?view=work"/);
+  assert.match(chat, /href="\/os\/eve\?mode=tools&view=work"/);
   assert.match(
     chat,
     /<Workbench embedded cloudDraft=\{cloudWorkDraft\} initialPackageKey=\{preferredPackage\} packageRuntimeServers=\{mcpServers\} \/>/,
@@ -201,8 +201,8 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(chat, /<ChatLiveProgress/);
   assert.match(chat, /<h1>Eve<\/h1>/);
   assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);
-  assert.match(chat, /Zemaが実行を管理/);
-  assert.match(chat, /Zemaの実行計画を開く/);
+  assert.match(chat, /Eveの仕事と成果/);
+  assert.match(chat, /Eveの仕事管理の実行計画を開く/);
   assert.match(chat, /useSkyChatSession\(/);
   const chatSession = readFileSync(
     resolve(root, 'components/use-sky-chat-session.ts'),
@@ -215,7 +215,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(chat, /SKY_ZEMA_JOB_EVENT/);
   assert.match(chat, /className="sky-chat-launch-tool"/);
   assert.match(sky, /queueSkyZemaHandoff\(tool\.id, request\)/);
-  assert.match(sky, /Zemaへ引き継ぐ/);
+  assert.match(sky, /Eveの仕事管理へ引き継ぐ/);
   assert.match(chat, /setInterval\(refresh, hasActiveJob \? 3_000 : 15_000\)/);
   assert.match(chat, /setInterval\(refresh, 30_000\)/);
   const liveProgress = readFileSync(
@@ -262,7 +262,7 @@ void test('Zema keeps the composer in view and explains a selected candidate bef
     /const \[allBotsOpen, setAllBotsOpen\] = useState\(false\)/,
   );
   assert.match(chat, /ツールと会話を検索/);
-  assert.match(chat, /AVOKADO \/ JENNIFER/);
+  assert.match(chat, /AVOKADO \/ EVE/);
   assert.match(chat, /jennifer-project-list/);
   assert.match(chat, /jennifer-flow-card/);
 });

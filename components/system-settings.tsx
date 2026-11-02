@@ -182,7 +182,7 @@ export default function SystemSettings() {
               />
             ) : (
               <SettingLink
-                href="/account"
+                href="/account?returnTo=%2Fsettings"
                 icon={<UserRound />}
                 tone="orange"
                 title="アカウントを確認"

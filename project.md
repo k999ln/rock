@@ -1,3 +1,7 @@
+## 2026-11-02 — EveとNoahの7件の導線修正（WEB04/HOME01/SKY21・O5・ROCK）
+
+公開v139/edfc0c4から独立sourceでR01〜R07を修正。旧/chatの互換転送と認証文脈、Cloud成果展開、管理成果URL、account return、ニュース受取、Noah機能ナビ、mobileメニューを統一。認証・既存保存・実行承認は保持。型検査/対象試験/全verifyと公開後実UIを確認する。実仕事・実参加/共有・native受入は別。
+
 ## 2026-11-02 — 起動演出の非ブロッキング化（WEB04/HOME01、ROCK）
 
 公開v138/source f18bc82から開始。全画面の待機overlayを既存ヘッダーロゴ内の装飾へ変更し、光の立体運動・残像→虹色原本の線を保持。描画量・再走査・終了cleanupを削減する。Eve mount/入力/権限/予算/実行は独立。IABの390/320pxで演出中の入力、タップ、成果往復の入力保持、390pxで接続・設定を操作確認。全体verify exit0（2637件、2636pass/1skip/0fail）。公開は次工程。物理携帯のGPU/発熱/電池は未測定。GitHub main照会7bbb4b27、Sites配信用sourceと分離しmain統合は未実施。

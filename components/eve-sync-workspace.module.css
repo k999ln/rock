@@ -187,3 +187,8 @@
  .composer textarea{min-height:76px;font-size:16px}
  .composer footer>span{flex-basis:100%}
 }
+
+/* Eve/Noah handoff: the destination and next action stay visible at narrow widths. */
+.handoffNotice{border:1px solid var(--line,#dedede);border-radius:12px;padding:18px;margin:0 0 20px;background:var(--os-shell-panel,#fff);scroll-margin-top:100px;overflow-wrap:anywhere}
+.handoffNotice h2{font-size:18px;line-height:1.5;margin:0 0 8px}.handoffNotice p{font-size:14px;line-height:1.7;margin:8px 0}.handoffNotice nav,.quickNavigation,.noahNavigation{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}.handoffNotice nav a,.handoffNotice nav button,.quickNavigation a,.noahNavigation a{display:inline-flex;align-items:center;min-height:44px;font-size:14px;text-decoration:underline;text-underline-offset:4px;color:inherit}.quickNavigation{margin:0 0 16px}.noahNavigation{padding:12px 16px;border-bottom:1px solid var(--line,#dedede);margin-bottom:16px}.noahNavigation a[aria-current=page]{font-weight:700;text-decoration-thickness:2px}.extraWork>details[id]{scroll-margin-top:100px}.handoffNotice:focus-visible,.extraWork>details[id]:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+@media(max-width:720px){.handoffNotice{padding:14px}.quickNavigation{gap:6px 14px}.quickNavigation a{font-size:13px}.noahNavigation{gap:4px 14px}}

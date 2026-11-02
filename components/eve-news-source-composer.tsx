@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { newsSourceNavigation } from '@/lib/eve-noah-navigation';
 import { prepareNewsSourceNote } from '@/lib/eve-news-source-note';
 import styles from './sky-commerce.module.css';
 const subscribeLocation=()=>()=>{};
@@ -11,10 +12,12 @@ export default function EveNewsSourceComposer({disabled,onPrepare,append=false}:
  const url=editedUrl??(q.get('newsSource')??''),title=append?'追加資料':editedTitle??(q.get('sourceTitle')??'').slice(0,240);
  const [excerpt,setExcerpt]=useState(''),[rights,setRights]=useState(''),[published,setPublished]=useState(''),[sourceType,setSourceType]=useState('licensed_reporting');
  const seenAt=editedUrl===null?(q.get('sourceSeenAt')??''):'',stale=editedUrl===null&&q.get('sourceStale')==='true';
+ const original=newsSourceNavigation(new URLSearchParams({newsSource:url}).toString());
  const [working,setWorking]=useState(false),[error,setError]=useState('');
  async function prepare(){setWorking(true);setError('');try{const value=await prepareNewsSourceNote({url,title,excerpt,rights,publishedAt:published,sourceType,seenAt,stale},crypto.randomUUID());if(alive.current)onPrepare(value);}catch{if(alive.current)setError('URL・見出し・本文範囲・利用権・UTC日時を確認してください。');}finally{if(alive.current)setWorking(false);}}
  return <details className={styles.purchaseConditions} open={open??q.has('newsSource')} onToggle={e=>setOpen(e.currentTarget.open)}><summary>{append?'同じ仕事へ追加する資料を入力':'出典リンクから資料メモを作る'}</summary><div className={styles.offerForm}>
   <p>原文を開き、保存・要約・引用できる範囲を本人が入力します。リンクの検出だけでは本文・発行時刻・利用権・真偽は確認できません。ここではモデルを呼び出しません。</p>
+  {original&&<p><a href={original.href} target="_blank" rel="noopener noreferrer nofollow" referrerPolicy="no-referrer">資料の原文を開く</a></p>}
   <label>出典のHTTPS URL<input value={url} maxLength={2048} disabled={disabled||working} onChange={e=>{setUrl(e.target.value);setRights('');}}/></label>
   {!append&&<label>資料メモの見出し<input value={title} maxLength={240} disabled={disabled||working} onChange={e=>setTitle(e.target.value)}/></label>}
   {seenAt&&<p>引継ぎのGDELT検出時刻（未照合）: {seenAt}{stale?' · 前回取得分':''}。記事の発行時刻とは別です。</p>}

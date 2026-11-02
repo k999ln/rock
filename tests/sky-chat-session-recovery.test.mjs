@@ -72,6 +72,8 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       createJenniferExecutionGoal: noop,
       createJenniferTaskJobCoordination: noop,
     },
+    './eve-tool-handoff': {default:'ToolHandoff'},
+    '@/lib/eve-noah-navigation': {},
     '@/components/ui/textarea': { Textarea: 'textarea' },
     '@/components/ui/dialog': { Dialog: 'Dialog', DialogContent: 'DialogContent', DialogTitle: 'DialogTitle', DialogDescription: 'DialogDescription' },
   };
@@ -108,7 +110,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       defaultPrevented: false, propagationStopped: false,
       preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.propagationStopped = true; } };
     // Real React capture runs before the Link's own click handler.
-    nodes(tree).find((x) => x.props?.title === 'Jennifer').props.onClickCapture(event);
+    nodes(tree).find((x) => x.props?.title === 'Eve').props.onClickCapture(event);
     if (!event.propagationStopped) n.props.onClick?.(event);
     if (n.type === 'a' && !event.defaultPrevented && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) routes.push(n.props.href);
     render(); await flush();
@@ -124,7 +126,7 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
       const event = { target: new FixtureElement({ href, ...options }), button: 0,
         defaultPrevented: false, propagationStopped: false,
         preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.propagationStopped = true; } };
-      nodes(tree).find((x) => x.props?.title === 'Jennifer').props.onClickCapture(event);
+      nodes(tree).find((x) => x.props?.title === 'Eve').props.onClickCapture(event);
       render(); await flush(); return event;
     },
     unmount() { mounted = false; slots.forEach((slot) => slot?.cleanup?.()); },
@@ -182,7 +184,7 @@ void test('dirty AMC blocks mode reset until explicit discard and keeps the save
   await h.choose('mr-citations'); assert.ok(h.text().includes('AMCに未保存の入力があります')); assert.equal(h.routes.length, 0);
   await h.click('入力を続ける'); assert.ok(h.nodes().find((n) => n.type === 'AMC'));
   await h.choose('mr-citations'); await h.click('未保存の入力を破棄して進む');
-  assert.equal(h.routes.at(-1), '/chat?tool=mr-citations'); assert.equal(h.nodes().filter((n) => n.type === 'AMC').length, 0); assert.equal(h.stored()[0].id, id);
+  assert.equal(h.routes.at(-1), '/os/eve?mode=tools&tool=mr-citations'); assert.equal(h.nodes().filter((n) => n.type === 'AMC').length, 0); assert.equal(h.stored()[0].id, id);
 });
 
 void test('mode reset aborts the active conversation and ignores its late answer', async () => {
@@ -327,7 +329,7 @@ void test('new-chat discard resets the current session after real capture and bu
   assert.equal(h.nodes().find((n) => n.type === 'textarea').props.value, '');
   assert.ok(!h.nodes().some((n) => n.type === 'AMC'));
   assert.ok(!h.conversation().includes('Synthetic retained brief'));
-  assert.equal(h.routes.at(-1), '/chat');
+  assert.equal(h.routes.at(-1), '/os/eve?mode=tools');
   assert.equal(h.stored()[0].id, id);
 });
 
