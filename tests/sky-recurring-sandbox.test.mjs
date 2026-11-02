@@ -5,7 +5,9 @@ import {createHmac} from 'node:crypto';
 import {openMonthlySandboxDatabase} from '../scripts/sky-monthly-sandbox-db.mjs';
 import {seedMonthlyCloudFixture} from '../scripts/sky-cloud-monthly-fixture.mjs';
 import {skyRecurringSandbox,RECURRING_TEST_CONSENT,nextRecurringMonth} from '../lib/sky-recurring-sandbox.ts';
-const start=Date.UTC(2026,9,1),end=nextRecurringMonth(start);
+// Keep synthetic contracts ahead of the SQL wall clock; production expiry remains enforced.
+const wall=new Date();
+const start=Date.UTC(wall.getUTCFullYear(),wall.getUTCMonth()+1,1),end=nextRecurringMonth(start);
 const env={SKY_CLOUD_MONTHLY_MODE:'stripe-test',SKY_MONTHLY_STRIPE_KEY:'sk_test_fixture',SKY_MONTHLY_STRIPE_ACCOUNT:'acct_fixture',SKY_MONTHLY_STRIPE_WEBHOOK_SECRET:'whsec_fixture'};
 function provider(){const invoices=new Map(),items=new Map(),keys=new Map();let failRead=false;let count=0;const calls=[];
  const client={accounts:{retrieve:async()=>{if(failRead)throw Error('offline');return {id:'acct_fixture'};}},customers:{retrieve:async id=>({id,livemode:false})},paymentMethods:{retrieve:async id=>({id,livemode:false,customer:'cus_fixture'})},invoices:{
@@ -158,4 +160,16 @@ void test('persisted waiting job stops at cap and unpaid, resumes after paid ren
  const invoices=await service.charges(c.id);assert.equal(invoices.length,2);assert.equal(new Set(invoices.map(x=>x.invoice_id)).size,2);assert.ok(invoices.every(x=>x.status==='paid'));assert.equal(invoices[0].invoice_id,invoice);
  assert.equal((await skyRecurringUsage(db,'owner',await hosted.refresh('owner'))).reason,'available');assert.equal(sends,2);
  assert.equal(db.sqlite.prepare("SELECT old_contract_json FROM sky_hosted_monthly_tests WHERE owner_id='owner'").get().old_contract_json,'{"preserved":true}');
+});
+
+void test('expired synthetic rate is refused by the SQL wall clock even with a backdated caller clock',async t=>{
+ const {service,db}=await setup(t);await service.tick(start+1);
+ const past=Date.UTC(wall.getUTCFullYear(),wall.getUTCMonth()-1,1);
+ // Use a separately enrolled historical contract so reservation itself is eligible.
+ const providerFixture=provider();const historical=skyRecurringSandbox(db,env,providerFixture.client);
+ await historical.enroll('past-owner','cus_fixture','pm_good',past,RECURRING_TEST_CONSENT);
+ await historical.tick(past+1);
+ const q=await seedMonthlyCloudFixture(db,'past-owner',{now:past+1,stage:'sending'});
+ assert.equal(await q.store.claimProviderSend('past-owner',q.id,past+2),false);
+ assert.equal(db.sqlite.prepare('SELECT COUNT(*) n FROM remote_ai_text_send_claims WHERE execution_id=?').get(q.id).n,0);
 });

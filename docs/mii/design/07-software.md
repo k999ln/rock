@@ -75,6 +75,8 @@ world.quality  // 09 章: 本数で変わる。ゲームは quality を見て機
 
 ## 5. RockstarOS との接点
 
+[声・指先の限定入力実装](../../avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit)は同じ仕事の依頼内容を確認・CAS保存・読戻しする。既存CameraSessionを使う2D pointerであり、下記SpatialFrameやspatialdの実装・校正・offline保存の証明ではない。
+
 | 機能 | どこ |
 | --- | --- |
 | 本人認識（顔→account） | viewer-service が顔埋め込みを出し、rockstaros runtime の identity が照合。生画像は出さない |

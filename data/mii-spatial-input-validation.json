@@ -1,0 +1,104 @@
+{
+  "date": "2026-11-01",
+  "taskId": "MINI01",
+  "primarySquad": "M1",
+  "baseMain": "06f29961464cfed0b2e63b4e034272d05726fdff",
+  "authority": "docs/avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit",
+  "validation": "data/mii-spatial-input-validation.json",
+  "status": "github_saved_pr311_ci_pending",
+  "scope": "WorkJob objective only; local speech capability and 2D fingertip adapters; CAS/event readback",
+  "physicalAccepted": false,
+  "mainIntegrated": false,
+  "sourceHashes": {
+    "components/mii-spatial-editor.tsx": "a410fa72942b92be159b8446a305fc33dc922210e16c198669f4d715dea3d361",
+    "components/mii-work-preview.tsx": "6ed5fa7c3a147212129258a0a86e46915ce8d2ea79b288ec3a6a60c688544ba9",
+    "lib/mii-local-speech.ts": "58f7a45509fe63d5e957f6d588b75531081c35c5a6f6bbe2b054a1be93e63591",
+    "lib/mii-plan-edit.ts": "3a839e207fa7a4580c81e509b8b98dd6d71bce42a4365b2e1829f972a8612e9c",
+    "lib/mii-spatial-input.ts": "82c79b419a3e895e0079647df92ec830b0c9c37646b28207fbe4245555ae1886",
+    "lib/workflow.ts": "9f36f3b2025c33347aa0be3e1b721c96bbb66de25f6449c67bfaddf98c920d5b",
+    "scripts/prepare-mii-input.mjs": "4366c68c2e504e51a1c1e95e2e328c305afd0683f116c780643dbc461e3366ac",
+    "systems/rock-star-os/targets/avocado-mini/gesture/camera-session.d.mts": "da79280ed8bba9130c3a8d0fe6244979b1dbf7ffded6e93ff663e37c6b433bfa",
+    "tests/eve-smith-mii-browser.test.mjs": "af1d0f89924199475412aded8398a9e94ad6ee2dcccd4889a7cdc385ebfaa49d",
+    "tests/mii-spatial-input.test.mjs": "f6ddddb167011192646372adfb93a56443183f6c8c011fd2b9c07a7fab0fe47f",
+    "tests/mii-work-preview-ui.test.mjs": "21aedfefa87287dae55c975fe2e95b74c09667afbf17f56cb22f4c1d11eda8cf",
+    "tests/mii-worker-shared-d1.test.mjs": "274cf20bc6bc09e2351cba719d722b34d324ec3a0a147e48bbab3b7241b4b623",
+    "tests/mii-worker-signed-browser.test.mjs": "42757a5f2aee7650330e05e92fd81d2b1eafc37350eda5518201a8d2d9256da8",
+    "tests/sky-recurring-sandbox.test.mjs": "38923a5250b732bebabdb72acf38570ef5fdb2827e152e530b3f0b34446b24f4",
+    "tests/work-plan-route.test.mjs": "0676231ec87beb6845f99bf14d1ead66b38dadd29d062b3b6edff02840941ba4"
+  },
+  "tests": [
+    {
+      "command": "node --experimental-strip-types --test tests/mii-spatial-input.test.mjs tests/work-plan-route.test.mjs tests/sky-recurring-sandbox.test.mjs",
+      "result": "PASS 42/42; deterministic input and real owner/CAS route; no paid send",
+      "logSha256": "0d0812f7871ee5c526d7ec285b7faff6464defa8b5e555b070b5493e1586411e"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/mii-work-preview-ui.test.mjs tests/mii-work-adapter.test.mjs tests/avocado-mini-gesture.test.mjs",
+      "result": "PASS 74/74",
+      "logSha256": "982f634b733dd2942159a65f5bd4fa743d245b2f83fe62a0abb43db317af285e"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/eve-smith-mii-browser.test.mjs",
+      "result": "PASS 2/2; real isolated Chrome/SQLite/Connector; synthetic hand/voice inputs",
+      "logSha256": "b19374550548b29c7ec228733556388d5c62f492d3868a75a9f0c2504f34533d"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/mii-worker-shared-d1.test.mjs tests/mii-worker-signed-browser.test.mjs",
+      "result": "PASS 5/5 after UTF-8 fixture fix",
+      "logSha256": "e10857c092326ddf02311dddbbf75adfe4adfe4e02535275b21a260c485722dd"
+    },
+    {
+      "command": "Existing pinned gesture npm ci/install-model then node scripts/prepare-mii-input.mjs",
+      "result": "PASS; model SHA verified, 7819105 bytes; camera remained off. Generated runtime moved outside public after preparation test.",
+      "logSha256": "d230e5df771bd2d606a93567ac7d42d08e1014336c3a656e9b9427bce10acabc"
+    },
+    {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "result": "PASS exit0; Node 3597 total, 3593 pass, 0 fail, 4 skip; build, asset closure, API 1678 assertions, CSV storage, mission/work/bot passed",
+      "logSha256": "b1472a8a0bc205123f5cd1996836068c893a8508d2dbf77b7ecf674d928ca24a"
+    }
+  ],
+  "physicalCameraTested": false,
+  "physicalSpeechTested": false,
+  "opticalAccepted": false,
+  "inference": "Browser UI tests inject ASR and hand observations; no external model or paid calls. Pinned vision model preparation verified separately.",
+  "limitations": [
+    "Only WorkJob objective is editable; not website/photos/CAD",
+    "Requires reachable existing owner-scoped storage API; offline editing is not implemented",
+    "Local Japanese ASR availability depends on browser and installed language pack",
+    "Camera assets are explicitly prepared locally; model/WASM not in Git",
+    "No 3D calibration, hand identity or complete occlusion detection",
+    "MR01..04 subset only; MR05..08 not implemented"
+  ],
+  "remoteCiVerified": false,
+  "failureHistory": [
+    {
+      "scope": "Previous design-only full verify",
+      "failure": "Fixed October 2026 monthly fixture expired against SQL wall clock. Fixture now starts next UTC month; added backdated-expiry refusal. Production expiry/auth/price unchanged."
+    },
+    {
+      "scope": "Initial local source checks",
+      "failure": "React compiler clock/capture lint and new component VM import stub needed correction; fixed without rule suppression."
+    },
+    {
+      "scope": "First full verify",
+      "failure": "3597 total, 3588 pass, 5 fail, 4 skip: two isolated dependency installation failures; three browser fixture script charset failures. Installed lockfile dependencies independently and specified UTF-8 with browser error diagnostics. No test/assertion removed.",
+      "logSha256": "083b73d1f541d04c2b365b9248729c1ec33c99b17202f7efa4b1d7fde4c72456"
+    },
+    {
+      "scope": "Failure triage",
+      "failure": "After dependency installation, browser fixtures reproduced Invalid regular expression with unspecified charset. Same cases passed after UTF-8 fix.",
+      "logSha256": "8ddf027cc42f9ef4701fb34600c187e27da48d35ee237db20fd379b104f059b6"
+    }
+  ],
+  "independentReview": {
+    "thread": "codex://threads/01a16c23-d327-7401-b994-05796b175cce",
+    "result": "PASS_SCOPED; no required fixes; independent focal 42/42 then 24/24; final fixed hash comparison remains with Git owner",
+    "physicalAcceptance": false,
+    "finalHashComparison": "PASS: frozen 33/33 source and handoff files matched; all preliminary/addendum source hashes matched final version",
+    "manifestSha256": "b803772c9b4fe5048ec57eff568da106f7032e5ad3c34a4dd295384d0e3e4d18"
+  },
+  "next": "Git owner: verify fixed manifest and source hashes, PR/HEAD CI, merge to main, verify same merge SHA CI. Preserve standalone intent and all four display requirements; physical input/optics remain unaccepted.",
+  "pullRequest": "https://github.com/k999ln/rock/pull/311",
+  "sourceCommit": "14474ce3450d91c860d44c10e1d3d91e2c74800e"
+}

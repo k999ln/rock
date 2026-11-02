@@ -50,6 +50,8 @@ native OSは、署名済みimage・exact SKU・boot/保存/復旧が受け入れ
 
 ## avocadoMini
 
+[声・指先による依頼内容の修正・保存・再開](../avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit)を追加。対象は同じ本人のWorkJob依頼内容。単体利用と表示4条件を維持し、新しい物理受入はない。
+
 2026-10-25の本人指示で、Miniのカメラ追跡・ジェスチャー入力を追加する。最初は手指の選択/移動/回転/停止を端末内で推定し、VIEW_ONLY候補として扱う。Eveの好み予測、本人の明示feedback、Smithの操作許可を分ける。単眼の画面座標を精密3D/全空間追跡の合格にせず、旧四方向契約や物理/金融承認を迂回しない。Mini単体と表示4条件を維持する。 [カメラ入力契約](../../systems/rock-star-os/targets/avocado-mini/gesture/README.md)。
 
 

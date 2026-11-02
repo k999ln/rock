@@ -64,3 +64,7 @@ __pycache__/
 
 # Local replay diagnostics are regenerated and never belong in source history.
 replay_pid*.log
+
+# Locally prepared, pinned camera runtime (regenerate via scripts/prepare-mii-input.mjs)
+/public/mii-input-runtime/
+/public/.mii-input-*/

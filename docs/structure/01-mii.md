@@ -67,6 +67,8 @@ Hub は見えない場所（分電盤脇・天井裏・家具内）に1台、**�
 
 ## 5. ソフト側の接点（RockstarOS から見た mii）
 
+2026-11-01の本人指示による[声・指先による依頼内容の修正・保存・再開](../avocado-mini-r5/spatial-computer-use-design.md#voice-point-edit)は既存WorkJobへ接続する限定ソフト試用。単体利用と表示4条件を保持し、Spatial Core/Hubの回路や光学を変更せず、2Dの指先選択を実空間の受入へ換算しない。
+
 | 機能 | 置き場所 | 現行コード |
 | --- | --- | --- |
 | hardware profile `mii` | systems/rock-star-os/targets/mii（旧 avocado-mini） | targets/avocado-mini |
