@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-10-31T05:30:57Z",
+  "observedAt": "2026-11-02T08:08:19Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -9,13 +9,13 @@
     "assetsBinding": "ASSETS",
     "assetsRunWorkerFirst": true
   },
-  "sourceCommit": "737be0a7d40e2b95c46b03651780b0ab4570aa13",
+  "sourceCommit": "74c80300a76bfde81ca1ce9bb04f71e86585f7a7",
   "sourceDirty": false,
   "measurement": {
     "nodeVersion": "v26.12.1",
     "packageLockSha256": "c59beca7b71bd505c660a3a777bf9c07c4a201673a1c2e592a04c2cf19ebf29d",
-    "rawResultSha256": "8590e7c30e1f987a643845d4f859d0db70e234cee66de04eb02f67cd9489def8",
-    "builtApplicationSha256": "a6d505a3d852e0a4cf826b761dd974ee82a15783ee10187437263aab7a9f0f36",
+    "rawResultSha256": "6f5203c88d47640e37b38f65f50470cae64ca7b33b8c819b9b0151123d6fb99e",
+    "builtApplicationSha256": "0a51c5ed89fc316e9eba738ec902419f16bc226d198371c5fca6cf33ca2e8f88",
     "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
     "outerRouterSha256": "a0c2e25f736ecc7faa44b4eeb377e06adbd9c94063a6078792bc4d980f4ef216"
   },
@@ -45,7 +45,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-BdKR8v9v.js"
+      "/_next/static/chunks/index-psOgs2KP.js"
     ]
   },
   "boundary": {
@@ -55,8 +55,8 @@
     "nextAction": "Verify the saved Sites deployment separately; this records local HTTP headers, redirect, manifest, SW and static asset responses only. No DB migration, physical-device, financial or general-launch acceptance is implied."
   },
   "supersedes": {
-    "observedAt": "2026-10-31T05:28:32Z",
-    "sha256": "8e0ab6dfef1ace994b77c3ceb2803db47a7876aadf3140953bed9ac96a7b38ea",
-    "sourceCommit": "d44970c7bbf3b2a33c106fbe0e750b5ce1585864"
+    "observedAt": "2026-10-31T05:30:57Z",
+    "sha256": "b752a8f743d34b21b2e3977508489009acd207c3b0d8b952e11c5acef9ab83b1",
+    "sourceCommit": "737be0a7d40e2b95c46b03651780b0ab4570aa13"
   }
 }
