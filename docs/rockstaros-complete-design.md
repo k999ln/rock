@@ -1542,3 +1542,9 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 - 受入範囲: 合成eventと既存codec/暗号化file-backed SQLiteだけ。wholePRO01、実アカウント保存・本番公開・実機・実収益・Providerを受入へ昇格させない。
 
 統合・検収は[evidence](evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)を参照。
+
+## mii 共通OSの実機接続仕様
+
+<a id="mii-common-os-prototype"></a>
+
+2026-11-02、本人の「osの中身は一緒」を[14章](mii/design/14-common-os.md)へ反映。目的は同じ仕事を声/指先/画面から確認・保存・再開すること。ROCKはWorkJob、owner、revision/command、権限/予算/Receiptを共通で管理し、EXTERNALは部品/BSP、JOINTは実機、OWNERは構成/予算/本人承認を担う。入力は候補、出力はjob/revisionと校正/leaseに束縛する。保存結果はevent読戻し、応答不明は自動再送せず照合、競合は保全して再確認、物理停止は独立ACK/測定で判断する。端末間・offline・光学をsource/fixture合格へ昇格しない。[BOM/接続/電力](mii/design/15-prototype-spec.md)、[合格条件と未決定の閉じ方](mii/design/16-prototype-acceptance.md)、[相談資料](mii/design/17-component-evaluation-brief.md)を同じ設計系列とする。

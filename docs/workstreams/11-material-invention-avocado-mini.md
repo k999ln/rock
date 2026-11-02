@@ -215,3 +215,7 @@ MAT15/M1の[現行設計追補](../avocado-mini-r5/embedded-portable-connectivit
 ## Proの共通仕事入口の責任境界（2026-10-27）
 
 PRO-02の固定linkはsource workstream05/ROCKで受入れ、[Pro詳細](../rockstaros-avocado-mini-complete-design.md#pro-private-work-entry)へ接続する。既存共通WorkJob/owner/保存/停止を再利用するソフトウェア入口であり、avocadoPro実機/配置/入出力/可搬復旧・物理製造やMini光学の合格ではない。公開・本番仕事は同artifact/本人の別JOINT gateで確認する。
+
+## 共通OSに接続するmii実機試作設計（2026-11-02）
+
+MAT15／OS10／MINI01・MINI02の設計担当ROCK。[設計入口](../mii/design/00-README.md)14〜17章へ共通OS、BOM/端子条件、帯域/電力、A01〜12とO01〜04、部品提供相談資料を追加。既存taskの完了判定は変更しない。EXTERNALは部品/driver、JOINTは同一実機で入力・停止・復旧・光学、OWNERは筐体/予算/試験対象/提供条件。検証は `npm run project:update`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。結果は `data/mii-prototype-design-validation.json`、再開はroot `project.md`。次はB01/B02/B06のexact型番・端子確認からP0一式を確定する。

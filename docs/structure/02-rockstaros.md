@@ -58,3 +58,7 @@ flowchart LR
 - 2026-09「共通のコアOSと用途別OS」→ 今回「用途別OS」は作らず **hardware profile** に置き換える。用途（ヨガ・工場）は Work と Agent の側。
 - 2026-10-15「account が正本」→ 維持。
 - 「Codex 専用設計」「CIが一人の足を止めている」→ 対象外（Private Pixel の話）。
+
+## 2026-11-02 — miiの実機化に向けた共通OS契約
+
+本人の「osの中身は一緒」を[共通OSと実機接続](../mii/design/14-common-os.md)へ具体化した。同じWorkJob/本人/revision/予算/保存・停止照合を使い、hardware profileが入出力・電源・通信・校正・資源を受け持つ。kernel/image/driverまで同一とはせず、各機種の導入と復旧は別受入。今回runtime実装/実機受入は追加していない。

@@ -807,7 +807,7 @@ workerのremote完了だけではAMCを進めず、暗号化artifact hashと署�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-29 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-11-02 / RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

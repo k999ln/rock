@@ -5,6 +5,14 @@
 上位: [docs/structure/01-mii.md](../../structure/01-mii.md)（構造の決定）。本書はその下の設計書。
 出典: 議事録 2026-08〜10、「3Dプロジェクション技術説明」チャット（特に回答 34, 50–55, 64–65）、AVOKADO Issue01 PDF、R5 統合設計（docs/avocado-mini-r5/package/integrated_design.md）。
 
+## V1.1追補 — OSの中身は共通（2026-11-02）
+
+本人の回答「osの中身は一緒」に基づき、**共通OS→ハード接続→実機試験**の順で設計を具体化した。まず [14章 共通OS](14-common-os.md)、[15章 部品・接続・電力](15-prototype-spec.md)、[16章 試験と記録票](16-prototype-acceptance.md)、[17章 部品提供相談資料](17-component-evaluation-brief.md) を読む。
+
+以下V1.0の室内Tower＋Hub構成は保持する。一方、元miiチャットと従来設計の単体携帯・表示4条件も保持する。今回の回答は筐体の選択ではないため、C-01/C-02として未解決を明示する。投影方式の試作合格を、板膜なし・少数表示部・上下全域・低眩しさの製品合格へ置き換えない。
+
+既存01〜13章の数値は設計目標で実測結果ではない。電源/集約帯域の訂正は06/15章、保存・認証・停止の具体契約は14章を使う。最終部品、pinout、PCB、実機受入は未確定。
+
 ## 0. 本人の指示（2026-11-02）で固定したこと
 
 | 項目 | 決定 |
@@ -60,6 +68,10 @@ Gen1 では ③④ の代わりに市販の投影エンジンを Hub に直結�
 | 11 | [11-acceptance.md](11-acceptance.md) | 受入試験（数値）と Demo 1〜6 |
 | 12 | [12-bom-structure.md](12-bom-structure.md) | BOM の構造（部品の役割と候補。**価格は書かない**） |
 | 13 | [13-prototype-plan.md](13-prototype-plan.md) | 試作の順番、手持ち機材の使い方、最初の 4 週間 |
+| 14 | [14-common-os.md](14-common-os.md) | 同じOS・仕事・保存・復旧、sourceと実装境界 |
+| 15 | [15-prototype-spec.md](15-prototype-spec.md) | 試作BOM、接続表、帯域・電力・機構固定条件 |
+| 16 | [16-prototype-acceptance.md](16-prototype-acceptance.md) | 実機一周、故障・再開、表示4条件、記録票 |
+| 17 | [17-component-evaluation-brief.md](17-component-evaluation-brief.md) | メーカーへ相談する概要と評価品・数量（未送信） |
 
 ## 3. 用語
 

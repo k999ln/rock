@@ -2,10 +2,14 @@
 
 目的: **Spatial Engine を先に完成させる**。表示（AIRR）が高いことを開発停止の理由にしない（チャット回答 65 §33）。
 
+## V1.1 実機化の順序
+
+[15章](15-prototype-spec.md)のP0（実声・指先・確認・保存・再起動）を先に通し、P1の2視点、P2の4視点、P3の製品光学/機構へ進む。既存「4週間」は部品と入力条件を揃えた後の目安。最初から4台を購入済みにせず、[17章](17-component-evaluation-brief.md)で評価機材1〜2台の相談を準備する。以下の「手持ち」は元資料の記述であり、型番・現物確認は未実施。
+
 ## 0. 手持ち機材の使い方
 
 - 本人の手持ちプロジェクター（センサー付き）: Gen1 表示出口として使う。自動台形・オートフォーカスを切り、HDMI ゲームモード。1,000 lm 以上なら 2×1.5 m の壁で 300 lux。
-- Node は市販部品で「Node 相当」を組む: Raspberry Pi 5 ＋ GS カメラ（Raspberry Pi Global Shutter Camera 1456×1088、IMX296、最大 60 fps）＋ 850 nm LED ＋ USB レーダー評価ボード。120 fps は本番センサー待ち。**フレーム同期は GPIO トリガー線で**（PTP は後）。
+- Node は市販部品で「Node 相当」を組む（以下は候補、所持・購入・配線は未確定）: Raspberry Pi 5 ＋ GS カメラ（Raspberry Pi Global Shutter Camera 1456×1088、IMX296、最大 60 fps）を可視光で評価する。GS CameraはIR filter付きのため850nm照明を必須の初回部品にしない。IR/radarは後段の独立評価。120fpsは別sensor待ち。同期triggerはboardの電圧/極性/pulse幅を確認して配線し、GPIO直結を未検証で指示しない（15章I04）。
 - Hub: 手持ち PC（NVIDIA GPU）で可。Jetson は Week 3 以降。
 
 ## 1. 4 週間

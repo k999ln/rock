@@ -4000,5 +4000,20 @@
     "scope": "WorkJob objective only; local speech capability and 2D fingertip adapters; CAS/event readback",
     "physicalAccepted": false,
     "mainIntegrated": false
+  },
+  "miiPrototypeCommonOs": {
+    "authority": "docs/rockstaros-complete-design.md#mii-common-os-prototype",
+    "toolDesign": "docs/rockstaros-avocado-mini-complete-design.md#mii-prototype-common-os",
+    "documents": [
+      "docs/mii/design/14-common-os.md",
+      "docs/mii/design/15-prototype-spec.md",
+      "docs/mii/design/16-prototype-acceptance.md",
+      "docs/mii/design/17-component-evaluation-brief.md"
+    ],
+    "decision": "osの中身は一緒",
+    "status": "design_only",
+    "newRuntimeImplemented": false,
+    "physicalAccepted": false,
+    "manufacturingReleased": false
   }
 }

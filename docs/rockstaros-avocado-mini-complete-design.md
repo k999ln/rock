@@ -841,3 +841,9 @@ Mini単体の衛星→Wi-Fi共有について、端末許可/失効、送受信�
 [AP認証・網側上限](../systems/rock-star-os/targets/avocado-mini/tethering/ACCESS.md)の共通adapterを追加。端末固有鍵、管理下hostapdの世代/認証、網側HMAC/TLS予約をLinux転送前に確認する。事業者・modemは本人回答どおり未定。実無線/衛星/請求は未受入、単体携行と表示4条件を維持。
 
 2026-10-15明示要求は[統合設計](service-design/08-mini-connectivity-and-billing.md)と[R5詳細](avocado-mini-r5/embedded-portable-connectivity.md)へ追加。固定dock/可搬core、携帯電源、衛星WAN/Wi-Fi LAN、場所権限、同一job継続、月次usage請求を分離して設計する。実機・本番未受入。
+
+## mii 試作設計と共通OS
+
+<a id="mii-prototype-common-os"></a>
+
+2026-11-02の本人回答「osの中身は一緒」による設計追補。[14章](mii/design/14-common-os.md)が目的・体験・責任・入出力・状態・保存・失敗/復旧・承認・未決定、[15章](mii/design/15-prototype-spec.md)がBOM/接続/電力、[16章](mii/design/16-prototype-acceptance.md)が合格条件、[17章](mii/design/17-component-evaluation-brief.md)が部品評価相談を定義する。既存job/store/Brokerを再利用し、OSをハード別に複製しない。室内Tower＋Hubと単体携帯の構成差はC-01、Gen1投影と板膜なし・少数・上下全域・低眩しさの差はC-02として保持。今回の回答は構成/表示条件の撤回ではない。新runtime・物理試験・製造release・問い合わせ送信は未実施。
