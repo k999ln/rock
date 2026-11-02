@@ -12730,10 +12730,48 @@
     "manufacturingReleased": false,
     "githubSaved": false,
     "mainIntegrated": false,
-    "next": "Confirm exact host/camera/projector models and interface details (B01/B02/B06), then freeze a P0 evaluation kit and execute A01–04/06/11/12; physical configuration remains C-01.",
+    "next": "W1 part/connector design is in docs/mii/design/18-parts-wiring.md. Match received parts, execute W-A01-04 then common-OS physical acceptance; projector/adapter/synchronization/optics remain open.",
     "authority": "docs/mii/design/14-common-os.md",
     "validation": "data/mii-prototype-design-validation.json",
     "localDocumentationSaved": true,
     "verification": "project:update, baseline:check, design:check, links, arithmetic, diff check PASS; full verify exit0 (3593 pass, 0 fail, 4 skip) after isolated dependency repair"
+  },
+  "miiPrototypeWiring": {
+    "date": "2026-11-02",
+    "status": "design_validated_physical_not_run",
+    "owner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "OS10",
+      "MINI01",
+      "MINI02"
+    ],
+    "baseLocalCommit": "fb3c431379eebaf40a9860051c14b4618c0cd2ea",
+    "baseMain": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+    "userDirection": "Keep the OS common; specify part models and terminals and create assembly wiring diagrams.",
+    "observedHost": {
+      "model": "MacBook Pro 14-inch November 2024",
+      "chip": "Apple M4",
+      "memoryGB": 16,
+      "os": "macOS Sequoia 15.7.4",
+      "evidence": "user-provided screenshot; serial and screenshot intentionally not copied into repository"
+    },
+    "physicalAccepted": false,
+    "purchased": false,
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "authority": "docs/mii/design/18-parts-wiring.md",
+    "bom": "docs/mii/design/wiring/bom.json",
+    "validation": "data/mii-prototype-wiring-validation.json",
+    "wiringRevision": "W1",
+    "partsCount": 14,
+    "connectionsCount": 9,
+    "pdf": "output/pdf/mii-prototype-wiring.pdf",
+    "runtimeChanged": false,
+    "osFlashed": false,
+    "supplierContactSent": false,
+    "localDocumentationSaved": true,
+    "next": "Match physical parts; P0b input selection and common-OS save/restart; P1a initial setup/capture. Node adapter, Japanese on-device ASR, projector model, 2-camera sync and product optics remain unaccepted.",
+    "verification": "Full npm run verify exit 0; BOM/9 connections/19 Markdown link targets/PDF 3 pages checked. No physical tests."
   }
 }

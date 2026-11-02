@@ -84,5 +84,7 @@
     "Optical whole-range/comfort/independent stopping"
   ],
   "status": "design_validated_physical_not_run",
-  "localBranch": "codex/mii-prototype-design-20261102"
+  "localBranch": "codex/mii-prototype-design-20261102",
+  "validatedSnapshotCommit": "fb3c431379eebaf40a9860051c14b4618c0cd2ea",
+  "snapshotNote": "Historical V1.1 results/hashes at validatedSnapshotCommit; W1 changes are recorded separately in data/mii-prototype-wiring-validation.json."
 }

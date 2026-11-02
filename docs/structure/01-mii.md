@@ -97,3 +97,7 @@ Hub は見えない場所（分電盤脇・天井裏・家具内）に1台、**�
 3. 4 Tower の相互キャリブレーション手順（施工時／引越し時）。
 4. Hub の演算: Pro と同じ基板か、Jetson 級か。local LLM をどこまで Hub に置くか。
 5. 名前 **mii** は Nintendo の登録商標（US Reg. 3451478, class 9）と衝突しうる。08-pdf-review.md 参照。
+
+## 卓上試作の具体化（2026-11-02）
+
+本人の追加指示で[設計18章W1](../mii/design/18-parts-wiring.md)に型番付きBOMと端子間配線を定めた。M4 Mac＋BRIO 500で共通OSの実入力/保存を検証し、Pi 5＋Global Shutter Camera SC0715を1台立ち上げてから2台同期へ進む。Macは開発host、Piはcapture側であり、仕事・本人性・権限・利用料・保存は同じ契約を使う。最終Tower/Hub、携帯とのC-01、表示4条件とのC-02は継続審議。部品選定を製品実機/光学/製造合格としない。

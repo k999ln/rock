@@ -1,6 +1,6 @@
 # 15 試作機の部品・接続・電力仕様
 
-V1.1設計追補 / 2026-11-02。**配線の設計入力であり、確定pinout・製造図ではない。** [14章](14-common-os.md)の共通OSへ接続し、[16章](16-prototype-acceptance.md)で受け入れる。購入価格・提供確約は含めない。
+V1.1設計追補 / 2026-11-02。**製品全体の設計入力。市販品を使うP0b/P1aの選定BOMと端子間配線は[18章](18-parts-wiring.md)で具体化済み。** 製品PCB/trigger回路の確定pinout・製造図は未完了。 [14章](14-common-os.md)の共通OSへ接続し、[16章](16-prototype-acceptance.md)で受け入れる。購入価格・提供確約は含めない。
 
 ## 1. 試作の単位
 
@@ -19,12 +19,12 @@ P0のカメラとPCをTower製品の最終部品にしない。P3の携帯機構
 
 | ID | 部品・数量 P0 / P1 / P2 | 必須条件 | 候補と採否条件 |
 | --- | --- | --- | --- |
-| B01 | 開発host 1 / 1 / 1 | 対応OS、RAM、camera入力、保存、表示出力 | 既存PCを先にinventory。GPU/所持は未確認。製品HubはJetson系等を実負荷で比較 |
-| B02 | camera 1 / 2 / 4 | 同じsensor/driver版、時刻と露光、固定レンズ | Pi Global Shutter CameraはP1の可視光60fps評価候補。120fps NIR製品の代用品にはしない |
-| B03 | camera host 0〜1 / 2 / 4 | 対応CSI/USB、帯域、適合電源、冷却 | Pi 5等をcameraとの組合せで評価。別Node方式なら台数分必要 |
-| B04 | lens・camera cable・固定具 各camera分 | mount、sensorサイズ、FoV、焦点、端子向き | B02の正確な型番とboard版を確定して選ぶ |
-| B05 | mic 1 / 1 / 1 | hostで録音可能、停止/表示 | P0はUSB評価品。多Node同期arrayは別評価 |
-| B06 | monitorまたは既存projector 1 | 入力端子、実解像度/Hz、表示遅延 | 手持ちprojectorの銘板/設定を確認。明るさ/低遅延/センサーAPIは未確認 |
+| B01 | 開発host 1 / 1 / 1 | 対応OS、RAM、camera入力、保存、表示出力 | 本人画像でM4 MacBook Pro 14-inch/16GB/macOS15.7.4を確認、P0 hostに採用。製品HubはJetson系等を実負荷で比較 |
+| B02 | camera 1 / 2 / 4 | 同じsensor/driver版、時刻と露光、固定レンズ | P0bはBRIO 500 960-001493、P1aはPi Global Shutter Camera SC0715を可視光評価用に選定。120fps NIR製品の代用品にはしない |
+| B03 | camera host 0〜1 / 2 / 4 | 対応CSI/USB、帯域、適合電源、冷却 | P1aはPi 5 4GB＋公式電源/Active Coolerを選定。別Node方式なら台数分必要 |
+| B04 | lens・camera cable・固定具 各camera分 | mount、sensorサイズ、FoV、焦点、端子向き | P1aは6mm CS、公式Standard-Mini Camera Cable 200mm、MTPIXI-B。現物board版は受領時確認 |
+| B05 | mic 1 / 1 / 1 | hostで録音可能、停止/表示 | P0bはBRIO内蔵mic。多Node同期arrayは別評価 |
+| B06 | monitorまたは既存projector 1 | 入力端子、実解像度/Hz、表示遅延 | P0はMac内蔵画面を使用。projector型番は引き続き未確認。明るさ/低遅延/センサーAPIは未確認 |
 | B07 | 認証済み電源・電力測定 各給電経路分 | 端子、極性、定格、保護、機器仕様との適合 | P0/P1は各評価kit指定電源。独自電池・昇圧回路は後段 |
 | B08 | Ethernet cable・switch 0〜1 / 1 / 1 | 同時stream、管理可能性、集約帯域 | 4 Nodeの現予算ではHub向け10GbE等。2.5GbEは減量したprofileで再評価 |
 | B09 | 校正板、測定尺、時刻/波形測定器 0 / 1式 / 同左 | 実寸/測定不確かさ、再現可能な配置 | 借用も可。試験記録へ型番/校正状態を残す |
@@ -35,7 +35,9 @@ P0のカメラとPCをTower製品の最終部品にしない。P3の携帯機構
 
 Jetsonのmoduleとcarrier board／開発kitは別物。既存04章のTOPSやSoC電力を、HDMI本数・PoE・NIC・SSD・冷却を含む完成Hubの能力へ転用しない。[NVIDIA公式module/kit区分](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/)（同日確認）。
 
-## 3. 接続表（端子番号の確定前）
+## 3. 製品全体の接続表
+
+P0b/P1aは18章W01〜W09で端子・cableを具体化した。以下は同期・製品拡張も含む上位interfaceで、全I項目を実装済みとしない。P1aではI04/I07は未接続。
 
 | ID | 接続元→接続先 | 信号/給電 | 接続前に埋める欄 | 検証 |
 | --- | --- | --- | --- | --- |

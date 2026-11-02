@@ -4008,12 +4008,15 @@
       "docs/mii/design/14-common-os.md",
       "docs/mii/design/15-prototype-spec.md",
       "docs/mii/design/16-prototype-acceptance.md",
-      "docs/mii/design/17-component-evaluation-brief.md"
+      "docs/mii/design/17-component-evaluation-brief.md",
+      "docs/mii/design/18-parts-wiring.md",
+      "docs/mii/design/wiring/bom.json"
     ],
     "decision": "osの中身は一緒",
     "status": "design_only",
     "newRuntimeImplemented": false,
     "physicalAccepted": false,
-    "manufacturingReleased": false
+    "manufacturingReleased": false,
+    "wiringRevision": "W1"
   }
 }

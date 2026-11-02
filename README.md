@@ -10,7 +10,7 @@
 | 知りたいこと | どこ |
 | --- | --- |
 | 設計の正本（世界観 → 製品 → システム → 事業） | [docs/structure/](docs/structure/00-overview.md) |
-| miiの実機試作設計（共通OS・部品・接続・試験） | [設計書14〜17章](docs/mii/design/14-common-os.md) |
+| miiの実機試作設計（共通OS・部品・接続・試験） | [共通OS](docs/mii/design/14-common-os.md) / [型番・端子・配線・組立手順](docs/mii/design/18-parts-wiring.md) |
 | Codex にやらせること | [codex/tasks/00-index.md](codex/tasks/00-index.md) |
 | Codex の作業規則 | [AGENTS.md](AGENTS.md)（57 行） |
 | いつ・何を変えたか | [CHANGELOG.md](CHANGELOG.md)（旧 README 冒頭の日付ノート全文を含む） |
@@ -469,3 +469,5 @@ Mini/Pro の Web は [sites/avocado-mini](sites/avocado-mini/) に共通で置�
 <!-- project-overview:start -->
 Updated: 2026-11-02 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
+
+配線図の生成: `python3 docs/mii/design/wiring/render-wiring.py --output output/pdf/mii-prototype-wiring.pdf`（reportlabと日本語fontが必要）。選定品14点、端子間接続9系統。Mac以外の所持と実機受入は未確認。

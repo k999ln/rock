@@ -68,3 +68,6 @@ replay_pid*.log
 # Locally prepared, pinned camera runtime (regenerate via scripts/prepare-mii-input.mjs)
 /public/mii-input-runtime/
 /public/.mii-input-*/
+
+# Reproducible mii assembly drawings; renderer and BOM are versioned.
+/output/pdf/mii-prototype-wiring.pdf

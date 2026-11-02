@@ -218,4 +218,4 @@ PRO-02の固定linkはsource workstream05/ROCKで受入れ、[Pro詳細](../rock
 
 ## 共通OSに接続するmii実機試作設計（2026-11-02）
 
-MAT15／OS10／MINI01・MINI02の設計担当ROCK。[設計入口](../mii/design/00-README.md)14〜17章へ共通OS、BOM/端子条件、帯域/電力、A01〜12とO01〜04、部品提供相談資料を追加。既存taskの完了判定は変更しない。EXTERNALは部品/driver、JOINTは同一実機で入力・停止・復旧・光学、OWNERは筐体/予算/試験対象/提供条件。検証は `npm run project:update`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。結果は `data/mii-prototype-design-validation.json`、再開はroot `project.md`。次はB01/B02/B06のexact型番・端子確認からP0一式を確定する。
+MAT15／OS10／MINI01・MINI02の設計担当ROCK。[設計入口](../mii/design/00-README.md)14〜17章へ共通OS、BOM/端子条件、帯域/電力、A01〜12とO01〜04、部品提供相談資料を追加。既存taskの完了判定は変更しない。EXTERNALは部品/driver、JOINTは同一実機で入力・停止・復旧・光学、OWNERは筐体/予算/試験対象/提供条件。検証は `npm run project:update`、`npm run baseline:check`、`npm run design:check`、`npm run verify`。結果は `data/mii-prototype-design-validation.json`、再開はroot `project.md`。18章でM4 Mac＋BRIOのP0b、Pi 5＋SC0715のP1aを選定し、端子間配線を具体化。次は現物/BOM版の照合→W-A01〜04→共通OS一周。実施状況は `data/mii-prototype-wiring-validation.json`。projector型番、Pi初期接続、Node adapter、同期/光学の未受入を維持する。

@@ -1548,3 +1548,5 @@ queued → sending → completed、生成前FREE_LIMITとRetry-Afterを確認で
 <a id="mii-common-os-prototype"></a>
 
 2026-11-02、本人の「osの中身は一緒」を[14章](mii/design/14-common-os.md)へ反映。目的は同じ仕事を声/指先/画面から確認・保存・再開すること。ROCKはWorkJob、owner、revision/command、権限/予算/Receiptを共通で管理し、EXTERNALは部品/BSP、JOINTは実機、OWNERは構成/予算/本人承認を担う。入力は候補、出力はjob/revisionと校正/leaseに束縛する。保存結果はevent読戻し、応答不明は自動再送せず照合、競合は保全して再確認、物理停止は独立ACK/測定で判断する。端末間・offline・光学をsource/fixture合格へ昇格しない。[BOM/接続/電力](mii/design/15-prototype-spec.md)、[合格条件と未決定の閉じ方](mii/design/16-prototype-acceptance.md)、[相談資料](mii/design/17-component-evaluation-brief.md)を同じ設計系列とする。
+
+2026-11-02の追加指示により[18章](mii/design/18-parts-wiring.md)へP0b（M4 Mac＋BRIO 500）とP1a（Pi 5＋SC0715）の選定型番、9系統の端子間配線、組立順、印刷図を追加した。仕事・本人性・権限・予算・保存は共通。Piはセンサー取り込みhostであり独立した仕事台帳を持たない。LAN camera adapter、日本語ASR実動作、2台同期、製品光学は未受入。製造/購入/実機通電は未実施。
