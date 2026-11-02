@@ -12711,7 +12711,7 @@
     "sourceCommit": "14474ce3450d91c860d44c10e1d3d91e2c74800e"
   },
   "eveNoahMainAlignment": {
-    "status": "validation_in_progress",
+    "status": "ci_fixes_verifying",
     "taskIds": [
       "G04",
       "WEB04"
@@ -12728,7 +12728,11 @@
       "officialSitesBuild": "pass",
       "browserOwnerToolJobFixtures": "3 passed",
       "migrationAndReleaseReadiness": "41 passed",
-      "fullRegression": "3927 total, 3916 pass, 7 fail, 4 skip before final corrections; final rerun pending"
-    }
+      "fullRegression": "3927 total:3923 pass,0 fail,4 environmental skips",
+      "api": "1918 work +385 CSV assertions passed after CSP correction",
+      "spiderPolicy": "12 real-scanner policy tests passed; whole reachable history0 candidates under19 exact reviewed public values",
+      "pending": "Final commit verify and CI; normal merge; same-main-SHA publication"
+    },
+    "pullRequest": "https://github.com/k999ln/rock/pull/312"
   }
 }

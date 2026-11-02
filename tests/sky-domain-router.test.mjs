@@ -443,6 +443,20 @@ void test('every outer OS route enforces the exact source security policy, inclu
   assert.equal(privateResponse.headers.get('cache-control'), 'private, no-store');
 });
 
+void test('outer response protection retains restrictive export CSP and enforces the shared policy as well', async () => {
+  const exportPolicy = "default-src 'none'; sandbox; form-action 'none'; frame-ancestors 'none'";
+  const app = withMiniSite({ fetch: () => new Response('<pre>synthetic result</pre>', { headers: {
+    'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store',
+    'content-disposition': 'attachment; filename="result.html"', 'content-security-policy': exportPolicy,
+  } }) });
+  const response = await app.fetch(new Request('https://avoado.si/api/sky/exports/fixture'));
+  const policy = JSON.parse(readFileSync(new URL('../data/web-security-policy.json', import.meta.url), 'utf8'));
+  assert.equal(response.headers.get('content-security-policy'), `${exportPolicy}, ${policy.universalHeaders['Content-Security-Policy']}`);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  assert.match(response.headers.get('content-disposition'), /^attachment;/);
+  assert.equal(await response.text(), '<pre>synthetic result</pre>');
+});
+
 void test('outer response protection preserves streaming bodies and private cache semantics', async () => {
   let writer;
   const stream = new ReadableStream({ start(controller) { writer = controller; } });

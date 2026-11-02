@@ -1,21 +1,21 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-02T11:19:41Z",
+  "observedAt": "2026-11-02T11:30:13Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
     "origin": "http://127.0.0.1:8787",
     "productionBuild": true
   },
-  "sourceCommit": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "sourceCommit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
   "sourceDirty": true,
   "measurement": {
     "nodeVersion": "v26.12.1",
     "packageLockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
-    "rawResultSha256": "9b54399f51c791c036092c01c962df20175eced0a8b829c728f8d07792499ceb",
-    "builtApplicationSha256": "a5bb007f62ef2fd41a7da6d192d4d37eff5dc082bb147ecde20683d9aefd6d80",
+    "rawResultSha256": "8473a8dd4be2107c875ec2babcbd19518a60d7a75cd8b74e3d6d07517a107f47",
+    "builtApplicationSha256": "df0bace97e2e979bfcfa3979688d7bad4ada46710bd471a206c01df21ff1d9d5",
     "entryWrapperSha256": "3f7bfbfd53a727eebc033bdeb7d9022cf2f497dd5f0788b9a85ad27d1f9c6b1a",
-    "outerRouterSha256": "dae6987445c5e3fb54c5e908c19dd80f26e315cb9abfd380b678baf7a40d78f0"
+    "outerRouterSha256": "0946146ae7e00313d87e0e848f523b1b619ae34b8572843507bad5523be9bb77"
   },
   "inputs": {
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
@@ -27,7 +27,7 @@
     "public/rock-icon-192.png": "3a8f750e40b79713f055a5ec5485ab7db04878744f3301bff34aa4b579abd8c0",
     "public/rock-icon-512.png": "c6a0cf9b9faf023da925ab29081b41be18eedf212bb673d2d6a5b17bb47393dc",
     "public/rock-icon-maskable.svg": "114f7f18e620c02d8272db9b647d91f9c820e8113955ec166c4c072602f63206",
-    "services/sky-web/domain-router.mjs": "dae6987445c5e3fb54c5e908c19dd80f26e315cb9abfd380b678baf7a40d78f0",
+    "services/sky-web/domain-router.mjs": "0946146ae7e00313d87e0e848f523b1b619ae34b8572843507bad5523be9bb77",
     "scripts/stage-sky-domain-router.mjs": "0075f6292660f61565425eadc2f32694b62d852b6435e4436a8f15c20e5d8a4a"
   },
   "result": {
@@ -43,7 +43,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-B_jxL5oR.js"
+      "/_next/static/chunks/index-mcehYlRH.js"
     ]
   },
   "boundary": {
