@@ -28,7 +28,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body>{children}<script src="/brand/rainbow-boot.js" defer /></body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -322,3 +322,7 @@ Source readback追加：現行public v111のproject/version/source/deploymentを
 ROCK/Web主担当（既存osWorkspaceUiUx）、本人の全体検証依頼により、旧visual基準と現UIの差を明示指示へ同期。forest/bronzeを白/墨色/focus青へ更新し、tokensと検査を同時変更する。HTTP証拠はrecord-web-security-evidence.mjsが実応答検査に成功した場合だけ入力hash・buildhash・実行時刻と共に更新する。失敗時に前回証拠を上書きしない。以前の測定はGitとsupersedesで追える。セキュリティ条件、実機/金融/署名/一般ローンチgateは弱めない。全体検証の署名fixtureは既存OpenSSL3をPATHへ指定する（システムLibreSSLは要件を満たさない）。
 携帯版はアイコン＋ラベルの58px以上の4入口、選択枠、56pxの「調べる/まとめる/作る」依頼テンプレート、実行先・担当・接続済みチェックと展開記号を備える。テンプレートは空欄時だけ入力を補助し、既存入力を上書きせず、同意・実行は行わない。本人のモデル・権限・費用・停止契約、入力保護は保持。入出力は依頼下書きのみ、保存/認証/APIは既存、失敗時は原入力保持と再確認、復旧は前版Sites。
 受入: baseline/release/verify、template部品試験、現build HTTP8経路、携帯実画面（ブラウザ基盤停止時は未検証と明示）。source/GitHub main/公開/実機受入を区別する。
+
+## 起動演出の非ブロッキング化（WEB04/HOME01、ROCK）
+
+[設計と受入条件](../rockstaros-complete-design.md#nonblocking-rainbow-boot)。既存v138を維持してヘッダーロゴ内の描画だけを軽量化する。`node --test tests/rainbow-boot.test.mjs`、`npm run verify`、390/320pxのブラウザー操作と正式domain読戻しを分けて記録する。光の演出から本人入力・仕事権限を独立させる。

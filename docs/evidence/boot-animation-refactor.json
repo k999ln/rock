@@ -1,0 +1,95 @@
+{
+  "schema": "rockstaros-boot-refactor/1",
+  "taskIds": [
+    "WEB04",
+    "HOME01"
+  ],
+  "primaryOwner": "ROCK",
+  "sourceBase": "f18bc82e2cf7dcc0f6d0d66d30f7101bcda0c541",
+  "githubMainObserved": "7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6",
+  "implementation": {
+    "scope": "Existing OS header logo only; non-modal and pointer-events:none",
+    "preserved": [
+      "white background",
+      "original rainbow logo",
+      "seven 3D orbit paths morph into traced original-logo pixels"
+    ],
+    "removed": [
+      "full-screen Eve input gate",
+      "per-frame whole 440x440 image scan",
+      "per-segment canvas blur and shadow"
+    ],
+    "drawing": {
+      "originalPixelScan": 193600,
+      "preparationPixels": 9216,
+      "maxFps": 30,
+      "trailPathsPerFrame": 28,
+      "cachedGlowSprites": 7
+    },
+    "lifecycle": [
+      "first interaction without cancellation",
+      "6.8s completion",
+      "8.5s safety timeout",
+      "image error",
+      "visibility hidden",
+      "pagehide",
+      "reduced motion change",
+      "detached logo"
+    ],
+    "loading": "After header hydration; app mount does not depend on script or image"
+  },
+  "checks": {
+    "focusedTests": {
+      "command": "node --test tests/rainbow-boot.test.mjs",
+      "passed": 5
+    },
+    "browser": {
+      "environment": "IAB responsive viewport on local development app, not physical phone",
+      "viewports": [
+        {
+          "width": 390,
+          "height": 844,
+          "scrollWidth": 390,
+          "animatedCanvasWidth": 26,
+          "animatedCanvasHeight": 26
+        },
+        {
+          "width": 320,
+          "height": 740,
+          "scrollWidth": 320,
+          "textarea": {
+            "left": 31,
+            "right": 289
+          }
+        }
+      ],
+      "animationPresentBeforeInput": true,
+      "inputAcceptedDuringAnimation": true,
+      "tapRetainsInputAndDismisses": true,
+      "resultsRoundTripRetainsInput": true,
+      "hydrationErrorAfterLoaderFix": false,
+      "localExecution": "No provider calls or job submissions; local account/connection unavailable",
+      "connectionAndSettings": {
+        "width": 390,
+        "scrollWidth": 390,
+        "draftGuardAndSeparateTab": true,
+        "mutationsPerformed": false
+      }
+    },
+    "fullVerify": {
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "exitCode": 0,
+      "tests": 2637,
+      "passed": 2636,
+      "failed": 0,
+      "skipped": 1,
+      "logSha256": "9d44d9b618be52c558c903e4cc6acfe1fda25c0da1b824e20d473d42710210ad"
+    }
+  },
+  "publicDeployment": null,
+  "limitations": [
+    "Physical phone GPU/frame timing/heat/battery not measured",
+    "Existing native, financial and general-launch gates unchanged",
+    "GitHub main integration not performed"
+  ]
+}

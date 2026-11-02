@@ -10220,5 +10220,16 @@
       "mobile visual QA when browser bridge recovers"
     ],
     "evidence": "docs/evidence/release-mobile-ux.json"
+  },
+  "bootAnimationRefactor": {
+    "taskIds": [
+      "WEB04",
+      "HOME01"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "verified_pending_publication",
+    "sourceBase": "f18bc82e2cf7dcc0f6d0d66d30f7101bcda0c541",
+    "scope": "Non-blocking header light trails; preserve rainbow logo and Eve execution contracts",
+    "verification": "docs/evidence/boot-animation-refactor.json"
   }
 }

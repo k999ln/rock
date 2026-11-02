@@ -1,3 +1,7 @@
+## 2026-11-02 — 起動演出の非ブロッキング化（WEB04/HOME01、ROCK）
+
+公開v138/source f18bc82から開始。全画面の待機overlayを既存ヘッダーロゴ内の装飾へ変更し、光の立体運動・残像→虹色原本の線を保持。描画量・再走査・終了cleanupを削減する。Eve mount/入力/権限/予算/実行は独立。IABの390/320pxで演出中の入力、タップ、成果往復の入力保持、390pxで接続・設定を操作確認。全体verify exit0（2637件、2636pass/1skip/0fail）。公開は次工程。物理携帯のGPU/発熱/電池は未測定。GitHub main照会7bbb4b27、Sites配信用sourceと分離しmain統合は未実施。
+
 ## 2026-10-25 — デザイン整理の回帰検証完了、公開待ち
 
 公開OS候補のnpm run verify exit0。Core2605試験（2604pass/1skip/0fail）、配布除外guard追加2試験、Mini/Pro44試験成功。参照されない旧Mini画像4,912,313 bytesは配布から除外し、本人原本/歴史資料は正本に保持。Mini/Pro public/imagesは65,760,897→2,448,179 bytes、現行Mini heroは見える画素/alphaを保つlossless WebP 661,850→367,448 bytes。原稿は既存pro-local-import/1を再利用。次は正規Sites source保存→OS→Mini/Pro公開→正式domainで読戻し。一般販売・native Mini・本人job自動同期の受入は増やしていない。

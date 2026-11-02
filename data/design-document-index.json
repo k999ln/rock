@@ -3113,13 +3113,14 @@
     }
   },
   "rainbowWebBrand20261025": {
-    "authority": "docs/rockstaros-complete-design.md",
+    "authority": "docs/rockstaros-complete-design.md#nonblocking-rainbow-boot",
     "source": [
       "public/brand/rainbow-boot.js",
       "components/os-header.tsx",
       "app/layout.tsx"
     ],
-    "scope": "Web branding only; native installation unchanged"
+    "scope": "Header-only decorative light trails, incremental original-logo reveal; no app/input/navigation gate; Web only",
+    "tests": "tests/rainbow-boot.test.mjs"
   },
   "publicDesignCleanup": {
     "authority": "docs/rockstaros-complete-design.md#公開webの入口原稿配布物の整理",

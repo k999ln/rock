@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -19,6 +19,14 @@ export default function OSHeader({
   running?: boolean;
   hideNavigation?: boolean;
 }) {
+  useEffect(() => {
+    // Load decoration only after React has hydrated the header. It never gates children.
+    const script = window.document.createElement('script');
+    script.src = '/brand/rainbow-boot.js';
+    script.async = true;
+    window.document.body.appendChild(script);
+    return () => { script.remove(); };
+  }, []);
   const pathname = usePathname();
   const homeHref = osRouteHref(pathname, '/os/eve', process.env.NODE_ENV === 'development');
   return (
