@@ -17,6 +17,7 @@
 | [11](11-node-tiers.md) | Node（30 cm）: N-Home / N-Sense、認証・健康・拡張スロット・6 本安定 | 済 |
 | [12](12-A-parallax-room.md) A / [13](13-B-airr-table.md) B / [14](14-C-swept-volume-table.md) C / [15](15-D-lightfield-table.md) D / [16](16-E-room-plus-table.md) E / [17](17-F-arena.md) F | 各案の詳細と原価 | 済 |
 | [20](20-comparison-and-recommendation.md) | 比較・推奨・最初に買う物・試作の順番・V1 の直し方・本人の決定事項 | 済 |
+| [30](30-gen1-ceiling-puck.md) | **第 1 形態 mii One**: 天井に工事なし（引掛シーリング／警報器ボックス）、火災警報器を兼ね、床・机・壁 1 面に投影、1 部屋 1 枚。原価 1,000 台 ¥83,000 → 売価 ¥160,000 が成立 | 済 |
 | [research/](research/) | 調査の生データ 4 本（表示・センサー・価格・先行例、出典 URL 付き） | 済 |
 
 ## 2. 結論を 1 枚で
