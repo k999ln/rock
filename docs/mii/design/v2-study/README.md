@@ -11,7 +11,7 @@
 | [02](02-pricing.md) | 部品の 1 / 100 / 1,000 台価格（出典付き） | 調査中 |
 | [10](10-candidates-overview.md) | 設計案 6 通り（A〜F）の全体像 | 済（価格欄は 02 待ち） |
 | [11](11-node-tiers.md) | Node（30 cm）の 2 段階 N-Home / N-Sense、認証・健康・拡張スロット・6 本安定 | 済 |
-| 12〜17 | 各案の詳細（構成・体験・採点・今日作れるか・設計書との差・原価・リスク） | 未 |
+| 12〜17 | 各案の詳細（構成・体験・採点・今日作れるか・設計書との差・原価・リスク） | 済（原価欄は 02 待ち）: [A](12-A-parallax-room.md) [B](13-B-airr-table.md) [C](14-C-swept-volume-table.md) [D](15-D-lightfield-table.md) [E](16-E-room-plus-table.md) [F](17-F-arena.md) |
 | [20](20-comparison-and-recommendation.md) | 比較表・推奨・最初に買う部品・試作の順番 | 未 |
 | [99](99-journal.md) | 作業記録 | 随時 |
 
