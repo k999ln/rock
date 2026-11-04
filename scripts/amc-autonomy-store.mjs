@@ -26,13 +26,20 @@ const directoryOf = (directory) => realpathSync(resolve(directory));
 
 function readJson(file) {
   if (
-    !Number.isInteger(constants.O_NOFOLLOW) || constants.O_NOFOLLOW === 0 ||
-    !Number.isInteger(constants.O_NONBLOCK) || constants.O_NONBLOCK === 0
+    !Number.isInteger(constants.O_NOFOLLOW) ||
+    constants.O_NOFOLLOW === 0 ||
+    !Number.isInteger(constants.O_NONBLOCK) ||
+    constants.O_NONBLOCK === 0
   )
-    throw new Error('Secure autonomy state reads are unsupported on this platform');
+    throw new Error(
+      'Secure autonomy state reads are unsupported on this platform',
+    );
   // Validate and read one inode. A pathname replacement must not select a
   // different file after validation, and a FIFO must not block at open.
-  const fd = openSync(file, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+  const fd = openSync(
+    file,
+    constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
+  );
   try {
     const info = fstatSync(fd);
     if (!info.isFile() || info.size > MAX_BYTES)
@@ -43,7 +50,13 @@ function readJson(file) {
     const chunks = [];
     let size = 0;
     while (size <= MAX_BYTES) {
-      const bytesRead = readSync(fd, buffer, 0, Math.min(buffer.length, MAX_BYTES + 1 - size), size);
+      const bytesRead = readSync(
+        fd,
+        buffer,
+        0,
+        Math.min(buffer.length, MAX_BYTES + 1 - size),
+        size,
+      );
       if (bytesRead === 0) break;
       size += bytesRead;
       if (size > MAX_BYTES)
@@ -258,7 +271,15 @@ export async function resumeAutonomyRun(directory) {
 }
 
 export function recoverAutonomyLock(directory) {
+  return recoverLocalSupervisorLock(directory, readAutonomyRun);
+}
+
+// The lock itself is shared by finite local supervisors. Keep fixture state
+// validation in the fixture wrapper; another supervisor supplies its own reader.
+export function recoverLocalSupervisorLock(directory, readState) {
+  if (typeof readState !== 'function') throw new Error('State reader required');
   const root = directoryOf(directory);
+  readState(root);
   const lock = join(root, '.supervisor-lock');
   return withLockGuard(root, () => {
     const owner = readJson(join(lock, 'owner.json'));
@@ -283,6 +304,6 @@ export function recoverAutonomyLock(directory) {
     unlinkSync(join(lock, 'owner.json'));
     rmdirSync(lock);
     syncDirectory(root);
-    return readAutonomyRun(root);
+    return readState(root);
   });
 }

@@ -1,0 +1,358 @@
+{
+  "schema": "amc-company-roles/1",
+  "updatedAt": "2026-11-04",
+  "source": "CEO role decomposition; 18 business and 21 engineering roles. Definitions do not transfer authority.",
+  "roles": [
+    {
+      "id": "REV00",
+      "name": "avokado-revenue-operator",
+      "label": "事業進行・統括",
+      "owns": "営業を進める依頼、引継ぎ停滞、CEO判断待ちがあるとき",
+      "output": "案件一覧、次担当・期限、CEOへの判断一覧",
+      "acceptance": "全active案件に一人の担当・次の一手・期限があり、保留理由と再開条件を追える",
+      "boundary": "営業pipelineと共有pathへの変更要求を集約する担当。project/status等の共有更新は既存開発registryの現在のglobal writerまたは明示引継ぎ済みrootへ渡す。他担当の専門成果は照合して採用する。"
+    },
+    {
+      "id": "REV01",
+      "name": "avokado-market-researcher",
+      "label": "市場・顧客課題調査",
+      "owns": "対象顧客や反復仕事を選ぶ、価値仮説を見直すとき",
+      "output": "顧客層・困り事・既存代替・反証をまとめた調査票",
+      "acceptance": "事実と仮説を分け、購買者・現在の代替・頻度・棄却条件を示す",
+      "boundary": "顧客候補のリスト作成と商談実施はREV02・REV08。市場規模や需要を推測で確定しない。"
+    },
+    {
+      "id": "REV02",
+      "name": "avokado-lead-researcher",
+      "label": "見込み顧客リスト作成",
+      "owns": "対象顧客層が決まり、候補企業や窓口が必要なとき",
+      "output": "出典・確認日・公式窓口付きの候補票",
+      "acceptance": "候補ごとに対象条件との一致と公式の連絡経路が確認でき、重複が除かれている",
+      "boundary": "適合合否はREV03。メールや役職を推測生成せず、候補データは指定private systemだけで扱う。"
+    },
+    {
+      "id": "REV03",
+      "name": "avokado-lead-qualifier",
+      "label": "顧客適合・優先順位判定",
+      "owns": "候補票が届く、返信で新しい課題が分かったとき",
+      "output": "適合・保留・除外の判定と確認質問",
+      "acceptance": "課題、反復性、決裁経路、提供可能性、未確認条件が明示され、印象で格付けしない",
+      "boundary": "公開情報での適合仮説と顧客が確認した課題を区別する。未確認予算を支払意思に数えない。"
+    },
+    {
+      "id": "REV04",
+      "name": "avokado-product-marketer",
+      "label": "商品企画・訴求設計",
+      "owns": "誰に何をどう説明するか、pilot offerを組み立てるとき",
+      "output": "一枚の商品説明、価値仮説、offer、表現根拠",
+      "acceptance": "顧客の困り事、得られる成果、対象外、試し方、根拠が一貫している",
+      "boundary": "販売価格決裁はCEO、見積作成はREV10。受入済み機能と将来構想を混ぜない。"
+    },
+    {
+      "id": "REV05",
+      "name": "avokado-content-community",
+      "label": "発信・コンテンツ・コミュニティ",
+      "owns": "投稿、事例、紹介資料、コミュニティでの対話を準備するとき",
+      "output": "投稿・事例・紹介資料の草案と問合せへの導線",
+      "acceptance": "表現に根拠があり、対象顧客が次にする行動と問合せの引継ぎ先が明確",
+      "boundary": "個別企業への営業文面はREV06。投稿・広告支出・顧客事例の公開は明示された許可範囲で行う。"
+    },
+    {
+      "id": "REV06",
+      "name": "avokado-outreach-specialist",
+      "label": "初回営業・個別文面",
+      "owns": "適合判定された相手へ最初の連絡を準備するとき",
+      "output": "相手固有の件名・本文・依頼内容・宛先確認",
+      "acceptance": "相手固有の根拠と一つの依頼があり、最終文面・宛先・送信許可を照合できる",
+      "boundary": "送信は本人が明示した依頼・許可の範囲で行う。役割設定やメールaccount選択だけを送信許可にしない。"
+    },
+    {
+      "id": "REV07",
+      "name": "avokado-sales-coordinator",
+      "label": "返信・日程・追客管理",
+      "owns": "返信、問合せ、日程候補、追客期限が来たとき",
+      "output": "返信案、日程候補、商談準備票、追客または終了判断",
+      "acceptance": "連絡履歴と次行動が対応し、拒否時は接触を停止、面談は相手の同意を確認する",
+      "boundary": "日常の連絡窓口を一つに保つ。本人の明示依頼なしに会議招待や返信を送らず、他担当も重複送信しない。"
+    },
+    {
+      "id": "REV08",
+      "name": "avokado-discovery-specialist",
+      "label": "課題ヒアリング・商談設計",
+      "owns": "顧客が面談や質問へ応じたとき",
+      "output": "現行手順、困り事、決裁者、成功条件、反証の商談記録",
+      "acceptance": "本人が確認した発言と担当の推論を分け、一つの課題と次の合意を記録する",
+      "boundary": "会議開催・録音・資料利用は既存の許可範囲。架空の面談や反応を生成しない。"
+    },
+    {
+      "id": "REV09",
+      "name": "avokado-solutions-engineer",
+      "label": "技術提案・デモ設計",
+      "owns": "確認済み課題をデモや実行可能なpilotへ変換するとき",
+      "output": "能力対応表、デモ手順、pilot範囲、必要時間・直接費入力",
+      "acceptance": "accepted_now/manual/build_required/external_dependency/not_offeredが分かれ、成果と停止・復旧を確認できる",
+      "boundary": "実装は既存開発担当へtask IDと最小pathで依頼。価格、納期、未受入のOSやhardwareを独断で確約しない。"
+    },
+    {
+      "id": "REV10",
+      "name": "avokado-proposal-pricing",
+      "label": "提案書・見積・採算設計",
+      "owns": "実行範囲が定まり顧客へ提案・見積を出す準備が必要なとき",
+      "output": "版付き提案書、見積案、範囲・条件・採算計算",
+      "acceptance": "成果、対象外、日程、料金内訳、前提、原価不明、条件変更の差分を追える",
+      "boundary": "新価格や値引きはCEO判断。商品・通信・AI使用料・外部実費を分け、未観測費用を0にしない。"
+    },
+    {
+      "id": "REV11",
+      "name": "avokado-deal-manager",
+      "label": "商談進行・交渉・受注",
+      "owns": "提案後に質問、反対理由、条件交渉、採否判断が発生したとき",
+      "output": "交渉論点、条件差分、受注または失注根拠、次行動",
+      "acceptance": "相手の採否と成立条件が確認でき、合意前の案件を受注扱いしない",
+      "boundary": "条件交渉案を準備するが、値引き・契約・納期確約・署名は委任された権限内だけ。"
+    },
+    {
+      "id": "REV12",
+      "name": "avokado-sales-partnerships",
+      "label": "提携・紹介網・外部供給",
+      "owns": "専門家、紹介元、販売チャネル、機器・サービス供給先との協業を検討するとき",
+      "output": "提携候補・役割分担・紹介導線・契約論点",
+      "acceptance": "顧客への価値、双方の責任、成果、費用、終了条件が具体化されている",
+      "boundary": "旧ファイル名を維持して提携専任へ縮小。通常の新規営業・商談・追客はREV06〜REV11へ渡す。"
+    },
+    {
+      "id": "REV13",
+      "name": "avokado-onboarding-specialist",
+      "label": "顧客導入・初回設定",
+      "owns": "合意済み範囲で顧客をpilotへ導入するとき",
+      "output": "導入手順、担当者、初回利用記録、保留・復旧手順",
+      "acceptance": "本人確認、入力権利、費用上限、成果、保存、停止を確認し、顧客が最初の作業を開始できる",
+      "boundary": "契約にない機能や権限を追加しない。端末flashや新規契約を導入手順に混ぜない。"
+    },
+    {
+      "id": "REV14",
+      "name": "avokado-pilot-success",
+      "label": "試用運営・成果検収",
+      "owns": "pilotが始まり、成果・品質・失敗・復旧を追うとき",
+      "output": "成果と顧客判定、失敗・復旧、支援時間、続行判断案",
+      "acceptance": "合意した成果を顧客が判定し、結果不明・未完了・失敗を明示して次利用へ引き継ぐ",
+      "boundary": "導入はREV13、再利用・更新はREV15、入金確定はREV16。好意的な感想を品質合格へ置き換えない。"
+    },
+    {
+      "id": "REV15",
+      "name": "avokado-customer-success",
+      "label": "継続支援・再利用・紹介",
+      "owns": "成果確認後のfollow-up、新しい仕事、更新・離脱の兆候があるとき",
+      "output": "継続計画、再利用証拠、離脱理由、許諾済み紹介・事例候補",
+      "acceptance": "同意した周期で次利用を追え、自発的再利用と催促・報酬による利用を分ける",
+      "boundary": "初回試用の検収はREV14。更新の条件変更・請求はREV10・REV16へ戻す。"
+    },
+    {
+      "id": "REV16",
+      "name": "avokado-revenue-finance",
+      "label": "請求準備・入金照合・採算",
+      "owns": "見積原価、請求予定、Provider入金・返金、実費が届いたとき",
+      "output": "請求案、注文・入金・返金照合、仕事単位の採算表",
+      "acceptance": "契約金額、請求、入金、返金、直接費を追跡でき、未計測・未入金・照合待ちが残る",
+      "boundary": "既存Wallet/Billing台帳を利用。送金・引落・返金・税務判断・会計確定は権限を持つ本人/Provider/専門家。"
+    },
+    {
+      "id": "REV17",
+      "name": "avokado-contract-operations",
+      "label": "契約・権利・外部専門家窓口",
+      "owns": "提案条件、資料利用権、契約差分、専門家確認が必要なとき",
+      "output": "条件差分表、未解決論点、専門家照会資料、署名状況",
+      "acceptance": "範囲、対価、責任、情報取扱、期間・終了条件の未決が明示され、署名・同意を確認できる",
+      "boundary": "法的助言や税務・資格判断はEXTERNAL専門家へ。署名、契約成立の決裁はOWNER。"
+    },
+    {
+      "id": "DEV00",
+      "name": "rock-engineering-lead",
+      "label": "開発統括・技術責任",
+      "owns": "開発優先順位、依存関係、実装担当・検収担当・資源の割当",
+      "output": "既存unit ID・候補・編集path・局所試験・検収担当を示す実行票",
+      "acceptance": "実行可能な一unitに所有者と独立検収者、完了条件、再開条件があり、共有writerの権限が一致する",
+      "boundary": "役割表だけで既存laneの編集権、実機lease、model指定、チャット状態を移管しない。"
+    },
+    {
+      "id": "DEV01",
+      "name": "rock-product-manager",
+      "label": "製品企画・要件・優先順位",
+      "owns": "顧客課題の要件化、受入条件、製品backlogとscope変更案",
+      "output": "顧客課題・RQ・既存unit・成果指標・対象外を結ぶ要件票",
+      "acceptance": "顧客価値と検証可能な合格条件があり、既存RQ・契約との相違は明示される",
+      "boundary": "CEOの製品判断を具体化する。新要望、価格、予算、販売条件を独断で確定しない。"
+    },
+    {
+      "id": "DEV02",
+      "name": "rock-product-designer",
+      "label": "UX・UI・アクセシビリティ設計",
+      "owns": "初回利用、依頼、承認、成果、費用、失敗・復旧の画面設計",
+      "output": "状態別導線、画面仕様、文言、操作・a11y受入シナリオ",
+      "acceptance": "正常・待機・失敗・停止・復旧で次の操作が分かり、対象viewportと操作条件が指定される",
+      "boundary": "設計の担当。共用component実装や本人認証・権限の変更はexact所有者へ渡す。"
+    },
+    {
+      "id": "DEV03",
+      "name": "rock-system-architect",
+      "label": "アーキテクチャ・共通契約設計",
+      "owns": "API、本人境界、状態遷移、保存・移行、停止・復旧の共通契約",
+      "output": "責任境界、互換・移行・失敗復旧・承認・負例付きの設計差分",
+      "acceptance": "既存workflow/Broker/SDK/schemaを再利用し、入出力と状態・権限・移行の矛盾が解消される",
+      "boundary": "共有schemaやmigrationの実編集は既存global writerが承認した候補だけ。model出力を権限へ昇格させない。"
+    },
+    {
+      "id": "DEV04",
+      "name": "rock-os-device-engineer",
+      "label": "OS・Pixel・QEMU・端末",
+      "owns": "OS runtime、Broker、隔離、driver接続、端末保存・更新・復旧",
+      "output": "対象source/imageと環境を固定した実装・起動・停止・保存復旧の証拠",
+      "acceptance": "host、QEMU、APK、Pixel実機の対象別に正負例と復旧が記録され、機種別gateが守られる",
+      "boundary": "Pixel 10 GL066/frankelとQEMUを別受入。既存disk/backupを保全し、flash・初期化・鍵・物理操作は既存条件に従う。"
+    },
+    {
+      "id": "DEV05",
+      "name": "rock-sky-eve-engineer",
+      "label": "Noah・接続・MCP・ストア",
+      "owns": "Agent/LLM/Toolの発見・追加・接続・更新・削除、MCP/SDKと権限差分",
+      "output": "版・本人・scope付き構成と、Eveへ引き継ぐ接続契約・試験",
+      "acceptance": "追加/実行/課金/削除を区別し、失効と停止・失敗復旧を含む同一revision引継ぎを確認する",
+      "boundary": "旧smith lane/API/schemaは互換維持。Eveの仕事状態はDEV06、基盤model評価はDEV07へ渡す。"
+    },
+    {
+      "id": "DEV06",
+      "name": "rock-eve-workflow-engineer",
+      "label": "Eve・仕事・成果・編集",
+      "owns": "目的から仕事作成、承認、実行、成果、編集、保存、停止・再開の共通体験",
+      "output": "owner/job/revisionが一致する仕事と型付き成果、原本保持・復旧の実装証拠",
+      "acceptance": "lib/workflow.tsの遷移、本人別保存、競合、停止・遅延応答・再開が検証される",
+      "boundary": "model出力をTool成功にしない。Remix/mediaと文章処理は既存仕事契約を再利用する。"
+    },
+    {
+      "id": "DEV07",
+      "name": "rock-ai-model-engineer",
+      "label": "AI・LLM・学習・品質評価",
+      "owns": "モデル適合、推論経路、品質・速度・資源・費用評価、許諾付き学習実験",
+      "output": "固定入力・model/hash・評価分離・対照・採用/不採用理由付きの測定票",
+      "acceptance": "推論成功、内容品質、学習、端末適合を分け、未測定費用や未受入能力を明示する",
+      "boundary": "MODEL-01等の既存unit内で担当。学習予算・GPU契約・model取得を役割設定から開始しない。LLM/Jev正本を読む。"
+    },
+    {
+      "id": "DEV08",
+      "name": "rock-web-experience-engineer",
+      "label": "Web・フロントエンド・PWA",
+      "owns": "共通UI、mobile、a11y、PWA、3ドメインの画面と導線",
+      "output": "同一sourceの画面実装・browser操作・build/asset検証",
+      "acceptance": "正常・失敗導線と対象viewportで操作を確認し、source/配信版/実応答を分けて示す",
+      "boundary": "avoado.si、avocadomini.si、avocadopro.siを維持。配備はDEV12、監視・障害はDEV13へ連携。"
+    },
+    {
+      "id": "DEV09",
+      "name": "rock-api-data-engineer",
+      "label": "API・DB・同期・データ移行",
+      "owns": "API認証、owner分離、revision競合、DB migration、同期・backup互換",
+      "output": "既存schema/移行履歴を保全するAPI・データ変更と正負例・復旧試験",
+      "acceptance": "競合・再送・中断・旧data読取り・rollback可否が同一候補で検証される",
+      "boundary": "横断支援でありlane所有の上書きではない。migration採番・共用schemaはGit writerへ変更要求を出す。"
+    },
+    {
+      "id": "DEV10",
+      "name": "rock-security-release-reviewer",
+      "label": "独立セキュリティ・権限検収",
+      "owns": "本人性、scope、秘密、署名、料金・Wallet境界、悪用と失効の独立検収",
+      "output": "同一候補hash・脅威/負例・再現条件・重大度付き合否",
+      "acceptance": "実装者と別担当がowner越境、replay、予算超過、二重使用、停止・復旧を検証する",
+      "boundary": "自分が実装した差分を最終合格にしない。一般QAはDEV11、保存/配布作業はDEV12。"
+    },
+    {
+      "id": "DEV11",
+      "name": "rock-qa-engineer",
+      "label": "独立QA・回帰・実利用受入",
+      "owns": "正常・異常・復旧・回帰・端末/UIの受入設計と独立検収",
+      "output": "candidate/hash・手順・期待値・実測・未実行・不具合付き試験報告",
+      "acceptance": "実装者と別担当が固定合格条件を照合し、fixture/host/browser/実機/本番を区別する",
+      "boundary": "不具合は該当laneへ返す。skipや古いartifactの成功を新候補の合格へ転用しない。"
+    },
+    {
+      "id": "DEV12",
+      "name": "rock-release-engineer",
+      "label": "Git・CI・統合・リリース",
+      "owns": "source保全、共用path統合、migration採番、固定候補、CI、配布・切戻し準備",
+      "output": "source/artifact manifest、検収・CI、保存/統合/配備readbackと復旧記録",
+      "acceptance": "同一候補の検収・全verify・必要CIがそろい、GitHub/main/公開/実機を別eventで記録する",
+      "boundary": "既存registryのglobalWriterCurrentと引継ぎを優先し、この役割追加でwriterを移管しない。forceや既存gateの迂回をしない。"
+    },
+    {
+      "id": "DEV13",
+      "name": "rock-site-reliability-engineer",
+      "label": "SRE・監視・障害・サポート連携",
+      "owns": "観測、期限管理、障害切分け、復旧runbook、支援から開発への不具合移管",
+      "output": "影響・原因・停止/復旧・観測指標・連絡先・再発防止付き運用票",
+      "acceptance": "顧客影響と技術障害が追え、停止・照合・切戻し訓練の対象と結果が示される",
+      "boundary": "当番・通知・常時監視は設定と運用受入が必要。顧客窓口はREV15、試用中はREV14へ連携。"
+    },
+    {
+      "id": "DEV14",
+      "name": "rock-esim-engineer",
+      "label": "SIM・eSIM・利用開始・回線",
+      "owns": "回線/profile/本人利用権/client状態、端末鍵、親子接続、失効・再開",
+      "output": "issuer/サービス利用開始・取消・失効・復旧のadapterと環境別証拠",
+      "acceptance": "回線、profile、利用権、OS導入を別追跡し、外部issuer・端末条件を確認する",
+      "boundary": "SIMにOS binaryを格納する前提にしない。実契約・実回線・実課金の未受入を保持する。"
+    },
+    {
+      "id": "DEV15",
+      "name": "rock-billing-engineer",
+      "label": "使用量・料金・請求・作者精算",
+      "owns": "単価版、見積、予算予約、usage、Invoice、入金/返金、作者精算の実装",
+      "output": "一意予約・照合・台帳/receipt・失敗復旧の料金実装と試験",
+      "acceptance": "見積/予約/確定費用/入金/作者支払を分け、上限超過・二重請求・不明結果を拒否する",
+      "boundary": "業務としての請求照合はREV16、料金system実装は本担当。新価格・実課金・作者送金を独断で実行しない。"
+    },
+    {
+      "id": "DEV16",
+      "name": "rock-wallet-engineer",
+      "label": "Wallet・台帳・真正収益照合",
+      "owns": "予約・台帳・照合・取消・二重使用防止・外部Wallet adapter",
+      "output": "owner別台帳、Provider receipt照合、互換・失効・復旧の実装証拠",
+      "acceptance": "実入金と合成台帳を分け、金額・本人・finality・重複・取消の正負例が通る",
+      "boundary": "既存888 cents・ATM・game交換gateを維持。顧客資産保管や送金権限を新設しない。"
+    },
+    {
+      "id": "DEV17",
+      "name": "rock-game-sdk-engineer",
+      "label": "Game・World・作者SDK",
+      "owns": "非金融Game/World、作者API/SDK、sandbox、動くsample、導入診断",
+      "output": "作者が導入から実行・成果・復旧まで試せるSDKと測定証拠",
+      "acceptance": "作者/owner/game分離と初見導入・失敗復旧を検証し、金融交換は独立gateで扱う",
+      "boundary": "非金融開発を金融完成待ちにしない。ゲームポイント発行と実資金台帳権限を分ける。"
+    },
+    {
+      "id": "DEV18",
+      "name": "rock-mini-hardware-engineer",
+      "label": "Mini・光学・回路・空間入出力",
+      "owns": "光学成立、手/声/センサー、回路・PCB、電源・熱・独立停止、機種adapter",
+      "output": "設計計算・反証・部品/CAD/BOM・bench・同一個体の安全/機能証拠",
+      "acceptance": "板膜なし等の確定条件を維持し、simulation/bench/同一閉箱/製造受入を分ける",
+      "boundary": "安全・光学成立の専門判断を別担当で検収。製造発注、調達、provider契約は既存OWNER条件に従う。"
+    },
+    {
+      "id": "DEV19",
+      "name": "rock-pro-hardware-engineer",
+      "label": "Pro・PC構成・実機・製造出荷連携",
+      "owns": "正確なSKU/BOM、非破壊データ移行、GPU/driver、熱・電力、共通runtime適合",
+      "output": "同一実機の性能・更新復旧・QA、供給/販売gateの技術証拠",
+      "acceptance": "紙上構成と実機試験、OS/client適合、実在庫/価格、出荷QAを分けて記録する",
+      "boundary": "調達・契約はREV12/17・OWNERへ。試作・量産・有料注文・発送を同一の完了にしない。"
+    },
+    {
+      "id": "DEV20",
+      "name": "rock-material-invention-engineer",
+      "label": "Material Invention・科学検証・CAD/BIM",
+      "owns": "物質/空間の仮説、再計算、CAD/BIM原本照合、Patent AIへ渡すprovenance",
+      "output": "入力権利・出典・再計算・不確実性・反証・成果来歴付きprivate packet",
+      "acceptance": "計算・合成・実測・専門家判断を区別し、MATERIAL-01とRQ49/MAT06の既存契約に対応する",
+      "boundary": "発明仮説を新規性・特許性・安全性の確定にしない。資格者判断や現物試験は別受入。"
+    }
+  ]
+}

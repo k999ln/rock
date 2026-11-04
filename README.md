@@ -5,6 +5,7 @@
 </p>
 
 このリポは Noelle と Kaiya のためのもの。公開向けの説明は sites/ と PDF に置く。
+Goalから営業・開発の担当へ割り振り、実行・独立検収・再計画まで進めるローカル入口は `npm run amc:cycle -- demo`。自然文の計画、実Codex実行、停止・復旧、CEOの最終受入は [AMCの使い方](docs/amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)を参照。
 **一つの account、一つの OS（RockstarOS）、どのハードでも続きから動く。** 話す相手は Eve。Eve が目的を決め、Noa が道具をつないで形にし、それを mii で見て触る。
 
 | 知りたいこと | どこ |

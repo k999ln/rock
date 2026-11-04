@@ -1,0 +1,133 @@
+{
+  "schema": "amc-goal-cycle-validation/1",
+  "recordedAt": "2026-11-04T08:23:36.857Z",
+  "scope": "Finite local supervisor and synthetic pilot fixtures; no real customer, external outreach, provider billing, physical device, deployment or main integration acceptance.",
+  "baseMainSha": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
+  "branch": "codex/goal-backward-cycle-20261104",
+  "roles": {
+    "business": 18,
+    "engineering": 21
+  },
+  "dedicatedTests": {
+    "total": 33,
+    "passed": 33
+  },
+  "fullVerify": {
+    "exitCode": 0,
+    "nodeTests": 3961,
+    "nodePassed": 3957,
+    "nodeFailed": 0,
+    "nodeSkipped": 4,
+    "apiAssertions": 1918,
+    "csvAssertions": 385,
+    "logSha256": "8cb1900221199d0728a5270701d4fd1c86e8641ebd45d11cd1f9d4bed282cf21",
+    "logPath": "/private/tmp/amc-cycle-verify-final.log"
+  },
+  "localDemo": {
+    "tasks": 4,
+    "actualFiles": 4,
+    "workerAttempts": 5,
+    "invocations": 10,
+    "rejections": 1,
+    "finalPhase": "awaiting_owner_acceptance",
+    "modelUsed": false
+  },
+  "actualCodex": {
+    "finalPhase": "awaiting_owner_acceptance",
+    "task": {
+      "id": "memo",
+      "role": "REV04",
+      "reviewer": "REV09",
+      "status": "done",
+      "attempts": 1,
+      "dependsOn": []
+    },
+    "invocations": "2/4",
+    "runDirectory": "/private/tmp/amc-cycle-codex-1ODK7H/run-reconciled",
+    "separateReadOnlyReviewer": true,
+    "originalSandboxAttempt": "Startup denied before artifact creation; intent retained. Absence of memo verified before a separate run with existing local Codex state access. No automatic replay.",
+    "logDigests": [
+      {
+        "name": "4df74292-5c3b-47fe-9b46-9683fd12e224/codex-events.jsonl",
+        "sha256": "f7dcc685b19d30a3b434c88f27c43aabeb6b639498298c4f357add4b74e695e5"
+      },
+      {
+        "name": "4df74292-5c3b-47fe-9b46-9683fd12e224/proposal.raw.json",
+        "sha256": "c4d43047cce4f8d04bcef0a069c804bbe15416e9aa10f70560b8061eb0217617"
+      },
+      {
+        "name": "eea81a31-7deb-4033-9a68-a0effed18ff9/codex-events.jsonl",
+        "sha256": "803aaa8f008c35baa95775299d9c24925f72a927bd92728f9ffd60109947a8d4"
+      },
+      {
+        "name": "eea81a31-7deb-4033-9a68-a0effed18ff9/codex-report.json",
+        "sha256": "9f0cb2d2bde6533de83f64e7529d59256061bce9b7e59e7d35b5dc6ee3c8bd9f"
+      }
+    ]
+  },
+  "naturalLanguagePlanner": {
+    "planId": "hypothetical-pilot-local-drafts-v1",
+    "tasks": [
+      {
+        "id": "T01",
+        "roleId": "REV09",
+        "reviewerRoleId": "DEV11",
+        "dependsOn": []
+      },
+      {
+        "id": "T02",
+        "roleId": "REV00",
+        "reviewerRoleId": "REV03",
+        "dependsOn": [
+          "T01"
+        ]
+      },
+      {
+        "id": "T03",
+        "roleId": "DEV11",
+        "reviewerRoleId": "DEV01",
+        "dependsOn": [
+          "T01",
+          "T02"
+        ]
+      }
+    ],
+    "goalCriteria": 4,
+    "unapproved": true,
+    "planSha256": "8ff8cf2529c05d8b6ac8a477675cd2117747ab87e5db0d39dad7ddd2553e3fef"
+  },
+  "finalSources": [
+    {
+      "path": "scripts/amc-backward-plan.mjs",
+      "sha256": "e7d054cf902d0658d90c07e998a8292f3628322a00c658df90b1b3af9940e268"
+    },
+    {
+      "path": "scripts/amc-goal-cycle.mjs",
+      "sha256": "f1885c3db0dc8c94f719e0b4e2ac0072e3ca82acf9f4e6d56f867f023d35200f"
+    },
+    {
+      "path": "scripts/amc-goal-cycle-codex.mjs",
+      "sha256": "a68b7f879ff0c554d343534e81a69ed986fb5c16a14f47141c4a1e7a10c77742"
+    },
+    {
+      "path": "scripts/amc-goal-cycle-demo.mjs",
+      "sha256": "303b55c9cca1790c6166257275059f6987a2c91ead7fc878aa308c9211faef19"
+    },
+    {
+      "path": "scripts/amc-goal-cycle-cli.mjs",
+      "sha256": "4405b32f8219f7736fe77be22a75629a3b0c6141efd117bf276d555cc0f775c9"
+    },
+    {
+      "path": "scripts/amc-autonomy-store.mjs",
+      "sha256": "d480a4a55dba20aa1e7a730f52e618c3411c2aeb230df9a108b973298af6a949"
+    },
+    {
+      "path": "tests/amc-goal-cycle.test.mjs",
+      "sha256": "dcd04d57157293cff63d4f56f4853b433312421e8280468b08eb886b1c78f4c3"
+    },
+    {
+      "path": "data/amc/company-roles.json",
+      "sha256": "22e0e51db962a88bbe3ecee59374a2bbdd40c4d2791e562d9fb56fa60b8ba1dc"
+    }
+  ]
+}

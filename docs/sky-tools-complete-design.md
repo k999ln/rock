@@ -843,7 +843,9 @@ Goal fileの読込中は検証・保存を無効にして状態を表示する�
 
 未決は、保持・完全削除（OWNER方針＋ROCKの消去／復元試験）、認証済み別担当の検収（ROCKのrole／actor設計）、LLM・実行先接続（OWNERの対象／費用／送信同意＋個別adapter受入）、実ブラウザ／配備（同一候補の導線と本人分離のreadback）で閉じる。これらがない段階では新しいmodelやcloud環境を契約・導入せず、既存準備計画と手動台帳の範囲に留める。
 
-正本: [AMC Goal Orchestrator](amc-goal-orchestrator.md)、[AMC部隊と進捗](mission-control.md)、`scripts/amc-request-plan.mjs`、`scripts/amc-goal-engine.mjs`、`scripts/amc-codex.mjs`、`lib/amc-tool.ts`、`lib/workflow.ts`、`app/api/amc/route.ts`。
+ローカルの追加入口（2026-11-04本人指示）: `npm run amc:cycle -- demo`、自然文からのread-only計画、営業18役/開発21役への逆算割当、明示承認後の有限Codex実行、別process read-only検収と安全な局所不備の上限内再計画を[既存Goalへ接続](amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)。入力はGoal/意図/条件/依存/役割/期限/上限、出力は未承認plan・私有run内のGoal正本/receipt/成果物hash。停止・不明結果はintentを残し再送禁止。最終OWNER受入、外部action hold、Sky authorityを維持する。実model費用のmeter、本番Jev、Web保存との自動同期は未接続。既存fixture専用autonomyを実executorへ偽装しない。
+
+正本: [AMC Goal Orchestrator](amc-goal-orchestrator.md)、[AMC部隊と進捗](mission-control.md)、`scripts/amc-request-plan.mjs`、`scripts/amc-goal-engine.mjs`、`scripts/amc-codex.mjs`、`scripts/amc-goal-cycle-cli.mjs`、`lib/amc-tool.ts`、`lib/workflow.ts`、`app/api/amc/route.ts`。
 
 ### 部隊ボードの文字列表示境界（SPIDER cycle 42）
 

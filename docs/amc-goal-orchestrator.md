@@ -2,6 +2,42 @@
 
 H1 / AMC02。依頼からGoalと意図を確認し、部隊案・準備工程・仮工数・Goal用指示文・進捗台帳を作る。既存standalone HTML／CLIを保持し、Skyの第一者ToolとZema内の専用画面にも接続する。Web版は本人認証と既存D1を使い、Webからsiを直接起動しない。ローカルCodex CLIの明示的な一件実行は別入口で、新しいWorker・DB・model・常駐executorは追加しない。
 
+## Goalから逆算するローカル実行と再計画
+
+2026-11-04の本人指示。主担当はGit / CI / Operations（ROCK / G04）、既存AMC02・AMC06の継続範囲。`scripts/amc-backward-plan.mjs` と `scripts/amc-goal-cycle*.mjs` が既存compiler/reducer・Codex executor・read-only plannerへ接続する。正本の32部隊と別に、`data/amc/company-roles.json` の営業18役・開発21役を工程へ割り当てる。CEOはGoal・優先順位・権限・上限と最終受入を決める。
+
+一周は **Goalと全体合格条件 → 必要な成果 → 前提作業 → 実行担当/独立検収担当 → 計画承認 → 実行 → 実物の検収 → 合格なら後続、既知の局所不備なら再計画 → CEOの最終受入**。各全体条件に末端taskを結び、依存を逆向きにたどる。循環、無関係な作業、未知の役割、自己検収、未定義の検証、順序のない成果物所有競合、不正pathは採用しない。モデルによる意味分解の妥当性は本人が計画時に確認する。
+
+まず `npm run amc:cycle -- demo` を実行できる。隔離temp directoryへ、顧客課題仮説・価値提案草案・技術受入条件・CEO判断資料の4ファイルを実際に作る。価値提案を一度差し戻し、同じ条件で修正・再検収し、最後は `awaiting_owner_acceptance` で止まる。これは決められたローカル処理のデモで、実Codex・実営業・需要検証の成功とは分ける。出力にworkspaceとrunの絶対pathを表示する。
+
+実際の依頼では、既存Codexの認証・モデル設定を利用する。コマンドの `<...>` は自分の絶対pathへ置き換える。
+
+```sh
+npm run amc:cycle -- plan --request '達成するGoal' --intent '誰の何を良くするか' --allow-codex-upload
+npm run amc:cycle -- init --plan <出力されたplan.json> --directory <私有run directory>
+npm run amc:cycle -- status --directory <私有run directory>
+npm run amc:cycle -- approve --directory <私有run directory> --owner ceo --revision 0
+npm run amc:cycle -- run --directory <私有run directory> --allow-codex-upload
+```
+
+`plan` はread-only Codexが自然文から役割・手順・出力path・条件・依存を持つ未承認候補を作る。初期候補のmaxAttemptsPerTask（1〜5）、maxTotalAttempts（1〜100）、maxInvocations（1〜200）、stepTimeoutMs（50〜1800000）を確認・調整してから `init` する。期限はtimezone付きISO日時かnull、見積分数は正の数かnull。逆算した最遅開始は1実行枠の順序に基づく仮見積りで、criticalMinutesは依存だけで決まる下限。工数不明を0として計算しない。呼出し回数上限は金額上限ではなく、実Codex料金の計測・予約・課金は既存利用環境側で別に管理する。
+
+`run` は有限・逐次実行。担当役割の指示を渡したworkspace-write Codex workerと、別の新しいprocessで動くread-only Codex reviewerを分ける。成果物の実在・size・SHA-256を保存し、提出後/検収中/最終受入までの版不一致を止める。reviewerは各条件の実測・観察内容を記録し、自己申告やファイル名だけで合格にしない。read-onlyで確認できない条件は不合格にして不足証拠を返す。このローカルreviewは本番Jev・本人認証済みの別人検収を代用しない。
+
+再計画は2種類。reviewerが「同じ許可範囲で安全に直せる既知の不備」と判定した場合、元の条件・権限・成果物を変えず、検収の指摘を渡してそのtaskだけ上限内で再試行する。依存先は検収合格まで進まない。条件・期限・権限の変更、retry上限、owner task、質問、処理不明は `handoff` と理由を残す。`plan --previous <run directory> --feedback '変更の理由' --allow-codex-upload` は別の未承認候補を作り、元のGoal・失敗・承認・検収を上書きも引継ぎもしない。新候補も本人が確認する。
+
+保存は私有runの `state.json` 一つを正本とし、元計画・役割snapshot・Goal・CAS版・試行/呼出し予約・履歴と現在intentを持つ。`operations/` に実物hashとworker/reviewer/ownerのreceipt、`executors/` にCodex記録を残す。Gitには原文・顧客情報・実行ログを入れず、コード・schema・必要な検証要約だけ保存する。modeや計画の変更をhash不一致として拒否し、同じrunのprocess lockで多重supervisorを拒否する。これは信頼されたローカル操作の整合機構であり、同じUnix利用者による任意改変を防ぐ認証境界ではない。別runを同じ編集先へ同時に動かさず、専用checkoutを使う。
+
+停止は `npm run amc:cycle -- stop --directory <run directory>`。工程間の停止だけ `resume --directory <run directory> --revision <現在版>` で明示再開できる。実行中の停止/timeout/process障害はintentと予約を残して不明扱いとし、自動再送しない。process lockが残る場合はprocess終了と成果・ログを照合し、`recover-lock --directory <run directory>` で同一host/uidとowner processの終了を確認して回復する。既存fixtureも同じlock回復を使うがstateの検証は各schemaで維持する。lock回復だけでは不明intentは再実行できない。途中の副作用を自動rollbackしない。
+
+全task合格後は本人が成果を確認し、`[{"criterionId":"Goal条件ID","passed":true,"detail":"対象版と確認した根拠"}]` を私有checks JSONに保存する。`npm run amc:cycle -- accept --directory <run directory> --owner ceo --revision <現在版> --checks <checks JSON>` だけが既存 `accept_goal` を通して最終受入する。条件不足・古い版・検収後に変わった実物は拒否する。本人判断をmodelが代行しない。
+
+実行境界: owner/external taskはholdを持ち、自動workerへ送らない。CLIの `--allow-codex-upload` は本文・対象repository文脈のCodex送信同意で、顧客メール・投稿・契約・支出・公開・実機・実資金は許可しない。Web API・本人D1・Sky authority・既存fixture専用autonomyの境界は変更しない。ブラウザ起動、自動Git保存/PR/merge、本番への自律継続は今回の範囲外。
+
+検証: `node --test tests/amc-goal-cycle.test.mjs tests/amc-autonomy.test.mjs tests/amc-goal-engine.test.mjs tests/amc-codex.test.mjs tests/amc-planner.test.mjs`、`npm run design:check`、`npm run verify`。local demo、注入adapterの負例、実Codex接続、全体回帰を別に記録する。
+
+実施結果: 専用33試験、全体verify（3961件・3957成功・0失敗・4環境skip、API1918＋CSV385）成功。実Codex worker→別process read-only検収→OWNER受入待ち、自然文から営業/開発の3工程・4条件の未承認計画生成を確認。[検証要約・source/log digest](../data/amc/goal-cycle-validation.json)。main未統合のローカル候補。
+
 ## ローカルAMCで依頼に合わせて計画する（AMC06）
 
 `npm run amc:workbench` を実行すると、そのプロセスだけが127.0.0.1の画面を提供する。表示されたURLで担当Botと依頼を選び、送信する内容を確認して「Gitを調べて計画する」を押す。既存Codexの認証・モデル設定を使い、GitHub main／作業branch／PR／CIと担当コードを読んで、作業数・担当・依存・成果物・検証方法を具体化する。追加指示で候補を見直す。旧4部隊7工程は通信しない補助テンプレートとして残す。

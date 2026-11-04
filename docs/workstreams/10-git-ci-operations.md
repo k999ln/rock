@@ -1,3 +1,7 @@
+## Goalからの役割割当・有限実行（2026-11-04 / G04・AMC02・AMC06）
+
+主担当ROCK。本人のGoal逆算要求を[既存AMC Goalのローカル実行](../amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)へ追加。営業18役・開発21役は担当候補、CEO/OWNERは計画・上限・外部行動・最終受入を保持。JOINTのmodel/provider結果は未信頼、EXTERNALの契約や実営業は別の許可条件とする。合格条件は逆算coverage/依存/独立検収/同条件rework/上限/停止不明の再送禁止/証拠付き最終受入。`node --test tests/amc-goal-cycle.test.mjs` と `npm run verify`。branch候補・main・公開を分け、39役を既存32部隊や95unitの完了件数へ加算しない。
+
 <a id="four-lane-priority-20261028"></a>
 ## 全体窓口の集約と4系統の開発優先（本人明示・G04）
 

@@ -1,4 +1,19 @@
 {
+  "goalBackwardCycle": {
+    "updatedAt": "2026-11-04",
+    "owner": "ROCK",
+    "workstream": "Git / CI / Operations",
+    "taskIds": ["G04", "AMC02", "AMC06"],
+    "status": "local_candidate_full_verify_pass_main_not_integrated",
+    "baseMainSha": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
+    "branch": "codex/goal-backward-cycle-20261104",
+    "worktree": "/Users/kaiya/Documents/ChatGPT/avokdo/work/goal-backward-cycle",
+    "roleCount": { "business": 18, "engineering": 21 },
+    "entrypoint": "npm run amc:cycle -- demo",
+    "tests": { "targeted": 33, "passed": 33, "fullVerify": "passed_all_stages", "nodeTests": 3961, "nodePassed": 3957, "nodeSkipped": 4, "realCodex": "actual_worker_and_separate_readonly_reviewer_passed_owner_acceptance_pending" },
+    "evidence": ["data/amc/goal-cycle-validation.json", "tests/amc-goal-cycle.test.mjs", "docs/amc-goal-orchestrator.md", "project.md"],
+    "next": "Use a concrete owner Goal and review its draft plan. Keep main integration, publication and actual business results separate from this verified local implementation."
+  },
   "workerUntrustedResult": {
     "owner": "ROCK",
     "status": "main_integrated_same_sha_ci_pass_host_scoped",
