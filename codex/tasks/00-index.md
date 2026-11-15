@@ -40,6 +40,8 @@
 | 30 | [30-account-continuity.md](30-account-continuity.md) | 別端末で同じ Job / 会話を続ける契約とテスト | |
 | 31 | [31-hardware-profiles.md](31-hardware-profiles.md) | phone / pro / pixel-native profile と Buildroot・Android 系の対応表 | |
 | 32 | [32-service-template-first-three.md](32-service-template-first-three.md) | サービス書式で最初の 3 枚（ヨガ・工場保守・請求書） | |
+| 33 | [33-sky-recipe-planner-wiring.md](33-sky-recipe-planner-wiring.md) | Sky recipe planner を Eve の依頼へつなぐ（正規表現の振り分けは受け皿に） | |
+| 34 | [34-company-order-first-loop.md](34-company-order-first-loop.md) | 会社受注を 1 件、保存・画面・分配の計算まで通す | |
 
 ## 40 番台: 統合
 
