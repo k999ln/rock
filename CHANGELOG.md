@@ -8,7 +8,7 @@
 
 - lib/sky-recipe-planner.ts: 依頼を Tool 1つではなく工程全体として計画し、検収に通る成果1つあたりの期待総額で順位付け。自動化を作るか・本人に何を残すかも同じ式で決める。未接続（接続は codex/tasks/33）。
 - lib/sky-company-order.ts: 会社受注の実行先の判定、見積り確認、作業料＋配当の分配計算、配れる月額の逆算。記帳・送金はしない（保存と画面は codex/tasks/34）。
-- 設計 [docs/sky-work-loop.md](docs/sky-work-loop.md)、書式 [docs/services/company-order.md](docs/services/company-order.md)、決定 07（11-15 の 5 行。うち 2 行は本人確認待ちの提案）、04 §5。検証: `node --experimental-strip-types --test tests/sky-recipe-planner.test.mjs tests/sky-company-order.test.mjs`（16件）。
+- 設計 [docs/sky-work-loop.md](docs/sky-work-loop.md)、書式 [docs/services/company-order.md](docs/services/company-order.md)、決定 07（11-15 の 5 行。うち 2 行は本人確認待ちの提案）、04 §5。検証: `node --experimental-strip-types --test tests/sky-recipe-planner.test.mjs tests/sky-company-order.test.mjs`（16件）。[PR #318](https://github.com/k999ln/rock/pull/318)
 
 ## 2026-11-02 — avoado.si と GitHub main のソース統合（G04 / WEB04）
 
