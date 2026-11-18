@@ -9,6 +9,14 @@
 }
 .sky :global(.rock-main) { padding: 0; color: var(--sky-text); background: var(--sky-bg); }
 .sky :global(.rock-main-column) { min-width: 0; background: var(--sky-bg); }
+/* Legacy feature pages pair light text with a dark surface. Keep that pair
+   inside Noah; the shared OS frame otherwise overrides only the background.
+   The Tool feed has its own light palette and remains on that surface. */
+.sky:global([data-noah-embedded].rock-workspace) :global(.rock-main:not(.sky-main-feed)) {
+  color: var(--sky-text);
+  background: var(--sky-bg);
+  color-scheme: dark;
+}
 .sky :global(.rock-topbar) { padding-inline: max(24px, calc((100% - 1160px) / 2)); border-color: var(--sky-line); background: var(--sky-bg); }
 .sky :global(.rock-bottom-note) { border-color: var(--sky-line); background: var(--sky-bg); }
 .sky :is(button, a, input, textarea, select, summary):focus-visible { outline: 2px solid var(--sky-accent); outline-offset: 3px; }

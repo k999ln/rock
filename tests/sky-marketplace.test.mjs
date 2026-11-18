@@ -72,9 +72,9 @@ void test('checkout preserves the server reason for a conflict after refreshing 
 void test('Sky exposes a separate si and automation marketplace from its main app view', () => {
   assert.match(page, /SkyMarketplace/);
   assert.match(sky, /href="\/noah\/marketplace"/);
-  assert.match(marketplace, /href="\/studio"/);
-  assert.match(marketplace, /href="\/sky\/register"/);
-  assert.match(marketplace, /href="\/sky\/network"/);
+  assert.match(marketplace, /href="\/noah\/publish"/);
+  assert.match(marketplace, /href="\/noah\/register"/);
+  assert.match(marketplace, /href="\/noah\/network"/);
 });
 
 void test('publisher can reuse owner-scoped details without an assumed free price', () => {
@@ -93,7 +93,7 @@ void test('all catalog tools remain individually discoverable without claiming c
   assert.match(marketplace, /skyToolUiState\(tool, runtimeContext\)/);
   assert.equal(skyToolUiState(catalog.find((tool) => tool.id === 'jev-router')).label, 'Noah未接続・PC CLIのみ');
   assert.match(marketplace, /掲載数は、接続済み・本番稼働数を意味しません/);
-  assert.match(marketplace, /\/sky\/tools\/\$\{encodeURIComponent\(tool\.id\)\}/);
+  assert.match(marketplace, /\/noah\/tools\/\$\{encodeURIComponent\(tool\.id\)\}/);
   assert.match(overview, /tool\.cost/);
   assert.match(detail, /tool\.source/);
   assert.match(overview, /tool\.environment/);
@@ -128,7 +128,7 @@ void test('third-party marketplace entries come only from the verified public Re
   assert.match(marketplace, /審査済みは実行・購入・自動接続の完了を意味しません/);
 });
 
-void test('smis Market treats LLMs as MCP-routable marketplace entries', () => {
+void test('Noah Market treats LLMs as MCP-routable marketplace entries', () => {
   assert.deepEqual(skyAiMarketplaceEntries.map(entry => entry.id),
     ['local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible']);
   // Dedicated free Cloud does not implement this generic MCP generation route.
@@ -136,14 +136,14 @@ void test('smis Market treats LLMs as MCP-routable marketplace entries', () => {
   assert.ok(skyAiMarketplaceEntries.some((entry) => entry.id === 'local-model'));
   assert.ok(skyAiMarketplaceEntries.every((entry) => entry.mcpRoute.includes('MCP')));
   assert.match(marketplace, /LLM・siモデル/);
-  assert.match(marketplace, /選んだLLMはsmis BrokerからMCP Toolを呼び出します/);
+  assert.match(marketplace, /選んだLLMはNoah BrokerからMCP Toolを呼び出します/);
   assert.match(marketplace, /接続設定を開く/);
 });
 
-void test('smis Market quotes the explicit ten percent commission without charging at UI stage', () => {
+void test('Noah Market quotes the explicit ten percent commission without charging at UI stage', () => {
   assert.equal(marketplaceCommissionMinor(10_000), 1_000);
   assert.equal(marketplaceProviderNetMinor(10_000), 9_000);
-  assert.match(marketplace, /売上が発生するToolのsmis手数料は10%/);
+  assert.match(marketplace, /売上が発生するToolのNoah手数料は10%/);
 });
 
 void test('browser host detection is conservative and handles desktop-class iPad user agents', () => {

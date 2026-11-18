@@ -112,7 +112,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(skyMarketplace, /重複購入を避けるため購入を保留しました/);
   assert.match(skyMarketplace, /Cloud実行等は別料金の場合あり/);
   assert.match(skyMarketplace, /chat\?view=work&package=/);
-  assert.match(skyMarketplace, /Zemaでクラウド依頼を作る/);
+  assert.match(skyMarketplace, /Eveでクラウド依頼を作る/);
   assert.match(workbench, /initialPackageKey/);
   assert.match(workbench, /\/api\/sky\/tool-registry/);
   assert.match(workbench, /\/api\/rockstar\/entitlements/);

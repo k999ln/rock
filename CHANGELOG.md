@@ -1,6 +1,6 @@
 ## 2026-11-18
 
-- 旧Noah/Skyの画面をNoah共通シェルと機能一覧に統合。旧URLの条件保持・誤配信404・AMC循環を修正し、ローカル実験の制限を保持（task70、PR作成予定）。
+- 旧Noah/Skyの画面をNoah共通シェルと機能一覧に統合。旧URLの条件保持・誤配信404・AMC循環を修正し、ローカル実験の制限を保持。表示名・配色競合も修正し、avoado.si公開版148を107項目で確認（[PR #320](https://github.com/k999ln/rock/pull/320)）。
 
 - 公開assetの正規URLをWorker経由へ修正し、CIの一時ブラウザーでローカル接続権限と実Tool再確認を明示。v144の公開ヘッダー8ルートと検索→Mac版への移動を実測（[PR #319](https://github.com/k999ln/rock/pull/319)）。
 - 統合Noahタイムラインをavoado.siの公開入口に接続。ドメイン直下からNoahを開き、既存の共有URLとMac版への導線を保持（公開v143を実URLで確認、[PR #319](https://github.com/k999ln/rock/pull/319)）。
