@@ -1,6 +1,6 @@
 ## 2026-11-18
 
-- 公開assetの正規URLをWorker経由へ修正し、CIの一時ブラウザーでローカル接続権限と実Tool再確認を明示。公開ヘッダー/閲覧受入をtask69で追跡（[PR #319](https://github.com/k999ln/rock/pull/319)）。
+- 公開assetの正規URLをWorker経由へ修正し、CIの一時ブラウザーでローカル接続権限と実Tool再確認を明示。v144の公開ヘッダー8ルートと検索→Mac版への移動を実測（[PR #319](https://github.com/k999ln/rock/pull/319)）。
 - 統合Noahタイムラインをavoado.siの公開入口に接続。ドメイン直下からNoahを開き、既存の共有URLとMac版への導線を保持（公開v143を実URLで確認、[PR #319](https://github.com/k999ln/rock/pull/319)）。
 
 ## 2026-11-18

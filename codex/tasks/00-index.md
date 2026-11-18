@@ -51,4 +51,4 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
-| 69 | [69-noah-public-timeline.md](69-noah-public-timeline.md) | 統合タイムラインの公開とGit保存 | ✅ 公開v143・[PR #319](https://github.com/k999ln/rock/pull/319) |
+| 69 | [69-noah-public-timeline.md](69-noah-public-timeline.md) | 統合タイムラインの公開とGit保存 | ✅ 公開v144・ヘッダー検証済み・[PR #319](https://github.com/k999ln/rock/pull/319) |
