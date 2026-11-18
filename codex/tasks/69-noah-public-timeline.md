@@ -19,3 +19,5 @@
 - ✅ Sites v143（source `09a9f3a55e54ebb937d5a1a760a3a8703cda7104`）の配備成功。実URL `https://avoado.si/` → `/noah`、ニュース/Agent混合配信、Anicca検索→詳細→Mac案内を実ブラウザーで確認。
 - 未ログインの投稿APIは401でサインイン案内を表示する。実アカウントでの投稿/フォロー送信は未実施。公開範囲・本番migrationの変更なし。
 - 実投稿/新規フォローの送信、一般Agentの追加実行受入、スマホ遠隔/一般cloud/Pixelは今回の受入対象外。Noah全体task68の完了ではない。
+
+- 公開環境の追加security検査では `/sw.js` がSitesの静的配信として返り、CSP/Service-Worker-Allowedが未適用。通常/再検証query/生成domainで同じ応答。ローカルWorker実測のPASSを本番security全合格へ昇格しない。今回のNoah表示/検索/詳細は実URLで確認済み。静的配信ヘッダーの追跡は残件として保持する。
