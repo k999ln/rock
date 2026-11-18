@@ -72,7 +72,8 @@
             "scripts/check-web-security-response.mjs",
             "tests/web-security-policy.test.mjs",
             "docs/evidence/launch/web-security-local-20260917.json",
-            "docs/evidence/launch/web-security-main-alignment-20261102.json"
+            "docs/evidence/launch/web-security-main-alignment-20261102.json",
+            "data/web-security-response-current.json"
           ]
         },
         {
@@ -136,7 +137,8 @@
             "tests/web-security-policy.test.mjs",
             "docs/evidence/launch/web-security-local-20260917.json",
             "docs/evidence/work-composition-development.json",
-            "docs/evidence/launch/web-security-main-alignment-20261102.json"
+            "docs/evidence/launch/web-security-main-alignment-20261102.json",
+            "data/web-security-response-current.json"
           ],
           "acceptanceScope": "Source policy and local production responses only; current public delivery is a separate required gate."
         },

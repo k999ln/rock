@@ -1,0 +1,49 @@
+{
+  "schema": "rockstaros-web-security-response-evidence/1",
+  "observedAt": "2026-11-18T03:26:51Z",
+  "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
+  "server": {
+    "runtime": "wrangler-local",
+    "origin": "http://127.0.0.1:8787",
+    "productionBuild": true
+  },
+  "inputs": {
+    "services/sky-web/domain-router.mjs": "c8e4c6abc94c85de19179e3f5def669f64a498724a7f84957f294dcdbca2731f",
+    "scripts/stage-sky-domain-router.mjs": "0075f6292660f61565425eadc2f32694b62d852b6435e4436a8f15c20e5d8a4a",
+    "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
+    "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
+    "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
+    "scripts/check-web-security-response.mjs": "8e61b27ed7593ce3ecb9ef052c829f8cfb5808d1d277ee320692ee409e2fa30d",
+    "scripts/web-security-evidence.mjs": "6adb5f6537839ab5646a43cde586ba8cb179dd44a0ac8abb712608eb46d6c43f",
+    "public/sw.js": "d4cf54192afefde19c97414f2be8b45d4e9f3194818cb1de1482f0f7e662177d",
+    "app/manifest.ts": "01fda7a72ab73b2e0f22f965353330c424825790ba51dc6c086ab29034efce86",
+    "app/page.tsx": "afc3bd62916f04680081920c94d415783d26ed251ca4f953f3e0ecf93cb8730c",
+    "lib/os-entry.ts": "57343aecfc336ea43f259e7ecfe38aceaf75e07d1da6f8c1e9c9cf0b5b570143",
+    "app/noah/page.tsx": "7c8ce7544ed3650236805164cd1a04d3e532db6bd5d1f561b8da927ee1889e87",
+    "components/noah-shell.tsx": "a02dea0e5a349b8040a53639f5e5e049845075ea62768ee71e13dfe2b3dcc37a",
+    "components/noah-timeline.tsx": "aac22bbfd690ef6223a65f825a9c7c2fa06aa26fd3e4331ba6591a34c89c4fc3",
+    "public/rock-icon-192.png": "3a8f750e40b79713f055a5ec5485ab7db04878744f3301bff34aa4b579abd8c0",
+    "public/rock-icon-512.png": "c6a0cf9b9faf023da925ab29081b41be18eedf212bb673d2d6a5b17bb47393dc",
+    "public/rock-icon-maskable.svg": "114f7f18e620c02d8272db9b647d91f9c820e8113955ec166c4c072602f63206"
+  },
+  "result": {
+    "schema": "rockstaros-web-security-response-check/1",
+    "status": "PASS",
+    "baseOrigin": "http://127.0.0.1:8787",
+    "universalHeaders": 8,
+    "routes": [
+      "/",
+      "/sky",
+      "/sw.js",
+      "/manifest.webmanifest",
+      "/rock-icon-192.png",
+      "/rock-icon-512.png",
+      "/rock-icon-maskable.svg",
+      "/_next/static/chunks/index-CklEqjsU.js"
+    ]
+  },
+  "boundary": {
+    "sitesDeploymentVerified": false,
+    "nextAction": "Verify the authorized public deployment separately."
+  }
+}

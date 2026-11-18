@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import styles from './eve-sync-workspace.module.css';
 const destinations = [
-  ['home', '/#timeline', 'Noahホーム'],
-  ['discover', '/#sky', '探して追加'],
-  ['library', '/#sky-manage', 'ライブラリ'],
+  ['home', '/noah#timeline', 'Noahホーム'],
+  ['discover', '/noah/agents', 'Agentを探す'],
+  ['library', '/noah/mac?target=library', '自分のAgent'],
   ['tools', '/os/sky', 'Tool一覧'],
   ['devices', '/sky/devices', '端末・担当'],
   ['connections', '/connect/service', '接続・権限'],
