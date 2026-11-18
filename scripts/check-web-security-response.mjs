@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { securityInputHashes, WEB_SECURITY_EVIDENCE_PATH } from './web-security-evidence.mjs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -102,8 +103,7 @@ for (const [key, value] of Object.entries(policy.routeHeaders['/_next/static/*']
   exactHeader(staticResponse, key, value, staticAsset);
 }
 
-console.log(
-  JSON.stringify({
+const result = {
     schema: 'rockstaros-web-security-response-check/1',
     status: 'PASS',
     baseOrigin: base.origin,
@@ -116,5 +116,16 @@ console.log(
       ...requiredIcons.map(({ src }) => src),
       staticAsset,
     ],
-  }),
-);
+};
+if (process.argv.includes('--record-local-production')) {
+  if (base.origin !== 'http://127.0.0.1:8787') throw new Error('Local production evidence requires port 8787');
+  const config = JSON.parse(readFileSync(resolve(root, 'dist/server/wrangler.json'), 'utf8'));
+  if (!config.main || !config.assets) throw new Error('Production Worker build is required');
+  writeFileSync(resolve(root, WEB_SECURITY_EVIDENCE_PATH), JSON.stringify({
+    schema: 'rockstaros-web-security-response-evidence/1', observedAt: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    scope: 'LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT', server: { runtime: 'wrangler-local', origin: base.origin, productionBuild: true },
+    inputs: securityInputHashes(root), result,
+    boundary: { sitesDeploymentVerified: false, nextAction: 'Verify the authorized public deployment separately.' },
+  }, null, 2) + '\n');
+}
+console.log(JSON.stringify(result));

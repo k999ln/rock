@@ -472,3 +472,11 @@ Updated: 2026-11-02 / 393 task records (32 parents, 192 children, 169 standalone
 ### avoado.si のEveとNoah
 
 [Noah](https://avoado.si/#timeline)で記事・Tool・担当を選び、[Eve](https://avoado.si/os/eve)へ渡して仕事と成果を確認します。旧 `/chat` は選択内容を保ってEveへ移動します。公開先は既存avoadoサイト。公開SQLは `drizzle/` と `drizzle-main/`、旧mainのSQLは `drizzle-legacy/github-main-before-avoado-alignment/` に保全し自動適用しません。
+
+## Noahの共通タイムライン
+
+`https://avoado.si/noah` に公開資料の検索・分類・詳細を追加。公開情報のみで、私有Agent・Work・SSDのDBは含まない。接続/実行/停止は起動中のMacのNoahへ明示移動し、スマホからMacへの中継は未対応。公開カタログAPIはD1を読まない。投稿は既存の認証付きコミュニティーAPIを使い、DB migration追加は0件。
+
+2026-11-18に公開v143へ反映済み。`https://avoado.si/` はNoahを開き、`/#timeline` と `/noah` でも同じ混合タイムラインを使う。ドメイン直下からの遷移・混合配信・Agent検索/詳細・Mac案内を実URLで確認済み。修正版v144では静的配信ヘッダー8種類/8ルートも公開URLで検証済み。投稿・フォローはサインインが必要で、実送信の受入は別。
+
+2026-11-18: ニュース・Agent紹介・通常投稿・コミュニティー投稿を一本のタイムラインへ統合。種別ラベル、コミュニティー名、分類/検索、Mac版への案内を共通UIで扱う。`/#timeline`と`/noah`は同じNoah。[公開記録・検証](codex/tasks/69-noah-public-timeline.md)。
