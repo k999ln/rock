@@ -15,5 +15,7 @@
 
 - 共通実装のroot verify: 3,997件中3,993成功、失敗0、skip4。今回の公開ソース関連21件成功、公開ビルド成功。
 - 本番用ローカルWorkerで8種類のsecurity header、manifest、service worker、icon、hash付きJSを実測。immutableな旧証拠を保全し、今回の記録をdata/web-security-response-current.jsonへ保存。
-- 公開ソースの全体verifyと実公開readbackを進行中。公開結果は本taskとPRに追記する。
+- 公開ソースの全体verify: 3,942件中3,937成功、既存Eve browser待機timeout1、skip4。該当ファイルの単独再試験は2/2成功。型/lint、design/Sky等の前段と、package/build/API等の後段はすべて成功。検証用Git履歴・同一lockfileのMini依存・既存OpenSSL 3を補完した。
+- ✅ Sites v143（source `09a9f3a55e54ebb937d5a1a760a3a8703cda7104`）の配備成功。実URL `https://avoado.si/` → `/noah`、ニュース/Agent混合配信、Anicca検索→詳細→Mac案内を実ブラウザーで確認。
+- 未ログインの投稿APIは401でサインイン案内を表示する。実アカウントでの投稿/フォロー送信は未実施。公開範囲・本番migrationの変更なし。
 - 実投稿/新規フォローの送信、一般Agentの追加実行受入、スマホ遠隔/一般cloud/Pixelは今回の受入対象外。Noah全体task68の完了ではない。
