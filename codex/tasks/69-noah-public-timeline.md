@@ -1,5 +1,7 @@
 # 69 Noahの統合タイムラインをavoado.siへ公開
 
+[PR #319](https://github.com/k999ln/rock/pull/319)
+
 2026-11-18本人指示: 統合タイムラインをavoado.siへ反映して公開し、Gitを更新する。
 
 ## 対象
