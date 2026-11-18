@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { withAssetResponses } from '../services/sky-web/asset-responses.mjs';
 
-test('public storage fallback has a fixed origin and forwards only cache/range headers', async () => {
+void test('public storage fallback has a fixed origin and forwards only cache/range headers', async () => {
   const requests = [], app = {fetch: () => new Response('app')};
   const worker = withAssetResponses(app, {'/photo.png': {storage:'/_site-assets/abc/photo.png'}}, async request => {
     requests.push(request);
