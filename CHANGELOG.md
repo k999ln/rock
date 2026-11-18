@@ -4,6 +4,11 @@
 
 書き方: 新しい日付を上に足す。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
 
+## 2026-11-18 — Sky の会社の窓口（ココナラ）（Fable / Noelle）
+
+- lib/sky-gig-desk.ts: 本人が渡した募集の文面を読み、応募する・見送るを決め、額と納品日を出し、提案の下書きを作る。受注後の確認を30秒の問いにして参加者へ配り、多数側の答えを作業料の寄与にする。サイトへの接続・送信はしない。
+- 実行例 `node --experimental-strip-types scripts/sky-gig-desk.mjs examples/sky/gig-desk/desk.json`。設計 [docs/sky-work-loop.md §7](docs/sky-work-loop.md)、書式 [docs/services/gig-desk.md](docs/services/gig-desk.md)、決定 07（11-18 の 3 行。うち 2 行は本人確認待ちの提案）。画面と保存は codex/tasks/35。検証: tests/sky-gig-desk.test.mjs（10件）。[PR #318](https://github.com/k999ln/rock/pull/318)
+
 ## 2026-11-15 — Sky の工程選択と会社受注の計算（Fable / Noelle）
 
 - lib/sky-recipe-planner.ts: 依頼を Tool 1つではなく工程全体として計画し、検収に通る成果1つあたりの期待総額で順位付け。自動化を作るか・本人に何を残すかも同じ式で決める。未接続（接続は codex/tasks/33）。
