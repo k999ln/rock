@@ -24,7 +24,7 @@ async function fetchBuildAsset(request, assets) {
   });
 }
 
-function secureResponse(response) {
+export function secureResponse(response) {
   const headers = new Headers(response.headers);
   for (const [name, value] of Object.entries(UNIVERSAL_RESPONSE_HEADERS)) {
     // Multiple CSP policies are enforced together. Keep stricter per-response

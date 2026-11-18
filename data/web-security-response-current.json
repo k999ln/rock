@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-18T03:26:51Z",
+  "observedAt": "2026-11-18T04:31:28Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -8,13 +8,15 @@
     "productionBuild": true
   },
   "inputs": {
-    "services/sky-web/domain-router.mjs": "c8e4c6abc94c85de19179e3f5def669f64a498724a7f84957f294dcdbca2731f",
+    "services/sky-web/asset-responses.mjs": "6d7f7d45cd3da2465f7ba8154757e124bdab857740019ea2a62fc7c75dda07d9",
+    "scripts/stage-secure-assets.mjs": "716addc37c60a19275bdb6199d5b2b89c8fd9469433f34bbcc5a6b44d454c862",
+    "services/sky-web/domain-router.mjs": "86c6d62f26144ef4e6bec7ce8f03fd0f71ad9000f31fffda906c938cffb80e23",
     "scripts/stage-sky-domain-router.mjs": "0075f6292660f61565425eadc2f32694b62d852b6435e4436a8f15c20e5d8a4a",
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
     "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
     "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
     "scripts/check-web-security-response.mjs": "8e61b27ed7593ce3ecb9ef052c829f8cfb5808d1d277ee320692ee409e2fa30d",
-    "scripts/web-security-evidence.mjs": "6adb5f6537839ab5646a43cde586ba8cb179dd44a0ac8abb712608eb46d6c43f",
+    "scripts/web-security-evidence.mjs": "5f9a9bc5c4970c8d9288e81594f8f9cf884e899cc38ffbb728955b917fcc6c79",
     "public/sw.js": "d4cf54192afefde19c97414f2be8b45d4e9f3194818cb1de1482f0f7e662177d",
     "app/manifest.ts": "01fda7a72ab73b2e0f22f965353330c424825790ba51dc6c086ab29034efce86",
     "app/page.tsx": "afc3bd62916f04680081920c94d415783d26ed251ca4f953f3e0ecf93cb8730c",
@@ -39,7 +41,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-CklEqjsU.js"
+      "/_next/static/chunks/index-DmCGrf8Y.js"
     ]
   },
   "boundary": {

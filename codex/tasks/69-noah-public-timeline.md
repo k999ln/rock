@@ -21,3 +21,9 @@
 - 実投稿/新規フォローの送信、一般Agentの追加実行受入、スマホ遠隔/一般cloud/Pixelは今回の受入対象外。Noah全体task68の完了ではない。
 
 - 公開環境の追加security検査では `/sw.js` がSitesの静的配信として返り、CSP/Service-Worker-Allowedが未適用。通常/再検証query/生成domainで同じ応答。ローカルWorker実測のPASSを本番security全合格へ昇格しない。今回のNoah表示/検索/詳細は実URLで確認済み。静的配信ヘッダーの追跡は残件として保持する。
+
+## 追加修正の受入（2026-11-18）
+
+- 正規asset URLをWorkerで配信。ビルド時に固定した内容hash付き公開保管先だけから取得し、認証情報は転送しない。HTML/SVG/SWはWorkerから直接返す。Sitesのasset-firstを再現する回帰試験を追加。
+- CIの一時ChromeはdurableStorageだけのgrantで新しいChromeのローカル接続権限を失うため、同一の一時loopback originに対応権限を設定。設定編集後は実UIでToolを再観測し、30秒の有効期限を延長・無効化しない。
+- 対象試験7/7成功。ローカル本番Workerで8種類のヘッダー/8ルート成功。全体verify・最新SHAのCI・公開版再検査は進行中。

@@ -1,3 +1,4 @@
+import { grantFixturePermissions } from './browser-fixture-permissions.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { build } from 'esbuild';
@@ -264,6 +265,9 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
       }
       finally { unsubscribe(); }
     };
+    const networkFailures = [];
+    devtools.onMessage(event => { if (event.method === 'Network.loadingFailed') networkFailures.push({errorText:event.params.errorText, blockedReason:event.params.blockedReason, corsError:event.params.corsErrorStatus}); });
+    await devtools.call('Network.enable');
     const evaluate = async expression => { const result = await devtools.call('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); return result.result.value; };
     const callWithValues = async (functionDeclaration, ...values) => {
@@ -272,7 +276,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
         functionDeclaration, arguments:values.map(value=>({value})), returnByValue:true, awaitPromise:true });
       if(result.exceptionDetails)throw new Error(result.exceptionDetails.text);return result.result.value;
     };
-    async function wait(expression, label) { for (let i = 0; i < 120; i++) { if (await evaluate(expression)) return; const errors = await evaluate('window.__fixtureErrors'); if (errors?.length) throw new Error(`browser error: ${JSON.stringify(errors)} lines ${JSON.stringify(bundleLines.slice(errors[0][2] - 4, errors[0][2] + 1))}`); await new Promise(r => setTimeout(r, 100)); } throw new Error(`browser timeout: ${label}; ${JSON.stringify(await evaluate('({href:location.href, ready:document.readyState, text:document.body?.innerText, errors:window.__fixtureErrors})'))}`); }
+    async function wait(expression, label) { for (let i = 0; i < 120; i++) { if (await evaluate(expression)) return; const errors = await evaluate('window.__fixtureErrors'); if (errors?.length) throw new Error(`browser error: ${JSON.stringify(errors)} lines ${JSON.stringify(bundleLines.slice(errors[0][2] - 4, errors[0][2] + 1))}`); await new Promise(r => setTimeout(r, 100)); } throw new Error(`browser timeout: ${label}; network=${JSON.stringify(networkFailures)}; ${JSON.stringify(await evaluate('({href:location.href, ready:document.readyState, text:document.body?.innerText, errors:window.__fixtureErrors})'))}`); }
     const js = value => JSON.stringify(value);
     const click = async label => { const x = js(label); await wait(`!![...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)`, label);
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
@@ -303,7 +307,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     await wait('document.body?.innerText.includes("自分の担当を作る")', 'Eve');
     // This permission is confined to the disposable test origin/profile. Product
     // code never requests it and must reject input when its journal is unavailable.
-    await devtools.call('Browser.grantPermissions', { origin: base, permissions: ['durableStorage'] });
+    await grantFixturePermissions(devtools, port, base);
     assert.equal(await evaluate('navigator.storage.persist()'), true);
     assert.equal(await evaluate('navigator.storage.persisted()'), true);
     await click('自分の担当を作る');
@@ -327,6 +331,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     await input('使用する接続と操作',JSON.stringify([sdk.localId,'add_integers']));
     await wait('document.body.innerText.includes("実Toolに処理能力ID")','different actual Tool is not a candidate');
     await input('使用する接続と操作',JSON.stringify([sdk.localId,'count_lines']));
+    await click('選択した実Toolを再確認');
     await wait('document.body.innerText.includes("宣言条件が一致しました")','explicit selected Tool matches');
     assert.equal(requests.filter(r=>r.path.endsWith('/tool-observations')).length,0);
 
@@ -368,7 +373,37 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     assert.equal(reloaded.agent.provider, 'openai'); assert.equal(reloaded.agent.model, 'fixture-model-v2');
     assert.deepEqual(reloaded.agent.requirements, requirements); assert.deepEqual(reloaded.agent.attachment, attachment);
     const resume = new URL(workbenchUrl); resume.searchParams.set('agentRevision', String(after.agent.revision));
-    await callWithValues("function(url){history.pushState({},'',url);dispatchEvent(new Event('fixture-navigation'));}",resume.pathname+resume.search);
+    const restoreObservation = async (target = resume, requireStale = false) => {
+      const requestsBefore = creationRequests.length, previousObservationId = resources.server?.passport?.observationId;
+      assert.ok(previousObservationId);
+      await evaluate('window.__fixtureClockOffset=0');
+      await evaluate(`history.pushState({}, '', '/sky/agents'); dispatchEvent(new Event('fixture-navigation'))`);
+      await wait('document.body.innerText.includes("fixture編集担当")', 'same role for explicit observation');
+      await click('fixture編集担当');
+      await wait(`(()=>{const e=document.querySelector('[aria-label="選択した実Toolの観測"]');return e?.textContent.includes('接続先: Example Line Counter') && e.textContent.includes('Package版: 1.0.0');})()`, 'owner and selected Tool readback loaded');
+      if (requireStale) {
+        await wait('document.body.innerText.includes("実Toolの観測が未確認または期限切れ")', 'old observation remains invalid after clock recovery');
+        assert.equal(await evaluate(`(()=>{const checkbox=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('入力と成果の宣言を'))?.querySelector('input[type="checkbox"]');return !checkbox || checkbox.disabled;})()`), true);
+        assert.equal(creationRequests.length, requestsBefore);
+      }
+      await click('選択した実Toolを再確認');
+      await wait('document.body.innerText.includes("宣言条件が一致しました")', 'explicit fresh Tool observation');
+      const listed = await (await reqConnector('/servers', 'GET')).json();
+      resources.server = listed.servers.find(server => server.id === sdk.localId);
+      assert.ok(resources.server?.passport?.observationId);
+      assert.notEqual(resources.server.passport.observationId, previousObservationId);
+      assert.ok(resources.server.passport.observedAt <= Date.now() && resources.server.passport.observationExpiresAt > Date.now());
+      assert.ok(resources.server.passport.observationExpiresAt - resources.server.passport.observedAt <= 30_000);
+      assert.equal(creationRequests.length, requestsBefore);
+      await callWithValues("function(servers,url){window.__fixtureServers=servers;history.pushState({},'',url);dispatchEvent(new Event('fixture-navigation'));}",[resources.server],target.pathname+target.search);
+      if (target.searchParams.has('workJob')) {
+        await wait('document.body.innerText.includes("mii連携のソフト試用")', 'same saved job after explicit observation');
+      } else {
+        await wait('document.body.innerText.includes("仕事の名前")', 'workbench after explicit observation');
+        await input('仕事の名前', 'fixture仕事');
+      }
+    };
+    await restoreObservation(resume);
     await wait('document.body.innerText.includes("仕事の名前")', 'same workbench after settings edit');
     await input('仕事の名前', 'fixture仕事');
     assert.equal(await evaluate(`([...document.querySelectorAll('button')].find(e=>e.textContent.includes('仕事を作成'))).disabled`),true);
@@ -403,36 +438,6 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
     // A clock jump invalidates the observed Tool snapshot. Returning the
     // clock alone cannot revive it: re-observe through the real Sky UI before
     // any further creation confirmation.
-    const restoreObservation = async (target = resume, requireStale = false) => {
-      const requestsBefore = creationRequests.length, previousObservationId = resources.server?.passport?.observationId;
-      assert.ok(previousObservationId);
-      await evaluate('window.__fixtureClockOffset=0');
-      await evaluate(`history.pushState({}, '', '/sky/agents'); dispatchEvent(new Event('fixture-navigation'))`);
-      await wait('document.body.innerText.includes("fixture編集担当")', 'same role for explicit observation');
-      await click('fixture編集担当');
-      await wait(`(()=>{const e=document.querySelector('[aria-label="選択した実Toolの観測"]');return e?.textContent.includes('接続先: Example Line Counter') && e.textContent.includes('Package版: 1.0.0');})()`, 'owner and selected Tool readback loaded');
-      if (requireStale) {
-        await wait('document.body.innerText.includes("実Toolの観測が未確認または期限切れ")', 'old observation remains invalid after clock recovery');
-        assert.equal(await evaluate(`(()=>{const checkbox=[...document.querySelectorAll('label')].find(e=>e.textContent.includes('入力と成果の宣言を'))?.querySelector('input[type="checkbox"]');return !checkbox || checkbox.disabled;})()`), true);
-        assert.equal(creationRequests.length, requestsBefore);
-      }
-      await click('選択した実Toolを再確認');
-      await wait('document.body.innerText.includes("宣言条件が一致しました")', 'explicit fresh Tool observation');
-      const listed = await (await reqConnector('/servers', 'GET')).json();
-      resources.server = listed.servers.find(server => server.id === sdk.localId);
-      assert.ok(resources.server?.passport?.observationId);
-      assert.notEqual(resources.server.passport.observationId, previousObservationId);
-      assert.ok(resources.server.passport.observedAt <= Date.now() && resources.server.passport.observationExpiresAt > Date.now());
-      assert.ok(resources.server.passport.observationExpiresAt - resources.server.passport.observedAt <= 30_000);
-      assert.equal(creationRequests.length, requestsBefore);
-      await callWithValues("function(servers,url){window.__fixtureServers=servers;history.pushState({},'',url);dispatchEvent(new Event('fixture-navigation'));}",[resources.server],target.pathname+target.search);
-      if (target.searchParams.has('workJob')) {
-        await wait('document.body.innerText.includes("mii連携のソフト試用")', 'same saved job after explicit observation');
-      } else {
-        await wait('document.body.innerText.includes("仕事の名前")', 'workbench after explicit observation');
-        await input('仕事の名前', 'fixture仕事');
-      }
-    };
     // Expiry during each asynchronous fence must leave zero create POSTs.
     await confirmDraft('行数確認',{text:'one\ntwo'});
     let releaseExpiry;

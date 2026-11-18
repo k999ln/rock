@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, readdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -37,12 +37,18 @@ async function assetFixture(staged) {
     writeFileSync(join(server, 'domain-router.mjs'), source);
     writeFileSync(join(server, 'index.js'), "import app from './vinext.js'; import {withMiniSite} from './domain-router.mjs'; export default withMiniSite(app);");
   }
+  if (staged === 'published') {
+    for (const file of ['scripts/stage-secure-assets.mjs', 'services/sky-web/asset-responses.mjs']) writeFileSync(join(directory, file), readFileSync(new URL('../' + file, import.meta.url)));
+    const result = spawnSync(process.execPath, ['scripts/stage-secure-assets.mjs'], { cwd: directory, encoding: 'utf8', timeout: 10000 });
+    assert.equal(result.status, 0, result.stderr);
+  }
   const config = JSON.parse(readFileSync(join(server, 'wrangler.json'), 'utf8'));
+  if (staged === 'published') config.assets.run_worker_first = false;
   let worker;
   try {
     worker = new Miniflare(convertV4MiniflareOptions({
       name: 'rock-asset-policy-test', rootPath: server, modulesRoot: server,
-      modules: ['index.js', 'vinext.js', 'domain-router.mjs'].map(path => ({type:'ESModule', path:join(server,path)})),
+      modules: ['index.js', ...readdirSync(server).filter(path => path !== 'index.js' && /\.m?js$/.test(path))].map(path => ({type:'ESModule', path:join(server,path)})),
       compatibilityDate: '2026-10-01', compatibilityFlags: ['nodejs_compat'],
       assets: {...config.assets, directory: resolve(server, config.assets.directory), routerConfig:{has_user_worker:true}},
       host: '127.0.0.1', port: 0,
@@ -88,4 +94,19 @@ void test('staged Worker-first delivery protects assets, redirects, canonical SW
   const api = check(await f.worker.dispatchFetch('https://avoado.si/api/eve/history'));
   assert.equal(api.status, 401); assert.equal(api.headers.get('cache-control'), 'private, no-store');
   assert.deepEqual(await api.json(), {error:'unauthorized'});
+});
+
+void test('canonical assets retain headers even when hosting forces asset-first routing', async t => {
+  const f = await assetFixture('published'); t.after(() => f.close());
+  for (const path of ['/_next/static/fixture.js', '/sw.js']) {
+    const response = await f.worker.dispatchFetch('https://avoado.si' + path);
+    assert.equal(response.status, 200);
+    for (const [key, value] of Object.entries(policy.universalHeaders)) assert.equal(response.headers.get(key), value, path + ' ' + key);
+    assert.equal(await response.text(), path.endsWith('fixture.js') ? js : '/* asset-first stale service worker */');
+    const head = await f.worker.dispatchFetch('https://avoado.si' + path, {method:'HEAD'});
+    assert.equal(head.status, 200); assert.equal(await head.text(), '');
+  }
+  const sw = await f.worker.dispatchFetch('https://avoado.si/sw.js');
+  assert.equal(sw.headers.get('Service-Worker-Allowed'), '/');
+  assert.equal(sw.headers.get('cache-control'), 'no-cache, no-store, must-revalidate');
 });
