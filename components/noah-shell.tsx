@@ -1,14 +1,13 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Hash links also work across the OS home aliases. */
 import { useEffect, useState, type ReactNode } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowUpRight, Bot, Newspaper, Users, MessageCircle, Plus, ListChecks, Laptop, LayoutGrid } from 'lucide-react';
-import { webBrandIcon } from '@/lib/web-brand';
 import { noahActionHref, noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import styles from './noah-shell.module.css';
 import { NoahSurfaceContext } from './noah-surface-context';
+import ProductAppHeader from './product-app-header';
 
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
   const pathname = usePathname();
@@ -38,11 +37,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   ];
   return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}><div className={styles.shell} data-noah-surface={effectiveMode}>
     <a href="#noah-content" className={styles.skip}>メインコンテンツへ</a>
-    <header className={styles.topbar}>
-      <a href={`${base}#timeline`} className={styles.brand}><Image src={webBrandIcon} alt="" width={32} height={32} unoptimized /><strong>RockstarOS</strong></a>
-      <nav aria-label="OSのアプリ"><a href={`${base}#timeline`} aria-current="page">Noah</a><Link href="/chat">Eve <ArrowUpRight size={13} /></Link></nav>
-      <span className={styles.environment}>{effectiveMode === 'local' ? 'Mac' : 'Web'}</span>
-    </header>
+    <ProductAppHeader active="noah" noahHref={`${base}#timeline`} environment={effectiveMode === 'local' ? 'Mac' : 'Web'} />
     <div className={`${styles.body} ${!home && !pathname.endsWith("/social") && !pathname.includes("/agents") && !pathname.endsWith("/mac") ? styles.workspaceBody : ""}`}>
       <aside className={styles.rail}>
         <div className={styles.railInner}>

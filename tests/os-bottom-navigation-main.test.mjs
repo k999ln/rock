@@ -25,6 +25,8 @@ function compile(path, modules, globals = {}) {
     if(name==='./noah-surface-context') return modules[name] ?? {useNoahSurface:()=>null};
     if(name==='react') return {...staticReact,...modules.react};
     if(name==='@/lib/os-navigation') return navContract;
+    if(name==='@/lib/web-brand') return {webBrandIcon:'/brand/avokado-rainbow-transparent-66dfbd0d.png'};
+    if(name==='./product-app-header') return {default:compile('components/product-app-header.tsx',modules,globals).default};
     if(name==='next/navigation') return modules[name]??{usePathname:()=>'/'};
     if(name==='./os-header') return {default:compile('components/os-header.tsx',modules,globals).default};
     if(['./workspace-flow-navigation','./os-account-access','./smis-added-posts','./sky-discovery-dialog'].includes(name))return {default:name};
@@ -34,7 +36,7 @@ function compile(path, modules, globals = {}) {
 }
 function nodes(value, found = []) {
   if (Array.isArray(value)) value.forEach(v => nodes(v, found));
-  else if (value && typeof value === 'object') { found.push(value); if(value.type?.name==='OSHeader')nodes(value.type(value.props),found); else nodes(value.props?.children, found); }
+  else if (value && typeof value === 'object') { found.push(value); if(['OSHeader','ProductAppHeader'].includes(value.type?.name))nodes(value.type(value.props),found); else nodes(value.props?.children, found); }
   return found;
 }
 function text(value) {
@@ -277,4 +279,47 @@ void test('Noah embeds existing workspace once, preserving connection and runnin
   }
   for(const release of cleanup)release?.();
   assert.equal(documentEvents.size,0);assert.equal(windowEvents.size,0);
+});
+
+void test('Eve uses the same two-tab header as Noah while retaining private content and workspace navigation', () => {
+  for (const pathname of ['/chat', '/os/eve', '/os/eve/remix']) {
+    const Shell = compile('components/workspace-shell.tsx', {
+      'next/navigation': { usePathname: () => pathname },
+      '@/lib/device': { monitorDevice() {} }, '@/lib/product-identity': { PRODUCT_RELEASE_NAME: 'RockstarOS 1.0' },
+      './os-app-navigation': { default: 'legacy-navigation' },
+    }).default;
+    const child = { type: 'private-access', props: { children: 'Passkey gate remains in place' } };
+    const all = nodes(Shell({ title: 'Eve', children: child, hideTopActions: true }));
+    const tabs = all.find(n => n.type === 'nav' && n.props['aria-label'] === 'OSのアプリ');
+    assert.deepEqual(Array.from(tabs.props.children, n => text(n)), ['Noah', 'Eve']);
+    assert.equal(tabs.props.children[1].props['aria-current'], 'page');
+    assert.equal(tabs.props.children[0].props.href, '/noah#timeline');
+    assert.equal(all.filter(n => n.type === 'header').length, 1);
+    assert.ok(!all.some(n => n.type === 'legacy-navigation'));
+    assert.ok(all.includes(child));
+    assert.ok(all.some(n => n.type === './workspace-flow-navigation'));
+  }
+  assert.match(source('components/noah-shell.tsx'), /<ProductAppHeader active="noah"/);
+  assert.match(source('components/noah-shell.tsx'), /label: 'コミュニティーに参加'/);
+});
+
+void test('shared app header preserves running guards, actions, and the active Eve query by preventing a reset', () => {
+  class Element { closest() { return this; } }
+  const Header = compile('components/product-app-header.tsx', {}, { Element }).default;
+  const action = { type:'button',props:{children:'Existing connection action'} };
+  for (const running of [false,true]) {
+    const tree=Header({active:'eve',running,children:action}), all=nodes(tree);
+    assert.ok(all.includes(action));
+    let prevented=false;
+    tree.props.onClickCapture({target:new Element(),preventDefault(){prevented=true;}});
+    assert.equal(prevented,running);
+    const links=all.filter(n=>n.type==='a');
+    assert.ok(links.every(n=>n.props['aria-disabled']===(running||undefined)));
+    prevented=false;
+    links.find(n=>text(n)==='Eve').props.onClick({preventDefault(){prevented=true;}});
+    assert.equal(prevented,true,'selecting the current Eve tab must not discard Tool/thread/query state');
+  }
+  const preview=nodes(Header({active:'noah',noahHref:'/noah/public#timeline',environment:'Mac'}));
+  assert.equal(preview.find(n=>n.type==='a'&&text(n)==='Noah').props.href,'/noah/public#timeline');
+  assert.ok(preview.some(n=>n.type==='span'&&text(n)==='Mac'));
 });

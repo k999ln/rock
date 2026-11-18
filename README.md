@@ -483,4 +483,6 @@ Updated: 2026-11-02 / 393 task records (32 parents, 192 children, 169 standalone
 
 ### Noahの機能をまとめた入口
 
+NoahとEveは同じヘッダーの2タブで切り替えます。コミュニティーはNoah内から開き、Eveの仕事・接続・設定はEve内のメニューで扱います。
+
 `/noah/features`から、Tool検索、購入履歴、掲載/販売、Webに保存した担当/モデル、端末/接続、成果、既存クラウド設定を同じNoahの画面で開けます。旧`/sky`と`/os/sky`の既知URLはqueryを保持して対応先へ移動します。`/add`・`/campus`の誤配信とAMCの循環も解消します。実行先や本人の権限、API/DB/課金は既存のものを使い、ローカル専用実験は公開側でMacの案内を表示します。[変更と検証](codex/tasks/70-noah-route-unification.md)。 avoado.si公開版148で確認済み。購入・販売は決済サービスの接続待ちで、画面の統合を実決済の受入完了とは扱いません。

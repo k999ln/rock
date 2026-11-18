@@ -1,5 +1,7 @@
 ## 2026-11-18
 
+- NoahとEveのヘッダーを共通化し、Eveだけに出るコミュニティータブ・タブ位置のずれを修正。avoado.si版149へ公開し、切替と既存認証の保持を確認（[PR #320](https://github.com/k999ln/rock/pull/320)）。
+
 - 旧Noah/Skyの画面をNoah共通シェルと機能一覧に統合。旧URLの条件保持・誤配信404・AMC循環を修正し、ローカル実験の制限を保持。表示名・配色競合も修正し、avoado.si公開版148を107項目で確認（[PR #320](https://github.com/k999ln/rock/pull/320)）。
 
 - 公開assetの正規URLをWorker経由へ修正し、CIの一時ブラウザーでローカル接続権限と実Tool再確認を明示。v144の公開ヘッダー8ルートと検索→Mac版への移動を実測（[PR #319](https://github.com/k999ln/rock/pull/319)）。

@@ -35,3 +35,14 @@
 - 最終公開版でも107項目とヘッダー8種類/8ルートがPASS。結果と画像は`work/verification/noah-unification-20261118/public-routes-v148.json`、`public-headers-v148.json`、`public-features-v148.jpg`、`public-marketplace-v148.jpg`。
 - 公開の購入画面は「決済サービスの接続待ち」。購入/販売の画面と既存処理は保持したが、実決済が可能になったという判定ではない。本人用データの更新、Agent実務、外部接続/決済はこの公開確認で実行していない。
 - ソース保存先は[PR #320](https://github.com/k999ln/rock/pull/320)。Sites専用ソースへの公開であり、GitHub mainへの直接pushは行わない。
+
+## Eveヘッダーの追加修正（2026-11-18）
+
+- 本人の録画で、NoahからEveへ切り替えると旧3タブと別の配置へ切り替わる問題を確認。
+- `ProductAppHeader`をNoah/Eveで共用し、上段をNoah/Eveの2項目に統一。コミュニティー入口はNoah内に保持。Eveの仕事/接続/設定、本人確認、処理中の移動制限を保持する。
+- 既存のOS幅制限による位置のずれと、古い固定メニューの位置競合も対象を限定して修正。現在のEveタブの再選択はTool/thread等のURL状態を消さない。
+- 対象24件成功。実ブラウザーでNoah→Eve→Noah、1280px幅のタブ横位置一致と390px幅の横はみ出し0を確認。
+- 最初のverifyは変更したNoahシェルとHTTP検証記録のハッシュ不一致で停止。新しいローカル本番buildから8ヘッダー/8ルートを実測して記録を更新し、全体検証を再実行して成功。
+- `npm run verify`成功。全体3,952件中3,948成功、失敗0、skip4。型/lint/build、Web asset closure 286件missing 0、ローカルAPI検証も成功。公開版149の配備成功。証拠は`work/verification/eve-header-20261118/`。
+
+- Sites source `60bfbe537d8af2eea2f621a2f43a2850bd341fa4`、deployment `appgdep_6afd40e33ba8819196291c68b9770bd6`、版149。公開ブラウザーでNoah→Eve→仕事と成果→Eveタブ再選択→Noah→Eveを確認し、上段2項目・仕事queryの保持・Noah内のコミュニティー導線・本人確認の維持を確認。公開ルート107項目/共通ヘッダー8種類8ルートもPASS。
