@@ -377,7 +377,7 @@ Skyを使うためにMiniやProの購入、native OSの導入を必須にはし�
 | --- | --- | --- |
 | 投稿型の Home/Sky、本人別の保存、コミュニティ OS の版と鍵。[総合・Sky 入口](https://avoado.si/) | 実 X 投稿、独自 For You、実 MCP Provider の接続、本番の料金・請求 | lib/sky-*.ts 104 本の整理 — [task 08](codex/tasks/08-sky-lib-foldering.md) |
 | Cloud 利用は事前見積・上限承認・明細が前提。許可済み予算を超えて実行しない | — | 月額 ¥600 候補と手数料 0 の形を決める（[05-business.md](docs/structure/05-business.md)） |
-| 工程の選択（Tool 1つでなく工程全体を期待総額で順位付け）と、会社受注の実行先判定・分配計算。lib/sky-recipe-planner.ts、lib/sky-company-order.ts（2026-11-15）。ココナラの募集の判定・提案の下書き・確認の割当 lib/sky-gig-desk.ts（2026-11-18） | Eve の依頼への接続、受注の保存と画面、外の人が払った仕事の一周（まだ 0 回）、Wallet 記帳と支払い | [task 33](codex/tasks/33-sky-recipe-planner-wiring.md)、[task 34](codex/tasks/34-company-order-first-loop.md)、[task 35](codex/tasks/35-gig-desk-screen.md)、設計 [sky-work-loop.md](docs/sky-work-loop.md) |
+| 工程の選択（Tool 1つでなく工程全体を期待総額で順位付け）と、会社受注の実行先判定・分配計算。lib/sky-recipe-planner.ts、lib/sky-company-order.ts（2026-11-15）。ココナラの募集の判定・提案文・lane への決定・確認の割当 lib/sky-gig-desk.ts、売る型 lib/sky-gig-offers.ts、端末の置き場所 lib/sky-device-tiers.ts（2026-11-18） | Eve の依頼への接続、受注の保存と画面、外の人が払った仕事の一周（まだ 0 回）、Wallet 記帳と支払い | [task 33](codex/tasks/33-sky-recipe-planner-wiring.md)、[task 34](codex/tasks/34-company-order-first-loop.md)、[task 35](codex/tasks/35-gig-desk-screen.md)〜[37](codex/tasks/37-lane-runner-bridge.md)、差分と統合 [sky-earn-parity.md](docs/sky-earn-parity.md)、設計 [sky-work-loop.md](docs/sky-work-loop.md) |
 
 機能の追加、商品の購入、仕事の実行、外部送信、課金は別の操作。モデルの出力や作者の署名を権限の承認に昇格させない。
 

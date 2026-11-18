@@ -106,7 +106,7 @@ export type RecipePlan = {
   gap: RecipeGap | null;
 };
 
-export const RECIPE_MAX_STEPS = 6;
+export const RECIPE_MAX_STEPS = 10;
 export const RECIPE_MAX_CANDIDATES = 200;
 /** 列挙の打ち切り。順番違いの重複を含む生の列の上限。 */
 const RECIPE_MAX_ENUMERATED = 5_000;

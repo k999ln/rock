@@ -1,12 +1,17 @@
 /**
- * Sky gig desk — 会社の窓口。募集を読み、受けるか決め、提案の下書きを作り、
+ * Sky gig desk — 窓口の頭脳。募集を読み、受けるか決め、提案文を作り、
  * 受注後の人の確認作業を参加者へ配る。
  *
- * やらないこと（境界）:
- * - 販売サイトへの自動ログイン・自動巡回・自動応募・自動返信。募集の文面は本人が見たページを渡す。
- *   提案の送信・契約・納品は本人が自分の手で行う。
- * - 参加者の個人アカウントを Sky が操作すること。受注は会社のアカウント1つだけ。
- * - 実行・課金・送金の許可。ここは判定と下書きと割当を返すだけ。
+ * 役割の分け方（2026-11-18 本人指示: 完全自動化）:
+ * - 手（ブラウザでの巡回・応募・返信・納品）は、ログイン済みブラウザを持つ lane runner が担う。
+ *   Daisuke134/life-manager（MIT）の gig の4 lane（apply / reply / paid / storefront）と同じ入出力で受け渡す。
+ * - 頭（どれに応募するか・いくらで・誰に確認を配るか・どう分けるか）がこのファイル。
+ *   ここはサイトへ接続しない。lane runner が読んだ snapshot を受け取り、decisions を返す。
+ * - 送信を自動にするか本人にするかは policy.submission で決める。初期値は自動。
+ *
+ * 変えない境界:
+ * - 参加者の個人アカウントを Sky が操作しない。窓口のアカウントは1つ。
+ * - 課金・送金の許可はここで出さない。
  */
 
 import {
@@ -205,8 +210,10 @@ export type GigDeskPolicy = {
   ownerMinutesPerProposal: number;
   /** 採用された後、1受注で会社の人が使う分数（やり取り、納品）。 */
   ownerMinutesPerOrder: number;
-  /** 1日に出す提案の上限。数で押さない。 */
+  /** 1日に出す提案の上限。 */
   dailyProposalLimit: number;
+  /** 提案の送信。auto: lane runner がそのまま送る / owner: 本人が送る。 */
+  submission: 'auto' | 'owner';
   /** これ以上応募が集まっている募集は見送る。 */
   maximumApplicants: number;
 };
@@ -220,7 +227,8 @@ export const COCONALA_DESK_POLICY: GigDeskPolicy = {
   ownerMinuteValueYen: 50,
   ownerMinutesPerProposal: 3,
   ownerMinutesPerOrder: 30,
-  dailyProposalLimit: 5,
+  dailyProposalLimit: 30,
+  submission: 'auto',
   maximumApplicants: 10,
 };
 
@@ -258,7 +266,8 @@ function validatePolicy(policy: GigDeskPolicy) {
     'POLICY_AMOUNT', '金額・分数は0以上の整数で指定してください。',
   );
   requireValue([1, 3, 5].includes(policy.judgmentQuorum), 'POLICY_QUORUM', '確認する人数は1・3・5のいずれかです。');
-  requireValue(Number.isSafeInteger(policy.dailyProposalLimit) && policy.dailyProposalLimit >= 0 && policy.dailyProposalLimit <= 50, 'POLICY_LIMIT', '1日の提案上限は0〜50です。');
+  requireValue(Number.isSafeInteger(policy.dailyProposalLimit) && policy.dailyProposalLimit >= 0 && policy.dailyProposalLimit <= 200, 'POLICY_LIMIT', '1日の提案上限は0〜200です。');
+  requireValue(policy.submission === 'auto' || policy.submission === 'owner', 'POLICY_SUBMISSION', '送信の方法は auto か owner です。');
   return policy;
 }
 
@@ -443,15 +452,18 @@ export type ProposalDraft = {
   priceYen: number;
   deliverOn: string;
   text: string;
-  /** 送信は本人だけが行う。 */
-  submission: 'owner_only';
+  /** auto: lane runner が送る / owner: 本人が送る。 */
+  submission: 'auto' | 'owner';
 };
 
 /**
- * 提案の下書き。額・納品日・納品物・AIを使うこと・人が確認することを必ず入れる。
- * 文面を整えるのは本人か Eve。送信はしない。
+ * 提案文。額・納品日・納品物・AIを使うこと・人が確認することを必ず入れる。
+ * 送信の方法は policy.submission に従う。ここでは送らない（送るのは lane runner か本人）。
  */
-export function draftProposal(posting: GigPosting, triage: GigTriage, offer: GigOffer, company: { name: string }): ProposalDraft {
+export function draftProposal(
+  posting: GigPosting, triage: GigTriage, offer: GigOffer, company: { name: string },
+  submission: GigDeskPolicy['submission'] = 'auto',
+): ProposalDraft {
   requireValue(triage.decision === 'propose' && triage.postingId === posting.id && triage.offerId === offer.id && triage.priceYen !== null && triage.deliverOn !== null, 'DRAFT_TRIAGE', '応募すると決めた募集だけ下書きにできます。');
   requireValue(typeof company?.name === 'string' && company.name.trim().length >= 1 && company.name.length <= 60, 'DRAFT_COMPANY', '会社名を指定してください。');
   const text = [
@@ -466,8 +478,138 @@ export function draftProposal(posting: GigPosting, triage: GigTriage, offer: Gig
       ? '■ お預かりする資料\n当社の管理する環境で扱います。読みやすさの確認を社外の確認者に頼む場合は、見せる範囲を先にお伝えし、承諾をいただいた分だけ見せます。'
       : '■ お預かりする資料\n当社の管理する環境の中だけで扱い、社外の人・端末には出しません。',
     '■ 先に確認したいこと\n・完成の判断基準（何ができていれば完了か）\n・お渡しいただける資料の形式',
+    '■ 納品後\n納品から7日以内のご指摘は、合意した範囲の中で直します。',
   ].join('\n');
-  return { postingId: posting.id, url: posting.url, priceYen: triage.priceYen, deliverOn: triage.deliverOn, text, submission: 'owner_only' };
+  return { postingId: posting.id, url: posting.url, priceYen: triage.priceYen, deliverOn: triage.deliverOn, text, submission };
+}
+
+// ---------------------------------------------------------------------------
+// 3b. lane runner との受け渡し（life-manager の gig apply lane と同じ形）
+// ---------------------------------------------------------------------------
+
+/** apply lane が読んだ募集1件。schemas/application_snapshot.schema.json の request_details と同じ項目。 */
+export type LaneRequestDetail = {
+  request_id: string;
+  canonical_url: string;
+  title: string;
+  category: string;
+  visible_text: string;
+  accepting_applications: boolean;
+  budget_min_jpy: number | null;
+  budget_max_jpy: number | null;
+  applicants_count: number | null;
+  contracted_count: number | null;
+};
+
+/** apply lane へ返す決定。schemas/application_decisions.schema.json と同じ形。 */
+export type LaneDecision = {
+  request_id: string;
+  business_class: 'submit_required' | 'hard_prohibited';
+  reason_codes: string[];
+  proposal_text: string | null;
+  price_jpy: number | null;
+  deliver_date: string | null;
+  work_frequency: null;
+  weekly_hours_min: null;
+  weekly_hours_max: null;
+  screening_answers: { question: string; answer: string }[];
+};
+
+/** lane runner が読んだ募集を、判定に使う形へ直す。締切と納品希望日は本文から拾う。 */
+export function postingFromLaneDetail(detail: LaneRequestDetail): GigPosting {
+  requireValue(typeof detail?.request_id === 'string' && /^\d{1,12}$/u.test(detail.request_id), 'LANE_REQUEST_ID', '募集IDが不正です。');
+  requireValue(typeof detail.title === 'string' && detail.title.trim().length >= 2, 'LANE_TITLE', '募集の題名がありません。');
+  requireValue(typeof detail.visible_text === 'string' && detail.visible_text.trim().length >= 1, 'LANE_TEXT', '募集の本文がありません。');
+  requireValue(
+    [detail.budget_min_jpy, detail.budget_max_jpy, detail.applicants_count, detail.contracted_count].every((value) => value === null || amount(value)),
+    'LANE_NUMBER', '募集の数値が不正です。',
+  );
+  const text = detail.visible_text.normalize('NFKC');
+  const pick = (label: RegExp) => japaneseDate(label.exec(text)?.[1] ?? '');
+  return {
+    id: `coconala_${detail.request_id}`,
+    channel: 'coconala',
+    url: /^https:\/\/coconala\.com\/requests\/\d{1,12}/u.test(detail.canonical_url) ? detail.canonical_url : null,
+    title: detail.title.trim().slice(0, 200),
+    category: detail.category?.trim().slice(0, 120) || null,
+    body: text.slice(0, 12_000),
+    budgetMinYen: detail.budget_min_jpy,
+    budgetMaxYen: detail.budget_max_jpy,
+    closesOn: pick(/締切日?\s*:?\s*([^\n/]{6,20})/u),
+    deliveryOn: pick(/納品希望日\s*:?\s*([^\n/]{6,20})/u),
+    applicants: detail.applicants_count,
+    clientRequiresNda: /機密保持契約|NDA/iu.test(text),
+  };
+}
+
+/**
+ * 1回の巡回ぶんの募集を判定し、lane runner へ返す決定を作る。
+ * 応募しないものは理由つきの hard_prohibited、応募するものは提案文・額・納品日つきの submit_required。
+ * 受付を終えた募集、既に応募した募集、1回の上限と1日の上限を超える分は、決定に含めない（次の巡回で見直す）。
+ */
+export function decideLanePass(input: {
+  details: readonly LaneRequestDetail[];
+  alreadyAppliedIds: readonly string[];
+  /** この巡回で出してよい件数（snapshot の objective.max_applications）。 */
+  maxApplications: number;
+  proposedToday: number;
+  offers: readonly GigOffer[];
+  capabilities: readonly RecipeCapability[];
+  observations?: readonly RecipeObservation[];
+  proposals?: readonly ProposalRecord[];
+  policy: GigDeskPolicy;
+  company: { name: string };
+  today: string;
+}) {
+  requireValue(Number.isSafeInteger(input.maxApplications) && input.maxApplications >= 0 && input.maxApplications <= 40, 'LANE_MAX', '1回の応募上限が不正です。');
+  const applied = new Set(input.alreadyAppliedIds);
+  const open = input.details.filter((detail) => detail.accepting_applications && !applied.has(detail.request_id));
+  const postings = open.map(postingFromLaneDetail);
+  const triaged = postings.map((posting) => triageGig({
+    posting, offers: input.offers, capabilities: input.capabilities, observations: input.observations,
+    proposals: input.proposals, policy: input.policy, today: input.today,
+  }));
+  const { send, held } = selectProposals(triaged, input.policy, {
+    proposedToday: input.proposedToday,
+    alreadyProposedIds: [...applied].map((id) => `coconala_${id}`),
+  });
+  const now = send.slice(0, input.maxApplications);
+  const later = [...send.slice(input.maxApplications), ...held];
+  const byId = new Map(postings.map((posting) => [posting.id, posting]));
+  const requestId = (postingId: string) => postingId.slice('coconala_'.length);
+  const decisions: LaneDecision[] = [];
+  for (const triage of now) {
+    const offer = input.offers.find((item) => item.id === triage.offerId)!;
+    const draft = draftProposal(byId.get(triage.postingId)!, triage, offer, input.company, input.policy.submission);
+    // apply lane は提案文200〜3000文字を要求する。
+    requireValue(draft.text.length >= 200 && draft.text.length <= 3_000, 'LANE_PROPOSAL_LENGTH', '提案文は200〜3000文字にしてください。');
+    decisions.push({
+      request_id: requestId(triage.postingId), business_class: 'submit_required',
+      reason_codes: ['sky_offer_match', `offer:${triage.offerId}`],
+      proposal_text: draft.text, price_jpy: draft.priceYen, deliver_date: draft.deliverOn,
+      work_frequency: null, weekly_hours_min: null, weekly_hours_max: null, screening_answers: [],
+    });
+  }
+  for (const triage of triaged) {
+    // 得にならないだけの募集は禁止にせず、次の巡回で見直す（採用率が変われば応募する）。
+    if (triage.decision !== 'skip') {
+      if (triage.score <= 0) later.push(triage);
+      continue;
+    }
+    decisions.push({
+      request_id: requestId(triage.postingId), business_class: 'hard_prohibited',
+      reason_codes: triage.reasons,
+      proposal_text: null, price_jpy: null, deliver_date: null,
+      work_frequency: null, weekly_hours_min: null, weekly_hours_max: null, screening_answers: [],
+    });
+  }
+  return {
+    decisions,
+    /** policy.submission が owner の時、lane runner は送らずに本人へ渡す。 */
+    submission: input.policy.submission,
+    deferredRequestIds: later.map((item) => requestId(item.postingId)),
+    triaged,
+  };
 }
 
 // ---------------------------------------------------------------------------

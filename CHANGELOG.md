@@ -17,6 +17,12 @@
 
 書き方: 新しい日付を上に足す。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
 
+## 2026-11-18 — Sky の収益ループを一つにまとめる（完全自動化の方針）（Fable / Noelle）
+
+- 本人指示で、送信まで自動を初期値に変更（`policy.submission`）。apply lane の snapshot を受けて decisions を返す `decideLanePass` と `scripts/sky-gig-desk.mjs --lane` を追加。上流（Daisuke134/life-manager）の schema と同じ形。
+- lib/sky-gig-offers.ts: 受注型 16 と、好きなこと型 4（お絵描き・エッセイ・業界の情報収集・解析）。lib/sky-device-tiers.ts: 携帯・家の計算機・会社・クラウドの置き場所と、一致した結果だけを作業料にする計算。
+- 差分の一覧と統合図は [docs/sky-earn-parity.md](docs/sky-earn-parity.md)。Mr. の同期は codex/tasks/36、lane との接続は 37。検証: tests/sky-earn-loop.test.mjs（7件）ほか関連 33 件。[PR #318](https://github.com/k999ln/rock/pull/318)
+
 ## 2026-11-18 — Sky の会社の窓口（ココナラ）（Fable / Noelle）
 
 - lib/sky-gig-desk.ts: 本人が渡した募集の文面を読み、応募する・見送るを決め、額と納品日を出し、提案の下書きを作る。受注後の確認を30秒の問いにして参加者へ配り、多数側の答えを作業料の寄与にする。サイトへの接続・送信はしない。

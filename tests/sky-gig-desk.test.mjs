@@ -75,12 +75,13 @@ void test('requests with personal data are built inside the company and never ro
   assert.equal(triage('req_sample_004', { capabilities: noInsideReviewer }).decision, 'skip');
 });
 
-void test('the draft states price, date, AI use and human review, and is never sent by Sky', () => {
+void test('the draft states price, date, AI use and human review, and carries the submission mode', () => {
   const decided = triage('req_sample_001');
   const draft = draftProposal(posting('req_sample_001'), decided, desk.offers[0], desk.company);
   for (const part of ['20,000円', '2026-11-23', '制作にはAIを使い', '担当者が内容を確認', '承諾をいただいた分だけ'])
     assert.ok(draft.text.includes(part), part);
-  assert.equal(draft.submission, 'owner_only');
+  assert.equal(draft.submission, 'auto');
+  assert.equal(draftProposal(posting('req_sample_001'), decided, desk.offers[0], desk.company, 'owner').submission, 'owner');
   assert.throws(() => draftProposal(posting('req_sample_003'), triage('req_sample_003'), desk.offers[1], desk.company), GigDeskError);
 });
 
@@ -88,8 +89,8 @@ void test('proposals are capped per day, never repeated, and dropped when the od
   const all = desk.postings.map((item) => triage(item.id));
   const first = selectProposals(all, policy, { proposedToday: 0, alreadyProposedIds: [] });
   assert.deepEqual(first.send.map((item) => item.postingId), ['req_sample_001', 'req_sample_004']);
-  assert.deepEqual(selectProposals(all, policy, { proposedToday: 4, alreadyProposedIds: [] }).send.map((item) => item.postingId), ['req_sample_001']);
-  assert.deepEqual(selectProposals(all, policy, { proposedToday: 5, alreadyProposedIds: [] }).send, []);
+  assert.deepEqual(selectProposals(all, policy, { proposedToday: policy.dailyProposalLimit - 1, alreadyProposedIds: [] }).send.map((item) => item.postingId), ['req_sample_001']);
+  assert.deepEqual(selectProposals(all, policy, { proposedToday: policy.dailyProposalLimit, alreadyProposedIds: [] }).send, []);
   assert.deepEqual(selectProposals(all, policy, { proposedToday: 0, alreadyProposedIds: ['req_sample_001'] }).send.map((item) => item.postingId), ['req_sample_004']);
   assert.deepEqual(selectProposals([...all, ...all], policy, { proposedToday: 0, alreadyProposedIds: [] }).send.length, 2);
   // 19件送って採用0なら、同じ型の提案は得にならないので止まる。
@@ -152,12 +153,12 @@ void test('a split vote goes to the company and pays everyone who answered', () 
   assert.equal(resolved.contributions.length, 2);
 });
 
-void test('the desk command runs on the example file and sends nothing', () => {
+void test('the desk command runs on the example file; the brain itself never touches the site', () => {
   const out = JSON.parse(execFileSync(process.execPath, ['--experimental-strip-types', 'scripts/sky-gig-desk.mjs', 'examples/sky/gig-desk/desk.json', '--json'], {
     cwd: new URL('..', import.meta.url), encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
   }));
   assert.equal(out.send.length, 2);
-  assert.ok(out.drafts.every((draft) => draft.submission === 'owner_only'));
+  assert.ok(out.drafts.every((draft) => draft.submission === 'auto'));
   const source = readFileSync(new URL('../lib/sky-gig-desk.ts', import.meta.url), 'utf8') + readFileSync(new URL('../scripts/sky-gig-desk.mjs', import.meta.url), 'utf8');
   assert.doesNotMatch(source, /\bfetch\(|playwright|puppeteer|XMLHttpRequest/u);
 });

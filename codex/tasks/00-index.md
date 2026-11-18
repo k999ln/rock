@@ -42,7 +42,9 @@
 | 32 | [32-service-template-first-three.md](32-service-template-first-three.md) | サービス書式で最初の 3 枚（ヨガ・工場保守・請求書） | |
 | 33 | [33-sky-recipe-planner-wiring.md](33-sky-recipe-planner-wiring.md) | Sky recipe planner を Eve の依頼へつなぐ（正規表現の振り分けは受け皿に） | |
 | 34 | [34-company-order-first-loop.md](34-company-order-first-loop.md) | 会社受注を 1 件、保存・画面・分配の計算まで通す | |
-| 35 | [35-gig-desk-screen.md](35-gig-desk-screen.md) | 会社の窓口: 募集を貼る → 判定 → 下書き → 確認の問いを配る、の画面と保存 | |
+| 35 | [35-gig-desk-screen.md](35-gig-desk-screen.md) | 参加者の画面: 受取額、確認の問い、答えの集計と保存 | |
+| 36 | [36-mr-gig-upstream-sync.md](36-mr-gig-upstream-sync.md) | Mr. の gig を上流の最新へ同期（対象 repo は k999ln/Mr.） | |
+| 37 | [37-lane-runner-bridge.md](37-lane-runner-bridge.md) | apply lane の判断を Sky の gig-desk につなぐ | |
 
 ## 40 番台: 統合
 

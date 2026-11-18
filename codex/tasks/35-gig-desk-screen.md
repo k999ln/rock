@@ -1,21 +1,21 @@
-# 35 会社の窓口（gig-desk）の画面と保存
+# 35 参加者の画面（受取額・確認の問い）と保存
 
 設計: docs/services/gig-desk.md、docs/sky-work-loop.md §7。コード: lib/sky-gig-desk.ts（判定・下書き・割当は実装済み。画面と保存は未実装）。task 34（会社受注の保存）の後に行う。
 
 ## やること
 
-1. /sky/tools/coconala に「募集を貼る」欄を足す。貼った文面を `parseCoconalaPosting` → `triageGig` → `selectProposals` → `draftProposal` に通し、今日出す提案・見送った理由・下書きを表示する。下書きは複写ボタンと、募集ページを開くリンクだけ。送信ボタンは作らない。
-2. 会社が売れる仕事の型（GigOffer）と方針（GigDeskPolicy）を D1 に保存する。型ごとの提案数・採用数（ProposalRecord）を、本人が「送った」「採用された」を押した時に更新する。
-3. 受注後、確認の問いを作り（`planJudgmentTasks`）、参加者へ配る（`assignJudgmentTasks`）。参加者の画面は自分の問いだけを表示し、依頼者の名前・募集の本文は出さない。
-4. 答えを `resolveJudgments` でまとめ、寄与を task 34 の受注に足す。
+1. 参加者の画面を1枚作る: 今月の受取額（作業料・配当の内訳、確定と未確定を分ける）、自分に来ている確認の問い、答える操作。依頼者の名前・募集の本文は出さない。入口は Telegram の bot からのリンクでよい。
+2. 受注ごとに確認の問いを作り（`planJudgmentTasks`）、配り（`assignJudgmentTasks`）、答えをまとめる（`resolveJudgments`）。寄与を task 34 の受注に足す。
+3. 運営の画面: 今日の lane の決定（応募した・しなかった理由・持ち越し）、型ごとの提案数と採用数、問いの割当の偏り、割れた問い。
+4. 売れる型（GigOffer）と方針（GigDeskPolicy）を D1 に保存する。初期値は lib/sky-gig-offers.ts と COCONALA_DESK_POLICY。
 
 ## 変えないもの
 
-- ココナラへ接続するコード（fetch・ブラウザ自動操作）を足さない。tests/sky-gig-desk.test.mjs がソースを検査している。
-- 送信・契約・納品・出品の変更は本人。
-- 資料を会社の外へ出す承諾（dataMayLeaveCompany）が無い受注は、会社の管理下の人にだけ配る。
+- lib/sky-gig-desk.ts にサイトへ接続するコードを足さない（tests/sky-gig-desk.test.mjs がソースを検査している）。
+- 資料を会社の外へ出す承諾が無い受注は、会社の管理下の人にだけ配る。
+- 受取額は入金の記録から計算したものだけを表示する。見込み額を受取額として見せない。
 
 ## 合格条件
 
-- 貼る → 判定 → 下書きの複写 → 「送った」記録 → 「採用」記録 → 問いの割当 → 答えの集計 → 寄与、が画面で一周する。
+- 受注 → 問いの割当 → 参加者が答える → 集計 → 寄与 → 受取額の表示、が画面で一周する。
 - `node --experimental-strip-types --test tests/sky-gig-desk.test.mjs tests/sky-company-order.test.mjs`、`npm run sky:check`、`npm run typecheck` が通る。
