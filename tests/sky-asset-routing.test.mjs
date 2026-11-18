@@ -17,6 +17,7 @@ async function assetFixture(staged) {
   const server = join(directory, 'dist/server');
   writeFileSync(join(directory, 'scripts/stage-sky-domain-router.mjs'), stager);
   writeFileSync(join(directory, 'services/sky-web/domain-router.mjs'), source);
+  writeFileSync(join(directory, 'services/sky-web/noah-page-routes.mjs'), readFileSync(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url)));
   writeFileSync(join(directory, 'dist/client/_next/static/fixture.js'), js);
   writeFileSync(join(directory, 'dist/client/sw.js'), '/* asset-first stale service worker */');
   // Intentionally no _headers file: responses must actually cross the wrapper.
@@ -35,6 +36,7 @@ async function assetFixture(staged) {
   } else {
     writeFileSync(join(server, 'vinext.js'), app);
     writeFileSync(join(server, 'domain-router.mjs'), source);
+    writeFileSync(join(server, 'noah-page-routes.mjs'), readFileSync(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url)));
     writeFileSync(join(server, 'index.js'), "import app from './vinext.js'; import {withMiniSite} from './domain-router.mjs'; export default withMiniSite(app);");
   }
   if (staged === 'published') {
@@ -86,7 +88,7 @@ void test('staged Worker-first delivery protects assets, redirects, canonical SW
   const missing = check(await f.worker.dispatchFetch('https://avoado.si/_next/static/missing.js'));
   assert.equal(missing.status, 404);
   const redirect = check(await f.worker.dispatchFetch('https://avoado.si/sky', {redirect:'manual'}));
-  assert.equal(redirect.status, 308); assert.equal(redirect.headers.get('location'), 'https://avoado.si/os/sky');
+  assert.equal(redirect.status, 308); assert.equal(redirect.headers.get('location'), 'https://avoado.si/noah');
   const sw = check(await f.worker.dispatchFetch('https://avoado.si/sw.js'));
   assert.equal(sw.status, 200); assert.match(await sw.text(), /skipWaiting/);
   assert.equal(sw.headers.get('Service-Worker-Allowed'), '/');

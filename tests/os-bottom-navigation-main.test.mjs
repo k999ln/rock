@@ -22,6 +22,7 @@ function compile(path, modules, globals = {}) {
     if (name === 'next/image') return { default: 'img' };
     if (name === 'lucide-react') return icons;
     if (name.endsWith('.css')) return css;
+    if(name==='./noah-surface-context') return modules[name] ?? {useNoahSurface:()=>null};
     if(name==='react') return {...staticReact,...modules.react};
     if(name==='@/lib/os-navigation') return navContract;
     if(name==='next/navigation') return modules[name]??{usePathname:()=>'/'};
@@ -247,4 +248,33 @@ void test('Home menu retains discover, owner library and work results alongside 
  assert.equal(all.filter(n=>n.type===Nav).length,1);
  for(const href of ['/#sky','/#sky-manage','/os/eve#eve-work-results'])assert.ok(all.some(n=>n.type==='a'&&n.props.href===href),href);
  assert.ok(all.some(n=>n.type==='details'&&'data-home-menu'in n.props));
+});
+
+void test('Noah embeds existing workspace once, preserving connection and running guards across its outer navigation', () => {
+  const effects=[], windowEvents=new Map(), documentEvents=new Map();
+  const events = map => ({ addEventListener:(name, fn)=>map.set(name,fn), removeEventListener:(name,fn)=>{if(map.get(name)===fn)map.delete(name);} });
+  class Element { constructor(href){this.href=href;} closest(){return this;} getAttribute(){return this.href;} }
+  const Nav=()=>null, connect=()=>{}, child={type:'existing-auth-child',props:{children:'protected content'}};
+  const Shell=compile('components/workspace-shell.tsx',{
+    react:{...staticReact,useEffect:fn=>effects.push(fn)},
+    './noah-surface-context':{useNoahSurface:()=>({mode:'public',base:'/noah',hash:''})},
+    '@/lib/device':{monitorDevice(){}}, '@/lib/product-identity':{PRODUCT_RELEASE_NAME:'RockstarOS'},
+    './os-app-navigation':{default:Nav},
+  },{Element,window:events(windowEvents),document:events(documentEvents),navigator:{}}).default;
+  const tree=Shell({title:'Noah',running:true,onConnect:connect,children:child}), all=nodes(tree);
+  assert.equal(all.filter(n=>n.type===Nav).length,0);
+  assert.equal(all.filter(n=>n.type?.name==='OSHeader').length,0);
+  assert.ok(all.includes(child));
+  assert.equal(tree.props['data-noah-embedded'],true);
+  assert.equal(all.find(n=>n.type==='button').props.onClick,connect);
+  assert.equal(all.find(n=>n.type==='button').props.disabled,true);
+  const cleanup=effects.map(fn=>fn());
+  assert.equal(windowEvents.has('beforeunload'),true);
+  for(const href of ['/noah/features','/noah#timeline','#workspace-main','#noah-content']){
+    let prevented=false,stopped=false;
+    documentEvents.get('click')({target:new Element(href),preventDefault(){prevented=true;},stopPropagation(){stopped=true;}});
+    assert.equal(prevented,!href.startsWith('#'));assert.equal(stopped,prevented);
+  }
+  for(const release of cleanup)release?.();
+  assert.equal(documentEvents.size,0);assert.equal(windowEvents.size,0);
 });

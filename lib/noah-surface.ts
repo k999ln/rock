@@ -8,8 +8,9 @@ export function noahHomeView(hash: string): NoahHomeView {
 }
 
 export function noahLegacyHref(hash: string, mode: NoahSurfaceMode, base: string): string | null {
-  if (['#sky', '#catalog', '#optional-features'].includes(hash)) return `${base}/agents`;
-  if (hash === '#sky-manage') return noahActionHref(mode, base, 'library');
+  if (hash === '#sky') return `${base}/tools`;
+  if (['#catalog', '#optional-features'].includes(hash)) return `${base}/agents`;
+  if (hash === '#sky-manage') return mode === 'public' ? `${base}/saved` : noahActionHref(mode, base, 'library');
   return null;
 }
 

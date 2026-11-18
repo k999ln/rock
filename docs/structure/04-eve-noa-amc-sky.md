@@ -1,5 +1,7 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
+2026-11-18 画面統合: `/noah`を唯一のタイムラインとし、既存のTool利用・購入・掲載/販売・担当設定・接続/端末・成果・クラウド設定を`/noah/features`から同じシェルで開く。旧`/sky`と`/os/sky`は対応するNoah画面へqueryを保持して移動する。API・認証・保存先・課金条件は変更しない。旧Agent設定は`/noah/saved`、外部Agentカタログは`/noah/agents`、Mac実行は既存の案内。ローカル実験は公開側で`/noah/local-tools`へ案内し、実験本体のhost制限を保持する。
+
 2026-11-18 公開配信の修正: Sitesの静的ファイル優先配信に依存せず、正規asset URLはWorkerを通して共通ヘッダーを付ける。ビルド時に正規URLと内容hash付き保管URLの対応を固定し、HTML/SVGとservice workerはWorkerで返す。保管先は公開asset専用であり秘密の保管場所ではない。権限付きAPIやcookieを保管先へのリクエストへ転送しない。
 
 2026-11-18 公開指示の更新: 統合タイムラインを既存avoado.siへ公開する。ドメイン直下はNoahへの入口にし、既存fragment/queryの共有導線を保持する。公開カタログと認証付き投稿の権限を区別し、管理/接続/実行/停止はMac版への案内を維持する。GitHubは作業branch/PRへ保存する。

@@ -121,7 +121,8 @@ await test('Zema source contract embeds AMC before the generic launch link and u
     component,
     /executeTracked|fetch\(['"]\/api\/(?:llm|jobs)/,
   );
-  assert.match(page, /redirect\('\/zema\/amc'\)/);
+  assert.match(page, /redirect\('\/os\/eve\?mode=tools&view=work'\)/);
+  assert.doesNotMatch(page, /redirect\('\/zema\/amc'\)/);
 });
 
 await test('AMC work keeps the exact brief and saves an approved pending plan, not a claimed AI run', () => {

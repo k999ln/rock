@@ -101,3 +101,15 @@
 .moreRow { padding:20px; text-align:center; }
 
 @media(max-width:700px) { .railInner > nav:first-of-type { display:none; } .rail .personal { margin:0; padding:0; border:0; } .railInner { padding:10px 12px; } .rail .add { bottom:13px; } }
+
+.rail nav .mobileFeatures { display:none; }
+.workspaceBody { grid-template-columns:230px minmax(0,1fr); }
+.workspaceBody .support { display:none; }
+.content :global([data-noah-embedded] .rock-main) { padding:20px; width:100%; max-width:none; }
+.content :global(.noah-workspace-heading) { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:20px; border-bottom:1px solid #e2e7e1; }
+.content :global(.noah-workspace-heading h2) { font-size:22px; margin:0 auto 0 0; }
+.content :global([data-noah-embedded] .sky-feed-layout) { grid-template-columns:minmax(0,1fr); }
+@media(max-width:700px){.rail nav .mobileFeatures{display:flex}.rail .personal{padding-right:0;flex-wrap:wrap}.rail .add{position:static;margin-top:8px}.content :global([data-noah-embedded] .rock-main){padding:12px}}
+
+.content :global([data-noah-embedded] nav[aria-label="Noahの主要画面"]) {display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px;margin-bottom:18px}
+.content :global([data-noah-embedded] .sky-marketplace-link) {margin:0;padding:6px 10px;background:#f3f6f0;border-radius:8px}

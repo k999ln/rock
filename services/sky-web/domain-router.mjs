@@ -1,3 +1,5 @@
+import { NOAH_LOCAL_LABS, noahPageRedirect, noahRedirectURL } from './noah-page-routes.mjs';
+
 // Keep outer-router responses under the same policy as application responses.
 // The exact values are checked against data/web-security-policy.json.
 const UNIVERSAL_RESPONSE_HEADERS = Object.freeze({
@@ -72,6 +74,10 @@ const SKY_PREFIXES = [
   '/api',
   '/activity',
   '/account',
+  '/add',
+  '/amc',
+  '/campus',
+  '/guide',
   '/chat',
   '/coconala-team',
   '/connect',
@@ -231,6 +237,13 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
     fetch(request, env, context) {
       const source = new URL(request.url);
       const path = source.pathname;
+      // Preserve campus-specific deployments and all API/mutation routing.
+      if ((source.hostname === MINI_PUBLIC_HOST || ['localhost', '127.0.0.1', '[::1]'].includes(source.hostname)) && ['GET', 'HEAD'].includes(request.method)) {
+        const legacy = noahPageRedirect(path);
+        if (legacy) return Response.redirect(noahRedirectURL(source, legacy).href, 308);
+        if (source.hostname === MINI_PUBLIC_HOST && NOAH_LOCAL_LABS.some(lab => ['/sky/', '/os/sky/'].some(prefix => path.replace(/\/$/, '') === prefix + lab)))
+          return Response.redirect(noahRedirectURL(source, '/noah/local-tools').href, 307);
+      }
       // Owner-approved retirement of duplicate screens; keep installation guidance.
       if (source.hostname === MINI_PUBLIC_HOST) {
         const matouPath = MATOU_PUBLIC_ALIASES.get(path);

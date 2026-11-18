@@ -480,3 +480,7 @@ Updated: 2026-11-02 / 393 task records (32 parents, 192 children, 169 standalone
 2026-11-18に公開v143へ反映済み。`https://avoado.si/` はNoahを開き、`/#timeline` と `/noah` でも同じ混合タイムラインを使う。ドメイン直下からの遷移・混合配信・Agent検索/詳細・Mac案内を実URLで確認済み。修正版v144では静的配信ヘッダー8種類/8ルートも公開URLで検証済み。投稿・フォローはサインインが必要で、実送信の受入は別。
 
 2026-11-18: ニュース・Agent紹介・通常投稿・コミュニティー投稿を一本のタイムラインへ統合。種別ラベル、コミュニティー名、分類/検索、Mac版への案内を共通UIで扱う。`/#timeline`と`/noah`は同じNoah。[公開記録・検証](codex/tasks/69-noah-public-timeline.md)。
+
+### Noahの機能をまとめた入口
+
+`/noah/features`から、Tool検索、購入履歴、掲載/販売、Webに保存した担当/モデル、端末/接続、成果、既存クラウド設定を同じNoahの画面で開けます。旧`/sky`と`/os/sky`の既知URLはqueryを保持して対応先へ移動します。`/add`・`/campus`の誤配信とAMCの循環も解消します。実行先や本人の権限、API/DB/課金は既存のものを使い、ローカル専用実験は公開側でMacの案内を表示します。[変更と検証](codex/tasks/70-noah-route-unification.md)。

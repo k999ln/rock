@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useNoahSurface } from './noah-surface-context';
 import Image from 'next/image';
 import {
   useCallback,
@@ -343,6 +344,7 @@ export default function CampusWorkspace({
   entryTag?: string;
   entrySource?: string;
 }) {
+  const noah = useNoahSurface();
   const [campus, setCampus] = useState<CampusId>(initialCampus);
   const [data, setData] = useState<Bootstrap | null>(null);
   const [tab, setTab] = useState<Tab>(() => tabForMode(entryMode));
@@ -694,14 +696,14 @@ export default function CampusWorkspace({
       }
     >
       <header className={styles.topbar}>
-        <Link href="/" className={styles.brand}>
+        {noah ? <h2>コミュニティー</h2> : <Link href="/" className={styles.brand}>
           <span>🥑</span>
           <b>avocado</b>
           <small>Campus</small>
-        </Link>
+        </Link>}
         <div className={styles.toplinks}>
-          <Link href="/sky">smis</Link>
-          <Link href="/chat">Jennifer</Link>
+          <Link href={noah ? "/noah/features" : "/sky"}>{noah ? "機能一覧" : "Noah"}</Link>
+          <Link href="/chat">Eve</Link>
           <Link href="/wallet" aria-label="Wallet">
             <WalletCards size={17} />
           </Link>

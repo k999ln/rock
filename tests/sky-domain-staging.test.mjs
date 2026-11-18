@@ -11,6 +11,7 @@ function fixture() {
   writeFileSync(join(root, 'scripts/stage-sky-domain-router.mjs'), readFileSync(new URL('../scripts/stage-sky-domain-router.mjs', import.meta.url)));
   writeFileSync(join(root, 'dist/server/wrangler.json'), JSON.stringify({ main: 'index.js', compatibility_date: '2026-10-22', assets: { directory: '../client', html_handling: 'none' } }));
   writeFileSync(join(root, 'services/sky-web/domain-router.mjs'), 'export const marker = "first";\n');
+  writeFileSync(join(root, 'services/sky-web/noah-page-routes.mjs'), readFileSync(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url)));
   const run = () => spawnSync(process.execPath, ['scripts/stage-sky-domain-router.mjs'], { cwd: root, encoding: 'utf8', timeout: 10000 });
   return { root, run, read: path => readFileSync(join(root, path), 'utf8'), write: (path, text) => writeFileSync(join(root, path), text), close: () => rmSync(root, { recursive: true, force: true }) };
 }

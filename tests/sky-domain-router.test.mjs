@@ -227,7 +227,7 @@ void test('cross-origin Mini mutation is rejected before upstream dispatch', asy
   assert.equal(calls, 0);
 });
 
-void test('avoado.si keeps RockstarOS at /os and canonicalizes Sky under /os/sky', async () => {
+void test('avoado.si keeps RockstarOS at /os and canonicalizes old Sky under /noah', async () => {
   const seen = [];
   const app = withMiniSite(
     {
@@ -243,15 +243,17 @@ void test('avoado.si keeps RockstarOS at /os and canonicalizes Sky under /os/sky
   const sky = await app.fetch(
     new Request('https://avoado.si/os/sky/outputs?source=nfc'),
   );
-  assert.equal(sky.status, 200);
-  assert.deepEqual(seen, ['/os', '/sky/outputs']);
+  assert.equal(sky.status, 308);
+  assert.equal(sky.headers.get('location'), 'https://avoado.si/noah/outputs?source=nfc');
+  assert.equal((await app.fetch(new Request(sky.headers.get('location')))).status, 200);
+  assert.deepEqual(seen, ['/os', '/noah/outputs']);
   const old = await app.fetch(
     new Request('https://avoado.si/sky/outputs?source=nfc'),
   );
   assert.equal(old.status, 308);
   assert.equal(
     old.headers.get('location'),
-    'https://avoado.si/os/sky/outputs?source=nfc',
+    'https://avoado.si/noah/outputs?source=nfc',
   );
 });
 
@@ -360,13 +362,14 @@ void test('OS and Sky documents point to their own install manifests', async () 
   const os = await app.fetch(new Request('https://avoado.si/os'));
   assert.match(await os.text(), /href="\/os\/manifest\.webmanifest"/);
   const sky = await app.fetch(new Request('https://avoado.si/os/sky'));
-  assert.match(await sky.text(), /href="\/os\/sky\/manifest\.webmanifest"/);
+  assert.equal(sky.status, 308);
+  assert.equal(sky.headers.get('location'), 'https://avoado.si/noah');
   const campus = await app.fetch(
-    new Request('https://avoado.si/os/sky/campus/nyu/hub?source=nfc'),
+    new Request('https://columbia.avoado.si/os/sky/campus/columbia/hub?source=nfc'),
   );
   assert.match(
     await campus.text(),
-    /href="\/os\/sky\/campus\/nyu\/manifest\.webmanifest"/,
+    /href="\/os\/sky\/campus\/columbia\/manifest\.webmanifest"/,
   );
 });
 
@@ -397,13 +400,15 @@ void test('local common OS links preserve canonical Sky aliases and request owne
     const response = await app.fetch(new Request(`http://${host}/os/sky/agents?source=common-nav`, {
       headers: { cookie: 'synthetic-local-session=1' },
     }));
-    assert.equal(response.status, 200);
-    assert.equal((await response.json()).path, '/sky/agents');
-    assert.equal(seen[0].url, `http://${host}/sky/agents?source=common-nav`);
+    assert.equal(response.status, 308);
+    assert.equal(response.headers.get('location'), `http://${host}/noah/saved?source=common-nav`);
+    const canonical = await app.fetch(new Request(response.headers.get('location'), {headers: {cookie: 'synthetic-local-session=1'}}));
+    assert.equal((await canonical.json()).path, '/noah/saved');
+    assert.equal(seen[0].url, `http://${host}/noah/saved?source=common-nav`);
     assert.equal(seen[0].headers.get('cookie'), 'synthetic-local-session=1');
     const redirect = await app.fetch(new Request(`http://${host}/sky/agents?revision=2`));
     assert.equal(redirect.status, 308);
-    assert.equal(redirect.headers.get('location'), `http://${host}/os/sky/agents?revision=2`);
+    assert.equal(redirect.headers.get('location'), `http://${host}/noah/saved?revision=2`);
     const post = new Request(`http://${host}/os/sky/agents`, { method: 'POST',
       headers: { origin: `http://${host}`, 'content-type': 'application/json' },
       body: JSON.stringify({ synthetic: true }),
@@ -532,4 +537,4 @@ void test('build asset cache policy covers successful reads but never promotes p
   }
 });
 
-void test('retired duplicate presentations use canonical product domains and retain same-origin Studio query state',async()=>{const app=withMiniSite({fetch:()=>new Response('app')},()=>new Response('mini'));const mini=await app.fetch(new Request('https://avoado.si/avocado-mini?private=do-not-forward'),{},{});assert.equal(mini.status,308);assert.equal(mini.headers.get('location'),'https://avocadomini.si/');const studio=await app.fetch(new Request('https://avoado.si/studio?tool=fixture'),{},{});assert.equal(studio.status,308);assert.equal(studio.headers.get('location'),'https://avoado.si/os/sky/publish?tool=fixture');});
+void test('retired duplicate presentations use canonical product domains and retain same-origin Studio query state',async()=>{const app=withMiniSite({fetch:()=>new Response('app')},()=>new Response('mini'));const mini=await app.fetch(new Request('https://avoado.si/avocado-mini?private=do-not-forward'),{},{});assert.equal(mini.status,308);assert.equal(mini.headers.get('location'),'https://avocadomini.si/');const studio=await app.fetch(new Request('https://avoado.si/studio?tool=fixture'),{},{});assert.equal(studio.status,308);assert.equal(studio.headers.get('location'),'https://avoado.si/noah/publish?tool=fixture');});

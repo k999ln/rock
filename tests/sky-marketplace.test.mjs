@@ -71,7 +71,7 @@ void test('checkout preserves the server reason for a conflict after refreshing 
 
 void test('Sky exposes a separate si and automation marketplace from its main app view', () => {
   assert.match(page, /SkyMarketplace/);
-  assert.match(sky, /href="\/sky\/marketplace"/);
+  assert.match(sky, /href="\/noah\/marketplace"/);
   assert.match(marketplace, /href="\/studio"/);
   assert.match(marketplace, /href="\/sky\/register"/);
   assert.match(marketplace, /href="\/sky\/network"/);
