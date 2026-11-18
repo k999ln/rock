@@ -1,6 +1,6 @@
 # Sky の収益ループ — 先行例との差分と、一つにまとめた形（2026-11-18）
 
-出典: Daisuke134/life-manager（MIT、2026-11-18 の main）、k999ln/Mr.（main、2026-11-18）、この repo の PR #318、2026-11-18 の本人指示。
+出典: Daisuke134/anicca（旧名 life-manager。同じリポジトリで、旧 URL は転送される。MIT、2026-11-18 の main）、k999ln/Mr.（main、2026-11-18）、この repo の PR #318、2026-11-18 の本人指示。
 本人の PC の `Mr/skills/anicca-life-manager` は読めていない（フォルダの許可が下りなかった）。GitHub の Mr. では同じスキルが `skills/anicca-rockstar_ibot` に改名されている（`docs/manifests/oss-merge-1-sources.json`）ので、GitHub 上の Mr. と上流で比べた。
 
 ## 1. 先行例（life-manager の「Coconala loop」）は何か
@@ -19,6 +19,8 @@
 
 公開されている成績（2026-11-15）: ココナラ入金 ¥263,634（7/25〜10/12）、直近30日は注文3件 ¥39,500、応募19件で返信0、出品20件の公開販売数は全て0。
 
+会社全体の公開数字（同リポの open/metrics.json、2026-11-15）: 直近30日の売上 $47.66、今月 $31.81、MRR $20。把握できている今月の支出は $293.70（一部のみ）。README も「事業の自律運営と確認済みの利益は目標であり、まだ実証されていません」と書いている。**先行例と同じ性能に並んでも、100人で分ける原資は月に数千円〜数万円の規模。足りないのは自動化ではなく買い手。**
+
 ## 2. 無いものの一覧
 
 ### 2.1 Mr. に無いもの（上流は 2026-07-29 の版から 3.5 か月進んでいる）
@@ -33,6 +35,15 @@
 | loop（registry） | 163 → 195。`hf-gig-apply-reconcile`、`hf-gig-apply-evidence-gc`、`gig-experiment-evaluate`、CrowdWorks 5本、Lancers 2本、Mercor 3本、ほか | 定期実行の定義 |
 | 他の販売先 | `crowdworks`、`mercor`、`promptbase`、`line-sticker`、`ebook-articles`、`upwork_readiness`、`freelancer_readiness` | ココナラ以外 |
 | 運用のスキル | `loop-engineering`、`harness-engineering`、`observability-engineering`、`eval-engineering`、`platform-deadline-guard`、`google-login` ほか計 19 | 止まらない運用の手順 |
+
+### 2.1b 既に Mr. にあるのに、この repo で作り直してしまったもの
+
+| 機能 | Mr. / 上流にあるもの | この repo で作ったもの | 扱い |
+| --- | --- | --- | --- |
+| 利益の分配 | `skills/ubi`: 黒字の回だけ、純利益の一定率（初期値 10%）を受取人で等分。運営者の取り分は別枠。二重払い防止、GMO あおぞらの一括振込、USDC | lib/sky-company-order.ts の配当 | 配当の計算と支払いは ubi を使う。Sky 側は作業料（寄与）の計算だけ残す |
+| 収支の集計 | `skills/cfo`（上流 80 ファイル、Mr. は 2） | なし | Mr. の同期（task 36）に cfo を含める |
+| 文章・電子書籍・スタンプ・プロンプトを売る | `writer-agent`、`earn/ebook-articles`、`earn/line-sticker`、`earn/promptbase`（後ろ3つは Mr. に無い） | lib/sky-gig-offers.ts の CREATOR_LANES（工程の定義だけ） | 売り場の手は上流のものを使い、CREATOR_LANES は「本人に何を残すか」の定義として使う |
+| 告知・SNS | `earn/marketing-engine`（上流 261、Mr. 196）、`social`、`x-tweeter` | なし | 同上 |
 
 ### 2.2 上流にも Mr. にも無く、Sky が足すもの
 
@@ -133,6 +144,18 @@ node --experimental-strip-types scripts/sky-gig-desk.mjs desk.json --lane snapsh
 - 「稼げるなら友達に見せる」が効くのは、見せられる画面があってから。最初に作るのは受取額が見える画面。
 - 人数は仕事の量に合わせて増やす。問いが来ない日が続くと人は離れる。
 - 未成年は保護者の同意が要る。報酬の支払いと税の扱いは税理士に確認する。
+
+## 6b. 100 人に何をしてもらうか（買い手が足りない、を前提に）
+
+作る側（AI）は余っていて、買い手が足りない。だから 100 人の主な役割は、計算でも確認でもなく、**買い手を連れてくること**と**売れるものを作ること**に置く。
+
+| 役割 | 何をする | お金の出どころ |
+| --- | --- | --- |
+| 紹介 | 知っている店・会社・人を1つ指す。提案と見本と運用は Sky が用意する | その取引の作業料（`referral`）。販売サイトの手数料がかからない直接の取引 |
+| 作る | 絵・文章・調べたこと・分析を渡す。掲載・告知・問い合わせ・納品は Sky | その商品の売上 |
+| 確認・端末 | 問いに答える、端末を貸す | 受注があった分だけ |
+
+ココナラの窓口は入口の1つとして回すが、原資の中心には置かない。
 
 ## 7. 作る順番
 
