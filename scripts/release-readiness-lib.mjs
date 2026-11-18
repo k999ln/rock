@@ -1,3 +1,4 @@
+import { securityInputHashes, WEB_SECURITY_EVIDENCE_PATH } from './web-security-evidence.mjs';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -1042,29 +1043,9 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
   ) {
     fail(label + ': static asset用_headerがsecurity policy正本と不一致です');
   }
-  const localEvidencePath = 'docs/evidence/launch/web-security-main-alignment-20261102.json';
+  const localEvidencePath = WEB_SECURITY_EVIDENCE_PATH;
   const localEvidence = readJson(resolve(root, localEvidencePath));
-  const localInputs = {
-    'services/sky-web/domain-router.mjs': sha256(readFileSync(resolve(root, 'services/sky-web/domain-router.mjs'))),
-    'scripts/stage-sky-domain-router.mjs': sha256(readFileSync(resolve(root, 'scripts/stage-sky-domain-router.mjs'))),
-    'data/web-security-policy.json': sha256(readFileSync(resolve(root, 'data/web-security-policy.json'))),
-    'public/_headers': sha256(readFileSync(resolve(root, 'public/_headers'))),
-    'next.config.ts': sha256(readFileSync(resolve(root, 'next.config.ts'))),
-    'scripts/check-web-security-response.mjs': sha256(
-      readFileSync(resolve(root, 'scripts/check-web-security-response.mjs')),
-    ),
-    'public/sw.js': sha256(readFileSync(resolve(root, 'public/sw.js'))),
-    'app/manifest.ts': sha256(readFileSync(resolve(root, 'app/manifest.ts'))),
-    'public/rock-icon-192.png': sha256(
-      readFileSync(resolve(root, 'public/rock-icon-192.png')),
-    ),
-    'public/rock-icon-512.png': sha256(
-      readFileSync(resolve(root, 'public/rock-icon-512.png')),
-    ),
-    'public/rock-icon-maskable.svg': sha256(
-      readFileSync(resolve(root, 'public/rock-icon-maskable.svg')),
-    ),
-  };
+  const localInputs = securityInputHashes(root);
   if (
     localEvidence.schema !== 'rockstaros-web-security-response-evidence/1' ||
     !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(localEvidence.observedAt || '') ||

@@ -43,6 +43,14 @@ export function auditWebAssetClosure(distDirectory) {
   const dist = resolve(distDirectory);
   const client = resolve(dist, 'client');
   const references = new Map();
+  const mapFile = resolve(dist, 'server/asset-map.json');
+  const assets = existsSync(mapFile) ? JSON.parse(readFileSync(mapFile, 'utf8')) : {};
+  const available = asset => {
+    const entry = assets['/' + asset];
+    if (!entry) return existsSync(resolve(client, asset));
+    if (typeof entry.body === 'string') return true;
+    return typeof entry.storage === 'string' && entry.storage.startsWith('/_site-assets/') && existsSync(resolve(client, '.' + entry.storage));
+  };
   for (const source of filesBelow(dist).filter(
     (path) => isTextCandidate(path) && isDeliveryReferenceIndex(path, dist),
   )) {
@@ -55,7 +63,7 @@ export function auditWebAssetClosure(distDirectory) {
     }
   }
   const missing = [...references]
-    .filter(([asset]) => !existsSync(resolve(client, asset)))
+    .filter(([asset]) => !available(asset))
     .map(([asset, sources]) => ({
       asset,
       sources: [...sources].sort((left, right) => left.localeCompare(right)),

@@ -1,3 +1,4 @@
+import { grantFixturePermissions } from './browser-fixture-permissions.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { build } from 'esbuild';
@@ -243,9 +244,12 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
       }
       finally { unsubscribe(); }
     };
+    const networkFailures = [];
+    devtools.onMessage(event => { if (event.method === 'Network.loadingFailed') networkFailures.push({errorText:event.params.errorText, blockedReason:event.params.blockedReason, corsError:event.params.corsErrorStatus}); });
+    await devtools.call('Network.enable');
     const evaluate = async expression => { const result = await devtools.call('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.text); return result.result.value; };
-    async function wait(expression, label) { for (let i = 0; i < 120; i++) { if (await evaluate(expression)) return; const errors = await evaluate('window.__fixtureErrors'); if (errors?.length) throw new Error(`browser error: ${JSON.stringify(errors)} lines ${JSON.stringify(bundleLines.slice(errors[0][2] - 4, errors[0][2] + 1))}`); await new Promise(r => setTimeout(r, 100)); } throw new Error(`browser timeout: ${label}; ${JSON.stringify(await evaluate('({href:location.href, ready:document.readyState, text:document.body?.innerText, errors:window.__fixtureErrors})'))}`); }
+    async function wait(expression, label) { for (let i = 0; i < 120; i++) { if (await evaluate(expression)) return; const errors = await evaluate('window.__fixtureErrors'); if (errors?.length) throw new Error(`browser error: ${JSON.stringify(errors)} lines ${JSON.stringify(bundleLines.slice(errors[0][2] - 4, errors[0][2] + 1))}`); await new Promise(r => setTimeout(r, 100)); } throw new Error(`browser timeout: ${label}; network=${JSON.stringify(networkFailures)}; ${JSON.stringify(await evaluate('({href:location.href, ready:document.readyState, text:document.body?.innerText, errors:window.__fixtureErrors})'))}`); }
     const js = value => JSON.stringify(value);
     const click = async label => { const x = js(label); await wait(`!![...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)`, label);
       await evaluate(`([...document.querySelectorAll('button,summary')].find(e=>e.textContent.trim().includes(${x})&&!e.disabled)).click()`); };
@@ -279,7 +283,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await wait('document.body?.innerText.includes("自分の担当を作る")', 'Eve');
     // This permission is confined to the disposable test origin/profile. Product
     // code never requests it and must reject input when its journal is unavailable.
-    await devtools.call('Browser.grantPermissions', { origin: base, permissions: ['durableStorage'] });
+    await grantFixturePermissions(devtools, port, base);
     assert.equal(await evaluate('navigator.storage.persist()'), true);
     assert.equal(await evaluate('navigator.storage.persisted()'), true);
     const composerText = `document.querySelector('section[aria-label="合成Eve応答fixture"] textarea')?.value`;
@@ -351,6 +355,7 @@ for (const localAuthority of [true, false]) void test(`isolated browser: Eve, Sm
     await input('使用する接続と操作',JSON.stringify([sdk.localId,'add_integers']));
     await wait('document.body.innerText.includes("実Toolに処理能力ID")','different actual Tool is not a candidate');
     await input('使用する接続と操作',JSON.stringify([sdk.localId,'count_lines']));
+    await click('選択した実Toolを再確認');
     await wait('document.body.innerText.includes("宣言条件が一致しました")','explicit selected Tool matches');
     assert.equal(requests.filter(r=>r.path.endsWith('/tool-observations')).length,0);
 

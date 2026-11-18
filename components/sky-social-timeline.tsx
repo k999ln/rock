@@ -88,12 +88,14 @@ export default function SkySocialTimeline({
   initialView = 'home',
   discovery,
   externalFeed,
+  agentManagementHref,
 }: {
   fullHome?: boolean;
   personalFeed?: ReactNode;
   initialView?: 'home' | 'bookmarks' | 'communities';
   discovery?: ReactNode;
   externalFeed?: ReactNode;
+  agentManagementHref?: string;
 } = {}) {
   const [data, setData] = useState(empty),
     [mode, setMode] = useState<'recommended' | 'following' | 'bookmarks'>(
@@ -932,7 +934,7 @@ export default function SkySocialTimeline({
                 ) : ['model', 'dataset', 'space', 'agent'].includes(
                     post.attachment.kind,
                   ) ? (
-                  attachmentAdded ? (
+                  agentManagementHref ? <Link href={agentManagementHref}>Mac版で使う条件を確認 <ArrowUpRight size={15} /></Link> : attachmentAdded ? (
                     <>
                       <small>自分のNoahに追加済み</small>
                       <button

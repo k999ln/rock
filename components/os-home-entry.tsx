@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { osEntryRedirect } from '@/lib/os-entry';
-import HomeScreen from './home-screen';
+import NoahShell from './noah-shell';
+import NoahHome from './noah-home';
 
 /** Fragment navigation is resolved in the browser; never drop an existing handoff. */
 export default function OsHomeEntry() {
@@ -15,5 +16,5 @@ export default function OsHomeEntry() {
     });
     return () => cancelAnimationFrame(frame);
   }, []);
-  return showHome ? <HomeScreen /> : <main aria-busy="true">Eveを開いています…</main>;
+  return showHome ? <NoahShell mode="public"><NoahHome mode="public" /></NoahShell> : <main aria-busy="true">Noahを開いています…</main>;
 }
