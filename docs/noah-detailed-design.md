@@ -1,0 +1,318 @@
+# Noah 詳細設計書（バックエンド・フロント・UX）
+
+2026-11-20。[全体の設計書](noah-design.md) を、そのまま実装できる細かさにした文書。機能ごとに、UX（体験と文言）→ フロント（画面と状態）→ バックエンド（API・データ・処理）→ 試験 の順で書く。main `c4d7c27` のコードを土台にしている。数値は候補で、決めるのは本人。
+
+## 0. この文書の使い方（実装する Agent へ）
+
+1. 作業の単位は 17 章の表の 1 行（＝ `codex/tasks/` の 1 枚＝ 1 PR）。表の上から順に進める。
+2. 1 単位でやること: 対象の章を読む → 書かれた関数・API・表を作る → その章の「試験」の各行をテストにする → 検証コマンドを通す → `CHANGELOG.md` の先頭と `codex/tasks/00-index.md` を更新する → PR 本文に、通した試験と残した事を書く。
+3. **止まらないための決まり。** 本人の決定を待つ項目は、18 章の既定値で実装し、flag を閉じたまま入れる。それ以外で止まらない。
+4. **触らない物**（AGENTS.md §6）: 本番の決済鍵、本番 D1 への migration の適用、外部サービスとの契約・申込、端末の署名・flash、`docs/evidence/` と `archive/`、main への直接 push。migration は `drizzle/` に置くまで。
+5. **変えない物**: Eve → Noa → AMC → Jev の構造。Broker と Wallet の確認。既存の API path・D1 table・enum の名前と意味。`noah-terminal/1`・`noah-isolation/1`・`LIMITS`。価格と料率。原本を変えない決まり。台帳の文章を実行コードにしない決まり。
+6. 画面に出す言葉は 1 章の言葉だけを使う。技術の言葉（MCP、OAuth、runner、lease、container）を画面に出さない。
+7. 迷った時に確かめる順: この文書 → [サービスシート](services/) → コード。書いてある事とコードが食い違う時は、コードを正とし、PR 本文に食い違いを書く。
+
+## 1. 用語
+
+| 言葉 | 意味 |
+| --- | --- |
+| Agent | 頼むと仕事をして成果を返す物。外から取り込んだ道具も、画面では Agent として並べる |
+| 道具 | 呼ぶと 1 つの処理をする物（MCP の tool）。自分では考えない |
+| 系列 | 同じ Agent の版・コピー・量産をまとめた 1 単位。カード 1 枚 |
+| 版 | 中身を hash で固定した 1 つの状態 |
+| 口 | つなぎ方の種類。`mcp-remote`・`space-mcp`・`acp`・`mcp-package`・`a2a`・`source` |
+| 面 | Agent が使う表示の種類。`none`・`terminal`・`browser`・`screen`・`own-device` |
+| 置き場所 | Agent が動く所。`provider`（相手のサーバー）・`home`（家の端末）・`cloud`（雲の端末）・`pocket`（スマホの中） |
+| 専用の端末 | 本人専用の、Agent が動く端末。画面を Agent に渡さない。今は本人の Mac、次に mii の Hub |
+| 手元 | 本人が頼んで受け取る端末。スマホ、次に mii |
+| 接続 | 本人と Agent の版を、置き場所・権限・料金の条件で結んだ状態 |
+| Passport | 接続の記録。account に保存する |
+| 接続要件 | その版をつなぐのに要る物の宣言（`noah-connect/1`） |
+| 接続計画 | 接続要件と本人の今の状態から、足りない物と手数を計算した結果 |
+| 接続の手数 | （1 タップの数、入力の数） |
+| 接続試験 | L0 台帳の検査、L1 握手と道具の一覧、L2 見本で 1 往復 |
+| 仕事 | 頼んだ 1 件。既存の Work / Job |
+| 受け渡し | 端末が仕事を取りに来て、結果を返す手順（`/api/noah/runner`） |
+| 隔離環境 | Agent のコードが動く、画面も鍵も無い Linux の箱 |
+| 中継 | Agent の代わりにモデルや外の接続先を呼び、鍵を付ける所 |
+| 道具を持つ担当 | 本人の 1 文を受け取り、その接続の道具を選んで呼ぶ Noah の基盤 |
+
+## 2. 構成
+
+| 部品 | 役目 | 今あるコード | 足すコード |
+| --- | --- | --- | --- |
+| 手元の画面 | 見つける・接続・頼む・受け取る | `app/noah/*`、`components/noah-home.tsx`、`noah-public-catalog.tsx`、`noah-public-detail.tsx`、`noah-launch.tsx`、`noah-library.tsx`、`noah-execution-panel.tsx` | `components/noah-card.tsx`、`noah-connect-button.tsx`、`noah-connect-sheet.tsx`、`noah-ask.tsx`、`noah-work-list.tsx`、`noah-device-list.tsx` |
+| 接続 | 計画・利用権・Passport | `lib/noah-instances.ts`、`lib/noah-launch.ts`、`lib/noah-release.ts` | `lib/noah-connect-requirements.ts`、`lib/noah-connect-plan.ts`、`lib/noah-connect.ts`、`app/api/noah/connect-plan`、`app/api/noah/connect`、`app/api/noah/connect/[id]` |
+| 受け渡し | 端末との仕事のやり取り | `app/api/noah/runner`、`noah_runner_devices`、`noah_runner_commands` | 変えない |
+| 端末の実行 | 隔離環境で動かす | `scripts/noah-mac-runner.mjs`、`noah-isolated-runtime.mjs`、`noah-terminal-runtime.mjs`、`noah-mac-service.mjs` | `scripts/noah-runner-host.mjs`（Mac と Linux の差し替え） |
+| 取り込み | 外の台帳 → 系列 | `lib/noah-discovery-provider.ts`、`lib/noah-discovery-store.ts`、`scripts/noah-discovery-daemon.mjs` | `lib/noah-intake.ts`、`lib/noah-intake-family.ts`、`lib/noah-surface-class.ts` |
+| 口 | つなぎ方ごとの client | `lib/mcp-client.ts`、`lib/mcp-inspection.ts`、`lib/a2a-client.ts` | `lib/noah-mouth-mcp-remote.ts`、`noah-mouth-space.ts`、`noah-mouth-acp.ts`、`noah-mouth-mcp-package.ts`、`lib/noah-oauth-client.ts` |
+| 道具を持つ担当 | 1 文 → 道具 → 成果 | `lib/workflow.ts`、既存 Work | `lib/noah-tool-agent.ts` |
+| 接続試験 | L1・L2・見回り | 無い | `lib/noah-probe.ts`、`scripts/noah-probe-daemon.mjs` |
+| 継続運用 | 予定どおりに仕事を作る | `lib/noah-operations.ts`、`app/api/noah/operations` | `lib/noah-standing-work.ts` |
+| 利用の記録 | 3 つの立場の集計 | `lib/noah-usage.ts`、`app/api/noah/usage` | `lib/noah-usage-events.ts` |
+| 検査 | 画面を取らない | 隔離の起動引数 | `scripts/check-noah-screenless.mjs`、`tests/noah-surface-class.test.mjs` |
+
+## 3. 共通の決まり
+
+### 3.1 API
+
+| 項目 | 決まり |
+| --- | --- |
+| 書き込みの条件 | `origin` header が URL の origin と同じ（違えば 403「同じNoahから操作してください。」）。`X-Rock-Owner-Scope` が今の本人と同じ（違えば 409「アカウントが変わりました。」）。今の `/api/noah/launch` と同じ |
+| 操作 ID | client が UUID を作り、body の `id` で送る。同じ `id`・同じ内容の再送は同じ結果を返す。同じ `id`・違う内容は 409「同じ操作IDの内容は変更できません。」 |
+| エラーの形 | `{ "error": "<日本語の 1〜2 文>" }` と HTTP status |
+| status | 400 入力の形が違う。401 未サインイン。403 権限・Origin。404 無い。409 状態が違う・競合・計画が変わった。422 対象外。429 上限。503 一時的に不可 |
+| 値の形 | 時刻は epoch ミリ秒の整数。ID は UUID。hash は sha256 の hex 64 桁。金額は最小単位の整数と通貨（JPY は円） |
+| 楽観ロック | 更新する物は `revision` を持つ。body の `revision` が今と違えば 409 と今の状態を返す |
+| 結果不明 | 外へ出た操作の結果を確かめられない時は `unknown` にする。自動で再実行しない。同じ `id` で照合する |
+| 記録しない物 | 鍵、token、依頼と成果の本文（既存 Work にだけ置く） |
+
+### 3.2 フロント
+
+- 正本はサーバー。操作の後は GET で読み直す（今の `noah-launch.tsx` と同じ）。client だけの成功表示を作らない。
+- ボタンは 4 状態。押せる／送信中（二重押し不可）／済み／押せない（理由を下に 1 行）。
+- 進行中の表示は、一覧の中の 1 行。全画面の進行表示と、操作を塞ぐ dialog を作らない。
+- 読み直し: 進行中の物がある間だけ 3 秒ごと。画面が裏に回ったら止め、戻ったら 1 回読む。
+- 幅 390px で横スクロールなし。主ボタンは 1 画面に 1 つ、下側に置く。
+- 未サインインで書き込みを押した時: 操作の内容を sessionStorage に置き（`lib/eve-agent-creation.ts` と同じ持ち方）、`/account?returnTo=…` へ移り、戻ったら同じ `id` で続ける。
+
+### 3.3 UX
+
+| 項目 | 決まり |
+| --- | --- |
+| 言葉 | 接続／頼む／止める／切る／受け取る／直してもらう／あなたの番。置き場所は「相手のサーバー」「あなたの端末」「スマホの中」「雲の端末」 |
+| 失敗の文 | 「何が起きたか。次に何をすればいいか。」の 2 文。例:「端末が応答していません。Mac の電源とネットワークを確かめてください。」 |
+| 待ちの目安 | 接続計画の表示 0.3 秒、相手のサーバーへの接続 5 秒、あなたの端末への接続 10 秒、最初の成果 30 秒。越えたら「まだ進んでいます。閉じても大丈夫です。」を出す |
+| 何も無い時 | 各一覧に、次の一手を 1 つ書く。例:「まだ何もつないでいません。タイムラインで『接続』を押すと、ここに並びます。」 |
+| 通知 | 4 種だけ。完了／あなたの番／上限に達して止めた／失敗が続いて止めた |
+| 表し方 | 色だけで状態を伝えない。文字を添える。押せる所は 44px 以上 |
+| 見せる順 | 何が返るか（見本）→ どこで動くか → いくらか → 何が要るか。規約や注意書きを先に出さない |
+
+## 4. 見つける（タイムライン・カード）
+
+### UX
+
+1. タイムラインに、つながると確かめた Agent のカードが流れる。検索では、まだ誰も動かしていない物も出る。
+2. カード 1 枚で、つなぐかどうかを決められる。詳細を開かなくてよい。
+
+| カードの項目 | 中身 | 無い時 |
+| --- | --- | --- |
+| 名前、1 行説明 | 日本語。取り込んだ物は自動で作り、「自動で作った説明」と小さく添える | 元の説明をそのまま |
+| 作者 | 引き取った作者の名前。未引き取りは「提供: <名前空間>」 | 「提供者不明」 |
+| 見本 | 接続試験で実際に出た入力と成果の先頭 2 行 | 出さない |
+| 印 | 「1 クリック」／「あと 1 タップ（<何の許可か>）」／「準備が必要（<何が要るか>）」／「まだ誰も動かしていない」 | 必ず 1 つ |
+| 動く所 | 「相手のサーバー（<host>）」／「あなたの端末」／「スマホの中」／「雲の端末」 | 必ず 1 つ |
+| 料金 | 「無料」／「¥500」／「試せる（あと 3 回）」 | 必ず 1 つ |
+| 主ボタン | 「接続」／つないだ後は「頼む」 | — |
+
+### フロント
+
+- `components/noah-card.tsx`（新規）。`noah-home.tsx`・`noah-public-catalog.tsx`・検索結果で同じ部品を使う。
+- データは `GET /api/noah/feed`（既存）と `GET /api/noah/public-catalog`（既存）。各項目に下の `connect` を足す。カードは `connect` だけを見て印とボタンを決める。自分で計算しない。
+- 一覧は 20 件ずつ読む（既存の追加読込）。カードの高さを固定し、読み込みで位置が動かないようにする。
+
+### バックエンド
+
+一覧の各項目に足す形:
+
+```json
+{ "connect": { "badge": "one_click", "taps": 0, "typed": 0, "place": "provider", "placeLabel": "相手のサーバー（mizan.ac）",
+    "need": null, "level": 2, "price": { "model": "free" }, "sample": { "input": "…", "output": "…" } } }
+```
+
+- `badge`: `one_click`／`taps`／`setup`／`unverified`／`blocked`。`need` は足りない物の 1 行（例:「GitHub の許可」）。
+- 未サインインの時は、本人の状態なしで計算した値を返す（account の段が 1 タップ増える）。
+- タイムラインへ出す条件: `level=2` で `l2_at` が 7 日以内。または、審査済みの公開版で接続証明がある。検索と一覧は `level>=1` も出し、`badge=unverified` にする。`blocked` は出さない。
+- 同じ系列は 1 件にまとめる（代表は 8 章の名寄せ）。
+
+### 試験
+
+| 前提 | 操作 | 期待 |
+| --- | --- | --- |
+| L2 が 3 日前に通った系列 | タイムラインを読む | カードが出る。印は計画の `badge` と同じ |
+| L2 が 8 日前の系列 | タイムラインを読む | 出ない。検索には「まだ誰も動かしていない」で出る |
+| 同じ名前のコピー 100 件 | 一覧を読む | カード 1 枚 |
+| `surface=own-device` の系列 | 一覧・検索 | 出ない |
+
+## 5. つなぐ（接続計画・1 クリック・相手の許可）
+
+### UX
+
+1. 「接続」を押す。ボタンが「準備しています…」になる。画面は使える。
+2. 足りない物がある時だけ、下からシートが出る。1 段に 1 つのボタン。段は多くても 3 つ。
+3. 終わると、ボタンが「頼む」に変わり、入力欄が開く。見本があれば入力欄に入っている。
+
+| 段 | シートの文 | ボタン |
+| --- | --- | --- |
+| サインイン | 「つなぐには、あなたの確認が要ります。」 | 「パスキーで続ける」 |
+| 相手の許可 | 「<サービス名> が、あなたの代わりに使うことを許可します。<サービス名> のアカウントが要ります。」 | 「<サービス名> で許可する」 |
+| 支払い | 「¥500（買い切り）。つながらなければ請求しません。」 | 「購入して接続」 |
+| 権限 | 「この Agent は次のことをします: <権限の一覧>」 | 「許可して接続」 |
+| 送り先（相手のサーバーの時は必ず 1 行） | 「入力は <提供者> の <host> へ送られます。」 | —（接続のボタンの下に出すだけ） |
+
+| 結果 | 表示 |
+| --- | --- |
+| つながった | ボタン「頼む」。小さく「<置き場所> につなぎました」 |
+| 端末が止まっている | 「端末が応答していません。Mac の電源とネットワークを確かめてください。」＋「もう一度」 |
+| 相手が応答しない | 「相手のサーバーが応答しません。時間をおいて試してください。」＋「もう一度」 |
+| 計画が変わった | 新しい計画でシートを出し直す（エラーにしない） |
+| つなげない | 「この Agent は、今の端末ではつなげません。<理由>」 |
+
+### フロント
+
+- `components/noah-connect-button.tsx`: 表示は `connect.badge` と接続の `state` から決める。押した時に操作 ID を作る。
+- `components/noah-connect-sheet.tsx`: `steps` のうち `state=needed` の物を上から 1 つずつ出す。
+- 呼ぶ順: `GET /api/noah/connect-plan` → `POST /api/noah/connect` → 状態が `connected`・`needs_action`・`blocked`・`failed` になるまで `GET /api/noah/connect/[id]` を 1 秒ごと（最大 30 秒。越えたら待ちの文を出して 3 秒ごと）。
+- 相手の許可は、同じ tab を `nextStep.url` へ移す。戻り先は元のカード。戻ったら同じ `id` で読み直す。
+
+### バックエンド
+
+**`GET /api/noah/connect-plan?agent=<agentId>&digest=<digest>`**（未サインインでも可。書き込まない）
+
+```json
+{ "agentId": "…", "digest": "<64 hex>", "planSha256": "<64 hex>", "badge": "taps", "cost": { "taps": 1, "typed": 0 },
+  "place": "provider", "placeLabel": "相手のサーバー（api.example.com）", "deviceId": null,
+  "steps": [ { "kind": "account", "fill": "auto", "state": "satisfied" },
+             { "kind": "services", "fill": "tap", "state": "needed", "label": "Example の許可", "serviceId": "example" } ],
+  "sendsTo": { "provider": "Example Inc.", "host": "api.example.com" },
+  "price": { "model": "free" } }
+```
+
+**`POST /api/noah/connect`** body `{ "id", "agentId", "digest", "planSha256", "place"?, "deviceId"? }`
+
+| 応答 | 中身 |
+| --- | --- |
+| 202 | `{ "id", "state", "revision", "nextStep"?: { "kind": "oauth"｜"checkout", "url" } }` |
+| 401 | 未サインイン。client は 3.2 の手順で戻る |
+| 409 | 計画が変わった。`{ "error", "plan": <新しい計画> }` |
+| 409 | 端末が応答していない（`home`）。今の `/api/noah/launch` と同じ判定（最後の応答が lease より前） |
+| 422 | `blocked`（面が `own-device`、審査失効、撤回、希望と合わない） |
+
+処理の順（どこかで止まったら、その段を `needs_action` として返す。終わった段はやり直さない）:
+
+1. 版を解決する（既存の `resolveNoahPin`）。接続要件を読む。計画を計算し直し、`planSha256` と比べる。
+2. 利用権を確かめる（既存の `authorizedNoahRelease`。無料はそのまま。有料は 12 章）。
+3. `noah_connections` に行を作る（同じ本人・同じ系列の有効な接続は 1 件。あれば置き場所の変更として扱う）。`noah_instances` の選択を既存の手順で行う。
+4. 置き場所ごとの準備と疎通:
+   - `provider`: 握手と道具の一覧（9 章の口）。許可が要れば `nextStep` を返す。道具の定義の hash を保存する。
+   - `home`: 既存の `/api/noah/launch` の connect と同じ命令を `noah_runner_commands` に入れ、端末の完了を待つ。
+   - `cloud`・`pocket`: flag が開いている時だけ（18 章）。
+5. Passport を確定する（`state=connected`）。見本の入力があれば、6 章の「頼む」を同じ操作の続きとして 1 回行う。
+
+**`GET /api/noah/connect/[id]`** → `{ "id", "state", "revision", "agentId", "digest", "place", "deviceId", "error"?, "sampleWorkId"? }`
+
+**`POST /api/noah/connect/[id]`** body `{ "action": "disconnect"｜"retry"｜"change_place", "revision", "place"?, "deviceId"? }`。`disconnect` は新しい実行を止め、動いている仕事に停止を出し、`disconnected_at` を入れる。成果と費用の記録は消さない。
+
+**相手の許可（OAuth）**
+
+1. 握手が 401 を返す。`WWW-Authenticate` の `resource_metadata`、無ければ `/.well-known/oauth-protected-resource` を読む。
+2. 認可サーバーの公開情報を読む。PKCE（S256）に対応していなければ「準備が必要」にする。
+3. client の登録: client 文書（`https://<Noah の origin>/oauth/client.json`）に対応していればそれを使う。無ければ動的登録を行い、認可サーバーごとに `noah_oauth_clients` へ保存して使い回す。どちらも無ければ「準備が必要」。
+4. `GET /api/noah/oauth/start?connect=<id>&service=<serviceId>` → 認可画面へ 302。`state` は 1 回だけ使える値で、接続の `id` と本人に結ぶ。
+5. `GET /api/noah/oauth/callback` → token を取り、Broker の保存（`noah_oauth_grants`。暗号化）へ入れる。接続の処理を 4 から続ける。元のカードへ戻す。
+6. token を Agent・道具を持つ担当・client へ渡さない。呼び出しの時に中継が付ける。別の接続先へ送らない（発行先の resource にだけ使う）。
+
+接続計画の規則は [services/noah-one-click-connect.md](services/noah-one-click-connect.md) の表のとおり。置き場所は、本人の希望と面で絞り、手数が最も少ない所。同じなら `provider` → `home` → `cloud` → `pocket`。
+
+### 試験
+
+| 前提 | 操作 | 期待 |
+| --- | --- | --- |
+| サインイン済み、鍵の要らない相手のサーバー、L2 済み | 「接続」 | シートが出ずに「頼む」になる。送り先の 1 行が出る |
+| 未サインイン | 「接続」 | パスキーの段だけ出る。戻った後、同じ `id` で続く |
+| 相手の許可が要る、動的登録あり | 「接続」→ 許可 | 1 タップで「頼む」になる。2 つ目の Agent は同じサービスを聞かれない |
+| 応答中の Mac がある、対応済みの 13 件 | 「接続」 | 「頼む」になる。`noah_runner_commands` に connect が 1 件 |
+| Mac が止まっている | 「接続」 | 409 と「端末が応答していません。…」。黙って雲へ回さない |
+| 二重押し、再読込 | 同じ `id` で 2 回 | 接続は 1 件 |
+| 計画を見た後に価格が変わった | 「接続」 | 409 と新しい計画。古い条件でつながらない |
+| 別の Origin、別の本人の scope | POST | 403、409 |
+
+## 6. 頼む・受け取る（実行・停止・通知・検収）
+
+### UX
+
+1. 入力欄に 1 文を書いて「頼む」。行が「進んでいます」に変わる。画面は元のまま使える。閉じてよい。
+2. 終わると通知が来る。成果のカードに、成果の先頭、ファイル、1 行の添え書き（誰の Agent が・何を使い・いくらかかったか）、「受け取る」「直してもらう」が出る。
+3. Agent が本人を要る時は、通知と「あなたの番」に出る。前面に割り込まない。
+
+| 状態 | 行の表示 | 操作 |
+| --- | --- | --- |
+| 待ち | 「順番を待っています」 | 止める |
+| 実行中 | 「進んでいます（<経過>）」 | 止める |
+| あなたの番 | 「確認が要ります: <何を>」 | 許可する／断る |
+| 完了 | 成果のカード | 受け取る／直してもらう |
+| 失敗 | 「できませんでした。<理由>。<次の一手>」 | もう一度 |
+| 停止 | 「止めました」（停止の確認が返ってから） | — |
+| 結果不明 | 「結果を確かめられませんでした。課金していません。」 | 確かめ直す |
+
+- 「受け取ったこと」を 1 行で返す（言い直し）。止めない。取り返しのつかない操作と、費用が上限に近い時だけ止めて確かめる。
+- 「直してもらう」は、同じ接続へ、前の成果と直す点を付けて頼み直す。
+
+### フロント
+
+- `components/noah-ask.tsx`: 入力欄と「頼む」。送った後は入力欄を空にし、`noah-work-list.tsx` の先頭に行を足す（サーバーの応答で）。
+- `components/noah-work-list.tsx`: 進行中・あなたの番・成果を 1 つの一覧に出す。データは既存の `GET /api/noah/executions` と Work の API。
+- 通知: 対応する端末は Web の通知（flag `NOAH_PUSH`）。それ以外は、一覧の未読の印。
+
+### バックエンド
+
+**`POST /api/noah/ask`** body `{ "id", "connectionId", "prompt" }` → 202 `{ "id", "workId", "state" }`
+
+1. 接続が `connected` で、利用権と上限が有効かを確かめる（Wallet の予約）。`prompt` は 12,000 bytes まで（`LIMITS.inputBytes`）。
+2. Work を 1 件作る（既存）。
+3. 置き場所で分ける。`home`: 既存の `/api/noah/launch` の run と同じ命令を入れる。`provider`: 道具を持つ担当（9 章）の仕事を始める。
+4. 完了の時、利用の記録を 1 回書く（13 章）。通知を出す。
+
+**`POST /api/noah/ask/[id]`** body `{ "action": "stop"｜"accept"｜"redo"｜"approve"｜"deny", "revision", "note"? }`
+
+- `stop`: 既存の停止（停止の確認が返るまで「停止済み」と出さない）。
+- `accept`・`redo`: 既存の検収へつなぐ。`redo` は新しい操作 ID で頼み直す。
+- 停止の後に遅れて届いた成功は 409 で拒否する（既存の回帰試験と同じ）。
+
+### 試験
+
+| 前提 | 操作 | 期待 |
+| --- | --- | --- |
+| つないである | 頼む → すぐ画面を閉じる | 仕事が完了し、次に開いた時に成果がある |
+| 実行中 | 止める | 停止の確認の後に「止めました」。隔離環境が残らない |
+| 同じ `id` で 2 回 | 頼む | 実行は 1 回 |
+| lease を越えた | — | 「結果を確かめられませんでした」。再配送しない |
+| 月の上限に達している | 頼む | 429 と理由。実行しない |
+| 進行中が 1 件ある | もう 1 件頼む | 2 件目も受け付ける。画面は塞がらない |
+
+## 7. 専用の端末（足す・見る・移す）
+
+### UX
+
+1. 「端末」の画面に、あなたの端末が並ぶ。家（Mac）、スマホの中、雲。各行に、応答しているか、最後に応答した時刻、つないである Agent の数。
+2. 足す: 「端末を足す」→ Mac に導入する物の案内（1 つ）→ Mac に出たコードをスマホで承認、または QR を読む。承認は 1 回。
+3. 新しい端末を承認すると、「つないである Agent をこの端末へ移しますか」と 1 回聞く。
+
+| 状態 | 表示 |
+| --- | --- |
+| 応答している | 「動いています」 |
+| 止まっている | 「止まっています（最後: <時刻>）。電源とネットワークを確かめてください。」 |
+| 外した | 一覧から消える。この端末につないでいた Agent は「置き場所がありません」になり、移すか切るかを選ぶ |
+
+### フロント
+
+- `app/noah/devices`（既存の画面）を `components/noah-device-list.tsx` で置き換える。承認は既存の `components/rockstar-device-authorization.tsx` を使う。
+- Mac の画面で人がやる事は、導入と承認の 1 回だけにする。その後の操作は全部、手元からできる。
+
+### バックエンド
+
+- **`GET /api/noah/devices`** → `[{ "id", "name", "place": "home", "platform", "online", "lastSeenAt", "connections": 3, "fallbackToCloud": false }]`。`online` は、最後の応答が lease（30 秒）以内。
+- **`POST /api/noah/devices/[id]`** body `{ "action": "rename"｜"revoke"｜"set_fallback", "revision", "name"?, "fallbackToCloud"? }`。
+- **`POST /api/noah/connections/move`** body `{ "id", "connectionIds": ["…"]｜"all", "to": { "place", "deviceId"? } }`。接続ごとに、新しい置き場所で準備と疎通をやり直し、通った物だけ移す。通らない物は元のまま残し、理由を返す。
+- 端末の承認・token・起動 ID の扱いは変えない（`noah_runner_devices`、`/api/rockstar/device-authorizations/approve`）。
+- 端末が止まっている間の仕事は「待ち」。`fallbackToCloud` が真で、雲の flag が開いている時だけ雲へ回す。
+
+### 試験
+
+| 前提 | 操作 | 期待 |
+| --- | --- | --- |
+| Mac を承認済み | 端末の画面を開く | 「動いています」と Agent の数 |
+| Mac を止める | 頼む | 「待ち」。黙って別の所で動かない |
+| 2 台目を承認 | 「移す」 | 通った接続だけ移る。通らない物は理由付きで残る |
+| 別の本人の端末 ID | POST | 404 |

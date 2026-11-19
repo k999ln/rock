@@ -41,7 +41,7 @@
 | 管理する | 自分の利用と費用を見る | 利用者・提供者・運営の 3 つの立場に、同じ記録を出し分ける |
 
 ```mermaid
-flowchart LR
+flowchart TB
   A[作る人・提供者] --> IN[取り込み・接続試験]
   subgraph Noah[Noah（account が正本）]
     IN --> TL[タイムライン・検索]
@@ -154,7 +154,7 @@ sequenceDiagram
 ### 3.5 集めるスキーム
 
 ```mermaid
-flowchart LR
+flowchart TB
   S1[MCP の公式台帳<br/>66,608] --> M[名寄せ<br/>系列にまとめる]
   S2[Hugging Face の MCP の Space<br/>12,856] --> M
   S3[ACP の台帳<br/>46] --> M
@@ -179,7 +179,7 @@ flowchart LR
 ### 3.6 載せる・売るスキーム
 
 ```mermaid
-flowchart LR
+flowchart TB
   A1[既に並んでいる自分の Agent を引き取る] --> E
   A2[ファイル・リポジトリ・担当を落とす] --> B[Eve のビルド<br/>見分ける・整える・縮める・試す]
   B --> E[説明・見本・価格]
