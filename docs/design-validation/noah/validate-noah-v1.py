@@ -114,7 +114,7 @@ check("DDL 案を 2 回流しても壊れず、既存の定義を変えない", 
 
 
 def candidate(key="ac.mizan/registry", **change):
-    return dict(id=f"mcp-registry:{key}", source="mcp-registry", external_key=key, family_id=f"mcp-registry:{key}", name=key,
+    return dict(id=f"mcp-registry:{key}", source="mcp-registry", external_key=key, family_id=f"mcp-registry:{key}", group_key=key.split("/")[0], name=key,
                 record_sha256=H, record_json="{}", state="active", first_seen_at=1, changed_at=1, seen_at=1, revision=1) | change
 
 
@@ -138,8 +138,8 @@ def intake():
     put(db, "noah_intake_sources", dict(id="mcp-registry"))
     rejects(db, "INSERT INTO noah_intake_sources(id) VALUES('github')")                       # 取り込みの出どころは 3 種だけ
     put(db, "noah_intake_candidates", candidate())
-    rejects(db, "INSERT INTO noah_intake_candidates(id,source,external_key,family_id,name,record_sha256,record_json,state,first_seen_at,changed_at,seen_at,revision) "
-                "VALUES('mcp-registry:dup','mcp-registry','ac.mizan/registry','f','n',?,'{}','active',1,1,1,1)", (H,))   # 出どころと鍵で一意
+    rejects(db, "INSERT INTO noah_intake_candidates(id,source,external_key,family_id,group_key,name,record_sha256,record_json,state,first_seen_at,changed_at,seen_at,revision) "
+                "VALUES('mcp-registry:dup','mcp-registry','ac.mizan/registry','f','g','n',?,'{}','active',1,1,1,1)", (H,))   # 出どころと鍵で一意
     variants(db, "noah_intake_candidates", candidate("x/y"), (dict(state="unsupported"), dict(state="active", reason="bad_url"), dict(record_json="{not json"), dict(record_sha256="abc"),
                 dict(source="nowhere"), dict(revision=0), dict(running=2)))
     put(db, "noah_intake_candidates", candidate("x/unsupported", state="unsupported", reason="legacy_sse_only"))
@@ -188,7 +188,7 @@ def connections():
     put(db, "noah_runner_devices", dict(id="dev-1", owner_id="owner-1", credential_sha256="c1", boot_id="b1", name="Mac", platform="darwin", created_at=1, last_seen_at=1))
     put(db, "noah_connections", connection(1))
     rejects(db, "INSERT INTO noah_connections SELECT ?,owner_id,family_key,agent_id,digest,request_sha256,connect_json,connect_sha256,plan_sha256,tools_sha256,confirmed_tools_json,egress_granted_json,"
-                "place,device_id,state,needs_json,consent_json,price_json,cost_taps,cost_typed,probe_ms,error,revision,created_at,updated_at,connected_at,last_used_at,disconnected_at FROM noah_connections WHERE id=?",
+                "place,device_id,runner_command_id,state,needs_json,consent_json,price_json,cost_taps,cost_typed,probe_ms,error,revision,created_at,updated_at,connected_at,last_used_at,disconnected_at FROM noah_connections WHERE id=?",
             (UUID.format(2), UUID.format(1)))                                                 # 同じ本人・同じ系列の、切っていない接続は 1 件
     variants(db, "noah_connections", connection(3, family_key="other"), (dict(place="mac"), dict(place="home"), dict(place="provider", device_id="dev-1"), dict(state="connected"), dict(state="needs_action"),
                 dict(state="disconnected"), dict(disconnected_at=9), dict(state="ready"), dict(connect_json="x"), dict(revision=0), dict(id="short"),
@@ -302,6 +302,67 @@ def standing_and_usage():
 
 
 check("継続運用と利用の記録: 状態と次の時刻・溜めて連発しない・記録は 1 件・5 人未満は出さない", standing_and_usage)
+
+def regroup():
+    """名寄せの SQL が、参照実装（groupNoahFamilies）の試験と同じ系列を作ること。別の一時 DB で流す。"""
+    g = sqlite3.connect(":memory:")
+    for stmt in statements(DDL.read_text()):
+        try:
+            g.executescript(stmt)
+        except sqlite3.OperationalError as error:
+            if "noah_runner_devices" not in str(error):   # 接続の表は、この確認では使わない
+                raise
+    for source in ("mcp-registry", "hf-mcp-space", "acp-registry"):
+        put(g, "noah_intake_sources", dict(id=source))
+
+    def add(source, key, group_key, host=None, repository=None, tools=None, running=1, likes=0, level=0):
+        cid = f"{source}:{key}"
+        put(g, "noah_intake_candidates", dict(id=cid, source=source, external_key=key, family_id=cid, group_key=group_key, name=key, repository=repository, host=host,
+                                              record_sha256=H, record_json="{}", state="active", running=running, likes=likes, first_seen_at=1, changed_at=1, seen_at=1, revision=1))
+        if tools or level:
+            put(g, "noah_intake_checks", checks() | dict(candidate_id=cid, level=level or 1, result="ok", tools_sha256=tools or H, l1_at=1,
+                                                         l2_at=2 if level == 2 else None, next_check_at=0))
+        return cid
+
+    T = 20
+    bulk = [add("mcp-registry", f"io.github.maker/tool-{i}", "io.github.maker", host="gateway.maker.example") for i in range(T)]
+    almost = [add("mcp-registry", f"io.github.small/tool-{i}", "io.github.small", host="api.small.example") for i in range(T - 1)]
+    same_repo = [add("mcp-registry", f"io.github.mono/pkg-{i}", "io.github.mono", repository="github.com/mono/servers") for i in range(T)]
+    two = [add("mcp-registry", f"io.github.duo/{n}", "io.github.duo", repository="github.com/duo/tools") for n in ("alpha", "beta")]
+    mirror = [add("mcp-registry", "ai.smithery/owner-thing", "ai.smithery", host="server.smithery.example", repository="github.com/owner/thing", tools="f" * 64),
+              add("mcp-registry", "io.github.owner/thing", "io.github.owner", host="thing.example", repository="github.com/owner/thing", tools="f" * 64)]
+    cross = [add("mcp-registry", "io.github.solo/agent", "io.github.solo", repository="github.com/solo/agent"), add("acp-registry", "solo-agent", "solo-agent", repository="github.com/solo/agent")]
+    copies = [add("hf-mcp-space", f"user{i}/mcp-sentiment", "mcp-sentiment", running=1 if i == 7 else 0, likes=i) for i in range(T)]
+    few = [add("hf-mcp-space", "a/demo", "demo"), add("hf-mcp-space", "b/demo", "demo")]
+    same_tools = [add("hf-mcp-space", "c/calc", "calc", tools="e" * 64), add("hf-mcp-space", "d/calc", "calc", tools="e" * 64, level=2)]
+    for stmt in statements((REPO / "docs/contracts/noah-regroup-v1.sql").read_text()):
+        g.execute(stmt, {"threshold": T, "now": 100} if ":now" in stmt else {"threshold": T} if ":threshold" in stmt else {})
+    family = dict(g.execute("SELECT id, family_id FROM noah_intake_candidates"))
+    fam = lambda ids: sorted({family[i] for i in ids})  # noqa: E731
+    assert fam(bulk) == ["bulk:io.github.maker@gateway.maker.example"], fam(bulk)
+    assert len(fam(almost)) == T - 1
+    assert fam(same_repo) == ["bulk:repo:github.com/mono/servers"], fam(same_repo)
+    assert len(fam(two)) == 2, fam(two)
+    assert fam(mirror) == ["same:ffffffffffffffff:github.com/owner/thing"], fam(mirror)
+    assert fam(cross) == ["repo:github.com/solo/agent"], fam(cross)
+    assert fam(copies) == ["space:mcp-sentiment"], fam(copies)
+    assert len(fam(few)) == 2, fam(few)
+    assert fam(same_tools) == ["same:eeeeeeeeeeeeeeee:space/calc"], fam(same_tools)
+    rep = dict(g.execute("SELECT id, representative_id FROM noah_intake_families"))
+    assert rep["space:mcp-sentiment"] == "hf-mcp-space:user7/mcp-sentiment", "代表は、動いている物"
+    assert rep["same:eeeeeeeeeeeeeeee:space/calc"] == "hf-mcp-space:d/calc", "代表は、接続試験が深い物"
+    members = dict(g.execute("SELECT id, members FROM noah_intake_families"))
+    assert members["bulk:io.github.maker@gateway.maker.example"] == T and members["space:mcp-sentiment"] == T
+    assert g.execute("SELECT COUNT(*) FROM noah_intake_families").fetchone()[0] == len(set(family.values()))
+    # 候補が消えた系列は隠す。もう一度流しても同じ結果
+    g.execute("UPDATE noah_intake_candidates SET state='withdrawn' WHERE id IN ('hf-mcp-space:a/demo')")
+    for stmt in statements((REPO / "docs/contracts/noah-regroup-v1.sql").read_text()):
+        g.execute(stmt, {"threshold": T, "now": 200} if ":now" in stmt else {"threshold": T} if ":threshold" in stmt else {})
+    assert g.execute("SELECT hidden_at FROM noah_intake_families WHERE id='hf-mcp-space:a/demo'").fetchone()[0] == 200
+    assert dict(g.execute("SELECT id, family_id FROM noah_intake_candidates WHERE state='active'")) == {k: v for k, v in family.items() if k != "hf-mcp-space:a/demo"}
+
+
+check("名寄せの SQL が、参照実装と同じ系列と代表を作る", regroup)
 
 failed = [r for r in results if r["status"] != "pass"]
 summary = {"sqlite": sqlite3.sqlite_version, "rejections": REJECTED[0], "migrationsApplied": len(applied), "migrationsSkipped": skipped, "checks": len(results),

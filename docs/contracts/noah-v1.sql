@@ -23,11 +23,13 @@ CREATE TABLE IF NOT EXISTS noah_intake_candidates (
   id TEXT PRIMARY KEY CHECK(length(id) BETWEEN 3 AND 300),       -- '出どころ:鍵'。例 'mcp-registry:ac.mizan/registry'
   source TEXT NOT NULL REFERENCES noah_intake_sources(id),
   external_key TEXT NOT NULL,
-  family_id TEXT NOT NULL,                                        -- 名寄せの結果（groupNoahFamilies）
+  family_id TEXT NOT NULL,                                        -- 名寄せの結果（noah-regroup-v1.sql。規則は groupNoahFamilies と同じ）
+  group_key TEXT NOT NULL,                                        -- 名寄せに使う鍵。台帳は名前空間、Space は小文字にした名前、ACP は id
   name TEXT NOT NULL CHECK(length(name) BETWEEN 1 AND 200),
   summary TEXT NOT NULL DEFAULT '' CHECK(length(summary) <= 500), -- 出どころの説明（そのまま）
   summary_ja TEXT CHECK(summary_ja IS NULL OR length(summary_ja) <= 200),   -- 自動で作った日本語の 1 行
-  repository TEXT, host TEXT,
+  repository TEXT,                                                -- 比べられる形にした鍵（noahRepositoryKey。例 'github.com/owner/name'）
+  host TEXT,                                                      -- 接続先の host。端末で動かす配布は NULL
   record_sha256 TEXT NOT NULL CHECK(length(record_sha256) = 64),
   record_json TEXT NOT NULL CHECK(json_valid(record_json) AND length(record_json) <= 65536),
   state TEXT NOT NULL CHECK(state IN ('active','unsupported','withdrawn')),
@@ -47,6 +49,8 @@ CREATE INDEX IF NOT EXISTS noah_intake_candidates_family ON noah_intake_candidat
 CREATE INDEX IF NOT EXISTS noah_intake_candidates_sweep ON noah_intake_candidates(source, state, seen_at);
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_intake_candidates_repository ON noah_intake_candidates(repository) WHERE repository IS NOT NULL;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS noah_intake_candidates_group ON noah_intake_candidates(source, group_key, host);
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS noah_intake_checks (
   candidate_id TEXT PRIMARY KEY REFERENCES noah_intake_candidates(id),
@@ -116,6 +120,7 @@ CREATE TABLE IF NOT EXISTS noah_connections (
   egress_granted_json TEXT NOT NULL DEFAULT '[]' CHECK(json_valid(egress_granted_json)),         -- 本人が許した通信先（package）
   place TEXT NOT NULL CHECK(place IN ('provider','home','cloud','pocket')),
   device_id TEXT REFERENCES noah_runner_devices(id),
+  runner_command_id TEXT,                                         -- 置き場所が home の時、今の起動（boot）で通った接続の命令（noah_runner_commands.id）
   state TEXT NOT NULL CHECK(state IN ('planned','entitling','preparing','probing','needs_action','connected','failed','unknown','blocked','disconnected')),
   needs_json TEXT CHECK(needs_json IS NULL OR json_valid(needs_json)),      -- needs_action の時、次に本人がやる段（NoahPlanStep と nextStep）
   consent_json TEXT NOT NULL CHECK(json_valid(consent_json)),     -- 同意した権限・送り先・時刻
