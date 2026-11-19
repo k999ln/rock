@@ -12813,8 +12813,13 @@
     "sourceSha": "4ebe83cd700d1fa8a0eda55e24104918da7658a9",
     "pullRequest": "https://github.com/k999ln/rock/pull/321",
     "mainIntegration": {
+      "merged": true,
+      "mergeSha": "37ef2bfd5217677fddb766d27e8828248f75c3e6",
       "authority": "https://github.com/k999ln/rock/pull/321",
-      "rule": "Read the current PR merged state and exact main-SHA checks; this source record does not predict merge completion."
+      "latestVerifiedMain": "697be21c3d81ee600162375110b2498028450c58",
+      "latestMainChecks": 6,
+      "latestMainChecksSuccessful": 6,
+      "initialMergeVerify": "browser fixtureのowner-bound source handoff待機がtimeout。後続mainでは同試験を含むverify成功。"
     },
     "preservedRuntime": {
       "branch": "codex/preserved-runtime-source-20261119",
@@ -12873,7 +12878,12 @@
         }
       }
     },
-    "latestMainIntegrated": "aa533e1df550410e95c50903ffa705fdaec740ff"
+    "latestMainIntegrated": "aa533e1df550410e95c50903ffa705fdaec740ff",
+    "readmeFollowup": {
+      "reason": "並行PR324で復活した公開版番号と過去の修正記録を現在の認証案内へ置換",
+      "baseMain": "697be21c3d81ee600162375110b2498028450c58",
+      "runtimeChanged": false
+    }
   },
   "noahSelectResaleAgents": {
     "updatedAt": "2026-11-15",
