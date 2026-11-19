@@ -30,4 +30,4 @@ PR308のMATOU aliasは現mainに既存。古いPRのCI成功や未追跡とい�
 
 原本文書を含む全テキストsourceは[codex/preserved-local-source-20261119](https://github.com/k999ln/rock/tree/codex/preserved-local-source-20261119) / `3f3b0e67`へ保存・remote SHA一致。Gitleaksの19指摘は独立検収で17件のSHA-256と2件の説明文と確認し、実credentialの指摘は0件。生成物・実DB・ローカル設定・媒体はGit外backupに保持する。
 
-最新main `aa533e1df`（PR322）を通常mergeで追加。READMEはNoah単体登録・審査・Mac Runnerの現状へ同期し、過去の日付別実績はCHANGELOGと元taskに保持。Workのresale/outbox/operation/local実行を併存させ、汎用操作の拒否を維持。task71はNoahローンチに割当済みのため本件はtask72へ変更。追加統合後の全verify・独立検収・同一SHA CIを再実行する。
+最新main `aa533e1df`（PR322）を通常mergeで追加。READMEはNoah単体登録・審査・Mac Runnerの現状へ同期し、過去の日付別実績はCHANGELOGと元taskに保持。Workのresale/outbox/operation/local実行を併存させ、汎用操作の拒否を維持。task71はNoahローンチに割当済みのため本件はtask72へ変更。追加統合後の`4ebe83cd7`でローカル全verify成功、全verify CIを含む8件も成功。本体4,426件中4,422成功・失敗0・skip4。独立検収71試験と汎用操作16通りの拒否・状態不変を確認。merge途中のSPIDER path上限失敗はcommit固定後に解消し、上限を変更していない。

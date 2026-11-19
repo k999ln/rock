@@ -12777,8 +12777,8 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/312"
   },
   "currentGitRefresh": {
-    "status": "validating_latest_main_merge",
-    "updatedAt": "2026-11-19",
+    "status": "verified_source",
+    "updatedAt": "2026-11-20",
     "taskIds": [
       "G04",
       "DOC01"
@@ -12793,7 +12793,7 @@
     "backupVerifiedFiles": 2075,
     "candidate": "work/git-refresh-20261119/candidate",
     "githubSaved": true,
-    "next": "PR322のNoah単体ローンチを取り込んだ現headで全verify・独立検収・CIを確認してmainへ統合する。保全sourceの未再受入は別管理。",
+    "next": "GitHub/mainの現在状態はPR321を確認する。保全sourceの端末runtime、共有/精算、mediaは現行契約へ順次照合する。",
     "candidateBranch": "codex/latest-code-readme-20261119",
     "adoptedChanges": [
       "PR320 Noah/Eve route unification",
@@ -12810,7 +12810,7 @@
       "Agent share/outcomes and author settlement with legacy schema",
       "independent media editing candidates"
     ],
-    "sourceSha": "0211c1892d19ec2c484da4057ed73f33dcd1fd38",
+    "sourceSha": "4ebe83cd700d1fa8a0eda55e24104918da7658a9",
     "pullRequest": "https://github.com/k999ln/rock/pull/321",
     "mainIntegration": {
       "authority": "https://github.com/k999ln/rock/pull/321",
@@ -12838,6 +12838,21 @@
       "independentReview": {
         "plannerAndResearch": "pass; 27 independent tests; inequality correction applied",
         "resaleAndRoleEntries": "pass; 24 independent tests; 26 JSON paths and 167 links exist"
+      },
+      "latestMainIntegration": {
+        "sourceSha": "4ebe83cd700d1fa8a0eda55e24104918da7658a9",
+        "mainBase": "aa533e1df550410e95c50903ffa705fdaec740ff",
+        "ciChecks": 8,
+        "ciSuccess": 8,
+        "verifyRun": "https://github.com/k999ln/rock/actions/runs/44566222805",
+        "nodeTests": 4426,
+        "passed": 4422,
+        "failed": 0,
+        "skipped": 4,
+        "independentTestsPassed": 71,
+        "genericActionsRejected": 16,
+        "initialLocalFailure": "merge作業中の変更path数がSPIDER上限超過。commit固定後の対象4試験は成功。上限の緩和なし。",
+        "localFullVerifyExitCode": 0
       }
     },
     "preservedSources": {
