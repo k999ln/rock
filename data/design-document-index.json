@@ -613,7 +613,7 @@
   },
   "schema": "rockstaros-design-document-index/1",
   "version": "1.58",
-  "updatedAt": "2026-10-28",
+  "updatedAt": "2026-11-19",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -4711,5 +4711,23 @@
       "tests/workspace-flow-navigation.test.mjs"
     ],
     "nativeAcceptanceChanged": false
+  },
+  "noahLocalResale": {
+    "authority": "docs/sky-tools-complete-design.md#noahの本人用リセール実行とcli",
+    "contract": "docs/services/noah-select-resale.md",
+    "implementation": [
+      "lib/noah-resale.ts",
+      "lib/noah-resale-service.ts",
+      "lib/noah-resale-provider.ts",
+      "app/api/noah/resale/route.ts",
+      "toolkits/noah-resale-agent/runtime.mjs"
+    ],
+    "tests": [
+      "tests/noah-resale.test.mjs",
+      "tests/noah-resale-cli.test.mjs"
+    ],
+    "localOwnerOnly": true,
+    "productionTradingAccepted": false,
+    "sharedWorkReducer": "lib/workflow.ts"
   }
 }

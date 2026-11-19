@@ -114,7 +114,7 @@ const targets = [
         'project-overview',
         [
           '<!-- project-overview:start -->',
-          `Updated: ${status.updatedAt} / ${overviewEnglish}`,
+          `更新日: ${status.updatedAt}。現在の受入範囲と次の作業は[進捗](project.md)、全タスクは[全タスクの進捗](project.md#全taskの作業進捗)を参照してください。`,
           '<!-- project-overview:end -->',
         ].join('\n'),
         'README.md',
@@ -122,7 +122,7 @@ const targets = [
     },
   },
   {
-    name: 'archive/root-snapshot-20261029/project.md',
+    name: 'project.md',
     transform: (source) =>
       replaceMarkedBlock(source, 'project-status', block, 'project.md'),
   },

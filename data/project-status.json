@@ -3,16 +3,42 @@
     "updatedAt": "2026-11-04",
     "owner": "ROCK",
     "workstream": "Git / CI / Operations",
-    "taskIds": ["G04", "AMC02", "AMC06"],
-    "status": "local_candidate_full_verify_pass_main_not_integrated",
+    "taskIds": [
+      "G04",
+      "AMC02",
+      "AMC06"
+    ],
+    "status": "integration_candidate",
     "baseMainSha": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
-    "branch": "codex/goal-backward-cycle-20261104",
-    "worktree": "/Users/kaiya/Documents/ChatGPT/avokdo/work/goal-backward-cycle",
-    "roleCount": { "business": 18, "engineering": 21 },
+    "branch": "codex/latest-code-readme-20261119",
+    "candidateCommit": "c3e2e494a82fd5f4b92b92c8cf67da4b50ed68ae",
+    "worktree": ".",
     "entrypoint": "npm run amc:cycle -- demo",
-    "tests": { "targeted": 33, "passed": 33, "fullVerify": "passed_all_stages", "nodeTests": 3961, "nodePassed": 3957, "nodeSkipped": 4, "realCodex": "actual_worker_and_separate_readonly_reviewer_passed_owner_acceptance_pending" },
-    "evidence": ["data/amc/goal-cycle-validation.json", "tests/amc-goal-cycle.test.mjs", "docs/amc-goal-orchestrator.md", "project.md"],
-    "next": "Use a concrete owner Goal and review its draft plan. Keep main integration, publication and actual business results separate from this verified local implementation."
+    "roles": {
+      "business": 18,
+      "engineering": 21
+    },
+    "verification": {
+      "dedicatedTests": 33,
+      "fullVerifyExitCode": 0,
+      "nodeTests": 3961,
+      "passed": 3957,
+      "skipped": 4,
+      "apiAssertions": 1918,
+      "csvAssertions": 385
+    },
+    "rootEntrypointVerification": {
+      "fullVerifyExitCode": 0,
+      "nodeTests": 1858,
+      "passed": 1857,
+      "failed": 0,
+      "skipped": 1,
+      "apiAssertions": 2152,
+      "csvAssertions": 113,
+      "log": "/private/tmp/amc-cycle-root-verify.log"
+    },
+    "evidence": "work/goal-backward-cycle/data/amc/goal-cycle-validation.json",
+    "next": "Review a concrete owner Goal with bounded local execution; preserve external-action holds and final owner acceptance. Main merge and publication remain separate."
   },
   "workerUntrustedResult": {
     "owner": "ROCK",
@@ -1350,9 +1376,9 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-11-02",
-  "milestone": "RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する",
-  "nextAction": "P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。",
+  "updatedAt": "2026-11-19",
+  "milestone": "Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合",
+  "nextAction": "統合候補の全verifyと独立検収、同一SHA CIを確認して通常PRでmainへ統合。未再受入の端末・共有・精算実装はsource保全とschema/API照合を継続する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -12749,5 +12775,238 @@
       "pending": "Final commit verify and CI; normal merge; same-main-SHA publication"
     },
     "pullRequest": "https://github.com/k999ln/rock/pull/312"
+  },
+  "currentGitRefresh": {
+    "status": "in_progress",
+    "updatedAt": "2026-11-19",
+    "taskIds": [
+      "G04",
+      "DOC01"
+    ],
+    "workstream": "Git / CI / Operations",
+    "owner": "ROCK",
+    "request": "コードとREADMEを最新化しGitHub保存・main統合まで実施。READMEに過去の受領票や旧状態を載せない。",
+    "baseMain": "1cb703d0fe81314b450d0bf315721c7b18c0c979",
+    "preservedRootHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "backup": "work/git-refresh-20261119/working-tree-before.tar",
+    "backupManifest": "work/git-refresh-20261119/working-tree-before.json",
+    "backupVerifiedFiles": 2075,
+    "candidate": "work/git-refresh-20261119/candidate",
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "next": "最新mainとPR320を土台に差分分類。最新の製品説明・使用手順・未完了だけをREADMEへ残し、候補全verifyとCIを確認して通常統合する。",
+    "candidateBranch": "codex/latest-code-readme-20261119",
+    "adoptedChanges": [
+      "PR320 Noah/Eve route unification",
+      "PR318 planning/calculation with bounded search and ambiguous quorum fixes",
+      "PR313 mii design research; physical acceptance not claimed",
+      "AMC goal cycle c3e2e494a",
+      "Noah local resale runtime and CLI",
+      "Company and revenue role definitions"
+    ],
+    "preservedNotIntegrated": [
+      "Pixel portable runtime and bridge",
+      "Mini firmware/hardware/spatial candidates",
+      "camera/module/object-purpose candidates",
+      "Agent share/outcomes and author settlement with legacy schema",
+      "independent media editing candidates"
+    ]
+  },
+  "noahSelectResaleAgents": {
+    "updatedAt": "2026-11-15",
+    "primaryOwner": "ROCK",
+    "workstream": "Business Pilots",
+    "taskIds": [
+      "B02",
+      "B05",
+      "B06"
+    ],
+    "status": "three_personal_roles_saved_and_ui_readback_verified_execution_pending",
+    "template": "data/noah-select-resale-agents.json",
+    "scope": "Three personal Noah roles plus owner-local resale Work runtime; external provider acceptance pending",
+    "registration": {
+      "street-select": "saved_ui_confirmed_after_list_reload",
+      "archive-select": "saved_ui_confirmed_after_list_reload",
+      "objects-select": "saved_ui_confirmed_after_list_reload"
+    },
+    "automaticPurchases": false,
+    "automaticListings": false,
+    "nextAction": "Obtain total budget, per-item cap and purchase/sale marketplaces; verify available search and transaction adapters, then test same-version agent inference on supplied product evidence. No automatic spending or listing is enabled.",
+    "model": {
+      "provider": "ollama",
+      "model": "qwen3:4b",
+      "installedModelObserved": true,
+      "inferenceTested": false
+    },
+    "gitObservation": {
+      "main": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
+      "workingBranch": "codex/esim-cloud-access",
+      "remoteBranchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "method": "GitHub connector search_branches and fetch_commit",
+      "ci": "not_checked",
+      "save": "local_working_tree_only",
+      "mainIntegrated": false
+    },
+    "validation": {
+      "roleParser": "3/3 passed; instructions 953/947/948 chars",
+      "ui": "3 successful saves and 3 entries after explicit list reload",
+      "focused": {
+        "command": "node --experimental-strip-types --test tests/mercari-revenue.test.mjs tests/sky-agent-library.test.mjs",
+        "passed": 13,
+        "failed": 0,
+        "log": "/private/tmp/noah-select-resale-focused.log"
+      },
+      "projectUpdate": "passed",
+      "projectCheck": "passed",
+      "baselineCheck": "passed",
+      "diffCheck": "passed",
+      "fullVerify": {
+        "exitCode": 1,
+        "stoppedAt": "database:check",
+        "reason": "Existing data/database-status.json and docs/database-status.md require database:status regeneration; same pre-existing blocker recorded by prior task. No unrelated database files changed.",
+        "log": "/private/tmp/noah-select-resale-verify.log",
+        "downstreamChecks": "not_run"
+      }
+    },
+    "runtime": {
+      "updatedAt": "2026-11-16",
+      "status": "local_implementation_verified_provider_connection_pending",
+      "target": {
+        "url": "http://127.0.0.1:3107/noah/resale",
+        "source": "/Volumes/avokado",
+        "branch": "codex/noah-device-store",
+        "head": "f7feef8e39f7deeabf20558fe3ff3f03e73390d4",
+        "rootBranch": "codex/esim-cloud-access",
+        "rootHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "existingDirtyChangesPreserved": true
+      },
+      "implementation": [
+        "Three saved searches and sequential scouts with bounded results/partial errors",
+        "15-minute local discovery runner, not started without credentials",
+        "Owner/revision-isolated existing Work/D1 storage, shared budget, inventory",
+        "Official eBay Browse, checkout/order, Inventory publish/reconciliation adapter",
+        "CAS reservation before external effects, no automatic retry on unknown results",
+        "Inspection and factual listing draft, owner-reported sale/fees/refunds with correction history"
+      ],
+      "checks": {
+        "focused": {
+          "passed": 16,
+          "log": "/private/tmp/noah-resale-focused.log"
+        },
+        "targetFocused": {
+          "passed": 12,
+          "log": "/private/tmp/noah-resale-target-test.log"
+        },
+        "rootTypecheck": "pass",
+        "rootDesignCheck": "pass",
+        "rootBaselineCheck": "pass",
+        "ui": [
+          "candidate saved via browser",
+          "assessment saved and restored after reload",
+          "synthetic test candidate cleaned; no real inventory modified",
+          "Saved initial street/archive/object searches",
+          "Paused with budget0; no test inventory remains"
+        ],
+        "api": [
+          "wrong Origin rejected HTTP403",
+          "wrong owner scope rejected HTTP403",
+          "test candidate removed, remaining0 budget0"
+        ],
+        "targetFullVerify": {
+          "exitCode": 1,
+          "tests": 3729,
+          "passed": 3718,
+          "failed": 7,
+          "skipped": 4,
+          "log": "/private/tmp/noah-resale-target-verify.log",
+          "failures": "Existing 0033_noah_agent_uploads migration not reflected in inventory/count expectations: 192 vs191 and130 vs129; not introduced by resale (no migrations added).",
+          "scope": "Full run before final pre-dispatch release change; final localized change rerun via focused/type/lint/build."
+        },
+        "targetBuild": {
+          "exitCode": 0,
+          "log": "/private/tmp/noah-resale-live-build.log"
+        },
+        "rootFullVerify": {
+          "exitCode": 1,
+          "stage": "database:check",
+          "log": "/private/tmp/noah-resale-root-verify.log",
+          "reason": "Existing generated database metadata needs refresh; later gates not run."
+        },
+        "targetDesignCheck": "pass",
+        "targetProductLint": "pass",
+        "watchStopped": "--once exited0 with 探索は停止中, no external dispatch",
+        "targetFinalTypecheck": "pass",
+        "targetFinalLint": "pass",
+        "rootFinalTypecheck": "pass"
+      },
+      "notAccepted": [
+        "No live external discovery, purchase, listing or revenue",
+        "eBay API entitlement/credentials, marketplace choice and owner budget missing",
+        "No automatic payout sync or unattended purchase/publish",
+        "Physical inspection, photography and shipping require owner execution",
+        "No public deployment, commit, push or main integration"
+      ],
+      "next": [
+        "Confirm marketplaces and total/per-item budget",
+        "Connect owner-authorized eBay API scopes (Order API approval required) or choose another supported official path",
+        "Run provider sandbox lifecycle on same build; then separately accept production"
+      ],
+      "design": "docs/services/noah-select-resale.md",
+      "evidence": "docs/evidence/noah-resale-runtime.json"
+    },
+    "cli": {
+      "updatedAt": "2026-11-17",
+      "status": "implemented_local_terminal_template_provider_acceptance_pending",
+      "source": "toolkits/noah-resale-agent",
+      "entry": "toolkits/noah-resale-agent/cli.mjs",
+      "portable": "work/noah-resale-agent-template/agent.mjs",
+      "archive": "work/noah-resale-agent-template.zip",
+      "sha256": "d37dbb7ead04b829d7682d1cf9cf4a58d601125b1c6ec8ba4a99f2d7eef4b12c",
+      "requiresWebServer": false,
+      "requiresBrowser": false,
+      "portableRequiresNodeModules": false,
+      "nodeMinimum": "22.13",
+      "features": [
+        "shared resale service and workflow reducer",
+        "private owner Work SQLite / separate from Web D1",
+        "3 role configuration and run/watch discovery",
+        "all lifecycle records via action JSON",
+        "5-minute account/owner/revision/terms-bound review and explicit hash execution",
+        "stop/resume, SQLite watcher lease, unknown result reconciliation",
+        "offline fixture demo and portable bundle"
+      ],
+      "checks": {
+        "testsPassed": 33,
+        "testsFailed": 0,
+        "testLog": "/private/tmp/noah-resale-cli-tests.log",
+        "typecheck": "passed",
+        "lint": "passed",
+        "designCheck": "passed",
+        "baselineCheck": "passed",
+        "portableDemo": "passed under network-forbidden preload outside repository",
+        "fullVerify": {
+          "exitCode": 1,
+          "stoppedAt": "database:check",
+          "reason": "Existing data/database-status.json and docs/database-status.md need regeneration; later verify stages were not executed.",
+          "log": "/private/tmp/noah-resale-cli-verify.log"
+        }
+      },
+      "git": {
+        "main": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
+        "branch": "codex/esim-cloud-access",
+        "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "remoteChecked": "2026-11-17",
+        "sameShaCI": "not_checked",
+        "commitPushDeploy": false
+      },
+      "realTransactions": 0,
+      "unaccepted": [
+        "real provider account/API entitlement and budget",
+        "fully unattended purchase/publish",
+        "automatic payout sync",
+        "physical inspection/photo/shipping automation"
+      ],
+      "next": "Use demo; initialize private workspace; configure own official API and total/per-item budget; accept real sandbox lifecycle before production"
+    }
   }
 }

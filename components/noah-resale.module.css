@@ -1,0 +1,188 @@
+.page {
+  max-width: 1260px;
+  margin: auto;
+  padding: 32px 28px 90px;
+  color: #15251e;
+  background: #f6f7f2;
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+}
+.page nav {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.page a {
+  color: #246847;
+}
+.page header {
+  padding: 50px 0 25px;
+}
+.page header > p:first-child {
+  letter-spacing: 0.17em;
+  font-size: 12px;
+}
+.page h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.15;
+  font-weight: 550;
+  margin: 20px 0;
+}
+.page h2 {
+  font-size: 21px;
+}
+.page p {
+  line-height: 1.7;
+  color: #4c5a51;
+}
+.notice {
+  background: #e7ece3;
+  border-radius: 12px;
+  padding: 18px;
+  line-height: 1.7;
+  font-size: 14px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin: 24px 0;
+}
+.stats > div {
+  background: white;
+  padding: 20px;
+  border: 1px solid #dce1d6;
+  border-radius: 12px;
+}
+.stats small,
+.stats strong {
+  display: block;
+}
+.stats strong {
+  font-size: 25px;
+  margin-top: 12px;
+}
+.toolbar,
+.roles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.columns {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(300px, 1.15fr);
+  gap: 30px;
+  margin-top: 32px;
+}
+.page fieldset {
+  border: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.page label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+.page input,
+.page textarea,
+.page select {
+  font: inherit;
+  background: #fff;
+  border: 1px solid #c8d2c8;
+  border-radius: 7px;
+  padding: 11px;
+  color: #15251e;
+  min-width: 0;
+}
+.page textarea {
+  min-height: 90px;
+}
+.page button {
+  font: inherit;
+  padding: 11px 17px;
+  border: 1px solid #bccbbd;
+  background: #fff;
+  color: #214b34;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.page button:hover,
+.page button[aria-pressed='true'] {
+  background: #204f36;
+  color: white;
+}
+.page button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.page form {
+  margin: 20px 0;
+}
+.page form button {
+  background: #204f36;
+  color: white;
+}
+.page details {
+  border-bottom: 1px solid #ccd5c8;
+  padding: 16px 0;
+}
+.page summary {
+  cursor: pointer;
+  font-weight: 550;
+}
+.items {
+  display: grid;
+  gap: 10px;
+}
+.items button {
+  display: grid;
+  gap: 10px;
+  text-align: left;
+}
+.items small {
+  font-size: 12px;
+}
+.items strong {
+  font-size: 16px;
+}
+.page pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+}
+.error {
+  background: #f8d9d3 !important;
+  padding: 15px;
+  border-radius: 8px;
+  color: #6f201a !important;
+}
+.empty {
+  padding: 70px 20px;
+}
+.page :focus-visible {
+  outline: 3px solid #b68128;
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .page {
+    padding: 20px 16px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .columns {
+    grid-template-columns: 1fr;
+  }
+  .empty {
+    padding: 20px;
+  }
+  .stats strong {
+    font-size: 21px;
+  }
+}

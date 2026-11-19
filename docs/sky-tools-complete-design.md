@@ -1844,3 +1844,14 @@ Homeから追加した担当はowner別の保存版をEveへ渡す。Agentのins
 - 受入範囲: 合成eventと既存codec/暗号化file-backed SQLiteだけ。wholePRO01、実アカウント保存・本番公開・実機・実収益・Providerを受入へ昇格させない。
 
 統合・検収は[evidence](evidence/development-execution/pro-recovery-eve-drain-main-adoption.json)を参照。
+
+
+## Noahの本人用リセール実行とCLI
+
+目的は3分野の候補選定・採算・予算・在庫・原稿・収支を同じWorkの状態として管理すること。Webは本人用localhost、CLIは本人専用SQLiteで既存serviceを呼ぶ。ROCKは状態遷移/CAS予約/照合、EXTERNALは注文/出品の正本、OWNERはAPI利用権/予算/具体条件の確定、JOINTは実provider受入を担当する。
+
+入力は検索条件・商品・採算・action・review済み条件hash。出力は候補、予約、在庫、明細と実行結果。保存先間の自動同期はなく、同じ予算の重複利用を許可しない。未送信/送信中/結果不明/確定を分け、結果不明では予約を保持して照合し、再発注しない。停止は保存し、再開には同じ本人と版を確認する。
+
+CLIの確認書はowner/provider/資格情報fingerprint/条件/Work revision/5分の期限へ固定し、改ざん・再送・別本人・条件変更を拒否する。terminal監査は信頼された内部経路だけで記録し、一般Work APIからは宣言できない。合格条件は予算/本人/CAS/確認書/中断復元のfixtureと同版テスト。API未接続・初期予算0・実売買未受入を保持し、予算/市場/接続/実条件が決まってから別途受入する。
+
+[全契約と保存・復旧](services/noah-select-resale.md)、[CLI](../toolkits/noah-resale-agent/README.md)、[試験](../tests/noah-resale-cli.test.mjs)。

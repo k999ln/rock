@@ -1,0 +1,10 @@
+{
+  "notice": "Example payloads. Copy ONE object into action.json. IDs, prices and evidence must be your actual data; these are not purchase/sale instructions.",
+  "import": {"action":"import","role":"street","title":"商品名","url":"https://example.com/replace-with-product","currency":"USD","price":0},
+  "assess": {"action":"assess","itemId":"REPLACE_ITEM_ID","resalePrice":0,"costs":0,"floorProfit":0,"evidence":"実際の成約比較・状態・限定数の根拠を記入"},
+  "receive": {"action":"receive","itemId":"REPLACE_ITEM_ID","condition":"実物を検品した状態","notes":"実寸・タグ・来歴・付属品・手入れ・欠点を記入"},
+  "draft": {"action":"draft","itemId":"REPLACE_ITEM_ID","price":0,"conditionCode":"USED_GOOD","categoryId":"REPLACE_CATEGORY","images":["https://example.com/replace-with-owned-photo.jpg"]},
+  "record_purchase": {"action":"record_purchase","itemId":"REPLACE_ITEM_ID","reference":"実購入の領収書番号","total":0},
+  "record_listing": {"action":"record_listing","itemId":"REPLACE_ITEM_ID","reference":"実際の出品ID"},
+  "settlement": {"action":"settlement","itemId":"REPLACE_ITEM_ID","reference":"実際の売上取引ID","gross":0,"fees":0,"shipping":0,"other":0,"refunds":0}
+}

@@ -94,7 +94,7 @@ export type RecipeCandidate = {
 
 export type RecipeGap = {
   /** 欲しい成果に届かなかった理由。 */
-  reason: 'no_capability_produces_goal' | 'inputs_unreachable' | 'over_budget_or_deadline';
+  reason: 'no_capability_produces_goal' | 'inputs_unreachable' | 'over_budget_or_deadline' | 'search_limit_reached';
   /** 足りない素材の型。ここを作れる能力を足せば届く。 */
   missingMaterials: string[];
   /** 接続すれば使える未接続の能力。 */
@@ -104,12 +104,14 @@ export type RecipeGap = {
 export type RecipePlan = {
   candidates: RecipeCandidate[];
   gap: RecipeGap | null;
+  /** 探索が打ち切られた候補を、全候補を比較済み・実現不能と扱わない。 */
+  search?: { complete: boolean; visitedStates: number; limits: ('states' | 'steps')[] };
 };
 
 export const RECIPE_MAX_STEPS = 10;
 export const RECIPE_MAX_CANDIDATES = 200;
-/** 列挙の打ち切り。順番違いの重複を含む生の列の上限。 */
-const RECIPE_MAX_ENUMERATED = 5_000;
+/** 成果へ届く列数ではなく、探索する状態全体の上限。 */
+export const RECIPE_MAX_SEARCH_STATES = 5_000;
 /** 5回に1回は実績の少ない工程を試す。lib/sky-continuous-ranking.ts の探索枠と同じ比率。 */
 export const RECIPE_TRIAL_INTERVAL = 5;
 /** 連続でこの回数検収に通った工程は固定し、毎回の再計画を省く。 */
@@ -287,23 +289,82 @@ export function planRecipes(
     (capability) => capability.available && (!goal.keepForSelf.includes(capability.produces) || capability.kind === 'owner'),
   );
 
+  // 到達不能な成果のために無関係なToolの全順列を列挙しない。
+  const reachable = new Set(goal.have);
+  for (let changed = true; changed; ) {
+    changed = false;
+    for (const capability of usable) {
+      if (!reachable.has(capability.produces) && capability.consumes.every((item) => reachable.has(item))) {
+        reachable.add(capability.produces);
+        changed = true;
+      }
+    }
+  }
+  if (!reachable.has(goal.want)) {
+    const producers = usable.filter((capability) => capability.produces === goal.want);
+    const missing = new Set<string>();
+    for (const capability of producers)
+      for (const item of capability.consumes) if (!reachable.has(item)) missing.add(item);
+    return {
+      candidates: [],
+      gap: {
+        reason: producers.length ? 'inputs_unreachable' : 'no_capability_produces_goal',
+        missingMaterials: producers.length ? [...missing].sort() : [goal.want],
+        unavailableCapabilityIds: capabilityInput
+          .filter((capability) => !capability.available && (capability.produces === goal.want || missing.has(capability.produces)))
+          .map((capability) => capability.id)
+          .sort(),
+      },
+      search: { complete: true, visitedStates: 0, limits: [] },
+    };
+  }
+
+  // 成果から依存を逆にたどる。既に手元にある素材は作り直さない。
+  const required = new Set([goal.want]);
+  const have = new Set(goal.have);
+  for (let changed = true; changed; ) {
+    changed = false;
+    for (const capability of usable) {
+      if (!required.has(capability.produces) || !capability.consumes.every((item) => reachable.has(item))) continue;
+      for (const material of capability.consumes) {
+        if (!have.has(material) && !required.has(material)) {
+          required.add(material);
+          changed = true;
+        }
+      }
+    }
+  }
+  const relevant = usable.filter((capability) =>
+    required.has(capability.produces) && capability.consumes.every((item) => reachable.has(item)));
   const found: RecipeCapability[][] = [];
-  let withinLimits = false;
+  const visited = new Set<string>();
+  const limits = new Set<'states' | 'steps'>();
   const walk = (materials: Set<string>, steps: RecipeCapability[]) => {
-    if (found.length >= RECIPE_MAX_ENUMERATED) return;
+    // 同じ能力の集合は素材も費用も同じ。順序だけ違う探索を重複させない。
+    const identity = steps.map((step) => step.id).sort().join('|');
+    if (visited.has(identity)) return;
+    if (visited.size >= RECIPE_MAX_SEARCH_STATES) {
+      limits.add('states');
+      return;
+    }
+    visited.add(identity);
     if (materials.has(goal.want)) {
       found.push(steps);
       return;
     }
-    if (steps.length >= RECIPE_MAX_STEPS) return;
-    for (const capability of usable) {
-      // 既にある素材を作り直す工程は足さない。これで循環と無駄な工程を除く。
-      if (materials.has(capability.produces)) continue;
-      if (!capability.consumes.every((item) => materials.has(item))) continue;
+    const next = relevant.filter((capability) =>
+      !materials.has(capability.produces) && capability.consumes.every((item) => materials.has(item)));
+    if (steps.length >= RECIPE_MAX_STEPS) {
+      if (next.length) limits.add('steps');
+      return;
+    }
+    for (const capability of next) {
       walk(new Set([...materials, capability.produces]), [...steps, capability]);
+      if (limits.has('states')) break;
     }
   };
   walk(new Set(goal.have), []);
+  const search = { complete: limits.size === 0, visitedStates: visited.size, limits: [...limits] };
 
   // 成果に使われない工程を含む列は、同じ成果へ届く短い列の言い換えなので除く。
   const needed = (steps: RecipeCapability[]) => {
@@ -318,7 +379,6 @@ export function planRecipes(
   for (const steps of found.filter(needed)) {
     const candidate = scoreRecipe(steps, goal, observations);
     if (!candidate) continue;
-    withinLimits = true;
     // 同じ能力の集合は順番違いでも同じ工程。最初に見つけた順序を残す。
     const identity = steps.map((step) => step.id).sort().join('|');
     if (!candidates.has(identity)) candidates.set(identity, candidate);
@@ -326,36 +386,13 @@ export function planRecipes(
   const ranked = [...candidates.values()].sort(
     (a, b) => a.expectedMinor - b.expectedMinor || a.steps.length - b.steps.length || a.key.localeCompare(b.key),
   ).slice(0, RECIPE_MAX_CANDIDATES);
-  if (ranked.length) return { candidates: ranked, gap: null };
-
-  if (found.length && !withinLimits)
-    return { candidates: [], gap: { reason: 'over_budget_or_deadline', missingMaterials: [], unavailableCapabilityIds: [] } };
-
-  // 届く素材を出し、欲しい成果を作れる能力の入力のうち届かないものを報告する。
-  const reachable = new Set(goal.have);
-  for (let changed = true; changed; ) {
-    changed = false;
-    for (const capability of usable) {
-      if (!reachable.has(capability.produces) && capability.consumes.every((item) => reachable.has(item))) {
-        reachable.add(capability.produces);
-        changed = true;
-      }
-    }
-  }
-  const producers = usable.filter((capability) => capability.produces === goal.want);
-  const missing = new Set<string>();
-  for (const capability of producers)
-    for (const item of capability.consumes) if (!reachable.has(item)) missing.add(item);
+  if (ranked.length) return { candidates: ranked, gap: null, search };
+  if (!search.complete)
+    return { candidates: [], gap: { reason: 'search_limit_reached', missingMaterials: [], unavailableCapabilityIds: [] }, search };
   return {
     candidates: [],
-    gap: {
-      reason: producers.length ? 'inputs_unreachable' : 'no_capability_produces_goal',
-      missingMaterials: producers.length ? [...missing].sort() : [goal.want],
-      unavailableCapabilityIds: capabilityInput
-        .filter((capability) => !capability.available && (capability.produces === goal.want || missing.has(capability.produces)))
-        .map((capability) => capability.id)
-        .sort(),
-    },
+    gap: { reason: 'over_budget_or_deadline', missingMaterials: [], unavailableCapabilityIds: [] },
+    search,
   };
 }
 

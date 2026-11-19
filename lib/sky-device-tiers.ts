@@ -100,6 +100,7 @@ export type DeviceResult = { unitId: string; memberRef: string; outputSha256: st
 /**
  * 参加者の端末の結果を突き合わせる。
  * 同じ単位について、別の参加者 quorum 人以上が同じ出力を出したものだけ採用し、一致した人に作業料の寄与を付ける。
+ * 複数の異なる出力がquorumを満たす場合は未解決とし、寄与を発行しない。
  * 同じ人が同じ単位に何度出しても1回と数える。稼働時間・台数は見ない。
  */
 export function settleDeviceResults(input: {
@@ -128,13 +129,14 @@ export function settleDeviceResults(input: {
   for (const [unitId, results] of [...byUnit.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
     const tally = new Map<string, DeviceResult[]>();
     for (const result of results) tally.set(result.outputSha256, [...(tally.get(result.outputSha256) ?? []), result]);
-    const [top] = [...tally.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
-    if (top[1].length < input.quorum) {
+    const agreed = [...tally.entries()].filter(([, group]) => group.length >= input.quorum);
+    if (agreed.length !== 1) {
       unresolved.push(unitId);
       continue;
     }
-    accepted.push({ unitId, outputSha256: top[0] });
-    for (const result of top[1])
+    const [outputSha256, matching] = agreed[0];
+    accepted.push({ unitId, outputSha256 });
+    for (const result of matching)
       contributions.push({
         id: `${input.orderId}:${unitId}:${result.memberRef}`, participantRef: result.memberRef, kind: 'compute',
         acceptedUnits: 1, unitRateMinor: input.unitRateMinor,

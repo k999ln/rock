@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { spawnSync } from 'node:child_process';
 import {
   RecipePlannerError,
+  RECIPE_MAX_SEARCH_STATES,
+  RECIPE_MAX_STEPS,
   acceptanceEstimate,
   chooseRecipe,
   ownerSteps,
@@ -132,4 +135,85 @@ void test('malformed capabilities and goals are rejected', () => {
   assert.throws(() => planRecipes(goal(), [capability('loop', ['draft'], 'draft')]), RecipePlannerError);
   assert.throws(() => planRecipes(goal({ expectedRepeats: 0 }), shop), RecipePlannerError);
   assert.throws(() => planRecipes(goal(), [capability('bad', ['request'], 'delivery', { costMinor: -1 })]), RecipePlannerError);
+});
+
+void test('unreachable goals with unrelated Tools are rejected before any sequence search', () => {
+  // A child deadline detects a synchronous factorial search regression without hanging the suite.
+  const script = `
+    import { planRecipes } from './lib/sky-recipe-planner.ts';
+    const capability = ${capability.toString()};
+    const goal = ${goal.toString()};
+    const tools = Array.from({ length: 20 }, (_, i) => capability('side-' + i, ['request'], 'unused-' + i));
+    console.log(JSON.stringify([
+      planRecipes(goal(), tools),
+      planRecipes(goal(), [...tools, capability('delivery', ['missing'], 'delivery')]),
+    ]));
+  `;
+  const result = spawnSync(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', script], {
+    cwd: new URL('..', import.meta.url), encoding: 'utf8', timeout: 3_000,
+  });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+  const [noProducer, noInput] = JSON.parse(result.stdout);
+  assert.equal(noProducer.gap.reason, 'no_capability_produces_goal');
+  assert.equal(noInput.gap.reason, 'inputs_unreachable');
+  assert.deepEqual(noInput.gap.missingMaterials, ['missing']);
+  for (const plan of [noProducer, noInput]) {
+    assert.equal(plan.search.complete, true);
+    assert.equal(plan.search.visitedStates, 0);
+  }
+});
+
+void test('backward dependency pruning keeps a reachable pipeline small among unrelated Tools', () => {
+  const unrelated = Array.from({ length: 20 }, (_, i) => capability(`side-${i}`, ['request'], `unused-${i}`));
+  const plan = planRecipes(goal(), [...unrelated, ...shop]);
+  assert.equal(plan.gap, null);
+  assert.equal(plan.candidates.length, 2);
+  assert.equal(plan.search.complete, true);
+  assert.ok(plan.search.visitedStates < 20);
+});
+
+void test('total search budget exhaustion does not claim that a reachable affordable recipe is impossible', () => {
+  const expensive = Array.from({ length: RECIPE_MAX_SEARCH_STATES }, (_, i) =>
+    capability(`expensive-${i}`, ['request'], 'delivery', { costMinor: 1 }));
+  const affordable = capability('last-affordable', ['request'], 'delivery');
+  const plan = planRecipes(goal({ budgetMinor: 0 }), [...expensive, affordable]);
+  assert.equal(plan.candidates.length, 0);
+  assert.equal(plan.gap.reason, 'search_limit_reached');
+  assert.deepEqual(plan.gap.missingMaterials, []);
+  assert.equal(plan.search.complete, false);
+  assert.equal(plan.search.visitedStates, RECIPE_MAX_SEARCH_STATES);
+  assert.deepEqual(plan.search.limits, ['states']);
+  assert.equal(planRecipes(goal({ budgetMinor: 0 }), [affordable]).candidates[0].key, affordable.id);
+});
+
+void test('bounded partial candidates explicitly report that the comparison is incomplete', () => {
+  const tools = Array.from({ length: RECIPE_MAX_SEARCH_STATES }, (_, i) =>
+    capability(`choice-${i}`, ['request'], 'delivery'));
+  const plan = planRecipes(goal(), tools);
+  assert.ok(plan.candidates.length > 0);
+  assert.equal(plan.gap, null);
+  assert.equal(plan.search.complete, false);
+  assert.deepEqual(plan.search.limits, ['states']);
+});
+
+void test('the step limit is distinct from missing capabilities or over-budget recipes', () => {
+  const tools = Array.from({ length: RECIPE_MAX_STEPS + 1 }, (_, i) =>
+    capability(`step-${i}`, [i ? `material-${i - 1}` : 'request'], i === RECIPE_MAX_STEPS ? 'delivery' : `material-${i}`));
+  const plan = planRecipes(goal(), tools);
+  assert.equal(plan.gap.reason, 'search_limit_reached');
+  assert.equal(plan.search.complete, false);
+  assert.deepEqual(plan.search.limits, ['steps']);
+});
+
+void test('independent prerequisite orderings collapse while preserving the whole pipeline', () => {
+  const tools = [
+    capability('prepare-left', ['request'], 'left'),
+    capability('prepare-right', ['request'], 'right'),
+    capability('deliver', ['left', 'right'], 'delivery'),
+  ];
+  const plan = planRecipes(goal(), tools);
+  assert.equal(plan.search.complete, true);
+  assert.equal(plan.candidates.length, 1);
+  assert.deepEqual(plan.candidates[0].steps.map((step) => step.capabilityId), ['prepare-left', 'prepare-right', 'deliver']);
 });

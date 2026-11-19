@@ -1,0 +1,12 @@
+{
+  "name": "noah-select-resale-agent-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "start": "node --experimental-strip-types cli.mjs",
+    "demo": "node --experimental-strip-types cli.mjs demo",
+    "package": "node ../../scripts/package-noah-resale-agent.mjs"
+  }
+}
