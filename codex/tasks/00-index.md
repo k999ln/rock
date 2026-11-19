@@ -61,4 +61,4 @@
 
 | 70 | [70-noah-route-unification.md](70-noah-route-unification.md) | 旧画面とNoahの統合・404修正 | ✅ 公開版149・Eveヘッダー確認済み・[PR #320](https://github.com/k999ln/rock/pull/320) |
 
-| 71 | [71-current-code-and-readme.md](71-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | 作業中 |
+| 71 | [71-current-code-and-readme.md](71-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | 検証済み・[PR #321](https://github.com/k999ln/rock/pull/321) |

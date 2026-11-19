@@ -8,7 +8,7 @@
       "AMC02",
       "AMC06"
     ],
-    "status": "integration_candidate",
+    "status": "verified_source_with_main_integration_tracked_by_pr321",
     "baseMainSha": "9393ed97fc0333ed3a26be49c86b87fd21254b50",
     "branch": "codex/latest-code-readme-20261119",
     "candidateCommit": "c3e2e494a82fd5f4b92b92c8cf67da4b50ed68ae",
@@ -1378,7 +1378,7 @@
   },
   "updatedAt": "2026-11-19",
   "milestone": "Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合",
-  "nextAction": "統合候補の全verifyと独立検収、同一SHA CIを確認して通常PRでmainへ統合。未再受入の端末・共有・精算実装はsource保全とschema/API照合を継続する。",
+  "nextAction": "検証済みコードのGitHub/main状態はPR321を確認する。保存済み独自コードを端末runtime、共有/精算、mediaの順で現行契約と照合し、未受入を実装合格へ置き換えない。",
   "tasks": [
     {
       "id": "AMC02",
@@ -12777,7 +12777,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/312"
   },
   "currentGitRefresh": {
-    "status": "in_progress",
+    "status": "verified_source",
     "updatedAt": "2026-11-19",
     "taskIds": [
       "G04",
@@ -12792,9 +12792,8 @@
     "backupManifest": "work/git-refresh-20261119/working-tree-before.json",
     "backupVerifiedFiles": 2075,
     "candidate": "work/git-refresh-20261119/candidate",
-    "githubSaved": false,
-    "mainIntegrated": false,
-    "next": "最新mainとPR320を土台に差分分類。最新の製品説明・使用手順・未完了だけをREADMEへ残し、候補全verifyとCIを確認して通常統合する。",
+    "githubSaved": true,
+    "next": "PRの同一SHA CIとmain受入を確認する。保全した独自コードはdomainごとにschema/API/機種条件を照合し、既存main機能を退行させず順次再受入する。",
     "candidateBranch": "codex/latest-code-readme-20261119",
     "adoptedChanges": [
       "PR320 Noah/Eve route unification",
@@ -12810,7 +12809,55 @@
       "camera/module/object-purpose candidates",
       "Agent share/outcomes and author settlement with legacy schema",
       "independent media editing candidates"
-    ]
+    ],
+    "sourceSha": "0211c1892d19ec2c484da4057ed73f33dcd1fd38",
+    "pullRequest": "https://github.com/k999ln/rock/pull/321",
+    "mainIntegration": {
+      "authority": "https://github.com/k999ln/rock/pull/321",
+      "rule": "Read the current PR merged state and exact main-SHA checks; this source record does not predict merge completion."
+    },
+    "preservedRuntime": {
+      "branch": "codex/preserved-runtime-source-20261119",
+      "sha": "7a0e1091dbdda0daf198bc9f2bfb9c3e4e4a9a7b",
+      "remoteReadbackMatched": true,
+      "runtimeAccepted": false
+    },
+    "validation": {
+      "fullVerifyExitCode": 0,
+      "sourceSha": "0211c1892d19ec2c484da4057ed73f33dcd1fd38",
+      "nodeTests": 4053,
+      "passed": 4049,
+      "failed": 0,
+      "skipped": 4,
+      "webAssetReferences": 288,
+      "webAssetMissing": 0,
+      "resaleDemoExitCode": 0,
+      "amcDemoExitCode": 0,
+      "candidateGitleaksFindings": 0,
+      "preservedRuntimeGitleaksFindings": 0,
+      "independentReview": {
+        "plannerAndResearch": "pass; 27 independent tests; inequality correction applied",
+        "resaleAndRoleEntries": "pass; 24 independent tests; 26 JSON paths and 167 links exist"
+      }
+    },
+    "preservedSources": {
+      "branch": "codex/preserved-local-source-20261119",
+      "sha": "3f3b0e67afe368682f2aa55db547f9b68f27dd61",
+      "remoteReadbackMatched": true,
+      "runtimeAccepted": false,
+      "copiedTextPaths": 1268,
+      "secretScan": {
+        "findings": 19,
+        "independentlyReviewedFalsePositives": 19,
+        "realCredentialsAmongFindings": 0,
+        "classification": {
+          "fileSha256": 14,
+          "logSha256": 3,
+          "validationStatusText": 1,
+          "procedureDescription": 1
+        }
+      }
+    }
   },
   "noahSelectResaleAgents": {
     "updatedAt": "2026-11-15",
