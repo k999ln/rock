@@ -55,4 +55,4 @@
 
 | 70 | [70-noah-route-unification.md](70-noah-route-unification.md) | 旧画面とNoahの統合・404修正 | ✅ 公開版149・Eveヘッダー確認済み・[PR #320](https://github.com/k999ln/rock/pull/320) |
 
-| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・本番/別Mac未確認 |
+| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)・本番/別Mac未確認 |

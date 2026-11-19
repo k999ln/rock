@@ -15,3 +15,5 @@
 2026-11-19 保存時点: 最新typecheckと主要7テスト成功、ビルド成功。作者/審査者/利用者を分けたローカルHTTP＋実隔離コンテナで接続→Work成果→実行中停止→切断を確認。配布ZIPを空の保存領域へ導入・診断済み。実行は既存MacのVMを使用。利用者は別のApple Silicon Macを利用可能と回答。
 
 全体検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` を実施。集計・DB移行整合性などの既存試験に失敗が残るため、現段階はドラフトとして保存。テストを削除・スキップして成功扱いにはしていない。配布物と本番migrationの準備はあり、本番D1適用は未実施。審査者accountの設定、本番HTTPS、別Mac実機の受入が残る。
+
+Git保存: [PR #322](https://github.com/k999ln/rock/pull/322)（ドラフト）。このチャットへ作業ツリーとPRを接続済み。
