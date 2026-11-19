@@ -1,33 +1,22 @@
 # 現在の開発・統合状況
 
-更新日: 2026-11-20。製品要件は[product baseline](docs/product-baseline.md)、現在の名称は[名称正本](docs/structure/06-naming.md)。
+更新日: 2026-11-20。現在の優先順位は[構成正本](docs/structure/00-overview.md)、名称は[名称正本](docs/structure/06-naming.md)、要件の検査入力は[product baseline](docs/product-baseline.md)。
 
-## 現行の製品優先順位
+## 現在の作業
 
-主商品はmii、最小構成から始めるのがNoah。まず本人MacのAgent選択・接続・実行・成果受領・停止を受け入れる。次にmiiで声からEveへ依頼し、空間表示を見たり触ったりして仕事を進める。SIM/eSIMはOS導入時の仕組み。方針とコード/実機の合格は別で、詳細は[製品正本](docs/product-baseline.md)。
+[task73](codex/tasks/73-current-product-consolidation.md)でNoah/Eveの共通通信・コード取得と現行説明を整理する。本人MacでAgent選択・接続・実行・成果受領・停止を完成させ、その後にmiiの声/Eve/空間操作へ進む優先順位を維持する。
 
-## 現在の統合ソース
-
-G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保存、main統合まで実施する。READMEは現在の製品説明・コード・利用方法・未完了だけを載せ、日付ごとの受領票はCHANGELOGへ分離する。
-
-- PR321はmain `37ef2bfd`へ統合済み。後続のNoah認証修正を含むmain `697be21c`の全6チェック成功を確認。並行更新でREADMEへ戻った過去の公開記録は現在の動作説明へ同期する。
-- 基点: GitHub main `1cb703d0fe81314b450d0bf315721c7b18c0c979`。
-- 最新のNoah/Eve画面統一、工程計画と会社受注計算、mii研究、AMCの有限実行、Noahリセール、役割定義を集約し、全verifyと独立検収が成功。
-- mainへ追加されたPR322のNoah単体ローンチを取り込み、`4ebe83cd7`で8件のCIと独立検収71件が成功。
-- PR308のMATOU aliasはmainに既存のため再移植しない。
-- 旧作業木の2,082pathはGit外へ退避し、現存2,075fileをhash読戻し確認。main同一354pathと生成物/ローカル設定357pathを分離した。
-- Pixel/portable、Mini実装候補、Agent共有/作者精算などは現mainのschema/APIへ未再受入。旧コードを現在の保存処理へ上書きせず保全する。
-- 本番DB適用・公開更新・実売買・実課金・Pixel書込みはこのGit統合の実行に含まれない。
+- MacのAPI接続、私有/招待/公開版の取得容量照合、Eveの仕事の読み書きを共通化。本人・招待期限・審査・revision・停止の条件は保持する。
+- 設計の入口・名称・OS導入の説明を正本への参照へ揃える。公開Webのdevice sessionとlocalhostの認証を混ぜない。
+- 前回の整理は[PR325](https://github.com/k999ln/rock/pull/325)でmain `c4d7c273`へ統合し同一SHAのCI成功。保全原本と未移植の固有機能は[task72](codex/tasks/72-current-code-and-readme.md)を参照する。
 
 ## 検証と再開
 
-方針同期と参照Noahの3差分を取り込んだ統合作業木で全verify成功。本体4,433件中4,429成功・失敗0・skip4、build/APIも成功。最終commitのCI/main統合状態は[PR325](https://github.com/k999ln/rock/pull/325)を確認する。
-
-最新main統合後の`4ebe83cd7`でローカル全verify・CI成功。本体4,426件中4,422成功・失敗0・skip4。先行ソース`0211c1892`のローカル全verifyも成功。独立検収の指摘は修正・再検収済み。保存とmain統合の現在状態は[PR321](https://github.com/k999ln/rock/pull/321)、ソース検証と保全先は `data/project-status.json#currentGitRefresh` と[task72](codex/tasks/72-current-code-and-readme.md)を参照する。
+共通化の対象試験83件と追加の境界試験4件が成功。全体検証とPR同一SHAのCIは確認中。変更はGit整理と共通処理の保守であり、Noahの別Mac通し受入・mii実機・本番公開の完了とは区別する。
 
 ## 全taskの作業進捗
 <!-- project-status:start -->
-最終更新: 2026-11-20 / Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-11-20 / Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

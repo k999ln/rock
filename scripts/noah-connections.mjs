@@ -1,3 +1,4 @@
+import { createNoahLocalRequest } from './noah-local-api.mjs';
 import path from 'node:path';
 import { isLocalRuntimeHost, isLocalRuntimeRequest } from '../lib/sky-private-loopback.mjs';
 import { createNoahConnectionManager, ConnectionError } from './noah-connection-manager.mjs';
@@ -42,11 +43,9 @@ export function createNoahConnectionsPlugin() {
       const getAgent = async (incoming, id) => {
         // Delegate ownership to the existing account API; never trust a browser
         // supplied owner ID, upload content, target URL or execution command.
-        const headers = {};
-        for (const name of ['cookie', 'authorization', 'oai-authenticated-user-id']) if (typeof incoming.headers[name] === 'string') headers[name] = incoming.headers[name];
-        const url = `http://${incoming.headers.host}/api/noah/agents/${id}`;
+        const request = createNoahLocalRequest(incoming);
         const revalidate = async () => {
-          const result = await fetch(url, { headers, redirect: 'error', signal: AbortSignal.timeout(5000) });
+          const result = await request(`/api/noah/agents/${id}`, { timeoutMs: 5000 });
           if (!result.ok) throw new ConnectionError(result.status === 404 ? 'Agentが見つかりません。' : 'Agentの所有者を確認できません。', [401, 403, 404].includes(result.status) ? result.status : 503);
           return result.json();
         };

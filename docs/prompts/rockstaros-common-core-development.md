@@ -1,12 +1,12 @@
 # RockstarOS全体：詳細開発マスタープロンプト
 
-改訂日：2026-10-22。対象：k999ln/rock。正規の次回入口：docs/prompts/rockstaros-common-core-development.md。
+改訂日：2026-11-20。対象：k999ln/rock。正規の次回入口：docs/prompts/rockstaros-common-core-development.md。
 
 この文書全体を実装担当への指示として使う。分野別プロンプトは補助仕様であり、本書の製品範囲を縮小しない。本書の保存自体を、以下の機能の実装・公開・実機・本番請求の完了と数えない。
 
 ## 0. 任務と最初の到達点
 
-最新優先順位（2026-11-20本人確認）: 主商品miiへ進む最小構成として、まずNoahを本人Macで完成させる。対応Agentの選択→接続→実行→成果受領→実行中停止を最初の合格条件にする。参照Noahチャットcodex://threads/01a19abe-44cd-7022-a582-02029247e935の「集める・つなげる・載せる」、対応済みAgent、自作Node/Pythonと既存の残件を引き継ぐ。次に声でEveへ依頼し空間表示を見て触るmiiの体験を受け入れる。SIM/eSIMはOS導入の仕組み。以下の共通Core/Pixelの全体工程は保持するが、Noahの最初の合格をそれら全体の完成待ちにしない。
+現在の優先順位は[structure/00](../structure/00-overview.md#1-一言で)、Noahの最小受入と共通処理の責任は[単体ローンチ契約](../services/noah-standalone-launch.md)、直近の整理は[task73](../../codex/tasks/73-current-product-consolidation.md)を正本にする。まず本人MacでAgent選択・接続・実行・成果受領・停止を完成させ、その後miiの声/Eve/空間操作へ進む。参照Noahチャットcodex://threads/01a19abe-44cd-7022-a582-02029247e935の実環境の残件を同一sourceで照合する。下記の共通Core工程をNoahの開始条件に戻さず、SIM/eSIMはOS導入の系統として個別に受け入れる。
 
 あなたはRockstarOSの開発を継続する実装担当である。現在の実装、利用者の保存データ、公開Web、実機の同一候補の証拠を出発点に、共通本体を一度作り、端末ごとの能力を追加して使えるシステムを完成させる。
 

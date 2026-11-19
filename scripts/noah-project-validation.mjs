@@ -1,7 +1,6 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
-import ts from 'typescript';
+import { checkNoahSourceTypes } from './noah-source-typecheck.mjs';
 import { containerArgs, engineSocket, ensureEngine } from './noah-isolated-runtime.mjs';
 import { InstallError, runCommand } from './noah-source-fetch.mjs';
 
@@ -11,19 +10,8 @@ export const VALIDATION_IMAGES = Object.freeze({
 });
 
 export function checkProjectTypes(project) {
-  const root = '/input', library = path.dirname(ts.getDefaultLibFilePath({}));
-  const files = new Map(project.files.map(f => [root + '/' + f.name, f.content]));
-  const options = { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
-    strict: true, noEmit: true, allowJs: true, checkJs: false, skipLibCheck: true, types: [], allowImportingTsExtensions: true, lib: ['lib.es2022.d.ts'] };
-  const base = ts.createCompilerHost(options);
-  const read = name => files.get(name) ?? (path.dirname(name) === library && /^lib\..*\.d\.ts$/.test(path.basename(name)) ? ts.sys.readFile(name) : undefined);
-  const host = { ...base, getCurrentDirectory: () => root + (project.root ? '/' + project.root : ''), readFile: read, fileExists: name => read(name) !== undefined,
-    directoryExists: name => name === root || name === library || [...files.keys()].some(f => f.startsWith(name + '/')),
-    getSourceFile: (name, version) => { const text = read(name); return text === undefined ? undefined : ts.createSourceFile(name, text, version, true); } };
-  const roots = project.editable.filter(name => /\.[cm]?[jt]s$/i.test(name)).map(name => root + '/' + name);
-  const program = ts.createProgram(roots, options, host);
-  return ts.getPreEmitDiagnostics(program).filter(d => d.category === ts.DiagnosticCategory.Error).slice(0, 12)
-    .map(d => `${d.file ? path.posix.relative(root, d.file.fileName) : 'code'}: ${ts.flattenDiagnosticMessageText(d.messageText, ' ').slice(0, 300)}`);
+  return checkNoahSourceTypes({ files: project.files, root: '/input', currentDirectory: '/input' + (project.root ? '/' + project.root : ''),
+    entrypoints: project.editable.filter(name => /\.[cm]?[jt]s$/i.test(name)), maxErrors: 12, maxMessageLength: 300 });
 }
 
 const STAGE = `import fs from 'node:fs';import path from 'node:path';let data='';for await(const c of process.stdin)data+=c;const p=JSON.parse(data);for(const f of p.files){const n=path.join('/input',f.name);fs.mkdirSync(path.dirname(n),{recursive:true});fs.writeFileSync(n,f.content,{flag:'wx',mode:0o444});}console.log('staged');`;

@@ -13,9 +13,9 @@
 | 契約の強さ | 回線契約と同じ重さ（カード/口座引落し、未払い時は回線停止）。**これを売り文句にはしない**。ユーザーには「使い続けたくなる価値」を見せる（2026-10-10 YouTube Premium型の結論を維持） |
 | OS本体をeSIMに入れるか | **入れない。** eSIM profile は数十KBで、鍵・回線設定・アクセス規則しか入らない。OSの実体はcloud（RockstarOS runtime）とスマホ側のclient。eSIMは「鍵と回線」 |
 
-一言で：**eSIM = RockstarOSの鍵付き回線。入れた瞬間にスマホがEveの端末になる。**
+導入の目標は、**eSIMをRockstarOSの鍵付き回線として使い、適合確認後にEveへ進めること**。自動導入は下記のprovider・端末・配布条件が整った場合に限る。
 
-## 2. 技術的に何が起きるか（Android / iOS）
+## 2. 条件付きの導入設計（Android / iOS）
 
 ```mermaid
 flowchart LR
@@ -54,18 +54,18 @@ flowchart LR
 | 利用開始UI | app/connect, components/esim-purchase-setup.tsx, components/rockstar-service-setup.tsx | 文言を本定義に合わせる（「データ」「GB」を出さない） |
 | 旧定義の文書 | docs/service-design/08-*, docs/native-os-integration.md の「通信＋si利用権bundle」節 | 本ファイルを正本にし、旧節は「2026-10-15版」と明記して残す |
 
-## 5. 料金（最新の有効な結論 → 05-business.md と同じ）
+## 5. 料金
 
-- eSIM回線付き RockstarOS: **月額固定（日本 ¥800前後、米国 $8.88 を候補）**。2026-10-10「月額は確実に取る」を維持。8.88は「毎月の少額」の意味で残し、天引き（下記）とは別。
-- 仕事で稼いだ分からの天引き（Sky経由の収益の一定率）は Wallet/settlement に実装済みの earnings 契約を使う。eSIM契約者はこの天引きが回線料と同じ明細に載る。
-- データ残量の販売はしない。通信は RockstarOS cloud 向けに最適化し、一般ブラウジング用の容量は売らない（必要なら将来 option）。
+候補額・月額・仕事の収益からの天引きは[05-business.md](05-business.md)を正本とする。ここで別の料金を定義しない。既存Wallet/settlement契約を使い、商品料金・通信・si使用料・外部実費を分ける。データ残量の販売を主商品にしない。
 
-## 6. 今日から稼働させるための順番
+## 6. OS導入系統の検証順
 
-1. **今すぐできる（provider契約なし）**: avoado.si の `/connect` で、既存の esim-go sandbox を使って「QR/universal link でeSIMを入れる → Eve が開く → account束縛」まで通す。これで体験は検証できる（自社証明書なし版）。
-2. **並行**: MVNE候補への RFQ（Codex task 10 が質問票を作る。本人が送る）。質問は「ARF/BF76 に当社証明書を入れられるか」「私設APN」「日本/米国の両方で発行できるか」「最小ロットと月額」「Apple/Google partner 実績」。
-3. **契約後**: provider adapter を差し替え、Android の Play 自動導入を有効化。iOS は universal link のまま。
-4. **請求**: Stripe 月額 → 未払い時に entitlement を一時停止（回線停止は provider API）。
+製品全体の最初の受入は[00 全体像](00-overview.md#1-一言で)の本人Mac上のNoah。以下はその前提条件にはしない。
+
+1. 準備済みsandboxで、発行・導入案内・Eveへの導線・account束縛を個別に確認。実回線発行や端末自動導入の合格へ読み替えない。
+2. task10でproviderへの質問票と適合条件を整理。契約・申込・問い合わせの送信は本人の明示許可が必要。
+3. provider・配布条件が確定してから対応adapterとAndroid/iOSの導入経路を検証する。
+4. 請求・利用権・回線停止は既存課金契約とproviderの個別受入を通す。
 
 ## 7. 法務・規約の注意（売り文句にしない理由）
 

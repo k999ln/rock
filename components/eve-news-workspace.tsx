@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { NewsSource } from '@/lib/eve-news-audit';
 import type { WorkJob } from '@/lib/workflow';
 import { newsReviewModelAdvice } from '@/lib/eve-news-model-advice';
+import { createEveWorkClient } from '@/lib/eve-work-client';
 import EveNewsDraftEditor from './eve-news-draft-editor';
 import EveNewsSourceComposer from './eve-news-source-composer';
 import EveNewsLearningPreparation from './eve-news-learning-preparation';
@@ -11,12 +12,7 @@ import { SkyNotice } from './sky-feedback';
 import styles from './sky-commerce.module.css';
 type Result = { job: WorkJob; historySaved?: boolean };
 type Bundle = { packet: unknown; draft: unknown; modelLabel: string };
-async function api<T>(query = '', input?: unknown, method = 'PATCH') {
-  const response = await fetch('/api/eve/news-work' + query, { method: input ? method : 'GET', cache: 'no-store', headers: input ? { 'content-type': 'application/json' } : undefined, body: input ? JSON.stringify(input) : undefined });
-  const value = await response.json() as T & { error?: string };
-  if (!response.ok) throw new Error(value.error ?? '保存したニュース仕事を読み直してください。');
-  return value;
-}
+const api = createEveWorkClient('news-work', '保存したニュース仕事を読み直してください。');
 export default function EveNewsWorkspace({ threadId, onThread }: { threadId: string; onThread: (id: string) => void }) {
   const [jobs,setJobs]=useState<WorkJob[]>([]),[current,setCurrent]=useState<WorkJob|null>(null);
   const [bundle,setBundle]=useState<Bundle|null>(null),[consent,setConsent]=useState(false),[busy,setBusy]=useState(false),[notice,setNotice]=useState(''),[noticeIsError,setNoticeIsError]=useState(false);
