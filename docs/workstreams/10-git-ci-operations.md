@@ -1,3 +1,86 @@
+## 営業・開発・品質・運用の全社分担
+
+2026-11-03の本人訂正「開発は？これで完全なの？」により、営業18役だけだった一覧を[全社役割台帳](../../data/company-role-map.json)へつなぐ。CEOに加え、営業・顧客運営18役と開発・品質・運用21役を定義する。旧来の開発4設定と既存11lane/95unitは再利用し、担当チャットの作り直しや実行指示の送信は行わない。
+
+### 開発21役
+
+| ID | 役割 | 所有責任 | 成果物 |
+| --- | --- | --- | --- |
+| DEV00 | [開発統括・技術責任](../../.cursor/agents/rock-engineering-lead.md) | 開発優先順位、依存関係、実装担当・検収担当・資源の割当 | 既存unit ID・候補・編集path・局所試験・検収担当を示す実行票 |
+| DEV01 | [製品企画・要件・優先順位](../../.cursor/agents/rock-product-manager.md) | 顧客課題の要件化、受入条件、製品backlogとscope変更案 | 顧客課題・RQ・既存unit・成果指標・対象外を結ぶ要件票 |
+| DEV02 | [UX・UI・アクセシビリティ設計](../../.cursor/agents/rock-product-designer.md) | 初回利用、依頼、承認、成果、費用、失敗・復旧の画面設計 | 状態別導線、画面仕様、文言、操作・a11y受入シナリオ |
+| DEV03 | [アーキテクチャ・共通契約設計](../../.cursor/agents/rock-system-architect.md) | API、本人境界、状態遷移、保存・移行、停止・復旧の共通契約 | 責任境界、互換・移行・失敗復旧・承認・負例付きの設計差分 |
+| DEV04 | [OS・Pixel・QEMU・端末](../../.cursor/agents/rock-os-device-engineer.md) | OS runtime、Broker、隔離、driver接続、端末保存・更新・復旧 | 対象source/imageと環境を固定した実装・起動・停止・保存復旧の証拠 |
+| DEV05 | [Noah・接続・MCP・ストア](../../.cursor/agents/rock-sky-eve-engineer.md) | Agent/LLM/Toolの発見・追加・接続・更新・削除、MCP/SDKと権限差分 | 版・本人・scope付き構成と、Eveへ引き継ぐ接続契約・試験 |
+| DEV06 | [Eve・仕事・成果・編集](../../.cursor/agents/rock-eve-workflow-engineer.md) | 目的から仕事作成、承認、実行、成果、編集、保存、停止・再開の共通体験 | owner/job/revisionが一致する仕事と型付き成果、原本保持・復旧の実装証拠 |
+| DEV07 | [AI・LLM・学習・品質評価](../../.cursor/agents/rock-ai-model-engineer.md) | モデル適合、推論経路、品質・速度・資源・費用評価、許諾付き学習実験 | 固定入力・model/hash・評価分離・対照・採用/不採用理由付きの測定票 |
+| DEV08 | [Web・フロントエンド・PWA](../../.cursor/agents/rock-web-experience-engineer.md) | 共通UI、mobile、a11y、PWA、3ドメインの画面と導線 | 同一sourceの画面実装・browser操作・build/asset検証 |
+| DEV09 | [API・DB・同期・データ移行](../../.cursor/agents/rock-api-data-engineer.md) | API認証、owner分離、revision競合、DB migration、同期・backup互換 | 既存schema/移行履歴を保全するAPI・データ変更と正負例・復旧試験 |
+| DEV10 | [独立セキュリティ・権限検収](../../.cursor/agents/rock-security-release-reviewer.md) | 本人性、scope、秘密、署名、料金・Wallet境界、悪用と失効の独立検収 | 同一候補hash・脅威/負例・再現条件・重大度付き合否 |
+| DEV11 | [独立QA・回帰・実利用受入](../../.cursor/agents/rock-qa-engineer.md) | 正常・異常・復旧・回帰・端末/UIの受入設計と独立検収 | candidate/hash・手順・期待値・実測・未実行・不具合付き試験報告 |
+| DEV12 | [Git・CI・統合・リリース](../../.cursor/agents/rock-release-engineer.md) | source保全、共用path統合、migration採番、固定候補、CI、配布・切戻し準備 | source/artifact manifest、検収・CI、保存/統合/配備readbackと復旧記録 |
+| DEV13 | [SRE・監視・障害・サポート連携](../../.cursor/agents/rock-site-reliability-engineer.md) | 観測、期限管理、障害切分け、復旧runbook、支援から開発への不具合移管 | 影響・原因・停止/復旧・観測指標・連絡先・再発防止付き運用票 |
+| DEV14 | [SIM・eSIM・利用開始・回線](../../.cursor/agents/rock-esim-engineer.md) | 回線/profile/本人利用権/client状態、端末鍵、親子接続、失効・再開 | issuer/サービス利用開始・取消・失効・復旧のadapterと環境別証拠 |
+| DEV15 | [使用量・料金・請求・作者精算](../../.cursor/agents/rock-billing-engineer.md) | 単価版、見積、予算予約、usage、Invoice、入金/返金、作者精算の実装 | 一意予約・照合・台帳/receipt・失敗復旧の料金実装と試験 |
+| DEV16 | [Wallet・台帳・真正収益照合](../../.cursor/agents/rock-wallet-engineer.md) | 予約・台帳・照合・取消・二重使用防止・外部Wallet adapter | owner別台帳、Provider receipt照合、互換・失効・復旧の実装証拠 |
+| DEV17 | [Game・World・作者SDK](../../.cursor/agents/rock-game-sdk-engineer.md) | 非金融Game/World、作者API/SDK、sandbox、動くsample、導入診断 | 作者が導入から実行・成果・復旧まで試せるSDKと測定証拠 |
+| DEV18 | [Mini・光学・回路・空間入出力](../../.cursor/agents/rock-mini-hardware-engineer.md) | 光学成立、手/声/センサー、回路・PCB、電源・熱・独立停止、機種adapter | 設計計算・反証・部品/CAD/BOM・bench・同一個体の安全/機能証拠 |
+| DEV19 | [Pro・PC構成・実機・製造出荷連携](../../.cursor/agents/rock-pro-hardware-engineer.md) | 正確なSKU/BOM、非破壊データ移行、GPU/driver、熱・電力、共通runtime適合 | 同一実機の性能・更新復旧・QA、供給/販売gateの技術証拠 |
+| DEV20 | [Material Invention・科学検証・CAD/BIM](../../.cursor/agents/rock-material-invention-engineer.md) | 物質/空間の仮説、再計算、CAD/BIM原本照合、Patent AIへ渡すprovenance | 入力権利・出典・再計算・不確実性・反証・成果来歴付きprivate packet |
+
+DEV00は開発統括、REV00は営業・事業進行の窓口。CEOが製品の目的・優先順位・予算・最終判断を持ち、DEV01が実装可能な要件と受入条件へ落とす。DEV03が共通契約、専門実装者がexact pathの変更、DEV10/11が独立検収、DEV12が保存・統合・配布、DEV13が運用と顧客障害の引継ぎを担当する。
+
+### 担当分野と現在の作業入口
+
+| 担当ラベル | 主担当role | 履歴unit数（現行件数ではない） | 現行入口 |
+| --- | --- | --- | --- |
+| git | DEV12 | 8 | [packet](10-git-ci-operations.md) |
+| os-pixel | DEV04 | 24 | [packet](07-android-device-local-ai.md) |
+| smith | DEV05 | 7 | [packet](02-sky-mcp.md) |
+| eve | DEV06 | 17 | [packet](01-product-ux.md) |
+| mini | DEV18 | 9 | [packet](11-material-invention-avocado-mini.md) |
+| pro | DEV19 | 4 | [packet](07-android-device-local-ai.md) |
+| esim | DEV14 | 8 | [packet](03-wallet-billing-providers.md) |
+| billing | DEV15 | 8 | [packet](03-wallet-billing-providers.md) |
+| wallet | DEV16 | 3 | [packet](03-wallet-billing-providers.md) |
+| game | DEV17 | 2 | [packet](08-game-market-fund.md) |
+| web-ops | DEV08 | 5 | [packet](05-web-pwa-sites.md) |
+
+上表は責任を見えるようにした対応表。現在のtask ID、編集範囲、進捗と実機/Provider/Sites leaseを照合し、今回の役割追加で移管・再起動・完了にしない。AI/LLMはeve/os-pixel、Material Inventionはminiの既存unitを使い、別の重複laneを作らない。Web実装DEV08と運用DEV13、料金system実装DEV15と業務入金照合REV16、試用成果REV14とQA DEV11を区別する。
+
+### 共通writerと独立検収
+
+共有pathのwriterは[現在のtask](../../codex/tasks/00-index.md)と明示された引継ぎで決める。DEV12はこの既存Git系列の役割名であり、権限移管の証拠にはならない。REV00は営業pipeline、DEV00は開発queueの変更要求を集約し、project/status/README/共用schema/migration/CIへの更新は現在のglobal writerまたは当該変更の引継ぎ済みrootへ渡す。専門担当は専用成果物・所有pathだけを編集する。
+
+合計activeは営業・開発・統括・Git・検収・既存実機担当を含め最大3。新しいroleを一斉に起動せず、現在地に必要な一unitだけを割り当てる。DEV10/11は実装者と別担当で同じcandidate/hashと固定合格条件を照合する。実装者がrole名を変更して自分を最終検収することは独立性に数えない。
+
+### 営業から開発・運用へ
+
+REV09の顧客仕事/提供範囲 → DEV01/00の要件・優先順位 → DEV02/03の設計 → 該当専門実装 → DEV10/11の検収 → DEV12の保存・統合・配布 → DEV13の運用 → REV13/14/15の導入・成果・継続へつなぐ。提供できる範囲、手作業、未実装、外部待ち、未合格gateはREV09へ返し、販売上の約束を更新する。
+
+各引継ぎにはcase/unit ID、目的、candidate/hash、exact write set、現在owner、権限/予算、局所試験、独立検収、残件、次行動、期限を付ける。顧客に影響する障害はREV14/15からDEV13へ、再現できる不具合は該当laneへ戻す。社内準備の既承認範囲は進め、価格・契約・支出・公開・実機作用の判断は既存OWNER条件に従う。
+
+### 役割表と実運営の完成条件
+
+現在の結論は**責任を定義した段階であり、実運営は未完成**。役割台帳は会社全体の無条件な完全性や製品完成を証明しない。現在の既知範囲として営業18役・開発21役・11lane/95unitの対応を検査する。
+
+| まだ実運営で必要なもの | 責任者・接続先 |
+| --- | --- |
+| 実案件、原本とCRM/private保存先、送信accountと許可 | CEO、REV00/06/07 |
+| 実行担当、予算、候補と編集権、資源lease、独立review枠 | CEO、DEV00/12、既存lane |
+| 監視・通知・当番、顧客窓口、復旧訓練 | DEV13、REV14/15 |
+| 会計・税務、金融Provider、現金予算と資金調達 | CEO、REV16/17、実在する専門家。投資家交渉の専任担当は未設定 |
+| 採用・人事・労務、実作業者と採用予算 | CEO、DEV00/REV00/17、必要な専門家。専任担当は未設定 |
+| 法務・権利・資格判断と署名 | CEO、REV17、外部専門家 |
+| 部品調達・製造・物流・安全検査の実契約と受入 | CEO、REV12/17、DEV18/19/20、OEM/組立/物流/検査機関 |
+
+稼働の合格は実案件一件を通し、誰が何を受け取り、成果・検収・提供/復旧・顧客支援・入金照合までどう引き継いだかの証拠で判定する。設定file、bootstrap、host試験、実機、Provider、本番、一般公開の結果を交換しない。次はREV00/DEV00が既存の実成果物と進捗を照合し、必要な担当へ一件ずつ渡す。
+
+
+## Goalからの役割割当・有限実行（2026-11-04 / G04・AMC02・AMC06）
+
+主担当ROCK。本人のGoal逆算要求を[既存AMC Goalのローカル実行](../amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)へ追加。営業18役・開発21役は担当候補、CEO/OWNERは計画・上限・外部行動・最終受入を保持。JOINTのmodel/provider結果は未信頼、EXTERNALの契約や実営業は別の許可条件とする。合格条件は逆算coverage/依存/独立検収/同条件rework/上限/停止不明の再送禁止/証拠付き最終受入。`node --test tests/amc-goal-cycle.test.mjs` と `npm run verify`。branch候補・main・公開を分け、39役を既存32部隊や95unitの完了件数へ加算しない。
+
 <a id="four-lane-priority-20261028"></a>
 ## 全体窓口の集約と4系統の開発優先（本人明示・G04）
 

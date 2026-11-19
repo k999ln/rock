@@ -31,7 +31,8 @@
 | --- | --- | --- | --- |
 | 20 | [20-mii-architecture-research.md](20-mii-architecture-research.md) | Tower/Hub/表示層の部品候補・工場・BOM の調査（価格は決めない） | |
 | 21 | [21-mii-motion-parallax-prototype.md](21-mii-motion-parallax-prototype.md) | Gen1 試作: 1 プロジェクター＋1 壁＋頭追跡 | |
-| 22 | [22-mii-hardware-profile.md](22-mii-hardware-profile.md) | targets/avocado-mini → targets/mii、3 筐体の profile 記述 | |
+| 22 | [22-mii-hardware-profile.md](22-mii-hardware-profile.md) | targets/avocado-mini → targets/mii、4 筐体（column/puck/slot/**ceiling**）の profile 記述 | |
+| 23 | [23-mii-v2-into-design.md](23-mii-v2-into-design.md) | V2 研究と第 1 形態（v2-study 20・37〜45）を設計書 V1 に反映。**本人承認後** | |
 
 ## 30 番台: RockstarOS 共通層
 
@@ -40,6 +41,11 @@
 | 30 | [30-account-continuity.md](30-account-continuity.md) | 別端末で同じ Job / 会話を続ける契約とテスト | |
 | 31 | [31-hardware-profiles.md](31-hardware-profiles.md) | phone / pro / pixel-native profile と Buildroot・Android 系の対応表 | |
 | 32 | [32-service-template-first-three.md](32-service-template-first-three.md) | サービス書式で最初の 3 枚（ヨガ・工場保守・請求書） | |
+| 33 | [33-sky-recipe-planner-wiring.md](33-sky-recipe-planner-wiring.md) | Sky recipe planner を Eve の依頼へつなぐ（正規表現の振り分けは受け皿に） | |
+| 34 | [34-company-order-first-loop.md](34-company-order-first-loop.md) | 会社受注を 1 件、保存・画面・分配の計算まで通す | |
+| 35 | [35-gig-desk-screen.md](35-gig-desk-screen.md) | 参加者の画面: 受取額、確認の問い、答えの集計と保存 | |
+| 36 | [36-mr-gig-upstream-sync.md](36-mr-gig-upstream-sync.md) | Mr. の gig を上流の最新へ同期（対象 repo は k999ln/Mr.） | |
+| 37 | [37-lane-runner-bridge.md](37-lane-runner-bridge.md) | apply lane の判断を Sky の gig-desk につなぐ | |
 
 ## 40 番台: 統合
 
@@ -56,3 +62,5 @@
 | 70 | [70-noah-route-unification.md](70-noah-route-unification.md) | 旧画面とNoahの統合・404修正 | ✅ 公開版149・Eveヘッダー確認済み・[PR #320](https://github.com/k999ln/rock/pull/320) |
 
 | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・本番通し/別Mac未確認 |
+
+| 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | 検証済み・[PR #321](https://github.com/k999ln/rock/pull/321) |

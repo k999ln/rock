@@ -79,7 +79,6 @@ const hierarchy = parentIds.size
   ? `（親${parentIds.size}・子${childCount}・独立${leafCount - childCount}。実行単位は親を除く${leafCount}件）`
   : '';
 const overview = `${status.tasks.length}登録task${hierarchy}中${done} done・${inProgress} in progress・${planned} planned${blocked ? `・${blocked} blocked` : ''}`;
-const overviewEnglish = `${status.tasks.length} task records${parentIds.size ? ` (${parentIds.size} parents, ${childCount} children, ${leafCount - childCount} standalone; ${leafCount} execution units excluding parents)` : ''}: ${done} done, ${inProgress} in progress, ${planned} planned${blocked ? `, ${blocked} blocked` : ''}`;
 const block = [
   '<!-- project-status:start -->',
   `最終更新: ${status.updatedAt} / ${status.milestone} / 完了記録 ${done}/${status.tasks.length}件${hierarchy}`,
@@ -114,7 +113,7 @@ const targets = [
         'project-overview',
         [
           '<!-- project-overview:start -->',
-          `Updated: ${status.updatedAt} / ${overviewEnglish}`,
+          `更新日: ${status.updatedAt}。現在の受入範囲と次の作業は[進捗](project.md)、全タスクは[全タスクの進捗](project.md#全taskの作業進捗)を参照してください。`,
           '<!-- project-overview:end -->',
         ].join('\n'),
         'README.md',
@@ -122,7 +121,7 @@ const targets = [
     },
   },
   {
-    name: 'archive/root-snapshot-20261029/project.md',
+    name: 'project.md',
     transform: (source) =>
       replaceMarkedBlock(source, 'project-status', block, 'project.md'),
   },
