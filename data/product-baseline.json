@@ -2833,7 +2833,7 @@
     "mainProduct": "mii_with_noah_as_minimum_starting_product",
     "simRole": "os_installation_system",
     "seller": "avokado",
-    "firstCustomers": "individuals_starting_with_solo_businesses_that_deliver_writing",
+    "firstCustomers": "owner_mac_pilot_first_commercial_audience_unconfirmed",
     "billing": {
       "account": "free",
       "termPass": "prepaid_valid_for_less_than_6_months_auto_renew_on_by_default_shown_at_purchase_and_notified_before_renewal_no_mid_term_refund",
@@ -2886,7 +2886,8 @@
     "cloudPlanAuthority": "docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン",
     "cloudPlanDesignStatus": "monthly_140_requested_quota_and_overage_terms_pending",
     "productDirectionAuthority": "miiFirstNoahMinimumDecision",
-    "productDirectionDecidedAt": "2026-11-20"
+    "productDirectionDecidedAt": "2026-11-20",
+    "historicalFirstCustomersHypothesis": "individuals_starting_with_solo_businesses_that_deliver_writing"
   },
   "skyCampusMainReconciliation": {
     "decidedAt": "2026-10-14",

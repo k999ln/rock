@@ -162,7 +162,7 @@ npm run verify
 | 製品全体・Tool詳細 | [design portal](docs/rockstaros-design-portal.md) / [Tool詳細](docs/sky-tools-complete-design.md) |
 
 <!-- project-overview:start -->
-更新日: 2026-11-19。現在の受入範囲と次の作業は[進捗](project.md)、全タスクは[全タスクの進捗](project.md#全taskの作業進捗)を参照してください。
+更新日: 2026-11-20。現在の受入範囲と次の作業は[進捗](project.md)、全タスクは[全タスクの進捗](project.md#全taskの作業進捗)を参照してください。
 <!-- project-overview:end -->
 
 コードの `sky`・`zema`等は互換性のため保持する識別子です。公開画面の製品名はEveとNoahに揃えます。画像・GIFはコンセプトであり、実機性能や製造承認の証拠ではありません。
