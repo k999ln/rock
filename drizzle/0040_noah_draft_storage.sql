@@ -15,10 +15,6 @@ CREATE TABLE noah_draft_objects (
 --> statement-breakpoint
 CREATE INDEX noah_draft_objects_owner_state ON noah_draft_objects(owner_id,state,orphaned_at);
 --> statement-breakpoint
-INSERT INTO noah_draft_objects(object_key,owner_id,draft_id,bytes,sha256,state,write_expires_at,created_at,updated_at)
-SELECT source_key,owner_id,id,source_bytes,source_sha256,'ready',0,created_at,updated_at
-FROM noah_agent_drafts WHERE source_key IS NOT NULL;
---> statement-breakpoint
 CREATE TABLE noah_draft_storage_scans (
   owner_id TEXT PRIMARY KEY NOT NULL, cursor TEXT, last_scan_at INTEGER, revision INTEGER NOT NULL DEFAULT 0
 );

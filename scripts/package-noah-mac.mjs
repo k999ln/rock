@@ -6,8 +6,9 @@ import {
   writeFile,
   cp,
   readdir,
-  lstat,
+  open,
 } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
@@ -69,13 +70,18 @@ const files = {};
 async function walk(dir) {
   for (const name of (await readdir(dir)).sort()) {
     const p = path.join(dir, name),
-      s = await lstat(p);
-    if (s.isSymbolicLink()) throw new Error('No symlinks in distribution');
-    if (s.isDirectory()) await walk(p);
-    else
-      files[path.relative(stage, p)] = createHash('sha256')
-        .update(await readFile(p))
-        .digest('hex');
+      handle = await open(p, constants.O_RDONLY | constants.O_NOFOLLOW);
+    try {
+      const s = await handle.stat();
+      if (s.isDirectory()) await walk(p);
+      else if (s.isFile())
+        files[path.relative(stage, p)] = createHash('sha256')
+          .update(await handle.readFile())
+          .digest('hex');
+      else throw new Error('Regular distribution files required');
+    } finally {
+      await handle.close();
+    }
   }
 }
 await walk(stage);

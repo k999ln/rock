@@ -14,11 +14,14 @@ CREATE TABLE IF NOT EXISTS noah_agent_invites (
   revoked_at INTEGER,
   created_at INTEGER NOT NULL
 );
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_invites_owner_created ON noah_agent_invites(owner_id,created_at,id);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS noah_agent_invite_claims (
   invite_id TEXT NOT NULL REFERENCES noah_agent_invites(id),
   recipient_id TEXT NOT NULL,
   claimed_at INTEGER NOT NULL,
   PRIMARY KEY(invite_id,recipient_id)
 );
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_invite_claims_recipient ON noah_agent_invite_claims(recipient_id,invite_id);

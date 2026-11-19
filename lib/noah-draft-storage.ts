@@ -17,9 +17,12 @@ const unreferenced = `NOT EXISTS(SELECT 1 FROM noah_agent_drafts d WHERE d.sourc
   AND NOT EXISTS(SELECT 1 FROM noah_agent_uploads a WHERE a.source_key=o.object_key OR a.original_key=o.object_key)`;
 export function createNoahDraftStorage(db: Db, bucket?: DraftBucket, now = () => Date.now()) {
   const prefix = async (owner: string) => `noah/drafts/${await noahSha256(new TextEncoder().encode(owner))}/`;
+  const reconcileReferences = (owner: string) => db.prepare(`INSERT OR IGNORE INTO noah_draft_objects(object_key,owner_id,draft_id,bytes,sha256,state,write_expires_at,created_at,updated_at)
+    SELECT source_key,owner_id,id,source_bytes,source_sha256,'ready',0,created_at,updated_at FROM noah_agent_drafts WHERE owner_id=? AND source_key IS NOT NULL AND purged_at IS NULL RETURNING object_key`).bind(owner).all();
   const object = (owner: string, key: string) => db.prepare('SELECT * FROM noah_draft_objects WHERE owner_id=? AND object_key=?').bind(owner, key).first<ObjectRow>();
   return {
     async summary(owner: string, before?: string | null): Promise<NoahDraftStorage> {
+      await reconcileReferences(owner);
       let after: {at:number;id:string} | null=null;
       if (before) {
         try { if (before.length>200) throw new Error(); after=JSON.parse(before); if (!after || !Number.isSafeInteger(after.at) || after.at<0) throw new Error(); noahUploadId(after.id); } catch { throw new NoahAgentError('復元一覧の続き位置を確認してください。'); }
@@ -39,6 +42,7 @@ export function createNoahDraftStorage(db: Db, bucket?: DraftBucket, now = () =>
     },
     async write(owner: string, draftId: string, command: string, sha256: string, bytes: Uint8Array) {
       if (!bucket) throw new NoahAgentError('ファイル保存先が未設定です。', 503);
+      await reconcileReferences(owner);
       const key = `${await prefix(owner)}${draftId}/${command}/${sha256}`, time = now();
       await db.prepare(`INSERT OR IGNORE INTO noah_draft_objects(object_key,owner_id,draft_id,bytes,sha256,state,write_expires_at,created_at,updated_at)
         SELECT ?,?,?,?,?,'writing',?,?,? WHERE ${draftInputBytesSql}+${draftObjectBytesSql}+?<=?

@@ -67,6 +67,7 @@ export function createDiscoveryStore({
   fetcher?: typeof fetch;
   publicTags?: (id:string)=>string[];
 }) {
+  const ensureSources = () => db.batch(discoverySources.map(({ id }) => db.prepare('INSERT OR IGNORE INTO noah_discovery_sources(id) VALUES(?)').bind(id)));
   const sourceRow = (id: DiscoveryProvider) =>
     db
       .prepare('SELECT * FROM noah_discovery_sources WHERE id=?')
@@ -77,6 +78,7 @@ export function createDiscoveryStore({
     args: [id, lease, now(), now()],
   });
   async function cursorKey() {
+    await ensureSources();
     let row = await sourceRow('github');
     if (!row) throw Error('discovery migration required');
     if (!row.cursor_key) {
@@ -161,6 +163,7 @@ export function createDiscoveryStore({
     ]);
   }
   async function sync() {
+    await ensureSources();
     const outcomes: Record<string, string> = {};
     for (const { id } of discoverySources) {
       const lease = crypto.randomUUID(),
@@ -256,6 +259,7 @@ export function createDiscoveryStore({
       : [];
   }
   async function status() {
+    await ensureSources();
     const rows = await db
       .prepare(
         'SELECT id,lease_until,next_run_at,last_attempt_at,last_success_at,error_code,observed,withdrawn,request_count FROM noah_discovery_sources ORDER BY id',

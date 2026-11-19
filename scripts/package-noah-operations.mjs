@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFile, lstat, mkdir, writeFile, mkdtemp, rm } from 'node:fs/promises';
+import { readFile, open, mkdir, writeFile, mkdtemp, rm } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -19,8 +20,11 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const json = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
 async function add(source, destination) {
   const path = resolve(root, source);
-  if (!(await lstat(path)).isFile()) throw new Error(`Regular source required: ${source}`);
-  files.set(destination, await readFile(path));
+  const handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try {
+    if (!(await handle.stat()).isFile()) throw new Error(`Regular source required: ${source}`);
+    files.set(destination, await handle.readFile());
+  } finally { await handle.close(); }
 }
 // Only tracked source in explicit directories. No runtime state, env, tests or dependencies.
 const tracked = execFileSync('git', ['ls-files', '-z', '--', 'toolkits/mr', 'vendor/mr', 'toolkits/fashion-brand-ops'], { cwd: root }).toString().split('\0').filter(Boolean);

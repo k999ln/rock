@@ -14,7 +14,18 @@ void test('already published avoado migration bytes cannot be replaced by the di
   assert.equal(proof.version, 141);
   const sql = Object.keys(proof.sha256).filter(path => path.endsWith('.sql'));
   assert.equal(sql.length, 26);
-  for (const [path, expected] of Object.entries(proof.sha256)) assert.equal(hash(path), expected, path);
+  for (const [path, expected] of Object.entries(proof.sha256)) {
+    if (path.endsWith('/meta/_journal.json')) {
+      const journal = read(path);
+      // Preserve the exact published prefix; later reviewed migrations append to it.
+      const published = { ...journal, entries: journal.entries.slice(0, sql.length / 2) };
+      assert.equal(createHash('sha256').update(JSON.stringify(published, null, 2) + '\n').digest('hex'), expected, path);
+      for (let i = published.entries.length; i < journal.entries.length; i++) {
+        assert.equal(journal.entries[i].idx, i);
+        assert.ok(journal.entries[i].when > Math.max(...journal.entries.slice(0, i).map(e => e.when)));
+      }
+    } else assert.equal(hash(path), expected, path);
+  }
 });
 
 void test('old main migration history remains recoverable but separate from the live migration source', () => {

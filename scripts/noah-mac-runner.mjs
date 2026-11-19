@@ -3,12 +3,12 @@ import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   mkdir,
-  readFile,
   readdir,
   writeFile,
   rename,
-  stat,
+  open,
 } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { randomUUID, createHash } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { createInstallationManager } from './noah-managed-installations.mjs';
@@ -144,13 +144,23 @@ export async function saveRunnerConfig(file, value) {
   await rename(temporary, file);
 }
 export async function readRunnerConfig(file) {
-  const s = await stat(file);
-  if ((s.mode & 0o077) !== 0)
-    throw new Error('認証ファイルの権限を600にしてください。');
-  const value = JSON.parse(await readFile(file, 'utf8'));
-  if (!/^rock_session_[A-Za-z0-9_-]{43}$/.test(value.token))
-    throw new Error('Macの認証をやり直してください。');
-  return value;
+  const handle = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try {
+    const s = await handle.stat();
+    if (
+      !s.isFile() ||
+      s.nlink !== 1 ||
+      s.uid !== process.getuid() ||
+      (s.mode & 0o077) !== 0
+    )
+      throw new Error('本人所有の通常ファイルを権限600で保存してください。');
+    const value = JSON.parse(await handle.readFile('utf8'));
+    if (!/^rock_session_[A-Za-z0-9_-]{43}$/.test(value.token))
+      throw new Error('Macの認証をやり直してください。');
+    return value;
+  } finally {
+    await handle.close();
+  }
 }
 
 export async function pairRunner({

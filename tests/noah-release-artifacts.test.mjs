@@ -9,7 +9,7 @@ async function fixture(fn) { const directory = await mkdtemp(path.join(os.tmpdir
 
 await test('release acquisition uses reviewed version/digest and rejects catalog substitutions', async () => {
   const plan = sourcePlan({ id: 'research-8782e21ebeda898af4b7', kind: 'candidate', sources: [{ type: 'primary', url: 'https://evil.example/a' }] });
-  assert.equal(plan.type, 'artifact'); assert.match(plan.url, /github.com\/aaif-goose\/goose\/releases/); assert.equal(plan.version, '1.59.1');
+  assert.equal(plan.type, 'artifact'); assert.equal(new URL(plan.url).origin, 'https://github.com'); assert.ok(new URL(plan.url).pathname.startsWith('/aaif-goose/goose/releases/')); assert.equal(plan.version, '1.59.1');
   await fixture(async directory => {
     for (const changed of [{ url }, { sha256: '0'.repeat(64) }, { version: 'latest' }, { agentId: 'research-unknown' }]) {
       await assert.rejects(acquireSource({ plan: { ...plan, ...changed }, directory }), /確認済み/);

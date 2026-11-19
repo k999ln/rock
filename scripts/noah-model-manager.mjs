@@ -8,6 +8,7 @@ import {
   unlink,
 } from 'node:fs/promises';
 import { createHash, randomUUID } from 'node:crypto';
+import { constants } from 'node:fs';
 import { NOAH_MODELS, noahModel } from '../lib/noah-model-catalog.mjs';
 import { InstallError } from './noah-source-fetch.mjs';
 import { deriveModelTemplate } from './noah-model-template.mjs';
@@ -47,7 +48,12 @@ export async function createNoahModelManager({ root, fetcher = fetch } = {}) {
     await f.close();
   } catch (e) {
     if (e.code !== 'EEXIST') throw e;
-    const previous = JSON.parse(await readFile(guard, 'utf8'));
+    const lock = await open(guard, constants.O_RDONLY | constants.O_NOFOLLOW);
+    let previous;
+    try {
+      if (!(await lock.stat()).isFile()) throw new InstallError('モデル管理のロックを確認してください。', 503);
+      previous = JSON.parse(await lock.readFile('utf8'));
+    } finally { await lock.close(); }
     if (!Number.isInteger(previous.pid) || previous.pid < 1)
       throw new InstallError('モデル管理の保存領域を確認してください。', 503);
     let alive = true;

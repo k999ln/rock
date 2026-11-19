@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { mkdtemp, rm, readFile, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, readFile, mkdir, writeFile, chmod, symlink, link } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
@@ -134,6 +134,20 @@ void test('origin and response limits prevent credential redirects or unbounded 
   await assert.rejects(
     runnerClient('https://avoado.si', credential).json('https://wrong.example'),
   );
+});
+
+void test('runner credentials reject links and group-readable files', async (t) => {
+  const dir = await folder(t), file = path.join(dir, 'account.json');
+  await saveRunnerConfig(file, { token: credential });
+  await symlink(file, path.join(dir, 'symbolic.json'));
+  await assert.rejects(readRunnerConfig(path.join(dir, 'symbolic.json')));
+  await link(file, path.join(dir, 'hard.json'));
+  await assert.rejects(readRunnerConfig(file), /通常ファイル/);
+  await rm(path.join(dir, 'hard.json'));
+  await chmod(file, 0o640);
+  await assert.rejects(readRunnerConfig(file), /権限600/);
+  await chmod(file, 0o600);
+  assert.equal((await readRunnerConfig(file)).token, credential);
 });
 
 void test('installation validates hashes, handles spaced paths, and needs no repository or SSD', async (t) => {
