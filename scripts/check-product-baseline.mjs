@@ -64,11 +64,27 @@ export function validateBaseline(
       sourceExtensions.retained[0].status === 'retained_source_extension_not_deleted_or_promoted_to_public_acceptance',
     '保持するSource拡張と現行49項目を分け、既存契約・金融保留を維持してください',
   );
+  const productDirection = data.miiFirstNoahMinimumDecision;
+  requireValue(
+    productDirection?.decidedAt === '2026-11-20' &&
+      productDirection?.primaryProduct === 'mii' &&
+      productDirection?.minimumStartingProduct === 'Noah' &&
+      productDirection?.initialTarget === 'owner_mac' &&
+      JSON.stringify(productDirection?.firstAcceptance) ===
+        JSON.stringify(['select_agent', 'connect_owner_mac', 'execute', 'receive_result', 'stop_running_execution']) &&
+      productDirection?.simEsimRole === 'os_installation_system' &&
+      productDirection?.runtimeAcceptanceChanged === false &&
+      productDirection?.pricingChanged === false &&
+      productDirection?.deviceManufacturingApproved === false &&
+      productDirection?.liveIssuanceEnabled === false &&
+      productDirection?.autoFlashAllowed === false,
+    'mii-first direction requires Noah on the owner Mac, result receipt and stopping; product priority does not grant production acceptance',
+  );
   const serviceAccess = data.serviceAccessModel;
   requireValue(
     serviceAccess?.status ===
       'authoritative_product_direction_design_and_local_onboarding_only' &&
-      serviceAccess?.primaryEntry === 'connectivity_and_si_access_bundle' &&
+      serviceAccess?.primaryEntry === productDirection.simEsimRole &&
       serviceAccess?.simRequiredForService === false &&
       serviceAccess?.consumerEsimSales === 'bundle_product_design_live_issuance_disabled' &&
       JSON.stringify(serviceAccess?.distributionChannels) ===
@@ -83,11 +99,11 @@ export function validateBaseline(
       serviceAccess?.productionBillingAccepted === false &&
       serviceAccess?.carrierActivationAccepted === false &&
       serviceAccess?.deviceOsInstallationAccepted === false,
-    'Connectivity-bundled service access, separate account/line/device delivery, and unaccepted production states must remain explicit',
+    'OS-installation service access, separate account/line/device delivery, and unaccepted production states must remain explicit',
   );
   const bundle = data.connectivityServiceBundleDecision;
   requireValue(
-    bundle?.decidedAt === '2026-10-15' &&
+    bundle?.decidedAt === productDirection.decidedAt &&
       bundle?.primaryEntry === serviceAccess.primaryEntry &&
       bundle?.accountIsOwnerAndLedgerRoot === true &&
       bundle?.connectivityAndServiceHaveSeparateStates === true &&
@@ -123,7 +139,7 @@ export function validateBaseline(
       serviceAccess?.carrierAndAiChargesSeparated === true &&
       serviceAccess?.dispatchPolicy ===
         'fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted',
-    'SIM-led service value, offline Cloud continuity, spend approval, and fail-closed paid execution requirements must remain explicit',
+    'Service value, offline Cloud continuity, spend approval, and fail-closed paid execution requirements must remain explicit',
   );
   requireValue(
     data.productIdentity?.displayName === 'RockstarOS' &&
@@ -1598,7 +1614,5 @@ if (
       readFileSync(resolve(root, 'data/product-baseline.json'), 'utf8'),
     ),
   );
-  console.log(
-    '製品ベース: RQ01〜RQ49、siネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
-  );
+  console.log('製品ベース: mii主商品・Noah最小構成・本人Mac受入・SIM/eSIMのOS導入役割、RQ01〜RQ49と保持するSource拡張、共通runtime、本人/予算/保存/復旧・料金/金融/製造/実機の未受入gateを確認（最新進捗は同一sourceの証拠で別途確認）');
 }

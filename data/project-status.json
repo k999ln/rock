@@ -1378,7 +1378,7 @@
   },
   "updatedAt": "2026-11-19",
   "milestone": "Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合",
-  "nextAction": "検証済みコードのGitHub/main状態はPR321を確認する。保存済み独自コードを端末runtime、共有/精算、mediaの順で現行契約と照合し、未受入を実装合格へ置き換えない。",
+  "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -13081,5 +13081,36 @@
       ],
       "next": "Use demo; initialize private workspace; configure own official API and total/per-item budget; accept real sandbox lifecycle before production"
     }
+  },
+  "currentProductDirection": {
+    "decidedAt": "2026-11-20",
+    "decidedBy": "owner",
+    "source": "Current chat explicit answers; referenced Noah chat",
+    "referenceThread": "codex://threads/01a19abe-44cd-7022-a582-02029247e935",
+    "primaryProduct": "mii",
+    "minimumStartingProduct": "Noah",
+    "initialTarget": "owner_mac",
+    "firstAcceptance": [
+      "select_agent",
+      "connect_owner_mac",
+      "execute",
+      "receive_result",
+      "stop_running_execution"
+    ],
+    "nextMiiExperience": "speak_to_Eve_and_progress_work_by_seeing_and_touching_spatial_display",
+    "simEsimRole": "os_installation_system",
+    "noahScope": "collect_connect_publish; start with supported agents and owner Node/Python packages; keep broader agent support as remaining work",
+    "osRole": "shared_runtime_and_permission_identity_budget_storage_recovery_contracts",
+    "eveRole": "request_and_work_interface_then_voice_spatial_experience_on_mii",
+    "supersedes": [
+      "SIM/eSIM bundle as primary product",
+      "Noah as ultimate primary product",
+      "OS-first or Eve-automatic-completion as first product acceptance"
+    ],
+    "runtimeAcceptanceChanged": false,
+    "pricingChanged": false,
+    "deviceManufacturingApproved": false,
+    "liveIssuanceEnabled": false,
+    "autoFlashAllowed": false
   }
 }

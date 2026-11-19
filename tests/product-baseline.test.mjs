@@ -7,26 +7,46 @@ import { root, validateBaseline } from '../scripts/check-product-baseline.mjs';
 const source = JSON.parse(
   readFileSync(resolve(root, 'data/product-baseline.json'), 'utf8'),
 );
+void test('current product direction cannot revert to SIM-first or promote a prototype to acceptance', () => {
+  for (const [field, value] of [
+    ['primaryProduct', 'connectivity_bundle'],
+    ['minimumStartingProduct', 'native_os'],
+    ['initialTarget', 'all_devices'],
+    ['runtimeAcceptanceChanged', true],
+    ['deviceManufacturingApproved', true],
+    ['autoFlashAllowed', true],
+  ]) {
+    const invalid = structuredClone(source);
+    invalid.miiFirstNoahMinimumDecision[field] = value;
+    assert.throws(() => validateBaseline(invalid), /mii-first direction/);
+  }
+  const incomplete = structuredClone(source);
+  incomplete.miiFirstNoahMinimumDecision.firstAcceptance = ['select_agent', 'connect_owner_mac'];
+  assert.throws(() => validateBaseline(incomplete), /mii-first direction/);
+  const staleEntry = structuredClone(source);
+  staleEntry.serviceAccessModel.primaryEntry = 'connectivity_and_si_access_bundle';
+  assert.throws(() => validateBaseline(staleEntry), /OS-installation service access/);
+});
 void test('product baseline rejects lost requirements, stale-as-live claims and mismatched source evidence', () => {
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const osOnSim = structuredClone(source);
   osOnSim.serviceAccessModel.osBinaryStoredOnSim = true;
-  assert.throws(() => validateBaseline(osOnSim), /Connectivity-bundled service access/);
+  assert.throws(() => validateBaseline(osOnSim), /OS-installation service access/);
   const esimOnly = structuredClone(source);
   esimOnly.serviceAccessModel.distributionChannels = ['rockstar_direct'];
-  assert.throws(() => validateBaseline(esimOnly), /Connectivity-bundled service access/);
+  assert.throws(() => validateBaseline(esimOnly), /OS-installation service access/);
   const offlineCloudLost = structuredClone(source);
   offlineCloudLost.serviceAccessModel.deviceMinimumExperience =
     offlineCloudLost.serviceAccessModel.deviceMinimumExperience.filter(
       (item) => !item.startsWith('accepted_cloud_tasks_continue_while_device_offline'),
     );
-  assert.throws(() => validateBaseline(offlineCloudLost), /SIM-led service value/);
+  assert.throws(() => validateBaseline(offlineCloudLost), /Service value/);
   const billingGateOpened = structuredClone(source);
   billingGateOpened.serviceAccessModel.productionBillingAccepted = true;
-  assert.throws(() => validateBaseline(billingGateOpened), /Connectivity-bundled service access/);
+  assert.throws(() => validateBaseline(billingGateOpened), /OS-installation service access/);
   const simRequired = structuredClone(source);
   simRequired.serviceAccessModel.simRequiredForService = true;
-  assert.throws(() => validateBaseline(simRequired), /Connectivity-bundled service access/);
+  assert.throws(() => validateBaseline(simRequired), /OS-installation service access/);
   for (const [key, value] of [
     ['autoFlashAllowed', true],
     ['liveCloudDispatchEnabled', true],

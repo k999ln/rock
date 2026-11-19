@@ -4,6 +4,8 @@
 
 ## 1. 一言で
 
+**主商品はmii、最小構成の出発点はNoah。** まず本人Macで対応Agentを選び、接続・実行・成果受領・停止まで完成させ、その後miiで声と空間表示を使う体験へつなぐ。Eveは依頼窓口、RockstarOSは共通基盤、SIM/eSIMはOS導入の仕組み。[最新方針](../product-baseline.md)。
+
 > **一つの account、一つの OS（RockstarOS）、どのハードでも続きから動く。**
 > 話す相手は **Eve**。Eve が目的を決め、**Noa** が道具とAgentをつないで形にし、それを **mii** で見て触る。
 
@@ -18,7 +20,7 @@ flowchart TB
   end
   subgraph HW[ハード（どれでも）]
     M[mii<br/>部屋・建築に埋め込む<br/>4 Tower + Hub + 表示層]
-    S[スマホ<br/>eSIM で RockstarOS が入る]
+    S[スマホ<br/>対応client・OS導入経路]
     PRO[Pro<br/>AI専用PC（今回は範囲外）]
     X[将来: 車・工場・ロケット等<br/>hardware profile を足すだけ]
   end
@@ -28,7 +30,7 @@ flowchart TB
     REC[recovery / sync]
     HP[hardware profile<br/>mii / phone / pro / ...]
   end
-  subgraph SV[サービス層（ユーザーには Eve だけ見える）]
+  subgraph SV[サービス層（公開入口は Noah と Eve）]
     EVE[Eve 会話→Goal]
     NOA[Noa 道具・Agentをつなぐ]
     AMC[AMC 工程分解・担当・合格条件]
@@ -57,10 +59,10 @@ flowchart TB
 | **mii** | 部屋・建築に埋め込む物理端末。RockstarOS 搭載 | **扱う**（01-mii.md） |
 | **RockstarOS** | 一つの実行基盤。全ハード共通 | **扱う**（02-rockstaros.md） |
 | **Eve** | 話しかける相手。依頼→仕事→成果の窓口 | **扱う**（04-eve-noa-amc-sky.md） |
-| **Sky** | Agent・Tool・情報を見つけてつなぐ場所 | **扱う**（04） |
+| **Noah** | Agentを集める・つなげる・載せる最小構成 | **扱う**（04） |
 | Pro | AI専用PC | 範囲外（既存docsのまま） |
 
-配布できるものは **eSIM**（03-esim.md）。mii を持っていない人は eSIM で RockstarOS に入る。
+SIM/eSIMは **OS導入の仕組み**（03-esim.md）。最初のNoahは本人Macで受け入れ、miiやSIMの導入を前提にしない。
 
 ## 4. 読み順
 

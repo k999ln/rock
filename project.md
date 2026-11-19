@@ -2,6 +2,10 @@
 
 更新日: 2026-11-20。製品要件は[product baseline](docs/product-baseline.md)、現在の名称は[名称正本](docs/structure/06-naming.md)。
 
+## 現行の製品優先順位
+
+主商品はmii、最小構成から始めるのがNoah。まず本人MacのAgent選択・接続・実行・成果受領・停止を受け入れる。次にmiiで声からEveへ依頼し、空間表示を見たり触ったりして仕事を進める。SIM/eSIMはOS導入時の仕組み。方針とコード/実機の合格は別で、詳細は[製品正本](docs/product-baseline.md)。
+
 ## 現在の統合ソース
 
 G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保存、main統合まで実施する。READMEは現在の製品説明・コード・利用方法・未完了だけを載せ、日付ごとの受領票はCHANGELOGへ分離する。
@@ -438,5 +442,5 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 検証済みコードのGitHub/main状態はPR321を確認する。保存済み独自コードを端末runtime、共有/精算、mediaの順で現行契約と照合し、未受入を実装合格へ置き換えない。
+次の作業: Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。
 <!-- project-status:end -->

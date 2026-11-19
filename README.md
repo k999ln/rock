@@ -1,6 +1,6 @@
-# avokado / RockstarOS
+# avokado / mii / Noah
 
-avokadoは、会話で仕事を頼む **Eve**、情報・Agent・Toolを見つける **Noah**、それらを支える共通実行基盤 **RockstarOS** を開発しています。miiは空間で使う端末、Proはsiモデル・Agent・制作処理を動かす専用PCの開発計画です。
+avokadoの主商品は、声でEveへ依頼し、空間の表示を見たり触ったりして仕事を進める **mii** です。最小構成から始める商品が **Noah**。まず自分のMacでAgentを選び、接続・実行・成果受領・停止まで使える状態を完成させます。**RockstarOS** はこれらを支える共通実行基盤、**Eve** は依頼と仕事の窓口です。
 
 [Noahを開く](https://avoado.si/noah) · [Eveを開く](https://avoado.si/os/eve) · [現在の進捗](project.md) · [設計の入口](docs/structure/00-overview.md)
 
@@ -10,7 +10,7 @@ avokadoは、会話で仕事を頼む **Eve**、情報・Agent・Toolを見つ�
 
 | 製品 | 役割 | 入口・現在の範囲 |
 | --- | --- | --- |
-| Noah | ニュース・投稿・Agent・コミュニティーの発見、検索、追加・接続の案内 | [avoado.si/noah](https://avoado.si/noah)。公開カタログとMacの実行先を区別 |
+| Noah | miiへ進む最小構成。Agentを集める・つなげる・載せる | [avoado.si/noah](https://avoado.si/noah)。公開カタログとMacの実行先を区別 |
 | Eve | 依頼、担当設定、仕事、成果、停止、使用量の確認 | [avoado.si/os/eve](https://avoado.si/os/eve)。実行には本人確認と対象Toolの接続・権限が必要 |
 | RockstarOS 1.0 | 本人性、権限、予算、仕事の状態、保存・復旧を共有するruntime | Developer Preview。Web、Linux/QEMU、Android/機種別OSを別々に受入 |
 | mii | 声・手・表示・センサーを共通の仕事へつなぐ空間端末 | [avocadomini.si](https://avocadomini.si)。設計・ソフト試作段階 |
@@ -105,7 +105,7 @@ APK、QEMU、fixture、CIの成功を物理OSや本番金融の合格へ置き�
 
 ### SIM / eSIM・使用料金
 
-SIM/eSIMは通信とRockstarOSサービス利用を結ぶ導入経路です。OS binaryをSIMへ格納しません。回線、サービス利用権、本人確認、OS/clientの導入状態を別々に管理します。native OSは正確な機種と署名・復旧条件が通った場合に案内し、それ以外は対応clientやブラウザを使います。
+SIM/eSIMはOSを導入する際に使う仕組みです。主商品はmii、最初に完成させるのはMac上のNoahです。回線とサービス利用権を扱う既存契約は別々に確認します。OS binaryをSIMへ格納しません。回線、サービス利用権、本人確認、OS/clientの導入状態を別々に管理します。native OSは正確な機種と署名・復旧条件が通った場合に案内し、それ以外は対応clientやブラウザを使います。
 
 Cloud agentは事前単価・見積り、上限承認、実行中の費用・予約、項目別usageを示し、許可済み予算を超えて実行しません。商品料金・通信料・si使用料・外部実費・BYOKを混同しません。実回線発行・本番決済の受入は各providerの接続と個別条件が必要です。
 
@@ -115,7 +115,7 @@ Cloud agentは事前単価・見積り、上限承認、実行中の費用・予
 
 <img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="建築空間になじむmiiのコンセプト" width="100%" />
 
-声や手の動きからEveへ依頼し、連絡、創作、遊び、許可した機器の操作を共通の仕事として扱う端末です。表示・入力・センサー・演算の方式を設計と試作で確かめています。
+声でEveに依頼し、空間の表示を見たり触ったりして仕事を進める主商品です。連絡、創作、遊び、許可した機器の操作を共通の仕事として扱います。表示・入力・センサー・演算の方式を設計と試作で確かめています。
 
 R5を現行設計として、[R5設計](docs/avocado-mini-r5/README.md)と[現行構造](docs/structure/01-mii.md)を保持し、[V2・天井型の設計研究](docs/mii/design/v2-study/README.md)を比較候補として管理します。V2研究の追加はR5の要件変更や実機合格を意味しません。方式・製品化案は本人の決定と同一実機の受入を経て採用します。
 
