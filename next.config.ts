@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { NOAH_REDIRECTS } from './services/sky-web/noah-page-routes.mjs';
 import webSecurityPolicy from './data/web-security-policy.json' with { type: 'json' };
 
 export const WEB_SECURITY_RESPONSE_HEADERS = Object.entries(
@@ -6,6 +7,9 @@ export const WEB_SECURITY_RESPONSE_HEADERS = Object.entries(
 ).map(([key, value]) => ({ key, value }));
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return NOAH_REDIRECTS.map(([source, destination]) => ({ source, destination, permanent: true, has: [{ type: 'host' as const, value: '(avoado\\.si|localhost|127\\.0\\.0\\.1|\\[::1\\])(:[0-9]+)?' }] }));
+  },
   async headers() {
     return [
       {

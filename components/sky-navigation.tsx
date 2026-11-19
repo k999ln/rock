@@ -2,10 +2,10 @@ import Link from 'next/link';
 import { Cpu, MessageCircle, Store, Plug, CreditCard } from 'lucide-react';
 import styles from './sky-application.module.css';
 const destinations = [
-  { id: 'market', href: '/#sky', label: 'Noahで探す', Icon: Store },
-  { id: 'compute', href: '/sky/compute-grid', label: 'Compute Grid', Icon: Cpu },
-  { id: 'purchases', href: '/sky/purchases', label: '決済・購入履歴', Icon: CreditCard },
-  { id: 'network', href: '/sky/network', label: '接続', Icon: Plug },
+  { id: 'market', href: '/noah/tools', label: 'Noahで探す', Icon: Store },
+  { id: 'compute', href: '/noah/compute-grid', label: 'Compute Grid', Icon: Cpu },
+  { id: 'purchases', href: '/noah/purchases', label: '決済・購入履歴', Icon: CreditCard },
+  { id: 'network', href: '/noah/network', label: '接続', Icon: Plug },
   { id: 'zema', href: '/os/eve', label: 'Eveを開く', Icon: MessageCircle },
 ] as const;
 export default function SkyNavigation({ active }: { active: typeof destinations[number]['id'] }) {

@@ -48,7 +48,8 @@ const request = async (path, redirectTo = null) => {
 const home = await request('/');
 const usesOsAlias = base.hostname === 'avoado.si' || base.hostname.endsWith('.avoado.si') ||
   ['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname);
-await request('/sky', usesOsAlias ? '/os/sky' : '/');
+const unifiedNoah = base.hostname === 'avoado.si' || ['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname);
+await request('/sky', unifiedNoah ? '/noah' : usesOsAlias ? '/os/sky' : '/');
 const worker = await request('/sw.js');
 for (const [key, value] of Object.entries(policy.routeHeaders['/sw.js'])) {
   exactHeader(worker, key, value, '/sw.js');

@@ -140,7 +140,7 @@ function ErrorNotice({ error, returnTo }: { error: Error | null; returnTo: strin
 }
 
 export function CommerceNavigation() {
-  return <nav className={styles.navigation} aria-label="マーケットの管理"><Link href="/sky/esim"><Smartphone size={16} /> eSIMプラン</Link><Link href="/sky/purchases"><ShoppingBag size={16} /> 購入したツール</Link><Link href="/sky/sell"><Store size={16} /> 販売する</Link></nav>;
+  return <nav className={styles.navigation} aria-label="マーケットの管理"><Link href="/noah/esim"><Smartphone size={16} /> eSIMプラン</Link><Link href="/noah/purchases"><ShoppingBag size={16} /> 購入したツール</Link><Link href="/noah/sell"><Store size={16} /> 販売する</Link></nav>;
 }
 
 function TestMode({ mode }: { mode: CommerceStatus['mode'] }) {
@@ -184,17 +184,17 @@ export function MarketplacePurchase({ offer, mode, compatible = true, onOfferCha
 }
 
 function CommercePage({ title, description, children }: { title: string; description: string; children: ReactNode }) {
-  return <WorkspaceShell title="smis Market" tone="sky" hideTopActions contentClassName={styles.shell}>
+  return <WorkspaceShell title="Noah Market" tone="sky" hideTopActions contentClassName={styles.shell}>
     <div className={styles.page}>
-      <Link href="/sky/marketplace" className={styles.back}><ArrowLeft size={15} /> マーケットへ</Link>
-      <header className={styles.header}><div><span className={styles.eyebrow}>SKY MARKET</span><h1>{title}</h1><p>{description}</p></div><CommerceNavigation /></header>
+      <Link href="/noah/marketplace" className={styles.back}><ArrowLeft size={15} /> マーケットへ</Link>
+      <header className={styles.header}><div><span className={styles.eyebrow}>NOAH MARKET</span><h1>{title}</h1><p>{description}</p></div><CommerceNavigation /></header>
       {children}
     </div>
   </WorkspaceShell>;
 }
 
 function NotConfigured() {
-  return <section className={styles.empty}><CreditCard size={28} /><h2>決済サービスの接続待ち</h2><p>smisの決済設定が完了すると、購入・販売が使えるようになります。</p><Link href="/sky/marketplace" className={styles.secondary}>ツールを探す <ArrowRight size={16} /></Link></section>;
+  return <section className={styles.empty}><CreditCard size={28} /><h2>決済サービスの接続待ち</h2><p>Noahの決済設定が完了すると、購入・販売が使えるようになります。</p><Link href="/noah/marketplace" className={styles.secondary}>ツールを探す <ArrowRight size={16} /></Link></section>;
 }
 
 const statusLabels: Record<string, string> = {
@@ -224,7 +224,7 @@ function OrderCard({ order, seller = false, busy = false, onRefresh, onRefund }:
     <div className={styles.orderHeading}><div className={styles.orderIcon}><Package size={23} /></div><div className={styles.orderName}><h3>{order.name}</h3><p>{new Date(order.createdAt).toLocaleDateString('ja-JP')} · 注文 {order.id.slice(0, 8)}</p></div><span className={styles.status} data-status={order.status}>{statusLabels[order.status] || '確認中'}</span></div>
     <div className={styles.orderAmount}><strong>{commerceAmount(order.amountMinor, order.currency)}</strong>{seller && order.status === 'paid' && <span>受取分 {commerceAmount(order.amountMinor - order.commissionMinor, order.currency)} · 手数料10%</span>}{order.refundedMinor > 0 && <span>返金済み {commerceAmount(order.refundedMinor, order.currency)}</span>}</div>
     <div className={styles.actions}>
-      {!seller && order.access && order.endpointUrl && <><button className={styles.primary} type="button" onClick={() => void copyEndpoint()}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'コピーしました' : 'MCP接続先をコピー'}</button><Link href="/sky/network" className={styles.secondary}>siと接続する <ArrowRight size={16} /></Link></>}
+      {!seller && order.access && order.endpointUrl && <><button className={styles.primary} type="button" onClick={() => void copyEndpoint()}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'コピーしました' : 'MCP接続先をコピー'}</button><Link href="/noah/network" className={styles.secondary}>siと接続する <ArrowRight size={16} /></Link></>}
       {!seller && order.status === 'pending' && checkout && <a href={checkout} className={styles.primary}>支払いを続ける <ArrowRight size={16} /></a>}
       {receipt && <a href={receipt} target="_blank" rel="noreferrer" className={styles.textLink}>領収書 <ExternalLink size={14} /></a>}
       {!seller && onRefresh && <button className={styles.textButton} type="button" disabled={busy} onClick={onRefresh}><RefreshCw size={14} />{busy ? '確認中…' : '支払い状況を確認'}</button>}
@@ -285,7 +285,7 @@ export function SkyPurchases() {
     {canceled && <output className={styles.notice}>決済を途中で閉じました。支払いが必要な場合は、購入履歴から再開できます。</output>}
     <ErrorNotice error={error || actionError} returnTo="/sky/purchases" />
     {loading && !data && <output className={styles.loading}>購入履歴を読み込んでいます…</output>}
-    {data && <><TestMode mode={data.mode} />{!data.configured && <NotConfigured />}{data.purchases.length > 0 ? <div className={styles.orderList}>{data.purchases.map((order) => <OrderCard key={order.id} order={order} busy={busyOrder !== null} onRefresh={() => void reconcile(order.id)} />)}</div> : data.configured && <section className={styles.empty}><ShoppingBag size={28} /><h2>購入したツールはまだありません</h2><p>気になるツールを選び、料金と利用条件を確認できます。</p><Link className={styles.primary} href="/sky/marketplace">マーケットを見る <ArrowRight size={16} /></Link></section>}</>}
+    {data && <><TestMode mode={data.mode} />{!data.configured && <NotConfigured />}{data.purchases.length > 0 ? <div className={styles.orderList}>{data.purchases.map((order) => <OrderCard key={order.id} order={order} busy={busyOrder !== null} onRefresh={() => void reconcile(order.id)} />)}</div> : data.configured && <section className={styles.empty}><ShoppingBag size={28} /><h2>購入したツールはまだありません</h2><p>気になるツールを選び、料金と利用条件を確認できます。</p><Link className={styles.primary} href="/noah/marketplace">マーケットを見る <ArrowRight size={16} /></Link></section>}</>}
     {error && !(error instanceof CommerceError && error.status === 401) && <button className={styles.secondary} disabled={loading} onClick={() => void refresh()} type="button">もう一度読み込む</button>}
   </CommercePage>;
 }
@@ -356,8 +356,8 @@ export function OfferEditor({ item, offer, ready, onSave }: { item: Seller['pack
     {(offer?.revision ?? 0) > expectedRevision && !saved && <p className={styles.notice}>表示後に販売条件が更新されています。入力は編集開始時の版を基に保持しています。</p>}
     <fieldset disabled={saving || reviewing} style={{ border: 0, padding: 0, margin: 0, display: 'contents' }}>
     <label>販売価格（円・買い切り）<input type="number" min="50" max="99999999" step="1" required inputMode="numeric" placeholder="例：1,000" value={price} onChange={(event) => setPrice(event.target.value)} /></label>
-    {validPrice && <div className={styles.feeBreakdown}><div><span>あなたの受取分</span><strong>{commerceAmount(amountMinor - commission, 'jpy')}</strong></div><div><span>smis手数料 10%</span><span>{commerceAmount(commission, 'jpy')}</span></div></div>}
-    <p className={styles.subtle}>決済処理の費用はsmisの手数料から負担します。</p>
+    {validPrice && <div className={styles.feeBreakdown}><div><span>あなたの受取分</span><strong>{commerceAmount(amountMinor - commission, 'jpy')}</strong></div><div><span>Noah手数料 10%</span><span>{commerceAmount(commission, 'jpy')}</span></div></div>}
+    <p className={styles.subtle}>決済処理の費用はNoahの手数料から負担します。</p>
     <label>利用・販売条件のURL<input type="url" pattern="https://.*" required placeholder="https://…" value={termsUrl} onChange={(event) => setTermsUrl(event.target.value)} /></label>
     <label>返金条件<textarea required minLength={1} maxLength={2000} rows={3} placeholder="返金できる条件と、問い合わせ方法" value={refundPolicy} onChange={(event) => setRefundPolicy(event.target.value)} /></label>
     <label className={styles.checkbox}><input type="checkbox" checked={active} onChange={(event) => setActive(event.target.checked)} />マーケットで販売する</label>
@@ -435,7 +435,7 @@ export function SkySeller() {
         <div className={styles.actions}>{!data.seller?.ready && <button type="button" className={styles.primary} disabled={pending} onClick={() => void onboard()}>{pending ? '準備中…' : data.seller?.connected ? '受取先の登録を続ける' : '売上の受取先を登録'} <ArrowRight size={16} /></button>}<button type="button" className={styles.secondary} disabled={loading || pending} onClick={() => void refresh()}><RefreshCw size={15} />{loading ? '確認中…' : '接続を確認'}</button></div>
       </section>
       <section className={styles.panel} aria-labelledby="seller-offers"><div className={styles.panelHeading}><div><h2 id="seller-offers">買い切り販売</h2><p>あなたが登録した審査済みツール・LLMを販売できます。</p></div><span className={styles.feeBadge}>手数料 10%</span></div>
-        {selected ? <><label className={styles.selectLabel}>ツールを選択<select value={selected.packageKey} onChange={(event) => setSelectedKey(event.target.value)}>{salePackages.map((item) => <option key={item.packageKey} value={item.packageKey}>{item.name}</option>)}</select></label>{selectedOffer && selectedOffer.currency.toLowerCase() !== 'jpy' ? <p className={styles.notice}>この商品の価格は{commerceAmount(selectedOffer.amountMinor, selectedOffer.currency)}です。この画面での価格設定は現在、日本円の販売に対応しています。</p> : <OfferEditor key={selected.packageKey} item={selected} offer={selectedOffer} ready={data.seller?.ready === true} onSave={refresh} />}</> : <div className={styles.noTools}><p>買い切り条件で登録した、審査済みのツールがここに表示されます。定額・従量プランは現在準備中です。</p><Link href="/sky/register" className={styles.secondary}>ツールを登録 <ArrowRight size={16} /></Link></div>}
+        {selected ? <><label className={styles.selectLabel}>ツールを選択<select value={selected.packageKey} onChange={(event) => setSelectedKey(event.target.value)}>{salePackages.map((item) => <option key={item.packageKey} value={item.packageKey}>{item.name}</option>)}</select></label>{selectedOffer && selectedOffer.currency.toLowerCase() !== 'jpy' ? <p className={styles.notice}>この商品の価格は{commerceAmount(selectedOffer.amountMinor, selectedOffer.currency)}です。この画面での価格設定は現在、日本円の販売に対応しています。</p> : <OfferEditor key={selected.packageKey} item={selected} offer={selectedOffer} ready={data.seller?.ready === true} onSave={refresh} />}</> : <div className={styles.noTools}><p>買い切り条件で登録した、審査済みのツールがここに表示されます。定額・従量プランは現在準備中です。</p><Link href="/noah/register" className={styles.secondary}>ツールを登録 <ArrowRight size={16} /></Link></div>}
       </section>
     </>}
     {data.sales.length > 0 && <section aria-labelledby="seller-sales"><h2 id="seller-sales" className={styles.sectionTitle}>売上と返金</h2><div className={styles.orderList}>{data.sales.map((order) => <OrderCard key={order.id} order={order} seller busy={pending} onRefund={() => { setActionError(null); setRefundOrder(order); }} />)}</div></section>}

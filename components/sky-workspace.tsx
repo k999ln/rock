@@ -857,23 +857,23 @@ export default function SkyWorkspace({
           <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Noah</h2>
           <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
           <nav aria-label="大学別Noahの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
-            <Link href="/sky/marketplace" style={{color: 'white'}}>Agentを探す</Link>
-            <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
-            <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
-            <Link href="/sky/network" style={{color: 'white'}}>接続を管理</Link>
+            <Link href="/noah/marketplace" style={{color: 'white'}}>Agentを探す</Link>
+            <Link href="/noah/purchases" style={{color: 'white'}}>購入したAgent</Link>
+            <Link href="/noah/outputs" style={{color: 'white'}}>成果を見る</Link>
+            <Link href="/noah/network" style={{color: 'white'}}>接続を管理</Link>
             <Link href="/os/eve" style={{color: 'white'}}>Eveに相談</Link>
           </nav>
         </section>
       )}
       <nav aria-label="Noahの主要画面">
-        <Link className="sky-marketplace-link" href="/sky/devices">接続した担当・実行先</Link>
-        <Link className="sky-marketplace-link" href="/sky/agents/citations">
+        <Link className="sky-marketplace-link" href="/noah/devices">接続した担当・実行先</Link>
+        <Link className="sky-marketplace-link" href="/noah/citations">
           出典整理Agentを使う · 無料
         </Link>
-        <Link className="sky-marketplace-link" href="/sky/marketplace">
+        <Link className="sky-marketplace-link" href="/noah/marketplace">
           si・自動化マーケットプレイス
         </Link>
-        <Link className="sky-marketplace-link" href="/sky/outputs">
+        <Link className="sky-marketplace-link" href="/noah/outputs">
           Agentの成果を見る
         </Link>
       </nav>
@@ -882,7 +882,7 @@ export default function SkyWorkspace({
           <header className="sky-feed-header">
             <div className="sky-store-title">
               <span>Noah</span>
-              <h1 id="sky-feed-title">アプリ</h1>
+              <h1 id="sky-feed-title">Toolを探す</h1>
             </div>
             <Tabs
               value={feedMode}

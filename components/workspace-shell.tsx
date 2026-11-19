@@ -10,6 +10,7 @@ import { monitorDevice } from '@/lib/device';
 import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
 import skyStyles from '@/components/sky-surface.module.css';
 import OsAppNavigation from './os-app-navigation';
+import { useNoahSurface } from './noah-surface-context';
 
 export default function WorkspaceShell({
   children,
@@ -38,6 +39,7 @@ export default function WorkspaceShell({
   standaloneHomeHref?: string;
   tone?: 'sky';
 }) {
+  const noah = useNoahSurface();
   useEffect(() => {
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
     return monitorDevice();
@@ -47,9 +49,14 @@ export default function WorkspaceShell({
     const leaving = (event: BeforeUnloadEvent) => {
       event.preventDefault();
     };
+    const navigating = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+      if (link && !['#workspace-main', '#noah-content'].includes(link.getAttribute('href') ?? '')) { event.preventDefault(); event.stopPropagation(); }
+    };
     window.addEventListener('beforeunload', leaving);
-    return () => window.removeEventListener('beforeunload', leaving);
-  }, [running]);
+    if (noah) document.addEventListener('click', navigating, true);
+    return () => { window.removeEventListener('beforeunload', leaving); document.removeEventListener('click', navigating, true); };
+  }, [running, noah]);
   return (
     <div
       onClickCapture={(event) => {
@@ -62,9 +69,10 @@ export default function WorkspaceShell({
         if (running && link && link.getAttribute('href') !== '#workspace-main')
           event.preventDefault();
       }}
-      data-os-frame
+      data-os-frame={noah ? undefined : true}
       className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
-      data-os-bottom-navigation-host="workspace"
+      data-os-bottom-navigation-host={noah ? undefined : "workspace"}
+      data-noah-embedded={noah ? true : undefined}
       data-running={running ? 'true' : 'false'}
       aria-busy={running}
     >
@@ -72,7 +80,10 @@ export default function WorkspaceShell({
         メインコンテンツへ
       </a>
       <div className="rock-main-column rock-main-column-full">
-        {standaloneSky ? <header className={skyStyles.standaloneHeader}>
+        {noah ? <header className="noah-workspace-heading"><h2>{title.replace(/smis|Sky/g, 'Noah')}</h2>
+          {running && <output>処理中 · 完了まで画面を開いてください</output>}
+          {!hideTopActions && onConnect && <button className="rock-button rock-button-subtle" disabled={running} onClick={onConnect}><Cable size={17} />PCを接続</button>}
+        </header> : standaloneSky ? <header className={skyStyles.standaloneHeader}>
           <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="Noah home">avocado <span>/ Noah</span></Link>
           <Link href="/sky/help" className={skyStyles.standaloneHelp}>使い方と対応環境 <ArrowUpRight size={14} /></Link>
         </header> : <OSHeader title={title} running={running}>
@@ -106,7 +117,7 @@ export default function WorkspaceShell({
             </div>
           )}
         </OSHeader>}
-        {!standaloneSky && !hideFlowNavigation && <WorkspaceFlowNavigation running={running} />}
+        {!noah && !standaloneSky && !hideFlowNavigation && <WorkspaceFlowNavigation running={running} />}
         {!standaloneSky && !hideAccountAccess && title === 'Eve' && <OsAccountAccess />}
         <main
           id="workspace-main"
@@ -119,7 +130,7 @@ export default function WorkspaceShell({
           <span>{tone === 'sky' ? 'Noah' : PRODUCT_RELEASE_NAME}</span>
           <Link
             href={
-              tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'
+              noah ? '/noah/help#limits' : tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'
             }
             aria-disabled={running || undefined}
           >
@@ -127,7 +138,7 @@ export default function WorkspaceShell({
           </Link>
         </div>
       </div>
-      {standaloneSky && <OsAppNavigation running={running} />}
+      {!noah && standaloneSky && <OsAppNavigation running={running} />}
     </div>
   );
 }

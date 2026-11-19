@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function AmcPage() {
-  redirect('/zema/amc');
+  redirect('/os/eve?mode=tools&view=work');
 }
