@@ -21,6 +21,8 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 
 ## 検証と再開
 
+方針同期と参照Noahの3差分を取り込んだ統合作業木で全verify成功。本体4,433件中4,429成功・失敗0・skip4、build/APIも成功。最終commitのCI/main統合状態は[PR325](https://github.com/k999ln/rock/pull/325)を確認する。
+
 最新main統合後の`4ebe83cd7`でローカル全verify・CI成功。本体4,426件中4,422成功・失敗0・skip4。先行ソース`0211c1892`のローカル全verifyも成功。独立検収の指摘は修正・再検収済み。保存とmain統合の現在状態は[PR321](https://github.com/k999ln/rock/pull/321)、ソース検証と保全先は `data/project-status.json#currentGitRefresh` と[task72](codex/tasks/72-current-code-and-readme.md)を参照する。
 
 ## 全taskの作業進捗

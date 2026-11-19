@@ -12888,7 +12888,17 @@
       "typecheck": "pass",
       "independentDirectionReview": "pass",
       "independentDeviceReview": "pass",
-      "productionAcceptanceChanged": false
+      "productionAcceptanceChanged": false,
+      "validation": {
+        "runtimeSourceSha": "ce0ffd69924e8bd1e61ebad3d3850738f94dd3dc",
+        "localFullVerifyExitCode": 0,
+        "nodeTests": 4433,
+        "passed": 4429,
+        "failed": 0,
+        "skipped": 4,
+        "verificationScope": "統合作業木の全verify。追補した差分は対象試験・型・設計/進捗検査でも確認。最終commit単位のCIはPR325を正本に確認。",
+        "exactCommitCiAuthority": "https://github.com/k999ln/rock/pull/325"
+      }
     },
     "referenceNoahDelta": {
       "sourceThread": "codex://threads/01a19abe-44cd-7022-a582-02029247e935",

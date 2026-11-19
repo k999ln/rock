@@ -39,3 +39,5 @@ main統合: PR321は`37ef2bfd`へmerge済み。merge後verifyはbrowser fixture�
 参照Noahチャットの同一base `697be21c`に残る3差分（Noah受付文言、端末承認の使用済みコード/状態再読込み、UI回帰）も元の作業木を変更せず取り込み。原本hashは進捗JSONのreferenceNoahDeltaに記録。権限発行や本番操作は実行しない。
 
 最終検収: 方針・旧優先順位整理は独立pass。参照Noahの3差分も独立pass・原本hash一致。baseline/Codex対象12件、Noah/端末承認関連26件、型検査と設計/進捗整合は成功。最終headのCIとmain状態は[PR325](https://github.com/k999ln/rock/pull/325)を確認する。
+
+方針同期・Noah追補を含む全verifyはexit0。本体4,433件中4,429成功・失敗0・skip4、build/API成功。最終commitの同一SHA CIとmerge後の状態はPR325を正本に確認し、この記録自体から完了を推測しない。
