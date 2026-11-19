@@ -127,6 +127,15 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 ### 6.2 `components/noah-connect-sheet.tsx`（足りない物がある時だけ。1 段に 1 つのボタン）
 
 ```
+┌ シート（画面の下から出る）
+│ mcp.worldku.com のアカウントで許可
+│ mcp.worldku.com が、あなたの代わりに使うことを許可します。
+│ mcp.worldku.com のアカウントが要ります。
+│ 入力は mcp.worldku.com へ送られます。
+│            [ mcp.worldku.com で許可する ]
+│                      やめる
+└
+```
 ┌────────────────────────────────────────┐
 │ mcp.worldku.com のアカウントで許可         │
 │ worldku が、あなたの代わりに使うことを     │
