@@ -142,9 +142,9 @@ export default function NoahLaunch() {
       setRetry(null);
       setNotice(
         action === 'stop'
-          ? '停止を要求しました。Macの終了報告を待っています。'
+          ? '停止要求を受け付けました。終了結果は下の履歴で確認できます。'
           : action === 'connect'
-            ? 'Macで接続を準備しています。画面を閉じても続きます。'
+            ? '接続要求を受け付けました。進捗と結果は下の履歴に表示します。画面を閉じても処理は続きます。'
             : action === 'revoke'
               ? 'このMacの接続を解除しました。'
               : '依頼を受け付けました。',

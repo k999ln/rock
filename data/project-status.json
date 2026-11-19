@@ -12793,7 +12793,7 @@
     "backupVerifiedFiles": 2075,
     "candidate": "work/git-refresh-20261119/candidate",
     "githubSaved": true,
-    "next": "GitHub/mainの現在状態はPR321を確認する。保全sourceの端末runtime、共有/精算、mediaは現行契約へ順次照合する。",
+    "next": "PR325の最新CI/main状態を確認し、本人MacのNoahの成果受領まで閉じる。保全した旧sourceは現行契約との整合と必要性を確認して採用する。",
     "candidateBranch": "codex/latest-code-readme-20261119",
     "adoptedChanges": [
       "PR320 Noah/Eve route unification",
@@ -12880,9 +12880,35 @@
     },
     "latestMainIntegrated": "aa533e1df550410e95c50903ffa705fdaec740ff",
     "readmeFollowup": {
-      "reason": "並行PR324で復活した公開版番号と過去の修正記録を現在の認証案内へ置換",
+      "authority": "https://github.com/k999ln/rock/pull/325",
+      "scope": "mii主商品・Noah最小構成の明示方針同期、READMEの履歴整理、参照Noahの未保存3差分、非同期試験の完了待機",
       "baseMain": "697be21c3d81ee600162375110b2498028450c58",
-      "runtimeChanged": false
+      "focusedBaselineAndCodexTests": 12,
+      "focusedNoahAndDeviceTests": 26,
+      "typecheck": "pass",
+      "independentDirectionReview": "pass",
+      "independentDeviceReview": "pass",
+      "productionAcceptanceChanged": false
+    },
+    "referenceNoahDelta": {
+      "sourceThread": "codex://threads/01a19abe-44cd-7022-a582-02029247e935",
+      "baseSha": "697be21c3d81ee600162375110b2498028450c58",
+      "files": [
+        {
+          "path": "components/noah-launch.tsx",
+          "sha256": "e4ffcaea96d48ff7da045ceac279e6a85f0f075e839f03973b468350b7a2dc13"
+        },
+        {
+          "path": "components/rockstar-device-authorization.tsx",
+          "sha256": "bb33256473bc37a3950f073cd4ea05c13187b4811843f900a9ecda3b85b08222"
+        },
+        {
+          "path": "tests/rockstar-device-authorization-ui.test.mjs",
+          "sha256": "602c7ae37a5e96beab27a3f3591468c7908b6c24427b1b3c0e11e0055b9a3cf2"
+        }
+      ],
+      "scope": "承認済みコードの再送抑止・使用済みコードから実端末状態を再確認・接続/停止の受付案内",
+      "originalWorktreeModified": false
     }
   },
   "noahSelectResaleAgents": {

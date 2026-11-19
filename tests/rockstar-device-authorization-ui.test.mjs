@@ -111,3 +111,32 @@ void test('an in-flight device inspection locks the displayed code until its res
   delayed.resolve(Response.json({ authorization: { clientName: 'Device A', expiresAt: Date.now() + 600000 } })); await pending;
   assert.equal(disabled, true); assert.equal(h.input().props.disabled, false);
 });
+void test('confirmed approval clears the single-use code and cannot inspect it again', async () => {
+  const h = harness(); await h.flush(); await h.inspect(); await h.click('この端末を承認');
+  assert.equal(h.input().props.value, '');
+  assert.equal(h.button('端末を確認').props.disabled, true);
+  assert.ok(h.text().includes('このコードは使用済みです'));
+  const count = h.requests.length;
+  await h.inspect();
+  assert.equal(h.requests.length, count);
+  assert.equal(h.requests.filter(r => r.body?.action === 'approve').length, 1);
+});
+void test('a consumed or missing code refreshes the actual device list without another approval', async () => {
+  const h = harness(); await h.flush();
+  h.replies.push({ status: 404, body: { error: 'DEVICE_AUTH_NOT_FOUND' } }, { body: { sessions: [{ id: 'mac', deviceName: 'Noah Mac Runner', expiresAt: Date.now() + 600000 }] } });
+  await h.inspect();
+  assert.ok(h.text().includes('Noah Mac Runner'));
+  assert.ok(h.text().includes('承認後の場合は'));
+  assert.ok(!h.button('この端末を承認'));
+  assert.equal(h.requests.at(-1).path, '/api/rockstar/device-sessions');
+  assert.equal(h.requests.filter(r => r.body).length, 0);
+});
+void test('auth loss during consumed-code readback removes stale device details', async () => {
+  const h = harness({ body: { sessions: [{ id: 'old', deviceName: 'Old device', expiresAt: Date.now() + 600000 }] } });
+  await h.flush(); h.replies.push({ status: 404, body: { error: 'DEVICE_AUTH_NOT_FOUND' } }, { status: 401, body: {} });
+  await h.inspect();
+  assert.ok(h.text().includes('サインインして続ける'));
+  assert.ok(!h.text().includes('Old device'));
+  assert.ok(!h.button('この端末を承認'));
+  assert.equal(h.requests.filter(r => r.body).length, 0);
+});

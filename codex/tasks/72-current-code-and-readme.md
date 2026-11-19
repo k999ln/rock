@@ -35,3 +35,7 @@ PR308のMATOU aliasは現mainに既存。古いPRのCI成功や未追跡とい�
 main統合: PR321は`37ef2bfd`へmerge済み。merge後verifyはbrowser fixtureの待機timeoutで失敗し、後続PR324を含むmain `697be21c`では全6チェックが成功。PR324の認証・競合テスト修正を保持し、READMEに戻った公開版番号・過去の修正記録のみ現在の認証案内に整理する。
 
 2026-11-20の明示回答で商品優先順位を確定: miiが主、Noahが最小出発点、最初は本人Mac、次に声/Eve/空間表示のmii体験。SIM/eSIMはOS導入系統。README・baseline・構成/戦略・次回promptへ同期し、元のRQ/料金/実機受入を保持する。参照Noahチャットの現在進捗は個別証拠で再確認し、13/85等の過去限定試験を新しい全体合格にしない。
+
+参照Noahチャットの同一base `697be21c`に残る3差分（Noah受付文言、端末承認の使用済みコード/状態再読込み、UI回帰）も元の作業木を変更せず取り込み。原本hashは進捗JSONのreferenceNoahDeltaに記録。権限発行や本番操作は実行しない。
+
+最終検収: 方針・旧優先順位整理は独立pass。参照Noahの3差分も独立pass・原本hash一致。baseline/Codex対象12件、Noah/端末承認関連26件、型検査と設計/進捗整合は成功。最終headのCIとmain状態は[PR325](https://github.com/k999ln/rock/pull/325)を確認する。
