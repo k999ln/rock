@@ -2,10 +2,15 @@
 
 更新日: 2026-11-20。製品要件は[product baseline](docs/product-baseline.md)、現在の名称は[名称正本](docs/structure/06-naming.md)。
 
+## 現行の製品優先順位
+
+主商品はmii、最小構成から始めるのがNoah。まず本人MacのAgent選択・接続・実行・成果受領・停止を受け入れる。次にmiiで声からEveへ依頼し、空間表示を見たり触ったりして仕事を進める。SIM/eSIMはOS導入時の仕組み。方針とコード/実機の合格は別で、詳細は[製品正本](docs/product-baseline.md)。
+
 ## 現在の統合ソース
 
 G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保存、main統合まで実施する。READMEは現在の製品説明・コード・利用方法・未完了だけを載せ、日付ごとの受領票はCHANGELOGへ分離する。
 
+- PR321はmain `37ef2bfd`へ統合済み。後続のNoah認証修正を含むmain `697be21c`の全6チェック成功を確認。並行更新でREADMEへ戻った過去の公開記録は現在の動作説明へ同期する。
 - 基点: GitHub main `1cb703d0fe81314b450d0bf315721c7b18c0c979`。
 - 最新のNoah/Eve画面統一、工程計画と会社受注計算、mii研究、AMCの有限実行、Noahリセール、役割定義を集約し、全verifyと独立検収が成功。
 - mainへ追加されたPR322のNoah単体ローンチを取り込み、`4ebe83cd7`で8件のCIと独立検収71件が成功。
@@ -16,11 +21,13 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 
 ## 検証と再開
 
+方針同期と参照Noahの3差分を取り込んだ統合作業木で全verify成功。本体4,433件中4,429成功・失敗0・skip4、build/APIも成功。最終commitのCI/main統合状態は[PR325](https://github.com/k999ln/rock/pull/325)を確認する。
+
 最新main統合後の`4ebe83cd7`でローカル全verify・CI成功。本体4,426件中4,422成功・失敗0・skip4。先行ソース`0211c1892`のローカル全verifyも成功。独立検収の指摘は修正・再検収済み。保存とmain統合の現在状態は[PR321](https://github.com/k999ln/rock/pull/321)、ソース検証と保全先は `data/project-status.json#currentGitRefresh` と[task72](codex/tasks/72-current-code-and-readme.md)を参照する。
 
 ## 全taskの作業進捗
 <!-- project-status:start -->
-最終更新: 2026-11-19 / Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-11-20 / Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -437,5 +444,5 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 検証済みコードのGitHub/main状態はPR321を確認する。保存済み独自コードを端末runtime、共有/精算、mediaの順で現行契約と照合し、未受入を実装合格へ置き換えない。
+次の作業: Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。
 <!-- project-status:end -->

@@ -31,3 +31,13 @@ PR308のMATOU aliasは現mainに既存。古いPRのCI成功や未追跡とい�
 原本文書を含む全テキストsourceは[codex/preserved-local-source-20261119](https://github.com/k999ln/rock/tree/codex/preserved-local-source-20261119) / `3f3b0e67`へ保存・remote SHA一致。Gitleaksの19指摘は独立検収で17件のSHA-256と2件の説明文と確認し、実credentialの指摘は0件。生成物・実DB・ローカル設定・媒体はGit外backupに保持する。
 
 最新main `aa533e1df`（PR322）を通常mergeで追加。READMEはNoah単体登録・審査・Mac Runnerの現状へ同期し、過去の日付別実績はCHANGELOGと元taskに保持。Workのresale/outbox/operation/local実行を併存させ、汎用操作の拒否を維持。task71はNoahローンチに割当済みのため本件はtask72へ変更。追加統合後の`4ebe83cd7`でローカル全verify成功、全verify CIを含む8件も成功。本体4,426件中4,422成功・失敗0・skip4。独立検収71試験と汎用操作16通りの拒否・状態不変を確認。merge途中のSPIDER path上限失敗はcommit固定後に解消し、上限を変更していない。
+
+main統合: PR321は`37ef2bfd`へmerge済み。merge後verifyはbrowser fixtureの待機timeoutで失敗し、後続PR324を含むmain `697be21c`では全6チェックが成功。PR324の認証・競合テスト修正を保持し、READMEに戻った公開版番号・過去の修正記録のみ現在の認証案内に整理する。
+
+2026-11-20の明示回答で商品優先順位を確定: miiが主、Noahが最小出発点、最初は本人Mac、次に声/Eve/空間表示のmii体験。SIM/eSIMはOS導入系統。README・baseline・構成/戦略・次回promptへ同期し、元のRQ/料金/実機受入を保持する。参照Noahチャットの現在進捗は個別証拠で再確認し、13/85等の過去限定試験を新しい全体合格にしない。
+
+参照Noahチャットの同一base `697be21c`に残る3差分（Noah受付文言、端末承認の使用済みコード/状態再読込み、UI回帰）も元の作業木を変更せず取り込み。原本hashは進捗JSONのreferenceNoahDeltaに記録。権限発行や本番操作は実行しない。
+
+最終検収: 方針・旧優先順位整理は独立pass。参照Noahの3差分も独立pass・原本hash一致。baseline/Codex対象12件、Noah/端末承認関連26件、型検査と設計/進捗整合は成功。最終headのCIとmain状態は[PR325](https://github.com/k999ln/rock/pull/325)を確認する。
+
+方針同期・Noah追補を含む全verifyはexit0。本体4,433件中4,429成功・失敗0・skip4、build/API成功。最終commitの同一SHA CIとmerge後の状態はPR325を正本に確認し、この記録自体から完了を推測しない。

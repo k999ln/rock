@@ -66,7 +66,7 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
 
   async function inspect(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy || signedIn !== true) return;
+    if (busy || signedIn !== true || !/^[A-HJ-NP-Z2-9]{8}$/.test(code)) return;
     const version = ++requestVersion.current;
     const userCode = code;
     setMessage(''); setAuthorization(null); setBusy(true);
@@ -78,9 +78,10 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
       setAuthorization({ ...result.authorization, userCode });
     } catch (error) {
       if (version !== requestVersion.current) return;
-      if (error instanceof OperationRequestError && error.status === 404)
-        setMessage('コードが見つからないか、有効期限切れ・使用済みです。端末側の接続状態を確認してください。');
-      else fail(error);
+      if (error instanceof OperationRequestError && error.status === 404) {
+        setMessage('コードが見つからないか、有効期限切れ・使用済みです。承認後の場合は、下の接続中の端末と端末側の状態を確認してください。');
+        await refreshSessions();
+      } else fail(error);
     }
     finally { setBusy(false); }
   }
@@ -93,7 +94,8 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
       const result = await operationRequest<{ state: string }>('/api/rockstar/device-authorizations/approve', 'POST', { action, userCode: authorization.userCode });
       if (result.state !== (action === 'approve' ? 'approved' : 'denied')) throw new OperationResponseError('INVALID_RESPONSE');
       setAuthorization(null);
-      setMessage(action === 'approve' ? '端末の接続を承認しました。端末へ戻って接続状態を確認してください。'
+      setCode('');
+      setMessage(action === 'approve' ? '端末の接続を承認しました。このコードは使用済みです。端末へ戻って接続状態を確認してください。一覧にまだ表示されない場合は「端末の状態を再確認」を押してください。'
         : '端末の接続を拒否しました。');
       await refreshSessions();
     } catch (error) { fail(error, true); }

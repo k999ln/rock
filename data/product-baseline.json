@@ -1,4 +1,35 @@
 {
+  "miiFirstNoahMinimumDecision": {
+    "decidedAt": "2026-11-20",
+    "decidedBy": "owner",
+    "source": "Current chat explicit answers; referenced Noah chat",
+    "referenceThread": "codex://threads/01a19abe-44cd-7022-a582-02029247e935",
+    "primaryProduct": "mii",
+    "minimumStartingProduct": "Noah",
+    "initialTarget": "owner_mac",
+    "firstAcceptance": [
+      "select_agent",
+      "connect_owner_mac",
+      "execute",
+      "receive_result",
+      "stop_running_execution"
+    ],
+    "nextMiiExperience": "speak_to_Eve_and_progress_work_by_seeing_and_touching_spatial_display",
+    "simEsimRole": "os_installation_system",
+    "noahScope": "collect_connect_publish; start with supported agents and owner Node/Python packages; keep broader agent support as remaining work",
+    "osRole": "shared_runtime_and_permission_identity_budget_storage_recovery_contracts",
+    "eveRole": "request_and_work_interface_then_voice_spatial_experience_on_mii",
+    "supersedes": [
+      "SIM/eSIM bundle as primary product",
+      "Noah as ultimate primary product",
+      "OS-first or Eve-automatic-completion as first product acceptance"
+    ],
+    "runtimeAcceptanceChanged": false,
+    "pricingChanged": false,
+    "deviceManufacturingApproved": false,
+    "liveIssuanceEnabled": false,
+    "autoFlashAllowed": false
+  },
   "eveSmithMiiPlatformIntent": {
     "source": "2026-10-28 owner instruction: user-defined roles and shared Eve/Smith/mii work",
     "purpose": "用途を固定せず、本人がEveで担当を作り、Smithが能力と実行先を照合し、miiでも同じ仕事を扱う。",
@@ -410,11 +441,11 @@
     ]
   },
   "connectivityServiceBundleDecision": {
-    "decidedAt": "2026-10-15",
+    "decidedAt": "2026-11-20",
     "source": "Direct owner answer in this chat",
-    "ownerChoice": "通信とsi利用権をまとめて提供する商品の入口",
-    "authority": "docs/native-os-integration.md",
-    "primaryEntry": "connectivity_and_si_access_bundle",
+    "ownerChoice": "これはosを導入する際に使うシステム",
+    "authority": "docs/product-baseline.md",
+    "primaryEntry": "os_installation_system",
     "accountIsOwnerAndLedgerRoot": true,
     "connectivityAndServiceHaveSeparateStates": true,
     "grantRequiresVerifiedPurchase": true,
@@ -425,9 +456,14 @@
     "liveIssuanceEnabled": false,
     "liveCloudDispatchEnabled": false,
     "pricingChanged": false,
-    "supersedes": "2026-10-10 account-only commercial entry and consumer-eSIM product-design hold; preserves account identity, previews and all unaccepted production gates",
+    "supersedes": "SIM/eSIM bundle as the main product; existing pricing, account ownership, separate line/install states and unaccepted live gates remain unchanged",
     "grapheneBase": "feasibility_audited_candidate_not_full_os_acceptance",
-    "audit": "docs/evidence/graphene-cloud-foundation.json"
+    "audit": "docs/evidence/graphene-cloud-foundation.json",
+    "previousProductPositioning": {
+      "decidedAt": "2026-10-15",
+      "primaryEntry": "connectivity_and_si_access_bundle",
+      "ownerChoice": "通信とsi利用権をまとめて提供する商品の入口"
+    }
   },
   "ambientCreationIntent": {
     "decidedAt": "2026-10-15",
@@ -528,8 +564,8 @@
       }
     ]
   },
-  "version": "2.08",
-  "decidedAt": "2026-10-15",
+  "version": "2.09",
+  "decidedAt": "2026-11-20",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -655,10 +691,11 @@
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
     "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ50 and the current RockstarOS 1.0 technical base",
-    "initialAudienceHypothesis": "not_fixed; earlier independent-writer hypothesis remains historical until the verified economic loop selects a repeatable problem",
-    "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
+    "initialAudienceHypothesis": "owner Mac pilot first; wider market audience remains unconfirmed",
+    "representativeProductCandidate": "mii is the primary product; Noah on the owner Mac is the minimum starting product",
     "marketValidation": "not_run",
-    "runtimeChangedByThisDesign": false
+    "runtimeChangedByThisDesign": false,
+    "directionAuthority": "miiFirstNoahMinimumDecision"
   },
   "gameFirstLifeVision": {
     "recordedAt": "2026-09-21",
@@ -1081,7 +1118,10 @@
         "credentials",
         "precise_location"
       ]
-    }
+    },
+    "primaryProduct": "mii",
+    "minimumStartingProduct": "Noah",
+    "osCoreRole": "shared technical foundation for mii, Noah and Eve; not the first minimum product acceptance"
   },
   "materialInvention": {
     "requested": true,
@@ -2043,7 +2083,7 @@
     "cloudSpendApproved": false,
     "physicalFlashAuthorized": false
   },
-  "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
+  "firstOperationalTarget": "Noah on the owner Mac: select a supported Agent, connect, execute, receive results and stop. QEMU Developer Preview and physical OS acceptance remain separate tracks.",
   "releaseInstallation": {
     "requested": true,
     "releaseName": "RockstarOS 1.0",
@@ -2647,7 +2687,7 @@
   },
   "serviceAccessModel": {
     "status": "authoritative_product_direction_design_and_local_onboarding_only",
-    "primaryEntry": "connectivity_and_si_access_bundle",
+    "primaryEntry": "os_installation_system",
     "distributionChannels": [
       "rockstar_direct",
       "mobile_carrier",
@@ -2693,7 +2733,9 @@
     "decisionDate": "2026-10-15",
     "decisionRecord": "docs/product-baseline.md",
     "accountRole": "identity_contract_job_artifact_and_budget_owner",
-    "bundleDecision": "connectivityServiceBundleDecision"
+    "bundleDecision": "connectivityServiceBundleDecision",
+    "productRole": "OS導入用の仕組み。主商品mii・最小出発点Noahの位置づけはmiiFirstNoahMinimumDecisionを参照",
+    "directionAuthority": "miiFirstNoahMinimumDecision"
   },
   "portableAddons": {
     "requestedAt": "2026-10-06",
@@ -2788,10 +2830,10 @@
     "decidedAt": "2026-10-15",
     "decidedBy": "owner",
     "record": "docs/product-baseline.md",
-    "mainProduct": "connectivity_plus_si_access_bundle_with_account_owned_jobs_and_costs",
-    "simRole": "product_entry_connectivity_with_separate_account_identity",
+    "mainProduct": "mii_with_noah_as_minimum_starting_product",
+    "simRole": "os_installation_system",
     "seller": "avokado",
-    "firstCustomers": "individuals_starting_with_solo_businesses_that_deliver_writing",
+    "firstCustomers": "owner_mac_pilot_first_commercial_audience_unconfirmed",
     "billing": {
       "account": "free",
       "termPass": "prepaid_valid_for_less_than_6_months_auto_renew_on_by_default_shown_at_purchase_and_notified_before_renewal_no_mid_term_refund",
@@ -2842,7 +2884,10 @@
     ],
     "entryDecisionSource": "connectivityServiceBundleDecision",
     "cloudPlanAuthority": "docs/service-design/02-system-contracts.md#siクラウドのサービス事業者としての料金プラン",
-    "cloudPlanDesignStatus": "monthly_140_requested_quota_and_overage_terms_pending"
+    "cloudPlanDesignStatus": "monthly_140_requested_quota_and_overage_terms_pending",
+    "productDirectionAuthority": "miiFirstNoahMinimumDecision",
+    "productDirectionDecidedAt": "2026-11-20",
+    "historicalFirstCustomersHypothesis": "individuals_starting_with_solo_businesses_that_deliver_writing"
   },
   "skyCampusMainReconciliation": {
     "decidedAt": "2026-10-14",

@@ -100,14 +100,17 @@ void test('workspace command never reaches a host shell and unsuccessful cleanup
   const broken = await createCodexWorkspace('/root', 'image', new AbortController().signal, async (_root, args) => args[0] === 'ps' ? 'still-present' : '');
   await assert.rejects(broken.stop(), e => e.unconfirmed === true);
 });
-void test('execution manager replays the Work rather than consuming the provider plan twice', async () => {
+void test('execution manager replays the Work rather than consuming the provider plan twice', async t => {
   let work, runs = 0;
   const runtime = { binding: { recipe: 'codex', version: 'noah-codex/1', model: 'codex-account', provider }, execution: { image: `sha256:${'d'.repeat(64)}` }, run: async (_prompt, _signal, onModel) => { runs++; await onModel(1); return result; } };
   const store = async (action, data) => { if (action === 'get' && !work) throw new InstallError('missing', 404); if (action === 'create') work = await createNoahWork(data.id, data.binding); else if (action !== 'get') work = await updateNoahWork(work, { ...data, action }); return { job: work }; };
   const manager = createExecutionManager({ execution: async () => runtime });
+  t.after(() => manager.close());
   const request = { id: randomUUID(), agentId, prompt: 'test', providerConsent: 'codex-account/1' };
   await manager.start('scope', request, store, async () => {});
-  for (let i = 0; i < 50 && work.noahExecution.state !== 'returned'; i++) await new Promise(setImmediate);
+  const { job } = await manager.wait('scope', request.id, store);
+  assert.equal(job.noahExecution.state, 'returned');
+  assert.equal(job.noahExecution.calls, 1);
   const revision = work.revision; await manager.start('scope', request, store, async () => {});
-  assert.equal(work.revision, revision); assert.equal(runs, 1); assert.equal(work.noahExecution.provider.metric, 'provider_turns'); await manager.close();
+  assert.equal(work.revision, revision); assert.equal(runs, 1); assert.equal(work.noahExecution.provider.metric, 'provider_turns');
 });
