@@ -1,6 +1,6 @@
 # Noah 設計検証の再現キット
 
-2026-11-20。[Noah の設計書](../../noah-design.md) と [詳細設計書](../../noah-detailed-design.md) を実装へ引き継ぐための、手元で動く検証用のコード。[決済設計の検証キット](../README.md) と同じ置き方にしている。**実装済みの機能でも、本番の合格でもない。** 外の接続先・鍵・本番のデータには触らない。
+2026-11-20。[Noah の設計書](../../noah-design.md)・[詳細設計書](../../noah-detailed-design.md)・[作業単位ごとの実装仕様書](../../noah/README.md) を実装へ引き継ぐための、手元で動く検証用のコード。[決済設計の検証キット](../README.md) と同じ置き方にしている。**実装済みの機能でも、本番の合格でもない。** 外の接続先・鍵・本番のデータには触らない。
 
 | 物 | 場所 | 中身 |
 | --- | --- | --- |
@@ -9,9 +9,9 @@
 | | [noah-mouth-v1.ts](../../contracts/noah-mouth-v1.ts) | 相手のサーバーとの握手・道具の一覧・呼び出し、接続先の検査、相手の許可の組み立て、起動の型紙 |
 | | [noah-tool-agent-v1.ts](../../contracts/noah-tool-agent-v1.ts) | 道具を持つ担当（上限・確認・停止）、モデルの API の形との変換、入力欄での実行 |
 | | [noah-screenless-v1.ts](../../contracts/noah-screenless-v1.ts) | 面の見分け、隔離環境の起動引数の検査 |
-| DDL 案 | [noah-v1.sql](../../contracts/noah-v1.sql) | 新しい表 13 個。既存の表は変えない |
+| DDL 案 | [noah-v1.sql](../../contracts/noah-v1.sql)、[noah-regroup-v1.sql](../../contracts/noah-regroup-v1.sql) | 新しい表 13 個（既存の表は変えない）と、名寄せの SQL |
 | 試験 | この folder の `*.test.mjs` | 41 群 |
-| DDL の検証 | [validate-noah-v1.py](validate-noah-v1.py) | 8 群（拒否を確かめる行 55） |
+| DDL の検証 | [validate-noah-v1.py](validate-noah-v1.py) | 9 群（拒否を確かめる行 55） |
 | 実データ | [fixtures/](fixtures/) | 公式台帳の実記録 25 件＋合成 7 件、実際の握手の写し 1 件、ACP の台帳 3 件、Space 3 件 |
 
 ## 実行
@@ -25,7 +25,7 @@ python3 docs/design-validation/noah/validate-noah-v1.py
 
 失敗すると終了コードが 0 以外になる。DDL の検証の結果は `work/design-validation/noah-v1-validation.json`（`NOAH_SQL_RESULT` で変えられる）。型契約は `npm run typecheck` の対象に入っている（`tsconfig.json` が `**/*.ts` を読む）。
 
-2026-11-20 の結果（main `c4d7c27` の上）: 試験 41/41、DDL 8/8、`npm run typecheck` エラー 0、`oxlint docs/contracts docs/design-validation/noah` 指摘 0。これはその時点の入力への結果で、変更した後の成功は保証しない。
+2026-11-20 の結果（main `c4d7c27` の上）: 試験 41/41、DDL 9/9、`npm run typecheck` エラー 0、`oxlint docs/contracts docs/design-validation/noah` 指摘 0。これはその時点の入力への結果で、変更した後の成功は保証しない。
 
 ## 何を確かめているか
 
@@ -36,7 +36,7 @@ python3 docs/design-validation/noah/validate-noah-v1.py
 | `noah-mouth.test.mjs` | `https://mizan.ac/mcp` との実際のやり取りの写しを読める。相手の振る舞い 17 通り（JSON と SSE、途中の通知、セッション、頁、版の言い直し、401・402・403・429・404・5xx、読めない応答、大きすぎる応答）。接続先の検査（内部向けの名前、内部のアドレスへの転送、別の host への鍵の持ち出し）。相手の許可（公開情報の探し方、取り方の決定 10 通り、PKCE は RFC 7636 の値で照合）。起動の型紙 |
 | `noah-tool-agent.test.mjs` | 1 文 → 道具 → 成果。道具の説明と結果に仕込んだ指示で、一覧に無い道具も、確認の要る道具も呼ばれない。書き込みは最初の 1 回だけ確かめる。入力の検査。上限・停止・道具の中身の変化で止まる。結果が返らない道具を呼び直さない。道具の定義を上限に収める。モデルの API の形との変換 |
 | `noah-screenless.test.mjs` | **今の main の起動引数**（`scripts/noah-isolated-runtime.mjs` の `containerArgs`、`scripts/noah-terminal-runtime.mjs` の `terminalContainerArgs`、VM の起動）が検査を通る。緩めた変更 15 通りが落ちる。実際の依存の一覧での面の見分け。実行時の依存だけを読む |
-| `validate-noah-v1.py` | 既存の `drizzle/*.sql` を名前順に一時 DB へ流し、DDL 案を 2 回流しても既存の定義が変わらない。制約の拒否 55 行（元の行が通る事を先に確かめる）。設計書に書いた問い合わせ（見回りの取り合い、タイムライン、取り下げの掃き出し、host の間隔、接続の楽観ロック、依頼の取り合いと step の番号、1 回だけ使える state）が、期待した索引と結果になる |
+| `validate-noah-v1.py` | 既存の `drizzle/*.sql` を名前順に一時 DB へ流し、DDL 案を 2 回流しても既存の定義が変わらない。制約の拒否 55 行（元の行が通る事を先に確かめる）。設計書に書いた問い合わせ（見回りの取り合い、タイムライン、取り下げの掃き出し、host の間隔、接続の楽観ロック、依頼の取り合いと step の番号、1 回だけ使える state）が、期待した索引と結果になる。名寄せの SQL が、参照実装の試験と同じ系列と代表を作る |
 
 ## 実データでの実測（2026-11-20）
 

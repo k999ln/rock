@@ -214,7 +214,7 @@ flowchart TB
 | 本人・端末の承認 | account、`noah_runner_devices`（今は Mac） | Hub・Pro の行。雲を始める時は platform=`cloud` の行 |
 | 仕事の受け渡し | `noah_runner_commands`（端末 1 台につき実行中 1 件） | 並列が要る端末の持ち方（別の表か、制約の分割） |
 | 仕事と成果 | 既存の Work / Job / Receipt | 変えない |
-| 外の候補 | `noah_discovery_sources`・`_candidates`・`_versions`（GitHub・Hugging Face） | 出どころ（公式台帳・ACP）、`noah_intake_checks`（口・面・接続要件・深さ・引き取り） |
+| 外の候補 | `noah_discovery_sources`・`_candidates`・`_versions`（GitHub・Hugging Face。変えない） | 取り込み用の別の表: `noah_intake_sources`・`noah_intake_candidates`・`noah_intake_checks`（口・面・接続要件・深さ）・`noah_intake_families`（系列・引き取り・取り下げ）。今の表は出どころを 2 つに固定する制約を持ち、鍵がリポジトリで、上限が 10,000 件なので、足さない |
 | 載せた Agent | `noah_agent_drafts`、`sky_tool_packages`、`sky_tool_package_reviews` | sidecar `noah-connect/1`、`noah_agent_variants`（スマホ内版） |
 | つないだ物 | `noah_instances`（系列・版・固定）、`sky_connections`、`sky_provider_connections` | Passport（置き場所・道具の定義の hash・同意の版）を account に |
 | 売り買い | `sky_commerce_offers`・`_orders`・`_sellers` | 販売条件に `trialRuns`・`updates` |
@@ -315,7 +315,7 @@ flowchart TB
 | MCP の client（今の版と新しい版） | リモートの道具 45,668 件 | `lib/mcp-client.ts`、`lib/mcp-inspection.ts`（2025-11-25 まで） | 握手で版を決める。JSON と SSE。道具の定義の hash を固定 | 実装のばらつき（新しい版に応答したのは 273 中 8） | 86 |
 | 事前の申し込み無しの認可 | 相手の許可を 1 タップに | 無い | 保護された資源の公開情報 → 認可サーバー → client 文書（無ければ動的登録）→ PKCE。token は Broker | 認可サーバーごとの差、更新、取り消し。古い方式が 91%、新しい方式が 36% | 86 |
 | 道具を持つ担当 | 道具を 1 文で頼める形に | Eve の担当、planner、`LIMITS` | 1 回の仕事に接続先 1 つ。道具の説明は指示として読ませない。書き込みは確認 | 注入は完全には防げない。権限で被害を限る（その接続の道具しか呼べない。鍵を持たない） | 87 |
-| 取り込みと名寄せ | 大量に扱う | 発見（GitHub・Hugging Face。lease・ETag・hash。上限 10,000 件） | 出どころを足す。差分取得。系列の鍵（名前空間と host、同名と同じ定義） | 量産となりすまし。台帳側の名前空間の検証を根拠にする | 85 |
+| 取り込みと名寄せ | 大量に扱う | 発見（GitHub・Hugging Face。lease・ETag・hash。上限 10,000 件）。巡回の作りを手本にする | 取り込み用の表を別に作る。台帳の 1 件を、型の付いた項目だけから接続要件の下書きにする（全 66,608 件を通して、下書き 94.3%、例外 0）。系列の鍵（量産、同じ道具の定義、別の載り方、写し） | 量産となりすまし。台帳の書き方の揺れ。台帳に公開された鍵（6 件）を運ばない | 85 |
 | 接続試験と見回り | 約束は試してから出す | 無い（試験済み 0 件） | L1 は握手 1 回。L2 は読み取りだけの道具に限る。本人の実行も L2 に数える | 礼儀と回数制限。握手だけ通る偽の成功 | 86・88 |
 | 接続計画と接続要件 | 手数を正直に出す。場所を選ぶ | 文章の必要条件 | sidecar `noah-connect/1` と純関数。契約の表をそのままテストに | 本人が相手のアカウントを持っているかは分からない | 73 |
 | 1 クリックの操作 | 1 回で終わる | 取得の準備と接続が別の操作。`returnTo` | 1 操作にまとめる。操作 ID で冪等。見た計画の hash を照合 | 途中で閉じた時の続き。結果不明の扱い | 74 |
@@ -395,6 +395,8 @@ flowchart TB
 | 知りたいこと | 文書 |
 | --- | --- |
 | そのまま実装できる細かさ（UX・フロント・API・データ・状態遷移・試験・開発の進め方） | [noah-detailed-design.md](noah-detailed-design.md) |
+| 作業単位ごとの実装仕様書（今あるコードのどこをどう変えるか、規則の全表、画面と文言、処理の順、試験） | [noah/README.md](noah/README.md) |
+| 動く型契約と参照実装、表の定義、実データでの試験と実測 | [contracts/](contracts/)（`noah-*`）、[design-validation/noah/README.md](design-validation/noah/README.md) |
 | 接続・実行・取り込み・市場の細部、費用の計算、外の規格との関係 | [noah-agent-market-design.md](noah-agent-market-design.md) |
 | 実測の方法と数字、85 件の分類 | [noah-agent-census-20261120.md](noah-agent-census-20261120.md) |
 | 1 クリック接続、接続要件、接続計画 | [services/noah-one-click-connect.md](services/noah-one-click-connect.md) |

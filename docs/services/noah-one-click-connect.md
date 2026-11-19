@@ -46,7 +46,7 @@
 | `surface` | `none` / `terminal` / `browser` / `screen`。`own-device`（本人の端末を操作する）は接続できない |
 | `places` | `provider` / `cloud` / `home` / `pocket`。機種の名前は書かない |
 | `codeDelivery` | `cloud_only`（コードを利用者へ渡さない）/ `device_allowed` |
-| `model.use` | `relay`（host が渡す）/ `none` / `provider`（提供者側で動く） |
+| `model.use` | `none` / `local`（端末のモデル。今の 13 件のうち 11 件）/ `relay`（host が渡す）/ `provider`（提供者側で動く）/ `own_account`（本人の契約。置き場所は `home` だけ） |
 | `services[].method` | `oauth` / `official_login` / `none` |
 | `secrets` | 利用者が貼る鍵の名前。1 つでもあれば「準備が必要」になる |
 | `uses` | 一緒につなぐ他の Agent・Tool の packageKey |

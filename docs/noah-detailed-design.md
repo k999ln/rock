@@ -10,7 +10,8 @@
 4. **触らない物**（AGENTS.md §6）: 本番の決済鍵、本番 D1 への migration の適用、外部サービスとの契約・申込、端末の署名・flash、`docs/evidence/` と `archive/`、main への直接 push。migration は `drizzle/` に置くまで。
 5. **変えない物**: Eve → Noa → AMC → Jev の構造。Broker と Wallet の確認。既存の API path・D1 table・enum の名前と意味。`noah-terminal/1`・`noah-isolation/1`・`LIMITS`。価格と料率。原本を変えない決まり。台帳の文章を実行コードにしない決まり。
 6. 画面に出す言葉は 1 章の言葉だけを使う。技術の言葉（MCP、OAuth、runner、lease、container）を画面に出さない。
-7. 迷った時に確かめる順: この文書 → [サービスシート](services/) → コード。書いてある事とコードが食い違う時は、コードを正とし、PR 本文に食い違いを書く。
+7. 迷った時に確かめる順: [作業単位ごとの実装仕様書](noah/README.md) → この文書 → [サービスシート](services/) → コード。仕様書とこの文書が食い違う時は、仕様書を正とする（仕様書は、実データに通して直した後の内容）。書いてある事とコードが食い違う時は、コードを正とし、PR 本文に食い違いを書く。
+8. 型と、通信しない処理（接続要件の検査、接続計画、取り込みの下書き、名寄せ、握手、相手の許可の組み立て、道具を持つ担当、起動引数の検査）は、[docs/contracts/](contracts/) に動く参照実装がある。**書き直さずに `lib/` へ移す。** 試験は [docs/design-validation/noah/](design-validation/noah/README.md) から `tests/` へ移す。
 
 ## 1. 用語
 
@@ -75,7 +76,7 @@
 - 進行中の表示は、一覧の中の 1 行。全画面の進行表示と、操作を塞ぐ dialog を作らない。
 - 読み直し: 進行中の物がある間だけ 3 秒ごと。画面が裏に回ったら止め、戻ったら 1 回読む。
 - 幅 390px で横スクロールなし。主ボタンは 1 画面に 1 つ、下側に置く。
-- 未サインインで書き込みを押した時: 操作の内容を sessionStorage に置き（`lib/eve-agent-creation.ts` と同じ持ち方）、`/account?returnTo=…` へ移り、戻ったら同じ `id` で続ける。
+- 未サインインで書き込みを押した時: 続きに要る物（操作の ID と Agent の ID だけ）を sessionStorage に置き（`components/rockstar-entitlement-claim.tsx` と同じ持ち方）、`/account?returnTo=…` へ移り、戻ったら同じ `id` で続ける。
 
 ### 3.3 UX
 
@@ -101,7 +102,7 @@
 | 名前、1 行説明 | 日本語。取り込んだ物は自動で作り、「自動で作った説明」と小さく添える | 元の説明をそのまま |
 | 作者 | 引き取った作者の名前。未引き取りは「提供: <名前空間>」 | 「提供者不明」 |
 | 見本 | 接続試験で実際に出た入力と成果の先頭 2 行 | 出さない |
-| 印 | 「1 クリック」／「あと 1 タップ（<何の許可か>）」／「準備が必要（<何が要るか>）」／「まだ誰も動かしていない」 | 必ず 1 つ |
+| 印 | 「1 クリック」／「あと 1 タップ（<何が要るか>。相手の許可なら「<host> のアカウントで許可」）」／「準備が必要（<何が要るか>）」／「まだ誰も動かしていない」 | 必ず 1 つ |
 | 動く所 | 「相手のサーバー（<host>）」／「あなたの端末」／「スマホの中」／「雲の端末」 | 必ず 1 つ |
 | 料金 | 「無料」／「¥500」／「試せる（あと 3 回）」 | 必ず 1 つ |
 | 主ボタン | 「接続」／つないだ後は「頼む」 | — |
@@ -180,7 +181,7 @@
   "price": { "model": "free" } }
 ```
 
-**`POST /api/noah/connect`** body `{ "id", "agentId", "digest", "planSha256", "place"?, "deviceId"? }`
+**`POST /api/noah/connect`** body `{ "id", "agentId", "planSha256" }`（版・置き場所・端末は、サーバーが計画から決める。細部は [実装仕様書 74](noah/spec-74-one-click-connect.md)）
 
 | 応答 | 中身 |
 | --- | --- |
@@ -188,7 +189,7 @@
 | 401 | 未サインイン。client は 3.2 の手順で戻る |
 | 409 | 計画が変わった。`{ "error", "plan": <新しい計画> }` |
 | 409 | 端末が応答していない（`home`）。今の `/api/noah/launch` と同じ判定（最後の応答が lease より前） |
-| 422 | `blocked`（面が `own-device`、審査失効、撤回、希望と合わない） |
+| 422 | `blocked`（面が `own-device`、審査失効、撤回、希望と合わない）。入力の要る段がある（「準備が必要」。鍵を入れてつなぐ機能は、この段階では作らない） |
 
 処理の順（どこかで止まったら、その段を `needs_action` として返す。終わった段はやり直さない）:
 
@@ -330,21 +331,28 @@
 | Hugging Face の MCP の Space | `GET /api/spaces?filter=mcp-server&limit=1000&expand[]=runtime&expand[]=sdk&expand[]=likes&expand[]=lastModified` | Space の id |
 | ACP の台帳 | `registry.json` を 1 日 1 回 | `id` |
 
-今の発見（`noah_discovery_sources`・`_candidates`・`_versions`）と同じ作り（lease、内容 hash が変わった時だけ版を足す、取り下げ）で保存する。口・面・接続試験の結果は `noah_intake_checks`（15 章）に持つ。
+取り込み用の表（`noah_intake_sources`・`noah_intake_candidates`・`noah_intake_checks`・`noah_intake_families`）に保存する。今の発見（`noah_discovery_*`）は、出どころを `github`・`huggingface` に固定する CHECK を持ち、鍵がリポジトリで、上限が 10,000 件なので、足さずに別の表にする（発見は変えない）。巡回の作り（lease、内容 hash が変わった時だけ改める、取り下げ）は発見に合わせる。1 件がどの列になるか、巡回の順、取り下げの安全弁は [実装仕様書 85](noah/spec-85-intake.md)。
 
 ### 名寄せ（`lib/noah-intake-family.ts`、純関数 `familyKeyOf(item, peers)`）
 
-1. 同じ鍵の版違いは 1 系列（最新の有効な版が代表）。
-2. 公式台帳で、同じ名前空間かつ同じ host の記録が 20 件以上ある時は、まとめて 1 系列（量産）。カードには「<提供者> の道具 n 個」と出す。
-3. Space は、小文字にした名前が同じで、L1 の後に道具の定義の hash も同じ物を 1 系列にする。L1 の前は名前だけでまとめる。
-4. リポジトリの URL が同じ物は、出どころが違っても 1 系列。
-5. 代表の選び方: 動いている → L2 済み → いいねが多い → 更新が新しい、の順。
+規則は上から順に当て、最初に当たった物を採る（正本は `groupNoahFamilies`。SQL は [noah-regroup-v1.sql](contracts/noah-regroup-v1.sql)）。
+
+1. 公式台帳で、同じ名前空間かつ同じ host の記録が 20 件以上 → 1 系列（量産）。カードには「<提供者> の道具 n 個」と出す。
+2. 公式台帳で、同じリポジトリの記録が 20 件以上 → 1 系列（量産）。
+3. 道具の定義の hash が同じで、リポジトリか host か Space の名前も同じ物が 2 件以上 → 1 系列（同じ物のコピー。握手の後に分かる）。
+4. 出どころが違い、リポジトリが同じで、どの出どころにも 1 件ずつ → 1 系列（同じ物の別の載り方）。
+5. Space で、小文字にした名前が同じ物が 20 件以上 → 1 系列（教材などの写し）。
+6. それ以外 → 1 件で 1 系列。
+7. 代表の選び方: 動いている → 接続試験が深い → いいねが多い → 更新が新しい、の順。
+
+同じリポジトリの 2〜19 件（845 組）は、別の道具のことが多いので、握手の前はまとめない。実測では、下書きを作れた 62,798 件が 50,767 系列になる。
 
 ### 見分ける
 
 - 口: `remotes` があれば `mcp-remote`。Space は `space-mcp`。`packages` だけなら `mcp-package`。ACP の台帳は `acp`。
 - 面: 14 章の `classifyNoahSurface`。`mcp-remote` と `space-mcp` は `none`。
-- 鍵: 台帳の必須かつ秘密の header・環境変数があれば `key`（接続の手数は「準備が必要」）。無ければ L1 まで未定。
+- 鍵: 台帳の必須の header・環境変数・URL の変数・引数のうち、本人の入力が要る物があれば `key`（接続の手数は「準備が必要」）。無ければ L1 まで未定（鍵の宣言が無い接続先の 35.8% が、握手で 401 を返す）。
+- つなげない物（下書きを作れない物）は、理由を付けて候補に残す。理由の一覧と件数は [実装仕様書 85](noah/spec-85-intake.md)。台帳に鍵そのものが公開されている記録（6 件）は、Noah は運ばない。
 - ここでは何も実行しない。接続要件（`noah-connect/1`）の下書きを作って保存する。
 
 ### 接続試験（`lib/noah-probe.ts`）
@@ -356,14 +364,14 @@
 
 L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要らない。**全部の道具**が読み取りだけと宣言されている。選んだ道具の必須の入力が、文字列・数・真偽だけ。
 
-見本の入力の作り方: `default` → `examples` の先頭 → `enum` の先頭 → 型の既定（文字列は「テスト」、数は 1、真偽は false）。道具は、必須の入力が最も少ない物を選ぶ。
+見本の入力の作り方: 必須の項目だけを、`const` → `default` → `examples` の先頭 → `enum` の先頭 で埋める。**埋まらない項目が 1 つでもある道具は選ばない。文字列を Noah が作って入れない。** 候補は、必須の入力が少ない → 項目が少ない → 名前の順に、最大 3 つ試す（[実装仕様書 88](noah/spec-88-mass-probe.md)）。
 
 条件を満たさない接続先は、最初に使った本人の実行が成功した時に L2 を付ける（本文は残さない。成否と秒数だけ）。
 
 ### 見回り（`scripts/noah-probe-daemon.mjs`）
 
-- 次に確かめる時刻: つないでいる人がいる系列は 24 時間後。L2 だけの系列は 3 日後。L1 だけは 7 日後。失敗したら間隔を 2 倍にし、30 日続いたら隠す。
-- 礼儀: 同じ host へは 1 巡回に 1 回。同時 8 件まで。名乗りは `NoahBot/1`（連絡先の URL 付き）。429 は `Retry-After` を守る。寝ている Space・止まっている Space へは接続しない。
+- 次に確かめる時刻: つないでいる人がいる系列は 24 時間後。L2 だけの系列は 3 日後。L1 だけは 7 日後。失敗したら間隔を 2 倍にし（最長 30 日）、2 回続いたら印を外し、最初の失敗から 30 日で隠す。
+- 礼儀: 同じ host へは 1 時間に 1 回まで。1 回の呼び出しで 8 件まで（巡回は 60 秒ごと）。名乗りは `NoahBot/1`（連絡先の URL 付き）。429 は `Retry-After` を守る。寝ている Space・止まっている Space へは接続しない。
 - 道具の定義の hash が変わった系列は、つないでいる本人へ「内容が変わりました。もう一度確かめてください」を出し、確かめるまで実行を止める。
 
 ### 運営の画面と API
@@ -387,18 +395,11 @@ L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要
 
 ### 口の形（`lib/noah-mouth-*.ts`）
 
-```ts
-export type NoahToolDef = { name: string; description: string; inputSchema: unknown; readOnly: boolean };
-export interface NoahMouth {
-  handshake(target: NoahTarget, ctx: NoahMouthContext): Promise<{ protocol: string; tools: NoahToolDef[]; toolsSha256: string }>;
-  call(target: NoahTarget, tool: string, args: unknown, ctx: NoahMouthContext): Promise<{ ok: boolean; content: unknown; bytes: number }>;
-}
-export type NoahMouthContext = { fetch: typeof fetch; token?: () => Promise<string>; signal: AbortSignal; maxBytes: number };
-```
+型と実装は [docs/contracts/noah-mouth-v1.ts](contracts/noah-mouth-v1.ts)（`noahMcpHandshake`・`noahMcpCall`・`noahMcpClose`・`createNoahGuardedFetch`・`NoahMouthError`）。握手は、道具の定義の全体・定義の hash・全部が読み取りだけか・名前の形が違って入れなかった数を返す。失敗は 8 種類の `code`（`auth_required`・`payment_required`・`forbidden`・`rate_limited`・`unreachable`・`incompatible`・`too_large`・`blocked`）で返す。
 
 - `toolsSha256` は、道具を名前順に並べ、`{name, description, inputSchema, readOnly}` を決まった順の JSON にした物の sha256。
-- 外への通信は必ず `ctx.fetch` を使う。`ctx.fetch` の決まり: HTTPS だけ。名前を引いた先が、私設・loopback・link-local・metadata のアドレスなら拒否。転送は 3 回まで、毎回検査。応答は `maxBytes` まで。待ちは 10 秒（道具の呼び出しは 60 秒）。
-- `mcp-remote`: 握手は 2025-11-25 と 2025-06-18。失敗したら 2026-07-28 の `server/discover`。応答は JSON と SSE の両方を読む。
+- 外への通信は必ず `ctx.fetch` を使う。`ctx.fetch` の決まり: HTTPS だけ。内部向けの名前と数字のアドレスを拒否。転送は 3 回まで、毎回検査。別の host への転送に、許可と鍵を持ち出さない。応答は 1MB まで（実測の最大 606KB）。待ちは 10 秒（道具の呼び出しは 60 秒）。名前を引いた先のアドレスの検査は、Node で動かす時に足す（Worker からは内部のアドレスへ届かない）。
+- `mcp-remote`: 最新の版（2025-11-25）を名乗り、相手がエラーを返した時だけ 1 つ前（2025-06-18）でもう 1 回だけ試す。受け入れる版は 2025-11-25・2025-06-18・2025-03-26・2024-11-05（実測で 1.5% が返す）。2026-07-28 の `server/discover` は、応じる相手が 273 のうち 8 なので、今は使わない。応答は JSON と SSE の両方を読む。やり取りの形と結果の表は [実装仕様書 86](noah/spec-86-remote-mouth.md)。
 - 401 は `auth_required` として返す。許可の取得は 5 章の手順。`ctx.token` は中継の中だけで呼ぶ。
 
 ### ターミナルの口（起動の型紙）
@@ -409,10 +410,11 @@ export type NoahMouthContext = { fetch: typeof fetch; token?: () => Promise<stri
 | --- | --- | --- |
 | npm | `npx -y <identifier>@<version> <引数…>` | identifier は npm の名前の形。version は 1 つに決まる版（範囲は不可） |
 | PyPI | `uvx <identifier>==<version> <引数…>` | identifier は英数字と `._-`。version は 1 つに決まる版 |
-| OCI | `<identifier>@sha256:<digest>` を隔離環境の image として起動 | digest が必須 |
+| OCI | `<identifier>@sha256:<digest>` を隔離環境の image として起動 | **hash は、取り込みの時に Noah が tag から引いて固定する**（台帳で hash を持つのは 1,759 件のうち 11 件）。対応する registry は docker.io と ghcr.io |
 | ACP | 台帳の `distribution`（npx・uvx・binary の URL）を上と同じ型紙へ | binary は URL と hash を固定 |
 
-- 引数は台帳の型の付いた引数だけ。環境変数は、台帳が宣言した名前だけを、Broker が持つ値で入れる。
+- 引数は台帳の型の付いた引数だけ。台帳の「実行器への引数」（`docker` の `-v`・`--network` など）は、そのまま渡さず、型紙の中の意味へ読み替えられる 5 つの書き方だけを使う（[実装仕様書 89](noah/spec-89-terminal-mouth.md)）。環境変数は、台帳が宣言した名前だけを、Broker が持つ値で入れる。
+- 中身の固定（npm の `dist.integrity`、PyPI の配布の sha256、OCI の hash）は、取り込みの時に Noah が行う。固定していない配布は動かさない。
 - 導入の時だけ registry への通信を開ける。実行の時は接続要件の `egress` だけ。
 - 起動した物とは、標準入出力で話す（`mcp-package` は MCP、`acp` は ACP）。依頼・進行・成果・停止を `noah-terminal/1` と同じ受け渡しへ載せる。
 - 提供元のモデルに固定で、本人の契約か鍵が要る Agent は、置き場所を `home` だけにする。
@@ -438,7 +440,7 @@ export type NoahMouthContext = { fetch: typeof fetch; token?: () => Promise<stri
 - 道具の説明は 1 道具 1,024 文字、合計 32KB で切る。入り切らない時は、依頼の言葉に近い道具を先に入れる。
 - 1 回の仕事で使う接続先は 1 つ。別の接続の成果や記憶を渡さない。鍵と token を持たない（呼び出しは中継が行う）。
 - 道具が 1 つで必須の入力が 2 個以下なら、画面は入力欄をそのまま出し、モデルを使わずに呼ぶ。
-- サーバー側の仕事として動かす。モデルの呼び出しと道具の呼び出しを 1 step とし、途中で止まっても同じ step を 2 回実行しない。
+- 仕事の種類は 2 つ。入力欄から道具を 1 回呼ぶ仕事（`form`）は、Web の本体の中で動かす（応答の後の `waitUntil`、25 秒まで）。1 文で頼む仕事（`agent`）は、専用の Worker（`services/noah-relay`）の Durable Object で動かす（今の `services/noah-test-runtime` と同じ作り。配備は本人の許可の後）。モデルの呼び出しと道具の呼び出しを 1 step とし、途中で止まっても同じ step を 2 回実行しない。鍵と token は専用の Worker へ渡さず、道具の呼び出しは Web の本体へ頼み返す（[実装仕様書 87](noah/spec-87-tool-agent.md)）。
 
 ### 試験
 
@@ -549,30 +551,30 @@ export type NoahMouthContext = { fetch: typeof fetch; token?: () => Promise<stri
 
 ## 14. 画面を取らない検査
 
-### 面の見分け（`lib/noah-surface-class.ts`、純関数）
+### 面の見分け（`lib/noah-surface-class.ts`、純関数。正本は [docs/contracts/noah-screenless-v1.ts](contracts/noah-screenless-v1.ts)）
 
-```ts
-export type NoahSurface = 'none' | 'terminal' | 'browser' | 'screen' | 'own-device';
-export function classifyNoahSurface(input: { mouth: string; dependencies: string[]; imports: string[]; commands: string[] }): { surface: NoahSurface; reasons: string[] };
-```
+面は 2 段で決める。依存の一覧だけで決めると、今動いている 13 件のうち 2 件（Anicca・QwenPaw）を誤って止めるため。
 
-| 手がかり（依存・import・コマンド） | 面 |
-| --- | --- |
-| `osascript`、`applescript`、`pyobjc`、`Quartz`、`AppKit`、`uiautomator`、`adb`、`appium`、`pywinauto`、`uiautomation` | `own-device` |
-| `pyautogui`、`pynput`、`xdotool`、`wmctrl`、`mss`、`robotjs`、`nut-js`、VNC | `screen` |
-| `playwright`、`puppeteer`、`selenium`、`browser-use`、`chromium`、`stagehand` | `browser` |
-| それ以外で、口が `acp`・`mcp-package`・`source` | `terminal` |
-| 口が `mcp-remote`・`space-mcp`・`a2a` | `none` |
+1. **使おうとする面**（`classifyNoahSurface`）: 実行時の依存・import・コマンドから読む手がかり。開発用・任意・別の OS だけの依存は読まない（`noahRuntimeDependencies`）。名前は完全に一致した時だけ当てる。強い方を採る（`own-device` ＞ `screen` ＞ `browser` ＞ `terminal`）。説明文では決めない。
+2. **決めた面**（`decideNoahSurface`）: 接続要件に書く値。
 
-強い方を採る（`own-device` ＞ `screen` ＞ `browser` ＞ `terminal`）。説明文だけでは決めない。
+| 条件 | 決めた面 | カードの 1 行 |
+| --- | --- | --- |
+| 口が `mcp-remote`・`space-mcp`・`a2a` | `none` | 「画面を使いません」 |
+| 審査済みの実行の定義がある（`RECIPES`、`noah-terminal/1`）か、画面の無い隔離環境での見本の 1 往復が通った | `terminal` | 使おうとする面が `browser` なら「ブラウザを使う機能は動きません。」、`screen`・`own-device` なら「画面を操作する機能は動きません。」 |
+| どちらも無く、使おうとする面が `browser`・`screen` | そのまま | 専用の端末の中の画面が要る（task 91 の後） |
+| どちらも無く、使おうとする面が `own-device` | `own-device` | 一覧に出さない。接続計画は `blocked` |
+
+当てる名前の全部と、実測（manifest を読めた 33 件）は [実装仕様書 84](noah/spec-84-screenless.md)。
 
 ### リポジトリの検査（`scripts/check-noah-screenless.mjs`。`npm run verify` に足す）
 
-1. 隔離環境の起動引数（`containerArgs`、`terminalContainerArgs`）に、`--network none`、`--read-only`、`--cap-drop ALL`、`no-new-privileges`、`DISPLAY=` の空の指定が有る。
-2. 同じ引数に、host の mount（`-v`、`type=bind`）、`--privileged`、`--network host`、`--device` が無い。
-3. VM の起動引数に `--mount none` が有る。
-4. runner の常駐の定義（LaunchAgent）に、画面収録・アクセシビリティ・自動操作の利用の宣言が無い。
-5. 今の対応 13 件と `noah-terminal/1` の登録の面が、全部 `terminal`。
+文字列の検索でなく、**本物の関数が返す引数の配列**を調べる（`auditNoahContainerArgs`・`auditNoahVmArgs`）。今の main で違反 0 を確かめてある。
+
+1. `containerArgs`（`RECIPES` の 13 件）と `terminalContainerArgs`（実行と配置）に、`--network none`、`--read-only`、`--cap-drop ALL`、`--security-opt no-new-privileges`、root 以外の `--user`、`--memory`・`--cpus`・`--pids-limit` が有る。
+2. 同じ引数に、host の mount（`-v`、`type=bind`、`src=/…`）、`--privileged`、`--device`、`--cap-add`、`--pid`・`--ipc`・`--userns`、port の公開、値を持つ `DISPLAY`・`WAYLAND_DISPLAY`・`XAUTHORITY`・`DBUS_SESSION_BUS_ADDRESS`・`PULSE_SERVER`・`SSH_AUTH_SOCK`、docker と X11 の socket が無い。
+3. VM の起動引数（`engineArgs()` に切り出す）に `--mount none` が有り、`--ssh-agent`・`--network-address`・`--network-host-addresses` が無いか `=false`。
+4. 今の対応 13 件と `noah-terminal/1` の登録の、決めた面が全部 `terminal`。
 
 ### 端末での観測（検査用の Mac でだけ動かす）
 
@@ -592,15 +594,25 @@ export function classifyNoahSurface(input: { mouth: string; dependencies: string
 
 ### 15.1 新しい表（migration は `drizzle/` に置く。本番への適用は本人の許可の後）
 
-| 表 | 列（型。`!` は必須） | 制約・索引 |
+列・制約・索引の正本は [docs/contracts/noah-v1.sql](contracts/noah-v1.sql)（13 個）。既存の migration を流した一時 DB の上で、制約の拒否 55 行と、設計書に書いた問い合わせを [validate-noah-v1.py](design-validation/noah/validate-noah-v1.py) が確かめている。
+
+| 表 | 何を持つか | 主な決まり |
 | --- | --- | --- |
-| `noah_connections`（Passport） | `id` text 主キー（接続の操作 ID）、`owner_id` text!、`family_key` text!、`agent_id` text!、`digest` text!、`connect_sha256` text!、`tools_sha256` text、`place` text!、`device_id` text、`state` text!、`revision` integer!、`consent_json` text!、`price_json` text!、`cost_taps` integer!、`cost_typed` integer!、`probe_ms` integer、`error` text、`created_at` integer!、`updated_at` integer!、`disconnected_at` integer | `place` は `provider`・`home`・`cloud`・`pocket`。`state` は 16 章の値。同じ `owner_id`・`family_key` で `disconnected_at IS NULL` の行は 1 件（一意）。索引 `(owner_id, updated_at)` |
-| `noah_intake_checks` | `candidate_id` text 主キー、`family_id` text!、`mouth` text!、`surface` text!、`auth` text!、`connect_json` text!、`connect_sha256` text!、`tools_sha256` text、`tool_count` integer、`read_only` integer、`level` integer!、`result` text!、`latency_ms` integer、`sample_json` text、`checked_at` integer、`l2_at` integer、`next_check_at` integer!、`failures` integer!、`claimed_by` text、`withdrawn_at` integer | `level` は 0・1・2。`result` は `ok`・`auth_required`・`unreachable`・`incompatible`・`unchecked`。`auth` は `none`・`oauth`・`key`・`unknown`。索引 `(next_check_at)`、`(family_id)`、`(level, l2_at)` |
-| `noah_oauth_clients` | `issuer` text 主キー、`client_id` text!、`method` text!、`registration_json` text!、`created_at` integer! | `method` は `cimd`・`dcr` |
-| `noah_oauth_grants` | `id` text 主キー、`owner_id` text!、`resource` text!、`issuer` text!、`scopes` text!、`token_ciphertext` text!、`refresh_ciphertext` text、`expires_at` integer、`created_at` integer!、`revoked_at` integer | 同じ `owner_id`・`resource` で有効な行は 1 件。値は暗号化して保存し、一覧の API に出さない |
-| `noah_standing_works` | `id` text 主キー、`owner_id` text!、`connection_id` text!、`prompt` text!、`trigger_json` text!、`limits_json` text!、`state` text!、`runs` integer!、`failures` integer!、`next_run_at` integer、`revision` integer!、`created_at` integer!、`updated_at` integer! | `state` は `active`・`paused`・`stopped`・`limit_reached`・`failed_stopped`。索引 `(state, next_run_at)` |
-| `noah_usage_events` | `id` text 主キー（仕事の ID）、`owner_id` text!、`family_key` text!、`digest` text!、`place` text!、`mouth` text!、`result` text!、`seconds` integer!、`input_tokens` integer!、`output_tokens` integer!、`cost_micro_usd` integer!、`price_minor` integer!、`currency` text!、`created_at` integer! | 索引 `(owner_id, created_at)`、`(family_key, created_at)` |
-| `noah_agent_variants` | [services/noah-mobile-variant.md](services/noah-mobile-variant.md) のとおり | — |
+| `noah_intake_sources` | 取り込みの出どころ 3 つ（公式台帳・Space・ACP）の lease、途中の頁、次の時刻 | 出どころは 3 種だけ |
+| `noah_intake_candidates` | 外の 1 件。ID は `出どころ:鍵`。元の記録の写しと hash、系列、名寄せの鍵、リポジトリ、host、動いているか | 出どころと鍵で一意。`unsupported` は理由が必須 |
+| `noah_intake_checks` | 候補ごとの、口・面・鍵の要否・接続要件の下書き・接続試験の結果（深さ、道具の定義の hash、見本、次に確かめる時刻） | 深さ 1 以上は道具の定義の hash が必須。深さ 2 は時刻が必須 |
+| `noah_intake_families` | 系列（カード 1 枚）。代表、件数、深さ、印の目安、つないでいる本人の数、引き取り・取り下げ・隠した時刻 | タイムライン用の索引（L2 が新しい順） |
+| `noah_probe_hosts` | host ごとの、最後に握手した時刻と、次に握手してよい時刻 | 同じ host へは 1 時間に 1 回 |
+| `noah_connections`（Passport） | 本人と版の接続。ID は接続の操作 ID。同意した時の接続要件の写し、計画の hash、道具の定義の hash、確かめた道具、許した通信先、置き場所、端末、状態、手数 | 同じ本人・同じ系列で、切っていない接続は 1 件。家・手元は端末が必須。状態と時刻が対 |
+| `noah_connection_secrets` | 本人が入れた鍵（暗号化した値だけ） | 鍵を入れてつなぐ機能は後の task。表だけ用意 |
+| `noah_oauth_clients` | 認可サーバーごとの、Noah の client の登録 | `cimd` か `dcr` |
+| `noah_oauth_states` | 認可の往復 1 回分（state の hash、暗号化した verifier、戻り先） | 1 回だけ・10 分・本人だけ。戻り先は `/noah` の中 |
+| `noah_oauth_grants` | 本人ごとの許可（暗号化した token） | 同じ本人・同じ接続先で、有効な物は 1 件 |
+| `noah_asks` | 置き場所が `provider` の依頼の進み具合（状態、あなたの番で確かめている道具、step の番号、使った量） | 本文は置かない。step の番号が合う時だけ進む。止めた後の成功を採らない |
+| `noah_standing_works` | 継続運用の予定 | `active` の時だけ次の時刻を持つ |
+| `noah_usage_events` | 利用の記録。1 つの仕事につき 1 行 | 計測できなかった費用は NULL（0 と書かない） |
+
+`noah_agent_variants` は [services/noah-mobile-variant.md](services/noah-mobile-variant.md) のとおり（この DDL には入れていない）。
 
 ### 15.2 既存の表（列も意味も変えない）
 
@@ -609,9 +621,11 @@ export function classifyNoahSurface(input: { mouth: string; dependencies: string
 | `noah_runner_devices` | `id`、`owner_id`、`credential_sha256`（一意）、`boot_id`、`name`、`platform`、`created_at`、`last_seen_at`、`revoked_at` | 家の端末 1 台が 1 行。`platform` に Mac 以外（Linux）の値も入る |
 | `noah_runner_commands` | `id`、`owner_id`、`device_id`、`boot_id`、`kind`（`connect`・`run`）、`state`（`queued`・`claimed`・`succeeded`・`failed`・`cancelled`・`unknown`）、`payload`、`lease_until`、`stop_requested`、`result`。端末 1 台につき `claimed` は 1 件 | 置き場所が `home` の接続と実行は、今と同じ命令を入れる。`payload` の形（`pin`・`connectionId`・`prompt`）も変えない |
 | `noah_instances` | `id`、`owner_id`、`family_key`、`payload`（選んだ版・履歴）、`revision`。本人と系列で一意 | 版の選択と履歴の正本のまま。`noah_connections` は、その版をどこへどうつないだかを持つ |
-| `noah_discovery_*` | 出どころ・候補・版 | 取り込みの記録。出どころの種類を足す |
+| `noah_discovery_*` | 出どころ・候補・版（GitHub の topic と Space の検索。2 時間ごとに 10 件） | 変えない。取り込みは別の表（15.1） |
 
 ### 15.3 接続要件 `noah-connect/1`
+
+型と検査の正本は [docs/contracts/noah-connect-v1.ts](contracts/noah-connect-v1.ts) の `parseNoahConnect`。規則 14 個と、口ごとの `target` の形は [実装仕様書 73](noah/spec-73-connect-plan.md)。
 
 | 項目 | 型 | 決まり |
 | --- | --- | --- |
@@ -619,17 +633,17 @@ export function classifyNoahSurface(input: { mouth: string; dependencies: string
 | `packageKey`・`manifestSha256` | 文字列 | 載せた版を指す時。取り込んだ物は代わりに `candidateId`・`candidateDigest`。どちらか一方が必須 |
 | `mouth` | 文字列 | 1 章の口の値 |
 | `surface` | 文字列 | 1 章の面の値。`own-device` は保存はできるが、計画は `blocked` |
-| `places` | 文字列の配列 | `provider`・`home`・`cloud`・`pocket`。1 つ以上。機種の名前は拒否 |
-| `target` | object | `mcp-remote`: `{ "url" }`。`space-mcp`: `{ "spaceId", "host" }`。`acp`・`mcp-package`: `{ "registryType", "identifier", "version", "args": [], "env": ["名前"] }` |
-| `codeDelivery` | 文字列 | `cloud_only`・`device_allowed`・`none`（相手のサーバー） |
-| `model` | object | `{ "use": "relay"｜"none"｜"provider"｜"own_account", "needs": ["text"], "minContextTokens" }`。`own_account` は置き場所が `home` だけ |
-| `egress` | 文字列の配列 | host の名前だけ。`*` は不可 |
+| `places` | 文字列の配列 | `provider`・`home`・`cloud`・`pocket`。1 つ以上。機種の名前は拒否。**相手のサーバーの口は `provider` だけ。端末の口は `provider` を持てない。`pocket` は口が `source` の時だけ** |
+| `target` | object | `mcp-remote`: `{ url, headers }`。`space-mcp`: `{ spaceId, host }`。`a2a`: `{ cardUrl }`。`mcp-package`・`acp`: `{ registryType, identifier, version, integrity, args, command?, extras?, env, fixedEnv? }`。`source`: `{ runtime, key }` |
+| `codeDelivery` | 文字列 | `none`（相手のサーバーの口だけ）・`cloud_only`・`device_allowed` |
+| `model` | object | `{ "use": "none"｜"local"｜"relay"｜"provider"｜"own_account", "needs": [], "minContextTokens" }`。`local` は端末のモデル（今の 13 件のうち 11 件）で、置き場所は `home`・`pocket` だけ。`own_account` は `home` だけ |
+| `egress` | 文字列の配列 | 公開の host の名前だけ。`*` は不可。相手のサーバーの口は、接続先の host 1 つ |
 | `services` | 配列 | `{ "id", "method": "oauth"｜"official_login"｜"none", "required", "purpose" }` |
-| `secrets` | 文字列の配列 | 本人が貼る鍵の名前。1 つでもあれば「準備が必要」 |
+| `secrets` | 文字列の配列 | 本人が入力する物の名前（header・環境変数・URL の変数・引数）。1 つでもあれば「準備が必要」 |
 | `uses` | 文字列の配列 | 一緒につなぐ他の Agent・道具 |
 | `try` | object | `{ "input" }`。見本の入力 |
 
-未知の項目は拒否する。秘密値らしい値（長い乱数、`sk-` で始まる値など）が入っていたら拒否する。hash は、決まった順の JSON の sha256。
+未知の項目は拒否する。値を持てる欄に秘密値らしい値が入っていたら拒否する（URL は host を見ず、パスと query を接頭辞だけで見る。ID のような長い英数字は通す）。hash は、鍵を並べ替えた JSON の sha256。全体で 16KB まで。
 
 ## 16. 状態遷移
 
@@ -640,11 +654,13 @@ export function classifyNoahSurface(input: { mouth: string; dependencies: string
 | （無し） | 接続を受け付けた | `planned` |
 | `planned` | 利用権の確認を始めた | `entitling` |
 | `entitling` | 通った／支払い・許可が要る／失効 | `preparing`／`needs_action`／`blocked` |
-| `preparing` | 置き場所の準備が終わった／失敗 | `probing`／`failed` |
+| `preparing` | 置き場所の準備が終わった／相手の許可が要る／失敗 | `probing`／`needs_action`／`failed` |
 | `probing` | 疎通が返った／返らない／結果を確かめられない | `connected`／`failed`／`unknown` |
-| `needs_action` | 本人が段を済ませた | 止まった段から続ける |
+| `needs_action` | 本人が段を済ませた | `planned`（最初から通す。終わった段は、何回通っても同じ結果になるように書いてあるので飛ばされる） |
 | `connected` | 切った／道具の定義が変わった／審査失効・返金 | `disconnected`／`needs_action`／`blocked` |
-| `failed`・`unknown` | もう一度／照合 | `planned`／照合の結果 |
+| `failed` | もう一度 | `planned` |
+| `unknown` | 照合（自動でやり直さない） | `connected`／`failed` |
+| どの状態でも（切った後を除く） | 切った | `disconnected` |
 
 **仕事の受け渡し（`noah_runner_commands.state`。既存）**: `queued` →（端末が取った）`claimed` →（完了）`succeeded`／（失敗）`failed`／（停止の確認）`cancelled`／（lease 切れ）`unknown`。`unknown` を自動で `queued` に戻さない。
 
@@ -656,19 +672,21 @@ export function classifyNoahSurface(input: { mouth: string; dependencies: string
 
 ## 17. 開発の進め方
 
+task の番号は、その作業単位の実装仕様書へつながっている（段 2 以降は、段 1 が動いた後に同じ形で足す）。
+
 共通の検証コマンド: `npm run typecheck`、`npm run lint:product`、`node --experimental-strip-types --test tests/<対象>.test.mjs`、最後に `npm run verify`。
 
 | 順 | task | 章 | 作る物（主なファイル） | 完了の定義 |
 | --- | --- | --- | --- | --- |
 | 0 | 71 | 6・7 | 既存の runner と受け渡し | 本人の Mac で、選ぶ・接続・実行・**正常完了と成果の受け取り**・停止が通る |
-| 0 | 84 | 14 | `lib/noah-surface-class.ts`、`scripts/check-noah-screenless.mjs` | 14 章の試験が全部通る。今の main で検査が通る |
-| 1 | 85 | 8・15 | `lib/noah-intake.ts`、`lib/noah-intake-family.ts`、`noah_intake_checks` | 台帳の断片から、口ごとの件数と系列が期待どおり |
-| 1 | 73 | 5・15.3 | `lib/noah-connect-requirements.ts`、`lib/noah-connect-plan.ts`、`GET /api/noah/connect-plan`、`components/noah-card.tsx` | 計画の表の全行がテストで通る。13 件と取り込んだ物の全部に印が出る |
-| 1 | 86 | 5・9 | `lib/noah-mouth-mcp-remote.ts`、`lib/noah-mouth-space.ts`、`lib/noah-oauth-client.ts`、`lib/noah-probe.ts`（L1） | 試験用の接続先 6 種で期待どおり。公開の接続先 20 件に L1 が付く |
-| 1 | 87 | 9 | `lib/noah-tool-agent.ts`、`POST /api/noah/ask`（`provider`） | 9 章の試験が全部通る |
-| 1 | 74 | 5・7 | `lib/noah-connect.ts`、`POST /api/noah/connect`、`noah_connections`、`noah-connect-button.tsx`、`noah-connect-sheet.tsx` | 5 章の試験が全部通る |
-| 1 | 88 | 4・8 | `lib/noah-probe.ts`（L2）、`scripts/noah-probe-daemon.mjs`、運営の tab | 4 章と 8 章の試験が通る。つながると確かめた数が出る |
-| 1 | 89 | 9 | `lib/noah-mouth-acp.ts`、`lib/noah-mouth-mcp-package.ts` | ACP 3 件と package 20 件が、Agent ごとのコードなしで、本人の Mac の隔離環境で 1 往復 |
+| 0 | [84](noah/spec-84-screenless.md) | 14 | `lib/noah-surface-class.ts`、`lib/noah-screenless-audit.mjs`、`scripts/check-noah-screenless.mjs` | 14 章の試験が全部通る。今の main で検査が通る |
+| 1 | [85](noah/spec-85-intake.md) | 8・15 | `lib/noah-intake-draft.ts`、`lib/noah-intake-family.ts`、`lib/noah-intake-store.ts`、`noah_intake_*` | 台帳の断片から、口ごとの件数と系列が期待どおり |
+| 1 | [73](noah/spec-73-connect-plan.md) | 5・15.3 | `lib/noah-connect-requirements.ts`、`lib/noah-connect-plan.ts`、`GET /api/noah/connect-plan`、`components/noah-card.tsx` | 計画の表の全行がテストで通る。13 件と取り込んだ物の全部に印が出る |
+| 1 | [86](noah/spec-86-remote-mouth.md) | 5・9 | `lib/noah-mouth-mcp-remote.ts`、`lib/noah-mouth-space.ts`、`lib/noah-oauth-client.ts`、`lib/noah-probe.ts`（L1） | 試験用の接続先 6 種で期待どおり。公開の接続先 20 件に L1 が付く |
+| 1 | [87](noah/spec-87-tool-agent.md) | 9 | `lib/noah-tool-agent.ts`、`lib/noah-ask.ts`、`POST /api/noah/ask`、`noah_asks`、`services/noah-relay` | 9 章の試験が全部通る |
+| 1 | [74](noah/spec-74-one-click-connect.md) | 5・7 | `lib/noah-connect.ts`、`POST /api/noah/connect`、`noah_connections`、`noah-connect-button.tsx`、`noah-connect-sheet.tsx` | 5 章の試験が全部通る |
+| 1 | [88](noah/spec-88-mass-probe.md) | 4・8 | `lib/noah-probe.ts`（L2）、`scripts/noah-probe-daemon.mjs`、運営の tab | 4 章と 8 章の試験が通る。つながると確かめた数が出る |
+| 1 | [89](noah/spec-89-terminal-mouth.md) | 9 | `lib/noah-mouth-acp.ts`、`lib/noah-mouth-mcp-package.ts` | ACP 3 件と package 20 件が、Agent ごとのコードなしで、本人の Mac の隔離環境で 1 往復 |
 | 2 | 90 | 3・6 | `noah-ask.tsx`、`noah-work-list.tsx`、通知 | 幅 390 の実ブラウザで、PC の前に座らずに一周 |
 | 2 | 83 | 7 | 導入の同梱、QR の承認、`noah-device-list.tsx` | 何も入っていない Mac で、導入 1 つと承認 1 回 |
 | 2 | 92 | 10 | `lib/noah-standing-work.ts`、`noah_standing_works` | 10 章の試験が通る |
@@ -694,6 +712,10 @@ export function classifyNoahSurface(input: { mouth: string; dependencies: string
 | つながってから払う | `NOAH_PAY_AFTER_CONNECT` | 閉 | 有料の接続を受け付けない（今の購入の画面はそのまま） |
 | 並び順に実測を使う | `NOAH_RANK_BY_CONNECT` | 閉 | 今の並び順 |
 | 無料枠 | `NOAH_FREE_RUNS_PER_DAY` | 10 | — |
+| 許可と鍵を包む鍵 | `NOAH_BROKER_KEY` | 無し | 相手の許可の段が「準備が必要」になる（許可を保存できないため） |
+| 1 文で頼む仕事の実行の場 | `services/noah-relay` の配備 | 配備しない | 手元でだけ動く。入力欄で頼む仕事は、今の配備のまま動く |
+| 鍵を入れてつなぐ | — | 作らない | 印が「準備が必要」の Agent は、足りない物を見せる所まで |
+| 復旧コードを見せる時機 | — | 今のまま（登録の時に 1 回） | account の安全の作りなので、Noah の task では動かさない |
 | 継続運用の上限 | — | 24 時間・100 回・同時 1 件 | — |
 | 作る人に見せる最小の人数 | — | 5 | — |
 

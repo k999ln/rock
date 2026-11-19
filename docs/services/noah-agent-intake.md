@@ -24,7 +24,7 @@
 
 | 口 | 届く数 | 動く所 | 起動の作り方 |
 | --- | --- | --- | --- |
-| `mcp-remote` | 45,668。鍵なしで応答する host は約 1 万 7 千 | 提供者 | 台帳の URL へ接続。握手は 2025-06-18 と 2025-11-25、次に 2026-07-28 の `server/discover` |
+| `mcp-remote` | 45,668。鍵なしで応答する host は約 1 万 7 千 | 提供者 | 台帳の URL へ接続。握手は最新の版（2025-11-25）を名乗り、断られたら 2025-06-18 で 1 回だけ試す。2024-11-05 を返す相手（1.5%）も受ける |
 | `space-mcp` | 動いている 4,275 の約 82% | 提供者 | `/gradio_api/mcp/` と定義の取得。動いている物だけ |
 | `acp` | 46 | 専用の端末 | 台帳の配布（npx・uvx・binary の URL と hash）を固定の型紙へ入れる |
 | `mcp-package` | 25,063。鍵なし 12,649 | 専用の端末（雲） | 台帳の識別子と版を、種類ごとの固定の型紙へ入れる（npm・PyPI・OCI・MCPB） |
@@ -64,7 +64,7 @@
 
 ## 保存と API
 
-- 取り込みの記録は、今の発見の作り（`noah_discovery_sources`・`noah_discovery_candidates`・`noah_discovery_versions`。lease・ETag・内容 hash・取り下げ）にならう。出どころに `mcp-registry`・`acp-registry` と、Hugging Face の `mcp-server` の取得を足す。今の表は出どころを `github`・`huggingface` に限る CHECK を持つので、広げる migration か同じ形の別表かを実装で決める。既存の行の意味は変えない。
-- `noah_intake_checks`（新設）: candidate_id、family_id、mouth、surface、connect_json、connect_sha256、tools_sha256、level、result、checked_at、next_check_at、claimed_by。
+- 取り込みの記録は、**別の表**に置く（`noah_intake_sources`・`noah_intake_candidates`・`noah_intake_checks`・`noah_intake_families`・`noah_probe_hosts`。DDL は [docs/contracts/noah-v1.sql](../contracts/noah-v1.sql)）。今の発見の表は、出どころを `github`・`huggingface` に限る CHECK を持ち（SQLite は CHECK だけを変えられない）、鍵がリポジトリで、上限が 10,000 件なので、足さない。巡回の作り（lease・内容 hash・取り下げ）は発見にならう。既存の行の意味は変えない。
+- 候補の ID は `出どころ:鍵`（例 `mcp-registry:ac.mizan/registry`）。口・面・接続要件の下書き・接続試験の結果は `noah_intake_checks`、系列・引き取り・取り下げは `noah_intake_families`。1 件がどの列になるかは [実装仕様書 85](../noah/spec-85-intake.md)。
 - 一覧は今の候補の API に、口・深さの絞り込みを足す。`POST /api/noah/intake/[id]`: `{ action: "claim" | "withdraw" | "recheck", revision }`。同一 Origin と ownerScope が必須。
-- 巡回は今の発見の経路（`scripts/noah-discovery-daemon.mjs`）と同じ置き方で動かす。今の間隔（2 時間）と候補の上限（10,000 件）は、台帳の件数（有効 66,608）と差分取得に合わせて見直す。
+- 巡回は今の発見の経路（`scripts/noah-discovery-daemon.mjs`）と同じ置き方で動かす（空の `POST /api/noah/intake` 1 回で、期限の来た分を上限つきで進める。台帳は 1 回に 10 頁まで）。握手は 1 回に 8 件、同じ host へは 1 時間に 1 回まで。

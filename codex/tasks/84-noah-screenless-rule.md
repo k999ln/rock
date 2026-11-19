@@ -1,25 +1,25 @@
 # 84 画面を取らない決まりと検査
 
-設計: docs/noah-agent-market-design.md §1.3・§4.2、docs/services/noah-screenless.md。最初にやる。契約も許可も要らない。
+仕様: **[docs/noah/spec-84-screenless.md](../../docs/noah/spec-84-screenless.md)**（これ 1 本で足りる）。型と参照実装: docs/contracts/noah-screenless-v1.ts。試験: docs/design-validation/noah/noah-screenless.test.mjs（今の main で通過済み）。最初にやる。契約も許可も要らない。
 
-## やること
+## やること（仕様書 6 章の順）
 
-1. lib/noah-surface-class.ts: 面の見分け（`none`・`terminal`・`browser`・`screen`・`own-device`）。依存と import から決める純関数。理由を返す。説明文だけで決めない。
-2. scripts/check-noah-screenless.mjs: リポジトリの検査。隔離環境の起動引数（`scripts/noah-isolated-runtime.mjs`、`scripts/noah-terminal-runtime.mjs`）に `DISPLAY`・host の mount・host の network・特権が無いこと。runner と client の権限の宣言に、画面・入力・録画・自動操作が無いこと。`npm run verify` に足す。
-3. 今ある 13 件（`RECIPES`）と `noah-terminal/1` の登録に面を付ける。全部 `terminal` になることを試験で固定する。
-4. 「閉じても進む」の回帰試験。依頼の後に client を切り、runner だけで完了と成果の保存まで進むこと。
-5. 画面の決まり。実行中の表示を、操作を塞がない小さな表示にする。許可待ちは「あなたの番」の一覧と通知へ出す。
-6. Mac の検査用の計測（検査用の端末でだけ動かす）: 実行中の前面アプリ・窓の一覧・クリップボードの版・runner の権限。結果を Work に残す。
+1. scripts/noah-isolated-runtime.mjs: VM の起動引数を `export function engineArgs()` に切り出す。引数の中身は 1 文字も変えない。
+2. lib/noah-screenless-audit.mjs（`.mjs`。scripts から import するため）: 参照実装の `auditNoahContainerArgs`・`auditNoahVmArgs` を移す。
+3. lib/noah-surface-class.ts: 参照実装の `NOAH_SURFACE_SIGNS`・`noahRuntimeDependencies`・`classifyNoahSurface`・`decideNoahSurface`・`noahPlacesForSurface` を移す。書き直さない。
+4. scripts/check-noah-screenless.mjs: `RECIPES` の 13 件の `containerArgs`、`terminalContainerArgs`（実行 2 通りと配置）、`engineArgs()` を検査する。package.json に `noah:screenless:check` を足し、`verify` の鎖へ入れる。
+5. 試験を tests/noah-surface-class.test.mjs・tests/noah-screenless.test.mjs へ移す。「閉じても進む」の回帰試験 tests/noah-launch-close.test.mjs を足す（`overview` を呼ばずに、端末側の `poll` → `start` → `finish` だけで Work に成果が入る）。
+6. scripts/noah-screenless-observe.mjs（検査用の Mac でだけ動かす）: 前面のアプリ・窓の数・クリップボードの版・runner の権限。取り方は仕様書 6 章の候補を Mac で確かめてから決める。
 
-## 変えないもの
+## 決めてある事（変えない）
 
-- `noah-isolation/1` の値。隔離の条件。Broker の実行前確認。
-- 画面の内容や入力の中身を記録しない。
+- 面は 2 段。依存から読むのは「使おうとする面」。接続要件に書くのは「決めた面」。今の 13 件は、審査済みの実行の定義なので全部 `terminal`（Anicca と QwenPaw は、依存に playwright・mss を持つが、止めない）。
+- 読むのは実行時の依存だけ。名前は完全に一致した時だけ当てる。説明文は入力にしない。
+- `noah-isolation/1` の値、`containerArgs`・`terminalContainerArgs` の引数、Broker の実行前確認、`RECIPES`。画面の内容や入力の中身を記録しない。
 
 ## 合格条件
 
-- tests/noah-surface-class.test.mjs: `pyautogui`・`osascript`・`adb` を使う例が `screen` か `own-device` になり、接続計画が `own-device` を `blocked` にする。
-- 検査のスクリプトが今の main で通り、起動引数に `--env DISPLAY=:0` を足した変更で落ちる。
-- 13 件の実行中、検査用の Mac で、前面アプリの変化 0、新しい窓 0、クリップボードの変化 0。
-- 依頼の後に画面を閉じた仕事が完了し、次に開いた時に成果がある。
-- `npm run typecheck`、`npm run lint:product`。
+- `node scripts/check-noah-screenless.mjs` が今の main で 0。`terminalContainerArgs` に `'--env','DISPLAY=:0'` を足した作業用の変更で 1。
+- `node --experimental-strip-types --test tests/noah-surface-class.test.mjs tests/noah-screenless.test.mjs tests/noah-launch-close.test.mjs`。緩めた変更 15 通りが落ちる。
+- `npm run typecheck`、`npm run lint:product`、`npm run verify`。
+- PR 本文に、検査用の Mac での観測（4 項目の変化の数）か、まだ行っていない事を書く。
