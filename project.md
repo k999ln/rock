@@ -2,9 +2,9 @@
 
 更新日: 2026-11-20。現在の優先順位は[構成正本](docs/structure/00-overview.md)、名称は[名称正本](docs/structure/06-naming.md)、要件の検査入力は[product baseline](docs/product-baseline.md)。
 
-## 現在の作業
+## 今回の整理
 
-[task73](codex/tasks/73-current-product-consolidation.md)でNoah/Eveの共通通信・コード取得と現行説明を整理する。本人MacでAgent選択・接続・実行・成果受領・停止を完成させ、その後にmiiの声/Eve/空間操作へ進む優先順位を維持する。
+[task73](codex/tasks/73-current-product-consolidation.md)でNoah/Eveの共通通信・コード取得・型検査と現行説明を整理済み。本人MacでAgent選択・接続・実行・成果受領・停止を完成させ、その後にmiiの声/Eve/空間操作へ進む優先順位を維持する。
 
 - MacのAPI接続、私有/招待/公開版の取得容量照合、Eveの仕事の読み書きを共通化。本人・招待期限・審査・revision・停止の条件は保持する。
 - 設計の入口・名称・OS導入の説明を正本への参照へ揃える。公開Webのdevice sessionとlocalhostの認証を混ぜない。
@@ -12,7 +12,7 @@
 
 ## 検証と再開
 
-共通化の対象試験83件と追加の境界試験4件が成功。全体検証とPR同一SHAのCIは確認中。変更はGit整理と共通処理の保守であり、Noahの別Mac通し受入・mii実機・本番公開の完了とは区別する。
+対象試験は先行83件・追補48件・Git後処理12件が成功。`npm run verify`はexit0、本体4,438件中4,434成功・失敗0・skip4、build/APIも成功。Mac配布ZIP生成とbundle読込みも確認。最終commitの同一SHA CIとmain統合状態は[PR326](https://github.com/k999ln/rock/pull/326)を正本に確認する。変更はGit整理と共通処理の保守であり、Noahの別Mac通し受入・mii実機・本番公開の完了とは区別する。
 
 ## 全taskの作業進捗
 <!-- project-status:start -->

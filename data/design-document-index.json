@@ -4734,7 +4734,8 @@
     "authority": [
       "docs/structure/00-overview.md",
       "docs/structure/04-eve-noa-amc-sky.md",
-      "docs/services/noah-standalone-launch.md"
+      "docs/services/noah-standalone-launch.md",
+      "docs/structure/05-business.md"
     ],
     "source": [
       "scripts/noah-local-api.mjs",

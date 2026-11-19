@@ -5,7 +5,7 @@ import { readNoahSourceBytes, NOAH_SOURCE_DOWNLOAD_LIMIT } from '../scripts/noah
 
 const incoming = { headers: { host: 'localhost:5173', cookie: 'session=fixture', authorization: 'Bearer fixture', 'oai-authenticated-user-id': 'fixture', 'x-agent-secret': 'must-not-forward', 'x-rock-owner-scope': 'untrusted' } };
 
-test('local transport cannot forward credentials to a remote or non-Noah destination', async () => {
+await test('local transport cannot forward credentials to a remote or non-Noah destination', async () => {
   const calls = [], request = createNoahLocalRequest(incoming, async (...args) => { calls.push(args); return Response.json({ ok: true }); });
   for (const path of ['https://example.com/api/noah/agents', '//example.com/api/noah/agents', '/api/noah/../../wallet', '/api/noah/agents#secret'])
     assert.throws(() => request(path), error => error.status === 400);
@@ -20,7 +20,7 @@ test('local transport cannot forward credentials to a remote or non-Noah destina
   assert.ok(options.signal instanceof AbortSignal);
 });
 
-test('record clients retain different query contracts, scope and single-attempt commands', async () => {
+await test('record clients retain different query contracts, scope and single-attempt commands', async () => {
   const calls = [], clients = createNoahLocalRecordClients(incoming, 'owner-scope', async (url, options) => {
     calls.push({ url: new URL(url), options }); return Response.json({ ownerScope: 'owner-scope' });
   });
@@ -42,7 +42,7 @@ test('record clients retain different query contracts, scope and single-attempt 
   await assert.rejects(changed.instance('get', { id: 'id' }), error => error.status === 409);
 });
 
-test('source transport preserves exact bytes, rejects truncation and cancels oversized streams', async () => {
+await test('source transport preserves exact bytes, rejects truncation and cancels oversized streams', async () => {
   const bytes = Buffer.from('日本語の固定コード');
   assert.deepEqual(await readNoahSourceBytes(new Response(bytes), bytes.length), bytes);
   await assert.rejects(readNoahSourceBytes(new Response(bytes), bytes.length + 1), error => error.status === 409);

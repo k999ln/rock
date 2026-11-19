@@ -1,5 +1,7 @@
 ## 2026-11-20
 
+- Noah/EveのMac API接続・コード取得・型検査・仕事通信を共通化し、構成/事業/READMEを本人MacのNoah→miiへ同期。本人・招待・審査・停止条件と既存機能を保持し、Git読取り失敗時の子処理回収も修正（[PR #326](https://github.com/k999ln/rock/pull/326)、task73）。
+
 - 本人回答に基づき、主商品mii・最小構成Noah・本人Macの先行受入・SIM/eSIMのOS導入役割を正本へ同期。Codex実行の再送試験を、回数固定の待機から実処理の完了待機へ修正（task72）。
 
 - READMEのNoah案内を現在の動作へ同期（task72）。

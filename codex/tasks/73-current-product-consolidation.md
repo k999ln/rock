@@ -6,7 +6,7 @@
 
 - 現行Noah/Eve: `lib/noah-*`, `lib/eve-*`, `components/noah-*`, `components/eve-*`, `app/noah/`, 互換入口`app/sky/`, `app/api/noah/`, `services/sky-web/`, `scripts/noah-*`とその共通helper。依存先・対応テストは呼出箇所を追って読む。
 - 共通Workとの接続。Agent選択・本人Mac接続・実行・結果・停止と、既存の登録/審査/公開/復旧を保持する。
-- `docs/structure/00,02,03,04,06,07,09`、対応する`docs/services/`、README、現在の進捗と次回prompt。設計の優先順位・同じ説明の複製を整理する。
+- `docs/structure/00,02,03,04,05,06,07,09`、対応する`docs/services/`、README、現在の進捗と次回prompt。設計の優先順位・同じ説明の複製を整理する。
 - 保全sourceの採否はtask72の分類を参照し、現行と同じ機能の再取り込みを避ける。必要な独自機能は消さない。
 
 ## 制約
@@ -45,3 +45,13 @@ Private Pixel・Pro・robo data bank・MATOU・Princeton、archive/、docs/evide
 初期の対象試験83件＋共有境界4件は成功。初回typecheckは作業用checkoutのStripe依存不足で失敗し、lockfileどおりnpm ciで依存を揃えて再検証する。設計JSONのパス移動なし、既存API/DBの改名なし。
 
 追加の構文解析で403関数（180〜3500token）の類似を比較し、残った高類似の2つのcompiler hostを共通化。関数名や入出力型が似ていても認証・保存・停止の意味が異なる処理は統合しない。
+
+事業正本05にも残っていた「入口はeSIM一本」と旧月次優先順位を現行Noah→miiへ同期。金額自体を決定・変更せず候補として扱い、旧月次/年次表は検討履歴と明示した。
+
+PR: https://github.com/k999ln/rock/pull/326 。追補48件（共有境界4件を含む）も成功、先行83件と合わせ対象131件成功。Mac配布ZIP生成・bundle読込みも成功（Git外`work/task73-mac-package`）。型検査は依存導入後成功。全verify初回の追加testのno-floating-promises 4指摘はawaitで修正した。
+
+全verifyの2回目は4,437件中1件失敗（4,432成功・4skip）。`project-bot-context`の失敗時に並列Git読取りが残り、fixture削除と`git status`のindex更新が競合してENOTEMPTYになった。単体再実行だけでは成功するため、テストのretryではなく`scripts/project-bot-context.mjs`で全Git子処理のsettle後に失敗を返す。対象外機能の変更ではなく全体検証で発見したGit後処理の修正として、対応テストに遅延したstatusとの決定的回帰を追加。
+
+## 最終検証
+
+`npm run verify`はexit0。本体4,438件中4,434成功・失敗0・skip4、build/API/保存回帰/設計/担当整合まで成功。対象試験は83+48+12件成功。Mac配布ZIP（129file、SHA256 `7b1f66fd3e569179082e2dbe6e3760bed539510c013bccfe09b9be0ebcc11cd4`）の生成とbundle読込み成功。新しい実機・本番・別Macの受入は含まない。最終headの同一SHA CIと通常merge/main読戻しは[PR326](https://github.com/k999ln/rock/pull/326)を正本とする。次はtask71の本人Mac通し受入へ進み、共通処理を複製せず本taskの対応表を使う。

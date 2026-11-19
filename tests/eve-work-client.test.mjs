@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createEveWorkClient } from '../lib/eve-work-client.ts';
 
-test('both Eve views retain their endpoints and explicit Work revisions without retrying', async t => {
+await test('both Eve views retain their endpoints and explicit Work revisions without retrying', async t => {
   const calls = [];
   t.mock.method(globalThis, 'fetch', async (url, options) => { calls.push({ url, options }); return Response.json({ job: { revision: 4 } }); });
   for (const resource of ['tool-work', 'news-work']) {

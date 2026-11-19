@@ -13153,9 +13153,27 @@
     "task": "codex/tasks/73-current-product-consolidation.md",
     "baseMain": "c4d7c2732d899ccabe23654a62f89f2704cbaa8c",
     "scope": "Noah/Eveの共通通信・コード取得・現行説明の整理。固有機能と本人/招待/審査/停止条件を保持",
-    "focusedTests": 83,
+    "focusedTests": 143,
     "boundaryTests": 4,
-    "fullVerification": "pending",
-    "productionAcceptanceChanged": false
+    "fullVerification": "pass",
+    "productionAcceptanceChanged": false,
+    "focusedGroups": {
+      "noahAndEve": 83,
+      "sharedBoundaryAndFollowup": 48,
+      "gitContext": 12
+    },
+    "verifyExitCode": 0,
+    "nodeTests": 4438,
+    "passed": 4434,
+    "failed": 0,
+    "skipped": 4,
+    "integrationAuthority": "https://github.com/k999ln/rock/pull/326",
+    "macPackage": {
+      "sha256": "7b1f66fd3e569179082e2dbe6e3760bed539510c013bccfe09b9be0ebcc11cd4",
+      "files": 129,
+      "bundleImport": "pass",
+      "freshMacAccepted": false
+    },
+    "gitFailureCleanup": "all parallel Git reads settle before failure returns; deterministic regression passes"
   }
 }
