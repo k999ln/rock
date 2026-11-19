@@ -9,7 +9,7 @@ description: UX・UI・アクセシビリティ設計を担当し、初回利用
 
 ## 全社担当表との対応（DEV02）
 
-役割は`data/company-role-map.json`の`DEV02`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はProduct / UX。既存laneはweb-ops、eveで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV02`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はProduct / UX。既存laneはweb-ops、eveで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: 初回利用、依頼、承認、成果、費用、失敗・復旧の画面設計。
 - 成果物: 状態別導線、画面仕様、文言、操作・a11y受入シナリオ。

@@ -128,6 +128,10 @@ export function resaleService(
         return save(owner, job, s, action);
       }
       if (action === 'search') {
+        if (s.paused)
+          throw new WorkError('探索は停止中です。再開してから検索してください。', 409);
+        if (!provider.ready.search)
+          throw new WorkError('商品検索APIが未接続です。', 503);
         if (!resaleRoles.includes(v.role as ResaleRole))
           throw new WorkError('担当を選択してください。');
         ingest(

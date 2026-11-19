@@ -9,7 +9,7 @@ description: 使用量・料金・請求・作者精算を担当し、単価版�
 
 ## 全社担当表との対応（DEV15）
 
-役割は`data/company-role-map.json`の`DEV15`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はWallet / Billing / Providers。既存laneはbillingで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV15`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はWallet / Billing / Providers。既存laneはbillingで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: 単価版、見積、予算予約、usage、Invoice、入金/返金、作者精算の実装。
 - 成果物: 一意予約・照合・台帳/receipt・失敗復旧の料金実装と試験。

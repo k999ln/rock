@@ -9,7 +9,7 @@ description: AI・LLM・学習・品質評価を担当し、モデル適合、�
 
 ## 全社担当表との対応（DEV07）
 
-役割は`data/company-role-map.json`の`DEV07`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はAndroid / Device / Local AI。既存laneはeve、os-pixelで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV07`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はAndroid / Device / Local AI。既存laneはeve、os-pixelで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: モデル適合、推論経路、品質・速度・資源・費用評価、許諾付き学習実験。
 - 成果物: 固定入力・model/hash・評価分離・対照・採用/不採用理由付きの測定票。

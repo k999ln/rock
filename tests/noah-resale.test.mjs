@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+import ts from 'typescript';
 import {
   candidate,
   createResaleJob,
@@ -442,4 +445,73 @@ void test('publish records offer before making it public and validates receipts'
   });
   assert.equal(id, 'listing');
   assert.equal(calls.length, 3);
+});
+
+void test('paused manual search makes no provider request or state change, and resume restores search', async () => {
+  const calls = [];
+  const svc = resaleService(repo(), {
+    ready: { search: true },
+    async search(query, role, currency) {
+      calls.push({ query, role, currency });
+      return [candidate({ role, title: query, url: 'https://example.com/resale', currency, price: 100 })];
+    },
+  });
+  const initial = await svc.get('owner');
+  const paused = await svc.run('owner', { action: 'pause', revision: initial.revision });
+  await assert.rejects(
+    svc.run('owner', { action: 'search', revision: paused.revision, role: 'street', query: 'hoodie' }),
+    (error) => error.status === 409 && /停止中/.test(error.message),
+  );
+  assert.equal(calls.length, 0);
+  assert.deepEqual(await svc.get('owner'), paused);
+  const resumed = await svc.run('owner', { action: 'resume', revision: paused.revision });
+  const searched = await svc.run('owner', { action: 'search', revision: resumed.revision, role: 'street', query: 'hoodie' });
+  assert.deepEqual(calls, [{ query: 'hoodie', role: 'street', currency: 'USD' }]);
+  assert.equal(searched.resale.items.length, 1);
+  assert.equal(searched.revision, resumed.revision + 1);
+});
+
+void test('unconfigured manual search does not call the provider', async () => {
+  let calls = 0;
+  const svc = resaleService(repo(), { ready: { search: false }, async search() { calls++; return []; } });
+  const job = await svc.get('owner');
+  await assert.rejects(
+    svc.run('owner', { action: 'search', revision: job.revision, role: 'street', query: 'hoodie' }),
+    (error) => error.status === 503,
+  );
+  assert.equal(calls, 0);
+});
+
+void test('actual resale form disables manual search while paused and enables it after resume', () => {
+  const source = readFileSync(new URL('../components/noah-resale.tsx', import.meta.url), 'utf8');
+  const code = ts.transpileModule(source, { compilerOptions: {
+    jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022,
+  } }).outputText;
+  const jsx = (type, props) => ({ type, props });
+  const nodes = (tree, result = []) => {
+    if (Array.isArray(tree)) tree.forEach((child) => nodes(child, result));
+    else if (tree && typeof tree === 'object') { result.push(tree); nodes(tree.props?.children, result); }
+    return result;
+  };
+  for (const [paused, searchReady, disabled] of [[true, true, true], [false, true, false], [false, false, true]]) {
+    const job = createResaleJob(crypto.randomUUID());
+    job.resale.paused = paused;
+    const values = [{ job, ownerScope: 'fixture', totals: totals(job.resale), ready: { sandbox: true, search: searchReady }, approvals: {} }, '', false, '', 'street'];
+    let cursor = 0;
+    const exports = {};
+    const modules = {
+      react: { useState: () => [values[cursor++], () => {}], useEffect() {} },
+      'react/jsx-runtime': { jsx, jsxs: jsx },
+      'next/link': { default: 'a' },
+      './noah-resale.module.css': { default: new Proxy({}, { get: (_, key) => String(key) }) },
+    };
+    runInNewContext(code, { exports, require(name) { assert.ok(name in modules, name); return modules[name]; } });
+    const all = nodes(exports.default());
+    const searchForm = all.find((node) => node.type === 'form' && nodes(node).some((child) => child.type === 'input' && child.props.name === 'query'));
+    assert.ok(searchForm);
+    assert.equal(nodes(searchForm).find((node) => node.type === 'fieldset').props.disabled, disabled);
+    // Stopping exploration must not prevent the owner from using the resume control.
+    const pauseButton = all.find((node) => node.type === 'button' && node.props.children === (paused ? '新規操作を再開' : '探索・新規の購入・出品を停止'));
+    assert.equal(pauseButton.props.disabled, false);
+  }
 });

@@ -9,7 +9,7 @@ description: 独立QA・回帰・実利用受入を担当し、正常・異常�
 
 ## 全社担当表との対応（DEV11）
 
-役割は`data/company-role-map.json`の`DEV11`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はGit / CI / Operations。既存laneはgitで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV11`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はGit / CI / Operations。既存laneはgitで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: 正常・異常・復旧・回帰・端末/UIの受入設計と独立検収。
 - 成果物: candidate/hash・手順・期待値・実測・未実行・不具合付き試験報告。

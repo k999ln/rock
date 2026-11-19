@@ -113,11 +113,13 @@ Cloud agentは事前単価・見積り、上限承認、実行中の費用・予
 
 声や手の動きからEveへ依頼し、連絡、創作、遊び、許可した機器の操作を共通の仕事として扱う端末です。表示・入力・センサー・演算の方式を設計と試作で確かめています。
 
-[R5設計](docs/avocado-mini-r5/README.md)と[現行構造](docs/structure/01-mii.md)を保持し、[V2・天井型の設計研究](docs/mii/design/v2-study/README.md)を比較候補として管理します。V2研究の追加はR5の要件変更や実機合格を意味しません。方式・製品化案は本人の決定と同一実機の受入を経て採用します。
+R5を現行設計として、[R5設計](docs/avocado-mini-r5/README.md)と[現行構造](docs/structure/01-mii.md)を保持し、[V2・天井型の設計研究](docs/mii/design/v2-study/README.md)を比較候補として管理します。V2研究の追加はR5の要件変更や実機合格を意味しません。方式・製品化案は本人の決定と同一実機の受入を経て採用します。
 
 製造承認は**保留中**です。 R5実機試験の完了実績は0件です。光学・熱・電源・停止・取り付け・警報の安全性、認証、販売価格は未受入です。研究資料の原価は積算であり、調達見積や製品保証ではありません。
 
 - [miiの入力・編集](lib/mii-spatial-input.ts) / [機種profile](systems/rock-star-os/targets/avocado-mini/)
+Material Inventionの再計算用sandboxと設計資料はあります。シミュレーション・実験室接続は未実装です。
+
 - [空間・Material Invention詳細](docs/rockstaros-avocado-mini-complete-design.md)
 - [製品サイトsource](sites/avocado-mini/)
 

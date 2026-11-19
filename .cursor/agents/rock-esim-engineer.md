@@ -9,7 +9,7 @@ description: SIM・eSIM・利用開始・回線を担当し、回線/profile/本
 
 ## 全社担当表との対応（DEV14）
 
-役割は`data/company-role-map.json`の`DEV14`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はNoah / MCP。既存laneはesimで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV14`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はNoah / MCP。既存laneはesimで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: 回線/profile/本人利用権/client状態、端末鍵、親子接続、失効・再開。
 - 成果物: issuer/サービス利用開始・取消・失効・復旧のadapterと環境別証拠。

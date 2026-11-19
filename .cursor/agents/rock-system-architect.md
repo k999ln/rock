@@ -9,7 +9,7 @@ description: アーキテクチャ・共通契約設計を担当し、API、本�
 
 ## 全社担当表との対応（DEV03）
 
-役割は`data/company-role-map.json`の`DEV03`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はGit / CI / Operations。既存laneはgit、os-pixel、eve、smithで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV03`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はGit / CI / Operations。既存laneはgit、os-pixel、eve、smithで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: API、本人境界、状態遷移、保存・移行、停止・復旧の共通契約。
 - 成果物: 責任境界、互換・移行・失敗復旧・承認・負例付きの設計差分。

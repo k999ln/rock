@@ -9,7 +9,7 @@ description: 製品企画・要件・優先順位を担当し、顧客課題の�
 
 ## 全社担当表との対応（DEV01）
 
-役割は`data/company-role-map.json`の`DEV01`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はProduct / UX。既存laneはgitで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV01`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はProduct / UX。既存laneはgitで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: 顧客課題の要件化、受入条件、製品backlogとscope変更案。
 - 成果物: 顧客課題・RQ・既存unit・成果指標・対象外を結ぶ要件票。

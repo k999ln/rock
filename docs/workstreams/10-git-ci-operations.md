@@ -30,27 +30,27 @@
 
 DEV00は開発統括、REV00は営業・事業進行の窓口。CEOが製品の目的・優先順位・予算・最終判断を持ち、DEV01が実装可能な要件と受入条件へ落とす。DEV03が共通契約、専門実装者がexact pathの変更、DEV10/11が独立検収、DEV12が保存・統合・配布、DEV13が運用と顧客障害の引継ぎを担当する。
 
-### 既存11lane・95unitとの対応
+### 担当分野と現在の作業入口
 
-| 既存lane | 主担当role | 既存unit数 | 既存入口 |
+| 担当ラベル | 主担当role | 履歴unit数（現行件数ではない） | 現行入口 |
 | --- | --- | --- | --- |
-| git | DEV12 | 8 | [packet](../prompts/rockstaros-development-chats/git.md) |
-| os-pixel | DEV04 | 24 | [packet](../prompts/rockstaros-development-chats/os-pixel.md) |
-| smith | DEV05 | 7 | [packet](../prompts/rockstaros-development-chats/smith.md) |
-| eve | DEV06 | 17 | [packet](../prompts/rockstaros-development-chats/eve.md) |
-| mini | DEV18 | 9 | [packet](../prompts/rockstaros-development-chats/mini.md) |
-| pro | DEV19 | 4 | [packet](../prompts/rockstaros-development-chats/pro.md) |
-| esim | DEV14 | 8 | [packet](../prompts/rockstaros-development-chats/esim.md) |
-| billing | DEV15 | 8 | [packet](../prompts/rockstaros-development-chats/billing.md) |
-| wallet | DEV16 | 3 | [packet](../prompts/rockstaros-development-chats/wallet.md) |
-| game | DEV17 | 2 | [packet](../prompts/rockstaros-development-chats/game.md) |
-| web-ops | DEV08 | 5 | [packet](../prompts/rockstaros-development-chats/web-ops.md) |
+| git | DEV12 | 8 | [packet](10-git-ci-operations.md) |
+| os-pixel | DEV04 | 24 | [packet](07-android-device-local-ai.md) |
+| smith | DEV05 | 7 | [packet](02-sky-mcp.md) |
+| eve | DEV06 | 17 | [packet](01-product-ux.md) |
+| mini | DEV18 | 9 | [packet](11-material-invention-avocado-mini.md) |
+| pro | DEV19 | 4 | [packet](07-android-device-local-ai.md) |
+| esim | DEV14 | 8 | [packet](03-wallet-billing-providers.md) |
+| billing | DEV15 | 8 | [packet](03-wallet-billing-providers.md) |
+| wallet | DEV16 | 3 | [packet](03-wallet-billing-providers.md) |
+| game | DEV17 | 2 | [packet](08-game-market-fund.md) |
+| web-ops | DEV08 | 5 | [packet](05-web-pwa-sites.md) |
 
-上表は責任を見えるようにした対応表。unit ID、全95unit、sourceOwnership、各lane JSON、チャットID、進捗状態、model指定、実機/Provider/Sites leaseは既存registryとunit台帳を優先し、今回の役割追加で移管・再起動・完了にしない。AI/LLMはeve/os-pixel、Material Inventionはminiの既存unitを使い、別の重複laneを作らない。Web実装DEV08と運用DEV13、料金system実装DEV15と業務入金照合REV16、試用成果REV14とQA DEV11を区別する。
+上表は責任を見えるようにした対応表。現在のtask ID、編集範囲、進捗と実機/Provider/Sites leaseを照合し、今回の役割追加で移管・再起動・完了にしない。AI/LLMはeve/os-pixel、Material Inventionはminiの既存unitを使い、別の重複laneを作らない。Web実装DEV08と運用DEV13、料金system実装DEV15と業務入金照合REV16、試用成果REV14とQA DEV11を区別する。
 
 ### 共通writerと独立検収
 
-共有pathのwriterは`data/rockstaros-development-chats.json#globalWriterCurrent`と明示された引継ぎで決める。現在参照値はgit。DEV12はこの既存Git系列の役割名であり、権限移管の証拠にはならない。REV00は営業pipeline、DEV00は開発queueの変更要求を集約し、project/status/README/共用schema/migration/CIへの更新は現在のglobal writerまたは当該変更の引継ぎ済みrootへ渡す。専門担当は専用成果物・所有pathだけを編集する。
+共有pathのwriterは[現在のtask](../../codex/tasks/00-index.md)と明示された引継ぎで決める。DEV12はこの既存Git系列の役割名であり、権限移管の証拠にはならない。REV00は営業pipeline、DEV00は開発queueの変更要求を集約し、project/status/README/共用schema/migration/CIへの更新は現在のglobal writerまたは当該変更の引継ぎ済みrootへ渡す。専門担当は専用成果物・所有pathだけを編集する。
 
 合計activeは営業・開発・統括・Git・検収・既存実機担当を含め最大3。新しいroleを一斉に起動せず、現在地に必要な一unitだけを割り当てる。DEV10/11は実装者と別担当で同じcandidate/hashと固定合格条件を照合する。実装者がrole名を変更して自分を最終検収することは独立性に数えない。
 

@@ -161,7 +161,13 @@ export default function NoahResale() {
         key={`${action}:${i?.id || ''}`}
         onSubmit={submit(action, { itemId: i?.id, ...extra })}
       >
-        <fieldset disabled={busy}>
+        <fieldset
+          disabled={
+            busy ||
+            (action === 'search' &&
+              (data?.job.resale.paused === true || !data?.ready.search))
+          }
+        >
           {children}
           <button>{button}</button>
         </fieldset>
@@ -248,12 +254,15 @@ export default function NoahResale() {
             >
               {data.job.resale.paused
                 ? '新規操作を再開'
-                : '新規の購入・出品を停止'}
+                : '探索・新規の購入・出品を停止'}
             </button>
             <button disabled={busy} onClick={() => void load()}>
               再読み込み
             </button>
           </div>
+          {data.job.resale.paused && (
+            <output>探索・新規の購入・出品は停止中です。再開後に検索できます。</output>
+          )}
           <details>
             <summary>3担当の探索条件</summary>
             {form(

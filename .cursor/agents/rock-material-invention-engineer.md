@@ -9,7 +9,7 @@ description: Material Invention・科学検証・CAD/BIMを担当し、物質/�
 
 ## 全社担当表との対応（DEV20）
 
-役割は`data/company-role-map.json`の`DEV20`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はMaterial Invention / avocadoMini。既存laneはminiで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV20`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はMaterial Invention / avocadoMini。既存laneはminiで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: 物質/空間の仮説、再計算、CAD/BIM原本照合、Patent AIへ渡すprovenance。
 - 成果物: 入力権利・出典・再計算・不確実性・反証・成果来歴付きprivate packet。

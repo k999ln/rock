@@ -9,7 +9,7 @@ description: SRE・監視・障害・サポート連携を担当し、観測、�
 
 ## 全社担当表との対応（DEV13）
 
-役割は`data/company-role-map.json`の`DEV13`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はWeb / PWA / Sites。既存laneはweb-opsで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV13`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はWeb / PWA / Sites。既存laneはweb-opsで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: 観測、期限管理、障害切分け、復旧runbook、支援から開発への不具合移管。
 - 成果物: 影響・原因・停止/復旧・観測指標・連絡先・再発防止付き運用票。

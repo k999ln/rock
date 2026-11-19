@@ -18,7 +18,7 @@ description: SkyのAgent・Tool市場、MCP接続、Eveの同一job引継ぎと�
 
 ## 全社担当表との対応（DEV05）
 
-役割は`data/company-role-map.json`の`DEV05`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はNoah / MCP。既存laneはsmithで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV05`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はNoah / MCP。既存laneはsmithで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: Agent/LLM/Toolの発見・追加・接続・更新・削除、MCP/SDKと権限差分。
 - 成果物: 版・本人・scope付き構成と、Eveへ引き継ぐ接続契約・試験。

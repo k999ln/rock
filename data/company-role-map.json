@@ -1,6 +1,6 @@
 {
   "schema": "avokado-company-role-map/1",
-  "updatedAt": "2026-11-03",
+  "updatedAt": "2026-11-19",
   "scope": "CEO、営業18役、開発・品質・運用21役、外部専門家と実運営の未設定を一つの責任表へ結ぶ。",
   "status": "responsibilities_defined_operation_not_accepted",
   "ceo": {
@@ -287,7 +287,7 @@
           "DEV11",
           "DEV13"
         ],
-        "boundary": "既存registryのglobalWriterCurrentと引継ぎを優先し、この役割追加でwriterを移管しない。forceや既存gateの迂回をしない。"
+        "boundary": "現行taskの共有writerと明示引継ぎを優先し、この役割追加でwriterを移管しない。forceや既存gateの迂回をしない。"
       },
       {
         "id": "DEV13",
@@ -448,8 +448,8 @@
         "boundary": "発明仮説を新規性・特許性・安全性の確定にしない。資格者判断や現物試験は別受入。"
       }
     ],
-    "existingRegistry": "data/rockstaros-development-chats.json",
-    "unitProgress": "data/development-unit-progress.json",
+    "existingRegistry": "codex/tasks/00-index.md",
+    "unitProgress": "data/project-status.json",
     "laneCoverage": [
       {
         "lane": "git",
@@ -462,9 +462,9 @@
           "DEV10",
           "DEV11"
         ],
-        "packet": "docs/prompts/rockstaros-development-chats/git.md",
-        "statusPath": "data/development-lanes/git.json",
-        "existingUnitCount": 8
+        "packet": "docs/workstreams/10-git-ci-operations.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 8
       },
       {
         "lane": "os-pixel",
@@ -473,9 +473,9 @@
           "DEV03",
           "DEV07"
         ],
-        "packet": "docs/prompts/rockstaros-development-chats/os-pixel.md",
-        "statusPath": "data/development-lanes/os-pixel.json",
-        "existingUnitCount": 24
+        "packet": "docs/workstreams/07-android-device-local-ai.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 24
       },
       {
         "lane": "smith",
@@ -484,9 +484,9 @@
           "DEV03",
           "DEV09"
         ],
-        "packet": "docs/prompts/rockstaros-development-chats/smith.md",
-        "statusPath": "data/development-lanes/smith.json",
-        "existingUnitCount": 7
+        "packet": "docs/workstreams/02-sky-mcp.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 7
       },
       {
         "lane": "eve",
@@ -497,9 +497,9 @@
           "DEV07",
           "DEV09"
         ],
-        "packet": "docs/prompts/rockstaros-development-chats/eve.md",
-        "statusPath": "data/development-lanes/eve.json",
-        "existingUnitCount": 17
+        "packet": "docs/workstreams/01-product-ux.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 17
       },
       {
         "lane": "mini",
@@ -507,49 +507,49 @@
         "supportingRoles": [
           "DEV20"
         ],
-        "packet": "docs/prompts/rockstaros-development-chats/mini.md",
-        "statusPath": "data/development-lanes/mini.json",
-        "existingUnitCount": 9
+        "packet": "docs/workstreams/11-material-invention-avocado-mini.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 9
       },
       {
         "lane": "pro",
         "primaryRole": "DEV19",
         "supportingRoles": [],
-        "packet": "docs/prompts/rockstaros-development-chats/pro.md",
-        "statusPath": "data/development-lanes/pro.json",
-        "existingUnitCount": 4
+        "packet": "docs/workstreams/07-android-device-local-ai.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 4
       },
       {
         "lane": "esim",
         "primaryRole": "DEV14",
         "supportingRoles": [],
-        "packet": "docs/prompts/rockstaros-development-chats/esim.md",
-        "statusPath": "data/development-lanes/esim.json",
-        "existingUnitCount": 8
+        "packet": "docs/workstreams/03-wallet-billing-providers.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 8
       },
       {
         "lane": "billing",
         "primaryRole": "DEV15",
         "supportingRoles": [],
-        "packet": "docs/prompts/rockstaros-development-chats/billing.md",
-        "statusPath": "data/development-lanes/billing.json",
-        "existingUnitCount": 8
+        "packet": "docs/workstreams/03-wallet-billing-providers.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 8
       },
       {
         "lane": "wallet",
         "primaryRole": "DEV16",
         "supportingRoles": [],
-        "packet": "docs/prompts/rockstaros-development-chats/wallet.md",
-        "statusPath": "data/development-lanes/wallet.json",
-        "existingUnitCount": 3
+        "packet": "docs/workstreams/03-wallet-billing-providers.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 3
       },
       {
         "lane": "game",
         "primaryRole": "DEV17",
         "supportingRoles": [],
-        "packet": "docs/prompts/rockstaros-development-chats/game.md",
-        "statusPath": "data/development-lanes/game.json",
-        "existingUnitCount": 2
+        "packet": "docs/workstreams/08-game-market-fund.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 2
       },
       {
         "lane": "web-ops",
@@ -559,19 +559,20 @@
           "DEV09",
           "DEV13"
         ],
-        "packet": "docs/prompts/rockstaros-development-chats/web-ops.md",
-        "statusPath": "data/development-lanes/web-ops.json",
-        "existingUnitCount": 5
+        "packet": "docs/workstreams/05-web-pwa-sites.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 5
       }
     ],
-    "existingLaneCount": 11,
-    "existingUnitCount": 95
+    "laneLabels": "Role-routing labels retained for continuity; use current task index and project status, not former chat leases.",
+    "historicalLaneCount": 11,
+    "historicalUnitCount": 95
   },
   "workingRules": {
     "configurationDoesNotStartExecution": true,
     "maxActiveIncludingParentBusinessEngineeringReview": 3,
-    "exactOwnership": "既存11laneと95unit、sourceOwnership、資源leaseを優先。専門roleの追加はlaneの移管やチャットへの実行指示ではない。",
-    "sharedWriter": "実行中registryのglobalWriterCurrentと明示された引継ぎを優先。現在参照値はgit。REV00/DEV00は変更要求を集約し、共有progressはglobal writerまたは引継ぎ済みのrootだけが更新する。",
+    "exactOwnership": "現行codex/tasksと各作業のexact path/担当/資源leaseを優先。役割追加だけでは編集権を移管しない。",
+    "sharedWriter": "現行taskの明示された担当と引継ぎを優先。DEV12が共有progressを同期し、REV00/DEV00は変更要求を集約する。",
     "review": "DEV10/11は実装者と別の担当が同じcandidate/hash・固定条件で検収する。役割名の付替えだけでは独立検収にならない。",
     "businessEngineering": "REV09 → DEV01/00 → 設計/実装 → DEV10/11 → DEV12 → DEV13 → REV13/14/15。提供可能範囲と残gateをREV09へ返す。",
     "repeatableHandoff": "case/unit ID、目的、candidate/hash、exact write set、現在owner、権限/予算、試験、独立検収、残件、次行動、期限",

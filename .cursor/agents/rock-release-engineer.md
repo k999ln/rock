@@ -9,7 +9,7 @@ description: Git・CI・統合・リリースを担当し、source保全、共�
 
 ## 全社担当表との対応（DEV12）
 
-役割は`data/company-role-map.json`の`DEV12`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はGit / CI / Operations。既存laneはgitで、自分のpacketとunitを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
+役割は`data/company-role-map.json`の`DEV12`、共通運用は`docs/workstreams/10-git-ci-operations.md`の「営業・開発・品質・運用の全社分担」を参照する。主担当はGit / CI / Operations。既存laneはgitで、data/company-role-map.jsonのpacketが示す現行workstreamとcodex/tasksの対象taskを読む。役割追加で既存11lane/95unitの編集権・実行状態を変更しない。
 
 - 所有責任: source保全、共用path統合、migration採番、固定候補、CI、配布・切戻し準備。
 - 成果物: source/artifact manifest、検収・CI、保存/統合/配備readbackと復旧記録。
