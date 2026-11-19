@@ -21,6 +21,22 @@
 
 書き方: 新しい日付を上に足す。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
 
+## 2026-11-18 — Sky の収益ループを一つにまとめる（完全自動化の方針）（Fable / Noelle）
+
+- 本人指示で、送信まで自動を初期値に変更（`policy.submission`）。apply lane の snapshot を受けて decisions を返す `decideLanePass` と `scripts/sky-gig-desk.mjs --lane` を追加。上流（Daisuke134/life-manager）の schema と同じ形。
+- lib/sky-gig-offers.ts: 受注型 16 と、好きなこと型 4（お絵描き・エッセイ・業界の情報収集・解析）。lib/sky-device-tiers.ts: 携帯・家の計算機・会社・クラウドの置き場所と、一致した結果だけを作業料にする計算。
+- 差分の一覧と統合図は [docs/sky-earn-parity.md](docs/sky-earn-parity.md)。Mr. の同期は codex/tasks/36、lane との接続は 37。検証: tests/sky-earn-loop.test.mjs（7件）ほか関連 33 件。[PR #318](https://github.com/k999ln/rock/pull/318)
+
+## 2026-11-18 — Sky の会社の窓口（ココナラ）（Fable / Noelle）
+
+- lib/sky-gig-desk.ts: 本人が渡した募集の文面を読み、応募する・見送るを決め、額と納品日を出し、提案の下書きを作る。受注後の確認を30秒の問いにして参加者へ配り、多数側の答えを作業料の寄与にする。サイトへの接続・送信はしない。
+- 実行例 `node --experimental-strip-types scripts/sky-gig-desk.mjs examples/sky/gig-desk/desk.json`。設計 [docs/sky-work-loop.md §7](docs/sky-work-loop.md)、書式 [docs/services/gig-desk.md](docs/services/gig-desk.md)、決定 07（11-18 の 3 行。うち 2 行は本人確認待ちの提案）。画面と保存は codex/tasks/35。検証: tests/sky-gig-desk.test.mjs（10件）。[PR #318](https://github.com/k999ln/rock/pull/318)
+
+## 2026-11-15 — Sky の工程選択と会社受注の計算（Fable / Noelle）
+
+- lib/sky-recipe-planner.ts: 依頼を Tool 1つではなく工程全体として計画し、検収に通る成果1つあたりの期待総額で順位付け。自動化を作るか・本人に何を残すかも同じ式で決める。未接続（接続は codex/tasks/33）。
+- lib/sky-company-order.ts: 会社受注の実行先の判定、見積り確認、作業料＋配当の分配計算、配れる月額の逆算。記帳・送金はしない（保存と画面は codex/tasks/34）。
+- 設計 [docs/sky-work-loop.md](docs/sky-work-loop.md)、書式 [docs/services/company-order.md](docs/services/company-order.md)、決定 07（11-15 の 5 行。うち 2 行は本人確認待ちの提案）、04 §5。検証: `node --experimental-strip-types --test tests/sky-recipe-planner.test.mjs tests/sky-company-order.test.mjs`（16件）。[PR #318](https://github.com/k999ln/rock/pull/318)
 ## 2026-11-04 — Goalから役割・実行・検収・再計画へ
 
 - 既存AMC Goalに営業18役・開発21役の逆算計画と有限ローカル実行を追加。成果物の実在・版、別processの検収、差し戻し・上限・停止・不明時の再送禁止、CEOの証拠付き最終受入を保持。

@@ -1,0 +1,159 @@
+{
+  "company": {
+    "name": "（会社名）"
+  },
+  "today": "2026-11-18",
+  "offers": [
+    {
+      "id": "sheet-automation",
+      "name": "表計算の自動化",
+      "keywords": [
+        "GAS",
+        "スプレッドシート",
+        "Excel",
+        "エクセル",
+        "マクロ",
+        "VBA",
+        "自動化",
+        "転記",
+        "集計"
+      ],
+      "have": [
+        "request"
+      ],
+      "want": "delivery",
+      "floorYen": 5000,
+      "deliveryDays": 5,
+      "judgmentItems": 4,
+      "deliverable": "ご指定の表で動くスクリプト一式、設定手順書、動作確認の記録。"
+    },
+    {
+      "id": "listing-copy",
+      "name": "商品説明・掲載文の更新",
+      "keywords": [
+        "商品説明",
+        "掲載文",
+        "紹介文",
+        "プロフィール文",
+        "メニュー",
+        "リライト",
+        "校正"
+      ],
+      "have": [
+        "request"
+      ],
+      "want": "delivery",
+      "floorYen": 3000,
+      "deliveryDays": 3,
+      "judgmentItems": 6,
+      "deliverable": "更新後の文面、変更前後の対照表、表記ゆれと誤字の確認記録。"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "draft-with-ai",
+      "name": "AIで下書き",
+      "kind": "tool",
+      "consumes": [
+        "request"
+      ],
+      "produces": "draft",
+      "available": true,
+      "costMinor": 120,
+      "ownerMinutes": 0,
+      "waitMinutes": 5,
+      "setupMinor": 0,
+      "setupOwnerMinutes": 0,
+      "installed": true
+    },
+    {
+      "id": "self-check",
+      "name": "条件との照合",
+      "kind": "tool",
+      "consumes": [
+        "draft",
+        "request"
+      ],
+      "produces": "checked",
+      "available": true,
+      "costMinor": 40,
+      "ownerMinutes": 0,
+      "waitMinutes": 3,
+      "setupMinor": 0,
+      "setupOwnerMinutes": 0,
+      "installed": true
+    },
+    {
+      "id": "member-review",
+      "name": "参加者の確認",
+      "kind": "reviewer",
+      "consumes": [
+        "checked"
+      ],
+      "produces": "reviewed",
+      "available": true,
+      "costMinor": 0,
+      "ownerMinutes": 0,
+      "waitMinutes": 240,
+      "setupMinor": 0,
+      "setupOwnerMinutes": 0,
+      "installed": true
+    },
+    {
+      "id": "company-review",
+      "name": "会社の担当者の確認",
+      "kind": "owner",
+      "consumes": [
+        "checked"
+      ],
+      "produces": "reviewed",
+      "available": true,
+      "costMinor": 0,
+      "ownerMinutes": 20,
+      "waitMinutes": 0,
+      "setupMinor": 0,
+      "setupOwnerMinutes": 0,
+      "installed": true
+    },
+    {
+      "id": "company-delivery",
+      "name": "会社の最終確認と納品",
+      "kind": "owner",
+      "consumes": [
+        "reviewed"
+      ],
+      "produces": "delivery",
+      "available": true,
+      "costMinor": 0,
+      "ownerMinutes": 10,
+      "waitMinutes": 0,
+      "setupMinor": 0,
+      "setupOwnerMinutes": 0,
+      "installed": true
+    }
+  ],
+  "observations": [],
+  "proposals": [],
+  "state": {
+    "proposedToday": 0,
+    "alreadyProposedIds": []
+  },
+  "postings": [
+    {
+      "id": "req_sample_001",
+      "text": "カテゴリ：業務自動化・効率化支援\nタイトル：「Googleカレンダーの予定を集計・グラフ作成」の自動化をお願いします。\n予算：1万円 〜 3万円\n納品希望日：2026年12月5日\n募集期限：締切日 2026年11月26日 / 掲載日 2026年11月17日\n応募状況：応募人数 3 / 契約人数 0 / 閲覧数 120\n募集内容：Googleカレンダーの予定をスプレッドシートに出力し、色ごとの集計とグラフ化を自動化したいです。\n特記事項：品質重視"
+    },
+    {
+      "id": "req_sample_002",
+      "text": "カテゴリ：ライティング\nタイトル：ネイルサロンのメニュー紹介文のリライト\n予算：〜 2,000円\n納品希望日：2026年11月30日\n募集期限：締切日 2026年11月25日\n応募状況：応募人数 1\n募集内容：メニュー紹介文10件のリライトをお願いします。"
+    },
+    {
+      "id": "req_sample_003",
+      "text": "カテゴリ：ライティング\nタイトル：商品説明30件の校正\n予算：5,000円 〜 1万円\n納品希望日：2026年12月10日\n募集期限：締切日 2026年11月28日\n応募状況：応募人数 2\n募集内容：ECサイトの商品説明の校正です。生成AIの使用は不可とします。"
+    },
+    {
+      "id": "req_sample_004",
+      "text": "カテゴリ：業務自動化・効率化支援\nタイトル：顧客名簿のExcel集計マクロ\n予算：8,000円 〜 15,000円\n納品希望日：2026年12月15日\n募集期限：締切日 2026年11月30日\n応募状況：応募人数 0\n募集内容：顧客名簿（氏名・住所）を月別に集計するマクロを作ってください。\n募集者情報：認証状況：本人確認、機密保持契約(NDA)"
+    }
+  ]
+}
