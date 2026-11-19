@@ -12,11 +12,11 @@ const groups = [
     ['/noah/community','コミュニティーのホーム','参加状況・接続先を確認'],
   ]},
   {title:'自分のAgentと仕事', description:'Webで保存した設定と、Macで動かすAgentを管理。', links:[
-    ['/noah/mac?target=library','MacのAgentを管理','登録・接続・実行・停止は起動中のMacへ'],
+    ['/noah/launch#library','Agentを追加して使う','登録・管理はNoahで、処理は接続したMacで'],
     ['/noah/saved','保存した担当・モデル','Webに保存した担当、役割、LLMの設定'],
     ['/noah/devices','端末・実行先','接続している担当と実行場所を確認'],
     ['/noah/outputs','保存した成果','成果を開き、対応アプリへ渡す'],
-    ['/noah/mac?target=work','Macの仕事・運用','実行履歴と停止操作を開く'],
+    ['/noah/launch#work','Agentの仕事','実行結果と停止操作を確認する'],
   ]},
   {title:'購入・掲載・販売', description:'購入や公開の前に、価格と利用条件を確認。', links:[
     ['/noah/marketplace','マーケットプレイス','掲載されているTool・Agentを選ぶ'],

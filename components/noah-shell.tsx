@@ -49,13 +49,13 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
             <Link href={action('work')}><ListChecks size={22} />仕事・運用</Link>
           </nav>
           <Link className={styles.add} href={action('register')}><Plus size={19} />Agentを登録</Link>
-          <p className={styles.railNote}>{effectiveMode === 'local' ? '対応AgentはこのMacの裏側で動きます。進捗と停止はNoahから。' : '登録・管理・接続・実行・停止はMac版で利用できます。'}</p>
+          <p className={styles.railNote}>{effectiveMode === 'local' ? '対応AgentはこのMacの裏側で動きます。進捗と停止はNoahから。' : '登録・管理はこのNoahで。対応Agentの処理は接続したMacで動きます。'}</p>
         </div>
       </aside>
       <div className={styles.content} id="noah-content" tabIndex={-1}>{children}</div>
       <aside className={styles.support}>
         <section><span className={styles.eyebrow}>DISCOVER</span><h2>任せたい仕事から探す</h2><p>できること、配布元、接続条件を確認して選べます。</p><Link href={`${base}/agents`}>Agentを探す <ArrowUpRight size={16} /></Link></section>
-        <section><Laptop size={23} /><h2>{effectiveMode === 'local' ? 'このMacで使う' : 'Mac版につなぐ'}</h2><p>{effectiveMode === 'local' ? '自分のAgentを登録・管理。対応Agentの詳細から接続し、仕事の実行・停止まで。' : 'Noahが起動しているMacで管理画面を開きます。スマホからMacを遠隔操作する機能は準備中です。'}</p><Link href={action('library')}>自分のAgentへ <ArrowUpRight size={16} /></Link><Link href={action('work')}>仕事・成果を確認 <ArrowUpRight size={16} /></Link></section>
+        <section><Laptop size={23} /><h2>{effectiveMode === 'local' ? 'このMacで使う' : '自分のMacで動かす'}</h2><p>{effectiveMode === 'local' ? '自分のAgentを登録・管理。対応Agentの詳細から接続し、仕事の実行・停止まで。' : 'Macに実行器を接続すると、同じアカウントのNoahから依頼・成果の確認・停止ができます。'}</p><Link href={action('library')}>自分のAgentへ <ArrowUpRight size={16} /></Link><Link href={action('work')}>仕事・成果を確認 <ArrowUpRight size={16} /></Link></section>
         <footer>Noah · avokado</footer>
       </aside>
     </div>

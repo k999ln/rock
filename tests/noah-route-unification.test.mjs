@@ -12,9 +12,9 @@ void test('each known old page moves once to its canonical page, retaining selec
     assert.equal(response.status,308,path);
     const target=new URL(response.headers.get('location'));
     assert.equal(target.origin,'https://avoado.si');
-    assert.equal(target.pathname,destination.split('?')[0].replace(/:\w+/g,'fixture'));
+    assert.equal(target.pathname,destination.split(/[?#]/)[0].replace(/:\w+/g,'fixture'));
     assert.deepEqual(target.searchParams.getAll('tag'),['a','b']);
-    assert.equal(target.hash,'#result');
+    assert.equal(target.hash,new URL(destination,'https://avoado.si').hash||'#result');
     assert.equal(noahPageRedirect(target.pathname),null,'destination cannot redirect back');
   }
 });

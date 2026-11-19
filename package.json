@@ -108,7 +108,8 @@
     "test:avocado-farm": "npm --prefix toolkits/avocado-farm-sandbox test",
     "game:bridge": "node --experimental-strip-types toolkits/fivem-bridge/server.mjs",
     "sky:linux:pixel:build": "node scripts/build-sky-linux-pixel.mjs",
-    "web:security:record": "node scripts/record-web-security-evidence.mjs"
+    "web:security:record": "node scripts/record-web-security-evidence.mjs",
+    "noah:mac:package": "node scripts/package-noah-mac.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

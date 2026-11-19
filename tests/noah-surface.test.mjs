@@ -2,12 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { noahActionHref, noahMacPath, noahLegacyHref, noahHomeView } from '../lib/noah-surface.ts';
 
-void test('public management always goes through the Mac handoff, local operations stay local', () => {
+void test('public registration and supported execution use Noah; other local operations retain their handoff', () => {
   for (const target of ['library', 'register', 'work', 'marketplace', 'models', 'agent']) {
     const path = noahMacPath(target, 'anicca');
     assert.equal(noahActionHref('local', '/noah', target, 'anicca'), path);
     for (const base of ['/noah', '/noah/public']) {
       const href = new URL(noahActionHref('public', base, target, 'anicca'), 'https://avoado.si');
+      if(['library','work'].includes(target)){assert.equal(href.pathname,'/noah/launch');assert.equal(href.hash,'#'+target);continue;}
+      if(target==='register'){assert.equal(href.pathname,'/noah/agents/new');continue;}
       assert.equal(href.pathname, `${base}/mac`);
       assert.equal(noahMacPath(href.searchParams.get('target'), href.searchParams.get('agent')), path);
     }

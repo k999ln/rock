@@ -9,6 +9,7 @@ import { beginLinuxRun, finishLinuxRun, cancelLinuxRun, confirmLinuxRun, parseLi
 import { isLocalRuntimeRequest } from '../lib/sky-private-loopback.mjs';
 import { parseLinuxModel, parseLinuxAgentFile } from '../lib/sky-linux-models.ts';
 import { inspectLinuxModelLink } from './sky-linux-model-link.mjs';
+import { noahDeviceCatalog } from '../lib/noah-device-catalog.ts';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const VM = 'sky-private';
@@ -81,6 +82,11 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
   try { state = JSON.parse(await readFile(storePath, 'utf8')); }
   catch (error) { if (error.code !== 'ENOENT') throw error; state = { schema: 1, owner, phase: 'none', models: [], agents: [], runs: [], error: null }; }
   if (state.owner !== owner || state.schema !== 1) throw new Error('保存された本人情報を確認してください。');
+  state.noahDeviceId ??= randomUUID();
+  state.noahInstalls ??= [];
+  const noahCatalog = noahDeviceCatalog(environment?.id === 'pixel-linux' ? [lock.model, ...catalog] : [lock.model]).map(item => ({
+    ...item, digest: createHash('sha256').update(JSON.stringify(item)).digest('hex'),
+  }));
   // Existing jobs and prompt agents keep their exact original model identity.
   state.selectedModelId ??= state.models[0]?.id ?? lock.model.id;
   state.preparedModels ??= state.phase === 'ready' && (!state.environment?.modelSha256 || state.environment.modelSha256 === lock.model.sha256) ? [lock.model.id] : [];
@@ -114,7 +120,9 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
     return value;
   };
   const snapshot = () => ({ schema: 'sky.private-linux-deployment/1', vm: environment?.id ?? VM, private: true,
-    phase: state.phase, phaseLabel: environment?.phaseLabels?.[state.phase] ?? PHASES[state.phase], error: state.error,
+    noah: { device: { id: state.noahDeviceId, name: environment?.id === 'pixel-linux' ? 'このPixelのLinux' : '接続先PCの本人用Linux' },
+      catalog: noahCatalog.map(item => ({ ...item, model: { ...item.model, cacheBlob: undefined } })), installs: state.noahInstalls },
+    phase: preparation ? 'preparing' : state.phase, phaseLabel: preparation ? PHASES.preparing : environment?.phaseLabels?.[state.phase] ?? PHASES[state.phase], error: state.error,
     candidate: { ...lock.model, available: undefined, cacheBlob: undefined },
     candidates: [lock.model, ...catalog].filter(c => !state.models.some(m => m.sha256 === c.sha256 && m.id !== c.id)).map(m => ({ ...m, cacheBlob: undefined })),
     selectedModelId: state.selectedModelId, preparedModels: state.preparedModels,
@@ -262,8 +270,9 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
   }
   async function dispatch(input) {
     if (closed || !input || typeof input !== 'object' || Array.isArray(input)) throw new Error('画面を開き直してください。');
-    if (Object.keys(input).some(k => !['action', 'modelId', 'model', 'link', 'promptFormat', 'accepted', 'agent', 'agentFile', 'agentId', 'input', 'requestId', 'jobId', 'surface', 'agentSha256', 'modelSha256', 'scopeSha256', 'cacheOnly'].includes(k))) throw new Error('操作の項目を確認してください。');
+    if (Object.keys(input).some(k => !['action', 'modelId', 'model', 'link', 'promptFormat', 'accepted', 'agent', 'agentFile', 'agentId', 'input', 'requestId', 'jobId', 'surface', 'agentSha256', 'modelSha256', 'scopeSha256', 'cacheOnly', 'deviceId', 'catalogId', 'catalogDigest'].includes(k))) throw new Error('操作の項目を確認してください。');
     if (input.action === 'status') return snapshot();
+    if (input.deviceId !== undefined && input.deviceId !== state.noahDeviceId) throw new Error('追加先の端末が変わりました。Noahで端末を確認してください。');
     if (['cache-inventory', 'prepare-cached', 'cancel-cached-prepare', 'cache-status'].includes(input.action)) {
       const exact = names => Object.keys(input).sort().join(',') === names.sort().join(',');
       const bound = ['action', 'modelId', 'modelSha256', 'requestId', 'scopeSha256', 'cacheOnly'];
@@ -362,7 +371,35 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
     if (mutating) throw new Error('前の操作を保存しています。少し待ってください。');
     mutating = true;
     try {
-      if (input.action === 'add-model') {
+      if (input.action === 'noah-add') {
+        const keys = ['action', 'deviceId', 'catalogId', 'catalogDigest', 'requestId', 'accepted'];
+        if (Object.keys(input).length !== keys.length || keys.some(k => !(k in input)) || input.accepted !== true || !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(input.requestId))
+          throw new Error('追加先・容量・利用条件を確認してください。');
+        const prior = state.noahInstalls.find(row => row.requestId === input.requestId);
+        if (prior) {
+          if (prior.catalogId !== input.catalogId || prior.catalogDigest !== input.catalogDigest) throw new Error('同じ追加番号の内容が異なります。');
+          return snapshot(); // Lost response/reload never repeats preparation or creates another Agent.
+        }
+        const item = noahCatalog.find(row => row.id === input.catalogId && row.digest === input.catalogDigest);
+        if (!item) throw new Error('追加するAgent・LLMの版が変わりました。検索し直してください。');
+        if (active || preparation || state.runs.some(r => r.stop === 'unconfirmed')) throw new Error('今の仕事や準備の停止を確認してから追加してください。');
+        const model = item.model, existing = modelById(model.id);
+        if (existing && ['sha256', 'bytes', 'promptFormat', 'repository', 'revision', 'file', 'license', 'memoryMiB'].some(k => (existing[k] ?? null) !== (model[k] ?? null))) throw new Error('同じ名前のAIの設定が異なります。');
+        const hash = createHash('sha256').update(JSON.stringify(item.agent)).digest('hex');
+        let agent = state.agents.find(row => row.sha256 === hash);
+        if (state.noahInstalls.length >= 256 || (!agent && state.agents.length >= 32) || (!existing && (state.models.length >= 8 || state.models.reduce((sum, m) => sum + m.bytes, 0) + model.bytes > 6 * 1024 ** 3)))
+          throw new Error('端末内の保存上限です。追加した内容を確認してください。');
+        const before = { models: [...state.models], agents: [...state.agents], noahInstalls: [...state.noahInstalls], selectedModelId: state.selectedModelId, phase: state.phase };
+        if (!existing) state.models.push({ ...model });
+        if (!agent) { agent = { ...item.agent, id: randomUUID(), sha256: hash }; state.agents.push(agent); }
+        state.noahInstalls.push({ requestId: input.requestId, catalogId: item.id, catalogDigest: item.digest, agentId: agent.id, agentSha256: hash, modelId: model.id, modelSha256: model.sha256 });
+        state.selectedModelId = model.id;
+        if (state.phase === 'none') state.phase = 'added';
+        // Commit the exact dependency and Agent before any download. A crash is resumed explicitly.
+        try { await persistCache(); } catch (error) { Object.assign(state, before); throw error; }
+        await assertExecutionAllowed();
+        if (state.phase !== 'ready' || !state.preparedModels.includes(model.id)) startPreparation(model);
+      } else if (input.action === 'add-model') {
         if (input.accepted !== true) throw new Error('AIの配布元と利用条件を確認してください。');
         const model = input.model ? parseLinuxModel(input.model) : candidateById(input.modelId);
         if (!model) throw new Error('追加するAIを選んでください。');
@@ -382,11 +419,8 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
         if (active || preparation) throw new Error('実行中か、準備中です。');
         const model = modelById(input.modelId ?? state.selectedModelId);
         if (!model) throw new Error('準備するAIを選んでください。');
-        state.selectedModelId = model.id;
-        state.preparedModels = state.preparedModels.filter(id => id !== model.id);
-        state.phase = 'preparing'; state.error = null; state.preparation = { modelId: model.id, label: '必要な環境を確認しています', receivedBytes: 0, totalBytes: model.bytes };
-        prepareAbort = new AbortController();
-        preparation = prepare(model, prepareAbort.signal).catch(error => { state.phase = prepareAbort.signal.aborted ? 'stopped' : 'failed'; state.error = prepareAbort.signal.aborted ? null : error.message; }).finally(async () => { preparation = null; state.preparation = null; await persist(); });
+        if (input.modelSha256 !== undefined && input.modelSha256 !== model.sha256) throw new Error('選んだAIの版が変わりました。Noahで確認してください。');
+        startPreparation(model);
       } else if (input.action === 'add-agent' || input.action === 'import-agent') {
         if (input.action === 'import-agent' && input.accepted !== true) throw new Error('担当の名前・役割・使うAIを確認してください。');
         const agent = parseLinuxAgent(input.action === 'import-agent' ? parseLinuxAgentFile(input.agentFile) : input.agent);
@@ -442,6 +476,13 @@ export async function createLinuxLocalManager({ root = ROOT, stateDir = join(ROO
       } else throw new Error('対応する操作を選んでください。');
       await persist(); return snapshot();
     } finally { mutating = false; }
+  }
+  function startPreparation(model) {
+    state.selectedModelId = model.id;
+    state.preparedModels = state.preparedModels.filter(id => id !== model.id);
+    state.phase = 'preparing'; state.error = null; state.preparation = { modelId: model.id, label: '必要な環境を確認しています', receivedBytes: 0, totalBytes: model.bytes };
+    prepareAbort = new AbortController();
+    preparation = prepare(model, prepareAbort.signal).catch(error => { state.phase = prepareAbort.signal.aborted ? 'stopped' : 'failed'; state.error = prepareAbort.signal.aborted ? null : error.message; }).finally(async () => { state.preparation = null; await persist(); preparation = null; });
   }
   async function close() {
     if (closed) return;

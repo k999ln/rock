@@ -88,6 +88,7 @@ const SKY_PREFIXES = [
   '/market',
   '/noah',
   '/noah-research',
+  '/noah-downloads',
   '/os',
   '/polymarket',
   '/settings',
@@ -285,7 +286,7 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
       // Worker-first delivery must serve build assets through the configured
       // binding; the framework treats already-built static requests as missing.
       // Keep all other routes and methods under their existing application rules.
-      if ((/^\/noah-research\/[a-f0-9]{16}\/[a-f0-9]{2}\.json$/.test(path) || path === '/brand/avokado-rainbow-transparent-66dfbd0d.png') &&
+      if ((/^\/noah-research\/[a-f0-9]{16}\/[a-f0-9]{2}\.json$/.test(path) || /^\/noah-downloads\/Noah-Mac\.zip(?:\.sha256)?$/.test(path) || path === '/brand/avokado-rainbow-transparent-66dfbd0d.png') &&
           ['GET', 'HEAD'].includes(request.method) && env?.ASSETS?.fetch)
         return env.ASSETS.fetch(request);
       if (path.startsWith('/_next/static/') &&

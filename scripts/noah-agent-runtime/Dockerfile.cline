@@ -1,0 +1,12 @@
+FROM node:22.16.0-bookworm-slim@sha256:048ed02c5fd52e86fda6fbd2f6a76cf0d4492fd6c6fee9e2c463ed5108da0e34
+RUN apt-get update && apt-get install -y --no-install-recommends python3 git ripgrep ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /opt/cline
+COPY cline/package.json cline/package-lock.json ./
+RUN npm ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org && npm cache clean --force
+RUN useradd --uid 10001 --create-home agent
+COPY runner.py /opt/noah/
+COPY cline_sdk.mjs /opt/cline/
+ENV HOME=/home/agent PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DO_NOT_TRACK=1 NODE_OPTIONS=--max-old-space-size=512
+USER 10001:10001
+WORKDIR /workspace
+ENTRYPOINT ["python3", "/opt/noah/runner.py"]

@@ -1,5 +1,7 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
+2026-11-19 Noah単体ローンチ: 公開版の登録/公開/ライブラリをaccountへ統合し、本人が認証したMac runnerが外向きHTTPSで依頼を取得する。Webからlocalhostの公開bindを要求しない。対応済み固定adapterと審査済みNode/Python配布版を扱い、仕事は既存Work、審査は既存Package reviewを再利用する。停止は実行器の終了報告まで待ち、通信不明は停止済みにしない。[受入仕様](../services/noah-standalone-launch.md)。
+
 2026-11-18 ヘッダー統一: NoahとEveは共通の上段アプリ切替（Noah / Eve）を使い、現在地のみ選択表示を変える。コミュニティーはNoah内の機能。Eveの仕事・接続・設定はアプリ内ナビゲーションとして保持し、本人確認や実行中の遷移制限を変えない。
 
 2026-11-18 画面統合: `/noah`を唯一のタイムラインとし、既存のTool利用・購入・掲載/販売・担当設定・接続/端末・成果・クラウド設定を`/noah/features`から同じシェルで開く。旧`/sky`と`/os/sky`は対応するNoah画面へqueryを保持して移動する。API・認証・保存先・課金条件は変更しない。旧Agent設定は`/noah/saved`、外部Agentカタログは`/noah/agents`、Mac実行は既存の案内。ローカル実験は公開側で`/noah/local-tools`へ案内し、実験本体のhost制限を保持する。
@@ -105,3 +107,5 @@ sequenceDiagram
 ## Eve News のローカル下書き補助
 
 `toolkits/eve-news/` は出典packetからローカルOllamaの下書きを作る既存公開系統の補助CLI。`draft.mjs` は入力・出力schemaと実行前後のモデルdigestを検証し、不一致は失敗にする。`news-core.mjs` はWebと同じ根拠制約を共有する。モデルの文章を事実・公開承認・仕事の成功へ昇格させず、出典と未検証箇所を保持してEveへ渡す。実行には本人端末のモデル設定が必要で、今回のmain統合は新規ダウンロードや外部送信を実行しない。検証は `tests/eve-news-core.test.mjs` と関連 `tests/eve-news-*.test.mjs`。
+
+Noah移行の互換ToolKit: `toolkits/noah-agent-operations/` は既存の実行テンプレート集合、`toolkits/noah-vscode/` は保存時整理の補助。単体ローンチの実行器は `scripts/noah-mac-runner.mjs`、導入は `scripts/noah-mac-install.mjs`、配布生成は `scripts/package-noah-mac.mjs`。

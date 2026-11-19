@@ -18,6 +18,8 @@ export function noahLegacyHref(hash: string, mode: NoahSurfaceMode, base: string
 export function noahActionHref(mode: NoahSurfaceMode, base: string, target: string, agentId = '') {
   const path = noahMacPath(target, agentId);
   if (mode === 'local') return path;
+  if (target === 'register') return '/noah/agents/new?launch=1';
+  if (target === 'library' || target === 'work') return `/noah/launch#${target}`;
   return `${base}/mac?${new URLSearchParams({ target, ...(agentId ? { agent: agentId } : {}) })}`;
 }
 
