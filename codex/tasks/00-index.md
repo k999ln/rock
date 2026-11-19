@@ -65,20 +65,30 @@
 
 | 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | 検証済み・[PR #321](https://github.com/k999ln/rock/pull/321) |
 
-## 70番台: Noah の市場（2026-11-20）
+## 70〜90番台: Noah — 専用の端末につなぐ（2026-11-20）
 
-設計は [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)。番号順が推奨順。75 と 83 は本人の許可（契約・署名）が先。80 の 0 クリックと 81 の並び順は本人の確認が先。
+設計は [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)。**番号順ではなく、下の「順」の順に進める。** 段階 1 は雲の契約が無くても始められる。75・83・91 は本人の許可（契約・署名・月の上限）が先。87 はモデルの出どころ、78 は Stripe の sandbox、80 の 0 クリックと 81 の並び順は本人の確認が先。
 
-| # | ファイル | 一言 | 状態 |
-| --- | --- | --- | --- |
-| 73 | [73-noah-connect-plan.md](73-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 | |
-| 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | |
-| 75 | [75-noah-cloud-place.md](75-noah-cloud-place.md) | クラウドの実行先（隔離環境・外向きの中継・無料枠と上限） | |
-| 76 | [76-eve-build-autofill.md](76-eve-build-autofill.md) | 載せる 1 画面と自動入力（見分ける） | |
-| 77 | [77-eve-build-normalize.md](77-eve-build-normalize.md) | 整える・接続試験と接続証明・機械審査 | |
-| 78 | [78-noah-agent-purchase.md](78-noah-agent-purchase.md) | 試用、仮売上 → 接続の確認 → 確定、直した版の権利 | |
-| 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
-| 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
-| 81 | [81-noah-connect-patrol.md](81-noah-connect-patrol.md) | Spider の巡回、並び順、作者の引き取り | |
-| 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（事前登録無しの OAuth、利用権の受け渡し） | |
-| 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | Mac の導入を 1 つにまとめる | |
+| 順 | # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- | --- |
+| 0 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け | |
+| 1 | 85 | [85-noah-intake-ledger.md](85-noah-intake-ledger.md) | 外の台帳の取り込みと名寄せ、接続要件の下書き | |
+| 1 | 73 | [73-noah-connect-plan.md](73-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 | |
+| 1 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | |
+| 1 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（1 文で頼む） | |
+| 1 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | |
+| 1 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | |
+| 1 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | スマホだけの一周（PC 無しの受入） | |
+| 2 | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | 専用の端末（雲）: 隔離環境・外向きの中継・無料枠と上限 | |
+| 2 | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package） | |
+| 3 | 81 | [81-noah-connect-patrol.md](81-noah-connect-patrol.md) | 作者の引き取り、取り下げ、並び順 | |
+| 3 | 76 | [76-eve-build-autofill.md](76-eve-build-autofill.md) | 載せる 1 画面と自動入力（見分ける） | |
+| 3 | 77 | [77-eve-build-normalize.md](77-eve-build-normalize.md) | 整える・接続試験と接続証明・機械審査 | |
+| 3 | 78 | [78-noah-agent-purchase.md](78-noah-agent-purchase.md) | 試用、仮売上 → 接続の確認 → 確定、直した版の権利 | |
+| 4 | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
+| 4 | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | |
+| 4 | 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
+| 4 | 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
+| 4 | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
+
+71 の残り（正常完了と成果の受け取り、別の利用者、障害時の確認）は続ける。置き場所に依らない受け渡しと Work の検証なので、上の段階がそのまま使う。未導入の別 Mac の受入は 83 でやり直す。調査した残り 72 件を 1 件ずつ実行器で対応する作業は行わない（分類は [docs/noah-agent-census-20261120.md](../../docs/noah-agent-census-20261120.md)）。

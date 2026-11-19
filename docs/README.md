@@ -194,4 +194,5 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 新しい情報は該当する正本・workstreamへ統合する。不要な重複分冊や日付付き入口を増やさず、移動・削除では参照・索引・検査・復元commitを同時更新する。
 
 - [Noah本人用リセール](services/noah-select-resale.md) — 3担当・共有予算・Web/CLI・停止と照合の現行契約。
-- [Noah の市場 — 載せるのも、つなぐのも、1 回で終わる](noah-agent-market-design.md)（設計）。書式は [services/noah-one-click-connect.md](services/noah-one-click-connect.md)、[services/eve-agent-build.md](services/eve-agent-build.md)、[services/noah-cloud-place.md](services/noah-cloud-place.md)、[services/noah-mobile-variant.md](services/noah-mobile-variant.md)、[services/noah-agent-purchase.md](services/noah-agent-purchase.md)。
+- [Noah — みんなが、Agent を自分の専用の端末につないで使う](noah-agent-market-design.md)（設計）。書式は [services/noah-one-click-connect.md](services/noah-one-click-connect.md)、[services/noah-own-device.md](services/noah-own-device.md)、[services/noah-screenless.md](services/noah-screenless.md)、[services/noah-agent-intake.md](services/noah-agent-intake.md)、[services/eve-agent-build.md](services/eve-agent-build.md)、[services/noah-mobile-variant.md](services/noah-mobile-variant.md)、[services/noah-agent-purchase.md](services/noah-agent-purchase.md)。task は codex/tasks 73〜91。
+- [外にある Agent の実測（2026-11-20）](noah-agent-census-20261120.md)（上の設計の根拠。MCP の公式台帳・Hugging Face・ACP の件数と、鍵なしでつながる割合、調査した 85 件の分類）。

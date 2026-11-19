@@ -1,5 +1,7 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
+2026-11-20 専用の端末と画面: 本人指示により、Noah の行き先を「みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない」に置く。他人が作った Agent は、画面と入力装置の無い専用の端末（雲・家・手元）か提供者のサーバーでだけ動かし、本人が使っている端末の画面・入力・ブラウザを使わせない。本人の端末そのものを操作する Agent は受けない。置き場所は機種の名前で書かず、ハードの差は hardware profile に置く。外の Agent は 1 件ずつ実行器を書かず、つなぎ方（口）ごとに取り込む。[設計](../noah-agent-market-design.md)、[画面を取らない](../services/noah-screenless.md)、[専用の端末](../services/noah-own-device.md)、[取り込み](../services/noah-agent-intake.md)。設計まで。実装・契約・公開は変えていない。
+
 2026-11-19 Noah単体ローンチ: 公開版の登録/公開/ライブラリをaccountへ統合し、本人が認証したMac runnerが外向きHTTPSで依頼を取得する。Webからlocalhostの公開bindを要求しない。対応済み固定adapterと審査済みNode/Python配布版を扱い、仕事は既存Work、審査は既存Package reviewを再利用する。停止は実行器の終了報告まで待ち、通信不明は停止済みにしない。[受入仕様](../services/noah-standalone-launch.md)。
 
 2026-11-18 ヘッダー統一: NoahとEveは共通の上段アプリ切替（Noah / Eve）を使い、現在地のみ選択表示を変える。コミュニティーはNoah内の機能。Eveの仕事・接続・設定はアプリ内ナビゲーションとして保持し、本人確認や実行中の遷移制限を変えない。

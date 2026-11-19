@@ -2,7 +2,7 @@
 
 - 本人が言う一言: 「agentを載せる際にファイルをアップして載せるのだが、そこでリファクタしてあげたり、モバイル用に使えるように圧縮したりできるようにしたい」「Eveはagentをビルドする役割」（11-20）「開発者が入りやすいビルドを作る」（10-07）
 - Goal（Eveが作る）: 目的＝作者のファイルを、他の人が 1 クリックでつなげる版にして載せる / 入力＝ファイル・貼付・ZIP・リポジトリの URL・Eve の担当・接続先の URL、権利の確認 / 期待成果＝保存版、公開仕様の下書き、接続要件、接続証明、作れた時はスマホ内版 / 予算上限＝作者の無料ビルド枠（候補: 1 日 5 回）/ 要る権限＝作者自身の下書きと登録の読み書き
-- Noaがつなぐもの: `noah_agent_drafts`、`/api/noah/import`、`/api/noah/agents`、`/api/noah/publisher`、構文整理（`noah-upload-refactor`）、固定テスト付きの si 整理（`noah-project-refactor/1`）、隔離環境（[noah-cloud-place.md](noah-cloud-place.md) か作者の Mac runner）、Spider
+- Noaがつなぐもの: `noah_agent_drafts`、`/api/noah/import`、`/api/noah/agents`、`/api/noah/publisher`、構文整理（`noah-upload-refactor`）、固定テスト付きの si 整理（`noah-project-refactor/1`）、専用の端末（[noah-own-device.md](noah-own-device.md)。雲か、作者の家の端末）、Spider
 - AMCの工程:
   1. 受け取る（担当: Eve）— 合格条件: 既存の上限内。権利の確認が 1 回ある。
   2. 見分ける（担当: Noa）— 合格条件: 何も実行しない。読み取った内容が既存の parser を通る下書きになる。
@@ -27,9 +27,10 @@
 | `/.well-known/agent-card.json`、MCP の URL、MCPB の `manifest.json` | 種類＝提供者サーバー型、または Tool |
 | import と呼び出し（OpenAI 互換、各社の SDK、通信先の host） | モデルの使い方、通信先 |
 | 環境変数の参照、鍵らしい文字列 | 要る鍵。直書きの鍵は公開を止める |
+| 画面・入力・ブラウザを使う依存と呼び出し | 面（[noah-screenless.md](noah-screenless.md)）。本人の端末を操作する物は載せない |
 | README、LICENSE | 名前、説明、使い方の例、ライセンス |
 
-種類は `role`（担当）/ `code`（Node・Python）/ `tool`（MCP）/ `provider`（A2A・MCP HTTP・Web）/ `model`（重み。次の段階）。読み取った内容で `noah-agent/1`・`sky-tool-package/1`・`noah-connect/1` を下書きする。全部、作者が直せる。
+種類は `role`（担当）/ `code`（Node・Python）/ `tool`（MCP）/ `provider`（A2A・MCP HTTP・Web）/ `model`（重み。次の段階）。読み取った内容で `noah-agent/1`・`sky-tool-package/1`・`noah-connect/1` を下書きする。全部、作者が直せる。外から取り込んだ Agent（[noah-agent-intake.md](noah-agent-intake.md)）と同じ接続要件・同じ接続試験を使う。
 
 ## 整える
 
@@ -44,7 +45,7 @@
 
 - 変更は 1 つずつ別の差分にし、作者が採否を決める。si の出力だけで合格にしない。
 - 原本は変えない。固定テストの無い版は「動作未確認」と表示し、R1〜R4 を自動で採らない。
-- 外部の有料モデルへ自動で切り替えない。整える担当のモデルは本人が決める（設計書 §9）。
+- 外部の有料モデルへ自動で切り替えない。整える担当のモデルは本人が決める（設計書 §9 の 5）。
 
 ## 接続証明
 

@@ -42,6 +42,7 @@ flowchart LR
 | Eve との会話の文脈・Memory | lib/eve-*.ts, ai-memory-architecture.md | 端末跨ぎの同期規約が未定（task 30） |
 | Wallet 残高・天引き契約 | lib/wallet*.ts, lib/settlement.ts, services/sky-billing | 実装あり |
 | 権限・予算 | lib/agent-control-plane.ts, lib/a2a-broker-*.ts | 実装あり |
+| つないだ Agent（接続の条件と置き場所） | lib/noah-instances.ts, noah_runner_devices, [services/noah-one-click-connect.md](../services/noah-one-click-connect.md) | 接続は端末ごと。account を正本にし、端末を足す・替える時にまとめて移す（2026-11-20。task 74・75） |
 | mii の空間キャリブレーション | なし | profile 固有。account には紐づけない（部屋に紐づく） |
 
 ルール: **account に紐づくものは cloud が正本、端末は cache。** mii のオフライン動作（Hub の local LLM）は cache で動き、復帰時に Receipt を同期する。

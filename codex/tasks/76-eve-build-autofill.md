@@ -1,6 +1,6 @@
 # 76 載せる 1 画面と自動入力（Eve のビルドの静的な段）
 
-設計: docs/noah-agent-market-design.md §4.4、docs/services/eve-agent-build.md の「見分ける」。隔離環境が無くても始められる。
+設計: docs/noah-agent-market-design.md §4.6、docs/services/eve-agent-build.md の「見分ける」。隔離環境が無くても始められる。
 
 ## やること
 

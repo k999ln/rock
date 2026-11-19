@@ -1,6 +1,6 @@
 # 74 1 クリック接続（接続の API・その場のサインイン・Passport）
 
-設計: docs/noah-agent-market-design.md §4.2・§4.7、docs/services/noah-one-click-connect.md。先に 73。
+設計: docs/noah-agent-market-design.md §4.4・§4.9、docs/services/noah-one-click-connect.md。先に 73・86・87。
 
 ## やること
 
@@ -18,7 +18,8 @@
 
 ## 合格条件
 
-- 実ブラウザで、サインイン済みで応答中の Mac がある状態から、カードの「接続」1 回で「頼む」になる。
+- スマホの実ブラウザで、サインイン済みの本人が、鍵の要らない外の接続先（place=provider、L2 済み）のカードの「接続」1 回で「頼む」になる。Mac は使わない。ボタンの下に、入力の送り先が 1 行で出る。
+- 応答中の家の端末がある本人は、今の 13 件でも「接続」1 回で「頼む」になる。
 - 未サインインから、パスキー 1 回で同じ所まで進む。途中で閉じても、同じ操作 ID で続きから。
 - 二重クリックと再読込で接続は 1 回。別 Origin 403、ownerScope 不一致 409。
 - tests/noah-one-click-connect.test.mjs、`npm run typecheck`、`npm run lint:product`。

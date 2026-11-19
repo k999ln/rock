@@ -1,6 +1,6 @@
 # 79 スマホ内版（圧縮）
 
-設計: docs/noah-agent-market-design.md §4.5、docs/services/noah-mobile-variant.md。先に 77。
+設計: docs/noah-agent-market-design.md §4.7、docs/services/noah-mobile-variant.md。先に 77。
 
 ## やること
 

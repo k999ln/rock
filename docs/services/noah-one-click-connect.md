@@ -1,33 +1,35 @@
 # Noah — 1 クリック接続（接続要件・接続計画・Passport）
 
-- 本人が言う一言: 「タップして『接続』を押すと接続される」（10-07）「ワンクリックで接続がされるように工夫してほしい」「登録が面倒でユーザーが離れる」（11-20）
+- 本人が言う一言: 「タップして『接続』を押すと接続される」（10-07）「ワンクリックで接続がされるように工夫してほしい」「登録が面倒でユーザーが離れる」「agent を当たり前に自分の専用の端末に繋げて利用できるようにしたい」（11-20）
 - Goal（Eveが作る）: 目的＝カードの「接続」1 回で、最初の成果まで進める / 入力＝Agent の版、本人の今の状態 / 期待成果＝Connection Passport、「頼む」に変わったカード、見本の成果 / 予算上限＝無料枠、または本人の月の上限 / 要る権限＝その版が宣言した権限だけ
-- Noaがつなぐもの: 接続要件 `noah-connect/1`（新規の sidecar）、`noah_instances`、`sky_connections`、`sky_provider_connections`、`authorizedNoahRelease`、実行先（クラウド・runner・提供者）、`rockstar-account` の `returnTo`
+- Noaがつなぐもの: 接続要件 `noah-connect/1`（新規の sidecar）、`noah_instances`、`sky_connections`、`sky_provider_connections`、`authorizedNoahRelease`、つなぐ先（提供者、専用の端末。[noah-own-device.md](noah-own-device.md)）、取り込み（[noah-agent-intake.md](noah-agent-intake.md)）、`rockstar-account` の `returnTo`
 - AMCの工程:
   1. 計画（担当: Noa）— 合格条件: 接続計画が `blocked` でない。
   2. 本人確認（担当: Broker）— 合格条件: サインイン済み。未サインインは、その場のパスキーの後に同じ操作 ID で続ける。
   3. 利用権（担当: Wallet）— 合格条件: 作者本人・無料・試用の残りあり・支払い済みのどれか。
-  4. 実行先の準備（担当: Work）— 合格条件: 選んだ場所で固定版の準備が終わる。
+  4. つなぐ先の準備（担当: Work）— 合格条件: 選んだ置き場所で固定版の準備が終わる。提供者は相手の許可（要る時）まで終わる。
   5. 疎通（担当: Jev）— 合格条件: nonce 付きの往復が期限内に返る。
   6. Passport の保存（担当: Broker）— 合格条件: 版・場所・権限・料金・同意の版を固定して保存する。
   7. 見本の実行（担当: Work）— 合格条件: 見本の入力がある時、成果が Work に残る。
-- Jevの合格条件: 全段が自動の状態からの操作 1 回。計画が「1 クリック」と返した接続の、条件不足による失敗 0 件。未購入・返金済み・審査失効・撤回済みの版での新規接続 0 件。別 owner の取得・停止 0 件。同じ操作 ID の接続 1 回以下。疎通前の「接続済み」表示 0 件。接続後の実行先の無断変更 0 件。
+- Jevの合格条件: 全段が自動の状態からの操作 1 回。PC が要る手順 0。計画が「1 クリック」と返した接続の、条件不足による失敗 0 件。未購入・返金済み・審査失効・撤回済みの版での新規接続 0 件。別 owner の取得・停止 0 件。同じ操作 ID の接続 1 回以下。疎通前の「接続済み」表示 0 件。接続後の置き場所の無断変更 0 件。提供者へ送る物の表示が無い接続 0 件。面が「本人の端末」の Agent の接続 0 件（[noah-screenless.md](noah-screenless.md)）。
 - 出力先: スマホ（カード、接続のシート）。Pro・mii でも同じ契約。phone でも可。
 - Wallet: 接続そのものは 0 円。有料は [noah-agent-purchase.md](noah-agent-purchase.md)。新しい課金型は作らない。
-- hardware profile 依存: 全部。実行先の候補だけが profile で変わる。
+- hardware profile 依存: 全部。使える置き場所だけが profile で変わる。契約に機種の名前を書かない。
 - 失敗時: 足りない段を 1 つだけ見せて止める（終わった段はやり直さない）。疎通の失敗は「未接続」へ戻し、入力を保持する。結果不明は同じ操作 ID で照合し、自動で再接続しない。
-- 記録: Passport に、owner、Agent の系列と版 hash、接続要件の hash、実行先、権限と同意の版、料金条件、疎通の時刻と秒数、接続の手数。鍵と本文は残さない。
+- 記録: Passport に、owner、Agent の系列と版 hash、接続要件の hash、道具の定義の hash、置き場所、権限と同意の版、料金条件、疎通の時刻と秒数、接続の手数。鍵と本文は残さない。Passport は account が正本で、端末は cache。
 
 ## 接続要件 `noah-connect/1`
 
-公開仕様の版ごとに 1 つ。Eve のビルドが下書きし、作者が確かめ、審査が接続試験の観測と照合する。`sky-tool-package/1` の中には入れず、Package の hash を指す sidecar にする。未知の項目は拒否し、秘密値は書けない。
+公開仕様の版ごとに 1 つ。取り込みと Eve のビルドが下書きし、作者が確かめ、接続試験の観測と照合する。`sky-tool-package/1` の中には入れず、Package の hash を指す sidecar にする。未知の項目は拒否し、秘密値は書けない。
 
 ```json
 {
   "schema": "noah-connect/1",
   "packageKey": "example.summarizer@1.2.0",
   "manifestSha256": "<64 hex>",
-  "places": ["cloud", "mac", "pixel"],
+  "mouth": "source",
+  "surface": "terminal",
+  "places": ["cloud", "home", "pocket"],
   "codeDelivery": "cloud_only",
   "model": { "use": "relay", "needs": ["text"], "minContextTokens": 4000 },
   "egress": ["api.github.com"],
@@ -40,7 +42,9 @@
 
 | 項目 | 値 |
 | --- | --- |
-| `places` | `cloud` / `provider` / `mac` / `pixel` |
+| `mouth` | `mcp-remote` / `space-mcp` / `acp` / `mcp-package` / `a2a` / `source` |
+| `surface` | `none` / `terminal` / `browser` / `screen`。`own-device`（本人の端末を操作する）は接続できない |
+| `places` | `provider` / `cloud` / `home` / `pocket`。機種の名前は書かない |
 | `codeDelivery` | `cloud_only`（コードを利用者へ渡さない）/ `device_allowed` |
 | `model.use` | `relay`（host が渡す）/ `none` / `provider`（提供者側で動く） |
 | `services[].method` | `oauth` / `official_login` / `none` |
@@ -61,8 +65,10 @@
 - `fill`: `auto` / `tap` / `typed`。`state`: `satisfied` / `needed` / `blocked`。
 - `badge`: `one_click`（taps 0・typed 0）/ `taps`（typed 0）/ `setup`（typed 1 以上）/ `blocked`。
 - 段の順は固定: account → entitlement → place → runtime → model → services → secrets → consent。
-- 実行先: 本人の希望（おまかせ / 自分の端末だけ / クラウドだけ）で絞り、手数が最も少ない場所を選ぶ。同じなら cloud → provider → 今使っている端末 → 他の端末。
-- consent: 権限が `read_user_input`・`write_results` だけで無料なら `auto`（接続のクリックが同意）。それ以外は `tap`。外部への書き込みと金融の実行前確認（Broker）は別に残る。
+- 置き場所: 本人の希望（おまかせ / 自分の端末だけ / 雲だけ）と面で絞り、手数が最も少ない所を選ぶ。同じなら provider → cloud → home → pocket。「自分の端末だけ」は home と pocket。
+- consent: 権限が `read_user_input`・`write_results` だけで無料なら `auto`（接続のクリックが同意）。それ以外は `tap`。外部への書き込みと金融の実行前確認（Broker）は別に残る。place=provider の時は、接続のボタンの下に「入力は <提供者> の <host> へ送られます」を必ず出す。
+- services の `oauth`: 相手が事前の申し込み無しの登録（client 文書か動的登録）に対応していれば `tap`。本人が前に許可していれば `auto`。対応していなければ `typed`。相手のアカウントを持っているかは計画では分からないので、カードに「相手のアカウントが要る」と書く。
+- 0 クリック（Eve が自分でつなぐ）は、place が cloud・home・pocket の時だけ。place=provider は最初の 1 回、本人に聞く。
 
 ## API
 
@@ -77,13 +83,16 @@
 | 状態 | 期待 |
 | --- | --- |
 | サインイン済み、無料、cloud 可、権限は入力と成果だけ | `one_click`、place=cloud |
+| サインイン済み、無料、mouth=mcp-remote、鍵なし、L2 済み | `one_click`、place=provider |
+| mouth=mcp-remote、相手の許可が要る、登録方式あり、未許可 | taps 1（services） |
+| surface=own-device | `blocked` |
 | 未サインイン、他は同じ | taps 1（account） |
 | 有料、支払い方法あり、試用の残り 0 | taps 1（entitlement） |
 | 有料、支払い方法なし、試用の残りあり | `one_click` |
 | 有料、支払い方法なし、試用の残り 0 | `setup`（typed 1） |
 | services に未接続の oauth が 1 つ | taps 1。接続済みなら auto |
 | secrets が 1 つ | `setup` |
-| places=[mac]、端末なし | `setup`（place） |
-| places=[mac]、応答中の Mac あり | `one_click`、place=その Mac |
+| places=[home]、端末なし | `setup`（place） |
+| places=[home]、応答中の家の端末あり | `one_click`、place=home（その端末） |
 | 審査失効・撤回 | `blocked` |
 | 希望が「自分の端末だけ」、places=[cloud] | `blocked`（希望と合わない） |
