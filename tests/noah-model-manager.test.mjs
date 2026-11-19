@@ -286,6 +286,20 @@ void test('exclusive manager lock and interrupted state survive a clean restart'
     await next.close();
   }
 });
+void test('concurrent dead-owner recovery admits only one model manager', async (t) => {
+  const f = await fixture(t);
+  await f.manager.close();
+  const file = path.join(f.root, 'work/runtime-state/noah-models/manager.lock');
+  // PID above the host PID range, without spawning or killing another process.
+  assert.throws(() => process.kill(2147483647, 0), { code: 'ESRCH' });
+  await writeFile(file, JSON.stringify({ pid: 2147483647, token: 'dead-fixture' }), { mode: 0o600 });
+  const attempts = await Promise.allSettled(Array.from({ length: 6 }, () => createNoahModelManager({ root: f.root, fetcher: f.fetcher })));
+  const winners = attempts.filter(r => r.status === 'fulfilled');
+  t.after(async () => { for (const winner of winners) await winner.value.close(); });
+  assert.equal(winners.length, 1);
+  for (const result of attempts.filter(r => r.status === 'rejected')) assert.equal(result.reason.status, 409);
+  assert.equal(JSON.parse(await readFile(file, 'utf8')).pid, process.pid);
+});
 void test('cancelling one connection does not cancel another client sharing preparation', async (t) => {
   const f = await fixture(t);
   let release;

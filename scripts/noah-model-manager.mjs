@@ -6,6 +6,7 @@ import {
   rename,
   open,
   unlink,
+  rmdir,
 } from 'node:fs/promises';
 import { createHash, randomUUID } from 'node:crypto';
 import { constants } from 'node:fs';
@@ -37,39 +38,55 @@ export async function closeNoahModelManager(root) {
     if (managers.get(root) === pending) managers.delete(root);
   }
 }
+async function readModelLock(file) {
+  let handle;
+  try {
+    handle = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW);
+  } catch (e) {
+    if (e.code === 'ENOENT') return null;
+    throw e;
+  }
+  try {
+    const info = await handle.stat();
+    if (!info.isFile() || info.nlink !== 1 || info.uid !== process.getuid() || (info.mode & 0o077))
+      throw new InstallError('本人所有のモデル管理ロックを権限600で保存してください。', 503);
+    return JSON.parse(await handle.readFile('utf8'));
+  } finally { await handle.close(); }
+}
 export async function createNoahModelManager({ root, fetcher = fetch } = {}) {
   const directory = path.join(root, 'work/runtime-state/noah-models');
   await mkdir(directory, { recursive: true, mode: 0o700 });
   const guard = path.join(directory, 'manager.lock'),
+    transition = path.join(directory, 'manager-transition.lock'),
     token = randomUUID();
+  // Serialize creation and dead-owner recovery. Never steal a recovery lock:
+  // an interrupted transition needs inspection instead of risking two writers.
   try {
-    const f = await open(guard, 'wx', 0o600);
-    await f.writeFile(JSON.stringify({ pid: process.pid, token }));
-    await f.close();
+    await mkdir(transition, { mode: 0o700 });
   } catch (e) {
-    if (e.code !== 'EEXIST') throw e;
-    const lock = await open(guard, constants.O_RDONLY | constants.O_NOFOLLOW);
-    let previous;
-    try {
-      if (!(await lock.stat()).isFile()) throw new InstallError('モデル管理のロックを確認してください。', 503);
-      previous = JSON.parse(await lock.readFile('utf8'));
-    } finally { await lock.close(); }
-    if (!Number.isInteger(previous.pid) || previous.pid < 1)
-      throw new InstallError('モデル管理の保存領域を確認してください。', 503);
-    let alive = true;
-    try {
-      process.kill(previous.pid, 0);
-    } catch (error) {
-      if (error.code === 'ESRCH') alive = false;
-      else throw error;
+    if (e.code === 'EEXIST') throw new InstallError('モデル管理の起動確認が進行中です。残ったロックは状態を確認してください。', 409);
+    throw e;
+  }
+  try {
+    const previous = await readModelLock(guard);
+    if (previous) {
+      if (!Number.isInteger(previous.pid) || previous.pid < 1)
+        throw new InstallError('モデル管理の保存領域を確認してください。', 503);
+      let alive = true;
+      try {
+        process.kill(previous.pid, 0);
+      } catch (e) {
+        if (e.code === 'ESRCH') alive = false;
+        else throw e;
+      }
+      if (alive) throw new InstallError('この保存先のモデル管理は別のNoahが使用中です。', 409);
+      await unlink(guard);
     }
-    if (alive)
-      throw new InstallError(
-        'この保存先のモデル管理は別のNoahが使用中です。',
-        409,
-      );
-    await unlink(guard);
-    return createNoahModelManager({ root, fetcher });
+    const f = await open(guard, 'wx', 0o600);
+    try { await f.writeFile(JSON.stringify({ pid: process.pid, token })); }
+    finally { await f.close(); }
+  } finally {
+    await rmdir(transition);
   }
   const file = path.join(directory, 'state.json');
   let records = {};
@@ -485,8 +502,8 @@ export async function createNoahModelManager({ root, fetcher = fetch } = {}) {
       for (const j of jobs.values()) j.controller.abort();
       await Promise.allSettled([...jobs.values()].map((j) => j.promise));
       await writing;
-      const own = JSON.parse(await readFile(guard, 'utf8'));
-      if (own.token === token) await unlink(guard);
+      const own = await readModelLock(guard);
+      if (own?.token === token) await unlink(guard);
     },
   };
   return api;
