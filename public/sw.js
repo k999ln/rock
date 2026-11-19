@@ -1,5 +1,9 @@
-const CACHE = 'rockstaros-shell-v4';
+const CACHE = 'rockstaros-shell-v6';
+const OFFLINE_PAGE = '/offline.html';
 const CACHE_PREFIXES = ['rockstaros-shell-', 'loop-app-'];
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.add(OFFLINE_PAGE)));
+});
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'ROCKSTAROS_ACTIVATE_UPDATE') {
     event.waitUntil(self.skipWaiting());
@@ -48,7 +52,8 @@ self.addEventListener('fetch', (event) => {
             url.pathname.startsWith('/_next/static/') ||
             url.pathname.startsWith('/assets/') ||
             url.pathname.startsWith('/loop-icon-') ||
-            url.pathname.startsWith('/rock-icon-'))
+            url.pathname.startsWith('/rock-icon-') ||
+            url.pathname.startsWith('/company-mark'))
         ) {
           const copy = response.clone();
           event.waitUntil(
@@ -60,8 +65,13 @@ self.addEventListener('fetch', (event) => {
         }
         return response;
       })
-      .catch(() =>
-        caches.match(request).then((cached) => cached || Response.error()),
-      ),
+      .catch(async () => {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        if (request.mode === 'navigate') {
+          return (await caches.match(OFFLINE_PAGE)) || Response.error();
+        }
+        return Response.error();
+      }),
   );
 });

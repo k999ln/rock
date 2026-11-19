@@ -168,9 +168,14 @@ await test('fresh and both historical D1 databases converge without losing recor
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 80);
-        for (const table of ['esim_cloud_access_keys', 'esim_cloud_proof_uses', 'sky_usage_payments', 'sky_mcp_slots'])
+        assert.equal(schema.filter((item) => item.type === 'table').length, 117);
+        for (const name of ['sky_agent_shares','sky_agent_share_installs']) assert.ok(schema.some(item=>item.type==='table'&&item.name===name),name);
+        const paymentColumns=(await db.prepare('PRAGMA table_info(sky_usage_payments)').all()).results;
+        for(const name of ['source_kind','agent_source_id','confirmation_id'])assert.ok(paymentColumns.some(c=>c.name===name));
+        for (const table of ['eve_runtime_presence','sky_author_agreement_documents','eve_device_jobs','eve_device_presence','eve_device_commands','esim_cloud_access_keys', 'esim_cloud_proof_uses', 'sky_usage_payments', 'sky_mcp_slots', 'sky_linux_service_documents', 'sky_linux_service_receipts', 'rockstar_service_setups'])
           assert.ok(schema.some((item) => item.type === 'table' && item.name === table));
+        for (const trigger of ['sky_author_agreement_document_immutable_update','sky_author_agreement_document_immutable_delete','sky_usage_agent_payment_source','sky_usage_payment_source','sky_usage_payment_immutable','sky_usage_payment_no_delete'])
+          assert.ok(schema.some(item=>item.type==='trigger' && item.name===trigger));
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history !== 'fresh')

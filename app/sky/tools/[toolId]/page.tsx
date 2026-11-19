@@ -7,7 +7,7 @@ type Props = { params: Promise<{ toolId: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { toolId } = await params;
   const tool = catalog.find((item) => item.id === toolId);
-  return { title: tool ? `${tool.name} — Sky` : 'Sky Tool — avocadoOS' };
+  return { title: tool ? `${tool.name} — Smith` : 'Smith Tool — avocadoOS' };
 }
 
 export default async function SkyToolPage({

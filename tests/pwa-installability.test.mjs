@@ -16,6 +16,7 @@ function pngSize(path) {
 void test('PWA identity uses RockstarOS while navigation stays on the compatibility root scope', () => {
   const value = manifest();
   assert.equal(value.name, 'RockstarOS');
+  assert.match(value.description, /^Smith/);
   assert.equal(value.short_name, 'RockstarOS');
   assert.equal(value.id, '/');
   assert.equal(value.start_url, '/');
@@ -30,9 +31,14 @@ void test('PWA provides exact install icons and an opaque full-bleed maskable ic
   const icons = manifest().icons || [];
   for (const size of [192, 512]) {
     const icon = icons.find(({ sizes }) => sizes === `${size}x${size}`);
-    assert.equal(icon?.type, 'image/png');
+    assert.equal(icon?.type, size === 192 ? 'image/svg+xml' : 'image/png');
     assert.match(icon?.purpose || '', /(?:^|\s)any(?:\s|$)/);
-    assert.deepEqual(pngSize(resolve(root, `public${icon.src}`)), [size, size]);
+    if (size === 512) assert.deepEqual(pngSize(resolve(root, `public${icon.src}`)), [size, size]);
+    else {
+      const svg = readFileSync(resolve(root, `public${icon.src}`), 'utf8');
+      assert.match(svg, /width="192" height="192"/);
+      assert.match(svg, /data:image\/png;base64,/);
+    }
   }
 
   const maskable = icons.find(({ purpose }) =>
@@ -42,6 +48,7 @@ void test('PWA provides exact install icons and an opaque full-bleed maskable ic
   assert.equal(maskable?.type, 'image/svg+xml');
   const source = readFileSync(resolve(root, `public${maskable.src}`), 'utf8');
   assert.match(source, /width="1024" height="1024"/);
-  assert.match(source, /<rect width="24" height="24" fill="#d6eead"\/>/);
+  assert.match(source, /<rect width="1024" height="1024" fill="white"\/>/);
+  assert.match(source, /<image x="128" y="128" width="768" height="768"/);
   assert.doesNotMatch(source, /<rect[^>]+\brx=/);
 });

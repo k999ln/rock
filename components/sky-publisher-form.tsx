@@ -1,4 +1,6 @@
 'use client';
+
+import { SkyNotice } from '@/components/sky-feedback';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway route. */
 
 import { useEffect, useState, type SyntheticEvent } from 'react';
@@ -119,7 +121,7 @@ export default function SkyPublisherForm({
       error?: string;
     };
     if (!response.ok)
-      throw new Error(result.error || 'MCPの接続を確認できませんでした。');
+      throw new Error(result.error || "外部ツール接続の接続を確認できませんでした。");
     const checked = { ...result, endpointUrl: value };
     setInspection(checked);
     return checked;
@@ -138,7 +140,7 @@ export default function SkyPublisherForm({
       setInspectionError(
         cause instanceof Error
           ? cause.message
-          : 'MCPの接続を確認できませんでした。',
+          : "外部ツール接続の接続を確認できませんでした。",
       );
     } finally {
       setChecking(false);
@@ -198,7 +200,7 @@ export default function SkyPublisherForm({
         result.mcpInspection?.status === 'ready'
           ? `${result.mcpInspection.toolCount}件のMCPツールを確認し、掲載申請を審査キューへ保存しました。`
           : result.mcpInspection?.status === 'auth_required'
-            ? '接続先の応答を確認しました。OAuth認証を含む審査後に公開します。'
+            ? "接続先の応答を確認しました。公式の認証画面認証を含む審査後に公開します。"
             : '掲載申請を審査キューへ保存しました。公開や接続は、技術・権利・安全確認の後です。',
       );
     } catch (cause) {
@@ -219,15 +221,15 @@ export default function SkyPublisherForm({
       <div className="sky-publish-heading">
         <div>
           <p className="rock-eyebrow">FOR TOOL PROVIDERS</p>
-          <h1>自動化ツールを、Skyへ。</h1>
+          <h1>自動化ツールを、Smithへ。</h1>
           <p>
-            利用者が判断するための情報だけを入力。遠隔MCPは送信前にSkyが接続とツール一覧を確認します。
+            利用者が判断するための情報だけを入力。遠隔外部ツール接続は送信前にSmithが接続とツール一覧を確認します。
           </p>
         </div>
         {!embedded && (
           <Link href="/sky" className="rock-button rock-button-subtle">
             <ArrowLeft size={16} />
-            Skyへ戻る
+            Smithへ戻る
           </Link>
         )}
       </div>
@@ -251,7 +253,7 @@ export default function SkyPublisherForm({
           {access !== 'ready' && (
             <div className="rock-service-notice" aria-live="polite">
               <strong>{access === 'signin' ? 'サインインしてから、掲載情報を入力してください。' : access === 'checking' ? '掲載申請の利用条件を確認しています。' : '掲載申請に接続できませんでした。'}</strong>
-              <p>申請内容は本人のアカウントに保存し、審査後に公開します。APIキーやパスワードは入力しないでください。</p>
+              <p>申請内容は本人のアカウントに保存し、審査後に公開します。接続用の秘密キーやパスワードは入力しないでください。</p>
               {access === 'signin' && (
                 <a className="rock-button rock-button-dark" target="_top" href={`/signin-with-chatgpt?return_to=${encodeURIComponent(pathname + (searchParams.size ? '?' + searchParams.toString() : ''))}`}>サインインして申請する</a>
               )}
@@ -290,7 +292,7 @@ export default function SkyPublisherForm({
                 value={name}
                 onChange={(event) => setName(event.target.value)}
               />
-              <small>MCPの接続確認で取得できた名前は下書きに入ります。送信前に確認してください。</small>
+              <small>外部ツール接続の接続確認で取得できた名前は下書きに入ります。送信前に確認してください。</small>
             </label>
             <label>
               一言でできること
@@ -384,8 +386,8 @@ export default function SkyPublisherForm({
                 }}
               />
               <small>
-                認証キーは入力しません。MCP
-                OAuthまたは外部の安全な認証画面を使います。
+                認証キーは入力しません。外部ツール接続
+                公式の認証画面または外部の安全な認証画面を使います。
               </small>
             </label>
             {connectionType === 'mcp_streamable_http' && (
@@ -399,7 +401,7 @@ export default function SkyPublisherForm({
                   <ShieldCheck size={16} />
                   {checking ? '接続を確認中…' : '接続を確認して名前を入力'}
                 </button>
-                {inspectionError && <p className="sky-form-error" role="alert">{inspectionError}</p>}
+                {inspectionError && <SkyNotice className="sky-form-error" message={inspectionError} />}
                 {inspection && (
                   <output
                     className={
@@ -544,7 +546,7 @@ export default function SkyPublisherForm({
               {message}
             </output>
           )}
-          {error && <p className="sky-form-error" role="alert">{error}</p>}
+          {error && <SkyNotice className="sky-form-error" message={error} />}
           <button
             type="submit"
             className="rock-button rock-button-dark"
@@ -561,12 +563,12 @@ export default function SkyPublisherForm({
         </form>
         <aside className="sky-publish-review">
           <ShieldCheck size={25} />
-          <h2>公開前にSkyが確認すること</h2>
+          <h2>公開前にSmithが確認すること</h2>
           <ol>
-            <li>MCPの初期化と能力一覧</li>
+            <li>外部ツール接続の初期化と能力一覧</li>
             <li>作者・版・配布元の対応</li>
             <li>権限、送信先、料金の差分</li>
-            <li>認証情報をSkyへ直接入力させないこと</li>
+            <li>認証情報をSmithへ直接入力させないこと</li>
             <li>停止、失敗、結果不明時の挙動</li>
           </ol>
           <p>
@@ -577,5 +579,5 @@ export default function SkyPublisherForm({
     </div>
   );
   if (embedded) return <div className={`sky-publish-embedded ${styles.embedded}`}>{content}</div>;
-  return <WorkspaceShell title="Skyに掲載" tone="sky">{content}</WorkspaceShell>;
+  return <WorkspaceShell title="Smithに掲載" tone="sky">{content}</WorkspaceShell>;
 }

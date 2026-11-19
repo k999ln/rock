@@ -306,7 +306,7 @@ export default function AutonomousFundMarket() {
           </p>
         </div>
         <div className="autofund-contract" aria-label="収益の配給ルール">
-          <small>SKY REVENUE CONTRACT</small>
+          <small>Smith REVENUE CONTRACT</small>
           <strong>収益料金は保留中</strong>
           <p>収益料金は保留中です。外部実費を分けて表示し、利用料は差し引きません。</p>
         </div>
@@ -416,7 +416,7 @@ export default function AutonomousFundMarket() {
               実収益はProvider照合後にだけ計上
             </p>
             <Link href={`/chat?fund=${encodeURIComponent(active.id)}`}>
-              Zemaで進捗を見る <ArrowRight size={15} />
+              Eveで進捗を見る <ArrowRight size={15} />
             </Link>
           </article>
         )}

@@ -1,4 +1,5 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 
 import { useState, type SyntheticEvent } from 'react';
 import { Check, ShieldAlert, ShieldCheck, Sparkles } from 'lucide-react';
@@ -82,7 +83,7 @@ export function JevEvaluationRunner({
           </span>
         </div>
         <div className="patent-agent-summary">
-          <p>評価したい出力だけを貼り付ける、Skyの任意リモート評価Toolです。</p>
+          <p>評価したい出力だけを貼り付ける、Smithの任意リモート評価Toolです。</p>
           <p>
             個人情報、法務相談、未公開発明、秘密情報、原文の全文は送らないでください。
           </p>
@@ -133,9 +134,7 @@ export function JevEvaluationRunner({
       </form>
 
       {error && (
-        <p className="patent-error" role="alert">
-          {error}
-        </p>
+        <SkyNotice className="patent-error" message={error} />
       )}
       {receipt && (
         <section className="legal-runner-result" aria-live="polite">

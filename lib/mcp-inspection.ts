@@ -203,7 +203,7 @@ export async function inspectRemoteMcp(
       !MCP_PROTOCOLS.includes(protocolVersion as (typeof MCP_PROTOCOLS)[number])
     )
       throw new McpInspectionError(
-        'Skyが対応していないMCPバージョンです。',
+        'Smithが対応していないMCPバージョンです。',
         422,
       );
     const capabilities = initialized.capabilities;

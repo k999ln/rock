@@ -11541,7 +11541,7 @@
   background: var(--os-accent);
 }
 
-/* Zema history rail: it is a real responsive surface, not a hidden placeholder. */
+/* Eve history rail: it is a real responsive surface, not a hidden placeholder. */
 .zema-grok-shell {
   position: relative;
 }
@@ -11674,7 +11674,7 @@
   .zema-grok-shell:not(.is-sidebar-collapsed) .sky-chat-composer { padding-left: 18px; }
 }
 
-/* Zema desktop surface: match the Bot/channel layout instead of the old paper chat. */
+/* Eve desktop surface: match the Bot/channel layout instead of the old paper chat. */
 .rock-main-column:has(.sky-chat-page) {
   background: var(--os-bg);
 }
@@ -11808,7 +11808,7 @@
 .sky-chat-page .zema-tool-picker,
 .sky-chat-page .zema-add-tool { color: var(--os-muted); }
 
-/* Final Zema shell geometry: the history rail owns column one and never
+/* Final Eve shell geometry: the history rail owns column one and never
    overlaps the composer or the selected Bot conversation. */
 .sky-chat-page .zema-grok-shell {
   display: grid;
@@ -12042,7 +12042,7 @@
   }
 }
 
-/* Zema conversation: one clear product name, one active Bot, and readable work. */
+/* Eve conversation: one clear product name, one active Bot, and readable work. */
 .sky-chat-page .zema-sidebar {
   border-color: var(--os-line);
   background: var(--os-bg);
@@ -12816,7 +12816,7 @@
 .sky-chat-page .work-steps li > span { color: var(--os-muted); background: var(--os-panel); }
 .wallet-balance-actions button:first-child { border-color: var(--os-line) !important; color: var(--os-text) !important; background: var(--os-panel) !important; }
 
-/* Avokado Zema: a quiet graphite workspace with silver actions and one clear start. */
+/* Avokado Eve: a quiet graphite workspace with silver actions and one clear start. */
 .sky-chat-page .zema-grok-shell {
   grid-template-columns: clamp(232px, 22vw, 292px) minmax(0, 1fr);
   background: var(--os-bg);
@@ -13187,3 +13187,25 @@
 .spin { animation: sky-activation-spin 1s linear infinite; }
 @keyframes sky-activation-spin { to { transform: rotate(360deg); } }
 @media (max-width: 840px) { .sky-activation-form { grid-template-columns: 1fr 1fr; } .sky-activation-form label:first-child { grid-column: 1 / -1; } .sky-activation-form .rock-button { justify-self: start; } }
+
+/* Saved Sky agent context remains visible above Eve's existing work/results. */
+.sky-agent-context { margin: 0 0 12px; padding: 14px 20px; border: 1px solid #dedbd7; border-radius: 18px; background: #fffdf9; color: #37332f; font-size: 13px; line-height: 1.6; }
+.sky-agent-context p { margin: 0; }
+.sky-agent-context span { color: #635f59; }
+.sky-agent-context a { color: #963750; text-decoration: underline; text-underline-offset: 3px; }
+
+.eve-history-controls{margin:10px 12px;padding:12px;border:1px solid var(--border,#e2e5e0);border-radius:12px;font-size:12px;line-height:1.6}.eve-history-controls output{display:block;margin:0 0 10px;color:#52634d}.eve-history-controls label{display:flex;gap:8px;margin:10px 0 3px;align-items:flex-start}.eve-history-controls small{display:block;color:#6b7267;font-size:10px}.eve-history-controls button{border:1px solid #d8ded5;border-radius:8px;background:transparent;padding:6px 8px;font-size:11px;margin:6px 5px 0 0;cursor:pointer}.eve-memory-sources{margin:12px 24px;padding:12px 16px;border:1px solid #d6e0ce;border-radius:12px;max-height:220px;overflow:auto;font-size:12px}.eve-memory-sources p{white-space:pre-wrap}.eve-older-history{margin:10px auto;padding:8px 14px;border:1px solid #d6e0ce;border-radius:999px;background:transparent;font-size:12px;cursor:pointer}
+
+/* Eve keeps the saved job in view while making a separate new request available. */
+.rock-workspace .work-create-disclosure { margin-block: 16px; }
+.rock-workspace .work-create-disclosure > summary { cursor: pointer; color: var(--os-text); padding: 12px 0; font-weight: 600; }
+.rock-workspace .work-create-disclosure > summary:focus-visible { outline: 2px solid var(--os-muted); outline-offset: 4px; }
+
+/* Eve already has its conversation list. Choose saved jobs without a second permanent column. */
+.rock-workspace .eve-work-layout { display: block; }
+.rock-workspace .eve-work-layout > .work-create-disclosure { margin-block: 12px; }
+.rock-workspace .eve-work-binding { background: var(--os-bg); border-color: var(--os-line); color: var(--os-text); }
+.rock-workspace .eve-work-binding > details > summary,
+.rock-workspace .eve-work-usage > summary { cursor: pointer; padding: 12px 0; color: var(--os-muted); }
+.rock-workspace .eve-work-usage { margin-block: 16px; border-block: 1px solid var(--os-line); }
+.rock-workspace .eve-work-usage > summary:focus-visible { outline: 2px solid var(--os-focus); outline-offset: 3px; }

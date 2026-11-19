@@ -309,6 +309,14 @@ function sameIntent(existing: A2ADelegation, input: A2ADelegationInput) {
   );
 }
 
+// Server-owned SQL aliases only. A stop intent fences new approvals and sends,
+// while existing in-flight tasks still require remote reconciliation/cancellation.
+const noStoppedEveParent = (alias: 'd' | 'agent_delegations') => `NOT EXISTS (SELECT 1 FROM work_jobs w
+  WHERE w.id = ${alias}.parent_job_id AND w.user_id = ${alias}.owner_user_id
+  AND json_extract(w.payload, '$.eveAgent.threadId') IS NOT NULL
+  AND (json_extract(w.payload, '$.eveAgent.stopRequestedAt') IS NOT NULL
+    OR json_extract(w.payload, '$.status') IN ('cancelled', 'completed')))`;
+
 export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
   async function get(ownerUserId: string, id: string) {
     return db
@@ -485,7 +493,8 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
       remote_task_id = COALESCE(?, remote_task_id),
       remote_context_id = COALESCE(?, remote_context_id),
       remote_state = COALESCE(?, remote_state), revision = revision + 1, updated_at = ?
-      WHERE owner_user_id = ? AND id = ? AND revision = ? AND state = ?`)
+      WHERE owner_user_id = ? AND id = ? AND revision = ? AND state = ?
+      AND ${['dispatching', 'dispatch_submitting'].includes(values.state) ? noStoppedEveParent('agent_delegations') : '1=1'}`)
         .bind(
           values.state,
           values.remoteTaskId ?? null,
@@ -543,6 +552,17 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
   return {
     get,
     getByIdempotency,
+    async parentStopRequested(ownerUserId: string, id: string) {
+      const row = await db.prepare(`SELECT d.id FROM agent_delegations d WHERE d.owner_user_id = ? AND d.id = ? AND NOT (${noStoppedEveParent('d')})`).bind(ownerUserId, id).first<{ id: string }>();
+      return Boolean(row);
+    },
+    async listEveStoppingParents(limit = 50) {
+      const rows = await db.prepare(`SELECT id, user_id AS ownerUserId FROM work_jobs
+        WHERE json_extract(payload, '$.eveAgent.stopRequestedAt') IS NOT NULL
+          AND json_extract(payload, '$.status') IN ('active', 'review')
+        ORDER BY updated_at, id LIMIT ?`).bind(Math.min(Math.max(Math.trunc(limit), 1), 100)).all<{ id: string; ownerUserId: string }>();
+      return rows.results.map(row => ({ id: row.id, ownerUserId: row.ownerUserId }));
+    },
     getBudget,
     getBudgetReservation,
     listBudgetReservations,
@@ -1010,6 +1030,24 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
           createdAt: number;
         }>();
     },
+    async savePendingInput(ownerUserId: string, id: string, revision: number, encrypted: A2AStoredInput, now = Date.now()) {
+      if (!encrypted.ciphertext || !encrypted.nonce || encrypted.keyVersion !== 'aes-256-gcm-v1' || !hash.test(encrypted.inputSha256))
+        throw new A2ADelegationStoreError('下書き本文の暗号化形式を確認してください。', 'draft_input_invalid');
+      await db.prepare(`INSERT INTO agent_delegation_inputs
+        (delegation_id, owner_user_id, payload_ciphertext, nonce, input_sha256, key_version, expires_at, created_at)
+        SELECT d.id,d.owner_user_id,?,?,?,?,d.deadline_at,? FROM agent_delegations d
+        WHERE d.owner_user_id=? AND d.id=? AND d.revision=? AND d.state='awaiting_approval'
+          AND d.input_sha256=? AND d.deadline_at>? AND ${noStoppedEveParent('d')}
+        ON CONFLICT(delegation_id) DO NOTHING`)
+        .bind(encrypted.ciphertext, encrypted.nonce, encrypted.inputSha256, encrypted.keyVersion, now, ownerUserId, id, revision, encrypted.inputSha256, now).run();
+      const current = await get(ownerUserId, id);
+      const saved = await db.prepare(`SELECT i.input_sha256 AS inputSha256 FROM agent_delegation_inputs i
+        JOIN agent_delegations d ON d.id=i.delegation_id AND d.owner_user_id=i.owner_user_id
+        WHERE i.owner_user_id=? AND i.delegation_id=? AND d.revision=? AND d.state='awaiting_approval'
+          AND d.deadline_at>? AND ${noStoppedEveParent('d')}`).bind(ownerUserId, id, revision, now).first<{inputSha256:string}>();
+      if (!current || current.state !== 'awaiting_approval' || current.revision !== revision || current.deadlineAt <= now || saved?.inputSha256 !== encrypted.inputSha256)
+        throw new A2ADelegationStoreError('下書きの保存状態を再読込してください。', 'draft_revision_conflict');
+    },
     async deleteInput(ownerUserId: string, id: string) {
       return db
         .prepare('DELETE FROM agent_delegation_inputs WHERE owner_user_id = ? AND delegation_id = ?')
@@ -1055,7 +1093,8 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
           state, revision, created_at, updated_at
         ) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'awaiting_approval', 0, ?, ?
           WHERE EXISTS (SELECT 1 FROM work_jobs w WHERE w.id = ? AND w.user_id = ?
-            AND json_extract(w.payload, '$.status') IN ('active', 'review')) AND ? > ?
+            AND json_extract(w.payload, '$.status') IN ('active', 'review')
+            AND json_extract(w.payload, '$.eveAgent.stopRequestedAt') IS NULL) AND ? > ?
           ON CONFLICT(owner_user_id, idempotency_key) DO NOTHING`)
             .bind(
               input.id,
@@ -1274,7 +1313,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
               d.parent_budget_limit_minor, 0, 0, 0, ?, ?
             FROM agent_delegations d
             WHERE d.owner_user_id = ? AND d.id = ? AND d.revision = ?
-              AND d.state = 'awaiting_approval'
+              AND d.state = 'awaiting_approval' AND ${noStoppedEveParent('d')}
           ON CONFLICT(owner_user_id, parent_job_id) DO NOTHING`)
             .bind(now, now, ownerUserId, id, current.revision),
           db.prepare(`INSERT INTO agent_delegation_budget_reservations (
@@ -1288,7 +1327,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
               AND p.currency = d.budget_currency
               AND p.budget_limit_minor = d.parent_budget_limit_minor
             WHERE d.owner_user_id = ? AND d.id = ? AND d.revision = ?
-              AND d.state = 'awaiting_approval'
+              AND d.state = 'awaiting_approval' AND ${noStoppedEveParent('d')}
               AND d.budget_limit_minor <= d.parent_budget_limit_minor
               AND p.reserved_minor + p.settled_minor + d.budget_limit_minor <= p.budget_limit_minor
           ON CONFLICT(delegation_id) DO NOTHING`)
@@ -1297,11 +1336,15 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
             delegation_id, owner_user_id, payload_ciphertext, nonce, input_sha256,
             key_version, expires_at, created_at
           ) SELECT ?, d.owner_user_id, ?, ?, ?, ?, ?, ? FROM agent_delegations d
-            WHERE d.owner_user_id = ? AND d.id = ? AND d.revision = ? AND d.state = 'awaiting_approval'
+            WHERE d.owner_user_id = ? AND d.id = ? AND d.revision = ? AND d.state = 'awaiting_approval' AND ${noStoppedEveParent('d')}
               AND d.authorization_sha256 = ? AND d.input_sha256 = ?
               AND EXISTS (SELECT 1 FROM agent_delegation_budget_reservations r
                 WHERE r.owner_user_id = d.owner_user_id
                   AND r.delegation_id = d.id AND r.state = 'held')
+          ON CONFLICT(delegation_id) DO UPDATE SET payload_ciphertext=excluded.payload_ciphertext,
+            nonce=excluded.nonce,key_version=excluded.key_version,expires_at=excluded.expires_at
+            WHERE agent_delegation_inputs.owner_user_id=excluded.owner_user_id
+              AND agent_delegation_inputs.input_sha256=excluded.input_sha256
             `).bind(
             id, encryptedInput.ciphertext, encryptedInput.nonce,
             encryptedInput.inputSha256.toLowerCase(), encryptedInput.keyVersion,
@@ -1310,6 +1353,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
           ),
           db.prepare(`UPDATE agent_delegations SET state = 'prepared', revision = ?, updated_at = ?
             WHERE owner_user_id = ? AND id = ? AND revision = ? AND state = 'awaiting_approval'
+              AND ${noStoppedEveParent('agent_delegations')}
               AND authorization_sha256 = ? AND input_sha256 = ?
               AND EXISTS (SELECT 1 FROM agent_delegation_budget_reservations r
                 WHERE r.owner_user_id = agent_delegations.owner_user_id

@@ -1,9 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="dev.rock.permission.USE_SHELL_API" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <permission android:name="dev.rock.permission.START_SERVICE_SETUP" android:protectionLevel="signature" />
     <queries><package android:name="dev.rock.automation" /></queries>
-    <application android:label="RockstarOS" android:icon="@mipmap/ic_launcher" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@style/RockstarShellTheme">
+    <application android:label="@string/rockstaros_brand_name" android:icon="@mipmap/ic_launcher" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@style/RockstarShellTheme">
         <activity android:name=".TestModeActivity" android:exported="false" />
+        <activity android:name=".ServiceSetupActivity" android:exported="true"
+            android:enabled="@bool/rockstar_service_setup_enabled"
+            android:permission="dev.rock.permission.START_SERVICE_SETUP" />
+        <receiver android:name=".ServiceSetupActivity$ProfileResultReceiver" android:exported="false"
+            android:enabled="@bool/rockstar_service_setup_enabled" />
         <activity android:name=".MainActivity" android:exported="true" android:enableOnBackInvokedCallback="true">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
         </activity>

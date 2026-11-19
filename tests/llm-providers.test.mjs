@@ -20,7 +20,7 @@ const response = (value, status = 200) =>
 void test('text model registry exposes replaceable local and cloud adapters', () => {
   assert.deepEqual(
     textModelProviders.map((provider) => provider.id),
-    ['local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible'],
+    ['pollinations', 'local-model', 'ollama', 'openai', 'anthropic', 'google', 'openai-compatible'],
   );
   assert.equal(isTextModelProvider('anthropic'), true);
   assert.equal(isTextModelProvider('unknown'), false);
@@ -281,4 +281,32 @@ void test('research response body timeout is indeterminate and never automatical
   }), error => error.code === 'UPSTREAM_TIMEOUT' && error.status === 504 &&
     error.providerRequestId === 'req_fixture_body_timeout' && !/private/.test(error.message));
   assert.equal(calls, 1);
+});
+
+void test('Ollama requests enforce the caller output limit without changing provider scopes', async () => {
+  let sent;
+  const result = await generateText({ provider: 'ollama', model: 'installed-fixture', prompt: 'bounded', maxOutputTokens: 600 }, { SKY_OLLAMA_BASE_URL: 'http://127.0.0.1:11434' }, async (url, init) => {
+    sent = JSON.parse(init.body);
+    assert.equal(url, 'http://127.0.0.1:11434/api/chat');
+    return new Response(JSON.stringify({ model: 'installed-fixture', message: { content: 'response' }, prompt_eval_count: 2, eval_count: 1 }), { status: 200 });
+  });
+  assert.deepEqual(sent.options, { num_predict: 600 });
+  assert.equal(result.text, 'response');
+});
+
+void test('Ollama structured draft requests bind schema and deterministic temperature without changing ordinary calls',async()=>{
+ const schema={type:'object',additionalProperties:false,required:['headline'],properties:{headline:{type:'string'}}};let sent;
+ await generateText({provider:'ollama',model:'installed-fixture',prompt:'JSON only',ollamaSchema:schema,maxOutputTokens:900},{SKY_OLLAMA_BASE_URL:'http://127.0.0.1:11434'},async(_url,init)=>{sent=JSON.parse(init.body);return Response.json({model:'installed-fixture',message:{content:'{"headline":"fixture"}'},prompt_eval_count:3,eval_count:4});});
+ assert.deepEqual(sent.format,schema);assert.deepEqual(sent.options,{num_predict:900,temperature:0});
+ await assert.rejects(generateText({provider:'openai',prompt:'x',ollamaSchema:schema},{},async()=>{throw Error('must not call');}),e=>e.code==='INVALID_PROMPT');
+ await assert.rejects(generateText({provider:'ollama',prompt:'x',ollamaSchema:{oversize:'x'.repeat(16001)}},{},async()=>{throw Error('must not call');}),e=>e.code==='INVALID_PROMPT');
+});
+
+void test('Ollama empty final text errors carry observed metering without retaining thinking or an invented amount',async()=>{
+ await assert.rejects(generateText({provider:'ollama',model:'installed-fixture',prompt:'fixture'},{SKY_OLLAMA_BASE_URL:'http://127.0.0.1:11434'},async()=>Response.json({model:'installed-fixture',message:{content:'',thinking:'private reasoning must not be retained'},prompt_eval_count:60,eval_count:300})),error=>{assert.equal(error.code,'EMPTY_RESPONSE');assert.equal(error.metering.metrics.find(m=>m.meter==='output_tokens').quantity,300);assert.equal(error.metering.amountMinor,null);assert.doesNotMatch(JSON.stringify(error),/private reasoning/);return true;});
+});
+
+void test('Longer Ollama task timeout is bounded and loopback only; ordinary provider limits remain default',async()=>{
+ const request={provider:'ollama',model:'fixture',prompt:'bounded',ollamaLocalTimeoutMs:40000};let calls=0;await generateText(request,{SKY_OLLAMA_BASE_URL:'http://127.0.0.1:11434'},async(_url,init)=>{calls++;assert.ok(init.signal instanceof AbortSignal);return Response.json({model:'fixture',message:{content:'ok'}});});assert.equal(calls,1);
+ for(const [input,env]of [[{...request,ollamaLocalTimeoutMs:40001},{SKY_OLLAMA_BASE_URL:'http://127.0.0.1:11434'}],[request,{SKY_OLLAMA_BASE_URL:'https://remote.example.com'}],[{...request,provider:'openai'},{}]])await assert.rejects(generateText(input,env,async()=>{calls++;throw Error('must not call');}),e=>e.code==='INVALID_PROMPT');assert.equal(calls,1);
 });

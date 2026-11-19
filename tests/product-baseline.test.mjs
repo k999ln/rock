@@ -178,13 +178,13 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(unapprovedMarket), /PAPER runtime/);
   const missingBotControl = structuredClone(source);
   delete missingBotControl.chatInteraction.connectedMcpPresentation;
-  assert.throws(() => validateBaseline(missingBotControl), /Zema/);
+  assert.throws(() => validateBaseline(missingBotControl), /Eve/);
   const oldDisplayName = structuredClone(source);
   oldDisplayName.chatInteraction.displayName = 'Chat';
-  assert.throws(() => validateBaseline(oldDisplayName), /Zema/);
+  assert.throws(() => validateBaseline(oldDisplayName), /Eve/);
   const unsafeHandoff = structuredClone(source);
   unsafeHandoff.chatInteraction.skyHandoff.requestInUrl = true;
-  assert.throws(() => validateBaseline(unsafeHandoff), /Zema/);
+  assert.throws(() => validateBaseline(unsafeHandoff), /Eve/);
   const fakeLiveProgress = structuredClone(source);
   fakeLiveProgress.chatInteraction.liveProgress.fabricatedProgressAllowed = true;
   assert.throws(() => validateBaseline(fakeLiveProgress), /接続bot管理/);
@@ -273,7 +273,7 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
 });
 
 void test('the visual baseline preserves the existing pale-blue Web appearance', () => {
-  assert.equal(source.visualSystem.accent, 'ice_blue');
+  assert.equal(source.visualSystem.accent, 'forest_green_bronze');
   const oldTheme = structuredClone(source);
   oldTheme.visualSystem.accent = 'acid_green';
   assert.throws(() => validateBaseline(oldTheme), /共通visual system/);

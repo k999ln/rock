@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="590" viewBox="0 0 1060 590" role="img" aria-labelledby="title desc">
+  <title id="title">Orbit L 電池bayのradio基板と二本cellの幾何上限</title>
+  <desc id="desc">外径76mm、内径72mmの円筒断面に二本の最大径21.7mm cellと仮の58×16mm radio基板外包を並べる。基板の角の余裕は0.8mm程度で、固定、絶縁、熱、配線、実modem適合は未成立。</desc>
+  <rect width="1060" height="590" fill="#f8fafb"/>
+  <text x="43" y="53" fill="#1c3349" font-family="Arial, sans-serif" font-size="25" font-weight="700">Orbit L — 電池bayに衛星radioの居場所はあるか</text>
+  <text x="43" y="81" fill="#5d7181" font-family="Arial, sans-serif" font-size="15">D76 mm・高さ76 mmの仮区間。断面だけの数学的な上限で、部品採用・CAD合格ではない。</text>
+
+  <circle cx="246" cy="320" r="152" fill="#d8dfe3" stroke="#647989" stroke-width="3"/>
+  <circle cx="246" cy="320" r="144" fill="#f8fafb" stroke="#91a4ae" stroke-width="2" stroke-dasharray="7 5"/>
+  <circle cx="202" cy="260" r="43.4" fill="#dfeacd" stroke="#7b9562" stroke-width="3"/>
+  <circle cx="290" cy="260" r="43.4" fill="#dfeacd" stroke="#7b9562" stroke-width="3"/>
+  <text x="182" y="265" fill="#3d5b2f" font-family="Arial, sans-serif" font-size="14">cell 1</text>
+  <text x="270" y="265" fill="#3d5b2f" font-family="Arial, sans-serif" font-size="14">cell 2</text>
+  <rect x="130" y="336" width="232" height="64" rx="2" fill="#d7e5f1" stroke="#4f7493" stroke-width="3"/>
+  <text x="157" y="373" fill="#2c5878" font-family="Arial, sans-serif" font-size="16">仮radio board 58 × 16</text>
+  <line x1="94" y1="138" x2="398" y2="138" stroke="#6b8291" stroke-width="2"/>
+  <line x1="94" y1="130" x2="94" y2="146" stroke="#6b8291" stroke-width="2"/>
+  <line x1="398" y1="130" x2="398" y2="146" stroke="#6b8291" stroke-width="2"/>
+  <text x="185" y="126" fill="#3c596d" font-family="Arial, sans-serif" font-size="15">外径76 mm</text>
+  <text x="87" y="505" fill="#53697a" font-family="Arial, sans-serif" font-size="14">破線: 内径72 mm。各cell最大径21.70 mm。</text>
+
+  <line x1="454" y1="124" x2="454" y2="535" stroke="#cbd5de" stroke-width="2"/>
+  <text x="492" y="156" fill="#223c51" font-family="Arial, sans-serif" font-size="20" font-weight="700">幾何だけなら重なる軸区間に描ける</text>
+  <text x="492" y="195" fill="#405668" font-family="Arial, sans-serif" font-size="16">二本のM65A cell: 軸長最大71.00 mm</text>
+  <text x="492" y="223" fill="#405668" font-family="Arial, sans-serif" font-size="16">仮board: 軸長を70 mm程度に制限する必要</text>
+  <text x="492" y="251" fill="#405668" font-family="Arial, sans-serif" font-size="16">76 mm bayの端子・保護余裕: cell長との差5 mm</text>
+  <text x="492" y="279" fill="#405668" font-family="Arial, sans-serif" font-size="16">基板の角と内径の残り: 約0.8 mm</text>
+
+  <text x="492" y="343" fill="#7a3f39" font-family="Arial, sans-serif" font-size="20" font-weight="700">これではまだ製作できない</text>
+  <text x="492" y="382" fill="#684b48" font-family="Arial, sans-serif" font-size="16">Mini向け双方向IP modemの実外寸と契約が未取得</text>
+  <text x="492" y="410" fill="#684b48" font-family="Arial, sans-serif" font-size="16">固定、絶縁、BMS、配線、RF shield、充電接点がない</text>
+  <text x="492" y="438" fill="#684b48" font-family="Arial, sans-serif" font-size="16">radio熱とcell温度、上端antennaへの損失が未測定</text>
+  <text x="492" y="500" fill="#596f80" font-family="Arial, sans-serif" font-size="15">P0: 実部品CADで正のクリアランスを示せなければ L を棄却。</text>
+</svg>

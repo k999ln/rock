@@ -138,7 +138,7 @@ async function establishFashionMcpConnection() {
     if (error instanceof McpClientError) {
       if (error.code === 'protocol') throw new Error('対応するMCPバージョンを確認できませんでした。');
       if (error.code === 'initialized') throw new Error('MCPの初期接続が完了しませんでした。');
-      if (error.phase === 'connect') throw new Error('Sky接続アプリを確認できませんでした。');
+      if (error.phase === 'connect') throw new Error('Smith接続アプリを確認できませんでした。');
       if (error.status === 401) throw new Error('PCへの接続期限が切れました。もう一度接続してください。');
     }
     throw new Error('Fashion Brand Ops MCPから正常な応答がありません。');

@@ -1,0 +1,154 @@
+{
+  "schema": "rockstaros.selected-optical-cell/1",
+  "status": "selected_for_E0_development_not_final_product",
+  "pricingChanged": false,
+  "parts": [
+    {
+      "role": "optical plate",
+      "manufacturer": "ASKA3D",
+      "model": "ASKA3D-200NT",
+      "selection": "E0 near-field cell",
+      "nominalMm": [
+        200,
+        200,
+        6.3
+      ],
+      "conservativeDrawingEnvelopeMm": [
+        200.5,
+        200.5,
+        6.9
+      ],
+      "source": "https://aska3d.com/ja/aska3d-200nt.html",
+      "drawing": "https://aska3d.com/common/pdf/aska3d-200-design_ja.pdf",
+      "productAccepted": false
+    },
+    {
+      "role": "image source",
+      "manufacturer": "Waveshare",
+      "model": "5.5inch HDMI AMOLED",
+      "sku": "16103",
+      "selection": "E0 source pixels and luminance measurement",
+      "resolutionNativePx": [
+        1080,
+        1920
+      ],
+      "powerInputV": 5,
+      "recommendedExternalSupplyA": 2,
+      "glassVisibleWindowMm": [
+        121.76,
+        68.7
+      ],
+      "glassOuterMm": [
+        140.4,
+        74.76
+      ],
+      "visibleWindowIsEmissiveAreaCalibration": false,
+      "source": "https://docs.waveshare.net/5.5inch_HDMI_AMOLED/",
+      "drawing": "https://files.waveshare.com/wiki/5.5inch%20HDMI%20AMOLED/5_5inch-hdmi-amoled.pdf",
+      "brightnessControl": "manual steps; no verified software cd/m2 control",
+      "productAccepted": false
+    },
+    {
+      "role": "close-range depth",
+      "manufacturer": "RealSense",
+      "model": "D405",
+      "selection": "E0 image-plane interaction observation only",
+      "nominalMm": [
+        42,
+        42,
+        23
+      ],
+      "documentedIdealRangeM": [
+        0.07,
+        0.5
+      ],
+      "referenceDepthMode": [
+        1280,
+        720,
+        30
+      ],
+      "nominalPowerW": 1.55,
+      "interface": "USB; exact delivered device and SDK binding required",
+      "source": "https://www.intel.com/content/www/us/en/products/sku/229218/intel-realsense-depth-camera-d405/specifications.html",
+      "productAccepted": false
+    },
+    {
+      "role": "compute reference",
+      "manufacturer": "Raspberry Pi",
+      "model": "Compute Module 5 + CM5IO",
+      "selection": "existing E0 Linux host, not final motherboard",
+      "source": "https://www.raspberrypi.com/products/compute-module-5/",
+      "productAccepted": false
+    },
+    {
+      "role": "5V power coupon IC",
+      "manufacturer": "Texas Instruments",
+      "model": "TPS22965DSGR",
+      "selection": "evaluation switch only, dummy load until review",
+      "source": "https://www.ti.com/lit/ds/symlink/tps22965.pdf",
+      "limitations": [
+        "no current limit",
+        "not reverse-current isolation",
+        "single switch not a safety cutoff",
+        "HDMI/USB backfeed not qualified"
+      ],
+      "productAccepted": false
+    }
+  ],
+  "opticalHypothesis": {
+    "plateClearSquareM": 0.2,
+    "plateTiltDeg": 45,
+    "imageWidthM": 0.12,
+    "imageHeightM": 0.0675,
+    "imageOffsetTowardViewerM": 0.1,
+    "assemblyMeasured": false,
+    "sourcePlacement": "plane-symmetric to image plane, rigid mount and stray-light mask still need design"
+  },
+  "prototypePower": {
+    "oledSupplyEnvelopeW": 10,
+    "d405NominalW": 1.55,
+    "isCompleteSystemPower": false,
+    "oledSupplyRatingIsMeasuredConsumption": false
+  },
+  "unresolved": [
+    "whole room with few units",
+    "source and optical luminance/glare measurements",
+    "actual clear aperture and angle response",
+    "complete optical/mounting CAD",
+    "HDMI/USB backfeed and optical hard stop",
+    "final protected pack, RF and all rails",
+    "final Mini mainboard ERC/DRC/DFM and physical acceptance"
+  ],
+  "manufacturingReleased": false,
+  "threeDimensionalSourceCandidate": {
+    "manufacturer": "Looking Glass Factory",
+    "model": "Looking Glass Go",
+    "role": "E1 angular light-field source candidate for separate LeAIRR study; not substituted into E0 flat-image optics",
+    "nativeResolutionPx": [
+      1440,
+      2560
+    ],
+    "viewingAngleDeg": 58,
+    "widthMm": 80.4,
+    "manufacturerSupplyV": 5,
+    "manufacturerSupplyA": 3,
+    "source": "https://checkout.lookingglassfactory.com/products/looking-glass-go",
+    "sourceRuntime": "Looking Glass Bridge; exact host/OS/architecture and license to qualify",
+    "aerialRelayCompatible": false,
+    "fewUnitWholeRoomAccepted": false,
+    "selectedForPurchase": false,
+    "productAccepted": false
+  },
+  "researchDirection": {
+    "method": "light-field source + magnifying lens + Fresnel-enhanced AIRR",
+    "source": "https://doi.org/10.1002/jsid.70050",
+    "allAperturesAndSourcesCounted": true,
+    "comparisonOnly": true,
+    "lensPartNumbersSelected": true,
+    "glareAccepted": false,
+    "lensSelectionStatus": "catalog_candidates_not_qualified_parts",
+    "prescription": "docs/avocado-mini-r5/factory-development/e1-leairr-prescription.json",
+    "currentFixedTwoLensCandidateAdoptedForWholeRange": false,
+    "binocularCalculation": "docs/avocado-mini-r5/factory-development/e1-binocular-layout.py"
+  }
+}

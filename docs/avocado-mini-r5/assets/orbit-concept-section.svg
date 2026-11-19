@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">avocadoMini Orbitの概念断面と通信・空間操作</title>
+  <desc id="desc">本体上部にRF窓、光学カセット、中央にセンサーと演算、下部に電池を置き、ドックと空中カード、衛星とWi-Fi共有の関係を示す概念図。寸法は比較目標で実機図ではない。</desc>
+  <rect width="1200" height="720" fill="#f7f8fa"/>
+  <text x="48" y="58" fill="#15243b" font-family="Arial, sans-serif" font-size="28" font-weight="700">avocadoMini Orbit — ひとつの本体で、空間・仕事・通信を持ち出す</text>
+  <text x="48" y="91" fill="#526173" font-family="Arial, sans-serif" font-size="17">概念断面 / 実部品の収納、光路、熱、無線、安全は未受入</text>
+
+  <rect x="470" y="164" width="190" height="420" rx="60" fill="#d7dde2" stroke="#5b6874" stroke-width="3"/>
+  <rect x="482" y="178" width="166" height="72" rx="26" fill="#dbe9e9" stroke="#557c81" stroke-width="2"/>
+  <text x="565" y="208" text-anchor="middle" fill="#184c53" font-family="Arial, sans-serif" font-size="16" font-weight="700">RF window</text>
+  <text x="565" y="231" text-anchor="middle" fill="#184c53" font-family="Arial, sans-serif" font-size="13">衛星・地上antenna</text>
+  <rect x="485" y="261" width="160" height="75" rx="8" fill="#dce4fa" stroke="#6179b3" stroke-width="2"/>
+  <text x="565" y="290" text-anchor="middle" fill="#274983" font-family="Arial, sans-serif" font-size="16" font-weight="700">光学カセット</text>
+  <text x="565" y="314" text-anchor="middle" fill="#274983" font-family="Arial, sans-serif" font-size="13">折返し空中結像候補</text>
+  <rect x="473" y="348" width="184" height="54" rx="10" fill="#263440"/>
+  <text x="565" y="381" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="16">手・距離・周囲光sensor</text>
+  <rect x="485" y="413" width="160" height="69" rx="8" fill="#ecf0f1" stroke="#6f7c85" stroke-width="2"/>
+  <text x="565" y="441" text-anchor="middle" fill="#253745" font-family="Arial, sans-serif" font-size="15" font-weight="700">RockstarOS</text>
+  <text x="565" y="463" text-anchor="middle" fill="#253745" font-family="Arial, sans-serif" font-size="13">本人鍵・job・Wi-Fi AP</text>
+  <rect x="485" y="494" width="160" height="60" rx="8" fill="#e8eed7" stroke="#71884f" stroke-width="2"/>
+  <text x="565" y="523" text-anchor="middle" fill="#3f5827" font-family="Arial, sans-serif" font-size="16" font-weight="700">携帯電池</text>
+  <text x="565" y="544" text-anchor="middle" fill="#3f5827" font-family="Arial, sans-serif" font-size="13">保護・温度監視</text>
+  <rect x="445" y="570" width="240" height="31" rx="8" fill="#adb8bf" stroke="#5b6874" stroke-width="2"/>
+  <text x="565" y="591" text-anchor="middle" fill="#243445" font-family="Arial, sans-serif" font-size="13">前縁crown候補・dock接点</text>
+  <rect x="398" y="610" width="334" height="41" rx="7" fill="#c7d0d7" stroke="#647583" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="565" y="637" text-anchor="middle" fill="#263440" font-family="Arial, sans-serif" font-size="16">住まいに残る固定dock（演算なし）</text>
+  <line x1="710" y1="165" x2="710" y2="651" stroke="#657786" stroke-width="2"/>
+  <line x1="698" y1="165" x2="722" y2="165" stroke="#657786" stroke-width="2"/>
+  <line x1="698" y1="651" x2="722" y2="651" stroke="#657786" stroke-width="2"/>
+  <text x="735" y="381" fill="#485a69" font-family="Arial, sans-serif" font-size="16">設置・展開時全高</text>
+  <text x="735" y="405" fill="#485a69" font-family="Arial, sans-serif" font-size="18" font-weight="700">≤ 200 mm</text>
+
+  <rect x="77" y="216" width="240" height="142" rx="20" fill="#eef1fb" stroke="#6b7fb5" stroke-width="3"/>
+  <text x="197" y="253" text-anchor="middle" fill="#243d77" font-family="Arial, sans-serif" font-size="20" font-weight="700">空中の着信カード</text>
+  <rect x="96" y="277" width="94" height="58" rx="28" fill="#d7e8da" stroke="#57926b" stroke-width="2"/>
+  <rect x="204" y="277" width="94" height="58" rx="28" fill="#f4dedc" stroke="#b77670" stroke-width="2"/>
+  <text x="143" y="312" text-anchor="middle" fill="#2e6943" font-family="Arial, sans-serif" font-size="18">応答</text>
+  <text x="251" y="312" text-anchor="middle" fill="#914c49" font-family="Arial, sans-serif" font-size="18">拒否</text>
+  <line x1="318" y1="293" x2="474" y2="293" stroke="#657ab2" stroke-width="3" stroke-dasharray="7 7"/>
+  <text x="99" y="392" fill="#536173" font-family="Arial, sans-serif" font-size="15">H1二択カードの概念</text>
+  <text x="99" y="416" fill="#536173" font-family="Arial, sans-serif" font-size="15">視域・照度・誤タップを測る</text>
+
+  <rect x="868" y="184" width="258" height="86" rx="11" fill="#e7f1f1" stroke="#688b90" stroke-width="2"/>
+  <text x="997" y="216" text-anchor="middle" fill="#194d53" font-family="Arial, sans-serif" font-size="18" font-weight="700">衛星WAN</text>
+  <text x="997" y="243" text-anchor="middle" fill="#31565c" font-family="Arial, sans-serif" font-size="15">上り＋下り＋IPを同一機で</text>
+  <line x1="657" y1="213" x2="866" y2="213" stroke="#4c8588" stroke-width="3"/>
+  <polygon points="858,207 870,213 858,219" fill="#4c8588"/>
+  <rect x="868" y="344" width="258" height="86" rx="11" fill="#eef0f5" stroke="#788a9e" stroke-width="2"/>
+  <text x="997" y="376" text-anchor="middle" fill="#263e5e" font-family="Arial, sans-serif" font-size="18" font-weight="700">Wi-Fi共有</text>
+  <text x="997" y="403" text-anchor="middle" fill="#4b5e78" font-family="Arial, sans-serif" font-size="15">本人がON・別端末で疎通</text>
+  <line x1="655" y1="446" x2="837" y2="446" stroke="#6e8399" stroke-width="3"/>
+  <line x1="837" y1="446" x2="837" y2="387" stroke="#6e8399" stroke-width="3"/>
+  <line x1="837" y1="387" x2="866" y2="387" stroke="#6e8399" stroke-width="3"/>
+  <polygon points="858,381 870,387 858,393" fill="#6e8399"/>
+  <rect x="868" y="506" width="258" height="95" rx="11" fill="#f3f2ed" stroke="#9a9477" stroke-width="2"/>
+  <text x="997" y="541" text-anchor="middle" fill="#635b31" font-family="Arial, sans-serif" font-size="18" font-weight="700">Sky / Zema / Game</text>
+  <text x="997" y="568" text-anchor="middle" fill="#6d674f" font-family="Arial, sans-serif" font-size="15">仕事・承認・成果を継続</text>
+  <line x1="656" y1="451" x2="812" y2="451" stroke="#8a8569" stroke-width="3"/>
+  <line x1="812" y1="451" x2="812" y2="554" stroke="#8a8569" stroke-width="3"/>
+  <line x1="812" y1="554" x2="866" y2="554" stroke="#8a8569" stroke-width="3"/>
+  <polygon points="858,548 870,554 858,560" fill="#8a8569"/>
+  <text x="48" y="687" fill="#596878" font-family="Arial, sans-serif" font-size="15">MAT15 / OI01–06 未実施。既存9770 moduleは図の区画に収まらず、光学経路・体積・製造図ではありません。</text>
+</svg>

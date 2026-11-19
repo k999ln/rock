@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="700" viewBox="0 0 1260 700" role="img" aria-labelledby="title desc">
+  <title id="title">L-T上端の衛星アンテナと光学窓の平面干渉</title>
+  <desc id="desc">左は理想内径72mm円へ50mm角の参照ground planeと直径40mmの仮光学窓を重ねた模式図。右は別の面・高さに置く設計検討でRF性能未測定。</desc>
+  <rect width="1260" height="700" fill="#f5f7f5"/>
+  <text x="48" y="57" font-family="Arial, sans-serif" font-size="31" font-weight="700" fill="#182b33">L-T上端: 小さいpatchでも光学と場所を争う</text>
+  <text x="48" y="91" font-family="Arial, sans-serif" font-size="18" fill="#56666a">参照条件と仮内径の幾何。radio・光源・安全・製造の成立を示さない。</text>
+
+  <rect x="42" y="124" width="567" height="483" rx="18" fill="#ffffff" stroke="#c8d2d1" stroke-width="2"/>
+  <rect x="629" y="124" width="589" height="483" rx="18" fill="#ffffff" stroke="#c8d2d1" stroke-width="2"/>
+  <text x="66" y="163" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#1b323b">同じ端面の平面配置</text>
+  <text x="655" y="163" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#1b323b">別面・別層はP0の研究候補</text>
+
+  <circle cx="323" cy="361" r="180" fill="#e1e6e6" stroke="#506873" stroke-width="4"/>
+  <rect x="198" y="236" width="250" height="250" fill="#97b3a7" stroke="#3e7163" stroke-width="3"/>
+  <rect x="260.5" y="298.5" width="125" height="125" fill="#2c6a60" stroke="#195147" stroke-width="3"/>
+  <circle cx="323" cy="361" r="100" fill="#75c4d9" fill-opacity="0.76" stroke="#157699" stroke-width="4"/>
+  <text x="197" y="565" font-family="Arial, sans-serif" font-size="18" fill="#345159">円 D72 / 四角50×50 / 開口 D40</text>
+  <text x="197" y="592" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#a04739">四角の対角70.71 → 半径余白0.65mm</text>
+
+  <rect x="689" y="222" width="154" height="318" rx="28" fill="#d8dfe0" stroke="#506873" stroke-width="3"/>
+  <rect x="712" y="242" width="108" height="54" rx="8" fill="#68b8cf" stroke="#116e8d" stroke-width="3"/>
+  <text x="871" y="264" font-family="Arial, sans-serif" font-size="18" fill="#1d596c">上端光学窓</text>
+  <line x1="825" y1="268" x2="864" y2="268" stroke="#1d596c" stroke-width="3"/>
+  <rect x="692" y="333" width="29" height="140" rx="7" fill="#378369"/>
+  <text x="871" y="362" font-family="Arial, sans-serif" font-size="18" fill="#27664f">側面RF窓・軸方向ground案</text>
+  <line x1="718" y1="360" x2="864" y2="360" stroke="#27664f" stroke-width="3"/>
+  <text x="872" y="398" font-family="Arial, sans-serif" font-size="16" fill="#4c5f63">偏波・空の見通し・手・金属殻</text>
+  <text x="872" y="426" font-family="Arial, sans-serif" font-size="16" fill="#4c5f63">電池・襟と再測定が必要</text>
+  <text x="681" y="561" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#a04739">別配置もantenna認証やWi-Fi共有の証明ではない</text>
+
+  <rect x="43" y="627" width="1175" height="49" rx="8" fill="#fcebe4"/>
+  <text x="66" y="659" font-family="Arial, sans-serif" font-size="18" fill="#7d3d2f">参照: Taoglas IP.1621.25.4.A.02 (25×25×4mm patch、50×50mm groundで試験)。Mini固有OTAは未試験。</text>
+</svg>

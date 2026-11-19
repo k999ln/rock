@@ -1,0 +1,13 @@
+{
+  "schema": "rockstaros.go-bridge-observer/1",
+  "status": "TEMPLATE_NOT_RECEIVED_DEVICE_OR_CALIBRATION",
+  "model": "Looking Glass Go",
+  "serial": null,
+  "deviceName": null,
+  "sdkVersion": null,
+  "bridgeLibraryPath": null,
+  "bridgeLibrarySha256": null,
+  "calibrationId": null,
+  "placeEpoch": null,
+  "expiresUnixMs": null
+}

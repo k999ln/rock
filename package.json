@@ -3,18 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1 <27"
   },
   "scripts": {
     "amc": "node scripts/amc-agent.mjs",
     "amc:agent": "node scripts/amc-agent.mjs",
+    "amc:cycle": "node work/goal-backward-cycle/scripts/amc-goal-cycle-cli.mjs",
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist/server/wrangler.json && wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",
     "format": "oxfmt",
-    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test": "node --experimental-strip-types --test --test-concurrency=2 tests/*.test.mjs",
     "test:api": "node scripts/check-work-api.mjs && node scripts/check-csv-storage.mjs",
     "test:fashion-brand-ops": "npm --prefix toolkits/fashion-brand-ops test",
     "test:avocado-mini-site": "node --test sites/avocado-mini/tests/*.test.mjs",
@@ -42,7 +43,8 @@
     "sky:check": "node scripts/check-sky.mjs",
     "prompt:context": "node scripts/prompt-context.mjs",
     "db:generate": "node scripts/generate-migration.mjs",
-    "verify": "npm run project:check && npm run repository:check && npm run version:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run avocado:r5:check && npm run design:check && npm run system:composition:check && npm run llm:architecture:check && npm run csv:check && npm run sky:check && npm run sky:launch:check && npm run android:architecture:check && npm run device-support:check && npm run android:first-flash:check && npm run shared:check && npm run typecheck && npm run lint:product && npm test && npm run fashion:package:check && npm run mcp:package:check && npm run billing:check && npm run operator-dock:check && npm run test:fashion-brand-ops && npm run test:avocado-mini-site && npm run test:public-preview && npm run test:meme-intelligence && npm run test:avocado-farm && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api",
+    "verify": "npm run security:tls:check && npm run project:check && npm run repository:check && npm run version:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run avocado:r5:check && npm run design:check && npm run system:composition:check && npm run llm:architecture:check && npm run csv:check && npm run sky:check && npm run sky:launch:check && npm run android:architecture:check && npm run device-support:check && npm run android:first-flash:check && npm run shared:check && npm run typecheck && npm run lint:product && npm test && npm run fashion:package:check && npm run mcp:package:check && npm run billing:check && npm run operator-dock:check && npm run test:fashion-brand-ops && npm run test:avocado-mini-site && npm run test:public-preview && npm run test:meme-intelligence && npm run test:avocado-farm && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api",
+    "security:tls:check": "node scripts/check-tls-runtime.mjs",
     "discover": "node scripts/discover.mjs",
     "discover:watch": "node scripts/discover.mjs --watch",
     "os:check": "node scripts/check-os-contracts.mjs",
@@ -74,13 +76,16 @@
     "sky:launch:check": "node scripts/check-sky-launch.mjs",
     "test:meme-intelligence": "npm --prefix toolkits/meme-intelligence-sandbox test",
     "test:avocado-farm": "npm --prefix toolkits/avocado-farm-sandbox test",
-    "game:bridge": "node --experimental-strip-types toolkits/fivem-bridge/server.mjs"
+    "game:bridge": "node --experimental-strip-types toolkits/fivem-bridge/server.mjs",
+    "sky:linux:pixel:build": "node scripts/build-sky-linux-pixel.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
     "@shadcn/react": "0.3.0",
+    "@simplewebauthn/server": "14.0.2",
     "@streamdown/cjk": "^1.0.3",
     "@types/three": "^0.186.0",
+    "@zoom/appssdk": "0.16.42",
     "ai": "^7.0.107",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
@@ -117,6 +122,7 @@
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.34",
     "drizzle-kit": "^0.31.10",
+    "esbuild": "0.28.1",
     "miniflare": "5.20261001.0-alpha",
     "oxfmt": "0.61.0",
     "oxlint": "1.76.0",

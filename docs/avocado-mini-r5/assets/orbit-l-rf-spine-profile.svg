@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title description">
+  <title id="title">avocadoMini L-R 軸方向RF spineの寸法仮説</title>
+  <desc id="description">高さ186ミリ、直径76ミリの仮円筒を軸方向に端面20、光学42、演算28、電池76、ラッチ20ミリへ分ける。衛星antennaは側面55ミリ、参照groundは演算から電池区間へ104ミリ。基板、電池、光学、他の無線が共存した証拠ではない。</desc>
+  <rect width="1200" height="760" fill="#f7f9fb"/>
+  <text x="44" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#173047">L-R — 軸方向にRF窓を置く仮の一本</text>
+  <text x="44" y="84" font-family="Arial, sans-serif" font-size="16" fill="#587085">閉鎖時 D76 × H186 mm、使用時 H≤200 mmを狙う。全区画は設計用包絡で、基板・部品・性能の合格ではない。</text>
+
+  <text x="76" y="140" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#2c4861">外観と持つ位置</text>
+  <rect x="94" y="170" width="152" height="372" rx="28" fill="#d9e0e4" stroke="#5b6d7b" stroke-width="3"/>
+  <rect x="105" y="210" width="130" height="36" fill="#20384a"/>
+  <rect x="222" y="294" width="17" height="111" rx="5" fill="#e9f5ef" stroke="#52a088" stroke-width="2"/>
+  <rect x="94" y="410" width="152" height="92" fill="#b9c3ca" fill-opacity="0.82"/>
+  <text x="58" y="581" font-family="Arial, sans-serif" font-size="16" fill="#3e586b">端面は像と本人入力</text>
+  <text x="58" y="608" font-family="Arial, sans-serif" font-size="16" fill="#3e586b">側面はRF透過窓</text>
+  <text x="58" y="635" font-family="Arial, sans-serif" font-size="16" fill="#3e586b">下側を握る仮説</text>
+
+  <text x="347" y="140" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#2c4861">軸方向の割当 / 2 px = 1 mm</text>
+  <rect x="358" y="170" width="184" height="40" fill="#e6eef5" stroke="#6d879d" stroke-width="2"/>
+  <text x="373" y="196" font-family="Arial, sans-serif" font-size="17" fill="#273f53">0–20 端面・入力</text>
+  <rect x="358" y="210" width="184" height="84" fill="#d9e5f7" stroke="#6d86ae" stroke-width="2"/>
+  <text x="373" y="258" font-family="Arial, sans-serif" font-size="17" fill="#273f53">20–62 光学・黒帯</text>
+  <rect x="358" y="294" width="184" height="56" fill="#f5e2be" stroke="#b38d4e" stroke-width="2"/>
+  <text x="373" y="327" font-family="Arial, sans-serif" font-size="17" fill="#273f53">62–90 演算 / Wi-Fi</text>
+  <rect x="358" y="350" width="184" height="152" fill="#dcebdc" stroke="#6c9e78" stroke-width="2"/>
+  <text x="373" y="430" font-family="Arial, sans-serif" font-size="17" fill="#273f53">90–166 電池 ×2</text>
+  <rect x="358" y="502" width="184" height="40" fill="#ebdfe9" stroke="#96728d" stroke-width="2"/>
+  <text x="373" y="528" font-family="Arial, sans-serif" font-size="17" fill="#273f53">166–186 latch</text>
+
+  <text x="624" y="140" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#2c4861">同じ高さを別方向に重ねる部分</text>
+  <rect x="636" y="294" width="90" height="208" fill="#e8f2e8" stroke="#4c9872" stroke-width="3"/>
+  <text x="742" y="325" font-family="Arial, sans-serif" font-size="17" fill="#355a4c">衛星用の縦spine基板</text>
+  <text x="742" y="352" font-family="Arial, sans-serif" font-size="17" fill="#355a4c">ground候補 z62–166 = 104 mm</text>
+  <rect x="636" y="294" width="90" height="110" fill="#79bc9e" fill-opacity="0.6" stroke="#34846a" stroke-width="2"/>
+  <text x="742" y="394" font-family="Arial, sans-serif" font-size="17" fill="#355a4c">antenna 約55 mm、側面窓</text>
+  <rect x="833" y="350" width="83" height="152" rx="34" fill="#c2d8c7" stroke="#5c946b" stroke-width="2"/>
+  <rect x="927" y="350" width="83" height="152" rx="34" fill="#c2d8c7" stroke="#5c946b" stroke-width="2"/>
+  <text x="825" y="525" font-family="Arial, sans-serif" font-size="16" fill="#466451">21700二本の平面並置仮説</text>
+
+  <rect x="1026" y="174" width="132" height="368" rx="12" fill="#fff6ee" stroke="#d6a56e" stroke-width="2"/>
+  <text x="1040" y="207" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#875d3e">未解決</text>
+  <text x="1040" y="242" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">VoLTE</text>
+  <text x="1040" y="269" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">antenna</text>
+  <text x="1040" y="309" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">Wi-Fi</text>
+  <text x="1040" y="336" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">antenna</text>
+  <text x="1040" y="376" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">主SoCと</text>
+  <text x="1040" y="403" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">縦基板</text>
+  <text x="1040" y="430" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">の干渉</text>
+  <text x="1040" y="470" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">antenna</text>
+  <text x="1040" y="497" font-family="Arial, sans-serif" font-size="15" fill="#785f4a">OTA・熱</text>
+
+  <line x1="44" y1="671" x2="1154" y2="671" stroke="#c8d3dc" stroke-width="2"/>
+  <text x="44" y="704" font-family="Arial, sans-serif" font-size="16" fill="#506678">RF窓は非導電材の研究候補。屋外横置きで窓を空へ向ける。契約・閉箱CAD・熱・光学・通話は全て未受入。</text>
+</svg>

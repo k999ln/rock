@@ -335,7 +335,7 @@ export async function handleSkyCommerce(request: Request, action: string, db: Da
   } catch (error) {
     if (error instanceof SkyPaymentError) return json({ error: error.message }, error.status);
     if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'サインインしてから利用してください。' }, 401);
-    if (error instanceof Error && error.message === 'ORIGIN') return json({ error: 'Skyの画面から操作してください。' }, 403);
+    if (error instanceof Error && error.message === 'ORIGIN') return json({ error: 'Smithの画面から操作してください。' }, 403);
     if (error instanceof Error && error.message === 'STRIPE_SIGNATURE_INVALID') return json({ error: '決済通知の署名を確認できません。' }, 400);
     if (error instanceof SyntaxError) return json({ error: '入力形式を確認してください。' }, 400);
     return json({ error: '決済サービスに接続できません。時間をおいて確認してください。' }, 503);

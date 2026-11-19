@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { analyzeSkyCodeIntake } from '../lib/sky-code-intake.ts';
 
-void test('a pasted function becomes a local Sky package without another form', async () => {
+void test('a pasted function becomes a local smis package without another form', async () => {
   const result = await analyzeSkyCodeIntake({
     fileName: 'count.ts',
     code: `export function countCharacters(text: string) {

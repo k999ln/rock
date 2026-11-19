@@ -1,0 +1,10 @@
+{
+ "schema":"rockstaros.d405-observer-profile/1",
+ "status":"TEMPLATE_NOT_RECEIVED_DEVICE_OR_CALIBRATION",
+ "model":"D405",
+ "serial":null,
+ "calibrationId":null,
+ "placeEpoch":null,
+ "expiresUnixMs":null,
+ "samplePixels":[[640,360]]
+}

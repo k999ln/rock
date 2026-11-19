@@ -15,5 +15,15 @@
     "majorRule": "breaking_platform_or_storage_change_requires_migration_and_rollback_acceptance",
     "deviceSupportRule": "each_device_support_package_declares_a_compatible_core_version_range",
     "completionClaimFromVersionOnly": false
+  },
+  "agentHub": {
+    "displayName": "Smith",
+    "previousDisplayName": "smis",
+    "internalIdentifier": "sky",
+    "decisionDate": "2026-10-22",
+    "objective": "connect agents to inorganic and organic subjects through verified interfaces",
+    "legacyRoutesPreserved": true,
+    "generalLaunchAllowed": false,
+    "spellingCorrectedAt": "2026-10-23"
   }
 }

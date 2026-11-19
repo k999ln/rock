@@ -1,4 +1,11 @@
 'use client';
+import SkyUsageDetails from '@/components/sky-usage-details';
+import type { SkyUsageObservation } from '@/lib/sky-usage-observation';
+
+import { SkyNotice } from '@/components/sky-feedback';
+import { EveHistoryClient, eveMemoryPrompt } from '@/lib/eve-history-client';
+import type { EveMemorySource } from '@/lib/eve-history';
+import { skyAgentSystem, type SkyLibraryAgent } from '@/lib/sky-agent-library';
 
 import {
   useEffect,
@@ -27,7 +34,7 @@ import {
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
 import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
-import { routeSkyRequest, skyRoles, type SkyRole } from '@/lib/sky-routing';
+import { eveDispatchMode, routeSkyRequest, skyRoles, type SkyRole } from '@/lib/sky-routing';
 import {
   adaptersForCapability,
   type SkyProviderCapability,
@@ -73,8 +80,6 @@ import {
   SKY_ZEMA_JOB_EVENT,
 } from '@/lib/sky-zema-handoff';
 import {
-  readZemaChatSessions,
-  saveZemaChatSession,
   type ZemaChatSession,
 } from '@/lib/zema-chat-session';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
@@ -164,7 +169,7 @@ const providerRoutingFields: Array<{
 }> = [
   { id: 'imageGeneration', label: '画像', capability: 'image_generation' },
   { id: 'videoGeneration', label: '動画', capability: 'video_generation' },
-  { id: 'textGeneration', label: '文章・LLM', capability: 'text_generation' },
+  { id: 'textGeneration', label: "文章・AIモデル", capability: 'text_generation' },
   { id: 'workflow', label: 'ワークフロー', capability: 'workflow' },
   { id: 'socialPublish', label: 'SNS公開', capability: 'social_publish' },
   { id: 'gameDelivery', label: 'ゲーム導入', capability: 'game_delivery' },
@@ -176,7 +181,7 @@ function roleFor(tool: Automation) {
   return (
     skyRoles.find((role) => role.toolId === tool.id)?.label ??
     skyToolLabelFor(tool.id)?.role ??
-    'Skyアプリ'
+    'Smithアプリ'
   );
 }
 
@@ -214,7 +219,7 @@ function botStateLabel(tool: Automation, latest: Job | undefined) {
   }
   if (tool.runner === 'jev-evaluation' && !latest)
     return '外部AIの接続確認が必要';
-  return latest ? jobMessage(latest) : 'Sky登録済み';
+  return latest ? jobMessage(latest) : 'Smith登録済み';
 }
 
 function responseFor(
@@ -222,7 +227,7 @@ function responseFor(
   routedRole: SkyRole | null,
 ) {
   if (tool?.status === 'candidate' && tool.runner !== 'candidate-local')
-    return `${roleFor(tool)}はSkyに登録済みですが、実行器の接続待ちです。下のカードから接続方法を確認できます。`;
+    return `${roleFor(tool)}はSmithに登録済みですが、実行器の接続待ちです。下のカードから接続方法を確認できます。`;
   if (tool?.status === 'candidate' && tool.runner === 'candidate-local')
     return tool.origin === 'mr'
       ? `${roleFor(tool)}でローカル下書きを作れます。元サービス、端末、送信先には接続しません。`
@@ -230,8 +235,8 @@ function responseFor(
   if (tool)
     return `${roleFor(tool)}で進めます。下の処理カードで必要な入力を確認できます。`;
   if (routedRole)
-    return `${routedRole.label}はまだ接続されていません。Skyで接続すると、次からはここで頼めます。`;
-  return '担当を選べませんでした。Skyで接続状態を確認してください。';
+    return `${routedRole.label}はまだ接続されていません。Smithで接続すると、次からはここで頼めます。`;
+  return '担当を選べませんでした。Smithで接続状態を確認してください。';
 }
 
 function readableChatResult(markdown: string) {
@@ -249,8 +254,17 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
   const searchParams = useSearchParams();
   const campusHubPath = campusId ? `/sky/campus/${campusId}/hub` : '/sky';
   const zemaPath = campusId ? `/sky/campus/${campusId}/manage` : '/chat';
-  const zemaChatPath = campusId ? `${zemaPath}?view=chat` : zemaPath;
-  const zemaWorkPath = `${zemaPath}?view=work`;
+  const requestedAgentId = searchParams.get('agent') ?? '';
+  const requestedAgentRevision = Number(searchParams.get('agentRevision') ?? -1);
+  const agentQuery = requestedAgentId ? `&agent=${encodeURIComponent(requestedAgentId)}&agentRevision=${encodeURIComponent(String(requestedAgentRevision))}` : '';
+  const baseChatPath = campusId ? `${zemaPath}?view=chat` : zemaPath;
+  const zemaChatPath = agentQuery ? `${baseChatPath}${baseChatPath.includes('?') ? '&' : '?'}${agentQuery.slice(1)}` : baseChatPath;
+  const zemaWorkPath = `${zemaPath}?view=work${agentQuery}`;
+  const [libraryAgent, setLibraryAgent] = useState<SkyLibraryAgent | null>(null);
+  const [lastLlmUsage, setLastLlmUsage] = useState<{threadId:string;observation:SkyUsageObservation}|null>(null);
+  const [agentError, setAgentError] = useState('');
+  const activeAgent = requestedAgentId && libraryAgent?.id === requestedAgentId && libraryAgent.revision === requestedAgentRevision ? libraryAgent : null;
+  const agentBlocked = Boolean(requestedAgentId && (!activeAgent || !activeAgent.enabled));
   const skyOutputsPath = campusId ? `/sky/campus/${campusId}/outputs` : '/sky/outputs';
   const preferredTool = searchParams.get('tool') ?? '';
   const preferredPackage = searchParams.get('package') ?? '';
@@ -291,6 +305,16 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
   const [threadCreatedAt, setThreadCreatedAt] = useState(0);
   const [sessionReady, setSessionReady] = useState(false);
   const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
+  const historyClient = useRef(new EveHistoryClient());
+  const liveHistoryThread = useRef('');
+  const [historyStatus,setHistoryStatus] = useState('履歴を確認しています…');
+  const [historyCursor,setHistoryCursor] = useState<string|null>(null);
+  const [historyBefore,setHistoryBefore] = useState<number|null>(null);
+  const [rememberConversation,setRememberConversation] = useState(true);
+  const [useHistoryMemory,setUseHistoryMemory] = useState(true);
+  const [memorySources,setMemorySources] = useState<EveMemorySource[]>([]);
+  const [historyReload,setHistoryReload] = useState(0);
+  const [historyLoading,setHistoryLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [historyQuery, setHistoryQuery] = useState('');
   const [allBotsOpen, setAllBotsOpen] = useState(false);
@@ -304,6 +328,25 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
   const [remoteCurrencyOptions, setRemoteCurrencyOptions] = useState<string[]>([]);
   const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (loading || !requestedAgentId) return;
+    const controller = new AbortController();
+    void fetch(`/api/sky/agents?id=${encodeURIComponent(requestedAgentId)}`, { cache: 'no-store', signal: controller.signal })
+      .then(async response => {
+        const result = await response.json() as { agent?: SkyLibraryAgent; error?: string };
+        if (!response.ok || !result.agent) throw new Error(result.error || '担当の設定を読み込めませんでした。');
+        if (result.agent.revision !== requestedAgentRevision) throw new Error('設定が更新されています。Smithで最新の内容を確認してください。');
+        return result.agent;
+      }).then(agent => {
+        if (controller.signal.aborted) return;
+        setLibraryAgent(agent); setAgentError('');
+        setSelectedToolId(agent.sourceTool ?? AUTO_MODE);
+      }).catch(reason => {
+        if (controller.signal.aborted) return;
+        setLibraryAgent(null); setAgentError(reason instanceof Error ? reason.message : '担当を確認できませんでした。');
+      });
+    return () => controller.abort();
+  }, [loading, requestedAgentId, requestedAgentRevision]);
   const [error, setError] = useState('');
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const composerRef = useRef<HTMLTextAreaElement>(null);
@@ -357,7 +400,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
           setError(
             reason instanceof Error
               ? reason.message
-              : 'Zemaを読み込めませんでした。',
+              : 'Eveを読み込めませんでした。',
           );
       })
       .finally(() => {
@@ -546,11 +589,21 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
     ) ?? null;
   const displayMessages = messages.filter((message) =>
     !message.id.startsWith('welcome-') && !message.id.startsWith('progress-'));
-  const textProvider = isTextModelProvider(providerRouting.textGeneration)
+  const textProvider = activeAgent?.provider ?? (isTextModelProvider(providerRouting.textGeneration)
     ? providerRouting.textGeneration
-    : 'local-model';
+    : 'local-model');
+  const textModel = activeAgent?.model ?? providerRouting.textGenerationModel;
+  const agentBinding = activeAgent ? { agentId: activeAgent.id, agentRevision: activeAgent.revision } : {};
   const textProviderDefinition = textModelProviderDefinition(textProvider);
   const remoteTextProvider = textProviderDefinition.locality === 'remote';
+  const composerRoutedRole = !selectedTool && !selectedMcpServer && !activeAgent
+    ? routeSkyRequest(draft)
+    : null;
+  const composerHasToolRoute = Boolean(
+    selectedTool || selectedMcpServer ||
+    (composerRoutedRole && connectedApps.some((tool) => tool.id === composerRoutedRole.toolId)),
+  );
+  const composerNeedsRemoteEstimate = eveDispatchMode(remoteTextProvider, composerHasToolRoute) === 'estimate';
   const activeTool = activeRequest
     ? (modeApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
     : null;
@@ -591,9 +644,28 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
       : compactBotApps;
   useEffect(() => {
     if (loading || workView) return;
+    let cancelled=false;
     const frame = window.requestAnimationFrame(() => {
-    let sessions: ZemaChatSession[] = [];
-    try { sessions = readZemaChatSessions(); } catch { /* Private storage may be unavailable. */ }
+    void(async()=>{
+    setHistoryLoading(true);
+    if(requestedThreadId && requestedThreadId===liveHistoryThread.current)return;
+    let sessions: ZemaChatSession[] = [], saved: ZemaChatSession|undefined;
+    try {
+      const page=await historyClient.current.list();
+      if(cancelled)return;
+      sessions=page.items.map(item=>item.session);setHistoryCursor(page.cursor);
+      setHistoryStatus('本人の履歴を暗号化して保存します');
+      if(requestedThreadId){
+        try{
+          const item=await historyClient.current.get(requestedThreadId);
+          if(cancelled)return;
+          if(item.session.toolId===preferredTool&&(item.session.agent?.id??'')===requestedAgentId&&(!item.session.agent||item.session.agent.revision===requestedAgentRevision)){
+            saved=item.session;setRememberConversation(item.remember);setHistoryBefore(item.before);
+          }else{setHistoryStatus('この会話の担当とURLが異なります。履歴から開き直してください。');return;}
+        }catch(reason){if((reason as {status?:number}).status!==404)throw reason;}
+      }
+    }catch(reason){if(cancelled)return;setHistoryStatus(reason instanceof Error?reason.message:'履歴を取得できません。');}
+    if(cancelled)return;
     setRecentThreads(sessions);
     setSessionReady(false);
     setThreadId('');
@@ -603,21 +675,14 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
     setRequestStartedAt(0);
     setWorkflowStatus('ready');
     setOutcome(null);
-    const saved = sessions.find((item) => item.id === requestedThreadId && item.toolId === preferredTool);
+    setMemorySources([]);
     if (saved) {
+      liveHistoryThread.current=saved.id;
       setThreadId(saved.id);
       setThreadCreatedAt(saved.createdAt);
       setSelectedToolId(saved.toolId);
       setMessages(saved.messages);
-      setActiveRequest(saved.activeRequest
-        ? {
-            ...saved.activeRequest,
-            executionProvider: saved.activeRequest.executionProvider ?? 'local-model',
-            plannerProvider: saved.activeRequest.plannerProvider ?? 'local-model',
-            plannerModel: saved.activeRequest.plannerModel ??
-              textModelProviderDefinition(saved.activeRequest.plannerProvider ?? 'local-model').defaultModel,
-          }
-        : null);
+      setActiveRequest(null);
       setRequestStartedAt(saved.createdAt);
       if (saved.workflowStatus === 'running') {
         setWorkflowStatus('failed');
@@ -639,13 +704,14 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
     const tool = catalog.find((item) => item.id === handoff.toolId);
     if (!tool) return;
     const id = `handoff-${handoff.id}`;
+    liveHistoryThread.current=handoff.id;
     setSelectedToolId(tool.id);
     setThreadId(handoff.id);
     setThreadCreatedAt(handoff.createdAt);
     setMessages([
       ...(handoff.request ? [{ id: `${id}-me`, side: 'me' as const, text: handoff.request, tool: tool.id }] : []),
       { id: `${id}-sky`, side: 'sky', text: handoff.request
-        ? `${roleFor(tool)}へSkyから引き継ぎました。入力を確認し、必要な承認を得てから実行します。進捗と結果はこのチャットに表示します。`
+        ? `${roleFor(tool)}へSmithから引き継ぎました。入力を確認し、必要な承認を得てから実行します。進捗と結果はこのチャットに表示します。`
         : `${roleFor(tool)}を開きました。下の入力欄に依頼を送ってください。`, tool: tool.id },
     ]);
     setActiveRequest(handoff.request ? {
@@ -658,21 +724,26 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
     } : null);
     setRequestStartedAt(handoff.createdAt);
     setSessionReady(true);
+    })().finally(()=>{if(!cancelled)setHistoryLoading(false);});
     });
-    return () => window.cancelAnimationFrame(frame);
-  }, [loading, preferredTool, requestedThreadId, workView]);
+    return () => {cancelled=true;window.cancelAnimationFrame(frame);};
+  }, [loading, preferredTool, requestedThreadId, workView, requestedAgentId, requestedAgentRevision,historyReload]);
 
   useEffect(() => {
     if (!sessionReady || !threadId || threadId !== requestedThreadId || !threadCreatedAt) return;
-    try {
-      const sessions = saveZemaChatSession({
+    let visible=true;
+    void Promise.resolve().then(async()=>{
+      if(visible)setHistoryStatus('履歴を保存しています…');
+      await historyClient.current.save({
         version: 1, id: threadId, toolId: preferredTool, createdAt: threadCreatedAt,
         messages, activeRequest, workflowStatus, outcome,
-      });
-      const frame = window.requestAnimationFrame(() => setRecentThreads(sessions));
-      return () => window.cancelAnimationFrame(frame);
-    } catch { /* Keep the current conversation usable without tab storage. */ }
-  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome]);
+        ...(requestedAgentId ? { agent: { id: requestedAgentId, revision: requestedAgentRevision } } : {}),
+      },rememberConversation);
+      const page=await historyClient.current.list();
+      if(visible){setRecentThreads(page.items.map(item=>item.session));setHistoryCursor(page.cursor);setHistoryStatus('暗号化して保存済み · 同じアカウントで引継ぎ');}
+    }).catch(reason=>{if(visible)setHistoryStatus(reason instanceof Error?reason.message:'未保存です。接続を確認してください。');});
+    return()=>{visible=false;};
+  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome, requestedAgentId, requestedAgentRevision,rememberConversation]);
 
   useEffect(() => () => {
     if (providerSaveTimerRef.current !== null)
@@ -702,6 +773,11 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
   }
 
   function chooseMode(toolId: string) {
+    if (requestedAgentId) {
+      chatAbortRef.current?.abort();
+      router.push(`${baseChatPath}${baseChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(toolId)}`);
+      return;
+    }
     setError('');
     if (toolId === selectedToolId) return;
     chatAbortRef.current?.abort();
@@ -727,7 +803,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
     chatAbortRef.current?.abort();
     chatAbortRef.current = null;
     setChatLoading(false);
-    setSelectedToolId(AUTO_MODE);
+    setSelectedToolId(activeAgent?.sourceTool ?? AUTO_MODE);
     setDraft('');
     setMessages([]);
     setActiveRequest(null);
@@ -766,7 +842,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
         setError(
           reason instanceof Error
             ? reason.message
-            : 'Provider設定を保存できませんでした。',
+            : "提供元設定を保存できませんでした。",
         );
       });
     }, 250);
@@ -814,30 +890,43 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
     const text = draft.trim();
     if (!text) return;
 
-    if (chatLoading) return;
+    if (chatLoading || agentBlocked || historyLoading) return;
+    if (activeAgent && (activeAgent.sourceTool ?? AUTO_MODE) !== selectedToolId) {
+      setError('Smithで選んだ担当が変わっています。Smithから開き直してください。'); return;
+    }
     const targetMcp = selectedMcpServer;
-    const routedRole = selectedTool || targetMcp ? null : routeSkyRequest(text);
+    const routedRole = selectedTool || targetMcp || activeAgent ? null : routeSkyRequest(text);
     const routedTool = routedRole
       ? (connectedApps.find((item) => item.id === routedRole.toolId) ?? null)
       : null;
     const tool = selectedTool ?? routedTool;
     const toolId = targetMcp ? mcpMode(targetMcp.id) : tool?.id;
+    const dispatchMode = eveDispatchMode(remoteTextProvider, Boolean(toolId));
     const suggestedToolId = routedRole?.toolId;
     const id = `chat-${crypto.randomUUID()}`;
     const nextThreadId = threadId || crypto.randomUUID();
 
     const conversational = !toolId && !routedRole;
-    if (remoteTextProvider) {
-      const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
+    let memoryPrefix='';
+    if(!toolId && useHistoryMemory){
+      setChatLoading(true);
+      try{const recall=await historyClient.current.recall(text,nextThreadId);setMemorySources(recall.sources);memoryPrefix=eveMemoryPrompt(recall.sources);}
+      catch(reason){setMemorySources([]);setHistoryStatus(`過去の会話を参照できなかったため、今回の内容だけで返答します。${reason instanceof Error?reason.message:''}`);}
+    }else setMemorySources([]);
+    // A selected Sky Tool runs through its own reviewed executor. A remote
+    // conversation model's pricing gate must not turn the Tool request into
+    // an estimate-only conversation before the execution card is shown.
+    if (dispatchMode === 'estimate') {
+      const conversation = memoryPrefix + [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
-        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
-        .join('\n\n');
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Eve'}: ${message.text}`)
+        .join('\n\n').slice(-12000);
       const estimatePrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
         : conversation;
-      const estimateSystem = tool
-        ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
-        : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。';
+      const estimateSystem = activeAgent ? skyAgentSystem(activeAgent) : tool
+        ? `あなたはEve内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
+        : 'あなたはEveです。日本語で自然に対話し、必要なときだけSmithのツール利用を案内してください。実行していない作業を完了したと主張しないでください。';
       setChatLoading(true);
       setError('');
       try {
@@ -848,7 +937,8 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
           throw new Error(`${remoteCurrency || '選択した通貨'}の上限額を確認してください。`);
         const result = await remoteAiTextRequest<RemoteAiEstimateResult>('/api/llm/estimate', 'POST', {
           provider: textProvider,
-          model: providerRouting.textGenerationModel || undefined,
+          model: textModel || undefined,
+          ...agentBinding,
           system: estimateSystem,
           prompt: estimatePrompt.slice(-20_000),
           maxOutputTokens: 1_200,
@@ -857,9 +947,11 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
         });
         if (!result.estimate) throw new Error('料金見積を確認できませんでした。状態を更新してください。');
         setRemoteEstimate(result);
+        setMessages([...messages,{id:`${id}-me`,side:'me',text},{id:`${id}-estimate`,side:'sky',text:'料金見積を確認しました。契約・実行はまだ行っていません。'}]);
+        if(!threadId)startHistoryThread(nextThreadId,toolId??AUTO_MODE);
         setRemoteCurrency(result.estimate.currency);
         setRemoteCurrencyOptions([]);
-        setError('料金上限を確認しました。現在は見積のみで、Providerへの実行は未接続です。');
+        setError("料金上限を確認しました。現在は見積のみで、提供元への実行は未接続です。");
       } catch (reason) {
         setRemoteEstimate(null);
         if (reason instanceof RemoteAiTextClientError) {
@@ -905,20 +997,20 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
           executionProvider: 'local-model' as const,
           plannerProvider: textProvider,
           plannerModel:
-            providerRouting.textGenerationModel || textProviderDefinition.defaultModel,
+            textModel || textProviderDefinition.defaultModel,
         }
       : null;
     setMessages(nextMessages);
-    if (conversational || toolId) {
+    if (conversational || (dispatchMode === 'tool' && !remoteTextProvider)) {
       const controller = new AbortController();
       chatAbortRef.current?.abort();
       chatAbortRef.current = controller;
       activeChatThreadRef.current = nextThreadId;
       setChatLoading(true);
-      const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
+      const conversation = memoryPrefix + [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
-        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
-        .join('\n\n');
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Eve'}: ${message.text}`)
+        .join('\n\n').slice(-12000);
       const selectedToolPrompt = tool
         ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
         : conversation;
@@ -927,20 +1019,22 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           provider: textProvider,
-          model: providerRouting.textGenerationModel || undefined,
-          baseUrl: textProvider === 'local-model'
+          model: textModel || undefined,
+          ...agentBinding,
+          baseUrl: !activeAgent && textProvider === 'local-model'
             ? providerRouting.localLlmBaseUrl || undefined
             : undefined,
-          system: tool
-            ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
-            : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
+          system: activeAgent ? skyAgentSystem(activeAgent) : tool
+            ? `あなたはEve内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
+            : 'あなたはEveです。日本語で自然に対話し、必要なときだけSmithのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
           prompt: selectedToolPrompt.slice(-20_000),
           consent: false,
         }),
         signal: controller.signal,
       }).then(async (response) => {
-        const result = await response.json() as { text?: string; code?: string };
+        const result = await response.json() as { text?: string; code?: string; metering?: SkyUsageObservation };
         if (!response.ok || !result.text) throw new Error(result.code || 'TEXT_GENERATION_FAILED');
+        if (!controller.signal.aborted && activeChatThreadRef.current === nextThreadId && result.metering) setLastLlmUsage({threadId:nextThreadId,observation:result.metering});
         return result.text;
       }).then((answer) => {
         if (controller.signal.aborted) return;
@@ -953,17 +1047,17 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
         if (controller.signal.aborted) return;
         const code = reason instanceof Error ? reason.message : '';
         const detail = code === 'REMOTE_AI_PRICING_GATE_UNAVAILABLE'
-          ? 'この接続先はクラウド扱いですが、信頼できる料金見積・予算予約・利用明細が未接続です。Providerへは送信していません。'
+          ? "この接続先はクラウド扱いですが、信頼できる料金見積・予算予約・利用明細が未接続です。提供元へは送信していません。"
           : code === 'EXPLICIT_REMOTE_CONSENT_REQUIRED'
-            ? '設定された接続先は外部サーバーです。料金確認と本人の明示承認が整うまで実行できません。Providerへは送信していません。'
+            ? "設定された接続先は外部サーバーです。料金確認と本人の明示承認が整うまで実行できません。提供元へは送信していません。"
             : textProvider === 'local-model'
           ? code === 'LOCAL_LLM_BRIDGE_REQUIRED'
             ? 'Local Action Assistantの接続が未接続です。Ollama・LM Studio・llama.cppなどのローカルブリッジを起動して接続してください。Cloudへはフォールバックしません。'
-            : 'Local LLMブリッジに接続できませんでした。設定したループバックURLのサーバーを起動してください。Cloudへはフォールバックしません。'
+            : "Local AIモデルブリッジに接続できませんでした。設定したループバックURLのサーバーを起動してください。Cloudへはフォールバックしません。"
           : code === 'REMOTE_LLM_DISABLED'
-            ? '外部モデルはサーバー側で無効です。Skyの接続管理とサーバー設定を確認してください。'
+            ? '外部モデルはサーバー側で無効です。Smithの接続管理とサーバー設定を確認してください。'
             : code === 'MISSING_PROVIDER_CREDENTIAL' || code === 'MISSING_PROVIDER_ENDPOINT'
-              ? '文章モデルの接続設定が不足しています。Skyの接続管理を確認してください。'
+              ? '文章モデルの接続設定が不足しています。Smithの接続管理を確認してください。'
               : '文章モデルから返答を受け取れませんでした。接続状態を確認して再送してください。';
         setMessages((current) => conversational
           ? [...current, { id: `${id}-reply`, side: 'sky', text: detail, tool: toolId }]
@@ -985,25 +1079,35 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
       setRequestStartedAt(currentTimestamp());
     }
     if (!threadId) {
-      const createdAt = currentTimestamp();
-      const sessionToolId = toolId ?? AUTO_MODE;
-      try {
-        setRecentThreads(saveZemaChatSession({
-          version: 1,
-          id: nextThreadId,
-          toolId: sessionToolId,
-          createdAt,
-          messages: nextMessages,
-          activeRequest: nextRequest,
-          workflowStatus: 'ready',
-          outcome: null,
-        }));
-        setThreadId(nextThreadId);
-        setThreadCreatedAt(createdAt);
-        setSessionReady(true);
-        router.replace(`${zemaChatPath}${zemaChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
-      } catch { /* Keep the conversation available in this tab if storage is blocked. */ }
+      startHistoryThread(nextThreadId,toolId??AUTO_MODE);
     }
+  }
+
+  function startHistoryThread(id:string,toolId:string){
+    liveHistoryThread.current=id;
+    setThreadId(id);setThreadCreatedAt(currentTimestamp());setSessionReady(true);
+    router.replace(`${zemaChatPath}${zemaChatPath.includes('?')?'&':'?'}tool=${encodeURIComponent(toolId)}&thread=${encodeURIComponent(id)}`,{scroll:false});
+  }
+  async function olderHistory(){
+    try{if(!threadId||!historyBefore)return;const item=await historyClient.current.get(threadId,historyBefore,false);setMessages(current=>[...item.session.messages,...current.filter(m=>!item.session.messages.some(old=>old.id===m.id))]);setHistoryBefore(item.before);}
+    catch(reason){setHistoryStatus(reason instanceof Error?reason.message:'履歴を取得できません。');}
+  }
+  async function moreThreads(){
+    try{if(!historyCursor)return;const page=await historyClient.current.list(historyCursor);setRecentThreads(current=>[...current,...page.items.map(i=>i.session).filter(s=>!current.some(old=>old.id===s.id))]);setHistoryCursor(page.cursor);}
+    catch(reason){setHistoryStatus(reason instanceof Error?reason.message:'履歴を取得できません。');}
+  }
+  async function exportHistory(){
+    try{
+      if(!threadId)return;let before=0;const all:ChatEntry[]=[];
+      do{const item=await historyClient.current.get(threadId,before,false);all.unshift(...item.session.messages);before=item.before??0;}while(before);
+      const url=URL.createObjectURL(new Blob([JSON.stringify({schema:'eve.history-export/1',threadId,messages:all},null,2)],{type:'application/json'}));
+      const link=document.createElement('a');link.href=url;link.download=`eve-${threadId}.json`;link.click();window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+    }catch(reason){setHistoryStatus(reason instanceof Error?reason.message:'書き出せませんでした。');}
+  }
+  async function deleteHistory(){
+    if(!threadId||!window.confirm('この会話と、この会話から参照する記憶を削除します。書出しが必要な場合は先に保存してください。削除しますか？'))return;
+    try{await historyClient.current.remove(threadId);liveHistoryThread.current='';setSessionReady(false);setMessages([]);setThreadId('');setRecentThreads(current=>current.filter(s=>s.id!==threadId));router.replace(zemaChatPath);}
+    catch(reason){setHistoryStatus(reason instanceof Error?reason.message:'削除できませんでした。');}
   }
 
   function handleComposerKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -1023,7 +1127,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
     const latest = [...jobs].filter((job) => job.tool === id).sort((a, b) => b.createdAt - a.createdAt)[0];
     const current = activeRequest?.toolId === id;
     const result = [...messages].reverse().find((message) => message.tool === id && message.id.startsWith('result-'));
-    return <ToolCharacterDetails id={id} size={size} name={tool?.name ?? server?.name ?? 'Zema'}
+    return <ToolCharacterDetails id={id} size={size} name={tool?.name ?? server?.name ?? 'Eve'}
       description={tool?.description ?? server?.description ?? '会話しながら、やりたいことを整理して接続済みの道具につなぎます。'}
       status={current ? (workflowStatus === 'running' ? '処理中' : workflowStatus === 'completed' ? '結果があります' : workflowStatus === 'failed' ? '確認が必要です' : '入力・実行の確認待ち') : latest ? `直近の仕事：${jobMessage(latest)}` : tool?.status === 'candidate' ? '本体の接続待ち' : 'この会話ではまだ作業を始めていません'}
       result={result?.text}
@@ -1033,19 +1137,23 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
 
   return (
     <WorkspaceShell
-      title={campusId ? `${CAMPUSES[campusId].shortName} Sky` : 'Zema'}
+      title={campusId ? `${CAMPUSES[campusId].shortName} Smith` : 'Eve'}
       contentClassName="sky-chat-page"
       running={running}
       standaloneSky={Boolean(campusId)}
       standaloneHomeHref={campusHubPath}
     >
+      {requestedAgentId && <aside className="sky-agent-context" aria-label="選択したエージェント">
+        {agentBlocked ? <output>{agentError || (activeAgent && !activeAgent.enabled ? 'この担当は利用停止中です。Smithで設定を確認してください。' : 'Smithの設定を確認しています…')} <Link href="/#sky-manage">Smithで確認</Link></output>
+          : <p><strong>{activeAgent?.name}</strong> · {activeAgent?.model} <span>接続・料金は実行前に確認します。{activeAgent?.sourceTool ? ' 選択したLLMは依頼整理に適用され、Tool本体の設定は変わりません。' : ''}</span></p>}
+      </aside>}
       <section
         className={`sky-chat-simple zema-grok-shell${sidebarOpen ? '' : ' is-sidebar-collapsed'}${!workView && displayMessages.length === 0 ? ' is-empty' : ''}`}
-        aria-label="Zemaスレッド"
+        aria-label="Eveスレッド"
         >
-        <aside className="zema-sidebar" aria-label="Zema Botと会話">
+        <aside className="zema-sidebar" aria-label="Eve Botと会話">
           <div className="zema-sidebar-top">
-            <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">avokado</span><strong>Zema <small>WORKSPACE</small></strong></div>
+            <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">avokado</span><strong>Eve <small>SI WORKSPACE</small></strong></div>
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
           <Link className="zema-new-chat" href={zemaChatPath} onClick={startNewChat}><Plus size={17} /> <span>新しい会話</span></Link>
@@ -1091,7 +1199,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
               >
                 <span className="zema-bot-copy">
                   <strong>{server.name}</strong>
-                  <small>{server.passport?.tools.length ?? 0}機能 · MCP</small>
+                  <small>{server.passport?.tools.length ?? 0}機能 · 外部ツール接続</small>
                 </span>
                 <i className="is-online" />
               </button>
@@ -1104,39 +1212,49 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
             </button>
           )}
           <div className="zema-sidebar-section-title"><span>最近の会話</span></div>
+          <section className="eve-history-controls" aria-label="会話の保存と記憶">
+            <output>{historyStatus}</output>
+            <label><input type="checkbox" checked={useHistoryMemory} onChange={event=>setUseHistoryMemory(event.target.checked)}/>過去の会話を参考にする</label>
+            <small>関連する本人の発言を、選択したLLMへ参考情報として送ります。</small>
+            <label><input type="checkbox" checked={rememberConversation} onChange={event=>setRememberConversation(event.target.checked)}/>この会話を今後の記憶に使う</label>
+            <small>オフでも履歴は保存します。指紋・顔の認証原本は保存しません。</small>
+            <div><button type="button" onClick={()=>{liveHistoryThread.current='';setHistoryReload(value=>value+1);}}>履歴を再読込</button>
+            {threadId&&<><button type="button" onClick={()=>void exportHistory()}>会話を書き出す</button><button type="button" onClick={()=>void deleteHistory()}>この履歴を削除</button></>}</div>
+          </section>
           <div className="zema-history-list">
             {visibleThreads.length === 0 ? <p className="zema-history-empty">会話はまだありません</p> : visibleThreads.map((session) => {
               const title = session.messages.find((message) => message.side === 'me')?.text || '新しい会話';
-              return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`${zemaChatPath}${zemaChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
+              return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`${baseChatPath}${baseChatPath.includes('?') ? '&' : '?'}tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}${session.agent ? `&agent=${encodeURIComponent(session.agent.id)}&agentRevision=${session.agent.revision}` : ''}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href={campusId ? `/sky/marketplace?campus=${campusId}` : '/sky'}><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href={zemaWorkPath}><ListChecks size={16} /><span>仕事</span></Link><Link href={campusHubPath}><House size={16} /><span>{campusId ? `${CAMPUSES[campusId].shortName} Hub` : 'ホーム'}</span></Link></div>
+          {historyCursor&&<button type="button" onClick={()=>void moreThreads()}>さらに以前の会話</button>}
+          <div className="zema-sidebar-bottom"><Link href={campusId ? `/sky/marketplace?campus=${campusId}` : '/sky'}><Grid2X2 size={16} /><span>Smithでツールを追加</span></Link><Link href={zemaWorkPath}><ListChecks size={16} /><span>仕事</span></Link><Link href={campusHubPath}><House size={16} /><span>{campusId ? `${CAMPUSES[campusId].shortName} Hub` : 'ホーム'}</span></Link></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div className="zema-room-heading">
-            <div><span>{campusId ? `AVOKADO / ${CAMPUSES[campusId].shortName.toUpperCase()} SKY` : 'AVOKADO / ROCKSTAROS'}</span><h1>Zema</h1></div>
+            <div><span>{campusId ? `AVOKADO / ${CAMPUSES[campusId].shortName.toUpperCase()} Smith` : 'AVOKADO / ROCKSTAROS'}</span><h1>Eve</h1></div>
           </div>
-          {selectedTool || selectedMcpServer ? (
+          {requestedAgentId ? <div className="zema-active-bot"><div><small>Smithから選択した担当</small><strong>{activeAgent?.name ?? '設定を確認中'}</strong></div><Link href="/#sky-manage">設定</Link></div> : selectedTool || selectedMcpServer ? (
             <div className="zema-active-bot" title={selectedTool?.name ?? selectedMcpServer?.name}>
               {characterDetails(selectedToolId, 32)}
               <div><small>選択中のツール</small><strong>{selectedTool?.name ?? selectedMcpServer?.name}</strong></div>
             </div>
           ) : <span className="zema-auto-label">ツールは依頼に合わせて選択</span>}
-          <nav aria-label="Zemaナビゲーション">
-            <Link href={campusHubPath} aria-label={campusId ? '大学別Skyのハブへ戻る' : 'ホームへ戻る'}>
+          <nav aria-label="Eveナビゲーション">
+            <Link href={campusHubPath} aria-label={campusId ? '大学別Smithのハブへ戻る' : 'ホームへ戻る'}>
               <House size={18} />
               <span>ホーム</span>
             </Link>
-            <Link href="/sky" aria-label="Skyでアプリを見る">
+            <Link href="/sky" aria-label="Smithでアプリを見る">
               <Grid2X2 size={19} />
-              <span>Sky</span>
+              <span>Smith</span>
             </Link>
             <Link
               href={zemaChatPath}
               aria-current={!workView ? 'page' : undefined}
-              aria-label="Zemaの会話を開く"
+              aria-label="Eveの会話を開く"
             >
               <MessageCircle size={18} />
               <span>会話</span>
@@ -1144,7 +1262,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
             <Link
               href={zemaWorkPath}
               aria-current={workView ? 'page' : undefined}
-              aria-label="Zemaで仕事を管理する"
+              aria-label="Eveで仕事を管理する"
             >
               <ListChecks size={18} />
               <span>仕事</span>
@@ -1159,8 +1277,8 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
           >
             <header>
               <div>
-                <small>ZEMA WORK CONTROL</small>
-                <h2 id="chat-work-title">仕事をZemaで管理</h2>
+                <small>EVE WORK CONTROL</small>
+                <h2 id="chat-work-title">仕事をEveで管理</h2>
               </div>
               <p>
                 作成、手順の実行、確認、中止、結果の記録をここに集約します。
@@ -1174,14 +1292,12 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
               <div className="sky-chat-job-heading">
                 <div>
                   <h3 id="chat-job-title">ツールの実行</h3>
-                  <p>受付、実行中、結果、停止をZema内で確認します。</p>
+                  <p>受付、実行中、結果、停止をEve内で確認します。</p>
                 </div>
                 <span>{jobs.length}件</span>
               </div>
               {error && (
-                <p className="sky-chat-work-error" role="alert">
-                  {error}
-                </p>
+                <SkyNotice className="sky-chat-work-error" message={error} />
               )}
               {jobs.length === 0 ? (
                 <p className="sky-chat-work-empty">
@@ -1235,7 +1351,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
             <ExecutionSignin state={accessState} />
           </div>
         ) : loading ? (
-          <div className="sky-chat-centered">Zemaを読み込んでいます…</div>
+          <div className="sky-chat-centered">Eveを読み込んでいます…</div>
         ) : (
           <>
             <div
@@ -1244,10 +1360,12 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
               aria-live="polite"
               aria-relevant="additions"
             >
+        {historyBefore&&<button type="button" className="eve-older-history" onClick={()=>void olderHistory()}>この会話の前の発言を読む</button>}
+        {memorySources.length>0&&<details className="eve-memory-sources"><summary>今回参照した過去の会話（{memorySources.length}件）</summary>{memorySources.map(source=><blockquote key={`${source.threadId}:${source.messageId}`}><p>{source.text}</p><Link href={`${baseChatPath}${baseChatPath.includes("?")?"&":"?"}tool=${source.toolId}&thread=${source.threadId}${source.agent?`&agent=${source.agent.id}&agentRevision=${source.agent.revision}`:""}`}>元の会話を確認</Link></blockquote>)}</details>}
               {displayMessages.length > 0 && <div className="sky-chat-day">今日</div>}
               {displayMessages.length === 0 && (
                 <section className="zema-empty" aria-labelledby="zema-empty-title">
-                  <span className="zema-empty-kicker">AVOKADO / ZEMA</span>
+                  <span className="zema-empty-kicker">AVOKADO / EVE</span>
                   <h2 id="zema-empty-title">{selectedTool ? 'やりたいことを、ひと言から。' : '次の一歩を、ここから。'}</h2>
                   <p className="zema-empty-lead">{selectedTool || selectedMcpServer
                     ? '依頼を整理し、使える範囲と次の手順をこの会話で確認できます。'
@@ -1294,11 +1412,11 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                   >
                     {message.side === 'sky' && characterDetails(message.tool ?? 'zema', 48)}
                     <div>
-                      {message.side === 'sky' && <small>Zema</small>}
+                      {message.side === 'sky' && <small>Eve</small>}
                       <p className="zema-message-text">{message.text}</p>
                       {message.side === 'sky' && message.suggestedTool && (
                         <Link className="sky-chat-inline-action" href="/sky">
-                          Skyで接続する
+                          Smithで接続する
                         </Link>
                       )}
                     </div>
@@ -1362,10 +1480,10 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                         : '実行器の接続条件のみ確認できます。ツール本体や外部サービスは実行しません。'
                       : '入力を確認して実行してください。結果はこの会話に表示されます。'}
                   </p>
-                  {activeTool && (
+                  {activeTool && !requestedAgentId && (
                     <details className="sky-chat-provider-routing">
                       <summary>ツールの接続設定</summary>
-                      <p>この設定はZemaの会話・案内に適用されます。候補ツールのローカル確認・下書き処理は外部Providerを呼びません。</p>
+                      <p>この設定はEveの会話・案内に適用されます。候補ツールのローカル確認・下書き処理は外部提供元を呼びません。</p>
                       <div className="sky-chat-provider-grid">
                         {providerRoutingFields.map((field) => (
                           <label key={field.id}>
@@ -1385,7 +1503,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                         ))}
                       </div>
                       <label className="sky-chat-provider-model">
-                        <span>文章・LLMのモデルID</span>
+                        <span>文章・AIモデルのモデルID</span>
                         <input
                           value={providerRouting.textGenerationModel ?? ''}
                           list="zema-local-model-presets"
@@ -1445,7 +1563,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                         <div>
                           <strong>{activeTool.name}</strong>
                           <p>
-                            Sky登録済みです。実行器をこのPCのSky SDKへ接続すると、同じ入力をZemaから実行できます。
+                            Smith登録済みです。実行器をこのPCのSmith SDKへ接続すると、同じ入力をEveから実行できます。
                           </p>
                         </div>
                         <Link href="/studio">
@@ -1457,11 +1575,11 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                         <div>
                           <strong>{activeTool.name}</strong>
                           <p>
-                            専用画面で入力と実行条件を確認します。開始後の状態と結果はZemaへ戻って確認できます。
+                            専用画面で入力と実行条件を確認します。開始後の状態と結果はEveへ戻って確認できます。
                           </p>
                         </div>
                         <Link href={activeTool.launchPath}>
-                          Toolを開く <ArrowRight size={16} />
+                          ツールを開く <ArrowRight size={16} />
                         </Link>
                       </div>
                     ) : activeTool?.runner === 'candidate-local' ? (
@@ -1523,7 +1641,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                       />
                     ) : (
                       <p>
-                        この担当の実行画面は準備中です。接続状態と対応環境をSkyで確認してください。
+                        この担当の実行画面は準備中です。接続状態と対応環境をSmithで確認してください。
                       </p>
                     )}
                   </div>
@@ -1534,7 +1652,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
             </div>
 
             <form className="sky-chat-composer" onSubmit={sendMessage}>
-              {error && <p role="alert">{error}</p>}
+              {error && <SkyNotice message={error} />}
               <div className="sky-chat-composer-box">
                 <textarea
                   ref={composerRef}
@@ -1549,18 +1667,20 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                       ? `${roleFor(selectedTool)}への依頼`
                       : selectedMcpServer
                         ? `${selectedMcpServer.name}への指示`
-                        : 'Zemaへの依頼'
+                        : 'Eveへの依頼'
                   }
                   placeholder={selectedTool ? 'このツールでやりたいことを入力…' : '何を進めたいですか？'}
                 />
-                <button disabled={!draft.trim() || chatLoading || Boolean(remoteBudgetInput.trim() && remoteCurrency && parseCurrencyInputToMinor(remoteBudgetInput, remoteCurrency) === null)} aria-label={remoteTextProvider ? '料金を見積もる' : '送信'}>
-                  {remoteTextProvider ? '料金を見積もる' : <Send size={18} />}
+                <button disabled={agentBlocked || !draft.trim() || chatLoading || Boolean(composerNeedsRemoteEstimate && remoteBudgetInput.trim() && remoteCurrency && parseCurrencyInputToMinor(remoteBudgetInput, remoteCurrency) === null)} aria-label={composerHasToolRoute ? 'ツールの内容を確認' : composerNeedsRemoteEstimate ? '料金を見積もる' : '送信'}>
+                  {composerHasToolRoute ? 'ツールの内容を確認' : composerNeedsRemoteEstimate ? '料金を見積もる' : <Send size={18} />}
                 </button>
               </div>
-              {chatLoading && <output className="zema-thinking">Zemaが返答を考えています…</output>}
-              {remoteTextProvider && (
+              {chatLoading && <output className="zema-thinking">Eveが返答を考えています…</output>}
+              {lastLlmUsage?.threadId === threadId && <SkyUsageDetails observation={lastLlmUsage.observation} />}
+              {composerHasToolRoute && remoteTextProvider && <p className="sky-chat-local-llm-note">選択したSmith Toolの状態と入力を下で確認します。クラウド会話モデルへは送信しません。</p>}
+              {composerNeedsRemoteEstimate && (
                 <section className="zema-remote-consent" aria-live="polite">
-                  <p>クラウドAIの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
+                  <p>クラウドAIの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、AIモデル 提供元には送信しません。提供元への実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
                   {remoteEstimate && (
                     <dl>
                       <div><dt>最大費用</dt><dd>{formatCurrencyMinor(remoteEstimate.estimate.maximumChargeMinor, remoteEstimate.estimate.currency)}</dd></div>
@@ -1605,7 +1725,7 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                       <p role="alert">{remoteCurrency}の金額形式を確認してください。</p>
                     )}
                   {remoteCurrency && <p>入力した上限はこの依頼の見積判定にのみ使います。実行承認や残高予約には使われず、クラウド実行は引き続き無効です。</p>}
-                  {textProvider === 'openai' && <button type="button" disabled={chatLoading || !draft.trim()} onClick={() => {
+                  {!requestedAgentId && textProvider === 'openai' && <button type="button" disabled={chatLoading || !draft.trim()} onClick={() => {
                     setCloudWorkDraft({
                       prompt: draft.trim(), currency: remoteCurrency,
                       maximumBudgetInput: remoteBudgetInput,
@@ -1619,16 +1739,16 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                 <summary>会話モデル: {textProviderDefinition.name}</summary>
                 <div>
                   <label>接続先
-                    <select value={textProvider} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
+                    <select disabled={Boolean(requestedAgentId)} value={textProvider} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
                       {textModelProviders.map((provider) => <option key={provider.id} value={provider.id}>{provider.name}</option>)}
                     </select>
                   </label>
                   <label>モデルID
-                    <input value={providerRouting.textGenerationModel ?? ''} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)} list="zema-chat-model-presets" />
+                    <input disabled={Boolean(requestedAgentId)} value={textModel ?? ''} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)} list="zema-chat-model-presets" />
                     <datalist id="zema-chat-model-presets">{localModelPresets.map((model) => <option key={model.value} value={model.value}>{model.label}</option>)}</datalist>
                   </label>
                 </div>
-                <p>{textProviderDefinition.detail}</p>
+                <p>{textProviderDefinition.detail} {requestedAgentId && <Link href="/#sky-manage">担当のLLMはSmithで変更</Link>}</p>
               </details>
               <div className="zema-composer-toolbar" id="sky-chat-composer-help">
                 <label className="zema-tool-picker">
@@ -1636,19 +1756,20 @@ export default function SkyChatWorkspace({ campusId }: { campusId?: CampusId } =
                   <span className="sr-only">担当を選ぶ</span>
                   <select
                     aria-label="担当を選ぶ"
+                    disabled={Boolean(requestedAgentId)}
                     value={selectedToolId}
                     onChange={(event) => chooseMode(event.target.value)}
                   >
                     <option value={AUTO_MODE}>自動で選ぶ</option>
-                    {modeApps.length > 0 && <optgroup label="Sky Tool">
+                    {modeApps.length > 0 && <optgroup label="Smith Tool">
                       {modeApps.map((tool) => <option key={tool.id} value={tool.id}>{roleFor(tool)} · {tool.name}</option>)}
                     </optgroup>}
-                    {connectedMcpServers.length > 0 && <optgroup label="このPCのMCP">
+                    {connectedMcpServers.length > 0 && <optgroup label="このPCの外部ツール接続">
                       {connectedMcpServers.map((server) => <option key={server.id} value={mcpMode(server.id)}>{server.name}</option>)}
                     </optgroup>}
                   </select>
                 </label>
-                <Link href="/sky" className="zema-add-tool" aria-label="Skyでツールを追加">
+                <Link href="/sky" className="zema-add-tool" aria-label="Smithでツールを追加">
                   <Plus size={15} /> <span>ツールを追加</span>
                 </Link>
                 <span className="zema-composer-tip">Enterで送信 · Shift+Enterで改行</span>

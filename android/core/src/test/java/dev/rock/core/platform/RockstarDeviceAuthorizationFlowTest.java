@@ -111,6 +111,32 @@ public final class RockstarDeviceAuthorizationFlowTest {
         assertEquals(0, vault.saves);
     }
 
+    @Test public void serverIssuanceAfterRequestStartDoesNotLoseTheApprovedSession() throws Exception {
+        FakeHttp http = new FakeHttp(); FakeVault vault = new FakeVault();
+        http.responses.add(beginResponse(600, 5));
+        RockstarDeviceAuthorizationFlow flow = new RockstarDeviceAuthorizationFlow(http, vault);
+        RockstarDeviceAuthorizationFlow.DeviceAuthorization link = flow.begin("Existing Pixel", NOW);
+        // poll receives the request-start time; the server issues its 90-day token later.
+        long serverExpiry = NOW + 1_500 + 90L * 24 * 60 * 60_000L;
+        http.responses.add(authorized(TOKEN, serverExpiry));
+        assertEquals(RockstarDeviceAuthorizationFlow.PollState.AUTHORIZED, flow.poll(link, NOW).state);
+        assertEquals(serverExpiry, vault.expiresAt);
+        assertEquals(1, vault.saves);
+    }
+
+    @Test public void expiryToleranceIsBoundedAndNeverAcceptsExpiredOrUnboundedSessions() throws Exception {
+        for (long expiration : new long[]{NOW, NOW - 1, NOW + 90L * 24 * 60 * 60_000L + 300_001, Long.MAX_VALUE}) {
+            FakeHttp http = new FakeHttp(); FakeVault vault = new FakeVault();
+            http.responses.add(beginResponse(600, 5));
+            RockstarDeviceAuthorizationFlow flow = new RockstarDeviceAuthorizationFlow(http, vault);
+            RockstarDeviceAuthorizationFlow.DeviceAuthorization link = flow.begin("Existing Pixel", NOW);
+            http.responses.add(authorized(TOKEN, expiration));
+            try { flow.poll(link, NOW); fail("expired or excessive lifetime must be rejected"); }
+            catch (IOException expected) { assertEquals("DEVICE_AUTH_SESSION_INVALID", expected.getMessage()); }
+            assertEquals(0, vault.saves);
+        }
+    }
+
     private static Map<String,Object> beginResponse(long expiresIn, long interval) {
         return beginResponse(expiresIn, interval, USER_CODE);
     }

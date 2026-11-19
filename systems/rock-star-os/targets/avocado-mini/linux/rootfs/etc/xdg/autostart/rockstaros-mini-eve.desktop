@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=RockstarOS Eve
+Comment=Open the owner's existing Eve account
+Exec=/usr/bin/python3 -B /usr/lib/rockstaros-mini/launch_eve.py
+Terminal=false
+X-GNOME-Autostart-enabled=true

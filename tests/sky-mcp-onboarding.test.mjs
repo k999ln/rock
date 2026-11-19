@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
-void test('Sky MCP displays the real PC session and discovers registered servers dynamically', () => {
+void test('smis MCP displays the real PC session and discovers registered servers dynamically', () => {
   const workspace = read('components/sky-workspace.tsx');
   const center = read('components/sky-mcp-center.tsx');
 
@@ -20,7 +20,7 @@ void test('Sky MCP displays the real PC session and discovers registered servers
   assert.doesNotMatch(center, /demo\.sky\.local/);
 
   assert.doesNotMatch(center, /toolCount \|\| 4/);
-  assert.match(center, /MCPに接続すると、確認できた機能/);
+  assert.match(center, /外部ツールに接続すると、確認できた機能/);
 });
 
 void test('the onboarding screen exposes the generic Connector package and connect steps', () => {
@@ -33,7 +33,7 @@ void test('the onboarding screen exposes the generic Connector package and conne
   assert.match(center, /Sky MCP接続\.command/);
   assert.match(source, /このPCを接続/);
   assert.match(source, /各自動化をワンタップ接続/);
-  assert.match(center, /Connectorと登録済みMCPの検出/);
+  assert.match(center, /接続アプリと登録済みツールの確認/);
   assert.match(source, /送信後の結果不明時は自動再送しません/);
   assert.match(
     server,
@@ -42,15 +42,15 @@ void test('the onboarding screen exposes the generic Connector package and conne
   assert.match(server, /http:\/\/localhost:3000/);
 });
 
-void test('Sky makes execution destinations and unfinished OAuth boundaries explicit', () => {
+void test('smis makes execution destinations and unfinished OAuth boundaries explicit', () => {
   const center = read('components/sky-mcp-center.tsx');
 
   assert.match(center, /接続先を選ぶ/);
   assert.match(center, /このPC/);
-  assert.match(center, /Sky Cloud/);
-  assert.match(center, /提供者のMCP/);
+  assert.match(center, /Smith Cloud/);
+  assert.match(center, /提供者のツール/);
   assert.match(center, /disabled={!available}/);
-  assert.match(center, /OAuthが必要な接続先は権限確認と接続証跡が揃うまで/);
+  assert.match(center, /公式の認証画面が必要な接続先は権限確認と接続証跡が揃うまで/);
   assert.match(center, /Streamable HTTP/);
   assert.match(center, /server\.transport === 'stdio'/);
   assert.match(center, /server\.transport === 'streamable_http'/);

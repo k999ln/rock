@@ -1,12 +1,41 @@
+## 現行の大元：RockstarOSの中にSky・Eve・Linux
+
+2026-10-20の本人指示「osが大元」「osの中にskyもeveも」「osの中にlinux」に従い、製品全体の大元は**RockstarOS**とする。OSの中に、能力の登録・追加・接続を担う**Sky**、会話・依頼・計画確認・承認・進捗/停止・成果・利用額のSI窓口である**Eve**、対応するmodel/Agent/Toolを処理する**Linux実行環境**を置く。本人・eSIMサービス利用権・権限・予算・保存/復旧・利用量/請求はOSの共通管理へ結び、Sky/Eve/modelへOS権限を移さない。
+
+利用の流れは、Eveへの依頼→Skyで登録/追加した能力の選択→OSによる本人/利用権/権限/予算の確認→対応Linuxで実行→共通の仕事/成果/使用量→Eveで確認。Skyから機能を選んでEveへ渡す入口も同じOS内にある。TerminalはLinuxを直接扱う任意の操作口で、日常の依頼はEveから行える体験を目指す。クラウドサービスはOS外にある外部実行先で、対応adapterから呼び出す。全クラウドmodel本体を端末内に格納するという意味ではない。
+
+Pixel版はGrapheneOS/Android上の対応Linux guestを使う方針、Mini/Proは機種別のLinux/runtime適合で決め、Pixel用binaryを転用しない。既存のLinux計量・LLM・権限・保存コードを再利用する。これは前の「Skyを全体の大元」とする説明を利用者が訂正した設計階層の修正であり、全OS image・全機種・全Cloud/使用量統合の完成宣言ではない。月額16ドルの枠付き共通契約、Eveへの呼称統合、保存済みデータと既存IDを引き継ぐ。
+
+## 正式名称：Eve（イヴ、旧称Zema）
+
+2026-10-20、利用者の明示指示「zemaじゃなくてeveにしよadamとeveのeve」により、仕事・会話・進捗・承認・停止・成果・使用額を扱う製品の表示名を **Eve** に変更する。名前の由来はAdamとEveのEve。既存のSky、Jennifer、月額16ドルと利用枠、本人承認・保存・復旧の業務契約を引き継ぐ。文中の旧称Zemaは同じ製品の過去名として読む。
+
+既存の`/chat`、`zema`利用権scope、保存キー、`sky-zema-core` package、公開済みの関数/schema/ファイル識別子は互換性のため保持する。名称変更で既存の会話/仕事/成果を消したり、新規サービス契約/追加課金を開始しない。過去の受入証拠・配布物の名称とhashは当時の記録として保持する。Web sourceの表示・名乗りと、Android APK/OS image・公開環境への反映は別に受け入れる。
+
+<a id="sky-foundation"></a>
+## 現行の製品階層：RockstarOS → Sky・Eve・Linux実行環境
+
+2026-10-20の本人訂正により、RockstarOSを製品全体の大元とし、Sky・Eve・Linux実行環境をその内側へ配置する。Skyは能力の登録/追加/接続、EveはSIの依頼/仕事/成果/利用額の窓口、Linuxは対応する処理の実行環境。OSの本人/権限/利用権/予算/保存/復旧を共通に使う。2026-10-18にSkyを全体の大元と記した説明は、この現行方針で訂正する。Web/clientによる利用経路と本人の退出/移行は維持する。
+
+既存Platform Core/Brokerと本人承認、利用権/予算、型付き成果、DB/復旧を再利用する。この階層訂正はOS権限をmodelへ委ねる変更でも、全hardwareへの搭載済み宣言でもない。SIM/eSIMの導入/利用権、RQ01〜RQ49、料金、Provider/Pixel/QEMU/Mini/Proの受入は維持する。[共通契約の11項目とZoom/Planner実装](sky-tools-complete-design.md#sky-foundation)。一般公開は保留。
+
 # RockstarOS 製品・サービス・システム関係図
 
 版: 1.1 / 2026-10-02
 
 状態: **正本補助設計**。製品、サービス、内部システム、`Mr.` 由来Tool、MR（Mixed Reality）端末の関係を一つの図で確認するための文書。各コンポーネントのfield単位の契約は表中のリンク先を正本とする。
 
+2026-10-18訂正: avocadoMiniと**AI専用PCのavocadoPro**もPixelと同じRockstarOS SI Core／Sky／ZemaのDevice Profileにする。共通jobの成果を機種別の確認済み出力へ変換する。Mini R5は現行hardware受入待ち、ProはPC本体・OS・model仕様未確認であり、PixelのGrapheneOS image／Linux VMの互換を推定しない。[機種別契約](device-support-architecture.md#shared-si-device-profiles)。
+
 対外的な主商品は、物理SIM/eSIMの購入を入口にRockstarOS、Sky、Zema、cloud LLMとAgentへアクセスするサービスである。SIM購入にはサービス利用権を含める設計だが、OS binary自体はSIM/eUICCへ保存しない。avocadoは建築・インテリア・サウンドを最初に深く適用する産業領域とし、avocadoMiniを生活空間との物理node候補にする。Miniは別のhardware programで、実機試作と販売は未実施であり、サービス利用の必須端末ではない。
 
 入口は、購入チャネルでのSIM/eSIM offer、Rockstar service onboarding、既存OS client/browser、そして対応機種に限るnative OS導入である。通信開通、利用権claim、アカウント認証、端末へのOS/client導入を別々に確認する。
+
+再設計の共通基準は[RockstarOS 1.0 architecture](rockstaros-1.0-architecture.md#rockstaros-再設計一つの仕事を端末間で完了するサービスos)。UIは利用開始からHome、Sky、Zema、Wallet/Usageへ一本の仕事を見せ、runtimeは本人・利用権・承認・job ID/revision・receiptを共有する。画面・Web・Android・native OSは状態の別コピーを作らず、受入済みの共通contractを利用する。設計反映だけでは既存UIや各runtimeの実装済み状態は変わらない。
+
+SI（スーパーインテリジェンス）専用という製品体験では、RockstarOS内のHomeからクラウドLLM、Sky Marketplace、Zemaを直接開き、一つの仕事として選択・承認・実行・停止・成果を扱う。Sky単体のWeb/PWA入口も維持し、SIM/eSIMは利用開始・利用権の経路として区別する。Cloud Providerと実機native OSの受入は別々に判定する。
+
+月末後払いの追加商材候補は契約account単位のSI Managed Service。明示した契約と支払責任者、料金表、月間cap、支払方法を確認して初回の有償利用から起算し、検証済みusageだけを月末に請求する。eSIM、アプリ、端末は利用・配布の経路または別明細の商材であり、月次契約の成立や収納成功そのものではない。[契約と受入](sky-billing.md#rockstaros-siサービス契約と月末請求の商材案2026-10-18)。
 
 | 入口 | 現在のURL・状態 | 内側にあるもの |
 | --- | --- | --- |
@@ -19,73 +48,29 @@ eSIM/物理SIMの回線料金、RockstarOS service access、Cloud LLM/Agent usag
 この文書を読めば、次の三つを混同しない。
 
 - RockstarOSは、SIM/eSIMを入口にSky、Zema、cloud LLM/Agentへアクセスするサービスと、その本人性・権限・仕事・復旧を支える共通OS/Core。
-- SkyはAI自動化チームの仕事とToolを選ぶ入口、Zemaは仕事の管理、Walletは費用と確認済み収益を扱う。CSVとメルカリはSky登録済みのチーム担当。Material Invention StudioはSkyで組み合わせる発明チームの複合機能で、単体のcatalog Toolではない。
+- SkyはAgent/Tool・本人・仕事/成果・接続・費用の共通基盤、Zemaは仕事の管理、Walletは費用と確認済み収益を扱う。CSVとメルカリはSky登録済みのチーム担当。Material Invention StudioはSkyで組み合わせる発明チームの複合機能で、単体のcatalog Toolではない。
 - avocadoMiniは、現行Material Invention Studioを手で扱う専用deviceであり、将来は受入済みDevice Profileに限って建築・インテリア・サウンドの空間projectへ接続する。OSそのものでもサービス開始の前提でもない。
 
 ## 1. 会社が提供するもの
 
 ```mermaid
 flowchart TB
-  U[利用者]
-  D[外部Tool開発者 / ToB]
-  P[外部Provider]
-
-  subgraph PRODUCTS[利用者が触る製品]
-    OS[RockstarOS\nAI-native OS]
-    SKY[Sky\nToolを探す・接続する]
-    ZEMA[Zema\nAIへ仕事を頼む・止める・確認する]
-    WALLET[Wallet\n費用と確認済み収益を見る]
-    AM[avocadoMini\nMR空間発明デバイス]
-  end
-
-  SIM[物理SIM / eSIM offer\n回線契約 + RockstarOS service entitlement]
-  CLIENT[既存OS client / browser\nまたは適合機種のnative OS]
-
-  subgraph SKY_TEAM[Skyで編成するAI自動化チーム]
-    CSV[CSV業務\n整形・検査・納品]
-    MERCARI[メルカリ収益ループ\n出品準備・入金確認待ち]
-    MIS[Material Invention Studio\n発明案の操作・比較を設計中]
-  end
-
-  subgraph SERVICES[継続提供するサービス]
-    MODELS[LLMモデル提供・切替\n既存モデル + 自社LLM]
-    TOOLS[Tool配布・更新・接続]
-    SYNC[同期・保存・復旧]
-    SETTLE[収益・費用の照合・精算]
-    SDK[開発者SDK・審査・サポート]
-  end
-
-  subgraph CORE[共通システム]
-    PLATFORM[Platform Core / Broker]
-    RUNTIME[LLM Runtime + Agent Runtime]
-    AUTH[Identity / Capability / Approval]
-    JOBS[Work / Step / Event / Artifact / Receipt]
-    CONNECT[MCP / Provider Connector]
-    DATA[DB / Backup / Update / Recovery]
-    MATERIAL[Material Invention Core]
-    PATENT[Patent AI Bridge]
-  end
-
-  U --> SIM --> CLIENT --> OS
-  D --> SDK
-  P --> CONNECT
-  OS --> SKY & ZEMA & WALLET
-  SIM -. 購入・回線開通・利用権は独立状態 .-> AUTH
-  AM --> MIS
-  MODELS --> RUNTIME
-  TOOLS --> SKY
-  SKY --> CSV & MERCARI & MIS
-  SYNC --> DATA
-  SETTLE --> WALLET
-  SDK --> TOOLS
-  SKY --> PLATFORM
-  ZEMA --> PLATFORM
-  WALLET --> PLATFORM
-  MIS --> MATERIAL
-  PLATFORM --> RUNTIME & AUTH & JOBS & CONNECT & DATA
-  AM --> MATERIAL
-  MATERIAL --> PATENT
+  U[本人] --> ENTRY[SIM/eSIM・Web/clientの利用入口]
+  ENTRY --> SKY[Sky 共通基盤
+Agent/Tool・接続・本人・仕事・成果・費用・保存/退出]
+  SKY --> OS[RockstarOS
+端末実行・Broker/権限・隔離・保存/復旧]
+  OS --> DEVICE[機種別adapter
+Pixel・Mini・Pro AI専用PC・QEMU]
+  SKY --> ZEMA[Zema 仕事の依頼・確認・停止]
+  SKY --> APPS[応用サービス
+Zoom・Planner・CSV・Game・発明]
+  SKY --> PROVIDERS[審査済みAgent/Tool・Provider connector]
+  SKY --> WALLET[Wallet/usage
+予約・検証済み精算]
+  OS -. 同じ契約を機種能力で強制 .-> APPS
 ```
+
 
 矢印は「機能を呼び出す／契約を通して接続する」関係を表す。製品アプリがDB、Wallet台帳、外部Providerへ直接書き込むことは許可しない。すべてPlatform Core／Connectorを通す。
 
@@ -157,6 +142,8 @@ flowchart TB
 | 2D fallbackで同じprojectを確認する | gestureだけで特許性、発明者、出願を確定する |
 
 ## 5. 利用者の一周とデータの流れ
+
+再設計では一周の各画面を一つのjobへ結ぶ。Homeは継続中の仕事と本人に必要な次の操作、Skyは選択した能力と接続/権限、Zemaは入力から停止・成果までのjob state、Walletは見積/予約/確定usageを受け持つ。端末を替えた時は同じowner・job ID・revisionを再取得する。offline/unknown時は保存済み情報と同期時刻を示し、未送信下書きを実行済みjobとして扱わない。
 
 ```mermaid
 sequenceDiagram

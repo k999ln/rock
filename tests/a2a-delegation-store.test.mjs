@@ -160,7 +160,7 @@ void test('lost draft responses can be recovered only by owner, parent, key, and
   assert.equal(await store.getByIdempotency('alice', '00000000-0000-4000-8000-000000000099', input.idempotencyKey, input.inputSha256), null);
 });
 
-void test('Zema persists a reviewed result-to-successor edge once under the same owner and parent', async (t) => {
+void test('Eve persists a reviewed result-to-successor edge once under the same owner and parent', async (t) => {
   const { db, store } = await setup(t);
   const predecessor = await completedAndCaptured(store, childInput(16, { deadlineAt: 5_000 }));
   const successorInput = childInput(17, {

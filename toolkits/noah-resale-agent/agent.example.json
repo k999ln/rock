@@ -1,0 +1,13 @@
+{
+  "schema": "noah.resale.cli/1",
+  "mode": "ebay-sandbox",
+  "currency": "USD",
+  "budget": 0,
+  "perItemCap": 0,
+  "searches": {
+    "street": "Manhattan zip hoodie",
+    "archive": "designer archive jacket",
+    "objects": "limited edition design object"
+  },
+  "intervalSeconds": 900
+}

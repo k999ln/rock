@@ -1,0 +1,664 @@
+{
+  "source": "GDELT DOC 2.0",
+  "query": "(technology OR science OR politics OR business OR gaming) sourcelang:english",
+  "fetchedAt": "2026-10-22T00:35:25.702Z",
+  "articles": [
+    {
+      "id": "https://www.thefastmode.com/technology-solutions/51146-beyond-now-launches-wave-ai-framework-for-agent-collaboration",
+      "title": "Beyond Now Launches Wave AI Framework for Agent Collaboration",
+      "url": "https://www.thefastmode.com/technology-solutions/51146-beyond-now-launches-wave-ai-framework-for-agent-collaboration",
+      "publisher": "thefastmode.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://accountancyage.com/2026/09/03/submissions-open-for-the-2026-accountancy-age-top-5050/",
+      "title": "Submissions Open for the 2026 Accountancy Age Top 50+50",
+      "url": "https://accountancyage.com/2026/09/03/submissions-open-for-the-2026-accountancy-age-top-5050/",
+      "publisher": "accountancyage.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United Kingdom"
+    },
+    {
+      "id": "https://www.theobserver.ca/press-releases/pr-newswire/fidelity-investments-canada-ulc-announces-cash-distributions-for-certain-fidelity-etfs-and-etf-series-of-fidelity-mutual-funds/",
+      "title": "Fidelity Investments Canada ULC Announces Cash Distributions for Certain Fidelity ETFs and ETF Series of Fidelity Mutual Funds",
+      "url": "https://www.theobserver.ca/press-releases/pr-newswire/fidelity-investments-canada-ulc-announces-cash-distributions-for-certain-fidelity-etfs-and-etf-series-of-fidelity-mutual-funds/",
+      "publisher": "theobserver.ca",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Canada"
+    },
+    {
+      "id": "https://scvnews.com/the-reset-center-celebrates-one-year-of-helping-real-life-come-back-online/",
+      "title": "SCVNews . com | The Reset Center Celebrates One Year of Helping Real Life Come Back Online",
+      "url": "https://scvnews.com/the-reset-center-celebrates-one-year-of-helping-real-life-come-back-online/",
+      "publisher": "scvnews.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.bostonglobe.com/2026/10/21/business/isomorphic-labs-drugmaking/",
+      "title": "Does Isomorphic Labs have what it takes to revolutionize drugmaking ?",
+      "url": "https://www.bostonglobe.com/2026/10/21/business/isomorphic-labs-drugmaking/",
+      "publisher": "bostonglobe.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.newsday.com/news/nation/canada-ontario-carney-ford-trump-tariffs-r35293",
+      "title": "Carney says Trump tariffs hurt Americans as US alleges Canadian interference",
+      "url": "https://www.newsday.com/news/nation/canada-ontario-carney-ford-trump-tariffs-r35293",
+      "publisher": "newsday.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.tickerreport.com/banking-finance/13629540/neuberger-berman-energy-infrastructure-and-income-fund-nyseamericannml-shares-cross-below-200-day-moving-average-should-you-sell.html",
+      "title": "Neuberger Berman Energy Infrastructure and Income Fund ( NYSEAMERICAN : NML ) Shares Cross Below 200 Day Moving Average – Should You Sell ?",
+      "url": "https://www.tickerreport.com/banking-finance/13629540/neuberger-berman-energy-infrastructure-and-income-fund-nyseamericannml-shares-cross-below-200-day-moving-average-should-you-sell.html",
+      "publisher": "tickerreport.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.fortmacleodgazette.com/community-papers-connect-remotely-housed-albertans-to-satellite-internet-rebate/",
+      "title": "| Community papers connect remotely housed Albertans to satellite Internet rebateFort Macleod Gazette",
+      "url": "https://www.fortmacleodgazette.com/community-papers-connect-remotely-housed-albertans-to-satellite-internet-rebate/",
+      "publisher": "fortmacleodgazette.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Canada"
+    },
+    {
+      "id": "https://www.vogue.com/article/shampoo-for-hard-water",
+      "title": "After Years of Hard Water Damage , I Finally Found the Right Shampoo",
+      "url": "https://www.vogue.com/article/shampoo-for-hard-water",
+      "publisher": "vogue.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.govtech.com/gov-experience/utah-makes-state-regulations-easier-to-find-and-follow",
+      "title": "Utah Makes State Regulations Easier to Find and Follow",
+      "url": "https://www.govtech.com/gov-experience/utah-makes-state-regulations-easier-to-find-and-follow",
+      "publisher": "govtech.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.reseller.co.nz/article/4238785/two-critical-php-flaws-put-the-web-on-alert-as-emergency-patches-arrive-3.html",
+      "title": "Two critical PHP flaws put the web on alert as emergency patches arrive",
+      "url": "https://www.reseller.co.nz/article/4238785/two-critical-php-flaws-put-the-web-on-alert-as-emergency-patches-arrive-3.html",
+      "publisher": "reseller.co.nz",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "New Zealand"
+    },
+    {
+      "id": "https://www.dailypolitical.com/2026/10/21/rocket-pharmaceuticals-nasdaqrckt-stock-crosses-below-fifty-day-moving-average-should-you-sell.html",
+      "title": "Rocket Pharmaceuticals ( NASDAQ : RCKT ) Stock Crosses Below Fifty Day Moving Average – Should You Sell ?",
+      "url": "https://www.dailypolitical.com/2026/10/21/rocket-pharmaceuticals-nasdaqrckt-stock-crosses-below-fifty-day-moving-average-should-you-sell.html",
+      "publisher": "dailypolitical.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.thefastmode.com/technology-solutions/51137-equinix-opens-global-innovation-centers-for-liquid-cooling-and-ai-infrastructure",
+      "title": "Equinix Opens Global Innovation Centers for Liquid Cooling and AI Infrastructure",
+      "url": "https://www.thefastmode.com/technology-solutions/51137-equinix-opens-global-innovation-centers-for-liquid-cooling-and-ai-infrastructure",
+      "publisher": "thefastmode.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.theobserver.ca/press-releases/newsfile/rwomen-closes-the-market/",
+      "title": "RWomen Closes the Market",
+      "url": "https://www.theobserver.ca/press-releases/newsfile/rwomen-closes-the-market/",
+      "publisher": "theobserver.ca",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Canada"
+    },
+    {
+      "id": "https://www.ksl.com/article/51639344/southwest-tops-quarterly-profit-estimates-on-higher-fares-fees",
+      "title": "Southwest Airlines cuts profit forecast as fuel costs overshadow turnaround gains",
+      "url": "https://www.ksl.com/article/51639344/southwest-tops-quarterly-profit-estimates-on-higher-fares-fees",
+      "publisher": "ksl.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.soompi.com/article/1880539wpp/3-reasons-to-get-excited-for-jin-young-and-cho-yi-hyuns-new-romance-drama-summer-vacation",
+      "title": "3 Reasons To Get Excited For Jin Young And Cho Yi Hyun New Romance Drama  Summer Vacation",
+      "url": "https://www.soompi.com/article/1880539wpp/3-reasons-to-get-excited-for-jin-young-and-cho-yi-hyuns-new-romance-drama-summer-vacation",
+      "publisher": "soompi.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "South Korea"
+    },
+    {
+      "id": "https://www.dailyliberal.com.au/story/9371329/caravan-life-after-48-years-aussie-couples-153000km-journey/",
+      "title": "Caravan life after 48 years : Aussie couple 153 , 000km journey | Daily Liberal",
+      "url": "https://www.dailyliberal.com.au/story/9371329/caravan-life-after-48-years-aussie-couples-153000km-journey/",
+      "publisher": "dailyliberal.com.au",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Australia"
+    },
+    {
+      "id": "https://radaronline.com/p/rj-mitte-death-mystery-mother-breaks-silence-breaking-bad/",
+      "title": "R . J . Mitte Death Mystery Deepens After Mother Statement",
+      "url": "https://radaronline.com/p/rj-mitte-death-mystery-mother-breaks-silence-breaking-bad/",
+      "publisher": "radaronline.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://wtov9.com/news/local/brooke-chamber-educational-summit-brooke-county-chamber-education-summit-local-businesses-school-grants-follansbee-higher-education-teachers-community-events",
+      "title": "Brooke County Chamber backs education to support local businesses at summit",
+      "url": "https://wtov9.com/news/local/brooke-chamber-educational-summit-brooke-county-chamber-education-summit-local-businesses-school-grants-follansbee-higher-education-teachers-community-events",
+      "publisher": "wtov9.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.nzherald.co.nz/lifestyle/wellington-egg-donor-samantha-gadd-helped-work-acquaintance-have-two-children/premium/KDTGLTCZLNG2LNBJX6W5TZVXWQ/",
+      "title": "Wellington egg donor Samantha Gadd helped work acquaintance have two children",
+      "url": "https://www.nzherald.co.nz/lifestyle/wellington-egg-donor-samantha-gadd-helped-work-acquaintance-have-two-children/premium/KDTGLTCZLNG2LNBJX6W5TZVXWQ/",
+      "publisher": "nzherald.co.nz",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "New Zealand"
+    },
+    {
+      "id": "https://tech.yahoo.com/general/article/there-was-little-fuss-about-data-centers-in-the-last-election-now-they-could-sway-the-midterms-165906288.html",
+      "title": "There was little fuss about data centers in the last election . Now they could sway the midterms .",
+      "url": "https://tech.yahoo.com/general/article/there-was-little-fuss-about-data-centers-in-the-last-election-now-they-could-sway-the-midterms-165906288.html",
+      "publisher": "tech.yahoo.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.4029tv.com/article/tom-cruise-life-achievement-award-american-film-institute/74183557",
+      "title": "Tom Cruise to receive life achievement award from the American Film Institute",
+      "url": "https://www.4029tv.com/article/tom-cruise-life-achievement-award-american-film-institute/74183557",
+      "publisher": "4029tv.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.tickerreport.com/banking-finance/13629555/fifth-street-asset-management-otcmktsfsam-stock-price-breaks-above-fifty-day-moving-average-whats-next.html",
+      "title": "Fifth Street Asset Management ( OTCMKTS : FSAM ) Stock Price Breaks Above Fifty Day Moving Average – What Next ?",
+      "url": "https://www.tickerreport.com/banking-finance/13629555/fifth-street-asset-management-otcmktsfsam-stock-price-breaks-above-fifty-day-moving-average-whats-next.html",
+      "publisher": "tickerreport.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://gisuser.com/2026/10/a-mapped-bridge-becomes-a-printable-flat-base-model/",
+      "title": "A Mapped Bridge Becomes A Printable Flat - Base Model - GIS user technology news",
+      "url": "https://gisuser.com/2026/10/a-mapped-bridge-becomes-a-printable-flat-base-model/",
+      "publisher": "gisuser.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://gisuser.com/2026/10/why-is-packthc-trending-in-2026/",
+      "title": "Why is PackTHC trending in 2026 ? - GIS user technology news",
+      "url": "https://gisuser.com/2026/10/why-is-packthc-trending-in-2026/",
+      "publisher": "gisuser.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.dowjones.com/business-intelligence/blog/dje-forum-with-strait-of-hormuz-uncertainty-new-normal-lloyds-and-mcdermott-executives-point-to-market-innovation-optionality/",
+      "title": "Dow Jones Energy Forum : With Strait of Hormuz Uncertainty  New Normal , Lloyd and McDermott Executives Point to Market Innovation , Optionality",
+      "url": "https://www.dowjones.com/business-intelligence/blog/dje-forum-with-strait-of-hormuz-uncertainty-new-normal-lloyds-and-mcdermott-executives-point-to-market-innovation-optionality/",
+      "publisher": "dowjones.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.outdoornews.com/2026/10/21/minnesota-dnr-reminds-firearms-deer-hunters-to-prepare-for-cwd-sampling/",
+      "title": "Minnesota DNR reminds firearms deer hunters to prepare for CWD sampling",
+      "url": "https://www.outdoornews.com/2026/10/21/minnesota-dnr-reminds-firearms-deer-hunters-to-prepare-for-cwd-sampling/",
+      "publisher": "outdoornews.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://vicnews.com/2026/10/21/19th-century-seafarers-scrapbook-joins-maritime-museum-of-b-c-collection/",
+      "title": "19th - century seafarer scrapbook joins Maritime Museum of B . C . collection",
+      "url": "https://vicnews.com/2026/10/21/19th-century-seafarers-scrapbook-joins-maritime-museum-of-b-c-collection/",
+      "publisher": "vicnews.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Canada"
+    },
+    {
+      "id": "https://www.foreignpolicyjournal.com/2026/10/21/trump-media-nasdaq-djt-ceo-refuses-to-address-truth-api-insider-trading-investigations/",
+      "title": "Trump Media ( NASDAQ : DJT ) CEO Refuses To Address Truth API Insider Trading Investigations",
+      "url": "https://www.foreignpolicyjournal.com/2026/10/21/trump-media-nasdaq-djt-ceo-refuses-to-address-truth-api-insider-trading-investigations/",
+      "publisher": "foreignpolicyjournal.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Israel"
+    },
+    {
+      "id": "https://www.foreignpolicyjournal.com/2026/10/21/oklo-nyse-oklo-and-nuscale-nyse-smr-tumble-15-as-rising-treasury-yields-hammer-nuclear-stocks/",
+      "title": "Oklo ( NYSE : OKLO ) And NuScale ( NYSE : SMR ) Tumble 15 % As Rising Treasury Yields Hammer Nuclear Stocks",
+      "url": "https://www.foreignpolicyjournal.com/2026/10/21/oklo-nyse-oklo-and-nuscale-nyse-smr-tumble-15-as-rising-treasury-yields-hammer-nuclear-stocks/",
+      "publisher": "foreignpolicyjournal.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Israel"
+    },
+    {
+      "id": "https://www.foreignpolicyjournal.com/2026/10/21/rocket-lab-nasdaq-rklb-neutron-delay-sends-stock-to-two-thirds-below-its-high-but-analysts-see-a-buying-opportunity/",
+      "title": "Rocket Lab ( NASDAQ : RKLB ) Neutron Delay Sends Stock To Two - Thirds Below Its High , But Analysts See A Buying Opportunity",
+      "url": "https://www.foreignpolicyjournal.com/2026/10/21/rocket-lab-nasdaq-rklb-neutron-delay-sends-stock-to-two-thirds-below-its-high-but-analysts-see-a-buying-opportunity/",
+      "publisher": "foreignpolicyjournal.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Israel"
+    },
+    {
+      "id": "https://www.aspentimes.com/news/units-for-aspens-lumberyard-project-begin-dropping/",
+      "title": "Units for Aspen Lumberyard project begin dropping",
+      "url": "https://www.aspentimes.com/news/units-for-aspens-lumberyard-project-begin-dropping/",
+      "publisher": "aspentimes.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.presstv.co.uk/Detail/2026/10/21/778892/US-secures-discounted-Venezuelan-oil-in-secret-deal-favoring-American-interests",
+      "title": "Trumps Venezuela oil deal offers US steep discounts , with little for Caracas : Report",
+      "url": "https://www.presstv.co.uk/Detail/2026/10/21/778892/US-secures-discounted-Venezuelan-oil-in-secret-deal-favoring-American-interests",
+      "publisher": "presstv.co.uk",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": ""
+    },
+    {
+      "id": "https://www.fox13seattle.com/news/2026-midterm-elections-key-house-races-follow",
+      "title": "2026 midterm elections : 21 key House races to follow",
+      "url": "https://www.fox13seattle.com/news/2026-midterm-elections-key-house-races-follow",
+      "publisher": "fox13seattle.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": ""
+    },
+    {
+      "id": "https://huskers.com/news/2026/10/21/huskers-sign-reyse-zobel",
+      "title": "Huskers Sign Reyse Zobel",
+      "url": "https://huskers.com/news/2026/10/21/huskers-sign-reyse-zobel",
+      "publisher": "huskers.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://wncoam.iheart.com/content/2026-10-21-ohio-man-banned-from-betting-for-threatening-mlb-manager/",
+      "title": "Ohio Man Banned From Betting For Threatening MLB Manager",
+      "url": "https://wncoam.iheart.com/content/2026-10-21-ohio-man-banned-from-betting-for-threatening-mlb-manager/",
+      "publisher": "wncoam.iheart.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.fox5ny.com/news/texas-2026-senate-race-what-know-about-james-talarico-vs-ken-paxton",
+      "title": "Texa 2026 Senate race : What to know about Ken Paxton vs James Talarico",
+      "url": "https://www.fox5ny.com/news/texas-2026-senate-race-what-know-about-james-talarico-vs-ken-paxton",
+      "publisher": "fox5ny.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.foreignpolicyjournal.com/2026/10/21/ionq-nyse-ionq-and-d-wave-nyse-qbts-hardware-divide-forces-investors-to-choose-sides/",
+      "title": "IonQ ( NYSE : IONQ ) And D - Wave ( NYSE : QBTS ) Hardware Divide Forces Investors To Choose Sides",
+      "url": "https://www.foreignpolicyjournal.com/2026/10/21/ionq-nyse-ionq-and-d-wave-nyse-qbts-hardware-divide-forces-investors-to-choose-sides/",
+      "publisher": "foreignpolicyjournal.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Israel"
+    },
+    {
+      "id": "https://punchng.com/ghana-petroleum-authority-pti-partner-for-increased-capacity/",
+      "title": "Ghana Petroleum Authority , PTI partner for increased capacit",
+      "url": "https://punchng.com/ghana-petroleum-authority-pti-partner-for-increased-capacity/",
+      "publisher": "punchng.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Nigeria"
+    },
+    {
+      "id": "https://www.thefastmode.com/technology-solutions/51134-peraso-secures-2-million-production-order-for-60-ghz-fixed-wireless-access",
+      "title": "Peraso Secures $2 Million Production Order for 60 GHz Fixed Wireless Access",
+      "url": "https://www.thefastmode.com/technology-solutions/51134-peraso-secures-2-million-production-order-for-60-ghz-fixed-wireless-access",
+      "publisher": "thefastmode.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.dailypolitical.com/2026/10/21/northsight-capital-otcmktsncap-share-price-breaks-above-50-day-moving-average-whats-next.html",
+      "title": "Northsight Capital ( OTCMKTS : NCAP ) Share Price Breaks Above 50 - Day Moving Average – What Next ?",
+      "url": "https://www.dailypolitical.com/2026/10/21/northsight-capital-otcmktsncap-share-price-breaks-above-50-day-moving-average-whats-next.html",
+      "publisher": "dailypolitical.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://thesource.com/2026/10/21/ea-shuts-down-bioware-after-31-years-cancels-next-mass-effect-game-amid-major-layoffs/",
+      "title": "The Source |EA Shuts Down BioWare After 31 Years , Cancels Next Mass Effect Game Amid Major Layoffs",
+      "url": "https://thesource.com/2026/10/21/ea-shuts-down-bioware-after-31-years-cancels-next-mass-effect-game-amid-major-layoffs/",
+      "publisher": "thesource.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.businessnorth.com/daily_briefing/cirrus-breaks-ground-for-testing-facility/article_8ebc6737-02c7-4fcf-bace-db817fa76ff4.html",
+      "title": "Cirrus breaks ground for testing facility",
+      "url": "https://www.businessnorth.com/daily_briefing/cirrus-breaks-ground-for-testing-facility/article_8ebc6737-02c7-4fcf-bace-db817fa76ff4.html",
+      "publisher": "businessnorth.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.theobserver.ca/press-releases/globe-newswire/kane-engages-independent-trading-group-as-market-maker/",
+      "title": "Kane Engages Independent Trading Group as Market Maker",
+      "url": "https://www.theobserver.ca/press-releases/globe-newswire/kane-engages-independent-trading-group-as-market-maker/",
+      "publisher": "theobserver.ca",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Canada"
+    },
+    {
+      "id": "https://accountancyage.com/2025/10/27/the-road-to-mtd-it-readiness-and-why-it-starts-now/",
+      "title": "The road to MTD IT readiness and why it starts now",
+      "url": "https://accountancyage.com/2025/10/27/the-road-to-mtd-it-readiness-and-why-it-starts-now/",
+      "publisher": "accountancyage.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United Kingdom"
+    },
+    {
+      "id": "https://www.hellenicshippingnews.com/worlds-first-commercial-ship-to-ship-green-ammonia-bunkering-completed-in-china/",
+      "title": "World first commercial ship - to - ship green ammonia bunkering completed in China",
+      "url": "https://www.hellenicshippingnews.com/worlds-first-commercial-ship-to-ship-green-ammonia-bunkering-completed-in-china/",
+      "publisher": "hellenicshippingnews.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "China"
+    },
+    {
+      "id": "https://tasteofcountry.com/dolly-parton-coat-of-many-colors-story-behind-song-lyrics/",
+      "title": "Dolly Parton  Coat of Many Color Drew on Her Hard Childhood",
+      "url": "https://tasteofcountry.com/dolly-parton-coat-of-many-colors-story-behind-song-lyrics/",
+      "publisher": "tasteofcountry.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.dailypolitical.com/2026/10/21/black-stone-minerals-nysebsm-share-price-breaks-above-50-day-moving-average-on-analyst-downgrade.html",
+      "title": "Black Stone Minerals ( NYSE : BSM ) Share Price Breaks Above 50 Day Moving Average on Analyst Downgrade",
+      "url": "https://www.dailypolitical.com/2026/10/21/black-stone-minerals-nysebsm-share-price-breaks-above-50-day-moving-average-on-analyst-downgrade.html",
+      "publisher": "dailypolitical.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.nbcsandiego.com/news/national-international/idaho-prosecutor-death-penalty-mom-charged-with-murder-twins-deaths/4090104/",
+      "title": "Idaho prosecutors seek death penalty for mother accused of killing twin toddlers – NBC 7 San Diego",
+      "url": "https://www.nbcsandiego.com/news/national-international/idaho-prosecutor-death-penalty-mom-charged-with-murder-twins-deaths/4090104/",
+      "publisher": "nbcsandiego.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.fortmacleodgazette.com/alberta-government-offers-business-support/",
+      "title": "| Alberta government offers business supportFort Macleod Gazette",
+      "url": "https://www.fortmacleodgazette.com/alberta-government-offers-business-support/",
+      "publisher": "fortmacleodgazette.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Canada"
+    },
+    {
+      "id": "https://www.tickerreport.com/banking-finance/13629549/strategy-inc-variable-rate-series-a-perpetual-stretch-preferred-stock-nasdaqstrc-increases-dividend-to-0-04-per-share-8.html",
+      "title": "Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock ( NASDAQ : STRC ) Increases Dividend to $0 . 04 Per Share",
+      "url": "https://www.tickerreport.com/banking-finance/13629549/strategy-inc-variable-rate-series-a-perpetual-stretch-preferred-stock-nasdaqstrc-increases-dividend-to-0-04-per-share-8.html",
+      "publisher": "tickerreport.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.dailypolitical.com/2026/10/21/india-fund-nyseifn-shares-cross-below-two-hundred-day-moving-average-heres-what-happened.html",
+      "title": "India Fund ( NYSE : IFN ) Shares Cross Below Two Hundred Day Moving Average – Here What Happened",
+      "url": "https://www.dailypolitical.com/2026/10/21/india-fund-nyseifn-shares-cross-below-two-hundred-day-moving-average-heres-what-happened.html",
+      "publisher": "dailypolitical.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.dailypolitical.com/2026/10/21/strategy-inc-variable-rate-series-a-perpetual-stretch-preferred-stock-nasdaqstrc-announces-dividend-increase-0-04-per-share-4.html",
+      "title": "Strategy Inc Variable Rate Series A Perpetual Stretch Preferred Stock ( NASDAQ : STRC ) Announces Dividend Increase – $0 . 04 Per Share",
+      "url": "https://www.dailypolitical.com/2026/10/21/strategy-inc-variable-rate-series-a-perpetual-stretch-preferred-stock-nasdaqstrc-announces-dividend-increase-0-04-per-share-4.html",
+      "publisher": "dailypolitical.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.tickerreport.com/banking-finance/13629542/mexico-equity-and-income-fund-nysemxe-share-price-crosses-below-two-hundred-day-moving-average-whats-next.html",
+      "title": "Mexico Equity and Income Fund ( NYSE : MXE ) Share Price Crosses Below Two Hundred Day Moving Average – What Next ?",
+      "url": "https://www.tickerreport.com/banking-finance/13629542/mexico-equity-and-income-fund-nysemxe-share-price-crosses-below-two-hundred-day-moving-average-whats-next.html",
+      "publisher": "tickerreport.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://scvnews.com/henry-mayo-doctor-helps-launch-new-clinical-trial-for-early-breast-cancer-detection/",
+      "title": "SCVNews . com | Henry Mayo Doctor Helps Launch New Clinical Trial for Early Breast Cancer Detection",
+      "url": "https://scvnews.com/henry-mayo-doctor-helps-launch-new-clinical-trial-for-early-breast-cancer-detection/",
+      "publisher": "scvnews.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.thefastmode.com/technology-solutions/51141-google-cloud-nvidia-launch-vera-rubin-infrastructure-for-ai-workloads",
+      "title": "Google Cloud , NVIDIA Launch Vera Rubin Infrastructure for AI Workloads",
+      "url": "https://www.thefastmode.com/technology-solutions/51141-google-cloud-nvidia-launch-vera-rubin-infrastructure-for-ai-workloads",
+      "publisher": "thefastmode.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.thefastmode.com/technology-solutions/51138-elisa-advances-ai-ran-deployment-with-nvidia-and-nokia-in-finland",
+      "title": "Elisa Advances AI - RAN Deployment with NVIDIA and Nokia in Finland",
+      "url": "https://www.thefastmode.com/technology-solutions/51138-elisa-advances-ai-ran-deployment-with-nvidia-and-nokia-in-finland",
+      "publisher": "thefastmode.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.parrysound.com/things-to-do/parry-sound-witches-walk-2026-guide/article_ed69ea24-c662-5b99-803a-4024d4f27433.html",
+      "title": "Witches Walk hits Parry Sound Oct . 24 : Here what to know",
+      "url": "https://www.parrysound.com/things-to-do/parry-sound-witches-walk-2026-guide/article_ed69ea24-c662-5b99-803a-4024d4f27433.html",
+      "publisher": "parrysound.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "Canada"
+    },
+    {
+      "id": "https://www.thefastmode.com/technology-solutions/51139-nokia-nvidia-advance-ai-ran-toward-commercial-deployment",
+      "title": "Nokia , NVIDIA Advance AI - RAN Toward Commercial Deployment",
+      "url": "https://www.thefastmode.com/technology-solutions/51139-nokia-nvidia-advance-ai-ran-toward-commercial-deployment",
+      "publisher": "thefastmode.com",
+      "seenAt": "2026-10-22T00:00:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.thedailyworld.com/2026/10/21/elbows-up-in-washington-state-over-proposed-oil-tanker-terminal/",
+      "title": "Elbows up in Washington state over proposed oil tanker terminal",
+      "url": "https://www.thedailyworld.com/2026/10/21/elbows-up-in-washington-state-over-proposed-oil-tanker-terminal/",
+      "publisher": "thedailyworld.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://english.news.cn/northamerica/20261022/bfbade6ca84d466aafe30c0500dc93a2/c.html",
+      "title": "Meta Q3 revenue rises 26 pct , operating profit falls 37 pct amid legal costs - Xinhua",
+      "url": "https://english.news.cn/northamerica/20261022/bfbade6ca84d466aafe30c0500dc93a2/c.html",
+      "publisher": "english.news.cn",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": ""
+    },
+    {
+      "id": "https://gadget.co.za/witsstudentapp21t/",
+      "title": "Wits student app plots pothole fix – Gadget",
+      "url": "https://gadget.co.za/witsstudentapp21t/",
+      "publisher": "gadget.co.za",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "South Africa"
+    },
+    {
+      "id": "https://www.hindustantimes.com/astrology/horoscope/sagittarius-horoscope-today-october-22-2026-the-first-step-could-reveal-what-has-been-holding-up-your-plans-101792492714366.html",
+      "title": "Sagittarius Horoscope Today , October 22 , 2026 : The first step could reveal what has been holding up your plans",
+      "url": "https://www.hindustantimes.com/astrology/horoscope/sagittarius-horoscope-today-october-22-2026-the-first-step-could-reveal-what-has-been-holding-up-your-plans-101792492714366.html",
+      "publisher": "hindustantimes.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.chelmsfordcitynews.co.uk/news/national/uk-today/26658778.european-island-2-5-hours-uk-magical-aura/",
+      "title": "European island 2 . 5 hours from united kingdom has a  magical aura",
+      "url": "https://www.chelmsfordcitynews.co.uk/news/national/uk-today/26658778.european-island-2-5-hours-uk-magical-aura/",
+      "publisher": "chelmsfordcitynews.co.uk",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": ""
+    },
+    {
+      "id": "https://www.hindustantimes.com/world-news/us-news/armstrong-internet-down-in-several-us-states-amid-outage-101792623581802.html",
+      "title": "Armstrong internet down in several US states amid outage",
+      "url": "https://www.hindustantimes.com/world-news/us-news/armstrong-internet-down-in-several-us-states-amid-outage-101792623581802.html",
+      "publisher": "hindustantimes.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "India"
+    },
+    {
+      "id": "https://www.historynewsnetwork.org/article/turning-toward-charity-at-the-sight-of-uncomfortab",
+      "title": "Turning Toward Charity at the Sight of Uncomfortable News",
+      "url": "https://www.historynewsnetwork.org/article/turning-toward-charity-at-the-sight-of-uncomfortab",
+      "publisher": "historynewsnetwork.org",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://toronto.citynews.ca/2026/10/21/pope-leos-doctors-say-tests-show-he-needs-no-further-treatment-for-lung-cancer/",
+      "title": "Pope Leo doctors say tests show he needs no further treatment for lung cancer",
+      "url": "https://toronto.citynews.ca/2026/10/21/pope-leos-doctors-say-tests-show-he-needs-no-further-treatment-for-lung-cancer/",
+      "publisher": "toronto.citynews.ca",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": ""
+    },
+    {
+      "id": "https://keyt.com/news/santa-barbara-s-county/2026/10/21/santa-barbara-unifieds-superintendent-announces-retirement-wednesday/",
+      "title": "Santa Barbara Unified Superintendent Announces Retirement Wednesday",
+      "url": "https://keyt.com/news/santa-barbara-s-county/2026/10/21/santa-barbara-unifieds-superintendent-announces-retirement-wednesday/",
+      "publisher": "keyt.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.wctv.tv/2026/10/21/famu-unveils-new-mural-honoring-business-schools-founding-dean-during-homecoming-celebrations/",
+      "title": "FAMU unveils new mural honoring business school founding dean during homecoming celebrations",
+      "url": "https://www.wctv.tv/2026/10/21/famu-unveils-new-mural-honoring-business-schools-founding-dean-during-homecoming-celebrations/",
+      "publisher": "wctv.tv",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.tnonline.com/20261021/residents-want-to-retain-palmerton-board-input/",
+      "title": "Residents want to retain Palmerton board input – Times News Online",
+      "url": "https://www.tnonline.com/20261021/residents-want-to-retain-palmerton-board-input/",
+      "publisher": "tnonline.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.socialmediatoday.com/news/youtube-shares-data-on-how-creators-are-using-ai/833657/",
+      "title": "YouTube shares data on how creators are using AI",
+      "url": "https://www.socialmediatoday.com/news/youtube-shares-data-on-how-creators-are-using-ai/833657/",
+      "publisher": "socialmediatoday.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.newswiretoday.com/news/187114/Siemens-and-NVIDIA-Advance-AI-powered-PCB-Inspection-from-Digital-Twin-to-Factory/",
+      "title": "Siemens and NVIDIA Advance AI - powered PCB Inspection from Digital Twin to Factory - Manufacturing / Robotics - Siemens AG",
+      "url": "https://www.newswiretoday.com/news/187114/Siemens-and-NVIDIA-Advance-AI-powered-PCB-Inspection-from-Digital-Twin-to-Factory/",
+      "publisher": "newswiretoday.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "United States"
+    },
+    {
+      "id": "https://www.guampdn.com/news/national/meuser-wallace-clash-over-data-centers-health-care-and-stocks-in-only-debate/article_88afa10f-427b-5204-85b0-31242e9829e2.html",
+      "title": "Meuser , Wallace clash over data centers , health care , and stocks in only debate",
+      "url": "https://www.guampdn.com/news/national/meuser-wallace-clash-over-data-centers-health-care-and-stocks-in-only-debate/article_88afa10f-427b-5204-85b0-31242e9829e2.html",
+      "publisher": "guampdn.com",
+      "seenAt": "2026-10-21T23:30:00Z",
+      "language": "English",
+      "sourceCountry": "Guam"
+    }
+  ]
+}

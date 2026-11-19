@@ -1,5 +1,7 @@
 'use client';
 
+import { SkyNotice } from '@/components/sky-feedback';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Check, Copy, KeyRound, LoaderCircle, ShieldCheck } from 'lucide-react';
@@ -26,14 +28,14 @@ export default function SkyActivationPanel() {
     fetch('/api/sky/tool-packages', { cache: 'no-store' })
       .then(async (response) => {
         const data = (await response.json()) as { packages?: PackageItem[]; error?: string };
-        if (!response.ok) throw new Error(data.error || 'Tool一覧を読み込めませんでした。');
+        if (!response.ok) throw new Error(data.error || "ツール一覧を読み込めませんでした。");
         const available = (data.packages || []).filter((item) =>
           item.status === 'verified',
         );
         setPackages(available);
         setPackageKey(available[0]?.packageKey || '');
       })
-      .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : 'Tool一覧を読み込めませんでした。'))
+      .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "ツール一覧を読み込めませんでした。"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -74,13 +76,13 @@ export default function SkyActivationPanel() {
       <div className="sky-activation-heading">
         <div className="sky-activation-icon" aria-hidden="true"><KeyRound size={18} /></div>
         <div>
-          <h2 id="sky-activation-title">TelegramでSky Toolを使う</h2>
+          <h2 id="sky-activation-title">TelegramでSmith ツールを使う</h2>
           <p>発行コードを <code>/sky CODE</code> と送ると、このBotで有効化できます。</p>
         </div>
       </div>
-      {loading ? <p className="sky-activation-muted"><LoaderCircle className="spin" size={15} /> Toolを確認中…</p> : null}
+      {loading ? <p className="sky-activation-muted"><LoaderCircle className="spin" size={15} /> ツールを確認中…</p> : null}
       {!loading && !packages.length ? (
-        <p className="sky-activation-muted">審査済みToolがありません。<Link href="/sky/publish">Rock Studioで登録</Link>した後、Sky審査を完了してください。</p>
+        <p className="sky-activation-muted">審査済みツールがありません。<Link href="/sky/publish">Rock Studioで登録</Link>した後、Smith審査を完了してください。</p>
       ) : null}
       {packages.length ? (
         <div className="sky-activation-form">
@@ -102,8 +104,8 @@ export default function SkyActivationPanel() {
           <code>/sky {code}</code>
         </div>
       ) : null}
-      <p className="sky-activation-note"><ShieldCheck size={15} /> コードは実行権限そのものではなく、登録済みToolへの利用許可です。ソースコード・APIキー・カード情報はTelegramへ貼らないでください。</p>
-      {error ? <p className="sky-activation-error">{error}</p> : null}
+      <p className="sky-activation-note"><ShieldCheck size={15} /> コードは実行権限そのものではなく、登録済みツールへの利用許可です。ソースコード・接続用の秘密キー・カード情報はTelegramへ貼らないでください。</p>
+      {error ? <SkyNotice className="sky-activation-error" message={error} /> : null}
     </section>
   );
 }

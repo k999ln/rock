@@ -1,3 +1,4 @@
+import { A2A_USAGE_CONTEXT_EXTENSION_URI, A2A_USAGE_CONTEXT_METADATA, validateA2AUsageContext, type A2AUsageContext } from './a2a-usage-context.ts';
 /** Minimal A2A 1.0 JSON-RPC client boundary for approved agent delegation.
  *
  * This module deliberately does not retry `SendMessage`: A2A permits (but
@@ -100,6 +101,9 @@ export type A2AClientOptions = {
   bearerToken?: string;
   /** Exact, operator-configured URI for the quote extension; absent means quote calls are disabled. */
   priceQuoteExtensionUri?: string;
+  /** Explicit operator opt-in; context must also be declared by the selected Agent. */
+  usageContextExtensionUri?: string;
+  usageContext?: A2AUsageContext;
   /** Provider-declared extension used for signed Sky Package invocations. */
   packageRuntimeExtensionUri?: string;
   /** Must verify the persisted, owner-approved Broker snapshot before dispatch. */
@@ -292,7 +296,7 @@ export function createA2AClient(options: A2AClientOptions) {
       if (!response.ok)
         throw new A2AClientError('A2A Agent Cardを取得できません。', 'agent_card_fetch_failed', response.status);
       return parseA2AAgentCard(await readJson(response, MAX_CARD_BYTES),
-        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri)));
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri, options.usageContextExtensionUri].filter((uri): uri is string => Boolean(uri)));
     },
     async discoverAtOrigin(origin: string) {
       const url = safeUrl(new URL('/.well-known/agent-card.json', origin).toString(), options.allowedOrigins);
@@ -300,7 +304,7 @@ export function createA2AClient(options: A2AClientOptions) {
       if (!response.ok)
         throw new A2AClientError('A2A Agent Cardを取得できません。', 'agent_card_fetch_failed', response.status);
       return parseA2AAgentCard(await readJson(response, MAX_CARD_BYTES),
-        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri)));
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri, options.usageContextExtensionUri].filter((uri): uri is string => Boolean(uri)));
     },
     async requestPriceQuote(card: A2AAgentCard, quoteRequestId: string, text: string,
       currency: string, maximumBudgetMinor: number, expiresAt: number,
@@ -384,7 +388,7 @@ export function createA2AClient(options: A2AClientOptions) {
         throw new A2AClientError('A2A委任メッセージが不正です。', 'invalid_a2a_message');
       if (!options.authorizeDelegation)
         throw new A2AClientError('Broker承認を確認できないため、委任を送信しません。', 'delegation_authorization_required');
-      const supportedExtensions = [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri]
+      const supportedExtensions = [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri, options.usageContextExtensionUri]
         .filter((uri): uri is string => Boolean(uri));
       const parsed = parseA2AAgentCard(card, supportedExtensions);
       let packageRuntimeHeader: Record<string, string> | undefined;
@@ -403,7 +407,7 @@ export function createA2AClient(options: A2AClientOptions) {
             !/^[a-f0-9]{64}$/.test(packageRuntimeInvocation.inputSchemaSha256) ||
             !/^[a-f0-9]{64}$/.test(packageRuntimeInvocation.outputSchemaSha256) ||
             !/^[A-Za-z0-9._:-]{1,128}$/.test(packageRuntimeInvocation.pricingVersion))
-          throw new A2AClientError('Sky Package実行extensionまたはbindingがAgent Cardと一致しません。', 'package_runtime_extension_mismatch');
+          throw new A2AClientError('Smith Package実行extensionまたはbindingがAgent Cardと一致しません。', 'package_runtime_extension_mismatch');
         packageRuntimeHeader = { 'A2A-Extensions': extensionUri };
         packageRuntimeExtensions = [extensionUri];
       }
@@ -420,6 +424,15 @@ export function createA2AClient(options: A2AClientOptions) {
           requestSha256: digest,
         },
       };
+      const usageContext = options.usageContext ? Object.freeze({ ...options.usageContext }) : undefined;
+      if (usageContext) {
+        if (options.usageContextExtensionUri !== A2A_USAGE_CONTEXT_EXTENSION_URI || !parsed.capabilities?.extensions?.some(item => item.uri === A2A_USAGE_CONTEXT_EXTENSION_URI))
+          throw new A2AClientError('Agentが使用量照合の拡張を宣言していません。', 'a2a_usage_context_unsupported');
+        validateA2AUsageContext(usageContext, messageId, digest);
+        packageRuntimeMetadata = { ...packageRuntimeMetadata, [A2A_USAGE_CONTEXT_METADATA]: usageContext };
+        packageRuntimeExtensions = [...new Set([...(packageRuntimeExtensions ?? []), A2A_USAGE_CONTEXT_EXTENSION_URI])];
+        packageRuntimeHeader = { 'A2A-Extensions': packageRuntimeExtensions.join(', ') };
+      }
       await options.authorizeDelegation({
         messageId,
         targetOrigin: endpoint.origin,
@@ -467,11 +480,11 @@ export function createA2AClient(options: A2AClientOptions) {
     },
     async getTask(card: A2AAgentCard, taskId: string): Promise<A2ATask> {
       return parseTask(await rpc<unknown>(endpointFor(card, options.allowedOrigins,
-        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri))), 'GetTask', { id: taskId, historyLength: 0 }, crypto.randomUUID()));
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri, options.usageContextExtensionUri].filter((uri): uri is string => Boolean(uri))), 'GetTask', { id: taskId, historyLength: 0 }, crypto.randomUUID()));
     },
     async cancelTask(card: A2AAgentCard, taskId: string): Promise<A2ATask> {
       return parseTask(await rpc<unknown>(endpointFor(card, options.allowedOrigins,
-        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri].filter((uri): uri is string => Boolean(uri))), 'CancelTask', { id: taskId }, crypto.randomUUID()));
+        [options.priceQuoteExtensionUri, options.packageRuntimeExtensionUri, options.usageContextExtensionUri].filter((uri): uri is string => Boolean(uri))), 'CancelTask', { id: taskId }, crypto.randomUUID()));
     },
   };
 }

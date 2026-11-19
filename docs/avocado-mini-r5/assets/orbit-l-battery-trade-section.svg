@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="570" viewBox="0 0 1100 570" role="img" aria-labelledby="title desc">
+  <title id="title">Orbit L電池bayでの二本21700と三本18650の幾何比較</title>
+  <desc id="desc">D76mm外径、内径72mm、高さ76mmの仮bay断面。左は二本のM65Aと58×16mm仮基板、右は三本のM35Aと52×16mm仮基板。軸方向余裕はそれぞれ5mmと10.8mm。部品固定、保護、熱、製造は未成立。</desc>
+  <rect width="1100" height="570" fill="#f8fafb"/>
+  <text x="36" y="50" fill="#1c3349" font-family="Arial, sans-serif" font-size="25" font-weight="700">Orbit L — 電池容量と端子・絶縁の場所を交換する</text>
+  <text x="36" y="78" fill="#5d7181" font-family="Arial, sans-serif" font-size="15">同じD76×H76mm仮bayの2D上限。破線は内径72mm。cellと基板を同じ軸区間へ描いただけ。</text>
+
+  <text x="160" y="129" fill="#223c51" font-family="Arial, sans-serif" font-size="20" font-weight="700">A: 21700 M65A ×2</text>
+  <circle cx="270" cy="300" r="152" fill="#d8dfe3" stroke="#647989" stroke-width="3"/>
+  <circle cx="270" cy="300" r="144" fill="#f8fafb" stroke="#91a4ae" stroke-width="2" stroke-dasharray="7 5"/>
+  <circle cx="226" cy="240" r="43.4" fill="#dfeacd" stroke="#7b9562" stroke-width="3"/>
+  <circle cx="314" cy="240" r="43.4" fill="#dfeacd" stroke="#7b9562" stroke-width="3"/>
+  <rect x="154" y="316" width="232" height="64" fill="#d7e5f1" stroke="#4f7493" stroke-width="3"/>
+  <text x="204" y="357" fill="#2c5878" font-family="Arial, sans-serif" font-size="15">board 58×16</text>
+  <text x="110" y="476" fill="#405668" font-family="Arial, sans-serif" font-size="16">46.8Wh / cell最大149g</text>
+  <text x="110" y="501" fill="#7a3f39" font-family="Arial, sans-serif" font-size="16">軸端余裕5mm、基板角0.8mm</text>
+
+  <line x1="550" y1="111" x2="550" y2="526" stroke="#cbd5de" stroke-width="2"/>
+  <text x="684" y="129" fill="#223c51" font-family="Arial, sans-serif" font-size="20" font-weight="700">B: 18650 M35A ×3</text>
+  <circle cx="810" cy="300" r="152" fill="#d8dfe3" stroke="#647989" stroke-width="3"/>
+  <circle cx="810" cy="300" r="144" fill="#f8fafb" stroke="#91a4ae" stroke-width="2" stroke-dasharray="7 5"/>
+  <circle cx="730" cy="252" r="37.2" fill="#dfeacd" stroke="#7b9562" stroke-width="3"/>
+  <circle cx="810" cy="252" r="37.2" fill="#dfeacd" stroke="#7b9562" stroke-width="3"/>
+  <circle cx="890" cy="252" r="37.2" fill="#dfeacd" stroke="#7b9562" stroke-width="3"/>
+  <rect x="706" y="316" width="208" height="64" fill="#d7e5f1" stroke="#4f7493" stroke-width="3"/>
+  <text x="745" y="357" fill="#2c5878" font-family="Arial, sans-serif" font-size="15">board 52×16</text>
+  <text x="648" y="476" fill="#405668" font-family="Arial, sans-serif" font-size="16">37.8Wh / cell最大144g</text>
+  <text x="648" y="501" fill="#7a3f39" font-family="Arial, sans-serif" font-size="16">軸端10.8mm、隣接cell間1.4mm</text>
+
+  <text x="35" y="551" fill="#596f80" font-family="Arial, sans-serif" font-size="14">どちらもpack保護・絶縁・保持・RF・放熱・公差は未配置。P0で実部品CADに置けなければ採用しない。</text>
+</svg>

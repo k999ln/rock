@@ -4,7 +4,7 @@ import test from 'node:test';
 
 import { catalog } from '../lib/catalog.ts';
 
-void test('Sky exposes Rockstar Ledger as a ready local tool', () => {
+void test('smis exposes Rockstar Ledger as a ready local tool', () => {
   const ledger = catalog.find((tool) => tool.id === 'rockstar-ledger');
 
   assert.ok(ledger);
@@ -17,7 +17,7 @@ void test('Sky exposes Rockstar Ledger as a ready local tool', () => {
   assert.match(ledger.note, /解約、支払い、税務申告を自動実行せず/);
 });
 
-void test('Sky distribution contains the ledger package and license', () => {
+void test('smis distribution contains the ledger package and license', () => {
   assert.equal(existsSync('public/toolkits/rockstar-ledger.zip'), true);
   const license = readFileSync(
     'public/toolkits/rockstar-ledger-LICENSE.txt',

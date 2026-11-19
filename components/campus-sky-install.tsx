@@ -33,8 +33,8 @@ export default function CampusSkyInstall({ campusName }: { campusName: string })
   if (installed) return null;
   return <section className={styles.install} aria-labelledby="campus-install-title">
     <div>
-      <p className={styles.eyebrow}>ADD YOUR CAMPUS SKY</p>
-      <h2 id="campus-install-title">Keep {campusName} Sky on your phone.</h2>
+      <p className={styles.eyebrow}>ADD YOUR CAMPUS Smith</p>
+      <h2 id="campus-install-title">Keep {campusName} Smith on your phone.</h2>
       <p>Open it from your Home Screen next time. Your account and purchases still require sign-in.</p>
     </div>
     {prompt ? <button type="button" className={styles.primary} onClick={async () => {

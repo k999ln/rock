@@ -1,0 +1,103 @@
+{
+  "schema": "rockstaros.mini-contact-bench/1",
+  "productionRelease": false,
+  "dimensionsMm": [
+    76,
+    62,
+    1.6
+  ],
+  "power": "Pico 2 USB only; no external supply on carrier",
+  "pins": {
+    "1": "3V3",
+    "2": "STOP_OK",
+    "3": "3V3",
+    "4": "LATCH_OK",
+    "5": "3V3",
+    "6": "TEMP_OK",
+    "7": "3V3",
+    "8": "POWER_OK",
+    "9": "LED_K",
+    "10": "GND",
+    "11": "3V3",
+    "12": "DOCKED",
+    "13": "GND",
+    "15": "3V3",
+    "16": "LOCAL_BUTTON"
+  },
+  "normallyClosedContacts": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      9,
+      10
+    ],
+    [
+      11,
+      12
+    ]
+  ],
+  "momentaryNormallyOpenLocalButton": [
+    15,
+    16
+  ],
+  "physicalStop": "A mechanically linked DPST-NC stop opens BOTH harness pairs [1,2] and [9,10]. Second pole interrupts LED current independently of MCU software.",
+  "unusedPins": [
+    14
+  ],
+  "modulePinNames": {
+    "1": "GP0",
+    "2": "GP1",
+    "3": "GND",
+    "4": "GP2",
+    "5": "GP3",
+    "6": "GP4",
+    "7": "GP5",
+    "8": "GND",
+    "9": "GP6",
+    "10": "GP7",
+    "11": "GP8",
+    "12": "GP9",
+    "13": "GND",
+    "14": "GP10",
+    "15": "GP11",
+    "16": "GP12",
+    "17": "GP13",
+    "18": "GND",
+    "19": "GP14",
+    "20": "GP15",
+    "21": "GP16",
+    "22": "GP17",
+    "23": "GND",
+    "24": "GP18",
+    "25": "GP19",
+    "26": "GP20",
+    "27": "GP21",
+    "28": "GND",
+    "29": "GP22",
+    "30": "RUN",
+    "31": "GP26",
+    "32": "GP27",
+    "33": "AGND",
+    "34": "GP28",
+    "35": "ADC_VREF",
+    "36": "3V3_OUT",
+    "37": "3V3_EN",
+    "38": "GND",
+    "39": "VSYS",
+    "40": "VBUS"
+  }
+}

@@ -1,4 +1,93 @@
+現行の製品名は **Eve（イヴ、旧称Zema）**。2026-10-20の本人指示による改名で、以下のZemaは同じ製品を指す。既存契約・保存・利用権/SDK識別子は互換性を保持する。
+
+<a id="rockstar-monthly-billing-contract"></a>
+## RockstarOS共通サービスの料金・契約・請求契約（2026-10-20）
+
+本人の追加要件はBIL02の実装・受入条件とする。月額基本料は初期プランの**16 USD／契約account／月**を維持し、同一契約へ端末を追加しても重複させない。対象AI・Linuxの利用枠を含め、枠を超えた対象使用量のみ版付き単価で計算する。枠の数量・対象meter・超過単価・繰越・日割り・販売地域・税は未確定であり、現在のfixture値を販売条件にしない。既存契約の料金を遡及変更しない。
+
+### 契約前から実行前まで
+
+1. 料金表は`offerId`、`priceVersion`、適用開始／終了時刻、通貨、月額、各meterの単位・含有量・超過単価、税区分、決済手数料の負担、地域条件、上限、締日・支払日、解約・保存・停止・復帰条件を一つの不変snapshotとして保存する。変更時は新しい版と適用時刻を発行し、既存の仕事と請求期間には同意済み版を使う。
+2. 申込前に基本料、含有枠、超過時の具体例、通信料、Linux資源、Cloud AI、外部Tool実費、商品代、税・決済費用を分けた見積を提示する。未知の単価・税・第三者実費は「無料」と表示せず、有料dispatchを保留する。本人が月間上限、job上限、保存期間、未払い時の制限を確認し、契約本文・料金版・表示内容のdigestへ同意する。
+3. 支払い方法の登録はProviderのSetupIntent等で照合し、カード等の生情報をRockに保存しない。登録成功と実引落し・入金は別状態。初回登録時の引落額は0で、契約同意、真正なeSIMサービス利用権、管理Linuxの署名済み準備証拠がそろった`serviceStartAt`から基本料を起算する。準備待ち・失敗中は起算も新規有料実行もしない。
+4. 各実行ではowner／契約／job／実行先／Tool・model版／料金版／入力digestを固定し、含有枠の残量、月間上限、job上限、与信・既存予約を**同じ原子的判定**で確認して最大見積を予約する。承認済み額を超える可能性がある場合は送信前に縮小・再見積・再承認する。端末やAgentからの自己申告額で予約を増やさない。
+
+### 計量から月次Invoiceまで
+
+5. 実行中は、Cloudの入力・出力・cache token、Linuxの実CPU時間と契約に含む他の資源、Tool呼出し件数／外部実費をmeter別に集め、`実測済み`・`概算`・`予約中`・`Provider未照合`を明示してEveへ更新する。Providerが中間usageを返さない場合は保守的な予約額を表示し、確定額と呼ばない。実測または最大見積が上限へ達したら新しい出力・Tool・再試行を止め、すでに送信済みの外部作用は取消結果と最終usageを照合する。
+6. 確定usage receiptには`receiptId`、issuer／署名または信頼済み取得経路、owner、契約、job、実行ID、meter、数量・単位、観測期間、料金版、通貨、元Provider参照、digestを結ぶ。同じissuer＋receiptId＋実行IDは一度だけ記帳し、同一IDの異なるdigestは競合として隔離する。遅延・逆順receipt、取消、結果不明を二重請求や推測確定に変えない。
+7. 契約timezoneの月次締めでは、対象meterごとに確定数量を集約し、その期間に含む枠を**一度だけ**控除する。`課金対象数量 = max(0, 確定数量 − 対象枠)`とし、契約版の単位・丸め規則で超過額を計算する。含有枠外の商品代、通信、外部Tool、税、決済手数料は別行。予約は使用量ではなく、未確定receiptや異議行は照合待ちとする。基本料の起算日、日割り、繰越が未確定ならその期間のInvoiceを自動確定しない。
+8. Invoiceは契約account＋期間で一意にし、各行へ料金版、meter、数量、枠控除、単価、金額、job／receipt参照を保存する。本人に税・地域・通貨・決済費用と問い合わせ先を表示する。Provider側Invoiceへ同じ行を冪等送信し、customer、契約、期間、通貨、税、合計、Provider請求IDを読戻して一致するまで自動収納へ進めない。Provider原価Invoiceは顧客への請求と別に照合し、差額を黙って顧客へ転嫁しない。
+
+### 収納・制限・復帰
+
+9. `draft → open → paid`に加え`past_due`、`void`、`refunded`、`disputed`、`reconciliation_required`を区別する。支払い方法登録、請求書発行、引落し要求、Provider決済成功、実入金は別記録。Webhookは署名とProvider GETで金額・本人・請求ID・modeを再照合し、重複／逆順通知を安全に処理する。返金・取消・異議は元Invoice行と実決済参照へ結び、作者配分や残高を必要に応じ凍結・修正する。
+10. 支払期限・版付き猶予を過ぎた未払いは新規有料実行を制限する。既存の仕事・成果・請求明細・問い合わせ・支払更新・データ持出しは保持し、実入金とeSIM利用権が再確認できたら同じworkspaceへ復帰する。停止済み仕事を無断で再送しない。保存期限と削除／exportは契約版で示し、回線・端末・本人利用権・請求状態を一つのboolへ潰さない。
+
+**責任と実装順。** ROCKは既存`lib/sky-linux-service.ts`・`lib/sky-linux-billing.ts`、Cloud価格／usage、Wallet予約、Eve明細の共通ID・版・原子性・復旧を担当する。EXTERNALはeSIM issuer、Cloud／Linux meter、決済・税／通信Providerの実証拠を提供する。JOINTは同一契約・月境界・同時job・重複receipt・支払失敗／異議／返金・復帰をsandboxで通す。OWNERは枠量・単価・対象地域・税／決済費用の負担・日割り・猶予・契約文言を版として確定する。順序は料金版と同意→原子予約／計量→枠控除／明細→Provider請求・入金→制限／復帰→実環境受入。現在のLinux実装はCPU枠・作者料・月次Invoiceのlocal経路、Cloud tokenは別の閉鎖中経路であり、この共通契約の本番一周は未受入。
+
+<a id="smart-payment-experience"></a>
+### 決済をスマートにする本人体験（2026-10-21追加指示）
+
+「スマート」は、**本人が次の行動と最大負担額をすぐ判断でき、同じ請求を何度も操作せず、失敗しても同じ契約・データへ安全に戻れる**ことと定義する。Sky、Eve、eSIM、Linux、商品購入の本人向け入口は一つの支払い状況へ案内し、各行の販売主体・通貨・料金版・責任は分離する。別SiteのStripe Customerやメール一致を根拠に請求を自動統合しない。既存のSky単独140 USD Sandbox、RockstarOS共通16 USD、買切り商品、通信、外部Tool、旧Walletを一つの汎用残高に混ぜない。
+
+1. **次の一手を一画面にする。** 本人認証後、直近の確定請求、予約中、利用量確認中、支払い待ち、異議、返金、使用可能残枠と月/job上限を出典付きで表示する。要対応を優先順位と期限で一件ずつ示し、`支払い方法を登録`、`同じ請求を照合`、`本人確認を続ける`、`異議を申し立てる`、`データを持ち出す`を状態に応じて出す。未接続の操作を押せるように見せない。現行`/sky/payments`の直近100件だけから全期間の債務なしとは宣言しない。
+2. **実行前に最適化案を出す。** 同じ本人の目的・品質条件・実行先制約の範囲で、含有枠、従量単価、Tool実費、税・通信の既知分を用い、最大見積と上限到達時の停止方法を比較する。安い代替モデル/Toolや実行時刻の提案はできるが、品質・送信先・外部作用・料金版を勝手に変更しない。未知価格を0円扱いせず有料送信を保留する。提案の採否と上限変更には本人の新しい承認を要する。
+3. **登録と引落しを分ける。** 支払い方法の登録は初回0引落しの準備として表示し、環境準備と利用権の確認後にだけ契約の月額を起算する。月次Invoiceを本人に事前提示し、Providerの請求ID・金額・通貨・税・明細を読戻して一致させる。Checkoutの戻り画面やSetupIntent成功だけで`paid`にしない。Stripeの[SetupIntent](https://docs.stripe.com/api/setup_intents)は支払手段の保存、[Checkoutのsetup mode](https://docs.stripe.com/api/checkout/sessions/create)は後日の請求準備に使えるが、採用形態と地域の適合は別受入。
+4. **失敗から一操作で復帰する。** 署名Webhookを永続受付し、重複/逆順/欠落を同一InvoiceのProvider GETで照合する。失敗理由を`認証が必要`、`手段更新が必要`、`処理中/結果不明`、`異議中`へ分け、本人へ必要な操作だけを示す。期限切れの確実な未払いと結果不明を区別し、同じ請求の結果不明中に新attemptや作者送金を作らない。再試行間隔・回数・猶予は契約版とProvider能力に従い、AIの推測やクリック連打で増やさない。Stripeの[Invoiceイベント](https://docs.stripe.com/api/events/types)と[Customer Portal機能](https://docs.stripe.com/api/customer_portal/configurations/create)はadapter候補であり、現時点のRockstar共通請求が導入済みという意味ではない。
+5. **証拠と問い合わせをつなぐ。** 各明細から契約版、job、usage receipt、枠控除、Invoice、Payment/Refund/Disputeの参照と問い合わせIDへ辿れるようにする。本人は明細の訂正要求、支払い方法更新、領収書取得、解約/保存・exportの条件確認ができる。決済失敗で成果閲覧・適切なexport・問い合わせを塞がない。機微な決済情報はProviderに保持し、Sky/Eveへカード番号を保存しない。
+
+**合格指標と順序。** まず既存データだけで読取専用の「次の一手」を表示し、誤った支払済み判定・二重請求・異議中の再試行を0件に保つ。次に合成契約で見積比較→本人承認→原子予約→利用中表示→月次明細→失敗/訂正/復帰を同一IDで試す。最後に実Provider Sandboxで同一Invoiceの月次一周、欠落通知と再起動、本人UI操作を検証する。測定値は申込完了までの操作数/時間、請求前の金額理解率、結果不明の残存時間、本人による復帰成功率、問い合わせ解決時間、重複請求件数。目標値はpilot測定後にOWNERが決め、未実測の改善率を宣言しない。販売地域、税、価格、回収同意が未確定の間は本番請求を閉じる。
+
+## Sky Linux 16の共通実装（2026-10-20）
+
+初期プランは月額16 USDで一定のAI・Linux利用枠を含め、対象枠の超過分だけを事前単価/本人承認上限で課金する。枠の量・対象・超過単価は未確定。既存Package審査・eSIM grant・Zema workflowを専用Linuxの使用量、月次Invoice、入金確認後の作者精算へつなぐ。未払いの新規実行制限とデータ保持/支払復帰、電子契約とsalt付きchain証明を採用。[11項目の正本](sky-tools-complete-design.md#sky-linux-marketplace)。主担当Sky/MCPのROCK、既存SKY14/15/21・SIM01・BIL02。source/local fixtureのみで、Provider sandbox・実Linux/Pixel・本番・chain公開は未受入。新しい従量単価/無料量/上限は未確定。既存の別商品/旧台帳を新プランへ自動変更しない。
+
+## 本人用Linuxと共通料金表示（2026-10-18）
+
+利用者の明示指示により、基本月額＋追加計算資源＋選択商品の代金という表示原則を、実行先の追加/準備/実行/停止にも適用する。既存Sky基本無料、native SI基本月額と標準Cloud枠、Marketplace売上10%を保持し、すべてのusageへ一律手数料を追加しない。本人用Linuxの先行実装は自分のCPUで固定modelを動かすためCloud token使用量/Cloud使用料/自作担当代0。電気代/機器代は未計測、基本月額は未確定と明示し、新契約や後払いを起算しない。Linux VMと保存ファイルは仕事の終了後も残り、VM停止でも成果は残す。商用CloudはGPU稼働/待機/保存/通信の単価、上限、予約、usage照合が揃うまで有料実行を無効のままにする。[実行・停止・回収の契約](sky-tools-complete-design.md#sky-private-linux-deployment)。
+
 # Sky Market決済と旧収益精算
+
+2026-10-18追加方針: [Skyの本人主導・退出可能性](sky-tools-complete-design.md#sky-user-freedom)に従い、契約終了/未払い制限、有料実行権、本人データ回収、削除を別状態にする。保存期限内の本人成果・履歴・請求記録を回収する経路は本人認証で保ち、Agent購入/再契約を強制しない。終了後の新規Cloud/Agent dispatch・Rockstar管理モデル起動の停止、既存月額/手数料、usage精算、第三者実費、作者licenseは維持する。結果不明/未確定usage/予約/最終請求/異議は照合を続け、停止要求を返金や未請求の証拠にしない。終了前に回収期限と保持/削除対象を提示し、電話/緊急連絡/OS基礎機能/本人所有fileを壊さない。BIL02/SKY21でSF06と実契約・Provider応答を別に受け入れ、現時点で終了後回収APIや本番課金の受入済み宣言はしない。
+
+<a id="esim-si-plan"></a>
+## native SI版: eSIM継続条件、月額と選択制の追加AI料金（2026-10-18）
+
+最新の利用者指示ではRockstarOS native SI版をeSIMから導入し、eSIM契約終了時に管理サービスを停止する。既存の「初回有償利用を請求起算」とする下記のManaged Service候補はこのnative SI月額には適用しない。native SI版の**基本月額**は、支払責任者が料金・期間・日割り/解約条件を承諾し、eSIM開通と本人/端末利用権を検証して`service_activated_at`を記録した契約上の時点から発生する。SIM購入、eSIM profile追加、アプリ導入、無料閲覧だけでは月額を起算しない。金額・初月日割り・支払期日・税は未決定で、従来の既存OS月額契約を無断で改定しない。
+
+基本月額には版付き料金表で指定した標準Cloud LLMの**月間N token相当枠**を含める。対象model、入力/出力tokenの換算、time zone、月境界、未使用枠の繰越有無、枠超過時の動作を契約へ固定する。使用量は検証済みprovider usageを既存usage ID/job IDで一度だけ計上し、予約中と確定済みを別表示する。標準枠を使い切ったら追加課金への自動移行をせず、新しい見積と本人承認を要求する。ローカルLinux VM内のモデル推論はCloud token枠の消費やtoken課金対象にせず、端末計算資源・model licenseと管理サービス利用権の制限だけを扱う。
+
+有料Cloud LLM、Sky Agent、外部Toolは本人が選んだ場合だけ、版付き単価/単位、概算、最大上限、送信内容、実行先をjobごとに提示する。契約accountの月間cap・与信枠と既存Wallet/親job予約を原子的に照合してからdispatchし、承認上限を超える出力/再試行を許さない。月末は「基本サービス月額」「対象枠内使用量 0円」「追加Cloud LLM」「追加Agent/Tool」「Marketplace買い切り」「通信」「外部実費」「税」を別明細で示す。同じjobの実usageと請求/返金を照合する。キャリア代金との請求合算は提携契約ができるまで別請求とする。
+
+eSIM終了は認証済みcarrier/issuer eventと契約時刻で判定し、Rockstar利用権を失効させて新規管理実行を止める。支払失敗は猶予/異議を経て制限し、既存成果・invoice・支払/再開/解約の経路を残す。圏外即時停止は保証しない。責任とstate/recoveryは[導入設計](sim-led-product-architecture.md#esim-si-subscription)に従う。ROCK/BIL02、EXTERNAL issuer・決済/LLM provider、JOINT provider sandbox/Pixel、OWNER料金/地域/契約条件。受入は契約activation、月境界と枠リセット、同時job上限、eSIM終了/復活、支払失敗/返金/逆順webhook、明細と実usage照合まで同一契約で完走すること。現状は料金とruntimeの設計であり、実請求・eSIM契約連携は未受入。
+
+## RockstarOS SIサービス契約と月末請求の商材案（2026-10-18）
+
+利用者の追加方針は、RockstarOS（Sky）を使い始めた人へ携帯料金のように月末でまとめて請求し、eSIMやアプリ内の都度決済より明確な継続契約を商材の中心に置くこと。**RockstarOS SI Managed Service**を契約account単位の商材候補とし、OS/Sky/Zema利用権、Cloud LLM/Agent利用、本人別の仕事・成果・使用額管理、サポートを一つの注文書・サービス契約へ束ねる。既存SIM/eSIM offerは購入・本人への利用権付与の経路として残し、SIM取得やアプリ起動だけで後払い債務を発生させない。契約内容・料金・期間・顧客層は候補であり、販売決定ではない。
+
+### 何を「使い始めた」とするか
+
+支払責任者が契約版、料金表、月末締め・支払日、解約、月間上限、支払方法に明示同意し、本人accountと支払手段の設定を確認した後の**初回の有償SIサービス利用**を `billable_started_at` とする。Sky Marketplaceの閲覧、無料機能、SIM/eSIM claim、アプリ導入は請求開始イベントにしない。既存OS月額の起算と日割りの有無は契約で明示し、未決定の新料金を作らない。Cloud LLM/Agentは実際の検証済みusageだけを同じ契約accountへ計上し、注文書に含む無料枠、月額、Tool商品代、端末代/貸与料、通信料、AI使用料、第三者実費、税を別lineで扱う。
+
+```text
+契約提示 → 支払責任者の明示同意・支払手段設定 → 利用権active
+  → 初回有償利用で請求起算 → jobごとの見積・上限承認
+  → 検証済みusageを一度だけ集計 → 契約timezoneの月末で締め
+  → 明細・請求書確定 → 契約済み支払方法で収納 → 入金照合
+```
+
+後払いの支払可能性は端末やSIMの所有だけでは保証されない。契約accountに請求先法人/個人、管理者と支払責任者、契約版、決済同意reference、支払期限、与信枠、月間capを結び付ける。初回は小さな与信枠と短い督促・利用制限で損失を限定し、無制限のCloud dispatchを許可しない。既存Walletの資金holdと後払い与信枠を同じ残高と見せず、Brokerは利用済み＋未確定予約＋今回最大見積が契約cap/与信枠の両方に収まる場合だけ送信する。二重usage、結果不明、異議のある明細は確定請求から分ける。未払い時は新規の有料実行を制限し、成果閲覧・請求確認・支払・異議・解約の経路を残す。
+
+### 商材と地域の段階案
+
+最初の検証候補は、米国法人 `avokado llc` を契約/請求主体とする**米国内の法人向けManaged Service契約**。注文書＋サービス条件＋料金表＋支払同意により、名義人、管理者、請求先、上限、解約・紛争を固定する。法人向け先行は回収保証ではなく、契約担当者と月次請求を特定しやすいという実証仮説。個人向け米国、日本、EU/英国は別の市場候補で、現地の定期契約表示・税・支払手段・消費者対応を受け入れるまで同じ条件を自動展開しない。日本向けは価格、支払時期・方法、提供時期、解約条件等を申込直前に明確に表示する必要がある。[消費者庁の最終確認画面案内](https://www.caa.go.jp/notice/assets/consumer_transaction_cms203_240315_02.pdf)。Stripeは米国・日本などで事業者が利用でき、米国の事業者が国外の顧客に請求する決済経路を提供するが、対象国の税・契約条件や選んだ支払手段の利用可否を自動で満たす意味ではない。[Stripeの国別提供](https://stripe.com/global)、[通貨と支払手段](https://docs.stripe.com/currencies)。
+
+専用Pixel版などの管理端末を貸与・販売し、SIサービス契約に紐づける**端末付きプラン**は、同一機種の署名OS・boot・更新・data/Keystore復旧・サポート・返却条件が受入済みになった後の追加商材候補。端末の所有/貸与とCloud請求債務は別明細で、ハードウェアの存在を無断引落しや回線停止の権限に変えない。携帯キャリア請求書への実合算はキャリア契約と技術接続の別gate。
+
+ROCKは既存Sky/Zema/Walletのaccount、job、usage、receipt、契約・請求状態を接続する。決済Providerは月次invoiceと支払手段を扱い、顧客のカード/銀行情報はProviderが保持する。[Stripeの従量制・後払い料金モデル](https://docs.stripe.com/billing/subscriptions/metered-billing/thresholds)、[請求と自動回収](https://docs.stripe.com/api/subscriptions/object)。OWNERは最初の国/顧客層、商品名、月額/単価、締日/支払日、与信枠、契約主体を決める。JOINTは契約同意→初回有償利用→月末集計→invoice→決済失敗/異議→復旧をProvider sandboxで受け入れる。現状は設計のみで、実契約、実Provider請求、端末付きプランの販売は未受入。
+
+Stripeを収納Providerに選ぶ場合は、月額と従量の請求が契約上の一つの月末明細へ照合できる構成をsandboxで確かめる。usageの計量正本を二つ作らず、Providerへ送るイベントは既存usage IDで冪等化する。契約/請求の非同期変化には署名検証付きWebhookで `customer.subscription.*`、`invoice.paid`、`invoice.payment_failed` 等を処理し、Checkout完了画面だけで有効化・入金済みとしない。[Stripeのsubscription Webhook](https://docs.stripe.com/billing/subscriptions/webhooks)。税は対象地域の登録・商品分類を確認してから設定し、`automatic_tax` の指定だけで徴収済みと見なさない。[Stripe Taxの定期請求](https://docs.stripe.com/billing/taxes/collect-taxes)。
 
 ## Agent利用料の月次後払いと未払い対応（2026-10-15）
 
@@ -475,3 +564,146 @@ G6以降はCLIによる合成通知だけでは不足し、外部sandboxの実te
 ### 未確定・今回の作業範囲
 
 契約アカウント・販売地域・実単価・予算は未確定。この調査では問い合わせ送信、契約、実注文、実課金、配備、main統合を行わない。前ターンの試験証拠を再掲し、今回新たなruntime合格とはしない。今後の実装許可と本番実取引の条件を混同しない。
+
+<a id="cross-provider-usage-observation"></a>
+## 業者共通LLM/Agent計量と作者還元（2026-10-22）
+
+1. **目的/体験**: Eveの仕事ごとにProvider・model/Agent・入力/出力/cache/thinking/Provider meter単位・価格版・金額とその確定度を同じ明細で見る。利用者の許可候補・外部送信・上限を既存selector/Brokerで先に絞り、異なるtokenizerのtoken数だけで品質や割安を決めない。
+2. **責任**: BIL02/AI02/AI05/SKY14/SKY21、主担当Billing/ROCKはadapter、明細/契約版、本人別保存と照合。EXTERNALはAPI計量/価格/Invoice/作者身元と受取条件、JOINTは同一job/Provider応答/Invoice/入金/返金の受入、OWNERは候補/送信/上限と作者契約を決める。
+3. **入出力**: `sky-usage-observation/1`はsource(llm/agent)、providerId、resourceId/報告名、basis、status、meter/unit/quantity/包含関係、通貨/amountMinor/価格版/reference、invoiceVerified=false、developerPayment契約未結合を持つ。LLMはAPI応答の固定fieldだけ抽出し本文/credentialは保存しない。Agentは既存owner-scoped署名検証済みreceipt DB行を投影し、rowとowner/親job/delegation/provider/reference/currency/合計の一致を確認。
+4. **モデル別の意味**: OpenAI/compatibleは入力にcacheが含まれ、reasoningは出力の内訳。Anthropic通常入力/cache読取/cache作成は独立。Gemini candidates/thoughts/cache/tool入力を別項目にし、知らない内訳を再加算しない。Ollamaはprompt/eval/cacheカウンタで、local/remote実行場所は別契約。wall timeをGPU請求秒へ換算しない。Pollinations/将来業者は未報告から開始し、adapter受入前に全社対応を宣言しない。
+5. **状態**: reported/partial/not_reported/invalid、価格計算済み、invoice照合、入金済み、報酬計算/送金を別管理。生のProvider応答counterは請求の権限ではない。既存OpenAI final usage＋trusted rate＋承認上限の再計算と、A2A署名/予約/最終receiptのgateを維持。
+6. **保存**: paid OpenAIは既存暗号化request/usage/price行、Agentは既存receipt/署名/累積snapshotを使用。新観測は表示投影で、他社の永続/単価/請求adapterや作者配賦台帳は未統合。direct会話の直近meterは同じthreadにのみ表示し、台帳に昇格しない。
+7. **失敗/復旧**: 欠損はnull、負数/小数/overflow/既知total不一致はinvalid。価格不明は未確定、0円と表示しない。署名/owner/row不一致のAgent投影はnull。既存同一ID再読/照合を使い、meterの欠落で再実行しない。
+8. **承認/報酬**: model供給者、GPU運営者、model著作者、Agent作者を区別し、権利と契約の受取先/価格版/計算基準をserverで結合する。既存Sky販売の作者料率だけをその販売契約へ適用し、LLM原価に一律10%を上乗せしない。受取契約未結合はdeveloperPayment.amountMinor=null。使用量だけから既存EarningReceipt/Walletへ入金や作者報酬を捏造しない。
+9. **合格条件**: 全現行adapterのfixture応答から計量が返る、cache/total/thinkingの二重加算なし、欠落/0/異常値の区別、owner/receipt不一致拒否、型/lint/既存Provider・署名/HTTP検証、一般UIの読み取り表示。host fixture、実Provider、公開Site、本番入出金は別受入。
+10. **次の未完了**: 各Providerの版付き料金・最大額予約・永続idempotency・最終応答/Invoice照合、作者権利/受取契約・入金済み元明細の一度限り配賦・返金/争議・既存settlementへの接続を順に実装。接続条件未定の業者を有料実行しない。
+
+一次資料: [Gemini usage](https://ai.google.dev/gemini-api/docs/tokens)、[Ollama chat](https://docs.ollama.com/api/chat)、[Anthropic cache inputの区分](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)。OpenAIの現在の価格検証は既存remote-ai-text設計を正本とする。
+
+### 保存した共通使用量の表示（U01）
+
+検証DBは本番の復元前提と区別する。配信用drizzle-mainは既存/backup復元済みDB用で、0020のALTERを空DBへ直接適用しない。検証用は同一系列のSQLと、元Source1b65413の0016〜0019から固定した10表/11triggerを使う。generic store試験はTEMPの移行記録で業務データを汚さず、ファイル型monthly sandboxのみ移行記録を保存する。元のinvoice合計・改変拒否・共有quota、再読時の一回計上、二owner/再送の期待値を保持する。旧$140/$100 sandboxは$16の料金決定へ転用しない。修正はSource-only patchと[現在の受入証拠](evidence/sky-source-regression-repair.json)に保存し、本番DBや請求の修正済み宣言にはしない。
+
+
+公開v111/source6f32e4d55fc1eecb156bffba8f8e8fdaba1a1cafを本人の明示承認で配備。正式ドメイン/匿名拒否を確認、本人UIとU02/U03は未完了。Source全体verifyの古い参照欠落、原版でも再現する金融9失敗を、Rootの全体成功と区別する。
+
+目的は、Eve/仕事/無料Cloudの結果で提供元・指定モデル/Agent・応答モデル・計量内訳・未確定額を同じ意味で読むこと。ROCK/O5（SKY21/BIL02）は既存owner/job/receiptへ投影し、Providerは原始応答、作者契約/入金/送金は別gateを担う。
+
+入力はLLM応答counter、owner-scopedの保存済みremote AI、既存署名検証済みA2A receipt、free Cloud WorkJob。出力sky-usage-observation/1はinput/output/cache/reasoning/totalの包含関係、requested/reported model、出典reference、reported/partial/not_reported/invalidを持つ。未報告はnull、amount未確定は0円にしない。観測表示は実行権限・請求・入金・作者支払いの証明ではない。
+
+free Cloudは既存work_jobs JSONへ保存し、同一ownerの再訪/同一ID再送で同じ観測を読む。応答後に完了検査が失敗したunconfirmedも観測だけを保持し、新規送信・成功・金額確定へ昇格させない。古い仕事にないtotal/cache/reasoningを推測しない。直接chatの表示は会話を切り替えるとclearし、多Providerの全attempt永続台帳はU02で接続する。
+
+障害時は同じjob/receiptを再取得し、結果不明を再送で解消しない。owner/revision/外部送信同意、既存budget・Spider Guard・停止を保持する。原稿/API keyを計量へ入れない。表示追加だけで課金・権限・作者債務を作らない。
+
+合格は既存adapterの合成応答、欠落/0/不整合、cache/thinking二重加算拒否、owner/receipt不一致、queue再開・応答不明・再送なし、同じsource build/公開/本人UIを別々に記録すること。検証はtests/sky-usage-observation.test.mjs等。Provider料金/Invoice/作者契約は未決を保持し、現段階は独自料金や入金/送金を追加しない。証拠docs/evidence/sky-usage-public-integration.json。
+
+Eve計画用の端末内Ollama推論は、既存WorkJobのattemptへserver受領usageを保存する。送信marker/期限/同じownerをCASで検査し、browser応答喪失後もcounterと候補を再読取りできる。local tokenを有料Cloud枠へ課金せず、null/invalidを0や支払済みにしない。署名Agent receipt・課金済みProvider請求とは異なる観測であり、作者契約/入金/配分の確定には使用しない。全Providerの原価/顧客請求/作者報酬の接続は既存の別gateに保持する。
+
+
+### Eve実行SI・SI06への接続箇所（2026-10-22、実コード照合）
+
+### 隔離Sourceの月次観測保存と反転保留
+
+BIL02/SKY21/OS10/WEB04・ROCKのSource候補19fe452に、本人の既存Invoice/Provider参照・通貨/額を入力とする観測保存を追加。目的はunknownや逆順応答で保留を失わないこと。既存Invoiceの2 nullable JSON列へpending/request/revisionと検証済み反転証拠を保存し、最新slotだけ結果を書けるCASと、遅延した負の証拠も残す独立保留を使う。読取りは同じowner/accountから復旧し、旧schema/clientと元行を保持する移行を用意。型/形式/本人/保存失敗では保留し、通常再照会を解除承認にしない。EXTERNAL/JOINTの実Provider・受取先・返金/送金、OWNERの権利/費用/解除条件は別gateで、全状態で送金許可は出さない。合格はhostの競合/移行と同一Worker/D1再起動の範囲に限定し、実UI/本番/Root runtimeへの統合とは区別する。[実装・復旧コマンド・証拠](evidence/eve-monthly-payment-observation.json)。
+
+
+Sourceの既存月次adapterへ、明示的なPOST `inspect-payment`による現在のInvoice/PaymentIntent/Charge/Refund GET照合を追加。pending返金はamount_refunded0でも保留、現在の返金/異議と未知/分割/残ページを区別する。これはreadbackでありInvoice/作者精算の状態は書き換えず、送金許可を発行しない。実Provider受入・永続返金/送金/回収処理は未完。[同一候補の検証](evidence/eve-monthly-payment-evidence.json)。
+
+
+**現行Sourceとの統合差分（2026-10-23）。** `work/eve-v115-agent-integration` の固定候補では、署名作者契約→配分候補→同意→月次明細取込までがあり、作者へのtransfer/refundの永続処理は未結合。RootのLinux/commerce決済をこのSourceの受入へ転用しない。集中43件成功は合成Providerを含む境界の証拠で、実請求/入金/作者払出しではない。[差分と合格条件](evidence/eve-author-settlement-gap.json)。次は既存Invoice配分・返金・transfer契約とschemaを照合し、同じ原始source/作者契約/Invoice行へ接続する。未入金/返金/異議の凍結、重複/逆順通知、既送金後の要回収、端数負担を検証し、未確定の契約条件を勝手に補わない。
+
+
+- Agent原始明細は`a2a_delegation_store`の同一owner/parent/delegation署名検証済みreceipt、表示は`observeStoredAgentUsage`。`developerPayment=contract_not_bound`を維持する。修正前後は別delegation/receiptで、元成果の置換は元費用の取消ではない。
+- Cloudの既存回収入口は`lib/sky-usage-payment.ts:cloudUsageStatement`。現在は`source=cloud_llm`、既存RemoteAiTextStoreとOpenAIの確定usage/verified rate/cap再計算だけを使う。Agentや別Providerをこの入口で回収済みとしない。
+- Linuxの既存作者配分は`lib/sky-linux-service.ts`の`close-month`で、保存済みlisting.creatorId/authorMinorを集計して既存Invoice.allocationsへ保存する。`lib/sky-linux-billing.ts`がそのInvoiceの入金/配分/返金側のadapter。Agentの提供原価をauthorMinorへ直接コピーしない。
+- `lib/settlement.ts`は旧収益/原価の純粋計算器であり、A2A原始usageの永続精算台帳ではない。全体promptの「既存settlementを再利用」はこのファイルへ新しい並列台帳を作る意味ではない。
+
+次の実装は既存商品/作者契約と版付きのsource receipt結合から着手する。owner・parent・delegation・provider/receipt reference・currency・価格版・契約版・受取作者をserverで照合し、同一sourceの重複結合/owner越境/返金後の再配分を拒否する。金額不明・契約未登録・未入金は保留し、請求/送金を起動しない。ROCKはこの結合とfixture、JOINTは後続の同一Provider/Invoice照合、OWNERは作者契約/価格/受取条件を担当。これは接続設計の明確化であり、U02/U03 runtime完成や実決済の受入ではない。
+
+
+### Eve SI06：Agent原始利用元の追跡
+
+目的は本人がEveの同じ仕事から署名済み利用receiptとPackage登録作者へ辿ること。入力はserver固定owner/parentJob/delegationのみ。既存A2A receipt storeの行/owner/provider/reference/通貨/合計を共通観測で検査し、receiptのSHA256を返す。binding参照がなければagent_only、参照/digest/Agent版/Provider/価格版/manifest不一致はpackage_unavailable、一致時だけpackage_attributedとexact Package/現在registry登録作者を返す。登録作者は報酬契約の受取人とは別で、developerPaymentはcontract_not_bound/amountMinor=nullを維持する。
+
+ROCKはread-only投影と暗号化Eve会話への参照保存、EXTERNALは元Provider明細、JOINTは同一receipt/Package実接続、OWNERは後続の報酬契約を担う。新しい台帳/料金/配賦/請求/送金/権限は作らない。元receiptを変更せず再読込は同じ保存行を読む。現在registryが対象manifestを持たなければ作者を推測せず保留。失効したbindingも過去の出典として失効状態付きで表示し、実行資格へ昇格しない。原稿/鍵/生の署名原本を表示しない。
+
+合格条件は別owner/親job拒否、receiptの照合失敗は投影なし、Agent/価格版/digest/manifestの改変で誤帰属なし、同一source反復で料金/DB変更なし、Eve会話にreceipt参照/hashと帰属の確定度が保存されること。障害時は既存receipt/仕事を保持して再読し、再実行しない。集中試験と実UIを分ける。永続作者契約版/入金/配賦は未実装で次のgate。
+
+### Eve SI06：利用元の初回固定と競合検知
+
+本人の「進捗を会話へ反映」で、既存WorkJob.eveAgent.usageSourcesへserver照合したreceipt/Provider/価格版/Package/現在の登録作者とcapturedAtを追記する。receipt本文や鍵、新しい金銭台帳は追加しない。同一delegationは初回だけ保存し、再反映ではrevisionを増やさない。並行保存は既存親revision CASで一つだけ受け付け、停止が先に確定した場合は再読込を要求する。停止回収では帰属保存を行わず、停止を優先する。
+
+固定後にreceipt参照/hash/Provider/価格版/Package/作者の観測が変わった場合は保存時の利用元を保持し、現在情報との照合待ちを表示する。binding失効は現在状態として別表示し、保存済み出典は変更しない。復旧は同じjobを再読する。登録作者の確定や報酬契約の同意はこの保存から推定せず、developerPayment契約未結合/amount nullを維持。全owner/子件数/既存暗号化会話の境界を保持する。ROCKは保存と競合、OWNERは後続報酬条件の承認、JOINTは実Provider/請求一周を担当。集中試験で一回保存/並行競合/作者変更/失効を検証し、実UIの反映/再読を別に受け入れる。
+
+### Eve SI06：二者署名の作者利用契約と固定source結合
+
+目的は、保存済みAgent利用元を特定の作者・運営の合意した契約版へ一度だけ結ぶこと。独自内部schema `sky.author-usage-agreement/1` はid/version、publisher/platform/provider、exact Package/manifest、価格版、通貨、terms SHA256、発行/期限、双方key ID/Ed25519署名を持つ。独立の署名domainを使用し、全署名対象fieldを固定。server環境 `SKY_AUTHOR_AGREEMENT_TRUSTED_KEYS` のrole/principal/key/package pin/statusに一致する異なる二つの公開鍵のみ信用する。設定なしは拒否する。
+
+既存認証/Origin/body12KB保護のEve Agent PATCH action `bind-author-agreement` はowner/parent/sourceを照合し、固定済みusageSourcesと現在のreceipt/Package/登録作者が一致・bindingがactiveである場合だけ検証する。契約の発行より前のreceiptや通貨/価格版違いは拒否。既存WorkJobのsourceへ契約原本/hash・receipt hash・boundAtを保存し、親revision CASで一度だけ確定。同一契約再通知は保存revision不変、別契約への上書きは拒否。停止済み仕事/履歴鍵利用不可は新規結合を拒否。
+
+状態はcontract_not_bound、agreement_bound_pending_collection、agreement_unavailable。毎回のsnapshotで現鍵の失効/期限/出典競合を再検査し、保存済み契約は保持したまま有効性確認待ちを示す。結合は金銭台帳・追加請求・作者配賦・送金を作らず、amountMinorはnull。ROCKは署名/照合/原子保存、OWNERと作者は実際の条件本文確認と署名、JOINTは実Provider/Invoice照合を担う。今回の合成署名は法的契約成立・本人の署名操作を実証しない。terms本文の登録/表示/明示同意UI、契約単位失効、旧sourceに通貨/receipt時刻がない場合の確認移行、既存請求/配分連携は後続gate。任意JSON/自己申告の同意を契約として扱わない。集中試験は二者署名/改変/通貨/owner/期限/失効/上書き/並行を含み、UI・実契約・本番は別に受け入れる。
+
+### Eve SI06：契約本文の不変版registryと本人確認表示
+
+内部資料registry `sky_author_agreement_documents`（0080 migration、db/schema対応）はplatform/publisher/agreement ID/versionを主キーとし、二者署名原本/digest、terms本文/hashと作成/失効を保存する。金融台帳は追加しない。`register-author-agreement` は既存owner/WorkJob/captured sourceと二者署名を検証後、正確なUTF-8本文8KB/hash一致時のみ登録。同じ版の再登録は同じrowを返し、別本文/digestは拒否。DB triggerも本文/署名/版の更新・削除・失効取消を拒否する。失効はserver内部の当事者actor付き操作のみ、未認証公開endpointなし。
+
+利用元への結合は登録本文の存在/hash/非失効を必須とし、WorkStore更新の同一SQL条件で非失効/契約digestを再検査する。preflight後の失効競合でも新結合を拒否。読取は署名有効性と独立に保存済み失効本文を保持し、現在の資格は別表示。既存auth/Origin/12KB request境界を保持。契約本文は通常snapshotへ含めず、本人のGET `id=...&terms=1` で対象sourceの同一Package/publisher/provider/価格版/通貨に一致する最大10版/childを取得。scriptを実行せずReactのplain textで表示し、親仕事が変われば旧要求をabortして表示を破棄する。
+
+Eve「作者利用契約を確認」から登録済み/利用元結合待ち/照合済み/失効の本文を読める。これは同意・請求操作ではない。ROCKは不変版/署名hash/原子結合/本人表示、作者/OWNERは内容と実署名、JOINTは後続の実作者/Provider/Invoice一周。合格は本文改変/版競合/失効取消/owner越境拒否、preflight失効CAS競合、HTTP登録/結合/本文読取、実UIのplain text/再読込/空状態。本人署名ceremony・法的有効性・料金計算/入金/返金/作者配賦/本番は別gate。資料hashは内容の合法性・合意の法的成立を保証しない。
+
+
+### Agent作者料から既存回収へ接続する前の制約
+
+`drizzle/0060_sky_usage_payments.sql`はsource_idにremote_ai_text_executionsへのFKを持ち、INSERT triggerも完了済みLLM/owner/確定額/上限を検査する。`lib/sky-usage-payment.ts`もcloudUsageStatementを再計算し、test modeと明示enableだけを許可する。AgentをLLMの架空executionへ写してこの制約を通すことは禁止。`lib/sky-linux-service.ts`のInvoiceも別のLinux契約/period/jobへ束縛するため、Agent sourceを黙って混在させない。
+
+ROCKの次の実装は、既存回収recordのversioned source種別を拡張する移行とserver source resolverを設計し、LLM旧record/FK同等検査/immutable/重複防止/返金単調性を維持すること。Agent側は同じowner/job/receiptSHA/quoteDigest/二者契約/料金版/候補IDから再計算し、Invoiceと入金の照合前は保留。請求主体・Providerへの既払/BYOK・作者料のみか合計か・返金時の項目配分は未確定なので実課金へ昇格させない。OWNERは実契約と料金/請求条件、JOINTはProvider/決済sandbox照合を担当する。既存残高を複写せず、返金と支払候補の元sourceを保持する。移行・旧データ再開・同source二重請求拒否・別owner拒否・未入金/返金/紛争で作者払出し不可が合格条件。これは未実装の接続順で、今回の候補保存/UI受入を回収/精算完了にしない。
+
+
+### Agent契約明細を既存支払い画面から照合（SI06）
+
+既存`POST /api/sky/payments/statement`へ`source:sky_agent`と元delegationのsourceIdを渡す読取経路を追加。ROCKはowner-scoped WorkJobの固定source/現在binding/二者署名/非失効本文/元quote/receipt/承認上限/保存済み配分候補を再照合し、`sky.agent-usage-statement/1`を返す。入力金額は受け付けず、観測総額、作者料、既存10%手数料、作者受取候補、他利用額、通貨、原始参照hashと同じEve job/threadへの参照を示す。collectionはnot_configured、providerInvoiceはunreconciled、customerPaymentはunconfirmed。型既定のcloud_llm経路は維持し、不明sourceを拒否する。
+
+既存支払い画面のAgent行で「契約と配分候補を照合」を選び、結果と同じEveへの導線を読む。読取は仕事/支払/金融台帳を変更せず外部APIも呼ばない。失効・鍵不足・source変化・候補改変は理由を示し、履歴の元利用額を0へ置換しない。詳細読取の遅着応答は画面更新/unmountで破棄する。Agent checkoutは未対応のまま、LLM専用FK/trigger/二重請求防止を維持する。Invoice/顧客回収への接続には前節のsource移行と実請求条件が必要で、この明細を請求可能/入金済みとしない。EXTERNALは実Provider請求/決済、OWNERは請求主体/BYOK既払/課金範囲/返金配分、JOINTは将来の実sandbox照合。合格はserver再計算、owner/未登録/失効/候補改変拒否、同じ明細の再読取不変、金融row0、実UIの読取/戻り先/失敗。公開は別gate。
+
+
+### 署名済みAgent請求経路の準備（SI06、未回収）
+
+`sky.author-remuneration-terms/2`は既存作者料条件にcollectionを追加する。modeはplatform_invoice/external_provider、chargeScopeはauthor_fee/receipt_total/none、usageFundingはplatform/byok、refundPolicyはitemized_source/1。組合せを厳密検証し、external_providerはnoneのみ、platform_invoiceのBYOKはauthor_feeのみ。旧v1/plain textは保持し、請求経路を推測しない。既存不変本文/hash・作者/platform二者署名へcollectionも束縛する。本文変更は新しい契約版・署名が必要。
+
+既存Agent statementは、照合済み本文と再計算済み候補からsky.agent-collection-plan/1を返す。platform_invoice候補は指定作者料または総額の原始minor額、BYOK作者料限定ではその他利用額を除外する。external_providerのRockstar請求候補はnullで、支払済みや無料とは扱わない。planは同じallocationCandidateId/receiptSHA/agreementSHA/通貨を持ち、customerConsent=missing、providerInvoice=unreconciled、invoice=not_created。既存collection=not_configured/入金未確認を維持する。
+
+本人はEveの契約詳細と既存支払い明細で請求経路/対象/保留条件を読む。開閉/読取は同意・Invoice作成・引落ではない。ROCKは厳密parse/原始額再計算/版束縛/表示、OWNERは実契約と請求同意、EXTERNALはProvider請求/既払の証拠、JOINTは将来の回収照合。返金はsource lineへ紐付ける方針だけを固定し、部分返金/税/紛争の配分と既払検証が実装されるまでは回収/作者送金を無効にする。新台帳や架空LLM/Linux記録を作らない。失効/不正条件は拒否し、旧記録を保持して新契約で復旧する。合格は署名改変拒否、BYOK総額再請求拒否、direct providerのnull保持、旧契約未設定、同明細再読取不変、金融record0、実UIと回帰。既存月次Invoice/回収source移行と利用者同意束縛は未実装の次工程。
+
+
+### Agent請求準備の本人アカウント確認（SI06）
+
+既存Eve commandにrecord-agent-collection-consentを追加。本人認証/Origin/同じjob/source/暗号化会話/現binding/二者契約/非失効本文/元quote/receipt/保存候補を照合し、利用者が表示したstatementDigest、正確なminor額、通貨、confirmed=true、親revisionを検査する。platform_invoice候補だけが対象で、Provider直接払い・旧未設定・BYOK総額への変更は不可。確認記録sky.agent-collection-consent/1は同じWorkJob.usageSourcesへ保存し、新金融台帳を作らない。記録はowner/source/digest/候補ID/契約SHA/receiptSHA/額/通貨/時刻/保留status。IDはこれらの確定参照から決定的に生成。同条件の再送は同じ記録/版、異条件は409。同時更新は既存CASと原子的な契約非失効fenceを通す。
+
+支払い面の「この金額・条件の確認を記録」は請求準備用の確認であり、自動引落/送金の許可や法的契約成立の実証ではない。既存会話へ短い確認記録を投影し、再読込では同じ条件の確認済みを表示。確認前/記録後ともProvider請求未照合・Invoice未作成・入金未確認・collection無効を保持する。失効/金額/版違いでは理由を表示し、保存済み確認記録を改変せず、新しい有効条件で復旧する。停止済みjobの保存済み利用明細確認は可能だが、job status/stop intentを保持し新しい委任・権限・予約を作らない。ROCKは照合/保存/UI、OWNERは内容を読んだ操作、EXTERNALは実Provider/決済、JOINTは将来の実Invoice/同意/回収一周。
+
+合格はowner/改変/未確認/古い版/失効拒否、CAS競合/失効競合、同一確認再送、停止job非復活、元usageと金融record不変、会話/実UI/reload。本人署名ceremony、実請求契約、Invoice source移行、Provider請求/既払/部分返金/税/異議、実収納/送金は未完了で、確認記録を実回収へ昇格しない。
+
+
+### 完了Agentの請求準備を既存支払いstoreへ保存（SI06 / migration 0081）
+
+既存sky_usage_paymentsをsource_kindでcloud_llm/sky_agentへ分ける。既存source_id→remote_ai_text_executions FKを残し、Agent用agent_source_id→agent_delegations FKとconfirmation_idを追加する。旧LLM全列/入金参照/返金/時刻をそのままcopyし、cloud_llm既定・Agent列nullで移行する。sourceごとの一意制約、session/intent一意、額/通貨/参照不変、返金単調、削除禁止を保持。新台帳や架空LLM/Linux jobは作らない。
+
+Agent行はtest/prepared専用、source_id=null、元Agent/確認参照必須、session/intent=null・返金0。CHECKでpaid等への昇格を拒否する。準備額は原始JPY/USD整数（1〜99,999,999minor）をそのまま保存し、checkout最低額へ切り上げない。既存LLMの50minor最低額とstate集合は保持。SQL insert guardはowner/job/完了Agent/receipt/承認上限/現在binding/固定source/確認digest/額通貨/候補/非失効の署名本文を照合し、BYOK作者料のみ・platform管理の明示総額だけを受ける。暗号署名とquote hashの再計算は既存server resolverが先行し、保存時の契約失効競合はDB guardで拒否。
+
+既存POST /api/sky/payments/prepare-agent-invoiceはSKY_PAYMENTS_MODE=testかつSKY_USAGE_AGENT_INVOICE_PREPARATION_ENABLED=trueの検証環境だけで、同じstatement digest/金額/通貨と本人確認済みを再照合して保存する。入力owner/支払済み情報は受けない。同じsource/mode再送は同じrecord、異条件/不明/失効は409。Provider/Stripe APIは呼ばず、既存confirm/webhook同期はAgent preparedを拒否する。支払い面では確認済み候補から明示保存し、保存済み・Provider未照合を読む。旧LLMの照合ボタンをAgentへ表示しない。読み直しで復旧し、履歴参照を置換しない。
+
+ROCKは移行/原子照合/保存/UI、OWNERは候補条件の確認、EXTERNALは実Provider請求と入金、JOINTは将来の実Invoice・回収一周。移行はmigration managerのtransaction/D1 batchで適用し、途中失敗をrollbackする。検証は旧LLM全項目/FK/guard保持、SQLiteと実D1 batch rollback、既存6移行系列、Agent一回保存/別owner・額・失効拒否、JPY端数非切上げ、paid昇格不可、実UI。初回の新D1試験はMiniflare旧形式起動設定で失敗し、既存convertV4MiniflareOptionsへ合わせて再検証する。
+
+このrecordは請求準備で、正式Invoice/Provider請求照合/顧客収納/作者送金ではない。liveはschema/APIとも無効。失敗・取消Agentの費用、月次集約、実契約/本人の収納委任、既払/BYOK照合、税/部分返金/異議/送金、一般公開のgateを残す。実データへの移行/公開は未実行。
+
+### Agent月次準備明細の保存（SI06 / migration 0082）
+
+既存sky_usage_paymentsのsky_agent/test/prepared行を原本とし、共有sky_linux_service_documentsへkind=agent_monthly_statementを追加する。これは参照文書であり、Linux workspace/契約/基本料/利用権や別の金融台帳を作らない。ROCKは集約・本人分離・CAS・原本照合、EXTERNALは将来のProvider invoice、JOINTは将来の入金照合、OWNERは既存の各明細確認と将来の実請求/送金承認を担当する。
+
+- 入力/状態: 本人がUTC利用月と元通貨USD/JPYを選び、検証flag下で月次下書きを保存。schema sky.agent-monthly-statement/1、mode=test/state=draft_unreconciled/baseMinor=0、invoice=not_created/collection=disabled/customerPayment=unconfirmedを固定。実請求書ではない。
+- 原本: receipt.issued_atのUTC月（準備保存月/ローカル時刻ではない）と元通貨でprepared行を取得。各sourceの現在の署名済み契約・元usage・本人確認・digest/金額を再検査し、一件でも失効/不一致なら文書全体を保留。未報告/未準備を0円の行へ変えない。1〜200件、201件目は省かず409。未来月/不正月/通貨/他ownerは拒否または非開示。
+- 合計/作者: 請求準備額と観測額を別集計。作者料/commission/payable/その他は原本ごとの整数をBigIntで合算、月額から10%を再計算しない。BYOK実費を準備額へ足さず、為替/料金改定/税務確定を行わない。
+- 保存/復旧: owner+月+通貨+modeから決定ID、owner/kind/period/currencyの一意index、member payment ID重複拒否、各receipt月と元paymentの照合、旧memberの不変性をSQLで強制。署名照合と保存の間に契約/接続の期限が過ぎた場合も、DB時刻との比較で保存を拒否する。遅着した準備行だけ既存文書へappend、revision CASで同時更新拒否/同内容再送は同ID/revisionを返す。月次文書は削除/支払済み昇格不可。本文は元仕事/会話/receipt/契約の参照と料金メタデータだけ、原稿/署名原本は複製しない。既存Linux文書の6列はbyteを保持、新period/currencyはnull。0082中断はD1 batch内で旧表/制約までrollback。既存コードとmigration順は配信Sourceの独自系列へ個別適応する。
+- 本人UI: アカウント全体の支払い明細内「月ごとの請求準備を開く」から月/通貨指定→保存/保存済み読戻し。観測総額と候補合計・未照合を先に、作者配分と元Eve仕事はdetailsで表示。Eve内の同job表示は全月の他jobを混ぜず、アカウント全体へのリンクを使う。保存一覧は最新100件と明示。閉鎖/遅延応答は無効化、条件確認や支払いへ自動昇格しない。
+- 合格/未決: 同時同内容一件、遅着append、JPY19+19の手数料2/作者36、通貨分離、他owner拒否、改変/削除/member消失拒否、失効raceで全体保存拒否、旧文書保持/中断rollback、実D1と実UI/全verifyを同一候補で検査。現在はtest draftのみ。締め後訂正/正式invoice番号/Provider照合/入金/税務/作者送金/本番gateは未完、各実契約条件と既存BIL02で決定する。

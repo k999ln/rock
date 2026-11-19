@@ -1,0 +1,1 @@
+(fp_lib_table (version 7) (lib (name "MiniBench") (type "KiCad") (uri "${KIPRJMOD}/MiniBench.pretty") (options "") (descr "Review required custom bench footprints")))

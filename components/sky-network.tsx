@@ -43,7 +43,7 @@ const trustStack = [
     number: '01',
     Icon: Fingerprint,
     title: 'Connection Passport',
-    body: 'ツール、作者、OAuth、価格、受取人を同じ接続証明へ固定。',
+    body: "ツール、作者、公式の認証画面、価格、受取人を同じ接続証明へ固定。",
   },
   {
     number: '02',
@@ -94,12 +94,12 @@ export default function SkyNetwork() {
   }
 
   return (
-    <WorkspaceShell title="Sky Network" contentClassName={styles.shell}>
+    <WorkspaceShell title="Smith Network" contentClassName={styles.shell}>
       <div className={styles.page}>
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
             <p className={styles.eyebrow}>
-              <span /> SKY NETWORK · DEVELOPER PREVIEW
+              <span /> Smith NETWORK · DEVELOPER PREVIEW
             </p>
             <h1>
               つなぐのは、一度。
@@ -107,19 +107,19 @@ export default function SkyNetwork() {
               <em>価値は、正しく届く。</em>
             </h1>
             <p className={styles.lede}>
-              MCPの接続、安全確認、実行契約、ToB・ToCへの分配まで。
+              外部ツール接続の接続、安全確認、実行契約、ToB・ToCへの分配まで。
               <br />
-              Skyが一つの証跡でつなぎます。
+              この画面は試作の説明用です。実際の接続や送金は行いません。
             </p>
             <div className={styles.heroBadges}>
               <span>
                 <Building2 size={15} /> ToB利用料 0円
               </span>
               <span>
-                <CircleDollarSign size={15} /> Sky売上手数料 {SKY_MARKETPLACE_COMMISSION_LABEL}
+                <CircleDollarSign size={15} /> Smith売上手数料 {SKY_MARKETPLACE_COMMISSION_LABEL}
               </span>
               <span className={styles.previewBadge}>
-                <Zap size={15} /> LIVE送金 OFF
+                <Zap size={15} /> 実際の送金は停止中
               </span>
             </div>
           </div>
@@ -139,12 +139,12 @@ export default function SkyNetwork() {
             <div className={styles.sectionLabel}>
               <span>01</span>
               <p>CONNECT</p>
-              <small>フロント検証デモ</small>
+              <small>説明用の試作</small>
             </div>
             <div className={styles.connectHeading}>
               <div>
-                <h2 id="connect-title">MCPを接続する</h2>
-                <p>URL・Registry名・packageのいずれかを入力</p>
+                <h2 id="connect-title">外部ツール接続を接続する</h2>
+                <p>URL・登録名・配布パッケージ名のいずれかを入力</p>
               </div>
               <Link href="/sky/publish">
                 掲載フォーム <ArrowRight size={15} />
@@ -166,7 +166,7 @@ export default function SkyNetwork() {
                     setSource(event.target.value);
                     setCheckState('idle');
                   }}
-                  aria-label="MCP URL、Registry名、またはpackage"
+                  aria-label="外部ツール接続 URL、Registry名、またはpackage"
                   placeholder="https://example.com/mcp"
                 />
               </div>
@@ -234,12 +234,12 @@ export default function SkyNetwork() {
                       <strong>接続時に固定</strong>
                     </div>
                     <div>
-                    <span>Sky fee for ToB</span>
+                    <span>Smith fee for ToB</span>
                     <strong>{SKY_MARKETPLACE_COMMISSION_LABEL}</strong>
                     </div>
                   </div>
                   <p className={styles.demoNotice}>
-                    これは合成表示です。外部MCPへの通信、資格情報の取得、公開、課金は行っていません。
+                    これは合成表示です。外部ツールへの通信、資格情報の取得、公開、課金は行っていません。
                   </p>
                 </>
               )}
@@ -254,7 +254,7 @@ export default function SkyNetwork() {
             <strong className={styles.zeroPrice}>¥0</strong>
               <h2>売上の10%だけ。</h2>
             <p>
-              登録・接続・公開の基本利用料は0円。ツール売上の10%をSky手数料として受け取り、残りを提供者へ渡します。
+              登録・接続・公開の基本利用料は0円。ツール売上の10%をSmith手数料として受け取り、残りを提供者へ渡します。
             </p>
             <ul>
               <li>
@@ -264,13 +264,13 @@ export default function SkyNetwork() {
                 <Check size={15} /> 公開・更新・利用分析
               </li>
               <li>
-                <Check size={15} /> ToB商品売上のSky手数料 10%
+                <Check size={15} /> ToB商品売上のSmith手数料 10%
               </li>
             </ul>
             <div className={styles.costBoundary}>
               <KeyRound size={17} />
               <p>
-                決済・API・モデル・クラウド等の外部実費は、Sky手数料と分けて事前表示します。
+                決済・API・モデル・クラウド等の外部実費は、Smith手数料と分けて事前表示します。
               </p>
             </div>
           </aside>
@@ -326,7 +326,7 @@ export default function SkyNetwork() {
                 <Users size={21} />
                 <span>
                   <small>VALUE SOURCE</small>
-                  <strong>ToC · Sky Pass</strong>
+                  <strong>ToC · Smith Pass</strong>
                 </span>
               </div>
               <ArrowRight className={styles.flowArrow} size={19} />
@@ -334,13 +334,13 @@ export default function SkyNetwork() {
                 <WalletCards size={21} />
                 <span>
                   <small>VERIFIED POOL</small>
-                  <strong>Sky reward pool</strong>
+                  <strong>Smith reward pool</strong>
                 </span>
               </div>
               <ArrowRight className={styles.flowArrow} size={19} />
               <div className={styles.recipientStack}>
                 <span>
-                  <Building2 size={16} /> MCP提供者
+                  <Building2 size={16} /> 外部ツール接続提供者
                 </span>
                 <span>
                   <Laptop2 size={16} /> 計算資源
@@ -364,7 +364,7 @@ export default function SkyNetwork() {
                     <strong>ToBが設定</strong>
                   </div>
                   <div className={styles.receiptLine}>
-                    <span>Sky売上手数料</span>
+                    <span>Smith売上手数料</span>
                     <strong>{SKY_MARKETPLACE_COMMISSION_LABEL}</strong>
                   </div>
                   <div className={styles.receiptLine}>
@@ -428,8 +428,8 @@ export default function SkyNetwork() {
 
         <footer className={styles.pageFooter}>
           <p>
-            Sky
-            Networkは設計プレビューです。実MCP接続、現金保管、報酬分配、実送金は有効化していません。
+            Smith
+            Networkは設計プレビューです。実外部ツール接続接続、現金保管、報酬分配、実送金は有効化していません。
           </p>
           <Link href="/sky/publish">
             無料でツールを掲載する <ArrowRight size={16} />

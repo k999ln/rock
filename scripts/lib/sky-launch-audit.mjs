@@ -3,6 +3,10 @@ export function auditSkyLaunch(report, evidenceExists) {
   if (report.completeLaunchScope !== 'standalone-web-paid-marketplace') throw new Error('Sky complete-launch scope must be explicit.');
   if (report.schema !== 'sky-service-launch/1' || !Array.isArray(report.gates) || !report.gates.length)
     throw new Error('Sky launch report is missing its gates.');
+  if (report.releasePolicy?.generalLaunchAllowed !== false ||
+    report.releasePolicy?.mode !== 'private-development-government-review-preparation' ||
+    report.releasePolicy?.governmentShareReady !== false)
+    throw new Error('Sky general launch is on an explicit owner hold; government sharing is not accepted.');
   const stages = Object.keys(report.stageDependencies ?? {});
   if (!stages.includes('focused')) throw new Error('Focused-launch stage is required.');
   const ids = new Set();
@@ -43,5 +47,5 @@ export function auditSkyLaunch(report, evidenceExists) {
     }
     if (!requirements('focused').has('basic')) throw new Error('Focused launch must retain basic customer and recovery acceptance.');
   }
-  return { stages, missing };
+  return { stages, missing, generalLaunchAllowed: false };
 }

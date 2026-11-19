@@ -1,0 +1,168 @@
+--- a/shell/src/main/java/dev/rock/shell/MainActivity.java
++++ b/shell/src/main/java/dev/rock/shell/MainActivity.java
+@@ -359,7 +359,7 @@
+         button(form, "Skyでモデルを導入・接続", () -> selectPage(1));
+         zemaConsent = new CheckBox(this); zemaConsent.setText("この依頼を端末内siで計画し、検査に通ったツールの実行と成果物保存を許可する"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
+         message = label(form, "", 16);
+-        zemaSubmitButton = button(form, "Jenniferに計画と実行を依頼", this::submitZema); ui.primary(zemaSubmitButton);
++        zemaSubmitButton = button(form, "Eveに計画と実行を依頼", this::submitZema); ui.primary(zemaSubmitButton);
+         zemaSubmitButton.setEnabled(false);
+         zemaPrompt.addTextChangedListener(new android.text.TextWatcher() {
+             public void beforeTextChanged(CharSequence value, int start, int count, int after) { }
+@@ -490,19 +490,31 @@
+ 
+     private void buildHomePage() {
+         LinearLayout home = pageContent[0];
+-        heading(home, "Jennifer", "つくりたいことを、ここから。");
+-        LinearLayout categories = new LinearLayout(this);
+-        categories.setOrientation(LinearLayout.HORIZONTAL);
+-        categories.setPadding(0, ui.dp(8), 0, ui.dp(12));
+-        home.addView(categories, new LinearLayout.LayoutParams(-1, -2));
+-        homeCategory(categories, "探す", () -> selectPage(1));
+-        homeCategory(categories, "つくる", () -> homePrompt.requestFocus());
+-        homeCategory(categories, "仕事と成果", () -> selectPage(2));
++        TextView eyebrow = label(home, "EVE · YOUR CREATIVE SPACE", 12);
++        eyebrow.setLetterSpacing(0.06f);
++        TextView title = label(home, "思いついたら、\nつくろう。", 30);
++        title.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
++        title.setLineSpacing(0, 1.15f);
++        label(home, "依頼から成果まで、Eveと。", 15);
+         LinearLayout compose = ui.card(home);
+-        label(compose, "やりたいこと", 21);
+-        homePrompt = field(compose, "例：部屋の片づけを始める記事をつくる", "", true);
++        label(compose, "やりたいこと", 16);
++        homePrompt = field(compose, "例：アイデアを、読みやすい記事にしたい", "", true);
+         homePrompt.setTag("home-prompt"); homePrompt.setMinLines(3);
+-        label(compose, "実行する場所", 13);
++        homeExecutionSummary = label(compose, "実行先を確認しています…", 13);
++        homeExecutionSummary.setTag("home-execution-summary");
++        LinearLayout actions = new LinearLayout(this);
++        compose.addView(actions, new LinearLayout.LayoutParams(-1, -2));
++        Button speak = button(actions, "声で伝える", () -> voice.start());
++        LinearLayout.LayoutParams voiceSize = new LinearLayout.LayoutParams(0, -2, 1f);
++        voiceSize.setMargins(0, ui.dp(8), ui.dp(8), 0); speak.setLayoutParams(voiceSize);
++        Button confirm = button(actions, "内容を確認", this::prepareHomeRequest);
++        confirm.setTag("home-confirm"); ui.primary(confirm);
++        LinearLayout.LayoutParams confirmSize = new LinearLayout.LayoutParams(0, -2, 1.4f);
++        confirmSize.topMargin = ui.dp(8); confirm.setLayoutParams(confirmSize);
++        label(compose, "実行前に内容・実行先・費用を確認。", 12);
++        TextView voiceStatus = label(compose, "文字でも、声でも依頼できます。", 12);
++        voiceStatus.setTag("voice-status"); voice = new TerminalVoice(this, homePrompt, voiceStatus);
++        LinearLayout executionPanel = disclosure(home, "実行先・モデルを変更");
+         homeExecutionChoice = new RadioGroup(this);
+         String[] choices = {"自動 · 作業に合う導入済みモデル", "このPixelのツールで整える · モデル不要", "このPixelのsiに依頼する · モデルを指定", "クラウドに依頼する · まず見積"};
+         for (int index = 0; index < choices.length; index++) {
+@@ -519,21 +531,20 @@
+         homeExecutionChoice.setOnCheckedChangeListener((group, id) -> {
+             choicesStore.edit().putInt("executionChoice", id).apply(); updateModelChoiceLabel(); invalidateModelChoice();
+         });
+-        compose.addView(homeExecutionChoice);
+-        homeModelChoice = label(compose, "", 13); updateModelChoiceLabel();
+-        button(compose, "siを自分で選ぶ", this::showModelChooser);
+-        ui.primary(button(compose, "依頼の内容を確認", this::prepareHomeRequest));
+-        button(compose,"いつも任せる担当を作る",()->{selectPage(1);showOwnedAgentCreator();});
+-        label(compose, "確認した後に開始します。入力だけでは実行しません。", 12);
++        executionPanel.addView(homeExecutionChoice);
++        homeModelChoice = label(executionPanel, "", 13); updateModelChoiceLabel();
++        button(executionPanel, "モデルを自分で選ぶ", this::showModelChooser);
+         LinearLayout resume = ui.card(home);
+-        homeWorkSummary = label(resume, "保存された仕事を確認中…", 16);
+-        homeNextAction = button(resume, "仕事を見る", () -> selectPage(2)); ui.primary(homeNextAction);
+-        LinearLayout voicePanel = disclosure(home, "音声で入力・読み上げ");
+-        TextView voiceStatus = label(voicePanel, "対応する端末内の音声サービスを使います。", 13);
+-        voiceStatus.setTag("voice-status"); voice = new TerminalVoice(this, homePrompt, voiceStatus);
++        label(resume, "仕事と成果", 18);
++        homeWorkSummary = label(resume, "保存された仕事を確認中…", 15);
++        homeNextAction = button(resume, "仕事を見る", () -> selectPage(2));
++        ui.quiet(homeNextAction);
++        LinearLayout voicePanel = disclosure(home, "音声の状態・読み上げ");
++        label(voicePanel, "対応する端末内の音声サービスを使います。入力状態は依頼欄に表示します。", 13);
+         button(voicePanel, "話して入力", voice::start);
+         button(voicePanel, "音声を止める", voice::stop);
+         button(voicePanel, "依頼を読み上げる", () -> voice.speak(homePrompt.getText().toString()));
++        button(home, "Skyで能力を追加", () -> selectPage(1));
+         LinearLayout connections = disclosure(home, "能力と接続の状態");
+         homeConnectionStatus = label(connections, "準備状態を確認中…", 13);
+         button(connections, "Skyで能力を選ぶ", () -> selectPage(1));
+@@ -565,7 +576,16 @@
+             : getSharedPreferences("terminal_preferences", MODE_PRIVATE).getString("preferredLocalModel", "auto");
+     }
+ 
++    private TextView homeExecutionSummary;
++
+     private void updateModelChoiceLabel() {
++        if (homeExecutionSummary != null && homeExecutionChoice != null) {
++            int choice = homeExecutionChoice.getCheckedRadioButtonId();
++            homeExecutionSummary.setText(choice == 3103 ? "クラウド · 開始前に見積を確認"
++                : choice == 3102 ? "このPixelのLinux · 指定モデル"
++                : choice == 3101 ? "このPixelのツール · モデル不要"
++                : "自動選択 · 開始前に実行先を確認");
++        }
+         if (homeModelChoice == null) return;
+         String choice = selectedModelChoice();
+         homeModelChoice.setText("auto".equals(choice) ? "標準は自動。使うモデルと理由を、開始前に表示します。"
+@@ -3182,7 +3202,7 @@
+         final LocalSubmission.Attempt attempt = beginSubmission(zemaSubmission, zemaSubmitButton,
+             LocalSubmission.fingerprint("zema", selectionToken == null ? "local-draft" : selectionToken, prompt, "[]", modelDigest, Boolean.toString(allowed)));
+         if (attempt == null) return;
+-        message.setText("JenniferがこのPixelで計画しています。まだツールは実行していません…");
++        message.setText("EveがこのPixelで計画しています。まだツールは実行していません…");
+         zemaStopButton.setVisibility(View.VISIBLE);
+         worker.execute(() -> {
+             try {
+@@ -3580,7 +3600,7 @@
+         LinearLayout technical = disclosure(card, "工程と詳細");
+         label(technical, "仕事ID: " + id, 12);
+         JSONObject planner = work.optJSONObject("planner");
+-        label(technical, planner == null ? "端末内ツール · モデル不使用" : "Jennifer · " + planner.optString("profileId"), 12);
++        label(technical, planner == null ? "端末内ツール · モデル不使用" : "Eve · " + planner.optString("profileId"), 12);
+         if (runs != null) for (int i = 0; i < runs.length(); i++) {
+             JSONObject run = runs.optJSONObject(i); String step = run.optString("state");
+             String label = "succeeded".equals(step) ? "完了" : "running".equals(step) ? "実行中"
+--- a/shell/src/main/java/dev/rock/shell/ShellUi.java
++++ b/shell/src/main/java/dev/rock/shell/ShellUi.java
+@@ -69,7 +69,7 @@
+         input.setTextColor(INK); input.setHintTextColor(MUTED); input.setTextSize(16);
+         input.setPadding(dp(14), dp(12), dp(14), dp(12));
+         input.setMinHeight(dp(52)); input.setGravity(Gravity.TOP | Gravity.START);
+-        input.setBackground(surface(SURFACE, LINE, 24));
++        input.setBackground(surface(SURFACE, LINE, 16));
+         input.setBackgroundTintList(null);
+     }
+     Button button(LinearLayout parent, String text, Runnable action) {
+@@ -78,7 +78,7 @@
+         view.setAllCaps(false); view.setMinHeight(dp(52));
+         view.setPadding(dp(14), dp(10), dp(14), dp(10));
+         view.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+-        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22d9365d), surface(SURFACE, LINE, 26), null));
++        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22d9365d), surface(SURFACE, LINE, 16), null));
+         view.setOnClickListener(v -> action.run());
+         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+         params.topMargin = dp(8);
+@@ -87,7 +87,7 @@
+     }
+     void primary(Button view) {
+         view.setTextColor(SURFACE);
+-        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22ffffff), surface(ACCENT, 0, 26), null));
++        view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22ffffff), surface(ACCENT, 0, 16), null));
+     }
+     void quiet(Button view) {
+         view.setTextColor(MUTED); view.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+@@ -106,7 +106,7 @@
+         view.setText(name); view.setTextSize(11); view.setGravity(Gravity.CENTER);
+         view.setPadding(dp(2), dp(10), dp(2), dp(8));
+         view.setCompoundDrawablePadding(dp(5));
+-        view.setMinHeight(dp(68));
++        view.setMinHeight(dp(60));
+         view.setClickable(true); view.setFocusable(true);
+         view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x337f8b99), null, surface(INK, 0, 10)));
+         view.setOnClickListener(v -> action.run());
+@@ -119,7 +119,7 @@
+         int color = selected ? INK : MUTED;
+         view.setSelected(selected);
+         view.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22d9365d),
+-            surface(selected ? RAISED : SURFACE, selected ? LINE : 0, 18), null));
++            surface(selected ? RAISED : SURFACE, 0, 14), null));
+         view.setTextColor(color);
+         view.setTypeface(Typeface.create(selected ? "sans-serif-medium" : "sans-serif", Typeface.NORMAL));
+         view.setStateDescription(selected ? "選択中" : null);

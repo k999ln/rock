@@ -442,6 +442,153 @@
       "when": 1791763200000,
       "tag": "0063_sky_mcp_slots",
       "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "6",
+      "when": 1791763200001,
+      "tag": "0064_sky_linux_service",
+      "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "6",
+      "when": 1791763200002,
+      "tag": "0065_rockstar_service_setup",
+      "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "6",
+      "when": 1792528529428,
+      "tag": "0066_sky_agent_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "6",
+      "when": 1792529351878,
+      "tag": "0067_sky_optional_features",
+      "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "6",
+      "when": 1792530739914,
+      "tag": "0068_sky_hub_plugins",
+      "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "6",
+      "when": 1792533041164,
+      "tag": "0069_sky_x_feed_state",
+      "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "6",
+      "when": 1792536812154,
+      "tag": "0070_eve_durable_history",
+      "breakpoints": true
+    },
+    {
+      "idx": 70,
+      "version": "6",
+      "when": 1792537659071,
+      "tag": "0071_sky_communities",
+      "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "6",
+      "when": 1792539322023,
+      "tag": "0072_community_os_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "6",
+      "when": 1792556979739,
+      "tag": "0073_sky_timeline_interactions",
+      "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "6",
+      "when": 1792561586325,
+      "tag": "0074_sky_x_account_oauth",
+      "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "6",
+      "when": 1792580642768,
+      "tag": "0075_eve_device_jobs",
+      "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "6",
+      "when": 1792581115001,
+      "tag": "0076_eve_device_commands",
+      "breakpoints": true
+    },
+    {
+      "idx": 76,
+      "version": "6",
+      "when": 1792619014362,
+      "tag": "0077_jennifer_passkey_base",
+      "breakpoints": true
+    },
+    {
+      "idx": 77,
+      "version": "6",
+      "when": 1792619014363,
+      "tag": "0078_rockstar_accounts",
+      "breakpoints": true
+    },
+    {
+      "idx": 78,
+      "version": "6",
+      "when": 1792622874644,
+      "tag": "0079_rockstar_password_accounts",
+      "breakpoints": true
+    },
+    {
+      "idx": 79,
+      "version": "6",
+      "when": 1792670502087,
+      "tag": "0080_sky_author_agreement_documents",
+      "breakpoints": true
+    },
+    {
+      "idx": 80,
+      "version": "6",
+      "when": 1792674488521,
+      "tag": "0081_sky_agent_invoice_preparation",
+      "breakpoints": true
+    },
+    {
+      "idx": 81,
+      "version": "6",
+      "when": 1792677175027,
+      "tag": "0082_sky_agent_monthly_statements",
+      "breakpoints": true
+    },
+    {
+      "idx": 82,
+      "version": "6",
+      "when": 1792695218338,
+      "tag": "0083_eve_runtime_presence",
+      "breakpoints": true
+    },
+    {
+      "idx": 83,
+      "version": "6",
+      "when": 1792724704024,
+      "tag": "0084_sky_agent_shares",
+      "breakpoints": true
     }
   ]
 }

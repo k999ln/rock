@@ -1,0 +1,240 @@
+{
+  "schema": "noah.agent-model-store-design/1",
+  "version": "0.4",
+  "recordedAt": "2026-11-02",
+  "status": "design_recorded_not_implemented",
+  "authority": "docs/noah-agent-model-store-design.md",
+  "reason": "Current user requests an App Store-like Noah with discovery, device addition, execution, update and removal; incorporate the linked Eve/Noah roles.",
+  "relatedThread": "codex://threads/01a19abe-6bc5-7081-bc12-446a83a225ed",
+  "roles": {
+    "eve": "shared_intelligence_and_conversation",
+    "noah": "agent_composition_store_and_device_lifecycle",
+    "amc": "work_planning_and_progress",
+    "broker": "identity_permissions_budget_stop",
+    "work": "execution_artifacts_receipts_and_editing",
+    "jev": "independent_evaluation"
+  },
+  "sky": {
+    "separateProduct": false,
+    "separateSystem": false,
+    "separateStore": false,
+    "legacyIdentifiersPreserved": true
+  },
+  "storeIsPartOf": "Noah",
+  "navigation": [
+    "discover",
+    "compose_agent",
+    "library",
+    "devices_and_updates"
+  ],
+  "itemKinds": [
+    "agent_composition",
+    "local_llm",
+    "cloud_llm_connection",
+    "verified_tool_package"
+  ],
+  "agentComposition": [
+    "role",
+    "eveProfilePin",
+    "knowledgeRefs",
+    "memoryScopeRefs",
+    "toolPins",
+    "executionPolicy",
+    "permissionRequirements",
+    "budgetPolicyRef",
+    "acceptanceCriteria",
+    "originRef"
+  ],
+  "lifecycle": [
+    "discover",
+    "inspect",
+    "add_to_library",
+    "plan_for_device",
+    "confirm",
+    "download_or_reuse",
+    "verify",
+    "check_compatibility",
+    "activate",
+    "run_in_eve",
+    "update",
+    "rollback",
+    "remove"
+  ],
+  "separateStates": {
+    "library": [
+      "added",
+      "removed"
+    ],
+    "operation": [
+      "queued",
+      "running",
+      "succeeded",
+      "failed",
+      "cancelled",
+      "unknown"
+    ],
+    "devicePhase": [
+      "registered",
+      "downloading",
+      "verifying",
+      "checking",
+      "staged",
+      "ready",
+      "blocked",
+      "quarantined",
+      "missing",
+      "revoked",
+      "removing",
+      "removed"
+    ],
+    "modelManagement": [
+      "discovered",
+      "staged",
+      "verified",
+      "compatible",
+      "benchmarked",
+      "active",
+      "retired"
+    ],
+    "workJob": [
+      "active",
+      "review",
+      "completed",
+      "cancelled"
+    ]
+  },
+  "binding": [
+    "ownerId",
+    "deviceId",
+    "deviceEpoch",
+    "operationId",
+    "requestDigest",
+    "itemRelease",
+    "manifestDigest",
+    "dependencyLock",
+    "expectedLibraryRevision",
+    "expectedInstallGeneration",
+    "stopGeneration",
+    "termsDigest"
+  ],
+  "designDefaults": {
+    "automaticUpdate": false,
+    "automaticCloudFallback": false,
+    "capabilitySnapshotMaxAgeSeconds": 300,
+    "installPlanStartWindowSeconds": 600,
+    "operationMaxLifetimeSeconds": 86400,
+    "perDeviceConcurrentMutations": 1,
+    "dependencyMaxNodes": 32,
+    "dependencyMaxDepth": 8,
+    "retainedPreviousVersionCount": 1,
+    "terminalReceiptMinimumDays": 90
+  },
+  "deletionScopes": [
+    "this_device_only",
+    "owner_library_removal",
+    "separate_job_artifact_memory_deletion"
+  ],
+  "invariants": [
+    "library_add_does_not_download_execute_or_charge",
+    "ready_requires_current_device_receipt",
+    "all_mutations_owner_device_epoch_generation_bound",
+    "running_jobs_keep_exact_old_version_pins",
+    "updates_preserve_owner_edits",
+    "uninstall_preserves_jobs_artifacts_and_shared_blobs",
+    "offline_removal_is_pending_until_device_readback",
+    "unknown_activation_is_reconciled_not_reexecuted",
+    "revoked_versions_cannot_be_rollback_targets",
+    "restricted_provenance_survives_update_export_and_memory",
+    "model_output_never_grants_permissions"
+  ],
+  "existingAuthorities": [
+    "docs/ai-native-os-architecture.md#ai-model-management",
+    "docs/llm-evaluation-architecture.md",
+    "data/llm-capabilities.json",
+    "docs/sky-tools-complete-design.md#sky-multi-model-pixel",
+    "docs/noah-connection-sharing-contracts.md"
+  ],
+  "reusedSources": [
+    "lib/sky-agent-library.ts",
+    "lib/sky-agent-library-store.ts",
+    "app/api/sky/agents/route.ts",
+    "lib/sky-linux-models.ts",
+    "scripts/sky-linux-local-runtime.mjs",
+    "toolkits/sky-linux-local/worker.py",
+    "android/core/src/main/java/dev/rock/core/platform/ModelProfileManifest.java",
+    "android/core/src/main/java/dev/rock/core/platform/ResumableModelArtifactStager.java",
+    "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
+    "lib/sky-tool-package.ts",
+    "lib/sky-tool-package-store.ts",
+    "lib/sky-package-runtime-binding.ts",
+    "systems/rock-star-os/src/blackberryrock/packages.py",
+    "lib/workflow.ts"
+  ],
+  "proposedAdjunctRecords": [
+    "NoahAgentComposition",
+    "noah_library_entries",
+    "noah_install_plans",
+    "noah_install_operations",
+    "noah_device_installations"
+  ],
+  "existingAcceptance": {
+    "evidence": "docs/evidence/sky-multi-model-pixel.json",
+    "scope": "owner Pixel Linux text GGUF and data-only prompt-agent recipes",
+    "genericCatalogAccepted": false,
+    "deletionUiAccepted": false,
+    "fullBackupRestoreAccepted": false
+  },
+  "acceptanceIds": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17",
+    "S18"
+  ],
+  "acceptanceExecutedThisWork": false,
+  "requiredAnchors": {
+    "purpose_and_user": "noah-store-purpose",
+    "end_to_end_experience": "noah-store-experience",
+    "responsibilities": "noah-store-responsibility",
+    "contracts_and_sources": "noah-store-contracts",
+    "states": "noah-store-state",
+    "storage_and_deletion": "noah-store-storage",
+    "failure_and_retry": "noah-store-failure",
+    "update_and_recovery": "noah-store-update",
+    "approval_and_privacy": "noah-store-security",
+    "eve_work_and_editing": "noah-store-eve",
+    "acceptance_and_open_decisions": "noah-store-acceptance"
+  },
+  "delivery": {
+    "designSaved": true,
+    "runtimeChanged": false,
+    "productionSchemaChanged": false,
+    "migrationApplied": false,
+    "modelDownloaded": false,
+    "trainingExecuted": false,
+    "deviceTestExecuted": false,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "remaining": [
+    "integrate Eve composition API and branch differences",
+    "implement catalog projections and device plans using existing stores",
+    "same-artifact acquisition activation and failure testing",
+    "Eve job and artifact editing handoff",
+    "update rollback deletion and restore acceptance",
+    "publisher review model licensing real provider terms and per-device quality gates"
+  ]
+}

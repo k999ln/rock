@@ -5,6 +5,8 @@ import { beforeEach, it } from 'vitest';
 import { createA2AIntentDigests } from '../../../lib/a2a-authorization.ts';
 import { a2aPriceQuoteDigest, a2aPriceQuoteSigningBytes, A2A_PRICE_QUOTE_SCHEMA } from '../../../lib/a2a-price-quote.ts';
 import { SKY_PACKAGE_RUNTIME_BINDING_SCHEMA, skyPackageRuntimeBindingDigest, skyPackageRuntimeBindingSigningBytes } from '../../../lib/sky-package-runtime-binding.ts';
+import { eveAgentWorkStore } from '../../../lib/eve-agent-work.ts';
+import { createWorkJob } from '../../../lib/workflow.ts';
 import { a2aDelegationStore } from '../../../lib/a2a-delegation-store.ts';
 import { a2aLiveUsageSigningBytes } from '../../../lib/a2a-live-usage.ts';
 import {
@@ -170,6 +172,8 @@ async function seedApprovedDelegation(selected = {}) {
   const selectedDelegationId = selected.delegationId ?? delegationId;
   const selectedParentJobId = selected.parentJobId ?? parentJobId;
   const selectedMessageId = selected.messageId ?? messageId;
+  const parent = createWorkJob({ id: selectedParentJobId, title: 'Controlled Agent workflow parent', templateId: 'cloud-agent' });
+  await env.DB.prepare('INSERT INTO work_jobs(id,user_id,payload,revision,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(id) DO NOTHING').bind(parent.id, owner, JSON.stringify(parent), parent.revision, parent.updatedAt).run();
   const selectedMessage = selected.message ?? message;
   const selectedOrigin = selected.targetOrigin ?? targetOrigin;
   const selectedAgentName = selected.agentName ?? agentName;
@@ -1095,3 +1099,134 @@ it('holds an ambiguous remote send and does not replay it after Workflow restart
     await workflow.dispose();
   }
 }, 30_000);
+
+it('honors an Eve parent stop persisted before child cancellation without claiming a remote send', async () => {
+  const childId = crypto.randomUUID(), parentId = crypto.randomUUID(), msgId = crypto.randomUUID();
+  await seedApprovedDelegation({ delegationId: childId, parentJobId: parentId, messageId: msgId, budgetLimitMinor: 100, parentBudgetLimitMinor: 200 });
+  const row = await env.DB.prepare('SELECT payload FROM work_jobs WHERE id=?').bind(parentId).first();
+  const parent = JSON.parse(row.payload);
+  parent.eveAgent = { schema: 'eve.agent-work/1', threadId: crypto.randomUUID(), stopRequestedAt: Date.now(), stopCommandId: crypto.randomUUID() };
+  await env.DB.prepare('UPDATE work_jobs SET payload=? WHERE id=?').bind(JSON.stringify(parent), parentId).run();
+  const instanceId = `a2a-eve-stopped-${crypto.randomUUID()}`, workflow = await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW, instanceId);
+  try {
+    await env.A2A_DELEGATION_WORKFLOW.create({ id: instanceId, params: { ownerUserId: owner, delegationId: childId, operation: 'dispatch' } });
+    await workflow.waitForStatus('complete');
+    assert.deepEqual(await workflow.getOutput(), { outcome: 'parent_stop_requested' });
+    const child = await a2aDelegationStore(env.DB).get(owner, childId);
+    assert.equal(child.state, 'cancelled_before_dispatch');
+    const events = await a2aDelegationStore(env.DB).listEvents(owner, childId);
+    assert.equal(events.filter(e => e.eventType === 'remote_send_claimed').length, 0);
+  } finally { await workflow.dispose(); }
+});
+
+
+it('dispatches the production Workflow to a separate Node Agent process and captures its independently signed result', async () => {
+  const id = crypto.randomUUID(), parent = crypto.randomUUID(), messageId = crypto.randomUUID();
+  await seedApprovedDelegation({ delegationId: id, parentJobId: parent, messageId,
+    targetOrigin: 'https://process-agent.example.com', agentName: 'process-fixture-agent',
+    message: JSON.stringify({ mode: 'complete', owner, parentJobId: parent, delegationId: id }) });
+  const instanceId = `a2a-process-${crypto.randomUUID()}`;
+  const workflow = await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW, instanceId);
+  try {
+    await env.A2A_DELEGATION_WORKFLOW.create({ id: instanceId, params: { ownerUserId: owner, delegationId: id, operation: 'dispatch' } });
+    await workflow.waitForStatus('complete');
+    assert.deepEqual(await workflow.getOutput(), { outcome: 'task_received', state: 'remote_completed', usageOutcome: 'settled' });
+    const store = a2aDelegationStore(env.DB), row = await store.get(owner, id);
+    assert.equal(row.artifactsCaptured, 1);
+    assert.equal((await store.getBudgetReservation(owner, id)).state, 'settled');
+    assert.equal((await store.getUsageReceipt(owner, id)).amountMinor, 0);
+    const artifacts = await store.listArtifacts(owner, id); assert.equal(artifacts.length, 1);
+    const plaintext = await decryptA2AArtifact(artifacts[0], inputKey, owner, id, row.remoteTaskId);
+    assert.match(plaintext, /独立した試験Agentの成果/);
+    assert.equal(await store.claimDispatch(owner, id), null);
+    const stats = await (await env.A2A_TEST_OUTBOUND.fetch('https://process-agent.example.com/stats')).json();
+    assert.equal(stats.sendCalls, 1);
+  } finally { await workflow.dispose(); }
+}, 30_000);
+
+
+async function independentProcessCase(mode) {
+  const id = crypto.randomUUID(), parent = crypto.randomUUID(), messageId = crypto.randomUUID();
+  await seedApprovedDelegation({ delegationId: id, parentJobId: parent, messageId,
+    targetOrigin: 'https://process-agent.example.com', agentName: 'process-fixture-agent',
+    message: JSON.stringify({ mode, owner, parentJobId: parent, delegationId: id }) });
+  const store = a2aDelegationStore(env.DB);
+  const run = async (operation = 'dispatch', status = 'complete', restart = false) => {
+    const instanceId = `process-${operation}-${crypto.randomUUID()}`;
+    const workflow = await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW, instanceId);
+    try {
+      await env.A2A_DELEGATION_WORKFLOW.create({ id: instanceId, params: { ownerUserId: owner, delegationId: id, operation } });
+      await workflow.waitForStatus(status);
+      if (restart) { await (await env.A2A_DELEGATION_WORKFLOW.get(instanceId)).restart(); await workflow.waitForStatus('complete'); }
+      return status === 'errored' && !restart ? null : await workflow.getOutput();
+    } finally { await workflow.dispose(); }
+  };
+  const stats = async () => (await (await env.A2A_TEST_OUTBOUND.fetch('https://process-agent.example.com/stats')).json());
+  return { id, parent, messageId, store, run, stats };
+}
+
+it('rejects independently signed wrong-job and forged process Agent usage without releasing the held reservation', async () => {
+  for (const mode of ['wrong-job', 'bad-signature']) {
+    const f = await independentProcessCase(mode);
+    assert.deepEqual(await f.run(), { outcome: 'task_received', state: 'remote_completed', usageOutcome: 'rejected' });
+    assert.equal(await f.store.getUsageReceipt(owner, f.id), null);
+    assert.equal((await f.store.getBudgetReservation(owner, f.id)).state, 'held');
+    assert.equal((await f.stats()).sendsByMessage[f.messageId], 1);
+    assert.equal(await f.store.claimDispatch(owner, f.id), null);
+  }
+}, 30_000);
+
+it('keeps actual process response loss and oversized replies indeterminate across Workflow restart with one remote send', async () => {
+  for (const mode of ['lost-response', 'oversized']) {
+    const f = await independentProcessCase(mode);
+    assert.deepEqual(await f.run('dispatch', 'errored', true), { outcome: 'not_dispatchable' });
+    assert.equal((await f.store.get(owner, f.id)).state, 'indeterminate');
+    assert.equal((await f.store.getBudgetReservation(owner, f.id)).state, 'held');
+    assert.equal(await f.store.getUsageReceipt(owner, f.id), null);
+    assert.equal((await f.stats()).sendsByMessage[f.messageId], 1);
+  }
+}, 30_000);
+
+for (const mode of ['working', 'unconfirmed-cancel']) {
+  it(`reconciles Eve stop through Workflow to an independent ${mode} Agent and preserves the actual cancellation outcome`, async () => {
+    const f = await independentProcessCase(mode);
+    const row = await env.DB.prepare('SELECT payload FROM work_jobs WHERE id=?').bind(f.parent).first();
+    const parent = JSON.parse(row.payload);
+    parent.eveAgent = { schema: 'eve.agent-work/1', threadId: crypto.randomUUID() };
+    await env.DB.prepare('UPDATE work_jobs SET payload=? WHERE id=?').bind(JSON.stringify(parent), f.parent).run();
+    assert.deepEqual(await f.run(), { outcome: 'task_received', state: 'working', usageOutcome: 'missing' });
+    const eve = eveAgentWorkStore(env.DB, owner);
+    let stopped = await eve.command({ jobId: f.parent, revision: parent.revision, commandId: crypto.randomUUID(), action: 'stop' });
+    assert.equal(stopped.stop.confirmed, false);
+    const expectedState = mode === 'working' ? 'remote_cancelled' : 'cancel_unconfirmed';
+    assert.deepEqual(await f.run('reconcile'), { outcome: 'cancel_response_received', state: expectedState, usageOutcome: mode === 'working' ? 'settled' : 'missing' });
+    stopped = await eve.command({ jobId: f.parent, action: 'sync' });
+    assert.equal(stopped.stop.confirmed, mode === 'working');
+    assert.equal(stopped.job.status, mode === 'working' ? 'cancelled' : 'active');
+    const child = await f.store.get(owner, f.id);
+    assert.equal(child.state, expectedState);
+    assert.equal((await f.store.getBudgetReservation(owner, f.id)).state, mode === 'working' ? 'settled' : 'held');
+    await f.run('reconcile');
+    const stats = await f.stats();
+    assert.equal(stats.sendsByMessage[f.messageId], 1); assert.equal(stats.cancelsByTask[child.remoteTaskId], 1);
+  }, 30_000);
+}
+
+
+it('sends ordinary owner text to an independent Agent with negotiated usage metadata instead of internal IDs embedded in the prompt', async () => {
+  const id=crypto.randomUUID(), parent=crypto.randomUUID(), messageId=crypto.randomUUID();
+  const message='Produce a synthetic test result. No external operations.';
+  await seedApprovedDelegation({delegationId:id,parentJobId:parent,messageId,targetOrigin:'https://process-agent.example.com',agentName:'process-fixture-agent',message});
+  const instanceId=`usage-context-${crypto.randomUUID()}`, workflow=await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW,instanceId);
+  try {
+    await env.A2A_DELEGATION_WORKFLOW.create({id:instanceId,params:{ownerUserId:owner,delegationId:id,operation:'dispatch'}});
+    await workflow.waitForStatus('complete');
+    assert.deepEqual(await workflow.getOutput(),{outcome:'task_received',state:'remote_completed',usageOutcome:'settled'});
+    const store=a2aDelegationStore(env.DB), receipt=await store.getUsageReceipt(owner,id);
+    const value=JSON.parse(receipt.receiptJson);
+    assert.equal(value.ownerUserId,owner); assert.equal(value.parentJobId,parent); assert.equal(value.delegationId,id);
+    assert.equal((await store.getBudgetReservation(owner,id)).state,'settled');
+    const stats=await (await env.A2A_TEST_OUTBOUND.fetch('https://process-agent.example.com/stats')).json();
+    assert.equal(stats.sendsByMessage[messageId],1);
+  } finally {await workflow.dispose();}
+},30000);

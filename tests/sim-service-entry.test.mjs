@@ -54,11 +54,11 @@ void test('public RockstarOS entry offers SIM/eSIM-led service access without cl
   const rockApplication = read('android/automation/src/main/java/dev/rock/automation/RockApplication.java');
   const automationGradle = read('android/automation/build.gradle');
 
-  for (const source of [marketing, onboarding, launch]) {
+  for (const source of [marketing, onboarding]) {
     assert.match(source, /SIM[ /]+eSIM|physical SIM|物理SIM/i);
     assert.match(source, /RockstarOS/);
-    assert.match(source, /Sky/);
-    assert.match(source, /Zema/);
+    assert.match(source, /Smith/);
+    assert.match(source, /Eve/);
   }
   assert.match(marketing, /carriers, device retailers and online channels/);
   assert.match(marketing, /physical SIM or eSIM/i);
@@ -88,7 +88,7 @@ void test('public RockstarOS entry offers SIM/eSIM-led service access without cl
   assert.match(claimUI, /parseRockstarEntitlementHandoffFragment/);
   assert.match(claimUI, /この販売offerの初期Agent構成/);
   assert.match(claimUI, /端末での導入・実行は利用者の確認後/);
-  assert.match(claimUI, /Sky Marketplace/);
+  assert.match(claimUI, /Smith Marketplace/);
   assert.match(claimUI, /sky\/marketplace\?package=/);
   assert.match(skyMarketplacePage, /searchParams: Promise/);
   assert.match(skyMarketplacePage, /initialPackageKey=/);
@@ -101,7 +101,7 @@ void test('public RockstarOS entry offers SIM/eSIM-led service access without cl
   assert.match(skyMarketplace, /重複購入を避けるため購入を保留しました/);
   assert.match(skyMarketplace, /Cloud実行等は別料金の場合あり/);
   assert.match(skyMarketplace, /chat\?view=work&package=/);
-  assert.match(skyMarketplace, /Zemaでクラウド依頼を作る/);
+  assert.match(skyMarketplace, /Eveでクラウド依頼を作る/);
   assert.match(workbench, /initialPackageKey/);
   assert.match(workbench, /\/api\/sky\/tool-registry/);
   assert.match(workbench, /\/api\/rockstar\/entitlements/);
@@ -140,15 +140,20 @@ void test('public RockstarOS entry offers SIM/eSIM-led service access without cl
   assert.match(claimPackage, /#rockstar-claim=/);
   assert.match(claimPackage, /encodeRockstarEntitlementHandoffFragment/);
   assert.match(claimUI, /\/api\/rockstar\/entitlements/);
-  assert.match(claimUI, /signin-with-chatgpt\?return_to=%2Fconnect/);
-  assert.match(launch, /署名済み導入経路/);
-  assert.match(home, /href="\/connect"/);
-  assert.match(home, /<OSHeader\b/);
+  assert.match(claimUI, /account\?returnTo=%2Fconnect/);
+  assert.match(launch, /redirect\('\/os'\)/);
+  assert.match(onboarding, /署名済み購入claim/);
+  assert.match(home, /href=\{route\('\/connect'\)\}/);
+  assert.match(home, /<OSHeader title="Smith"/);
+  assert.match(osHeader, /aria-label="RockstarOS ホーム"/);
+  assert.match(home, /aria-label="追加メニュー"/);
   assert.match(osHeader, /aria-label="RockstarOSの主要サービス"/);
-  assert.match(home, /href: '\/sky'/);
-  assert.match(home, /href: '\/chat'/);
-  assert.match(home, /href="\/chat\?view=work"/);
-  assert.match(home, /\/api\/work-jobs/);
+  assert.match(home, /href=\{route\('\/#sky'\)\}/);
+  assert.match(read('lib/os-navigation.ts'), /id: 'eve', href: '\/chat'/);
+  assert.match(home, /href=\{route\('\/chat'\)\}/);
+  assert.match(read('app/chat/page.tsx'), /params\.view === 'work'/);
+  assert.match(read('components/sky-chat-workspace.tsx'), /<Workbench embedded/);
+  assert.match(read('components/workbench.tsx'), /\/api\/work-jobs/);
   assert.match(deviceHome, /requestRockstarUser\(request, db\)/);
   assert.match(deviceHome, /recentAgents/);
   assert.match(deviceHome, /recentLlm/);

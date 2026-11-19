@@ -5,7 +5,7 @@ import { catalog } from '../lib/catalog.ts';
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-void test('Sky exposes one Coconala Tool with both the order workflow and pre-application check', () => {
+void test('smis exposes one Coconala Tool with both the order workflow and pre-application check', () => {
   const coconala = catalog.filter((tool) => tool.id === 'coconala');
   assert.equal(coconala.length, 1);
   assert.equal(catalog.some((tool) => tool.id === 'coconala-team-ops'), false);

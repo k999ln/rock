@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
       env, request,
-    ))) return missingRockstarServiceScope('Sky');
+    ))) return missingRockstarServiceScope('smis');
     const raw = await request.text();
     if (new TextEncoder().encode(raw).length > 1_024)
       throw new McpInspectionError('接続確認の入力が大きすぎます。', 413);
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       );
     if (error instanceof Error && error.message === 'ORIGIN')
       return Response.json(
-        { error: 'このSky画面から確認してください。' },
+        { error: 'このSmith画面から確認してください。' },
         { status: 403, headers },
       );
     if (error instanceof McpInspectionError)

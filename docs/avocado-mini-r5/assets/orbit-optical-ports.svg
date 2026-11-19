@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="610" viewBox="0 0 1200 610" role="img" aria-labelledby="title desc">
+  <title id="title">Orbitの同一本体における壁正面と携行側面の二出口光路仮説</title>
+  <desc id="desc">壁に収納したときは正面cap、外したときは側面へ同じ光学engineの出力を向ける比較案。実光路、寸法、収納、安全は未検証。</desc>
+  <rect width="1200" height="610" fill="#f7f9fb"/>
+  <text x="42" y="55" fill="#17273a" font-family="Arial, sans-serif" font-size="27" font-weight="700">同じcoreで壁と携行をつなぐ「二出口」仮説</text>
+  <text x="42" y="87" fill="#57687b" font-family="Arial, sans-serif" font-size="16">側面が壁に隠れる問題を、正面capと側面開口の切替で解けるかをP1aで測る。光路図ではなく配置概念。</text>
+
+  <rect x="38" y="121" width="530" height="393" rx="13" fill="#ffffff" stroke="#cbd7e2" stroke-width="2"/>
+  <text x="60" y="157" fill="#243b55" font-family="Arial, sans-serif" font-size="22" font-weight="700">壁に収める</text>
+  <text x="60" y="184" fill="#536579" font-family="Arial, sans-serif" font-size="15">固定sleeveは保持・給電。演算はcore内。</text>
+  <rect x="64" y="222" width="188" height="240" fill="#e5e0d7"/>
+  <rect x="230" y="222" width="40" height="240" fill="#9faab3"/>
+  <rect x="249" y="238" width="100" height="208" rx="24" fill="#d6dce0" stroke="#647484" stroke-width="2"/>
+  <rect x="338" y="244" width="17" height="196" rx="6" fill="#edf1f5" stroke="#69798a"/>
+  <rect x="268" y="291" width="65" height="78" rx="7" fill="#cddcf5" stroke="#5f75a0"/>
+  <text x="300" y="328" text-anchor="middle" fill="#2b4b7a" font-family="Arial, sans-serif" font-size="12">光学engine</text>
+  <text x="300" y="345" text-anchor="middle" fill="#2b4b7a" font-family="Arial, sans-serif" font-size="11">仮置き</text>
+  <path d="M333 329 L347 329 L408 329" fill="none" stroke="#5278b3" stroke-width="4" stroke-dasharray="8 6"/>
+  <polygon points="401,322 414,329 401,336" fill="#5278b3"/>
+  <rect x="414" y="283" width="105" height="92" rx="11" fill="#e8f1ff" fill-opacity="0.77" stroke="#7a9cd0" stroke-width="2"/>
+  <text x="466" y="320" text-anchor="middle" fill="#284973" font-family="Arial, sans-serif" font-size="15">空中カード</text>
+  <text x="466" y="345" text-anchor="middle" fill="#284973" font-family="Arial, sans-serif" font-size="13">正面出口案</text>
+  <circle cx="349" cy="390" r="11" fill="#718698"/>
+  <text x="391" y="416" fill="#445c70" font-family="Arial, sans-serif" font-size="13">前縁の物理操作</text>
+  <text x="64" y="488" fill="#9b4340" font-family="Arial, sans-serif" font-size="14">側面窓と手sensorは壁内で塞がる。正面側も入力視野を要する。</text>
+
+  <rect x="632" y="121" width="530" height="393" rx="13" fill="#ffffff" stroke="#cbd7e2" stroke-width="2"/>
+  <text x="654" y="157" fill="#243b55" font-family="Arial, sans-serif" font-size="22" font-weight="700">外して使う</text>
+  <text x="654" y="184" fill="#536579" font-family="Arial, sans-serif" font-size="15">同じcoreに電池、OS、衛星送受信、Wi-Fi APが残る。</text>
+  <rect x="695" y="252" width="150" height="215" rx="32" fill="#d6dce0" stroke="#647484" stroke-width="2"/>
+  <rect x="703" y="261" width="134" height="43" rx="18" fill="#dcebea" stroke="#64888b"/>
+  <text x="770" y="286" text-anchor="middle" fill="#25575c" font-family="Arial, sans-serif" font-size="12">衛星RF窓</text>
+  <rect x="717" y="327" width="86" height="80" rx="7" fill="#cddcf5" stroke="#5f75a0"/>
+  <text x="760" y="362" text-anchor="middle" fill="#2b4b7a" font-family="Arial, sans-serif" font-size="12">同じ光学</text>
+  <text x="760" y="380" text-anchor="middle" fill="#2b4b7a" font-family="Arial, sans-serif" font-size="12">engine</text>
+  <rect x="827" y="332" width="18" height="69" rx="4" fill="#eef4fb" stroke="#7a91b2"/>
+  <path d="M803 366 L836 366 L915 366" fill="none" stroke="#5278b3" stroke-width="4" stroke-dasharray="8 6"/>
+  <polygon points="908,359 921,366 908,373" fill="#5278b3"/>
+  <rect x="922" y="323" width="183" height="91" rx="11" fill="#e8f1ff" fill-opacity="0.77" stroke="#7a9cd0" stroke-width="2"/>
+  <text x="1013" y="357" text-anchor="middle" fill="#284973" font-family="Arial, sans-serif" font-size="15">空中カード</text>
+  <text x="1013" y="382" text-anchor="middle" fill="#284973" font-family="Arial, sans-serif" font-size="13">側面出口案</text>
+  <text x="655" y="488" fill="#9b4340" font-family="Arial, sans-serif" font-size="14">取り外すと旧AirFrame・住宅scopeを失効。再校正までtapを止める。</text>
+
+  <path d="M554 318 C584 293, 604 293, 632 318" fill="none" stroke="#7a8997" stroke-width="3" stroke-dasharray="6 7"/>
+  <polygon points="622,309 635,319 620,323" fill="#7a8997"/>
+  <rect x="39" y="541" width="1123" height="44" rx="8" fill="#f8e9e6"/>
+  <text x="55" y="568" fill="#934039" font-family="Arial, sans-serif" font-size="16" font-weight="700">未証明：二つの開口・plate・sensor視野・遮光・RF・熱が、50mm光学区画と200mm以下の本体へ共存すること。</text>
+</svg>

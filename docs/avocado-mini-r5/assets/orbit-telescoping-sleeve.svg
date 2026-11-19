@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 820" role="img" aria-labelledby="title desc">
+  <title id="title">L-T 可動cup付き収納筒の寸法仮説</title>
+  <desc id="desc">186mm本体を50mm上げる時、長さ一定の可動cupも50mm上げて固定喉との重なりを増やす。仮の底壁5mm、内部すき間ゼロ、寸法余裕3mmなら全包絡194mm。内部すき間と実部品の組込、安全は未確認。</desc>
+  <defs>
+    <style>
+      .bg{fill:#f6f7f8}.panel{fill:#fff;stroke:#c8d0d5;stroke-width:2}.counter{fill:#c9b9a5}.core{fill:#bcc7cc;stroke:#56636b;stroke-width:2}.sensor{fill:#20272b}.throat{fill:#7c8c94}.cup{fill:#4b8791;fill-opacity:.72;stroke:#245963;stroke-width:2}.ghost{fill:none;stroke:#bb5961;stroke-width:3;stroke-dasharray:8 7}.line{stroke:#222e35;stroke-width:2}.dim{stroke:#d15a44;stroke-width:2;marker-start:url(#arrow);marker-end:url(#arrow)}.txt{font:16px sans-serif;fill:#243239}.small{font:13px sans-serif;fill:#37474f}.head{font:bold 22px sans-serif;fill:#17323b}.value{font:bold 18px sans-serif;fill:#d15a44}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 5 L9 1 L9 9 Z" fill="#d15a44"/></marker>
+  </defs>
+  <rect class="bg" width="1060" height="820"/>
+  <text class="head" x="42" y="42">avocadoMini L-T：可動cupが一緒に上がる収納機構（研究仮説）</text>
+  <text class="small" x="42" y="70">縦方向のみ2.5 px/mmの模式図。横幅は縮尺外。石天板20 mmを仮置きし、全高には収納筒の下端も含める。</text>
+  <rect class="panel" x="35" y="92" width="475" height="648" rx="14"/>
+  <rect class="panel" x="550" y="92" width="475" height="648" rx="14"/>
+  <text class="head" x="55" y="130">Stow：面一</text>
+  <text class="small" x="55" y="157">内部断面表示。実際の黒帯は天板内に隠れる。</text>
+  <text class="head" x="570" y="130">Ready</text>
+  <rect class="counter" x="58" y="250" width="415" height="50"/>
+  <rect class="counter" x="573" y="250" width="415" height="50"/>
+  <text class="small" x="65" y="243">家具の上面</text>
+  <text class="small" x="580" y="243">家具の上面</text>
+  <!-- fixed throat: from stone underside z=20 mm to z=130 mm -->
+  <rect class="throat" x="231" y="300" width="10" height="275"/>
+  <rect class="throat" x="351" y="300" width="10" height="275"/>
+  <rect class="throat" x="746" y="300" width="10" height="275"/>
+  <rect class="throat" x="866" y="300" width="10" height="275"/>
+  <!-- cup moves up 50 mm = 125 px -->
+  <path class="cup" d="M241 450h7v265h96v-265h7v277H241Z"/>
+  <path class="cup" d="M756 325h7v265h96v-265h7v277H756Z"/>
+  <!-- core 186 mm = 465 px; ready top moved 125 px -->
+  <rect class="core" x="250" y="250" width="92" height="465" rx="7"/>
+  <rect class="sensor" x="250" y="272" width="92" height="46"/>
+  <rect class="core" x="765" y="125" width="92" height="465" rx="7"/>
+  <rect class="sensor" x="765" y="147" width="92" height="46"/>
+  <rect class="ghost" x="750" y="603" width="122" height="124"/>
+  <text class="small" x="655" y="757">赤破線：cup固着でcoreだけ上昇すると仮244 mm</text>
+  <line class="dim" x1="480" y1="250" x2="480" y2="727"/>
+  <text class="value" x="370" y="500">191 + t</text>
+  <line class="dim" x1="1000" y1="125" x2="1000" y2="602"/>
+  <text class="value" x="882" y="390">191 + t</text>
+  <line class="dim" x1="707" y1="125" x2="707" y2="250"/>
+  <text class="value" x="616" y="192">上昇 50</text>
+  <line class="dim" x1="970" y1="602" x2="970" y2="727"/>
+  <text class="value" x="889" y="668">cup ↑50</text>
+  <text class="small" x="55" y="698">core 186 + 仮底壁 5 + t=3 → 194 mm</text>
+  <rect x="565" y="677" width="386" height="60" fill="#ffffff" fill-opacity="0.92"/>
+  <text class="small" x="570" y="695">core 186 + stroke 50 + 仮底壁 5 + t 3 − cup移動 50</text>
+  <text class="value" x="570" y="724">= 194 mm（寸法だけの仮計算）</text>
+  <text class="small" x="42" y="783">未解決：底壁上の内部すき間・cup重なり・保持爪・接点・異物挟み・停電・熱・石材施工。CADと実寸ダミーで満たせなければ撤回。</text>
+</svg>

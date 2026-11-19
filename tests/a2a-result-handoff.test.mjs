@@ -44,7 +44,7 @@ void test('refuses incomplete artifacts, malformed data, and prompts over the A2
   });
 });
 
-void test('Zema result handoff only prefills a new sibling draft and keeps fresh quote/approval gates', () => {
+void test('Eve result handoff only prefills a new sibling draft and keeps fresh quote/approval gates', () => {
   const source = readFileSync(resolve(process.cwd(), 'components/workbench.tsx'), 'utf8');
   const start = source.indexOf('function prepareResultForAnotherAgent(');
   const end = source.indexOf('async function loadUsageDetails(', start);

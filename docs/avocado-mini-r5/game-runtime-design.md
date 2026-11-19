@@ -1,6 +1,19 @@
-# avocadoMini R5 — Webゲームと現実をつなぐ実行設計
+# avocadoMini — ゲームを作る・持ち込む・遊ぶ実行設計
 
 更新: 2026-10-15。利用者の「FivePlay等をminiでも動かせる仕様に」「avocado miniの設計」を反映。主担当はMaterial Invention / avocadoMini、MAT15（JOINT）。Game / AI06はadapterを担当する。R5原本パッケージは保存時点のまま維持し、本追補を現行設計入口から参照する。
+
+## 0. ゲームの全体像（2026-10-19の照合）
+
+利用者が共有した[ゲーム調査チャット](codex://threads/01a14b2c-4506-7271-b28a-cc5cbbd6cefd)と[制作・持込み実現調査](../game-creation-and-intake-research.md)に従い、Miniのゲーム体験を「小作品を作る」だけに限定しない。確定した製品方針は **作る・他者の作品を権利のある方法で持ち込む・対応機器で遊ぶ・修正/セーブ/更新後に続ける** の両方向である。共通の作品ID/版、本人別save、Zemaの仕事をつなぐが、制作成功・取込成功・起動成功・操作成功・保存成功を別状態で記録する。
+
+| 入口 | 本人がMiniで行いたいこと | 他の実行先との分担 | 合格前に約束しないこと |
+| --- | --- | --- | --- |
+| 作る | 声/手/物理操作で目的を伝え、見積/共有先を確認し、途中版を試し、直して検収する | 対応する制作Tool、重いbuildはProまたは隔離workerへ依頼する。SkyはTool接続、Zemaは同じ仕事と成果を保持 | Mini内部だけでUnity/Unreal等の全作品をbuildできること |
+| 持ち込む | 作者の許諾済み作品や購入済み作品の正式な入口を指定し、自分のMiniで何ができるか理由付きで見る | package/URL/store/正式remote sessionを別経路で扱う。隔離診断と強いGPU/OSを要する作品はPro等で機種別に判定 | 任意binary、全store、全タイトルの無条件起動・再配布 |
+| 遊び続ける | Mini自身で合格したWeb/軽量作品を起動・操作し、中断後も同じ版とsaveに戻る。重い作品は対応機器の正式経路へ引き継ぐ | 作品/機種/OS/runtimeごとに起動・入力・save・再起動・更新後の復旧を別検証。外部gameのsaveには作者/提供元の正式interfaceを使う | Proで動いた作品がMiniでも動くこと、remote映像をMini上で見られること、外部game saveの自動取得 |
+| ゲームと現実をつなぐ | 遊び中の発想を本人の言葉でZemaの仕事にし、SkyのAgent/Toolで成果へ育てる | 作者のSDK/正式MOD/APIがある作品だけ、許可された成果をgameへ戻し結果を読む | GTA VIや任意gameの内部状態を自動で読む/書くこと |
+
+GTA VIは設計上の比較例であり、公式接続・Mini上起動・ゲーム内への書戻しの合格はない。現在の`avocadomini.si/create/`はブラウザで小作品を編集・試遊・書出し、アイデア/HTTPSデモを非公開で送る限定入口である。汎用の取込・実行・save復旧、Mini/Pro実機互換の完成には換算しない。詳細な作品台帳・権利・隔離・公開状態は[Game workstream](../workstreams/08-game-market-fund.md#game-creation-and-intake)に従う。
 
 ## 1. 製品の決定と未決定
 

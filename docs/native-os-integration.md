@@ -1,3 +1,5 @@
+2026-10-20本人訂正：現在のRockstarOS再設計が最新版。旧Buildroot/QEMUは選択再利用元であり、その完成を標準商品の前提へ戻さない。Pixel/ Mini/Pro/相棒の能力別適応と会社ロゴはdocs/device-support-architecture.md#current-device-adaptationとdata/rockstaros-device-adaptation.jsonを参照。Pixel試験は非破壊の明示許可あり、実eSIM/決済の受入は別gate。
+
 # Rock star OS — native OSの統合と現行方針
 
 現在の製品要望は [製品ベース](product-baseline.md)、実装順と承認範囲は [CHECKPOINT](../CHECKPOINT.md) と [承認記録](execution-approval-20260909.md)。main/native/設計の統合を先行し、下記の旧N順序を最新入口と混同しない。

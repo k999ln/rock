@@ -1,0 +1,36 @@
+{
+  "schema": "rockstaros.cell-power-coupon/1",
+  "status": "routed_source_unreviewed",
+  "scope": "5V evaluation load switch only, external current limit required",
+  "ic": "TPS22965DSGR",
+  "icPinNets": {
+    "1": "VIN5",
+    "2": "VIN5",
+    "3": "ON",
+    "4": "VIN5",
+    "5": "GND",
+    "6": "CT",
+    "7": "VOUT5",
+    "8": "VOUT5",
+    "9": "GND"
+  },
+  "source": "https://www.ti.com/lit/ds/symlink/tps22965.pdf",
+  "boardMm": [
+    28,
+    23,
+    1.6
+  ],
+  "manufacturingReleased": false,
+  "ercDrcExecuted": false,
+  "physicalAccepted": false,
+  "sourceOnly": true,
+  "exclusions": [
+    "Mini mainboard",
+    "current limit",
+    "reverse current blocking",
+    "watchdog",
+    "independent safety cutoff",
+    "HDMI/USB backfeed rejection"
+  ],
+  "powerBudget": "5V external current-limited supply; 2A is study envelope, not validated rating"
+}

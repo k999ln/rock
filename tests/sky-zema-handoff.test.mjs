@@ -22,7 +22,7 @@ function memoryStorage() {
   };
 }
 
-void test('Sky request is consumed by the matching Zema Tool exactly once', () => {
+void test('smis request is consumed by the matching Eve Tool exactly once', () => {
   const storage = memoryStorage();
   queueSkyZemaHandoff(
     'mr-citations',

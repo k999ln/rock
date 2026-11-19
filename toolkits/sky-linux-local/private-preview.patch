@@ -1,0 +1,56 @@
+--- a/shell/src/debug/java/dev/rock/shell/RockstarOsActivity.java
++++ b/shell/src/debug/java/dev/rock/shell/RockstarOsActivity.java
+@@ -84,6 +84,10 @@
+             button(body, "Noahを開く", () -> open("/#timeline"));
+             button(body, "コミュニティーを開く", () -> open("/#communities"));
+             button(body, "Webの設定", () -> open("/settings"));
++        if (EvePrivatePreview.allowed(this)) {
++            button(body, "このPCの最新Eveで試す（USB接続）", () -> choosePrivatePreview(true));
++            if (EvePrivatePreview.selected(this)) button(body, "通常サイトの接続へ戻す", () -> choosePrivatePreview(false));
++        }
+             section(body, "接続と同期");
+         status.setTextSize(15); status.setTextColor(ink);
+         status.setPadding(0, dp(24), 0, dp(12)); body.addView(status);
+@@ -122,6 +126,22 @@
+             bars.setSystemBarsAppearance(light, light);
+         }
+         if (saved == null && !settingsScreen) open("/os/eve");
++    }
++
++    private void choosePrivatePreview(boolean preview) {
++        status.setText("実行中の仕事と、前の停止確認を確かめています…");
++        new Thread(() -> {
++            try {
++                EvePrivatePreview.select(this, preview);
++                main.post(() -> {
++                    if (isFinishing() || isDestroyed()) return;
++                    if (EveAccountSync.linked(this)) open(preview?"/os/eve/module":"/os/eve");
++                    else startActivity(new Intent(this, EveAccountActivity.class));
++                });
++            } catch (Exception unavailable) {
++                main.post(() -> { if (!isFinishing() && !isDestroyed()) status.setText("接続を切り替えていません。仕事と停止の状態、Linuxの接続を確認してください。"); });
++            }
++        }, "eve-private-preview").start();
+     }
+ 
+     private Button cacheButton(LinearLayout body,String label,Runnable action) {
+@@ -259,7 +279,7 @@
+     private void open(String path) {
+         // An existing device session is never converted into a browser login.
+         if (PixelHostPrerequisites.available(this) && EveAccountSync.linked(this)) startHost();
+-        Intent browser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://avoado.si" + path));
++        Intent browser = new Intent(Intent.ACTION_VIEW, Uri.parse((EvePrivatePreview.selected(this)?EvePrivatePreview.ORIGIN:"https://avoado.si") + path));
+         browser.addCategory(Intent.CATEGORY_BROWSABLE);
+         try { startActivity(browser); }
+         catch (android.content.ActivityNotFoundException unavailable) { status.setText("ブラウザを有効にして、https://avoado.si を開いてください。"); }
+--- a/shell/src/debug/java/dev/rock/shell/PixelHostPrerequisites.java
++++ b/shell/src/debug/java/dev/rock/shell/PixelHostPrerequisites.java
+@@ -6,7 +6,7 @@
+ /** Read-only prerequisite check: a UI launch is never a pairing/key enrollment. */
+ final class PixelHostPrerequisites {
+     static boolean available(Context context) {
+-        if (!"https://avoado.si".equals(EveAccountSync.endpoint(context))) return false;
++        if (!"https://avoado.si".equals(EveAccountSync.endpoint(context)) && !EvePrivatePreview.selected(context)) return false;
+         if (!SkyLinuxBridge.paired(context)) return false;
+         try {
+             KeyStore store = KeyStore.getInstance("AndroidKeyStore");

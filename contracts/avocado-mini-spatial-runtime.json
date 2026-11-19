@@ -1,0 +1,235 @@
+{
+  "schema": "rockstaros.mini-spatial-runtime-design/1",
+  "status": "partial_local_prototype_full_contract_pending",
+  "design": "docs/avocado-mini-r5/spatial-computer-use-design.md",
+  "implemented": false,
+  "physicalAccepted": false,
+  "manufacturingReleased": false,
+  "coordinateConvention": {
+    "handedness": "right",
+    "linearUnit": "m",
+    "placeAxes": {
+      "x": "right",
+      "y": "forward",
+      "z": "up"
+    },
+    "rotation": "normalized_quaternion",
+    "transformMeaning": "T_AB maps coordinates in frame B into frame A",
+    "frames": [
+      "place",
+      "body",
+      "sensor",
+      "hand",
+      "object",
+      "output_surface"
+    ],
+    "foreignConvention": "explicit_adapter_conversion_required",
+    "remoteClock": "offset_and_uncertainty_required_monotonic_clocks_not_directly_comparable"
+  },
+  "coverage": {
+    "domain": "owner_approved_place_geometry",
+    "observationAndInput": "separate_measured_masks_with_validity",
+    "visibility": "function_of_object_pose_viewer_pose_and_environment",
+    "unmeasuredIsAvailable": false,
+    "silentlyShrinkDeclaredDomain": false,
+    "fullRangeOpticsResolved": false
+  },
+  "messages": {
+    "observation": {
+      "schema": "rockstaros.spatial-observation/1",
+      "required": [
+        "sensorId",
+        "bootId",
+        "sequence",
+        "frameId",
+        "calibrationId",
+        "placeEpoch",
+        "observedMonoNs",
+        "expiresMonoNs",
+        "pose",
+        "units",
+        "errorBound",
+        "trackingState"
+      ],
+      "grantsAuthority": false
+    },
+    "intent": {
+      "schema": "rockstaros.spatial-intent/1",
+      "required": [
+        "intentId",
+        "ownerSessionRef",
+        "jobId",
+        "objectId",
+        "sceneRevision",
+        "inputObservationRefs",
+        "verb",
+        "arguments",
+        "targetAppRef",
+        "deadline",
+        "grantRef"
+      ],
+      "plannerMayIssueGrant": false
+    },
+    "receipt": {
+      "schema": "rockstaros.spatial-action-receipt/1",
+      "required": [
+        "actionId",
+        "jobId",
+        "targetAppRef",
+        "beforeObservationRef",
+        "afterObservationRef",
+        "outcome",
+        "artifactRef",
+        "usageRef",
+        "reconciliationRequired"
+      ],
+      "modelGeneratedReceiptsAccepted": false
+    }
+  },
+  "localControlTransport": {
+    "candidate": "unix_domain_socket_with_peer_credentials_and_existing_owner_binding",
+    "lengthPrefixBytes": 4,
+    "payloadEncoding": "UTF-8_JSON",
+    "maxPayloadBytes": 65536,
+    "rawMediaInControlMessage": false,
+    "unknownSchemaOrAuthorityFields": "reject",
+    "mcuProtocol": "contracts/avocado-mini-supervisor.json remains separate"
+  },
+  "appExecution": {
+    "preferred": "dedicated_tool_or_api",
+    "fallback": "explicitly_authorized_accessibility_or_capture_input_adapter",
+    "linuxReference": "XDG_Desktop_Portal_RemoteDesktop_and_ScreenCast_on_supported_Wayland_hosts",
+    "arbitraryShellOrRootApi": false,
+    "requiredBinding": [
+      "owner",
+      "device",
+      "app_or_window",
+      "stream",
+      "observed_frame",
+      "scene_revision",
+      "object_revision",
+      "action_id",
+      "scope",
+      "expiry"
+    ],
+    "focusOrGeometryChanged": "invalidate_and_reobserve",
+    "unknownOutcome": "reconcile_existing_action_id_no_automatic_repeat"
+  },
+  "deviceStates": [
+    "booting",
+    "owner_required",
+    "calibrating",
+    "ready",
+    "degraded",
+    "output_stopped",
+    "recovery_required"
+  ],
+  "actionStates": [
+    "prepared",
+    "awaiting_approval",
+    "running",
+    "succeeded",
+    "failed",
+    "cancelled",
+    "unknown"
+  ],
+  "billing": "reuse_existing_owner_entitlement_quote_reservation_usage_and_invoice_no_new_pricing",
+  "opticalRequirement": "non_dazzling_output_physical_validation_required",
+  "validationPlan": [
+    "SC01",
+    "SC02",
+    "SC03",
+    "SC04",
+    "SC05",
+    "SC06",
+    "SC07",
+    "SC08",
+    "SC09",
+    "SC10"
+  ],
+  "physicalPassCount": 0,
+  "implementation": {
+    "path": "systems/rock-star-os/targets/avocado-mini/spatial/",
+    "input": "synthetic-pointer",
+    "localDraftOperation": true,
+    "realSensors": false,
+    "eveEndToEnd": false,
+    "distributedNodeTransport": false,
+    "fullContractImplemented": false,
+    "cameraApiAdapter": true,
+    "depthAndHandDriver": false,
+    "measuredOutputLeaseCoordinator": true,
+    "nativeStereoObserverSource": true,
+    "nativeStereoPhysicallyAccepted": false,
+    "nativeStereoActionEligible": false,
+    "sourceRasterPreview": true,
+    "d405DepthSource": true,
+    "d405PhysicallyAccepted": false,
+    "d405ActionEligible": false
+  },
+  "distributedOutputProposal": {
+    "identityAndPermissionAuthority": "Mini existing owner and Broker",
+    "nodeFields": [
+      "nodeId",
+      "owner",
+      "placeEpoch",
+      "transform",
+      "calibrationRevision",
+      "calibrationExpiry",
+      "outputRegion",
+      "viewerConditions",
+      "health",
+      "frameId"
+    ],
+    "handoff": "same action ID; single input focus; no implicit redispatch",
+    "failure": "expired calibration or disconnect removes output region",
+    "billingChanged": false,
+    "implemented": false,
+    "hostCoordinatorImplemented": true
+  },
+  "outputStages": [
+    "scene-prepared",
+    "source-raster-ready",
+    "calibrated-warp-ready",
+    "software-presented",
+    "scanout-observed",
+    "optical-frame-observed",
+    "viewer-visible"
+  ],
+  "stageEquivalenceForbidden": true,
+  "selectedOpticalCell": "docs/avocado-mini-r5/factory-development/selected-cell.json",
+  "leairrDepthPlan": {
+    "source": "systems/rock-star-os/targets/avocado-mini/spatial/leairr-prewarp.mjs",
+    "stage": "optical-coordinate-plan",
+    "physicalEligible": false,
+    "bridgeImplemented": false,
+    "calibrationRequired": true,
+    "studyDepthOffsetMm": [
+      -20,
+      20
+    ]
+  },
+  "goD405ObservationHost": {
+    "source": "systems/rock-star-os/targets/avocado-mini/spatial/go-d405-preview-host.mjs",
+    "stage": "source_only_not_device_accepted",
+    "pixelOutputImplemented": false,
+    "spatialActionEligible": false,
+    "physicalAccepted": false,
+    "sdkSettingsConsentRequired": true
+  },
+  "imageLocationNoPlateOrMembrane": true,
+  "handImagePreview": {
+    "source": "systems/rock-star-os/targets/avocado-mini/spatial/hand-preview-host.mjs",
+    "stage": "source_only_ephemeral_local_draft",
+    "physicalAccepted": false,
+    "metricSpatialTap": false,
+    "externalToolOrBillingAuthority": false,
+    "requiresSuppliedPinnedModelAndExactCamera": true
+  },
+  "opticalExitGeometry": {
+    "source": "systems/rock-star-os/targets/avocado-mini/spatial/optical-exits.mjs",
+    "scope": "ideal-empty-enclosure-ray-geometry",
+    "physicalVisible": false,
+    "grantsAuthority": false
+  }
+}

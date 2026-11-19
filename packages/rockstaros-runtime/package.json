@@ -1,0 +1,26 @@
+{
+  "name": "@rockstaros/runtime",
+  "version": "1.0.0-dev.7",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./node": "./dist/node-host.mjs",
+    "./host": "./dist/service-host.mjs",
+    "./linux": "./dist/linux-manager-executor.mjs"
+  },
+  "bin": {
+    "rockstar-host": "./dist/host-cli.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --experimental-strip-types --test test/*.test.mjs"
+  }
+}

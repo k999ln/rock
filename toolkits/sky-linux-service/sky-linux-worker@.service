@@ -1,0 +1,29 @@
+[Unit]
+Description=Sky admitted Linux job for workspace %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=sky-%i
+Group=sky-%i
+WorkingDirectory=/opt/rock
+EnvironmentFile=/etc/sky-linux/worker-%i.env
+ExecStart=/usr/bin/node /opt/rock/toolkits/sky-linux-service/worker.mjs
+TimeoutStartSec=300
+TimeoutStopSec=20
+KillMode=control-group
+MemoryMax=3G
+CPUQuota=200%%
+TasksMax=64
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/sky-%i/sky-private
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LimitCORE=0
+
+[Install]
+WantedBy=multi-user.target

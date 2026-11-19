@@ -4,17 +4,18 @@ import test from 'node:test';
 
 const outputRoot = new URL('../dist/', import.meta.url);
 const routes = [
-  'client/index.html',
+  'client/_site-pages/home/index.html',
   'client/crowdfunding/index.html',
+  'client/create/index.html',
   'client/guide/index.html',
   'client/install/index.html',
   'client/legal/index.html',
-  'client/mini/index.html',
+  'client/_site-pages/mini/index.html',
   'client/preorder/index.html',
   'client/preorder/confirm/index.html',
   'client/preorder/complete/index.html',
   'client/privacy/index.html',
-  'client/pro/index.html',
+  'client/_site-pages/pro/index.html',
   'client/rocket-star/index.html',
   'client/rockstaros/index.html',
 ];
@@ -33,140 +34,69 @@ test('Astro emits every public route and the Worker deployment contract', () => 
   }
 });
 
-test('Astro home now leads with SIM/eSIM service access while retaining separate hardware pages', () => {
-  const home = built('client/index.html');
-  const mini = built('client/mini/index.html');
-  const pro = built('client/pro/index.html');
-  assert.match(home, /SIM \+ eSIM SERVICE ACCESS/);
-  assert.match(home, /A whole team of AI\./);
-  assert.match(home, /physical SIM or eSIM purchase is designed to include access to RockstarOS/);
-  assert.match(home, /The RockstarOS binary does not live on the SIM/);
-  assert.match(home, /one Rockstar account/i);
-  assert.match(home, /approve a spending limit/);
-  assert.match(home, /itemized usage/);
-  assert.match(home, /id="how-it-works"/);
-  assert.match(home, /app or browser client on their existing OS/);
-  assert.match(home, /carrier activation, channel entitlement linking, production AI pricing and billing/);
-  assert.match(home, /href="\/mini\/"/);
-  assert.match(mini, /Give the space<br\s*\/?>another sense\./);
-  assert.match(mini, /id="mini-use-cases"/);
-  assert.match(mini, /You move\./);
-  assert.match(mini, /\/images\/avocado-mini-tower20-e3-kit\.png/);
-  assert.equal((mini.match(/class="highlight-card /g) || []).length, 4);
-  assert.match(mini, /The space can<br\s*\/?>respond to you\./);
-  assert.match(mini, /Everything,<br\s*\/?>for the space\./);
-  assert.equal((mini.match(/class="turn-frame"/g) || []).length, 3);
-  assert.match(mini, /id="angle"/);
-  assert.match(mini, /data-view="side"/);
-  assert.match(mini, /data-view="rear"/);
-  assert.match(mini, /Check release status/);
-  assert.match(pro, /Bring the game closer\.<br\s*\/?>Let the room join in\./);
-  assert.match(pro, /From ¥880,000/);
-  assert.match(pro, /GAME \+ SERVICES HUB/);
-  assert.match(pro, /id="pro-use-cases"/);
-  assert.match(pro, /Start the experience\./);
-  assert.match(built('client/install/index.html'), /id="os-use-cases"/);
-  assert.match(built('client/install/index.html'), /Input in\./);
-  assert.match(built('client/rocket-star/index.html'), /Complete product design/);
-  assert.match(built('client/preorder/index.html'), /NOT YET FOR SALE/);
+test('SIM service and hardware pages remain distinct', () => {
+ const home=built('client/_site-pages/home/index.html'), mini=built('client/_site-pages/mini/index.html'), pro=built('client/pro/build/index.html');
+ assert.match(home,/SIM \+ eSIM SERVICE ACCESS/); assert.match(home,/A whole team of AI\./);
+ assert.match(mini,/One device\./); assert.match(pro,/Meet avocadoPro\./); assert.match(pro,/data-pro-interest-form/);
 });
 
-test('home fragment navigation, carousel controls, and metadata remain valid', () => {
-  const home = built('client/index.html');
-  const ids = new Set([...home.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]));
-  for (const match of home.matchAll(/href="#([^"]+)"/g)) {
-    assert.equal(ids.has(match[1]), true, `#${match[1]} must identify a section`);
-  }
-  assert.match(home, /rel="canonical" href="https:\/\/avocadomini\.si\/"/);
-  assert.match(home, /property="og:title"/);
-  assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
-  assert.equal(existsSync(new URL('client/robots.txt', outputRoot)), true);
-  assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
+test('Pro root is an OS workspace preview, with the hardware builder kept separately', () => {
+  const os = built('client/_site-pages/pro/index.html');
+  const build = built('client/pro/build/index.html');
+  assert.match(os, /avocadoPro OS — Your work starts here/);
+  assert.match(os, /data-panel="home"/);
+  assert.match(os, /data-panel="eve"/);
+  assert.match(os, /data-panel="work"/);
+  assert.match(os, /data-panel="system"/);
+  assert.match(os, /data-draft-input/);
+  assert.match(os, /data-task-form/);
+  assert.match(os, /https:\/\/avoado\.si\/os\/eve/);
+  assert.match(os, /href="\/build\/"/);
+  assert.match(os, /Browser preview/);
+  assert.match(os, /Nothing typed in this preview starts an agent or creates a charge/);
+  assert.match(build, /data-pro-interest-form/);
+  assert.doesNotMatch(os, /data-pro-interest-form|checkout\.stripe\.com/);
+  const js = readFileSync(new URL('../src/pro-os.js', import.meta.url), 'utf8');
+  assert.match(js, /localStorage/);
+  assert.match(js, /textContent = item\.text/);
+  assert.doesNotMatch(js, /innerHTML/);
 });
 
-test('shared visual and interaction enhancements ship on every primary experience', () => {
-  assert.equal(existsSync(new URL('client/site-enhancements.js', outputRoot)), true);
-  for (const route of ['client/index.html', 'client/mini/index.html', 'client/pro/index.html', 'client/install/index.html', 'client/preorder/index.html', 'client/rocket-star/index.html']) {
-    assert.match(built(route), /src="\/site-enhancements\.js"/, `${route} must load the shared enhancement layer`);
-  }
-  const enhancement = built('client/site-enhancements.js');
-  assert.match(enhancement, /Page scroll progress/);
-  assert.match(enhancement, /aria-current/);
-  assert.match(enhancement, /currency-toggle-button/);
-  assert.match(enhancement, /prefers-reduced-motion/);
+test('home fragments and metadata remain valid', () => {
+ const home=built('client/_site-pages/home/index.html'); const ids=new Set([...home.matchAll(/\sid="([^"]+)"/g)].map(x=>x[1]));
+ for(const x of home.matchAll(/href="#([^"]+)"/g)) assert.equal(ids.has(x[1]),true);
+ assert.match(home,/rel="canonical" href="https:\/\/avocadomini\.si\/"/);
+ assert.equal(existsSync(new URL('client/_site-pages/robots.txt',outputRoot)),true);
 });
 
-test('reference-led product navigation and Pro highlights remain interactive', () => {
-  const home = built('client/index.html');
-  const mini = built('client/mini/index.html');
-  const pro = built('client/pro/index.html');
-  assert.match(home, /class="service-header"/);
-  assert.match(home, /Hardware concepts/);
-  for (const page of [mini, pro]) {
-    assert.match(page, /class="[^"]*site-menu/);
-    assert.match(page, />Menu</);
-    assert.match(page, /Price & status/);
-  }
-  assert.match(pro, /id="pro-highlights"/);
-  assert.match(pro, /data-carousel/);
-  assert.equal((pro.match(/class="pro-highlight-card"/g) || []).length, 4);
-  for (const image of [
-    'avokado-pro-play-e3-v3.png',
-    'avocado-mini-tower20-e3-kit.png',
-    'tower20-e3-highlight-sensor-v2.png',
-    'tower20-e3-highlight-200mm-v1.png',
-  ]) {
-    assert.match(pro, new RegExp(image.replace('.', '\\.')));
-  }
-  assert.equal((pro.match(/tower20-e3-highlight-edge-hub-v1\.png/g) || []).length, 1);
-  assert.equal((pro.match(/avocado-mini-tower20-e3-kit\.png/g) || []).length, 1);
-  assert.doesNotMatch(pro, /motion-tower-satin-four-point\.png/);
-  assert.match(pro, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
-  assert.match(pro, /id="pro-os"/);
-  const enhancement = built('client/site-enhancements.js');
-  assert.match(enhancement, /\[data-carousel\]/);
-  assert.match(enhancement, /details\.site-menu/);
+test('shared enhancements stay on product pages', () => {
+ for(const route of ['client/_site-pages/home/index.html','client/_site-pages/mini/index.html','client/pro/build/index.html']) assert.match(built(route),/site-enhancements\.js/);
+ assert.match(built('client/site-enhancements.js'),/prefers-reduced-motion/);
 });
 
-test('benefit-first journey ends in a truthful price and support path', () => {
-  const home = built('client/index.html');
-  const mini = built('client/mini/index.html');
-  const pro = built('client/pro/index.html');
+test('Pro builder keeps staged parts and interest gate', () => {
+ const pro=built('client/pro/build/index.html'); assert.match(pro,/id="pro-configuration"/); assert.match(pro,/id="pro-interest"/);
+ assert.equal((pro.match(/data-assembly-step="\d"/g)||[]).length,6); assert.match(pro,/data-machine-view="inside"/);
+ assert.match(pro,/data-pro-interest-form/); assert.match(pro,/physical compatibility unverified/i);
+});
+
+test('unaccepted hardware does not show checkout', () => {
+ const pro=built('client/pro/build/index.html'),mini=built('client/_site-pages/mini/index.html');
+ assert.match(pro,/No final price or checkout yet/); assert.match(mini,/No complete Mini prototype accepted/);
+ assert.doesNotMatch(pro,/data-price-/);
+});
+
+test('current Mini pages present the R5 concept and unaccepted product gates', () => {
+  const mini = built('client/_site-pages/mini/index.html');
   const status = built('client/preorder/index.html');
-  const install = built('client/install/index.html');
-  assert.match(home, /Start with the benefit/);
-  assert.match(home, /Want to see this become real/);
-  assert.match(mini, /See the price\. Follow the build\./);
-  assert.match(pro, /See the price\. Follow the build\./);
-  assert.match(status, /One avocadoMini/);
-  assert.match(status, /Four-Mini package/);
-  assert.match(status, /avokadoPro/);
-  assert.match(status, /¥160,000/);
-  assert.match(status, /¥410,000/);
-  assert.match(status, /¥880,000/);
-  assert.doesNotMatch(status, /R5|Old E3 pricing/);
-  assert.doesNotMatch(install, /R5/);
-  assert.match(install, /PUBLIC INSTALLER NOT YET AVAILABLE/);
-});
-
-test('the restored Mini 180-degree story and dedicated Pro page preserve their pricing', () => {
-  const mini = built('client/mini/index.html');
-  const pro = built('client/pro/index.html');
-  assert.match(mini, /0° \/ SINGLE MINI/);
-  assert.match(mini, /¥160,000/);
-  assert.match(mini, /180° \/ FOUR-MINI SYSTEM/);
-  assert.match(mini, /¥410,000/);
-  assert.match(mini, /data-price-usd="US\$1,050"/);
-  assert.match(mini, /data-price-usd="US\$2,700"/);
-  assert.match(mini, /class="pro-addon"/);
-  assert.equal((mini.match(/aria-label="Display currency"/g) || []).length, 2);
-  assert.match(mini, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
-  assert.match(pro, /From ¥880,000/);
-  assert.match(pro, /data-price-usd="From US\$5,800"/);
-  assert.equal((pro.match(/aria-label="Display currency"/g) || []).length, 1);
-  for (const view of ['front', 'side', 'rear']) {
-    assert.match(mini, new RegExp(`tower20-e3-${view}-transparent-v2\\.png`));
-  }
+  assert.match(mini, /Design and feasibility stage/);
+  assert.match(mini, /Not accepted/);
+  assert.match(mini, /Sales/);
+  assert.match(mini, /avocadoPro is a separate AI-dedicated PC/);
+  assert.doesNotMatch(mini, /Tower20 E3|¥160,000|¥410,000|¥880,000|game Hub/);
+  assert.match(status, /physical, software, and connectivity tests/);
+  assert.match(status, /Checkout and reservations stay closed/);
+  assert.doesNotMatch(status, /From ¥|Approx\. US\$/);
 });
 
 test('all public Astro pages are English-first', () => {

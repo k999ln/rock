@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">avocadoMini Orbit L 展開襟構成の三状態と仮の断面予算</title>
+  <desc id="desc">左は面一収納、手動せり出し、携行の三状態。右は高さ186ミリメートルを仮定したRF、光学、演算、電池、ラッチの軸方向予算。部品選定、光路、通信、製造は未合格。</desc>
+  <rect width="1280" height="760" fill="#f7f9fb"/>
+  <text x="48" y="53" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#14243a">avocadoMini Orbit L — 同じ一本を収納・操作・携行へ</text>
+  <text x="48" y="83" font-family="Arial, sans-serif" font-size="16" fill="#526477">寸法は比較用仮枠。光学・RF・電池・保持の実部品は未選定、同一閉箱の合格証拠はない。</text>
+
+  <text x="106" y="137" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#263d56">Stow</text>
+  <text x="284" y="137" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#263d56">Ready</text>
+  <text x="471" y="137" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#263d56">Carry</text>
+
+  <rect x="70" y="228" width="120" height="344" rx="23" fill="#d6dde2" stroke="#60707d" stroke-width="3"/>
+  <rect x="79" y="228" width="102" height="39" rx="13" fill="#d8e9e7" stroke="#5a8181" stroke-width="2"/>
+  <rect x="77" y="267" width="106" height="39" fill="#273b4b"/>
+  <line x1="35" y1="228" x2="224" y2="228" stroke="#788a99" stroke-width="5"/>
+  <text x="59" y="607" font-family="Arial, sans-serif" font-size="15" fill="#42586c">端面と建築面が揃う</text>
+  <text x="64" y="631" font-family="Arial, sans-serif" font-size="14" fill="#536a7c">前面の像・入力は別受入</text>
+
+  <rect x="253" y="178" width="120" height="394" rx="25" fill="#d6dde2" stroke="#60707d" stroke-width="3"/>
+  <rect x="262" y="178" width="102" height="40" rx="13" fill="#d8e9e7" stroke="#5a8181" stroke-width="2"/>
+  <rect x="258" y="218" width="110" height="40" fill="#273b4b"/>
+  <path d="M244 245 L382 245 L394 285 L232 285 Z" fill="#dce7f5" stroke="#607ca1" stroke-width="3"/>
+  <line x1="222" y1="228" x2="404" y2="228" stroke="#788a99" stroke-width="5"/>
+  <text x="250" y="607" font-family="Arial, sans-serif" font-size="15" fill="#42586c">手で軸方向へせり出す</text>
+  <text x="251" y="631" font-family="Arial, sans-serif" font-size="14" fill="#536a7c">襟は別動作で開く</text>
+
+  <rect x="451" y="178" width="120" height="394" rx="25" fill="#d6dde2" stroke="#60707d" stroke-width="3"/>
+  <rect x="460" y="178" width="102" height="40" rx="13" fill="#d8e9e7" stroke="#5a8181" stroke-width="2"/>
+  <rect x="456" y="218" width="110" height="40" fill="#273b4b"/>
+  <rect x="479" y="360" width="64" height="146" rx="20" fill="#c2cbd0" stroke="#71828d" stroke-width="2"/>
+  <text x="471" y="607" font-family="Arial, sans-serif" font-size="15" fill="#42586c">演算・鍵・回線・電池</text>
+  <text x="462" y="631" font-family="Arial, sans-serif" font-size="14" fill="#536a7c">dockに必須機能を残さない</text>
+
+  <line x1="641" y1="126" x2="641" y2="685" stroke="#cbd5de" stroke-width="2"/>
+  <text x="685" y="137" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#263d56">L の軸方向の仮配置 — H186 mm</text>
+  <text x="686" y="165" font-family="Arial, sans-serif" font-size="15" fill="#6c7e90">D76 mm、展開襟最大D140 mm、設置・使用時全高≤200 mmを狙う</text>
+
+  <rect x="704" y="192" width="146" height="62" fill="#dcefeb" stroke="#5e938a" stroke-width="2"/>
+  <text x="872" y="218" font-family="Arial, sans-serif" font-size="16" fill="#225951">0–20 RF窓・携行antenna</text>
+  <text x="872" y="239" font-family="Arial, sans-serif" font-size="13" fill="#48756f">modem寸法・RF keep-out未取得</text>
+
+  <rect x="704" y="254" width="146" height="130" fill="#dce6f7" stroke="#5a77aa" stroke-width="2"/>
+  <text x="872" y="300" font-family="Arial, sans-serif" font-size="16" fill="#294f8d">20–62 光学42 mm</text>
+  <text x="872" y="322" font-family="Arial, sans-serif" font-size="13" fill="#526e98">Stow前面／Ready襟の両光路未成立</text>
+  <rect x="699" y="328" width="156" height="55" fill="#273b4b" fill-opacity="0.87"/>
+  <text x="708" y="360" font-family="Arial, sans-serif" font-size="14" fill="#ffffff">黒いsensor帯18 mm重畳</text>
+
+  <rect x="704" y="384" width="146" height="86" fill="#e8ebf0" stroke="#8493a5" stroke-width="2"/>
+  <text x="872" y="420" font-family="Arial, sans-serif" font-size="16" fill="#33485c">62–90 演算・Wi-Fi 28 mm</text>
+  <text x="872" y="442" font-family="Arial, sans-serif" font-size="13" fill="#586c7d">衛星RFをここへ収めた証拠なし</text>
+
+  <rect x="704" y="470" width="146" height="222" fill="#e8efd8" stroke="#81965d" stroke-width="2"/>
+  <text x="872" y="548" font-family="Arial, sans-serif" font-size="16" fill="#425f2e">90–166 電池bay 76 mm</text>
+  <text x="872" y="571" font-family="Arial, sans-serif" font-size="13" fill="#677e53">21700長70.15 mm＋保護・端子はCAD待ち</text>
+
+  <rect x="704" y="692" width="146" height="44" fill="#ebdfd5" stroke="#a07a65" stroke-width="2"/>
+  <text x="872" y="719" font-family="Arial, sans-serif" font-size="16" fill="#765039">166–186 latch・接点20 mm</text>
+
+  <text x="48" y="708" font-family="Arial, sans-serif" font-size="15" fill="#5c6d7c">優先試験構成。Stow像、展開襟、衛星IP→Wi-Fi、熱・安全はすべて未受入。</text>
+</svg>

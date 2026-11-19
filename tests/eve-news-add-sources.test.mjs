@@ -1,0 +1,39 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{readFileSync}from'node:fs';
+import{eveAgentFixture}from'./helpers/eve-agent-fixture.mjs';import{eveNewsWorkStore}from'../lib/eve-news-work.ts';import{runEveNewsRepair}from'../lib/eve-news-repair.ts';import{observeLlmUsage}from'../lib/sky-usage-observation.ts';
+const packet=JSON.parse(readFileSync(new URL('../toolkits/eve-news/examples/fictional-packet.json',import.meta.url)));
+const draft={headline:'架空の採決',articleText:'採決を延期した。',claimLedger:[{id:'c1',text:'採決を延期した',type:'unverified_claim',evidenceState:'unknown',sourceIds:['record-1'],reason:'要確認'}],unresolvedQuestions:[]};
+function addition(index=1){return{...packet.sources[0],sourceId:'correction-'+index,canonicalUrl:'https://example.com/fictional-correction-'+index,sourceType:'correction_or_retraction',excerpt:'架空の訂正記録。採決は延期ではなく中止した。'};}
+async function setup(t){const f=eveAgentFixture(t),store=eveNewsWorkStore(f.db,'alice',f.keys);let job=(await store.create({jobId:crypto.randomUUID(),threadId:crypto.randomUUID(),packet,draft,modelLabel:'owner-authored',saveMaterial:true})).job;job=(await store.command({jobId:job.id,revision:0,commandId:crypto.randomUUID(),action:'check'})).job;return{...f,store,job,command:(patch={})=>({jobId:job.id,revision:job.revision,commandId:crypto.randomUUID(),action:'append-sources',sources:[addition()],saveMaterial:true,reason:'架空の訂正資料を追加して再確認する',...patch})};}
+void test('Appending correction preserves old packet/draft/audit, request identity and model proposal scope; correction must be rechecked',async t=>{
+ const f=await setup(t),digest='b'.repeat(64);let j=(await runEveNewsRepair(f.db,'alice',f.keys,{jobId:f.job.id,revision:f.job.revision,commandId:crypto.randomUUID(),action:'evaluate-claim',claimId:'c1',modelLabel:'review-fixture',modelDigest:digest,consentLocal:true},{SKY_OLLAMA_BASE_URL:'http://127.0.0.1:11434'},async()=>({provider:'ollama',model:'review-fixture',text:JSON.stringify({claimId:'c1',assessment:'supported',explanation:'制御fixture',evidence:[{sourceId:'record-1',quote:'採決を延期した',relation:'supports'}]}),metering:observeLlmUsage('ollama',{model:'review-fixture',prompt_eval_count:20,eval_count:10})}),async()=>digest)).job;
+ const before=structuredClone(j),command=f.command({revision:j.revision});j=(await f.store.command(command)).job;
+ assert.equal(j.id,before.id);assert.equal(j.eveNews.threadId,before.eveNews.threadId);assert.equal(j.eveNews.requestSha256,before.eveNews.requestSha256);assert.equal(j.status,'active');assert.ok(j.steps.every(s=>!s.passed));assert.equal(j.eveNews.audit,undefined);
+ assert.deepEqual(j.eveNews.sourceRevisions[0].packet,before.eveNews.packet);assert.deepEqual(j.eveNews.sourceRevisions[0].draft,before.eveNews.draft);assert.deepEqual(j.eveNews.sourceRevisions[0].audit,before.eveNews.audit);assert.deepEqual(j.eveNews.repairAttempts,before.eveNews.repairAttempts);assert.equal(j.eveNews.repairAttempts[0].packetSequence,0);assert.equal(j.eveNews.sourceRevisions.length,1);assert.equal(j.eveNews.draft.articleText,before.eveNews.draft.articleText);
+ assert.deepEqual((await f.store.command(command)).job,j);await assert.rejects(f.store.command({...command,reason:'別内容'}),e=>e.status===409);
+ j=(await f.store.command({jobId:j.id,revision:j.revision,commandId:crypto.randomUUID(),action:'check'})).job;assert.equal(j.eveNews.audit.checks.find(c=>c.id==='correction_references').passed,false);assert.equal(j.eveNews.audit.semanticTruth,'not_verified');assert.equal(j.status,'active');
+ assert.deepEqual((await eveNewsWorkStore(f.db,'alice',f.keys).get(j.id)).eveNews.sourceRevisions,j.eveNews.sourceRevisions);
+});
+void test('Source addition requires owner consent, valid rights/unique sources, current revision and stays bounded',async t=>{
+ const f=await setup(t);await assert.rejects(eveNewsWorkStore(f.db,'bob',f.keys).command(f.command()),e=>e.status===404);
+ for(const patch of [{saveMaterial:false},{reason:''},{sources:[]},{sources:[{...addition(),rightsScope:'unknown'}]},{sources:[{...addition(),canonicalUrl:packet.sources[0].canonicalUrl}]},{sources:[{...addition(),sourceId:packet.sources[0].sourceId}]}])await assert.rejects(f.store.command(f.command(patch)));
+ let job=f.job;for(let i=1;i<=3;i++)job=(await f.store.command(f.command({revision:job.revision,sources:[addition(i)]}))).job;
+ assert.equal(job.eveNews.sourceRevisions.length,3);assert.equal(job.eveNews.packet.sources.length,5);await assert.rejects(f.store.command(f.command({revision:job.revision,sources:[addition(4)]})),e=>e.status===409);
+ await assert.rejects(f.store.command(f.command({sources:[addition(5)]})),e=>e.status===409);
+});
+void test('Concurrent additions cannot overwrite one another; stop and in-flight model fences remain authoritative',async t=>{
+ const f=await setup(t);const results=await Promise.allSettled([f.store.command(f.command()),f.store.command(f.command({sources:[addition(2)]}))]);assert.equal(results.filter(r=>r.status==='fulfilled').length,1);let j=await f.store.get(f.job.id);assert.equal(j.eveNews.packet.sources.length,3);assert.equal(j.eveNews.sourceRevisions.length,1);
+ j=(await f.store.command({jobId:j.id,revision:j.revision,commandId:crypto.randomUUID(),action:'cancel'})).job;await assert.rejects(f.store.command(f.command({revision:j.revision,sources:[addition(3)]})),e=>e.status===409);
+ const g=await setup(t);const live=await g.store.get(g.job.id);live.eveNews.repairAttempts=[{id:crypto.randomUUID(),state:'sending',leaseUntil:Date.now()+60000}];g.sqlite.prepare('UPDATE work_jobs SET payload=? WHERE id=?').run(JSON.stringify(live),live.id);await assert.rejects(g.store.command(g.command()),e=>e.status===409);
+});
+void test('Owner correction can pass reference checks while opposing claims, prior material and unresolved truth remain explicit',async t=>{
+ const f=await setup(t);let j=(await f.store.command(f.command())).job;
+ j=(await f.store.command({jobId:j.id,revision:j.revision,commandId:crypto.randomUUID(),action:'check'})).job;
+ const before=structuredClone(j),claims=[
+  {id:'original-attribution',text:'元の資料は、交通予算案の採決を延期したと記載している。',type:'attributed_claim',evidenceState:'disputed',sourceIds:['record-1'],reason:'元記録の記載。訂正との対立は未解決。'},
+  {id:'correction-attribution',text:'訂正資料は、交通予算案の採決は延期ではなく中止したと記載している。',type:'attributed_claim',evidenceState:'disputed',sourceIds:['correction-1'],reason:'訂正記録の記載。実際の採決結果は独立検証していない。'},
+ ];
+ const command={jobId:j.id,revision:j.revision,commandId:crypto.randomUUID(),action:'revise',modelLabel:'owner-edited',reason:'元記録と訂正を帰属付きの対立する主張へ分ける',draft:{...j.eveNews.draft,headline:'架空記録と訂正の対立（未確認）',articleText:claims.map(c=>c.text).join(''),claimLedger:claims,unresolvedQuestions:['元記録と訂正の関係、実際の採決結果は要確認。']}};
+ j=(await f.store.command(command)).job;assert.equal(j.eveNews.audit,undefined);assert.deepEqual(j.eveNews.packet,before.eveNews.packet);assert.deepEqual(j.eveNews.sourceRevisions,before.eveNews.sourceRevisions);assert.deepEqual(j.eveNews.revisions[0].draft,before.eveNews.draft);assert.deepEqual(j.eveNews.revisions[0].audit,before.eveNews.audit);assert.deepEqual((await f.store.command(command)).job,j);
+ j=(await f.store.command({jobId:j.id,revision:j.revision,commandId:crypto.randomUUID(),action:'check'})).job;
+ assert.equal(j.status,'review');assert.ok(j.eveNews.audit.checks.every(c=>c.passed));assert.equal(j.eveNews.audit.coverage.unmappedUnitIds.length,0);assert.equal(j.eveNews.audit.semanticTruth,'not_verified');assert.equal(j.eveNews.audit.politicalFairness,'not_evaluated');assert.ok(j.eveNews.audit.warnings.some(w=>w.includes('対立')));assert.equal(j.eveNews.draft.publicationStatus,'not_published');assert.equal(j.eveNews.externalToolSuccess,false);assert.equal(j.eveNews.usage,'not_reported');assert.ok(j.eveNews.draft.claimLedger.every(c=>c.type==='attributed_claim'&&c.evidenceState==='disputed'));assert.deepEqual((await eveNewsWorkStore(f.db,'alice',f.keys).get(j.id)).eveNews,j.eveNews);
+});

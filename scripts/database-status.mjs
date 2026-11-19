@@ -34,6 +34,11 @@ function webDomains(tables) {
   ]);
   const definitions = [
     {
+      id: 'identity',
+      label: '本人アカウント・パスキー・復旧',
+      matches: (name) => name.startsWith('jennifer_passkey_') || name === 'rockstar_accounts' || name.startsWith('rockstar_account_'),
+    },
+    {
       id: 'core',
       label: '仕事・実行・端末・基本台帳',
       matches: (name) => core.has(name),
@@ -41,7 +46,7 @@ function webDomains(tables) {
     {
       id: 'sky',
       label: 'Sky接続・Tool管理',
-      matches: (name) => name.startsWith('sky_') || name === 'agent_delegations' || name.startsWith('agent_delegation_') || name === 'a2a_usage_receipts' || name === 'a2a_live_usage_snapshots' || name === 'a2a_price_quote_consent_events',
+      matches: (name) => name.startsWith('sky_') || name.startsWith('eve_') || name === 'agent_delegations' || name.startsWith('agent_delegation_') || name === 'a2a_usage_receipts' || name === 'a2a_live_usage_snapshots' || name === 'a2a_price_quote_consent_events',
     },
     {
       id: 'marketplace',

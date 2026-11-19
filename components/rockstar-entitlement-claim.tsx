@@ -136,7 +136,7 @@ export function RockstarEntitlementClaim() {
     </div>
     {loadError === 'signin' ? <div className={styles.notice}>
       <p>利用権を確認するにはRockstar IDでサインインしてください。</p>
-      <Link href="/signin-with-chatgpt?return_to=%2Fconnect" target="_top">サインインして続ける</Link>
+      <Link href="/account?returnTo=%2Fconnect" target="_top">サインインして続ける</Link>
     </div> : loadError === 'unavailable' ? <output className={styles.error}>利用権へ接続できません。時間をおいて再読み込みしてください。</output> : !snapshot ?
       <output className={styles.loading}>Rockstar IDを確認しています…</output> : <>
         {snapshot.claimRedemptionAvailable ? <form className={styles.offerForm} onSubmit={submit}>
@@ -162,14 +162,14 @@ export function RockstarEntitlementClaim() {
               <strong>この購入に含まれる初期Agent構成: {entitlement.serviceProfile.label} {entitlement.serviceProfile.version}</strong>
               <ul>{entitlement.serviceProfile.packages.map((item) => <li key={item.packageKey}>
                 {item.name ?? item.packageKey} — 確認済みPackage。端末での導入・実行は利用者の確認後です。
-                {item.state === 'ready' ? <> <Link href={`/sky/marketplace?package=${encodeURIComponent(item.packageKey)}`} target="_top">Skyで開く</Link></> : null}
+                {item.state === 'ready' ? <> <Link href={`/sky/marketplace?package=${encodeURIComponent(item.packageKey)}`} target="_top">Smithで開く</Link></> : null}
               </li>)}</ul>
             </div> : null}
             {entitlement.status === 'active' && entitlement.serviceProfile?.state === 'review_required' ?
               <p>初期Agent構成の一部はPackageの現在のレビュー状態を確認できません。未確認のPackageは導入しません。</p> : null}
             {entitlement.status === 'active' && entitlement.serviceProfile &&
               ['not_configured', 'catalog_unavailable'].includes(entitlement.serviceProfile.state) ?
-              <p>この販売offerの初期Agent構成はまだ設定されていません。追加のAgentは<Link href="/sky" target="_top">Sky Marketplace</Link>から選べます。</p> : null}
+              <p>この販売offerの初期Agent構成はまだ設定されていません。追加のAgentは<Link href="/sky" target="_top">Smith Marketplace</Link>から選べます。</p> : null}
           </li>)}
         </ul> : <p className={styles.subtle}>このRockstar IDには、まだ購入claimが登録されていません。</p>}
       </>}

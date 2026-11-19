@@ -1,3 +1,8 @@
+import { workStore } from '@/lib/work-store';
+import { WorkError } from '@/lib/workflow';
+import { buildEveAgentRepairDraft, sameEveAgentArtifacts } from '@/lib/eve-agent-repair';
+import { encryptA2AInput } from '@/lib/a2a-input-crypto';
+import { observeStoredAgentUsage } from '@/lib/sky-usage-observation';
 import { env } from 'cloudflare:workers';
 import {
   a2aDelegationStore,
@@ -63,6 +68,7 @@ async function body(request: Request) {
 }
 
 function errorResponse(error: unknown) {
+  if (error instanceof WorkError) return json({ error: error.message }, error.status);
   if (error instanceof A2ADelegationStoreError) {
     const status =
       error.code.includes('limit')
@@ -127,13 +133,14 @@ export async function GET(request: Request) {
       budget,
       reservations,
     });
+    const finalUsage = await Promise.all(delegations.map(delegation => store.getUsageReceipt(owner, delegation.id)));
     const liveUsage = await Promise.all(delegations.map((delegation) => store.getLatestLiveUsageSnapshot(owner, delegation.id)));
     return json({
       delegations: delegations.map((delegation, index) => {
         const snapshot = liveUsage[index];
         let liveUsageSnapshot: unknown = null;
         try { liveUsageSnapshot = snapshot ? JSON.parse(snapshot.snapshotJson) : null; } catch { liveUsageSnapshot = null; }
-        return { ...delegation, liveUsageSnapshot: snapshot ? {
+        return { ...delegation, usageStatement: finalUsage[index] ? observeStoredAgentUsage(finalUsage[index]) : null, liveUsageSnapshot: snapshot ? {
           sequence: snapshot.sequence,
           providerId: snapshot.providerId,
           currency: snapshot.currency,
@@ -271,7 +278,7 @@ export async function POST(request: Request) {
     if (!priceQuote && quoteRequired)
       return json({ error: '有料Agent実行にはProvider署名済みの価格見積が必要です。', code: 'PRICE_QUOTE_REQUIRED' }, 403);
     let priceQuoteDigest = '';
-    if (message.includes('【RockstarOSで選択したSky Package】') && !bindingId)
+    if (message.includes('【RockstarOSで選択したSmith Package】') && !bindingId)
       return json({ error: '選択したPackageにはProvider署名済みbinding付き見積が必要です。', code: 'PACKAGE_RUNTIME_BINDING_REQUIRED' }, 403);
     let verifiedPackageBinding: Awaited<ReturnType<typeof verifySkyPackageRuntimeBinding>> = null;
     if (bindingId) {
@@ -334,14 +341,25 @@ export async function POST(request: Request) {
         packageRuntimeBindingDigest: bindingDigest || undefined })
       : baseDigests;
     const store = a2aDelegationStore(db);
+    const parent = await workStore(db).get(owner, parentJobId);
+    const repair = parent?.eveAgent?.repairs?.find(r => r.successorDelegationId === id || r.sourceDelegationId === predecessorDelegationId);
+    if (repair && parent) {
+      if (repair.successorDelegationId !== id || repair.sourceDelegationId !== predecessorDelegationId || repair.messageSha256 !== digests.inputSha256 || Number(deadlineAt) > repair.deadlineAt)
+        return json({ error: '保存した修正案のID・元成果・本文と一致しません。元の修正案から再開してください。', code: 'EVE_REPAIR_MISMATCH' },409);
+      const draft = await buildEveAgentRepairDraft(db,owner,parent,repair.sourceDelegationId,(env as unknown as { A2A_INPUT_ENCRYPTION_KEY?: string }).A2A_INPUT_ENCRYPTION_KEY);
+      if (repair.criteriaSha256 !== draft.criteriaSha256 || repair.objectiveSha256 !== draft.objectiveSha256 || repair.messageSha256 !== draft.messageSha256 || !sameEveAgentArtifacts(repair.sourceArtifacts,draft.inspection.artifacts))
+        return json({ error: '元成果または固定条件が変わっています。再送せず確認してください。', code: 'EVE_REPAIR_MISMATCH' },409);
+    }
     if (predecessorDelegationId) {
       const predecessor = await store.get(owner, predecessorDelegationId as string);
       if (!predecessor || predecessor.parentJobId !== parentJobId ||
         predecessor.state !== 'remote_completed' || predecessor.artifactsCaptured !== 1)
-        return json({ error: '前段Agentの完了済み成果をこのZema jobで確認できません。', code: 'A2A_PREDECESSOR_NOT_REVIEWABLE' }, 409);
+        return json({ error: '前段Agentの完了済み成果をこのEve jobで確認できません。', code: 'A2A_PREDECESSOR_NOT_REVIEWABLE' }, 409);
       if (predecessor.predecessorDelegationId && A2A_MAX_REDELEGATION_DEPTH <= 1)
         return json({ error: `Agent間の再委任は${A2A_MAX_REDELEGATION_DEPTH}段階までです。新しい独立jobを作成してください。`, code: 'A2A_PREDECESSOR_DEPTH_EXCEEDED' }, 409);
     }
+    const draftKey = (env as unknown as { A2A_INPUT_ENCRYPTION_KEY?: string }).A2A_INPUT_ENCRYPTION_KEY;
+    const pendingInput = draftKey ? await encryptA2AInput(message, draftKey, owner, id, digests.inputSha256) : null;
     const result = await store.prepare(owner, {
       ...intent,
       predecessorDelegationId: predecessorDelegationId ? predecessorDelegationId as string : null,
@@ -360,10 +378,12 @@ export async function POST(request: Request) {
     if (pool && (pool.currency !== budgetCurrency ||
       pool.budgetLimitMinor !== parentBudgetLimitMinor))
       return json({ error: 'この親jobには別の共通予算が固定されています。', code: 'PARENT_BUDGET_MISMATCH' }, 409);
+    if (pendingInput && result.delegation.state === 'awaiting_approval') await store.savePendingInput(owner, result.delegation.id, result.delegation.revision, pendingInput);
     return json(
       {
         delegation: result.delegation,
         created: result.created,
+        resumeAvailable: Boolean(pendingInput && result.delegation.state === 'awaiting_approval'),
         approval: {
           required: result.delegation.state === 'awaiting_approval',
           digest: result.delegation.authorizationSha256,

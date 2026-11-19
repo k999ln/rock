@@ -9,17 +9,17 @@ const tool = (id) => {
   return found;
 };
 
-void test('catalog candidates stay explicitly unconnected on every Sky surface', () => {
+void test('catalog candidates stay explicitly unconnected on every smis surface', () => {
   const candidate = tool('faster-whisper');
   assert.equal(skyToolUiState(candidate).label, '導入候補・本体未接続');
   assert.equal(skyToolUiState(candidate, { connectedTools: [candidate.id] }).label, '導入候補・下書きのみ');
   assert.equal(skyToolDetailActionLabel(candidate), '利用条件を見る');
 });
 
-void test('Jev Router remains PC CLI only even when a Sky registration record exists', () => {
+void test('Jev Router remains PC CLI only even when a smis registration record exists', () => {
   const router = tool('jev-router');
-  assert.equal(skyToolUiState(router).label, 'Sky未接続・PC CLIのみ');
-  assert.equal(skyToolUiState(router, { connectedTools: [router.id] }).label, 'Sky未接続・PC CLIのみ');
+  assert.equal(skyToolUiState(router).label, 'Smithではまだ使えません');
+  assert.equal(skyToolUiState(router, { connectedTools: [router.id] }).label, 'Smithではまだ使えません');
   assert.equal(skyToolDetailActionLabel(router), '導入条件を見る');
 });
 

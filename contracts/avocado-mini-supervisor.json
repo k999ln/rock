@@ -1,0 +1,29 @@
+{
+  "schema": "rockstaros.mini-supervisor/1",
+  "scope": "pico2-led-contact-engineering-bench",
+  "productionRelease": false,
+  "physicalBootAccepted": false,
+  "frame": {
+    "bytes": 20,
+    "byteOrder": "little-endian",
+    "fields": [
+      { "offset": 0, "bytes": 2, "name": "magic", "value": "MN" },
+      { "offset": 2, "bytes": 1, "name": "version", "value": 1 },
+      { "offset": 3, "bytes": 1, "name": "kind", "values": { "STATUS": 1, "HEARTBEAT": 2, "ARM": 3, "STOP": 4 } },
+      { "offset": 4, "bytes": 4, "name": "bootNonce" },
+      { "offset": 8, "bytes": 4, "name": "sequence" },
+      { "offset": 12, "bytes": 4, "name": "placeEpoch" },
+      { "offset": 16, "bytes": 2, "name": "flags" },
+      { "offset": 18, "bytes": 2, "name": "crc16", "algorithm": "CRC-16/CCITT-FALSE", "initial": 65535, "polynomial": 4129, "coverageBytes": 18 }
+    ]
+  },
+  "flags": { "STOP_OK": 1, "LATCH_OK": 2, "TEMP_OK": 4, "POWER_OK": 8, "DOCKED": 16, "LOCAL_BUTTON": 32, "OUTPUT_ON": 64, "FAULT": 128 },
+  "timingMs": { "statusPeriod": 50, "hostStatusFreshness": 200, "hostHeartbeatPeriod": 100, "mcuHeartbeatExpiry": 500, "benchArmLease": 250, "watchdog": 1000 },
+  "timingMeaning": "configured software limits, not measured real-time or optical safety guarantees",
+  "hostDriverCommands": ["HEARTBEAT", "STOP"],
+  "armMeaning": "LED-only firmware test protocol; not exposed by Linux driver; requires healthy inputs, current boot/epoch, fresh heartbeat, local button edge, monotonic sequence",
+  "stopMeaning": "any CRC-valid STOP revokes output and local arm regardless of old boot/epoch; malformed frames never authorize output",
+  "detachMeaning": "epoch increments on dock state change; output, arm and heartbeat revoked; epoch overflow fails closed until reboot",
+  "identityMeaning": "boot nonce and USB serial select/reset the bench session; neither is signed hardware identity or biometric authorization",
+  "billing": "reuse existing RockstarOS owner contract; no new pricing or device base charge"
+}

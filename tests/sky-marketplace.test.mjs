@@ -25,7 +25,7 @@ const [page, marketplace, sky, registry, detail, publisher, overview, coconala, 
   readFile(new URL('../components/esim-purchase-setup.tsx', import.meta.url), 'utf8'),
 ]);
 
-void test('Sky paid-order eSIM setup is owner-driven, does not issue profiles, and protects install material', () => {
+void test('smis paid-order eSIM setup is owner-driven, does not issue profiles, and protects install material', () => {
   assert.match(commerce, /order\.status === 'paid' && <EsimPurchaseSetup/);
   assert.match(esimPurchase, /body \? 'install-material' : 'status'/);
   assert.match(esimPurchase, /action: 'fetch'/);
@@ -69,7 +69,7 @@ void test('checkout preserves the server reason for a conflict after refreshing 
   assert.doesNotMatch(checkout, /販売条件を更新しました/);
 });
 
-void test('Sky exposes a separate AI and automation marketplace from its main app view', () => {
+void test('smis exposes a separate AI and automation marketplace from its main app view', () => {
   assert.match(page, /SkyMarketplace/);
   assert.match(sky, /href="\/sky\/marketplace"/);
   assert.match(marketplace, /href="\/studio"/);
@@ -91,7 +91,7 @@ void test('all catalog tools remain individually discoverable without claiming c
   assert.equal(catalog.filter((tool) => tool.status === 'candidate').length, 22);
   assert.match(marketplace, /catalog\.filter/);
   assert.match(marketplace, /skyToolUiState\(tool, runtimeContext\)/);
-  assert.equal(skyToolUiState(catalog.find((tool) => tool.id === 'jev-router')).label, 'Sky未接続・PC CLIのみ');
+  assert.equal(skyToolUiState(catalog.find((tool) => tool.id === 'jev-router')).label, 'Smithではまだ使えません');
   assert.match(marketplace, /掲載数は、接続済み・本番稼働数を意味しません/);
   assert.match(marketplace, /\/sky\/tools\/\$\{encodeURIComponent\(tool\.id\)\}/);
   assert.match(overview, /tool\.cost/);
@@ -106,13 +106,14 @@ void test('catalog icons reveal capabilities without starting or connecting a to
   for (const surface of [marketplace, sky, detail, coconala])
     assert.match(surface, /<SkyToolOverview/);
   assert.match(overview, /<DialogTitle className=\{styles\.title\}>\{tool\.name\}<\/DialogTitle>/);
-  assert.match(overview, /<DialogDescription className=\{styles\.description\}>\{tool\.description\}<\/DialogDescription>/);
+  assert.match(overview, /<DialogDescription className=\{styles\.description\}>\{skyToolDescription\(tool\)\}<\/DialogDescription>/);
   assert.match(overview, /<dd>\{state\.label\}<\/dd>/);
-  assert.match(overview, /<dd>\{tool\.environment\}<\/dd>/);
-  assert.match(overview, /<dd>\{tool\.cost\}<\/dd>/);
+  assert.match(overview, /<dd>\{skyToolEnvironment\(tool\)\}<\/dd>/);
+  assert.match(overview, /<dd>\{skySystemWords\(tool\.cost\)\}<\/dd>/);
+  assert.match(overview, /<details><summary>詳しい動作環境と元の説明<\/summary><p>\{tool\.environment\}<\/p><p>\{tool\.description\}/);
 });
 
-void test('Sky home icon opens a single overview with the next action', () => {
+void test('smis home icon opens a single overview with the next action', () => {
   assert.match(sky, /<SkyToolCard/);
   assert.match(sky, /onInspect=\{\(\) => \{[^}]*setSelected\(tool\)/);
   assert.match(sky, /state=\{skyToolUiState\(selected,/);
@@ -128,19 +129,20 @@ void test('third-party marketplace entries come only from the verified public Re
   assert.match(marketplace, /審査済みは実行・購入・自動接続の完了を意味しません/);
 });
 
-void test('Sky Market treats LLMs as MCP-routable marketplace entries', () => {
+void test('smis Market treats LLMs as MCP-routable marketplace entries', () => {
   assert.equal(skyAiMarketplaceEntries.length, 6);
+  assert.ok(!skyAiMarketplaceEntries.some(entry=>entry.id==='pollinations')); // Dedicated free service has no generic MCP adapter.
   assert.ok(skyAiMarketplaceEntries.some((entry) => entry.id === 'local-model'));
   assert.ok(skyAiMarketplaceEntries.every((entry) => entry.mcpRoute.includes('MCP')));
-  assert.match(marketplace, /LLM・AIモデル/);
-  assert.match(marketplace, /選んだLLMはSky BrokerからMCP Toolを呼び出します/);
+  assert.match(marketplace, /AIモデル/);
+  assert.match(marketplace, /AIが提案した操作は、Smithが権限とあなたの確認を確かめてから実行します/);
   assert.match(marketplace, /接続設定を開く/);
 });
 
-void test('Sky Market quotes the explicit ten percent commission without charging at UI stage', () => {
+void test('smis Market quotes the explicit ten percent commission without charging at UI stage', () => {
   assert.equal(marketplaceCommissionMinor(10_000), 1_000);
   assert.equal(marketplaceProviderNetMinor(10_000), 9_000);
-  assert.match(marketplace, /売上が発生するToolのSky手数料は10%/);
+  assert.match(marketplace, /売上が発生するツールのSmith手数料は10%/);
 });
 
 void test('browser host detection is conservative and handles desktop-class iPad user agents', () => {

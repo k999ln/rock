@@ -13,10 +13,10 @@ import { workStore } from '../lib/work-store.ts';
 import { createWorkJob } from '../lib/workflow.ts';
 
 const owner = 'synthetic-owner';
-function database(t) {
+function database(t, beforeAgentMigration=false) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(file => file.endsWith('.sql')).sort())
+  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter(file => file.endsWith('.sql') && (!beforeAgentMigration || file<'0081_')).sort())
     sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
   const db = {
     prepare(sql) { return {
@@ -40,8 +40,8 @@ function database(t) {
   };
   return { db, sqlite };
 }
-async function fixture(t, budget = 100_000, saveResult = false) {
-  const { db, sqlite } = database(t);
+async function fixture(t, budget = 100_000, saveResult = false, beforeAgentMigration=false) {
+  const { db, sqlite } = database(t,beforeAgentMigration);
   const parent = createWorkJob({ id: randomUUID(), templateId: 'article', title: 'Synthetic cloud test' });
   await workStore(db).create(owner, parent);
   const now = Date.now();
@@ -227,4 +227,23 @@ void test('common payment HTTP path uses owner-scoped summaries and explicit app
   assert.equal(response.status,401);
   response=await handleSkyPayments(new Request(`${origin}/api/sky/payments/checkout`,{method:'POST',headers:{origin:'https://other.test','oai-authenticated-user-id':owner},body:JSON.stringify(f.input)}),'checkout',f.db,runtime,f.stripe.fetcher);
   assert.equal(response.status,403);
+});
+
+void test('Agent payment migration preserves every existing LLM payment field and its source/immutability constraints',async t=>{
+ const f=await fixture(t,100000,false,true);await f.reserve();await f.request(async()=>response());const statement=await cloudUsageStatement(f.db,owner,f.record.id),now=Date.now();
+ f.sqlite.prepare('INSERT INTO sky_usage_payments(id,owner_user_id,source_id,source_digest,amount_minor,currency,mode,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?)').run('legacy-payment',owner,f.record.id,statement.digest,statement.amountMinor,statement.currency,'test',now,now);
+ f.sqlite.prepare('UPDATE sky_usage_payments SET state=?,session_id=?,payment_intent_id=?,refunded_minor=?').run('partially_refunded','cs_legacy','pi_legacy',1);
+ const before=f.sqlite.prepare('SELECT * FROM sky_usage_payments').get(),migration=readFileSync(new URL('../drizzle/0081_sky_agent_invoice_preparation.sql',import.meta.url),'utf8');
+ f.sqlite.exec('BEGIN IMMEDIATE');try{f.sqlite.exec(migration);f.sqlite.exec('COMMIT');}catch(e){f.sqlite.exec('ROLLBACK');throw e;}
+ const after=f.sqlite.prepare('SELECT * FROM sky_usage_payments').get();for(const [key,value] of Object.entries(before))assert.equal(after[key],value);assert.equal(after.source_kind,'cloud_llm');assert.equal(after.agent_source_id,null);assert.equal(after.confirmation_id,null);
+ assert.deepEqual(new Set(f.sqlite.prepare('PRAGMA foreign_key_list(sky_usage_payments)').all().map(x=>x.table)),new Set(['remote_ai_text_executions','agent_delegations']));
+ assert.throws(()=>f.sqlite.exec('UPDATE sky_usage_payments SET amount_minor=amount_minor+1'),/IMMUTABLE/);assert.throws(()=>f.sqlite.exec('UPDATE sky_usage_payments SET refunded_minor=0'),/IMMUTABLE/);assert.throws(()=>f.sqlite.exec('DELETE FROM sky_usage_payments'),/IMMUTABLE/);
+ const rows=await skyUsagePayments(f.db,runtime,async()=>assert.fail('list is read-only')).list(owner);assert.equal(rows[0].source,'cloud_llm');assert.equal(rows[0].sourceId,f.record.id);assert.equal(rows[0].status,'partially_refunded');
+});
+void test('interrupted Agent payment rebuild rolls back the original LLM record without dropping its old constraints',async t=>{
+ const f=await fixture(t,100000,false,true);await f.reserve();await f.request(async()=>response());const statement=await cloudUsageStatement(f.db,owner,f.record.id),now=Date.now();
+ f.sqlite.prepare('INSERT INTO sky_usage_payments(id,owner_user_id,source_id,source_digest,amount_minor,currency,mode,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?)').run('rollback-payment',owner,f.record.id,statement.digest,statement.amountMinor,statement.currency,'test',now,now);
+ const before=f.sqlite.prepare('SELECT * FROM sky_usage_payments').get(),migration=readFileSync(new URL('../drizzle/0081_sky_agent_invoice_preparation.sql',import.meta.url),'utf8');
+ const partial=migration.slice(0,migration.indexOf('ALTER TABLE __new_sky_usage_payments RENAME'));f.sqlite.exec('BEGIN IMMEDIATE');assert.throws(()=>f.sqlite.exec(partial+'SELECT * FROM synthetic_missing_table;'));f.sqlite.exec('ROLLBACK');
+ assert.deepEqual(f.sqlite.prepare('SELECT * FROM sky_usage_payments').get(),before);assert.throws(()=>f.sqlite.exec('DELETE FROM sky_usage_payments'),/IMMUTABLE/);assert.equal(f.sqlite.prepare("SELECT count(*) n FROM sqlite_master WHERE name='__new_sky_usage_payments'").get().n,0);
 });

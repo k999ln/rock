@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="t d">
+  <title id="t">avocadoMini F/L端面の光学と衛星antenna参照寸法の衝突</title>
+  <desc id="d">F内径64ミリ、L内径72ミリの理想円へ、一択像用38または40ミリ角の光学窓と、45ミリ角の参照衛星patch antennaを同時に上向きに置こうとした概念図。両者は重なる。参照patchの試験ground plane70ミリ角は両方の円に収まらない。実製品CADやRF試験ではない。</desc>
+  <rect width="1200" height="690" fill="#f6f8fa"/>
+  <text x="42" y="54" font-family="Arial, sans-serif" font-size="27" font-weight="700" fill="#17293d">端面に「像」と「空を見る衛星antenna」を同時に置けるか</text>
+  <text x="42" y="86" font-family="Arial, sans-serif" font-size="16" fill="#4f6072">寸法は公開部品と仮枠による平面の反証。実際の光路・放射性能・固定・公差は未検証。</text>
+
+  <text x="69" y="147" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#1f405b">F 密閉前面 / 内径64 mm</text>
+  <circle cx="260" cy="334" r="128" fill="#e9eef2" stroke="#4d6578" stroke-width="4"/>
+  <rect x="120" y="194" width="280" height="280" fill="none" stroke="#d4933f" stroke-width="3" stroke-dasharray="9 7"/>
+  <rect x="170" y="244" width="180" height="180" fill="#dc8d7c" fill-opacity="0.44" stroke="#b85845" stroke-width="3"/>
+  <rect x="184" y="258" width="152" height="152" fill="#72a5cc" fill-opacity="0.58" stroke="#39789e" stroke-width="3"/>
+  <text x="177" y="492" font-family="Arial, sans-serif" font-size="16" fill="#2a4358">38 mm 光学窓と45 mm patchは重なる</text>
+  <text x="177" y="516" font-family="Arial, sans-serif" font-size="15" fill="#4e6070">patch角は理想円へ約0.2 mm余裕</text>
+
+  <text x="448" y="147" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#1f405b">L 展開襟 / 閉鎖時内径72 mm</text>
+  <circle cx="635" cy="334" r="144" fill="#e9eef2" stroke="#4d6578" stroke-width="4"/>
+  <rect x="495" y="194" width="280" height="280" fill="none" stroke="#d4933f" stroke-width="3" stroke-dasharray="9 7"/>
+  <rect x="545" y="244" width="180" height="180" fill="#dc8d7c" fill-opacity="0.44" stroke="#b85845" stroke-width="3"/>
+  <rect x="555" y="254" width="160" height="160" fill="#72a5cc" fill-opacity="0.58" stroke="#39789e" stroke-width="3"/>
+  <rect x="716" y="302" width="48" height="48" fill="#d6c1e7" stroke="#76589a" stroke-width="3"/>
+  <text x="520" y="492" font-family="Arial, sans-serif" font-size="16" fill="#2a4358">40 mm 光学窓＋12 mm 指紋も余裕小</text>
+  <text x="520" y="516" font-family="Arial, sans-serif" font-size="15" fill="#4e6070">45 mm patchを離す中心移動は最大約4.2 mm</text>
+
+  <rect x="828" y="181" width="323" height="317" rx="14" fill="#ffffff" stroke="#cbd5de" stroke-width="2"/>
+  <text x="852" y="221" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#223b53">寸法の出所</text>
+  <rect x="854" y="245" width="24" height="24" fill="#72a5cc" stroke="#39789e" stroke-width="2"/>
+  <text x="890" y="264" font-family="Arial, sans-serif" font-size="16" fill="#344c60">端面光学38/40 mm: Mini仮説</text>
+  <rect x="854" y="289" width="24" height="24" fill="#dc8d7c" stroke="#b85845" stroke-width="2"/>
+  <text x="890" y="308" font-family="Arial, sans-serif" font-size="16" fill="#344c60">45×45×7 mm: Taoglas CGSP457.A</text>
+  <rect x="854" y="333" width="24" height="24" fill="none" stroke="#d4933f" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="890" y="352" font-family="Arial, sans-serif" font-size="16" fill="#344c60">70×70 mm: 参照試験ground</text>
+  <rect x="854" y="377" width="24" height="24" fill="#d6c1e7" stroke="#76589a" stroke-width="2"/>
+  <text x="890" y="396" font-family="Arial, sans-serif" font-size="16" fill="#344c60">12×12 mm: 指紋部品の比較寸法</text>
+  <text x="852" y="446" font-family="Arial, sans-serif" font-size="15" fill="#596c7c">正方形70 mmの対角約99 mm。</text>
+  <text x="852" y="472" font-family="Arial, sans-serif" font-size="15" fill="#596c7c">F/Lの内径64/72 mmへ平板では入らない。</text>
+
+  <line x1="43" y1="559" x2="1154" y2="559" stroke="#d1dae2" stroke-width="2"/>
+  <text x="44" y="592" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#1f405b">発明上の分岐</text>
+  <text x="44" y="622" font-family="Arial, sans-serif" font-size="16" fill="#394e60">前面は像・指入力、衛星は側面／肩の別antennaを研究。光学とRFを実基板・同一姿勢の閉箱で測る。</text>
+  <text x="44" y="652" font-family="Arial, sans-serif" font-size="15" fill="#6b7d8b">この図は特定patchの参照条件を示す。他のantenna方式の不可を証明せず、Miniの合格証拠でもない。</text>
+</svg>

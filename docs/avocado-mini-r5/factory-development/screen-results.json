@@ -1,0 +1,42 @@
+{
+  "status": "SCREEN_ONLY_NOT_RELEASE",
+  "geometry": {
+    "readyUnallocatedGapAndFaultAndCollarMm": 6,
+    "cellEndSpaceMm": 5,
+    "listed9523BoardDiameterShortfallMm": -3,
+    "listed9523BoardFitsIdealClearDiameter": false,
+    "certus9770WidthMarginBeforeMountingMm": 12
+  },
+  "energy": {
+    "nominalCellEnergyWh": 46.8,
+    "hypotheticalLoadSideEnergyWh": 33.696,
+    "hypotheticalApEnergyWh": 16,
+    "hypotheticalOtherLoadsMaxAverageW": 0.804,
+    "cm5IdleTypicalW": 2,
+    "continuousCm5IdleExceedsAvailableOtherLoad": true,
+    "twoSeriesBatteryRangeV": [
+      5,
+      8.4
+    ],
+    "certus9770InputRangeV": [
+      9.5,
+      14.5
+    ],
+    "certus9770RequiresBoostFromTwoSeriesCells": true
+  },
+  "mass": {
+    "hypothetical9770PartialMassG": 493.5,
+    "hypothetical9523BoardPartialMassG": 398.5,
+    "comparisonTargetG": 450,
+    "warning": "Includes rejected optical mass proxy, excludes many required parts; never a BOM or mass pass."
+  },
+  "blockingUnknowns": [
+    "protected battery pack length, tab and insulation",
+    "chosen modem TX peak current",
+    "regulator thermal and transient design",
+    "antenna matching and legal RF exposure",
+    "actual optical engine, drivers and view zone",
+    "all-state closed enclosure CAD",
+    "US device-specific satellite IP and Wi-Fi redistribution contract"
+  ]
+}

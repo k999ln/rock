@@ -1,4 +1,52 @@
+## 業者共通LLM/Agent計量（2026-10-22・BIL02/AI02/AI05/SKY14/SKY21）
+
+主担当Billing/ROCK。契約と未完了は[共通計量](../sky-billing.md#cross-provider-usage-observation)。既存remote-ai/A2A/Marketplace/settlementを再利用。計量fixtureと既存Provider/署名試験、型/lint/design、npm run verifyが入口。GPU/有料実行/送金は未実施。
+
+2026-10-20本人は携帯代型の固い請求を要求。契約版/同意、支払手段、確定使用量、月次明細、入金照合、督促/追加認証/再試行、未払い制限/同じ保存への復帰を一つの契約へ追跡する。現在の23件を含む集中30/30はlocal/HTTP fixtureで、実Stripe sandboxの回収試験や法的効力/回収保証ではない。販売国/契約主体/税/料金版と実Provider受入は未完了。同一契約の端末追加で基本料を重ねず、相棒の独立警報は料金と分離する。[共通適応契約](../device-support-architecture.md#current-device-adaptation)。
+
+## 料金・契約・請求の追加受入（BIL02 / ROCK、2026-10-20）
+
+本人の追加要件を[共通請求契約](../sky-billing.md#rockstar-monthly-billing-contract)へ反映した。主担当はWallet / Billing。ROCKは版付き料金・同意・原子予約・meter別計量・枠控除・重複排除・Invoice・制限/復帰・本人明細、EXTERNALはIssuer/compute/Cloud/Tool/決済/税・通信の実証拠、JOINTは同一契約の月境界・同時実行・Provider sandbox・返金/異議・復帰、OWNERは販売地域・料金枠/超過単価・税/手数料負担・日割り/猶予/契約文言を担う。既存BIL02、SKY21、SIM01を用い、fixture料金を実販売へ転用しない。検証は対象billing試験、`npm run billing:check`、`npm run baseline:check`、`npm run design:check`、`npm run project:check`、`npm run verify`。文書、Provider sandbox、実入金、本番を別段階で受け入れる。
+
+### 決済の「次の一手」と安全な自動化（2026-10-21）
+
+本人の「決済を究極にスマートにする」を[決済体験契約](../sky-billing.md#smart-payment-experience)とBIL02開発プロンプトのGAP05に反映。ROCKは本人向けの状態優先表示、明細への追跡、枠/上限を守る費用提案、結果不明の再照合を担当する。EXTERNALは料金・税・Payment/Refund/Disputeの真の状態、JOINTは同一InvoiceのSandbox一周と欠落/逆順通知、OWNERは販売可能な価格版、地域、支払同意と再試行条件を決定する。既存`/sky/payments`には直近100件の読取情報から次の安全な操作を案内する先行UIを追加した。全期間の債務判定、共通月次請求、再試行の自動化、実引落しを合格にしない。検証は`npm run typecheck`、`npm run lint:product`、既存支払い試験、`npm run verify`。
+
+## Pixel利用開始module：OS完成後に組込（SIM01・BIL02・OS10 / ROCK、2026-10-20）
+
+本人指示により[eSIM→請求提示→同意→支払い方法→Linux準備→Sky/Eve](../sim-led-product-architecture.md#pixel-service-setup)を実装する。初回引落0で月末請求を維持し、既存の契約/usage/Invoice/収納を再利用。OSと両側の有効化設定は既定無効。ROCKは状態/同意/料金版/CAS/worker証拠/停止・復帰、EXTERNALは実profile/issuer・Stripe/Android/compute、JOINTはOS完成後の同一Pixelの一周、OWNERはOS受入と料金枠・地域/端末操作。新moduleをlocal試験で受け入れても、APK/実機/eSIM/Provider/本番を完了扱いしない。検証入口は新規setup試験、既存Linux/請求回帰、type/lint、Android35 compile、design/baseline/project/full verify。次はOS受入後の実profile・支払い方法・同一workspaceの一周。
+
+現行の製品名は **Eve（イヴ、旧称Zema）**。2026-10-20の本人指示による改名で、以下のZemaは同じ製品を指す。既存契約・保存・利用権/SDK識別子は互換性を保持する。
+
+## Sky Linux 16の共通実装（2026-10-20）
+
+初期プランは月額16 USDで一定のAI・Linux利用枠を含め、対象枠の超過分だけを事前単価/本人承認上限で課金する。枠の量・対象・超過単価は未確定。既存Package審査・eSIM grant・Zema workflowを専用Linuxの使用量、月次Invoice、入金確認後の作者精算へつなぐ。未払いの新規実行制限とデータ保持/支払復帰、電子契約とsalt付きchain証明を採用。[11項目の正本](../sky-tools-complete-design.md#sky-linux-marketplace)。主担当Sky/MCPのROCK、既存SKY14/15/21・SIM01・BIL02。source/local fixtureのみで、Provider sandbox・実Linux/Pixel・本番・chain公開は未受入。新しい従量単価/無料量/上限は未確定。既存の別商品/旧台帳を新プランへ自動変更しない。
+
 # Wallet / Billing / Providers
+
+<a id="wallet-revenue-finance-20261020"></a>
+## 2026-10-20 Wallet・収益・外部金融接続（BIL02・WLT06・B03 / ROCK）
+
+本人の11項目の追加指示を[OS全体設計 §18](../rockstaros-complete-design.md#wallet-revenue-external-finance)へ反映した。主担当はWallet / Billing / Providers。ROCKは既存Earning Receipt、Billing Worker、Web/Native Wallet予約、Sky Commerce注文を再利用して台帳状態・原子的な二重分配防止・契約版別の料金判定・承認と監査を担う。EXTERNALは販売/決済/custody/払出しProviderの署名付き取引・KYC・実送金、JOINTは同一取引のsandbox/限定live縦断、OWNERはProvider、販売国、料金版、受取先署名、実資金の個別操作を担う。
+
+2026-10-21に[開発実行プロンプト](../prompts/wallet-revenue-external-finance-development.md)を保存した。main/branch/PR/同一SHA CIと既存ledger/bridge/commerce/Providerの境界を固定し、WAL01〜06に原因、修正順、否定fixture、合格証拠、未解決条件を割り当てた。プロンプト保存はruntime、Provider sandbox、実資金、branch/mainへの反映ではない。
+
+現行sourceでは`lib/earning-bridge.ts`がProvider署名と完了済み実行を照合し、`lib/earning-receipt.ts`が旧888 cents式を持つ。旧ToC課金は保留、Sky Marketの10%買い切り手数料は別経路、Rock Settlement Walletはsandboxでcustody・LIVE無効。`WLT05=done`はsource範囲、`WLT06`と`BIL02`は実取引の受入中であり、実入金/実出金を意味しない。新指示から新たな本番課金、ゲーム手数料、実資金権限を推測しない。
+
+### 修正順と合格証拠
+
+1. **契約と元帳:** 対象商品/actor/通貨/料金版/費用負担/受取先を一取引に固定し、売上候補・入金待ち・保留・確定・返金・出金指図・着金を追記記録する。実行成功やEarning Receipt単体から確定残高を増やさない。既存旧888式、Sky Market 10%、SI月額16 USD、ATM 0の適用条件を分離したfixtureを作る。
+2. **真正性と一回性:** Provider署名鍵・時刻・額・通貨・finalityと独立再照会を照合する。`providerReference`、Receipt、job、払出し指図の重複/並行/順序逆転を原子的に拒否し、同じ純入金の配分合計が確認済み純額を超えないことを一時D1/SQLiteで試す。通知だけの確定、unknown時の新規自動再送はしない。
+3. **受益者・訂正・承認:** 作者、利用者、Rock、決済Providerのlineを独立表示。受取先の本人署名・nonce・期限・失効を確認し、実資金操作を金額/宛先/費用/期限へ束縛した個別承認で監査する。部分/全額返金、chargeback、送金失敗、返金後の費用調整を元行への補正仕訳で再計算する。
+4. **外部接続:** 最初の販売・決済・払出しProviderを選んで契約/対象国/KYC/税/責任を確定し、署名付きsandboxで同一取引を入金→収益確認→分配→返金/争議→払出し失敗/再照合まで通す。最初の実transferは本人署名とProvider着金readbackの同一参照で限定受入する。provider名、資格情報、契約条件が未指定の間はLIVEを閉じる。
+
+検証入口は`node --experimental-strip-types --test tests/earning-bridge.test.mjs tests/billing-worker.test.mjs tests/settlement.test.mjs tests/wallet-backend.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs`、`npm run billing:check`、`npm run verify`。今回の文書反映はruntime修正/Provider sandbox/実資金合格ではない。次の担当は既存の台帳schema・SDK・Provider adapterを調べ、修正順1から同一artifactの証拠を足す。
+
+## 2026-10-18 native SI eSIM月額と追加LLM/Agent料金（BIL02）
+
+最新の本人指示で、native SI版はeSIM申込・導入を標準入口とし、認証済みissuerの契約終了でRockstar管理サービスを制限する。月額サービスは契約で定めた`service_activated_at`から起算し、版付き料金表で対象とする標準Cloud LLMの月間token枠を含める。追加の有料LLM/Agentは選択、見積、上限承認、実usageで月末後払いする。下記の初回有償job起算はこのnative SI月額に適用しない。単独Sky Web/PWAは別offer。詳細な状態・停止・復旧は[導入設計](../sim-led-product-architecture.md#esim-si-subscription)、料金/明細は[請求設計](../sky-billing.md#esim-si-plan)を正本とする。
+
+主担当ROCK/BIL02は既存entitlement、予算/usage、invoiceとLinux管理起動gateの接続。EXTERNALはeSIM issuer状態、LLM usage、決済。JOINTは同一owner/端末/jobでsandboxとPixelを受入。OWNERは地域、月額、token枠/換算、日割り、猶予、offline lease、単価を版付き契約で決定する。未確定額での課金を有効化しない。まず発行→開通→終了→復活と月境界、同時job cap、重複/逆順event、圏外期限、失敗/返金/異議をfixtureとProvider sandboxで検証する。合格してもOS正式署名/flash/復旧はRLS02で別受入。現時点は設計で実eSIM・本番請求・Linux adapterは未受入。検証入口は`npm run baseline:check`、`npm run design:check`、`npm run billing:check`、`npm run verify`。
 
 ## 目的
 
@@ -213,3 +261,15 @@ Workbenchでbudget minor unitsを通貨別に表示し、Provider signed final u
 ### Agent利用料の月次後払い（2026-10-15）
 
 利用者指示により、Agent利用を契約accountごとに毎月まとめて請求する方向へ更新。[請求・未払い対応設計](../sky-billing.md)で単価/見積/上限、usage照合、支払方法、通知/猶予/有料実行制限/入金復旧/適法な回収を定義。通信・端末・OS・Agentの明細は分ける。銀行口座をOSが直接凍結する権限は持たせない。後払い与信・Provider sandbox・実請求は未受入。
+
+2026-10-18補足: BIL02/ROCKの商材候補は[SI Managed Serviceの契約accountと月末請求](../sky-billing.md#rockstaros-siサービス契約と月末請求の商材案2026-10-18)。本人/支払責任者が契約と料金表・cap・支払方法を承諾した後の初回有償利用を起算とし、SIM/eSIM claimや無料閲覧を自動請求しない。米国内法人pilotを先行仮説とし、EXTERNALのProvider収納、JOINTの月末請求sandbox、OWNERの国/顧客層/価格/与信確定を別gateにする。合格条件は初回起算、月境界、同一usage一回計上、cap/与信超過拒否、決済失敗・異議・解約/復旧を同一accountで追跡すること。日本/他国と端末付きプランはそれぞれ契約/税/機種gateを通す。
+
+## CORE09 P0・Sourceの計量/請求回帰（BIL02・SKY21・WEB04 / ROCK）
+
+元の10表/11triggerを固定した検証用schemaと、現在の配信SQLの復元前提を共通化。30store試験の初期化を変更し、期待値/業務判定は維持。使用量表示の実component/parserを画面fixtureへ接続。Source集中151/151、UI/金融91/91を確認し全Node回帰を実行中。本番migration/価格/公開111は変更せず、元9失敗を本番請求の失敗と読み替えない。[受入と残差](../evidence/sky-source-regression-repair.json)。
+
+CORE09追補: Sourceの0025 watermark以降に0026〜0028がスキップされる実D1更新を再現。新0031でowner workspaceのschemaだけを追加復旧し、既存金額・仕事・暗号化内容を保つ。公開SQL/時刻を変更しない。本番DB/請求/公開配備は未実行。型/lint/schemaの受入と最終回帰は既存Source証拠へ追記する。
+
+## Agent月次準備明細（SI06 / BIL02・ROCK）
+
+[請求正本](../sky-billing.md#agent月次準備明細の保存si06--migration-0082)。原本は既存prepared支払い、保存は共有document kindを追加し並列台帳にしない。0082は旧Linux6列保持/nullable月通貨、SQL member/原本/失効/CASを強制。作者端数はsourceごとに合算、BYOK実費と基本料を混ぜない。集中38/38・実D1最終SQL11/11・実UIと全verify exit0（Node1367pass/1skip、API2018/CSV113、assets212欠損0）を限定受入。正式請求/入金/送金は別。検証: tests/sky-author-usage-agreement.test.mjs、sky-agent-monthly-migration.test.mjs、migration-union.test.mjs、npm run verify。

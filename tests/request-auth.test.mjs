@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { requestUser } from '../lib/request-auth.ts';
+import { requestUser, requestGatewayUser } from '../lib/request-auth.ts';
 
 void test('request auth prefers the stable gateway user id', async () => {
   const request = new Request('https://example.test/api/jobs', {
@@ -59,5 +59,41 @@ void test('mutations still require same origin before identity is accepted', asy
       }),
     ),
     /ORIGIN/,
+  );
+});
+
+void test('custom production gateway identities require a Sites dispatch marker', async () => {
+  await assert.rejects(
+    requestGatewayUser(
+      new Request('https://avoado.si/api/jobs', {
+        headers: { 'oai-authenticated-user-id': 'forged-owner' },
+      }),
+    ),
+    /UNAUTHORIZED/,
+  );
+  assert.equal(
+    await requestGatewayUser(
+      new Request('https://avoado.si/api/jobs', {
+        headers: {
+          'oai-authenticated-user-id': 'trusted-owner',
+          'x-dispatched-app': 'site---verified-project',
+        },
+      }),
+    ),
+    'trusted-owner',
+  );
+});
+
+void test('unknown production hosts cannot confer gateway identity', async () => {
+  await assert.rejects(
+    requestGatewayUser(
+      new Request('https://attacker.example/api/jobs', {
+        headers: {
+          'oai-authenticated-user-id': 'forged-owner',
+          'x-dispatched-app': 'site---fake',
+        },
+      }),
+    ),
+    /UNAUTHORIZED/,
   );
 });

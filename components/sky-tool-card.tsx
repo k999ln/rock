@@ -1,4 +1,5 @@
 'use client';
+import { skyToolDescription } from '@/lib/sky-tool-ui';
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -40,7 +41,7 @@ export default function SkyToolCard({
       <span className={styles.status} data-state={state.className}>
         <i aria-hidden="true" />{state.label}
       </span>
-      <p className={styles.description}>{tool.description}</p>
+      <p className={styles.description}>{skyToolDescription(tool)}</p>
       {hostMismatch ? <p className={styles.mismatch}>{hostMismatch}</p> : null}
       <footer className={styles.footer}>
         <button type="button" className={styles.details} onClick={onInspect} aria-expanded={expanded} aria-haspopup="dialog">

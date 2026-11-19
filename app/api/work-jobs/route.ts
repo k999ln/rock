@@ -1,4 +1,9 @@
+import { resolveEveAgentResults } from '@/lib/eve-agent-repair';
+import { inspectEveAgentResult } from '@/lib/eve-agent-result-check';
+import type { AgentArtifactFence } from '@/lib/work-store';
 import { env } from 'cloudflare:workers';
+import { eveAgentWorkStore } from '@/lib/eve-agent-work';
+import { eveHistoryKeys } from '@/lib/eve-history';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
@@ -82,7 +87,7 @@ export async function POST(request: Request) {
       'zema',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
       env, request,
-    ))) return missingRockstarServiceScope('Zema');
+    ))) return missingRockstarServiceScope('Eve');
     const candidate = createWorkJob(await body(request));
     const saved = await workStore(db).create(user, candidate);
     if (
@@ -107,7 +112,34 @@ export async function PATCH(request: Request) {
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
+    if (current.templateId === 'sky-linux-service')
+      throw new WorkError('専用Linuxの仕事はSmithの実行・停止・成果確認から操作してください。', 409);
     const command = parseWorkCommand(input.command);
+    if ((current.eveAgent?.repairs ?? []).some(r => r.commandId === command.id)) throw new WorkError('同じ操作IDを修正案と別の操作へ使えません。',409);
+    if (current.eveTool && command.action !== 'cancel')
+      throw new WorkError('Eveの仕事はEveの実行・成果確認から操作してください。', 409);
+    if (current.skyApp && command.action !== 'cancel')
+      throw new WorkError('Smith連携の仕事は専用の本人確認・実行経路を使ってください。', 409);
+    if (current.eveAgent && command.action === 'cancel') {
+      let keys;
+      try { keys = eveHistoryKeys((env as unknown as { EVE_HISTORY_KEYRING?: string }).EVE_HISTORY_KEYRING); }
+      catch { /* History availability must not prevent owner-authorized stopping. */ }
+      return json(await eveAgentWorkStore(database(), user, keys, (env as unknown as { A2A_INPUT_ENCRYPTION_KEY?: string }).A2A_INPUT_ENCRYPTION_KEY, (env as unknown as { SKY_AUTHOR_AGREEMENT_TRUSTED_KEYS?: string }).SKY_AUTHOR_AGREEMENT_TRUSTED_KEYS).command({ jobId: current.id, revision: input.revision, commandId: command.id, action: 'stop' }));
+    }
+    if (current.eveAgent?.stopRequestedAt !== undefined) throw new WorkError('停止要求済みです。外部Agentの状態を照合してください。', 409);
+    const artifactFence: AgentArtifactFence[] = [];
+    const artifactKey = (env as unknown as { A2A_INPUT_ENCRYPTION_KEY?: string }).A2A_INPUT_ENCRYPTION_KEY;
+    if (current.eveAgent && command.action === 'complete') {
+      const children = await a2aDelegationStore(database()).listForParent(user, current.id);
+      const receipts = await Promise.all(children.map(child => a2aDelegationStore(database()).getUsageReceipt(user, child.id)));
+      if (children.length === 0 || children.some((child, index) => child.state !== 'remote_completed' || child.artifactsCaptured !== 1 || !receipts[index])) throw new WorkError('各Agentの完了・保存成果・利用receiptを照合してから完了してください。', 409);
+      const results = await resolveEveAgentResults(database(), user, current, artifactKey);
+      if (results.length !== children.length) throw new WorkError('Agentの状態が変わっています。再読込してください。',409);
+      for (const { child, inspection, supersededBy } of results) {
+        if (inspection.status !== 'passed' && !supersededBy) throw new WorkError('保存成果の独立検査が未達です。欠落・文字数・必須文言と鍵を確認してください。', 409);
+        artifactFence.push({ delegationId: child.id, artifacts: inspection.artifacts });
+      }
+    }
     if (current.templateId === 'cloud-agent') {
       const reviewCommands = [
         ...current.events.map(({ command: event }) => event),
@@ -131,13 +163,18 @@ export async function PATCH(request: Request) {
           if (delegation.state !== 'remote_completed' || delegation.artifactsCaptured !== 1 ||
             artifacts.length === 0 || !receipt || receipt.parentJobId !== current.id)
             throw new WorkError('Agentの完了状態・保存成果・利用receiptを確認できないため、計画を進められません。', 409);
+          if (current.eveAgent) {
+            const inspection = await inspectEveAgentResult(database(), user, current.id, delegation.id, current.eveAgent.acceptance, artifactKey);
+            if (inspection.status !== 'passed') throw new WorkError('保存成果の独立検査が未達です。欠落・文字数・必須文言と鍵を確認してください。', 409);
+            if (!artifactFence.some(f => f.delegationId === delegation.id)) artifactFence.push({ delegationId: delegation.id, artifacts: inspection.artifacts });
+          }
         } else {
           throw new WorkError('Cloud Agent計画の手順が不正です。', 409);
         }
       }
     }
     const next = applyWorkCommand(current, command, input.revision);
-    if (next !== current && !(await store.update(user, next, current.revision)))
+    if (next !== current && !(await store.update(user, next, current.revision, artifactFence.length ? artifactFence : undefined)))
       throw new WorkError(
         '別の操作で更新されています。一覧を再読込してください。',
         409,

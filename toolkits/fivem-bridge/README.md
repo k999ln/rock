@@ -14,7 +14,7 @@ npm run game:bridge
 
 保存先はGit管理外の `work/fivem-bridge/fixture.sqlite`（SQLite WAL）。Ctrl-Cで停止。同じコマンドで再開し、親画面を再読込すると新しいcookieを取得します。途中のカードは元の5分期限を維持し、期限切れを自動再送しません。応答不明は同じ操作IDの「再照会」を使います。入力・通信が失敗した場合は本文を保持します。停止は次の照会で相手の一覧から外れますが、相手が既に読んだ内容の回収を保証しません。
 
-試験用DBはこのMacの単一開発者向け。OSログイン本人を前提にloopbackのみで待受け、cookieとOrigin/Host検査で他サイトからの操作を拒否します。公開認証・複数利用者の登録・本番Zema/D1同期は実装していません。仕事状態は既存 `lib/workflow.ts` とcompositionの本文検査を再利用。カード配送のreceiptがない場合はbridgeの検収endpointが完了を拒否します。本文の検査だけで実ゲーム反映済みにはしません。
+試験用DBはこのMacの単一開発者向け。OSログイン本人を前提にloopbackのみで待受け、cookieとOrigin/Host検査で他サイトからの操作を拒否します。公開認証・複数利用者の登録・本番Eve/D1同期は実装していません。仕事状態は既存 `lib/workflow.ts` とcompositionの本文検査を再利用。カード配送のreceiptがない場合はbridgeの検収endpointが完了を拒否します。本文の検査だけで実ゲーム反映済みにはしません。
 
 ## FiveMへの接続候補（未実機受入）
 
@@ -57,6 +57,6 @@ npm run verify
 
 利用者の「繋げるやつ全部となければ作成」により、対象名の回答待ちを解除。既存compositionの利用可能5 ToolをローカルAgentとして一覧化し、本人が最大6手順のAgentを作成できる。LLM推論ではない。ゲームNUIで目的・素材を依頼し、現実側で内容を承認して実処理、同じ仕事IDの最大10版を継続、成果を明示共有、検収/停止する。既存workflow契約・revision・操作IDを維持しSQLiteへ保存。ゲーム側には現実側の原稿・設定・過去版を出さず、共有した成果だけ戻す。最大100仕事/20 custom Agent、素材UTF-8 8000バイト、停止/失敗を成功に昇格しない。失敗時は設定済みAgentまたは次の版で修正する。無料記事Toolは標準設定だけでは実行できず、詳細設定が必要。
 
-Sky外部AgentはROCK_BRIDGE_SKY_ORIGIN（HTTPS origin）とROCK_BRIDGE_SKY_TOKEN（既存本人session）の明示設定で登録一覧を取得するread-only connector。資格情報はgateway内のみ。未設定・認証失敗は未接続表示、登録済みを実行可能にしない。外部実行は既存見積/予算/Broker/delegation/usage経路の接続と受入が未完了。GTA VI、実FiveM、本番Zema、通貨交換、skin販売の成功ではない。
+Sky外部AgentはROCK_BRIDGE_SKY_ORIGIN（HTTPS origin）とROCK_BRIDGE_SKY_TOKEN（既存本人session）の明示設定で登録一覧を取得するread-only connector。資格情報はgateway内のみ。未設定・認証失敗は未接続表示、登録済みを実行可能にしない。外部実行は既存見積/予算/Broker/delegation/usage経路の接続と受入が未完了。GTA VI、実FiveM、本番Eve、通貨交換、skin販売の成功ではない。
 
 合格証拠: tests/fivem-bridge.test.mjs 11/11＋旧launcher 2/2、Mac UIで仕事cd237d92-84cb-4c33-a334-875fcf2d3bcdの出典整理→同ID第2版→明示共有→completedとcustom Agent作成。次は外部接続の本人環境・許可済み予算を設定して別受入する。

@@ -1,6 +1,12 @@
 'use client';
+import EveAuthorAgreementDetails from '@/components/eve-author-agreement-details';
+import SkyPayments from '@/components/sky-payments';
+import type { EveAgentRepair } from '@/lib/eve-agent-repair';
+import SkyUsageDetails from '@/components/sky-usage-details';
+import type { SkyUsageObservation } from '@/lib/sky-usage-observation';
+import { SkyNotice } from '@/components/sky-feedback';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { Check, Play, Plus, RefreshCw } from 'lucide-react';
 import {
@@ -10,6 +16,7 @@ import {
   type WorkPlan,
 } from '@/lib/workflow';
 import { type RunRecorder } from '@/lib/device';
+import { a2aApprovalReadiness, type A2AApprovalStatus } from '@/lib/a2a-approval-readiness';
 import { matchesA2ADelegationRecovery } from '@/lib/a2a-delegation-recovery';
 import type { A2AParentControllerSnapshot } from '@/lib/a2a-parent-controller';
 import type { A2APriceQuote } from '@/lib/a2a-price-quote';
@@ -60,6 +67,7 @@ type Delegation = {
   targetAgentVersion: string;
   inputSha256: string;
   authorizationSha256: string;
+  priceQuoteDigest?: string;
   state: string;
   remoteTaskId: string | null;
   remoteState: string | null;
@@ -70,6 +78,7 @@ type Delegation = {
   continueWhileDeviceOffline: boolean;
   artifactsCaptured: number;
   updatedAt: number;
+  usageStatement?: SkyUsageObservation | null;
   liveUsageSnapshot?: {
     sequence: number;
     providerId: string;
@@ -184,6 +193,7 @@ type RemoteTextExecution = {
   settledMinor: number | null;
   usage: { inputTokens: number; cachedInputTokens: number; cacheWriteInputTokens: number; outputTokens: number } | null;
   price: { chargeMinor: number; currency: string; pricingVersion: string; items: Array<{ category: string; tokens: number; rateMinorMicrosPerMillionTokens: number }> } | null;
+  metering?: SkyUsageObservation;
   spending?: {
     status: string;
     currency: string;
@@ -245,7 +255,7 @@ function a2aParentControllerStateName(state: A2AParentControllerSnapshot['state'
 }
 function a2aParentControllerNextAction(action: A2AParentControllerSnapshot['nextAction']) {
   const labels: Record<A2AParentControllerSnapshot['nextAction'], string> = {
-    choose_agent: 'SkyからAgentを選んで依頼を作成してください。',
+    choose_agent: 'SmithからAgentを選んで依頼を作成してください。',
     approve_each_paid_task: '各有料依頼の条件・見積・上限を確認し、実行を個別に承認してください。',
     wait_for_cloud_dispatch: '受付済みの同じ依頼の状態を待ってください。再送は不要です。',
     monitor_same_tasks: '既存の依頼IDの進捗を確認してください。新しい依頼を重複送信しないでください。',
@@ -292,7 +302,7 @@ function WorkPlanEditor({
   return (
     <section className="work-plan" aria-label="保存済みの依頼計画">
       <h3>依頼計画 v{job.plan.schemaVersion}</h3>
-      <p>目的は最初の手順を始める前まで編集できます。これはZemaに保存する仕事の目的です。Cloud Agentへ送る依頼文は別途確認します。承認条件と実行手順はシステムが固定し、計画を変えても実行承認は引き継ぎません。</p>
+      <p>目的は最初の手順を始める前まで編集できます。これはEveに保存する仕事の目的です。Cloud Agentへ送る依頼文は別途確認します。承認条件と実行手順はシステムが固定し、計画を変えても実行承認は引き継ぎません。</p>
       <ol>
         {job.steps.map((step) => {
           const gate = job.plan.approvalGates.find((item) => item.stepId === step.id);
@@ -353,13 +363,33 @@ async function sha256Hex(value: string) {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
+function WorkCreationDisclosure({ enabled, children, label = '別の仕事を作成' }: { enabled: boolean; children: ReactNode; label?: string }) {
+  if (!enabled) return children;
+  return <details className="work-create-disclosure">
+    <summary>{label}</summary>
+    {children}
+  </details>;
+}
+
+function EveJobUsageDetails({ job, onJobChange }: { job: WorkJob; onJobChange: (job: WorkJob) => void }) {
+  const [open, setOpen] = useState(false);
+  return <details className="eve-work-usage" onToggle={event => setOpen(event.currentTarget.open)}>
+    <summary>この仕事の利用と支払い</summary>
+    {open && <SkyPayments agentJobId={job.id} onJobChange={onJobChange} />}
+  </details>;
+}
+
 export default function Workbench({
   embedded = false,
+  eveThreadId = '',
+  onEveThread,
   cloudDraft,
   initialPackageKey = '',
   packageRuntimeServers = [],
 }: {
   embedded?: boolean;
+  eveThreadId?: string;
+  onEveThread?: (id: string) => void;
   cloudDraft?: { prompt: string; currency: string; maximumBudgetInput: string; model?: string } | null;
   initialPackageKey?: string;
   packageRuntimeServers?: McpConnection[];
@@ -375,6 +405,7 @@ export default function Workbench({
   const [a2aAgents, setA2aAgents] = useState<A2AAgentConnection[]>([]);
   const [agentOrigin, setAgentOrigin] = useState('');
   const [delegationBusy, setDelegationBusy] = useState(false);
+  const [delegationRepair, setDelegationRepair] = useState<(EveAgentRepair & {message:string}) | null>(null);
   const [delegationPredecessorId, setDelegationPredecessorId] = useState<string | null>(null);
   const [delegationError, setDelegationError] = useState('');
   const [delegationQuoteConsent, setDelegationQuoteConsent] = useState(false);
@@ -395,6 +426,11 @@ export default function Workbench({
     continueWhileDeviceOffline: false,
   });
   const [delegationReview, setDelegationReview] = useState<DelegationReview | null>(null);
+  const [delegationApprovalStatus, setDelegationApprovalStatus] = useState<{ id: string; ready: boolean; message: string } | null>(null);
+  const delegationApprovalInFlight = useRef(false);
+  const delegationReviewRef = useRef(delegationReview);
+  useEffect(() => { delegationReviewRef.current = delegationReview; }, [delegationReview]);
+  useEffect(() => () => { delegationReviewRef.current = null; }, []);
   const [resultReviewConfirmedForJob, setResultReviewConfirmedForJob] = useState('');
   const [handoffPackageResult, setHandoffPackageResult] = useState<{
     packageKey: string;
@@ -424,8 +460,9 @@ export default function Workbench({
   const remoteTextSubmission = useRef<{ fingerprint: string; requestId: string } | null>(null);
   const delegationSubmission = useRef<{ fingerprint: string; request: DelegationRequest } | null>(null);
   const selectedIdRef = useRef('');
+  const [agentRequiredText, setAgentRequiredText] = useState('');
   const [title, setTitle] = useState(''),
-    [templateId, setTemplateId] = useState('article'),
+    [templateId, setTemplateId] = useState(onEveThread ? 'cloud-agent' : 'article'),
     [note, setNote] = useState('');
   const [error, setError] = useState(''),
     [loading, setLoading] = useState(true),
@@ -440,7 +477,12 @@ export default function Workbench({
     id: string;
     title: string;
     templateId: string;
+    eveThreadId?: string;
+    sourceThreadId: string;
+    requiredText: string;
   } | null>(null);
+  const creationMounted = useRef(true);
+  useEffect(() => { creationMounted.current = true; return () => { creationMounted.current = false; }; }, []);
   const handoffPackage = handoffPackageResult?.packageKey === initialPackageKey
     ? handoffPackageResult.package ?? null : null;
   const handoffPackageState = !initialPackageKey ? 'none'
@@ -788,7 +830,33 @@ export default function Workbench({
       setDelegationError(cause instanceof Error ? cause.message : 'Agent接続を読み込めませんでした。');
     }
   }, []);
+  useEffect(() => {
+    if (!selectedId) return;
+    let active = true;
+    void delegationRequest<{agents:A2AAgentConnection[]}>('/api/sky/a2a-agents').then(data => {
+      if (active) setA2aAgents(data.agents ?? []);
+    }).catch(() => { /* Retain current candidates on transient restore failures. */ });
+    return () => { active = false; };
+  }, [selectedId]);
+  async function syncEveAgent(bind: boolean) {
+    if (!selected || selected.templateId !== 'cloud-agent') return;
+    setDelegationBusy(true); setDelegationError('');
+    const threadId = selected.eveAgent?.threadId || eveThreadId || crypto.randomUUID();
+    try {
+      const d = await delegationRequest<{ job: WorkJob; historySaved: boolean; stop: { requested: boolean; confirmed: boolean } }>('/api/eve/agent-work', bind ? 'POST' : 'PATCH', bind
+        ? { jobId: selected.id, threadId, revision: selected.revision }
+        : { jobId: selected.id, action: 'sync' });
+      setJobs(all => all.map(job => job.id === d.job.id ? d.job : job));
+      onEveThread?.(threadId);
+      const url = new URL(window.location.href); url.searchParams.set('workJob', d.job.id); window.history.replaceState(window.history.state, '', url);
+      if (!d.historySaved) setDelegationError('仕事は保持しています。会話への反映を再試行してください。');
+      await refreshDelegations(d.job.id);
+    } catch (e) { setDelegationError(e instanceof Error ? e.message : '同じ仕事を再読込してください。'); }
+    finally { setDelegationBusy(false); }
+  }
   function selectJob(id: string) {
+    const savedThread = jobs.find(job => job.id === id)?.eveAgent?.threadId;
+    if (savedThread && savedThread !== eveThreadId) onEveThread?.(savedThread);
     const url = new URL(window.location.href);
     url.searchParams.set('workJob', id);
     window.history.replaceState(window.history.state, '', url);
@@ -797,7 +865,10 @@ export default function Workbench({
     setRemoteTextNeedsSignin(false);
     setRemoteTextDeleteId(null);
     setSelectedId(id);
+    setDelegationReview(null);
+    setDelegationApprovalStatus(null);
     setDelegationPredecessorId(null);
+    setDelegationRepair(null);
     setDelegationQuote(null);
     setDelegationQuoteConsent(false);
     setArtifactDocuments({});
@@ -826,7 +897,7 @@ export default function Workbench({
   const currentStep = selected?.steps.find((step) => !step.passed);
   const openRunner = selected?.steps.find((step) => step.id === runnerStep);
   const locked = busy || running || pending !== null || loading;
-  const visibleJobs = jobs.filter(
+  const visibleJobs = jobs.filter(job=>!job.eveNews).filter(
     (job) =>
       filter === 'all' ||
       (job.status !== 'completed' && job.status !== 'cancelled'),
@@ -837,24 +908,35 @@ export default function Workbench({
   async function create() {
     setBusy(true);
     setError('');
+    const sourceThread = new URL(window.location.href).searchParams.get('thread');
+    const targetThread = onEveThread && templateId === 'cloud-agent' ? eveThreadId || (creation.current?.sourceThreadId === eveThreadId ? creation.current.eveThreadId : undefined) || crypto.randomUUID() : undefined;
     const input =
       creation.current?.title === title.trim() &&
-      creation.current.templateId === templateId
+      creation.current.templateId === templateId && creation.current.requiredText === agentRequiredText && creation.current.eveThreadId === targetThread && creation.current.sourceThreadId === eveThreadId
         ? creation.current
-        : { id: crypto.randomUUID(), title: title.trim(), templateId };
+        : { id: crypto.randomUUID(), title: title.trim(), templateId, eveThreadId: targetThread, sourceThreadId: eveThreadId, requiredText: agentRequiredText };
     creation.current = input;
     try {
-      const data = await request<{ job: WorkJob }>('POST', input);
+      const data = targetThread
+        ? await delegationRequest<{ job: WorkJob; historySaved: boolean }>('/api/eve/agent-work', 'POST', { create: true, jobId: input.id, threadId: targetThread, title: input.title, acceptance: { schema: 'eve.agent-criteria/1', minChars: 1, maxChars: 24000, requiredText: input.requiredText.split('\n').map(t => t.trim()).filter(Boolean) } })
+        : await request<{ job: WorkJob; historySaved?: boolean }>('POST', { id: input.id, title: input.title, templateId: input.templateId });
+      if (!creationMounted.current || (onEveThread && new URL(window.location.href).searchParams.get('thread') !== sourceThread)) return;
       accept(data.job);
       selectJob(data.job.id);
+      if (targetThread) {
+        onEveThread?.(targetThread);
+        const url = new URL(window.location.href); url.searchParams.set('workJob', data.job.id); window.history.replaceState(window.history.state, '', url);
+      }
+      if (data.historySaved === false) setError('仕事と会話の接続は保存済みです。進捗の会話反映を再試行してください。');
       setRunnerStep(null);
       setNote('');
       setTitle('');
+      setAgentRequiredText('');
       creation.current = null;
     } catch (e) {
-      setError(e instanceof Error ? e.message : '作成できませんでした。');
+      if (creationMounted.current && (!onEveThread || new URL(window.location.href).searchParams.get('thread') === sourceThread)) setError(e instanceof Error ? e.message : '作成できませんでした。');
     } finally {
-      setBusy(false);
+      if (creationMounted.current) setBusy(false);
     }
   }
   const submit = useCallback(
@@ -918,6 +1000,44 @@ export default function Workbench({
       /* The pending operation can be retried without running a tool again. */
     }
   }
+  async function resumeDelegationReview(id: string) {
+    const parentId = selectedIdRef.current;
+    if (!selected || !['active', 'review'].includes(selected.status) || selected.eveAgent?.stopRequestedAt !== undefined) return;
+    setDelegationBusy(true); setDelegationError(''); setDelegationApprovalStatus(null);
+    try {
+      const data = await delegationRequest<{review:DelegationReview}>(`/api/sky/a2a-delegations/${encodeURIComponent(id)}?review=1`);
+      if (selectedIdRef.current !== parentId) return;
+      if (data.review.delegationId !== id || data.review.request.parentJobId !== parentId) throw new Error('仕事と依頼が一致しません。');
+      setDelegationReview(data.review);
+    } catch (cause) { if (selectedIdRef.current === parentId) setDelegationError(cause instanceof Error ? cause.message : '保存した依頼を読み戻せませんでした。'); }
+    finally { setDelegationBusy(false); }
+  }
+  async function inspectDelegationApproval(execute = false) {
+    const review = delegationReview;
+    if (!review || !selected || selected.id !== review.request.parentJobId || !['active', 'review'].includes(selected.status) || selected.eveAgent?.stopRequestedAt !== undefined || delegationApprovalInFlight.current) return;
+    const stillCurrent = () => selectedIdRef.current === review.request.parentJobId && delegationReviewRef.current === review;
+    delegationApprovalInFlight.current = true;
+    setDelegationBusy(true); setDelegationError(''); setDelegationApprovalStatus(null);
+    const path = `/api/sky/a2a-delegations/${encodeURIComponent(review.delegationId)}`;
+    try {
+      const status = await delegationRequest<A2AApprovalStatus>(path);
+      const readiness = await a2aApprovalReadiness(review, status);
+      if (!stillCurrent()) return;
+      setDelegationApprovalStatus({ id: review.delegationId, ...readiness });
+      if (!execute || !readiness.ready) return;
+      const data = await delegationRequest<{ delegation: Delegation }>(path, 'PATCH', { action: 'approve', authorizationSha256: review.authorizationSha256, message: review.request.message });
+      if (!stillCurrent()) return;
+      if (data.delegation.id !== review.delegationId || data.delegation.parentJobId !== review.request.parentJobId) throw new Error('受付結果と仕事が一致しません。状態を照合してください。');
+      setDelegationReview(null); setDelegationApprovalStatus(null);
+      await refreshDelegations(review.request.parentJobId);
+    } catch (cause) {
+      if (stillCurrent()) {
+        setDelegationApprovalStatus(null);
+        setDelegationError(`${cause instanceof Error ? cause.message : '実行予約を確認できませんでした。'} 同じ依頼を再送せず、承認状態を確認してください。`);
+      }
+      // No automatic PATCH retry: an approval response may have been lost.
+    } finally { delegationApprovalInFlight.current = false; setDelegationBusy(false); }
+  }
   async function loadArtifacts(delegationId: string) {
     setDelegationBusy(true);
     setDelegationError('');
@@ -941,13 +1061,35 @@ export default function Workbench({
       setDelegationBusy(false);
     }
   }
+  async function prepareEveAgentRepair(delegationId: string) {
+    if (!selected?.eveAgent || !['active', 'review'].includes(selected.status) || selected.eveAgent.stopRequestedAt !== undefined) return;
+    const parentId=selected.id;
+    setDelegationBusy(true);setDelegationError('');
+    try {
+      const d=await delegationRequest<{job:WorkJob;historySaved:boolean;repairDraft:EveAgentRepair & {message:string}}>('/api/eve/agent-work','PATCH',{jobId:parentId,revision:selected.revision,action:'prepare-repair',commandId:crypto.randomUUID(),sourceDelegationId:delegationId});
+      if(selectedIdRef.current!==parentId) return;
+      setJobs(all=>all.map(j=>j.id===parentId?d.job:j));
+      const existing=delegations.find(c=>c.id===d.repairDraft.successorDelegationId);
+      if(existing) {
+        if(existing.state==='awaiting_approval') await resumeDelegationReview(existing.id);
+        else setDelegationError('同じ修正依頼を保存済みです。新しく送らず、接続したAgentの状態を確認してください。');
+        return;
+      }
+      setDelegationRepair(d.repairDraft);setDelegationPredecessorId(delegationId);
+      setDelegationForm(current=>({...current,targetAgentId:'',targetOrigin:'',targetAgentName:'',targetAgentVersion:'',message:d.repairDraft.message}));
+      setDelegationReview(null);setDelegationQuote(null);setDelegationQuoteConsent(false);delegationSubmission.current=null;
+      setDelegationError('同じ仕事へ限定修正案を保存しました。元成果・条件は固定です。送信先を選び、依頼全文の共有・新しい見積・Broker承認と予算予約を確認してください。まだ送信していません。');
+    } catch(e) {if(selectedIdRef.current===parentId)setDelegationError(e instanceof Error?e.message:'同じ仕事を再読込してください。');}
+    finally {setDelegationBusy(false);}
+  }
   function prepareResultForAnotherAgent(delegation: Delegation, document: ArtifactDocument) {
     if (!selected || selected.status !== 'active' || delegation.parentJobId !== selected.id ||
         delegation.state !== 'remote_completed' || delegation.artifactsCaptured !== 1) {
-      setDelegationError('次のAgentへ渡せるのは、このZema jobで完了し、成果の取得まで確認できた委任だけです。');
+      setDelegationError('次のAgentへ渡せるのは、このEve jobで完了し、成果の取得まで確認できた委任だけです。');
       return;
     }
     try {
+      setDelegationRepair(null);
       const message = buildA2AResultHandoffPrompt({
         sourceAgentName: delegation.targetAgentName,
         sourceAgentVersion: delegation.targetAgentVersion,
@@ -1053,11 +1195,11 @@ export default function Workbench({
       : null;
     if (!request) {
       request = {
-        id: crypto.randomUUID(),
+        id: delegationRepair?.successorDelegationId ?? crypto.randomUUID(),
         parentJobId: selected.id,
         ...(delegationPredecessorId ? { predecessorDelegationId: delegationPredecessorId } : {}),
-        idempotencyKey: `zema:${selected.id}:${crypto.randomUUID()}`,
-        messageId: crypto.randomUUID(),
+        idempotencyKey: delegationRepair?.idempotencyKey ?? `zema:${selected.id}:${crypto.randomUUID()}`,
+        messageId: delegationRepair?.messageId ?? crypto.randomUUID(),
         targetOrigin: delegationForm.targetOrigin.trim(),
         targetAgentName: delegationForm.targetAgentName.trim(),
         targetAgentVersion: delegationForm.targetAgentVersion.trim(),
@@ -1066,7 +1208,7 @@ export default function Workbench({
         budgetLimitMinor: delegationForm.budgetLimitMinor,
         parentBudgetLimitMinor: delegationForm.parentBudgetLimitMinor,
         continueWhileDeviceOffline: delegationForm.continueWhileDeviceOffline,
-        deadlineAt: Date.now() + 24 * 60 * 60 * 1000,
+        deadlineAt: Math.min(Date.now() + 24 * 60 * 60 * 1000, delegationRepair?.deadlineAt ?? Infinity),
         priceQuote: verifiedQuote,
         ...(packageRuntimeBindingId && packageRuntimeBindingDigest ? {
           packageRuntimeBindingId,
@@ -1079,12 +1221,15 @@ export default function Workbench({
       const data = await delegationRequest<{
         delegation: Delegation;
         approval: { digest: string; required: boolean };
+        resumeAvailable?: boolean;
       }>('/api/sky/a2a-delegations', 'POST', request);
       if (!data.approval.required)
         throw new Error('この委任はすでに承認済みか、再確認が必要です。状態を更新してください。');
       setDelegationReview({ request, delegationId: data.delegation.id, authorizationSha256: data.approval.digest });
       setDelegationPredecessorId(null);
+      setDelegationRepair(null);
       await refreshDelegations(selected.id);
+      if (data.resumeAvailable === false) setDelegationError('依頼条件は保存済みですが、再開用の本文保管が未設定です。この画面を閉じる前に接続設定を確認してください。');
     } catch (cause) {
       let recovered = false;
       try {
@@ -1115,7 +1260,7 @@ export default function Workbench({
       setDelegationBusy(false);
     }
   }, [jobs, selectedId, delegationForm, delegationQuote, refreshDelegations, fullDelegationMessage,
-    initialPackageKey, handoffPackage, delegationPredecessorId]);
+    initialPackageKey, handoffPackage, delegationPredecessorId, delegationRepair]);
   async function requestDelegationPriceQuote() {
     const selected = jobs.find((job) => job.id === selectedId);
     const agent = a2aAgents.find((item) => item.id === delegationForm.targetAgentId);
@@ -1238,6 +1383,8 @@ export default function Workbench({
     message: fullDelegationMessage,
     currency: delegationForm.budgetCurrency.trim().toUpperCase(),
     maximumBudgetMinor: delegationForm.budgetLimitMinor,
+    packageKey: initialPackageKey && handoffPackage ? handoffPackage.packageKey : null,
+    packageManifestSha256: initialPackageKey && handoffPackage ? handoffPackage.manifestSha256 : null,
   }) : '';
   const activeDelegationQuote = delegationQuote?.fingerprint === activeDelegationQuoteFingerprint
     ? delegationQuote.quote : null;
@@ -1245,7 +1392,7 @@ export default function Workbench({
     <div className={`work-shell${embedded ? ' is-chat-managed' : ''}`}>
       <div className="work-body">
         {!embedded && (
-          <nav className="rock-view-nav" aria-label="Skyの仕事と履歴">
+          <nav className="rock-view-nav" aria-label="Smithの仕事と履歴">
             <Link href="/work" aria-current="page">
               手順のある仕事
             </Link>
@@ -1255,16 +1402,16 @@ export default function Workbench({
         )}
         <div className="work-title">
           <div>
-            <h1>仕事を進める</h1>
-            <p>選んだ自動化を順番に実行して、仕上がりを確認。</p>
+            {onEveThread ? <h2>Agentへ任せる仕事</h2> : <h1>仕事を進める</h1>}
+            <p>{onEveThread ? '依頼・見積・権限・進捗・成果を、この会話で確認します。' : '選んだ自動化を順番に実行して、仕上がりを確認。'}</p>
           </div>
           <button disabled={loading || locked} onClick={() => void refresh()}>
             <RefreshCw size={16} /> 再読込
           </button>
         </div>
         {error && (
-          <div className="work-notice" role="alert">
-            {error}
+          <div className="work-notice">
+            <SkyNotice message={error} />
             {!ready && (
               <a href="/signin-with-chatgpt?return_to=/work" target="_top">
                 サインイン
@@ -1331,6 +1478,7 @@ export default function Workbench({
             {handoffPackageState === 'unavailable' && <p role="alert">Packageの審査状態または利用権を確認できませんでした。再読み込みして確認してください。</p>}
           </section>
         )}
+        <WorkCreationDisclosure enabled={Boolean(onEveThread && selected)}>
         <section className="work-create" aria-label="新しい仕事">
           <label>
             仕事の名前
@@ -1339,7 +1487,7 @@ export default function Workbench({
               maxLength={120}
               disabled={locked}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="例: 自動化についての記事"
+              placeholder={onEveThread ? '例: 複数の資料を調べて要点をまとめる' : '例: 自動化についての記事'}
             />
           </label>
           <label htmlFor="work-template">
@@ -1369,6 +1517,10 @@ export default function Workbench({
               </SelectContent>
             </Select>
           </label>
+          {onEveThread && templateId === 'cloud-agent' && <label htmlFor="eve-agent-required-text">Agent成果に必要な文言（任意・1行1件）
+            <Textarea id="eve-agent-required-text" value={agentRequiredText} maxLength={4000} disabled={locked} onChange={e => setAgentRequiredText(e.target.value)} />
+            <small>最大20件・各200文字。作成後は固定し、保存成果の完全性・文字数と合わせてサーバーが検査します。事実確認ではありません。Agentへ送る依頼にも必要な条件を記載してください。</small>
+          </label>}
           <button
             className="work-primary"
             disabled={!ready || loading || locked || !title.trim()}
@@ -1383,7 +1535,9 @@ export default function Workbench({
             }
           </p>
         </section>
-        <div className="work-layout">
+        </WorkCreationDisclosure>
+        <div className={`work-layout${onEveThread ? ' eve-work-layout' : ''}`}>
+          <WorkCreationDisclosure enabled={Boolean(onEveThread && selected)} label="保存した仕事を選ぶ">
           <aside className="work-list">
             <div className="work-list-heading">
               <h2>自分の仕事</h2>
@@ -1423,6 +1577,7 @@ export default function Workbench({
             )}
             {jobs.length === 100 && <p>最新100件を表示しています。</p>}
           </aside>
+          </WorkCreationDisclosure>
           <section className="work-detail" aria-label="仕事の詳細">
             {!selected ? (
               <div className="work-empty">
@@ -1435,6 +1590,16 @@ export default function Workbench({
                   <h2>{selected.title}</h2>
                   <span>{stateNames[selected.status]}</span>
                 </div>
+                {onEveThread && selected.templateId === 'cloud-agent' && <section className={`work-delegation-review${selected.eveAgent ? ' eve-work-binding' : ''}`} aria-label="Eve会話との接続">
+                  {selected.eveAgent?.acceptance && <details><summary>この仕事の成果条件</summary><p>固定した成果条件: {selected.eveAgent.acceptance.minChars}〜{selected.eveAgent.acceptance.maxChars}文字 · 必須文言 {selected.eveAgent.acceptance.requiredText.join(' / ') || '指定なし'}。会話への反映で保存成果の検査結果も確認できます。真偽・意味品質は別途確認してください。</p></details>}
+                  <p>{selected.eveAgent ? '同じEve会話に接続済み。進捗・使用量・停止確認を保存できます。' : 'このAgent仕事を、現在のEve会話へ接続できます。実行の承認と予算は既存の委任手順で確認します。'}</p>
+                  <button type="button" disabled={delegationBusy} onClick={() => void syncEveAgent(!selected.eveAgent)}>{selected.eveAgent ? '進捗を会話へ反映・停止を照合' : 'この会話へ接続する'}</button>
+                  {selected.eveAgent?.stopRequestedAt !== undefined && <p>{selected.status === 'cancelled' ? '停止確認済み' : '停止要求済み・外部確認待ち。新しい承認や送信は行いません。'}</p>}
+                </section>}
+                {onEveThread && <>
+                  {selected.eveAgent && <EveJobUsageDetails key={selected.id} job={selected} onJobChange={updated => setJobs(all => all.map(job => job.id===updated.id && job.revision<=updated.revision ? updated : job))} />}
+                  {selected.eveAgent && <EveAuthorAgreementDetails key={selected.id} jobId={selected.id} canCalculate={selected.status!=='cancelled' && selected.eveAgent.stopRequestedAt===undefined} onJobChange={updated=>setJobs(all=>all.map(job=>job.id===updated.id?updated:job))} />}
+                </>}
                 <ol className="work-steps">
                   {selected.steps.map((step, i) => (
                     <li key={step.id} className={step.passed ? 'passed' : ''}>
@@ -1478,7 +1643,8 @@ export default function Workbench({
                   {delegationBudgetPool && (
                     <p>親jobの支出上限: {formatCurrencyMinor(delegationBudgetPool.budgetLimitMinor, delegationBudgetPool.currency)} · 予約中 {formatCurrencyMinor(delegationBudgetPool.reservedMinor, delegationBudgetPool.currency)} · 利用量確定記録（請求照合前） {formatCurrencyMinor(delegationBudgetPool.settledMinor, delegationBudgetPool.currency)}</p>
                   )}
-                  {['active', 'review'].includes(selected.status) && !delegationReview && (
+                  {['active', 'review'].includes(selected.status) && selected.eveAgent?.stopRequestedAt === undefined && !delegationReview && (
+                    <WorkCreationDisclosure enabled={Boolean(onEveThread && delegations.length && !delegationRepair && !delegationPredecessorId && !initialPackageKey)} label="別のAgentへ依頼を追加">
                     <form
                       id="work-a2a-delegation-form"
                       className="work-delegation-create"
@@ -1488,7 +1654,7 @@ export default function Workbench({
                       }}
                     >
                       <h3>別のエージェントへ委任する</h3>
-                      <p>公開HTTPS originを入力してAgent Cardを取得し、Skyに自分の候補として保存できます。</p>
+                      <p>公開HTTPS originを入力してAgent Cardを取得し、Smithに自分の候補として保存できます。</p>
                       <p>親jobあたり最大8件、同時に4件までです。現在はRockstarOSから外部Agentへの一段委任のみ対応し、Agentによる自動再委任は許可しません。</p>
                       <label>
                         Agent Cardを探す
@@ -1502,7 +1668,7 @@ export default function Workbench({
                       <button type="button" disabled={delegationBusy || !agentOrigin.trim()} onClick={() => void discoverAgent()}>
                         Agent Cardを取得して候補に追加
                       </button>
-                      <div className="work-a2a-agent-list" aria-label="Skyに保存したエージェント候補">
+                      <div className="work-a2a-agent-list" aria-label="Smithに保存したエージェント候補">
                         {a2aAgents.map((agent) => {
                           let skills: Array<{ name: string }> = [];
                           try {
@@ -1527,7 +1693,7 @@ export default function Workbench({
                           );
                         })}
                       </div>
-                      <p>Card記載の能力は提供者の自己申告で、審査・安全性・本人の実行許可を意味しません。取得と保存だけでは委任を送信しません。実行gateはOFFです。</p>
+                      <p>Card記載の能力は提供者の自己申告で、審査・安全性・本人の実行許可を意味しません。取得と保存だけでは委任を送信しません。実行可否は承認状態の確認で表示します。</p>
                       <label>
                         選択中の接続先origin
                         <input
@@ -1554,7 +1720,7 @@ export default function Workbench({
                       </div>
                       <label>
                         依頼内容
-                        <textarea required maxLength={8000} rows={4} value={delegationForm.message} onChange={(event) => { setDelegationQuote(null); setDelegationQuoteConsent(false); setDelegationForm((current) => ({ ...current, message: event.target.value })); }} />
+                        <textarea required maxLength={8000} readOnly={Boolean(delegationRepair)} rows={4} value={delegationForm.message} onChange={(event) => { setDelegationQuote(null); setDelegationQuoteConsent(false); setDelegationForm((current) => ({ ...current, message: event.target.value })); }} />
                       </label>
                       <div className="work-delegation-fields">
                         <label>
@@ -1589,7 +1755,7 @@ export default function Workbench({
                         </div>
                       )}
                       <p className="work-delegation-price-note">署名付き見積がない、有効期限が切れた、または条件が変わった仕事は承認へ進めません。実行中のProvider meterと最終請求照合は別の記録で確認します。</p>
-                      <p>期限は作成から24時間です。発見・比較はSky側で確認済みのAgent Cardを使ってください。</p>
+                      <p>期限は作成から24時間です。発見・比較はSmith側で確認済みのAgent Cardを使ってください。</p>
                       <label className="work-offline-consent">
                         <input type="checkbox" checked={delegationForm.continueWhileDeviceOffline} onChange={(event) => setDelegationForm((current) => ({ ...current, continueWhileDeviceOffline: event.target.checked }))} />
                         <span>受付・承認後、この仕事を端末が圏外またはアプリ終了中も、表示した予算と期限の範囲でクラウド上で続けることを許可します。</span>
@@ -1599,6 +1765,7 @@ export default function Workbench({
                         条件を確認する
                       </button>
                     </form>
+                    </WorkCreationDisclosure>
                   )}
                   {delegationReview && (
                     <section className="work-delegation-review" aria-label="委任条件の確認">
@@ -1617,9 +1784,12 @@ export default function Workbench({
                         <dt>依頼文</dt><dd><pre>{delegationReview.request.message}</pre></dd>
                         <dt>条件digest</dt><dd><code>{delegationReview.authorizationSha256}</code></dd>
                       </dl>
-                      <p className="work-delegation-gate">実行承認は、Brokerの権限照合とWalletの原子的な予算予約を接続し、Provider契約・認証・費用条件を検証するまで無効です。現状は開発用の確認画面です。</p>
-                      <button type="button" disabled>Broker／Wallet／Provider接続待ち</button>
-                      <button type="button" onClick={() => setDelegationReview(null)}>
+                      <p className="work-delegation-gate">接続したRockstarOS端末で表示中の依頼を承認してから、承認状態を確認してください。実行予約時にも署名・期限・失効・見積・予算をサーバーで検証します。</p>
+                      <p>対応するAgentには、利用明細の照合用にアカウント識別子・仕事と依頼のID・本文ハッシュ・上限・期限も渡します。認証鍵やBroker証明の原本は渡しません。</p>
+                      {delegationApprovalStatus?.id === delegationReview.delegationId && <output>{delegationApprovalStatus.message}</output>}
+                      <button type="button" disabled={delegationBusy} onClick={() => void inspectDelegationApproval()}>Broker承認を確認</button>
+                      <button type="button" disabled={delegationBusy || delegationApprovalStatus?.id !== delegationReview.delegationId || !delegationApprovalStatus.ready || selected?.id !== delegationReview.request.parentJobId || !['active', 'review'].includes(selected.status) || selected.eveAgent?.stopRequestedAt !== undefined} onClick={() => void inspectDelegationApproval(true)}>表示した条件で実行を予約</button>
+                      <button type="button" onClick={() => { delegationReviewRef.current = null; setDelegationReview(null); }}>
                         確認を閉じる
                       </button>
                     </section>
@@ -1633,7 +1803,7 @@ export default function Workbench({
                       <RefreshCw size={14} /> 更新
                     </button>
                   </div>
-                  {delegationError && <p className="work-delegation-error" role="alert">{delegationError}</p>}
+                  {delegationError && <SkyNotice className="work-delegation-error" message={delegationError} />}
                   {delegationBusy && delegations.length === 0 ? (
                     <p>委任状態を読み込んでいます…</p>
                   ) : delegations.length === 0 ? (
@@ -1651,11 +1821,14 @@ export default function Workbench({
                           <small>
                             Agent上限 {formatCurrencyMinor(delegation.budgetLimitMinor, delegation.budgetCurrency)} · 親job上限 {formatCurrencyMinor(delegation.parentBudgetLimitMinor, delegation.budgetCurrency)} · 予約 {delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state === 'held' ? `保持中 ${formatCurrencyMinor(delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.reservedMinor ?? 0, delegation.budgetCurrency)}` : delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state ?? '未予約'} · 期限 {new Date(delegation.deadlineAt).toLocaleString('ja-JP')}
                           </small>
-                          {delegation.liveUsageSnapshot ? (
+                          {delegation.usageStatement ? <small>署名検証済みの最終利用記録を受領しました。請求書・入金の照合は別です。</small> : delegation.liveUsageSnapshot ? (
                             <small>Provider報告の実行中暫定累計: {formatCurrencyMinor(delegation.liveUsageSnapshot.cumulativeAmountMinor, delegation.liveUsageSnapshot.currency)} · {new Date(delegation.liveUsageSnapshot.issuedAt).toLocaleTimeString('ja-JP')}時点 · 最終請求額ではありません</small>
                           ) : <small>予約額は上限を確保した額です。Provider meterの報告待ちのため、実行中費用はまだ未確認です。</small>}
+                          {delegation.usageStatement && <SkyUsageDetails observation={delegation.usageStatement} />}
                           {delegation.remoteState && <small>相手の状態: {delegation.remoteState}</small>}
+                            {delegation.state === 'awaiting_approval' && <button type="button" disabled={delegationBusy || !['active', 'review'].includes(selected.status) || selected.eveAgent?.stopRequestedAt !== undefined} onClick={() => void resumeDelegationReview(delegation.id)}>保存した依頼を確認・承認</button>}
                           <div className="work-delegation-actions">
+                            {selected.eveAgent && ['active', 'review'].includes(selected.status) && selected.eveAgent.stopRequestedAt === undefined && !delegation.predecessorDelegationId && delegation.state === 'remote_completed' && delegation.artifactsCaptured === 1 && <button type="button" disabled={delegationBusy} onClick={() => void prepareEveAgentRepair(delegation.id)}>未達成果の限定修正案を作る</button>}
                             {delegation.remoteTaskId && (
                               <button disabled={delegationBusy || delegation.artifactsCaptured !== 1} onClick={() => void loadArtifacts(delegation.id)}>
                                 成果を確認
@@ -1738,7 +1911,7 @@ export default function Workbench({
                       <RefreshCw size={14} /> 状態を更新
                     </button>
                   </div>
-                  {selected.status === 'active' ? <form className="work-delegation-create" onSubmit={(event) => void createRemoteTextQuote(event)}>
+                  {selected.status === 'active' ? <WorkCreationDisclosure enabled={Boolean(onEveThread && !cloudDraft)} label="新しいCloud AI依頼を作成"><form className="work-delegation-create" onSubmit={(event) => void createRemoteTextQuote(event)}>
                     <label htmlFor="work-cloud-text-prompt">
                       AIへの依頼
                       <Textarea id="work-cloud-text-prompt" value={remoteTextPrompt} onChange={(event) => { setRemoteTextPrompt(event.target.value); setRemoteTextEstimate(null); }} rows={5} maxLength={24000} placeholder="依頼を具体的に入力してください" />
@@ -1766,7 +1939,7 @@ export default function Workbench({
                       {remoteTextBusy ? '料金を確認中…' : '料金見積を確認して保存'}
                     </button>
                     <p>見積と保存だけではProviderへ依頼文を送信しません。支出上限はこの親jobの残り予算内に設定してください。Cloud taskとして実行する許可は別の操作です。</p>
-                  </form> : <p>Cloud AI依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。</p>}
+                  </form></WorkCreationDisclosure> : <p>Cloud AI依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。</p>}
                   {remoteTextEstimate && <dl>
                     <div><dt>最大見積</dt><dd>{formatCurrencyMinor(remoteTextEstimate.estimate.maximumChargeMinor, remoteTextEstimate.estimate.currency)}</dd></div>
                     <div><dt>モデル / 価格版</dt><dd>{remoteTextEstimate.estimate.modelId} · {remoteTextEstimate.estimate.pricingVersion}</dd></div>
@@ -1777,7 +1950,7 @@ export default function Workbench({
                     <div><dt>入力 / 出力上限</dt><dd>{remoteTextEstimate.estimate.inputTokenUpperBound.toLocaleString('ja-JP')} / {remoteTextEstimate.estimate.outputTokenLimit.toLocaleString('ja-JP')} tokens</dd></div>
                     <div><dt>料金表</dt><dd><a href={remoteTextEstimate.rateSource} target="_blank" rel="noreferrer">{remoteTextEstimate.cardId}</a></dd></div>
                   </dl>}
-                  {remoteTextError && <p className="work-delegation-error" role="alert">{remoteTextError}</p>}
+                  {remoteTextError && <SkyNotice className="work-delegation-error" message={remoteTextError} />}
                   {remoteTextNeedsSignin && <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(typeof window === 'undefined' ? '/work' : window.location.pathname + window.location.search)}`} target="_top">サインインして続ける</a>}
                   {!remoteTextExecutionAvailable && <p className="work-delegation-gate">クラウドAIの実行は準備中です。見積もりを保存しても、AIへの送信や課金は始まりません。</p>}
                   {remoteTextExecutions.length > 0 && <div className="work-delegation-list" aria-label="Cloud LLM依頼履歴">
@@ -1797,6 +1970,7 @@ export default function Workbench({
                         <ul>{execution.price.items.map((item) => <li key={item.category}>{item.category}: {item.tokens.toLocaleString('ja-JP')} tokens · {item.rateMinorMicrosPerMillionTokens.toLocaleString('ja-JP')} minor-unit micro / 1M tokens</li>)}</ul>
                         <small>これはProvider利用量に基づく計算記録であり、請求書・決済照合済みを意味しません。</small>
                       </section>}
+                      {execution.metering && <SkyUsageDetails observation={execution.metering} />}
                       {execution.resultText && <>
                         <details><summary>保存した回答を表示</summary><pre>{execution.resultText}</pre></details>
                         <div className="work-delegation-actions">
@@ -1834,16 +2008,20 @@ export default function Workbench({
                       <p>
                         結果を確認・保存してから次へ進んでください。原稿の引き渡しはコピーで行えます。
                       </p>
-                      {openRunner.runner === 'a2a-quote-check' ? (
-                        <section aria-label="A2A委任条件の確認">
-                          <p>この手順は、A2A条件とProvider署名見積を含むdraftが同じZema jobへ保存された後に通過できます。draft保存は外部実行ではありません。</p>
-                          <button type="button" disabled={busy || pending !== null || openRunner.passed || delegationReview?.request.parentJobId !== selected.id || !delegationReview.request.priceQuote}
-                            onClick={() => void record(openRunner.tool, 'browser', 'completed', 1, false, 'passed', delegationReview?.delegationId)}>
+                      {openRunner.runner === 'a2a-quote-check' ? (() => {
+                        const briefDelegation = delegations.find((item) => item.parentJobId === selected.id &&
+                          item.id === delegationReview?.delegationId && /^[a-f0-9]{64}$/i.test(item.priceQuoteDigest ?? '')) ??
+                          delegations.find((item) => item.parentJobId === selected.id && /^[a-f0-9]{64}$/i.test(item.priceQuoteDigest ?? ''));
+                        return <section aria-label="A2A委任条件の確認">
+                          <p>この手順は、A2A条件とProvider署名見積を含むdraftが同じEve jobへ保存された後に通過できます。再読込や実行予約の後も保存済み条件から記録できます。この記録で新しい承認や送信は行いません。</p>
+                          {briefDelegation && <p>保存した依頼: {briefDelegation.targetAgentName} · {briefDelegation.targetOrigin} · Agent上限 {formatCurrencyMinor(briefDelegation.budgetLimitMinor, briefDelegation.budgetCurrency)} · 委任ID {briefDelegation.id}</p>}
+                          <button type="button" disabled={busy || pending !== null || openRunner.passed || !briefDelegation || selected.eveAgent?.stopRequestedAt !== undefined}
+                            onClick={() => void record(openRunner.tool, 'browser', 'completed', 1, false, 'passed', briefDelegation?.id)}>
                             保存済みの依頼条件を確認して記録
                           </button>
-                        </section>
-                      ) : openRunner.runner === 'a2a-result-check' ? (() => {
-                        const resultDelegation = delegations.find((item) => item.parentJobId === selected.id && item.state === 'remote_completed' && item.artifactsCaptured === 1);
+                        </section>;
+                      })() : openRunner.runner === 'a2a-result-check' ? (() => {
+                        const resultDelegation = delegations.find((item) => item.parentJobId === selected.id && item.state === 'remote_completed' && item.artifactsCaptured === 1 && !(selected.eveAgent?.repairs ?? []).some(r => r.sourceDelegationId === item.id));
                         const details = resultDelegation ? delegationUsageDetails[resultDelegation.id] : null;
                         const captured = resultDelegation ? (artifactDocuments[resultDelegation.id]?.length ?? 0) > 0 : false;
                         return <section aria-label="A2A成果・利用量の確認">
@@ -1931,7 +2109,7 @@ export default function Workbench({
           </section>
         </div>
         <p className="work-footnote">
-          原稿とファイルは端末内で処理されます。サンプルは手順を進めません。履歴は本人の端末から報告された処理結果で、売上・送信・外部納品の実績には含めません。
+          {selected?.templateId === 'cloud-agent' || templateId === 'cloud-agent' ? 'Cloud Agentへの依頼は、本人が確認した接続先へ送信します。仕事の作成だけでは送信しません。権限・見積・上限と使用量を確認してください。' : '原稿とファイルは端末内で処理されます。サンプルは手順を進めません。履歴は本人の端末から報告された処理結果で、売上・送信・外部納品の実績には含めません。'}
         </p>
       </div>
       <Dialog open={Boolean(remoteTextDeleteTarget)} onOpenChange={(open) => { if (!open && !remoteTextBusy) setRemoteTextDeleteId(null); }}>
@@ -1964,7 +2142,7 @@ export default function Workbench({
   return (
     <WorkspaceShell
       running={running}
-      title="Zema · 仕事"
+      title="Eve · 仕事"
       onConnect={() => setDeviceOpen(true)}
     >
       {content}

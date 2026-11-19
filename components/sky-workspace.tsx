@@ -1,10 +1,14 @@
 'use client';
+import SkyOptionalFeatures from '@/components/sky-optional-features';
+
+import { SkyNotice } from '@/components/sky-feedback';
 
 import {
   useEffect,
   useState,
   useSyncExternalStore,
   type SyntheticEvent,
+  type ComponentProps,
 } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -70,9 +74,9 @@ const subscribeHost = () => () => undefined;
 const browserHost = () => detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
 const serverHost = () => null;
 
-type FeedFilter = 'おすすめ' | 'Skyのツール' | '導入候補';
+type FeedFilter = 'おすすめ' | 'Smithのツール' | '導入候補';
 
-const feedFilters: FeedFilter[] = ['おすすめ', 'Skyのツール', '導入候補'];
+const feedFilters: FeedFilter[] = ['おすすめ', 'Smithのツール', '導入候補'];
 const recommendedToolIds = new Set([
   'rockstar-csv-cleanup',
   'coconala',
@@ -91,58 +95,58 @@ const providers: Record<
   { name: string; handle: string; initial: string }
 > = {
   'rockstar-csv-cleanup': {
-    name: 'Sky CSV自動化役',
+    name: 'Smith CSV自動化役',
     handle: '@sky_csv',
     initial: '表',
   },
   'mercari-revenue': {
-    name: 'Sky 販売収益化役',
+    name: 'Smith 販売収益化役',
     handle: '@sky_income',
     initial: '売',
   },
   'fashion-brand-ops': {
-    name: 'Sky ブランド運営役',
+    name: 'Smith ブランド運営役',
     handle: '@sky_brand',
     initial: '服',
   },
   'rockstar-ip-studio': {
-    name: 'Sky IP Studio',
+    name: 'Smith IP Studio',
     handle: '@sky_ip',
     initial: 'IP',
   },
-  coconala: { name: 'Sky 案件判断役', handle: '@sky_case', initial: '案' },
+  coconala: { name: 'Smith 案件判断役', handle: '@sky_case', initial: '案' },
   'mr-free-article': {
-    name: 'Sky 記事編集役',
+    name: 'Smith 記事編集役',
     handle: '@sky_editor',
     initial: '編',
   },
   'mr-citations': {
-    name: 'Sky 出典整理役',
+    name: 'Smith 出典整理役',
     handle: '@sky_sources',
     initial: '出',
   },
   'mr-delivery': {
-    name: 'Sky 納品確認役',
+    name: 'Smith 納品確認役',
     handle: '@sky_delivery',
     initial: '納',
   },
   'rockstar-ledger': {
-    name: 'Sky サブスク顧問',
+    name: 'Smith サブスク顧問',
     handle: '@sky_subscriptions',
     initial: '顧',
   },
   'rockstar-legal-intake': {
-    name: 'Sky 法務受付',
+    name: 'Smith 法務受付',
     handle: '@sky_legal',
     initial: '法',
   },
   'rockstar-patent-assistant': {
-    name: 'Sky 特許アシスタント',
+    name: 'Smith 特許アシスタント',
     handle: '@sky_patent',
     initial: '特',
   },
   'jev-evaluation': {
-    name: 'Sky Jev品質評価',
+    name: 'Smith Jev品質評価',
     handle: '@sky_jev',
     initial: '評',
   },
@@ -158,7 +162,7 @@ function providerFor(tool: Automation) {
   return (
     providers[tool.id] ??
     skyToolLabelFor(tool.id) ?? {
-      name: 'Sky ツール案内',
+      name: 'Smith ツール案内',
       handle: '@sky_tools',
       initial: 'M',
     }
@@ -188,11 +192,17 @@ function actionLabel(
   return '開いて使う';
 }
 
+function SkyWorkspaceSurface({ embedded, ...props }: ComponentProps<typeof WorkspaceShell> & { embedded?: boolean }) {
+  return embedded ? <section aria-label="SmithのToolと追加機能">{props.children}</section> : <WorkspaceShell {...props} />;
+}
+
 export default function SkyWorkspace({
+  embedded = false,
   initialMcpOpen = false,
   initialPublishOpen = false,
   campusId,
 }: {
+  embedded?: boolean;
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
   campusId?: CampusId;
@@ -296,7 +306,7 @@ export default function SkyWorkspace({
     if (host && catalogHostMismatch(tool, host)) return false;
     const matchesFilter = Boolean(query.trim()) ||
       (filter === 'おすすめ' && campusRecommendations.has(tool.id)) ||
-      (filter === 'Skyのツール' && tool.status === 'ready') ||
+      (filter === 'Smithのツール' && tool.status === 'ready') ||
       (filter === '導入候補' && tool.status === 'candidate');
     const provider = providerFor(tool);
     const text =
@@ -405,7 +415,7 @@ export default function SkyWorkspace({
           ? current
           : [...current, connection.tool],
       );
-      // A successful Sky connection immediately creates/opens the matching Zema Bot.
+      // A successful Sky connection immediately creates/opens the matching Eve Bot.
       openConnectedTool(connectedTool, lastRequest);
     } catch (error) {
       if (error instanceof OperationRequestError && error.status === 401)
@@ -460,8 +470,9 @@ export default function SkyWorkspace({
   }
 
   return (
-    <WorkspaceShell
-      title="Sky"
+    <SkyWorkspaceSurface
+      embedded={embedded}
+      title="Smith"
       tone="sky"
       contentClassName={styles.shell}
       onConnect={() => setDeviceOpen(true)}
@@ -470,35 +481,37 @@ export default function SkyWorkspace({
       standaloneHomeHref={campusId ? `/sky/campus/${campusId}/hub` : '/sky'}
     >
       <div className={styles.page}>
-        <header className={styles.heading}>
+        {!embedded && <header className={styles.heading}>
           <div>
-            <p className={styles.eyebrow}>{campusId ? `SKY FOR ${CAMPUSES[campusId].name.toUpperCase()}` : 'YOUR TOOLS'}</p>
-            <h1 id="sky-feed-title">{campusId ? `${CAMPUSES[campusId].shortName} のSky` : 'ツールを選ぶ'}</h1>
-            <p className={styles.intro}>{campusId ? 'Agentを探して接続。仕事はSky内のZemaで管理できます。' : 'アイコンで機能を確認。そのまま使い始められます。'}</p>
+            <p className={styles.eyebrow}>{campusId ? `Smith FOR ${CAMPUSES[campusId].name.toUpperCase()}` : 'YOUR TOOLS'}</p>
+            <h1 id="sky-feed-title">{campusId ? `${CAMPUSES[campusId].shortName} のSmith` : 'ツールを選ぶ'}</h1>
+            <p className={styles.intro}>{campusId ? "エージェントを探して接続。仕事はSmith内のEveで管理できます。" : 'アイコンで機能を確認。そのまま使い始められます。'}</p>
           </div>
           {!campusId && <Link className={styles.marketLink} href="/sky/marketplace">
             <Store size={17} /> マーケット <ArrowUpRight size={15} />
           </Link>}
-        </header>
-        {campusId ? <nav className={styles.campusNav} aria-label={`${CAMPUSES[campusId].shortName} Skyの管理`}>
-          <Link href={`/sky/marketplace?campus=${campusId}`}>Agentを探す <ArrowUpRight size={14} /></Link>
-          <Link href="/sky/purchases">購入したAgent <ArrowUpRight size={14} /></Link>
+        </header>}
+        {embedded && <h2>エージェントと、毎日の道具。</h2>}
+        {campusId ? <nav className={styles.campusNav} aria-label={`${CAMPUSES[campusId].shortName} Smithの管理`}>
+          <Link href={`/sky/marketplace?campus=${campusId}`}>エージェントを探す <ArrowUpRight size={14} /></Link>
+          <Link href="/#sky-manage">マイエージェント・LLM設定 <ArrowUpRight size={14} /></Link><Link href="/sky/purchases">購入したエージェント <ArrowUpRight size={14} /></Link>
           <Link href={`/sky/campus/${campusId}/outputs`}>成果を見る <ArrowUpRight size={14} /></Link>
           <Link href="/sky/network">接続を管理 <ArrowUpRight size={14} /></Link>
-          <Link href={`/sky/campus/${campusId}/manage?view=work`}>Zemaで仕事を管理 <ArrowUpRight size={14} /></Link>
+          <Link href={`/sky/campus/${campusId}/manage?view=work`}>Eveで仕事を管理 <ArrowUpRight size={14} /></Link>
           <Link href="/sky/campus">大学を変更 <ArrowUpRight size={14} /></Link>
-        </nav> : <div className={styles.generalNav}><Link href="/sky/outputs">Agentの成果を見る <ArrowUpRight size={14} /></Link><Link href="/sky/campus">大学別のSkyを開く <ArrowUpRight size={14} /></Link></div>}
+        </nav> : <div className={styles.generalNav}><Link href="/sky/devices">接続した担当・実行先 <ArrowUpRight size={14} /></Link><Link href="/#sky-manage">マイエージェント・LLM設定 <ArrowUpRight size={14} /></Link><Link href="/sky/outputs">エージェントの成果を見る <ArrowUpRight size={14} /></Link><Link href="/sky/campus">大学別のSmithを開く <ArrowUpRight size={14} /></Link></div>}
+        {!campusId && !embedded && <SkyOptionalFeatures />}
         {campusId ? <details className={styles.planDetails}>
-          <summary>MCP接続枠 · 一般5 / 対象大学生6</summary>
+          <summary>外部ツール接続接続枠 · 一般5 / 対象大学生6</summary>
           <SkyMcpPlan campusId={campusId} />
         </details> : <SkyMcpPlan />}
         <section className={styles.assistant} aria-labelledby="sky-assistant-title">
           <h2 id="sky-assistant-title">やりたいことから探す</h2>
           <form className={styles.composer} onSubmit={submitRequest}>
-            <input value={requestText} onChange={(event) => setRequestText(event.target.value)} placeholder="例：CSVを整えたい" aria-label="Skyへの依頼" maxLength={2000} />
-            <button disabled={!requestText.trim()} aria-label="Skyへ依頼を送る"><ArrowRight size={19} /></button>
+            <input value={requestText} onChange={(event) => setRequestText(event.target.value)} placeholder="例：CSVを整えたい" aria-label="Smithへの依頼" maxLength={2000} />
+            <button disabled={!requestText.trim()} aria-label="Smithへ依頼を送る"><ArrowRight size={19} /></button>
           </form>
-          <div className={styles.roles} aria-label="Skyの役割">
+          <div className={styles.roles} aria-label="Smithの役割">
             {skyRoles.filter((role) => allRolesOpen || campusQuickRoles.has(role.toolId)).map((role) => {
               const tool = catalog.find((item) => item.id === role.toolId)!;
               if (host && catalogHostMismatch(tool, host)) return null;
@@ -538,7 +551,7 @@ export default function SkyWorkspace({
                 <button disabled={Boolean(localBusy)} onClick={() => void connectLocalServer(server)}>
                   {localBusy === server.id ? '確認中…' : server.state === 'connected' ? '機能を見る' : '接続する'}<ArrowRight size={16} />
                 </button>
-                {localError?.id === server.id && <p className={styles.error} role="alert">{localError.message}</p>}
+                {localError?.id === server.id && <SkyNotice className={styles.error} message={localError.message} />}
               </article>
             ))}
             {visibleTools.map((tool) => (
@@ -559,7 +572,7 @@ export default function SkyWorkspace({
           )}
         </section>
         <SkyOwnedAgents campusId={campusId} />
-        <nav className={styles.utilities} aria-label="Skyの管理">
+        <nav className={styles.utilities} aria-label="Smithの管理">
           <button onClick={() => setConnectionCenterOpen(true)}><Link2 size={17} /> サービス接続</button>
           <button onClick={() => setMcpOpen(true)}><Network size={17} /> PCのツール</button>
           <button onClick={() => setPublishOpen(true)}><PackagePlus size={17} /> ツールを登録</button>
@@ -597,7 +610,7 @@ export default function SkyWorkspace({
               {selected.id === 'jev-router' ? (
                 <>
                   <div className="sky-candidate-state">
-                    本体はSkyに未接続です。現状は本人のPCでCLIを導入して使う方式で、この画面から登録しても接続・実行は始まりません。
+                    本体はSmithに未接続です。現状は本人のPCでCLIを導入して使う方式で、この画面から登録しても接続・実行は始まりません。
                   </div>
                   <Link
                     className="sky-one-tap-connect sky-tool-guidance-link"
@@ -630,8 +643,8 @@ export default function SkyWorkspace({
                     </div>
                   )}
                   <div className="sky-candidate-state">
-                    Skyへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
-                    <span>依頼はZemaへ引き継ぐ</span>
+                    Smithへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
+                    <span>依頼はEveへ引き継ぐ</span>
                   </div>
                   {executionBlocked ? (
                     <ExecutionSignin state={accessState} />
@@ -639,12 +652,12 @@ export default function SkyWorkspace({
                     <div className="sky-connect-complete">
                       <CheckCircle2 size={22} />
                       <div>
-                        <strong>Sky登録済み</strong>
+                        <strong>Smith登録済み</strong>
                         <span>
                           {selected.runner === 'candidate-local'
-                            ? 'Skyの共通ジョブ受付と、外部接続なしのローカル確認器が利用できます。'
+                            ? 'Smithの共通ジョブ受付と、外部接続なしのローカル確認器が利用できます。'
                             : selected.id === 'rockstar-ip-studio'
-                            ? '接続済みのIP StudioをSkyから開けます。'
+                            ? '接続済みのIP StudioをSmithから開けます。'
                             : '専用画面で実行器の接続と状態を確認できます。'}
                         </span>
                       </div>
@@ -674,7 +687,7 @@ export default function SkyWorkspace({
                         ? '確認中…'
                         : connectionBusy
                           ? '登録中…'
-                          : '1タップでSkyに登録'}
+                          : '1タップでSmithに登録'}
                     </button>
                   )}
                 </>
@@ -683,7 +696,7 @@ export default function SkyWorkspace({
                   {actionLabel(selected, connectedTools, connected)} <ArrowRight size={17} />
                 </button>
               )}
-              {connectionError && selected.status === 'candidate' && <p className="bench-error" role="alert">{connectionError}</p>}
+              {connectionError && selected.status === 'candidate' && <SkyNotice className="bench-error" message={connectionError} />}
 
               <details className="rock-tool-details sky-tool-about">
                 <summary>手順・提供元を詳しく見る</summary>
@@ -720,7 +733,7 @@ export default function SkyWorkspace({
 
       <Dialog open={publishOpen} onOpenChange={setPublishOpen}>
         <DialogContent className={styles.utilityDialog}>
-          <DialogTitle className="sr-only">Skyにツールを掲載</DialogTitle>
+          <DialogTitle className="sr-only">Smithにツールを掲載</DialogTitle>
           <DialogDescription className="sr-only">
             自動化ツールの接続、権限、料金、提供元を申請します。
           </DialogDescription>
@@ -732,6 +745,6 @@ export default function SkyWorkspace({
         open={connectionCenterOpen}
         onOpenChange={setConnectionCenterOpen}
       />
-    </WorkspaceShell>
+    </SkyWorkspaceSurface>
   );
 }

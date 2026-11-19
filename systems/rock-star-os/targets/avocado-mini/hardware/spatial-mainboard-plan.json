@@ -1,0 +1,138 @@
+{
+  "schema": "rockstaros.mini-spatial-mainboard-plan/1",
+  "status": "engineering_partition_not_schematic_or_routed_pcb",
+  "manufacturingReleased": false,
+  "pricingChanged": false,
+  "productCoreEnvelopeMm": {
+    "outerDiameter": 76,
+    "innerDiameter": 72,
+    "height": 186
+  },
+  "sharedRuntime": "packages/rockstaros-runtime",
+  "boards": [
+    {
+      "id": "CORE",
+      "purpose": "compute, owner state and existing OS runtime",
+      "candidate": "CM5, not final adoption",
+      "signalRoutes": [
+        "MIPI camera: reference design only after exact sensor selection",
+        "HDMI display: reference design after output engine choice",
+        "USB host: supported UVC camera or measured display node bridge",
+        "USB CDC: existing supervisor protocol"
+      ],
+      "connectorPinout": "UNASSIGNED_PENDING_CURRENT_CARRIER_REFERENCE_DESIGN",
+      "pcb": "placement study only; no released high-speed routing"
+    },
+    {
+      "id": "AON",
+      "purpose": "existing Pico2 supervisor and independent stop research",
+      "existingCad": "hardware/cad/mini-supervisor-bench.kicad_sch",
+      "existingPcb": "hardware/cad/mini-supervisor-bench.kicad_pcb",
+      "power": "Pico2 USB, 3V3 contacts only",
+      "output": "low-current LED only, NOT optical power enable",
+      "conversionToProductRequired": [
+        "chosen optical engine power and interface",
+        "independent current interruption and watchdog",
+        "fault analysis and measured stop latency",
+        "exact connector and driver isolation"
+      ]
+    },
+    {
+      "id": "SENSOR",
+      "purpose": "real image acquisition",
+      "benchPath": "OS UVC driver -> Chromium getUserMedia -> shared smis pixel observation",
+      "rawCloudUpload": false,
+      "gestureAndDepth": "not inferred from RGB observation",
+      "nativeDepthDriver": "linux/d405_depth_observer.py; source only, physical acceptance pending"
+    },
+    {
+      "id": "DISPLAY_NODE",
+      "purpose": "calibrated output per installed node",
+      "power": "locally protected independent supply; not unspecified power over data connector",
+      "signalRoutes": [
+        "selected compute display output to exact optical engine",
+        "paired host control and frame metadata",
+        "independent stop/thermal/power interlocks"
+      ],
+      "outputEnableDefault": "OFF",
+      "interlockVoltageAndCurrent": "UNASSIGNED_UNTIL_ENGINE_SELECTION",
+      "pcb": "NOT_ROUTED"
+    },
+    {
+      "id": "PACK_RF",
+      "purpose": "protected battery, charger, satellite, terrestrial and Wi-Fi",
+      "status": "not modified or solved by distributed optics",
+      "reference": "docs/avocado-mini-r5/factory-development/electrical-architecture.md"
+    }
+  ],
+  "releasePrerequisites": [
+    "final optical source and aperture assembly",
+    "sensor and display part numbers and current drawings",
+    "protected pack topology",
+    "rails, peaks, inrush and thermal measurements",
+    "per-pin interface and level compatibility",
+    "complete schematic and netlist",
+    "stackup and impedance budget",
+    "routed PCB ERC/DRC, schematic parity, DFM/DFA",
+    "same closed-unit measured optical glare, RF and power acceptance"
+  ],
+  "guardrails": [
+    "Do not connect an optical engine to the existing LED GPIO or LED return circuit",
+    "Software brightness is not measured luminance or a hardware stop",
+    "No rail values or converter parts inferred from unselected optical loads",
+    "Extra fixed displays do not remove portable-core requirements"
+  ],
+  "outputSignalChain": [
+    "Existing Eve/Smith job + permission",
+    "Scene and measured viewer pose",
+    "Calibrated output surface / optical mode",
+    "Scene raster -> calibrated warp/mirror -> source frame",
+    "Display interface / selected timing controller",
+    "Image source -> beam splitter -> retroreflector -> aerial image in accepted viewing region",
+    "Independent interlock + actual optical readback"
+  ],
+  "sensorPrototype": {
+    "driver": "linux/stereo_marker_observer.py",
+    "osReader": "spatial/stereo-observation.mjs",
+    "physicalBus": "two Linux V4L2 supported USB cameras, exact by-id devices",
+    "customUsbPcbRequiredForBench": false,
+    "power": "existing approved host USB ports, camera power budget unresolved",
+    "synchronizationVerified": false,
+    "actionEligible": false,
+    "nativeHandTracking": "source-only; physical execution not accepted",
+    "selectedDevice": "RealSense D405",
+    "deviceSpecificSource": "linux/d405_depth_observer.py",
+    "physicalAccepted": false
+  },
+  "finalSchematicBlockers": [
+    "No accepted full-range few-unit optical prescription",
+    "Image-source supply, peak/inrush, data interface and shutdown characteristics unselected",
+    "Stereo exposure timestamps/synchronization and verified physical error bound unavailable",
+    "No exact final optical/sensor connectors, pack, RF coexistence or complete mechanical stack"
+  ],
+  "selectedE0OpticalCell": "docs/avocado-mini-r5/factory-development/selected-cell.json",
+  "newPartialCircuit": {
+    "source": "hardware/cell-power/",
+    "scope": "TPS22965DSGR evaluation source, dummy load only",
+    "routingPresent": true,
+    "ercDrcAccepted": false,
+    "finalMainboard": false,
+    "opticalStopAccepted": false
+  },
+  "referenceInterfaceMap": "hardware/reference-interface-map.json",
+  "userImageLocationConstraint": "No plate or membrane at intended image location; peripheral optical exits only",
+  "handSource": {
+    "native": "linux/hand_landmark_observer.py",
+    "host": "spatial/hand-preview-host.mjs",
+    "stage": "source-only image-coordinate hand preview",
+    "metricPoseAccepted": false,
+    "spatialActionEligible": false
+  },
+  "sixFaceStudy": {
+    "opticalEngineAccepted": false,
+    "sourceCountAssigned": false,
+    "idealExitAreaM2": 80,
+    "newDriverPinoutAssigned": false,
+    "manufacturingReleased": false
+  }
+}

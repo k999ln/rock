@@ -1,4 +1,5 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 
 import { useCallback, useEffect, useMemo, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
@@ -183,7 +184,7 @@ export default function CoconalaTeamWorkspace() {
   return <WorkspaceShell title="ココナラ" tone="sky" contentClassName={styles.shell} hideTopActions>
     <div className={styles.root}>
       <nav className={styles.skyNav} aria-label="ココナラの機能">
-        <Link href="/sky"><ArrowLeft size={15} />Skyへ戻る</Link>
+        <Link href="/sky"><ArrowLeft size={15} />Smithへ戻る</Link>
         <button type="button" aria-current={view === 'management' ? 'page' : undefined} onClick={() => setView('management')}>案件管理</button>
         <button type="button" aria-current={view === 'check' ? 'page' : undefined} onClick={() => setView('check')}>応募前チェック</button>
       </nav>
@@ -224,7 +225,7 @@ export default function CoconalaTeamWorkspace() {
       </div>
       </details>
 
-      {error && !formOpen && !deleteCaseId && <p className={styles.error} role="alert">{error}</p>}
+      {error && !formOpen && !deleteCaseId && <SkyNotice className={styles.error} message={error} />}
       {notice && <output className={styles.notice}>{notice}</output>}
       {needsSignin ? signinRecovery :
         <div className={styles.layout}>
@@ -277,16 +278,16 @@ export default function CoconalaTeamWorkspace() {
         <DialogDescription>この画面は案件管理の下書きです。ココナラでの契約、顧客・担当者への連絡、実送金は行いません。</DialogDescription>
         <form onSubmit={(event) => void save(event)}><div className={styles.formGrid}>{fields.map((field) => <label key={field.key}><span>{field.label}</span>{field.kind === 'textarea' ? <textarea required value={String(form[field.key])} onChange={(e) => setForm((current) => ({ ...current, [field.key]: e.target.value }))} /> : <input required type={field.kind ?? 'text'} min={field.kind === 'number' ? '0' : undefined} max={field.key === 'estimatedPlatformFeePercent' ? '100' : undefined} step={field.key === 'estimatedPlatformFeePercent' ? '0.01' : field.kind === 'number' ? '1' : undefined} value={form[field.key]} onChange={(e) => setForm((current) => ({ ...current, [field.key]: field.kind === 'number' ? Number(e.target.value) : e.target.value }))} />}{field.help && <small>{field.help}</small>}</label>)}</div>
           <div className={styles.formEstimate}><span>手数料後見込 <b>{yen(estimate.net)}</b></span><span>運営の見込差額 <b>{yen(estimate.margin)}</b></span><button type="button" onClick={() => setForm((current) => { const net = current.grossYen - Math.round(current.grossYen * current.estimatedPlatformFeePercent / 100); return { ...current, workerFeeYen: Math.max(0, net - Math.round(net * .03)) }; })}>参考: 見込手取りの3%を残す</button></div>
-          {error && <p className={styles.error} role="alert">{error}</p>}
+          {error && <SkyNotice className={styles.error} message={error} />}
           {needsSignin && signinRecovery}
           <button className={styles.primary} disabled={busy || needsSignin}>{busy ? '保存中…' : '下書きとして保存'}</button></form>
       </DialogContent></Dialog>
       <Dialog open={Boolean(deleteCaseId)} onOpenChange={(open) => { if (!busy && !open) setDeleteCaseId(''); }}>
         <DialogContent className={`${styles.modal} ${styles.deleteModal}`} showCloseButton={false}>
           <DialogTitle>この下書きを削除しますか？</DialogTitle>
-          <DialogDescription>Skyに保存したこの下書きと変更履歴を削除します。取り消せません。ココナラの契約やメッセージは変更しません。</DialogDescription>
+          <DialogDescription>Smithに保存したこの下書きと変更履歴を削除します。取り消せません。ココナラの契約やメッセージは変更しません。</DialogDescription>
           <p className={styles.deleteTitle}>{deleteTarget?.terms.title ?? '案件を再読込してください。'}</p>
-          {error && <p className={styles.error} role="alert">{error}</p>}
+          {error && <SkyNotice className={styles.error} message={error} />}
           {needsSignin && signinRecovery}
           <div className={styles.actionRow}>
             <button className={styles.secondary} disabled={busy} onClick={() => setDeleteCaseId('')}>削除せず戻る</button>

@@ -418,7 +418,7 @@ export function validateBaseline(
       data.northStar?.dataCollection?.defaultExcluded?.includes(
         'precise_location',
       ),
-    'AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層を維持してください',
+    'AIネイティブOS CoreからSky・Eve・便利機能・ゲームへ接続する製品階層を維持してください',
   );
   for (const field of ['main', 'nativeHead', 'designHead']) {
     requireValue(
@@ -928,9 +928,9 @@ export function validateBaseline(
     '本番受取レールはBase USDCの所有確認・限定回収・finalized照合とし、秘密鍵保管・自動送金・完了の先取りを禁止してください',
   );
   requireValue(
-    data.baseApps?.find?.((app) => app.id === 'chat')?.displayName === 'Zema' &&
+    data.baseApps?.find?.((app) => app.id === 'chat')?.displayName === 'Eve' &&
       data.baseApps?.find?.((app) => app.id === 'chat')?.route === '/chat' &&
-      data.chatInteraction?.displayName === 'Zema' &&
+      data.chatInteraction?.displayName === 'Eve' &&
       data.chatInteraction?.legacyDisplayName === 'Chat' &&
       data.chatInteraction?.compatibilityRoute === '/chat' &&
       data.chatInteraction?.connectedMcpPresentation ===
@@ -975,7 +975,7 @@ export function validateBaseline(
       data.chatInteraction?.liveProgress?.unverifiedYieldAllowed === false &&
       data.chatInteraction?.genericExecutionContract ===
         'passport_tool_schema_then_prepare_confirm_execute',
-    'Zemaの接続bot管理契約が必要です',
+    'Eveの接続bot管理契約が必要です',
   );
   requireValue(
     data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&
@@ -1009,7 +1009,10 @@ export function validateBaseline(
   );
   requireValue(
     data.homeExperience?.defaultRoute === '/' &&
-      data.homeExperience?.skyRoute === '/sky' &&
+      data.homeExperience?.skyRoute === '/' &&
+      data.homeExperience?.legacySkyRoute === '/sky' &&
+      data.skyInformationMarket?.entry === '/' &&
+      data.skyInformationMarket?.authority === 'docs/sky-tools-complete-design.md#sky-information-market' &&
       data.homeExperience?.systemUtility === 'settings' &&
       data.homeExperience?.preferencesStorage === 'device_local' &&
       data.homeExperience?.customizable?.includes('focus_mode') &&
@@ -1025,15 +1028,18 @@ export function validateBaseline(
     'OS内の画面と公開製品ページの戻り先を分けてください',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  const canonicalOsEntry = data.obsoletePageCleanup?.approved === true &&
+    data.obsoletePageCleanup?.canonicalOs === '/os' && data.obsoletePageCleanup?.canonicalEve === '/os/eve' &&
+    launchPageSource.includes("redirect('/os')") && read(resolve(root, 'app/os/eve/page.tsx')).includes('EveSyncWorkspace');
   const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
   const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
-    data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.role === 'public_sim_esim_service_home' &&
-      data.launchPage?.osHomeRoute === '/' &&
+    data.launchPage?.route === (canonicalOsEntry ? '/os' : '/rockstaros') &&
+      data.launchPage?.role === (canonicalOsEntry ? 'canonical_os_workspace_entry' : 'public_sim_esim_service_home') &&
+      data.launchPage?.osHomeRoute === (canonicalOsEntry ? '/os' : '/') &&
       data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
-      data.launchPage?.directOsHomeLink === false &&
-      data.launchPage?.serviceDetailsLocation === 'public_service_home' &&
+      data.launchPage?.directOsHomeLink === canonicalOsEntry &&
+      data.launchPage?.serviceDetailsLocation === (canonicalOsEntry ? 'service_settings_and_connect' : 'public_service_home') &&
       data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
       data.marketPositioning?.customerFacingFocus === 'sim_esim_led_rockstaros_service_access' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
@@ -1045,12 +1051,12 @@ export function validateBaseline(
         'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
-      data.launchPage?.primaryAction === 'start_service_onboarding' &&
-      data.launchPage?.secondaryAction === 'view_sim_esim_plans' &&
+      data.launchPage?.primaryAction === (canonicalOsEntry ? 'open_os_workspace' : 'start_service_onboarding') &&
+      data.launchPage?.secondaryAction === (canonicalOsEntry ? 'connect_account_or_device' : 'view_sim_esim_plans') &&
       data.launchPage?.publicDownloadFallback === '/connect' &&
-      launchPageSource.includes('SIM/eSIMをつないで、Sky・Zema・AI Agentへ') &&
+      (canonicalOsEntry || (launchPageSource.includes('SIM/eSIMをつないで、Sky・Eve・AI Agentへ') &&
       launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
-      launchPageSource.includes('href="/connect"') &&
+      launchPageSource.includes('href="/connect"'))) &&
       hardwarePageSource.includes('<AvocadoTurntable />') &&
       hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
@@ -1132,7 +1138,7 @@ export function validateBaseline(
       data.visualSystem?.surfaces?.includes('/rockstaros') &&
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
-      data.visualSystem?.accent === 'ice_blue' &&
+      data.visualSystem?.accent === 'forest_green_bronze' &&
       data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&
@@ -1161,7 +1167,7 @@ export function validateBaseline(
       !shellSource.includes('rock-sidebar') &&
       shellSource.includes('rock-main-column rock-main-column-full') &&
       shellSource.includes('<OSHeader title={title} running={running}>') &&
-      osHeaderSource.includes('href="/"') &&
+      osHeaderSource.includes('href={homeHref}') &&
       osHeaderSource.includes('aria-label="RockstarOS ホーム"') &&
       osHeaderSource.includes('aria-disabled={running || undefined}') &&
       shellSource.includes('aria-disabled={running || undefined}') &&
@@ -1464,6 +1470,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Eve・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Eveの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

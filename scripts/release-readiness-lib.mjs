@@ -40,6 +40,10 @@ const expectedWebRouteHeaders = {
   '/_next/static/*': {
     'Cache-Control': 'public, max-age=31536000, immutable',
   },
+  '/sky/objects/camera': {
+    'Permissions-Policy': 'bluetooth=(), camera=(self), geolocation=(), hid=(), microphone=(), payment=(), serial=(), usb=()',
+    'Cache-Control': 'no-store',
+  },
 };
 
 const exactRecord = (actual, expected) =>
@@ -983,6 +987,16 @@ export function validatePersonalNumberReleaseAudit({ root, audit, readiness }) {
   };
 }
 
+// Parallel local acceptance servers may use a free port. Keep the evidence
+// restricted to a literal IPv4 loopback origin; no URL credentials/path/queries.
+export function isLocalWebSecurityEvidenceOrigin(value) {
+  if (typeof value !== 'string') return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' && url.hostname === '127.0.0.1' && url.port !== '' && url.origin === value;
+  } catch { return false; }
+}
+
 export function validateWebSecurityPolicy({ root, policy, readiness }) {
   const label = 'Web security policy';
   if (policy?.schema !== 'rockstaros-web-security-policy/1') fail(label + ': schemaが違います');
@@ -995,6 +1009,11 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
   if (!exactRecord(policy.universalHeaders, expectedWebSecurityHeaders)) {
     fail(label + ': universal header集合または値が不一致です');
   }
+  if (!exactRecord(policy.cameraException, {
+    path: '/sky/objects/camera',
+    permission: 'same-origin camera only, explicit owner action and browser permission',
+    microphoneAllowed: false, rawImagesUploaded: false, defaultElsewhere: 'camera=()', generalLaunchAllowed: false,
+  })) fail(label + ': cameraの例外は専用pageの同origin・本人操作だけに限定してください');
   if (
     !policy.routeHeaders ||
     typeof policy.routeHeaders !== 'object' ||
@@ -1002,10 +1021,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     Object.keys(policy.routeHeaders).length !== Object.keys(expectedWebRouteHeaders).length ||
     Object.keys(expectedWebRouteHeaders).some((path) => !(path in policy.routeHeaders)) ||
     !exactRecord(policy.routeHeaders['/sw.js'], expectedWebRouteHeaders['/sw.js']) ||
-    !exactRecord(
-      policy.routeHeaders['/manifest.webmanifest'],
-      expectedWebRouteHeaders['/manifest.webmanifest'],
-    )
+    Object.entries(expectedWebRouteHeaders).some(([path, headers]) => !exactRecord(policy.routeHeaders[path], headers))
   ) {
     fail(label + ': Service Worker/manifest cache policyが不一致です');
   }
@@ -1014,7 +1030,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     'pluginObjectsRejected',
     'foreignFormTargetsRejected',
     'mimeSniffingRejected',
-    'sensitiveBrowserCapabilitiesDisabled',
+    'sensitiveBrowserCapabilitiesDisabledByDefault',
     'crossOriginOpenerIsolated',
     'referrerSuppressed',
     'hstsDeclared',
@@ -1041,7 +1057,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
   ) {
     fail(label + ': static asset用_headerがsecurity policy正本と不一致です');
   }
-  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260917.json';
+  const localEvidencePath = 'docs/evidence/launch/web-security-local-current.json';
   const localEvidence = readJson(resolve(root, localEvidencePath));
   const localInputs = {
     'data/web-security-policy.json': sha256(readFileSync(resolve(root, 'data/web-security-policy.json'))),
@@ -1052,12 +1068,8 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     ),
     'public/sw.js': sha256(readFileSync(resolve(root, 'public/sw.js'))),
     'app/manifest.ts': sha256(readFileSync(resolve(root, 'app/manifest.ts'))),
-    'public/rock-icon-192.png': sha256(
-      readFileSync(resolve(root, 'public/rock-icon-192.png')),
-    ),
-    'public/rock-icon-512.png': sha256(
-      readFileSync(resolve(root, 'public/rock-icon-512.png')),
-    ),
+    'public/company-mark-192.svg': sha256(readFileSync(resolve(root, 'public/company-mark-192.svg'))),
+    'public/company-mark.png': sha256(readFileSync(resolve(root, 'public/company-mark.png'))),
     'public/rock-icon-maskable.svg': sha256(
       readFileSync(resolve(root, 'public/rock-icon-maskable.svg')),
     ),
@@ -1067,7 +1079,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(localEvidence.observedAt || '') ||
     localEvidence.scope !== 'LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT' ||
     localEvidence.server?.runtime !== 'wrangler-local' ||
-    localEvidence.server?.origin !== 'http://127.0.0.1:8787' ||
+    !isLocalWebSecurityEvidenceOrigin(localEvidence.server?.origin) ||
     localEvidence.server?.productionBuild !== true ||
     !exactRecord(localEvidence.inputs, localInputs) ||
     localEvidence.result?.status !== 'PASS' ||
@@ -1079,13 +1091,18 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
       '/sky',
       '/sw.js',
       '/manifest.webmanifest',
-      '/rock-icon-192.png',
-      '/rock-icon-512.png',
+      '/company-mark-192.svg',
+      '/company-mark.png',
       '/rock-icon-maskable.svg',
     ].every((path) =>
       localEvidence.result.routes.includes(path),
     ) ||
     !localEvidence.result.routes.some((path) => /^\/_next\/static\/[^/].+\.js$/.test(path)) ||
+    !exactRecord(localEvidence.result.cameraRoute, {
+      path: '/sky/objects/camera', status: 200,
+      permissionsPolicy: expectedWebRouteHeaders['/sky/objects/camera']['Permissions-Policy'],
+      otherRoutesCameraDisabled: true,
+    }) ||
     localEvidence.boundary?.sitesDeploymentVerified !== false ||
     typeof localEvidence.boundary?.nextAction !== 'string' ||
     !localEvidence.boundary.nextAction

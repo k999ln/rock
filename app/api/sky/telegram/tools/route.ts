@@ -17,6 +17,6 @@ export async function GET(request: Request) {
   } catch (error) {
     if (error instanceof SkySubmissionError)
       return json({ error: error.message }, error.status);
-    return json({ error: 'Skyの有効化済みToolを読み込めませんでした。' }, 503);
+    return json({ error: 'Smithの有効化済みToolを読み込めませんでした。' }, 503);
   }
 }

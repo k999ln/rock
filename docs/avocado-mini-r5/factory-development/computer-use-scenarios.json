@@ -1,0 +1,21 @@
+{
+  "schema": "rockstaros.mini.computer-use-scenarios/1",
+  "sourceThread": "codex://threads/01a16b71-c8f7-7590-918f-9f5cf1ea6073",
+  "sourceThreadTitle": "avocado✖️architecture 🎬 (2)",
+  "classification": "experience_and_acceptance_inputs_not_hardware_evidence",
+  "common": {
+    "workflowAuthority": "lib/workflow.ts",
+    "accountJobBudgetStorage": "reuse_existing_RockstarOS_Eve_Smith",
+    "nodeChangeCreatesNewJob": false,
+    "gestureOrRecognitionGrantsExecution": false,
+    "requiredHandoffBindings": ["same owner", "same work job ID", "same scene/asset revision", "same fixed world anchor", "new node calibration and output mode", "old input lease revoked", "stop/permission/readback reconciliation"],
+    "pricingChanged": false,
+    "physicalAccepted": false
+  },
+  "scenarios": [
+    {"id":"M01","purpose":"last musical take -> slower practice copy","sensorInput":["explicit microphone consent","bounded take with timestamps","owner chooses exact take"],"appOperations":["read original revision","create practice copy","apply pitch-preserving 0.67x stretch with supported editor","play result","save copy and read back"],"proof":["original bytes preserved","audible slower copy with pitch retained","same job resumes after node change"],"notProvidedByCurrentHandPreview":["microphone recording","time-stretch editor operation","persistent work acceptance"],"physicalAccepted":false},
+    {"id":"M02","purpose":"paper sketch -> working website; real guitar -> hero image","sensorInput":["camera capture and consent","finger/paper target with ambiguity confirmation","exact guitar image and usage consent"],"appOperations":["interpret layout and show selected paper region","user approves implementation scope","operate supported editor/build/browser","replace hero from confirmed asset","verify actual page interactions","save source/result under same job"],"proof":["recognized layout matches source","actual code/build/browser readback","approved image matches the pointed guitar","handoff preserves job/asset revision"],"notProvidedByCurrentHandPreview":["OCR/layout understanding","working editor/browser control","camera target identity","website deployment"],"physicalAccepted":false},
+    {"id":"M03","purpose":"drawing and floor -> world-fixed full-size table preview","sensorInput":["drawing dimensions with units","measured floor plane and scale/error","observer/hand pose with exposure mapping"],"appOperations":["open model","apply confirmed dimensions","anchor same scene to floor","render correctly for both observers","resume same anchor across nodes","save placement and read back"],"proof":["physical dimensional error measured","no placement jump on handoff","bare-eye binocular visibility incl upper/lower positions","comfort and stop measured"],"notProvidedByCurrentHandPreview":["room-scale metric pose","full-size free-space display","multi-observer optical output"],"physicalAccepted":false}
+  ],
+  "mechanicalConcept": {"ceilingFlushRotating40Mm":"reference film concept, not accepted CAD or confirmed current dimensions","currentEngineeringCoreEnvelopeMm":[76,186],"GoWidthMm":80.4,"fitAccepted":false}
+}

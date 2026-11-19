@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "id": "eve-news-1.0",
+  "recordedAt": "2026-10-21",
+  "status": "design_only",
+  "authority": "docs/llm-evaluation-architecture.md#eve-news-1-0",
+  "primaryWorkstream": "Android / Device / Local AI",
+  "taskIds": ["AI02", "AI05", "SKY21", "HOME01"],
+  "productIntent": "Publish source-grounded news without suppressing a political viewpoint solely because of its ideology.",
+  "model": {
+    "baseSelected": false,
+    "shortlistForBenchmark": [
+      "ibm-granite/granite-4.2-3b",
+      "Qwen/Qwen3.5-4B"
+    ],
+    "trainingMethodSelected": false,
+    "trainedWeightsCreated": false,
+    "role": "evidence-bound claim extraction and article-draft generation",
+    "authority": "untrusted_draft_only"
+  },
+  "sourceContract": {
+    "requiredFields": [
+      "sourceId",
+      "canonicalUrl",
+      "publisherOrSpeaker",
+      "sourceType",
+      "publishedAtOrUnknown",
+      "retrievedAt",
+      "contentHashOrReference",
+      "rightsScope",
+      "language"
+    ],
+    "sourceTypes": [
+      "primary_record",
+      "on_record_statement",
+      "licensed_reporting",
+      "correction_or_retraction"
+    ],
+    "politicalViewpointAsExclusionReason": false,
+    "xContentAllowedInFoundationModelTraining": false,
+    "xPolicyReference": "https://docs.x.com/developer-terms/agreement",
+    "unlicensedFullTextStoredOrRepublished": false
+  },
+  "draftContract": {
+    "requiredFields": [
+      "jobId",
+      "revision",
+      "modelProfileIdAndHash",
+      "headline",
+      "articleText",
+      "claimLedger",
+      "sourceReferences",
+      "unresolvedQuestions",
+      "generatedAt",
+      "reviewStatus"
+    ],
+    "claimTypes": [
+      "verified_fact",
+      "attributed_claim",
+      "analysis_or_inference",
+      "unverified_claim"
+    ],
+    "claimEvidenceStates": [
+      "supported",
+      "contradicted",
+      "disputed",
+      "unknown"
+    ],
+    "modelMayClaimToolOrPublicationSuccess": false,
+    "modelMayPublishWithoutReview": false
+  },
+  "editorialContract": {
+    "sourceInclusion": "Apply the same relevance, timeliness, provenance and rights criteria regardless of political viewpoint.",
+    "unverifiedMaterial": "Keep the original source reference visible where permitted and label the assertion as unverified; do not promote it to verified news.",
+    "evidenceWeight": "Represent evidence strength rather than mechanically equal space for unequal evidence.",
+    "articleReview": "A human reviewer checks source links, attributed claims, headline, dates, quotes, rights and corrections before initial public publication.",
+    "corrections": "Append a visible versioned correction with reason, time and affected claims; retain the prior revision for audit."
+  },
+  "evaluationPlan": {
+    "suiteStatus": "not_built",
+    "firstLanguages": ["ja", "en"],
+    "minimumHeldOutPairedCases": 120,
+    "pairedTests": [
+      "party_or_ideology_swap_with_same_evidence",
+      "speaker_status_swap_with_same_evidence",
+      "supporting_and_contradicting_source_order_swap",
+      "ambiguous_time_and_correction",
+      "fabricated_citation_and_unsupported_claim",
+      "headline_sentiment_and_uncertainty_parity"
+    ],
+    "measureSeparately": [
+      "topic_inclusion_gap",
+      "headline_valence_gap",
+      "uncertainty_language_gap",
+      "source_attribution_accuracy",
+      "unsupported_factual_claim_rate",
+      "fabricated_citation_rate",
+      "correction_accuracy",
+      "latency_and_cost"
+    ],
+    "releaseThresholds": "Pre-register after the held-out set and source classes are fixed; never infer zero political bias from a model card or one test set."
+  },
+  "firstReleaseGate": {
+    "sourceRightsAndModelLicenseReviewed": false,
+    "heldOutEvaluationPassed": false,
+    "sameJobDraftReviewCorrectionReceiptAccepted": false,
+    "liveSourceAdapterAccepted": false,
+    "publicPublishingAccepted": false
+  },
+  "referenceStandards": [
+    "https://reutersagency.com/about/our-trust-principles/",
+    "https://reutersagency.com/about/standards-values/",
+    "https://huggingface.co/docs/hub/model-cards",
+    "https://huggingface.co/docs/hub/main/datasets-cards"
+  ]
+}

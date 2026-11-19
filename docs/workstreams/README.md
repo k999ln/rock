@@ -1,5 +1,7 @@
 # RockstarOS 設計・作業ストリーム案内
 
+会社の担当から探す場合は[営業・開発・品質・運用の全社分担](10-git-ci-operations.md#営業開発品質運用の全社分担)と[全社役割台帳](../../data/company-role-map.json)を参照する。営業18役だけの一覧とは分け、既存11開発lane/95unitへつなぐ。
+
 更新日: 2026-09-19
 
 このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、進捗の正本は [data/project-status.json](../../data/project-status.json) であり、ここでは内容を置き換えない。
@@ -22,7 +24,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は163 task中104 done、42 in progress、16 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は165 task中104 done、44 in progress、16 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム

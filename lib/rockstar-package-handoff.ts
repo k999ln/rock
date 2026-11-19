@@ -5,7 +5,7 @@ export type RockstarPackageHandoff = {
   summary: string;
 };
 
-/** Build explicit Zema/A2A request context without claiming the Package is itself executable. */
+/** Build explicit Eve/A2A request context without claiming the Package is itself executable. */
 export function rockstarPackageHandoffMessage(
   handoff: RockstarPackageHandoff,
   task: string,
@@ -18,7 +18,7 @@ export function rockstarPackageHandoffMessage(
     throw new Error('ROCKSTAR_PACKAGE_HANDOFF_INVALID');
 
   const message = [
-    '【RockstarOSで選択したSky Package】',
+    '【RockstarOSで選択したSmith Package】',
     `名前: ${handoff.name.trim()}`,
     `Package key: ${handoff.packageKey}`,
     `審査済みmanifest SHA-256: ${handoff.manifestSha256}`,

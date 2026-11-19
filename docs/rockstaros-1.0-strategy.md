@@ -1,5 +1,56 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
+## 2026-11-03 創業者の役割を開発中心から事業責任へ移す
+
+本人の「開発は？これで完全なの？」を受け、営業18役に開発・品質・運用21役を接続した[全社責任表](workstreams/10-git-ci-operations.md#営業開発品質運用の全社分担)を現行入口とする。CEOは方針と最終判断、REV00は営業進行、DEV00は開発進行を持つ。既存11lane/95unitを再利用し、共通writerは既存Git系列と引継ぎを優先する。採用・経理・資金調達・法務・製造等の実担当、予算、稼働、実案件受入が未確定であるため、役割の定義を実運営の完成とは記録しない。
+
+本人の「今まで開発ばかりしてきたので役割を決める」という明示指示により、本人の運用上の役割を **Founder & CEO 兼 Product Owner** とする。これは会社登記上の役職、株式、雇用契約を変更する決定ではなく、avokadoの仕事を進めるための責任分担である。
+
+本人の追加訂正により、CEOが候補調査、リスト作成、個別文面、追客、pipeline更新、pilot運用まで自分で行う体制は採らない。本人は会社の目的、最初に解く顧客課題、製品の優先順位、価格・契約・公開・支出・提携、最終的な製品受入に責任を持つが、日々の営業実行はRevenue Podへ委ねる。CEOが行うのは、まとめられた承認パケットの判断、CEO本人が必要な適合済み商談、重要な提携・契約・支出、週次の続行/修正/停止判断である。
+
+本人の「役割を細分化して」により、営業と事業運営を統括1役＋専門17役へ分ける。REV00が案件、引継ぎ、期限、CEOへの判断一覧を所有する。専門担当は市場調査、候補作成、適合判定、商品訴求、発信、初回営業、返信/日程、課題ヒアリング、技術提案、提案/見積、交渉/受注、提携、導入、試用成果、継続、請求/採算、契約窓口へ分担する。[役割台帳](../data/revenue-role-map.json)と[担当表・引継ぎ規則](workstreams/09-business-pilots.md#細分化した担当の共通運用)を参照する。既存の開発担当はREV09から必要な実装を受け取る。役割設定は常駐運転を開始しない。
+
+CEOの標準cadenceは、週2回の20分承認block、適合済みの重要商談、週1回の30分pipeline reviewとする。営業事務をCEOへ戻さず、承認項目は「決めること、推奨、根拠、正確な文面/金額、リスク、承認後24時間の行動」の6点へ圧縮する。直接開発は重大な安全境界または本人だけができる受入の例外とする。既存のRQ01〜RQ49、実機・本番・料金・公開gateは変更しない。
+
+最初の運用単位は、既存`B02`・`B03`・`B05`・`B06`から一つの顧客層と一つの反復仕事を選び、`problem evidence → pilot → voluntary reuse → genuine payment → contribution`を順に測ることとする。追加機能は、その一周の阻害要因、安全・法令・復旧gate、または受入に必要な場合だけ優先する。役割決定だけを顧客需要、売上、採算、一般公開の証拠にしない。
+
+最初の営業仮説は、小規模な建築・インテリア専門家の一つの実案件で、依頼、revision、見積、承認、成果を追跡する7日間のconcierge pilotとする。Web/Eve/Noahの現受入範囲と人手を明示し、native OS、eSIM、Mini/Pro完成を開始条件にしない。最初のsprint目標は適合調査10件、個別outreach草案5件、discovery候補3件、pilot提案1件。これは仮説・目標であり、顧客確定、送信、契約、売上の実績ではない。
+
+## 2026-10-19 avokadoの企業価値を高める経営判断
+
+利用者の明示方針により、avokadoの判断では企業価値の向上を特に重視する。ここでいう企業価値の向上は、未確認の評価額を掲げることではなく、顧客が継続して対価を払う理由と、その提供を採算よく安全に繰り返せる能力を証拠で増やすことを指す。会社の評価額・資金調達条件・市場規模はこの文書から算出しない。
+
+| 優先して増やすもの | 次の判断に使う証拠 | 現時点の扱い |
+| --- | --- | --- |
+| 顧客が得る価値 | 一つの実仕事で初回成果、品質、手間、保存・復旧を既存手順と比較し、同じ顧客の自発的な再利用を追う | 既存pilot目標は提案値。外部顧客の継続実績は未確認 |
+| 検証済みの収益性 | 注文・納品・検収・Provider入金を別eventで照合し、商品料金、通信料、AI usage、決済・推論・支援の直接費を同じ仕事へ割り当てる | 第三者の真正な有料取引と粗利は未受入 |
+| 再利用できる資産 | Skyの仕事・成果・接続・費用契約を、Web/PWA、対応端末、Mini/Pro、作者Toolへ同じ権限と復旧条件で再利用できるか検証する | 共通設計と限定実装を資産候補として扱い、独占力や需要の実績にしない |
+| 事業リスクの低減 | 権限、費用上限、停止、失効、個人情報、OS復旧、Provider依存を実環境ごとに受け入れる | 事故がない合成試験を本番安全性へ換算しない |
+
+最初の商業検証は既存の`B02`・`B03`・`B05`・`B06`とBusiness Pilotsに結び、一つの顧客層の一つの反復仕事をSky/Zemaで完走させる。建築・インテリア・サウンドの専門家と空間projectは産業候補だが、対象業務とpartnerは実対話・実仕事で選ぶ。顧客がSIM/eSIMを必要としない段階では既存のSky Web/PWA入口で検証できる。主商品のSIM/eSIMサービスと機種別OS受入は独立して進め、未受入の回線・Cloud料金・物理端末をpilotの成功条件へ紛れ込ませない。
+
+2026-10-20に正味10時間調査を開始した。当時は本人が**New York City**を初期地域に指定したが、後続の明示方針でNYCは**初回対面開催地**、美術・建築の題材と協働先は地域非限定となった。最初の有料支払者・案件所在地・borough/地区・一件の仕事は未選定。現段階の反証材料として、[NYC SBSの無料事業支援](https://nyc-business.nyc.gov/nycbusiness/business-services/initiatives/opening-a-business-in-nyc)は一般的な店主向け相談/許認可案内の有料化を難しくし、[SBSの店舗改善guide](https://www.nyc.gov/assets/sbs/downloads/pdf/neighborhoods/storefront-improvement-program-guide.pdf)はCBO・物件owner・店主・専門家の既存手順と費用分担を示す。[Houzz Proの既存機能](https://pro.houzz.com/pro-learn/blog/houzz-pro-pricing)はAI・見積/請求だけでなくrole別権限・subcontractor/client共有も掲げ、一般的なデザイン/案件管理や単純な多者共有の独自性に反例を与える。今は、誰が既存手順で解けない仕事を持ち、購入権限と予算を持ち、同じ仕事を繰り返すかを比較する段階である。Facebook対話とSky/Eve仕事記録の組合せ、多者の同意・版・費用・成果の追跡は**検証候補**であり、需要や差別化の結論ではない。現在のsource/証拠と未受入条件は[Business Pilots](workstreams/09-business-pilots.md#企業価値10時間調査第1区間の事実監査2026-10-20開始)へ記録する。
+
+NYC行政と地区団体への販売は別の購買経路である。[SBSの市契約案内](https://www.nyc.gov/site/sbs/businesses/contracting-opportunities.page)は直接の市契約にPASSPort/PIP登録を求め、[SBS Fiscal Manual](https://www.nyc.gov/assets/sbs/downloads/pdf/about/fiscal-manual.pdf)は対象契約の再委託費に事前承認等を求める。団体への助成採択や公開職務票からRockへの発注権・現在予算・入金時期を推定しない。
+
+Phase 1の初期比較では、一店舗の店主/owner、複数店舗を扱うCBO/BID、専門家事務所、美術×建築のcommissioning主体、NYC市、空間以外のSky仕事を**別の反復単位と購入契約**で評価する。[SBSのBID説明](https://www.nyc.gov/site/sbs/neighborhoods/bids.page)ではBIDのBoardがprogram/予算を決めるため、担当者の作業負担だけで発注権を推定できない。[小規模BID支援](https://www.nyc.gov/site/sbs/neighborhoods/small-bid-support-grants.page)の人員・財源制約は仕事の必要性と購買制約の双方の反例になる。地域の空室、公開grant、Facebookでの反応から支払者を選ばず、同じ一件の利用者・決裁者・既存代替・実支出・専門家責任を照合する。[比較と反例](workstreams/09-business-pilots.md#企業価値10時間調査phase-1の顧客課題支払者仕事比較45分以降調査中)は面談設計であり、実面談・受注は未実施。
+
+2026-10-22に受け取った提案文は、本人回答により**正味10時間調査で検証する仮説**として追加する。確定した商品・料金・事業方針ではない。長期に守りたい目的の候補を「人が場所を安心して使い続けられること」とし、最初に対価を得る仕事は別に選ぶ。土地/建物を「使える状態」へ進める情報・権利・合意・予算・専門家・運営の接続、また修繕依頼から承認・作業確認・請求照合・維持/引継ぎまでの反復仕事を、既存の単発店舗改修と同条件で比較する。版付きの確認・実行履歴と本人が持ち出せる成果が、再説明や手戻りを実際に減らすかを測る。AIやDeFi/ReFiの採用自体を価値や収益の証拠にせず、Eve LLMの製品名、SIM/eSIM主商品、Sky、Facebook、Mini/Pro、Gameと既存の権限・料金・実資金gateを維持する。添付中の国際機関への出典帰属は直接URLがなく未検証で、結論の根拠へ使わない。[観測単位と反証](workstreams/09-business-pilots.md#添付提案から追加する検証仮説2026-10-22)をBusiness Pilotsに記録した。
+
+施設運営者案の追加監査では、現場担当と購入決裁者を分ける必要がさらに明確になった。NYC文化施設の[DCLA資本予算](https://www.nyc.gov/site/dcla/cultural-funding/capital-funding-process.page)があっても、[FY27設備catalog](https://www.nyc.gov/assets/dcla/downloads/pdf/Capital-Equipment-Catalog.pdf)はsubscription softwareを対象外とする。民間側でも[AppFolio](https://www.appfolio.com/property-manager/maintenance)や[UpKeep](https://upkeep.com/product/procurement/)が依頼・承認・請求・履歴を既に扱い、[MaintainX](https://www.getmaintainx.com/pricing)には制限付き無料のwork order入口がある。従って「施設に修繕がある」「AIで履歴をまとめる」だけでは発注費目や独自の差は確認できない。現行の[`ServiceSetup`](../lib/rockstar-service-setup.ts)は一owner・注文・端末に結び、[`serviceSetupBilling`](../lib/rockstar-service-setup-billing.ts)は支払方法準備であり、団体購買の受入や実課金と同一視しない。NY所在の実仕事が物件の募集・賃貸交渉・賃料徴収や契約の法的判断に入るなら、[NY州のbroker免許境界](https://dos.ny.gov/real-estate-broker-frequently-asked-questions)と[法律実務memo](https://dos.ny.gov/legal-memorandum-li04-real-estate-brokers-and-salespersons-and-unauthorized-practice-law)を別gateとする。Rockの候補役務である資料・承認履歴の整理と分け、具体契約が決まるまでは免許要否を断定しない。初回の探索順は、発注権と反復仕事を同一組織で照合しやすい民間owner/小規模施設運営者と専門家事務所を先に比べ、店主・CBO/BID・市は実案件と予算決裁経路に応じて進めるという仮説にとどめる。これは成約確率の推定ではなく、既存CMMS・Houzz・市の無料支援と調達条件で逆転する。最初の有料支払者の推奨は、同一組織の独立した仕事、承認済み予算と既存Toolとの差、真正な支払を得るまで保留する。[施設運営者の役割・予算・反例](workstreams/09-business-pilots.md#phase-1追加監査施設場所の運営者は誰が買うか2026-10-22時点の公開資料)をBusiness Pilotsに記録した。
+
+美術×建築の有料仕事も作品制作と維持管理を同じ売上にしない。[NYC Public Design Commissionの市有地作品checklist](https://www.nyc.gov/assets/designcommission/downloads/pdf/checklists/PDC_Checklist_Artwork_Install.pdf)は所管agency経由の審査、作家費/資格者/保険/維持基金を区分する。[NYC DOT Art](https://www.nyc.gov/html/dot/html/pedestrians/dotart.shtml)は自費型では協力団体が制作費を負い、DOT出資型ではagencyが作家へproject feeを出す別経路を示す。これは発注者を案件ごとに特定する必要の根拠で、Rockの受注実績ではない。
+
+実行経路の選択では、mainにある本人限定の[無料Cloud応答・再開の限定受入](https://github.com/k999ln/rock/blob/70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a/docs/evidence/sky-free-cloud-background.json)と、現作業branchにあるfixture Stripeの[Sky Payments証拠](evidence/unified-payment-verification.json)を分ける。どちらもNYCの第三者顧客が有料Cloudに継続支払った証拠ではない。`remoteAiPricingGateAccepted()`は両refとも`false`で、顧客課題をWeb/決定的Tool/人手で試す判断と、SIM/eSIM加入・有料Cloudの採算受入を別gateにする。比較したGit履歴はmain側625 commit・branch側3 commitの分岐であり、事業pilotを実装する前に双方の仕事・請求・本人契約を同期する。
+
+無料Cloudの実応答は、物件資料を外部へ送れる許可でも業務SLAでもない。mainの匿名Free API Classicに対する[ProviderのTerms](https://enter.pollinations.ai/terms)と[Privacy](https://enter.pollinations.ai/privacy)はbeta/preview変更、選択modelに伴う第三者処理、標準DPA未組込などの条件を示す。NYCの実案件で図面・個人情報を扱う場合は、権利/本人同意と使用経路の契約・保存/送信条件を別に確認する。
+
+判断順は、(1) 実際の困り事と初回の有用な成果、(2) 自発的な再利用、(3) 本人が理解した条件での真正な支払と入金照合、(4) 直接費・支援時間を含む仕事単位の採算、(5) 同じ品質と安全条件での再現性とする。既存の[pilot目標](#6-最初の検証計画と続ける見直すの基準)を使い、売上0や失敗も分母へ入れる。段階を満たさないときは対象仕事、導線、品質、価格候補を見直し、外部契約・広告・製造などの資本支出を実績がないまま拡大しない。これは投資・料金・発売の個別承認を新たに与えるものではない。
+
+既存の「7日間に10人中6人が再利用」は短周期のWeb/Tool試用向けの**提案目標**であり、店主の一回の改修やCBOの月/年度programへそのまま適用しない。NYC候補では同じ担当者が新しい店舗案件や同一案件のscope/見積/承認を自発的に再び扱う頻度を、実際の仕事周期に合わせて定義する。特定期間の再依頼がまだ観測できなければ継続率は未測定とする。
+
+この測定軸は、獲得、継続、収益、粗利を分けて追う一般的なSaaS指標も参考にした。ただしavokadoへ他社の倍率や合格率を当てはめない（[Stripeの指標整理](https://stripe.com/resources/more/essential-saas-metrics)、[Stripeの粗利定義](https://stripe.com/resources/more/saas-gross-margin-explained-what-it-is-and-why-it-is-important)）。
+
 ## 2026-10-14 建築・インテリア・サウンドを最初の産業拠点にする
 
 利用者の最新の明示方針により、avocadoは建築・インテリアの専門家・事業者と組み、architecture、interior、soundと自然なITによって生活の質を豊かにする領域を最初の産業上の根城とする。これは顧客向け主商品であるSIM/eSIM起点のRockstarOS service accessを置き換えず、その共通runtime、Sky、Zema、avocadoMiniを実空間の仕事へ集中適用する市場・提携方針である。

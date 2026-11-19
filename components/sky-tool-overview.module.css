@@ -11,7 +11,7 @@
   border: 1px solid var(--os-line) !important;
   border-radius: 20px !important;
   color: var(--os-text) !important;
-  color-scheme: dark;
+  color-scheme: light;
   background: var(--os-bg) !important;
   box-shadow: none !important;
 }

@@ -28,13 +28,13 @@ const valid = (change = {}) => ({
   ...change,
 });
 
-void test('Sky accepts a minimal remote MCP listing and normalizes URLs', () => {
+void test('smis accepts a minimal remote MCP listing and normalizes URLs', () => {
   const parsed = parseSkySubmission(valid());
   assert.equal(parsed.endpointUrl, 'https://tools.example.com/mcp');
   assert.deepEqual(parsed.executionTargets, ['cloud']);
 });
 
-void test('Sky rejects stale, unsafe, or misleading listing input', () => {
+void test('smis rejects stale, unsafe, or misleading listing input', () => {
   const rejected = [
     { permissions: ['read_user_input', 'write_results'] },
     { endpointUrl: 'http://tools.example.com/mcp' },
@@ -64,7 +64,7 @@ void test('Rock recipe is accepted only for device-local execution', () => {
   );
 });
 
-void test('Sky stores submissions per owner and keeps them in review state', async (t) => {
+void test('smis stores submissions per owner and keeps them in review state', async (t) => {
   const worker = new Miniflare(
     convertV4MiniflareOptions({
       modules: true,

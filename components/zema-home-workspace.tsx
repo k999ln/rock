@@ -15,22 +15,22 @@ function toolHref(tool: (typeof catalog)[number]) {
 }
 
 function roleFor(tool: (typeof catalog)[number]) {
-  return skyToolLabelFor(tool.id)?.role ?? 'Skyアプリ';
+  return skyToolLabelFor(tool.id)?.role ?? 'Smithアプリ';
 }
 
 export default function ZemaHomeWorkspace() {
   return (
-    <WorkspaceShell title="Zema" contentClassName="zema-home-shell">
+    <WorkspaceShell title="Eve" contentClassName="zema-home-shell">
       <section className="zema-home-page" aria-labelledby="zema-home-title">
         <header className="zema-home-header">
           <div className="zema-home-mark" aria-hidden="true"><Sparkles size={25} /></div>
           <div>
-            <p className="zema-home-eyebrow">AVOCADOOS / ZEMA</p>
-            <h1 id="zema-home-title">Zema</h1>
+            <p className="zema-home-eyebrow">AVOCADOOS / EVE</p>
+            <h1 id="zema-home-title">Eve</h1>
             <p>Botを選ぶと、そのツール専用の画面が開きます。</p>
           </div>
           <Link className="zema-home-sky-link" href="/sky">
-            <Grid2X2 size={16} /> Skyでアプリを管理
+            <Grid2X2 size={16} /> Smithでアプリを管理
           </Link>
         </header>
 

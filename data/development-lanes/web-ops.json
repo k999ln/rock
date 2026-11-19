@@ -1,0 +1,360 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "web-ops",
+  "revision": 2,
+  "status": "implementation_ready_for_independent_review",
+  "threadId": "01a16c30-a468-7681-923d-3a8bd7871587",
+  "currentUnit": "WEBOPS-01",
+  "baseAndSource": [
+    {
+      "kind": "local_git_refs",
+      "branch": "codex/esim-cloud-access",
+      "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "originMainLocal": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "remoteFreshness": "No fetch/GitHub/CI readback in this bootstrap. Packet snapshot 2026-10-24T04:16:26.119Z matches local refs; not a fresh remote verification.",
+      "workingTree": "Shared dirty Root; HEAD alone does not identify inspected bytes."
+    },
+    {
+      "path": "components/system-maintenance.tsx",
+      "sha256": "5ce292f197203b674e15a672a118d6f72e5b02889510df355766d6c7a95d0e47"
+    },
+    {
+      "path": "components/system-maintenance.module.css",
+      "sha256": "92239de0affeebf5fcd4277eef8707b7419486c40d4744d0bf274e0c3ae0b7ac"
+    },
+    {
+      "path": "tests/web-route-style-contract.test.mjs",
+      "sha256": "315a3914e57b48b0c41ce6f9f8975bcd469049879bc61ba4e248ef34e5c7084b"
+    },
+    {
+      "path": "tests/pwa-offline.test.mjs",
+      "sha256": "33357b280f4c2e437fbe3f94d45d392e35b3bc1461edbde4dd4faf465409e116"
+    },
+    {
+      "path": "tests/pwa-installability.test.mjs",
+      "sha256": "d84c6d15c9d8447b9c418873b0ce7c3060ac9c5f216e242de4d0845575b71d6c"
+    },
+    {
+      "path": "tests/service-worker-update.test.mjs",
+      "sha256": "362e00bdfc9be8626dac95c6ca75973686cd76923a6828b764654810bfb455af"
+    },
+    {
+      "path": "public/sw.js",
+      "sha256": "b4986c8a4eae0c1f09e3b986548f0b1ca0b8152c1ffda013e8e8acdf78fd84b1"
+    },
+    {
+      "path": "components/ui/dialog.tsx",
+      "sha256": "1667ae84d69918b76ee781df9caa002f6cb4428e3bfd87643b029e322acfa8dd"
+    },
+    {
+      "path": "docs/prompts/rockstaros-remaining-work-development.md",
+      "sha256": "9e57e44c717052986913e4604b5dc40803970040b5347f8c4c1058288bebbeea"
+    },
+    {
+      "path": "data/rockstaros-development-chats.json",
+      "sha256": "4c6607a8f677ea72513c9d9dab15e855da2fe305b558b8ae8174cc3fcb0c0834"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "components/system-maintenance.tsx",
+    "components/system-maintenance.module.css",
+    "tests/system-maintenance-accessibility.test.mjs",
+    "data/development-lanes/web-ops.json",
+    "docs/evidence/development-execution/webops-01.json"
+  ],
+  "readPaths": [
+    "docs/product-baseline.md",
+    "data/product-baseline.json",
+    "README.md",
+    "project.md",
+    "data/project-status.json",
+    "docs/workstreams/README.md",
+    "docs/workstreams/00-responsibility-boundaries.md",
+    "docs/workstreams/05-web-pwa-sites.md",
+    "docs/execution-approval-20260909.md",
+    "data/execution-approval.json",
+    "docs/design-implementation-alignment-20260909.md",
+    "docs/prompts/rockstaros-development-chats.md",
+    "docs/prompts/rockstaros-development-chats/web-ops.md",
+    "docs/prompts/rockstaros-remaining-work-development.md#webops-01",
+    "data/rockstaros-development-chats.json#sourceOwnership",
+    "data/rockstaros-full-function-coverage.json#F140-F142",
+    "components/eve-sync-workspace.tsx",
+    "components/sky-workspace.tsx",
+    "package.json",
+    "scripts/check-web-security-response.mjs",
+    "components/system-maintenance.tsx",
+    "components/system-maintenance.module.css",
+    "tests/web-route-style-contract.test.mjs",
+    "tests/pwa-offline.test.mjs",
+    "tests/pwa-installability.test.mjs",
+    "tests/service-worker-update.test.mjs",
+    "public/sw.js",
+    "components/ui/dialog.tsx"
+  ],
+  "findings": [
+    {
+      "kind": "existing",
+      "tasks": {
+        "WEB04": "done",
+        "WEB06": "in_progress",
+        "WEB13": "in_progress",
+        "HOME01": "done",
+        "SYS02": "done",
+        "SYS07": "done",
+        "SYS08": "done",
+        "SYS09": "done"
+      },
+      "contracts": [
+        "CORE08",
+        "CORE12"
+      ],
+      "coverage": [
+        "F140",
+        "F141",
+        "F142"
+      ],
+      "detail": "Task done is bounded source evidence, not all-flow a11y or low-speed acceptance."
+    },
+    {
+      "kind": "existing",
+      "detail": "Maintenance uses semantic buttons, named diagnostics section, Base UI dialogs, output status, explicit Notification permission/test. CSS disables spinner for reduced motion. SW waits for owner activation, excludes API/auth/foreign requests, uses static offline fallback. Existing tests cover source/style and SW behavior."
+    },
+    {
+      "kind": "first_gap",
+      "path": "components/system-maintenance.module.css",
+      "detail": "Passphrase input has outline:0 and focus only changes border; module lacks explicit focus-visible rule. Verify computed global cascade/contrast before assigning a defect. Diagnostic running/result heading has no explicit stable live-region summary. Existing output already has implicit status semantics; avoid duplicate announcements."
+    },
+    {
+      "kind": "acceptance_gap",
+      "detail": "22 host tests do not exercise focus trap/return, reader announcements, actual contrast/touch geometry, 319px/zoom/landscape or low-speed bytes/time. No same-artifact WEBOPS-01 flow matrix or fixed low-end/network budget was established here."
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "to": "git",
+      "paths": [
+        "project.md",
+        "data/project-status.json",
+        "README.md",
+        "data/design-document-index.json",
+        "docs/rockstaros-complete-design.md",
+        "app/manifest.ts",
+        "tests/web-route-style-contract.test.mjs",
+        "components/ui/dialog.tsx"
+      ],
+      "request": "Aggregate this bootstrap delta into progress via project:update; assign maintenance TSX/CSS/dedicated test exact write set; shared dialog/style changes only after evidence. Preserve manifest identity and shared router. Run verify once on fixed aggregate candidate.",
+      "negativeCases": [
+        "No bootstrap->runtime/a11y/device/publication acceptance",
+        "No stale whole-status overwrite"
+      ]
+    },
+    {
+      "to": "eve",
+      "paths": [
+        "components/eve-sync-workspace.tsx",
+        "lib/eve-runtime-sync.ts"
+      ],
+      "request": "Propose stable state/stop-pending summary outside whole message live region; verify no token-by-token reading and no double send, draft loss or changed same-job authority. Eve retains media/binary and source writer."
+    },
+    {
+      "to": "smith",
+      "paths": [
+        "components/sky-workspace.tsx"
+      ],
+      "request": "Review whole grid aria-live behavior under filtering; keyboard/reader/Add flow changes through Smith owner, keep draft on network failure and reconcile same job before retry."
+    },
+    {
+      "to": "os-pixel",
+      "paths": [
+        "docs/security-incident-response.md"
+      ],
+      "request": "NET device/route/clock and incident runbook writer remain OS. Web consumes truthful unavailable/reconnecting state only; no route/clock/VPN or Pixel operation in this bootstrap."
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/pwa-offline.test.mjs tests/pwa-installability.test.mjs tests/service-worker-update.test.mjs tests/web-route-style-contract.test.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "tests": 22,
+      "passed": 22,
+      "failed": 0,
+      "scope": "existing host source/style + VM service-worker regression; no code changed; not full UI/a11y/physical acceptance"
+    },
+    {
+      "command": "npm run typecheck",
+      "status": "not_run",
+      "reason": "Bootstrap only; full verify aggregated by parent/Git. Response check requires separately assigned same-build server."
+    },
+    {
+      "command": "npm run lint:product",
+      "status": "not_run",
+      "reason": "Bootstrap only; full verify aggregated by parent/Git. Response check requires separately assigned same-build server."
+    },
+    {
+      "command": "npm run build",
+      "status": "not_run",
+      "reason": "Bootstrap only; full verify aggregated by parent/Git. Response check requires separately assigned same-build server."
+    },
+    {
+      "command": "npm run release:web-assets:check",
+      "status": "not_run",
+      "reason": "Bootstrap only; full verify aggregated by parent/Git. Response check requires separately assigned same-build server."
+    },
+    {
+      "command": "npm run web:security:check",
+      "status": "not_run",
+      "reason": "Bootstrap only; full verify aggregated by parent/Git. Response check requires separately assigned same-build server."
+    },
+    {
+      "command": "npm run verify",
+      "status": "not_run",
+      "reason": "Bootstrap only; full verify aggregated by parent/Git. Response check requires separately assigned same-build server."
+    }
+  ],
+  "externalConditions": [
+    "Current original Smith retains Pixel lease; no adb/UI/device/network operations.",
+    "Browser/reader pair, touch/keyboard profile, low-end device/network profile and measured byte/time budgets still need selection and same-build capture.",
+    "Actual Push subscription/delivery is separate from local permission/test notification.",
+    "DNS/TLS/deployment/source identity and public rollout not verified or changed.",
+    "No provider/account/contract/fee/financial operations. General launch remains on hold.",
+    "32 registry collisions: global/exact exceptions then longest prefix; lib/operations.ts is Wallet, incident document OS, Eve runtime/media Eve, manifest/router/CI/Git integration Git."
+  ],
+  "nextUnit": {
+    "id": "WEBOPS-02",
+    "scope": "Owner-driven PWA install/update/offline and notification-denied/unsupported fallback, preserve manifest Git ownership and actual Push delivery separate."
+  },
+  "updatedAt": "2026-10-24T06:49:33.385751+00:00",
+  "note": "Scoped WEBOPS-01 implementation ready for independent review; no self final acceptance, Git integration, public deployment, real device/provider/financial operations. Global status/design update delegated to Git.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:34:53.770711+00:00",
+  "primaryWorkstream": "docs/workstreams/05-web-pwa-sites.md",
+  "responsibility": {
+    "primary": "ROCK",
+    "deliverable": "WEBOPS-01 source/contract bootstrap only",
+    "JOINT": "same-build browser/reader/keyboard/touch/slow-profile acceptance",
+    "EXTERNAL": "browser/assistive technology/PWA/Push/network infrastructure",
+    "OWNER": "target users/settings/notification and trial consent"
+  },
+  "nextExactPathCandidates": [
+    {
+      "path": "components/system-maintenance.tsx",
+      "owner": "web-ops",
+      "purpose": "First small batch: diagnostic summary semantics; keep permission/storage/backup/job behavior.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    },
+    {
+      "path": "components/system-maintenance.module.css",
+      "owner": "web-ops",
+      "purpose": "First small batch: visible focus, target geometry and narrow-width wrapping after computed-style check.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    },
+    {
+      "path": "tests/web-route-style-contract.test.mjs",
+      "owner": "git",
+      "purpose": "Shared existing style regression; propose scoped maintenance assertions to Git, or use dedicated test below.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    },
+    {
+      "path": "tests/pwa-offline.test.mjs",
+      "owner": "web-ops",
+      "purpose": "WEBOPS-02 existing offline regression; no WEBOPS-01 edit now.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    },
+    {
+      "path": "tests/pwa-installability.test.mjs",
+      "owner": "web-ops",
+      "purpose": "WEBOPS-02 existing identity regression; manifest remains Git-owned.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    },
+    {
+      "path": "tests/service-worker-update.test.mjs",
+      "owner": "web-ops",
+      "purpose": "WEBOPS-02 existing update consent/cache regression.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    },
+    {
+      "path": "public/sw.js",
+      "owner": "web-ops",
+      "purpose": "WEBOPS-02 only; preserve owner update/private cache boundaries.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    },
+    {
+      "path": "components/ui/dialog.tsx",
+      "owner": "git",
+      "purpose": "Shared primitive: focus return/trap/close/reduced-motion proposal only.",
+      "writeAuthorization": "proposal_only; exact write set requires Git assignment"
+    }
+  ],
+  "nextBatch": {
+    "unit": "WEBOPS-01",
+    "scope": "Maintenance diagnostic/backup dialog keyboard + status one flow only",
+    "firstOwnedFileCandidate": "components/system-maintenance.tsx",
+    "additionalProposedTestPath": "tests/system-maintenance-accessibility.test.mjs",
+    "authorization": "No implementation write set granted by bootstrap; Git to assign these 3 paths before next batch.",
+    "acceptance": [
+      "Stable summary announces diagnostic completion once, not every check/token; existing output status remains usable.",
+      "Visible keyboard focus and dialog cancel/Escape return verified; destructive reset is not executed during review.",
+      "319px, zoom, long detail, reduced-motion and touch geometry measured on same candidate; contrast uses computed colors.",
+      "Keep draft/backup/permission/job authority unchanged; no automatic retry/approval/network-setting mutation.",
+      "For F142 establish fixed device/browser/network and byte/time budgets before optimization; do not lazy-load media without owner proposal/profile."
+    ]
+  },
+  "implementation": {
+    "unit": "WEBOPS-01",
+    "status": "implementation_ready_for_independent_review",
+    "evidence": "docs/evidence/development-execution/webops-01.json",
+    "sourceSha256": {
+      "components/system-maintenance.tsx": "db9595fa9ce0830da7c94eea707ab10ccfc6e3bf1668e2ce044bd91f393b0803",
+      "components/system-maintenance.module.css": "822d6f088f4b83cb1060549a412b92bc59dee18d8d99309159b9c1d055b5934a",
+      "tests/system-maintenance-accessibility.test.mjs": "d7df52a02889060184b32716301dbf1df6164589e7ab84a6b4de8014f337e911"
+    },
+    "tests": [
+      {
+        "command": "node --experimental-strip-types --test tests/system-maintenance-accessibility.test.mjs tests/system-backup.test.mjs tests/pwa-offline.test.mjs tests/service-worker-update.test.mjs tests/web-route-style-contract.test.mjs",
+        "result": "pass",
+        "exitCode": 0,
+        "tests": 27,
+        "notes": "4 new source contract tests supplement existing encryption/storage, offline/update, visual-route guards. Source assertions are not interactive a11y proof."
+      },
+      {
+        "command": "npm run typecheck",
+        "result": "pass",
+        "exitCode": 0
+      },
+      {
+        "command": "node_modules/.bin/oxlint components/system-maintenance.tsx tests/system-maintenance-accessibility.test.mjs",
+        "result": "pass",
+        "exitCode": 0
+      }
+    ],
+    "browserSummary": "Keyboard, create/restore cancel focus, 319px, short input and own-server disconnect observed; reader/actual zoom/slow profile/reduced-motion preference/other flows remain unaccepted.",
+    "sharedChangeRequests": [
+      {
+        "to": "git / shared UI owner",
+        "path": "components/ui/dialog.tsx",
+        "request": "If full reduced-motion requirement includes backdrop, inspect DialogOverlay animation (portal sibling outside maintenance .dialog subtree). This batch only disables popup descendants; no claim that backdrop is reduced-motion accepted.",
+        "blockingThisScopedBatch": false
+      },
+      {
+        "to": "git",
+        "paths": [
+          "project.md",
+          "data/project-status.json",
+          "README.md",
+          "data/design-document-index.json",
+          "docs/rockstaros-complete-design.md"
+        ],
+        "request": "Aggregate progress and design delta for maintenance accessibility into same integration candidate; run project:update/design:check/verify once and independent reviewer before final acceptance. No global files edited in lane."
+      }
+    ],
+    "notPerformed": [
+      "Real screen reader / VoiceOver speech, actual touch device and other major Home/Eve/Smith/Wallet flows.",
+      "Actual browser zoom: super+plus attempted but innerWidth319/dpr1/scale1 unchanged; not counted as zoom test.",
+      "Slow network/low-end budget and bytes/time before-after; actual reduced-motion preference emulation (CSS guard only).",
+      "Real encrypted backup download/restore/UI wrong-file case; existing pure backup tests cover wrong passphrase/tamper/foreign records.",
+      "npm run verify/build/release checks, independent review, immutable aggregate source acceptance, GitHub save/main integration, deployment, Pixel/provider/Push."
+    ]
+  }
+}

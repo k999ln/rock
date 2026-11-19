@@ -1,3 +1,30 @@
+本人用実会議の追加受入: Zoom7.1.9一人会議の送信済みchat→共通job→本人保存HTML→Sky停止後のChrome読戻しまで確認。最初の表示は普通の日本語の決定/担当/未定事項にし、処理記録は折り畳む。音声字幕/複数参加者/許可失効は未受入、一般公開は保留。詳細は既存Zoom証拠とworkstream02へ。
+
+<!-- sky-zoom-hybrid-gate -->
+本人了承の実Zoom先行版はsuite v2: 要約LLM＋明示見出し抽出コードを同じ条件で評価。CPU/推定RAM25%、候補cache解放。qwen2.5:1.5bの合成3問は100点/13.286秒、4B/7Bは推定メモリ上限で除外。raw model suite v1の失敗を消さず、合成合格・Zoom公開案内の読取・実会議受入を分ける。研究チャット「RockstarOSを再設計」は調査進行中で、runtime合格の証拠にしない。一般公開保留。
+
+## 最優先追補: 実Zoomと作業別LLM選定
+
+本人は実Zoom試用を指示し、GPT固定を訂正してログイン不要候補からSkyが作業に適したLLMを厳選する方針を明示した。`/sky/add/zoom/device`、`scripts/sky-zoom-local-runtime.mjs`、`scripts/sky-zoom-reader.swift`、`lib/sky-model-selector.ts`を読む。private Mac / 固定loopback Ollama / 選択Zoom window読取 / 15分lease / 共通jobでreview-confirm-stop / Markdown/JSON回収。モデルの選定・形式合格はTool権限にならない。最初の接続taskは会議メモ、他task suiteは未接続。合成fixture、実モデル比較、実Zoom UI、実会議を別受入にする。`docs/evidence/sky-zoom-local-runtime.json`を確認し、証拠のない成功へ進捗を置換しない。一般公開保留。main/branch SHAは既存の下記観測と再照合し、dirtyを保全する。
+
+## 最優先の階層訂正と共通実装
+
+利用者の明示指示によりSkyが全体の共通基盤、RockstarOSが端末で実行/権限/保存/復旧を一体化する環境、hardwareとZoom/Plannerがadapter/応用となる。既存mainのP0〜P4とdirty/DB履歴を保持し、共通仕事契約`sky.app-request/1`/`sky.app-result/1`を既存workflow/WorkStoreで実装。一般公開しない。詳細は`docs/sky-tools-complete-design.md#sky-foundation`。Zoom/Plannerの制限付きtext処理、元task版と確認待ち返却、停止競合、本人A/B、default閉鎖、再読込と持出しを受入し、実Zoom/OS/device/Providerは別gateにする。Planner local-only transportは`toolkits/sky-app-client/`で、COOPを維持する。
+
+## 製品domainの追加指示
+
+総合入口は利用者再確認済みの`avoado.si`。Miniは`avocadomini.si`、Proは`avocadopro.si`。`lib/product-domains.ts`の共通設定を使う。localhost限定の本人Zoom Labをproduct domainに配布せず、一般ローンチ保留を維持。今回のdomain navはlocal sourceのみ、DNS/TLS/配備/SSOは別受入。
+
+## 最新指示: Zoom本人用Agent Lab
+
+一般公開せず本人が作成/Add/実行/成果確認/停止を試せる手入力recipeを`/sky/add/zoom/lab`へ実装。development/loopbackのみ、tab-local workflow、設定/成果の持出し、編集/停止後の遅延result抑止。実Zoom操作、OS permission、本人DB保存、署名/Registry公開とは別gate。[仕様](../sky-tools-complete-design.md#sky-private-zoom-lab)。既存main優先順位とdirty保全を維持し、次は本人が選ぶZoom画面/操作を既存端末AgentとBrokerへ結び、同一job成果・停止を限定環境で受入する。
+
+## 最新の実装優先順位と一般ローンチ保留（2026-10-18）
+
+利用者の最新明示指示を優先し、Skyの主軸は本人の選択・拒否・データ回収・退出、応用はオフィシャル商品に限らず本人が欲しいAgentを作成し対応アプリへAddする構成とする。まず既存SKY21で選択した本人jobの持出しとSkyなしの成果閲覧を実装する。Zoomは正規拡張口と本人scopeを使う先行例。一般ローンチは行わず、国への共有準備と分ける。共有候補はアメリカ・スペイン・日本・韓国、利用者の希望する共有到達点「人の中にAgentを入れられた段階」は未実証の長期研究目標。政府窓口、研究評価、共有範囲は未確定で、ソフトウェア試作の合格を脳接続へ転用しない。
+
+GitHub main `70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a`、対象branch/local `codex/esim-cloud-access`の`951d82d5a491a284aed4e0d4d280171d835d4b43`を`git ls-remote`で再確認した。mainのP0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home、およびPixelの独立gateを保持し、今回のWeb持出しと区別する。mainとbranchのworkflow/store/migration差分は保全し、全体を上書き/mergeしたことにしない。引継ぎ入口と優先順位の同期を本追補で先に実施し、持出しは既存owner別readと追加moduleで実装する。最新CIは未確認。下記の旧一般公開促進指示はこの保留方針で置き換え、公開・対外送信・実機操作を実装完了へ自動連動させない。
+
 ## Sky共通入口の最新仕様同期（2026-10-12）
 
 最初に`docs/sim-led-product-architecture.md#sky-shared-entry`と`data/project-status.json`の`skyEntrySpecificationSync`を読む。利用者指定チャット「大学別NFCでSkyに接続」の最新指示で、単独Skyの既存Agentフィード・役割・Market・接続・Sky内Zemaを大学NFCと任意eSIMから共用する。旧専用Hubを新しい別サービスとして復活させない。briefは補助Tool。iOSはbrowser/PWAから開始し、App Clip/native/Siri連携は未実装の後続候補。eSIM/OS完成をWeb利用の前提に戻さない。

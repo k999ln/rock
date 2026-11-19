@@ -1,0 +1,4255 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Noah connection and sharing contracts",
+    "version": "0.3.0",
+    "description": "Design contract only; routes are not implemented. Existing authentication, D1, workflow and remote AI executor remain authoritative. Normative companion: docs/noah-connection-sharing-contracts.md."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Same origin as the existing authenticated application"
+    }
+  ],
+  "security": [
+    {
+      "passwordSession": []
+    },
+    {
+      "passkeySession": []
+    },
+    {
+      "trustedGateway": []
+    }
+  ],
+  "paths": {
+    "/api/noah/nonces": {
+      "post": {
+        "operationId": "createNoahNonce",
+        "summary": "Issue an owner/purpose/intent-bound 10-minute creation nonce",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NonceResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical operation replay; secrets are never replayed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NonceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NonceRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/noah/operations/{operationId}": {
+      "get": {
+        "operationId": "readNoahOperation",
+        "summary": "Read metadata-only mutation receipt",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "operationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/api/eve/drafts": {
+      "get": {
+        "operationId": "listDrafts",
+        "summary": "List current owner editable drafts without content",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createDraft",
+        "summary": "Explicitly save a new unsent draft",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMetadata"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical operation replay; secrets are never replayed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMetadata"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/eve/drafts/{id}": {
+      "get": {
+        "operationId": "readDraft",
+        "summary": "Read draft after current source ACL check",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftRead"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      },
+      "put": {
+        "operationId": "saveDraft",
+        "summary": "CAS save without sending or creating a job",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMetadata"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftWrite"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteDraft",
+        "summary": "Clear ciphertext and retain tombstone; does not cancel execution",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMetadata"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRevision"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/eve/drafts/{id}/extend": {
+      "post": {
+        "operationId": "extendDraft",
+        "summary": "Explicitly extend an editable draft by 30 days",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMetadata"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Revision"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/eve/drafts/{id}/submission": {
+      "get": {
+        "operationId": "readDraftSubmission",
+        "summary": "Read latest submission metadata without resending",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftSubmission"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/api/sky/communities/{communityId}/egress-policy": {
+      "get": {
+        "operationId": "readPolicy",
+        "summary": "Read current egress-policy",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Policy"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      },
+      "put": {
+        "operationId": "writePolicy",
+        "summary": "Append version and CAS current egress-policy",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Policy"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyWrite"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sky/posts/{postId}/egress-permission": {
+      "get": {
+        "operationId": "readPermission",
+        "summary": "Read current egress-permission",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      },
+      "put": {
+        "operationId": "writePermission",
+        "summary": "Append version and CAS current egress-permission",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermissionWrite"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/noah/egress/destinations": {
+      "get": {
+        "operationId": "listEgressDestinations",
+        "summary": "List only destinations with accepted adapter and current terms",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DestinationList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/api/noah/egress/previews": {
+      "post": {
+        "operationId": "createEgressPreview",
+        "summary": "Reconstruct exact payload; bind source, policy, author, destination and quote",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preview"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical operation replay; secrets are never replayed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/noah/egress/previews/{id}": {
+      "get": {
+        "operationId": "readEgressPreview",
+        "summary": "Read current preview; content only while authorized and unclaimed",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/api/noah/egress/previews/{id}/approve": {
+      "post": {
+        "operationId": "approveEgressPreview",
+        "summary": "Approve this payload once; separate quote approval still required",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "$ref": "#/components/parameters/CommunityKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preview"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewApproval"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/noah/egress/previews/{id}/revoke": {
+      "post": {
+        "operationId": "revokeEgressPreview",
+        "summary": "Revoke before send claim or report possibly_sent",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewRevoked"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRevision"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sky/communities/{communityId}/invites": {
+      "get": {
+        "operationId": "listCommunityInvites",
+        "summary": "Issuer-only invite metadata and control revision",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      },
+      "post": {
+        "operationId": "issueCommunityInvite",
+        "summary": "Issue one-use invitation; return raw token once",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteIssued"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical operation replay; secrets are never replayed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteIssued"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteIssue"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sky/communities/{communityId}/invites/revoke-all": {
+      "post": {
+        "operationId": "revokeAllCommunityInvites",
+        "summary": "Advance invite epoch without removing members",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteControl"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRevision"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sky/invites/{id}": {
+      "get": {
+        "operationId": "readCommunityInvite",
+        "summary": "Issuer-only invite metadata",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invite"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/api/sky/invites/{id}/revoke": {
+      "post": {
+        "operationId": "revokeCommunityInvite",
+        "summary": "Revoke invitation; preserve redeemed membership",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteRevoked"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRevision"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sky/invites/{id}/reissue": {
+      "post": {
+        "operationId": "reissueCommunityInvite",
+        "summary": "Atomically retire old invitation and issue one new token",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteIssued"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical operation replay; secrets are never replayed.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteIssued"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteReissue"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sky/invites/preview": {
+      "post": {
+        "operationId": "previewCommunityInvite",
+        "summary": "Authenticated token preview; never consume invitation",
+        "description": "Read-only POST to keep token out of URL. No consumption, operation receipt, or idempotency header. Always evaluate current validity and rules.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvitePreview"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sky/invites/redeem": {
+      "post": {
+        "operationId": "redeemCommunityInvite",
+        "summary": "Atomically consume invitation, join, create key hash and receipt",
+        "description": "Normative transaction, current ACL, expiry and replay rules: docs/noah-connection-sharing-contracts.md. This route is proposed, not implemented.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OperationKey"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success; current authorization still required.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "private, no-store"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "Present only on an identical replay."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteRedeemed"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteRedeem"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INVALID_INPUT",
+                  "BODY_TOO_LARGE",
+                  "UNAUTHENTICATED",
+                  "FORBIDDEN",
+                  "ORIGIN_REJECTED",
+                  "NOT_FOUND",
+                  "INVITE_UNAVAILABLE",
+                  "REVISION_CONFLICT",
+                  "IDEMPOTENCY_CONFLICT",
+                  "SOURCE_CHANGED",
+                  "SUBMISSION_PENDING",
+                  "RULES_CHANGED",
+                  "DRAFT_TERMINAL",
+                  "NONCE_INVALID",
+                  "EGRESS_INVALIDATED",
+                  "DRAFT_LIMIT",
+                  "EGRESS_DENIED",
+                  "DESTINATION_UNSUPPORTED",
+                  "BUDGET_REJECTED",
+                  "RATE_LIMITED",
+                  "STORE_UNAVAILABLE",
+                  "KEY_UNAVAILABLE",
+                  "CLOCK_UNTRUSTED"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+              },
+              "retryable": {
+                "type": "boolean"
+              },
+              "currentRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "requestId",
+              "retryable"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "OperationReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "operation": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "resourceId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "committedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "resultRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "saved",
+              "deleted",
+              "extended",
+              "submitted",
+              "claimed",
+              "approved",
+              "revoked",
+              "issued",
+              "reissued",
+              "redeemed",
+              "already_member",
+              "already_redeemed",
+              "possibly_sent",
+              "nonce_issued",
+              "policy_updated",
+              "permission_updated",
+              "all_revoked"
+            ]
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "operationId",
+          "operation",
+          "resourceId",
+          "committedAt",
+          "outcome"
+        ]
+      },
+      "SourceRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "postId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "communityId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "sourcePin": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "postId",
+          "communityId",
+          "sourcePin"
+        ]
+      },
+      "AgentRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "revision"
+        ]
+      },
+      "DraftContent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schema": {
+            "const": "noah.draft/1"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "autoSave": {
+            "type": "boolean",
+            "default": false
+          },
+          "entryKind": {
+            "type": "string",
+            "enum": [
+              "new",
+              "thread",
+              "agent"
+            ]
+          },
+          "threadId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "agentRef": {
+            "$ref": "#/components/schemas/AgentRef"
+          },
+          "sourceRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceRef"
+            },
+            "maxItems": 1,
+            "uniqueItems": true
+          },
+          "restrictedDerived": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schema",
+          "text",
+          "autoSave",
+          "entryKind",
+          "sourceRefs",
+          "restrictedDerived"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "entryKind": {
+                  "const": "thread"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "threadId"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "entryKind": {
+                  "const": "agent"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "agentRef"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "restrictedDerived": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "sourceRefs": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "DraftMetadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "editable",
+              "submitted",
+              "deleted",
+              "expired"
+            ]
+          },
+          "createdAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "updatedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "terminalAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "state",
+          "createdAt",
+          "updatedAt",
+          "expiresAt"
+        ]
+      },
+      "DraftRead": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/DraftMetadata"
+          },
+          "content": {
+            "$ref": "#/components/schemas/DraftContent"
+          },
+          "sourceStatus": {
+            "type": "string",
+            "enum": [
+              "none",
+              "valid",
+              "unavailable"
+            ]
+          },
+          "sourceRef": {
+            "$ref": "#/components/schemas/SourceRef"
+          }
+        },
+        "required": [
+          "draft",
+          "sourceStatus"
+        ]
+      },
+      "DraftWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "content": {
+            "$ref": "#/components/schemas/DraftContent"
+          }
+        },
+        "required": [
+          "expectedRevision",
+          "content"
+        ]
+      },
+      "DraftCreateIntent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "expectedRevision": {
+            "const": 0
+          },
+          "content": {
+            "$ref": "#/components/schemas/DraftContent"
+          }
+        },
+        "required": [
+          "id",
+          "expectedRevision",
+          "content"
+        ]
+      },
+      "DraftCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "expectedRevision": {
+            "const": 0
+          },
+          "content": {
+            "$ref": "#/components/schemas/DraftContent"
+          },
+          "createNonce": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "expectedRevision",
+          "content",
+          "createNonce"
+        ]
+      },
+      "Revision": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "expectedRevision"
+        ]
+      },
+      "ConfirmRevision": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "confirm": {
+            "const": true
+          }
+        },
+        "required": [
+          "expectedRevision",
+          "confirm"
+        ]
+      },
+      "DraftSubmissionRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "draftId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "submissionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          }
+        },
+        "required": [
+          "draftId",
+          "expectedRevision",
+          "submissionId"
+        ]
+      },
+      "DraftSubmission": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "draftId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "draftRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "local-text",
+              "remote-ai-text"
+            ]
+          },
+          "requestId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "executionId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "claimed",
+              "accepted",
+              "rejected",
+              "unknown"
+            ]
+          },
+          "createdAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "updatedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "draftId",
+          "draftRevision",
+          "target",
+          "requestId",
+          "state",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PolicyWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "deny",
+              "allow_list"
+            ]
+          },
+          "destinationIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            },
+            "maxItems": 16,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "expectedRevision",
+          "mode",
+          "destinationIds"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "deny"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "destinationIds": {
+                  "maxItems": 0
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "destinationIds": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Policy": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "communityId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "deny",
+              "allow_list"
+            ]
+          },
+          "destinationIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            },
+            "maxItems": 16,
+            "uniqueItems": true
+          },
+          "updatedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "communityId",
+          "revision",
+          "mode",
+          "destinationIds",
+          "updatedAt"
+        ]
+      },
+      "PermissionWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "sourcePin": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "deny",
+              "allow_list"
+            ]
+          },
+          "destinationIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            },
+            "maxItems": 16,
+            "uniqueItems": true
+          },
+          "lifetimeSeconds": {
+            "type": "integer",
+            "minimum": 300,
+            "maximum": 604800,
+            "default": 86400
+          }
+        },
+        "required": [
+          "expectedRevision",
+          "sourcePin",
+          "mode",
+          "destinationIds"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "mode": {
+                  "const": "deny"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "destinationIds": {
+                  "maxItems": 0
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "destinationIds": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Permission": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "postId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "deny",
+              "allow_list"
+            ]
+          },
+          "destinationIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            },
+            "maxItems": 16,
+            "uniqueItems": true
+          },
+          "sourcePin": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "postId",
+          "revision",
+          "mode",
+          "destinationIds"
+        ]
+      },
+      "Destination": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "provider": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "model": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "endpointOrigin": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 512
+          },
+          "endpointPath": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "region": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "purpose": {
+            "const": "text-generation"
+          },
+          "termsVersion": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "termsUrl": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048
+          },
+          "retentionSummary": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "model",
+          "endpointOrigin",
+          "endpointPath",
+          "region",
+          "purpose",
+          "termsVersion",
+          "termsUrl",
+          "retentionSummary",
+          "expiresAt"
+        ]
+      },
+      "Range": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ]
+      },
+      "Ranges": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Range"
+        },
+        "maxItems": 8,
+        "uniqueItems": true,
+        "minItems": 1,
+        "description": "Sorted disjoint code point [start,end) ranges in LF-normalized source. End > start; total <= 1000."
+      },
+      "PreviewCreate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sourceRef": {
+            "$ref": "#/components/schemas/SourceRef"
+          },
+          "quoteId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "destinationId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "excerptRanges": {
+            "$ref": "#/components/schemas/Ranges"
+          },
+          "includeHistory": {
+            "const": false
+          },
+          "includeAttachments": {
+            "const": false
+          }
+        },
+        "required": [
+          "sourceRef",
+          "quoteId",
+          "destinationId",
+          "text",
+          "excerptRanges",
+          "includeHistory",
+          "includeAttachments"
+        ]
+      },
+      "FinalPayload": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "maxLength": 24000
+          },
+          "system": {
+            "type": "string",
+            "maxLength": 8000
+          },
+          "rendererVersion": {
+            "const": "noah.restricted-text/1"
+          }
+        },
+        "required": [
+          "prompt",
+          "system",
+          "rendererVersion"
+        ]
+      },
+      "QuoteSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "parentJobId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "approvalDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "maximumChargeMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "approvedCapMinor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "parentJobId",
+          "approvalDigest",
+          "currency",
+          "maximumChargeMinor",
+          "approvedCapMinor",
+          "expiresAt"
+        ]
+      },
+      "Preview": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "preview",
+              "approved",
+              "claimed",
+              "revoked",
+              "expired"
+            ]
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "approvalDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "executionId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/Destination"
+          },
+          "quote": {
+            "$ref": "#/components/schemas/QuoteSummary"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/FinalPayload"
+          },
+          "excerptRanges": {
+            "$ref": "#/components/schemas/Ranges"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "state",
+          "valid",
+          "approvalDigest",
+          "expiresAt",
+          "executionId",
+          "destination",
+          "quote"
+        ]
+      },
+      "PreviewApproval": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "approvalDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "consent": {
+            "const": true
+          }
+        },
+        "required": [
+          "expectedRevision",
+          "approvalDigest",
+          "consent"
+        ]
+      },
+      "PreviewRevoked": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "preview": {
+            "$ref": "#/components/schemas/Preview"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "revoked",
+              "possibly_sent",
+              "already_terminal"
+            ]
+          }
+        },
+        "required": [
+          "preview",
+          "outcome"
+        ]
+      },
+      "EgressApprovalRef": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "previewId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "approvalDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "previewId",
+          "approvalDigest",
+          "expectedRevision"
+        ]
+      },
+      "RestrictedSource": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sourceRef": {
+            "$ref": "#/components/schemas/SourceRef"
+          },
+          "destinationId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "excerptRanges": {
+            "$ref": "#/components/schemas/Ranges"
+          }
+        },
+        "required": [
+          "sourceRef",
+          "destinationId",
+          "excerptRanges"
+        ]
+      },
+      "InviteIssueIntent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lifetimeSeconds": {
+            "type": "integer",
+            "minimum": 300,
+            "maximum": 604800,
+            "default": 86400
+          },
+          "recipientProfileId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          }
+        },
+        "required": []
+      },
+      "InviteReissueIntent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "lifetimeSeconds": {
+            "type": "integer",
+            "minimum": 300,
+            "maximum": 604800,
+            "default": 86400
+          },
+          "recipientProfileId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          }
+        },
+        "required": [
+          "expectedRevision"
+        ]
+      },
+      "InviteIssue": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lifetimeSeconds": {
+            "type": "integer",
+            "minimum": 300,
+            "maximum": 604800,
+            "default": 86400
+          },
+          "recipientProfileId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "createNonce": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "createNonce"
+        ]
+      },
+      "InviteReissue": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "lifetimeSeconds": {
+            "type": "integer",
+            "minimum": 300,
+            "maximum": 604800,
+            "default": 86400
+          },
+          "recipientProfileId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "createNonce": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "expectedRevision",
+          "createNonce"
+        ]
+      },
+      "NonceRequest": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {
+                "const": "draft.create"
+              },
+              "targetId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+              },
+              "intent": {
+                "$ref": "#/components/schemas/DraftCreateIntent"
+              }
+            },
+            "required": [
+              "purpose",
+              "targetId",
+              "intent"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {
+                "const": "invite.issue"
+              },
+              "targetId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+              },
+              "intent": {
+                "$ref": "#/components/schemas/InviteIssueIntent"
+              }
+            },
+            "required": [
+              "purpose",
+              "targetId",
+              "intent"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "purpose": {
+                "const": "invite.reissue"
+              },
+              "targetId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+              },
+              "intent": {
+                "$ref": "#/components/schemas/InviteReissueIntent"
+              }
+            },
+            "required": [
+              "purpose",
+              "targetId",
+              "intent"
+            ]
+          }
+        ]
+      },
+      "NonceResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "nonce": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "nonceAvailable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expiresAt",
+          "nonceAvailable"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "nonceAvailable": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "nonce"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "nonce"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "Invite": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "communityId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "epoch": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active",
+              "redeemed",
+              "revoked",
+              "expired"
+            ]
+          },
+          "recipientProfileId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "createdAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "terminalAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "redeemedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "revokedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "id",
+          "communityId",
+          "revision",
+          "epoch",
+          "state",
+          "createdAt",
+          "expiresAt"
+        ]
+      },
+      "InviteIssued": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "invite": {
+            "$ref": "#/components/schemas/Invite"
+          },
+          "tokenAvailable": {
+            "type": "boolean"
+          },
+          "token": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          }
+        },
+        "required": [
+          "invite",
+          "tokenAvailable"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "tokenAvailable": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "token"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "InviteRevoked": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "invite": {
+            "$ref": "#/components/schemas/Invite"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "revoked",
+              "already_redeemed",
+              "already_terminal"
+            ]
+          }
+        },
+        "required": [
+          "invite",
+          "outcome"
+        ]
+      },
+      "InviteControl": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "communityId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "version": {
+            "const": 2
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "epoch": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "updatedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "communityId",
+          "version",
+          "revision",
+          "epoch",
+          "updatedAt"
+        ]
+      },
+      "TokenRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "InvitePreview": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "community": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+              },
+              "name": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 4000
+              },
+              "rules": {
+                "type": "string",
+                "maxLength": 16000
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "description",
+              "rules"
+            ]
+          },
+          "rulesVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "community",
+          "rulesVersion",
+          "expiresAt"
+        ]
+      },
+      "InviteRedeem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$",
+            "writeOnly": true
+          },
+          "rulesVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "consent": {
+            "const": true
+          }
+        },
+        "required": [
+          "token",
+          "rulesVersion",
+          "consent"
+        ]
+      },
+      "InviteRedeemed": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "receipt": {
+            "$ref": "#/components/schemas/OperationReceipt"
+          },
+          "currentMembership": {
+            "type": "string",
+            "enum": [
+              "member",
+              "not_member",
+              "blocked",
+              "community_unavailable"
+            ]
+          },
+          "keyRecoveryRequired": {
+            "type": "boolean"
+          },
+          "communityKey": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "receipt",
+          "currentMembership",
+          "keyRecoveryRequired"
+        ]
+      },
+      "DraftList": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftMetadata"
+            },
+            "maxItems": 50,
+            "uniqueItems": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "InviteList": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Invite"
+            },
+            "maxItems": 50,
+            "uniqueItems": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "control": {
+            "$ref": "#/components/schemas/InviteControl"
+          }
+        },
+        "required": [
+          "items",
+          "control"
+        ]
+      },
+      "DestinationList": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Destination"
+            },
+            "maxItems": 50,
+            "uniqueItems": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "items"
+        ]
+      }
+    },
+    "parameters": {
+      "OperationKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      },
+      "Origin": {
+        "name": "Origin",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "description": "Exact same origin. Existing owner-intent CSRF guard also applies."
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        }
+      },
+      "Cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      },
+      "CommunityKey": {
+        "name": "x-rock-community-keys",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "description": "JSON map containing only the one selected community ID to its 64-hex access key. Required when reading/saving restricted derived content or granting/approving egress. Not needed for invite acceptance or authority-reducing deletion/revocation."
+      }
+    },
+    "securitySchemes": {
+      "passwordSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "rockstar_account_access"
+      },
+      "passkeySession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "jennifer_access"
+      },
+      "trustedGateway": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "oai-authenticated-user-id",
+        "description": "Only accepted from existing trusted Sites dispatcher with host/dispatch validation. Never trust a client-supplied header. Device/eSIM/agent tokens are not human-owner consent."
+      }
+    },
+    "responses": {
+      "Error400": {
+        "description": "Invalid input",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error401": {
+        "description": "Login required",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error403": {
+        "description": "Current actor/origin not allowed",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error404": {
+        "description": "Unavailable or not visible to this owner",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error409": {
+        "description": "Conflict; read back, do not overwrite or resend automatically",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error413": {
+        "description": "Byte limit exceeded",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error422": {
+        "description": "Policy, capacity, destination or budget rejected",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error429": {
+        "description": "Rate limited",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          },
+          "Retry-After": {
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error503": {
+        "description": "Store, key or trusted clock unavailable",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "private, no-store"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-existing-route-extensions": {
+    "POST /api/llm/quotes": {
+      "optionalNewProperties": {
+        "restrictedSource": {
+          "$ref": "#/components/schemas/RestrictedSource"
+        }
+      },
+      "rules": [
+        "Required for known restricted provenance. Reconstruct canonical renderer payload; current ACL/policy/author/destination required.",
+        "No provider call; keep existing 28000-byte limit, quote/parent budget and request ID rules."
+      ],
+      "conditionalHeaders": {
+        "x-rock-community-keys": "Exactly the selected community key only; never forward to provider"
+      }
+    },
+    "POST /api/llm/text": {
+      "optionalNewProperties": {
+        "restrictedSource": {
+          "$ref": "#/components/schemas/RestrictedSource"
+        },
+        "egressApproval": {
+          "$ref": "#/components/schemas/EgressApprovalRef"
+        },
+        "draftSubmission": {
+          "$ref": "#/components/schemas/DraftSubmissionRef"
+        }
+      },
+      "rules": [
+        "Known restricted provenance requires both restrictedSource and egressApproval. Server reconstructs final payload.",
+        "Add Idempotency-Key and current human-owner guard when using these extensions. Keep old unrestricted behavior/response shape.",
+        "Claim draft submission and durable remote input atomically. Local execution must claim once before invocation; unknown outcome never auto-retries.",
+        "Remote final send claim must atomically revalidate current ACL, source row, policy, author, destination, budget and expiry; see companion section 4.3.",
+        "202 queue acceptance is not provider completion."
+      ],
+      "conditionalHeaders": {
+        "x-rock-community-keys": "Exactly the selected community key only; never forward to provider"
+      }
+    },
+    "POST /api/llm/quotes/{id}": {
+      "unchangedRequest": {
+        "action": "approve|cancel",
+        "approvalDigest": "existing 64-hex quote approval digest",
+        "consent": true
+      },
+      "rules": [
+        "Existing budget approval remains necessary and distinct from egress approval. No new global budget store."
+      ]
+    }
+  },
+  "x-byte-limits": {
+    "default": 32768,
+    "draftPlaintext": 16384,
+    "existingLlm": 28000,
+    "inviteAndPolicyAndInviteNonce": 4096,
+    "draftCreateNonce": 32768
+  },
+  "x-implementation-status": "design_only"
+}

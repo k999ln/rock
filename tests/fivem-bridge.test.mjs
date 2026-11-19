@@ -210,7 +210,7 @@ void test('custom Agent is allowlisted and game cannot create it; failures never
  await assert.rejects(x.send('agent_complete',{taskId:id}));
 });
 
-void test('Sky directory stays read-only, sanitizes all registered agents and never follows redirects',async()=>{
+void test('smis directory stays read-only, sanitizes all registered agents and never follows redirects',async()=>{
  const {skyDirectory}=await import('../toolkits/fivem-bridge/sky-directory.mjs');
  assert.equal((await skyDirectory()()).status,'not_configured');
  let calls=0;

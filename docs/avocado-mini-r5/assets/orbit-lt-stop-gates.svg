@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Orbit L-T の自己反証と次の判定</title>
+  <desc id="desc">K0は現寸法の採用停止、K1は米国の正式通信契約と空中像の未証明、K2は同一閉箱の安全と体験の未受入。最後にP0からP3までの試験順を示す。製品合格図ではない。</desc>
+  <rect width="1200" height="700" fill="#f5f6f4"/>
+  <text x="48" y="59" font-family="Arial, sans-serif" font-size="31" font-weight="700" fill="#1c2a30">Orbit L-T：何を止め、何を確かめるか</text>
+  <text x="48" y="91" font-family="Arial, sans-serif" font-size="18" fill="#56636a">2026-10-19 / 5時間の設計反証。候補の比較であり、実機の合格ではない。</text>
+
+  <rect x="48" y="127" width="346" height="391" rx="14" fill="#ffffff" stroke="#cbd1d2" stroke-width="2"/>
+  <rect x="427" y="127" width="346" height="391" rx="14" fill="#ffffff" stroke="#cbd1d2" stroke-width="2"/>
+  <rect x="806" y="127" width="346" height="391" rx="14" fill="#ffffff" stroke="#cbd1d2" stroke-width="2"/>
+
+  <rect x="66" y="149" width="58" height="34" rx="7" fill="#f0d7d2"/>
+  <text x="82" y="173" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#853b33">K0</text>
+  <text x="136" y="173" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#22333a">現寸法で採用停止</text>
+  <text x="67" y="218" font-family="Arial, sans-serif" font-size="18" fill="#33464d">固定筒＋50 mm上昇：仮236 mm</text>
+  <text x="67" y="256" font-family="Arial, sans-serif" font-size="18" fill="#33464d">Sの底付きStow：仮208 mm</text>
+  <text x="67" y="294" font-family="Arial, sans-serif" font-size="18" fill="#33464d">四枚光学：襟の余白 約0.2 mm</text>
+  <text x="67" y="332" font-family="Arial, sans-serif" font-size="18" fill="#33464d">露出30 − 板厚25.6 = 4.4 mm</text>
+  <text x="67" y="370" font-family="Arial, sans-serif" font-size="18" fill="#33464d">9523既製IP基板幅75 &gt; 内径72</text>
+  <line x1="67" y1="404" x2="375" y2="404" stroke="#d7dddd" stroke-width="1"/>
+  <text x="67" y="439" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#853b33">同じ部品・図を採用しない</text>
+  <text x="67" y="473" font-family="Arial, sans-serif" font-size="16" fill="#53646b">別光路・基板・機構なら再計測</text>
+
+  <rect x="445" y="149" width="58" height="34" rx="7" fill="#ece8d5"/>
+  <text x="461" y="173" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#67562b">K1</text>
+  <text x="515" y="173" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#22333a">最低機能が未証明</text>
+  <text x="446" y="218" font-family="Arial, sans-serif" font-size="18" fill="#33464d">米国Miniの衛星・双方向IP</text>
+  <text x="446" y="256" font-family="Arial, sans-serif" font-size="18" fill="#33464d">任意clientへのWi-Fi共有権</text>
+  <text x="446" y="294" font-family="Arial, sans-serif" font-size="18" fill="#33464d">Provider側の硬い料金上限</text>
+  <text x="446" y="332" font-family="Arial, sans-serif" font-size="18" fill="#33464d">実番号・双方音声・着信</text>
+  <text x="446" y="370" font-family="Arial, sans-serif" font-size="18" fill="#33464d">読める空中像＋誤らないtap</text>
+  <line x1="446" y1="404" x2="754" y2="404" stroke="#d7dddd" stroke-width="1"/>
+  <text x="446" y="439" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#67562b">書面とbenchで別々に確認</text>
+  <text x="446" y="473" font-family="Arial, sans-serif" font-size="16" fill="#53646b">部品公称値を完成機へ転用しない</text>
+
+  <rect x="824" y="149" width="58" height="34" rx="7" fill="#dce9e9"/>
+  <text x="840" y="173" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#275b62">K2</text>
+  <text x="894" y="173" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#22333a">同一閉箱で判定</text>
+  <text x="825" y="218" font-family="Arial, sans-serif" font-size="18" fill="#33464d">遷移全姿勢：g + δ + e ≤ 6 mm</text>
+  <text x="825" y="256" font-family="Arial, sans-serif" font-size="18" fill="#33464d">挟み込み・空dock・転倒</text>
+  <text x="825" y="294" font-family="Arial, sans-serif" font-size="18" fill="#33464d">電池・熱・手／RF曝露</text>
+  <text x="825" y="332" font-family="Arial, sans-serif" font-size="18" fill="#33464d">誤tap・共有室の漏えい</text>
+  <text x="825" y="370" font-family="Arial, sans-serif" font-size="18" fill="#33464d">離脱時の場所権限失効</text>
+  <line x1="825" y1="404" x2="1133" y2="404" stroke="#d7dddd" stroke-width="1"/>
+  <text x="825" y="439" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#275b62">別箱の成功を足さない</text>
+  <text x="825" y="473" font-family="Arial, sans-serif" font-size="16" fill="#53646b">OI 0/7・MP 0/6（物理受入）</text>
+
+  <rect x="48" y="548" width="1104" height="104" rx="12" fill="#e9edec"/>
+  <text x="69" y="581" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#273a40">次の順序</text>
+  <text x="69" y="616" font-family="Arial, sans-serif" font-size="18" fill="#364c53">P0 実部品CAD  →  P1a 光学・手  ＋  P1b 米国衛星IP・契約  →  P1c 乾式模擬島  →  P2 200 mm閉箱  →  P3 本人の一周</text>
+  <text x="48" y="680" font-family="Arial, sans-serif" font-size="16" fill="#56636a">操作できる距離は別測定。近距離の着信カードはR5全空間裸眼3Dの合格ではない。</text>
+</svg>

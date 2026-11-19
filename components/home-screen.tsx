@@ -1,561 +1,199 @@
-/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway. */
 'use client';
-
-import {
-  ArrowUpRight,
-  ArrowRight,
-  ArrowUp,
-  Asterisk,
-  Check,
-  Command,
-  Search,
-  X,
-  Plus,
-  SlidersHorizontal,
-  Cloud,
-  GraduationCap,
-  MessageCircle,
-  WalletCards,
-  ChartNoAxesCombined,
-  Settings2,
-  RefreshCw,
-  CornerDownLeft,
-  type LucideIcon,
-} from 'lucide-react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type SyntheticEvent,
-} from 'react';
-import type { WorkJob } from '@/lib/workflow';
-import { writeHomeIntent, HOME_INTENT_MAX_LENGTH } from '@/lib/home-intent';
-import styles from './home-screen.module.css';
+import { usePathname } from 'next/navigation';
 import OSHeader from './os-header';
+import OsAppNavigation from './os-app-navigation';
+import { osRouteHref, skyHomePanelForHash } from '@/lib/os-navigation';
+import { MessageCircle, Plus, MoreHorizontal } from 'lucide-react';
+import SkySocialTimeline from './sky-social-timeline';
+import SkyDiscoveryFeed from './sky-discovery-feed';
+import SmisAddedPosts from './smis-added-posts';
+import SkyDiscoveryDialog from './sky-discovery-dialog';
+import SkyXAccountTimeline, { SkyXAccountConnection } from './sky-x-account';
+import {
+  useTimelineConnector,
+  SkyTimelineConnector,
+  SkyMcpTimeline,
+} from './sky-timeline-connector';
+import { SkyNewsConnections } from './sky-information-market';
+import { useSkyFeatures } from '@/lib/use-sky-features';
+import styles from './home-screen.module.css';
 
-type App = {
-  name: string;
-  description: string;
-  href: string;
-  Icon: LucideIcon;
-};
-const apps: App[] = [
-  {
-    name: 'Campus',
-    description: '大学の人・プロジェクト・機会をつなぐ',
-    href: '/campus',
-    Icon: GraduationCap,
-  },
-  {
-    name: 'Sky',
-    description: '必要なエージェントと道具を見つける',
-    href: '/sky',
-    Icon: Cloud,
-  },
-  {
-    name: 'Zema',
-    description: '依頼を伝える・一緒に進める',
-    href: '/chat',
-    Icon: MessageCircle,
-  },
-  {
-    name: 'Wallet',
-    description: '費用と資金を確認する',
-    href: '/wallet',
-    Icon: WalletCards,
-  },
-  {
-    name: 'Market',
-    description: '価値を探索する · PAPER',
-    href: '/market',
-    Icon: ChartNoAxesCombined,
-  },
-  {
-    name: '設定',
-    description: '接続・権限・自分の環境',
-    href: '/settings',
-    Icon: Settings2,
-  },
-];
-const intentions = [
-  {
-    label: 'つくる',
-    example: '伝えたいアイデアを、読みやすい記事にしたい',
-    placeholder: '作りたいものや、伝えたい内容を入力',
-  },
-  {
-    label: '調べる',
-    example: 'このアイデアに関連する特許を調べたい',
-    placeholder: '調べたいテーマや条件を入力',
-  },
-  {
-    label: '整える',
-    example: '記事の出典を整理して、確かめたい',
-    placeholder: '整理したい内容や目的を入力',
-  },
-];
-const filters = [
-  { id: 'all', label: 'すべて' },
-  { id: 'active', label: '進行中' },
-  { id: 'review', label: '確認待ち' },
-  { id: 'completed', label: '完了' },
-] as const;
-const statusNames: Record<WorkJob['status'], string> = {
-  active: '進行中',
-  review: '確認待ち',
-  completed: '完了',
-  cancelled: '取消済み',
-};
-type LoadState = 'loading' | 'ready' | 'signin' | 'error';
+const SkyAgentLibrary = lazy(() => import('./sky-agent-library'));
+type View = 'home' | 'discover' | 'manage' | 'sources' | 'bookmarks' | 'communities';
+function viewForHash(fragment: string): View {
+  const hash = fragment.replace(/^#/, '');
+  return skyHomePanelForHash('#' + hash)
+    ?? (hash === 'news-plugins' || hash === 'external-sources'
+      ? 'sources'
+      : hash === 'bookmarks' || hash === 'communities' || hash.startsWith('community=')
+        ? hash === 'bookmarks' ? 'bookmarks' : 'communities'
+        : 'home');
 
+}
 export default function HomeScreen() {
-  const router = useRouter();
-  const [intent, setIntent] = useState('');
-  const [mode, setMode] = useState(0);
-  const [focus, setFocus] = useState(false);
-  const [intentError, setIntentError] = useState('');
-  const [jobs, setJobs] = useState<WorkJob[]>([]);
-  const [loadState, setLoadState] = useState<LoadState>('loading');
-  const [filter, setFilter] = useState<(typeof filters)[number]['id']>('all');
-  const [paletteOpen, setPaletteOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [date, setDate] = useState('');
-  const input = useRef<HTMLTextAreaElement>(null);
-  const dialog = useRef<HTMLDialogElement>(null);
-  const loadController = useRef<AbortController | null>(null);
-
-  const refresh = useCallback(async () => {
-    loadController.current?.abort();
-    const controller = new AbortController();
-    loadController.current = controller;
-    setLoadState('loading');
-    setJobs([]);
-    const timeout = window.setTimeout(() => controller.abort(), 12000);
-    try {
-      const response = await fetch('/api/work-jobs', {
-        cache: 'no-store',
-        credentials: 'same-origin',
-        signal: controller.signal,
-      });
-      if (controller !== loadController.current) return;
-      if (response.status === 401) {
-        setLoadState('signin');
-        return;
-      }
-      if (!response.ok) throw new Error('unavailable');
-      const data = (await response.json()) as { jobs: WorkJob[] };
-      if (!Array.isArray(data.jobs)) throw new Error('invalid');
-      if (controller !== loadController.current || controller.signal.aborted)
-        return;
-      setJobs(
-        data.jobs
-          .slice()
-          .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
-      );
-      setLoadState('ready');
-    } catch {
-      if (controller === loadController.current) {
-        setJobs([]);
-        setLoadState('error');
-      }
-    } finally {
-      window.clearTimeout(timeout);
-    }
-  }, []);
-
+  const pathname = usePathname();
+  const route = (href: string) =>
+    osRouteHref(pathname, href, process.env.NODE_ENV === 'development');
+  const homePath = route('/');
+  const timelineReceiver = useTimelineConnector();
+  const [view, setView] = useState<View>('home');
+  const [panelVisited, setPanelVisited] = useState(false);
+  const [featureOnly, setFeatureOnly] = useState(false);
+  const { enabled } = useSkyFeatures();
   useEffect(() => {
-    const initialize = window.setTimeout(() => {
-      void refresh();
-      setDate(
-        new Intl.DateTimeFormat('en-GB', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        })
-          .format(new Date())
-          .toUpperCase(),
-      );
-      try {
-        setFocus(
-          new URLSearchParams(window.location.search).get('focus') === '1' ||
-            window.localStorage.getItem('rockstaros.home.focus.v1') === '1',
-        );
-      } catch {
-        /* Optional display preference. */
-      }
-    }, 0);
-    void navigator.serviceWorker?.register('/sw.js').catch(() => {});
+    const sync = () => {
+      const next = viewForHash(window.location.hash);
+      setView(next);
+      if (next === 'discover' || next === 'manage') setPanelVisited(true);
+      setFeatureOnly(window.location.hash === '#optional-features');
+    };
+    const frame = requestAnimationFrame(sync);
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        setPaletteOpen((open) => !open);
+        window.location.hash = 'sky';
       }
-      if (event.key === 'Escape') setPaletteOpen(false);
+      if (
+        event.key === 'Escape' &&
+        !['INPUT', 'TEXTAREA', 'SELECT'].includes(
+          (event.target as HTMLElement)?.tagName,
+        )
+      )
+        window.location.hash = 'timeline';
     };
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') void refresh();
-    };
+    window.addEventListener('hashchange', sync);
+    window.addEventListener('popstate', sync);
     window.addEventListener('keydown', onKey);
-    document.addEventListener('visibilitychange', onVisibility);
+    void navigator.serviceWorker?.register('/sw.js').catch(() => {});
     return () => {
-      window.clearTimeout(initialize);
-      const controller = loadController.current;
-      loadController.current = null;
-      controller?.abort();
+      cancelAnimationFrame(frame);
+      window.removeEventListener('hashchange', sync);
+      window.removeEventListener('popstate', sync);
       window.removeEventListener('keydown', onKey);
-      document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [refresh]);
-
-  useEffect(() => {
-    if (paletteOpen) dialog.current?.showModal();
-    else dialog.current?.close();
-  }, [paletteOpen]);
-
-  const visibleJobs = useMemo(
-    () =>
-      jobs
-        .filter((job) => filter === 'all' || job.status === filter)
-        .slice(0, 4),
-    [jobs, filter],
-  );
-  const foundApps = apps.filter((app) =>
-    `${app.name} ${app.description}`
-      .toLowerCase()
-      .includes(search.trim().toLowerCase()),
-  );
-  function submit(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      writeHomeIntent(window.sessionStorage, intent);
-      setIntentError('');
-      router.push('/chat');
-    } catch {
-      setIntentError(
-        '依頼を引き継げませんでした。入力は残っています。コピーしてZemaを開いてください。',
-      );
-    }
-  }
-  function toggleFocus() {
-    const value = !focus;
-    setFocus(value);
-    try {
-      window.localStorage.setItem(
-        'rockstaros.home.focus.v1',
-        value ? '1' : '0',
-      );
-    } catch {
-      /* Still works in this session. */
-    }
-  }
+  }, []);
   return (
-    <main className={styles.home} data-focus={focus}>
-      <a href="#home-intent" className={styles.skip}>
-        依頼を入力する
+    <div
+      className={styles.home}
+      data-sky-home
+      data-os-frame
+      data-timeline-skin="x"
+      onClickCapture={(event) => {
+        if (
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        )
+          return;
+        const anchor = (event.target as Element).closest('a[href]');
+        if (!anchor) return;
+        const target = new URL(
+          anchor.getAttribute('href')!,
+          window.location.href,
+        );
+        if (
+          target.origin === window.location.origin &&
+          target.pathname === homePath &&
+          target.hash
+        ) {
+          const next = viewForHash(target.hash);
+          setView(next);
+          if (next === 'discover' || next === 'manage') setPanelVisited(true);
+          setFeatureOnly(target.hash === '#optional-features');
+        }
+      }}
+    >
+      <a className={styles.skip} href="#home-content">
+        ホームの内容へ
       </a>
-      <OSHeader title="ホーム">
-        <button
-          className={styles.launcher}
-          onClick={() => {
-            setSearch('');
-            setPaletteOpen(true);
-          }}
-          aria-haspopup="dialog"
-        >
-          <span>すべてのツール</span>
-          <kbd>
-            <Command size={11} /> K
-          </kbd>
-        </button>
-      </OSHeader>
+      <div className={styles.layout}>
 
-      <section className={styles.hero} aria-labelledby="home-title">
-        <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>Zemaに依頼</p>
-          <h1 id="home-title">何を進めますか。</h1>
-          <p className={styles.intro}>
-            作成・調査・整理したいことを、Zemaに伝えられます。
-          </p>
-          <div className={styles.intentModes} aria-label="依頼のヒント">
-            {intentions.map((item, index) => (
-              <button
-                key={item.label}
-                aria-pressed={mode === index}
-                onClick={() => setMode(index)}
-              >
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                {item.label}
-                {mode === index && <span className={styles.modeDot} />}
-              </button>
-            ))}
+        <main className={styles.main} id="home-content">
+          <h1 className={styles.srOnly}>Smith ホーム</h1>
+          <div className={styles.mobileHeader}>
+            <OSHeader title="Smith" hideNavigation>
+              <div className={styles.mobileActions}>
+                <Link href={route('/chat')}>
+                  Eve <MessageCircle size={20} />
+                </Link>
+                <Link href={route('/#sky')} aria-label="追加・管理"><Plus size={21} /></Link>
+                <details>
+                  <summary aria-label="その他のメニュー">
+                    <MoreHorizontal size={22} />
+                  </summary>
+                  <nav aria-label="追加メニュー">
+                    <Link href="/os/eve?view=build">Eveでエージェントを作る</Link>
+                    <Link href={route('/#sky-manage')}>担当とLLMを管理</Link>
+                    <Link href="/account">アカウント</Link>
+                    <span className={styles.preview}>DEVELOPER PREVIEW</span>
+                    <Link href={route('/#bookmarks')}>ブックマーク</Link>
+                    <Link href={route('/#news-plugins')}>ニュースの配信元</Link>
+                    <Link href={route('/#optional-features')}>機能を追加</Link>
+                    <Link href={route('/campus')}>Campus</Link>
+                    <Link href={route('/connect')}>利用環境をつなぐ</Link>
+                    <Link href={route('/settings')}>設定</Link>
+                    {enabled('wallet') && (
+                      <Link href={route('/wallet')}>Wallet</Link>
+                    )}
+                    {enabled('market') && (
+                      <Link href={route('/market')}>Market</Link>
+                    )}
+                  </nav>
+                </details>
+              </div>
+            </OSHeader>
           </div>
-          <form className={styles.composer} onSubmit={submit}>
-            <label htmlFor="home-intent" className={styles.composerLabel}>
-              いま、何をしたい？
-            </label>
-            <textarea
-              id="home-intent"
-              ref={input}
-              value={intent}
-              onChange={(e) => {
-                setIntent(e.target.value);
-                setIntentError('');
-              }}
-              placeholder={intentions[mode].placeholder}
-              maxLength={HOME_INTENT_MAX_LENGTH}
-              rows={2}
-              onKeyDown={(event) => {
-                if (
-                  (event.metaKey || event.ctrlKey) &&
-                  event.key === 'Enter' &&
-                  !event.nativeEvent.isComposing
-                ) {
-                  event.preventDefault();
-                  event.currentTarget.form?.requestSubmit();
-                }
-              }}
+          <SkyDiscoveryDialog open={view==='discover'||view==='manage'} mode={view==='manage'?'manage':'discover'} onModeChange={mode=>{window.location.hash=mode==='manage'?'sky-manage':'sky';}} onClose={()=>{window.location.hash='timeline';setView('home');}}>
+            {panelVisited && <>
+              <section id="sky-add-panel" role="tabpanel" aria-labelledby="sky-add-tab" hidden={view!=='discover'}>
+                <SkyDiscoveryFeed key={featureOnly?'features':'discover'} initialFilter={featureOnly?'features':'all'} standalone />
+              </section>
+              <section id="sky-manage-panel" role="tabpanel" aria-labelledby="sky-manage-tab" hidden={view!=='manage'}>
+                <Suspense fallback={<output>担当とLLMの設定を読み込んでいます…</output>}><SkyAgentLibrary embedded /></Suspense>
+              </section>
+            </>}
+          </SkyDiscoveryDialog>
+          {view === 'sources' ? (
+            <section className={styles.sources}>
+              <header className={styles.pageTitle}>
+                <h1>配信元をつなぐ</h1>
+                <Link href={route('/#timeline')}>ホームへ</Link>
+              </header>
+              <SkyTimelineConnector receiver={timelineReceiver} />
+              <details className={styles.providerSettings}>
+                <summary>個別APIの接続設定（任意）</summary>
+                <SkyXAccountConnection />
+              </details>
+              <SkyNewsConnections />
+            </section>
+          ) : (
+            <SkySocialTimeline
+              key={view==='discover'||view==='manage'?'home':view}
+              fullHome
+              personalFeed={<SmisAddedPosts />}
+              initialView={view==='discover'||view==='manage'?'home':view}
+              externalFeed={
+                <>
+                  <SkyMcpTimeline receiver={timelineReceiver} />
+                  <SkyXAccountTimeline />
+                </>
+              }
             />
-            <div className={styles.composerBottom}>
-              <span>
-                <span className={styles.tinyStar}>✳</span> Zemaと始める{' '}
-                <span className={styles.composerNote}>
-                  送信前に確認できます
-                </span>
-              </span>
-              <button
-                type="submit"
-                disabled={!intent.trim()}
-                aria-label="依頼をZemaへ引き継ぐ"
-              >
-                <ArrowUp size={20} />
-              </button>
-            </div>
-          </form>
-          {intentError && (
-            <p className={styles.intentError} role="alert">
-              {intentError} <Link href="/chat">Zemaを開く</Link>
-            </p>
           )}
-          <button
-            className={styles.example}
-            onClick={() => {
-              setIntent(intentions[mode].example);
-              input.current?.focus();
-            }}
-          >
-            <Plus size={13} /> たとえば、{intentions[mode].example}
-            <ArrowUpRight size={13} />
-          </button>
-        </div>
-        <button
-          className={styles.focusToggle}
-          aria-pressed={focus}
-          onClick={toggleFocus}
-        >
-          <SlidersHorizontal size={13} />
-          {focus ? '通常表示に戻す' : '入力に集中'}
-        </button>
-      </section>
+        </main>
 
-      <section className={styles.activity} aria-labelledby="activity-title">
-        <div className={styles.activityHeading}>
-          <div>
-            <h2 id="activity-title">最近の仕事</h2>
-          </div>
-          <button
-            className={styles.refresh}
-            aria-label="仕事を再読み込み"
-            disabled={loadState === 'loading'}
-            onClick={() => void refresh()}
-          >
-            <RefreshCw size={15} />
-          </button>
-        </div>
-        <div className={styles.activityBar}>
-          <div className={styles.filters} aria-label="仕事を絞り込む">
-            {filters.map((item) => (
-              <button
-                key={item.id}
-                aria-pressed={filter === item.id}
-                onClick={() => setFilter(item.id)}
-              >
-                {item.label}
-                {loadState === 'ready' && (
-                  <span>
-                    {
-                      jobs.filter(
-                        (job) => item.id === 'all' || job.status === item.id,
-                      ).length
-                    }
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-          <Link href="/chat?view=work" className={styles.allWork}>
-            仕事を開く <ArrowUpRight size={14} />
-          </Link>
-        </div>
-        <div aria-live="polite" aria-busy={loadState === 'loading'}>
-          {loadState === 'loading' && (
-            <div className={styles.empty}>
-              <span className={styles.emptyMark}>
-                <span className={styles.loadingDot} />
-              </span>
-              <div>
-                <strong>あなたの仕事を読み込んでいます</strong>
-                <p>保存済みの進捗を取得しています。</p>
-              </div>
-            </div>
-          )}
-          {loadState === 'signin' && (
-            <div className={styles.empty}>
-              <span className={styles.emptyMark}>
-                <Asterisk size={28} strokeWidth={1} />
-              </span>
-              <div>
-                <strong>保存した仕事を確認</strong>
-                <p>
-                  サインインすると、保存した仕事をひとつの場所で確認できます。
-                </p>
-              </div>
-              <a
-                className={styles.emptyAction}
-                href="/signin-with-chatgpt?return_to=%2F"
-                target="_top"
-              >
-                サインイン <ArrowRight size={16} />
-              </a>
-            </div>
-          )}
-          {loadState === 'error' && (
-            <div className={styles.empty}>
-              <span className={styles.emptyMark}>
-                <RefreshCw size={22} strokeWidth={1} />
-              </span>
-              <div>
-                <strong>仕事を読み込めませんでした</strong>
-                <p>接続を確認して、もう一度お試しください。</p>
-              </div>
-              <button
-                className={styles.emptyAction}
-                onClick={() => void refresh()}
-              >
-                再読み込み <ArrowRight size={16} />
-              </button>
-            </div>
-          )}
-          {loadState === 'ready' && !visibleJobs.length && (
-            <div className={styles.empty}>
-              <span className={styles.emptyMark}>
-                <Plus size={24} strokeWidth={1} />
-              </span>
-              <div>
-                <strong>
-                  {filter === 'all'
-                    ? 'まだ仕事はありません。'
-                    : `${filters.find((item) => item.id === filter)?.label}の仕事はまだありません。`}
-                </strong>
-                <p>上の入力欄から依頼すると、Zemaへ引き継げます。</p>
-              </div>
-              <button
-                className={styles.emptyAction}
-                onClick={() => input.current?.focus()}
-              >
-                依頼を書く <ArrowUpRight size={16} />
-              </button>
-            </div>
-          )}
-          {loadState === 'ready' &&
-            visibleJobs.map((job, index) => (
-              <Link
-                key={job.id}
-                href={`/chat?view=work&workJob=${encodeURIComponent(job.id)}`}
-                className={styles.job}
-              >
-                <span className={styles.jobIndex}>
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <div className={styles.jobTitle}>
-                  <strong>{job.title}</strong>
-                  <span>
-                    {job.steps.filter((step) => step.passed).length} /{' '}
-                    {job.steps.length} ステップ
-                  </span>
-                </div>
-                <span className={styles.jobStatus} data-status={job.status}>
-                  {job.status === 'completed' ? <Check size={13} /> : <span />}
-                  {statusNames[job.status]}
-                </span>
-                <ArrowUpRight size={17} />
-              </Link>
-            ))}
-        </div>
-      </section>
-      <footer className={styles.footer}>
-        <Link href="/connect">
-          SIM・サービス利用権を接続 <ArrowUpRight size={11} />
-        </Link>
-        <span>
-          ROCKSTAROS <span className={styles.footerDivider}>/</span> DEVELOPER
-          PREVIEW
-        </span>
-        <span>
-          {date} <span className={styles.footerDivider}>/</span> WEB
-        </span>
-      </footer>
-
-      <dialog
-        ref={dialog}
-        className={styles.palette}
-        onClose={() => setPaletteOpen(false)}
-        aria-labelledby="palette-title"
-      >
-        <div className={styles.paletteInner}>
-          <header>
-            <h2 id="palette-title">アプリを開く</h2>
-            <button
-              onClick={() => setPaletteOpen(false)}
-              aria-label="ツール一覧を閉じる"
-            >
-              <X size={19} />
-            </button>
-          </header>
-          <label className={styles.paletteSearch}>
-            <Search size={18} />
-            <input
-              placeholder="ツールを探す"
-              aria-label="ツールを検索"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </label>
-          <div className={styles.paletteResults}>
-            {foundApps.map(({ name, description, href, Icon }) => (
-              <Link
-                href={href}
-                key={href}
-                onClick={() => setPaletteOpen(false)}
-              >
-                <Icon size={22} />
-                <span>
-                  <strong>{name}</strong>
-                  <small>{description}</small>
-                </span>
-                <CornerDownLeft size={16} />
-              </Link>
-            ))}
-            {!foundApps.length && <p>一致するツールがありません。</p>}
-          </div>
-          <footer>
-            <kbd>esc</kbd> 閉じる <span>ROCKSTAROS / TOOLS</span>
-          </footer>
-        </div>
-      </dialog>
-    </main>
+      </div>
+      <OsAppNavigation
+        className={`${styles.mobileNav} os-home-navigation`}
+        aria-label="RockstarOSの主要サービス"
+        active={
+          view === 'communities' ? 'communities' : 'stream'
+        }
+      />
+    </div>
   );
 }

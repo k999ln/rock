@@ -18,16 +18,17 @@ const presetLabel = new Map<string, string>(
 
 /** LLMs are first-class Sky Market entries; Sky Broker is their MCP route. */
 export const skyAiMarketplaceEntries: readonly SkyAiMarketplaceEntry[] =
-  textModelProviders.map((provider) => ({
+  // Dedicated free Cloud requires its own service; generic MCP generation is not ready.
+  textModelProviders.filter(provider=>provider.id!=='pollinations').map((provider) => ({
     ...provider,
     marketplaceId: `llm-${provider.id}`,
     category: 'LLM',
-    mcpRoute: 'Sky Broker → MCP tools',
+    mcpRoute: 'Smith Broker → MCP tools',
     defaultModelLabel: presetLabel.get(provider.defaultModel) ?? provider.defaultModel,
     connectionLabel:
       provider.locality === 'local'
         ? '端末内・ローカル接続'
-        : 'Provider接続・Sky Broker経由',
+        : 'Provider接続・Smith Broker経由',
   }));
 
 export function skyAiMarketplaceEntry(providerId: string) {

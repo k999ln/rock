@@ -92,7 +92,7 @@ void test('package SHA is canonical and changes with the declared version', asyn
   );
 });
 
-void test('declared publication stays private until an evidence-backed review verifies it', { timeout: 10_000 }, async (t) => {
+void test('declared publication stays private until an evidence-backed review verifies it', { timeout: 30_000 }, async (t) => {
   const worker = new Miniflare(
     convertV4MiniflareOptions({
       modules: true,

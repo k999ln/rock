@@ -1,11 +1,12 @@
 // Loopback Worker/D1/R2 regression. Synthetic users, no payments or providers.
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
+import { copyWorkerBuildFixture } from './worker-build-fixture.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporary = mkdtempSync(join(tmpdir(), 'sky-csv-storage-'));
@@ -20,7 +21,7 @@ async function start() {
   worker = new Miniflare(convertV4MiniflareOptions({
     name: config.name, rootPath: directory, modulesRoot: directory,
     modules: [config.main, ...readdirSync(directory, {recursive:true, encoding:'utf8'})
-      .filter(f => f !== config.main && /\.m?js$/.test(f))]
+      .filter(f => f !== config.main && !f.split(/[\\/]/).some(part => part.startsWith('._')) && /\.m?js$/.test(f))]
       .map(f => ({type:'ESModule', path:resolve(directory, f)})),
     compatibilityDate: config.compatibility_date, compatibilityFlags: config.compatibility_flags,
     bindings: {...config.vars, SKY_REMOTE_LLM_ENABLED:'false'},
@@ -64,10 +65,10 @@ async function artifacts(job, user=alice) {
   return result;
 }
 try {
-  cpSync(join(root,'dist'),join(temporary,'dist'), {recursive:true,filter:p=>!p.split(/[\\/]/).at(-1).startsWith('._')});
+  copyWorkerBuildFixture(join(root,'dist'),join(temporary,'dist'));
   await start();
   // Canonical builds use migrations; Sites builds also have an idempotent bootstrap.
-  for (const file of readdirSync(join(root,'drizzle')).filter(f=>f.endsWith('.sql')).sort())
+  for (const file of readdirSync(join(root,'drizzle')).filter(f=>!f.startsWith('._') && f.endsWith('.sql')).sort())
     for (const sql of readFileSync(join(root,'drizzle',file),'utf8').split('--> statement-breakpoint').filter(s=>s.trim()))
       await db.prepare(sql).run();
   await db.prepare('CREATE TABLE IF NOT EXISTS sky_service_schema(version INTEGER PRIMARY KEY)').run();

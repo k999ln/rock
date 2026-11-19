@@ -21,7 +21,7 @@ const skySubmission = JSON.parse(
   ),
 );
 
-void test('RockstarOS Sky lists Fashion Brand Ops as a ready MCP product', () => {
+void test('RockstarOS smis lists Fashion Brand Ops as a ready MCP product', () => {
   const item = catalog.find((tool) => tool.id === 'fashion-brand-ops');
   assert.ok(item);
   assert.equal(item.status, 'ready');
@@ -32,7 +32,7 @@ void test('RockstarOS Sky lists Fashion Brand Ops as a ready MCP product', () =>
   assert.match(item.note, /承認/);
 });
 
-void test('Sky accepts the Fashion Brand Ops listing contract', () => {
+void test('smis accepts the Fashion Brand Ops listing contract', () => {
   const parsed = parseSkySubmission(skySubmission);
   assert.equal(parsed.name, 'Instagram運用・受注型ブランド管理');
   assert.equal(parsed.connectionType, 'mcp_stdio');
@@ -40,7 +40,7 @@ void test('Sky accepts the Fashion Brand Ops listing contract', () => {
   assert.ok(parsed.permissions.includes('financial_action'));
 });
 
-void test('the Sky manifest binds the MCP runtime and every dangerous effect to approval', () => {
+void test('the smis manifest binds the MCP runtime and every dangerous effect to approval', () => {
   assert.equal(manifest.id, 'org.rockstar.fashion-brand-ops');
   assert.equal(manifest.runtime.kind, 'local_mcp');
   assert.deepEqual(manifest.runtime.transports, ['stdio', 'streamable_http']);

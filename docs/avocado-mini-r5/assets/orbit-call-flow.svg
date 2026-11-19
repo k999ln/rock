@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+  <title id="title">Orbitの空間着信と応答の四段階</title>
+  <desc id="desc">着信後は匿名の光合図、本人確認後に短い空中カード、校正された手の空間タップで応答要求、通信事業者の接続確認後に通話中と表示する。実機画面ではない。</desc>
+  <rect width="1200" height="430" fill="#f8fafc"/>
+  <text x="36" y="51" fill="#1b2e42" font-family="Arial, sans-serif" font-size="28" font-weight="700">電話が空間に現れ、本人が応答するまで</text>
+  <text x="36" y="82" fill="#526477" font-family="Arial, sans-serif" font-size="15">表示と入力の概念。光学・生体・通話回線の成立を示す実機記録ではない。</text>
+
+  <g fill="#ffffff" stroke="#d4dce4" stroke-width="2">
+    <rect x="35" y="115" width="265" height="259" rx="16"/>
+    <rect x="322" y="115" width="265" height="259" rx="16"/>
+    <rect x="609" y="115" width="265" height="259" rx="16"/>
+    <rect x="896" y="115" width="265" height="259" rx="16"/>
+  </g>
+
+  <text x="54" y="150" fill="#26445a" font-family="Arial, sans-serif" font-size="20" font-weight="700">1 着信を知らせる</text>
+  <rect x="145" y="190" width="55" height="132" rx="24" fill="#c5cbd1" stroke="#788895" stroke-width="2"/>
+  <ellipse cx="172" cy="188" rx="57" ry="18" fill="none" stroke="#90adba" stroke-width="4" opacity="0.5"/>
+  <ellipse cx="172" cy="188" rx="41" ry="12" fill="none" stroke="#4fa0b5" stroke-width="4"/>
+  <text x="54" y="350" fill="#57697a" font-family="Arial, sans-serif" font-size="14">共有空間には名前を出さない</text>
+
+  <text x="341" y="150" fill="#26445a" font-family="Arial, sans-serif" font-size="20" font-weight="700">2 本人を確かめる</text>
+  <rect x="425" y="190" width="55" height="132" rx="24" fill="#c5cbd1" stroke="#788895" stroke-width="2"/>
+  <circle cx="452" cy="270" r="11" fill="#375d71"/>
+  <circle cx="452" cy="270" r="5" fill="#a7d9da"/>
+  <path d="M 510 244 Q 530 266 510 290" fill="none" stroke="#72aaa8" stroke-width="4" stroke-linecap="round"/>
+  <text x="341" y="350" fill="#57697a" font-family="Arial, sans-serif" font-size="14">指紋かPIN。手の近接だけでは不可</text>
+
+  <text x="628" y="150" fill="#26445a" font-family="Arial, sans-serif" font-size="20" font-weight="700">3 空間で選ぶ</text>
+  <rect x="676" y="231" width="49" height="91" rx="22" fill="#c5cbd1" stroke="#788895" stroke-width="2"/>
+  <rect x="739" y="191" width="106" height="77" rx="10" fill="#e9f6f4" fill-opacity="0.82" stroke="#4d9395" stroke-width="2"/>
+  <text x="792" y="220" text-anchor="middle" fill="#255459" font-family="Arial, sans-serif" font-size="15">着信</text>
+  <text x="792" y="250" text-anchor="middle" fill="#1d6d58" font-family="Arial, sans-serif" font-size="19" font-weight="700">応答</text>
+  <path d="M 810 302 L 792 266" fill="none" stroke="#57697a" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="790" cy="263" r="8" fill="#efcf9e" stroke="#af8e60"/>
+  <text x="628" y="350" fill="#57697a" font-family="Arial, sans-serif" font-size="14">像面校正と意図確認で一回だけ要求</text>
+
+  <text x="915" y="150" fill="#26445a" font-family="Arial, sans-serif" font-size="20" font-weight="700">4 接続結果を返す</text>
+  <rect x="981" y="199" width="55" height="123" rx="24" fill="#c5cbd1" stroke="#788895" stroke-width="2"/>
+  <rect x="1042" y="200" width="98" height="67" rx="12" fill="#e5f3e5" stroke="#70ad73" stroke-width="2"/>
+  <text x="1091" y="226" text-anchor="middle" fill="#326f39" font-family="Arial, sans-serif" font-size="17" font-weight="700">通話中</text>
+  <text x="1091" y="251" text-anchor="middle" fill="#4e7653" font-family="Arial, sans-serif" font-size="12">provider確認後</text>
+  <text x="915" y="350" fill="#57697a" font-family="Arial, sans-serif" font-size="14">要求と成立は別の表示にする</text>
+
+  <text x="35" y="405" fill="#506477" font-family="Arial, sans-serif" font-size="15">誤検知・遮蔽・着脱中は空間入力を止め、物理crown／音声で同じ通話状態へ戻す。</text>
+</svg>

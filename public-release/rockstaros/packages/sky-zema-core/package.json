@@ -1,7 +1,7 @@
 {
   "name": "@avokado-ink/rockstaros-sky-zema-core",
   "version": "0.1.0",
-  "description": "Public local-first Sky catalog and Zema workflow core.",
+  "description": "Public local-first Sky catalog and Eve workflow core.",
   "type": "module",
   "exports": "./src/index.js",
   "scripts": {

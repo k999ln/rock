@@ -1,0 +1,10 @@
+import { build } from 'esbuild';
+import { mkdir,copyFile } from 'node:fs/promises';
+import { resolve,dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const source=dirname(fileURLToPath(import.meta.url)),output=process.argv[2];
+if(!output)throw new Error('OUTPUT_DIRECTORY_REQUIRED');
+await mkdir(output,{recursive:true});
+await build({entryPoints:[resolve(source,'lab.mjs')],outfile:resolve(output,'lab.mjs'),bundle:true,format:'esm',platform:'browser',target:'es2022'});
+await copyFile(resolve(source,'lab.html'),resolve(output,'index.html'));
+console.log('Local-only Lab built: '+resolve(output));

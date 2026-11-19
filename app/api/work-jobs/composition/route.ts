@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     const input = objectInput(await read(request), ['action', 'jobId', 'revision', 'commandId', 'plan', 'source', 'stepId', 'saveMaterial']);
     const store = workStore(db);
     if (input.action !== 'clear' && !(await rockstarServiceScopeAllowed(db, user, 'zema',
-      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request))) return missingRockstarServiceScope('Zema');
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request))) return missingRockstarServiceScope('Eve');
     if (input.action === 'create') {
       const candidate = createWorkJob({ id: input.jobId, title: '目的から組み立てる仕事', templateId: 'composition', plan: input.plan });
       const saved = await store.create(user, candidate);
@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     }
     const current = await store.get(user, workId(input.jobId));
     if (!current?.composition) throw new WorkError('仕事が見つかりません。', 404);
+    if (current.eveTool) throw new WorkError('Eveの仕事はEveの実行・停止・成果確認から操作してください。', 409);
     if (!['revise', 'run', 'clear'].includes(String(input.action))) throw new WorkError('操作を確認してください。');
     const id = workId(input.commandId);
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(input)));

@@ -30,7 +30,7 @@ export type Automation = {
 };
 
 const mrHubCandidates = ([
-  ['coconala-proposal-draft', 'ココナラ提案文の下書き', '案件・納品支援', '案件条件から提案文と確認リストを作る既存の端末内処理。', '既存のローカル実行器をSky SDKへ接続する'],
+  ['coconala-proposal-draft', 'ココナラ提案文の下書き', '案件・納品支援', '案件条件から提案文と確認リストを作る既存の端末内処理。', '既存のローカル実行器をSmith SDKへ接続する'],
   ['gig-workflow', '受託案件ワークフロー', '案件・納品支援', '応募・交渉・制作・納品・売上確認の既存処理を段階ごとに支援。', '所有者設定を移し、外部操作に個別承認を付ける'],
   ['coconala-inbox', 'ココナラの依頼・添付整理', '案件・納品支援', '本人の依頼文と添付を整理する既存処理。', '本人の接続と保存範囲を確認する'],
   ['youtube-script-writer', 'YouTube台本', '動画制作', 'タイトル案、冒頭、台本、撮影キューを作る既存Service Cell。', '台本生成と品質確認の実行器を接続する'],
@@ -39,7 +39,7 @@ const mrHubCandidates = ([
   ['sales-objection-reply-builder', '商談返信・見積り支援', '販売・収益化', '正式な商品条件から返信文と確認事項を作る既存Service Cell。', '返信生成実行器を接続する'],
   ['user-interview-synthesizer', '顧客インタビュー分析', '市場・商品設計', '発言をテーマ、根拠、仮説と次の検証に整理する既存Service Cell。', '発言と分析結果を結ぶ実行器を接続する'],
   ['calendar-coordination', '予定・カレンダー連携', '生活・予定', '既存Coreの予定解釈とカレンダー連携処理。', '本人のアカウント接続と権限確認を行う'],
-  ['telegram-notifications', 'Telegram通知・承認', '通知・連絡', '既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。', '本人確認済みBotと送信範囲を接続する'],
+  ['telegram-notifications', 'Telegram通知・承認', '通知・連絡', '既存Botの依頼受付、通知、進捗確認をSmithの仕事につなぐ処理。', '本人確認済みBotと送信範囲を接続する'],
   ['producthunt-discovery', '外部ツール候補の発見', '市場・商品設計', 'Product Hunt公式API向けの候補検索処理。', 'API利用条件と商用許諾を確認する'],
 ] as const).map(([id, name, category, description, next]) => ({
   id, name, category, description,
@@ -49,10 +49,10 @@ const mrHubCandidates = ([
   color: 'blue',
   status: 'candidate' as const,
   origin: 'mr' as const,
-  environment: '既存コード・設計あり / Sky実行器は未接続',
+  environment: '既存コード・設計あり / Smith実行器は未接続',
   cost: '接続先、モデル、外部サービスの実費を接続時に確認します。',
-  steps: [next, 'Sky SDKでPackageとMCPを登録する', '接続先、権限、副作用、結果を確認して使う'],
-  note: 'Mr.の旧Automation Hubの在庫から移した導入候補です。Skyからの実行と外部サービスへの接続は、実装・検証後に有効になります。',
+  steps: [next, 'Smith SDKでPackageとMCPを登録する', '接続先、権限、副作用、結果を確認して使う'],
+  note: 'Mr.の旧Automation Hubの在庫から移した導入候補です。Smithからの実行と外部サービスへの接続は、実装・検証後に有効になります。',
 }));
 const catalogEntries = [
   {
@@ -63,7 +63,7 @@ const catalogEntries = [
       '1ファイルのCSVを指定どおりに整形し、結果・変更報告・独立検査を一つの受付から納品します。',
     source: 'avocadoOS built-in',
     launchPath: '/csv',
-    environment: 'Sky Cloud / サインイン必須 / 暗号化された非公開ストレージ',
+    environment: 'Smith Cloud / サインイン必須 / 暗号化された非公開ストレージ',
     cost: '購入者向け試験価格は税込3,000円。販売者向けの8.88 USD料金案は収益動線が決まるまで保留中です。',
     steps: [
       'CSVと列名・列順・空白・重複・並び順・出力文字コードを指定する',
@@ -115,10 +115,10 @@ const catalogEntries = [
     launchPath: '/income/mercari',
     environment:
       '個人メルカリはブラウザ内の出品支援 / Shops自動連携は日本国内の固定IPを持つConnectorが必要',
-    cost: 'Skyの出品準備は追加料金なし。販売手数料・送料・仕入原価は利用者が実額を入力し、売上から先に差し引いて計算します。',
+    cost: 'Smithの出品準備は追加料金なし。販売手数料・送料・仕入原価は利用者が実額を入力し、売上から先に差し引いて計算します。',
     steps: [
       '自分が保有する商品と、状態・価格・実費を入力する',
-      'Skyが出品原稿と見込み手取りを作り、禁止物・誤表示・在庫を確認する',
+      'Smithが出品原稿と見込み手取りを作り、禁止物・誤表示・在庫を確認する',
       '個人メルカリは本人が公式画面で出品する。Shopsは公式API Connector接続後に個別承認する',
       '取引完了と入金をProviderで確認できた売上だけをWalletへ記録する。収益料金は保留中',
     ],
@@ -146,7 +146,7 @@ const catalogEntries = [
       'Campaign Autopilotが市場、広告仮説、投稿ペース、次の操作を組み立てる',
       'Sales Conciergeが顧客履歴と購入意向から返信案・見積りへの次の一手を作る',
       '入金確認後、Production Cockpitで資材・原価・能力・納期・工程を管理する',
-      '投稿・広告・DM・請求の外部作用はSkyで内容を確認して個別承認する',
+      '投稿・広告・DM・請求の外部作用はSmithで内容を確認して個別承認する',
       '広告・DM・売上・制作結果を経営画面と次回creativeへ反映する',
     ],
     note: '計画と下書きは自動化しますが、価格変更、外部生成、投稿・広告出稿、DM送信、請求、返金は署名付きの個別承認が必要です。paid/refundedは検証済み決済event以外から変更できません。',
@@ -165,7 +165,7 @@ const catalogEntries = [
     source: 'avocadoOS built-in / Kaiya IP Studio',
     launchPath: 'http://127.0.0.1:18767/',
     environment:
-      'このPCのIP Studio / Skyで接続状態と承認を管理',
+      'このPCのIP Studio / Smithで接続状態と承認を管理',
     cost:
       'ローカル利用は追加料金なし。生成・SNS・ゲームに加え、LiveKit、音声モデル、電話番号・通話回線の料金と契約は利用前に確認します。',
     steps: [
@@ -174,10 +174,10 @@ const catalogEntries = [
       '権利・利用条件・ゲーム導入先を確認してゲーム版を記録する',
       'Instagram・YouTubeの投稿案を確認し、本人承認後にMakeへ送る',
       '投稿結果とゲームへの導線を同じIPの履歴へ戻す',
-      '音声会話・電話を使う場合はSkyの接続管理でLiveKitとAgentを登録する（本体との通話連携は未接続）',
+      '音声会話・電話を使う場合はSmithの接続管理でLiveKitとAgentを登録する（本体との通話連携は未接続）',
     ],
     note:
-      'Skyは本人・接続・承認・停止状態を管理します。IP Studioは素材と生成・投稿案を扱います。APIキー、Cookie、SNSログイン情報はSkyの入力欄や仕事本文へ保存しません。投稿、広告、DM、ゲームへの提出は1回ごとの本人承認が必要です。音声送信・録音・電話発信の許可は別々に扱います。LiveKit設定を保存しても通話や番号取得は始まりません。',
+      'Smithは本人・接続・承認・停止状態を管理します。IP Studioは素材と生成・投稿案を扱います。APIキー、Cookie、SNSログイン情報はSmithの入力欄や仕事本文へ保存しません。投稿、広告、DM、ゲームへの提出は1回ごとの本人承認が必要です。音声送信・録音・電話発信の許可は別々に扱います。LiveKit設定を保存しても通話や番号取得は始まりません。',
     color: 'purple',
     license: 'avocadoOS / Kaiya IP Studio',
     licenseUrl: 'http://127.0.0.1:18767/',
@@ -195,15 +195,15 @@ const catalogEntries = [
       'https://github.com/k999ln/Mr./blob/26a39d2c31ea5246cb78dbe42d86e333922db60c/skills/earn/gig/scripts/application_eligibility.py',
     runner: 'coconala',
     launchPath: '/sky/tools/coconala',
-    environment: 'Skyの専用画面 / サインイン必須 / 本人別の非公開案件台帳',
-    cost: 'Sky Marketの売上手数料は10%。ココナラ手数料と担当者報酬は案件ごとに確認します。',
+    environment: 'Smithの専用画面 / サインイン必須 / 本人別の非公開案件台帳',
+    cost: 'Smith Marketの売上手数料は10%。ココナラ手数料と担当者報酬は案件ごとに確認します。',
     steps: [
       '応募前に依頼文と提案文をチェックし、元ページの条件・規約を確認する',
       '代表者の受注額と担当者の固定報酬・支払期日を事前登録する',
       '規約・顧客説明・担当者への条件明示を記録し、納品と検収を管理する',
       '顧客入金・返金と担当者への支払いを分けて記録する',
     ],
-    note: '応募前チェックはMr.の単発・非同期案件向けルールです。3%は見積りの参考値でSky手数料ではありません。ココナラの応募・契約・納品・入金照合、銀行振込は自動実行しません。手入力の入金は検証済み収益ではありません。',
+    note: '応募前チェックはMr.の単発・非同期案件向けルールです。3%は見積りの参考値でSmith手数料ではありません。ココナラの応募・契約・納品・入金照合、銀行振込は自動実行しません。手入力の入金は検証済み収益ではありません。',
     color: 'green',
     license: 'MIT',
     licenseUrl: '/toolkits/mr-LICENSE.txt',
@@ -295,14 +295,14 @@ const catalogEntries = [
       'https://github.com/k999ln/rock/tree/codex/sky-rockstar-ledger-20260912/toolkits/rockstar-ledger',
     runner: 'subscription-ledger',
     environment: 'PC接続 / ローカル台帳',
-    cost: '追加API料金なし。契約データと明細はPC内のSQLiteに保存し、Skyは読み取り専用で接続します。',
+    cost: '追加API料金なし。契約データと明細はPC内のSQLiteに保存し、Smithは読み取り専用で接続します。',
     steps: [
       'Rockstar LedgerをPCへ展開する',
       'Python 3.10以上でローカル台帳を起動する',
-      'Skyでサブスク顧問を開き、接続状態を確認する',
+      'Smithでサブスク顧問を開き、接続状態を確認する',
       '要対応と更新予定を確認し、変更は本人が各契約先で行う',
     ],
-    note: 'Skyは契約状況の確認を支援します。解約、支払い、税務申告を自動実行せず、通貨も勝手に合算しません。',
+    note: 'Smithは契約状況の確認を支援します。解約、支払い、税務申告を自動実行せず、通貨も勝手に合算しません。',
     color: 'green',
     license: 'MIT',
     licenseUrl: '/toolkits/rockstar-ledger-LICENSE.txt',
@@ -316,7 +316,7 @@ const catalogEntries = [
     description:
       '確認済みの最小出力をJevで評価し、根拠性・安全性・次の人手レビューの目安を返します。',
     source: 'https://vercel.com/ai-gateway/models/jev',
-    environment: 'Sky Cloud / Vercel AI Gateway / 明示同意が必要',
+    environment: 'Smith Cloud / Vercel AI Gateway / 明示同意が必要',
     cost: 'AI Gatewayのprovider料金・無料枠・保持条件に従います。送信前に表示を確認します。',
     steps: [
       '評価対象を最小化し、個人情報・法務相談・未公開発明・秘密情報を除く',
@@ -342,7 +342,7 @@ const catalogEntries = [
       'https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912',
     runner: 'legal-intake',
     environment:
-      'Skyは相談内容を保存しません / 標準は端末内処理、オンライン検索は本人が明示許可した場合だけ',
+      'Smithは相談内容を保存しません / 標準は端末内処理、オンライン検索は本人が明示許可した場合だけ',
     cost: '利用者への料金は0円で提供できます。法令AI接続時のAPI利用料は運営側に発生し、連絡・依頼後の弁護士費用は別途確認が必要です。',
     steps: [
       '危険・逮捕・公的書類・期限の有無を確認する',
@@ -367,7 +367,7 @@ const catalogEntries = [
       'https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912',
     runner: 'patent-assistant',
     environment:
-      'Skyは発明内容を保存しません / 標準は端末内で書類作成、オンライン調査は本人が明示許可した場合だけ',
+      'Smithは発明内容を保存しません / 標準は端末内で書類作成、オンライン調査は本人が明示許可した場合だけ',
     cost: '書類ドラフトはブラウザ内で作成します。AI調査を選んだ場合だけ運営側にAPI利用料が発生し、出願料・弁理士費用は別です。',
     steps: [
       '発明者・出願人候補と、公開済みかどうかを確認する',

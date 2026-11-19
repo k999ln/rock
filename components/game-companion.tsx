@@ -13,7 +13,7 @@ export default function GameCompanion() {
         <p>現実側でカードを保存・承認し、ゲーム側の試験画面で確認。その記録を現実側で検収します。ゲーム側から依頼の下書きを返すこともできます。</p>
         <a className="game-primary" href="http://127.0.0.1:5216/" target="_blank" rel="noopener noreferrer">Macの往復試験を開く ↗</a>
         <p>このMacで開発用bridgeを起動している場合に使えます。起動コマンド: <code>npm run game:bridge</code></p>
-        <p>ゲーム側はFiveM用と同じNUIを使う試験表示です。実FiveM・GTA VI・Mini／Pro実機は未受入です。試験用の仕事と履歴はローカルに保存し、本番Zemaや実サービスを実行しません。</p>
+        <p>ゲーム側はFiveM用と同じNUIを使う試験表示です。実FiveM・GTA VI・Mini／Pro実機は未受入です。試験用の仕事と履歴はローカルに保存し、本番Eveや実サービスを実行しません。</p>
       </section>
       <section aria-labelledby="next-title">
         <h2 id="next-title">ゲーム世界への接続</h2>
