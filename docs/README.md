@@ -10,9 +10,9 @@
 
 ## サービスの中心
 
-通信＋si利用権bundleを商品入口とし、無料avokadoアカウントで本人・仕事を管理する。Jenniferに目的を伝え、SkyでAgent/Toolを選び、裏側のZema/AMCで仕事・承認・停止・成果・費用を管理する。RockstarOS/Brokerが本人・権限・保存・復旧を強制し、modelの応答を実行許可にしない。
+通信＋si利用権bundleを商品入口とし、無料avokadoアカウントで本人・仕事を管理する。Eveに目的を伝え、NoahでAgent/Toolを見つけて接続し、裏側のAMC/Workで仕事・承認・停止・成果・費用を管理する（旧名: Jennifer → AMC、Sky → Noah、Zema → Eve / Work。[名前の正本](structure/06-naming.md)）。RockstarOS/Brokerが本人・権限・保存・復旧を強制し、modelの応答を実行許可にしない。
 
-MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独立したNVIDIA高性能si PC。rocketstarは独立工学programで、一般Agentの実行経路と飛行管制を分ける。各機器の完成をSkyの利用条件にしない。
+MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独立したNVIDIA高性能si PC。rocketstarは独立工学programで、一般Agentの実行経路と飛行管制を分ける。各機器の完成をEve・Noahの利用条件にしない。
 
 ## 入口＋7章の8冊
 
@@ -155,7 +155,7 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [Sky Assistant / Sky Memory設計](sky-assistant-and-memory.md)（設計）
 - [Sky Market決済と旧収益精算](sky-billing.md)（設計）
 - [Sky Cloud — 端末切断中の継続実行](sky-cloud-continuity.md)（設計）
-- [Sky の仕事の一周 — 工程の選択、会社受注、分配](sky-work-loop.md)（設計）。書式は [services/company-order.md](services/company-order.md)、[services/gig-desk.md](services/gig-desk.md)。先行例との差分と統合は [sky-earn-parity.md](sky-earn-parity.md)
+- [Sky の仕事の一周 — 工程の選択、会社受注、分配](work-loop.md)（設計）。書式は [services/company-order.md](services/company-order.md)、[services/gig-desk.md](services/gig-desk.md)。先行例との差分と統合は [earn-loop-parity.md](earn-loop-parity.md)
 - [Sky cloud execution operations and recovery runbook](sky-cloud-operations-runbook.md)（手順）
 - [Sky Market 決済・Wallet 統合詳細設計](sky-commerce-design.md)（設計）
 - [Sky Compute Grid — 使われていない携帯を束ねるVirtual Compute Plant](sky-compute-grid.md)（設計）

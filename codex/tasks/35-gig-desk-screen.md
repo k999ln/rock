@@ -1,6 +1,6 @@
 # 35 参加者の画面（受取額・確認の問い）と保存
 
-設計: docs/services/gig-desk.md、docs/sky-work-loop.md §7。コード: lib/sky-gig-desk.ts（判定・下書き・割当は実装済み。画面と保存は未実装）。task 34（会社受注の保存）の後に行う。
+設計: docs/services/gig-desk.md、docs/work-loop.md §7。コード: lib/sky-gig-desk.ts（判定・下書き・割当は実装済み。画面と保存は未実装）。task 34（会社受注の保存）の後に行う。
 
 ## やること
 

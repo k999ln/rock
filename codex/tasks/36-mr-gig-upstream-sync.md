@@ -1,6 +1,6 @@
 # 36 Mr. の gig を上流（Daisuke134/life-manager）の最新へ同期する
 
-対象 repo: k999ln/Mr.（この repo ではない）。設計: docs/sky-earn-parity.md §2.1。上流は MIT。
+対象 repo: k999ln/Mr.（この repo ではない）。設計: docs/earn-loop-parity.md §2.1。上流は MIT。
 
 ## やること
 

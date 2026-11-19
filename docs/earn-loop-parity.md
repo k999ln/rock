@@ -1,4 +1,4 @@
-# Sky の収益ループ — 先行例との差分と、一つにまとめた形（2026-11-18）
+# 収益ループ — 先行例との差分と、一つにまとめた形（2026-11-18）
 
 出典: Daisuke134/anicca（旧名 life-manager。同じリポジトリで、旧 URL は転送される。MIT、2026-11-18 の main）、k999ln/Mr.（main、2026-11-18）、この repo の PR #318、2026-11-18 の本人指示。
 本人の PC の `Mr/skills/anicca-life-manager` は読めていない（フォルダの許可が下りなかった）。GitHub の Mr. では同じスキルが `skills/anicca-rockstar_ibot` に改名されている（`docs/manifests/oss-merge-1-sources.json`）ので、GitHub 上の Mr. と上流で比べた。
@@ -40,14 +40,14 @@
 
 | 機能 | Mr. / 上流にあるもの | この repo で作ったもの | 扱い |
 | --- | --- | --- | --- |
-| 利益の分配 | `skills/ubi`: 黒字の回だけ、純利益の一定率（初期値 10%）を受取人で等分。運営者の取り分は別枠。二重払い防止、GMO あおぞらの一括振込、USDC | lib/sky-company-order.ts の配当 | 配当の計算と支払いは ubi を使う。Sky 側は作業料（寄与）の計算だけ残す |
+| 利益の分配 | `skills/ubi`: 黒字の回だけ、純利益の一定率（初期値 10%）を受取人で等分。運営者の取り分は別枠。二重払い防止、GMO あおぞらの一括振込、USDC | lib/sky-company-order.ts の配当 | 配当の計算と支払いは ubi を使う。この repo 側は作業料（寄与）の計算だけ残す |
 | 収支の集計 | `skills/cfo`（上流 80 ファイル、Mr. は 2） | なし | Mr. の同期（task 36）に cfo を含める |
 | 文章・電子書籍・スタンプ・プロンプトを売る | `writer-agent`、`earn/ebook-articles`、`earn/line-sticker`、`earn/promptbase`（後ろ3つは Mr. に無い） | lib/sky-gig-offers.ts の CREATOR_LANES（工程の定義だけ） | 売り場の手は上流のものを使い、CREATOR_LANES は「本人に何を残すか」の定義として使う |
 | 告知・SNS | `earn/marketing-engine`（上流 261、Mr. 196）、`social`、`x-tweeter` | なし | 同上 |
 
-### 2.2 上流にも Mr. にも無く、Sky が足すもの
+### 2.2 上流にも Mr. にも無く、この repo が足すもの
 
-| 無いもの | Sky の実装 | 状態 |
+| 無いもの | 実装 | 状態 |
 | --- | --- | --- |
 | 型ごとの採算と採用率で「出す・出さない」を決める | lib/sky-gig-desk.ts `triageGig` / `selectProposals` | 実装済み |
 | 工程の組合せを実績で選び直す | lib/sky-recipe-planner.ts | 実装済み・未接続 |
@@ -67,7 +67,7 @@ flowchart TB
   subgraph hands[手: lane runner（上流の gig。Mac 1台・ブラウザ1つ・アカウント1つ）]
     A[apply] --- R[reply] --- P[paid] --- S[storefront]
   end
-  subgraph brain[頭: Sky（この repo）]
+  subgraph brain[頭: Eve / AMC（この repo）]
     D[gig-desk<br/>型・採算・採用率で決める]
     N[recipe-planner<br/>工程を選ぶ]
     T[device-tiers<br/>どの計算機で動かすか]
@@ -151,8 +151,8 @@ node --experimental-strip-types scripts/sky-gig-desk.mjs desk.json --lane snapsh
 
 | 役割 | 何をする | お金の出どころ |
 | --- | --- | --- |
-| 紹介 | 知っている店・会社・人を1つ指す。提案と見本と運用は Sky が用意する | その取引の作業料（`referral`）。販売サイトの手数料がかからない直接の取引 |
-| 作る | 絵・文章・調べたこと・分析を渡す。掲載・告知・問い合わせ・納品は Sky | その商品の売上 |
+| 紹介 | 知っている店・会社・人を1つ指す。提案と見本と運用は avokado が用意する | その取引の作業料（`referral`）。販売サイトの手数料がかからない直接の取引 |
+| 作る | 絵・文章・調べたこと・分析を渡す。掲載・告知・問い合わせ・納品は avokado | その商品の売上 |
 | 確認・端末 | 問いに答える、端末を貸す | 受注があった分だけ |
 
 ココナラの窓口は入口の1つとして回すが、原資の中心には置かない。
