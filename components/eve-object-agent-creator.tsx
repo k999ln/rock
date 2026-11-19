@@ -142,7 +142,7 @@ export default function EveObjectAgentCreator({ replies = [], threadId = 'new' }
         }}><option value="">回答を選択</option>{replies.map((reply,index) => <option key={reply.id} value={reply.id}>回答{index+1} · {reply.text.slice(0,60)}</option>)}</select></label>
         {replySelection && <label>下書きに使う文章<textarea aria-label="下書きに使う文章" rows={6} maxLength={16000} disabled={busy || uncertain} value={replySelection.edited}
           onChange={e => setReplySelection({ ...replySelection, edited:e.target.value })} /></label>}
-        <p>回答を役割の下書きにします。Toolと実行先は保存後にSmithで照合します。実行と料金の確認は別に必要です。</p>
+        <p>回答を役割の下書きにします。Toolと実行先は保存後にNoahで照合します。実行と料金の確認は別に必要です。</p>
         <button type="button" disabled={!owner || !replySelection || busy || uncertain} onClick={() => void importReply()}>回答から下書きを作る</button>
       </section>}
       <form onSubmit={prepare} aria-label="担当の作成">

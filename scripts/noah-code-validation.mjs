@@ -1,7 +1,6 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import path from 'node:path';
-import ts from 'typescript';
+import { checkNoahSourceTypes } from './noah-source-typecheck.mjs';
 import { containerArgs, engineSocket } from './noah-isolated-runtime.mjs';
 import { InstallError, runCommand } from './noah-source-fetch.mjs';
 
@@ -18,16 +17,7 @@ export function codeSnapshot(value) {
 // The compiler reads only supplied source and its own standard library. It never
 // evaluates the input, loads project plugins, or follows workspace configuration.
 export function checkCodeTypes(snapshot) {
-  const root = '/noah-input', lib = path.dirname(ts.getDefaultLibFilePath({}));
-  const sources = new Map(snapshot.files.map(f => [root + '/' + f.name, f.content]));
-  const options = { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, strict: true, noEmit: true, allowJs: true, checkJs: false, skipLibCheck: true, types: [], allowImportingTsExtensions: true, lib: ['lib.es2022.d.ts'] };
-  const base = ts.createCompilerHost(options);
-  const read = name => sources.get(name) ?? (path.dirname(name) === lib && /^lib\..*\.d\.ts$/.test(path.basename(name)) ? ts.sys.readFile(name) : undefined);
-  const host = { ...base, getCurrentDirectory: () => root, readFile: read, fileExists: name => read(name) !== undefined, directoryExists: name => name === root || [...sources.keys()].some(f => f.startsWith(name + '/')) || name === lib,
-    getSourceFile: (name, version) => { const text = read(name); return text === undefined ? undefined : ts.createSourceFile(name, text, version, true); } };
-  const program = ts.createProgram([root + '/' + snapshot.target], options, host);
-  const errors = ts.getPreEmitDiagnostics(program).filter(d => d.category === ts.DiagnosticCategory.Error).slice(0, 8);
-  return errors.map(d => `${d.file ? path.posix.relative(root, d.file.fileName) : 'code'}: ${ts.flattenDiagnosticMessageText(d.messageText, ' ').slice(0, 400)}`);
+  return checkNoahSourceTypes({ files: snapshot.files, root: '/noah-input', entrypoints: [snapshot.target], maxErrors: 8, maxMessageLength: 400 });
 }
 const RUNNER = `import fs from 'node:fs';import{spawnSync}from'node:child_process';import path from'node:path';let raw='';for await(const c of process.stdin)raw+=c;const x=JSON.parse(raw);for(const f of x.files){const p=path.join('/workspace',f.name);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,f.content);}fs.writeFileSync('/workspace/package.json','{"type":"module"}');const r=spawnSync(process.execPath,['--experimental-strip-types','--test',x.test],{cwd:'/workspace',encoding:'utf8',timeout:20000,maxBuffer:32768,env:{PATH:process.env.PATH,HOME:'/tmp',NODE_NO_WARNINGS:'1'}});console.log(JSON.stringify({passed:r.status===0&&!r.error,exitCode:r.status,output:((r.stdout||'')+(r.stderr||'')+(r.error?.message||'')).slice(-16000)}));`;
 

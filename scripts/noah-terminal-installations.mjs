@@ -1,3 +1,5 @@
+import { createNoahLocalRequest } from './noah-local-api.mjs';
+import { readNoahSourceBytes, NOAH_SOURCE_DOWNLOAD_LIMIT } from './noah-source-bytes.mjs';
 import { prepareTerminalRuntime } from './noah-terminal-runtime.mjs';
 import { InstallError } from './noah-source-fetch.mjs';
 import { isNoahInviteAgentId } from '../lib/noah-invite-contract.mjs';
@@ -64,23 +66,19 @@ export function createTerminalInstallations({ root, prepare = prepareTerminalRun
 }
 
 export function terminalSourceLoader(incoming, scope, id, getOwner, fetcher = fetch) {
-  const endpoint = `http://${incoming.headers.host}/api/noah/agents/${id}`;
-  const headers = {};
-  for (const key of ['cookie', 'authorization', 'oai-authenticated-user-id']) if (typeof incoming.headers[key] === 'string') headers[key] = incoming.headers[key];
+  const endpoint = `/api/noah/agents/${id}`, request = createNoahLocalRequest(incoming, fetcher);
   return async download => {
     const owner = await getOwner(incoming);
     if (!owner.localHostOwner || owner.ownerScope !== scope) throw new InstallError('本人の接続が変わりました。', 403);
-    const response = await fetcher(endpoint, { headers, redirect: 'error', signal: AbortSignal.timeout(10000) });
+    const response = await request(endpoint);
     if (!response.ok) throw new InstallError('本人の登録コードを取得できません。', response.status);
     const { agent, ownerScope } = await response.json();
     if (ownerScope !== scope || agent?.id !== id || !agent.manifest.runtime || agent.uploadState !== 'ready' || !agent.source) throw new InstallError('実行定義と所有者を確認できません。', 409);
     if (!download) return { agent };
-    if (agent.source.bytes > 2 * 1024 * 1024) throw new InstallError('テンプレートの実行は展開後1MiBまでです。', 413);
-    const source = await fetcher(endpoint + '/source', { headers, redirect: 'error', signal: AbortSignal.timeout(10000) });
+    if (agent.source.bytes > NOAH_SOURCE_DOWNLOAD_LIMIT) throw new InstallError('テンプレートの実行は展開後1MiBまでです。', 413);
+    const source = await request(endpoint + '/source');
     if (!source.ok || source.headers.get('x-content-sha256') !== agent.source.sha256 || !source.body) throw new InstallError('保存版のコードを確認できません。', 409);
-    const reader = source.body.getReader(), chunks = []; let size = 0;
-    for (;;) { const { done, value } = await reader.read(); if (done) break; size += value.length; if (size > 2 * 1024 * 1024) { await reader.cancel(); throw new InstallError('コードの容量が上限を超えました。', 413); } chunks.push(value); }
-    if (size !== agent.source.bytes) throw new InstallError('コードの容量が保存記録と一致しません。', 409);
-    return { agent, bytes: Buffer.concat(chunks) };
+    const bytes = await readNoahSourceBytes(source, agent.source.bytes);
+    return { agent, bytes };
   };
 }
