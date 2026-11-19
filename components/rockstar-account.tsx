@@ -35,9 +35,10 @@ function message(value: unknown) {
   return messages[code] || (code.includes('CHALLENGE') ? '確認が期限切れか、使用済みです。最初からやり直してください。' : '認証を完了できませんでした。入力と通信状態を確認してお試しください。');
 }
 export default function RockstarAccount() {
-  const returnNavigation = accountReturnNavigation(useSearchParams().toString());
+  const query = useSearchParams().toString();
+  const returnNavigation = accountReturnNavigation(query);
   const [access, setAccess] = useState<Access | null>(null);
-  const [mode, setMode] = useState<Mode>('signup');
+  const [mode, setMode] = useState<Mode>(new URLSearchParams(query).get('mode') === 'login' ? 'login' : 'signup');
   const [kind, setKind] = useState<'password' | 'passkey'>('password');
   const [handle, setHandle] = useState('');
   const [secret, setSecret] = useState('');

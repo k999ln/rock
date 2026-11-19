@@ -121,7 +121,7 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
       </div>
       {signedIn === false ? <div className={styles.notice}>
         <p>端末を接続するにはRockstar IDでサインインしてください。</p>
-        <Link href="/signin-with-chatgpt?return_to=%2Fconnect%2Fdevice" target="_blank" rel="noopener noreferrer">サインインして続ける</Link>
+        <Link href={`/account?mode=login&returnTo=${encodeURIComponent(`/connect/device${/^[A-HJ-NP-Z2-9]{8}$/.test(code) ? `?user_code=${code}` : ''}`)}`} target="_blank" rel="noopener noreferrer">サインインして続ける</Link>
         <p>別タブでサインイン後、この画面で端末の状態を再確認してください。</p>
       </div> : signedIn === null ? <p>端末の状態を確認してから接続操作を行ってください。</p> : <form className={styles.offerForm} onSubmit={inspect}>
         <label htmlFor="rockstar-device-code">端末に表示されたコード</label>
