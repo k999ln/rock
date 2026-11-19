@@ -1,6 +1,6 @@
 # 83 専用の端末（家）— 今ある Mac を、座らずに使える端末にする
 
-設計: docs/noah-agent-market-design.md §4.1・§4.2・§4.9、docs/services/noah-own-device.md、docs/services/noah-standalone-launch.md。署名と配布は本人の許可が要る。
+設計: docs/noah-design.md §3.7・§6、docs/noah-agent-market-design.md §4.1・§4.2・§4.9、docs/services/noah-own-device.md、docs/services/noah-standalone-launch.md。先に 71 の最小構成の受入。署名と配布は本人の許可が要る。本線の 2 歩目。
 
 ## やること
 

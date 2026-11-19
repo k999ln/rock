@@ -1,6 +1,6 @@
 # Noah — 専用の端末（雲・家・手元）
 
-提案を含む。Cloudflare の有料契約、月の上限額、モデルの出どころ、無料枠の回数は本人の許可が要る。許可の前は、ローカルの Workers 試験と合成の負荷までにする。
+本線は家（今は本人の Mac。次に mii の Hub、Pro）。主商品は mii で、Noah はその最小構成（11-20 の本人確定方針）。雲は、端末を持たない人の置き場所として足す提案で、Cloudflare の有料契約、月の上限額、モデルの出どころ、無料枠の回数は本人の許可が要る。許可の前は、ローカルの Workers 試験と合成の負荷までにする。
 
 - 本人が言う一言: 「みんながこの noah を使って agent を当たり前に自分の専用の端末に繋げて利用できるようにしたい」「pc の前じゃダメ」（11-20）「携帯は『リモコン感覚』。メインの動きは違うハードウェアで済ます」（10-10）
 - Goal（Eveが作る）: 目的＝Agent を、本人専用の、画面の無い端末で動かす。本人の手元は頼む所と受け取る所にする / 入力＝固定版（hash）、依頼文、承認済みの上限 / 期待成果＝既存 Work の成果と使用量 / 予算上限＝無料枠、または本人の月の上限 / 要る権限＝その版が宣言した権限
@@ -24,14 +24,14 @@
 
 | 値 | 何か | 本人の準備 | 向く Agent |
 | --- | --- | --- | --- |
-| `cloud` | 本人専用の、画面の無い Linux。使う時だけ起きる | 無し | ターミナルで動く Agent、載せたコード |
-| `home` | 家で動き続ける端末。今は Mac の runner。次に mii の Hub、Pro | 端末を 1 回つなぐ | 常駐、本人の契約で動く Agent、手元のデータ、画面を操作する Agent |
+| `home` | 家で動き続ける端末。今は Mac の runner（最初の完成条件）。次に mii の Hub、Pro | 端末を 1 回つなぐ | ターミナルで動く Agent、載せたコード、常駐、本人の契約で動く Agent、手元のデータ、画面を操作する Agent |
+| `cloud` | 本人専用の、画面の無い Linux。使う時だけ起きる。端末を持たない人の置き場所（提案） | 無し | ターミナルで動く Agent、載せたコード |
 | `pocket` | Pixel の中 | 無し | スマホ内版（[noah-mobile-variant.md](noah-mobile-variant.md)） |
 
 - つないだ Agent（Passport）は account が正本。端末は cache。端末を足した時・替えた時は、置き場所の変更（`change_place`）をまとめて 1 回の確認で行う。
 - 提供者のサーバーで動く Agent は、この契約の外（[noah-agent-intake.md](noah-agent-intake.md)）。
 
-## 雲の作り
+## 雲の作り（始める時）
 
 - 専用 Worker から Cloudflare Sandbox を起動する（[noah-cloud-operation.md](noah-cloud-operation.md) の専用 Worker と同じ置き方）。Web の本体とは別の配備にし、runner と同じ認証付き API だけで話す。Sandbox は 1 つが 1 つの VM。認証と回数制限は用意されないので、こちらで持つ。
 - 本人ごとの端末は `noah_runner_devices` に platform=`cloud` の行として持ち、端末の一覧に出す。初めて必要になった接続の時に作る。
@@ -43,7 +43,8 @@
 ## 家の作り
 
 - 今の Mac の runner（`scripts/noah-mac-runner.mjs`、常駐は `scripts/noah-mac-service.mjs`）が最初の実装。足すのは、スマホの QR での承認、導入を 1 つにまとめること、[noah-screenless.md](noah-screenless.md) の重さの上限。
-- mii の Hub と Pro は、同じ runner を Linux で動かす。機種ごとの受入は別の task にする（この契約は変えない）。
+- mii の Hub と Pro は、同じ runner を Linux で動かす。先に、Mac 固有の処理を 1 か所に寄せ、Linux の host で同じ受入を通す（task 95）。機種ごとの受入は別の task にする（この契約は変えない）。
+- mii では、Agent に表示層・カメラ・マイク・センサーを直接渡さない。Agent が返すのは成果と表示の依頼で、描くのは RockstarOS（[noah-screenless.md](noah-screenless.md)）。
 - 本人の月額契約で動く Agent（Codex 等）は、`home` でだけ動かす。本人のログインを雲へ運ばない。
 
 ## 費用の式（雲）

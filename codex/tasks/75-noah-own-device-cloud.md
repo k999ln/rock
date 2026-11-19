@@ -1,6 +1,6 @@
-# 75 専用の端末（雲）
+# 75 専用の端末（雲）— 端末を持たない人の置き場所
 
-設計: docs/noah-agent-market-design.md §4.1・§6、docs/services/noah-own-device.md。先に 73・74・84。
+設計: docs/noah-design.md §3.7、docs/noah-agent-market-design.md §4.1・§6、docs/services/noah-own-device.md。先に 73・74・84。個別の残件。本線（本人の Mac → mii の Hub）の後ろで、本人の許可が出た時に始める。
 
 ## 先に要る本人の許可
 
@@ -28,5 +28,5 @@ Cloudflare の有料契約、月の上限額、モデルの出どころ、無料
 - 別の 2 アカウントで、隔離環境・成果・停止が混ざらない。同じアカウントの 2 つの Agent でも、ファイルが見えない。
 - 宣言外の host への通信が拒否される。隔離環境の中に鍵が無い。停止の後に隔離環境が残らない。
 - 同じ要求 ID の実行は 1 回。lease を越えた仕事は結果不明になり、再配送されない。
-- 初めての本人が、スマホだけで、ターミナル型の Agent のカードの「接続」から最初の成果まで進む。Mac は使わない。
+- Mac も mii も持たない本人が、スマホだけで、ターミナル型の Agent のカードの「接続」から最初の成果まで進む。
 - 84 の検査が通る。tests/noah-own-device.test.mjs、`npm run typecheck`、`npm run lint:product`。

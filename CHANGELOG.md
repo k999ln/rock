@@ -1,6 +1,6 @@
 ## 2026-11-20
 
-- Noah の設計を、本人の構想（みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない）へ置き直した（Fable / Noelle）。11-20 の本人指示（売り買い・利用者の Agent の掲載・1 クリック接続・登録の省力化・アップ時のリファクタとモバイル用の圧縮、外の Agent を大量に扱う所から始める、画面を取らない、専用の端末）と開発進捗 2026-11-20 をもとに、置き場所（提供者・専用の端末の雲／家／手元）、画面を取らない決まりと検査、つなぎ方（口）ごとの取り込み、接続の手数、Eve のビルド、スマホ内版、試用とつながってから払う流れを設計。外の台帳を読み取りだけで実測（MCP の公式台帳 66,608 件、鍵なしで応答する host は標本の 54.6%、Hugging Face の「agent」は 0.7% しか動いていない）し、残り 72 件を分類。`docs/noah-agent-market-design.md`、`docs/noah-agent-census-20261120.md`、`docs/services/`（noah-one-click-connect・noah-own-device・noah-screenless・noah-agent-intake・eve-agent-build・noah-mobile-variant・noah-agent-purchase）、`codex/tasks/73`〜`91`、07 に本人指示 4 行と提案 4 行、02・04 に 1 か所ずつ。設計まで。コード・migration・契約・公開は変えていない。
+- Noah 全体の設計書を置いた（Fable / Noelle）。主商品 mii・最小構成 Noah・最初は本人の Mac（PR #325 の本人確定方針）に順番を合わせ、行き先（みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない）、具体的なスキーム（お金・つなぐ・動かす・集める・載せる／売る・端末・データ）、進捗報告の 11 項目ごとの設計、要る技術と作り方の表、作る順番を 1 冊にした。接続・実行・取り込み・市場は詳細の文書へ分けた。外の台帳を読み取りだけで実測（MCP の公式台帳 66,608 件、鍵なしで応答する host は標本の 54.6%、Hugging Face の「agent」は 0.7% しか動いていない）し、残り 72 件を分類。`docs/noah-design.md`、`docs/noah-agent-market-design.md`、`docs/noah-agent-census-20261120.md`、`docs/services/`（noah-one-click-connect・noah-own-device・noah-screenless・noah-agent-intake・eve-agent-build・noah-mobile-variant・noah-agent-purchase）、`codex/tasks/73`〜`95`、07 に本人指示と提案、02・04 に 1 か所ずつ。設計まで。コード・migration・契約・公開は変えていない。
 
 - 本人回答に基づき、主商品mii・最小構成Noah・本人Macの先行受入・SIM/eSIMのOS導入役割を正本へ同期。Codex実行の再送試験を、回数固定の待機から実処理の完了待機へ修正（task72）。
 

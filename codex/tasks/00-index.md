@@ -65,12 +65,13 @@
 
 | 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | 検証済み・[PR #321](https://github.com/k999ln/rock/pull/321) |
 
-## 70〜90番台: Noah — 専用の端末につなぐ（2026-11-20）
+## 70〜90番台: Noah — mii へ進む最小構成（2026-11-20）
 
-設計は [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)。**番号順ではなく、下の「順」の順に進める。** 段階 1 は雲の契約が無くても始められる。75・83・91 は本人の許可（契約・署名・月の上限）が先。87 はモデルの出どころ、78 は Stripe の sandbox、80 の 0 クリックと 81 の並び順は本人の確認が先。
+設計は [docs/noah-design.md](../../docs/noah-design.md)（全体）と [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)（接続・実行・取り込み・市場の詳細）。**番号順ではなく、下の「順」の順に進める。** 段階 0 は main の方針（最初の完成条件は本人の Mac 上の Noah）。段階 1 は Mac の受入と並べて進められる。75・91 は個別の残件で、本人の許可（契約・月の上限）が先。83 は署名と配布、87 はモデルの出どころ、78 は Stripe の sandbox、80 の 0 クリックと 81 の並び順は本人の確認が先。
 
 | 順 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- | --- |
+| 0 | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 最小構成: 本人の Mac で、選ぶ・接続・実行・成果の受け取り・停止 | 進行中（上の表） |
 | 0 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け | |
 | 1 | 85 | [85-noah-intake-ledger.md](85-noah-intake-ledger.md) | 外の台帳の取り込みと名寄せ、接続要件の下書き | |
 | 1 | 73 | [73-noah-connect-plan.md](73-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 | |
@@ -78,17 +79,21 @@
 | 1 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（1 文で頼む） | |
 | 1 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | |
 | 1 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | |
-| 1 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | スマホだけの一周（PC 無しの受入） | |
-| 2 | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | 専用の端末（雲）: 隔離環境・外向きの中継・無料枠と上限 | |
-| 2 | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package） | |
+| 1 | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package）。今ある Mac の隔離環境で | |
+| 2 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入） | |
+| 2 | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
+| 2 | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
+| 2 | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | |
 | 3 | 81 | [81-noah-connect-patrol.md](81-noah-connect-patrol.md) | 作者の引き取り、取り下げ、並び順 | |
 | 3 | 76 | [76-eve-build-autofill.md](76-eve-build-autofill.md) | 載せる 1 画面と自動入力（見分ける） | |
 | 3 | 77 | [77-eve-build-normalize.md](77-eve-build-normalize.md) | 整える・接続試験と接続証明・機械審査 | |
 | 3 | 78 | [78-noah-agent-purchase.md](78-noah-agent-purchase.md) | 試用、仮売上 → 接続の確認 → 確定、直した版の権利 | |
-| 4 | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
-| 4 | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | |
-| 4 | 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
-| 4 | 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
-| 4 | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
+| 3 | 93 | [93-noah-library-lifecycle.md](93-noah-library-lifecycle.md) | 入れ替える（更新・戻す・切る・移す） | |
+| 4 | 95 | [95-noah-on-mii-contract.md](95-noah-on-mii-contract.md) | mii で使うための契約（Linux の host で同じ受入、声と表示の模擬） | |
+| 並行 | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | 専用の端末（雲）: 端末を持たない人の置き場所 | |
+| 並行 | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | |
+| 並行 | 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
+| 並行 | 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
+| 並行 | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
 
-71 の残り（正常完了と成果の受け取り、別の利用者、障害時の確認）は続ける。置き場所に依らない受け渡しと Work の検証なので、上の段階がそのまま使う。未導入の別 Mac の受入は 83 でやり直す。調査した残り 72 件を 1 件ずつ実行器で対応する作業は行わない（分類は [docs/noah-agent-census-20261120.md](../../docs/noah-agent-census-20261120.md)）。
+調査した残り 72 件を 1 件ずつ実行器で対応する作業は行わない（分類は [docs/noah-agent-census-20261120.md](../../docs/noah-agent-census-20261120.md)）。13 / 85 などの限定試験を、全体の合格と数えない。

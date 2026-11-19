@@ -65,7 +65,7 @@
 - `fill`: `auto` / `tap` / `typed`。`state`: `satisfied` / `needed` / `blocked`。
 - `badge`: `one_click`（taps 0・typed 0）/ `taps`（typed 0）/ `setup`（typed 1 以上）/ `blocked`。
 - 段の順は固定: account → entitlement → place → runtime → model → services → secrets → consent。
-- 置き場所: 本人の希望（おまかせ / 自分の端末だけ / 雲だけ）と面で絞り、手数が最も少ない所を選ぶ。同じなら provider → cloud → home → pocket。「自分の端末だけ」は home と pocket。
+- 置き場所: 本人の希望（おまかせ / 自分の端末だけ / 雲だけ）と面で絞り、手数が最も少ない所を選ぶ。同じなら provider → home → cloud → pocket。「自分の端末だけ」は home と pocket。
 - consent: 権限が `read_user_input`・`write_results` だけで無料なら `auto`（接続のクリックが同意）。それ以外は `tap`。外部への書き込みと金融の実行前確認（Broker）は別に残る。place=provider の時は、接続のボタンの下に「入力は <提供者> の <host> へ送られます」を必ず出す。
 - services の `oauth`: 相手が事前の申し込み無しの登録（client 文書か動的登録）に対応していれば `tap`。本人が前に許可していれば `auto`。対応していなければ `typed`。相手のアカウントを持っているかは計画では分からないので、カードに「相手のアカウントが要る」と書く。
 - 0 クリック（Eve が自分でつなぐ）は、place が cloud・home・pocket の時だけ。place=provider は最初の 1 回、本人に聞く。
