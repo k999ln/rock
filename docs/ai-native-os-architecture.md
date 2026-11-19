@@ -1,3 +1,7 @@
+## 2026-11-02 — Noahストアと既存モデル管理の接続
+
+本人の指示により、Agent/LLMを探して端末へ追加・実行・更新・削除する入口は[Noahストア設計](noah-agent-model-store-design.md)に統合する。Eveは共通知能、Noahは構成とストア/端末管理を担当し、独立したSkyは設けない。以下のsky系名は既存実装・過去証拠の参照として保持する。manifest/stager/profile pin・Pixel Linux・既存Jobを再利用し、Noahの表示とAI02の状態を対応づける。実行中の旧版pin、成果編集/読戻し、削除と共用blob、Cloud送信承認を維持する。今回のストア一周は未実装/未受入。
+
 # RockstarOS — SIM/eSIM主導サービスを支えるAIネイティブOS設計
 
 状態: 2026-10-02製品方針同期。利用者向けの主商品は**物理SIM/eSIMの購入を入口にRockstarOS、Sky、Zema、クラウドLLM/Agentへ簡単にアクセスできるサービス**である。本書はそのサービスを支えるOS/Coreの技術設計であり、製品が端末内LLMを前提にするという意味ではない。SIM/eSIMの購入権・回線activation・OS/client導入・service entitlementは別状態とし、OS binaryをSIM/eUICCへ保存しない。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品の正本は[product baseline](product-baseline.md)と[SIM/eSIM entitlement design](sim-service-entitlement-claims.md)、LLMとJevの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Product / UX](workstreams/01-product-ux.md)および[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索とavocadoMiniは、このCoreの権限、仕事、Tool、receiptを再利用する応用systemであり、全体像は[空間発明システム完成設計書](rockstaros-avocado-mini-complete-design.md)、Core詳細は[Material Invention Core設計](material-invention-core.md)を正本とする。
@@ -22,6 +26,8 @@ OSが保証する契約と更新可能な実装を分ける。Sky、Zema、LLM r
 
 ## 2. 交換可能なローカルLLM
 
+2026-10-21の自社LLM構想は[実行SIモデル設計](llm-evaluation-architecture.md#execution-si-owned-model)で、既存AI02 ModelProfileとAI05実行先判定に接続する。Eve/AMC/Sky Toolの最初の縦断を評価対象とし、学習方式・重み・実機配備は未決定。モデル提案はBrokerの権限・承認・予算判定へ昇格しない。
+
 新設する `ModelProfile` は、model ID/版、weight・tokenizer・chat templateのhash、license、runtime/API範囲、量子化/形式、context上限、plan schema、必要RAM/保存容量、測定端末/条件、品質結果を一組にする。GGUFは初期形式であり恒久的なCore依存にしない。runtime adapterを追加してもBrokerの承認・仕事契約は変えない。現在のLocal AI API v2を破壊せず、将来のprofile交渉は別version/capabilityとして追加する。
 
 model更新は `download → hash/license/互換検査 → 隔離試験 → 待機状態で切替 → health確認` の順。進行中runは旧profileを固定し、途中でtokenizer/modelを差し替えない。切替失敗は互換性を検査した前profileへ戻す。無効・失効profileへは戻さず「model利用不可」で停止する。OS更新、runtime更新、weight更新を別のreceiptへ記録する。weightをbackupへ重複保存せず、profileとhashを保存して本人が再取得できるようにする。
@@ -35,6 +41,22 @@ model更新は `download → hash/license/互換検査 → 隔離試験 → 待�
 runtime側は別の `RuntimeManifest` にpackage/signer/版/API範囲/対応ModelProfile形式/plan schemaを宣言し、Brokerが実APK identityと照合してregistryへ登録する設計とする。現行 `contracts/local-ai-runtime.json` と `LocalAiConnection` は固定package・versionCode・API・同署名検査であり、任意runtimeへの交換を実装済みとはしない。1.0ではこの一つのadapterと互換model二構成の差替え/失敗rollback/旧job pinを最低受入とし、別runtime二実装間の差替えは拡張受入に分ける。署名境界を変えるruntime導入は通常のmodel変更で迂回できない。
 
 profile activation/rollbackのauthorityはBrokerの管理transactionだけが持つ。最小download資格のstagerが非active領域へ置き、Brokerが承認されたmanifestの署名、全hash、容量、互換性を再検査してからactive generation pointerをatomicに切り替える。runtimeの自己更新でこの経路を迂回できない。staging/検証/切替/healthのjournalを残し、起動時は最後に確定したpointerからresumeまたは検査済み旧profileへrollbackする。旧jobのpinがあるprofileは削除しない。旧profile失効時はそのjobを停止し、新profileでの明示的replanを新revisionとして扱う。
+
+<a id="ai-model-management"></a>
+### AI・モデル管理の追加契約（2026-10-20、RQ48 / AI02・AI05）
+
+利用者が明示したモデル管理の範囲を、端末内、本人用Linux、外部Cloudに共通の**選択と証拠**として扱う。モデル登録と実行権限は別である。ROCKはmanifest検証、取得状態、仕事への版固定、選択理由、Broker再検査、保存・復旧を担当する。EXTERNALはweights、license、runtime、Cloud providerの実条件を供給する。JOINTは同一端末／Linux環境で資源・品質と失敗復旧を測り、OWNERはモデル、資料、外部送信と費用上限を決める。以下は到達契約であり、全経路の現行実装・実機合格を宣言しない。
+
+| 領域 | 入力・処理・出力 | 失敗・復旧と合格証拠 |
+| --- | --- | --- |
+| 登録・適合 | 配布元URLとpublisher、固定revision、model/runtime版、weights/tokenizer/templateのbyte数とSHA-256、license ID/本文への参照、形式・量子化・architecture、API/plan schema、RAM・disk・context条件を別fieldで保存する。Rockの審査済みcatalogと本人が選んだ未審査fileを区別し、宣言だけで安全性や再配布権を認めない。端末能力snapshotとLinuxのCPU/ABI/runtime、利用可能なメモリ・保存容量、実際のloader probeを照合して「適合候補／不適合／未検証」を表示する。 | 不明なlicense、hash、必須能力、runtime範囲は導入・起動を拒否。Pixel固定profile、Pixel Linux GGUF、本人用別Linux、Cloudを別々に試験し、同じartifact hashとruntime版のload結果を残す。 |
+| 取得・回収 | 開始前にmodel byte数、旧新weights、部分file、展開領域、仕事・backup reserveを表示する。private stagingへ取り、URLと固定revision、ETag/Range、受領byte数をjournalに残す。再開は同一remote objectのRange応答と全byte hash照合後だけ許す。検証後に原子的にactivateし、不要な部分file・重複転送fileは参照を確認して回収する。 | 中断・容量不足・hash不一致・source変更はactive profileと成果を保持し、部分fileを隔離または明示削除する。旧job pin、唯一の再取得不能weights、本人exportは自動回収しない。中断再開、改ざん、disk不足、削除後の旧仕事閲覧を同じ候補で試験する。 |
+| 実測・比較 | model/runtime/hash、正確な端末/CPU/GPU、OS、電源、室温、context、入力suite、上限と計測時刻を一つの測定条件に固定し、peak RAM/PSS、容量、cold/warm load、TTFT、token/s、p50/p95、電池・電力・thermal、品質の採点と失敗分類を保存する。依頼に必要な言語、形式、privacy、速度、予算で候補を絞り、同条件の測定値、除外理由、選定理由と未測定項目をEveへ示す。 | 合成fixture点数を実仕事の品質保証へ転用しない。二候補を同じ仕事群で評価し、OOM、熱停止、schema違反、幻覚、拒否、timeout、Tool失敗を別分類にする。回帰はmodel/runtime/recipe変更時に固定suiteを再実行し、旧版との悪化と根拠を残す。 |
+| 実行先・資料 | job revisionにlocal端末／本人用Linux／外部Cloud、profile ID・版・hash、送信先、許可済み資料scope、費用見積・上限を固定する。入力は上限内のchunkへ分け、検索と参照取得はowner/project/Tool read grantを各回確認する。参照資料はsource ID・hash・版・取得時刻・引用範囲、生成文はmodel outputとして別保存し、引用不能な主張を資料の事実として表示しない。 | `local_only`または外部送信未許可ならCloud候補を実行しない。実行先を変える時は送信内容・provider・地域/保持・費用を改めて承認し、新revisionにする。通信断、資料失効、権限撤回、検索0件でも無断fallbackせず、理由を示して待機する。 |
+| planner・境界 | untrustedな資料/Tool結果は命令として採用せず、内容を引用付きdataとして隔離する。plannerは閉じたschemaの有限plan候補だけを返す。出力形式・文字数/token・実行時間・手順数・Tool呼出し回数をjobとadapter両方で上限化し、各操作の直前にBrokerがowner、grant、Tool/入力、effect、端末能力、費用予約、停止世代を再検査する。 | prompt injection、Tool結果の偽system指示、超長文、別owner参照、停止後の遅延結果を拒否し、候補と拒否理由だけを監査に残す。LLMの自己申告、引用、採点を承認、Tool成功、請求確定へ昇格させない。 |
+| 保存・削除・更新 | canonical job、入力参照、成果、引用、model identity、評価条件、receiptをmodel weightsと独立して版付き保存する。weights削除・更新時も既存jobと成果を読め、旧profileを必要とする再生成だけを利用不可と示す。token/embedding cacheはmodel版に結び、更新後に正本から再作成する。 | 旧job pinが実行中なら削除を保留する。失効・欠損・復旧時も履歴を黙って新modelで再生成しない。再起動、rollback、model削除、backup復元、schema migration後の閲覧と出所表示を検証する。 |
+
+状態は `discovered → staged → verified → compatible → benchmarked → active → retired` とし、`quarantined`、`incompatible`、`revoked`、`missing`を成功状態へ読み替えない。`ready`はcatalog表示、`configured`は資格・接続、`device_verified`は同一実機での測定、`production_verified`は運用と復旧までの合格として分離する。最初の実装順は、既存AI02 manifest/stagerとPixel Linux固定catalogを再利用した取得・適合・履歴契約、次に同条件の二model比較、続いてAI05の実行先・資料scope・Broker再検査を一件のjobでつなぐ。`npm run design:check`、`npm run llm:architecture:check`、`npm run baseline:check`、AI02/AI05 focused tests、Android/Pixel/Linux同一artifact試験、最後に`npm run verify`をそれぞれの証拠として記録する。
 
 ## 3. Agentの記憶、仕事、再起動
 

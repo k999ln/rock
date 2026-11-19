@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import SkyChatWorkspace from '@/components/sky-chat-workspace';
 
 export const metadata: Metadata = {
-  title: 'Zema — RockstarOS',
+  title: 'Eve — RockstarOS',
 };
 
 export default async function ChatPage({

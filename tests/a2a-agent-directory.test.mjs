@@ -77,7 +77,7 @@ void test('discovery rejects internal hosts, redirect targets and cross-origin A
   );
 });
 
-void test('Sky A2A connection cards are owner-scoped, update in place and can be removed', async (t) => {
+void test('smis A2A connection cards are owner-scoped, update in place and can be removed', async (t) => {
   const db = makeDb(t);
   const directory = a2aAgentDirectory(db);
   const first = await discoverA2AAgent(origin, async () => new Response(JSON.stringify(card)));

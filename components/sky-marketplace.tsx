@@ -55,7 +55,7 @@ type MarketKind = 'all' | 'automation' | 'llm';
 type InitialPackageState = 'none' | 'pending' | 'available' | 'missing' | 'lookup_failed';
 const views: { id: View; label: string }[] = [
   { id: 'all', label: 'すべて' },
-  { id: 'built-in', label: 'Skyのツール' },
+  { id: 'built-in', label: 'Smithのツール' },
   { id: 'candidate', label: '導入候補' },
   { id: 'verified', label: '審査済み外部' },
 ];
@@ -209,19 +209,20 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
           : `${pricingLabel[activeSelection?.manifest.pricing.model ?? 'external_contract']} · ${activeSelection?.manifest.pricing.note ?? ''}`;
 
   return (
-    <WorkspaceShell title="Sky Market" tone="sky" contentClassName={styles.shell} hideTopActions>
+    <WorkspaceShell title="Smith Market" tone="sky" contentClassName={styles.shell} hideTopActions>
       <div className={styles.page}>
         <nav className={styles.breadcrumb} aria-label="現在位置">
-          <Link href={campusId ? `/sky/campus/${campusId}/hub` : '/sky'}><ArrowLeft size={14} /> {campusId ? `${CAMPUSES[campusId].shortName} Agent Hubに戻る` : 'Skyに戻る'}</Link>
+          <Link href={campusId ? `/sky/campus/${campusId}/hub` : '/sky'}><ArrowLeft size={14} /> {campusId ? `${CAMPUSES[campusId].shortName} Agent Hubに戻る` : 'Smithに戻る'}</Link>
           <span>/</span>
           <strong>マーケット</strong>
+          <Link href="/sky/linux">専用Linux・月額16ドル</Link>
         </nav>
 
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
-            <span className={styles.eyebrow}>SKY MARKET</span>
+            <span className={styles.eyebrow}>Smith MARKET</span>
             <h1>AIと自動化をつなぐ</h1>
-            <p>LLM、MCP、自動化Toolを一つの接続条件で探して使う。</p>
+            <p>AIモデル、外部ツール接続、自動化ツールを一つの接続条件で探して使う。</p>
           </div>
           <Link href="/sky/register" className={styles.secondaryAction}><Code2 size={17} /> ツールを登録</Link>
         </header>
@@ -230,7 +231,7 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
 
         {initialPackageState === 'missing' && (
           <output className={styles.registryNote}>
-            この購入に含まれるPackageは現在の審査済みRegistryにありません。購入権は有効のままです。Skyで検索するか、販売元へ確認してください。
+            この購入に含まれるPackageは現在の審査済みRegistryにありません。購入権は有効のままです。Smithで検索するか、販売元へ確認してください。
           </output>
         )}
         {initialPackageState === 'lookup_failed' && (
@@ -244,8 +245,8 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
           <div className={styles.marketKinds} role="tablist" aria-label="マーケットの種類">
             {([
               ['all', 'すべて'],
-              ['automation', '自動化・MCP'],
-              ['llm', 'LLM・AIモデル'],
+              ['automation', "自動化・外部ツール接続"],
+              ['llm', "AIモデル"],
             ] as const).map(([id, label]) => (
               <button
                 key={id}
@@ -313,9 +314,9 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
                   <div className={styles.aiSectionHeading}>
                     <div>
                       <span><BrainCircuit size={15} /> AI RUNTIME</span>
-                      <h2 id="ai-market-title">LLMを選ぶ</h2>
+                      <h2 id="ai-market-title">AIモデルを選ぶ</h2>
                     </div>
-                    <small>選んだLLMはSky BrokerからMCP Toolを呼び出します</small>
+                    <small>AIが提案した操作は、Smithが権限とあなたの確認を確かめてから実行します</small>
                   </div>
                   <div className={styles.grid}>
                     {matchingAi.map((provider) => (
@@ -345,7 +346,7 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
               )}
               {hasResults && (
                 <section className={styles.automationSection} aria-labelledby="automation-market-title">
-                  {matchingAi.length > 0 && <div className={styles.aiSectionHeading}><div><span><Cable size={15} /> MCP AUTOMATION</span><h2 id="automation-market-title">Toolを探す</h2></div></div>}
+                  {matchingAi.length > 0 && <div className={styles.aiSectionHeading}><div><span><Cable size={15} /> MCP AUTOMATION</span><h2 id="automation-market-title">ツールを探す</h2></div></div>}
                   <div className={styles.grid}>
                     {visibleCatalog.map((tool) => (
                       <SkyToolCard
@@ -387,26 +388,26 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
             <div className={styles.emptyState}>
               <CircleHelp size={27} />
               <h3>条件に合うツールはありません</h3>
-              <p>{view === 'verified' && registryState === 'loading' ? '審査済みToolを読み込んでいます。' : view === 'verified' && registryState === 'unavailable' ? '公開Registryに接続できません。Skyのツールは他のタブで確認できます。' : hiddenCount > 0 && !showHostMismatches ? '検索条件に合うツールは、この端末では対象外です。対象外も表示すると詳細を確認できます。' : '検索語やカテゴリを変えてみてください。'}</p>
+              <p>{view === 'verified' && registryState === 'loading' ? "審査済みツールを読み込んでいます。" : view === 'verified' && registryState === 'unavailable' ? '公開Registryに接続できません。Smithのツールは他のタブで確認できます。' : hiddenCount > 0 && !showHostMismatches ? '検索条件に合うツールは、この端末では対象外です。対象外も表示すると詳細を確認できます。' : '検索語やカテゴリを変えてみてください。'}</p>
               <button type="button" onClick={() => { setQuery(''); setCategory('すべて'); setView('all'); }}>検索条件をリセット</button>
             </div>
           )}
           {registryState === 'unavailable' && view !== 'verified' && (
-            <p className={styles.registryNote}>公開Registryを取得できませんでした。審査済み外部Toolの件数は未確認です。</p>
+            <p className={styles.registryNote}>公開Registryを取得できませんでした。審査済み外部ツールの件数は未確認です。</p>
           )}
         </section>
 
         <p className={styles.inventory}>
-          Skyのツール {readyCount} · 導入候補 {candidateCount} · 審査済み外部 {registryState === 'ready' ? registry.length : '—'}
-          <span>基本登録・接続は0円。売上が発生するToolのSky手数料は10%。外部API・モデル費用は別表示します。</span>
+          Smithのツール {readyCount} · 導入候補 {candidateCount} · 審査済み外部 {registryState === 'ready' ? registry.length : '—'}
+          <span>基本登録・接続は0円。売上が発生するツールのSmith手数料は10%。外部API・モデル費用は別表示します。</span>
           <span>掲載数は、接続済み・本番稼働数を意味しません。</span>
         </p>
         <section className={styles.developerStrip} aria-labelledby="developer-title">
           <div className={styles.developerIcon}><Layers3 size={27} /></div>
           <div>
             <span>FOR BUILDERS</span>
-            <h2 id="developer-title">あなたの自動化も、Skyへ。</h2>
-            <p>既存のNode.jsコードにSDKを追加し、このPCのSkyで試せます。一般向け掲載は別途審査が必要です。</p>
+            <h2 id="developer-title">あなたの自動化も、Smithへ。</h2>
+            <p>既存のNode.jsコードにSDKを追加し、このPCのSmithで試せます。一般向け掲載は別途審査が必要です。</p>
           </div>
           <Link href="/studio">Studioを開く <ArrowRight size={17} /></Link>
         </section>
@@ -447,11 +448,11 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
             {entitlementReadState === 'loading' ? <p className={styles.modalNote}>SIM/eSIMに含まれる利用権を確認しています。確認が終わるまで別の購入は開始できません。</p>
               : entitlementReadState === 'unavailable' ? <p className={styles.modalNote}>SIM/eSIMの利用権を確認できません。重複購入を避けるため購入を保留しました。接続を確認して再度開いてください。</p>
                 : activePackageIncluded ? <>
-                  <p className={styles.modalNote}>このPackageは購入済みSIM/eSIMのサービス構成に含まれています。Zemaへ依頼仕様として渡せます。実行先Agentは別途選び、Providerへ送る内容・見積・上限を確認してください。このPackage自体が選んだAgent上で実行できる保証はありません。</p>
-                  <Link className={styles.modalAction} href={`/chat?view=work&package=${encodeURIComponent(activeSelection.packageKey)}`}>Zemaでクラウド依頼を作る <ArrowRight size={17} /></Link>
+                  <p className={styles.modalNote}>このPackageは購入済みSIM/eSIMのサービス構成に含まれています。Eveへ依頼仕様として渡せます。実行先エージェントは別途選び、提供元へ送る内容・見積・上限を確認してください。このPackage自体が選んだエージェント上で実行できる保証はありません。</p>
+                  <Link className={styles.modalAction} href={`/chat?view=work&package=${encodeURIComponent(activeSelection.packageKey)}`}>Eveでクラウド依頼を作る <ArrowRight size={17} /></Link>
                 </> : activeOffer ? <MarketplacePurchase key={activeSelection.packageKey} offer={activeOffer} mode={commerce.data?.mode ?? null} compatible={Boolean(host && !registryHostMismatch(activeSelection.manifest.capabilities.executionTargets, host))} onOfferChanged={commerce.refresh} /> : <>
-              <p className={styles.modalNote}>{commerce.loading ? '販売情報を確認しています。' : commerce.error ? '販売情報を取得できませんでした。購入履歴を確認するか、再度開いてください。' : 'Skyでの販売設定はありません。料金と利用方法は提供元の案内を確認してください。'}審査済みは実行・購入・自動接続の完了を意味しません。</p>
-              <Link className={styles.modalAction} href="/sky/network">Skyで接続先を確認 <ArrowRight size={17} /></Link>
+              <p className={styles.modalNote}>{commerce.loading ? '販売情報を確認しています。' : commerce.error ? '販売情報を取得できませんでした。購入履歴を確認するか、再度開いてください。' : 'Smithでの販売設定はありません。料金と利用方法は提供元の案内を確認してください。'}審査済みは実行・購入・自動接続の完了を意味しません。</p>
+              <Link className={styles.modalAction} href="/sky/network">Smithで接続先を確認 <ArrowRight size={17} /></Link>
             </>}
           </DialogContent>
         )}
@@ -460,16 +461,16 @@ export default function SkyMarketplace({ initialPackageKey = null, campusId }: {
       <Dialog open={Boolean(selectedAi)} onOpenChange={(open) => { if (!open) setSelectedAi(null); }}>
         {selectedAi && (
           <DialogContent className={styles.modal}>
-            <span className={styles.verifiedBadge}><BrainCircuit size={13} /> LLM / MCP対応</span>
+            <span className={styles.verifiedBadge}><BrainCircuit size={13} /> AIモデル / 外部ツール接続対応</span>
             <DialogTitle>{selectedAi.name}</DialogTitle>
             <DialogDescription>{selectedAi.detail}</DialogDescription>
             <dl>
               <div><dt>標準モデル</dt><dd>{selectedAi.defaultModel}</dd></div>
               <div><dt>実行場所</dt><dd>{selectedAi.connectionLabel}</dd></div>
-              <div><dt>MCP経路</dt><dd>{selectedAi.mcpRoute}</dd></div>
-              <div><dt>認証</dt><dd>{selectedAi.credentialEnv ? 'Skyの接続設定で管理' : '追加の外部鍵なし'}</dd></div>
+              <div><dt>外部ツール接続経路</dt><dd>{selectedAi.mcpRoute}</dd></div>
+              <div><dt>認証</dt><dd>{selectedAi.credentialEnv ? 'Smithの接続設定で管理' : '追加の外部鍵なし'}</dd></div>
             </dl>
-            <p className={styles.modalNote}>LLMは勝手に外部操作しません。Sky BrokerがToolの権限・確認・結果検証を通してからMCPを呼び出します。</p>
+            <p className={styles.modalNote}>AIモデルは勝手に外部操作しません。Smith Brokerがツールの権限・確認・結果検証を通してから外部ツール接続を呼び出します。</p>
             <Link className={styles.modalAction} href="/sky/network">接続設定を開く <ArrowRight size={17} /></Link>
           </DialogContent>
         )}

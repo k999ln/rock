@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "0.1",
+  "status": "engineering_screen_only_not_manufacturing_release",
+  "geometry": {
+    "coreOuterDiameterMm": 76,
+    "idealClearDiameterMm": 72,
+    "coreLengthMm": 186,
+    "allStatesHeightLimitMm": 200,
+    "telescopingReadyBaseHeightMm": 194,
+    "batteryBayLengthMm": 76,
+    "planet9523BoardWidthMm": 75,
+    "certus9770LengthMm": 140,
+    "certus9770WidthMm": 60,
+    "certus9770HeightMm": 16
+  },
+  "energy": {
+    "m65aCellNominalWh": 23.4,
+    "m65aCellMaxLengthMm": 71,
+    "m65aCellMaxMassG": 74.5,
+    "cellCount": 2,
+    "usableFractionHypothesis": 0.8,
+    "railEfficiencyHypothesis": 0.9,
+    "satelliteApSystemPowerHypothesisW": 8,
+    "satelliteApHoursHypothesis": 2,
+    "carryHoursHypothesis": 24,
+    "cm5IdleTypicalW": 2,
+    "twoSeriesCellVoltageMinV": 5,
+    "twoSeriesCellVoltageNominalV": 7.2,
+    "twoSeriesCellVoltageMaxV": 8.4,
+    "certus9770InputMinV": 9.5,
+    "certus9770InputMaxV": 14.5
+  },
+  "mass": {
+    "comparisonTargetG": 450,
+    "shellSidewallHypothesisG": 95,
+    "rejectedFourPanelOpticalHypothesisG": 64.5,
+    "certus9770ModuleG": 185,
+    "planet9523BoardCurrentListingG": 90
+  },
+  "sources": {
+    "geometryAndUnprovedOptics": "../product-invention-r1.md#選定l-tの配置図面へ渡す座標と空欄",
+    "m65aDatasheet": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-M65A-80153-0.1_250805.pdf",
+    "certus9770": "https://www.iridium.com/products/iridium-certus-9770",
+    "planet9523Board": "https://www.iridium.com/products/planet-9523-oem-board",
+    "cm5Datasheet": "https://datasheets.raspberrypi.com/cm5/cm5-datasheet.pdf"
+  }
+}

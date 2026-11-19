@@ -1,3 +1,4 @@
+import {agentUsageStatement} from './sky-agent-usage-statement.ts';
 import { RemoteAiTextStore } from './remote-ai-text-store.ts';
 import { priceRemoteAiTextUsage } from './remote-ai-text-pricing.ts';
 import { sha256Hex } from './rockstar-entitlement-claim.ts';
@@ -12,11 +13,11 @@ export type UsageStatement = {
   items: unknown[]; collection: 'test_only';
 };
 type Payment = {
-  id: string; owner: string; sourceId: string; digest: string; amountMinor: number;
+  id: string; owner: string; source: 'cloud_llm'|'sky_agent'; sourceId: string; digest: string; amountMinor: number;
   currency: string; mode: 'test' | 'live'; state: string; sessionId: string | null;
   intentId: string | null; refundedMinor: number; createdAt: number;
 };
-const columns = `id,owner_user_id AS owner,source_id AS sourceId,source_digest AS digest,
+const columns = `id,owner_user_id AS owner,source_kind AS source,COALESCE(source_id,agent_source_id) AS sourceId,source_digest AS digest,
   amount_minor AS amountMinor,currency,mode,state,session_id AS sessionId,
   payment_intent_id AS intentId,refunded_minor AS refundedMinor,created_at AS createdAt`;
 const objectId = (value: string | { id: string } | null | undefined) => typeof value === 'string' ? value : value?.id;
@@ -51,11 +52,12 @@ export function skyUsagePayments(db: Database, runtime: Runtime, fetcher: typeof
   const stripe = skyStripe(config, fetcher);
   const get = (owner: string, id: string) => db.prepare(`SELECT ${columns} FROM sky_usage_payments WHERE owner_user_id=? AND id=?`)
     .bind(owner, id).first<Payment>();
-  const publicPayment = (row: Payment) => ({ id: row.id, source: 'cloud_llm', sourceId: row.sourceId,
+  const publicPayment = (row: Payment) => ({ id: row.id, source: row.source, sourceId: row.sourceId,
     amountMinor: row.amountMinor, currency: row.currency, status: row.state,
     refundedMinor: row.refundedMinor, mode: row.mode, createdAt: row.createdAt });
 
   function bindSession(row: Payment, session: StripeCheckoutSession) {
+    if (row.source !== 'cloud_llm') throw new SkyPaymentError('Agentの請求準備は入金未照合です。',409);
     if (session.mode !== 'payment' || session.livemode !== (row.mode === 'live') ||
       session.client_reference_id !== row.id || session.metadata?.purpose !== 'sky_cloud_usage' ||
       session.metadata?.usage_payment_id !== row.id || session.metadata?.source_digest !== row.digest ||
@@ -64,6 +66,7 @@ export function skyUsagePayments(db: Database, runtime: Runtime, fetcher: typeof
       throw new SkyPaymentError('支払い情報が利用明細と一致しません。', 409);
   }
   async function sync(row: Payment, provided?: StripeCheckoutSession) {
+    if(row.source!=='cloud_llm')throw new SkyPaymentError('Agentの請求準備は入金未照合です。',409);
     if (!row.sessionId && !provided) throw new SkyPaymentError('決済受付を確認してください。', 409);
     const session = provided ?? await stripe.retrieveCheckout(row.sessionId!);
     bindSession(row, session);
@@ -167,4 +170,21 @@ export function skyUsagePayments(db: Database, runtime: Runtime, fetcher: typeof
       return { received: true, ignored: !row };
     },
   };
+}
+
+/** Persists only a test preparation in the existing payment store. SQL forbids
+ * Agent payment-state promotion; Provider invoices and actual collection remain gated. */
+export async function prepareAgentUsagePayment(db:Database,owner:string,runtime:Runtime,input:{sourceId:string;digest:string;amountMinor:number;currency:string}) {
+ if(runtime.SKY_PAYMENTS_MODE!=='test' || runtime.SKY_USAGE_AGENT_INVOICE_PREPARATION_ENABLED!=='true')throw new SkyPaymentError('Agentの請求準備保存は検証環境でのみ有効です。',503);
+ const statement=await agentUsageStatement(db,owner,input.sourceId,typeof runtime.SKY_AUTHOR_AGREEMENT_TRUSTED_KEYS==='string'?runtime.SKY_AUTHOR_AGREEMENT_TRUSTED_KEYS:undefined),plan=statement.collectionPlan;
+ if(!plan || plan.mode!=='platform_invoice' || statement.customerConsent!=='recorded_pending_invoice_reconciliation' || !statement.collectionConsent || input.digest!==statement.digest || input.amountMinor!==plan.platformInvoiceCandidateMinor || input.currency!==statement.currency)throw new SkyPaymentError('同じ明細の確認記録・金額・通貨を照合してください。',409);
+ const currency=statement.currency.toLowerCase();
+ if(!['usd','jpy'].includes(currency) || !Number.isSafeInteger(input.amountMinor) || input.amountMinor<1 || input.amountMinor>99999999)throw new SkyPaymentError('この通貨・金額は請求準備に対応していません。',409);
+ const now=Date.now();
+ try {await db.prepare(`INSERT INTO sky_usage_payments(id,owner_user_id,source_kind,agent_source_id,confirmation_id,source_digest,amount_minor,currency,mode,state,created_at,updated_at) VALUES (?,?,'sky_agent',?,?,?,?,?,'test','prepared',?,?) ON CONFLICT(agent_source_id,mode) DO NOTHING`)
+  .bind(crypto.randomUUID(),owner,statement.sourceId,statement.collectionConsent.id,statement.digest,input.amountMinor,currency,now,now).run();}
+ catch {throw new SkyPaymentError('保存前に元明細または契約が変わりました。同じ明細を読み直してください。',409);}
+ const row=await db.prepare(`SELECT ${columns},confirmation_id AS confirmationId FROM sky_usage_payments WHERE owner_user_id=? AND agent_source_id=? AND mode='test'`).bind(owner,input.sourceId).first<Payment & {confirmationId:string}>();
+ if(!row || row.digest!==statement.digest || row.amountMinor!==input.amountMinor || row.currency!==currency || row.confirmationId!==statement.collectionConsent.id || row.source!=='sky_agent' || row.state!=='prepared')throw new SkyPaymentError('保存した請求準備が異なります。再請求せず照合してください。',409);
+ return {id:row.id,source:row.source,sourceId:row.sourceId,status:row.state,amountMinor:row.amountMinor,currency:row.currency,confirmationId:row.confirmationId,mode:row.mode,invoice:'not_created' as const,customerPayment:'unconfirmed' as const};
 }

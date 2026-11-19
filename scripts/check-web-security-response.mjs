@@ -27,10 +27,17 @@ const exactHeader = (response, key, expected, path) => {
 };
 
 const request = async (path) => {
-  const response = await fetch(new URL(path, base), {
+  let response = await fetch(new URL(path, base), {
     cache: 'no-store',
-    redirect: 'error',
+    redirect: 'manual',
   });
+  // The legacy hub entry now opens the same-origin OS home. No other
+  // redirect, destination or redirect chain is accepted by this check.
+  if (path === '/sky' && [307, 308].includes(response.status) && response.headers.get('Location') === '/') {
+    for (const [key, value] of Object.entries(policy.universalHeaders)) exactHeader(response, key, value, path);
+    await response.body?.cancel();
+    response = await fetch(new URL('/', base), { cache: 'no-store', redirect: 'error' });
+  }
   if (!response.ok) {
     throw new Error(`web-security-response: ${path} HTTP ${response.status}`);
   }
@@ -67,8 +74,8 @@ for (const [key, expected] of Object.entries({
   }
 }
 const requiredIcons = [
-  { src: '/rock-icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-  { src: '/rock-icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+  { src: '/company-mark-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
+  { src: '/company-mark.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
   { src: '/rock-icon-maskable.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
 ];
 for (const required of requiredIcons) {
@@ -96,6 +103,11 @@ for (const [key, value] of Object.entries(policy.routeHeaders['/_next/static/*']
   exactHeader(staticResponse, key, value, staticAsset);
 }
 
+const cameraPath = '/sky/objects/camera';
+const cameraResponse = await fetch(new URL(cameraPath, base), { cache: 'no-store', redirect: 'error' });
+if (!cameraResponse.ok) throw new Error(`web-security-response: ${cameraPath} HTTP ${cameraResponse.status}`);
+for (const [key, value] of Object.entries({ ...policy.universalHeaders, ...policy.routeHeaders[cameraPath] })) exactHeader(cameraResponse, key, value, cameraPath);
+
 console.log(
   JSON.stringify({
     schema: 'rockstaros-web-security-response-check/1',
@@ -110,5 +122,6 @@ console.log(
       ...requiredIcons.map(({ src }) => src),
       staticAsset,
     ],
+    cameraRoute: { path: cameraPath, status: cameraResponse.status, permissionsPolicy: cameraResponse.headers.get('Permissions-Policy'), otherRoutesCameraDisabled: true },
   }),
 );

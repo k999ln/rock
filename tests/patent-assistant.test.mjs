@@ -31,7 +31,7 @@ const completeInput = {
   disclosureDate: undefined,
 };
 
-void test('patent assistant is a ready Sky browser tool', () => {
+void test('patent assistant is a ready smis browser tool', () => {
   const tool = catalog.find(
     (entry) => entry.id === 'rockstar-patent-assistant',
   );

@@ -34,6 +34,6 @@ export async function POST(request: Request) {
     if (error instanceof SkySubmissionError)
       return json({ error: error.message }, error.status);
     if (error instanceof SyntaxError) return json({ error: '入力形式を確認してください。' }, 400);
-    return json({ error: 'Skyコードを確認できませんでした。' }, 503);
+    return json({ error: 'Smithコードを確認できませんでした。' }, 503);
   }
 }

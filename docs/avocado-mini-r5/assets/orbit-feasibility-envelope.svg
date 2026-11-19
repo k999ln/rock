@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">avocadoMini Orbitの初期包絡を崩す三つの比較</title>
+  <desc id="desc">190mmの仮の軸方向割当と9770衛星モジュールの長さ、45mm電池区画と21700セル2本の直径、450g質量目標と2mmアルミ側面とセルの質量を比較する。実CADではない。</desc>
+  <rect width="1200" height="650" fill="#f7f9fb"/>
+  <text x="38" y="57" fill="#17273a" font-family="Arial, sans-serif" font-size="29" font-weight="700">Orbit：同一筐体に収める前に解く三つの衝突</text>
+  <text x="38" y="88" fill="#53667b" font-family="Arial, sans-serif" font-size="16">数値はメーカー公表値と仮置き外形からの排除計算。製造図・実機収納・採用部品ではない。</text>
+
+  <rect x="34" y="123" width="366" height="480" rx="14" fill="#fff" stroke="#d1d9e0"/>
+  <text x="56" y="157" fill="#1b3449" font-family="Arial, sans-serif" font-size="21" font-weight="700">1. 軸方向 190 mm</text>
+  <text x="56" y="185" fill="#526275" font-family="Arial, sans-serif" font-size="15">初期の区画割当と9770を比較</text>
+  <rect x="75" y="210" width="92" height="50" fill="#c7e1e1" stroke="#5a8284"/>
+  <rect x="75" y="260" width="92" height="100" fill="#d6e2fa" stroke="#5b78ae"/>
+  <rect x="75" y="360" width="92" height="40" fill="#bfd0d7" stroke="#627d88"/>
+  <rect x="75" y="400" width="92" height="60" fill="#e2e6eb" stroke="#72818d"/>
+  <rect x="75" y="460" width="92" height="90" fill="#deebc7" stroke="#758b53"/>
+  <rect x="75" y="550" width="92" height="40" fill="#ccd2d6" stroke="#72818d"/>
+  <text x="188" y="236" fill="#27434a" font-family="Arial, sans-serif" font-size="14">RF窓 25</text>
+  <text x="188" y="314" fill="#274983" font-family="Arial, sans-serif" font-size="14">光学 50</text>
+  <text x="188" y="385" fill="#27434a" font-family="Arial, sans-serif" font-size="14">sensor 20</text>
+  <text x="188" y="434" fill="#27434a" font-family="Arial, sans-serif" font-size="14">演算・無線 30</text>
+  <text x="188" y="510" fill="#3f5827" font-family="Arial, sans-serif" font-size="14">電池 45</text>
+  <text x="188" y="571" fill="#526275" font-family="Arial, sans-serif" font-size="14">crown・余裕 20</text>
+  <rect x="299" y="210" width="32" height="280" fill="#f4b5ab" fill-opacity="0.75" stroke="#ba4e42" stroke-width="2"/>
+  <text x="290" y="516" fill="#a33c35" font-family="Arial, sans-serif" font-size="13">9770</text>
+  <text x="285" y="536" fill="#a33c35" font-family="Arial, sans-serif" font-size="13">140 mm</text>
+
+  <rect x="417" y="123" width="366" height="480" rx="14" fill="#fff" stroke="#d1d9e0"/>
+  <text x="439" y="157" fill="#1b3449" font-family="Arial, sans-serif" font-size="21" font-weight="700">2. 電池区画 45 mm</text>
+  <text x="439" y="185" fill="#526275" font-family="Arial, sans-serif" font-size="15">P50Bを2本横倒しで軸へ積む比較</text>
+  <rect x="474" y="236" width="166" height="245" rx="10" fill="#eef2e6" stroke="#758b53" stroke-width="2"/>
+  <rect x="491" y="253" width="132" height="108" rx="54" fill="#a8c279" stroke="#627f3a" stroke-width="2"/>
+  <rect x="491" y="361" width="132" height="108" rx="54" fill="#a8c279" stroke="#627f3a" stroke-width="2"/>
+  <text x="657" y="286" fill="#334d20" font-family="Arial, sans-serif" font-size="16">21.55 mm</text>
+  <text x="657" y="396" fill="#334d20" font-family="Arial, sans-serif" font-size="16">21.55 mm</text>
+  <text x="657" y="443" fill="#a33c35" font-family="Arial, sans-serif" font-size="18" font-weight="700">合計 43.1 mm</text>
+  <text x="439" y="515" fill="#a33c35" font-family="Arial, sans-serif" font-size="15">差は1.9 mm。保持・絶縁・端子の</text>
+  <text x="439" y="538" fill="#a33c35" font-family="Arial, sans-serif" font-size="15">保護回路まで入れる余地を未確保。</text>
+
+  <rect x="800" y="123" width="366" height="480" rx="14" fill="#fff" stroke="#d1d9e0"/>
+  <text x="822" y="157" fill="#1b3449" font-family="Arial, sans-serif" font-size="21" font-weight="700">3. 質量目標 450 g</text>
+  <text x="822" y="185" fill="#526275" font-family="Arial, sans-serif" font-size="15">連続2mmアルミ側面を仮定</text>
+  <rect x="844" y="250" width="245" height="92" fill="#aebdc9"/>
+  <text x="856" y="302" fill="#17273a" font-family="Arial, sans-serif" font-size="18">側面だけ 約309 g</text>
+  <rect x="844" y="342" width="245" height="67" fill="#a8c279"/>
+  <text x="856" y="383" fill="#243b17" font-family="Arial, sans-serif" font-size="18">cell 2本 最大142 g</text>
+  <line x1="829" y1="408" x2="1110" y2="408" stroke="#ba4e42" stroke-width="3" stroke-dasharray="7 5"/>
+  <text x="822" y="448" fill="#a33c35" font-family="Arial, sans-serif" font-size="20" font-weight="700">この2要素だけで約451 g</text>
+  <text x="822" y="481" fill="#526275" font-family="Arial, sans-serif" font-size="15">光学、modem、SoC、端面は未算入。</text>
+  <text x="822" y="506" fill="#526275" font-family="Arial, sans-serif" font-size="15">薄い構造材・部分金属を比較する。</text>
+
+  <text x="38" y="630" fill="#43576b" font-family="Arial, sans-serif" font-size="15">結論：元の割当を静かに縮めない。modem／光学／pack／外装を同じ実寸CADで選び直す。OI01〜06はすべて未実施。</text>
+</svg>

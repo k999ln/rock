@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="610" viewBox="0 0 1120 610" role="img" aria-labelledby="title desc">
+  <title id="title">Orbit L 面一端面の面積予算と光学・生体・RFの衝突</title>
+  <desc id="desc">左に直径76ミリメートルの端面を拡大し、内径72ミリメートル、40ミリメートル角の仮光学窓、12ミリメートル角の仮指紋面を示す。右に未配置のRF、近接入力、停止、封止を記す。寸法は二次元の試算で実装ではない。</desc>
+  <rect width="1120" height="610" fill="#f8fafb"/>
+  <text x="42" y="51" fill="#1c3349" font-family="Arial, sans-serif" font-size="26" font-weight="700">Orbit L — 面一端面を使い切れるか</text>
+  <text x="42" y="79" fill="#566b7b" font-family="Arial, sans-serif" font-size="15">仮の D76 mm 本体、壁厚2 mm。二次元の面積比較であり、光路・RF・実装・安全の成立図ではない。</text>
+
+  <circle cx="240" cy="300" r="152" fill="#dbe2e6" stroke="#647989" stroke-width="3"/>
+  <circle cx="240" cy="300" r="144" fill="#f8fafb" stroke="#93a3ad" stroke-width="2" stroke-dasharray="7 5"/>
+  <rect x="160" y="220" width="160" height="160" fill="#dbe6f3" stroke="#486b95" stroke-width="3"/>
+  <text x="182" y="293" fill="#274a72" font-family="Arial, sans-serif" font-size="17" font-weight="700">光学窓</text>
+  <text x="179" y="318" fill="#274a72" font-family="Arial, sans-serif" font-size="16">40 × 40 mm</text>
+  <rect x="216" y="380" width="48" height="48" rx="4" fill="#dcebd8" stroke="#6b915f" stroke-width="3"/>
+  <text x="166" y="465" fill="#416437" font-family="Arial, sans-serif" font-size="15">指紋 12 × 12 mm（例）</text>
+  <line x1="88" y1="120" x2="392" y2="120" stroke="#698191" stroke-width="2"/>
+  <line x1="88" y1="113" x2="88" y2="127" stroke="#698191" stroke-width="2"/>
+  <line x1="392" y1="113" x2="392" y2="127" stroke="#698191" stroke-width="2"/>
+  <text x="176" y="111" fill="#3c596d" font-family="Arial, sans-serif" font-size="15">外径 D76 mm</text>
+  <text x="93" y="530" fill="#53697a" font-family="Arial, sans-serif" font-size="14">破線: 理想内径72 mm。ねじ・封止・端子は未計上。</text>
+
+  <line x1="455" y1="120" x2="455" y2="544" stroke="#cad4db" stroke-width="2"/>
+  <text x="494" y="151" fill="#223c51" font-family="Arial, sans-serif" font-size="20" font-weight="700">この平面図で確かめられること</text>
+  <text x="494" y="186" fill="#405668" font-family="Arial, sans-serif" font-size="16">内径72 mmの理想円面積: 約4,072 mm²</text>
+  <text x="494" y="215" fill="#405668" font-family="Arial, sans-serif" font-size="16">40 mm角光学窓: 1,600 mm²</text>
+  <text x="494" y="244" fill="#405668" font-family="Arial, sans-serif" font-size="16">12 mm角の指紋面: 144 mm²</text>
+  <text x="494" y="273" fill="#405668" font-family="Arial, sans-serif" font-size="16">最大51 mm角の窓なら指紋面との同居が難しい</text>
+
+  <text x="494" y="334" fill="#7a3f39" font-family="Arial, sans-serif" font-size="20" font-weight="700">まだ置けていないもの</text>
+  <text x="494" y="369" fill="#684b48" font-family="Arial, sans-serif" font-size="16">衛星antennaのRF窓と金属からの距離</text>
+  <text x="494" y="398" fill="#684b48" font-family="Arial, sans-serif" font-size="16">近接sensorの視野・精密な指の追跡</text>
+  <text x="494" y="427" fill="#684b48" font-family="Arial, sans-serif" font-size="16">物理停止、PIN入力、mic／speaker、防滴封止</text>
+  <text x="494" y="456" fill="#684b48" font-family="Arial, sans-serif" font-size="16">光源、反射光路、熱、配線、組立公差</text>
+  <text x="494" y="521" fill="#596f80" font-family="Arial, sans-serif" font-size="15">P0: 実部品と視線のCAD → P1a: 一択空中像と入力bench → OI01/02: 同一閉箱。</text>
+</svg>

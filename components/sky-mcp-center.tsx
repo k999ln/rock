@@ -1,5 +1,7 @@
 'use client';
 
+import { SkyNotice } from '@/components/sky-feedback';
+
 import {
   Cable,
   Check,
@@ -40,8 +42,8 @@ const connectionTargets = [
   },
   {
     id: 'sky-cloud',
-    name: 'Sky Cloud',
-    detail: '常時動くSky管理の実行先',
+    name: 'Smith Cloud',
+    detail: '常時動くSmith管理の実行先',
     note: '準備中',
     ready: false,
     recommended: false,
@@ -49,8 +51,8 @@ const connectionTargets = [
   },
   {
     id: 'provider',
-    name: '提供者のMCP',
-    detail: 'OAuthで提供者へ直接接続',
+    name: "提供者のツール",
+    detail: "公式の認証画面で提供者へ直接接続",
     note: '準備中',
     ready: false,
     recommended: false,
@@ -126,7 +128,7 @@ export default function SkyMcpCenter({
       setServerError('');
     } catch (cause) {
       setServers([]);
-      setServerError(cause instanceof Error ? cause.message : 'MCPの一覧を取得できませんでした。');
+      setServerError(cause instanceof Error ? cause.message : "外部ツール接続の一覧を取得できませんでした。");
     }
   }, [connected]);
 
@@ -149,7 +151,7 @@ export default function SkyMcpCenter({
         .catch((cause) => {
           if (active) {
             setServers([]);
-            setServerError(cause instanceof Error ? cause.message : 'MCPの一覧を取得できませんでした。');
+            setServerError(cause instanceof Error ? cause.message : "外部ツール接続の一覧を取得できませんでした。");
           }
         });
     };
@@ -179,7 +181,7 @@ export default function SkyMcpCenter({
     } catch (error) {
       setConnectionFailed(true);
       setConnectionMessage(
-        error instanceof Error ? error.message : 'MCPへ接続できませんでした。',
+        error instanceof Error ? error.message : "外部ツールへ接続できませんでした。",
       );
     } finally {
       setBusyServer('');
@@ -207,17 +209,17 @@ export default function SkyMcpCenter({
 
   return (
     <>
-      <section className={styles.rail} aria-label="MCP接続状態">
+      <section className={styles.rail} aria-label="外部ツールの接続状態">
         <div className={styles.railIcon} aria-hidden="true">
           <Network size={20} />
         </div>
         <div className={styles.railCopy}>
           <div>
-            <strong>MCP</strong>
+            <strong>PCのツール</strong>
             <span>{toolCount}機能</span>
           </div>
           <p>
-            {serverError ? 'MCPの一覧を確認できません' : connected
+            {serverError ? "外部ツール接続の一覧を確認できません" : connected
               ? 'このPCで自動化を実行できます'
               : '初回だけ接続アプリを起動します'}
           </p>
@@ -244,9 +246,9 @@ export default function SkyMcpCenter({
                 <Network size={21} />
               </span>
               <div>
-                <DialogTitle>Sky MCP</DialogTitle>
+                <DialogTitle>PCのツールをつなぐ</DialogTitle>
                 <DialogDescription>
-                  自動化ごとのMCPを、共通Connectorから安全に接続します。
+                  自動化ごとの外部ツール接続を、共通接続アプリから安全に接続します。
                 </DialogDescription>
               </div>
             </div>
@@ -255,12 +257,12 @@ export default function SkyMcpCenter({
                 <ShieldCheck size={14} /> 実行前に権限を確認
               </span>
               <span className={connected ? styles.liveOn : styles.liveOff}>
-                {connected ? 'MCP接続中' : 'MCP未接続'}
+                {connected ? "外部ツールに接続中" : "外部ツールは未接続"}
               </span>
             </div>
           </header>
 
-          <div className={styles.tabs} role="tablist" aria-label="MCPメニュー">
+          <div className={styles.tabs} role="tablist" aria-label="外部ツール接続メニュー">
             <button
               ref={setupTab}
               onKeyDown={moveTab}
@@ -294,12 +296,12 @@ export default function SkyMcpCenter({
               role="tabpanel"
               aria-labelledby="sky-mcp-setup-tab"
             >
-              {serverError && <p className={styles.errorMessage} role="alert">{serverError}</p>}
+              {serverError && <SkyNotice className={styles.errorMessage} message={serverError} />}
               <section className={styles.targetSection}>
                 <div className={styles.sectionHeading}>
                   <div>
                     <strong>接続先を選ぶ</strong>
-                    <p>MCPごとの推奨先をSkyが表示し、対応先だけ選べます。</p>
+                    <p>ツールごとの推奨先をSmithが表示し、対応先だけ選べます。</p>
                   </div>
                   <span>STEP 1</span>
                 </div>
@@ -356,8 +358,8 @@ export default function SkyMcpCenter({
                   </strong>
                   <p>
                     {connected
-                      ? 'Skyのツール画面から、対応する自動化を実行できます。'
-                      : '追加アカウント・APIキー・有料契約は必要ありません。'}
+                      ? 'Smithのツール画面から、対応する自動化を実行できます。'
+                      : "追加アカウント・接続用の秘密キー・有料契約は必要ありません。"}
                   </p>
                 </div>
               </section>
@@ -366,9 +368,9 @@ export default function SkyMcpCenter({
                 <section className={styles.serverSection}>
                   <div className={styles.sectionHeading}>
                     <div>
-                      <strong>接続できるMCP</strong>
+                      <strong>接続できる外部ツール接続</strong>
                       <p>
-                        Connectorが登録定義を読み、安全確認後に機能を取得します。
+                        接続アプリが登録定義を読み、安全確認後に機能を取得します。
                       </p>
                     </div>
                     <span>ONE TAP</span>
@@ -417,8 +419,8 @@ export default function SkyMcpCenter({
                     {visibleServers.length === 0 && (
                       <p className={styles.serverEmpty}>
                         {target === 'provider'
-                          ? '登録済みの外部MCPはありません。OAuthが必要な接続先は、認可対応後に表示します。'
-                          : 'この接続先で利用できるMCPはありません。'}
+                          ? "登録済みの外部ツールはありません。公式の認証画面が必要な接続先は、認可対応後に表示します。"
+                          : "この接続先で利用できる外部ツール接続はありません。"}
                       </p>
                     )}
                   </div>
@@ -435,7 +437,7 @@ export default function SkyMcpCenter({
                   <span>1</span>
                   <div>
                     <strong>無料パックをダウンロード</strong>
-                    <p>共通Connectorと、導入済みの2つのMCPが入っています。</p>
+                    <p>共通接続アプリと、導入済みの2つの外部ツール接続が入っています。</p>
                   </div>
                 </li>
                 <li>
@@ -448,8 +450,8 @@ export default function SkyMcpCenter({
                 <li>
                   <span>3</span>
                   <div>
-                    <strong>Skyから接続を確認</strong>
-                    <p>Connectorと登録済みMCPの検出まで自動で確認します。</p>
+                    <strong>Smithから接続を確認</strong>
+                    <p>接続アプリと登録済みツールの確認まで自動で確認します。</p>
                   </div>
                 </li>
               </ol>
@@ -460,8 +462,8 @@ export default function SkyMcpCenter({
               </button>
 
               <p className={styles.boundaryNote}>
-                SDKで起動したPC内Tool、登録済みのstdio MCPとStreamable HTTP
-                MCPに対応します。秘密情報はSkyへ渡さず、OAuthが必要な接続先は権限確認と接続証跡が揃うまで実行できません。
+                SDKで起動したPC内ツール、登録済みのstdio 外部ツール接続とStreamable HTTP
+                外部ツール接続に対応します。秘密情報はSmithへ渡さず、公式の認証画面が必要な接続先は権限確認と接続証跡が揃うまで実行できません。
               </p>
             </div>
           ) : (
@@ -471,7 +473,7 @@ export default function SkyMcpCenter({
               role="tabpanel"
               aria-labelledby="sky-mcp-tools-tab"
             >
-              {serverError && <p className={styles.errorMessage} role="alert">{serverError}</p>}
+              {serverError && <SkyNotice className={styles.errorMessage} message={serverError} />}
               <div className={styles.toolList}>
                 {servers.flatMap((server) =>
                   (server.passport?.tools ?? []).map((tool) => ({
@@ -493,7 +495,7 @@ export default function SkyMcpCenter({
                 ))}
                 {toolCount === 0 && !serverError && (
                   <p className={styles.serverEmpty}>
-                    MCPに接続すると、確認できた機能がここに表示されます。
+                    外部ツールに接続すると、確認できた機能がここに表示されます。
                   </p>
                 )}
               </div>

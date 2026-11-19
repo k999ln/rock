@@ -1,4 +1,6 @@
 'use client';
+
+import { SkyNotice } from '@/components/sky-feedback';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway route. */
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type SubmitEvent, type ReactNode } from 'react';
@@ -136,7 +138,7 @@ function SignIn({ returnTo }: { returnTo: string }) {
 
 function ErrorNotice({ error, returnTo }: { error: Error | null; returnTo: string }) {
   if (!error) return null;
-  return <div className={styles.error} role="alert"><p>{error instanceof CommerceError && error.status === 401 ? '購入・販売の管理にはサインインが必要です。' : error.message}</p>{error instanceof CommerceError && error.status === 401 && <SignIn returnTo={returnTo} />}</div>;
+  return <div className={styles.error} role="alert"><SkyNotice message={error} />{error instanceof CommerceError && error.status === 401 && <SignIn returnTo={returnTo} />}</div>;
 }
 
 export function CommerceNavigation() {
@@ -184,17 +186,17 @@ export function MarketplacePurchase({ offer, mode, compatible = true, onOfferCha
 }
 
 function CommercePage({ title, description, children }: { title: string; description: string; children: ReactNode }) {
-  return <WorkspaceShell title="Sky Market" tone="sky" hideTopActions contentClassName={styles.shell}>
+  return <WorkspaceShell title="Smith Market" tone="sky" hideTopActions contentClassName={styles.shell}>
     <div className={styles.page}>
       <Link href="/sky/marketplace" className={styles.back}><ArrowLeft size={15} /> マーケットへ</Link>
-      <header className={styles.header}><div><span className={styles.eyebrow}>SKY MARKET</span><h1>{title}</h1><p>{description}</p></div><CommerceNavigation /></header>
+      <header className={styles.header}><div><span className={styles.eyebrow}>Smith MARKET</span><h1>{title}</h1><p>{description}</p></div><CommerceNavigation /></header>
       {children}
     </div>
   </WorkspaceShell>;
 }
 
 function NotConfigured() {
-  return <section className={styles.empty}><CreditCard size={28} /><h2>決済サービスの接続待ち</h2><p>Skyの決済設定が完了すると、購入・販売が使えるようになります。</p><Link href="/sky/marketplace" className={styles.secondary}>ツールを探す <ArrowRight size={16} /></Link></section>;
+  return <section className={styles.empty}><CreditCard size={28} /><h2>決済サービスの接続待ち</h2><p>Smithの決済設定が完了すると、購入・販売が使えるようになります。</p><Link href="/sky/marketplace" className={styles.secondary}>ツールを探す <ArrowRight size={16} /></Link></section>;
 }
 
 const statusLabels: Record<string, string> = {
@@ -224,7 +226,7 @@ function OrderCard({ order, seller = false, busy = false, onRefresh, onRefund }:
     <div className={styles.orderHeading}><div className={styles.orderIcon}><Package size={23} /></div><div className={styles.orderName}><h3>{order.name}</h3><p>{new Date(order.createdAt).toLocaleDateString('ja-JP')} · 注文 {order.id.slice(0, 8)}</p></div><span className={styles.status} data-status={order.status}>{statusLabels[order.status] || '確認中'}</span></div>
     <div className={styles.orderAmount}><strong>{commerceAmount(order.amountMinor, order.currency)}</strong>{seller && order.status === 'paid' && <span>受取分 {commerceAmount(order.amountMinor - order.commissionMinor, order.currency)} · 手数料10%</span>}{order.refundedMinor > 0 && <span>返金済み {commerceAmount(order.refundedMinor, order.currency)}</span>}</div>
     <div className={styles.actions}>
-      {!seller && order.access && order.endpointUrl && <><button className={styles.primary} type="button" onClick={() => void copyEndpoint()}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'コピーしました' : 'MCP接続先をコピー'}</button><Link href="/sky/network" className={styles.secondary}>AIと接続する <ArrowRight size={16} /></Link></>}
+      {!seller && order.access && order.endpointUrl && <><button className={styles.primary} type="button" onClick={() => void copyEndpoint()}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'コピーしました' : "外部ツール接続接続先をコピー"}</button><Link href="/sky/network" className={styles.secondary}>AIと接続する <ArrowRight size={16} /></Link></>}
       {!seller && order.status === 'pending' && checkout && <a href={checkout} className={styles.primary}>支払いを続ける <ArrowRight size={16} /></a>}
       {receipt && <a href={receipt} target="_blank" rel="noreferrer" className={styles.textLink}>領収書 <ExternalLink size={14} /></a>}
       {!seller && onRefresh && <button className={styles.textButton} type="button" disabled={busy} onClick={onRefresh}><RefreshCw size={14} />{busy ? '確認中…' : '支払い状況を確認'}</button>}
@@ -282,7 +284,7 @@ export function SkyPurchases() {
     }
   }, [orderId, canceled, refresh]);
   return <CommercePage title="購入したツール" description="支払い状況と、AIへの接続先をここに。">
-    <Link href="/sky/campus">大学別SkyのAgent Hubへ戻る <ArrowRight size={16} /></Link>
+    <Link href="/sky/campus">大学別Smithのエージェント Hubへ戻る <ArrowRight size={16} /></Link>
     <Link href="/sky/payments">支払いとクラウド利用明細をまとめて確認</Link>
     {canceled && <output className={styles.notice}>決済を途中で閉じました。支払いが必要な場合は、購入履歴から再開できます。</output>}
     <ErrorNotice error={error || actionError} returnTo="/sky/purchases" />
@@ -324,8 +326,8 @@ function OfferEditor({ item, offer, ready, onSave }: { item: Seller['packages'][
   }
   return <form className={styles.offerForm} onSubmit={submit} onChange={() => setSaved(false)}>
     <label>販売価格（円・買い切り）<input type="number" min="50" max="99999999" step="1" required inputMode="numeric" placeholder="例：1,000" value={price} onChange={(event) => setPrice(event.target.value)} /></label>
-    {validPrice && <div className={styles.feeBreakdown}><div><span>あなたの受取分</span><strong>{commerceAmount(amountMinor - commission, 'jpy')}</strong></div><div><span>Sky手数料 10%</span><span>{commerceAmount(commission, 'jpy')}</span></div></div>}
-    <p className={styles.subtle}>決済処理の費用はSkyの手数料から負担します。</p>
+    {validPrice && <div className={styles.feeBreakdown}><div><span>あなたの受取分</span><strong>{commerceAmount(amountMinor - commission, 'jpy')}</strong></div><div><span>Smith手数料 10%</span><span>{commerceAmount(commission, 'jpy')}</span></div></div>}
+    <p className={styles.subtle}>決済処理の費用はSmithの手数料から負担します。</p>
     <label>利用・販売条件のURL<input type="url" pattern="https://.*" required placeholder="https://…" value={termsUrl} onChange={(event) => setTermsUrl(event.target.value)} /></label>
     <label>返金条件<textarea required minLength={1} maxLength={2000} rows={3} placeholder="返金できる条件と、問い合わせ方法" value={refundPolicy} onChange={(event) => setRefundPolicy(event.target.value)} /></label>
     <label className={styles.checkbox}><input type="checkbox" checked={active} onChange={(event) => setActive(event.target.checked)} />マーケットで販売する</label>
@@ -387,7 +389,7 @@ export function SkySeller() {
       <section className={styles.panel} aria-labelledby="seller-account"><div className={styles.panelHeading}><div><h2 id="seller-account">売上の受取先</h2><p>{data.seller?.ready ? '登録済みです。ツールの販売を始められます。' : data.seller?.connected ? 'Stripeで登録を完了すると、売上を受け取れます。' : 'Stripeで本人情報と銀行口座を一度だけ登録します。'}</p></div>{data.seller?.ready && <span className={styles.status} data-status="paid"><Check size={13} /> 登録済み</span>}</div>
         <div className={styles.actions}>{!data.seller?.ready && <button type="button" className={styles.primary} disabled={pending} onClick={() => void onboard()}>{pending ? '準備中…' : data.seller?.connected ? '受取先の登録を続ける' : '売上の受取先を登録'} <ArrowRight size={16} /></button>}<button type="button" className={styles.secondary} disabled={loading || pending} onClick={() => void refresh()}><RefreshCw size={15} />{loading ? '確認中…' : '接続を確認'}</button></div>
       </section>
-      <section className={styles.panel} aria-labelledby="seller-offers"><div className={styles.panelHeading}><div><h2 id="seller-offers">買い切り販売</h2><p>あなたが登録した審査済みツール・LLMを販売できます。</p></div><span className={styles.feeBadge}>手数料 10%</span></div>
+      <section className={styles.panel} aria-labelledby="seller-offers"><div className={styles.panelHeading}><div><h2 id="seller-offers">買い切り販売</h2><p>あなたが登録した審査済みツール・AIモデルを販売できます。</p></div><span className={styles.feeBadge}>手数料 10%</span></div>
         {selected ? <><label className={styles.selectLabel}>ツールを選択<select value={selected.packageKey} onChange={(event) => setSelectedKey(event.target.value)}>{salePackages.map((item) => <option key={item.packageKey} value={item.packageKey}>{item.name}</option>)}</select></label>{selectedOffer && selectedOffer.currency.toLowerCase() !== 'jpy' ? <p className={styles.notice}>この商品の価格は{commerceAmount(selectedOffer.amountMinor, selectedOffer.currency)}です。この画面での価格設定は現在、日本円の販売に対応しています。</p> : <OfferEditor key={selected.packageKey} item={selected} offer={selectedOffer} ready={data.seller?.ready === true} onSave={refresh} />}</> : <div className={styles.noTools}><p>買い切り条件で登録した、審査済みのツールがここに表示されます。定額・従量プランは現在準備中です。</p><Link href="/sky/register" className={styles.secondary}>ツールを登録 <ArrowRight size={16} /></Link></div>}
       </section>
     </>}

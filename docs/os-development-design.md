@@ -285,6 +285,8 @@ Recipeは型付きDAGとして検証し、循環・存在しないTool版・型�
 | 送金・課金承認・取引・権限共有の変更 | 初期未実装。Toolが要求しても実行しない |
 | 他アプリの画面操作/Accessibility | 初期未対応。OSだから自由に操作できるとは見なさない |
 
+2026-10-18の利用者訂正により、Sky AddではZoom Appの事前導入なしでSky端末側Agentが本人許可のOS Accessibilityを使う経路を優先する。上表の「初期未対応」は現行runtimeの受入状態として維持し、製品目標としての対応を否定する意味にはしない。端末実行部、OS許可、Brokerの一回承認、対象画面の再確認、Zema成果/停止を結んだ時にのみ対応済みとする。[契約と限定Mac研究probe](sky-tools-complete-design.md#sky-add-agent-ecosystem)。
+
 権限の実体は、Tool版・Android user・Automation・runId・対象resource・用途・期限・予算に紐付いたcapability。更新で権限が増える場合は旧同意を再利用しない。利用者の「全停止」は新規発行を即座に止め、進行中の処理へ取消を送る。
 
 Managed Toolは直接INTERNETや広範なstorage権限を持たないプロファイルを基本とし、ネット接続はConnector Brokerへ集約する。AndroidのINTERNET権限だけではドメイン単位の制限にはならない。Store審査・PackageManagerのインストール検査・実行時のUID/SELinux/通信制御を組み合わせ、外部Intent等の迂回路も否定試験する。直接通信を必要とする既存APKは、この管理保証の外として別枠に置く。

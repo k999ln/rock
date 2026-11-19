@@ -43,7 +43,7 @@
 }
 
 /* Settings uses the common app chrome and panel geometry. */
-.page { font-family: var(--os-font); color-scheme: dark; }
+.page { font-family: var(--os-font); color-scheme: light; }
 .content { width: calc(100% - 48px); max-width: calc(var(--os-content) - 48px); padding-top: 28px; }
 .hero > span, .itemIcon { background: var(--os-raised); color: var(--os-text); box-shadow: none; border: 1px solid var(--os-line); border-radius: 10px; }
 .hero small { color: var(--os-muted); }

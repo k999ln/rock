@@ -205,7 +205,7 @@ export function skyActivationStore(db: Database) {
       );
       const normalized = normalizeSkyActivationCode(input.code);
       if (!isSkyActivationCode(normalized))
-        throw new SkySubmissionError('Sky有効化コードの形式を確認してください。');
+        throw new SkySubmissionError('Smith有効化コードの形式を確認してください。');
       const row = await db
         .prepare(
           `SELECT c.id, c.package_key AS packageKey, c.status,

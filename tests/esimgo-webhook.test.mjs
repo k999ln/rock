@@ -89,7 +89,7 @@ void test('callback request is bounded, HMAC protected, and rejected before payl
     createHmac('sha256', apiKey).update(duplicateIccid).digest('base64'), apiKey, dedupeSecret, profileHashSecret), /INVALID_BODY/);
 });
 
-void test('only a paid live owner-matched Sky order can bind a provider profile; callbacks resolve the order without storing ICCID', async (t) => {
+void test('only a paid live owner-matched smis order can bind a provider profile; callbacks resolve the order without storing ICCID', async (t) => {
   const db = database(t);
   const now = 1234;
   const addOrder = (id, status) => db.sqlite.prepare(`INSERT INTO sky_commerce_orders

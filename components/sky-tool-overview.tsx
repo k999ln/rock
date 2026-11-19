@@ -1,7 +1,9 @@
 'use client';
+import { skyToolDescription, skyToolEnvironment } from '@/lib/sky-tool-ui';
 
 import { useRef, type ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { skySystemWords } from '@/lib/sky-presentation';
 import type { Automation } from '@/lib/catalog';
 import type { SkyToolUiState } from '@/lib/sky-tool-ui';
 import { DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -40,13 +42,14 @@ export default function SkyToolOverview({
           <DialogTitle className={styles.title}>{tool.name}</DialogTitle>
         </div>
       </div>
-      <DialogDescription className={styles.description}>{tool.description}</DialogDescription>
+      <DialogDescription className={styles.description}>{skyToolDescription(tool)}</DialogDescription>
       <dl className={styles.facts}>
         <div><dt>現在の状態</dt><dd>{state.label}</dd></div>
-        <div><dt>利用環境</dt><dd>{tool.environment}</dd></div>
-        <div><dt>料金・実費</dt><dd>{tool.cost}</dd></div>
+        <div><dt>利用環境</dt><dd>{skyToolEnvironment(tool)}</dd></div>
+        <div><dt>料金・実費</dt><dd>{skySystemWords(tool.cost)}</dd></div>
       </dl>
       {hostMismatch && <p className={styles.mismatch}>この端末では対象外 · {hostMismatch}</p>}
+      <details><summary>詳しい動作環境と元の説明</summary><p>{tool.environment}</p><p>{tool.description}</p></details>
       {children}
       {/^https?:\/\//.test(tool.source) ? (
         <a className={styles.source} href={tool.source} target="_blank" rel="noopener noreferrer">

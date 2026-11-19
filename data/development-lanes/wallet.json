@@ -1,0 +1,353 @@
+{
+  "schema": "rockstaros.development-lane/1",
+  "lane": "wallet",
+  "revision": 2,
+  "status": "implementation_candidate_awaiting_independent_review",
+  "threadId": "01a16c2e-7c9a-7280-ae01-171f113453ef",
+  "currentUnit": "WALLET-01",
+  "baseAndSource": [
+    {
+      "branch": "codex/esim-cloud-access",
+      "head": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "originMainLocalRef": "7304e449cd7938b098b0b1ce481a06501db8d795",
+      "remoteFreshness": "No network refresh in this bootstrap; packet snapshot 2026-10-24T04:16:26.119Z matches local refs; no new same-SHA CI claim",
+      "dirtyWorkspace": true
+    },
+    {
+      "path": "docs/prompts/rockstaros-development-chats.md",
+      "sha256": "ac06c1970eb446559cfcabe6d6afae07cddc1b126fae8d7e1c6a188e7868ac83",
+      "bytes": 6510,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "docs/prompts/rockstaros-development-chats/wallet.md",
+      "sha256": "1ee9d817e2033d42d19d2323070c07d6c6aeb054b2086980fa04c9f7c516866a",
+      "bytes": 4267,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "docs/prompts/rockstaros-remaining-work-development.md",
+      "sha256": "2e2c978d1f108009437ad519334af2407473b6f06d2718eb04aab789e69f68ba",
+      "bytes": 324223,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "lib/operations.ts",
+      "sha256": "0e9b4d49b3254a9e207f99bade098f04e7b660b05fc9b643fb54a78061892b00",
+      "bytes": 26819,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "lib/financial-provider.ts",
+      "sha256": "2f6d5c6924c821f74e17779e211d833ee0387c26274d27005a27fe132f87d43f",
+      "bytes": 7550,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "lib/rock-wallet.ts",
+      "sha256": "81fb54ffc8c790705a78d56208db5095dca76245c0dc4a17e2f274d3e6f0933b",
+      "bytes": 4976,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "lib/earning-bridge.ts",
+      "sha256": "c6a2895a0af100fbaabd31db6c96199a2f2d3dc3cc1d4d25686dbd5064fb56f9",
+      "bytes": 6308,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "lib/settlement.ts",
+      "sha256": "e540626528367c0e14c8fe2aa33b11e79f6087b3fe7736825aeabcb1e2d85f82",
+      "bytes": 1761,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "tests/wallet-backend.test.mjs",
+      "sha256": "a6604602e88e71b6851e67b72bd574478abe8bccb54420c6475ab9e34757a27c",
+      "bytes": 3565,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "tests/rock-wallet.test.mjs",
+      "sha256": "1f2801ab9e5e80422d73b7f055e7da14d41272aad441539f5c04be4d71ac4124",
+      "bytes": 3338,
+      "scope": "working_tree_source_only"
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/runtime_contracts.py",
+      "sha256": "27b173d8a09499a18307aa7a9820ed2f47a1316fb78986a6fd71757069cfdea4",
+      "bytes": 2974,
+      "scope": "working_tree_source_only"
+    }
+  ],
+  "ownedPathsConfirmed": [
+    "lib/wallet-deposit-provenance.ts",
+    "tests/wallet-deposit-provenance.test.mjs",
+    "data/development-lanes/wallet.json",
+    "docs/evidence/development-execution/wallet-01.json"
+  ],
+  "readPaths": [
+    "lib/operations.ts",
+    "lib/financial-provider.ts",
+    "lib/rock-wallet.ts",
+    "lib/earning-bridge.ts",
+    "lib/settlement.ts",
+    "tests/wallet-backend.test.mjs",
+    "tests/rock-wallet.test.mjs",
+    "systems/rock-star-os/os/wallet_backend/runtime_contracts.py",
+    "docs/product-baseline.md",
+    "data/product-baseline.json",
+    "README.md",
+    "project.md",
+    "data/project-status.json",
+    "docs/workstreams/README.md",
+    "docs/workstreams/00-responsibility-boundaries.md",
+    "docs/workstreams/03-wallet-billing-providers.md",
+    "docs/execution-approval-20260909.md",
+    "data/execution-approval.json",
+    "docs/design-implementation-alignment-20260909.md",
+    "docs/external-wallet-fund-provider-boundary-20260913.md"
+  ],
+  "findings": [
+    {
+      "path": "lib/operations.ts",
+      "existing": "owner-scoped revenue/expense/cancel and JPY book balance",
+      "gap": "booked income is not independently finalized external deposit; do not credit cash from user bookkeeping"
+    },
+    {
+      "path": "lib/financial-provider.ts",
+      "existing": "versioned capabilities, SANDBOX/LIVE rejection, Rock fee collector/reporting only",
+      "gap": "generic receive/payout/custody event provenance and lifecycle adapter not accepted"
+    },
+    {
+      "path": "lib/rock-wallet.ts",
+      "existing": "origin-bound expiring receiving signature; Base USDC exact recipient/amount/finalized block verification",
+      "gap": "888 minor maximum belongs to fee collection; not general deposit cap or multi-rail proof"
+    },
+    {
+      "path": "lib/earning-bridge.ts",
+      "existing": "signed receipt linked to same-owner completed non-sample execution/tool/time",
+      "gap": "Earning Receipt alone does not establish external deposit finality/cancellation"
+    },
+    {
+      "path": "lib/settlement.ts",
+      "existing": "revenue/cost/fee/payout arithmetic",
+      "gap": "calculation is not funded cash, rail settlement, general distribution or monthly USD16 invoice"
+    },
+    {
+      "path": "tests/wallet-backend.test.mjs",
+      "existing": "owner isolation, stored income/expense, fund projection distinct from cash fixtures",
+      "gap": "general deposit restart/finality/reorg and reversal chain not demonstrated"
+    },
+    {
+      "path": "tests/rock-wallet.test.mjs",
+      "existing": "signature and exact finalized USDC collection fixtures",
+      "gap": "generic event duplicate/cross-owner/wrong-asset/reorg lifecycle fixture needed"
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/runtime_contracts.py",
+      "existing": "protected coordinator/router identity, ledger authority and writer-epoch contracts",
+      "gap": "reuse native journal/reservations through existing authority; no second ledger or direct adapter writes"
+    }
+  ],
+  "sharedChangeRequests": [
+    {
+      "owner": "Git/schema/workflow single-writer",
+      "paths": [
+        "db/schema.ts",
+        "drizzle/",
+        "lib/operations.ts",
+        "lib/workflow.ts",
+        "systems/rock-star-os/src/blackberryrock/wallet.py"
+      ],
+      "requirements": [
+        "Reuse existing wallet_journals/wallet_postings and reservation authority, not a new balance ledger. Web book_records are self-bookkeeping, not authenticated external cash.",
+        "Globally UNIQUE(provider,eventId) bound to eventSha256 and UNIQUE(provider,chain,transactionId,transferId); do not scope uniqueness by owner/receipt/asset. Load eventClaim globally and reject aliases.",
+        "In one existing authority transaction, recheck authenticated owner, writer epoch/trust revision, current revocation and independent query proof; CAS expectedRevision plus immutable intent hash, insert event claim and proposal projection atomically. Retry same key after lost commit outcome.",
+        "Pure seam returns zero credit, never a posting authorization. Accepting a real rail needs a separate reviewed adapter, signed-key/finality/contract acceptance and funding policy; no caller may turn confirmed_candidate into available.",
+        "Refund/reorg append original-journal-linked compensating postings exactly once, never edit history. Reconcile holds/settled/spent amounts before any availability correction; unknown outcome retains reservation and queries first.",
+        "Add real storage concurrency/restart/crash-before-after-commit tests for duplicates, aliases and linked reversal; current checkpoint tests serialize/reload fixtures only."
+      ]
+    },
+    {
+      "owner": "Git/Billing/Provider manifest single-writer",
+      "paths": [
+        "lib/financial-provider.ts",
+        "lib/earning-bridge.ts",
+        "lib/sky-stripe.ts",
+        "docs/sky-billing.md"
+      ],
+      "requirements": [
+        "Review wallet-rail-policy/1 operation extension as proposal only: deposit and sales each explicitly opt into receive; fee_collection requires collect_platform_fee and existing allocation; payout requires payout. Keep Rock collector restricted to fee/reporting.",
+        "Sales remain earning_reconciliation_required until existing same-owner completed non-sample execution/tool/time/currency receipt is reconciled to unique finalized external funds; do not allocate from job success.",
+        "Preserve legacy fee888c fixture cap; never use it as general deposit cap. USD16 basic fee and invoices remain Billing, separate from cash/deposit/general revenue allocation. No transport or balance change in this unit."
+      ]
+    },
+    {
+      "owner": "Git/design/progress single-writer",
+      "paths": [
+        "docs/rockstaros-complete-design.md",
+        "docs/sky-tools-complete-design.md",
+        "data/design-document-index.json",
+        "project.md",
+        "data/project-status.json",
+        "README.md"
+      ],
+      "requirements": [
+        "Aggregate same candidate design/progress and index changes, project:update/design:check and full verify; source implementation is unconnected candidate until independent review, Git save and shared contract integration."
+      ]
+    }
+  ],
+  "testResults": [
+    {
+      "command": "node --experimental-strip-types --test tests/wallet-deposit-provenance.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs tests/wallet-backend.test.mjs",
+      "exitCode": 0,
+      "tests": 21,
+      "failed": 0,
+      "scope": "12 new adapter tests and 9 existing local fixtures",
+      "status": "executed"
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/earning-bridge.test.mjs",
+      "exitCode": 0,
+      "tests": 2,
+      "failed": 0,
+      "scope": "existing synthetic SQLite bridge; no Provider request",
+      "status": "executed"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit --target es2022 --lib dom,esnext --module esnext --moduleResolution bundler --allowImportingTsExtensions --strict --skipLibCheck --types node lib/wallet-deposit-provenance.ts",
+      "exitCode": 0,
+      "scope": "target and imported dependencies only; no project-wide typecheck claim",
+      "status": "executed"
+    },
+    {
+      "command": "node node_modules/oxlint/bin/oxlint lib/wallet-deposit-provenance.ts tests/wallet-deposit-provenance.test.mjs",
+      "exitCode": 0,
+      "scope": "exact product/test write set",
+      "status": "executed"
+    },
+    {
+      "command": "npm run verify",
+      "status": "not_run",
+      "result": "parent fixed integration candidate only"
+    },
+    {
+      "command": "./node_modules/.bin/eslint lib/wallet-deposit-provenance.ts tests/wallet-deposit-provenance.test.mjs",
+      "status": "unavailable",
+      "exitCode": 127,
+      "result": "not installed; used repository oxlint instead"
+    }
+  ],
+  "externalConditions": [
+    {
+      "owner": "EXTERNAL",
+      "condition": "rail/provider capability, contract, identity/KYC, signature keys and finality/query/reversal semantics"
+    },
+    {
+      "owner": "JOINT",
+      "condition": "contracted sandbox readback of exact account/asset/amount/transaction; restart reconciliation and payout arrival separately accepted"
+    },
+    {
+      "owner": "OWNER",
+      "condition": "explicit rail/chain/asset/recipient/amount/fees and exact consent before real funds; no calls or money movement in this bootstrap"
+    }
+  ],
+  "nextUnit": {
+    "id": "WALLET-02",
+    "condition": "WALLET-01 independent review and integration checkpoint; exact ownership assigned before implementation"
+  },
+  "updatedAt": "2026-10-24T06:36:00.836483+00:00",
+  "note": "WALLET-01 finite pure adapter candidate implemented in exact owned source/test. No credit/ledger/balance/fee policy changes; independent Astra review and shared integration remain required. Parent aggregates project/status/README/design-index/full verify/Git. No self acceptance.",
+  "hostId": "local",
+  "dispatchCreatedAt": "2026-10-24T04:32:31.660160+00:00",
+  "primaryWorkstream": "docs/workstreams/03-wallet-billing-providers.md",
+  "primaryOwner": "ROCK",
+  "taskIds": [
+    "WLT01",
+    "WLT02",
+    "WLT03",
+    "WLT04",
+    "WLT05",
+    "WLT06"
+  ],
+  "anchor": "docs/prompts/rockstaros-remaining-work-development.md#wallet-01",
+  "contracts": [
+    "SI06",
+    "U02",
+    "U03",
+    "CORE09"
+  ],
+  "coverageRows": [
+    "F126",
+    "F127",
+    "F131"
+  ],
+  "nextOwnedPathsProposed": [],
+  "nextOwnedPathsStatus": "Exact four-path bounded implementation authorized in current dispatch; no shared source edits.",
+  "execution": {
+    "unit": "WALLET-01",
+    "status": "implementation_candidate_awaiting_independent_review",
+    "evidence": {
+      "path": "docs/evidence/development-execution/wallet-01.json",
+      "sha256": "436b9e70ccaa003dbfca93124ae406e3239f1c6296b9270452bae1f91307c9c9",
+      "bytes": 10016
+    },
+    "candidateHashes": [
+      {
+        "path": "lib/wallet-deposit-provenance.ts",
+        "sha256": "9d1bcae8b62738f054616fd2f72127373cb72d8548ea47ad87a9e3a2a51c24a9",
+        "bytes": 14052
+      },
+      {
+        "path": "tests/wallet-deposit-provenance.test.mjs",
+        "sha256": "1cc3fd394f1ab6210d98b5a5b009192bc5f3d55343566c9b8422c8c3f97f8e88",
+        "bytes": 13801
+      }
+    ],
+    "sourceHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "localChecks": [
+      {
+        "command": "node --experimental-strip-types --test tests/wallet-deposit-provenance.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs tests/wallet-backend.test.mjs",
+        "exitCode": 0,
+        "tests": 21,
+        "failed": 0,
+        "scope": "12 new adapter tests and 9 existing local fixtures"
+      },
+      {
+        "command": "node --experimental-strip-types --test tests/earning-bridge.test.mjs",
+        "exitCode": 0,
+        "tests": 2,
+        "failed": 0,
+        "scope": "existing synthetic SQLite bridge; no Provider request"
+      },
+      {
+        "command": "node node_modules/typescript/bin/tsc --noEmit --target es2022 --lib dom,esnext --module esnext --moduleResolution bundler --allowImportingTsExtensions --strict --skipLibCheck --types node lib/wallet-deposit-provenance.ts",
+        "exitCode": 0,
+        "scope": "target and imported dependencies only; no project-wide typecheck claim"
+      },
+      {
+        "command": "node node_modules/oxlint/bin/oxlint lib/wallet-deposit-provenance.ts tests/wallet-deposit-provenance.test.mjs",
+        "exitCode": 0,
+        "scope": "exact product/test write set"
+      }
+    ],
+    "independentReview": {
+      "required": true,
+      "requestedModel": "gpt-6-astra",
+      "effort": "high",
+      "status": "pending_parent_dispatch",
+      "selfAccepted": false,
+      "reviewScope": "same candidate hashes; provenance/duplicate/refund/reorg/fee invariant negatives; synthetic trust and no-credit boundary; no new active reviewer spawned by lane due shared active cap"
+    },
+    "unconnected": [
+      "No real persistent journal/CAS/atomic uniqueness exercised; JSON checkpoint reloads only.",
+      "No actual bank/chain finality connection: HMAC event/query envelopes are synthetic independent-role proof candidates.",
+      "No funded balance, reservation mutation, Provider sandbox/live, hardware, billing issue, deployment or Git mutation.",
+      "No full verify; parent runs it on fixed integrated candidate."
+    ],
+    "productMoneyMovement": false,
+    "gitSaved": false,
+    "mainIntegrated": false
+  }
+}

@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.23.4"
       - name: Unit tests
         run: npm --prefix toolkits/avocado-farm-sandbox test
 
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.23.4"
       - name: Live Robinhood Chain PAPER scan
         env:
           PAPER_CASH_USD: "10000"
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.23.4"
       - name: 30-day historical PAPER backtest
         env:
           BACKTEST_DAYS: "30"
@@ -64,7 +64,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.23.4"
       - name: Historical LP range sweep
         env:
           BACKTEST_DAYS: "30"
@@ -81,7 +81,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.23.4"
       - name: Walk-forward LP paper test
         env:
           BACKTEST_DAYS: "30"
@@ -106,7 +106,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.23.4"
       - name: Multi-pool walk-forward paper test
         env:
           BACKTEST_DAYS: "14"

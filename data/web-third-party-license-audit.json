@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros-web-third-party-license-audit/1",
-  "evaluatedAt": "2026-10-01",
+  "evaluatedAt": "2026-10-18",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "bd8fbed98bb9f24414f3bb1707c0f1a5afbe0ffc0e884ca84951408ab752f915",
-  "packageEntries": 956,
-  "uniqueComponents": 914,
+  "packageLockSha256": "199f8ed0a6c99390aa217362a834a54aad4e8a87dad564dd7b4c0b052de30547",
+  "packageEntries": 981,
+  "uniqueComponents": 939,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
@@ -14,12 +14,12 @@
     },
     {
       "expression": "0BSD",
-      "uniqueComponents": 1,
+      "uniqueComponents": 2,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
       "expression": "Apache-2.0",
-      "uniqueComponents": 53,
+      "uniqueComponents": 54,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -44,7 +44,7 @@
     },
     {
       "expression": "BSD-3-Clause",
-      "uniqueComponents": 9,
+      "uniqueComponents": 10,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -69,7 +69,7 @@
     },
     {
       "expression": "MIT",
-      "uniqueComponents": 754,
+      "uniqueComponents": 776,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -94,7 +94,7 @@
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 864,
+    "standard-license-text-and-notice": 889,
     "reciprocal-source-terms-review": 41,
     "license-choice-review": 8,
     "attribution-review": 1

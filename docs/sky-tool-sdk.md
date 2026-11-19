@@ -1,4 +1,18 @@
+## Sky基盤に接続するアプリadapter
+
+ZoomとPlannerは`sky.app-request/1` / `sky.app-result/1`と既存workflow job/revision/本人確認/停止を共有する。`lib/sky-app-contract.ts`と`lib/sky-app-foundation.ts`を共通sourceとし、OS/device adapterでも同じ状態契約に従う。本人用永続APIは`/api/sky/app-work`（default閉鎖のowner allowlist）、ローカルPlanner受渡しは`/api/sky/app-lab`（development/loopback限定・短命memory）。作者登録・Package/Passport・Provider実行権・料金/OS capabilityをこのrequestだけで付与しない。[範囲と失敗/復旧/受入](sky-tools-complete-design.md#sky-foundation)。Plannerの最小local変更と共通transportは`toolkits/sky-app-client/`へ保存する。
+
+## 本人用Zoom Agent Lab
+
+`/sky/add/zoom/lab`はdevelopment/loopback限定。名前/目的/出力/見出しから制限付きrecipeを作成し、確認後にこのLabへAdd、実行、成果検収、停止を試す。設定JSONを読み戻せるが、SDK Package/作者署名/公開Registryへは登録しない。Studioの任意処理やmodel生成、実Zoomへの配布は未接続。[状態・入出力・承認・受入](sky-tools-complete-design.md#sky-private-zoom-lab)。
+
 # Sky Tool SDK / Rock Studio — 自動化をSky商品へする標準導線
+
+2026-10-18最新指示: Skyの応用層はオフィシャル商品に限定せず、本人が欲しい機能からAgentを作成して対応hostへAddできる作者導線を優先する。Zoomは先行例。既存Studio/Package/Registryを使い、例示入力・期待成果・scope・実行先・費用・停止・成果形式を宣言してsandbox受入後にAddする。一般ローンチは保留。[共有説明と段階](sky-launch-design.md#sky-private-review)。汎用のユーザー作成Agentを実Zoomへ登録/実行する経路は、現在の固定Agent手入力試作から区別する。
+
+2026-10-18追加: [本人主導・退出可能性](sky-tools-complete-design.md#sky-user-freedom)をSDK/Agent宣言へ適用する。作者は入出力schema/版、実行先、送信先/scope、料金、停止/失効の保証範囲、成果形式/license/retention、依存サービス、export/import互換性を宣言する設計とする。Skyは未対応/欠損を表示し、他clientでの再実行に旧承認やsecretを流用しない。本人成果の回収にAgent再購入を要求せず、作者sourceやmodel weightsの公開/再配布を一律に求めない。新しい宣言項目のvalidator・互換reader・停止/持出し/乗換えのSF受入は未実装で、既存Package schemaへの追加は版と旧reader互換を検証して行う。
+
+2026-10-18追補: Sky Addでは、利用者の具体的な悩みからAgentの入力例・期待成果・失敗時の復旧を決め、既存Studio／SDKの雛形で試作し、審査済みPackageだけを対象アプリへAddする。Terminal/Linuxや本人が選んだローカルLLMの成果は型付きartifactとしてSkyへ取り込む設計で、任意shellやmodel出力を権限へ昇格させない。買い切りJPY／10%手数料の現行経路と、月額・従量等の新しい商材は分ける。[目的から収益照合までの設計](sky-tools-complete-design.md#sky-add-agent-ecosystem)。
 
 最終更新: 2026-09-15
 

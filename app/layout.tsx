@@ -4,11 +4,14 @@ import './app.css';
 import './workspace.css';
 import './os-design-tokens.css';
 import './os-appearance.css';
+import './community-os.css';
+import CommunityOsRuntime from '@/components/community-os-runtime';
 import './work/work.css';
+import './os-shell.css';
 export const metadata: Metadata = {
   title: 'RockstarOS',
   description:
-    'Sky、Zema、Wallet、Market、Fundを一つのホームから使うRockstarOS Developer Preview。',
+    'Smith、Eve、Wallet、Market、Fundを一つのホームから使うRockstarOS Developer Preview。',
   applicationName: 'RockstarOS',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {
@@ -16,7 +19,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'RockstarOS',
   },
-  icons: { icon: '/favicon.svg', apple: '/rock-icon-192.png' },
+  icons: { icon: '/company-mark.png', apple: '/company-mark.png' },
 };
 export const viewport: Viewport = {
   width: 'device-width',
@@ -29,7 +32,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body><CommunityOsRuntime/>{children}</body>
     </html>
   );
 }

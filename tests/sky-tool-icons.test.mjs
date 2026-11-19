@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { catalog } from '../lib/catalog.ts';
 
-void test('every Sky catalog tool has its own visible icon', () => {
+void test('every smis catalog tool has its own visible icon', () => {
   const source = readFileSync(new URL('../components/tool-icon.tsx', import.meta.url), 'utf8');
   const mapping = source.split('export const toolIcons: Record<string, LucideIcon> = {')[1]?.split('\n};')[0];
   assert.ok(mapping, 'tool icon mapping must exist');

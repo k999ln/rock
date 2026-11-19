@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     id: '/',
     name: 'RockstarOS',
     short_name: 'RockstarOS',
-    description: 'Sky、Zema、Wallet、Market、Fundを一つのホームから開く。',
+    description: 'Smith、Eve、Wallet、Market、Fundを一つのホームから開く。',
     start_url: '/',
     scope: '/',
     display: 'standalone',
@@ -17,24 +17,9 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ['productivity', 'utilities'],
     prefer_related_applications: false,
     icons: [
-      {
-        src: '/rock-icon-192.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'any',
-      },
-      {
-        src: '/rock-icon-512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any',
-      },
-      {
-        src: '/rock-icon-maskable.svg',
-        sizes: 'any',
-        type: 'image/svg+xml',
-        purpose: 'maskable',
-      },
+      { src: '/company-mark-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
+      { src: '/company-mark.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/rock-icon-maskable.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
     ],
   };
 }

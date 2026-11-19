@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ campus: string }>;
 }) {
   const campus = findCampus((await params).campus);
-  return { title: campus ? `成果 · ${campus.shortName} Sky` : '成果 · Sky' };
+  return { title: campus ? `成果 · ${campus.shortName} Smith` : '成果 · Smith' };
 }
 
 export default async function CampusSkyOutputsPage({

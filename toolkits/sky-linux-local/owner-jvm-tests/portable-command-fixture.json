@@ -1,0 +1,121 @@
+{
+  "schema": "rockstaros.native-command-fixture/1",
+  "owner": "native-fixture-owner",
+  "device": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  "now": 1700000000000,
+  "command": {
+    "schema": "rockstaros.runtime-command/1",
+    "owner": "native-fixture-owner",
+    "deviceId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "request": {
+      "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "threadId": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      "input": "合成の依頼\n/slash \ud800 / 🔬",
+      "agent": {
+        "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+        "name": "文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬",
+        "instructions": "確認\n\t出典を残す / < >     \ud800",
+        "modelId": "fixture-gguf",
+        "sha256": "12a5e4c91d9c4df95bcd7382b83f079e01906c9f6803657fe268feea20595d40"
+      },
+      "model": {
+        "id": "fixture-gguf",
+        "scheme": "gguf-sha256",
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "deadline": 1700000120000,
+      "maxOutputTokens": 1024
+    },
+    "requestSha256": "4700b2f4eb67d36989ffca64fbb915232f4bbe6439f153431702cf292bd8ad4e",
+    "executorId": "pixel-linux-gguf",
+    "displayInput": "合成の依頼"
+  },
+  "vectors": [
+    {
+      "value": {
+        "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "threadId": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        "input": "合成の依頼\n/slash \ud800 / 🔬",
+        "agent": {
+          "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+          "name": "文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬",
+          "instructions": "確認\n\t出典を残す / < >     \ud800",
+          "modelId": "fixture-gguf",
+          "sha256": "12a5e4c91d9c4df95bcd7382b83f079e01906c9f6803657fe268feea20595d40"
+        },
+        "model": {
+          "id": "fixture-gguf",
+          "scheme": "gguf-sha256",
+          "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        },
+        "deadline": 1700000120000,
+        "maxOutputTokens": 1024
+      },
+      "canonical": "{\"agent\":{\"id\":\"dddddddd-dddd-4ddd-8ddd-dddddddddddd\",\"instructions\":\"確認\\n\\t出典を残す / < >     \\ud800\",\"modelId\":\"fixture-gguf\",\"name\":\"文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬 文章 / 🔬\",\"sha256\":\"12a5e4c91d9c4df95bcd7382b83f079e01906c9f6803657fe268feea20595d40\"},\"deadline\":1700000120000,\"id\":\"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb\",\"input\":\"合成の依頼\\n/slash \\ud800 / 🔬\",\"maxOutputTokens\":1024,\"model\":{\"id\":\"fixture-gguf\",\"scheme\":\"gguf-sha256\",\"sha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\"},\"threadId\":\"cccccccc-cccc-4ccc-8ccc-cccccccccccc\"}",
+      "sha256": "4700b2f4eb67d36989ffca64fbb915232f4bbe6439f153431702cf292bd8ad4e"
+    },
+    {
+      "value": {
+        "z": 9007199254740991,
+        "a": -9007199254740991,
+        "😀": "pair",
+        "￿": "last",
+        "\ud800": "lone",
+        "a2": [
+          "\b\f\n\r\t\u0001",
+          "</script>  ",
+          null,
+          false
+        ]
+      },
+      "canonical": "{\"a\":-9007199254740991,\"a2\":[\"\\b\\f\\n\\r\\t\\u0001\",\"</script>  \",null,false],\"z\":9007199254740991,\"\\ud800\":\"lone\",\"😀\":\"pair\",\"￿\":\"last\"}",
+      "sha256": "58de955d2843a7282545eb6e352a5a477010df6d74b1e3c327b416d8b1516c90"
+    },
+    {
+      "value": [
+        "alpha",
+        {},
+        [],
+        true,
+        0,
+        -1
+      ],
+      "canonical": "[\"alpha\",{},[],true,0,-1]",
+      "sha256": "f30896a07287b02f061e5b6f886a64483c0174ff94a88e2c93606cb7cf46ee2c"
+    }
+  ],
+  "reports": [
+    {
+      "schema": "rockstaros.runtime-report/1",
+      "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "requestSha256": "4700b2f4eb67d36989ffca64fbb915232f4bbe6439f153431702cf292bd8ad4e",
+      "claimId": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "model": {
+        "id": "fixture-gguf",
+        "scheme": "gguf-sha256",
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "state": "review",
+      "text": "合成 / Unicode \ud800 🔬",
+      "outputSha256": "927bb9f2aa6aee91dd96ea881b05d8708e2606d1009396e0dc0ede4c84edbebe",
+      "durationMs": 3,
+      "errorCode": null
+    },
+    {
+      "schema": "rockstaros.runtime-report/1",
+      "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "requestSha256": "4700b2f4eb67d36989ffca64fbb915232f4bbe6439f153431702cf292bd8ad4e",
+      "claimId": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "model": {
+        "id": "fixture-gguf",
+        "scheme": "gguf-sha256",
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "state": "unknown",
+      "text": null,
+      "outputSha256": null,
+      "durationMs": null,
+      "errorCode": "TEST_OUTCOME_UNKNOWN"
+    }
+  ]
+}

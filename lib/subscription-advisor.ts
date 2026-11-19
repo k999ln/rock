@@ -83,7 +83,7 @@ function actionAnswer(summary: AdvisorSummary) {
       (alert) => `- **${alert.subscription}** — ${alert.message}`,
     ),
     '',
-    'Skyから支払い・解約は実行しません。内容を確認して、各契約先で本人が対応してください。',
+    'Smithから支払い・解約は実行しません。内容を確認して、各契約先で本人が対応してください。',
   ].join('\n');
 }
 
@@ -151,7 +151,7 @@ function coverageAnswer(summary: AdvisorSummary) {
       ? `未確認: ${coverage.unresolved_sources.join('、')}`
       : '情報源の確認は完了していますが、更新日の不足が残っています。',
     '',
-    '未確認が1つでも残る間、Skyは「全網羅」と判定しません。',
+    '未確認が1つでも残る間、Smithは「全網羅」と判定しません。',
   ].join('\n');
 }
 
@@ -196,7 +196,7 @@ export function answerSubscriptionQuestion(
   if (!normalized) return '質問を入力してください。';
   if (/解約|キャンセル|止めたい|退会/.test(normalized))
     return [
-      'Skyは誤操作を防ぐため、**解約を自動実行しません**。',
+      'Smithは誤操作を防ぐため、**解約を自動実行しません**。',
       '',
       actionAnswer(summary),
       '',
@@ -215,7 +215,7 @@ export function answerSubscriptionQuestion(
   if (/全部|一覧|全体|要約|状況|何件|summary/.test(normalized))
     return overviewAnswer(summary);
   return [
-    '私はSkyの**サブスク顧問**です。PC内の台帳を参照して、次の質問に答えられます。',
+    '私はSmithの**サブスク顧問**です。PC内の台帳を参照して、次の質問に答えられます。',
     '',
     '- 今月いくら？',
     '- 要対応は？',

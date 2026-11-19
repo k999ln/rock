@@ -9,12 +9,12 @@ export async function generateMetadata({
   const campus = findCampus((await params).campus);
   if (!campus) return {};
   return {
-    applicationName: `${campus.shortName} Sky`,
+    applicationName: `${campus.shortName} Smith`,
     manifest: `/sky/campus/${campus.id}/manifest.webmanifest`,
     appleWebApp: {
       capable: true,
       statusBarStyle: 'default',
-      title: `${campus.shortName} Sky`,
+      title: `${campus.shortName} Smith`,
     },
   };
 }

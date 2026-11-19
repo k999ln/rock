@@ -16,7 +16,7 @@ function failure(error: unknown) {
   if (error instanceof SkySubmissionError)
     return json({ error: error.message }, error.status);
   if (error instanceof Error && error.message === 'UNAUTHORIZED_REVIEWER')
-    return json({ error: '有効なSky審査者資格が必要です。' }, 401);
+    return json({ error: '有効なSmith審査者資格が必要です。' }, 401);
   if (error instanceof SyntaxError)
     return json({ error: '審査記録の形式を確認してください。' }, 400);
   return json({ error: 'Tool Packageを審査できませんでした。' }, 503);

@@ -200,7 +200,7 @@ await test('ownership is checked for every job, device, control and book operati
   assert.equal(view.book.revenue, 0);
   assert.equal(view.devices.length, 0);
 });
-await test('Sky connections are one-tap, idempotent and isolated per user', async () => {
+await test('smis connections are one-tap, idempotent and isolated per user', async () => {
   const { a, b } = fixture();
   const first = await a.connectSky({ tool: 'coconala' });
   const replay = await a.connectSky({ tool: 'coconala' });

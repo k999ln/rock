@@ -30,7 +30,6 @@ yarn-error.log*
 
 # local environment
 .env*
-!.env.example
 !**/.env.example
 
 # deployment and generated files
@@ -52,6 +51,8 @@ next-env.d.ts
 /android/.idea/
 **/.gradle/
 **/build/
+!sites/avocado-mini/src/pages/pro/build/
+!sites/avocado-mini/src/pages/pro/build/index.astro
 services/**/work/
 *.jks
 *.keystore
@@ -60,3 +61,13 @@ services/**/work/
 # Python tool caches
 __pycache__/
 *.pyc
+
+.projects/cache
+.projects/vault
+.projects/state.test.json
+.projects/state.local.test.json
+.env
+.env.*
+!.env.example
+.dev.vars*
+!.dev.vars.example

@@ -5,8 +5,8 @@ export function skyAppManifest(os: MetadataRoute.Manifest): MetadataRoute.Manife
   return {
     ...os,
     id: '/sky',
-    name: 'Sky',
-    short_name: 'Sky',
+    name: 'Smith',
+    short_name: 'Smith',
     description: 'ツールやAIを探し、接続して使うマーケットプレイス。',
     start_url: '/sky/marketplace',
     scope: '/sky/',
@@ -23,9 +23,9 @@ export function campusSkyAppManifest(
   return {
     ...base,
     id: `/sky/campus/${campusId}`,
-    name: `${shortName} Sky`,
-    short_name: `${shortName} Sky`,
-    description: `Sky and Zema for ${shortName} students.`,
+    name: `${shortName} Smith`,
+    short_name: `${shortName} Smith`,
+    description: `Smith and Eve for ${shortName} students.`,
     start_url: `/sky/campus/${campusId}/hub`,
     lang: 'en',
   };

@@ -115,3 +115,25 @@
   .orderHeading > .status { margin-left: 54px; }
   .actions > .primary, .actions > .secondary { flex: 1 1 auto; }
 }
+
+.paymentPage { line-height: 1.8; }
+.paymentPage > p { margin: 14px 0; }
+.paymentPage h2 { margin: 30px 0 12px; font-size: 22px; font-weight: 650; letter-spacing: -.025em; }
+.paymentPage h3 { margin: 0 0 12px; font-size: 18px; font-weight: 650; }
+.paymentPage section > p { margin: 10px 0; }
+.paymentPage button { display: inline-flex; align-items: center; min-height: 44px; margin: 5px 8px 5px 0; padding: 9px 14px; border: 1px solid var(--os-line); border-radius: 11px; background: var(--os-raised); color: var(--os-text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.paymentPage button:disabled { opacity: .55; cursor: wait; }
+.paymentPage a { text-decoration: underline; text-underline-offset: 3px; }
+.paymentPage summary { cursor: pointer; margin: 12px 0; color: var(--os-muted); }
+
+/* Eve uses its existing conversation frame; the same payment view supplies only this job's sources. */
+.embeddedPayments { min-width: 0; padding: 12px 0; }
+.usageRow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 22px 0; border-bottom: 1px solid var(--os-line); }
+.paymentPage .usageRow h3 { margin: 0 0 8px; font-size: 14px; }
+.usageAmount { display: inline-block; margin-right: 12px; font-size: 26px; font-weight: 600; letter-spacing: -.025em; }
+.usageBreakdown { display: grid; gap: 10px; margin: 16px 0; }
+.usageBreakdown > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; }
+.usageBreakdown dt { color: var(--os-muted); }
+.usageBreakdown dd { margin: 0; color: var(--os-text); }
+.embeddedPayments .panel { margin: 16px 0 0; padding: 18px; }
+@media (max-width: 620px) { .embeddedPayments .panel { padding: 14px; } .usageRow { padding: 18px 0; } }

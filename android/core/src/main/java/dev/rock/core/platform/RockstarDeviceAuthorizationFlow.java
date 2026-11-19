@@ -20,6 +20,9 @@ public final class RockstarDeviceAuthorizationFlow {
     private static final Pattern SESSION_TOKEN = Pattern.compile("rock_session_[A-Za-z0-9_-]{43}");
     private static final long MAX_LINK_LIFETIME_MS = 15 * 60_000L;
     private static final long MAX_SESSION_LIFETIME_MS = 90L * 24 * 60 * 60_000L;
+    // The server issues after the client starts polling. Allow bounded transport/clock
+    // difference when validating its absolute expiry; never extend the stored expiry.
+    private static final long SESSION_CLOCK_TOLERANCE_MS = 5 * 60_000L;
 
     public interface HttpTransport {
         /** Canonical service origin, for example https://rockstar.example. */
@@ -151,12 +154,17 @@ public final class RockstarDeviceAuthorizationFlow {
         String token = string(response, "accessToken");
         long expiresAt = integer(response, "expiresAt");
         String ownerUserId = string(response, "ownerUserId");
-        if (!SESSION_TOKEN.matcher(token).matches() || expiresAt <= now ||
-            expiresAt - now > MAX_SESSION_LIFETIME_MS || !validOwnerId(ownerUserId))
+        if (!SESSION_TOKEN.matcher(token).matches() || !validSessionExpiry(expiresAt, now) || !validOwnerId(ownerUserId))
             throw new IOException("DEVICE_AUTH_SESSION_INVALID");
         sessions.save(token, expiresAt, ownerUserId);
         authorization.finished = true;
         return finish(PollState.AUTHORIZED, authorization);
+    }
+
+    /** Shared by the handshake and encrypted storage; expiry is still enforced exactly. */
+    public static boolean validSessionExpiry(long expiresAt, long now) {
+        return now > 0 && expiresAt > now &&
+            expiresAt - now <= MAX_SESSION_LIFETIME_MS + SESSION_CLOCK_TOLERANCE_MS;
     }
 
     private static PollResult finish(PollState state, DeviceAuthorization authorization) {

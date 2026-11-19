@@ -43,7 +43,7 @@ export default function CampusSky({ campus }: { campus: CampusConfig }) {
       window.location.assign(`/sky/campus/${campus.id}/manage?view=chat`);
     } catch {
       setNotice(
-        'Your browser could not transfer the draft. Download it, then open Zema in Sky.',
+        'Your browser could not transfer the draft. Download it, then open Eve in smis.',
       );
     }
   }
@@ -56,7 +56,7 @@ export default function CampusSky({ campus }: { campus: CampusConfig }) {
       <div className={styles.inner}>
         <header className={styles.header}>
           <Link href="/sky" className={styles.brand}>
-            avocado <span>/ Sky</span>
+            avocado <span>/ Smith</span>
           </Link>
           <Link className={styles.change} href="/sky/campus">
             Change campus <ArrowUpRight size={14} />
@@ -94,12 +94,12 @@ export default function CampusSky({ campus }: { campus: CampusConfig }) {
         </section>
         <CampusSkyInstall campusName={campus.shortName} />
         <section className={styles.journey} aria-labelledby="campus-journey-title">
-          <p className={styles.eyebrow}>SKY / FROM DISCOVERY TO CONTROL</p>
-          <h2 id="campus-journey-title">Find it. Buy it. Manage it in Sky.</h2>
+          <p className={styles.eyebrow}>Smith / FROM DISCOVERY TO CONTROL</p>
+          <h2 id="campus-journey-title">Find it. Buy it. Manage it in smis.</h2>
           <div className={styles.journeySteps}>
-            <Link href={`/sky/marketplace?campus=${campus.id}`}><strong>01 / Sky Market</strong><span>Review the agent package, price, permissions, and supported device.</span></Link>
+            <Link href={`/sky/marketplace?campus=${campus.id}`}><strong>01 / Smith Market</strong><span>Review the agent package, price, permissions, and supported device.</span></Link>
             <Link href="/sky/purchases"><strong>02 / Purchase</strong><span>Pay through Stripe Checkout. Apple Pay appears only on eligible devices when available. Check the confirmed purchase here.</span></Link>
-            <Link href={hubLink}><strong>03 / Agent Hub + Zema</strong><span>See your purchased packages and work. Review, approve, stop, and retrieve results in Sky.</span></Link>
+            <Link href={hubLink}><strong>03 / Agent Hub + Eve</strong><span>See your purchased packages and work. Review, approve, stop, and retrieve results in smis.</span></Link>
           </div>
           <p className={styles.note}>A paid package grants access only after payment and provider checks. Agent execution and AI usage can have separate approval and charges. Tapping the NFC tag selects this campus; it does not verify your identity or student status.</p>
         </section>
@@ -180,11 +180,11 @@ export default function CampusSky({ campus }: { campus: CampusConfig }) {
                 <Copy size={16} /> Copy
               </button>
               <button onClick={openZema}>
-                Continue in Sky Zema <ArrowUpRight size={16} />
+                Continue in Smith Eve <ArrowUpRight size={16} />
               </button>
             </div>
             <p className={styles.note}>
-              Zema inside Sky lets you review the draft and manage the work. Nothing runs
+              Eve inside Smith lets you review the draft and manage the work. Nothing runs
               automatically; cloud work requires sign-in and any applicable cost
               approval.
             </p>
@@ -217,9 +217,9 @@ export default function CampusSky({ campus }: { campus: CampusConfig }) {
               </span>
             </Link>
             <Link href={hubLink}>
-              <strong>Sky Agent Hub</strong>
+              <strong>Smith Agent Hub</strong>
               <span>
-                Check purchases and manage your agents with Zema{' '}
+                Check purchases and manage your agents with Eve{' '}
                 <ArrowUpRight size={17} />
               </span>
             </Link>

@@ -55,11 +55,11 @@ export default function SkyMcpPlan({ campusId }: { campusId?: CampusId }) {
       if (!response.ok) throw new Error();
       setPlan(await response.json());
       setNotice(
-        'Removed from Sky. A running task or PC process has not been stopped.',
+        'Smithからの接続を外しました。PCで動いている仕事は停止していません。',
       );
       window.dispatchEvent(new Event('sky-mcp-plan'));
     } catch {
-      setNotice('Could not remove this connection. Try again.');
+      setNotice('接続を外せたか確認できません。最新の状態を読み直してください。');
     } finally {
       setRemoving('');
     }
@@ -67,44 +67,43 @@ export default function SkyMcpPlan({ campusId }: { campusId?: CampusId }) {
   const returnTo = campusId ? `/sky/campus/${campusId}/hub` : '/sky';
   return (
     <div
-      aria-label="MCP connection plan"
+      aria-label="接続できるツールの数"
       style={{ fontSize: 14, lineHeight: 1.7 }}
     >
-      {status === 'loading' && <p>Checking your connection plan…</p>}
+      {status === 'loading' && <p>接続の状態を確認しています…</p>}
       {status === 'signin' && (
         <p>
           <Link
             href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`}
           >
-            Sign in to view your free connections ↗
+            サインインして、無料で接続できる数を確認 ↗
           </Link>
         </p>
       )}
       {status === 'error' && (
         <output>
-          Connection plan unavailable.{' '}
+          接続の状態を確認できませんでした。{' '}
           <button type="button" onClick={() => void refresh()}>
-            Try again
+            もう一度確認
           </button>
         </output>
       )}
       {plan && (
         <p>
           <strong>
-            {plan.used} / {plan.freeLimit} MCP slots in use
+            {plan.used} / {plan.freeLimit} 件を接続中
           </strong>{' '}
-          · {plan.tier === 'campus' ? 'Campus student plan' : 'General plan'}
+          · {plan.tier === 'campus' ? '大学生向けプラン' : '一般プラン'}
           {plan.used >= plan.freeLimit &&
-            ' · Free limit reached. Paid expansion is not yet available.'}
+            ' · 無料で接続できる上限に達しました。有料での追加は準備中です。'}
         </p>
       )}
       {plan && plan.connections.length > 0 && (
         <details>
-          <summary>Manage saved connections</summary>
+          <summary>保存した接続を管理</summary>
           <p>
-            Remove an old or unavailable device’s connection to free a slot.
-            This removes its Sky access; use your PC to stop a running task or
-            disconnect the local server.
+            使わなくなった端末の接続を外すと、新しい接続を追加できます。
+            PCで動いている仕事を止める場合は、そのPCで停止してください。
           </p>
           <ul>
             {plan.connections.map((connection) => (
@@ -116,8 +115,8 @@ export default function SkyMcpPlan({ campusId }: { campusId?: CampusId }) {
                   onClick={() => void removeSlot(connection.connectionKey)}
                 >
                   {removing === connection.connectionKey
-                    ? 'Removing…'
-                    : 'Remove from Sky'}
+                    ? '接続を外しています…'
+                    : 'Smithから外す'}
                 </button>
               </li>
             ))}
@@ -128,13 +127,12 @@ export default function SkyMcpPlan({ campusId }: { campusId?: CampusId }) {
       {campusId && plan && plan.tier !== 'campus' && (
         <p>
           <Link href={`/campus?campus=${campusId}&profile=1`}>
-            Set up your student profile ↗
+            大学生として登録する ↗
           </Link>
           <br />
           <small>
-            Use a sign-in identity with your university email. Campus confirms
-            the email domain; selecting “student” alone does not unlock the
-            extra slot.
+            大学のメールアドレスでサインインしてください。メールの所属先を確認してから、
+            接続できる数が増えます。「学生」を選ぶだけでは増えません。
           </small>
         </p>
       )}

@@ -15,7 +15,7 @@
   border-radius: 20px;
   color: var(--os-text);
   background: var(--os-bg);
-  color-scheme: dark;
+  color-scheme: light;
 }
 .dialog :global([data-slot='dialog-close']) { z-index: 2; color: var(--os-text); }
 .header { display: flex; flex-shrink: 0; gap: 12px; padding: 24px 52px 20px 24px; border-bottom: 1px solid var(--os-line); }

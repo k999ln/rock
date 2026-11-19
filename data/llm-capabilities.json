@@ -1,6 +1,85 @@
 {
+  "eveIdentity": {
+    "name": "Eve",
+    "productKind": "LLM",
+    "status": "identity_defined_own_weights_not_created",
+    "authority": "docs/llm-evaluation-architecture.md#eve-llm-identity",
+    "currentRuntime": "existing_models_under_eve_work_surface",
+    "newsProfile": "eve-news-1.0",
+    "ownedWeightsCreated": false,
+    "generalExecutionAccepted": false,
+    "productionAccepted": false,
+    "display": {
+      "productName": "Eve",
+      "separateFields": [
+        "agent_role",
+        "reported_base_model",
+        "execution_device"
+      ],
+      "publicVersion": 100,
+      "ownWeightsNotCreatedDisclosure": true
+    }
+  },
+  "eveNewsModel": {
+    "id": "eve-news-1.0",
+    "status": "designed_not_implemented",
+    "authority": "docs/llm-evaluation-architecture.md#eve-news-1-0",
+    "machineContract": "data/eve-news-model.json",
+    "baseModelSelected": false,
+    "trainedWeightsCreated": false,
+    "politicalNeutralityValidated": false,
+    "publicNewsAccepted": false,
+    "evidenceReviewEvaluation": {
+      "suite": "eve.news-evidence-fixtures/1",
+      "fixtureSha256": "6ecba5195a85e43eab5cbae96cb9aa3fefc485426955fd337e20bc014e2d91d2",
+      "evidence": "docs/evidence/eve-execution-si.json#SI07_newsEvidenceModelSuite",
+      "scope": "8 owner-authored fictional source-relation cases; not general knowledge/truth/political neutrality",
+      "profiles": [
+        {
+          "name": "qwen2.5:1.5b",
+          "digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+          "cases": 8,
+          "criteriaPassed": 2,
+          "fixtureCriteriaPassed": false,
+          "automaticReviewerAccepted": false,
+          "politicalNeutralityValidated": false
+        }
+      ],
+      "selectionAdvice": "Do not infer News review suitability from catalog presence or unrelated planner benchmarks. This measured candidate did not pass the scoped suite.",
+      "recordedAt": "2026-10-22T18:39:11.503Z"
+    }
+  },
+  "executionSiOwnedModel": {
+    "status": "designed_not_implemented",
+    "authority": "docs/llm-evaluation-architecture.md#execution-si-owned-model",
+    "sourceCatalog": "data/execution-si-model-source-catalog.json",
+    "firstSlice": "Eve request to one approved Sky Tool to same-job receipt",
+    "trainingMethodSelected": false,
+    "weightsCreated": false,
+    "runtimeAccepted": false,
+    "cpuLearningReference": {
+      "repository": "https://github.com/GrEarl/microgpt-lesson",
+      "commit": "af735511e13af5881ade5dee0c15151ac23ca2a5",
+      "authority": "docs/llm-evaluation-architecture.md#eve-microgpt-reference",
+      "status": "reviewed_design_only_training_not_started",
+      "codeImported": false,
+      "trainingExecuted": false
+    }
+  },
   "schemaVersion": 1,
-  "updatedAt": "2026-09-19",
+  "updatedAt": "2026-10-20",
+  "userSelectableLocalModels": {
+    "status": "designed_not_implemented",
+    "document": "docs/llm-evaluation-architecture.md#user-selectable-local-models",
+    "firstTarget": "Pixel 10 GL066 / frankel",
+    "initialWeightsBundled": false,
+    "ownerSelectsModel": true,
+    "requiresLicenseFormatRuntimeHashDeviceFit": true,
+    "modelAuthority": "untrusted_content_and_plan_candidates_only",
+    "automaticCloudFallback": false,
+    "skyArtifactAdapterAccepted": false,
+    "secondProfileDeviceAccepted": false
+  },
   "product": {
     "displayName": "avocadoOS",
     "internalId": "dev.rock",
@@ -154,5 +233,104 @@
     "installedVersion": "7.0.107",
     "experimentalEvaluateExportPresent": true,
     "decision": "Sky route and consent-gated runner use AI SDK experimental_evaluate; AI_GATEWAY_API_KEY, provider terms, budget and live acceptance remain configuration gates."
+  },
+  "skyTaskModelSelection": {
+    "status": "implemented_configuration_required",
+    "source": "lib/sky-model-selector.ts",
+    "runtime": "scripts/sky-zoom-local-runtime.mjs",
+    "document": "docs/llm-evaluation-architecture.md#sky-task-model-selection",
+    "connectedTask": "meeting-notes",
+    "candidateScope": "installed loopback Ollama GGUF models, max20 inspected/max3 measured",
+    "authority": "advisory_only",
+    "automaticCloudFallback": false,
+    "requiresGpt": false,
+    "requiresSkyOrLlmLogin": false,
+    "qualityEvidence": "synthetic task fixtures; actual model/live Zoom acceptance recorded separately",
+    "evaluationSuite": "sky-local-model-eval/2",
+    "pipeline": "local LLM summary plus literal source facts",
+    "macInference": "cpu",
+    "estimatedMemoryBudgetFraction": 0.25
+  },
+  "privateLinuxDeployment": {
+    "status": "pixel_native_linux_limited_text_lifecycle_accepted",
+    "model": "Qwen2.5-1.5B-Instruct GGUF",
+    "runtime": "llama.cpp b11723 Linux aarch64",
+    "execution": "fixed text-only Linux process; no model-issued permissions or Tool calls",
+    "authority": "docs/sky-tools-complete-design.md#sky-private-linux-deployment",
+    "entry": "/sky/add/linux",
+    "generalLaunchAllowed": false,
+    "cloudBillingStarted": false,
+    "pixelRuntimeMigrated": false,
+    "evidence": "docs/evidence/sky-private-linux-deployment.json",
+    "pixelNativeLinuxCompute": true,
+    "requestedExecution": "pixel-local-linux",
+    "pixelLocalEntry": "http://127.0.0.1:5199/",
+    "nativeApkIntegrated": false,
+    "quality": "First ambiguous SI request failed content expectation; clarified request produced short draft. Owner review pending."
+  },
+  "skyPixelLinuxEntry": {
+    "authority": "docs/sky-tools-complete-design.md#sky-private-linux-deployment",
+    "status": "owner_pixel_native_text_lifecycle_accepted",
+    "evidence": "docs/evidence/sky-pixel-linux-entry.json",
+    "generalLaunchAllowed": false,
+    "ownerContentReviewAccepted": false
+  },
+  "aiModelManagement": {
+    "recordedAt": "2026-10-20",
+    "authority": "docs/ai-native-os-architecture.md#ai-model-management",
+    "status": "design_recorded_runtime_acceptance_pending",
+    "requiredEvidence": [
+      "same_artifact_manifest_license_hash_and_compatibility",
+      "interrupted_resumed_verified_download_and_safe_cleanup",
+      "same_conditions_two_model_resource_quality_comparison",
+      "local_only_cloud_denial_and_explicit_destination_cost_consent",
+      "scoped_retrieval_citation_vs_generation_and_injection_quarantine",
+      "broker_recheck_before_each_effect_and_job_limits",
+      "old_job_readback_after_model_update_delete_and_restore"
+    ],
+    "acceptedNow": {
+      "existingFixedAndroidProfile": true,
+      "pixelPrivateLinuxLimitedMultiModel": true,
+      "genericModelCatalog": false,
+      "sameArtifactTwoModelBenchmark": false,
+      "cloudAutoFallback": false,
+      "crossEnvironmentProductionAcceptance": false
+    },
+    "nextAction": "Reuse AI02 stager/profile pin and Pixel Linux catalog for one artifact, verify resume/hash/compatibility and two-model measurements, then connect AI05 placement and scoped retrieval to one Broker-controlled job. Record host, Pixel/Linux and Cloud provider evidence separately.",
+    "validation": {
+      "baselineCheck": "passed_RQ01_to_RQ49",
+      "designCheck": "passed_21_domains_34_tools_6_native_families",
+      "llmArchitectureCheck": "passed_5_capabilities_6_adapters",
+      "projectCheck": "passed_104_of_165_tasks",
+      "focusedModelTests": "18_passed_0_failed",
+      "focusedCommand": "node --experimental-strip-types --test tests/model-profile-fixture.test.mjs tests/sky-linux-models.test.mjs tests/sky-model-selector.test.mjs tests/decision-layer.test.mjs",
+      "fullVerify": "failed_at_release_check_before_remaining_gates",
+      "fullVerifyCause": "docs/evidence/launch/web-security-local-current.json input hash for pre-existing modified public/sw.js differs from current source; local production response must be remeasured before release gate can pass",
+      "fullVerifyLogOutsideGit": "/private/tmp/ai-model-management-verify-20261020.log",
+      "gitReadback": {
+        "main": "70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a",
+        "workBranch": "codex/esim-cloud-access",
+        "workBranchHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "localHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "source": "GitHub connector compare refs; direct git ls-remote DNS failed"
+      },
+      "documentSavedLocally": true,
+      "branchCommitCreated": false,
+      "mainMerged": false,
+      "deviceAcceptancePerformed": false,
+      "productionDeployed": false
+    }
+  },
+  "noahStoreIntegration": {
+    "recordedAt": "2026-11-02",
+    "status": "designed_not_implemented",
+    "authority": "docs/noah-agent-model-store-design.md",
+    "contract": "data/noah-agent-model-store-design.json",
+    "eveRole": "shared_intelligence",
+    "noahRole": "composition_store_and_device_lifecycle",
+    "separateSkySystem": false,
+    "existingModelManagementPreserved": true,
+    "genericStoreAcceptance": false,
+    "existingEvidenceUnchanged": true
   }
 }

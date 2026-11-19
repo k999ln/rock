@@ -1,4 +1,5 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 
 import { useMemo, useState, type SyntheticEvent } from 'react';
 import {
@@ -242,7 +243,7 @@ export function LegalIntakeRunner({
         setAiResult(tracked.result.guide);
         setNeedsSignin(tracked.needsSignin);
         setNotice(tracked.warning || (saveHistory
-          ? '端末内のガイドを作成し、本文を含まない実行履歴をSkyに保存しました。'
+          ? '端末内のガイドを作成し、本文を含まない実行履歴をSmithに保存しました。'
           : '端末内のローカルガイドと公的窓口を準備しました。通信は行っていません。'));
         onOutcome?.({ ok: true, text: '端末内の法務ガイドと公的窓口を準備しました。内容はこのカードで確認してください。' });
       } catch {
@@ -326,7 +327,7 @@ export function LegalIntakeRunner({
                   <Bot size={15} />
                 </span>
                 <MessageResponse>
-                  こんにちは。Skyの**法務受付**です。まず安全と期限を確認し、政府・裁判所の公式情報で一般案内を作ります。弁護士が必要な場合だけ、日本語対応の候補と引継ぎ要約を表示します。
+                  こんにちは。Smithの**法務受付**です。まず安全と期限を確認し、政府・裁判所の公式情報で一般案内を作ります。弁護士が必要な場合だけ、日本語対応の候補と引継ぎ要約を表示します。
                 </MessageResponse>
               </MessageContent>
             </Message>
@@ -376,7 +377,7 @@ export function LegalIntakeRunner({
                         <MessageResponse>{aiResult.answer}</MessageResponse>
                       ) : (
                         <p className="legal-agent-thinking">
-                          {aiError || '公式情報の案内を準備しています。'}
+                          {aiError ? <SkyNotice message={aiError} /> : '公式情報の案内を準備しています。'}
                         </p>
                       )}
                     </MessageContent>
@@ -734,7 +735,7 @@ export function LegalIntakeRunner({
                   {copied ? 'コピーしました' : '要約をコピー'}
                 </button>
                 <small>
-                  内容を確認し、ご本人が送信してください。Skyから自動送信はしません。
+                  内容を確認し、ご本人が送信してください。Smithから自動送信はしません。
                 </small>
               </div>
               <div className="legal-runner-lawyers">

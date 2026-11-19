@@ -1,11 +1,619 @@
 {
-  "version": "1.98",
-  "decidedAt": "2026-10-01",
+  "crossProviderUsage": {
+    "recordedAt": "2026-10-22",
+    "status": "local_source_full_verify_passed_public_and_payout_pending",
+    "taskIds": [
+      "BIL02",
+      "AI02",
+      "AI05",
+      "SKY14",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "authority": "docs/sky-billing.md#cross-provider-usage-observation",
+    "sources": [
+      "lib/sky-usage-observation.ts",
+      "lib/llm-providers.ts",
+      "lib/remote-ai-text-http.ts",
+      "app/api/sky/a2a-delegations/route.ts",
+      "components/sky-usage-details.tsx",
+      "components/workbench.tsx",
+      "components/sky-chat-workspace.tsx",
+      "components/sky-free-cloud-panel.tsx",
+      "tests/sky-usage-observation.test.mjs"
+    ],
+    "gpuRented": false,
+    "liveChargesExecuted": false,
+    "developerPayoutEnabled": false,
+    "publicDeployed": false,
+    "evidence": "docs/evidence/sky-cross-provider-usage.json",
+    "fullVerifyExitCode": 0
+  },
+  "eveModelIdentityAndTraining": {
+    "recordedAt": "2026-10-21",
+    "taskIds": [
+      "WEB04",
+      "OS10",
+      "AI02",
+      "AI05"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "public_v100_display_verified_training_not_started",
+    "authority": "docs/rockstaros-complete-design.md#eve-cross-device-sync",
+    "trainingRequirements": "docs/llm-evaluation-architecture.md#eve-training-prerequisites",
+    "source": [
+      "components/eve-sync-workspace.tsx",
+      "components/eve-sync-workspace.module.css"
+    ],
+    "modelWeightsCreated": false,
+    "trainingStarted": false,
+    "publicDeployment": {
+      "version": 100,
+      "sourceSha": "626d03fb45a1a87e2b8764d421c2425c658fd7a6",
+      "url": "https://avoado.si/os/eve",
+      "status": "succeeded_ui_readback_passed"
+    }
+  },
+  "eveIdentity": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner corrected the previous explanation: Eve has become the LLM, not merely a work interface",
+    "productKind": "LLM",
+    "name": "Eve",
+    "surfaces": [
+      "/os/eve",
+      "/chat"
+    ],
+    "newsProfile": "eve-news-1.0",
+    "ownWeightsAccepted": false,
+    "modelOutputsAuthorizeTools": false,
+    "authority": "docs/llm-evaluation-architecture.md#eve-llm-identity"
+  },
+  "rockstarosPortableRuntimePackage": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner requested Eve and RockstarOS as a common package across hardware with the same billing system",
+    "primaryWorkstream": "Android / Device / Local AI",
+    "taskIds": [
+      "OS10",
+      "DSP01",
+      "MAT15"
+    ],
+    "authority": "docs/device-support-architecture.md#portable-runtime-package",
+    "package": "packages/rockstaros-runtime",
+    "status": "HOST_CLIENT_RUNTIME_IMPLEMENTED_PHYSICAL_AND_NATIVE_OS_PENDING",
+    "billing": "reuse_existing_account_contract_quote_reservation_usage_invoice_no_device_base_fee_duplication",
+    "localModelsIncluded": false,
+    "miniPhysicalAccepted": false,
+    "universalNativeOsImageAccepted": false,
+    "requirementsChanged": false
+  },
+  "avocadoMiniArchitectureResearchBridge": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner linked the architecture 1000-essay thread and said Mini can solve the researched problems; clarified as a proposed field-to-design use case",
+    "authority": "docs/avocado-mini-r5/phone-spatial-interface.md#23-建築構想を実際の場所へ結ぶ2026-10-21",
+    "primaryWorkstream": "Material Invention / avocadoMini",
+    "taskIds": [
+      "MAT15",
+      "MAT18"
+    ],
+    "scope": "Connect one selected and consented real place, measured observations, versioned CAD/BIM alternatives, expert decisions and post-use outcomes to one owner/place/project/job record",
+    "requirementsChanged": false,
+    "siteSelected": false,
+    "physicalMiniAcceptance": false
+  },
+  "eveNewsTimeline20261021": {
+    "reason": "Owner explicitly requested that retrieved news appear in the avoado.si/os timeline and that the eventual Eve News model appear at avoado.si/os/eve after it is built",
+    "publicNewsLinksPath": "https://avoado.si/os#news",
+    "futureModelPath": "https://avoado.si/os/eve",
+    "sourceMetadataProvider": "GDELT DOC 2.0",
+    "currentStatus": "source_links_published_model_not_built",
+    "modelGeneratedArticlesPublished": false,
+    "firstPartyNewsModelTrained": false
+  },
+  "eveNewsModel20261021": {
+    "reason": "Owner explicitly requested creating a politically viewpoint-neutral, uncensored news-publishing LLM",
+    "authority": "docs/llm-evaluation-architecture.md#eve-news-1-0",
+    "machineContract": "data/eve-news-model.json",
+    "meaningOfUncensored": "No exclusion solely for political viewpoint; show original source where permitted and label unsupported claims instead of presenting them as verified facts",
+    "primaryWorkstream": "Android / Device / Local AI",
+    "taskIds": [
+      "AI02",
+      "AI05",
+      "SKY21",
+      "HOME01"
+    ],
+    "status": "design_only",
+    "trainedWeightsAccepted": false,
+    "newsPublished": false
+  },
+  "executionSiOwnedLlmDesign20261021": {
+    "reason": "Owner explicitly requested making an LLM, then directed design first",
+    "authority": "docs/llm-evaluation-architecture.md#execution-si-owned-model",
+    "primaryWorkstream": "Android / Device / Local AI",
+    "taskIds": [
+      "AI02",
+      "AI05",
+      "SKY21"
+    ],
+    "firstSlice": "Eve to one Sky Tool to same-job evidence receipt",
+    "status": "design_only",
+    "sourceResearch": "Fifteen manually reviewed publisher model cards are a seed set, not the Hub inventory; the 2026-10-21 Hugging Face text-generation listing showed 426979 repositories including derivatives. Three dataset cards, upstream GitHub repositories, and X source-use terms are recorded in data/execution-si-model-source-catalog.json",
+    "trainingMethodSelected": false,
+    "trainedWeightsAccepted": false,
+    "runtimeChanged": false
+  },
+  "avocadoProUsBuildToOrder20261021": {
+    "reason": "Owner explicitly requested real purchase, procurement, assembly, shipping and a viable business",
+    "firstMarket": "US",
+    "sellerNameOwnerStated": "avokado LLC",
+    "ownerStatedContactCityState": "New York, NY",
+    "ownerStatedRegistrationState": "NY; public record not yet checked",
+    "contactAddressUse": "correspondence only",
+    "assemblyAndReturnsLocationsConfirmed": false,
+    "fundingPreference": "bootstrap one unit at a time",
+    "candidateSku": "pro-studio-16",
+    "firstPrototypeEnclosureOwnerSelected": "silver Lian Li A4-H2O; Mac Studio-like low custom enclosure deferred to later version",
+    "paymentProviderSelected": false,
+    "paymentProviderPreference": "compare Stripe with other US providers before selecting",
+    "primaryWorkstream": "Business Pilots",
+    "taskIds": [
+      "B05",
+      "DSP01",
+      "WEB13"
+    ],
+    "interestPilotContinues": true,
+    "paidSalesAccepted": false,
+    "procurementAuthorizedWithoutExactSpendAndTerms": false,
+    "source": "docs/workstreams/09-business-pilots.md#avocadoproを米国で実際に販売製造発送するgate2026-10-21"
+  },
+  "avocadoProFirstBuildPilot20261021": {
+    "reason": "Owner explicitly asked to launch avocadoPro as a business immediately, while the earlier chosen purchase mode was configuration save plus purchase-interest intake",
+    "primaryWorkstream": "Business Pilots",
+    "taskIds": [
+      "B05",
+      "DSP01",
+      "WEB13"
+    ],
+    "publicInterestPilotAllowed": true,
+    "firstBuildInterestLive": true,
+    "siteVersion": 40,
+    "url": "https://avocadopro.si/#pro-interest",
+    "paidHardwareOrdersAllowed": false,
+    "hardwareSpecificationAccepted": false,
+    "priceAccepted": false,
+    "deliveryPromiseAllowed": false,
+    "generalRockstarOSLaunchAllowed": false,
+    "authority": "docs/workstreams/09-business-pilots.md#avocadopro先行募集pilot2026-10-21"
+  },
+  "avocadoMiniDeviceReferenceStudy": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner showed a detached Nest Thermostat, explicitly instructed that many similar devices be used as references, then twice asked for more relevant examples",
+    "authority": "docs/avocado-mini-r5/embedded-portable-connectivity.md#既製デバイスを参照する方法2026-10-21",
+    "primaryWorkstream": "Material Invention / avocadoMini",
+    "taskIds": [
+      "MAT15",
+      "MAT18"
+    ],
+    "referenceCount": 31,
+    "referenceCategories": [
+      "mounting_and_power",
+      "detachable_core",
+      "game_mode_switching",
+      "projection_and_shared_visuals",
+      "gesture_and_biometrics",
+      "satellite_and_cellular_connectivity"
+    ],
+    "scope": "Primary-source comparison of mounting, detachment, power, maintenance, spatial input and output, identity and connectivity; product form remains open",
+    "physicalMiniAcceptanceFromReferences": false,
+    "requirementsChanged": false
+  },
+  "companyValueTenHourPrompt": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly requested a prompt to think for ten hours about how avokado should increase company value",
+    "prompt": "docs/prompts/avokado-company-value-ten-hour-strategy.md",
+    "executionAgent": ".cursor/agents/avokado-strategy-executor.md",
+    "durationRequestedMinutes": 600,
+    "executionStatus": "PROMPT_CREATED_RESEARCH_NOT_STARTED",
+    "primaryWorkstream": "Business Pilots",
+    "taskIds": [
+      "B02",
+      "B03",
+      "B05",
+      "B06"
+    ],
+    "valuationCalculated": false,
+    "customerValidationPerformed": false,
+    "runtimeChanged": false
+  },
+  "regionalRevitalizationCommunity": {
+    "recordedAt": "2026-10-20",
+    "mission": "Spend time making towns and everyday life better",
+    "businessFocus": "regional_revitalization",
+    "collaboratorsSought": [
+      "architects",
+      "designers",
+      "global_real_estate_experts"
+    ],
+    "facebookPageRole": "existing_public_entry_linking_three_official_sites",
+    "facebookGroupStatus": "proposed_not_created",
+    "facebookCommunityDecision": "use_as_primary_discussion_infrastructure",
+    "networkLoop": [
+      "regional_question",
+      "expert_and_member_discussion",
+      "consented_editorial_audio_video",
+      "new_audience_and_questions",
+      "local_proposal_and_evaluation"
+    ],
+    "mediaDestinations": [
+      "facebook",
+      "phone_and_pc_audio",
+      "television_pitch_subject_to_rights_and_broadcaster_agreement"
+    ],
+    "microphonePolicy": "explicit_user_initiation_permission_and_separate_recording_publication_consent",
+    "successMeasures": [
+      "useful_answers",
+      "return_participation",
+      "coauthored_local_proposals",
+      "local_evaluation"
+    ],
+    "recruitmentStatus": "draft_not_posted",
+    "firstRegionAndProject": "undecided",
+    "authority": "docs/workstreams/09-business-pilots.md#地方創生とfacebook専門家コミュニティ"
+  },
+  "gameMaterialOperationsPlan": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly listed Game, creation, Material Invention, development, distribution, and operations requirements.",
+    "type": "existing_RQ01_to_RQ49_acceptance_detail",
+    "primaryWorkstream": "Game / Market / Fund",
+    "crossWorkstreams": [
+      "Material Invention / avocadoMini",
+      "Git / CI / Operations",
+      "Security / Identity / Compliance"
+    ],
+    "taskIds": [
+      "AI06",
+      "DX01",
+      "GX01",
+      "GX02",
+      "MAT02",
+      "MAT03",
+      "MAT05",
+      "MAT06",
+      "MAT15",
+      "MAT18",
+      "G04",
+      "LCH06",
+      "DB01"
+    ],
+    "status": "requirements_mapped_execution_plan_only",
+    "gamePlan": "docs/workstreams/08-game-market-fund.md#game-creation-material-20261020",
+    "materialPlan": "docs/workstreams/11-material-invention-avocado-mini.md#material-creation-20261020",
+    "operationsPlan": "docs/workstreams/10-git-ci-operations.md#operations-acceptance-20261020",
+    "separateGates": [
+      "prediction_market",
+      "fund",
+      "real_game_exchange"
+    ],
+    "notAccepted": [
+      "real_game_sandbox",
+      "real_funds",
+      "physical_mini",
+      "production_operations"
+    ]
+  },
+  "monthlyBillingContract20261020": {
+    "reason": "Owner explicitly supplied the 2026-10-20 pricing, contract and billing requirements",
+    "taskId": "BIL02",
+    "authority": "docs/sky-billing.md#rockstar-monthly-billing-contract",
+    "monthlyBaseMinor": 1600,
+    "currency": "USD",
+    "includedAllowanceRequired": true,
+    "allowanceQuantityAndRatesConfirmed": false,
+    "providerBillingAccepted": false
+  },
+  "smartPayments20261021": {
+    "reason": "Owner explicitly requested ultimately smart payments after the billing development prompt",
+    "taskId": "BIL02",
+    "authority": "docs/sky-billing.md#smart-payment-experience",
+    "goals": [
+      "one_owner_view_with_next_safe_action",
+      "transparent_total_and_category_separation",
+      "approved_cap_and_cost_aware_suggestions",
+      "no_duplicate_charge_on_unknown_outcome",
+      "self_service_reconciliation_dispute_export_and_recovery"
+    ],
+    "currentImplementation": "read_only_next_action_on_existing_sky_payments_summary",
+    "commonMonthlyInvoiceAccepted": false,
+    "providerSandboxAccepted": false,
+    "productionBillingAccepted": false
+  },
+  "eveWorkDesk": {
+    "recordedAt": "2026-10-20",
+    "developmentPrompt": "docs/prompts/eve-work-desk-development.md",
+    "executionPriorityReason": "Owner explicitly said the SI must execute and chose Eve-to-Sky-Tool execution as the first target",
+    "firstExecutionTarget": "Eve reviewed request -> connected Sky Tool runner -> actual result in the same conversation/job; candidate draft is distinct from Tool success",
+    "primaryWorkstream": "Product / UX",
+    "authority": "docs/rockstaros-complete-design.md#eve-work-desk",
+    "role": "unified_owner_job_intake_approval_progress_stop_review_result_and_usage",
+    "intake": [
+      "conversation_to_draft",
+      "confirm_objective_inputs_expected_result",
+      "sky_selected_capability_same_owner_job"
+    ],
+    "plan": [
+      "agent_tool_order_and_dependencies",
+      "destination_scope_execution_target",
+      "quote_cap_deadline_stop_condition"
+    ],
+    "ownerVisibleStates": [
+      "draft",
+      "awaiting_approval",
+      "running",
+      "awaiting_review",
+      "completed",
+      "stopped",
+      "failed"
+    ],
+    "executionRule": "dispatch_only_after_explicit_owner_approval_of_plan_revision_scope_destination_max_cost_and_deadline",
+    "continuityRule": "accepted_job_may_continue_after_client_closes_only_within_approved_scope_budget_and_deadline; new_cost_permission_or_destination_waits_for_new_approval",
+    "observability": [
+      "step_progress",
+      "reserved_cost",
+      "finalized_itemized_usage",
+      "stop_request_and_executor_stop_evidence_separate"
+    ],
+    "resultRule": "owner_review_then_save_export_and_independent_app_readback; failure_explains_remaining_data_and_resume_path",
+    "compatibility": "reuse_existing_workflow_broker_wallet_a2a_export_and_legacy_zema_identifiers",
+    "acceptance": "host_fixture_then_provider_sandbox_then_device_and_deployed_artifact_separately",
+    "status": "requirements_and_design_recorded_runtime_acceptance_pending"
+  },
+  "dataSyncRecoveryAlgorithms": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly listed data isolation, unique IDs, idempotency, revision conflicts, state transitions, lease, checkpoint, uncertain results, artifact integrity, offline sync, restore and lifecycle handling",
+    "primaryWorkstream": "Product / UX",
+    "taskId": "OS10",
+    "authority": "docs/rockstaros-complete-design.md#data-sync-recovery-algorithms",
+    "requires": [
+      "owner_scoped_access",
+      "unique_job_operation_artifact_usage_ids",
+      "idempotent_job_billing_payment",
+      "revision_and_transition_guards",
+      "lease_heartbeat_fencing_and_checkpoint",
+      "uncertain_result_reconciliation",
+      "source_projection_receipt_separation_and_artifact_hash",
+      "offline_queue_and_conflict_display",
+      "cross_environment_restore_test",
+      "retention_deletion_export_and_contract_end"
+    ],
+    "runtimeAcceptance": "pending",
+    "preserves": [
+      "RQ01-RQ49",
+      "existing_workflow_wallet_and_device_gates"
+    ]
+  },
+  "avocadoProVisualAssembly": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner corrected v35: the empty-chassis assembly took precedence over introducing the AI PC and made the configuration flow hard to understand",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "taskIds": [
+      "WEB13",
+      "DSP01"
+    ],
+    "experience": [
+      "product_intro_and_large_complete_pc_image_first",
+      "ai_pc_purpose_and_beyond_desk_product_goal",
+      "choose_model_tap_part_confirm_choice_flow",
+      "complete_internal_layout_by_default",
+      "optional_assembly_demo_without_mutating_saved_choices",
+      "mobile_actions_only_while_pc_image_is_visible"
+    ],
+    "sitesVersion": 37,
+    "sitesSourceCommit": "56eb61c589dba99f8ec56e4acab9eab0a0a5a0ef",
+    "liveUrl": "https://avocadopro.si/#pro-build",
+    "physicalCompatibilityAccepted": false,
+    "priceAccepted": false,
+    "paymentEnabled": false,
+    "generalProductLaunchAccepted": false
+  },
+  "avocadoMiniSpatialArchitecture": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner clarified that Mini should make an empty place visually become an architectural design space and that their invited group sees the same scene inside a limited observation area, described as a candle in a tunnel",
+    "authority": "docs/avocado-mini-r5/phone-spatial-interface.md#21-何もない場所に建築を見せそこで設計する",
+    "primaryWorkstream": "Material Invention / avocadoMini",
+    "taskId": "MAT15",
+    "experience": [
+      "visible_architecture_in_previously_empty_space",
+      "walk_around_and_edit_without_physical_touch",
+      "shared_registered_scene_for_invited_viewers",
+      "limited_observation_area_with_measured_optical_leakage",
+      "versioned_CAD_BIM_and_measurement_return"
+    ],
+    "preserves": [
+      "RQ01-RQ49",
+      "phone_spatial_minimum",
+      "Game_creation_and_intake",
+      "single_core_200mm_goal"
+    ],
+    "physicalDisplayAccepted": false,
+    "opticalPrivacyAccepted": false,
+    "precisionDesignAccepted": false
+  },
+  "companyValueStrategy": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner explicitly directed avokado to take a strategy that particularly increases company value",
+    "authority": "docs/rockstaros-1.0-strategy.md#2026-10-19-avokadoの企業価値を高める経営判断",
+    "primaryWorkstream": "Business Pilots",
+    "taskIds": [
+      "B02",
+      "B03",
+      "B05",
+      "B06"
+    ],
+    "decisionCriteria": [
+      "repeatable_customer_value",
+      "verified_retention_and_payment",
+      "job_level_contribution_after_direct_costs",
+      "reusable_platform_assets",
+      "material_risk_reduction"
+    ],
+    "valuationCalculated": false,
+    "marketDemandProven": false,
+    "newPricingOrPublicationAuthorized": false,
+    "preserves": [
+      "RQ01-RQ49",
+      "SIM_eSIM_service_direction",
+      "independent_Pixel_QEMU_Game_Mini_Pro_gates"
+    ]
+  },
+  "avocadoMiniProductName": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner explicitly said to stop calling the product R5M",
+    "displayName": "avocadoMini",
+    "r5AndR5mAreNotProductNames": true,
+    "legacyDesignIdentifiersPreserved": true,
+    "commercialModelNumber": null
+  },
+  "avocadoMiniFactoryDevelopment": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner explicitly requested rigorous internal circuit calculations and development to take avocadoMini design to a factory",
+    "authority": "docs/avocado-mini-r5/factory-development/README.md",
+    "taskId": "MAT15",
+    "factoryEngineeringRfqReady": true,
+    "manufacturingReleaseReady": false,
+    "preserveR5MinimumFeatures": true
+  },
+  "version": "1.128",
+  "decidedAt": "2026-11-02",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
+  "nextPrompt": "docs/prompts/rockstaros-development-chats.md",
+  "simEsimServiceOnboardingDevelopmentPrompt": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner requested a concrete development prompt for SIM/eSIM onboarding and identity, permission and safety requirements",
+    "prompt": "docs/prompts/sim-esim-service-onboarding-development.md",
+    "referenceThread": "codex://threads/01a14d54-daee-7c30-87a8-faea84641a40",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "taskId": "SIM01",
+    "executionStatus": "PROMPT_PREPARED_IMPLEMENTATION_NOT_STARTED_BY_THIS_CHANGE"
+  },
+  "monthlyBillingDevelopmentPrompt": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner requested a development prompt for the previously specified pricing, contract and billing requirements",
+    "prompt": "docs/prompts/rockstar-monthly-billing-development.md",
+    "primaryWorkstream": "Wallet / Billing / Providers",
+    "taskId": "BIL02",
+    "executionStatus": "PROMPT_PREPARED_IMPLEMENTATION_NOT_STARTED_BY_THIS_CHANGE"
+  },
+  "dataSyncRecoveryDevelopmentPrompt": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner explicitly requested a development prompt after data/sync/recovery requirements were recorded as design only",
+    "prompt": "docs/prompts/rockstaros-data-sync-recovery-development.md",
+    "primaryWorkstream": "Product / UX",
+    "taskId": "OS10",
+    "executionStatus": "PROMPT_PREPARED_IMPLEMENTATION_NOT_STARTED_BY_THIS_CHANGE",
+    "preserves": [
+      "RQ01-RQ49",
+      "existing_workflow_wallet_and_device_gates"
+    ]
+  },
+  "skyAgentSmithTenHourDevelopmentPrompt": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner explicitly asked to create a prompt for ten hours of Agent Smith development after an ambiguous earlier request had started research",
+    "prompt": "docs/prompts/agent-smith-ten-hour-development.md",
+    "executionStatus": "PROMPT_PREPARED_NOT_STARTED",
+    "durationRequestedMinutes": 600,
+    "researchMinutesNotCreditedToDevelopment": 7,
+    "primaryWorkstream": "Sky / MCP",
+    "taskIds": [
+      "SKY14",
+      "SKY15",
+      "SKY21"
+    ],
+    "generalLaunchAllowed": false
+  },
+  "skyZoomInterpretation": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner clarified that existing Zoom translated captions and Voice Translator should be used instead of inventing an independent interpreter",
+    "authority": "docs/sky-tools-complete-design.md#sky-zoom-interpretation",
+    "tasks": [
+      "SKY14",
+      "SKY15",
+      "SKY21"
+    ],
+    "nativeZoomGuide": "/sky/add/zoom/interpret",
+    "customCaptionBridgeRetired": true,
+    "allLanguagesAccepted": false,
+    "translatedVoiceDelivered": false,
+    "generalLaunchAllowed": false
+  },
+  "esimSecurityChainFiveHourResearchPrompt": {
+    "recordedAt": "2026-10-18",
+    "reason": "User clarified that eSIM is intended as the security-chain trust starting point and requested a five-hour research execution prompt covering dedicated Linux cloud processing",
+    "prompt": "docs/prompts/esim-security-chain-five-hour-research.md",
+    "executionStatus": "FIVE_HOUR_RESEARCH_STARTED_2026-10-19T02:27:47Z",
+    "durationRequestedMinutes": 300,
+    "primaryWorkstream": "Security / Identity / Compliance",
+    "taskId": "SIM01",
+    "preservesExistingMiniResearch": true,
+    "productionSecurityAccepted": false,
+    "referenceThread": "codex://threads/01a14d54-daee-7c30-87a8-faea84641a40"
+  },
+  "avocadoMiniFiveHourInventionPrompt": {
+    "recordedAt": "2026-10-18",
+    "reason": "User gave five hours for product invention and explicitly requested an execution prompt",
+    "prompt": "docs/prompts/avocado-mini-five-hour-invention.md",
+    "executionStatus": "PROMPT_PREPARED_NOT_STARTED",
+    "minimumFunctionsPreserved": true,
+    "physicalAcceptance": false,
+    "manufacturingApproved": false
+  },
+  "avocadoMiniSatellitePilotRegion": {
+    "recordedAtUtc": "2026-10-19T03:00:23Z",
+    "region": "United States",
+    "reason": "Owner explicitly selected the United States as the first region for avocadoMini satellite connectivity validation during the five-hour invention work",
+    "scope": "provider_module_equipment_authorization_and_hotspot_contract_research",
+    "legacyThurayaX5AndSatSleeveExcludedAsUsServiceCandidates": true,
+    "otherThurayaNorthAmericanM2mAutomaticallyExcluded": false,
+    "satelliteServiceContracted": false,
+    "deviceCertified": false,
+    "physicalTransmissionAuthorized": false,
+    "generalLaunchAllowed": false,
+    "authority": "docs/product-baseline.md#2026-10-19-avocadomini衛星通信の初回検証地域"
+  },
+  "avocadoMiniOrbitInvention": {
+    "recordedAt": "2026-10-18",
+    "reason": "User explicitly requested a three-hour invention of a product satisfying the already stated Mini minimum functions",
+    "status": "three_hour_candidate_design_completed_physical_unverified",
+    "design": "docs/avocado-mini-r5/product-invention-r1.md",
+    "preserves": [
+      "RQ01-RQ49",
+      "avocadoMiniPhoneSpatialMinimum",
+      "R5_200mm_one_core",
+      "Game_and_living_use",
+      "SIM_eSIM_RockstarOS_service_access"
+    ],
+    "candidateNameIsFinal": false,
+    "physicalAcceptance": false,
+    "manufacturingApproved": false,
+    "sourceThreadsReviewed": [
+      "codex://threads/01a135ff-4d40-77c3-bf40-e614db076b0e",
+      "codex://threads/01a15082-9371-7d30-a75f-6745dc248ec0"
+    ],
+    "formDirection": "slender_silver_portable_core_black_sensor_band_flush_architectural_trim_axial_ejection_hand_detach",
+    "uniform96mmIs": "engineering_packaging_comparison_not_approved_exterior",
+    "desktopDiscBaseRole": "optional_stationary_dock_not_portable_core",
+    "oldNestedCanRole": "retired_visual_candidate",
+    "exactProductVideoReviewed": false,
+    "linkedHiggsfieldProjectsReviewed": [
+      "2895ffaf-daf4-4c00-8508-26eb7895ff1a",
+      "289d1861-f105-41a2-9b1a-4568d9686405"
+    ],
+    "inventionFollowupReason": "User asked to invent after reviewing the linked home-usage and shape-nonbinding experience videos",
+    "candidateMechanism": "one_core_three_positions_aperture_lift_place_passport_scene_contract_route_guardian",
+    "firstPrototypeLocation": "reachable_dry_island_mock_counter",
+    "singleClosedBoxPhysicalAcceptance": false
+  },
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-sky-wallet-game-design.md",
   "productIdentity": {
@@ -42,6 +650,58 @@
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
     "runtimeChangedByThisDesign": false
+  },
+  "avocadoMiniPurposeFirstExperience": {
+    "recordedAt": "2026-10-18",
+    "status": "explicit_product_direction_design_only",
+    "reason": "User clarified that Mini should support Game and remain easy to use across purposes after a housing-centered summary",
+    "design": "docs/avocado-mini-r5/README.md#目的から使うmini住まいゲーム制作携行を一つの製品体験にする2026-10-18",
+    "principle": "start_from_the_users_goal_and_continue_the_same_work_across_play_creation_living_space_and_portability",
+    "firstScreen": [
+      "what_do_you_want_to_do",
+      "resume",
+      "verified_capabilities",
+      "stop"
+    ],
+    "preserves": [
+      "R5_current_requirements",
+      "RockstarOS_Sky_Zema_common_contract",
+      "Game_requirements",
+      "architecture_interior_sound_direction"
+    ],
+    "gtaVIResearchRole": "experience_and_creator_workflow_reference_not_integration_or_runtime_acceptance",
+    "runtimeChanged": false,
+    "physicalAcceptance": false
+  },
+  "avocadoMiniPhoneSpatialMinimum": {
+    "recordedAt": "2026-10-18",
+    "status": "explicit_minimum_product_requirements_design_only",
+    "source": "User clarified minimum Mini features and supplied an 11.45-second visual reference for a luminous spatial notification",
+    "design": "docs/avocado-mini-r5/phone-spatial-interface.md",
+    "minimumFunctions": [
+      "sensing",
+      "biometric_identity",
+      "approved_device_service_interoperation",
+      "RockstarOS_Sky_Zema_use",
+      "direct_satellite_bidirectional_wan_to_wifi",
+      "detached_pocket_wifi",
+      "spatial_incoming_call_notification",
+      "spatial_tap_answer_decline"
+    ],
+    "aspiration": "a_new_form_of_mobile_phone_with_sensor_led_interaction_across_living_game_creation_and_portability",
+    "directSatelliteExternalTerminalCountsAsAccepted": false,
+    "videoIsAppearanceReferenceNotHardwareEvidence": true,
+    "gates": [
+      "MP01",
+      "MP02",
+      "MP03",
+      "MP04",
+      "MP05",
+      "MP06"
+    ],
+    "physicalTests": 0,
+    "runtimeChanged": false,
+    "manufacturingApproved": false
   },
   "builtEnvironmentStronghold": {
     "recordedAt": "2026-10-14",
@@ -173,7 +833,7 @@
       "RockstarOS",
       "replaceable_llm",
       "Sky",
-      "Zema"
+      "Eve"
     ],
     "avocadoMiniStage": "design_only_no_physical_prototype_or_sales",
     "pixel10Role": "development_reference_device_not_own_hardware_product",
@@ -435,7 +1095,9 @@
         "credentials",
         "precise_location"
       ]
-    }
+    },
+    "currentDefaultDelivery": "docs/sim-led-product-architecture.md#esim-service-attachment",
+    "localOfflineCapabilityScope": "Retained for accepted compatible executors; not a prerequisite for iOS or other service clients"
   },
   "materialInvention": {
     "requested": true,
@@ -555,14 +1217,15 @@
   "sky": {
     "displayName": "Sky",
     "role": "automation_discovery_connection_and_catalog",
-    "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Zema.",
+    "definition": "Home and Sky share one information marketplace for news sources, Hugging Face models/data/Spaces and agents; Eve handles requests and work.",
     "inventory": "docs/sky.md",
     "internalSurfaces": [
       "/csv"
     ],
-    "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
+    "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Eve; /chat, /work and /activity remain compatibility routes.",
     "legacyInternalName": "hub",
-    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
+    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name.",
+    "userFreedomPolicy": "docs/sky-tools-complete-design.md#sky-user-freedom"
   },
   "campus": {
     "displayName": "Campus",
@@ -627,7 +1290,7 @@
     },
     {
       "id": "chat",
-      "displayName": "Zema",
+      "displayName": "Eve",
       "legacyDisplayName": "Chat",
       "route": "/chat",
       "role": "request_create_approve_stop_status_results_and_work_history"
@@ -648,7 +1311,7 @@
   ],
   "homeExperience": {
     "defaultRoute": "/",
-    "skyRoute": "/sky",
+    "skyRoute": "/",
     "returnPolicy": "os_routes_return_to_os_home_public_routes_return_to_product_home",
     "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
     "smartphoneLayout": {
@@ -693,11 +1356,13 @@
       "autoExecute": false
     },
     "latestDirection": {
-      "date": "2026-10-09",
-      "reason": "利用者がデザイン未統一を再指摘し、HomeだけでなくWeb主要アプリ共通の外観・導線へ修正",
-      "scope": "Home/Sky/Zema/Wallet/Market/Settings shared appearance and navigation; existing authority unchanged"
+      "date": "2026-10-20",
+      "reason": "本人がHomeとSkyを分けず、ニュース・LLM・Agentを一つの情報マーケットで追加しEveへつなぐよう明示",
+      "scope": "Unified Sky home at /; /sky compatibility redirect; existing Eve/workflow authority retained"
     },
-    "focusMode": "hide_intro_and_examples_keep_global_navigation"
+    "focusMode": "hide_intro_and_examples_keep_global_navigation",
+    "legacySkyRoute": "/sky",
+    "currentFrontend": "homeTimelineFrontend: explicit owner instruction replaces stacked hero/cards with native post Home; older focus/composition details are historical for this surface."
   },
   "launchPage": {
     "domainSeparation": {
@@ -717,18 +1382,19 @@
       "customDomainStatus": "pending_dns_and_tls_validation",
       "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site"
     },
-    "route": "/rockstaros",
-    "role": "public_sim_esim_service_home",
-    "osHomeRoute": "/",
+    "route": "/os",
+    "role": "canonical_os_workspace_entry",
+    "osHomeRoute": "/os",
     "installGuideRoute": "/rockstaros/guide",
-    "directOsHomeLink": false,
-    "serviceDetailsLocation": "public_service_home",
-    "primaryAction": "start_service_onboarding",
-    "secondaryAction": "view_sim_esim_plans",
+    "directOsHomeLink": true,
+    "serviceDetailsLocation": "service_settings_and_connect",
+    "primaryAction": "open_os_workspace",
+    "secondaryAction": "connect_account_or_device",
     "publicDownloadFallback": "/connect",
     "visualDirection": "light_product_showcase_with_scroll_tower",
     "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable",
-    "hardwareProgramRoute": "/avocado-mini"
+    "hardwareProgramRoute": "/avocado-mini",
+    "previousRoute": "/rockstaros"
   },
   "visualSystem": {
     "surfaces": [
@@ -739,7 +1405,7 @@
     ],
     "background": "near_black",
     "productHomeAppearance": "light_scroll_product_showcase",
-    "accent": "ice_blue",
+    "accent": "forest_green_bronze",
     "headline": "heavy_display_latin",
     "metadata": "monospace_uppercase",
     "primaryControl": "rounded_high_contrast",
@@ -762,7 +1428,8 @@
       "mobile_header_overflow"
     ],
     "businessFunctionalityChanged": false,
-    "interactionFunctionalityImproved": true
+    "interactionFunctionalityImproved": true,
+    "previousAccent": "ice_blue"
   },
   "systemMaintenance": {
     "route": "/settings/system",
@@ -830,7 +1497,7 @@
     "externalProviders": "excluded_from_first_os_full_build_required_before_public_earning_launch"
   },
   "chatInteraction": {
-    "displayName": "Zema",
+    "displayName": "Eve",
     "legacyDisplayName": "Chat",
     "compatibilityRoute": "/chat",
     "defaultRouting": "sky_auto",
@@ -1420,7 +2087,17 @@
     "salesOrProfitGuaranteed": false,
     "architecture": "docs/mercari-revenue-loop.md"
   },
-  "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. The first physical target is the owner-selected Japan-market Pixel 10 GL066 / frankel; this identity does not establish image, flash, boot or release readiness. BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
+  "hardwarePolicy": "Default access attaches the same RockstarOS service environment to existing operating systems through capability-based clients/adapters. Per-device OS images are optional native research, not prerequisites for service use. Pixel 10 GL066/frankel remains the native reference device; QEMU, physical native, client-only and unsupported evidence stay separate. No universal feature or zero-touch iOS acceptance is claimed.",
+  "deviceAdaptationDevelopmentPrompt": {
+    "recordedAt": "2026-10-21",
+    "prompt": "docs/prompts/rockstaros-device-adaptation-development.md",
+    "upstreamPrompt": "docs/prompts/rockstaros-os-device-foundation-development.md",
+    "taskIds": [
+      "OS10",
+      "DSP01"
+    ],
+    "executionStatus": "PROMPT_PREPARED_IMPLEMENTATION_PENDING"
+  },
   "deviceSupportPolicy": {
     "status": "source_tag_and_device_layout_frozen_not_physical_support",
     "architecture": "docs/device-support-architecture.md",
@@ -1449,7 +2126,9 @@
     "fullBuildInputGatePassed": false,
     "externalProviderBoundary": "app_server_gate_excluded_from_first_os_full_build_required_before_public_earning_launch",
     "cloudSpendApproved": false,
-    "physicalFlashAuthorized": false
+    "physicalFlashAuthorized": false,
+    "defaultDelivery": "existing_os_common_service_attachment",
+    "nativeRequiredForStandardAccess": false
   },
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
@@ -1494,6 +2173,21 @@
       "onboarding and reconciliation diagnostics"
     ],
     "osSubscriptionChange": "none; ATM fee clarification does not change existing OS contract"
+  },
+  "gameCreationAndIntakeIntent": {
+    "recordedAt": "2026-10-18",
+    "source": "User explicitly requested both game creation and accepting games made by others after clarifying that build alone was insufficient",
+    "requirements": [
+      "RQ14",
+      "AI06"
+    ],
+    "creationPath": "Create, playtest, revise and export an authored game as one versioned work; Mini hands-free creation is a device-specific candidate",
+    "intakePath": "Import an authored game or its authorized URL, diagnose compatibility, then launch, control, save, update and recover on each accepted device",
+    "sharedIdentity": "The same game/artifact ID and revision connect the two paths without requiring all games to use a single engine",
+    "deviceAcceptance": "Pro and Mini are evaluated separately on the exact runtime, hardware and game revision; unknown or incompatible games receive explicit reasons",
+    "boundaries": "No arbitrary binary authority, automatic external-game redistribution, Wallet permission, game-currency exchange or public release from a successful build or import",
+    "status": "design_only_general_game_intake_and_creation_runtime_not_accepted",
+    "design": "docs/workstreams/08-game-market-fund.md#game-creation-and-intake"
   },
   "atmFees": {
     "rockFeeMinor": 0,
@@ -1669,7 +2363,9 @@
     "offlineStopIsUnconfirmed": true,
     "resumeByReconciliationNotResubmission": true,
     "implementationStatus": "REQUIREMENTS_AND_ACCEPTANCE_PLAN_ONLY",
-    "cloudDeployed": false
+    "cloudDeployed": false,
+    "serviceAttachmentDesign": "docs/sim-led-product-architecture.md#esim-service-attachment",
+    "localModelContinuation": "Model stored on the executing Linux; scoped autonomy and executor/network state remain separate"
   },
   "satelliteConnectivityIntent": {
     "decidedAt": "2026-09-30",
@@ -1691,12 +2387,13 @@
       "service",
       "game"
     ],
-    "architecture": "existing_core_and_capability_adapters",
+    "architecture": "common_rockstaros_service_attachment_and_capability_adapters",
     "gtaExplicitlyIncluded": true,
     "priorPartnershipStatementPreserved": true,
     "gtaRuntimeVerified": false,
     "document": "docs/sky-mcp-architecture.md",
-    "status": "REQUIREMENTS_ONLY"
+    "status": "REQUIREMENTS_ONLY",
+    "currentDesign": "docs/sim-led-product-architecture.md#esim-service-attachment"
   },
   "agentInterconnectionIntent": {
     "decidedAt": "2026-09-30",
@@ -1793,7 +2490,8 @@
       "hardware_first_service_positioning"
     ],
     "applicability": "SIM/eSIM offering only; ordinary Web and campus NFC entry do not require SIM/eSIM; latest shared-entry policy is authoritative for standalone Sky",
-    "sharedEntrySpecification": "docs/sim-led-product-architecture.md#sky-shared-entry"
+    "sharedEntrySpecification": "docs/sim-led-product-architecture.md#sky-shared-entry",
+    "currentDefaultDelivery": "docs/sim-led-product-architecture.md#esim-service-attachment"
   },
   "cloudOsUsageBusinessIntent": {
     "decidedAt": "2026-10-05",
@@ -1940,9 +2638,11 @@
       "/market",
       "/settings"
     ],
-    "theme": "graphite_silver",
+    "theme": "warm_white_ink_silver_rose",
     "stateColors": "semantic_with_labels",
-    "minimumTouchTargetPx": 44
+    "minimumTouchTargetPx": 48,
+    "composition": "responsive_1_618_to_1_on_desktop_single_column_on_phone",
+    "authority": "docs/rockstaros-complete-design.md#frontend-composition"
   },
   "gtaRealityBridgeIntent": {
     "recordedAt": "2026-10-09",
@@ -1989,8 +2689,199 @@
       "hostLocalAgentWorkflowImplemented": true
     }
   },
+  "siDedicatedOsDirection": {
+    "recordedAt": "2026-10-18",
+    "source": "explicit_user_clarification",
+    "meaningOfSi": "superintelligence",
+    "purpose": "use_cloud_llms_and_sky_agents_from_rockstaros",
+    "firstPartySurfacesInsideOs": [
+      "home_cloud_llm_request",
+      "sky_agent_tool_marketplace",
+      "zema_job_approval_progress_stop_result"
+    ],
+    "primaryFlow": "home_request_to_sky_selection_connection_to_zema_quote_budget_approval_execution_stop_result_to_itemized_usage_and_recovery",
+    "simEsimRole": "service_access_and_distribution_channel_not_the_meaning_of_si_or_os_binary_storage",
+    "singleOwnerJobContractAcrossClients": true,
+    "modelOutputGrantsBrokerAuthority": false,
+    "terminalLinux": "optional_isolated_capability_on_accepted_devices",
+    "browserPerformance": "measure_on_same_device_network_and_job_before_optimization",
+    "preserves": [
+      "RQ01-RQ49",
+      "sim_esim_led_service_offer",
+      "standalone_sky_web_pwa",
+      "wallet_game_and_other_application_contracts"
+    ],
+    "cloudProviderAccepted": false,
+    "nativeOsAccepted": false,
+    "document": "docs/rockstaros-1.0-architecture.md#rockstaros-再設計一つの仕事を端末間で完了するサービスos",
+    "taskId": "UXRS01"
+  },
+  "skyAddAgentEcosystem": {
+    "recordedAt": "2026-10-18",
+    "source": "利用者: Terminal/Linuxと好きなローカルLLMからSkyへ成果を返し、Skyをあらゆる対応先にAgentをAddできる層にする。悩み起点で簡単に制作・収益化する。",
+    "clarification": "利用者: Zoomでこの機能が欲しい時、Skyに対応AgentがあればAdd Pluginして希望の処理を実行できる。アプリと欲しい機能からAgentを探す入口を持つ。",
+    "status": "design_direction_existing_sdk_and_one_time_marketplace_reused",
+    "document": "docs/sky-tools-complete-design.md#sky-add-agent-ecosystem",
+    "modelDocument": "docs/llm-evaluation-architecture.md#user-selectable-local-models",
+    "userPainAndPracticalOutcomeFirst": true,
+    "targetAppAndDesiredFunctionDiscovery": true,
+    "inAppMomentDeliveryRequested": true,
+    "noPriorZoomAppInstallRequested": true,
+    "deviceAgentPreferredForNoHostPlugin": true,
+    "deviceAgentMeaning": "Sky or RockstarOS local runtime uses owner-granted OS accessibility to observe and operate the foreground target app; it cannot enter a device with no Sky runtime or OS permission",
+    "zoomHostPluginRequiredForBasicUiControl": false,
+    "screenReadAndUiActionPermissionsSeparate": true,
+    "boundedDeviceJobLeaseForLowRiskSteps": true,
+    "externalSendRequiresFreshOwnerApproval": true,
+    "deviceAgentZoomAcceptance": "not_accepted_mac_ax_probe_typecheck_only",
+    "zoomInClientPrototypeStatus": "local_manual_input_preview_only",
+    "tenHourResearchWindowUtc": "2026-10-18T07:21:00Z/2026-10-18T17:21:00Z",
+    "zoomExampleStatus": "product_example_only_no_external_app_acceptance",
+    "supportsLocalTerminalAndOwnerSelectedModelArtifacts": "design_only",
+    "targetAdaptersRequiredForEachApp": true,
+    "arbitraryAppControlClaimed": false,
+    "creatorPath": [
+      "problem",
+      "template",
+      "local_sandbox",
+      "review",
+      "add",
+      "actual_job",
+      "sale_and_earnings_reconciliation"
+    ],
+    "reuses": [
+      "sky_tool_sdk",
+      "rock_studio",
+      "sky_marketplace",
+      "sky_app_output_plugins",
+      "zema_workflow",
+      "wallet_and_stripe_connect"
+    ],
+    "currentCommerceScope": "reviewed_one_time_jpy_package_sale_with_10_percent_marketplace_fee_source_path_only",
+    "newRecurringOrOutcomePricingAccepted": false,
+    "creatorPayoutProductionAccepted": false,
+    "linuxArtifactAdapterAccepted": false,
+    "externalAppGeneralSdkAccepted": false,
+    "taskIds": [
+      "SKY14",
+      "SKY15",
+      "SKY21",
+      "AI02",
+      "BIL01"
+    ],
+    "privateZoomLab": {
+      "direction": "user_requested_private_create_add_run_review_stop",
+      "path": "/sky/add/zoom/lab",
+      "scope": "development_and_loopback_only_tab_local_manual_notes_recipe",
+      "generalLaunchAllowed": false,
+      "zoomConnected": false
+    }
+  },
+  "sharedSiDeviceProfiles": {
+    "recordedAt": "2026-10-18",
+    "source": "利用者: RockstarOSはavocadoMiniとavocadoProにも入り、baseは同じSIシステムだがhardwareごとに出力と機能が異なる。",
+    "proClarification": "利用者: proはai専用pcだよ。以前の用途未定の上位端末候補という解釈を訂正する。",
+    "status": "product_direction_design_only",
+    "commonSystem": [
+      "owner_identity",
+      "service_entitlement",
+      "sky_catalog",
+      "zema_job_revision",
+      "broker_scope_approval",
+      "budget_usage",
+      "artifact_receipt",
+      "storage_recovery"
+    ],
+    "deviceSpecific": [
+      "boot_update_recovery",
+      "input_output",
+      "local_compute",
+      "display_audio_spatial_rendering",
+      "power_thermal_privacy"
+    ],
+    "targetProfiles": [
+      "pixel_10_frankel_gl066",
+      "avocado_mini_r5",
+      "avocado_pro_ai_dedicated_pc_pending_hardware_specification"
+    ],
+    "avocadoProProductType": "ai_dedicated_pc",
+    "avocadoProPrimaryExperience": "owner_scoped_ai_agent_work_local_or_approved_cloud_execution_artifact_recovery",
+    "awayFromPcCreationGoal": "mini_requests_revises_and_reviews_same_owner_job_while_approved_pro_or_cloud_executes_without_pc_screen_operation",
+    "phoneFreeCommunicationGoal": "mini_accepted_own_network_call_and_message_without_smartphone_or_pro_as_required_relay",
+    "avocadoProExploration": {
+      "source": "Owner expressed interest in price competition, strong NVIDIA GPU use and semiconductor holdings, then requested ten design mockups.",
+      "nvidiaGpuPreference": true,
+      "priceCompetition": "hypothesis_not_final_offer",
+      "bulkSemiconductorPurchaseAuthorized": false,
+      "mockGallery": "docs/avocado-pro-mocks/README.md",
+      "mockCount": 20,
+      "preferredVisualDirection": "studio_like_low_rounded_aluminum_original_design",
+      "studioVariantCount": 10,
+      "studioVisualFirstCandidate": "12-studio-performance",
+      "hardwareCandidateDesign": "docs/device-support-architecture.md#pro-internals",
+      "hardwareCandidateStatus": "unselected_value_16gb_performance_32gb_compact_gb10_comparison",
+      "siteExperience": "single_builder_service_mobile_direct_part_action_any_order_assembly_configuration_purchase_interest",
+      "siteSource": "sites/avocado-mini/src/pages/pro/index.astro",
+      "siteBuilderState": "v32_live_service_only_mobile_quick_fit_any_order_auto_next_save_share_private_purchase_interest_no_checkout",
+      "hardwareSkuPricingAndManufacturingAccepted": false,
+      "siteVisualReferenceInstruction": "2026-10-19 owner: もっとpcの中身がリアル製品であって欲しい。実在部品の型番・寸法・メーカー仕様を表示し、画像は製品写真/実装証拠と区別する。",
+      "realReferenceExamples": [
+        "ASUS Dual GeForce RTX 5060 Ti OC 16GB",
+        "ASUS ROG STRIX B850-I GAMING WIFI",
+        "AMD Ryzen 7 9700X",
+        "Kingston FURY Beast 2x32GB DDR5",
+        "Samsung 990 PRO 2TB M.2 2280",
+        "Corsair SF750 SFX",
+        "Noctua NF-A12x25 PWM"
+      ],
+      "illustrationStatus": "generated_original_silver_shell_and_open_inside_concept_not_product_photo_cad_or_fit_acceptance",
+      "ownerCustomizationScope": "component_customization_only_no_advertising_slots",
+      "purchaseMode": "save_configuration_and_accept_purchase_interest_no_payment_or_reservation",
+      "purchaseSiteVersion": 29,
+      "assemblyInteraction": "main_product_view_outside_inside_six_direct_hotspots_part_tray_click_keyboard_or_drag_to_fit",
+      "assemblyIsPhysicalCompatibilityEvidence": false
+    },
+    "pixelGrapheneImageAutomaticallyPortableToMiniOrPro": false,
+    "avocadoMiniR5RequirementsPreserved": true,
+    "avocadoProHardwareSpecificationVerified": false,
+    "miniOrProNativeOsAccepted": false,
+    "document": "docs/device-support-architecture.md#shared-si-device-profiles",
+    "taskIds": [
+      "OS10",
+      "DSP01",
+      "MAT15",
+      "MAT18"
+    ]
+  },
   "grapheneReuseIntent": {
     "recordedAt": "2026-10-10",
+    "minimalSiProfileRecordedAt": "2026-10-18",
+    "minimalSiProfileDocument": "docs/device-support-architecture.md#graphene-si-minimal",
+    "initialUserSurfaces": [
+      "cloud_llm_request",
+      "sky_marketplace_agents",
+      "zema_jobs_approval_results_usage",
+      "optional_terminal_linux",
+      "general_browser"
+    ],
+    "retainUnderlyingPlatform": [
+      "boot_and_pixel_hardware_support",
+      "cellular_sim_esim_and_networking",
+      "android_and_grapheneos_isolation",
+      "vanadium_webview",
+      "signed_updates_and_recovery",
+      "owner_storage_backup_and_accessibility"
+    ],
+    "notRequiredOnInitialHomeOrImage": [
+      "game_fund_and_wallet_earnings_surfaces",
+      "bulk_optional_tool_preload",
+      "local_llm_weights",
+      "optional_android_auto_and_duplicate_browsers"
+    ],
+    "existingRequirementsAndApplicationGatesPreserved": true,
+    "browserBottleneckMeasured": false,
+    "userSelectableLocalModelProfiles": "design_only_no_bundled_weights_or_arbitrary_model_acceptance",
+    "initialPackageAllowlistFrozen": false,
     "source": "利用者: グラフェンのいいとこどりをしよう。",
     "status": "design_direction_not_runtime_acceptance",
     "document": "docs/device-support-architecture.md#graphene-reuse",
@@ -2119,9 +3010,80 @@
     "fitnessAgentProviderAccepted": false,
     "productionAccepted": false
   },
+  "esimNativeSiSubscriptionIntent": {
+    "recordedAt": "2026-10-18",
+    "source": "利用者: OSをeSIMから導入し、eSIM契約終了で使えなくする。毎月定額の基本サービス、追加有料LLM/Agent、Linuxで動くローカルLLM。先行補足は月内の規定token枠。",
+    "scope": "native_rockstaros_si_offer_on_accepted_exact_devices",
+    "supersedesOptionalEsimForThisOffer": true,
+    "standaloneSkyWebPwaRemainsSeparate": true,
+    "physicalSimOfferRemainsSeparate": true,
+    "esimContainsOsBinary": false,
+    "nativeInstallRequiresSignedImageBootRecoveryAcceptance": true,
+    "entitlementRequires": [
+      "verified_issuer_contract_active",
+      "signed_install_receipt",
+      "authenticated_owner",
+      "device_binding",
+      "accepted_monthly_service_contract"
+    ],
+    "baseMonthlyStartsAt": "service_activated_at_after_explicit_contract_and_verified_esim_binding",
+    "baseIncludes": "versioned_eligible_cloud_llm_monthly_token_allowance",
+    "tokenAllowanceAmountDecided": false,
+    "basePriceAndProrationDecided": false,
+    "extraPaidModelsAndAgents": "opt_in_quote_cap_approval_verified_usage_month_end_invoice",
+    "automaticOverageWithoutConsent": false,
+    "localLinuxModelUse": "managed_launcher_service_entitlement_gated_no_cloud_token_meter",
+    "onVerifiedEsimEnd": "stop_new_rockstar_managed_cloud_agent_and_linux_model_execution_preserve_basic_phone_account_billing_and_artifact_recovery",
+    "offlineImmediateRevocationGuaranteed": false,
+    "offlineLeaseDurationDecided": false,
+    "carrierBillingIntegrationAccepted": false,
+    "issuerIntegrationAccepted": false,
+    "nativeOsAccepted": false,
+    "paidUsageBillingAccepted": false,
+    "document": "docs/sim-led-product-architecture.md#esim-si-subscription",
+    "billingDocument": "docs/sky-billing.md#esim-si-plan",
+    "taskIds": [
+      "BIL02",
+      "SIM01",
+      "OS10",
+      "RLS02",
+      "AI02"
+    ],
+    "currentScopeNote": "Optional native series; standard product default is the later eSIM service-attachment design"
+  },
   "agentMonthlyPostpaidIntent": {
     "date": "2026-10-15",
     "source": "携帯料金と同じシステムでAgent利用を毎月請求、強い支払義務",
+    "clarifiedAt": "2026-10-18",
+    "clarification": "RockstarOS/Skyの利用開始から月末請求し、eSIMやapp決済だけより明確な継続契約の商材を導入する",
+    "commercialOfferCandidate": "RockstarOS SI Managed Service account contract",
+    "contractActivation": "explicit_payer_acceptance_and_payment_method_setup_before_first_billable_si_use",
+    "billableStart": "first_paid_os_sky_service_use_after_contract_activation",
+    "nativeSiBaseMonthlyException": "The 2026-10-18 eSIM native SI offer starts its base monthly fee at contractual service_activated_at; this first-paid-use field only applies to the earlier usage-billed managed-service candidate.",
+    "nonBillableEvents": [
+      "marketplace_browsing",
+      "free_feature_use",
+      "sim_esim_claim",
+      "app_install"
+    ],
+    "existingOsMonthlyFeePreserved": true,
+    "newMonthlyAmountDecided": false,
+    "calendarMonthClose": true,
+    "contractTimezoneAndProration": "to_be_fixed_in_order_form",
+    "separateInvoiceLines": [
+      "os_service_access",
+      "cloud_llm_sky_agent_usage",
+      "tool_product_purchase",
+      "device_sale_or_lease_if_accepted",
+      "carrier_service_if_separately_contracted",
+      "tax_and_external_cost"
+    ],
+    "contractAccountMonthlyCapAndCreditLimitRequired": true,
+    "serviceRestrictionForOverdue": "new_paid_cloud_execution_only_with_dispute_payment_export_routes_retained",
+    "firstPilotHypothesis": "us_business_managed_service_by_avokado_llc",
+    "jurisdictionStatus": "pilot_hypothesis_not_owner_decision",
+    "japanExpansion": "requires_local_recurring_contract_tax_payment_method_and_support_acceptance",
+    "managedDeviceBundle": "optional_after_exact_device_signed_os_and_recovery_acceptance",
     "billingCycle": "monthly",
     "settlementDirection": "postpaid",
     "scope": "contract_account_agent_usage",
@@ -2132,5 +3094,2286 @@
     "jurisdiction": "undecided",
     "productionBillingEnabled": false,
     "document": "docs/sky-billing.md"
+  },
+  "skyUserFreedomIntent": {
+    "recordedAt": "2026-10-18",
+    "source": "利用者の明示指示: 人を自由にする側としてSkyを設計し、Sky自体にも閉じ込められないようにする。",
+    "status": "authoritative_design_direction_runtime_acceptance_pending",
+    "document": "docs/sky-tools-complete-design.md#sky-user-freedom",
+    "requirements": [
+      "RQ01",
+      "RQ02",
+      "RQ04",
+      "RQ08",
+      "RQ18",
+      "RQ22",
+      "RQ24"
+    ],
+    "taskIds": [
+      "SKY07",
+      "SKY14",
+      "SKY15",
+      "SKY21",
+      "AI02",
+      "BIL02"
+    ],
+    "purpose": "Increase the owner's ability to act, choose and refuse, including leaving Sky.",
+    "principles": [
+      "owner_selected_agents_providers_and_compatible_local_execution",
+      "visible_data_scopes_costs_recommendation_reasons_and_commercial_interests",
+      "explicit_consent_and_refusal_without_unauthorized_dispatch",
+      "stop_revoke_and_block_new_scheduled_or_cloud_dispatch",
+      "owner_data_export_readable_without_sky_login_or_network",
+      "migration_with_new_identity_consent_and_compatibility_checks",
+      "authenticated_recovery_within_retention_without_paid_reactivation",
+      "owner_controlled_privacy_deletion_and_no_resurrection_after_backup_restore"
+    ],
+    "exportDesign": {
+      "status": "planned_contract_not_implemented_archive_schema",
+      "formats": [
+        "versioned_manifest",
+        "utf8_json",
+        "markdown_or_text_summary",
+        "licensed_original_artifact_files"
+      ],
+      "include": [
+        "job_and_artifact_ids_and_revisions",
+        "snapshot_time",
+        "schema_and_tool_versions",
+        "file_types_sizes_hashes_counts",
+        "provenance_and_licenses",
+        "usage_and_receipts",
+        "owner_selected_saved_settings_and_memory",
+        "retention_omissions_and_compatibility"
+      ],
+      "exclude": [
+        "oauth_tokens",
+        "private_keys",
+        "session_cookies",
+        "recovery_secrets",
+        "execution_approval_tokens",
+        "other_owners_data"
+      ],
+      "partialOrExpiredMustBeExplicit": true
+    },
+    "contractEndRule": "Keep existing eSIM/SI managed execution termination; separate authenticated data recovery from paid execution entitlement and do not block cancellation or recovery on unresolved provider reconciliation.",
+    "preservedBoundaries": [
+      "existing_monthly_and_marketplace_pricing",
+      "verified_usage_reservations_and_invoice_reconciliation",
+      "provider_costs_and_author_licenses",
+      "existing_data_retention_and_minimum_legal_audit_holds",
+      "broker_owner_scope_revision_and_budget_checks",
+      "base_phone_emergency_and_os_functions"
+    ],
+    "acceptanceIds": [
+      "SF01",
+      "SF02",
+      "SF03",
+      "SF04",
+      "SF05",
+      "SF06",
+      "SF07",
+      "SF08"
+    ],
+    "runtimeImplemented": false,
+    "crossProviderMigrationAccepted": false,
+    "accountExitAccepted": false,
+    "firstImplementation": "Preserve existing dirty work and sync main handoff/migrations; accept a representative owner export and reading it without Sky before full migration and account exit.",
+    "selectedWorkExport": {
+      "status": "source_implemented_local_regressions_passed_browser_visual_and_production_pending",
+      "route": "/api/sky/exports/{jobId}?revision={revision}",
+      "entry": "/sky/outputs",
+      "format": "self_contained_html_with_manifest_json_markdown",
+      "schema": "sky.owner-work-export/1",
+      "allAccountExportAccepted": false,
+      "accountExitAccepted": false,
+      "evidence": "docs/evidence/sky-owner-export-local.json",
+      "independentParserAccepted": true,
+      "browserFileOpenAccepted": false,
+      "productionAccepted": false
+    }
+  },
+  "skyMissionAndReleaseIntent": {
+    "recordedAt": "2026-10-18",
+    "source": "利用者: 本人主導・退出を主軸に実装し、ユーザーが欲しいAgentを作成して対応ソフトへAddする。一般ローンチせず、米国/スペイン/日本/韓国へ、人の中にAgentを入れられたら共有したい。",
+    "primaryPurpose": "owner_agency_choice_refusal_portability_and_exit_including_leaving_sky",
+    "applicationLayer": "official_and_user_created_agents_added_to_supported_software_workflows_and_devices",
+    "firstImplementation": "selected_owner_work_export_readable_without_sky",
+    "zoomCreatorPath": [
+      "desired_function",
+      "existing_studio_sdk_template",
+      "bounded_manual_sandbox",
+      "schema_scope_cost_stop_review",
+      "owner_consent",
+      "registry_and_zema_binding",
+      "authorized_host_add",
+      "typed_output_and_revocation"
+    ],
+    "zoomUserCreatedAgentEndToEndAccepted": false,
+    "arbitraryAppControlAccepted": false,
+    "generalLaunchAllowed": false,
+    "releaseDocument": "docs/sky-launch-design.md#sky-private-review",
+    "governmentShareCandidates": [
+      "US",
+      "ES",
+      "JP",
+      "KR"
+    ],
+    "requestedGovernmentShareMilestone": "人の中にAgentを入れられた段階",
+    "humanIntegrationResearchStatus": "unproven_long_term_goal_not_software_acceptance",
+    "governmentRecipientConfirmed": false,
+    "governmentShareReady": false,
+    "externalMessageSent": false
+  },
+  "productDomainRoles": {
+    "recordedAt": "2026-10-18",
+    "service": "avoado.si",
+    "mini": "avocadomini.si",
+    "pro": "avocadopro.si",
+    "serviceSpellingOwnerConfirmed": true,
+    "source": "lib/product-domains.ts",
+    "component": "components/product-domain-navigation.tsx",
+    "workstream": "docs/workstreams/05-web-pwa-sites.md",
+    "privateZoomLabOnProductDomains": false,
+    "dnsOrDeploymentChanged": false
+  },
+  "skyFoundationArchitecture": {
+    "recordedAt": "2026-10-18",
+    "direction": "RockstarOS is the product root and contains Sky, Eve and a supported Linux execution environment. Sky provides capability registration/add/connection inside the OS; Eve is the unified SI work surface; OS Core owns permissions, entitlement, budget, persistence/recovery and usage.",
+    "reason": "Explicit owner correction and implementation instruction in this chat",
+    "contracts": [
+      "sky.app-request/1",
+      "sky.app-result/1"
+    ],
+    "sources": [
+      "lib/sky-app-contract.ts",
+      "lib/sky-app-foundation.ts",
+      "lib/sky-app-local-channel.ts",
+      "lib/sky-zoom-recipe.ts",
+      "lib/workflow.ts"
+    ],
+    "osAuthority": "Existing Broker/identity/capability/approval remains enforced by the OS, never by LLM outputs",
+    "entry": "docs/sky-tools-complete-design.md#sky-foundation",
+    "publicLaunchAllowed": false,
+    "physicalOrProductionAcceptance": false,
+    "previousDirection": "Sky is the common foundation; RockstarOS completes its device execution, permission, isolation, persistence and recovery; hardware uses per-device adapters; Zoom/Planner are applications of the same contracts",
+    "hierarchyCorrectedAt": "2026-10-20",
+    "hierarchyAuthority": "docs/rockstaros-complete-design.md",
+    "hierarchyReason": "Latest user: OS is the root and contains Sky, Eve and Linux."
+  },
+  "skyTaskModelSelection": {
+    "recordedAt": "2026-10-18",
+    "reason": "Explicit owner request for actual private Zoom use, login-free LLM candidates and Sky task-specific selection",
+    "document": "docs/sky-tools-complete-design.md#sky-zoom-local-runtime",
+    "sources": [
+      "lib/sky-model-selector.ts",
+      "scripts/sky-zoom-local-runtime.mjs",
+      "scripts/sky-zoom-reader.swift",
+      "components/sky-zoom-device-lab.tsx",
+      "lib/sky-zoom-recipe.ts"
+    ],
+    "gptRequired": false,
+    "modelLoginRequired": false,
+    "automaticCloudFallback": false,
+    "generalLaunchAllowed": false,
+    "scope": "private macOS Zoom visible-text read and meeting-notes measurements; live acceptance separate",
+    "evaluationSuite": "sky-local-model-eval/2",
+    "pipeline": "local LLM summary plus literal heading extraction; model decision/owner fields ignored",
+    "memoryBudgetFraction": 0.25,
+    "macInference": "cpu"
+  },
+  "avocadoMiniAmbientCreationCommunication": {
+    "recordedAt": "2026-10-18",
+    "reason": "User explicitly required making things away from a PC and communicating without holding a mobile phone",
+    "authority": "docs/product-baseline.md",
+    "design": "docs/avocado-mini-r5/product-invention-r1.md",
+    "gate": "OI07",
+    "minimumExperience": [
+      "phone_free_call_and_short_message_from_docked_mini",
+      "pc_free_creation_brief_revision_artifact_review_save_stop_on_same_mini"
+    ],
+    "implementationAccepted": false,
+    "physicalAcceptance": false
+  },
+  "skyZoomMeetingAcceptance": {
+    "recordedAt": "2026-10-18",
+    "reason": "Explicit owner request for a real private Zoom meeting, export and readback without Sky; owner selected a self-only test meeting",
+    "document": "docs/sky-tools-complete-design.md#sky-zoom-local-runtime",
+    "scope": "same meeting text, shared Sky job, exported standalone HTML and offline readback",
+    "generalLaunchAllowed": false,
+    "presentation": "Explicit owner correction: anyone should understand the exported result. Decisions, owner and undecided items first; technical records collapsed; plain-language explanation in chat."
+  },
+  "skyPlainLanguage": {
+    "recordedAt": "2026-10-18",
+    "reason": "User explicitly corrected Zoom-only treatment and requested ordinary-language screens, progress, results, errors and exports across Sky; no general release.",
+    "authority": "docs/sky-tools-complete-design.md#sky-plain-language",
+    "scope": [
+      "all_sky_screens",
+      "progress",
+      "results",
+      "errors",
+      "portable_exports",
+      "future_device_adapters"
+    ],
+    "firstView": [
+      "what_was_done",
+      "what_is_available",
+      "what_remains",
+      "next_action",
+      "costs_and_limits"
+    ],
+    "technicalDetails": "optional_disclosure_without_hiding_permissions_costs_uncertainty_or_loss",
+    "preserveOriginalContent": true,
+    "unknownStateIsSuccess": false,
+    "unknownCostIsFree": false,
+    "automaticExternalRetry": false,
+    "generalRelease": "on_hold"
+  },
+  "skyPrivateLinuxDeployment": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner explicitly selected execution inside Pixel Linux, including local UI/work management/inference/storage; the earlier Pixel-to-PC Linux acceptance is supporting evidence only. No general release.",
+    "authority": "docs/sky-tools-complete-design.md#sky-private-linux-deployment",
+    "sources": [
+      "lib/sky-linux-local.ts",
+      "lib/workflow.ts",
+      "scripts/sky-linux-local-runtime.mjs",
+      "toolkits/sky-linux-local/worker.py",
+      "toolkits/sky-linux-local/runtime-lock.json",
+      "components/sky-linux-local-lab.tsx",
+      "app/sky/add/linux/page.tsx",
+      "lib/sky-private-loopback.mjs",
+      "toolkits/sky-linux-local/pixel-server.mjs",
+      "toolkits/sky-linux-local/pixel-client.tsx",
+      "toolkits/sky-linux-local/pixel-bootstrap.py",
+      "toolkits/sky-linux-local/prepare-pixel.py",
+      "toolkits/sky-linux-local/node-lock.json",
+      "scripts/build-sky-linux-pixel.mjs"
+    ],
+    "privateRoute": "/sky/add/linux",
+    "generalLaunchAllowed": false,
+    "productionBillingAccepted": false,
+    "allDeviceMigrationAccepted": false,
+    "executionTarget": "pixel-local-linux",
+    "pixelLocalRoute": "http://127.0.0.1:5199/",
+    "pixelNativeLinuxExecutionAccepted": true,
+    "acceptedScope": "Owner Pixel10 existing Terminal Linux, one pinned text model,3 saved prompt agents, shared workflow/cost/export/process stop. No generic or full OS acceptance."
+  },
+  "skyPixelLinuxEntry": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner explicitly requested native Pixel Sky start/request/review/save/stop without everyday Terminal input; general release remains on hold.",
+    "authority": "docs/sky-tools-complete-design.md#sky-private-linux-deployment",
+    "sources": [
+      "toolkits/sky-linux-local/android-entry.patch",
+      "toolkits/sky-linux-local/install-startup.py",
+      "scripts/sky-linux-local-runtime.mjs",
+      "toolkits/sky-linux-local/owner-tests/dev/rock/shell/PixelLinuxSkyPhysicalTest.java"
+    ],
+    "evidence": "docs/evidence/sky-pixel-linux-entry.json",
+    "generalLaunchAllowed": false,
+    "productionBillingAccepted": false,
+    "status": "owner_pixel_native_text_lifecycle_accepted",
+    "ownerContentReviewAccepted": false
+  },
+  "skyUserFirstDesign": {
+    "recordedAt": "2026-10-19",
+    "reason": "Owner requested user-centered consolidation instead of feature-by-feature clutter",
+    "taskId": "SKY12",
+    "authority": "docs/sky-tools-complete-design.md#sky-user-first-flow",
+    "status": "implementation_and_visual_review",
+    "scope": "Common Sky interaction rule; Pixel Sky hub and local request/results screens first",
+    "generalLaunchAllowed": false,
+    "evidence": "docs/evidence/sky-user-first-design.json",
+    "implementation": [
+      "toolkits/sky-linux-local/android-entry.patch"
+    ],
+    "acceptedSourceSnapshot": "toolkits/sky-linux-local/android-entry-design-v2.patch",
+    "newCandidate": "docs/evidence/sky-multi-model-pixel.json"
+  },
+  "skyMultiModelPixel": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly requested adding other models and agents, preparing and executing on Pixel, review/export/stop, plain language, no general launch; owner download clutter feedback led to private installer resources and verified cleanup.",
+    "authority": "docs/sky-tools-complete-design.md#sky-multi-model-pixel",
+    "sources": [
+      "lib/sky-linux-models.ts",
+      "scripts/sky-linux-local-runtime.mjs",
+      "toolkits/sky-linux-local/models.json",
+      "toolkits/sky-linux-local/prepare-pixel.py",
+      "toolkits/sky-linux-local/worker.py",
+      "toolkits/sky-linux-local/android-entry.patch",
+      "toolkits/sky-linux-local/install-startup.py",
+      "toolkits/sky-linux-local/android-system-bars-startup-fix.patch"
+    ],
+    "generalLaunchAllowed": false,
+    "physicalAccepted": true,
+    "status": "owner_pixel_text_multi_model_lifecycle_accepted",
+    "evidence": "docs/evidence/sky-multi-model-pixel.json",
+    "ownerContentReviewAccepted": false,
+    "apkSha256": "f819a607911767b45b67f6f3200ca4da78d7ab9c86b9ec9ccb0e230ba888d7f1",
+    "guestManifestSha256": "e1781e3929f6dc22e78221f80075661ebd0eb33653efd449c80ba64ffa11fc70",
+    "downloadFilesPolicy": "Keep models/runtime privately inside Linux; collect developer fixtures and duplicate transfer files; preserve owner exports."
+  },
+  "skyLinuxMarketplace": {
+    "recordedAt": "2026-10-20",
+    "status": "source_implemented_local_checks_passed_external_acceptance_pending",
+    "taskIds": [
+      "SKY14",
+      "SKY15",
+      "SKY21",
+      "SIM01",
+      "BIL02"
+    ],
+    "primaryOwner": "ROCK",
+    "primaryWorkstream": "Sky / MCP",
+    "initialPlan": {
+      "name": "Sky Linux 16",
+      "currency": "USD",
+      "baseMinor": 1600,
+      "onlyInitialPlan": true,
+      "usageRatesApproved": false,
+      "includedUsagePolicy": "included_ai_and_linux_allowance_then_metered_overage",
+      "includedUsagePolicyApproved": true,
+      "includedUsageQuantityApproved": false
+    },
+    "dataOnNonpayment": "retained_read_export_allowed_new_execution_restricted",
+    "resume": "confirmed_payment_and_active_entitlement_same_workspace",
+    "contract": "electronic_agreement_plus_salted_onchain_commitment_only",
+    "evidence": "docs/evidence/sky-linux-service.json",
+    "source": "lib/sky-linux-service.ts",
+    "generalLaunchAllowed": false,
+    "productionBilling": false,
+    "productionPayouts": false,
+    "chainPublished": false,
+    "nextAction": "Accept the same-contract lifecycle on operator-managed Linux, authenticated current issuer state and Stripe sandbox; implement the Cloud LLM execution adapter. Set allowance/rates/cap/grace/retention/tax/region before enabling, and confirm chain/wallet before anchoring.",
+    "usageAccountingBoundary": {
+      "zema": "job_progress_budget_usage_display",
+      "jennifer": "local_model_profile_not_a_metering_authority",
+      "localJenniferCloudTokenCharge": false,
+      "unifiedAllRuntimeAllowanceAccepted": false
+    }
+  },
+  "skyCodeCheckAndDownloads": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly requested fixing remaining full-code-check failures and explaining necessary downloads plainly without unnecessary files",
+    "authority": "docs/sky-tools-complete-design.md#sky-multi-model-pixel",
+    "generalLaunchAllowed": false,
+    "status": "verified_private_only",
+    "sources": [
+      "components/sky-linux-service.tsx",
+      "lib/sky-linux-service.ts",
+      "lib/sky-linux-payment-handler.ts",
+      "components/sky-linux-local-lab.tsx",
+      "toolkits/sky-linux-local/prepare-pixel.py",
+      "toolkits/sky-linux-local/android-entry.patch",
+      "toolkits/sky-linux-local/owner-tests/dev/rock/shell/PixelMultiModelAcceptanceTest.java"
+    ],
+    "evidence": "docs/evidence/sky-multi-model-pixel.json#codeCheckAndDownloadGuidance",
+    "wholeCodeVerify": "exit0",
+    "pixelGuidanceAccepted": true,
+    "temporaryFilesCollected": true,
+    "currentApkSha256": "c7f8b44180db8045fcc977829fb7f0f583f58a8dad67bc62f7a160a9450c60b5",
+    "currentManifestSha256": "ce3fe5dbd2cb8123735d13094facfa5ed4268587142772e097bde50578938c95"
+  },
+  "eveProductName": {
+    "recordedAt": "2026-10-20",
+    "displayName": "Eve",
+    "readingJa": "イヴ",
+    "previousDisplayName": "Zema",
+    "origin": "Eve from Adam and Eve; user explicitly renamed the work/conversation product",
+    "primaryWorkstream": "Product / UX",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY12"
+    ],
+    "scope": "Product name, unified SI entry, Web display, prompts, metadata and canonical documentation",
+    "compatibility": "Keep /chat, zema storage/entitlement keys, exported names and sky-zema-core package identifiers readable",
+    "androidInstalledLabelUpdated": false,
+    "publicDeploymentPerformed": false,
+    "validation": {
+      "focusedCompatibilityPassed": 30,
+      "focusedReleaseAndEntryPassed": 38,
+      "fullVerify": "exit0",
+      "nodeTests": 1024,
+      "nodePassed": 1023,
+      "nodeSkipped": 1,
+      "workApiAssertions": 1330,
+      "csvAssertions": 113,
+      "webSecurityHeaders": 8,
+      "fullVerifyLogOutsideGit": "/private/tmp/eve-si-verify.log",
+      "scope": "Web source/build and local synthetic checks; no installed Android/OS or public deployment acceptance"
+    },
+    "category": "SI",
+    "categoryJa": "スーパーインテリジェンス",
+    "jenniferPresentation": "Unified into Eve; existing local model profile remains an internal implementation choice, not a separate product",
+    "relationshipToSky": "RockstarOS contains both Sky and Eve: Sky registers/adds/connects capabilities; Eve is the unified SI work surface; both use OS-owned execution, identity, budgets and persistence.",
+    "focusedTests": {
+      "passed": 30,
+      "failed": 0
+    },
+    "webDisplayReadback": "Eve title, common navigation, conversation heading and work link visible in localhost production build; no conversation or external operation sent",
+    "webSecurityEvidence": "docs/evidence/launch/web-security-local-current.json",
+    "status": "source_local_checks_passed_android_and_deployment_pending",
+    "sourceSha256": {
+      "app/chat/page.tsx": "25dcf5c7ee77785884b0a9c6e68a00a341c2d6d0f17fa7349efeb74721cd0d2c",
+      "app/manifest.ts": "2e3ab12b6f41f3eeac170b0accfa2ee9ef383eccc4bfb980af881a83eba792bb",
+      "components/os-header.tsx": "d5ac640844f293ca9c91dd4487cfe808a58defb5767ab104cfd687e642656e37",
+      "components/sky-chat-workspace.tsx": "6aac8052975c95e5d33e692a504ab918c88e2783f15f7dcf4b4c4db1cf65bd6a",
+      "components/home-screen.tsx": "8709ba2c9c52941b65dc2e03b50bed3587ae477729deb5595adbdd0ccccc72d9",
+      "lib/sky-zema-handoff.ts": "d9e18b267be31fd39bbb3d7e4f6c6de37e9b104bb7d78d6223c93c1581265b35",
+      "lib/zema-chat-session.ts": "4ba5ce9c91af6fb06399e8e3a6502b30b37516fa147298f1214ffbc613c72778",
+      "scripts/release-readiness-lib.mjs": "c52cc65c6c98fbbe16488463fd18afa0f5611f833755a95ef2004b1658ea9bc3"
+    },
+    "nextAction": "Use Eve/SI in future UI and docs; update the active Android source and accept the rebuilt same-signer APK separately; preserve legacy storage/schema/scope identifiers. Continue common execution and usage-account integration under existing gates."
+  },
+  "osRootArchitecture": {
+    "recordedAt": "2026-10-20",
+    "status": "design_hierarchy_corrected_runtime_acceptance_unchanged",
+    "authority": "docs/rockstaros-complete-design.md",
+    "primaryWorkstream": "Product / UX",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "OS10"
+    ],
+    "root": "RockstarOS",
+    "insideOS": {
+      "Sky": "capability registration, marketplace, add and connection",
+      "Eve": "unified SI conversation, work, approval, progress, result and usage surface",
+      "Linux": "supported model/Agent/Tool execution environment",
+      "OSCore": "identity, entitlement, capabilities, budget, persistence/recovery and usage/billing"
+    },
+    "cloud": "RockstarOS-managed hosted Linux is inside the service; third-party model/provider services are external adapters",
+    "terminal": "Optional direct interface to the Linux environment; ordinary work enters through Eve",
+    "hardware": "Capability-negotiated existing-OS attachment; exact-device local Linux/native evidence remains independent",
+    "reason": "Latest user explicitly corrected the prior assistant explanation and the 2026-10-18 Sky-first hierarchy",
+    "runtimeModified": false,
+    "generalLaunchAllowed": false,
+    "validation": {
+      "designCheck": "passed",
+      "baselineCheck": "passed",
+      "fullVerify": "exit0",
+      "logOutsideGit": "/private/tmp/os-root-hierarchy-verify.log",
+      "nodeTests": 1024,
+      "nodePassed": 1023,
+      "nodeSkipped": 1,
+      "workApiAssertions": 1330,
+      "csvAssertions": 113,
+      "scope": "Documentation hierarchy correction and existing local regressions only; no new runtime/device/provider acceptance"
+    },
+    "defaultDelivery": "Existing OS client or input/output adapter attaches to the common RockstarOS environment; native is optional"
+  },
+  "esimServiceAttachment": {
+    "recordedAt": "2026-10-20",
+    "status": "pure_attachment_verifier_local_fixture_passed_full_integration_pending",
+    "authority": "docs/sim-led-product-architecture.md#esim-service-attachment",
+    "protocol": "contracts/rockstar-service-attachment.json",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "SIM01",
+      "WEB06",
+      "SKY21",
+      "OS10",
+      "DSP01"
+    ],
+    "source": "User explicitly requests invention of eSIM-started universal access so dedicated device operating systems are unnecessary.",
+    "defaultDelivery": "existing_os_with_common_rockstaros_service_attachment",
+    "root": "RockstarOS",
+    "inside": [
+      "Sky",
+      "Eve",
+      "Linux",
+      "OSCore"
+    ],
+    "deviceSpecificOsRequired": false,
+    "localNativeTrack": "Optional capability and independent evidence, not deleted or required for standard access",
+    "bootstrap": "Issuer-authorized eSIM applet/menu/browser request plus authenticated lifecycle and owner-bound provisioning; actual iOS behavior must be measured",
+    "nonEsimDevices": "Explicit owner-approved scoped child attachment with device keys, parent entitlement and revocation epoch",
+    "algorithms": [
+      "idempotent_activation",
+      "capability_intersection_and_executor_selection",
+      "typed_artifact_projection",
+      "parent_child_attachment_revocation",
+      "stable_workspace_restore"
+    ],
+    "existingImplementationReused": [
+      "lib/rockstar-entitlement-claim.ts",
+      "lib/rockstar-entitlement-event.ts",
+      "lib/esim-cloud-grant.ts",
+      "lib/esim-cloud-proof.ts",
+      "lib/workflow.ts",
+      "lib/sky-linux-service.ts",
+      "lib/sky-linux-service-store.ts"
+    ],
+    "implementationGap": "New issuer evidence adapter and binding required; do not fake existing strong device-install receipts for an iOS browser",
+    "externalDependency": [
+      "authorized_issuer_profile_and_applet",
+      "host_supported_launch_or_OS_vendor_hook",
+      "managed_compute_acceptance"
+    ],
+    "ownerAction": "Existing consent retained; choose actual issuer/region, rate allowances and authorized device actions before external integration",
+    "acceptanceEvidence": "Same real profile and owner contract, two existing-OS devices, every required tap, same job/artifact/usage, suspension, child revocation and restore",
+    "currentStage": "PARTIAL_ROCK_LOGIC_NOT_INTEGRATED",
+    "runtimeModified": true,
+    "iosAutomaticLaunchAccepted": false,
+    "crossOsAttachmentAccepted": false,
+    "allHardwareSupported": false,
+    "patentNoveltyEstablished": false,
+    "generalLaunchAllowed": false,
+    "validation": {
+      "protocolJson": "parsed",
+      "designCheck": "passed",
+      "baselineCheck": "passed",
+      "projectCheck": "passed",
+      "diffWhitespaceCheck": "passed",
+      "fullVerify": "exit0",
+      "fullVerifyLogOutsideGit": "/private/tmp/esim-service-attachment-verify-20261020-retry.log",
+      "initialFailure": "Generated database status was stale; ran npm run database:status and reran full verify successfully",
+      "initialLogOutsideGit": "/private/tmp/esim-service-attachment-verify-20261020.log",
+      "workApiAssertions": 1330,
+      "csvAssertions": 113,
+      "scope": "Existing local source and document regressions only; the new protocol is a design, not an implemented or hardware-accepted runtime",
+      "runtimeAcceptanceAdded": false,
+      "protocolSha256": "a4d81baa29c4e984481fab609070a9b5668bb07e1abd8de1dfb134c47ecb3817",
+      "designSha256": "17bad5b165fe02d14dda6e338ffc1addccabf980279ca55fbf9c2e8699246173",
+      "nodeTestRuns": [
+        {
+          "tests": 1024,
+          "passed": 1023,
+          "failed": 0
+        },
+        {
+          "tests": 22,
+          "passed": 22,
+          "failed": 0
+        },
+        {
+          "tests": 24,
+          "passed": 24,
+          "failed": 0
+        },
+        {
+          "tests": 4,
+          "passed": 4,
+          "failed": 0
+        },
+        {
+          "tests": 6,
+          "passed": 6,
+          "failed": 0
+        },
+        {
+          "tests": 7,
+          "passed": 7,
+          "failed": 0
+        },
+        {
+          "tests": 2,
+          "passed": 2,
+          "failed": 0
+        },
+        {
+          "tests": 2,
+          "passed": 2,
+          "failed": 0
+        },
+        {
+          "tests": 7,
+          "passed": 7,
+          "failed": 0
+        },
+        {
+          "tests": 25,
+          "passed": 25,
+          "failed": 0
+        }
+      ]
+    },
+    "gitReadback": {
+      "main": "70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a",
+      "branch": "codex/esim-cloud-access",
+      "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "localChangesCommitted": false,
+      "mainIntegrated": false,
+      "ciForDirtyTree": "not_established"
+    },
+    "nextAction": "Wire trusted issuer lifecycle, owner/contract/device-key proofs and durable one-time workspace operation to the verifier; then two-device sandbox and physical acceptance.",
+    "productMeaning": "cloud_compute_service_profile_not_telecom_data_plan",
+    "transport": "Existing Wi-Fi/other SIM/network; handset signal does not prove or revoke service rights",
+    "modelPlacement": "Local to the executing Linux, which may be cloud-hosted or an accepted local device",
+    "phoneOfflineContinuation": "Durably accepted jobs continue within a saved autonomy grant; new approval requirements wait",
+    "executorOfflineContinuation": "Self-contained already-installed local-model work only; external effects wait and reconcile",
+    "purpose": [
+      "create_away_from_pc",
+      "communicate_without_holding_phone",
+      "run_to_earn_from_verified_demand"
+    ],
+    "runToEarn": "Verified commercial usage/acceptance and collected revenue, with existing author settlement and Earning Receipt; CPU consumption alone creates no earnings",
+    "handsFreeHardwareAccepted": false,
+    "pixelSignupImplementation": "docs/sim-led-product-architecture.md#pixel-service-setup",
+    "attachmentVerifier": {
+      "source": "lib/rockstar-service-attachment.ts",
+      "test": "tests/rockstar-service-attachment.test.mjs",
+      "status": "pure_verifier_local_synthetic_passed",
+      "signedFields": 18,
+      "signatureAlgorithm": "Ed25519",
+      "maxLeaseMs": 900000,
+      "scope": "canonical bytes and current-facts verification for a device-key-bound parent or child attachment",
+      "tested": "node --experimental-strip-types --test tests/rockstar-service-attachment.test.mjs: 3/3 passed; npm run typecheck: exit 0",
+      "notConnected": [
+        "issuer signed lifecycle adapter",
+        "device request proof caller",
+        "owner consent store and contract version readback",
+        "durable Linux operation and signed readiness",
+        "API, database, dispatch and revocation integration",
+        "iPhone/Pixel physical acceptance",
+        "real issuer and billing"
+      ],
+      "currentStage": "partial_ROCK_logic_only_not_integrated",
+      "fullVerify": {
+        "status": "failed_environment_no_space",
+        "gate": "release signing regression",
+        "errors": 8,
+        "cause": "OSError Errno 28 temporary directory creation",
+        "logOutsideGit": "/private/tmp/rockstar-attachment-verify-20261020.log",
+        "codeRegressionEstablished": false
+      }
+    }
+  },
+  "pixelServiceSetupImplementation": {
+    "recordedAt": "2026-10-20",
+    "status": "source_implemented_locally_validated_integration_deferred_until_os_acceptance",
+    "primaryWorkstream": "Wallet / Billing / Providers",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "SIM01",
+      "BIL02",
+      "OS10"
+    ],
+    "authority": "docs/sim-led-product-architecture.md#pixel-service-setup",
+    "integrationPolicy": "Develop now; enable and integrate only after the OS system is actually accepted",
+    "moduleEnabledByDefault": false,
+    "installedOnPixel": true,
+    "productionEnabled": false,
+    "flow": [
+      "verified_esim_profile",
+      "invoice_preview",
+      "explicit_terms_and_recurring_consent",
+      "payment_method_setup_without_charge",
+      "canonical_linux_workspace",
+      "signed_worker_readiness",
+      "current_entitlement_and_debt_check",
+      "sky_and_eve_entry"
+    ],
+    "signupChargeMinor": 0,
+    "monthlyBaseMinor": 1600,
+    "currency": "USD",
+    "billingTiming": "monthly_arrears",
+    "baseFeeStartsAfter": "verified_environment_readiness_and_current_service_entitlement",
+    "onUnpaid": "restrict_new_execution_preserve_data_and_restore_same_workspace_after_verified_payment",
+    "source": [
+      "lib/rockstar-service-setup.ts",
+      "lib/rockstar-service-setup-store.ts",
+      "lib/rockstar-service-setup-billing.ts",
+      "app/api/rockstar/service-setup/route.ts",
+      "app/api/rockstar/service-setup/webhook/route.ts",
+      "app/connect/service/page.tsx",
+      "components/rockstar-service-setup.tsx",
+      "android/shell/src/main/java/dev/rock/shell/ServiceSetupActivity.java",
+      "toolkits/sky-linux-service/setup-probe.py",
+      "data/service-setup-integration.json"
+    ],
+    "acceptance": {
+      "sourceTypecheck": "passed_full_verify",
+      "focusedTests": "passed_9_of_9_local_synthetic",
+      "android35Java11Compile": "passed_generated_R_and_activity_only",
+      "apkBuild": "passed_branding_candidate_build_unit20_lint_release_compile",
+      "pixelFlow": "not_run_deferred",
+      "realIssuer": "not_accepted",
+      "stripeSandbox": "not_run",
+      "managedLinux": "not_accepted",
+      "osService": "not_accepted",
+      "relatedTests": "passed_25_of_25_local_synthetic",
+      "androidResources": "passed_aapt2_compile_link",
+      "disabledWebUi": "readback_passed_local_browser_no_contract_or_payment_actions",
+      "pixelDisabledComponent": "passed_UI_only_not_signup"
+    },
+    "validation": {
+      "fullVerify": "passed_exit0_local_shared_dirty_checkout",
+      "fullVerifyLogOutsideGit": "/private/tmp/rockstar-service-setup-completion-verify.log",
+      "fullVerifyLogSha256": "37023b48aba93e932e8cb3da9466e418a2e48786f64c9fbbd450b6df63bd4601",
+      "fullVerifyEnvironment": "OpenSSL3 PATH and localhost test permission",
+      "nodeTests": {
+        "total": 1033,
+        "passed": 1032,
+        "failed": 0,
+        "skipped": 1,
+        "skipReason": "existing Linux-only protected-PID lock test on macOS"
+      },
+      "workerD1Assertions": 1330,
+      "csvAssertions": 113,
+      "webAssetReferences": 188,
+      "webMissingAssets": 0,
+      "focusedTestsLogOutsideGit": "/private/tmp/rockstar-service-setup-tests.log",
+      "relatedTestsLogOutsideGit": "/private/tmp/rockstar-service-setup-related.log",
+      "evidence": "docs/evidence/pixel-service-setup.json"
+    },
+    "remaining": [
+      "OS acceptance and exact build/evidence binding",
+      "permitted actual profile and issuer install proof integration",
+      "Stripe customer/webhook sandbox acceptance",
+      "managed Linux same-workspace readiness and job acceptance",
+      "same APK and Pixel eSIM→contract→ready→restriction/recovery acceptance"
+    ],
+    "nextAction": "Keep server and Android module disabled; complete OS Core acceptance first, then exact-build configuration, permitted real issuer install proof, Stripe sandbox and managed Linux before same-Pixel signup/restriction/recovery acceptance.",
+    "evidence": "docs/evidence/pixel-service-setup.json",
+    "installedState": "disabled_code_only_with_branding_update_no_signup_acceptance"
+  },
+  "currentRedesignDeviceAdaptation": {
+    "recordedAt": "2026-10-20",
+    "deviceSpecificAcceptance": "docs/device-support-architecture.md#device-specific-acceptance",
+    "status": "current_design_and_pixel_branding_ui_accepted_other_hardware_and_billing_pending",
+    "authority": "docs/device-support-architecture.md#current-device-adaptation",
+    "contract": "data/rockstaros-device-adaptation.json",
+    "currentDesignSupersedesLegacyBuildroot": true,
+    "legacyReuseRequiresNewAcceptance": true,
+    "productName": "RockstarOS",
+    "companyLogo": "public/company-mark.png",
+    "pixelTestingAuthorized": true,
+    "pixelBrandingInstalled": true,
+    "otherDevicesAccepted": false,
+    "realBillingAccepted": false,
+    "nextAction": "Continue current shared-Core/issuer/payment acceptance and per-device adapters; frontend refinement is tracked separately.",
+    "evidence": "docs/evidence/rockstar-redesign-branding.json",
+    "validation": {
+      "status": "passed_exit0",
+      "nodeTotal": 1038,
+      "nodePassed": 1037,
+      "nodeSkipped": 1,
+      "skipReason": "existing Linux-only protected system PID lock case on macOS",
+      "apiAssertions": 1330,
+      "csvAssertions": 113,
+      "logOutsideGit": "/private/tmp/rockstar-redesign-branding-completion-verify.log",
+      "logSha256": "32b12f9f9b1f2f06a339f4d309c7ce424595b8c06863c9beb002ad10857aae2f",
+      "sourceSnapshotUnchangedAtCompletion": true,
+      "focusedPassed": 30,
+      "androidUnitPassed": 20,
+      "androidLint": "passed",
+      "androidReleaseCompile": "passed",
+      "pixelUiInstrumentation": "1_test_4_pages_passed",
+      "pixelVisual": "passed_owner_unlocked_company_mark_and_RockstarOS_visible",
+      "brokerDatabaseBytesUnchanged": true,
+      "webSecurity": "actual_local_production_8_headers_8_routes_passed"
+    }
+  },
+  "frontendDesignRefinement": {
+    "recordedAt": "2026-10-20",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY12"
+    ],
+    "primaryOwner": "ROCK",
+    "status": "web_and_pixel_candidate_accepted_user_comparison_not_run",
+    "authority": "docs/rockstaros-complete-design.md#frontend-composition",
+    "reason": "Owner requested evidence-informed composition, golden ratio, professional design and usability",
+    "userStudyCompleted": false,
+    "statisticallyOptimalClaimed": false,
+    "pixelPreviousBrandingVisuallyConfirmed": true,
+    "nextAction": "Evaluate real users on task completion/time/errors and aesthetic preference; refine Eve/Sky/detail and billing pages using the same contract.",
+    "evidence": "docs/evidence/frontend-design-refinement.json",
+    "validation": {
+      "fullVerify": {
+        "exitCode": 0,
+        "nodeTotal": 1043,
+        "nodePassed": 1042,
+        "nodeFailed": 0,
+        "nodeSkipped": 1,
+        "workerAssertions": 1330,
+        "csvAssertions": 113
+      },
+      "androidUnit": 20,
+      "androidLint": "passed",
+      "pixelUi": "passed",
+      "pixelVisual": "passed",
+      "brokerDataUnchanged": true,
+      "responsiveWidthsPx": [
+        320,
+        390,
+        768,
+        1280
+      ],
+      "sharedPwaRegression": "8_passed",
+      "productionHttp": "8_headers_8_routes_passed"
+    }
+  },
+  "networkTransportArchitecture": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly listed communication and network requirements",
+    "authority": "docs/network-transport-design.md",
+    "primaryWorkstream": "Native / QEMU / Release",
+    "taskId": "NET01",
+    "scope": [
+      "IP_DNS_TCP_UDP",
+      "HTTPS_TLS",
+      "WiFi_cellular_wired_gated_satellite",
+      "device_and_Linux_connectivity_separate",
+      "timeout_backoff_idempotent_reconciliation",
+      "ordered_notifications_and_progress_delta",
+      "gated_voice_video_recovery",
+      "bytes_and_external_API_cost",
+      "trusted_time_VPN_leak_control_DNS_TLS_domain_monitoring"
+    ],
+    "excludedFromApplicationCore": [
+      "BGP",
+      "FTP_as_standard_artifact_transfer"
+    ],
+    "status": "design_recorded_runtime_not_accepted",
+    "physicalNetworkAccepted": false,
+    "satelliteAccepted": false,
+    "callsAccepted": false,
+    "productionDomainMonitoringAccepted": false,
+    "validation": {
+      "designCheck": "pass_21_domains",
+      "baselineCheck": "pass_RQ01_RQ49",
+      "projectCheck": "pass_104_of_165_tasks_done_count_only",
+      "diffCheck": "pass",
+      "databaseStatus": "regenerated_6_boundaries_155_tables_production_readback_0_of_6",
+      "fullVerify": "not_passed_current_shared_checkout",
+      "fullVerifyStop": "release:check Web security policy local production response input hash mismatch after OpenSSL3 and localhost fixture issues were resolved",
+      "fullVerifyLogOutsideGit": "/private/tmp/rockstar-network-verify-final.log"
+    }
+  },
+  "ownerIdentityPermissionSafety20261020": {
+    "recordedAt": "2026-10-20",
+    "primaryWorkstream": "Security / Identity / Compliance",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "SIM01",
+      "SYS13"
+    ],
+    "authority": "docs/workstreams/04-security-identity-compliance.md#owner-identity-permission-safety-20261020",
+    "status": "DESIGN_RECORDED_RUNTIME_ACCEPTANCE_PENDING",
+    "sourceScope": "Existing OS Core/Broker, account sessions, eSIM Cloud proof, Sky/Eve jobs, Operator Dock; no new runtime acceptance from this documentation update",
+    "gaps": [
+      "consumer passkey and high-risk step-up",
+      "authoritative device challenge and current issuer evidence for every supported client",
+      "cross-credential lost-device revocation",
+      "job-bound short leases and active-job revocation propagation",
+      "two-owner and two-worker Cloud/Provider end-to-end negative acceptance"
+    ],
+    "nextAction": "Inventory all authentication routes and credentials; implement consumer step-up and device challenge, then job grant/lease/fencing and lost-device containment in existing Broker; test negative cases before Pixel, issuer, Cloud and Provider joint acceptance.",
+    "generalLaunchAllowed": false,
+    "productionSecurityAccepted": false,
+    "validation": {
+      "designCheck": "pass_21_domains_34_catalog_tools_6_native_families",
+      "baselineCheck": "pass_RQ01_RQ49",
+      "projectCheck": "pass_104_of_165",
+      "diffCheck": "pass_scoped_files",
+      "fullVerify": "blocked_by_unrelated_web_security_evidence_input_hash_mismatch",
+      "fullVerifyLogOutsideGit": "/private/tmp/rockstar-security-requirements-verify.log",
+      "mismatch": "docs/evidence/launch/web-security-local-current.json records an older SHA-256 for public/sw.js than the current shared dirty checkout; release:check stopped before tests",
+      "runtimeAcceptance": "not_tested_by_documentation_update"
+    }
+  },
+  "aiModelManagement": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly listed AI/model source, compatibility, lifecycle, measurement, selection, routing, context, Broker, limits, injection, regression and history requirements; the shared redesign thread confirms RockstarOS contains Sky, Eve and Linux while Pixel service setup remains disabled",
+    "primaryWorkstream": "Android / Device / Local AI",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "AI02",
+      "AI05",
+      "OS09",
+      "SKY21"
+    ],
+    "authority": "docs/ai-native-os-architecture.md#ai-model-management",
+    "status": "design_recorded_runtime_acceptance_pending",
+    "requiredEvidence": [
+      "same_artifact_manifest_license_hash_and_compatibility",
+      "interrupted_resumed_verified_download_and_safe_cleanup",
+      "same_conditions_two_model_resource_quality_comparison",
+      "local_only_cloud_denial_and_explicit_destination_cost_consent",
+      "scoped_retrieval_citation_vs_generation_and_injection_quarantine",
+      "broker_recheck_before_each_effect_and_job_limits",
+      "old_job_readback_after_model_update_delete_and_restore"
+    ],
+    "acceptedNow": {
+      "existingFixedAndroidProfile": true,
+      "pixelPrivateLinuxLimitedMultiModel": true,
+      "genericModelCatalog": false,
+      "sameArtifactTwoModelBenchmark": false,
+      "cloudAutoFallback": false,
+      "crossEnvironmentProductionAcceptance": false
+    },
+    "nextAction": "Reuse AI02 stager/profile pin and Pixel Linux catalog for one artifact, verify resume/hash/compatibility and two-model measurements, then connect AI05 placement and scoped retrieval to one Broker-controlled job. Record host, Pixel/Linux and Cloud provider evidence separately.",
+    "validation": {
+      "baselineCheck": "passed_RQ01_to_RQ49",
+      "designCheck": "passed_21_domains_34_tools_6_native_families",
+      "llmArchitectureCheck": "passed_5_capabilities_6_adapters",
+      "projectCheck": "passed_104_of_165_tasks",
+      "focusedModelTests": "18_passed_0_failed",
+      "focusedCommand": "node --experimental-strip-types --test tests/model-profile-fixture.test.mjs tests/sky-linux-models.test.mjs tests/sky-model-selector.test.mjs tests/decision-layer.test.mjs",
+      "fullVerify": "failed_at_release_check_before_remaining_gates",
+      "fullVerifyCause": "docs/evidence/launch/web-security-local-current.json input hash for pre-existing modified public/sw.js differs from current source; local production response must be remeasured before release gate can pass",
+      "fullVerifyLogOutsideGit": "/private/tmp/ai-model-management-verify-20261020.log",
+      "gitReadback": {
+        "main": "70c3e3ef3a05d6f0c9d068616a98f47a38b96d4a",
+        "workBranch": "codex/esim-cloud-access",
+        "workBranchHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "localHead": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+        "source": "GitHub connector compare refs; direct git ls-remote DNS failed"
+      },
+      "documentSavedLocally": true,
+      "branchCommitCreated": false,
+      "mainMerged": false,
+      "deviceAcceptancePerformed": false,
+      "productionDeployed": false
+    }
+  },
+  "skyMarketplaceMcpLifecycle": {
+    "recordedAt": "2026-10-20",
+    "primaryWorkstream": "Sky / MCP",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "SKY14",
+      "SKY15",
+      "SKY20",
+      "SKY21",
+      "BIL02"
+    ],
+    "authority": "docs/sky-tools-complete-design.md#sky-marketplace-mcp-lifecycle",
+    "status": "design_recorded_existing_partial_runtime_external_acceptance_pending",
+    "scope": [
+      "model_agent_tool_catalog_lifecycle",
+      "author_origin_license_dependencies_signature_hash",
+      "input_output_permissions_price_execution_target",
+      "review_sandbox_visibility_revocation",
+      "pc_sky_cloud_provider_mcp",
+      "oauth_expiry_reconnect_disconnect",
+      "approval_on_target_or_scope_change",
+      "failed_partial_unknown_canceled",
+      "sdk_sample_diagnostics_and_usage_results",
+      "separate_product_external_rock_prices",
+      "add_is_not_purchase_or_execution"
+    ],
+    "pcConnector": "partial_local_source_and_fixture",
+    "skyCloudProviderOAuthAccepted": false,
+    "paidMcpDirectExecutionAccepted": false,
+    "allProductsEndToEndAccepted": false,
+    "nextAction": "Bind existing Package/Registry/Connector/Commerce states and tests to this lifecycle, then accept same-version Cloud/provider OAuth and MCP execution through result reconciliation and revocation in sandbox.",
+    "developmentPrompt": "docs/prompts/sky-marketplace-mcp-development.md",
+    "promptRecordedAt": "2026-10-21",
+    "promptStatus": "saved_implementation_not_started",
+    "githubReadback": {
+      "main": "01b6aecd8b4d8bd2385665232dfb4b57029f991f",
+      "mainCi": "verify_success_same_sha",
+      "branch": "codex/esim-cloud-access",
+      "branchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+      "branchCi": "source_preparation_only_success_same_sha",
+      "promptContext": "failed_exit_2_github_connector_readback_used",
+      "directFetch": "dns_failure",
+      "mainIntegratedIntoCheckout": false,
+      "branchCommitCreated": false
+    },
+    "integratedDevelopmentPrompt": "docs/prompts/sky-integrated-marketplace-development.md"
+  },
+  "walletRevenueExternalFinance": {
+    "recordedAt": "2026-10-20",
+    "source": "owner explicit Wallet / revenue / external finance requirements",
+    "primaryWorkstream": "Wallet / Billing / Providers",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "BIL02",
+      "WLT06",
+      "B03"
+    ],
+    "requirements": [
+      "append_only_sales_hold_confirm_refund_payout_ledger",
+      "reconcile_external_deposit_with_earning_receipt",
+      "prevent_double_allocation_from_same_revenue",
+      "separate_creator_user_rock_payment_provider_shares",
+      "check_rock_collection_scope_and_cap",
+      "versioned_wallet_payment_custody_provider_adapters",
+      "owner_signed_payout_destination_and_revocation",
+      "verify_provider_signature_amount_time_finality",
+      "compensating_entries_for_refund_chargeback_payout_failure",
+      "per_operation_real_money_approval_and_audit",
+      "rock_atm_fee_zero_with_external_cost_disclosure"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#wallet-revenue-external-finance",
+    "legacyToCFee": "on_hold; 888 cents remains historical fixture only",
+    "skyMarketFee": "existing 10 percent one-time sale policy; separate contract",
+    "atmRockFeeMinor": 0,
+    "liveProviderAcceptance": false,
+    "realMoneyMovementAuthorizedByThisRequest": false,
+    "nextAction": "Use the Wallet development prompt to sync current main and the working branch, preserve dirty changes, then implement exact-state fixture and atomic allocation invariants before one signed provider sandbox transaction.",
+    "developmentPrompt": "docs/prompts/wallet-revenue-external-finance-development.md",
+    "promptRecordedAt": "2026-10-21",
+    "promptReason": "Owner requested a development prompt for the eleven Wallet, revenue, and external finance requirements after design-only recording",
+    "promptExecutionStatus": "document_saved_runtime_and_provider_acceptance_pending"
+  },
+  "skyAgentLibrary": {
+    "recordedAt": "2026-10-21",
+    "status": "source_host_worker_and_limited_browser_accepted",
+    "taskIds": [
+      "SKY12",
+      "SKY14",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "authority": "docs/sky-tools-complete-design.md#sky-agent-library",
+    "scope": "Owner agent settings, connected Sky Tools and existing linked-device agent projections; explicit version-bound Eve handoff",
+    "creatorFlow": {
+      "status": "source_and_local_browser_wizard_verified_public_source_reconciliation_pending",
+      "steps": [
+        "choose_purpose_and_edit_role",
+        "choose_llm",
+        "review_and_save"
+      ],
+      "connectedToolPath": "reuse_existing_sky_tool_agent_and_connection",
+      "personalAgentToolGrant": false,
+      "saveStartsExecutionOrBilling": false
+    },
+    "evidence": "docs/evidence/sky-agent-library.json",
+    "generalLaunchAllowed": false,
+    "nextAction": "Localhost owner saved a personal agent using installed qwen2.5:1.5b and received an actual Eve reply. Durable/Pixel synchronization, other providers and production remain separate acceptance.",
+    "localBrowserInferenceEvidence": "docs/evidence/unified-sky-information-market.json"
+  },
+  "skyOptionalFeatures": {
+    "recordedAt": "2026-10-20",
+    "status": "source_host_worker_and_browser_add_remove_accepted",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "SKY12",
+      "SKY14",
+      "SKY21"
+    ],
+    "authority": "docs/sky-tools-complete-design.md#sky-optional-features",
+    "source": "User explicitly requested optional Wallet/Market addition from Sky with just-in-time setup",
+    "features": [
+      "wallet",
+      "market"
+    ],
+    "financialAuthorizationGrantedByAddition": false,
+    "recordsDeletedOnRemoval": false,
+    "evidence": "docs/evidence/sky-agent-library.json",
+    "generalLaunchAllowed": false
+  },
+  "newsSourcePlugins": {
+    "recordedAt": "2026-10-20",
+    "status": "pixel_official_x_account_posts_owner_confirmed_public_widget_unaccepted",
+    "authority": "docs/sky-tools-complete-design.md#news-source-plugins",
+    "entry": "Unified Sky /#news-plugins",
+    "output": "Unified Sky /#timeline",
+    "initialSourceCandidate": "X",
+    "specificSourcesSelected": true,
+    "selectedPublicSource": "https://x.com/huggingface",
+    "consentVersion": "x-public-timeline-v1",
+    "consentConfirmedBy": "Human performed the Add action and replied 追加した",
+    "provenPoliticalNeutrality": false,
+    "trainedModelAccepted": false,
+    "xConnectionAccepted": false,
+    "livePostsAccepted": false,
+    "lastObservedFailure": "Official syndication iframe displayed Rate limit exceeded; HTTP 429 also observed server side.",
+    "oauthHomeTimelineConnected": false,
+    "evidence": "docs/evidence/x-account-integration.json",
+    "repairStatus": "account_first_pixel_companion_accepted_by_owner_web_inline_feed_pending",
+    "accountViewerPackage": "dev.rock.xsession",
+    "pixelAccountPostsAccepted": true,
+    "pixelAcceptanceSource": "Human replied ログインして投稿が見えた after install/start",
+    "webAccountEntryAccepted": true,
+    "webInlinePostsAccepted": false,
+    "publicWidgetPostsAccepted": false,
+    "apiConfigured": false,
+    "apiRequiredForAccountView": false,
+    "researchReferenceScope": "OS-wide redesign research; selected records read, not all 39 files or completed 15 hours",
+    "livePostsAcceptanceScope": "Legacy livePostsAccepted field concerns public plugin posts inside Web Home; separate Pixel account viewer is owner-confirmed."
+  },
+  "skyInformationMarket": {
+    "recordedAt": "2026-10-20",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "SKY12",
+      "SKY14",
+      "SKY21"
+    ],
+    "authority": "docs/sky-tools-complete-design.md#sky-information-market",
+    "reason": "Owner explicitly unified Home and Sky, requested HF-backed discovery/Add/Eve and X plugin posts without an extra HF connection fee.",
+    "status": "local_hf_eve_and_pixel_x_account_view_accepted_web_inline_posts_pending",
+    "entry": "/",
+    "legacyEntry": "/sky",
+    "skySearchAndAddFeeMinor": 0,
+    "existingAuthorCommissionBps": 1000,
+    "authorCommissionDecision": "User asked whether a processor requires the commission; no change to the existing author-sales rate was decided.",
+    "evidence": "docs/evidence/unified-sky-information-market.json",
+    "generalLaunchAllowed": false,
+    "nextAction": "Account-first Pixel viewer owner-confirmed; Web inline posts, native Shell entry and provider/public acceptance remain separate.",
+    "everydayValuePrinciple": {
+      "recordedAt": "2026-10-20",
+      "source": "Owner explicitly described discovery reward and integration into everyday life as drivers of continued access",
+      "intent": "Sky provides personally relevant discovery; Eve turns information and capabilities into useful everyday and creative outcomes",
+      "plannedMeasures": [
+        "useful_outcomes_received",
+        "recurring_task_completion",
+        "ease_of_resuming"
+      ],
+      "dopamineResponseValidated": false,
+      "retentionMeasured": false
+    },
+    "checks": "Current dirty source full verify exit0: Node1067 pass/1 existing Linux-only skip (1068 total), Worker1423 and CSV113. Pixel X posts confirmed by human; World/edition runtime not implemented.",
+    "integratedDevelopmentPrompt": "docs/prompts/sky-integrated-marketplace-development.md"
+  },
+  "personalOsWorldVersions": {
+    "recordedAt": "2026-10-20",
+    "status": "web_runtime_local_accepted_native_world_governance_pending",
+    "source": "Owner: OSは自分で好きなバージョンを作れる形。好きな国を作る話の導入",
+    "primaryOwner": "ROCK",
+    "primaryWorkstream": "Product / UX",
+    "taskIds": [
+      "OS10",
+      "SKY21"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#personal-os-world-versions",
+    "skyAuthority": "docs/sky-tools-complete-design.md#os-edition-world-catalog",
+    "coreAndEditionVersionsSeparate": true,
+    "personalEditionOptionalWorld": true,
+    "authorable": [
+      "name_brand_theme_layout",
+      "default_models_agents_tools_news",
+      "world_membership_roles_rules_governance",
+      "games_and_creator_extensions"
+    ],
+    "nativeBinaryRequiresDeviceSigningRecoveryGates": true,
+    "coreApprovalAndBudgetNotOverridable": true,
+    "secretsAndPrivateJobsExcludedFromRemix": true,
+    "existingMonthlyBaseUsd": 16,
+    "implementationAccepted": false,
+    "nextAction": "Design bounded edition manifest and owner-scoped draft/preview/export/import; then Sky sharing/remix and separate-owner World join/leave/rule revisions.",
+    "implementationEvidence": "docs/evidence/community-os-keyed-editions.json",
+    "webPreviewAccepted": true
+  },
+  "eveMemoryAndSkyCommunities": {
+    "recordedAt": "2026-10-20",
+    "reason": "本人がEveの永続記憶・端末間引継ぎ、MiniのマネジメントSI、Sky自身のフォロー/おすすめタイムライン、SNSのような共有、アカウントからのコミュニティー作成を明示",
+    "taskIds": [
+      "OS10",
+      "SKY21"
+    ],
+    "eve": "本人別の暗号化保存、出典付き参照、記憶対象の切替、export/削除、同一accountで再取得",
+    "sky": "公開名、投稿、フォロー、おすすめ、公開/招待制コミュニティー、参加ルール、Agent/model/作品/OS構成のリンク共有",
+    "privateByDefault": [
+      "Eve conversations",
+      "biometric templates",
+      "health data",
+      "credentials",
+      "execution and payment authority"
+    ],
+    "xPersonalFeed": "not_connected_authorized_provider_required",
+    "rawBiometricCollectionAuthorized": false,
+    "nativeOsEditionInstallAccepted": false,
+    "implementationEvidence": "docs/evidence/eve-memory-sky-community.json"
+  },
+  "keyedCommunityOs": {
+    "recordedAt": "2026-10-20",
+    "reason": "Owner explicitly requested per-community rules/design/LLM/agents, installable shared OS editions and dedicated-key admission",
+    "taskIds": [
+      "OS10",
+      "SKY21"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#keyed-community-os",
+    "replaces": [
+      "link_only_os_sharing",
+      "keyless_public_community_join"
+    ],
+    "accountAndDedicatedKeyRequired": true,
+    "privateDataAndKeysExcludedFromManifests": true,
+    "nativeOsBinaryAcceptance": false,
+    "localImplementationEvidence": "docs/evidence/community-os-keyed-editions.json",
+    "localWebApiBrowserAccepted": true
+  },
+  "researchIntegration": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner explicitly requests applying research after gap registration; X reference applies only to timeline.",
+    "authority": "docs/rockstaros-research-integration.md",
+    "preserveAllRequirements": true,
+    "status": "gaps_registered_timeline_local_accepted_core_remaining",
+    "register": "data/rockstaros-research-reconciliation.json",
+    "nextPrompt": "docs/prompts/rockstaros-redesign-development.md",
+    "developmentPromptReason": "Owner explicitly requested a development prompt after reviewing the RockstarOS redesign thread; reconcile latest Home/Sky/Eve/X direction, Wallet and 87-gap audit with current main before implementation",
+    "sourceThread": "codex://threads/01a14d54-daee-7c30-87a8-faea84641a40"
+  },
+  "homeTimelineFrontend": {
+    "recordedAt": "2026-10-21",
+    "status": "local_web_source_browser_and_full_verify_accepted_external_physical_pending",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "reason": "Owner explicitly replaces prior embedded timeline trial with full Home native post frontend.",
+    "authority": "docs/rockstaros-complete-design.md#homeを投稿そのものにするhome-native-post-frontend",
+    "implementation": [
+      "components/home-screen.tsx",
+      "components/home-screen.module.css",
+      "components/sky-discovery-feed.tsx",
+      "components/sky-discovery-feed.module.css",
+      "components/sky-social-timeline.tsx",
+      "components/sky-optional-features.tsx"
+    ],
+    "root": "/",
+    "catalog": "/#catalog",
+    "billingAuthorizationChanged": false,
+    "xPersonalFeedConnected": false,
+    "physicalAccepted": false,
+    "publicDeployed": false,
+    "evidence": "docs/evidence/home-native-post-frontend.json",
+    "nextAction": "Owner design review; preserve separate X personal-feed integration, actual Pixel/native OS, eSIM/billing and public release gates.",
+    "validation": {
+      "fullVerifyExit": 0,
+      "focusedPassed": 39,
+      "nodePassed": 1106,
+      "existingLinuxOnlySkipped": 1,
+      "workerAssertions": 1559,
+      "csvAssertions": 113,
+      "webAssetMissing": 0
+    },
+    "latestVisualRevision": "xAccountTimeline: explicit owner request replaces black/blue trial with ivory/forest/bronze and Sky entry; previous evidence is historical visual scope."
+  },
+  "xAccountTimeline": {
+    "recordedAt": "2026-10-21",
+    "status": "optional_adapter_source_ready_live_unaccepted",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#本人x連携とskyの固有配色sky-x-account-native-feed",
+    "implementation": [
+      "lib/sky-x-account.ts",
+      "components/sky-x-account.tsx",
+      "components/sky-x-account.module.css",
+      "app/api/sky/x-account/route.ts",
+      "app/api/sky/x-account/callback/route.ts",
+      "drizzle/0074_sky_x_account_oauth.sql"
+    ],
+    "requiredUserOutcome": "actual owner X following and For You posts in native Home",
+    "providerFollowing": "official reverse_chronological adapter, unaccepted live",
+    "providerForYou": "no verified public endpoint; requested outcome remains open",
+    "liveAccountAccepted": false,
+    "livePostsAccepted": false,
+    "providerContractAccepted": false,
+    "providerBillingStarted": false,
+    "homePalette": [
+      "ivory",
+      "forest",
+      "bronze"
+    ],
+    "homeEntryLabel": "Sky",
+    "tabs": [
+      "あなたへ",
+      "つながり"
+    ],
+    "evidence": "docs/evidence/x-account-native-feed.json",
+    "nextAction": "Optional only: configure operator X OAuth app if that adapter is selected. Default: add an authorized API/MCP posting source through the common receiver; accept actual X posts separately.",
+    "endUserOnboarding": "X sign-in/consent only; no per-user developer app, API contract or separate X reading purchase",
+    "costDecision": "Latest clarification: platform receives external API/MCP. X operator API is optional, default disabled; it is not a mandatory user contract. No paid access or provider contract accepted."
+  },
+  "osDeviceFoundationDevelopmentPrompt": {
+    "createdAt": "2026-10-21",
+    "primaryWorkstream": "Android / Device / Local AI",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "DSP01",
+      "OS02",
+      "OS03",
+      "OS04",
+      "OS10",
+      "OS11",
+      "RLS02"
+    ],
+    "path": "docs/prompts/rockstaros-os-device-foundation-development.md",
+    "status": "documented_not_executed",
+    "scope": "15 OS/device foundation requirements; Pixel 10 GL066 first; QEMU, Web, Mini and Pro separately accepted",
+    "mainShaAtCreation": "01b6aecd8b4d8bd2385665232dfb4b57029f991f",
+    "branchShaAtCreation": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "promptContextCommand": "npm run prompt:context exited 2; GitHub connector readback used",
+    "nextAction": "Preserve dirty changes; sync current main/branch entry; map RQ49+38 to OS Core; implement and test one same-job Pixel client boundary before full-image/flash gates.",
+    "referenceThread": "01a14d54-daee-7c30-87a8-faea84641a40",
+    "redesignAlignedAt": "2026-10-21",
+    "redesignScope": "Home/Sky API-MCP receiver and Add -> Eve same-job -> Broker/device/Linux or approved Cloud -> result/recovery; community OS edition and Eve history remain separate acceptance; A16/A9/A13 gaps tracked",
+    "validation": {
+      "redesignFocused": "project:update, baseline:check, design:check, project:check passed; typecheck passed in full verify attempt",
+      "redesignFullVerify": "exit 1: sandbox first attempt listen EPERM; allowed attempt interrupted during migration-union after filename fresh/release/sites and drizzle fresh; no full pass",
+      "redesignVerifyLogOutsideGit": "/private/tmp/rockstar-os-foundation-redesign-verify-allowed.log"
+    }
+  },
+  "aiModelDevelopmentPrompt": {
+    "recordedAt": "2026-10-21",
+    "taskIds": [
+      "AI02",
+      "AI05",
+      "OS09",
+      "SKY21"
+    ],
+    "primaryWorkstream": "Android / Device / Local AI",
+    "primaryOwner": "ROCK",
+    "status": "PROMPT_PREPARED_IMPLEMENTATION_NOT_STARTED",
+    "prompt": "docs/prompts/rockstaros-ai-model-management-development.md",
+    "mainSha": "01b6aecd8b4d8bd2385665232dfb4b57029f991f",
+    "workBranch": "codex/esim-cloud-access",
+    "workBranchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "mainSameShaChecks": "6_success_including_verify",
+    "workBranchSameShaChecks": "1_success_source_preparation_only",
+    "relatedMergedPrs": [
+      152,
+      155,
+      158,
+      159,
+      167,
+      169,
+      181
+    ],
+    "promptContextCommand": "failed_exit2_gh_access; GitHub_connector_compare_PR_and_check_runs_equivalent_used",
+    "sourceReview": "Read current main ModelProfileManifest, ResumableModelArtifactStager, Sky model routing/tests, model evidence and current status; older local branch implementation is not current main",
+    "nextAction": "Protect the dirty checkout; reconcile newest main account/Sky/Pixel contracts with local RQ48 additions, then implement AM01-AM05 in an isolated current-main checkout with same-artifact tests and separately recorded host, Pixel, Linux, Cloud and production gates.",
+    "documentationSavedLocally": true,
+    "implementationStarted": false,
+    "branchCommitCreated": false,
+    "mainMerged": false,
+    "productionPublished": false
+  },
+  "timelineReceiver": {
+    "recordedAt": "2026-10-21",
+    "status": "local_source_fixture_ui_accepted_real_x_provider_unconnected",
+    "authority": "docs/sky-tools-complete-design.md#投稿ソースのapimcp受け皿sky-timeline-receiver",
+    "explicitCorrection": "RockstarOS/Sky is the API/MCP receiving platform; X-specific API contract must not be a mandatory user onboarding step.",
+    "primaryOwner": "ROCK/Web",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY14",
+      "SKY15",
+      "SKY21"
+    ],
+    "implementation": [
+      "components/sky-timeline-connector.tsx",
+      "lib/sky-timeline-provider.ts",
+      "components/sky-x-account.tsx",
+      "components/home-screen.tsx"
+    ],
+    "providerContract": "sky.timeline.v1",
+    "mcpTool": "sky_timeline_read",
+    "mcpExecution": "existing slot, prepare, one-use approval, execute; free-declared only in this pilot",
+    "storage": "page memory only, display TTL15m; device/server changes and unmount invalidate",
+    "xApiAdapter": "optional, disabled, no contract submitted or credits purchased",
+    "realXPostsAccepted": false,
+    "realXForYouAccepted": false,
+    "autoSyncAccepted": false,
+    "arbitraryApiAdaptersAccepted": false,
+    "nextAction": "Add a permitted real X feed API/MCP, authorize at supplier, then accept actual posts, refresh, stop and expiry separately.",
+    "verification": {
+      "fullVerifyExitCode": 0,
+      "nodePass": 1122,
+      "nodeSkip": 1,
+      "workerAssertions": 1578,
+      "csvAssertions": 113,
+      "evidence": "docs/evidence/x-account-native-feed.json",
+      "localBrowserWidths": [
+        1280,
+        390,
+        320
+      ]
+    }
+  },
+  "skyTimelineDevelopmentPrompt": {
+    "recordedAt": "2026-10-21",
+    "sourceThread": "01a14d54-daee-7c30-87a8-faea84641a40",
+    "sourceThreadTitle": "RockstarOSを再設計",
+    "sourceTurnStatusAtPreparation": "inProgress",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY14",
+      "SKY15",
+      "SKY21"
+    ],
+    "status": "PROMPT_PREPARED_IMPLEMENTATION_NOT_STARTED_IN_THIS_CHAT",
+    "prompt": "docs/prompts/rockstaros-sky-timeline-receiver-development.md",
+    "mainSha": "01b6aecd8b4d8bd2385665232dfb4b57029f991f",
+    "workBranch": "codex/esim-cloud-access",
+    "workBranchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "mainSameShaChecks": "6_success_including_verify",
+    "workBranchSameShaChecks": "1_success_source_preparation_only",
+    "promptContextCommand": "failed_GitHub_read; equivalent_GitHub_connector_branch_PR_check_runs_read",
+    "localReceiverState": "synthetic_MCP_one_shot_receive_reported_in_source_thread; real_X_provider_Web_inline_and_auto_sync_unaccepted",
+    "nextAction": "Protect shared dirty source; reconcile current main and completed source-thread changes; implement FEED01-FEED05 using one permitted real provider, with X Following/For You and automatic sync accepted separately.",
+    "documentationSavedLocally": true,
+    "branchCommitCreated": false,
+    "mainMerged": false,
+    "publicDeployed": false,
+    "previousNextPromptAtPreparation": "docs/prompts/sky-integrated-marketplace-development.md",
+    "sourceTurnStatusAtFinalization": "completed",
+    "sourceTurnFinalResult": "local synthetic MCP one-shot receive/display and full verification reported passed; actual X provider and automatic sync unaccepted",
+    "finalizationVerification": "baseline:check, design:check, project:check and git diff --check passed; own full verify rerun encountered PC citation failure and several 10s test timeouts in shared dirty checkout; log /private/tmp/sky-timeline-prompt-verify-escalated.log"
+  },
+  "harness2DevelopmentPrompt": {
+    "recordedAt": "2026-10-21",
+    "reason": "Owner explicitly requested a development prompt after reviewing google-research/harness2 and the RockstarOS redesign chat; RQ01-RQ49 and runtime authority remain unchanged",
+    "primaryWorkstream": "Sky / MCP",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "SKY14",
+      "SKY15",
+      "SKY21",
+      "AI07",
+      "AI08",
+      "OS10"
+    ],
+    "prompt": "docs/prompts/sky-harness2-development.md",
+    "executionStatus": "PROMPT_PREPARED_IMPLEMENTATION_NOT_STARTED",
+    "upstreamReference": "google-research/harness2@1cfe254e8d25b15f37048c3730134686abe60335",
+    "mainSha": "01b6aecd8b4d8bd2385665232dfb4b57029f991f",
+    "workBranch": "codex/esim-cloud-access",
+    "workBranchSha": "951d82d5a491a284aed4e0d4d280171d835d4b43",
+    "mainSameShaChecks": "6_success_including_verify",
+    "workBranchSameShaChecks": "1_success_source_preparation_only",
+    "generalLaunchAllowed": false,
+    "runtimeChanged": false
+  },
+  "obsoletePageCleanup": {
+    "recordedAt": "2026-10-21",
+    "authority": "Owner explicitly requested removing unused avoado.si pages and chose old/duplicate page cleanup",
+    "canonicalOs": "/os",
+    "canonicalEve": "/os/eve",
+    "approved": true,
+    "strategy": "retire obsolete UI through redirects; preserve existing owner data and backend APIs",
+    "redirects": {
+      "/zema/compose": "/os/eve",
+      "/zema/library": "/os/sky/agents",
+      "/zema/amc": "/amc",
+      "/fund/legacy": "/fund",
+      "/rockstaros": "/os",
+      "/rockstaros/crowdfunding": "/os"
+    },
+    "retained": [
+      "Sky",
+      "Eve",
+      "Wallet",
+      "Market",
+      "Game",
+      "avocadoMini",
+      "avocadoPro",
+      "/rockstaros/guide"
+    ]
+  },
+  "sharedOsFrame": {
+    "recordedAt": "2026-10-21",
+    "authority": "Owner identified the design changing between Home and Eve and provided two screenshots",
+    "reference": "existing ivory/forest-green Home timeline",
+    "sharedHeader": true,
+    "stableMobileNavigation": [
+      "stream",
+      "discover",
+      "eve",
+      "agents",
+      "communities"
+    ],
+    "themeBoundary": "system chrome remains neutral; community appearance stays in community content and previews",
+    "businessPermissionsChanged": false
+  },
+  "mainDomainWebOs": {
+    "recordedAt": "2026-10-21",
+    "source": "explicit user: avoado.si main domain runs OS with member registration",
+    "home": "https://avoado.si/",
+    "compatibilityEntrances": [
+      "/os",
+      "/os/eve"
+    ],
+    "identity": "existing Sites sign-in and account-owned storage",
+    "newBillingAuthorized": false
+  },
+  "independentRockstarAccount": {
+    "recordedAt": "2026-10-21",
+    "source": "explicit user instruction: register without ChatGPT and use own Sky/Eve, continue on Pixel",
+    "targetIdentity": "independent RockstarOS account with server-owned identity and verified credential",
+    "existingDataPolicy": "preserve authenticated existing owner; no automatic email-based merge",
+    "currentStatus": "dependency_and_passkey_reuse_preparation_only",
+    "publicRegistrationAccepted": false
+  },
+  "commonCoreDevelopmentPrompt": {
+    "path": "docs/prompts/rockstaros-common-core-development.md",
+    "sharedRuntime": "one common core, device-specific host/executor/output adapters",
+    "firstAcceptance": "independent account -> Sky -> Eve -> physical Pixel Linux -> same Web/Pixel history and result",
+    "allHardwareAccepted": false
+  },
+  "skyEveConnections": {
+    "status": "local_source_and_service_handoff_verified_new_pixel_cycle_pending",
+    "sourceThreadId": "01a15b7f-e98c-7c32-ae03-8cb61be8bd7d",
+    "scope": "Owner-bound Sky service settings and existing linked-device agents; explicit Eve references and version-bound consent",
+    "modules": [
+      "lib/sky-eve-connections.ts",
+      "components/sky-device-agent-connections.tsx"
+    ],
+    "newStorage": false,
+    "newExecutionOrBillingAuthority": false,
+    "publicDeploymentChanged": false,
+    "physicalAccepted": false,
+    "generalLaunchAllowed": false,
+    "focusedTests": {
+      "passed": 18,
+      "failed": 0
+    },
+    "nextAction": "Accept this Sky-to-Eve pinned agent reference on the same Pixel candidate (run/result/export/stop), then reconcile the public source separately. Do not infer public deployment, new execution authority or production billing from host tests.",
+    "authority": "docs/sky-tools-complete-design.md#sky-agent-library",
+    "localBrowser": {
+      "serviceAgentHandoffAccepted": true,
+      "invalidDeviceReferenceBlocked": true,
+      "reselectSkyLinkAccepted": true,
+      "newInferenceSubmitted": false,
+      "localDevicePresenceReadbackAccepted": false,
+      "localDevicePresenceIssue": "The existing localhost device-sync endpoint returned an error; no synthetic connection was shown as a real device."
+    },
+    "verification": {
+      "fullVerify": {
+        "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "exitCode": 0,
+        "node": {
+          "tests": 1210,
+          "passed": 1209,
+          "failed": 0,
+          "skipped": 1
+        },
+        "workApiAssertions": 1627,
+        "csvAssertions": 113,
+        "webAssets": {
+          "references": 203,
+          "missing": 0
+        },
+        "log": "/private/tmp/sky-eve-connections-verify.log"
+      },
+      "focused": {
+        "passed": 18,
+        "failed": 0,
+        "log": "/private/tmp/sky-eve-connections-focused.log"
+      },
+      "typecheck": {
+        "exitCode": 0
+      },
+      "targetedLint": {
+        "exitCode": 0
+      },
+      "designCheck": {
+        "exitCode": 0
+      },
+      "priorWholeVerifyFailure": {
+        "gate": "lint:product",
+        "cause": "Eight no-floating-promises errors in the concurrently added tests/sky-continuous-feed.test.mjs",
+        "fix": "Mark the eight top-level test registrations void; test bodies and assertions preserved."
+      }
+    },
+    "sourceSha256": {
+      "lib/sky-eve-connections.ts": "0ff92ac062c0532b299d8feb4640c024838bd4949e504affd2044ca69ccd6d83",
+      "lib/sky-agent-library.ts": "bb285f15315bef50d500455bf1bd7b328d3d5541ac6b6d261fb58e31104f748d",
+      "lib/eve-device-sync.ts": "0c288c85634aa07b6175e648cb27b3ca1e0d1bfb64a3fbc4bf669d957966c961",
+      "components/sky-device-agent-connections.tsx": "cf64016332533ea9a1d32be3934b031cbede529c510e2218d30223971489349c",
+      "components/sky-agent-library.tsx": "9d1bf85ed54e26fe027b16412716f602b46f5dbc3ff1e1ed92806a4648b820b7",
+      "components/eve-sync-workspace.tsx": "599be760adcf3296aca20dc4cff8acff6ca1d6f7a5545305a34b1584048aa5fb",
+      "app/os/eve/page.tsx": "eac02e13ce2f9f79353fcbd9bff69603b3d6c0219aee1bbf538e5b2611305fdf",
+      "app/api/sky/agents/route.ts": "1cc2edf9230330eee921c3ff09080dbaf47e0a7df144107e347110c7e3fb254d",
+      "scripts/check-work-api.mjs": "43c5282e4fa01660eba5f937f661f2bb89c5a9cee1cfb0ddf2469c24ec5257d6",
+      "tests/sky-eve-connections.test.mjs": "8fbfa26dd985090bae69f9b46b35b9f46ca334e472ef59af4d09ea5e6cb34865",
+      "tests/eve-device-sync.test.mjs": "6a37b96306a108fd926cc60adda48c1dd854d12770b070d7fe605947f8dfbef4",
+      "tests/sky-agent-library.test.mjs": "58ece2bcdcbe4cdc85c37a4423e7d14666a74b72ce85fa787a9ddad4f91f2619"
+    },
+    "recordedAt": "2026-10-22T00:37:53.396108+00:00"
+  },
+  "continuousSkyTimeline": {
+    "recordedAt": "2026-10-21",
+    "source": "Owner explicitly requests dynamic related, continuously updating timeline",
+    "authority": "docs/rockstaros-complete-design.md#sky-continuous-timeline",
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "preserve": [
+      "existing account/key boundaries",
+      "Sky/Eve execution and budget",
+      "no manufactured endless posts"
+    ]
+  },
+  "miniOsInterface": {
+    "recordedAt": "2026-10-22",
+    "source": "User explicitly corrected the request: Mini dedicated OS screen on avocadomini.si, not a product website.",
+    "requirements": [
+      "Dedicated Mini operating interface",
+      "Non-dazzling display with subdued notifications",
+      "Reuse RockstarOS/Eve account and existing billing",
+      "Distinguish browser UI from physical native OS and unconnected hardware"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#mini-os-interface"
+  },
+  "skyObjectAttachment": {
+    "status": "local_software_prototype_accepted_physical_pending",
+    "authority": "docs/sky-tools-complete-design.md#sky-object-attachment",
+    "taskIds": [
+      "SKY12",
+      "SKY14",
+      "SKY21",
+      "DSP01"
+    ],
+    "primaryOwner": "ROCK",
+    "creator": "/os/eve/create-agent",
+    "entry": "/sky/objects/{agentId}",
+    "implementation": [
+      "lib/sky-object-attachment.ts",
+      "lib/sky-agent-draft.ts",
+      "components/eve-object-agent-creator.tsx",
+      "components/sky-attached-object.tsx",
+      "app/os/eve/create-agent/page.tsx",
+      "app/sky/objects/[id]/page.tsx",
+      "packages/rockstaros-runtime/src/index.mjs"
+    ],
+    "newStorageTable": false,
+    "physicalModuleImplemented": false,
+    "physicalAccepted": false,
+    "flowticaIntegrationAccepted": false,
+    "generalLaunchAllowed": false,
+    "publicDeploymentChanged": false,
+    "draftMethod": "explicit template; no model call",
+    "focusedTests": {
+      "passed": 77,
+      "failed": 0
+    },
+    "nextAction": "Select one removable module and subject, define power/transport/actual input/output and consent/withdrawal; implement bounded firmware/host bridge and accept same-job I/O, disconnect, stop and restart. Do not claim all inorganic/organic subjects or public deployment accepted.",
+    "displayName": "Smith",
+    "targetScope": "inorganic_and_organic_through_verified_interfaces",
+    "verification": {
+      "status": "passed",
+      "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "node": {
+        "tests": 1511,
+        "pass": 1510,
+        "fail": 0,
+        "skipped": 1
+      },
+      "workApiAssertions": 2113,
+      "csvAssertions": 113,
+      "webAssets": {
+        "references": 218,
+        "missing": 0
+      },
+      "focused": {
+        "passed": 77,
+        "failed": 0
+      },
+      "portableRuntime": {
+        "build": "passed",
+        "passed": 61,
+        "failed": 0
+      },
+      "scope": "local source and synthetic host/HTTP/DB/UI only; no physical/biological acceptance or deployment"
+    },
+    "evidence": "docs/evidence/sky-agent-library.json#objectAttachment"
+  },
+  "smisIdentity": {
+    "displayName": "Smith",
+    "previousDisplayName": "smis",
+    "decisionDate": "2026-10-23",
+    "reason": "本人がSmithを正式なスペルとして明示したため。接続の役割と互換識別子は維持。",
+    "referenceThread": "01a15221-cccf-7f12-a7f9-cddd417fa4fd",
+    "authority": "docs/sky-tools-complete-design.md#sky-object-attachment",
+    "scope": "unified agent and capability hub for inorganic and organic subjects",
+    "internalIdentifier": "sky",
+    "compatibility": "retain existing /sky, /api/sky, SDK/schema/header/storage identifiers",
+    "targetClassificationRequired": false,
+    "actualCapabilityAndConsentRequired": true,
+    "allTargetsPhysicallyAccepted": false,
+    "physicalOrBiologicalExperimentPerformed": false,
+    "generalLaunchAllowed": false,
+    "publicDeploymentChanged": false,
+    "status": "smith_source_host_checked_pixel_pending",
+    "previousVerification": {
+      "status": "passed",
+      "command": "env PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+      "node": {
+        "tests": 1511,
+        "pass": 1510,
+        "fail": 0,
+        "skipped": 1
+      },
+      "workApiAssertions": 2113,
+      "csvAssertions": 113,
+      "webAssets": {
+        "references": 218,
+        "missing": 0
+      },
+      "focused": {
+        "passed": 77,
+        "failed": 0
+      },
+      "portableRuntime": {
+        "build": "passed",
+        "passed": 61,
+        "failed": 0
+      },
+      "scope": "local source and synthetic host/HTTP/DB/UI only; no physical/biological acceptance or deployment"
+    },
+    "spellingCorrection": {
+      "displayName": "Smith",
+      "legacyDisplayNames": [
+        "Sky",
+        "smis"
+      ],
+      "internalIdentifiersUnchanged": true,
+      "localUiAccepted": true,
+      "physicalPixelAccepted": false,
+      "publicDeploymentChanged": false,
+      "scope": "Mac browser headings and current Web source only; no new Pixel APK installation or physical execution acceptance"
+    },
+    "verification": {
+      "status": "passed",
+      "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH MINIFLARE_WORKERD_PATH=<existing nested workerd> npm run verify",
+      "exitCode": 0,
+      "nodeTests": 1697,
+      "nodePassed": 1696,
+      "nodeSkipped": 1,
+      "nodeFailed": 0,
+      "apiAssertions": 2151,
+      "csvAssertions": 113,
+      "webAssets": {
+        "references": 231,
+        "missing": 0
+      },
+      "focusedPurposeAndIdentityPassed": 41,
+      "focusedUiReleasePassed": 57,
+      "portableRuntime": {
+        "build": "passed",
+        "passed": 62,
+        "failed": 0
+      },
+      "scope": "Local source, host tests, synthetic API/DB and Mac UI. Pixel execution and public deployment not accepted. Shared working tree, no immutable whole-tree receipt.",
+      "log": "/private/tmp/smith-verify-complete.log",
+      "lateValidationInputReadback": {
+        "checked": 153,
+        "changed": []
+      }
+    }
+  },
+  "smisPhysicalEnvironment": {
+    "status": "source_and_host_validated_pixel_camera_pending",
+    "authority": "docs/sky-tools-complete-design.md#smis-three-connection-ways",
+    "taskIds": [
+      "SKY12",
+      "SKY14",
+      "SKY21",
+      "DSP01"
+    ],
+    "primaryOwner": "ROCK",
+    "userDefinesPurposeAndAgent": true,
+    "developerUseCasesAreExclusive": false,
+    "connectionWays": [
+      "embedded",
+      "attached_module",
+      "surrounding_sensor"
+    ],
+    "firstCameraRoute": "/sky/objects/camera",
+    "sharedInput": "smis.visual-observation/1",
+    "implementation": [
+      "lib/smis-visual-input.ts",
+      "lib/smis-camera.ts",
+      "lib/smis-object-handoff.ts",
+      "components/smis-camera-workspace.tsx",
+      "lib/smis-input-session.ts"
+    ],
+    "cameraProcessing": "local_registered_appearance_candidate_only",
+    "semanticImageUnderstanding": false,
+    "rawImagesUploaded": false,
+    "rawImagesPersisted": false,
+    "newModelDownloads": false,
+    "newStorageTable": false,
+    "physicalPixelAccepted": false,
+    "miniHardwareAccepted": false,
+    "generalLaunchAllowed": false,
+    "publicDeploymentChanged": false,
+    "sharedInputSourceNames": [
+      "browser-camera",
+      "mini-camera"
+    ],
+    "physicalAcceptanceBlockedBy": "Computer-use connection unavailable; no UI or Pixel camera acceptance has been claimed",
+    "validation": {
+      "focusedTests": {
+        "command": "node --experimental-strip-types --test tests/smis-visual-input.test.mjs tests/sky-object-attachment.test.mjs tests/sky-agent-library.test.mjs",
+        "passed": 28,
+        "failed": 0
+      },
+      "releaseTestsPassed": 34,
+      "portableBuildPassed": true,
+      "portableTestsPassed": 61,
+      "portableExportCheckPassed": true,
+      "fullVerify": {
+        "command": "npm run verify",
+        "node": "24.19.0 bundled app runtime",
+        "exitCode": 0,
+        "tests": 1534,
+        "passed": 1533,
+        "skipped": 1,
+        "failed": 0,
+        "workApiAssertions": 2112,
+        "csvAssertions": 113,
+        "webAssetReferences": 221,
+        "webAssetsMissing": 0,
+        "log": "/private/tmp/smis-camera-verify-fixed-node.log"
+      },
+      "relevantInputsUnchangedAcrossValidation": 19,
+      "browserUiAccepted": false,
+      "physicalPixelAccepted": false,
+      "miniHardwareAccepted": false,
+      "currentWorkingTreeGate": {
+        "status": "blocked_by_concurrent_dependency_update",
+        "releaseCheck": "Web third-party license audit package-lock hash mismatch",
+        "packageLockSha256": "199f8ed0a6c99390aa217362a834a54aad4e8a87dad564dd7b4c0b052de30547",
+        "currentNodeEngine": ">=22.23.4 <23 || >=24.22.1 <25 || >=26.12.1 <27",
+        "newTlsGateAddedAfterFullRunStarted": true,
+        "fullRunDoesNotAcceptCurrentEntireWorkingTree": true,
+        "action": "Keep the smis source/host receipts. Reconcile the concurrent dependency/license/runtime work and rerun current verify; do not rewrite other work or call the present whole repository accepted."
+      }
+    },
+    "evidence": "docs/evidence/sky-agent-library.json#physicalEnvironment",
+    "next": "Complete current dependency/license/TLS reconciliation and rerun current verify; restore screen connection for real Pixel camera acceptance; then separately implement Mini driver. Preserve users choosing their own purposes in Eve.",
+    "removableModuleTrial": {
+      "recordedAt": "2026-10-23",
+      "reason": "本人が調査案の正本反映と、Pixelで同じ部品を違う物へ付け替えるEve一周の開発を明示",
+      "status": "host_software_checked_physical_pixel_pending",
+      "authority": "docs/sky-tools-complete-design.md#smis-removable-module",
+      "primaryWorkstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+      "taskIds": [
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "architecture": [
+        "reusable_electronics",
+        "object_specific_mount_or_sensor_contact",
+        "common_os_runtime"
+      ],
+      "firstModule": "micro:bit V2 accelerometer BLE service (hardware acceptance pending)",
+      "privateRoute": "/os/eve/module",
+      "privateOptIn": "SMIS_MODULE_PRIVATE_PREVIEW=1 and development and loopback",
+      "moduleOwned": false,
+      "ownerPlansToAcquireParts": true,
+      "automaticDetachDetection": false,
+      "physicalPixelAccepted": false,
+      "generalLaunchAllowed": false,
+      "publicDeploymentChanged": false,
+      "newModelDownloads": false,
+      "newStorageTables": false,
+      "evidence": "docs/evidence/smis-removable-module.json",
+      "nextAction": "Acquire the bounded motion module and mounting/power parts; restore native UI control; accept the same programmed board on two real objects using Pixel Chrome and the existing owner/runtime/model/job/export/stop path. Host software checks do not accept hardware."
+    },
+    "objectPurpose": {
+      "recordedAt": "2026-10-23",
+      "reason": "本人が物を便利にする目的から、今の部品でできる範囲・不足部品を確認し同じEve作成/実行/保存/停止へ進むよう明示",
+      "status": "host_software_checked_physical_pixel_pending",
+      "authority": "docs/sky-tools-complete-design.md#smis-object-purpose",
+      "taskIds": [
+        "SKY21",
+        "OS10",
+        "DSP01"
+      ],
+      "primaryWorkstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+      "physicalPixelAccepted": false,
+      "generalLaunchAllowed": false,
+      "purchasesPerformed": false,
+      "newStorageTables": false,
+      "evidence": "docs/evidence/smis-object-purpose.json",
+      "validation": {
+        "focusedPassed": 63,
+        "portablePassed": 61,
+        "typecheckExitCode": 0,
+        "productLintExitCode": 0,
+        "fullVerifyExitCode": 0,
+        "nodePassed": 1666,
+        "nodeSkipped": 1,
+        "apiAssertions": 2113,
+        "csvAssertions": 113,
+        "physicalPixelAccepted": false,
+        "browserInteractionAccepted": false
+      },
+      "nextAction": "Use the private purpose/parts screen; after hardware arrives and native UI control is restored, accept the same Pixel and programmed module on two objects with reviewed goal, actual model, Android text-file readback and original-job stop. Retain the existing owner/runtime and public hold."
+    }
+  },
+  "miniVoiceInteraction": {
+    "recordedAt": "2026-10-22",
+    "status": "os_common_core_validated_native_entry_and_physical_voice_pending",
+    "authority": "docs/rockstaros-avocado-mini-complete-design.md#mini-hey-eve",
+    "primaryWorkstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "MAT15",
+      "OS10",
+      "DSP01",
+      "SKY21"
+    ],
+    "source": [
+      "lib/rockstar-eve-interaction.ts",
+      "lib/sky-linux-eve-work-port.ts",
+      "components/eve-interaction-panel.tsx",
+      "lib/mini-local-speech.ts"
+    ],
+    "wakePhrase": "Hey Eve",
+    "stopPhrase": "Thanks Eve",
+    "offMeans": "consented_voice_standby_not_complete_power_off",
+    "jobStore": "existing private Pixel Linux manager and workflow",
+    "rawAudioSaved": false,
+    "cloudAsrFallback": false,
+    "automaticDownloads": false,
+    "pixelVoiceAccepted": false,
+    "miniHardwareAccepted": false,
+    "publicDeploymentChanged": false,
+    "generalLaunchAllowed": false,
+    "remaining": [
+      "on-device Japanese ASR availability",
+      "current native Pixel entry integration / old loopback forwarding acceptance",
+      "real audio and camera-control connection recovery",
+      "physical stop and return to standby"
+    ],
+    "validation": {
+      "focusedPassed": 17,
+      "focusedFailed": 0,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "portableBuildPassed": true,
+      "portableTestsPassed": 61,
+      "builtPortableExportPassed": true,
+      "pixelPackageFiles": 11,
+      "pixelPackageHashesMatched": true,
+      "fullVerify": {
+        "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "exitCode": 0,
+        "tests": 1553,
+        "passed": 1552,
+        "skipped": 1,
+        "failed": 0,
+        "workApiAssertions": 2113,
+        "csvAssertions": 113,
+        "webAssets": 221,
+        "webAssetsMissing": 0,
+        "log": "/private/tmp/eve-os-unified-verify-current.log"
+      },
+      "scopedInputsUnchanged": 12,
+      "sharedWholeTreeFrozen": false,
+      "browserUiAccepted": false,
+      "pixelInstalled": false,
+      "physicalVoiceAccepted": false,
+      "allOsEntryPointsUnified": false
+    },
+    "evidence": "docs/evidence/avocado-mini-native-development.json#osUnifiedInteraction",
+    "next": "Implement and compile the existing native Pixel entry/voice adapter over the established mTLS bridge rather than assuming old Terminal 5199 forwarding. Verify or prepare a local Japanese ASR provider with exact source/license/required capacity shown before any download, then accept real Hey Eve/request/owner confirmation/same agent-job/result export/Thanks Eve/confirmed stop/standby on the unchanged owner data. Keep general launch on hold.",
+    "commonOsAuthority": "docs/rockstaros-complete-design.md#os-unified-interaction",
+    "standalonePerDeviceSessionRetired": true,
+    "compatibilityOnly": [
+      "lib/mini-voice-session.ts",
+      "components/mini-voice-panel.tsx"
+    ]
+  },
+  "osUnifiedInteraction": {
+    "recordedAt": "2026-10-22",
+    "status": "common_core_screen_legacy_adapter_validated_all_entry_integration_pending",
+    "authority": "docs/rockstaros-complete-design.md#os-unified-interaction",
+    "primaryWorkstream": "docs/workstreams/07-android-device-local-ai.md",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "OS10",
+      "DSP01",
+      "CORE02",
+      "CORE03",
+      "CORE05",
+      "SKY21"
+    ],
+    "commonCore": "lib/rockstar-eve-interaction.ts",
+    "commonScreen": "components/eve-interaction-panel.tsx",
+    "existingJobAuthority": "lib/workflow.ts",
+    "firstHostAdapter": "lib/sky-linux-eve-work-port.ts",
+    "compatibilityOnly": [
+      "lib/mini-voice-session.ts",
+      "components/mini-voice-panel.tsx"
+    ],
+    "newJobStore": false,
+    "newBillingLedger": false,
+    "existingRecordsMigrated": false,
+    "nativeCurrentEntryUnified": false,
+    "allWebPathsUnified": false,
+    "pixelPhysicalAccepted": false,
+    "miniHardwareAccepted": false,
+    "generalLaunchAllowed": false,
+    "publicDeploymentChanged": false,
+    "next": "Connect the same core to current authenticated native/account/runtime job paths; accept same owner/agent/job/output/stop across input modes on Pixel, then separately accept Mini/Pro drivers.",
+    "validation": {
+      "focusedPassed": 17,
+      "focusedFailed": 0,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "portableBuildPassed": true,
+      "portableTestsPassed": 61,
+      "builtPortableExportPassed": true,
+      "pixelPackageFiles": 11,
+      "pixelPackageHashesMatched": true,
+      "fullVerify": {
+        "command": "PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify",
+        "exitCode": 0,
+        "tests": 1553,
+        "passed": 1552,
+        "skipped": 1,
+        "failed": 0,
+        "workApiAssertions": 2113,
+        "csvAssertions": 113,
+        "webAssets": 221,
+        "webAssetsMissing": 0,
+        "log": "/private/tmp/eve-os-unified-verify-current.log"
+      },
+      "scopedInputsUnchanged": 12,
+      "sharedWholeTreeFrozen": false,
+      "browserUiAccepted": false,
+      "pixelInstalled": false,
+      "physicalVoiceAccepted": false,
+      "allOsEntryPointsUnified": false
+    },
+    "evidence": "docs/evidence/avocado-mini-native-development.json#osUnifiedInteraction"
+  },
+  "miniSpatialComputerUse": {
+    "recordedAt": "2026-10-22",
+    "taskIds": [
+      "MAT15",
+      "OS10",
+      "WEB04"
+    ],
+    "status": "design_only_runtime_and_physical_acceptance_pending",
+    "authority": "docs/rockstaros-complete-design.md#mini-spatial-computer-use",
+    "referenceUrl": "https://www.instagram.com/reel/Dc74JgZybZJ/",
+    "referenceVideoViewed": false,
+    "referenceAccess": "Web fetch failed; browser request failed. Requirements derive only from explicit user text.",
+    "userRequirement": "空間全体でコンピュータユーズができるようにする",
+    "requiredDesign": [
+      "scene_object_owner_place_epoch_job_binding",
+      "calibrated_coordinate_and_focus_resolution",
+      "voice_and_hand_intent",
+      "permissioned_app_or_tool_adapter",
+      "observe_action_readback_save_recovery",
+      "non_dazzling_optical_output"
+    ],
+    "implemented": false,
+    "physicalAccepted": false,
+    "pricingChanged": false,
+    "publicationAuthorizedByThisMessage": false,
+    "testsRun": false,
+    "nextAction": "Obtain reference footage through an allowed attachment, select one supported app/surface and develop the calibrated input-to-authorized-action path; keep optics/physical acceptance separate."
+  },
+  "smisNetworkEffects": {
+    "recordedAt": "2026-10-23T02:51:46.787540+00:00",
+    "reason": "Owner explicitly requested stronger network effects inside RockstarOS",
+    "status": "design_recorded_runtime_and_growth_not_accepted",
+    "primaryWorkstream": "Product / UX",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "HOME01",
+      "SKY21",
+      "OS10",
+      "WEB04"
+    ],
+    "requirements": [
+      "RQ02",
+      "RQ03",
+      "RQ21",
+      "RQ37",
+      "RQ48"
+    ],
+    "authority": "docs/rockstaros-complete-design.md#smis-network-effects",
+    "loop": [
+      "create_with_eve",
+      "explicitly_share_version",
+      "other_owner_adds",
+      "execute_with_existing_authority_and_budget",
+      "verify_result",
+      "share_improved_version"
+    ],
+    "reuse": [
+      "sky_agent_settings",
+      "social_acl",
+      "community_os_versioned_add",
+      "workflow_broker",
+      "existing_job_artifact_usage"
+    ],
+    "gaps": [
+      "real_owner_pixel_reuse",
+      "consented_cross_owner_outcome_discovery",
+      "growth_measurement",
+      "existing_author_settlement"
+    ],
+    "privateDataAutoPublication": false,
+    "sharingGrantsExecutionAuthority": false,
+    "pricingOrPayoutTermsChanged": false,
+    "runtimeAccepted": false,
+    "publicDeploymentAccepted": false,
+    "growthMeasured": false,
+    "nextAction": "Integrate the separately saved Eve evaluation/native work from exact source checkpoints while preserving this accepted loop; accept the same candidate in real UI/owner/Pixel when available; then measured outcome-informed discovery and existing author settlement. Keep the full master goal active.",
+    "validation": {
+      "designCheck": "passed",
+      "baselineCheck": "passed",
+      "projectCheck": "passed",
+      "fullVerify": {
+        "exitCode": 0,
+        "nodeTests": 1553,
+        "nodePass": 1552,
+        "nodeSkip": 1,
+        "nodeFail": 0,
+        "apiAssertions": 2113,
+        "csvAssertions": 113,
+        "log": "/private/tmp/rock-network-effects-root-full.log",
+        "inputProof": "/Users/kaiya/.codex-work/visualizations/2026/10/18/01a14d54-daee-7c30-87a8-faea84641a40/network-effects-root-proof.json",
+        "scope": "Command passed in shared root. Documents/evidence and new sky route/mini build output changed during run; not a frozen whole-artifact release or network-effects runtime acceptance."
+      }
+    },
+    "implementationEvidence": "docs/evidence/smis-agent-shares.json",
+    "localPrimitivesAccepted": "versioned role sharing, lineage and same WorkJob controlled planner/actual citation Tool/history/restart; real UI/owner/Pixel/public pending",
+    "latestToolLoopEvidence": "docs/evidence/smis-agent-tool-loop.json",
+    "latestOutcomeEvidence": "docs/evidence/smis-agent-outcomes.json"
+  },
+  "companyLogo20261023": {
+    "schema": "rockstaros.company-brand/1",
+    "revision": 2,
+    "authority": "User supplied signal-2026-10-23-025407.png and requested global sharing",
+    "source": "public/brand/rockstaros-logo-source.png",
+    "sourceSha256": "99718729b2caaf0c52ddcf1db48c48da2c0b1eb61d7ff2c1775ce44d545bf6b9",
+    "width": 1920,
+    "height": 1080,
+    "description": "Six navy outlined petals and a central outlined circle on white",
+    "scope": [
+      "RockstarOS",
+      "smis (formerly Sky)",
+      "Eve",
+      "avocadoMini",
+      "avocadoPro"
+    ],
+    "previousMark": "silver metallic droplet; retained only in historical evidence",
+    "handling": "Preserve the supplied shape/aspect; derive square icons from the centered 1080x1080 canvas without redrawing. Keep legacy asset URLs compatible. Do not imply a rebuilt APK, flashed OS or published Site from source changes."
+  },
+  "smisEveWorkbench20261023": {
+    "taskIds": [
+      "HOME01",
+      "WEB04",
+      "SKY21"
+    ],
+    "primaryOwner": "ROCK",
+    "evidence": "docs/evidence/os-visual-release.json#workbenchFollowup",
+    "design": "docs/sky-tools-complete-design.md#smis-eve-workbench",
+    "scope": "existing marketplace content, private saved-resource posts, Eve role builder and execution-screen usability; preserve owner/revision/budget/stop boundaries",
+    "reason": "Latest explicit human requests in this chat; restores existing content and simplifies Eve creation/execution UI",
+    "progressEvidence": "docs/evidence/os-visual-release.json#workbenchFollowup"
+  },
+  "eveSmisExecutionLoopRequirement20261023": {
+    "source": "本人の明示依頼: Eveとの会話でエージェントを作り、smisに追加し、PixelでもWebでも実行して成果を受け取るところまで実際に一周確認する。",
+    "requirements": [
+      "会話入力から役割を確認し、本人用Agentへ保存する",
+      "smisから同じAgent IDとrevisionで利用できる",
+      "承認済み端末と準備済みモデルだけに登録・実行する",
+      "Web/Pixelの同一accountでJobと成果を再読込する",
+      "fixture/API/ビルドと実UI・実モデル・実機の受入を分ける"
+    ],
+    "design": "docs/rockstaros-complete-design.md#smis-eve-workbench",
+    "evidence": "docs/evidence/eve-smis-execution-loop.json"
+  },
+  "remainingWorkDevelopmentPrompt": {
+    "recordedAt": "2026-10-23",
+    "source": "Explicit owner request: rewrite detailed Mini/Pro/OS/Smith/Eve unfinished development and Git saving/integration, eSIM, usage/billing; preparation estimate first",
+    "path": "docs/prompts/rockstaros-remaining-work-development.md",
+    "plan": "data/rockstaros-remaining-work-plan.json",
+    "evidence": "docs/evidence/rockstaros-remaining-work-prompt.json",
+    "estimatedPreparationMinutes": [
+      25,
+      40
+    ],
+    "requirementsChanged": false,
+    "runtimeChanged": false,
+    "generalLaunchHeld": true,
+    "revision": "efficient_model_routing_95_units",
+    "detailedUnitCount": 95,
+    "freshGithubContextAt": "2026-10-24T05:04:24.598Z",
+    "originalDetailedUnitCount": 75,
+    "additionalDetailedUnitCount": 20,
+    "historyAchievementPath": "data/rockstaros-chat-achievements.json"
+  },
+  "miniReferenceReels20261023": {
+    "design": "docs/avocado-mini-r5/spatial-computer-use-design.md",
+    "references": "docs/avocado-mini-r5/factory-development/reference-reels.json",
+    "explicitImageLocationCondition": "No plate or membrane at the intended image location",
+    "reason": "Explicit owner request and answer in this chat",
+    "pricingChanged": false,
+    "physicalAcceptanceInferredFromReels": false
+  },
+  "developmentChatDispatch": {
+    "recordedAt": "2026-10-24T04:19:57.404601+00:00",
+    "entryPrompt": "docs/prompts/rockstaros-development-chats.md",
+    "registry": "data/rockstaros-development-chats.json",
+    "detailedPrompt": "docs/prompts/rockstaros-remaining-work-development.md",
+    "fullHistoryInheritance": false,
+    "maxActiveWorkLanes": 3,
+    "functionalCoverageAudit": "180_features_10_algorithms_reconciled_95_units",
+    "reason": "Owner explicitly requested lightweight task-specific chat branches, and asked to reconcile the full function inventory thread.",
+    "functionalCoveragePath": "data/rockstaros-full-function-coverage.json",
+    "laneCount": 11,
+    "totalImplementationUnits": 95,
+    "historyAchievementPath": "data/rockstaros-chat-achievements.json",
+    "unitProgressPath": "data/development-unit-progress.json",
+    "historyThreadCount": 23,
+    "dispatchLoopSpecified": true,
+    "rq49BridgeDetailed": true,
+    "modelRoutingPolicyPath": "data/development-model-routing.json"
+  },
+  "developmentModelRouting": {
+    "recordedAt": "2026-10-24T05:38:00.854847+00:00",
+    "policyPath": "data/development-model-routing.json",
+    "coordinatorModel": "gpt-6.1-sol",
+    "helperModel": "gpt-6-luna",
+    "hardCaseAndRiskReviewModel": "gpt-6-astra",
+    "basis": "official model roles plus repository-specific initial allocation; tune from acceptance and total consumption",
+    "productModelsAndPricesChanged": false,
+    "unitCount": 95
+  },
+  "pixelEntryDesignIntent": {
+    "date": "2026-11-02",
+    "ownerDirection": "Open Eve immediately, use current rainbow logo and Web design, put synchronization and diagnostics in device settings",
+    "authority": "data/pixel-entry-design.json",
+    "runtimeAndBillingChanged": false
+  },
+  "noahStoreAndRoles20261102": {
+    "authority": "docs/noah-agent-model-store-design.md",
+    "contract": "data/noah-agent-model-store-design.json",
+    "source": "Current explicit user instruction plus linked Eve chat: この役割分担でEveとNoahの設計書を更新して skyはないからね",
+    "eve": "shared_intelligence",
+    "noah": "agent_composition_and_integrated_store_device_lifecycle",
+    "standaloneSkyExists": false,
+    "legacySkyKeys": "compatibility and historical inventory; superseded for current role naming by this decision",
+    "lifecycle": [
+      "discover",
+      "add_to_device",
+      "execute",
+      "update",
+      "remove"
+    ],
+    "existingModelManagementReused": true,
+    "runtimeMigrationExecuted": false,
+    "newStoreAccepted": false,
+    "requirementIdsUnchanged": true,
+    "pricingUnchanged": true
   }
 }

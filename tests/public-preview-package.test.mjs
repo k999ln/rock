@@ -24,7 +24,7 @@ void test('the public publisher allowlist and copy steps include every standalon
   assert.deepEqual(copied, allowed, 'approved source must also be copied to its matching public path');
 });
 
-void test('public Sky/Zema package imports and validates a request outside the private repository', async (t) => {
+void test('public smis/Eve package imports and validates a request outside the private repository', async (t) => {
   const directory = await mkdtemp(join(tmpdir(), 'rock-public-package-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   await cp(new URL('package.json', source), join(directory, 'package.json'));

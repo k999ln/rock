@@ -59,12 +59,12 @@ function failure(error: unknown) {
   if (error instanceof SkySubmissionError)
     return json({ error: error.message }, error.status);
   if (error instanceof Error && error.message === 'UNAUTHORIZED')
-    return json({ error: 'サインインするとSkyコードを発行できます。' }, 401);
+    return json({ error: 'サインインするとSmithコードを発行できます。' }, 401);
   if (error instanceof Error && error.message === 'ORIGIN')
-    return json({ error: 'Skyから操作してください。' }, 403);
+    return json({ error: 'Smithから操作してください。' }, 403);
   if (error instanceof SyntaxError)
     return json({ error: '入力形式を確認してください。' }, 400);
-  return json({ error: 'Skyコードを発行できませんでした。' }, 503);
+  return json({ error: 'Smithコードを発行できませんでした。' }, 503);
 }
 
 export async function GET(request: Request) {

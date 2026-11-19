@@ -33,13 +33,13 @@ test("Sky validates and freezes a public tool catalog", () => {
   assert.equal(Object.isFrozen(catalog), true);
 });
 
-test("Sky hands a selected tool to Zema", () => {
+test("Sky hands a selected tool to Eve", () => {
   const value = handoff();
   assert.equal(value.source, "sky");
   assert.equal(value.executionProvider, "local");
 });
 
-test("Zema keeps the workflow explicit", () => {
+test("Eve keeps the workflow explicit", () => {
   let session = createZemaSession(handoff());
   session = addZemaMessage(session, { side: "user", text: "Start." });
   session = beginZemaRun(session);

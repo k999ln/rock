@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="580" viewBox="0 0 1100 580" role="img" aria-labelledby="title desc">
+  <title id="title">Orbitのアイランド収納時の上向き像と斜め視線の試験幾何</title>
+  <desc id="desc">仮のcap高さ900mm、像面975mm、眼高さ1500mm、水平距離500mmから視線は水平より約46度となる。実験姿勢を決める算術で、像が見える証拠ではない。</desc>
+  <rect width="1100" height="580" fill="#f7f9fa"/>
+  <text x="40" y="49" fill="#1d3449" font-family="Arial, sans-serif" font-size="26" font-weight="700">05アイランド — 上向きの像は立った人に見えるか</text>
+  <text x="40" y="79" fill="#5a6b79" font-family="Arial, sans-serif" font-size="15">寸法は試験治具の仮置き。画像の成立・視域・住宅寸法を示すものではない。</text>
+  <rect x="90" y="425" width="900" height="36" rx="4" fill="#b8ae9f" stroke="#786f65" stroke-width="2"/>
+  <rect x="145" y="461" width="795" height="54" fill="#ddd7ce"/>
+  <rect x="280" y="425" width="71" height="34" rx="12" fill="#929da4" stroke="#60727c" stroke-width="2"/>
+  <ellipse cx="315" cy="424" rx="51" ry="8" fill="#2e414d"/>
+  <line x1="315" y1="425" x2="315" y2="342" stroke="#67a8b1" stroke-width="3" stroke-dasharray="8 5"/>
+  <rect x="242" y="337" width="146" height="35" rx="8" fill="#e4f4f2" stroke="#438f92" stroke-width="2"/>
+  <text x="315" y="361" text-anchor="middle" fill="#286a70" font-family="Arial, sans-serif" font-size="16" font-weight="700">着信カード</text>
+  <circle cx="560" cy="105" r="13" fill="#2d4555"/>
+  <path d="M 560 118 Q 544 160 563 199" fill="none" stroke="#8396a1" stroke-width="12" stroke-linecap="round"/>
+  <line x1="560" y1="105" x2="315" y2="354" stroke="#d88a5d" stroke-width="3"/>
+  <line x1="315" y1="354" x2="560" y2="354" stroke="#9ba8af" stroke-width="2" stroke-dasharray="6 6"/>
+  <line x1="560" y1="105" x2="560" y2="354" stroke="#9ba8af" stroke-width="2" stroke-dasharray="6 6"/>
+  <text x="360" y="386" fill="#506676" font-family="Arial, sans-serif" font-size="18">水平 500 mm（仮）</text>
+  <text x="580" y="240" fill="#506676" font-family="Arial, sans-serif" font-size="18">鉛直 525 mm（仮）</text>
+  <text x="611" y="284" fill="#bd6f41" font-family="Arial, sans-serif" font-size="19" font-weight="700">視線 約46°（水平から）</text>
+  <text x="95" y="547" fill="#506676" font-family="Arial, sans-serif" font-size="15">cap 900 mm、像面 +75 mm、眼 1500 mm の例。H0／H1をこの姿勢・座位・左右移動で比較する。</text>
+</svg>

@@ -589,8 +589,8 @@ export default function CampusWorkspace({
           <small>Campus</small>
         </Link>
         <div className={styles.toplinks}>
-          <Link href={`/sky/campus/${campus}`}>Sky · {campusOptions.find((option) => option.id === campus)?.label}</Link>
-          <Link href="/chat">Zema</Link>
+          <Link href={`/sky/campus/${campus}`}>Smith · {campusOptions.find((option) => option.id === campus)?.label}</Link>
+          <Link href="/chat">Eve</Link>
           <Link href="/wallet" aria-label="Wallet">
             <WalletCards size={17} />
           </Link>
@@ -1413,7 +1413,7 @@ function Tags({
           <label>
             Mode
             <select name="mode" defaultValue="sky">
-              <option value="sky">Sky for this university</option>
+              <option value="sky">Smith for this university</option>
               <option value="campus">Campus home</option>
               <option value="creative">Creative</option>
               <option value="study">Study</option>

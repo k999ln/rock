@@ -1,0 +1,20 @@
+{
+  "schema": "rockstaros.mini.reference-reels/1",
+  "reviewedOn": "2026-10-23",
+  "reviewMethod": "Instagram logged-in browser playback, multiple frames, caption; first reel's technical-question replies",
+  "reels": [
+    {"url":"https://www.instagram.com/reel/Da21x7iCtxJ/","author":"perspek.steven","observed":"moving luminous form within a transparent aquarium-like enclosure","captionTool":"TouchDesigner","borrowedExperience":"surroundings remain visible; the luminous content appears to occupy space","opticalMechanismConfirmed":false,"glareMeasured":false,"fullAngleOrPhysical3DConfirmed":false},
+    {"url":"https://www.instagram.com/reel/DLrVDOJtpW3/","author":"perspek.steven","title":"ARRAY","observed":"hand moving near a desk sensor, matching display preview and changing light on multiple framed surfaces","captionTool":"TouchDesigner","borrowedExperience":"continuous hand motion changes a spatial scene across a large installation","exactSensorAndOpticsConfirmed":false,"framedSurfacesAdopted":false}
+  ],
+  "explicitOwnerAnswer": "Maintain no plate or membrane at the intended image location",
+  "requirements": {
+    "imageLocationHasNoPlateOrMembrane": true,
+    "bareEye": true,
+    "wholeServiceDomainRetained": true,
+    "glareRequirementRelaxed": false,
+    "pricingChanged": false,
+    "sourceCountEqualsOpticalExitCountAssumed": false,
+    "sourceExitSensorAndPassiveSurfaceCountsReportedSeparately": true
+  },
+  "notInferred": ["reference uses AIRR", "reference uses Go", "reference is a free-space volumetric display", "video brightness proves comfort", "hand response proves physical tap accuracy"]
+}

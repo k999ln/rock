@@ -1,0 +1,110 @@
+{
+  "schema": "rockstaros.mini.reference-interface-map/1",
+  "status": "bench_wiring_definition_not_final_mainboard",
+  "nativeHandSource": "linux/hand_landmark_observer.py",
+  "hostCameraBus": "existing supported host USB/V4L2; exact RGB camera and consumption not selected",
+  "goVideo": {
+    "selectedBenchAccessory": "Looking Glass Go HDMI to USB C Adapter Cable",
+    "source": "https://checkout.lookingglassfactory.com/products/looking-glass-go-hdmi-cable",
+    "path": "reference host HDMI -> manufacturer active adapter -> Go USB-C",
+    "exactHostModeAccepted": false,
+    "alternative": "received DP Alt Mode host + included USB-C cable; exact model/power budget must be accepted"
+  },
+  "power": {
+    "GoSupplyCapacityW": 15,
+    "capacityIsConsumption": false,
+    "GoConnectedTo2ACoupon": false,
+    "reverseOrAlternatePowerPathsQualified": false,
+    "customUsbCHighSpeedRoutingProduced": false
+  },
+  "existingContactInputs": [
+    {
+      "signal": "STOP_OK",
+      "picoGpio": 2,
+      "picoModulePhysicalPin": 4,
+      "existingCarrierHarnessPins": [
+        1,
+        2
+      ],
+      "level": "3V3-only existing contact bench",
+      "opticalSafetyQualified": false
+    },
+    {
+      "signal": "LATCH_OK",
+      "picoGpio": 3,
+      "picoModulePhysicalPin": 5,
+      "existingCarrierHarnessPins": [
+        3,
+        4
+      ],
+      "level": "3V3-only existing contact bench",
+      "opticalSafetyQualified": false
+    },
+    {
+      "signal": "TEMP_OK",
+      "picoGpio": 4,
+      "picoModulePhysicalPin": 6,
+      "existingCarrierHarnessPins": [
+        5,
+        6
+      ],
+      "level": "3V3-only existing contact bench",
+      "opticalSafetyQualified": false
+    },
+    {
+      "signal": "POWER_OK",
+      "picoGpio": 5,
+      "picoModulePhysicalPin": 7,
+      "existingCarrierHarnessPins": [
+        7,
+        8
+      ],
+      "level": "3V3-only existing contact bench",
+      "opticalSafetyQualified": false
+    },
+    {
+      "signal": "DOCKED",
+      "picoGpio": 6,
+      "picoModulePhysicalPin": 9,
+      "existingCarrierHarnessPins": [
+        11,
+        12
+      ],
+      "level": "3V3-only existing contact bench",
+      "opticalSafetyQualified": false
+    },
+    {
+      "signal": "LOCAL_BUTTON",
+      "picoGpio": 8,
+      "picoModulePhysicalPin": 11,
+      "existingCarrierHarnessPins": [
+        15,
+        16
+      ],
+      "level": "3V3-only existing contact bench",
+      "opticalSafetyQualified": false
+    }
+  ],
+  "output": {
+    "picoGpio": 7,
+    "picoModulePhysicalPin": 10,
+    "load": "existing low-current LED only",
+    "externalStopHarnessPins": [
+      9,
+      10
+    ],
+    "opticalSourceConnected": false
+  },
+  "independentOpticalStop": {
+    "candidate": "inside-head spring-closed optical shutter, actual assembly unselected",
+    "normallyClosedSenseRequired": true,
+    "positionReadbackAccepted": false,
+    "actuatorPartAndDriverSelected": false,
+    "timingMeasured": false,
+    "doesNotPutPlateAtImageLocation": true
+  },
+  "portablePackRfAudioBiometricAndThermalAccepted": false,
+  "newPcbRoutingProduced": false,
+  "manufacturingReleased": false,
+  "pricingChanged": false
+}

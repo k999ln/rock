@@ -10,8 +10,8 @@ export async function generateMetadata({
   const campus = findCampus((await params).campus);
   return {
     title: campus
-      ? `${campus.shortName} · Sky by avocado`
-      : 'Campus not found · Sky',
+      ? `${campus.shortName} · Smith by avocado`
+      : 'Campus not found · Smith',
   };
 }
 export default async function CampusSkyPage({

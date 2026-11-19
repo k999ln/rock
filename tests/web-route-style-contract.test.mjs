@@ -94,7 +94,7 @@ void test('primary apps share the avokado graphite, silver and ice-blue system',
   assert.doesNotMatch(sky, /showSidebar/);
 });
 
-void test('OS home keeps Work and CSV inside Sky without fake device telemetry', () => {
+void test('OS home keeps Work and CSV inside smis without fake device telemetry', () => {
   const home = readFileSync(
     resolve(root, 'components/home-screen.tsx'),
     'utf8',
@@ -103,29 +103,24 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
   );
-  for (const route of [
-    '/sky',
-    '/chat',
-    '/campus',
-    '/wallet',
-    '/market',
-    '/settings',
-  ]) {
-    assert.match(
-      home,
-      new RegExp(`href: '${route}'`),
-      `${route} is missing from the OS home`,
-    );
+  const navigation = readFileSync(resolve(root, 'lib/os-navigation.ts'), 'utf8');
+  for (const route of ['/#timeline', '/#sky', '/chat', '/#communities', '/campus', '/wallet', '/market', '/settings']) {
+    assert.ok((home + navigation).includes("'" + route + "'"), `${route} is missing from the shared frame`);
   }
+  assert.match(home, /<SkySocialTimeline/);
+  assert.match(home, /<SkyDiscoveryDialog/);
+  assert.doesNotMatch(home, /discovery=\{<SkyDiscoveryFeed/);
+  assert.doesNotMatch(home, /<SkyInformationMarket|<SkyOptionalFeatures|styles\.hero/);
   assert.doesNotMatch(home, /href: '\/work'/);
   assert.doesNotMatch(home, /href: '\/csv'/);
   assert.match(home, /DEVELOPER\s+PREVIEW/);
   assert.doesNotMatch(home, /BatteryFull|\bWifi\b|\bSignal\b/);
   assert.match(home, /event.key === 'Escape'/);
-  assert.match(home, /localStorage\.setItem/);
+  assert.match(home, /data-sky-home/);
+  assert.match(readFileSync(resolve(root, 'components/sky-social-timeline.tsx'), 'utf8'), /sky-post/);
   assert.match(
     homeStyles,
-    /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/,
+    /grid-template-columns: repeat\(var\(--os-navigation-count, 3\), minmax\(0, 1fr\)\)/,
   );
 });
 
@@ -162,7 +157,7 @@ void test('OS surfaces keep a smartphone viewport and safe-area contract', () =>
   assert.match(csvStyles, /@media \(max-width: 520px\)/);
 });
 
-void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () => {
+void test('Eve owns work management while smis keeps CSV as a catalog Tool', () => {
   const sky = readFileSync(
     resolve(root, 'components/sky-workspace.tsx'),
     'utf8',
@@ -182,20 +177,20 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.doesNotMatch(sky, /href="\/csv"/);
   assert.match(catalog, /id: 'rockstar-csv-cleanup'/);
   assert.match(routing, /label: 'CSV自動化役'/);
-  assert.match(chat, /const zemaWorkPath = `\$\{zemaPath\}\?view=work`/);
+  assert.match(chat, /const zemaWorkPath = `\$\{zemaPath\}\?view=work\$\{agentQuery\}`/);
   assert.match(chat, /href=\{zemaWorkPath\}/);
   assert.match(
     chat,
     /<Workbench embedded cloudDraft=\{cloudWorkDraft\} initialPackageKey=\{preferredPackage\} packageRuntimeServers=\{mcpServers\} \/>/,
   );
   assert.match(chat, /<ChatLiveProgress/);
-  assert.match(chat, /<h1>Zema<\/h1>/);
+  assert.match(chat, /<h1>Eve<\/h1>/);
   assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);
   assert.match(chat, /consumeSkyZemaHandoff\(preferredTool\)/);
   assert.match(chat, /SKY_ZEMA_JOB_EVENT/);
   assert.match(chat, /className="sky-chat-launch-tool"/);
   assert.match(sky, /queueSkyZemaHandoff\(tool\.id, request\)/);
-  assert.match(sky, /Zemaへ引き継ぐ/);
+  assert.match(sky, /Eveへ引き継ぐ/);
   assert.match(chat, /setInterval\(refresh, hasActiveJob \? 3_000 : 15_000\)/);
   assert.match(chat, /setInterval\(refresh, 30_000\)/);
   const liveProgress = readFileSync(
@@ -219,7 +214,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
 });
 
-void test('Zema keeps the composer in view and explains a selected candidate before sending', () => {
+void test('Eve keeps the composer in view and explains a selected candidate before sending', () => {
   const chat = readFileSync(
     resolve(root, 'components/sky-chat-workspace.tsx'),
     'utf8',
@@ -242,7 +237,7 @@ void test('Zema keeps the composer in view and explains a selected candidate bef
     /const \[allBotsOpen, setAllBotsOpen\] = useState\(false\)/,
   );
   assert.match(chat, /ツールと会話を検索/);
-  assert.match(chat, /AVOKADO \/ ZEMA/);
+  assert.match(chat, /AVOKADO \/ EVE/);
 });
 
 void test('routes inside the OS keep a home affordance', () => {
@@ -255,7 +250,7 @@ void test('routes inside the OS keep a home affordance', () => {
     [
       'mobile chat command bar',
       'components/sky-chat-workspace.tsx',
-      /<Link href=\{campusHubPath\} aria-label=\{campusId \? '大学別Skyのハブへ戻る' : 'ホームへ戻る'\}/,
+      /<Link href=\{campusHubPath\} aria-label=\{campusId \? '大学別Smithのハブへ戻る' : 'ホームへ戻る'\}/,
     ],
     [
       'settings',
@@ -275,7 +270,7 @@ void test('routes inside the OS keep a home affordance', () => {
     [
       'legacy fund',
       'app/fund/legacy/page.tsx',
-      /<Link href="\/">⌂ ホーム<\/Link>/,
+      /redirect\('\/fund'\)/,
     ],
     [
       'rock studio',
@@ -289,7 +284,7 @@ void test('routes inside the OS keep a home affordance', () => {
   }
 });
 
-void test('public product and install guide stay outside the OS home', () => {
+void test('retired product forwards to the OS while the installation guide remains available', () => {
   const product = readFileSync(
     resolve(root, 'app/rockstaros/page.tsx'),
     'utf8',
@@ -299,10 +294,11 @@ void test('public product and install guide stay outside the OS home', () => {
     'utf8',
   );
   assert.doesNotMatch(product, /href="\/"/);
-  assert.match(product, /href="\/rockstaros\/guide"/);
+  assert.match(product, /redirect\('\/os'\)/);
+  assert.match(guide, /id="install"/);
   assert.match(
     guide,
-    /<Link href="\/rockstaros" className=\{styles\.brand\} aria-label="製品ホームへ戻る"/,
+    /<Link href="\/os" className=\{styles\.brand\} aria-label="RockstarOS ホームへ戻る"/,
   );
 });
 

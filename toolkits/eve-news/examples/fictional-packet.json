@@ -1,0 +1,30 @@
+{
+  "jobId": "eve-news-fixture-1",
+  "topic": "架空の市議会における公共交通予算案の扱い。実在の出来事として報じない。",
+  "sources": [
+    {
+      "sourceId": "record-1",
+      "canonicalUrl": "https://example.com/fictional-council-record",
+      "publisherOrSpeaker": "架空市議会の議事録",
+      "sourceType": "primary_record",
+      "publishedAtOrUnknown": "2026-10-20T12:00:00Z",
+      "retrievedAt": "2026-10-21T09:00:00Z",
+      "contentHashOrReference": "fictional-fixture-record-1",
+      "rightsScope": "owner_authored",
+      "language": "ja",
+      "excerpt": "これは評価用の架空記録。市議会は交通予算案について採決を延期した。票数や次回日程は記録されていない。"
+    },
+    {
+      "sourceId": "statement-1",
+      "canonicalUrl": "https://example.com/fictional-statement",
+      "publisherOrSpeaker": "架空の議員A",
+      "sourceType": "on_record_statement",
+      "publishedAtOrUnknown": "2026-10-20T13:00:00Z",
+      "retrievedAt": "2026-10-21T09:00:00Z",
+      "contentHashOrReference": "fictional-fixture-statement-1",
+      "rightsScope": "owner_authored",
+      "language": "ja",
+      "excerpt": "これは評価用の架空発言。議員Aは延期に賛成で、追加の費用見積もりが必要だと述べた。費用の数値は示していない。"
+    }
+  ]
+}

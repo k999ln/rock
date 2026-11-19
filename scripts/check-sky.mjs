@@ -87,7 +87,8 @@ for (const path of [
 const readme = read('README.md');
 requireValue(
   readme.includes('R5 is the current design baseline') &&
-    readme.includes('The Material Invention interface and Sky connection are not implemented'),
+    ['Sky', 'smis'].some(name =>
+      readme.includes(`The Material Invention interface and ${name} connection are not implemented`)),
   'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
 );
 requireValue(
@@ -254,7 +255,7 @@ for (const marker of [
 ])
   requireValue(
     chat.includes(marker),
-    `Zemaの会話操作に「${marker}」がありません`,
+    `Eveの会話操作に「${marker}」がありません`,
   );
 
 for (const marker of [
@@ -265,7 +266,7 @@ for (const marker of [
 ])
   requireValue(
     skyZemaHandoff.includes(marker),
-    `SkyからZemaへの一回引き継ぎに「${marker}」がありません`,
+    `SkyからEveへの一回引き継ぎに「${marker}」がありません`,
   );
 for (const marker of [
   '.sky-chat-simple',
@@ -280,7 +281,7 @@ for (const marker of [
 ])
   requireValue(
     workspaceCss.includes(marker),
-    `ZemaのレスポンシブCSSに「${marker}」がありません`,
+    `EveのレスポンシブCSSに「${marker}」がありません`,
   );
 for (const marker of [
   'prepareMcpTool',
@@ -291,7 +292,7 @@ for (const marker of [
 ])
   requireValue(
     mcpBot.includes(marker),
-    `ZemaのMCP bot管理に「${marker}」がありません`,
+    `EveのMCP bot管理に「${marker}」がありません`,
   );
 for (const tool of [
   'rockstar-csv-cleanup',
@@ -307,7 +308,7 @@ for (const tool of [
 ])
   requireValue(
     connectionTools.has(tool),
-    `Zemaで使うready担当「${tool}」がSky接続許可リストにありません`,
+    `Eveで使うready担当「${tool}」がSky接続許可リストにありません`,
   );
 
 console.log(

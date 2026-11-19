@@ -146,8 +146,8 @@ export async function analyzeSkyCodeIntake(input: {
     sourceKind: 'inline_code',
     fileName,
     name: detectedEntrypoint === 'run' ? fileName.replace(/\.[^.]+$/, '') : detectedEntrypoint,
-    summary: `${detectedEntrypoint}をSkyから安全に呼び出し、構造化された結果を返す自動化Toolです。`,
-    developerName: 'Sky Developer',
+    summary: `${detectedEntrypoint}をSmithから安全に呼び出し、構造化された結果を返す自動化Toolです。`,
+    developerName: 'Smith Developer',
     developerId: 'sky-developer',
     license: 'LicenseRef-Owner-Confirmation',
   });

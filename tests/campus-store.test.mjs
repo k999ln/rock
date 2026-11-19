@@ -25,7 +25,7 @@ function fixture(t, beforeRun = async () => {}) {
 const profile = (handle) => ({ campusId: 'nyu', handle, displayName: handle, affiliation: 'student', headline: '', bio: '', skills: [], interests: [], lookingFor: [], links: [], isPublic: true });
 const post = { campusId: 'nyu', kind: 'project', title: 'Film project', summary: 'A student project', tags: [], details: {}, visibility: 'campus', startsAt: null, endsAt: null };
 
-void test('NFC Sky tags resolve to the correct university and deactivation cannot fall back into an active entry', async (t) => {
+void test('NFC smis tags resolve to the correct university and deactivation cannot fall back into an active entry', async (t) => {
   const { store } = fixture(t);
   for (const campus of ['nyu', 'fit', 'columbia', 'fordham', 'johnjay']) {
     const [tag] = await store.registerTagBatch('owner', campus, { prefix: campus, start: 1, count: 1, mode: 'sky', label: 'Poster', placement: '' });

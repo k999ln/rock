@@ -1,0 +1,40 @@
+[Unit]
+Description=RockstarOS Mini LED-only bench supervisor telemetry
+After=systemd-udevd.service
+ConditionPathExists=/etc/rockstaros-mini/supervisor-device.json
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=rockstar-mini
+Group=rockstar-mini
+SupplementaryGroups=dialout
+ExecStart=/usr/bin/python3 -B /usr/lib/rockstaros-mini/start_supervisor.py
+RuntimeDirectory=rockstaros-mini-supervisor
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=no
+UMask=0077
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=3
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+DevicePolicy=closed
+DeviceAllow=char-ttyACM rw
+ReadWritePaths=/run/rockstaros-mini-supervisor
+MemoryMax=64M
+TasksMax=8
+
+[Install]
+WantedBy=multi-user.target

@@ -27,7 +27,7 @@ function failure(error: unknown) {
   if (error instanceof Error && error.message === 'UNAUTHORIZED')
     return json({ error: 'サインインすると掲載申請を保存できます。' }, 401);
   if (error instanceof Error && error.message === 'ORIGIN')
-    return json({ error: 'このSky画面から申請してください。' }, 403);
+    return json({ error: 'このSmith画面から申請してください。' }, 403);
   if (error instanceof SyntaxError)
     return json({ error: '入力形式を確認してください。' }, 400);
   return json({ error: '掲載申請を保存できませんでした。' }, 503);

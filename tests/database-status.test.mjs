@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 152);
+  assert.equal(report.summary.tableCount, 189);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -30,8 +30,12 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 80);
-  assert.equal(report.webSchema.migrationCount, 63);
+  assert.equal(report.webSchema.tableCount, 117);
+  assert.equal(report.webSchema.migrationCount, 84);
+  for (const name of ['sky_author_agreement_documents','eve_device_jobs','eve_device_presence','eve_runtime_presence','eve_device_commands']) assert.ok(report.webSchema.tables.includes(name));
+  assert.ok(report.webSchema.tables.includes('sky_linux_service_documents'));
+  assert.ok(report.webSchema.tables.includes('sky_linux_service_receipts'));
+  assert.ok(report.webSchema.tables.includes('rockstar_service_setups'));
   assert.ok(report.webSchema.tables.includes('esim_cloud_access_keys'));
   assert.ok(report.webSchema.tables.includes('esim_cloud_proof_uses'));
   assert.ok(report.webSchema.tables.includes('sky_usage_payments'));
@@ -46,17 +50,19 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('sky_package_runtime_bindings'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_authorizations'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0063_sky_mcp_slots.sql');
+  assert.equal(report.webSchema.latestMigration, '0084_sky_agent_shares.sql');
+  for (const name of ['sky_agent_shares','sky_agent_share_installs']) assert.ok(report.webSchema.tables.includes(name));
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
+      ['identity', 9],
       ['core', 12],
-      ['sky', 34],
+      ['sky', 61],
       ['marketplace', 7],
       ['csv', 5],
-      ['business', 22],
+      ['business', 23],
     ],
   );
   assert.equal(

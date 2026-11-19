@@ -36,7 +36,7 @@ void test('Rock provider cannot silently add custody, funds or LIVE mode', () =>
     );
 });
 
-void test('verified Sky fee allocation prepares one idempotent sandbox collection', () => {
+void test('verified smis fee allocation prepares one idempotent sandbox collection', () => {
   const instruction = prepareRockFeeCollection({
     receiptId: 'earn:001',
     userId: 'owner:001',

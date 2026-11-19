@@ -1,0 +1,23 @@
+{
+  "schema":"rockstaros.mini-optical-layout-input/1",
+  "classification":"research_inputs_not_manufacturing_bom",
+  "recordedAt":"2026-10-22",
+  "shell":{"outerDiameterMm":76,"innerDiameterMm":72,"heightMm":186},
+  "opticalModel":{"kind":"ideal_planar_real_image_aperture_necessary_ray_condition_only","imageDistanceM":0.2,"viewerDistanceM":2,"imageWidthM":0.04,"requiredViewerWidthM":3,"aperturesM":[0.072,0.2,0.42]},
+  "components":[
+    {"id":"cm5-module","shape":"box","min":[-27.5,-20,67],"size":[55,40,4.7],"geometry":"manufacturer_nominal_module_only","release":"bench_reference_not_product_selection","source":"https://www.raspberrypi.com/products/compute-module-5/","excludes":["socket","carrier","heatsink","cables","RF_keepout"]},
+    {"id":"carrier-envelope","shape":"cylinder","centerXY":[0,0],"radius":35,"z":64,"height":1.6,"geometry":"unmanufactured_hypothesis","release":"not_designed","source":null},
+    {"id":"thermal-envelope","shape":"box","min":[-27,-19,74],"size":[54,38,10],"geometry":"unselected_hypothesis","release":"not_thermally_validated","source":null},
+    {"id":"cell-left-bare","shape":"cylinder","centerXY":[-12.5,10],"radius":10.85,"z":92,"height":71,"geometry":"manufacturer_max_bare_cell","release":"not_a_protected_pack","source":"https://www.molicel.com/cn/wp-content/uploads/Product-Data-Sheet-of-INR-21700-M65A-80153-0.1_250805.pdf"},
+    {"id":"cell-right-bare","shape":"cylinder","centerXY":[12.5,10],"radius":10.85,"z":92,"height":71,"geometry":"manufacturer_max_bare_cell","release":"not_a_protected_pack","source":"https://www.molicel.com/cn/wp-content/uploads/Product-Data-Sheet-of-INR-21700-M65A-80153-0.1_250805.pdf"},
+    {"id":"radio-corridor","shape":"box","min":[-22,-25,94],"size":[44,10,65],"geometry":"empty_reservation_not_an_actual_radio","release":"part_missing","source":null},
+    {"id":"aska200nt-excluded","shape":"box","min":[-100.25,-100.25,20],"size":[200.5,200.5,6.9],"geometry":"manufacturer_drawing_max_tolerance","release":"excluded_from_compact_layout","source":"https://aska3d.com/common/pdf/aska3d-200-design_ja.pdf","catalogConflict":"Product page says 6.3mm; drawing says 6.4 plus/minus 0.5mm. Use 6.9mm for screening; obtain current signed drawing before selection."}
+  ],
+  "mandatoryMissing":["full_range_naked_eye_optics","image_source_and_light_path","validated_gesture_sensors_and_windows","certified_power_pack_and_charger","satellite_radio_and_antenna","terrestrial_voice_radio","WiFi_RF_coexistence","audio_and_microphone_off","biometric_and_key_path","production_MCU_and_stop_circuit","latch_dock_and_cables","calibration_and_thermal_measurements"],
+  "opticalCandidateVerdicts":[
+    {"id":"planar-aerial-image","role":"near_field_optical_bench_only","productAccepted":false,"reason":"Existing 200mm plate does not fit compact shell. Full viewer coverage and arbitrary room volume not demonstrated."},
+    {"id":"surface-projection","role":"surface_input_mapping_research_only","productAccepted":false,"source":"https://www.ti.com/tool/DLP3010EVM-LC","reason":"Requires a receiving surface; does not satisfy empty-space naked-eye image requirement. No brightness safety or package fit acceptance."},
+    {"id":"head-worn-display","role":"coordinate_runtime_research_only","productAccepted":false,"reason":"Does not satisfy bare-eye product requirement."},
+    {"id":"full-range-naked-eye-output","role":"required_product_output","productAccepted":false,"reason":"No accepted optical architecture or complete compact layout yet. Do not substitute a research rig as the product."}
+  ]
+}

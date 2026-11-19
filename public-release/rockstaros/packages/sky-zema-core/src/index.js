@@ -93,14 +93,14 @@ export function addZemaMessage(session, input) {
 
 export function beginZemaRun(session) {
   if (session?.status !== "ready") {
-    throw new Error("Only a ready Zema session can begin");
+    throw new Error("Only a ready Eve session can begin");
   }
   return freeze({ ...session, status: "running" });
 }
 
 export function completeZemaRun(session, result) {
   if (session?.status !== "running") {
-    throw new Error("Only a running Zema session can complete");
+    throw new Error("Only a running Eve session can complete");
   }
   if (!OUTCOMES.has(result?.status)) {
     throw new TypeError(`status must be one of: ${[...OUTCOMES].join(", ")}`);

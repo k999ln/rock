@@ -1,0 +1,216 @@
+{
+  "schema": "rockstar.service-attachment-design/1",
+  "status": "proposed_protocol_not_runtime_or_industry_standard",
+  "authority": "docs/sim-led-product-architecture.md#esim-service-attachment",
+  "purpose": "Attach the same owner-controlled RockstarOS service environment to existing devices without replacing their operating systems.",
+  "root": "RockstarOS",
+  "components": [
+    "Sky",
+    "Eve",
+    "Linux",
+    "OSCore"
+  ],
+  "defaultDelivery": "existing_os_with_common_service_client",
+  "nativeImageRequired": false,
+  "productMeaning": {
+    "esim": "User's cloud-compute service profile; telecom data capacity is not the purchased product.",
+    "physicalEuiccIntegration": "Separate proposed issuer-authorized hardware anchor, not established by this JSON specification.",
+    "transport": "Existing Wi-Fi, another SIM or any accepted network path; service entitlement is not inferred from signal or the active data SIM.",
+    "serviceIssuer": "Authenticated authority for the RockstarOS service profile; telecom lifecycle is tracked separately when applicable."
+  },
+  "esimBootstrap": {
+    "target": "profile_activation_prepares_service_and_offers_owner_bound_entry",
+    "applet": "optional_issuer_authorized_uicc_bootstrap_not_linux_or_model_weights",
+    "candidateCommands": [
+      "SET_UP_MENU",
+      "LAUNCH_BROWSER"
+    ],
+    "standardPresenceDoesNotProveIphoneSupport": true,
+    "automaticForegroundLaunchAccepted": false,
+    "automaticAppInstallationAccepted": false,
+    "ordinaryBrowserCannotReadSimPrivateKeys": true
+  },
+  "evidenceKinds": {
+    "issuer_subscription": "Current authenticated cloud-service-profile issuer lifecycle evidence; telecom profile/network states are separate when applicable. A new versioned adapter is required rather than bypassing existing device-install checks.",
+    "device_installation": "Existing separately verified device installation receipt; never fabricate this for iOS.",
+    "owner_authorization": "Existing authenticated owner plus explicit contract and device-attachment authorization.",
+    "host_capability": "Supported and owner-granted device APIs; a capability report is not OS attestation."
+  },
+  "attachmentRecord": {
+    "proposedSchema": "rockstar.service-attachment/1",
+    "signedFields": [
+      "schema",
+      "issuerId",
+      "keyId",
+      "attachmentId",
+      "ownerRef",
+      "contractId",
+      "contractVersion",
+      "workspaceId",
+      "deviceKeyThumbprint",
+      "parentEntitlementId",
+      "parentEntitlementEpoch",
+      "scope",
+      "capabilityProfileHash",
+      "manifestHash",
+      "audience",
+      "issuedAt",
+      "expiresAt",
+      "nonce"
+    ],
+    "signature": "Ed25519 with trusted operator-provisioned key resolver; pure verifier implemented, issuance and trusted issuer lifecycle integration pending.",
+    "signingEncoding": "UTF-8 JSON of signedFields in listed order, prefixed by rockstar.service-attachment.signature/1 and NUL",
+    "signatureEncoding": "Canonical unpadded base64url of a 64-byte Ed25519 signature",
+    "maximumLeaseMilliseconds": 900000,
+    "implementation": "lib/rockstar-service-attachment.ts is a pure verifier. Current issuer profile, owner consent, device request proof, contract, durable runtime and dispatch must be supplied by independent authorities.",
+    "urlContents": "Public routing reference only; no credential, SIM secret, owner data or bearer entitlement.",
+    "urlReferenceAloneAuthorizesNothing": true,
+    "initialBinding": "Contract owner identity verified during purchase or an explicit owner authentication; not inferred from the URL, IP or phone number.",
+    "delegation": "A separately approved, device-key-bound child attachment can use the parent contract on a device without an eSIM.",
+    "revocation": "Parent epoch and device revocation checked on issuance, renewal and each new dispatch.",
+    "keyAssurance": "Track browser possession, OS-keystore protection and independently accepted attestation separately; no browser key becomes a SIM or hardware-attested key by renaming it"
+  },
+  "stateAxes": {
+    "sim": [
+      "unknown",
+      "pending",
+      "active",
+      "suspended",
+      "terminated"
+    ],
+    "contract": [
+      "pending",
+      "active",
+      "grace",
+      "restricted",
+      "ended"
+    ],
+    "attachment": [
+      "unbound",
+      "awaiting_evidence",
+      "provisioning",
+      "ready",
+      "restricted",
+      "recovery_required"
+    ],
+    "client": [
+      "not_opened",
+      "web_open",
+      "clip_open",
+      "app_open",
+      "disconnected"
+    ],
+    "runtime": [
+      "unallocated",
+      "preparing",
+      "available",
+      "busy",
+      "stopping",
+      "asleep",
+      "unknown"
+    ]
+  },
+  "autonomyGrant": {
+    "purpose": "Continue accepted work without keeping a phone or PC client online.",
+    "requires": [
+      "authenticated_owner",
+      "accepted_goal_and_input_revision",
+      "allowed_tools_and_data_destinations",
+      "approved_execution_locations",
+      "budget_reservation_and_maximum",
+      "deadline_and_step_limits",
+      "review_required_effects",
+      "stop_and_checkpoint_policy",
+      "durable_acceptance_receipt"
+    ],
+    "plannerAuthority": "A model proposes steps; the Broker enforces scope, entitlement, resource limits and approvals.",
+    "offlineOwner": "Continue only within the saved grant; new permissions, spend or review-required actions wait for owner approval.",
+    "offlineStopRequest": "A request still on an offline device is unconfirmed until the executor receives and acknowledges it.",
+    "proposedSchema": "rockstar.autonomy-grant/1",
+    "authorization": "Separate approved canonical request digest; an attachment grants service access, not unlimited job authority"
+  },
+  "offlineContinuity": {
+    "clientOffline": "An accepted cloud Linux job can continue independently of the phone connection or power state.",
+    "modelLocality": "A model stored on the cloud Linux disk is local to that executor; it is not thereby installed on the iPhone.",
+    "executorOffline": "A compatible already-prepared Linux executor can perform self-contained local-model work within its valid grant and resource limits; external actions wait for connectivity.",
+    "noReachableExecutor": "Persist or queue the request; do not claim execution, cloud connectivity or remote result delivery.",
+    "delivery": "Store artifacts and pending notifications durably; deliver to available authorized outputs or on reconnection.",
+    "mobileConnectionNotHeartbeat": true
+  },
+  "handsFreeCreationAndCommunication": {
+    "intendedExperience": "Create away from a PC and communicate without holding a phone.",
+    "inputs": "Accepted Mini, microphone, wearable or other capability adapter plus owner authorization.",
+    "outputs": "Eve voice, nearby display, supported game/3D surface, files or an authorized communication adapter.",
+    "communicationBoundary": "Real calls, messages and external delivery require actual hardware/network APIs and separate recipient/send approval.",
+    "physicalAcceptance": "not_accepted_for_this_cross_device_system"
+  },
+  "runToEarn": {
+    "role": "Users publish and operate useful Agents, Worlds, games or supported outputs through Sky and receive verified earnings from real demand.",
+    "revenueEvidence": "Accepted commercial usage or delivery, payer authorization, verified collection and existing Earning Receipt and refund/dispute reconciliation.",
+    "cpuUsageIsRevenue": false,
+    "guaranteedIncome": false,
+    "settlement": "Reuse the marketplace, Wallet reservations, ledger and paid creator settlement; do not invent reward tokens or transfer real funds from a runtime receipt.",
+    "worldAndGameRevenueAdapters": "design_only_and_separate_acceptance"
+  },
+  "algorithms": {
+    "activation": [
+      "Validate trusted issuer, freshness, subject and lifecycle ordering; reconcile uncertain state through the same issuer adapter.",
+      "Require authenticated owner, accepted versioned terms and authorized device association.",
+      "Atomically find or create one workspace for the owner and contract; do not create one subscription per client.",
+      "Persist intended runtime state and an idempotent provisioning operation before external allocation.",
+      "Issue a scoped attachment only after runtime readiness is verified; report service-ready separately from client-open."
+    ],
+    "capabilityNegotiation": [
+      "Allowed capabilities are the intersection of implemented adapter APIs, host permission grants, owner approval and server policy.",
+      "Match task requirements against available, accepted executors and input/output representations.",
+      "Prefer a compatible authorized execution route under privacy, budget and resource constraints; measured performance may rank eligible routes.",
+      "Unavailable local Linux can route to approved cloud execution; unavailable cloud or unapproved spend returns a clear unavailable or approval-required state.",
+      "Return the same job ID, revision, artifact and receipt through supported text, document, audio, graphics, game or spatial renderers."
+    ],
+    "dispatch": [
+      "Recheck owner, parent entitlement epoch, attachment expiry, exact tool/version/scope and contract.",
+      "Reserve the approved maximum in the existing shared budget before a single stable-ID dispatch.",
+      "Record actual executor usage and return output to the existing workflow and owner-scoped artifact storage.",
+      "Read the same job after disconnection; an unknown result never authorizes an automatic repeat."
+    ],
+    "suspensionAndRestore": [
+      "Verified suspension or nonpayment restricts new managed execution and lease renewal across child devices.",
+      "Stop accepted jobs under the approved contract and budget policy; retain results and reconcile actual use.",
+      "Permit account recovery, billing review and authorized export under the retention policy.",
+      "After payment and entitlement restoration, rebind the same workspace and saved state; never repeat completed jobs automatically."
+    ]
+  },
+  "resourcePolicy": {
+    "dedicatedMeaning": "Owner-isolated workspace, execution permissions, storage and accounting; not a guaranteed dedicated physical server or GPU.",
+    "allocation": "Allocate compatible execution resources on demand; sleep idle compute while retaining contracted storage.",
+    "baseMonthlyUsdMinor": 1600,
+    "includedAllowanceQuantityDecided": false,
+    "automaticUnapprovedOverage": false,
+    "retentionAndLeaseDurationsDecided": false
+  },
+  "acceptance": {
+    "protocolImplementation": "pixel_signup_slice_source_added_full_protocol_and_hardware_unaccepted",
+    "issuerAppletIntegration": "not_accepted",
+    "iosLaunch": "not_accepted",
+    "crossDeviceAttachment": "not_accepted",
+    "referenceDevicePair": "owner-approved existing-OS iPhone and Pixel; no OS flash required",
+    "requiredEvidence": [
+      "same_contract_activation_to_ready_and_actual_client_open",
+      "real_issuer_profile_and_bootstrap_applet_behavior",
+      "record_of_every_required_tap_or_system_permission",
+      "same_job_result_and_revision_across_two_different_operating_systems",
+      "sim_swap_parent_revocation_and_child_device_revocation",
+      "duplicate_out_of_order_and_missing_activation_events",
+      "disconnect_unknown_stop_restore_and_private_export",
+      "single_base_subscription_and_no_unapproved_usage",
+      "accepted_job_continues_after_phone_disconnect_with_bounded_autonomy",
+      "executor_network_outage_waits_for_external_effects_and_reconciles_without_repeat",
+      "hands_free_input_to_private_result_and_explicit_external_send",
+      "commercial_usage_collection_refund_and_creator_receipt_reconcile"
+    ],
+    "allHardwareSupported": false,
+    "patentNoveltyEstablished": false,
+    "productionReady": false
+  },
+  "pixelSignupImplementation": "docs/sim-led-product-architecture.md#pixel-service-setup"
+}

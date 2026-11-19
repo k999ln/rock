@@ -1,4 +1,6 @@
+import { observeLlmUsage, type SkyUsageObservation } from './sky-usage-observation.ts';
 export type TextModelProviderId =
+  | 'pollinations'
   | 'local-model'
   | 'ollama'
   | 'openai'
@@ -16,6 +18,7 @@ export type TextModelProviderDefinition = {
 };
 
 export const textModelProviders: readonly TextModelProviderDefinition[] = [
+  {id:'pollinations',name:'Pollinations Classic（無料Cloud）',detail:'匿名の無料Cloud。待機制限あり。有料切替なし。',defaultModel:'openai-fast',locality:'remote'},
   {
     id: 'local-model',
     name: 'Local Action Assistant / Qwen',
@@ -197,6 +200,10 @@ export type TextGenerationRequest = {
   system?: string;
   prompt: string;
   maxOutputTokens?: number;
+  /** Trusted server-supplied JSON schema, only for local Ollama structured output. */
+  ollamaSchema?: Record<string, unknown>;
+  /** Server-selected bounded loopback task profile; public request bodies do not forward this. */
+  ollamaLocalTimeoutMs?: number;
   clientRequestId?: string;
 };
 
@@ -214,6 +221,7 @@ export type TextGenerationResult = {
   text: string;
   durationMs?: number;
   usage?: TextGenerationUsage | null;
+  metering?: SkyUsageObservation;
   serviceTier?: string | null;
   webSearchCalls?: number | null;
   textOnlyOutput?: boolean;
@@ -239,6 +247,8 @@ export class LlmProviderError extends Error {
   readonly code: string;
   readonly status: number;
   providerRequestId?: string;
+  /** Trusted counters from an observed response whose text was unusable. */
+  metering?: SkyUsageObservation;
 
   constructor(code: string, status = 502) {
     super(code);
@@ -530,13 +540,14 @@ export async function generateText(
   fetchImpl: FetchLike = fetch,
   onProgress?: OpenAiOutputProgress,
 ): Promise<TextGenerationResult> {
+  if(request.provider==='pollinations')throw new LlmProviderError('FREE_CLOUD_SERVICE_REQUIRED',503);
   const startedAt = Date.now();
   // Edge Workers support manual redirects. Never forward provider credentials.
   const guardedFetch: FetchLike = (input, init) =>
     fetchImpl(input, { ...init, redirect: 'manual' });
   try {
     const result = await generateTextRequest(request, runtimeEnv, guardedFetch, onProgress);
-    return { ...result, durationMs: Math.max(0, Date.now() - startedAt) };
+    return { ...result, metering: { ...(result.metering ?? observeLlmUsage(request.provider, {})), resourceId: result.model }, durationMs: Math.max(0, Date.now() - startedAt) };
   } catch (error) {
     if (error instanceof LlmProviderError) throw error;
     if (error instanceof Error &&
@@ -554,6 +565,11 @@ async function generateTextRequest(
 ): Promise<TextGenerationResult> {
   if (!request.prompt.trim() || request.prompt.length > 24_000)
     throw new LlmProviderError('INVALID_PROMPT', 400);
+  if(request.ollamaSchema!==undefined&&(request.provider!=='ollama'||!request.ollamaSchema||Array.isArray(request.ollamaSchema)||typeof request.ollamaSchema!=='object'||JSON.stringify(request.ollamaSchema).length>16000))throw new LlmProviderError('INVALID_PROMPT',400);
+  if(request.ollamaLocalTimeoutMs!==undefined){
+    const base=new URL(runtimeEnv.SKY_OLLAMA_BASE_URL||'http://127.0.0.1:11434');
+    if(request.provider!=='ollama'||!Number.isInteger(request.ollamaLocalTimeoutMs)||request.ollamaLocalTimeoutMs<1000||request.ollamaLocalTimeoutMs>40000||!['127.0.0.1','localhost','[::1]'].includes(base.hostname)||!['http:','https:'].includes(base.protocol)||base.username||base.password||base.search||base.hash)throw new LlmProviderError('INVALID_PROMPT',400);
+  }
   const model = modelFor(request);
   const maxOutputTokens = limitFor(request);
   const messages = messagesFor(request);
@@ -579,11 +595,8 @@ async function generateTextRequest(
       }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
-    return {
-      provider: request.provider,
-      model,
-      text: textFromChatResponse(await jsonResponse(response)),
-    };
+    const payload = await jsonResponse(response);
+    return { provider: request.provider, model, text: textFromChatResponse(payload), metering: observeLlmUsage(request.provider, payload) };
   }
 
   if (request.provider === 'ollama') {
@@ -594,17 +607,18 @@ async function generateTextRequest(
     const response = await fetchImpl(`${base}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages, stream: false }),
-      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+      body: JSON.stringify({ model, messages, stream: false, ...(request.ollamaSchema?{format:request.ollamaSchema}:{}),options: { num_predict: maxOutputTokens,...(request.ollamaSchema?{temperature:0}:{}) } }),
+      signal: AbortSignal.timeout(request.ollamaLocalTimeoutMs??PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
     const text =
       payload && typeof payload.message === 'object' && payload.message
         ? (payload.message as { content?: unknown }).content
         : undefined;
-    if (typeof text !== 'string' || !text.trim())
-      throw new LlmProviderError('EMPTY_RESPONSE');
-    return { provider: request.provider, model, text: text.trim() };
+    if (typeof text !== 'string' || !text.trim()) {
+      const error=new LlmProviderError('EMPTY_RESPONSE');error.metering={...observeLlmUsage(request.provider,payload),resourceId:model};throw error;
+    }
+    return { provider: request.provider, model, text: text.trim(), metering: observeLlmUsage(request.provider, payload), ...(payload.done_reason === 'length' ? { responseStatus: 'incomplete' } : {}) };
   }
 
   if (request.provider === 'openai') {
@@ -625,6 +639,7 @@ async function generateTextRequest(
       model: result.model,
       text: textFromOpenAiResponse(result.payload),
       usage: result.usage,
+      metering: observeLlmUsage(request.provider, result.payload),
       serviceTier: result.serviceTier,
       webSearchCalls: result.webSearchCalls,
       textOnlyOutput: result.textOnlyOutput,
@@ -664,7 +679,7 @@ async function generateTextRequest(
           .trim()
       : '';
     if (!text) throw new LlmProviderError('EMPTY_RESPONSE');
-    return { provider: request.provider, model, text };
+    return { provider: request.provider, model, text, metering: observeLlmUsage(request.provider, payload) };
   }
 
   if (request.provider === 'google') {
@@ -706,7 +721,7 @@ async function generateTextRequest(
           .trim()
       : '';
     if (!text) throw new LlmProviderError('EMPTY_RESPONSE');
-    return { provider: request.provider, model, text };
+    return { provider: request.provider, model, text, metering: observeLlmUsage(request.provider, payload) };
   }
 
   const base = runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL?.trim();
@@ -726,9 +741,6 @@ async function generateTextRequest(
     }),
     signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
-  return {
-    provider: request.provider,
-    model,
-    text: textFromChatResponse(await jsonResponse(response)),
-  };
+  const payload = await jsonResponse(response);
+  return { provider: request.provider, model, text: textFromChatResponse(payload), metering: observeLlmUsage(request.provider, payload) };
 }

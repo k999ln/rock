@@ -1,0 +1,85 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { eveAgentFixture } from './helpers/eve-agent-fixture.mjs';
+import { eveToolWorkStore } from '../lib/eve-tool-work.ts';
+import { createEvePlannerState, transitionEvePlanner, EVE_PLANNER_LEASE_MS } from '../lib/eve-planner-state.ts';
+import { evePlannerPrompt } from '../lib/eve-plan-candidate.ts';
+import { workStore } from '../lib/work-store.ts';
+const request = () => ({ jobId: crypto.randomUUID(), threadId: crypto.randomUUID(), objective: '引用の出典を整理する', source: '本文。（出典: [資料](https://example.com/first)）', saveMaterial: true, plannerRequest: { modelLabel: 'qwen2.5:1.5b', modelDigest: 'a'.repeat(64) } });
+const cmd = (job, action, extra = {}) => ({ jobId: job.id, revision: job.revision, commandId: crypto.randomUUID(), action, ...extra });
+const context = job => ({ jobId: job.id, objective: job.plan.objective, sourceSha256: job.eveTool.sourceSha256 });
+const output = job => evePlannerPrompt(context(job)).prompt.split('\n').slice(1).join('\n');
+async function setup(t) { const f = eveAgentFixture(t), tools = () => eveToolWorkStore(f.db, 'alice', f.keys), input = request(); return { ...f, tools, input, job: (await tools().create(input)).job }; }
+void test('planner claim persists across store reopening and repeat create; concurrency and idempotency do not reset attempts', async t => {
+  const f = await setup(t), claim = cmd(f.job, 'planner-claim');
+  const results = await Promise.allSettled([f.tools().plannerCommand(claim), f.tools().plannerCommand(cmd(f.job, 'planner-claim'))]);
+  assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
+  const job = await f.tools().get(f.job.id);
+  assert.equal(job.eveTool.planning.attempts.length, 1);
+  assert.equal((await f.tools().create(f.input)).job.revision, job.revision);
+  const currentId = job.eveTool.planning.attempts[0].id;
+  assert.equal((await f.tools().plannerCommand({ ...claim, commandId: currentId })).job.revision, job.revision);
+  await assert.rejects(f.tools().plannerCommand(cmd(job, 'planner-claim')), /進行中/);
+  assert.equal(Object.keys(job.composition.artifacts).length, 0);
+  await assert.rejects(f.tools().command(cmd(job, 'advance')), /計画候補/);
+});
+void test('invalid output hash and attempt count survive; accepted candidate requires owner adoption before real Tool execution', async t => {
+  const f = await setup(t); let job = (await f.tools().plannerCommand(cmd(f.job, 'planner-claim'))).job;
+  let a = job.eveTool.planning.attempts.at(-1);
+  job = (await f.tools().plannerCommand(cmd(job, 'planner-submit', { attemptId: a.id, output: 'not JSON; do not store this arbitrary raw reply' }))).job;
+  assert.equal(job.eveTool.planning.attempts[0].reason, 'candidate_invalid');
+  assert.equal(job.eveTool.planning.attempts[0].outputSha256.length, 64);
+  assert.ok(!JSON.stringify(job).includes('not JSON;'));
+  job = (await f.tools().plannerCommand(cmd(job, 'planner-claim'))).job; a = job.eveTool.planning.attempts.at(-1);
+  const submit = cmd(job, 'planner-submit', { attemptId: a.id, output: output(job) });
+  job = (await f.tools().plannerCommand(submit)).job;
+  assert.equal(job.eveTool.planning.status, 'proposed');
+  assert.equal((await f.tools().plannerCommand(submit)).job.revision, job.revision);
+  await assert.rejects(f.tools().command(cmd(job, 'advance')), /計画候補/);
+  job = (await f.tools().plannerCommand(cmd(job, 'planner-adopt'))).job;
+  assert.equal(job.eveTool.plannerCandidate.origin, 'untrusted-submitted-candidate');
+  for (let n = 0; n < 2; n++) job = (await f.tools().command(cmd(job, 'advance'))).job;
+  assert.equal(job.status, 'review');
+  job = (await f.tools().command(cmd(job, 'complete'))).job;
+  assert.equal(job.status, 'completed');
+});
+void test('expired and abandoned responses cannot be adopted, and expiry does not reset the two-attempt cap', async () => {
+  const state = createEvePlannerState(request().plannerRequest), ctx = { jobId: crypto.randomUUID(), objective: 'test', sourceSha256: 'b'.repeat(64) };
+  const firstId = crypto.randomUUID();
+  let r = await transitionEvePlanner(state, { commandId: firstId, action: 'planner-claim' }, ctx, 100);
+  r = await transitionEvePlanner(r.state, { commandId: crypto.randomUUID(), action: 'planner-claim' }, ctx, 101 + EVE_PLANNER_LEASE_MS);
+  assert.equal(r.state.attempts[0].reason, 'lease_expired');
+  const second = r.state.attempts[1];
+  await assert.rejects(transitionEvePlanner(r.state, { commandId: crypto.randomUUID(), action: 'planner-submit', attemptId: firstId, output: '{}' }, ctx, second.startedAt + 1), /試行ID/);
+  r = await transitionEvePlanner(r.state, { commandId: crypto.randomUUID(), action: 'planner-submit', attemptId: second.id, output: '{}' }, ctx, second.leaseUntil);
+  assert.equal(r.state.status, 'draft'); assert.equal(r.state.attempts[1].state, 'unknown');
+  await assert.rejects(transitionEvePlanner(r.state, { commandId: crypto.randomUUID(), action: 'planner-claim' }, ctx, second.leaseUntil + 1), /上限/);
+  await assert.rejects(transitionEvePlanner(r.state, { commandId: crypto.randomUUID(), action: 'planner-adopt' }, ctx), /検証済み/);
+});
+void test('owner explicit recipe fallback preserves failed/unknown attempts and rejects late output; no automatic fallback', async t => {
+  const f = await setup(t); let job = (await f.tools().plannerCommand(cmd(f.job, 'planner-claim'))).job;
+  const attempt = job.eveTool.planning.attempts[0];
+  job = (await f.tools().plannerCommand(cmd(job, 'planner-recipe'))).job;
+  assert.equal(job.eveTool.planning.attempts[0].state, 'unknown');
+  await assert.rejects(f.tools().plannerCommand(cmd(job, 'planner-submit', { attemptId: attempt.id, output: output(job) })), /終了/);
+  job = (await f.tools().command(cmd(job, 'advance'))).job;
+  assert.ok(job.composition.artifacts.s1.text.includes('https://example.com/first'));
+});
+void test('owner isolation, cancelled job and deleted thread prevent new planner transitions; immutable model binding survives retry', async t => {
+  const f = await setup(t);
+  await assert.rejects(eveToolWorkStore(f.db, 'bob', f.keys).plannerCommand(cmd(f.job, 'planner-claim')), /見つかりません/);
+  await assert.rejects(f.tools().create({ ...f.input, plannerRequest: { ...f.input.plannerRequest, modelDigest: 'b'.repeat(64) } }), /異なります/);
+  const job = (await f.tools().command(cmd(f.job, 'cancel'))).job;
+  await assert.rejects(f.tools().plannerCommand(cmd(job, 'planner-claim')), /実行前/);
+  const other = await f.tools().create(request());
+  await f.db.prepare('UPDATE eve_conversations SET deleted_at=? WHERE owner_id=? AND id=?').bind(Date.now(), 'alice', other.job.eveTool.threadId).run();
+  await assert.rejects(f.tools().plannerCommand(cmd(other.job, 'planner-claim')));
+});
+void test('stale revisions and source mutation cannot certify a candidate; malformed public planner commands are rejected', async t => {
+  const f = await setup(t); const j = (await f.tools().plannerCommand(cmd(f.job, 'planner-claim'))).job;
+  await assert.rejects(f.tools().plannerCommand(cmd(f.job, 'planner-abandon', { attemptId: j.eveTool.planning.attempts[0].id })), /更新/);
+  const changed = structuredClone(j); changed.composition.source += ' altered'; changed.revision++;
+  assert.equal(await workStore(f.db).update('alice', changed, j.revision), true);
+  await assert.rejects(f.tools().plannerCommand(cmd(changed, 'planner-submit', { attemptId: j.eveTool.planning.attempts[0].id, output: output(j) })), /素材/);
+  await assert.rejects(f.tools().plannerCommand({ ...cmd(changed, 'planner-adopt'), scope: 'root' }), /項目/);
+});

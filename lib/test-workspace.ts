@@ -180,7 +180,7 @@ const definitions: TestScenario[] = [
   },
   {
     id: 'test-zema',
-    name: 'Zemaの仕事',
+    name: 'Eveの仕事',
     mode: 'local',
     scope:
       '既存の業務状態遷移を実行。サンプル実行は完了判定に使わず、本番の仕事は作りません。',

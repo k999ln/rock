@@ -1,3 +1,4 @@
+import { A2A_USAGE_CONTEXT_EXTENSION_URI, createA2AUsageContext } from '../../../lib/a2a-usage-context';
 import {
   WorkflowEntrypoint,
   type WorkflowEvent,
@@ -18,6 +19,7 @@ import {
   a2aDelegationExecutionEnabled,
   a2aEgressOriginAllowed,
 } from '../../../lib/a2a-authorization';
+import { reconcileEveAgentStops } from '../../../lib/eve-agent-work';
 import { a2aAgentCardSha256, a2aAgentDirectory } from '../../../lib/a2a-agent-directory';
 import {
   createA2AClient,
@@ -150,6 +152,7 @@ interface Env {
   A2A_TRUSTED_BROKER_KEYS?: string;
   A2A_TRUSTED_USAGE_KEYS?: string;
   A2A_PRICE_QUOTES_REQUIRED?: string;
+  A2A_USAGE_CONTEXT_EXTENSION_URI?: string;
   SKY_PACKAGE_RUNTIME_BINDING_TRUSTED_KEYS?: string;
   SKY_PACKAGE_RUNTIME_EXTENSION_URI?: string;
   ESIMGO_API_KEY?: string;
@@ -441,6 +444,10 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
 
     const { ownerUserId, delegationId } = event.payload;
     const store = a2aDelegationStore(this.env.DB);
+    if (await store.parentStopRequested(ownerUserId, delegationId)) {
+      await store.requestCancel(ownerUserId, delegationId);
+      if (event.payload.operation !== 'reconcile') return { outcome: 'parent_stop_requested' };
+    }
     if (event.payload.operation === 'reconcile')
       return this.reconcile(ownerUserId, delegationId, step);
     if (!a2aDelegationExecutionEnabled(this.env.A2A_DELEGATION_EXECUTION_ENABLED))
@@ -590,6 +597,7 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
             throw new NonRetryableError('Broker proof expired or was revoked before discovery.');
           const client = createA2AClient({
             allowedOrigins: [current.targetOrigin],
+            ...(this.env.A2A_USAGE_CONTEXT_EXTENSION_URI === A2A_USAGE_CONTEXT_EXTENSION_URI ? { usageContextExtensionUri: A2A_USAGE_CONTEXT_EXTENSION_URI } : {}),
             packageRuntimeExtensionUri: this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI,
             fetch: a2aFetchFor(this.env),
           });
@@ -739,8 +747,11 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
           throw new NonRetryableError('A remote send was already claimed.');
 
         try {
+          const shareUsageContext = this.env.A2A_USAGE_CONTEXT_EXTENSION_URI === A2A_USAGE_CONTEXT_EXTENSION_URI &&
+            card.capabilities?.extensions?.some(extension => extension.uri === A2A_USAGE_CONTEXT_EXTENSION_URI);
           const client = createA2AClient({
             allowedOrigins: [current.targetOrigin],
+            ...(shareUsageContext ? { usageContextExtensionUri: A2A_USAGE_CONTEXT_EXTENSION_URI, usageContext: createA2AUsageContext(current) } : {}),
             packageRuntimeExtensionUri: this.env.SKY_PACKAGE_RUNTIME_EXTENSION_URI,
             fetch: a2aFetchFor(this.env),
             authorizeDelegation: async (intent) => {
@@ -1096,6 +1107,12 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
 }
 
 async function startReadyDelegations(env: Env) {
+  const store = a2aDelegationStore(env.DB);
+  const scheduledAt = Date.now();
+  // Owner stop recovery is housekeeping, independent of new paid execution or
+  // history-key availability. Reuse the same durable cancellation state machine.
+  const stopRecovery = await reconcileEveAgentStops(env.DB);
+  if (stopRecovery.failed) console.warn('Eve stop reconciliation remains pending', stopRecovery.failed);
   const textStore = new RemoteAiTextStore(env.DB);
   await textStore.expireAllBeforeSend(Date.now());
   if (remoteAiPricingGateAccepted() && remoteAiTextExecutionAvailable(env)) {
@@ -1113,8 +1130,6 @@ async function startReadyDelegations(env: Env) {
       }
     }
   }
-  const store = a2aDelegationStore(env.DB);
-  const scheduledAt = Date.now();
   await store.purgeExpiredInputs(scheduledAt);
   await store.expireOverdueBeforeDispatch(scheduledAt, 50);
   const overdueRemoteTasks = await store.listOverdueRemoteTasks(scheduledAt, 50);

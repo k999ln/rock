@@ -1,0 +1,14 @@
+{
+  "schema":"rockstaros.stereo-marker-calibration/1",
+  "status":"TEMPLATE_NOT_A_MEASURED_CALIBRATION",
+  "calibrationId":null,
+  "expiresUnixMs":null,
+  "placeEpoch":null,
+  "units":"m",
+  "dictionary":"DICT_4X4_50",
+  "markerIds":[0,1],
+  "resolution":[640,480],
+  "cameras":[{"device":null,"K":null,"distortion":null},{"device":null,"K":null,"distortion":null}],
+  "R_left_to_right":null,
+  "T_left_to_right_m":null
+}

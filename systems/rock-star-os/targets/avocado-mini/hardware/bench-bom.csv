@@ -1,0 +1,8 @@
+Reference,Quantity,Value,Footprint,Part selection,Release status
+U1,1,Raspberry Pi Pico 2,MiniBench:Pico2_Socket_2x20,RP2350 A4 stepping preferred; verify delivered module and headers,Engineering bench only
+J1,1,2x08 2.54mm header,MiniBench:Harness_2x08_P2.54,Exact keyed header and mating harness TBD,Footprint and mating review open
+R1 R2 R3 R4 R5 R6,6,4.7k 1% 0603,MiniBench:R_0603,Yageo RC0603FR-074K7L candidate,Manufacturer land-pattern procurement review open
+R7,1,1k 1% 0603,MiniBench:R_0603,Yageo RC0603FR-071KL candidate,Manufacturer land-pattern procurement review open
+D1,1,Red LED 0603 cathode pad1,MiniBench:LED_0603,Exact LED part and forward-voltage range TBD,Polarity and land-pattern review open
+STOP,1,Mechanically linked DPST NC,External J1 pairs1-2 and9-10,Exact switch and harness TBD,Independent LED-current cutoff must be measured
+SOCKETS,2,1x20 2.54mm socket,Included U1 carrier pad geometry,Exact socket and USB plug clearance TBD,Mechanical review open

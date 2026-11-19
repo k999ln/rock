@@ -121,7 +121,7 @@ void test('existing paid order keeps its immutable price catalog after server ca
     'lifeline_jp_2gb');
 });
 
-void test('initial agent pack only accepts the exact currently reviewed Sky package manifest', async () => {
+void test('initial agent pack only accepts the exact currently reviewed smis package manifest', async () => {
   const { createSkyToolPackageDraft, skyToolPackageKey, skyToolPackageSha256 } = await import('../lib/sky-tool-package.ts');
   const manifest = createSkyToolPackageDraft({
     sourceKind: 'github', sourceUrl: 'https://github.com/rockstaros/offline-guide',

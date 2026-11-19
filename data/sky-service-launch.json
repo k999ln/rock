@@ -234,5 +234,23 @@
   ],
   "completeLaunchScope": "standalone-web-paid-marketplace",
   "focusedLaunchClaim": false,
-  "focusedLaunchScope": "csv-article-citations-and-one-cloud-ai"
+  "focusedLaunchScope": "csv-article-citations-and-one-cloud-ai",
+  "releasePolicy": {
+    "recordedAt": "2026-10-18",
+    "source": "利用者の明示指示: 一般ローンチせず、完成後の国への共有に向けて準備する。",
+    "mode": "private-development-government-review-preparation",
+    "generalLaunchAllowed": false,
+    "governmentShareCandidates": [
+      "US",
+      "ES",
+      "JP",
+      "KR"
+    ],
+    "governmentShareReady": false,
+    "requestedShareMilestone": "人の中にAgentを入れられた段階",
+    "researchMilestoneStatus": "unproven_not_a_software_or_zoom_acceptance",
+    "recipientConfirmed": false,
+    "externalMessageSent": false,
+    "evidence": "docs/sky-launch-design.md"
+  }
 }

@@ -133,6 +133,9 @@ public final class MainActivity extends Activity {
         button(executionControls, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
         button(executionControls, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
         heading(pageContent[3], "設定", "アカウント・端末・データ");
+        if (getResources().getBoolean(R.bool.rockstar_service_setup_enabled)) {
+            button(pageContent[3], "Sky・Eveの利用開始", () -> startActivity(new Intent(this, ServiceSetupActivity.class)));
+        }
         form = ui.card(pageContent[3]);
         label(form, "Rockstarアカウント", 18);
         label(form, "連携すると、利用権とクラウドの仕事を確認できます。", 14);
@@ -325,7 +328,13 @@ public final class MainActivity extends Activity {
         });
         LinearLayout header = new LinearLayout(this); header.setGravity(Gravity.CENTER_VERTICAL);
         header.setPadding(ui.dp(22), ui.dp(12), ui.dp(22), ui.dp(12));
-        TextView brand = new TextView(this); brand.setText("✳  RockstarOS"); brand.setTextSize(18);
+        android.widget.ImageView companyMark = new android.widget.ImageView(this);
+        companyMark.setImageResource(R.drawable.company_mark);
+        companyMark.setContentDescription("avokado 会社ロゴ");
+        companyMark.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        LinearLayout.LayoutParams companyMarkSize = new LinearLayout.LayoutParams(ui.dp(30), ui.dp(30));
+        companyMarkSize.setMarginEnd(ui.dp(10)); header.addView(companyMark, companyMarkSize);
+        TextView brand = new TextView(this); brand.setText("RockstarOS"); brand.setTextSize(18);
         brand.setTextColor(ShellUi.INK); brand.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
         header.addView(brand, new LinearLayout.LayoutParams(0, -2, 1f));
         TextView preview = new TextView(this); preview.setText("Developer Preview"); preview.setTextSize(10);

@@ -1,0 +1,211 @@
+{
+  "schema": "rockstaros.portable-runtime/1",
+  "release": "1.0 Developer Preview",
+  "implementation": "packages/rockstaros-runtime/src/index.mjs",
+  "delivery": {
+    "existing_os_client": "ES2022 ESM with fetch, WebCrypto, UTF-8, streams, AbortController and host-protected device session",
+    "native_os": "common runtime plus board-specific BSP, boot, drivers, signing, update and recovery; no common universal flash image",
+    "firmware_bridge": "bounded signed firmware and authorized host transport; ESM cannot execute on arbitrary MCU"
+  },
+  "eve": {
+    "history": "/api/eve/history",
+    "jobs": "/api/work-jobs",
+    "workflowAuthority": "lib/workflow.ts",
+    "textQuote": "/api/llm/quotes",
+    "approvedTextSubmission": "/api/llm/text",
+    "includesLocalModel": false,
+    "pixelOnlyDeviceExecutorGeneralized": false
+  },
+  "billing": {
+    "authority": "existing account entitlement, contract, reservation and usage/invoice services",
+    "policySource": "data/rockstaros-device-adaptation.json#/billing",
+    "duplicateBaseFeePerDevice": false,
+    "newPriceCreated": false,
+    "newLedgerCreated": false,
+    "perDeviceCredentialsAreBillingAuthority": false,
+    "remoteExecutionRequiresExistingQuoteReservationAndApproval": true
+  },
+  "hardwareObservation": {
+    "schema": "rockstaros.hardware-observation/1",
+    "maximumLifetimeMs": 30000,
+    "unknownCapability": "unavailable",
+    "observationGrantsAuthority": false,
+    "observationProvesNativeCompatibility": false
+  },
+  "adapters": {
+    "descriptorSchema": "rockstaros.adapter/1",
+    "negotiatedSchema": "rockstaros.negotiated-adapters/1",
+    "protocolVersions": [
+      1
+    ],
+    "roles": [
+      "host",
+      "executor",
+      "output"
+    ],
+    "implementation": "lib/rockstar-adapters.ts",
+    "observationMaximumLifetimeMs": 30000,
+    "unknownCapability": "unavailable",
+    "observationGrantsAuthority": false,
+    "modelPinSchemes": [
+      "gguf-sha256",
+      "ollama-manifest-sha256"
+    ],
+    "modelIdentitySchemesInterchangeable": false
+  },
+  "privateExecutionCore": {
+    "implementation": "packages/rockstaros-runtime/src/executor.mjs",
+    "workflowAuthority": "lib/workflow.ts",
+    "scope": "explicit OS owner local text preview; not service entitlement",
+    "requestAuthority": "host authorizer binds owner, job ID, request hash, executor, permission, zero maximum cloud charge and expiry",
+    "requestMaximumLifetimeMs": 120000,
+    "maximumOutputTokens": 1024,
+    "publicWorkTemplate": false,
+    "newCustomerOrBillingLedger": false,
+    "nodeHost": "packages/rockstaros-runtime/src/node-host.mjs",
+    "nodeTransport": "fixed http://127.0.0.1:11434 tags/show/chat only; reject remote model/host metadata and unsupported local format; no pull or cloud fallback",
+    "persistence": "private UID journal with exclusive lock, atomic claim, revision CAS and durable rename",
+    "staleLock": "explicit inspection/recovery required; no automatic deletion based on a PID",
+    "lostOutcome": "UNKNOWN; same ID returns saved state and never automatically repeats inference",
+    "outputSchema": "rockstaros.text-output/1",
+    "modelOutputIsExternalToolOrFinancialReceipt": false,
+    "nodeWebAccountEnrollmentAccepted": false,
+    "newPixelProtocolHandshakeAccepted": false,
+    "localityTrust": "trusted local daemon metadata, not proof of network egress isolation or hardware attestation"
+  },
+  "recovery": {
+    "automaticMutationRetry": false,
+    "lostMutationResponse": "unknown; reconcile original job or quote before any next action",
+    "automaticCloudFallback": false,
+    "historyRevisionConflict": "reload and explicitly reconcile"
+  },
+  "acceptance": {
+    "hostRuntimeTests": "packages/rockstaros-runtime/test/runtime.test.mjs",
+    "physicalMini": false,
+    "physicalPro": false,
+    "universalNativeOsImage": false,
+    "hardwareSchematicReleased": false
+  },
+  "linkedExecution": {
+    "schema": "rockstaros.runtime-command/1",
+    "presenceSchema": "rockstaros.runtime-presence/1",
+    "reportSchema": "rockstaros.runtime-report/1",
+    "service": "/api/eve/runtime",
+    "scope": "explicit browser-approved zero-cloud owner-local text preview",
+    "implementation": "packages/rockstaros-runtime/src/linked-worker.mjs",
+    "server": "lib/eve-runtime-sync.ts",
+    "persistence": "existing eve_device_commands/eve_device_jobs and encrypted Eve history, shared via eve-device-replicas",
+    "legacyPixelAbiPreserved": true,
+    "deviceMayCreateApproval": false,
+    "claimPolicy": "one CAS claim; lost response/orphan claim is UNKNOWN; no automatic lease takeover",
+    "recovery": "same local journal and report digest, read back before acknowledgement; no repeat inference",
+    "observationsGrantAuthority": false,
+    "publicDeploymentAccepted": false,
+    "realWebOwnerNodeGrantAccepted": false,
+    "productionEntitlementAndBillingAccepted": false,
+    "ownerView": {
+      "presenceAndReports": "GET /api/eve/runtime; owner-bound devices, pending receipt states and saved executions",
+      "selection": "existing Sky/Eve URL with runtime=1 and exact model digest scheme",
+      "credentialStorage": "optional POSIX software encrypted vault, explicit process unlock; no OS biometric acceptance"
+    }
+  },
+  "objectAttachment": {
+    "schema": "sky.object-attachment/1",
+    "implementation": "lib/sky-object-attachment.ts",
+    "agentSettingsAuthority": "existing owner-bound sky_agent_settings and revision",
+    "adapterAuthority": "existing rockstaros.adapter/1 host/executor/output observations",
+    "minimumPhysicalModule": "object attachment + power/input/output as needed + authorized host transport; exact hardware is not selected",
+    "agentRunsOnModuleRequired": false,
+    "creatingSettingsConnectsHardware": false,
+    "unknownCapability": "unavailable",
+    "compatibilityGrantsAuthority": false,
+    "physicalModuleImplemented": false,
+    "physicalAcceptance": false,
+    "flowticaIntegrationAccepted": false,
+    "ownerAgentLookup": "runtime.sky.inspectAgent(agentId) -> existing authenticated GET /api/sky/agents?id=...",
+    "displayName": "smis",
+    "targetScope": "inorganic_and_organic_through_verified_interfaces",
+    "classificationDoesNotGrantCapability": true,
+    "connectionWays": [
+      "embedded",
+      "attached_module",
+      "surrounding_sensor"
+    ],
+    "visualObservation": {
+      "schema": "smis.visual-observation/1",
+      "pixelInterface": "64x64 opaque RGBA Uint8ClampedArray, ephemeral",
+      "sourceAdapters": [
+        "browser-camera",
+        "mini-camera"
+      ],
+      "implementedProcessing": "local_registered_appearance_candidate_only",
+      "maximumAgeMs": 10000,
+      "grantsAuthority": false,
+      "miniHardwareAccepted": false
+    },
+    "removableModule": {
+      "schema": "smis.module-observation/1",
+      "core": "lib/smis-module-session.ts",
+      "exports": [
+        "createSmisModuleSession",
+        "decodeMicrobitMotion",
+        "smisModuleRequestSuffix",
+        "SMIS_MODULE_MAX_AGE",
+        "guardSmisModuleWorkPort"
+      ],
+      "firstInputAdapter": "lib/smis-microbit-bluetooth.ts",
+      "firstHardwareCandidate": "micro:bit V2 accelerometer BLE service; not yet owned or accepted",
+      "maximumAgeMs": 10000,
+      "attachmentIdentity": "owner confirmation + connection nonce + object ID + mount epoch; ephemeral",
+      "automaticDetachDetection": false,
+      "observationGrantsAuthority": false,
+      "persistence": "visible observation suffix in existing owner-bound Eve request/history; no new job store",
+      "oldJobReadAndStopRetained": true,
+      "privatePreview": "development opt-in and loopback /os/eve/module only; production disabled",
+      "physicalPixelAccepted": false,
+      "miniHardwareAccepted": false,
+      "generalLaunchAllowed": false
+    },
+    "purposeAssessment": {
+      "implementation": "lib/smis-object-purpose.ts",
+      "exports": [
+        "smisObjectNeeds",
+        "suggestSmisObjectNeeds",
+        "assessSmisObjectPurpose",
+        "smisObjectPurposeRequest"
+      ],
+      "requestMaximumCharacters": 300,
+      "otherMaximumCharacters": 200,
+      "candidateAuthority": "limited lexical suggestions; owner corrects and confirms",
+      "currentSupportedNeeds": [
+        "motion",
+        "text"
+      ],
+      "textRuntimeAlwaysRequired": true,
+      "hardwareOrModelClaimGrantsAuthority": false,
+      "unknownNeed": "clarify; no execution",
+      "missingPartsAndMissingImplementationSeparate": true,
+      "partialPurposeRequiresExplicitChangeAndConfirmation": true,
+      "persistence": "ephemeral same-page draft; reviewed scope uses existing owner-bound Eve request/role/job",
+      "physicalPixelAccepted": false,
+      "generalLaunchAllowed": false,
+      "reviewHandoff": "reviewSmisObjectPurpose: existing session review only, no prepare/start until explicit final confirmation"
+    }
+  },
+  "interaction": {
+    "core": "lib/rockstar-eve-interaction.ts",
+    "export": "createEveInteractionSession",
+    "inputAndOutputAdaptersSeparate": true,
+    "workPort": [
+      "prepare",
+      "start",
+      "read",
+      "stop"
+    ],
+    "authority": "existing authenticated owner workflow, permission, budget and store",
+    "inputGrantsExecutionAuthority": false,
+    "legacyPixelAdapter": "lib/sky-linux-eve-work-port.ts",
+    "separatePerDeviceJobStore": false,
+    "allClientsIntegrated": false
+  }
+}

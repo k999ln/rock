@@ -10,7 +10,7 @@ void test('launch only targets the fixed public origin without user content or r
   }
   assert.throws(()=>gameLaunchUrl('https://evil.example'));
 });
-void test('manual results stay one-shot and expire through existing Zema handoff', () => {
+void test('manual results stay one-shot and expire through existing Eve handoff', () => {
   const m = new Map(); const s={setItem:(k,v)=>m.set(k,v),getItem:k=>m.get(k)??null,removeItem:k=>m.delete(k)};
   const value=gameTestIntent('low','起動せず');
   assert.match(value,/手動記録/);

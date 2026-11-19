@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="585" viewBox="0 0 1120 585" role="img" aria-labelledby="title desc">
+  <title id="title">avocadoMini Orbitの三つの携行外形比較</title>
+  <desc id="desc">元R5の細軸と広い台座、全長太径のcore、中央に握るくびれを持つcoreの三案を同じ高さで比べる。収納と握りやすさは未実証。</desc>
+  <rect width="1120" height="585" fill="#f7f9fb"/>
+  <text x="40" y="54" fill="#17273a" font-family="Arial, sans-serif" font-size="27" font-weight="700">携行外形を一つに決める前の三案</text>
+  <text x="40" y="84" fill="#54687b" font-family="Arial, sans-serif" font-size="16">全案とも高さ190 mm仮枠。同じ質量・重心の模型で握り、収納、光学とRFを比べる。</text>
+
+  <rect x="35" y="117" width="333" height="423" rx="14" fill="#fff" stroke="#cbd7e2" stroke-width="2"/>
+  <text x="58" y="151" fill="#233b54" font-family="Arial, sans-serif" font-size="21" font-weight="700">A  元R5の細軸</text>
+  <rect x="176" y="200" width="50" height="219" rx="22" fill="#d3dbe1" stroke="#637484" stroke-width="2"/>
+  <rect x="116" y="382" width="170" height="58" rx="20" fill="#becbd3" stroke="#637484" stroke-width="2"/>
+  <rect x="178" y="257" width="46" height="30" rx="5" fill="#263644"/>
+  <text x="58" y="471" fill="#335c44" font-family="Arial, sans-serif" font-size="15">握る細い軸を残せる</text>
+  <text x="58" y="496" fill="#9b4640" font-family="Arial, sans-serif" font-size="15">衛星・電池・光学の置き場が狭い</text>
+  <text x="58" y="522" fill="#536579" font-family="Arial, sans-serif" font-size="13">D30軸＋D96台座は旧比較寸法</text>
+
+  <rect x="393" y="117" width="333" height="423" rx="14" fill="#fff" stroke="#cbd7e2" stroke-width="2"/>
+  <text x="416" y="151" fill="#233b54" font-family="Arial, sans-serif" font-size="21" font-weight="700">B  全長を太径にする</text>
+  <rect x="480" y="185" width="160" height="255" rx="39" fill="#d3dbe1" stroke="#637484" stroke-width="2"/>
+  <rect x="482" y="271" width="156" height="35" rx="5" fill="#263644"/>
+  <text x="416" y="471" fill="#335c44" font-family="Arial, sans-serif" font-size="15">各部品を全長へ分散できる</text>
+  <text x="416" y="496" fill="#9b4640" font-family="Arial, sans-serif" font-size="15">直径96 mmの握りは未評価</text>
+  <text x="416" y="522" fill="#536579" font-family="Arial, sans-serif" font-size="13">Orbit最初の包絡比較。採用ではない</text>
+
+  <rect x="751" y="117" width="333" height="423" rx="14" fill="#fff" stroke="#cbd7e2" stroke-width="2"/>
+  <text x="774" y="151" fill="#233b54" font-family="Arial, sans-serif" font-size="21" font-weight="700">C  中央を握るくびれ</text>
+  <path d="M840 226 Q840 188 877 185 L957 185 Q994 188 994 226 L994 274 Q982 299 955 306 L955 379 Q982 386 994 410 L994 419 Q994 440 966 440 L868 440 Q840 440 840 419 L840 410 Q852 386 879 379 L879 306 Q852 299 840 274 Z" fill="#d3dbe1" stroke="#637484" stroke-width="2"/>
+  <rect x="882" y="320" width="70" height="27" rx="4" fill="#263644"/>
+  <text x="774" y="471" fill="#335c44" font-family="Arial, sans-serif" font-size="15">40〜50 mmの握り候補</text>
+  <text x="774" y="496" fill="#9b4640" font-family="Arial, sans-serif" font-size="15">電池・配線の軸断面を失う</text>
+  <text x="774" y="522" fill="#536579" font-family="Arial, sans-serif" font-size="13">握り寸法は人体試験前の仮値</text>
+
+  <text x="40" y="565" fill="#6a5360" font-family="Arial, sans-serif" font-size="15">どの図も製造寸法・構造・収納証拠ではない。最終形は同一閉箱CADと人の携行評価で決める。</text>
+</svg>

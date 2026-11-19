@@ -1,3 +1,8 @@
+import { runEvePlannerInference } from '@/lib/eve-planner-inference';
+import { eveHistoryKeys, EveHistoryError } from '@/lib/eve-history';
+import { WorkError } from '@/lib/workflow';
+import { bindSkyAgentLlmInput } from '@/lib/sky-agent-library-store';
+import { SkyAgentLibraryError } from '@/lib/sky-agent-library';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
@@ -24,7 +29,7 @@ function isLoopbackEndpoint(value: string | undefined) {
   if (!value) return false;
   try {
     const hostname = new URL(value).hostname.toLowerCase();
-    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]';
   } catch {
     return false;
   }
@@ -34,6 +39,8 @@ export async function POST(request: Request) {
   try {
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'llm-text', db);
+    const expectedOwner = request.headers.get('x-sky-owner');
+    if (expectedOwner !== null && expectedOwner !== owner) return Response.json({error:'アカウントが変わりました。素材を送信せず画面を開き直してください。'}, {status:409,headers:noStoreHeaders});
     if (!(await rockstarServiceScopeAllowed(
       db,
       owner,
@@ -44,7 +51,9 @@ export async function POST(request: Request) {
 
     const raw = await request.text();
     if (new TextEncoder().encode(raw).byteLength > 28_000) throw new LlmProviderError('INVALID_INPUT', 413);
-    const value = JSON.parse(raw) as Record<string, unknown>;
+    const input: unknown = JSON.parse(raw);
+    if (!input || typeof input !== 'object' || Array.isArray(input)) throw new LlmProviderError('INVALID_INPUT', 400);
+    const value = await bindSkyAgentLlmInput(db, owner, input as Record<string, unknown>);
     const provider = value.provider;
     if (!isTextModelProvider(provider))
       throw new LlmProviderError('UNKNOWN_LLM_PROVIDER', 400);
@@ -78,6 +87,7 @@ export async function POST(request: Request) {
       SKY_LOCAL_LLM_API_KEY?: string;
       REMOTE_AI_TRUSTED_RATE_KEYS?: string;
       REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string;
+      EVE_HISTORY_KEYRING?: string;
     };
     const definition = textModelProviderDefinition(provider);
     const requestedBaseUrl = typeof value.baseUrl === 'string'
@@ -97,6 +107,7 @@ export async function POST(request: Request) {
     const remote =
       definition.locality === 'remote' ||
       Boolean(configuredEndpoint && !isLoopbackEndpoint(configuredEndpoint));
+    if (value.evePlanner !== undefined && (remote || provider !== 'ollama')) throw new WorkError('この計画作成は端末内Ollamaのみ対応しています。', 403);
     if (remote && value.consent !== true)
       throw new LlmProviderError('EXPLICIT_REMOTE_CONSENT_REQUIRED', 403);
     if (remote && runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
@@ -145,9 +156,11 @@ export async function POST(request: Request) {
     const requestEnv = requestedBaseUrl
       ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
       : runtimeEnv;
+    if (value.evePlanner !== undefined) return Response.json(await runEvePlannerInference(db, owner, eveHistoryKeys(runtimeEnv.EVE_HISTORY_KEYRING), value.evePlanner, value.model, requestEnv), { headers: noStoreHeaders });
     const result = await generateText(
       {
         provider,
+        ...(provider === 'ollama' && !remote ? { ollamaLocalTimeoutMs: 40000 } : {}),
         model: typeof value.model === 'string' ? value.model : undefined,
         system: typeof value.system === 'string' ? value.system : undefined,
         prompt: value.prompt,
@@ -160,6 +173,8 @@ export async function POST(request: Request) {
     );
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {
+    if (error instanceof WorkError || error instanceof EveHistoryError) return Response.json({ error: error.message }, { status: error.status, headers: noStoreHeaders });
+    if (error instanceof SkyAgentLibraryError) return Response.json({ code: 'AGENT_SETTINGS_CHANGED', error: error.message }, { status: error.status, headers: noStoreHeaders });
     if (error instanceof RemoteAiTextStoreError) return remoteAiTextHttpError(error);
     if (error instanceof RemoteAiGuardError)
       return Response.json(

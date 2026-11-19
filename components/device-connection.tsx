@@ -55,7 +55,7 @@ export function DeviceConnection() {
     <section className="device-page">
       <div className="page-heading device-heading">
         <div>
-          <span className="eyebrow">SKY MCP / LOCAL</span>
+          <span className="eyebrow">Smith MCP / LOCAL</span>
           <h1>このPCの実行機能を接続</h1>
           <p>
             ローカル開発版は、接続ボタンから必要な実行機能を自動で準備します。別端末・公開Web版では手動準備が必要です。
@@ -96,7 +96,7 @@ export function DeviceConnection() {
                   className="black-button device-download"
                 >
                   <Download size={16} />
-                  Sky MCP Connectorをダウンロード
+                  Smith MCP Connectorをダウンロード
                 </a>
               </div>
             </li>
@@ -125,7 +125,7 @@ export function DeviceConnection() {
               <div>
                 <h2>この画面から接続を確認</h2>
                 <p>
-                  Skyが共通Connectorを確認します。その後、MCP画面から各自動化をワンタップ接続できます。
+                  Smithが共通Connectorを確認します。その後、MCP画面から各自動化をワンタップ接続できます。
                 </p>
               </div>
             </li>
@@ -141,7 +141,7 @@ export function DeviceConnection() {
             <strong>{connected ? 'このPCは接続済み' : 'PC未接続'}</strong>
             <p>
               {connected
-                ? 'Skyの対応ツールからMCP実行できます。'
+                ? 'Smithの対応ツールからMCP実行できます。'
                 : '「このPCを接続」で準備を確認します。自動準備に対応しない環境では下の接続手順を開いてください。'}
             </p>
           </div>

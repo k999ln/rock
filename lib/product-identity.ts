@@ -5,3 +5,4 @@ export const PRODUCT_VERSION = identity.version;
 export const PRODUCT_RELEASE_NAME = identity.releaseName;
 export const PRODUCT_PREVIEW_NAME = identity.previewName;
 export const PRODUCT_INTERNAL_IDENTIFIER = identity.internalIdentifier;
+export const AGENT_HUB_NAME = identity.agentHub.displayName;

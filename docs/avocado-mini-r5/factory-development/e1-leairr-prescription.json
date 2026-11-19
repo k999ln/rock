@@ -1,0 +1,20 @@
+{
+  "schema": "rockstaros.mini.e1-paraxial-prescription/1",
+  "stage": "engineering_candidate_not_manufacturing_release",
+  "units": "mm",
+  "source": {"model": "Looking Glass Go", "diagonalInch": 6, "aspect": [9,16], "activeAreaMeasured": false, "horizontalFullConeDeg": 58, "verticalConeDeg": null, "powerSupplyV": 5, "powerSupplyA": 3, "reference": "https://checkout.lookingglassfactory.com/products/looking-glass-go"},
+  "magnifier": {"candidatePart": "OptoSigma FRLN-300S-300P", "focalLength": 300, "pitch": 0.5, "material": "PMMA", "thickness": 2, "assumedSquareSize": 300, "assumedCircularClearDiameter": 270, "drawingAndCurrentAvailabilityAccepted": false},
+  "resolutionLens": {"candidatePart": "OptoSigma FRLN-300S-150P", "focalLength": 150, "pitch": 0.5, "material": "PMMA", "thickness": 2, "assumedSquareSize": 300, "assumedCircularClearDiameter": 270, "drawingAndCurrentAvailabilityAccepted": false},
+  "lensCatalog": "https://static.optosigma.com/en/page_pdf/FRLN.pdf",
+  "beamsplitter": {"stockPartSelected": false, "drawingId": "MINI-E1-BS-01", "status": "custom_requirement_unsent_unaccepted", "physicalRectangle": [400,300], "assumedClearRectangle": [360,270], "incidenceDeg": 45, "foldPlane": "vertical", "coatingTarget": "visible 50R/50T at 45deg for received source polarization; rear AR; supplier to qualify angular/spectral behavior, ghosting, flatness and thickness", "reflectanceMeasured": false},
+  "retroreflector": {"candidateMaterial": "Nippon Carbide RF-AC", "requestedCutSize": [300,300], "stockCutAndMountAccepted": false, "reference": "https://www.carbide.co.jp/cms/wp-content/uploads/2019/04/RF-A.pdf"},
+  "spacing": {"sourceToMagnifier": 150, "magnifierToBeamsplitter": 150, "beamsplitterToResolutionLens": 150, "resolutionLensToRetroreflector": 200},
+  "mounting": {"grooveOrientation": "do not freeze before finite-conjugate imaging review; parallel-light B series is not accepted as a substitute", "sourceOpticalDatum": "emissive/lenticular plane, not the plastic front housing", "sourceAdjustmentTravel": [-5,5], "tolerancesAccepted": false},
+  "coordinates": {"axes": "local optical x right, y toward RR, z source forward; NOT place frame", "source": [0,0,-150], "magnifier": [0,0,0], "beamsplitter": [0,0,150], "beamsplitterNormal": [0,-0.7071067811865475,0.7071067811865475], "resolutionLens": [0,150,150], "retroreflector": [0,350,150], "nominalAerialImage": [0,-450,150], "opticalToPlace": null},
+  "analysisScope": "thin-lens unfolded paraxial forward pass with circular/elliptical aperture clipping; ideal reciprocal return only; source horizontal cone only; no full-wave lens, finite plate refraction, RR lobe, pupil, scatter, MTF or radiometry",
+  "researchReference": "https://doi.org/10.1002/jsid.70050",
+  "wholeRangeAccepted": false,
+  "glareAccepted": false,
+  "pricingChanged": false,
+  "manufacturingReleased": false
+}

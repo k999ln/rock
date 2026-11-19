@@ -236,7 +236,7 @@ export function skyStripe(
         mode: 'payment', 'payment_method_types[0]': 'card',
         'line_items[0][quantity]': '1', 'line_items[0][price_data][currency]': order.currency,
         'line_items[0][price_data][unit_amount]': String(order.amountMinor),
-        'line_items[0][price_data][product_data][name]': 'Sky cloud usage',
+        'line_items[0][price_data][product_data][name]': 'Smith cloud usage',
         client_reference_id: order.id,
         'metadata[purpose]': 'sky_cloud_usage', 'metadata[usage_payment_id]': order.id,
         'metadata[source_digest]': order.digest,
@@ -373,7 +373,7 @@ export function skyStripe(
             'line_items[0][price_data][unit_amount]': '50',
             'adaptive_pricing[enabled]': 'false',
             'line_items[0][price_data][product_data][name]':
-              'Sky CSV・50円試験',
+              'Smith CSV・50円試験',
             'metadata[csv_job_id]': jobId,
             'metadata[purpose]': 'csv_trial_50',
             'payment_intent_data[metadata][csv_job_id]': jobId,

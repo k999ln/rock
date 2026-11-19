@@ -200,6 +200,23 @@ export const workJobs = sqliteTable(
   ],
 );
 
+// Encrypted, owner-scoped replicas of linked-device jobs; never an execution grant.
+export const eveDeviceJobs = sqliteTable('eve_device_jobs', {
+  ownerId:text('owner_id').notNull(),jobId:text('job_id').notNull(),threadId:text('thread_id').notNull(),deviceId:text('device_id').notNull(),
+  revision:integer('revision').notNull(),digest:text('digest').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},table=>[uniqueIndex('idx_eve_device_job_owner_id').on(table.ownerId,table.jobId),index('idx_eve_device_jobs_thread').on(table.ownerId,table.threadId,table.updatedAt)]);
+export const eveDevicePresence = sqliteTable('eve_device_presence', {
+  ownerId:text('owner_id').notNull(),deviceId:text('device_id').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_eve_device_presence_owner_id').on(t.ownerId,t.deviceId)]);
+// Common runtime observations coexist with legacy Pixel sync; neither is an execution grant.
+export const eveRuntimePresence = sqliteTable('eve_runtime_presence', {
+  ownerId:text('owner_id').notNull(),deviceId:text('device_id').notNull(),envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[uniqueIndex('idx_eve_runtime_presence_owner_id').on(t.ownerId,t.deviceId)]);
+export const eveDeviceCommands = sqliteTable('eve_device_commands', {
+  ownerId:text('owner_id').notNull(),id:text('id').notNull(),deviceId:text('device_id').notNull(),threadId:text('thread_id').notNull(),
+  digest:text('digest').notNull(),envelope:text('envelope').notNull(),state:text('state').notNull(),createdAt:integer('created_at').notNull(),expiresAt:integer('expires_at').notNull(),
+},t=>[uniqueIndex('idx_eve_device_command_owner_id').on(t.ownerId,t.id),index('idx_eve_device_command_pending').on(t.ownerId,t.deviceId,t.state)]);
+
 export const agentDelegations = sqliteTable(
   'agent_delegations',
   {
@@ -1672,7 +1689,8 @@ export const skyCampusReports = sqliteTable(
 // Collection records reference usage; budget settlement itself is not a customer payment.
 export const skyUsagePayments = sqliteTable('sky_usage_payments', {
   id: text('id').primaryKey(), ownerUserId: text('owner_user_id').notNull(),
-  sourceId: text('source_id').notNull(), sourceDigest: text('source_digest').notNull(),
+  sourceId: text('source_id'), sourceKind: text('source_kind').notNull().default('cloud_llm'),
+  agentSourceId: text('agent_source_id'), confirmationId: text('confirmation_id'), sourceDigest: text('source_digest').notNull(),
   amountMinor: integer('amount_minor').notNull(), currency: text('currency').notNull(),
   mode: text('mode').notNull(), state: text('state').notNull().default('pending'),
   sessionId: text('session_id'), paymentIntentId: text('payment_intent_id'),
@@ -1680,6 +1698,7 @@ export const skyUsagePayments = sqliteTable('sky_usage_payments', {
   createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
 }, (table) => [
   uniqueIndex('idx_sky_usage_source_mode').on(table.sourceId, table.mode),
+  uniqueIndex('idx_sky_usage_agent_mode').on(table.agentSourceId, table.mode),
   uniqueIndex('idx_sky_usage_session').on(table.sessionId),
   uniqueIndex('idx_sky_usage_intent').on(table.paymentIntentId),
   index('idx_sky_usage_owner').on(table.ownerUserId, table.createdAt),
@@ -1693,3 +1712,283 @@ export const esimCloudProofUses = sqliteTable('esim_cloud_proof_uses', {
   primaryKey({ columns: [table.accessKeyId, table.requestId] }),
   index('idx_esim_cloud_proof_expiry').on(table.expiresAt),
 ]);
+
+export const skyLinuxServiceDocuments = sqliteTable('sky_linux_service_documents', {
+  id:text('id').primaryKey(),ownerUserId:text('owner_user_id').notNull(),kind:text('kind').notNull(),
+  period:text('period'),currency:text('currency'),
+  revision:integer('revision').notNull().default(0),payload:text('payload').notNull(),updatedAt:integer('updated_at').notNull(),
+}, table=>[index('idx_sky_linux_service_owner').on(table.ownerUserId,table.kind,table.updatedAt),
+ check('sky_service_document_kind',sql`${table.kind} IN ('workspace','listing','review','agent_monthly_statement')`),
+ uniqueIndex('idx_sky_agent_monthly_owner_period').on(table.ownerUserId,table.kind,table.period,table.currency),
+]);
+export const skyLinuxServiceReceipts = sqliteTable('sky_linux_service_receipts', {
+  id:text('id').primaryKey(),workspaceId:text('workspace_id').notNull(),digest:text('digest').notNull(),
+  kind:text('kind').notNull(),payload:text('payload').notNull(),createdAt:integer('created_at').notNull(),
+}, table=>[index('idx_sky_linux_receipt_workspace').on(table.workspaceId,table.createdAt)]);
+
+export const rockstarServiceSetups = sqliteTable('rockstar_service_setups', {
+  id: text('id').primaryKey(),
+  ownerUserId: text('owner_user_id').notNull().unique(),
+  revision: integer('revision').notNull().default(0),
+  payload: text('payload').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, table => [
+  uniqueIndex('idx_rockstar_service_setup_session').on(sql`json_extract(${table.payload},'$.billing.sessionId')`),
+]);
+
+export const skyAgentSettings = sqliteTable('sky_agent_settings', {
+  ownerUserId: text('owner_user_id').notNull(),
+  id: text('id').notNull(),
+  sourceTool: text('source_tool'),
+  settings: text('settings').notNull(),
+  revision: integer('revision').notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, table => [uniqueIndex('idx_sky_agent_settings_owner_id').on(table.ownerUserId,table.id),
+  index('idx_sky_agent_settings_owner_updated').on(table.ownerUserId,table.updatedAt)]);
+
+export const skyAgentShares = sqliteTable('sky_agent_shares', {
+  id: text('id').notNull(), version: integer('version').notNull(), ownerId: text('owner_id').notNull(),
+  communityId: text('community_id'), manifest: text('manifest').notNull(), digest: text('digest').notNull(),
+  createdAt: integer('created_at').notNull(), withdrawnAt: integer('withdrawn_at').notNull().default(0),
+}, table => [uniqueIndex('sky_agent_shares_id_version').on(table.id,table.version), index('sky_agent_shares_owner').on(table.ownerId)]);
+export const skyAgentShareInstalls = sqliteTable('sky_agent_share_installs', {
+  ownerId: text('owner_id').notNull(), shareId: text('share_id').notNull(), version: integer('version').notNull(),
+  agentId: text('agent_id').notNull(), manifest: text('manifest').notNull(), digest: text('digest').notNull(),
+  configDigest: text('config_digest').notNull(), saveToken: text('save_token').notNull(), createdAt: integer('created_at').notNull(),
+}, table => [uniqueIndex('sky_agent_share_installs_version').on(table.ownerId,table.shareId,table.version), uniqueIndex('sky_agent_share_installs_agent').on(table.ownerId,table.agentId)]);
+
+export const skyFeatureAdditions = sqliteTable('sky_feature_additions', {
+  ownerUserId: text('owner_user_id').notNull(),
+  feature: text('feature').notNull(),
+  enabled: integer('enabled').notNull(),
+  purpose: text('purpose').notNull(),
+  revision: integer('revision').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, table => [uniqueIndex('idx_sky_feature_additions_owner_feature').on(table.ownerUserId, table.feature)]);
+
+export const skyHubPlugins = sqliteTable('sky_hub_plugins', {
+  ownerUserId: text('owner_user_id').notNull(),
+  pluginKey: text('plugin_key').notNull(),
+  kind: text('kind').notNull(),
+  resource: text('resource').notNull(),
+  enabled: integer('enabled').notNull(),
+  revision: integer('revision').notNull(),
+  metadata: text('metadata').notNull(),
+  consentVersion: text('consent_version'),
+  updatedAt: integer('updated_at').notNull(),
+}, table=>[uniqueIndex('idx_sky_hub_plugins_owner_key').on(table.ownerUserId,table.pluginKey)]);
+
+// Public X post cache and a global API request window; never stores credentials.
+export const eveConversations = sqliteTable('eve_conversations', {
+  ownerId: text('owner_id').notNull(), id: text('id').notNull(),
+  revision: integer('revision').notNull(), remember: integer('remember').notNull(),
+  envelope: text('envelope').notNull(), updatedAt: integer('updated_at').notNull(),
+  saveToken: text('save_token').notNull(),
+  deletedAt: integer('deleted_at').notNull().default(0),
+}, table => [primaryKey({columns:[table.ownerId,table.id]})]);
+export const eveMessages = sqliteTable('eve_messages', {
+  seq: integer('seq').primaryKey({autoIncrement:true}),ownerId:text('owner_id').notNull(),
+  threadId:text('thread_id').notNull(),messageId:text('message_id').notNull(),
+  envelope:text('envelope').notNull(),updatedAt:integer('updated_at').notNull(),
+}, table => [uniqueIndex('eve_messages_identity').on(table.ownerId,table.threadId,table.messageId)]);
+export const eveMemoryTerms = sqliteTable('eve_memory_terms', {
+  ownerId:text('owner_id').notNull(),token:text('token').notNull(),threadId:text('thread_id').notNull(),messageId:text('message_id').notNull(),
+}, table => [primaryKey({columns:[table.ownerId,table.token,table.threadId,table.messageId]})]);
+
+export const skyXFeedState = sqliteTable('sky_x_feed_state', {
+  key: text('key').primaryKey(),
+  payload: text('payload').notNull().default('[]'),
+  remoteUserId: text('remote_user_id'),
+  fetchedAt: integer('fetched_at').notNull().default(0),
+  nextRefreshAt: integer('next_refresh_at').notNull().default(0),
+  retryAfter: integer('retry_after').notNull().default(0),
+  leaseId: text('lease_id'),
+  leaseUntil: integer('lease_until').notNull().default(0),
+  windowDay: text('window_day').notNull().default(''),
+  requestCount: integer('request_count').notNull().default(0),
+  errorCode: text('error_code'),
+});
+
+export const skySocialProfiles = sqliteTable('sky_social_profiles', {
+  id:text('id').primaryKey(), ownerId:text('owner_id').notNull().unique(),
+  name:text('name').notNull(), createdAt:integer('created_at').notNull(),
+});
+export const skyCommunities = sqliteTable('sky_communities', {
+  id:text('id').primaryKey(), ownerId:text('owner_id').notNull(), name:text('name').notNull(),
+  description:text('description').notNull(), rules:text('rules').notNull(),
+  visibility:text('visibility').notNull(), inviteHash:text('invite_hash'),
+  recoveryHash:text('recovery_hash'), osRevision:integer('os_revision').notNull().default(0),
+  postMode:text('post_mode').notNull().default('members'),
+  createdAt:integer('created_at').notNull(), archivedAt:integer('archived_at').notNull().default(0),
+});
+export const skyCommunityMembers = sqliteTable('sky_community_members', {
+  communityId:text('community_id').notNull(), profileId:text('profile_id').notNull(),
+  joinedAt:integer('joined_at').notNull(),
+}, table=>[primaryKey({columns:[table.communityId,table.profileId]})]);
+export const skySocialFollows = sqliteTable('sky_social_follows', {
+  followerId:text('follower_id').notNull(), followingId:text('following_id').notNull(), createdAt:integer('created_at').notNull(),
+}, table=>[primaryKey({columns:[table.followerId,table.followingId]})]);
+export const skySocialPosts = sqliteTable('sky_social_posts', {
+  id:text('id').primaryKey(), authorId:text('author_id').notNull(), communityId:text('community_id'),
+  content:text('content').notNull(), attachment:text('attachment'), createdAt:integer('created_at').notNull(),
+  replyTo:text('reply_to'),
+}, table=>[index('sky_social_posts_created').on(table.createdAt,table.id),index('sky_social_posts_community').on(table.communityId,table.createdAt),index('sky_social_posts_reply').on(table.replyTo,table.createdAt)]);
+
+export const skySocialReactions = sqliteTable('sky_social_reactions', {
+  profileId:text('profile_id').notNull(),postId:text('post_id').notNull(),
+  kind:text('kind').notNull(),createdAt:integer('created_at').notNull(),
+},t=>[primaryKey({columns:[t.profileId,t.postId,t.kind]}),index('sky_social_reactions_post').on(t.postId,t.kind)]);
+
+export const skyCommunityKeys = sqliteTable('sky_community_keys', {
+  communityId:text('community_id').notNull(),profileId:text('profile_id').notNull(),keyHash:text('key_hash').notNull(),
+  revokedAt:integer('revoked_at').notNull().default(0),createdAt:integer('created_at').notNull(),
+},t=>[primaryKey({columns:[t.communityId,t.profileId]})]);
+export const skyCommunityEditions = sqliteTable('sky_community_editions', {
+  communityId:text('community_id').notNull(),version:integer('version').notNull(),
+  manifest:text('manifest').notNull(),digest:text('digest').notNull(),createdAt:integer('created_at').notNull(),
+},t=>[primaryKey({columns:[t.communityId,t.version]})]);
+export const skyCommunityInstalls = sqliteTable('sky_community_installs', {
+  ownerId:text('owner_id').notNull(),communityId:text('community_id').notNull(),version:integer('version').notNull(),
+  revision:integer('revision').notNull(),manifest:text('manifest').notNull(),agentRefs:text('agent_refs').notNull(),
+  active:integer('active').notNull().default(0),saveToken:text('save_token').notNull(),updatedAt:integer('updated_at').notNull(),
+},t=>[primaryKey({columns:[t.ownerId,t.communityId]}),uniqueIndex('sky_community_install_active').on(t.ownerId).where(sql`${t.active}=1`)]);
+
+export const skyXAccounts = sqliteTable('sky_x_accounts', {
+  ownerId:text('owner_id').primaryKey(),remoteId:text('remote_id'),username:text('username'),displayName:text('display_name'),tokens:text('tokens'),cache:text('cache'),
+  status:text('status').notNull().default('disconnected'),revision:integer('revision').notNull().default(0),
+  fetchedAt:integer('fetched_at').notNull().default(0),nextRefreshAt:integer('next_refresh_at').notNull().default(0),retryAt:integer('retry_at').notNull().default(0),
+  leaseId:text('lease_id'),leaseUntil:integer('lease_until').notNull().default(0),windowDay:text('window_day').notNull().default(''),requestCount:integer('request_count').notNull().default(0),errorCode:text('error_code'),
+});
+export const skyXOAuthStates = sqliteTable('sky_x_oauth_states', {
+  stateHash:text('state_hash').primaryKey(),ownerId:text('owner_id').notNull(),cookieHash:text('cookie_hash').notNull(),verifier:text('verifier').notNull(),accountRevision:integer('account_revision').notNull(),expiresAt:integer('expires_at').notNull(),usedAt:integer('used_at').notNull().default(0),
+}, t=>[index('sky_x_oauth_owner_expiry').on(t.ownerId,t.expiresAt)]);
+
+export const jenniferPasskeyChallenges = sqliteTable(
+  'jennifer_passkey_challenges',
+  {
+    id: text('id').primaryKey(),
+    kind: text('kind').notNull(),
+    userId: text('user_id'),
+    challengeSha256: text('challenge_sha256').notNull(),
+    requestKeySha256: text('request_key_sha256').notNull(),
+    rpId: text('rp_id').notNull(),
+    origin: text('origin').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    consumedAt: integer('consumed_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_passkey_challenge_hash').on(table.challengeSha256),
+    index('idx_jennifer_passkey_challenge_expiry').on(table.expiresAt),
+    check('jennifer_passkey_challenge_kind_check', sql`${table.kind} IN ('registration','authentication')`),
+    check('jennifer_passkey_challenge_hash_check', sql`length(${table.challengeSha256}) = 64`),
+    check('jennifer_passkey_challenge_request_key_check', sql`length(${table.requestKeySha256}) = 64`),
+    index('idx_jennifer_passkey_challenge_rate').on(table.requestKeySha256, table.createdAt),
+  ],
+);
+
+export const jenniferPasskeyCredentials = sqliteTable(
+  'jennifer_passkey_credentials',
+  {
+    credentialId: text('credential_id').primaryKey(),
+    userId: text('user_id').notNull(),
+    publicKeyCose: text('public_key_cose').notNull(),
+    signCount: integer('sign_count').notNull(),
+    transportsJson: text('transports_json').notNull().default('[]'),
+    label: text('label').notNull(),
+    deviceType: text('device_type').notNull(),
+    backedUp: integer('backed_up').notNull(),
+    rpId: text('rp_id').notNull(),
+    createdAt: integer('created_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    index('idx_jennifer_passkey_owner').on(table.userId, table.createdAt),
+    check('jennifer_passkey_counter_check', sql`${table.signCount} >= 0`),
+    check('jennifer_passkey_transports_check', sql`json_valid(${table.transportsJson})`),
+    check('jennifer_passkey_device_type_check', sql`${table.deviceType} IN ('singleDevice','multiDevice')`),
+    check('jennifer_passkey_backed_up_check', sql`${table.backedUp} IN (0,1)`),
+  ],
+);
+
+export const jenniferPasskeySessions = sqliteTable(
+  'jennifer_passkey_sessions',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    credentialId: text('credential_id').notNull(),
+    authMethod: text('auth_method').notNull(),
+    tokenSha256: text('token_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_jennifer_passkey_session_token').on(table.tokenSha256),
+    index('idx_jennifer_passkey_session_owner').on(table.userId, table.createdAt),
+    index('idx_jennifer_passkey_session_credential').on(table.credentialId, table.createdAt),
+    check('jennifer_passkey_session_hash_check', sql`length(${table.tokenSha256}) = 64`),
+    check('jennifer_passkey_session_method_check', sql`${table.authMethod} = 'passkey'`),
+  ],
+);
+
+export const jenniferPasskeyEvents = sqliteTable(
+  'jennifer_passkey_events',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    eventType: text('event_type').notNull(),
+    credentialId: text('credential_id').notNull(),
+    detailsJson: text('details_json').notNull().default('{}'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    index('idx_jennifer_passkey_event_owner').on(table.userId, table.createdAt),
+    check('jennifer_passkey_event_details_check', sql`json_valid(${table.detailsJson})`),
+  ],
+);
+
+
+export const rockstarAccounts = sqliteTable('rockstar_accounts', {
+  userId: text('user_id').primaryKey(),
+  recoverySha256: text('recovery_sha256').notNull().unique(),
+  revision: integer('revision').notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, t => [check('rockstar_account_recovery_hash', sql`length(${t.recoverySha256}) = 64`), check('rockstar_account_revision', sql`${t.revision} >= 1`)]);
+
+export const rockstarAccountEnrollments = sqliteTable('rockstar_account_enrollments', {
+  id: text('id').primaryKey(), userId: text('user_id'), mode: text('mode').notNull(),
+  bindingSha256: text('binding_sha256').notNull(), origin: text('origin').notNull(),
+  recoverySha256: text('recovery_sha256'), expectedRevision: integer('expected_revision').notNull().default(0), createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(), consumedAt: integer('consumed_at'), completionNonce: text('completion_nonce'),
+}, t => [check('rockstar_account_enrollment_mode', sql`${t.mode} IN ('signup','add','recover','login')`),
+  check('rockstar_account_enrollment_binding', sql`length(${t.bindingSha256}) = 64`), index('idx_rockstar_account_enrollment_expiry').on(t.expiresAt)]);
+
+export const rockstarAccountRateLimits = sqliteTable('rockstar_account_rate_limits', {
+  requestKey: text('request_key').notNull(), window: integer('window').notNull(), attempts: integer('attempts').notNull(),
+}, t => [primaryKey({ columns: [t.requestKey, t.window] }), check('rockstar_account_rate_attempts', sql`${t.attempts} > 0`)]);
+
+export const rockstarAccountPasswords = sqliteTable('rockstar_account_passwords', {
+  userId: text('user_id').primaryKey(), handle: text('handle').notNull().unique(),
+  salt: text('salt').notNull(), verifier: text('verifier').notNull(), accountRevision: integer('account_revision').notNull(),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, t => [check('rockstar_password_verifier', sql`length(${t.verifier}) = 64`), check('rockstar_password_revision', sql`${t.accountRevision} >= 1`)]);
+
+export const rockstarAccountSessions = sqliteTable('rockstar_account_sessions', {
+  id: text('id').primaryKey(), userId: text('user_id').notNull(), accountRevision: integer('account_revision').notNull(),
+  tokenSha256: text('token_sha256').notNull().unique(), createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(), lastUsedAt: integer('last_used_at').notNull(), revokedAt: integer('revoked_at'),
+}, t => [index('idx_rockstar_account_session_owner').on(t.userId), check('rockstar_account_session_hash', sql`length(${t.tokenSha256}) = 64`)]);
+
+
+export const skyAuthorAgreementDocuments = sqliteTable('sky_author_agreement_documents', {
+  platformId: text('platform_id').notNull(), publisherId: text('publisher_id').notNull(),
+  agreementId: text('agreement_id').notNull(), version: text('version').notNull(),
+  agreementSha256: text('agreement_sha256').notNull(), termsSha256: text('terms_sha256').notNull(),
+  agreementJson: text('agreement_json').notNull(), termsText: text('terms_text').notNull(),
+  createdAt: integer('created_at').notNull(), revokedAt: integer('revoked_at'), revokedBy: text('revoked_by'),
+}, t => [primaryKey({columns:[t.platformId,t.publisherId,t.agreementId,t.version]})]);

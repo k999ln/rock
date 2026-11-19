@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+  <title id="title">Orbit L-T 一台の使用体験と確認の境界</title>
+  <desc id="desc">05の面一着信から伸縮、本人確認、一択空中カードへのタップ、通話、離脱後の衛星候補からWi-Fi共有、SkyとZemaでの制作、再装着時の場所権限確認までの研究仮説。</desc>
+  <rect width="1500" height="900" fill="#f4f5f2"/>
+  <text x="64" y="68" fill="#14272e" font-family="Arial, sans-serif" font-size="35" font-weight="700">Orbit L-T  |  一台で続く暮らし・通話・制作</text>
+  <text x="64" y="106" fill="#56666a" font-family="Arial, sans-serif" font-size="19">設計研究の操作順。空中像、衛星契約、同一閉箱、米国実網は未受入。</text>
+
+  <line x1="132" y1="255" x2="1370" y2="255" stroke="#b7c4c3" stroke-width="6"/>
+  <line x1="132" y1="530" x2="1370" y2="530" stroke="#b7c4c3" stroke-width="6"/>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="65" y="151" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="104" cy="203" r="19" fill="#183540"/><text x="98" y="210" font-size="18" fill="#fff" font-weight="700">1</text>
+    <text x="140" y="207" font-size="24" fill="#14272e" font-weight="700">面一で着信</text>
+    <text x="90" y="265" font-size="18" fill="#34515a">匿名の端面合図だけ</text>
+    <text x="90" y="297" font-size="18" fill="#34515a">05の乾いた手元の島</text>
+    <text x="90" y="337" font-size="16" fill="#a14034">発信者名は未表示</text>
+
+    <rect x="422" y="151" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="461" cy="203" r="19" fill="#183540"/><text x="455" y="210" font-size="18" fill="#fff" font-weight="700">2</text>
+    <text x="497" y="207" font-size="24" fill="#14272e" font-weight="700">安全に上昇</text>
+    <text x="447" y="265" font-size="18" fill="#34515a">本体と可動cupを50mm</text>
+    <text x="447" y="297" font-size="18" fill="#34515a">黒いsensor帯を露出</text>
+    <text x="447" y="337" font-size="16" fill="#a14034">異物・爪不成立なら停止</text>
+
+    <rect x="779" y="151" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="818" cy="203" r="19" fill="#183540"/><text x="812" y="210" font-size="18" fill="#fff" font-weight="700">3</text>
+    <text x="854" y="207" font-size="24" fill="#14272e" font-weight="700">本人を確認</text>
+    <text x="804" y="265" font-size="18" fill="#34515a">指紋 / PIN、像面を校正</text>
+    <text x="804" y="297" font-size="18" fill="#34515a">詳細表示は本人の選択</text>
+    <text x="804" y="337" font-size="16" fill="#a14034">顔推定だけで応答しない</text>
+
+    <rect x="1136" y="151" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="1175" cy="203" r="19" fill="#183540"/><text x="1169" y="210" font-size="18" fill="#fff" font-weight="700">4</text>
+    <text x="1211" y="207" font-size="24" fill="#14272e" font-weight="700">空間で応答</text>
+    <text x="1161" y="265" font-size="18" fill="#34515a">一択ずつ選ぶ → 別tap</text>
+    <text x="1161" y="297" font-size="18" fill="#34515a">回線の受付後に通話表示</text>
+    <text x="1161" y="337" font-size="16" fill="#a14034">誤tap / 結果不明は照合</text>
+
+    <rect x="65" y="425" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="104" cy="477" r="19" fill="#183540"/><text x="98" y="484" font-size="18" fill="#fff" font-weight="700">5</text>
+    <text x="140" y="481" font-size="24" fill="#14272e" font-weight="700">同じ本体を外す</text>
+    <text x="90" y="539" font-size="18" fill="#34515a">通話と仕事の続きは保持</text>
+    <text x="90" y="571" font-size="18" fill="#34515a">家の場所scopeは失効</text>
+    <text x="90" y="611" font-size="16" fill="#a14034">空dockの触れ方も検証</text>
+
+    <rect x="422" y="425" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="461" cy="477" r="19" fill="#183540"/><text x="455" y="484" font-size="18" fill="#fff" font-weight="700">6</text>
+    <text x="497" y="481" font-size="24" fill="#14272e" font-weight="700">携行中の通信</text>
+    <text x="447" y="539" font-size="18" fill="#34515a">屋外で衛星IP候補を確立</text>
+    <text x="447" y="571" font-size="18" fill="#34515a">費用確認後にWi-Fi共有</text>
+    <text x="447" y="611" font-size="16" fill="#a14034">米国の契約 / 実疎通は未取得</text>
+
+    <rect x="779" y="425" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="818" cy="477" r="19" fill="#183540"/><text x="812" y="484" font-size="18" fill="#fff" font-weight="700">7</text>
+    <text x="854" y="481" font-size="24" fill="#14272e" font-weight="700">PCなしの制作</text>
+    <text x="804" y="539" font-size="18" fill="#34515a">声でbrief、Skyへ依頼</text>
+    <text x="804" y="571" font-size="18" fill="#34515a">Zemaで修正・検収・保存</text>
+    <text x="804" y="611" font-size="16" fill="#a14034">費用上限と成果を別に確認</text>
+
+    <rect x="1136" y="425" width="300" height="214" rx="20" fill="#fff" stroke="#cbd4d3" stroke-width="2"/>
+    <circle cx="1175" cy="477" r="19" fill="#183540"/><text x="1169" y="484" font-size="18" fill="#fff" font-weight="700">8</text>
+    <text x="1211" y="481" font-size="24" fill="#14272e" font-weight="700">家に戻す</text>
+    <text x="1161" y="539" font-size="18" fill="#34515a">同じjobIdで結果を続ける</text>
+    <text x="1161" y="571" font-size="18" fill="#34515a">家の権限は再確認</text>
+    <text x="1161" y="611" font-size="16" fill="#a14034">再装着だけで設備を動かさない</text>
+  </g>
+
+  <rect x="65" y="696" width="1371" height="128" rx="18" fill="#dfe9e7"/>
+  <text x="94" y="737" font-family="Arial, sans-serif" font-size="22" fill="#17313b" font-weight="700">利用者の約束: 手と声で連絡し、仕事を作り、同じMiniを持ち出せる。</text>
+  <text x="94" y="775" font-family="Arial, sans-serif" font-size="18" fill="#314c53">受入単位: 同一閉箱、200mm以内、本人の実着信、読める裸眼空中像、米国の許可済み衛星IP→Wi-Fi、保存・復旧。</text>
+  <text x="65" y="864" font-family="Arial, sans-serif" font-size="16" fill="#59686a">Orbit L-T / 2026-10-19 / research design, not a built device</text>
+</svg>

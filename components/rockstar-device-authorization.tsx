@@ -94,8 +94,10 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
         <p>端末に表示された8文字のコードを確認します。承認すると、このRockstar ID専用の端末セッションが発行されます。端末の接続はいつでも取り消せます。</p>
       </div>
       {signedIn === false ? <div className={styles.notice}>
-        <p>端末を接続するにはRockstar IDでサインインしてください。</p>
-        <Link href="/signin-with-chatgpt?return_to=%2Fconnect%2Fdevice" target="_top">サインインして続ける</Link>
+        <p>端末を接続するには会員登録またはログインをしてください。</p>
+        <Link href={`/account?returnTo=${encodeURIComponent(`/connect/device${code ? `?user_code=${encodeURIComponent(code)}` : ''}`)}`}>
+          会員登録・ログインして続ける
+        </Link>
       </div> : <form className={styles.offerForm} onSubmit={inspect}>
         <label htmlFor="rockstar-device-code">端末に表示されたコード</label>
         <input id="rockstar-device-code" autoComplete="one-time-code" autoCapitalize="characters"

@@ -41,7 +41,7 @@ async function handle(request: Request) {
           status === 401
             ? 'Sign in to manage your MCP connections.'
             : status === 403
-              ? 'このSky画面から操作してください。'
+              ? 'このSmith画面から操作してください。'
               : error instanceof McpPlanError || error instanceof OperationError
                 ? error.message
                 : '接続枠を確認できません。時間を置いて再試行してください。',

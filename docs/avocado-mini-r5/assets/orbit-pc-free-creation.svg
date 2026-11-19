@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440" role="img" aria-labelledby="title desc">
+  <title id="title">OrbitでPCを使わずに制作し、電話割込後も続ける設計</title>
+  <desc id="desc">同じMiniから声で制作briefを作り、本人が費用と範囲を確認し、Skyが制作し、Zemaが版を保持し、Miniで修正と成果検収を行う。通話は入力を一時的に優先する。</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#09151b"/><stop offset="1" stop-color="#172934"/></linearGradient>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#9fe4cf"/></marker>
+  </defs>
+  <rect width="1200" height="440" rx="22" fill="url(#bg)"/>
+  <text x="40" y="52" fill="#eaf8f2" font-family="Arial,sans-serif" font-size="28" font-weight="700">PCを開かず、同じMiniから作品を完成まで導く</text>
+  <text x="40" y="80" fill="#9bb5b4" font-family="Arial,sans-serif" font-size="15">構想フロー · Sky / Zema と実Toolの契約・実機合格は未実施</text>
+  <g font-family="Arial,sans-serif">
+    <g fill="#18323b" stroke="#4f7c80" stroke-width="2">
+      <rect x="40" y="116" width="202" height="166" rx="16"/>
+      <rect x="269" y="116" width="202" height="166" rx="16"/>
+      <rect x="498" y="116" width="202" height="166" rx="16"/>
+      <rect x="727" y="116" width="202" height="166" rx="16"/>
+      <rect x="956" y="116" width="202" height="166" rx="16"/>
+    </g>
+    <g fill="#86e5c5" font-size="15" font-weight="700">
+      <text x="58" y="147">01 · MINI</text><text x="287" y="147">02 · 本人確認</text><text x="516" y="147">03 · SKY</text><text x="745" y="147">04 · ZEMA</text><text x="974" y="147">05 · MINI</text>
+    </g>
+    <g fill="#f3faf7" font-size="20" font-weight="700">
+      <text x="58" y="184">声で発想する</text><text x="287" y="184">範囲と費用を選ぶ</text><text x="516" y="184">Tool が制作する</text><text x="745" y="184">途中版を残す</text><text x="974" y="184">直して検収する</text>
+    </g>
+    <g fill="#b9cfca" font-size="15">
+      <text x="58" y="215">目的・素材・成果物を</text><text x="58" y="238">短い brief にする</text>
+      <text x="287" y="215">聞き返しと空中カード</text><text x="287" y="238">開始は明示承認</text>
+      <text x="516" y="215">権限と予算内で実行</text><text x="516" y="238">外部作用は別承認</text>
+      <text x="745" y="215">job ID / revision / 費用</text><text x="745" y="238">止めて戻れる</text>
+      <text x="974" y="215">音声・短い空中見本</text><text x="974" y="238">成果を保存・共有確認</text>
+    </g>
+    <g stroke="#9fe4cf" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+      <path d="M244 198H264"/><path d="M473 198H493"/><path d="M702 198H722"/><path d="M931 198H951"/>
+    </g>
+    <rect x="40" y="315" width="1118" height="84" rx="14" fill="#26383f" stroke="#627d80"/>
+    <circle cx="80" cy="357" r="20" fill="#eea972"/>
+    <path d="M73 353v9m7-14v19m7-14v9" stroke="#17252d" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="116" y="348" fill="#ffe2cb" font-size="17" font-weight="700">電話が来たら</text>
+    <text x="116" y="374" fill="#d2dcda" font-size="15">通話がマイクと入力を優先。制作の job と途中版を保持し、終了後に本人が再開する。</text>
+  </g>
+</svg>

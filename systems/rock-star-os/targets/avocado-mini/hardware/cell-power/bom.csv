@@ -1,0 +1,8 @@
+Reference,Value,Part,Footprint,Status
+U1,5V evaluation load switch,TPS22965DSGR,MiniCell:WSON8_2x2_EP,Selected for coupon only; TI DSG0008A land pattern review pending
+C1,10uF 25V X7R,Exact manufacturer part pending,MiniCell:C_0805,Effective capacitance under DC bias not measured
+C2,1uF 25V X7R,Exact manufacturer part pending,MiniCell:C_0805,Actual OLED input capacitance not included
+C3,1nF 50V C0G,Exact manufacturer part pending,MiniCell:R_C_0603,Rise time requires measurement with actual load
+R1,1k 1%,Exact manufacturer part pending,MiniCell:R_C_0603,3V3 signal series
+R2,10k 1%,Exact manufacturer part pending,MiniCell:R_C_0603,ON default low
+J1 J2 J3,1x02 2.54mm header,Exact keyed connector and mate pending,MiniCell:Header_1x02,Not touch or polarity protected

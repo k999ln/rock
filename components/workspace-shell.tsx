@@ -1,20 +1,23 @@
 'use client';
 
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, type ReactNode, type MouseEventHandler } from 'react';
 import Link from 'next/link';
 import OSHeader from './os-header';
+import OsAccountAccess from './os-account-access';
 import { ArrowUpRight, Cable, CircleHelp } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
-import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
+import { AGENT_HUB_NAME, PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
 import skyStyles from '@/components/sky-surface.module.css';
 
 export default function WorkspaceShell({
   children,
   title,
   contentClassName,
+  onClickCapture,
   onConnect,
   running = false,
   hideTopActions = false,
+  hideAccountAccess = false,
   standaloneSky = false,
   standaloneHomeHref = '/sky',
   tone,
@@ -22,9 +25,11 @@ export default function WorkspaceShell({
   children: ReactNode;
   title: string;
   contentClassName?: string;
+  onClickCapture?: MouseEventHandler<HTMLDivElement>;
   onConnect?: () => void;
   running?: boolean;
   hideTopActions?: boolean;
+  hideAccountAccess?: boolean;
   standaloneSky?: boolean;
   standaloneHomeHref?: string;
   tone?: 'sky';
@@ -44,6 +49,7 @@ export default function WorkspaceShell({
   return (
     <div
       onClickCapture={(event) => {
+        onClickCapture?.(event);
         if (
           running &&
           event.target instanceof Element &&
@@ -51,6 +57,7 @@ export default function WorkspaceShell({
         )
           event.preventDefault();
       }}
+      data-os-frame
       className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
       data-running={running ? 'true' : 'false'}
       aria-busy={running}
@@ -60,7 +67,7 @@ export default function WorkspaceShell({
       </a>
       <div className="rock-main-column rock-main-column-full">
         {standaloneSky ? <header className={skyStyles.standaloneHeader}>
-          <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label="Sky home">avocado <span>/ Sky</span></Link>
+          <Link href={standaloneHomeHref} className={skyStyles.standaloneBrand} aria-label={`${AGENT_HUB_NAME} home`}>avocado <span>/ {AGENT_HUB_NAME}</span></Link>
           <Link href="/sky/help" className={skyStyles.standaloneHelp}>使い方と対応環境 <ArrowUpRight size={14} /></Link>
         </header> : <OSHeader title={title} running={running}>
           {!hideTopActions && (
@@ -93,6 +100,7 @@ export default function WorkspaceShell({
             </div>
           )}
         </OSHeader>}
+        {!standaloneSky && !hideAccountAccess && title === 'Eve' && <OsAccountAccess />}
         <main
           id="workspace-main"
           className={`rock-main ${contentClassName ?? ''}`}
@@ -101,7 +109,7 @@ export default function WorkspaceShell({
           {children}
         </main>
         <div className="rock-bottom-note">
-          <span>{tone === 'sky' ? 'Sky' : PRODUCT_RELEASE_NAME}</span>
+          <span>{tone === 'sky' ? AGENT_HUB_NAME : PRODUCT_RELEASE_NAME}</span>
           <Link
             href={
               tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'

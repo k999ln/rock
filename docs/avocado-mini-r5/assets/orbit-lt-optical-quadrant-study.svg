@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">L-T 光学四分割の寸法反証</title>
+  <desc id="desc">左は直径76ミリの本体で、RF用20ミリの直下にある上側42ミリ区画に仮の48ミリ角板四枚を重ねた断面、右は直径140ミリの操作襟の中で96ミリ角に開く平面図。Readyでも区画下端12ミリは天板開口内に残る。光学性能や安全は未検証。</desc>
+  <rect width="1200" height="640" fill="#f5f6f4"/>
+  <text x="48" y="52" fill="#18252b" font-family="Arial, sans-serif" font-size="31" font-weight="700">L-T 光学四分割: 幾何だけの研究標的</text>
+  <text x="48" y="82" fill="#536169" font-family="Arial, sans-serif" font-size="18">同じ本体の Stow → Ready。既製plateの切断・光学性能・機構成立を示さない</text>
+  <rect x="44" y="110" width="520" height="446" rx="18" fill="#ffffff" stroke="#c9d0d1" stroke-width="2"/>
+  <rect x="590" y="110" width="566" height="446" rx="18" fill="#ffffff" stroke="#c9d0d1" stroke-width="2"/>
+  <text x="70" y="148" fill="#15262d" font-family="Arial, sans-serif" font-size="23" font-weight="700">Stow: D76 / 内径仮72 mm</text>
+  <text x="70" y="180" fill="#536169" font-family="Arial, sans-serif" font-size="17">RF20 mm の直下 / Ready下端12 mmは天板内</text>
+  <text x="615" y="148" fill="#15262d" font-family="Arial, sans-serif" font-size="23" font-weight="700">Ready: 襟外径 D140 mm</text>
+  <rect x="170" y="198" width="228" height="248" rx="42" fill="#d7dcdd" stroke="#55656b" stroke-width="3"/>
+  <rect x="181" y="208" width="206" height="126" rx="10" fill="#14232c"/>
+  <rect x="202" y="224" width="164" height="18" fill="#56bcd0" opacity="0.85"/>
+  <rect x="202" y="249" width="164" height="18" fill="#56bcd0" opacity="0.70"/>
+  <rect x="202" y="274" width="164" height="18" fill="#56bcd0" opacity="0.55"/>
+  <rect x="202" y="299" width="164" height="18" fill="#56bcd0" opacity="0.40"/>
+  <text x="70" y="480" fill="#344950" font-family="Arial, sans-serif" font-size="18">4 × 6.4 = 25.6 mm 厚みのみ</text>
+  <text x="70" y="508" fill="#a43d35" font-family="Arial, sans-serif" font-size="18" font-weight="700">42 − 25.6 = 16.4 mm へ光源・hinge等は未配置</text>
+  <text x="70" y="535" fill="#a43d35" font-family="Arial, sans-serif" font-size="17" font-weight="700">Ready 露出30 − 25.6 = 4.4 mm だけ</text>
+  <circle cx="873" cy="347" r="175" fill="#eef1f0" stroke="#4b626c" stroke-width="4"/>
+  <rect x="753" y="227" width="240" height="240" fill="#14232c" stroke="#1a2630" stroke-width="3"/>
+  <rect x="753" y="227" width="119" height="119" fill="#59bcd0" opacity="0.88" stroke="#ffffff" stroke-width="2"/>
+  <rect x="874" y="227" width="119" height="119" fill="#59bcd0" opacity="0.73" stroke="#ffffff" stroke-width="2"/>
+  <rect x="753" y="348" width="119" height="119" fill="#59bcd0" opacity="0.58" stroke="#ffffff" stroke-width="2"/>
+  <rect x="874" y="348" width="119" height="119" fill="#59bcd0" opacity="0.43" stroke="#ffffff" stroke-width="2"/>
+  <text x="615" y="507" fill="#344950" font-family="Arial, sans-serif" font-size="18">2 × 2 枚 = 96 mm 角、対角 135.8 mm</text>
+  <text x="615" y="535" fill="#a43d35" font-family="Arial, sans-serif" font-size="18" font-weight="700">壁 2 mm / 側なら内径 136、残り約 0.2 mm</text>
+  <rect x="45" y="580" width="1110" height="39" rx="8" fill="#fce8df"/>
+  <text x="63" y="607" fill="#713529" font-family="Arial, sans-serif" font-size="17" font-weight="700">P0 機構干渉、P1a 像・視域・tap、P2 同一閉箱 RF・熱・安全。すべて未合格。</text>
+</svg>

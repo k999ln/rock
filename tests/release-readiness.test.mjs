@@ -25,6 +25,18 @@ const personalNumberAudit = read('data/personal-number-release-audit.json');
 const sitesAudit = read('data/sites-owner-preview-audit.json');
 const sitesHosting = read('.openai/hosting.json');
 const webSecurityPolicy = read('data/web-security-policy.json');
+
+void test('camera exception is limited to one same-origin owner-action page while all other capabilities stay disabled', () => {
+  const altered = structuredClone(webSecurityPolicy);
+  altered.routeHeaders['/sky/objects/camera']['Permissions-Policy'] = altered.routeHeaders['/sky/objects/camera']['Permissions-Policy'].replace('camera=(self)', 'camera=*');
+  assert.throws(() => validateWebSecurityPolicy({root,policy:altered,readiness}), /policy/);
+  const broad = structuredClone(webSecurityPolicy);
+  broad.routeHeaders['/sky/*'] = broad.routeHeaders['/sky/objects/camera'];
+  assert.throws(() => validateWebSecurityPolicy({root,policy:broad,readiness}), /policy/);
+  const uploaded = structuredClone(webSecurityPolicy);
+  uploaded.cameraException.rawImagesUploaded = true;
+  assert.throws(() => validateWebSecurityPolicy({root,policy:uploaded,readiness}), /camera/);
+});
 const webLicenseAudit = read('data/web-third-party-license-audit.json');
 const qemuAudit = read('data/qemu-release-audit.json');
 const qemuAcceptance = read('docs/evidence/rls01/final-b7-rc2/acceptance-result.json');
@@ -79,8 +91,8 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.equal(result.blockedTargets.length, 6);
   assert.equal(result.missingDependencyLicenses, 0);
   assert.deepEqual(result.webLicense, {
-    packageEntries: 956,
-    uniqueComponents: 914,
+    packageEntries: 981,
+    uniqueComponents: 939,
     reviewRequired: 50,
   });
   assert.equal(result.sites.status, 'OUTDATED');

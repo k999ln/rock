@@ -4,7 +4,7 @@
   margin: 0 auto;
   padding: 28px 24px 40px;
   color: var(--os-text);
-  color-scheme: dark;
+  color-scheme: light;
 }
 .embedded.embedded { padding: 0; }
 .content :global(.sky-publish-heading) { align-items: flex-start; gap: 16px; margin-bottom: 24px; }

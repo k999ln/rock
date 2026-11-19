@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
         source: source.endsWith('/*') ? source.replace(/\/\*$/, '/:path*') : source,
         headers: Object.entries(headers).map(([key, value]) => ({ key, value })),
       })),
+      ...(process.env.SMIS_MODULE_PRIVATE_PREVIEW === '1' && process.env.NODE_ENV === 'development' ? [{
+        source: '/os/eve/module',
+        has: [{ type: 'host' as const, value: '(localhost|127\\.0\\.0\\.1|\\[::1\\])(:[0-9]+)?' }],
+        headers: [
+          { key: 'Permissions-Policy', value: 'bluetooth=(self), camera=(), geolocation=(), hid=(), microphone=(self), payment=(), serial=(), usb=()' },
+          { key: 'Cache-Control', value: 'no-store' },
+        ],
+      }] : []),
     ];
   },
 };

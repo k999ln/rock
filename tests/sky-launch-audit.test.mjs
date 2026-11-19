@@ -61,3 +61,18 @@ void test('removing the whole focused stage or its owner-isolation gate cannot h
   narrowed.gates = narrowed.gates.filter((gate) => gate.id !== 'authenticated-first-use');
   assert.throws(() => auditSkyLaunch(narrowed, evidenceExists), /Missing basic acceptance/);
 });
+
+void test('technical acceptance never lifts the explicit hold on general launch', () => {
+  const report = current();
+  for (const gate of report.gates) {
+    gate.status = 'passed';
+    gate.environment = 'production';
+  }
+  report.completeLaunchClaim = true;
+  report.focusedLaunchClaim = true;
+  const audited = auditSkyLaunch(report, evidenceExists);
+  assert.equal(audited.missing.paid.length, 0);
+  assert.equal(audited.generalLaunchAllowed, false);
+  delete report.releasePolicy;
+  assert.throws(() => auditSkyLaunch(report, evidenceExists), /explicit owner hold/);
+});

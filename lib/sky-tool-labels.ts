@@ -10,7 +10,7 @@ export type SkyToolLabel = {
 export const skyToolLabels: Record<string, SkyToolLabel> = {
   'rockstar-ip-studio': {
     role: 'IP・SNS運用役',
-    provider: 'Sky IP・SNS運用アシスタント',
+    provider: 'Smith IP・SNS運用アシスタント',
     handle: '@sky_ip',
     initial: 'IP',
     helper: 'IP・SNS運用とLiveKitの音声・電話連携の接続条件を整理します。公開・音声送信・発信は行いません。',
@@ -18,7 +18,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'coconala-proposal-draft': {
     role: '提案文下書き役',
-    provider: 'Sky 提案文アシスタント',
+    provider: 'Smith 提案文アシスタント',
     handle: '@sky_proposal',
     initial: '提',
     helper: '案件の条件を入れると、送信前に確認できる提案文を作ります。',
@@ -26,7 +26,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'gig-workflow': {
     role: '受託案件進行役',
-    provider: 'Sky 案件ワークフロー',
+    provider: 'Smith 案件ワークフロー',
     handle: '@sky_gig',
     initial: '進',
     helper: '応募から納品・売上確認までを、承認ポイント付きで整理します。',
@@ -34,7 +34,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'coconala-inbox': {
     role: '依頼整理役',
-    provider: 'Sky 依頼整理アシスタント',
+    provider: 'Smith 依頼整理アシスタント',
     handle: '@sky_inbox',
     initial: '整',
     helper: '依頼文から納期・報酬・添付・確認事項を分けて見える化します。',
@@ -42,7 +42,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'youtube-script-writer': {
     role: 'YouTube台本役',
-    provider: 'Sky YouTube台本アシスタント',
+    provider: 'Smith YouTube台本アシスタント',
     handle: '@sky_youtube',
     initial: '動',
     helper: 'テーマと動画尺を入れると、台本・構成・撮影キューを作ります。',
@@ -50,7 +50,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'seo-blueprint': {
     role: 'SEO構成役',
-    provider: 'Sky SEO構成アシスタント',
+    provider: 'Smith SEO構成アシスタント',
     handle: '@sky_seo',
     initial: 'S',
     helper: '記事テーマと読者を入れると、検索意図と記事構成を整理します。',
@@ -58,7 +58,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'landing-page-sprint': {
     role: 'LP制作役',
-    provider: 'Sky LP制作アシスタント',
+    provider: 'Smith LP制作アシスタント',
     handle: '@sky_lp',
     initial: 'L',
     helper: '商品と対象者を入れると、販売ページの構成と確認項目を作ります。',
@@ -66,7 +66,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'sales-objection-reply-builder': {
     role: '商談返信役',
-    provider: 'Sky 商談返信アシスタント',
+    provider: 'Smith 商談返信アシスタント',
     handle: '@sky_sales',
     initial: '商',
     helper: '相手の懸念を入れると、条件確認付きの返信と見積り項目を作ります。',
@@ -74,7 +74,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'user-interview-synthesizer': {
     role: '顧客インタビュー役',
-    provider: 'Sky 顧客理解アシスタント',
+    provider: 'Smith 顧客理解アシスタント',
     handle: '@sky_interview',
     initial: '顧',
     helper: '発言を添えて、テーマ・根拠・仮説の記入欄を作ります。AIによる分析は未接続です。',
@@ -82,7 +82,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'calendar-coordination': {
     role: '予定調整役',
-    provider: 'Sky 予定調整アシスタント',
+    provider: 'Smith 予定調整アシスタント',
     handle: '@sky_calendar',
     initial: '予',
     helper: '依頼文を残し、日時・所要時間・場所の記入欄を作ります。条件の自動抽出とカレンダー接続は未実装です。',
@@ -90,7 +90,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'telegram-notifications': {
     role: 'Telegram通知役',
-    provider: 'Sky 通知アシスタント',
+    provider: 'Smith 通知アシスタント',
     handle: '@sky_telegram',
     initial: '通',
     helper: '通知文を作ります。Bot接続と送信先を確認するまで送信しません。',
@@ -98,7 +98,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'producthunt-discovery': {
     role: 'ツール発見役',
-    provider: 'Sky ツール発見アシスタント',
+    provider: 'Smith ツール発見アシスタント',
     handle: '@sky_discovery',
     initial: '発',
     helper: '探したい分野を入れると、公式URL・料金・権限などの調査条件を作ります。',
@@ -106,7 +106,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'faster-whisper': {
     role: '文字起こし役',
-    provider: 'Sky ローカル文字起こし',
+    provider: 'Smith ローカル文字起こし',
     handle: '@sky_transcribe',
     initial: '音',
     helper: '音声をローカル処理するための接続条件を確認します。',
@@ -114,7 +114,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'transformers-js': {
     role: 'ブラウザAI役',
-    provider: 'Sky ブラウザAIアシスタント',
+    provider: 'Smith ブラウザAIアシスタント',
     handle: '@sky_browser_ai',
     initial: 'AI',
     helper: 'ブラウザ内AIのモデル・ライセンス・負荷の確認項目を整理します。',
@@ -122,7 +122,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   playwright: {
     role: 'ブラウザ検証役',
-    provider: 'Sky ブラウザ検証',
+    provider: 'Smith ブラウザ検証',
     handle: '@sky_playwright',
     initial: '検',
     helper: '所有・許可済みサイトの読み取りテスト条件を整理します。送信はしません。',
@@ -130,7 +130,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'jev-ultrafast': {
     role: '高速操作検証役',
-    provider: 'Sky 高速操作検証',
+    provider: 'Smith 高速操作検証',
     handle: '@sky_jev_fast',
     initial: '速',
     helper: '許可済みページで、次に確認する一手だけを安全に整理します。',
@@ -138,7 +138,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'jev-trader': {
     role: 'PAPER市場研究役',
-    provider: 'Sky PAPER市場研究',
+    provider: 'Smith PAPER市場研究',
     handle: '@sky_paper',
     initial: '市',
     helper: '固定リプレイで価格・仮想注文・手数料の確認条件を整理します。',
@@ -146,7 +146,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'typesafe-computer-use': {
     role: 'PC操作検証役',
-    provider: 'Sky PC操作検証',
+    provider: 'Smith PC操作検証',
     handle: '@sky_pc_check',
     initial: 'PC',
     helper: '隔離環境で画面観測だけを行う確認条件を整理します。',
@@ -154,7 +154,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'jev-review': {
     role: 'コードレビュー役',
-    provider: 'Sky コードレビュー',
+    provider: 'Smith コードレビュー',
     handle: '@sky_review',
     initial: '査',
     helper: '変更内容のリスク・確認項目・テスト観点を整理します。',
@@ -162,7 +162,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'jev-router': {
     role: 'モデル振分け役',
-    provider: 'Sky モデル振分け',
+    provider: 'Smith モデル振分け',
     handle: '@sky_router',
     initial: '振',
     helper: '依頼の複雑さと制約から、使うモデルの条件を整理します。',
@@ -170,7 +170,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'jev-browser': {
     role: 'サイト検証役',
-    provider: 'Sky サイト検証',
+    provider: 'Smith サイト検証',
     handle: '@sky_browser',
     initial: 'Web',
     helper: '所有サイトの読み取りだけを行うブラウザ接続条件を整理します。',
@@ -178,7 +178,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
   },
   'mobile-jev': {
     role: 'Android検証役',
-    provider: 'Sky Android検証',
+    provider: 'Smith Android検証',
     handle: '@sky_android',
     initial: '携',
     helper: '隔離した試験端末で、観測だけの操作ジョブ条件を整理します。',

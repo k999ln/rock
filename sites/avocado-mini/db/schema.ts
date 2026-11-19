@@ -34,3 +34,41 @@ export const preorderAttempts = sqliteTable('preorder_attempts', {
   count: integer('count').notNull().default(0),
   createdAt: integer('created_at').notNull().default(0),
 });
+
+export const miniCreatorSubmissions = sqliteTable('mini_creator_submissions', {
+  id: text('id').primaryKey(),
+  kind: text('kind').notNull(),
+  category: text('category'),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  demoUrl: text('demo_url'),
+  sourceUrl: text('source_url'),
+  status: text('status').notNull(),
+  removalHash: text('removal_hash').notNull(),
+  consentVersion: text('consent_version').notNull(),
+  createdAt: integer('created_at').notNull(),
+});
+
+export const miniCreatorAttempts = sqliteTable('mini_creator_attempts', {
+  key: text('key').primaryKey(),
+  count: integer('count').notNull().default(0),
+  createdAt: integer('created_at').notNull(),
+});
+
+export const proPurchaseInterests = sqliteTable('pro_purchase_interests', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull(),
+  region: text('region').notNull(),
+  note: text('note').notNull(),
+  configurationJson: text('configuration_json').notNull(),
+  status: text('status').notNull(),
+  removalHash: text('removal_hash').notNull(),
+  consentVersion: text('consent_version').notNull(),
+  createdAt: integer('created_at').notNull(),
+});
+
+export const proInterestAttempts = sqliteTable('pro_interest_attempts', {
+  key: text('key').primaryKey(),
+  count: integer('count').notNull().default(0),
+  createdAt: integer('created_at').notNull(),
+});

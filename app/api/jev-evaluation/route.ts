@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
       env, request,
-    ))) return missingRockstarServiceScope('Sky');
+    ))) return missingRockstarServiceScope('smis');
     if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();
     if (raw.length > 8_000) throw new Error('INVALID_INPUT');

@@ -1,4 +1,5 @@
-import { createHash, generateKeyPairSync } from 'node:crypto';
+import { fork } from 'node:child_process';
+import { createHash, generateKeyPairSync, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-plugin';
@@ -13,6 +14,20 @@ import { skyPackageSchemaSha256 } from '../../lib/sky-package-runtime.ts';
 
 const directory = fileURLToPath(new URL('.', import.meta.url));
 const repository = resolve(directory, '../..');
+const processToken = randomUUID();
+const processAgent = fork(resolve(repository, 'tests/fixtures/a2a-process-agent.mjs'), { execArgv: [], stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
+const processReady = new Promise<{ port: number; publicKeyHex: string }>((resolveReady, reject) => {
+  const timeout = setTimeout(() => { processAgent.kill('SIGKILL'); reject(new Error('Independent Agent startup timed out')); }, 5000);
+  processAgent.once('error', error => { clearTimeout(timeout); reject(error); });
+  processAgent.once('exit', () => { clearTimeout(timeout); reject(new Error('Independent Agent exited before startup')); });
+  processAgent.once('message', value => { clearTimeout(timeout); resolveReady(value as { port: number; publicKeyHex: string }); });
+});
+processAgent.send({ token: processToken });
+const processInfo = await processReady;
+processAgent.unref();
+processAgent.channel?.unref();
+process.once('exit', () => processAgent.kill('SIGTERM'));
+
 const packageRuntimeExtensionUri = 'https://rockstar.example/extensions/sky-package-runtime/v2';
 const keyPair = generateKeyPairSync('ed25519');
 const usageKeyPair = generateKeyPairSync('ed25519');
@@ -62,7 +77,7 @@ const secondAgentCard = {
 const migrations = await readD1Migrations(resolve(repository, 'drizzle'));
 const a2aMigrations = migrations.filter((migration) => {
   const number = Number(migration.name.slice(0, 4));
-  return number === 10 || number === 16 || (number >= 19 && number <= 26) || number === 33 || number === 39 || number === 40 ||
+  return number === 2 || number === 10 || number === 16 || (number >= 19 && number <= 26) || number === 33 || number === 39 || number === 40 ||
     number === 41 || number === 42 || number === 43 || number === 44 || number === 46 || number === 47 || number === 48 ||
     number === 55 || number === 56 || number === 57;
 });
@@ -129,6 +144,10 @@ async function signedUsageReceipt(input: {
 
 async function outboundService(request: Request) {
   const url = new URL(request.url);
+  if (url.origin === 'https://process-agent.example.com') {
+    const headers = new Headers(request.headers); headers.set('authorization', `Bearer ${processToken}`);
+    return fetch(`http://127.0.0.1:${processInfo.port}${url.pathname}`, { method: request.method, headers, ...(request.method === 'POST' ? { body: await request.text() } : {}), redirect: 'manual' });
+  }
   if (url.origin !== 'https://a2a.example.com' && url.origin !== 'https://python.a2a.example.com')
     throw new Error(`Unexpected A2A mock origin: ${url.origin}`);
   if (request.method === 'GET' && url.pathname === '/.well-known/agent-card.json') {
@@ -403,8 +422,9 @@ export default defineConfig({
           A2A_DELEGATION_EXECUTION_ENABLED: 'true',
           A2A_PRICE_QUOTES_REQUIRED: 'true',
           ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'true',
-          A2A_EGRESS_ALLOWED_ORIGINS: 'https://a2a.example.com,https://python.a2a.example.com',
+          A2A_EGRESS_ALLOWED_ORIGINS: 'https://a2a.example.com,https://python.a2a.example.com,https://process-agent.example.com',
           A2A_TEST_OUTBOUND_REQUIRED: 'true',
+          A2A_USAGE_CONTEXT_EXTENSION_URI: 'https://avoado.si/sky/extensions/usage-context/v1',
           A2A_INPUT_ENCRYPTION_KEY: 'b'.repeat(64),
           A2A_TRUSTED_BROKER_KEYS: JSON.stringify([
             {
@@ -417,6 +437,8 @@ export default defineConfig({
             },
           ]),
           A2A_TRUSTED_USAGE_KEYS: JSON.stringify([
+            { providerId: 'process-fixture-provider', keyId: 'process-key', agentOrigin: 'https://process-agent.example.com', publicKeyHex: processInfo.publicKeyHex, status: 'active' },
+            { providerId: 'vitest-provider', keyId: 'vitest-usage-key', agentOrigin: 'https://process-agent.example.com', publicKeyHex: Buffer.from(usagePublicKey).toString('hex'), status: 'active' },
             {
               providerId: 'vitest-provider',
               keyId: 'vitest-usage-key',

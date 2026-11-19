@@ -1,0 +1,18 @@
+{
+  "schema": "rockstaros.mini-spatial-design-assumptions/1",
+  "classification": "hypotheses_only_not_measured_or_product_specifications",
+  "manufacturingReleased": false,
+  "physicalAcceptance": false,
+  "envelope": {"outerDiameterMm":76,"idealInnerDiameterMm":72,"heightMm":186,"axialZonesMm":[20,42,28,76,20]},
+  "coverage": {"widthM":3,"depthM":3,"heightM":2.5,"gridStepM":0.5,"viewerPositions":9,"orientations":4,"horizontalFovDeg":120,"adjacentOverlapDeg":30},
+  "latency": {"refreshHz":60,"budgetMs":{"captureWait":16.7,"perception":8,"coordinateAndTarget":2,"localDispatch":2,"nextFrame":16.7},"p95TargetMs":50,"p99TargetMs":80,"inputExpiryCandidateMs":100},
+  "position": {"distancesM":[2,4],"angleErrorDeg":0.15,"calibrationErrorMm":5,"handErrorMm":5,"buttonWidthMm":40},
+  "rawStreams": [
+    {"name":"gray_tracking","count":4,"width":1280,"height":720,"bytesPerPixel":1,"fps":60},
+    {"name":"depth","count":1,"width":640,"height":480,"bytesPerPixel":2,"fps":60},
+    {"name":"rgb","count":1,"width":1920,"height":1080,"bytesPerPixel":3,"fps":30}
+  ],
+  "memoryTransferPasses":3,
+  "power":{"nominalWh":46.8,"usableFraction":0.8,"conversionEfficiency":0.9,"satelliteApW":8,"satelliteApHours":2,"profileHours":24,"activeLoadsW":[12,20,30],"thermalExampleW":20,"allowedRiseExampleK":15},
+  "statistics":{"zeroErrorTrials":1000,"oneSidedConfidence":0.95}
+}

@@ -1,3 +1,5 @@
+import { readA2ADraftReview } from '@/lib/a2a-draft-review';
+import { WorkError } from '@/lib/workflow';
 import {
   a2aDelegationStore,
   A2ADelegationStoreError,
@@ -55,6 +57,7 @@ async function readBody(request: Request) {
 }
 
 function errorResponse(error: unknown) {
+  if (error instanceof WorkError) return json({ error: error.message }, error.status);
   if (error instanceof A2ADelegationStoreError) {
     const status =
       error.code.includes('conflict') || error.code.includes('mismatch')
@@ -86,6 +89,7 @@ export async function GET(request: Request, context: Context) {
     const store = a2aDelegationStore(database());
     const delegation = await store.get(owner, id);
     if (!delegation) return json({ error: '委任が見つかりません。' }, 404);
+    if (new URL(request.url).searchParams.get('review') === '1') return json({ review: await readA2ADraftReview(database(), owner, id, (env as unknown as { A2A_INPUT_ENCRYPTION_KEY?: string }).A2A_INPUT_ENCRYPTION_KEY) });
     const usage = await store.getUsageReceipt(owner, id);
     const liveUsage = await store.getLatestLiveUsageSnapshot(owner, id);
     const brokerAuthorization = await store.getBrokerAuthorization(owner, id);
@@ -95,6 +99,7 @@ export async function GET(request: Request, context: Context) {
     try { liveUsageDetails = liveUsage ? JSON.parse(liveUsage.snapshotJson) : null; } catch { liveUsageDetails = null; }
     return json({
       delegation,
+      executionEnabled: a2aDelegationExecutionEnabled((env as unknown as { A2A_DELEGATION_EXECUTION_ENABLED?: string }).A2A_DELEGATION_EXECUTION_ENABLED),
       events: await store.listEvents(owner, id),
       budgetReservation: await store.getBudgetReservation(owner, id),
       brokerAuthorization: brokerAuthorization ? {

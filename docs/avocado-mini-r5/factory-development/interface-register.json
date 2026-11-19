@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "0.1",
+  "status": "FUNCTIONAL_INTERFACE_REGISTER_PIN_AND_VOLTAGE_UNASSIGNED",
+  "rules": [
+    "No function in this file constitutes an electrical netlist or verified pin assignment.",
+    "Hardware optical and motion output shall remain disabled on reset, brownout, controller fault and line break.",
+    "Battery protection and charge control shall work without RockstarOS.",
+    "Dock loss revokes place authority without deleting owner keys or the current job."
+  ],
+  "interfaces": [
+    {
+      "id": "IF01",
+      "from": "protected pack",
+      "to": "power tree",
+      "purpose": "portable energy",
+      "releasePrerequisite": "chosen cell arrangement and certified pack design"
+    },
+    {
+      "id": "IF02",
+      "from": "dock power contact",
+      "to": "charger input protection",
+      "purpose": "charge and dock supply",
+      "releasePrerequisite": "contact order, voltage, current, creepage, touch safety"
+    },
+    {
+      "id": "IF03",
+      "from": "cell temperature and pack monitor",
+      "to": "independent charge/protection",
+      "purpose": "stop unsafe charge/discharge",
+      "releasePrerequisite": "cell and charger datasheets plus pack thermal test"
+    },
+    {
+      "id": "IF04",
+      "from": "physical stop",
+      "to": "independent safety controller",
+      "purpose": "remove optical and motion permission",
+      "releasePrerequisite": "fault analysis and verified stop latency"
+    },
+    {
+      "id": "IF05",
+      "from": "cup position, obstruction, latch and temperature sensors",
+      "to": "independent safety controller",
+      "purpose": "allow controlled lift and stop on fault",
+      "releasePrerequisite": "selected sensor, mechanism and fault coverage"
+    },
+    {
+      "id": "IF06",
+      "from": "safety controller",
+      "to": "optical power gate",
+      "purpose": "hardware output permission default OFF",
+      "releasePrerequisite": "selected optical engine, hazard analysis and interlock circuit"
+    },
+    {
+      "id": "IF07",
+      "from": "safety controller",
+      "to": "motion power gate",
+      "purpose": "hardware lift permission default OFF",
+      "releasePrerequisite": "motor, peak current and pinch-force test"
+    },
+    {
+      "id": "IF08",
+      "from": "provider event and low-power controller",
+      "to": "main SoC wake",
+      "purpose": "wake for genuine call while preserving private cue",
+      "releasePrerequisite": "chosen paging architecture and latency/power measurement"
+    },
+    {
+      "id": "IF09",
+      "from": "main SoC",
+      "to": "safety controller",
+      "purpose": "requested operating state, never sole safety permission",
+      "releasePrerequisite": "versioned state protocol, timeout and heartbeat test"
+    },
+    {
+      "id": "IF10",
+      "from": "main SoC",
+      "to": "satellite modem",
+      "purpose": "IP session control and accounting",
+      "releasePrerequisite": "module, interface, contract and peak electrical profile"
+    },
+    {
+      "id": "IF11",
+      "from": "satellite modem",
+      "to": "satellite antenna",
+      "purpose": "licensed RF path",
+      "releasePrerequisite": "approved antenna, feed, ground, matching, hand/exposure and OTA test"
+    },
+    {
+      "id": "IF12",
+      "from": "main SoC",
+      "to": "terrestrial voice/data modem",
+      "purpose": "numbered calls and ground WAN",
+      "releasePrerequisite": "US carrier approval, audio and SIM/eSIM architecture"
+    },
+    {
+      "id": "IF13",
+      "from": "main SoC",
+      "to": "Wi-Fi radio",
+      "purpose": "AP to the selected and allowed WAN",
+      "releasePrerequisite": "RF coexistence, client, power and regulatory test"
+    },
+    {
+      "id": "IF14",
+      "from": "biometric and hand sensors",
+      "to": "main SoC",
+      "purpose": "identity and spatial intent inputs",
+      "releasePrerequisite": "selected parts, calibration, privacy, spoof and false-action test"
+    },
+    {
+      "id": "IF15",
+      "from": "physical MIC OFF",
+      "to": "microphone capture path",
+      "purpose": "hardware-level capture disable",
+      "releasePrerequisite": "chosen audio circuit and independent readback"
+    },
+    {
+      "id": "IF16",
+      "from": "dock early-break identity contact",
+      "to": "main SoC and safety controller",
+      "purpose": "revoke old place and disable dock actuation on detach",
+      "releasePrerequisite": "contact sequencing and chatter test"
+    }
+  ],
+  "allPinNumbers": "UNASSIGNED",
+  "allElectricalLevels": "UNASSIGNED",
+  "allConnectorModels": "UNASSIGNED",
+  "evaluationOnlyImplementations": {
+    "selectedCell": "selected-cell.json",
+    "D405": "USB SDK-bound depth observer; final IF14 pin/electrical design not assigned",
+    "powerCoupon": "TPS22965DSGR evaluation source; does not release product IF06"
+  }
+}

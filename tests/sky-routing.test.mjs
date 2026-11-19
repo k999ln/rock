@@ -1,8 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
+import { eveDispatchMode, routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
 
-void test('Sky routes a plain-language request to each available role', () => {
+void test('Eve opens a smis Tool run even when a remote conversation model is selected', () => {
+  assert.equal(eveDispatchMode(true, true), 'tool');
+  assert.equal(eveDispatchMode(true, false), 'estimate');
+  assert.equal(eveDispatchMode(false, true), 'tool');
+  assert.equal(eveDispatchMode(false, false), 'conversation');
+});
+
+void test('smis routes a plain-language request to each available role', () => {
   const cases = [
     ['CSVの列名と重複行を整理して', 'rockstar-csv-cleanup'],
     ['メルカリで不用品を出品して収益化したい', 'mercari-revenue'],
@@ -26,7 +33,7 @@ void test('Sky routes a plain-language request to each available role', () => {
   }
 });
 
-void test('Sky exposes twelve roles and does not guess an unrelated request', () => {
+void test('smis exposes twelve roles and does not guess an unrelated request', () => {
   assert.equal(skyRoles.length, 12);
   assert.deepEqual(
     skyRoles.slice(9).map((role) => role.label),

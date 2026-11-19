@@ -4,6 +4,8 @@ import {
   readdirSync,
   readFileSync,
   existsSync,
+  renameSync,
+  writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -39,6 +41,22 @@ if (
   /(?:^|\n)\w*Error:/.test((result.stdout || '') + (result.stderr || ''))
 )
   process.exit(result.status || 1);
+
+// Published fork histories can have a SQL ordinal different from journal idx.
+// Drizzle uses idx for snapshot names; preserve those, but give new SQL its next
+// unused ordinal so a manual/historical migration is never shadowed.
+const priorJournal = JSON.parse(readFileSync(join(source, 'meta/_journal.json'), 'utf8'));
+const nextJournalPath = join(output, 'meta/_journal.json');
+const nextJournal = JSON.parse(readFileSync(nextJournalPath, 'utf8'));
+let ordinal = Math.max(-1, ...readdirSync(source).filter(file => /^\d{4}_.+\.sql$/.test(file)).map(file => Number(file.slice(0, 4))));
+for (const entry of nextJournal.entries.slice(priorJournal.entries.length)) {
+  const nextTag = String(++ordinal).padStart(4, '0') + entry.tag.slice(4);
+  if (nextTag !== entry.tag) {
+    renameSync(join(output, entry.tag + '.sql'), join(output, nextTag + '.sql'));
+    entry.tag = nextTag;
+  }
+}
+writeFileSync(nextJournalPath, JSON.stringify(nextJournal, null, 2) + '\n');
 const files = readdirSync(output, { recursive: true, encoding: 'utf8' }).filter(
   (file) => /\.json$|\.sql$/.test(file),
 );

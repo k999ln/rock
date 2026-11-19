@@ -24,6 +24,7 @@ export type ZemaChatSession = {
   version: 1;
   id: string;
   toolId: string;
+  agent?: { id: string; revision: number };
   createdAt: number;
   messages: ZemaChatMessage[];
   activeRequest: {
@@ -66,6 +67,7 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
     ID.test(session.id) &&
     typeof session.toolId === 'string' &&
     isSkyToolId(session.toolId) &&
+    (session.agent === undefined || (typeof session.agent === 'object' && session.agent !== null && typeof session.agent.id === 'string' && /^[a-zA-Z0-9][a-zA-Z0-9:._-]{0,119}$/.test(session.agent.id) && Number.isSafeInteger(session.agent.revision) && session.agent.revision >= 0)) &&
     typeof session.createdAt === 'number' &&
     Number.isFinite(session.createdAt) &&
     session.createdAt <= now + skyZemaLimits.futureToleranceMs &&
@@ -141,7 +143,7 @@ export function saveZemaChatSession(
       : null,
   };
   if (!validSession(bounded, now))
-    throw new Error('Zemaのチャット状態を確認してください。');
+    throw new Error('Eveのチャット状態を確認してください。');
   const sessions = [
     bounded,
     ...readZemaChatSessions(storage, now).filter((item) => item.id !== bounded.id),

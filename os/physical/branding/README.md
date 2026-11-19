@@ -1,0 +1,3 @@
+# RockstarOSの起動表示候補
+
+会社サイトの銀色avokadoロゴを原画像のまま使うbootanimation.zip。Pixel向けfull OS候補のproduct/media/bootanimation.zipへ入れるための準備物で、現在のGrapheneOS端末の起動表示には未適用。元の画像はpublic/company-mark.png。表示名はRockstarOS、基盤の機種・boot/patch/attestationは保持する。実表示、起動終了、回転/解像度/復旧と正式署名は同一OS候補で受け入れる。Mini/Pro/相棒の起動loaderへこのAndroid用zipを流用せず、それぞれの表示/物理マークadapterへ同じ会社assetを渡す。

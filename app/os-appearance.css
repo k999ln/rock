@@ -1,4 +1,4 @@
-/* Shared geometry and controls for Home, Sky, Zema, Wallet, Market and Settings. */
+/* Shared geometry and controls for Home, Sky, Eve, Wallet, Market and Settings. */
 .rock-workspace.rock-workspace {
   --rock-paper: var(--os-bg);
   --rock-ink: var(--os-text);
@@ -29,7 +29,7 @@
   color: var(--os-text);
   font-family: var(--os-font);
   line-height: 1.65;
-  color-scheme: dark;
+  color-scheme: light;
 }
 .rock-workspace .rock-main-column.rock-main-column-full {
   width: 100%;
@@ -64,8 +64,8 @@
 .rock-workspace .sky-role-pill,
 .rock-workspace .sky-chat-quick-requests button {
   border: 1px solid var(--os-line);
-  border-radius: 8px;
-  min-height: 40px;
+  border-radius: 999px;
+  min-height: var(--os-control-height);
   background: var(--os-panel);
   color: var(--os-text);
   font-size: 13px;
@@ -80,9 +80,9 @@
 .rock-workspace .wallet-signin > a,
 .rock-workspace .wallet-send-button,
 .rock-workspace .market-ticket-submit {
-  min-height: 40px;
+  min-height: var(--os-control-height);
   border: 1px solid var(--os-accent);
-  border-radius: 8px;
+  border-radius: 999px;
   background: var(--os-accent);
   color: var(--os-accent-ink);
   box-shadow: none;
@@ -92,8 +92,8 @@
 .rock-workspace .rock-button-primary:hover,
 .rock-workspace .sky-main-feed .sky-post-primary:hover,
 .rock-workspace .sky-one-tap-connect:hover {
-  background: #fff;
-  border-color: #fff;
+  background: #bf2850;
+  border-color: #bf2850;
   color: var(--os-accent-ink);
 }
 .rock-workspace button:disabled {
@@ -101,7 +101,7 @@
   cursor: not-allowed;
 }
 .rock-workspace :is(input, textarea, select) {
-  color-scheme: dark;
+  color-scheme: light;
 }
 .rock-workspace :is(button, a, input, textarea, select):focus-visible {
   outline: 2px solid var(--os-focus);
@@ -339,12 +339,17 @@
 
 .os-header .os-header-actions .rock-button {
   border: 1px solid var(--os-line);
-  border-radius: 8px;
+  border-radius: 999px;
   background: var(--os-panel);
   color: var(--os-text);
   font-size: 12px;
   font-weight: 500;
   padding: 0 12px;
+}
+
+/* Keep app content clear of the shared mobile navigation. */
+@media (max-width: 650px) {
+  .rock-workspace.rock-workspace { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
 }
 .rock-workspace .rock-main.everything-market-page.everything-market-page {
   padding: 28px 24px 48px;
@@ -388,3 +393,13 @@
   .rock-workspace .market-search { grid-column: 1 / -1; grid-row: 2; }
   .rock-workspace .market-wallet { grid-column: 2; grid-row: 1; }
 }
+
+/* Shared interaction geometry; inline prose links retain their text flow. */
+.rock-workspace :is(input:not([type='checkbox']):not([type='radio']), textarea, select) {
+  font-size: 16px;
+  line-height: 1.65;
+}
+.rock-workspace :is(input:not([type='checkbox']):not([type='radio']), select) {
+  min-height: var(--os-control-height);
+}
+.rock-workspace .rock-button { transition: background var(--os-motion-duration), border-color var(--os-motion-duration); }

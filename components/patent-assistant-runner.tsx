@@ -1,4 +1,5 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 
 import { useMemo, useState, type SyntheticEvent } from 'react';
 import {
@@ -171,7 +172,7 @@ export function PatentAssistantRunner({
         });
         setNeedsSignin(tracked.needsSignin);
         setNotice(tracked.warning || (saveHistory
-          ? '端末内で書類ドラフトを作成し、本文を含まない実行履歴をSkyに保存しました。'
+          ? '端末内で書類ドラフトを作成し、本文を含まない実行履歴をSmithに保存しました。'
           : '端末内で予備評価と書類ドラフトを作成しました。通信は行っていません。'));
         onOutcome?.({ ok: true, text: '端末内で予備評価と書類ドラフトを作成しました。出願・提出はしていません。内容はこのカードで確認してください。' });
       } catch {
@@ -256,7 +257,7 @@ export function PatentAssistantRunner({
         </header>
         <div className="legal-agent-boundaries">
           <span>
-            <ShieldCheck size={15} /> 入力はSkyに保存しません
+            <ShieldCheck size={15} /> 入力はSmithに保存しません
           </span>
           <span>
             <FileCheck2 size={15} /> 提出前に人の承認が必要です
@@ -446,7 +447,7 @@ export function PatentAssistantRunner({
         {running ? (researchConsent ? '公式特許情報を確認しています…' : '本文を送らず実行履歴を保存しています…') : notice}
       </output>
       {needsSignin && <LocalGuideSignin tool="rockstar-patent-assistant" />}
-      {error && <p className="patent-error">{error}</p>}
+      {error && <SkyNotice className="patent-error" message={error} />}
 
       {step === 3 && assessment && (
         <section className="legal-runner-result" aria-live="polite">
@@ -527,7 +528,7 @@ export function PatentAssistantRunner({
               onChange={(event) => setReviewed(event.target.checked)}
             />
             <span>
-              内容を確認しました。これは専門家レビュー前のドラフトで、Skyが提出を代行しないことを理解しました。
+              内容を確認しました。これは専門家レビュー前のドラフトで、Smithが提出を代行しないことを理解しました。
             </span>
           </label>
           <button

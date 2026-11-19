@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22.23.4"
       - name: Historical PAPER replay
         run: |
           node toolkits/meme-intelligence-sandbox/run-historical-paper.mjs --bankroll 100 --output meme-historical-paper-report.json

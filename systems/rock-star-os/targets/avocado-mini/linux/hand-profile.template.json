@@ -1,0 +1,13 @@
+{
+  "schema": "rockstaros.hand-observer-profile/1",
+  "status": "TEMPLATE_NO_MODEL_CAMERA_OR_CALIBRATION_ACCEPTED",
+  "cameraById": null,
+  "resolution": [640,480],
+  "modelPath": null,
+  "modelSha256": null,
+  "mediapipeVersion": null,
+  "opencvVersion": null,
+  "calibrationId": null,
+  "placeEpoch": null,
+  "expiresUnixMs": null
+}

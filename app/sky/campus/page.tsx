@@ -8,7 +8,7 @@ export default function CampusSkyPicker() {
       <div className={styles.inner}>
         <header className={styles.header}>
           <Link href="/sky" className={styles.brand}>
-            avocado <span>/ Sky</span>
+            avocado <span>/ Smith</span>
           </Link>
         </header>
         <section className={styles.hero}>
@@ -19,7 +19,7 @@ export default function CampusSkyPicker() {
             Your starting point.
           </h1>
           <p>
-            Choose your university to open its Sky workspace. A campus NFC tag
+            Choose your university to open its Smith workspace. A campus NFC tag
             or QR code opens that same workspace directly.
           </p>
         </section>

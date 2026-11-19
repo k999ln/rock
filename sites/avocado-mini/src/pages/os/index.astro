@@ -1,0 +1,45 @@
+---
+import '../../mini-os.css';
+const navigation = [['home','ホーム','01'],['eve','Eve','02'],['work','仕事','03'],['network','通信','04'],['settings','設定','05']];
+---
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#171c1a" /><meta name="robots" content="noindex" />
+  <meta name="description" content="avocadoMiniのRockstarOS専用操作画面。Eve、仕事、通信、表示設定。Developer Preview。" />
+  <title>Mini — RockstarOS</title><link rel="icon" href="/images/avokado-metallic-mark.png" />
+</head>
+<body>
+ <a class="skip" href="#screen">操作画面へ</a>
+ <div class="mini-shell">
+  <aside class="rail">
+   <a class="brand" href="#home" aria-label="Mini ホーム"><img src="/images/avokado-metallic-mark.png" alt="" /><span>mini<small>ROCKSTAROS</small></span></a>
+   <nav aria-label="Miniの操作">{navigation.map(([id,label,number])=><a href={`#${id}`} data-nav={id}><span class="nav-number">{number}</span>{label}<span class="nav-dot" aria-hidden="true"></span></a>)}</nav>
+   <div class="rail-bottom"><span class="quiet-dot"></span>Developer Preview<small>RockstarOS 1.0 · dev.rock</small></div>
+  </aside>
+  <div class="workspace">
+   <header class="topbar"><div><span class="tiny">AVOCADOMINI</span><span class="top-title">あなたのいる場所から。</span></div><div class="top-actions"><span id="browser-status">接続確認中</span><button id="rest-button" aria-label="表示を休める">表示を休める</button></div></header>
+   <main id="screen" tabindex="-1">
+    <section data-screen="home" aria-labelledby="home-title">
+     <div class="home-heading"><div><p class="eyebrow" id="calendar">今日</p><h1 id="home-title">何をしようか。</h1><p class="muted">声や手から、その先へ。まずはEveに依頼を準備。</p></div><div class="clock"><time id="clock">--:--</time><span>この端末の時刻</span></div></div>
+     <div class="home-grid">
+      <section class="eve-surface"><div class="surface-heading"><span class="eyebrow">YOUR ASSISTANT</span><span class="tag">Eve</span></div><div class="eve-mark" aria-hidden="true"><div></div><div></div><div></div></div><div class="eve-intro"><h2>思いついた、そのときに。</h2><p>作りたいもの、調べたいこと、<br />続きから始めたい仕事を。</p></div><form id="home-form"><label class="sr-only" for="home-input">Eveへの依頼文</label><div class="input-bar"><input id="home-input" maxlength="4000" placeholder="Eveに頼みたいこと…" autocomplete="off" /><button type="submit" aria-label="依頼文を準備する">↗</button></div><small>ここでは依頼文を準備します。実行は本人のEveで確認。</small></form></section>
+      <aside class="right-stack"><section class="device-card"><span class="eyebrow">DEVICE</span><div class="device-title"><span class="device-outline" aria-hidden="true"></span><div><h2>Mini</h2><p>実機未接続</p></div></div><dl><div><dt>バッテリー</dt><dd>未取得</dd></div><div><dt>設置状態</dt><dd>未取得</dd></div><div><dt>センサー・空間表示</dt><dd>未取得</dd></div></dl><a class="inline-link" href="#network">接続状態を見る <span>↗</span></a></section><section class="notification-card"><span class="eyebrow">NOTIFICATIONS</span><h2>通知はまだ接続されていません。</h2><p>着信・メッセージの取得には、本人認証と対応する通信機能の接続が必要です。</p></section></aside>
+     </div>
+     <section class="start-section"><div class="section-line"><h2>ここから始める</h2><span>依頼のヒント</span></div><div class="intent-grid"><button data-prompt="作りたいもののアイデアを整理したい。目的と使う人から一緒に考えて。"><span>CREATE</span><strong>ものを作る</strong><small>アイデアを、次の一歩へ。</small><b aria-hidden="true">↗</b></button><button data-prompt="建物や部屋の設計案を比較したい。必要な図面と実測情報を整理して。"><span>SPACE</span><strong>空間を考える</strong><small>建物や部屋の案を整理する。</small><b aria-hidden="true">↗</b></button><button data-prompt="短いゲームを作りたい。ルールと必要な素材、実行先を一緒に決めて。"><span>PLAY</span><strong>ゲームを作る</strong><small>遊びのルールから始める。</small><b aria-hidden="true">↗</b></button></div></section>
+    </section>
+    <section data-screen="eve" hidden aria-labelledby="eve-title"><p class="eyebrow">EVE / REQUEST</p><h1 id="eve-title">頼みたいことを、ここに。</h1><p class="page-lead">準備した文章をコピーして、本人のEveで依頼できます。</p><div class="editor-panel"><label for="eve-input">依頼文</label><textarea id="eve-input" maxlength="4000" rows="7" placeholder="何をしたい？ 目的や条件も書いてください。"></textarea><div class="editor-footer"><small id="draft-count">0 / 4000</small><button id="clear-draft" class="subtle">消去</button></div><div class="actions"><button id="copy-draft" class="primary">依頼文をコピー</button><a class="secondary" href="https://avoado.si/os/eve">本人のEveを開く ↗</a></div><p class="explanation">文章はこの画面のメモリ内だけに保持し、再読込で消えます。外部送信・AI実行・課金は、この画面では行いません。Eve側でログインし、貼り付けて確認してください。</p></div><div class="boundary-note"><h2>同じRockstarOSにつながる。</h2><p>Eveの会話・仕事・承認・使用額は、既存アカウントで管理します。このMini画面からの本人連携は未接続です。</p><a href="https://avoado.si/">Smith・RockstarOSを開く ↗</a></div></section>
+    <section data-screen="work" hidden aria-labelledby="work-title"><p class="eyebrow">WORKSPACE</p><h1 id="work-title">仕事の続きへ。</h1><p class="page-lead">本人の仕事を、同じEveから確認する。</p><div class="wide-panel"><span class="state-label">アカウント未接続</span><h2>進捗・成果・使用額は未取得です。</h2><p>この画面にはまだ仕事の一覧を同期していません。既存のEveを開いて、本人の仕事と承認内容を確認してください。</p><a class="primary" href="https://avoado.si/os/eve">Eveで仕事を確認 ↗</a></div><div class="principles"><article><span>01</span><h3>実行前に確認</h3><p>実行先、見積、許可する上限を確認。</p></article><article><span>02</span><h3>途中で見直す</h3><p>進捗、承認、停止は既存の仕事で管理。</p></article><article><span>03</span><h3>成果を引き継ぐ</h3><p>保存した結果へ、同じ本人として戻る。</p></article></div></section>
+    <section data-screen="network" hidden aria-labelledby="network-title"><p class="eyebrow">CONNECTIONS</p><h1 id="network-title">つながりを確かめる。</h1><p class="page-lead">ブラウザで分かる状態と、Mini実機の状態を分けて表示。</p><div class="connection-list"><article><div><h2>このブラウザ</h2><p>端末が報告するネットワーク状態。インターネット疎通の保証ではありません。</p></div><span id="network-detail" class="state-label">確認中</span></article><article><div><h2>Mini本体</h2><p>監視MCU・dock・電池・センサーの接続。</p></div><span>未接続</span></article><article><div><h2>衛星通信</h2><p>対応modem・アンテナ・回線の実機接続が必要。</p></div><span>未取得</span></article><article><div><h2>Wi-Fi共有</h2><p>本体のアクセスポイントと通信回線の連携が必要。</p></div><span>未取得</span></article><article><div><h2>電話・メッセージ</h2><p>本人認証と対応する通話・メッセージサービスの連携が必要。</p></div><span>未接続</span></article></div><p class="explanation">接続・切断はブラウザの通知で更新します。衛星の接続や電池残量を推測して表示しません。</p></section>
+    <section data-screen="settings" hidden aria-labelledby="settings-title"><p class="eyebrow">PREFERENCES</p><h1 id="settings-title">心地よく使うために。</h1><p class="page-lead">強く光らせず、落ち着いた表示に。</p><div class="settings-panel"><label for="brightness"><strong>この画面の明るさ</strong><span id="brightness-value">85%</span></label><input type="range" id="brightness" min="65" max="100" value="85" /><p>ブラウザ内の描画だけを調整します。端末のバックライトやMiniの光学出力は制御しません。</p><div class="setting-row"><div><strong>表示を休める</strong><p>暗い待機画面へ切り替えます。</p></div><button id="settings-rest">休める</button></div><div class="setting-row"><div><strong>全画面表示</strong><p>対応するブラウザで画面を広く使います。</p></div><button id="fullscreen">切り替える</button></div></div><div class="boundary-note"><h2>RockstarOS 1.0</h2><p>Developer Preview · dev.rock<br />Mini専用操作画面の試作です。native OS起動、空間光学、生体認証、実機通話の合格を示すものではありません。</p><p>既存の契約・料金体系を使用。この画面に新しい課金機能はありません。</p></div></section>
+   </main>
+   <footer class="system-footer"><span><i></i>MINI INTERFACE PREVIEW</span><span>実機未接続 · この画面はブラウザで動作</span><a href="https://avocadopro.si/">avocadoPro ↗</a></footer>
+  </div>
+ </div>
+ <div id="rest-overlay" hidden role="dialog" aria-modal="true" aria-label="表示を休める"><p>mini</p><button id="wake-button">画面に戻る</button><small>表示の休止です。端末やアカウントのロックではありません。</small></div>
+ <div id="notice" role="status" aria-live="polite"></div>
+ <noscript><p>画面の切り替えにはJavaScriptが必要です。<a href="https://avoado.si/os/eve">Eveを開く</a></p></noscript>
+ <script src="../../mini-os.js"></script>
+</body>
+</html>

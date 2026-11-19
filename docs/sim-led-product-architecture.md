@@ -1,4 +1,139 @@
-# Optional SIM/eSIM-led RockstarOS service architecture
+現行の製品名は **Eve（イヴ、旧称Zema）**。2026-10-20の本人指示による改名で、以下のZemaは同じ製品を指す。既存契約・保存・利用権/SDK識別子は互換性を保持する。
+
+<a id="pixel-service-setup"></a>
+## Pixelの利用開始モジュール：OS完成後に組み込む
+
+2026-10-20本人訂正に従い、ここでのOS完成は最新版の共通RockstarOS Core/runtimeの受入を指す。旧Buildroot/QEMUの完成を前提に戻さない。独自Pixel OS imageは追加native系列として別受入し、既存OS clientによる標準サービス経路と混同しない。eSIM直接追加の権限がないShellはAndroid/発行元設定へ案内し、追加成功や本人利用権を推測しない。
+
+2026-10-20の本人指示「その設計で実装」「まずPixelでeSIM追加からSkyとEve」「請求してからの契約そのあとの利用」「OSのシステムが出来上がったらつけて」に従う。開発は今行い、既存PixelのOSやインストール済みAPKへは今回適用しない。`ROCKSTAR_SERVICE_SETUP_ENABLED`とAndroid resourceの`rockstar_service_setup_enabled`は既定で無効。OSの本人/利用権/権限・予算/私有保存・復旧/Sky・Eve入口を同一候補で受け入れた後に、運営の`rockstar.os-service-acceptance/1`記録（Pixel 10 GL066/frankel、build ID、証拠hash）と両側の設定を組み込む。sampleのpendingをacceptedへ書き替えるだけでは実機受入にならない。
+
+**目的・体験。** Pixelのforegroundで発行元のeSIM追加をAndroidへ依頼し、必要時はOSの確認を開く。成功callbackは端末追加の結果として保存し、`/connect/service`へ進む。本人のaccount認証→既存の真正なeSIM導入/端末利用権→16ドルの請求内容→契約と継続請求への別々の同意→月末請求用の支払い方法の確認→既存Linux workspaceの一回の準備→認証済みworkerの準備証拠→現在のissuer状態/未払いの確認→Sky/Eveの入口、を扱う。
+
+**請求の意味。** 元の携帯代型の月末請求を維持する。契約前には金額・枠・単価・上限・停止/保存条件を提示する。初回Checkoutは`setup`で、登録時の引落額は0。SetupIntent成功は支払い方法の準備であり入金ではない。実請求は既存のLinux usage/Invoice/入金照合へ渡す。専用環境の準備待ちでは`serviceStartAt=null`として新規実行と基本料の起算を止め、準備証拠の保存後に開始時刻を記録する。旧契約の未指定fieldは従来挙動を保持する。枠の量・単価・保持/猶予等が未確定のため、この開発で実販売価格表を有効化しない。
+
+**責任・権限。** 主担当BillingのROCK、SIM01/BIL02/OS10。ROCKは状態遷移・account/revision・scope・同意・料金版・冪等性・準備証拠・保存/復帰、EXTERNALは許可された実profile/issuerの証拠、AndroidのLPA/権限、Stripeとcompute、JOINTは同じ実profile/端末/契約/jobの一周、OWNERは既存承認に沿うOS受入と料金/地域/利用枠・端末操作を担う。アプレット配布、未知のeSIMprofile、未署名のreceipt、回線active表示を真正なサービス利用権へ置き換えない。eSIM用の限定cloud資格情報に契約/決済の管理権限を追加せず、本人accountで行う。
+
+**入出力・保存。** 新規`rockstar_service_setups`はowner一件の導入状態とrevision、注文/端末、凍結した見積・契約digest、Stripe Session/SetupIntent/PaymentMethod参照、既存workspace ID、worker challenge/証拠digestを保存する。秘密鍵、カード番号、eSIM追加コード、原稿は保存しない。job/usage/invoice/作者分配は既存DBのままで、別台帳へ複製しない。追加migrationは0065。APIは`/api/rockstar/service-setup`、署名webhookはその`/webhook`。内部workerの`setup-ready`は既存のowner/workspaceに限定した署名を要し、public APIからは受けない。
+
+**失敗・復旧。** OS未受入はdeferred、profile未確認、契約待ち、支払い方法待ち、環境準備/検証待ち、利用可能、制限を区別する。画面のredirectだけでは成立せず、Checkout→SetupIntent→本人PaymentMethod→月次Invoiceのdefault設定を提供元GETで照合する。要求を先に保存し、応答消失は同じidempotency key/Session/契約を回復する。古い結果不明は自動再作成しない。eSIM追加のPendingIntentを受けたreceiverは非公開で、request IDを照合し、backgroundから画面を強制起動しない。結果不明のdownloadを繰り返さない。未払い/失効は既存gateで新規実行を制限し、支払と利用権復旧後に同じworkspace/仕事へ戻る。OS更新はmodule無効へ戻せるが、契約・成果の記録を消さない。
+
+**合格・未完了。** 新規9件のlocal fixtureはprofile/同意/支払い準備/一回の環境作成/worker証拠/失効と復帰/他owner/重複/結果不明/OS無効を検査し、既存Linuxの関連回帰と併せる。Android 35 SDKを使う新ActivityのJava 11 compileはAPK/実機受入とは別。新probeはmodel/runtimeのhash、namespace隔離と私有保存の書込み/読戻しを確認するが、推論の実品質合格とはしない。実eSIM、端末の追加結果と真正なissuer導入証拠の自動結合、Stripe sandbox、本番課金、管理Linuxの実配備、full OS/同一APK/Pixelの一周は未受入。設定/接続先/証拠が揃った後、破壊しない同一Pixelで別途受け入れる。
+
+実装入口: `lib/rockstar-service-setup*.ts`、`components/rockstar-service-setup.tsx`、`android/shell/.../ServiceSetupActivity.java`、`toolkits/sky-linux-service/{worker.mjs,setup-probe.py}`。OS完成後の組込条件は[無効のままの設定記録](../data/service-setup-integration.json)。今回のsource/local検証は[証拠](evidence/pixel-service-setup.json)に記録し、以下の発明全体・全機種対応を分ける。
+
+<a id="esim-service-attachment"></a>
+## 最新の発明課題：eSIMから共通RockstarOS環境を接続し、端末ごとのOS開発を不要にする
+
+**同日の本人による意味の確定。** 本商品の「eSIM」は通信容量を売る商品ではなく、**クラウド上の自分専用Linux・LLM・Agentが追加され、Skyを使うためのサービスprofile**である。既存Wi-Fi/別SIM等を通信経路として使い、本人の携帯の通信状態をAgent稼働のheartbeatにしない。LLMは実行先Linuxへ配置し、本人が承認した仕事を自律継続する。目標は「PCの前に立たずに制作」「携帯を持たずにやり取り」「Run to Earn」。この商品上のeSIMという呼称と、GSMA準拠eUICCへ実際に搭載できたことは別で、後者は発行元/端末との研究・実装対象である。
+
+2026-10-20、本人は「希望が可能になるように発明して」「各端末の専用osを作らなくて済む」「何にでも対応」「このシステムは既存じゃないから発明して」と明示した。これにより、**標準の提供方式を、既存OSを保った端末へ共通RockstarOS環境を接続する方式へ変更する**。RockstarOSが大元で、その中にSky・Eve・Linux・OS Coreを置く階層は維持する。端末内にすべてを格納する条件を外し、共通管理と主なLinux実行をサービス側へ置く。既存Pixel内Linux、GrapheneOS統合、QEMU、Mini/Proのnative研究は追加能力として残し、標準サービス利用開始の前提にはしない。旧native優先文はその系列の履歴として読む。
+
+この節と[機械可読のプロトコル案](../contracts/rockstar-service-attachment.json)は**今回設計する仕組み**であり、既製品の紹介、実装・eSIM開通・iPhone自動起動・全機種対応・特許性の証明ではない。
+
+### 1. 目的と利用者
+
+目標体験は、契約時に必要な本人同意を済ませ、eSIMを追加すると、自分のSky・Eve・Linux作業環境が準備され、その端末から使い始められること。利用者へLinux構築、provider API鍵、モデルごとの起動コマンド、機種別OS書込を要求しない。eSIM非対応PC・TV等も、本人が同じ契約へ端末を追加すれば同じ仕事と成果を利用する。完全自動の前面起動、必要な確認一回、別途URLを開く方式を測り分け、後者の成功で前者を達成したとはしない。
+
+### 2. 発明する構成と利用体験
+
+構成は、(a)対応eSIM内の小さな起動用アプレット、(b)開通と契約から専用環境を準備する制御部、(c)期限・権限・端末鍵を持つ接続証明、(d)端末の入出力に合わせる共通クライアント、(e)仕事・成果・費用を持つ共通RockstarOS基盤、とする。アプレットは発行元の許可したprofileへ組み込む研究対象で、ブラウザから市販eSIMへ任意追加できるとは仮定しない。
+
+本人の流れは、料金・保存・停止条件への同意→サービスprofile追加→真正なサービス有効化証拠と本人契約の照合→同一workspaceとLinux上LLMの準備→端末/音声等のSky/Eveの入口→依頼・自律継続範囲/上限承認→Linux/対応providerで実行→同一jobの成果・使用額をEveへ返す。通信回線も提供する場合はその開通証拠を別管理する。profileの追加だけで有料Agentの実行を承認しない。
+
+eSIMアプレットの候補処理は、初期化時の端末能力確認、Sky/EveのSIMメニュー登録、本人確認後の起動案内、対応端末への`LAUNCH BROWSER`要求。URLは`https://avoado.si/`配下の公開起動参照だけを運び、SIM秘密、Bearer token、本人データを入れない。ブラウザのURL到達をeSIM所有証明にせず、購入時の本人session/追加本人確認と信頼済みissuer証拠で接続を確定する。
+
+### 3. 新しい接続契約とアルゴリズム
+
+仮仕様`rockstar.service-attachment/1`は、既存のowner、contract、entitlementとworkspace、端末公開鍵、親利用権epoch、scope、能力profile hash、manifest hash、audience、期限、nonceを結ぶ。独自暗号は作らず、署名のcanonical bytesと検証規則は実装前に固定する。これは提案中のRockstar内部protocolで、Apple/GSMA公認の新規APIではない。
+
+**サービス有効化処理。** 信頼済みサービスissuerの署名/真正性、対象契約、時刻、通知順序を検証する。本人同意と契約版を確認し、ownerと契約の組に対してworkspaceを一回だけ取得/作成する。準備要求を永続化してから計算資源を確保し、同じoperation IDで再照合する。準備完了の読戻し後に接続証明を発行する。「サービス準備済み」と「端末で画面を開いた」を別記録にする。telecomのactive状態をサービス利用権そのものへ置き換えない。既存のdevice-install/grantは弱めず、新しいservice-profile用の証拠kind・契約版・adapterを実装する。
+
+**能力照合。** 利用できる能力は「adapterが実装したAPI ∩ hostが許可したAPI ∩ 本人承認 ∩ server policy」。依頼の必要能力を満たす候補だけから、データ送信先、予算、実測遅延、電池/熱を条件に実行先を選ぶ。modelの推測やUser-Agent文字列で権限を増やさない。対応local Linuxがなければ承認済みcloudを選べるが、未承認の外部送信/追加費用へ自動切替しない。
+
+**成果の変換。** 仕事は端末名に依存せず、同じjob ID、revision、型付きartifact、receiptを返す。端末に応じて文章、書類、音声、画像、3D、ゲーム、空間出力を選ぶ。原本とhashを保持し、音声化や簡易表示を原本と混同しない。作者の任意HTML/JSを管理画面へ注入せず、検証済みrendererまたは隔離したゲームruntimeで扱う。カメラのない端末へカメラ機能を約束しない。
+
+**端末追加。** eSIMを持たないPC等には、既存ownerが相手端末の鍵と対象scopeを確認して子接続を発行する。子は親契約と失効epochへ従い、別の月額契約・全権root・SIM秘密の複製を作らない。QRだけを撮れば他人の環境へ入れる方式にはしない。Mini/Pro・Game作者も同じ能力契約へ接続する。
+
+**接続証明の純粋検証（2026-10-20 / SIM01・OS10）。** `lib/rockstar-service-attachment.ts`に、仮仕様の署名対象18項目を固定順序・domain付きUTF-8 JSONへ変換する処理と、Ed25519署名を検証する処理を追加した。ROCKが管理する信頼済み鍵resolverだけから公開鍵を得る。発行元profileの現在状態、本人認証、明示した端末追加、端末鍵による当該要求署名、契約版と状態、workspace、親entitlement/epoch、端末失効、scope、能力/manifest hash、audience、期限を、呼出側が独立の現行記録から渡し、発行・更新・新規dispatchのたびに照合する。短期証明は最長15分で、署名や状態の不一致は拒否する。子端末は同じcontract/workspaceを参照するが別端末鍵を持つ。証明そのものはissuer署名済み開通証拠、端末秘密鍵所持、本人同意、Linux準備完了を生み出さない。現在は純粋logicと合成鍵の試験のみで、API/DBへの接続、実issuer、実端末での子接続・失効の受入は未完了。
+
+### 4. 端末の受け皿とiPhoneの開発境界
+
+画面とHTTPS対応がある端末には共通Web UIを基本とし、カメラ/音声/共有/通知等は既存OSの許可APIへ接続する。ブラウザを持たない機器には既存firmware上の小さな入出力adapter、既存OSのclient/bridge、または対応gatewayを使う。最低限のネットワーク・実行口もない機器、未知のセンサー/出力には追加adapterまたはhardwareが必要で、全機器が無改造で同じ機能を持つとはしない。新しいOS kernel/driver一式を全機種に作る方式へ戻さない。
+
+iPhoneは、まず発行元が組み込んだアプレットと対象端末のCAT対応を検証する。対応がなければ開通の案内URL、Web、App Clip、必要時の薄いiOS clientが候補。App ClipはURL等から本人が起動する仕組みであり、eSIM通知だけで自動実行するAPIの証拠ではない。Appleが案内する開通後のcarrierページへの遷移も条件付きの例で、全追加方法で任意callbackを設定できる保証ではない。**完全無操作の前面起動/アイコン追加は独立した最終目標**で、公開APIだけで達成する証拠がなければApple/carrier連携または新しいOS hookを必要条件として残す。確認一回の経路をその達成へ読み替えない。
+
+### 5. Linux上のローカルLLM・自律継続・専用資源
+
+「ローカルLLM」はどの計算機に配置したかを明記する。クラウドの本人用Linuxにmodelを保存して推論する場合は、そのLinuxに対してlocalであり、iPhone内へmodel/VMを導入した証拠ではない。Pixel/Pro等の受入済みLinuxへ置く場合はその実行機内localである。両者は同じ仕事/権限/成果契約で選べるが、速度・費用・offline性は別に測る。
+
+本人が離れる前に、目的・入力revision、許可Toolと送信先、実行場所、最大額/予約、期限、step/resource上限、途中検収が必要な操作、停止/保存を`autonomyGrant`へ固定する。executorの永続的な受領証拠を得た仕事は、携帯の圏外/電源OFFや画面終了後もその範囲で進める。LLMは次の手順を提案し、Brokerが権限/予算を強制する。新しい宛先・権限・予算が必要なら待機し、本人が不在だから承認を省略しない。
+
+通信断は二つに分ける。(a) 携帯だけofflineなら、到達可能なcloud Linuxの受入済み仕事は続ける。(b) 実行Linuxまで外部ネットワーク断なら、導入済みmodel/素材による自己完結処理だけを有効なlease/資源内で進め、外部API/送信/新規model取得/収納確認は待機する。実行機がどこにも利用できなければ仕事を保存/queueし、動作したとは表示しない。offline端末で押した停止はexecutorの受領まで未確認。結果・未通知event・checkpointを永続化し、再接続で同じ仕事を照合する。
+
+専用は本人別の権限、仕事、保存、実行隔離、計量を意味し、月16ドルで物理server/GPU一台を常時専有する約束ではない。既存worker/隔離/leaseを再利用し、仕事時に資源を確保、idle時に計算を休止して契約範囲の保存を維持する。常時大容量GPUの代金を隠さない。remote desktopの全画面動画配信を通常画面の必須条件にせず、操作と文章は小さな状態差分を返し、重い3D/Game等だけ対応stream/local描画を選ぶ。速度改善は対象端末・回線の実測前には確定しない。
+
+### 6. 状態・保存・失敗・復旧
+
+SIM、月額契約、端末接続、client開閉、runtime稼働、仕事/予算/請求は独立状態にする。通知の欠落/遅延/重複/順序逆転は同一issuerの現在状態と照合し、古いactive通知で失効を戻さない。既存`lib/rockstar-entitlement-event.ts`はrefund/revoke中心であり、これだけで完全な開通状態adapterが完成しているとはしない。
+
+未払い/確認済み失効では親epoch更新と短期leaseで各端末の新規管理実行/更新を制限する。進行中の仕事は承認した停止・精算規則に従う。圏外の端末を瞬時に失効できたとはしない。通信断/再起動後は同じjobとoperationを照合し、結果不明を再実行しない。支払いと利用権復旧後は同じworkspaceとartifactへ戻る。保持期間、猶予、lease長、終了時のexport条件は未確定なので、版付き契約へ固定するまで実販売しない。iPhone自体の電話・設定・本人の外部appを封鎖する権限は持たない。
+
+### 7. セキュリティと既存実装の再利用
+
+issuer開通証拠、端末導入証拠、本人承認、hostの完全性は別種類の証明。iOSブラウザへ偽のAndroid/eUICC gateway receiptを作らせて既存の強いdevice-install gateを通さない。必要なissuer証拠adapterを別に実装する。ブラウザがSIM秘密鍵を直接利用できるとは仮定しない。SIM swap/端末交換は元のowner確認と親利用権の再照合を要する。
+
+GrapheneOSの強みのうち、隔離・最小権限・署名更新・保存/復旧・権限を持たないmodelという設計原則を共通サービスへ適用する。GrapheneOS binary、Verified Boot、kernel hardeningがiPhoneへ移ったとは表示しない。通信/保存の暗号化と、cloud実行者が処理する平文の範囲も区別する。
+
+再利用先は`lib/rockstar-entitlement-claim.ts`、`lib/rockstar-entitlement-event.ts`、`lib/esim-cloud-grant.ts`、`lib/esim-cloud-proof.ts`、`lib/workflow.ts`、`lib/sky-linux-service.ts`と同store、既存owner別成果/料金台帳。既存`zema`scope/保存キー、作者審査、package hash、本人承認、source/runtimeごとの受入を維持する。この設計保存で既存APIの保証を弱めない。
+
+### 8. 料金・マネタイズ
+
+月額16 USD＋決定後の利用枠＋事前単価/本人上限を承認した超過usage。複数端末を接続しても同じ契約を二重請求しない。通信料金、cloud token、Linux資源、作者の有料Agent、決済実費を明細で分ける。基本料の起算は契約で定めたservice activationの真正な確認後とし、eSIM画面のスクリーンショットだけで起算しない。作者への配分は既存Marketplace/検証済み収納と照合する。電子契約とsalt付きchain証明は維持し、個人情報や成果をchainへ載せない。
+
+**Run to Earn。** 本人がSkyへAgent/World/自作Game/対応作品を登録し、その稼働で有用な仕事や体験を提供し、実利用・納品検収・支払者同意・収納を照合した収益を作者へ分配する。Linuxの稼働時間や消費tokenは原価/usageであり、その値だけから収益・報酬token・実資金を作らない。仕事receiptと売上/Earning Receiptを分け、返金/異議/作者の権利・同一成果重複を既存台帳で照合する。収益候補、検証済み収納、分配保留、払出可能、支払済みを区別する。Agent作者配分のsourceと、World/Gameの未接続収益adapterを分け、常時稼働で利益が出る保証や固定利回りは設定しない。既存の別商品や月最大888 cents条件を新報酬制度へ勝手に変更しない。
+
+**PCに向かわず、携帯を持たない体験。** Mini、受入済みマイク/ウェアラブル、近くの画面等からEveへ目的を伝える。Skyが対応能力を選び、承認済み仕事をLinuxで続け、途中版・完成物・費用を同じjobへ保存する。受入済み音声/画面/空間/ファイルの受け皿へ返し、本人が修正/検収/停止する。実通話・メッセージ送信・製造/施工等の外部作用は、対応hardware/APIと送信先/内容の別承認を要する。話せた/Agentが動いたことを、作品完成や相手への到達へ置き換えない。Mini実機の入出力/秘匿/電源/通信は別の物理gateを維持する。
+
+### 9. 責任と実装順
+
+主担当はWeb / PWA / SitesのROCK、既存SIM01・WEB06・SKY21・OS10・DSP01へ接続する。ROCKは共通protocol、起動制御、能力交渉、子端末接続、仕事/費用/停止/復帰、表示の正確性を担う。EXTERNALは許可したprofile/appletの発行と真正な状態、Apple等のhost API/配布、compute供給。JOINTは同一profile・実端末・契約・仕事の一周。OWNERは既存承認の範囲で、料金枠/上限、接続端末、原稿/権限、地域と相手先を決定する。現在carrier/Appleへ依頼を送信したり、新しい有料契約を締結した状態ではない。
+
+順序は、最新main/現branchと引継ぎの同期→既存強い証拠を保った接続protocolの純粋logicとfixture→許可済みtest profile/appletとiPhone/Pixelの起動実験→同一workspaceの準備/停止/復帰→二つのOSで同一jobの成果/使用額→eSIM非対応端末の本人承認接続→限定実課金の別gate。機種別full OS buildを先行必須にしない。
+
+### 10. 合格条件と未決定事項
+
+合格は、OSを書き換えないiPhoneとPixelで、同じprofile/発行証拠から準備、実際の画面起動、本人の一件実行、同一artifactとusage、端末追加、失効、保存、復帰までを追跡できること。OS/機種/版、全タップ/permission数、開通→準備/画面までの時間、同じjob/revision/hashを記録する。携帯切断後の自律継続、実行Linuxの外部通信断による待機/照合、手ぶら入力→非公開成果→明示的送信、真正な利用/収納→作者receiptも別に受け入れる。Web経由の手動起動だけならその区分で受入する。SIM swap、他owner、盗まれたURL、重複/古い通知、圏外、再起動、未払い、資源枯渇、二重計算/請求の拒否も別証拠を要する。
+
+applet搭載可否、iPhoneのCAT起動、完全無操作経路、issuer/地域、compute境界、同時端末数、利用枠/単価/保持/leaseは未決定。発行元の能力表と同一test profile実験、対象OSの公開API/実測、原価計測と本人の料金判断で決める。「何にでも」は能力契約を拡張する設計目標で、全機種で全機能受入済みという表示にはしない。新規性/特許性や他社権利は未調査で、既存規格の組合せを世界初と宣言しない。
+
+### 11. 一次資料と今回の到達点
+
+- [ETSI TS 102 223 v18.2.0](https://www.etsi.org/deliver/etsi_ts/102200_102299/102223/18.02.00_60/ts_102223v180200p.pdf)、6.4.8/6.4.26: UICCからのメニュー・URL起動要求の規定。端末能力、要求の拒否、条件に応じた本人確認がある。iPhone対応の証明ではない。
+- [TCA eUICC Profile Package](https://trustedconnectivityalliance.org/technology_library/euicc-profile-package-technical-specifications/): profile作成/搭載の形式は発行側・eUICC側の技術領域。[既公開v3.0](https://trustedconnectivityalliance.org/wp-content/uploads/2021/05/Profile-interoperability-technical-specification_V3.0-Final.pdf)はApplicationの例にJava Card appletを含む。現行発行元での採用は別確認。
+- [GSMA SGP.22 v3.1](https://www.gsma.com/solutions-and-impact/technologies/esim/wp-content/uploads/2023/12/SGP.22-v3.1.pdf)の通知手順: 対象設定と接続に依存するbest-effort通知であり、即時/必達の利用権証明としない。今回PDF全文取得は失敗し、該当一次資料の検索抽出だけを確認した。
+- [Apple CTCellularPlanProvisioning](https://developer.apple.com/documentation/coretelephony/ctcellularplanprovisioning)と[entitlement](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.commcenter.fine-grained): carrier向け権限が必要。Skyに許可済みとはしない。
+- [Apple App Clip起動](https://developer.apple.com/documentation/appclip/configuring-the-launch-experience-of-your-app-clip)と[eSIM設定](https://support.apple.com/en-us/118669): URL/案内からの開始候補。自動導入/常駐/無操作起動の証明としない。
+
+今回完成した範囲は、発明対象、protocol/アルゴリズム案、責任/状態/失敗/受入と既存実装との差の設計である。eSIMアプレット、issuer adapter、自動起動、跨OS接続、実Linux/課金の新規実装と実機受入は未完了。設計検査の合格とこれらを分けて記録する。
+
+## Sky Linux 16の共通実装（2026-10-20）
+
+初期プランは月額16 USDで一定のAI・Linux利用枠を含め、対象枠の超過分だけを事前単価/本人承認上限で課金する。枠の量・対象・超過単価は未確定。既存Package審査・eSIM grant・Zema workflowを専用Linuxの使用量、月次Invoice、入金確認後の作者精算へつなぐ。未払いの新規実行制限とデータ保持/支払復帰、電子契約とsalt付きchain証明を採用。[11項目の正本](sky-tools-complete-design.md#sky-linux-marketplace)。主担当Sky/MCPのROCK、既存SKY14/15/21・SIM01・BIL02。source/local fixtureのみで、Provider sandbox・実Linux/Pixel・本番・chain公開は未受入。新しい従量単価/無料量/上限は未確定。既存の別商品/旧台帳を新プランへ自動変更しない。
+
+# SIM/eSIM-led RockstarOS service architecture
+
+<a id="esim-si-subscription"></a>
+## 最新方針: native SI版のeSIM導入・継続利用権（2026-10-18）
+
+**目的・範囲。** 利用者の最新指示で、Pixel 10 GL066／`frankel`を最初の候補とするRockstarOS native SI版は、対応eSIMの申込→端末導入→本人と端末への利用権結合→月額サービス有効化を標準導線にする。以下の履歴にある「eSIM任意」は単独Sky Web/PWA等には残るが、このnative SI版の入手・継続条件には適用しない。eSIMはOS imageではない。署名済みimage、boot、更新、純正復旧の同一機種受入前は既存OS上client/browserへ案内し、eSIM導入だけでnative OSを導入済みにしない。
+
+**本人の流れ。** 料金表・利用期間・終了時の制限を見て支払責任者が明示契約する。発行元のeSIMをOSのLPAで本人が導入し、carrier/issuerの真正な開通証拠、既存の署名install receipt、Rockstar account、端末、版付きofferを一回だけ結ぶ。月額service activationを保存してSky/ZemaとRockstar管理のLinuxローカルモデルを開く。契約中は対象Cloud modelの月間token枠を表示し、追加有料LLM/Agentは価格・job見積・上限・承認後だけ使う。既存のメインSIMまたはWi-Fiで通信できる場合も、eSIM契約状態の証拠と通信経路は別に判定する。
+
+**入力・状態・保存。** 既存owner、order、profile digest、device ref、install receipt、gateway鍵、entitlement ID、contract/rate-card版、service activation時刻を結ぶ。carrier契約状態 `pending/active/suspended/terminated/unknown`、Rockstar月額 `pending/active/grace/restricted/ended`、端末導入 `client/native_accepted`、job/usage/invoiceを独立記録する。EID/ICCID、電波、IP、profileの画面表示だけで本人・契約継続を証明しない。本人別の失効event、順序、effective time、処理時刻を保存し、遅延・重複・順序逆転を冪等に処理する。本人の成果、請求明細、契約証拠は失効後も既存保持規則で回収できる。SIM秘密・model weights・原稿を請求台帳へ入れない。
+
+**失効・故障・復旧。** 提携issuerの認証済み終了eventまたは契約上の期限を確認した時点で新規Cloud/Agent dispatch、Rockstar管理のLinuxモデル起動、追加課金を停止する。既に承認済みのjobは契約に定めた停止/精算規則と本人の上限で処理し、完了を推測しない。圏外で即時失効は証明できないため、期限付き署名offline leaseの上限を商品条件に明示し、期限超過・時計巻戻し・状態不明は新規管理実行を安全に停止する。月額未払い時は通知・契約上の猶予・異議対応を経て同じ管理サービスを制限する。一般の電話/緊急機能、設定、既存browser、汎用Terminal shell、データexport、請求/再契約を端末の機能停止やデータ消去で塞がない。再開はissuer契約復活とRockstar入金・本人/端末再照合の両方を要し、重複請求と二重jobを拒否する。
+
+**責任・合格。** 主担当Billing/BIL02のROCKは既存claim/Broker/予算/明細へstate gateを接続する。EXTERNALはeSIM発行・正規契約event、Cloud usage、収納を提供し、JOINTは同一端末・契約・jobで開始/終了/復活を検証する。OWNERはoffer、月額、枠、契約先・費用上限と端末操作を決める。まずfixtureで開通、未開通、失効、返金、端末交換、通知の重複/逆転、圏外lease期限、月境界と同一job復旧を再現する。次にprovider sandboxでeSIM状態と請求を照合し、Pixelの署名OS/復旧を別gateで受入する。発行元、対象地域、確定価格/枠、offline lease長、停止・日割り・再開条件は未決定で、実提携と端末試験の後に版付きofferへ固定する。現状は設計のみ。
 
 <a id="sky-shared-entry"></a>
 ## Sky共通入口仕様 — NFC・通常Web・任意eSIM・iOS

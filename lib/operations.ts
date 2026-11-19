@@ -69,7 +69,7 @@ export type SkyProviderConnection = {
   connectedAt: number | null;
   updatedAt: number;
 };
-const SKY_CONSENT_VERSION = '2026-09-12';
+export const SKY_CONSENT_VERSION = '2026-09-12';
 export class OperationError extends Error {
   status: number;
   constructor(message: string, status = 400) {
@@ -115,9 +115,9 @@ function toolName(value: unknown): JobTool {
     throw new OperationError('対応していないツールです。');
   return value as JobTool;
 }
-function skyConnectionToolName(value: unknown): SkyConnectionTool {
+export function skyConnectionToolName(value: unknown): SkyConnectionTool {
   if (!SKY_CONNECTION_TOOLS.includes(value as SkyConnectionTool))
-    throw new OperationError('対応していないSkyアプリです。');
+    throw new OperationError('対応していないSmithアプリです。');
   return value as SkyConnectionTool;
 }
 const columns =
@@ -456,7 +456,7 @@ export function operations(
         isSensitiveConnectionKey(key)
       )
         throw new OperationError(
-          '秘密情報はSkyの設定欄へ保存できません。公式接続を使ってください。',
+          '秘密情報はSmithの設定欄へ保存できません。公式接続を使ってください。',
         );
       if (typeof raw !== 'string' || raw.length > 500)
         throw new OperationError('接続情報を確認してください。');

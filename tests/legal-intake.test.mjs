@@ -29,7 +29,7 @@ const baseInput = {
   contactPreference: 'email',
 };
 
-void test('legal intake is a ready Sky browser tool', () => {
+void test('legal intake is a ready smis browser tool', () => {
   const tool = catalog.find((entry) => entry.id === 'rockstar-legal-intake');
   assert.equal(tool?.status, 'ready');
   assert.equal(tool?.runner, 'legal-intake');

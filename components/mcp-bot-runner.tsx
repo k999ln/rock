@@ -1,9 +1,9 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 
 import { useMemo, useState } from 'react';
 import {
   CheckCircle2,
-  CircleAlert,
   LoaderCircle,
   Pause,
   Play,
@@ -228,7 +228,7 @@ export function McpBotRunner({
   }
 
   if (!server.passport || server.state !== 'connected')
-    return <p>このMCPは接続されていません。Skyで接続を確認してください。</p>;
+    return <p>このMCPは接続されていません。Smithで接続を確認してください。</p>;
 
   return (
     <section className="mcp-bot-runner" aria-label={`${server.name}の管理`}>
@@ -339,9 +339,7 @@ export function McpBotRunner({
       </div>
 
       {error && (
-        <p className="mcp-bot-error" role="alert">
-          <CircleAlert size={16} /> {error}
-        </p>
+        <SkyNotice className="mcp-bot-error" message={error} />
       )}
       {result && (
         <div className="mcp-bot-result" aria-live="polite">

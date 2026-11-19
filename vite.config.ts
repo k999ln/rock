@@ -5,6 +5,8 @@ import { defineConfig } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 import { createWebBundleInventoryPlugin } from './scripts/web-bundle-inventory.mjs';
 import { createSkyLocalRuntimePlugin } from './scripts/sky-local-runtime.mjs';
+import { createSkyZoomLocalPlugin } from './scripts/sky-zoom-local-runtime.mjs';
+import { createSkyLinuxLocalPlugin } from './scripts/sky-linux-local-runtime.mjs';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
@@ -51,7 +53,7 @@ const clientCloudflareWorkersStub = {
   },
 };
 
-export default defineConfig(async () => {
+export default defineConfig(async ({ command }) => {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= 'false';
@@ -62,12 +64,20 @@ export default defineConfig(async () => {
   const { cloudflare } = await import('@cloudflare/vite-plugin');
 
   return {
+    define: {
+      // Forward only this non-secret development opt-in into the worker SSR graph.
+      // A production build always compiles the private device trial off.
+      'process.env.SMIS_MODULE_PRIVATE_PREVIEW': JSON.stringify(command === 'serve' && process.env.SMIS_MODULE_PRIVATE_PREVIEW === '1' ? '1' : '0'),
+    },
     css: { postcss: { plugins: [tailwindcss()] } },
-    server: isCodexSeatbeltSandbox
-      ? { watch: { useFsEvents: false, usePolling: true } }
-      : undefined,
+    server: {
+      ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
+      ...(process.env.SKY_LINUX_PRIVATE_PREVIEW === '1' || process.env.SMIS_MODULE_PRIVATE_PREVIEW === '1' ? { host: '127.0.0.1' } : {}),
+    },
     plugins: [
+      createSkyLinuxLocalPlugin(),
       createSkyLocalRuntimePlugin(),
+      createSkyZoomLocalPlugin(),
       createWebBundleInventoryPlugin(),
       clientCloudflareWorkersStub,
       vinext(),

@@ -18,7 +18,7 @@ function memoryStorage() {
 
 const id = 'b55ad88a-5b84-4ac2-ac0d-c5441c832be1';
 
-void test('a Sky handoff creates a separate Zema chat that survives reload in the same tab', () => {
+void test('a smis handoff creates a separate Eve chat that survives reload in the same tab', () => {
   const storage = memoryStorage();
   const session = {
     version: 1,

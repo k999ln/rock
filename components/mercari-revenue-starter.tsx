@@ -188,10 +188,10 @@ export default function MercariRevenueStarter() {
       <div className="mercari-revenue">
         <header className="mercari-hero">
           <div>
-            <p className="mercari-kicker">SKY REVENUE LOOP</p>
+            <p className="mercari-kicker">Smith REVENUE LOOP</p>
             <h1>売上の準備と確認を、一歩ずつ進める</h1>
             <p>
-              手元の商品を安全に販売する準備を自動化します。売れなければSkyの回収は0。
+              手元の商品を安全に販売する準備を自動化します。売れなければSmithの回収は0。
               自己申告ではなく、公式Providerで取引完了を確認できた収益だけが精算対象です。
             </p>
           </div>

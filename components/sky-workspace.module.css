@@ -90,7 +90,7 @@
   border-radius: 18px;
   color: var(--os-text);
   background: var(--os-bg);
-  color-scheme: dark;
+  color-scheme: light;
 }
 .utilityDialog :global([data-slot='dialog-title']) { padding-right: 30px; color: var(--os-text); }
 .utilityDialog :global([data-slot='dialog-description']) { color: var(--os-muted); }

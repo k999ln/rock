@@ -1,3 +1,9 @@
+## Skyの本人用Linux試用
+
+[sky-linux-local](toolkits/sky-linux-local/README.md)は、対応する文章AIと担当を追加し、Pixel本体Linuxで環境準備・実推論・料金表示・持出し・停止を行う本人用の経路です。Skyの共通workflowを使い、同一APKの起動・追加AI実推論・保存・独立読戻し・停止を[限定受入](docs/evidence/sky-multi-model-pixel.json)しています。必要な資材は内部へ保存し、開発用Downloadを残しません。全モデル・任意コード・Cloud請求・全OS・一般公開は別gateです.
+
+別作業の `toolkits/sky-linux-service/` はLinuxサービス向けworkerの準備用ソースです。このPixelの限定受入には含めず、サービス接続・配備・課金・本番の合格とは扱いません。
+
 # プロジェクト別ガイド
 
 このページは、`k999ln/rock`の成果物を**製品・実装単位**から探す入口です。確定要望は[製品ベース](docs/product-baseline.md)、現在のtaskと完了条件は[進捗JSON](data/project-status.json)、設計の正本は[全設計ポータル](docs/rockstaros-design-portal.md)を参照してください。ここに書くディレクトリの存在は、実機・本番・販売の受入完了を意味しません。
@@ -10,14 +16,14 @@
 | **rocketstar** | ロケットR1.0、衛星・A-LINK・受信試作などの設計アーカイブ。Siteの構想ページと設計原本を分ける | [設計アーカイブ](docs/rocketstar-design/README.md)・[構想ページ](sites/avocado-mini/rocket-star/index.html) | [`docs/rocketstar-design/`](docs/rocketstar-design/)・[`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/) |
 | **RockstarOS** | AIネイティブOSの共通基盤と配布候補。完全版原本はR5専用Device Profileの実装済みを意味しない | [OS設計書完全版 v1.0](docs/rockstaros-complete-design-v1.0.pdf)・[OS全体詳細設計](docs/rockstaros-complete-design.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
 | **AI自動化チーム** | 作成中のToolを役割ごとに組み合わせ、利用者の仕事を進める | [Toolチーム設計](docs/sky-network-economy.md)・[役割エージェント仕様](docs/sky-role-agents-20260912.md) | [`lib/catalog.ts`](lib/catalog.ts)・[`lib/automation-fund-catalog.ts`](lib/automation-fund-catalog.ts)・[`app/sky/`](app/sky/)・[`app/work/`](app/work/) |
-| **Webアプリ** | Home、Sky、Zema、Campus、Wallet、設定、Sky Tool SDK用Rock Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
+| **Webアプリ** | Home、Sky、Eve、Campus、Wallet、設定、Sky Tool SDK用Rock Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
 
-rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページです。両段再使用・衛星搭載・A-LINK・RockstarOSからコロニーへつなぐ計画を説明します。[設計アーカイブ](docs/rocketstar-design/README.md)にはロケット、衛星・受信、A-LINK、OS付録と検証記録がありますが、製造・実機・飛行・資金受付の完了を示しません。avocadoMiniの[P0.2](docs/avocado-mini-hardware-design.md)、[Mini200 E1](docs/avocado-mini-mini200-e1/README.md)、[E2](docs/avocado-mini-mini200-e2/README.md)、[Tower20 E3](docs/avocado-mini-tower20-e3/README.md)は現行R5と区別した設計履歴です。AI自動化チームの仕事とToolはSkyの中で選び編成します。Zemaが依頼・進捗・承認・停止・成果を管理し、Walletが費用と確認済み収益を扱います。CSV、メルカリ、Material Inventionなどの仕事をWeb/OSの独立サービスとして数えません。
+rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページです。両段再使用・衛星搭載・A-LINK・RockstarOSからコロニーへつなぐ計画を説明します。[設計アーカイブ](docs/rocketstar-design/README.md)にはロケット、衛星・受信、A-LINK、OS付録と検証記録がありますが、製造・実機・飛行・資金受付の完了を示しません。avocadoMiniの[P0.2](docs/avocado-mini-hardware-design.md)、[Mini200 E1](docs/avocado-mini-mini200-e1/README.md)、[E2](docs/avocado-mini-mini200-e2/README.md)、[Tower20 E3](docs/avocado-mini-tower20-e3/README.md)は現行R5と区別した設計履歴です。AI自動化チームの仕事とToolはSkyの中で選び編成します。Eveが依頼・進捗・承認・停止・成果を管理し、Walletが費用と確認済み収益を扱います。CSV、メルカリ、Material Inventionなどの仕事をWeb/OSの独立サービスとして数えません。
 
 | AIチームを支える共通機能 | 主なソース | 設計・担当の入口 |
 | --- | --- | --- |
 | **Sky** — Toolの発見と接続 | [`app/sky/`](app/sky/)・[`app/api/sky/`](app/api/sky/) | [全Tool詳細設計](docs/sky-tools-complete-design.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
-| **Zema / Work / Activity** — 依頼、進捗、承認、停止、成果、履歴 | [`app/chat/`](app/chat/)・[`app/work/`](app/work/)・[`app/activity/`](app/activity/)・[`lib/zema-chat-session.ts`](lib/zema-chat-session.ts) | [Platform Core](docs/platform-core.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
+| **Eve / Work / Activity** — 依頼、進捗、承認、停止、成果、履歴 | [`app/chat/`](app/chat/)・[`app/work/`](app/work/)・[`app/activity/`](app/activity/)・[`lib/zema-chat-session.ts`](lib/zema-chat-session.ts) | [Platform Core](docs/platform-core.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
 | **Campus** — 大学別のPeople / Project / Opportunity / Event / Community / Portfolio / ResourceとNFC/QR入口 | [`app/campus/`](app/campus/)・[`app/api/campus/`](app/api/campus/)・[`app/t/`](app/t/)・[`lib/campus.ts`](lib/campus.ts)・[`lib/campus-store.ts`](lib/campus-store.ts) | [Campus設計](docs/campus-layer.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
 | **Wallet** — 費用と確認済み収益 | [`app/wallet/`](app/wallet/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **Home / Settings** — 入口と端末・接続設定 | [`app/page.tsx`](app/page.tsx)・[`app/settings/`](app/settings/) | [Product / UX](docs/workstreams/01-product-ux.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
@@ -25,7 +31,7 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 
 ## SkyのAI自動化チーム
 
-作成しているToolと、それを組み合わせる仕事は、利用者が所有する一つのAI自動化チームの中で整理します。Skyが目的に合わせてTool・役割・構成版を選び、Zemaが同じ仕事の実行と成果を管理します。チームの実際の構成は選択と受入状態によって変わり、一覧にある全Toolが同時に稼働するという意味ではありません。[Toolチーム設計](docs/sky-network-economy.md)と[役割エージェント仕様](docs/sky-role-agents-20260912.md)がこの関係の入口です。
+作成しているToolと、それを組み合わせる仕事は、利用者が所有する一つのAI自動化チームの中で整理します。Skyが目的に合わせてTool・役割・構成版を選び、Eveが同じ仕事の実行と成果を管理します。チームの実際の構成は選択と受入状態によって変わり、一覧にある全Toolが同時に稼働するという意味ではありません。[Toolチーム設計](docs/sky-network-economy.md)と[役割エージェント仕様](docs/sky-role-agents-20260912.md)がこの関係の入口です。
 
 | Skyのチームが扱う仕事 | 現在のSkyとの接続 | 実装・設計の入口 |
 | --- | --- | --- |
@@ -122,7 +128,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録34件すべてを上に記載。ready 12件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 12ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
+| [`toolkits/`](toolkits/) | 13ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -143,6 +149,8 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Sky Billing** | 収益・費用の照合と請求Worker。Walletの実資金受入とは別 | [`services/sky-billing/`](services/sky-billing/) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md)・[請求設計](docs/sky-billing.md) |
 | **Sky Tool SDK** | Tool作者向けのpackage、サンプル、契約 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Sky MCP Connector** | MCP接続先と権限を管理する独立connector | [`toolkits/sky-mcp-connector/`](toolkits/sky-mcp-connector/) | [Connector README](toolkits/sky-mcp-connector/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Sky App Client** | Zoom/Planner共通仕事契約と非公開local Plannerの受渡しadapter | [`toolkits/sky-app-client/`](toolkits/sky-app-client/) | [手順](toolkits/sky-app-client/README.md)・[共通基盤](docs/sky-tools-complete-design.md#sky-foundation) |
+| **Android Branding** | 現行Android実装を保全したPixel会社ロゴ・製品名更新と限定実機検査 | [`toolkits/android-branding/`](toolkits/android-branding/) | [再現・保全・復旧](toolkits/android-branding/README.md)・[四端末適応](docs/device-support-architecture.md#current-device-adaptation) |
 | **Fashion Brand Ops** | 受注型ブランド運営の独立MCPサービス | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) | [README](toolkits/fashion-brand-ops/README.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Game SDK / Sandbox** | 非金融ゲームの接続と、資産交換を分けた試験 | [`systems/rock-star-os/examples/game/`](systems/rock-star-os/examples/game/) | [Game API契約](docs/game-api-contract-draft.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Mr. Tool adapter** | `Mr.`の固定原本をSkyへ接続するRock側の実装 | [`toolkits/mr/`](toolkits/mr/) | [README](toolkits/mr/README.md)・[Mr.取り込み](docs/mr-integration.md) |
@@ -151,7 +159,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **AMC Agent** | 現在のCodexチャットでの任務分担・独立検収と登録診断。Web自動同期は未接続 | [`toolkits/amc-agent/`](toolkits/amc-agent/) | [利用・復旧手順](toolkits/amc-agent/README.md) |
 | **eSIM Bootstrap** | SIM/eSIM-led RockstarOS service offerのうち、eSIM provider接続を試すhost fixtureとadapter。物理SIMや複数販売チャネルを除外する製品境界ではない | [`toolkits/esim-bootstrap/`](toolkits/esim-bootstrap/)・[`app/api/esim/`](app/api/esim/) | [開発ガイド](toolkits/esim-bootstrap/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
-| **FiveM Reality Bridge** | 仕事カードの共有とFiveM向けNUI確認・依頼下書きの開発sandbox。実ゲームengine・GTA VI対応・本番Zema連携は未受入 | [`toolkits/fivem-bridge/`](toolkits/fivem-bridge/) | [開発ガイド](toolkits/fivem-bridge/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **FiveM Reality Bridge** | 仕事カードの共有とFiveM向けNUI確認・依頼下書きの開発sandbox。実ゲームengine・GTA VI対応・本番Eve連携は未受入 | [`toolkits/fivem-bridge/`](toolkits/fivem-bridge/) | [開発ガイド](toolkits/fivem-bridge/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **FivePlay Browser Adapter** | FivePlay向けの拡張sourceとmock HTTP試験。ゲーム起動・extension導入・engine API・残高変更は未受入 | [`toolkits/fiveplay-adapter/`](toolkits/fiveplay-adapter/) | [開発ガイド](toolkits/fiveplay-adapter/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 
 ## 共有領域と正本
@@ -173,3 +181,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 1. 上の表から対象プロジェクトの入口を開く。
 2. [workstream案内](docs/workstreams/README.md)から主担当を一つ選び、[進捗JSON](data/project-status.json)の既存task ID、完了条件、証拠を確認する。
 3. 変更後は対象の小さい検証を実行し、配布・統合候補では`npm run verify`と対象OS固有の受入を実施する。結果は`project.md`と進捗JSONへ記録する。
+
+### Eve Newsの追加ToolKit
+
+`toolkits/eve-news/` は出典付きニュースのpacket／draftを扱う開発用ToolKitです。`news-core.mjs`、`draft.mjs`、架空の入力例 `examples/fictional-packet.json` が入口です。公開中の `/os#news` での実ソースmetadata表示と、未公開の独自model学習・生成記事の受入を区別します。これらのfixtureは独自LLMの学習済み証拠ではありません。

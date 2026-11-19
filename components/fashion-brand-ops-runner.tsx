@@ -1,4 +1,5 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 
 import { useEffect, useId, useRef, useState } from 'react';
 import {
@@ -198,7 +199,7 @@ export function FashionBrandOpsRunner({ onOutcome }: {
       const result = await connectFashionMcp();
       setConnected(true);
       setMessage(
-        `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
+        `${result.toolCount}個の専用操作を確認しました。Smithから実行できます。`,
       );
       onOutcome?.({ ok: true, text: `PCのブランド運営MCPに接続しました。${result.toolCount}機能を確認しました。個別操作の成功は各実行結果で確認してください。` });
       void refreshCandidates();
@@ -207,7 +208,7 @@ export function FashionBrandOpsRunner({ onOutcome }: {
       setConnected(fashionMcpConnected());
       const message = error instanceof Error
         ? error.message
-        : 'Sky接続アプリを起動してから、もう一度お試しください。';
+        : 'Smith接続アプリを起動してから、もう一度お試しください。';
       setMessage(message);
       onOutcome?.({ ok: false, text: message });
     } finally {
@@ -270,7 +271,7 @@ export function FashionBrandOpsRunner({ onOutcome }: {
         <p className={styles.modeNote}>{connected ? 'PCへ接続済み。投稿や決済は実行せず、プランと下書きだけを保存します。' : 'PCへ未接続。ローカル開発版では、保存時に接続を準備します。ブラウザ内の下書きは保存されません。'}</p>
       </div>
       {planError && (
-        <p className={`${styles.message} ${styles.error}`} role="alert">{planError}</p>
+        <SkyNotice className={`${styles.message} ${styles.error}`} message={planError} />
       )}
       {producer && (
         <div className={styles.result} aria-label="PCに保存したブランド運営プラン">
@@ -346,7 +347,7 @@ export function FashionBrandOpsRunner({ onOutcome }: {
           })}</ul>
         </section>
       )}
-      {readinessError && <p className={styles.error} role="alert">{readinessError}</p>}
+      {readinessError && <SkyNotice className={styles.error} message={readinessError} />}
       {plan && (
         <div className={styles.result} aria-label="ブラウザ簡易プラン">
           <header className={styles.resultHeading}>
@@ -524,7 +525,7 @@ export function FashionBrandOpsRunner({ onOutcome }: {
               </ul>
             </div>
           )}
-          {candidateError && <p className={styles.error} role="alert">{candidateError}</p>}
+          {candidateError && <SkyNotice className={styles.error} message={candidateError} />}
           <p className={styles.photoPrivacy}>
             画像本体・パスワード・Cookieは運用DBへ保存しません。Meta確認前の候補では投稿やDMを実行できません。
           </p>
@@ -541,14 +542,14 @@ export function FashionBrandOpsRunner({ onOutcome }: {
           <li>
             <a href="/toolkits/fashion-brand-ops-connector.zip" download>
               <Download size={14} />
-              Sky接続アプリをダウンロード
+              Smith接続アプリをダウンロード
             </a>
           </li>
           <li>展開したフォルダの「RockstarOS Sky接続.command」を開きます。</li>
           <li>
             .env.exampleを参考に、利用するProviderだけを安全な秘密情報保管先へ設定します。
           </li>
-          <li>Skyへ戻り「ワンクリックで接続」を押します。</li>
+          <li>Smithへ戻り「ワンクリックで接続」を押します。</li>
         </ol>
         <p>
           接続先はこのPC（{FASHION_MCP_URL}

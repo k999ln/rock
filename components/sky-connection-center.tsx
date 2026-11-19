@@ -1,5 +1,7 @@
 'use client';
 
+import { SkyNotice } from '@/components/sky-feedback';
+
 import { CheckCircle2, CircleDashed, KeyRound, Link2, Save, ShieldCheck } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -117,7 +119,7 @@ export default function SkyConnectionCenter({
       }
       setMessage(
         status === 'ready'
-          ? '設定を保存しました。外部サービスのOAuth・実接続はまだ行っていません。'
+          ? "設定を保存しました。外部サービスの公式の認証画面・実接続はまだ行っていません。"
           : '途中まで保存しました。',
       );
     } catch (cause) {
@@ -134,8 +136,8 @@ export default function SkyConnectionCenter({
         <header className={styles.header} ref={headingRef} tabIndex={-1}>
           <div className={styles.headerMark}><Link2 size={19} /></div>
           <div>
-            <DialogTitle>Skyの接続管理</DialogTitle>
-            <DialogDescription>保存した表示名や接続先は次回から再利用します。OAuth・実行接続は別途必要です。</DialogDescription>
+            <DialogTitle>Smithの接続管理</DialogTitle>
+            <DialogDescription>保存した表示名や接続先は次回から再利用します。公式の認証画面・実行接続は別途必要です。</DialogDescription>
           </div>
         </header>
 
@@ -212,14 +214,14 @@ export default function SkyConnectionCenter({
             )}
             <div className={styles.notice}>
               <ShieldCheck size={17} />
-              <span>パスワード・APIキー・トークンはここへ保存しません。公式OAuthやOSの安全な接続画面で認証します。</span>
+              <span>パスワード・接続用の秘密キー・トークンはここへ保存しません。公式公式の認証画面やOSの安全な接続画面で認証します。</span>
             </div>
             <div className={styles.actions}>
               <button className={styles.secondary} onClick={() => void save('setup_required')} disabled={saving || loading || executionBlocked || !profilesAvailable}><Save size={16} /> あとで続ける</button>
               <button className={styles.primary} onClick={() => void save('ready')} disabled={saving || loading || executionBlocked || !profilesAvailable}><KeyRound size={16} /> 設定を保存</button>
             </div>
             {message && <output className={styles.message}>{message}</output>}
-            {error && <p className={styles.error} role="alert">{error}</p>}
+            {error && <SkyNotice className={styles.error} message={error} />}
             {error && !profilesAvailable && !executionBlocked && (
               <button className={styles.secondary} disabled={loading} onClick={() => void refresh()}>接続情報を再取得</button>
             )}

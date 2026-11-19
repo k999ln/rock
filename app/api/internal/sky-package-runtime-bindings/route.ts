@@ -47,7 +47,7 @@ function handleError(error: unknown) {
   if (error instanceof SyntaxError) return json({ code: 'INVALID_INPUT' }, 400);
   if (error instanceof Error && error.message === 'BODY_TOO_LARGE') return json({ code: 'BODY_TOO_LARGE' }, 413);
   if (error instanceof Error && error.message === 'INVALID_BODY_SHAPE') return json({ code: 'INVALID_BODY_SHAPE' }, 400);
-  console.error('Sky Package runtime binding registry failed', error instanceof Error ? error.message : 'unknown');
+  console.error('smis Package runtime binding registry failed', error instanceof Error ? error.message : 'unknown');
   return json({ code: 'BINDING_STORE_UNAVAILABLE' }, 503);
 }
 

@@ -64,7 +64,7 @@ async function connector<T>(path: string, init?: RequestInit): Promise<T> {
   const token = deviceToken();
   if (!token)
     throw new McpHubError(
-      '先にSky MCP Connectorを起動して、このPCを接続してください。',
+      '先にSmith MCP Connectorを起動して、このPCを接続してください。',
       'connector_not_connected',
     );
   const headers = new Headers(init?.headers);
@@ -77,7 +77,7 @@ async function connector<T>(path: string, init?: RequestInit): Promise<T> {
   });
   const response = await fetch(`${DEVICE_URL}${path}`, request).catch(() => {
     throw new McpHubError(
-      'PC内のSky MCP Connectorへ接続できません。',
+      'PC内のSmith MCP Connectorへ接続できません。',
       'connector_unavailable',
     );
   });
@@ -140,7 +140,7 @@ async function requireMcpSlot(serverId: string) {
   const connectionKey = await mcpConnectionKey(serverId);
   const plan = await planRequest('GET');
   if (!plan.connections.some((slot: { connectionKey: string }) => slot.connectionKey === connectionKey))
-    throw new McpHubError('MCP接続枠を確保するため、Skyで接続し直してください。', 'mcp_plan_required');
+    throw new McpHubError('MCP接続枠を確保するため、Smithで接続し直してください。', 'mcp_plan_required');
 }
 
 export async function prepareMcpTool(

@@ -280,7 +280,7 @@ void test('A2A 1.0 client interoperates with independent Node and Python HTTP ag
   await exercise(`http://127.0.0.1:${nodeServer.address().port}`, 'Node Fixture Agent', '2.0.0', 'node', 'TASK_STATE_COMPLETED');
   await exercise(pythonOrigin, 'Python Fixture Agent', '1.0.0', 'python', 'TASK_STATE_SUBMITTED');
 
-  // Zema acts as the supervisor between two independent A2A implementations.
+  // Eve acts as the supervisor between two independent A2A implementations.
   // The second dispatch is a new explicit authorization after the first result
   // has been read and reviewed; an agent result never grants the next agent's
   // permission, budget, or task automatically.

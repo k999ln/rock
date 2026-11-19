@@ -1,0 +1,27 @@
+{
+  "schema": "rockstaros.pixel-entry-design/1",
+  "date": "2026-11-02",
+  "ownerDirection": "Use current rainbow logo and same Web Eve immediately; move synchronization and diagnostics to settings",
+  "taskIds": [
+    "OS10",
+    "DSP01",
+    "WEB04"
+  ],
+  "authority": "docs/rockstaros-complete-design.md#pixel-eve-entry",
+  "logo": {
+    "source": "toolkits/sky-linux-local/common-ui-res/drawable-nodpi/company_mark.png",
+    "sha256": "c6a0cf9b9faf023da925ab29081b41be18eedf212bb673d2d6a5b17bb47393dc",
+    "provenance": "Existing official avoado.si Sites source edfc0c4d396963457e8e5a92f7548448caf21bbc public/brand/rainbow-logo-512.png, unchanged copy",
+    "override": "Owner debug APK drawable override; old branding originals preserved"
+  },
+  "defaultRoute": "/os/eve",
+  "settingsIntentExtra": "deviceSettings",
+  "preserved": [
+    "browser authentication isolation",
+    "existing normal/private realm selection",
+    "same app signature and data",
+    "explicit model preparation",
+    "runtime stop and sync distinction"
+  ],
+  "physicalAcceptance": "docs/evidence/pixel-entry-design.json"
+}

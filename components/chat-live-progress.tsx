@@ -119,7 +119,7 @@ function ToolProgress({ job, name }: { job: Job; name: string }) {
       label: job.status === 'completed' ? '結果を履歴へ保存' : '結果を保存',
       detail:
         job.status === 'completed'
-          ? 'Zemaの仕事管理から確認できます'
+          ? 'Eveの仕事管理から確認できます'
           : '完了後に保存されます',
       at: job.status === 'completed' ? job.finishedAt : null,
       state: job.status === 'completed' ? 'done' : 'waiting',
@@ -319,7 +319,7 @@ export default function ChatLiveProgress({
   const selectedJobName =
     selectedTool?.name ??
     (selectedJob ? toolNames.get(selectedJob.tool) : null) ??
-    'Sky Tool';
+    'Smith Tool';
 
   if (!selectedJob && !selectedCsvJob && !fund) return null;
   const busy =

@@ -1,0 +1,14 @@
+.news{margin:16px 0;border:1px solid var(--os-line,#39475a);border-radius:16px;background:var(--os-panel,#172334);color:var(--os-text,#f5f8fc);overflow:hidden}
+.heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 18px 8px}
+.heading small{display:block;color:var(--os-muted,#aab8c9);font-size:11px}
+.heading h2{margin:2px 0 0;font-size:18px}
+.heading button{border:1px solid var(--os-line,#536277);border-radius:8px;background:transparent;color:inherit;padding:7px 12px;cursor:pointer}
+.heading button:disabled{opacity:.6;cursor:wait}
+.note,.meta,.error{margin:0;padding:0 18px 12px;color:var(--os-muted,#aab8c9);font-size:12px;line-height:1.6}
+.error{color:#f3b4a8}
+.status{display:block;margin:0;padding:0 18px 12px;font-size:12px;line-height:1.6}
+.list{list-style:none;margin:0;padding:0}
+.list li{border-top:1px solid var(--os-line,#39475a);padding:13px 18px}
+.list a{color:inherit;font-weight:650;line-height:1.45;text-decoration:none}
+.list a:hover,.list a:focus-visible{text-decoration:underline}
+.byline{margin-top:5px;color:var(--os-muted,#aab8c9);font-size:11px}

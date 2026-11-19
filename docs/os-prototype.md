@@ -2,6 +2,8 @@
 
 現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [CHECKPOINT](../CHECKPOINT.md)。Android/AOSPとLinux nativeの実績を分けます。
 
+2026-10-20追加：現在の最初の物理対象はPixel 10 GL066／frankel。以下の2026-09-05時点の記述は履歴です。OS完成後に組み込むeSIM→契約→Sky/Eveの後付け画面を`ServiceSetupActivity.java`へ追加しました。Gradle/Soong共通の`service_setup.xml`で既定無効とし、署名callerだけを許可します。Android35の実resource生成とJava11 compileは合格、全APK/OS build・新機能のPixel試験は未実施です。利用方法、料金/同意・保存/復旧・失効、外部接続と受入条件は[利用開始module正本](sim-led-product-architecture.md#pixel-service-setup)、設定は`data/service-setup-integration.json`を参照。実eSIMと同一APK/OSでの追加→利用開始→再起動/失効/復帰はOS受入後に行い、既存のAPK受入結果を新機能へ転用しません。
+
 対象範囲: 本書は既存の **Android/AOSP P1のみ**。2026-09-09追加のLinux native OSは [別の実装・検証記録](native-os-integration.md)を参照する。初期製品端末の優先候補はBlackBerryへ更新し、以下のPixel計画は比較候補として保持する。
 
 2026-09-05。状態: OS部品を組み始めた試作。**OSイメージのビルド/起動、Pixel実機、第三者Storeは未検証。** [基本設計](os-development-design.md) の一般構想と、本書の実装範囲を区別する。
@@ -129,3 +131,5 @@ Gradleはpackage/versionをbuild設定から補うが、Soongではその設定�
 5. ファイル取込、保持/削除/export、通知Inbox、実業務の外部接続と費用計測。決済・分配は別途確定する。
 
 作業進捗: [project.md](../project.md)。検証した範囲と残課題: [検証記録](validation.md)。
+
+2026-10-19 SKY21の本人用Linux入口: debug試用版だけにSkyLinuxActivityとlocalhost接続・準備通知の権限を追加する。正式版Shellの通信なし/Binder境界とOS受入は維持する。固定guestサービスと共通workflowで起動・依頼・下書き確認・Android保存・停止を行う。実機証拠は docs/evidence/sky-pixel-linux-entry.json。

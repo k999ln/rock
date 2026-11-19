@@ -1,3 +1,7 @@
+## 最新再設計と端末・ブランドの統一（2026-10-20）
+
+本人の明示訂正により、今のRockstarOS再設計を最新版とし、旧Buildroot OSは良い実装の選択再利用元とする。旧OS完成や旧QEMU合格を現商品の完成条件/証拠へ置き換えない。表示名RockstarOSと既存avokado会社ロゴを統一し、Pixel・avocadoMini・avocadoPro・吊り下げ相棒を共通owner/job/権限/契約/料金へ接続する。端末差は能力と入出力adapterで扱い、同一契約の端末追加による基本料重複を防ぐ。相棒のSOS/独立警報は通信/LLM/課金と分離する。[詳細正本](device-support-architecture.md#current-device-adaptation)。現段階の各実装・実機・請求受入は独立して記録する。
+
 # avocado Companion（仮称）／RockstarOS 吊り下げ型会話端末 P0 設計
 
 記録日: 2026-10-14 / 内部profile: `avocado-schoolbag-safety-p0`

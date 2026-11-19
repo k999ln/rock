@@ -1,4 +1,5 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -277,7 +278,7 @@ export default function CsvBusinessWorkspace() {
     type: 'text/csv',
   });
   return (
-    <WorkspaceShell title="Sky · CSV仕事" hideTopActions>
+    <WorkspaceShell title="Smith · CSV仕事" hideTopActions>
       <div className={styles.page}>
         <header className={styles.hero}>
           <div>
@@ -305,8 +306,8 @@ export default function CsvBusinessWorkspace() {
         </section>
 
         {error && (
-          <div className={styles.error} role="alert">
-            {error}
+          <div className={styles.error}>
+            <SkyNotice message={error} />
             {needsSignin && (
               <a href="/signin-with-chatgpt?return_to=/csv" target="_top">
                 サインイン

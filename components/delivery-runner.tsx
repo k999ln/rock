@@ -1,4 +1,5 @@
 'use client';
+import { SkyNotice } from '@/components/sky-feedback';
 import { useEffect, useState } from 'react';
 import {
   ExecutionSignin,
@@ -107,7 +108,7 @@ export function DeliveryRunner({
         setNeedsSignin(true);
       const message =
         e instanceof TypeError
-          ? 'このPCの実行機能に接続できませんでした。Skyの接続設定を確認してください。'
+          ? 'このPCの実行機能に接続できませんでした。Smithの接続設定を確認してください。'
           : e instanceof Error
             ? e.message
             : '入力を確認してください。';
@@ -199,9 +200,7 @@ export function DeliveryRunner({
           </button>
         </div>
         {error && (
-          <p className="notice" role="alert">
-            {error}
-          </p>
+          <SkyNotice className="notice" message={error} />
         )}
       </fieldset>
       {output && (
