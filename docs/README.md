@@ -194,3 +194,4 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 新しい情報は該当する正本・workstreamへ統合する。不要な重複分冊や日付付き入口を増やさず、移動・削除では参照・索引・検査・復元commitを同時更新する。
 
 - [Noah本人用リセール](services/noah-select-resale.md) — 3担当・共有予算・Web/CLI・停止と照合の現行契約。
+- [Noah の市場 — 載せるのも、つなぐのも、1 回で終わる](noah-agent-market-design.md)（設計）。書式は [services/noah-one-click-connect.md](services/noah-one-click-connect.md)、[services/eve-agent-build.md](services/eve-agent-build.md)、[services/noah-cloud-place.md](services/noah-cloud-place.md)、[services/noah-mobile-variant.md](services/noah-mobile-variant.md)、[services/noah-agent-purchase.md](services/noah-agent-purchase.md)。
