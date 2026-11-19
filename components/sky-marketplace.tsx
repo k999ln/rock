@@ -54,7 +54,7 @@ type MarketKind = 'all' | 'automation' | 'llm';
 type InitialPackageState = 'none' | 'pending' | 'available' | 'missing' | 'lookup_failed';
 const views: { id: View; label: string }[] = [
   { id: 'all', label: 'すべて' },
-  { id: 'built-in', label: 'smisのツール' },
+  { id: 'built-in', label: 'Noahのツール' },
   { id: 'candidate', label: '導入候補' },
   { id: 'verified', label: '審査済み外部' },
 ];
@@ -208,33 +208,33 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
           : `${pricingLabel[activeSelection?.manifest.pricing.model ?? 'external_contract']} · ${activeSelection?.manifest.pricing.note ?? ''}`;
 
   return (
-    <WorkspaceShell title="smis Market" tone="sky" contentClassName={styles.shell} hideTopActions>
+    <WorkspaceShell title="Noah Market" tone="sky" contentClassName={styles.shell} hideTopActions>
       <div className={styles.page}>
         <nav className={styles.breadcrumb} aria-label="現在位置">
-          <Link href="/sky"><ArrowLeft size={14} /> smisに戻る</Link>
+          <Link href="/noah"><ArrowLeft size={14} /> Noahに戻る</Link>
           <span>/</span>
           <strong>マーケット</strong>
         </nav>
 
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
-            <span className={styles.eyebrow}>SKY MARKET</span>
+            <span className={styles.eyebrow}>NOAH MARKET</span>
             <h1>siと自動化をつなぐ</h1>
             <p>LLM、MCP、自動化Toolを一つの接続条件で探して使う。</p>
           </div>
-          <Link href="/sky/register" className={styles.secondaryAction}><Code2 size={17} /> ツールを登録</Link>
+          <Link href="/noah/register" className={styles.secondaryAction}><Code2 size={17} /> ツールを登録</Link>
         </header>
 
         <CommerceNavigation />
 
-        <Link href="/sky/agents/citations" className={styles.starterAgent}>
-          <span><strong>今すぐ使える · 出典整理Agent</strong><small>無料 · スマホだけで実行 · 成果はSkyへ保存</small></span>
+        <Link href="/noah/citations" className={styles.starterAgent}>
+          <span><strong>今すぐ使える · 出典整理Agent</strong><small>無料 · スマホだけで実行 · 成果はNoahへ保存</small></span>
           <ArrowRight size={20} aria-hidden="true" />
         </Link>
 
         {initialPackageState === 'missing' && (
           <output className={styles.registryNote}>
-            この購入に含まれるPackageは現在の審査済みRegistryにありません。購入権は有効のままです。Skyで検索するか、販売元へ確認してください。
+            この購入に含まれるPackageは現在の審査済みRegistryにありません。購入権は有効のままです。Noahで検索するか、販売元へ確認してください。
           </output>
         )}
         {initialPackageState === 'lookup_failed' && (
@@ -319,7 +319,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
                       <span><BrainCircuit size={15} /> si RUNTIME</span>
                       <h2 id="ai-market-title">LLMを選ぶ</h2>
                     </div>
-                    <small>選んだLLMはsmis BrokerからMCP Toolを呼び出します</small>
+                    <small>選んだLLMはNoah BrokerからMCP Toolを呼び出します</small>
                   </div>
                   <div className={styles.grid}>
                     {matchingAi.map((provider) => (
@@ -359,7 +359,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
                         expanded={selectedCatalog?.id === tool.id}
                         onInspect={() => setSelectedCatalog(tool)}
                         actionLabel={skyToolDetailActionLabel(tool)}
-                        href={`/sky/tools/${encodeURIComponent(tool.id)}`}
+                        href={`/noah/tools/${encodeURIComponent(tool.id)}`}
                         hostMismatch={catalogHostMismatch(tool, host)}
                       />
                     ))}
@@ -391,7 +391,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
             <div className={styles.emptyState}>
               <CircleHelp size={27} />
               <h3>条件に合うツールはありません</h3>
-              <p>{view === 'verified' && registryState === 'loading' ? '審査済みToolを読み込んでいます。' : view === 'verified' && registryState === 'unavailable' ? '公開Registryに接続できません。smisのツールは他のタブで確認できます。' : hiddenCount > 0 && !showHostMismatches ? '検索条件に合うツールは、この端末では対象外です。対象外も表示すると詳細を確認できます。' : '検索語やカテゴリを変えてみてください。'}</p>
+              <p>{view === 'verified' && registryState === 'loading' ? '審査済みToolを読み込んでいます。' : view === 'verified' && registryState === 'unavailable' ? '公開Registryに接続できません。Noahのツールは他のタブで確認できます。' : hiddenCount > 0 && !showHostMismatches ? '検索条件に合うツールは、この端末では対象外です。対象外も表示すると詳細を確認できます。' : '検索語やカテゴリを変えてみてください。'}</p>
               <button type="button" onClick={() => { setQuery(''); setCategory('すべて'); setView('all'); }}>検索条件をリセット</button>
             </div>
           )}
@@ -401,18 +401,18 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
         </section>
 
         <p className={styles.inventory}>
-          smisのツール {readyCount} · 導入候補 {candidateCount} · 審査済み外部 {registryState === 'ready' ? registry.length : '—'}
-          <span>基本登録・接続は0円。売上が発生するToolのsmis手数料は10%。外部API・モデル費用は別表示します。</span>
+          Noahのツール {readyCount} · 導入候補 {candidateCount} · 審査済み外部 {registryState === 'ready' ? registry.length : '—'}
+          <span>基本登録・接続は0円。売上が発生するToolのNoah手数料は10%。外部API・モデル費用は別表示します。</span>
           <span>掲載数は、接続済み・本番稼働数を意味しません。</span>
         </p>
         <section className={styles.developerStrip} aria-labelledby="developer-title">
           <div className={styles.developerIcon}><Layers3 size={27} /></div>
           <div>
             <span>FOR BUILDERS</span>
-            <h2 id="developer-title">あなたの自動化も、smisへ。</h2>
-            <p>既存のNode.jsコードにSDKを追加し、このPCのsmisで試せます。一般向け掲載は別途審査が必要です。</p>
+            <h2 id="developer-title">あなたの自動化も、Noahへ。</h2>
+            <p>既存のNode.jsコードにSDKを追加し、このPCのNoahで試せます。一般向け掲載は別途審査が必要です。</p>
           </div>
-          <Link href="/studio">Studioを開く <ArrowRight size={17} /></Link>
+          <Link href="/noah/publish">Studioを開く <ArrowRight size={17} /></Link>
         </section>
       </div>
 
@@ -423,7 +423,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
             state={skyToolUiState(selectedCatalog, runtimeContext)}
             hostMismatch={host ? catalogHostMismatch(selectedCatalog, host) : null}
           >
-            <Link className={styles.modalAction} href={`/sky/tools/${encodeURIComponent(selectedCatalog.id)}`}>
+            <Link className={styles.modalAction} href={`/noah/tools/${encodeURIComponent(selectedCatalog.id)}`}>
               {skyToolDetailActionLabel(selectedCatalog)} <ArrowRight size={17} />
             </Link>
           </SkyToolOverview>
@@ -451,11 +451,11 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
             {entitlementReadState === 'loading' ? <p className={styles.modalNote}>SIM/eSIMに含まれる利用権を確認しています。確認が終わるまで別の購入は開始できません。</p>
               : entitlementReadState === 'unavailable' ? <p className={styles.modalNote}>SIM/eSIMの利用権を確認できません。重複購入を避けるため購入を保留しました。接続を確認して再度開いてください。</p>
                 : activePackageIncluded ? <>
-                  <p className={styles.modalNote}>このPackageは購入済みSIM/eSIMのサービス構成に含まれています。Zemaへ依頼仕様として渡せます。実行先Agentは別途選び、Providerへ送る内容・見積・上限を確認してください。このPackage自体が選んだAgent上で実行できる保証はありません。</p>
-                  <Link className={styles.modalAction} href={`/chat?view=work&package=${encodeURIComponent(activeSelection.packageKey)}`}>Zemaでクラウド依頼を作る <ArrowRight size={17} /></Link>
+                  <p className={styles.modalNote}>このPackageは購入済みSIM/eSIMのサービス構成に含まれています。Eveへ依頼仕様として渡せます。実行先Agentは別途選び、Providerへ送る内容・見積・上限を確認してください。このPackage自体が選んだAgent上で実行できる保証はありません。</p>
+                  <Link className={styles.modalAction} href={`/chat?view=work&package=${encodeURIComponent(activeSelection.packageKey)}`}>Eveでクラウド依頼を作る <ArrowRight size={17} /></Link>
                 </> : activeOffer ? <MarketplacePurchase key={activeSelection.packageKey} offer={activeOffer} mode={commerce.data?.mode ?? null} compatible={Boolean(host && !registryHostMismatch(activeSelection.manifest.capabilities.executionTargets, host))} onOfferChanged={commerce.refresh} /> : <>
-              <p className={styles.modalNote}>{commerce.loading ? '販売情報を確認しています。' : commerce.error ? '販売情報を取得できませんでした。購入履歴を確認するか、再度開いてください。' : 'Skyでの販売設定はありません。料金と利用方法は提供元の案内を確認してください。'}審査済みは実行・購入・自動接続の完了を意味しません。</p>
-              <Link className={styles.modalAction} href="/sky/network">Skyで接続先を確認 <ArrowRight size={17} /></Link>
+              <p className={styles.modalNote}>{commerce.loading ? '販売情報を確認しています。' : commerce.error ? '販売情報を取得できませんでした。購入履歴を確認するか、再度開いてください。' : 'Noahでの販売設定はありません。料金と利用方法は提供元の案内を確認してください。'}審査済みは実行・購入・自動接続の完了を意味しません。</p>
+              <Link className={styles.modalAction} href="/noah/network">Noahで接続先を確認 <ArrowRight size={17} /></Link>
             </>}
           </DialogContent>
         )}
@@ -471,10 +471,10 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
               <div><dt>標準モデル</dt><dd>{selectedAi.defaultModel}</dd></div>
               <div><dt>実行場所</dt><dd>{selectedAi.connectionLabel}</dd></div>
               <div><dt>MCP経路</dt><dd>{selectedAi.mcpRoute}</dd></div>
-              <div><dt>認証</dt><dd>{selectedAi.credentialEnv ? 'smisの接続設定で管理' : '追加の外部鍵なし'}</dd></div>
+              <div><dt>認証</dt><dd>{selectedAi.credentialEnv ? 'Noahの接続設定で管理' : '追加の外部鍵なし'}</dd></div>
             </dl>
-            <p className={styles.modalNote}>LLMは勝手に外部操作しません。smis BrokerがToolの権限・確認・結果検証を通してからMCPを呼び出します。</p>
-            <Link className={styles.modalAction} href="/sky/network">接続設定を開く <ArrowRight size={17} /></Link>
+            <p className={styles.modalNote}>LLMは勝手に外部操作しません。Noah BrokerがToolの権限・確認・結果検証を通してからMCPを呼び出します。</p>
+            <Link className={styles.modalAction} href="/noah/network">接続設定を開く <ArrowRight size={17} /></Link>
           </DialogContent>
         )}
       </Dialog>

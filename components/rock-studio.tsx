@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useNoahSurface } from './noah-surface-context';
 import {
   Activity,
   Check,
@@ -56,6 +57,7 @@ type DeveloperTokenResponse = {
 };
 
 export default function RockStudio() {
+  const noah = useNoahSurface();
   const [copied, setCopied] = useState('');
   const [copyError, setCopyError] = useState('');
   const [developerToken, setDeveloperToken] = useState('');
@@ -107,14 +109,14 @@ export default function RockStudio() {
   return (
     <main className="studio-chat-shell studio-code-first">
       <header className="studio-chat-header">
-        <div className="studio-chat-brand">
+        {noah ? <h2>コード・SDKを公開</h2> : <div className="studio-chat-brand">
           <Link href="/" className="studio-wordmark" aria-label="ホームへ戻る">
             Rockstar<span>OS</span>
           </Link>
           <span className="studio-product-name">/ STUDIO</span>
-        </div>
+        </div>}
         <div className="studio-chat-nav">
-          <Link href="/sky">SKY</Link>
+          <Link href={noah ? "/noah/features" : "/sky"}>{noah ? "Noahの機能一覧" : "SKY"}</Link>
           <div className="studio-chat-private"><ShieldCheck size={15} />ソースコードの送信なし</div>
         </div>
       </header>

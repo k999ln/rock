@@ -11,6 +11,59 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
   }
   return {
     get,
+    async listNoahOperations(user: string, agentId: string | null = null, archived = false) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'noah-operation'
+        AND (json_extract(payload, '$.noahOperation.state') = 'archived') = ${archived ? 1 : 0}
+        ${agentId ? "AND json_extract(payload, '$.noahOperation.config.agentId') = ?" : ''}
+        ORDER BY updated_at DESC, id DESC LIMIT 20`).bind(...(agentId ? [user, agentId] : [user])).all<{ payload: string }>();
+      return rows.results.map(row => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
+    async createNoahOperation(user: string, job: WorkJob) {
+      await db.prepare(`INSERT INTO work_jobs (id,user_id,payload,revision,updated_at) SELECT ?,?,?,?,?
+        WHERE (SELECT COUNT(*) FROM work_jobs WHERE user_id = ? AND json_extract(payload,'$.templateId') = 'noah-operation' AND json_extract(payload,'$.noahOperation.state') != 'archived') < 20
+        ON CONFLICT(id) DO NOTHING`).bind(job.id,user,JSON.stringify(job),job.revision,job.updatedAt,user).run();
+      return get(user, job.id);
+    },
+    async updateNoahOperation(user: string, job: WorkJob, revision: number, restoring = false) {
+      const result = await db.prepare(`UPDATE work_jobs SET payload = ?,revision = ?,updated_at = ? WHERE id = ? AND user_id = ? AND revision = ?
+        AND (? = 0 OR (SELECT COUNT(*) FROM work_jobs WHERE user_id = ? AND json_extract(payload,'$.templateId') = 'noah-operation'
+          AND json_extract(payload,'$.noahOperation.state') != 'archived') < 20)`)
+        .bind(JSON.stringify(job),job.revision,job.updatedAt,job.id,user,revision,restoring ? 1 : 0,user).run();
+      return result.meta.changes === 1;
+    },
+    async listNoahEvents(user: string, agentId: string, cursor: { at: number; id: string }) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs WHERE user_id = ? AND json_extract(payload,'$.templateId') = 'noah-agent-local'
+        AND json_extract(payload,'$.noahExecution.agentId') = ? AND json_extract(payload,'$.noahExecution.state') = 'returned'
+        AND json_extract(payload,'$.noahExecution.result.exitCode') = 0 AND json_type(payload,'$.noahExecution.completedAt') = 'integer'
+        AND (json_extract(payload,'$.noahExecution.completedAt') > ? OR (json_extract(payload,'$.noahExecution.completedAt') = ? AND id > ?))
+        ORDER BY json_extract(payload,'$.noahExecution.completedAt'),id LIMIT 25`).bind(user,agentId,cursor.at,cursor.at,cursor.id).all<{payload:string}>();
+      return rows.results.map(row => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
+    async createNoahOperationRun(user: string, job: WorkJob, parent: WorkJob) {
+      await db.prepare(`INSERT INTO work_jobs (id,user_id,payload,revision,updated_at) SELECT ?,?,?,?,?
+        WHERE EXISTS (SELECT 1 FROM work_jobs WHERE id = ? AND user_id = ? AND revision = ?
+          AND json_extract(payload,'$.noahOperation.state') = 'enabled'
+          AND json_extract(payload,'$.noahOperation.active.jobId') = ?)
+        AND (? IS NULL OR EXISTS (SELECT 1 FROM work_jobs WHERE id = ? AND user_id = ? AND revision = ?))
+        ON CONFLICT(id) DO NOTHING`).bind(job.id,user,JSON.stringify(job),job.revision,job.updatedAt,parent.id,user,parent.revision,job.id,job.noahExecution?.operation?.event?.jobId ?? null,job.noahExecution?.operation?.event?.jobId ?? null,user,job.noahExecution?.operation?.event?.revision ?? null).run();
+      return get(user, job.id);
+    },
+    async startNoahOperationRun(user: string, job: WorkJob, previousRevision: number, parent: WorkJob) {
+      const result = await db.prepare(`UPDATE work_jobs SET payload = ?,revision = ?,updated_at = ? WHERE id = ? AND user_id = ? AND revision = ?
+        AND EXISTS (SELECT 1 FROM work_jobs p WHERE p.id = ? AND p.user_id = ? AND p.revision = ?
+          AND json_extract(p.payload,'$.noahOperation.state') = 'enabled'
+          AND json_extract(p.payload,'$.noahOperation.active.jobId') = ?)
+        AND (? IS NULL OR EXISTS (SELECT 1 FROM work_jobs WHERE id = ? AND user_id = ? AND revision = ?))`)
+        .bind(JSON.stringify(job),job.revision,job.updatedAt,job.id,user,previousRevision,parent.id,user,parent.revision,job.id,job.noahExecution?.operation?.event?.jobId ?? null,job.noahExecution?.operation?.event?.jobId ?? null,user,job.noahExecution?.operation?.event?.revision ?? null).run();
+      return result.meta.changes === 1;
+    },
+    async listNoah(user: string, agentId: string | null = null) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs WHERE user_id = ?
+        AND json_type(payload, '$.noahExecution') = 'object'
+        ${agentId ? "AND json_extract(payload, '$.noahExecution.agentId') = ?" : ''}
+        ORDER BY updated_at DESC, id DESC LIMIT 100`).bind(...(agentId ? [user, agentId] : [user])).all<{ payload: string }>();
+      return rows.results.map(row => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
     async listMaterial(user: string) {
       const rows = await db.prepare(
         `SELECT id, json_extract(payload, '$.title') AS title, revision,

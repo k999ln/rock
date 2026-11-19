@@ -124,14 +124,14 @@ export default function SkyOutputCenter({
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'Skyの成果.html';
+      link.download = 'Noahの成果.html';
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       setExportMessage(response.headers.get('x-sky-export-completeness') === 'partial'
         ? "保存を開始しました。省略・未確認の項目があるため、ファイル内の案内も確認してください。"
-        : '保存を開始しました。保存したHTMLをブラウザで開くと、Skyへの接続なしで読めます。');
+        : '保存を開始しました。保存したHTMLをブラウザで開くと、Noahへの接続なしで読めます。');
     } catch (error) {
       if (!controller.signal.aborted)
         setExportMessage(skyError(error).message + ' ' + skyError(error).next);
@@ -209,7 +209,7 @@ export default function SkyOutputCenter({
   }
 
   return <WorkspaceShell
-    title={campusId ? `${CAMPUSES[campusId].shortName} smis` : 'smis'}
+    title={campusId ? `${CAMPUSES[campusId].shortName} Noah` : 'Noah'}
     contentClassName={styles.shell}
     tone="sky"
   >
@@ -222,15 +222,15 @@ export default function SkyOutputCenter({
         </div>
         <button type="button" onClick={refresh}><RefreshCw size={16} /> 更新</button>
       </header>
-      <nav className={styles.nav} aria-label="Skyの移動先">
-        <Link href={home}>Skyでエージェントを探す</Link>
+      <nav className={styles.nav} aria-label="Noahの移動先">
+        <Link href={home}>Noahでエージェントを探す</Link>
         <Link href="/fitness">Fitnessアプリの例 <ArrowRight size={15} /></Link>
         <Link href={zema}>OS版のEveで仕事を見る</Link>
       </nav>
       {listState === 'loading' && <p className={styles.notice}>本人の仕事を読み込んでいます…</p>}
       {listState === 'signed_out' && <p className={styles.notice}><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(outputPath)}`}>サインイン</Link>すると、自分の成果を確認できます。</p>}
       {listState === 'unavailable' && <p className={styles.notice} role="alert">仕事を読み込めませんでした。接続を確認して更新してください。</p>}
-      {listState === 'ready' && jobs.length === 0 && <div className={styles.empty}><h2>まだ成果はありません</h2><p>Skyで保存されたエージェント成果がここに並びます。対応アプリでは、その成果をアプリ専用の画面で表示できます。</p><Link href={home}>Skyを開く <ArrowRight size={15} /></Link></div>}
+      {listState === 'ready' && jobs.length === 0 && <div className={styles.empty}><h2>まだ成果はありません</h2><p>Noahで保存されたエージェント成果がここに並びます。対応アプリでは、その成果をアプリ専用の画面で表示できます。</p><Link href={home}>Skyを開く <ArrowRight size={15} /></Link></div>}
       {listState === 'ready' && jobs.length > 0 && <div className={styles.layout}>
         <section className={styles.list} aria-label="仕事一覧">
           <div className={styles.sectionHead}><h2>仕事</h2><span>{jobs.length}件</span></div>
@@ -273,7 +273,7 @@ export default function SkyOutputCenter({
               </div>
             </div>
           </article>}
-          {detailState === 'ready' && !sourceError && !selected?.standaloneAgent && delegations.length === 0 && answers.length === 0 && <p className={styles.notice}>この仕事には保存済みのAgent成果・Cloud si回答がありません。実行中の状態はZemaで確認できます。</p>}
+          {detailState === 'ready' && !sourceError && !selected?.standaloneAgent && delegations.length === 0 && answers.length === 0 && <p className={styles.notice}>この仕事には保存済みのAgent成果・Cloud si回答がありません。実行中の状態はEveで確認できます。</p>}
           {detailState === 'ready' && delegations.map((delegation) => <article className={styles.output} key={delegation.id}>
             <div className={styles.outputHead}>
               <div><small>エージェント</small><h3>{delegation.targetAgentName}</h3><span>v{delegation.targetAgentVersion} · {skyProgress(delegation.state, 'execution').label}</span></div>

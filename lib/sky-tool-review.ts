@@ -3,6 +3,7 @@ import type {
   SkyToolPackageStatus,
   StoredSkyToolPackage,
 } from './sky-tool-package-store.ts';
+import { parseSkyToolPackage, skyToolPackageSha256 } from './sky-tool-package.ts';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
 
@@ -172,13 +173,25 @@ export function skyToolReviewStore(db: Database) {
     ): Promise<{ package: StoredSkyToolPackage; review: SkyToolPackageReview }> {
       const current = await db
         .prepare(
-          `SELECT status FROM sky_tool_packages
+          `SELECT status, manifest FROM sky_tool_packages
            WHERE package_key = ? AND manifest_sha256 = ?`,
         )
         .bind(input.packageKey, input.manifestSha256)
-        .first<{ status: SkyToolPackageStatus }>();
+        .first<{ status: SkyToolPackageStatus; manifest: string }>();
       if (!current)
         throw new SkySubmissionError('審査対象のTool Packageが見つかりません。', 404);
+      if (input.decision === 'verified') {
+        // Old packages may omit source.artifact, but never source itself. Do not
+        // turn a malformed stored manifest into an approved legacy package.
+        let manifest;
+        try { manifest = parseSkyToolPackage(JSON.parse(current.manifest)); }
+        catch { throw new SkySubmissionError('審査対象の保存仕様が不正です。元の登録版を確認してください。', 409); }
+        if (`${manifest.id}@${manifest.version}` !== input.packageKey ||
+          await skyToolPackageSha256(manifest) !== input.manifestSha256)
+          throw new SkySubmissionError('審査対象の保存仕様と固定版が一致しません。', 409);
+        if (manifest.source.artifact && input.sourceSha256 !== manifest.source.artifact.sha256)
+          throw new SkySubmissionError('審査したコードがこの配布版の固定hashと一致しません。', 409);
+      }
       const allowed =
         input.decision === 'verified'
           ? ['submitted', 'published_declared']

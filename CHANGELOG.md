@@ -1,4 +1,12 @@
+## 2026-11-19
+
+- Noah単体ローンチの登録・独立審査・別利用者実行を開発ブランチへ統合し、認証付きMac Runner・配布ZIP・停止確認を追加。12件の失敗・移行整合性・ファイル読取競合を修正し、全体verifyとローカルAPI/実コンテナの接続→実行→停止を確認。公開はリリース工程、別Mac実機は未確認（[PR #322](https://github.com/k999ln/rock/pull/322)）。
+
 ## 2026-11-18
+
+- NoahとEveのヘッダーを共通化し、Eveだけに出るコミュニティータブ・タブ位置のずれを修正。avoado.si版149へ公開し、切替と既存認証の保持を確認（[PR #320](https://github.com/k999ln/rock/pull/320)）。
+
+- 旧Noah/Skyの画面をNoah共通シェルと機能一覧に統合。旧URLの条件保持・誤配信404・AMC循環を修正し、ローカル実験の制限を保持。表示名・配色競合も修正し、avoado.si公開版148を107項目で確認（[PR #320](https://github.com/k999ln/rock/pull/320)）。
 
 - 公開assetの正規URLをWorker経由へ修正し、CIの一時ブラウザーでローカル接続権限と実Tool再確認を明示。v144の公開ヘッダー8ルートと検索→Mac版への移動を実測（[PR #319](https://github.com/k999ln/rock/pull/319)）。
 - 統合Noahタイムラインをavoado.siの公開入口に接続。ドメイン直下からNoahを開き、既存の共有URLとMac版への導線を保持（公開v143を実URLで確認、[PR #319](https://github.com/k999ln/rock/pull/319)）。

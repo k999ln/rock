@@ -597,6 +597,7 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
 
 void test('Workbench keeps A creation through precommit failure, 401 and B switch, then resumes A once', async (t) => {
   const h = await setup(t);
+  const untouched = h.sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT IN ('work_jobs','rockstar_service_entitlements')").all().map(({ name }) => ({ name, rows: h.sqlite.prepare(`SELECT * FROM "${String(name)}"`).all() }));
   h.render();
   await h.flush();
   h.input('Synthetic original owner draft');
@@ -669,17 +670,9 @@ void test('Workbench keeps A creation through precommit failure, 401 and B switc
     (await h.routeCall('POST', original.value, 'bob')).response.status,
     409,
   );
-  const tables = h.sqlite
-    .prepare(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT IN ('work_jobs','rockstar_service_entitlements')",
-    )
-    .all();
-  for (const { name } of tables)
-    assert.equal(
-      h.sqlite.prepare(`SELECT COUNT(*) n FROM "${String(name)}"`).get().n,
-      0,
-      name,
-    );
+  // Seeded discovery providers are baseline data, not a Workbench side effect.
+  for (const { name, rows } of untouched)
+    assert.deepEqual(h.sqlite.prepare(`SELECT * FROM "${String(name)}"`).all(), rows, name);
 });
 
 void test('Workbench API rejects the owner switch after preflight before save and owner intent never authenticates', async (t) => {

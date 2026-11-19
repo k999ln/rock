@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "avokado-noah-test-runtime",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "durable_objects": { "bindings": [{ "name": "OPERATIONS", "class_name": "NoahTestOperation" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["NoahTestOperation"] }],
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "observability": { "enabled": false },
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }]
+}

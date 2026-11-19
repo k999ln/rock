@@ -1,0 +1,45 @@
+{
+  "name": "noah-save-refactor",
+  "displayName": "Noah 保存時リファクタ",
+  "publisher": "avokado",
+  "version": "0.1.0",
+  "description": "Noahで運用する公式Agentへ保存内容を渡し、指定テストに通った修正を保存します。",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "main": "./extension.cjs",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    },
+    "virtualWorkspaces": false
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "noah.saveRefactor.connect",
+        "title": "Noah: このファイルを保存時リファクタに接続"
+      },
+      {
+        "command": "noah.saveRefactor.open",
+        "title": "Noah: 保存時運用を開く"
+      },
+      {
+        "command": "noah.saveRefactor.stop",
+        "title": "Noah: 保存時リファクタを停止"
+      },
+      {
+        "command": "noah.saveRefactor.restore",
+        "title": "Noah: 直前のリファクタ前へ復元"
+      }
+    ]
+  },
+  "private": true,
+  "license": "UNLICENSED",
+  "extensionKind": [
+    "ui"
+  ]
+}

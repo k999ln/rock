@@ -52,3 +52,7 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 69 | [69-noah-public-timeline.md](69-noah-public-timeline.md) | 統合タイムラインの公開とGit保存 | ✅ 公開v144・ヘッダー検証済み・[PR #319](https://github.com/k999ln/rock/pull/319) |
+
+| 70 | [70-noah-route-unification.md](70-noah-route-unification.md) | 旧画面とNoahの統合・404修正 | ✅ 公開版149・Eveヘッダー確認済み・[PR #320](https://github.com/k999ln/rock/pull/320) |
+
+| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)・本番/別Mac未確認 |

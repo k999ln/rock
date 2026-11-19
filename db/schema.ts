@@ -9,6 +9,36 @@ import {
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
+export const noahDiscoverySources = sqliteTable('noah_discovery_sources', {
+  id: text('id').primaryKey(), leaseId: text('lease_id'), leaseUntil: integer('lease_until').notNull().default(0),
+  nextRunAt: integer('next_run_at').notNull().default(0), lastAttemptAt: integer('last_attempt_at'), lastSuccessAt: integer('last_success_at'),
+  etag: text('etag'), cursorKey: text('cursor_key'), errorCode: text('error_code'), failureCount: integer('failure_count').notNull().default(0),
+  observed: integer('observed').notNull().default(0), withdrawn: integer('withdrawn').notNull().default(0), requestCount: integer('request_count').notNull().default(0),
+}, t => [check('noah_discovery_source_provider', sql`${t.id} IN ('github','huggingface')`)]);
+export const noahDiscoveryCandidates = sqliteTable('noah_discovery_candidates', {
+  id: text('id').primaryKey(), provider: text('provider').notNull(), externalId: text('external_id').notNull(), repository: text('repository').notNull(), digest: text('digest').notNull(),
+  state: text('state').notNull(), revision: integer('revision').notNull(), firstSeenAt: integer('first_seen_at').notNull(), changedAt: integer('changed_at').notNull(), checkedAt: integer('checked_at').notNull(),
+}, t => [uniqueIndex('noah_discovery_candidates_provider_id').on(t.provider,t.externalId),index('noah_discovery_candidates_refresh').on(t.provider,t.state,t.checkedAt,t.id),index('noah_discovery_candidates_latest').on(t.state,t.changedAt,t.id),check('noah_discovery_candidate_provider',sql`${t.provider} IN ('github','huggingface')`),check('noah_discovery_candidate_state',sql`${t.state} IN ('active','withdrawn')`)]);
+export const noahDiscoveryVersions = sqliteTable('noah_discovery_versions', {
+  candidateId: text('candidate_id').notNull().references(()=>noahDiscoveryCandidates.id), revision: integer('revision').notNull(), digest: text('digest').notNull(),
+  metadataJson: text('metadata_json').notNull(), state: text('state').notNull(), observedAt: integer('observed_at').notNull(),
+}, t => [primaryKey({columns:[t.candidateId,t.revision]}),index('noah_discovery_versions_snapshot').on(t.candidateId,t.observedAt,t.revision),check('noah_discovery_version_state',sql`${t.state} IN ('active','withdrawn')`)]);
+
+export const noahRecommendationSettings = sqliteTable('noah_recommendation_settings', {
+  ownerId: text('owner_id').primaryKey(), revision: integer('revision').notNull(),
+  historyEnabled: integer('history_enabled').notNull().default(0), historySince: integer('history_since').notNull().default(0),
+  runtime: text('runtime').notNull().default('any'), updatedAt: integer('updated_at').notNull(),
+}, t => [check('noah_recommendation_revision',sql`${t.revision}>=1`),check('noah_recommendation_history',sql`${t.historyEnabled} IN (0,1)`),check('noah_recommendation_runtime',sql`${t.runtime} IN ('any','headless','local-model','codex')`)]);
+
+export const noahFeedPreferences = sqliteTable('noah_feed_preferences', {
+  ownerId: text('owner_id').notNull(),
+  kind: text('kind').notNull(),
+  subject: text('subject').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, table => [primaryKey({ columns: [table.ownerId, table.kind, table.subject] }),
+  check('noah_feed_preference_kind', sql`${table.kind} IN ('follow','hide','interest','personalize')`),
+  check('noah_feed_preference_subject', sql`length(${table.subject}) BETWEEN 1 AND 160`)]);
+
 export const skyLibraryItems = sqliteTable('sky_library_items', {
   userId: text('user_id').notNull(),
   tool: text('tool').notNull(),
@@ -2064,6 +2094,15 @@ export const skyXAccounts = sqliteTable('sky_x_accounts', {
   fetchedAt:integer('fetched_at').notNull().default(0),nextRefreshAt:integer('next_refresh_at').notNull().default(0),retryAt:integer('retry_at').notNull().default(0),
   leaseId:text('lease_id'),leaseUntil:integer('lease_until').notNull().default(0),windowDay:text('window_day').notNull().default(''),requestCount:integer('request_count').notNull().default(0),errorCode:text('error_code'),
 });
+export const noahAgentUploads = sqliteTable('noah_agent_uploads', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), manifest: text('manifest').notNull(),
+  manifestSha256: text('manifest_sha256').notNull(), sourceKey: text('source_key'), sourceName: text('source_name'),
+  sourceBytes: integer('source_bytes'), sourceSha256: text('source_sha256'), uploadState: text('upload_state').notNull().default('pending'),
+  originalKey: text('original_key'), originalName: text('original_name'), originalBytes: integer('original_bytes'),
+  originalSha256: text('original_sha256'), processingJson: text('processing_json'),
+  createdAt: integer('created_at').notNull(), deletedAt: integer('deleted_at'),
+}, t => [index('noah_agent_uploads_owner_created').on(t.ownerId, t.createdAt, t.id)]);
+
 export const skyXOAuthStates = sqliteTable('sky_x_oauth_states', {
   stateHash:text('state_hash').primaryKey(),ownerId:text('owner_id').notNull(),cookieHash:text('cookie_hash').notNull(),verifier:text('verifier').notNull(),accountRevision:integer('account_revision').notNull(),expiresAt:integer('expires_at').notNull(),usedAt:integer('used_at').notNull().default(0),
 }, t=>[index('sky_x_oauth_owner_expiry').on(t.ownerId,t.expiresAt)]);
@@ -2124,3 +2163,51 @@ export const rockstarAccountSessions = sqliteTable('rockstar_account_sessions', 
   tokenSha256: text('token_sha256').notNull().unique(), createdAt: integer('created_at').notNull(),
   expiresAt: integer('expires_at').notNull(), lastUsedAt: integer('last_used_at').notNull(), revokedAt: integer('revoked_at'),
 }, t => [index('idx_rockstar_account_session_owner').on(t.userId), check('rockstar_account_session_hash', sql`length(${t.tokenSha256}) = 64`)]);
+export const noahAgentDrafts = sqliteTable('noah_agent_drafts', {
+  registeredUploadId: text('registered_upload_id'), registeredDraftRevision: integer('registered_draft_revision'), restoredFromRevision: integer('restored_from_revision'), purgedAt: integer('purged_at'),
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), content: text('content').notNull(),
+  revision: integer('revision').notNull(), commandId: text('command_id').notNull(), inputSha256: text('input_sha256').notNull(),
+  sourceKey: text('source_key'), sourceName: text('source_name'), sourceBytes: integer('source_bytes'), sourceSha256: text('source_sha256'),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(), deletedAt: integer('deleted_at'),
+}, t => [index('noah_agent_drafts_owner_updated').on(t.ownerId, t.updatedAt, t.id)]);
+
+export const noahAgentInvites = sqliteTable('noah_agent_invites', {
+  executionAllowed: integer('execution_allowed').notNull().default(0),
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), uploadId: text('upload_id').notNull().references(() => noahAgentUploads.id),
+  manifestSha256: text('manifest_sha256').notNull(), sourceSha256: text('source_sha256'), tokenSha256: text('token_sha256').notNull().unique(),
+  inputSha256: text('input_sha256').notNull(), recipientId: text('recipient_id'), accessScope: text('access_scope').notNull(), expiresAt: integer('expires_at').notNull(),
+  maxUses: integer('max_uses').notNull(), revision: integer('revision').notNull().default(1), revokedAt: integer('revoked_at'), createdAt: integer('created_at').notNull(),
+}, t => [index('noah_invites_owner_created').on(t.ownerId,t.createdAt,t.id)]);
+export const noahAgentInviteClaims = sqliteTable('noah_agent_invite_claims', {
+  inviteId: text('invite_id').notNull().references(() => noahAgentInvites.id), recipientId: text('recipient_id').notNull(), claimedAt: integer('claimed_at').notNull(),
+}, t => [primaryKey({columns:[t.inviteId,t.recipientId]}),index('noah_invite_claims_recipient').on(t.recipientId,t.inviteId)]);
+
+export const noahInstances = sqliteTable('noah_instances', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), familyKey: text('family_key').notNull(),
+  payload: text('payload').notNull(), revision: integer('revision').notNull(),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, t => [uniqueIndex('noah_instances_owner_family').on(t.ownerId,t.familyKey), index('noah_instances_owner_updated').on(t.ownerId,t.updatedAt,t.id)]);
+
+export const noahDraftObjects = sqliteTable('noah_draft_objects', {
+  objectKey: text('object_key').primaryKey(), ownerId: text('owner_id').notNull(), draftId: text('draft_id').notNull(),
+  bytes: integer('bytes').notNull(), sha256: text('sha256').notNull(), state: text('state').notNull(),
+  writeExpiresAt: integer('write_expires_at').notNull(), orphanedAt: integer('orphaned_at'),
+  createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, t => [index('noah_draft_objects_owner_state').on(t.ownerId,t.state,t.orphanedAt)]);
+export const noahDraftStorageScans = sqliteTable('noah_draft_storage_scans', {
+  ownerId: text('owner_id').primaryKey(), cursor: text('cursor'), lastScanAt: integer('last_scan_at'), revision: integer('revision').notNull().default(0),
+});
+
+export const noahRunnerDevices = sqliteTable('noah_runner_devices', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), credentialSha256: text('credential_sha256').notNull().unique(),
+  bootId: text('boot_id').notNull(), name: text('name').notNull(), platform: text('platform').notNull(),
+  createdAt: integer('created_at').notNull(), lastSeenAt: integer('last_seen_at').notNull(), revokedAt: integer('revoked_at'),
+}, t => [index('noah_runner_owner').on(t.ownerId,t.lastSeenAt)]);
+export const noahRunnerCommands = sqliteTable('noah_runner_commands', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), deviceId: text('device_id').notNull().references(() => noahRunnerDevices.id),
+  bootId: text('boot_id').notNull(), kind: text('kind').notNull(), state: text('state').notNull(), requestSha256: text('request_sha256').notNull(),
+  payload: text('payload').notNull(), leaseSha256: text('lease_sha256'), leaseUntil: integer('lease_until').notNull().default(0),
+  stopRequested: integer('stop_requested').notNull().default(0), result: text('result'), createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
+}, t => [index('noah_runner_queue').on(t.deviceId,t.state,t.createdAt),index('noah_runner_history').on(t.ownerId,t.updatedAt),
+  uniqueIndex('noah_runner_one_claim').on(t.deviceId).where(sql`${t.state}='claimed'`),
+  check('noah_runner_kind',sql`${t.kind} IN ('connect','run')`),check('noah_runner_state',sql`${t.state} IN ('queued','claimed','succeeded','failed','cancelled','unknown')`)]);

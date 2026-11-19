@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import OsAppNavigation from './os-app-navigation';
-import { osRouteHref, type OsNavigationId } from '@/lib/os-navigation';
+import { activeOsNavigation, osRouteHref, type OsNavigationId } from '@/lib/os-navigation';
+import ProductAppHeader from './product-app-header';
 
 /** Shared application chrome. Running work keeps every navigation link inert. */
 export default function OSHeader({
@@ -31,6 +32,9 @@ export default function OSHeader({
   }, []);
   const pathname = usePathname();
   const homeHref = osRouteHref(pathname, '/os/eve', process.env.NODE_ENV === 'development');
+  if (title === 'Eve' || activeNavigation === 'eve' || activeOsNavigation(pathname) === 'eve') {
+    return <ProductAppHeader active="eve" running={running} hideNavigation={hideNavigation}>{children}</ProductAppHeader>;
+  }
   return (
     <header
       className="os-header"

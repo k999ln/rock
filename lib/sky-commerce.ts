@@ -4,9 +4,7 @@ import { skyCommerceStore, type CommerceOrder, type CommerceStatus } from './sky
 import { readSkyStripeConfig, skyStripe, SkyPaymentError, type SkyStripeConfig, type StripeAccount, type StripeCheckoutSession, type StripePaymentIntent } from './sky-stripe.ts';
 import { verifyStripeSignature } from '../services/sky-billing/src/stripe-signature.ts';
 import type { SkyToolPackage } from './sky-tool-package.ts';
-import { rockstarEntitlementStore } from './rockstar-entitlement-claim.ts';
-import { describeRockstarServiceOfferProfile, parseRockstarServiceOfferProfiles } from './rockstar-service-offers.ts';
-import { skyToolPackageStore } from './sky-tool-package-store.ts';
+import { includedSkyPackage } from './sky-package-entitlement.ts';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
 type Runtime = Record<string, unknown>;
@@ -58,32 +56,8 @@ export function skyCommerce(
     return { ...item, definition: JSON.parse(item.manifest) as SkyToolPackage };
   }
   async function isIncludedInActiveServiceOffer(userId: string, packageKey: string) {
-    if (!serviceOfferProfiles) return false;
-    let profiles;
-    try { profiles = parseRockstarServiceOfferProfiles(serviceOfferProfiles).profiles; }
+    try { return await includedSkyPackage(db, userId, packageKey, serviceOfferProfiles); }
     catch { throw new SkyPaymentError('SIM/eSIMのPackage構成を検証できません。購入を保留してください。', 503); }
-    const entitlements = await rockstarEntitlementStore(db).activeOffers(userId, profiles);
-    if (!entitlements.length) return false;
-    // Purchase eligibility must use the owner's exact offer pins, independent
-    // of the paginated public registry and unrelated newer publications.
-    const references = profiles.filter((profile) => entitlements.some((entitlement) =>
-      entitlement.issuerId === profile.issuerId && entitlement.offerId === profile.offerId,
-    )).flatMap((profile) => profile.packages);
-    const registry = await skyToolPackageStore(db).verifiedRegistryPackages(references);
-    for (const entitlement of entitlements) {
-      const profile = await describeRockstarServiceOfferProfile(
-        entitlement.issuerId,
-        entitlement.offerId,
-        serviceOfferProfiles,
-        registry,
-      );
-      if (profile.state === 'catalog_unavailable')
-        throw new SkyPaymentError('SIM/eSIMのPackage構成を検証できません。購入を保留してください。', 503);
-      if (profile.packages.some((item) =>
-        item.state === 'ready' && item.packageKey === packageKey,
-      )) return true;
-    }
-    return false;
   }
   async function purchaseView(order: CommerceOrder, seller = false) {
     const manifest = await store.access(order);
@@ -95,6 +69,7 @@ export function skyCommerce(
       checkoutUrl: !seller && order.status === 'pending' ? order.checkoutUrl : null,
       termsUrl: order.termsUrl, refundPolicy: order.refundPolicy,
       access: Boolean(manifest) && !seller, endpointUrl: !seller && manifest ? manifest.adapter.endpointUrl : null,
+      releaseManifestSha256: !seller && manifest?.source.artifact?.runtime ? order.manifestSha256 : null,
     };
   }
   async function verifyIntent(order: CommerceOrder, intent: StripePaymentIntent) {

@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "answer": { "type": "string" },
+    "next_steps": { "type": "array", "items": { "type": "string" } },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["answer", "next_steps", "limitations"],
+  "additionalProperties": false
+}

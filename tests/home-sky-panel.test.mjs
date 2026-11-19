@@ -10,7 +10,7 @@ void test('Home combines Add and management while old links preserve their actio
   for (const hash of ['', '#timeline', '#communities', '#community=fixture', '#sky-manage-other']) assert.equal(skyHomePanelForHash(hash), null);
   assert.deepEqual(osNavigationItems.map(x => x.id), ['stream', 'eve', 'communities']);
   for (const hash of ['#sky', '#sky-manage', '#catalog']) assert.equal(activeOsNavigation('/', hash), 'stream');
-  assert.match(read('app/sky/agents/page.tsx'), /redirect\('\/#sky-manage'\)/);
+  assert.match(read('app/sky/agents/page.tsx'), /redirect\('\/noah\/saved'\)/);
 });
 
 void test('embedded owner settings reuse the same store, revision, device connections and Eve links', () => {

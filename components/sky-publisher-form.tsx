@@ -219,15 +219,15 @@ export default function SkyPublisherForm({
       <div className="sky-publish-heading">
         <div>
           <p className="rock-eyebrow">FOR TOOL PROVIDERS</p>
-          <h1>自動化ツールを、smisへ。</h1>
+          <h1>自動化ツールを、Noahへ。</h1>
           <p>
-            利用者が判断するための情報だけを入力。遠隔MCPは送信前にsmisが接続とツール一覧を確認します。
+            利用者が判断するための情報だけを入力。遠隔MCPは送信前にNoahが接続とツール一覧を確認します。
           </p>
         </div>
         {!embedded && (
-          <Link href="/sky" className="rock-button rock-button-subtle">
+          <Link href="/noah" className="rock-button rock-button-subtle">
             <ArrowLeft size={16} />
-            smisへ戻る
+            Noahへ戻る
           </Link>
         )}
       </div>
@@ -244,7 +244,7 @@ export default function SkyPublisherForm({
       )}
       <div className="sky-publish-layout">
         <form className="sky-publish-form" onSubmit={submit}>
-          <Link href="/studio" className="rock-button rock-button-subtle">
+          <Link href="/noah/publish" className="rock-button rock-button-subtle">
             <MonitorUp size={17} />
             PCのコード・GitHub・OpenAPIから登録する
           </Link>
@@ -561,12 +561,12 @@ export default function SkyPublisherForm({
         </form>
         <aside className="sky-publish-review">
           <ShieldCheck size={25} />
-          <h2>公開前にsmisが確認すること</h2>
+          <h2>公開前にNoahが確認すること</h2>
           <ol>
             <li>MCPの初期化と能力一覧</li>
             <li>作者・版・配布元の対応</li>
             <li>権限、送信先、料金の差分</li>
-            <li>認証情報をsmisへ直接入力させないこと</li>
+            <li>認証情報をNoahへ直接入力させないこと</li>
             <li>停止、失敗、結果不明時の挙動</li>
           </ol>
           <p>
@@ -577,5 +577,5 @@ export default function SkyPublisherForm({
     </div>
   );
   if (embedded) return <div className={`sky-publish-embedded ${styles.embedded}`}>{content}</div>;
-  return <WorkspaceShell title="smisに掲載" tone="sky">{content}</WorkspaceShell>;
+  return <WorkspaceShell title="Noahに掲載" tone="sky">{content}</WorkspaceShell>;
 }

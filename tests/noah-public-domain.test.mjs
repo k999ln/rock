@@ -5,11 +5,11 @@ import { routesToSky, withMiniSite } from '../services/sky-web/domain-router.mjs
 void test('Noah pages and public API remain on the existing Site instead of Mini proxy', async () => {
   const seen = [];
   const app = withMiniSite({ fetch: request => { seen.push(new URL(request.url).pathname); return new Response('site'); } }, () => { throw Error('unexpected external proxy'); });
-  for (const path of ['/noah', '/noah/agents/anicca', '/api/noah/public-catalog']) {
+  for (const path of ['/noah', '/noah/agents/anicca', '/api/noah/public-catalog', '/noah-downloads/Noah-Mac.zip']) {
     assert.equal(routesToSky(path), true);
     assert.equal(await (await app.fetch(new Request('https://avoado.si' + path), {}, {})).text(), 'site');
   }
-  assert.equal(seen.length, 3); assert.equal(routesToSky('/noah-unrelated'), false);
+  assert.equal(seen.length, 4); assert.equal(routesToSky('/noah-unrelated'), false);
 });
 void test('only exact public shard and logo assets are delivered by the asset binding', async () => {
   let assetCalls = 0, workerCalls = 0;

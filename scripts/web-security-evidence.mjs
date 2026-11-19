@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 export const WEB_SECURITY_EVIDENCE_PATH = 'data/web-security-response-current.json';
 export const WEB_SECURITY_INPUTS = [
   'services/sky-web/asset-responses.mjs', 'scripts/stage-secure-assets.mjs',
+  'services/sky-web/noah-page-routes.mjs',
   'services/sky-web/domain-router.mjs', 'scripts/stage-sky-domain-router.mjs',
   'data/web-security-policy.json', 'public/_headers', 'next.config.ts',
   'scripts/check-web-security-response.mjs', 'scripts/web-security-evidence.mjs',
