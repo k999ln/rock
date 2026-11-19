@@ -67,7 +67,7 @@
 
 ## 70〜90番台: Noah — mii へ進む最小構成（2026-11-20）
 
-設計は [docs/noah-design.md](../../docs/noah-design.md)（全体）と [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)（接続・実行・取り込み・市場の詳細）。**番号順ではなく、下の「順」の順に進める。** 段階 0 は main の方針（最初の完成条件は本人の Mac 上の Noah）。段階 1 は Mac の受入と並べて進められる。75・91 は個別の残件で、本人の許可（契約・月の上限）が先。83 は署名と配布、87 はモデルの出どころ、78 は Stripe の sandbox、80 の 0 クリックと 81 の並び順は本人の確認が先。
+設計は [docs/noah-design.md](../../docs/noah-design.md)（全体）。**実装は [docs/noah-detailed-design.md](../../docs/noah-detailed-design.md)（詳細設計書）を見て進める。** その 0 章が実装する Agent への指示、17 章が task と章の対応、18 章が本人の決定待ちの既定値。背景と費用の計算は [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)。**番号順ではなく、下の「順」の順に進める。** 段階 0 は main の方針（最初の完成条件は本人の Mac 上の Noah）。段階 1 は Mac の受入と並べて進められる。75・91 は個別の残件で、本人の許可（契約・月の上限）が先。83 は署名と配布、87 はモデルの出どころ、78 は Stripe の sandbox、80 の 0 クリックと 81 の並び順は本人の確認が先。
 
 | 順 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- | --- |
