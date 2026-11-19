@@ -17,5 +17,5 @@
 - hardware profile 依存: phone でも可。全部。
 - 失敗時: 割れた問いは会社の担当者が見る。人数が足りない問いは short として表示。採用されない型は採用率が下がり、得にならなくなった時点で提案が止まる。
 - 記録: Receipt に、募集ID、判定と理由、提案額、送信の記録、問いID・答えた人・結論。募集の本文と依頼者の名前は残さない。
-- 変えない境界: 窓口のアカウントは1つ。参加者の個人アカウントは操作しない。出品代行はしない。lib/sky-gig-desk.ts からサイトへ直接つながない（手は lane runner）。規約の該当条は [sky-work-loop.md §7.2](../sky-work-loop.md)。
+- 変えない境界: 窓口のアカウントは1つ。参加者の個人アカウントは操作しない。出品代行はしない。lib/sky-gig-desk.ts からサイトへ直接つながない（手は lane runner）。規約の該当条は [work-loop.md §7.2](../work-loop.md)。
 - 未実装: lane runner との実接続（[task 36](../../codex/tasks/36-mr-gig-upstream-sync.md)、[task 37](../../codex/tasks/37-lane-runner-bridge.md)）、参加者の画面と保存（[task 35](../../codex/tasks/35-gig-desk-screen.md)）、参加者の端末へ問い・計算を届ける経路。
