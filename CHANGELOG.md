@@ -1,3 +1,7 @@
+## 2026-11-20
+
+- Noah公開登録の未ログイン時停止・無効な再確認、ChatGPTログインへの循環、下書きの公開モード消失を修正。登録/運用/Mac承認を既存accountへ接続し、outbox競合試験の誤った勝者固定も解消。全体verify成功、本番の登録→実行→停止は有効セッション確認待ち（[PR #324](https://github.com/k999ln/rock/pull/324)）。
+
 ## 2026-11-19
 
 - 最新のNoah/Eve、仕事計画、mii設計研究、AMC・リセール・全社担当を統合候補へ集約。READMEを現在の利用方法と受入範囲へ整理し、進捗生成を現行project.mdへ移動。探索打切りと競合quorumを修正（[PR #321](https://github.com/k999ln/rock/pull/321)）。

@@ -1,5 +1,6 @@
 'use client';
 import { noahTerminalTemplate } from '@/lib/noah-terminal-template';
+import { noahUploadPath } from '@/lib/noah-surface';
 import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,6 +19,8 @@ export default function NoahAgentUploadForm() {
   const [source, setSource] = useState<File | null>(null), [scope, setScope] = useState('');
   const [id, setId] = useState(''), [rights, setRights] = useState(false), [pending, setPending] = useState(false), [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
+  const [accountChecking, setAccountChecking] = useState(true), [signedOut, setSignedOut] = useState(false);
+  const [returnPath, setReturnPath] = useState('/noah/agents/new?launch=1');
   const [drafts, setDrafts] = useState<Array<{id:string;name:string;revision:number;updatedAt:number}>>([]);
   const [storageTick,setStorageTick] = useState(0);
   const [draftMessage, setDraftMessage] = useState(''), [draftError, setDraftError] = useState('');
@@ -40,10 +43,13 @@ export default function NoahAgentUploadForm() {
   }, []);
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/noah/agents', { cache: 'no-store', signal: controller.signal }).then(async r => {
-      const data = await r.json() as { ownerScope: string; error?: string }; if (!r.ok) throw new Error(data.error || 'アカウントを確認できません。');
+    fetch('/api/noah/agents', { cache: 'no-store', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]) }).then(async r => {
+      if (controller.signal.aborted) return;
+      if (r.status === 401) { setScope(''); setSignedOut(true); return; }
+      const data = await r.json() as { ownerScope: string; error?: string }; if (!r.ok || !data.ownerScope) throw new Error(data.error || 'アカウントを確認できません。');
       if (!controller.signal.aborted) { setScope(data.ownerScope); setError(''); }
-    }).catch(e => { if (!controller.signal.aborted) setError(e.message); });
+    }).catch(e => { if (!controller.signal.aborted) { setScope(''); setError(e instanceof Error && e.name === 'TimeoutError' ? 'アカウントの確認が時間切れになりました。再確認してください。' : 'アカウントを確認できません。通信を確認して再試行してください。'); } })
+      .finally(() => { if (!controller.signal.aborted) { setReturnPath(noahUploadPath(window.location.search)); setAccountChecking(false); } });
     return () => controller.abort();
   }, [attempt]);
   const draftContent = JSON.stringify({ manifest, codeMode, codeName, code: rights ? code : '', rights, validation: { enabled: verifiedRefactor, testName, testCode: rights ? testCode : '' } });
@@ -77,7 +83,7 @@ export default function NoahAgentUploadForm() {
       draft.current.revision = data.draft.revision; draft.current.saved = draftSignature; draftRetry.current = null;
       setDrafts(rows => [{ id: data.draft.id, name: typeof data.draft.content.manifest.name === 'string' && data.draft.content.manifest.name || '名前未設定', revision: data.draft.revision, updatedAt: data.draft.updatedAt }, ...rows.filter(d => d.id !== data.draft.id)]);
       setStorageTick(n=>n+1); setDraftRevision(data.draft.revision); setDraftMessage(`下書き保存済み · ${new Date(data.draft.updatedAt).toLocaleTimeString('ja-JP')}`);
-      window.history.replaceState(window.history.state, '', `/noah/agents/new?draft=${draft.current.id}`);
+      window.history.replaceState(window.history.state, '', noahUploadPath(window.location.search, draft.current.id));
       return true;
     } catch (e) { setDraftError(e instanceof Error ? e.message : '下書きを保存できません。'); setDraftMessage('未保存の変更があります'); return false; }
     finally { draft.current.busy = false; }
@@ -141,7 +147,7 @@ export default function NoahAgentUploadForm() {
   async function openDraft(savedId: string) {
     if (pending || draft.current.busy || draftLoading || hashing) return;
     if ((code || source || testCode) && !rights) { setDraftError('保存権利を確認すると、入力中のコードを保存して別の下書きを開けます。'); return; }
-    if (await saveDraft()) window.location.assign(`/noah/agents/new?draft=${savedId}`);
+    if (await saveDraft()) window.location.assign(noahUploadPath(window.location.search, savedId));
   }
   async function removeDraft(savedId: string, revision: number) {
     if (draft.current.busy || pending) return;
@@ -155,7 +161,7 @@ export default function NoahAgentUploadForm() {
         draft.current = { id:'', revision:0, saved:'', busy:true }; draftRetry.current = null;
         setManifest({ ...noahAgentTemplate, name:'', summary:'', author:'', adapter:'source', endpointUrl:null, priceNote:'' });
         setCode(''); setSource(null); setRights(false); setId(''); setDraftRevision(0);
-        window.history.replaceState(window.history.state, '', '/noah/agents/new');
+        window.history.replaceState(window.history.state, '', noahUploadPath(window.location.search, ''));
       }
       setDraftError(''); setDraftMessage('下書きを削除しました。');
     } catch (e) { setDraftError(e instanceof Error ? e.message : '削除できません。'); }
@@ -224,15 +230,23 @@ export default function NoahAgentUploadForm() {
   return <div className={`${styles.page} ${styles.formPage}`}>
     <nav className={styles.nav}><Link href="/noah/agents">← Agent一覧</Link></nav>
     <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENT</span><h1>自分のAgentを追加</h1><p>コードを選ぶ、または貼り付ける。対応するコードは整理して保存します。<br />元コードも残し、追加したAgentは自分だけの一覧に入ります。</p></div></header>
+    {!scope && <section className={styles.notice} aria-label="アカウントの確認">
+      {accountChecking ? <output>アカウントを確認中…</output> : <>
+        <p>{signedOut ? 'サインインすると、自分のAgentの登録と下書きの保存ができます。' : 'アカウントの確認後に登録できます。'}</p>
+        <Link className={styles.primary} href={`/account?mode=login&returnTo=${encodeURIComponent(returnPath)}`}>サインインして登録を続ける</Link>
+        <button type="button" onClick={() => { setAccountChecking(true); setSignedOut(false); setError(''); setAttempt(n => n + 1); }}>アカウントを再確認</button>
+      </>}
+    </section>}
+    {error && <div role="alert" className={styles.error}>{error}</div>}
     <section className={styles.notice} aria-label="下書き">
       <h2>非公開の下書き</h2><p>入力途中でも保存し、後から再開できます。コードとファイルは保存権利の確認後に保管します。</p>
-      <output aria-live="polite">{draftLoading ? '保存した下書きを確認中…' : draftMessage || '入力すると自動保存します。'}</output>
+      <output aria-live="polite">{!scope ? 'サインイン後に保存した下書きを確認します。' : draftLoading ? '保存した下書きを確認中…' : draftMessage || '入力すると自動保存します。'}</output>
       {(draftError || (source && source.size > NOAH_SOURCE_LIMIT)) && <p role="alert" className={styles.error}>{source && source.size > NOAH_SOURCE_LIMIT ? 'ファイルは10MiBまでです。選び直してください。' : draftError}</p>}
       {restoreFailed ? <button type="button" disabled={draftLoading} onClick={() => { setDraftLoading(true); setRestoreFailed(false); setDraftError(''); restoreStarted.current = false; setRestoreAttempt(n => n + 1); }}>保存した下書きを読み直す</button> : <button type="button" disabled={!scope || draftLoading || pending || hashing} onClick={() => { void saveDraft(); }}>下書きを保存・再試行</button>}
       {!!drafts.length && <details><summary>保存した下書きから再開</summary>{drafts.map(d => <p key={d.id}><button type="button" disabled={pending || draftLoading || hashing || restoreFailed} onClick={() => { void openDraft(d.id); }}>{d.name} · {new Date(d.updatedAt).toLocaleString('ja-JP')}</button> <button type="button" disabled={pending} onClick={() => { void removeDraft(d.id, d.revision); }}>削除</button></p>)}</details>}
     </section>
     {scope && <NoahDraftStoragePanel key={scope} scope={scope} refresh={storageTick} disabled={pending || draftLoading || hashing} onRestored={(restoredId)=>{ void openDraft(restoredId); }} />}
-    <form onSubmit={save}><fieldset disabled={pending || draftLoading || restoreFailed} className={styles.fields}>
+    <form onSubmit={save}><fieldset disabled={!scope || accountChecking || pending || draftLoading || restoreFailed} className={styles.fields}>
       <section className={styles.notice} aria-labelledby="source-heading"><h2 id="source-heading">Agentのコード</h2><p>登録時に自動リファクタ · 元コードを保管</p>
         <p>専用画面を作らずに始められます。ターミナル用テンプレートには処理コードと固定テストが入っています。</p>
         <div className={styles.actions}>{(['node', 'python'] as const).map(language => <button key={language} type="button" onClick={() => {
@@ -287,7 +301,6 @@ export default function NoahAgentUploadForm() {
         <small>取得する場合は上の「GitHub・Hugging Faceからコードを取得」を使います。参照URLの入力だけでは取得しません。</small>
         <div className={styles.columns}><label>識別名<input required value={manifest.id} onChange={e => change({ id: e.target.value })} /></label><label>ライセンス<input required value={manifest.license} onChange={e => change({ license: e.target.value })} /></label></div>
       </div></details>
-      {error && <div role="alert" className={styles.error}>{error}{!scope && <button type="button" onClick={() => setAttempt(n => n + 1)}>アカウントを再確認</button>}</div>}
       <button className={styles.primary} disabled={!scope || !rights || pending || processorAvailable === null} type="submit">{pending ? '原本の確認・コードの整理・保存中…' : '自分のNoahに保存'}</button>
     </fieldset></form>
     {processingMessage && <output aria-live="polite">{processingMessage}</output>}

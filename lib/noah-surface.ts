@@ -1,6 +1,16 @@
 export type NoahSurfaceMode = 'local' | 'public';
 export type NoahHomeView = 'news' | 'social' | 'communities';
 
+/** Keep only registration state when navigating, never an arbitrary return URL. */
+export function noahUploadPath(search = '', draftId?: string) {
+  const current = new URLSearchParams(search), next = new URLSearchParams();
+  if (current.get('launch') === '1') next.set('launch', '1');
+  const draft = draftId ?? current.get('draft');
+  if (draft && /^[a-f0-9-]{36}$/i.test(draft)) next.set('draft', draft);
+  const query = next.toString();
+  return `/noah/agents/new${query ? `?${query}` : ''}`;
+}
+
 export function noahHomeView(hash: string): NoahHomeView {
   if (hash === '#social' || hash === '#following') return 'social';
   if (hash === '#communities' || hash.startsWith('#community=')) return 'communities';

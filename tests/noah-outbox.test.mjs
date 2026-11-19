@@ -37,9 +37,11 @@ void test('approval binds preview and expiry; one concurrent claim produces one 
  const f=fixture(t),j=await f.service.create('alice',f.input());await assert.rejects(f.service.command('alice',j.id,f.command(j,'approve',{snapshotSha256:'b'.repeat(64)})));
  await assert.rejects(f.service.command('alice',j.id,f.command(j,'approve',{confirmation:undefined})));
  const approval=f.command(j,'approve'),approved=(await f.service.command('alice',j.id,approval)).job;assert.equal((await f.service.command('alice',j.id,approval)).job.revision,approved.revision);
- const cmd=f.command(approved,'send'),results=await Promise.allSettled([f.service.command('alice',j.id,cmd),f.service.command('alice',j.id,{...cmd,commandId:randomUUID()})]);assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
- const claimed=results.find(r=>r.status==='fulfilled').value;await f.service.dispatch('alice',j.id,claimed.dispatch);const done=await f.service.get('alice',j.id);assert.equal(done.noahOutbox.state,'accepted');assert.equal(f.calls.length,1);
- assert.equal((await f.service.command('alice',j.id,cmd)).dispatch,null);assert.equal(f.calls.length,1);
+ const cmd=f.command(approved,'send'),commands=[cmd,{...cmd,commandId:randomUUID()}],results=await Promise.allSettled(commands.map(command=>f.service.command('alice',j.id,command)));assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
+ // Digest calculation is asynchronous; either competing request may win the CAS.
+ const winner=results.findIndex(r=>r.status==='fulfilled'),claimed=results[winner].value;await f.service.dispatch('alice',j.id,claimed.dispatch);const done=await f.service.get('alice',j.id);assert.equal(done.noahOutbox.state,'accepted');assert.equal(f.calls.length,1);
+ assert.equal((await f.service.command('alice',j.id,commands[winner])).dispatch,null);
+ await assert.rejects(f.service.command('alice',j.id,commands[1-winner]),e=>e.status===409);assert.equal(f.calls.length,1);
 });
 void test('expired approval and changed target fail before transport, while credential rotation alone remains allowed',async t=>{
  const f=fixture(t);let j=await f.approve(await f.service.create('alice',f.input()));f.time.now+=600001;await assert.rejects(f.claim(j));assert.equal(f.calls.length,0);

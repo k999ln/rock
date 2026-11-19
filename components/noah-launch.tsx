@@ -212,7 +212,7 @@ export default function NoahLaunch() {
       {signedOut && (
         <section className={styles.notice}>
           <p>自分のAgentとMacを管理するにはサインインしてください。</p>
-          <Link href="/signin-with-chatgpt?return_to=%2Fnoah%2Flaunch">
+          <Link href="/account?mode=login&returnTo=%2Fnoah%2Flaunch">
             サインイン
           </Link>
         </section>

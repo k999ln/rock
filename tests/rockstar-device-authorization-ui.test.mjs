@@ -49,7 +49,7 @@ function harness(initialReply) {
   async function flush() { for (let i = 0; i < 4; i++) { await new Promise((r) => setImmediate(r)); render(); } }
   const find = (type) => nodes(tree).find((n) => n.type === type);
   const button = (name) => nodes(tree).find((n) => n.type === 'button' && text(n) === name);
-  render(); return { requests, replies, controllers, flush, text: () => text(tree), button, input: () => find('input'),
+  render(); return { requests, replies, controllers, flush, text: () => text(tree), button, links: () => nodes(tree).filter(n => n.props?.href), input: () => find('input'),
     async code(value) { find('input').props.onChange({ target: { value } }); await flush(); },
     async inspect() { await find('form').props.onSubmit({ preventDefault() {} }); await flush(); },
     async click(name) { const n = button(name); assert.ok(n, name); n.props.onClick(); await flush(); },
@@ -65,6 +65,10 @@ void test('editing a device code invalidates the previously inspected device bef
 for (const status of [401, 302]) void test(`device approval auth loss (${status}) removes the old confirmation and requires readback`, async () => {
   const h = harness(); await h.flush(); await h.inspect(); h.replies.push({ status, body: { error: 'sign_in_required' } });
   await h.click('この端末を承認'); assert.ok(h.text().includes('サインインして続ける'));
+  const login = h.links().find(n => n.props.children === 'サインインして続ける');
+  const destination = new URL(login.props.href, 'https://avoado.si');
+  assert.equal(destination.pathname, '/account'); assert.equal(destination.searchParams.get('mode'), 'login');
+  assert.equal(destination.searchParams.get('returnTo'), '/connect/device?user_code=' + a);
   assert.ok(!h.text().includes('sign_in_required'));
   assert.ok(!h.text().includes('Device A')); assert.ok(!h.button('この端末を承認'));
   const mutations = () => h.requests.filter((r) => r.body).length;
