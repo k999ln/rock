@@ -91,6 +91,7 @@
     "amc:codex": "node scripts/amc-codex.mjs",
     "amc:parallel": "node scripts/amc-parallel.mjs",
     "amc:agent": "node scripts/amc-agent.mjs",
+    "amc:cycle": "node scripts/amc-goal-cycle-cli.mjs",
     "amc:autonomy:fixture": "node scripts/amc-autonomy-fixture.mjs",
     "work": "node scripts/workspaces.mjs",
     "work:update": "node scripts/workspaces.mjs --write",

@@ -155,6 +155,7 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [Sky Assistant / Sky Memory設計](sky-assistant-and-memory.md)（設計）
 - [Sky Market決済と旧収益精算](sky-billing.md)（設計）
 - [Sky Cloud — 端末切断中の継続実行](sky-cloud-continuity.md)（設計）
+- [Sky の仕事の一周 — 工程の選択、会社受注、分配](sky-work-loop.md)（設計）。書式は [services/company-order.md](services/company-order.md)、[services/gig-desk.md](services/gig-desk.md)。先行例との差分と統合は [sky-earn-parity.md](sky-earn-parity.md)
 - [Sky cloud execution operations and recovery runbook](sky-cloud-operations-runbook.md)（手順）
 - [Sky Market 決済・Wallet 統合詳細設計](sky-commerce-design.md)（設計）
 - [Sky Compute Grid — 使われていない携帯を束ねるVirtual Compute Plant](sky-compute-grid.md)（設計）
@@ -191,3 +192,5 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [削除台帳](../data/archived-paths.json)と[復元手順](git-consolidation.md) — 役目を終えた旧仕様・重複文書・作業ログは現行ツリーへ再掲せずGit履歴から読む。
 
 新しい情報は該当する正本・workstreamへ統合する。不要な重複分冊や日付付き入口を増やさず、移動・削除では参照・索引・検査・復元commitを同時更新する。
+
+- [Noah本人用リセール](services/noah-select-resale.md) — 3担当・共有予算・Web/CLI・停止と照合の現行契約。

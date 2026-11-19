@@ -1,0 +1,709 @@
+{
+  "schema": "avokado-company-role-map/1",
+  "updatedAt": "2026-11-19",
+  "scope": "CEO、営業18役、開発・品質・運用21役、外部専門家と実運営の未設定を一つの責任表へ結ぶ。",
+  "status": "responsibilities_defined_operation_not_accepted",
+  "ceo": {
+    "role": "CEO / Product Owner",
+    "accountability": "方針、予算、価格・契約・公開、重要商談・提携、最終受入"
+  },
+  "business": {
+    "roleMap": "data/revenue-role-map.json",
+    "roleCount": 18,
+    "lead": "REV00"
+  },
+  "engineering": {
+    "roleCount": 21,
+    "lead": "DEV00",
+    "roles": [
+      {
+        "id": "DEV00",
+        "name": "rock-engineering-lead",
+        "label": "開発統括・技術責任",
+        "lanes": [
+          "git"
+        ],
+        "workstream": "Git / CI / Operations",
+        "owns": "開発優先順位、依存関係、実装担当・検収担当・資源の割当",
+        "output": "既存unit ID・候補・編集path・局所試験・検収担当を示す実行票",
+        "acceptance": "実行可能な一unitに所有者と独立検収者、完了条件、再開条件があり、共有writerの権限が一致する",
+        "next": [
+          "DEV01",
+          "DEV03",
+          "DEV04",
+          "DEV05",
+          "DEV06",
+          "DEV07",
+          "DEV08",
+          "DEV09",
+          "DEV10",
+          "DEV11",
+          "DEV12",
+          "DEV13",
+          "DEV14",
+          "DEV15",
+          "DEV16",
+          "DEV17",
+          "DEV18",
+          "DEV19",
+          "DEV20"
+        ],
+        "boundary": "役割表だけで既存laneの編集権、実機lease、model指定、チャット状態を移管しない。"
+      },
+      {
+        "id": "DEV01",
+        "name": "rock-product-manager",
+        "label": "製品企画・要件・優先順位",
+        "lanes": [
+          "git"
+        ],
+        "workstream": "Product / UX",
+        "owns": "顧客課題の要件化、受入条件、製品backlogとscope変更案",
+        "output": "顧客課題・RQ・既存unit・成果指標・対象外を結ぶ要件票",
+        "acceptance": "顧客価値と検証可能な合格条件があり、既存RQ・契約との相違は明示される",
+        "next": [
+          "DEV00",
+          "DEV02",
+          "DEV03"
+        ],
+        "boundary": "CEOの製品判断を具体化する。新要望、価格、予算、販売条件を独断で確定しない。"
+      },
+      {
+        "id": "DEV02",
+        "name": "rock-product-designer",
+        "label": "UX・UI・アクセシビリティ設計",
+        "lanes": [
+          "web-ops",
+          "eve"
+        ],
+        "workstream": "Product / UX",
+        "owns": "初回利用、依頼、承認、成果、費用、失敗・復旧の画面設計",
+        "output": "状態別導線、画面仕様、文言、操作・a11y受入シナリオ",
+        "acceptance": "正常・待機・失敗・停止・復旧で次の操作が分かり、対象viewportと操作条件が指定される",
+        "next": [
+          "DEV08",
+          "DEV06",
+          "DEV11"
+        ],
+        "boundary": "設計の担当。共用component実装や本人認証・権限の変更はexact所有者へ渡す。"
+      },
+      {
+        "id": "DEV03",
+        "name": "rock-system-architect",
+        "label": "アーキテクチャ・共通契約設計",
+        "lanes": [
+          "git",
+          "os-pixel",
+          "eve",
+          "smith"
+        ],
+        "workstream": "Git / CI / Operations",
+        "owns": "API、本人境界、状態遷移、保存・移行、停止・復旧の共通契約",
+        "output": "責任境界、互換・移行・失敗復旧・承認・負例付きの設計差分",
+        "acceptance": "既存workflow/Broker/SDK/schemaを再利用し、入出力と状態・権限・移行の矛盾が解消される",
+        "next": [
+          "DEV04",
+          "DEV05",
+          "DEV06",
+          "DEV09",
+          "DEV10"
+        ],
+        "boundary": "共有schemaやmigrationの実編集は既存global writerが承認した候補だけ。model出力を権限へ昇格させない。"
+      },
+      {
+        "id": "DEV04",
+        "name": "rock-os-device-engineer",
+        "label": "OS・Pixel・QEMU・端末",
+        "lanes": [
+          "os-pixel"
+        ],
+        "workstream": "Android / Device / Local AI",
+        "owns": "OS runtime、Broker、隔離、driver接続、端末保存・更新・復旧",
+        "output": "対象source/imageと環境を固定した実装・起動・停止・保存復旧の証拠",
+        "acceptance": "host、QEMU、APK、Pixel実機の対象別に正負例と復旧が記録され、機種別gateが守られる",
+        "next": [
+          "DEV07",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "Pixel 10 GL066/frankelとQEMUを別受入。既存disk/backupを保全し、flash・初期化・鍵・物理操作は既存条件に従う。"
+      },
+      {
+        "id": "DEV05",
+        "name": "rock-sky-eve-engineer",
+        "label": "Noah・接続・MCP・ストア",
+        "lanes": [
+          "smith"
+        ],
+        "workstream": "Noah / MCP",
+        "owns": "Agent/LLM/Toolの発見・追加・接続・更新・削除、MCP/SDKと権限差分",
+        "output": "版・本人・scope付き構成と、Eveへ引き継ぐ接続契約・試験",
+        "acceptance": "追加/実行/課金/削除を区別し、失効と停止・失敗復旧を含む同一revision引継ぎを確認する",
+        "next": [
+          "DEV06",
+          "DEV09",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "旧smith lane/API/schemaは互換維持。Eveの仕事状態はDEV06、基盤model評価はDEV07へ渡す。"
+      },
+      {
+        "id": "DEV06",
+        "name": "rock-eve-workflow-engineer",
+        "label": "Eve・仕事・成果・編集",
+        "lanes": [
+          "eve"
+        ],
+        "workstream": "Noah / MCP",
+        "owns": "目的から仕事作成、承認、実行、成果、編集、保存、停止・再開の共通体験",
+        "output": "owner/job/revisionが一致する仕事と型付き成果、原本保持・復旧の実装証拠",
+        "acceptance": "lib/workflow.tsの遷移、本人別保存、競合、停止・遅延応答・再開が検証される",
+        "next": [
+          "DEV07",
+          "DEV08",
+          "DEV09",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "model出力をTool成功にしない。Remix/mediaと文章処理は既存仕事契約を再利用する。"
+      },
+      {
+        "id": "DEV07",
+        "name": "rock-ai-model-engineer",
+        "label": "AI・LLM・学習・品質評価",
+        "lanes": [
+          "eve",
+          "os-pixel"
+        ],
+        "workstream": "Android / Device / Local AI",
+        "owns": "モデル適合、推論経路、品質・速度・資源・費用評価、許諾付き学習実験",
+        "output": "固定入力・model/hash・評価分離・対照・採用/不採用理由付きの測定票",
+        "acceptance": "推論成功、内容品質、学習、端末適合を分け、未測定費用や未受入能力を明示する",
+        "next": [
+          "DEV04",
+          "DEV06",
+          "DEV10",
+          "DEV11"
+        ],
+        "boundary": "MODEL-01等の既存unit内で担当。学習予算・GPU契約・model取得を役割設定から開始しない。LLM/Jev正本を読む。"
+      },
+      {
+        "id": "DEV08",
+        "name": "rock-web-experience-engineer",
+        "label": "Web・フロントエンド・PWA",
+        "lanes": [
+          "web-ops"
+        ],
+        "workstream": "Web / PWA / Sites",
+        "owns": "共通UI、mobile、a11y、PWA、3ドメインの画面と導線",
+        "output": "同一sourceの画面実装・browser操作・build/asset検証",
+        "acceptance": "正常・失敗導線と対象viewportで操作を確認し、source/配信版/実応答を分けて示す",
+        "next": [
+          "DEV10",
+          "DEV11",
+          "DEV12",
+          "DEV13"
+        ],
+        "boundary": "avoado.si、avocadomini.si、avocadopro.siを維持。配備はDEV12、監視・障害はDEV13へ連携。"
+      },
+      {
+        "id": "DEV09",
+        "name": "rock-api-data-engineer",
+        "label": "API・DB・同期・データ移行",
+        "lanes": [
+          "git",
+          "eve",
+          "smith",
+          "web-ops"
+        ],
+        "workstream": "Web / PWA / Sites",
+        "owns": "API認証、owner分離、revision競合、DB migration、同期・backup互換",
+        "output": "既存schema/移行履歴を保全するAPI・データ変更と正負例・復旧試験",
+        "acceptance": "競合・再送・中断・旧data読取り・rollback可否が同一候補で検証される",
+        "next": [
+          "DEV04",
+          "DEV05",
+          "DEV06",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "横断支援でありlane所有の上書きではない。migration採番・共用schemaはGit writerへ変更要求を出す。"
+      },
+      {
+        "id": "DEV10",
+        "name": "rock-security-release-reviewer",
+        "label": "独立セキュリティ・権限検収",
+        "lanes": [
+          "git"
+        ],
+        "workstream": "Security / Identity / Compliance",
+        "owns": "本人性、scope、秘密、署名、料金・Wallet境界、悪用と失効の独立検収",
+        "output": "同一候補hash・脅威/負例・再現条件・重大度付き合否",
+        "acceptance": "実装者と別担当がowner越境、replay、予算超過、二重使用、停止・復旧を検証する",
+        "next": [
+          "DEV00",
+          "DEV03",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "自分が実装した差分を最終合格にしない。一般QAはDEV11、保存/配布作業はDEV12。"
+      },
+      {
+        "id": "DEV11",
+        "name": "rock-qa-engineer",
+        "label": "独立QA・回帰・実利用受入",
+        "lanes": [
+          "git"
+        ],
+        "workstream": "Git / CI / Operations",
+        "owns": "正常・異常・復旧・回帰・端末/UIの受入設計と独立検収",
+        "output": "candidate/hash・手順・期待値・実測・未実行・不具合付き試験報告",
+        "acceptance": "実装者と別担当が固定合格条件を照合し、fixture/host/browser/実機/本番を区別する",
+        "next": [
+          "DEV00",
+          "DEV10",
+          "DEV12",
+          "DEV13"
+        ],
+        "boundary": "不具合は該当laneへ返す。skipや古いartifactの成功を新候補の合格へ転用しない。"
+      },
+      {
+        "id": "DEV12",
+        "name": "rock-release-engineer",
+        "label": "Git・CI・統合・リリース",
+        "lanes": [
+          "git"
+        ],
+        "workstream": "Git / CI / Operations",
+        "owns": "source保全、共用path統合、migration採番、固定候補、CI、配布・切戻し準備",
+        "output": "source/artifact manifest、検収・CI、保存/統合/配備readbackと復旧記録",
+        "acceptance": "同一候補の検収・全verify・必要CIがそろい、GitHub/main/公開/実機を別eventで記録する",
+        "next": [
+          "DEV00",
+          "DEV11",
+          "DEV13"
+        ],
+        "boundary": "現行taskの共有writerと明示引継ぎを優先し、この役割追加でwriterを移管しない。forceや既存gateの迂回をしない。"
+      },
+      {
+        "id": "DEV13",
+        "name": "rock-site-reliability-engineer",
+        "label": "SRE・監視・障害・サポート連携",
+        "lanes": [
+          "web-ops"
+        ],
+        "workstream": "Web / PWA / Sites",
+        "owns": "観測、期限管理、障害切分け、復旧runbook、支援から開発への不具合移管",
+        "output": "影響・原因・停止/復旧・観測指標・連絡先・再発防止付き運用票",
+        "acceptance": "顧客影響と技術障害が追え、停止・照合・切戻し訓練の対象と結果が示される",
+        "next": [
+          "DEV00",
+          "DEV09",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "当番・通知・常時監視は設定と運用受入が必要。顧客窓口はREV15、試用中はREV14へ連携。"
+      },
+      {
+        "id": "DEV14",
+        "name": "rock-esim-engineer",
+        "label": "SIM・eSIM・利用開始・回線",
+        "lanes": [
+          "esim"
+        ],
+        "workstream": "Noah / MCP",
+        "owns": "回線/profile/本人利用権/client状態、端末鍵、親子接続、失効・再開",
+        "output": "issuer/サービス利用開始・取消・失効・復旧のadapterと環境別証拠",
+        "acceptance": "回線、profile、利用権、OS導入を別追跡し、外部issuer・端末条件を確認する",
+        "next": [
+          "DEV04",
+          "DEV09",
+          "DEV15",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "SIMにOS binaryを格納する前提にしない。実契約・実回線・実課金の未受入を保持する。"
+      },
+      {
+        "id": "DEV15",
+        "name": "rock-billing-engineer",
+        "label": "使用量・料金・請求・作者精算",
+        "lanes": [
+          "billing"
+        ],
+        "workstream": "Wallet / Billing / Providers",
+        "owns": "単価版、見積、予算予約、usage、Invoice、入金/返金、作者精算の実装",
+        "output": "一意予約・照合・台帳/receipt・失敗復旧の料金実装と試験",
+        "acceptance": "見積/予約/確定費用/入金/作者支払を分け、上限超過・二重請求・不明結果を拒否する",
+        "next": [
+          "DEV09",
+          "DEV16",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "業務としての請求照合はREV16、料金system実装は本担当。新価格・実課金・作者送金を独断で実行しない。"
+      },
+      {
+        "id": "DEV16",
+        "name": "rock-wallet-engineer",
+        "label": "Wallet・台帳・真正収益照合",
+        "lanes": [
+          "wallet"
+        ],
+        "workstream": "Wallet / Billing / Providers",
+        "owns": "予約・台帳・照合・取消・二重使用防止・外部Wallet adapter",
+        "output": "owner別台帳、Provider receipt照合、互換・失効・復旧の実装証拠",
+        "acceptance": "実入金と合成台帳を分け、金額・本人・finality・重複・取消の正負例が通る",
+        "next": [
+          "DEV15",
+          "DEV17",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "既存888 cents・ATM・game交換gateを維持。顧客資産保管や送金権限を新設しない。"
+      },
+      {
+        "id": "DEV17",
+        "name": "rock-game-sdk-engineer",
+        "label": "Game・World・作者SDK",
+        "lanes": [
+          "game"
+        ],
+        "workstream": "Game / Market / Fund",
+        "owns": "非金融Game/World、作者API/SDK、sandbox、動くsample、導入診断",
+        "output": "作者が導入から実行・成果・復旧まで試せるSDKと測定証拠",
+        "acceptance": "作者/owner/game分離と初見導入・失敗復旧を検証し、金融交換は独立gateで扱う",
+        "next": [
+          "DEV16",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "非金融開発を金融完成待ちにしない。ゲームポイント発行と実資金台帳権限を分ける。"
+      },
+      {
+        "id": "DEV18",
+        "name": "rock-mini-hardware-engineer",
+        "label": "Mini・光学・回路・空間入出力",
+        "lanes": [
+          "mini"
+        ],
+        "workstream": "Material Invention / avocadoMini",
+        "owns": "光学成立、手/声/センサー、回路・PCB、電源・熱・独立停止、機種adapter",
+        "output": "設計計算・反証・部品/CAD/BOM・bench・同一個体の安全/機能証拠",
+        "acceptance": "板膜なし等の確定条件を維持し、simulation/bench/同一閉箱/製造受入を分ける",
+        "next": [
+          "DEV04",
+          "DEV20",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "安全・光学成立の専門判断を別担当で検収。製造発注、調達、provider契約は既存OWNER条件に従う。"
+      },
+      {
+        "id": "DEV19",
+        "name": "rock-pro-hardware-engineer",
+        "label": "Pro・PC構成・実機・製造出荷連携",
+        "lanes": [
+          "pro"
+        ],
+        "workstream": "Android / Device / Local AI",
+        "owns": "正確なSKU/BOM、非破壊データ移行、GPU/driver、熱・電力、共通runtime適合",
+        "output": "同一実機の性能・更新復旧・QA、供給/販売gateの技術証拠",
+        "acceptance": "紙上構成と実機試験、OS/client適合、実在庫/価格、出荷QAを分けて記録する",
+        "next": [
+          "DEV04",
+          "DEV07",
+          "DEV10",
+          "DEV11",
+          "DEV12"
+        ],
+        "boundary": "調達・契約はREV12/17・OWNERへ。試作・量産・有料注文・発送を同一の完了にしない。"
+      },
+      {
+        "id": "DEV20",
+        "name": "rock-material-invention-engineer",
+        "label": "Material Invention・科学検証・CAD/BIM",
+        "lanes": [
+          "mini"
+        ],
+        "workstream": "Material Invention / avocadoMini",
+        "owns": "物質/空間の仮説、再計算、CAD/BIM原本照合、Patent AIへ渡すprovenance",
+        "output": "入力権利・出典・再計算・不確実性・反証・成果来歴付きprivate packet",
+        "acceptance": "計算・合成・実測・専門家判断を区別し、MATERIAL-01とRQ49/MAT06の既存契約に対応する",
+        "next": [
+          "DEV18",
+          "DEV09",
+          "DEV10",
+          "DEV11"
+        ],
+        "boundary": "発明仮説を新規性・特許性・安全性の確定にしない。資格者判断や現物試験は別受入。"
+      }
+    ],
+    "existingRegistry": "codex/tasks/00-index.md",
+    "unitProgress": "data/project-status.json",
+    "laneCoverage": [
+      {
+        "lane": "git",
+        "primaryRole": "DEV12",
+        "supportingRoles": [
+          "DEV00",
+          "DEV01",
+          "DEV03",
+          "DEV09",
+          "DEV10",
+          "DEV11"
+        ],
+        "packet": "docs/workstreams/10-git-ci-operations.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 8
+      },
+      {
+        "lane": "os-pixel",
+        "primaryRole": "DEV04",
+        "supportingRoles": [
+          "DEV03",
+          "DEV07"
+        ],
+        "packet": "docs/workstreams/07-android-device-local-ai.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 24
+      },
+      {
+        "lane": "smith",
+        "primaryRole": "DEV05",
+        "supportingRoles": [
+          "DEV03",
+          "DEV09"
+        ],
+        "packet": "docs/workstreams/02-sky-mcp.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 7
+      },
+      {
+        "lane": "eve",
+        "primaryRole": "DEV06",
+        "supportingRoles": [
+          "DEV02",
+          "DEV03",
+          "DEV07",
+          "DEV09"
+        ],
+        "packet": "docs/workstreams/01-product-ux.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 17
+      },
+      {
+        "lane": "mini",
+        "primaryRole": "DEV18",
+        "supportingRoles": [
+          "DEV20"
+        ],
+        "packet": "docs/workstreams/11-material-invention-avocado-mini.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 9
+      },
+      {
+        "lane": "pro",
+        "primaryRole": "DEV19",
+        "supportingRoles": [],
+        "packet": "docs/workstreams/07-android-device-local-ai.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 4
+      },
+      {
+        "lane": "esim",
+        "primaryRole": "DEV14",
+        "supportingRoles": [],
+        "packet": "docs/workstreams/03-wallet-billing-providers.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 8
+      },
+      {
+        "lane": "billing",
+        "primaryRole": "DEV15",
+        "supportingRoles": [],
+        "packet": "docs/workstreams/03-wallet-billing-providers.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 8
+      },
+      {
+        "lane": "wallet",
+        "primaryRole": "DEV16",
+        "supportingRoles": [],
+        "packet": "docs/workstreams/03-wallet-billing-providers.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 3
+      },
+      {
+        "lane": "game",
+        "primaryRole": "DEV17",
+        "supportingRoles": [],
+        "packet": "docs/workstreams/08-game-market-fund.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 2
+      },
+      {
+        "lane": "web-ops",
+        "primaryRole": "DEV08",
+        "supportingRoles": [
+          "DEV02",
+          "DEV09",
+          "DEV13"
+        ],
+        "packet": "docs/workstreams/05-web-pwa-sites.md",
+        "statusPath": "data/project-status.json",
+        "historicalUnitCount": 5
+      }
+    ],
+    "laneLabels": "Role-routing labels retained for continuity; use current task index and project status, not former chat leases.",
+    "historicalLaneCount": 11,
+    "historicalUnitCount": 95
+  },
+  "workingRules": {
+    "configurationDoesNotStartExecution": true,
+    "maxActiveIncludingParentBusinessEngineeringReview": 3,
+    "exactOwnership": "現行codex/tasksと各作業のexact path/担当/資源leaseを優先。役割追加だけでは編集権を移管しない。",
+    "sharedWriter": "現行taskの明示された担当と引継ぎを優先。DEV12が共有progressを同期し、REV00/DEV00は変更要求を集約する。",
+    "review": "DEV10/11は実装者と別の担当が同じcandidate/hash・固定条件で検収する。役割名の付替えだけでは独立検収にならない。",
+    "businessEngineering": "REV09 → DEV01/00 → 設計/実装 → DEV10/11 → DEV12 → DEV13 → REV13/14/15。提供可能範囲と残gateをREV09へ返す。",
+    "repeatableHandoff": "case/unit ID、目的、candidate/hash、exact write set、現在owner、権限/予算、試験、独立検収、残件、次行動、期限",
+    "authority": "既承認の社内準備は再承認を求めず進める。外部送信・価格・支出・契約・公開・実機作用は本人が明示した範囲と既存gateに従う。"
+  },
+  "companyFunctions": [
+    {
+      "area": "経営・製品判断",
+      "accountable": "CEO",
+      "support": [
+        "REV00",
+        "DEV00",
+        "DEV01"
+      ],
+      "operatingGap": "予算と優先案件の実行時決定"
+    },
+    {
+      "area": "集客・営業・提携",
+      "accountable": "CEO",
+      "support": [
+        "REV00",
+        "REV01",
+        "REV02",
+        "REV03",
+        "REV04",
+        "REV05",
+        "REV06",
+        "REV07",
+        "REV08",
+        "REV09",
+        "REV10",
+        "REV11",
+        "REV12"
+      ],
+      "operatingGap": "承認済みの送信account、案件原本とCRM、実対話"
+    },
+    {
+      "area": "製品開発・品質・配布",
+      "accountable": "CEO",
+      "support": [
+        "DEV00",
+        "DEV01",
+        "DEV02",
+        "DEV03",
+        "DEV04",
+        "DEV05",
+        "DEV06",
+        "DEV07",
+        "DEV08",
+        "DEV09",
+        "DEV10",
+        "DEV11",
+        "DEV12",
+        "DEV13",
+        "DEV14",
+        "DEV15",
+        "DEV16",
+        "DEV17",
+        "DEV18",
+        "DEV19",
+        "DEV20"
+      ],
+      "operatingGap": "現在のlane担当、candidate、編集権、独立review、資源leaseの実行時再照合"
+    },
+    {
+      "area": "顧客支援・障害",
+      "accountable": "CEO",
+      "support": [
+        "REV13",
+        "REV14",
+        "REV15",
+        "DEV11",
+        "DEV13"
+      ],
+      "operatingGap": "private問合せ経路、実当番、通知と復旧訓練"
+    },
+    {
+      "area": "経理・資金管理・調達資金",
+      "accountable": "CEO",
+      "support": [
+        "REV16",
+        "REV17"
+      ],
+      "external": "会計士・税理士・決済/金融Provider",
+      "operatingGap": "専門家の実担当と契約、現金予算・会計運用。投資家交渉はCEO、専任担当未設定"
+    },
+    {
+      "area": "法務・権利・規制",
+      "accountable": "CEO",
+      "support": [
+        "REV17",
+        "DEV10"
+      ],
+      "external": "弁護士・資格者・監査者",
+      "operatingGap": "管轄/案件別の専門家選任と法的判断"
+    },
+    {
+      "area": "採用・人事・労務",
+      "accountable": "CEO",
+      "support": [
+        "REV00",
+        "REV17",
+        "DEV00"
+      ],
+      "external": "必要な採用/労務専門家",
+      "operatingGap": "専任担当・雇用条件・採用予算・実稼働者未設定"
+    },
+    {
+      "area": "調達・製造・物流",
+      "accountable": "CEO",
+      "support": [
+        "REV12",
+        "REV17",
+        "DEV18",
+        "DEV19",
+        "DEV20"
+      ],
+      "external": "OEM/組立/物流/検査機関",
+      "operatingGap": "実取引先・書面見積・試作/安全/出荷受入・発注予算"
+    }
+  ],
+  "completion": {
+    "responsibilityCoverage": "営業18役と開発21役の定義、既存11lane/95unitの対応を検査する。",
+    "notProofOf": "採用済み、常駐稼働、営業成約、製品完成、実機/本番/一般公開の合格",
+    "operatingAcceptanceRequired": [
+      "実案件一件と入力・保存先・送信account/権限",
+      "実行担当と予算・編集権・資源lease",
+      "実装と別担当の検収、同candidateの保存/CI",
+      "支援・障害・継続・入金までの引継ぎ",
+      "専門家とphysical作業を担う実在の人・Provider"
+    ],
+    "currentResult": "not_operationally_complete"
+  }
+}

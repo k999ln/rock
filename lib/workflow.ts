@@ -120,7 +120,7 @@ export type WorkCommand =
       action: 'record';
       stepId: string;
       tool: string;
-      transport: 'browser' | 'local-mcp';
+      transport: 'browser' | 'local-mcp' | 'terminal';
       outcome: WorkOutcome;
       sample: boolean;
       durationMs: number;
@@ -324,6 +324,7 @@ export type WorkToolObservation = {
   recordedAt: string;
 };
 export type WorkJob = {
+  resale?: import('./noah-resale.ts').ResaleState;
   noahOutbox?: import('./noah-outbox.ts').NoahOutbox;
   noahOperation?: import('./noah-operations.ts').NoahOperation;
   noahExecution?: NoahExecution;
@@ -406,6 +407,10 @@ function defaultWorkPlan(templateId: string, objective: string): WorkPlan {
   };
 }
 export function normalizeWorkJob(job: WorkJob): WorkJob {
+  if (job.templateId === 'noah-resale') {
+    if (job.resale?.schema !== 'noah.resale/1' || job.steps.length !== 0 || !Array.isArray(job.resale.items) || !Array.isArray(job.resale.operations)) throw new WorkError('リセールの保存形式を確認してください。');
+    return job;
+  }
   if (job.templateId === 'noah-outbox') {
     if (job.noahOutbox?.schema !== 'noah-outbox/1' || job.steps.length || !job.noahOutbox.snapshotSha256) throw new WorkError('送信記録を確認してください。');
     return job;
@@ -762,6 +767,7 @@ export function applyWorkCommand(
   now = new Date().toISOString(),
 ): WorkJob {
   const command = parseWorkCommand(value);
+  if (job.templateId === 'noah-resale') throw new WorkError('Noahのリセール画面から操作してください。', 409);
   if (job.eveNews && command.action !== 'cancel') throw new WorkError('ニュース草稿は専用の参照検査を使ってください。掲載・真偽確認の完了にはできません。',409);
   if (job.eveTool?.planning?.commands.some(c => c.id === command.id)) throw new WorkError('同じ操作IDを別の操作へ使えません。', 409);
   if (['noah-agent-local', 'noah-operation', 'noah-outbox'].includes(job.templateId)) throw new WorkError('Noahの専用実行画面から操作してください。', 409);
@@ -1050,4 +1056,14 @@ export function updateEveToolPlanner(job: WorkJob, state: NonNullable<NonNullabl
 export function recordEvePlannerObservation(job: WorkJob, state: NonNullable<NonNullable<WorkJob['eveTool']>['planning']>): WorkJob {
   if (!job.eveTool?.planning || state.attempts.length !== job.eveTool.planning.attempts.length || state.attempts.some((a, i) => a.id !== job.eveTool!.planning!.attempts[i].id)) throw new WorkError('保存済みの計画試行へ観測を接続してください。', 409);
   return { ...job, eveTool: { ...job.eveTool, planning: state }, revision: job.revision + 1, updatedAt: new Date().toISOString() };
+}
+
+/** Only the authenticated resale service may call this reducer after validating its action. */
+export function recordResaleWork(job: WorkJob, state: import('./noah-resale.ts').ResaleState, revision: number, commandId: string, action: string, transport: 'browser' | 'terminal' = 'browser'): WorkJob {
+  if(job.templateId!=='noah-resale' || state.schema!=='noah.resale/1' || job.revision!==revision)
+    throw new WorkError('リセールの保存版が変わりました。',409);
+  if(job.status==='cancelled' && !['finish','reconcile'].includes(action)) throw new WorkError('この仕事は停止しています。',409);
+  if(job.events.length>=1000)throw new WorkError('監査履歴の上限です。');
+  return {...job,resale:state,revision:revision+1,updatedAt:new Date().toISOString(),
+    events:[...job.events,{at:new Date().toISOString(),command:{id:workId(commandId),action:'record',stepId:action,tool:'noah-resale',transport,outcome:'needs_review',sample:false,durationMs:0}}]};
 }

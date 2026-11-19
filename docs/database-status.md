@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-11-02
+更新日: 2026-11-19
 
 ## 全体
 
@@ -10,7 +10,7 @@
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 393 task中 114 done、48 in progress、230 planned、1 blocked
-- 現在milestone: RockstarOS本体の最新設計を基準に、Sky/Home・Eve・eSIM service accessと端末別gateを統合する
+- 現在milestone: Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合
 
 ## 保存境界と配備状態
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-P0候補同期/固定→P1現v4受入→P2一仕事→P3Sky選択→P4Home。C1/C2は独立。同候補prefull後にP5 compile-only、P6初回flash 4gate、P7同image受入。料金はsi cloudサービスplan、数値未決・実課金/flash gate維持。
+検証済みコードのGitHub/main状態はPR321を確認する。保存済み独自コードを端末runtime、共有/精算、mediaの順で現行契約と照合し、未受入を実装合格へ置き換えない。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

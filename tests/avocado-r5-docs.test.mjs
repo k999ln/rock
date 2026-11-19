@@ -52,10 +52,10 @@ void test('the concise landing page links to complete progress and explicitly wi
   assert.match(readme, /docs\/avocado-mini-r5\/README\.md/);
   assert.match(readme, /manufacturing approval is \*\*on hold\*\*|製造承認は\*\*保留中\*\*/i);
   assert.match(readme, /zero physical-device tests have been completed|R5実機試験の完了実績は0件/i);
-  // 2026-11-02: project.md は archive/root-snapshot-20261029/ へ移動（内容は不変）
-  assert.match(readme, /\[(?:All task progress|全タスクの進捗)\]\(archive\/root-snapshot-20261029\/project\.md#/);
+  // 現在の生成進捗はproject.mdへ。過去のarchiveを更新先にしない。
+  assert.match(readme, /\[(?:All task progress|全タスクの進捗)\]\(project\.md#/);
   assert.doesNotMatch(readme, /<!-- project-status:start -->/);
-  assert.match(read('archive/root-snapshot-20261029/project.md'), /## 全taskの作業進捗\s+<!-- project-status:start -->/);
+  assert.match(read('project.md'), /## 全taskの作業進捗\s+<!-- project-status:start -->/);
 });
 
 void test('retired duplicate Mini presentation redirects to its product domain without changing R5 gates', () => {

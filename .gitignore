@@ -68,3 +68,6 @@ replay_pid*.log
 # Locally prepared, pinned camera runtime (regenerate via scripts/prepare-mii-input.mjs)
 /public/mii-input-runtime/
 /public/.mii-input-*/
+
+# Local render/export products stay outside source history.
+/output/

@@ -613,7 +613,7 @@
   },
   "schema": "rockstaros-design-document-index/1",
   "version": "1.58",
-  "updatedAt": "2026-10-28",
+  "updatedAt": "2026-11-19",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/service-design/README.md",
@@ -1928,8 +1928,24 @@
         "read_only_canonical_squad_board",
         "owner_scoped_manual_goal_ledger",
         "json_and_prompt_export",
-        "explicit_local_codex_single_task_runner"
+        "explicit_local_codex_single_task_runner",
+        "explicit_local_backward_role_cycle_candidate"
       ],
+      "localBackwardRoleCycle": {
+        "design": "docs/amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画",
+        "implementation": "scripts/amc-goal-cycle-cli.mjs",
+        "roles": "data/amc/company-roles.json",
+        "goalEngine": "scripts/amc-goal-engine.mjs",
+        "tests": "tests/amc-goal-cycle.test.mjs",
+        "scope": "finite_local_plan_execute_readonly_review_bounded_rework_owner_acceptance",
+        "businessRoles": 18,
+        "engineeringRoles": 21,
+        "webRuntimeChanged": false,
+        "externalActionAuthority": false,
+        "monetaryMeter": false,
+        "productionJevAccepted": false,
+        "mainIntegrated": false
+      },
       "columbiaCardEnglishEntry": {
         "design": "docs/sky-nfc-columbia.md",
         "implementation": "components/amc-english-workspace.tsx",
@@ -4695,5 +4711,23 @@
       "tests/workspace-flow-navigation.test.mjs"
     ],
     "nativeAcceptanceChanged": false
+  },
+  "noahLocalResale": {
+    "authority": "docs/sky-tools-complete-design.md#noahの本人用リセール実行とcli",
+    "contract": "docs/services/noah-select-resale.md",
+    "implementation": [
+      "lib/noah-resale.ts",
+      "lib/noah-resale-service.ts",
+      "lib/noah-resale-provider.ts",
+      "app/api/noah/resale/route.ts",
+      "toolkits/noah-resale-agent/runtime.mjs"
+    ],
+    "tests": [
+      "tests/noah-resale.test.mjs",
+      "tests/noah-resale-cli.test.mjs"
+    ],
+    "localOwnerOnly": true,
+    "productionTradingAccepted": false,
+    "sharedWorkReducer": "lib/workflow.ts"
   }
 }
