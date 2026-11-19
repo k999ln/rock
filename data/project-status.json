@@ -12777,7 +12777,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/312"
   },
   "currentGitRefresh": {
-    "status": "verified_source",
+    "status": "validating_latest_main_merge",
     "updatedAt": "2026-11-19",
     "taskIds": [
       "G04",
@@ -12793,7 +12793,7 @@
     "backupVerifiedFiles": 2075,
     "candidate": "work/git-refresh-20261119/candidate",
     "githubSaved": true,
-    "next": "PRの同一SHA CIとmain受入を確認する。保全した独自コードはdomainごとにschema/API/機種条件を照合し、既存main機能を退行させず順次再受入する。",
+    "next": "PR322のNoah単体ローンチを取り込んだ現headで全verify・独立検収・CIを確認してmainへ統合する。保全sourceの未再受入は別管理。",
     "candidateBranch": "codex/latest-code-readme-20261119",
     "adoptedChanges": [
       "PR320 Noah/Eve route unification",
@@ -12857,7 +12857,8 @@
           "procedureDescription": 1
         }
       }
-    }
+    },
+    "latestMainIntegrated": "aa533e1df550410e95c50903ffa705fdaec740ff"
   },
   "noahSelectResaleAgents": {
     "updatedAt": "2026-11-15",

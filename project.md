@@ -8,6 +8,7 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 
 - 基点: GitHub main `1cb703d0fe81314b450d0bf315721c7b18c0c979`。
 - 最新のNoah/Eve画面統一、工程計画と会社受注計算、mii研究、AMCの有限実行、Noahリセール、役割定義を集約し、全verifyと独立検収が成功。
+- mainへ追加されたPR322のNoah単体ローンチを取り込み、現headで回帰を再確認する。
 - PR308のMATOU aliasはmainに既存のため再移植しない。
 - 旧作業木の2,082pathはGit外へ退避し、現存2,075fileをhash読戻し確認。main同一354pathと生成物/ローカル設定357pathを分離した。
 - Pixel/portable、Mini実装候補、Agent共有/作者精算などは現mainのschema/APIへ未再受入。旧コードを現在の保存処理へ上書きせず保全する。
@@ -15,7 +16,7 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 
 ## 検証と再開
 
-`0211c1892`で全verify成功。本体4,053件中4,049成功・失敗0・skip4、build/API/Web asset検査も成功。独立検収の指摘は修正・再検収済み。保存とmain統合の現在状態は[PR321](https://github.com/k999ln/rock/pull/321)、ソース検証と保全先は `data/project-status.json#currentGitRefresh` と[task71](codex/tasks/71-current-code-and-readme.md)を参照する。
+`0211c1892`で全verify成功。本体4,053件中4,049成功・失敗0・skip4、build/API/Web asset検査も成功。独立検収の指摘は修正・再検収済み。保存とmain統合の現在状態は[PR321](https://github.com/k999ln/rock/pull/321)、ソース検証と保全先は `data/project-status.json#currentGitRefresh` と[task72](codex/tasks/72-current-code-and-readme.md)を参照する。
 
 ## 全taskの作業進捗
 <!-- project-status:start -->

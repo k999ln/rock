@@ -41,7 +41,7 @@ function webDomains(tables) {
     {
       id: 'sky',
       label: 'Sky接続・Tool管理',
-      matches: (name) => name.startsWith('sky_') || name === 'agent_delegations' || name.startsWith('agent_delegation_') || name === 'a2a_usage_receipts' || name === 'a2a_live_usage_snapshots' || name === 'a2a_price_quote_consent_events',
+      matches: (name) => name.startsWith('sky_') || name.startsWith('noah_') || name === 'agent_delegations' || name.startsWith('agent_delegation_') || name === 'a2a_usage_receipts' || name === 'a2a_live_usage_snapshots' || name === 'a2a_price_quote_consent_events',
     },
     {
       id: 'marketplace',

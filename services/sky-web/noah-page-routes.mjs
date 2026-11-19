@@ -24,8 +24,8 @@ export const NOAH_REDIRECTS = [
   ['/campus', '/noah/community'], ['/guide', '/rockstaros/guide'],
   ['/amc', '/os/eve?mode=tools&view=work'], ['/zema/amc', '/os/eve?mode=tools&view=work'],
   ['/zema/library', '/noah/saved'], ['/studio', '/noah/publish'],
-  ['/noah/library', '/noah/mac?target=library'], ['/noah/work', '/noah/mac?target=work'],
-  ['/noah/models', '/noah/mac?target=models'], ['/noah/agents/new', '/noah/mac?target=register'],
+  ['/noah/library', '/noah/launch#library'], ['/noah/work', '/noah/launch#work'],
+  ['/noah/models', '/noah/mac?target=models'],
   ['/noah/public', '/noah'], ['/noah/public/agents', '/noah/agents'],
   ['/noah/public/agents/:id', '/noah/agents/:id'],
 ];
@@ -51,6 +51,6 @@ export function noahRedirectURL(source, destination) {
     target.searchParams.delete(key);
     for (const value of fixed.getAll(key)) target.searchParams.append(key, value);
   }
-  target.hash = source.hash;
+  if(!target.hash) target.hash = source.hash;
   return target;
 }

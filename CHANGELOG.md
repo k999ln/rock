@@ -2,6 +2,8 @@
 
 - 最新のNoah/Eve、仕事計画、mii設計研究、AMC・リセール・全社担当を統合候補へ集約。READMEを現在の利用方法と受入範囲へ整理し、進捗生成を現行project.mdへ移動。探索打切りと競合quorumを修正（[PR #321](https://github.com/k999ln/rock/pull/321)）。
 
+- Noah単体ローンチの登録・独立審査・別利用者実行を開発ブランチへ統合し、認証付きMac Runner・配布ZIP・停止確認を追加。12件の失敗・移行整合性・ファイル読取競合を修正し、全体verifyとローカルAPI/実コンテナの接続→実行→停止を確認。公開はリリース工程、別Mac実機は未確認（[PR #322](https://github.com/k999ln/rock/pull/322)）。
+
 ## 2026-11-18
 
 - NoahとEveのヘッダーを共通化し、Eveだけに出るコミュニティータブ・タブ位置のずれを修正。avoado.si版149へ公開し、切替と既存認証の保持を確認（[PR #320](https://github.com/k999ln/rock/pull/320)）。

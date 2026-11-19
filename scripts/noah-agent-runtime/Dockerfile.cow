@@ -1,0 +1,10 @@
+FROM python:3.12-slim-bookworm@sha256:935c3c5b12357a7e10caa9c1e6ca5692344d97cf229832ef584be2cec9fc03df
+COPY cow/requirements.lock /opt/noah-lock/requirements.lock
+RUN pip install --no-cache-dir --require-hashes -r /opt/noah-lock/requirements.lock && pip check && pip freeze > /opt/dependencies.txt
+RUN python -c "import hashlib,urllib.request,tarfile,io; b=urllib.request.urlopen('https://codeload.github.com/zhayujie/CowAgent/tar.gz/bcc36de52ca17b45d1132f388a04b7a456bd3f95', timeout=120).read(); assert hashlib.sha256(b).hexdigest() == '8a63fc30101eff9ffac7889112ea2ee8c79a632dc33fd7d7a0b5e01e9d6a2ccd'; tarfile.open(fileobj=io.BytesIO(b)).extractall('/opt/upstream', filter='data')"
+RUN useradd --uid 10001 --create-home agent
+COPY runner.py cow_sdk.py /opt/noah/
+ENV HOME=/home/agent PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DO_NOT_TRACK=1 COW_DATA_DIR=/tmp/noah-cow
+USER 10001:10001
+WORKDIR /workspace
+ENTRYPOINT ["python", "/opt/noah/runner.py"]

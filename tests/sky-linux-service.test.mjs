@@ -21,6 +21,7 @@ import { captureEsimAuthorityReads } from '../lib/esim-cloud-grant.ts';
 import { createServiceSetup, acceptServiceSetup } from '../lib/rockstar-service-setup.ts';
 import { sha256Hex } from '../lib/rockstar-entitlement-claim.ts';
 import { workStore } from '../lib/work-store.ts';
+import { createSkyToolPackageDraft, skyToolPackageSha256 } from '../lib/sky-tool-package.ts';
 const now = Date.UTC(2026, 9, 1),
   end = Date.UTC(2026, 10, 1),
   sha = 'a'.repeat(64);
@@ -79,10 +80,11 @@ async function setup() {
     }),
     now,
   );
+  const manifest = createSkyToolPackageDraft({ sourceKind: 'github', sourceUrl: 'https://github.com/example/fixture-agent', name: 'Fixture Agent', developerName: 'creator', version: '1.0.0' });
   const listing = await makeLinuxListing({
     id: 'creator.agent.v1',
-    packageKey: 'test.package@1',
-    packageSha256: sha,
+    packageKey: `${manifest.id}@${manifest.version}`,
+    packageSha256: await skyToolPackageSha256(manifest),
     creatorId: 'creator',
     model,
     agent: {
@@ -98,7 +100,7 @@ async function setup() {
     [listing],
     now,
   );
-  return { w, listing };
+  return { w, listing, manifest };
 }
 async function run(w, listing, id = randomUUID()) {
   w = await linuxCommand(
@@ -603,7 +605,7 @@ void test('text validation rejects the original control range and retains ordina
 // A trusted synthetic issuer adapter reads existing main documents through the
 // same read-set DB as the real resolver. No provider or browser facts are used.
 async function runtimeAuthorityFixture(t) {
-  const db = database(t), { w, listing } = await setup(), stamp = Date.now();
+  const db = database(t), { w, listing, manifest } = await setup(), stamp = Date.now();
   w.issuer.validUntil = stamp + 60_000;
   w.serviceStartAt = stamp - 1;
   const key = `workspace:${await sha256Hex(w.ownerId)}`;
@@ -618,8 +620,8 @@ async function runtimeAuthorityFixture(t) {
     deviceRef: w.deviceRef, receiptSha256: sha, scopes: ['agents'], expiresAt: stamp + 60_000 });
   db.sqlite.prepare(`INSERT INTO sky_tool_packages
     (package_key,tool_id,version,user_id,manifest,manifest_sha256,status,created_at,updated_at,published_at)
-    VALUES(?, 'fixture', '1', 'creator', '{}', ?, 'verified', ?, ?, ?)`)
-    .run(listing.packageKey, listing.packageSha256, stamp, stamp, stamp);
+    VALUES(?, ?, ?, 'creator', ?, ?, 'verified', ?, ?, ?)`)
+    .run(listing.packageKey, manifest.id, manifest.version, JSON.stringify(manifest), listing.packageSha256, stamp, stamp, stamp);
   db.sqlite.prepare(`INSERT INTO sky_tool_package_reviews
     (id,package_key,manifest_sha256,reviewer_id,decision,checks_json,evidence_json,notes,reviewed_at,expires_at)
     VALUES('package-review',?,?,'reviewer','verified','{}','{}','fixture',?,?)`)

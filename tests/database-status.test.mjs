@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 200);
+  assert.equal(report.summary.tableCount, 214);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -30,11 +30,12 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 128);
-  assert.equal(report.webSchema.migrationCount, 13);
+  assert.equal(report.webSchema.tableCount, 142);
+  assert.equal(report.webSchema.migrationCount, 24);
   for (const name of ['sky_linux_service_documents','sky_linux_service_receipts','rockstar_service_setups']) { assert.ok(report.webSchema.tables.includes(name)); assert.ok(report.webSchema.sourceOnlyTables.includes(name)); }
   assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('eve_runtime_presence'));
+  for (const name of ['noah_agent_uploads', 'noah_instances', 'noah_runner_devices', 'noah_runner_commands']) assert.ok(report.webSchema.tables.includes(name), name);
   assert.ok(report.webSchema.tables.includes('sky_feed_history_events'));
   assert.ok(
     report.webSchema.tables.includes('sky_feed_personalization_settings'),
@@ -56,7 +57,7 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0032_eve_runtime_presence.sql');
+  assert.equal(report.webSchema.latestMigration, '0043_noah_runner.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.publishedConvergenceDeclarations, 25);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
@@ -64,7 +65,7 @@ void test('database status inventories every boundary and keeps production readb
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 30],
-      ['sky', 64],
+      ['sky', 78],
       ['marketplace', 7],
       ['csv', 5],
       ['business', 22],
