@@ -79,7 +79,6 @@ const hierarchy = parentIds.size
   ? `（親${parentIds.size}・子${childCount}・独立${leafCount - childCount}。実行単位は親を除く${leafCount}件）`
   : '';
 const overview = `${status.tasks.length}登録task${hierarchy}中${done} done・${inProgress} in progress・${planned} planned${blocked ? `・${blocked} blocked` : ''}`;
-const overviewEnglish = `${status.tasks.length} task records${parentIds.size ? ` (${parentIds.size} parents, ${childCount} children, ${leafCount - childCount} standalone; ${leafCount} execution units excluding parents)` : ''}: ${done} done, ${inProgress} in progress, ${planned} planned${blocked ? `, ${blocked} blocked` : ''}`;
 const block = [
   '<!-- project-status:start -->',
   `最終更新: ${status.updatedAt} / ${status.milestone} / 完了記録 ${done}/${status.tasks.length}件${hierarchy}`,
