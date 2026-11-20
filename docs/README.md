@@ -48,7 +48,7 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [担当別workstream](workstreams/README.md) — ROCK／EXTERNAL／JOINT／OWNER、taskと検証入口。
 - [機能別の作業部屋](../workspaces/README.md) — 現行の一意な担当と前提。
 - [Tool・Agent総覧](agents-and-tools.md) — カタログと実行役の役割。
-- [Campus／NFC](sky-nfc-columbia.md) — OS不要のブラウザ入口。タグ、本人、学生利用枠、購入・実行権を分ける。
+- [Campus／NFC](sky-nfc-columbia.md) — Columbia大学の学生向け。OS不要のブラウザ入口。タグ、本人、学生利用枠、購入・実行権を分ける。
 
 ## 詳細資料の索引
 
@@ -56,7 +56,6 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 
 - [A2A Cloud Agent価格見積拡張（契約準備）](a2a-pricing-extension.md)（設計）
 - [Agent Control Plane v1](agent-control-plane.md)（設計）
-- [エージェント・Tool総覧 — 何があって、それぞれ何をするか](agents-and-tools.md)（設計）
 - [RockstarOS canonical memory and model projections](ai-memory-architecture.md)（設計）
 - [RockstarOS — アカウントサービスを支えるsi・Agent共通runtime設計](ai-native-os-architecture.md)（設計）
 - [RockstarOS siネイティブOS設計—Sol独立監査](ai-native-os-design-audit.md)（監査・記録）
@@ -169,7 +168,6 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [Sky MCP導入・利用体験の改善](sky-mcp-usability-20260912.md)（設計）
 - [旧Mr. Hub自動化のSky導入設計](sky-mr-automation-candidates.md)（設計）
 - [Sky — Toolチームと開発者還元](sky-network-economy.md)（設計）
-- [Sky NFCカード — Columbia大学の学生向け入口（設計）](sky-nfc-columbia.md)（設計）
 - [Sky 特許出願アシスタント](sky-patent-assistant-20260912.md)（設計）
 - [Sky「サブスク顧問」接続 — 2026-09-12](sky-rockstar-ledger-20260912.md)（設計）
 - [Skyの役割エージェント仕様 — 2026-09-12](sky-role-agents-20260912.md)（設計）

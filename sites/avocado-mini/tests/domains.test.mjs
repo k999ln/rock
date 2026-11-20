@@ -59,7 +59,7 @@ test('asset-first hosting still serves the correct root and redirects old produc
     const asset = await diskAssets.fetch(request);
     return asset.status === 404 ? worker.fetch(request, {ASSETS:diskAssets}) : asset;
   };
-  for (const [host, heading] of [['avoado.si', 'Make the room part'], ['avocadomini.si', 'One device.'], ['avocadopro.si', 'Meet avocadoPro.']]) {
+  for (const [host, heading] of [['avoado.si', 'Make the room part'], ['avocadomini.si', 'Work with Eve'], ['avocadopro.si', 'Meet avocadoPro.']]) {
     const page = await hostedFetch(`https://${host}/`);
     assert.equal(page.status, 200);
     assert.ok((await page.text()).includes(heading));

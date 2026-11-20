@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
@@ -11,6 +12,9 @@ export default defineConfig({
     assets: 'assets',
   },
   vite: {
+    define: {
+      'import.meta.env.MII_IMAGE_SOURCE_ROOT': JSON.stringify(fileURLToPath(new URL('../../', import.meta.url))),
+    },
     build: {
       emptyOutDir: true,
     },

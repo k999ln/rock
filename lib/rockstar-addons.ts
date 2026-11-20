@@ -2,7 +2,7 @@ export const ADDONS_STORAGE_KEY = 'rockstaros.addons.v1';
 export const ADDONS_CHANGED_EVENT = 'rockstaros-addons-changed';
 export const optionalAddons = [
   { id: 'data', name: 'データ回収', href: '/add/data', description: '選んだファイルとメモをまとめ、暗号化して持ち運ぶ。' },
-  { id: 'llm', name: 'LLM', href: '/chat', description: 'Zemaで文章を相談する。接続先と利用条件を確認して始める。' },
+  { id: 'llm', name: 'LLM', href: '/chat', description: 'Eveで文章を相談する。接続先と利用条件を確認して始める。' },
 ] as const;
 export type AddonId = typeof optionalAddons[number]['id'];
 type Store = Pick<Storage, 'getItem' | 'setItem'>;
