@@ -90,8 +90,8 @@ export function createIntakeStore(deps: IntakeDependencies) {
     const groups = (await intakeStatement(db, NOAH_LISTING_SQL.counts).all<Group>()).results;
     const mouths = { remote: 0, terminal: 0, remoteReady: 0, terminalReady: 0 }, reasons: Record<string, number> = {};
     for (const group of groups) {
-      if (group.mouth === 'mcp-remote') { mouths.remote += group.n; if (!group.setup) mouths.remoteReady += group.n; }
-      if (group.mouth === 'mcp-package') { mouths.terminal += group.n; if (!group.setup) mouths.terminalReady += group.n; }
+      if (group.state === 'active' && group.mouth === 'mcp-remote') { mouths.remote += group.n; if (!group.setup) mouths.remoteReady += group.n; }
+      if (group.state === 'active' && group.mouth === 'mcp-package') { mouths.terminal += group.n; if (!group.setup) mouths.terminalReady += group.n; }
       const result = noahListing({ source: group.source, familyId: group.bulk ? 'bulk:group' : 'single', candidateState: group.state, withdrawn: false, hidden: false,
         check: group.mouth ? { mouth: group.mouth, setup: !!group.setup, auth: group.auth, result: group.result, level: group.level, formTools: group.has_form, oneTapTools: group.has_one_tap } : null });
       if (!result.listed) reasons[result.reason] = (reasons[result.reason] ?? 0) + group.n;
