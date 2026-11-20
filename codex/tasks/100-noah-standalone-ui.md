@@ -28,6 +28,8 @@
 
 ## 進捗
 
-実装を [PR #337](https://github.com/k999ln/rock/pull/337) にpush。typecheck・lint:product・焦点試験30群成功。1360px/390pxの実ブラウザで3カラム/下部ナビ・検索・未設定登録画面・横はみ出しなしを確認。全体verifyを実行中。
+実装を [PR #337](https://github.com/k999ln/rock/pull/337) にpush。typecheck・lint:product・焦点試験30群成功。1360px/390pxの実ブラウザで3カラム/下部ナビ・検索・未設定登録画面・横はみ出しなしを確認。全体verify成功。ルート4,503成功・4 skip（計4,507）、仕事API1,918 assertions、CSV385 assertions、ビルド・設計・残りの検査も成功。ローカルHTTP8ルート/8共通ヘッダーを実測し、data/web-security-response-current.jsonを更新。
 
 再開: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。登録API/UIは `node --experimental-strip-types --test tests/noah-registration*.test.mjs`。実際の登録先アダプターと秘密設定は未接続。本人Mac・成果の認証と本番環境は変更しない。
+
+CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/noah/noah-connect.test.mjs:85、51df5ce・80b3810・5b7cde3）を検出。run44755532375/job136354220728で確認。例外化・履歴書換えは未実施。
