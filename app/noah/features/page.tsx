@@ -4,7 +4,9 @@ export const metadata = { title: '機能一覧 — Noah' };
 const groups = [
   {title:'見つける・つながる', description:'タイムラインから、必要なAgentや仲間を探す。', links:[
     ['/noah#timeline','タイムライン','ニュース・Agent・投稿をまとめて見る'],
-    ['/noah/agents','Agentを探す','用途・提供元・接続条件を比較'],
+    ['/noah/registration','外部Agentの登録','必要項目を入力して登録Agentに依頼'],
+    ['/noah/explore','Agentを探す','実行対応Agentを検索して接続条件を確認'],
+    ['/noah/agents','調査カタログ','接続準備中のAgentや関連資料を見る'],
     ['/noah/tools','Toolを探す','既存のTool・コードを検索して利用'],
     ['/noah/social#compose','投稿・共有','サインインして投稿やフォローを管理'],
     ['/noah/social#communities','コミュニティー','参加して投稿を読む・共有する'],

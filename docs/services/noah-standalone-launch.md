@@ -33,3 +33,15 @@
 公開WebとMac Runnerの接続はdevice sessionによる外向きHTTPS。localhostのcookie転送とは別契約であり、`scripts/noah-mac-runner.mjs`の認証・lease・切断停止を維持する。固定Agent、本人のNode/Python、招待、審査済み公開版を一律の権限へまとめない。
 
 対象試験: `tests/noah-local-api.test.mjs`、`tests/eve-work-client.test.mjs`、既存`noah-terminal` / `noah-invite-runtime` / `noah-release-runtime` / `noah-mac-runner` / `noah-managed-installations`。全体は`npm run verify`。
+
+## 専用フロント（2026-11-20・task100）
+
+本人指示: 共通の認証・保存を使い、Noah専用のトップ・メニュー・利用画面にする。紫を基調とする。追加指示「xと同じフロント」により、左ナビ・中央フィード・右検索/Agent欄の3カラム、下線タブ、区切り線の投稿、モバイル下部ナビにする。
+
+- `/noah`: 既存の統合タイムラインを維持。ニュース・Agent・投稿・コミュニティーを読み、専用メニューから探す・使う・仕事・成果へ進む。カード型ホームには変更しない。
+- `/noah/explore`: 実行対応Agentを名前・説明で検索する。カードから既存のNoah接続画面へAgent IDを渡す。研究用の候補一覧とは区別する。
+- 共通のNoah専用ナビゲーション: タイムライン、Agentを探す、自分のAgent、仕事、成果。登録・接続・実行・停止・成果保存の権限は既存APIを使う。
+- `/noah#timeline`、既存のqueryとコミュニティーへの遷移、ローカルOSのホーム表示を維持。タイムラインを複製・移動しない。
+- サインインは共通accountへ遷移し、Noahに戻る。NoahのヘッダーはNoahの名前・専用メニューにし、OSアプリ切り替えを置かない。
+- 合格条件: 主導線がNoah内の既存操作へ到達する、取得失敗を成果0件や実行成功にしない、検索できる、タイムラインと絞り込み・検索・投稿の機能が保持される、390pxで横にはみ出さない、キーボードで主要操作に到達できる。
+- リモート実行のL4〜L9完成をこの画面変更で主張しない。現時点で実行できる一覧はMac接続が必要である旨をカードと接続案内に表示する。
