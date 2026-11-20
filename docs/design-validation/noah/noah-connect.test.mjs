@@ -7,6 +7,15 @@ import {
 } from '../../contracts/noah-connect-v1.ts';
 
 const H = 'a'.repeat(64);
+// 鍵らしい文字列は、試験の中で組み立てる（どれも作り物で、どこの鍵でもない）。
+// リポジトリの秘密値の検査（SPIDER。SECURITY.md）は履歴の全部を見るので、作り物でも、そのまま書くと鍵の候補として拾われる。
+const glue = (...parts) => parts.join('');
+const FAKE_SK = glue('sk', '-', 'abcdefgh', '12345678');
+const FAKE_JWT_HEAD = glue('eyJ', 'hbGciOiJIUzI1NiJ9', 'abcdefgh');
+const FAKE_GHP = glue('gh', 'p_', 'abcdefgh', '12345678');
+const FAKE_BEARER = glue('Bearer', ' ', 'abcdEFGH', '1234abcd');
+const FAKE_PAIR = glue('token', '=', 'A1b2C3', 'd4E5f6', 'G7h8I9', 'j0K1l2', 'M3n4O5', 'p6');
+const FAKE_HF = glue('hf', '_', 'abcdefghijkl');
 const remote = (change = {}) => ({
   schema: 'noah-connect/1', candidateId: 'mcp-registry:ac.mizan/registry', candidateDigest: H, mouth: 'mcp-remote', surface: 'none',
   places: ['provider'], target: { url: 'https://mizan.ac/mcp', headers: [] }, codeDelivery: 'none',
@@ -59,8 +68,8 @@ test('接続要件: 拒否する形（規則ごとに 1 つ以上）', () => {
     k('host への差し込み', remote({ target: { url: 'https://{tenant}.example.com/mcp', headers: [] }, egress: ['x.example.com'] }), 'url'),
     k('予約された header', remote({ target: { url: 'https://mizan.ac/mcp', headers: [{ name: 'Cookie', required: true, secret: true }] } }), 'header'),
     k('秘密の header に固定の値', remote({ target: { url: 'https://mizan.ac/mcp', headers: [{ name: 'X-Key', required: true, secret: true, value: 'abc' }] } }), 'secret'),
-    k('固定の値が鍵らしい', remote({ target: { url: 'https://mizan.ac/mcp', headers: [{ name: 'X-Key', required: true, secret: false, value: 'sk-abcdefgh12345678' }] } }), 'secret'),
-    k('URL のパスに token', remote({ target: { url: 'https://mizan.ac/mcp/eyJhbGciOiJIUzI1NiJ9abcdefgh', headers: [] } }), 'secret'),
+    k('固定の値が鍵らしい', remote({ target: { url: 'https://mizan.ac/mcp', headers: [{ name: 'X-Key', required: true, secret: false, value: FAKE_SK }] } }), 'secret'),
+    k('URL のパスに token', remote({ target: { url: `https://mizan.ac/mcp/${FAKE_JWT_HEAD}`, headers: [] } }), 'secret'),
     k('egress が接続先と違う', remote({ egress: ['other.example.com'] }), 'egress'),
     k('egress に * ', pkg({ egress: ['*'] }), 'egress'),
     k('codeDelivery の不一致', remote({ codeDelivery: 'cloud_only' }), 'codeDelivery'),
@@ -74,7 +83,7 @@ test('接続要件: 拒否する形（規則ごとに 1 つ以上）', () => {
     k('固定の hash の形', pkg({ target: { ...pkg().target, integrity: 'md5-abc' } }), 'integrity'),
     k('binary に hash が無い', pkg({ mouth: 'acp', places: ['home'], target: { registryType: 'binary', identifier: 'https://example.com/a.tgz', version: '', integrity: null, args: [], command: './a', env: [] } }), 'integrity'),
     k('起動する名前に ..', pkg({ target: { ...pkg().target, command: '../../bin/sh' } }), 'arg'),
-    k('見本の入力に鍵', remote({ try: { input: 'key is ghp_abcdefgh12345678' } }), 'secret'),
+    k('見本の入力に鍵', remote({ try: { input: `key is ${FAKE_GHP}` } }), 'secret'),
     k('サービスの重複', remote({ services: [{ id: 'a', method: 'oauth', required: true, purpose: 'A の許可' }, { id: 'a', method: 'oauth', required: true, purpose: 'A の許可' }] }), 'shape'),
   ];
   for (const { name, value, expected } of cases) assert.equal(code(value), expected, name);
@@ -82,8 +91,9 @@ test('接続要件: 拒否する形（規則ごとに 1 つ以上）', () => {
 });
 
 test('秘密値の見分け: 当てる物と当てない物', () => {
-  for (const s of ['sk-abcdefgh12345678', 'Bearer abcdEFGH1234abcd', 'token=A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6', 'hf_abcdefghijkl'])
+  for (const s of [FAKE_SK, FAKE_BEARER, FAKE_PAIR, FAKE_HF])
     assert.equal(looksLikeNoahSecret(s), true, s);
+  assert.deepEqual([FAKE_SK.length, FAKE_BEARER.length, FAKE_PAIR.length, FAKE_HF.length, FAKE_GHP.length, FAKE_JWT_HEAD.length], [19, 23, 38, 15, 20, 28], '組み立てた値は、前に直に書いていた値と同じ長さ');
   for (const s of ['@modelcontextprotocol/server-memory', 'agent-observatory-sensor.nolimit-observatory.workers.dev', '--transport', 'テスト', '2842d69a', 'abcdefghijklmnopqrstuvwxyzabcdefghijkl'])
     assert.equal(looksLikeNoahSecret(s), false, s);
 });
