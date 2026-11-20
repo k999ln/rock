@@ -23,3 +23,10 @@
 - 仕様書 9 章の試験: 切り替え 4 群、窓口の文、見張る数（一時 DB で、手で数えた値と同じ）、戻し方（一覧 404・接続と依頼 503・進んでいる依頼は最後まで）、記録に名前と ID が無い。
 - `npm run typecheck`、`npm run lint:product`。
 - `services/noah-patrol-wake` が `wrangler deploy --dry-run` を通る。配備はしない。
+
+## 開発進捗
+
+- 2026-11-21 04:55 JST: **L8（出すための運用）は Claude が作業中。** 枝は `claude/noah-ops-l8-20261121`（L7 の枝 `claude/noah-patrol-l7-20261121` = [PR #345](https://github.com/k999ln/rock/pull/345) の上）。同じ範囲を、別の枝で作り始めない。
+- L8 で入れる物: `/noah/help` の `#bot` の節（宛先が決まるまで、出さない）、運営の画面の見張る数（仕様書 6 章。`GET /api/noah/intake?state=1` の `launch`）、`services/noah-patrol-wake/README.md` の手順、試験（仕様書 9 章。切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録）、本人が行う事の一覧（PR 本文）。
+- すでに入っている物（作り直さない）: 巡回を起こす専用の Worker と合図の入口（L3）、合図の記録の 1 行（L3・L4。`swept` は L7）、切り替えの読み方 `lib/noah-flags.ts`（L3）、つながると確かめた数（L7）。
+- 入れない物: 本番への配備・migration の適用・切り替え・契約（本人の許可の後）。報告の数で自動で伏せる作り。
