@@ -1,3 +1,7 @@
+## 2026-11-21
+
+- READMEにmiiのデザイン映像とNoahの公開画面を使った操作デモを掲載し、オンラインサロン向けの18秒動画と投稿文を追加（[PR #340](https://github.com/k999ln/rock/pull/340)、task 99）。
+
 ## 2026-11-20
 
 - READMEにmii公式の筐体全景とセンサー部の接写を掲載し、Proの紹介・画像・表の記載を外した（[PR #338](https://github.com/k999ln/rock/pull/338)、task 99）。

@@ -8,3 +8,4 @@
 - 録画の更新日・ハイライト枠・左の縦目次と右の機能記事・操作直後の画面例を再現。Noahの検索から詳細までを収録し、Eveの送信前の画面、Macの操作、公開版の入出力例を掲載（[PR #333](https://github.com/k999ln/rock/pull/333)）。
 - mii公式サイトの生活シーンと短編をREADME全体の入口に使い、Eve・Noahの実画面、端末の構成、開発状況、検証手順へつなぐ。公式素材と実装の表示を区別（[PR #336](https://github.com/k999ln/rock/pull/336)）。
 - READMEの製品画像はmii公式の筐体全景とセンサー帯を使用し、Proは製品案内に掲載しない（[PR #338](https://github.com/k999ln/rock/pull/338)）。
+- README冒頭のmiiのデザイン映像とNoahの操作録画を掲載。オンラインサロン向けにCowAgentの検索からサインインまでの18秒動画と試せる投稿文を用意（[PR #340](https://github.com/k999ln/rock/pull/340)）。

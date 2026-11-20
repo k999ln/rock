@@ -66,7 +66,7 @@
 | 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | ✅ [PR #321](https://github.com/k999ln/rock/pull/321)・[PR #325](https://github.com/k999ln/rock/pull/325) |
 | 73 | [73-current-product-consolidation.md](73-current-product-consolidation.md) | 機能を保った重複・類似処理と現行説明の統合 | ✅ [PR #326](https://github.com/k999ln/rock/pull/326) |
 | 98 | [98-product-cleanup.md](98-product-cleanup.md) | miiの商品案内・画像と旧画面の整理 | ✅ [PR #327](https://github.com/k999ln/rock/pull/327) |
-| 99 | [99-readme-entrypoints.md](99-readme-entrypoints.md) | READMEからNoah公開版・Mac・miiの作業先を選ぶ | ✅ [PR #331](https://github.com/k999ln/rock/pull/331)・[PR #333](https://github.com/k999ln/rock/pull/333)・[PR #336](https://github.com/k999ln/rock/pull/336)・[PR #338](https://github.com/k999ln/rock/pull/338) |
+| 99 | [99-readme-entrypoints.md](99-readme-entrypoints.md) | READMEからNoah公開版・Mac・miiの作業先を選ぶ | ✅ [PR #331](https://github.com/k999ln/rock/pull/331)・[PR #333](https://github.com/k999ln/rock/pull/333)・[PR #336](https://github.com/k999ln/rock/pull/336)・[PR #338](https://github.com/k999ln/rock/pull/338)・[PR #340](https://github.com/k999ln/rock/pull/340) |
 
 ## 70〜90番台: Noah — mii へ進む最小構成（2026-11-20）
 

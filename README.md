@@ -2,9 +2,16 @@
 
 miiは、声でEveに頼み、部屋に映った成果を手で操作するために開発している空間コンピューターです。
 
-[![銀色の円筒形のmiiを円形ドックに載せた正面のデザイン画像。上部に黒いセンサー帯がある](docs/assets/readme/mii-tower-on-dock.webp)](https://avocadomini.si/#product-details)
+**[NoahでAgentを試す](https://avoado.si/noah/agents)**　·　[18秒で操作を見る](#catalog)
 
-*miiと円形ドックのデザイン案。* [公式サイトで製品を見る](https://avocadomini.si/#product-details)
+<a href="https://avocadomini.si/#technology">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/readme/mii-tower-on-dock.webp">
+    <img src="docs/assets/readme/mii-body-motion.webp" alt="円形ドックに載ったmiiの全景から、筐体の内部に寄っていく公式デザイン映像" width="100%">
+  </picture>
+</a>
+
+*miiの外観と内部構造を描いたコンセプト映像。* [公式サイトで構造を見る](https://avocadomini.si/#technology)
 
 <a name="contents"></a>
 
@@ -83,11 +90,18 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
-Noahはmiiの最小構成です。「機能一覧」から「Agentを探す」を開き、名前や任せたい仕事で検索します。詳細では配布元、費用、ライセンスと、Macで接続するための条件を確かめられます。
+Noahはmiiの最小構成です。会議のメモを整理したいなら、公開カタログで「CowAgent」と検索して「詳細を見る」を開きます。配布元・費用・ライセンスを確認し、「Noahで接続して使う」から自分のMacを選ぶ画面へ進めます。
 
-![Noahの機能一覧で「Agentを探す」を選び、Aniccaを検索して詳細を開くまでの操作](docs/assets/readme/noah-agent-discovery.gif)
+<a href="https://avoado.si/noah/agents">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/readme/noah-first-agent-poster.jpg">
+    <img src="docs/assets/readme/noah-first-agent-preview.webp" alt="公開中のNoahでCowAgentを検索し、詳細の接続ボタンからサインイン画面へ進む18秒の操作動画" width="440">
+  </picture>
+</a>
 
-*開発環境の操作録画。「Anicca」を検索して詳細を開くまで。* [カタログを開く](https://avoado.si/noah/agents)
+**[NoahでAgentを試す](https://avoado.si/noah/agents)**。閲覧・検索はスマホからできます。仕事を実行するには、サインインして自分のApple Silicon MacにRunnerを設定します。[Macの接続手順](#noah-mac)
+
+[動画をダウンロード（MP4・18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [オンラインサロン用の投稿文](docs/noah/online-salon-trial.md)
 
 <a name="noah-tools"></a>
 
