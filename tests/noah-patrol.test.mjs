@@ -13,6 +13,7 @@ import { readFileSync } from 'node:fs';
 import { createNoahAskService, NOAH_ASK_RUN_LIMITS } from '../lib/noah-ask.ts';
 import { NOAH_ASK_END_MESSAGES, NOAH_ASK_LEASE_GRACE_MS, NOAH_ASK_STOP_MESSAGES } from '../lib/noah-ask-store.ts';
 import * as askView from '../lib/noah-ask-view.ts';
+import * as botNotice from '../lib/noah-bot-notice.ts';
 import { parseNoahFlags } from '../lib/noah-flags.ts';
 import * as formLib from '../lib/noah-form.ts';
 import { createIntakeTick } from '../lib/noah-intake-api.ts';
@@ -386,7 +387,7 @@ void test('the listing rule: the pure function and the SQL give the same answer 
 void test('the screen: a connection the cleanup cut shows its reason and 接続 again; pressing connects as a new operation', async (t) => {
   const { server, hold } = holding({ tools: [lookup()] });
   const w = await world(t, { [hostOf(1)]: server });
-  const modules = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-form': formLib, '@/lib/noah-surface': surface, 'next/image': { default: 'img' }, 'next/navigation': { usePathname: () => '/noah/ready' } };
+  const modules = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-bot-notice': botNotice, '@/lib/noah-form': formLib, '@/lib/noah-surface': surface, 'next/image': { default: 'img' }, 'next/navigation': { usePathname: () => '/noah/ready' } };
   const ui = screen({ fetch: w.browser({ user: 'owner-a' }), modules, now: w.f.time() });
   const page = ui.mount('components/noah-ready-detail.tsx', { id: familyId(1) });
   await page.flush();
@@ -418,7 +419,7 @@ void test('the screen: when a run is gone, 止める comes back after a while an
   await w.as('owner-a').connect(familyId(1), uuid(1));
   w.clear();
   const waiting = [];
-  const modules = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-form': formLib };
+  const modules = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-bot-notice': botNotice, '@/lib/noah-form': formLib };
   const ui = screen({ fetch: w.browser({ user: 'owner-a' }, { waitUntil: (work) => { waiting.push(work); } }), modules, now: w.f.time() });
   const page = ui.mount('components/noah-ready-detail.tsx', { id: familyId(1) });
   await page.flush();

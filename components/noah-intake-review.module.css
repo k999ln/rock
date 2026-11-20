@@ -1,0 +1,12 @@
+/* 運営の画面（/noah/review）の「取り込み」の節。数の行を、スマホの幅で読み分けられるようにする。色は、親（.page）の変数を使う。 */
+.intake { margin: 8px 0 32px; font-size: 14px; line-height: 1.75; overflow-wrap: anywhere; }
+.intake h2 { font-size: 20px; font-weight: 700; margin: 8px 0 10px; }
+.intake h3 { font-size: 16px; font-weight: 700; margin: 20px 0 6px; padding-top: 16px; border-top: 1px solid var(--os-line); }
+.intake h4 { font-size: 13px; font-weight: 700; margin: 12px 0 2px; color: var(--os-muted); }
+.intake p { margin: 2px 0; }
+.intake table { border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+.intake th, .intake td { text-align: left; padding: 4px 14px 4px 0; font-variant-numeric: tabular-nums; }
+.intake output { display: block; margin: 6px 0; }
+.intake form { display: grid; gap: 10px; margin: 18px 0 10px; }
+.intake form label { display: grid; gap: 4px; }
+.intake form input { min-height: 44px; padding: 8px 12px; border: 1px solid var(--os-line); border-radius: 10px; background: transparent; }

@@ -85,7 +85,7 @@
 | 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | ✅ L7（見回りを保つ）実装・手元の受入 [PR #345](https://github.com/k999ln/rock/pull/345)（L6 の #344 を base、未マージ。本番への適用なし）: 止まった依頼と接続の後始末・道具を呼ぶ直前の「相手へ送る」の印・つながると確かめた数・索引を足す migration 0049。自動の見本（`probeL2`・`noahSampleCalls`）は作っていない（出した後） |
 | 1 | — | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package）。今ある Mac の隔離環境で | |
 | 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | |
-| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | 作業中（Claude。枝 `claude/noah-ops-l8-20261121`。L7 の #345 の上）: 窓口の節・見張る数・手順・試験 |
+| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8（出すための運用）実装 [PR #346](https://github.com/k999ln/rock/pull/346)（L7 の #345 を base、未マージ。**本番への配備・適用・切り替えなし**）: 運営の画面の「見張る数」（`lib/noah-launch-status.ts`）、`/noah/help` の `#bot` の節（`lib/noah-bot-notice.ts`。宛先 D8 が未定のため、まだ出していない）、専用の Worker の手順書（`services/noah-patrol-wake/README.md`）、試験 `tests/noah-launch-ops.test.mjs`（切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録・適用する物の形）。残り: D8 の宛先（本人）、本番での G4〜G6 の確かめ（L9・本人の許可の後） |
 | 2 | — | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
 | 2 | — | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
 | 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | |

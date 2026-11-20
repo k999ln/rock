@@ -12,6 +12,8 @@ function harness(fetcher) {
     fetch: async (url, init) => { calls.push({ url, init }); return fetcher(url, init); },
     require(id) {
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
+      // 見た目（CSS）は、ここでは確かめない。class の名前だけを返す。
+      if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (id === 'react') return {
         useState(value) { const i = cursor++; slots[i] ??= { value }; return [slots[i].value, v => { slots[i].value = typeof v === 'function' ? v(slots[i].value) : v; }]; },
         useEffect(fn, deps) { const i = cursor++, previous = slots[i]; if (!previous || deps.some((v, n) => v !== previous.deps[n])) { slots[i] = { deps }; effects.push(() => { previous?.cleanup?.(); slots[i].cleanup = fn(); }); } },

@@ -6,13 +6,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import * as askView from '../lib/noah-ask-view.ts';
+import * as botNotice from '../lib/noah-bot-notice.ts';
 import * as formLib from '../lib/noah-form.ts';
 import * as view from '../lib/noah-ready-view.ts';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, uuid } from './fixtures/noah/connect-world.mjs';
 import { screen } from './fixtures/noah/screen.mjs';
 
-const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-form': formLib };
+const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-bot-notice': botNotice, '@/lib/noah-form': formLib };
 const DETAIL = 'components/noah-ready-detail.tsx';
 const lookup = tool('lookup', true, { description: 'Looks up a player.', inputSchema: { type: 'object', required: ['query'], properties: {
   query: { type: 'string', title: 'Player', description: 'A player id or name.', maxLength: 200 }, limit: { type: 'integer', default: 5 },

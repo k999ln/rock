@@ -7,6 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahAsk from './noah-ask';
@@ -107,6 +108,6 @@ export default function NoahReadyDetail({ id }: { id: string }) {
       {error && <p className={styles.reason} role="alert">{error}</p>}
     </section>}
 
-    <footer className={styles.source}><p>{NOAH_READY_TEXT.source} <Link href="/noah/help#bot">{NOAH_READY_TEXT.report} →</Link></p></footer>
+    <footer className={styles.source}><p>{NOAH_READY_TEXT.source}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{NOAH_READY_TEXT.report} →</Link></>}</p></footer>
   </main>;
 }

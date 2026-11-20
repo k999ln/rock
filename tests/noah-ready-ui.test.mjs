@@ -6,6 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import * as askView from '../lib/noah-ask-view.ts';
+import * as botNotice from '../lib/noah-bot-notice.ts';
 import * as formLib from '../lib/noah-form.ts';
 import * as view from '../lib/noah-ready-view.ts';
 import * as surface from '../lib/noah-surface.ts';
@@ -14,7 +15,7 @@ import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, rpcs, handshakes } from './fixtures/noah/connect-world.mjs';
 import { screen } from './fixtures/noah/screen.mjs';
 
-const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-form': formLib, '@/lib/noah-surface': surface, 'next/image': { default: 'img' }, 'next/navigation': { usePathname: () => '/noah/ready' } };
+const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-bot-notice': botNotice, '@/lib/noah-form': formLib, '@/lib/noah-surface': surface, 'next/image': { default: 'img' }, 'next/navigation': { usePathname: () => '/noah/ready' } };
 const LIST = 'components/noah-ready.tsx', DETAIL = 'components/noah-ready-detail.tsx';
 const nested = (name) => tool(name, false, { inputSchema: { type: 'object', required: ['o'], properties: { o: { type: 'object' } } } });
 const markRan = (w, i) => {
@@ -64,12 +65,33 @@ void test('the list: sections, one main button per card, badges in words, where 
   assert.doesNotMatch(page.text(of('Agent 3')), /押すだけで試せる/);
   // 出どころと、申し出の窓口、Mac で動かす Agent への道。
   assert.match(text, /出どころ: Official MCP Registry。Noah が作った物ではありません。説明は、提供者が書いた文のままです。/);
-  assert.deepEqual(page.find('a', '報告・取り下げの申し出').map((node) => node.props.href), ['/noah/help#bot']);
+  // 申し出の窓口への道は、宛先が決まるまで出さない（行き先の節 /noah/help#bot も、その間は出ない。docs/noah/spec-97-launch-ops.md の 5 章）。
+  assert.equal(botNotice.NOAH_REPORT_CONTACT, null, '宛先は、本人が決めるまで null');
+  assert.deepEqual(page.find('a', '報告・取り下げの申し出'), []);
   assert.deepEqual(page.find('a', '自分の Mac で動かす Agent').map((node) => node.props.href), ['/noah/explore']);
   // 名前を押すと、詳細へ。系列の ID は query で渡す。
   assert.equal(page.nodes(of('Agent 1')).find((node) => node.type === 'a').props.href, `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`);
   // 未サインインの間は、本人の接続を読まない。相手へも送らない。
   assert.deepEqual(ui.calls.map((call) => call.url), ['/api/noah/intake?']);
+  assert.deepEqual(w.net.hosts, []);
+});
+
+void test('the way to the report desk appears on the list and the detail screen only once a contact is decided', async (t) => {
+  const w = await world(t, { [hostOf(1)]: mcpServer() });
+  const decided = { ...MODULES, '@/lib/noah-bot-notice': { ...botNotice, NOAH_REPORT_CONTACT: { label: 'example.org の窓口', href: 'https://example.org/report' } } };
+  const hrefs = (page) => page.find('a', '報告・取り下げの申し出').map((node) => node.props.href);
+  for (const [modules, expected] of [[MODULES, []], [decided, ['/noah/help#bot']]]) {
+    const ui = screen({ fetch: w.browser({ user: null }), modules, now: w.f.time() });
+    const list = ui.mount(LIST);
+    await list.flush();
+    assert.match(list.text(), /出どころ: Official MCP Registry/);
+    assert.deepEqual(hrefs(list), expected);
+    const detail = ui.mount(DETAIL, { id: familyId(1) });
+    await detail.flush();
+    assert.match(detail.text(), /出どころ: Official MCP Registry/);
+    assert.deepEqual(hrefs(detail), expected);
+  }
+  // 宛先そのもの（メールや URL）は、一覧・詳細には出さない。出すのは、/noah/help の節だけ。
   assert.deepEqual(w.net.hosts, []);
 });
 

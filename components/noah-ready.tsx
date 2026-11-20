@@ -7,6 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { NOAH_READY_TEXT, noahConnectionStateText, noahReadyDetailHref, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahCard from './noah-card';
 import base from './noah-service.module.css';
@@ -150,7 +151,7 @@ export default function NoahReady() {
 
       <footer className={styles.source}>
         <p><Link href="/noah/explore">{NOAH_READY_TEXT.mac} →</Link></p>
-        <p>{NOAH_READY_TEXT.source} <Link href="/noah/help#bot">{NOAH_READY_TEXT.report} →</Link></p>
+        <p>{NOAH_READY_TEXT.source}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{NOAH_READY_TEXT.report} →</Link></>}</p>
       </footer>
     </>}
   </main>;

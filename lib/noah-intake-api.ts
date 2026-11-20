@@ -3,6 +3,7 @@ import type { IntakeDependencies, IntakeOutcome } from './noah-intake-sync.ts';
 import { noProbes, type IntakeProbeCounts } from './noah-intake-probe.ts';
 import { noahAllowed, type NoahFlags } from './noah-flags.ts';
 import { verifyNoahWake } from './noah-intake-wake.ts';
+import { createNoahLaunchStatus } from './noah-launch-status.ts';
 import { createNoahSweep, noSweep, noahSweepTotal } from './noah-sweep.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
@@ -19,7 +20,7 @@ function failure(error: unknown) {
   return json({ error: '台帳を確認できません。少し待ってから再試行してください。' }, 503);
 }
 export function createIntakeApi(deps: IntakeApiDependencies) {
-  const store = createIntakeStore(deps);
+  const store = createIntakeStore(deps), launch = createNoahLaunchStatus(deps);
   return async (request: Request) => {
     try {
       if (!['GET', 'POST'].includes(request.method)) return json({ error: '対応しない操作です。' }, 405);
@@ -29,7 +30,8 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
       if (!noahAllowed(deps.flags, 'list', reviewer)) return json({ error: '見つかりません。' }, 404);
       const ownerScope = owner ? await ownerScopeFor(owner) : null;
       if (request.method === 'GET') {
-        if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.status(url.searchParams), warnings: deps.flags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
+        // 運営の画面（審査者だけ）。launch は、見張る数（docs/noah/spec-97-launch-ops.md の 6 章）。数えられない時は null（取り込みの節の、他の行は出す）。
+        if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.status(url.searchParams), launch: await launch(deps.flags).catch(() => null), warnings: deps.flags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
         const id = url.searchParams.get('id');
         return json({ ...(id ? await store.detail(id, owner, reviewer) : await store.list(owner, url.searchParams)), ownerScope });
       }

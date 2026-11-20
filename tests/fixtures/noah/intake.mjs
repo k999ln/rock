@@ -24,7 +24,10 @@ export function fixture(t, fetcher = async () => page([]), extra = {}) {
     async batch(statements) {
       if (statements.length > 50) throw Error('D1 batch limit'); batches.push(statements.map(s => s.query));
       hooks.beforeBatch?.(statements); sql.exec('BEGIN');
-      try { const results = []; for (const statement of statements) { if (hooks.fail?.(statement.query)) throw Error('Synthetic batch failure'); results.push(await statement.run()); } sql.exec('COMMIT'); return results; }
+      // D1 の batch は、読む文には行（results）を、書く文には変えた数（meta.changes）を返す。読む文は、SELECT と、書く語の無い WITH。
+      const reads = (query) => /^\s*SELECT\b/i.test(query) || (/^\s*WITH\b/i.test(query) && !/\b(?:INSERT|UPDATE|DELETE|REPLACE)\b/i.test(query));
+      const answer = async (statement) => (reads(statement.query) ? { ...(await statement.all()), meta: { changes: 0 } } : statement.run());
+      try { const results = []; for (const statement of statements) { if (hooks.fail?.(statement.query)) throw Error('Synthetic batch failure'); results.push(await answer(statement)); } sql.exec('COMMIT'); return results; }
       catch (error) { sql.exec('ROLLBACK'); throw error; }
     },
   };
