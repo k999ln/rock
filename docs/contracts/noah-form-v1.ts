@@ -449,11 +449,8 @@ export function noahResultOutline(value: string, limits: { rows: number; depth: 
  * open〜hostPerMinute は依頼。connect* は接続。hostHandshakes は、1 つの接続先へ、利用者の操作から始める握手
  * （接続・道具の一覧・依頼）を、全員合わせて 60 秒の枠に何回まで行うか（host_take の :limit）。
  */
-export const NOAH_ASK_LIMITS = {
-  open: 8, perMinute: 10, perDay: 200, hostPerMinute: 30,
-  connectLive: 50, connectPerMinute: 10, connectPerDay: 100,
-  hostHandshakes: 60,
-};
+import { NOAH_ASK_LIMITS } from '../../lib/noah-limits.ts';
+export { NOAH_ASK_LIMITS };
 /** 接続先の枠（host_take）が取れなかった時の文。相手が「混んでいる」と返して待っている間も、同じ文を出す。 */
 export const NOAH_HOST_BUSY = 'この Agent は、今こんでいます。少し待ってから試してください。';
 
