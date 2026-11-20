@@ -229,9 +229,10 @@ L3〜L7 で、もう入っていた物（作り直していない）: 切り替�
 
 | 検査 | 結果 |
 | --- | --- |
-| `node --experimental-strip-types --test tests/noah-launch-ops.test.mjs tests/noah-ready-ui.test.mjs`（9 章の試験） | 通過（17 + 15） |
+| `node --experimental-strip-types --test tests/noah-launch-ops.test.mjs tests/noah-ready-ui.test.mjs`（9 章の試験） | 通過（17 + 14） |
 | わざと壊して、試験が気づくか（18 か所。1 か所ずつ壊して、戻した） | 18 か所とも、試験が落ちた。壊した所: 見張る数の条件 11（相手のサーバーだけ・取り下げ・量産・鍵が要る・59 分の窓・失敗がある物だけ・5 件以上・つながった時刻で数える・別の日で数える・待つ時刻は今と比べる・60 秒の枠）、切り替えを今の値で返す、読み取りの途中を止まったと言わない、数えられない時は見張る数だけ null、文の中の数、宛先が無い間は節を出さない・道を出さない、2xx でない応答で Worker が失敗する |
 | `npm run typecheck`、`npm run lint:product` | 通過（指摘 0） |
+| GitHub の自動検査 | `verify` は通過。`CodeQL` は、最初の push で、試験の file の 2 行（応答の文字列の中を、接続先の名前で探す書き方）を指摘した。値を読んで比べる書き方に替えて、通過（製品のコードへの指摘ではない）。`SPIDER / secrets` は、前からある履歴の 3 commit で赤のまま |
 | `node --experimental-strip-types --test tests/noah-*.test.mjs tests/migration-union.test.mjs tests/database-status.test.mjs tests/sites-owner-workspace-recovery.test.mjs tests/release-*.test.mjs` | 724 本のうち 721 本が通過。通らない 3 本は、この環境だけの物（配布物の検査 2 と、その中の 1。L7 の時と同じ 3 本） |
 | `npm test`（全部） | 4,678 本のうち 4,639 本が通過、36 本が失敗、3 本は対象外。失敗の 36 本は、L7 の時と同じ名前の 36 本（この環境に無い配布物・道具に当たる試験）。L8 で足した 18 本は、通過に入っている |
 | `npm run build`、`release:web-bundle:check`、`release:web-assets:check` | 通過 |
