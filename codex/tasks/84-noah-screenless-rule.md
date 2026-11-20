@@ -31,3 +31,7 @@
 - `node --experimental-strip-types --test tests/noah-surface-class.test.mjs tests/noah-screenless.test.mjs tests/noah-launch-close.test.mjs`。緩めた変更 15 通りが落ちる。
 - `npm run typecheck`、`npm run lint:product`、`npm run verify`。
 - PR 本文に、検査用の Mac での観測（4 項目の変化の数）か、まだ行っていない事を書く。
+
+## 開発進捗
+
+L1 実装済み・全体検証中。起動引数は変更せず `engineArgs()` を抽出し、監査の正本を `lib/noah-screenless-audit.mjs` へ移した。18 起動構成の検査と、15 通りの緩和拒否、overview なしの poll → start → finish による Work 成果保存を確認。関連 30 テスト成功。Mac の観測・面の分類はローンチ後の範囲。

@@ -1,3 +1,4 @@
+// 起動引数の検査の正本は lib/noah-screenless-audit.mjs へ移した（L1）。面の見分けは下の参照実装を保持する。
 /**
  * Noah 画面を取らない: 面の見分けと、隔離環境の起動引数の検査。
  *
@@ -117,45 +118,4 @@ export function noahPlacesForSurface(surface: NoahSurface): ('provider' | 'home'
   return [];
 }
 
-/**
- * 隔離環境（container）の起動引数を検査する。違反の一覧を返す。空なら合格。
- * 対象は scripts/noah-isolated-runtime.mjs の containerArgs と、scripts/noah-terminal-runtime.mjs の terminalContainerArgs。
- */
-export function auditNoahContainerArgs(args: string[], options: { stage?: boolean } = {}): string[] {
-  const violations: string[] = [];
-  const valueOf = (flag: string) => args.flatMap((a, i) => (a === flag ? [args[i + 1] ?? ''] : a.startsWith(`${flag}=`) ? [a.slice(flag.length + 1)] : []));
-  const has = (flag: string) => args.includes(flag) || args.some((a) => a.startsWith(`${flag}=`));
-
-  if (valueOf('--network').join() !== 'none') violations.push('--network none が無い（外向きの通信が開いている）');
-  if (!has('--read-only')) violations.push('--read-only が無い');
-  if (!valueOf('--cap-drop').includes('ALL')) violations.push('--cap-drop ALL が無い');
-  if (!valueOf('--security-opt').includes('no-new-privileges')) violations.push('--security-opt no-new-privileges が無い');
-  for (const flag of ['--memory', '--cpus', '--pids-limit']) if (!has(flag)) violations.push(`${flag} が無い（重さの上限が無い）`);
-  const user = valueOf('--user');
-  if (user.length !== 1 || (!options.stage && /^(0|root)(:|$)/.test(user[0]))) violations.push('--user が無い、または root');
-  for (const flag of ['--privileged', '--device', '--cap-add', '--pid', '--ipc', '--uts', '--userns', '--volumes-from', '--gpus', '-p', '--publish', '-P', '--add-host'])
-    if (has(flag)) violations.push(`${flag} を使っている`);
-  for (const v of [...valueOf('-v'), ...valueOf('--volume')]) violations.push(`host の mount を使っている: ${v}`);
-  for (const m of valueOf('--mount')) if (!/^type=(volume|tmpfs),/.test(m) || /(^|,)(src|source)=\//.test(m)) violations.push(`host の mount を使っている: ${m}`);
-  for (const env of [...valueOf('--env'), ...valueOf('-e')]) {
-    const at = env.indexOf('=');
-    const name = at < 0 ? env : env.slice(0, at);
-    const value = at < 0 ? null : env.slice(at + 1);
-    // 画面・音・デスクトップへの経路は、空で上書きしている時だけ通す。
-    if (/^(DISPLAY|WAYLAND_DISPLAY|XAUTHORITY|DBUS_SESSION_BUS_ADDRESS|PULSE_SERVER|XDG_RUNTIME_DIR|SSH_AUTH_SOCK)$/.test(name) && value !== '') violations.push(`${name} を渡している`);
-  }
-  for (const socket of ['/var/run/docker.sock', '/tmp/.X11-unix', '/run/user']) if (args.some((a) => a.includes(socket))) violations.push(`${socket} を渡している`);
-  return violations;
-}
-
-/** 隔離の VM（colima）の起動引数を検査する。host のファイルを VM へ見せない。 */
-export function auditNoahVmArgs(args: string[]): string[] {
-  const violations: string[] = [];
-  const mount = args.flatMap((a, i) => (a === '--mount' ? [args[i + 1] ?? ''] : []));
-  if (mount.join() !== 'none') violations.push('--mount none が無い（host のファイルが VM から見える）');
-  const on = (flag: string) => args.some((a) => a === flag || (a.startsWith(`${flag}=`) && a !== `${flag}=false`));
-  if (on('--ssh-agent')) violations.push('--ssh-agent を使っている');
-  if (on('--network-address')) violations.push('--network-address を使っている（VM が LAN に出る）');
-  if (on('--network-host-addresses')) violations.push('--network-host-addresses を使っている（VM から host のアドレスへ届く）');
-  return violations;
-}
+export { auditNoahContainerArgs, auditNoahVmArgs } from '../../lib/noah-screenless-audit.mjs';
