@@ -14,6 +14,8 @@ avokadoの主商品 **mii** は、声でEveに頼み、部屋に表示された�
 
 開発環境がある方は[起動と検証](#development)へ。進行中の作業と次の実機試験は[進捗](project.md)で確認できます。
 
+ページの途中から別の項目に移るときは、GitHubのファイル上部にある「Outline」から各章や操作の見出しを選べます。[GitHubの目次の使い方](https://docs.github.com/ja/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes#auto-generated-table-of-contents-for-markdown-files)
+
 ---
 
 <a name="contents"></a>
