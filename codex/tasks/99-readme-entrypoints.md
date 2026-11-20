@@ -9,3 +9,4 @@
 - mii公式サイトの生活シーンと短編をREADME全体の入口に使い、Eve・Noahの実画面、端末の構成、開発状況、検証手順へつなぐ。公式素材と実装の表示を区別（[PR #336](https://github.com/k999ln/rock/pull/336)）。
 - READMEの製品画像はmii公式の筐体全景とセンサー帯を使用し、Proは製品案内に掲載しない（[PR #338](https://github.com/k999ln/rock/pull/338)）。
 - README冒頭のmiiのデザイン映像とNoahの操作録画を掲載。オンラインサロン向けにCowAgentの検索からサインインまでの18秒動画と試せる投稿文を用意（[PR #340](https://github.com/k999ln/rock/pull/340)）。
+- スマホでQwenPawの配布元を確認する操作と、MacでRunnerを入手・登録する手順を2本のHiggsfield操作CMに編集し、サロン向けの投稿文を追加（[PR #341](https://github.com/k999ln/rock/pull/341)）。
