@@ -1,0 +1,76 @@
+{
+ "note": "ACP の台帳（cdn.agentclientprotocol.com/registry/v1/latest/registry.json）と Hugging Face の一覧（filter=mcp-server）の実記録から、使う項目だけを写した物。2026-11-20 取得。",
+ "acp": [
+  {
+   "id": "auggie",
+   "version": "0.37.0",
+   "distribution": {
+    "npx": {
+     "package": "@augmentcode/auggie@0.37.0",
+     "args": [
+      "--acp"
+     ],
+     "env": {
+      "AUGMENT_DISABLE_AUTO_UPDATE": "1"
+     }
+    }
+   }
+  },
+  {
+   "id": "fast-agent",
+   "version": "0.10.1",
+   "distribution": {
+    "uvx": {
+     "package": "fast-agent-acp==0.10.1",
+     "args": [
+      "-x"
+     ],
+     "env": {
+      "FAST_AGENT_MODEL": "codexplan"
+     }
+    }
+   }
+  },
+  {
+   "id": "amp-acp",
+   "version": "0.13.0",
+   "distribution": {
+    "binary": {
+     "linux-aarch64": {
+      "archive": "https://github.com/tao12345666333/amp-acp/releases/download/v0.13.0/amp-acp-linux-aarch64.tar.gz",
+      "cmd": "./amp-acp",
+      "sha256": "ad7e1c23ec29bf47f757d656fc4c9a957dd60533da034213a6bc7d33d1813d32"
+     },
+     "linux-x86_64": {
+      "archive": "https://github.com/tao12345666333/amp-acp/releases/download/v0.13.0/amp-acp-linux-x86_64.tar.gz",
+      "cmd": "./amp-acp",
+      "sha256": "205c819383b6fd389b408120ebea9cdde5c2957530b5ce4ebc912998d4118f8b"
+     }
+    }
+   }
+  }
+ ],
+ "spaces": [
+  {
+   "id": "JCisHERE/wan2-2-i2v-v3",
+   "sdk": "gradio",
+   "stage": "RUNNING",
+   "host": "jcishere-wan2-2-i2v-v3.hf.space",
+   "likes": 478
+  },
+  {
+   "id": "hugging-apps/boom-vvt",
+   "sdk": "gradio",
+   "stage": "SLEEPING",
+   "host": "hugging-apps-boom-vvt.hf.space",
+   "likes": 1
+  },
+  {
+   "id": "Agents-MCP-Hackathon/chess-mcp-server",
+   "sdk": "docker",
+   "stage": "PAUSED",
+   "host": "czakop-chess-agent-mcp.hf.space",
+   "likes": 21
+  }
+ ]
+}

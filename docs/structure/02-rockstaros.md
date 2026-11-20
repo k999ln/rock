@@ -42,6 +42,7 @@ flowchart LR
 | Eve との会話の文脈・Memory | lib/eve-*.ts, ai-memory-architecture.md | 端末跨ぎの同期規約が未定（task 30） |
 | Wallet 残高・天引き契約 | lib/wallet*.ts, lib/settlement.ts, services/sky-billing | 実装あり |
 | 権限・予算 | lib/agent-control-plane.ts, lib/a2a-broker-*.ts | 実装あり |
+| つないだ Agent（接続の条件と置き場所） | lib/noah-instances.ts, noah_runner_devices, [services/noah-one-click-connect.md](../services/noah-one-click-connect.md) | 接続は端末ごと。account を正本にし、端末を足す・替える時にまとめて移す（2026-11-20。Mac でつないだ物を mii でそのまま使う。task 74・93・95） |
 | mii の空間キャリブレーション | なし | profile 固有。account には紐づけない（部屋に紐づく） |
 
 設計原則: **accountに紐づく仕事の正本はaccount側、端末はcache。** 本人Macの私有ファイルとWebの保存先を自動で同一視しない。オフラインのReceipt照合と別端末での再開はそれぞれの受入で確認する。miiのHub内推論・復帰時同期は後続の端末受入対象。

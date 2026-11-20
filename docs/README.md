@@ -192,3 +192,9 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 新しい情報は該当する正本・workstreamへ統合する。不要な重複分冊や日付付き入口を増やさず、移動・削除では参照・索引・検査・復元commitを同時更新する。
 
 - [Noah本人用リセール](services/noah-select-resale.md) — 3担当・共有予算・Web/CLI・停止と照合の現行契約。
+- [Noah の設計書（全体）](noah-design.md)（行き先、具体的なスキーム、機能ごとの設計、要る技術と作り方、作る順番、7 つの問いへの答え）。
+- [Noah 詳細設計書（バックエンド・フロント・UX）](noah-detailed-design.md)（機能ごとの体験と文言、画面と状態、API・データ・状態遷移、試験、開発の進め方、決定待ちの既定値）。実装はこれを見て進める。
+- [Noah ローンチの最小限（MVP）](noah/mvp-launch.md)（本人指示 11-20。出すまでに作る範囲の線、作る順 L1〜L9、出す前に確かめる事 G1〜G7、本人が決める事 13 個、実測の出どころ）。**出すまでは、これと、各実装仕様書の「ローンチの範囲」の章だけを見て作る。**
+- [Noah 実装仕様書（作業単位ごと）](noah/README.md)（task 1 枚につき 1 本。今あるコードのどこをどう変えるか、規則の全表、画面と文言、処理の順、試験。84・85・96・86・87・74・88・89・90・97。各仕様書の最後が「ローンチの範囲」）。動く型契約と参照実装は [contracts/](contracts/) の `noah-*`、実データでの試験と実測は [design-validation/noah/](design-validation/noah/README.md)。
+- [Noah — 接続・実行・取り込み・市場の設計（詳細）](noah-agent-market-design.md)。書式は [services/noah-one-click-connect.md](services/noah-one-click-connect.md)、[services/noah-own-device.md](services/noah-own-device.md)、[services/noah-screenless.md](services/noah-screenless.md)、[services/noah-agent-intake.md](services/noah-agent-intake.md)、[services/eve-agent-build.md](services/eve-agent-build.md)、[services/noah-mobile-variant.md](services/noah-mobile-variant.md)、[services/noah-agent-purchase.md](services/noah-agent-purchase.md)。task は codex/tasks 74〜97（73 は main の別の task）。
+- [外にある Agent の実測（2026-11-20）](noah-agent-census-20261120.md)（上の設計の根拠。MCP の公式台帳・Hugging Face・ACP の件数と、鍵なしでつながる割合、調査した 85 件の分類）。

@@ -11,6 +11,7 @@
 | 互換入口 | `/sky`と`/os/sky`はqueryを保持して対応するNoah画面へ移動。保存済み担当は`/noah/saved`、調査カタログは`/noah/agents`。APIと保存識別子は変更しない |
 | ローカル実験 | 公開画面は`/noah/local-tools`へ案内。Macのlocalhost制限・私有データを保持。公開Webからの実行は、別の認証済みRunner経路を使用 |
 | 公開配信 | 共通ヘッダーと固定hashのasset配信を使用。公開カタログ、本人の登録、審査済み公開版、実行許可を区別。配備の履歴は[task69](../../codex/tasks/69-noah-public-timeline.md)・[task70](../../codex/tasks/70-noah-route-unification.md)、通し受入は[task71](../../codex/tasks/71-noah-standalone-launch.md)で確認 |
+| 次の設計（未実装・本人確認待ち） | 本人指示（2026-11-20）により、行き先を「みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない」に置く設計。他人が作った Agent は、画面と入力装置の無い専用の端末か提供者のサーバーでだけ動かす。外の Agent は 1 件ずつ実行器を書かず、つなぎ方（口）ごとに取り込む。正本は[Noah の設計書](../noah-design.md)と[作業単位ごとの実装仕様書](../noah/README.md)。出すまでに作る範囲（スマホだけで、相手のサーバーで動く Agent を、選ぶ・接続・入力欄から頼む・受け取る・切る）は[ローンチの最小限](../noah/mvp-launch.md)。現在の契約・実装・公開は変えていない |
 
 以下のEve→Noa→AMC→Jevは責任分担と後続の体験を示す設計であり、すべての依頼が自動完了するという受入記録ではない。最初のNoahでは既存Work/Broker/Walletを通して本人が実行と停止を指定する。
 
