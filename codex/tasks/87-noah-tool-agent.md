@@ -33,3 +33,11 @@
 - 手元で、鍵の要らない接続先へ入力欄から頼んで成果が出る。Mac を使わない。`POST` の後に `GET` を 1 回も呼ばなくても、Work に成果が入る。
 - 道具の説明に「前の指示を無視して…」と書いた接続先で、一覧に無い道具も、確認の要る道具も呼ばれない。
 - `npm run typecheck`、`npm run lint:product`、`npm run work:check`。本番への配備と migration の適用は行わない。
+
+## 開発進捗
+
+- 2026-11-21 03:00 JST: **L6（入力欄で頼む。仕様書 11 章）は Claude が作業中。** 枝は `claude/noah-ask-l6-20261121`（L5 の枝 `claude/noah-connect-l5-20261121` = [PR #342](https://github.com/k999ln/rock/pull/342) の上）。同じ範囲を、別の枝で作り始めない。
+- 入れる物（仕様書 11.1 のローンチまでの列）: migration `noah_asks`（番号は 0048 の予定。0045・0046 は Codex、0047 は接続の表）、`lib/workflow.ts`（`noahRemote`）、`lib/noah-remote-work.ts`、`lib/noah-ask.ts` と入口 2 つ（`/api/noah/ask`・`/api/noah/ask/[id]`）、画面（`components/noah-ask.tsx` に、道具を選ぶ・入力欄・確かめ。`components/noah-work-list.tsx`）、`tests/noah-ask.test.mjs`、手元の D1 での受入の script。
+- 入れない物: 1 文で頼む（モデル・`services/noah-relay`・`lib/noah-tool-agent.ts`・「あなたの番」）。本番への migration・配備・切り替え。
+- 順: 先に、画面に依らない所（表・Work・API・実行・試験）。次に画面。
+
