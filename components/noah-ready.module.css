@@ -5,6 +5,13 @@
 .back { margin:0 0 18px; font-size:13px; }
 .page .back a { color:#7546c8; display:inline-flex; align-items:center; min-height:44px; }
 
+/* 「Agentを探す」の一番上に出す入口（components/noah-ready-entry.tsx）。 */
+.entry { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; margin:0 0 22px; padding:14px 18px; border:1px solid #dbc7ef; border-radius:12px; background:#f3eefb; }
+.entryText { min-width:0; }
+.entryText strong { display:block; color:#202024; font-size:15px; letter-spacing:-.2px; }
+.entryText small { color:#52525b; font-size:12px; }
+.entryCount { flex-shrink:0; color:#7546c8; font-size:13px; font-weight:650; white-space:nowrap; }
+
 .filters { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0; padding:0; border:0; min-width:0; }
 .filters button { min-height:44px; padding:0 16px; border:1px solid #ececef; border-radius:22px; background:#fff; color:#52525b; font-size:13px; cursor:pointer; }
 .filters button[aria-pressed="true"] { border-color:#7546c8; background:#f3eefb; color:#7546c8; font-weight:650; }

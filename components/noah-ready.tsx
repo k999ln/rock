@@ -1,13 +1,13 @@
 'use client';
 /**
  * 「すぐ使える Agent」の一覧（/noah/ready）。相手のサーバーで動き、握手が通った物だけが並ぶ。スマホだけで、選んで、つなげる。
- * 上から: 語で探す／つながっているもの（サインイン済みの時）／動いた／まだ誰も動かしていない／出どころ。
+ * 上から: 語で探す／つながっているもの・つながっていないもの（サインイン済みで、切っていない接続がある時）／動いた／まだ誰も動かしていない／出どころ。
  * 並びと、載せるかどうかは、サーバーが決める（GET /api/noah/intake）。ここは、返った順に出すだけ。
  * 仕様: docs/noah/spec-74-one-click-connect.md の 11.5、spec-88-mass-probe.md の 9.6。
  */
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { NOAH_READY_TEXT, noahReadyDetailHref, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import { NOAH_READY_TEXT, noahConnectionStateText, noahReadyDetailHref, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahCard from './noah-card';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
@@ -98,7 +98,9 @@ export default function NoahReady() {
   ]);
   const cards = (items: NoahReadyItem[]) => <div className={styles.cards}>{items.map((item) => <NoahCard key={item.id} item={item} signedIn={signedIn} ownerScope={page.ownerScope} connection={connectionOf(item.id)} onChange={changed(item)} />)}</div>;
   const ran = page.items.filter((item) => item.section === 'ran'), fresh = page.items.filter((item) => item.section === 'new');
+  // 切っていない接続。つながっている物と、そうでない物（失敗・途中・取り下げ）を、分けて出す（見出しと中身を、合わせる）。
   const live = mine.filter((connection) => connection.state !== 'disconnected');
+  const working = live.filter((connection) => connection.state === 'connected'), broken = live.filter((connection) => connection.state !== 'connected');
 
   return <main className={`${base.page} ${styles.page}`}>
     <header className={base.exploreHeading}><span className={base.eyebrow}>READY</span><h1>{NOAH_READY_TEXT.title}</h1><p>{NOAH_READY_TEXT.lead}</p></header>
@@ -112,11 +114,18 @@ export default function NoahReady() {
         </fieldset>}
       </search>
 
-      {live.length > 0 && !search && <section className={styles.section} aria-labelledby="noah-ready-connected">
+      {working.length > 0 && !search && <section className={styles.section} aria-labelledby="noah-ready-connected">
         <h2 id="noah-ready-connected">{NOAH_READY_TEXT.connected}</h2>
-        <ul className={styles.connections}>{live.map((connection) => <li key={connection.id}>
+        <ul className={styles.connections}>{working.map((connection) => <li key={connection.id}>
           <span className={styles.connectionName}><strong>{connection.name}</strong><small>{connection.placeLabel ?? ''}</small></span>
-          <Link className={styles.secondary} href={noahReadyDetailHref(connection.agentId)}>{connection.state === 'connected' ? '頼む' : '開く'}</Link>
+          <Link className={styles.secondary} href={noahReadyDetailHref(connection.agentId)}>頼む</Link>
+        </li>)}</ul>
+      </section>}
+      {broken.length > 0 && !search && <section className={styles.section} aria-labelledby="noah-ready-broken">
+        <h2 id="noah-ready-broken">{NOAH_READY_TEXT.notConnected}</h2>
+        <ul className={styles.connections}>{broken.map((connection) => <li key={connection.id}>
+          <span className={styles.connectionName}><strong>{connection.name}</strong><small>{noahConnectionStateText(connection.state)}</small></span>
+          <Link className={styles.secondary} href={noahReadyDetailHref(connection.agentId)}>開く</Link>
         </li>)}</ul>
       </section>}
 

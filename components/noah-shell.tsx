@@ -4,12 +4,11 @@ import { useEffect, useState, useId, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Activity, Bot, Home, PenLine, Compass, FolderOpen, UserRound, Search, MoreHorizontal, Menu, ChevronUp, ChevronRight, X, Plug } from 'lucide-react';
+import { Activity, Bot, Home, PenLine, Compass, FolderOpen, UserRound, Search, MoreHorizontal, Menu, ChevronUp, ChevronRight, X } from 'lucide-react';
 import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import styles from './noah-service-shell.module.css';
 import NoahServiceCatalog from './noah-service-catalog';
 import { NoahSurfaceContext } from './noah-surface-context';
-import { useNoahReadyOpen } from './use-noah-ready';
 
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
   const pathname = usePathname();
@@ -39,9 +38,6 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     { href: `${base}/activity`, label: '実行中', description: 'Agentの動きと届いた成果を見る', Icon: Activity, selected: pathname.endsWith('/activity') },
     { href: `${base}/data`, label: '成果データ', description: '受け取った結果を確認・保存する', Icon: FolderOpen, selected: pathname.endsWith('/data') || pathname.endsWith('/outputs') },
   ];
-  // 相手のサーバーで動く Agent（スマホだけで使える物）の一覧。見せてよい時（切り替えが開いている・審査者）にだけ、行を足す。
-  const readyOpen = useNoahReadyOpen();
-  if (readyOpen) primary.splice(2, 0, { href: '/noah/ready', label: 'すぐ使える', description: 'スマホだけで使えるAgentをつなぐ', Icon: Plug, selected: pathname.startsWith('/noah/ready') });
   const currentPage = primary.find(item => item.selected)?.label ?? 'その他の画面';
   const secondary = [
     { href: `${base}/registration`, label: '登録サポート', Icon: Bot, selected: pathname.endsWith('/registration') },

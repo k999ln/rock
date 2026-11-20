@@ -23,7 +23,9 @@ export type NoahReadyConnection = { id: string; state: string; revision: number;
 export const NOAH_READY_TEXT = {
   title: 'すぐ使える Agent',
   lead: 'スマホだけで使えます。あなたの端末では何も動きません。',
+  entryNote: 'スマホだけで使えます。',
   connected: 'つながっているもの',
+  notConnected: 'つながっていないもの',
   ran: '動いた',
   ranNote: '人が動かして、成果が返った物です。',
   fresh: 'まだ誰も動かしていない',

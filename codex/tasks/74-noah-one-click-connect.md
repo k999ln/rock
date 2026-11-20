@@ -51,10 +51,10 @@
   - この時点の残り: 画面（仕様書 11.5）、その場のサインイン（11.4）、menu の 1 行、`tests/noah-ready-ui.test.mjs`（下の 02:30 の行で入れた）。途中で止まった接続の後始末は L7、運営の画面の数は L8。
   - 本番への migration・配備・切り替えは行っていない。
 - 2026-11-21 02:30 JST: **画面を入れた。L5 の完了の定義を、手元で通した**（同じ [PR #342](https://github.com/k999ln/rock/pull/342)。未マージ）。
-  - 入れた物: `/noah/ready`（一覧）・`/noah/ready/agent?id=`（詳細）、`components/noah-ready.tsx`・`noah-ready-detail.tsx`・`noah-card.tsx`・`noah-connect-button.tsx`・`noah-ask.tsx`（道具の一覧まで）・`use-noah-ready.ts`・`noah-ready.module.css`、`lib/noah-ready-view.ts`（画面の文と、状態 → 見た目）。外枠（Codex の `components/noah-shell.tsx`）には、menu の「すぐ使える」の 1 行と import だけを足した（見せてよい時にだけ出る）。
-  - **本人の返事を待っている 2 つ（出す場所・つなぐ時のサインイン）は、既定で作った。** 既定と、変える時に直す所は、仕様書 11.5 の最初の表。閉じている間、menu の行は審査者にしか出ないので、開ける前に変えられる。
-  - 途中で Codex の #337 が進んだ（menu が 4 つに・`/noah/launch` が `/noah/activity` へ・説明の文を減らす）。合わせた枝（`claude/noah-l4-with-ui-stack-20261121`）へ取り込み、新しい menu の上に行を足し直した。画面の文も、短くした。
-  - 確かめ方: `node --experimental-strip-types --test tests/noah-connect.test.mjs tests/noah-connect-plan-api.test.mjs tests/noah-ready-ui.test.mjs`（44 本）。画面の試験は、ブラウザなしの台（`tests/fixtures/noah/screen.mjs`）で、画面の要求を本物の入口へ通す。
-  - 手元の実物（`npx vinext dev`・手元の D1・実在の台帳から載った 39 件・幅 390 の Chromium）: 「接続」1 回 →「頼む」が、実在の系列 3 つで 3 回とも通った。道具の一覧・切る・探す・続きを読む・閉じている時に出ない事も見た。結果と、実物で見つけて直した 4 つは、仕様書 11.9。**未サインインからの続きは、手元の実物では確かめていない**（試験の台だけ）。
+  - 入れた物: `/noah/ready`（一覧）・`/noah/ready/agent?id=`（詳細）、`components/noah-ready.tsx`・`noah-ready-detail.tsx`・`noah-card.tsx`・`noah-connect-button.tsx`・`noah-ask.tsx`（道具の一覧まで）・`use-noah-ready.ts`・`noah-ready.module.css`、`lib/noah-ready-view.ts`（画面の文と、状態 → 見た目）。入口は、「Agentを探す」の一番上の 1 つ（`components/noah-ready-entry.tsx`。見せてよい時にだけ出る。Codex の file に足したのは `app/noah/explore/page.tsx` の 2 行だけ）。**外枠（`components/noah-shell.tsx`）は変えていない**: 最初は menu に 1 行足したが、その file は、応答の header を測った記録（`data/web-security-response-current.json`）の入力で、`npm run release:check` が落ちた（GitHub の自動検査で分かった）。menu も、本人の指示で 4 つにまとめられた所だった。
+  - **本人の返事を待っている 2 つ（出す場所・つなぐ時のサインイン）は、既定で作った。** 既定と、変える時に直す所は、仕様書 11.5 の最初の表。閉じている間、入口は審査者にしか出ないので、開ける前に変えられる。
+  - 途中で Codex の #337 が進んだ（menu が 4 つに・`/noah/launch` が `/noah/activity` へ・説明の文を減らす）。合わせた枝（`claude/noah-l4-with-ui-stack-20261121`）へ取り込んだ。画面の文も、短くした。
+  - 確かめ方: `node --experimental-strip-types --test tests/noah-connect.test.mjs tests/noah-connect-plan-api.test.mjs tests/noah-ready-ui.test.mjs`（45 本）。**push の前に `npm run release:check` も流す**（手元の点検に入れていなかったので、自動検査で落ちるまで気付かなかった）。画面の試験は、ブラウザなしの台（`tests/fixtures/noah/screen.mjs`）で、画面の要求を本物の入口へ通す。
+  - 手元の実物（`npx vinext dev`・手元の D1・実在の台帳から載った 39 件・幅 390 の Chromium）: 「接続」1 回 →「頼む」が、実在の系列 5 つのうち 4 つで通った（残りの 1 つは、相手が断った。画面は、理由と「もう一度」を出した）。道具の一覧・切る・探す・続きを読む・探す画面の入口・閉じている時に出ない事も見た。結果と、実物で見つけて直した 5 つは、仕様書 11.9。**未サインインからの続きは、手元の実物では確かめていない**（試験の台だけ）。
   - 次（L6: 頼む）で、この画面に足す物: `noah-ask.tsx` に、道具を選ぶ・入力欄・確かめ・仕事の一覧（87 の 11.5）。詳細の `&tool=`・`&from=`・`&pos=`（棚のカードから来た時。#343 の spec-100）。
   - 本番への migration・配備・切り替えは行っていない。

@@ -198,7 +198,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 
 | 章 | ローンチまで | 後 |
 | --- | --- | --- |
-| 3 変える所 | migration（`noah_connections` だけ）、`lib/noah-connect.ts`、入口 2 つ、`noah-connect-button.tsx`、96 の `noah-card.tsx` と計画の API、新しい画面（11.5）、menu の 1 行（`components/noah-shell.tsx`。書いた時は `noah-navigation.tsx` だった。#337 で外枠が変わった） | `noah_connection_secrets`・`noah_oauth_*` の表、`noah-connect-sheet.tsx`、`noah-library.tsx` の節、`lib/noah-ask.ts` の家の端末の受け口。**`components/noah-launch.tsx`・`noah-public-catalog.tsx`・`noah-timeline.tsx` と、その API は触らない** |
+| 3 変える所 | migration（`noah_connections` だけ）、`lib/noah-connect.ts`、入口 2 つ、`noah-connect-button.tsx`、96 の `noah-card.tsx` と計画の API、新しい画面（11.5）、探す画面の入口（`components/noah-ready-entry.tsx` と、`app/noah/explore/page.tsx` の 1 行。書いた時は `noah-navigation.tsx` の 1 行だった。#337 で外枠が変わったので、menu には足さない事にした。11.5） | `noah_connection_secrets`・`noah_oauth_*` の表、`noah-connect-sheet.tsx`、`noah-library.tsx` の節、`lib/noah-ask.ts` の家の端末の受け口。**`components/noah-launch.tsx`・`noah-public-catalog.tsx`・`noah-timeline.tsx` と、その API は触らない** |
 | 4.1 `POST` | 取り込んだ系列（相手のサーバー）だけ。握手まで、その要求の中で終える（11.3） | 今の Agent（家の端末）、`nextStep`、有料 |
 | 4.2 `GET` | 入れる（照合は無い） | 5.3 の照合 |
 | 4.3 | `disconnect`・`retry` | `resume` |
@@ -251,7 +251,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 
 | 確かめている事 | 今の既定 | そう読んだ理由 | 変える時に直す所 |
 | --- | --- | --- | --- |
-| ① 握手が通った Agent を、Noah のどこに出すか | 別の画面 2 つ（一覧 `/noah/ready`・詳細 `/noah/ready/agent`）。menu の「Agentを探す」の次に「すぐ使える」を 1 行 | 本人の決定「最初の画面は、X のようなタイムライン」（11-20 23:35）を受けた棚の設計（[PR #343](https://github.com/k999ln/rock/pull/343) の spec-100 の 10 章）が、棚を「ローンチの一覧 `/noah/ready` の一番上」に置く前提で書かれている | menu は、本人の指示で 4 つに減った所（07 の 2026-11-21。重なる入口をまとめた）。5 つ目として足さずに「Agentを探す」の中へ入れるなら、`components/noah-shell.tsx` の 1 行（`primary.splice`）を消して、探す画面に入口を足す。一覧と詳細の部品は、そのまま使える。**閉じている間、この行は審査者にしか出ないので、開ける前に決められる** |
+| ① 握手が通った Agent を、Noah のどこに出すか | 別の画面 2 つ（一覧 `/noah/ready`・詳細 `/noah/ready/agent`）。入口は、**「Agentを探す」（`/noah/explore`）の一番上**に 1 つ（「すぐ使える Agent　n 件 →」）。**menu には、行を足さない** | 一覧の場所: 本人の決定「最初の画面は、X のようなタイムライン」（11-20 23:35）を受けた棚の設計（[PR #343](https://github.com/k999ln/rock/pull/343) の spec-100 の 10 章）が、棚を「ローンチの一覧 `/noah/ready` の一番上」に置く前提で書かれている。入口: menu は、本人の指示で 4 つにまとめた所（07 の 2026-11-21。重なる入口を減らした）。Agent を探す入口が 2 つ（「Agentを探す」と「すぐ使える」）並ぶと、どちらを開くかで迷う | menu に「すぐ使える」を足すなら、`components/noah-shell.tsx` の `primary` に 1 行（`useNoahReadyOpen().open` が真の時だけ）。**その file は、応答の header を測った記録（`data/web-security-response-current.json`）の入力なので、変えたら、同じ PR で測り直す**（変えただけだと `npm run release:check` が落ちる。最初は menu に足して、自動検査で落ちた。11.9）。**閉じている間、入口は審査者にしか出ないので、開ける前に決められる** |
 | ② 「接続」を押す時に、サインインを求めるか | 求める（その場のサインイン。11.4）。見るだけ（一覧・詳細・計画）は、サインイン無しで読める | 接続は、本人の行（`noah_connections`）を作る。つなぐ前の上限（11.3 の 4）と「切る」は、本人ごと | 求めないなら、サインインしていない人を数える単位（端末ごとの ID など）を決める設計が要る。11.3 の 1・4 を直す |
 
 一覧（`/noah/ready`）:
@@ -262,9 +262,12 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 │ スマホだけで使えます。あなたの端末では何も動きません。
 │ [ 語で探す（名前・説明）                ]
 │ ( すべて ) ( 押すだけで試せる )            ← 語で探している間は、出さない
-├ つながっているもの                        ← サインイン済みで、切っていない接続がある時だけ
+├ つながっているもの                        ← サインイン済みで、つながっている接続がある時だけ
 │   Mizan                                   [ 頼む ]
 │   相手のサーバー（mizan.ac）
+├ つながっていないもの                      ← 失敗した・途中の・取り下げられた接続がある時だけ（切るまで残る）
+│   （Agent の名前）                         [ 開く ]
+│   つながっていません。
 ├ 動いた  n 件
 │   人が動かして、成果が返った物です。
 │   （カード）
@@ -311,12 +314,12 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 | --- | --- |
 | `app/noah/ready/page.tsx`・`app/noah/ready/agent/page.tsx` | 下の部品を出すだけ。詳細は、系列の ID を query の `id` で受ける（ID が `/` を含むので、パスに入れない。85 の 11.5。400 字まで） |
 | `lib/noah-ready-view.ts` | 画面の文（`NOAH_READY_TEXT`）、印・料金・確かめた日の文、接続のボタンの見た目（`noahConnectButtonView`: 状態 → 文・押せるか・押した時にする事。5.2 の表のローンチの分）、詳細の下の状態の文（`noahConnectionStateText`）、その場のサインインの続き（`writeNoahConnectHandoff`・`takeNoahConnectHandoff`）、サインインの画面の場所（`noahReadyAccountHref`。戻る先は `/noah/ready` で始まるパスだけ）。通信も保存もしない関数だけ |
-| `components/noah-ready.tsx` | 一覧。`GET /api/noah/intake`（85 の 11.5）を読み、返った順に `noah-card.tsx` を並べる（並びと、載せるかどうかは、サーバーが決める）。語の欄は、打ち終わって 300 ミリ秒してから読む（2 文字より短い語では探さない）。「押すだけで試せる」は `oneTap=1`。続きは `nextCursor`（「続きを読む」と、下まで来た時の `IntersectionObserver`）。前の問い合わせの応答が後から届いても、使わない。サインイン済みなら、上に「つながっているもの」（`GET /api/noah/connect`。別の account の接続を混ぜない）。API が 404 の時は「まだ公開していません。」だけを出す |
+| `components/noah-ready.tsx` | 一覧。`GET /api/noah/intake`（85 の 11.5）を読み、返った順に `noah-card.tsx` を並べる（並びと、載せるかどうかは、サーバーが決める）。語の欄は、打ち終わって 300 ミリ秒してから読む（2 文字より短い語では探さない）。「押すだけで試せる」は `oneTap=1`。続きは `nextCursor`（「続きを読む」と、下まで来た時の `IntersectionObserver`）。前の問い合わせの応答が後から届いても、使わない。サインイン済みなら、上に、本人の切っていない接続（`GET /api/noah/connect`。別の account の接続を混ぜない）を、「つながっているもの」（「頼む」）と「つながっていないもの」（今の状態の文と「開く」）に分けて出す。API が 404 の時は「まだ公開していません。」だけを出す |
 | `components/noah-card.tsx` | カード 1 枚。印とボタンは、サーバーが計算した `connect` と、その本人の接続だけで決める（カードは、自分で計算しない） |
 | `components/noah-connect-button.tsx` | 接続のボタン。下の「ボタンの流れ」 |
 | `components/noah-ready-detail.tsx` | 詳細。`GET /api/noah/intake?id=`（説明・`connect`・`listed`・その本人の `connection`・`ownerScope` が、1 回で返る。計画の API は、ボタンを押した時に読む）。つないだ後は `noah-ask.tsx` と「切る」（`POST /api/noah/connect/[id]` の `disconnect`。版が古かった時は、返ってきた今の接続に合わせる）。`failed` は理由と「もう一度」、`blocked` は理由だけ |
 | `components/noah-ask.tsx` | つないだ相手の道具の一覧（`GET /api/noah/connect/[id]/tools`）。名前・印・説明の先頭 2 行。**L5 は、一覧まで**（選んで頼む所は L6）。読んだ一覧は、この tab が 5 分持つ（`sessionStorage['noah-tools:' + 接続の ID]`。開き直すたびに、相手へ握手を送らない。切ったら消す）。409・404 の時は、詳細の画面が、接続を読み直す（取り下げなら、理由が出る） |
-| `components/use-noah-ready.ts`・`components/noah-shell.tsx` | menu の行「すぐ使える」。`GET /api/noah/intake?limit=0` が 200 を返した時だけ出す（結果は `sessionStorage['noah-ready-open']` に 10 分持つ）。閉じている間、審査者でない人には出ない。外枠（Codex の `noah-shell.tsx`）に足したのは、この 1 行と import だけ |
+| `components/noah-ready-entry.tsx`・`components/use-noah-ready.ts`・`app/noah/explore/page.tsx` | 探す画面の一番上の入口（「すぐ使える Agent／スマホだけで使えます。　n 件 →」。行き先は一覧）。`GET /api/noah/intake?limit=0` が 200 を返した時だけ出す（`n` は、応答の `counts` の合計。結果は `sessionStorage['noah-ready-open']` に 10 分持つ）。閉じている間、審査者でない人には、何も出ない（探す画面は、今のまま）。Codex の file に足したのは、`app/noah/explore/page.tsx` の 2 行（import と、見出しの下の 1 つ）だけ。**外枠（`components/noah-shell.tsx`）は、変えていない** |
 | `components/noah-ready.module.css` | 足りない分の見た目だけ（下の「見た目」） |
 
 ボタンの流れ（`noah-connect-button.tsx`。6.1 との違いを含む）:
@@ -329,7 +332,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 6. 自分が押していないのに、途中（`planned`〜`probing`）の接続を見た時（別の tab で押した・再読込した）だけ、`GET /api/noah/connect/[id]` を 1.5 秒ごとに読む。20 回（30 秒）で止めて「まだ進んでいます。少し後で、この画面を開き直してください。」。
 7. 断る応答（409・422・429）は、応答の `error` を出す。応答に今の接続（`connection`）があれば、それを映す。
 
-見た目: 新しい画面は、今の `app/noah/layout.tsx` の外枠（`components/noah-shell.tsx`）の中に出る。class は、Agent を探す画面の `components/noah-service.module.css` の物（`page`・`exploreHeading`・`eyebrow`・`search`・`srOnly`・`loading`・`empty`）を使い、足りない分だけを `components/noah-ready.module.css` に足した。新しい色は、足していない（紫 `#7546c8`・線 `#ececef`・薄い字 `#71717a`。角は 12px）。決まり:
+見た目: 新しい画面は、今の `app/noah/layout.tsx` の外枠（`components/noah-shell.tsx`）の中に出る（menu の「今いる所」は、どの行にも付かず「その他の画面」と出る。Agent の詳細など、今ある他の画面と同じ）。class は、Agent を探す画面の `components/noah-service.module.css` の物（`page`・`exploreHeading`・`eyebrow`・`search`・`srOnly`・`loading`・`empty`）を使い、足りない分だけを `components/noah-ready.module.css` に足した。新しい色は、足していない（紫 `#7546c8`・線 `#ececef`・薄い字 `#71717a`。角は 12px）。決まり:
 
 - 押す所は、高さ 44px 以上（主ボタン・「切る」・絞り込み・カードの名前・戻る・提供者のページ・出どころの行）。名前のリンクは、見た目の行の高さを変えずに、押す所だけを広げる。
 - 幅 700 以下はカード 1 列（主ボタンは横いっぱい）、1100 以下は 2 列、それより広ければ 3 列。横に並んだカードの主ボタンは、下でそろえる。
@@ -342,7 +345,8 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 | 所 | 文 |
 | --- | --- |
 | 見出しと、その下 | 「すぐ使える Agent」「スマホだけで使えます。あなたの端末では何も動きません。」 |
-| 段の見出し | 「つながっているもの」「動いた」「まだ誰も動かしていない」「探した結果」。「動いた」「まだ誰も動かしていない」は、右に件数（一覧の API の `counts`） |
+| 探す画面の入口 | 「すぐ使える Agent」「スマホだけで使えます。」「<n> 件 →」 |
+| 段の見出し | 「つながっているもの」「つながっていないもの」「動いた」「まだ誰も動かしていない」「探した結果」。「動いた」「まだ誰も動かしていない」は、右に件数（一覧の API の `counts`） |
 | 段の下の 1 行 | 動いた: 「人が動かして、成果が返った物です。」／まだ: 「Noah が、応答する事だけを確かめた物です。」 |
 | カードの印 | 96 の 6 章。ローンチで出るのは「1 クリック」「まだ誰も動かしていない」「あと 1 タップ（サインイン）」 |
 | カードの補い | `oneTap` が真なら「押すだけで試せる」。`tools` があれば「道具 <n> 個」 |
@@ -403,7 +407,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 
 - `node --experimental-strip-types --test tests/noah-connect.test.mjs tests/noah-connect-plan-api.test.mjs tests/noah-ready-ui.test.mjs` が通る。
 - 手元で、審査者の account と幅 390 のブラウザで、握手が通った実在の系列の「接続」を 1 回押して「頼む」になる（道具の一覧が出る所まで）。Mac を使わない。
-- 切り替えが閉じている時、審査者でない人に、新しい画面と navigation の行が出ない。今の `/noah`・`/noah/agents`・`/noah/launch` の表示と API の応答が変わらない（`npm run verify`）。
+- 切り替えが閉じている時、審査者でない人に、新しい画面と、そこへの入口（書いた時は navigation の行。作った形は、探す画面の入口）が出ない。今の `/noah`・`/noah/agents`・`/noah/launch` の表示と API の応答が変わらない（`npm run verify`）。
 - 本番 D1 への migration を適用していない。
 
 ### 11.8 実装の記録（L5。画面の前まで。2026-11-21）
@@ -460,7 +464,7 @@ D1 への往復（1 文の実行か、1 回の batch。`scripts/check-noah-conne
 
 | ファイル | 中身 |
 | --- | --- |
-| `tests/noah-ready-ui.test.mjs`（12 本） | 一覧（段・カードの主ボタンは 1 つ・印が文字・出どころ）／閉じている・空・読めない／探す（300 ミリ秒待つ・絞る・続きを読む）／サインイン済みで 1 回押して「頼む」／未サインイン → サインイン → 押し直さずに同じ操作 ID で続く／続きは、その Agent の物・1 回・10 分・形が合う物だけ／詳細（送り先が接続の前に出ている → 道具 → 切る → つなぎ直す）／失敗と「もう一度」と 5 秒の決まり／取り下げ／無い Agent・形の違う ID・載せていない物／ボタンの見た目の表／menu の行（見せてよい人にだけ・10 分持つ） |
+| `tests/noah-ready-ui.test.mjs`（13 本） | 一覧（段・カードの主ボタンは 1 つ・印が文字・出どころ）／閉じている・空・読めない／探す（300 ミリ秒待つ・絞る・続きを読む）／サインイン済みで 1 回押して「頼む」／相手が断った接続は「つながっていないもの」に出て、カードに理由と「もう一度」／未サインイン → サインイン → 押し直さずに同じ操作 ID で続く／続きは、その Agent の物・1 回・10 分・形が合う物だけ／詳細（送り先が接続の前に出ている → 道具 → 切る → つなぎ直す）／失敗と「もう一度」と 5 秒の決まり／取り下げ／無い Agent・形の違う ID・載せていない物／ボタンの見た目の表／探す画面の入口（見せてよい人にだけ・数を出す・10 分持つ・外枠の menu は 4 つのまま） |
 | `tests/fixtures/noah/screen.mjs` | 画面の部品を、ブラウザなしで動かす台。部品のファイルを JS に直し、小さな React の代わり（入れ子の部品・`useState`・`useRef`・`useEffect`）で動かす。`fetch`・`sessionStorage`・`location`・時計は、試験が渡す。確かめるのは、出る文・押せる物・送る要求（見た目は、下の「手元の実物」で確かめた） |
 | `tests/fixtures/noah/connect-world.mjs` の `browser()` | 画面が送った要求を、本物の入口（一覧・計画・接続・道具の一覧）へ通す。握手の相手は、試験の中の関数。画面の試験も、表を直に書いて「つないだ事」にしない |
 
@@ -469,6 +473,8 @@ D1 への往復（1 文の実行か、1 回の batch。`scripts/check-noah-conne
 | 決めた事 | 理由 |
 | --- | --- |
 | 出す場所と、サインインの扱いは、既定で作った（11.5 の最初の表。本人確認待ち） | 画面が無いと、L5 の完了の定義（幅 390 で「接続」1 回）を確かめられない。どちらも、後から 1〜数行で変えられる形にした |
+| 入口は、menu の行ではなく、「Agentを探す」の一番上に置く | 最初は、menu に「すぐ使える」を足した。その後で 2 つ分かった: ① menu は、本人の指示で 4 つにまとめられた（#337 の続き。重なる入口を減らす）。② menu の file（`components/noah-shell.tsx`）は、応答の header を測った記録の入力で、1 行足しただけで `npm run release:check` が落ちた（GitHub の自動検査で分かった）。探す画面の file（`app/noah/explore/page.tsx`）は、その記録の入力ではない。探す入口が 1 つのままなので、迷わない |
+| 本人の接続を、「つながっているもの」と「つながっていないもの」に分けて出す | 手元の実物で、実在の相手が接続を断った時に、失敗した接続が「つながっているもの」の下に並んだ。見出しと中身を合わせる。失敗した接続は、切るまで残る（つなぐ前の上限に数える）ので、一覧の何枚目にあっても、上から開けるようにしておく |
 | 操作 ID を `sessionStorage` に置かない（部品が、応答が届くまでだけ持つ） | 再読込の後に別の ID で送っても、同じ系列の切っていない接続があれば、今ある行が返る（行も握手も増えない）。置く物を減らす |
 | つないだ後の詳細では、主ボタンを出さない。下に「つながっています。」と「切る」を 1 行で出す | すぐ下に道具の一覧がある。「頼む」を押して同じ画面へ移る、という無駄な 1 回を作らない |
 | 道具の一覧を、この tab が 5 分持つ | 開き直すたびに、相手へ握手を送らない（API の 5 秒の決まりは、続けて押した時のため。こちらは、行き来した時のため） |
@@ -476,16 +482,20 @@ D1 への往復（1 文の実行か、1 回の batch。`scripts/check-noah-conne
 | 「Mac の行」の行き先は `/noah/explore` | `/noah/launch` は、#337 で `/noah/activity` にまとめられた |
 | 画面の例に、実在の相手の道具の名前を書かない | 相手の道具の定義は、Noah が配り直す物ではない。数だけを書く |
 
-手元の実物での確かめ（L5 の完了の定義の 2 つ目と 3 つ目。2026-11-21 02:05〜02:30 JST）:
+手元の実物での確かめ（L5 の完了の定義の 2 つ目と 3 つ目。2026-11-21 02:05〜02:45 JST。最後の一周は、この PR の最後の形で行った）:
 
 - 用意: `npx vinext dev`（この repo の本物の app）。表は、手元の D1 に Noah の 3 つ（0043・0044・0047）だけを作った（本番の D1 には、何もしていない）。台帳は、巡回の合図を手元で送って、実在の台帳から取り込んだ（見た記録 69,115 件。巡回の握手 76 回で、載った系列 39 件）。account は、手元の審査者。ブラウザは Chromium（幅 390×高さ 844 のスマホの設定、幅 320、幅 1360）。
+- 入口: 「Agentを探す」の一番上に「すぐ使える Agent／スマホだけで使えます。／39 件 →」が出て（高さ 77px）、押すと一覧へ移った。menu は 4 つのまま（タイムライン・Agentを探す・実行中・成果データ）。
 - 一覧（幅 390）: カード 20 枚。下まで動かすと 39 枚（続きを読む）。「押すだけで試せる」で絞ると、全部のカードに、その印がある。語「tax」で 1 件、無い語で「見つかりませんでした。別の語で探してください。」。カードの主ボタンは、どれも 1 つ。
-- **「接続」を 1 回押して「頼む」になった。** 実在の系列 3 つで、3 回とも（道具 24 個・8 個・36 個の相手）。画面が送ったのは、計画の読み取りと接続の 2 要求。押してから「頼む」が出るまで、測った 2 回は 1,968 ミリ秒と 1,369 ミリ秒（手元の D1 の往復と、相手との握手を含む）。「相手のサーバー（<host>）につなぎました」が出て、一覧の上に「つながっているもの」が出た。Mac は使っていない。
-- 詳細: 送り先の 1 行が出ている。道具の一覧が出た（画面で数えた 2 回は 8 行・36 行。カードの「道具 n 個」と同じ数。1 回目は、読み込みの途中で画面を写したので、数えていない）。開き直しても、道具の一覧の要求は 0 回（5 分の控え）。「切る」で「接続」に戻り、道具の一覧が消え、一覧の「つながっているもの」からも消えた。
-- 相手へ送った物: 1 つの接続先へ、握手 2 回（接続・道具の一覧）。**道具は 1 回も呼んでいない。**
+- **「接続」を 1 回押して「頼む」になった。** 実在の系列 5 つへ 1 回ずつ押して、4 つ（道具 24 個・8 個・36 個・5 個の相手）。画面が送ったのは、計画の読み取りと接続の 2 要求。押してから「頼む」が出るまで、測った 3 回は 1,968・1,369・1,360 ミリ秒（手元の D1 の往復と、相手との握手を含む）。「相手のサーバー（<host>）につなぎました」が出て、一覧の上に「つながっているもの」が出た。Mac は使っていない。
+- **残りの 1 つは、相手が断った**（巡回の握手は通っていた相手。接続の握手に 403）。画面は、決めたとおりになった: カードに「もう一度」と「相手のサーバーが、Noah からの接続を断りました。」、詳細の下に「つながっていません。」と「切る」。続けては押していない（相手へ、握手を送り続けない）。「切る」で「接続」に戻った。この時に、上の表の「つながっていないもの」を足した。
+- 詳細: 送り先の 1 行が出ている。道具の一覧が出た（画面で数えた 3 回は 8 行・36 行・5 行。カードの「道具 n 個」と同じ数。1 回目は、読み込みの途中で画面を写したので、数えていない）。開き直しても、道具の一覧の要求は 0 回（5 分の控え）。「切る」で「接続」に戻り、道具の一覧が消え、一覧の「つながっているもの」からも消えた。
+- 相手へ送った物: 1 つの接続先へ、握手 2 回まで（接続・道具の一覧。断った相手へは 1 回）。**道具は 1 回も呼んでいない。**
 - 見た目: 幅 320・390・1360 で、横のはみ出し 0。押す所（ボタン・リンク）は、高さ 44px 以上。机の画面（3 列）で、横に並んだカードの主ボタンの下がそろっている。
-- 閉じている時（`NOAH_INTAKE_PUBLIC`・`NOAH_ASK_FORM` を閉じ、審査者でない account）: 一覧は「まだ公開していません。」だけ。menu に「すぐ使える」が出ない（タイムライン・Agentを探す・実行中・成果データ の 4 つ）。詳細は「この Agent は、見つかりませんでした。」。`GET /api/noah/connect-plan` は 404、`POST /api/noah/connect` は 503「今は、新しい接続を受け付けていません。」、本人の接続の一覧（`GET /api/noah/connect`）は 200（読める・切れる）。`/noah`・`/noah/explore`・`/noah/activity`・`/noah/data` は、そのまま出る。
-- 実物で見つけて、直した物（試験の台では見えなかった物）: ① リンクの色が、開き方で変わる（外枠の `.shell a` と同じ強さ。「頼む」のリンクの字が、紫の地に黒で出ていた）。② つないだ後の詳細に、中身の無い区切りの線が残る。③ カードの名前（詳細への入口）の押す所が、高さ 20px しか無い。④ 机の画面で、横に並んだカードの主ボタンの高さがそろわない。
-- **手元の実物で確かめていない物:** 未サインインからの続き（手元では、いつも審査者の account でサインイン済みになる）。試験の台で確かめた（`tests/noah-ready-ui.test.mjs` の 5・6 本目。サインインの画面そのものは、今ある `/account`）。実機のスマホ・本番の環境でも、確かめていない（出す前の受入は、90 の L9）。
+- 閉じている時（`NOAH_INTAKE_PUBLIC`・`NOAH_ASK_FORM` を閉じ、審査者でない account）: 探す画面に入口が出ない（`/noah/ready` へのリンクは、どこにも無い）。一覧を直に開くと「まだ公開していません。」だけ。詳細は「この Agent は、見つかりませんでした。」。`GET /api/noah/connect-plan` は 404、`POST /api/noah/connect` は 503「今は、新しい接続を受け付けていません。」、本人の接続の一覧（`GET /api/noah/connect`）は 200（読める・切れる）。`/noah`・`/noah/explore`・`/noah/activity`・`/noah/data` は、そのまま出る。
+- 実物で見つけて、直した物（試験の台では見えなかった物）: ① リンクの色が、開き方で変わる（外枠の `.shell a` と同じ強さ。「頼む」のリンクの字が、紫の地に黒で出ていた）。② つないだ後の詳細に、中身の無い区切りの線が残る。③ カードの名前（詳細への入口）の押す所が、高さ 20px しか無い。④ 机の画面で、横に並んだカードの主ボタンの高さがそろわない。⑤ 失敗した接続が「つながっているもの」に並ぶ。
+- **手元の実物で確かめていない物:** 未サインインからの続き（手元では、いつも審査者の account でサインイン済みになる）。試験の台で確かめた（`tests/noah-ready-ui.test.mjs` の「未サインイン」と「続き」の 2 本。サインインの画面そのものは、今ある `/account`）。実機のスマホ・本番の環境でも、確かめていない（出す前の受入は、90 の L9）。探す画面の、今ある Agent の欄は、手元では「取得できませんでした」と出る（手元の D1 に、その表を作っていないため。この PR は、その欄を変えていない）。
+
+自動検査で分かった事（2026-11-21 02:32 JST の push）: menu に 1 行足した版は、`verify` の `release:check` で落ちた（「Web security policy: local production response実測またはinput hashが不一致です」）。外枠の file を、Codex の物（#337 の `ce74bbb`）と 1 文字も違わない形に戻し、入口を探す画面へ移した。手元で `npm run release:check` が通る事を確かめてから、push し直した。**この repo では、`data/web-security-response-current.json` の `inputs` にある file を変えたら、測り直しが要る。**
 
 残っている物: 道具を選んで、入力欄から頼む所と、仕事の一覧（L6。87 の 11.5。`noah-ask.tsx` に足す）。棚（[PR #343](https://github.com/k999ln/rock/pull/343) の task 100）は、この一覧の一番上に乗る。運営の画面の数は L8、途中で止まった接続の後始末は L7。11.5 の最初の表の 2 つは、本人の返事を待っている。
