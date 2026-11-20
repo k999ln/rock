@@ -46,6 +46,12 @@ export default function NoahIntakeReview({ ownerScope }: { ownerScope: string })
         <tr><th>端末で動かす</th><td>{state.mouths.terminal}</td><td>{state.mouths.terminalReady}</td><td>{state.mouths.terminal - state.mouths.terminalReady}</td></tr>
       </tbody></table>
       <p>一覧に載せている数：{state.listed}</p>
+      {state.confirmed && <>
+        <h3>つながると確かめた数</h3>
+        <p>動いた（人が動かして、成果が出た）：{state.confirmed.ran}</p>
+        <p>握手まで確かめた（まだ誰も動かしていない）：{state.confirmed.handshake}</p>
+        <p>本人の Mac で動かす（台帳とは別の、固定の物）：{state.confirmed.fixed}</p>
+      </>}
       <p>載せていない理由：{Object.entries(state.reasons).map(([reason, count]) => `${labels[reason] ?? 'その他'} ${count}`).join(' ／ ') || 'ありません'}</p>
       <p>つなげない物の内訳：{Object.entries(state.unsupported).map(([reason, count]) => `${labels[reason] ?? 'その他'} ${count}`).join(' ／ ') || 'ありません'}</p>
       {state.warnings.map(warning => <output key={warning}>{warning}</output>)}

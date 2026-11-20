@@ -3,6 +3,7 @@ import type { IntakeDependencies, IntakeOutcome } from './noah-intake-sync.ts';
 import { noProbes, type IntakeProbeCounts } from './noah-intake-probe.ts';
 import { noahAllowed, type NoahFlags } from './noah-flags.ts';
 import { verifyNoahWake } from './noah-intake-wake.ts';
+import { createNoahSweep, noSweep, noahSweepTotal } from './noah-sweep.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
@@ -65,12 +66,15 @@ export function createIntakeTick(deps: IntakeApiDependencies) {
       outcome = await store.sync();
       probe = await store.probeDue(started + budget.seconds * 1000);
     } catch (error) { thrown = error; }
+    // 後始末（止まった依頼と、つなぐ途中で止まった接続）。台帳や握手が失敗した合図でも、行う（別の表の仕事。相手へは、何も送らない）。
+    let swept = noSweep();
+    try { swept = await createNoahSweep(deps)(); } catch (error) { thrown ??= error; }
     // 台帳を読めなかった・表を読み書きできなかった合図は、2xx にしない（合図を送る専用の Worker の実行が、失敗として残る。監視で、成功に見せない）。
-    // 握手を 1 件でも試みた時は、その数を応答に足す（数だけ。接続先の名前は持たない）。
-    const attempted = probe.probes + probe.skippedHost > 0;
-    const response = thrown ? failure(thrown) : json(attempted ? { ...outcome, probe } : outcome, outcome.error ? 500 : 200);
-    // 合図 1 回の記録（1 行）。数と理由の符号だけ。接続先の名前・URL・本人の ID は出さない。swept（後始末）は、依頼と接続を作る層が入れる。
-    console.info(JSON.stringify({ event: 'noah-patrol', pages: outcome.pages, seen: outcome.seen, changed: outcome.changed, skipped: outcome.skipped ?? 0, probes: probe.probes, ok: probe.ok, authRequired: probe.authRequired, unreachable: probe.unreachable, rateLimited: probe.rateLimited, skippedHost: probe.skippedHost, toolsChanged: probe.toolsChanged, swept: 0, error: thrown ? 'unavailable' : outcome.error ?? null, ms: clock() - started }));
+    // 握手を 1 件でも試みた時は、その数を応答に足す（数だけ。接続先の名前は持たない）。後始末も、1 件でも片付けた時だけ、数を足す（誰の物かは持たない）。
+    const attempted = probe.probes + probe.skippedHost > 0, sweptTotal = noahSweepTotal(swept);
+    const response = thrown ? failure(thrown) : json({ ...outcome, ...(attempted ? { probe } : {}), ...(sweptTotal ? { swept } : {}) }, outcome.error ? 500 : 200);
+    // 合図 1 回の記録（1 行）。数と理由の符号だけ。接続先の名前・URL・本人の ID は出さない。swept は、後始末で片付けた依頼と接続の数（合わせた数）。
+    console.info(JSON.stringify({ event: 'noah-patrol', pages: outcome.pages, seen: outcome.seen, changed: outcome.changed, skipped: outcome.skipped ?? 0, probes: probe.probes, ok: probe.ok, authRequired: probe.authRequired, unreachable: probe.unreachable, rateLimited: probe.rateLimited, skippedHost: probe.skippedHost, toolsChanged: probe.toolsChanged, swept: sweptTotal, error: thrown ? 'unavailable' : outcome.error ?? null, ms: clock() - started }));
     return response;
   };
 }

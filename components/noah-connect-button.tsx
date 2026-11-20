@@ -59,6 +59,8 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     if (reply.status === 401 && id) { leaveToSignIn(id); return; }
     if (reply.status !== 200) { setError(reply.body.error ?? NOAH_READY_TEXT.offline); return; }
     if (next?.state === 'connected') setNotice(`${reply.body.placeLabel ?? '相手のサーバー'}につなぎました`);
+    // つなぐ途中で止まって、後始末が切った接続: 理由を出す（ボタンは「接続」に戻る。押すと、新しい操作として、つなぎ直す）。
+    else if (next?.state === 'disconnected' && next.error) setError(next.error);
   }
   async function run(action: () => Promise<void>) {
     if (busy) return;
@@ -103,7 +105,13 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     let stopped = false, tries = 0;
     const timer = setInterval(() => {
       if (++tries > 20) { clearInterval(timer); if (!stopped) setError(NOAH_READY_TEXT.slow); return; }
-      void call(`/api/noah/connect/${pendingId}`).then((reply) => { const next = asConnection(reply.body); if (!stopped && next) onChange(next); }).catch(() => undefined);
+      void call(`/api/noah/connect/${pendingId}`).then((reply) => {
+        const next = asConnection(reply.body);
+        if (stopped || !next) return;
+        onChange(next);
+        // 待っている間に、後始末が切った: 理由を出す（ボタンは「接続」に戻る）。
+        if (next.state === 'disconnected' && next.error) setError(next.error);
+      }).catch(() => undefined);
     }, 1500);
     return () => { stopped = true; clearInterval(timer); };
     // 読み直すのは、その接続の ID が変わった時だけ。

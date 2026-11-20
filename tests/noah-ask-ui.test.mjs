@@ -239,9 +239,12 @@ void test('a request that did not get through is sent again with the same ID; re
 
 void test('pure rules of the ask screens', () => {
   const { noahAskRowView, noahResultPreview, noahLinkParts, noahFieldInitial, noahFormInput, noahConfirmRows, noahScreenKind, noahFilterTools } = askView;
-  const row = (change) => noahAskRowView({ state: 'queued', stopRequested: false, createdAt: 0, ...change }, 125_000);
+  const row = (change) => noahAskRowView({ state: 'queued', stopRequested: false, createdAt: 0, updatedAt: 0, ...change }, 125_000);
   assert.deepEqual([row({}).text, row({}).stoppable, row({ stopRequested: true }).stoppable], ['順番を待っています', true, false]);
   assert.equal(row({ state: 'running' }).text, '進んでいます（2 分 5 秒）');
+  // 止める事を頼んだ後は、「止める」を出さない。「止めています…」が 45 秒より長く続いた時だけ、もう一度出す（実行の場が無くなった時の、出口）。
+  const stopping = (updatedAt) => row({ state: 'running', stopRequested: true, updatedAt });
+  assert.deepEqual([stopping(125_000 - 44_000).stoppable, stopping(125_000 - 46_000).stoppable, stopping(0).text, stopping(0).done], [false, true, '止めています…（相手のサーバーで始まっていれば、止められません）', false]);
   assert.deepEqual([row({ state: 'stopped' }).text, row({ state: 'stopped', error: '接続を切ったので、止めました。' }).text], ['止めました。', '接続を切ったので、止めました。']);
   assert.equal(row({ state: 'unknown' }).text, '結果を確かめられませんでした。相手のサーバーで実行されたかは分かりません。');
   assert.deepEqual([row({ state: 'succeeded' }).done, row({ state: 'running' }).done], [true, false]);

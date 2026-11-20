@@ -15,10 +15,23 @@ export type NoahAskState = 'queued' | 'running' | 'your_turn' | 'succeeded' | 'f
 export type NoahAskRow = {
   id: string; owner_id: string; connection_id: string; work_id: string; request_sha256: string; mode: 'agent' | 'form';
   host: string | null; tool: string | null; tool_sha256: string | null; screen: 'narrow' | 'wide' | null;
-  state: NoahAskState; stop_requested: 0 | 1; lease_until: number; error: string | null; revision: number;
+  state: NoahAskState; stop_requested: 0 | 1; lease_until: number;
+  /** 道具を呼んだ回数。入力欄の依頼では、呼ぶ直前に 1 にする（0 のまま止まった依頼は、相手へ送っていない）。 */
+  tool_calls: number;
+  error: string | null; revision: number;
   created_at: number; updated_at: number; finished_at: number | null;
 };
-export const NOAH_ASK_COLUMNS = 'id,owner_id,connection_id,work_id,request_sha256,mode,host,tool,tool_sha256,screen,state,stop_requested,lease_until,error,revision,created_at,updated_at,finished_at';
+export const NOAH_ASK_COLUMNS = 'id,owner_id,connection_id,work_id,request_sha256,mode,host,tool,tool_sha256,screen,state,stop_requested,lease_until,tool_calls,error,revision,created_at,updated_at,finished_at';
+
+/** 画面に出す文（実行が終わらなかった時）。頼む側（lib/noah-ask.ts）と、後始末（lib/noah-sweep.ts）が、同じ文を使う。 */
+export const NOAH_ASK_END_MESSAGES = {
+  /** 相手へ送った後に、応答が無い・読めない・実行の場が落ちた。実行されたかどうかが、分からない。 */
+  unknown: '結果を確かめられませんでした。相手のサーバーで実行されたかは分かりません。',
+  /** 相手へ送る前に、実行の場が落ちた。 */
+  interrupted: '途中で止まりました。相手のサーバーへは、送っていません。もう一度頼んでください。',
+  /** 受け付けた後、実行が始まらなかった。 */
+  notStarted: '始められませんでした。もう一度頼んでください。',
+};
 
 /** 画面に出す文（止めた時）。 */
 export const NOAH_ASK_STOP_MESSAGES = {
@@ -80,6 +93,28 @@ export async function finishNoahAsk(
     if (current.stop_requested === 1 && state !== 'stopped') return 'stop_requested';
   }
   return 'already';
+}
+
+/** lease（実行の場が持つ時間）を過ぎてから、これだけ待って「実行の場は、もう無い」と見る（終わり際に書かれる成果を、先に「結果不明」にしない）。数値は候補。 */
+export const NOAH_ASK_LEASE_GRACE_MS = 5_000;
+/** `running` のまま、実行の場が無くなった依頼か。 */
+export const noahAskRunGone = (row: Pick<NoahAskRow, 'state' | 'lease_until'>, at: number) => row.state === 'running' && row.lease_until > 0 && row.lease_until < at - NOAH_ASK_LEASE_GRACE_MS;
+
+/**
+ * 実行の場が無くなった `running` の依頼を終える（巡回の後始末と、本人の「止める」が使う）。**取り直して呼び直さない。**
+ * - 相手へ送る印（`tool_calls`）が付いていれば「結果不明」。付いていなければ、送っていないので「失敗」（もう一度頼める）。
+ * - 止める事が頼まれていた時・`stop` を付けた時は、「止めた」。
+ * 書いた状態を返す。もう終わっていた時は null（何も変えていない）。
+ */
+export async function finishGoneNoahAsk(deps: Dependencies, row: NoahAskRow, stop = false): Promise<'unknown' | 'failed' | 'stopped' | null> {
+  const sent = row.tool_calls > 0, used = sent && row.tool ? [row.tool] : [], options = { toolCalls: sent ? row.tool_calls : 0 };
+  const stopped = async () => ((await finishNoahAsk(deps, row, 'stopped', { state: 'cancelled', error: sent ? NOAH_ASK_STOP_MESSAGES.stoppedAfterCall : NOAH_ASK_STOP_MESSAGES.stopped, used }, options)) === 'written' ? 'stopped' as const : null);
+  if (stop) return stopped();
+  const done = sent
+    ? await finishNoahAsk(deps, row, 'unknown', { state: 'unknown', error: NOAH_ASK_END_MESSAGES.unknown, used }, options)
+    : await finishNoahAsk(deps, row, 'failed', { state: 'failed', error: NOAH_ASK_END_MESSAGES.interrupted }, options);
+  if (done === 'written') return sent ? 'unknown' : 'failed';
+  return done === 'stop_requested' ? stopped() : null;
 }
 
 /**

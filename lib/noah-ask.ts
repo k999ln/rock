@@ -14,7 +14,7 @@
  */
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
-import { finishNoahAsk, noahAskView, NOAH_ASK_COLUMNS, NOAH_ASK_STOP_MESSAGES, type NoahAskRow } from './noah-ask-store.ts';
+import { finishGoneNoahAsk, finishNoahAsk, noahAskRunGone, noahAskView, NOAH_ASK_COLUMNS, NOAH_ASK_END_MESSAGES, NOAH_ASK_STOP_MESSAGES, type NoahAskRow } from './noah-ask-store.ts';
 import { createNoahConnectService, type NoahConnectApiDependencies, type NoahConnectDependencies } from './noah-connect.ts';
 import { noahAllowed } from './noah-flags.ts';
 import { checkNoahToolArgs, noahAskGate, noahFormArgs, noahFormRequestSha256, noahFormSummary, noahResultText, noahToolForm, noahToolSha256, NOAH_HOST_BUSY, type NoahConfirmedTool } from './noah-form.ts';
@@ -62,8 +62,8 @@ export const NOAH_ASK_MESSAGES = {
   refusedCall: '相手のサーバーが、この依頼を断りました。',
   rejectedInput: '相手のサーバーが、この入力を受け付けませんでした。',
   tooLarge: '成果が大きすぎて、受け取れませんでした。相手のサーバーでは、実行されています。',
-  unknown: '結果を確かめられませんでした。相手のサーバーで実行されたかは分かりません。',
-  interrupted: '途中で止まりました。相手のサーバーへは、送っていません。もう一度頼んでください。',
+  unknown: NOAH_ASK_END_MESSAGES.unknown,
+  interrupted: NOAH_ASK_END_MESSAGES.interrupted,
   toolFailed: '道具が、できなかったと返しました。',
 };
 
@@ -198,14 +198,18 @@ export function createNoahAskService(deps: NoahAskDependencies) {
       at + NOAH_ASK_RUN_LIMITS.leaseMs, at, id, owner).first<NoahAskRow>();
     if (!row || !row.tool || !row.tool_sha256) return;
     let sent = false;
-    /** 終わりを書く。止める事が頼まれていて書けなかった時は、「止めた」で書き直す。 */
-    const finish = async (state: 'succeeded' | 'failed' | 'stopped' | 'unknown', outcome: NoahRemoteOutcome) => {
+    /** 終わりを書く。止める事が頼まれていて書けなかった時は、「止めた」で書き直す。その状態で書けた時だけ、true を返す。 */
+    const finish = async (state: 'succeeded' | 'failed' | 'stopped' | 'unknown', outcome: NoahRemoteOutcome): Promise<boolean> => {
       const calls = sent ? 1 : 0;
-      if ((await finishNoahAsk(deps, row, state, outcome, { toolCalls: calls })) !== 'stop_requested') return;
+      const done = await finishNoahAsk(deps, row, state, outcome, { toolCalls: calls });
+      if (done !== 'stop_requested') return done === 'written';
       const message = sent ? NOAH_ASK_STOP_MESSAGES.stoppedAfterCall : NOAH_ASK_STOP_MESSAGES.stopped;
       await finishNoahAsk(deps, row, 'stopped', { state: 'cancelled', error: message, used: sent ? [row.tool!] : [] }, { toolCalls: calls });
+      return false;
     };
-    const fail = (error: string) => finish('failed', { state: 'failed', error });
+    /** 終わりを書くだけ（書けたかどうかを、使わない所）。 */
+    const end = async (state: 'failed' | 'stopped' | 'unknown', outcome: NoahRemoteOutcome): Promise<void> => { await finish(state, outcome); };
+    const fail = (error: string) => end('failed', { state: 'failed', error });
     let close: (() => Promise<void>) | null = null;
     try {
       const job = await jobs.get(owner, row.work_id);
@@ -232,10 +236,15 @@ export function createNoahAskService(deps: NoahAskDependencies) {
         if (!confirmed) return await fail(NOAH_ASK_MESSAGES.needsConfirm);
         if (!(await confirm(owner, row.connection_id, { name: tool.name, sha256: toolSha256 }))) return await fail(NOAH_ASK_MESSAGES.interrupted);
       }
-      // 止める事が頼まれていれば、呼ばない。
-      const current = await readOne(owner, id);
-      if (!current || current.finished_at !== null) return;
-      if (current.stop_requested === 1) return await finish('stopped', { state: 'cancelled', error: NOAH_ASK_STOP_MESSAGES.stopped });
+      // 呼ぶ直前に、「相手へ送る」の印（tool_calls=1）を付ける。止める事が頼まれていれば、付かない（呼ばない）。
+      // 印を付けてから呼ぶので、実行の場が途中で落ちても、後始末（lib/noah-sweep.ts）が、「送っていない」と「送ったかもしれない」を分けられる。
+      // 版（revision）は進めない: 画面が持っている版で、「止める」がそのまま通る。
+      const marked = await prepare('UPDATE noah_asks SET tool_calls=1 WHERE id=? AND owner_id=? AND finished_at IS NULL AND stop_requested=0', id, owner).run();
+      if (marked.meta.changes !== 1) {
+        const current = await readOne(owner, id);
+        if (!current || current.finished_at !== null) return;
+        return await end('stopped', { state: 'cancelled', error: NOAH_ASK_STOP_MESSAGES.stopped });
+      }
 
       // 道具を 1 回呼ぶ。失敗しても、呼び直さない。
       sent = true;
@@ -244,17 +253,15 @@ export function createNoahAskService(deps: NoahAskDependencies) {
         called = await noahMcpCall(shaken.handshake.session, tool.name, args.args, shaken.ctx, NOAH_ASK_RUN_LIMITS.callMs);
       } catch (error) {
         const outcome = await callFailure(again.target, error);
-        return await finish(outcome.state, { state: outcome.state, error: outcome.error, used: [tool.name] });
+        return await end(outcome.state, { state: outcome.state, error: outcome.error, used: [tool.name] });
       }
       const text = noahResultText(called);
       if (!called.ok) {
         // 道具が「できなかった」と返した。理由は、相手の文の先頭（文字として出す）。
-        return await finish('failed', { state: 'failed', error: clip(text.text.trim() || NOAH_ASK_MESSAGES.toolFailed, NOAH_ASK_RUN_LIMITS.errorChars), used: [tool.name] });
+        return await end('failed', { state: 'failed', error: clip(text.text.trim() || NOAH_ASK_MESSAGES.toolFailed, NOAH_ASK_RUN_LIMITS.errorChars), used: [tool.name] });
       }
-      await finish('succeeded', { state: 'returned', result: text, note: `${again.target.host} の ${tool.name} が返した内容です。費用 0。`, used: [tool.name] });
-      // 成果を書けた時だけ: 使った時刻を書き、その系列を「動いた」にする。
-      const written = await readOne(owner, id);
-      if (written?.state === 'succeeded') {
+      // 成果を書けた時だけ（止められた依頼・後始末が先に終わらせた依頼では、書けない）: 使った時刻を書き、その系列を「動いた」にする。
+      if (await finish('succeeded', { state: 'returned', result: text, note: `${again.target.host} の ${tool.name} が返した内容です。費用 0。`, used: [tool.name] })) {
         const used = now();
         await prepare("UPDATE noah_connections SET last_used_at=? WHERE id=? AND owner_id=? AND state='connected'", used, row.connection_id, owner).run();
         await markRan(again.target, shaken.handshake);
@@ -263,7 +270,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
       // 使えない接続（切られた・取り下げられた・接続先が変わった）は、その文で終える。それ以外の途中の失敗は、送った後なら「結果不明」。
       const message = error instanceof NoahAgentError ? error.message : null;
       await (sent
-        ? finish('unknown', { state: 'unknown', error: NOAH_ASK_MESSAGES.unknown, used: row.tool ? [row.tool] : [] })
+        ? end('unknown', { state: 'unknown', error: NOAH_ASK_MESSAGES.unknown, used: row.tool ? [row.tool] : [] })
         : fail(message ?? NOAH_ASK_MESSAGES.interrupted)).catch(() => undefined);
     } finally {
       // 握手のセッションを閉じる（成果と状態を書き終えた後。届かなくても、依頼の結果は変わらない）。
@@ -287,7 +294,8 @@ export function createNoahAskService(deps: NoahAskDependencies) {
 
   /**
    * `stop`: まだ始まっていない依頼は、その場で止める。進んでいる依頼は、止める事を頼む
-   * （相手で実行が始まっていれば、止められない。届いた成果は、採らない）。切り替えが閉じていても、止められる。
+   * （相手で実行が始まっていれば、止められない。届いた成果は、採らない）。実行の場が無くなっている依頼は、その場で止める。
+   * 切り替えが閉じていても、止められる。
    */
   async function stop(owner: string, id: string, revision: number): Promise<NoahAskReply> {
     const row = await readOne(owner, id);
@@ -295,6 +303,8 @@ export function createNoahAskService(deps: NoahAskDependencies) {
     if (row.revision !== revision) return failed(409, NOAH_ASK_MESSAGES.stale, { ask: noahAskView(row) });
     if (row.finished_at !== null) return failed(409, NOAH_ASK_MESSAGES.finished, { ask: noahAskView(row) });
     if (row.state === 'queued') await finishNoahAsk(deps, row, 'stopped', { state: 'cancelled', error: NOAH_ASK_STOP_MESSAGES.stopped }, { only: 'queued' });
+    // 進んでいる依頼の、実行の場が、もう無い時（lease を過ぎた）: 止める事を頼んでも、聞く相手が居ない。その場で止める（巡回の後始末を、待たない）。
+    else if (noahAskRunGone(row, now())) await finishGoneNoahAsk(deps, row, true);
     const at = now();
     // 実行の場が、同時に取っていた時も含めて: 終わっていなければ、止める事を頼む。
     await prepare('UPDATE noah_asks SET stop_requested=1,revision=revision+1,updated_at=? WHERE id=? AND owner_id=? AND finished_at IS NULL AND stop_requested=0', at, id, owner).run();

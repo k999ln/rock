@@ -6,6 +6,7 @@ import { parseNoahConnect, noahPublicHttpsUrl } from './noah-connect-requirement
 import { planNoahConnection } from './noah-connect-plan.ts';
 import { noahLaunchPlanState, noahPlaceLabel } from './noah-connect-source.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
+import { RECIPES } from './noah-execution-contract.mjs';
 
 type Row = {
   id: string; representative_id: string; members: number; level: 0 | 1 | 2; l2_at: number | null; shuffle: number;
@@ -37,6 +38,12 @@ function item(row: Row, signedIn: boolean) {
 export type IntakeStatus = {
   sources: Pick<IntakeSource, 'id' | 'next_run_at' | 'last_success_at' | 'error_code' | 'failure_count' | 'observed' | 'withdrawn' | 'request_count' | 'sweep_started_at'>[];
   mouths: { remote: number; terminal: number; remoteReady: number; terminalReady: number }; families: { id: string; name: string; members: number; mouth: string | null; level: number; revision: number; withdrawn: boolean }[]; nextOffset: number | null; reasons: Record<string, number>; unsupported: Record<string, number>; listed: number;
+  /**
+   * つながると確かめた数（spec-88 の 9.6）。台帳の件数とは別に出す。
+   * ran: 人が動かして、成果が出た系列。handshake: 握手まで確かめた系列（まだ誰も動かしていない）。どちらも、一覧に載せている物だけ。
+   * fixed: 本人の Mac で動かす、固定の型紙の数（取り込んだ台帳とは別の物）。
+   */
+  confirmed: { ran: number; handshake: number; fixed: number };
 };
 export function createIntakeStore(deps: IntakeDependencies) {
   const { db } = deps, now = deps.now ?? Date.now, sync = createIntakeSync(deps), probe = createIntakeProbe(deps);
@@ -102,7 +109,7 @@ export function createIntakeStore(deps: IntakeDependencies) {
     }
     const unsupported = Object.fromEntries((await db.prepare("SELECT reason,COUNT(*) AS n FROM noah_intake_candidates WHERE state='unsupported' GROUP BY reason").all<{ reason: string; n: number }>()).results.map(r => [r.reason, r.n]));
     const visible = await counts();
-    return { sources, mouths, reasons, unsupported, listed: visible.ran + visible.new, families: families.slice(0, 20).map(r => ({ id: r.id, name: r.name, members: r.members, mouth: r.mouth, level: r.level, revision: r.revision, withdrawn: r.withdrawn_at !== null })), nextOffset: families.length > 20 ? offset + 20 : null };
+    return { sources, mouths, reasons, unsupported, listed: visible.ran + visible.new, confirmed: { ran: visible.ran, handshake: visible.new, fixed: Object.keys(RECIPES).length }, families: families.slice(0, 20).map(r => ({ id: r.id, name: r.name, members: r.members, mouth: r.mouth, level: r.level, revision: r.revision, withdrawn: r.withdrawn_at !== null })), nextOffset: families.length > 20 ? offset + 20 : null };
   }
   async function moderate(action: 'withdraw' | 'restore', id: string, revision: number) {
     const row = await db.prepare(`${ROW} WHERE f.id=?`).bind(id).first<Row>();

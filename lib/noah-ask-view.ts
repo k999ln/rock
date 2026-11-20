@@ -93,10 +93,19 @@ export function noahConfirmRows(fields: NoahFormField[], args: Record<string, un
 }
 
 const seconds = (ms: number) => { const s = Math.max(0, Math.floor(ms / 1000)); return s < 60 ? `${s} 秒` : `${Math.floor(s / 60)} 分 ${s % 60} 秒`; };
+/**
+ * 「止めています…」が、これより長く続いた依頼には、「止める」をもう一度出す（数値は候補）。
+ * 実行の場が持つ時間（30 秒）と、その後の待ち（5 秒）より長い。ここまで続くのは、実行の場が無くなった時だけなので、押すと、その場で止まる
+ * （巡回の後始末が先に片付けていれば、押す前に「止めました。」になっている）。
+ */
+export const NOAH_ASK_STOP_AGAIN_MS = 45_000;
 /** 仕事の行の文と、止められるか。 */
-export function noahAskRowView(ask: Pick<NoahAskItem, 'state' | 'stopRequested' | 'error' | 'createdAt'>, now: number): { text: string; stoppable: boolean; done: boolean } {
+export function noahAskRowView(ask: Pick<NoahAskItem, 'state' | 'stopRequested' | 'error' | 'createdAt' | 'updatedAt'>, now: number): { text: string; stoppable: boolean; done: boolean } {
   if (ask.state === 'queued') return { text: ask.stopRequested ? '止めています…' : '順番を待っています', stoppable: !ask.stopRequested, done: false };
-  if (ask.state === 'running') return { text: ask.stopRequested ? '止めています…（相手のサーバーで始まっていれば、止められません）' : `進んでいます（${seconds(now - ask.createdAt)}）`, stoppable: !ask.stopRequested, done: false };
+  if (ask.state === 'running') {
+    if (!ask.stopRequested) return { text: `進んでいます（${seconds(now - ask.createdAt)}）`, stoppable: true, done: false };
+    return { text: '止めています…（相手のサーバーで始まっていれば、止められません）', stoppable: now - ask.updatedAt > NOAH_ASK_STOP_AGAIN_MS, done: false };
+  }
   if (ask.state === 'succeeded') return { text: NOAH_ASK_TEXT.received, stoppable: false, done: true };
   if (ask.state === 'failed') return { text: `できませんでした。${ask.error ?? ''}`, stoppable: false, done: true };
   if (ask.state === 'stopped') return { text: ask.error ?? '止めました。', stoppable: false, done: true };
