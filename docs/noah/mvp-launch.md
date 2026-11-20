@@ -144,7 +144,7 @@ sequenceDiagram
 | L5 | つなぐ | 74・96 | migration（`noah_connections`）、`lib/noah-connect.ts`（相手のサーバー）、計画の API（`lib/noah-connect-source.ts`・`lib/noah-connect-plan-api.ts`）、道具の一覧の API、利用者の操作から始める握手（`lib/noah-user-handshake.ts`。接続先の枠・401 と 429 の扱い）、つないでいる人が居る系列を 24 時間ごとに確かめる（88 の 9.3）。画面（`noah-ready.tsx`・`noah-ready-detail.tsx`・`noah-card.tsx`・`noah-connect-button.tsx`・`noah-ask.tsx`（道具の一覧まで）、その場のサインイン、探す画面の入口 `noah-ready-entry.tsx`）。出す場所とサインインの扱いは、本人の返事を待ちながら、既定で作った（74 の 11.5 の最初の表） | L4 |
 | L6 | 頼む | 87 | migration（`noah_asks`）、`WorkJob.noahRemote`、`lib/noah-remote-work.ts`、`lib/noah-ask.ts`・`lib/noah-ask-store.ts`（入力欄だけ）、`noah-ask.tsx`・`noah-work-list.tsx`、本人の実行で「動いた」を付ける、切った時に終わっていない依頼を止める。成果を「成果データ」「実行中」に出す所は、まだ（87 の 11.8） | L5 |
 | L7 | 見回りを保つ | 88 | 止まった依頼と接続の後始末（`lib/noah-sweep.ts`。巡回の合図の終わりに行う。migration は、つなぐ途中の接続を拾う索引 1 つ）、道具を呼ぶ直前の「相手へ送る」の印、つながると確かめた数（失敗が続いた物を外す・量産を握手の対象から外す は L4 で、並びの引き直し・取り下げと戻し は L3 で入った） | L6 |
-| L8 | 出すための運用 | 97 | `/noah/help` の `#bot`、運営の画面（切り替えの状態・見張る数）、戻し方の手順書 | L3 |
+| L8 | 出すための運用 | 97 | `/noah/help` の `#bot`（文は `lib/noah-bot-notice.ts`。宛先が決まるまで `hidden`。一覧と詳細からの道も、その間は出さない）、運営の画面の「見張る数」（`lib/noah-launch-status.ts`。切り替えの状態・台帳の巡回・まだ握手していない数・握手の結果・同じ接続先への握手・接続と依頼の数）、巡回を起こす Worker の配備と止め方の手順書（`services/noah-patrol-wake/README.md`）、切り替えを閉じた時の動きの試験（`tests/noah-launch-ops.test.mjs`）。**本番への配備・適用・切り替えは、行っていない** | L3 |
 | L9 | 受入 | 90 | 一周の自動試験、画面の決まりの試験、実機の確かめの表 | L6 |
 
 L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 までで機能は全部そろい、L9 が「出してよいか」を判定する。
@@ -162,7 +162,7 @@ L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 
 | D5 | Cloudflare の契約 | **確かめが要る。** 巡回は Workers の有料の枠（CPU 時間・D1 の書き込み）が前提（[97](spec-97-launch-ops.md) 3 章） | 無料の枠のままでは、この線では出せない（CPU 時間と、D1 の書き込みの行数が足りない）。載せる数を大きく減らす、別の線が要る |
 | D6 | 巡回を起こす Worker の配備と、合図の鍵 | 配備しない（手元でだけ動く） | 配備すると、本番で毎分の巡回が始まる |
 | D7 | 本番 D1 への migration（4 本。L7 で、索引を足す 1 本が増えた） | 適用しない | 適用すると、L3・L5・L6・L7 が本番で動く |
-| D8 | 取り下げ・報告の窓口の宛先 | 未定（`/noah/help#bot` に載せる） | 宛先が無い間は出さない（8 章の G5） |
+| D8 | 取り下げ・報告の窓口の宛先 | 未定（`/noah/help#bot` に載せる。入れる所は `lib/noah-bot-notice.ts` の `NOAH_REPORT_CONTACT` の 1 行） | 宛先が無い間は出さない（8 章の G5）。巡回の名乗りが、この節の URL を持つので、**段 1（巡回を開ける）の前に決める事を勧める**（[97](spec-97-launch-ops.md) の 5 章） |
 | D9 | カードと道具の説明の言葉 | 提供者の原文のまま（英語が多い） | 訳すなら、モデルの契約が要る。Noah は文を作らない決まりも変わる |
 | D10 | 頼む回数の上限 | 同時 8 件、1 分 10 回、24 時間 200 回、1 つの接続先へ全員で 1 分 30 回 | 数だけ変える（`NOAH_ASK_LIMITS`） |
 | D11 | 量産の系列（60 系列・9,070 件）を載せないこと | 載せない | 載せるなら、1 枚のカードの中から 1 件ずつつなぐ画面が要る |
@@ -190,7 +190,7 @@ L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 
 | 段 | する事 | 見える変化 |
 | --- | --- | --- |
 | 0 | L1〜L9 を main へ。migration を適用。切り替えは全部閉 | 無し |
-| 1 | `services/noah-patrol-wake` を配備。`NOAH_PATROL_WAKE_KEY` を両方に置く。`NOAH_PATROL_ENABLED=true` | 審査者にだけ `/noah/ready` が見える。台帳の全件（約 70 分）→ 握手の 1 巡（既定の毎分 8 件で約 3 日。この間だけ `NOAH_PATROL_BUDGET` で 16 件にすると約 1.5 日）が進む |
+| 1 | `services/noah-patrol-wake` を配備。`NOAH_PATROL_WAKE_KEY` を両方に置く。`NOAH_PATROL_ENABLED=true`（手順は `services/noah-patrol-wake/README.md`。先に、D8 の宛先を入れておく事を勧める: 巡回の名乗りの URL を開いた提供者に、説明が出るように） | 審査者にだけ `/noah/ready` が見える。台帳の全件（約 70 分）→ 握手の 1 巡（既定の毎分 8 件で約 3 日。この間だけ `NOAH_PATROL_BUDGET` で 16 件にすると約 1.5 日）が進む |
 | 2 | 審査者が、本番で G1〜G6 を確かめる。運営が 100 件動かす | 「動いた」が増える |
 | 3 | `NOAH_INTAKE_PUBLIC=true`、`NOAH_ASK_FORM=true`。navigation に「すぐ使える」が出る。開けた直後に、account を持っていない人の一周（[90](spec-90-phone-only-loop.md) の 5 章の 13）を確かめ、通らなければ閉じる | **ローンチ** |
 
