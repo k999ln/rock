@@ -11,10 +11,12 @@
 | | [noah-tool-agent-v1.ts](../../contracts/noah-tool-agent-v1.ts) | 道具を持つ担当（上限・確認・停止）、モデルの API の形との変換。出した後 |
 | | [noah-flags-v1.ts](../../contracts/noah-flags-v1.ts) | 切り替え（環境変数）の読み方。形の違う値は、閉じた側に倒す |
 | | [noah-screenless-v1.ts](../../contracts/noah-screenless-v1.ts) | 面の見分け、隔離環境の起動引数の検査 |
+| | [noah-shelf-v1.ts](../../contracts/noah-shelf-v1.ts) | 棚とパッケージ（2026-11-21）: カード `noah-package/1` の検査、載せる条件（今動かせる物だけ）、学習を使わない並び、見せた位置の区分、助言を含む成果の検査、つなげる数、札の候補、工程の計画へのつなぎ、300 人の試行の判定と式、切り替え |
 | DDL 案 | [noah-v1.sql](../../contracts/noah-v1.sql)、[noah-regroup-v1.sql](../../contracts/noah-regroup-v1.sql)、[noah-listing-v1.sql](../../contracts/noah-listing-v1.sql) | 新しい表 13 個（既存の表は変えない。ローンチで使うのは 7 個）、名寄せの SQL、ローンチの一覧・検索の問い合わせと、つなぐ前・頼む前の上限、接続先の枠（合わせて 10 文） |
-| 試験 | この folder の `*.test.mjs` | 61 群（8 ファイル） |
-| DDL の検証 | [validate-noah-v1.py](validate-noah-v1.py) | 10 群（拒否を確かめる行 63） |
-| 実データ | [fixtures/](fixtures/) | 公式台帳の実記録 25 件＋合成 7 件、実際の握手の写し 1 件、ACP の台帳 3 件、Space 3 件、一覧に載せる条件の表 24 行（合成。純関数と SQL が共に使う） |
+| DDL 案（棚） | [noah-shelf-v1.sql](../../contracts/noah-shelf-v1.sql)、[noah-shelf-queries-v1.sql](../../contracts/noah-shelf-queries-v1.sql) | 新しい表 9 個（[noah-v1.sql](../../contracts/noah-v1.sql) の表を読む。変えない）、棚の一覧・載せるかの写し・実績の数え直し・見せた記録・つなげる数・試行の問い合わせ（15 文） |
+| 試験 | この folder の `*.test.mjs` | 78 群（9 ファイル。2026-11-20 までの 61 群と、棚の 17 群） |
+| DDL の検証 | [validate-noah-v1.py](validate-noah-v1.py)、[validate-noah-shelf-v1.py](validate-noah-shelf-v1.py) | 10 群（拒否を確かめる行 63）と、棚の 6 群（同 73） |
+| 実データ | [fixtures/](fixtures/) | 公式台帳の実記録 25 件＋合成 7 件、実際の握手の写し 1 件、ACP の台帳 3 件、Space 3 件、一覧に載せる条件の表 24 行（合成。純関数と SQL が共に使う）、最初の棚のカード案 12 枚（全部が下書き。工程の先は、今の main の Agent・道具を指す） |
 
 **ローンチまでに `lib/` へ移すのは、この中の一部。** どの関数を、どの PR で移すかは [ローンチの最小限](../../noah/mvp-launch.md) の 6 章。
 
@@ -25,11 +27,14 @@
 ```sh
 node --experimental-strip-types --test "docs/design-validation/noah/*.test.mjs"
 python3 docs/design-validation/noah/validate-noah-v1.py
+python3 docs/design-validation/noah/validate-noah-shelf-v1.py
 ```
 
-失敗すると終了コードが 0 以外になる。DDL の検証の結果は `work/design-validation/noah-v1-validation.json`（`NOAH_SQL_RESULT` で変えられる）。型契約は `npm run typecheck` の対象に入っている（`tsconfig.json` が `**/*.ts` を読む）。
+失敗すると終了コードが 0 以外になる。DDL の検証の結果は `work/design-validation/noah-v1-validation.json`（`NOAH_SQL_RESULT` で変えられる）。棚の DDL の検証の結果は `work/design-validation/noah-shelf-v1-validation.json`（`NOAH_SHELF_SQL_RESULT`）。型契約は `npm run typecheck` の対象に入っている（`tsconfig.json` が `**/*.ts` を読む）。
 
 2026-11-20 の結果（main `fa57c57` を、別の場所へ取り出して確かめた。Node.js 22.23、SQLite 3.53）: 試験 61/61、DDL 10/10（拒否を確かめた行 63）、`npm run typecheck` エラー 0、`oxlint docs/contracts docs/design-validation/noah` 指摘 0。これはその時点の入力への結果で、変更した後の成功は保証しない。
+
+2026-11-21 の結果（main `b58f6d8` に棚の分を足した作業 branch。Node.js 22.23、SQLite 3.53）: 試験 78/78、DDL 10/10（拒否を確かめた行 63）と 6/6（同 73）、`npm run typecheck` エラー 0、`oxlint docs/contracts docs/design-validation/noah` 指摘 0。棚の試験（`noah-shelf.test.mjs`）は、今の main の `lib/noah-execution-contract.mjs`・`lib/work-composition.ts`・`lib/sky-gig-offers.ts`・`lib/sky-recipe-planner.ts` をそのまま読むので、そこが変わると、カード案と合わなくなった所で落ちる（落ちたら、カード案か文書を直す）。
 
 ## 何を確かめているか
 
@@ -43,7 +48,9 @@ python3 docs/design-validation/noah/validate-noah-v1.py
 | `noah-flags.test.mjs` | 何も置かなければ全部閉。開くのは値が `true` の時だけ。形の違う値は閉じた物として扱い、運営に知らせる。数の上書き。閉じていても審査者は使える |
 | `noah-tool-agent.test.mjs` | 1 文 → 道具 → 成果。道具の説明と結果に仕込んだ指示で、一覧に無い道具も、確認の要る道具も呼ばれない。書き込みは最初の 1 回だけ確かめる。入力の検査。上限・停止・道具の中身の変化で止まる。結果が返らない道具を呼び直さない。道具の定義を上限に収める。モデルの API の形との変換 |
 | `noah-screenless.test.mjs` | **今の main の起動引数**（`scripts/noah-isolated-runtime.mjs` の `containerArgs`、`scripts/noah-terminal-runtime.mjs` の `terminalContainerArgs`、VM の起動）が検査を通る。緩めた変更 15 通りが落ちる。実際の依存の一覧での面の見分け。実行時の依存だけを読む |
+| `noah-shelf.test.mjs` | **棚とパッケージ**（[仕様書 100](../../noah/spec-100-shelf.md)）。最初のカード案 12 枚が通る形で、今の main の固定 adapter 13 件・Noah の中の道具・売れる型の最低額と合っている。下書きは、切り替えを全部開けても載らない。カードの形の規則 20 個（拒否する形 64 行。誘う語 7 つ）。載せる条件の理由 8 つ（握手だけ・一覧から外れた・入力欄で使えない・定義が変わった・系列が無い・工程をつなぐ・家の端末・専門家の確かめが無い助言）。割合の見積りが、工程の計画（`acceptanceEstimate`）と同じ値。並び: 閉の間と、実績の無い日は運営の順。成果が返ってまた使われるカードが上がり、回数の多さでは上がらない。5 人未満の実績は使わない・出さない。5 枚に 1 枚の試しの位置。同じ領域を 3 枚続けない。本人の関心と見飽きは、おすすめを切った人・同意していない人に効かない。入力の順を変えても同じ結果。つなげる数（無料 6 枚・カードで数える）。札の候補は、決まった形の JSON だけを読み、語彙の外と仕込んだ指示を捨てる。12 枚の全部で、工程の計画（`planRecipes`）が、カードと同じ工程を同じ順で出す。300 人の試行（段の判定・届ける人数 2,000・売れた額の式の 2 つの置き方） |
 | `validate-noah-v1.py` | 既存の `drizzle/*.sql` を名前順に一時 DB へ流し、DDL 案を 2 回流しても既存の定義が変わらない。制約の拒否 63 行（元の行が通る事を先に確かめる）。設計書に書いた問い合わせ（見回りの取り合い、タイムライン、取り下げの掃き出し、host の間隔、接続の楽観ロック、依頼の取り合いと step の番号、1 回だけ使える state）が、期待した索引と結果になる。名寄せの SQL が、参照実装の試験と同じ系列と代表を作る。何も変わっていなければ、名寄せをやり直しても 1 行も書かない。**ローンチの一覧**: SQL が、表（24 行）と同じ物を、同じ段に出す。索引を使い、並べ替えの一時の表を作らない。頁の継ぎ目で重ならず抜けない。並びの引き直し。握手・実行の直後の写し。検索（`%` と `_` を文字として探す）。頼む前・つなぐ前の上限の数え方。**接続先の枠**: 60 秒の枠に決まった回数まで（枠が明けたら取れる・接続先ごとに別・巡回の間隔に触らない）。相手が「混んでいる」と返したら、その時刻まで、利用者の操作も巡回も待つ |
+| `validate-noah-shelf-v1.py` | 既存の migration と `noah-v1.sql` の後に、棚の DDL 案を 2 回流しても、どの定義も変わらない。新しい表は 9 個で、本文を置く列が無く、数える表に本人の ID が無い。制約の拒否 73 行。棚の一覧が索引を使い、並べ替えの一時の表を作らない。載せるかの写しは、版が合う時だけ。**実績の数え直し**が、手で数えた値（切ってつなぎ直した人・つながらなかった人・別の道具・期間より前・終わっていない依頼を含む）と同じになり、もう 1 回流しても足し込まず、系列と本人の索引で読む。見せた記録（全員の数・同意した本人の数・非表示・履歴を消す）。つなげる数（同じカードの中の接続は 1）。試行の 4 つの数と、5 人未満の経路・カードを出さない事 |
 
 ## 実データでの実測（2026-11-20）
 

@@ -103,3 +103,17 @@
 | 並行 | — | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
 
 調査した残り 72 件を 1 件ずつ実行器で対応する作業は行わない（分類は [docs/noah-agent-census-20261120.md](../../docs/noah-agent-census-20261120.md)）。13 / 85 などの限定試験を、全体の合格と数えない。
+
+## 100 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
+
+本人の決定（11-19〜21。[07](../../docs/structure/07-decisions-from-minutes.md)）: 領域ごとのパッケージ、1 つの仕事を最後までやる組合せ、今動かせる物だけ、入口の棚は「稼ぐ・仕事を省く」「教育」「暮らし」、無料は 6 枚までつなげる、まず 300 人に試してもらう。設計は [docs/noah/spec-100-shelf.md](../../docs/noah/spec-100-shelf.md)（100〜103 が、同じ仕様書の章を分けて使う）と [docs/noah/trial-300.md](../../docs/noah/trial-300.md)（104）。型契約と参照実装は docs/contracts/noah-shelf-v1.ts、試験は docs/design-validation/noah/noah-shelf.test.mjs と validate-noah-shelf-v1.py。
+
+| 順 | ローンチ | # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | L5・L8 に足す | 100 | [100-noah-shelf.md](100-noah-shelf.md) | 棚とカード: カードの形、載せる条件（今動かせる物だけ）、運営が動かして確かめる、`/noah/ready` の棚、運営の画面 | |
+| 2 | —（出した後） | 101 | [101-noah-shelf-rank.md](101-noah-shelf-rank.md) | 実績の並び（学習なし）、見せた記録、カードをタイムラインへ流す | |
+| 2 | —（出した後） | 102 | [102-noah-package-chains.md](102-noah-package-chains.md) | 家の端末のカード、工程をつなぐカード、札の候補、工程の計画へのつなぎ | |
+| 2 | —（出した後） | 103 | [103-noah-plan-limits.md](103-noah-plan-limits.md) | つなげる数を料金ごとに（無料 6 枚・有料 50 枚。数えるのはカード） | |
+| 2 | 出した直後 | 104 | [104-noah-trial-300.md](104-noah-trial-300.md) | 300 人の試行: 経路の札、段を終えたかの判定、本人の報告（売れた件数・手取り・掛けた分） | |
+
+カードを動かして確かめる事（[カード案](../../docs/services/noah-shelf.md) の 12 枚）、投稿・動画・人への連絡、切り替えを開ける事、本番の migration は、task ではなく本人と運営の作業。
