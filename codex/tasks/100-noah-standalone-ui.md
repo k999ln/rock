@@ -28,4 +28,6 @@
 
 ## 進捗
 
-実装中。PRと検証結果は追記する。
+実装を [PR #337](https://github.com/k999ln/rock/pull/337) にpush。typecheck・lint:product・焦点試験30群成功。1360px/390pxの実ブラウザで3カラム/下部ナビ・検索・未設定登録画面・横はみ出しなしを確認。全体verifyを実行中。
+
+再開: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。登録API/UIは `node --experimental-strip-types --test tests/noah-registration*.test.mjs`。実際の登録先アダプターと秘密設定は未接続。本人Mac・成果の認証と本番環境は変更しない。

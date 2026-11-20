@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 const code = ts.transpileModule(readFileSync(new URL('../components/noah-registration.tsx', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
-const provider = { id: 'example', name: 'Example', agentIds: ['agent'], revision: '1', providerOrigin: 'https://provider.example.com', executorOrigin: 'https://executor.example.com', executorName: 'Registration Agent', termsUrl: 'https://provider.example.com/terms', termsVersion: '1', fields: [{ key: 'email', label: 'メール', type: 'email', required: true, maxLength: 100 }, { key: 'password', label: 'パスワード', type: 'password', required: true, maxLength: 100 }] };
+const provider = { id: 'example', name: 'Example', agentIds: ['agent'], revision: 1, providerOrigin: 'https://provider.example.com', executorOrigin: 'https://executor.example.com', executorName: 'Registration Agent', termsUrl: 'https://provider.example.com/terms', termsVersion: '1', fields: [{ key: 'email', label: 'メール', type: 'email', required: true, maxLength: 100 }, { key: 'password', label: 'パスワード', type: 'password', required: true, maxLength: 100 }] };
 const job = state => ({ id: 'job', providerName: 'Example', providerOrigin: provider.providerOrigin, state, expiresAt: Date.now() + 86400000, verificationUrl: provider.providerOrigin + '/verify', returnTo: '/noah/launch?agent=agent#library' });
 function harness(fetcher, initial = []) {
   const slots = [], effects = [], exports = {}, calls = [], storage = new Map(initial); let cursor = 0, tree;

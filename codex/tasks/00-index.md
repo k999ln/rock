@@ -108,4 +108,4 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
-| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahのタイムライン維持・専用導線と紫のデザイン | 実装中 |
+| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | NoahのX型タイムライン・紫の専用導線と登録Agent | 検証中 PR #337 |

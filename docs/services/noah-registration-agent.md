@@ -20,7 +20,7 @@
 ## 設定と実行契約
 
 `NOAH_REGISTRATION_PROVIDERS` はJSON配列。各項目は `id,name,agentIds,revision,providerOrigin,verificationUrl,termsUrl,termsVersion,executorUrl,executorName,fields`。
-必要項目は `key,label,type,required,maxLength`（type=text/email/password）。executorUrlはHTTPS。外部の提供者と登録Agentの送信先を両方表示する。
+必要項目は `key,label,type,required,maxLength`（type=text/email/password）。revisionは1以上の整数、NOAH_REGISTRATION_AGENT_TOKENは32文字以上。executorUrlはHTTPS。外部の提供者と登録Agentの送信先を両方表示する。
 `NOAH_REGISTRATION_AGENT_TOKEN` は登録Agentのサーバー認証。公開APIへ返さない。
 未設定・不正設定では受付を閉じ、個人情報のフォームを出さない。架空の登録成功や未接続Agentを実行可能とは表示しない。
 
@@ -31,6 +31,6 @@
 - 応答は `{id,state}`（state=running/needs_user/completed/failed/unknown）。任意の自由文・URL・tokenは捨てる。本人確認リンクはサーバー設定済みの登録先URLだけを表示する。
 - 20秒の上限、転送禁止、応答8KiB、受付8KiB。本人確認待ちで状態照会だけを継続する。completedは登録Agentからの完了報告で、Noahの接続許可ではない。
 - Workへメタデータを保存してから一度だけ送る。同じID/入力の再送は現在の状態を返す。入力指紋はブラウザ権限を鍵にしたHMACで、原文やpasswordの裸hashを残さない。
-- 有効期限24時間、ゲスト1人につき日10件、全体日200件を上限とする。状態照会は5秒に1回。Noahの他APIへこの権限を流用しない。
+- 有効期限24時間、同じブラウザ権限につき日10件、全体日200件を上限とする。権限を作り直せるため、本人単位の回数保証ではない。状態照会は5秒に1回。Noahの他APIへこの権限を流用しない。
 
 実際の登録先アダプター・秘密設定は未接続。開発では注入した登録Agentで、必要項目が実行に渡り、本人確認待ちから状態照会へ進むことを検証する。本番の登録・契約・配備・設定は行わない。
