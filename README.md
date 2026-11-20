@@ -82,6 +82,8 @@ node --experimental-strip-types --test docs/design-validation/noah/noah-loop.tes
 
 未ログイン時はアカウント確認・ログイン・再確認を案内し、認証後は登録やMac承認の元の画面へ戻ります。Mac経由の登録・接続・実行・停止については、[Mac Runnerの検証記録](codex/tasks/71-noah-standalone-launch.md)を参照してください。
 
+### Noahのコード
+
 | コード | 内容 |
 | --- | --- |
 | [app/noah/](app/noah/) / [components/noah-timeline.tsx](components/noah-timeline.tsx) | 公開タイムラインと機能画面 |
