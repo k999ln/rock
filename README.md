@@ -101,7 +101,7 @@ Noahはmiiの最小構成です。会議のメモを整理したいなら、公�
 
 **[NoahでAgentを試す](https://avoado.si/noah/agents)**。閲覧・検索はスマホからできます。仕事を実行するには、サインインして自分のApple Silicon MacにRunnerを設定します。[Macの接続手順](#noah-mac)
 
-[動画をダウンロード（MP4・18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [オンラインサロン用の投稿文](docs/noah/online-salon-trial.md)
+[CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
 
 <a name="noah-tools"></a>
 
