@@ -18,7 +18,7 @@
 
 1. drizzle/0044_noah_intake.sql・db/schema.ts・drizzle/meta/_journal.json: DDL 案から取り込みの 5 表と索引を移す（`when` は今の最大より大きい値）。
 2. lib/noah-intake-draft.ts: 参照実装の `draftFromRegistry`・`draftFromSpace`・`draftFromAcp`・`noahCandidateId`・`NOAH_INTAKE_REASONS` を移す。
-3. lib/noah-intake-family.ts: `groupNoahFamilies`・`noahRepositoryKey`・`NOAH_BULK_THRESHOLD` を移し、noah-regroup-v1.sql の 8 文を同じファイルに置く。
+3. lib/noah-intake-family.ts: `groupNoahFamilies`・`noahRepositoryKey`・`NOAH_BULK_THRESHOLD` を移し、noah-regroup-v1.sql の 9 文を同じファイルに置く。
 4. lib/noah-intake-store.ts: `createIntakeStore({ db, now, fetcher })` → `sync`・`regroup`・`list`・`detail`・`status`。巡回の順は仕様書 5.1（lease → 上限つきで頁を読む → `ON CONFLICT` で書く → 最後の頁で取り下げと名寄せ）。1 件がどの列になるかは 4 章。
 5. lib/noah-intake-api.ts、app/api/noah/intake/route.ts・[id]/route.ts: 検査は lib/noah-discovery-api.ts と同じ（本文は `{}` だけ）。flag `NOAH_INTAKE_PUBLIC` が閉じている間、一覧は審査者だけ。
 6. scripts/noah-discovery-daemon.mjs: `POST /api/noah/intake` も 60 秒ごとに呼ぶ。components/noah-review.tsx に「取り込み」の節（仕様書 6 章）。
@@ -27,7 +27,7 @@
 
 - 今の発見（`noah_discovery_*`、lib/noah-discovery-*.ts）は変えない。取り込みは別の表（今の表は出どころを 2 つに固定する CHECK を持つ）。
 - この task は何も実行しない。握手もしない。台帳の説明文から命令を作らない。台帳に公開された鍵を運ばない。
-- 取り下げは、前回の 9 割以上が見えた巡回でだけ行う。寝ている Space は候補の行だけを持ち、握手の対象にしない。
+- 取り下げは、持っている有効な候補の 9 割以上が見えた巡回でだけ行う（仕様書 5.1 の 4）。握手の記録を消すのは、接続先に関わる項目が変わった時だけ（5.1 の 3）。寝ている Space は候補の行だけを持ち、握手の対象にしない。
 
 ## 合格条件
 

@@ -139,7 +139,7 @@ UPDATE noah_intake_candidates SET family_id = 'bulk:' || group_key || '@' || hos
                               GROUP BY group_key, host HAVING COUNT(*) >= :threshold);
 `,
 String.raw`
--- 系列の表を作り直す。代表は、動いている → 接続試験が深い → いいねが多い → 更新が新しい → ID の順。引き取り・取り下げ・隠した印は残す。
+-- 系列の表を作り直す。代表は、動いている → 接続試験が深い → いいねが多い → 更新が新しい → ID の順。引き取り・取り下げ・隠した印は残す（隠した印は、下の 2 つの文だけが書く）。
 -- listed は、ローンチの一覧に載せる条件（規則の正本は noahListing。同じ結果になることを検証キットが確かめる）:
 -- 公式台帳の、相手のサーバーで動く物で、鍵も許可も無しで握手が通っていて（level 1 以上）、入力欄で使える道具が 1 つ以上あり、量産の系列でない。
 -- shuffle（「まだ誰も動かしていない」の並び）は、初めて作る行にだけ引く。今ある行の値は変えない（引き直すのは、下の 1 日 1 回の文）。
@@ -163,8 +163,16 @@ ON CONFLICT(id) DO UPDATE SET representative_id = excluded.representative_id, me
      OR noah_intake_families.listed <> excluded.listed OR noah_intake_families.one_tap <> excluded.one_tap;
 `,
 String.raw`
--- 候補が 1 件も無くなった系列を隠す（行は消さない。引き取りと取り下げの記録が残る）。
-UPDATE noah_intake_families SET hidden_at = COALESCE(hidden_at, :now)
- WHERE id NOT IN (SELECT DISTINCT family_id FROM noah_intake_candidates WHERE state = 'active');
+-- 候補が 1 件も無くなった系列を隠す（行は消さない。引き取りと取り下げの記録が残る）。すでに隠してある行は書かない（D1 は、書いた行の数で数える）。
+UPDATE noah_intake_families SET hidden_at = :now
+ WHERE hidden_at IS NULL AND id NOT IN (SELECT DISTINCT family_id FROM noah_intake_candidates WHERE state = 'active');
+`,
+String.raw`
+-- 候補が戻った系列を戻す（取り下げの後で台帳に戻った物、量産の系列がほどけた物）。隠したままだと、握手が通っても、一覧と検索に出ない。
+-- 握手の失敗が続いて隠した系列（代表に first_failure_at がある。spec-88 の 9.3）は、ここでは戻さない。握手が通った時に戻る。
+UPDATE noah_intake_families SET hidden_at = NULL, updated_at = :now, revision = revision + 1
+ WHERE hidden_at IS NOT NULL
+   AND id IN (SELECT DISTINCT family_id FROM noah_intake_candidates WHERE state = 'active')
+   AND NOT EXISTS (SELECT 1 FROM noah_intake_checks k WHERE k.candidate_id = noah_intake_families.representative_id AND k.first_failure_at IS NOT NULL);
 `
 ];

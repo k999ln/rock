@@ -1,5 +1,5 @@
 import { createIntakeStore } from './noah-intake-store.ts';
-import type { IntakeDependencies } from './noah-intake-sync.ts';
+import type { IntakeDependencies, IntakeOutcome } from './noah-intake-sync.ts';
 import { noahAllowed, type NoahFlags } from './noah-flags.ts';
 import { verifyNoahWake } from './noah-intake-wake.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
@@ -55,6 +55,12 @@ export function createIntakeTick(deps: IntakeApiDependencies) {
     try { valid = await verifyNoahWake({ key: deps.wakeKey, timestamp: request.headers.get('x-noah-time'), signature: request.headers.get('x-noah-signature'), body: await body(request, 2), now: (deps.now ?? Date.now)(), path: new URL(request.url).pathname }); } catch { /* Invalid or oversized wake: fail closed. */ }
     if (!valid) return json({ error: 'Unauthorized' }, 401);
     if (!deps.flags.patrol) return json({ disabled: true });
-    try { return json(await createIntakeStore(deps).sync()); } catch (error) { return failure(error); }
+    // 台帳を読めなかった・書けなかった巡回は、500 で返す（合図を送る専用の Worker の実行が、失敗として残る。監視で、成功に見せない）。
+    const clock = deps.now ?? Date.now, started = clock();
+    let outcome: IntakeOutcome = { pages: 0, seen: 0, changed: 0, more: false, error: 'unavailable' }, response: Response;
+    try { outcome = await createIntakeStore(deps).sync(); response = json(outcome, outcome.error ? 500 : 200); } catch (error) { response = failure(error); }
+    // 合図 1 回の記録（1 行）。数と理由の符号だけ。接続先の名前・URL・本人の ID は出さない。握手の数は、握手を作る層（L4）が入れる。
+    console.info(JSON.stringify({ event: 'noah-patrol', pages: outcome.pages, seen: outcome.seen, changed: outcome.changed, skipped: outcome.skipped ?? 0, probes: 0, ok: 0, authRequired: 0, unreachable: 0, rateLimited: 0, skippedHost: 0, toolsChanged: 0, swept: 0, error: outcome.error ?? null, ms: clock() - started }));
+    return response;
   };
 }

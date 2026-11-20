@@ -180,6 +180,8 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 
 相手が「混んでいる」（429）を返した時は、失敗に数えない（`Retry-After` の後に確かめ直す）。401・402・形が合わない は、86 の 4.2 の表のとおり、その場で `level=0`。
 
+`hidden_at` を書く所は 2 つある。ここ（握手の失敗が 30 日続いた代表の系列）と、名寄せ（候補が 1 件も無くなった系列。[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql)）。名寄せは、候補が戻った系列の `hidden_at` を NULL に戻すが、代表の `first_failure_at` がある系列は戻さない。だから、失敗で隠している間は `first_failure_at` を消さない（消すのは、握手が通った時だけ）。
+
 ### 9.4 道具の定義が変わった時（ローンチ版。4.4 を置き換える）
 
 握手で得た道具の定義の hash（接続先の全部の道具）が前と違う時、**握手の表の hash と数を新しくするだけ**にする。`level` は変えない。つないでいる人の接続も止めない。

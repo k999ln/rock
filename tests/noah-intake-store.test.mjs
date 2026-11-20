@@ -60,7 +60,8 @@ void test('regroup and shuffle run only on full sweep or first completion of a U
   f.advance(86400000); await f.store.sync(); assert.equal(regroupCount(), 2);
 });
 void test('429 obeys Retry-After, redirects/oversize/malformed responses never advance checkpoint', async t => {
-  for (const response of [new Response('', { status: 429, headers: { 'Retry-After': '900' } }), new Response('', { status: 302 }), new Response('x', { headers: { 'content-length': String(5 * 1024 * 1024) } }), Response.json({ servers: [null], metadata: {} })]) {
+  // A single unreadable record is skipped (tests/noah-intake-resilience.test.mjs). A malformed page, or one with more than ten unreadable records, still fails.
+  for (const response of [new Response('', { status: 429, headers: { 'Retry-After': '900' } }), new Response('', { status: 302 }), new Response('x', { headers: { 'content-length': String(5 * 1024 * 1024) } }), Response.json({ servers: {}, metadata: {} }), Response.json({ servers: Array.from({ length: 11 }, () => null), metadata: {} })]) {
     const f = fixture(t, async () => response); const result = await f.store.sync(); assert.ok(result.error); assert.equal(f.source().checkpoint_at, null);
     if (response.status === 429) { assert.equal(result.error, 'rate_limited'); assert.equal(f.source().next_run_at, NOW + 900000); }
   }
