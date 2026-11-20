@@ -24,18 +24,23 @@ function harness(catalog,social,initial='all') {
   const render=()=>{cursor=0;result=exports.useNoahTimeline('public','','all',filter);effects.splice(0).forEach(fn=>fn());}; render();
   return {calls,get result(){return result;},setFilter(v){filter=v;render();},async flush(){for(let n=0;n<4;n++){await new Promise(resolve=>setTimeout(resolve,5));render();}},close(){slots.forEach(s=>s?.cleanup?.());}};
 }
-const catalog=async()=>Response.json({entries:[{id:'agent',name:'Agent'}],nextCursor:null});
+const catalog=async url=>Response.json(url.startsWith('/api/noah/feedback?')?{entries:[],cursor:null}:{entries:[{id:'agent',name:'Agent'}],nextCursor:null});
 void test('all feed fetches no news, excludes community posts and gives followed posts priority',async t=>{
   const h=harness(catalog,async()=>({posts:[post('ordinary'),post('follow',true),post('private-group',true,{id:'group'})],cursor:null}));t.after(()=>h.close());await h.flush();
-  assert.equal(h.calls.length,2);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')));
-  assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['post:follow','agent:agent','post:ordinary']);
+  assert.equal(h.calls.length,3);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')||u.startsWith('/api/noah/feedback?')));
+  assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['post:follow','post:ordinary','agent:agent']);
 });
 void test('Agent filter does not request social feed and an obsolete all-feed response cannot reappear',async t=>{
   let finish;const h=harness(catalog,()=>new Promise(resolve=>{finish=resolve;}));t.after(()=>h.close());await h.flush();h.setFilter('agent');await h.flush();
-  assert.equal(h.calls.filter(u=>u.startsWith('/api/sky/social?')).length,1);assert.deepEqual(Array.from(h.result.data.items,i=>i.kind),['agent']);
+  assert.equal(h.calls.filter(u=>u.startsWith('/api/sky/social?')).length,1);assert.equal(h.calls.filter(u=>u.startsWith('/api/noah/feedback?')).length,1);assert.deepEqual(Array.from(h.result.data.items,i=>i.kind),['agent']);
   finish({posts:[post('late-follow',true)],cursor:null});await h.flush();assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['agent:agent']);
 });
 void test('failed social feed leaves real Agent results and a retryable error',async t=>{
   const h=harness(catalog,async()=>{throw Error('offline');});t.after(()=>h.close());await h.flush();
   assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['agent:agent']);assert.match(h.result.data.errors[0],/投稿：offline/);assert.equal(h.result.loading,false);
+});
+
+void test('public Agent comments join the personal timeline without needing a social profile',async t=>{
+  const h=harness(async url=>url.startsWith('/api/noah/feedback?')?Response.json({entries:[{id:'review',agentId:'agent',agentName:'Agent',author:'Synthetic author',content:'Synthetic opinion',createdAt:10,replies:0}],cursor:null}):catalog(url),async()=>({profile:null,posts:[],cursor:null}));t.after(()=>h.close());await h.flush();
+  assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['feedback:review','agent:agent']);
 });

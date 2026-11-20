@@ -31,7 +31,8 @@ void test('followed posts appear twice per round without removing ordinary posts
   const followed = [1,2,3].map(id => ({...posts[0],id:`follow-${id}`}));
   const ordinary = {...posts[0],id:'ordinary',following:false};
   const items = mixNoahTimeline(agents,[ordinary,...followed,posts[1],followed[0]]);
-  assert.deepEqual(items.map(i=>i.key), ['post:follow-1','post:follow-2','agent:same-id','post:ordinary','post:follow-3']);
+  assert.deepEqual(items.map(i=>i.key), ['post:follow-1','post:follow-2','post:ordinary','agent:same-id','post:follow-3']);
+  assert.deepEqual(mixNoahTimeline(agents,[ordinary]).map(i=>i.kind), ['post','agent']);
   assert.deepEqual(mixNoahTimeline(agents,[]).map(i=>i.kind), ['agent']);
   assert.deepEqual(mixNoahTimeline([],[]), []);
 });

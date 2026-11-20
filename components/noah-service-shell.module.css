@@ -18,7 +18,7 @@
 .rail nav a:hover { background:#f7f7f8; }
 .rail nav a[aria-current] { font-weight:750; color:#7546c8; }
 .secondary { margin-top:3px; }
-.post { display:flex; align-items:center; justify-content:center; gap:10px; min-height:51px; padding:12px 20px; background:#7546c8; color:#fff!important; border-radius:30px; font-size:17px; font-weight:700; margin:18px 6px 24px; box-shadow:0 3px 10px #7543c014; }
+.post { display:flex; align-items:center; justify-content:center; gap:10px; min-height:51px; padding:12px 20px; background:#792ddd; color:#fff!important; border-radius:30px; font-size:17px; font-weight:700; margin:18px 6px 24px; box-shadow:0 3px 10px #7543c014; }
 .post:hover { background:#7040bd; }
 .post svg { display:none; }
 .account { margin-top:auto; display:flex; align-items:center; gap:10px; padding:12px 10px; border-radius:40px; font-size:13px; }
@@ -73,6 +73,9 @@
   .menuPanel nav { display:grid; gap:0; }.menuPanel nav a { display:flex; align-items:center; gap:15px; width:100%; min-height:57px; height:auto; padding:10px 2px; border-radius:0; border-bottom:1px solid #ececef; white-space:normal; }.menuPanel nav a:last-child { border-bottom:0; }
   .menuPanel nav a[aria-current] { background:transparent; color:#202024; }.menuPanel nav a:hover { background:#f7f7f8; }.menuPanel nav a span { display:block; }.menuPanel nav .menuIcon { display:grid; place-items:center; width:25px; flex-shrink:0; color:#52525b; }.menuPanel nav a[aria-current] .menuIcon { color:#7546c8; }.menuPanel nav .menuText { min-width:0; flex:1; }.menuText strong { display:block; font-size:14px; font-weight:600; line-height:1.5; }.menuText small { display:block; font-size:11px; line-height:1.6; color:#71717a; font-weight:400; }.menuPanel nav .currentBadge { width:6px; height:6px; border-radius:50%; background:#7546c8; font-size:0; }.menuPanel nav a > svg { width:15px; height:15px; color:#c4bdca; }
 
-  .post { position:fixed; right:20px; bottom:calc(80px + env(safe-area-inset-bottom)); width:52px; height:52px; margin:0; box-shadow:0 4px 14px #65409633; }.post svg { display:block; }
+  .post { position:fixed; right:20px; bottom:calc(80px + env(safe-area-inset-bottom)); width:52px; height:52px; margin:0; box-shadow:0 6px 22px #792ddd40; }.post svg { display:block; }
   .content :global([data-noah-embedded] .rock-main) { padding:16px; }
 }
+
+.post { transition:transform .18s,box-shadow .18s; }.post:active { transform:scale(.94); }
+@media(prefers-reduced-motion:reduce) { .post { transition:none; }.post:active { transform:none; } }
