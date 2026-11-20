@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buyer, credential, launchFixture, outcome } from './helpers/noah-launch-fixture.mjs';
 
-test('closing the browser after enqueue does not prevent the runner from saving Work results', async (t) => {
+void test('closing the browser after enqueue does not prevent the runner from saving Work results', async (t) => {
   const f = await launchFixture(t);
   const overview = t.mock.method(f.service, 'overview', () => {
     assert.fail('the browser must not refresh the overview to advance a job');

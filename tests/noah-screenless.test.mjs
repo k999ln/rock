@@ -10,7 +10,7 @@ import { TERMINAL_SURFACE } from '../lib/noah-terminal-contract.mjs';
 const VOLUME = 'noah-terminal-00000000-0000-0000-0000-000000000000';
 const run = () => terminalContainerArgs('noah-terminal-run-x', 'image', VOLUME, { root: '' }, 'main.py', 'python');
 
-test('今の main の起動引数は、検査を通る', () => {
+void test('今の main の起動引数は、検査を通る', () => {
   for (const recipe of Object.values(RECIPES)) assert.deepEqual(auditNoahContainerArgs(containerArgs('noah-run-x', 'image', recipe)), [], recipe.key);
   assert.deepEqual(auditNoahContainerArgs(run()), []);
   assert.deepEqual(auditNoahContainerArgs(terminalContainerArgs('noah-run-node', 'image', VOLUME, { root: '' }, 'main.mjs', 'node')), []);
@@ -21,7 +21,7 @@ test('今の main の起動引数は、検査を通る', () => {
   assert.deepEqual(auditNoahVmArgs(vm), []);
 });
 
-test('起動引数を緩めた変更は、検査で落ちる', () => {
+void test('起動引数を緩めた変更は、検査で落ちる', () => {
   const tamper = (edit) => { const args = run(); edit(args); return auditNoahContainerArgs(args); };
   const insert = (...extra) => (args) => args.splice(args.indexOf('image'), 0, ...extra);
   const c = (name, change, expected) => ({ name, change, expected });
