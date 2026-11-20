@@ -395,6 +395,7 @@ export default function NoahLaunch() {
                   <pre style={{ whiteSpace: 'pre-wrap' }}>
                     {job.result.text}
                   </pre>
+                  <p><Link href="/noah/data">成果データを検索・保存・提供する</Link></p>
                   {job.result.files.map((f) => (
                     <p key={f.name}>
                       <button

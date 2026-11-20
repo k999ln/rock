@@ -281,7 +281,7 @@ void test('Noah embeds existing workspace once, preserving connection and runnin
   assert.equal(documentEvents.size,0);assert.equal(windowEvents.size,0);
 });
 
-void test('Eve uses the same two-tab header as Noah while retaining private content and workspace navigation', () => {
+void test('Eve retains its app header while Noah has standalone navigation', () => {
   for (const pathname of ['/chat', '/os/eve', '/os/eve/remix']) {
     const Shell = compile('components/workspace-shell.tsx', {
       'next/navigation': { usePathname: () => pathname },
@@ -299,8 +299,9 @@ void test('Eve uses the same two-tab header as Noah while retaining private cont
     assert.ok(all.includes(child));
     assert.ok(all.some(n => n.type === './workspace-flow-navigation'));
   }
-  assert.match(source('components/noah-shell.tsx'), /<ProductAppHeader active="noah"/);
-  assert.match(source('components/noah-shell.tsx'), /label: 'コミュニティーに参加'/);
+  assert.doesNotMatch(source('components/noah-shell.tsx'), /<ProductAppHeader/);
+  assert.match(source('components/noah-shell.tsx'), /aria-label="Noahの主要メニュー"/);
+  assert.match(source('components/noah-shell.tsx'), /label: 'タイムライン'/);
 });
 
 void test('shared app header preserves running guards, actions, and the active Eve query by preventing a reset', () => {

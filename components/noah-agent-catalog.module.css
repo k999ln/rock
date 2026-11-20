@@ -1,4 +1,4 @@
-.page { --os-text: var(--sky-text, #edf3f7); --os-muted: var(--sky-muted, #a0b1bc); --os-line: var(--sky-line, #2e3c47); --os-panel: var(--sky-panel, #151d25); --os-raised: #1b2630; --os-accent: var(--sky-accent, #c3e1f0); --os-accent-ink: #101b23; --os-focus: var(--os-accent); max-width: 1168px; margin: auto; color: var(--os-text); padding: 0 24px 60px; box-sizing: border-box; }
+.page { --os-text: var(--sky-text, #edf3f7); --os-muted: var(--sky-muted, #a0b1bc); --os-line: var(--sky-line, #2e3c47); --os-panel: var(--sky-panel, #151d25); --os-raised: var(--noah-raised, #1b2630); --os-accent: var(--sky-accent, #c3e1f0); --os-accent-ink: #101b23; --os-focus: var(--os-accent); max-width: 1168px; margin: auto; color: var(--os-text); padding: 0 24px 60px; box-sizing: border-box; }
 .formPage { max-width: 820px; }
 .nav, .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
 .nav { border-bottom: 1px solid var(--os-line); padding: 8px 0 18px; }

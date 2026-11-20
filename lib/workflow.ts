@@ -324,6 +324,7 @@ export type WorkToolObservation = {
   recordedAt: string;
 };
 export type WorkJob = {
+  noahRegistration?: import('./noah-registration-contract.ts').RegistrationRecord;
   resale?: import('./noah-resale.ts').ResaleState;
   noahOutbox?: import('./noah-outbox.ts').NoahOutbox;
   noahOperation?: import('./noah-operations.ts').NoahOperation;
@@ -407,6 +408,10 @@ function defaultWorkPlan(templateId: string, objective: string): WorkPlan {
   };
 }
 export function normalizeWorkJob(job: WorkJob): WorkJob {
+  if (job.templateId === 'noah-registration') {
+    if (job.noahRegistration?.schema !== 'noah-registration/1' || job.noahRegistration.verification !== 'registration_agent_reported' || job.steps.length !== 0 || job.status === 'completed') throw new WorkError('登録Agentの記録を確認してください。');
+    return job;
+  }
   if (job.templateId === 'noah-resale') {
     if (job.resale?.schema !== 'noah.resale/1' || job.steps.length !== 0 || !Array.isArray(job.resale.items) || !Array.isArray(job.resale.operations)) throw new WorkError('リセールの保存形式を確認してください。');
     return job;

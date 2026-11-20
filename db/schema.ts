@@ -2364,3 +2364,21 @@ export const noahProbeHosts = sqliteTable('noah_probe_hosts', {
 }, t => [
   check('noah_probe_hosts_check_1', sql`${t.userCount} >= 0`),
 ]);
+
+// Explicit user-selected output contributions. Withdrawal removes the snapshot.
+export const noahResultContributions = sqliteTable('noah_result_contributions', {
+  id: text('id').primaryKey(), ownerId: text('owner_id').notNull(), workId: text('work_id').notNull(),
+  workRevision: integer('work_revision').notNull(), requestSha256: text('request_sha256').notNull(),
+  sourceSha256: text('source_sha256').notNull(), policyVersion: text('policy_version').notNull(),
+  state: text('state').notNull(), snapshot: text('snapshot'), createdAt: integer('created_at').notNull(), revokedAt: integer('revoked_at'),
+}, t => [
+  uniqueIndex('noah_result_one_work').on(t.ownerId, t.workId),
+  index('noah_result_operator').on(t.state, t.createdAt, t.id),
+  check('noah_result_revision', sql`${t.workRevision} >= 0`),
+  check('noah_result_request_hash', sql`length(${t.requestSha256}) = 64`),
+  check('noah_result_source_hash', sql`length(${t.sourceSha256}) = 64`),
+  check('noah_result_policy', sql`${t.policyVersion} = 'noah-quality-v1'`),
+  check('noah_result_state', sql`${t.state} IN ('active','revoked')`),
+  check('noah_result_snapshot', sql`${t.snapshot} IS NULL OR (json_valid(${t.snapshot}) AND length(CAST(${t.snapshot} AS BLOB)) <= 196608)`),
+  check('noah_result_withdrawal', sql`(${t.state} = 'active' AND ${t.snapshot} IS NOT NULL AND ${t.revokedAt} IS NULL) OR (${t.state} = 'revoked' AND ${t.snapshot} IS NULL AND ${t.revokedAt} IS NOT NULL)`),
+]);
