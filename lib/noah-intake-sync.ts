@@ -15,6 +15,7 @@ export type IntakeDependencies = {
   db: IntakeDb; now?: () => number; fetcher?: typeof fetch; origin?: string;
   budget?: typeof NOAH_PATROL_BUDGET;
 };
+class IntakeBudgetExhausted extends Error {}
 class IntakeFailure extends Error {
   readonly code: 'unavailable' | 'rate_limited' | 'invalid_response';
   readonly retryAt: number;
@@ -87,13 +88,16 @@ export function createIntakeSync(deps: IntakeDependencies) {
     // D1 batch is transactional. Deliberately invalid JSON aborts the whole batch after a lost lease.
     return prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM noah_intake_sources WHERE id='mcp-registry' AND lease_id=? AND lease_until>?) THEN 1 ELSE json('lease_lost') END", lease, now());
   }
-  async function batch(statements: D1PreparedStatement[], lease: string) {
-    for (let i = 0; i < statements.length; i += 49) await db.batch([guard(lease), ...statements.slice(i, i + 49)]);
+  async function batch(statements: D1PreparedStatement[], lease: string, deadline = Infinity) {
+    for (let i = 0; i < statements.length; i += 49) {
+      if (now() >= deadline) throw new IntakeBudgetExhausted();
+      await db.batch([guard(lease), ...statements.slice(i, i + 49)]);
+    }
   }
   const regroupStatements = () => [...NOAH_REGROUP_SQL.map(sql => intakeStatement(db, sql, { threshold: NOAH_BULK_THRESHOLD, now: now() })), intakeStatement(db, NOAH_LISTING_SQL.reshuffle)];
-  async function regroup(lease: string) { await batch(regroupStatements(), lease); }
+  async function regroup(lease: string, deadline = Infinity) { await batch(regroupStatements(), lease, deadline); }
   const touch = (id: string) => intakeStatement(db, NOAH_LISTING_SQL.touch, { level: 0, l2_at: null, listed: 0, one_tap: 0, badge_hint: 'unverified', now: now(), candidate_id: id });
-  async function savePage(entries: unknown[], lease: string) {
+  async function savePage(entries: unknown[], lease: string, deadline: number) {
     const normalized = await Promise.all(entries.map(async entry => {
       if (!object(entry) || !object(entry._meta) || !object(entry._meta['io.modelcontextprotocol.registry/official'])) throw new IntakeFailure('invalid_response');
       const meta = entry._meta['io.modelcontextprotocol.registry/official'], server = registryRecord(entry.server);
@@ -124,7 +128,7 @@ export function createIntakeSync(deps: IntakeDependencies) {
       if (state === 'active' && !old?.singleton) statements.push(prepare("INSERT OR IGNORE INTO noah_intake_families(id,representative_id,members,level,badge_hint,listed,one_tap,shuffle,updated_at,revision) VALUES(?,?,1,0,?,0,0,abs(random()) % 1000000000,?,1)", id, id, draft.ok && draft.connect.secrets.length ? 'setup' : 'unverified', time));
       if (old?.published && (state !== 'active' || !draft.ok || old.check_level === 0 || old.connect_sha256 !== connectHash)) statements.push(touch(id));
     }
-    await batch(statements, lease); return { changed, seen: normalized.length };
+    await batch(statements, lease, deadline); return { changed, seen: normalized.length };
   }
   async function sync() {
     const start = now(), lease = crypto.randomUUID();
@@ -149,7 +153,7 @@ export function createIntakeSync(deps: IntakeDependencies) {
         }
         const page = await boundedPage(response);
         if (page.cursor && page.cursor === source.cursor) throw new IntakeFailure('invalid_response');
-        const saved = await savePage(page.entries, lease); pages++; seen += saved.seen; changed += saved.changed;
+        const saved = await savePage(page.entries, lease, end); pages++; seen += saved.seen; changed += saved.changed;
         // This checkpoint follows every successful page write. A partial batch failure replays the page safely.
         if (page.cursor) await batch([prepare("UPDATE noah_intake_sources SET cursor=?,observed=observed+?,error_code=NULL WHERE id='mcp-registry'", page.cursor, saved.seen)], lease);
         source.cursor = page.cursor; source.observed += saved.seen;
@@ -164,7 +168,7 @@ export function createIntakeSync(deps: IntakeDependencies) {
               prepare("UPDATE noah_intake_sources SET withdrawn=(SELECT COUNT(*) FROM noah_intake_candidates WHERE source='mcp-registry' AND state='withdrawn' AND seen_at<?) WHERE id='mcp-registry'", sweep),
             ], lease);
           }
-          if (full || source.last_success_at === null || Math.floor(source.last_success_at / 86400000) !== Math.floor(now() / 86400000)) await regroup(lease);
+          if (full || source.last_success_at === null || Math.floor(source.last_success_at / 86400000) !== Math.floor(now() / 86400000)) await regroup(lease, end);
           await batch([prepare("UPDATE noah_intake_sources SET observed=?,checkpoint_at=?,last_full_at=CASE WHEN ?=1 THEN ? ELSE last_full_at END,sweep_started_at=NULL,updated_since=NULL,cursor=NULL,last_success_at=?,next_run_at=?,failure_count=0,error_code=NULL,lease_id=NULL,lease_until=0 WHERE id='mcp-registry'", source.observed, sweep, Number(full), sweep, now(), sweep + NOAH_REGISTRY.everyMs)], lease);
           return { pages, seen, changed, more: false };
         }
@@ -172,6 +176,10 @@ export function createIntakeSync(deps: IntakeDependencies) {
       await batch([prepare("UPDATE noah_intake_sources SET lease_id=NULL,lease_until=0,error_code=NULL WHERE id='mcp-registry'")], lease);
       return { pages, seen, changed, more: true };
     } catch (error) {
+      if (error instanceof IntakeBudgetExhausted) {
+        await prepare("UPDATE noah_intake_sources SET lease_id=NULL,lease_until=0,error_code=NULL WHERE id='mcp-registry' AND lease_id=?", lease).run();
+        return { pages, seen, changed, more: true };
+      }
       const failure = error instanceof IntakeFailure ? error : new IntakeFailure('unavailable');
       const delay = Math.min(2 ** Math.min(source.failure_count + 1, 20) * 60000, 6 * 3600000);
       await prepare("UPDATE noah_intake_sources SET error_code=?,failure_count=failure_count+1,next_run_at=?,lease_id=NULL,lease_until=0 WHERE id='mcp-registry' AND lease_id=?", failure.code, Math.max(now() + delay, failure.retryAt), lease).run();

@@ -104,3 +104,10 @@ void test('short optional declared secrets are not persisted even when the remot
   const f = fixture(t, async () => page([entry(1, { remotes: [{ type: 'streamable-http', url: 'https://example.com/mcp', headers: [{ name: 'X-Optional', isSecret: true, value: 'tiny-value' }] }] })]));
   await f.store.sync(); assert.equal(f.candidate().state, 'active'); assert.equal(f.candidate().record_json.includes('tiny-value'), false);
 });
+void test('time budget yields before page writes without failure backoff or advancing the checkpoint', async t => {
+  let slow = true;
+  const f = fixture(t, async () => { if (slow) f.advance(26000); return page([entry(1)]); });
+  const first = await f.store.sync(); assert.equal(first.error, undefined); assert.equal(first.more, true); assert.equal(f.candidate(), undefined);
+  assert.equal(f.source().failure_count, 0); assert.equal(f.source().checkpoint_at, null);
+  slow = false; assert.equal((await f.store.sync()).seen, 1); assert.equal(f.source().checkpoint_at, NOW);
+});

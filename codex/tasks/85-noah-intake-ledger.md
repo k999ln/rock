@@ -46,4 +46,8 @@
 - 型契約: `node --experimental-strip-types --test docs/design-validation/noah/noah-*.test.mjs`（61/61）、`python3 docs/design-validation/noah/validate-noah-v1.py`（10/10）。移設済み表も元の DDL と一致するか検査する。
 - 大量受入: `node --experimental-strip-types scripts/check-noah-intake.mjs` は合成65,000件、`--live` は公式台帳だけを読む。どちらも一時的なローカルD1。論理時計を1分ずつ進めた署名付き合図71回で、最後に差分巡回を検査する。Agentの接続先には通信しない。
 - `WRANGLER_WRITE_LOGS=false npx wrangler deploy --dry-run --config services/noah-patrol-wake/wrangler.jsonc --outdir work/noah-patrol-wake-dry-run` 成功。配備はしていない。
-- 残件: 実台帳を使ったローカルD1受入、`npm run verify`、最終レビュー。結果はこの節と PR 本文を更新する。
+- 検証結果: `npm run verify` 成功（ルート4,466成功・4 skip、仕事API 1,918、CSV 385）。最新差分の製品23群、typecheck、lint:productも成功。migration追加で変わる表数・末尾番号を既存回帰試験へ反映した。
+- 実台帳の受入: 70回で68,964件を保存し、71回目は `updated_since` 付き1頁・36件を取得、合計68,967件。初回完了時のローカルD1を読み取り専用で保存し、最終コードで集計を照合した。対象67,861件の内訳は、相手のサーバーが入力なし41,039／準備あり4,149、端末配布が14,810／4,035、下書き不可3,828。仕様85 §8との差は最大0.6074ポイント（全分類が1ポイント以内）。系列51,187、握手未実施なので公開対象0。
+- 最終コードでの合成65,000件もローカルD1受入成功。65回で全件完了、66回目に差分1頁、次の毎時枠までは追加取得しない。保存バッチの時間予算中断はバックオフせず、次の合図で再開する。
+- 完了した範囲はL3の実装とローカル受入。残るのはPRレビュー・依存L2のマージ、後続L4以降。本番migration・配備・切り替えは未実施。
+- CIの既知の残件: SPIDER / secretsが既存mainの試験用文字列の履歴3件（`docs/design-validation/noah/noah-connect.test.mjs:85`、51df5ce・80b3810・5b7cde3）を検出する。今回の追加ファイルによる検出ではない。検査の例外化・履歴の書き換えはしていない。
