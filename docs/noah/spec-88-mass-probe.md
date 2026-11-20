@@ -171,7 +171,7 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 
 ### 9.3 握手の失敗の扱い（ローンチ版。4.3 の表を置き換える）
 
-**この表は、L4（握手）で入れた**（`lib/noah-probe.ts` の `planNoahProbeWrite`。握手の結果を書く所と、失敗を数える所が同じなので）。L7 で足す物は無い。
+**この表は、L4（握手）で入れた**（`lib/noah-probe.ts` の `planNoahProbeWrite`。握手の結果を書く所と、失敗を数える所が同じなので）。L7 で足す物は無い。「つないでいる人が居れば 24 時間後」は、接続の表が入った L5 で入れた（`lib/noah-intake-probe.ts` の `NOAH_PROBE_FAMILY`。候補と系列を読む文の中で、`EXISTS(SELECT 1 FROM noah_connections …)` を見る。D1 への往復は増えない）。
 
 | 続けて失敗した回数（応答しない） | する事 | 次に確かめる時 |
 | --- | --- | --- |

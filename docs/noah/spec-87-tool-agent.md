@@ -261,6 +261,8 @@ Durable Object は仕事 1 つに 1 つ（名前は仕事の `id`）。保存す
 
 **`GET /api/noah/connect/[id]/tools`**（サインイン済み。同じ本人の、`connected` で `place='provider'` の接続）
 
+**この入口は、L5 で入れた**（`lib/noah-connect.ts` の `tools`。握手は `lib/noah-user-handshake.ts`。試験は `tests/noah-connect.test.mjs`）。作る時に決めた事: ① `noahAllowed(flags, 'ask', 審査者か)` が偽なら 503「今は、新しい依頼を受け付けていません。」（閉じている間、相手へ握手を送らない）。② 相手へ送る前に、使ってよい接続かを確かめる（`usable`。取り下げ・接続先や条件の変更。[74](spec-74-one-click-connect.md) の 11.3 の終わり）。③ `last_used_at` は、握手の前に書く（同時の 2 回目も止める。失敗の直後に開き直しても、5 秒は相手へ送らない）。`revision` と `updated_at` は変えない。④ 握手の失敗は、相手の応答ごとの文（11.4 の表の「握手の時」）で返す。status は、401・402 が 409、429 と枠が無い時が 429、それ以外が 502。⑤ `?tool=<名前>` の応答は、その 1 つだけを `tools` に入れ、`form` と `description`（説明の全文。4,000 文字まで。改行は保つ）を付ける。無い名前は 404「道具が見つかりません。」。⑥ 握手のセッションを閉じる要求は、応答の後に回す（`waitUntil`）。
+
 1. その接続の `last_used_at` が 5 秒以内なら 429「少し待ってから開いてください。」（同じ接続先へ、続けて握手しない）。続けて、接続先の枠を 1 つ取る（[noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `host_take`。`:limit` は `flags.askLimits.hostHandshakes`。74 の 11.3 の 6 と同じ枠）。取れなければ 429「この Agent は、今こんでいます。少し待ってから試してください。」（`NOAH_HOST_BUSY`）。どちらも、相手へ送らない。
 2. 相手と握手する（全体で 8 秒）。失敗は 502「相手のサーバーが応答しません。時間をおいて試してください。」。相手が 429 を返したら 429「相手のサーバーが混んでいます。少し待ってから試してください。」とし、`host_wait` で `Retry-After`（無ければ 60 秒）の時刻まで待つ事を書く。相手が 401 を返したら 409「この Agent は、相手の許可が要るようになりました。まだ対応していません。」とし、86 の握手の結果と同じ書き込み（`level=0`、`result='auth_required'`、系列への写し）を行う。
 3. `noahToolMenu(tools, confirmed_tools_json)` を返す。`last_used_at` を今にする。握手は閉じる。
@@ -281,7 +283,7 @@ Durable Object は仕事 1 つに 1 つ（名前は仕事の `id`）。保存す
 1. 共通の検査（Origin、ownerScope、JSON）。本文は 16,000 bytes まで。`form.tool` は `[A-Za-z0-9_.:/-]{1,128}`、`toolSha256` は hex 64 桁、`input` は object。違えば 400。`prompt` を持つ本文は 422「1 文で頼む機能は、まだ使えません。入力欄から使えます。」。
 2. `noahAllowed(flags, 'ask', 審査者か)` が偽なら 503「今は、新しい依頼を受け付けていません。」。
 3. 接続を読む（同じ本人、`place='provider'`）。無ければ 404。`connected` でなければ 409「接続を確かめてください。」。
-4. その接続の候補が `active` で、系列が取り下げられていない事。違えば 409「この Agent は、出どころから取り下げられました。使えません。」。
+4. その接続の候補が `active` で、系列が取り下げられていない事。違えば 409「この Agent は、取り下げられました。使えません。」。同意した時から接続先や条件が変わっていれば 409「この Agent の接続先や条件が変わりました。切って、つなぎ直してください。」（3 と 4 は、`lib/noah-connect.ts` の `usable(owner, id)` を呼ぶ。L5 で入れた）。
 5. 同じ `id` の行があれば、`request_sha256`（`noahFormRequestSha256({ connectionId, tool, toolSha256, args: input })`）を比べる。同じなら今の状態を 200 で返す。違えば 409「同じ操作IDの内容は変更できません。」。`confirm` は hash に入れない。
 6. 上限: [noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `gate` で 4 つの数を取り、`noahAskGate(counts, flags.askLimits)`。越えていれば、その status と文。通ったら、接続先の枠を 1 つ取る（`host_take`。この依頼の握手の分。接続・道具の一覧と同じ枠）。取れなければ 429（`NOAH_HOST_BUSY`）。どちらの時も、Work も行も作らない。
 7. Work を作る（`createNoahRemoteWork`。`mode: 'form'`、`prompt` は「<道具の名前> <入力の JSON>」を 1,000 文字で切った物）。`noah_asks` に入れる（`mode='form'`、`host`、`tool`、`tool_sha256`。`INSERT OR IGNORE … WHERE (その本人の終わっていない数) < :open RETURNING *`。行が返らなければ 409）。
@@ -316,7 +318,7 @@ Durable Object は仕事 1 つに 1 つ（名前は仕事の `id`）。保存す
 | --- | --- | --- |
 | 401（`auth_required`） | `failed`「この Agent は、相手の許可が要るようになりました。まだ対応していません。」。一覧から外す | 同じ |
 | 402（`payment_required`） | `failed`「この Agent は、呼ぶたびの支払いが要るようになりました。まだ対応していません。」。一覧から外す | 同じ |
-| 403（`forbidden`） | `failed`「相手のサーバーが、この依頼を断りました。」 | 同じ |
+| 403（`forbidden`） | `failed`「相手のサーバーが、Noah からの接続を断りました。」（接続・道具の一覧でも同じ文を使うので、「この依頼」と書かない） | `failed`「相手のサーバーが、この依頼を断りました。」 |
 | 429（`rate_limited`） | `failed`「相手のサーバーが混んでいます。少し待ってから試してください。」。`host_wait` で、その接続先の `noah_probe_hosts.not_before` に `Retry-After`（無ければ 60 秒）の時刻を入れる（その時刻まで、巡回も、利用者の操作から始める握手も、相手へ送らない） | 同じ |
 | 応答しない（`unreachable`） | `failed`「相手のサーバーが応答しません。時間をおいて試してください。」 | `unknown`（送った後なので、実行されたかが分からない） |
 | 相手が、決まった形のエラーを返した（`incompatible` で、`detail.rpc` がある） | `failed`「相手のサーバーの応答を読めませんでした。」 | `failed`「相手のサーバーが、この入力を受け付けませんでした。」と、相手の文の先頭 200 文字（文字として出す） |

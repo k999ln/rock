@@ -40,3 +40,5 @@
 検証: `npm ci` と `npm ci --prefix sites/avocado-mini` の後、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 成功（主テスト4,444成功・既存skip4・失敗0、仕事API1,918項目・CSV保存385項目、build含む）。設計キット61件・DDL10項目も成功。作業フォルダ間の依存共有によるパス照合失敗は、各フォルダへの独立インストールで解消した。
 
 残件: L5のAPI・カード、既存13件への組み込みは未着手。本番migration・配備・切り替えなし。PRは未マージ。GitHubの秘密値検査はmainから引き継いだ過去3コミットの合成テスト入力を検出している（詳細はPR）。検査・履歴・例外設定は変更していない。
+
+2026-11-21（Claude。[PR #342](https://github.com/k999ln/rock/pull/342)。未マージ）: L5 の、計画の API を入れた。`lib/noah-connect-source.ts`（つなぐ相手の読み取りと、ローンチ版の本人の状態）、`lib/noah-connect-plan-api.ts`、`app/api/noah/connect-plan/route.ts`。一覧の各項目の `connect` も、同じ関数（`noahLaunchPlanState`）で計算する。試験は `tests/noah-connect-plan-api.test.mjs`（6 本）。記録は [仕様書 96](../../docs/noah/spec-96-connect-plan.md) の 9.6。残り: `components/noah-card.tsx`（画面と一緒に、本人の決定の後）、今ある 13 件への組み込み（出した後）。本番への適用・配備・切り替えなし。
