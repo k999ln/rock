@@ -32,13 +32,13 @@ avokadoの主商品は、声でEveへ依頼し、空間の表示を見たり触�
 
 ```mermaid
 flowchart LR
-  U[本人] --> N[Noah: 発見・追加・接続]
-  U --> E[Eve: 依頼・仕事・成果]
+  B[スマホ・PCのブラウザ] --> N[Noah：Agentを選ぶ・つなぐ]
+  B --> E[Eve：依頼・仕事・成果]
+  M[miiのマイク・空間表示] -. 開発中 .-> E
   N --> R
-  E --> R[RockstarOS: 本人・権限・予算・保存・復旧]
-  R --> B[対応ブラウザ / 既存OS client]
-  R --> L[対応するローカル / Cloud実行先]
-  R --> H[機種別profile: Pixel / mii / Pro]
+  E --> R[RockstarOS：本人・権限・予算・成果の保存]
+  R <-->|接続・実行・停止| L[本人のMac：Noah Runner]
+  R -. スマホ向け公開版で接続予定 .-> A[外部サービス：提供者のAgent]
 ```
 
 ## Noah — Agentを選んで使う
@@ -217,4 +217,4 @@ npm run verify
 更新日: 2026-11-20。現在の受入範囲と次の作業は[進捗](project.md)、全タスクは[全タスクの進捗](project.md#全taskの作業進捗)を参照してください。
 <!-- project-overview:end -->
 
-コードの `sky`・`zema`等は互換性のため保持する識別子です。公開画面の製品名はEveとNoahに揃えます。画像・GIFはコンセプトであり、実機性能や製造承認の証拠ではありません。
+コードの `sky`・`zema`等は互換性のため保持する識別子です。公開画面の製品名はEveとNoahに揃えます。Macの接続画面は開発環境で撮影しました。製品のイメージ画像とGIFは、それぞれの節で紹介する体験や筐体の設計を示しています。
