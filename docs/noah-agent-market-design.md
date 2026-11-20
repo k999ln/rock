@@ -424,7 +424,7 @@ Eve は公開の窓口で、中の構造（Eve → Noa → AMC → Jev）は変�
 | 段階 | 閉じる一周 | task | 要る決定 |
 | --- | --- | --- | --- |
 | 0 最小構成 | 本人の Mac で、選ぶ・接続・実行・成果の受け取り・停止（進行中）。画面を取らない検査が通る | 71 の残り、[84](../codex/tasks/84-noah-screenless-rule.md) | 無し |
-| 1 大量につなぐ | 外の Agent を、1 件ずつ書かずに、1 クリックでつなぎ、1 文で頼む。動く所は提供者と本人の Mac | [85](../codex/tasks/85-noah-intake-ledger.md) 取り込みと名寄せ、[73](../codex/tasks/73-noah-connect-plan.md) 接続要件と接続計画、[86](../codex/tasks/86-noah-remote-mouth.md) リモートの口、[87](../codex/tasks/87-noah-tool-agent.md) 道具を持つ担当、[74](../codex/tasks/74-noah-one-click-connect.md) 1 クリック接続、[88](../codex/tasks/88-noah-mass-probe.md) 大量の接続試験と見回り、[89](../codex/tasks/89-noah-terminal-mouth.md) ターミナルの口 | モデルの出どころと月の上限 |
+| 1 大量につなぐ | 外の Agent を、1 件ずつ書かずに、1 クリックでつなぎ、1 文で頼む。動く所は提供者と本人の Mac | [85](../codex/tasks/85-noah-intake-ledger.md) 取り込みと名寄せ、[96](../codex/tasks/96-noah-connect-plan.md) 接続要件と接続計画、[86](../codex/tasks/86-noah-remote-mouth.md) リモートの口、[87](../codex/tasks/87-noah-tool-agent.md) 道具を持つ担当、[74](../codex/tasks/74-noah-one-click-connect.md) 1 クリック接続、[88](../codex/tasks/88-noah-mass-probe.md) 大量の接続試験と見回り、[89](../codex/tasks/89-noah-terminal-mouth.md) ターミナルの口 | モデルの出どころと月の上限 |
 | 2 座らない | 手元（スマホ）から頼み、通知で受け取る。Mac は導入 1 つで裏に回る。継続して任せる。利用を見る | [90](../codex/tasks/90-noah-phone-only-loop.md) 手元だけの一周、[83](../codex/tasks/83-noah-mac-installer.md) 家の端末、[92](../codex/tasks/92-noah-standing-work.md) 継続運用、[94](../codex/tasks/94-noah-usage-three-views.md) 利用の記録 | 署名と配布 |
 | 3 作る人 | 作者が引き取る・載せる。有料の Agent を試し、つながってから払う。更新・戻す・移す | [81](../codex/tasks/81-noah-connect-patrol.md) 引き取りと並び順、[76](../codex/tasks/76-eve-build-autofill.md)・[77](../codex/tasks/77-eve-build-normalize.md) Eve のビルド、[78](../codex/tasks/78-noah-agent-purchase.md) 売り買い、[93](../codex/tasks/93-noah-library-lifecycle.md) 入れ替える | Stripe の sandbox |
 | 4 mii | 同じ契約を Linux の host で動かし、声と空間の表示の模擬で一周 | [95](../codex/tasks/95-noah-on-mii-contract.md) | Hub の演算、検証用の端末 |
@@ -436,7 +436,7 @@ Eve は公開の窓口で、中の構造（Eve → Noa → AMC → Jev）は変�
 | --- | --- |
 | A1〜A5（正常完了と成果受領、未公開の UI 修正、別ユーザーの審査と利用、未導入の別 Mac、障害時の確認） | 続ける。main の方針の「最初の完成条件」。段階 0 |
 | 残り 72 件の個別接続（1〜10 人日/件） | やめる。4.3 の口へ置き換える。分類は付録に済ませた |
-| B8 実行場所の選択とスマホからの通し操作 | 段階 1・2（73・90） |
+| B8 実行場所の選択とスマホからの通し操作 | 段階 1・2（96・90） |
 | B7 一般 Agent の雲 | 個別の残件。設計は済ませた（75）。契約と上限の決定の後 |
 | B2 新着取込・推薦の継続運用 | 85・88 に含める |
 | B1 出品・購入、B5 公開アップロードのリファクタ、B6 更新・削除・復元 | 段階 3（78、76・77、93） |

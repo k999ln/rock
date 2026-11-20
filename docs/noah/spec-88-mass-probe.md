@@ -100,7 +100,7 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 
 | 所 | 出す条件 | 印 |
 | --- | --- | --- |
-| タイムライン | 系列の `level=2`、`l2_at` が 7 日以内、取り下げても隠してもいない。`blocked` でない | 73 の計画のとおり |
+| タイムライン | 系列の `level=2`、`l2_at` が 7 日以内、取り下げても隠してもいない。`blocked` でない | 96 の計画のとおり |
 | 検索・一覧 | `level>=1`。または、台帳にあるだけの物（`level=0`）も、語が一致すれば出す | L2 でなければ「まだ誰も動かしていない」 |
 | 公開のページ（サインインなし） | 上と同じ。1 系列に 1 頁（今の `components/noah-public-detail.tsx` を使う） | 名前、1 行説明、見本、印、動く所、料金、最後に確かめた日。`<title>`・`<meta name="description">`・正規の URL を付ける |
 

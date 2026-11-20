@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- |
 | 0 | 84 | [画面を取らない決まりと検査](spec-84-screenless.md) | `noah-screenless-v1.ts` | `noah-screenless.test.mjs` |
 | 1 | 85 | [取り込みと名寄せ](spec-85-intake.md) | `noah-intake-v1.ts`、`noah-v1.sql`、`noah-regroup-v1.sql` | `noah-intake.test.mjs`、`validate-noah-v1.py` |
-| 1 | 73 | [接続要件と接続計画](spec-73-connect-plan.md) | `noah-connect-v1.ts` | `noah-connect.test.mjs` |
+| 1 | 96 | [接続要件と接続計画](spec-96-connect-plan.md) | `noah-connect-v1.ts` | `noah-connect.test.mjs` |
 | 1 | 86 | [リモートの口と、握手までの接続試験](spec-86-remote-mouth.md) | `noah-mouth-v1.ts` | `noah-mouth.test.mjs` |
 | 1 | 87 | [道具を持つ担当](spec-87-tool-agent.md) | `noah-tool-agent-v1.ts` | `noah-tool-agent.test.mjs` |
 | 1 | 74 | [1 回でつなぐ](spec-74-one-click-connect.md) | `noah-connect-v1.ts`、`noah-v1.sql` | `noah-connect.test.mjs`、`validate-noah-v1.py` |

@@ -625,7 +625,7 @@ L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要
 
 ### 15.3 接続要件 `noah-connect/1`
 
-型と検査の正本は [docs/contracts/noah-connect-v1.ts](contracts/noah-connect-v1.ts) の `parseNoahConnect`。規則 14 個と、口ごとの `target` の形は [実装仕様書 73](noah/spec-73-connect-plan.md)。
+型と検査の正本は [docs/contracts/noah-connect-v1.ts](contracts/noah-connect-v1.ts) の `parseNoahConnect`。規則 14 個と、口ごとの `target` の形は [実装仕様書 96](noah/spec-96-connect-plan.md)。
 
 | 項目 | 型 | 決まり |
 | --- | --- | --- |
@@ -681,7 +681,7 @@ task の番号は、その作業単位の実装仕様書へつながっている
 | 0 | 71 | 6・7 | 既存の runner と受け渡し | 本人の Mac で、選ぶ・接続・実行・**正常完了と成果の受け取り**・停止が通る |
 | 0 | [84](noah/spec-84-screenless.md) | 14 | `lib/noah-surface-class.ts`、`lib/noah-screenless-audit.mjs`、`scripts/check-noah-screenless.mjs` | 14 章の試験が全部通る。今の main で検査が通る |
 | 1 | [85](noah/spec-85-intake.md) | 8・15 | `lib/noah-intake-draft.ts`、`lib/noah-intake-family.ts`、`lib/noah-intake-store.ts`、`noah_intake_*` | 台帳の断片から、口ごとの件数と系列が期待どおり |
-| 1 | [73](noah/spec-73-connect-plan.md) | 5・15.3 | `lib/noah-connect-requirements.ts`、`lib/noah-connect-plan.ts`、`GET /api/noah/connect-plan`、`components/noah-card.tsx` | 計画の表の全行がテストで通る。13 件と取り込んだ物の全部に印が出る |
+| 1 | [96](noah/spec-96-connect-plan.md) | 5・15.3 | `lib/noah-connect-requirements.ts`、`lib/noah-connect-plan.ts`、`GET /api/noah/connect-plan`、`components/noah-card.tsx` | 計画の表の全行がテストで通る。13 件と取り込んだ物の全部に印が出る |
 | 1 | [86](noah/spec-86-remote-mouth.md) | 5・9 | `lib/noah-mouth-mcp-remote.ts`、`lib/noah-mouth-space.ts`、`lib/noah-oauth-client.ts`、`lib/noah-probe.ts`（L1） | 試験用の接続先 6 種で期待どおり。公開の接続先 20 件に L1 が付く |
 | 1 | [87](noah/spec-87-tool-agent.md) | 9 | `lib/noah-tool-agent.ts`、`lib/noah-ask.ts`、`POST /api/noah/ask`、`noah_asks`、`services/noah-relay` | 9 章の試験が全部通る |
 | 1 | [74](noah/spec-74-one-click-connect.md) | 5・7 | `lib/noah-connect.ts`、`POST /api/noah/connect`、`noah_connections`、`noah-connect-button.tsx`、`noah-connect-sheet.tsx` | 5 章の試験が全部通る |

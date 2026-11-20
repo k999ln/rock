@@ -1,6 +1,6 @@
 # 78 Agent の売り買い（試用・つながってから払う・直した版の権利）
 
-設計: docs/noah-agent-market-design.md §4.8、docs/services/noah-agent-purchase.md。先に 73・74。
+設計: docs/noah-agent-market-design.md §4.8、docs/services/noah-agent-purchase.md。先に 96・74。
 
 ## 最初に確かめること
 

@@ -68,14 +68,14 @@
 
 ## 70〜90番台: Noah — mii へ進む最小構成（2026-11-20）
 
-設計は [docs/noah-design.md](../../docs/noah-design.md)（全体）。**実装は、task 1 枚 → その [実装仕様書](../../docs/noah/README.md) 1 本（84・85・73・86・87・74・88・89 にある）を見て進める。** 仕様書に、今あるコードのどのファイル・関数をどう変えるか、規則の全表、画面と文言、処理の順、試験がある。通信しない処理は [docs/contracts/](../../docs/contracts/) に動く参照実装があり、書き直さずに `lib/` へ移す。試験は [docs/design-validation/noah/](../../docs/design-validation/noah/README.md) から移す。仕様書がまだ無い task は [docs/noah-detailed-design.md](../../docs/noah-detailed-design.md)（詳細設計書）の章を見る。その 0 章が実装する Agent への指示、17 章が task と章の対応、18 章が本人の決定待ちの既定値。背景と費用の計算は [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)。**番号順ではなく、下の「順」の順に進める。** 段階 0 は main の方針（最初の完成条件は本人の Mac 上の Noah）。段階 1 は Mac の受入と並べて進められる。75・91 は個別の残件で、本人の許可（契約・月の上限）が先。83 は署名と配布、87 はモデルの出どころ、78 は Stripe の sandbox、80 の 0 クリックと 81 の並び順は本人の確認が先。
+設計は [docs/noah-design.md](../../docs/noah-design.md)（全体）。**実装は、task 1 枚 → その [実装仕様書](../../docs/noah/README.md) 1 本（84・85・96・86・87・74・88・89 にある）を見て進める。** 仕様書に、今あるコードのどのファイル・関数をどう変えるか、規則の全表、画面と文言、処理の順、試験がある。通信しない処理は [docs/contracts/](../../docs/contracts/) に動く参照実装があり、書き直さずに `lib/` へ移す。試験は [docs/design-validation/noah/](../../docs/design-validation/noah/README.md) から移す。仕様書がまだ無い task は [docs/noah-detailed-design.md](../../docs/noah-detailed-design.md)（詳細設計書）の章を見る。その 0 章が実装する Agent への指示、17 章が task と章の対応、18 章が本人の決定待ちの既定値。背景と費用の計算は [docs/noah-agent-market-design.md](../../docs/noah-agent-market-design.md)。**番号順ではなく、下の「順」の順に進める。** 段階 0 は main の方針（最初の完成条件は本人の Mac 上の Noah）。段階 1 は Mac の受入と並べて進められる。75・91 は個別の残件で、本人の許可（契約・月の上限）が先。83 は署名と配布、87 はモデルの出どころ、78 は Stripe の sandbox、80 の 0 クリックと 81 の並び順は本人の確認が先。
 
 | 順 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- | --- |
 | 0 | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 最小構成: 本人の Mac で、選ぶ・接続・実行・成果の受け取り・停止 | 進行中（上の表） |
 | 0 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け | |
 | 1 | 85 | [85-noah-intake-ledger.md](85-noah-intake-ledger.md) | 外の台帳の取り込みと名寄せ、接続要件の下書き | |
-| 1 | 73 | [73-noah-connect-plan.md](73-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 | |
+| 1 | 96 | [96-noah-connect-plan.md](96-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 | |
 | 1 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | |
 | 1 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（1 文で頼む） | |
 | 1 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | |

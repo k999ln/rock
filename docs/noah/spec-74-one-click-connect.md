@@ -1,6 +1,6 @@
 # 仕様書 74 — 1 回でつなぐ（接続の API・その場のサインイン・Passport）
 
-task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-click-connect.md)。先に要る物: 73（計画）、86（口と相手の許可）、87（頼む）。
+task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-click-connect.md)。先に要る物: 96（計画）、86（口と相手の許可）、87（頼む）。
 型契約: [noah-connect-v1.ts](../contracts/noah-connect-v1.ts)（状態遷移）、[noah-v1.sql](../contracts/noah-v1.sql)（`noah_connections`）。試験: [noah-connect.test.mjs](../design-validation/noah/noah-connect.test.mjs)、[validate-noah-v1.py](../design-validation/noah/validate-noah-v1.py)（「接続」の群）。
 
 ## 1. 完成の姿
@@ -30,7 +30,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 | `lib/noah-launch.ts` | `createNoahLaunchService(deps)` が `enqueue`・`stop`・`overview` を持つ | **変えない。** 接続の service から `enqueue(owner, { id, deviceId, action: 'connect', agentId })` を呼ぶ |
 | `lib/noah-ask.ts`（87） | 置き場所が `provider` の依頼だけ | 置き場所が `home` の依頼を受け、5.4 の出し直しの後に `enqueue(owner, { id, action: 'run', connectionId: runner_command_id, prompt, deviceId })` を呼ぶ |
 | `components/noah-connect-button.tsx`、`components/noah-connect-sheet.tsx` | 無い | 新規（6 章） |
-| `components/noah-card.tsx`（73） | `onConnect` は `/noah/launch` へ移るだけ | 上のボタンを入れる |
+| `components/noah-card.tsx`（96） | `onConnect` は `/noah/launch` へ移るだけ | 上のボタンを入れる |
 | `components/noah-library.tsx` | `GET /api/noah/library` と招待の一覧 | 「つながっているもの」の節を足す（`GET /api/noah/connect`） |
 | `components/noah-launch.tsx`、`/api/noah/launch`、`/api/noah/instances` | 細かい操作の画面と API | **変えない**（残す） |
 
@@ -71,8 +71,8 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 
 ### 5.1 接続（`POST` と `retry`・`resume` が同じ関数を通る。段は何回通っても同じ結果になるように書く）
 
-1. **版と接続要件。** `agentId` が今の Agent なら `resolveNoahPin(deps, owner, agentId)` と 73 の `connectForPin`。取り込んだ系列なら、代表の候補の `connect_json`。`invite` は 422。
-2. **計画。** 73 の `planStateFor` と `planNoahConnection`。`noahPlanSha256` が本文の `planSha256` と違えば 409 と新しい計画。`blocked` と、入力の要る段（`typed > 0`）は 422。
+1. **版と接続要件。** `agentId` が今の Agent なら `resolveNoahPin(deps, owner, agentId)` と 96 の `connectForPin`。取り込んだ系列なら、代表の候補の `connect_json`。`invite` は 422。
+2. **計画。** 96 の `planStateFor` と `planNoahConnection`。`noahPlanSha256` が本文の `planSha256` と違えば 409 と新しい計画。`blocked` と、入力の要る段（`typed > 0`）は 422。
 3. **行。** `request_sha256 = noahDigest(JSON.stringify({ agentId, planSha256 }))`。`INSERT OR IGNORE INTO noah_connections …`（`state='planned'`、`connect_json`、`plan_sha256`、`cost_taps`・`cost_typed`、`consent_json = { permissions, sendsTo, at }`、`price_json`）。同じ `id` の行があれば hash を比べる。同じ本人・同じ系列の切っていない行が別の `id` であれば、同じ `digest` ならその行を 200 で返し、違えば 409。
 4. **利用権**（`entitle_start`）。今は全部無料なので `entitle_ok`。有料は、flag `NOAH_PAY_AFTER_CONNECT` が閉じている間 422。
 5. **置き場所の準備と疎通**（`prepare_ok` → `probing`）。
@@ -120,7 +120,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 
 | props | 中身 |
 | --- | --- |
-| `agentId`、`connect`（73 の印）、`connection`（今の接続。無ければ null）、`ownerScope`、`onConnected(connectionId)` | |
+| `agentId`、`connect`（96 の印）、`connection`（今の接続。無ければ null）、`ownerScope`、`onConnected(connectionId)` | |
 
 押した時: ① `crypto.randomUUID()` で `id` を作り、`sessionStorage['noah-connect:' + agentId]` に `{ id, at }` を置く（再読込と二重押しで同じ `id` を使う。10 分で捨てる）。② `GET /api/noah/connect-plan?agent=`。③ `account` の段が `needed` なら 6.3。④ `POST /api/noah/connect`。⑤ `GET /api/noah/connect/[id]` を 1 秒ごと（30 秒を越えたら 3 秒ごと。画面が裏の間は読まない）。終わりの状態になったら、`sessionStorage` の項目を消す。
 

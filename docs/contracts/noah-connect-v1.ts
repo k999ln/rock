@@ -5,7 +5,7 @@
  * I/O を持たない純関数だけを置く（hash の計算に crypto.subtle を使う所を除く）。
  * 実装する時は lib/noah-connect-requirements.ts・lib/noah-connect-plan.ts へ移し、
  * docs/design-validation/noah/ の試験を tests/ へ移して同じ結果にする。
- * 仕様の本文は docs/noah/spec-73-connect-plan.md。
+ * 仕様の本文は docs/noah/spec-96-connect-plan.md。
  */
 
 export const NOAH_CONNECT_SCHEMA = 'noah-connect/1';

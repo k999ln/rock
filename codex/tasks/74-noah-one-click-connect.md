@@ -1,6 +1,6 @@
 # 74 1 回でつなぐ（接続の API・その場のサインイン・Passport）
 
-仕様: **[docs/noah/spec-74-one-click-connect.md](../../docs/noah/spec-74-one-click-connect.md)**。型: docs/contracts/noah-connect-v1.ts（状態遷移）、noah-v1.sql（`noah_connections`）。先に 73・86・87。
+仕様: **[docs/noah/spec-74-one-click-connect.md](../../docs/noah/spec-74-one-click-connect.md)**。型: docs/contracts/noah-connect-v1.ts（状態遷移）、noah-v1.sql（`noah_connections`）。先に 96・86・87。
 
 ## やること
 

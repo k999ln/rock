@@ -1,6 +1,6 @@
-# 73 接続要件と接続計画（純関数・計画の API・カードの印）
+# 96 接続要件と接続計画（純関数・計画の API・カードの印）
 
-仕様: **[docs/noah/spec-73-connect-plan.md](../../docs/noah/spec-73-connect-plan.md)**。型と参照実装: docs/contracts/noah-connect-v1.ts。試験: docs/design-validation/noah/noah-connect.test.mjs。先に 84。雲の契約が無くても始められる。
+仕様: **[docs/noah/spec-96-connect-plan.md](../../docs/noah/spec-96-connect-plan.md)**。型と参照実装: docs/contracts/noah-connect-v1.ts。試験: docs/design-validation/noah/noah-connect.test.mjs。先に 84。雲の契約が無くても始められる。
 
 ## やること
 

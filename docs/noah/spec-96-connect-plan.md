@@ -1,6 +1,6 @@
-# 仕様書 73 — 接続要件と接続計画（純関数・計画の API・カードの印）
+# 仕様書 96 — 接続要件と接続計画（純関数・計画の API・カードの印）
 
-task: [codex/tasks/73-noah-connect-plan.md](../../codex/tasks/73-noah-connect-plan.md)。先に要る物: 84。雲の契約は要らない。
+task: [codex/tasks/96-noah-connect-plan.md](../../codex/tasks/96-noah-connect-plan.md)。先に要る物: 84。雲の契約は要らない。
 型契約: [noah-connect-v1.ts](../contracts/noah-connect-v1.ts)。試験: [noah-connect.test.mjs](../design-validation/noah/noah-connect.test.mjs)（9 群）。
 
 ## 1. 完成の姿
