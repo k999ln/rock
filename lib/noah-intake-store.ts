@@ -4,6 +4,7 @@ import { intakeStatement } from './noah-intake-db.ts';
 import { noahListing, NOAH_LISTING_SQL, type NoahListingInput } from './noah-intake-listing.ts';
 import { parseNoahConnect, noahPublicHttpsUrl } from './noah-connect-requirements.ts';
 import { planNoahConnection } from './noah-connect-plan.ts';
+import { noahLaunchPlanState, noahPlaceLabel } from './noah-connect-source.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 
 type Row = {
@@ -25,11 +26,12 @@ function listing(row: Row, restore = false) {
 }
 function item(row: Row, signedIn: boolean) {
   const req = row.connect_json ? parseNoahConnect(JSON.parse(row.connect_json)) : null;
-  const plan = req ? planNoahConnection(req, { signedIn, entitlement: 'free', price: { model: 'free' }, hasPaymentMethod: false, devices: [], cloudEnabled: false, ownAccountReady: false, grantedServices: [], serviceRegistration: {}, consentedSha256: null, connectSha256: row.connect_sha256!, permissions: ['read_user_input', 'write_results'], preference: 'auto', intakeLevel: row.check_level }) : null;
+  // 計画の API（lib/noah-connect-plan-api.ts）と同じ関数で計算する（一覧の印と、詳細の印が、ずれない）。
+  const plan = req ? planNoahConnection(req, noahLaunchPlanState({ signedIn, connectSha256: row.connect_sha256!, level: row.check_level, consentedSha256: null })) : null;
   return { id: row.id, name: row.name, provider: row.external_key.split('/')[0], summary: row.summary, host: row.host,
     section: row.level === 2 ? 'ran' : 'new', tools: row.tool_count ?? 0, oneTap: (row.one_tap_tools ?? 0) > 0, checkedAt: row.checked_at,
     connect: { badge: plan?.badge ?? 'blocked', taps: plan?.cost.taps ?? 0, typed: plan?.cost.typed ?? 0, place: plan?.place ?? null,
-      placeLabel: plan?.place === 'provider' ? `相手のサーバー${row.host ? `（${row.host}）` : ''}` : plan?.place === 'home' ? '自分の端末' : null,
+      placeLabel: noahPlaceLabel(plan?.place ?? null, row.host),
       need: plan?.need ?? (req ? null : '接続先を確認できません。'), level: row.check_level ?? 0, price: { model: 'free' }, note: null } };
 }
 export type IntakeStatus = {
@@ -72,13 +74,14 @@ export function createIntakeStore(deps: IntakeDependencies) {
   }
   async function detail(id: string, owner: string | null, reviewer: boolean) {
     const row = await db.prepare(`${ROW} WHERE f.id=?`).bind(id).first<Row>();
-    if (!row || (!reviewer && !listing(row).listed)) throw new NoahAgentError('Agentが見つかりません。', 404);
+    const listed = !!row && listing(row).listed;
+    // その本人の、この系列の切っていない接続（1 件まで）。L5 で接続の表が入った（drizzle/0046_noah_connections.sql）。
+    const connection = row && owner ? await db.prepare('SELECT id,state,revision,error FROM noah_connections WHERE owner_id=? AND family_key=? AND disconnected_at IS NULL').bind(owner, id).first<{ id: string; state: string; revision: number; error: string | null }>() : null;
+    // 載せていない系列は、無い物として答える。ただし、その本人がつないでいる物は読める（一覧から外れた理由を見て、切れるように）。
+    if (!row || (!reviewer && !listed && !connection)) throw new NoahAgentError('Agentが見つかりません。', 404);
     let website: string | null = null;
     try { const record = JSON.parse(row.record_json) as { websiteUrl?: string }; if (record.websiteUrl) website = noahPublicHttpsUrl(record.websiteUrl, 'website').href; } catch { /* Untrusted informational link. */ }
-    let connection: { id: string; state: string } | null = null;
-    // L3 installs no connection tables. A later launch step can supply owner-scoped live connections.
-    if (owner && await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='noah_connections'").first()) connection = await db.prepare('SELECT id,state FROM noah_connections WHERE owner_id=? AND family_key=? AND disconnected_at IS NULL ORDER BY updated_at DESC LIMIT 1').bind(owner, id).first<{ id: string; state: string }>();
-    return { ...item(row, !!owner), members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection };
+    return { ...item(row, !!owner), listed, members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection: connection ? { ...connection } : null };
   }
   async function status(params = new URLSearchParams()): Promise<IntakeStatus> {
     const mouth = params.get('mouth') ?? '', level = params.get('level') ?? '', q = (params.get('q') ?? '').trim(), offsetText = params.get('offset') ?? '0';

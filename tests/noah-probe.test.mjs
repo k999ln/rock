@@ -419,6 +419,6 @@ void test('the wake reads the registry, then handshakes: counts in the answer an
 
 void test('the listing statements in the library are the contract statements, character for character', () => {
   const contract = Object.fromEntries(readFileSync(new URL('../docs/contracts/noah-listing-v1.sql', import.meta.url), 'utf8').split('--> statement-breakpoint').map((part) => [/-- name: (\w+)/.exec(part)[1], part]));
-  assert.deepEqual(Object.keys(NOAH_LISTING_SQL).sort((a, b) => a.localeCompare(b)), ['counts', 'host_wait', 'new', 'ran', 'reshuffle', 'search', 'touch']);
+  assert.deepEqual(Object.keys(NOAH_LISTING_SQL).sort((a, b) => a.localeCompare(b)), ['connect_gate', 'counts', 'host_take', 'host_wait', 'new', 'ran', 'reshuffle', 'search', 'touch']);
   for (const [name, statement] of Object.entries(NOAH_LISTING_SQL)) assert.equal(statement, contract[name], name);
 });

@@ -11,7 +11,7 @@ import { noahListing, NOAH_LISTING_SQL, type NoahListingInput } from './noah-int
 import type { IntakeDependencies } from './noah-intake-sync.ts';
 import { NOAH_PATROL_BUDGET } from './noah-intake-wake.ts';
 import { createNoahGuardedFetch, type NoahMouthContext } from './noah-mouth-mcp-remote.ts';
-import { NOAH_PROBE, planNoahProbeWrite, probeL1, type NoahCheckState, type NoahProbeOutcome } from './noah-probe.ts';
+import { NOAH_PROBE, planNoahProbeWrite, probeL1, type NoahCheckState, type NoahProbeOutcome, type NoahProbeWrite } from './noah-probe.ts';
 
 /** 合図 1 回の握手の数（合図の 1 行に出す。接続先の名前は持たない）。 */
 export type IntakeProbeCounts = { probes: number; ok: number; authRequired: number; unreachable: number; rateLimited: number; skippedHost: number; toolsChanged: number };
@@ -24,25 +24,39 @@ const CLAIM_MAX = 90;
 /** 接続先の枠を取り直す回数（同じ接続先の候補が続いた時に、握手の数が減りすぎないように）。 */
 const MAX_ROUNDS = 4;
 
-type Claimed = {
+/** 握手の表（noah_intake_checks）の行のうち、握手が読む列。 */
+export type NoahCheckRow = {
   candidate_id: string; mouth: string; connect_json: string; auth: NoahCheckState['auth']; level: 0 | 1 | 2; result: NoahCheckState['result'];
   tools_sha256: string | null; tool_count: number | null; read_only: number | null; form_tools: number | null; one_tap_tools: number | null;
   latency_ms: number | null; checked_at: number | null; l1_at: number | null; l2_at: number | null; next_check_at: number; failures: number; first_failure_at: number | null;
 };
-type Family = {
+export const NOAH_CHECK_COLUMNS = 'candidate_id,mouth,connect_json,auth,level,result,tools_sha256,tool_count,read_only,form_tools,one_tap_tools,latency_ms,checked_at,l1_at,l2_at,next_check_at,failures,first_failure_at';
+/** 握手の表の行を、握手の結果を当てる前の状態（planNoahProbeWrite の previous）へ直す。 */
+export const noahCheckState = (row: NoahCheckRow): NoahCheckState => ({
+  level: row.level, result: row.result, auth: row.auth, toolsSha256: row.tools_sha256, toolCount: row.tool_count,
+  readOnly: row.read_only === null ? null : row.read_only === 1, formTools: row.form_tools, oneTapTools: row.one_tap_tools,
+  latencyMs: row.latency_ms, checkedAt: row.checked_at, l1At: row.l1_at, l2At: row.l2_at, nextCheckAt: row.next_check_at, failures: row.failures, firstFailureAt: row.first_failure_at,
+});
+/** 候補と、その候補が今いる系列。connected は、その系列へつないでいる人が居るか（居れば、24 時間ごとに確かめ直す。spec-88 の 9.3）。 */
+export type NoahProbeFamily = {
   id: string; source: NoahListingInput['source']; state: string; family_id: string; host: string | null;
-  representative_id: string | null; withdrawn_at: number | null; hidden_at: number | null; connections: number | null;
+  representative_id: string | null; withdrawn_at: number | null; hidden_at: number | null; connected: number;
   family_level: number | null; family_l2_at: number | null; family_badge: string | null; family_listed: number | null; family_one_tap: number | null;
 };
+type Claimed = NoahCheckRow;
+type Family = NoahProbeFamily;
 type Target = { row: Claimed; family: Family; url: string; host: string };
 
 // 取る条件は、索引 noah_intake_checks_due の条件と同じ形で書く（索引で、期限の早い順に読む）。
 const CLAIM = `UPDATE noah_intake_checks SET lease_until=?
  WHERE candidate_id IN (SELECT candidate_id FROM noah_intake_checks WHERE setup = 0 AND mouth IN ('mcp-remote','space-mcp','a2a') AND next_check_at <= ? AND lease_until < ? ORDER BY next_check_at LIMIT ?)
- RETURNING candidate_id,mouth,connect_json,auth,level,result,tools_sha256,tool_count,read_only,form_tools,one_tap_tools,latency_ms,checked_at,l1_at,l2_at,next_check_at,failures,first_failure_at`;
-const FAMILY = `SELECT c.id,c.source,c.state,c.family_id,c.host,f.representative_id,f.withdrawn_at,f.hidden_at,f.connections,
+ RETURNING ${NOAH_CHECK_COLUMNS}`;
+// つないでいる人が居るかは、接続の表を、その時に見る（系列の行に数を別に持つと、ずれる。索引 noah_connections_family）。
+export const NOAH_PROBE_FAMILY = `SELECT c.id,c.source,c.state,c.family_id,c.host,f.representative_id,f.withdrawn_at,f.hidden_at,
+ EXISTS(SELECT 1 FROM noah_connections n WHERE n.family_key=c.family_id AND n.state='connected') AS connected,
  f.level AS family_level,f.l2_at AS family_l2_at,f.badge_hint AS family_badge,f.listed AS family_listed,f.one_tap AS family_one_tap
  FROM noah_intake_candidates c LEFT JOIN noah_intake_families f ON f.id=c.family_id WHERE c.id IN `;
+const FAMILY = NOAH_PROBE_FAMILY;
 // 同じ接続先へ、巡回が握手するのは 1 時間に 1 回まで。相手が「混んでいる」と返した後は、その時刻（not_before）まで送らない。書けた行が 1 なら、握手してよい。
 const HOST_TAKE = `INSERT INTO noah_probe_hosts(host,last_probe_at) VALUES(?,?)
  ON CONFLICT(host) DO UPDATE SET last_probe_at=excluded.last_probe_at WHERE noah_probe_hosts.last_probe_at <= ? AND noah_probe_hosts.not_before <= ?`;
@@ -59,6 +73,26 @@ function target(row: Claimed, family: Family | undefined): { url: string; host: 
   } catch {
     return null;
   }
+}
+
+/**
+ * 握手の表に書いた値を、その候補が代表の系列へ写す文（次の名寄せを待たない）。書く事が無ければ空。
+ * 巡回の握手（下の save）と、利用者の操作から始めた握手が 401・402 を受けた時（lib/noah-user-handshake.ts）が、同じ決まりで写す。
+ */
+export function noahFamilyWrites(db: IntakeDependencies['db'], family: NoahProbeFamily, candidateId: string, write: NoahProbeWrite, at: number): D1PreparedStatement[] {
+  // 系列の行を書くのは、その候補が、今の系列の代表の時だけ。
+  if (family.representative_id !== candidateId) return [];
+  const prepare = (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).bind(...args);
+  const statements: D1PreparedStatement[] = [], s = write.state, hidden = family.hidden_at !== null;
+  if (write.hide && !hidden) statements.push(prepare('UPDATE noah_intake_families SET hidden_at=?,updated_at=?,revision=revision+1 WHERE id=? AND representative_id=? AND hidden_at IS NULL', at, at, family.family_id, candidateId));
+  if (write.unhide && hidden) statements.push(prepare('UPDATE noah_intake_families SET hidden_at=NULL,updated_at=?,revision=revision+1 WHERE id=? AND representative_id=? AND hidden_at IS NOT NULL', at, family.family_id, candidateId));
+  // 系列の行の値は、名寄せの SQL と同じ決まりで出す（隠した印・取り下げの印は、別の列。ここでは見ない）。
+  const listing = noahListing({ source: family.source, familyId: family.family_id, candidateState: 'active', withdrawn: false, hidden: false,
+    check: { mouth: 'mcp-remote', setup: false, auth: s.auth, result: s.result, level: s.level, formTools: s.formTools, oneTapTools: s.oneTapTools } });
+  const want = { level: s.level, l2_at: s.level === 2 ? s.l2At : null, badge_hint: s.level < 2 ? 'unverified' : s.auth === 'oauth' ? 'taps' : 'one_click', listed: Number(listing.listed), one_tap: Number((s.oneTapTools ?? 0) >= 1) };
+  const same = family.family_level === want.level && family.family_l2_at === want.l2_at && family.family_badge === want.badge_hint && family.family_listed === want.listed && family.family_one_tap === want.one_tap;
+  if (!same) statements.push(intakeStatement(db, NOAH_LISTING_SQL.touch, { ...want, now: at, candidate_id: candidateId }));
+  return statements;
 }
 
 export function createIntakeProbe(deps: IntakeDependencies) {
@@ -128,15 +162,7 @@ export function createIntakeProbe(deps: IntakeDependencies) {
   /** 握手の結果を握手の表へ書き、書けた物だけを、その候補が代表の系列へ写す（次の名寄せを待たない）。 */
   async function save(going: Target[], outcomes: NoahProbeOutcome[], lease: number, counts: IntakeProbeCounts) {
     const at = now();
-    const writes = going.map((item, index) => {
-      const { row } = item;
-      const previous: NoahCheckState = {
-        level: row.level, result: row.result, auth: row.auth, toolsSha256: row.tools_sha256, toolCount: row.tool_count,
-        readOnly: row.read_only === null ? null : row.read_only === 1, formTools: row.form_tools, oneTapTools: row.one_tap_tools,
-        latencyMs: row.latency_ms, checkedAt: row.checked_at, l1At: row.l1_at, l2At: row.l2_at, nextCheckAt: row.next_check_at, failures: row.failures, firstFailureAt: row.first_failure_at,
-      };
-      return planNoahProbeWrite(previous, outcomes[index], { now: at, connected: (item.family.connections ?? 0) > 0 });
-    });
+    const writes = going.map((item, index) => planNoahProbeWrite(noahCheckState(item.row), outcomes[index], { now: at, connected: item.family.connected === 1 }));
     const first: D1PreparedStatement[] = [];
     for (const [index, write] of writes.entries()) {
       const s = write.state, item = going[index];
@@ -151,23 +177,13 @@ export function createIntakeProbe(deps: IntakeDependencies) {
     for (const [index, write] of writes.entries()) {
       // 取り置きが変わっていた（取り込みが握手の記録を消した・別の合図が取り直した）結果は、書かれていない。系列にも写さない。
       if (written[index]?.meta.changes !== 1) continue;
-      const s = write.state, { family, row } = going[index], id = row.candidate_id;
+      const s = write.state, { family, row } = going[index];
       if (s.result === 'ok') counts.ok++;
       else if (s.result === 'auth_required') counts.authRequired++;
       else if (s.result === 'unreachable') counts.unreachable++;
       else if (s.result === 'rate_limited') counts.rateLimited++;
       if (write.toolsChanged) counts.toolsChanged++;
-      // 系列の行を書くのは、その候補が、今の系列の代表の時だけ。
-      if (family.representative_id !== id) continue;
-      const hidden = family.hidden_at !== null;
-      if (write.hide && !hidden) second.push(prepare('UPDATE noah_intake_families SET hidden_at=?,updated_at=?,revision=revision+1 WHERE id=? AND representative_id=? AND hidden_at IS NULL', at, at, family.family_id, id));
-      if (write.unhide && hidden) second.push(prepare('UPDATE noah_intake_families SET hidden_at=NULL,updated_at=?,revision=revision+1 WHERE id=? AND representative_id=? AND hidden_at IS NOT NULL', at, family.family_id, id));
-      // 系列の行の値は、名寄せの SQL と同じ決まりで出す（隠した印・取り下げの印は、別の列。ここでは見ない）。
-      const listing = noahListing({ source: family.source, familyId: family.family_id, candidateState: 'active', withdrawn: false, hidden: false,
-        check: { mouth: 'mcp-remote', setup: false, auth: s.auth, result: s.result, level: s.level, formTools: s.formTools, oneTapTools: s.oneTapTools } });
-      const want = { level: s.level, l2_at: s.level === 2 ? s.l2At : null, badge_hint: s.level < 2 ? 'unverified' : s.auth === 'oauth' ? 'taps' : 'one_click', listed: Number(listing.listed), one_tap: Number((s.oneTapTools ?? 0) >= 1) };
-      const same = family.family_level === want.level && family.family_l2_at === want.l2_at && family.family_badge === want.badge_hint && family.family_listed === want.listed && family.family_one_tap === want.one_tap;
-      if (!same) second.push(intakeStatement(db, NOAH_LISTING_SQL.touch, { ...want, now: at, candidate_id: id }));
+      second.push(...noahFamilyWrites(db, family, row.candidate_id, write, at));
     }
     if (second.length) await db.batch(second);
   }

@@ -1,0 +1,77 @@
+// つなぐ・道具の一覧の試験で使う世界: 台帳・接続先（合成のサーバー）・表（本番と同じ migration）・入口（API の関数）。通信はしない。
+// 一覧に載せるのは、巡回の握手を実際に通した物だけ（表を直に書いて「載せた事」にしない）。
+import { createNoahConnectApi } from '../../../lib/noah-connect.ts';
+import { createNoahConnectPlanApi } from '../../../lib/noah-connect-plan-api.ts';
+import { parseNoahFlags } from '../../../lib/noah-flags.ts';
+import { ownerScopeFor } from '../../../lib/owner-intent.ts';
+import { fixture, entry, page } from './intake.mjs';
+import { network } from './mcp-server.mjs';
+
+export const ORIGIN = 'https://noah.test';
+export const REGISTRY = 'registry.modelcontextprotocol.io';
+/** 一覧と、接続・依頼を、誰にでも開けた状態。 */
+export const OPEN = { NOAH_INTAKE_PUBLIC: 'true', NOAH_ASK_FORM: 'true' };
+export const familyId = (i) => `mcp-registry:test.provider/agent-${i}`;
+export const hostOf = (i) => `agent-${i}.example.com`;
+/** 接続の操作 ID（client が作る UUID）。 */
+export const uuid = (n) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
+/** 相手が受けた要求の名前の並び（握手は initialize・notifications/initialized・tools/list）。 */
+export const rpcs = (server) => server.log.map((request) => request.rpc ?? request.method);
+export const handshakes = (server) => server.log.filter((request) => request.rpc === 'initialize').length;
+
+/**
+ * servers は { host: mcpServer(...) | (url, init) => Response }。records は、台帳が返す記録（既定は、servers の host ごとに 1 件）。
+ * 作った後、台帳を 1 回読み、巡回の握手を済ませてある（握手が通った物が、一覧に載っている）。相手が受けた要求の記録は、そこで空にする。
+ */
+export async function world(t, servers, options = {}) {
+  const state = { records: options.records ?? Object.keys(servers).map((name) => entry(Number(/^agent-(\d+)\./.exec(name)?.[1] ?? 0))) };
+  const net = network({
+    [REGISTRY]: async () => page(state.records),
+    ...Object.fromEntries(Object.entries(servers).map(([name, server]) => [name, typeof server === 'function' ? server : server.fetch])),
+  });
+  const f = fixture(t, net.fetch, options.extra ?? {});
+  const patrol = async () => {
+    let total = 0;
+    for (let round = 0; round < 20; round++) {
+      const counts = await f.store.probeDue(f.time() + 25_000);
+      total += counts.probes;
+      if (!counts.probes) break;
+    }
+    return total;
+  };
+  /** 台帳を読み直す（記録を変えた後）。名寄せは 1 日 1 回なので、要る時は時計を進めてから呼ぶ。 */
+  const sync = async (records) => { if (records) state.records = records; return f.store.sync(); };
+  const clear = () => { net.hosts.length = 0; for (const server of Object.values(servers)) if (typeof server !== 'function') server.log.length = 0; };
+  await sync();
+  if (options.patrol !== false) await patrol();
+  clear();
+
+  /** その人として、入口を呼ぶ。user が null なら、未サインイン。 */
+  const as = (user, config = {}) => {
+    const deps = {
+      ...f.deps, flags: parseNoahFlags(config.env ?? options.env ?? OPEN), reviewers: config.reviewers ?? options.reviewers ?? [],
+      authenticate: async () => { if (!user) throw Error('UNAUTHORIZED'); return user; },
+      ...(config.waitUntil ? { waitUntil: config.waitUntil } : {}),
+    };
+    const api = createNoahConnectApi(deps), planApi = createNoahConnectPlanApi(deps);
+    const send = async (handler, method, path, body, headers) => {
+      const base = method === 'GET' ? {} : { Origin: ORIGIN, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': user ? await ownerScopeFor(user) : '' };
+      const response = await handler(new Request(ORIGIN + path, { method, ...(body === undefined ? {} : { body: typeof body === 'string' ? body : JSON.stringify(body) }), headers: { ...base, ...headers } }));
+      return { status: response.status, body: await response.json(), headers: response.headers };
+    };
+    const plan = (agent) => send(planApi, 'GET', `/api/noah/connect-plan?agent=${encodeURIComponent(agent)}`);
+    return {
+      deps, api, planApi, send, plan,
+      /** 計画を読んでから、つなぐ（画面と同じ順）。planSha256 を渡した時は、読まずに、その値で送る。 */
+      connect: async (agent, id, planSha256, headers) => send(api.collection, 'POST', '/api/noah/connect', { id, agentId: agent, planSha256: planSha256 ?? (await plan(agent)).body.planSha256 }, headers),
+      raw: (body, headers, method = 'POST') => send(api.collection, method, '/api/noah/connect', body, headers),
+      list: () => send(api.collection, 'GET', '/api/noah/connect'),
+      get: (id) => send((request) => api.item(request, id), 'GET', `/api/noah/connect/${id}`),
+      act: (id, action, revision, headers) => send((request) => api.item(request, id), 'POST', `/api/noah/connect/${id}`, { action, revision }, headers),
+      tools: (id, tool) => send((request) => api.tools(request, id), 'GET', `/api/noah/connect/${id}/tools${tool ? `?tool=${encodeURIComponent(tool)}` : ''}`),
+    };
+  };
+  const rows = (where = '1=1', ...args) => f.sql.prepare(`SELECT * FROM noah_connections WHERE ${where} ORDER BY created_at,id`).all(...args);
+  const listed = async () => (await f.store.list(null, new URLSearchParams())).items.map((item) => item.id).sort((a, b) => a.localeCompare(b));
+  return { f, net, servers, as, patrol, sync, clear, rows, listed, check: (i) => f.check(i), family: (i) => f.sql.prepare('SELECT * FROM noah_intake_families WHERE id=?').get(familyId(i)) };
+}

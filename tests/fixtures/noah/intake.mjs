@@ -5,7 +5,9 @@ export const NOW = Date.UTC(2026, 10, 20, 10);
 export const entry = (i, change = {}, status = 'active') => ({ server: { name: `test.provider/agent-${i}`, title: `Agent ${i}`, description: 'Public registry fixture', version: '1.0.0', remotes: [{ type: 'streamable-http', url: `https://agent-${i}.example.com/mcp` }], ...change }, _meta: { 'io.modelcontextprotocol.registry/official': { status, updatedAt: new Date(NOW).toISOString() } } });
 export const page = (entries, cursor = null) => Response.json({ servers: entries, metadata: { nextCursor: cursor } });
 export function fixture(t, fetcher = async () => page([]), extra = {}) {
-  const sql = new DatabaseSync(':memory:'); t.after(() => sql.close()); sql.exec(readFileSync(new URL('../../../drizzle/0044_noah_intake.sql', import.meta.url), 'utf8'));
+  const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
+  // 家の端末の表（接続の表が指す）・取り込みの表・接続の表。本番と同じ migration を、順に流す。
+  for (const name of ['0043_noah_runner', '0044_noah_intake', '0046_noah_connections']) sql.exec(readFileSync(new URL(`../../../drizzle/${name}.sql`, import.meta.url), 'utf8'));
   const batches = [], queries = [], hooks = {}; let clock = NOW;
   const db = {
     prepare(query) {

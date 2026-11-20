@@ -19,8 +19,8 @@ import { NOAH_PROBE } from '../lib/noah-probe.ts';
 import { mcpServer, tool } from '../tests/fixtures/noah/mcp-server.mjs';
 
 const REGISTRY = 'registry.modelcontextprotocol.io';
-const SAMPLE_AGENT = 'noah-acceptance/1 (read-only sample: initialize + tools/list only, no tool calls; +https://github.com/k999ln/rock)';
-const official = (at) => ({ 'io.modelcontextprotocol.registry/official': { status: 'active', updatedAt: new Date(at).toISOString() } });
+export const SAMPLE_AGENT = 'noah-acceptance/1 (read-only sample: initialize + tools/list only, no tool calls; +https://github.com/k999ln/rock)';
+export const official = (at) => ({ 'io.modelcontextprotocol.registry/official': { status: 'active', updatedAt: new Date(at).toISOString() } });
 /** 決まった並びの乱数（選び方を、seed で再現できるようにする）。 */
 function random(seed) {
   let state = seed >>> 0;
@@ -76,8 +76,11 @@ function synthetic(started) {
   } };
 }
 
-/** 実在の接続先。記録は手元のファイルから選ぶ。 */
-async function live(started, options) {
+/**
+ * 手元のファイル（台帳の API が返す 1 件を 1 行）から、実在の記録を選ぶ。鍵の宣言が無い・相手のサーバーで動く・有効な記録を、接続先ごとに 1 件ずつ。
+ * 選び方は seed で決まる（同じ seed なら、同じ並び）。接続の受入（scripts/check-noah-connect.mjs）も使う。
+ */
+export async function pickLiveRecords(options, started) {
   assert.ok(options.records, '--live には --records=<file.jsonl> が要ります（台帳の API が返す 1 件を 1 行）');
   const draw = random(options.seed), picked = new Map();
   const lines = readFileSync(options.records, 'utf8').split('\n').filter(Boolean);
@@ -93,6 +96,18 @@ async function live(started, options) {
     const host = draft.connect.egress[0];
     if (!picked.has(host)) picked.set(host, { server: record.server, _meta: official(started) });
   }
+  return picked;
+}
+/** 握手の前に、名前を引いた先のアドレスが内部向けでない事を確かめる（Node で動かす時だけ要る。本番の Workers からは、内部のアドレスへ届かない）。 */
+export async function checkPublicAddress(url) {
+  let addresses;
+  try { addresses = await lookup(url.hostname, { all: true }); } catch { throw new NoahMouthError('unreachable', '名前を引けません。'); }
+  if (!addresses.length || addresses.some((entry) => isNoahPrivateAddress(entry.address))) throw new NoahMouthError('blocked', '内部向けのアドレスです。');
+}
+
+/** 実在の接続先。記録は手元のファイルから選ぶ。 */
+async function live(started, options) {
+  const picked = await pickLiveRecords(options, started);
   const seen = new Map(), methods = new Set();
   const agents = async (url, init) => {
     const { hostname } = new URL(String(url)), method = init?.body ? JSON.parse(init.body).method : init?.method;
@@ -101,12 +116,7 @@ async function live(started, options) {
     // 受入の標本である事を、相手に分かるように名乗る（本番の巡回の名乗りは NoahBot/1。lib/noah-intake-probe.ts）。
     return fetch(url, { ...init, headers: { ...Object.fromEntries(new Headers(init?.headers ?? {})), 'user-agent': SAMPLE_AGENT } });
   };
-  const check = async (url) => {
-    let addresses;
-    try { addresses = await lookup(url.hostname, { all: true }); } catch { throw new NoahMouthError('unreachable', '名前を引けません。'); }
-    if (!addresses.length || addresses.some((entry) => isNoahPrivateAddress(entry.address))) throw new NoahMouthError('blocked', '内部向けのアドレスです。');
-  };
-  return { records: [...picked.values()], agents, expected: null, eligible: picked.size, check, after: () => {
+  return { records: [...picked.values()], agents, expected: null, eligible: picked.size, check: checkPublicAddress, after: () => {
     // 版の名乗り直しで、初期化が 2 回になる相手が居る（実測で 0.7%）。3 回以上は送らない。
     assert.ok([...seen.values()].every((count) => count <= 2), '同じ接続先へ、握手は 1 回だけ');
     assert.deepEqual([...methods].filter((method) => !['initialize', 'notifications/initialized', 'tools/list', 'DELETE'].includes(method)), [], '道具を呼ばない');
@@ -117,7 +127,7 @@ export async function checkNoahProbe(options = { live: false }) {
   const mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: 'export default { fetch() { return new Response("local probe acceptance"); } };', compatibilityDate: '2026-10-01', d1Databases: { DB: 'noah-probe-local-acceptance' } }));
   try {
     const db = await mf.getD1Database('DB');
-    for (const sql of readFileSync(new URL('../drizzle/0044_noah_intake.sql', import.meta.url), 'utf8').split('--> statement-breakpoint').filter((part) => /CREATE/.test(part))) await db.prepare(sql).run();
+    for (const file of ['0043_noah_runner', '0044_noah_intake', '0046_noah_connections']) for (const sql of readFileSync(new URL(`../drizzle/${file}.sql`, import.meta.url), 'utf8').split('--> statement-breakpoint').filter((part) => /CREATE/.test(part))) await db.prepare(sql).run();
     const started = Date.now(), key = 'local-acceptance-wake-'.repeat(3);
     const world = options.live ? await live(started, options) : synthetic(started);
     let logical = started, turnStart = started;
