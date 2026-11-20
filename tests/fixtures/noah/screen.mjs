@@ -11,7 +11,7 @@ const jsx = (type, props, key) => ({ type, props: props ?? {}, key: key ?? null 
 
 /**
  * options: { fetch, modules（'@/lib/…' などの実体）, now（始まりの時刻）, storage（sessionStorage の最初の中身） }
- * 返す物: mount(file, props) → { text(), find(...), click(label), type(value), flush(), tick(ms) } と、calls・storage・visits。
+ * 返す物: mount(file, props) → { text(), find(...), click(label), press(node), change(node, value), submit(form), type(value), flush(), tick(ms) } と、calls・storage・visits。
  */
 export function screen(options = {}) {
   const calls = [], visits = [], storage = new Map(Object.entries(options.storage ?? {}));
@@ -66,6 +66,8 @@ export function screen(options = {}) {
     sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, String(value)); }, removeItem: (key) => { storage.delete(key); } },
     location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: '', origin: 'https://noah.test' },
     addEventListener() {}, removeEventListener() {},
+    // 画面の幅（頼んだ画面の幅の区分に使う）。既定は、スマホの幅。
+    innerWidth: options.width ?? 390,
   };
 
   const loaded = new Map();
@@ -159,6 +161,28 @@ export function screen(options = {}) {
       async type(value) {
         const [input] = nodes().filter((node) => node.type === 'input');
         input.props.onChange({ target: { value } });
+        render();
+        await flush();
+      },
+      /** その要素を押す（ボタン・リンク）。 */
+      async press(node) {
+        if (!node) throw Error('押す要素がありません');
+        if (node.props.disabled) throw Error('その要素は、押せません');
+        node.props.onClick?.({ preventDefault() {} });
+        render();
+        await flush();
+      },
+      /** その欄の値を変える（input・textarea・select）。 */
+      async change(node, value) {
+        if (!node?.props.onChange) throw Error('値を変えられる要素がありません');
+        node.props.onChange({ target: { value } });
+        render();
+        await flush();
+      },
+      /** その form を送る（Enter や、submit のボタンを押した時と同じ）。 */
+      async submit(node) {
+        if (!node?.props.onSubmit) throw Error('送れる form がありません');
+        node.props.onSubmit({ preventDefault() {} });
         render();
         await flush();
       },

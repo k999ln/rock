@@ -70,8 +70,55 @@
 .tools li[data-usable] { color:#202024; }
 .tools strong { font-size:14px; overflow-wrap:anywhere; margin-right:8px; }
 .tools p { margin:6px 0 0; color:#52525b; font-size:12px; line-height:1.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+/* 道具を選ぶ行（押せる）。行の全部が、押す所。 */
+.toolButton,.toolRow { display:block; width:100%; min-height:44px; padding:14px 16px; border:0; background:none; text-align:left; color:inherit; font:inherit; }
+.toolButton { cursor:pointer; }
+.toolButton[aria-pressed="true"] { background:#f3eefb; }
+.tools li:has(.toolButton),.tools li:has(.toolRow) { padding:0; }
 .marks { display:inline-flex; flex-wrap:wrap; gap:6px; vertical-align:middle; }
 .marks span { font-size:11px; color:#71717a; background:#f7f7f8; border:1px solid #ececef; border-radius:20px; padding:2px 8px; }
+
+/* 入力欄。 */
+.form { margin-top:16px; padding:18px; border:1px solid #ececef; border-radius:12px; background:#fff; min-width:0; }
+.form h3 { margin:0 0 14px; font-size:16px; overflow-wrap:anywhere; }
+.field { display:block; margin:0 0 16px; padding:0; border:0; min-width:0; }
+.fieldLabel { display:block; margin:0 0 6px; padding:0; font-size:13px; font-weight:650; color:#202024; overflow-wrap:anywhere; }
+.control { display:block; width:100%; min-height:44px; padding:10px 12px; border:1px solid #dbc7ef; border-radius:10px; background:#fff; color:#202024; font:inherit; font-size:16px; line-height:1.6; resize:vertical; }
+.control:focus-visible { outline:2px solid #7546c8; outline-offset:1px; }
+.control[aria-invalid="true"] { border-color:#202024; border-width:2px; }
+.help { margin:6px 0 0; color:#71717a; font-size:12px; line-height:1.7; overflow-wrap:anywhere; }
+.fieldError { margin:6px 0 0; color:#202024; font-size:13px; font-weight:650; line-height:1.7; overflow-wrap:anywhere; }
+.fieldError::before { content:'! '; }
+.choices { display:flex; flex-wrap:wrap; gap:8px; }
+.choices button { min-height:44px; padding:0 16px; border:1px solid #ececef; border-radius:22px; background:#fff; color:#52525b; font-size:13px; cursor:pointer; overflow-wrap:anywhere; }
+.choices button[aria-pressed="true"] { border-color:#7546c8; background:#f3eefb; color:#7546c8; font-weight:650; }
+.form details.more { display:block; margin:0 0 16px; }
+.form details.more summary { min-height:44px; display:flex; align-items:center; color:#7546c8; font-size:13px; cursor:pointer; }
+.actions { display:flex; justify-content:flex-end; gap:10px; margin-top:14px; }
+.confirmBox { margin:0; padding:14px; border:1px solid #dbc7ef; border-radius:10px; background:#f7f7f8; min-width:0; }
+.confirmBox legend { padding:0 6px; font-size:12px; color:#7546c8; font-weight:650; }
+.confirmBox p { margin:0 0 10px; font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
+.confirmBox dl { margin:0 0 10px; }
+.confirmBox dl div,.outline div { display:flex; gap:10px; padding:4px 0; font-size:13px; min-width:0; }
+.confirmBox dt,.outline dt { flex-shrink:0; max-width:40%; color:#71717a; overflow-wrap:anywhere; }
+.confirmBox dd,.outline dd { margin:0; min-width:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+
+/* 仕事の一覧と成果。 */
+.work { list-style:none; margin:14px 0 0; padding:0; border:1px solid #ececef; border-radius:12px; background:#fff; }
+.work li { padding:14px 16px; min-width:0; }
+.work li + li { border-top:1px solid #ececef; }
+.workHead { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.workState { margin:0; font-size:14px; font-weight:650; min-width:0; overflow-wrap:anywhere; }
+.workTool { margin:4px 0 0; color:#52525b; font-size:12px; line-height:1.8; overflow-wrap:anywhere; }
+.result { margin:10px 0 0; padding:12px 14px; border-radius:10px; background:#f7f7f8; color:#202024; font:inherit; font-size:13px; line-height:1.8; white-space:pre-wrap; overflow-wrap:anywhere; max-height:60vh; overflow:auto; }
+.outline { margin:10px 0 0; padding:12px 14px; border-radius:10px; background:#f7f7f8; max-height:60vh; overflow:auto; }
+.outline div[data-depth="1"] { padding-left:14px; }
+.outline div[data-depth="2"] { padding-left:28px; }
+.outline div[data-depth="3"] { padding-left:42px; }
+.outline div[data-depth="4"] { padding-left:56px; }
+.page .result a,.page .outline a { color:#7546c8; text-decoration:underline; text-underline-offset:3px; }
+.result a small,.outline a small { color:#71717a; }
+.workActions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 
 .more { display:flex; justify-content:center; margin:26px 0 0; }
 .source { margin-top:40px; padding-top:18px; border-top:1px solid #ececef; color:#71717a; font-size:12px; line-height:1.9; }
@@ -79,4 +126,4 @@
 .page .source a { color:#7546c8; text-decoration:underline; text-underline-offset:3px; display:inline-flex; align-items:center; min-height:44px; }
 
 @media(max-width:1100px) { .cards { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:700px) { .cards { grid-template-columns:1fr; } .card,.detail { padding:18px; } .cardHead h1 { font-size:21px; } .connect { align-items:stretch; } .notice { text-align:left; } }
+@media(max-width:700px) { .cards { grid-template-columns:1fr; } .card,.detail { padding:18px; } .cardHead h1 { font-size:21px; } .connect { align-items:stretch; } .notice { text-align:left; } .actions { flex-direction:column-reverse; } .actions .primary,.actions .secondary { width:100%; } }

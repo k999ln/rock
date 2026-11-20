@@ -1,6 +1,6 @@
 'use client';
 /**
- * Agent の詳細（/noah/ready/agent?id=<系列の ID>）。説明・動く所・料金・送り先を見て、「接続」1 回でつなぐ。つないだ後は、道具の一覧と「切る」。
+ * Agent の詳細（/noah/ready/agent?id=<系列の ID>）。説明・動く所・料金・送り先を見て、「接続」1 回でつなぐ。つないだ後は、道具を選んで頼む所・仕事の一覧・「切る」。
  * 送り先（入力が送られる host）は、つなぐ前に、必ず出す。説明は、提供者が書いた文のまま、文字として出す。
  * 未サインインの人が「接続」を押した後、サインインから戻った時は、この画面が、同じ操作 ID で続ける（押し直さない）。
  * 仕様: docs/noah/spec-74-one-click-connect.md の 11.4・11.5。
@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahAsk from './noah-ask';
+import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
@@ -21,6 +22,8 @@ export default function NoahReadyDetail({ id }: { id: string }) {
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
   const [cutting, setCutting] = useState(false), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
+  // 頼むたびに進める数（下の「仕事」が、すぐ読み直す）。
+  const [asked, setAsked] = useState(0);
   const epoch = useRef(0);
   // 形の違う ID は、問い合わせずに「見つかりません」。
   const valid = id.length >= 3 && id.length <= 400;
@@ -92,7 +95,8 @@ export default function NoahReadyDetail({ id }: { id: string }) {
       <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" />
     </article>
 
-    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} onUnusable={() => refresh(live)} />}
+    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
+    {live && <NoahWorkList key={`work:${live.id}`} connectionId={live.id} ownerScope={detail.ownerScope} refresh={asked} />}
 
     {live && <section className={styles.section} aria-label="この接続">
       <div className={styles.cut}>

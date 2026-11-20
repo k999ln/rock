@@ -5,6 +5,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as ownerIntent from '../lib/owner-intent.ts';
+import * as askView from '../lib/noah-ask-view.ts';
+import * as formLib from '../lib/noah-form.ts';
 import * as view from '../lib/noah-ready-view.ts';
 import * as surface from '../lib/noah-surface.ts';
 import { entry, NOW } from './fixtures/noah/intake.mjs';
@@ -12,7 +14,7 @@ import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, rpcs, handshakes } from './fixtures/noah/connect-world.mjs';
 import { screen } from './fixtures/noah/screen.mjs';
 
-const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-surface': surface, 'next/image': { default: 'img' }, 'next/navigation': { usePathname: () => '/noah/ready' } };
+const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-form': formLib, '@/lib/noah-surface': surface, 'next/image': { default: 'img' }, 'next/navigation': { usePathname: () => '/noah/ready' } };
 const LIST = 'components/noah-ready.tsx', DETAIL = 'components/noah-ready-detail.tsx';
 const nested = (name) => tool(name, false, { inputSchema: { type: 'object', required: ['o'], properties: { o: { type: 'object' } } } });
 const markRan = (w, i) => {
@@ -27,6 +29,8 @@ function browser(w, user, extra = {}) {
 }
 const posts = (ui) => ui.calls.filter((call) => call.method === 'POST');
 const cards = (page) => page.find('article');
+/** 道具を選ぶ行（押せる）を除いた、画面のボタンの文。 */
+const actions = (page) => page.find('button').filter((node) => node.props.className !== 'toolButton').map((node) => page.text(node));
 const buttonsIn = (page, node) => page.nodes(node).filter((child) => child.type === 'button' || (child.type === 'a' && child.props.className === 'primary'));
 
 void test('the list: sections, one main button per card, badges in words, where the input goes, and where the list comes from', async (t) => {
@@ -227,10 +231,10 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   const calls = ui.calls.length;
   const detail = ui.mount(DETAIL, { id: familyId(1) });
   await detail.flush();
-  assert.deepEqual(ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
+  assert.deepEqual(ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`], ['GET', '/api/noah/ask']]);
   assert.equal(posts(ui)[0].body.id, handoff.id);
   assert.deepEqual([w.rows().length, w.rows()[0].id, w.rows()[0].state, w.rows()[0].owner_id], [1, handoff.id, 'connected', 'owner-a']);
-  assert.match(detail.text(), /道具/);
+  assert.match(detail.text(), /道具を選ぶ/);
   assert.equal(ui.storage.has('noah-connect-handoff'), false, '続きは、1 回しか使わない');
   // もう一度開いても、つなぎ直さない。
   const reopened = ui.mount(DETAIL, { id: familyId(1) });
@@ -295,14 +299,15 @@ void test('the detail screen: where the input goes is shown before connecting; t
   // 「接続」1 回で、道具の一覧まで出る。
   await page.click('接続');
   assert.equal(w.rows()[0].state, 'connected');
-  assert.match(page.text(), /道具4 個/);
+  assert.match(page.text(), /道具を選ぶ4 個/);
   const rows = page.find('ul').at(-1);
   assert.deepEqual(page.nodes(rows).filter((node) => node.type === 'li').map((node) => page.text(node)), [
     'lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publishpublish の説明', 'configure入力欄ではまだ使えませんconfigure の説明',
   ]);
   assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
-  // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['切る']);
+  // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。
+  assert.deepEqual(actions(page), ['切る']);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['lookup', 'stats', 'publish']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっています。切る切っても、受け取った成果は残ります。$/);
   // 「つなぎました」は 3 秒で消える。消えた後は、接続の欄（区切りの線）ごと出さない。
   assert.equal(page.find('output', 'につなぎました').length, 1);
@@ -313,13 +318,13 @@ void test('the detail screen: where the input goes is shown before connecting; t
   const shakes = handshakes(server);
   const reopened = ui.mount(DETAIL, { id: familyId(1) });
   await reopened.flush();
-  assert.match(reopened.text(), /道具4 個/);
+  assert.match(reopened.text(), /道具を選ぶ4 個/);
   assert.equal(handshakes(server), shakes);
 
   // 切る。「接続」に戻る。道具の一覧は消える。記録は残る。
   await page.click('切る');
   assert.deepEqual([w.rows().length, w.rows()[0].state], [1, 'disconnected']);
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
+  assert.deepEqual(actions(page), ['接続']);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   assert.equal([...ui.storage.keys()].filter((key) => key.startsWith('noah-tools:')).length, 0);
   // もう一度つなげる（新しい操作 ID）。
@@ -349,8 +354,8 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   w.f.advance(5000);
   await page.click('もう一度');
   assert.equal(w.rows()[0].state, 'connected');
-  assert.deepEqual([w.rows().length, page.find('button').map((node) => page.text(node))], [1, ['切る']]);
-  assert.match(page.text(), /道具2 個/);
+  assert.deepEqual([w.rows().length, actions(page)], [1, ['切る']]);
+  assert.match(page.text(), /道具を選ぶ2 個/);
 });
 
 void test('the detail screen: a withdrawn agent says so, offers no button to use it, and can be cut', async (t) => {
