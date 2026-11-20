@@ -32,3 +32,7 @@
 - `node --experimental-strip-types --test tests/noah-connect-*.test.mjs`: 通る形 6、拒否する形 37、計画の表 27 行、状態遷移 170 通り、今ある 13 件の全部から接続要件が作れる。
 - Mac の runner を動かした本人には 13 件が「1 クリック」、止めた本人には「準備が必要（端末を動かす）」。未サインインでも計画が返り、表の行数が変わらない。
 - 幅 390 でカードがはみ出さない。`npm run typecheck`、`npm run lint:product`。
+
+## 開発進捗
+
+L2 の純関数を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側は再exportへ集約。検証キットの9群を2つの製品テストへ移設、共通入力を `tests/fixtures/noah/connect.mjs` に配置。検証中。L5のAPI・カード、既存13件への組み込みは未着手。
