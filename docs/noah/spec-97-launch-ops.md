@@ -67,7 +67,7 @@ D1 の書き込みの内訳（1 日。索引の書き込みも 1 行と数える
 
 合図が持つ物は、時刻と署名と、空の本文だけ。利用者の情報・依頼・鍵・接続先を持たない。専用の Worker には、HTTP の入口が無い。
 
-合図 1 回の記録: Web の本体が `console.info(JSON.stringify({ event: 'noah-patrol', pages, seen, changed, probes, ok, authRequired, unreachable, rateLimited, skippedHost, toolsChanged, swept, ms }))` を 1 行出す。接続先の名前・URL・本人の ID は出さない。`toolsChanged` は、握手が通った物のうち、道具の定義の hash（`tools_sha256`）が前の握手と違った数（最初の握手は数えない）。道具の定義が、日や週の単位でどれだけ変わるかを、配備先のログから数える（実測は 1 時間で 274 のうち 1。[86](spec-86-remote-mouth.md) の 10.2）。失敗（台帳が読めない、D1 が書けない）は、合図の応答を 500 にして、専用の Worker の実行を失敗として残す（監視で、成功に見せない）。
+合図 1 回の記録: Web の本体が `console.info(JSON.stringify({ event: 'noah-patrol', pages, seen, changed, skipped, probes, ok, authRequired, unreachable, rateLimited, skippedHost, toolsChanged, swept, error, ms }))` を 1 行出す。接続先の名前・URL・本人の ID は出さない。`skipped` は、形が違って読み飛ばした台帳の記録の数（[85](spec-85-intake.md) の 5.1 の 3。0 でない日が続く時は、台帳の形が変わっていないかを見る）。`error` は、巡回が失敗した時の理由の符号（`unavailable`・`rate_limited`・`invalid_response`。失敗していなければ `null`）。握手の数（`probes` から `swept` まで）は、握手を作る層（L4）が入れる。それまでは 0。`toolsChanged` は、握手が通った物のうち、道具の定義の hash（`tools_sha256`）が前の握手と違った数（最初の握手は数えない）。道具の定義が、日や週の単位でどれだけ変わるかを、配備先のログから数える（実測は 1 時間で 274 のうち 1。[86](spec-86-remote-mouth.md) の 10.2）。失敗（台帳が読めない、D1 が書けない）は、合図の応答を 500（表を読み書きできない時は 503）にして、専用の Worker の実行を失敗として残す（監視で、成功に見せない）。失敗の後の待ち時間の間に届いた合図は、何もせず 200 を返す（失敗ではない）。
 
 ## 5. 取り下げ・報告の窓口（`/noah/help` に `#bot` の節を足す）
 
