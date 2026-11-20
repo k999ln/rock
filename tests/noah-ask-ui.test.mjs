@@ -123,7 +123,7 @@ void test('asking: checked before sending; the request carries the tool the pers
   assert.deepEqual(rows(), [`結果を受け取りましたlookup — ${hostOf(1)} の lookup が返した内容です。費用 0。1. cobalt\n2. second\n3. third開く`]);
   await page.click('開く');
   assert.match(rows()[0], /4\. fourth https:\/\/example\.org\/players\/7（example\.org）\.閉じる$/);
-  assert.deepEqual(page.find('a').filter((node) => node.props.target === '_blank' && node.props.href.startsWith('https://example.org')).map((node) => [node.props.href, node.props.rel]), [['https://example.org/players/7', 'noopener noreferrer nofollow']]);
+  assert.deepEqual(page.find('a').filter((node) => node.props.target === '_blank' && new URL(node.props.href).hostname === 'example.org').map((node) => [node.props.href, node.props.rel]), [['https://example.org/players/7', 'noopener noreferrer nofollow']]);
   // 欄の値は残る。もう一度頼むと、新しい操作 ID。
   assert.deepEqual([field('Player').props.value, field('limit').props.value], ['cobalt', '3']);
   w.f.advance(1000);

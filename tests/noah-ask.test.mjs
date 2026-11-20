@@ -37,7 +37,7 @@ void test('the table: the migration is the contract, and the pairs the columns m
   const contract = readFileSync(new URL('../docs/contracts/noah-v1.sql', import.meta.url), 'utf8'), migration = readFileSync(new URL('../drizzle/0048_noah_asks.sql', import.meta.url), 'utf8');
   const statements = (sql) => sql.split('--> statement-breakpoint').map((part) => part.replace(/^--[^\n]*\n/gm, '').trim()).filter((part) => /noah_asks/.test(part) && /^CREATE (TABLE|INDEX)/.test(part));
   // 型契約の、依頼の表と索引 4 つを、そのまま移してある。
-  assert.deepEqual(statements(migration), statements(contract).filter((part) => /^CREATE TABLE IF NOT EXISTS noah_asks|ON noah_asks\(/.test(part)));
+  assert.deepEqual(statements(migration), statements(contract).filter((part) => part.startsWith('CREATE TABLE IF NOT EXISTS noah_asks (') || part.includes(' ON noah_asks(')));
   assert.equal(statements(migration).length, 5);
   assert.equal(migration, readFileSync(new URL('../drizzle-main/0048_noah_asks.sql', import.meta.url), 'utf8'));
 
