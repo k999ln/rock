@@ -479,14 +479,15 @@ void test('the watched numbers: only numbers leave; no person, no ask content, a
     assert.equal(launch.includes(secret), false, secret);
     assert.equal(whole.includes(secret), false, secret);
   }
-  // 見張る数の中に出る接続先の名前は、「失敗の多い接続先」の 2 つだけ。
-  assert.deepEqual(launch.match(/[a-z0-9-]+\.example\.com/g), [A, B]);
-  assert.equal(launch.includes(C), false);
-  assert.equal(launch.includes(QUIET), false);
-  // 見張る数に出る文字は、状態の名前・接続先の名前・台帳の失敗の符号だけ。残りは、数と真偽と null。
-  const strings = [];
-  JSON.parse(launch, (key, value) => { if (typeof value === 'string') strings.push(value); return value; });
+  // 見張る数に出る文字の値は、「失敗の多い接続先」の 2 つの名前だけ。残りは、数と真偽と null。
+  // 依頼が 4 件の接続先（C）と、失敗の無い接続先（QUIET）は、値にも、項目の名前にも、出ない。
+  const strings = [], keys = new Set();
+  JSON.parse(launch, (key, value) => { keys.add(key); if (typeof value === 'string') strings.push(value); return value; });
   assert.deepEqual(strings, [A, B]);
+  assert.deepEqual(body.launch.failingHosts.map((row) => row.host), [A, B]);
+  assert.deepEqual([strings.indexOf(C), strings.indexOf(QUIET), keys.has(C), keys.has(QUIET)], [-1, -1, false, false]);
+  // 項目の名前は、決まった語だけ（接続先の名前や ID を、項目の名前にしていない）。
+  assert.deepEqual([...keys].filter((key) => !/^(?:[a-zA-Z_][a-zA-Z0-9_]*|\d*)$/.test(key)), []);
 
   // 審査者でない人・サインインしていない人には、切り替えを開けていても、見せない。
   for (const user of ['someone', null]) {
