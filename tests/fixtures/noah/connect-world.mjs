@@ -1,5 +1,6 @@
 // つなぐ・道具の一覧の試験で使う世界: 台帳・接続先（合成のサーバー）・表（本番と同じ migration）・入口（API の関数）。通信はしない。
 // 一覧に載せるのは、巡回の握手を実際に通した物だけ（表を直に書いて「載せた事」にしない）。
+import { createIntakeApi } from '../../../lib/noah-intake-api.ts';
 import { createNoahConnectApi } from '../../../lib/noah-connect.ts';
 import { createNoahConnectPlanApi } from '../../../lib/noah-connect-plan-api.ts';
 import { parseNoahFlags } from '../../../lib/noah-flags.ts';
@@ -71,7 +72,28 @@ export async function world(t, servers, options = {}) {
       tools: (id, tool) => send((request) => api.tools(request, id), 'GET', `/api/noah/connect/${id}/tools${tool ? `?tool=${encodeURIComponent(tool)}` : ''}`),
     };
   };
+  /**
+   * 画面の試験（tests/fixtures/noah/screen.mjs）へ渡す fetch。画面が送った要求を、本物の入口（一覧・計画・接続）へ通す。
+   * session.user が、今サインインしている人（null なら未サインイン）。途中で変えると、サインインした後の画面を試せる。
+   * ブラウザと同じく、書き込みの要求には Origin を付ける。知らない道は 404。
+   */
+  const browser = (session, config = {}) => async (request) => {
+    const { deps, api, planApi } = as(session.user, config);
+    const url = new URL(request.url, ORIGIN), path = url.pathname;
+    const route = path === '/api/noah/intake' ? createIntakeApi(deps)
+      : path === '/api/noah/connect-plan' ? planApi
+      : path === '/api/noah/connect' ? api.collection
+      : /^\/api\/noah\/connect\/[^/]+\/tools$/.test(path) ? (incoming) => api.tools(incoming, path.split('/')[4])
+      : /^\/api\/noah\/connect\/[^/]+$/.test(path) ? (incoming) => api.item(incoming, path.split('/')[4])
+      : null;
+    if (!route) return { status: 404, body: { error: '見つかりません。' } };
+    const response = await route(new Request(url, {
+      method: request.method, headers: { ...request.headers, ...(request.method === 'GET' ? {} : { Origin: ORIGIN }) },
+      ...(request.body === undefined ? {} : { body: JSON.stringify(request.body) }),
+    }));
+    return { status: response.status, body: await response.json() };
+  };
   const rows = (where = '1=1', ...args) => f.sql.prepare(`SELECT * FROM noah_connections WHERE ${where} ORDER BY created_at,id`).all(...args);
   const listed = async () => (await f.store.list(null, new URLSearchParams())).items.map((item) => item.id).sort((a, b) => a.localeCompare(b));
-  return { f, net, servers, as, patrol, sync, clear, rows, listed, check: (i) => f.check(i), family: (i) => f.sql.prepare('SELECT * FROM noah_intake_families WHERE id=?').get(familyId(i)) };
+  return { f, net, servers, as, browser, patrol, sync, clear, rows, listed, check: (i) => f.check(i), family: (i) => f.sql.prepare('SELECT * FROM noah_intake_families WHERE id=?').get(familyId(i)) };
 }

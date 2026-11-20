@@ -1,0 +1,420 @@
+// 「すぐ使える」の画面（一覧 /noah/ready・詳細 /noah/ready/agent）と、接続のボタン・その場のサインイン・道具の一覧・menu の行。
+// 画面の部品を、ブラウザなしで動かす（tests/fixtures/noah/screen.mjs）。画面が送る要求は、本物の入口（一覧・計画・接続）と、試験用の表・合成の接続先へ通す。
+// 見た目（CSS・幅 390 で、はみ出さない事）は、ここでは確かめない（実ブラウザで確かめる。docs/noah/spec-74-one-click-connect.md の 11.8）。
+// 仕様: docs/noah/spec-74-one-click-connect.md の 5.2・6.3・11.4・11.5・11.6、spec-96-connect-plan.md の 6 章。
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import * as ownerIntent from '../lib/owner-intent.ts';
+import * as view from '../lib/noah-ready-view.ts';
+import * as surface from '../lib/noah-surface.ts';
+import { entry, NOW } from './fixtures/noah/intake.mjs';
+import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
+import { world, familyId, hostOf, rpcs, handshakes } from './fixtures/noah/connect-world.mjs';
+import { screen } from './fixtures/noah/screen.mjs';
+
+const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-surface': surface, 'next/image': { default: 'img' }, 'next/navigation': { usePathname: () => '/noah/ready' } };
+const LIST = 'components/noah-ready.tsx', DETAIL = 'components/noah-ready-detail.tsx';
+const nested = (name) => tool(name, false, { inputSchema: { type: 'object', required: ['o'], properties: { o: { type: 'object' } } } });
+const markRan = (w, i) => {
+  w.f.sql.prepare('UPDATE noah_intake_checks SET level=2,l2_at=? WHERE candidate_id=?').run(w.f.time(), familyId(i));
+  w.f.sql.prepare("UPDATE noah_intake_families SET level=2,l2_at=?,badge_hint='one_click' WHERE id=?").run(w.f.time(), familyId(i));
+};
+/** 試験用の世界と、その上の画面。session.user を変えると、サインインした後になる。画面の時計は、表の時計と同じ所から始める。 */
+function browser(w, user, extra = {}) {
+  const session = { user };
+  const ui = screen({ fetch: w.browser(session, extra.config), modules: MODULES, now: w.f.time(), ...(extra.storage ? { storage: extra.storage } : {}) });
+  return { session, ui };
+}
+const posts = (ui) => ui.calls.filter((call) => call.method === 'POST');
+const cards = (page) => page.find('article');
+const buttonsIn = (page, node) => page.nodes(node).filter((child) => child.type === 'button' || (child.type === 'a' && child.props.className === 'primary'));
+
+void test('the list: sections, one main button per card, badges in words, where the input goes, and where the list comes from', async (t) => {
+  const w = await world(t, { [hostOf(1)]: mcpServer(), [hostOf(2)]: mcpServer(), [hostOf(3)]: mcpServer({ tools: [tool('lookup', true, { inputSchema: { type: 'object', required: ['q'], properties: { q: { type: 'string' } } } })] }) });
+  markRan(w, 2);
+  const { ui } = browser(w, null);
+  const page = ui.mount(LIST);
+  assert.match(page.text(), /読み込んでいます/);
+  await page.flush();
+  const text = page.text();
+  assert.match(text, /すぐ使える Agent/);
+  assert.match(text, /スマホだけで使えます。あなたの端末では何も動きません。/);
+  // 段: 動いた（人が動かした物）が先、握手だけの物が後。件数も出る。
+  assert.ok(text.indexOf('人が動かして、成果が返った物です。') < text.indexOf('Noah が、応答する事だけを確かめた物です。'));
+  assert.deepEqual(page.find('h2').map((node) => page.text(node)), ['動いた1 件', 'まだ誰も動かしていない2 件']);
+  assert.deepEqual(cards(page).map((card) => page.text(page.nodes(card).find((node) => node.type === 'h3'))), ['Agent 2', 'Agent 1', 'Agent 3'].filter((name) => text.includes(name)).sort((a, b) => text.indexOf(a) - text.indexOf(b)));
+  assert.equal(cards(page).length, 3);
+  for (const card of cards(page)) {
+    // カードの主ボタンは 1 つ。
+    assert.deepEqual(buttonsIn(page, card).map((node) => page.text(node)), ['接続']);
+    const facts = page.nodes(card).filter((node) => node.type === 'li').map((node) => page.text(node));
+    // 印・動く所・料金は、必ず文字で出る。
+    assert.match(facts[0], /^(あと 1 タップ（サインイン）|まだ誰も動かしていない)$/);
+    assert.match(facts[1], /^相手のサーバー（agent-\d\.example\.com）$/);
+    assert.equal(facts[2], '無料');
+    assert.match(page.text(card), /提供: test\.provider/);
+  }
+  const of = (name) => cards(page).find((card) => page.text(card).includes(name));
+  assert.match(page.text(of('Agent 2')), /あと 1 タップ（サインイン）/, '動いた物を、未サインインの人が見た時');
+  assert.match(page.text(of('Agent 1')), /押すだけで試せる.*道具 2 個/);
+  assert.doesNotMatch(page.text(of('Agent 3')), /押すだけで試せる/);
+  // 出どころと、申し出の窓口、Mac で動かす Agent への道。
+  assert.match(text, /出どころ: Official MCP Registry。Noah が作った物ではありません。説明は、提供者が書いた文のままです。/);
+  assert.deepEqual(page.find('a', '報告・取り下げの申し出').map((node) => node.props.href), ['/noah/help#bot']);
+  assert.deepEqual(page.find('a', '自分の Mac で動かす Agent').map((node) => node.props.href), ['/noah/explore']);
+  // 名前を押すと、詳細へ。系列の ID は query で渡す。
+  assert.equal(page.nodes(of('Agent 1')).find((node) => node.type === 'a').props.href, `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`);
+  // 未サインインの間は、本人の接続を読まない。相手へも送らない。
+  assert.deepEqual(ui.calls.map((call) => call.url), ['/api/noah/intake?']);
+  assert.deepEqual(w.net.hosts, []);
+});
+
+void test('the list: closed, empty, unavailable', async (t) => {
+  const w = await world(t, { [hostOf(1)]: mcpServer({ status: 401 }) });
+  // 切り替えが閉じている間、審査者でない人には「まだ公開していません。」だけ。
+  const closed = browser(w, 'owner-a', { config: { env: {} } }).ui.mount(LIST);
+  await closed.flush();
+  assert.match(closed.text(), /まだ公開していません。/);
+  assert.equal(closed.find('input').length, 0);
+  assert.doesNotMatch(closed.text(), /出どころ/);
+  // 載せている物が無い（握手が通った物が、まだ無い）。
+  const empty = browser(w, null).ui.mount(LIST);
+  await empty.flush();
+  assert.match(empty.text(), /今、並べられる物がありません。少し後で開いてください。/);
+  // 読めなかった時は、読み直せる。
+  let down = true;
+  const session = { user: null }, real = w.browser(session);
+  const ui = screen({ fetch: async (request) => (down ? { status: 503, body: { error: '台帳を確認できません。' } } : real(request)), modules: MODULES });
+  const page = ui.mount(LIST);
+  await page.flush();
+  assert.match(page.text(), /一覧を読めませんでした。接続を確かめて、もう一度試してください。/);
+  down = false;
+  await page.click('読み直す');
+  assert.match(page.text(), /今、並べられる物がありません/);
+});
+
+void test('the list: search waits for the typing to stop, filters, and reads on', async (t) => {
+  const servers = Object.fromEntries(Array.from({ length: 24 }, (_, i) => [hostOf(i + 1), i < 4 ? mcpServer({ tools: [nested('configure'), tool('publish', false)] }) : mcpServer()]));
+  const records = Object.keys(servers).map((_, i) => entry(i + 1, i === 6 ? { title: 'Weather lookup', description: '天気を調べる' } : {}));
+  const w = await world(t, servers, { records });
+  const { ui } = browser(w, null);
+  const page = ui.mount(LIST);
+  await page.flush();
+  assert.equal(cards(page).length, 20);
+  assert.match(page.text(), /まだ誰も動かしていない24 件/);
+  // 続きを読む（重ならない）。
+  await page.click('続きを読む');
+  assert.equal(cards(page).length, 24);
+  assert.equal(new Set(cards(page).map((card) => page.text(page.nodes(card).find((node) => node.type === 'h3')))).size, 24);
+  assert.equal(page.find('button', '続きを読む').length, 0);
+  // 押すだけで試せる物だけ。
+  await page.click('押すだけで試せる');
+  assert.equal(cards(page).length, 20);
+  assert.ok(ui.calls.at(-1).url.includes('oneTap=1'));
+  for (const card of cards(page)) assert.match(page.text(card), /押すだけで試せる/);
+  await page.click('すべて');
+  // 語で探す: 打っている間は読まない。300 ミリ秒してから、1 回だけ読む。1 文字では探さない。
+  const before = ui.calls.length;
+  await page.type('W');
+  await page.tick(300);
+  assert.equal(ui.calls.length, before);
+  await page.type('We');
+  await page.type('Weather');
+  await page.tick(299);
+  assert.equal(ui.calls.length, before);
+  await page.tick(1);
+  assert.deepEqual(ui.calls.slice(before).map((call) => call.url), ['/api/noah/intake?q=Weather']);
+  assert.deepEqual([page.find('h2').map((node) => page.text(node)), cards(page).map((card) => page.text(page.nodes(card).find((node) => node.type === 'h3')))], [['探した結果'], ['Weather lookup']]);
+  assert.equal(page.find('button', '押すだけで試せる').length, 0, '探している間は、絞り込みを出さない');
+  await page.type('zzzz-not-there');
+  await page.tick(300);
+  assert.match(page.text(), /見つかりませんでした。別の語で探してください。/);
+  await page.type('');
+  await page.tick(300);
+  assert.equal(cards(page).length, 20);
+});
+
+void test('signed in: one press on the card connects, and the button becomes 頼む', async (t) => {
+  const server = mcpServer();
+  const w = await world(t, { [hostOf(1)]: server, [hostOf(2)]: mcpServer() });
+  const { ui } = browser(w, 'owner-a');
+  const page = ui.mount(LIST);
+  await page.flush();
+  // サインイン済みなら、本人の接続も読む。まだ無い。
+  assert.deepEqual(ui.calls.map((call) => call.url), ['/api/noah/intake?', '/api/noah/connect']);
+  assert.doesNotMatch(page.text(), /つながっているもの/);
+  const card = () => cards(page).find((node) => page.text(node).includes('Agent 1'));
+  const [connect] = buttonsIn(page, card());
+  connect.props.onClick();
+  page.render();
+  // 押してから応答までは「準備しています…」（押せない）。
+  assert.deepEqual(buttonsIn(page, card()).map((node) => [page.text(node), node.props.disabled]), [['準備しています…', true]]);
+  await page.flush();
+  // 計画を読んでから、つなぐ。始めた時と同じ account の印（ownerScope）を付けて送る。
+  const sent = ui.calls.slice(2);
+  assert.deepEqual(sent.map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/connect-plan'], ['POST', '/api/noah/connect']]);
+  assert.deepEqual(Object.keys(sent[1].body).sort((a, b) => a.localeCompare(b)), ['agentId', 'id', 'planSha256']);
+  assert.match(sent[1].headers['X-Rock-Owner-Scope'], /^owner-v1:[a-f0-9]{64}$/);
+  assert.equal(sent[1].body.agentId, familyId(1));
+  // 「頼む」に変わる（詳細へ移る）。動く所を 3 秒だけ出す。
+  assert.deepEqual(buttonsIn(page, card()).map((node) => [page.text(node), node.props.href]), [['頼む', `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`]]);
+  assert.match(page.text(card()), new RegExp(`相手のサーバー（${hostOf(1)}）につなぎました`));
+  await page.tick(3000);
+  assert.doesNotMatch(page.text(card()), /につなぎました/);
+  // 上の段に出る。行は 1 件。相手が受けたのは握手だけ。
+  assert.match(page.text(), /つながっているもの/);
+  assert.deepEqual(page.find('li', 'Agent 1').filter((node) => page.text(node).includes('頼む')).length, 1);
+  assert.deepEqual([w.rows().length, w.rows()[0].state, w.rows()[0].id, rpcs(server)], [1, 'connected', sent[1].body.id, ['initialize', 'notifications/initialized', 'tools/list']]);
+  // 開き直しても、つながっている物は「頼む」。
+  const again = browser(w, 'owner-a').ui.mount(LIST);
+  await again.flush();
+  assert.deepEqual(buttonsIn(again, cards(again).find((node) => again.text(node).includes('Agent 1'))).map((node) => again.text(node)), ['頼む']);
+  assert.deepEqual(buttonsIn(again, cards(again).find((node) => again.text(node).includes('Agent 2'))).map((node) => again.text(node)), ['接続']);
+});
+
+void test('not signed in: pressing 接続 goes to sign-in, and the detail screen continues with the same ID without pressing again', async (t) => {
+  const server = mcpServer();
+  const w = await world(t, { [hostOf(1)]: server, [hostOf(2)]: mcpServer() });
+  const detailPath = `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`;
+  const { session, ui } = browser(w, null);
+  const page = ui.mount(LIST);
+  await page.flush();
+  const [connect] = buttonsIn(page, cards(page).find((node) => page.text(node).includes('Agent 1')));
+  connect.props.onClick();
+  await page.flush();
+  // サインインの画面へ移る。戻る先は、その Agent の詳細。置くのは、操作 ID と Agent の ID と時刻だけ。何も送らない。
+  assert.deepEqual(ui.visits, [`/account?returnTo=${encodeURIComponent(detailPath)}`]);
+  const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
+  assert.deepEqual(Object.keys(handoff).sort((a, b) => a.localeCompare(b)), ['agentId', 'at', 'id']);
+  assert.deepEqual([handoff.agentId, handoff.at], [familyId(1), ui.time()]);
+  assert.deepEqual([posts(ui).length, w.rows().length, handshakes(server)], [0, 0, 0]);
+
+  // サインインして、詳細の画面へ戻る（同じ tab）。押し直さずに、同じ操作 ID で続く。
+  session.user = 'owner-a';
+  const calls = ui.calls.length;
+  const detail = ui.mount(DETAIL, { id: familyId(1) });
+  await detail.flush();
+  assert.deepEqual(ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
+  assert.equal(posts(ui)[0].body.id, handoff.id);
+  assert.deepEqual([w.rows().length, w.rows()[0].id, w.rows()[0].state, w.rows()[0].owner_id], [1, handoff.id, 'connected', 'owner-a']);
+  assert.match(detail.text(), /道具/);
+  assert.equal(ui.storage.has('noah-connect-handoff'), false, '続きは、1 回しか使わない');
+  // もう一度開いても、つなぎ直さない。
+  const reopened = ui.mount(DETAIL, { id: familyId(1) });
+  await reopened.flush();
+  assert.equal(posts(ui).length, 1);
+});
+
+void test('a handoff is used only for its own agent, only once, and only for ten minutes', async (t) => {
+  const w = await world(t, { [hostOf(1)]: mcpServer(), [hostOf(2)]: mcpServer() });
+  const id = '00000000-0000-4000-8000-00000000abcd';
+  const stored = (change = {}) => ({ 'noah-connect-handoff': JSON.stringify({ agentId: familyId(1), id, at: w.f.time(), ...change }) });
+  // 10 分を越えた続きは、使わない（「接続」が出たまま）。消す。
+  const old = browser(w, 'owner-a', { storage: stored({ at: w.f.time() - 600_001 }) });
+  const expired = old.ui.mount(DETAIL, { id: familyId(1) });
+  await expired.flush();
+  assert.deepEqual([posts(old.ui).length, expired.find('button', '接続').length, old.ui.storage.has('noah-connect-handoff')], [0, 1, false]);
+  // 別の Agent の続きは、使わない。消さない（その Agent の詳細を開いた時に使う）。
+  const other = browser(w, 'owner-a', { storage: stored() });
+  const elsewhere = other.ui.mount(DETAIL, { id: familyId(2) });
+  await elsewhere.flush();
+  assert.deepEqual([posts(other.ui).length, other.ui.storage.has('noah-connect-handoff')], [0, true]);
+  // 形の違う続き（操作 ID が UUID でない・先の時刻）は、使わない。
+  for (const change of [{ id: 'not-a-uuid' }, { at: w.f.time() + 3_600_000 }, { at: 'now' }]) {
+    const bad = browser(w, 'owner-a', { storage: stored(change) });
+    const page = bad.ui.mount(DETAIL, { id: familyId(1) });
+    await page.flush();
+    assert.deepEqual([posts(bad.ui).length, bad.ui.storage.has('noah-connect-handoff')], [0, false], JSON.stringify(change));
+  }
+  // 未サインインのまま戻った時は、続けない（続きは残す。サインインした後に使える）。
+  const anonymous = browser(w, null, { storage: stored() });
+  const page = anonymous.ui.mount(DETAIL, { id: familyId(1) });
+  await page.flush();
+  assert.deepEqual([posts(anonymous.ui).length, anonymous.ui.storage.has('noah-connect-handoff'), w.rows().length], [0, true, 0]);
+  // 戻る先に渡すのは、/noah/ready で始まるパスだけ。
+  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/account?returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
+  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/account?returnTo=%2Fnoah%2Fready', path);
+});
+
+void test('the detail screen: where the input goes is shown before connecting; then the tools; then cutting', async (t) => {
+  const tools = [tool('lookup', true, { description: 'Looks up a player.', inputSchema: { type: 'object', required: ['query'], properties: { query: { type: 'string' } } } }), nested('configure'), tool('stats'), tool('publish', false)];
+  const server = mcpServer({ tools });
+  const w = await world(t, { [hostOf(1)]: server }, { records: [entry(1, { title: 'Mizan', description: 'Looks up game bans. Second line.', websiteUrl: 'https://mizan.example.com/about' })] });
+  const { ui } = browser(w, 'owner-a');
+  const page = ui.mount(DETAIL, { id: familyId(1) });
+  await page.flush();
+  const text = page.text();
+  // 名前・提供者・説明（提供者の文のまま）・動く所・料金・道具の数・最後に確かめた日。
+  assert.deepEqual(page.find('h1').map((node) => page.text(node)), ['Mizan']);
+  assert.match(text, /提供: test\.provider/);
+  assert.match(text, /Looks up game bans\. Second line\./);
+  assert.deepEqual(page.find('li').slice(0, 4).map((node) => page.text(node)), ['まだ誰も動かしていない', `相手のサーバー（${hostOf(1)}）`, '無料', '道具 4 個']);
+  assert.match(text, new RegExp(`最後に確かめた日 ${new Date(NOW).getMonth() + 1}/${new Date(NOW).getDate()}`));
+  // 送り先は、接続の前に出ている。
+  assert.match(text, new RegExp(`入力は ${hostOf(1).replaceAll('.', '\\.')} へ送られます。Noah が送るのは、あなたが入力した内容だけです。`));
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
+  assert.doesNotMatch(text, /切る/);
+  // 提供者のページは、別の tab で開く。行き先の host を出す。
+  assert.deepEqual(page.find('a', '提供者のページ').map((node) => [page.text(node), node.props.href, node.props.target, node.props.rel]), [['提供者のページ（mizan.example.com）', 'https://mizan.example.com/about', '_blank', 'noopener noreferrer nofollow']]);
+  assert.match(text, /出どころ: Official MCP Registry。Noah が作った物ではありません。/);
+  assert.equal(handshakes(server), 0, '開いただけでは、相手へ送らない');
+
+  // 「接続」1 回で、道具の一覧まで出る。
+  await page.click('接続');
+  assert.equal(w.rows()[0].state, 'connected');
+  assert.match(page.text(), /道具4 個/);
+  const rows = page.find('ul').at(-1);
+  assert.deepEqual(page.nodes(rows).filter((node) => node.type === 'li').map((node) => page.text(node)), [
+    'lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publishpublish の説明', 'configure入力欄ではまだ使えませんconfigure の説明',
+  ]);
+  assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
+  // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['切る']);
+  assert.match(page.text(page.find('section').at(-1)), /^つながっています。切る切っても、受け取った成果は残ります。$/);
+  // 「つなぎました」は 3 秒で消える。消えた後は、接続の欄（区切りの線）ごと出さない。
+  assert.equal(page.find('output', 'につなぎました').length, 1);
+  await page.tick(3000);
+  assert.equal(page.find('output').length, 0);
+  assert.equal(page.find('div').filter((node) => node.props.className === 'connect').length, 0);
+  // 開き直しても、5 分の間は、道具の一覧を読み直さない（相手へ握手を送らない）。
+  const shakes = handshakes(server);
+  const reopened = ui.mount(DETAIL, { id: familyId(1) });
+  await reopened.flush();
+  assert.match(reopened.text(), /道具4 個/);
+  assert.equal(handshakes(server), shakes);
+
+  // 切る。「接続」に戻る。道具の一覧は消える。記録は残る。
+  await page.click('切る');
+  assert.deepEqual([w.rows().length, w.rows()[0].state], [1, 'disconnected']);
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
+  assert.doesNotMatch(page.text(), /読み取りだけ/);
+  assert.equal([...ui.storage.keys()].filter((key) => key.startsWith('noah-tools:')).length, 0);
+  // もう一度つなげる（新しい操作 ID）。
+  await page.click('接続');
+  assert.deepEqual(w.rows().map((row) => row.state), ['disconnected', 'connected']);
+});
+
+void test('the detail screen: a failure shows its reason and もう一度; pressing again too soon is refused without contacting the provider', async (t) => {
+  const server = mcpServer();
+  const w = await world(t, { [hostOf(1)]: server });
+  const { ui } = browser(w, 'owner-a');
+  const page = ui.mount(DETAIL, { id: familyId(1) });
+  await page.flush();
+  server.options.status = 503;
+  await page.click('接続');
+  assert.match(page.text(), /相手のサーバーが応答しません。時間をおいて試してください。/);
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['もう一度', '切る']);
+  assert.match(page.text(page.find('section').at(-1)), /^つながっていません。切る/);
+  assert.doesNotMatch(page.text(), /読み取りだけ/);
+  // 続けて押しても、相手へ握手を送り続けない。
+  const shakes = handshakes(server);
+  await page.click('もう一度');
+  assert.match(page.text(), /少し待ってから試してください。/);
+  assert.equal(handshakes(server), shakes);
+  // 相手が戻った後。
+  server.options.status = undefined;
+  w.f.advance(5000);
+  await page.click('もう一度');
+  assert.equal(w.rows()[0].state, 'connected');
+  assert.deepEqual([w.rows().length, page.find('button').map((node) => page.text(node))], [1, ['切る']]);
+  assert.match(page.text(), /道具2 個/);
+});
+
+void test('the detail screen: a withdrawn agent says so, offers no button to use it, and can be cut', async (t) => {
+  const w = await world(t, { [hostOf(1)]: mcpServer() });
+  const { ui } = browser(w, 'owner-a');
+  const first = ui.mount(DETAIL, { id: familyId(1) });
+  await first.flush();
+  await first.click('接続');
+  // 運営が取り下げる。別の tab で開く（道具の一覧の控えは無い）。
+  const detail = await w.f.store.detail(familyId(1), null, true);
+  await w.f.store.moderate('withdraw', familyId(1), detail.revision);
+  w.clear();
+  const other = browser(w, 'owner-a');
+  const page = other.ui.mount(DETAIL, { id: familyId(1) });
+  await page.flush();
+  // 一覧から外れた物でも、つないでいる本人は詳細を読める。理由が出る。相手へは送らない。
+  assert.match(page.text(), /この Agent は、取り下げられました。使えません。/);
+  assert.equal(w.rows()[0].state, 'blocked');
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['切る']);
+  assert.match(page.text(page.find('section').at(-1)), /^使えません。切る/);
+  assert.deepEqual(w.net.hosts, []);
+  await page.click('切る');
+  assert.equal(w.rows()[0].state, 'disconnected');
+  // 切った後は、つなげない物として出る（載せていないので、「接続」は出ない）。他の人には、無い物。
+  const after = browser(w, 'owner-a').ui.mount(DETAIL, { id: familyId(1) });
+  await after.flush();
+  assert.match(after.text(), /この Agent は、見つかりませんでした。/);
+});
+
+void test('the detail screen: unknown agents, malformed IDs, unlisted agents seen by a reviewer', async (t) => {
+  const keyed = entry(2, { remotes: [{ type: 'streamable-http', url: `https://${hostOf(2)}/mcp`, headers: [{ name: 'X-Api-Key', isRequired: true, isSecret: true }] }] });
+  const w = await world(t, { [hostOf(1)]: mcpServer(), [hostOf(2)]: mcpServer() }, { records: [entry(1), keyed] });
+  for (const id of [familyId(99), familyId(2)]) {
+    const { ui } = browser(w, 'owner-a');
+    const page = ui.mount(DETAIL, { id });
+    await page.flush();
+    assert.match(page.text(), /この Agent は、見つかりませんでした。/, id);
+    assert.equal(page.find('button').length, 0);
+    assert.deepEqual(page.find('a', 'すぐ使える Agent').map((node) => node.props.href), ['/noah/ready']);
+  }
+  // 形の違う ID は、問い合わせない。
+  const malformed = browser(w, 'owner-a');
+  const page = malformed.ui.mount(DETAIL, { id: 'x' });
+  await page.flush();
+  assert.match(page.text(), /見つかりませんでした/);
+  assert.equal(malformed.ui.calls.length, 0);
+  // 審査者は、載せていない物の詳細も見られる。ただし、つなぐボタンは出ない。
+  const reviewer = browser(w, 'reviewer', { config: { reviewers: ['reviewer'] } });
+  const unlisted = reviewer.ui.mount(DETAIL, { id: familyId(2) });
+  await unlisted.flush();
+  assert.match(unlisted.text(), /この Agent は、今はつなげません。/);
+  assert.equal(unlisted.find('button').length, 0);
+});
+
+void test('what the button shows for every state of a connection', () => {
+  const show = (state, extra = {}) => view.noahConnectButtonView({ connection: state ? { id: 'x', state, revision: 1, error: extra.error ?? null } : null, busy: extra.busy ?? false, listed: extra.listed ?? true });
+  assert.deepEqual(show(null), { label: '接続', disabled: false, action: 'connect', note: null });
+  assert.deepEqual(show('disconnected'), { label: '接続', disabled: false, action: 'connect', note: null });
+  assert.deepEqual(show(null, { busy: true }), { label: '準備しています…', disabled: true, action: null, note: null });
+  for (const state of ['planned', 'entitling', 'preparing', 'probing']) assert.deepEqual(show(state), { label: '準備しています…', disabled: true, action: null, note: null }, state);
+  assert.deepEqual(show('connected'), { label: '頼む', disabled: false, action: 'ask', note: null });
+  assert.deepEqual(show('failed', { error: '相手のサーバーが応答しません。時間をおいて試してください。' }), { label: 'もう一度', disabled: false, action: 'retry', note: '相手のサーバーが応答しません。時間をおいて試してください。' });
+  // 取り下げられた物・載せていない物は、ボタンを出さない。理由だけを出す。
+  assert.deepEqual(show('blocked', { error: 'この Agent は、取り下げられました。使えません。' }), { label: null, disabled: true, action: null, note: 'この Agent は、取り下げられました。使えません。' });
+  assert.deepEqual(show(null, { listed: false }), { label: null, disabled: true, action: null, note: 'この Agent は、今はつなげません。' });
+  // 印は、必ず文字。
+  assert.deepEqual(['one_click', 'taps', 'setup', 'unverified', 'blocked'].map((badge) => view.noahBadgeText({ badge, taps: 1, need: 'サインイン' })), ['1 クリック', 'あと 1 タップ（サインイン）', '準備が必要（サインイン）', 'まだ誰も動かしていない', 'つなげません']);
+  assert.deepEqual([view.noahPriceText({ model: 'free' }), view.noahPriceText({ model: 'one_time', amountMinor: 3000 })], ['無料', '¥3,000']);
+});
+
+void test('the menu row appears only for people who may see the list, and the answer is kept for ten minutes', async (t) => {
+  const w = await world(t, { [hostOf(1)]: mcpServer() });
+  const labels = (page) => page.nodes().filter((node) => node.type === 'a' && node.props['aria-label']).map((node) => node.props['aria-label']);
+  // 開いている時。
+  const open = browser(w, null);
+  const shell = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
+  assert.equal(labels(shell).filter((label) => label === 'すぐ使える').length, 0, '最初の表示には、出さない');
+  await shell.flush();
+  assert.equal(labels(shell).filter((label) => label === 'すぐ使える').length, 1);
+  assert.deepEqual(shell.nodes().filter((node) => node.type === 'a' && node.props.href === '/noah/ready' && node.props['aria-current'] === 'page').length >= 1, true);
+  assert.deepEqual(open.ui.calls.filter((call) => call.url === '/api/noah/intake?limit=0').length, 1);
+  // 同じ tab で開き直しても、10 分の間は、問い合わせない。
+  const again = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
+  await again.tick(0);
+  assert.equal(labels(again).filter((label) => label === 'すぐ使える').length, 1);
+  assert.equal(open.ui.calls.filter((call) => call.url === '/api/noah/intake?limit=0').length, 1);
+  await again.tick(600_000);
+  const later = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
+  await later.flush();
+  assert.equal(open.ui.calls.filter((call) => call.url === '/api/noah/intake?limit=0').length, 2);
+  // 閉じている間、審査者でない人には、出ない。審査者には、出る。
+  const closed = browser(w, 'owner-a', { config: { env: {} } });
+  const hidden = closed.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
+  await hidden.flush();
+  assert.equal(labels(hidden).filter((label) => label === 'すぐ使える').length, 0);
+  const reviewer = browser(w, 'reviewer', { config: { env: {}, reviewers: ['reviewer'] } });
+  const shown = reviewer.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
+  await shown.flush();
+  assert.equal(labels(shown).filter((label) => label === 'すぐ使える').length, 1);
+});

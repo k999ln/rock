@@ -1,0 +1,187 @@
+// 画面の部品（components/*.tsx）を、ブラウザなしで動かす台。
+// 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
+// fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
+import { existsSync, readFileSync } from 'node:fs';
+import { createContext, runInContext } from 'node:vm';
+import ts from 'typescript';
+
+const ROOT = new URL('../../../', import.meta.url);
+const Fragment = Symbol('Fragment');
+const jsx = (type, props, key) => ({ type, props: props ?? {}, key: key ?? null });
+
+/**
+ * options: { fetch, modules（'@/lib/…' などの実体）, now（始まりの時刻）, storage（sessionStorage の最初の中身） }
+ * 返す物: mount(file, props) → { text(), find(...), click(label), type(value), flush(), tick(ms) } と、calls・storage・visits。
+ */
+export function screen(options = {}) {
+  const calls = [], visits = [], storage = new Map(Object.entries(options.storage ?? {}));
+  let clock = options.now ?? Date.UTC(2026, 10, 21, 3), timerId = 0, uuid = 0, inflight = 0;
+  const timers = new Map();
+  // 描いている途中の部品・描いた後に動かす effect・状態が変わった印。画面（mount）ごとの物は、mount の中に持つ。
+  let current = null, effects = [], dirty = false, mounts = 0;
+
+  const hooks = {
+    useState(initial) {
+      const instance = current, index = instance.cursor++;
+      if (!(index in instance.slots)) instance.slots[index] = { value: typeof initial === 'function' ? initial() : initial };
+      const slot = instance.slots[index];
+      return [slot.value, (next) => { const value = typeof next === 'function' ? next(slot.value) : next; if (!Object.is(value, slot.value)) { slot.value = value; dirty = true; } }];
+    },
+    useRef(initial) { const instance = current, index = instance.cursor++; return (instance.slots[index] ??= { current: initial }); },
+    useEffect(run, deps) {
+      const instance = current, index = instance.cursor++, old = instance.slots[index];
+      if (!old || !deps || deps.length !== old.deps?.length || deps.some((value, n) => !Object.is(value, old.deps[n]))) {
+        const slot = (instance.slots[index] = { deps, cleanup: old?.cleanup, effect: true });
+        effects.push(() => { slot.cleanup?.(); slot.cleanup = run() ?? undefined; });
+      }
+    },
+    useCallback: (fn) => fn,
+    useMemo: (fn) => fn(),
+    useId: () => 'id',
+    createContext: (value) => ({ Provider: Fragment, value }),
+    useContext: (held) => held.value,
+  };
+
+  const context = createContext({
+    console, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl,
+    Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
+    crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
+    fetch: async (url, init = {}) => {
+      const request = { url: String(url), method: init.method ?? 'GET', headers: { ...init.headers }, body: init.body ? JSON.parse(init.body) : undefined };
+      calls.push(request);
+      inflight++;
+      try {
+        const reply = await options.fetch(request);
+        return { status: reply.status ?? 200, ok: (reply.status ?? 200) < 400, json: async () => structuredClone(reply.body ?? {}), body: { cancel: async () => undefined } };
+      } finally { inflight--; }
+    },
+    setTimeout: (fn, ms = 0) => { timers.set(++timerId, { at: clock + ms, fn }); return timerId; },
+    clearTimeout: (id) => { timers.delete(id); },
+    setInterval: (fn, ms = 0) => { timers.set(++timerId, { at: clock + ms, fn, every: ms }); return timerId; },
+    clearInterval: (id) => { timers.delete(id); },
+    requestAnimationFrame: (fn) => { timers.set(++timerId, { at: clock, fn }); return timerId; },
+    cancelAnimationFrame: (id) => { timers.delete(id); },
+  });
+  context.window = {
+    sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, String(value)); }, removeItem: (key) => { storage.delete(key); } },
+    location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: '', origin: 'https://noah.test' },
+    addEventListener() {}, removeEventListener() {},
+  };
+
+  const loaded = new Map();
+  function load(file) {
+    if (loaded.has(file)) return loaded.get(file);
+    const module = { exports: {} };
+    loaded.set(file, module.exports);
+    const code = ts.transpileModule(readFileSync(new URL(file, ROOT), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
+    const require = (id) => {
+      if (id === 'react') return hooks;
+      if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment };
+      if (id === 'next/link') return { default: 'a' };
+      if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
+      if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
+      if (options.modules?.[id]) return options.modules[id];
+      if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
+      throw Error(`画面の試験の台に、${id} がありません`);
+    };
+    runInContext(`(function (exports, require, module) {${code}\n})`, context)(module.exports, require, module);
+    loaded.set(file, module.exports);
+    return module.exports;
+  }
+
+  /** 画面を 1 つ開く（開くたびに、新しい画面。前に開いた画面の状態は、引き継がない。sessionStorage と時計は、同じ tab の物として共有する）。 */
+  function mount(file, props = {}) {
+    const Component = load(file).default, root = `screen${++mounts}`;
+    const instances = new Map();
+    let tree = null, visited = new Set();
+    /** 関数の部品を、入れ子で描く。返すのは、HTML の要素だけの木。 */
+    const expand = (node, path) => {
+      if (Array.isArray(node)) return node.map((child, index) => expand(child, `${path}/${child && typeof child === 'object' && child.key !== null && child.key !== undefined ? `k:${child.key}` : index}`));
+      if (node === null || node === undefined || typeof node !== 'object') return node;
+      if (typeof node.type === 'function') {
+        const id = `${path}<${node.type.name}${node.key !== null ? `:${node.key}` : ''}>`;
+        const instance = instances.get(id) ?? { slots: [], cursor: 0 };
+        instances.set(id, instance); visited.add(id);
+        const before = current;
+        current = instance; instance.cursor = 0;
+        const output = node.type(node.props);
+        current = before;
+        return expand(output, id);
+      }
+      return { ...node, props: { ...node.props, children: expand(node.props.children, `${path}/${typeof node.type === 'symbol' ? 'fragment' : node.type}`) } };
+    };
+    const render = () => {
+      for (let pass = 0; pass < 50; pass++) {
+        dirty = false; visited = new Set(); effects = [];
+        tree = expand(jsx(Component, props), root);
+        // 描かれなくなった部品を片づける。
+        for (const [id, instance] of instances) if (!visited.has(id)) { for (const slot of instance.slots) if (slot?.effect) slot.cleanup?.(); instances.delete(id); }
+        for (const run of effects.splice(0)) run();
+        if (!dirty) return;
+      }
+      throw Error('画面が、落ち着きません（描き直しが続いています）');
+    };
+    const collect = (value, out) => {
+      if (Array.isArray(value)) value.forEach((child) => collect(child, out));
+      else if (value && typeof value === 'object') { out.push(value); collect(value.props.children, out); }
+      return out;
+    };
+    const read = (value) => (Array.isArray(value) ? value.map(read).join('') : value && typeof value === 'object' ? read(value.props.children) : value === null || value === undefined || typeof value === 'boolean' ? '' : String(value));
+    /** 要素の並び（渡さなければ、画面の全部）。 */
+    const nodes = (value) => collect(value === undefined ? tree : value, []);
+    /** 中の文（渡さなければ、画面の全部）。 */
+    const text = (value) => read(value === undefined ? tree : value);
+    /** 進んでいる通信が終わり、画面が落ち着くまで待つ（回数ではなく、実際の時間で見張る。hash の計算は、別の thread で終わるため）。 */
+    const flush = async () => {
+      const deadline = performance.now() + 20_000;
+      for (let quiet = 0; quiet < 4;) {
+        await new Promise((resolve) => { if (inflight > 0) setTimeout(resolve, 1); else setImmediate(resolve); });
+        const before = read(tree);
+        render();
+        quiet = inflight === 0 && read(tree) === before ? quiet + 1 : 0;
+        if (performance.now() > deadline) throw Error('画面の通信が、終わりません');
+      }
+    };
+    const api = {
+      text, nodes, render, flush,
+      /** 条件に合う要素（type と、中の文の一部）。 */
+      find: (type, label) => nodes().filter((node) => node.type === type && (label === undefined || text(node).includes(label))),
+      /** ボタンを押す。押せないボタン・無いボタンは、試験の失敗。 */
+      async click(label) {
+        const [button] = api.find('button', label);
+        if (!button) throw Error(`「${label}」のボタンがありません: ${text()}`);
+        if (button.props.disabled) throw Error(`「${label}」は、押せません`);
+        button.props.onClick?.({ preventDefault() {} });
+        render();
+        await flush();
+      },
+      /** 入力欄へ打つ（最初の input）。 */
+      async type(value) {
+        const [input] = nodes().filter((node) => node.type === 'input');
+        input.props.onChange({ target: { value } });
+        render();
+        await flush();
+      },
+      /** 時計を進める。期限の来た timer を、順に動かす。 */
+      async tick(ms) {
+        const end = clock + ms;
+        for (let guard = 0; guard < 1000; guard++) {
+          const due = [...timers.entries()].filter(([, timer]) => timer.at <= end).sort((a, b) => a[1].at - b[1].at)[0];
+          if (!due) break;
+          const [id, timer] = due;
+          clock = Math.max(clock, timer.at);
+          if (timer.every) timer.at += timer.every; else timers.delete(id);
+          timer.fn();
+          render();
+          await flush();
+        }
+        clock = end;
+        render();
+        await flush();
+      },
+    };
+    render();
+    return api;
+  }
+  return { mount, calls, visits, storage, time: () => clock };
+}
