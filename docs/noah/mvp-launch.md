@@ -140,16 +140,16 @@ sequenceDiagram
 | L1 | 画面を取らない検査 | 84 | `engineArgs()` の切り出し、`lib/noah-screenless-audit.mjs`、`scripts/check-noah-screenless.mjs`、`verify` の鎖、「閉じても進む」の回帰試験 | — |
 | L2 | 接続要件と計画（純関数） | 96 | `lib/noah-connect-requirements.ts`、`lib/noah-connect-plan.ts`、試験 | — |
 | L3 | 取り込みと一覧の土台 | 85 | migration（取り込みの 5 表）、`lib/noah-intake-draft.ts`・`-family.ts`・`-store.ts`（公式台帳、更新された物だけ、名寄せ、一覧・検索・集計）、`lib/noah-flags.ts`、巡回の入口（`/api/noah/intake/tick`）と `services/noah-patrol-wake/`、運営の画面の節 | L2 |
-| L4 | 握手 | 86 | `lib/noah-mouth-mcp-remote.ts`、`lib/noah-form.ts`、`lib/noah-probe.ts`、巡回での握手、系列への写し | L3 |
+| L4 | 握手 | 86 | `lib/noah-mouth-mcp-remote.ts`、`lib/noah-form.ts`、`lib/noah-probe.ts`、巡回での握手（`lib/noah-intake-probe.ts`）、系列への写し。握手の結果を書く所なので、失敗が続いた物を外す・30 日で隠す・量産を握手の対象から外す、も、ここで入れた | L3 |
 | L5 | つなぐ | 74・96 | migration（`noah_connections`）、`lib/noah-connect.ts`（相手のサーバー）、計画の API、道具の一覧の API、`noah-card.tsx`・`noah-connect-button.tsx`・`noah-ready.tsx`・`noah-ready-detail.tsx`、その場のサインイン、navigation の 1 行 | L4 |
 | L6 | 頼む | 87 | migration（`noah_asks`）、`WorkJob.noahRemote`、`lib/noah-remote-work.ts`、`lib/noah-ask.ts`（入力欄だけ）、`noah-ask.tsx`・`noah-work-list.tsx`、本人の実行で「動いた」を付ける | L5 |
-| L7 | 見回りを保つ | 88 | 失敗が続いた物を外す、量産を握手の対象から外す、並びの引き直し、取り下げと戻し、止まった依頼と接続の後始末、つながると確かめた数 | L6 |
+| L7 | 見回りを保つ | 88 | 止まった依頼と接続の後始末、つながると確かめた数（失敗が続いた物を外す・量産を握手の対象から外す は L4 で、並びの引き直し・取り下げと戻し は L3 で入った） | L6 |
 | L8 | 出すための運用 | 97 | `/noah/help` の `#bot`、運営の画面（切り替えの状態・見張る数）、戻し方の手順書 | L3 |
 | L9 | 受入 | 90 | 一周の自動試験、画面の決まりの試験、実機の確かめの表 | L6 |
 
 L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 までで機能は全部そろい、L9 が「出してよいか」を判定する。
 
-移す先の対応（参照実装 → `lib/`）: `noah-connect-v1.ts` → `noah-connect-requirements.ts`・`noah-connect-plan.ts`（L2）。`noah-intake-v1.ts` → `noah-intake-draft.ts`・`noah-intake-family.ts`・`noah-intake-wake.ts`（L3）、`noahSampleCalls` は移さない（後）。`noah-flags-v1.ts` → `noah-flags.ts`（L3）。`noah-mouth-v1.ts` の握手・呼び出し・検査 → `noah-mouth-mcp-remote.ts`（L4）、相手の許可と起動の型紙は移さない（後）。`noah-form-v1.ts` → `noah-form.ts`（L4）。`noah-tool-agent-v1.ts` は移さない（後）。SQL は `noah-v1.sql` から、その PR の表だけを `drizzle/` へ。`noah-regroup-v1.sql` と `noah-listing-v1.sql` は、文字列のまま `lib/noah-intake-family.ts`・`lib/noah-intake-store.ts` へ。
+移す先の対応（参照実装 → `lib/`）: `noah-connect-v1.ts` → `noah-connect-requirements.ts`・`noah-connect-plan.ts`（L2）。`noah-intake-v1.ts` → `noah-intake-draft.ts`・`noah-intake-family.ts`・`noah-intake-wake.ts`（L3）、`noahSampleCalls` は移さない（後）。`noah-flags-v1.ts` → `noah-flags.ts`（L3）。`noah-mouth-v1.ts` の握手・呼び出し・検査 → `noah-mouth-mcp-remote.ts`（L4）、相手の許可と起動の型紙は移さない（後）。`noah-form-v1.ts` → `noah-form.ts`（L4）。`noah-intake-v1.ts` の見回りの間隔（`nextNoahCheck`）→ `noah-probe.ts`（L4）。`noah-tool-agent-v1.ts` は移さない（後）。SQL は `noah-v1.sql` から、その PR の表だけを `drizzle/` へ。`noah-regroup-v1.sql` と `noah-listing-v1.sql` は、文字列のまま `lib/noah-intake-family.ts`・`lib/noah-intake-store.ts` へ。
 
 ## 7. 本人が決める事（既定つき。決まるまで、既定で進める）
 

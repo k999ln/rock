@@ -171,6 +171,8 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 
 ### 9.3 握手の失敗の扱い（ローンチ版。4.3 の表を置き換える）
 
+**この表は、L4（握手）で入れた**（`lib/noah-probe.ts` の `planNoahProbeWrite`。握手の結果を書く所と、失敗を数える所が同じなので）。L7 で足す物は無い。
+
 | 続けて失敗した回数（応答しない） | する事 | 次に確かめる時 |
 | --- | --- | --- |
 | 1 回 | `failures=1`、`first_failure_at=now`。`level` はそのまま（一覧に残る） | 6 時間後 |
@@ -222,7 +224,7 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 ### 9.7 握手の対象と、最初の 1 巡
 
 - 巡回が握手するのは、口が「相手のサーバー」で、本人の鍵の入力が要らない候補だけ（86 の 10.3）。
-- 量産の系列（`family_id LIKE 'bulk:%'`）は、ローンチでは載せないので、握手もしない: 名寄せの直後に `UPDATE noah_intake_checks SET next_check_at = ? WHERE level = 0 AND candidate_id IN (SELECT id FROM noah_intake_candidates WHERE family_id LIKE 'bulk:%')` で 30 日後へ送る（9,070 件。標本では 24 host のうち 5 host しか応答しない）。
+- （L4 で入れた。`lib/noah-intake-sync.ts` の `regroupStatements`。期限が 1 日以内の物だけを送り、毎日は書き直さない）量産の系列（`family_id LIKE 'bulk:%'`）は、ローンチでは載せないので、握手もしない: 名寄せの直後に `UPDATE noah_intake_checks SET next_check_at = ? WHERE level = 0 AND candidate_id IN (SELECT id FROM noah_intake_candidates WHERE family_id LIKE 'bulk:%')` で 30 日後へ送る（9,070 件。標本では 24 host のうち 5 host しか応答しない）。
 - 最初の 1 巡は、量産でない約 31,400 件。同じ接続先へは 1 時間に 1 回までなので、1 つの接続先に候補が多い物（最大は 428 件）は、1 巡に日数が掛かる。それ以外は、1 回の合図で 16 件なら約 1.5 日、8 件なら約 3 日。
 - 1 巡の後は、7 日ごとの確かめ直しで、1 日に約 5,000 件（1 回の合図で 8 件あれば足りる）。
 
