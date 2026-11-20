@@ -70,7 +70,7 @@ function synthetic(started) {
   };
   return { records, agents, expected, eligible: kinds.length + 3, check: undefined, after: () => {
     assert.equal(never.log.length, 0, '鍵の要る候補と、量産の系列へは送らない');
-    assert.equal(hosts.includes('elsewhere.example.org'), false, '別の接続先への転送に従わない');
+    assert.deepEqual(hosts.filter((name) => name === 'elsewhere.example.org'), [], '別の接続先への転送に従わない');
     assert.equal(shared.log.filter((request) => request.rpc === 'initialize').length, 1, '同じ接続先へは 1 時間に 1 回');
     assert.deepEqual([...new Set([...servers, shared].flatMap((server) => server.log.map((request) => request.rpc ?? request.method)))].sort((a, b) => a.localeCompare(b)), ['DELETE', 'initialize', 'notifications/initialized', 'tools/list'], '道具を呼ばない');
   } };

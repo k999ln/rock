@@ -317,7 +317,7 @@ void test('a server that sends the handshake to another host is blocked, and not
   await f.store.sync();
   assert.deepEqual(await patrol(), { ...NONE, probes: 2, ok: 1 });
   assert.deepEqual([f.check(1).result, f.check(1).level, f.check(1).next_check_at - NOW, f.check(1).failures], ['blocked', 0, 30 * DAY, 0]);
-  assert.equal(net.hosts.includes('elsewhere.example.org'), false, '転送先へ 1 回も送らない');
+  assert.deepEqual(net.hosts.filter((name) => name === 'elsewhere.example.org'), [], '転送先へ 1 回も送らない');
   assert.equal(elsewhere.log.length, 0);
   assert.deepEqual(await listed(f), [[id(2), 'new']]);
 });
