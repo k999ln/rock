@@ -10,7 +10,7 @@ const Fragment = Symbol('Fragment');
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key: key ?? null });
 
 /**
- * options: { fetch, modules（'@/lib/…' などの実体）, now（始まりの時刻）, storage（sessionStorage の最初の中身） }
+ * options: { fetch, modules（'@/lib/…' などの実体）, now（始まりの時刻）, storage（sessionStorage の最初の中身）, document（画面が裏かどうかを見る `document`。例 `{ hidden: false }`。渡さなければ、`document` は無い） }
  * 返す物: mount(file, props) → { text(), find(...), click(label), press(node), change(node, value), submit(form), type(value), flush(), tick(ms) } と、calls・storage・visits。
  */
 export function screen(options = {}) {
@@ -62,6 +62,8 @@ export function screen(options = {}) {
     requestAnimationFrame: (fn) => { timers.set(++timerId, { at: clock, fn }); return timerId; },
     cancelAnimationFrame: (id) => { timers.delete(id); },
   });
+  // 画面が裏の間は読み直さない、の試験のため（試験が、hidden を書き換える）。
+  if (options.document) context.document = options.document;
   context.window = {
     sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, String(value)); }, removeItem: (key) => { storage.delete(key); } },
     location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: '', origin: 'https://noah.test' },
@@ -73,8 +75,8 @@ export function screen(options = {}) {
   const loaded = new Map();
   function load(file) {
     if (loaded.has(file)) return loaded.get(file);
-    const module = { exports: {} };
-    loaded.set(file, module.exports);
+    const unit = { exports: {} };
+    loaded.set(file, unit.exports);
     const code = ts.transpileModule(readFileSync(new URL(file, ROOT), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
     const require = (id) => {
       if (id === 'react') return hooks;
@@ -86,9 +88,9 @@ export function screen(options = {}) {
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
       throw Error(`画面の試験の台に、${id} がありません`);
     };
-    runInContext(`(function (exports, require, module) {${code}\n})`, context)(module.exports, require, module);
-    loaded.set(file, module.exports);
-    return module.exports;
+    runInContext(`(function (exports, require, module) {${code}\n})`, context)(unit.exports, require, unit);
+    loaded.set(file, unit.exports);
+    return unit.exports;
   }
 
   /** 画面を 1 つ開く（開くたびに、新しい画面。前に開いた画面の状態は、引き継がない。sessionStorage と時計は、同じ tab の物として共有する）。 */

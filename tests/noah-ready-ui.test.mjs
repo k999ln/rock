@@ -4,6 +4,7 @@
 // 仕様: docs/noah/spec-74-one-click-connect.md の 5.2・6.3・11.4・11.5・11.6、spec-96-connect-plan.md の 6 章。
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import * as askView from '../lib/noah-ask-view.ts';
 import * as botNotice from '../lib/noah-bot-notice.ts';
@@ -494,4 +495,132 @@ void test('the entry on the explore screen appears only for people who may see t
   const shell = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
   await shell.flush();
   assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agentを探す', '実行中', '成果データ']);
+});
+
+// ---------------------------------------------------------------------------
+// 画面の決まり（docs/noah/spec-90-phone-only-loop.md の 4 章）。一周の、どの段の画面でも守られている事。
+//
+// 4 章の表の行と、その試験がある所:
+// - 1 枚のカードに、主ボタンは 1 つ／印・動く所・料金が、文字で出る／出どころが出る … この file の最初の試験（the list: …）
+// - 送り先が、接続の前と、頼む欄に出る … この file の「the detail screen: where the input goes …」と、tests/noah-ask-ui.test.mjs の「choosing a tool: …」
+// - 確かめ（最初の「頼む」が、送らない） … tests/noah-ask-ui.test.mjs の「a tool that may change something …」
+// - 読み直し（終わっていない依頼がある間だけ） … tests/noah-ask-ui.test.mjs の「the work list: …」。画面が裏の間は読まない事は、下の試験
+// - 進行で画面を塞がない／提供者の文を、HTML として出さない／画面に出さない言葉／「提携」「公認」の語が無い … 下の試験（一周の、全部の段で見る）
+// ---------------------------------------------------------------------------
+
+void test('the rules of the screens hold at every step of the loop: nothing covers the screen, provider text stays text, no internal words, no claim of partnership', async (t) => {
+  // 提供者の文（名前・説明・道具の説明・欄の説明・成果）に、HTML を入れておく。
+  const TRAP = '<script>alert(1)</script><img src=x onerror=alert(2)><b>bold</b>';
+  const lookup = tool('lookup', true, { description: `Looks up a player. ${TRAP}`, inputSchema: { type: 'object', required: ['query'], properties: { query: { type: 'string', description: `Name to find ${TRAP}` } } } });
+  const note = tool('send_note', null, { description: `Sends a note. ${TRAP}`, inputSchema: { type: 'object', required: ['text'], properties: { text: { type: 'string' } } } });
+  const hold = {};
+  const server = mcpServer({ tools: [lookup, tool('stats'), note], call: (params) => ({ content: [{ type: 'text', text: `found ${String(params.arguments.query ?? params.arguments.text ?? '')} ${TRAP}` }] }),
+    before: async (body) => { const stop = body?.method === 'tools/call' ? hold.call : null; if (stop) { stop.reached(); await stop.opened; } } });
+  const w = await world(t, { [hostOf(1)]: server }, { records: [entry(1, { title: `Agent ${TRAP}`, description: `Finds players. ${TRAP}`, websiteUrl: 'https://provider.example.org/about' })] });
+  const waiting = [], doc = { hidden: false };
+  const session = { user: null };
+  const ui = screen({ fetch: w.browser(session, { waitUntil: (work) => { waiting.push(work); } }), modules: MODULES, now: w.f.time(), document: doc });
+
+  // 部品の file に、HTML をそのまま差し込む書き方・画面を覆う部品が無い。
+  for (const name of ['noah-ready', 'noah-ready-detail', 'noah-card', 'noah-connect-button', 'noah-ask', 'noah-work-list']) {
+    const source = readFileSync(new URL(`../components/${name}.tsx`, import.meta.url), 'utf8');
+    assert.doesNotMatch(source, /dangerouslySetInnerHTML|innerHTML|<dialog|aria-modal|showModal|createPortal/, name);
+  }
+
+  const INTERNAL = ['MCP', 'OAuth', 'token', 'runner', 'lease', 'container', 'hash', 'JSON'];
+  const seen = [];
+  /** その時の画面が、決まりを守っている事。stage は、失敗した時に、どの段かを言うための名前。 */
+  const rules = (page, stage) => {
+    seen.push(stage);
+    const nodes = page.nodes(), text = page.text();
+    // 提供者の文は、字のまま出る（要素にならない）。
+    assert.deepEqual(nodes.filter((node) => ['script', 'iframe', 'object', 'embed', 'style', 'b'].includes(node.type)).map((node) => node.type), [], stage);
+    assert.equal(nodes.some((node) => node.type === 'img' && node.props.src === 'x'), false, stage);
+    assert.equal(nodes.some((node) => 'dangerouslySetInnerHTML' in node.props || Object.keys(node.props).some((key) => /^on(?:error|load)$/i.test(key))), false, stage);
+    // 進行で、画面を塞がない（重ねて出す部品・全画面を覆う部品が無い。進行は、ボタンの文と、一覧の行だけ）。
+    assert.deepEqual(nodes.filter((node) => node.type === 'dialog' || node.props['aria-modal'] !== undefined || ['dialog', 'alertdialog'].includes(node.props.role)
+      || /overlay|modal|backdrop|fullscreen|scrim|spinner/i.test(String(node.props.className ?? ''))).map((node) => [node.type, node.props.className]), [], stage);
+    // 画面に出さない言葉（Noah の文に無い事。出どころの名前「Official MCP Registry」は、固有の名前なので除く。提供者の文は、この試験では、その言葉を持たない）。
+    const own = text.replaceAll('Official MCP Registry', '');
+    for (const word of INTERNAL) assert.doesNotMatch(own, new RegExp(`(?<![A-Za-z])${word}(?![A-Za-z])`, 'i'), `${stage}: ${word}`);
+    // 台帳の運営と、関係があるように書かない。
+    for (const word of ['提携', '公認', '公式パートナー', 'パートナー']) assert.equal(text.includes(word), false, `${stage}: ${word}`);
+  };
+  const asksRead = () => ui.calls.filter((call) => call.method === 'GET' && call.url.startsWith('/api/noah/ask?')).length;
+
+  // --- 一覧（未サインイン）---
+  const listPage = ui.mount(LIST);
+  await listPage.flush();
+  rules(listPage, '一覧');
+  assert.ok(listPage.text().includes(`Agent ${TRAP}`), '提供者の文は、字のまま');
+  assert.match(listPage.text(), /出どころ: Official MCP Registry。Noah が作った物ではありません。説明は、提供者が書いた文のままです。/);
+
+  // --- 詳細（接続の前）---
+  session.user = 'owner-a';
+  const page = ui.mount(DETAIL, { id: familyId(1) });
+  await page.flush();
+  rules(page, '詳細（接続の前）');
+  assert.ok(page.text().includes(`Finds players. ${TRAP}`));
+
+  // --- 接続した後（道具の一覧）---
+  await page.click('接続');
+  rules(page, '道具の一覧');
+  const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && page.text(page.nodes(node).find((child) => child.type === 'strong')) === name);
+  const form = () => page.find('form')[0];
+  const input = () => page.nodes(form()).find((node) => ['textarea', 'input'].includes(node.type));
+
+  // --- 入力欄 ---
+  await page.press(toolButton('lookup'));
+  rules(page, '入力欄');
+  assert.ok(page.text(form()).includes(`Name to find ${TRAP}`));
+
+  // --- 頼んだ直後（相手が、まだ返していない）---
+  let open, reached;
+  hold.call = { opened: new Promise((resolve) => { open = resolve; }), arrived: new Promise((resolve) => { reached = resolve; }), reached: () => reached() };
+  await page.change(input(), 'cobalt');
+  await page.submit(form());
+  await hold.call.arrived;
+  await page.tick(1000);
+  rules(page, '進んでいる間');
+  assert.match(page.text(), /進んでいます/);
+  // 進んでいる間も、他の物を押せる（別の道具を選べる。「切る」も押せる）。
+  assert.equal(page.find('button').some((node) => page.text(node) === '切る' && !node.props.disabled), true);
+
+  // 読み直し: 終わっていない依頼がある間は、読む。画面が裏の間は、読まない。戻ると、また読む。
+  const visible = asksRead();
+  await page.tick(3000);
+  assert.ok(asksRead() > visible, '表の間は、読み直す');
+  doc.hidden = true;
+  const hiddenAt = asksRead();
+  await page.tick(10_000);
+  assert.equal(asksRead(), hiddenAt, '裏の間は、読まない');
+  doc.hidden = false;
+  await page.tick(3000);
+  assert.ok(asksRead() > hiddenAt, '戻ると、読む');
+
+  // --- 成果が出た後 ---
+  delete hold.call;
+  open();
+  for (let seenWork = -1; seenWork !== waiting.length;) { seenWork = waiting.length; await Promise.all(waiting); }
+  await page.tick(3000);
+  rules(page, '成果');
+  assert.ok(page.text().includes(`found cobalt ${TRAP}`), '成果も、字のまま');
+  assert.match(page.text(), new RegExp(`${hostOf(1).replaceAll('.', '\\.')} の lookup が返した内容です。`));
+
+  // 読み直し: 終わっていない依頼が無くなったら、定期の読み直しを置かない（1 分進めても、何も読まない）。
+  const settled = ui.calls.length;
+  await page.tick(60_000);
+  assert.equal(ui.calls.length, settled);
+
+  // --- 確かめ（送る前に、入力を見せる）---
+  await page.press(toolButton('send_note'));
+  await page.change(input(), 'hello');
+  await page.submit(form());
+  rules(page, '確かめ');
+  assert.equal(ui.calls.filter((call) => call.method === 'POST' && call.url === '/api/noah/ask').length, 1, '確かめの前は、送らない');
+
+  // --- 切った後 ---
+  await page.click('切る');
+  rules(page, '切った後');
+  assert.deepEqual(seen, ['一覧', '詳細（接続の前）', '道具の一覧', '入力欄', '進んでいる間', '成果', '確かめ', '切った後']);
 });

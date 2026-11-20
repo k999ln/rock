@@ -24,6 +24,7 @@ export const handshakes = (server) => server.log.filter((request) => request.rpc
 /**
  * servers は { host: mcpServer(...) | (url, init) => Response }。records は、台帳が返す記録（既定は、servers の host ごとに 1 件）。
  * 作った後、台帳を 1 回読み、巡回の握手を済ませてある（握手が通った物が、一覧に載っている）。相手が受けた要求の記録は、そこで空にする。
+ * options.patrol が false なら握手をせず、options.sync が false なら台帳も読まない（表は空のまま）。
  */
 export async function world(t, servers, options = {}) {
   const state = { records: options.records ?? Object.keys(servers).map((name) => entry(Number(/^agent-(\d+)\./.exec(name)?.[1] ?? 0))) };
@@ -44,8 +45,11 @@ export async function world(t, servers, options = {}) {
   /** 台帳を読み直す（記録を変えた後）。名寄せは 1 日 1 回なので、要る時は時計を進めてから呼ぶ。 */
   const sync = async (records) => { if (records) state.records = records; return f.store.sync(); };
   const clear = () => { net.hosts.length = 0; for (const server of Object.values(servers)) if (typeof server !== 'function') server.log.length = 0; };
-  await sync();
-  if (options.patrol !== false) await patrol();
+  // options.sync が false の時は、台帳も読まない（取り込みを、巡回の合図から始める試験のため）。
+  if (options.sync !== false) {
+    await sync();
+    if (options.patrol !== false) await patrol();
+  }
   clear();
 
   /** その人として、入口を呼ぶ。user が null なら、未サインイン。 */
