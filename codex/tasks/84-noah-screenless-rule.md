@@ -34,4 +34,6 @@
 
 ## 開発進捗
 
-L1 実装済み・全体検証中。起動引数は変更せず `engineArgs()` を抽出し、監査の正本を `lib/noah-screenless-audit.mjs` へ移した。18 起動構成の検査と、15 通りの緩和拒否、overview なしの poll → start → finish による Work 成果保存を確認。関連 30 テスト成功。Mac の観測・面の分類はローンチ後の範囲。
+[PR #329](https://github.com/k999ln/rock/pull/329): L1 実装済み・全体検証中。起動引数は変更せず `engineArgs()` を抽出し、監査の正本を `lib/noah-screenless-audit.mjs` へ移した。18 起動構成の検査と、15 通りの緩和拒否、overview なしの poll → start → finish による Work 成果保存を確認。関連 30 テスト成功。Mac の観測・面の分類はローンチ後の範囲。
+
+最新 main を pull し `npm ci` 完了。設計検証キット61件・DDL10項目成功。使い捨てコピーの `terminalContainerArgs` に DISPLAY=:0 を追加した実CLIは終了コード1で拒否（作業元の引数は不変）。製品lintのtest呼出しをvoidへ合わせて全体verifyを再実行中。
