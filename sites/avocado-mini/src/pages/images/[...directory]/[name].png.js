@@ -14,12 +14,12 @@ export function getStaticPaths() {
     'R5-V01-camera-geometry.png',
   ];
   const aliases = [
-    ['avocado-mini-kit.png', 'public/rockstaros/avocado-mini-kit-p0.png'],
-    ['tower-concept.png', 'public/rockstaros/avocado-mini-tower-concept.png'],
-    ['r5/avocado-mini-r5-concept.png', 'sites/avocado-mini/public/images/avocadomini-r5-slim-form-reference.png'],
-    ...drawings.map(name => ['r5/' + name, 'docs/avocado-mini-r5/package/drawings/' + name]),
+    [undefined, 'avocado-mini-kit', 'public/rockstaros/avocado-mini-kit-p0.png'],
+    [undefined, 'tower-concept', 'public/rockstaros/avocado-mini-tower-concept.png'],
+    ['r5', 'avocado-mini-r5-concept', 'sites/avocado-mini/public/images/avocadomini-r5-slim-form-reference.png'],
+    ...drawings.map(name => ['r5', name.slice(0, -4), 'docs/avocado-mini-r5/package/drawings/' + name]),
   ];
-  return aliases.map(([path, source]) => ({ params: { path }, props: { source } }));
+  return aliases.map(([directory, name, source]) => ({ params: { directory, name }, props: { source } }));
 }
 
 export async function GET({ props }) {

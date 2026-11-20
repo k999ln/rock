@@ -1,6 +1,6 @@
 ## 2026-11-20
 
-- miiの商品案内を4本のTower＋別体Hubに統一し、商品サイトの画像11点を原本から生成。追加機能の表示名、重複索引、未使用の旧画面・CSSを整理（task74）。
+- miiの商品案内を4本のTower＋別体Hubに統一し、商品サイトの画像11点を原本から生成。追加機能の表示名、重複索引、未使用の旧画面・CSSを整理（[PR #327](https://github.com/k999ln/rock/pull/327)、task74）。
 
 - Noah/EveのMac API接続・コード取得・型検査・仕事通信を共通化し、構成/事業/READMEを本人MacのNoah→miiへ同期。本人・招待・審査・停止条件と既存機能を保持し、Git読取り失敗時の子処理回収も修正（[PR #326](https://github.com/k999ln/rock/pull/326)、task73）。
 
