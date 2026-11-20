@@ -32,3 +32,10 @@
 - `node --experimental-strip-types --test tests/noah-mouth-remote.test.mjs tests/noah-oauth.test.mjs tests/noah-probe.test.mjs tests/noah-oauth-service.test.mjs`（相手の振る舞い 17 通り、接続先の検査、取り方の決定 10 通り、`state` は 1 回だけ・10 分・本人だけ）。
 - 手元の巡回で、鍵の宣言が無い候補 100 件に握手の結果が付く。内訳を PR 本文に書く（実測: 応答 54.6%・401 が 34.8%・失敗 10.6%）。
 - `npm run sky:check`、`npm run typecheck`、`npm run lint:product`。
+
+## 開発進捗
+
+- 2026-11-20 23:15 JST: **L4（握手）は Claude が作業中。** 枝は `claude/noah-handshake-l4-20261120`（L3 の [PR #332](https://github.com/k999ln/rock/pull/332) の上に積む）。同じ範囲を、別の枝で作り始めない（L3 は、2 か所で同じ物を作ってしまった）。
+- 範囲は仕様書 86 の 10 章だけ（握手・道具の一覧・道具の呼び出し・接続先の検査・握手までの巡回）。相手の許可（OAuth）は作らない。
+- 本番への migration・配備・切り替えは行わない。
+
