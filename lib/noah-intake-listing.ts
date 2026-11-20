@@ -114,6 +114,14 @@ SELECT c.source, c.state, (c.family_id LIKE 'bulk:%') AS bulk, k.mouth, k.setup,
   FROM noah_intake_candidates c LEFT JOIN noah_intake_checks k ON k.candidate_id = c.id
  GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
 `,
+gate: String.raw`
+-- name: gate
+-- 頼む前の上限（noahAskGate へ渡す 4 つの数）。:minute_ago = 今 - 60,000、:day_ago = 今 - 86,400,000。
+SELECT (SELECT COUNT(*) FROM noah_asks WHERE owner_id = :owner AND finished_at IS NULL) AS open,
+       (SELECT COUNT(*) FROM noah_asks WHERE owner_id = :owner AND created_at > :minute_ago) AS last_minute,
+       (SELECT COUNT(*) FROM noah_asks WHERE owner_id = :owner AND created_at > :day_ago) AS last_day,
+       (SELECT COUNT(*) FROM noah_asks WHERE host = :host AND created_at > :minute_ago) AS host_last_minute;
+`,
 connect_gate: String.raw`
 -- name: connect_gate
 -- つなぐ前の上限（noahConnectGate へ渡す 3 つの数）。新しく行を作る時だけ数える。:minute_ago = 今 - 60,000、:day_ago = 今 - 86,400,000。

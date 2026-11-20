@@ -127,7 +127,7 @@ export async function checkNoahProbe(options = { live: false }) {
   const mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: 'export default { fetch() { return new Response("local probe acceptance"); } };', compatibilityDate: '2026-10-01', d1Databases: { DB: 'noah-probe-local-acceptance' } }));
   try {
     const db = await mf.getD1Database('DB');
-    for (const file of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections']) for (const sql of readFileSync(new URL(`../drizzle/${file}.sql`, import.meta.url), 'utf8').split('--> statement-breakpoint').filter((part) => /CREATE/.test(part))) await db.prepare(sql).run();
+    for (const file of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections', '0048_noah_asks']) for (const sql of readFileSync(new URL(`../drizzle/${file}.sql`, import.meta.url), 'utf8').split('--> statement-breakpoint').filter((part) => /CREATE/.test(part))) await db.prepare(sql).run();
     const started = Date.now(), key = 'local-acceptance-wake-'.repeat(3);
     const world = options.live ? await live(started, options) : synthetic(started);
     let logical = started, turnStart = started;

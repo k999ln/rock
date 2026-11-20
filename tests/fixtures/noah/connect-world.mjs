@@ -1,6 +1,7 @@
-// つなぐ・道具の一覧の試験で使う世界: 台帳・接続先（合成のサーバー）・表（本番と同じ migration）・入口（API の関数）。通信はしない。
+// つなぐ・道具の一覧・頼む の試験で使う世界: 台帳・接続先（合成のサーバー）・表（本番と同じ migration）・入口（API の関数）。通信はしない。
 // 一覧に載せるのは、巡回の握手を実際に通した物だけ（表を直に書いて「載せた事」にしない）。
 import { createIntakeApi } from '../../../lib/noah-intake-api.ts';
+import { createNoahAskApi } from '../../../lib/noah-ask.ts';
 import { createNoahConnectApi } from '../../../lib/noah-connect.ts';
 import { createNoahConnectPlanApi } from '../../../lib/noah-connect-plan-api.ts';
 import { parseNoahFlags } from '../../../lib/noah-flags.ts';
@@ -54,7 +55,7 @@ export async function world(t, servers, options = {}) {
       authenticate: async () => { if (!user) throw Error('UNAUTHORIZED'); return user; },
       ...(config.waitUntil ? { waitUntil: config.waitUntil } : {}),
     };
-    const api = createNoahConnectApi(deps), planApi = createNoahConnectPlanApi(deps);
+    const api = createNoahConnectApi(deps), planApi = createNoahConnectPlanApi(deps), askApi = createNoahAskApi(deps);
     const send = async (handler, method, path, body, headers) => {
       const base = method === 'GET' ? {} : { Origin: ORIGIN, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': user ? await ownerScopeFor(user) : '' };
       const response = await handler(new Request(ORIGIN + path, { method, ...(body === undefined ? {} : { body: typeof body === 'string' ? body : JSON.stringify(body) }), headers: { ...base, ...headers } }));
@@ -62,7 +63,7 @@ export async function world(t, servers, options = {}) {
     };
     const plan = (agent) => send(planApi, 'GET', `/api/noah/connect-plan?agent=${encodeURIComponent(agent)}`);
     return {
-      deps, api, planApi, send, plan,
+      deps, api, planApi, askApi, send, plan,
       /** 計画を読んでから、つなぐ（画面と同じ順）。planSha256 を渡した時は、読まずに、その値で送る。 */
       connect: async (agent, id, planSha256, headers) => send(api.collection, 'POST', '/api/noah/connect', { id, agentId: agent, planSha256: planSha256 ?? (await plan(agent)).body.planSha256 }, headers),
       raw: (body, headers, method = 'POST') => send(api.collection, method, '/api/noah/connect', body, headers),
@@ -70,6 +71,11 @@ export async function world(t, servers, options = {}) {
       get: (id) => send((request) => api.item(request, id), 'GET', `/api/noah/connect/${id}`),
       act: (id, action, revision, headers) => send((request) => api.item(request, id), 'POST', `/api/noah/connect/${id}`, { action, revision }, headers),
       tools: (id, tool) => send((request) => api.tools(request, id), 'GET', `/api/noah/connect/${id}/tools${tool ? `?tool=${encodeURIComponent(tool)}` : ''}`),
+      /** 頼む。body は `{ id, connectionId, form: { tool, toolSha256, input, confirm? }, screen? }`。 */
+      ask: (body, headers, method = 'POST') => send(askApi.collection, method, '/api/noah/ask', body, headers),
+      asks: (connection) => send(askApi.collection, 'GET', `/api/noah/ask${connection ? `?connection=${connection}` : ''}`),
+      askGet: (id) => send((request) => askApi.item(request, id), 'GET', `/api/noah/ask/${id}`),
+      askStop: (id, revision, headers) => send((request) => askApi.item(request, id), 'POST', `/api/noah/ask/${id}`, { action: 'stop', revision }, headers),
     };
   };
   /**
@@ -78,13 +84,15 @@ export async function world(t, servers, options = {}) {
    * ブラウザと同じく、書き込みの要求には Origin を付ける。知らない道は 404。
    */
   const browser = (session, config = {}) => async (request) => {
-    const { deps, api, planApi } = as(session.user, config);
+    const { deps, api, planApi, askApi } = as(session.user, config);
     const url = new URL(request.url, ORIGIN), path = url.pathname;
     const route = path === '/api/noah/intake' ? createIntakeApi(deps)
       : path === '/api/noah/connect-plan' ? planApi
       : path === '/api/noah/connect' ? api.collection
       : /^\/api\/noah\/connect\/[^/]+\/tools$/.test(path) ? (incoming) => api.tools(incoming, path.split('/')[4])
       : /^\/api\/noah\/connect\/[^/]+$/.test(path) ? (incoming) => api.item(incoming, path.split('/')[4])
+      : path === '/api/noah/ask' ? askApi.collection
+      : /^\/api\/noah\/ask\/[^/]+$/.test(path) ? (incoming) => askApi.item(incoming, path.split('/')[4])
       : null;
     if (!route) return { status: 404, body: { error: '見つかりません。' } };
     const response = await route(new Request(url, {
@@ -94,6 +102,9 @@ export async function world(t, servers, options = {}) {
     return { status: response.status, body: await response.json() };
   };
   const rows = (where = '1=1', ...args) => f.sql.prepare(`SELECT * FROM noah_connections WHERE ${where} ORDER BY created_at,id`).all(...args);
+  /** 依頼の行（古い順）と、その Work（成果の正本）。 */
+  const asked = (where = '1=1', ...args) => f.sql.prepare(`SELECT * FROM noah_asks WHERE ${where} ORDER BY created_at,id`).all(...args);
+  const work = (id) => { const row = f.sql.prepare('SELECT payload,revision FROM work_jobs WHERE id=?').get(id); return row ? JSON.parse(row.payload) : null; };
   const listed = async () => (await f.store.list(null, new URLSearchParams())).items.map((item) => item.id).sort((a, b) => a.localeCompare(b));
-  return { f, net, servers, as, browser, patrol, sync, clear, rows, listed, check: (i) => f.check(i), family: (i) => f.sql.prepare('SELECT * FROM noah_intake_families WHERE id=?').get(familyId(i)) };
+  return { f, net, servers, as, browser, patrol, sync, clear, rows, asked, work, listed, check: (i) => f.check(i), family: (i) => f.sql.prepare('SELECT * FROM noah_intake_families WHERE id=?').get(familyId(i)) };
 }

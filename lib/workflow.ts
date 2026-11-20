@@ -15,6 +15,7 @@ import {
 } from './amc-tool.ts';
 import type { MaterialStudy } from './material-study.ts';
 import type { NoahExecution } from './noah-execution.ts';
+import type { NoahRemoteExecution } from './noah-remote-work.ts';
 import {
   parseJenniferTaskJobCoordination,
   type JenniferTaskJobCoordination,
@@ -329,6 +330,8 @@ export type WorkJob = {
   noahOutbox?: import('./noah-outbox.ts').NoahOutbox;
   noahOperation?: import('./noah-operations.ts').NoahOperation;
   noahExecution?: NoahExecution;
+  /** 相手のサーバーで動く仕事（入力欄から、道具を 1 回呼ぶ）。lib/noah-remote-work.ts。 */
+  noahRemote?: NoahRemoteExecution;
   toolAttempts?: WorkToolAttempt[];
   toolObservations?: WorkToolObservation[];
   agentBinding?: WorkAgentBinding;
@@ -426,6 +429,11 @@ export function normalizeWorkJob(job: WorkJob): WorkJob {
   }
   if (job.templateId === 'noah-agent-local') {
     if (!job.noahExecution || job.noahExecution.verification !== 'host_observed_unverified' || job.noahExecution.chargeMinor !== 0 || job.steps.some(s => s.passed)) throw new WorkError('Noahの実行記録を確認してください。');
+    return job;
+  }
+  if (job.templateId === 'noah-agent-remote') {
+    // 相手のサーバーが返した内容を、Noah は確かめていない。費用は 0。通った step は無い（家の端末の仕事と同じ決まり）。
+    if (!job.noahRemote || job.noahRemote.verification !== 'relay_observed_unverified' || job.noahRemote.chargeMinor !== 0 || job.steps.some(s => s.passed)) throw new WorkError('Noahの実行記録を確認してください。');
     return job;
   }
   if (job.templateId === 'sky-linux-service') {
@@ -775,7 +783,7 @@ export function applyWorkCommand(
   if (job.templateId === 'noah-resale') throw new WorkError('Noahのリセール画面から操作してください。', 409);
   if (job.eveNews && command.action !== 'cancel') throw new WorkError('ニュース草稿は専用の参照検査を使ってください。掲載・真偽確認の完了にはできません。',409);
   if (job.eveTool?.planning?.commands.some(c => c.id === command.id)) throw new WorkError('同じ操作IDを別の操作へ使えません。', 409);
-  if (['noah-agent-local', 'noah-operation', 'noah-outbox'].includes(job.templateId)) throw new WorkError('Noahの専用実行画面から操作してください。', 409);
+  if (['noah-agent-local', 'noah-agent-remote', 'noah-operation', 'noah-outbox'].includes(job.templateId)) throw new WorkError('Noahの専用実行画面から操作してください。', 409);
   if (job.templateId === 'composition' && !['complete', 'cancel'].includes(command.action))
     throw new WorkError('組み合わせの計画・実行は専用画面から行ってください。', 409);
   const duplicate = job.events.find((event) => event.command.id === command.id);

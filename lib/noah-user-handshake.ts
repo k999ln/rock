@@ -74,26 +74,42 @@ export function createNoahUserHandshake(deps: IntakeDependencies & { hostHandsha
     if (copies.length) await db.batch(copies);
   }
 
-  /** 接続先の枠を取り、握手する。失敗は、理由の符号と、本人に見せる文にして返す（投げない）。 */
-  async function handshake(target: NoahUserHandshakeTarget): Promise<NoahUserHandshake> {
-    const taken = await intakeStatement(db, NOAH_LISTING_SQL.host_take, { host: target.host, now: now(), limit: deps.hostHandshakes }).first<{ user_count: number }>();
-    if (!taken) return { ok: false, code: 'host_busy', message: NOAH_HOST_BUSY };
+  /** 接続先の枠を 1 つ取る。取れなければ false（相手へ、何も送らない）。 */
+  async function take(host: string): Promise<boolean> {
+    return (await intakeStatement(db, NOAH_LISTING_SQL.host_take, { host, now: now(), limit: deps.hostHandshakes }).first<{ user_count: number }>()) !== null;
+  }
+
+  /**
+   * 相手が断った時の後始末（握手の時も、握手の後の道具の呼び出しの時も、同じ決まり）。理由の符号を返す。
+   * 401・402 は、握手の表に書いて一覧から外す。429 は、相手が言った時刻まで待つ事を書く。それ以外は、何も書かない。
+   */
+  async function settle(target: NoahUserHandshakeTarget, error: unknown): Promise<NoahMouthCode> {
+    // 口の外の失敗（応答の本文を読む途中で切れた、時間切れ）は「応答しない」に数える。
+    const code: NoahMouthCode = error instanceof NoahMouthError ? error.code : 'unreachable';
+    if (code === 'auth_required' || code === 'payment_required') await unlist(target, code);
+    if (code === 'rate_limited') {
+      const after = error instanceof NoahMouthError && typeof error.detail.retryAfterSeconds === 'number' ? error.detail.retryAfterSeconds : 60;
+      await intakeStatement(db, NOAH_LISTING_SQL.host_wait, { host: target.host, until: now() + Math.max(1, after) * 1000 }).run();
+    }
+    return code;
+  }
+
+  /**
+   * 接続先の枠を取り、握手する。失敗は、理由の符号と、本人に見せる文にして返す（投げない）。
+   * `slotTaken`: 枠を、先に取ってある（依頼は、受け付ける前に `take` で取る。握手で、もう 1 つ取らない）。
+   */
+  async function handshake(target: NoahUserHandshakeTarget, options: { slotTaken?: boolean } = {}): Promise<NoahUserHandshake> {
+    if (!options.slotTaken && !(await take(target.host))) return { ok: false, code: 'host_busy', message: NOAH_HOST_BUSY };
     const ctx: NoahMouthContext = { fetch: guarded, headers };
     const started = now();
     try {
       const result = await noahMcpHandshake(target.url, { ...ctx, signal: AbortSignal.timeout(NOAH_USER_HANDSHAKE_MS) });
       return { ok: true, handshake: result, ms: Math.max(0, now() - started), ctx, close: () => noahMcpClose(result.session, ctx) };
     } catch (error) {
-      // 口の外の失敗（応答の本文を読む途中で切れた、時間切れ）は「応答しない」に数える。
-      const code: NoahMouthCode = error instanceof NoahMouthError ? error.code : 'unreachable';
-      if (code === 'auth_required' || code === 'payment_required') await unlist(target, code);
-      if (code === 'rate_limited') {
-        const after = error instanceof NoahMouthError && typeof error.detail.retryAfterSeconds === 'number' ? error.detail.retryAfterSeconds : 60;
-        await intakeStatement(db, NOAH_LISTING_SQL.host_wait, { host: target.host, until: now() + Math.max(1, after) * 1000 }).run();
-      }
+      const code = await settle(target, error);
       return { ok: false, code, message: NOAH_HANDSHAKE_MESSAGES[code] };
     }
   }
 
-  return { handshake };
+  return { handshake, take, settle };
 }

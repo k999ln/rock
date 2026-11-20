@@ -6,12 +6,14 @@
  * - 接続は、要求 1 回の中で握手まで終え、結果を返す。握手は lib/noah-user-handshake.ts（接続先の枠・8 秒・401 と 429 の扱い）。
  * - 同じ操作 ID の再送は、今の行をそのまま返す（握手をやり直さない）。同じ本人・同じ系列の、切っていない接続は 1 件。
  * - 行の更新は、全部 `WHERE id=? AND revision=?`（古い読み取りで上書きしない）。状態は nextNoahConnectionState でだけ進める。
+ * - 切った時は、その接続の、終わっていない依頼を止める（lib/noah-ask-store.ts）。
  * - 家の端末を同じボタンでつなぐ道・相手の許可の続き・有料は、出した後に足す。今の `/api/noah/launch`・`/api/noah/instances` は変えない。
  * ここは、本人の端末では何も動かさない。相手へ送るのは、握手（初期化・通知・道具の一覧）だけ。道具は呼ばない。
  * 道具の一覧の決まりは docs/noah/spec-87-tool-agent.md の 11.3。
  */
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
+import { stopNoahAsksOfConnection } from './noah-ask-store.ts';
 import { nextNoahConnectionState, type NoahConnectionEvent, type NoahConnectionState } from './noah-connect-plan.ts';
 import { canonicalJson, diffNoahConnect, parseNoahConnect, sha256Hex, type NoahConnect } from './noah-connect-requirements.ts';
 import { NOAH_INTAKE_PERMISSIONS, noahPlaceLabel, noahProviderTarget, planNoahSubject, readNoahSubject } from './noah-connect-source.ts';
@@ -239,7 +241,11 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
     if (!next) return refused(409, NOAH_CONNECT_MESSAGES.notNow, row);
     const at = now();
     const written = await prepare('UPDATE noah_connections SET state=?,disconnected_at=?,revision=revision+1,updated_at=? WHERE id=? AND owner_id=? AND revision=?', next, at, at, id, owner, revision).run();
-    if (written.meta.changes === 1) return reply(200, view({ ...row, state: next, disconnected_at: at, revision: revision + 1, updated_at: at }));
+    if (written.meta.changes === 1) {
+      // その接続の、終わっていない依頼を止める（まだ始まっていない物は、その場で。進んでいる物は、止める事を頼む。届いた成果は、採らない）。
+      await stopNoahAsksOfConnection(deps, owner, id);
+      return reply(200, view({ ...row, state: next, disconnected_at: at, revision: revision + 1, updated_at: at }));
+    }
     // 読んだ後に、別の操作が先に書いた。今の行を返す。
     const after = await readOne(owner, id);
     return after ? refused(409, NOAH_CONNECT_MESSAGES.stale, after) : failed(404, NOAH_CONNECT_MESSAGES.missing);
@@ -281,7 +287,12 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
    * - その接続の候補が有効で、候補が今いる系列が取り下げられていない事。取り下げられていたら、接続を `blocked` にする。
    * - 本人が同意した時から、接続先や条件が変わっていない事。送り先は、同意した時の接続要件から読む（本人に見せた host の外へ送らない）。
    */
-  async function usable(owner: string, id: string): Promise<{ connection: NoahConnectionView; familyKey: string; confirmed: NoahConfirmedTool[]; target: NoahUserHandshakeTarget }> {
+  async function usable(owner: string, id: string): Promise<{
+    connection: NoahConnectionView; familyKey: string;
+    /** つないだ時の版（候補の記録の hash）と、つないだ時に読んだ道具の定義の hash（無ければ空）。Work の記録に写す。 */
+    digest: string; toolsSha256: string;
+    confirmed: NoahConfirmedTool[]; target: NoahUserHandshakeTarget;
+  }> {
     const row = await readOne(owner, id);
     if (!row || row.place !== 'provider') throw new NoahAgentError(NOAH_CONNECT_MESSAGES.missing, 404);
     if (row.state !== 'connected') throw new NoahAgentError(row.state === 'blocked' && row.error ? row.error : NOAH_CONNECT_MESSAGES.notConnected, 409);
@@ -303,7 +314,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
     if (current.state !== 'active' || !current.connect_json || !current.connect_sha256) throw new NoahAgentError(NOAH_CONNECT_MESSAGES.unusable, 409);
     if (current.connect_sha256 !== row.connect_sha256 && reconsent(row.connect_json, current.connect_json)) throw new NoahAgentError(NOAH_CONNECT_MESSAGES.reconsent, 409);
     // 握手の記録を書く時の照らし先は、今の接続要件の hash（取り込みが入れ替えた後の記録を、古い握手で書かない）。
-    return { connection: view(row), familyKey: row.family_key, confirmed: confirmedTools(row.confirmed_tools_json), target: { candidateId, connectSha256: current.connect_sha256, ...found } };
+    return { connection: view(row), familyKey: row.family_key, digest: row.digest, toolsSha256: row.tools_sha256 ?? '', confirmed: confirmedTools(row.confirmed_tools_json), target: { candidateId, connectSha256: current.connect_sha256, ...found } };
   }
 
   /** `GET /api/noah/connect/[id]/tools`: つないだ相手の道具の一覧（選ぶ画面）。道具の定義は保存しない。開くたびに、相手から読む。spec-87 の 11.3。 */

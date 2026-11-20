@@ -26,7 +26,7 @@ export async function checkNoahIntake(live = false) {
 const mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: 'export default { fetch() { return new Response("local intake acceptance"); } };', compatibilityDate: '2026-10-01', d1Databases: { DB: 'noah-intake-local-acceptance' } }));
 try {
   const db = await mf.getD1Database('DB');
-  for (const file of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections']) for (const sql of readFileSync(new URL(`../drizzle/${file}.sql`, import.meta.url), 'utf8').split('--> statement-breakpoint').filter((s) => /CREATE/.test(s))) await db.prepare(sql).run();
+  for (const file of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections', '0048_noah_asks']) for (const sql of readFileSync(new URL(`../drizzle/${file}.sql`, import.meta.url), 'utf8').split('--> statement-breakpoint').filter((s) => /CREATE/.test(s))) await db.prepare(sql).run();
   const key = 'local-acceptance-wake-'.repeat(3), started = Date.now(), urls = [];
   let logical = started, turnStart = started;
   // This acceptance covers the registry intake only: zero handshakes per wake, so no Agent endpoint is contacted (handshakes: scripts/check-noah-probe.mjs).
