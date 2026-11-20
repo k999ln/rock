@@ -302,7 +302,7 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.match(page.text(), /道具を選ぶ4 個/);
   const rows = page.find('ul').at(-1);
   assert.deepEqual(page.nodes(rows).filter((node) => node.type === 'li').map((node) => page.text(node)), [
-    'lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publishpublish の説明', 'configure入力欄ではまだ使えませんconfigure の説明',
+    'lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publish送る前に確かめますpublish の説明', 'configure入力欄ではまだ使えませんconfigure の説明',
   ]);
   assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
   // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。

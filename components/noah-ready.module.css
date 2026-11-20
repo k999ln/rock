@@ -99,6 +99,7 @@
 .confirmBox legend { padding:0 6px; font-size:12px; color:#7546c8; font-weight:650; }
 .confirmBox p { margin:0 0 10px; font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
 .confirmBox dl { margin:0 0 10px; }
+.confirmBox .sendsTo { margin:0 0 12px; padding:0; background:none; font-weight:650; }
 .confirmBox dl div,.outline div { display:flex; gap:10px; padding:4px 0; font-size:13px; min-width:0; }
 .confirmBox dt,.outline dt { flex-shrink:0; max-width:40%; color:#71717a; overflow-wrap:anywhere; }
 .confirmBox dd,.outline dd { margin:0; min-width:0; white-space:pre-wrap; overflow-wrap:anywhere; }

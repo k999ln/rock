@@ -50,7 +50,7 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   const server = mcpServer({ tools: [lookup, nested, stats, publish] });
   const { page, toolButton, field, form } = await opened(t, server);
   // 使える道具は、押せる行。使えない道具は、押せない（印は文字）。
-  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publishPublishes a note.']);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publish送る前に確かめますPublishes a note.']);
   assert.match(page.text(), /configure入力欄ではまだ使えません/);
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('lookup'));
