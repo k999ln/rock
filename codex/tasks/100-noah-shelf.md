@@ -14,7 +14,7 @@
 4. lib/noah-shelf-store.ts: `createNoahShelfStore({ db, now })` → `list(viewer)`（`shelf` を 3 段ぶん読み、`rankNoahShelf` を `byEvidence: false` で通す）・`put`・`verify`・`retire`・`review`・`recheck(familyId?)`（`noahPackageListing` を `{ chains: false, home: false }` で呼び、`package_touch` で写す）。
 5. `verify`: その審査者自身の `noah_asks`（その系列・その道具・`succeeded`・直近 7 日）が 1 件以上ある時だけ通す。確かめた時の中身は、サーバーが今の事実から作る。
 6. lib/noah-shelf-api.ts、app/api/noah/shelf/route.ts: `GET`（サインイン不要。閉じている間は審査者だけ）と `POST`（審査者だけ。検査は lib/noah-launch.ts の `createNoahLaunchApi` と同じ）。
-7. lib/noah-intake-store.ts: 握手・実行・取り下げの直後に `recheck(familyId)`、1 日 1 回の合図で `recheck()`。
+7. lib/noah-intake-store.ts: 握手・実行・取り下げの直後に `recheck(familyId)`、1 日 1 回の合図で `recheck()`。載せているカードが使っている系列は、`nextNoahCheck` に `connected: true` として渡す（24 時間ごとに握手する）。
 8. components/noah-shelf.tsx（`noah-ready.tsx` の一番上）、components/noah-review.tsx の「棚」の節（仕様書 10 章の文）。
 
 ## 決めてある事（変えない）
