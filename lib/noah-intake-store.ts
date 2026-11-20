@@ -33,7 +33,7 @@ function item(row: Row, signedIn: boolean) {
 }
 export type IntakeStatus = {
   sources: Pick<IntakeSource, 'id' | 'next_run_at' | 'last_success_at' | 'error_code' | 'failure_count' | 'observed' | 'withdrawn' | 'request_count' | 'sweep_started_at'>[];
-  mouths: { remote: number; terminal: number }; reasons: Record<string, number>; unsupported: Record<string, number>; listed: number;
+  mouths: { remote: number; terminal: number; remoteReady: number; terminalReady: number }; families: { id: string; name: string; members: number; mouth: string | null; level: number; revision: number; withdrawn: boolean }[]; nextOffset: number | null; reasons: Record<string, number>; unsupported: Record<string, number>; listed: number;
 };
 export function createIntakeStore(deps: IntakeDependencies) {
   const { db } = deps, now = deps.now ?? Date.now, sync = createIntakeSync(deps);
@@ -56,7 +56,7 @@ export function createIntakeStore(deps: IntakeDependencies) {
       if (rows.length > 20) nextCursor = `s:${offset + 20}`;
     } else {
       const match = cursor ? /^([rn]):(0|[1-9]\d{0,15}):(.{3,400})$/.exec(cursor) : null;
-      if (cursor && (!match || !Number.isSafeInteger(Number(match[2])) || /[\u0000-\u001f\u007f]/.test(match[3]))) throw new NoahAgentError('ページの指定を確認してください。');
+      if (cursor && (!match || !Number.isSafeInteger(Number(match[2])) || Array.from(match[3]).some(char => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127))) throw new NoahAgentError('ページの指定を確認してください。');
       if (match?.[1] !== 'n') {
         ids = (await intakeStatement(db, NOAH_LISTING_SQL.ran, { before_at: match ? Number(match[2]) : Number.MAX_SAFE_INTEGER, after_id: match?.[3] ?? '', limit: 21 }).all<{ id: string; l2_at: number }>()).results.map(r => ({ ...r, kind: 'r' }));
       }
@@ -79,21 +79,26 @@ export function createIntakeStore(deps: IntakeDependencies) {
     if (owner && await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='noah_connections'").first()) connection = await db.prepare('SELECT id,state FROM noah_connections WHERE owner_id=? AND family_key=? AND disconnected_at IS NULL ORDER BY updated_at DESC LIMIT 1').bind(owner, id).first<{ id: string; state: string }>();
     return { ...item(row, !!owner), members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection };
   }
-  async function status(): Promise<IntakeStatus> {
+  async function status(params = new URLSearchParams()): Promise<IntakeStatus> {
+    const mouth = params.get('mouth') ?? '', level = params.get('level') ?? '', q = (params.get('q') ?? '').trim(), offsetText = params.get('offset') ?? '0';
+    if (!['', 'mcp-remote', 'mcp-package'].includes(mouth) || !['', '0', '1', '2'].includes(level) || q.length > 80 || !/^(?:0|[1-9]\d{0,5})$/.test(offsetText)) throw new NoahAgentError('絞り込みを確認してください。');
+    const offset = Number(offsetText);
+    const families = (await db.prepare(`${ROW} WHERE (?='' OR k.mouth=?) AND (?='' OR f.level=?) AND (?='' OR c.name LIKE ? ESCAPE '\\' OR c.summary LIKE ? ESCAPE '\\') ORDER BY f.id LIMIT 21 OFFSET ?`).bind(mouth, mouth, level, Number(level), q, `%${q.replace(/[\\%_]/g, '\\$&')}%`, `%${q.replace(/[\\%_]/g, '\\$&')}%`, offset).all<Row>()).results;
+
     const sources = (await db.prepare('SELECT id,next_run_at,last_success_at,error_code,failure_count,observed,withdrawn,request_count,sweep_started_at FROM noah_intake_sources ORDER BY id').all<IntakeStatus['sources'][number]>()).results;
     type Group = { source: Row['source']; state: Row['state']; bulk: number; mouth: Row['mouth']; setup: number; auth: Row['auth']; result: string; level: 0 | 1 | 2; has_form: number; has_one_tap: number; n: number };
     const groups = (await intakeStatement(db, NOAH_LISTING_SQL.counts).all<Group>()).results;
-    const mouths = { remote: 0, terminal: 0 }, reasons: Record<string, number> = {};
+    const mouths = { remote: 0, terminal: 0, remoteReady: 0, terminalReady: 0 }, reasons: Record<string, number> = {};
     for (const group of groups) {
-      if (group.mouth === 'mcp-remote') mouths.remote += group.n;
-      if (group.mouth === 'mcp-package') mouths.terminal += group.n;
+      if (group.mouth === 'mcp-remote') { mouths.remote += group.n; if (!group.setup) mouths.remoteReady += group.n; }
+      if (group.mouth === 'mcp-package') { mouths.terminal += group.n; if (!group.setup) mouths.terminalReady += group.n; }
       const result = noahListing({ source: group.source, familyId: group.bulk ? 'bulk:group' : 'single', candidateState: group.state, withdrawn: false, hidden: false,
         check: group.mouth ? { mouth: group.mouth, setup: !!group.setup, auth: group.auth, result: group.result, level: group.level, formTools: group.has_form, oneTapTools: group.has_one_tap } : null });
       if (!result.listed) reasons[result.reason] = (reasons[result.reason] ?? 0) + group.n;
     }
     const unsupported = Object.fromEntries((await db.prepare("SELECT reason,COUNT(*) AS n FROM noah_intake_candidates WHERE state='unsupported' GROUP BY reason").all<{ reason: string; n: number }>()).results.map(r => [r.reason, r.n]));
     const visible = await counts();
-    return { sources, mouths, reasons, unsupported, listed: visible.ran + visible.new };
+    return { sources, mouths, reasons, unsupported, listed: visible.ran + visible.new, families: families.slice(0, 20).map(r => ({ id: r.id, name: r.name, members: r.members, mouth: r.mouth, level: r.level, revision: r.revision, withdrawn: r.withdrawn_at !== null })), nextOffset: families.length > 20 ? offset + 20 : null };
   }
   async function moderate(action: 'withdraw' | 'restore', id: string, revision: number) {
     const row = await db.prepare(`${ROW} WHERE f.id=?`).bind(id).first<Row>();

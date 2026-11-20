@@ -35,3 +35,15 @@
 - `python3 docs/design-validation/noah/validate-noah-v1.py`。名寄せの SQL が、純関数と同じ系列と代表を作る。
 - 手元の D1 で `POST /api/noah/intake` を 70 回呼び、候補が 6 万件以上入る。口ごと・理由ごとの件数が、仕様書 8 章（入力なし 82%・準備が必要 12%・つなげない 6%）と 1% 以内で合う。
 - `npm run typecheck`、`npm run lint:product`、`npm run schema:check`、`npm run database:check`。
+
+## 実装の引き継ぎ（2026-11-20、PR #332）
+
+- ブランチ `codex/noah-intake-l3-20261120`。L2 #330 の上に積んだ PR。main への直接 push・マージはしていない。
+- ローンチ範囲の公式台帳だけを実装。Space/ACP の取り込み、Agent への握手・実行は入れない。既存の発見の表は変えない。
+- `0044_noah_intake.sql` は root と canonical main の両系譜に同じ内容で追加。**本番へは適用していない。**
+- `lib/noah-intake-sync.ts` が巡回、`-store.ts` が一覧と運営、`-db.ts` が参照 SQL の引数を D1 に渡す。環境変数は `-server.ts` だけで読む。
+- 製品試験: `node --experimental-strip-types --test tests/noah-intake-*.test.mjs tests/noah-discovery-daemon.test.mjs`。
+- 型契約: `node --experimental-strip-types --test docs/design-validation/noah/noah-*.test.mjs`（61/61）、`python3 docs/design-validation/noah/validate-noah-v1.py`（10/10）。移設済み表も元の DDL と一致するか検査する。
+- 大量受入: `node --experimental-strip-types scripts/check-noah-intake.mjs` は合成65,000件、`--live` は公式台帳だけを読む。どちらも一時的なローカルD1。論理時計を1分ずつ進めた署名付き合図71回で、最後に差分巡回を検査する。Agentの接続先には通信しない。
+- `WRANGLER_WRITE_LOGS=false npx wrangler deploy --dry-run --config services/noah-patrol-wake/wrangler.jsonc --outdir work/noah-patrol-wake-dry-run` 成功。配備はしていない。
+- 残件: 実台帳を使ったローカルD1受入、`npm run verify`、最終レビュー。結果はこの節と PR 本文を更新する。

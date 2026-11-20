@@ -1,5 +1,7 @@
 ## 2026-11-20
 
+- Noah MVP L3の公式台帳取り込み・再開可能な巡回・一覧API・運営画面とローカルD1受入コマンドを実装。全体検証と実台帳受入を進行中。本番migration・配備・切り替えなし（[PR #332](https://github.com/k999ln/rock/pull/332)、task85）。
+
 - Noah MVP L2の接続要件・計画・状態遷移を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側を再exportへ集約。製品9群と全体verify成功。API・画面はL5で接続（[PR #330](https://github.com/k999ln/rock/pull/330)、task96）。
 
 - Noah の設計を、別の機械から始められるようにした（Fable / Noelle。本人指示「main に入れて、別の PC が git にアクセスして開発が進めれるようにして」）。docs/noah/README.md に「別の機械で始める時」（clone → `npm ci` → 検証キット → 読む順 → 最初の PR は L1 と L2）を足した。main を別の場所へ取り出して確かめた: `npm ci` の後は試験 61/61・DDL 10/10。`npm ci` が無いと `noah-screenless.test.mjs` だけが読めない（今の起動スクリプトが `fflate` を使う）ので、検証キットの README の「`npm install` は要らない」を直した。

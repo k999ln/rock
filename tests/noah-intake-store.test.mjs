@@ -87,3 +87,20 @@ void test('list crosses ran/new boundary without duplication; literal search, mo
   for (const cursor of ['oops', 'n:NaN:abc', 'r:9007199254740992:abc', 's:0']) await assert.rejects(f.store.list(null, new URLSearchParams({ cursor })), e => e.status === 400);
   assert.equal((await f.store.list(null, new URLSearchParams({ limit: '0' }))).items.length, 0);
 });
+void test('retry repairs a published family after checks reset but touch was interrupted', async t => {
+  const f = fixture(t, async () => page([entry(1)])); await f.store.sync(); markListed(f, 1);
+  // Model an already-committed candidate/check batch before a later touch batch failed.
+  f.sql.exec("UPDATE noah_intake_checks SET level=0,result='unchecked',tools_sha256=NULL,l1_at=NULL,l2_at=NULL");
+  f.advance(3600000); await f.store.sync();
+  assert.equal(f.sql.prepare('SELECT listed FROM noah_intake_families').get().listed, 0);
+});
+void test('status distinguishes setup/ready mouths and shows reviewer filters with bounded pagination', async t => {
+  const f = fixture(t, async () => page([entry(1), entry(2, { remotes: [{ type: 'streamable-http', url: 'https://example.com/mcp', headers: [{ name: 'Authorization', isRequired: true, isSecret: true }] }] }), entry(3, { remotes: [], packages: [] })])); await f.store.sync();
+  const status = await f.store.status(); assert.deepEqual(status.mouths, { remote: 2, terminal: 0, remoteReady: 1, terminalReady: 0 }); assert.equal(status.unsupported.no_endpoint, 1); assert.equal(status.reasons.needs_key, 1);
+  assert.equal((await f.store.status(new URLSearchParams({ mouth: 'mcp-remote', q: 'Agent 2' }))).families.length, 1);
+  await assert.rejects(f.store.status(new URLSearchParams({ offset: '-1' })), e => e.status === 400);
+});
+void test('short optional declared secrets are not persisted even when the remote needs no setup', async t => {
+  const f = fixture(t, async () => page([entry(1, { remotes: [{ type: 'streamable-http', url: 'https://example.com/mcp', headers: [{ name: 'X-Optional', isSecret: true, value: 'tiny-value' }] }] })]));
+  await f.store.sync(); assert.equal(f.candidate().state, 'active'); assert.equal(f.candidate().record_json.includes('tiny-value'), false);
+});

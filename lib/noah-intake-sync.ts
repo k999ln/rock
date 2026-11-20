@@ -21,7 +21,7 @@ class IntakeFailure extends Error {
   constructor(code: IntakeFailure['code'], retryAt = 0) { super(code); this.code = code; this.retryAt = retryAt; }
 }
 const bytes = (text: string) => new TextEncoder().encode(text).byteLength;
-const clean = (value: string, max: number) => Array.from((looksLikeNoahSecret(value) ? '[redacted]' : value).replace(/[\u0000-\u001f\u007f]/g, '')).slice(0, max).join('');
+const clean = (value: string, max: number) => Array.from((looksLikeNoahSecret(value) ? '[redacted]' : value).split('').filter(char => char.charCodeAt(0) >= 32 && char.charCodeAt(0) !== 127).join('')).slice(0, max).join('');
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 function registryRecord(value: unknown): RegistryServer {
   if (!object(value) || typeof value.name !== 'string' || !value.name || value.name.length > 287) throw new IntakeFailure('invalid_response');
@@ -45,9 +45,14 @@ function registryRecord(value: unknown): RegistryServer {
 // Public registry entries are untrusted. Published credentials never become saved transport data.
 function storedRecord(server: RegistryServer, hash: string) {
   let saved: Record<string, unknown> = { ...server };
-  if (looksLikeNoahSecret(canonicalJson(saved))) {
-    saved = JSON.parse(JSON.stringify(saved, (_key, value: unknown) => typeof value === 'string' && looksLikeNoahSecret(value) ? '[redacted]' : value)) as Record<string, unknown>;
+  function redact(value: unknown): unknown {
+    if (typeof value === 'string') return looksLikeNoahSecret(value) ? '[redacted]' : value;
+    if (Array.isArray(value)) return value.map(redact);
+    if (!object(value)) return value;
+    const secret = value.isSecret === true || (typeof value.name === 'string' && /authorization|token|secret|password|api[-_]?key/i.test(value.name));
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, secret && ['value', 'default'].includes(key) ? '[redacted]' : redact(item)]));
   }
+  saved = redact(saved) as Record<string, unknown>;
   if (bytes(JSON.stringify(saved)) > 65_536) {
     delete saved.remotes; delete saved.packages; saved.oversize = true;
   }
@@ -56,7 +61,7 @@ function storedRecord(server: RegistryServer, hash: string) {
   return JSON.stringify(saved);
 }
 async function boundedPage(response: Response) {
-  if (Number(response.headers.get('content-length')) > 4 * 1024 * 1024 || !response.body) throw new IntakeFailure('invalid_response');
+  if (Number(response.headers.get('content-length')) > 4 * 1024 * 1024 || !response.body) { await response.body?.cancel(); throw new IntakeFailure('invalid_response'); }
   const reader = response.body.getReader(), chunks: Uint8Array[] = []; let length = 0;
   try {
     for (;;) {
@@ -98,7 +103,7 @@ export function createIntakeSync(deps: IntakeDependencies) {
       const timestamp = typeof meta.updatedAt === 'string' ? Date.parse(meta.updatedAt) : NaN;
       return { server, draft, id, hash, state, updatedAt: Number.isFinite(timestamp) ? timestamp : null, connectHash: draft.ok ? await noahConnectSha256(draft.connect) : null };
     }));
-    const prior = normalized.length ? (await prepare(`SELECT c.id,c.record_sha256,c.state,k.connect_sha256,f.id AS singleton FROM noah_intake_candidates c LEFT JOIN noah_intake_checks k ON k.candidate_id=c.id LEFT JOIN noah_intake_families f ON f.id=c.id WHERE c.id IN (${normalized.map(() => '?').join(',')})`, ...normalized.map(r => r.id)).all<{ id: string; record_sha256: string; state: string; connect_sha256: string | null; singleton: string | null }>()).results : [];
+    const prior = normalized.length ? (await prepare(`SELECT c.id,c.record_sha256,c.state,k.connect_sha256,k.level AS check_level,f.id AS singleton,EXISTS(SELECT 1 FROM noah_intake_families p WHERE p.representative_id=c.id AND (p.listed=1 OR p.level>0)) AS published FROM noah_intake_candidates c LEFT JOIN noah_intake_checks k ON k.candidate_id=c.id LEFT JOIN noah_intake_families f ON f.id=c.id WHERE c.id IN (${normalized.map(() => '?').join(',')})`, ...normalized.map(r => r.id)).all<{ id: string; record_sha256: string; state: string; connect_sha256: string | null; singleton: string | null; check_level: number | null; published: number }>()).results : [];
     const previous = new Map(prior.map(row => [row.id, row])), statements: D1PreparedStatement[] = []; let changed = 0;
     for (const row of normalized) {
       const { id, server, hash, draft, state, updatedAt, connectHash } = row, old = previous.get(id), time = now();
@@ -114,11 +119,10 @@ export function createIntakeSync(deps: IntakeDependencies) {
         const c = draft.connect, setup = Number(c.secrets.length > 0);
         statements.push(prepare(`INSERT INTO noah_intake_checks(candidate_id,mouth,surface,auth,connect_json,connect_sha256,setup,level,result,next_check_at) VALUES(?,?,?,?,?,?,?,0,'unchecked',?)
           ON CONFLICT(candidate_id) DO UPDATE SET mouth=excluded.mouth,surface=excluded.surface,auth=excluded.auth,connect_json=excluded.connect_json,connect_sha256=excluded.connect_sha256,setup=excluded.setup,level=0,result='unchecked',next_check_at=excluded.next_check_at,oauth_json=NULL,tools_sha256=NULL,tool_count=NULL,read_only=NULL,form_tools=NULL,one_tap_tools=NULL,latency_ms=NULL,sample_json=NULL,checked_at=NULL,l1_at=NULL,l2_at=NULL,failures=0,first_failure_at=NULL,lease_until=0`, id, c.mouth, c.surface, setup ? 'key' : c.mouth === 'mcp-package' ? 'none' : 'unknown', JSON.stringify(c), connectHash, setup, time + (setup ? 30 * 86400000 : 0)));
-        if (old) statements.push(touch(id));
       }
       if (!draft.ok && old?.connect_sha256) statements.push(prepare('DELETE FROM noah_intake_checks WHERE candidate_id=?', id));
       if (state === 'active' && !old?.singleton) statements.push(prepare("INSERT OR IGNORE INTO noah_intake_families(id,representative_id,members,level,badge_hint,listed,one_tap,shuffle,updated_at,revision) VALUES(?,?,1,0,?,0,0,abs(random()) % 1000000000,?,1)", id, id, draft.ok && draft.connect.secrets.length ? 'setup' : 'unverified', time));
-      if (state !== 'active' && different) statements.push(touch(id));
+      if (old?.published && (state !== 'active' || !draft.ok || old.check_level === 0 || old.connect_sha256 !== connectHash)) statements.push(touch(id));
     }
     await batch(statements, lease); return { changed, seen: normalized.length };
   }

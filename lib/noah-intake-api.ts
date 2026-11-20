@@ -27,7 +27,7 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
       if (!noahAllowed(deps.flags, 'list', reviewer)) return json({ error: '見つかりません。' }, 404);
       const ownerScope = owner ? await ownerScopeFor(owner) : null;
       if (request.method === 'GET') {
-        if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.status(), warnings: deps.flags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
+        if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.status(url.searchParams), warnings: deps.flags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
         const id = url.searchParams.get('id');
         return json({ ...(id ? await store.detail(id, owner, reviewer) : await store.list(owner, url.searchParams)), ownerScope });
       }

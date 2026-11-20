@@ -104,9 +104,17 @@ def ddl_twice():
     for name, sql in before.items():
         assert after.get(name) == sql, f"既存の定義が変わった: {name}"
     new = sorted(n for n in after if n not in before and db.execute("SELECT type FROM sqlite_master WHERE name=?", (n,)).fetchone()[0] == "table")
-    assert new == ["noah_asks", "noah_connection_secrets", "noah_connections", "noah_intake_candidates", "noah_intake_checks", "noah_intake_families",
+    expected = ["noah_asks", "noah_connection_secrets", "noah_connections", "noah_intake_candidates", "noah_intake_checks", "noah_intake_families",
                    "noah_intake_sources", "noah_oauth_clients", "noah_oauth_grants", "noah_oauth_states", "noah_probe_hosts", "noah_standing_works",
-                   "noah_usage_events"], new
+                   "noah_usage_events"]
+    assert new == [name for name in expected if name not in before], new
+    # Promoted launch tables must still be byte-equivalent SQLite definitions,
+    # including checks and indexes; they are no longer newly created by this draft.
+    contract = sqlite3.connect(":memory:")
+    contract.executescript(DDL.read_text())
+    for name, sql in contract.execute("SELECT name,sql FROM sqlite_master WHERE name LIKE 'noah_intake_%' OR name='noah_probe_hosts'"):
+        assert after.get(name) == sql, f"移植した定義が型契約と違う: {name}"
+    contract.close()
 
 
 check("既存の Noah の表がある", existing)
