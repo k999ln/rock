@@ -4,7 +4,7 @@ avokadoの主商品は、声でEveへ依頼し、空間の表示を見たり触�
 
 [Noahを開く](https://avoado.si/noah) · [Eveを開く](https://avoado.si/os/eve) · [現在の進捗](project.md) · [設計の入口](docs/structure/00-overview.md)
 
-## 作業を始めるとき
+## 開発ハイライト
 
 | やりたいこと | どこで動くか・何を確かめるか | 最初に開く文書 |
 | --- | --- | --- |
@@ -12,7 +12,11 @@ avokadoの主商品は、声でEveへ依頼し、空間の表示を見たり触�
 | 本人のMacでAgentを動かす | Mac上のRunnerに接続し、実行・成果保存・停止を検証する。別Macや本番経由の通し試験は残っている | [Mac Runnerの導入・実行・停止](docs/services/noah-standalone-launch.md) |
 | miiの空間体験を作る | 声でEveに依頼し、TowerとHubを通じて部屋の表示を見たり触ったりする。実機受入はこれから | [miiの構造と入出力](docs/structure/01-mii.md) |
 
+**目次**　[全体構成](#architecture) · [Noahの公開版](#noah-public) · [Macの接続](#noah-mac) · [Eveの仕事と成果](#eve) · [RockstarOS](#rockstaros) · [mii](#mii) · [Pro](#pro) · [開発と検証](#development)
+
 複数の作業フォルダを使うときは、VS Codeのターミナルで `git status -sb` を実行すると、今のブランチと未コミットの変更を確認できます。作業方針の正本は [GitHubのmainのREADME](https://github.com/k999ln/rock/blob/main/README.md) です。
+
+<a name="architecture"></a>
 
 ## 製品と入口
 
@@ -37,19 +41,46 @@ flowchart LR
   R --> H[機種別profile: Pixel / mii / Pro]
 ```
 
-## Noah — 情報と担当を見つける
+## Noah — Agentを選んで使う
 
 <img src="docs/assets/cover-sky.gif" alt="Noahの発見と接続を表すコンセプト" width="340" />
+
+<a name="noah-public"></a>
+
+### スマホ向け公開版で目指す操作
+
+教育や身の回りの用事に使うAgentを、スマホから試せるようにします。次の流れが本番の公開条件です。
+
+1. **選ぶ。** カードでAgentの説明、提供者、入力の送信先を確認する。
+2. **つなぐ。** 「接続」を押す。サインインが必要な場合は、認証後に元の操作へ戻る。
+3. **頼む。** 道具を選んで入力欄を埋めると、提供者のサーバーが処理する。
+4. **受け取って切る。** 成果を確認し、使い終えたAgentの接続を切る。
+
+この流れの参照実装は、外部通信を使わず手元で検査できます。本番のスマホで行う受入は[公開前の確認項目](docs/noah/mvp-launch.md)にまとめています。
+
+```sh
+node --experimental-strip-types --test docs/design-validation/noah/noah-loop.test.mjs
+```
+
+### 現在のカタログとタイムライン
 
 ニュース、Agent紹介、通常投稿、コミュニティー投稿を一つのタイムラインで扱います。分類・検索・詳細から、利用したい担当やToolを確認できます。[機能一覧](https://avoado.si/noah/features)には、保存済み担当、端末、接続、成果、購入・販売などの入口をまとめています。Eveと共通のヘッダーから往復できます。
 
 公開カタログは公開資料を使います。私有Agent、仕事、MacのDBを公開カタログへ移しません。私有登録、固定版の保存、別権限の審査、公開版の追加・接続・実行・停止を既存のPackage・利用権・Workへ接続しています。本番の審査と公開には審査担当の設定と個別受入が必要です。
 
+投稿・フォローにはサインインが必要です。画面表示の確認と、本人アカウントでの送信・外部接続・決済の受入を区別します。決済サービスが未接続の機能は接続待ちとして扱います。
+
+<a name="noah-mac"></a>
+
+### 自分のMacを実行先にする
+
+[Macの接続画面](https://avoado.si/noah/mac)からApple Silicon用のNoah Runnerを入れ、`noah doctor` で必要なものを確認します。`noah pair` で自分のアカウントにMacを登録し、`noah start` で実行器を起動します。NoahでそのMacとAgentを選ぶと、依頼・成果確認・停止に進めます。
+
+![NoahのMac接続画面。中央にRunnerの導入手順、左に自分のAgentと仕事・運用への入口がある。](docs/assets/readme/noah-mac-handoff.png)
+
 本人MacのRunnerは認証付きの要求取得、重複防止、停止確認を実装しています。ローカルAPIと実コンテナで接続・実行・停止を検証していますが、本番HTTPS・別Mac間の通し試験は未受入です。Macのスリープ・電源断中は動きません。Apple Silicon向け配布ZIPは空の保存領域で導入確認済みで、未導入の別Macでの受入は残っています。[導入・実行・停止の契約](docs/services/noah-standalone-launch.md)。
 
 未ログイン時はアカウント確認・ログイン・再確認を案内し、認証後は登録やMac承認の元の画面へ戻ります。Mac経由の登録・接続・実行・停止については、[Mac Runnerの検証記録](codex/tasks/71-noah-standalone-launch.md)を参照してください。
-
-投稿・フォローにはサインインが必要です。画面表示の確認と、本人アカウントでの送信・外部接続・決済の受入を区別します。決済サービスが未接続の機能は接続待ちとして扱います。
 
 | コード | 内容 |
 | --- | --- |
@@ -68,6 +99,8 @@ npm --prefix toolkits/noah-resale-agent run demo
 ```
 
 初期予算は0です。実購入・実出品にはAPI利用権・接続設定・予算と、具体的条件を固定した確認書が必要です。WebのD1とCLIのSQLiteは独立した保存先です。実売買と入金自動同期、完全無人運用の受入は未完了です。[実行・停止・照合の契約](docs/services/noah-select-resale.md)。
+
+<a name="eve"></a>
 
 ## Eve — 会話から仕事と成果へ
 
@@ -95,6 +128,8 @@ npm run amc:cycle -- demo
 
 [実行・停止・復旧](docs/amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)。担当設定は[全社役割台帳](data/company-role-map.json)、[営業担当台帳](data/revenue-role-map.json)、[.cursor/agents/](.cursor/agents/)にあります。設定ファイルの存在だけで常駐実行・外部作用・会社運営の完成とはしません。
 
+<a name="rockstaros"></a>
+
 ## RockstarOS — 共通の実行基盤
 
 RockstarOS 1.0の内部識別子は `dev.rock`、配布段階はDeveloper Previewです。本人成果の保存、権限、予算、更新・復旧を共通契約にし、端末の差はhardware profileとadapterで扱います。すべての機種へ同じOS imageを書き込む方式ではありません。
@@ -120,6 +155,8 @@ Cloud agentは事前単価・見積り、上限承認、実行中の費用・予
 
 [SIM/eSIM設計](docs/structure/03-esim.md) / [料金とusage](docs/sky-billing.md) / [導入試作](toolkits/esim-bootstrap/README.md)。
 
+<a name="mii"></a>
+
 ## mii — 暮らしと空間で使う端末
 
 <img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="建築空間になじむmiiのコンセプト" width="100%" />
@@ -136,6 +173,8 @@ Material Inventionの再計算用sandboxと設計資料はあります。シミ�
 - [空間・Material Invention詳細](docs/rockstaros-avocado-mini-complete-design.md)
 - [製品サイトsource](sites/avocado-mini/)
 
+<a name="pro"></a>
+
 ## Pro — si専用PC
 
 <img src="docs/assets/readme/pro-studio-hero-v1.png" alt="Proの筐体コンセプト" width="100%" />
@@ -143,6 +182,8 @@ Material Inventionの再計算用sandboxと設計資料はあります。シミ�
 モデル・Agent・制作・計算を動かす独立PCの開発計画です。用途ごとに構成、実性能、冷却、消費電力、保守性、調達を確認します。miiを持つことを利用条件にしません。販売・出荷・一般機種対応は、正確なSKUと同じ実機の検証が必要です。
 
 [Proの機種適合](docs/device-support-architecture.md) / [公開入口](https://avocadopro.si)。
+
+<a name="development"></a>
 
 ## 開発する
 
