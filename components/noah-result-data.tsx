@@ -19,9 +19,11 @@ export default function NoahResultData() {
   const operation = useRef<{ key: string; id: string } | null>(null);
   const renderEpoch = session.current.epoch;
   const resetSelection = useCallback(() => { setIncludeText(false); setFiles([]); setConsent(false); setNotice(''); }, []);
-  const erase = useCallback(() => {
+  const erase = useCallback((preserveOperation = false) => {
     session.current.epoch++; session.current.scope = null; session.current.busy = false;
-    operation.current = null; setPage(null); setDetail(null); resetSelection(); setPending(false);
+    if (!preserveOperation) operation.current = null;
+    setPage(null); setDetail(null); resetSelection(); setPending(false);
+    setView('personal'); setQuery(''); setSearch('');
   }, [resetSelection]);
   const request = useCallback(async function request(params: URLSearchParams, body?: unknown) {
     const { epoch, scope } = session.current;
@@ -42,7 +44,7 @@ export default function NoahResultData() {
     catch (e) {
       if (session.current.mounted && epoch === session.current.epoch && !(e instanceof Error && e.message === 'STALE')) {
         // A failed refresh never leaves previous account contents available.
-        erase();
+        erase(true);
         setError(e instanceof Error ? e.message : '成果を確認できません。接続を確認してください。');
       }
     } finally {
@@ -88,11 +90,16 @@ export default function NoahResultData() {
   async function share() {
     if (!detail || !consent || (!includeText && !files.length)) return;
     const input = { action: 'share', workId: detail.id, workRevision: detail.revision, policyVersion: NOAH_DATA_POLICY, includeText, files: [...files].sort(), consent: true };
-    const key = JSON.stringify(input);
+    const key = `${session.current.scope}:${JSON.stringify(input)}`;
     if (operation.current?.key !== key) operation.current = { key, id: crypto.randomUUID() };
     const data = await request(new URLSearchParams(), { ...input, id: operation.current.id });
     setDetail({ ...detail, contribution: data.contribution }); resetSelection();
     setNotice(data.contribution?.state === 'revoked' ? 'この提供は取り消されています。' : '選択した成果を提供しました。');
+  }
+  async function revokeFromHistory(id: string) {
+    await request(new URLSearchParams(), { action: 'revoke', id });
+    await load('contributions');
+    setNotice('運営向けの写しを削除しました。');
   }
   async function revoke() {
     if (!detail?.contribution) return;
@@ -105,16 +112,24 @@ export default function NoahResultData() {
     {error && <p role="alert">{error} <Link href="/account?returnTo=%2Fnoah%2Fdata">サインインを確認</Link></p>}
     <div className={styles.actions}>
       <button disabled={pending} onClick={() => { void perform(() => load()); }}>読み直す</button>
-      {page?.operatorAllowed && <button disabled={pending} onClick={() => { void perform(() => load(view === 'personal' ? 'operator' : 'personal', '')); setQuery(''); }}>{view === 'personal' ? '運営に提供された成果' : '自分の成果'}</button>}
+      {page && <>
+        <button disabled={pending || view === 'personal'} onClick={() => { void perform(() => load('personal', '')); setQuery(''); }}>自分の成果</button>
+        <button disabled={pending || view === 'contributions'} onClick={() => { void perform(() => load('contributions', '')); setQuery(''); }}>自分の提供履歴</button>
+      </>}
+      {page?.operatorAllowed && <button disabled={pending || view === 'operator'} onClick={() => { void perform(() => load('operator', '')); setQuery(''); }}>運営に提供された成果</button>}
     </div>
-    <h2>{view === 'operator' ? '運営に提供された成果' : '自分の成果'}</h2>
+    <h2>{view === 'operator' ? '運営に提供された成果' : view === 'contributions' ? '自分の提供履歴' : '自分の成果'}</h2>
+    {view === 'contributions' && <p>元の仕事を削除した後でも、ここで提供を取り消せます。取り消し済みの記録に成果の本文・ファイルは残りません。</p>}
     {view === 'operator' && <p>明示同意を受けた品質確認・不具合調査専用の成果です。学習・販売・一般公開には使えません。</p>}
     <form onSubmit={event => { event.preventDefault(); void perform(() => load(view, query)); }} className={styles.actions}>
       <label>本文・Agent・ファイル名 <input value={query} maxLength={80} onChange={event => setQuery(event.target.value)} /></label><button disabled={pending || !page}>検索</button>
     </form>
     {pending && <output>確認しています…</output>}
-    {page?.items?.length === 0 && <p>{search ? '一致する成果はありません。' : view === 'operator' ? '提供されている成果はまだありません。' : '受け取った成果はまだありません。'}</p>}
-    <ul className={styles.list}>{page?.items?.map(item => <li key={item.id}><button disabled={pending} onClick={() => { void perform(() => open(item.id)); }}>{item.agentId} · {new Date(item.completedAt).toLocaleString('ja-JP')}</button></li>)}</ul>
+    {page?.items?.length === 0 && <p>{search ? '一致する成果はありません。' : view !== 'personal' ? '提供の記録はまだありません。' : '受け取った成果はまだありません。'}</p>}
+    <ul className={styles.list}>{page?.items?.map(item => <li key={item.id}>{view === 'contributions' ? <>
+      <span>{item.agentId} · {new Date(item.completedAt).toLocaleString('ja-JP')} · {item.state === 'active' ? '提供中' : '取り消し済み'}</span>
+      {item.state === 'active' && <button disabled={pending} onClick={() => { void perform(() => revokeFromHistory(item.id)); }}>この提供を取り消す</button>}
+    </> : <button disabled={pending} onClick={() => { void perform(() => open(item.id)); }}>{item.agentId} · {new Date(item.completedAt).toLocaleString('ja-JP')}</button>}</li>)}</ul>
     {page?.nextCursor && <button disabled={pending} onClick={() => { void perform(() => load(view, search, page.nextCursor!)); }}>次の20件</button>}
     {detail && <section className={styles.detail} aria-label="選んだ成果">
       <h2>{detail.result.agentId}</h2><p>版 {detail.result.version} · Agentから受け取った成果です。内容の正しさは未確認です。</p>

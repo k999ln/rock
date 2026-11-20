@@ -66,21 +66,22 @@ export function createNoahDataStore(db: DB, now = Date.now) {
     const result = await readNoahDataResult(row.payload), shared = await contribution(owner, id);
     return { id: row.id, revision: row.revision, result, contribution: shared ? present(shared) : null };
   }
-  async function list(owner: string, params: URLSearchParams, operator = false) {
+  async function list(owner: string, params: URLSearchParams, view: 'personal' | 'operator' | 'contributions' = 'personal') {
+    const shared = view !== 'personal', operator = view === 'operator';
     const q = params.get('q') ?? '';
     if (q.length > 80) fail('検索語が長すぎます。80文字以内で入力してください。');
-    const cursor = cursorFor(params, operator), pattern = `%${q.replace(/[\\%_]/g, '\\$&')}%`;
-    const table = operator ? 'noah_result_contributions' : 'work_jobs';
-    const time = operator ? 'created_at' : 'updated_at';
-    const path = operator ? 'snapshot' : "json_extract(payload,'$.noahExecution')";
-    const textPath = operator ? '$.text' : '$.result.text', filePath = operator ? '$.files' : '$.result.files';
-    const where = [operator ? "state='active'" : `user_id=? AND ${returned}`];
+    const cursor = cursorFor(params, shared), pattern = `%${q.replace(/[\\%_]/g, '\\$&')}%`;
+    const table = shared ? 'noah_result_contributions' : 'work_jobs';
+    const time = shared ? 'created_at' : 'updated_at';
+    const path = shared ? 'snapshot' : "json_extract(payload,'$.noahExecution')";
+    const textPath = shared ? '$.text' : '$.result.text', filePath = shared ? '$.files' : '$.result.files';
+    const where = [operator ? "state='active'" : (shared ? 'owner_id=?' : `user_id=? AND ${returned}`)];
     const values: (string | number)[] = operator ? [] : [owner];
     if (q) { where.push(`(json_extract(${path},'$.agentId') LIKE ? ESCAPE '\\' OR json_extract(${path},'${textPath}') LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM json_each(${path},'${filePath}') f WHERE json_extract(f.value,'$.name') LIKE ? ESCAPE '\\'))`); values.push(pattern, pattern, pattern); }
     if (cursor) { where.push(`(${time}<? OR (${time}=? AND id<?))`); values.push(cursor[0], cursor[0], cursor[1]); }
-    const rows = (await db.prepare(`SELECT id,${time} AS sort_time,json_extract(${path},'$.agentId') AS agentId,json_extract(${path},'$.completedAt') AS completedAt FROM ${table} WHERE ${where.join(' AND ')} ORDER BY ${time} DESC,id DESC LIMIT 21`).bind(...values).all<{ id: string; sort_time: number | string; agentId: string; completedAt: string }>()).results;
+    const rows = (await db.prepare(`SELECT id,${time} AS sort_time,${shared ? 'state' : 'NULL'} AS state,json_extract(${path},'$.agentId') AS agentId,json_extract(${path},'$.completedAt') AS completedAt FROM ${table} WHERE ${where.join(' AND ')} ORDER BY ${time} DESC,id DESC LIMIT 21`).bind(...values).all<{ id: string; sort_time: number | string; agentId: string | null; completedAt: string | null; state: 'active' | 'revoked' | null }>()).results;
     const page = rows.slice(0, 20), last = page.at(-1);
-    return { items: page.map(({ id, agentId, completedAt }) => ({ id, agentId, completedAt })), nextCursor: rows.length > 20 && last ? JSON.stringify([last.sort_time, last.id]) : null };
+    return { items: page.map(({ id, agentId, completedAt, sort_time, state }) => ({ id, agentId: agentId ?? '提供の記録', completedAt: completedAt ?? new Date(sort_time).toISOString(), ...(view === 'contributions' ? { state } : {}) })), nextCursor: rows.length > 20 && last ? JSON.stringify([last.sort_time, last.id]) : null };
   }
   async function mutate(owner: string, input: unknown) {
     if (!object(input)) fail('操作の内容を確認してください。');

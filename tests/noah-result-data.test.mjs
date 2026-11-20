@@ -57,8 +57,8 @@ void test('only selected text/files are copied; operator projections omit owner,
   const detail = await f.store.detail('operator', input.id, true);
   assert.equal(detail.result.text, ''); assert.equal(detail.result.files.length, 1); assert.equal(detail.result.files[0].name, 'report.csv'); assert.equal(detail.policyVersion, 'noah-quality-v1'); assert.equal(detail.sourceSha256.length, 64);
   assert.doesNotMatch(JSON.stringify(detail), /private output|private request|private title|never expose this|ownerId|workId|work_revision|request_sha256/);
-  assert.equal((await f.store.list('operator', new URLSearchParams({ q: 'private.txt' }), true)).items.length, 0);
-  assert.equal((await f.store.list('operator', new URLSearchParams({ q: 'report.csv' }), true)).items.length, 1);
+  assert.equal((await f.store.list('operator', new URLSearchParams({ q: 'private.txt' }), 'operator')).items.length, 0);
+  assert.equal((await f.store.list('operator', new URLSearchParams({ q: 'report.csv' }), 'operator')).items.length, 1);
   assert.equal((await f.store.detail('owner', 'job')).contribution.id, input.id);
 });
 void test('same-ID retries are idempotent, payload changes conflict and one Work cannot be shared twice', async t => {
@@ -78,7 +78,7 @@ void test('withdrawal scrubs snapshot, preserves Work, hides operator data and c
   assert.deepEqual(await f.store.mutate('owner', input), revoked);
   await assert.rejects(f.store.mutate('owner', share()), { status: 409 });
   await assert.rejects(f.store.detail('operator', input.id, true), { status: 404 });
-  assert.equal((await f.store.list('operator', new URLSearchParams(), true)).items.length, 0);
+  assert.equal((await f.store.list('operator', new URLSearchParams(), 'operator')).items.length, 0);
   assert.equal((await f.store.detail('owner', 'job')).result.text, result().result.text);
 });
 void test('atomic source fence rejects changed or deleted Work between preview and insertion', async t => {
@@ -89,7 +89,7 @@ void test('atomic source fence rejects changed or deleted Work between preview a
 });
 void test('a concurrent duplicate arriving after withdrawal cannot restore the data', async t => {
   const f = fixture(t), input = share(); await f.store.mutate('owner', input);
-  // Retry passes its first lookup before a competing request revokes; both observe a monotonic state.
+  // Concurrent replays and revocation both observe the already withdrawn state.
   await f.store.mutate('owner', { action: 'revoke', id: input.id });
   const answers = await Promise.all([f.store.mutate('owner', input), f.store.mutate('owner', { action: 'revoke', id: input.id })]);
   assert.ok(answers.every(a => a.state === 'revoked')); assert.equal(f.row().snapshot, null);
@@ -99,8 +99,8 @@ void test('owner contribution limit includes tombstones; operator pagination use
   f.sql.exec(`WITH RECURSIVE n(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM n WHERE x<9999) INSERT INTO noah_result_contributions SELECT 'extra-'||x,'owner','extra-work-'||x,4,request_sha256,source_sha256,policy_version,'revoked',NULL,created_at,created_at FROM n,noah_result_contributions WHERE id='${input.id}'`);
   f.add('new'); await assert.rejects(f.store.mutate('owner', share({ workId: 'new' })), { status: 409 });
   for (let n = 0; n < 24; n++) { f.add(`op-${n}`, 'other-owner'); await f.store.mutate('other-owner', share({ workId: `op-${n}` })); }
-  const page = await f.store.list('operator', new URLSearchParams(), true); assert.equal(page.items.length, 20);
-  const next = await f.store.list('operator', new URLSearchParams({ cursor: page.nextCursor }), true); assert.equal(next.items.length, 5); assert.equal(next.nextCursor, null);
+  const page = await f.store.list('operator', new URLSearchParams(), 'operator'); assert.equal(page.items.length, 20);
+  const next = await f.store.list('operator', new URLSearchParams({ cursor: page.nextCursor }), 'operator'); assert.equal(next.items.length, 5); assert.equal(next.nextCursor, null);
   assert.equal(new Set([...page.items, ...next.items].map(i => i.id)).size, 25);
 });
 void test('operator allowlist is dedicated and fail-closed', () => {
@@ -125,4 +125,16 @@ void test('API enforces authentication, dedicated operator access, owner scope, 
 void test('storage failure is not reported as an empty result or successful consent', async () => {
   const api = createNoahDataApi({ db: { prepare() { throw Error('synthetic storage failure'); } }, authenticate: async () => 'owner' });
   assert.equal((await api(new Request('https://noah.test/api/noah/data'))).status, 503);
+});
+void test('owners can find and revoke their contributions after the source Work is deleted', async t => {
+  const f = fixture(t), input = share(); await f.store.mutate('owner', input);
+  f.sql.exec("DELETE FROM work_jobs WHERE id='job'");
+  assert.equal((await f.store.list('owner', new URLSearchParams())).items.length, 0);
+  const history = await f.store.list('owner', new URLSearchParams(), 'contributions');
+  assert.equal(history.items[0].id, input.id); assert.equal(history.items[0].state, 'active');
+  assert.equal((await f.store.list('other-owner', new URLSearchParams(), 'contributions')).items.length, 0);
+  await f.store.mutate('owner', { action: 'revoke', id: history.items[0].id });
+  const revokedHistory = await f.store.list('owner', new URLSearchParams(), 'contributions');
+  assert.equal(revokedHistory.items[0].state, 'revoked'); assert.equal(f.row().snapshot, null);
+  assert.doesNotMatch(JSON.stringify(revokedHistory), /agent-example|成果100|private/);
 });

@@ -15,11 +15,12 @@ export function createNoahDataApi(deps: NoahDataDependencies) {
       const store = createNoahDataStore(deps.db, deps.now);
       if (request.method === 'GET') {
         const view = url.searchParams.get('view') ?? 'personal';
-        if (!['personal', 'operator'].includes(view)) return json({ error: '表示する成果を選び直してください。' }, 400);
+        if (!['personal', 'operator', 'contributions'].includes(view)) return json({ error: '表示する成果を選び直してください。' }, 400);
         const operator = view === 'operator';
         if (operator && !operatorAllowed) return json({ error: 'この成果を閲覧する権限がありません。' }, 403);
         const id = url.searchParams.get('id');
-        return json({ ...(id ? { detail: await store.detail(owner, id, operator) } : await store.list(owner, url.searchParams, operator)), ownerScope, operatorAllowed });
+        if (id && view === 'contributions') return json({ error: '提供の履歴から操作してください。' }, 400);
+        return json({ ...(id ? { detail: await store.detail(owner, id, operator) } : await store.list(owner, url.searchParams, view as 'personal' | 'operator' | 'contributions')), ownerScope, operatorAllowed });
       }
       if (request.headers.get('origin') !== url.origin) return json({ error: '同じNoahから操作してください。' }, 403);
       if (request.headers.get('content-type')?.split(';')[0].trim() !== 'application/json') return json({ error: 'JSONで操作してください。' }, 415);

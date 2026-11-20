@@ -19,9 +19,10 @@
 
 ## 進捗
 
-実装と焦点試験が完了。全体verifyを実行中。
+実装と焦点試験が完了。[PR #334](https://github.com/k999ln/rock/pull/334)。全体verifyの最終工程を実行中。
 
 - `node --experimental-strip-types --test tests/noah-result-data*.test.mjs tests/database-status.test.mjs tests/migration-union.test.mjs tests/sites-owner-workspace-recovery.test.mjs`: 40/40成功（新機能18群、DB互換22群）。
+- 最終差分の `node --experimental-strip-types --test tests/noah-result-data*.test.mjs`: 21/21成功。元Work削除後の撤回、通信断後の同じ操作IDでの再試行を追加検証。
 - `npm run typecheck` / `npm run lint:product`: 成功。
 - 全体検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。
 - SQL `0045_noah_result_data.sql` は両系統に追加しただけ。本番適用なし。

@@ -98,3 +98,24 @@ void test('withdrawal is an explicit owner action and removes the share controls
   }); t.after(() => h.close()); await h.flush(); h.click('Test Agent'); await h.flush(); h.click('提供を取り消す'); await h.flush();
   assert.match(h.text(), /提供は取り消し済み/); assert.match(h.text(), /元の成果は残っています/); assert.equal(h.calls.filter(c => c.options.method === 'POST').length, 1);
 });
+void test('own contribution history exposes withdrawal without requiring a surviving Work', async t => {
+  let revoked = false;
+  const h = harness(async (url, options) => {
+    if (options.method === 'POST') { assert.deepEqual(JSON.parse(options.body), { action: 'revoke', id: 'orphan' }); revoked = true; return Response.json({ ...page(), contribution: { id: 'orphan', state: 'revoked', createdAt: 1, revokedAt: 2 } }); }
+    const history = new URL(url, 'https://noah.test').searchParams.get('view') === 'contributions';
+    return Response.json({ ...page(), items: history ? [{ id: 'orphan', agentId: revoked ? '提供の記録' : 'Test Agent', completedAt: '2026-11-20T00:00:00Z', state: revoked ? 'revoked' : 'active' }] : [] });
+  }); t.after(() => h.close()); await h.flush(); h.click('自分の提供履歴'); await h.flush();
+  assert.match(h.text(), /元の仕事を削除した後でも/); h.click('この提供を取り消す'); await h.flush();
+  assert.match(h.text(), /取り消し済み/); assert.equal(h.calls.some(c => c.url.includes('id=orphan')), false);
+});
+void test('uncertain write response retains an account-bound operation ID for retry', async t => {
+  let posts = 0;
+  const h = harness(async (url, options) => {
+    if (options.method === 'POST') { if (++posts === 1) throw Error('response lost'); return Response.json({ ...page(), contribution: { id: 'saved', state: 'active', createdAt: 1, revokedAt: null } }); }
+    return standard(url);
+  }); t.after(() => h.close());
+  await h.flush(); h.click('Test Agent'); await h.flush(); h.check('本文を提供する'); h.check('選んだ成果と目的を確認'); h.click('選択した成果を提供する'); await h.flush();
+  assert.doesNotMatch(h.text(), /private result text/); h.click('読み直す'); await h.flush(); h.click('Test Agent'); await h.flush(); h.check('本文を提供する'); h.check('選んだ成果と目的を確認'); h.click('選択した成果を提供する'); await h.flush();
+  const writes = h.calls.filter(c => c.options.method === 'POST').map(c => JSON.parse(c.options.body));
+  assert.equal(writes.length, 2); assert.equal(writes[0].id, writes[1].id);
+});
