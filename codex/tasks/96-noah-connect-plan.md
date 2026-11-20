@@ -35,4 +35,8 @@
 
 ## 開発進捗
 
-L2 の純関数を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側は再exportへ集約。検証キットの9群を2つの製品テストへ移設、共通入力を `tests/fixtures/noah/connect.mjs` に配置。[PR #330](https://github.com/k999ln/rock/pull/330)。製品9群・設計キット61件・DDL10項目・typecheck・lint:product成功、全体verify中。参照実装の関数本体と型が変更されていない事も照合。L5のAPI・カード、既存13件への組み込みは未着手。
+[PR #330](https://github.com/k999ln/rock/pull/330): L2（純関数）の実装・ローカル検証済み。`lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ型と全関数を移設し、設計側は再exportへ集約。参照実装との関数本体・型の一致を確認。検証キットの9群を製品の2テストへ移し、共通入力を `tests/fixtures/noah/connect.mjs` に配置。
+
+検証: `npm ci` と `npm ci --prefix sites/avocado-mini` の後、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 成功（主テスト4,444成功・既存skip4・失敗0、仕事API1,918項目・CSV保存385項目、build含む）。設計キット61件・DDL10項目も成功。作業フォルダ間の依存共有によるパス照合失敗は、各フォルダへの独立インストールで解消した。
+
+残件: L5のAPI・カード、既存13件への組み込みは未着手。本番migration・配備・切り替えなし。PRは未マージ。GitHubの秘密値検査はmainから引き継いだ過去3コミットの合成テスト入力を検出している（詳細はPR）。検査・履歴・例外設定は変更していない。
