@@ -8,7 +8,7 @@ void test('public registration and supported execution use Noah; other local ope
     assert.equal(noahActionHref('local', '/noah', target, 'anicca'), path);
     for (const base of ['/noah', '/noah/public']) {
       const href = new URL(noahActionHref('public', base, target, 'anicca'), 'https://avoado.si');
-      if(['library','work'].includes(target)){assert.equal(href.pathname,'/noah/launch');assert.equal(href.hash,'#'+target);continue;}
+      if(['library','work'].includes(target)){assert.equal(href.pathname,'/noah/activity');assert.equal(href.hash,'#'+target);continue;}
       if(target==='register'){assert.equal(href.pathname,'/noah/agents/new');continue;}
       assert.equal(href.pathname, `${base}/mac`);
       assert.equal(noahMacPath(href.searchParams.get('target'), href.searchParams.get('agent')), path);

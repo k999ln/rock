@@ -1,4 +1,3 @@
-import { env } from 'cloudflare:workers';
 import { database, requestUser } from './fund-store';
 import { createNoahFeedbackApi } from './noah-feedback';
 import { noahResearchCatalog } from './noah-research-catalog';
@@ -10,13 +9,6 @@ export function noahFeedbackApi() {
   return createNoahFeedbackApi({
     db: database(),
     authenticate: requestUser,
-    operators: (
-      (env as unknown as { NOAH_FEEDBACK_OPERATOR_USER_IDS?: string })
-        .NOAH_FEEDBACK_OPERATOR_USER_IDS ?? ''
-    )
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean),
     agentName: (id) =>
       noahResearchCatalog.get(id)?.entry.name ??
       recipeFor(id)?.name ??

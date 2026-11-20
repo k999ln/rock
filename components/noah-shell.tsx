@@ -4,8 +4,8 @@ import { useEffect, useState, useId, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Bot, Home, PenLine, ListChecks, Compass, FolderOpen, UserRound, Search, MoreHorizontal, Menu, ChevronUp, ChevronRight, X } from 'lucide-react';
-import { noahActionHref, noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
+import { Activity, Bot, Home, PenLine, Compass, FolderOpen, UserRound, Search, MoreHorizontal, Menu, ChevronUp, ChevronRight, X } from 'lucide-react';
+import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import styles from './noah-service-shell.module.css';
 import NoahServiceCatalog from './noah-service-catalog';
 import { NoahSurfaceContext } from './noah-surface-context';
@@ -30,14 +30,12 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     window.addEventListener('hashchange', update); window.addEventListener('popstate', update);
     return () => { cancelAnimationFrame(frame); window.removeEventListener('hashchange', update); window.removeEventListener('popstate', update); };
   }, [pathname, effectiveMode, base]);
-  const action = (target: string) => noahActionHref(effectiveMode, base, target);
   const timeline = `${base}#timeline`;
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
   const primary = [
     { href: timeline, label: 'タイムライン', description: 'みんなの投稿とAgentを見る', Icon: Home, selected: pathname === base || pathname === '/' || pathname === '/os' },
     { href: `${base}/explore`, label: 'Agentを探す', description: '頼みたい仕事に合うAgentを見つける', Icon: Compass, selected: pathname.endsWith('/explore') },
-    { href: action('library'), label: '自分のAgent', description: '追加したAgentを使う・管理する', Icon: Bot, selected: pathname.endsWith('/library') || (pathname.endsWith('/launch') && hash !== '#work') },
-    { href: action('work'), label: '仕事', description: '依頼した仕事の進み具合を確認する', Icon: ListChecks, selected: pathname.endsWith('/work') || (pathname.endsWith('/launch') && hash === '#work') },
+    { href: `${base}/activity`, label: '実行中', description: 'Agentの動きと届いた成果を見る', Icon: Activity, selected: pathname.endsWith('/activity') },
     { href: `${base}/data`, label: '成果データ', description: '受け取った結果を確認・保存する', Icon: FolderOpen, selected: pathname.endsWith('/data') || pathname.endsWith('/outputs') },
   ];
   const currentPage = primary.find(item => item.selected)?.label ?? 'その他の画面';

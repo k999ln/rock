@@ -48,7 +48,6 @@ function fixture(t) {
       return user;
     },
     now: () => time,
-    operators: ['operator'],
   };
   const api = createNoahFeedbackApi(deps);
   const get = (query = 'agent=agent-one', user) =>
@@ -285,46 +284,38 @@ void test('comment pagination is stable at identical timestamps and rejects malf
   );
   assert.equal((await f.get('agent=agent-one&cursor=bad')).status, 400);
 });
-void test('maintenance inquiry is idempotent, private, and requires scope/authority without claiming code execution or payment', async (t) => {
+void test('retired Web maintenance intake refuses reads and writes without changing retained records', async (t) => {
   const f = fixture(t),
     v = maintenance();
-  assert.equal((await f.post({ ...v, authorized: false })).status, 400);
-  assert.equal(
-    (
-      await f.post({
-        ...v,
-        repository: 'https://user:secret@example.test/repo',
-      })
-    ).status,
-    400,
-  );
-  assert.equal(
-    (
-      await f.post({
-        ...v,
-        repository: 'https://example.test/repo?token=secret',
-      })
-    ).status,
-    400,
-  );
-  assert.equal((await f.post(v)).status, 201);
-  assert.equal((await f.post(v)).status, 201);
-  assert.equal((await f.post({ ...v, objective: 'changed' })).status, 409);
-  assert.equal((await f.post(v, 'owner-b')).status, 409);
-  assert.equal((await f.get('maintenance=mine')).status, 401);
-  assert.equal(
-    (await (await f.get('maintenance=mine', 'owner-b')).json()).requests.length,
-    0,
-  );
-  const d = await (await f.get('maintenance=mine', 'owner-a')).json();
-  assert.equal(d.requests.length, 1);
-  assert.equal(d.requests[0].state, 'requested');
-  assert.doesNotMatch(JSON.stringify(d), /owner-a|request_sha256/);
-  assert.equal((await f.get('maintenance=operator', 'owner-a')).status, 403);
-  assert.equal(
-    (await (await f.get('maintenance=operator', 'operator')).json()).requests
-      .length,
-    1,
+  f.sql
+    .prepare(
+      "INSERT INTO noah_maintenance_requests VALUES(?,?,?,?,?,?,'requested','noah-maintenance-v1',?)",
+    )
+    .run(
+      v.id,
+      'owner-a',
+      'agent-one',
+      'Synthetic retained request',
+      'https://example.test/repo',
+      'synthetic',
+      1,
+    );
+  const before = f.sql.prepare('SELECT * FROM noah_maintenance_requests').all();
+  for (const owner of [undefined, 'owner-a', 'owner-b', 'operator']) {
+    for (const view of ['mine', 'operator']) {
+      const response = await f.get(`maintenance=${view}`, owner);
+      assert.equal(response.status, 410);
+      const data = await response.json();
+      assert.match(data.error, /smash@avoado.si/);
+      assert.equal(data.requests, undefined);
+      assert.doesNotMatch(JSON.stringify(data), /Synthetic retained request/);
+    }
+  }
+  assert.equal((await f.post(v)).status, 410);
+  assert.equal((await f.post(maintenance())).status, 410);
+  assert.deepEqual(
+    f.sql.prepare('SELECT * FROM noah_maintenance_requests').all(),
+    before,
   );
 });
 void test('unavailable storage never becomes a zero count or a successful mutation', async (t) => {

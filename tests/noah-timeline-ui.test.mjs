@@ -46,6 +46,7 @@ void test('UI defaults to all posts and Agents with one Agent filter link and no
   assert.ok(!all.some(n=>n.props?.['aria-label']==='タイムラインの種類'));
   assert.ok(all.some(n=>n.props?.href==='/noah#agents' && text(n)==='Agent'));
   assert.ok(!text(tree).includes('すべてに戻る'));
+  assert.ok(all.some(n=>n.props?.href==='/noah/activity' && text(n)==='実行中'));
   assert.ok(nodes(render('#agents')).some(n=>n.props?.href==='/noah#timeline' && text(n)==='すべてに戻る'));
   assert.ok(nodes(cards[1]).some(node => node.props?.href === '/noah/agents/agent'));
   assert.ok(nodes(cards[0]).some(node => node.props?.href === '/noah/social?post=ordinary'));
