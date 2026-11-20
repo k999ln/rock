@@ -1,16 +1,24 @@
 # avokado / mii / Noah
 
-avokadoの主商品は、声でEveへ依頼し、空間の表示を見たり触ったりして仕事を進める **mii** です。最小構成から始める商品が **Noah**。まず自分のMacでAgentを選び、接続・実行・成果受領・停止まで使える状態を完成させます。**RockstarOS** はこれらを支える共通実行基盤、**Eve** は依頼と仕事の窓口です。
+avokadoの主商品は、声でEveへ依頼し、空間の表示を見たり触ったりして仕事を進める **mii** です。その最小構成が **Noah** です。公開に向けて、スマホからAgentを選び、提供者のサーバーに仕事を依頼して成果を受け取り、接続を切る体験を開発します。本人のMacでAgentを動かす機能も引き続き開発・検証します。**RockstarOS** はこれらを支える共通実行基盤、**Eve** は依頼と仕事の窓口です。
 
 [Noahを開く](https://avoado.si/noah) · [Eveを開く](https://avoado.si/os/eve) · [現在の進捗](project.md) · [設計の入口](docs/structure/00-overview.md)
 
-このREADMEには現在の利用方法・コード・受入範囲を記載します。変更履歴は[CHANGELOG](CHANGELOG.md)で管理します。
+## 作業を始めるとき
+
+| やりたいこと | どこで動くか・何を確かめるか | 最初に開く文書 |
+| --- | --- | --- |
+| Noahの公開版を作る | 利用者はスマホのブラウザで操作し、Agentは提供者のサーバーで動く。初めての利用者が接続・依頼・成果受領・切断までできることが公開条件 | [ローンチの範囲と作る順](docs/noah/mvp-launch.md) → [担当する作業票と仕様書](docs/noah/README.md) |
+| 本人のMacでAgentを動かす | Mac上のRunnerに接続し、実行・成果保存・停止を検証する。別Macや本番経由の通し試験は残っている | [Mac Runnerの導入・実行・停止](docs/services/noah-standalone-launch.md) |
+| miiの空間体験を作る | 声でEveに依頼し、TowerとHubを通じて部屋の表示を見たり触ったりする。実機受入はこれから | [miiの構造と入出力](docs/structure/01-mii.md) |
+
+複数の作業フォルダを使うときは、VS Codeのターミナルで `git status -sb` を実行すると、今のブランチと未コミットの変更を確認できます。作業方針の正本は [GitHubのmainのREADME](https://github.com/k999ln/rock/blob/main/README.md) です。
 
 ## 製品と入口
 
 | 製品 | 役割 | 入口・現在の範囲 |
 | --- | --- | --- |
-| Noah | miiへ進む最小構成。Agentを集める・つなげる・載せる | [avoado.si/noah](https://avoado.si/noah)。公開カタログとMacの実行先を区別 |
+| Noah | miiへ進む最小構成。Agentを集める・つなげる・載せる | [avoado.si/noah](https://avoado.si/noah)。公開カタログ・Agentの選択 |
 | Eve | 依頼、担当設定、仕事、成果、停止、使用量の確認 | [avoado.si/os/eve](https://avoado.si/os/eve)。実行には本人確認と対象Toolの接続・権限が必要 |
 | RockstarOS 1.0 | 本人性、権限、予算、仕事の状態、保存・復旧を共有するruntime | Developer Preview。Web、Linux/QEMU、Android/機種別OSを別々に受入 |
 | mii | 声・手・表示・センサーを共通の仕事へつなぐ空間端末 | [avocadomini.si](https://avocadomini.si)。設計・ソフト試作段階 |
@@ -39,7 +47,7 @@ flowchart LR
 
 本人MacのRunnerは認証付きの要求取得、重複防止、停止確認を実装しています。ローカルAPIと実コンテナで接続・実行・停止を検証していますが、本番HTTPS・別Mac間の通し試験は未受入です。Macのスリープ・電源断中は動きません。Apple Silicon向け配布ZIPは空の保存領域で導入確認済みで、未導入の別Macでの受入は残っています。[導入・実行・停止の契約](docs/services/noah-standalone-launch.md)。
 
-未ログイン時はアカウント確認・ログイン・再確認を案内し、認証後は登録やMac承認の元の画面へ戻ります。登録・接続・実行・停止の本番通し受入と、別Macの実機受入は未完了です。現在の受入範囲と残件は[Noah単体ローンチ](codex/tasks/71-noah-standalone-launch.md)を参照してください。
+未ログイン時はアカウント確認・ログイン・再確認を案内し、認証後は登録やMac承認の元の画面へ戻ります。Mac経由の登録・接続・実行・停止については、[Mac Runnerの検証記録](codex/tasks/71-noah-standalone-launch.md)を参照してください。
 
 投稿・フォローにはサインインが必要です。画面表示の確認と、本人アカウントでの送信・外部接続・決済の受入を区別します。決済サービスが未接続の機能は接続待ちとして扱います。
 
@@ -106,7 +114,7 @@ APK、QEMU、fixture、CIの成功を物理OSや本番金融の合格へ置き�
 
 ### SIM / eSIM・使用料金
 
-SIM/eSIMはOSを導入する際に使う仕組みです。主商品はmii、最初に完成させるのはMac上のNoahです。回線とサービス利用権を扱う既存契約は別々に確認します。OS binaryをSIMへ格納しません。回線、サービス利用権、本人確認、OS/clientの導入状態を別々に管理します。native OSは正確な機種と署名・復旧条件が通った場合に案内し、それ以外は対応clientやブラウザを使います。
+SIM/eSIMはOSを導入する際に使う仕組みです。回線とサービス利用権を扱う既存契約は別々に確認します。OS binaryをSIMへ格納しません。回線、サービス利用権、本人確認、OS/clientの導入状態を別々に管理します。native OSは正確な機種と署名・復旧条件が通った場合に案内し、それ以外は対応clientやブラウザを使います。
 
 Cloud agentは事前単価・見積り、上限承認、実行中の費用・予約、項目別usageを示し、許可済み予算を超えて実行しません。商品料金・通信料・si使用料・外部実費・BYOKを混同しません。実回線発行・本番決済の受入は各providerの接続と個別条件が必要です。
 

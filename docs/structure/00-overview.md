@@ -23,7 +23,7 @@ Agent を使う時・運営する時に、一番重く見る 3 つ（迷った�
 
 ## 1. 一言で
 
-**主商品はmii、最小構成の出発点はNoah。** まず本人Macで対応Agentを選び、接続・実行・成果受領・停止まで完成させ、その後miiで声と空間表示を使う体験へつなぐ。Eveは依頼窓口、RockstarOSは共通基盤、SIM/eSIMはOS導入の仕組み。[最新方針](../product-baseline.md)。
+**主商品はmii、最小構成の出発点はNoah。** [Noahの公開版](../noah/mvp-launch.md)ではスマホから提供者のサーバー上のAgentに依頼し、成果を受け取って接続を切る。本人Macでの接続・実行・成果受領・停止も検証し、miiで声と空間表示を使う体験へつなぐ。Eveは依頼窓口、RockstarOSは共通基盤、SIM/eSIMはOS導入の仕組み。[最新方針](../product-baseline.md)。
 
 > **一つの account、一つの OS（RockstarOS）、どのハードでも続きから動く。**
 > 話す相手は **Eve**。Eve が目的を決め、**Noa** が道具とAgentをつないで形にし、それを **mii** で見て触る。
