@@ -27,7 +27,7 @@
 
 1. `git clone https://github.com/k999ln/rock`（もう clone があれば `git pull origin main`）。続けて `npm ci`。Node.js 22.13 以上、Python 3.9 以上。
 2. 検証キットが通る事を確かめる: `node --experimental-strip-types --test "docs/design-validation/noah/*.test.mjs"` と `python3 docs/design-validation/noah/validate-noah-v1.py`。2026-11-20 に、main を別の場所へ取り出して確かめた結果は、試験 61/61・DDL 10/10。
-3. 読む順: [ローンチの最小限](mvp-launch.md) の 1〜3 章と 6 章（作る順）→ その PR の task（`codex/tasks/`）→ 下の表の仕様書の「ローンチの範囲」の章。
+3. 読む順: [00 全体像](../structure/00-overview.md) の 0 章（何のために作るか・一番重く見る 3 つ）→ [ローンチの最小限](mvp-launch.md) の 1〜3 章と 6 章（作る順）→ その PR の task（`codex/tasks/`）→ 下の表の仕様書の「ローンチの範囲」の章。
 4. 最初の PR は L1（task 84）と L2（task 96 の純関数）。どちらも、先に要る物が無く、並べて進められる。その後は L3（85）→ L4（86）→ L5（74。96 の計画の API とカードを含む）→ L6（87）→ L7（88）。L8（97）は L3 の後ならいつでも。L9（90）が受入。
 5. 本番への migration・配備・切り替え・契約は、どの PR も行わない（本人の許可の後。[ローンチの最小限](mvp-launch.md) の 7 章と 9 章）。
 

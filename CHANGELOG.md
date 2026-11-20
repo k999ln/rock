@@ -1,5 +1,7 @@
 ## 2026-11-20
 
+- 目的と、一番重く見る 3 つを、設計の正本に書いた（Fable / Noelle。本人指示「ここまでを git に更新してあげて」）。① docs/structure/00-overview.md の 0 章: 大きな目的（みんなが Agent を使って、生活がより豊かになる）、最初の目的（教育と身の回りの生活が、少しでも便利に・効率よくなる）、重点 3 つ（どんな Agent にも 1 クリックでつながる／登録が要っても離れさせない／画面をジャックしない）。② docs/noah-design.md の 12 章: 3 つへの設計の対応と足りない所、全部の Agent につながるまでの型ごとの数と順、今の Noah の現状（動かせるのは 13 件・調査カタログ 79,643 件は接続を確かめた物が 0・並びは点数の足し算で予測なし）、最初の目的に合わせて変える所（提案）。③ docs/noah/mvp-launch.md の 13 章: 入口を「教育」「暮らし」の棚にする案。④ docs/structure/07 に本人の言葉 4 行。**設計の文書だけ。実装（lib/・app/）と本番は変えていない。**
+
 - Noah の設計を、別の機械から始められるようにした（Fable / Noelle。本人指示「main に入れて、別の PC が git にアクセスして開発が進めれるようにして」）。docs/noah/README.md に「別の機械で始める時」（clone → `npm ci` → 検証キット → 読む順 → 最初の PR は L1 と L2）を足した。main を別の場所へ取り出して確かめた: `npm ci` の後は試験 61/61・DDL 10/10。`npm ci` が無いと `noah-screenless.test.mjs` だけが読めない（今の起動スクリプトが `fflate` を使う）ので、検証キットの README の「`npm install` は要らない」を直した。
 
 - Noah の検証キットの試験で、鍵らしい作り物の文字列を、試験の中で組み立てる形へ直した（docs/design-validation/noah/noah-connect.test.mjs。Fable / Noelle）。main へ上げた後、SPIDER / secrets が、試験に直に書いていた作り物の 1 行（commit 5b7cde3 と、それを含む merge の 80b3810）を鍵の候補として検出したため。本物の鍵ではない。今のファイルからは消えるが、履歴には残るので、検査は、例外（policy と control commit の更新。owner review）が入るまで赤のまま。**この変更では、`.github/spider/` と workflow を触っていない。履歴も書き換えていない。** 検証キットは試験 61/61。PR #328。
