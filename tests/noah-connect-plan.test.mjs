@@ -90,4 +90,3 @@ void test('接続の状態遷移: 全部の組み合わせ', () => {
   // 切った後、止められた後は、どこへも進まない
   for (const e of NOAH_CONNECTION_EVENTS) { assert.equal(nextNoahConnectionState('disconnected', e), null); if (e !== 'disconnect') assert.equal(nextNoahConnectionState('blocked', e), null); }
 });
-

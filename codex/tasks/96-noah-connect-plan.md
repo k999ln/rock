@@ -35,4 +35,4 @@
 
 ## 開発進捗
 
-L2 の純関数を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側は再exportへ集約。検証キットの9群を2つの製品テストへ移設、共通入力を `tests/fixtures/noah/connect.mjs` に配置。検証中。L5のAPI・カード、既存13件への組み込みは未着手。
+L2 の純関数を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側は再exportへ集約。検証キットの9群を2つの製品テストへ移設、共通入力を `tests/fixtures/noah/connect.mjs` に配置。[PR #330](https://github.com/k999ln/rock/pull/330)。製品9群・設計キット61件・DDL10項目・typecheck・lint:product成功、全体verify中。参照実装の関数本体と型が変更されていない事も照合。L5のAPI・カード、既存13件への組み込みは未着手。

@@ -177,4 +177,3 @@ export function nextNoahConnectionState(state: NoahConnectionState, event: NoahC
 }
 /** 「頼む」を受け付けてよい状態。 */
 export const noahConnectionUsable = (state: NoahConnectionState) => state === 'connected';
-
