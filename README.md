@@ -252,7 +252,7 @@ Cloud agentの実行前に単価・見積りと予算上限を確認し、実行
 
 <img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="建築空間になじむmiiのコンセプト" width="100%" />
 
-*部屋に組み込んだmiiのコンセプト。* R5を現行設計として試作を進めています。製造承認は保留中で、R5の実機試験は完了0件です。次に実機で確かめる項目は、光学・熱・電源・停止・取り付け・警報です。V2・天井型は比較研究の段階です。[miiの構造](docs/structure/01-mii.md) · [R5設計](docs/avocado-mini-r5/README.md) · [V2の比較研究](docs/mii/design/v2-study/README.md)
+*部屋に組み込んだmiiのコンセプト。* R5を現行設計として試作を進めています。製造承認は**保留中**です。R5実機試験の完了実績は0件です。次に実機で確かめる項目は、光学・熱・電源・停止・取り付け・警報です。V2・天井型は比較研究の段階です。[miiの構造](docs/structure/01-mii.md) · [R5設計](docs/avocado-mini-r5/README.md) · [V2の比較研究](docs/mii/design/v2-study/README.md)
 
 空間入力の実装と機種設定から、手の入力がどこで処理されるかを追えます。Material Inventionには再計算用sandboxと設計資料があり、シミュレーション・実験室接続は未実装です。[空間入力のコード](lib/mii-spatial-input.ts) · [機種設定](systems/rock-star-os/targets/avocado-mini/) · [Material Inventionの設計](docs/rockstaros-avocado-mini-complete-design.md) · [製品サイトのコード](sites/avocado-mini/)
 
