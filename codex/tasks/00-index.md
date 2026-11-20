@@ -82,7 +82,7 @@
 | 1 | L4 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | ✅ L4 実装・手元の受入 [PR #335](https://github.com/k999ln/rock/pull/335)（L3 の点検の修正 #339 を base、未マージ）。相手の許可（OAuth）・Space は、出した後 |
 | 1 | L6 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（入力欄で頼む・1 文で頼む） | ✅ L6（入力欄で頼む）実装・手元の受入 [PR #344](https://github.com/k999ln/rock/pull/344)（L5 の #342 を base、未マージ。本番への適用なし）: migration 0048・依頼の API・実行・画面。読み取りだけと宣言されていない実在の道具は、呼んでいない（確かめの画面まで）。成果を「成果データ」「実行中」に出す所は、まだ。1 文で頼むは、出した後 |
 | 1 | L5 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | ✅ L5 実装・手元の受入 [PR #342](https://github.com/k999ln/rock/pull/342)（未マージ。本番への適用なし）: migration 0047・接続の API・道具の一覧の API・画面（`/noah/ready`・`/noah/ready/agent`）・その場のサインイン・探す画面の入口。手元の実物（幅 390）で「接続」1 回 →「頼む」を確かめた。出す場所とサインインの扱いは、既定で作った（本人確認待ち）。Passport・家の端末・相手の許可は、出した後 |
-| 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | |
+| 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | 作業中（Claude。枝 `claude/noah-patrol-l7-20261121`。L6 の #344 の上）: 後始末・つながると確かめた数・試験・受入 |
 | 1 | — | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package）。今ある Mac の隔離環境で | |
 | 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | |
 | 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | |
