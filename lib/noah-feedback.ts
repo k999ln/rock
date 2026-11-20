@@ -33,14 +33,6 @@ export type AgentFeedbackPage = {
   authenticated: boolean;
   canComment: boolean;
 };
-export type MaintenanceRequest = {
-  id: string;
-  agentId: string;
-  objective: string;
-  repository: string;
-  state: 'requested';
-  createdAt: number;
-};
 export type FeedbackFeedEntry = {
   id: string;
   agentId: string;
@@ -61,7 +53,6 @@ type Deps = {
   publicAgent: (id: string) => Promise<boolean> | boolean;
   agentName?: (id: string) => Promise<string> | string;
   now?: () => number;
-  operators?: string[];
 };
 const json = (value: unknown, status = 200) =>
   Response.json(value, {
@@ -370,62 +361,6 @@ export function createNoahFeedbackApi(deps: Deps) {
       .bind(now(), v.id, id, owner)
       .run();
   }
-  async function maintenance(owner: string, v: Record<string, unknown>) {
-    keys(v, [
-      'action',
-      'agentId',
-      'id',
-      'objective',
-      'repository',
-      'scopeVersion',
-      'authorized',
-    ]);
-    const id = await publicAgent(v.agentId);
-    if (
-      !uuid(v.id) ||
-      v.scopeVersion !== 'noah-maintenance-v1' ||
-      v.authorized !== true
-    )
-      fail('依頼権限と作業範囲を確認してください。');
-    const objective = text(v.objective, 2000),
-      repository = text(v.repository, 300);
-    let url: URL;
-    try {
-      url = new URL(repository);
-    } catch {
-      return fail('リポジトリのHTTPS URLを入力してください。');
-    }
-    if (
-      url.protocol !== 'https:' ||
-      url.username ||
-      url.password ||
-      url.search ||
-      url.hash
-    )
-      fail('認証情報を含まないHTTPS URLを入力してください。');
-    const hash = await digest([id, objective, repository, v.scopeVersion]);
-    await db
-      .prepare(
-        `INSERT INTO noah_maintenance_requests(id,owner_id,agent_id,objective,repository,request_sha256,state,scope_version,created_at) SELECT ?,?,?,?,?,?,'requested','noah-maintenance-v1',? WHERE (SELECT COUNT(*) FROM noah_maintenance_requests WHERE owner_id=?)<5 ON CONFLICT(id) DO NOTHING`,
-      )
-      .bind(v.id, owner, id, objective, repository, hash, now(), owner)
-      .run();
-    const saved = await db
-      .prepare(
-        'SELECT id,owner_id,request_sha256 FROM noah_maintenance_requests WHERE id=?',
-      )
-      .bind(v.id)
-      .first<{ owner_id: string; request_sha256: string }>();
-    if (!saved) fail('依頼の受付上限に達しました。', 429);
-    if (saved!.owner_id !== owner || saved!.request_sha256 !== hash)
-      fail('依頼IDが使用済みです。', 409);
-    return {
-      id: v.id,
-      state: 'requested',
-      message:
-        '見積もり依頼を保存しました。料金・作業範囲の合意と権限確認はこれからです。',
-    };
-  }
   return async (r: Request) => {
     try {
       if (!['GET', 'POST'].includes(r.method))
@@ -435,11 +370,13 @@ export function createNoahFeedbackApi(deps: Deps) {
         r.headers.get('origin') !== new URL(r.url).origin
       )
         fail('この画面から操作してください。', 403);
-      const u = new URL(r.url),
-        owner = await viewer(
-          r,
-          r.method === 'POST' || u.searchParams.has('maintenance'),
+      const u = new URL(r.url);
+      if (r.method === 'GET' && u.searchParams.has('maintenance'))
+        return json(
+          { error: 'ご相談は smash@avoado.si へのメールで受け付けています。' },
+          410,
         );
+      const owner = await viewer(r, r.method === 'POST');
       if (r.method === 'GET') {
         if (u.searchParams.has('feed')) {
           let at = Number.MAX_SAFE_INTEGER,
@@ -487,21 +424,6 @@ export function createNoahFeedbackApi(deps: Deps) {
           });
         }
 
-        if (u.searchParams.has('maintenance')) {
-          const operator = u.searchParams.get('maintenance') === 'operator';
-          if (operator && !deps.operators?.includes(owner!))
-            fail('運営の権限が必要です。', 403);
-          const rows = await db
-            .prepare(
-              `SELECT id,agent_id AS agentId,objective,repository,state,created_at AS createdAt FROM noah_maintenance_requests ${operator ? '' : 'WHERE owner_id=?'} ORDER BY created_at DESC,id DESC LIMIT 50`,
-            )
-            .bind(...(operator ? [] : [owner]))
-            .all<MaintenanceRequest>();
-          return json({
-            requests: rows.results,
-            ownerScope: await ownerScopeFor(owner!),
-          });
-        }
         if (u.searchParams.has('ids')) {
           const ids = [
             ...new Set((u.searchParams.get('ids') ?? '').split(',')),
@@ -531,7 +453,10 @@ export function createNoahFeedbackApi(deps: Deps) {
         fail('入力内容を確認してください。');
       const v = raw as Record<string, unknown>;
       if (v.action === 'maintenance')
-        return json(await maintenance(owner!, v), 201);
+        return json(
+          { error: 'ご相談は smash@avoado.si へのメールで受け付けています。' },
+          410,
+        );
       const id = await publicAgent(v.agentId);
       if (v.action === 'crown') await crown(id, owner!, v);
       else if (v.action === 'comment') await comment(id, owner!, v);
