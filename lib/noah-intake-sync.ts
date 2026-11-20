@@ -4,6 +4,7 @@ import { NOAH_BULK_THRESHOLD, NOAH_REGROUP_SQL, noahRepositoryKey } from './noah
 import { NOAH_LISTING_SQL } from './noah-intake-listing.ts';
 import { NOAH_PATROL_BUDGET } from './noah-intake-wake.ts';
 import { intakeStatement, type IntakeDb } from './noah-intake-db.ts';
+import { NOAH_PROBE } from './noah-probe.ts';
 
 export type IntakeSource = {
   id: string; lease_id: string | null; lease_until: number; next_run_at: number;
@@ -14,6 +15,8 @@ export type IntakeSource = {
 export type IntakeDependencies = {
   db: IntakeDb; now?: () => number; fetcher?: typeof fetch; origin?: string;
   budget?: typeof NOAH_PATROL_BUDGET;
+  /** 握手の前に、名前を引いた先のアドレスを確かめる差し込み口。Node で動かす時だけ渡す（Workers からは、内部のアドレスへ届かない。spec-86 の 4.4）。 */
+  probeCheck?: (url: URL) => Promise<void>;
 };
 /** 1 回の巡回の結果。skipped は、形が違って読み飛ばした記録の数（ある時だけ）。error は、台帳を読めなかった・書けなかった時の理由。 */
 export type IntakeOutcome = { pages: number; seen: number; changed: number; more: boolean; skipped?: number; error?: 'unavailable' | 'rate_limited' | 'invalid_response' };
@@ -110,7 +113,14 @@ export function createIntakeSync(deps: IntakeDependencies) {
       await db.batch([guard(lease), ...statements.slice(i, i + 49)]);
     }
   }
-  const regroupStatements = () => [...NOAH_REGROUP_SQL.map(sql => intakeStatement(db, sql, { threshold: NOAH_BULK_THRESHOLD, now: now() })), intakeStatement(db, NOAH_LISTING_SQL.reshuffle)];
+  const regroupStatements = () => [
+    ...NOAH_REGROUP_SQL.map(sql => intakeStatement(db, sql, { threshold: NOAH_BULK_THRESHOLD, now: now() })), intakeStatement(db, NOAH_LISTING_SQL.reshuffle),
+    // 量産の系列は、ローンチでは載せないので、握手もしない（spec-88 の 9.7）。期限が 1 日以内の物だけを、30 日後へ送る（毎日は書き直さない）。
+    prepare("UPDATE noah_intake_checks SET next_check_at=? WHERE level=0 AND next_check_at<? AND candidate_id IN (SELECT id FROM noah_intake_candidates WHERE family_id LIKE 'bulk:%')", now() + NOAH_PROBE.laterMs, now() + 86_400_000),
+    // 先へ送ってあった候補が、握手の対象になった（量産の系列がほどけた・取り下げを戻した）時は、期限を今に戻す。まだ 1 回も握手していない物だけ。
+    prepare(`UPDATE noah_intake_checks SET next_check_at=? WHERE result='unchecked' AND setup=0 AND mouth='mcp-remote' AND next_check_at>?
+      AND candidate_id IN (SELECT c.id FROM noah_intake_candidates c JOIN noah_intake_families f ON f.id=c.family_id WHERE c.state='active' AND c.family_id NOT LIKE 'bulk:%' AND f.withdrawn_at IS NULL)`, now(), now() + 86_400_000),
+  ];
   async function regroup(lease: string, deadline = Infinity) { await batch(regroupStatements(), lease, deadline); }
   const touch = (id: string) => intakeStatement(db, NOAH_LISTING_SQL.touch, { level: 0, l2_at: null, listed: 0, one_tap: 0, badge_hint: 'unverified', now: now(), candidate_id: id });
   async function savePage(entries: unknown[], lease: string, deadline: number) {

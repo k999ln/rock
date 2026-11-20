@@ -1,4 +1,5 @@
 import { createIntakeSync, type IntakeDependencies, type IntakeSource } from './noah-intake-sync.ts';
+import { createIntakeProbe } from './noah-intake-probe.ts';
 import { intakeStatement } from './noah-intake-db.ts';
 import { noahListing, NOAH_LISTING_SQL, type NoahListingInput } from './noah-intake-listing.ts';
 import { parseNoahConnect, noahPublicHttpsUrl } from './noah-connect-requirements.ts';
@@ -36,7 +37,7 @@ export type IntakeStatus = {
   mouths: { remote: number; terminal: number; remoteReady: number; terminalReady: number }; families: { id: string; name: string; members: number; mouth: string | null; level: number; revision: number; withdrawn: boolean }[]; nextOffset: number | null; reasons: Record<string, number>; unsupported: Record<string, number>; listed: number;
 };
 export function createIntakeStore(deps: IntakeDependencies) {
-  const { db } = deps, now = deps.now ?? Date.now, sync = createIntakeSync(deps);
+  const { db } = deps, now = deps.now ?? Date.now, sync = createIntakeSync(deps), probe = createIntakeProbe(deps);
   async function counts() {
     const rows = (await db.prepare("SELECT level,COUNT(*) AS n FROM noah_intake_families WHERE listed=1 AND level>=1 AND withdrawn_at IS NULL AND hidden_at IS NULL GROUP BY level").all<{ level: number; n: number }>()).results;
     return { ran: rows.find(r => r.level === 2)?.n ?? 0, new: rows.find(r => r.level === 1)?.n ?? 0 };
@@ -108,5 +109,5 @@ export function createIntakeStore(deps: IntakeDependencies) {
     if (result.meta.changes !== 1) throw new NoahAgentError('内容が更新されました。再読込してください。', 409);
     return { id, revision: revision + 1 };
   }
-  return { ...sync, list, detail, status, moderate };
+  return { ...sync, ...probe, list, detail, status, moderate };
 }

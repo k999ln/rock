@@ -189,7 +189,8 @@ void test('the wake answers 500 when the sweep failed, and writes one line of co
   const f = fixture(t, async () => reply());
   const lines = [];
   t.mock.method(console, 'info', (line) => lines.push(JSON.parse(line)));
-  const deps = (config = {}) => ({ ...f.deps, authenticate: async () => { throw Error('UNAUTHORIZED'); }, reviewers: [], flags: parseNoahFlags({ NOAH_PATROL_ENABLED: 'true' }), wakeKey: key, ...config });
+  // ここでは、台帳の巡回の応答だけを見る（握手は 0 件にする。握手の数は tests/noah-probe.test.mjs）。
+  const deps = (config = {}) => ({ ...f.deps, budget: { pages: 10, probes: 0, concurrent: 4, seconds: 25 }, authenticate: async () => { throw Error('UNAUTHORIZED'); }, reviewers: [], flags: parseNoahFlags({ NOAH_PATROL_ENABLED: 'true' }), wakeKey: key, ...config });
   const wake = async (tick = createIntakeTick(deps())) => {
     const timestamp = String(f.time());
     return tick(new Request('https://noah.test/api/noah/intake/tick', { method: 'POST', body: '{}', headers: { 'x-noah-time': timestamp, 'x-noah-signature': await noahWakeSignature(key, timestamp) } }));

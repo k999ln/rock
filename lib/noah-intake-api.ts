@@ -1,5 +1,6 @@
 import { createIntakeStore } from './noah-intake-store.ts';
 import type { IntakeDependencies, IntakeOutcome } from './noah-intake-sync.ts';
+import { noProbes, type IntakeProbeCounts } from './noah-intake-probe.ts';
 import { noahAllowed, type NoahFlags } from './noah-flags.ts';
 import { verifyNoahWake } from './noah-intake-wake.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
@@ -55,12 +56,21 @@ export function createIntakeTick(deps: IntakeApiDependencies) {
     try { valid = await verifyNoahWake({ key: deps.wakeKey, timestamp: request.headers.get('x-noah-time'), signature: request.headers.get('x-noah-signature'), body: await body(request, 2), now: (deps.now ?? Date.now)(), path: new URL(request.url).pathname }); } catch { /* Invalid or oversized wake: fail closed. */ }
     if (!valid) return json({ error: 'Unauthorized' }, 401);
     if (!deps.flags.patrol) return json({ disabled: true });
-    // 台帳を読めなかった・書けなかった巡回は、500 で返す（合図を送る専用の Worker の実行が、失敗として残る。監視で、成功に見せない）。
-    const clock = deps.now ?? Date.now, started = clock();
-    let outcome: IntakeOutcome = { pages: 0, seen: 0, changed: 0, more: false, error: 'unavailable' }, response: Response;
-    try { outcome = await createIntakeStore(deps).sync(); response = json(outcome, outcome.error ? 500 : 200); } catch (error) { response = failure(error); }
-    // 合図 1 回の記録（1 行）。数と理由の符号だけ。接続先の名前・URL・本人の ID は出さない。握手の数は、握手を作る層（L4）が入れる。
-    console.info(JSON.stringify({ event: 'noah-patrol', pages: outcome.pages, seen: outcome.seen, changed: outcome.changed, skipped: outcome.skipped ?? 0, probes: 0, ok: 0, authRequired: 0, unreachable: 0, rateLimited: 0, skippedHost: 0, toolsChanged: 0, swept: 0, error: outcome.error ?? null, ms: clock() - started }));
+    // 1 回の合図で進める量（台帳の頁・握手の数・時間）は、環境変数 NOAH_PATROL_BUDGET で変えられる。
+    const clock = deps.now ?? Date.now, started = clock(), budget = deps.budget ?? deps.flags.patrolBudget;
+    const store = createIntakeStore({ ...deps, budget });
+    let outcome: IntakeOutcome = { pages: 0, seen: 0, changed: 0, more: false, error: 'unavailable' }, probe: IntakeProbeCounts = noProbes(), thrown: unknown = null;
+    try {
+      // 台帳の巡回の後に、握手を行う。台帳を読めなかった時も、握手は行う（別の相手なので）。
+      outcome = await store.sync();
+      probe = await store.probeDue(started + budget.seconds * 1000);
+    } catch (error) { thrown = error; }
+    // 台帳を読めなかった・表を読み書きできなかった合図は、2xx にしない（合図を送る専用の Worker の実行が、失敗として残る。監視で、成功に見せない）。
+    // 握手を 1 件でも試みた時は、その数を応答に足す（数だけ。接続先の名前は持たない）。
+    const attempted = probe.probes + probe.skippedHost > 0;
+    const response = thrown ? failure(thrown) : json(attempted ? { ...outcome, probe } : outcome, outcome.error ? 500 : 200);
+    // 合図 1 回の記録（1 行）。数と理由の符号だけ。接続先の名前・URL・本人の ID は出さない。swept（後始末）は、依頼と接続を作る層が入れる。
+    console.info(JSON.stringify({ event: 'noah-patrol', pages: outcome.pages, seen: outcome.seen, changed: outcome.changed, skipped: outcome.skipped ?? 0, probes: probe.probes, ok: probe.ok, authRequired: probe.authRequired, unreachable: probe.unreachable, rateLimited: probe.rateLimited, skippedHost: probe.skippedHost, toolsChanged: probe.toolsChanged, swept: 0, error: thrown ? 'unavailable' : outcome.error ?? null, ms: clock() - started }));
     return response;
   };
 }

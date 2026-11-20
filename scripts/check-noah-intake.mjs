@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { createIntakeTick } from '../lib/noah-intake-api.ts';
 import { createIntakeStore } from '../lib/noah-intake-store.ts';
 import { parseNoahFlags } from '../lib/noah-flags.ts';
-import { noahWakeSignature } from '../lib/noah-intake-wake.ts';
+import { NOAH_PATROL_BUDGET, noahWakeSignature } from '../lib/noah-intake-wake.ts';
 export async function assertIntakeDistribution(db, live = true) {
   const rows = (await db.prepare("SELECT c.state,k.mouth,k.setup,COUNT(*) AS n FROM noah_intake_candidates c LEFT JOIN noah_intake_checks k ON k.candidate_id=c.id WHERE c.state<>'withdrawn' GROUP BY c.state,k.mouth,k.setup").all()).results;
   const actual = { remoteReady: 0, remoteSetup: 0, terminalReady: 0, terminalSetup: 0, unsupported: 0 };
@@ -29,7 +29,8 @@ try {
   for (const sql of readFileSync(new URL('../drizzle/0044_noah_intake.sql', import.meta.url), 'utf8').split('--> statement-breakpoint').filter(s => /CREATE/.test(s))) await db.prepare(sql).run();
   const key = 'local-acceptance-wake-'.repeat(3), started = Date.now(), urls = [];
   let logical = started, turnStart = started;
-  const deps = { db, now: () => logical + Date.now() - turnStart, authenticate: async () => 'local-reviewer', reviewers: ['local-reviewer'], wakeKey: key, flags: parseNoahFlags({ NOAH_PATROL_ENABLED: 'true' }),
+  // This acceptance covers the registry intake only: zero handshakes per wake, so no Agent endpoint is contacted (handshakes: scripts/check-noah-probe.mjs).
+  const deps = { db, now: () => logical + Date.now() - turnStart, authenticate: async () => 'local-reviewer', reviewers: ['local-reviewer'], wakeKey: key, flags: parseNoahFlags({ NOAH_PATROL_ENABLED: 'true' }), budget: { ...NOAH_PATROL_BUDGET, probes: 0 },
     fetcher: async (input, init) => {
       const url = new URL(input); assert.equal(url.origin, 'https://registry.modelcontextprotocol.io'); assert.equal(url.pathname, '/v0.1/servers'); urls.push({ cursor: !!url.searchParams.get('cursor'), updated: url.searchParams.get('updated_since') });
       if (live) return fetch(input, init);

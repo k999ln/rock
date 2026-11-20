@@ -113,5 +113,11 @@ SELECT c.source, c.state, (c.family_id LIKE 'bulk:%') AS bulk, k.mouth, k.setup,
        (COALESCE(k.form_tools, 0) >= 1) AS has_form, (COALESCE(k.one_tap_tools, 0) >= 1) AS has_one_tap, COUNT(*) AS n
   FROM noah_intake_candidates c LEFT JOIN noah_intake_checks k ON k.candidate_id = c.id
  GROUP BY 1, 2, 3, 4, 5, 6, 7, 8, 9, 10;
+`,
+host_wait: String.raw`
+-- name: host_wait
+-- 相手が「混んでいる」（429）と返した時。Retry-After の時刻（:until）まで、巡回も、利用者の操作から始める握手も待つ。短くはしない。
+INSERT INTO noah_probe_hosts(host, last_probe_at, not_before) VALUES(:host, 0, :until)
+ON CONFLICT(host) DO UPDATE SET not_before = MAX(noah_probe_hosts.not_before, excluded.not_before);
 `
 };

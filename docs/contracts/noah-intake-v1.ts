@@ -116,18 +116,7 @@ export function noahSampleCalls(tools: NoahProbeTool[], limit = 3): { tool: stri
   return candidates.slice(0, limit).map(({ tool, args }) => ({ tool, args }));
 }
 
-const HOUR = 3_600_000;
-export const NOAH_CHECK_INTERVALS = { connected: 24 * HOUR, level2: 72 * HOUR, level1: 168 * HOUR, retry: 6 * HOUR, hideAfter: 30 * 24 * HOUR };
-/** 握手が続けて何回失敗したら、一覧から外すか（level を 0 にする）。1 回の失敗では外さない。 */
-export const NOAH_FAILURES_TO_UNLIST = 2;
-/**
- * 次に確かめる時刻。つないでいる人がいる系列は 24 時間後、L2 だけは 3 日後、L1 以下は 7 日後。
- * 1 回目の失敗の後は、6 時間後に確かめ直す（止まった物を、何日も並べたままにしない）。
- * 2 回目からは、間隔を 2 倍ずつ伸ばす（最長 30 日）。hide は、最初の失敗から 30 日たったら真。
- */
-export function nextNoahCheck(input: { now: number; connected: boolean; level: 0 | 1 | 2; failures: number; firstFailureAt: number | null }): { at: number; hide: boolean } {
-  const base = input.connected ? NOAH_CHECK_INTERVALS.connected : input.level === 2 ? NOAH_CHECK_INTERVALS.level2 : NOAH_CHECK_INTERVALS.level1;
-  const interval = input.failures === 1 ? NOAH_CHECK_INTERVALS.retry : Math.min(base * 2 ** Math.min(Math.max(input.failures - 1, 0), 10), NOAH_CHECK_INTERVALS.hideAfter);
-  return { at: input.now + interval, hide: input.firstFailureAt !== null && input.now - input.firstFailureAt >= NOAH_CHECK_INTERVALS.hideAfter };
-}
+// 見回りの間隔（NOAH_CHECK_INTERVALS・NOAH_FAILURES_TO_UNLIST・nextNoahCheck）と、握手 1 回（probeL1）・握手の結果の書き方（planNoahProbeWrite）は、
+// lib/noah-probe.ts へ移した（MVP L4）。
+export * from '../../lib/noah-probe.ts';
 
