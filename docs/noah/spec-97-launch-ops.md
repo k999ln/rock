@@ -31,7 +31,7 @@ Cloudflare の上限（読んだ日 2026-11-20: [Workers](https://developers.clo
 | 1 回の実行の、外向きの通信 | 50 回 | 10,000 回 | 合図 1 回で、台帳 10 頁＋握手 8 件 × 4 回 ＝ 約 42 回（握手 1 件は、実測で 3 回が 88%、4 回が 11%。[86](spec-86-remote-mouth.md) の 10.2）。握手を 16 件にすると約 75 回。接続 1 件・道具の一覧 1 回は、握手の 3〜4 回（セッションを使う相手は、閉じる要求で 1 回多い）。依頼 1 件で 5 回 | 既定の数なら足りる |
 | 同時に開ける外向きの接続 | 6 本 | 6 本 | 握手は同時に 4 件まで（`NOAH_PATROL_BUDGET.concurrent`） | 足りる |
 | 応答の後に続けられる時間（`waitUntil`） | 30 秒 | 30 秒 | 依頼 1 件で、握手 8 秒＋呼び出し 20 秒まで | 足りる |
-| D1 の query（1 回の実行） | 50 | 1,000 | 合図 1 回で、最初の全件の間（約 70 分）は約 110（台帳 10 頁で約 100）、毎時の更新は約 20、握手だけの合図は 11（`db.batch` は 1 と数える。手元の計測。[86](spec-86-remote-mouth.md) の 10.6）。接続 1 件で 7（相手が 401・402 の時は 11）、道具の一覧で 4、切るで 2、計画を読むで 2（本人の確かめの分を除く。手元の計測。[74](spec-74-one-click-connect.md) の 11.8）。依頼 1 件で約 12 | **足りない**（最初の全件の間） |
+| D1 の query（1 回の実行） | 50 | 1,000 | 合図 1 回で、最初の全件の間（約 70 分）は約 110（台帳 10 頁で約 100）、毎時の更新は約 20、握手だけの合図は 11（`db.batch` は 1 と数える。手元の計測。[86](spec-86-remote-mouth.md) の 10.6）。どの合図にも、終わりの後始末の 3 が足される（片付ける物が無い時。[88](spec-88-mass-probe.md) の 9.11）。接続 1 件で 7（相手が 401・402 の時は 11）、道具の一覧で 4、切るで 3（終わっていない依頼があれば、その分が増える）、計画を読むで 2（本人の確かめの分を除く。手元の計測。[74](spec-74-one-click-connect.md) の 11.8）。依頼 1 件で 20〜21（受け付け 6・応答の後の実行 14〜15。確かめの記録を足す時は 2 多い。手元の計測。[87](spec-87-tool-agent.md) の 11.8） | **足りない**（最初の全件の間） |
 | D1 の書き込み | 1 日 10 万行 | 月 5,000 万行まで含む | 最初の取り込みと握手の 1 巡で約 95 万行（1 回だけ）。その後は 1 日に約 17〜21 万行（下の内訳） | **足りない** |
 | D1 の読み取り | 1 日 500 万行 | 月 250 億行まで含む | 一覧は索引を使い、1 頁 21 行。検索は 1 回に約 18,000 行 | 利用が少ない間は足りる |
 | D1 の大きさ | 500MB | 10GB | 候補 6.8 万行（1 行の記録は中央値 409 bytes）で、数十 MB | 足りる |
@@ -62,12 +62,12 @@ D1 の書き込みの内訳（1 日。索引の書き込みも 1 行と数える
 | 置く | 同じ値を、専用の Worker の secret `NOAH_PATROL_WAKE_KEY` と、Web の本体の環境変数 `NOAH_PATROL_WAKE_KEY` に置く（今の合図の鍵と同じ置き方。`services/sky-free-cloud-wake/README.md`） |
 | 配備 | リポジトリの根から `npx wrangler deploy --config services/noah-patrol-wake/wrangler.jsonc`。Web の本体は、他の環境変数を保ったまま、今の保存版を配備し直す |
 | 動かす | Web の本体の `NOAH_PATROL_ENABLED=true`。閉じている間、合図は届くが、何もしない（200 `disabled`） |
-| 止める | `NOAH_PATROL_ENABLED=false`（握手と台帳の読み取りが止まる。今ある一覧は、そのまま出る）。合図そのものを止めるなら、専用の Worker の cron を外す |
+| 止める | `NOAH_PATROL_ENABLED=false`（握手と台帳の読み取りが止まる。今ある一覧は、そのまま出る。合図の終わりの後始末も止まる: その間、止まった依頼は、本人が「止める」で終えられ、開け直した最初の合図で、残りが片付く）。合図そのものを止めるなら、専用の Worker の cron を外す |
 | 鍵を替える | 両方を同時に替える。合図は、時刻が 2 分より離れると通らない |
 
 合図が持つ物は、時刻と署名と、空の本文だけ。利用者の情報・依頼・鍵・接続先を持たない。専用の Worker には、HTTP の入口が無い。
 
-合図 1 回の記録: Web の本体が `console.info(JSON.stringify({ event: 'noah-patrol', pages, seen, changed, skipped, probes, ok, authRequired, unreachable, rateLimited, skippedHost, toolsChanged, swept, error, ms }))` を 1 行出す。接続先の名前・URL・本人の ID は出さない。`skipped` は、形が違って読み飛ばした台帳の記録の数（[85](spec-85-intake.md) の 5.1 の 3。0 でない日が続く時は、台帳の形が変わっていないかを見る）。`error` は、巡回が失敗した時の理由の符号（`unavailable`・`rate_limited`・`invalid_response`。失敗していなければ `null`）。握手の数（`probes` から `toolsChanged` まで）は、L4 から入る。`swept`（止まった依頼と接続の後始末。[88](spec-88-mass-probe.md) の 9.5）は、依頼と接続を作った後の層が入れる。それまでは 0。`toolsChanged` は、握手が通った物のうち、道具の定義の hash（`tools_sha256`）が前の握手と違った数（最初の握手は数えない）。道具の定義が、日や週の単位でどれだけ変わるかを、配備先のログから数える（実測は 1 時間で 274 のうち 1。[86](spec-86-remote-mouth.md) の 10.2）。失敗（台帳が読めない、D1 が書けない）は、合図の応答を 500（表を読み書きできない時は 503）にして、専用の Worker の実行を失敗として残す（監視で、成功に見せない）。失敗の後の待ち時間の間に届いた合図は、何もせず 200 を返す（失敗ではない）。
+合図 1 回の記録: Web の本体が `console.info(JSON.stringify({ event: 'noah-patrol', pages, seen, changed, skipped, probes, ok, authRequired, unreachable, rateLimited, skippedHost, toolsChanged, swept, error, ms }))` を 1 行出す。接続先の名前・URL・本人の ID は出さない。`skipped` は、形が違って読み飛ばした台帳の記録の数（[85](spec-85-intake.md) の 5.1 の 3。0 でない日が続く時は、台帳の形が変わっていないかを見る）。`error` は、巡回が失敗した時の理由の符号（`unavailable`・`rate_limited`・`invalid_response`。失敗していなければ `null`）。握手の数（`probes` から `toolsChanged` まで）は、L4 から入る。`swept` は、合図の終わりの後始末（[88](spec-88-mass-probe.md) の 9.5）が片付けた、止まった依頼と接続の数（合わせた数。L7 から入る）。0 でない合図が続く時は、依頼や接続の実行が、途中で落ち続けている。`toolsChanged` は、握手が通った物のうち、道具の定義の hash（`tools_sha256`）が前の握手と違った数（最初の握手は数えない）。道具の定義が、日や週の単位でどれだけ変わるかを、配備先のログから数える（実測は 1 時間で 274 のうち 1。[86](spec-86-remote-mouth.md) の 10.2）。失敗（台帳が読めない、D1 が書けない）は、合図の応答を 500（表を読み書きできない時は 503）にして、専用の Worker の実行を失敗として残す（監視で、成功に見せない）。失敗の後の待ち時間の間に届いた合図は、何もせず 200 を返す（失敗ではない）。
 
 ## 5. 取り下げ・報告の窓口（`/noah/help` に `#bot` の節を足す）
 
@@ -118,7 +118,7 @@ D1 の書き込みの内訳（1 日。索引の書き込みも 1 行と数える
 
 | 名前 | 既定 | 開けると | 閉じると |
 | --- | --- | --- | --- |
-| `NOAH_PATROL_ENABLED` | 閉 | 合図のたびに、台帳を読み、握手する | 外への定期の通信が止まる。一覧は、今ある物をそのまま出す |
+| `NOAH_PATROL_ENABLED` | 閉 | 合図のたびに、台帳を読み、握手し、終わりに、止まった依頼と接続を片付ける（88 の 9.5） | 外への定期の通信と、後始末が止まる。一覧は、今ある物をそのまま出す |
 | `NOAH_INTAKE_PUBLIC` | 閉 | 一覧・詳細・検索・navigation の行が、誰にでも見える | 審査者だけに見える |
 | `NOAH_ASK_FORM` | 閉 | 接続と、入力欄で頼む事が、誰にでもできる（`NOAH_INTAKE_PUBLIC` も開いている時だけ） | 新しい接続と依頼が 503。進んでいる依頼は、最後まで進む。つないだ記録と成果は残る |
 | `NOAH_PROBE_L2` | 閉 | （ローンチの範囲に、開けた時の動きは無い。本人の決定の後に作る） | — |
@@ -147,10 +147,11 @@ D1 の書き込みの内訳（1 日。索引の書き込みも 1 行と数える
 | migration 1 | `noah_intake_sources`・`noah_intake_candidates`・`noah_intake_checks`・`noah_intake_families`・`noah_probe_hosts` と索引 | L3 |
 | migration 2 | `noah_connections` と索引 | L5 |
 | migration 3 | `noah_asks` と索引 | L6 |
+| migration 4 | `noah_connections` の索引 1 つ（`noah_connections_connecting`。つなぐ途中で止まった接続を、後始末が拾う） | L7 |
 | 環境変数 | 7 章の表と `NOAH_PATROL_WAKE_KEY` | L3 |
 | 専用の Worker | `services/noah-patrol-wake` | L3 |
 
-3 本とも、新しい表を作るだけ（`CREATE TABLE IF NOT EXISTS`・`CREATE INDEX IF NOT EXISTS`）。今ある表を変えない。今ある行を書かない。適用の後、表の定義が [noah-v1.sql](../contracts/noah-v1.sql) の該当の部分と同じである事を、`sqlite_master` の `sql` を比べて確かめる。`noah_connection_secrets`・`noah_oauth_*`・`noah_standing_works`・`noah_usage_events` は、ローンチでは作らない。
+4 本とも、新しい表か索引を作るだけ（`CREATE TABLE IF NOT EXISTS`・`CREATE INDEX IF NOT EXISTS`）。今ある表の列を変えない。今ある行を書かない。**巡回を開ける（`NOAH_PATROL_ENABLED=true`）前に、4 本とも適用する**: 合図の終わりの後始末は、`noah_asks` と `noah_connections` を読む（表が無いと、合図が失敗する）。適用の後、表の定義が [noah-v1.sql](../contracts/noah-v1.sql) の該当の部分と同じである事を、`sqlite_master` の `sql` を比べて確かめる。`noah_connection_secrets`・`noah_oauth_*`・`noah_standing_works`・`noah_usage_events` は、ローンチでは作らない。
 
 ## 9. 変える所と試験
 

@@ -40,3 +40,10 @@
 - L7 で入れる物（9 章のうち、まだ入っていない物）: 後始末（9.5。`lease_until` を過ぎた `running` の依頼を `unknown` に・60 秒たった `queued` を `failed` に・30 秒たった途中の接続を切る。巡回の合図の終わりに、それぞれ 50 件まで。相手へは送らない）、つながると確かめた数（9.6。運営の画面）、`tests/noah-patrol.test.mjs`（9.9 のうち、まだ試験の無い行）、手元の D1 での受入（9.10）。
 - すでに入っている物（作り直さない）: 本人の実行で「動いた」を付ける（9.2 = L6 の `lib/noah-ask.ts`）、握手の失敗の扱い（9.3 = L4 の `lib/noah-probe.ts`）、道具の定義が変わった時（9.4 = L4）、並びの引き直し・取り下げと戻し（L3）、量産を握手の対象から外す（9.7 = L4）。
 - 入れない物: `probeL2`・`noahSampleCalls`（Noah が自動で道具を呼ぶ見本）。本番への migration・配備・切り替え。
+- 2026-11-21 04:50 JST: **L7 を入れた**（[PR #345](https://github.com/k999ln/rock/pull/345)。未マージ）。
+  - 入れた物: 後始末 `lib/noah-sweep.ts`（巡回の合図 `lib/noah-intake-api.ts` の終わりに呼ぶ）、道具を呼ぶ直前の「相手へ送る」の印と、実行の場が無くなった依頼をその場で止める「止める」（`lib/noah-ask.ts`・`lib/noah-ask-store.ts`）、画面の出口（`lib/noah-ask-view.ts`・`components/noah-connect-button.tsx`）、つながると確かめた数（`lib/noah-intake-store.ts`・`components/noah-intake-review.tsx`）、索引を足す migration `0049_noah_connections_connecting`（`drizzle/`・`drizzle-main/`・`db/schema.ts`・型契約）。
+  - 決めた事と理由・受入の結果・手元の実物での確かめは、[仕様書 88](../../docs/noah/spec-88-mass-probe.md) の 9.5・9.11。
+  - 確かめ方: `node --experimental-strip-types --test tests/noah-patrol.test.mjs tests/noah-intake-store.test.mjs tests/noah-ask.test.mjs tests/noah-probe.test.mjs`。`node --experimental-strip-types scripts/check-noah-patrol.mjs`（手元の D1。外へは通信しない）。`python3 docs/design-validation/noah/validate-noah-v1.py`、`npm run typecheck`、`npm run lint:product`、`npm run database:check`、`npm run release:check`。
+  - 完了の定義（9.10）の 4 つは、通した。手元の実物で通していない物: 相手へ送った後に落ちた依頼（「結果不明」になる方。受入の script と試験で通した）。運営の画面そのもの（手元では、審査の API が 503 を返して開けない。数の API と、画面の部品の試験で確かめた）。
+  - 残り: 運営の画面の、残りの数（97 の 6 章 = L8）。依頼の成果を「成果データ」「実行中」に出す所（87 の 11.8）。
+  - 本番への migration・配備・切り替えは行っていない。
