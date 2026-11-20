@@ -68,6 +68,8 @@ export default function NoahReadyDetail({ id }: { id: string }) {
       const body = await response.json() as { id?: string; state?: string; revision?: number; error?: string; connection?: NoahReadyConnection };
       if (response.status === 200 && typeof body.id === 'string' && typeof body.state === 'string' && typeof body.revision === 'number') {
         setConnection({ id: body.id, state: body.state, revision: body.revision, error: null });
+        // 切ると、終わっていない依頼は止まる。仕事の一覧を、読み直す。
+        setAsked((n) => n + 1);
         try { window.sessionStorage.removeItem(`noah-tools:${current.id}`); } catch { /* 控えが残っても、次に開く時は読み直す。 */ }
       } else {
         // 版が古かった時は、返ってきた今の接続に合わせる（もう 1 回押せば、切れる）。
@@ -97,7 +99,8 @@ export default function NoahReadyDetail({ id }: { id: string }) {
     </article>
 
     {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
-    {live && <NoahWorkList key={`work:${live.id}`} connectionId={live.id} ownerScope={detail.ownerScope} refresh={asked} />}
+    {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
+    {signedIn && <NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} />}
 
     {live && <section className={styles.section} aria-label="この接続">
       <div className={styles.cut}>

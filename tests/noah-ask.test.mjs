@@ -471,3 +471,45 @@ void test('what is sent to the provider: the tool name and the input, and nothin
   assert.deepEqual([...new Set(w.net.hosts)], [hostOf(1)]);
   assert.deepEqual(Object.keys(calls(server)[0].body.params).sort((x, y) => x.localeCompare(y)), ['arguments', 'name']);
 });
+
+void test('the work of one agent: asks of cut connections stay listed with the new ones; nobody else\'s, no other agent\'s', async (t) => {
+  // 詳細の画面の「仕事」が読む入口（GET /api/noah/ask?agent=）。切っても、受け取った成果は残る（spec-90 の 5 章の 10）。
+  const definition = lookup();
+  const server = mcpServer({ tools: [definition], call: (params) => ({ content: [{ type: 'text', text: `found ${params.arguments.query}` }] }) });
+  const other = mcpServer({ tools: [definition], call: () => ({ content: [{ type: 'text', text: 'other agent' }] }) });
+  const { w, a, connectionId } = await connected(t, server, { servers: { [hostOf(2)]: other } });
+  const ask = async (who, n, connection, query) => { w.f.advance(1_000); assert.equal((await who.ask({ id: uuid(n), connectionId: connection, form: await form(definition, { query }) })).status, 202); };
+  // owner-a: Agent 1 へ 2 件頼んで、切る。つなぎ直して、もう 1 件。Agent 2 へも 1 件。owner-b: Agent 1 へ 1 件。
+  await ask(a, 10, connectionId, 'first');
+  await ask(a, 11, connectionId, 'second');
+  assert.equal((await a.act(connectionId, 'disconnect', (await a.get(connectionId)).body.revision)).status, 200);
+  w.f.advance(1_000);
+  assert.equal((await a.connect(familyId(1), uuid(2))).body.state, 'connected');
+  await ask(a, 12, uuid(2), 'third');
+  assert.equal((await a.connect(familyId(2), uuid(3))).body.state, 'connected');
+  await ask(a, 13, uuid(3), 'elsewhere');
+  const b = w.as('owner-b');
+  assert.equal((await b.connect(familyId(1), uuid(4))).body.state, 'connected');
+  await ask(b, 14, uuid(4), 'someone else');
+
+  // その Agent への依頼が、切った接続の分も含めて、新しい順に出る。成果の文は、一覧には持たない。
+  const queries = w.f.queries.length;
+  const mine = await a.asksOf(familyId(1));
+  assert.equal(w.f.queries.length - queries, 1, 'D1 への往復は 1');
+  assert.deepEqual([mine.status, mine.body.asks.map((item) => [item.id, item.connectionId, item.state, 'result' in item])],
+    [200, [[uuid(12), uuid(2), 'succeeded', false], [uuid(11), connectionId, 'succeeded', false], [uuid(10), connectionId, 'succeeded', false]]]);
+  // 切った接続の成果も、1 件ずつ読める。
+  assert.equal((await a.askGet(uuid(10))).body.result.text, 'found first');
+  // 別の Agent の依頼・別の人の依頼は、混ざらない。
+  assert.deepEqual((await a.asksOf(familyId(2))).body.asks.map((item) => item.id), [uuid(13)]);
+  assert.deepEqual((await b.asksOf(familyId(1))).body.asks.map((item) => item.id), [uuid(14)]);
+  assert.deepEqual((await w.as('owner-c').asksOf(familyId(1))).body.asks, []);
+  // 接続で絞る読み方は、前のまま（その接続の依頼だけ）。両方を渡した時は、接続が先。
+  assert.deepEqual((await a.asks(connectionId)).body.asks.map((item) => item.id), [uuid(11), uuid(10)]);
+  assert.deepEqual((await a.send(a.askApi.collection, 'GET', `/api/noah/ask?connection=${uuid(2)}&agent=${encodeURIComponent(familyId(2))}`)).body.asks.map((item) => item.id), [uuid(12)]);
+  // 知らない Agent・形の違う ID は、何も無い物として答える（誤りにしない）。未サインインは 401。
+  for (const agent of ['mcp-registry:test.provider/unknown', 'x', 'y'.repeat(401), '']) assert.deepEqual((await a.asksOf(agent)).body.asks, [], agent.slice(0, 20));
+  assert.equal((await w.as(null).asksOf(familyId(1))).status, 401);
+  // 切り替えを閉じていても、本人の記録は読める。
+  assert.equal((await w.as('owner-a', { env: {} }).asksOf(familyId(1))).body.asks.length, 3);
+});

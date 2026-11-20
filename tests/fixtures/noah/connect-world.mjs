@@ -78,6 +78,8 @@ export async function world(t, servers, options = {}) {
       /** 頼む。body は `{ id, connectionId, form: { tool, toolSha256, input, confirm? }, screen? }`。 */
       ask: (body, headers, method = 'POST') => send(askApi.collection, method, '/api/noah/ask', body, headers),
       asks: (connection) => send(askApi.collection, 'GET', `/api/noah/ask${connection ? `?connection=${connection}` : ''}`),
+      /** その Agent への依頼（切った接続の分も含む）。 */
+      asksOf: (agent) => send(askApi.collection, 'GET', `/api/noah/ask?agent=${encodeURIComponent(agent)}`),
       askGet: (id) => send((request) => askApi.item(request, id), 'GET', `/api/noah/ask/${id}`),
       askStop: (id, revision, headers) => send((request) => askApi.item(request, id), 'POST', `/api/noah/ask/${id}`, { action: 'stop', revision }, headers),
     };

@@ -18,8 +18,9 @@ import styles from './noah-ready.module.css';
 type Result = NonNullable<NoahAskItem['result']> & { note?: string };
 const FAST_MS = 1000, SLOW_MS = 3000, SLOW_AFTER_MS = 30_000;
 
-export default function NoahWorkList({ connectionId, ownerScope, refresh }: {
-  connectionId: string; ownerScope: string | null;
+export default function NoahWorkList({ agentId, ownerScope, refresh }: {
+  /** 系列の ID。その Agent への依頼を、切った接続の分も含めて出す（切っても、受け取った成果は、ここに残る）。 */
+  agentId: string; ownerScope: string | null;
   /** 新しく頼むたびに変わる値（すぐ読み直す）。 */
   refresh: number;
 }) {
@@ -35,7 +36,7 @@ export default function NoahWorkList({ connectionId, ownerScope, refresh }: {
       // 画面が裏の間は、読まない（戻った時に、次の回で読む）。
       if (typeof document !== 'undefined' && document.hidden) return true;
       try {
-        const response = await fetch(`/api/noah/ask?${new URLSearchParams({ connection: connectionId }).toString()}`, { cache: 'no-store' });
+        const response = await fetch(`/api/noah/ask?${new URLSearchParams({ agent: agentId }).toString()}`, { cache: 'no-store' });
         const body = await response.json() as { asks?: NoahAskItem[] };
         if (stopped || response.status !== 200 || !Array.isArray(body.asks)) return false;
         setAsks(body.asks); setNow(Date.now());
@@ -50,8 +51,8 @@ export default function NoahWorkList({ connectionId, ownerScope, refresh }: {
     };
     void loop();
     return () => { stopped = true; if (timer) clearTimeout(timer); };
-    // 読み直すのは、頼んだ時と、止める事を頼んだ時（refresh が変わる）。
-  }, [connectionId, refresh]);
+    // 読み直すのは、頼んだ時・つないだ時・切った時（refresh が変わる）。
+  }, [agentId, refresh]);
 
   // 成果が出た依頼は、その文を 1 回だけ読む。
   useEffect(() => {
@@ -71,12 +72,12 @@ export default function NoahWorkList({ connectionId, ownerScope, refresh }: {
   useEffect(() => {
     if (bump === 0) return;
     let stopped = false;
-    void fetch(`/api/noah/ask?${new URLSearchParams({ connection: connectionId }).toString()}`, { cache: 'no-store' }).then(async (response) => {
+    void fetch(`/api/noah/ask?${new URLSearchParams({ agent: agentId }).toString()}`, { cache: 'no-store' }).then(async (response) => {
       const body = await response.json() as { asks?: NoahAskItem[] };
       if (!stopped && response.status === 200 && Array.isArray(body.asks)) { setAsks(body.asks); setNow(Date.now()); }
     }).catch(() => undefined);
     return () => { stopped = true; };
-  }, [connectionId, bump]);
+  }, [agentId, bump]);
 
   async function stop(ask: NoahAskItem) {
     setError('');

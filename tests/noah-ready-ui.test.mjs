@@ -254,7 +254,8 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   const calls = ui.calls.length;
   const detail = ui.mount(DETAIL, { id: familyId(1) });
   await detail.flush();
-  assert.deepEqual(ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`], ['GET', '/api/noah/ask']]);
+  // 仕事の一覧（この Agent への、前の依頼と成果）は、つなぐ前から読む（サインイン済みの人だけ）。つないだ後に、読み直さない。
+  assert.deepEqual(ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['GET', '/api/noah/ask'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
   assert.equal(posts(ui)[0].body.id, handoff.id);
   assert.deepEqual([w.rows().length, w.rows()[0].id, w.rows()[0].state, w.rows()[0].owner_id], [1, handoff.id, 'connected', 'owner-a']);
   assert.match(detail.text(), /道具を選ぶ/);
@@ -619,8 +620,16 @@ void test('the rules of the screens hold at every step of the loop: nothing cove
   rules(page, '確かめ');
   assert.equal(ui.calls.filter((call) => call.method === 'POST' && call.url === '/api/noah/ask').length, 1, '確かめの前は、送らない');
 
-  // --- 切った後 ---
+  // --- 切った後 ---（受け取った成果は、「仕事」に残る。開き直しても、ある）
   await page.click('切る');
   rules(page, '切った後');
-  assert.deepEqual(seen, ['一覧', '詳細（接続の前）', '道具の一覧', '入力欄', '進んでいる間', '成果', '確かめ', '切った後']);
+  assert.equal(w.rows()[0].state, 'disconnected');
+  assert.deepEqual(page.find('button').filter((node) => page.text(node) === '接続').length, 1);
+  assert.ok(page.text().includes(`found cobalt ${TRAP}`), '切っても、成果は残る');
+  const reopened = ui.mount(DETAIL, { id: familyId(1) });
+  await reopened.flush();
+  rules(reopened, '切った後に開き直す');
+  assert.ok(reopened.text().includes(`found cobalt ${TRAP}`));
+  assert.match(reopened.text(), /仕事/);
+  assert.deepEqual(seen, ['一覧', '詳細（接続の前）', '道具の一覧', '入力欄', '進んでいる間', '成果', '確かめ', '切った後', '切った後に開き直す']);
 });

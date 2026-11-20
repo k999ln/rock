@@ -284,11 +284,16 @@ export function createNoahAskService(deps: NoahAskDependencies) {
     return row ? reply(200, await detail(row)) : failed(404, NOAH_ASK_MESSAGES.missing);
   }
 
-  /** `GET /api/noah/ask[?connection=]`。本人の新しい 50 件（成果の文は持たない）。 */
-  async function list(owner: string, connectionId: string | null): Promise<NoahAskReply> {
+  /**
+   * `GET /api/noah/ask[?connection=|?agent=]`。本人の新しい 50 件（成果の文は持たない）。
+   * `agent`（系列の ID）を渡すと、その Agent への依頼を、**切った接続の分も含めて**返す（詳細の画面の「仕事」。切った後も、成果を読めるように）。
+   */
+  async function list(owner: string, connectionId: string | null, agentId: string | null = null): Promise<NoahAskReply> {
     const rows = (await (connectionId
       ? prepare(`SELECT ${NOAH_ASK_COLUMNS} FROM noah_asks WHERE owner_id=? AND connection_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, connectionId, NOAH_ASK_RUN_LIMITS.listed)
-      : prepare(`SELECT ${NOAH_ASK_COLUMNS} FROM noah_asks WHERE owner_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, NOAH_ASK_RUN_LIMITS.listed)).all<NoahAskRow>()).results;
+      : agentId
+        ? prepare(`SELECT ${NOAH_ASK_COLUMNS} FROM noah_asks WHERE owner_id=? AND connection_id IN (SELECT id FROM noah_connections WHERE owner_id=? AND family_key=?) ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, owner, agentId, NOAH_ASK_RUN_LIMITS.listed)
+        : prepare(`SELECT ${NOAH_ASK_COLUMNS} FROM noah_asks WHERE owner_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, NOAH_ASK_RUN_LIMITS.listed)).all<NoahAskRow>()).results;
     return reply(200, { asks: rows.map(noahAskView) });
   }
 
@@ -361,9 +366,11 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
   return {
     collection: (request: Request) => respond(request, ['GET', 'POST'], async ({ owner, reviewer, url }) => {
       if (request.method === 'GET') {
-        const connection = url.searchParams.get('connection');
+        const connection = url.searchParams.get('connection'), agent = url.searchParams.get('agent');
         if (connection !== null && !UUID.test(connection)) return json({ asks: [] });
-        return service.list(owner, connection);
+        // 系列の ID は、一覧・計画の入口と同じ長さの範囲だけを受ける（それ以外は、何も無い物として答える）。
+        if (connection === null && agent !== null && (agent.length < 3 || agent.length > 400)) return json({ asks: [] });
+        return service.list(owner, connection, connection === null ? agent : null);
       }
       const value = await body(request);
       // 1 文で頼む（prompt）は、まだ受けない。

@@ -177,8 +177,12 @@ void test('the phone-only loop: find, connect with one press, ask three kinds of
   assert.equal(w.f.sql.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n, works);
   const late = await a.ask({ id: uuid(16), connectionId, form: await form(stats, {}), screen: 'narrow' });
   assert.deepEqual([late.status, late.body.error], [409, NOAH_CONNECT_MESSAGES.notConnected]);
-  // 切った後も、成果は読める。
+  // 切った後も、成果は読める。その Agent の「仕事」（GET /api/noah/ask?agent=）には、切った接続の依頼が、全部残っている。
   assert.equal((await a.askGet(uuid(10))).body.result.text, '{"total":560}');
+  const kept = await a.asksOf(agent);
+  assert.deepEqual([kept.status, kept.body.asks.length, kept.body.asks.filter((ask) => ask.state === 'succeeded').length], [200, 6, 5]);
+  // 未サインインの人には、何も返さない（401）。別の人には、その人の依頼だけ（ここでは 0 件）。
+  assert.deepEqual([(await visitor.asksOf(agent)).status, (await w.as('owner-b', config).asksOf(agent)).body.asks], [401, []]);
 
   // --- 段 13: 端末の表。一周の前と後で、行の数が変わらない。一周の間、その表を読みも書きもしていない。 ---
   assert.deepEqual(rowsOf(), before);
