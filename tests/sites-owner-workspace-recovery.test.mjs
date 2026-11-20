@@ -51,7 +51,7 @@ for (const watermark of [4102444800000, 4102444800002]) {
     const ledger = (await db.prepare('SELECT hash,created_at FROM __drizzle_migrations ORDER BY id').all()).results;
     await run();
     assert.deepEqual((await db.prepare('SELECT hash,created_at FROM __drizzle_migrations ORDER BY id').all()).results, ledger);
-    assert.equal(Number(ledger.at(-1).created_at), 4102444800016);
+    assert.equal(Number(ledger.at(-1).created_at), 4102444800017);
     assert.ok(ledger.some(e=>Number(e.created_at)===4102444800003));
   });
 }
@@ -74,8 +74,8 @@ void test('recovery preserves published bytes and times and stages exactly the m
   assert.deepEqual(proof.recovery.tables, ownerTables);
   assert.equal(journal.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
   assert.equal(journal.find(e=>e.tag==='0032_eve_runtime_presence').when,4102444800004);
-  assert.equal(journal.at(-1).tag,'0044_noah_intake');
-  assert.equal(journal.at(-1).when,4102444800016);
+  assert.equal(journal.at(-1).tag,'0045_noah_result_data');
+  assert.equal(journal.at(-1).when,4102444800017);
   assert.ok(journal.at(-1).when > Math.max(...proof.published.map(e => e.when)));
   for (const entry of journal) assert.equal(read(entry.tag + '.sql'), readFileSync(new URL('../drizzle/' + entry.tag + '.sql', import.meta.url), 'utf8'));
   assert.deepEqual(JSON.parse(readFileSync(new URL('../drizzle/meta/_journal.json', import.meta.url), 'utf8')), JSON.parse(read('meta/_journal.json')));
@@ -101,7 +101,7 @@ void test('a partial unrecorded recovery and two owners replay without replacing
   const run = () => migrate(drizzle(db), { migrationsFolder: folder.pathname });
   await run(); await run();
   assert.deepEqual((await db.prepare('SELECT * FROM eve_conversations ORDER BY owner_id').all()).results, before);
-  assert.equal((await db.prepare('SELECT COUNT(*) n FROM __drizzle_migrations').first()).n, 15);
+  assert.equal((await db.prepare('SELECT COUNT(*) n FROM __drizzle_migrations').first()).n, 16);
   assert.equal((await db.prepare('SELECT COUNT(*) n FROM eve_runtime_presence').first()).n,0);
 });
 

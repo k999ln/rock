@@ -15,6 +15,7 @@ const groups = [
     ['/noah/launch#library','Agentを追加して使う','登録・管理はNoahで、処理は接続したMacで'],
     ['/noah/saved','保存した担当・モデル','Webに保存した担当、役割、LLMの設定'],
     ['/noah/devices','端末・実行先','接続している担当と実行場所を確認'],
+    ['/noah/data','Agentの成果データ','検索・保存・選択した成果の提供と取り消し'],
     ['/noah/outputs','保存した成果','成果を開き、対応アプリへ渡す'],
     ['/noah/launch#work','Agentの仕事','実行結果と停止操作を確認する'],
   ]},
