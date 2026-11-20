@@ -84,6 +84,7 @@ async function request<T>(
 }
 export default function SkySocialTimeline({
   fullHome = false,
+  postsOnly = false,
   personalFeed,
   initialView = 'home',
   discovery,
@@ -91,6 +92,7 @@ export default function SkySocialTimeline({
   agentManagementHref,
 }: {
   fullHome?: boolean;
+  postsOnly?: boolean;
   personalFeed?: ReactNode;
   initialView?: 'home' | 'bookmarks' | 'communities';
   discovery?: ReactNode;
@@ -132,7 +134,7 @@ export default function SkySocialTimeline({
   const [refreshedAt, setRefreshedAt] = useState(0);
   const [liveError, setLiveError] = useState('');
   const continuousEnabled =
-    fullHome &&
+    fullHome && !postsOnly &&
     mode === 'recommended' &&
     !communityId &&
     !threadId &&
@@ -192,7 +194,7 @@ export default function SkySocialTimeline({
   const hub = useSkyHub();
   const router = useRouter();
   const sourceHandoff = useEveSourceHandoff(() => router.push('/chat'), setError);
-  const communityPage = initialView === 'communities';
+  const communityPage = !postsOnly && initialView === 'communities';
   const communityDirectory =
     communityPage && !communityId && !threadId && !lockedCommunity;
   useEffect(() => {
@@ -237,6 +239,7 @@ export default function SkySocialTimeline({
             controller.signal,
           );
         if (seq !== sequence.current) return;
+        if (postsOnly) value = { ...value, communities: [], posts: value.posts.filter(post => !post.community), thread: value.thread?.community ? null : value.thread };
         setData((old) =>
           quiet && old.profile?.id === value.profile?.id
             ? {
@@ -317,7 +320,7 @@ export default function SkySocialTimeline({
         }
       }
     },
-    [mode, communityId, threadId],
+    [mode, communityId, threadId, postsOnly],
   );
   const cancelLoad = useCallback(() => {
     sequence.current++;
@@ -344,6 +347,7 @@ export default function SkySocialTimeline({
       );
       if (sharedPost && /^[a-f0-9-]{36}$/i.test(sharedPost))
         setThreadId(sharedPost);
+      if (postsOnly) return;
       const hash = new URLSearchParams(window.location.hash.slice(1)),
         id = hash.get('community'),
         token = hash.get('invite');
@@ -358,7 +362,7 @@ export default function SkySocialTimeline({
       } else if (id) setCommunityId(id);
     });
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [postsOnly]);
   async function act(
     input: unknown,
     done?: (result: Record<string, unknown>) => void,
@@ -1040,7 +1044,7 @@ export default function SkySocialTimeline({
       aria-labelledby="sky-social-title"
     >
       {!communityPage && <header className={styles.heading}>
-        <h2 id="sky-social-title">ニュースとつながり</h2>
+        <h2 id="sky-social-title">{postsOnly ? '投稿' : 'ニュースとつながり'}</h2>
       </header>}
       <div className={styles.timelineTop}>
         {communityPage ? (
@@ -1088,15 +1092,15 @@ export default function SkySocialTimeline({
               aria-selected={mode === 'recommended'}
               onClick={() => returnToTimeline('recommended')}
             >
-              {fullHome ? 'あなたへ' : 'おすすめ'}
+              {postsOnly ? '投稿' : fullHome ? 'あなたへ' : 'おすすめ'}
             </button>
-            <button
+            {!postsOnly && <button
               role="tab"
               aria-selected={mode === 'following'}
               onClick={() => returnToTimeline('following')}
             >
               {fullHome ? 'つながり' : 'フォロー中'}
-            </button>
+            </button>}
             {mode === 'bookmarks' && (
               <button role="tab" aria-selected>
                 保存済み
@@ -1123,7 +1127,7 @@ export default function SkySocialTimeline({
         {!communityPage && (
           <button
             className={`${styles.topIcon} ${styles.menuButton}`}
-            aria-label="投稿・保存・コミュニティー"
+            aria-label={postsOnly ? '投稿・保存' : '投稿・保存・コミュニティー'}
             aria-expanded={management}
             onClick={() => setManagement((v) => !v)}
           >
@@ -1256,9 +1260,9 @@ export default function SkySocialTimeline({
       {signedOut ? (
         <div className={styles.welcome}>
           <Users size={28} />
-          <h3>アカウントから、コミュニティーへ。</h3>
+          <h3>{postsOnly ? '投稿して、フォローしよう。' : 'アカウントから、コミュニティーへ。'}</h3>
           <p>
-            サインインすると、コミュニティーの作成・参加、フォロー、投稿と共有ができます。
+            {postsOnly ? 'サインインすると、フォロー、投稿と共有ができます。' : 'サインインすると、コミュニティーの作成・参加、フォロー、投稿と共有ができます。'}
           </p>
           <a href="/signin-with-chatgpt?return_to=%2F%23timeline" target="_top">
             サインインする
@@ -1298,11 +1302,11 @@ export default function SkySocialTimeline({
             <aside
               className={styles.sidebar}
               data-open={management}
-              aria-label="コミュニティー"
+              aria-label={postsOnly ? '投稿の設定' : 'コミュニティー'}
               hidden={!management || communityPage}
             >
               <div className={styles.panelHeading}>
-                <strong>投稿・保存・コミュニティー</strong>
+                <strong>{postsOnly ? '投稿・保存' : '投稿・保存・コミュニティー'}</strong>
                 <button
                   aria-label="設定を閉じる"
                   onClick={() => setManagement(false)}
@@ -1339,6 +1343,7 @@ export default function SkySocialTimeline({
               >
                 すべての投稿
               </button>
+              {!postsOnly && <>
               <div className={styles.sideHeading}>
                 <h3>コミュニティー</h3>
                 <button
@@ -1397,6 +1402,7 @@ export default function SkySocialTimeline({
               >
                 招待鍵で参加する
               </button>
+              </>}
               <Link href="/#sky-manage">担当とLLMを設定 →</Link>
             </aside>
             <div className={styles.stream}>
@@ -1839,7 +1845,7 @@ export default function SkySocialTimeline({
                             : mode === 'bookmarks'
                               ? '投稿のブックマークを押すと保存できます。'
                               : mode === 'following'
-                                ? '人をフォローするか、コミュニティーに参加すると投稿が流れます。'
+                                ? (postsOnly ? '人をフォローすると投稿が流れます。' : '人をフォローするか、コミュニティーに参加すると投稿が流れます。')
                                 : 'まだ投稿がありません。最初の発見を共有してみよう。'}
                         </p>
                         {!threadId && mode !== 'bookmarks' && (

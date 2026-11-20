@@ -1,13 +1,11 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { EveNewsLink } from '@/lib/eve-news-feed';
 import type { ResearchPage } from '@/lib/noah-research-types';
 import type { SkySocialState } from '@/lib/sky-social';
 import { communityFetch, setCommunityKeyProfile } from '@/lib/community-key-client';
 import { appendNoahTimeline, mixNoahTimeline, type NoahTimelineItem, type NoahTimelineFilter } from '@/lib/noah-timeline-feed';
 import type { NoahSurfaceMode } from '@/lib/noah-surface';
 
-type News = { articles: EveNewsLink[]; stale: boolean };
 type Snapshot = { key: string; items: NoahTimelineItem[]; agents?: ResearchPage; social?: SkySocialState; errors: string[] };
 const failure = (error: unknown) => error instanceof Error ? error.message : '取得できませんでした。';
 async function json<T>(url: string, signal: AbortSignal): Promise<T> {
@@ -26,12 +24,12 @@ async function socialPage(cursor = '', following = false, signal?: AbortSignal) 
 }
 
 export function useNoahTimeline(mode: NoahSurfaceMode, query: string, kind: string, filter: NoahTimelineFilter) {
-  const following = filter === 'following', includeAgents = filter === 'all' || filter === 'agent', includeSocial = filter !== 'agent' && filter !== 'news';
+  const includeSocial = filter === 'all';
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null), [attempt, setAttempt] = useState(0), [moreKey, setMoreKey] = useState('');
   const generation = useRef(0), paging = useRef(false), pending = useRef<AbortController | null>(null);
   const params = new URLSearchParams({ q: query.trim().slice(0, 200), kind, limit: '20' }).toString();
   const endpoint = mode === 'public' ? '/api/noah/public-catalog' : '/api/noah/catalog';
-  const key = `${mode}:${params}:${following}:${attempt}`, data = snapshot?.key === key ? snapshot : null;
+  const key = `${mode}:${params}:${filter}:${attempt}`, data = snapshot?.key === key ? snapshot : null;
   useEffect(() => {
     const invalidate = () => { generation.current++; pending.current?.abort(); setSnapshot(null); setAttempt(n => n + 1); };
     const storage = (event: StorageEvent) => { if (!event.key || event.key.startsWith('rockstar.community.')) invalidate(); };
@@ -44,29 +42,27 @@ export function useNoahTimeline(mode: NoahSurfaceMode, query: string, kind: stri
     pending.current?.abort(); paging.current = false;
     const timer = setTimeout(() => {
       void Promise.allSettled([
-        json<News>('/api/news/feed?topic=all', controller.signal),
         json<ResearchPage>(`${endpoint}?${params}`, controller.signal),
-        socialPage('', following, controller.signal),
-      ]).then(([news, agents, social]) => {
+        includeSocial ? socialPage('', false, controller.signal) : Promise.resolve(undefined),
+      ]).then(([agents, social]) => {
         if (controller.signal.aborted || version !== generation.current) return;
         const errors: string[] = [];
-        if (news.status === 'rejected') errors.push(`ニュース：${failure(news.reason)}`);
         if (agents.status === 'rejected') errors.push(`Agent：${failure(agents.reason)}`);
-        if (social.status === 'rejected') errors.push(`投稿・コミュニティー：${failure(social.reason)}`);
-        const n = news.status === 'fulfilled' ? news.value : undefined, a = agents.status === 'fulfilled' ? agents.value : undefined, s = social.status === 'fulfilled' ? social.value : undefined;
-        setSnapshot({ key, agents: a, social: s, errors, items: mixNoahTimeline(n?.articles ?? [], a?.entries ?? [], s?.posts ?? [], n?.stale) });
+        if (social.status === 'rejected') errors.push(`投稿：${failure(social.reason)}`);
+        const a = agents.status === 'fulfilled' ? agents.value : undefined, s = social.status === 'fulfilled' ? social.value : undefined;
+        setSnapshot({ key, agents: a, social: s, errors, items: mixNoahTimeline(a?.entries ?? [], s?.posts ?? []) });
       });
     }, 180);
     return () => { clearTimeout(timer); controller.abort(); pending.current?.abort(); };
-  }, [key, endpoint, params, following]);
+  }, [key, endpoint, params, includeSocial]);
 
   const loadMore = useCallback(async () => {
-    if (!data || paging.current || (!(includeAgents && data.agents?.nextCursor) && !(includeSocial && data.social?.cursor))) return;
+    if (!data || paging.current || (!(data.agents?.nextCursor) && !(includeSocial && data.social?.cursor))) return;
     paging.current = true; setMoreKey(key);
     const version = generation.current, controller = new AbortController(); pending.current = controller;
     const results = await Promise.allSettled([
-      includeAgents && data.agents?.nextCursor ? json<ResearchPage>(`${endpoint}?${params}&cursor=${encodeURIComponent(data.agents.nextCursor)}`, controller.signal) : Promise.resolve(undefined),
-      includeSocial && data.social?.cursor ? socialPage(data.social.cursor, following, controller.signal) : Promise.resolve(undefined),
+      data.agents?.nextCursor ? json<ResearchPage>(`${endpoint}?${params}&cursor=${encodeURIComponent(data.agents.nextCursor)}`, controller.signal) : Promise.resolve(undefined),
+      includeSocial && data.social?.cursor ? socialPage(data.social.cursor, false, controller.signal) : Promise.resolve(undefined),
     ]);
     if (version !== generation.current || controller.signal.aborted) return;
     const [a, s] = results, agents = a.status === 'fulfilled' ? a.value : undefined, social = s.status === 'fulfilled' ? s.value : undefined;
@@ -78,9 +74,9 @@ export function useNoahTimeline(mode: NoahSurfaceMode, query: string, kind: stri
       if (a.status === 'rejected') errors.push(`追加読込：Agent — ${failure(a.reason)}`);
       if (s.status === 'rejected') errors.push(`追加読込：投稿 — ${failure(s.reason)}`);
       setSnapshot(current => current?.key === key ? { ...current, agents: agents ?? current.agents, social: social ?? current.social, errors,
-        items: appendNoahTimeline(current.items, mixNoahTimeline([], agents?.entries ?? [], social?.posts ?? [])) } : current);
+        items: appendNoahTimeline(current.items, mixNoahTimeline(agents?.entries ?? [], social?.posts ?? [])) } : current);
     }
     paging.current = false; setMoreKey('');
-  }, [data, endpoint, params, following, key, includeAgents, includeSocial]);
-  return { data, loading: !data, moreLoading: moreKey === key, hasMore: Boolean((includeAgents && data?.agents?.nextCursor) || (includeSocial && data?.social?.cursor)), loadMore, refresh: () => setAttempt(n => n + 1) };
+  }, [data, endpoint, params, key, includeSocial]);
+  return { data, loading: !data, moreLoading: moreKey === key, hasMore: Boolean((data?.agents?.nextCursor) || (includeSocial && data?.social?.cursor)), loadMore, refresh: () => setAttempt(n => n + 1) };
 }

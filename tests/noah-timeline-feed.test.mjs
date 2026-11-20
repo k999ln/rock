@@ -1,35 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mixNoahTimeline, appendNoahTimeline, selectNoahTimeline, timelineFilter } from '../lib/noah-timeline-feed.ts';
-const news = [{ id: 'same-id', title: 'News about code', publisher: 'publisher.example' }];
 const agents = [{ id: 'same-id', name: 'Code helper', summary: 'Create files', author: 'Author', kind: 'agent' }];
 const posts = [
   { id: 'post', content: 'Hello', author: { name: 'Alice' }, community: null, following: true },
   { id: 'community', content: 'Members talk', author: { name: 'Bob' }, community: { id: 'group', name: 'Development club' }, following: false },
 ];
-void test('a single timeline interleaves sources with explicit kinds and retains the community name', () => {
-  const items = mixNoahTimeline(news, agents, posts);
-  assert.deepEqual(items.map(item => item.kind), ['news', 'agent', 'post', 'community']);
-  assert.equal(items[3].post.community.name, 'Development club');
+void test('timeline interleaves followed posts and Agents while excluding community posts', () => {
+  const items = mixNoahTimeline(agents, posts);
+  assert.deepEqual(items.map(item => item.kind), ['post', 'agent']);
+  assert.equal(items[0].post.id, 'post');
   assert.equal(items[1].agent.createdAt, undefined, 'catalog dates are not fabricated publication dates');
-  assert.equal(new Set(items.map(item => item.key)).size, 4, 'source IDs cannot collide');
+  assert.equal(new Set(items.map(item => item.key)).size, 2, 'source IDs cannot collide');
 });
 void test('pagination does not reorder existing cards or repeat overlapping pages', () => {
-  const first = mixNoahTimeline(news, agents, posts);
-  const next = appendNoahTimeline(first, mixNoahTimeline(news, [{ ...agents[0], id: 'new-agent' }], posts));
-  assert.deepEqual(next.slice(0, 4), first); assert.equal(next.length, 5);
-  assert.equal(next[4].agent.id, 'new-agent');
+  const first = mixNoahTimeline(agents, posts);
+  const next = appendNoahTimeline(first, mixNoahTimeline([{ ...agents[0], id: 'new-agent' }], posts));
+  assert.deepEqual(next.slice(0, 2), first); assert.equal(next.length, 3);
+  assert.equal(next[2].agent.id, 'new-agent');
 });
-void test('community and follow filters select real posts, not inferred memberships or catalog authors', () => {
-  const items = mixNoahTimeline(news, agents, posts);
-  assert.deepEqual(selectNoahTimeline(items, 'community').map(i => i.key), ['post:community']);
-  assert.deepEqual(selectNoahTimeline(items, 'following').map(i => i.key), ['post:post']);
-  assert.equal(selectNoahTimeline(items, 'all', 'Development club').length, 1);
+void test('only all and Agent filters remain; retired hashes return to the main timeline', () => {
+  const items = mixNoahTimeline(agents, posts);
+  assert.equal(selectNoahTimeline(items, 'all', 'Development club').length, 0);
   assert.equal(selectNoahTimeline(items, 'agent', 'code').length, 1);
-  assert.equal(timelineFilter('#timeline'), 'all'); assert.equal(timelineFilter('#news'), 'news');
+  for (const hash of ['#timeline','#news','#communities','#following']) assert.equal(timelineFilter(hash), 'all');
+  assert.equal(timelineFilter('#agents'), 'agent');
+  assert.deepEqual(selectNoahTimeline([{kind:'news',article:{}},{kind:'community',post:posts[1]},{kind:'post',post:posts[1]}], 'all'), []);
 });
-void test('failure or absence of one source does not produce fake rows or remove the other sources', () => {
-  assert.deepEqual(mixNoahTimeline([], agents, []).map(i => i.kind), ['agent']);
-  assert.deepEqual(mixNoahTimeline([], [], []), []);
-  assert.equal(mixNoahTimeline(news, [], [], true)[0].stale, true);
+void test('followed posts appear twice per round without removing ordinary posts or duplicating entries', () => {
+  const followed = [1,2,3].map(id => ({...posts[0],id:`follow-${id}`}));
+  const ordinary = {...posts[0],id:'ordinary',following:false};
+  const items = mixNoahTimeline(agents,[ordinary,...followed,posts[1],followed[0]]);
+  assert.deepEqual(items.map(i=>i.key), ['post:follow-1','post:follow-2','agent:same-id','post:ordinary','post:follow-3']);
+  assert.deepEqual(mixNoahTimeline(agents,[]).map(i=>i.kind), ['agent']);
+  assert.deepEqual(mixNoahTimeline([],[]), []);
 });

@@ -1,9 +1,10 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Hash destinations work in the local OS as well. */
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, useId, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Bot, Home, Users, PenLine, ListChecks, Compass, FolderOpen, CircleHelp, Settings2, UserRound, Search, MoreHorizontal } from 'lucide-react';
+import { Bot, Home, PenLine, ListChecks, Compass, FolderOpen, UserRound, Search, MoreHorizontal, Menu, ChevronUp, ChevronRight, X } from 'lucide-react';
 import { noahActionHref, noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import styles from './noah-service-shell.module.css';
 import NoahServiceCatalog from './noah-service-catalog';
@@ -14,6 +15,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const preview = pathname.startsWith('/noah/public');
   const effectiveMode = preview ? 'public' : mode, base = preview ? '/noah/public' : '/noah';
   const [hash, setHash] = useState('');
+  const menuId = useId(), menu = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const update = () => {
       const currentHash = window.location.hash;
@@ -32,26 +34,32 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const timeline = `${base}#timeline`;
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
   const primary = [
-    { href: timeline, label: 'タイムライン', Icon: Home, selected: pathname === base || pathname === '/' || pathname === '/os' },
-    { href: `${base}/explore`, label: 'Agentを探す', Icon: Compass, selected: pathname.endsWith('/explore') },
-    { href: action('library'), label: '自分のAgent', Icon: Bot, selected: pathname.endsWith('/library') || (pathname.endsWith('/launch') && hash !== '#work') },
-    { href: action('work'), label: '仕事', Icon: ListChecks, selected: pathname.endsWith('/work') || (pathname.endsWith('/launch') && hash === '#work') },
-    { href: `${base}/data`, label: '成果データ', Icon: FolderOpen, selected: pathname.endsWith('/data') || pathname.endsWith('/outputs') },
+    { href: timeline, label: 'タイムライン', description: 'みんなの投稿とAgentを見る', Icon: Home, selected: pathname === base || pathname === '/' || pathname === '/os' },
+    { href: `${base}/explore`, label: 'Agentを探す', description: '頼みたい仕事に合うAgentを見つける', Icon: Compass, selected: pathname.endsWith('/explore') },
+    { href: action('library'), label: '自分のAgent', description: '追加したAgentを使う・管理する', Icon: Bot, selected: pathname.endsWith('/library') || (pathname.endsWith('/launch') && hash !== '#work') },
+    { href: action('work'), label: '仕事', description: '依頼した仕事の進み具合を確認する', Icon: ListChecks, selected: pathname.endsWith('/work') || (pathname.endsWith('/launch') && hash === '#work') },
+    { href: `${base}/data`, label: '成果データ', description: '受け取った結果を確認・保存する', Icon: FolderOpen, selected: pathname.endsWith('/data') || pathname.endsWith('/outputs') },
   ];
+  const currentPage = primary.find(item => item.selected)?.label ?? 'その他の画面';
   const secondary = [
-    { href: `${base}/social#communities`, label: 'コミュニティー', Icon: Users, selected: pathname.endsWith('/social') },
     { href: `${base}/registration`, label: '登録サポート', Icon: Bot, selected: pathname.endsWith('/registration') },
-    { href: `${base}/features`, label: 'すべての機能', Icon: Settings2, selected: pathname.endsWith('/features') },
   ];
   return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
     <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>メインコンテンツへ</a>
-      <header className={styles.mobileHeader}><Link href={base} className={styles.brand}><span className={styles.mark}>n.</span><strong>Noah</strong></Link><Link href={`${base}/features`} aria-label="すべての機能"><MoreHorizontal size={24} /></Link></header>
+      <header className={styles.mobileHeader}><Link href={base} className={styles.brand}><Image className={styles.mark} src="/company-mark.png" width={48} height={48} alt="" unoptimized /><strong>Noah</strong></Link><Link href={`/account?returnTo=${encodeURIComponent(pathname)}`} aria-label="アカウント・保存・引き継ぎ"><UserRound size={22} /></Link></header>
       <div className={styles.body} data-wide={!isTimeline || undefined}>
         <aside className={styles.rail}>
           <div className={styles.railInner}>
-            <Link href={base} className={styles.brand} aria-label="Noah ホーム"><span className={styles.mark} aria-hidden="true">n.</span><strong>Noah</strong></Link>
-            <nav aria-label="Noahの主要メニュー">{primary.map(({ href, label, Icon, selected }) => <a key={label} href={href} aria-label={label} aria-current={selected ? 'page' : undefined}><Icon size={20} strokeWidth={1.7} /><span>{label}</span></a>)}</nav>
+            <Link href={base} className={styles.brand} aria-label="Noah ホーム"><Image className={styles.mark} src="/company-mark.png" width={48} height={48} alt="" unoptimized /><strong>Noah</strong></Link>
+            <nav className={styles.desktopNav} aria-label="Noahの主要メニュー">{primary.map(({ href, label, Icon, selected }) => <a key={label} href={href} aria-label={label} aria-current={selected ? 'page' : undefined}><Icon size={20} strokeWidth={1.7} /><span>{label}</span></a>)}</nav>
+            <div className={styles.mobileMenu}>
+              <button className={styles.menuTrigger} popoverTarget={menuId}><Menu size={24} /><strong>メニュー</strong><span>{currentPage}</span><ChevronUp size={18} /></button>
+              <div ref={menu} id={menuId} popover="auto" className={styles.menuPanel}>
+                <div className={styles.menuHeading}><strong>メニュー</strong><button popoverTarget={menuId} popoverTargetAction="hide" aria-label="メニューを閉じる"><X size={20} /></button></div>
+                <nav aria-label="画面を選ぶ">{primary.map(({ href, label, description, Icon, selected }) => <a key={label} href={href} aria-current={selected ? 'page' : undefined} onClick={() => menu.current?.hidePopover()}><span className={styles.menuIcon}><Icon size={23} /></span><span className={styles.menuText}><strong>{label}</strong><small>{description}</small></span>{selected ? <span className={styles.currentBadge}>表示中</span> : <ChevronRight size={17} />}</a>)}</nav>
+              </div>
+            </div>
             <div className={styles.secondary}><nav aria-label="Noahのその他の機能">{secondary.map(({ href, label, Icon, selected }) => <Link key={label} href={href} aria-label={label} aria-current={selected ? 'page' : undefined}><Icon size={19} strokeWidth={1.6} /><span>{label}</span></Link>)}</nav></div>
             <Link href={`${base}/social#compose`} className={styles.post} aria-label="ポストする"><PenLine size={22} /><span>ポストする</span></Link>
             <Link href={`/account?returnTo=${encodeURIComponent(pathname)}`} className={styles.account} aria-label="アカウント・保存・引き継ぎ"><span className={styles.avatar}><UserRound size={23} /></span><span><strong>アカウント</strong><small>保存・引き継ぎ</small></span><MoreHorizontal size={20} /></Link>
@@ -64,7 +72,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
             <section className={styles.supportCard}><h2>Agentと、できることを。</h2><p>気になるAgentを見つけて、あなたの仕事を頼んでみよう。</p><Link href={`${base}/explore`} className={styles.pill}>Agentを探す</Link></section>
             <section className={styles.supportCard}><h2>使えるAgent</h2><NoahServiceCatalog compact /></section>
             <section className={styles.supportCard}><h2>外部Agentの登録</h2><p>アカウントが必要なAgentは、必要な情報を入力して登録Agentに依頼できます。</p><Link href={`${base}/registration`} className={styles.textLink}>登録を依頼する →</Link></section>
-            <footer className={styles.supportFooter}><Link href={`${base}/help`}><CircleHelp size={13} />使い方</Link><Link href={`${base}/features`}>すべての機能</Link><span>Noah · by avokado</span></footer>
+            <footer className={styles.supportFooter}><span>Noah · by avokado</span></footer>
           </div>
         </aside>}
       </div>
