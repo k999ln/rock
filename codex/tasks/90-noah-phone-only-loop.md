@@ -21,3 +21,10 @@
 - `node --experimental-strip-types --test tests/noah-phone-loop.test.mjs tests/noah-ready-ui.test.mjs`、`npm run verify`。
 - 切り替え（`NOAH_INTAKE_PUBLIC`・`NOAH_ASK_FORM`）を閉じた時、一覧が 404、接続と依頼が 503。
 - PR 本文に、実機の 1〜12 の合否と、通らなかった行の画面の文。本番で行えない間は、手元の結果と、本番で残っている行。
+
+## 開発進捗
+
+- 2026-11-21 05:55 JST: **L9（受入）は Claude が作業中。** 枝は `claude/noah-loop-l9-20261121`（L8 の枝 `claude/noah-ops-l8-20261121` = [PR #346](https://github.com/k999ln/rock/pull/346) の上）。同じ範囲を、別の枝で作り始めない。
+- L9 で入れる物: 一周の自動試験 `tests/noah-phone-loop.test.mjs`（仕様書 3 章の 15 段と、切り替えを閉じた時）、画面の決まりの試験（仕様書 4 章の 9 つ。`tests/noah-ready-ui.test.mjs`・`tests/noah-ask-ui.test.mjs` に足す）、実機の表（仕様書 5 章）の、手元での結果。**手元の結果を、本番の合格と書かない。**
+- すでに入っている物（作り直さない）: 合成の接続先と、一時の表（`tests/fixtures/noah/`。仕様書 6 章の `tests/helpers/noah-remote-fixture.mjs` に当たる物は、L4・L5 で、ここに作ってある）。機能のコードは、変えない（試験が通らない所が見つかったら、その機能の仕様書に戻って直す）。
+- 入れない物: 本番での確かめ（仕様書 5 章の表を、本番で行う事）。配備・migration の適用・切り替えは、本人の許可の後。
