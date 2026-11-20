@@ -1,5 +1,7 @@
 ## 2026-11-20
 
+- NoahのWeb保存済みAgent成果を `/noah/data` で検索・出力し、本人が選択・同意した成果を運営へ提供・撤回できるように実装。元Work削除後の撤回と通信断時の再送を保持。全体verifyと最終21群成功。本番migration・配備・切り替えなし（[PR #334](https://github.com/k999ln/rock/pull/334)、task99）。
+
 - Noah MVP L3の公式台帳取り込み・再開可能な巡回・一覧API・運営画面とローカルD1受入コマンドを実装。全体verify、製品23群、実台帳68,964件＋差分1頁・合成65,000件のローカルD1受入が成功。本番migration・配備・切り替えなし（[PR #332](https://github.com/k999ln/rock/pull/332)、task85）。
 
 - Noah MVP L2の接続要件・計画・状態遷移を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側を再exportへ集約。製品9群と全体verify成功。API・画面はL5で接続（[PR #330](https://github.com/k999ln/rock/pull/330)、task96）。
