@@ -379,6 +379,13 @@ export async function checkNoahAsk(options = { trace: false }) {
     const hostsBefore = world.hosts.length;
     assert.deepEqual(brief(await ask(main, form(main, 'lookup', { query: 'q' }))), [409, null, '接続を確かめてください。']);
     assert.equal(world.hosts.length, hostsBefore);
+    // 切った後も、その Agent への依頼は、詳細の画面の「仕事」の入口（?agent=）から読める（切った接続の分。新しい 50 件まで）。相手へは送らない。
+    const mainAsks = (await one('SELECT COUNT(*) AS n FROM noah_asks WHERE connection_id=?', main.id)).n;
+    const ofAgent = await send(open.ask.collection, 'GET', `/api/noah/ask?agent=${encodeURIComponent(kinds.main.family)}`);
+    assert.deepEqual([ofAgent.status, ofAgent.spent.length, ofAgent.body.asks.length, ofAgent.body.asks.every((item) => item.connectionId === main.id)], [200, 1, Math.min(mainAsks, 50), true]);
+    assert.ok(mainAsks >= 10);
+    assert.equal(world.hosts.length, hostsBefore);
+    const listByAgentTrips = ofAgent.spent.length;
 
     // 11. 頼む前の上限。越えた時は、Work も行も作らず、相手へも送らない。
     advance(120_000);
@@ -467,7 +474,7 @@ export async function checkNoahAsk(options = { trace: false }) {
     const summary = {
       mode: 'synthetic/local-D1', wakes, providers: Object.keys(kinds).length, listedBefore: listedBefore.length, listedAfter: (await listedNow()).length,
       asks: tally, works, toolCalls: received, ran: (await one('SELECT COUNT(*) AS n FROM noah_intake_families WHERE level=2')).n,
-      d1RoundTrips: { accept: range(counts.accept), run: range(counts.run), runWithConfirm: range(counts.runConfirm), get: range(counts.get), list: range(counts.list), stop: range(counts.stop), disconnectWithOpenAsks: cutTrips },
+      d1RoundTrips: { accept: range(counts.accept), run: range(counts.run), runWithConfirm: range(counts.runConfirm), get: range(counts.get), list: range(counts.list), listByAgent: listByAgentTrips, stop: range(counts.stop), disconnectWithOpenAsks: cutTrips },
       ...(trace ? { trace } : {}), durationMs: Date.now() - started,
     };
     console.log(JSON.stringify(summary, null, 2));
