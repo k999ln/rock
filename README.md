@@ -1,57 +1,135 @@
-# avokado 開発ノート
+# avokado / mii
 
-*2026年11月20日更新*　·　[Noahを開く](https://avoado.si/noah)　·　[Eveを開く](https://avoado.si/os/eve)
+miiは、声でEveに頼み、部屋に映った成果を手で操作するために開発している空間コンピューターです。
 
-avokadoの主商品 **mii** は、声でEveに頼み、部屋に表示された成果を見たり触ったりして仕事を進める端末です。その最小構成が **Noah** です。まずは自分のMacで、Agentを選んで動かし、成果を受け取って停止するところまで確かめます。スマホから使う公開版では、提供者のサーバーがAgentを動かします。
+[![夕暮れの庭から、明かりのついた家に戻る人。mii公式サイトの生活コンセプト](docs/assets/readme/mii-homecoming.jpg)](https://avocadomini.si/#time-together)
 
-> ### 開発ハイライト
->
-> - **[Agentを探す](#catalog)** — Noahの「機能一覧」から名前で検索し、提供元と接続条件を確認できます。実際の操作を短いデモにしました。
-> - **[自分のMacをつなぐ](#noah-mac)** — Apple SiliconのMacにRunnerを入れ、本人のアカウントで接続し、仕事と実行器の状態を確かめます。
-> - **[スマホで頼む](#noah-public)** — 接続して入力を送り、成果を受け取り、接続を切る。公開前に確かめる一周を入出力の例で紹介します。
-> - **[Eveに依頼する](#eve)** — 会話に依頼を書き、実行先・担当・モデルを選びます。仕事と成果をもう一度開く場所も確認できます。
-> - **[miiで空間を使う](#mii)** — 声と手の動きを4本のTowerとHubで受け取り、部屋の表示を操作する設計です。
-
-開発環境がある方は[起動と検証](#development)へ。進行中の作業と次の実機試験は[進捗](project.md)で確認できます。
-
-ページの途中から別の項目に移るときは、GitHubのファイル上部にある「Outline」から各章や操作の見出しを選べます。[GitHubの目次の使い方](https://docs.github.com/ja/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes#auto-generated-table-of-contents-for-markdown-files)
-
----
+*家に帰ってから一日を終えるまで。mii公式サイトのコンセプト映像より。* [miiの公式サイトを見る](https://avocadomini.si/)
 
 <a name="contents"></a>
 
-<table>
-<tr>
-<td valign="top" width="24%">
+[暮らしの短編](#films) · [miiの構造](#mii) · [Eveに頼む](#eve) · [Noahで探す](#catalog) · [Macで試す](#noah-mac) · [全体構成](#architecture) · [開発状況](#status) · [コードと検証](#development)
 
-**このページの目次**
+<a name="films"></a>
 
-[Agent検索](#catalog)<br>[全体構成](#architecture)<br>[本人のMac](#noah-mac)<br>[スマホ公開版](#noah-public)<br>[Noahの機能](#noah-tools)<br>[Eveの仕事](#eve)<br>[RockstarOS](#rockstaros)<br>[SIM・eSIM](#esim)<br>[mii](#mii)<br>[Pro](#pro)<br>[開発と検証](#development)
+## 暮らしの中のmii
 
-</td>
-<td valign="top">
+料理で両手がふさがっているとき、手を止めずに残り時間を確かめる。公式サイトの短編「料理」は、その使い心地を描いています。
+
+[![キッチンで調理を続けながら、手元の横にあるタイマーを確認する5秒間のコンセプト映像](docs/assets/readme/mii-kitchen.webp)](https://avocadomini.si/#quick-scenes)
+
+*公式サイトの5本の短編。朝の光、集中するときの日よけ、外での制作、料理中のタイマー、夜の足元の灯りを描いたコンセプト映像です。*
+
+[朝](https://d8j0ntlcm91z4.cloudfront.net/user_3ImsN7zDg5XAxCTCNf16qVkxzVQ/hf_20261028_201649_fe60d9fe-0cb2-4101-b833-4afbc7cfe769.mp4)　·　[集中](https://d8j0ntlcm91z4.cloudfront.net/user_3ImsN7zDg5XAxCTCNf16qVkxzVQ/hf_20261028_201649_1efcbbf2-15f6-4650-8089-16a7679b7ce3.mp4)　·　[創作](https://d8j0ntlcm91z4.cloudfront.net/user_3ImsN7zDg5XAxCTCNf16qVkxzVQ/hf_20261028_202029_48890df7-1fdf-49bf-b749-eae800aacdd5.mp4)　·　[料理](https://d8j0ntlcm91z4.cloudfront.net/user_3ImsN7zDg5XAxCTCNf16qVkxzVQ/hf_20261028_201647_7fafb347-3f1d-47e2-97fd-67e407a11d1c.mp4)　·　[夜](https://d8j0ntlcm91z4.cloudfront.net/user_3ImsN7zDg5XAxCTCNf16qVkxzVQ/hf_20261028_201650_242a20a0-0837-4b0a-827b-c90c76088834.mp4)
+
+<a name="mii"></a>
+
+## 声と手を受け取る、4本のTowerとHub
+
+部屋の中で表示を指すと、四方向のTowerが手の位置を捉えます。別体のHub上でRockstarOSが入力をまとめ、表示層に渡す設計です。表示層は使う空間に合わせて差し替えられます。Towerが1本のときは、Eveの機能を限定して使う想定です。
+
+<img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="建築空間になじむmiiのコンセプト" width="100%" />
+
+*室内に設置したmiiのデザイン案。* [miiの構造](docs/structure/01-mii.md) · [R5設計](docs/avocado-mini-r5/README.md) · [V2の比較研究](docs/mii/design/v2-study/README.md)
+
+<details>
+<summary>空間入力とMaterial Inventionの実装を見る</summary>
+
+空間入力の実装と機種設定から、手の入力がどこで処理されるかを追えます。Material Inventionには再計算用sandboxと設計資料があり、シミュレーション・実験室接続は未実装です。[空間入力のコード](lib/mii-spatial-input.ts) · [機種設定](systems/rock-star-os/targets/avocado-mini/) · [Material Inventionの設計](docs/rockstaros-avocado-mini-complete-design.md) · [製品サイトのコード](sites/avocado-mini/)
+
+</details>
+
+<a name="eve"></a>
+
+## Eveに、やりたいことを伝える
+
+「今週の学習メモを、次に調べたいことと一緒に整理したい」。Eveでは、まず依頼を自分の言葉で書きます。入力欄の下で実行先・担当・基盤モデルを確認し、その仕事をどこに任せるか選びます。
+
+![Eveに学習メモの整理を入力し、実行先・担当・基盤モデルの確認欄を開いた画面](docs/assets/readme/eve-request.png)
+
+*Web版の実画面。依頼を書いたところで、実行先はまだ接続していません。* 会話は履歴から、依頼した仕事と成果は「仕事と成果」から開けます。実行には本人確認とToolへの接続・権限が必要です。[Eveを開く](https://avoado.si/os/eve)
+
+<details>
+<summary>Eveが依頼を工程に分け、成果を検収する仕組み</summary>
+
+### 仕事の工程と検収
+
+<img src="docs/assets/readme/eve-workflow.svg" alt="Eveの仕事環境のコンセプト" width="100%" />
+
+Eveが目的を受け取り、Noaが道具とAgentをつなぎ、AMCが工程・担当・合格条件を決め、Jevが結果を検収します。下のデモでAMCの実行、別プロセスでの検収、差し戻しと再計画を試せます。成果の編集・持ち出しは、その仕事の保存方式に従います。
+
+```sh
+npm run amc:cycle -- demo
+```
+
+工程の組み合わせ、見積り、会社受注の分配を計算するライブラリと、募集文面を判定するCLIがあります。外部への応募・契約・納品・送金までの接続は開発中です。[仕事の計画](docs/sky-work-loop.md) · [実行・停止・復旧](docs/amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)
+
+</details>
+
+<details>
+<summary>Eveのコードと担当設定</summary>
+
+| コード | 内容 |
+| --- | --- |
+| [app/os/eve/](app/os/eve/) / [components/sky-chat-workspace.tsx](components/sky-chat-workspace.tsx) | 会話・仕事・Toolの画面 |
+| [lib/workflow.ts](lib/workflow.ts) / [lib/work-store.ts](lib/work-store.ts) | 状態遷移・本人別保存・revision競合判定 |
+| [docs/structure/04-eve-noa-amc-sky.md](docs/structure/04-eve-noa-amc-sky.md) | Eveと担当構成・実行・評価の責任 |
+
+担当設定は[全社役割台帳](data/company-role-map.json)、[営業担当台帳](data/revenue-role-map.json)、[担当別の設定](.cursor/agents/)にあります。
+
+</details>
 
 <a name="catalog"></a>
 
-## NoahでAgentを探す
+## Noahで、仕事に合うAgentを探す
 
-### 提供元と接続条件を開く
-
-**画面**　`機能一覧` → `Agentを探す` → `詳細を見る`
-
-「Agentを探す」を開き、検索欄に `Anicca` と入力します。「詳細を見る」には、配布元、確認状況、費用、ライセンスの情報と、Macで接続するための入口が並びます。
+Noahはmiiの最小構成です。「機能一覧」から「Agentを探す」を開き、名前や任せたい仕事で検索します。詳細では配布元、費用、ライセンスと、Macで接続するための条件を確かめられます。
 
 ![Noahの機能一覧で「Agentを探す」を選び、Aniccaを検索して詳細を開くまでの操作](docs/assets/readme/noah-agent-discovery.gif)
 
-*開発環境の操作デモ。検索結果を開くところまでを収録しています。* [カタログを開く](https://avoado.si/noah/agents)
+*開発環境の操作録画。「Anicca」を検索して詳細を開くまで。* [カタログを開く](https://avoado.si/noah/agents)
 
-</td>
-</tr>
-</table>
+<a name="noah-tools"></a>
+
+<details>
+<summary>タイムライン、本人のライブラリ、セレクト・リセール</summary>
+
+### タイムラインと本人のライブラリ
+
+タイムラインの「Agent」「ニュース」「コミュニティー」で表示を切り替え、検索欄で絞り込めます。投稿やフォローにはサインインが必要です。保存した担当、端末、成果、購入・販売は「機能一覧」から開きます。[タイムライン](https://avoado.si/noah) · [機能一覧](https://avoado.si/noah/features)
+
+<img src="docs/assets/cover-sky.gif" alt="Noahの発見と接続を表すコンセプト" width="340" />
+
+*Noahの発見と接続を表すコンセプト。* 公開カタログは公開資料を使います。個人が登録したAgentは固定版を保存し、別の権限を持つ担当が審査してから公開版に追加します。公開審査には担当の設定、決済にはサービス接続と個別の確認が必要です。
+
+### 本人用セレクト・リセール
+
+ストリート、アーカイブ、オブジェの3担当が、候補・採算・共有予算・在庫・出品原稿・収支を扱います。Webの入口は `/noah/resale`。CLIのデモは外部通信なしで動きます。
+
+```sh
+npm --prefix toolkits/noah-resale-agent run demo
+```
+
+初期予算は0です。実購入・実出品にはAPI利用権、接続設定、予算、具体的条件を確認した記録が必要です。WebはD1、CLIはSQLiteに保存します。入金同期と無人運用は未検証です。[CLIの使い方](toolkits/noah-resale-agent/README.md) · [実行・停止・照合の仕様](docs/services/noah-select-resale.md)
+
+</details>
+
+<details>
+<summary>Noahの画面・接続・Toolのコード</summary>
+
+| コード | 内容 |
+| --- | --- |
+| [app/noah/](app/noah/) / [components/noah-timeline.tsx](components/noah-timeline.tsx) | 公開タイムラインと機能画面 |
+| [lib/noah-surface.ts](lib/noah-surface.ts) | 公開側とMac側の遷移 |
+| [services/sky-web/noah-page-routes.mjs](services/sky-web/noah-page-routes.mjs) | 現行URLと互換URLの対応 |
+| [Mac API接続](scripts/noah-local-api.mjs) / [コード取得](scripts/noah-source-bytes.mjs) | 既存機能で共有する通信・容量照合。本人・招待・公開版の条件は各経路で保持 |
+| [Tool詳細設計](docs/sky-tools-complete-design.md) | 入出力・権限・保存・失敗・復旧・受入 |
+
+</details>
 
 <a name="architecture"></a>
 
-## 全体の接続構成
+## 部屋、Mac、外部サービスのつながり
 
 **Noah** でAgentを選び、**Eve** で依頼や成果を扱います。どちらも **RockstarOS** の本人確認・権限・予算・保存を使います。RockstarOSから右に伸びる実線が本人Mac、点線がスマホ向け公開版で使う提供者のAgentです。[全体の設計と各層の役割](docs/structure/00-overview.md)
 
@@ -81,9 +159,16 @@ flowchart LR
 
 <a name="noah-mac"></a>
 
-## Noahを自分のMacで動かす
+## 選んだAgentを、自分のMacで動かす
 
-### Runnerを入れて本人のMacを登録する
+最初の実行先は本人のApple Silicon Macです。Runnerを入れ、自分のアカウントとMacを結ぶと、Noahの管理画面でAgentへの依頼、成果の確認、停止に進めます。
+
+![NoahのMac接続画面。RunnerのダウンロードからMacの登録までが中央に並ぶ](docs/assets/readme/noah-mac-handoff.png)
+
+*Web版のMac接続画面。中央にRunnerの入手先と、Macを承認する手順が並びます。* [Macを接続する](https://avoado.si/noah/mac)
+
+<details>
+<summary>Macの導入・実行・停止コマンドを開く</summary>
 
 **画面**　[自分のMacをNoahにつなぐ](https://avoado.si/noah/mac)　·　**対象**　Apple Silicon Mac
 
@@ -95,8 +180,6 @@ noah doctor
 noah pair
 noah start
 ```
-
-![NoahのMac接続画面。RunnerのダウンロードからMacの登録までが中央に並ぶ](docs/assets/readme/noah-mac-handoff.png)
 
 ### 仕事を実行し、成果を確認して停止する
 
@@ -110,15 +193,16 @@ noah status
 noah receipts
 ```
 
-> **検証状況**　ローカルAPIと実コンテナで接続・実行・成果受領・停止を確認済みです。配布ZIPは空の保存領域で導入を確認しました。未導入の別Macと本番HTTPSを使った一周が次の実機試験です。動作にはMacの電源と通信が必要です。[導入と実行の仕様](docs/services/noah-standalone-launch.md) · [検証記録](codex/tasks/71-noah-standalone-launch.md)
+</details>
 
 <a name="noah-public"></a>
 
-## Noahをスマホから使う（公開に向けて開発中）
+## スマホから頼んで、成果を受け取る
 
-### 接続して依頼し、成果を受け取る
+スマホ向けの公開版では、利用者がブラウザでAgentを選び、提供者のサーバーが処理を引き受ける設計です。「接続」を押し、入力を送り、成果を開き、使い終わったら接続を切る。この一周を公開に向けて開発しています。
 
-**操作する場所**　スマホのブラウザ　·　**Agentが動く場所**　提供者のサーバー
+<details>
+<summary>スマホでの操作と、手元で試せる検索例</summary>
 
 1. **選ぶ。** カードを開き、提供者と「入力はどこへ送られるか」を読みます。
 2. **つなぐ。** 「接続」を押します。サインインが必要な場合は、認証後に同じ操作へ戻ります。
@@ -141,89 +225,18 @@ node --experimental-strip-types --test docs/design-validation/noah/noah-loop.tes
 
 公開の条件は、初めての利用者が自分のスマホで一周できることです。[公開までに作る順番](docs/noah/mvp-launch.md) · [各機能の仕様書](docs/noah/README.md)
 
-<a name="noah-tools"></a>
-
-## Noahのその他の機能
-
-### タイムラインと本人のライブラリ
-
-タイムラインの「Agent」「ニュース」「コミュニティー」で表示を切り替え、検索欄で絞り込めます。投稿やフォローにはサインインが必要です。保存した担当、端末、成果、購入・販売は「機能一覧」から開きます。[タイムライン](https://avoado.si/noah) · [機能一覧](https://avoado.si/noah/features)
-
-<img src="docs/assets/cover-sky.gif" alt="Noahの発見と接続を表すコンセプト" width="340" />
-
-*Noahの発見と接続を表すコンセプト。* 公開カタログは公開資料を使います。個人が登録したAgentは固定版を保存し、別の権限を持つ担当が審査してから公開版に追加します。公開審査には担当の設定、決済にはサービス接続と個別の確認が必要です。
-
-### 本人用セレクト・リセール
-
-ストリート、アーカイブ、オブジェの3担当が、候補・採算・共有予算・在庫・出品原稿・収支を扱います。Webの入口は `/noah/resale`。CLIのデモは外部通信なしで動きます。
-
-```sh
-npm --prefix toolkits/noah-resale-agent run demo
-```
-
-初期予算は0です。実購入・実出品にはAPI利用権、接続設定、予算、具体的条件を確認した記録が必要です。WebはD1、CLIはSQLiteに保存します。入金同期と無人運用は未検証です。[CLIの使い方](toolkits/noah-resale-agent/README.md) · [実行・停止・照合の仕様](docs/services/noah-select-resale.md)
-
-<details>
-<summary>Noahの画面・接続・Toolのコード</summary>
-
-| コード | 内容 |
-| --- | --- |
-| [app/noah/](app/noah/) / [components/noah-timeline.tsx](components/noah-timeline.tsx) | 公開タイムラインと機能画面 |
-| [lib/noah-surface.ts](lib/noah-surface.ts) | 公開側とMac側の遷移 |
-| [services/sky-web/noah-page-routes.mjs](services/sky-web/noah-page-routes.mjs) | 現行URLと互換URLの対応 |
-| [Mac API接続](scripts/noah-local-api.mjs) / [コード取得](scripts/noah-source-bytes.mjs) | 既存機能で共有する通信・容量照合。本人・招待・公開版の条件は各経路で保持 |
-| [Tool詳細設計](docs/sky-tools-complete-design.md) | 入出力・権限・保存・失敗・復旧・受入 |
-
-</details>
-
-<a name="eve"></a>
-
-## Eveで依頼・仕事・成果を扱う
-
-### 依頼を書いて実行先を確かめる
-
-**画面**　[Eveを開く](https://avoado.si/os/eve) → `Eveに依頼する` → `実行先・担当・基盤モデルを確認する`
-
-「今週の学習メモを、次に調べたいことと一緒に整理したい」と入力した例です。入力欄の下を開くと、会話の一部と依頼がどの実行先に送られるかを確認できます。
-
-![Eveに学習メモの整理を入力し、実行先・担当・基盤モデルの確認欄を開いた画面](docs/assets/readme/eve-request.png)
-
-*開発環境で依頼を書き、送信する前の状態です。この例では実行先が未接続なので、接続設定の案内が出ています。* 会話を続けるときは履歴から、依頼した仕事と成果は「仕事と成果」から開きます。実行には本人確認と、使うToolへの接続・権限が必要です。
-
-### 仕事の工程と検収
-
-<img src="docs/assets/readme/eve-workflow.svg" alt="Eveの仕事環境のコンセプト" width="100%" />
-
-Eveが目的を受け取り、Noaが道具とAgentをつなぎ、AMCが工程・担当・合格条件を決め、Jevが結果を検収します。下のデモでAMCの実行、別プロセスでの検収、差し戻しと再計画を試せます。成果の編集・持ち出しは、その仕事の保存方式に従います。
-
-```sh
-npm run amc:cycle -- demo
-```
-
-工程の組み合わせ、見積り、会社受注の分配を計算するライブラリと、募集文面を判定するCLIがあります。外部への応募・契約・納品・送金までの接続は開発中です。[仕事の計画](docs/sky-work-loop.md) · [実行・停止・復旧](docs/amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)
-
-<details>
-<summary>Eveのコードと担当設定</summary>
-
-| コード | 内容 |
-| --- | --- |
-| [app/os/eve/](app/os/eve/) / [components/sky-chat-workspace.tsx](components/sky-chat-workspace.tsx) | 会話・仕事・Toolの画面 |
-| [lib/workflow.ts](lib/workflow.ts) / [lib/work-store.ts](lib/work-store.ts) | 状態遷移・本人別保存・revision競合判定 |
-| [docs/structure/04-eve-noa-amc-sky.md](docs/structure/04-eve-noa-amc-sky.md) | Eveと担当構成・実行・評価の責任 |
-
-担当設定は[全社役割台帳](data/company-role-map.json)、[営業担当台帳](data/revenue-role-map.json)、[担当別の設定](.cursor/agents/)にあります。
-
 </details>
 
 <a name="rockstaros"></a>
 
-## RockstarOSで仕事を引き継ぐ
+## RockstarOSが仕事と端末をつなぐ
 
-### 対応端末と次の実機試験
+Eveに頼んだ仕事を別の画面で開くために、RockstarOSは本人のアカウントに権限・予算・仕事・成果を結び付けます。部屋のHub、Web、機種別OSで共有するのはこの仕組みです。端末ごとの入力・表示・更新・復旧は個別に検証します。
+
+<details>
+<summary>RockstarOS 1.0の対応端末と次の実機試験</summary>
 
 **配布段階**　Developer Preview　·　**内部識別子**　`dev.rock`
-
-RockstarOS 1.0は、本人のアカウントに権限・予算・仕事・成果を結び付けます。端末ごとの入出力と更新・復旧の違いはhardware profileとadapterで扱います。下の表から、試したい環境の検証段階を確認できます。
 
 | 対象 | 現在の範囲 | 次の受入 |
 | --- | --- | --- |
@@ -234,27 +247,18 @@ RockstarOS 1.0は、本人のアカウントに権限・予算・仕事・成果
 
 端末内モデルの出力を外部操作に使う際も、実行先の権限と本人の承認を確認します。[native OS](systems/rock-star-os/README.md) · [Androidとnativeの区分](docs/native-os-integration.md) · [対応機種](docs/device-support-architecture.md) · [リリース条件](docs/release-minimum-gates.md) · [モデルの評価](docs/llm-evaluation-architecture.md)
 
+</details>
+
 <a name="esim"></a>
 
-### OSを導入するときのSIM・eSIM
+<details>
+<summary>OS導入時のSIM・eSIMと使用料金</summary>
 
 SIM/eSIMはRockstarOS導入時の回線に使います。対象機種と署名・復旧条件がそろった端末にはnative OSを案内し、そのほかの対応端末ではclientやブラウザを使います。OS本体は端末に置き、本人確認・回線・サービス利用権・インストール状態をそれぞれ管理します。
 
 Cloud agentの実行前に単価・見積りと予算上限を確認し、実行後に項目別の使用量を照合します。商品料金、通信料、si使用料、外部実費、利用者自身の鍵での費用は個別に扱います。回線発行・本番決済は各providerとの接続試験が残っています。[SIM/eSIM設計](docs/structure/03-esim.md) · [料金と使用量](docs/sky-billing.md) · [導入試作](toolkits/esim-bootstrap/README.md)
 
-<a name="mii"></a>
-
-## miiで声と手を使う
-
-### 部屋に表示した仕事を操作する
-
-声でEveに依頼すると、4本のTowerが部屋や手の動きを捉え、別体のHub上のRockstarOSが入力をまとめ、差し替え可能な表示層へ渡す設計です。表示を見たり触ったりしながら、連絡、創作、遊び、許可した機器の操作を進めます。Towerが1本の構成では、Eveの機能を限定して使う想定です。
-
-<img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="建築空間になじむmiiのコンセプト" width="100%" />
-
-*部屋に組み込んだmiiのコンセプト。* R5を現行設計として試作を進めています。製造承認は**保留中**です。R5実機試験の完了実績は0件です。次に実機で確かめる項目は、光学・熱・電源・停止・取り付け・警報です。V2・天井型は比較研究の段階です。[miiの構造](docs/structure/01-mii.md) · [R5設計](docs/avocado-mini-r5/README.md) · [V2の比較研究](docs/mii/design/v2-study/README.md)
-
-空間入力の実装と機種設定から、手の入力がどこで処理されるかを追えます。Material Inventionには再計算用sandboxと設計資料があり、シミュレーション・実験室接続は未実装です。[空間入力のコード](lib/mii-spatial-input.ts) · [機種設定](systems/rock-star-os/targets/avocado-mini/) · [Material Inventionの設計](docs/rockstaros-avocado-mini-complete-design.md) · [製品サイトのコード](sites/avocado-mini/)
+</details>
 
 <a name="pro"></a>
 
@@ -265,6 +269,19 @@ Cloud agentの実行前に単価・見積りと予算上限を確認し、実行
 モデル・Agent・制作・計算を動かす独立PCの開発計画です。用途ごとに構成、実性能、冷却、消費電力、保守性、調達を確認します。miiを持つことを利用条件にしません。販売・出荷・一般機種対応は、正確なSKUと同じ実機の検証が必要です。
 
 [Proの機種適合](docs/device-support-architecture.md) / [公開入口](https://avocadopro.si)。
+
+<a name="status"></a>
+
+## 今どこまで動くか
+
+| 対象 | 確認できていること | 次に確かめること |
+| --- | --- | --- |
+| mii | R5を現行設計として試作中。製造承認は**保留中**です。R5実機試験の完了実績は0件です。 | 同じ実機で光学、熱、電源、停止、取り付け、警報を確認する。V2・天井型は比較研究の段階 |
+| Noah・本人のMac | ローカルAPIと実コンテナで接続・実行・成果受領・停止を確認。配布ZIPは空の保存領域で導入を確認 | 初めて導入する別のMacと本番HTTPSを通して同じ一周を確認する |
+| Noah・スマホ公開版 | 参照試験で検索の入力から成果までを確認 | 初めての利用者が本番で接続・依頼・成果受領・切断まで進めることを確認する |
+| Eve・RockstarOS | Webの会話・仕事・成果の画面と共通の保存処理を実装。RockstarOS 1.0はDeveloper Preview | 本人アカウントと実行先を接続し、端末を替えて同じ仕事を再開する |
+
+miiの販売・予約は受け付けておらず、価格と発売日は未定です。MacのRunnerは電源が入り、ネットワークにつながっている間に動作します。 [導入と実行の仕様](docs/services/noah-standalone-launch.md) · [検証記録](codex/tasks/71-noah-standalone-launch.md) · [進捗](project.md) · [mii公式の開発状況](https://avocadomini.si/#status)
 
 <a name="development"></a>
 
@@ -306,4 +323,6 @@ macOSでHomebrewのOpenSSL 3を使う場合は `PATH=/opt/homebrew/opt/openssl@3
 
 個々の変更とPRは[変更履歴](CHANGELOG.md)にあります。コードに残る `sky`・`zema` は互換性のための識別子です。公開サービス名はEveとNoahです。
 
-[このページの目次に戻る](#contents)
+ページの途中から別の項目に移るときは、GitHubのファイル上部にある「Outline」から各章や操作の見出しを選べます。[GitHubの目次の使い方](https://docs.github.com/ja/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes#auto-generated-table-of-contents-for-markdown-files)
+
+[目次に戻る](#contents)
