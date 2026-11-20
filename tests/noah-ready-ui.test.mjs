@@ -452,6 +452,12 @@ void test('the entry on the explore screen appears only for people who may see t
   const shown = reviewer.ui.mount(ENTRY);
   await shown.flush();
   assert.equal(links(shown).length, 1);
+  // 開いていても、並んでいる物が無い時は、出さない（押した先が、空の一覧にならない）。
+  const empty = await world(t, {});
+  const nothing = browser(empty, null);
+  const blank = nothing.ui.mount(ENTRY);
+  await blank.flush();
+  assert.deepEqual([links(blank), probes(nothing.ui)], [[], 1]);
   // 読めない控え・形の違う控えは、使わずに、問い合わせ直す。
   const broken = browser(w, null, { storage: { 'noah-ready-open': '{"at":"now","open":"yes"}' } });
   const retried = broken.ui.mount(ENTRY);

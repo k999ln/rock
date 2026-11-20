@@ -319,7 +319,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 | `components/noah-connect-button.tsx` | 接続のボタン。下の「ボタンの流れ」 |
 | `components/noah-ready-detail.tsx` | 詳細。`GET /api/noah/intake?id=`（説明・`connect`・`listed`・その本人の `connection`・`ownerScope` が、1 回で返る。計画の API は、ボタンを押した時に読む）。つないだ後は `noah-ask.tsx` と「切る」（`POST /api/noah/connect/[id]` の `disconnect`。版が古かった時は、返ってきた今の接続に合わせる）。`failed` は理由と「もう一度」、`blocked` は理由だけ |
 | `components/noah-ask.tsx` | つないだ相手の道具の一覧（`GET /api/noah/connect/[id]/tools`）。名前・印・説明の先頭 2 行。**L5 は、一覧まで**（選んで頼む所は L6）。読んだ一覧は、この tab が 5 分持つ（`sessionStorage['noah-tools:' + 接続の ID]`。開き直すたびに、相手へ握手を送らない。切ったら消す）。409・404 の時は、詳細の画面が、接続を読み直す（取り下げなら、理由が出る） |
-| `components/noah-ready-entry.tsx`・`components/use-noah-ready.ts`・`app/noah/explore/page.tsx` | 探す画面の一番上の入口（「すぐ使える Agent／スマホだけで使えます。　n 件 →」。行き先は一覧）。`GET /api/noah/intake?limit=0` が 200 を返した時だけ出す（`n` は、応答の `counts` の合計。結果は `sessionStorage['noah-ready-open']` に 10 分持つ）。閉じている間、審査者でない人には、何も出ない（探す画面は、今のまま）。Codex の file に足したのは、`app/noah/explore/page.tsx` の 2 行（import と、見出しの下の 1 つ）だけ。**外枠（`components/noah-shell.tsx`）は、変えていない** |
+| `components/noah-ready-entry.tsx`・`components/use-noah-ready.ts`・`app/noah/explore/page.tsx` | 探す画面の一番上の入口（「すぐ使える Agent／スマホだけで使えます。　n 件 →」。行き先は一覧）。`GET /api/noah/intake?limit=0` が 200 を返し、並んでいる物が 1 つ以上ある時だけ出す（`n` は、応答の `counts` の合計。0 の時は出さない: 押した先が、空の一覧にならないように。結果は `sessionStorage['noah-ready-open']` に 10 分持つ）。閉じている間、審査者でない人には、何も出ない（探す画面は、今のまま）。Codex の file に足したのは、`app/noah/explore/page.tsx` の 2 行（import と、見出しの下の 1 つ）だけ。**外枠（`components/noah-shell.tsx`）は、変えていない** |
 | `components/noah-ready.module.css` | 足りない分の見た目だけ（下の「見た目」） |
 
 ボタンの流れ（`noah-connect-button.tsx`。6.1 との違いを含む）:
@@ -464,7 +464,7 @@ D1 への往復（1 文の実行か、1 回の batch。`scripts/check-noah-conne
 
 | ファイル | 中身 |
 | --- | --- |
-| `tests/noah-ready-ui.test.mjs`（13 本） | 一覧（段・カードの主ボタンは 1 つ・印が文字・出どころ）／閉じている・空・読めない／探す（300 ミリ秒待つ・絞る・続きを読む）／サインイン済みで 1 回押して「頼む」／相手が断った接続は「つながっていないもの」に出て、カードに理由と「もう一度」／未サインイン → サインイン → 押し直さずに同じ操作 ID で続く／続きは、その Agent の物・1 回・10 分・形が合う物だけ／詳細（送り先が接続の前に出ている → 道具 → 切る → つなぎ直す）／失敗と「もう一度」と 5 秒の決まり／取り下げ／無い Agent・形の違う ID・載せていない物／ボタンの見た目の表／探す画面の入口（見せてよい人にだけ・数を出す・10 分持つ・外枠の menu は 4 つのまま） |
+| `tests/noah-ready-ui.test.mjs`（13 本） | 一覧（段・カードの主ボタンは 1 つ・印が文字・出どころ）／閉じている・空・読めない／探す（300 ミリ秒待つ・絞る・続きを読む）／サインイン済みで 1 回押して「頼む」／相手が断った接続は「つながっていないもの」に出て、カードに理由と「もう一度」／未サインイン → サインイン → 押し直さずに同じ操作 ID で続く／続きは、その Agent の物・1 回・10 分・形が合う物だけ／詳細（送り先が接続の前に出ている → 道具 → 切る → つなぎ直す）／失敗と「もう一度」と 5 秒の決まり／取り下げ／無い Agent・形の違う ID・載せていない物／ボタンの見た目の表／探す画面の入口（見せてよい人にだけ・数を出す・並んでいる物が無ければ出さない・10 分持つ・外枠の menu は 4 つのまま） |
 | `tests/fixtures/noah/screen.mjs` | 画面の部品を、ブラウザなしで動かす台。部品のファイルを JS に直し、小さな React の代わり（入れ子の部品・`useState`・`useRef`・`useEffect`）で動かす。`fetch`・`sessionStorage`・`location`・時計は、試験が渡す。確かめるのは、出る文・押せる物・送る要求（見た目は、下の「手元の実物」で確かめた） |
 | `tests/fixtures/noah/connect-world.mjs` の `browser()` | 画面が送った要求を、本物の入口（一覧・計画・接続・道具の一覧）へ通す。握手の相手は、試験の中の関数。画面の試験も、表を直に書いて「つないだ事」にしない |
 
@@ -497,5 +497,9 @@ D1 への往復（1 文の実行か、1 回の batch。`scripts/check-noah-conne
 - **手元の実物で確かめていない物:** 未サインインからの続き（手元では、いつも審査者の account でサインイン済みになる）。試験の台で確かめた（`tests/noah-ready-ui.test.mjs` の「未サインイン」と「続き」の 2 本。サインインの画面そのものは、今ある `/account`）。実機のスマホ・本番の環境でも、確かめていない（出す前の受入は、90 の L9）。探す画面の、今ある Agent の欄は、手元では「取得できませんでした」と出る（手元の D1 に、その表を作っていないため。この PR は、その欄を変えていない）。
 
 自動検査で分かった事（2026-11-21 02:32 JST の push）: menu に 1 行足した版は、`verify` の `release:check` で落ちた（「Web security policy: local production response実測またはinput hashが不一致です」）。外枠の file を、Codex の物（#337 の `ce74bbb`）と 1 文字も違わない形に戻し、入口を探す画面へ移した。手元で `npm run release:check` が通る事を確かめてから、push し直した。**この repo では、`data/web-security-response-current.json` の `inputs` にある file を変えたら、測り直しが要る。**
+
+手元と自動検査の結果（最後の形 `b4868a0` で）: L5 の試験 45 本・`typecheck`・`lint:product`・`release:check` ほかの check・`npm run build`（新しい 2 画面が入っている）・`release:web-bundle:check`・`release:web-assets:check` が通った。`npm test` は 4,629 本のうち 4,590 通過・36 失敗・3 skip（失敗の 36 は、前からある、この環境だけの物。取り込み・握手・接続・画面の試験に、失敗は無い）。GitHub の `verify`・`CodeQL` は通過（`SPIDER / secrets` は、前からある履歴の 3 commit で赤のまま）。
+
+分かっていない事（L7・L8 で扱う）: 巡回の握手（名乗りは `NoahBot/1`）が通っていた相手が、接続の握手（名乗りは `Noah/1`）を断った。理由は、まだ分からない（名乗りで分けている・回数で分けている・その時だけ、のどれか。確かめるために、続けて握手を送る事はしていない）。こういう相手は、一覧に載ったまま、つなごうとした人が全員断られる。巡回は、今の決まりでは、これを見つけられない（1 人の失敗で一覧から外さない決まりは、そのまま正しい）。案: 接続で断られた回数を、接続先ごとに数えて運営の画面に出す（97 の 6 章）。別々の本人が続けて断られた相手は、巡回が、人の操作と同じ名乗りで 1 回確かめ直す（88 の 9 章）。**決めるのは L7 を作る時。**
 
 残っている物: 道具を選んで、入力欄から頼む所と、仕事の一覧（L6。87 の 11.5。`noah-ask.tsx` に足す）。棚（[PR #343](https://github.com/k999ln/rock/pull/343) の task 100）は、この一覧の一番上に乗る。運営の画面の数は L8、途中で止まった接続の後始末は L7。11.5 の最初の表の 2 つは、本人の返事を待っている。
