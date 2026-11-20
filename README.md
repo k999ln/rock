@@ -2,9 +2,9 @@
 
 miiは、声でEveに頼み、部屋に映った成果を手で操作するために開発している空間コンピューターです。
 
-[![夕暮れの庭から、明かりのついた家に戻る人。mii公式サイトの生活コンセプト](docs/assets/readme/mii-homecoming.jpg)](https://avocadomini.si/#time-together)
+[![銀色の円筒形のmiiを円形ドックに載せた正面のデザイン画像。上部に黒いセンサー帯がある](docs/assets/readme/mii-tower-on-dock.webp)](https://avocadomini.si/#product-details)
 
-*家に帰ってから一日を終えるまで。mii公式サイトのコンセプト映像より。* [miiの公式サイトを見る](https://avocadomini.si/)
+*miiと円形ドックのデザイン案。* [公式サイトで製品を見る](https://avocadomini.si/#product-details)
 
 <a name="contents"></a>
 
@@ -28,9 +28,9 @@ miiは、声でEveに頼み、部屋に映った成果を手で操作するた�
 
 部屋の中で表示を指すと、四方向のTowerが手の位置を捉えます。別体のHub上でRockstarOSが入力をまとめ、表示層に渡す設計です。表示層は使う空間に合わせて差し替えられます。Towerが1本のときは、Eveの機能を限定して使う想定です。
 
-<img src="docs/assets/readme/mini-architectural-hero-v1.png" alt="建築空間になじむmiiのコンセプト" width="100%" />
+[![miiのセンサー部の接写。黒い帯の中にレンズが並び、上下を銀色の筐体が挟んでいる](docs/assets/readme/mii-sensor-detail.webp)](https://avocadomini.si/#product-details)
 
-*室内に設置したmiiのデザイン案。* [miiの構造](docs/structure/01-mii.md) · [R5設計](docs/avocado-mini-r5/README.md) · [V2の比較研究](docs/mii/design/v2-study/README.md)
+*Tower上部のセンサー帯のデザイン案。* [miiの構造](docs/structure/01-mii.md) · [R5設計](docs/avocado-mini-r5/README.md) · [V2の比較研究](docs/mii/design/v2-study/README.md)
 
 <details>
 <summary>空間入力とMaterial Inventionの実装を見る</summary>
@@ -153,7 +153,6 @@ flowchart LR
 | Eve | 依頼、担当設定、仕事、成果、停止、使用量の確認 | [avoado.si/os/eve](https://avoado.si/os/eve)。実行には本人確認と対象Toolの接続・権限が必要 |
 | RockstarOS 1.0 | 本人性、権限、予算、仕事の状態、保存・復旧を共有するruntime | Developer Preview。Web、Linux/QEMU、Android/機種別OSを別々に受入 |
 | mii | 声・手・表示・センサーを共通の仕事へつなぐ空間端末 | [avocadomini.si](https://avocadomini.si)。設計・ソフト試作段階 |
-| Pro | siモデル・Agent・制作・計算の専用PC | [avocadopro.si](https://avocadopro.si)。構成・実機・販売の受入は個別管理 |
 
 </details>
 
@@ -243,7 +242,7 @@ Eveに頼んだ仕事を別の画面で開くために、RockstarOSは本人の�
 | Web / 既存OS client | Eve・Noahと共通の仕事・保存・権限の実装 | 本人アカウント、外部Tool、別端末引継ぎの同条件確認 |
 | Linux / QEMU | 独立したDeveloper Preview系列 | 配布する同一artifactの導入・保存・再起動・復旧 |
 | Pixel 10 GL066 / frankel | Android clientと機種別OS準備 | 現候補での接続・復旧、正式署名、全OS build、flashと同一image受入 |
-| mii / Pro | 共通runtimeへ接続するprofileと設計 | 実機の入出力・電源・停止・保存・復旧 |
+| mii | 共通runtimeへ接続するprofileと設計 | 実機の入出力・電源・停止・保存・復旧 |
 
 端末内モデルの出力を外部操作に使う際も、実行先の権限と本人の承認を確認します。[native OS](systems/rock-star-os/README.md) · [Androidとnativeの区分](docs/native-os-integration.md) · [対応機種](docs/device-support-architecture.md) · [リリース条件](docs/release-minimum-gates.md) · [モデルの評価](docs/llm-evaluation-architecture.md)
 
@@ -259,16 +258,6 @@ SIM/eSIMはRockstarOS導入時の回線に使います。対象機種と署名�
 Cloud agentの実行前に単価・見積りと予算上限を確認し、実行後に項目別の使用量を照合します。商品料金、通信料、si使用料、外部実費、利用者自身の鍵での費用は個別に扱います。回線発行・本番決済は各providerとの接続試験が残っています。[SIM/eSIM設計](docs/structure/03-esim.md) · [料金と使用量](docs/sky-billing.md) · [導入試作](toolkits/esim-bootstrap/README.md)
 
 </details>
-
-<a name="pro"></a>
-
-## Pro — si専用PC
-
-<img src="docs/assets/readme/pro-studio-hero-v1.png" alt="Proの筐体コンセプト" width="100%" />
-
-モデル・Agent・制作・計算を動かす独立PCの開発計画です。用途ごとに構成、実性能、冷却、消費電力、保守性、調達を確認します。miiを持つことを利用条件にしません。販売・出荷・一般機種対応は、正確なSKUと同じ実機の検証が必要です。
-
-[Proの機種適合](docs/device-support-architecture.md) / [公開入口](https://avocadopro.si)。
 
 <a name="status"></a>
 
