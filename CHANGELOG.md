@@ -1,5 +1,7 @@
 ## 2026-11-20
 
+- Noah の設計を、別の機械から始められるようにした（Fable / Noelle。本人指示「main に入れて、別の PC が git にアクセスして開発が進めれるようにして」）。docs/noah/README.md に「別の機械で始める時」（clone → `npm ci` → 検証キット → 読む順 → 最初の PR は L1 と L2）を足した。main を別の場所へ取り出して確かめた: `npm ci` の後は試験 61/61・DDL 10/10。`npm ci` が無いと `noah-screenless.test.mjs` だけが読めない（今の起動スクリプトが `fflate` を使う）ので、検証キットの README の「`npm install` は要らない」を直した。
+
 - Noah の検証キットの試験で、鍵らしい作り物の文字列を、試験の中で組み立てる形へ直した（docs/design-validation/noah/noah-connect.test.mjs。Fable / Noelle）。main へ上げた後、SPIDER / secrets が、試験に直に書いていた作り物の 1 行（commit 5b7cde3 と、それを含む merge の 80b3810）を鍵の候補として検出したため。本物の鍵ではない。今のファイルからは消えるが、履歴には残るので、検査は、例外（policy と control commit の更新。owner review）が入るまで赤のまま。**この変更では、`.github/spider/` と workflow を触っていない。履歴も書き換えていない。** 検証キットは試験 61/61。PR #328。
 
 - miiの商品案内を4本のTower＋別体Hubに統一し、商品サイトの画像11点を原本から生成。追加機能の表示名、重複索引、未使用の旧画面・CSSを整理（[PR #327](https://github.com/k999ln/rock/pull/327)、task98）。

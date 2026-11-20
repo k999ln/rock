@@ -20,7 +20,7 @@
 
 ## 実行
 
-リポジトリ直下で実行する。Node.js 22.13 以上と Python 3.9 以上（標準の `sqlite3`）。このキットだけなら `npm install` は要らない。
+リポジトリ直下で実行する。Node.js 22.13 以上と Python 3.9 以上（標準の `sqlite3`）。先に `npm ci` を流す（`noah-screenless.test.mjs` が、今の main の起動スクリプトをそのまま読み、そのスクリプトが npm の package `fflate` を使うため）。`npm ci` をしていない checkout でも、他の 7 ファイル（56 群）と DDL の検証は動く。
 
 ```sh
 node --experimental-strip-types --test "docs/design-validation/noah/*.test.mjs"
@@ -29,7 +29,7 @@ python3 docs/design-validation/noah/validate-noah-v1.py
 
 失敗すると終了コードが 0 以外になる。DDL の検証の結果は `work/design-validation/noah-v1-validation.json`（`NOAH_SQL_RESULT` で変えられる）。型契約は `npm run typecheck` の対象に入っている（`tsconfig.json` が `**/*.ts` を読む）。
 
-2026-11-20 の結果（main `bf7021b` を取り込んだ上。Node.js 22.23、SQLite 3.53）: 試験 61/61、DDL 10/10（拒否を確かめた行 63）、`npm run typecheck` エラー 0、`oxlint docs/contracts docs/design-validation/noah` 指摘 0。これはその時点の入力への結果で、変更した後の成功は保証しない。
+2026-11-20 の結果（main `fa57c57` を、別の場所へ取り出して確かめた。Node.js 22.23、SQLite 3.53）: 試験 61/61、DDL 10/10（拒否を確かめた行 63）、`npm run typecheck` エラー 0、`oxlint docs/contracts docs/design-validation/noah` 指摘 0。これはその時点の入力への結果で、変更した後の成功は保証しない。
 
 ## 何を確かめているか
 
