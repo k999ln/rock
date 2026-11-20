@@ -1,13 +1,23 @@
 # 87 道具を持つ担当（入力欄で頼む・1 文で頼む）
 
-仕様: **[docs/noah/spec-87-tool-agent.md](../../docs/noah/spec-87-tool-agent.md)**。型と参照実装: docs/contracts/noah-tool-agent-v1.ts、noah-v1.sql（`noah_asks`）。試験: docs/design-validation/noah/noah-tool-agent.test.mjs。先に 86。モデルの出どころと月の上限は本人の許可の後（flag `NOAH_MODEL_RELAY=test` のまま入れる）。
+仕様: **[docs/noah/spec-87-tool-agent.md](../../docs/noah/spec-87-tool-agent.md)**。型と参照実装: docs/contracts/noah-tool-agent-v1.ts、noah-form-v1.ts、noah-v1.sql（`noah_asks`）。試験: docs/design-validation/noah/noah-tool-agent.test.mjs、noah-form.test.mjs。先に 86。モデルの出どころと月の上限は本人の許可の後（flag `NOAH_MODEL_RELAY=test` のまま入れる）。
 
-## やること
+## ローンチまで（先に、この範囲だけを出す。[ローンチの最小限](../../docs/noah/mvp-launch.md) の L6）
 
-1. lib/noah-tool-agent.ts: 参照実装を全部移す（`runNoahToolAgent`・`fitNoahTools`・`checkNoahToolArgs`・`noahDirectForm`・モデルの API の形との変換）。
+仕様書の **11 章** だけを見て作る。完了の定義も、その章にある。
+
+- 先に要る PR: L5（74 のローンチ分。`noah_connections` と「接続」）
+- やる: 入力欄で頼む（道具を選ぶ画面を含む）。下の「やること」の 2・3・4・6 を、11 章の形で
+- やる: API: `GET /api/noah/connect/[id]/tools`、`POST /api/noah/ask`（`form` だけ）、`stop`（11.3）。成果を受け取る操作は作らない（Work に入った時点で「結果を受け取りました」）。実行は 11.4 の 12 段
+- やる: 頼む前の上限（`noahAskGate`）、道具の一覧と依頼の握手の前に接続先の枠を取る事（`host_take`。74 と同じ枠）、相手が 429 を返した時の `host_wait`、本人の実行で「動いた」を付ける所（88 の 9.2）
+- やらない（出した後）: 1（`lib/noah-tool-agent.ts`）と 5（`services/noah-relay`、頼み返しの API）。「1 文で頼む」「あなたの番」「直してもらう」
+
+## やること（全部。ローンチの後に、残りをやる）
+
+1. lib/noah-tool-agent.ts: 参照実装を全部移す（`runNoahToolAgent`・`fitNoahTools`・モデルの API の形との変換。入力の検査 `checkNoahToolArgs` は lib/noah-form.ts の物を使う）。
 2. lib/workflow.ts の `WorkJob` に `noahRemote?` を足し、Noah の受け取りに分岐を足す。lib/noah-remote-work.ts（`createNoahRemoteWork`・`updateNoahRemoteWork`。仕様書 4.1）。
-3. `noah_asks` の migration。lib/noah-ask.ts、app/api/noah/ask/route.ts・[id]/route.ts（仕様書 5 章。`stop`・`approve`・`deny`・`accept`・`redo`）。
-4. 入力欄で頼む仕事（`form`）: Web の本体の中で、応答の後の `waitUntil`、25 秒まで（仕様書 6.1）。**これは今の配備のまま出せる。**
+3. `noah_asks` の migration。lib/noah-ask.ts、app/api/noah/ask/route.ts・[id]/route.ts（仕様書 5 章。`stop`・`approve`・`deny`・`redo`）。
+4. 入力欄で頼む仕事（`form`）: Web の本体の中で、応答の後の `waitUntil`、握手 8 秒・呼び出し 20 秒まで（仕様書 11.4）。**これは今の配備のまま出せる。**
 5. 1 文で頼む仕事（`agent`）: services/noah-relay（Durable Object。services/noah-test-runtime を土台にする）と、頼み返しの API lib/noah-relay-api.ts・app/api/noah/relay/route.ts（仕様書 6.2〜6.3）。手元でだけ動かす。
 6. components/noah-ask.tsx・components/noah-work-list.tsx（仕様書 7 章の図と、状態ごとの文）。
 

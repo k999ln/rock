@@ -3,6 +3,8 @@
 task: [codex/tasks/86-noah-remote-mouth.md](../../codex/tasks/86-noah-remote-mouth.md)。先に要る物: 85（候補と checks の表）。
 型契約: [noah-mouth-v1.ts](../contracts/noah-mouth-v1.ts)。試験: [noah-mouth.test.mjs](../design-validation/noah/noah-mouth.test.mjs)（9 群）。実測の写し: [fixtures/mcp-exchange-mizan.json](../design-validation/noah/fixtures/mcp-exchange-mizan.json)。
 
+**ローンチまでに作る範囲は 10 章（握手・道具の一覧・道具の呼び出し・握手までの巡回）。** 相手の許可（5 章）は、出した後の最初。10 章と食い違う所は、ローンチまでは 10 章が勝つ。
+
 ## 1. 完成の姿
 
 - 取り込んだ「相手のサーバー」の候補へ、Noah が握手して、道具の一覧を読む。**道具は呼ばない。** 結果（応答した／相手の許可が要る／応答しない／読めない）と、道具の定義の hash が候補に付く。
@@ -60,6 +62,8 @@ data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listCh
 
 続けて `notifications/initialized`（`id` なし。応答は 202 が多い。失敗しても握手の失敗にしない）、`tools/list`（`nextCursor` があれば 10 頁まで）。応答に `mcp-session-id` があれば、2 回目から同じ値を付ける。終わったら `DELETE` でセッションを閉じる（相手が対応していなくてもよい）。
 
+版の名乗り方: Noah が知っている版は 4 つ（`2025-11-25`・`2025-06-18`・`2025-03-26`・`2024-11-05`）。最初に、最新の `2025-11-25` を名乗る。相手が返した版が 4 つのどれかなら、その版で続ける（上の例は `2025-06-18` に下がっている）。**相手が初期化にエラー（4.2 の `incompatible`）を返した時だけ、1 つ前の `2025-06-18` で、もう 1 回だけ名乗り直す。** それも通らなければ「形が合わない」。実測では、名乗り直しで通った相手が 274 のうち 2 あった（10.2）。
+
 ### 4.2 握手の結果（`NoahMouthError.code` → `noah_intake_checks`）
 
 | 相手の応答 | code | `result` | `level` | `auth` | 次に確かめる時 |
@@ -69,11 +73,12 @@ data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listCh
 | 401 | `auth_required` | `auth_required` | 0 | 5 章の発見が通れば `oauth`、通らなければ `key` | `oauth` は 7 日後。`key` は 30 日後 |
 | 402 | `payment_required` | `payment_required` | 0 | `payment` | 30 日後 |
 | 403 | `forbidden` | `forbidden` | 0 | `unknown` | 7 日後 |
-| 429 | `rate_limited` | `rate_limited` | 変えない | 変えない | `Retry-After`（無ければ 60 秒）の後。`noah_probe_hosts.not_before` にも入れる |
-| 名前が引けない・つながらない・時間切れ・404・5xx | `unreachable` | `unreachable` | 変えない（88 が、続いたら下げる） | 変えない | 間隔を 2 倍 |
-| 応答が読めない・版が合わない・相手がエラーを返した・400・405 | `incompatible` | `incompatible` | 0 | 変えない | 7 日後 |
+| 429 | `rate_limited` | `rate_limited` | 変えない | 変えない | `Retry-After`（無ければ 60 秒）の後。`noah_probe_hosts.not_before` にも入れる（[noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `host_wait`。その時刻まで、巡回も、利用者の操作から始める握手も送らない） |
+| 名前が引けない・つながらない・時間切れ・404・410・5xx | `unreachable` | `unreachable` | 変えない（88 が、続いたら下げる） | 変えない | 間隔を 2 倍 |
+| 応答が読めない・版が合わない・相手がエラーを返した・400・405・406 | `incompatible` | `incompatible` | 0 | 変えない | 7 日後 |
 | 応答が 1MB を越えた・道具が 500 個を越えた | `too_large` | `too_large` | 0 | 変えない | 30 日後 |
 | 接続先が検査を通らない | `blocked` | `blocked` | 0 | 変えない | 確かめ直さない（記録が変わるまで） |
+| 別の host へ転送された（`sameHost` で握手した時。`detail.redirectedTo` がある） | `blocked` | `blocked` | 0 | 変えない | 30 日後（転送をやめる相手、台帳の URL を直す相手が居る） |
 
 通った時に書く列: `tools_sha256`、`tool_count`、`read_only`（全部の道具が読み取りだけと宣言されているか）、`latency_ms`（握手から一覧の終わりまで）、`l1_at`、`checked_at`、`failures=0`、`first_failure_at=NULL`。**道具の定義そのものは保存しない**（hash と数だけ。定義は、つなぐ時に読み直す）。
 
@@ -81,13 +86,13 @@ data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listCh
 
 ### 4.3 上限（`NOAH_MOUTH_LIMITS`。数値は候補）
 
-握手と一覧の待ち 10 秒（実測の 9 割は 1.2 秒以内）。道具の呼び出しの待ち 60 秒。1 応答 1MB（実測の最大 606KB）。道具 500 個。一覧 10 頁。転送 3 回。
+握手と一覧の待ちは、要求 1 つにつき 10 秒（実測: 初期化から一覧の終わりまで、中央値 1.2 秒、9 割が 2.1 秒以内、最大 11.7 秒。10.2）。道具の呼び出しの待ち 60 秒。1 応答 1MB（実測の最大 606KB）。道具 500 個。一覧 10 頁。転送 3 回。
 
 ### 4.4 接続先の検査（`createNoahGuardedFetch`）
 
 1. URL は `remoteMcpUrl`（既存）を通す: HTTPS、認証情報なし、`#` なし、数字だけの host と内部向けの名前（`localhost`・`.local`・`.internal`・`.lan`・`.test`・`.invalid`・`.onion`）を拒否。
 2. 転送は自分で追う（`redirect: 'manual'`）。転送先ごとに 1 をやり直す。3 回まで。
-3. 別の host への転送には、`authorization` と本人の鍵の header を付けない（`content-type`・`accept`・`mcp-protocol-version`・`user-agent` だけを残す）。
+3. 別の host への転送には、`authorization` と本人の鍵の header を付けない（`content-type`・`accept`・`mcp-protocol-version`・`user-agent` だけを残す）。`sameHost` を真にした時は、別の host への転送そのものに従わない（ローンチの使い方。10.3 の 9）。
 4. 名前を引いた先のアドレスの検査（`check`）。動かす所で作りが違う:
    - Cloudflare の Worker（製品）: Worker から内部のアドレスへは届かない。`check` は何もしない。1〜3 だけで足りる。
    - Node（手元の巡回、端末の runner）: `dns.lookup(host, { all: true })` の全部のアドレスを `isNoahPrivateAddress` に通し、1 つでも内部向けなら拒否する。通ったアドレスへつなぐ（引き直しで別のアドレスへ行かないように、`lookup` を固定した agent を使う）。
@@ -136,7 +141,7 @@ data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listCh
 
 ## 6. 巡回での握手（`probeDue()`。1 回の呼び出しで 8 件まで）
 
-1. 取る: `SELECT candidate_id FROM noah_intake_checks WHERE next_check_at <= ? AND lease_until < ? ORDER BY next_check_at LIMIT 8` を `UPDATE … SET lease_until = now + 60000 … RETURNING` で（2 つの巡回が同じ候補を取らない事は、検証キットが確かめている）。
+1. 取る: `SELECT candidate_id FROM noah_intake_checks WHERE setup = 0 AND mouth IN ('mcp-remote','space-mcp','a2a') AND next_check_at <= ? AND lease_until < ? ORDER BY next_check_at LIMIT 8` を `UPDATE … SET lease_until = now + 60000 … RETURNING` で（2 つの巡回が同じ候補を取らない事、端末で動かす配布と鍵の要る物を取らない事は、検証キットが確かめている。条件は、索引 `noah_intake_checks_due` の条件と同じ形で書く）。
 2. host の間隔: `noah_probe_hosts` へ `INSERT … ON CONFLICT(host) DO UPDATE … WHERE last_probe_at <= now - 3600000 AND not_before <= now RETURNING host`。行が返らなければ、その候補は今回は握手せず、`next_check_at` を 1 時間後にする（同じ host へは 1 時間に 1 回まで）。
 3. 握手する。名乗りは `user-agent: NoahBot/1 (+https://<origin>/noah/help#bot)`。401 なら 5.1 の発見まで行う（同じ host と、その認可サーバーへの GET が 2〜4 回）。
 4. 4.2 の表のとおりに書く。lease を放す。握手の後、道具の定義の hash が前と違えば、88 の「内容が変わった」の処理へ渡す。
@@ -166,3 +171,99 @@ data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listCh
 - `node --experimental-strip-types --test tests/noah-mouth-remote.test.mjs tests/noah-oauth.test.mjs tests/noah-probe.test.mjs tests/noah-oauth-service.test.mjs` が通る。
 - 手元の D1 で巡回を回し、鍵の宣言が無い候補 100 件に握手の結果が付く。内訳（応答・401・失敗）を PR 本文に書く。実測（54.6%・34.8%・10.6%）から大きく外れたら、原因を書く。
 - `npm run sky:check`（`lib/mcp-*` を変えていない事）、`npm run typecheck`、`npm run lint:product`。
+
+## 10. ローンチの範囲（[ローンチの最小限](mvp-launch.md) の L4）
+
+ローンチまでに作るのは、この章に書いた範囲だけ。相手の許可（5 章の全部）は、出した後の最初に足す。
+
+### 10.1 入れる物・後にする物
+
+| 章 | ローンチまで | 後 |
+| --- | --- | --- |
+| 3 変える所 | `lib/noah-mouth-mcp-remote.ts`（握手・一覧・呼び出し・閉じる・接続先の検査）、`lib/noah-form.ts`（[noah-form-v1.ts](../contracts/noah-form-v1.ts) を全部移す。握手の時に、入力欄で使える道具の数を数えるのに使う。87 も使う）、`lib/noah-probe.ts`（`probeL1`）、`lib/noah-intake-store.ts` の `probeDue()` | `lib/noah-mouth-space.ts`、`lib/noah-oauth.ts`、`lib/noah-oauth-service.ts`、`lib/noah-broker-cipher.ts`、`app/oauth/client.json`、`app/api/noah/oauth/*`、`noah_oauth_*` の表 |
+| 4 握手 | 全部。4.2 の表は 10.3 の違いつきで | — |
+| 5 相手の許可 | 無し。握手が 401 を返したら `result='auth_required'`・`level=0`・`auth='unknown'` と書くだけで、**公開情報を探す通信（5.1）を 1 回も送らない** | 出した後の最初 |
+| 6 巡回での握手 | 入れる。10.3 の違いつきで | — |
+
+### 10.2 参照実装を、実在の接続先に通した結果（2026-11-20）
+
+握手の標本と同じ 500 host へ、参照実装の `noahMcpHandshake`（最新の版を名乗る）を通した。道具は呼んでいない。
+
+| 結果 | 件数 | 割合 | ローンチでの扱い |
+| --- | --- | --- | --- |
+| 握手と一覧が通った | 276 | 55.2% | 入力欄で使える道具があれば、一覧に載せる |
+| 相手の許可が要る（401） | 174 | 34.8% | 載せない（出した後、相手の許可を入れた時に載る） |
+| 呼ぶたびの支払いが要る（402） | 4 | 0.8% | 載せない |
+| 応答しない（つながらない 16、404 が 16、410 が 2、5xx が 8） | 42 | 8.4% | 載せない。巡回が確かめ直す |
+| 形が合わない（405 が 2、406 が 1、相手のエラー 1） | 4 | 0.8% | 載せない |
+
+- 410（無くなった）は、この実測で 2 件あった。参照実装を直して「応答しない」に数えるようにした（前は「形が合わない」）。
+- 最新の版（`2025-11-25`）を名乗った時に相手が返した版: `2025-11-25` が 211、`2025-06-18` が 51、`2025-03-26` が 9、`2024-11-05` が 5。先の調査（`2025-06-18` を名乗った）では、262 件が `2025-06-18` を返していた。**ほとんどの相手は、名乗った版に合わせる。** 最新の版を名乗った初期化が通らず、1 つ前の版で名乗り直して通った相手が 2 あった（通った物の 0.7%。返した版は `2025-06-18` と `2025-03-26`）。4.1 の名乗り直し（相手がエラーを返した時だけ、1 つ前の版でもう 1 回）が無いと、この 2 つは「形が合わない」になる。名乗り直しは、ローンチでも入れる。
+- セッションを使う相手は 29（10.5%）。握手の時間（`initialize` から一覧の終わりまで）は、中央値 1.18 秒、9 割が 2.05 秒以内、最大 11.7 秒。
+- 先の調査の作業用のスクリプトが一覧を読めなかった 11 件も、参照実装は読めた（SSE の読み方の違い）。
+- 道具は合わせて 3,699 個。接続先ごとに中央値 6、9 割が 25 以下、最大 244。名前の形で入れなかった道具は 1 個。全部の道具が読み取りだけと宣言された接続先は 129（46.7%）、宣言が 1 つも無い接続先は 71（25.7%）。
+
+**1 時間あけて、もう 1 回握手した**（上で通った 276 host。同じ日の 20:37 JST。間隔は 61〜63 分。道具は呼んでいない）:
+
+| 見た事 | 結果 | 設計での扱い |
+| --- | --- | --- |
+| もう 1 回も通った | 274（99.3%）。残りの 2 は、10 秒待っても応答しなかった | 1 回の失敗では外さない。6 時間後に確かめ直し、2 回続いたら外す（88 の 9.3） |
+| 相手が返した版 | 274 のうち、1 回目と違う物は 0 | — |
+| 初期化を名乗り直した | 2（0.7%）。初期化の要求だけが 2 回で、2 つとも通った | 上の箇条書きのとおり。握手が 1 往復増える |
+| 接続先の全部の道具の hash が変わった | 1（0.4%）。道具が 1 つ増えた（9 → 10） | `level` を変えない。hash と数を新しくするだけ（88 の 9.4） |
+| 1 つ 1 つの道具の定義が変わった・消えた | 3,563 個のうち 0 | 本人が見た道具 1 つの定義と照らす作り（87 の 11.4）なら、この 1 時間で止まる依頼は無い。接続先の全部の hash で止める作りなら、1 host が止まる |
+| 握手 1 回で送った要求の数 | 3 回が 242、4 回が 31（セッションを閉じる 29、名乗り直し 2）、6 回が 1（下の転送） | 巡回の見積もり（97 の 3 章）は、1 件 4 回で数えている |
+| 別の host へ転送する | 1（276 のうち。0.4%）。要求のたびに、別の名前の host へ回した。転送に従えば握手は通る | **ローンチでは従わない**（10.3 の 9）。この接続先は `blocked` になり、載らない。載る見込み（約 18,000）から約 60 系列減る。幅の中 |
+| 同じ host の中の転送 | 0 | 従う作りはそのまま（試験は検証キットにある） |
+| 握手の時間 | 中央値 1.19 秒、9 割が 2.27 秒以内 | 1 回目（1.18 秒・2.05 秒）と同じ |
+
+標本は 1 回・1 時間だけ。日や週の単位でどれだけ変わるかは、まだ測っていない。出した後は、巡回の合図の記録の `toolsChanged`（道具の定義の hash が、前の握手と違った数）で数える（[97](spec-97-launch-ops.md) の 4 章）。
+
+### 10.3 巡回での握手（ローンチ版。6 章との違い）
+
+| # | 違い | 理由 |
+| --- | --- | --- |
+| 1 | 握手するのは、`mouth='mcp-remote'` で `setup=0` の候補だけ（6 章の 1 の問い合わせ。ローンチでは `mcp-remote` の候補しか入っていない）。量産の系列と、取り下げた系列は握手しない（88 の 9.7・9.8） | ローンチで載せない物へ、通信を送らない |
+| 2 | 握手が通った時に書く列に、`form_tools`・`one_tap_tools`（`noahFormSummary(tools)`）を足す | 入力欄で使える道具が無い接続先を、一覧に載せない。「押すだけで試せる」の絞り込み |
+| 3 | 握手の表を書いた直後に、その候補が代表の系列へ写す（[noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `touch`。値は `noahListing` から） | 次の名寄せ（1 日 1 回）を待たずに、一覧へ出す・外す |
+| 4 | 401 の時、発見（5.1）を行わない | 相手の許可は、出した後 |
+| 5 | 「応答しない」が 2 回続いたら `level=0`（88 の 9.3）。1 回目の後は、6 時間後に確かめ直す | 止まった物を、何日も並べたままにしない |
+| 6 | 道具の定義の hash が前と違っても、`level` を変えない。hash と数を新しくするだけ（88 の 9.4） | 呼ぶ時に、本人が見た道具 1 つの定義を確かめる（87 の 11.4） |
+| 7 | 1 回の合図で握手するのは `NOAH_PATROL_BUDGET.probes` 件（既定 8）。同時に 4 件まで。握手 1 件の全体の待ちは 12 秒まで（`ctx.signal` に `AbortSignal.timeout(12_000)`） | Workers は、同時に開ける外向きの接続が 6 本まで。合図 1 回を 25 秒に収める |
+| 8 | 名乗りは `user-agent: NoahBot/1 (+https://<origin>/noah/help#bot)`。利用者の操作から握手する時（接続・道具の一覧・依頼）は `Noah/1 (+…)` | 相手が、定期の確かめと、人の利用を見分けられる |
+| 9 | 巡回・接続・道具の一覧・依頼の全部で、`createNoahGuardedFetch(fetch, { sameHost: true })` を使う。**別の host への転送には従わない**（`blocked`。同じ host の中の転送には従う） | 画面に「入力は <host> へ送られます。」と出した送り先の外へ、本人の入力を送らない。接続要件の `egress` が、その host 1 つだけである事と対になる。巡回も同じにするのは、握手で別の host へ回される物を、一覧に載せないため。実測では、握手が通った 276 のうち 1（10.2）。出した後に足せる作り: 転送先を握手の記録に持ち、「入力は <転送先> へ送られます。」と見せた上でつなぐ |
+
+握手の結果の書き方は 4.2 の表のまま（上の 4〜6 を除く）。`unreachable` の行は「`failures` を 1 増やす。2 回目で `level=0`」と読み替える。
+
+接続先の検査（4.4）: Web の本体（Workers）では、`createNoahGuardedFetch(fetch)` を `check` なしで使う。手元の巡回（Node）では、4.4 の `check`（名前を引いた先のアドレスの検査）を付ける。**本番の Worker から、内部向けのアドレスを指す名前へ届かない事は、この設計では確かめていない**（Workers の作りからの推定）。出す前に 1 回確かめる（[ローンチの最小限](mvp-launch.md) の G3）:
+
+1. 確かめ方: Cloudflare の上で動く形（`wrangler dev --remote` か、審査者だけが呼べる一時の入口）で、内部のアドレスに引ける公開の名前へ、`createNoahGuardedFetch(fetch)` を通して 1 回ずつ握手を試す。例: `127.0.0.1.nip.io`、`10.0.0.1.nip.io`、`192.168.0.1.nip.io`、`169.254.169.254.nip.io`（どれも、名前の検査 `remoteMcpUrl` は通る）。
+2. 合格: 4 つとも「応答しない」（`unreachable`）か「つなげない」（`blocked`）。
+3. 1 つでも届いた時の手当て（その時だけ作る）: 握手の前に、名前を公開の DNS（DNS over HTTPS。`accept: application/dns-json`）で引き、A と AAAA の答えを `isNoahPrivateAddress` に通す `check` を、Workers でも付ける。1 つでも内部向けなら `blocked`。引けなければ `unreachable`。この `check` は、巡回・接続・道具の一覧・依頼の全部の握手に付ける。
+4. 結果（4 つの名前と、それぞれの結果）を PR 本文に書く。
+
+### 10.4 試験（7 章に足す。`tests/noah-probe.test.mjs`）
+
+| 試験 | 前提 | 期待 |
+| --- | --- | --- |
+| 握手・呼び出し・接続先の検査（移す） | — | [noah-mouth.test.mjs](../design-validation/noah/noah-mouth.test.mjs) のうち、握手・呼び出し・検査の群（相手の許可と起動の型紙の群は、今は移さない） |
+| 入力欄の関数（移す） | — | [noah-form.test.mjs](../design-validation/noah/noah-form.test.mjs) の 11 群 |
+| 握手の結果を書く | 4.2 の表の全行 | `result`・`level`・`auth`・次に確かめる時。通った行に `form_tools`・`one_tap_tools` が入る |
+| 系列への写し | 握手が通る／入力欄で使える道具が 0 | 一覧に出る／出ない。名寄せを呼ばない |
+| 401 | 相手が 401 と `WWW-Authenticate` を返す | `auth_required`。相手が受けた要求は `initialize` の 1 回だけ。認可サーバーの host へ 0 回 |
+| 410 | — | 「応答しない」に数える |
+| 2 回続けて失敗 | — | 1 回目は一覧に残り、次は 6 時間後。2 回目で一覧から消える |
+| 定義が変わる | 2 回目の握手で、道具の説明が違う | `tools_sha256` が新しくなる。`level` はそのまま |
+| 対象から外す物 | 鍵の要る候補、量産の系列、取り下げた系列 | 握手しない |
+| 同時の数と時間 | 握手が 5 秒掛かる相手を 8 件 | 同時に 4 件まで。合図 1 回が 25 秒を越えない（残りは次の合図） |
+| host の間隔 | 同じ host の候補が 5 件 | 1 時間に 1 件 |
+| 名乗り | 巡回／接続 | `NoahBot/1`／`Noah/1` |
+| 別の host への転送 | 握手に、別の host への 307 を返す相手 | `blocked`。転送先へ 1 回も送らない。一覧に載らない。次に確かめるのは 30 日後 |
+| 版の名乗り直し | 最新の版での初期化にエラーを返し、1 つ前の版なら通る相手 | 握手が通る。初期化は 2 回。3 回目は送らない（2 回とも通らなければ「形が合わない」） |
+
+### 10.5 完了の定義（L4）
+
+- `node --experimental-strip-types --test tests/noah-mouth-remote.test.mjs tests/noah-form.test.mjs tests/noah-probe.test.mjs` が通る。
+- 手元の D1 で合図を回し、鍵の宣言が無い候補 100 件に握手の結果が付く。内訳（通った・401・応答しない）と、通った物のうち `form_tools >= 1` の割合を PR 本文に書く。10.2 の表（55%・35%・9%、入力欄で使える道具がある物は 99%）から大きく外れたら、原因を書く。
+- 一覧の API（85 の 11.5）に、握手が通った系列が「まだ誰も動かしていない」として出る（審査者の account で）。
+- `lib/noah-oauth*.ts` と `noah_oauth_*` の表を作っていない。`npm run sky:check`（`lib/mcp-*` を変えていない事）、`npm run typecheck`、`npm run lint:product`。

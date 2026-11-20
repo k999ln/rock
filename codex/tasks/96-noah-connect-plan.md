@@ -2,7 +2,17 @@
 
 仕様: **[docs/noah/spec-96-connect-plan.md](../../docs/noah/spec-96-connect-plan.md)**。型と参照実装: docs/contracts/noah-connect-v1.ts。試験: docs/design-validation/noah/noah-connect.test.mjs。先に 84。雲の契約が無くても始められる。
 
-## やること
+## ローンチまで（先に、この範囲だけを出す。[ローンチの最小限](../../docs/noah/mvp-launch.md) の L2（純関数）と L5 の一部（計画の API・カード））
+
+仕様書の **9 章** だけを見て作る。完了の定義も、その章にある。
+
+- 先に要る PR: 純関数（L2）は無し。計画の API とカード（L5）は、L4（86 の握手）の後
+- やる: L2: 下の「やること」の 1・2（純関数と試験を全部移す。`lib/` のどこからも、まだ呼ばれなくてよい）
+- やる: L5: 4 と 6 のうち、取り込んだ系列（相手のサーバー）の分（9.3・9.4）。74 のローンチ分と同じ PR に入れる
+- やらない（出した後）: 3（`lib/noah-connect-source.ts`。今ある 13 件の接続要件）
+- やらない（出した後）: 5（今の一覧への `connect` の追加と、行の置き換え）。`components/noah-launch.tsx`・`noah-public-catalog.tsx`・`noah-timeline.tsx` は触らない
+
+## やること（全部。ローンチの後に、残りをやる）
 
 1. lib/noah-connect-requirements.ts: 参照実装の型・`parseNoahConnect`（規則 14 個）・`canonicalJson`・`noahConnectSha256`・`looksLikeNoahSecret`・`noahPublicHttpsUrl`・`diffNoahConnect` を移す。
 2. lib/noah-connect-plan.ts: `planNoahConnection`・`noahPlanSha256`・状態遷移（`nextNoahConnectionState`）を移す。

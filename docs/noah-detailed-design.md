@@ -4,6 +4,7 @@
 
 ## 0. この文書の使い方（実装する Agent へ）
 
+0. **ローンチまでに作る範囲は、[ローンチの最小限（MVP）](noah/mvp-launch.md) が決める**（本人指示 11-20）。出すまでは、その 6 章の順（L1〜L9）で、各 [実装仕様書](noah/README.md) の最後の「ローンチの範囲」の章だけを作る。この文書の章のうち、そこに無い所（相手の許可、1 文で頼む、専用の端末、続ける、入れ替える、載せる・売る、利用の記録、mii）は、出した後。
 1. 作業の単位は 17 章の表の 1 行（＝ `codex/tasks/` の 1 枚＝ 1 PR）。表の上から順に進める。
 2. 1 単位でやること: 対象の章を読む → 書かれた関数・API・表を作る → その章の「試験」の各行をテストにする → 検証コマンドを通す → `CHANGELOG.md` の先頭と `codex/tasks/00-index.md` を更新する → PR 本文に、通した試験と残した事を書く。
 3. **止まらないための決まり。** 本人の決定を待つ項目は、18 章の既定値で実装し、flag を閉じたまま入れる。それ以外で止まらない。
@@ -378,7 +379,7 @@ L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要
 
 - `app/noah/review`（既存）に「取り込み」の tab を足す。口ごと・深さごとの件数、つながると確かめた数、失敗の理由の内訳、取り下げの申し出。
 - 一覧は今の候補の API に `mouth`・`level`・`q` の絞り込みを足す。
-- **`POST /api/noah/intake/[id]`** body `{ "action": "claim"｜"withdraw"｜"recheck", "revision" }`。`claim` は持ち主の確認が要る: 名前空間が `io.github.<user>` なら GitHub の認可で user が一致。ドメインの名前空間なら、`https://<domain>/.well-known/noah-claim.txt` に出した値が置かれている。Space は Hugging Face の認可で owner が一致。
+- **`POST /api/noah/intake`** body `{ "action": "claim"｜"withdraw"｜"restore"｜"recheck", "id", "revision" }`（系列の ID は `/` と `:` を含むので、パスに入れない）。`claim` は持ち主の確認が要る: 名前空間が `io.github.<user>` なら GitHub の認可で user が一致。ドメインの名前空間なら、`https://<domain>/.well-known/noah-claim.txt` に出した値が置かれている。Space は Hugging Face の認可で owner が一致。
 
 ### 試験
 
@@ -440,7 +441,7 @@ L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要
 - 道具の説明は 1 道具 1,024 文字、合計 32KB で切る。入り切らない時は、依頼の言葉に近い道具を先に入れる。
 - 1 回の仕事で使う接続先は 1 つ。別の接続の成果や記憶を渡さない。鍵と token を持たない（呼び出しは中継が行う）。
 - 道具が 1 つで必須の入力が 2 個以下なら、画面は入力欄をそのまま出し、モデルを使わずに呼ぶ。
-- 仕事の種類は 2 つ。入力欄から道具を 1 回呼ぶ仕事（`form`）は、Web の本体の中で動かす（応答の後の `waitUntil`、25 秒まで）。1 文で頼む仕事（`agent`）は、専用の Worker（`services/noah-relay`）の Durable Object で動かす（今の `services/noah-test-runtime` と同じ作り。配備は本人の許可の後）。モデルの呼び出しと道具の呼び出しを 1 step とし、途中で止まっても同じ step を 2 回実行しない。鍵と token は専用の Worker へ渡さず、道具の呼び出しは Web の本体へ頼み返す（[実装仕様書 87](noah/spec-87-tool-agent.md)）。
+- 仕事の種類は 2 つ。入力欄から道具を 1 回呼ぶ仕事（`form`）は、Web の本体の中で動かす（応答の後の `waitUntil`。握手 8 秒・呼び出し 20 秒まで。道具を選ぶ画面と入力欄の作りは [実装仕様書 87](noah/spec-87-tool-agent.md) の 11 章）。1 文で頼む仕事（`agent`）は、専用の Worker（`services/noah-relay`）の Durable Object で動かす（今の `services/noah-test-runtime` と同じ作り。配備は本人の許可の後）。モデルの呼び出しと道具の呼び出しを 1 step とし、途中で止まっても同じ step を 2 回実行しない。鍵と token は専用の Worker へ渡さず、道具の呼び出しは Web の本体へ頼み返す（[実装仕様書 87](noah/spec-87-tool-agent.md)）。
 
 ### 試験
 
@@ -594,7 +595,7 @@ L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要
 
 ### 15.1 新しい表（migration は `drizzle/` に置く。本番への適用は本人の許可の後）
 
-列・制約・索引の正本は [docs/contracts/noah-v1.sql](contracts/noah-v1.sql)（13 個）。既存の migration を流した一時 DB の上で、制約の拒否 55 行と、設計書に書いた問い合わせを [validate-noah-v1.py](design-validation/noah/validate-noah-v1.py) が確かめている。
+列・制約・索引の正本は [docs/contracts/noah-v1.sql](contracts/noah-v1.sql)（13 個）。既存の migration を流した一時 DB の上で、制約の拒否 63 行と、設計書に書いた問い合わせを [validate-noah-v1.py](design-validation/noah/validate-noah-v1.py) が確かめている。
 
 | 表 | 何を持つか | 主な決まり |
 | --- | --- | --- |
@@ -602,7 +603,7 @@ L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要
 | `noah_intake_candidates` | 外の 1 件。ID は `出どころ:鍵`。元の記録の写しと hash、系列、名寄せの鍵、リポジトリ、host、動いているか | 出どころと鍵で一意。`unsupported` は理由が必須 |
 | `noah_intake_checks` | 候補ごとの、口・面・鍵の要否・接続要件の下書き・接続試験の結果（深さ、道具の定義の hash、見本、次に確かめる時刻） | 深さ 1 以上は道具の定義の hash が必須。深さ 2 は時刻が必須 |
 | `noah_intake_families` | 系列（カード 1 枚）。代表、件数、深さ、印の目安、つないでいる本人の数、引き取り・取り下げ・隠した時刻 | タイムライン用の索引（L2 が新しい順） |
-| `noah_probe_hosts` | host ごとの、最後に握手した時刻と、次に握手してよい時刻 | 同じ host へは 1 時間に 1 回 |
+| `noah_probe_hosts` | host ごとの、巡回が最後に握手した時刻、次に握手してよい時刻（相手が「混んでいる」と返した時）、利用者の操作から始めた握手の、直近 60 秒の枠と回数 | 巡回は、同じ host へ 1 時間に 1 回。利用者の操作から始める握手は、全員合わせて 60 秒に 60 回まで |
 | `noah_connections`（Passport） | 本人と版の接続。ID は接続の操作 ID。同意した時の接続要件の写し、計画の hash、道具の定義の hash、確かめた道具、許した通信先、置き場所、端末、状態、手数 | 同じ本人・同じ系列で、切っていない接続は 1 件。家・手元は端末が必須。状態と時刻が対 |
 | `noah_connection_secrets` | 本人が入れた鍵（暗号化した値だけ） | 鍵を入れてつなぐ機能は後の task。表だけ用意 |
 | `noah_oauth_clients` | 認可サーバーごとの、Noah の client の登録 | `cimd` か `dcr` |
@@ -672,7 +673,9 @@ L2 を自動で行う条件（全部を満たす時だけ）: 鍵も許可も要
 
 ## 17. 開発の進め方
 
-task の番号は、その作業単位の実装仕様書へつながっている（段 2 以降は、段 1 が動いた後に同じ形で足す）。
+task の番号は、その作業単位の実装仕様書へつながっている（段 2 以降の残りは、ローンチの後に同じ形で足す）。
+
+**出すまでの順は、この表ではなく、[ローンチの最小限](noah/mvp-launch.md) の 6 章（L1〜L9）。** 下の表は、出した後も含めた全部の順と、task ごとの完了の定義。各 task の、出すまでに作る範囲は、その仕様書の「ローンチの範囲」の章。
 
 共通の検証コマンド: `npm run typecheck`、`npm run lint:product`、`node --experimental-strip-types --test tests/<対象>.test.mjs`、最後に `npm run verify`。
 
@@ -687,7 +690,8 @@ task の番号は、その作業単位の実装仕様書へつながっている
 | 1 | [74](noah/spec-74-one-click-connect.md) | 5・7 | `lib/noah-connect.ts`、`POST /api/noah/connect`、`noah_connections`、`noah-connect-button.tsx`、`noah-connect-sheet.tsx` | 5 章の試験が全部通る |
 | 1 | [88](noah/spec-88-mass-probe.md) | 4・8 | `lib/noah-probe.ts`（L2）、`scripts/noah-probe-daemon.mjs`、運営の tab | 4 章と 8 章の試験が通る。つながると確かめた数が出る |
 | 1 | [89](noah/spec-89-terminal-mouth.md) | 9 | `lib/noah-mouth-acp.ts`、`lib/noah-mouth-mcp-package.ts` | ACP 3 件と package 20 件が、Agent ごとのコードなしで、本人の Mac の隔離環境で 1 往復 |
-| 2 | 90 | 3・6 | `noah-ask.tsx`、`noah-work-list.tsx`、通知 | 幅 390 の実ブラウザで、PC の前に座らずに一周 |
+| 2 | [90](noah/spec-90-phone-only-loop.md) | 3・6 | 一周の自動試験、画面の決まりの試験、実機の確かめの表。出した後に、通知と「あなたの番」 | 幅 390 の実機のブラウザで、PC の前に座らずに一周 |
+| 2 | [97](noah/spec-97-launch-ops.md) | 8・18 | `services/noah-patrol-wake`、`lib/noah-flags.ts`、`/noah/help#bot`、運営の画面の数 | 人が触らずに巡回が進む。切り替えを閉じた時の動きが、表のとおり |
 | 2 | 83 | 7 | 導入の同梱、QR の承認、`noah-device-list.tsx` | 何も入っていない Mac で、導入 1 つと承認 1 回 |
 | 2 | 92 | 10 | `lib/noah-standing-work.ts`、`noah_standing_works` | 10 章の試験が通る |
 | 2 | 94 | 13 | `lib/noah-usage-events.ts`、`noah_usage_events` | 13 章の試験が通る |
@@ -712,6 +716,12 @@ task の番号は、その作業単位の実装仕様書へつながっている
 | つながってから払う | `NOAH_PAY_AFTER_CONNECT` | 閉 | 有料の接続を受け付けない（今の購入の画面はそのまま） |
 | 並び順に実測を使う | `NOAH_RANK_BY_CONNECT` | 閉 | 今の並び順 |
 | 無料枠 | `NOAH_FREE_RUNS_PER_DAY` | 10 | — |
+| 巡回（台帳の読み取りと握手） | `NOAH_PATROL_ENABLED`、`NOAH_PATROL_WAKE_KEY`、`NOAH_PATROL_BUDGET` | 閉・無し・既定の数 | 合図が届いても何もしない。今ある一覧は、そのまま出る（[仕様書 97](noah/spec-97-launch-ops.md)） |
+| 接続と、入力欄で頼む事を、誰にでも許す | `NOAH_ASK_FORM` | 閉 | 審査者だけが使える。開けるには `NOAH_INTAKE_PUBLIC` も要る |
+| 頼む回数の上限 | `NOAH_ASK_LIMITS` | 同時 8 件・1 分 10 回・24 時間 200 回・1 つの接続先へ 1 分 30 回 | — |
+| 巡回を起こす Worker | `services/noah-patrol-wake` の配備 | 配備しない | 手元の巡回でだけ進む |
+| Cloudflare の契約 | — | 確かめが要る | 巡回は、Workers と D1 の有料の枠が前提（[仕様書 97](noah/spec-97-launch-ops.md) の 3 章） |
+| 取り下げ・報告の窓口の宛先 | — | 未定 | `/noah/help#bot` の節を出さない。出すまで、ローンチしない |
 | 許可と鍵を包む鍵 | `NOAH_BROKER_KEY` | 無し | 相手の許可の段が「準備が必要」になる（許可を保存できないため） |
 | 1 文で頼む仕事の実行の場 | `services/noah-relay` の配備 | 配備しない | 手元でだけ動く。入力欄で頼む仕事は、今の配備のまま動く |
 | 鍵を入れてつなぐ | — | 作らない | 印が「準備が必要」の Agent は、足りない物を見せる所まで |

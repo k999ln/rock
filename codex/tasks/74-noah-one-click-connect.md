@@ -2,7 +2,20 @@
 
 仕様: **[docs/noah/spec-74-one-click-connect.md](../../docs/noah/spec-74-one-click-connect.md)**。型: docs/contracts/noah-connect-v1.ts（状態遷移）、noah-v1.sql（`noah_connections`）。先に 96・86・87。
 
-## やること
+## ローンチまで（先に、この範囲だけを出す。[ローンチの最小限](../../docs/noah/mvp-launch.md) の L5）
+
+仕様書の **11 章** だけを見て作る。完了の定義も、その章にある。
+
+- 先に要る PR: L2（96 の純関数）と L4（86 の握手）。87 のローンチ分（L6）は、この PR の後
+- やる: 相手のサーバーへつなぐ道だけ。`noah_connections` の migration、`lib/noah-connect.ts`（11.3。要求 1 回の中で握手まで終える）、入口 2 つ、`disconnect`・`retry`
+- やる: 新しい画面 `/noah/ready`（一覧）・`/noah/ready/agent?id=`（詳細）、`noah-connect-button.tsx`、96 の `noah-card.tsx` と計画の API、navigation の 1 行（11.5）
+- やる: その場のサインイン（11.4。下の「やること」の 6）
+- やる: つなぐ前の上限（`noahConnectGate`。新しく行を作る時だけ）と、握手の前に接続先の枠を取る事（`host_take`。取れなければ送らない）。相手が 429 を返したら `host_wait`（11.3 の 4・6）
+- やらない（出した後）: 4（家の端末を同じボタンでつなぐ。照合と、再起動の後の出し直し）
+- やらない（出した後）: `noah-connect-sheet.tsx`、`resume`、相手の許可の続き、`noah_connection_secrets` の表、`noah-library.tsx` の節
+- やらない（出した後）: **今の `components/noah-launch.tsx`・`noah-public-catalog.tsx`・`noah-timeline.tsx` と、その API は触らない**
+
+## やること（全部。ローンチの後に、残りをやる）
 
 1. `noah_connections`・`noah_connection_secrets` の migration。
 2. lib/noah-connect.ts: `createNoahConnectService`・`createNoahConnectApi`。接続の処理は仕様書 5.1 の 6 段（版と接続要件 → 計画の照合 → 行 → 利用権 → 置き場所の準備と疎通 → 見本）。どの段も、何回通っても同じ結果になるように書く。

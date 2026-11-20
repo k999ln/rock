@@ -1,7 +1,9 @@
 # 仕様書 85 — 取り込みと名寄せ（外の台帳 → 候補 → 系列 → 接続要件の下書き）
 
-task: [codex/tasks/85-noah-intake-ledger.md](../../codex/tasks/85-noah-intake-ledger.md)。先に要る物: 84（面の値）。
-型契約: [noah-intake-v1.ts](../contracts/noah-intake-v1.ts)、[noah-v1.sql](../contracts/noah-v1.sql)（`noah_intake_*`、`noah_probe_hosts`）、[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql)。試験: [noah-intake.test.mjs](../design-validation/noah/noah-intake.test.mjs)（7 群）、[validate-noah-v1.py](../design-validation/noah/validate-noah-v1.py)（取り込みの 3 群）。
+task: [codex/tasks/85-noah-intake-ledger.md](../../codex/tasks/85-noah-intake-ledger.md)。先に要る物: 84（面の値）。ローンチ分（11 章。L3）で先に要るのは、96 の純関数（L2）だけ（ローンチで入る候補は、面が「無し」の物だけなので、84 を待たない）。
+型契約: [noah-intake-v1.ts](../contracts/noah-intake-v1.ts)、[noah-v1.sql](../contracts/noah-v1.sql)（`noah_intake_*`、`noah_probe_hosts`）、[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql)、[noah-listing-v1.sql](../contracts/noah-listing-v1.sql)、[noah-flags-v1.ts](../contracts/noah-flags-v1.ts)。試験: [noah-intake.test.mjs](../design-validation/noah/noah-intake.test.mjs)（10 群）、[noah-flags.test.mjs](../design-validation/noah/noah-flags.test.mjs)（4 群）、[validate-noah-v1.py](../design-validation/noah/validate-noah-v1.py)（取り込みと一覧の 4 群）。
+
+**ローンチまでに作る範囲は 11 章。** 公式台帳だけを、最初は全件、その後は毎時「更新された物だけ」読む。Space と ACP は出した後。
 
 ## 1. 完成の姿
 
@@ -27,7 +29,7 @@ task: [codex/tasks/85-noah-intake-ledger.md](../../codex/tasks/85-noah-intake-le
 | `lib/noah-intake-draft.ts` | 無い | 型契約から `draftFromRegistry`・`draftFromSpace`・`draftFromAcp`・`noahCandidateId`・`NOAH_INTAKE_REASONS` を移す |
 | `lib/noah-intake-family.ts` | 無い | 型契約から `groupNoahFamilies`・`noahRepositoryKey`・`NOAH_BULK_THRESHOLD` を移す。[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql) の文を、文字列の配列として同じファイルに置く |
 | `lib/noah-intake-store.ts` | 無い | 新規。`createIntakeStore({ db, now, fetcher })` → `{ sync, regroup, list, detail, status }`。作りは `lib/noah-discovery-store.ts` に合わせる |
-| `lib/noah-intake-api.ts`、`app/api/noah/intake/route.ts`、`app/api/noah/intake/[id]/route.ts` | 無い | 新規。`lib/noah-discovery-api.ts` と同じ検査（Origin、ownerScope、本文は `{}` だけ） |
+| `lib/noah-intake-api.ts`、`app/api/noah/intake/route.ts` | 無い | 新規（系列の ID は `/` と `:` を含むので、パスに入れず、`?id=` で渡す）。`lib/noah-discovery-api.ts` と同じ検査（Origin、ownerScope、本文は `{}` だけ） |
 | `scripts/noah-discovery-daemon.mjs` | `POST /api/noah/discovery` を 60 秒ごとに呼ぶ | `POST /api/noah/intake` も同じ間隔で呼ぶ（1 行足す）。loopback だけの条件は変えない |
 | `components/noah-review.tsx` | 審査の画面 | 「取り込み」の節を足す（6 章） |
 | `lib/noah-discovery-*.ts`、`noah_discovery_*` | 発見（GitHub の topic と Space の検索、2 時間ごとに 10 件） | **変えない** |
@@ -98,7 +100,7 @@ checks の行は、**動いている時にだけ**作る（`draftFromSpace`）�
 
 - `GET /api/noah/intake?mouth=&level=&state=&q=&cursor=` → 系列の一覧（20 件ずつ）。`noah_intake_families` と代表の候補・checks を結ぶ。`q` は `name`・`summary` の前方一致と部分一致（`LIKE`。全文検索は後）。flag `NOAH_INTAKE_PUBLIC` が閉じている間は、審査者（`deps.reviewers`）だけ。他は 404。
 - `GET /api/noah/intake?state=1` → 出どころごとの最後の成功・次の時刻・エラーと、集計（下の画面の表）。
-- `GET /api/noah/intake/[id]` → 系列 1 つと、中の候補（50 件まで）。
+- `GET /api/noah/intake?id=<系列の ID>` → 系列 1 つと、中の候補（50 件まで）。
 
 集計の問い合わせ: `SELECT k.mouth, k.level, k.setup, COUNT(*) FROM noah_intake_candidates c JOIN noah_intake_checks k ON k.candidate_id=c.id WHERE c.state='active' GROUP BY 1,2,3` と、`SELECT reason, COUNT(*) FROM noah_intake_candidates WHERE state='unsupported' GROUP BY 1`。結果を 5 分間、同じ値で返してよい。
 
@@ -154,7 +156,7 @@ checks の行は、**動いている時にだけ**作る（`draftFromSpace`）�
 
 - 日本語の 1 行説明（`summary_ja`）を作るモデルと費用。列は作る。作るのは `NOAH_MODEL_RELAY` を決めた後。
 - `q` の検索（今は `LIKE`）。件数が 10 万を越えたら、検索用の表を足す。
-- 公式台帳の「更新された物だけ」の取り方（`updated_since`）。census は全件を読んだ。指定が使えると確かめたら、毎時の巡回を差分にし、全件は 1 日 1 回にする。確かめるまでは、毎時 10 頁ずつ進み、68 回（約 1 時間強）で 1 巡する。
+- ~~公式台帳の「更新された物だけ」の取り方（`updated_since`）。~~ 2026-11-20 に確かめて、11.2 で決めた（毎時は更新された物だけ。全件は 7 日に 1 回）。
 - 発見の候補（`noah_discovery_candidates`）と同じリポジトリの系列を、詳細の画面で並べて見せるか。
 
 ## 10. 完了の定義
@@ -164,3 +166,142 @@ checks の行は、**動いている時にだけ**作る（`draftFromSpace`）�
 - 手元の D1 で `POST /api/noah/intake` を 70 回呼ぶと、台帳の候補が 6 万件以上入り、運営の画面の件数が 8 章の表と 1% 以内で合う（台帳は増え続けるので、同じにはならない）。
 - `npm run typecheck`、`npm run lint:product`、`npm run schema:check`、`npm run database:check`。
 - 本番 D1 への migration は適用しない。PR 本文に、適用が要る事を書く。
+
+## 11. ローンチの範囲（[ローンチの最小限](mvp-launch.md) の L3）
+
+ローンチまでに作るのは、この章に書いた範囲だけ。1〜10 章のうち、下の表で「後」とした所は作らない。
+
+### 11.1 入れる物・後にする物
+
+| 章 | ローンチまで | 後 |
+| --- | --- | --- |
+| 3 変える所 | migration・`noah-intake-draft`・`-family`・`-store`・`-api`・運営の画面の節。足す物は 11.3 の表 | `scripts/noah-discovery-daemon.mjs` の変更は手元用として入れる |
+| 4.1 公式台帳 | 入れる。読み方は 11.2 に変える（毎時 10 頁ずつ全件を回す案をやめる） | — |
+| 4.2 Space・4.3 ACP | 入れない。`noah_intake_sources` の行も作らない | 出した後 |
+| 5.1 `sync()` | 11.2 と 11.4 のとおり | — |
+| 5.2 一覧・詳細・状態 | 入れる。形は 11.5 | 全文検索 |
+| 6 運営の画面 | 入れる。件数の表は「相手のサーバー」「端末で動かす」の 2 行と、載せていない理由の内訳 | Space の行 |
+| 9 決めていない事 | 「更新された物だけ」の取り方は 11.2 で決めた | 日本語の 1 行説明 |
+
+### 11.2 台帳の読み方（最初は全件、その後は更新された物だけ）
+
+出どころの決まり（[MCP Registry Aggregators](https://modelcontextprotocol.io/registry/registry-aggregators)）のとおりにする。2026-11-20 に実際に読んで確かめた: `/v0.1/servers` が `limit`・`cursor`・`version=latest`・`updated_since` を受ける。直前の 1 時間に更新された記録は 109 件（2 頁）で、`status: "deleted"` の記録が 1 件入っていた。
+
+| 決まり | 参照実装（[noah-intake-v1.ts](../contracts/noah-intake-v1.ts)） |
+| --- | --- |
+| 1 頁の URL は `https://registry.modelcontextprotocol.io/v0.1/servers?limit=100&version=latest[&updated_since=<RFC 3339>][&cursor=…]` | `noahRegistryPageUrl` |
+| 全件を読むのは、最初の 1 回と、前の全件から 7 日たった時。それ以外は、前回の印から 10 分さかのぼった時刻より後の物だけ | `noahRegistrySyncPlan`、`NOAH_REGISTRY` |
+| `updated_since` は、1 巡の間ずっと同じ値を使う。印は、全部の頁を書き終えた後にだけ進める | 同上（`nextCheckpoint` は巡回を始めた時刻） |
+| `status` が `active` 以外（`deprecated`・`deleted`）は取り下げ | `noahRegistryState` |
+
+`noah_intake_sources` の `mcp-registry` の行の使い方:
+
+| 列 | 意味 |
+| --- | --- |
+| `next_run_at` | 次に巡回を始めてよい時刻。巡回を始めた時刻 ＋ 1 時間 |
+| `sweep_started_at`・`updated_since`・`cursor` | 進行中の巡回。始めた時刻、その巡回の `updated_since`（全件は NULL）、次に読む頁 |
+| `checkpoint_at` | 最後に書き終えた巡回を、始めた時刻（＝次の `updated_since` の元） |
+| `last_full_at` | 最後に書き終えた全件の巡回を、始めた時刻 |
+
+1 回の合図（11.3）で行う事:
+
+1. lease を取る（5.1 の 2 と同じ）。
+2. 進行中の巡回が無い時: `next_run_at > now` なら何もしない。そうでなければ `noahRegistrySyncPlan({ now, checkpoint: checkpoint_at, lastFullAt: last_full_at })` を取り、`sweep_started_at = now`、`updated_since`、`cursor = NULL`、`observed = 0` を書く。
+3. 頁を読む。`NOAH_PATROL_BUDGET.pages`（既定 10）頁まで、かつ、合図の残り時間まで。記録ごとに:
+   - 4.1 の列に直して `INSERT … ON CONFLICT(id) DO UPDATE`。`record_sha256` が同じなら `seen_at` だけ。
+   - 新しく入った有効な候補には、**その場で「1 件で 1 系列」の行を作る**（候補の `family_id` は、入れる時に、候補の ID と同じ値にする。系列の ID も同じ値。次の名寄せが、まとめる物だけを付け替える）: `INSERT OR IGNORE INTO noah_intake_families(id, representative_id, members, level, badge_hint, listed, one_tap, shuffle, updated_at, revision) VALUES(?, ?, 1, 0, ?, 0, 0, abs(random()) % 1000000000, ?, 1)`（`badge_hint` は、鍵の入力が要れば `setup`、それ以外は `unverified`）。握手が通ると、86 が同じ行へ写す。
+   - 取り下げになった候補が代表の系列は、その場で外す: [noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `touch` を `level=0`・`listed=0`・`one_tap=0`・`badge_hint='unverified'` で流す。その候補へつないでいる人の新しい依頼は、87 が止める（87 の 11.4 の 4）。
+   - 1 頁ごとに `cursor` を保存する。
+4. 最後の頁まで読んだら:
+   - `checkpoint_at = sweep_started_at`。全件の巡回なら `last_full_at = sweep_started_at` と、5.1 の 4 の取り下げ（前回の 9 割以上を読めた時だけ）。
+   - 名寄せ（[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql)）を流すのは、全件の巡回の後と、UTC の日付が変わって最初に終わった巡回の後だけ（毎時は流さない。まとめた候補を書き直すため）。
+   - 同じ時に、並びを引き直す（`noah-listing-v1.sql` の `reshuffle`）。
+   - `sweep_started_at = NULL`、`updated_since = NULL`、`cursor = NULL`、`last_success_at = now`、`next_run_at = 巡回を始めた時刻 + 3,600,000`。
+5. 失敗は 5.1 の 5 と同じ。進行中の巡回の列は消さない（次の合図が、同じ `updated_since` と `cursor` から続ける）。
+
+最初の全件は 678 頁。1 回の合図で 10 頁なら約 70 分。その後は、毎時 1〜2 頁。
+
+### 11.3 巡回の入口と、足すファイル
+
+今の発見の巡回（`scripts/noah-discovery-daemon.mjs`）は、手元（loopback）からだけ動く。本番は、既存の「合図の Worker」と同じ作りにする（`services/sky-free-cloud-wake` と `lib/sky-free-cloud-background.ts` の `verifyWake`）。
+
+| ファイル | 中身 |
+| --- | --- |
+| `lib/noah-flags.ts` | [noah-flags-v1.ts](../contracts/noah-flags-v1.ts) を移す（`parseNoahFlags`・`noahAllowed`） |
+| `lib/noah-intake-server.ts` | 新規。`cloudflare:workers` の `env` と `waitUntil` を読み、`{ db, authenticate, reviewers, flags: parseNoahFlags(env), wakeKey: env.NOAH_PATROL_WAKE_KEY, fetcher: fetch, now: Date.now }` を返す。`env` を読むのはここだけ |
+| `lib/noah-intake-wake.ts` | 型契約から `NOAH_WAKE`・`noahWakeSignature`・`verifyNoahWake` を移す |
+| `app/api/noah/intake/tick/route.ts` | 新規。`POST` だけ。`verifyNoahWake({ key, timestamp: header 'x-noah-time', signature: header 'x-noah-signature', body, now })` が偽なら 401。`flags.patrol` が偽なら 200 `{ "disabled": true }`。真なら `sync()` を呼び、件数だけを返す。`Origin` の header が付いた要求は 403（画面から呼ぶ入口ではない） |
+| `services/noah-patrol-wake/worker.ts`・`wrangler.jsonc`・`README.md` | 新規。`services/sky-free-cloud-wake` を写す。毎分（`"crons": ["* * * * *"]`）、空の本文 `{}` と署名を `https://<NOAH_ORIGIN>/api/noah/intake/tick` へ送る。HTTP の入口・利用者の情報・モデルの鍵を持たない。**配備は本人の許可の後**（[97](spec-97-launch-ops.md) の 4 章） |
+
+合図は「起きて」だけを伝える。何を読むか、どこへつなぐかは、Web の本体だけが決める（合図の本文が `{}` でなければ拒否する。検証キットが確かめている）。
+
+### 11.4 D1 の書き方（上限に合わせる）
+
+D1 の上限（[読んだ日 2026-11-20](https://developers.cloudflare.com/d1/platform/limits/)）: 1 文に結べる値は 100 個、1 文は 100KB、1 回の実行で query は有料 1,000（無料 50）。`db.batch` は 1 query と数える。書き込みは、索引の分も行として数える。
+
+| 決まり | 理由 |
+| --- | --- |
+| 候補の 1 件は 1 文（列は 21 個）。1 頁 100 件を、50 文ずつの `db.batch` 2 回で書く。checks と系列の行も同じ batch に入れる | 1 頁の query を 2〜4 回に収める |
+| `record_sha256` が同じ記録は `seen_at` だけを書く | 更新された物だけの巡回では、ほぼ全部が変わった記録。全件の巡回では、ほぼ全部が変わらない |
+| 名寄せは 1 日 1 回。変わらない行は書かない | まとめた候補（約 12,000）だけを書き直す |
+| `record_json` は 65,536 bytes まで。越える記録は、`remotes` と `packages` を外して `"oversize": true` を足した形で保存する。下書きと `record_sha256` は、外す前の記録から作る | 実測: 保存する形の大きさは中央値 409 bytes、99% が 2,078 bytes 以下。65,536 を越えるのは 67,703 件のうち 1 件（72,523 bytes） |
+
+書き込みの見込みは [97](spec-97-launch-ops.md) の 3 章。
+
+### 11.5 一覧の API（ローンチ版）
+
+見せてよいかは `noahAllowed(flags, 'list', 審査者か)`。偽なら 404。
+
+**`GET /api/noah/intake?cursor=&q=&oneTap=1`**（サインイン不要）
+
+```json
+{ "items": [ { "id": "mcp-registry:ac.mizan/registry", "name": "Mizan", "provider": "ac.mizan", "summary": "…（提供者の文のまま）",
+               "host": "mizan.ac", "section": "ran", "tools": 5, "oneTap": true, "checkedAt": 1795170000000,
+               "connect": { "badge": "one_click", "taps": 0, "typed": 0, "place": "provider", "placeLabel": "相手のサーバー（mizan.ac）",
+                            "need": null, "level": 2, "price": { "model": "free" }, "note": null } } ],
+  "nextCursor": "n:734122001:mcp-registry:io.example/x", "counts": { "ran": 132, "new": 17990 },
+  "source": "Official MCP Registry", "ownerScope": null }
+```
+
+- 20 件ずつ。先に「動いた」（`noah-listing-v1.sql` の `ran`）を最後まで、続けて「まだ誰も動かしていない」（`new`）。`cursor` は `r:<l2_at>:<id>` か `n:<shuffle>:<id>`。形の違う `cursor` は 400。
+- `q`（80 文字まで）がある時は `search` だけを使う（段に分けない。`cursor` は `s:<offset>`、200 件まで）。`oneTap=1` は `new` の絞り込み。
+- 各項目は、系列の代表の候補と checks から作る。`provider` は台帳の名前の `/` より前。`tools` は `tool_count`。`checkedAt` は `checked_at`。`connect` は 96 の `planNoahConnection`（未サインインなら `signedIn=false`）。
+- `counts` は 5 分間、同じ値を返してよい。
+- 応答は `Cache-Control: no-store, private`（サインインの有無で `connect` が変わるため）。サインインしていない人への応答は、同じ `cursor`・`q`・`oneTap` について、サーバーの側で 60 秒持ってよい（一覧は鍵も本人の情報も含まない。検索 1 回は、載せている系列の約 18,000 行と、その代表の候補を読むので、同じ問い合わせで D1 を読み直さない）。`q` は 2 文字以上。
+
+**`GET /api/noah/intake?id=<系列の ID>`** → 系列 1 つ `{ …上の項目, "members": 1, "website": <台帳の websiteUrl か null>, "repository": <鍵か null>, "sourceUpdatedAt", "connection": { "id", "state" } | null }`。`connection` は、サインイン済みで、切っていない接続がある時だけ。載せていない系列（`noahListing` が偽）は、審査者でなければ 404。
+
+**`GET /api/noah/intake?state=1`**（審査者だけ）→ 出どころの状態、`noah-listing-v1.sql` の `counts` を `noahListing` に通した内訳（載せている数、理由ごとの数）、`flags.warnings`。
+
+**`POST /api/noah/intake`**（審査者だけ。共通の書き込みの検査）本文 `{ "action": "withdraw" | "restore", "id": <系列の ID>, "revision": <数> }` → `withdrawn_at` を入れる／消す。`revision` が違えば 409。
+
+**`POST /api/noah/intake`** に本文 `{}`（手元の巡回用。今の発見と同じ検査）→ `sync()`。本番では使わない（本番は 11.3 の合図）。
+
+**系列の ID を、URL のパスに入れない。** ID は `mcp-registry:ac.mizan/registry` や `same:<16 桁>:github.com/owner/name` の形で、`/` と `:` を含む。パスの中の `%2F` は、配備先や途中の中継で `/` に直される事があるので、いつも query（`?id=`・`?agent=`）か本文で渡す（公式台帳の API も、パスに入れる時は必ず符号化する決まり）。`limit=0` を付けた一覧は、`items` を空にして `counts` だけを返す（navigation が、見せてよいかを確かめるのに使う）。
+
+### 11.6 試験（7 章に足す）
+
+| 試験 | 入力 | 期待 |
+| --- | --- | --- |
+| 読み方（移す） | — | `noahRegistryPageUrl`・`noahRegistrySyncPlan`・`noahRegistryState` |
+| 最初の全件 | 3 頁を返す試験用の fetcher。印なし | URL に `updated_since` が無い。終わると `checkpoint_at` と `last_full_at` が巡回を始めた時刻 |
+| 更新された物だけ | 印あり。1 頁 | URL の `updated_since` が、印の 10 分前。2 頁目も同じ値 |
+| 途中で止まる | 2 頁目で例外 | `checkpoint_at` が進まない。次の合図が、同じ `updated_since` と保存した `cursor` で続ける |
+| 外された記録 | `status: "deleted"` の記録 | 候補が `withdrawn`。系列が一覧から消える（名寄せを待たない） |
+| 新しい記録 | 初めて見る名前 | 候補・checks・系列の 3 行が入る。`listed` は 0 |
+| 7 日後 | `last_full_at` が 7 日前 | 全件を読む |
+| 名寄せの回数 | 同じ UTC の日に 3 回の巡回 | 名寄せと並びの引き直しは 1 回 |
+| 合図（移す） | 署名・時刻・本文・道 | 型契約の試験と同じ |
+| 合図の入口 | 鍵なし／古い時刻／本文あり／`Origin` あり／`flags.patrol` が偽 | 401／401／401／403／200 `disabled` |
+| 切り替え（移す） | — | [noah-flags.test.mjs](../design-validation/noah/noah-flags.test.mjs) |
+| 一覧 | 握手済みの系列 25、動いた 3 | 1 頁目は「動いた」3 と「まだ」17。2 頁目は残り 8。重なりなし |
+| 見せない | `NOAH_INTAKE_PUBLIC` が閉、審査者でない | 404。審査者は 200 |
+| 検索 | `q=100%` | `%` を文字として探す |
+| 取り下げ | `withdraw` → 一覧・検索・詳細 | 消える。`restore` で戻る |
+
+### 11.7 完了の定義（L3）
+
+- 10 章の試験に、11.6 を足した物が通る。`python3 docs/design-validation/noah/validate-noah-v1.py` が 10/10。
+- 手元の D1 で、合図を 70 回送ると候補が 6 万件以上入り、71 回目からは `updated_since` 付きの 1〜2 頁だけを読む。運営の画面の「相手のサーバー」の行が、8 章の表と 1% 以内で合う。
+- `services/noah-patrol-wake` が `wrangler deploy --dry-run` を通る。配備はしない。
+- 切り替えを全部閉じた時、今の画面と API の動きが変わらない（`npm run verify`）。

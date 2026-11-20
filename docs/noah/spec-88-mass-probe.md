@@ -1,7 +1,9 @@
 # 仕様書 88 — 大量の接続試験と見回り（見本まで確かめる・印を保つ・つながると確かめた数）
 
 task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.md)。先に要る物: 86（握手）、87（道具の呼び出し）。
-型契約: [noah-intake-v1.ts](../contracts/noah-intake-v1.ts) の `noahSampleCalls`・`nextNoahCheck`。試験: [noah-intake.test.mjs](../design-validation/noah/noah-intake.test.mjs) の「見本の入力」「見回りの間隔」、[validate-noah-v1.py](../design-validation/noah/validate-noah-v1.py) の「見回り・タイムライン」。
+型契約: [noah-intake-v1.ts](../contracts/noah-intake-v1.ts) の `noahSampleCalls`・`nextNoahCheck`・`noahListing`、[noah-listing-v1.sql](../contracts/noah-listing-v1.sql)。試験: [noah-intake.test.mjs](../design-validation/noah/noah-intake.test.mjs) の「見本の入力」「見回りの間隔」「ローンチの一覧に載せる条件」、[validate-noah-v1.py](../design-validation/noah/validate-noah-v1.py) の「見回り・タイムライン」「ローンチの一覧と上限」。
+
+**ローンチまでに作る範囲は 9 章。** 一覧は「動いた」と「まだ誰も動かしていない」の 2 段。Noah が自動で道具を呼ぶ見本（4.1）は、本人が決めるまで作らない。9 章と食い違う所は、ローンチまでは 9 章が勝つ。
 
 ## 1. 完成の姿
 
@@ -63,7 +65,8 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 | つないでいる本人がいる（`noah_intake_families.connections > 0`） | 24 時間 |
 | L2 だが、つないでいる本人はいない | 3 日 |
 | L1 以下 | 7 日 |
-| 失敗が続いている | 上の間隔 × 2 の（失敗の回数）乗。最長 30 日 |
+| 1 回目の失敗の後 | 6 時間 |
+| 2 回以上続けて失敗 | 上の間隔 × 2 の（失敗の回数 − 1）乗。最長 30 日 |
 
 失敗（`unreachable`）の扱い:
 
@@ -93,7 +96,7 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 | 429 | `Retry-After` を守る（無ければ 60 秒。最長 1 日）。その host の `not_before` に入れる |
 | 寝ている Space・止まっている Space | 接続しない。出どころの一覧が「動いている」と言う物だけ |
 | 自動で呼ぶ道具 | 4.1 の条件の物だけ。1 回の見回りで最大 3 回 |
-| 取り下げ | 作者か提供者から申し出があれば、その系列に `withdrawn_at` を入れる（運営の操作。`POST /api/noah/intake/[id]` の `withdraw`）。一覧・検索・公開のページから消し、見回りを止める。台帳から消えた記録は、85 の巡回が `withdrawn` にする |
+| 取り下げ | 作者か提供者から申し出があれば、その系列に `withdrawn_at` を入れる（運営の操作。`POST /api/noah/intake` の `withdraw`。系列の ID は本文で渡す）。一覧・検索・公開のページから消し、見回りを止める。台帳から消えた記録は、85 の巡回が `withdrawn` にする |
 | 書かない物 | 道具の定義の本文、依頼、成果（見本の先頭 500 文字を除く）、相手の応答の header |
 
 ## 5. 見せる
@@ -139,3 +142,114 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 - 手元で flag を開け、鍵なしで握手が通った 50 件を回して、L2 が付いた数と、付かなかった理由（書き込みの道具がある／必須の入力が埋まらない／3 つとも失敗）を PR 本文に書く。標本の割合（握手が通った物の 36%）から大きく外れたら、原因を書く。
 - 同じ host への握手が、1 時間に 1 回を越えない事を、`noah_probe_hosts` の記録で確かめる。
 - `npm run typecheck`、`npm run lint:product`。
+
+## 9. ローンチの範囲（[ローンチの最小限](mvp-launch.md) の L7。一覧の出し方は L3〜L6 も使う）
+
+ローンチまでに作るのは、この章に書いた範囲だけ。Noah が自動で道具を呼ぶ見本（4.1）は、本人が決めるまで作らない。
+
+### 9.1 入れる物・後にする物
+
+| 章 | ローンチまで | 後 |
+| --- | --- | --- |
+| 1 完成の姿 | 一覧は 2 段: 「動いた」（L2）と「まだ誰も動かしていない」（L1）。握手が 2 回続けて通らない物は外れる | 「この 7 日の間に動いた物だけ」に絞る（「動いた」が十分に増えてから） |
+| 3 変える所 | `lib/noah-probe.ts`（失敗の扱い）、`lib/noah-intake-store.ts`（後始末・並びの引き直し・対象から外す物）、`lib/noah-ask.ts`（「動いた」を付ける）、`components/noah-review.tsx`（数）。`lib/noah-feed.ts`・`lib/noah-public-catalog-api.ts` は触らない | `probeL2`、`noahSampleCalls` |
+| 4.1 自動の L2 | 無し（`NOAH_PROBE_L2` は閉） | 本人の決定の後 |
+| 4.2 本人の実行 | 入れる（9.2 に変える） | — |
+| 4.3 見回り | 入れる。間隔は `nextNoahCheck`。失敗の扱いは 9.3 に変える | — |
+| 4.4 定義が変わった時 | 9.4 に変える（接続を止めない） | 「1 文で頼む」を入れる時に、4.4 の作りへ |
+| 4.5 礼儀 | 全部 | — |
+| 5 見せる | 9.6 に変える | 公開の頁の検索向けの項目（title・description・正規の URL） |
+
+### 9.2 本人の実行で「動いた」を付ける
+
+87 の依頼が `succeeded` で終わった時（道具が `isError` を返した依頼は数えない）、その接続の系列の、代表の候補について:
+
+1. 握手の表を、今の握手で見た値にする: `UPDATE noah_intake_checks SET l2_at = CASE WHEN level = 2 THEN l2_at ELSE ? END, level=2, result='ok', tools_sha256=?, tool_count=?, read_only=?, form_tools=?, one_tap_tools=?, l1_at=COALESCE(l1_at, ?), failures=0, first_failure_at=NULL WHERE candidate_id=?`。**`l2_at` は、「動いた」になった時にだけ入れる。** すでに「動いた」の物を、もう一度動かしても、時刻は進めない（「動いた」の段は `l2_at` の新しい順に並ぶ。動かすたびに進めると、自分で何度も動かして、上に居続けられる）。 `checked_at` と `next_check_at` は書き換えない（巡回が最後に握手した時刻と、巡回の予定のまま。巡回の間隔を数える問い合わせに、利用者の操作を混ぜない。[97](spec-97-launch-ops.md) の 6 章）。`l1_at` は、空の時だけ入れる。
+2. 系列へ写す: [noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `touch`（`level=2`・`l2_at` は握手の表の値・`badge_hint='one_click'`・`listed` と `one_tap` は `noahListing` から）。
+
+見本（`sample_json`）は書かない。誰の実行かも、依頼の中身も、ここには書かない。審査者の実行も同じに数える（出す前に運営が動かす 100 件は、これで「動いた」になる）。
+
+### 9.3 握手の失敗の扱い（ローンチ版。4.3 の表を置き換える）
+
+| 続けて失敗した回数（応答しない） | する事 | 次に確かめる時 |
+| --- | --- | --- |
+| 1 回 | `failures=1`、`first_failure_at=now`。`level` はそのまま（一覧に残る） | 6 時間後 |
+| 2 回（`NOAH_FAILURES_TO_UNLIST`） | `level=0`。系列へ写す（`listed=0`）。**一覧・検索から外れる。** つないでいる人の接続は、そのまま（頼んだ時に「相手のサーバーが応答しません。」が出る） | 14 日後。その後は 2 倍ずつ（最長 30 日） |
+| 最初の失敗から 30 日 | 系列を隠す（`hidden_at`） | 30 日ごと |
+| 握手が通った | `failures=0`、`level=1`。隠していた系列を戻す。「動いた」は、人が動かすまで戻らない | 7 日後（つないでいる人が居れば 24 時間後。居るかどうかは、その時に `SELECT 1 FROM noah_connections WHERE family_key = ? AND state = 'connected' LIMIT 1` で見る。索引 `noah_connections_family`） |
+
+相手が「混んでいる」（429）を返した時は、失敗に数えない（`Retry-After` の後に確かめ直す）。401・402・形が合わない は、86 の 4.2 の表のとおり、その場で `level=0`。
+
+### 9.4 道具の定義が変わった時（ローンチ版。4.4 を置き換える）
+
+握手で得た道具の定義の hash（接続先の全部の道具）が前と違う時、**握手の表の hash と数を新しくするだけ**にする。`level` は変えない。つないでいる人の接続も止めない。
+
+理由: ローンチで道具を呼ぶのは、入力欄で頼む道だけ。その道は、呼ぶたびに「本人が見た、その道具 1 つの定義」と「今の定義」が同じ事を確かめる（87 の 11.4 の 3）。確かめの記録も、道具 1 つの定義の hash と組で持つ。だから、関係の無い道具の説明が変わっただけで、全員の接続を止めて聞き直す必要が無い。
+
+実測（2026-11-20。握手が通った接続先を、1 時間あけて 2 回握手した）: 仕様書 86 の 10.2 の表。
+
+「1 文で頼む」を入れる時は、道具の説明の全部がモデルへ渡るので、4.4 の作り（全部の道具の hash が変わったら、聞き直すまで止める）へ戻す。
+
+### 9.5 後始末（巡回の合図が、毎回の終わりに行う）
+
+実行の途中で落ちた依頼と接続を、放っておかない。どれも、相手へは何も送らない。
+
+| 対象 | 文 | 結果 |
+| --- | --- | --- |
+| `running` のまま `lease_until` を過ぎた依頼 | `UPDATE noah_asks SET state='unknown', finished_at=?, error='結果を確かめられませんでした。相手のサーバーで実行されたかは分かりません。', revision=revision+1 WHERE finished_at IS NULL AND state='running' AND lease_until > 0 AND lease_until < ? RETURNING id, owner_id, work_id` | Work も `unknown` にする。**取り直して呼び直さない** |
+| `queued` のまま 60 秒たった依頼（応答の後の実行が始まらなかった） | 同じ形で `state='failed'`、`error='始められませんでした。もう一度頼んでください。'` | 相手へは送っていないので、`failed` |
+| `planned`・`entitling`・`preparing`・`probing` のまま 30 秒たった、置き場所が `provider` の接続 | `disconnect` を当てる（`error='つなぐ途中で止まりました。もう一度試してください。'`） | 本人には「接続」がもう一度出る |
+
+1 回の合図で、それぞれ 50 件まで。
+
+### 9.6 見せる（ローンチ版。5 章を置き換える）
+
+| 所 | 出す物 | 並び |
+| --- | --- | --- |
+| 「動いた」 | `noah-listing-v1.sql` の `ran`（L2 で、載せる条件を満たし、取り下げても隠してもいない） | `l2_at`（「動いた」になった時刻）の新しい順。使われた数での並びは、出した後（利用の記録が貯まってから） |
+| 「まだ誰も動かしていない」 | `new`（L1 で、同じ条件）。`oneTap=1` で、押すだけで頼める道具がある物だけ | `shuffle` の大きい順。`shuffle` は 1 日 1 回引き直す（`reshuffle`） |
+| 検索 | `search`（名前と説明の部分一致。載せている系列だけ） | L2 を先に |
+| 詳細 | 載せている系列。審査者は、載せていない系列も見られる | — |
+
+並びを `shuffle` にする理由: 握手だけの物には、良し悪しの手がかりが無い。握手した順は、台帳を読んだ順（名前の順）に寄る。台帳での更新が新しい順にすると、更新の多さ（直前の 1 時間に 109 件）で上に居続けられる。1 日 1 回引き直す並びなら、名前でも更新の多さでも上に来られず、全部の系列に、同じだけ上に出る機会がある。人が動かせば「動いた」へ移る。
+
+載せる条件は `noahListing`（[noah-intake-v1.ts](../contracts/noah-intake-v1.ts)）。系列の行の `listed`・`one_tap` は、名寄せ（1 日 1 回）と、握手・実行の直後の `touch` が書く。
+
+つながると確かめた数（運営の画面）: 「動いた」の数（`SELECT COUNT(*) FROM noah_intake_families WHERE level = 2 AND listed = 1 AND withdrawn_at IS NULL AND hidden_at IS NULL`）と、握手まで確かめた数（同じ文で `level = 1`）を、台帳の件数とは別の行に出す。固定 adapter の 13 件は、別の行。
+
+### 9.7 握手の対象と、最初の 1 巡
+
+- 巡回が握手するのは、口が「相手のサーバー」で、本人の鍵の入力が要らない候補だけ（86 の 10.3）。
+- 量産の系列（`family_id LIKE 'bulk:%'`）は、ローンチでは載せないので、握手もしない: 名寄せの直後に `UPDATE noah_intake_checks SET next_check_at = ? WHERE level = 0 AND candidate_id IN (SELECT id FROM noah_intake_candidates WHERE family_id LIKE 'bulk:%')` で 30 日後へ送る（9,070 件。標本では 24 host のうち 5 host しか応答しない）。
+- 最初の 1 巡は、量産でない約 31,400 件。同じ接続先へは 1 時間に 1 回までなので、1 つの接続先に候補が多い物（最大は 428 件）は、1 巡に日数が掛かる。それ以外は、1 回の合図で 16 件なら約 1.5 日、8 件なら約 3 日。
+- 1 巡の後は、7 日ごとの確かめ直しで、1 日に約 5,000 件（1 回の合図で 8 件あれば足りる）。
+
+### 9.8 取り下げと戻し
+
+4.5 の「取り下げ」のとおり。入口は 85 の 11.5 の `POST /api/noah/intake`（`withdraw`・`restore`。審査者だけ）。取り下げた系列は、一覧・検索・詳細から消え、巡回が握手しない（`next_check_at` を 30 日後へ送り、巡回が取る時に `withdrawn_at IS NULL` を確かめる）。つないでいる人の接続は、次に使おうとした時に `blocked` になる（74 の 11.3）。戻すと、次の握手から元に戻る。
+
+### 9.9 試験（6 章に足す。`tests/noah-patrol.test.mjs`）
+
+| 試験 | 前提 | 期待 |
+| --- | --- | --- |
+| 見回りの間隔（移す） | — | 1 回目の失敗は 6 時間後。2 回目からは 2 倍ずつ |
+| 一覧の条件（移す） | [fixtures/listing-cases.json](../design-validation/noah/fixtures/listing-cases.json) の 24 行 | 純関数と SQL が同じ結果 |
+| 動いたを付ける | L1 の系列で、依頼が成功 | 握手の表が `level=2`。系列が、名寄せを待たずに「動いた」の先頭に出る。本人の ID がどこにも書かれない |
+| 動かし直しても上がらない | 「動いた」の系列で、もう一度成功 | `l2_at` が変わらない。「動いた」の中の順が変わらない |
+| 相手のエラーは数えない | 道具が `isError` | `level` は 1 のまま |
+| 1 回の失敗 | 握手が 1 回応答しない | 一覧に残る。次は 6 時間後 |
+| 2 回続けて失敗 | — | 一覧と検索から消える。握手が通ると「まだ誰も動かしていない」に戻る |
+| 混んでいる | 429 と `Retry-After: 120` | 失敗に数えない。120 秒は、その接続先へ送らない |
+| 定義が変わった | 握手の hash が変わる | `level` が変わらない。接続が `connected` のまま |
+| 量産 | 同じ名前空間・同じ host の候補 20 件 | 握手しない |
+| 並びの引き直し | 同じ UTC の日に合図を 3 回／日付が変わって 1 回 | 引き直しは 1 回ずつ |
+| 後始末 | `running` で lease 切れ／`queued` で 60 秒／`probing` で 30 秒 | `unknown`／`failed`／切れている。相手への要求は 0 回 |
+| host の間隔 | 同じ host の候補が 5 件 | 1 時間に握手するのは 1 件 |
+| 取り下げ | `withdraw` | 一覧・検索・詳細・握手から外れる。行は残る。`restore` で戻る |
+
+### 9.10 完了の定義（L7）
+
+- `node --experimental-strip-types --test tests/noah-patrol.test.mjs tests/noah-intake-store.test.mjs` が通る。`python3 docs/design-validation/noah/validate-noah-v1.py` が 10/10。
+- 手元で合図を回し、握手が通った 50 件のうち、相手を止めた 1 件が、2 回の握手の後に一覧から消える。
+- 同じ接続先への握手が、1 時間に 1 回を越えない事を、`noah_probe_hosts` の記録で確かめる。
+- `probeL2` と `noahSampleCalls` を作っていない。

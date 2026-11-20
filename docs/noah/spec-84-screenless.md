@@ -3,6 +3,8 @@
 task: [codex/tasks/84-noah-screenless-rule.md](../../codex/tasks/84-noah-screenless-rule.md)。先に要る物: 無し（最初にやる）。契約も許可も要らない。
 型契約: [docs/contracts/noah-screenless-v1.ts](../contracts/noah-screenless-v1.ts)。試験: [noah-screenless.test.mjs](../design-validation/noah/noah-screenless.test.mjs)（5 群、全部通過）。
 
+**ローンチまでに作る範囲は 10 章（起動引数の検査と、「閉じても進む」の回帰試験）。** 面の見分けと、検査用の Mac での観測は、出した後。
+
 ## 1. 完成の姿
 
 - Agent が動いている間、本人が使っている端末の前面のアプリ・窓・クリップボード・音が変わらない。これを「行儀」でなく「作り」で保ち、**作りが緩んだ変更を、PR の検査が止める。**
@@ -144,3 +146,17 @@ VM の合格条件: `--mount none` が有る。`--ssh-agent`・`--network-addres
 - `node --experimental-strip-types --test tests/noah-surface-class.test.mjs tests/noah-screenless.test.mjs tests/noah-launch-close.test.mjs` が通る。
 - `npm run typecheck`、`npm run lint:product`、`npm run verify`。
 - PR 本文に、検査用の Mac での観測の結果（4 項目の変化の数）か、まだ行っていない事を書く。
+
+## 10. ローンチの範囲（[ローンチの最小限](mvp-launch.md) の L1）
+
+| 章 | ローンチまで | 後 |
+| --- | --- | --- |
+| 3 変える所 | `scripts/noah-isolated-runtime.mjs` の `engineArgs()`、`lib/noah-screenless-audit.mjs`、`scripts/check-noah-screenless.mjs`、`package.json`、`tests/noah-screenless.test.mjs`、`tests/noah-launch-close.test.mjs` | `lib/noah-surface-class.ts`、`tests/noah-surface-class.test.mjs`（面の見分けは、端末で動かす配布を入れる 89 と一緒に）。`scripts/noah-screenless-observe.mjs`（検査用の Mac が要る） |
+| 4.1〜4.3 面の見分け | 無し。ローンチで並ぶのは、口が「相手のサーバー」の物だけで、面は必ず `none`（本人の端末では何も動かない。96 の規則 6 が、保存の前に確かめる） | 89 と一緒に |
+| 4.4 検査 | 全部 | — |
+| 5 画面の決まり | 新しい画面（`/noah/ready`）にも同じ決まりを当てる。確かめは [90](spec-90-phone-only-loop.md) の 4 章 | — |
+| 6 処理の順 | 1・3・4（検査の分）・5 | 2 のうち面の見分け、6 |
+
+ローンチに入れる理由: 今の Mac の道（13 件と、載せたコード）は、起動引数が緩めば画面や host のフォルダに届く。今は違反 0 だが、それを守る検査が `npm run verify` に無い。相手のサーバーの道は、作りとして本人の端末に何も置かないので、足す検査は無い。
+
+完了の定義（L1）: 9 章のうち、`tests/noah-surface-class.test.mjs` と観測を除いた物。`node scripts/check-noah-screenless.mjs` が今の main で終了コード 0。`terminalContainerArgs` に `'--env', 'DISPLAY=:0'` を足した作業用の変更で、終了コード 1。

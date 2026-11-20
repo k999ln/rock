@@ -4,18 +4,22 @@
 
 読む順は、task 1 枚 → その仕様書 1 本 → 仕様書が指す型契約（[docs/contracts/](../contracts/)）と試験（[docs/design-validation/noah/](../design-validation/noah/README.md)）。それ以外は読まなくてよい。
 
-| 順 | task | 仕様書 | 型契約・参照実装 | 動く試験 |
-| --- | --- | --- | --- | --- |
-| 0 | 84 | [画面を取らない決まりと検査](spec-84-screenless.md) | `noah-screenless-v1.ts` | `noah-screenless.test.mjs` |
-| 1 | 85 | [取り込みと名寄せ](spec-85-intake.md) | `noah-intake-v1.ts`、`noah-v1.sql`、`noah-regroup-v1.sql` | `noah-intake.test.mjs`、`validate-noah-v1.py` |
-| 1 | 96 | [接続要件と接続計画](spec-96-connect-plan.md) | `noah-connect-v1.ts` | `noah-connect.test.mjs` |
-| 1 | 86 | [リモートの口と、握手までの接続試験](spec-86-remote-mouth.md) | `noah-mouth-v1.ts` | `noah-mouth.test.mjs` |
-| 1 | 87 | [道具を持つ担当](spec-87-tool-agent.md) | `noah-tool-agent-v1.ts` | `noah-tool-agent.test.mjs` |
-| 1 | 74 | [1 回でつなぐ](spec-74-one-click-connect.md) | `noah-connect-v1.ts`、`noah-v1.sql` | `noah-connect.test.mjs`、`validate-noah-v1.py` |
-| 1 | 88 | [大量の接続試験と見回り](spec-88-mass-probe.md) | `noah-intake-v1.ts` | `noah-intake.test.mjs` |
-| 1 | 89 | [ターミナルの口](spec-89-terminal-mouth.md) | `noah-mouth-v1.ts`、`noah-intake-v1.ts` | `noah-mouth.test.mjs` |
+**ローンチまでに作る範囲は、[ローンチの最小限（MVP）](mvp-launch.md) が決める。** 各仕様書の最後の「ローンチの範囲」の章が、その仕様書のうち、出すまでに作る所と、その完了の定義。出すまでは、その章だけを作る（表の「ローンチ」の列が、作る順）。
 
-段 2 以降（90・83・92・94 など）の仕様書は、段 1 が動いた後に同じ形で足す。それまでは詳細設計書の章が入口。
+| 順 | ローンチ | task | 仕様書 | 型契約・参照実装 | 動く試験 |
+| --- | --- | --- | --- | --- | --- |
+| 0 | L1（10 章） | 84 | [画面を取らない決まりと検査](spec-84-screenless.md) | `noah-screenless-v1.ts` | `noah-screenless.test.mjs` |
+| 1 | L3（11 章） | 85 | [取り込みと名寄せ](spec-85-intake.md) | `noah-intake-v1.ts`、`noah-flags-v1.ts`、`noah-v1.sql`、`noah-regroup-v1.sql`、`noah-listing-v1.sql` | `noah-intake.test.mjs`、`noah-flags.test.mjs`、`validate-noah-v1.py` |
+| 1 | L2・L5（9 章） | 96 | [接続要件と接続計画](spec-96-connect-plan.md) | `noah-connect-v1.ts` | `noah-connect.test.mjs` |
+| 1 | L4（10 章） | 86 | [リモートの口と、握手までの接続試験](spec-86-remote-mouth.md) | `noah-mouth-v1.ts`、`noah-form-v1.ts` | `noah-mouth.test.mjs` |
+| 1 | L6（11 章） | 87 | [道具を持つ担当（入力欄で頼む・1 文で頼む）](spec-87-tool-agent.md) | `noah-form-v1.ts`、`noah-tool-agent-v1.ts`、`noah-listing-v1.sql`（上限の数え方・接続先の枠） | `noah-form.test.mjs`、`noah-tool-agent.test.mjs`、`validate-noah-v1.py` |
+| 1 | L5（11 章） | 74 | [1 回でつなぐ](spec-74-one-click-connect.md) | `noah-connect-v1.ts`、`noah-v1.sql`、`noah-form-v1.ts`（つなぐ前の上限）、`noah-listing-v1.sql`（上限の数え方・接続先の枠） | `noah-connect.test.mjs`、`noah-form.test.mjs`、`validate-noah-v1.py` |
+| 1 | L7（9 章） | 88 | [大量の接続試験と見回り](spec-88-mass-probe.md) | `noah-intake-v1.ts`、`noah-listing-v1.sql` | `noah-intake.test.mjs`、`validate-noah-v1.py` |
+| 1 | —（出した後） | 89 | [ターミナルの口](spec-89-terminal-mouth.md) | `noah-mouth-v1.ts`、`noah-intake-v1.ts` | `noah-mouth.test.mjs` |
+| 2 | L8（全部） | 97 | [出すための運用](spec-97-launch-ops.md) | `noah-flags-v1.ts`、`noah-intake-v1.ts` | `noah-flags.test.mjs`、`noah-intake.test.mjs` |
+| 2 | L9（全部） | 90 | [手元だけの一周](spec-90-phone-only-loop.md) | （参照実装の全部をつなぐ） | `noah-loop.test.mjs`（通信しない一周。`tests/` には、本物の入口を通す版を足す） |
+
+段 2 以降の残り（83・92・94 など）の仕様書は、ローンチの後に同じ形で足す。それまでは詳細設計書の章が入口。
 
 ## 参照実装の使い方（実装する Agent へ）
 

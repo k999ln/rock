@@ -2,9 +2,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createHmac } from 'node:crypto';
 import {
-  NOAH_BULK_THRESHOLD, NOAH_INTAKE_REASONS, draftFromAcp, draftFromRegistry, draftFromSpace, groupNoahFamilies, nextNoahCheck,
-  noahRepositoryKey, noahSampleCalls, noahSpaceMcpUrl,
+  NOAH_BULK_THRESHOLD, NOAH_FAILURES_TO_UNLIST, NOAH_INTAKE_REASONS, NOAH_LISTING_REASONS, NOAH_REGISTRY, NOAH_WAKE, draftFromAcp, draftFromRegistry, draftFromSpace, groupNoahFamilies,
+  nextNoahCheck, noahListing, noahRegistryPageUrl, noahRegistryState, noahRegistrySyncPlan, noahRepositoryKey, noahSampleCalls, noahSpaceMcpUrl,
+  noahWakeSignature, verifyNoahWake,
 } from '../../contracts/noah-intake-v1.ts';
 import { planNoahConnection } from '../../contracts/noah-connect-v1.ts';
 
@@ -126,8 +128,62 @@ test('見回りの間隔', () => {
   assert.equal(at({ connected: true }).at, 24 * H);
   assert.equal(at({ level: 2 }).at, 72 * H);
   assert.equal(at({ level: 1 }).at, 168 * H);
-  assert.equal(at({ level: 2, failures: 1 }).at, 144 * H, '失敗で 2 倍');
+  assert.equal(at({ level: 2, failures: 1 }).at, 6 * H, '1 回目の失敗の後は、6 時間後に確かめ直す');
+  assert.equal(at({ connected: true, failures: 1 }).at, 6 * H);
+  assert.equal(at({ level: 0, failures: 2 }).at, 336 * H, '2 回続けて失敗して外した物は、7 日の 2 倍');
+  assert.equal(at({ level: 0, failures: 3 }).at, 672 * H);
   assert.equal(at({ level: 2, failures: 20 }).at, 720 * H, '最長 30 日');
+  assert.equal(NOAH_FAILURES_TO_UNLIST, 2);
   assert.equal(at({ now: 31 * 24 * H, firstFailureAt: 0, failures: 4 }).hide, true, '最初の失敗から 30 日で隠す');
   assert.equal(at({ now: 29 * 24 * H, firstFailureAt: 0, failures: 4 }).hide, false);
+});
+
+test('公式台帳の読み方: 最初は全件、その後は更新された物だけ。印は、書き終えた後にだけ進める', () => {
+  assert.equal(noahRegistryPageUrl({}), 'https://registry.modelcontextprotocol.io/v0.1/servers?limit=100&version=latest');
+  assert.equal(noahRegistryPageUrl({ updatedSince: Date.UTC(2026, 10, 20, 9, 42, 15), cursor: 'net.seal/mcp:0.14.0' }),
+    'https://registry.modelcontextprotocol.io/v0.1/servers?limit=100&version=latest&updated_since=2026-11-20T09%3A42%3A15.000Z&cursor=net.seal%2Fmcp%3A0.14.0');
+  const H = 3_600_000;
+  assert.deepEqual(noahRegistrySyncPlan({ now: 1000 * H, checkpoint: null, lastFullAt: null }), { mode: 'full', updatedSince: null, nextCheckpoint: 1000 * H }, '最初は全件');
+  assert.deepEqual(noahRegistrySyncPlan({ now: 1001 * H, checkpoint: 1000 * H, lastFullAt: 1000 * H }),
+    { mode: 'updated', updatedSince: 1000 * H - NOAH_REGISTRY.overlapMs, nextCheckpoint: 1001 * H }, '前回の印から 10 分さかのぼる');
+  assert.equal(noahRegistrySyncPlan({ now: 1000 * H + NOAH_REGISTRY.fullEveryMs, checkpoint: 1100 * H, lastFullAt: 1000 * H }).mode, 'full', '7 日たったら全件');
+  assert.equal(noahRegistrySyncPlan({ now: 1001 * H, checkpoint: 1000 * H, lastFullAt: null }).mode, 'full', '全件を読み終えていなければ全件');
+  assert.deepEqual(['active', 'deprecated', 'deleted', undefined].map(noahRegistryState), ['active', 'withdrawn', 'withdrawn', 'withdrawn']);
+});
+
+test('ローンチの一覧に載せる条件: 表の全行（同じ表を、SQL の検証も使う）', () => {
+  const { cases } = fixture('listing-cases.json');
+  const seen = new Set();
+  for (const c of cases) {
+    const k = c.check;
+    const got = noahListing({
+      source: c.source, familyId: c.bulk ? 'bulk:io.maker@gateway.example' : `${c.source}:io.case/agent`, candidateState: c.state, withdrawn: c.withdrawn === true, hidden: c.hidden === true,
+      check: k && { mouth: k.mouth, setup: k.setup === 1, auth: k.auth, result: k.result, level: k.level, formTools: k.formTools, oneTapTools: k.oneTapTools },
+    });
+    assert.deepEqual(got, c.expect, c.name);
+    if (!got.listed) seen.add(got.reason);
+  }
+  assert.deepEqual(NOAH_LISTING_REASONS.filter((reason) => !seen.has(reason)), [], '載せない理由の全部に、表の行がある');
+  assert.equal(seen.size, NOAH_LISTING_REASONS.length);
+});
+
+test('巡回を起こす合図: 署名・時刻・本文・道', async () => {
+  const key = 'k'.repeat(32);
+  const now = 1_795_170_000_000;
+  const stamp = String(now);
+  const signature = await noahWakeSignature(key, stamp);
+  assert.equal(signature, createHmac('sha256', key).update(`${stamp}\nPOST\n/api/noah/intake/tick\n{}`).digest('hex'), '既存の合図（verifyWake）と同じ作り');
+  const ok = { key, timestamp: stamp, signature, body: '{}', now };
+  assert.equal(await verifyNoahWake(ok), true);
+  assert.equal(await verifyNoahWake({ ...ok, now: now + NOAH_WAKE.maxSkewMs }), true);
+  assert.equal(await verifyNoahWake({ ...ok, now: now + NOAH_WAKE.maxSkewMs + 1 }), false, '2 分より古い合図');
+  assert.equal(await verifyNoahWake({ ...ok, now: now - NOAH_WAKE.maxSkewMs - 1 }), false, '2 分より先の時刻');
+  assert.equal(await verifyNoahWake({ ...ok, body: '{"source":"mcp-registry"}' }), false, '合図に中身を持たせない');
+  assert.equal(await verifyNoahWake({ ...ok, path: '/api/noah/ask' }), false, '別の入口には使えない');
+  assert.equal(await verifyNoahWake({ ...ok, signature: signature.replace(/^./, (c) => (c === '0' ? '1' : '0')) }), false);
+  assert.equal(await verifyNoahWake({ ...ok, key: 'k'.repeat(31), signature: await noahWakeSignature('k'.repeat(31), stamp) }), false, '短い鍵は使わない');
+  assert.equal(await verifyNoahWake({ ...ok, key: undefined }), false, '鍵を置いていなければ、誰の合図も通さない');
+  assert.equal(await verifyNoahWake({ ...ok, timestamp: null }), false);
+  assert.equal(await verifyNoahWake({ ...ok, timestamp: '1795170000' }), false, '秒の時刻は受けない');
+  assert.equal(await verifyNoahWake({ ...ok, signature: 'zz' }), false);
 });

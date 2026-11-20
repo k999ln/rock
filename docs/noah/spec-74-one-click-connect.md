@@ -1,7 +1,9 @@
 # 仕様書 74 — 1 回でつなぐ（接続の API・その場のサインイン・Passport）
 
-task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-click-connect.md)。先に要る物: 96（計画）、86（口と相手の許可）、87（頼む）。
+task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-click-connect.md)。先に要る物: 96（計画）、86（口と相手の許可）、87（頼む）。ローンチ分（11 章。L5）で先に要るのは、96 の純関数（L2）と 86 の握手（L4）まで。87 のローンチ分（L6）は、この後に作る。
 型契約: [noah-connect-v1.ts](../contracts/noah-connect-v1.ts)（状態遷移）、[noah-v1.sql](../contracts/noah-v1.sql)（`noah_connections`）。試験: [noah-connect.test.mjs](../design-validation/noah/noah-connect.test.mjs)、[validate-noah-v1.py](../design-validation/noah/validate-noah-v1.py)（「接続」の群）。
+
+**ローンチまでに作る範囲は 11 章（相手のサーバーへつなぐ道と、`/noah/ready` の 2 画面）。** 家の端末を同じボタンでつなぐ道と、相手の許可の続きは、出した後に足す。11 章と食い違う所は、ローンチまでは 11 章が勝つ。
 
 ## 1. 完成の姿
 
@@ -187,3 +189,145 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 - 幅 390 の実ブラウザで、サインイン済みの本人が、鍵の要らない相手のサーバーの Agent の「接続」を 1 回押して「頼む」になる。Mac を使わない。ボタンの下に送り先の 1 行が出る。
 - 応答している家の端末がある本人は、今の 13 件でも「接続」1 回で「頼む」になる。Mac を再起動した後、「接続」を押し直さずに頼める。
 - `npm run typecheck`、`npm run lint:product`。本番 D1 への migration は適用しない。
+
+## 11. ローンチの範囲: 相手のサーバーへつなぐ・`/noah/ready` の 2 画面（[ローンチの最小限](mvp-launch.md) の L5）
+
+ローンチまでに作るのは、この章に書いた範囲だけ。家の端末を同じボタンでつなぐ道（5.3・5.4）と、相手の許可の続き（シート）は、出した後に 1〜10 章のとおりに足す。
+
+### 11.1 入れる物・後にする物
+
+| 章 | ローンチまで | 後 |
+| --- | --- | --- |
+| 3 変える所 | migration（`noah_connections` だけ）、`lib/noah-connect.ts`、入口 2 つ、`noah-connect-button.tsx`、96 の `noah-card.tsx` と計画の API、新しい画面（11.5）、`noah-navigation.tsx` の 1 行 | `noah_connection_secrets`・`noah_oauth_*` の表、`noah-connect-sheet.tsx`、`noah-library.tsx` の節、`lib/noah-ask.ts` の家の端末の受け口。**`components/noah-launch.tsx`・`noah-public-catalog.tsx`・`noah-timeline.tsx` と、その API は触らない** |
+| 4.1 `POST` | 取り込んだ系列（相手のサーバー）だけ。握手まで、その要求の中で終える（11.3） | 今の Agent（家の端末）、`nextStep`、有料 |
+| 4.2 `GET` | 入れる（照合は無い） | 5.3 の照合 |
+| 4.3 | `disconnect`・`retry` | `resume` |
+| 5.2 状態と文 | `connected`・`failed`・`disconnected`・`blocked` と、途中の「準備しています…」 | `needs_action`・`unknown` |
+| 5.3・5.4 | 無し | 全部 |
+| 6.1・6.3 | 入れる | 6.2（シート） |
+| 7 数える物 | 入れる | — |
+
+### 11.2 この範囲で決めた事
+
+| 決めた事 | 理由 |
+| --- | --- |
+| 新しい画面を 2 つ足す（一覧 `/noah/ready` と、詳細 `/noah/ready/agent?id=<系列の ID>`）。今の `/noah`・`/noah/agents`・`/noah/launch` は変えない | 今の Mac の道（task 71）は、本番の受入の途中。同じ画面と API を触らない。今の公開カタログの API は「D1 を読まない」決まりで書かれている（`lib/noah-public-catalog-api.ts` の先頭） |
+| 接続は、要求 1 回の中で握手まで終え、結果を返す（202 と読み直しを使わない） | 握手の実測は中央値 1.2 秒・9 割が 2.1 秒以内。相手のサーバーへの接続は、途中で止まっても、やり直して害が無い |
+| `agentId` は系列の ID（例 `mcp-registry:ac.mizan/registry`）。接続要件は、代表の候補の物 | 一覧と同じ ID で引ける |
+| 載せていない系列（`noahListing` が偽）は、つなげない | 画面を通さない要求で、鍵の要る物・量産・取り下げた物へつながせない |
+| 取り下げられた物へつないでいた接続は、次に使おうとした時に `blocked` にする | 台帳が外した記録（迷惑・悪意・違法の疑い）へ、送り続けない |
+
+### 11.3 接続の処理（`POST /api/noah/connect`。本文は 4.1 と同じ）
+
+1. 共通の検査。`noahAllowed(flags, 'ask', 審査者か)` が偽なら 503「今は、新しい接続を受け付けていません。」。未サインインは 401（画面は 6.3）。
+2. 系列と、代表の候補・checks を読む。無ければ 404。`noahListing(…)` が偽なら 422「この Agent は、今はつなげません。」。
+3. 計画（96 の 9.3）を作り、`noahPlanSha256` が本文の `planSha256` と違えば 409 と新しい計画。`blocked` と、入力の要る段があれば 422。
+4. **つなぐ前の上限。** 新しく行を作る時だけ見る（同じ `id` の行がある時と、同じ系列の切っていない接続がある時は、数えずに 5 へ進み、5.1 の 3 のとおり、今ある行を返す）。[noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `connect_gate` で 3 つの数（切っていない接続・直近 60 秒に作った接続・直近 24 時間に作った接続）を取り、`noahConnectGate(counts, flags.askLimits)`（[noah-form-v1.ts](../contracts/noah-form-v1.ts)。既定は 50 件・10 件・100 件）。越えていれば、その status（409 か 429）と文。行を作らない。相手へ送らない。
+5. 行を入れる（5.1 の 3 と同じ。`family_key` と `agent_id` は系列の ID、`digest` は候補の `record_sha256`、`place='provider'`、`consent_json = { "permissions": ["read_user_input", "write_results"], "sendsTo": <host>, "at": <今> }`、`price_json = { "model": "free" }`）。同じ `id` の再送と、同じ系列の別の `id` の扱いは 5.1 の 3 のとおり。
+6. 状態を進める: `entitle_start` → `entitle_ok`（無料）→ `prepare_ok`。握手の前に、**接続先の枠を 1 つ取る**（`noah-listing-v1.sql` の `host_take`。`:limit` は `flags.askLimits.hostHandshakes`。1 つの接続先へ、利用者の操作から始める握手は、全員合わせて 60 秒に 60 回まで。相手が「混んでいる」と返して待っている間は 0 回）。取れたら、相手と握手する（全体で 8 秒。名乗りは `Noah/1 (+https://<origin>/noah/help#bot)`）。
+   - 枠が取れない: `probe_failed`。`error`「この Agent は、今こんでいます。少し待ってから試してください。」（`NOAH_HOST_BUSY`）。相手へ送らない。
+   - 通った: `probe_ok`。`tools_sha256`・`probe_ms`・`connected_at` を書く。系列の `connections` の列は、ローンチでは書かない（つないでいる人が居るかは、見回りが握手の時に `noah_connections` を見て決める。88 の 9.3。数を別に持つと、ずれる）。
+   - 相手が 401: `probe_failed`。`error`「この Agent は、相手の許可が要るようになりました。まだ対応していません。」。86 の握手の結果と同じ書き込み（`level=0`・`result='auth_required'`・系列への写し。`checked_at` は書き換えない。87 の 11.4 の終わり）で、一覧から外す。
+   - 相手が 429: `probe_failed`。`error`「相手のサーバーが混んでいます。少し待ってから試してください。」。`host_wait` で、`Retry-After`（無ければ 60 秒）の時刻まで待つ事を書く（その間、その接続先への接続・道具の一覧・依頼は、相手へ送らずに断る。巡回も握手しない）。
+   - それ以外の失敗: `probe_failed`。`error`「相手のサーバーが応答しません。時間をおいて試してください。」。握手の表には書かない（外すかどうかは、巡回の 2 回続けた失敗で決める）。
+7. 200 `{ "id", "state", "revision", "place": "provider", "placeLabel": "相手のサーバー（<host>）", "error"? }`。
+
+更新は全部 `WHERE id=? AND revision=?`。要求が途中で落ちて `planned`〜`probing` のまま残った行は、30 秒たったら巡回の合図が切る（88 の 9.5。`disconnect`。本人には「接続」がもう一度出る）。
+
+`disconnect`: 4.3 のとおり（許可の取り消しは無い）。終わっていない依頼は `stop` と同じ扱い。`retry`: `failed` から、3 と 6 をやり直す（行は作らないので、4 は見ない）。その行の `updated_at` から 5 秒たっていなければ 429「少し待ってから試してください。」（続けて押して、相手へ握手を送り続けない）。
+
+取り下げ: 道具の一覧（87 の 11.3）と依頼（同）が、候補が `active` でない・系列が取り下げられている事を見つけたら、その接続へ `revoked` を当てて `blocked` にする（`error`「この Agent は、出どころから取り下げられました。使えません。」）。
+
+### 11.4 その場のサインイン（6.3 のとおり。ローンチに入れる）
+
+未サインインの人が「接続」を押した時だけ通る。`sessionStorage['noah-connect-handoff'] = { agentId, id, at }` を置いて `/account?returnTo=<今の詳細の画面のパスと query>` へ移り、戻った詳細の画面が、10 分以内の handoff を読んで、同じ `id` で計画の読み直しから続ける。**本人は「接続」を押し直さない。** `returnTo` に渡すのは `/noah/ready` で始まるパスだけ。
+
+### 11.5 画面
+
+一覧（`/noah/ready`）:
+
+```
+┌ すぐ使える Agent
+│ [ 語で探す                              ]
+│ ( すべて ) ( 押すだけで試せる )
+├ つながっているもの
+│   Mizan — mizan.ac                [ 頼む ]
+├ 動いた
+│   （カード）
+├ まだ誰も動かしていない
+│   （カード）…
+│   （下まで来たら、続きを読む）
+├ 自分の Mac で動かす Agent →
+└ 出どころ: Official MCP Registry …
+```
+
+詳細（`/noah/ready/agent?id=…`）:
+
+```
+┌ Mizan                          提供: ac.mizan
+│ （説明。提供者の文のまま）
+│ 相手のサーバー（mizan.ac）・無料・道具 5 個
+│ 最後に確かめた日 11/20
+│ 入力は mizan.ac へ送られます。Noah が送るのは、あなたが入力した内容だけです。
+│                                      [ 接続 ]
+├ （つないだ後: 87 の 11.5 の、道具と入力欄と仕事）
+├ [ 切る ]
+└ 出どころ: Official MCP Registry。Noah が作った物ではありません。 報告・取り下げの申し出 →
+```
+
+| ファイル | 中身 |
+| --- | --- |
+| `app/noah/ready/page.tsx`・`app/noah/ready/agent/page.tsx` | 2〜3 行。下の部品を出すだけ（今の `app/noah/*/page.tsx` と同じ書き方）。詳細は、系列の ID を query の `id` で受ける（ID が `/` を含むので、パスに入れない。85 の 11.5） |
+| `components/noah-ready.tsx` | 一覧。`GET /api/noah/intake`（85 の 11.5）を読み、`noah-card.tsx` を並べる。語の欄は 300 ミリ秒待ってから読む。「押すだけで試せる」は `oneTap=1`。下まで来たら `nextCursor` で続きを読む（今の `noah-public-catalog.tsx` の `IntersectionObserver` と同じやり方）。サインイン済みなら、上に「つながっているもの」（`GET /api/noah/connect`）。API が 404 の時は「まだ公開していません。」だけを出す |
+| `components/noah-ready-detail.tsx` | 詳細。`GET /api/noah/intake?id=` と `GET /api/noah/connect-plan?agent=`。未接続なら `noah-connect-button.tsx`。`connected` なら `noah-ask.tsx` と `noah-work-list.tsx`（87）と「切る」。`blocked`・`failed` は `error` の文と、`failed` だけ「もう一度」 |
+| `components/noah-connect-button.tsx` | 6.1 のとおり。違い: `POST` の応答で結果が決まるので、読み直しは行わない。押してから応答までは「準備しています…」（押せない） |
+| `components/noah-navigation.tsx` | `destinations` に `['ready', '/noah/ready', 'すぐ使える']` を足す。`GET /api/noah/intake?limit=0` が 200 を返した時だけ出す（結果は `sessionStorage` に 10 分持つ）。閉じている間、審査者でない人には出ない |
+
+見た目: 新しい画面は、今の `app/noah/layout.tsx` の中に出る（上段の「Noah / Eve」の切り替えは、そのまま）。class は、今の `components/noah-timeline.module.css` の物を使い、足りない分だけを `components/noah-ready.module.css` に足す。新しい色・字・余白の決まりを作らない。
+
+画面の文:
+
+| 所 | 文 |
+| --- | --- |
+| 段の見出し | 「つながっているもの」「動いた」「まだ誰も動かしていない」 |
+| 段の下の 1 行 | 動いた: 「人が動かして、成果が返った物です。」／まだ: 「Noah が、応答する事だけを確かめた物です。」 |
+| カードの印 | 96 の 6 章。ローンチで出るのは「1 クリック」「まだ誰も動かしていない」「あと 1 タップ（サインイン）」 |
+| カードの補い | `oneTap` が真なら「押すだけで試せる」。`tools` があれば「道具 <n> 個」 |
+| 送り先 | 「入力は <host> へ送られます。Noah が送るのは、あなたが入力した内容だけです。」 |
+| 出どころ | 「出どころ: Official MCP Registry。Noah が作った物ではありません。説明は、提供者が書いた文のままです。」 |
+| 窓口 | 「報告・取り下げの申し出」→ `/noah/help#bot` |
+| Mac の行 | 「自分の Mac で動かす Agent」→ `/noah/launch`（今の画面。変えない） |
+| 一覧が空 | 「今、並べられる物がありません。少し後で開いてください。」 |
+| 探して無い | 「見つかりませんでした。別の語で探してください。」 |
+
+出どころの書き方は、台帳の利用条件に合わせる（「Official MCP Registry から来たデータ」とは書ける。提携・公認と読める書き方はしない。[利用条件](https://modelcontextprotocol.io/registry/terms-of-service) の 6）。
+
+### 11.6 試験（8 章に足す。`tests/noah-connect.test.mjs`・`tests/noah-ready-ui.test.mjs`）
+
+| 試験 | 前提 | 期待 |
+| --- | --- | --- |
+| 状態遷移・表の制約（移す） | — | 型契約と DDL の検証 |
+| つなぐ | サインイン済み、握手が通る試験用の相手、載せている系列 | `POST` 1 回で 200 `connected`。`tools_sha256`・`connected_at` が入る。`noah_runner_commands` の行が増えない |
+| 相手が応答しない | 握手が時間切れ | 200 `failed` と 2 文の `error`。`retry` で `connected` |
+| 相手が 401 | — | `failed`。系列が一覧から消える |
+| 載せていない物 | 鍵の要る系列・量産・取り下げた系列の ID | 422。行ができない。相手へ 1 回も送らない |
+| 二重押し・再読込 | 同じ `id` で 3 回 | 行は 1 件。握手は 1 回。3 回とも同じ応答 |
+| 条件が変わった | 計画を読んだ後に、接続要件の hash を変える | 409 と新しい計画 |
+| 同じ系列を 2 回 | 別の `id` で、同じ系列 | 前の行を 200 で返す。行は 1 件 |
+| 切る | `connected` | `disconnected`。新しい依頼は 409。Work の行数が変わらない。もう一度つなげる |
+| 取り下げの後 | つないだ後に、候補を `withdrawn` にして、道具の一覧を開く | 409。接続が `blocked` |
+| 切り替え | `NOAH_ASK_FORM` が閉、審査者でない | 503 |
+| つなぐ前の上限 | 切っていない接続が 50 件／直近 60 秒に 10 件作った／直近 24 時間に 100 件作った | 409／429／429。行ができない。相手が受けた要求は 0 回。同じ `id` の再送は、上限に達していても、今の行を返す |
+| 接続先の枠 | 同じ接続先の系列へ、別々の本人が、60 秒の間に 61 回つなぐ | 61 回目は `failed`「この Agent は、今こんでいます…」。相手が受けた握手は 60 回。60 秒たつと通る |
+| 相手が「混んでいる」 | 握手に 429 と `Retry-After: 120` | `failed`「相手のサーバーが混んでいます…」。120 秒の間、その接続先への接続・道具の一覧・依頼は、相手へ送らずに断る。巡回も握手しない |
+| 続けて押す | `failed` の直後に `retry` を 3 回 | 2 回目と 3 回目は 429。相手が受けた握手は 1 回。5 秒後は通る |
+| 他人 | 別の本人の `id`、別の Origin、違う ownerScope | 404、403、409 |
+| 未サインイン | handoff を置く → サインイン → 戻る | 同じ `id` で 1 件。押し直さない。10 分を越えた handoff は使わない |
+| 画面 | 既存の画面の試験と同じやり方 | カードの主ボタンは 1 つ。印が文字で出る。「入力は <host> へ送られます。」が、接続の前に出ている。出どころの文がある |
+
+### 11.7 完了の定義（L5）
+
+- `node --experimental-strip-types --test tests/noah-connect.test.mjs tests/noah-connect-plan-api.test.mjs tests/noah-ready-ui.test.mjs` が通る。
+- 手元で、審査者の account と幅 390 のブラウザで、握手が通った実在の系列の「接続」を 1 回押して「頼む」になる（道具の一覧が出る所まで）。Mac を使わない。
+- 切り替えが閉じている時、審査者でない人に、新しい画面と navigation の行が出ない。今の `/noah`・`/noah/agents`・`/noah/launch` の表示と API の応答が変わらない（`npm run verify`）。
+- 本番 D1 への migration を適用していない。

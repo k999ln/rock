@@ -3,9 +3,13 @@
  *
  * Design contract only. No network calls, credentials or production mutations.
  * モデル・道具の呼び出し・本人への確認・停止の確認は、呼ぶ側が渡す。担当は鍵も token も持たない。
- * 仕様の本文は docs/noah/spec-87-tool-agent.md。
+ * 仕様の本文は docs/noah/spec-87-tool-agent.md。入力欄で頼む方（モデルを使わない。ローンチの範囲）は noah-form-v1.ts。
  */
+import { checkNoahToolArgs } from './noah-form-v1.ts';
 import type { NoahToolDef } from './noah-mouth-v1.ts';
+
+/** 入力の形の検査は、入力欄で頼む方（noah-form-v1.ts）と同じ関数を使う。 */
+export { checkNoahToolArgs };
 
 export type NoahToolCall = { id: string; name: string; arguments: unknown };
 export type NoahAgentMessage =
@@ -80,28 +84,6 @@ export function fitNoahTools(tools: NoahToolDef[], prompt: string, limits: NoahT
     bytes += size;
   }
   return fitted;
-}
-
-/** 入力の形の最小の検査。object であること、必須の項目があること、文字列・数・真偽・配列・object の型が合うこと。 */
-export function checkNoahToolArgs(schema: unknown, args: unknown): string | null {
-  if (!args || typeof args !== 'object' || Array.isArray(args)) return '入力は object です。';
-  const s = (schema && typeof schema === 'object' ? schema : {}) as {
-    required?: unknown; properties?: Record<string, { type?: unknown; enum?: unknown }>; additionalProperties?: unknown;
-  };
-  const given = args as Record<string, unknown>;
-  for (const key of Array.isArray(s.required) ? s.required : []) if (!(String(key) in given)) return `必須の項目がありません: ${key}`;
-  for (const [key, value] of Object.entries(given)) {
-    const property = s.properties?.[key];
-    if (!property) {
-      if (s.additionalProperties === false) return `定義に無い項目です: ${key}`;
-      continue;
-    }
-    const got = Array.isArray(value) ? 'array' : value === null ? 'null' : typeof value === 'number' && Number.isInteger(value) ? 'integer' : typeof value;
-    const want = Array.isArray(property.type) ? property.type : typeof property.type === 'string' ? [property.type] : [];
-    if (want.length && !want.includes(got) && !(got === 'integer' && want.includes('number'))) return `型が違います: ${key}`;
-    if (Array.isArray(property.enum) && !property.enum.includes(value)) return `選べない値です: ${key}`;
-  }
-  return null;
 }
 
 /**
@@ -245,32 +227,4 @@ export function fromNoahChatResponse(json: unknown, names: { fromModel: Map<stri
     inputTokens: Number.isInteger(j.usage?.prompt_tokens) ? (j.usage!.prompt_tokens as number) : 0,
     outputTokens: Number.isInteger(j.usage?.completion_tokens) ? (j.usage!.completion_tokens as number) : 0,
   };
-}
-
-// ---------------------------------------------------------------------------
-// 入力欄での実行（モデルを使わない）
-// ---------------------------------------------------------------------------
-
-export type NoahFormField = { name: string; label: string; type: 'string' | 'number' | 'boolean'; required: boolean; choices?: unknown[] };
-/**
- * 道具が 1 つで、入力が文字列・数・真偽だけ、必須の入力が 2 個以下なら、画面にそのまま入力欄を出す。
- * 合わなければ null（1 文で頼む方へ回す）。
- */
-export function noahDirectForm(tools: NoahToolDef[]): { tool: string; fields: NoahFormField[] } | null {
-  if (tools.length !== 1) return null;
-  const schema = (tools[0].inputSchema ?? {}) as { required?: unknown; properties?: Record<string, { type?: unknown; description?: unknown; title?: unknown; enum?: unknown }> };
-  const required = Array.isArray(schema.required) ? schema.required.map(String) : [];
-  if (required.length > 2) return null;
-  const fields: NoahFormField[] = [];
-  for (const [name, property] of Object.entries(schema.properties ?? {})) {
-    const type = property.type === 'integer' ? 'number' : property.type;
-    if (type !== 'string' && type !== 'number' && type !== 'boolean') {
-      if (required.includes(name)) return null;
-      continue;
-    }
-    if (!required.includes(name) && fields.length >= 4) continue;
-    const label = typeof property.title === 'string' ? property.title : typeof property.description === 'string' ? property.description.slice(0, 80) : name;
-    fields.push({ name, label, type, required: required.includes(name), ...(Array.isArray(property.enum) ? { choices: property.enum } : {}) });
-  }
-  return { tool: tools[0].name, fields: fields.sort((a, b) => Number(b.required) - Number(a.required)) };
 }

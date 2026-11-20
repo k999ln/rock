@@ -482,13 +482,158 @@ export function noahSampleCalls(tools: NoahProbeTool[], limit = 3): { tool: stri
 }
 
 const HOUR = 3_600_000;
-export const NOAH_CHECK_INTERVALS = { connected: 24 * HOUR, level2: 72 * HOUR, level1: 168 * HOUR, hideAfter: 30 * 24 * HOUR };
+export const NOAH_CHECK_INTERVALS = { connected: 24 * HOUR, level2: 72 * HOUR, level1: 168 * HOUR, retry: 6 * HOUR, hideAfter: 30 * 24 * HOUR };
+/** 握手が続けて何回失敗したら、一覧から外すか（level を 0 にする）。1 回の失敗では外さない。 */
+export const NOAH_FAILURES_TO_UNLIST = 2;
 /**
  * 次に確かめる時刻。つないでいる人がいる系列は 24 時間後、L2 だけは 3 日後、L1 以下は 7 日後。
- * 失敗が続くと間隔を 2 倍ずつ伸ばす（最長 30 日）。hide は、最初の失敗から 30 日たったら真。
+ * 1 回目の失敗の後は、6 時間後に確かめ直す（止まった物を、何日も並べたままにしない）。
+ * 2 回目からは、間隔を 2 倍ずつ伸ばす（最長 30 日）。hide は、最初の失敗から 30 日たったら真。
  */
 export function nextNoahCheck(input: { now: number; connected: boolean; level: 0 | 1 | 2; failures: number; firstFailureAt: number | null }): { at: number; hide: boolean } {
   const base = input.connected ? NOAH_CHECK_INTERVALS.connected : input.level === 2 ? NOAH_CHECK_INTERVALS.level2 : NOAH_CHECK_INTERVALS.level1;
-  const interval = Math.min(base * 2 ** Math.min(input.failures, 10), NOAH_CHECK_INTERVALS.hideAfter);
+  const interval = input.failures === 1 ? NOAH_CHECK_INTERVALS.retry : Math.min(base * 2 ** Math.min(Math.max(input.failures - 1, 0), 10), NOAH_CHECK_INTERVALS.hideAfter);
   return { at: input.now + interval, hide: input.firstFailureAt !== null && input.now - input.firstFailureAt >= NOAH_CHECK_INTERVALS.hideAfter };
 }
+
+// ---------------------------------------------------------------------------
+// 公式台帳の読み方（最初は全件。その後は、更新された物だけ）
+// 出どころの決まり: https://modelcontextprotocol.io/registry/registry-aggregators
+// 2026-11-20 に確かめた: /v0.1/servers が limit・cursor・version=latest・updated_since を受ける。
+// 直前の 1 時間に更新された記録は 109 件（2 頁）。その中に、status が deleted の記録が入る。
+// ---------------------------------------------------------------------------
+
+export const NOAH_REGISTRY = {
+  base: 'https://registry.modelcontextprotocol.io',
+  pageSize: 100,
+  /** 更新された物だけを読む時、前回の印からさかのぼる幅（境目の取りこぼしを防ぐ）。 */
+  overlapMs: 10 * 60_000,
+  /** 更新された物だけを読む間隔。出どころの決まりは「1 時間に 1 回ほど」。 */
+  everyMs: 60 * 60_000,
+  /** 全件を読み直す間隔（取り下げの確かめと、取りこぼしの保険）。 */
+  fullEveryMs: 7 * 24 * 60 * 60_000,
+};
+
+/** 1 頁を読む URL。updatedSince は、1 巡の間ずっと同じ値を使う（頁をまたいで変えない）。 */
+export function noahRegistryPageUrl(input: { cursor?: string | null; updatedSince?: number | null }): string {
+  const url = new URL('/v0.1/servers', NOAH_REGISTRY.base);
+  url.searchParams.set('limit', String(NOAH_REGISTRY.pageSize));
+  url.searchParams.set('version', 'latest');
+  if (input.updatedSince) url.searchParams.set('updated_since', new Date(input.updatedSince).toISOString());
+  if (input.cursor) url.searchParams.set('cursor', input.cursor);
+  return url.toString();
+}
+
+/**
+ * 次の巡回の読み方を決める。全件を読むのは、最初の 1 回と、前の全件から 7 日たった時。それ以外は、更新された物だけ。
+ * 印（checkpoint）は、巡回を始めた時刻。全部の頁を書き終えた後にだけ進める（途中で止まったら、同じ印からやり直す）。
+ */
+export function noahRegistrySyncPlan(input: { now: number; checkpoint: number | null; lastFullAt: number | null }): { mode: 'full' | 'updated'; updatedSince: number | null; nextCheckpoint: number } {
+  const full = input.checkpoint === null || input.lastFullAt === null || input.now - input.lastFullAt >= NOAH_REGISTRY.fullEveryMs;
+  return { mode: full ? 'full' : 'updated', updatedSince: full ? null : input.checkpoint! - NOAH_REGISTRY.overlapMs, nextCheckpoint: input.now };
+}
+
+/** 台帳の status を、候補の状態にする。active 以外（deprecated・deleted）は取り下げ。deleted は、台帳の運営が外した物（迷惑・悪意・違法の疑い）。 */
+export function noahRegistryState(status: unknown): 'active' | 'withdrawn' {
+  return status === 'active' ? 'active' : 'withdrawn';
+}
+
+// ---------------------------------------------------------------------------
+// ローンチの一覧に載せる条件（docs/noah/mvp-launch.md 3 章）。同じ条件を noah-regroup-v1.sql が SQL で持つ。
+// ---------------------------------------------------------------------------
+
+export const NOAH_LISTING_REASONS = [
+  'withdrawn',         // 出どころから外れた、または運営が取り下げた
+  'hidden',            // 30 日つながらなかった
+  'unsupported',       // 接続要件の下書きを作れない（理由は NOAH_INTAKE_REASONS）
+  'later_source',      // 公式台帳の外（Space・ACP）。ローンチの後
+  'later_mouth',       // 端末で動かす配布。ローンチの後
+  'bulk',              // 同じ提供者の量産。ローンチの後（1 枚のカードの中身の見せ方を決めてから）
+  'needs_key',         // 本人の鍵の入力が要る。ローンチの後
+  'not_checked',       // まだ握手していない
+  'needs_permission',  // 相手の許可（OAuth か鍵）が要る。ローンチの後
+  'needs_payment',     // 呼ぶたびの支払いが要る。未対応
+  'not_responding',    // 握手が通らない（2 回続けて失敗した物を含む）
+  'no_form_tool',      // 入力欄で使える道具が 1 つも無い
+] as const;
+export type NoahListingReason = (typeof NOAH_LISTING_REASONS)[number];
+export type NoahListingInput = {
+  source: NoahFamilyItem['source'];
+  familyId: string;
+  candidateState: 'active' | 'unsupported' | 'withdrawn';
+  withdrawn: boolean;
+  hidden: boolean;
+  /** 握手の表（noah_intake_checks）の行。下書きを作れなかった候補は null。 */
+  check: null | {
+    mouth: NoahConnect['mouth']; setup: boolean; auth: 'none' | 'oauth' | 'key' | 'payment' | 'unknown';
+    result: string; level: 0 | 1 | 2; formTools: number | null; oneTapTools: number | null;
+  };
+};
+export type NoahListing =
+  | { listed: true; section: 'ran' | 'new'; oneTap: boolean }
+  | { listed: false; reason: NoahListingReason };
+
+/**
+ * ローンチの一覧に載せるか。載せるのは、公式台帳の、相手のサーバーで動く物で、鍵も許可も無しで握手が通っていて（level 1 以上）、
+ * 入力欄で使える道具が 1 つ以上ある系列。量産の系列は載せない。理由は上から順に見て、最初に当たった物。
+ * 握手の 1 回の失敗と、相手の「混んでいる」では外さない（level が変わらないため）。2 回続けて失敗すると level が 0 になり、外れる。
+ * section: 'ran' は、人が動かして成果が返った物（L2）。'new' は、握手までの物（「まだ誰も動かしていない」）。
+ */
+export function noahListing(input: NoahListingInput): NoahListing {
+  const no = (reason: NoahListingReason): NoahListing => ({ listed: false, reason });
+  if (input.candidateState === 'withdrawn' || input.withdrawn) return no('withdrawn');
+  if (input.hidden) return no('hidden');
+  const k = input.check;
+  if (input.candidateState === 'unsupported' || !k) return no('unsupported');
+  if (input.source !== 'mcp-registry') return no('later_source');
+  if (k.mouth !== 'mcp-remote') return no('later_mouth');
+  if (input.familyId.startsWith('bulk:')) return no('bulk');
+  if (k.setup) return no('needs_key');
+  if (k.level < 1) {
+    if (k.result === 'unchecked') return no('not_checked');
+    if (k.auth === 'oauth' || k.auth === 'key' || k.result === 'auth_required') return no('needs_permission');
+    if (k.auth === 'payment' || k.result === 'payment_required') return no('needs_payment');
+    return no('not_responding');
+  }
+  if (k.auth !== 'none') return no('needs_permission');
+  if ((k.formTools ?? 0) < 1) return no('no_form_tool');
+  return { listed: true, section: k.level === 2 ? 'ran' : 'new', oneTap: (k.oneTapTools ?? 0) >= 1 };
+}
+
+// ---------------------------------------------------------------------------
+// 巡回を起こす合図（専用の cron の Worker → Web の本体）。既存の lib/sky-free-cloud-background.ts の verifyWake と同じ作り。
+// 合図は空（'{}'）。何を読むか・どこへつなぐかは、Web の本体だけが決める。
+// ---------------------------------------------------------------------------
+
+export const NOAH_WAKE = { path: '/api/noah/intake/tick', maxSkewMs: 120_000, minKeyChars: 32 };
+const hex = (buffer: ArrayBuffer) => Array.from(new Uint8Array(buffer), (b) => b.toString(16).padStart(2, '0')).join('');
+async function hmacKey(key: string, usage: 'sign' | 'verify') {
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, [usage]);
+}
+const wakeMessage = (timestamp: string, path: string) => new TextEncoder().encode(`${timestamp}\nPOST\n${path}\n{}`);
+
+/** 合図の署名（hex 64 桁）。送る側が使う。header は x-noah-time（ミリ秒 13 桁）と x-noah-signature。 */
+export async function noahWakeSignature(key: string, timestamp: string, path: string = NOAH_WAKE.path): Promise<string> {
+  return hex(await crypto.subtle.sign('HMAC', await hmacKey(key, 'sign'), wakeMessage(timestamp, path)));
+}
+
+/** 合図の検査。鍵が短い・時刻が 2 分より離れている・本文が '{}' でない・署名が違う、のどれでも偽。 */
+export async function verifyNoahWake(input: { key: string | undefined; timestamp: string | null; signature: string | null; body: string; now: number; path?: string }): Promise<boolean> {
+  const { key, timestamp, signature } = input;
+  if (!key || key.length < NOAH_WAKE.minKeyChars || !timestamp || !/^\d{13}$/.test(timestamp) || !signature || !/^[a-f0-9]{64}$/.test(signature)) return false;
+  if (Math.abs(input.now - Number(timestamp)) > NOAH_WAKE.maxSkewMs || input.body !== '{}') return false;
+  const bytes = Uint8Array.from(signature.match(/../g)!, (pair) => parseInt(pair, 16));
+  return crypto.subtle.verify('HMAC', await hmacKey(key, 'verify'), bytes, wakeMessage(timestamp, input.path ?? NOAH_WAKE.path));
+}
+
+/** 1 回の合図で進める量。数値は候補。配備先の上限（CPU・外向きの通信・D1 の query）の中に収まるように、本人が変える。 */
+export const NOAH_PATROL_BUDGET = {
+  /** 台帳の頁。手元の計測で、1 頁（100 件）の下書きと hash に CPU 約 27 ms。 */
+  pages: 10,
+  /** 握手する候補。1 件で外向きの通信が 4〜5 回。 */
+  probes: 8,
+  /** 握手を同時に行う数。Workers は、1 回の実行で同時に開ける外向きの接続が 6 本まで。 */
+  concurrent: 4,
+  /** 1 回の合図で使う時間の上限。 */
+  seconds: 25,
+};

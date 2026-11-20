@@ -2,7 +2,18 @@
 
 仕様: **[docs/noah/spec-86-remote-mouth.md](../../docs/noah/spec-86-remote-mouth.md)**。型と参照実装: docs/contracts/noah-mouth-v1.ts。試験: docs/design-validation/noah/noah-mouth.test.mjs（実測の写し fixtures/mcp-exchange-mizan.json を含む）。先に 85。
 
-## やること
+## ローンチまで（先に、この範囲だけを出す。[ローンチの最小限](../../docs/noah/mvp-launch.md) の L4）
+
+仕様書の **10 章** だけを見て作る。完了の定義も、その章にある。
+
+- 先に要る PR: L3（85 のローンチ分）
+- やる: 下の「やること」の 1 のうち `lib/noah-mouth-mcp-remote.ts`、4（`probeL1`）、5（巡回での握手）
+- やる: `lib/noah-form.ts`: docs/contracts/noah-form-v1.ts を全部移す（握手の時に、入力欄で使える道具の数を数える。87 が使う）
+- やる: 握手の後の書き込み（10.3）: `form_tools`・`one_tap_tools`、系列への写し、2 回続けて失敗したら外す
+- やらない（出した後）: 2・3（相手の許可の全部）。401 を返した相手は「相手の許可が要る」と記録するだけで、認可サーバーへは 1 回も送らない
+- やらない（出した後）: `lib/noah-mouth-space.ts`
+
+## やること（全部。ローンチの後に、残りをやる）
 
 1. lib/noah-mouth-mcp-remote.ts: 参照実装の `noahMcpHandshake`・`noahMcpCall`・`noahMcpClose`・`noahToolsSha256`・`createNoahGuardedFetch`・`isNoahPrivateAddress`・`parseNoahWwwAuthenticate`・`NoahMouthError` を移す。lib/noah-mouth-space.ts は URL を作って同じ握手を呼ぶだけ。
 2. lib/noah-oauth.ts: `noahProtectedResourceUrls`・`noahAuthorizationServerUrls`・`planNoahOAuth`・`noahClientMetadata`・`noahRegistrationBody`・`noahPkcePair`・`noahAuthorizationUrl`・`noahTokenRequestBody` を移す。

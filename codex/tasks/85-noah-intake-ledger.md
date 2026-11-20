@@ -2,7 +2,19 @@
 
 仕様: **[docs/noah/spec-85-intake.md](../../docs/noah/spec-85-intake.md)**。型と参照実装: docs/contracts/noah-intake-v1.ts、noah-v1.sql（`noah_intake_*`・`noah_probe_hosts`）、noah-regroup-v1.sql。試験: docs/design-validation/noah/noah-intake.test.mjs、validate-noah-v1.py。先に 84。本番 D1 の migration は本人の許可の後。
 
-## やること
+## ローンチまで（先に、この範囲だけを出す。[ローンチの最小限](../../docs/noah/mvp-launch.md) の L3）
+
+仕様書の **11 章** だけを見て作る。完了の定義も、その章にある。
+
+- 先に要る PR: L2（96 の純関数）だけ
+- やる: 公式台帳だけを取り込む。最初は全件、その後は毎時「更新された物だけ」（11.2）
+- やる: 足すファイル: `lib/noah-flags.ts`、`lib/noah-intake-server.ts`、`lib/noah-intake-wake.ts`、`app/api/noah/intake/tick/route.ts`、`services/noah-patrol-wake/`（11.3）
+- やる: 一覧・詳細・検索・集計・取り下げの API（11.5）。問い合わせは docs/contracts/noah-listing-v1.sql を文字列のまま使う
+- やる: D1 の書き方（11.4）: 名寄せは 1 日 1 回。変わらない行を書かない
+- やらない（出した後）: Hugging Face の Space と ACP の台帳（`draftFromSpace`・`draftFromAcp` は移さない）
+- やらない（出した後）: 日本語の 1 行説明
+
+## やること（全部。ローンチの後に、残りをやる）
 
 1. drizzle/0044_noah_intake.sql・db/schema.ts・drizzle/meta/_journal.json: DDL 案から取り込みの 5 表と索引を移す（`when` は今の最大より大きい値）。
 2. lib/noah-intake-draft.ts: 参照実装の `draftFromRegistry`・`draftFromSpace`・`draftFromAcp`・`noahCandidateId`・`NOAH_INTAKE_REASONS` を移す。

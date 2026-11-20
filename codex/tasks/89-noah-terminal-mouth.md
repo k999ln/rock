@@ -2,6 +2,8 @@
 
 仕様: **[docs/noah/spec-89-terminal-mouth.md](../../docs/noah/spec-89-terminal-mouth.md)**。型と参照実装: docs/contracts/noah-intake-v1.ts（台帳の読み方）、noah-mouth-v1.ts の `noahLaunchPlan`。先に 84・85。動かす所は専用の端末（今は本人の Mac の隔離環境。雲は 75 の後）。
 
+**ローンチまで: 何もしない。** この task は、全部が出した後（[ローンチの最小限](../../docs/noah/mvp-launch.md) の 3 章）。
+
 **最初にやる事: 仕様書 6 章の「確かめていない事」6 つを、Mac の隔離環境で確かめる。** 設計の検証では、外の配布を実際に動かしていない。結果で型紙を直してよい（何を直したかを PR 本文に書く）。
 
 ## やること

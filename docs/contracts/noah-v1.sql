@@ -13,8 +13,10 @@ CREATE TABLE IF NOT EXISTS noah_intake_sources (
   lease_id TEXT, lease_until INTEGER NOT NULL DEFAULT 0,
   next_run_at INTEGER NOT NULL DEFAULT 0, last_attempt_at INTEGER, last_success_at INTEGER,
   cursor TEXT,                 -- 途中の頁。1 巡が終わったら NULL
-  updated_since TEXT,          -- 次の巡回で「これより新しい物だけ」を読む時刻（出どころの形式のまま）
-  sweep_started_at INTEGER,    -- 全件の巡回を始めた時刻。これより前に見た切りの行を、取り下げとして扱う
+  updated_since TEXT,          -- 進行中の巡回が使っている updated_since（1 巡の間は同じ値。全件の巡回は NULL）
+  sweep_started_at INTEGER,    -- 進行中の巡回を始めた時刻。全件の巡回では、これより前に見た切りの行を、取り下げとして扱う
+  checkpoint_at INTEGER,       -- 最後に書き終えた巡回を、始めた時刻。次の「更新された物だけ」は、ここから 10 分さかのぼって読む
+  last_full_at INTEGER,        -- 最後に書き終えた全件の巡回を、始めた時刻。7 日たったら、もう一度全件を読む
   error_code TEXT, failure_count INTEGER NOT NULL DEFAULT 0,
   observed INTEGER NOT NULL DEFAULT 0, withdrawn INTEGER NOT NULL DEFAULT 0, request_count INTEGER NOT NULL DEFAULT 0
 );
@@ -64,11 +66,13 @@ CREATE TABLE IF NOT EXISTS noah_intake_checks (
   tools_sha256 TEXT CHECK(tools_sha256 IS NULL OR length(tools_sha256) = 64),
   tool_count INTEGER CHECK(tool_count IS NULL OR tool_count >= 0),
   read_only INTEGER CHECK(read_only IS NULL OR read_only IN (0,1)),         -- 全部の道具が読み取りだけか
+  form_tools INTEGER CHECK(form_tools IS NULL OR form_tools >= 0),          -- 入力欄で使える道具の数（noahFormSummary）。定義そのものは保存しない
+  one_tap_tools INTEGER CHECK(one_tap_tools IS NULL OR one_tap_tools >= 0), -- そのうち、読み取りだけで必須の入力が無い道具の数（押すだけで頼める）
   level INTEGER NOT NULL CHECK(level IN (0,1,2)),
   result TEXT NOT NULL CHECK(result IN ('unchecked','ok','auth_required','payment_required','forbidden','rate_limited','unreachable','incompatible','too_large','blocked')),
   latency_ms INTEGER CHECK(latency_ms IS NULL OR latency_ms >= 0),
   sample_json TEXT CHECK(sample_json IS NULL OR (json_valid(sample_json) AND length(sample_json) <= 4096)),   -- 見本（道具の名前・入力・成果の先頭 500 文字）
-  checked_at INTEGER, l1_at INTEGER, l2_at INTEGER,
+  checked_at INTEGER, l1_at INTEGER, l2_at INTEGER,                -- checked_at は、巡回が最後に握手した時刻（利用者の接続・依頼では書き換えない）。l1_at・l2_at は、その段になった時刻
   next_check_at INTEGER NOT NULL, failures INTEGER NOT NULL DEFAULT 0 CHECK(failures >= 0), first_failure_at INTEGER,
   lease_until INTEGER NOT NULL DEFAULT 0,
   CHECK(level = 0 OR (tools_sha256 IS NOT NULL AND l1_at IS NOT NULL)),
@@ -76,7 +80,8 @@ CREATE TABLE IF NOT EXISTS noah_intake_checks (
   CHECK((failures = 0) = (first_failure_at IS NULL))
 );
 --> statement-breakpoint
-CREATE INDEX IF NOT EXISTS noah_intake_checks_due ON noah_intake_checks(next_check_at, lease_until);
+-- 巡回が次に握手する物。握手できるのは、相手のサーバーの口で、本人の鍵の入力が要らない候補だけ（端末で動かす配布と、鍵の要る物を、毎回読み飛ばさない）。
+CREATE INDEX IF NOT EXISTS noah_intake_checks_due ON noah_intake_checks(next_check_at, lease_until) WHERE setup = 0 AND mouth IN ('mcp-remote','space-mcp','a2a');
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_intake_checks_level ON noah_intake_checks(level, l2_at);
 --> statement-breakpoint
@@ -87,6 +92,9 @@ CREATE TABLE IF NOT EXISTS noah_intake_families (
   level INTEGER NOT NULL CHECK(level IN (0,1,2)), l2_at INTEGER,
   badge_hint TEXT NOT NULL CHECK(badge_hint IN ('one_click','taps','setup','unverified','blocked')),   -- サインイン済みで端末の無い本人から見た印
   connections INTEGER NOT NULL DEFAULT 0 CHECK(connections >= 0),  -- 今つないでいる本人の数（見回りの間隔に使う）
+  listed INTEGER NOT NULL DEFAULT 0 CHECK(listed IN (0,1)),        -- ローンチの一覧に載せる（noahListing と同じ条件。noah-regroup-v1.sql が計算する）
+  one_tap INTEGER NOT NULL DEFAULT 0 CHECK(one_tap IN (0,1)),      -- 押すだけで頼める道具がある（一覧の絞り込み）
+  shuffle INTEGER NOT NULL DEFAULT 0 CHECK(shuffle >= 0),          -- 「まだ誰も動かしていない」の並び。1 日 1 回、引き直す（名前の順・更新の多さで並べない）
   claimed_by TEXT, claimed_at INTEGER, withdrawn_at INTEGER, hidden_at INTEGER,
   updated_at INTEGER NOT NULL, revision INTEGER NOT NULL CHECK(revision >= 1),
   CHECK((claimed_by IS NULL) = (claimed_at IS NULL))
@@ -95,11 +103,19 @@ CREATE TABLE IF NOT EXISTS noah_intake_families (
 -- タイムライン: L2 が新しい順。取り下げた物と隠した物は載せない。
 CREATE INDEX IF NOT EXISTS noah_intake_families_timeline ON noah_intake_families(l2_at DESC, id) WHERE level = 2 AND withdrawn_at IS NULL AND hidden_at IS NULL;
 --> statement-breakpoint
+-- ローンチの一覧の「まだ誰も動かしていない」: 握手まで（L1）の系列を、その日の並びで。
+CREATE INDEX IF NOT EXISTS noah_intake_families_listed ON noah_intake_families(shuffle DESC, id) WHERE listed = 1 AND level = 1 AND withdrawn_at IS NULL AND hidden_at IS NULL;
+--> statement-breakpoint
+-- 握手・実行で checks を書いた時、その候補が代表の系列の行も同じ値にする。
+CREATE INDEX IF NOT EXISTS noah_intake_families_representative ON noah_intake_families(representative_id);
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_intake_families_claimed ON noah_intake_families(claimed_by) WHERE claimed_by IS NOT NULL;
 --> statement-breakpoint
--- 巡回の礼儀: 同じ host へは 1 巡回に 1 回。429 の Retry-After を守る。
+-- 接続先（host）ごとの礼儀。巡回: 同じ host へは 1 時間に 1 回（last_probe_at）。429 の Retry-After を守る（not_before。巡回も、利用者の操作も待つ）。
+-- 利用者の操作から始める握手（接続・道具の一覧・依頼）: 全員合わせて、60 秒の枠に決まった回数まで（user_window_at・user_count。noah-listing-v1.sql の host_take）。
 CREATE TABLE IF NOT EXISTS noah_probe_hosts (
-  host TEXT PRIMARY KEY, last_probe_at INTEGER NOT NULL, not_before INTEGER NOT NULL DEFAULT 0
+  host TEXT PRIMARY KEY, last_probe_at INTEGER NOT NULL, not_before INTEGER NOT NULL DEFAULT 0,
+  user_window_at INTEGER NOT NULL DEFAULT 0, user_count INTEGER NOT NULL DEFAULT 0 CHECK(user_count >= 0)
 );
 --> statement-breakpoint
 
@@ -116,7 +132,7 @@ CREATE TABLE IF NOT EXISTS noah_connections (
   connect_sha256 TEXT NOT NULL CHECK(length(connect_sha256) = 64),
   plan_sha256 TEXT NOT NULL CHECK(length(plan_sha256) = 64),
   tools_sha256 TEXT CHECK(tools_sha256 IS NULL OR length(tools_sha256) = 64),                    -- 同意した時の道具の定義
-  confirmed_tools_json TEXT NOT NULL DEFAULT '[]' CHECK(json_valid(confirmed_tools_json)),       -- 本人が確かめた、書き込みの道具
+  confirmed_tools_json TEXT NOT NULL DEFAULT '[]' CHECK(json_valid(confirmed_tools_json)),       -- 本人が確かめた、読み取りだけでない道具。[{ "name", "sha256" }]（定義が変わったら確かめ直す）
   egress_granted_json TEXT NOT NULL DEFAULT '[]' CHECK(json_valid(egress_granted_json)),         -- 本人が許した通信先（package）
   place TEXT NOT NULL CHECK(place IN ('provider','home','cloud','pocket')),
   device_id TEXT REFERENCES noah_runner_devices(id),
@@ -193,6 +209,10 @@ CREATE TABLE IF NOT EXISTS noah_asks (
   work_id TEXT NOT NULL,
   request_sha256 TEXT NOT NULL CHECK(length(request_sha256) = 64),
   mode TEXT NOT NULL CHECK(mode IN ('agent','form')),             -- agent: 1 文で頼む。form: 入力欄から道具を 1 回呼ぶ
+  host TEXT,                                                      -- 送り先の host（置き場所が provider の時）。同じ接続先へ集まりすぎないための数え方に使う
+  tool TEXT CHECK(tool IS NULL OR length(tool) BETWEEN 1 AND 128),-- form の時、呼ぶ道具の名前
+  tool_sha256 TEXT CHECK(tool_sha256 IS NULL OR length(tool_sha256) = 64),   -- form の時、本人が見た道具の定義
+  screen TEXT CHECK(screen IS NULL OR screen IN ('narrow','wide')),          -- 頼んだ画面の幅の区分（600 未満が narrow）。「スマホで使われるか」を数えるためだけに持つ
   state TEXT NOT NULL CHECK(state IN ('queued','running','your_turn','succeeded','failed','stopped','limit','unknown')),
   stop_requested INTEGER NOT NULL DEFAULT 0 CHECK(stop_requested IN (0,1)),
   pending_json TEXT CHECK(pending_json IS NULL OR json_valid(pending_json)),   -- あなたの番で確かめている道具の名前と入力
@@ -204,12 +224,18 @@ CREATE TABLE IF NOT EXISTS noah_asks (
   revision INTEGER NOT NULL CHECK(revision >= 1),
   created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, finished_at INTEGER,
   CHECK((state = 'your_turn') = (pending_json IS NOT NULL)),
-  CHECK((state IN ('succeeded','failed','stopped','limit','unknown')) = (finished_at IS NOT NULL))
+  CHECK((state IN ('succeeded','failed','stopped','limit','unknown')) = (finished_at IS NOT NULL)),
+  CHECK(mode <> 'form' OR (tool IS NOT NULL AND tool_sha256 IS NOT NULL AND host IS NOT NULL))
 );
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_asks_owner ON noah_asks(owner_id, updated_at, id);
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_asks_open ON noah_asks(state, lease_until) WHERE finished_at IS NULL;
+--> statement-breakpoint
+-- 頼む前の上限（noahAskGate）: 本人の直近 60 秒と今日、接続先の直近 60 秒を数える。
+CREATE INDEX IF NOT EXISTS noah_asks_owner_created ON noah_asks(owner_id, created_at);
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS noah_asks_host_created ON noah_asks(host, created_at) WHERE host IS NOT NULL;
 --> statement-breakpoint
 -- 同じ本人の、動いている依頼は 8 件まで（今の noah_runner_commands と同じ上限）。上限は API の INSERT で数える。
 

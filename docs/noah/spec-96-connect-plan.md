@@ -1,7 +1,9 @@
 # 仕様書 96 — 接続要件と接続計画（純関数・計画の API・カードの印）
 
-task: [codex/tasks/96-noah-connect-plan.md](../../codex/tasks/96-noah-connect-plan.md)。先に要る物: 84。雲の契約は要らない。
+task: [codex/tasks/96-noah-connect-plan.md](../../codex/tasks/96-noah-connect-plan.md)。先に要る物: 84。雲の契約は要らない。ローンチ分（9 章）のうち、純関数（L2）は先に要る物が無い（84 の L1 と並べて進められる）。計画の API とカード（L5）は、86 の握手（L4）の後。
 型契約: [noah-connect-v1.ts](../contracts/noah-connect-v1.ts)。試験: [noah-connect.test.mjs](../design-validation/noah/noah-connect.test.mjs)（9 群）。
+
+**ローンチまでに作る範囲は 9 章。** 純関数は全部移す。計画の API とカードは、取り込んだ系列（相手のサーバー）の分だけ。今ある 13 件への組み込みは、出した後。
 
 ## 1. 完成の姿
 
@@ -194,3 +196,53 @@ task: [codex/tasks/96-noah-connect-plan.md](../../codex/tasks/96-noah-connect-pl
 - 手元で、Mac の runner を動かした本人には 13 件が「1 クリック」、止めた本人には「準備が必要（端末を動かす）」と出る。
 - 幅 390 で、カードが横にはみ出さない。主ボタンが 1 枚に 1 つ。
 - `npm run typecheck`、`npm run lint:product`。
+
+## 9. ローンチの範囲（[ローンチの最小限](mvp-launch.md) の L2 と、L5 の一部）
+
+ローンチまでに作るのは、この章に書いた範囲だけ。今ある 13 件のカードへの組み込み（4.3、今の一覧の置き換え）は、出した後に足す。
+
+### 9.1 入れる物・後にする物
+
+| 章 | ローンチまで | 後 |
+| --- | --- | --- |
+| 3 変える所 | **L2**: `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts`（型契約の全部を移す。状態遷移を含む）。**L5**: `lib/noah-connect-plan-api.ts`、`app/api/noah/connect-plan/route.ts`、`components/noah-card.tsx` | `lib/noah-connect-source.ts`、`catalog()`・`lib/noah-feed.ts`・`lib/noah-public-catalog-api.ts` への `connect` の追加、`noah-launch.tsx`・`noah-public-catalog.tsx`・`noah-timeline.tsx` の行の置き換え |
+| 4.1・4.2 規則 | 全部（純関数は、使わない枝も含めて移す。試験も全部移す） | — |
+| 4.3 今ある Agent の接続要件 | 無し | 全部 |
+| 4.4 本人の状態 | 9.3（取り込んだ系列の分だけ） | 端末・利用権・相手の許可 |
+| 5.1 計画の API | `agent` は、取り込んだ系列の ID だけ。今の `agentId` は 404 | 今の Agent |
+| 5.2 一覧の `connect` | 85 の 11.5 の一覧の項目に付ける | 今の一覧 |
+| 6 カード | 入れる（`/noah/ready` が使う。74 の 11.5） | 今の一覧での利用 |
+
+### 9.2 ローンチで出る印（参照実装に通した結果）
+
+ローンチで並ぶのは、口が「相手のサーバー」、鍵も許可も要らない、無料の系列だけなので、計画の段は `account` 以外が全部「済み」になる。
+
+| 本人 | 接続試験の深さ | 印 | 手数 | カードの文 |
+| --- | --- | --- | --- | --- |
+| サインイン済み | L2（動いた） | `one_click` | タップ 0 | 「1 クリック」 |
+| サインイン済み | L1（握手まで） | `unverified` | タップ 0 | 「まだ誰も動かしていない」 |
+| 未サインイン | L2 | `taps` | タップ 1 | 「あと 1 タップ（サインイン）」 |
+| 未サインイン | L1 | `unverified` | タップ 1 | 「まだ誰も動かしていない」 |
+
+`unverified` でも「接続」は押せる（押すと、その場で握手する）。置き場所は、どれも `provider`、文は「相手のサーバー（<host>）」。料金は「無料」。
+
+### 9.3 本人の状態（ローンチ版の `planStateFor`）
+
+| 項目 | 値 |
+| --- | --- |
+| `signedIn` | `owner !== null` |
+| `entitlement`・`price`・`hasPaymentMethod` | `'free'`・`{ model: 'free' }`・偽 |
+| `devices`・`cloudEnabled`・`ownAccountReady` | `[]`・偽・偽（相手のサーバーの口は、端末を見ない） |
+| `grantedServices`・`serviceRegistration` | `[]`・`{}` |
+| `consentedSha256` | その本人の、同じ系列の切っていない接続の `connect_sha256`。無ければ null |
+| `connectSha256`・`permissions`・`preference` | 代表の候補の `connect_sha256`・`['read_user_input', 'write_results']`・`'auto'` |
+| `intakeLevel` | 代表の候補の `noah_intake_checks.level` |
+
+### 9.4 計画の API（ローンチ版）
+
+`GET /api/noah/connect-plan?agent=<系列の ID>`。応答は 5.1 の形で、`agentId` は系列の ID、`digest` は代表の候補の `record_sha256`、`deviceId` は null、`sendsTo` は `{ "host": <接続先の host> }`、`note` は null。見せてよいかは `noahAllowed(flags, 'list', 審査者か)`（偽なら 404）。載せていない系列（`noahListing` が偽）は 422 `{ "error": "この Agent は、今はつなげません。" }`。書き込まない。
+
+### 9.5 試験と完了の定義
+
+- **L2**: `tests/noah-connect-requirements.test.mjs`・`tests/noah-connect-plan.test.mjs`（検証キットの [noah-connect.test.mjs](../design-validation/noah/noah-connect.test.mjs) を分けて移す。9 群）。`npm run typecheck`、`npm run lint:product`。`lib/` のどこからも、まだ呼ばれていなくてよい。
+- **L5**: `tests/noah-connect-plan-api.test.mjs`: 9.2 の 4 行。未サインインで 200。無い系列で 404。載せていない系列で 422。表の行数が変わらない。`noah-card.tsx` は 74 の 11.6 の画面の試験で確かめる。

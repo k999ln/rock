@@ -111,6 +111,7 @@ test('握手: 相手の振る舞いごとの結果', async () => {
   assert.deepEqual([limited.code, limited.detail.retryAfterSeconds], ['rate_limited', 120]);
   assert.equal((await failure(noahMcpHandshake(URL_OK, { fetch: server({ status: 404 }).fetch }))).code, 'unreachable');
   assert.equal((await failure(noahMcpHandshake(URL_OK, { fetch: server({ status: 503 }).fetch }))).code, 'unreachable');
+  assert.equal((await failure(noahMcpHandshake(URL_OK, { fetch: server({ status: 410 }).fetch }))).code, 'unreachable', '410（無くなった）は、応答しない物として数える');
   assert.equal((await failure(noahMcpHandshake(URL_OK, { fetch: server({ status: 405 }).fetch }))).code, 'incompatible');
   assert.equal((await failure(noahMcpHandshake(URL_OK, { fetch: async () => { throw new TypeError('fetch failed'); } }))).code, 'unreachable');
   assert.equal((await failure(noahMcpHandshake(URL_OK, { fetch: async () => new Response('<html>', { headers: { 'content-type': 'text/html' } }) }))).code, 'incompatible');
@@ -129,7 +130,7 @@ test('道具の定義の hash: 順が違っても同じ。中身が変われば�
 test('道具の呼び出し: 1 回だけ。失敗しても呼び直さない。セッションを閉じる', async () => {
   const s = server({ session: 'sess-2', call: (params) => (params.name === 'boom' ? { isError: true, content: [{ type: 'text', text: 'だめ' }] } : { structuredContent: { echoed: params.arguments } }) });
   const hs = await noahMcpHandshake(URL_OK, { fetch: s.fetch });
-  assert.deepEqual(await noahMcpCall(hs.session, 'read_thing', { q: 1 }, { fetch: s.fetch }), { ok: true, content: { echoed: { q: 1 } } });
+  assert.deepEqual(await noahMcpCall(hs.session, 'read_thing', { q: 1 }, { fetch: s.fetch }), { ok: true, content: { echoed: { q: 1 } }, blocks: [] });
   assert.equal((await noahMcpCall(hs.session, 'boom', {}, { fetch: s.fetch })).ok, false);
   let calls = 0;
   const flaky = async (url, init) => { if (JSON.parse(init.body ?? '{}').method === 'tools/call') { calls++; throw new TypeError('reset'); } return s.fetch(url, init); };
@@ -156,6 +157,19 @@ test('接続先の検査: 内部向けの名前、転送、鍵の持ち出し', 
   assert.deepEqual(hits, [['https://a.example.com/mcp', 'Bearer secret'], ['https://b.example.org/mcp', null]], '別の host への転送に、許可を持ち出さない');
   assert.equal((await failure(guarded('https://evil.example.com/mcp', {}))).code, 'blocked', '内部のアドレスへの転送');
   assert.equal((await failure(guarded('https://loop.example.com/mcp', {}))).code, 'blocked', '転送の回数');
+  // 送り先を 1 つの host に限る使い方（ローンチの握手・接続・依頼）: 別の host への転送に従わず、本文も送らない
+  hits.length = 0;
+  const pinnedBase = async (url, init) => {
+    hits.push([String(url), init.body ?? null]);
+    if (String(url) === 'https://a.example.com/mcp') return new Response('', { status: 307, headers: { location: 'https://b.example.org/mcp' } });
+    if (String(url) === 'https://a.example.com/old') return new Response('', { status: 308, headers: { location: 'https://a.example.com/mcp/v2' } });
+    return new Response('ok');
+  };
+  const pinned = createNoahGuardedFetch(pinnedBase, { sameHost: true });
+  const moved = await failure(pinned('https://a.example.com/mcp', { method: 'POST', body: '{"query":"本人の入力"}' }));
+  assert.deepEqual([moved.code, moved.detail], ['blocked', { redirectedTo: 'b.example.org' }]);
+  assert.deepEqual(hits, [['https://a.example.com/mcp', '{"query":"本人の入力"}']], '本人の入力を、見せた送り先の外へ送らない');
+  assert.equal(await (await pinned('https://a.example.com/old', { method: 'POST', body: '{}' })).text(), 'ok', '同じ host の中の転送には従う');
   const resolving = createNoahGuardedFetch(base, { check: async (url) => { if (url.hostname === 'rebind.example.com') throw new NoahMouthError('blocked', '内部のアドレスです。'); } });
   assert.equal((await failure(resolving('https://rebind.example.com/mcp', {}))).code, 'blocked', '名前を引いた先の検査（差し込み口）');
 });

@@ -44,7 +44,7 @@ export type NoahMouthCode =
   | 'payment_required'   // 402。呼ぶたびの支払いが要る（未対応）
   | 'forbidden'          // 403
   | 'rate_limited'       // 429。detail.retryAfterSeconds
-  | 'unreachable'        // 名前が引けない、つながらない、時間切れ、404、5xx
+  | 'unreachable'        // 名前が引けない、つながらない、時間切れ、404、410、5xx
   | 'incompatible'       // 応答が読めない、版が合わない、相手がエラーを返した
   | 'too_large'          // 応答が上限を越えた
   | 'blocked';           // 接続先が検査を通らない
@@ -78,10 +78,12 @@ export function isNoahPrivateAddress(address: string): boolean {
 /**
  * 接続先を検査してから通す fetch を作る。HTTPS の公開の名前だけ。転送は自分で追い、毎回検査する。
  * check は、名前を引いた先のアドレスを確かめる差し込み口（Node では dns.lookup と isNoahPrivateAddress）。
+ * sameHost が真の時は、別の host への転送に従わない（本人に見せた送り先の外へ、入力を送らない。
+ * 接続要件の egress が、その接続先の host 1 つだけである事と対になる）。ローンチの握手・接続・依頼は、真で使う。
  */
 export function createNoahGuardedFetch(
   base: typeof fetch,
-  options: { check?: (url: URL) => Promise<void>; redirects?: number } = {},
+  options: { check?: (url: URL) => Promise<void>; redirects?: number; sameHost?: boolean } = {},
 ): typeof fetch {
   const inspect = async (raw: string) => {
     let url: URL;
@@ -103,6 +105,7 @@ export function createNoahGuardedFetch(
       await response.body?.cancel();
       if (hop >= (options.redirects ?? NOAH_MOUTH_LIMITS.redirects)) throw new NoahMouthError('blocked', '転送が多すぎます。');
       const next = await inspect(new URL(location, url).toString());
+      if (options.sameHost && next.host !== url.host) throw new NoahMouthError('blocked', '別の接続先への転送には従いません。', { redirectedTo: next.host });
       // 別の host への転送で、本人の許可や鍵を持ち出さない。
       if (next.host !== url.host && init?.headers) init = { ...init, headers: stripCredentials(init.headers) };
       url = next;
@@ -220,7 +223,9 @@ async function rpc(session: NoahMcpSession, ctx: NoahMouthContext, method: strin
   if (id === null) { await response.body?.cancel(); return null; }
   if (!response.ok) {
     await response.body?.cancel();
-    throw new NoahMouthError(response.status === 404 || response.status >= 500 ? 'unreachable' : 'incompatible', `接続先が ${response.status} を返しました。`, { status: response.status });
+    // 404・410（無くなった）・5xx は「応答しない」。それ以外の 4xx は「形が合わない」。
+    const gone = response.status === 404 || response.status === 410 || response.status >= 500;
+    throw new NoahMouthError(gone ? 'unreachable' : 'incompatible', `接続先が ${response.status} を返しました。`, { status: response.status });
   }
   if (session.sessionId === null) {
     const raw = response.headers.get('mcp-session-id');
@@ -296,12 +301,18 @@ export async function noahMcpHandshake(rawUrl: string, ctx: NoahMouthContext): P
   };
 }
 
-/** 道具を 1 回呼ぶ。失敗しても、口は自分で呼び直さない（相手で実行されたかどうかが分からないため）。 */
-export async function noahMcpCall(session: NoahMcpSession, name: string, args: unknown, ctx: NoahMouthContext): Promise<{ ok: boolean; content: unknown }> {
-  const result = (await rpc(session, ctx, 'tools/call', { name, arguments: args ?? {} }, NOAH_MOUTH_LIMITS.callMs)) as {
+/**
+ * 道具を 1 回呼ぶ。失敗しても、口は自分で呼び直さない（相手で実行されたかどうかが分からないため）。
+ * content は、構造のある結果があればそれ、無ければ部分の並び（道具を持つ担当が読む）。
+ * blocks は、部分の並びそのまま（入力欄で頼む方が、人に見せる文を作るのに使う。noah-form-v1.ts の noahResultText）。
+ */
+export async function noahMcpCall(
+  session: NoahMcpSession, name: string, args: unknown, ctx: NoahMouthContext, timeoutMs: number = NOAH_MOUTH_LIMITS.callMs,
+): Promise<{ ok: boolean; content: unknown; blocks: unknown[] }> {
+  const result = (await rpc(session, ctx, 'tools/call', { name, arguments: args ?? {} }, timeoutMs)) as {
     isError?: unknown; structuredContent?: unknown; content?: unknown;
   };
-  return { ok: result?.isError !== true, content: result?.structuredContent ?? result?.content ?? null };
+  return { ok: result?.isError !== true, content: result?.structuredContent ?? result?.content ?? null, blocks: Array.isArray(result?.content) ? result.content : [] };
 }
 
 /** セッションを閉じる。相手が対応していなくても失敗にしない。 */

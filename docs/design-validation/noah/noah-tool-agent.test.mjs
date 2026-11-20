@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  NOAH_TOOL_AGENT_LIMITS, NOAH_TOOL_AGENT_SYSTEM, checkNoahToolArgs, fitNoahTools, fromNoahChatResponse, noahDirectForm,
+  NOAH_TOOL_AGENT_LIMITS, NOAH_TOOL_AGENT_SYSTEM, checkNoahToolArgs, fitNoahTools, fromNoahChatResponse,
   noahModelToolNames, runNoahToolAgent, toNoahChatRequest,
 } from '../../contracts/noah-tool-agent-v1.ts';
 
@@ -141,15 +141,4 @@ test('モデルの API の形との変換: 名前の直し、入力の JSON、�
   const back = fromNoahChatResponse({ choices: [{ message: { content: null, tool_calls: [{ id: 'k', function: { name: 'ns_get_data', arguments: '{"a":2}' } }, { function: { name: 'ns_get_data', arguments: '{bad' } }] } }], usage: { prompt_tokens: 11, completion_tokens: 7 } }, used);
   assert.deepEqual(back, { text: '', toolCalls: [{ id: 'k', name: 'ns/get.data', arguments: { a: 2 } }, { id: 'call_1', name: 'ns/get.data', arguments: null }], inputTokens: 11, outputTokens: 7 });
   assert.deepEqual(fromNoahChatResponse({ choices: [{ message: { content: 'やあ' } }] }, used), { text: 'やあ', inputTokens: 0, outputTokens: 0 });
-});
-
-test('入力欄での実行: 道具が 1 つで、入力が少ない時だけ', () => {
-  const one = (inputSchema) => [{ name: 'convert', description: '', inputSchema, readOnly: true }];
-  assert.deepEqual(noahDirectForm(one({ type: 'object', required: ['text'], properties: { text: { type: 'string', description: '変換する文' }, upper: { type: 'boolean', title: '大文字' }, mode: { type: 'string', enum: ['a', 'b'] } } })), {
-    tool: 'convert', fields: [{ name: 'text', label: '変換する文', type: 'string', required: true }, { name: 'upper', label: '大文字', type: 'boolean', required: false }, { name: 'mode', label: 'mode', type: 'string', required: false, choices: ['a', 'b'] }],
-  });
-  assert.equal(noahDirectForm(one({ required: ['a', 'b', 'c'], properties: { a: { type: 'string' }, b: { type: 'string' }, c: { type: 'string' } } })), null, '必須が 3 つ');
-  assert.equal(noahDirectForm(one({ required: ['items'], properties: { items: { type: 'array' } } })), null, '必須の入力が配列');
-  assert.equal(noahDirectForm(TOOLS), null, '道具が 2 つ以上');
-  assert.deepEqual(noahDirectForm(one({ type: 'object' })), { tool: 'convert', fields: [] }, '入力の無い道具は、ボタンだけ');
 });

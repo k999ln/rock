@@ -2,7 +2,15 @@
 
 仕様: **[docs/noah/spec-84-screenless.md](../../docs/noah/spec-84-screenless.md)**（これ 1 本で足りる）。型と参照実装: docs/contracts/noah-screenless-v1.ts。試験: docs/design-validation/noah/noah-screenless.test.mjs（今の main で通過済み）。最初にやる。契約も許可も要らない。
 
-## やること（仕様書 6 章の順）
+## ローンチまで（先に、この範囲だけを出す。[ローンチの最小限](../../docs/noah/mvp-launch.md) の L1）
+
+仕様書の **10 章** だけを見て作る。完了の定義も、その章にある。
+
+- やる: 下の「やること」の 1・2・4・5（`engineArgs()`、`lib/noah-screenless-audit.mjs`、`scripts/check-noah-screenless.mjs` と `verify` の鎖、`tests/noah-screenless.test.mjs`、`tests/noah-launch-close.test.mjs`）
+- やらない（出した後）: 3（`lib/noah-surface-class.ts` と、その試験）。端末で動かす配布を入れる 89 と一緒に
+- やらない（出した後）: 6（検査用の Mac での観測）
+
+## やること（全部。ローンチの後に、残りをやる）（仕様書 6 章の順）
 
 1. scripts/noah-isolated-runtime.mjs: VM の起動引数を `export function engineArgs()` に切り出す。引数の中身は 1 文字も変えない。
 2. lib/noah-screenless-audit.mjs（`.mjs`。scripts から import するため）: 参照実装の `auditNoahContainerArgs`・`auditNoahVmArgs` を移す。

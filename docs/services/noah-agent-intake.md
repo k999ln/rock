@@ -66,5 +66,20 @@
 
 - 取り込みの記録は、**別の表**に置く（`noah_intake_sources`・`noah_intake_candidates`・`noah_intake_checks`・`noah_intake_families`・`noah_probe_hosts`。DDL は [docs/contracts/noah-v1.sql](../contracts/noah-v1.sql)）。今の発見の表は、出どころを `github`・`huggingface` に限る CHECK を持ち（SQLite は CHECK だけを変えられない）、鍵がリポジトリで、上限が 10,000 件なので、足さない。巡回の作り（lease・内容 hash・取り下げ）は発見にならう。既存の行の意味は変えない。
 - 候補の ID は `出どころ:鍵`（例 `mcp-registry:ac.mizan/registry`）。口・面・接続要件の下書き・接続試験の結果は `noah_intake_checks`、系列・引き取り・取り下げは `noah_intake_families`。1 件がどの列になるかは [実装仕様書 85](../noah/spec-85-intake.md)。
-- 一覧は今の候補の API に、口・深さの絞り込みを足す。`POST /api/noah/intake/[id]`: `{ action: "claim" | "withdraw" | "recheck", revision }`。同一 Origin と ownerScope が必須。
+- 一覧は今の候補の API に、口・深さの絞り込みを足す。`POST /api/noah/intake`: `{ action: "claim" | "withdraw" | "restore" | "recheck", id, revision }`（系列の ID は `/` を含むので、パスに入れない）。同一 Origin と ownerScope が必須。
 - 巡回は今の発見の経路（`scripts/noah-discovery-daemon.mjs`）と同じ置き方で動かす（空の `POST /api/noah/intake` 1 回で、期限の来た分を上限つきで進める。台帳は 1 回に 10 頁まで）。握手は 1 回に 8 件、同じ host へは 1 時間に 1 回まで。
+
+## ローンチの範囲（2026-11-20。本人指示「ローンチするのに最小限」）
+
+出すまでに作るのは、[ローンチの最小限](../noah/mvp-launch.md) の線の内側だけ。このシートのうち、次の所。
+
+| このシートの節 | ローンチまで | 出した後 |
+| --- | --- | --- |
+| 取り込み | 公式台帳だけ。最初は全件、その後は毎時「更新された物だけ」（`updated_since`。[仕様書 85](../noah/spec-85-intake.md) の 11 章） | Hugging Face の Space、ACP の台帳 |
+| 口 | 相手のサーバー（`mcp-remote`）の、握手・道具の一覧・道具の呼び出し（[仕様書 86](../noah/spec-86-remote-mouth.md) の 10 章） | 相手の許可（OAuth）、Space、端末で動かす配布、A2A |
+| 道具を持つ担当 | 入力欄で頼む（道具を選ぶ画面つき。モデルを使わない。[仕様書 87](../noah/spec-87-tool-agent.md) の 11 章） | 1 文で頼む |
+| 接続試験と表示 | 握手まで（L1）と、本人の実行で付ける「動いた」（L2）。一覧は 2 段（[仕様書 88](../noah/spec-88-mass-probe.md) の 9 章） | Noah が自動で道具を呼ぶ見本 |
+| 礼儀と取り下げ | 全部。窓口は `/noah/help#bot`（[仕様書 97](../noah/spec-97-launch-ops.md) の 5 章） | 報告の数で自動で伏せる |
+| 保存と API | 取り込みの 5 表、`noah_connections`、`noah_asks`。巡回は、専用の Worker の毎分の合図で動く（手元の daemon ではなく） | 相手の許可の 3 表、鍵の表、継続運用、利用の記録 |
+
+合格条件（出してよいかの判定）は、[ローンチの最小限](../noah/mvp-launch.md) の 8 章の G1〜G7。

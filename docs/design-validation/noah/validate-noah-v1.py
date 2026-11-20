@@ -159,11 +159,18 @@ check("取り込み: 候補・接続試験・系列の制約", intake)
 
 def intake_queries():
     # 見回りが次に確かめる物を取る（期限が来ていて、他の巡回が持っていない物）
-    due = "SELECT candidate_id FROM noah_intake_checks WHERE next_check_at <= ? AND lease_until < ? ORDER BY next_check_at LIMIT 8"
+    due = ("SELECT candidate_id FROM noah_intake_checks WHERE setup = 0 AND mouth IN ('mcp-remote','space-mcp','a2a') "
+           "AND next_check_at <= ? AND lease_until < ? ORDER BY next_check_at LIMIT 8")
     assert "noah_intake_checks_due" in plan(db, due, (100, 100)), plan(db, due, (100, 100))
     claimed = db.execute("UPDATE noah_intake_checks SET lease_until=? WHERE candidate_id IN (" + due + ") RETURNING candidate_id", (160, 100, 100)).fetchall()
     assert len(claimed) == 1
     assert db.execute("UPDATE noah_intake_checks SET lease_until=? WHERE candidate_id IN (" + due + ") RETURNING candidate_id", (160, 100, 100)).fetchall() == [], "同じ物を 2 つの巡回が取らない"
+    # 端末で動かす配布と、鍵の入力が要る物は、期限が来ていても、握手の対象に取らない
+    put(db, "noah_intake_candidates", candidate("x/package"))
+    put(db, "noah_intake_checks", checks("x/package", mouth="mcp-package", surface="terminal", auth="none"))
+    put(db, "noah_intake_candidates", candidate("x/keyed"))
+    put(db, "noah_intake_checks", checks("x/keyed", setup=1, auth="key"))
+    assert db.execute(due, (10**15, 10**15)).fetchall() == [("mcp-registry:ac.mizan/registry",)], "握手できる物だけを取る"
     # タイムライン（L2 が 7 日以内の系列を、新しい順に 20 件）
     timeline = "SELECT id FROM noah_intake_families WHERE level = 2 AND withdrawn_at IS NULL AND hidden_at IS NULL AND l2_at >= ? ORDER BY l2_at DESC, id LIMIT 20"
     assert "noah_intake_families_timeline" in plan(db, timeline, (0,)), plan(db, timeline, (0,))
@@ -272,6 +279,11 @@ def asks():
     assert db.execute(expire, (300, 300)).fetchall() == [(UUID.format(3),)]
     assert db.execute(claim, (400, 390)).fetchall() == []
     assert "noah_asks_open" in plan(db, "SELECT id FROM noah_asks WHERE finished_at IS NULL AND state='running' AND lease_until < ?", (1,))
+    # 入力欄で頼む依頼は、送り先・道具の名前・本人が見た定義の hash を必ず持つ
+    form = ask(4, mode="form", host="mizan.ac", tool="lookup_player", tool_sha256=H)
+    variants(db, "noah_asks", form | dict(screen="narrow"), (dict(host=None), dict(tool=None), dict(tool_sha256=None), dict(tool_sha256="abc"), dict(tool="x" * 129), dict(tool=""),
+                                                                 dict(screen="phone")))
+    put(db, "noah_asks", form)
 
 
 check("頼む: 取り合い・step の番号・あなたの番・停止・結果不明", asks)
@@ -354,6 +366,15 @@ def regroup():
     members = dict(g.execute("SELECT id, members FROM noah_intake_families"))
     assert members["bulk:io.github.maker@gateway.maker.example"] == T and members["space:mcp-sentiment"] == T
     assert g.execute("SELECT COUNT(*) FROM noah_intake_families").fetchone()[0] == len(set(family.values()))
+    # 何も変わっていなければ、もう一度流しても 1 行も書かない（D1 は、書いた行の数で数える）
+    revisions = dict(g.execute("SELECT id, revision FROM noah_intake_families"))
+    changes = g.total_changes
+    for stmt in statements((REPO / "docs/contracts/noah-regroup-v1.sql").read_text()):
+        g.execute(stmt, {"threshold": T, "now": 150} if ":now" in stmt else {"threshold": T} if ":threshold" in stmt else {})
+    assert dict(g.execute("SELECT id, family_id FROM noah_intake_candidates")) == family, "2 回目も同じ系列"
+    assert dict(g.execute("SELECT id, revision FROM noah_intake_families")) == revisions, "変わらない系列の行を書き直さない"
+    grouped = sum(1 for cid, fid in family.items() if cid != fid)
+    assert g.total_changes - changes <= 2 * grouped, f"書いた行は、まとめた候補の分だけ（{g.total_changes - changes} 行、まとめた候補 {grouped} 件）"
     # 候補が消えた系列は隠す。もう一度流しても同じ結果
     g.execute("UPDATE noah_intake_candidates SET state='withdrawn' WHERE id IN ('hf-mcp-space:a/demo')")
     for stmt in statements((REPO / "docs/contracts/noah-regroup-v1.sql").read_text()):
@@ -363,6 +384,183 @@ def regroup():
 
 
 check("名寄せの SQL が、参照実装と同じ系列と代表を作る", regroup)
+
+
+def named(path):
+    """「-- name: …」で始まる文を、名前で引けるようにする。"""
+    out = {}
+    for stmt in statements(path.read_text()):
+        for line in stmt.splitlines():
+            if line.startswith("-- name:"):
+                out[line.split(":", 1)[1].strip()] = "\n".join(part for part in stmt.splitlines() if not part.startswith("--")).strip().rstrip(";")
+    return out
+
+
+def listing():
+    """ローンチの一覧: SQL が、表（fixtures/listing-cases.json）と同じ結果になる。頁の継ぎ目・並びの引き直し・写し・検索・上限。"""
+    q = named(REPO / "docs/contracts/noah-listing-v1.sql")
+    assert sorted(q) == ["connect_gate", "counts", "gate", "host_take", "host_wait", "new", "ran", "reshuffle", "search", "touch"], sorted(q)
+    g = sqlite3.connect(":memory:")
+    g.execute("CREATE TABLE noah_runner_devices(id TEXT PRIMARY KEY)")   # 接続の表が参照する（この確認では行を入れない）
+    for stmt in statements(DDL.read_text()):
+        g.executescript(stmt)
+    for source in ("mcp-registry", "hf-mcp-space", "acp-registry"):
+        put(g, "noah_intake_sources", dict(id=source))
+    cases = json.loads((REPO / "docs/design-validation/noah/fixtures/listing-cases.json").read_text())["cases"]
+    T = 20
+    ids = {}
+
+    def add(source, key, group_key, host, state, check, summary=""):
+        cid = f"{source}:{key}"
+        put(g, "noah_intake_candidates", dict(id=cid, source=source, external_key=key, family_id=cid, group_key=group_key, name=key, summary=summary, host=host, record_sha256=H,
+                                              record_json="{}", state=state, reason="bad_url" if state == "unsupported" else None, source_updated_at=5,
+                                              first_seen_at=1, changed_at=1, seen_at=1, revision=1))
+        if check is not None:
+            level = check["level"]
+            failures = check.get("failures", 0)
+            put(g, "noah_intake_checks", dict(candidate_id=cid, mouth=check["mouth"], surface=check.get("surface", "none"), auth=check["auth"], connect_json="{}", connect_sha256=H,
+                                              setup=check["setup"], level=level, result=check["result"], tools_sha256=H if level else None, l1_at=10 if level else None,
+                                              l2_at=20 if level == 2 else None, form_tools=check["formTools"], one_tap_tools=check["oneTapTools"],
+                                              failures=failures, first_failure_at=9 if failures else None, next_check_at=0))
+        return cid
+
+    for n, case in enumerate(cases):
+        ns = f"io.case{n}"
+        if case.get("bulk"):
+            members = [add(case["source"], f"{ns}/tool-{i}", ns, "gateway.example", case["state"], case["check"]) for i in range(T)]
+            ids[case["name"]] = f"bulk:{ns}@gateway.example"
+            assert len(members) == T
+        else:
+            host = f"h{n}.example" if case["check"] and case["check"]["mouth"] in ("mcp-remote", "space-mcp") else None
+            ids[case["name"]] = add(case["source"], f"{ns}/agent", ns if case["source"] == "mcp-registry" else f"agent{n}", host, case["state"], case["check"])
+    regroup_sql = statements((REPO / "docs/contracts/noah-regroup-v1.sql").read_text())
+
+    def run_regroup(now):
+        for stmt in regroup_sql:
+            g.execute(stmt, {"threshold": T, "now": now} if ":now" in stmt else {"threshold": T} if ":threshold" in stmt else {})
+
+    run_regroup(100)
+    for case in cases:
+        if case.get("withdrawn"):
+            g.execute("UPDATE noah_intake_families SET withdrawn_at=150 WHERE id=?", (ids[case["name"]],))
+        if case.get("hidden"):
+            g.execute("UPDATE noah_intake_families SET hidden_at=150 WHERE id=?", (ids[case["name"]],))
+    first_ran = {"before_at": 9007199254740991, "after_id": "", "limit": 500}
+    first_new = {"before": 1000000000, "after_id": "", "one_tap": 0, "limit": 500}
+    ran = [r[0] for r in g.execute(q["ran"], first_ran)]
+    new = [r[0] for r in g.execute(q["new"], first_new)]
+    quick = [r[0] for r in g.execute(q["new"], first_new | {"one_tap": 1})]
+    for case in cases:
+        fid, want = ids[case["name"]], case["expect"]
+        section = "ran" if fid in ran else "new" if fid in new else None
+        assert section == (want.get("section") if want["listed"] else None), f"{case['name']}: SQL は {section}、表は {want}"
+        if want["listed"] and want["section"] == "new":
+            assert (fid in quick) == want["oneTap"], f"{case['name']}: 押すだけの絞り込み"
+    assert not set(ran) & set(new)
+    # 索引を使い、並べ替えのための一時の表を作らない
+    for name, args, index in (("ran", first_ran, "noah_intake_families_timeline"), ("new", first_new, "noah_intake_families_listed")):
+        text = plan(g, q[name], args)
+        assert index in text and "TEMP B-TREE" not in text, f"{name}: {text}"
+    # 頁の継ぎ目: 同じ並びの値が続いても、重ならず、抜けない
+    extra = []
+    for i in range(30):
+        cid = add("mcp-registry", f"io.page/agent-{i:02d}", f"io.page{i}", f"p{i}.example", "active",
+                  dict(mouth="mcp-remote", setup=0, auth="none", result="ok", level=1, formTools=1, oneTapTools=i % 2))
+        extra.append(cid)
+    run_regroup(200)
+    for i, cid in enumerate(extra):
+        g.execute("UPDATE noah_intake_families SET shuffle=? WHERE id=?", (500 + i // 3, cid))    # 3 件ずつ同じ値
+    expected = [r[0] for r in g.execute("SELECT id FROM noah_intake_families WHERE listed=1 AND level=1 AND withdrawn_at IS NULL AND hidden_at IS NULL ORDER BY shuffle DESC, id")]
+    assert len(expected) >= 30
+    seen, cursor = [], {"before": 1000000000, "after_id": ""}
+    for _ in range(20):
+        page = g.execute(q["new"], cursor | {"one_tap": 0, "limit": 7}).fetchall()
+        seen += [r[0] for r in page]
+        if len(page) < 7:
+            break
+        cursor = {"before": page[-1][1], "after_id": page[-1][0]}
+    assert seen == expected, "頁をつないだ結果が、全体の並びと同じ"
+    # 並びの引き直し: 載せている L1 の系列だけ。L2 と、載せていない系列は変えない
+    before = dict(g.execute("SELECT id, shuffle FROM noah_intake_families"))
+    g.execute(q["reshuffle"])
+    after = dict(g.execute("SELECT id, shuffle FROM noah_intake_families"))
+    assert sum(1 for cid in extra if after[cid] != before[cid]) >= 25 and all(0 <= v < 1000000000 for v in after.values())
+    drawn = {r[0] for r in g.execute("SELECT id FROM noah_intake_families WHERE listed=1 AND level=1")}   # 隠した系列も引くが、一覧には出ない
+    assert all(after[i] == before[i] for i in after if i not in drawn), "L1 で載せる印のある系列以外は変えない"
+    assert [r[0] for r in g.execute("SELECT id FROM noah_intake_families WHERE listed=1 AND level=1 AND withdrawn_at IS NULL AND hidden_at IS NULL ORDER BY id")] == sorted(expected)
+    # 名寄せをやり直しても、並びの値は変わらない（毎時の名寄せで並びが動かない）
+    run_regroup(300)
+    assert dict(g.execute("SELECT id, shuffle FROM noah_intake_families")) == after
+    # 写し: 本人の実行で L2 になった物は、次の名寄せを待たずに「動いた」へ移る。2 回続けて失敗した物は、すぐ外れる
+    one = extra[0]
+    g.execute(q["touch"], {"candidate_id": one, "level": 2, "l2_at": 400, "badge_hint": "one_click", "listed": 1, "one_tap": 0, "now": 400})
+    assert [r[0] for r in g.execute(q["ran"], first_ran)][0] == one and one not in [r[0] for r in g.execute(q["new"], first_new)]
+    g.execute("UPDATE noah_intake_checks SET level=0, result='unreachable', failures=2, first_failure_at=450 WHERE candidate_id=?", (one,))   # 写しは、握手の表を書いた直後に行う
+    g.execute(q["touch"], {"candidate_id": one, "level": 0, "l2_at": None, "badge_hint": "unverified", "listed": 0, "one_tap": 0, "now": 500})
+    assert one not in [r[0] for r in g.execute(q["ran"], first_ran)] + [r[0] for r in g.execute(q["new"], first_new)]
+    assert g.execute("SELECT l2_at FROM noah_intake_families WHERE id=?", (one,)).fetchone()[0] is None
+    assert "noah_intake_families_representative" in plan(g, q["touch"], {"candidate_id": one, "level": 1, "l2_at": None, "badge_hint": "unverified", "listed": 1, "one_tap": 0, "now": 1})
+    # 検索: 名前と説明の部分一致。載せている系列だけ。% と _ は文字として探す
+    add("mcp-registry", "io.find/weather", "io.find", "w.example", "active", dict(mouth="mcp-remote", setup=0, auth="none", result="ok", level=1, formTools=1, oneTapTools=1), summary="天気を 100% 調べる")
+    add("mcp-registry", "io.find/hidden-weather", "io.find2", "w2.example", "active", dict(mouth="mcp-remote", setup=1, auth="key", result="unchecked", level=0, formTools=None, oneTapTools=None), summary="天気（鍵が要る）")
+    run_regroup(600)
+    like = lambda word: "%" + word.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%"  # noqa: E731
+    find = lambda word: [r[0] for r in g.execute(q["search"], {"like": like(word), "limit": 50, "offset": 0})]  # noqa: E731
+    assert find("weather") == ["mcp-registry:io.find/weather"], find("weather")
+    assert find("天気") == ["mcp-registry:io.find/weather"], "載せていない物は出さない"
+    assert find("100%") == ["mcp-registry:io.find/weather"] and find("%") == ["mcp-registry:io.find/weather"], "% を、何にでも合う記号として扱わない"
+    assert find("agent_0") == [], "_ を、1 文字に合う記号として扱わない"
+    assert len(find("agent-0")) == 9, find("agent-0")   # agent-00 は、上で 2 回続けて失敗した物。名寄せをやり直しても戻らない
+    # 集計: 全部の候補を、1 回ずつ数える
+    assert sum(r[-1] for r in g.execute(q["counts"])) == g.execute("SELECT COUNT(*) FROM noah_intake_candidates").fetchone()[0]
+    # 頼む前の上限の数え方
+    put(g, "noah_connections", connection(1))
+    now = 10_000_000
+    rows = [(1, "owner-1", "mizan.ac", now - 30_000, None), (2, "owner-1", "mizan.ac", now - 90_000, now - 80_000), (3, "owner-1", "other.example", now - 90_000_000, now - 89_000_000),
+            (4, "owner-2", "mizan.ac", now - 10_000, None), (5, "owner-2", "mizan.ac", now - 61_000, now - 50_000)]
+    for n, owner, host, created, finished in rows:
+        put(g, "noah_asks", ask(n, owner_id=owner, mode="form", host=host, tool="lookup_player", tool_sha256=H, created_at=created, updated_at=created,
+                                state="succeeded" if finished else "queued", finished_at=finished))
+    args = {"owner": "owner-1", "host": "mizan.ac", "minute_ago": now - 60_000, "day_ago": now - 86_400_000}
+    assert g.execute(q["gate"], args).fetchone() == (1, 1, 2, 2), g.execute(q["gate"], args).fetchone()
+    text = plan(g, q["gate"], args)
+    assert "noah_asks_owner_created" in text and "noah_asks_host_created" in text, text
+    # つなぐ前の上限の数え方: 切っていない数・直近 60 秒に作った数・直近 24 時間に作った数。他の本人の行は数えない
+    for n, owner, created, gone in ((5, "owner-3", now - 30_000, None), (6, "owner-3", now - 50_000, now - 40_000), (7, "owner-3", now - 3_600_000, None),
+                                    (8, "owner-3", now - 90_000_000, None), (9, "owner-4", now - 5_000, None)):
+        put(g, "noah_connections", connection(n, owner_id=owner, family_key=f"family-{n}", created_at=created, updated_at=gone or created,
+                                              state="disconnected" if gone else "planned", disconnected_at=gone))
+    cargs = {"owner": "owner-3", "minute_ago": now - 60_000, "day_ago": now - 86_400_000}
+    assert g.execute(q["connect_gate"], cargs).fetchone() == (3, 2, 3), g.execute(q["connect_gate"], cargs).fetchone()
+    g.execute("UPDATE noah_connections SET updated_at=? WHERE id=?", (now - 1_000, UUID.format(8)))   # 古い接続を今さわっても、「作った数」には入らない
+    assert g.execute(q["connect_gate"], cargs).fetchone() == (3, 2, 3)
+    text = plan(g, q["connect_gate"], cargs)
+    assert text.count("SEARCH noah_connections USING") == 3 and "SCAN noah_connections" not in text, text   # 3 つとも、本人の行だけを索引で引く
+    # 接続先の枠: 60 秒の枠に :limit 回まで。枠が明けたら、また取れる
+    take = lambda at, limit=3, host="busy.example": g.execute(q["host_take"], {"host": host, "now": at, "limit": limit}).fetchall()  # noqa: E731
+    assert [take(now + i) for i in range(4)] == [[(1,)], [(2,)], [(3,)], []], "4 回目は取れない"
+    assert take(now + 59_999) == [] and take(now + 60_000) == [(1,)] and take(now + 60_001) == [(2,)], "最初に取った時刻から 60 秒で、枠が明ける"
+    assert take(now + 60_002, limit=2) == [], "上限を下げると、その場で効く"
+    assert take(now, host="other.example") == [(1,)], "別の接続先の枠は別"
+    # 枠を取っても、巡回の間隔には触らない（新しい host は last_probe_at = 0 で入り、巡回の握手を妨げない）
+    probe = ("INSERT INTO noah_probe_hosts(host,last_probe_at) VALUES(?,?) ON CONFLICT(host) DO UPDATE SET last_probe_at=excluded.last_probe_at "
+             "WHERE noah_probe_hosts.last_probe_at <= ? AND noah_probe_hosts.not_before <= ? RETURNING host")
+    assert g.execute(probe, ("busy.example", now + 70_000, now + 70_000 - 3_600_000, now + 70_000)).fetchall() == [("busy.example",)]
+    assert g.execute("SELECT user_count FROM noah_probe_hosts WHERE host='busy.example'").fetchone() == (2,), "巡回の握手は、利用者の枠を使わない"
+    assert g.execute(probe, ("patrol-first.example", now, now - 3_600_000, now)).fetchall() == [("patrol-first.example",)]
+    assert take(now + 1, host="patrol-first.example") == [(1,)], "巡回が先に作った行でも、利用者の枠は取れる"
+    # 相手が「混んでいる」と返したら、その時刻まで、利用者の操作から始める握手も、巡回も待つ。待つ時刻は、短くはならない
+    g.execute(q["host_wait"], {"host": "busy.example", "until": now + 300_000})
+    g.execute(q["host_wait"], {"host": "busy.example", "until": now + 200_000})
+    assert g.execute("SELECT not_before FROM noah_probe_hosts WHERE host='busy.example'").fetchone() == (now + 300_000,)
+    assert take(now + 299_999) == [] and take(now + 300_000) == [(1,)], "待つ時刻の前は取れない。過ぎたら取れる"
+    assert g.execute(probe, ("busy.example", now + 4_000_000, now + 400_000, now + 299_999)).fetchall() == [], "巡回も待つ"
+    g.execute(q["host_wait"], {"host": "new-busy.example", "until": now + 50_000})
+    assert take(now, host="new-busy.example") == [] and take(now + 50_000, host="new-busy.example") == [(1,)], "初めての host でも待つ"
+    rejects(g, "UPDATE noah_probe_hosts SET user_count=-1 WHERE host='busy.example'")
+
+
+check("ローンチの一覧と上限: 表と同じ結果・索引・頁の継ぎ目・並びの引き直し・写し・検索・つなぐ前と頼む前の上限・接続先の枠", listing)
 
 failed = [r for r in results if r["status"] != "pass"]
 summary = {"sqlite": sqlite3.sqlite_version, "rejections": REJECTED[0], "migrationsApplied": len(applied), "migrationsSkipped": skipped, "checks": len(results),
