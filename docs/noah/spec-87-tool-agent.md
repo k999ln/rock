@@ -291,6 +291,8 @@ Durable Object は仕事 1 つに 1 つ（名前は仕事の `id`）。保存す
 
 **`GET /api/noah/ask/[id]`**・**`GET /api/noah/ask?connection=<接続の ID>`** → 5.2 と同じ形から `pending` と `used` を除き、`tool` と `host` を足した物。`result`（全文）は 1 件の方だけ。一覧（新しい 50 件）は `noah_asks` の行だけを読む。
 
+**`GET /api/noah/ask?agent=<系列の ID>`**（L9 で足した）→ 本人の、その Agent への依頼を、**切った接続の分も含めて**、新しい順に 50 件まで。形は、上の一覧と同じ。詳細の画面の「仕事」が読む（切っても、受け取った成果は、ここに残る）。知らない Agent・形の違う ID は、空の一覧。未サインインは 401。切り替えを閉じていても、本人の記録は読める。`connection` と一緒に渡した時は、`connection` が先。
+
 **`POST /api/noah/ask/[id]`** 本文 `{ "action": "stop", "revision": <数> }`。`queued` なら、その場で `stopped`。`running` なら `stop_requested=1`（相手で実行が始まっていれば止められない。届いた成果は採らない。画面の文は「止めました。相手のサーバーで実行されたかは分かりません。」）。 実行の場が無くなっている依頼（`running` のまま、`lease_until` を過ぎて 5 秒）は、その場で `stopped` にする（止める事を頼んでも、聞く相手が居ない。巡回の合図を待たせない。88 の 9.5）。
 
 成果を受け取る操作は無い。成果が Work に入った時点で、行に「結果を受け取りました」と出す（今の Noah の仕事と同じ。`components/noah-execution-panel.tsx` の `returned` の文）。Work は `review` のままで、step を通した事にはしない（相手のサーバーが返した内容を、Noah は確かめていない。`verification: 'relay_observed_unverified'`。今の `noah-agent-local` と同じ決まり）。
@@ -365,7 +367,7 @@ Durable Object は仕事 1 つに 1 つ（名前は仕事の `id`）。保存す
 | 送り先 | 「頼む」の上に必ず「入力は <host> へ送られます。」 |
 | 送った後 | 欄の値は残す（少し変えて、もう一度頼める）。`id` は送るたびに新しくする。失敗の後は、道具の一覧を読み直す |
 
-`components/noah-work-list.tsx`（props: `connectionId`）: `GET /api/noah/ask?connection=`。終わっていない依頼がある間、1 秒ごと（30 秒を越えたら 3 秒ごと。画面が裏の間は読まない）。`succeeded` になった行は、`GET /api/noah/ask/[id]` を 1 回だけ読み、成果の先頭 3 行を出す（読んだ成果は、その画面の間、持っておく）。
+`components/noah-work-list.tsx`（props: `agentId`。L9 で、`connectionId` から替えた: つないでいない時・切った後も、その Agent への前の依頼と成果を出す。[90](spec-90-phone-only-loop.md) の 9.3）: `GET /api/noah/ask?agent=`。終わっていない依頼がある間、1 秒ごと（30 秒を越えたら 3 秒ごと。画面が裏の間は読まない）。`succeeded` になった行は、`GET /api/noah/ask/[id]` を 1 回だけ読み、成果の先頭 3 行を出す（読んだ成果は、その画面の間、持っておく）。
 
 | 状態 | 行の文 | 操作 |
 | --- | --- | --- |
@@ -459,7 +461,7 @@ D1 への往復（1 文の実行か、1 回の batch。`scripts/check-noah-ask.m
 | 実行（応答の後。成果が出た時） | 14〜15（L6 の時は 15〜16） | 行を取る 1・Work を読んで進める 2・使える接続かの確かめ 4（握手の前後に 2 回ずつ）・相手へ送る印を付ける 1（L6 の時は、止める印を読む 1）・終わりの書き込み 2（Work を読む・batch）・使った時刻 1・「動いた」の写し 3〜4（もう「動いた」の系列は 3）。握手と、道具の呼び出しそのものは、D1 へ往復しない（接続先の枠は、受け付けの時に取ってある）。L6 の時は、終わりを書いた後に、書けた事を読む 1 があった |
 | 実行（確かめの記録を足す時） | 16（L6 の時は 17） | 上（もう「動いた」の系列で 14）に、確かめの記録を読む・書くの 2 |
 | 読む（`GET /api/noah/ask/[id]`。成果つき） | 2 | 行・Work |
-| 一覧（`GET /api/noah/ask`） | 1 | — |
+| 一覧（`GET /api/noah/ask`。`?connection=`・`?agent=` も同じ） | 1 | — |
 | 止める（まだ始まっていない依頼） | 5 | 行・Work を読む・終わりの batch・止める印・読み直し |
 | 切る（終わっていない依頼が 2 件ある接続） | 6 | 切る 3（[74](spec-74-one-click-connect.md) の 11.8）に、始まっていない依頼の終わり 2・進んでいる依頼の止める印 1 |
 
