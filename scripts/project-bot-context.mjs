@@ -160,7 +160,7 @@ export async function githubContext(repo) {
 
 export async function collectBotContext(
   { bot, repo },
-  { collect = githubContext } = {},
+  { collect = githubContext, executeGit = execute } = {},
 ) {
   const metadata = await collect(repo);
   if (
@@ -171,13 +171,15 @@ export async function collectBotContext(
     throw new Error('最新確認済みのGitHubコンテキストが必要です');
   const git = async (args) =>
     (
-      await execute('git', args, {
+      await executeGit('git', args, {
         cwd: repo,
         timeout: 30000,
         maxBuffer: 8 * 1024 * 1024,
       })
     ).stdout;
-  const [head, tree, history, status] = await Promise.all([
+  // Drain every Git process before returning a failure. Otherwise a caller can
+  // clean up/reuse its checkout while a concurrent status still writes its index.
+  const reads = await Promise.allSettled([
     git(['rev-parse', 'HEAD']),
     git([
       'ls-tree',
@@ -198,6 +200,9 @@ export async function collectBotContext(
     ]),
     git(['status', '--porcelain']),
   ]);
+  const failed = reads.find(result => result.status === 'rejected');
+  if (failed) throw failed.reason;
+  const [head, tree, history, status] = reads.map(result => result.value);
   if (head.trim() !== metadata.local.head)
     throw new Error('調査中にlocal HEADが変わりました。再取得してください');
   const { mission, project, provenance } = botPlanSources(repo);

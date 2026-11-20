@@ -14,7 +14,7 @@
     "in_progress": 48,
     "planned": 230,
     "blocked": 1,
-    "milestone": "Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合",
+    "milestone": "Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合",
     "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。"
   },
   "webSchema": {

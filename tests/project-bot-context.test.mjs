@@ -224,6 +224,27 @@ void test('offline or changed-head metadata fails before creating preparation ar
   assert.equal(existsSync(resolve(repo, 'work')), false);
 });
 
+void test('a failed Git read waits for sibling processes before checkout cleanup', async (t) => {
+  const { repo, bot, collect, metadata } = fixture(t);
+  let finishStatus, settled = false;
+  const status = new Promise(resolve => { finishStatus = resolve; });
+  const pending = collectBotContext({ repo, bot }, {
+    collect,
+    executeGit: async (command, args) => {
+      assert.equal(command, 'git');
+      if (args[0] === 'ls-tree') throw new Error('fixture invalid object');
+      if (args[0] === 'status') return status;
+      return { stdout: args[0] === 'rev-parse' ? metadata.local.head : '' };
+    },
+  }).then(value => { settled = true; return { value }; }, error => { settled = true; return { error }; });
+  await new Promise(resolve => setImmediate(resolve));
+  try { assert.equal(settled, false, 'the outstanding git status must finish before rejection'); }
+  finally { finishStatus({ stdout: '' }); }
+  const result = await pending;
+  assert.match(result.error.message, /fixture invalid object/);
+  assert.equal(existsSync(resolve(repo, 'work')), false);
+});
+
 void test('prepare persists Git provenance and a valid AMC draft; no task means Bot must select from source', async (t) => {
   const { repo, bot, collect } = fixture(t);
   const prepared = await prepareBotWork(

@@ -20,3 +20,16 @@
 ## 検証の区別
 
 独立した3利用主体のDB/API試験、実隔離VM、公開WebのUI、空のMac保存領域、未導入の別Macをそれぞれ記録する。自動試験の審査fixtureは本番審査ではない。実機を使うまで「初めてのMacで合格」とは書かない。本番migrationは本人の明示許可後にのみ適用する。
+
+## 共通処理と維持する違い
+
+| 経路 | 共通化先 | 固有の条件 |
+| --- | --- | --- |
+| 本人Macのlocalhostからaccount APIへ | `scripts/noah-local-api.mjs` | 呼出元のsocket/Host/Origin確認を維持。転送する認証headerは固定し、外部URLへ転送しない。Work/instance/operationのquery、revision、owner照合は各契約を保持 |
+| 私有登録・招待・審査済み公開版のコード取得 | `scripts/noah-source-bytes.mjs` | 2MiB上限・実受信容量照合を共有。私有登録の本人性、招待の実行許可/期限、公開版のmanifest/審査/利用権の照合はそれぞれのloaderで維持。取得は実行許可を新しく発行しない |
+| 単一コード・複数ファイルprojectの型検査 | `scripts/noah-source-typecheck.mjs` | 提供されたsourceとcompiler標準libraryだけを読み、host設定・plugin・周囲の依存を読み込まない。各入口の対象ファイルとエラー上限を保持 |
+| EveのTool仕事・ニュース仕事の読み書き | `lib/eve-work-client.ts` | 通信処理のみ共通。作成ID・command ID・revision・同意・再開/停止判断は各画面と既存Workが管理。通信層で自動再送しない |
+
+公開WebとMac Runnerの接続はdevice sessionによる外向きHTTPS。localhostのcookie転送とは別契約であり、`scripts/noah-mac-runner.mjs`の認証・lease・切断停止を維持する。固定Agent、本人のNode/Python、招待、審査済み公開版を一律の権限へまとめない。
+
+対象試験: `tests/noah-local-api.test.mjs`、`tests/eve-work-client.test.mjs`、既存`noah-terminal` / `noah-invite-runtime` / `noah-release-runtime` / `noah-mac-runner` / `noah-managed-installations`。全体は`npm run verify`。

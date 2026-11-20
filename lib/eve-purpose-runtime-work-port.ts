@@ -58,7 +58,7 @@ function purposePort(raw:PortOptions,selection?:SkyLibraryAgent):EveWorkPort&{ca
   async prepare(input,continuing){
    if(typeof input!=='string'||!input.trim()||input.length>1000)throw Error('依頼を1,000文字以内で確認してください。');
    const role=selection?parseLinuxAgent({name:selection.name,instructions:selection.instructions,modelId:b.modelId}):draftEvePurposeRole(input,b.modelId),sha=await linkedDigest(JSON.stringify(role));live();
-   if(selection&&!matches(await library(selection.id),role))throw Error('担当の設定が変わりました。smisで現在の版を確認してください。');
+   if(selection&&!matches(await library(selection.id),role))throw Error('担当の設定が変わりました。Noahで現在の版を確認してください。');
    const snapshot=await api<{ownerUserId:string;devices:EveRuntimePresence[]}>('/api/eve/runtime'),device=snapshot.devices?.find(d=>d.deviceId===b.deviceId),model=device?.models.find(m=>m.id===b.modelId);
    if(snapshot.ownerUserId!==b.owner||!device||device.phase!=='ready'||now()-device.updatedAt>=30000||device.host.capabilities['agent.prepare']!==true||!model||model.scheme!==b.modelScheme||model.sha256!==b.modelSha256||!device.preparedModels.includes(model.id))throw Error('選んだ実行先で担当登録とAIの準備を確認してください。');
    negotiateTextAdapters(device.host,device.executor,device.output,now());
@@ -74,7 +74,7 @@ function purposePort(raw:PortOptions,selection?:SkyLibraryAgent):EveWorkPort&{ca
    try{
     let a:SkyLibraryAgent|null=null;try{a=await library(i.agentId);}catch(e){if(!(e&&typeof e==='object'&&'status'in e&&e.status===404))throw e;}
     if(!a){
-     if(selection)throw Error('保存した担当が見つかりません。smisで確認してください。');
+     if(selection)throw Error('保存した担当が見つかりません。Noahで確認してください。');
      // ID is durable before the first mutation. A lost save response is read
      // through that same ID on the next confirmed attempt, never recreated.
      await api('/api/sky/agents',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:i.agentId,revision:0,create:true,settings:{name:role.name,instructions:role.instructions,provider:'local-model',model:b.modelId,enabled:true}})});

@@ -22,7 +22,7 @@ avokadoの主商品は、声でEveへ依頼し、空間の表示を見たり触�
 flowchart LR
   U[本人] --> N[Noah: 発見・追加・接続]
   U --> E[Eve: 依頼・仕事・成果]
-  N --> E
+  N --> R
   E --> R[RockstarOS: 本人・権限・予算・保存・復旧]
   R --> B[対応ブラウザ / 既存OS client]
   R --> L[対応するローカル / Cloud実行先]
@@ -48,6 +48,7 @@ flowchart LR
 | [app/noah/](app/noah/) / [components/noah-timeline.tsx](components/noah-timeline.tsx) | 公開タイムラインと機能画面 |
 | [lib/noah-surface.ts](lib/noah-surface.ts) | 公開側とMac側の遷移 |
 | [services/sky-web/noah-page-routes.mjs](services/sky-web/noah-page-routes.mjs) | 現行URLと互換URLの対応 |
+| [Mac API接続](scripts/noah-local-api.mjs) / [コード取得](scripts/noah-source-bytes.mjs) | 既存機能で共有する通信・容量照合。本人・招待・公開版の条件は各経路で保持 |
 | [Tool詳細設計](docs/sky-tools-complete-design.md) | 入出力・権限・保存・失敗・復旧・受入 |
 
 ### 本人用セレクト・リセール

@@ -63,7 +63,8 @@
 
 | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・本番通し/別Mac未確認 |
 
-| 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | 検証済み・[PR #321](https://github.com/k999ln/rock/pull/321) |
+| 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | ✅ [PR #321](https://github.com/k999ln/rock/pull/321)・[PR #325](https://github.com/k999ln/rock/pull/325) |
+| 73 | [73-current-product-consolidation.md](73-current-product-consolidation.md) | 機能を保った重複・類似処理と現行説明の統合 | ✅ [PR #326](https://github.com/k999ln/rock/pull/326) |
 
 ## 70〜90番台: Noah — mii へ進む最小構成（2026-11-20）
 

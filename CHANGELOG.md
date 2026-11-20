@@ -4,6 +4,8 @@
 
 - Noah 全体の設計書を置いた（Fable / Noelle）。主商品 mii・最小構成 Noah・最初は本人の Mac（PR #325 の本人確定方針）に順番を合わせ、行き先（みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない）、具体的なスキーム（お金・つなぐ・動かす・集める・載せる／売る・端末・データ）、進捗報告の 11 項目ごとの設計、要る技術と作り方の表、作る順番、7 つの問い（技術・タイミング・独占・人材・販売・持続性・隠れた真実）への答えを 1 冊にした。実装する Agent がそのまま進められる詳細設計書（機能ごとに UX → フロント → バックエンド → 試験、データ定義、状態遷移、開発の進め方、決定待ちの既定値）を別に置いた。接続・実行・取り込み・市場の背景は別の文書へ分けた。外の台帳を読み取りだけで実測（MCP の公式台帳 66,608 件、鍵なしで応答する host は標本の 54.6%、Hugging Face の「agent」は 0.7% しか動いていない）し、残り 72 件を分類。`docs/noah-design.md`、`docs/noah-detailed-design.md`、`docs/noah-agent-market-design.md`、`docs/noah-agent-census-20261120.md`、`docs/services/`（noah-one-click-connect・noah-own-device・noah-screenless・noah-agent-intake・eve-agent-build・noah-mobile-variant・noah-agent-purchase）、`codex/tasks/73`〜`95`、07 に本人指示と提案、02・04 に 1 か所ずつ。設計まで。コード・migration・契約・公開は変えていない。
 
+- Noah/EveのMac API接続・コード取得・型検査・仕事通信を共通化し、構成/事業/READMEを本人MacのNoah→miiへ同期。本人・招待・審査・停止条件と既存機能を保持し、Git読取り失敗時の子処理回収も修正（[PR #326](https://github.com/k999ln/rock/pull/326)、task73）。
+
 - 本人回答に基づき、主商品mii・最小構成Noah・本人Macの先行受入・SIM/eSIMのOS導入役割を正本へ同期。Codex実行の再送試験を、回数固定の待機から実処理の完了待機へ修正（task72）。
 
 - READMEのNoah案内を現在の動作へ同期（task72）。

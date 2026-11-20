@@ -1377,7 +1377,7 @@
     }
   },
   "updatedAt": "2026-11-20",
-  "milestone": "Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合",
+  "milestone": "Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合",
   "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。",
   "tasks": [
     {
@@ -13148,5 +13148,32 @@
     "deviceManufacturingApproved": false,
     "liveIssuanceEnabled": false,
     "autoFlashAllowed": false
+  },
+  "currentProductConsolidation": {
+    "task": "codex/tasks/73-current-product-consolidation.md",
+    "baseMain": "c4d7c2732d899ccabe23654a62f89f2704cbaa8c",
+    "scope": "Noah/Eveの共通通信・コード取得・現行説明の整理。固有機能と本人/招待/審査/停止条件を保持",
+    "focusedTests": 143,
+    "boundaryTests": 4,
+    "fullVerification": "pass",
+    "productionAcceptanceChanged": false,
+    "focusedGroups": {
+      "noahAndEve": 83,
+      "sharedBoundaryAndFollowup": 48,
+      "gitContext": 12
+    },
+    "verifyExitCode": 0,
+    "nodeTests": 4438,
+    "passed": 4434,
+    "failed": 0,
+    "skipped": 4,
+    "integrationAuthority": "https://github.com/k999ln/rock/pull/326",
+    "macPackage": {
+      "sha256": "7b1f66fd3e569179082e2dbe6e3760bed539510c013bccfe09b9be0ebcc11cd4",
+      "files": 129,
+      "bundleImport": "pass",
+      "freshMacAccepted": false
+    },
+    "gitFailureCleanup": "all parallel Git reads settle before failure returns; deterministic regression passes"
   }
 }

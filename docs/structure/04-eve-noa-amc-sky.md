@@ -1,22 +1,19 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
-2026-11-20 専用の端末と画面: 本人指示により、Noah の行き先を「みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない」に置く。主商品は mii、Noah はその最小構成で、最初は本人の Mac（裏で動く）、次に mii の Hub へ同じ契約を移す。他人が作った Agent は、画面と入力装置の無い専用の端末（家・手元。端末を持たない人には雲）か提供者のサーバーでだけ動かし、本人が使っている端末の画面・入力・ブラウザを使わせない。mii では、Agent に空間の表示・カメラ・マイクを直接渡さない。本人の端末そのものを操作する Agent は受けない。置き場所は機種の名前で書かず、ハードの差は hardware profile に置く。外の Agent は 1 件ずつ実行器を書かず、つなぎ方（口）ごとに取り込む。[全体の設計](../noah-design.md)、[詳細](../noah-agent-market-design.md)、[画面を取らない](../services/noah-screenless.md)、[専用の端末](../services/noah-own-device.md)、[取り込み](../services/noah-agent-intake.md)。設計まで。実装・契約・公開は変えていない。
+## 現在の入口と実装範囲
 
-2026-11-19 Noah単体ローンチ: 公開版の登録/公開/ライブラリをaccountへ統合し、本人が認証したMac runnerが外向きHTTPSで依頼を取得する。Webからlocalhostの公開bindを要求しない。対応済み固定adapterと審査済みNode/Python配布版を扱い、仕事は既存Work、審査は既存Package reviewを再利用する。停止は実行器の終了報告まで待ち、通信不明は停止済みにしない。[受入仕様](../services/noah-standalone-launch.md)。
+製品の優先順位は[00 全体像](00-overview.md#1-一言で)、公開名と内部名は[06 名前](06-naming.md)を正本とする。公開Noahと内部Noaは別の役割。
 
-2026-11-18 ヘッダー統一: NoahとEveは共通の上段アプリ切替（Noah / Eve）を使い、現在地のみ選択表示を変える。コミュニティーはNoah内の機能。Eveの仕事・接続・設定はアプリ内ナビゲーションとして保持し、本人確認や実行中の遷移制限を変えない。
+| 入口・機能 | 現在の契約と参照先 |
+| --- | --- |
+| Noah | `/noah`が唯一のタイムライン、`/noah/features`がTool・担当・接続・成果等の入口。最初の本人MacでのAgent選択・接続・実行・成果受領・停止は[Noah単体ローンチ](../services/noah-standalone-launch.md)に集約する。Eveを開くことを実行条件にしない |
+| Eve | 本人の依頼、仕事、成果と使用量の窓口。Noahと共通ヘッダーで往復し、選んだTool・記事・担当を渡す。既存の認証・実行中の遷移制限を保持 |
+| 互換入口 | `/sky`と`/os/sky`はqueryを保持して対応するNoah画面へ移動。保存済み担当は`/noah/saved`、調査カタログは`/noah/agents`。APIと保存識別子は変更しない |
+| ローカル実験 | 公開画面は`/noah/local-tools`へ案内。Macのlocalhost制限・私有データを保持。公開Webからの実行は、別の認証済みRunner経路を使用 |
+| 公開配信 | 共通ヘッダーと固定hashのasset配信を使用。公開カタログ、本人の登録、審査済み公開版、実行許可を区別。配備の履歴は[task69](../../codex/tasks/69-noah-public-timeline.md)・[task70](../../codex/tasks/70-noah-route-unification.md)、通し受入は[task71](../../codex/tasks/71-noah-standalone-launch.md)で確認 |
+| 次の設計（未実装・本人確認待ち） | 本人指示（2026-11-20）により、行き先を「みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない」に置く設計。他人が作った Agent は、画面と入力装置の無い専用の端末か提供者のサーバーでだけ動かす。外の Agent は 1 件ずつ実行器を書かず、つなぎ方（口）ごとに取り込む。正本は[Noah の設計書](../noah-design.md)と[作業単位ごとの実装仕様書](../noah/README.md)。現在の契約・実装・公開は変えていない |
 
-2026-11-18 画面統合: `/noah`を唯一のタイムラインとし、既存のTool利用・購入・掲載/販売・担当設定・接続/端末・成果・クラウド設定を`/noah/features`から同じシェルで開く。旧`/sky`と`/os/sky`は対応するNoah画面へqueryを保持して移動する。API・認証・保存先・課金条件は変更しない。旧Agent設定は`/noah/saved`、外部Agentカタログは`/noah/agents`、Mac実行は既存の案内。ローカル実験は公開側で`/noah/local-tools`へ案内し、実験本体のhost制限を保持する。
-
-2026-11-18 公開配信の修正: Sitesの静的ファイル優先配信に依存せず、正規asset URLはWorkerを通して共通ヘッダーを付ける。ビルド時に正規URLと内容hash付き保管URLの対応を固定し、HTML/SVGとservice workerはWorkerで返す。保管先は公開asset専用であり秘密の保管場所ではない。権限付きAPIやcookieを保管先へのリクエストへ転送しない。
-
-2026-11-18 公開指示の更新: 統合タイムラインを既存avoado.siへ公開する。ドメイン直下はNoahへの入口にし、既存fragment/queryの共有導線を保持する。公開カタログと認証付き投稿の権限を区別し、管理/接続/実行/停止はMac版への案内を維持する。GitHubは作業branch/PRへ保存する。
-
-2026-11-18 Noahの統一: ニュース、フォロー、投稿・共有、コミュニティーとAgent検索・分類・紹介を共通のOS画面にまとめる。Macでは本人のAgent登録・管理・対応Agentの接続・実行・停止へ進み、公開画面はMacへの案内を挟む。`/noah/public`は公開モードの確認用とし別製品にしない。既存の認証・投稿権限・公開範囲とWork/Broker/Walletを保持し、ニュースの閲覧やカタログ掲載を実行許可へ昇格させない。
-
-2026-11-18 公開範囲の確定: 本人指示によりavoado.si向けNoahは準備まで。公開Site・ドメイン・main・本番DBを変更せず、ローカルで確認できる成果物として保持する。
-
-2026-11-18 本人指定の `avoado.si/noah` に公開カタログ・検索・詳細を追加する。既存認証/DB/公開範囲を保ち、本人のAgent・Work・SSDデータを含めない。Macへの移動と未実装の認証付き遠隔実行を区別する。
+以下のEve→Noa→AMC→Jevは責任分担と後続の体験を示す設計であり、すべての依頼が自動完了するという受入記録ではない。最初のNoahでは既存Work/Broker/Walletを通して本人が実行と停止を指定する。
 
 ## 1. 一周の流れ（公開入口は Eve と Noah）
 
@@ -59,7 +56,7 @@ sequenceDiagram
 
 **内部構造として AMC / Eve / Noa を一つに潰さない**（本人の指示）。公開UIでは Eve と Noah を表示し、NoahからEveへ選択したTool・記事・担当を渡す。ウェイクワードは「ヘイ、エヴァ」（議事録 10-27）。
 
-注: 議事録 10-07 の「ジェニファーが最上位（データ許可）、下にプロジェクト管理・データ管理・データ探索の3人」は、この表では Jennifer＝AMC、3人＝AMC 内の役割（.codex/agents の amc / amc-worker / amc-reviewer）として読む。Jennifer を AMC に吸収するのは 2026-11-02 の整理での判断で、本人の確認待ち。
+注: 議事録 10-07 の「ジェニファーが最上位（データ許可）、下にプロジェクト管理・データ管理・データ探索の3人」は、この表では Jennifer＝AMC、3人＝AMC 内の役割（.codex/agents の amc / amc-worker / amc-reviewer）として読む。現行の責任分担はAMCへ統合する。互換API・保存識別子に残る`jennifer`は別製品を意味しない。
 
 2026-11-04の本人指示により、ローカルAMCに[Goalから逆算する有限実行](../amc-goal-orchestrator.md#goalから逆算するローカル実行と再計画)を追加する。営業18役・開発21役は工程の担当候補で、32部隊の正本や本人権限を置き換えない。既存Goal reducerで前提・成果提出・実行者と異なる検収・最終OWNER受入を保持し、検収された安全な局所修正だけを元の条件と上限内で再計画する。Codex workerと別processのread-only検収はローカルadapterであり、本番Jev/Brokerの権限・課金・Web実行の受入とは分ける。
 
@@ -67,12 +64,12 @@ sequenceDiagram
 
 | 役割 | lib | app / api | 備考 |
 | --- | --- | --- | --- |
-| Eve | lib/eve-*.ts（11）, lib/zema-chat-session.ts | app/chat, app/zema, app/api/eve | zema-chat-session は Eve 配下へ（task 04） |
+| Eve | lib/eve-*.ts, lib/zema-chat-session.ts | app/chat, app/zema, app/api/eve | zema-chat-session は Eve 配下へ（task 04） |
 | Noa | lib/eve-agent-proposal.ts, eve-agent-creation.ts, eve-agent-origin.ts, components/eve-object-agent-creator.tsx | app/api/llm/local-agent | コード内の `smith` → `noa`（task 04） |
-| AMC | lib/amc-*.ts, lib/jennifer-amc-*.ts, lib/jennifer-*.ts（7） | app/amc, app/api/amc, app/api/jennifer | jennifer-* を lib/amc/ に統合（task 23） |
+| AMC | lib/amc-*.ts, lib/jennifer-amc-*.ts, lib/jennifer-*.ts | app/amc, app/api/amc, app/api/jennifer | 内部名と互換入口の整理はtask40。移動だけを機能統合の完了としない |
 | Jev | lib/jev-evaluation.ts, jev-transport.ts, android/jev-provider | app/api/jev-evaluation | — |
 | Spider | lib/spider-*.ts, toolkits/spider-guard | — | .github/workflows/spider-codeql.yml |
-| Sky | lib/sky-*.ts（104本） | app/sky, app/api/sky, services/sky-* | 104本は多い。lib/sky/ に機能別サブフォルダ化（task 26） |
+| Sky | lib/sky-*.ts | app/sky, app/api/sky, services/sky-* | 接続契約を保持。フォルダ整理はtask08 |
 | Work | lib/work-*.ts, lib/workflow.ts | app/work, app/api/work-jobs, app/api/jobs | — |
 | Broker | lib/a2a-broker-*.ts, lib/agent-control-plane.ts | app/api/agent-control-plane | — |
 | Wallet | lib/wallet*.ts, lib/settlement.ts | app/wallet, app/api/wallet, app/api/earnings, services/sky-billing | — |
@@ -108,17 +105,17 @@ sequenceDiagram
 - 他人の Agent を使うときの権限は Broker が本人に確認。Sky は価格と評価だけ出す。
 - MCP / A2A / SDK は Sky の接続口。toolkits/, services/sky-agent-runtime, systems/rock-star-os/docs/TOOL-SDK.md が実体。
 
-## 5. 組合せの決め方と会社受注（2026-11-15）
+## 5. 後続の組合せ計画と会社受注（2026-11-15の設計）
 
-利用者像はかいや。受入条件は「めんどくさい、と言った後に、誰かが裏でツールを選び・指示を訳し・進捗を追わなくても成果が出る」。全体は [sky-work-loop.md](../sky-work-loop.md)。
+Noahの最初の受入後に接続する応用系統。利用者像はかいや。ここでの受入条件は「めんどくさい、と言った後に、誰かが裏でツールを選び・指示を訳し・進捗を追わなくても成果が出る」。全体は [sky-work-loop.md](../sky-work-loop.md)。
 
 | 何を決めるか | 誰が | コード | 決め方 |
 | --- | --- | --- | --- |
 | どの工程で作るか | Noa | lib/sky-recipe-planner.ts | 手元の素材から成果までの工程を列挙し、「検収に通る成果1つあたりの期待総額」が最小のものを選ぶ。実績は Jev の検収結果 |
 | 自動化を作るか | Noa | 同上 | 初回準備を、その仕事が起きる回数で割って比べる。1回きりなら手でやる工程が選ばれる |
 | 本人に何を残すか | Eve | RecipeGoal.keepForSelf | 本人が「自分でやりたい」と言った成果の型だけ。そこは自動処理に置き換えない |
-| どこで実行してよいか | AMC | lib/sky-company-order.ts | AI不可・未確認は受けない。個人情報・秘密、持ち出しの承諾なしは会社の管理下だけ |
-| どの募集に応募するか | AMC | lib/sky-gig-desk.ts、lib/sky-gig-offers.ts | lane runner が読んだ募集を、売れる型・予算・納期・AI可否・採用率で決め、lane へ決定を返す。送信は自動が初期値 |
+| どこで実行してよいか | AMC | lib/sky-company-order.ts | si利用不可・未確認は受けない。個人情報・秘密、持ち出しの承諾なしは会社の管理下だけ |
+| どの募集に応募するか | AMC | lib/sky-gig-desk.ts、lib/sky-gig-offers.ts | lane runner が読んだ募集を、売れる型・予算・納期・si利用可否・採用率で決め、lane へ決定を返す。送信は自動が初期値 |
 | どの計算機で動かすか | Noa | lib/sky-device-tiers.ts | 依頼者の秘密は会社側だけ。それ以外は、こなせる中で最も安い所。参加者の端末は複数台の一致で検証 |
 | 人の確認を誰に頼むか | AMC | 同上 | 30秒・2〜4択の問いにして、引き受けの少ない人から配る。同じ問いを同じ人に二度渡さない |
 | お金をどう分けるか | Wallet | 同上 | 作業料（単価×検収量）と配当（入金済み余剰の一部を等分）。計算だけで、記帳・送金はしない |

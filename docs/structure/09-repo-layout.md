@@ -19,6 +19,7 @@
 | RockstarOS（共通層） | docs/structure/02 → docs/native-os-integration.md, systems/rock-star-os/docs/architecture.md | lib/rockstar-*.ts, systems/rock-star-os/os（Buildroot）, android/, os/ | tests/rockstar-* | `npm run android:architecture:check`, `npm run device-support:check` |
 | eSIM | docs/structure/03 → docs/service-design/08 | app/api/esim, lib/esim-*.ts, lib/esimgo-*.ts, app/connect, toolkits/esim-bootstrap | tests/esim-* | `npm test -- esim` |
 | Eve | docs/structure/04 | lib/eve-*.ts, lib/zema-chat-session.ts, app/chat, app/zema, app/api/eve | tests/eve-*, tests/zema-* | — |
+| Noah / 本人Mac接続 | docs/structure/04 → docs/services/noah-standalone-launch.md | app/noah, app/api/noah, lib/noah-*, scripts/noah-*。localhost通信はnoah-local-api、取得容量照合はnoah-source-bytes、公開WebのRunnerはnoah-mac-runner | tests/noah-* | `npm run verify` |
 | Noa（旧Smith） | docs/structure/04 | lib/eve-agent-*.ts, components/eve-object-agent-creator.tsx, app/api/llm | tests/eve-agent-* | — |
 | AMC（＋旧Jennifer） | docs/structure/04 → docs/mission-control.md, docs/amc-*.md | lib/amc-*.ts, lib/jennifer-*.ts, app/amc, app/api/amc, app/api/jennifer, data/amc/ | tests/amc-*, tests/jennifer-* | `npm run mission:check` |
 | Jev | docs/jev-*.md | lib/jev-*.ts, android/jev-provider, app/api/jev-evaluation | tests/jev-* | — |

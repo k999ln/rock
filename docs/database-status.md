@@ -10,7 +10,7 @@
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 393 task中 114 done、48 in progress、230 planned、1 blocked
-- 現在milestone: Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合
+- 現在milestone: Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合
 
 ## 保存境界と配備状態
 

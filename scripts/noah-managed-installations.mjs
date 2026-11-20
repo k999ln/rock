@@ -1,3 +1,4 @@
+import { createNoahLocalRequest, createNoahLocalRecordClients } from './noah-local-api.mjs';
 import { createTerminalInstallations, terminalUploadId, terminalSourceLoader } from './noah-terminal-installations.mjs';
 import { isNoahInviteAgentId } from '../lib/noah-invite-contract.mjs';
 import { inviteSourceLoader } from './noah-invite-loader.mjs';
@@ -204,47 +205,21 @@ export function createNoahInstallationsPlugin() {
     server.middlewares.use((request, response, next) => {
       const address = server.httpServer?.address(), port = typeof address === 'object' ? address?.port : server.config.server.port;
       const getOwner = async incoming => {
-        const headers = {};
-        for (const key of ['cookie', 'authorization', 'oai-authenticated-user-id']) if (typeof incoming.headers[key] === 'string') headers[key] = incoming.headers[key];
-        const r = await fetch(`http://${incoming.headers.host}/api/noah/catalog/owner`, { headers, redirect: 'error', signal: AbortSignal.timeout(5000) });
+        const r = await createNoahLocalRequest(incoming)('/api/noah/catalog/owner', { timeoutMs: 5000 });
         if (!r.ok) throw new InstallError('Noahの本人確認が必要です。', r.status === 401 ? 401 : 503);
         return r.json();
       };
-      const workFor = (incoming, scope) => async (action, input) => {
-        const headers = { 'Content-Type': 'application/json', 'Origin': `http://${incoming.headers.host}`, 'X-Rock-Owner-Scope': scope };
-        for (const key of ['cookie', 'authorization', 'oai-authenticated-user-id']) if (typeof incoming.headers[key] === 'string') headers[key] = incoming.headers[key];
-        const get = action === 'get';
-        const query = new URLSearchParams();
-        if (get) for (const key of ['id', 'agentId', 'summary']) if (typeof input[key] === 'string') query.set(key, input[key]);
-        const r = await fetch(`http://${incoming.headers.host}/api/noah/executions${query.size ? `?${query}` : ''}`, { method: get ? 'GET' : 'POST', headers, ...(get ? {} : { body: JSON.stringify({ ...input, action }) }), redirect: 'error', signal: AbortSignal.timeout(10000) });
-        const data = await r.json(); if (!r.ok) throw new InstallError(data.error || '仕事の記録を確認できません。', r.status); return data;
-      };
+      const workFor = (incoming, scope) => createNoahLocalRecordClients(incoming, scope).work;
+      const instanceFor = (incoming, scope) => createNoahLocalRecordClients(incoming, scope).instance;
+      const operationFor = (incoming, scope) => createNoahLocalRecordClients(incoming, scope).operation;
       const requestManager = { ...manager, execution: (scope,id) => terminalUploadId(id) || isReleaseAgentId(id) || isNoahInviteAgentId(id) ? terminals.execution(scope,id) : manager.execution(scope,id) };
       const referencesFor = (incoming, scope) => async model => {
         const current = await getOwner(incoming);
         if (!current.localHostOwner || current.ownerScope !== scope) throw new InstallError('本人の接続が変わりました。', 409);
-        const headers = {};
-        for (const key of ['cookie', 'authorization', 'oai-authenticated-user-id']) if (typeof incoming.headers[key] === 'string') headers[key] = incoming.headers[key];
-        const r = await fetch(`http://${incoming.headers.host}/api/noah/models/references?model=${encodeURIComponent(model)}`, { headers, redirect: 'error', signal: AbortSignal.timeout(10000) });
+        const r = await createNoahLocalRequest(incoming)(`/api/noah/models/references?model=${encodeURIComponent(model)}`);
         const data = await r.json();
         if (!r.ok || data.ownerScope !== scope || !Array.isArray(data.references)) throw new InstallError(data.error || 'モデルの参照先を確認できません。', r.ok ? 409 : r.status);
         return data.references;
-      };
-      const instanceFor = (incoming,scope) => async(action,input) => {
-        const headers = { 'Content-Type':'application/json','Origin':`http://${incoming.headers.host}`,'X-Rock-Owner-Scope':scope };
-        for(const key of ['cookie','authorization','oai-authenticated-user-id']) if(typeof incoming.headers[key]==='string') headers[key]=incoming.headers[key];
-        const get=action==='get',query=new URLSearchParams();
-        if(get) for(const key of ['id','agentId']) if(typeof input[key]==='string') query.set(key,input[key]);
-        const r=await fetch(`http://${incoming.headers.host}/api/noah/instances${query.size?`?${query}`:''}`,{method:get?'GET':'POST',headers,...(get?{}:{body:JSON.stringify({...input,action})}),redirect:'error',signal:AbortSignal.timeout(10000)});
-        const data=await r.json(); if(!r.ok||data.ownerScope!==scope) throw new InstallError(data.error||'ライブラリの記録を確認できません。',r.ok?409:r.status); return data;
-      };
-      const operationFor = (incoming, scope) => async (action, input) => {
-        const headers = { 'Content-Type': 'application/json', 'Origin': `http://${incoming.headers.host}`, 'X-Rock-Owner-Scope': scope };
-        for (const key of ['cookie', 'authorization', 'oai-authenticated-user-id']) if (typeof incoming.headers[key] === 'string') headers[key] = incoming.headers[key];
-        const get = action === 'get', query = new URLSearchParams();
-        if (get) for (const key of ['id','agentId','archived']) if (typeof input[key] === 'string') query.set(key, input[key]);
-        const r = await fetch(`http://${incoming.headers.host}/api/noah/operations${query.size ? `?${query}` : ''}`, { method: get ? 'GET' : 'POST', headers, ...(get ? {} : { body: JSON.stringify({ ...input, action }) }), redirect: 'error', signal: AbortSignal.timeout(10000) });
-        const data = await r.json(); if (!r.ok) throw new InstallError(data.error || '運用記録を確認できません。', r.status); return data;
       };
       for (const action of ['status', 'connect', 'disconnect', 'remove']) requestManager[action] = async (scope, id, revalidate) => {
         if (!terminalUploadId(id) && !isReleaseAgentId(id) && !isNoahInviteAgentId(id)) return manager[action](scope, id, revalidate);
