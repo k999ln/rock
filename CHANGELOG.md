@@ -1,5 +1,7 @@
 ## 2026-11-20
 
+- READMEにmii公式の筐体全景とセンサー部の接写を掲載し、Proの紹介・画像・表の記載を外した（[PR #338](https://github.com/k999ln/rock/pull/338)、task 99）。
+
 - ルートREADMEをmii公式サイトに合わせ、帰宅のビジュアルと5本の短編からEve・Noahの実画面、接続構成、実機の検証状況へ進む構成に更新（[PR #336](https://github.com/k999ln/rock/pull/336)、task 99）。
 
 - READMEを更新日・ハイライト・縦目次・機能別記事の順に改め、Noahの検索デモ、Eveの実画面、Macの停止手順とスマホ版の入出力例を追加（[PR #333](https://github.com/k999ln/rock/pull/333)、task 99）。
