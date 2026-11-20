@@ -52,4 +52,3 @@ void test('起動引数を緩めた変更は、検査で落ちる', () => {
   assert.ok(auditNoahVmArgs(['start', 'noah-exec', '--mount', 'none', '--network-address']).length > 0);
   assert.deepEqual(auditNoahVmArgs(['start', 'noah-exec', '--mount', 'none', '--network-address=false']), []);
 });
-

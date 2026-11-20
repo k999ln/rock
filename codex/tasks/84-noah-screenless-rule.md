@@ -34,6 +34,8 @@
 
 ## 開発進捗
 
-[PR #329](https://github.com/k999ln/rock/pull/329): L1 実装済み・全体検証中。起動引数は変更せず `engineArgs()` を抽出し、監査の正本を `lib/noah-screenless-audit.mjs` へ移した。18 起動構成の検査と、15 通りの緩和拒否、overview なしの poll → start → finish による Work 成果保存を確認。関連 30 テスト成功。Mac の観測・面の分類はローンチ後の範囲。
+[PR #329](https://github.com/k999ln/rock/pull/329): L1の実装・ローカル検証済み。起動引数を変えずに `engineArgs()` を抽出し、監査の正本を `lib/noah-screenless-audit.mjs` へ移設。固定13件・Node/Python実行と配置・VMの18構成をverifyで検査する。15通りの緩和拒否と、overviewなしのpoll → start → finishによるWork成果保存を確認した。
 
-最新 main を pull し `npm ci` 完了。設計検証キット61件・DDL10項目成功。使い捨てコピーの `terminalContainerArgs` に DISPLAY=:0 を追加した実CLIは終了コード1で拒否（作業元の引数は不変）。製品lintのtest呼出しをvoidへ合わせて全体verifyを再実行中。
+検証: `npm ci` と `npm ci --prefix sites/avocado-mini` の後、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 成功（主テスト4,438成功・既存skip4・失敗0、仕事API1,918項目・CSV保存385項目、build含む）。関連30テスト・設計キット61件・DDL10項目も成功。使い捨てコピーの `terminalContainerArgs` に DISPLAY=:0 を追加した実CLIは終了コード1で拒否。途中の既存ブラウザー試験のタイムアウトは、単独4件成功と全体verifyの再成功を確認した。
+
+残件: 面の分類とMac実機の前面アプリ・窓・クリップボード・権限観測はローンチ後。実機OSの合格ではない。本番migration・配備・切り替えなし。PRは未マージ。GitHubの秘密値検査はmainから引き継いだ過去3コミットの合成テスト入力を検出している（詳細はPR）。検査・履歴・例外設定は変更していない。
