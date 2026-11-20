@@ -2,7 +2,7 @@ import NoahDeveloperMaintenance from '@/components/noah-developer-maintenance';
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ agent?: string; view?: string }>;
+  searchParams: Promise<{ agent?: string }>;
 }) {
   const q = await searchParams;
   return (
@@ -13,7 +13,6 @@ export default async function Page({
           ? q.agent
           : ''
       }
-      operator={q.view === 'operator'}
     />
   );
 }

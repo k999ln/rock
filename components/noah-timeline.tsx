@@ -118,6 +118,7 @@ export default function NoahTimeline({
               </>
             )}
           </a>
+          <Link className={styles.filterButton} href={`${base}/activity`}>実行中</Link>
           <button
             aria-label="タイムラインを更新"
             disabled={feed.loading}
