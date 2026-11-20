@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 220,
+    "tableCount": 223,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。"
   },
   "webSchema": {
-    "tableCount": 148,
+    "tableCount": 151,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -73,6 +73,8 @@
       "marketplace_receipts",
       "marketplace_reservations",
       "mercari_revenue_plans",
+      "noah_agent_comments",
+      "noah_agent_crowns",
       "noah_agent_drafts",
       "noah_agent_invite_claims",
       "noah_agent_invites",
@@ -88,6 +90,7 @@
       "noah_intake_checks",
       "noah_intake_families",
       "noah_intake_sources",
+      "noah_maintenance_requests",
       "noah_probe_hosts",
       "noah_recommendation_settings",
       "noah_result_contributions",
@@ -175,8 +178,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 26,
-    "latestMigration": "0045_noah_result_data.sql",
+    "migrationCount": 27,
+    "latestMigration": "0046_noah_feedback.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -240,6 +243,8 @@
           "agent_delegation_events",
           "agent_delegation_inputs",
           "agent_delegations",
+          "noah_agent_comments",
+          "noah_agent_crowns",
           "noah_agent_drafts",
           "noah_agent_invite_claims",
           "noah_agent_invites",
@@ -255,6 +260,7 @@
           "noah_intake_checks",
           "noah_intake_families",
           "noah_intake_sources",
+          "noah_maintenance_requests",
           "noah_probe_hosts",
           "noah_recommendation_settings",
           "noah_result_contributions",
@@ -315,7 +321,7 @@
           "sky_x_feed_state",
           "sky_x_oauth_states"
         ],
-        "tableCount": 84
+        "tableCount": 87
       },
       {
         "id": "marketplace",
@@ -438,6 +444,8 @@
         "marketplace_receipts",
         "marketplace_reservations",
         "mercari_revenue_plans",
+        "noah_agent_comments",
+        "noah_agent_crowns",
         "noah_agent_drafts",
         "noah_agent_invite_claims",
         "noah_agent_invites",
@@ -453,6 +461,7 @@
         "noah_intake_checks",
         "noah_intake_families",
         "noah_intake_sources",
+        "noah_maintenance_requests",
         "noah_probe_hosts",
         "noah_recommendation_settings",
         "noah_result_contributions",
@@ -534,8 +543,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0045_noah_result_data.sql",
-      "tableCount": 148,
+      "expectedAppliedThrough": "0046_noah_feedback.sql",
+      "tableCount": 151,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

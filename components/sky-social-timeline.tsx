@@ -1685,7 +1685,7 @@ export default function SkySocialTimeline({
                   )}
                   {data.thread && renderPost(data.thread, true)}
                   {(!selected || selected.member) && (
-                    <form className={styles.composer} onSubmit={post}>
+                    <form id={postsOnly ? "compose" : undefined} className={styles.composer} onSubmit={post}>
                       <span
                         className={styles.composerAvatar}
                         aria-hidden="true"
@@ -1697,7 +1697,7 @@ export default function SkySocialTimeline({
                           ? `${data.thread.author.name}に返信`
                           : selected
                             ? `${selected.name}に共有`
-                            : 'いまどうしてる？'}
+                            : postsOnly ? 'Agentを使って感じたこと' : 'いまどうしてる？'}
                       </label>
                       <textarea
                         id="sky-post"
@@ -1713,7 +1713,7 @@ export default function SkySocialTimeline({
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         placeholder={
-                          data.thread ? '返信を投稿' : 'いまどうしてる？'
+                          data.thread ? '返信を投稿' : postsOnly ? '何に使った？ よかった点、惜しかった点、あなたの感想を。' : 'いまどうしてる？'
                         }
                       />
                       <div className={styles.attach} hidden={!attachmentOpen}>
