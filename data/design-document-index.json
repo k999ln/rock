@@ -4315,8 +4315,7 @@
         "scripts/check-sky-a2a-workflow.mjs",
         "scripts/check-work-api.mjs",
         "scripts/check-csv-storage.mjs",
-        "app/avocado-mini/page.tsx",
-        "app/avocado-mini/design.module.css"
+        "app/avocado-mini/page.tsx"
       ],
       "tests": [
         "tests/sky-domain-staging.test.mjs",

@@ -1097,16 +1097,6 @@ export function validateBaseline(
     data.marketPositioning?.legacyCommercialFields?.currentR5PriceAuthority === 'marketPositioning.r5.priceStatus' &&
     data.marketPositioning?.r5?.priceStatus === 'not_confirmed_for_R5_do_not_inherit_E3_prices' &&
     ['tower20E3', 'mini200E2Integration', 'avocadoMiniDesiredReferencePriceJpy'].every(key => !Object.hasOwn(data.marketPositioning, key));
-  const currentR5Entry = retiredHardware &&
-    hardwarePageSource.includes('AVOCADOMINI R5 / DESIGN PROGRAM') &&
-    hardwarePageSource.includes('使用時200mm以内') && hardwarePageSource.includes('別Hubは不要') &&
-    hardwarePageSource.includes('価格は未確定') && hardwarePageSource.includes('実機試験・製造・一般販売は未承認') &&
-    hardwarePageSource.includes('携帯電源') && hardwarePageSource.includes('電池方式は未選定') &&
-    hardwarePageSource.includes('https://avocadomini.si/mini/') &&
-    data.marketPositioning?.legacyCommercialFields?.appliesToCurrentR5 === false &&
-    data.marketPositioning?.legacyCommercialFields?.currentR5PriceAuthority === 'marketPositioning.r5.priceStatus' &&
-    data.marketPositioning?.r5?.priceStatus === 'not_confirmed_for_R5_do_not_inherit_E3_prices' &&
-    ['tower20E3', 'mini200E2Integration', 'avocadoMiniDesiredReferencePriceJpy'].every(key => !Object.hasOwn(data.marketPositioning, key));
   requireValue(
     data.launchPage?.route === (canonicalOsEntry ? '/os' : '/rockstaros') &&
       data.launchPage?.role === (canonicalOsEntry ? 'canonical_os_workspace_entry' : 'public_sim_esim_service_home') &&
@@ -1116,9 +1106,9 @@ export function validateBaseline(
       data.launchPage?.serviceDetailsLocation === (canonicalOsEntry ? 'service_settings_and_connect' : 'public_service_home') &&
       data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
       data.marketPositioning?.customerFacingFocus === (retiredHardware ? 'account_led_rockstaros_service_access' : 'sim_esim_led_rockstaros_service_access') &&
-      data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
+      data.marketPositioning?.leadHardwareConcept === 'mii' &&
       data.marketPositioning?.leadHardwareForm ===
-        'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
+        'spatial_core_four_towers_separate_hub' &&
       (retiredHardware ? data.marketPositioning?.legacyCommercialFields?.restoreCommit === '98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb' :
         data.marketPositioning?.previousLeadHardwareForm === 'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
         data.marketPositioning?.legacyReferencePriceAppliesTo === 'historical_motion_tower_p0_kit_only') &&
@@ -1130,7 +1120,7 @@ export function validateBaseline(
       (canonicalOsEntry || (launchPageSource.includes('SIM/eSIMをつないで、Sky・Eve・AI Agentへ') &&
       launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
       launchPageSource.includes('href="/connect"'))) &&
-      (currentR5Entry || canonicalHardwareEntry || (!retiredHardware && hardwarePageSource.includes('<AvocadoTurntable />') &&
+      (canonicalHardwareEntry || (!retiredHardware && hardwarePageSource.includes('<AvocadoTurntable />') &&
       hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&

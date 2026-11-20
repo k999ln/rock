@@ -344,3 +344,10 @@ void test('canonical 49 requirements and the existing Source extension retain se
 });
 
 void test('Mini canonical presentation cannot become an arbitrary external destination or inherit historical prices',()=>{const wrong=structuredClone(source);wrong.launchPage.hardwareCanonicalOrigin='https://example.invalid';assert.throws(()=>validateBaseline(wrong),/avocadoMini製品ホーム/);const priced=structuredClone(source);priced.marketPositioning.r5.priceStatus='for_sale';assert.throws(()=>validateBaseline(priced),/avocadoMini/);});
+
+
+void test('the lead hardware is the mii Spatial Core', () => {
+  const obsolete = structuredClone(source);
+  obsolete.marketPositioning.leadHardwareForm = 'r5_200mm_autonomous_peer_minis_no_required_edge_hub';
+  assert.throws(() => validateBaseline(obsolete), /avocadoMini製品ホーム/);
+});
