@@ -25,8 +25,8 @@
 
 ## Web D1
 
-- expected latest migration: 0048_noah_asks.sql
-- migration files: 29
+- expected latest migration: 0049_noah_connections_connecting.sql
+- migration files: 30
 - accidental duplicate: 0
 - published convergence definitions: 25
 - Marketplace relation guards: 8

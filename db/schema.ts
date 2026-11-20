@@ -2397,7 +2397,7 @@ export const noahMaintenanceRequests = sqliteTable('noah_maintenance_requests', 
   state:text('state').notNull(), scopeVersion:text('scope_version').notNull(), createdAt:integer('created_at').notNull(),
 }, t=>[index('noah_maintenance_owner').on(t.ownerId,t.createdAt),check('noah_maintenance_state',sql`${t.state}='requested'`),check('noah_maintenance_scope',sql`${t.scopeVersion}='noah-maintenance-v1'`)]);
 
-// 接続（Passport）。account が正本。DDL は drizzle/0047_noah_connections.sql（docs/contracts/noah-v1.sql から移した）。
+// 接続（Passport）。account が正本。DDL は drizzle/0047_noah_connections.sql と、索引を 1 つ足す 0049_noah_connections_connecting.sql（docs/contracts/noah-v1.sql から移した）。
 export const noahConnections = sqliteTable('noah_connections', {
   id: text('id').primaryKey(),
   ownerId: text('owner_id').notNull(),
@@ -2455,6 +2455,8 @@ export const noahConnections = sqliteTable('noah_connections', {
   index('noah_connections_owner').on(t.ownerId, t.updatedAt, t.id),
   index('noah_connections_device').on(t.deviceId, t.state).where(sql`${t.deviceId} IS NOT NULL`),
   index('noah_connections_family').on(t.familyKey, t.state),
+  // つなぐ途中のまま止まった接続を、巡回の後始末が拾う（drizzle/0049_noah_connections_connecting.sql）。
+  index('noah_connections_connecting').on(t.updatedAt).where(sql`${t.disconnectedAt} IS NULL AND ${t.state} IN ('planned','entitling','preparing','probing')`),
 ]);
 
 // 頼む（入力欄から、相手のサーバーの道具を 1 回呼ぶ仕事）。依頼と成果の本文は Work にだけ置く。DDL は drizzle/0048_noah_asks.sql（docs/contracts/noah-v1.sql から移した）。

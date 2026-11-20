@@ -180,8 +180,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 29,
-    "latestMigration": "0048_noah_asks.sql",
+    "migrationCount": 30,
+    "latestMigration": "0049_noah_connections_connecting.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -549,7 +549,7 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0048_noah_asks.sql",
+      "expectedAppliedThrough": "0049_noah_connections_connecting.sql",
       "tableCount": 153,
       "sourceStatus": "VERIFIED",
       "deployment": {

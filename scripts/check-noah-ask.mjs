@@ -90,7 +90,7 @@ export async function checkNoahAsk(options = { trace: false }) {
   const mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: 'export default { fetch() { return new Response("local ask acceptance"); } };', compatibilityDate: '2026-10-01', d1Databases: { DB: 'noah-ask-local-acceptance' } }));
   try {
     const d1 = await mf.getD1Database('DB');
-    for (const file of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections', '0048_noah_asks']) for (const sql of readFileSync(new URL(`../drizzle/${file}.sql`, import.meta.url), 'utf8').split('--> statement-breakpoint').filter((part) => /CREATE/.test(part))) await d1.prepare(sql).run();
+    for (const file of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections', '0048_noah_asks', '0049_noah_connections_connecting']) for (const sql of readFileSync(new URL(`../drizzle/${file}.sql`, import.meta.url), 'utf8').split('--> statement-breakpoint').filter((part) => /CREATE/.test(part))) await d1.prepare(sql).run();
     // 成果の正本（Work）の表。大きな migration（0021）から、その表を作る文だけを、そのまま取り出して流す。
     await d1.prepare(/CREATE TABLE IF NOT EXISTS `work_jobs` \([^;]+\);/.exec(readFileSync(new URL('../drizzle/0021_sites_schema_convergence.sql', import.meta.url), 'utf8'))[0]).run();
     // D1 への往復（1 文の実行か、1 回の batch）を、文と一緒に、順に残す。

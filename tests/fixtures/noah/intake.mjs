@@ -6,8 +6,8 @@ export const entry = (i, change = {}, status = 'active') => ({ server: { name: `
 export const page = (entries, cursor = null) => Response.json({ servers: entries, metadata: { nextCursor: cursor } });
 export function fixture(t, fetcher = async () => page([]), extra = {}) {
   const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
-  // 家の端末の表（接続の表が指す）・取り込みの表・接続の表・依頼の表。本番と同じ migration を、順に流す。
-  for (const name of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections', '0048_noah_asks']) sql.exec(readFileSync(new URL(`../../../drizzle/${name}.sql`, import.meta.url), 'utf8'));
+  // 家の端末の表（接続の表が指す）・取り込みの表・接続の表・依頼の表・後始末の索引。本番と同じ migration を、順に流す。
+  for (const name of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections', '0048_noah_asks', '0049_noah_connections_connecting']) sql.exec(readFileSync(new URL(`../../../drizzle/${name}.sql`, import.meta.url), 'utf8'));
   // 成果の正本（Work）の表。大きな migration（0021）から、その表を作る文だけを、そのまま取り出して流す。
   sql.exec(/CREATE TABLE IF NOT EXISTS `work_jobs` \([^;]+\);/.exec(readFileSync(new URL('../../../drizzle/0021_sites_schema_convergence.sql', import.meta.url), 'utf8'))[0]);
   const batches = [], queries = [], hooks = {}; let clock = NOW;

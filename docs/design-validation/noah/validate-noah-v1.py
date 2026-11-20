@@ -224,6 +224,14 @@ def connections():
     assert "noah_connections" in plan(db, mine, ("owner-1",))
     on_device = "SELECT id FROM noah_connections WHERE device_id=? AND state='connected'"
     assert "noah_connections_device" in plan(db, on_device, ("dev-1",)), plan(db, on_device, ("dev-1",))
+    # つなぐ途中で止まった接続を、巡回の後始末が拾う文（spec-88 の 9.5）。その接続だけを持つ索引を使い、表を端から読まない。
+    connecting = ("SELECT id,owner_id,state,revision FROM noah_connections WHERE disconnected_at IS NULL AND state IN ('planned','entitling','preparing','probing') "
+                  "AND place='provider' AND updated_at < ? ORDER BY updated_at LIMIT ?")
+    assert "SEARCH noah_connections USING INDEX noah_connections_connecting" in plan(db, connecting, (10**15, 50)), plan(db, connecting, (10**15, 50))
+    assert "SCAN" not in plan(db, connecting, (10**15, 50))
+    # IN の並びが違う文は、この索引を使えない（文は、索引の式と同じに書く）。
+    reordered = connecting.replace("('planned','entitling','preparing','probing')", "('probing','planned','entitling','preparing')")
+    assert "noah_connections_connecting" not in plan(db, reordered, (10**15, 50))
     put(db, "noah_connection_secrets", dict(connection_id=UUID.format(2), name="Authorization", value_ciphertext="v1:…", created_at=1))
     rejects(db, "INSERT INTO noah_connection_secrets(connection_id,name,value_ciphertext,created_at) VALUES(?,?,?,1)", (UUID.format(2), "Authorization", "v1:…"))
     rejects(db, "INSERT INTO noah_connection_secrets(connection_id,name,value_ciphertext,created_at) VALUES('none','K','v',1)")

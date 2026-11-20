@@ -31,7 +31,7 @@ void test('database status inventories every boundary and keeps production readb
     'OWNER_ACCESS_BLOCKED',
   );
   assert.equal(report.webSchema.tableCount, 153);
-  assert.equal(report.webSchema.migrationCount, 29);
+  assert.equal(report.webSchema.migrationCount, 30);
   for (const name of ['sky_linux_service_documents','sky_linux_service_receipts','rockstar_service_setups']) { assert.ok(report.webSchema.tables.includes(name)); assert.ok(report.webSchema.sourceOnlyTables.includes(name)); }
   assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('eve_runtime_presence'));
@@ -58,7 +58,7 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('jennifer_task_attempts'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_credentials'));
   assert.ok(report.webSchema.tables.includes('jennifer_passkey_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0048_noah_asks.sql');
+  assert.equal(report.webSchema.latestMigration, '0049_noah_connections_connecting.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.publishedConvergenceDeclarations, 25);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);

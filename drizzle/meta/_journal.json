@@ -204,6 +204,13 @@
       "when": 4102444800020,
       "tag": "0048_noah_asks",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "6",
+      "when": 4102444800021,
+      "tag": "0049_noah_connections_connecting",
+      "breakpoints": true
     }
   ]
 }
