@@ -66,6 +66,32 @@ export function startDiscoveryDaemon({
           at: new Date().toISOString(),
           outcomes: result.outcomes,
         });
+      // 取り込みの巡回（公式台帳）も、同じ間隔で進める。手元用（本番は、専用の Worker の合図で動く）。
+      // 審査者でない時・巡回を閉じている時は、何も進まない。ここでの失敗は、上の発見の結果を変えない。
+      if (!closed) {
+        let intake = { state: 'intake_unavailable' };
+        try {
+          const patrol = await fetcher(base + '/api/noah/intake', {
+            method: 'POST',
+            signal,
+            redirect: 'manual',
+            headers: {
+              Origin: base,
+              'Content-Type': 'application/json',
+              'X-Rock-Owner-Scope': data.ownerScope,
+            },
+            body: '{}',
+          });
+          const body = await patrol.json();
+          if (patrol.ok && body.ownerScope === data.ownerScope)
+            intake = body.disabled
+              ? { state: 'intake_disabled' }
+              : { state: 'intake_checked', outcomes: body.outcomes };
+        } catch {
+          intake = { state: 'intake_unavailable' };
+        }
+        if (!closed) onStatus({ ...intake, at: new Date().toISOString() });
+      }
     } catch {
       if (!closed)
         onStatus({ state: 'unavailable', at: new Date().toISOString() });

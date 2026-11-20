@@ -95,6 +95,11 @@ def existing():
         assert table in names, table
 
 
+ALL_TABLES = ["noah_asks", "noah_connection_secrets", "noah_connections", "noah_intake_candidates", "noah_intake_checks", "noah_intake_families",
+              "noah_intake_sources", "noah_oauth_clients", "noah_oauth_grants", "noah_oauth_states", "noah_probe_hosts", "noah_standing_works",
+              "noah_usage_events"]
+
+
 def ddl_twice():
     before = {r[0]: r[1] for r in db.execute("SELECT name, sql FROM sqlite_master WHERE name LIKE 'noah_%'")}
     for _ in range(2):
@@ -103,14 +108,42 @@ def ddl_twice():
     after = {r[0]: r[1] for r in db.execute("SELECT name, sql FROM sqlite_master WHERE name LIKE 'noah_%'")}
     for name, sql in before.items():
         assert after.get(name) == sql, f"既存の定義が変わった: {name}"
-    new = sorted(n for n in after if n not in before and db.execute("SELECT type FROM sqlite_master WHERE name=?", (n,)).fetchone()[0] == "table")
-    assert new == ["noah_asks", "noah_connection_secrets", "noah_connections", "noah_intake_candidates", "noah_intake_checks", "noah_intake_families",
-                   "noah_intake_sources", "noah_oauth_clients", "noah_oauth_grants", "noah_oauth_states", "noah_probe_hosts", "noah_standing_works",
-                   "noah_usage_events"], new
+    tables = lambda names: sorted(n for n in names if db.execute("SELECT type FROM sqlite_master WHERE name=?", (n,)).fetchone()[0] == "table")  # noqa: E731
+    new = tables(n for n in after if n not in before)
+    migrated = tables(n for n in before if n in ALL_TABLES)   # 実装の PR が、もう migration へ移した表
+    assert sorted(new + migrated) == ALL_TABLES, (new, migrated)
+
+
+def strip_sql(stmt):
+    """注釈（-- …）と空行を外す。文そのものは変えない。"""
+    lines = [line.split("--", 1)[0].rstrip() for line in stmt.splitlines()]
+    return "\n".join(line for line in lines if line.strip())
+
+
+def migrations_match():
+    """migration へ移した表と索引は、DDL 案と同じ文（注釈だけを外した物）。drizzle-main の同じ番号も、同じ中身。"""
+    import re
+    contract = {}
+    for stmt in statements(DDL.read_text()):
+        text = strip_sql(stmt)
+        found = re.match(r"CREATE (?:UNIQUE )?(?:TABLE|INDEX) IF NOT EXISTS ([a-z_]+)", text)
+        if found:
+            contract[found.group(1)] = text
+    matched = 0
+    for path in sorted((REPO / "drizzle").glob("*.sql")):
+        for stmt in statements(path.read_text()):
+            text = strip_sql(stmt)
+            found = re.match(r"CREATE (?:UNIQUE )?(?:TABLE|INDEX) IF NOT EXISTS ([a-z_]+)", text)
+            if found and found.group(1) in contract:
+                assert text == contract[found.group(1)], f"{path.name} の {found.group(1)} が、DDL 案と違う"
+                assert (REPO / "drizzle-main" / path.name).read_text() == path.read_text(), f"drizzle-main/{path.name} が違う"
+                matched += 1
+    assert matched >= 16, f"migration に、DDL 案と同じ名前の表・索引が {matched} 個しか無い"
 
 
 check("既存の Noah の表がある", existing)
 check("DDL 案を 2 回流しても壊れず、既存の定義を変えない", ddl_twice)
+check("migration へ移した表と索引は、DDL 案と同じ文", migrations_match)
 
 
 def candidate(key="ac.mizan/registry", **change):
@@ -406,7 +439,7 @@ def listing():
         g.executescript(stmt)
     for source in ("mcp-registry", "hf-mcp-space", "acp-registry"):
         put(g, "noah_intake_sources", dict(id=source))
-    cases = json.loads((REPO / "docs/design-validation/noah/fixtures/listing-cases.json").read_text())["cases"]
+    cases = json.loads((REPO / "tests/fixtures/noah/listing-cases.json").read_text())["cases"]
     T = 20
     ids = {}
 

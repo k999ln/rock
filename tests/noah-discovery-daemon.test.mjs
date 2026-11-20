@@ -33,11 +33,66 @@ void test('daemon schedules independently of a page, sends owner intent and orig
     Response.json({ ownerScope: scope, outcomes: { github: 'updated' } }),
   );
   await flush();
-  assert.equal(timers[0].ms, 60000);
   assert.equal(statuses[0].state, 'checked');
+  // 取り込みの巡回（公式台帳）も、同じ間隔で、同じ本人の意図と Origin を付けて、空の本文で進める。
+  assert.equal(calls.length, 3);
+  assert.equal(calls[2].url, 'http://127.0.0.1:3107/api/noah/intake');
+  assert.equal(calls[2].init.headers.Origin, 'http://127.0.0.1:3107');
+  assert.equal(calls[2].init.headers['X-Rock-Owner-Scope'], scope);
+  assert.equal(calls[2].init.redirect, 'manual');
+  assert.equal(calls[2].init.body, '{}');
+  assert.equal(timers.length, 0, '取り込みが終わるまで、次の予定を入れない（重ならない）');
+  release(
+    Response.json({
+      ownerScope: scope,
+      outcomes: [{ source: 'mcp-registry', pages: 1 }],
+    }),
+  );
+  await flush();
+  assert.equal(timers[0].ms, 60000);
+  assert.deepEqual(
+    statuses.map((s) => s.state),
+    ['checked', 'intake_checked'],
+  );
   daemon.close();
   await timers[0].f();
-  assert.equal(calls.length, 2);
+  assert.equal(calls.length, 3);
+});
+void test('intake patrol being closed, refused or broken never changes the discovery result', async () => {
+  for (const [variant, expected] of [
+    ['disabled', 'intake_disabled'],
+    ['forbidden', 'intake_unavailable'],
+    ['changed', 'intake_unavailable'],
+    ['throws', 'intake_unavailable'],
+  ]) {
+    const statuses = [];
+    const d = startDiscoveryDaemon({
+      origin: 'http://localhost:3107',
+      setTimer: () => 1,
+      clearTimer: () => {},
+      onStatus: (s) => statuses.push(s),
+      fetcher: async (url, init) => {
+        if (!init.method) return Response.json({ ownerScope: scope });
+        if (!url.endsWith('/api/noah/intake'))
+          return Response.json({ ownerScope: scope, outcomes: {} });
+        if (variant === 'throws') throw Error('network');
+        if (variant === 'forbidden')
+          return Response.json({ error: 'no' }, { status: 403 });
+        return Response.json({
+          ownerScope: variant === 'changed' ? 'owner-v1:' + 'b'.repeat(64) : scope,
+          disabled: true,
+        });
+      },
+    });
+    await flush();
+    await flush();
+    d.close();
+    assert.deepEqual(
+      statuses.map((s) => s.state),
+      ['checked', expected],
+      variant,
+    );
+  }
 });
 void test('missing owner, redirected reads and changed owner never count as a successful update', async () => {
   for (const variant of ['missing', 'redirect', 'changed']) {

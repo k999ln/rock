@@ -85,13 +85,13 @@ checks の行は、**動いている時にだけ**作る（`draftFromSpace`）�
 2. 出どころを 1 つ選ぶ: `next_run_at <= now AND lease_until < now` のうち `next_run_at` が最も古い物。`UPDATE … SET lease_id=?, lease_until=now+60000 WHERE id=? AND lease_until < now RETURNING *` で取る。取れなければ `{ outcomes: [] }` を返す。
 3. 頁を読む。1 回の呼び出しで、台帳は 10 頁まで、Space は 2 頁まで、合わせて 20 秒まで。頁ごとに:
    - 各記録を 4 章の列に直す。`INSERT … ON CONFLICT(id) DO UPDATE` で書く。`record_sha256` が同じなら `seen_at` だけを更新する。違えば `revision+1`・`changed_at=now` にし、下書きを作り直す。
-   - 下書きの `connect_sha256` が変わった候補は、checks を `level=0`・`result='unchecked'`・`tools_sha256=NULL`・`next_check_at=now` に戻す（確かめ直すまで、印を出さない）。
+   - **接続先に関わる項目**が変わった候補（`diffNoahConnect(前, 今).reconsent` が真: 口・面・置き場所・接続先・通信先・サービス・鍵・モデル）と、取り下げ・下書きなしから有効に戻った候補は、checks を `level=0`・`result='unchecked'`・`tools_sha256=NULL`・`next_check_at=now` に戻す（確かめ直すまで、印を出さない）。説明や版だけの更新では、握手の記録を消さない（`connect_json`・`connect_sha256` だけを新しくする。接続要件は記録の hash を含むので、記録が変わるたびに hash は変わる。台帳は 1 時間に約 100 件が版を上げる。そのたびに「動いた」を消さない）。下書きを作れなくなった候補は、checks の行を消す。
    - 1 頁の書き込みは `db.batch` で 100 文ずつ。頁の最後に `cursor` を保存する（途中で止まっても、次の呼び出しが続きから読む）。
 4. 最後の頁まで読んだら（`nextCursor` が無い）:
-   - 取り下げ: この巡回で見えた件数が、前回の `observed` の 9 割以上の時だけ、`source=? AND state='active' AND seen_at < sweep_started_at` を `withdrawn` にする。
+   - 取り下げ: 安全弁を通った時だけ、`source=? AND state IN ('active','unsupported') AND seen_at < sweep_started_at` を `withdrawn` にする。安全弁: この巡回の前から知っていて（`first_seen_at < sweep_started_at`）、前の全件の巡回より後に見えていた（`seen_at >= last_full_at`）候補のうち、この巡回でも見えた物が 9 割以上。届かない巡回では行わない。見えない状態が次の全件の巡回でも続いた候補は、分母から外れるので、その時に取り下げる。`observed` は、終わった巡回で見えた件数（運営の画面に出す数。巡回の終わりに、行から数えて書く。途中の頁を読み直しても、数え過ぎない）。
    - `regroup()` を流す（[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql) の 8 文を上から順に。`:threshold` は 20）。
    - `cursor=NULL`、`sweep_started_at=NULL`、`last_success_at=now`、`next_run_at` ＝ 台帳と Space は 1 時間後、ACP は 24 時間後。
-5. 失敗した時: `error_code` に `rate_limited`・`unavailable`・`invalid_response` を入れ、`failure_count+1`、`next_run_at = now + min(2^failure_count 分, 6 時間)`。429 は `Retry-After` を使う。lease は放す。
+5. 失敗した時: `error_code` に `rate_limited`・`unavailable`・`invalid_response` を入れ、`failure_count+1`、`next_run_at = now + min(2^(続けて失敗した回数) 分, 6 時間)`（1 回目は 2 分後）。429 は `Retry-After` を使う（1 分以上、6 時間まで）。lease は放す。続けて 6 回失敗したら、進行中の巡回の列（`sweep_started_at`・`updated_since`・`cursor`）を消して、同じ印から始め直す（保存した頁の続きが、もう読めない時のため）。`nextCursor` が、今読んだ頁と同じ値の応答は、`invalid_response`（進まない応答で、同じ頁を読み続けない）。
 6. 応答 `{ "outcomes": [{ "source", "pages", "seen", "changed", "more" }], "sources": <status()> }`。
 
 名乗り: `User-Agent: NoahBot/1 (+https://<Noah の origin>/noah/help#bot)`。転送は追わない（`redirect: 'manual'`）。1 応答は 4MB まで。
@@ -206,12 +206,13 @@ checks の行は、**動いている時にだけ**作る（`draftFromSpace`）�
 1 回の合図（11.3）で行う事:
 
 1. lease を取る（5.1 の 2 と同じ）。
-2. 進行中の巡回が無い時: `next_run_at > now` なら何もしない。そうでなければ `noahRegistrySyncPlan({ now, checkpoint: checkpoint_at, lastFullAt: last_full_at })` を取り、`sweep_started_at = now`、`updated_since`、`cursor = NULL`、`observed = 0` を書く。
+2. `next_run_at > now` なら何もしない（進行中の巡回も、失敗の後は、この時刻まで待つ）。進行中の巡回が無い時は `noahRegistrySyncPlan({ now, checkpoint: checkpoint_at, lastFullAt: last_full_at })` を取り、`sweep_started_at = now`、`updated_since`、`cursor = NULL`、`request_count = 0` を書く。
 3. 頁を読む。`NOAH_PATROL_BUDGET.pages`（既定 10）頁まで、かつ、合図の残り時間まで。記録ごとに:
    - 4.1 の列に直して `INSERT … ON CONFLICT(id) DO UPDATE`。`record_sha256` が同じなら `seen_at` だけ。
    - 新しく入った有効な候補には、**その場で「1 件で 1 系列」の行を作る**（候補の `family_id` は、入れる時に、候補の ID と同じ値にする。系列の ID も同じ値。次の名寄せが、まとめる物だけを付け替える）: `INSERT OR IGNORE INTO noah_intake_families(id, representative_id, members, level, badge_hint, listed, one_tap, shuffle, updated_at, revision) VALUES(?, ?, 1, 0, ?, 0, 0, abs(random()) % 1000000000, ?, 1)`（`badge_hint` は、鍵の入力が要れば `setup`、それ以外は `unverified`）。握手が通ると、86 が同じ行へ写す。
-   - 取り下げになった候補が代表の系列は、その場で外す: [noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `touch` を `level=0`・`listed=0`・`one_tap=0`・`badge_hint='unverified'` で流す。その候補へつないでいる人の新しい依頼は、87 が止める（87 の 11.4 の 4）。
-   - 1 頁ごとに `cursor` を保存する。
+   - 取り下げになった候補・下書きを作れなくなった候補・握手の記録を消した候補（5.1 の 3）が代表の系列は、その場で外す: [noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の `touch` を `level=0`・`listed=0`・`one_tap=0`・`badge_hint='unverified'`（鍵の入力が要れば `setup`）で流す。その候補へつないでいる人の新しい依頼は、87 が止める（87 の 11.4 の 4）。
+   - 有効に戻った候補は、`family_id` を自分の ID に戻し、上の「1 件で 1 系列」の行を（無ければ）作る。握手が通るまで載せない。
+   - 1 頁ごとに `cursor` を保存する（最後の頁では保存しない。下の 4 の最後の 1 文が、巡回の列をまとめて消す。その前で止まっても、次の合図は最後の頁から読み直すだけで済む）。
 4. 最後の頁まで読んだら:
    - `checkpoint_at = sweep_started_at`。全件の巡回なら `last_full_at = sweep_started_at` と、5.1 の 4 の取り下げ（前回の 9 割以上を読めた時だけ）。
    - 名寄せ（[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql)）を流すのは、全件の巡回の後と、UTC の日付が変わって最初に終わった巡回の後だけ（毎時は流さない。まとめた候補を書き直すため）。
@@ -228,6 +229,8 @@ checks の行は、**動いている時にだけ**作る（`draftFromSpace`）�
 | ファイル | 中身 |
 | --- | --- |
 | `lib/noah-flags.ts` | [noah-flags-v1.ts](../contracts/noah-flags-v1.ts) を移す（`parseNoahFlags`・`noahAllowed`） |
+| `lib/noah-limits.ts` | [noah-form-v1.ts](../contracts/noah-form-v1.ts) の「つなぐ前・頼む前の上限」の節を移す（`NOAH_ASK_LIMITS`・`noahAskGate`・`noahConnectGate`）。切り替えが、この数を読むため、入力欄（L4 の `lib/noah-form.ts`）より先に要る |
+| `lib/noah-intake-sql.ts` | [noah-listing-v1.sql](../contracts/noah-listing-v1.sql) の 10 文（`NOAH_LISTING_SQL`。注釈だけを外す）と、名前つきの引数（`:name`）を D1 が受ける番号つきの引数（`?1`）に直す `noahNamedSql`・`noahStatement`。D1 は名前つきの引数を受けない。store・握手（L4）・接続（L5）・依頼（L6）が、同じ文を使う |
 | `lib/noah-intake-server.ts` | 新規。`cloudflare:workers` の `env` と `waitUntil` を読み、`{ db, authenticate, reviewers, flags: parseNoahFlags(env), wakeKey: env.NOAH_PATROL_WAKE_KEY, fetcher: fetch, now: Date.now }` を返す。`env` を読むのはここだけ |
 | `lib/noah-intake-wake.ts` | 型契約から `NOAH_WAKE`・`noahWakeSignature`・`verifyNoahWake` を移す |
 | `app/api/noah/intake/tick/route.ts` | 新規。`POST` だけ。`verifyNoahWake({ key, timestamp: header 'x-noah-time', signature: header 'x-noah-signature', body, now })` が偽なら 401。`flags.patrol` が偽なら 200 `{ "disabled": true }`。真なら `sync()` を呼び、件数だけを返す。`Origin` の header が付いた要求は 403（画面から呼ぶ入口ではない） |
@@ -244,7 +247,8 @@ D1 の上限（[読んだ日 2026-11-20](https://developers.cloudflare.com/d1/pl
 | 候補の 1 件は 1 文（列は 21 個）。1 頁 100 件を、50 文ずつの `db.batch` 2 回で書く。checks と系列の行も同じ batch に入れる | 1 頁の query を 2〜4 回に収める |
 | `record_sha256` が同じ記録は `seen_at` だけを書く | 更新された物だけの巡回では、ほぼ全部が変わった記録。全件の巡回では、ほぼ全部が変わらない |
 | 名寄せは 1 日 1 回。変わらない行は書かない | まとめた候補（約 12,000）だけを書き直す |
-| `record_json` は 65,536 bytes まで。越える記録は、`remotes` と `packages` を外して `"oversize": true` を足した形で保存する。下書きと `record_sha256` は、外す前の記録から作る | 実測: 保存する形の大きさは中央値 409 bytes、99% が 2,078 bytes 以下。65,536 を越えるのは 67,703 件のうち 1 件（72,523 bytes） |
+| `record_json` は 65,536 bytes まで。越える記録は、`remotes` と `packages` を外して `"oversize": true` を足した形で保存する。下書きと `record_sha256` は、外す前の記録から作る | 実測: 保存する形の大きさは中央値 409 bytes、99% が 2,078 bytes 以下。型契約の項目だけを取り出した後の最大は 22,332 bytes で、65,536 を越える記録は無い（2026-11-20 の全件。元の記録のままでは 1 件が 72,523 bytes） |
+| `record_json` に、鍵らしい値を保存しない。header・環境変数・引数の `value`・`default` のうち、`isSecret` が真の物と、鍵らしい形（`looksLikeNoahSecret`）の物は `"[redacted]"` に置き換え、その項目に `"redacted": true` を足す。接続先の URL が鍵らしい並びを含む時も同じ。下書きと `record_sha256` は、置き換える前の記録から作る | 台帳に公開された鍵を運ばない決まり。実測: 67,703 件のうち 964 件に、置き換えた値がある（多くは `Bearer {名前}` の型で、鍵そのものではない。鍵そのものが公開されていた記録は 6 件） |
 
 書き込みの見込みは [97](spec-97-launch-ops.md) の 3 章。
 
@@ -267,15 +271,15 @@ D1 の上限（[読んだ日 2026-11-20](https://developers.cloudflare.com/d1/pl
 - `q`（80 文字まで）がある時は `search` だけを使う（段に分けない。`cursor` は `s:<offset>`、200 件まで）。`oneTap=1` は `new` の絞り込み。
 - 各項目は、系列の代表の候補と checks から作る。`provider` は台帳の名前の `/` より前。`tools` は `tool_count`。`checkedAt` は `checked_at`。`connect` は 96 の `planNoahConnection`（未サインインなら `signedIn=false`）。
 - `counts` は 5 分間、同じ値を返してよい。
-- 応答は `Cache-Control: no-store, private`（サインインの有無で `connect` が変わるため）。サインインしていない人への応答は、同じ `cursor`・`q`・`oneTap` について、サーバーの側で 60 秒持ってよい（一覧は鍵も本人の情報も含まない。検索 1 回は、載せている系列の約 18,000 行と、その代表の候補を読むので、同じ問い合わせで D1 を読み直さない）。`q` は 2 文字以上。
+- 応答は `Cache-Control: no-store, private`（サインインの有無で `connect` が変わるため）。サインインしていない人への応答は、同じ `cursor`・`q`・`oneTap` について、サーバーの側で 60 秒持ってよい（一覧は鍵も本人の情報も含まない。検索 1 回は、載せている系列の約 18,000 行と、その代表の候補を読むので、同じ問い合わせで D1 を読み直さない）。持つのは、実行環境（isolate）ごとの memory の中で、256 件まで。取り下げと戻しは、その実行環境が持った物をその場で捨てる（他の実行環境に残った物は、長くて 60 秒で消える。詳細と接続は持たないので、その場で効く）。`q` は 2 文字以上（全角は半角にそろえてから数える）。
 
-**`GET /api/noah/intake?id=<系列の ID>`** → 系列 1 つ `{ …上の項目, "members": 1, "website": <台帳の websiteUrl か null>, "repository": <鍵か null>, "sourceUpdatedAt", "connection": { "id", "state" } | null }`。`connection` は、サインイン済みで、切っていない接続がある時だけ。載せていない系列（`noahListing` が偽）は、審査者でなければ 404。
+**`GET /api/noah/intake?id=<系列の ID>`** → `{ "agent": { …上の項目, "members": 1, "website": <台帳の websiteUrl か null>, "repository": <鍵か null>, "sourceUpdatedAt", "connection": { "id", "state" } | null }, "source", "ownerScope" }`。`connection` は、サインイン済みで、切っていない接続がある時だけ（L5 で足す。L3 では、いつも null）。`website` は、`https` で、利用者名や鍵を含まない URL の時だけ返す（提供者が書いた値を、そのまま link にしない）。載せていない系列（`noahListing` が偽）は、審査者でなければ 404。審査者には `"review": { "revision", "withdrawnAt", "hiddenAt", "mouth", "level", "result", "listing": { "listed": true } | { "listed": false, "reason", "label" } }` を足す（取り下げの操作が `revision` を使う）。載せていない系列の `section` は null。
 
-**`GET /api/noah/intake?state=1`**（審査者だけ）→ 出どころの状態、`noah-listing-v1.sql` の `counts` を `noahListing` に通した内訳（載せている数、理由ごとの数）、`flags.warnings`。
+**`GET /api/noah/intake?state=1`**（審査者だけ。開けていても、審査者でなければ 404）→ `{ "sources": [出どころの状態], "table": [口ごとの、候補・入力なし・準備が要る], "unsupported": [下書きを作れない理由ごとの数と表示名], "listing": { "listed": <載せる条件を満たす候補の数>, "families": { "ran", "new" }, "reasons": [載せていない理由ごとの数と表示名] }, "withdrawn": [取り下げている系列。50 件まで], "warnings": flags.warnings, "ownerScope" }`。`reasons` は、`noah-listing-v1.sql` の `counts` を `noahListing` に通した内訳（候補の数。系列の取り下げ・隠した印は数えない）。5 分間、同じ値を返してよい。
 
 **`POST /api/noah/intake`**（審査者だけ。共通の書き込みの検査）本文 `{ "action": "withdraw" | "restore", "id": <系列の ID>, "revision": <数> }` → `withdrawn_at` を入れる／消す。`revision` が違えば 409。
 
-**`POST /api/noah/intake`** に本文 `{}`（手元の巡回用。今の発見と同じ検査）→ `sync()`。本番では使わない（本番は 11.3 の合図）。
+**`POST /api/noah/intake`** に本文 `{}`（手元の巡回用。今の発見と同じ検査に加えて、**審査者だけ**）→ `sync()`。`NOAH_PATROL_ENABLED` が閉じている間は、200 `{ "disabled": true }` を返して何もしない（閉じている物は、無い物として動く。サインインした人が、本番で巡回を始められないようにする）。本番では使わない（本番は 11.3 の合図）。
 
 **系列の ID を、URL のパスに入れない。** ID は `mcp-registry:ac.mizan/registry` や `same:<16 桁>:github.com/owner/name` の形で、`/` と `:` を含む。パスの中の `%2F` は、配備先や途中の中継で `/` に直される事があるので、いつも query（`?id=`・`?agent=`）か本文で渡す（公式台帳の API も、パスに入れる時は必ず符号化する決まり）。`limit=0` を付けた一覧は、`items` を空にして `counts` だけを返す（navigation が、見せてよいかを確かめるのに使う）。
 
@@ -301,7 +305,36 @@ D1 の上限（[読んだ日 2026-11-20](https://developers.cloudflare.com/d1/pl
 
 ### 11.7 完了の定義（L3）
 
-- 10 章の試験に、11.6 を足した物が通る。`python3 docs/design-validation/noah/validate-noah-v1.py` が 10/10。
+- 10 章の試験に、11.6 を足した物が通る。`python3 docs/design-validation/noah/validate-noah-v1.py` が全部通る（L3 で、「migration へ移した表と索引は、DDL 案と同じ文」の 1 群を足して 11 群）。
 - 手元の D1 で、合図を 70 回送ると候補が 6 万件以上入り、71 回目からは `updated_since` 付きの 1〜2 頁だけを読む。運営の画面の「相手のサーバー」の行が、8 章の表と 1% 以内で合う。
 - `services/noah-patrol-wake` が `wrangler deploy --dry-run` を通る。配備はしない。
 - 切り替えを全部閉じた時、今の画面と API の動きが変わらない（`npm run verify`）。
+
+### 11.8 実装の記録（L3。2026-11-20）
+
+手元で確かめた結果。**本番の合格ではない。** 本番 D1 への migration・専用の Worker の配備・切り替えは、行っていない。
+
+| 確かめた事 | 結果 |
+| --- | --- |
+| 公式台帳の全件（2026-11-20 に読んだ 67,703 件の写し）を、製品の `createIntakeApi().tick` に、本番と同じ頁の大きさ（100 件）で通した（手元の SQLite を D1 の形で包んだ物。外へは何も送っていない） | 合図 68 回（678 頁）で読み終わる。69 回目からは `updated_since` 付きの頁だけを読む。有効 62,798・下書きを作れない 3,810・取り下げ（非推奨）1,095。「相手のサーバー」44,640（入力なし 40,503・準備が要る 4,137）、「端末で動かす」18,158（14,132・4,026）。下書きを作れない理由の内訳も、8 章の表と 1 件も違わない |
+| 名寄せ | 量産の系列 83（12,114 件）。量産でない、相手のサーバーの、入力の要らない候補は 31,433（[ローンチの最小限](mvp-launch.md) の 5 章と同じ） |
+| 保存する項目だけを取り出しても、下書きが変わらない事 | 67,703 件の全部で、元の記録からの下書きと同じ（違い 0 件） |
+| 1 回の合図の D1 の query | 最初の全件の間は最大 66（10 頁。1 頁につき、読む 1・書く 3・続きの保存 1）。その後の「更新された物だけ」（109 件）は 12。変わらない全件の読み直し（7 日に 1 回）は、1 頁につき書く文が 1 つ |
+| 保存の大きさ | 約 141MB（候補 62MB・握手の記録 43MB・系列 8MB・索引 29MB）。握手の後も、行の数は変わらない |
+| `services/noah-patrol-wake` | `wrangler deploy --dry-run` が通る（配備していない） |
+
+設計から変えた所（理由は、上の各章に書いた）:
+
+- 握手の記録を消して確かめ直すのは、接続先に関わる項目が変わった時と、有効に戻った時だけにした（5.1 の 3）。記録の hash が変わるたびに消すと、版を上げただけで「動いた」が消える。
+- 取り下げの安全弁を、行から数える割合にした（5.1 の 4）。`observed` を巡回の途中で足していく作りは、途中の頁を読み直すと数え過ぎる。
+- 空の本文の `POST /api/noah/intake` を、審査者だけにし、巡回を閉じている間は何もしないようにした（11.5）。
+- 鍵らしい値を、保存する記録から消す（11.4）。
+- 名寄せの最後の文に `hidden_at IS NULL` を足した（[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql)）。もう隠してある約 12,000 行を、毎回書き直していた。
+- 運営の画面の、口と深さでの絞り込み（6 章の 4）は入れていない（11.5 の一覧に、その引数が無い）。代わりに、語・台帳の名前・系列の ID で 1 件を開き、取り下げと戻しができる。
+
+残っている事:
+
+- 下書きの規則（`draftFromRegistry`）を直した時、その結果が出るのは、候補を次に読んだ時（更新された記録は 1 時間以内、それ以外は 7 日に 1 回の全件）。読んだ記録は毎回下書きを作り、状態・理由・接続要件の hash のどれかが前と違う候補だけを書き直す。すぐ全部に当てたい時は、`last_full_at` を空にして全件を読ませる（本番 D1 を直に書く操作なので、本人の許可の後）。
+- 名寄せで隠した系列（まとめられた候補の、元の 1 件 1 系列の行）は、候補が量産から外れて戻っても、握手が通るまで隠れたまま（握手が通ると戻す。88 の 9.3）。
+- D1 の上（batch・同時の合図・負荷）では、動かしていない。確かめたのは、手元の SQLite（3.53）と、D1 の migrator を通す既存の試験（`tests/migration-union.test.mjs`）。
+

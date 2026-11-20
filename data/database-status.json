@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 214,
+    "tableCount": 219,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。"
   },
   "webSchema": {
-    "tableCount": 142,
+    "tableCount": 147,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -84,6 +84,11 @@
       "noah_draft_storage_scans",
       "noah_feed_preferences",
       "noah_instances",
+      "noah_intake_candidates",
+      "noah_intake_checks",
+      "noah_intake_families",
+      "noah_intake_sources",
+      "noah_probe_hosts",
       "noah_recommendation_settings",
       "noah_runner_commands",
       "noah_runner_devices",
@@ -169,8 +174,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 24,
-    "latestMigration": "0043_noah_runner.sql",
+    "migrationCount": 25,
+    "latestMigration": "0044_noah_intake.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -245,6 +250,11 @@
           "noah_draft_storage_scans",
           "noah_feed_preferences",
           "noah_instances",
+          "noah_intake_candidates",
+          "noah_intake_checks",
+          "noah_intake_families",
+          "noah_intake_sources",
+          "noah_probe_hosts",
           "noah_recommendation_settings",
           "noah_runner_commands",
           "noah_runner_devices",
@@ -303,7 +313,7 @@
           "sky_x_feed_state",
           "sky_x_oauth_states"
         ],
-        "tableCount": 78
+        "tableCount": 83
       },
       {
         "id": "marketplace",
@@ -437,6 +447,11 @@
         "noah_draft_storage_scans",
         "noah_feed_preferences",
         "noah_instances",
+        "noah_intake_candidates",
+        "noah_intake_checks",
+        "noah_intake_families",
+        "noah_intake_sources",
+        "noah_probe_hosts",
         "noah_recommendation_settings",
         "noah_runner_commands",
         "noah_runner_devices",
@@ -516,8 +531,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0043_noah_runner.sql",
-      "tableCount": 142,
+      "expectedAppliedThrough": "0044_noah_intake.sql",
+      "tableCount": 147,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

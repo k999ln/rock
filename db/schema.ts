@@ -2211,3 +2211,54 @@ export const noahRunnerCommands = sqliteTable('noah_runner_commands', {
 }, t => [index('noah_runner_queue').on(t.deviceId,t.state,t.createdAt),index('noah_runner_history').on(t.ownerId,t.updatedAt),
   uniqueIndex('noah_runner_one_claim').on(t.deviceId).where(sql`${t.state}='claimed'`),
   check('noah_runner_kind',sql`${t.kind} IN ('connect','run')`),check('noah_runner_state',sql`${t.state} IN ('queued','claimed','succeeded','failed','cancelled','unknown')`)]);
+
+// Noah の取り込み（外の台帳 → 候補 → 握手の記録 → 系列）と、接続先ごとの間隔。
+// 制約と索引の正本は drizzle/0044_noah_intake.sql（docs/contracts/noah-v1.sql と同じ文）。ここは列と索引の写し。
+export const noahIntakeSources = sqliteTable('noah_intake_sources', {
+  id: text('id').primaryKey(), leaseId: text('lease_id'), leaseUntil: integer('lease_until').notNull().default(0),
+  nextRunAt: integer('next_run_at').notNull().default(0), lastAttemptAt: integer('last_attempt_at'), lastSuccessAt: integer('last_success_at'),
+  cursor: text('cursor'), updatedSince: text('updated_since'), sweepStartedAt: integer('sweep_started_at'),
+  checkpointAt: integer('checkpoint_at'), lastFullAt: integer('last_full_at'),
+  errorCode: text('error_code'), failureCount: integer('failure_count').notNull().default(0),
+  observed: integer('observed').notNull().default(0), withdrawn: integer('withdrawn').notNull().default(0), requestCount: integer('request_count').notNull().default(0),
+}, t => [check('noah_intake_source_id', sql`${t.id} IN ('mcp-registry','hf-mcp-space','acp-registry')`)]);
+export const noahIntakeCandidates = sqliteTable('noah_intake_candidates', {
+  id: text('id').primaryKey(), source: text('source').notNull().references(() => noahIntakeSources.id), externalKey: text('external_key').notNull(),
+  familyId: text('family_id').notNull(), groupKey: text('group_key').notNull(), name: text('name').notNull(),
+  summary: text('summary').notNull().default(''), summaryJa: text('summary_ja'), repository: text('repository'), host: text('host'),
+  recordSha256: text('record_sha256').notNull(), recordJson: text('record_json').notNull(), state: text('state').notNull(), reason: text('reason'),
+  running: integer('running').notNull().default(1), likes: integer('likes').notNull().default(0), sourceUpdatedAt: integer('source_updated_at'),
+  firstSeenAt: integer('first_seen_at').notNull(), changedAt: integer('changed_at').notNull(), seenAt: integer('seen_at').notNull(), revision: integer('revision').notNull(),
+}, t => [uniqueIndex('noah_intake_candidates_key').on(t.source, t.externalKey), index('noah_intake_candidates_family').on(t.familyId, t.state),
+  index('noah_intake_candidates_sweep').on(t.source, t.state, t.seenAt), index('noah_intake_candidates_repository').on(t.repository).where(sql`${t.repository} IS NOT NULL`),
+  index('noah_intake_candidates_group').on(t.source, t.groupKey, t.host),
+  check('noah_intake_candidate_state', sql`${t.state} IN ('active','unsupported','withdrawn')`),
+  check('noah_intake_candidate_reason', sql`(${t.state} = 'unsupported') = (${t.reason} IS NOT NULL)`)]);
+export const noahIntakeChecks = sqliteTable('noah_intake_checks', {
+  candidateId: text('candidate_id').primaryKey().references(() => noahIntakeCandidates.id), mouth: text('mouth').notNull(), surface: text('surface').notNull(),
+  auth: text('auth').notNull(), connectJson: text('connect_json').notNull(), connectSha256: text('connect_sha256').notNull(), setup: integer('setup').notNull(),
+  oauthJson: text('oauth_json'), toolsSha256: text('tools_sha256'), toolCount: integer('tool_count'), readOnly: integer('read_only'),
+  formTools: integer('form_tools'), oneTapTools: integer('one_tap_tools'), level: integer('level').notNull(), result: text('result').notNull(),
+  latencyMs: integer('latency_ms'), sampleJson: text('sample_json'), checkedAt: integer('checked_at'), l1At: integer('l1_at'), l2At: integer('l2_at'),
+  nextCheckAt: integer('next_check_at').notNull(), failures: integer('failures').notNull().default(0), firstFailureAt: integer('first_failure_at'),
+  leaseUntil: integer('lease_until').notNull().default(0),
+}, t => [index('noah_intake_checks_due').on(t.nextCheckAt, t.leaseUntil).where(sql`${t.setup} = 0 AND ${t.mouth} IN ('mcp-remote','space-mcp','a2a')`),
+  index('noah_intake_checks_level').on(t.level, t.l2At),
+  check('noah_intake_check_level', sql`${t.level} IN (0,1,2)`),
+  check('noah_intake_check_auth', sql`${t.auth} IN ('none','oauth','key','payment','unknown')`)]);
+export const noahIntakeFamilies = sqliteTable('noah_intake_families', {
+  id: text('id').primaryKey(), representativeId: text('representative_id').notNull().references(() => noahIntakeCandidates.id), members: integer('members').notNull(),
+  level: integer('level').notNull(), l2At: integer('l2_at'), badgeHint: text('badge_hint').notNull(), connections: integer('connections').notNull().default(0),
+  listed: integer('listed').notNull().default(0), oneTap: integer('one_tap').notNull().default(0), shuffle: integer('shuffle').notNull().default(0),
+  claimedBy: text('claimed_by'), claimedAt: integer('claimed_at'), withdrawnAt: integer('withdrawn_at'), hiddenAt: integer('hidden_at'),
+  updatedAt: integer('updated_at').notNull(), revision: integer('revision').notNull(),
+}, t => [index('noah_intake_families_timeline').on(sql`${t.l2At} DESC`, t.id).where(sql`${t.level} = 2 AND ${t.withdrawnAt} IS NULL AND ${t.hiddenAt} IS NULL`),
+  index('noah_intake_families_listed').on(sql`${t.shuffle} DESC`, t.id).where(sql`${t.listed} = 1 AND ${t.level} = 1 AND ${t.withdrawnAt} IS NULL AND ${t.hiddenAt} IS NULL`),
+  index('noah_intake_families_representative').on(t.representativeId),
+  index('noah_intake_families_claimed').on(t.claimedBy).where(sql`${t.claimedBy} IS NOT NULL`),
+  check('noah_intake_family_level', sql`${t.level} IN (0,1,2)`),
+  check('noah_intake_family_badge', sql`${t.badgeHint} IN ('one_click','taps','setup','unverified','blocked')`)]);
+export const noahProbeHosts = sqliteTable('noah_probe_hosts', {
+  host: text('host').primaryKey(), lastProbeAt: integer('last_probe_at').notNull(), notBefore: integer('not_before').notNull().default(0),
+  userWindowAt: integer('user_window_at').notNull().default(0), userCount: integer('user_count').notNull().default(0),
+}, t => [check('noah_probe_host_user_count', sql`${t.userCount} >= 0`)]);

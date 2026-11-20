@@ -13,10 +13,10 @@
 | | [noah-screenless-v1.ts](../../contracts/noah-screenless-v1.ts) | 面の見分け、隔離環境の起動引数の検査 |
 | DDL 案 | [noah-v1.sql](../../contracts/noah-v1.sql)、[noah-regroup-v1.sql](../../contracts/noah-regroup-v1.sql)、[noah-listing-v1.sql](../../contracts/noah-listing-v1.sql) | 新しい表 13 個（既存の表は変えない。ローンチで使うのは 7 個）、名寄せの SQL、ローンチの一覧・検索の問い合わせと、つなぐ前・頼む前の上限、接続先の枠（合わせて 10 文） |
 | 試験 | この folder の `*.test.mjs` | 61 群（8 ファイル） |
-| DDL の検証 | [validate-noah-v1.py](validate-noah-v1.py) | 10 群（拒否を確かめる行 63） |
-| 実データ | [fixtures/](fixtures/) | 公式台帳の実記録 25 件＋合成 7 件、実際の握手の写し 1 件、ACP の台帳 3 件、Space 3 件、一覧に載せる条件の表 24 行（合成。純関数と SQL が共に使う） |
+| DDL の検証 | [validate-noah-v1.py](validate-noah-v1.py) | 11 群（拒否を確かめる行 63）。L3 で「migration へ移した表と索引は、DDL 案と同じ文」を足した |
+| 実データ | [fixtures/](fixtures/)、[tests/fixtures/noah/](../../../tests/fixtures/noah/) | 実際の握手の写し 1 件、ACP の台帳 3 件、Space 3 件（ここ）。公式台帳の実記録 25 件＋合成 7 件と、一覧に載せる条件の表 24 行（合成。純関数と SQL が共に使う）は、L3 で製品の試験の側（`tests/fixtures/noah/`）へ移した。ここの試験と DDL の検証も、同じファイルを読む |
 
-**ローンチまでに `lib/` へ移すのは、この中の一部。** どの関数を、どの PR で移すかは [ローンチの最小限](../../noah/mvp-launch.md) の 6 章。
+**ローンチまでに `lib/` へ移すのは、この中の一部。** どの関数を、どの PR で移すかは [ローンチの最小限](../../noah/mvp-launch.md) の 6 章。移した関数は `lib/` が正本で、`docs/contracts/` の同じ名前のファイルは、そこからの再 export になる（両方を直す状態を作らない）。2026-11-20 の時点で移した物: L2 の `noah-connect-v1.ts` の全部、L3 の `noah-intake-v1.ts` のうち公式台帳の下書き・読み方・名寄せ・一覧に載せる条件・巡回の合図、`noah-flags-v1.ts` の全部、`noah-form-v1.ts` のうち「つなぐ前・頼む前の上限」。製品の側の試験は `tests/noah-*.test.mjs`。
 
 ## 実行
 
@@ -26,6 +26,8 @@
 node --experimental-strip-types --test "docs/design-validation/noah/*.test.mjs"
 python3 docs/design-validation/noah/validate-noah-v1.py
 ```
+
+L3 の後（2026-11-20、Node.js 22.23、SQLite 3.53）: 試験 61/61、DDL 11/11。
 
 失敗すると終了コードが 0 以外になる。DDL の検証の結果は `work/design-validation/noah-v1-validation.json`（`NOAH_SQL_RESULT` で変えられる）。型契約は `npm run typecheck` の対象に入っている（`tsconfig.json` が `**/*.ts` を読む）。
 
@@ -85,7 +87,7 @@ python3 docs/design-validation/noah/validate-noah-v1.py
 
 ## 限界
 
-- 参照実装は、製品のコード（`lib/`）から import されていない。ここの全件成功は、製品の成功を意味しない。実装する task が `lib/` と `tests/` へ移し、同じ試験を通す。
+- まだ移していない参照実装（握手・入力欄・道具を持つ担当・面の見分け・Space と ACP の下書き）は、製品のコード（`lib/`）から import されていない。ここの全件成功は、製品の成功を意味しない。実装する task が `lib/` と `tests/` へ移し、同じ試験を通す。移した後の関数は、ここの試験も `lib/` の実装を通る。
 - 握手は、参照実装を実在の 500 host に 1 回ずつ（通った 276 host には、1 時間あけてもう 1 回）通した（上の実測）。試験の中にあるのは、実測の写し 1 件と合成のサーバー。**道具の呼び出し（`tools/call`）は、実在の接続先へ 1 回も送っていない**（設計の検証で、他人の道具を呼ばない）。成果の形（文字・JSON・画像の割合、時間）は、測っていない。L6 の完了の定義で、実在の接続先 3 つへ、人が頼んで確かめる。
 - 参照実装を動かしたのは Node。Cloudflare Workers の上（CPU 時間、同時の接続、`waitUntil` の 30 秒）では動かしていない。本番の Worker から内部向けのアドレスへ届かない事も、確かめていない（仕様書 86 の 10.3 に、出す前の確かめ方）。
 - 入力欄の関数は、実在の道具 3,699 個の定義に通したが、作った引数を相手が受け取るかは、確かめていない（呼んでいないため）。

@@ -83,3 +83,5 @@
 | 保存と API | 取り込みの 5 表、`noah_connections`、`noah_asks`。巡回は、専用の Worker の毎分の合図で動く（手元の daemon ではなく） | 相手の許可の 3 表、鍵の表、継続運用、利用の記録 |
 
 合格条件（出してよいかの判定）は、[ローンチの最小限](../noah/mvp-launch.md) の 8 章の G1〜G7。
+
+実装の状況（2026-11-20）: 取り込み（L3）は `lib/noah-intake-draft.ts`・`-family.ts`・`-sql.ts`・`-store.ts`・`-api.ts`・`-wake.ts`、`lib/noah-flags.ts`、`app/api/noah/intake/`、`services/noah-patrol-wake/`、migration `0044_noah_intake`。手元の試験と、台帳の全件の写しを通した結果は [仕様書 85](../noah/spec-85-intake.md) の 11.8。握手（L4）より後は、まだ無い。本番への migration・配備・切り替えは行っていない。運用（巡回を起こす・止める・戻す）は [仕様書 97](../noah/spec-97-launch-ops.md)。

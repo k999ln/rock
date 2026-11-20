@@ -43,6 +43,8 @@ flowchart LR
 
 接続要件の検査・接続計画・状態遷移の純関数は `lib/noah-connect-requirements.ts` と `lib/noah-connect-plan.ts` に置いています。MVP L2 の開発範囲で、画面・APIとの接続は後続のL5です。計画の計算だけでは権限や利用権は発行しません。
 
+公開の台帳（Official MCP Registry）の記録を読んで、候補・系列として保存する取り込み（MVP L3）を `lib/noah-intake-*.ts` と `/api/noah/intake` に置いています。記録を読むだけで、候補を実行せず、握手もしません（握手は後続のL4）。巡回・一覧の公開は切り替え（`NOAH_PATROL_ENABLED`・`NOAH_INTAKE_PUBLIC`）で閉じてあり、本番への migration の適用、巡回を起こす Worker（`services/noah-patrol-wake`）の配備、切り替えは行っていません。手元の試験と、台帳の全件の写しを通した結果は[実装仕様書 85](docs/noah/spec-85-intake.md)の 11.8 にあります。
+
 投稿・フォローにはサインインが必要です。画面表示の確認と、本人アカウントでの送信・外部接続・決済の受入を区別します。決済サービスが未接続の機能は接続待ちとして扱います。
 
 | コード | 内容 |

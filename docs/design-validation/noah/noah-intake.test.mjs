@@ -10,7 +10,7 @@ import {
 } from '../../contracts/noah-intake-v1.ts';
 import { planNoahConnection } from '../../contracts/noah-connect-v1.ts';
 
-const fixture = (name) => JSON.parse(readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8'));
+const fixture = (name) => JSON.parse(readFileSync(new URL(['registry-records.json', 'listing-cases.json'].includes(name) ? `../../../tests/fixtures/noah/${name}` : `./fixtures/${name}`, import.meta.url), 'utf8'));   // 台帳の記録と一覧の表は、製品の試験と共に使う（tests/fixtures/noah/）
 
 test('公式台帳の実記録: 口・鍵・起動の型紙・つなげない理由が、期待どおり', async () => {
   const { rows } = fixture('registry-records.json');

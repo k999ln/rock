@@ -9,7 +9,7 @@
 | 順 | ローンチ | task | 仕様書 | 型契約・参照実装 | 動く試験 |
 | --- | --- | --- | --- | --- | --- |
 | 0 | L1（10 章） | 84 | [画面を取らない決まりと検査](spec-84-screenless.md) | `noah-screenless-v1.ts` | `noah-screenless.test.mjs` |
-| 1 | L3（11 章） | 85 | [取り込みと名寄せ](spec-85-intake.md) | `noah-intake-v1.ts`、`noah-flags-v1.ts`、`noah-v1.sql`、`noah-regroup-v1.sql`、`noah-listing-v1.sql` | `noah-intake.test.mjs`、`noah-flags.test.mjs`、`validate-noah-v1.py` |
+| 1 | L3（11 章。実装の記録は 11.8） | 85 | [取り込みと名寄せ](spec-85-intake.md) | `noah-intake-v1.ts`、`noah-flags-v1.ts`、`noah-v1.sql`、`noah-regroup-v1.sql`、`noah-listing-v1.sql`（L3 で `lib/noah-intake-*.ts`・`lib/noah-flags.ts`・`lib/noah-limits.ts` と migration `0044_noah_intake` へ移した） | `noah-intake.test.mjs`、`noah-flags.test.mjs`、`validate-noah-v1.py`（製品の側は `tests/noah-intake-*.test.mjs`・`noah-flags`・`noah-limits`） |
 | 1 | L2・L5（9 章） | 96 | [接続要件と接続計画](spec-96-connect-plan.md) | `noah-connect-v1.ts` | `noah-connect.test.mjs` |
 | 1 | L4（10 章） | 86 | [リモートの口と、握手までの接続試験](spec-86-remote-mouth.md) | `noah-mouth-v1.ts`、`noah-form-v1.ts` | `noah-mouth.test.mjs` |
 | 1 | L6（11 章） | 87 | [道具を持つ担当（入力欄で頼む・1 文で頼む）](spec-87-tool-agent.md) | `noah-form-v1.ts`、`noah-tool-agent-v1.ts`、`noah-listing-v1.sql`（上限の数え方・接続先の枠） | `noah-form.test.mjs`、`noah-tool-agent.test.mjs`、`validate-noah-v1.py` |

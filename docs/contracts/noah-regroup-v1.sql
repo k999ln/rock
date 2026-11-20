@@ -65,6 +65,6 @@ ON CONFLICT(id) DO UPDATE SET representative_id = excluded.representative_id, me
      OR noah_intake_families.level <> excluded.level OR noah_intake_families.l2_at IS NOT excluded.l2_at OR noah_intake_families.badge_hint <> excluded.badge_hint
      OR noah_intake_families.listed <> excluded.listed OR noah_intake_families.one_tap <> excluded.one_tap;
 --> statement-breakpoint
--- 候補が 1 件も無くなった系列を隠す（行は消さない。引き取りと取り下げの記録が残る）。
-UPDATE noah_intake_families SET hidden_at = COALESCE(hidden_at, :now)
- WHERE id NOT IN (SELECT DISTINCT family_id FROM noah_intake_candidates WHERE state = 'active');
+-- 候補が 1 件も無くなった系列を隠す（行は消さない。引き取りと取り下げの記録が残る）。もう隠してある行は書かない。
+UPDATE noah_intake_families SET hidden_at = :now
+ WHERE hidden_at IS NULL AND id NOT IN (SELECT DISTINCT family_id FROM noah_intake_candidates WHERE state = 'active');

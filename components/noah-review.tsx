@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { SKY_REVIEW_CHECKS } from '@/lib/sky-tool-review';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
+import NoahIntakePanel from './noah-intake-panel';
 import styles from './noah-agent-catalog.module.css';
 const labels: Record<string, string> = {
   sourcePinned: '配布コードの固定版',
@@ -192,6 +193,7 @@ export default function NoahReview() {
           )}
         </section>
       )}
+      <NoahIntakePanel />
     </main>
   );
 }
