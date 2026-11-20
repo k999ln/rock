@@ -36,3 +36,10 @@
 - 幅 390 の実ブラウザで、サインイン済みの本人が、鍵の要らない相手のサーバーの Agent の「接続」1 回で「頼む」になる。Mac を使わない。送り先の 1 行が出る。
 - 応答している家の端末がある本人は、今の 13 件でも「接続」1 回。Mac を再起動した後、「接続」を押し直さずに頼める。
 - `npm run typecheck`、`npm run lint:product`。本番 D1 の migration は適用しない。
+
+## 開発進捗
+
+- 2026-11-21 01:15 JST: **L5（つなぐ）は Claude が作業中。** 枝は `claude/noah-connect-l5-20261121`。同じ範囲を、別の枝で作り始めない。
+- 積み方: 握手（L4。[PR #335](https://github.com/k999ln/rock/pull/335)）の上に、Codex の成果データ（[PR #334](https://github.com/k999ln/rock/pull/334)。migration 0045）と Noah 専用の画面（[PR #337](https://github.com/k999ln/rock/pull/337)）を合わせた枝 `claude/noah-l4-with-ui-stack-20261121` を base にする。`noah_connections` の migration は **0046**（0045 と番号が当たらないように）。
+- 順: 先に、画面に依らない所（migration、`lib/noah-connect.ts`、`/api/noah/connect`・`/api/noah/connect-plan`、試験）。画面は、#337 の新しい枠（左のナビ・中央のタイムライン・右の Agent 欄）に合わせる必要があるので、本人に 2 つ確かめてから作る（置く場所。つなぐ時にサインインを求めるか）。確かめるまでの既定は、仕様書 11 章のとおり（サインインを求める。その場のサインイン）。
+- 本番への migration・配備・切り替えは行わない。
