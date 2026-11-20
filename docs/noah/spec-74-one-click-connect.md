@@ -356,7 +356,7 @@ task: [codex/tasks/74-noah-one-click-connect.md](../../codex/tasks/74-noah-one-c
 
 | ファイル | 中身 |
 | --- | --- |
-| `drizzle/0046_noah_connections.sql`（`drizzle-main/` も同じ）・`db/schema.ts` | [noah-v1.sql](../contracts/noah-v1.sql) の `noah_connections` と索引 4 つを、そのまま移した。鍵の表・相手の許可の表は入れていない。本番 D1 へは適用していない |
+| `drizzle/0047_noah_connections.sql`（`drizzle-main/` も同じ）・`db/schema.ts` | [noah-v1.sql](../contracts/noah-v1.sql) の `noah_connections` と索引 4 つを、そのまま移した。鍵の表・相手の許可の表は入れていない。本番 D1 へは適用していない |
 | `lib/noah-connect-source.ts` | つなぐ相手（系列・代表の候補・握手の記録）を読む `readNoahSubject`、本人の状態（96 の 9.3）、計画と応答の形を作る `planNoahSubject`。計画の API・接続・一覧の項目が、同じ関数を通る |
 | `lib/noah-connect-plan-api.ts`・`app/api/noah/connect-plan/route.ts` | 計画の API（96 の 9.4） |
 | `lib/noah-user-handshake.ts` | 利用者の操作から始める握手（接続・道具の一覧・依頼が使う）。接続先の枠（`host_take`）→ 握手（8 秒。`Noah/1`。別の接続先への転送に従わない）→ 401・402 の書き込みと 429 の待ち。相手の応答ごとの文（`NOAH_HANDSHAKE_MESSAGES`） |

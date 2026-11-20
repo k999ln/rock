@@ -75,7 +75,7 @@ export function createIntakeStore(deps: IntakeDependencies) {
   async function detail(id: string, owner: string | null, reviewer: boolean) {
     const row = await db.prepare(`${ROW} WHERE f.id=?`).bind(id).first<Row>();
     const listed = !!row && listing(row).listed;
-    // その本人の、この系列の切っていない接続（1 件まで）。L5 で接続の表が入った（drizzle/0046_noah_connections.sql）。
+    // その本人の、この系列の切っていない接続（1 件まで）。L5 で接続の表が入った（drizzle/0047_noah_connections.sql）。
     const connection = row && owner ? await db.prepare('SELECT id,state,revision,error FROM noah_connections WHERE owner_id=? AND family_key=? AND disconnected_at IS NULL').bind(owner, id).first<{ id: string; state: string; revision: number; error: string | null }>() : null;
     // 載せていない系列は、無い物として答える。ただし、その本人がつないでいる物は読める（一覧から外れた理由を見て、切れるように）。
     if (!row || (!reviewer && !listed && !connection)) throw new NoahAgentError('Agentが見つかりません。', 404);

@@ -2209,6 +2209,7 @@ export const noahRunnerCommands = sqliteTable('noah_runner_commands', {
   payload: text('payload').notNull(), leaseSha256: text('lease_sha256'), leaseUntil: integer('lease_until').notNull().default(0),
   stopRequested: integer('stop_requested').notNull().default(0), result: text('result'), createdAt: integer('created_at').notNull(), updatedAt: integer('updated_at').notNull(),
 }, t => [index('noah_runner_queue').on(t.deviceId,t.state,t.createdAt),index('noah_runner_history').on(t.ownerId,t.updatedAt),
+  index('noah_runner_usage').on(sql`json_extract(${t.payload},'$.pin.agentId')`,t.ownerId).where(sql`${t.kind}='run' AND ${t.state}='succeeded'`),
   uniqueIndex('noah_runner_one_claim').on(t.deviceId).where(sql`${t.state}='claimed'`),
   check('noah_runner_kind',sql`${t.kind} IN ('connect','run')`),check('noah_runner_state',sql`${t.state} IN ('queued','claimed','succeeded','failed','cancelled','unknown')`)]);
 
@@ -2383,7 +2384,20 @@ export const noahResultContributions = sqliteTable('noah_result_contributions', 
   check('noah_result_withdrawal', sql`(${t.state} = 'active' AND ${t.snapshot} IS NOT NULL AND ${t.revokedAt} IS NULL) OR (${t.state} = 'revoked' AND ${t.snapshot} IS NULL AND ${t.revokedAt} IS NOT NULL)`),
 ]);
 
-// 接続（Passport）。account が正本。DDL は drizzle/0046_noah_connections.sql（docs/contracts/noah-v1.sql から移した）。
+export const noahAgentCrowns = sqliteTable('noah_agent_crowns', {
+  agentId:text('agent_id').notNull(), ownerId:text('owner_id').notNull(), enabled:integer('enabled').notNull(),
+  revision:integer('revision').notNull(), requestId:text('request_id').notNull(), updatedAt:integer('updated_at').notNull(),
+}, t=>[primaryKey({columns:[t.agentId,t.ownerId]}),index('noah_crowns_count').on(t.agentId,t.enabled),check('noah_crown_enabled',sql`${t.enabled} IN (0,1)`),check('noah_crown_revision',sql`${t.revision}>=1`)]);
+export const noahAgentComments = sqliteTable('noah_agent_comments', {
+  id:text('id').primaryKey(), agentId:text('agent_id').notNull(), ownerId:text('owner_id').notNull(), profileId:text('profile_id').notNull().references(()=>skySocialProfiles.id),
+  parentId:text('parent_id'), content:text('content').notNull(), contentSha256:text('content_sha256').notNull(), createdAt:integer('created_at').notNull(), deletedAt:integer('deleted_at'),
+}, t=>[index('noah_comments_feed').on(t.agentId,t.createdAt,t.id),index('noah_comments_rate').on(t.ownerId,t.createdAt),check('noah_comment_length',sql`length(${t.content})<=1000`),check('noah_comment_parent',sql`${t.parentId} IS NULL OR ${t.parentId}<>${t.id}`)]);
+export const noahMaintenanceRequests = sqliteTable('noah_maintenance_requests', {
+  id:text('id').primaryKey(), ownerId:text('owner_id').notNull(), agentId:text('agent_id').notNull(), objective:text('objective').notNull(), repository:text('repository').notNull(), requestSha256:text('request_sha256').notNull(),
+  state:text('state').notNull(), scopeVersion:text('scope_version').notNull(), createdAt:integer('created_at').notNull(),
+}, t=>[index('noah_maintenance_owner').on(t.ownerId,t.createdAt),check('noah_maintenance_state',sql`${t.state}='requested'`),check('noah_maintenance_scope',sql`${t.scopeVersion}='noah-maintenance-v1'`)]);
+
+// 接続（Passport）。account が正本。DDL は drizzle/0047_noah_connections.sql（docs/contracts/noah-v1.sql から移した）。
 export const noahConnections = sqliteTable('noah_connections', {
   id: text('id').primaryKey(),
   ownerId: text('owner_id').notNull(),

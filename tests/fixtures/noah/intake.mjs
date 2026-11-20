@@ -7,7 +7,7 @@ export const page = (entries, cursor = null) => Response.json({ servers: entries
 export function fixture(t, fetcher = async () => page([]), extra = {}) {
   const sql = new DatabaseSync(':memory:'); t.after(() => sql.close());
   // 家の端末の表（接続の表が指す）・取り込みの表・接続の表。本番と同じ migration を、順に流す。
-  for (const name of ['0043_noah_runner', '0044_noah_intake', '0046_noah_connections']) sql.exec(readFileSync(new URL(`../../../drizzle/${name}.sql`, import.meta.url), 'utf8'));
+  for (const name of ['0043_noah_runner', '0044_noah_intake', '0047_noah_connections']) sql.exec(readFileSync(new URL(`../../../drizzle/${name}.sql`, import.meta.url), 'utf8'));
   const batches = [], queries = [], hooks = {}; let clock = NOW;
   const db = {
     prepare(query) {
