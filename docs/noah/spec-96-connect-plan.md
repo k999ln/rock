@@ -253,4 +253,4 @@ task: [codex/tasks/96-noah-connect-plan.md](../../codex/tasks/96-noah-connect-pl
 - 計画の API は `lib/noah-connect-plan-api.ts`（`createNoahConnectPlanApi`）と `app/api/noah/connect-plan/route.ts`。一覧の各項目の `connect`（`lib/noah-intake-store.ts`）も `noahLaunchPlanState` で計算する（一覧の印と、計画の API の印が、ずれない。試験あり）。
 - 接続（`POST /api/noah/connect`）は、同じ `planNoahSubject` をやり直して、`planSha256` を照らす（[74](spec-74-one-click-connect.md) の 11.3 の 3）。
 - 試験は `tests/noah-connect-plan-api.test.mjs`（6 本）: 9.2 の 4 行、応答の形と「書かない」（表の行数・書く文が 0・相手へ送らない）、一覧の印と同じ、無い系列 404・載せていない系列 422（鍵・量産・相手の許可・運営の取り下げ・台帳での取り下げ）、切り替え、`GET` だけ。
-- `noah-card.tsx` は、画面と一緒に作る（74 の 11.5。本人の決定を待っている）。
+- カード（`components/noah-card.tsx`）は、画面と一緒に作った（[74](spec-74-one-click-connect.md) の 11.5・11.9）。上から、名前（詳細への入口）と提供者／説明（2 行で切る）／印・動く所・料金（必ず 3 つ）と補い／主ボタン（1 枚に 1 つ）。印とボタンは、一覧の `connect`（サーバーが計算した物）と、その本人の接続だけで決める。カードは、自分で計算しない。印の文は `lib/noah-ready-view.ts` の `noahBadgeText`。試験は `tests/noah-ready-ui.test.mjs`。

@@ -42,3 +42,5 @@
 残件: L5のAPI・カード、既存13件への組み込みは未着手。本番migration・配備・切り替えなし。PRは未マージ。GitHubの秘密値検査はmainから引き継いだ過去3コミットの合成テスト入力を検出している（詳細はPR）。検査・履歴・例外設定は変更していない。
 
 2026-11-21（Claude。[PR #342](https://github.com/k999ln/rock/pull/342)。未マージ）: L5 の、計画の API を入れた。`lib/noah-connect-source.ts`（つなぐ相手の読み取りと、ローンチ版の本人の状態）、`lib/noah-connect-plan-api.ts`、`app/api/noah/connect-plan/route.ts`。一覧の各項目の `connect` も、同じ関数（`noahLaunchPlanState`）で計算する。試験は `tests/noah-connect-plan-api.test.mjs`（6 本）。記録は [仕様書 96](../../docs/noah/spec-96-connect-plan.md) の 9.6。残り: `components/noah-card.tsx`（画面と一緒に、本人の決定の後）、今ある 13 件への組み込み（出した後）。本番への適用・配備・切り替えなし。
+
+2026-11-21 02:30 JST（Claude。同じ [PR #342](https://github.com/k999ln/rock/pull/342)。未マージ）: カード（`components/noah-card.tsx`）を、L5 の画面と一緒に入れた。名前（詳細への入口）・提供者・説明・印／動く所／料金・主ボタン 1 つ。印とボタンは、一覧の `connect` と本人の接続だけで決める（`lib/noah-ready-view.ts` の `noahBadgeText`・`noahConnectButtonView`）。試験は `tests/noah-ready-ui.test.mjs`（主ボタンが 1 つ・印が文字・状態ごとのボタンの表）。今ある 13 件（Mac の道）のカードへの組み込みは、出した後。
