@@ -1,14 +1,11 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Download, Share2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import NoahResultContent from './noah-result-content';
 import { useNoahLocale } from './noah-locale';
 import NoahLoading from './noah-loading';
-import {
-  noahAskRowView,
-  noahLinkParts,
-  type NoahAskItem,
-} from '@/lib/noah-ask-view';
+import { noahAskRowView, type NoahAskItem } from '@/lib/noah-ask-view';
 import { noahWorkStages, noahWorkState } from '@/lib/noah-work-view';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import styles from './noah-unified.module.css';
@@ -19,7 +16,6 @@ export default function NoahTaskDetail({ id }: { id: string }) {
     [scope, setScope] = useState<string | null>(null),
     [attempt, setAttempt] = useState(0),
     [busy, setBusy] = useState(false),
-    [notice, setNotice] = useState(''),
     [now, setNow] = useState(() => Date.now());
   const generation = useRef(0);
   const invalidate = useCallback(() => {
@@ -120,35 +116,6 @@ export default function NoahTaskDetail({ id }: { id: string }) {
       if (epoch === generation.current) setBusy(false);
     }
   }
-  function save() {
-    if (!ask?.result) return;
-    const url = URL.createObjectURL(
-      new Blob([ask.result.text], { type: 'text/plain;charset=utf-8' }),
-    );
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `noah-${ask.id}.txt`;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setNotice('保存を開始しました');
-  }
-  async function share() {
-    if (!ask?.result) return;
-    try {
-      if (navigator.share)
-        await navigator.share({
-          title: ask.tool ?? 'Noah',
-          text: ask.result.text,
-        });
-      else {
-        await navigator.clipboard.writeText(ask.result.text);
-        setNotice('コピーしました');
-      }
-    } catch (e) {
-      if (!(e instanceof Error && e.name === 'AbortError'))
-        setError('通信できませんでした。もう一度試してください。');
-    }
-  }
   const result = ask?.state === 'succeeded';
   return (
     <main className={styles.page}>
@@ -176,54 +143,25 @@ export default function NoahTaskDetail({ id }: { id: string }) {
       {!ask && !error && <NoahLoading />}
       {ask && (
         <>
-          <h2>{ask.tool || t('仕事')}</h2>
+          {!result && <h2>{ask.tool || t('仕事')}</h2>}
           <p className={styles.meta}>{ask.host}</p>
           <output className={styles.state}>{t(noahWorkState(ask))}</output>
-          <ol className={styles.track}>
-            {noahWorkStages(ask).map((stage) => (
-              <li key={stage.label} data-state={stage.state}>
-                {t(stage.label)}
-              </li>
-            ))}
-          </ol>
+          {!result && (
+            <ol className={styles.track}>
+              {noahWorkStages(ask).map((stage) => (
+                <li key={stage.label} data-state={stage.state}>
+                  {t(stage.label)}
+                </li>
+              ))}
+            </ol>
+          )}
           {ask.error && (
             <p role="alert" className={styles.error}>
               {ask.error}
             </p>
           )}
           {result && ask.result && (
-            <>
-              <pre className={styles.resultBody} dir="auto">
-                {noahLinkParts(ask.result.text).map((part, i) =>
-                  'href' in part ? (
-                    <a
-                      key={i}
-                      href={part.href}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                    >
-                      {part.href}
-                    </a>
-                  ) : (
-                    <span key={i}>{part.text}</span>
-                  ),
-                )}
-              </pre>
-              {ask.result.truncated && <p>{t('成果の一部を表示しています')}</p>}
-              <div className={styles.actions}>
-                <button className={styles.primary} onClick={save}>
-                  <Download size={18} />
-                  {t('保存')}
-                </button>
-                <button
-                  className={styles.secondary}
-                  onClick={() => void share()}
-                >
-                  <Share2 size={18} />
-                  {t('共有')}
-                </button>
-              </div>
-            </>
+            <NoahResultContent key={ask.id} result={ask.result} id={ask.id} />
           )}
           {noahAskRowView(ask, now).stoppable && (
             <button
@@ -236,6 +174,9 @@ export default function NoahTaskDetail({ id }: { id: string }) {
           )}
           <details className={styles.meta}>
             <summary>{t('履歴')}</summary>
+            <p>
+              {ask.tool} · {ask.host}
+            </p>
             <p>
               {t('受付')} · {new Date(ask.createdAt).toLocaleString(locale)}
             </p>
@@ -253,7 +194,6 @@ export default function NoahTaskDetail({ id }: { id: string }) {
           )}
         </>
       )}
-      {notice && <output>{t(notice)}</output>}
     </main>
   );
 }

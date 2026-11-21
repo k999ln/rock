@@ -129,10 +129,9 @@ void test('asking: checked before sending; the request carries the tool the pers
   assert.match(page.text(), /受け付けました。/);
   assert.equal(page.find('a','進捗と成果を見る')[0].props.href,'#noah-agent-work');
   assert.ok(page.nodes().some(node=>node.props.id==='noah-agent-work' && node.props.tabIndex===-1));
-  assert.deepEqual(rows(), [`結果を受け取りましたlookup — ${hostOf(1)} の lookup が返した内容です。費用 0。1. cobalt\n2. second\n3. third開く`]);
-  await page.click('開く');
-  assert.match(rows()[0], /4\. fourth https:\/\/example\.org\/players\/7（example\.org）\.閉じる$/);
-  assert.deepEqual(page.find('a').filter((node) => node.props.target === '_blank' && new URL(node.props.href).hostname === 'example.org').map((node) => [node.props.href, node.props.rel]), [['https://example.org/players/7', 'noopener noreferrer nofollow']]);
+  assert.match(rows()[0], /結果を受け取りましたlookup/);
+  assert.match(rows()[0], /届いた文章1\. cobalt/);
+  assert.equal(page.find('a','詳細を開く →')[0].props.href, `/noah/tasks/${sent.body.id}`);
   // 欄の値は残る。もう一度頼むと、新しい操作 ID。
   assert.deepEqual([field('Player').props.value, field('limit').props.value], ['cobalt', '3']);
   w.f.advance(1000);
@@ -209,11 +208,8 @@ void test('the work list: progress is read while something is unfinished; stoppi
   await Promise.all(waiting);
   await page.tick(1000);
   assert.match(rows()[0], /^結果を受け取りましたstats — /);
-  await page.click('開く');
-  const outline = page.find('dl').find((node) => node.props.className === 'outline');
-  assert.deepEqual(page.nodes(outline).filter((node) => node.type === 'div').map((node) => [node.props['data-depth'], page.text(node)]), [[0, 'players'], [1, '1'], [2, 'id7'], [2, 'nameCobalt'], [2, 'urlhttps://example.org/p/7（example.org）']]);
-  await page.click('元の形で見る');
-  assert.match(rows()[0], /"name": "Cobalt"/);
+  assert.match(rows()[0], /届いた一覧1件Cobalt/);
+  assert.equal(page.find('a','詳細を開く →')[0].props.href, `/noah/tasks/${asksSent(ui).at(-1).body.id}`);
   // 道具が「できなかった」と返した時は、理由を出す。
   fail = true;
   w.f.advance(1000);

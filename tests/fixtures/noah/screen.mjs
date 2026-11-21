@@ -5,6 +5,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
 import { noahTranslate } from '../../../lib/noah-i18n.ts';
+import * as resultPresentation from '../../../lib/noah-result-presentation.ts';
+import * as resultMedia from '../../../lib/noah-result-media.ts';
 import * as workView from '../../../lib/noah-work-view.ts';
 import * as profileContract from '../../../lib/noah-profile-contract.ts';
 
@@ -56,7 +58,7 @@ export function screen(options = {}) {
   };
 
   const context = createContext({
-    console, queueMicrotask, File, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
+    console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
     Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
     crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
     fetch: async (url, init = {}) => {
@@ -104,6 +106,8 @@ export function screen(options = {}) {
       if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
       if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
       if(id==='@/lib/noah-work-view')return workView;
+      if(id==='@/lib/noah-result-presentation')return resultPresentation;
+      if(id==='@/lib/noah-result-media')return resultMedia;
       if(id==='@/components/noah-work-page')return load('components/noah-work-page.tsx');
       if(id==='@/lib/noah-profile-contract')return profileContract;
       if (id === '@/lib/noah-haptics') return load('lib/noah-haptics.ts');

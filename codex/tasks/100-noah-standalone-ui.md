@@ -90,3 +90,12 @@ CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/no
 Dock: Launch Servicesの起動先 `work/noah-standalone/native-package-final/Noah.app` が旧Mac実行器だったため、元bundleを `work/noah-dock-backups/Noah-before-web-20261122-022613.zip` に保存し、`scripts/noah-web-app/NoahWebApp.swift` で入口を更新。Swiftビルド・ad-hoc署名の検査に成功。同じアプリの起動後、Chromeが `https://avoado.si/noah` を表示し、新しい端末認証タブを開かないことを確認。旧実行器・仕事・端末セッションは変更なし。一般配布用の公証済みアプリではない。
 
 未完了: 実在Agentboardアカウントの作成と成果受取までの本番一周、ブラウザ登録先ごとの手順/本人照会の受入、OAuth更新や書類提出の個別対応、100人向け容量。`NOAH_BROWSER_RECIPES=[]`、10ブラウザ分/UTC日（4+4+2分）の受入予算であり、全サービス対応/100人対応とは扱わない。実機スマホでの外部本人確認・振動体感も未検証。再開は `npm ci --prefix services/noah-registration-browser`、`npm --prefix services/noah-registration-browser test`、[運用手順](../../services/noah-registration-browser/README.md)。PRは #371 上の差分でmain未統合。
+
+
+## 2026-11-22 読める成果と画像保存（PR #376）
+
+本人の「成果がそれで届いても伝わらない」「画像ならギャラリーにそのまま保存して」を反映。成果一覧と詳細はJSON原文を主表示せず、アカウント名/状態、見出し/説明/提供元の一覧カード、文章、画像プレビューを表示する。原文は折りたたんで保持。モデルによる推測や内容の事実認定は追加しない。MCPの対応ラスター画像（PNG/JPEG/WebP/GIFと埋込resource）は署名/MIME/容量を照合し、既存の本人別Workに実体を保持する。従来保存済みの件数しかない画像は復元したと扱わない。明示画像URLはブラウザのCORS範囲でのみ読み、サーバーから任意URLを取得しない。
+
+画像Fileをタップ前に用意し、画像保存ボタンは対応端末ではOSの共有/写真保存へ渡し、非対応では元画像をダウンロードする。OS保存完了は確認できないため「ギャラリー保存済み」と断定しない。キャンセル/失敗を区別。6言語のUIを保持。
+
+ローカル検証: 最終関連56試験、typecheck、lint成功。390px/320pxとアラビア語RTLで横はみ出しなし。検証用PNGを実ブラウザから保存し、元の191,359bytesとSHA256一致。これは写真アプリへの実機保存の確認ではない。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 全工程成功（ルート4,809成功・4 skip、計4,813。production build・仕事API1,918 assertions・CSV385 assertions等を含む）。ローカルproductionの8ルート/8共通ヘッダーもPASS。成果改善の追加公開は配備担当へ引継ぎ、公開後に独立確認する。
