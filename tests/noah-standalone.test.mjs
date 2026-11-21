@@ -77,7 +77,7 @@ void test('standalone work distinguishes signed out, empty and failed reads, wit
 
 void test('old in-flight results are discarded when the signed-in owner changes', async () => {
   let resolveDetail, owner = 'a';
-  const props = { ownerScope: 'a', refresh: 0, showEmpty: true };
+  const props = { ownerScope: 'a', refresh: 0, showEmpty: true, only: 'succeeded' };
   const ui = screen({ modules: workModules, fetch: async ({ url }) => url === '/api/noah/ask' ? { body: { ownerScope: owner, asks: owner === 'a' ? [{ id: 'job', state: 'succeeded', finishedAt: 1 }] : [] } } : new Promise(resolve => { resolveDetail = resolve; }) });
   const page = ui.mount('components/noah-work-list.tsx', props);
   for (let n = 0; n < 5; n++) { await new Promise(resolve => setImmediate(resolve)); page.render(); }
@@ -86,25 +86,23 @@ void test('old in-flight results are discarded when the signed-in owner changes'
   resolveDetail({ body: { result: { text: 'previous owner private result' } } });
   await page.flush();
   assert.doesNotMatch(page.text(), /previous owner/);
-  assert.match(page.text(), /まだ仕事を頼んでいません/);
+  assert.match(page.text(), /成果はまだ届いていません/);
 });
 
 void test('the primary activity route shows remote jobs; only explicit legacy Agent links go to Mac', async () => {
   const jsx = (type, props) => ({ type, props });
-  const modules = { 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' }, 'next/navigation': { redirect: (url) => { throw Error(url); } }, '@/components/noah-work-list': { default: 'work-list' }, '@/components/noah-service.module.css': { default: {} } };
+  const modules = { 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' }, 'next/navigation': { redirect: (url) => { throw Error(url); } }, '@/components/noah-work-page': { default: 'work-page' }, '@/components/noah-service.module.css': { default: {} } };
   const code = ts.transpileModule(readFileSync(new URL('../app/noah/activity/page.tsx', import.meta.url), 'utf8'), { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const unit = { exports: {} };
   runInNewContext(`(function(exports, require, module){${code}\n})`, { URLSearchParams })(unit.exports, name => { assert(name in modules, name); return modules[name]; }, unit);
   const tree = await unit.exports.default({ searchParams: Promise.resolve({}) });
-  assert.equal(tree.type, 'main');
-  const list = tree.props.children.find(child => child.type === 'work-list');
-  assert.equal(list.props.showEmpty, true); assert.equal(list.props.ownerScope, null);
+  assert.equal(tree.type, 'work-page');
   await assert.rejects(unit.exports.default({ searchParams: Promise.resolve({ agent: 'anicca' }) }), /\/noah\/mac\/activity\?agent=anicca/);
 });
 
 void test('a known owner change hides cached results before the next network reply', async () => {
   let nextList;
-  const props = { ownerScope: 'a', refresh: 0, showEmpty: true };
+  const props = { ownerScope: 'a', refresh: 0, showEmpty: true, only: 'succeeded' };
   const ui = screen({ modules: workModules, fetch: async ({ url }) => url === '/api/noah/ask'
     ? props.ownerScope === 'a' ? { body: { ownerScope: 'a', asks: [{ id: 'job', state: 'succeeded', finishedAt: 1 }] } } : new Promise(resolve => { nextList = resolve; })
     : { body: { result: { text: 'owner a private result' } } } });
@@ -114,5 +112,5 @@ void test('a known owner change hides cached results before the next network rep
   assert.doesNotMatch(page.text(), /owner a private result/);
   assert.match(page.text(), /読み込んでいます/);
   nextList({ body: { ownerScope: 'b', asks: [] } }); await page.flush();
-  assert.match(page.text(), /まだ仕事を頼んでいません/);
+  assert.match(page.text(), /成果はまだ届いていません/);
 });

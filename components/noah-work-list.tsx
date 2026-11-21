@@ -15,6 +15,10 @@ import { useEffect, useRef, useState } from 'react';
 import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import { NOAH_ASK_TEXT, noahAskRowView, noahLinkParts, noahResultPreview, type NoahAskItem } from '@/lib/noah-ask-view';
+import { useNoahLocale } from './noah-locale';
+import { noahWorkGroups, noahWorkHref, noahWorkState } from '@/lib/noah-work-view';
+import { ChevronRight, FileText, RefreshCw } from 'lucide-react';
+import ui from './noah-unified.module.css';
 import { noahResultOutline } from '@/lib/noah-form';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import styles from './noah-ready.module.css';
@@ -39,8 +43,10 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
   /** Standalone pages show loading, sign-in, failure and empty states instead of a blank page. */
   showEmpty?: boolean;
 }) {
-  const [asks, setAsks] = useState<NoahAskItem[]>([]), [results, setResults] = useState<Record<string, Result>>({}), [open, setOpen] = useState<Record<string, boolean>>({});
-  const [raw, setRaw] = useState<Record<string, boolean>>({}), [now, setNow] = useState(() => Date.now()), [error, setError] = useState('');
+  const {t,locale}=useNoahLocale();
+  const [asks, setAsks] = useState<NoahAskItem[]>([]), [results, setResults] = useState<Record<string, Result>>({});
+  const [open,setOpen]=useState<Record<string,boolean>>({}),[raw,setRaw]=useState<Record<string,boolean>>({}),[now,setNow]=useState(()=>Date.now()),[error,setError]=useState('');
+  const pending=asks.some(ask=>ask.finishedAt===undefined);
   const [listScope, setListScope] = useState<string | null>(null);
   const [listState, setListState] = useState<'loading' | 'ready' | 'signed-out' | 'error'>('loading'), [attempt, setAttempt] = useState(0);
   const generation = useRef(0), seenScope = useRef<string | null>(null);
@@ -48,7 +54,6 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
   const listUrl = agentId ? `/api/noah/ask?${new URLSearchParams({ agent: agentId }).toString()}` : '/api/noah/ask';
 
   // 一覧を読む。終わっていない依頼がある間だけ、続けて読む。
-  const pending = asks.some((ask) => ask.finishedAt === undefined);
   useEffect(() => {
     generation.current++; wanted.current.clear();
     let stopped = false, timer: ReturnType<typeof setTimeout> | null = null;
@@ -67,8 +72,8 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
         }
         const nextScope = typeof body.ownerScope === 'string' ? body.ownerScope : null;
         if (nextScope !== seenScope.current) { generation.current++; setResults({}); wanted.current.clear(); seenScope.current = nextScope; }
-        setListState('ready');
-        setAsks(body.asks); setListScope(typeof body.ownerScope === 'string' ? body.ownerScope : null); setNow(Date.now());
+        setListState('ready'); setNow(Date.now());
+        setAsks(body.asks); setListScope(typeof body.ownerScope === 'string' ? body.ownerScope : null);
         return body.asks.some((ask) => ask.finishedAt === undefined);
       } catch {
         if (!stopped) { setListState('error'); setAsks([]); setResults({}); setListScope(null); seenScope.current = null; wanted.current.clear(); generation.current++; }
@@ -128,13 +133,13 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
     if (!showEmpty) return null;
     const retry = () => { setListState('loading'); setAttempt(n => n + 1); };
     return <section className={styles.section} aria-live="polite">
-      {changedOwner || listState === 'loading' ? <NoahLoading label="読み込んでいます…" />
-        : listState === 'signed-out' ? <><p>ログインすると、あなたの仕事と成果を確認できます。</p><Link className={styles.primary} href={`/noah/account?returnTo=${encodeURIComponent(only === 'succeeded' ? '/noah/data' : '/noah/activity')}`}>ログイン</Link><p><Link href="/noah/explore">Agentを見てみる</Link></p></>
-        : listState === 'error' ? <div role="alert"><p>仕事を読み込めませんでした。</p><button className={styles.secondary} onClick={retry}>読み直す</button></div>
-        : <><p>{only === 'succeeded' ? '成果はまだ届いていません。' : 'まだ仕事を頼んでいません。'}</p><Link className={styles.primary} href={only === 'succeeded' ? '/noah/activity' : '/noah/explore'}>{only === 'succeeded' ? '実行中を見る' : 'Agentを探す'}</Link></>}
+      {changedOwner || listState === 'loading' ? <NoahLoading label={t("読み込んでいます…")} />
+        : listState === 'signed-out' ? <><p>{t("ログインすると、あなたの仕事と成果を確認できます。")}</p><Link className={styles.primary} href={`/noah/account?returnTo=${encodeURIComponent(only === 'succeeded' ? '/noah/data' : '/noah/activity')}`}>{t("ログイン")}</Link><p><Link href="/noah/explore">{t("Agentを見てみる")}</Link></p></>
+        : listState === 'error' ? <div role="alert"><p>{t("仕事を読み込めませんでした。")}</p><button className={styles.secondary} onClick={retry}>{t("読み直す")}</button></div>
+        : <><p>{only === 'succeeded' ? t("成果はまだ届いていません。") : t("まだ仕事を頼んでいません。")}</p><Link className={styles.primary} href={only === 'succeeded' ? '/noah/activity' : '/noah/explore'}>{only === 'succeeded' ? t("実行中を見る") : t("Agentを探す")}</Link></>}
     </section>;
   }
-  return <section className={styles.section} aria-labelledby="noah-work-list">
+  if(!showEmpty)return <section className={styles.section} aria-labelledby="noah-work-list">
     <h2 id="noah-work-list">{heading ?? NOAH_ASK_TEXT.work}{pending ? <small>進んでいます</small> : null}</h2>
     {error && <p className={styles.reason} role="alert">{error}</p>}
     <ul className={styles.work}>{shown.map((ask) => {
@@ -158,8 +163,12 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
       </li>;
     })}</ul>
   </section>;
+  if(only==='succeeded')return <section aria-label={t('成果')}><ul className={ui.resultGrid}>{shown.map(ask=><li className={ui.resultCard} key={ask.id}><Link href={noahWorkHref(ask.id)}><pre className={ui.resultPreview}>{results[ask.id]?noahResultPreview(results[ask.id].text,5).text:<NoahLoading compact/>}</pre><h2>{ask.tool||t('成果')}</h2><small><FileText size={13}/> {t('文章')} · {new Date(ask.createdAt).toLocaleDateString(locale)}</small></Link></li>)}</ul></section>;
+  return <section className={ui.groups} aria-label={t(heading??'仕事')}>
+    {error&&<p role="alert">{t(error)}</p>}
+    {noahWorkGroups(shown).map(group=><section key={group.label}><h2 className={ui.groupTitle}>{group.label==='作業中'&&<RefreshCw size={18}/>} {t(group.label)} <span className={ui.count}>{group.items.length}</span></h2><ul className={ui.taskList}>{group.items.map(ask=><li key={ask.id} id={`noah-work-${ask.id}`} className={ui.task} data-attention={group.label==='確認待ち'}><Link href={noahWorkHref(ask.id)}><div className={ui.taskHead}><FileText size={25}/><div><strong>{ask.tool||t('仕事')}</strong><small>{ask.host}</small></div><ChevronRight size={18}/></div><div className={ui.state}>{t(noahWorkState(ask))}</div></Link></li>)}</ul></section>)}
+  </section>;
 }
-
 /** 成果の文。`https://` で始まる所だけを、行き先の host を横に書いたリンクにする。 */
 function Linked({ text }: { text: string }) {
   return <>{noahLinkParts(text).map((part, index) => ('href' in part

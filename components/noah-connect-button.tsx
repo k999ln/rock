@@ -1,4 +1,5 @@
 'use client';
+import { useNoahLocale } from './noah-locale';
 /**
  * 接続のボタン。「接続」を 1 回押すと、計画を読み、つなぎ、「頼む」に変わる。失敗の時は、理由と「もう一度」。
  * 未サインインの人が押した時は、続き（操作 ID と Agent の ID だけ）を置いて、サインインの画面へ移る。
@@ -39,6 +40,8 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
   /** つながった後の主ボタン。一覧では「頼む」（詳細へ移る）。詳細では出さない（すぐ下に、道具の一覧が出る）。 */
   askAs?: 'link' | 'none';
 }) {
+  const {t}=useNoahLocale();
+
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
   // 応答が届かなかった「接続」は、押し直した時に、同じ操作 ID で送る（行と握手が増えない）。応答が届いたら、次は新しい ID。
   const operation = useRef<string | null>(null), started = useRef(false);
@@ -126,13 +129,13 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
 
   const note = error || view.note;
   const main = view.label === null ? null : view.action === 'ask'
-    ? (askAs === 'link' ? <Link className={styles.primary} href={detail}>{view.label}</Link> : null)
-    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{busy ? <NoahLoading compact label={view.label} /> : view.label}</button>;
+    ? (askAs === 'link' ? <Link className={styles.primary} href={detail}>{t(view.label)}</Link> : null)
+    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{busy ? <NoahLoading compact label={t(view.label)} /> : view.label}</button>;
   // 出す物が無い時（詳細の画面で、つながった後）は、区切りの線も出さない。
   if (!main && !notice && !note) return null;
   return <div className={styles.connect}>
     {main}
-    {notice && <output className={styles.notice}>{notice}</output>}
+    {notice && <output className={styles.notice}>{t(notice)}</output>}
     {note && <p className={styles.reason} role={error ? 'alert' : undefined}>{note}</p>}
   </div>;
 }

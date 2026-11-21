@@ -43,8 +43,8 @@ void test('the list: sections, one main button per card, badges in words, where 
   assert.match(page.text(), /読み込んでいます/);
   await page.flush();
   const text = page.text();
-  assert.match(text, /すぐ使える Agent/);
-  assert.match(text, /スマホだけで使えます。あなたの端末では何も動きません。/);
+  assert.deepEqual(page.find('h1').map(node=>page.text(node)),['Agent']);
+  assert.equal(page.find('button','商品紹介').length,1); // Purpose-first entry replaces the explanatory lead.
   // 段: 動いた（人が動かした物）が先、握手だけの物が後。件数も出る。
   assert.ok(text.indexOf('人が動かして、成果が返った物です。') < text.indexOf('Noah が、応答する事だけを確かめた物です。'));
   assert.deepEqual(page.find('h2').map((node) => page.text(node)), ['動いた1 件', 'まだ誰も動かしていない2 件']);
@@ -343,7 +343,7 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.deepEqual(page.find('li').slice(0, 4).map((node) => page.text(node)), ['まだ誰も動かしていない', `相手のサーバー（${hostOf(1)}）`, '無料', '道具 4 個']);
   assert.match(text, new RegExp(`最後に確かめた日 ${new Date(NOW).getMonth() + 1}/${new Date(NOW).getDate()}`));
   // 送り先は、接続の前に出ている。
-  assert.match(text, new RegExp(`入力は ${hostOf(1).replaceAll('.', '\\.')} へ送られます。Noah が送るのは、あなたが入力した内容だけです。`));
+  assert.match(text, new RegExp(`送信先: ${hostOf(1).replaceAll('.', '\\.')}`));
   assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
   assert.doesNotMatch(text, /切る/);
   // 提供者のページは、別の tab で開く。行き先の host を出す。
@@ -449,7 +449,7 @@ void test('the detail screen: unknown agents, malformed IDs, unlisted agents see
     await page.flush();
     assert.match(page.text(), /この Agent は、見つかりませんでした。/, id);
     assert.equal(page.find('button').length, 0);
-    assert.deepEqual(page.find('a', 'すぐ使える Agent').map((node) => node.props.href), ['/noah/ready']);
+    assert.deepEqual(page.find('a', 'すぐ使える Agent').map((node) => node.props.href), ['/noah/explore']);
   }
   // 形の違う ID は、問い合わせない。
   const malformed = browser(w, 'owner-a');
@@ -526,7 +526,7 @@ void test('the entry on the explore screen appears only for people who may see t
   // 外枠の menu（Codex の file）は、変えていない: 行は 4 つのまま。
   const shell = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
   await shell.flush();
-  assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agentを探す', '実行中', '成果データ']);
+  assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agent', '実行中', '成果']);
 });
 
 // ---------------------------------------------------------------------------

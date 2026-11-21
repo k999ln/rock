@@ -1,6 +1,8 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Filters intentionally use the same timeline's hash. */
 import { useEffect, useRef, useState } from 'react';
+import { useNoahLocale } from './noah-locale';
+import NoahAgentVisual from './noah-agent-visual';
 import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import {
@@ -8,12 +10,9 @@ import {
   MessageCircle,
   Share2,
   ArrowUpRight,
-  ArrowLeft,
-  RefreshCw,
   Search,
   Heart,
   Repeat2,
-  Plus,
 } from 'lucide-react';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import { researchKindLabels } from '@/lib/noah-research-types';
@@ -37,7 +36,10 @@ export default function NoahTimeline({
   mode: NoahSurfaceMode;
   base: string;
 }) {
-  const filter = timelineFilter(useNoahHash());
+  const {t,locale}=useNoahLocale();
+  const hash=useNoahHash();
+  const following=hash==='#following';
+  const filter = timelineFilter(hash);
   const [query, setQuery] = useState(''),
     [kind, setKind] = useState('all'),
     [notice, setNotice] = useState('');
@@ -50,7 +52,7 @@ export default function NoahTimeline({
   const { hasMore, loadMore } = feed,
     hasErrors = Boolean(feed.data?.errors.length);
   const sentinel = useRef<HTMLDivElement>(null), masonry=useRef<HTMLElement>(null);
-  const items = selectNoahTimeline(feed.data?.items ?? [], filter, query);
+  const items = selectNoahTimeline(feed.data?.items ?? [], filter, query).filter(item=>!following||(item.kind==='post'&&item.post.following));
   const feedback = useNoahFeedback(
     items.flatMap((item) =>
       item.kind === 'agent' &&
@@ -58,9 +60,6 @@ export default function NoahTimeline({
         ? [item.agent.id]
         : [],
     ),
-  );
-  const hasPersonalPosts = items.some(
-    (item) => item.kind === 'post' || item.kind === 'feedback',
   );
   useEffect(() => {
     if (
@@ -113,68 +112,24 @@ export default function NoahTimeline({
   }
   return (
     <main className={styles.home}>
-      <div className={styles.feedTop}>
-        <header className={styles.timelineHeading}>
-          <h2>{filter === 'agent' ? 'Agentを見つける' : 'あなたの次の、できた。'}</h2>
-          <a
-            className={styles.filterButton}
-            href={`${base}${filter === 'agent' ? '#timeline' : '#agents'}`}
-          >
-            {filter === 'agent' ? (
-              <>
-                <ArrowLeft size={16} />
-                すべてに戻る
-              </>
-            ) : (
-              <>
-                <Bot size={17} />
-                Agent
-              </>
-            )}
-          </a>
-          <Link className={styles.filterButton} href={`${base}/activity`}>実行中</Link>
-          <button
-            aria-label="タイムラインを更新"
-            disabled={feed.loading}
-            onClick={feed.refresh}
-          >
-            <RefreshCw size={19} />
-          </button>
-        </header>
-      </div>
-      {filter === 'all' && (
-        <div className={styles.composeBlock}>
-          <Link href={`${base}/social#compose`} className={styles.composeEntry}>
-            <span>
-              <span className={styles.composeEyebrow}>YOUR TAKE</span>
-              <strong>今日の発見を、ひとこと。</strong>
-              <small>使った人の声が、次の発見になる。</small>
-            </span>
-            <span className={styles.composeAction}>
-              <Plus size={24} />
-              <span>ポスト</span>
-            </span>
-          </Link>
-          <div className={styles.conversationHints}>
-            <span>使ってよかった</span>
-            <span>ここが惜しい</span>
-            <span>こんな使い方</span>
-          </div>
-        </div>
-      )}
       <div className={styles.timelineSearch}>
         <Search size={18} />
         <input
-          aria-label="タイムラインを検索"
-          placeholder="気になるAgentや、みんなの声を検索"
+          aria-label={t("タイムラインを検索")}
+          placeholder={t('投稿やAgentを探す')}
           maxLength={200}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        {query && <button onClick={() => setQuery('')}>クリア</button>}
+        {query && <button onClick={() => setQuery('')}>{t("クリア")}</button>}
       </div>
+      <nav className={styles.feedTabs} aria-label={t('タイムライン')}>
+        <a href={`${base}#timeline`} aria-current={!following&&filter==='all'?'page':undefined}>{t('おすすめ')}</a>
+        <a href={`${base}#following`} aria-current={following?'page':undefined}>{t('フォロー中')}</a>
+        <a href={`${base}${filter==='agent'?'#timeline':'#agents'}`} aria-current={filter==='agent'?'page':undefined} className={styles.agentOnly}>{t('Agentのみ')}</a>
+      </nav>
       {filter === 'agent' && (
-        <div className={styles.topics} aria-label="Agentの分類">
+        <div className={styles.topics} aria-label={t("Agentの分類")}>
           {[
             ['all', 'すべて'],
             ['agent', 'Agent本体候補'],
@@ -186,51 +141,31 @@ export default function NoahTimeline({
               aria-pressed={kind === id}
               onClick={() => setKind(id)}
             >
-              {label}
+              {t(label)}
             </button>
           ))}
-          <Link href={`${base}/agents`}>詳しく探す</Link>
+          <Link href={`${base}/agents`}>{t("詳しく探す")}</Link>
         </div>
       )}
       {feedback.error && (
         <p className={styles.feedError}>
-          評価を読み込めませんでした。
-          <button onClick={feedback.reload}>再読み込み</button>
+          {t("評価を読み込めませんでした。")}<button onClick={feedback.reload}>{t("再読み込み")}</button>
         </p>
       )}
-      {notice && <output className={styles.status}>{notice}</output>}
+      {notice && <output className={styles.status}>{t(notice)}</output>}
       {feed.loading && (
-        <NoahLoading label="タイムラインを読み込んでいます…" />
+        <NoahLoading label={t("タイムラインを読み込んでいます…")} />
       )}
-      {filter === 'all' &&
-        feed.data?.social &&
-        !hasPersonalPosts &&
-        !query.trim() && (
-          <div className={styles.voiceInvitation}>
-            <MessageCircle size={21} />
-            <div>
-              <strong>あなたのひとことから。</strong>
-              <p>
-                {feed.data.social.profile
-                  ? '表示できる投稿はまだありません。使って感じたことをシェアしてみよう。'
-                  : '感想や発見をシェアするには、公開名を設定できます。'}
-              </p>
-              <Link href={`${base}/social#compose`}>
-                自分の感想を書く <ArrowUpRight size={15} />
-              </Link>
-            </div>
-          </div>
-        )}
       {!!feed.data?.errors.length && (
         <details className={styles.feedError}>
-          <summary>一部の情報を取得できませんでした</summary>
+          <summary>{t("一部の情報を取得できませんでした")}</summary>
           {feed.data.errors.map((error) => (
-            <p key={error}>{error}</p>
+            <p key={error}>{t(error)}</p>
           ))}
-          <button onClick={feed.refresh}>再試行</button>
+          <button onClick={feed.refresh}>{t("再試行")}</button>
         </details>
       )}
-      <section ref={masonry} className={styles.masonry} aria-label="Noahの統合タイムライン">
+      <section ref={masonry} className={styles.masonry} aria-label={t("Noahの統合タイムライン")}>
         {items.map((item) => {
           if (item.kind === 'post' || item.kind === 'feedback') {
             const post =
@@ -264,10 +199,10 @@ export default function NoahTimeline({
                   <div className={styles.byline}>
                     <strong>{post.author.name}</strong>
                     {post.following && (
-                      <span className={styles.following}>フォロー中</span>
+                      <span className={styles.following}>{t("フォロー中")}</span>
                     )}
                     <time dateTime={new Date(post.createdAt).toISOString()}>
-                      {new Date(post.createdAt).toLocaleDateString('ja-JP')}
+                      {new Date(post.createdAt).toLocaleDateString(locale)}
                     </time>
                   </div>
                   <Link className={styles.socialText} href={href}>
@@ -279,7 +214,7 @@ export default function NoahTimeline({
                       className={styles.opinionAgent}
                     >
                       <Bot size={14} />
-                      {item.opinion.agentName} への感想{' '}
+                      {item.opinion.agentName} {t("への感想")}{' '}
                       <ArrowUpRight size={13} />
                     </Link>
                   )}
@@ -287,31 +222,31 @@ export default function NoahTimeline({
                     <p className={styles.attachment}>
                       <span>
                         {post.attachment.kind === 'agent'
-                          ? '使ったAgent'
-                          : '共有'}
+                          ? t("使ったAgent")
+                          : t("共有")}
                       </span>
                       {post.attachment.resource}
                     </p>
                   )}
                   <footer className={styles.postActions}>
-                    <Link href={href} aria-label="返信を見る">
+                    <Link href={href} aria-label={t("返信を見る")}>
                       <MessageCircle size={17} />
-                      {post.replies > 0 ? post.replies : '返信'}
+                      {post.replies > 0 ? post.replies : t("返信")}
                     </Link>
                     {item.kind === 'post' && (
                       <>
-                        <Link href={href} aria-label="いいね・詳細">
+                        <Link href={href} aria-label={t("いいね・詳細")}>
                           <Heart size={17} />
-                          {post.likes > 0 ? post.likes : 'いいね'}
+                          {post.likes > 0 ? post.likes : t("いいね")}
                         </Link>
-                        <Link href={href} aria-label="リポスト・詳細">
+                        <Link href={href} aria-label={t("リポスト・詳細")}>
                           <Repeat2 size={17} />
-                          {post.reposts > 0 ? post.reposts : 'リポスト'}
+                          {post.reposts > 0 ? post.reposts : t("リポスト")}
                         </Link>
                       </>
                     )}
                     <button
-                      aria-label="投稿を共有"
+                      aria-label={t("投稿を共有")}
                       onClick={() => void share(item)}
                     >
                       <Share2 size={16} />
@@ -323,9 +258,9 @@ export default function NoahTimeline({
           }
           if(item.kind==='remote'){
             const a=item.agent;
-            return <article key={item.key} className={styles.agentPost} data-feed-kind="remote"><div className={styles.agentLabel}><Bot size={14}/><span>スマホで使える</span><span>{a.section==='ran'?'成果の受取実績あり':'接続確認済み'}</span></div>
-              <Link href={noahReadyDetailHref(a.id)} className={styles.agentPreview}><span className={styles.agentMonogram} aria-hidden="true"><span>{a.name.slice(0,2).toUpperCase()}</span><Bot size={24}/><span className={styles.artCaption}>READY WHEN YOU ARE</span></span><div><span className={styles.publisher}>{a.provider}</span><h3>{a.name}</h3><p>{a.summary}</p></div><ArrowUpRight size={20}/></Link>
-              <footer className={styles.agentFooter}><span>{a.users}人が利用 · {a.tools}個の道具</span><Link className={styles.tryAgent} href={noahReadyDetailHref(a.id)}>使う ↗</Link></footer>
+            return <article key={item.key} className={styles.agentPost} data-feed-kind="remote"><div className={styles.agentLabel}><Bot size={14}/><span>{t("スマホで使える")}</span><span>{a.section==='ran'?t("成果の受取実績あり"):t("接続確認済み")}</span></div>
+              <Link href={noahReadyDetailHref(a.id)} className={styles.agentPreview}><NoahAgentVisual name={a.name} summary={a.summary}/><div><span className={styles.publisher}>{a.provider}</span><h3>{a.name}</h3><p>{a.summary}</p></div><ArrowUpRight size={20}/></Link>
+              <footer className={styles.agentFooter}><span>{a.users}{t("人が利用 ·")}{a.tools}{t("個の道具")}</span><Link className={styles.tryAgent} href={noahReadyDetailHref(a.id)}>{t("使う ↗")}</Link></footer>
             </article>;
           }
           if (item.kind === 'card') {
@@ -338,17 +273,14 @@ export default function NoahTimeline({
               >
                 <div className={styles.agentLabel}>
                   <Bot size={14} />
-                  <span>仕事のカード</span>
-                  <span>Noah の棚</span>
+                  <span>{t("仕事のカード")}</span>
+                  <span>{t("Noah の棚")}</span>
                 </div>
                 <Link href={card.target} className={styles.agentPreview}>
-                  <span className={styles.agentMonogram} aria-hidden="true">
-                    <span>{card.topicLabel.slice(0, 2)}</span><Bot size={24}/><span className={styles.artCaption}>MAKE ROOM FOR MORE</span>
-                  </span>
+                  <NoahAgentVisual name={card.title} summary={card.promise}/>
                   <div>
                     <span className={styles.publisher}>
-                      {card.topicLabel} · Noah の説明
-                    </span>
+                      {card.topicLabel} {t("· Noah の説明")}</span>
                     <h3>{card.title}</h3>
                     <p>{card.promise}</p>
                   </div>
@@ -357,7 +289,7 @@ export default function NoahTimeline({
                 <footer className={styles.agentFooter}>
                   <span>{noahTimelineCardFacts(card)}</span>
                   <button
-                    aria-label="カードを共有"
+                    aria-label={t("カードを共有")}
                     onClick={() => void share(item)}
                   >
                     <Share2 size={15} />
@@ -375,19 +307,17 @@ export default function NoahTimeline({
             >
               <div className={styles.agentLabel}>
                 <Bot size={14} />
-                <span>Agent紹介</span>
-                <span>{researchKindLabels[agent.kind]}</span>
+                <span>{t("Agent紹介")}</span>
+                <span>{t(researchKindLabels[agent.kind])}</span>
               </div>
               <Link
                 href={`${base}/agents/${agent.id}`}
                 className={styles.agentPreview}
               >
-                <span className={styles.agentMonogram} aria-hidden="true">
-                  <span>{agent.name.slice(0, 2).toUpperCase()}</span><Bot size={24}/><span className={styles.artCaption}>MEET YOUR NEXT AGENT</span>
-                </span>
+                <NoahAgentVisual name={agent.name} summary={agent.summary}/>
                 <div>
                   <span className={styles.publisher}>
-                    {agent.author || '公開資料からの紹介'}
+                    {agent.author || t('公開資料からの紹介')}
                   </span>
                   <h3>{agent.name}</h3>
                   <p>{agent.summary}</p>
@@ -406,9 +336,9 @@ export default function NoahTimeline({
                 />
               )}
               <footer className={styles.agentFooter}>
-                <span>紹介情報 · 利用条件は詳細で確認</span>
+                <span>{t("紹介情報 · 利用条件は詳細で確認")}</span>
                 <button
-                  aria-label="Agentを共有"
+                  aria-label={t("Agentを共有")}
                   onClick={() => void share(item)}
                 >
                   <Share2 size={15} />
@@ -419,9 +349,9 @@ export default function NoahTimeline({
         })}
       </section>
       <div className={styles.guestAccess}>
-        <span>閲覧・検索は登録なしで。</span>
+        <span>{t("閲覧・検索は登録なしで。")}</span>
         <Link href={`${base}/registration`}>
-          外部Agentの登録を依頼 <ArrowUpRight size={14} />
+          {t("外部Agentの登録を依頼")}<ArrowUpRight size={14} />
         </Link>
       </div>
       {!feed.loading && !items.length && (
@@ -433,7 +363,7 @@ export default function NoahTimeline({
             disabled={feed.moreLoading}
             onClick={() => void feed.loadMore()}
           >
-            {feed.moreLoading ? <NoahLoading compact label="読み込み中…" /> : '続きを読み込む'}
+            {feed.moreLoading ? <NoahLoading compact label={t("読み込み中…")} /> : t("続きを読み込む")}
           </button>
         </div>
       )}
