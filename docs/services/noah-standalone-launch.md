@@ -70,3 +70,16 @@
 - `/noah/explore` はスマホだけで使えるAgentと棚を直接表示する。`/noah/activity` と `/noah/data` はリモートAgentへの依頼・成果を本体にする。既存Macの管理は `/noah/mac/activity` に保持し、主導線からMac導入を要求しない。
 - 合格条件: Noah初期表示とルート移動時の `/api/sky/community-os` 呼出し0、OS表示/テーマ適用0、Noahの認証がNoahに復帰、主要4画面が390pxで使える、未認証/空/通信失敗が区別される、同じAPIによる接続→依頼→成果の試験が通る。既存OS画面と所有者照合も維持する。
 - 本番DB適用は引き続き本人確認待ち。保存版152はこの追補前のため、そのまま配備しない。
+
+### 独立版の検証（2026-11-21、PR #358）
+
+- 全体 `npm run verify` 成功: 4,749件中4,745成功・4skip。署名の公開fixture試験はHomebrew OpenSSL 3をPATH先頭にして実行。本番鍵は使わない。
+- その後のmain `db3c9b8d`（取込結果インポート・共有/利用状況の復旧）を両側保持で統合し、Noah 737件・typecheck・lintを再確認。737件の接続と依頼は合成Agent/APIで、本番接続の受入ではない。
+- 390×844の実ブラウザで4主要画面と専用ログインの遷移、横はみ出しなし、OS/Mac導入要求なしを確認。認証フォームと投稿ボタンの重なりを解消。1280pxでも専用メニューと成果画面を確認。ローカルのDBは空の合成schemaで、他の利用者のデータをコピーしていない。
+- 公開側はversion151の旧版。152・153は未配備の履歴で、独立版としては使わない。公開サイトへDB変更や配備は行っていない。
+
+### 公開候補（2026-11-21、PR #358）
+
+- **Sites保存版154（未配備）**: source `6b69d0097bea242519e14d17bc78c32deefabaa6`。version ID `appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_01d7afdf93888191917baa5d42c327c8`。archive SHA-256 `043853fa99f493936b6d5946e87a5dcdaf1a358c120d571cec373942a25cfbc3`、110,233,600 bytes。並行して保存された153のsourceも通常mergeで保全し、最新GitのNoahを合わせた。公開用sourceでもtypecheck・Noah 737件・buildが成功。
+- 本番反映に必要な候補は `0044`〜`0053` の10 migration（Noahの20表と索引の追加）。既存行の削除・既存表の再作成を含まない。履歴照合後に未適用分だけを適用する。公開設定候補は `NOAH_ORIGIN=avoado.si`・`NOAH_INTAKE_PUBLIC=true`・`NOAH_ASK_FORM=true`。自動巡回・自動の道具呼出し・モデル中継は開けない。
+- 本番変更は本人の明示許可待ち。許可前にdeployを呼ばない。配備後のドメイン確認と実サービス一周はまだで、外部認証付きAgentの接続を完了扱いにしない。
