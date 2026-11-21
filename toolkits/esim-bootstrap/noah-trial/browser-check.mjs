@@ -1,8 +1,7 @@
 // Run with node --experimental-strip-types. All data belongs to a throwaway pilot.
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { once } from 'node:events';
-import { mkdtemp, readFile, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -32,14 +31,13 @@ const browser = spawn(
     '--no-first-run',
     '--disable-background-networking',
     '--disable-default-apps',
-    '--remote-debugging-port=0',
+    '--remote-debugging-pipe',
     '--user-data-dir=' + profile,
     'about:blank',
   ],
-  { stdio: 'ignore' },
+  { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] },
 );
-const exit = once(browser, 'exit');
-const sockets = [];
+
 async function until(read, label) {
   const deadline = Date.now() + 15_000;
   do {
@@ -49,41 +47,87 @@ async function until(read, label) {
   } while (Date.now() < deadline);
   throw Error('Timed out: ' + label);
 }
-async function devtools(url, onEvent = () => {}) {
-  const ws = new WebSocket(url);
-  await once(ws, 'open');
-  sockets.push(ws);
-  let seq = 0;
-  const pending = new Map();
-  const send = (method, params = {}) =>
-    new Promise((resolve, reject) => {
-      const id = ++seq;
-      pending.set(id, (msg) =>
-        msg.error ? reject(Error(msg.error.message)) : resolve(msg.result),
-      );
-      ws.send(JSON.stringify({ id, method, params }));
-    });
-  ws.onmessage = ({ data }) => {
-    const m = JSON.parse(data);
-    if (m.id) {
-      pending.get(m.id)?.(m);
-      pending.delete(m.id);
-    } else onEvent(m, send);
-  };
-  return send;
+// Chrome inherits these pipes. No debug listener or discovery file is needed.
+const input = browser.stdio[3];
+const output = browser.stdio[4];
+const pending = new Map();
+const operatorSessions = new Set();
+let seq = 0;
+let closed;
+let buffer = '';
+function disconnect(error) {
+  closed = error;
+  for (const entry of pending.values()) {
+    clearTimeout(entry.timer);
+    entry.reject(error);
+  }
+  pending.clear();
 }
+const exit = new Promise((resolve) => browser.once('close', resolve));
+browser.once('error', disconnect);
+browser.once('exit', () => disconnect(Error('Chrome exited')));
+input.on('error', disconnect);
+output.on('error', disconnect);
+function control(method, params = {}, sessionId) {
+  if (closed) return Promise.reject(closed);
+  return new Promise((resolve, reject) => {
+    const id = ++seq;
+    const timer = setTimeout(() => {
+      pending.delete(id);
+      reject(Error('Chrome timed out on ' + method));
+    }, 15000);
+    pending.set(id, { resolve, reject, timer });
+    input.write(JSON.stringify({ id, method, params, sessionId }) + '\0');
+  });
+}
+function routeMessage(message) {
+  if (Number.isSafeInteger(message.id)) {
+    const entry = pending.get(message.id);
+    if (!entry) return;
+    pending.delete(message.id);
+    clearTimeout(entry.timer);
+    if (message.error) entry.reject(Error(message.error.message));
+    else entry.resolve(message.result);
+    return;
+  }
+  const { sessionId, method, params } = message;
+  if (!operatorSessions.has(sessionId)) return;
+  if (method === 'Fetch.requestPaused') {
+    void control(
+      'Fetch.continueRequest',
+      { requestId: params.requestId },
+      sessionId,
+    ).catch(disconnect);
+  } else if (method === 'Fetch.authRequired') {
+    const challenge = params.authChallenge;
+    const allowed =
+      challenge.source === 'Server' &&
+      challenge.origin === dock &&
+      challenge.scheme === 'basic' &&
+      new URL(params.request.url).origin === dock;
+    void control(
+      'Fetch.continueWithAuth',
+      {
+        requestId: params.requestId,
+        authChallengeResponse: allowed
+          ? { response: 'ProvideCredentials', username: 'operator', password }
+          : { response: 'CancelAuth' },
+      },
+      sessionId,
+    ).catch(disconnect);
+  }
+}
+output.setEncoding('utf8');
+output.on('data', (chunk) => {
+  buffer += chunk;
+  let end;
+  while ((end = buffer.indexOf('\0')) !== -1) {
+    const packet = buffer.slice(0, end);
+    buffer = buffer.slice(end + 1);
+    if (packet) routeMessage(JSON.parse(packet));
+  }
+});
 try {
-  const [port, browserPath] = await until(async () => {
-    try {
-      return (
-        await readFile(join(profile, 'DevToolsActivePort'), 'utf8')
-      ).split('\n');
-    } catch {
-      return null;
-    }
-  }, 'Chrome start');
-  const endpoint = 'http://127.0.0.1:' + port;
-  const control = await devtools('ws://127.0.0.1:' + port + browserPath);
   const ctx = async () =>
     (await control('Target.createBrowserContext')).browserContextId;
   const ownerCtx = await ctx(),
@@ -93,26 +137,15 @@ try {
       url: 'about:blank',
       browserContextId,
     });
-    const listing = await (await fetch(endpoint + '/json/list')).json();
-    const send = await devtools(
-      listing.find((t) => t.id === targetId).webSocketDebuggerUrl,
-      (m, cmd) => {
-        if (m.method === 'Fetch.requestPaused')
-          void cmd('Fetch.continueRequest', { requestId: m.params.requestId });
-        if (m.method === 'Fetch.authRequired')
-          void cmd('Fetch.continueWithAuth', {
-            requestId: m.params.requestId,
-            authChallengeResponse: m.params.request.url.startsWith(dock + '/')
-              ? {
-                  response: 'ProvideCredentials',
-                  username: 'operator',
-                  password,
-                }
-              : { response: 'CancelAuth' },
-          });
-      },
-    );
-    if (operator) await send('Fetch.enable', { handleAuthRequests: true });
+    const { sessionId } = await control('Target.attachToTarget', {
+      targetId,
+      flatten: true,
+    });
+    const send = (method, params = {}) => control(method, params, sessionId);
+    if (operator) {
+      operatorSessions.add(sessionId);
+      await send('Fetch.enable', { handleAuthRequests: true });
+    }
     await send('Page.enable');
     const ev = async (expr) => {
       const r = await send('Runtime.evaluate', {
@@ -313,7 +346,6 @@ try {
     'PASS 3/3 service bindings returned the same text result, 3 accepted jobs reopened after client closure.',
   );
 } finally {
-  for (const ws of sockets) ws.close();
   browser.kill('SIGTERM');
   await exit;
   await server.close();

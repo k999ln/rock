@@ -38,6 +38,7 @@ export function screen({
   freeLine,
   assignments = [],
   registered,
+  selectedAgent,
   notice,
   origins,
 }) {
@@ -77,7 +78,7 @@ export function screen({
   else if (!dedicated || !verified)
     display = layout(
       '回線とお知らせ',
-      `<section><h2>${notice ? '更新があります' : '模擬回線を追加しました'}</h2><p>専用回線を開くと、自分に指定された配給を確認できます。</p>${link(origins.mobile, '模擬専用回線でNoahを開く')}</section>`,
+      `<section><h2>${notice ? '更新があります' : '模擬回線を追加しました'}</h2><p>専用回線を開くと、自分に指定された配給を確認できます。</p>${link(origins.mobile, selectedAgent ? '専用回線で選んだAgentに戻る' : '模擬専用回線でNoahを開く')}</section>`,
     );
   else {
     display = layout(

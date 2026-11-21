@@ -665,3 +665,48 @@ await test('partial results remain readable and the same work keeps polling for 
   assert.equal(created, 1);
   assert.ok(lookups >= 3);
 });
+
+await test('selecting an Agent before enrollment returns to that package over the simulated dedicated line', async (t) => {
+  const f = fixture(t),
+    invite = f.invite(),
+    server = await startTrialServers(f.trial);
+  t.after(() => server.close());
+  const { public: ordinary, mobile } = server.origins;
+  const first = await fetch(ordinary + base + 'agents?agent=text-check', {
+    redirect: 'manual',
+  });
+  assert.equal(first.status, 303);
+  assert.equal(first.headers.get('location'), base);
+  const selected = first.headers.get('set-cookie').split(';')[0];
+  let cookies = selected;
+  const post = async (action, fields = {}) =>
+    fetch(ordinary + base + action, {
+      method: 'POST',
+      headers: { Origin: ordinary, Cookie: cookies },
+      body: new URLSearchParams(fields),
+      redirect: 'manual',
+    });
+  const login = await post('login', { invite });
+  cookies += '; ' + login.headers.get('set-cookie').split(';')[0];
+  await post('enroll');
+  await post('install');
+  const home = await fetch(ordinary + base, { headers: { Cookie: cookies } });
+  assert.match(await home.text(), /選んだAgentに戻る/);
+  const go = await fetch(mobile + base, {
+    headers: { Cookie: cookies },
+    redirect: 'manual',
+  });
+  assert.equal(go.status, 303);
+  assert.equal(go.headers.get('location'), base + 'agents?agent=text-check');
+  const card = await fetch(mobile + go.headers.get('location'), {
+    headers: { Cookie: cookies },
+  });
+  assert.match(await card.text(), /文章の文字数/);
+  assert.equal((await f.trial.cloudWork('alice', true, 'list')).jobs.length, 0);
+  const hostile = await fetch(
+    ordinary + base + 'agents?agent=https%3A%2F%2Fexample.invalid',
+    { redirect: 'manual' },
+  );
+  assert.equal(hostile.status, 401);
+  assert.equal(hostile.headers.get('location'), null);
+});
