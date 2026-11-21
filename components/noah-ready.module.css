@@ -63,7 +63,7 @@
 .card .connect { margin-top:auto; }
 .connect { display:flex; flex-direction:column; align-items:flex-end; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid #ececef; }
 .primary,.secondary { display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:112px; padding:0 22px; border-radius:22px; font-size:14px; font-weight:650; cursor:pointer; text-decoration:none; }
-.primary,.page a.primary { border:1px solid #7546c8; background:#7546c8; color:#fff; }
+.primary,a.primary,.page a.primary { border:1px solid #7546c8; background:#7546c8; color:#fff; }
 .primary:disabled { opacity:.6; cursor:default; }
 .secondary,.page a.secondary { border:1px solid #dbc7ef; background:#fff; color:#7546c8; }
 .secondary:disabled { opacity:.6; cursor:default; }
