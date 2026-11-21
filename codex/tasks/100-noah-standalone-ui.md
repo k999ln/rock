@@ -165,3 +165,10 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 
 
 2026-11-22 操作接続の復旧調査（PR #377）: 本人の復旧依頼を受けて再調査。MacのComputer Useサービスは稼働しているが、このチャットへ操作ツールが提供されていない。別ランタイムにも既存操作セッションはない。PixelはADB端末一覧とmDNS探索から消えており、保存済み接続先への接続は到達不能。ADB再接続でも端末0のため、現在のワイヤレスデバッグのIP/ポートを本人へ依頼した。Mac側は公式のComputer use設定とこのチャットへの@Computer付与を依頼。macOS権限の書換え・認証回避・別端末への接続は行わない。実機一周は未完了。
+### 2026-11-22 Agent詳細の接続・保存ボタン（PR #377）
+
+接続と保存の間隔が0pxだったため、保存を専用の行へ置き16pxの余白を確保。紫の接続と白地の保存で主操作・補助操作を区別し、保存の押す高さは46px。保存先・接続処理は変更していない。
+
+公開175: source `c2e9f2d44a8ab2fef3a835170d63a51ce3cbf2d4`、deployment `appgdep_6b01fdb5bf7081918ade578924721a19`、env16、succeeded。並行して追加されたbusiness入口 `3c9f02a` を履歴ごとmergeして保持。最初のsource pushは先端更新により拒否され、統合・再build後に成功した。公開Arabic Name Calligraphy詳細で320/390/1280pxすべて間隔16px・重なりなし・横はみ出しなし。保存を押して保存先シートが開くこと、接続の中心が別ボタンに覆われていないことを確認。ローカルpreviewには対象Agentがないため、表示検証は公開画面で実施した。
+
+検証: 関連26試験、公開sourceのtypecheck/build成功。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` exit0、ルート4,844 pass / 4 skip / 0 fail、build・API・残りの全検査成功。ログ `/tmp/noah-button-verify.log`。スクリーンショットは `/Users/kaiya/.codex-work/visualizations/2026/11/21/01a1fe90-1f3f-7083-a3a9-f7e3cad0ea6a/noah-public-mobile-20261122/noah-175-button-spacing.jpg`。

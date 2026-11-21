@@ -25,7 +25,7 @@ export default function NoahPinExtras({ item, ownerScope }: { item: Omit<NoahPin
   }, [item.id, signedIn]);
   const pin: NoahPinView = { ...item, topic: noahPinTopic(item.name, item.summary), shape: noahPinShape(item.id), savedIn };
   return <>
-    <p><button type="button" className={styles.saveButton} data-saved={savedIn.length > 0 || undefined} onClick={() => setOpen(true)}>{savedIn.length ? `${NOAH_PIN_TEXT.saved}（${savedIn.length}）` : NOAH_PIN_TEXT.save}</button></p>
+    <div className={styles.detailSave}><button type="button" className={styles.saveButton} data-saved={savedIn.length > 0 || undefined} onClick={() => setOpen(true)}>{savedIn.length ? `${NOAH_PIN_TEXT.saved}（${savedIn.length}）` : NOAH_PIN_TEXT.save}</button></div>
     {open && <NoahSaveSheet pin={pin} signedIn={signedIn} ownerScope={ownerScope} onClose={() => setOpen(false)} onChange={setSavedIn} />}
     {related && related.length > 0 && <section className={styles.related} aria-labelledby="noah-related">
       <h2 id="noah-related">{NOAH_PIN_TEXT.related}</h2>
