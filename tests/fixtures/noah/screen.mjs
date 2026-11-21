@@ -4,6 +4,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
+import { noahTranslate } from '../../../lib/noah-i18n.ts';
+import * as workView from '../../../lib/noah-work-view.ts';
 import * as profileContract from '../../../lib/noah-profile-contract.ts';
 
 const ROOT = new URL('../../../', import.meta.url);
@@ -47,6 +49,7 @@ export function screen(options = {}) {
     // React と同じく、deps が変わらない間は、前の値を返す（deps を渡さない時は、毎回作り直す）。
     useCallback(fn, deps) { return memo(() => fn, deps); },
     useMemo(make, deps) { return memo(make, deps); },
+    useSyncExternalStore: (_subscribe,get)=>get(),
     useId: () => 'id',
     createContext: (value) => ({ Provider: Fragment, value }),
     useContext: (held) => held.value,
@@ -98,6 +101,10 @@ export function screen(options = {}) {
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (options.modules?.[id]) return options.modules[id];
+      if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
+      if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
+      if(id==='@/lib/noah-work-view')return workView;
+      if(id==='@/components/noah-work-page')return load('components/noah-work-page.tsx');
       if(id==='@/lib/noah-profile-contract')return profileContract;
       if (id === '@/lib/noah-haptics') return load('lib/noah-haptics.ts');
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);

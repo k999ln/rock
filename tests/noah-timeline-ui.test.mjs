@@ -24,6 +24,8 @@ function render(hash = '#timeline', snapshot = { items, social: { profile: { id:
   const exports = {}, source = readFileSync(new URL('../components/noah-timeline.tsx', import.meta.url), 'utf8');
   const code = ts.transpileModule(source, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const modules = {
+    './noah-locale': {useNoahLocale:()=>({t:x=>x,locale:'ja'})},
+    './noah-agent-visual': {default:'agent-visual'},
     react: { useState: value => [value, () => {}], useRef: () => ({ current: null }), useEffect() {} },
     'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' },
     'lucide-react': new Proxy({}, { get: (_, key) => String(key) }),
@@ -39,22 +41,23 @@ function render(hash = '#timeline', snapshot = { items, social: { profile: { id:
   runInNewContext(code, { exports, URL, Date, require(name) { assert.ok(name in modules, name); return modules[name]; } });
   return exports.default({ mode: 'public', base: '/noah' });
 }
-void test('UI defaults to all posts and Agents with one Agent filter link and no tab bar', () => {
+void test('UI mixes posts and Agents with recommended, following and Agent-only controls', () => {
   const tree = render(), all = nodes(tree);
   assert.equal(all.filter(node => node.props?.['aria-label'] === 'Noahの統合タイムライン').length, 1);
   const cards = all.filter(node => node.type === 'article');
   assert.deepEqual(cards.map(card => card.props['data-feed-kind']), ['post', 'agent']);
   assert.doesNotMatch(text(tree), /試験コミュニティー|ニュース/);
   assert.ok(!all.some(n=>n.props?.['aria-label']==='タイムラインの種類'));
-  assert.ok(all.some(n=>n.props?.href==='/noah#agents' && text(n)==='Agent'));
+  assert.ok(all.some(n=>n.props?.href==='/noah#agents' && text(n)==='Agentのみ'));
   assert.ok(!text(tree).includes('すべてに戻る'));
-  assert.ok(all.some(n=>n.props?.href==='/noah/activity' && text(n)==='実行中'));
-  assert.ok(nodes(render('#agents')).some(n=>n.props?.href==='/noah#timeline' && text(n)==='すべてに戻る'));
+  assert.ok(all.some(n=>n.props?.href==='/noah#following' && text(n)==='フォロー中'));
+  assert.ok(all.some(n=>n.props?.href==='/noah#timeline' && text(n)==='おすすめ'));
+  assert.ok(nodes(render('#agents')).some(n=>n.props?.href==='/noah#timeline' && text(n)==='Agentのみ'));
   assert.ok(nodes(cards[1]).some(node => node.props?.href === '/noah/agents/agent'));
   assert.ok(nodes(cards[0]).some(node => node.props?.href === '/noah/social?post=ordinary'));
 });
 void test('Agent filter narrows the same list and retired filters return to all without private management actions', () => {
-  for (const [hash, expected] of [['#news', ['post','agent']], ['#agents', ['agent']], ['#communities', ['post','agent']], ['#following', ['post','agent']]]) {
+  for (const [hash, expected] of [['#news', ['post','agent']], ['#agents', ['agent']], ['#communities', ['post','agent']], ['#following', ['post']]]) {
     const all = nodes(render(hash));
     assert.deepEqual(all.filter(node => node.type === 'article').map(node => node.props['data-feed-kind']), expected);
     assert.equal(all.filter(node => node.props?.['aria-label'] === 'Noahの統合タイムライン').length, 1);
@@ -78,9 +81,9 @@ void test('personal opinions preserve author, full text, attachment and observed
 void test('setup, successful empty posts, and failed retrieval are distinct without fabricated opinions', () => {
   const agentItems = items.filter(i=>i.kind==='agent');
   const setup = render('#timeline', { items: agentItems, social: { profile: null, posts: [] }, errors: [] });
-  assert.ok(text(setup).includes('公開名を設定できます'));
+  assert.equal(nodes(setup).filter(n=>n.props?.['data-feed-kind']==='agent').length,1);
   const empty = render('#timeline', { items: agentItems, social: { profile: { id: 'test' }, posts: [] }, errors: [] });
-  assert.ok(text(empty).includes('表示できる投稿はまだありません'));
+  assert.equal(nodes(empty).filter(n=>n.props?.['data-feed-kind']==='agent').length,1);
   const failed = render('#timeline', { items: agentItems, errors: ['投稿：offline'] });
   assert.ok(text(failed).includes('投稿：offline'));
   assert.ok(!text(failed).includes('表示できる投稿はまだありません'));
