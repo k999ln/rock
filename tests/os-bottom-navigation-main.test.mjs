@@ -301,7 +301,8 @@ void test('Eve retains its app header while Noah has standalone navigation', () 
   }
   assert.doesNotMatch(source('components/noah-shell.tsx'), /<ProductAppHeader/);
   assert.match(source('components/noah-shell.tsx'), /aria-label="Noahの主要メニュー"/);
-  assert.match(source('components/noah-shell.tsx'), /label: 'タイムライン'/);
+  // 2026-11-22: ホームはピンタレスト風（task 115）。メニューの最初は「ホーム」。
+  assert.match(source('components/noah-shell.tsx'), /label: 'ホーム'/);
 });
 
 void test('shared app header preserves running guards, actions, and the active Eve query by preventing a reset', () => {

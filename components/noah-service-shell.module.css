@@ -6,42 +6,29 @@
 .skip { position:fixed; left:12px; top:-100px; z-index:100; padding:12px; background:#fff; color:#7546c8; }
 .skip:focus { top:12px; }
 .mobileHeader,.mobileMenu { display:none; }
-.brand { display:flex; align-items:center; gap:8px; width:fit-content; padding:7px 12px; margin-bottom:12px; }
-.mark { display:block; width:48px; height:48px; object-fit:contain; flex-shrink:0; }
-.brand strong { font-size:27px; font-weight:700; letter-spacing:-1.2px; }
-.body { display:grid; grid-template-columns:250px minmax(0,600px) minmax(280px,350px); gap:0; max-width:1230px; margin:auto; }
-.rail { min-width:0; }
-.railInner { position:sticky; top:0; height:100svh; display:flex; flex-direction:column; padding:6px 20px 16px 4px; overflow-y:auto; scrollbar-width:thin; }
-.rail nav { display:grid; gap:3px; }
-.rail nav a { display:flex; width:fit-content; max-width:100%; align-items:center; gap:16px; padding:12px 16px; border-radius:30px; min-height:50px; font-size:18px; white-space:nowrap; }
-.rail nav a svg { width:25px; height:25px; flex-shrink:0; }
-.rail nav a:hover { background:#f7f7f8; }
-.rail nav a[aria-current] { font-weight:750; color:#7546c8; }
-.secondary { margin-top:3px; }
-.post { display:flex; align-items:center; justify-content:center; gap:10px; min-height:51px; padding:12px 20px; background:#792ddd; color:#fff!important; border-radius:30px; font-size:17px; font-weight:700; margin:18px 6px 24px; box-shadow:0 3px 10px #7543c014; }
+.mobileMenu { display:none; }
+/* 上の帯（2026-11-22。ピンタレスト風）: ロゴ・メニュー・検索・ポスト・アカウント。下は全面。 */
+.topbar { position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:10px; min-height:72px; padding:8px 20px; background:#fffffffa; backdrop-filter:blur(14px); }
+.brand { display:flex; align-items:center; gap:8px; flex-shrink:0; padding:6px 8px; border-radius:24px; }
+.brand:hover { background:#f7f7f8; }
+.mark { display:block; width:40px; height:40px; object-fit:contain; flex-shrink:0; }
+.brand strong { font-size:23px; font-weight:700; letter-spacing:-1px; }
+.desktopNav { display:flex; align-items:center; gap:2px; flex-shrink:0; }
+.desktopNav a { display:flex; align-items:center; min-height:46px; padding:0 15px; border-radius:24px; font-size:15px; font-weight:600; white-space:nowrap; }
+.desktopNav a:hover { background:#f7f7f8; }
+.desktopNav a[aria-current] { background:#202024; color:#fff; }
+.searchSlot { flex:1; min-width:120px; }
+.search { display:flex; gap:10px; align-items:center; min-height:46px; border:2px solid transparent; border-radius:24px; padding:0 16px; background:#efeff1; color:#71717a; }
+.search:focus-within { border-color:#a180df; background:#fff; }
+.search input { width:100%; min-width:0; border:0; background:transparent; outline:none; padding:10px 0; color:#202024; font-size:15px; }
+.post { display:flex; align-items:center; justify-content:center; gap:8px; flex-shrink:0; min-height:46px; padding:0 18px; background:#792ddd; color:#fff!important; border-radius:24px; font-size:15px; font-weight:700; transition:transform .18s; }
 .post:hover { background:#7040bd; }
-.post svg { display:none; }
-.account { margin-top:auto; display:flex; align-items:center; gap:10px; padding:12px 10px; border-radius:40px; font-size:13px; }
+.post:active { transform:scale(.95); }
+.account { display:grid; place-items:center; flex-shrink:0; width:46px; height:46px; border-radius:50%; color:#52525b; }
 .account:hover { background:#f7f7f8; }
-.avatar { flex-shrink:0; display:grid; place-items:center; width:41px; height:41px; border-radius:50%; background:#f3eefb; color:#7546c8; }
-.account strong,.account small { display:block; }
-.account small { font-size:11px; color:#71717a; }
-.account > svg { margin-left:auto; }
-.content { min-width:0; min-height:100svh; border-inline:1px solid #ececef; }
-.support { min-width:0; padding:5px 0 24px 28px; }
-.supportInner { position:sticky; top:5px; }
-.search { display:flex; gap:12px; align-items:center; min-height:43px; border:1px solid transparent; border-radius:25px; padding:0 18px; background:#f7f7f8; color:#71717a; margin-bottom:16px; }
-.search:focus-within { border-color:#7546c8; background:#fff; }
-.search input { width:100%; min-width:0; border:0; background:transparent; outline:none; padding:10px 0; color:#202024; }
-.supportCard { border:1px solid #ececef; border-radius:12px; margin-bottom:16px; padding:16px; }
-.supportCard h2 { font-size:19px; letter-spacing:-.5px; margin:0 0 10px; line-height:1.5; }
-.supportCard p { color:#71717a; font-size:13px; line-height:1.7; margin:0 0 13px; }
-.pill { display:inline-flex; background:#7546c8; color:white!important; padding:9px 18px; border-radius:24px; font-size:13px; font-weight:700; }
-.textLink { color:#7546c8!important; font-size:13px; }
-.supportFooter { display:flex; flex-wrap:wrap; gap:7px 14px; color:#71717a; font-size:11px; padding:0 12px; }
-.supportFooter a { display:flex; gap:4px; align-items:center; }
-.body[data-wide] { grid-template-columns:250px minmax(0,950px); }
-.body[data-wide] .support { display:none; }
+.body { max-width:1000px; margin:0 auto; padding:0 20px 40px; }
+.body[data-home] { max-width:none; padding:0 16px 48px; }
+.content { min-width:0; min-height:calc(100svh - 72px); }
 .content :global(.rock-workspace) { min-height:0; }
 .content :global([data-noah-embedded] .rock-main) { padding:24px; width:100%; max-width:none; }
 .content :global(.noah-workspace-heading) { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:24px; border-bottom:1px solid #ececef; }
@@ -49,20 +36,15 @@
 .content :global([data-noah-embedded] .sky-feed-layout) { grid-template-columns:minmax(0,1fr); }
 .content :global([data-noah-embedded] nav[aria-label="Noahの主要画面"]) { display:flex; flex-wrap:wrap; gap:8px; }
 .content :global([data-noah-embedded] .sky-marketplace-link) { margin:0; padding:6px 10px; background:#f7f7f8; border-radius:8px; }
-@media(max-width:1200px) {
-  .body { grid-template-columns:80px minmax(0,600px) minmax(270px,330px); max-width:1010px; }
-  .body[data-wide] { grid-template-columns:80px minmax(0,930px); }
-  .railInner { padding:6px 10px 12px; align-items:center; }
-  .brand { padding:7px 0; }.brand strong,.rail nav a span,.post span,.account > span:not(.avatar),.account > svg { display:none; }
-  .rail nav a { padding:13px; width:52px; height:52px; }.post { padding:14px; min-height:52px; width:52px; margin-inline:0; }.post svg { display:block; }.account { padding:6px; }.support { padding-left:22px; padding-right:12px; }
-}
-@media(max-width:1000px) { .body,.body[data-wide] { grid-template-columns:80px minmax(0,600px); max-width:680px; }.support { display:none; } }
-@media(max-width:600px) {
-  .mobileHeader { display:flex; height:54px; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #ececef; }.mobileHeader .brand { margin:0; padding:0; }.mobileHeader .brand strong { display:block; font-size:22px; }.mobileHeader .mark { width:38px; height:38px; }
-  .body,.body[data-wide] { display:block; }.content { border:0; padding-bottom:calc(70px + env(safe-area-inset-bottom)); }
-  .rail { position:fixed; bottom:0; left:0; right:0; z-index:30; border-top:1px solid #ececef; background:#fffffff5; backdrop-filter:blur(16px); padding-bottom:env(safe-area-inset-bottom); }
-  .railInner { height:auto; padding:4px 6px; display:block; overflow:visible; }.railInner > .brand,.secondary,.account { display:none; }
-  .rail .desktopNav { display:none; }.mobileMenu { display:block; }
+@media(max-width:1100px) { .desktopNav a { padding:0 11px; font-size:14px; } }
+@media(max-width:900px) { .desktopNav { display:none; } .mobileMenu { display:block; } }
+/* 下のメニュー（900 px より狭い時）。 */
+@media(max-width:900px) {
+  .topbar { min-height:60px; padding:6px 12px; gap:6px; }
+  .brand strong { font-size:20px; }.mark { width:34px; height:34px; }
+  .post { position:fixed; right:18px; bottom:calc(78px + env(safe-area-inset-bottom)); z-index:35; width:54px; height:54px; padding:0; box-shadow:0 6px 22px #792ddd40; }.post span { display:none; }
+  .body,.body[data-home] { padding-left:8px; padding-right:8px; padding-bottom:calc(76px + env(safe-area-inset-bottom)); }
+  .mobileMenu { position:fixed; bottom:0; left:0; right:0; z-index:30; border-top:1px solid #ececef; background:#fffffff5; backdrop-filter:blur(16px); padding:4px 6px env(safe-area-inset-bottom); }
   .menuTrigger { display:flex; align-items:center; gap:10px; width:100%; min-height:52px; padding:10px 18px; background:transparent; border:0; color:#202024; cursor:pointer; text-align:left; }
   .menuTrigger strong { font-size:14px; font-weight:600; }.menuTrigger > span { margin-left:auto; font-size:12px; color:#71717a; }.menuTrigger > svg { flex-shrink:0; }.menuTrigger > svg:last-child { width:15px; color:#71717a; }
   .menuTrigger:hover { background:#f7f7f8; }.menuTrigger:focus-visible { outline-width:2px; outline-offset:-2px; }
@@ -72,10 +54,7 @@
   .menuHeading button { display:grid; place-items:center; width:32px; height:32px; border:0; border-radius:50%; background:transparent; color:#71717a; cursor:pointer; }.menuHeading button:hover { background:#f7f7f8; }
   .menuPanel nav { display:grid; gap:0; }.menuPanel nav a { display:flex; align-items:center; gap:15px; width:100%; min-height:57px; height:auto; padding:10px 2px; border-radius:0; border-bottom:1px solid #ececef; white-space:normal; }.menuPanel nav a:last-child { border-bottom:0; }
   .menuPanel nav a[aria-current] { background:transparent; color:#202024; }.menuPanel nav a:hover { background:#f7f7f8; }.menuPanel nav a span { display:block; }.menuPanel nav .menuIcon { display:grid; place-items:center; width:25px; flex-shrink:0; color:#52525b; }.menuPanel nav a[aria-current] .menuIcon { color:#7546c8; }.menuPanel nav .menuText { min-width:0; flex:1; }.menuText strong { display:block; font-size:14px; font-weight:600; line-height:1.5; }.menuText small { display:block; font-size:11px; line-height:1.6; color:#71717a; font-weight:400; }.menuPanel nav .currentBadge { width:6px; height:6px; border-radius:50%; background:#7546c8; font-size:0; }.menuPanel nav a > svg { width:15px; height:15px; color:#c4bdca; }
-
-  .post { position:fixed; right:20px; bottom:calc(80px + env(safe-area-inset-bottom)); width:52px; height:52px; margin:0; box-shadow:0 6px 22px #792ddd40; }.post svg { display:block; }
   .content :global([data-noah-embedded] .rock-main) { padding:16px; }
 }
-
-.post { transition:transform .18s,box-shadow .18s; }.post:active { transform:scale(.94); }
+@media(max-width:480px) { .brand strong { display:none; } }
 @media(prefers-reduced-motion:reduce) { .post { transition:none; }.post:active { transform:none; } }
