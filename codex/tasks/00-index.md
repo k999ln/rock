@@ -110,3 +110,17 @@
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 |
+
+## 110 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
+
+本人の決定（11-19〜21。[07](../../docs/structure/07-decisions-from-minutes.md)）: 領域ごとのパッケージ、1 つの仕事を最後までやる組合せ、今動かせる物だけ、入口の棚は「稼ぐ・仕事を省く」「教育」「暮らし」、無料は 6 枚までつなげる、まず 300 人に試してもらう。設計は [docs/noah/spec-110-shelf.md](../../docs/noah/spec-110-shelf.md)（110〜113 が、同じ仕様書の章を分けて使う）と [docs/noah/trial-300.md](../../docs/noah/trial-300.md)（114）。型契約と参照実装は docs/contracts/noah-shelf-v1.ts、試験は docs/design-validation/noah/noah-shelf.test.mjs と validate-noah-shelf-v1.py。
+
+| 順 | ローンチ | # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | L5・L8 に足す | 110 | [110-noah-shelf.md](110-noah-shelf.md) | 棚とカード: カードの形、載せる条件（今動かせる物だけ）、運営が動かして確かめる、`/noah/ready` の棚、運営の画面 |✅ [#353](https://github.com/k999ln/rock/pull/353) |
+| 2 | —（出した後） | 111 | [111-noah-shelf-rank.md](111-noah-shelf-rank.md) | 実績の並び（学習なし）、見せた記録、カードをタイムラインへ流す |✅ [#355](https://github.com/k999ln/rock/pull/355) |
+| 2 | —（出した後） | 112 | [112-noah-package-chains.md](112-noah-package-chains.md) | 家の端末のカード、工程をつなぐカード、札の候補、工程の計画へのつなぎ | |
+| 2 | —（出した後） | 113 | [113-noah-plan-limits.md](113-noah-plan-limits.md) | つなげる数を料金ごとに（無料 6 枚・有料 50 枚。数えるのはカード） |✅ [#357](https://github.com/k999ln/rock/pull/357) |
+| 2 | 出した直後 | 114 | [114-noah-trial-300.md](114-noah-trial-300.md) | 300 人の試行: 経路の札、段を終えたかの判定、本人の報告（売れた件数・手取り・掛けた分） |✅ [#354](https://github.com/k999ln/rock/pull/354) |
+
+カードを動かして確かめる事（[カード案](../../docs/services/noah-shelf.md) の 12 枚）、投稿・動画・人への連絡、切り替えを開ける事、本番の migration は、task ではなく本人と運営の作業。

@@ -36,3 +36,16 @@ void test('followed posts appear twice per round without removing ordinary posts
   assert.deepEqual(mixNoahTimeline(agents,[]).map(i=>i.kind), ['agent']);
   assert.deepEqual(mixNoahTimeline([],[]), []);
 });
+
+void test('shelf cards are one kind in the timeline: the Agent filter leaves them out, words find them, and the order is each shelf in turn', async () => {
+  const { noahShelfTimelineCards, noahTimelineCardFacts } = await import('../lib/noah-timeline-feed.ts');
+  const card = (id, title) => ({ id, shelf: 'earn', topic: 'research', topicLabel: '調査', title, promise: '名前を渡すと要点が返ります。', give: '名前', get: '要点', priceHint: null, advice: false, runs: ['provider'], ownerSteps: 0, ownerMinutes: 1, position: 1, why: 'operator', target: `/noah/ready/agent?from=${id}`, numbers: null });
+  const cards = noahShelfTimelineCards([{ cards: [card('pkg:a', '選手を調べる'), card('pkg:b', '表を整える')] }, { cards: [card('pkg:c', '小テスト')] }, {}]);
+  assert.deepEqual(cards.map((item) => item.id), ['pkg:a', 'pkg:c', 'pkg:b']);
+  const items = mixNoahTimeline(agents, [], [], cards);
+  assert.deepEqual(items.map((item) => item.key), ['agent:same-id', 'card:pkg:a', 'card:pkg:c', 'card:pkg:b']);
+  assert.deepEqual(selectNoahTimeline(items, 'agent').map((item) => item.kind), ['agent']);
+  assert.deepEqual(selectNoahTimeline(items, 'all', '小テスト').map((item) => item.key), ['card:pkg:c']);
+  assert.equal(noahTimelineCardFacts(cards[0]), '相手のサーバー · あなたがやる事 0・約 1 分 · まだ数字はありません');
+  assert.equal(noahTimelineCardFacts({ ...cards[0], numbers: { resultPercent: 90, againPercent: 50, seconds: 20 } }), '相手のサーバー · あなたがやる事 0・約 1 分 · 成果が返った割合 90%・また使った人 50%・最初の成果まで 約 20 秒');
+});

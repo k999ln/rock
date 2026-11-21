@@ -10,3 +10,5 @@
 .intake form { display: grid; gap: 10px; margin: 18px 0 10px; }
 .intake form label { display: grid; gap: 4px; }
 .intake form input { min-height: 44px; padding: 8px 12px; border: 1px solid var(--os-line); border-radius: 10px; background: transparent; }
+.intake textarea { min-height: 120px; padding: 8px 12px; border: 1px solid var(--os-line); border-radius: 10px; background: transparent; font: 13px/1.6 ui-monospace, monospace; }
+.intake button + button { margin-left: 8px; }

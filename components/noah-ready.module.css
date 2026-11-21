@@ -39,6 +39,23 @@
 .facts { display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
 .facts li { font-size:11px; color:#71717a; background:#f7f7f8; border:1px solid #ececef; border-radius:20px; padding:4px 9px; overflow-wrap:anywhere; }
 .facts li.badge { color:#7546c8; border-color:#dbc7ef; background:#f3eefb; font-weight:650; }
+/* 棚のカード（components/noah-shelf.tsx）。渡す物・受け取る物は 2 行で切る。「Noah の説明」は、カードの文が運営の言葉である印。 */
+.shelfIo { display:grid; gap:4px; margin:0 0 14px; font-size:12px; line-height:1.7; }
+.shelfIo div { display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px; min-width:0; }
+.shelfIo dt { color:#71717a; }
+.shelfIo dd { margin:0; color:#202024; min-width:0; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.shelfPrice { margin:12px 0 0; color:#52525b; font-size:12px; line-height:1.7; overflow-wrap:anywhere; }
+.shelfNote { margin:10px 0 0; color:#a1a1aa; font-size:11px; }
+.shelfHide { min-height:44px; padding:0 12px; border:0; background:transparent; color:#71717a; font-size:12px; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+/* 試行の本人の報告（components/noah-trial-report.tsx）。欄は縦に並べ、押す所は 44px。 */
+.trialForm { display:grid; gap:12px; padding:16px; border:1px solid #ececef; border-radius:12px; background:#fff; }
+.trialForm fieldset { display:flex; flex-wrap:wrap; gap:8px; margin:0; padding:0; border:0; }
+.trialForm legend { margin-bottom:6px; font-size:13px; color:#52525b; }
+.trialForm fieldset button { min-height:44px; padding:0 16px; border:1px solid #dbc7ef; border-radius:22px; background:#fff; color:#7546c8; font-size:14px; }
+.trialForm fieldset button[aria-pressed="true"] { background:#7546c8; color:#fff; }
+.trialForm label { display:grid; gap:4px; font-size:13px; color:#52525b; }
+.trialForm input { min-height:44px; padding:8px 12px; border:1px solid #ececef; border-radius:10px; font-size:16px; }
+.trialForm .primary { justify-self:end; }
 .sendsTo { margin:14px 0 0; padding:12px 14px; border-radius:10px; background:#f7f7f8; color:#202024; font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
 
 /* 横に並んだカードの主ボタンを、下でそろえる（名前や説明の行数が違っても、同じ高さに出る）。 */

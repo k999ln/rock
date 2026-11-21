@@ -2506,3 +2506,158 @@ export const noahAsks = sqliteTable('noah_asks', {
   index('noah_asks_owner_created').on(t.ownerId, t.createdAt),
   index('noah_asks_host_created').on(t.host, t.createdAt).where(sql`${t.host} IS NOT NULL`),
 ]);
+
+// 棚のカード（パッケージ）と、その工程の先。DDL は drizzle/0050_noah_shelf.sql（docs/contracts/noah-shelf-v1.sql から移した。task 110）。
+export const noahPackages = sqliteTable('noah_packages', {
+  id: text('id').primaryKey(),
+  shelf: text('shelf').notNull(),
+  topic: text('topic').notNull(),
+  position: integer('position').notNull(),
+  status: text('status').notNull(),
+  packageJson: text('package_json').notNull(),
+  packageSha256: text('package_sha256').notNull(),
+  listed: integer('listed').notNull().default(0),
+  reason: text('reason'),
+  reasonStep: integer('reason_step'),
+  checkedAt: integer('checked_at'),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+  revision: integer('revision').notNull(),
+}, t => [
+  check('noah_packages_check_1', sql`${t.id} GLOB 'pkg:[a-z0-9]*' AND ${t.id} NOT GLOB '*[^a-z0-9:-]*' AND length(${t.id}) BETWEEN 6 AND 67`),
+  check('noah_packages_check_2', sql`${t.shelf} IN ('earn','learn','life')`),
+  check('noah_packages_check_3', sql`${t.topic} IN ('dev','research','support','office','study','home','health')`),
+  check('noah_packages_check_4', sql`${t.position} BETWEEN 0 AND 9999`),
+  check('noah_packages_check_5', sql`${t.status} IN ('draft','verified','retired')`),
+  check('noah_packages_check_6', sql`json_valid(${t.packageJson}) AND length(${t.packageJson}) <= 8192`),
+  check('noah_packages_check_7', sql`length(${t.packageSha256}) = 64`),
+  check('noah_packages_check_8', sql`${t.listed} IN (0,1)`),
+  check('noah_packages_check_9', sql`${t.reason} IS NULL OR ${t.reason} IN ('retired','draft','advice_unreviewed','later_chain','later_home','step_missing','step_not_running','step_changed')`),
+  check('noah_packages_check_10', sql`${t.reasonStep} IS NULL OR ${t.reasonStep} BETWEEN 0 AND 5`),
+  check('noah_packages_check_11', sql`${t.revision} >= 1`),
+  check('noah_packages_check_12', sql`(${t.listed} = 1) = (${t.reason} IS NULL)`),
+  check('noah_packages_check_13', sql`${t.listed} = 0 OR ${t.status} = 'verified'`),
+  check('noah_packages_check_14', sql`${t.reasonStep} IS NULL OR ${t.reason} IS NOT NULL`),
+  index('noah_packages_shelf').on(t.shelf, t.position, t.id).where(sql`${t.listed} = 1`),
+]);
+export const noahPackageSteps = sqliteTable('noah_package_steps', {
+  packageId: text('package_id').notNull().references(() => noahPackages.id),
+  step: integer('step').notNull(),
+  kind: text('kind').notNull(),
+  ref: text('ref').notNull(),
+  tool: text('tool'),
+}, t => [
+  primaryKey({ columns: [t.packageId, t.step] }),
+  check('noah_package_steps_check_1', sql`${t.step} BETWEEN 0 AND 5`),
+  check('noah_package_steps_check_2', sql`${t.kind} IN ('family','home','builtin','owner','gap')`),
+  check('noah_package_steps_check_3', sql`length(${t.ref}) <= 400`),
+  check('noah_package_steps_check_4', sql`${t.tool} IS NULL OR length(${t.tool}) BETWEEN 1 AND 128`),
+  check('noah_package_steps_check_5', sql`(${t.kind} = 'family') = (${t.tool} IS NOT NULL)`),
+  check('noah_package_steps_check_6', sql`(${t.kind} IN ('owner','gap')) = (${t.ref} = '')`),
+  index('noah_package_steps_ref').on(t.kind, t.ref),
+]);
+// 接続が、どのカードの中でつながれたか。DDL は drizzle/0053_noah_package_connections.sql（docs/contracts/noah-shelf-v1.sql から移した。task 113）。
+// 同じカードの中の接続は、つなげる数を 1 と数える。カードの外の接続は、行を持たない。
+export const noahPackageConnections = sqliteTable('noah_package_connections', {
+  connectionId: text('connection_id').primaryKey().references(() => noahConnections.id),
+  packageId: text('package_id').notNull().references(() => noahPackages.id),
+}, t => [
+  index('noah_package_connections_package').on(t.packageId),
+]);
+// 棚の実績の集計と、見せた記録。DDL は drizzle/0052_noah_shelf_evidence.sql（docs/contracts/noah-shelf-v1.sql から移した。task 111）。
+// 集計と、全員を合わせた見せた記録に、本人の ID は無い。本人ごとの行は、履歴の利用に同意した本人の分と、本人が頼んだ「非表示」だけ。
+export const noahPackageEvidence = sqliteTable('noah_package_evidence', {
+  packageId: text('package_id').primaryKey().references(() => noahPackages.id),
+  people: integer('people').notNull(),
+  connects: integer('connects').notNull(),
+  connected: integer('connected').notNull(),
+  asks: integer('asks').notNull(),
+  succeeded: integer('succeeded').notNull(),
+  reviewed: integer('reviewed').notNull().default(0),
+  accepted: integer('accepted').notNull().default(0),
+  firstUsers: integer('first_users').notNull(),
+  returned: integer('returned').notNull(),
+  medianSeconds: integer('median_seconds'),
+  sinceAt: integer('since_at').notNull(),
+  computedAt: integer('computed_at').notNull(),
+}, t => [
+  check('noah_package_evidence_check_1', sql`${t.people} >= 0`),
+  check('noah_package_evidence_check_2', sql`${t.connects} >= 0`),
+  check('noah_package_evidence_check_3', sql`${t.connected} >= 0`),
+  check('noah_package_evidence_check_4', sql`${t.asks} >= 0`),
+  check('noah_package_evidence_check_5', sql`${t.succeeded} >= 0`),
+  check('noah_package_evidence_check_6', sql`${t.reviewed} >= 0`),
+  check('noah_package_evidence_check_7', sql`${t.accepted} >= 0`),
+  check('noah_package_evidence_check_8', sql`${t.firstUsers} >= 0`),
+  check('noah_package_evidence_check_9', sql`${t.returned} >= 0`),
+  check('noah_package_evidence_check_10', sql`${t.medianSeconds} IS NULL OR ${t.medianSeconds} >= 0`),
+  check('noah_package_evidence_check_11', sql`${t.connected} <= ${t.connects} AND ${t.succeeded} <= ${t.asks} AND ${t.accepted} <= ${t.reviewed} AND ${t.returned} <= ${t.firstUsers}`),
+]);
+export const noahShelfDaily = sqliteTable('noah_shelf_daily', {
+  day: integer('day').notNull(),
+  packageId: text('package_id').notNull().references(() => noahPackages.id),
+  band: text('band').notNull(),
+  shown: integer('shown').notNull().default(0),
+  opened: integer('opened').notNull().default(0),
+}, t => [
+  primaryKey({ columns: [t.day, t.packageId, t.band] }),
+  check('noah_shelf_daily_check_1', sql`${t.day} BETWEEN 20260101 AND 99991231`),
+  check('noah_shelf_daily_check_2', sql`${t.band} IN ('top','mid','low')`),
+  check('noah_shelf_daily_check_3', sql`${t.shown} >= 0`),
+  check('noah_shelf_daily_check_4', sql`${t.opened} >= 0`),
+]);
+export const noahShelfSeen = sqliteTable('noah_shelf_seen', {
+  ownerId: text('owner_id').notNull(),
+  packageId: text('package_id').notNull().references(() => noahPackages.id),
+  shown: integer('shown').notNull().default(0),
+  opened: integer('opened').notNull().default(0),
+  hidden: integer('hidden').notNull().default(0),
+  firstAt: integer('first_at').notNull(),
+  lastAt: integer('last_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.ownerId, t.packageId] }),
+  check('noah_shelf_seen_check_1', sql`${t.shown} >= 0`),
+  check('noah_shelf_seen_check_2', sql`${t.opened} >= 0`),
+  check('noah_shelf_seen_check_3', sql`${t.hidden} IN (0,1)`),
+  check('noah_shelf_seen_check_4', sql`${t.lastAt} >= ${t.firstAt}`),
+]);
+// 300 人の試行（docs/noah/trial-300.md）。DDL は drizzle/0051_noah_trial.sql（docs/contracts/noah-shelf-v1.sql から移した。task 114）。
+// 経路の札は、運営が登録した物だけ。入口は、本人 1 人につき 1 行。報告は、本人が自分で入れる数だけ（文章は置かない）。
+export const noahTrialChannels = sqliteTable('noah_trial_channels', {
+  via: text('via').primaryKey(),
+  label: text('label').notNull(),
+  wave: integer('wave').notNull(),
+  createdAt: integer('created_at').notNull(),
+  closedAt: integer('closed_at'),
+}, t => [
+  check('noah_trial_channels_check_1', sql`${t.via} GLOB '[a-z0-9]*' AND ${t.via} NOT GLOB '*[^a-z0-9-]*' AND length(${t.via}) BETWEEN 1 AND 40`),
+  check('noah_trial_channels_check_2', sql`length(${t.label}) BETWEEN 1 AND 60`),
+  check('noah_trial_channels_check_3', sql`${t.wave} IN (1,2,3)`),
+]);
+export const noahTrialEntries = sqliteTable('noah_trial_entries', {
+  ownerId: text('owner_id').primaryKey(),
+  via: text('via').notNull().references(() => noahTrialChannels.via),
+  wave: integer('wave').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  check('noah_trial_entries_check_1', sql`${t.wave} IN (1,2,3)`),
+  index('noah_trial_entries_via').on(t.via, t.wave),
+]);
+export const noahTrialReports = sqliteTable('noah_trial_reports', {
+  ownerId: text('owner_id').notNull().references(() => noahTrialEntries.ownerId),
+  packageId: text('package_id').notNull().references(() => noahPackages.id),
+  listed: integer('listed').notNull(),
+  sold: integer('sold').notNull(),
+  netYen: integer('net_yen').notNull(),
+  minutes: integer('minutes').notNull(),
+  reportedAt: integer('reported_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.ownerId, t.packageId] }),
+  check('noah_trial_reports_check_1', sql`${t.listed} IN (0,1)`),
+  check('noah_trial_reports_check_2', sql`${t.sold} BETWEEN 0 AND 999`),
+  check('noah_trial_reports_check_3', sql`${t.netYen} BETWEEN 0 AND 100000000`),
+  check('noah_trial_reports_check_4', sql`${t.minutes} BETWEEN 0 AND 100000`),
+  check('noah_trial_reports_check_5', sql`${t.sold} = 0 OR ${t.listed} = 1`),
+  check('noah_trial_reports_check_6', sql`${t.netYen} = 0 OR ${t.sold} > 0`),
+  index('noah_trial_reports_package').on(t.packageId),
+]);

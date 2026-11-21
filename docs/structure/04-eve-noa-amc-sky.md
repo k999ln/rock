@@ -1,5 +1,7 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
+2026-11-21 棚とパッケージ: Noah の入口に「稼ぐ・仕事を省く」「教育」「暮らし」の棚を置き、カード 1 枚を「1 つの仕事を最後までやる組合せ」にする（本人の決定 11-19〜21）。棚に載せるのは、運営が動かして確かめた、今動かせる物だけ。並びは、運営の順から始め、数えた実績（成果が返って、また使われるか）で直す。学習したモデルは使わない。カードの工程は、今の工程の計画（lib/sky-recipe-planner.ts）の能力として、そのまま Noa へ渡る。Eve → Noa → AMC → Jev の構造と、Broker・Wallet の gate は変えない。[仕様書 110](../noah/spec-110-shelf.md)、[書式](../services/noah-shelf.md)、[300 人への出し方](../noah/trial-300.md)。
+
 ## 現在の入口と実装範囲
 
 2026-11-21: Noah の公開先は **https://avoado.si/noah**。スマホ向けの接続・依頼・成果は最新 main を土台に公開する。公開状態の読み取り確認は `node --experimental-strip-types scripts/check-noah-domain.mjs`。ページ200だけでは接続APIの配備を合格としない。本番DBへの適用は本人の承認後。
