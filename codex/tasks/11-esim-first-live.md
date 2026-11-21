@@ -19,3 +19,6 @@ app/api/esim/**（catalog, order, issue, qr, install-proof, device-entitlement, 
 
 ## やらないこと
 - 自社証明書の ARF 埋め込み（provider 契約後の task 12）。本番 Stripe 鍵の投入。
+
+
+2026-11-22 Noah実機受入と回線準備（PR #377）: PixelのブラウザからAgentboardへ登録・認証付き実行・成果再表示を確認した。Wi-Fi経由であり実eSIMの受入ではない。最新main 97898c519にある専用クラウドの2試験はローカル合成LINEで再成功。公開env16に事業者設定はなく、実回線照合器も未設定。[導入候補・費用・事業者への確認文案](../../docs/esim/noah-pilot-rfq.md)を作成。本人の費用確認、発行承認、実回線経由のPixel疎通が次の前提。

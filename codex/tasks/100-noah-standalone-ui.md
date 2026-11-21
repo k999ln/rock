@@ -222,3 +222,22 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 画面証拠は `/Users/kaiya/.codex-work/visualizations/2026/11/20/01a1f8f6-e45c-7260-bc55-53b2712253bb/noah-pixel-20261122/` に保存。`noah-pixel-memberless-saved.png` SHA-256 `a4e62d8fcd9434cb11a1201f0d73cef1ce7c1614e746f2d6ada4610f9a9512fd`、`noah-pixel-memberless-reopened-loaded.png` SHA-256 `178d11c26c924212bd10be95abefc0601d800fed17436168f734f24f523951bc`。秘密値・cookie・本人の旧アカウント情報は取得せず、公開外部データの成果だけを確認した。
 
 検証は実機の上記操作と設定readback、文書差分の `git diff --check`。今回のリポジトリ変更は受入記録だけで、直前のコードに対する全体verify 4,856 pass・4 skip・0 failと公開12項目成功は上記の記録を参照。別チャットの公開182の全体試験をこの数値へ含めない。残件はブラウザ別保存での認証付き外部登録一周、別利用者の本番受入、写真アプリへの実画像保存、100人の本番負荷、任意のAgent実行。過去のAgentboard登録1件と本人による成果表示報告は別の証拠として保持する。
+
+
+### 2026-11-22 Pixelで外部登録から認証付き成果まで（PR #377）
+
+Pixel 10 / Android 17 / Vanadiumで、既存のブラウザ保存権限を利用し、公開NoahのAgentboard詳細→「登録して使う」→公開名 `Noah-Pixel-Pilot-20261122` を入力→「今回だけ使う」→送信先/規約確認→「同意して登録」を1回タップ。登録の受付確認・完了報告を経て「Agentを使う」→「接続」→「アカウントを確認（whoami）」→「頼む」1回→成果受取まで実測した。キーの入力・表示・コピー、旧本人アカウントからの移送はない。Noahログイン・投稿・課金なし。合成の表示名は再利用プロフィールへ保存していない。外部アカウントは1件だけ作成し、登録の再送なし。
+
+成果は `Noah-Pixel-Pilot-20261122` / `noah-pixel-pilot-20261122` / 利用中を表示。Work `05767f3d-174d-4da9-baad-270e557fd718`。詳細の「戻る」→ `/noah/saved?tab=results` → Agentboardカード→同じ名前・状態の成果詳細を再表示。先に受領したTipline成果も同じ保存画面に残っていた。操作中の画面ロックや外部アプリへの強制移動はなし。承認済みADBでスマホ画面を操作した結果であり、実回線eSIM・iPhone・任意サービスの登録・画像の写真アプリ保存の受入ではない。
+
+登録開始時に公開183、試験中に別担当の184/185が配備。成果詳細への初回移動で1回「This page couldn’t load」を観測し、表示されたReloadで同じWorkを復元した。公開185は native status succeeded / env16（source `6f5e9f832a5b68dc23e9e84d559c8612b86f4e0e`、deployment `appgdep_6b0212a7f8b88191a7da30ccf12e17aa`）。公開更新が重なったが、画面エラーの原因は未確定であり、修正済みと記載しない。その後の保存一覧→詳細は再読込操作なしで成功。今回こちらからの配備や環境設定変更はない。
+
+本番限定負荷: 2026-11-22 06:57 JSTにブラウザ権限100個を発行し、同時5人で各4要求（発行、GET session、空の本人ask一覧、上記Pixel Workへの別所有者GET）を実施。400/400成功、独立cookie100個、他人の成果404は100/100。全体8,556ms、中央値155ms、95パーセンタイル182ms、最大438ms。cookieはメモリ内のみ、外部登録や仕事は増やさず、DB保存を追加しない。これは100人同時・100外部サービス実行の負荷保証ではない。再現用の一時スクリプト `/tmp/noah-pilot-production-smoke.mjs` と集計 `/tmp/noah-pilot-production-smoke.json` を保持し、永続記録はこの段落とPR本文。秘密値は集計しない。
+
+再検証: `node --experimental-strip-types --test tests/noah-cohort-capacity.test.mjs` 2件成功（合成100所有者・200タップ・100登録、10提供者・100成果・100別所有者拒否）。`npm run noah:check:domain` 公開12項目成功。最新main 97898c519の `node --experimental-strip-types --test tests/noah-cloud-work.test.mjs` 2件成功（別checkout、合成LINEのローカルworkerd。実キャリア接続ではない）。アプリコードの変更はなく、今回全体verifyを再実行したという意味ではない。直前Gitコードの全体verify 4,856 pass / 4 skipは前節の記録を参照。
+
+画面証拠: `/Users/kaiya/.codex-work/visualizations/2026/11/20/01a1f8f6-e45c-7260-bc55-53b2712253bb/noah-pixel-20261122/`。`noah-pixel-agentboard-terms.png` SHA-256 `e4eac3c1a810a1c9c4846d34c4f4819d588b9e678af28724f9d47189edcb9ebf`、`noah-pixel-agentboard-saved.png` `23bbae35101d7f3c22f2ba934b2535aa2379a3ebb935e85206d32039e63eec90`、`noah-pixel-agentboard-reopened.png` `ec95f855e07b1ddc2424b10aa8297e15ddb9744015cf42aaa5678bc8d4a5980d`。読込エラーと復帰の画像も同じフォルダに保存。
+
+100人向けの配布文を会員登録不要・「保存」の「成果」へ訂正し、旧Mac向け案内は配布しない旨を明記。まず10人ずつ、外部登録枠と実到達を確認して拡大する運用を維持。別利用者の通し受入、ブラウザ型の実登録手順・容量、全Agentの実行、読み込みエラー原因の確定は残る。
+
+eSIMは本人回答「未発行。対応先と費用を確認してから導入する」に従い、[候補費用と未送信の質問票](../../docs/esim/noah-pilot-rfq.md)を作成。公開env16に実発行事業者の設定なし。PixelのeUICC featureと有効なeUICC packageは読み取り確認したが、EID/ICCIDは取得せず、回線追加・契約・AWS有料作成・発行は行っていない。正式見積りと対応条件の確認後に実eSIM→専用クラウドを受け入れる。
