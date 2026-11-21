@@ -201,6 +201,16 @@ async function docker({ fetcher, now }) {
 }
 
 // ---- awesome 一覧（GitHub の README。ETag で変わった時だけ読む）。初めて読んだ時の行は「前からある物」、後から増えた行が新着。
+/** HTML の断片（<sup>…</sup> など）を、山括弧の内側ごと外す。表示は文字として出す（React が逃がす）が、断片を残さない。 */
+function withoutTags(value) {
+  let out = '', inside = false;
+  for (const char of value) {
+    if (char === '<') inside = true;
+    else if (char === '>') inside = false;
+    else if (!inside) out += char;
+  }
+  return out;
+}
 const LIST_LINE = /^\s*[-*]\s+(?:<img[^>]*>\s*)?(?:\*\*)?\[([^\]]{1,200})\]\((https:\/\/[^)\s]{1,500})\)(?:\*\*)?(.*)$/u;
 export function parseAwesome(markdown, format) {
   const out = [];
@@ -219,9 +229,7 @@ export function parseAwesome(markdown, format) {
     if (!match) continue;
     const url = projectUrl(match[2]);
     if (!url || /^https:\/\/(github\.com\/[^/]+\/awesome-|glama\.ai\/)/u.test(url)) continue;
-    const rest = match[3].replace(/\[!\[[^\]]*\]\([^)]*\)\]\([^)]*\)/gu, '').replace(/<[^>]+>/gu, '').replace(/\[([^\]]*)\]\([^)]*\)/gu, '$1').replace(/\*\*/gu, '')
-      // 表示は文字として出す（React が逃がす）が、HTML の断片が残らないよう、山括弧は 1 文字ずつ外す。
-      .replace(/[<>]/gu, '');
+    const rest = withoutTags(match[3].replace(/\[!\[[^\]]*\]\([^)]*\)\]\([^)]*\)/gu, '')).replace(/\[([^\]]*)\]\([^)]*\)/gu, '$1').replace(/\*\*/gu, '');
     const dash = rest.search(/\s[-–—]\s/u);
     out.push({ name: text(match[1].replace(/[`*<>]/gu, ''), 200), url, summary: text(dash >= 0 ? rest.slice(dash + 3) : '', 300) });
   }
