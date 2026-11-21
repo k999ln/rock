@@ -212,7 +212,7 @@ export function parseAwesome(markdown, format) {
       const auth = text(cells[4].replace(/[^\p{L}\p{N} .+-]/gu, ''), 40);
       const url = site && projectUrl(site);
       if (!url) continue;
-      out.push({ name: text(cells[1].replace(/[<>]/gu, ''), 200), url, summary: text(`${cells[2]}のリモートMCP（${auth || '認証不明'}）`, 300), auth });
+      out.push({ name: text(cells[1].replace(/[<>]/gu, ''), 200), url, summary: text(`${cells[2].replace(/[<>]/gu, '')}のリモートMCP（${auth || '認証不明'}）`, 300), auth });
       continue;
     }
     const match = LIST_LINE.exec(line);
