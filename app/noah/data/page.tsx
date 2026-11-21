@@ -1,2 +1,2 @@
-import NoahWorkPage from '@/components/noah-work-page';
-export default function Page(){return <NoahWorkPage results/>;}
+import { redirect } from 'next/navigation';
+export default function Page(){redirect('/noah/saved?tab=results');}

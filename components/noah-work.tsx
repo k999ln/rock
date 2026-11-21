@@ -41,7 +41,7 @@ export default function NoahWork({ jobId }: { jobId?: string }) {
   }
   const execution = job?.noahExecution;
   return <WorkspaceShell title="Noah" tone="sky"><main className={styles.page}>
-    <nav className={styles.nav}><Link href="/noah/agents">見つける</Link><Link href="/noah/library">自分のAgent</Link><Link href="/noah/work">仕事</Link><Link href="/noah/usage">利用状況</Link><Link href="/noah/outbox">送信履歴</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/explore">見つける</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link><Link href="/noah/work">仕事</Link><Link href="/noah/usage">利用状況</Link><Link href="/noah/outbox">送信履歴</Link></nav>
     <header className={styles.hero}><div><h1>{jobId ? '仕事の結果' : 'Agentに頼んだ仕事'}</h1><p>このMacで受け付けた依頼と成果を、画面を開き直しても確認できます。</p></div></header>
     {loading && <NoahLoading label="仕事を読み込み中…" />}
     {error && <p role="alert" className={styles.error}>{error} <button onClick={() => setTick(n => n + 1)}>再試行</button></p>}

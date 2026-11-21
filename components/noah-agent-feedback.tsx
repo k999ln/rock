@@ -378,18 +378,7 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
       ) : (
         data && (
           <p className={styles.setup}>
-            <Link
-              href={
-                data.authenticated
-                  ? '/noah/social#compose'
-                  : `/noah/account?returnTo=${encodeURIComponent(`/noah/feedback/${id}#feedback`)}`
-              }
-            >
-              {data.authenticated
-                ? t("公開名を設定してコメントする")
-                : t("本人確認してコメントする")}{' '}
-              <ArrowUpRight size={15} />
-            </Link>
+            {data.authenticated ? <span>{t("コメントには公開名が必要です。")}</span> : <Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/feedback/${id}#feedback`)}`}>{t("本人確認してコメントする")} <ArrowUpRight size={15}/></Link>}
           </p>
         )
       )}

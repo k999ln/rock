@@ -1,7 +1,8 @@
-import NoahReady from '@/components/noah-ready';
-import NoahShelf from '@/components/noah-shelf';
-export const metadata = { title: 'Agentを探す — Noah' };
-export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
-  const params = await searchParams, query = typeof params.q === 'string' ? params.q.slice(0, 120) : '';
-  return <NoahReady key={query} initialQuery={query} shelf={<NoahShelf />} />;
+import NoahExplore from '@/components/noah-explore';
+import NoahTrialEntry from '@/components/noah-trial-entry';
+import { NOAH_EXPLORE_TABS, noahPageTab, type NoahPageParams } from '@/lib/noah-page-routes';
+export const metadata={title:'Agentを探す — Noah'};
+export default async function Page({searchParams}:{searchParams:Promise<NoahPageParams>}) {
+ const p=await searchParams,tab=noahPageTab(p.tab,NOAH_EXPLORE_TABS,'ready'),q=typeof p.q==='string'?p.q.slice(0,200):'',via=typeof p.via==='string'?p.via:'';
+ return <><NoahTrialEntry via={via}/><NoahExplore key={tab+'|'+q} initialTab={tab} initialQuery={q} via={via}/></>;
 }

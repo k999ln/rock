@@ -36,7 +36,7 @@ export default function NoahServiceCatalog({ compact = false, initialQuery = '' 
         {a.model === 'codex-account' && <p className={styles.registrationLink}><Link href={`/noah/registration?${new URLSearchParams({ agent: a.id })}`}>外部アカウントの登録を依頼する <ArrowUpRight size={13} /></Link></p>}
       </article>)}</div>
     </>}
-    {!compact && <div className={styles.researchNote}><CompassNote /><p>もっと広く探したい方へ。<Link href="/noah/agents">調査カタログ</Link>では、接続準備中のAgentや関連するToolも確認できます。</p></div>}
+    {!compact && <div className={styles.researchNote}><CompassNote /><p>もっと広く探したい方へ。<Link href="/noah/explore">調査カタログ</Link>では、接続準備中のAgentや関連するToolも確認できます。</p></div>}
   </section>;
 }
 function CompassNote() { return <Search size={19} aria-hidden="true" />; }

@@ -1,4 +1,10 @@
 export const NOAH_FLOW_MESSAGES:Record<string,readonly [string,string,string,string,string]> = {
+  'コメントには公開名が必要です。':['A public name is required to comment.','评论需要公开名称。','댓글에는 공개 이름이 필요합니다.','Para comentar necesitas un nombre público.','يلزم اسم علني للتعليق.'],
+  '保存したもの':['Saved','已保存','저장한 항목','Guardados','المحفوظات'],
+  '探すもの':['Browse','查找内容','찾을 항목','Explorar','استكشاف'],
+  'カタログ':['Catalog','目录','카탈로그','Catálogo','الدليل'],
+  '担当':['Assistants','助手','담당','Asistentes','المساعدون'],
+
   "登録済み": [
     "Registered",
     "已注册",

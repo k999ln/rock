@@ -154,16 +154,16 @@ export default function NoahAgentCatalog({ embedded = false }: { embedded?: bool
     <div className={styles.layout}>
       <aside className={styles.leftRail}>
         <div className={styles.leftInner}>
-          <Link href="/noah/agents" className={styles.brand} aria-label="Noah ホーム"><Image src={webBrandIcon} width={42} height={42} alt="" unoptimized className={styles.brandMark} /><span className={styles.brandWord}>Noah</span></Link>
+          <Link href="/noah/explore" className={styles.brand} aria-label="Noah ホーム"><Image src={webBrandIcon} width={42} height={42} alt="" unoptimized className={styles.brandMark} /><span className={styles.brandWord}>Noah</span></Link>
           <nav className={styles.navigation} aria-label="Noahのメニュー">
             <button type="button" className={styles.activeNav} onClick={resetFeed} aria-label="ホーム"><House size={25} strokeWidth={2.2} /><span>ホーム</span></button>
             <button type="button" onClick={focusSearch} aria-label="検索"><Search size={26} strokeWidth={1.7} /><span>検索</span></button>
-            <Link href="/noah/library" aria-label="自分のAgent"><Bot size={26} strokeWidth={1.7} /><span>自分のAgent</span></Link>
+            <Link href="/noah/saved?tab=agents" aria-label="自分のAgent"><Bot size={26} strokeWidth={1.7} /><span>自分のAgent</span></Link>
             <Link href="/noah/marketplace" aria-label="マーケット"><Store size={25} strokeWidth={1.7} /><span>マーケット</span></Link>
             <Link href="/noah/work" aria-label="仕事"><ListChecks size={25} strokeWidth={1.7} /><span>仕事</span></Link>
           </nav>
           <Link href="/noah/agents/new" className={styles.addButton} aria-label="Agentを追加"><Plus size={22} /><span>Agentを追加</span></Link>
-          <Link href="/noah/library" className={styles.account} aria-label="自分のAgentを管理"><span className={styles.accountAvatar}><Bot size={21} /></span><span><strong>自分のNoah</strong><small>Agentを管理する</small></span><MoreHorizontal size={20} /></Link>
+          <Link href="/noah/saved?tab=agents" className={styles.account} aria-label="自分のAgentを管理"><span className={styles.accountAvatar}><Bot size={21} /></span><span><strong>自分のNoah</strong><small>Agentを管理する</small></span><MoreHorizontal size={20} /></Link>
         </div>
       </aside>
 
@@ -201,12 +201,12 @@ export default function NoahAgentCatalog({ embedded = false }: { embedded?: bool
         <div className={styles.rightInner}>
           <div className={styles.sideSearch}><Search size={18} /><input aria-label="サイドバーからAgentを検索" placeholder="Agentを検索" value={query} onChange={e => setQuery(e.target.value)} /></div>
           <section className={styles.sidePanel}><h2>気になるAgentから。</h2><p>できることを見て、<br />自分に合ったAgentを見つけよう。</p><Link href="/noah/agents/anicca" className={styles.suggestion}><span className={`${styles.avatar} ${styles.aniccaAvatar}`}>a</span><span><strong>Anicca</strong><small>このMac · Life Manager</small></span><span className={styles.smallButton}>見る</span></Link><Link href="/noah/discover" className={styles.moreLink}>もっと探す <ArrowRight size={14} /></Link></section>
-          <section className={styles.sidePanel}><span className={styles.sideEyebrow}>YOUR SPACE</span><h2>自分のAgent</h2><p>追加したAgentの設定や接続を、<br />ひとつの場所で。</p><Link className={styles.libraryLink} href="/noah/library"><Bot size={20} /><span>ライブラリを開く</span><ChevronRight size={17} /></Link></section>
+          <section className={styles.sidePanel}><span className={styles.sideEyebrow}>YOUR SPACE</span><h2>自分のAgent</h2><p>追加したAgentの設定や接続を、<br />ひとつの場所で。</p><Link className={styles.libraryLink} href="/noah/saved?tab=agents"><Bot size={20} /><span>ライブラリを開く</span><ChevronRight size={17} /></Link></section>
           <div className={styles.sideFooter}><Link href="/sky/help"><CircleHelp size={13} />使い方</Link><Link href="/noah/marketplace">マーケット</Link><span>Noah · avokado</span></div>
         </div>
       </aside>
     </div>
     <Link href="/noah/agents/new" className={styles.mobileAdd} aria-label="Agentを追加"><Plus size={27} /></Link>
-    <nav className={styles.mobileNav} aria-label="Noahのモバイルメニュー"><button type="button" aria-label="ホーム" onClick={resetFeed}><House size={24} /></button><button type="button" aria-label="検索" onClick={focusSearch}><Search size={24} /></button><Link href="/noah/library" aria-label="自分のAgent"><Bot size={24} /></Link><Link href="/noah/work" aria-label="仕事"><ListChecks size={24} /></Link></nav>
+    <nav className={styles.mobileNav} aria-label="Noahのモバイルメニュー"><button type="button" aria-label="ホーム" onClick={resetFeed}><House size={24} /></button><button type="button" aria-label="検索" onClick={focusSearch}><Search size={24} /></button><Link href="/noah/saved?tab=agents" aria-label="自分のAgent"><Bot size={24} /></Link><Link href="/noah/work" aria-label="仕事"><ListChecks size={24} /></Link></nav>
   </div>;
 }

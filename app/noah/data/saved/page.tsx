@@ -1,3 +1,3 @@
-import NoahResultData from '@/components/noah-result-data';
-export const metadata = { title: '保存した成果 — Noah' };
-export default function Page() { return <NoahResultData />; }
+import { redirect } from 'next/navigation';
+import { noahPageHref, type NoahPageParams } from '@/lib/noah-page-routes';
+export default async function Page({searchParams}:{searchParams:Promise<NoahPageParams>}) {redirect(noahPageHref('saved',await searchParams,'results'));}

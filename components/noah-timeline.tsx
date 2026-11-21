@@ -11,8 +11,6 @@ import {
   Share2,
   ArrowUpRight,
   Search,
-  Heart,
-  Repeat2,
 } from 'lucide-react';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import { researchKindLabels } from '@/lib/noah-research-types';
@@ -95,7 +93,7 @@ export default function NoahTimeline({
         ? `${base}/agents/${item.agent.id}`
         : item.kind === 'feedback'
           ? `${base}/feedback/${item.opinion.agentId}#comment-${item.opinion.id}`
-          : `${base}/social?post=${item.post.id}`;
+          : `${base}#timeline`;
     const url = new URL(href, window.location.origin).href;
     try {
       if (navigator.share) await navigator.share({ url });
@@ -184,7 +182,7 @@ export default function NoahTimeline({
                   };
             const href =
               item.kind === 'post'
-                ? `${base}/social?post=${post.id}`
+                ? `${base}#timeline`
                 : `${base}/feedback/${item.opinion.agentId}#comment-${post.id}`;
             return (
               <article
@@ -205,9 +203,7 @@ export default function NoahTimeline({
                       {new Date(post.createdAt).toLocaleDateString(locale)}
                     </time>
                   </div>
-                  <Link className={styles.socialText} href={href}>
-                    {post.content}
-                  </Link>
+                  {item.kind === 'post' ? <p className={styles.socialText}>{post.content}</p> : <Link className={styles.socialText} href={href}>{post.content}</Link>}
                   {item.kind === 'feedback' && (
                     <Link
                       href={`${base}/agents/${item.opinion.agentId}`}
@@ -229,22 +225,11 @@ export default function NoahTimeline({
                     </p>
                   )}
                   <footer className={styles.postActions}>
-                    <Link href={href} aria-label={t("返信を見る")}>
+                    {item.kind === 'feedback' && <>                    <Link href={href} aria-label={t("返信を見る")}>
                       <MessageCircle size={17} />
                       {post.replies > 0 ? post.replies : t("返信")}
-                    </Link>
-                    {item.kind === 'post' && (
-                      <>
-                        <Link href={href} aria-label={t("いいね・詳細")}>
-                          <Heart size={17} />
-                          {post.likes > 0 ? post.likes : t("いいね")}
-                        </Link>
-                        <Link href={href} aria-label={t("リポスト・詳細")}>
-                          <Repeat2 size={17} />
-                          {post.reposts > 0 ? post.reposts : t("リポスト")}
-                        </Link>
-                      </>
-                    )}
+                    </Link></>}
+
                     <button
                       aria-label={t("投稿を共有")}
                       onClick={() => void share(item)}

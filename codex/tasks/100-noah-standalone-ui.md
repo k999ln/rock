@@ -165,3 +165,16 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 公開175: source `c2e9f2d44a8ab2fef3a835170d63a51ce3cbf2d4`、deployment `appgdep_6b01fdb5bf7081918ade578924721a19`、env16、succeeded。並行して追加されたbusiness入口 `3c9f02a` を履歴ごとmergeして保持。最初のsource pushは先端更新により拒否され、統合・再build後に成功した。公開Arabic Name Calligraphy詳細で320/390/1280pxすべて間隔16px・重なりなし・横はみ出しなし。保存を押して保存先シートが開くこと、接続の中心が別ボタンに覆われていないことを確認。ローカルpreviewには対象Agentがないため、表示検証は公開画面で実施した。
 
 検証: 関連26試験、公開sourceのtypecheck/build成功。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` exit0、ルート4,844 pass / 4 skip / 0 fail、build・API・残りの全検査成功。ログ `/tmp/noah-button-verify.log`。スクリーンショットは `/Users/kaiya/.codex-work/visualizations/2026/11/21/01a1fe90-1f3f-7083-a3a9-f7e3cad0ea6a/noah-public-mobile-20261122/noah-175-button-spacing.jpg`。
+
+
+## 検索・保存の統合と不要ページ撤去（2026-11-22、PR #377）
+
+- 検索は `/noah/explore` の使えるAgent・カタログ・Tool、保存は `/noah/saved` のボード・Agent・担当・成果・ファイルへ集約。検索語をタブ間で保ち、成果は既存Workと以前の保存データを同じカテゴリから読む。既存の所有者確認・保存API・データは維持。
+- 旧 `/ready`・`/agents`・`/tools`・`/library`・`/boards`・`/boards/:id`・`/data`・`/data/saved`・`/outputs` はカテゴリと検索語/board/job参照を保持して転送。共有Skyの担当/成果、旧Zema担当の転送先も対応カテゴリへ変更。
+- Noah配下の `/mac` 3画面、`/local-tools`、Macガイド、`/social`、`/community`、`/campus` 3画面、旧 `/work/:id` を撤去。共有実装・バックエンド・他製品のcampusは残す。タイムラインの通常投稿は閲覧のみとして削除済み投稿画面への操作を外した。
+- 公開178: Sites source `e4392274eeaf56dcf7800aae736b18f94c68e4e1`、deployment `appgdep_6b02055843b08191b05f2067bbd458ca` succeeded。環境revision16を維持、本番D1変更なし。
+- 公開177の収集欄と法人入口を保持。収集欄の検索はカタログ入力を共有し、ホームでは検索欄を重ねない。この収集統合差分はSites sourceに含む。GitHub側はPR #380の収集実装との統合時に同じ差分を保全すること（補助patch `/tmp/noah-collection-search-integration.patch`、永続の正本は上記source commit）。
+- 同じ `/noah` の画面差は、開いたままの旧タブと公開177の新タブの差だった。旧タブは再読み込みで収集一覧が現れることを確認し、最終的に元のタブも公開178へ再読み込みした。
+- 公開HTTPで転送9件と撤去11件の404を確認。390pxブラウザで保存5カテゴリとカタログの検索欄1個、検索語付きタブ、横はみ出しなしを確認。匿名表示の確認であり、実利用者の非公開データ件数や実機OSの合格を意味しない。
+- 検証: 公開ソースのtypecheck/lint、変更関連テスト、Sites build/package成功。ローカル全体verifyは修正途中の旧URL期待値1件で停止（4,847 pass / 1 fail / 4 skip）。その期待値を修正し、関連20件を再実行して成功。最初の全体実行で遅延したmiiブラウザ試験は単独再試験と次の全体実行で成功。verifyの後続15コマンドは別途すべて成功（build・bundle/asset検査・API・mission/work/botまで）。最終typecheck/lintも成功。再ビルドしたローカル本番Workerでsecurity header 8経路とページ転送84検査が成功し、現行入力hashの記録を更新した。全体verifyの単一実行がexit 0になったという意味ではなく、旧期待値修正後の対象再試験と後続コマンドの成功を区別して記録する。
+- 画面証拠: `/Users/kaiya/.codex-work/visualizations/2026/11/21/01a1fe90-1f3f-7083-a3a9-f7e3cad0ea6a/noah-public-mobile-20261122/noah-178-saved.jpg`。
