@@ -4,6 +4,8 @@
 
 - Noah の公開先 `https://avoado.si/noah` に向け、公開originの正規化・ローカル設定拒否・画面とAPIの読み取り確認を追加（[PR #358](https://github.com/k999ln/rock/pull/358)、task97）。本番は旧版で新しい画面/APIが404、接続表なし。公開用のSites保存版152を作成し（未配備）、migration 0044〜0049の適用と配備は本人確認待ち。認証付きAgentの接続は継続実装。
 
+- Noahの限定共有・送信履歴・利用状況を登録Agentの画面から開けるようにし、外部Agentの利用報告を所有者確認付きで既存APIに統合（[PR #362](https://github.com/k999ln/rock/pull/362)、task 73）。
+
 - Noah のつなげる数を、料金ごとのカードの数にした（task 113。Opus / Noelle。本人指示「続き最後までやって」。[PR #357](https://github.com/k999ln/rock/pull/357)、#355 の上の積み上げ）。表 `noah_package_connections`（migration 0053）、`lib/noah-plan.ts`、`lib/noah-connect.ts` のつなぐ前の上限（無料 6・有料 50。数えるのはカードで、同じカードの中の 2 本目は増やさない。7 枚目は 409「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」。もうつないである物は切らない）、`/noah/ready` の見出し「6 個のうち 4 個」。**どの利用権を有料と見るかは本人が決めるまで置いていない（`NOAH_PLAN_SOURCE` は null）ので、切り替え `NOAH_PLAN_LIMITS` を開けても、今は全員 50 のまま。** 試験 5 本（`tests/noah-plan-limits.test.mjs`）。変えた所は `docs/noah/spec-110-shelf.md` の 17 章。本番の migration・配備・切り替えは、していない。
 
 - Noah の棚の実績の並びと見せた記録（task 111）を実装した（Opus / Noelle。本人指示「続き最後までやって」。[PR #355](https://github.com/k999ln/rock/pull/355)、#354 の上の積み上げ）。表 `noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen`（migration 0052）。学習なしの並び（4 つの率の控えめな見積りの積・5 人未満は使わない・5 枚に 1 枚の試し・同じ領域を 3 枚続けない。`NOAH_SHELF_RANK` が開いている時だけ）、実績の数え直し（直近 90 日・1 日 1 回・巡回の合図の中）、カードの数（成果が返った割合・また使った人・最初の成果まで）、見せた記録（全員の数と、履歴に同意した本人の分だけ。`NOAH_SHELF_SEEN`）、「表示しない」、履歴を消すと見た記録も消える、タイムライン（`/noah`）に「Noah の棚」のカードを流す。試験 7 本（`tests/noah-shelf-rank.test.mjs` 5・タイムライン 2）。変えた所は `docs/noah/spec-110-shelf.md` の 16 章（本人の関心の点はまだ渡さない）。本番の migration・配備・切り替えは、していない。
