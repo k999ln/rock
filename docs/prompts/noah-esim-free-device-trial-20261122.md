@@ -1,76 +1,138 @@
-# 開発プロンプト｜Noahの0円申込からAgentの成果受取まで
+# Deliver eSIM access, background Agent execution and operator-funded distribution by 09:00 JST
 
-## 11月22日 朝9時の引き渡し
+You are the engineer responsible for the Noah distribution pilot in `k999ln/rock`. Work through implementation, browser operation, failure recovery, tests and a Git handoff. Your deadline is **Sunday, November 22, 2026 at 09:00 Asia/Tokyo**. Record the actual start time. If you finish a checkpoint early, advance immediately. If you start late, run the baseline once, keep the acceptance order below and reserve the final 25 minutes for verification and handoff.
 
-**目的**　手持ちのスマホから、自分に必要なAgentを選ぶだけで生活に役立つ結果を受け取れるようにする。EveがAgentを作り、Noahが承認済みの仕事を動かす。RockstarOSは既存のiOS・Androidに加える利用権・実行管理の層。配るものはeSIM、利用者が使うものはNoahのクラウド。
+## What the owner should be able to do at 09:00
 
-**今回の完成条件**　招待された本人が、模擬回線を0円で1本申し込む。「食料・日用品の配給案内」で地域と品目を選んで1回承認する。タブを閉じた状態でサーバーの時計がAgentを動かし、本人が開き直すと、専用回線に限って受取候補・出典・実行時刻・使用回数・0円の明細を確認できる。正常系、停止・再開、本人違い、回線違い、費用不明の試験結果を朝9時（JST）までに提出する。
+Open two browser sessions. In **Operator Dock**, record a simulated delivery paid for by the operator, see how many units are available, and assign some of those units to a particular recipient. Close the recipient's Noah tab. Let a Noah Agent process the assignment. Reopen the signed-in Noah session on the ordinary connection to see a generic update. On the simulated dedicated eSIM connection, open the assigned item, quantity and pickup instructions. Press the existing Japanese button **「受け取りました」** once the test handover takes place. Reopen Dock and trace that receipt back to the assignment, the incoming stock and the operator's simulated cost. Repeat a request and restart the service. The totals and the first receipt time must still agree.
 
-### この文章を開発担当に渡す
+This is a first step toward recurring provision of food and household essentials. The operator owns the budget and supplier relationships. The recipient's only distribution decisions are when to open the notice and when to acknowledge receipt. Keep the current Japanese UI and use its existing translations where available. The English in this document is for the engineer. Noah operates Agents, Eve builds them, and RockstarOS provides the service on the user's existing phone. The eSIM is the service access credential and network path. Keep iOS or Android, the user's main SIM and their everyday Wi-Fi in place. Other Noah packages, including earning Agents, have their own entry and accounting. Distribution does not require income, membership in a public consultation service, a supplier search, a choice of crops, payment details or an approval click per assignment.
 
-> 11月22日09:00 JSTまでに、k999ln/rock のNoahで「招待された本人が0円で模擬回線を追加し、生活に使うパッケージを1つ選び、画面を閉じても後から自分の結果と使用明細を受け取れる」体験を再現可能にしてください。今回は利用者1人・模擬回線1本・1回の承認につき1回実行です。普段使う作業場所は `~/Developer/avokado-main` です。着手時の `origin/main` とPR #378の最新HEADを照合し、すでに入っている処理を試してから残件を選んでください。他の作業中の変更を保存したまま、今回の差分だけPR経由で統合してください。
->
-> **出発点**　11月22日03:37 JST時点で、GitHub mainは `50326651322d7a35df20fb39b840e83fc4b7785d`、最初の通し実装はPR #378の `ed3b3c274abe8a9f1b590f799662fa68a3bcdd0b`。Macで招待、0円申込、模擬端末への追加、承認、タブを閉じて通常回線で再開、専用回線で成果を既読にするまでをブラウザで確認済み。ここから先のローカル差分とCIの状態は再照合してください。SORACOM・IIJ・NTTドコモへ個別の相談を送信済み。先方の回答と実プロファイルの有無を確認し、同じ問い合わせを重ねないでください。
->
-> **作業順**
->
-> 1. 招待と申込を確認する。期限内の本人1人に1回線を割り当てる。二重タップ、別ブラウザでの再開、発行応答の消失を試し、同じ申込に戻り、供給元の発行件数が1件であることを記録する。事業者側の発行料・基本料・通信料・終了費と自動有料移行の有無を確認できないときは「準備待ち」を返し、発行件数が0件になることも確かめる。
-> 2. 利用者が見る2つの入口を検証する。通常回線で見せるのは申込状況と「更新があります」。専用回線でのみ地域・品目・配給場所・成果本文を表示する。現在の接続口、本人、登録端末、利用期限、回線の有効状態をサーバーで照合する。ヘッダーや「追加した」という利用者の申告に依存しない。ここでの2ポートはMac上の模擬経路であることを画面に表示する。
-> 3. まず1つのパッケージを仕上げる。架空の配給台帳で「東京・お米」は候補あり、「大阪・お米」は候補なし、情報源停止は取得失敗とする。承認前に、入力、10秒後に1回実行、上限0円、買付・発送の有無を見せる。承認した本人・回線・固定パッケージ・実行予定を同じ仕事に保存する。利用者・運営いずれかに費用が発生し得る場合は止める。
-> 4. ローカルWorkersのアラームで実行する。ブラウザを閉じても計算が進むことを確認する。Agentには検索に必要な地域・品目・試験台帳だけを渡し、産出した候補を台帳と照合してから受領記録を1件保存する。承認前や停止後の新規実行は0件、同じ仕事の再送後も成果1件・使用記録1件。予定前の停止、開始後の停止要求、ホスト再起動、期限切れを区別し、照合できない実行を「完了」にしない。
-> 5. 上記の操作をブラウザで1周し、申込条件と成果画面を保存する。GitHub Actionsの新規検出と不具合は直す。本人が認めた例外は、#378の変更前mainと同じ過去3コミット・同じテスト行の秘密情報検出のみ。ほかの検査が通った時点で根拠をPRに記録してmainへ統合し、マージSHAを確認する。
->
-> **利用者が実際に押す順番**　このMacで `npm run noah:esim:trial` を起動し、`http://127.0.0.1:43871/noah/esim/trial/` を開く。起動時に案内されるファイルの招待コードで入り、0円申込 → 模擬端末に追加 → 模擬専用回線を開く → 「東京」「お米」を選んで1回承認 → タブを閉じる。通常入口を再度開いて「更新があります」を確認し、専用入口で「サンプル東会場」、受取時間、出典、Agent 1回・0円を読み、受取済みにする。招待コードとセッション値は提出物に載せない。
->
-> **時間の使い方**　最初に最新SHAと既存PRでこの1周を再現し、失敗箇所から直す。次に通常回線からの閲覧拒否・費用不明・停止・再起動・二重配達を優先する。待ち時間は別の試験データで一定間隔の承認・受取・停止を繰り返し、実行回数と金額を集計する。08:45 JSTを目安に最終検査と事業者の返答の有無を照合し、09:00 JST時点のマージ状態・成功件数・未確認項目を報告する。CIや事業者の返事の時刻は到達条件と別に記載する。
->
-> **提出するもの**　起動コマンド・入口URL、申込から受領までの操作手順、対象SHAとPR、正常系と異常系の実測件数、請求額と供給元発行件数を返してください。「Mac上の模擬試験」「事業者の試験網」「iPhone／Androidの実機結果」をそれぞれ記録します。9時時点で実機用eSIMが届かなければ、未確認の項目、先方に確認中の条件、再開に必要なものを短く残してください。
+## Start with the owner's cloud acceptance test
 
-### 事業者から回答が届いたときの分岐
+**Priority for this run:** get from an installed eSIM to a usable Noah cloud session, submit work, put the phone away, and retrieve the result. Then use the same background execution contract for the operator's distribution notice. Keep physical procurement and acknowledgement with the two people described above. An external Agent may run in its provider's dedicated cloud or at another registered destination. Let the user choose per Agent; keep Noah cloud available where a compatible adapter exists. Show the chosen destination before dispatch. Save the preference for the next request. Freeze the actual destination and work ID on acceptance. Switching the preference affects future work.
 
-| 返事の内容 | 次に進めること |
-| --- | --- |
-| 無料実機評価の条件が揃った | 費用上限・期限・対応機種・回線識別方法を記録する。発行や契約への同意が必要なら、その具体的な条件を本人に返す |
-| APIのsandboxのみ | 注文の再送・照合・失効を事業者sandboxで試せる範囲を特定する。スマホへの導入・開通は未検証にする |
-| 有料・法人要件・最低回線数がある、または回答待ち | 模擬版と試験結果を引き渡し、制約を事業者別に記録する。課金や契約を発生させない |
+1. **Enrollment and admission.** Trace the free order, profile installation, proof of an active line and owner, session creation and return to the selected Agent. On ordinary Wi-Fi show only a generic update. Verify authorization again on protected reads, writes and before delivering a result. Test expired and revoked grants. Record separately that a carrier issued a profile, that traffic traversed the required path and that Noah opened. If the free carrier profile is unavailable, run the entire fixture path now.
+2. **Execution choices.** Demonstrate the same text-based job on Noah cloud, the provider's dedicated runtime and another registered endpoint. For the hosted pilot, registration means a named service binding with known scope, cost, idempotency and result lookup. Let the server resolve the route. Show unavailable destinations honestly. External input must pass through the approved, isolated adapter; keep subscriber identifiers, session cookies, operator credentials and pickup records inside Noah. If an adapter cannot reconcile a request after a lost reply, keep that request pending for intervention instead of dispatching it elsewhere.
+3. **Screen independence.** Submit once, receive an acknowledgement and a stable work ID, switch to another app, type unrelated text there, then close the Noah tab. Execute the job on a server using durable storage and alarms. No mouse, keyboard, screen recording, foreground service, forced popup or automatic return to Noah is required on the user's phone. Reopen Noah and read the same work. Claim the Mac can sleep only after the hosted worker completes while the Mac is offline.
+4. **Continue until a usable result arrives.** Keep accepted work in persistent storage and schedule the next attempt on the server. Use bounded exponential backoff between attempts, continuing across transient errors, worker restarts and an absent browser. Poll the same upstream work ID on every retry. Use create-if-absent only for an adapter with an idempotency contract. Simulate temporary unavailability, a request accepted with a lost response and several pending responses. Restore the adapter. Require one external operation, one validated result owned by the requester and zero duplicate charges. Treat a malformed, empty or uncorrelated response as an integration issue. An explicit stop, loss of entitlement or unapproved cost interrupts execution and leaves the reason visible. Report local cancellation and upstream cancellation separately.
+5. **Time allocation.** By 06:15 verify the three execution choices, loss of the foreground and recovery of a pending result. From 06:15 to 07:15 attach the passing job contract to the accepted distribution and its stock record. By 07:55 finish reconciliation and recipient isolation. Prioritize this flow over recurrence and the 1,000-ID capacity run. Retain the 08:35 verification window. If stage 1 already works, use the extra time for an actual carrier/device or hosted-adapter test with confirmed zero-cost terms.
 
-実機試験では、iPhoneとAndroidを別々に記録する。主SIMとWi-Fiが有効な状態で、Noahの要求だけが専用eSIMを経由したかを事業者側の記録と照合する。端末の操作回数、端末管理の要否、手動切替の必要性、利用停止後の拒否を記録する。Macの2ポート試験だけでは実機の自動経路選択は判定できない。
+At handoff, give the active Git SHA and counts for the three routes, client closures, backend restarts, physical or simulated lines, unique upstream executions, duplicate charges and delivered results. Name the adapter, device, line or hosted environment that supplied each observation. Provide the next deployable integration step for each missing external dependency.
 
-### 02:49〜02:53の試験記録（実装前）
+## Establish the starting point once
 
-2026-11-22 02:49〜02:53 JST、リポジトリ `k999ln/rock`。GitHubの対象mainは `50326651322d7a35df20fb39b840e83fc4b7785d`。実行した作業ツリーは `~/Developer/avokado-main` のローカルmain `a03eb56ec5bf008e3eec55ff86429189609bb6a7` に未コミットの導入画面・設計の変更を含む。両者を同じビルドと扱わない。着手時は最新main・関連PRを再確認し、利用者の未コミット差分を保つ。
+Four related workstreams were checked at 05:24 JST. GitHub main was rechecked at 05:44 JST on November 22. Refresh only the relevant refs and operating evidence at startup and before handoff. Use the following as a starting point, not a deployment manifest.
 
-| 試した場所 | 観測結果 | 次に埋める箇所 |
+| Source | Evidence available | How to use it |
 | --- | --- | --- |
-| 公開中の申込・回線画面とカタログAPI | `/connect` と `/noah/esim` はHTTP 200。公開ブラウザで「現在公開できるeSIMプランはありません」を確認。`GET /api/esim/catalog` はHTTP 200、`commerceState=catalog_not_configured`、`purchaseEnabled=false`、プラン0件 | 最初の行き止まりは事業者発行より前。招待された本人が0円試験を申し込む入口が要る。公開販売の停止は維持する |
-| 現行の発行実装 | `lib/esim-public-catalog.ts` の公開応答は設定済みでも購入不可。`lib/esim-plan-catalog.ts` と `lib/esimgo-provider.ts` の実発行経路は本人の支払済み注文を確認する | JSONの設定だけでは無料試験にならない。試験に参加できる根拠をサーバーで別に検証し、既存の有料注文の条件を保つ |
-| Mac上の模擬導入 | `npm run esim:demo` が模擬発行・有効化・端末登録・署名検証を通過。`receiver_ready`、`offlineSignatureVerified=true`、`realEsimIssued=false`、`charged=false`、`cloudAi=provider_connection_required` | 同じ操作を実機向け事業者アダプタへ接続する。模擬コードをスマホに配らない |
-| 関連する既存テスト | 下記のNodeテスト93件成功、失敗・スキップ0件。模擬の端末導入・API、スマホ向けの外部Agent経路、固定テストAgentのローカルWorker実行を含む | これらは分かれた試験。無料注文から同じ本人・同じ回線・同じ仕事で結果を読む通し試験が必要 |
-| 実機・事業者 | 試験時点でXcodeの過去のiPhoneペアリング記録2件はいずれも利用不可。ADB接続は0台。本人は未発行で、今回の実回線発行、課金、端末へのプロファイル追加はいずれも0件 | 端末がつながったら接続を再確認する。発行元の準備ができてから本人のスマホで回線追加を受け入れる |
+| GitHub main | `5a35ab0b9fc73e308505eafffd3121fc5cc84337` includes #380 and [the cloud-collection acceptance #383](https://github.com/k999ln/rock/pull/383). The preceding baseline `76a183697c0bc642ec5008973165d627be0fe16e` contained the free trial (#378), home updates (#375/#379) and the earlier farm-search tool (#381). | The owner's later decision is operator-assigned distribution. #382 removes the farm search and its links. Retain historical commits. |
+| Distribution implementation | The first implementation in [#382](https://github.com/k999ln/rock/pull/382) is `bc46331c7ff4a169b7410eead0384702d9f2dfc9`. The preceding handoff revision was `69b835b4e5aa89497296dbd95d1837ea5a882b4c` on `codex/noah-assigned-distribution-20261122`. | The local Mac trial already passed ordinary notice → dedicated view → receipt → Dock, including Chrome at 320 and 390 px. There were 106 passing focused tests. Verify the exact checkout used for new work. |
+| Public Noah UI and identity | [#373](https://github.com/k999ln/rock/pull/373), [#376](https://github.com/k999ln/rock/pull/376) and [#377](https://github.com/k999ln/rock/pull/377) form a stack. The UI owner reported release 173, 4,844 tests passed and four skipped, including narrow RTL coverage. A subsequent button change was being published and its hit areas still needed checking. | Reuse the existing recipient identity, result view and translations when connecting the pilot. Ask the checkout itself which interfaces exist. The public release and GitHub main can have different source SHAs. |
+| Agent collection, phone and costs | [#380](https://github.com/k999ln/rock/pull/380) owns the catalogue. Its owner reported tests for visible GitHub/Hugging Face ratings and refresh, and #380/#383 have since merged. The recorded acceptance cites public release 177 and two collection cycles in the cloud with the Mac collector stopped. These are collection runs; the new routed Agent still needs an independent hosted run. The device owner was using ADB to check the Pixel registration/run/reopen flow. [#372](https://github.com/k999ln/rock/pull/372), [#365](https://github.com/k999ln/rock/pull/365), [#368](https://github.com/k999ln/rock/pull/368) and [#370](https://github.com/k999ln/rock/pull/370) cover phone onboarding, line proof, cost and recovery. | Take release SHA and actual device results from their owners when available. Keep distribution data out of the catalogue. A passing phone UI check alone supplies no evidence of carrier routing. |
+| Consultation and revenue | [#374](https://github.com/k999ln/rock/pull/374) and its owner track consultation, referrals and operator-only revenue records. Bank receipt and budget availability need separate confirmation. | Keep supplier spending and the recipient's zero-charge ledger independent of referral revenue. |
 
-### 実機評価に進む際の設計と合格条件
-
-1. **回線を供給できる状態を定義する。** 通信担当は、事業者が発行する消費者向けスマホ用プロファイルと、その配布元（SM-DP+）を使う。候補の順と既存調査はtask 10とPR #360を読む。対象国・端末、実機でのダウンロードと網への接続、初期費用・月額・通信・再発行の費用、期限・失効、注文との照合、閉域接続または事業者による現在の回線識別を確認する。無料の実機評価枠があるかは未確定。料金不明なら実発行を保留し、公開資料と問い合わせ文案、未確定項目を提出する。契約・申込・問い合わせ送信・支出には本人の明示許可が必要。APIの注文検証だけを実回線の発行と扱わない。[SORACOMの発行条件](https://users.soracom.io/ja-jp/docs/air/issue-esim-profile/)・[eSIM Goの検証と実注文](https://docs.esim-go.com/quick_start/)
-2. **招待した本人の0円申込から、発行・照合・失効までをつなぐ。** 基盤担当は既存の注文、暗号化した導入情報、受領確認、再照合を再利用する。試験用adapterはローカルの模擬供給元で先に完成させる。招待の対象者・期限・発行枠1件をサーバーで検証し、本人と申込を固定する。事業者側費用と利用者側0円を別々に検証する。支払済み注文の捏造、Stripe請求、有料発行フラグの転用、自動更新は行わない。再送・二重タップ・別ブラウザからの再開でも発行は最大1件。事業者の応答が途切れたら元の申込を照合し、勝手に2件目を作らない。試験用の失効は対象の回線だけに適用する。
-3. **端末で追加し、元の申込に戻れるようにする。** iPhoneは事業者リンクまたはQR、Androidは確認済み機種のシステム設定から追加する。本人が普段使う回線は維持する。注文履歴を開き直しても初回と同じ状態が出ること。未発行・導入情報を受領・端末へ追加・網への接続・専用回線の照合を区別する。QR・有効化コード・生のSIM識別子・トークンをログ、PR、画面収録、公開URLに残さない。iPhoneの追加画面・復帰はPR #372、SIMと本人の紐付けは #365 を先に確認する。
-4. **本人の専用回線からの操作だけを許可する。** 通信担当と基盤担当は、事業者が識別した今回の通信、注文、登録端末、ログインした本人の利用権を入口で照合する。以前に取得したトークンや「追加した」の自己申告だけでは、今この回線を通った証拠にならない。iPhone・Androidで、普段のアプリはWi-Fi／主SIMを使い、RockstarOSへの要求だけが専用回線を通るかを別々に測る。手動切替、アプリ追加、端末管理が必要なら必要条件を記録する。自動振り分けができない組み合わせには「対応確認中」を表示し、一般提供の対応機種に含めない。
-5. **パッケージ1個でクラウドまで通す。** まず「食料・日用品の配給案内」を、日時と出典を持つ試験データだけで動かす。Noahのカードで地域・品目・予定・0円上限を確認し、1回の承認を保存する。クラウド側が予定時刻に同じ回のWorkを1件作り、Brokerの権限確認・Walletの上限確認を経て固定版のAgentを隔離実行する。有料モデルや外部への発注・発送は必要ない。スマホを閉じてもクラウドの時計で動くこと。「該当なし」と「情報源に接続できなかった」を区別し、Jevの検収後に本人の成果・出典・使用量を保存する。結果本文は本人の専用回線経由に限定し、通知は「更新があります」まで。通知を拒否しても成果を開けること。再送・停止・期限切れで二重実行・二重計上・停止後の新しい実行は0件。
-
-### 実装前に照合する既存資産
-
-- 回線・端末担当は `app/api/esim`、`lib/esimgo-provider.ts`、`lib/esim-install-material.ts`、`lib/esim-attested-device-activation.ts`、`components/esim-purchase-setup.tsx`、`toolkits/esim-bootstrap`、task 10〜13を読む。PR #85はマージ済みのクラウド利用権。#360・#365・#372は調査時点で未マージ。#360が許すWi-Fi上での資格の再利用と、今回の「実際に専用eSIMを通る」という条件の差に注意する。
-- Noah担当は `lib/noah-shelf.ts`、`app/api/noah/runner`、`services/noah-test-runtime`、`lib/noah-usage.ts` とtask 75・92・94を読む。公開中のWebやMacの独立版への影響を限定し、保護対象の仕事には共通の回線確認を適用する。未マージの #349（スマホからの依頼・受領）、#368（運用）、#370（使用量・復旧）を照合し、同じ機能を作り直さない。
-- 確定要望は `docs/structure/03-esim.md`、`docs/services/noah-own-device.md`、RQ04・05・08・09・11・12・16を優先して対応付ける。既存契約とRQ全体を照合し、今回の無料試験を正式価格や一般販売の変更にしない。パッケージ供給者は入力・権限・成果条件、Noah運営は版の確認・隔離・停止・利用明細を担当する。
-
-### 再現と提出物
+1. In `~/Developer/avokado-main`, read `AGENTS.md`, note the branch, working changes and other worktrees. Preserve local work. Fetch main and inspect #382. If merged, start in an isolated worktree on the latest main containing its merge. If open, fetch its actual tip into an isolated local branch and identify #382 as the parent for review. Build from the tree containing the distribution code. Keep the public UI checkout, Dock launcher and running soak available to their owners.
+2. Read only the applicable sections of task 11, the eSIM and service designs, and the files below. Map this change to RQ05 (cost and rights), RQ08 (connection, cost and stop), RQ09 (evidence) and RQ46 (operator controls), plus the owner's November 22 distribution decision. Check the current product baseline for conflicts before submission.
+3. Run the baseline tests and walk the existing flow once. Fix any new regression at the first failing boundary. An already passing feature earns a regression check; spend implementation time on the missing links.
 
 ```sh
-curl -fsS https://avoado.si/api/esim/catalog | node -e 'let b="";process.stdin.on("data",c=>b+=c).on("end",()=>{const v=JSON.parse(b);console.log(v.commerceState,v.purchaseEnabled,v.plans?.length)})'
-npm run esim:demo
-npm run noah:esim:trial  # このMacで起動し、テストは別ターミナルから実行
-node --experimental-strip-types --test tests/esim*.test.mjs tests/noah-cloud-operation.test.mjs tests/noah-phone-loop.test.mjs
+date '+%F %T %Z'
+git status --short --branch
+git worktree list
+git fetch origin main
+git rev-parse origin/main
+gh pr view 382 --repo k999ln/rock --json state,baseRefName,headRefName,headRefOid,mergeCommit
+gh pr list --repo k999ln/rock --state open --limit 50 --json number,title,baseRefName,headRefOid
+node --experimental-strip-types --test --test-concurrency=1 tests/esim-noah-free-trial.test.mjs tests/operator-dock-isolation.test.mjs
 ```
 
-- 既存テストに加え、登録した本人で招待→0円申込→模擬発行→導入案内→専用回線の照合→パッケージ→結果までを**1本の通し試験**にする。本人2人、期限切れ、回線違い、供給元エラー、リトライ、結果配達の再送を検証する。実機試験では同じ申込に対応する事業者記録、初回の手動操作数、専用回線を確認できたか、成果・使用記録を同じ仕事で照合できたかを匿名化して記録する。
-- PRに対象SHA、変更した入口、再現コマンド、テスト結果、模擬／事業者sandbox／実機を分けた受入表、未取得の事業者条件と再開手順を残す。通常の `npm run verify` と変更範囲の検査を実施する。今回の関連テスト93件は当該作業ツリーでの結果。当時のGitHub対象mainのCIは `SPIDER / secrets` が失敗し、一部の検査が進行中だった。
-- 最初の引き渡しは招待した本人1人の試験に絞る。導入できる無料プロファイルが実際に発行されるまで、利用者へQRや「開通済み」を表示しない。模擬環境では模擬データだけを使い、実機結果は別欄に残す。
+## Where to make changes
+
+| Boundary | Start with these files | Existing behavior and the gap to close |
+| --- | --- | --- |
+| Operator UI and authorization | `services/operator-dock/public/distributions.html`, `public/distributions.js`, `src/worker.ts`, `src/distribution.ts` under the same service | Operators can already assign by ID and list receipts. Add receiving stock, available quantity, source lot and cost reconciliation through this authenticated UI. The hosted Worker uses Cloudflare Access. |
+| Operator data | `services/operator-dock/migrations/0003_distribution.sql`, `toolkits/esim-bootstrap/noah-trial/runtime.mjs` | Existing rows store descriptive quantity text and an optional receipt timestamp. Add a forward migration for countable stock. The local adapter currently loads migration 0003 explicitly. Exercise the new migration on both a fresh fixture and a populated old fixture. Preserve old quantity labels and receipt times. |
+| Free line and recipient | `toolkits/esim-bootstrap/noah-trial/{server,trial,view,dock}.mjs` | The three loopback entry points, server-side line gate, owner-scoped listing and idempotent receipt already work. The ordinary connection shows a generic pending signal. It currently derives that signal from the assignment table. Add evidence of a separate Agent run. |
+| Background work and result | `services/noah-test-runtime/src/esim-trial/worker.mjs`, `agent.mjs` in the same directory, and `toolkits/esim-bootstrap/noah-trial/runtime.mjs` | The trial has persisted Worker jobs, alarms, line checks and stop/revoke handling. Inspect the actual commands and package inputs. Reuse the scheduling and accounting primitives. Keep older jobs readable. Give distribution its own assignment-keyed work input if the existing guide requires user-selected items. |
+| Tests and reproducible entry | `tests/esim-noah-free-trial.test.mjs`, `tests/operator-dock-isolation.test.mjs`, `tests/database-status.test.mjs`, `package.json` | Use `npm run noah:esim:trial` for the Mac demo. Default user entrances are `http://127.0.0.1:43871/noah/esim/trial/` and `http://127.0.0.1:43872/noah/esim/trial/`. Local operator Dock is `http://127.0.0.1:43873/`. Use the test harness with a temporary directory and dynamically allocated ports for automated runs. |
+
+The background execution pilot now has a private Worker entry in `services/noah-test-runtime/src/cloud-entry.mjs`, persisted jobs in `src/esim-trial/cloud-work.mjs`, an operator-defined package registry in `src/esim-trial/cloud-packages.mjs`, and a web ingress at `app/api/noah/cloud-work/[[...action]]/route.ts`. Use `tests/noah-cloud-work.test.mjs` and the cloud-job cases in `tests/esim-noah-free-trial.test.mjs` first. Chrome on this Mac was exercised end to end: submit, close the Noah tab, type in a separate tab, reopen and read the saved outcome. The private Worker passed a local Workers-runtime test with a synthetic carrier verifier. The hosted carrier approval, remote deployment and a phone connected through a real profile still need independent evidence. Use the existing code before implementing any of the checkpoints below.
+
+## Build and acceptance order
+
+### 1. Baseline by 05:45 — Reproduce the baseline and prepare one deterministic case
+
+Use separate operator and recipient sessions. Enroll one synthetic recipient on the zero-yen fixture. Retrying an enrollment must return to the same order and line. Check the empty inbox, one direct assignment and a duplicate acknowledgement. Capture the available actions, persisted assignment count and original receipt time. Preserve those as regression expectations. The sandbox models one handset slot. Use isolated handset sessions for two-person access checks and a single shared stock ledger for allocation races. Keep the user's existing trial and its database intact.
+
+Use one synthetic lot of **10 units**, A's allocation of **4**, and B's allocation of **3**. Choose any food or household item and a clearly fictional pickup window. For example, enter **JPY 1,200 for the whole lot and JPY 300 freight**. These are disposable test inputs. The operator's expected recorded outlay is JPY 1,500, the recipient's expected charge is JPY 0. Preserve the unit the operator entered. Real suppliers, fixed product lists and a real operating budget are unnecessary.
+
+### 2. Complete stock by 07:00 — Receive stock and allocate it atomically
+
+Give the operator a usable form for a supplier reference, received lot, item, count, unit, operator-paid cost, freight and handover details. Reuse an existing operator-only supplier record if present. A supplier offer or a planned purchase has zero available stock until an operator records receipt. Track integer units per lot and monetary amounts in integer yen for this fixture. Keep a partial or unknown cost distinguishable from a verified zero.
+
+Implement allocation through the same code called by the real Dock UI and the loopback fixture. Make stock deduction and assignment creation succeed or fail together using the storage engine's supported atomic operation. Enforce a stable operation ID on the server. The same ID and payload return the original outcome; reusing it with a different recipient, lot or count returns a conflict. Preserve `received_at` on duplicate acknowledgement. Old free-text assignments must still open and acknowledge. Their quantities have no numeric stock effect unless backed by an explicit lot reference.
+
+**Pass:** after allocating 4 and 3, Dock shows 3 available, 7 allocated and total recorded procurement cost of JPY 1,500. Acknowledging A's 4 changes their status and leaves available stock at 3. Race two distinct requests for the last 3 units. Exactly one succeeds, stock becomes 0, and the rejected request leaves no assignment, charge or notification. Retry the winning request. All counts stay the same.
+
+### 3. By 07:15 — Connect the verified background job to a distribution
+
+On a committed assignment, schedule durable work keyed by its assignment ID. Close the recipient's tab before running the worker. Use the existing runtime to wake the Agent and store a result. Link the work ID and result to the assignment so an engineer can follow the operation from Dock to Noah. The notification on the ordinary connection may reveal only that an update exists. Require an active owner session and verified dedicated-line context to read the result or acknowledge the item. Keep pickup details, other recipients, supplier references and costs off the public endpoint.
+
+Handle interruption between committing the assignment and scheduling work. Use a durable pending record or reconciliation of committed assignments with existing jobs. Retry with the same identity. On temporary failure, preserve the assignment and display a retryable state to the operator. After revocation, prevent new protected reads and new work with that credential. Exercise the existing stop action on a pending test job; reopening the screen must not restart it or post a charge. If the live Noah service binding is absent, use its local Worker adapter and identify the missing binding and owning component in the report.
+
+**Pass:** a closed tab, one assignment, one completed logical job, one retrievable result, one accounting outcome and zero recipient charge. Reload three times, deliver the same event twice, restart the worker, then repeat the read. The same IDs and first receipt timestamp survive. Check a recorded zero-yen usage entry if that is the existing accounting contract; check charge posting count separately. Distinguish measured cloud usage from an actual provider invoice.
+
+### 4. By 07:55 — Reconcile the operator's books and prove recipient isolation
+
+Add a Dock view or extend the existing list so the operator can follow **lot → assignment → Agent result state → recipient acknowledgement**. Display remaining units, outstanding assigned units, received units and recorded cost. Enforce the conservation rule `stock received = available + assigned awaiting receipt + acknowledged` for these test cases. For the full lot after the race and A's acknowledgement, the expected breakdown is **0 available, 6 awaiting receipt, 4 acknowledged**. The acknowledgement records the recipient's statement. Physical delivery remains a separate observation.
+
+Test distinct operator, A and B credentials. The operator can inspect the lot; A can read only A's assignment; B cannot retrieve or acknowledge A's ID. A normal-connection session sees a generic notification. Revoke A's line and verify the protected content and acknowledgement are inaccessible. Record the response class and confirm the database is unchanged on rejection. Simulate a failed database read and a lost acknowledgement response. The UI should show retry for the first, and recover the original receipt on the second. Check the operator state and recipient screens at 320 and 390 pixels. If phone automation becomes available, coordinate with the Pixel owner and reuse the existing registration.
+
+### 5. By 08:35 — Demonstrate a second distribution cycle
+
+Once stages 2–4 pass, implement the small repeatable workflow that makes this a regular service. Let the operator reuse a distribution plan for a second pickup window. Use a fixture clock to advance to the next window. Give each occurrence a stable identity and recheck confirmed stock and current recipient eligibility before committing. A missed window or disabled plan should have an explicit operator-visible outcome. Replaying the scheduler for the same window must create at most one assignment and notification per eligible recipient.
+
+**Pass:** demonstrate two separate pickup windows for the same synthetic person. Duplicate scheduler ticks must produce zero additional assignments. If the second window has insufficient stock, produce zero allocations for that attempt and show the reason. Record a new simulated receipt of stock, retry that same window and verify exactly one successful assignment. Original receipts and procurement totals must remain traceable. Keep recurring commitments opt-in for the operator. If the time budget is exhausted, preserve the verified one-cycle path and give the first failing second-cycle test and resume command.
+
+If both cycles already pass with time to finish a batch before the verification window, run a local synthetic batch for **1,000 recipient IDs** through the shared allocation logic. Measure unique assignments, duplicates, stock balance, failures and elapsed time for the exact fixture size. This is a bounded capacity experiment. Report actual counts, host and storage adapter. Do not infer 1,000 phone connections, users served, or cloud operating costs from it.
+
+### 6. From 08:35 to 09:00 — Verify and deliver
+
+Start the full verification early enough for its measured runtime. Keep the long-running trial started at 03:52 on revision `323d087010bb3c3eca01364656d0a027f8014c0f` separate. Its planned finish is 08:55. If the report exists, read its actual revision, timestamps, samples and failures from `/private/tmp/noah-free-trial-soak-current-report-20261122.json`. Its intentional retries and legacy Agent jobs measure their own flow. Give the new supply-and-receipt run its own temporary database and counts.
+
+```sh
+node --experimental-strip-types --test --test-concurrency=1 tests/esim*.test.mjs tests/noah-cloud-operation.test.mjs tests/noah-phone-loop.test.mjs tests/operator-dock-isolation.test.mjs
+node --test tests/database-status.test.mjs
+npm run operator-dock:check
+npm run database:check
+npm run design:check
+npm run verify
+git diff --check
+```
+
+Run any new stock, scheduling and upgrade tests explicitly as well. When a forward migration changes the repository inventory, use `npm run database:status`, review the generated diff, and verify that only Operator Dock owns the private stock tables. Follow the repository's existing PR and changelog procedure. Use a `codex/` branch and a reviewable PR. Record the exact commit, GitHub check results and merge SHA when available. Respect the owner's decision for each PR with outstanding CI, including the specific three historical scanner findings on #382. Keep other chats' branches and uncommitted work intact.
+
+## External dependencies and decisions during the run
+
+- **Carrier reply or no reply.** Check existing correspondence with SORACOM, IIJ and NTT DOCOMO for an actual installable consumer profile and written terms for issuance, maintenance, traffic, expiry, cancellation and automatic conversion. Keep this trial at zero user charge. Leave further applications, supplier outreach and spending to the owner. If no verified free profile is available, finish every independent fixture stage and list the exact missing carrier evidence.
+- **Phone test becomes possible.** Let the owner install the carrier profile. Record iPhone and Android separately: hardware and OS, profile installation, main line/Wi-Fi behavior, observed RockstarOS traffic path, protected access, and behavior after revocation. Record any OS prompt or manual switch. Redact identifiers and activation material. An installable profile, route observation and successful protected access are three separate results. If a phone stays unavailable, report that platform as untested and continue on the other one.
+- **Published Noah changes.** Retrieve the public release and source SHA from the owner, verify the recipient identity and service binding, and use a test integration where available. Preserve the unauthenticated public consultation flow. Keep operator credentials and D1 bindings on the operator side. A production migration, new carrier contract, paid resource or supplier order requires the owner's explicit action. Continue local recovery and reconciliation while waiting.
+- **A checkpoint is blocked.** Capture the smallest reproducing case and the component that owns the dependency. Complete the next independent test. Protect stock correctness, recipient isolation, durable result delivery and zero user charge before spending time on recurrence or scale. Keep user-facing failures explicit and readable.
+
+## The 09:00 handoff
+
+Lead with one sentence stating exactly which environment allowed an operator to allocate stock and a recipient to acknowledge it. Include a replay command, the two operator/recipient entry points, required fixture setup, the branch and full SHA. Provide these rows with measured values, using **pass**, **fail**, **blocked** or **untested**. Give the first failing command and resumable next action for every open row.
+
+| Evidence to report | What must be visible |
+| --- | --- |
+| Free enrollment and eligibility | Unique orders, lines, retries, protected-access outcome and user charge |
+| Stock and operator cost | Initial and final counts per lot, cost and freight, rejected over-allocation, old-row migration result |
+| Background Agent | Assignment ID, work ID and result ID or stable result reference, timing, retry count, stop/revoke outcome and deduplicated result count |
+| Handovers | Unique assignments, unique acknowledgements, original receipt time on retry, expected and actual outstanding units |
+| Recurrence and batch | Windows attempted/completed, shortages and recovery, actual batch size and duration if run |
+| Confidence and boundaries | Mac fixture, provider sandbox, physical iPhone, physical Android, public Noah and financial/physical fulfillment reported separately |
+
+For each objective you accepted, finish with three plain-language sections, **Accomplished**, **Incomplete or failed**, and **Not verified**. Give expected versus observed behavior, a reproducible piece of evidence and its environment. For an incomplete item give the reason, what still runs automatically, who owns the dependency and the next action. If there are no known failures say how many objectives were exercised. A provider's bare success response is evidence of a response only. If part of a job is still pending, show its partial results and retain its existing work ID until an accepted outcome, an explicit terminal condition or an owner stop. Report every scope item including phone checks, hosted execution, charges and physical delivery, even when untested.
+
+Keep proof reproducible using synthetic identifiers and redacted logs. Provide a screenshot or short clip of the two-session flow if available. Keep invitations, activation codes, operator passwords and personal pickup records out of Git and screenshots. A checked-in plan, a passing unit test and an observed end-to-end delivery each have their own place in the report.

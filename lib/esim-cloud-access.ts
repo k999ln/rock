@@ -31,6 +31,8 @@ export function esimCloudRequestToken(request: Request) {
 export function esimCloudRequestScope(request: Request) {
   const { pathname } = new URL(request.url);
   const method = request.method;
+  if ((method === 'GET' && pathname === '/api/noah/cloud-work') ||
+      (method === 'POST' && ['/api/noah/cloud-work/start', '/api/noah/cloud-work/stop'].includes(pathname))) return 'noah';
   if (method === 'GET' && ['/api/rockstar/device-home', '/api/rockstar/entitlements'].includes(pathname)) return 'rockstaros_access';
   if (method === 'POST' && ['/api/llm/estimate', '/api/llm/text'].includes(pathname)) return 'rockstaros_access';
   if (['GET', 'POST'].includes(method) && pathname === '/api/llm/quotes') return 'rockstaros_access';

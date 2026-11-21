@@ -11,7 +11,7 @@ export type EsimCloudConfig = {
   ESIM_INSTALL_RECEIPT_KEYS?: string;
   ESIM_DEVICE_GATEWAY_KEYS?: string;
 };
-export const ESIM_CLOUD_SCOPES = ['rockstaros_access', 'sky', 'zema', 'agents'] as const;
+export const ESIM_CLOUD_SCOPES = ['rockstaros_access', 'sky', 'zema', 'agents', 'noah'] as const;
 export type EsimCloudScope = typeof ESIM_CLOUD_SCOPES[number];
 export type EsimCloudPolicy = {
   packageKey: string;
