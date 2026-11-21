@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { randomBytes } from 'node:crypto';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -10,7 +11,7 @@ import { collectXAgents } from '../scripts/noah-collector-x.mjs';
 import { normalizeDiscovery } from '../lib/noah-discovery-provider.ts';
 import { publishCollection } from '../scripts/noah-collector-publish.mjs';
 
-const NOW = Date.UTC(2026, 10, 22), KEY = 'collection-test-signature-material-0000';
+const NOW = Date.UTC(2026, 10, 22), KEY = randomBytes(32).toString('hex');
 const item = (source = 'github', extra = {}) => ({ id: `${source}:1`, source, name: 'Useful agent', summary: 'A public Agent repository', author: 'maker', url: 'https://github.com/maker/agent', sourceUrl: 'https://github.com/maker/agent', observedAt: NOW, expiresAt: NOW + 86_400_000, ...extra });
 const snapshot = (source = 'github', items = [item(source)], at = NOW) => ({ schema: 'noah-collection/1', source, collectedAt: at, items });
 function bucket() {

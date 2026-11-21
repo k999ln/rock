@@ -30,3 +30,7 @@
 - 残る2件は共有node_modulesのsymlinkでbracesの絶対パスが元checkoutになったことと、Miniの依存未導入でundici解決先がrootになったこと。既存のlock・製品・試験を変更していない。全体チェーン後半は未実行なのでPRはdraft。次担当は独立した依存導入環境で全体verifyを再実行する。
 
 停止: `node scripts/noah-collector-service.mjs --stop`。再開/常駐設定/外部評価の意味はサービス契約の運用節を参照。
+
+## クラウド移行（2026-11-22 追加指示）
+
+Mac常駐からGitHub Actionsへ移す。保存先はNoah R2の署名付き非公開checkpoint。5分ごとの起動、復元→収集→ETag付き保存→掲載の順序を守る。Mac停止後のクラウド2回成功と公開更新を受入条件とし、結果を追記する。

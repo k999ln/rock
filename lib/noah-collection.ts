@@ -55,15 +55,15 @@ export function parseCollectionSnapshot(value: unknown, now: number): NoahCollec
   return { schema: 'noah-collection/1', source, collectedAt: at, items };
 }
 
-export async function collectionSignature(key: string, timestamp: string, body: string) {
+export async function collectionSignature(key: string, timestamp: string, body: string, path: string = NOAH_COLLECTION_PATH) {
   const imported = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const hash = await sha256Hex(body);
-  const signature = await crypto.subtle.sign('HMAC', imported, new TextEncoder().encode(`${timestamp}\nPOST\n${NOAH_COLLECTION_PATH}\n${hash}`));
+  const signature = await crypto.subtle.sign('HMAC', imported, new TextEncoder().encode(`${timestamp}\nPOST\n${path}\n${hash}`));
   return [...new Uint8Array(signature)].map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
-export async function verifyCollectionSignature(key: string | undefined, timestamp: string | null, signature: string | null, body: string, now: number) {
+export async function verifyCollectionSignature(key: string | undefined, timestamp: string | null, signature: string | null, body: string, now: number, path: string = NOAH_COLLECTION_PATH) {
   if (!key || key.length < 32 || !timestamp || !/^\d{13}$/.test(timestamp) || Math.abs(now - Number(timestamp)) > 120_000 || !signature || !/^[a-f0-9]{64}$/.test(signature)) return false;
-  const expected = await collectionSignature(key, timestamp, body);
+  const expected = await collectionSignature(key, timestamp, body, path);
   let diff = 0; for (let i = 0; i < 64; i++) diff |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
   return diff === 0;
 }
