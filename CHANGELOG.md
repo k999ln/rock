@@ -22,6 +22,10 @@
 
 - Noahに会社の正式花形ロゴと白・チャコール・紫の配色を適用。スマホ下部5項目を1メニューへ統合し、既定の全件表示からAgent絞り込み/解除に変更。ニュース・コミュニティー・機能一覧の導線を廃止。390px/1360pxの表示・操作と全体verify成功（4,506成功・4 skip）を確認（[PR #337](https://github.com/k999ln/rock/pull/337)、task100）。
 
+- Noahのスマホでの配布元確認とMacの接続準備をHiggsfieldで縦型CMに編集し、READMEとサロン向け投稿文から案内（[PR #341](https://github.com/k999ln/rock/pull/341)、task 99）。
+
+- READMEにmiiのデザイン映像とNoahの公開画面を使った操作デモを掲載し、オンラインサロン向けの18秒動画と投稿文を追加（[PR #340](https://github.com/k999ln/rock/pull/340)、task 99）。
+
 ## 2026-11-20
 
 - Noah MVP L3 の点検で見つけた所を直した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #339](https://github.com/k999ln/rock/pull/339)、task85。#332 の上の積み上げ）。握手済みの候補の記録が、版や説明だけ更新されても、握手の記録と一覧を保つ（消すのは、接続先に関わる項目が変わった時だけ）。形の違う記録は 1 件ずつ読み飛ばす（1 頁で 10 件を越えたら止める）。台帳を読めなかった合図は、500 と件数の 1 行。名寄せは、隠した系列を 1 回だけ書き、候補が戻った系列を戻す。取り下げは、持っている有効な候補の 9 割以上が見えた時だけ。続けて 6 回の失敗で、同じ印から読み直す。直す前の実装で落ちる試験 11 件を足し、設計書（85 の 5.1・11.8、88、97、名寄せの SQL）も直した。本番 migration・配備・切り替えなし。
@@ -33,6 +37,16 @@
 - Noah MVP L3の公式台帳取り込み・再開可能な巡回・一覧API・運営画面とローカルD1受入コマンドを実装。全体verify、製品23群、実台帳68,964件＋差分1頁・合成65,000件のローカルD1受入が成功。本番migration・配備・切り替えなし（[PR #332](https://github.com/k999ln/rock/pull/332)、task85）。
 
 - Noah MVP L2の接続要件・計画・状態遷移を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側を再exportへ集約。製品9群と全体verify成功。API・画面はL5で接続（[PR #330](https://github.com/k999ln/rock/pull/330)、task96）。
+
+- READMEにmii公式の筐体全景とセンサー部の接写を掲載し、Proの紹介・画像・表の記載を外した（[PR #338](https://github.com/k999ln/rock/pull/338)、task 99）。
+
+- ルートREADMEをmii公式サイトに合わせ、帰宅のビジュアルと5本の短編からEve・Noahの実画面、接続構成、実機の検証状況へ進む構成に更新（[PR #336](https://github.com/k999ln/rock/pull/336)、task 99）。
+
+- READMEを更新日・ハイライト・縦目次・機能別記事の順に改め、Noahの検索デモ、Eveの実画面、Macの停止手順とスマホ版の入出力例を追加（[PR #333](https://github.com/k999ln/rock/pull/333)、task 99）。
+
+- READMEを機能別のハイライト・目次・実画面・検証手順で整理し、設計の入口でもNoahのスマホ向け公開版とMacのRunner開発を区別（[PR #331](https://github.com/k999ln/rock/pull/331)、task99）。
+
+- 目的と、一番重く見る 3 つを、設計の正本に書いた（Fable / Noelle。本人指示「ここまでを git に更新してあげて」）。① docs/structure/00-overview.md の 0 章: 大きな目的（みんなが Agent を使って、生活がより豊かになる）、最初の目的（教育と身の回りの生活が、少しでも便利に・効率よくなる）、重点 3 つ（どんな Agent にも 1 クリックでつながる／登録が要っても離れさせない／画面をジャックしない）。② docs/noah-design.md の 12 章: 3 つへの設計の対応と足りない所、全部の Agent につながるまでの型ごとの数と順、今の Noah の現状（動かせるのは 13 件・調査カタログ 79,643 件は接続を確かめた物が 0・並びは点数の足し算で予測なし）、最初の目的に合わせて変える所（提案）。③ docs/noah/mvp-launch.md の 13 章: 入口を「教育」「暮らし」の棚にする案。④ docs/structure/07 に本人の言葉 4 行。**設計の文書だけ。実装（lib/・app/）と本番は変えていない。**
 
 - Noah の設計を、別の機械から始められるようにした（Fable / Noelle。本人指示「main に入れて、別の PC が git にアクセスして開発が進めれるようにして」）。docs/noah/README.md に「別の機械で始める時」（clone → `npm ci` → 検証キット → 読む順 → 最初の PR は L1 と L2）を足した。main を別の場所へ取り出して確かめた: `npm ci` の後は試験 61/61・DDL 10/10。`npm ci` が無いと `noah-screenless.test.mjs` だけが読めない（今の起動スクリプトが `fflate` を使う）ので、検証キットの README の「`npm install` は要らない」を直した。
 
