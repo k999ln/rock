@@ -57,7 +57,7 @@ export function parseSkyToolEvent(value: unknown): SkyToolEvent {
     packageKey: text(
       input.packageKey,
       'Package ID',
-      /^[a-z0-9]+(?:[.-][a-z0-9]+)+@[0-9]+\.[0-9]+\.[0-9]+$/,
+      /^(?:[a-z0-9]+(?:[.-][a-z0-9]+)+@[0-9]+\.[0-9]+\.[0-9]+|noah-upload:[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12})$/,
     ),
     toolName: text(input.toolName, 'MCP Tool名', /^[a-zA-Z0-9_.-]+$/, 128),
     installationId: text(
@@ -79,14 +79,17 @@ export function parseSkyToolEvent(value: unknown): SkyToolEvent {
 export function skyToolEventStore(db: Database) {
   return {
     async record(userId: string, event: SkyToolEvent) {
+      const upload = event.packageKey.startsWith('noah-upload:');
+      const ownership = upload
+        ? "SELECT 1 FROM noah_agent_uploads WHERE id = ? AND owner_id = ? AND upload_state = 'ready' AND deleted_at IS NULL"
+        : 'SELECT 1 FROM sky_tool_packages WHERE package_key = ? AND user_id = ?';
       const result = await db
         .prepare(
           `INSERT OR IGNORE INTO sky_tool_events
            (id, package_key, owner_user_id, tool_name, installation_id, outcome, duration_ms, occurred_at, created_at)
            SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?
            WHERE EXISTS (
-             SELECT 1 FROM sky_tool_packages
-             WHERE package_key = ? AND user_id = ?
+             ${ownership}
            )`,
         )
         .bind(
@@ -99,7 +102,7 @@ export function skyToolEventStore(db: Database) {
           event.durationMs,
           event.occurredAt,
           Date.now(),
-          event.packageKey,
+          upload ? event.packageKey.slice('noah-upload:'.length) : event.packageKey,
           userId,
         )
         .run();

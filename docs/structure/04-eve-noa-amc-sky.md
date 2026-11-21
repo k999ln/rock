@@ -138,4 +138,6 @@ Noahの最初の受入後に接続する応用系統。利用者像はかいや�
 
 [toolkits/noah-resale-agent/](../../toolkits/noah-resale-agent/)は本人用CLI。Webはlocalhost限定。既存WorkのCASと予算予約を使い、初期予算0・外部接続未受入を保持する。[実行契約](../services/noah-select-resale.md)。
 
+[外部Agentの利用報告SDK](../../toolkits/noah-agent-client/) は、提供者が自分の登録済みAgentの利用実績を送るために使う。[記録する項目と権限](../services/noah-agent-usage.md)
+
 Noah移行の互換ToolKit: `toolkits/noah-agent-operations/` は既存の実行テンプレート集合、`toolkits/noah-vscode/` は保存時整理の補助。単体ローンチの実行器は `scripts/noah-mac-runner.mjs`、導入は `scripts/noah-mac-install.mjs`、配布生成は `scripts/package-noah-mac.mjs`。

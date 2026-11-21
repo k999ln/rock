@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import {
   launchFixture,
@@ -31,12 +31,14 @@ const { createMacRunner, runnerClient } = await import(
 const cleanups = [],
   template = noahTerminalTemplate('node');
 template.manifest.runtime.model = 'none';
-const code = `import fs from 'node:fs';import net from 'node:net';import {createInterface} from 'node:readline';
+const code = `import {createHash} from 'node:crypto';import fs from 'node:fs';import net from 'node:net';import {createInterface} from 'node:readline';
 const input=JSON.parse((await createInterface({input:process.stdin})[Symbol.asyncIterator]().next()).value);
 if(input.prompt==='wait-for-stop'){setInterval(()=>{},1000);}
 else {const checks={nonRoot:process.getuid()!==0,noDisplay:!process.env.DISPLAY&&!process.env.WAYLAND_DISPLAY,noHost:!fs.existsSync('/Users')&&!fs.existsSync('/Volumes'),noCredentials:!process.env.OPENAI_API_KEY&&!process.env.NOAH_RUNNER_HOME,noDaemon:!fs.existsSync('/var/run/docker.sock')};
 checks.noNetwork=await new Promise(resolve=>{const s=net.connect({host:'1.1.1.1',port:443});s.setTimeout(1000);s.once('connect',()=>{s.destroy();resolve(false)});s.once('error',()=>resolve(true));s.once('timeout',()=>{s.destroy();resolve(true)});});
-console.log(JSON.stringify({type:'result',text:JSON.stringify(checks),files:[],exitCode:Object.values(checks).every(Boolean)?0:1}));process.exit(0);}
+const bytes=Buffer.from('Noah Mac acceptance: '+input.prompt+'\\n');
+const file={name:'result.txt',base64:bytes.toString('base64'),bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
+console.log(JSON.stringify({type:'result',text:JSON.stringify(checks),files:[file],exitCode:Object.values(checks).every(Boolean)?0:1}));process.exit(0);}
 `;
 template.bytes = writeNoahArchive([
   { name: 'main.mjs', bytes: new TextEncoder().encode(code), os: 0, attrs: 0 },
@@ -149,7 +151,28 @@ try {
   assert.equal(job.noahExecution.state, 'returned', job.noahExecution.error);
   const checks = JSON.parse(job.noahExecution.result.text);
   assert.ok(Object.values(checks).every(Boolean));
-  result.phases.push({ executed: checks, workId: run.id });
+  const detail = await fetch(address + '/api/noah/launch?work=' + run.id, {
+    headers: { Authorization: 'Bearer ' + credential },
+  });
+  assert.equal(detail.status, 200);
+  const saved = await detail.json();
+  assert.equal(saved.ownerScope, scope);
+  assert.equal(saved.commands[0].id, run.id);
+  const expected = Buffer.from('Noah Mac acceptance: isolation-check\n');
+  const [file] = saved.jobs[0].noahExecution.result.files;
+  assert.equal(file.name, 'result.txt');
+  assert.equal(file.bytes, expected.length);
+  assert.deepEqual(Buffer.from(file.base64, 'base64'), expected);
+  assert.equal(
+    file.sha256,
+    createHash('sha256').update(expected).digest('hex'),
+  );
+  result.phases.push({
+    executed: checks,
+    workId: run.id,
+    file: file.name,
+    sha256: file.sha256,
+  });
   const stop = await post({
       action: 'run',
       id: randomUUID(),
@@ -163,6 +186,10 @@ try {
       break;
     await new Promise((r) => setTimeout(r, 50));
   }
+  assert.equal(
+    (await f.jobs.get(buyer, stop.id))?.noahExecution.state,
+    'running',
+  );
   await post({ action: 'stop', id: stop.id });
   await active;
   assert.equal(

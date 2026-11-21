@@ -3,6 +3,9 @@
 - Noah の棚の最初のカード 17 枚（下書き）を用意した（Opus / Noelle。本人の回答「選んで用意して」）。`data/noah-shelf-first-cards.json`（稼ぐ・仕事を省く 7・教育 4・暮らし 6。健康は除く）。手元の巡回が一覧に載せた系列から選び、どれも相手のサーバーの道具 1 つで終わり、道具を 1 回ずつ実際に呼んで成果が返る事と、入力欄にできる事を確かめた（仕訳・インボイス番号・広告文の点検・自動化の仕様書・Web 調査・求人・法令・英語の発音・中国語・クイズ・算数ぬりえ・ふるさと納税・年末調整・手取り・紅葉・コインロッカー・保育園）。運営の画面の「カードを置く」へそのまま貼れる。試験 4 本（`tests/noah-shelf-first-cards.test.mjs`）。一覧と、置いてから載るまでの手順は `docs/noah/spec-110-shelf.md` の 18 章。本番へは、まだ置いていない。
 
 - Noah の取り込みと握手を手元で計算し、本番へ結果だけを入れる道を作った（Opus / Noelle。本人の問い「上手くローカルで計算できないの？」。[PR #359](https://github.com/k999ln/rock/pull/359)）。`scripts/noah-local-patrol.mjs`（本番と同じコードと migration の表を手元の SQLite で動かし、台帳を読み、握手し、一覧に載せる系列だけを書き出す）、`lib/noah-intake-import.ts`・`POST /api/noah/intake/import`（審査者だけ。手元の L2 は 1 に落とし、本番の L2・取り下げ・隠した印は残し、載せるかは本番の決まりで計算し直す）、運営の画面の「取り込みの結果を入れる」。本番の巡回（`NOAH_PATROL_ENABLED`）と有料の枠を開けなくても、一覧が使える。試験 4 本（`tests/noah-intake-import.test.mjs`）。手順は `docs/noah/spec-97-launch-ops.md` の 12 章。
+- NoahのMacで実行した仕事を個別URLから開いて停止・成果保存できるようにした。配布Runnerで接続・実行・ファイル照合・停止・切断を確認（[PR #366](https://github.com/k999ln/rock/pull/366)）。
+
+- Noahの限定共有・送信履歴・利用状況を登録Agentの画面から開けるようにし、外部Agentの利用報告を所有者確認付きで既存APIに統合（[PR #362](https://github.com/k999ln/rock/pull/362)、task 73）。
 
 - Noah のつなげる数を、料金ごとのカードの数にした（task 113。Opus / Noelle。本人指示「続き最後までやって」。[PR #357](https://github.com/k999ln/rock/pull/357)、#355 の上の積み上げ）。表 `noah_package_connections`（migration 0053）、`lib/noah-plan.ts`、`lib/noah-connect.ts` のつなぐ前の上限（無料 6・有料 50。数えるのはカードで、同じカードの中の 2 本目は増やさない。7 枚目は 409「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」。もうつないである物は切らない）、`/noah/ready` の見出し「6 個のうち 4 個」。**どの利用権を有料と見るかは本人が決めるまで置いていない（`NOAH_PLAN_SOURCE` は null）ので、切り替え `NOAH_PLAN_LIMITS` を開けても、今は全員 50 のまま。** 試験 5 本（`tests/noah-plan-limits.test.mjs`）。変えた所は `docs/noah/spec-110-shelf.md` の 17 章。本番の migration・配備・切り替えは、していない。
 
