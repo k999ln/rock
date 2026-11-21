@@ -152,7 +152,7 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 | 章 | ローンチまで | 後 |
 | --- | --- | --- |
 | 1 完成の姿 | 一覧は 2 段: 「動いた」（L2）と「まだ誰も動かしていない」（L1）。握手が 2 回続けて通らない物は外れる | 「この 7 日の間に動いた物だけ」に絞る（「動いた」が十分に増えてから） |
-| 3 変える所 | `lib/noah-probe.ts`（失敗の扱い）、`lib/noah-intake-store.ts`（後始末・並びの引き直し・対象から外す物）、`lib/noah-ask.ts`（「動いた」を付ける）、`components/noah-review.tsx`（数）。`lib/noah-feed.ts`・`lib/noah-public-catalog-api.ts` は触らない | `probeL2`、`noahSampleCalls` |
+| 3 変える所 | `lib/noah-probe.ts`（失敗の扱い）、`lib/noah-sweep.ts`（後始末。巡回の合図 `lib/noah-intake-api.ts` が呼ぶ）、`lib/noah-intake-store.ts`（並びの引き直し・対象から外す物・つながると確かめた数）、`lib/noah-ask.ts`（「動いた」を付ける・相手へ送る印）、`components/noah-intake-review.tsx`（数。`noah-review.tsx` の「取り込み」の節）。`lib/noah-feed.ts`・`lib/noah-public-catalog-api.ts` は触らない | `probeL2`、`noahSampleCalls` |
 | 4.1 自動の L2 | 無し（`NOAH_PROBE_L2` は閉） | 本人の決定の後 |
 | 4.2 本人の実行 | 入れる（9.2 に変える） | — |
 | 4.3 見回り | 入れる。間隔は `nextNoahCheck`。失敗の扱いは 9.3 に変える | — |
@@ -171,6 +171,8 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 
 ### 9.3 握手の失敗の扱い（ローンチ版。4.3 の表を置き換える）
 
+**この表は、L4（握手）で入れた**（`lib/noah-probe.ts` の `planNoahProbeWrite`。握手の結果を書く所と、失敗を数える所が同じなので）。L7 で足す物は無い。「つないでいる人が居れば 24 時間後」は、接続の表が入った L5 で入れた（`lib/noah-intake-probe.ts` の `NOAH_PROBE_FAMILY`。候補と系列を読む文の中で、`EXISTS(SELECT 1 FROM noah_connections …)` を見る。D1 への往復は増えない）。
+
 | 続けて失敗した回数（応答しない） | する事 | 次に確かめる時 |
 | --- | --- | --- |
 | 1 回 | `failures=1`、`first_failure_at=now`。`level` はそのまま（一覧に残る） | 6 時間後 |
@@ -179,6 +181,8 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 | 握手が通った | `failures=0`、`level=1`。隠していた系列を戻す。「動いた」は、人が動かすまで戻らない | 7 日後（つないでいる人が居れば 24 時間後。居るかどうかは、その時に `SELECT 1 FROM noah_connections WHERE family_key = ? AND state = 'connected' LIMIT 1` で見る。索引 `noah_connections_family`） |
 
 相手が「混んでいる」（429）を返した時は、失敗に数えない（`Retry-After` の後に確かめ直す）。401・402・形が合わない は、86 の 4.2 の表のとおり、その場で `level=0`。
+
+`hidden_at` を書く所は 2 つある。ここ（握手の失敗が 30 日続いた代表の系列）と、名寄せ（候補が 1 件も無くなった系列。[noah-regroup-v1.sql](../contracts/noah-regroup-v1.sql)）。名寄せは、候補が戻った系列の `hidden_at` を NULL に戻すが、代表の `first_failure_at` がある系列は戻さない。だから、失敗で隠している間は `first_failure_at` を消さない（消すのは、握手が通った時だけ）。
 
 ### 9.4 道具の定義が変わった時（ローンチ版。4.4 を置き換える）
 
@@ -192,15 +196,31 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 
 ### 9.5 後始末（巡回の合図が、毎回の終わりに行う）
 
-実行の途中で落ちた依頼と接続を、放っておかない。どれも、相手へは何も送らない。
+実行の途中で落ちた依頼と接続を、放っておかない。どれも、相手へは何も送らない。作りは `lib/noah-sweep.ts`（L7 で入れた。下の表が、作った形）。
 
-| 対象 | 文 | 結果 |
+| 対象 | 見つけ方 | 結果 |
 | --- | --- | --- |
-| `running` のまま `lease_until` を過ぎた依頼 | `UPDATE noah_asks SET state='unknown', finished_at=?, error='結果を確かめられませんでした。相手のサーバーで実行されたかは分かりません。', revision=revision+1 WHERE finished_at IS NULL AND state='running' AND lease_until > 0 AND lease_until < ? RETURNING id, owner_id, work_id` | Work も `unknown` にする。**取り直して呼び直さない** |
-| `queued` のまま 60 秒たった依頼（応答の後の実行が始まらなかった） | 同じ形で `state='failed'`、`error='始められませんでした。もう一度頼んでください。'` | 相手へは送っていないので、`failed` |
-| `planned`・`entitling`・`preparing`・`probing` のまま 30 秒たった、置き場所が `provider` の接続 | `disconnect` を当てる（`error='つなぐ途中で止まりました。もう一度試してください。'`） | 本人には「接続」がもう一度出る |
+| `running` のまま、`lease_until` を過ぎて、さらに 5 秒たった依頼のうち、**相手へ送る印（`tool_calls`）が付いている物** | `finished_at IS NULL AND state='running' AND lease_until > 0 AND lease_until < 今 − 5 秒`（索引 `noah_asks_open`） | `unknown`「結果を確かめられませんでした。相手のサーバーで実行されたかは分かりません。」。Work も `unknown`。**取り直して呼び直さない** |
+| 同じで、**印が付いていない物**（握手の途中などで落ちた。相手へ、道具の呼び出しを送っていない） | 同じ | `failed`「途中で止まりました。相手のサーバーへは、送っていません。もう一度頼んでください。」。Work も `failed` |
+| 上の 2 つのうち、止める事が頼まれていた依頼 | 同じ | `stopped`（印が付いていれば「止めました。相手のサーバーで実行されたかは分かりません。」、無ければ「止めました。」） |
+| `queued` のまま 60 秒たった依頼（応答の後の実行が始まらなかった） | `finished_at IS NULL AND state='queued' AND created_at < 今 − 60 秒`（同じ索引） | `failed`「始められませんでした。もう一度頼んでください。」。相手へは送っていない |
+| `planned`・`entitling`・`preparing`・`probing` のまま 30 秒たった、置き場所が `provider` の接続 | `disconnected_at IS NULL AND state IN ('planned','entitling','preparing','probing') AND place='provider' AND updated_at < 今 − 30 秒`（索引 `noah_connections_connecting`。migration 0049） | 切る（`error='つなぐ途中で止まりました。もう一度試してください。'`）。本人には「接続」がもう一度出る |
 
-1 回の合図で、それぞれ 50 件まで。
+1 回の合図で、それぞれ 50 件まで（古い物から）。後始末に使う時間は 10 秒まで（越えたら、残りは次の合図で）。終わりは、頼む側と同じ関数（`finishNoahAsk`）で書く: Work と依頼の行を、1 回の書き込みで一緒に終える。もう終わっていた物は、変えない。
+
+片付けた数（依頼と接続を合わせた数）を、合図の記録の `swept` に出す（[97](spec-97-launch-ops.md) の 4 章）。合図の応答には、1 件でも片付けた時だけ、種類ごとの数（`swept: { asksUnknown, asksFailed, asksStopped, connections }`）を足す。誰の物か・どの接続先かは、出さない。
+
+この範囲で決めた事（最初の案と違う所。ここが正）:
+
+| 決めた事 | 理由 |
+| --- | --- |
+| 道具を呼ぶ直前に、依頼の行へ「相手へ送る」の印（`tool_calls=1`）を付ける。印は、終わっていず、止める事も頼まれていない依頼にだけ付く（`lib/noah-ask.ts`）。後始末は、印の有無で「結果不明」と「失敗（送っていない）」を分ける | 最初の案は、どれも「結果不明」。握手の途中で落ちただけの依頼に「実行されたかは分かりません」と出すと、本人は、やり直してよいかが分からない（相手の何かを変える道具なら、なおさら）。送っていないと分かる時は、そう言う。印を付ける文は、止める印を読む文と入れ替えたので、D1 への往復は増えない。印を付けてから呼ぶので、「送っていません」と出した後に、遅れて動いた実行の場が道具を呼ぶ事は無い（印が付かないので、呼ばずに終わる） |
+| lease を過ぎてから 5 秒待つ（`NOAH_ASK_LEASE_GRACE_MS`） | 応答の後に続けられる時間（30 秒）の終わり際に書かれる成果を、先に「結果不明」にしない。合図は 1 分ごとなので、片付く時刻は、ほとんど変わらない |
+| 本人の「止める」は、実行の場が無くなっている依頼（lease を過ぎて 5 秒）を、その場で止める（`lib/noah-ask.ts` の `stop`） | 止める事を頼んでも、聞く相手が居ない。巡回の合図（最大 1 分後）を待たせない。巡回を止めている間も、本人が終えられる |
+| 画面は、「止めています…」が 45 秒より長く続いた依頼に、「止める」をもう一度出す（`lib/noah-ask-view.ts`） | 実行の場が生きている間に「止める」を押し、その後で実行の場が落ちた依頼の出口（上の決まりで、押すと、その場で止まる）。巡回が動いていれば、その前に「止めました。」になっている |
+| つなぐ途中で止まった接続を拾う文のために、索引を 1 つ足した（`noah_connections_connecting`。[noah-v1.sql](../contracts/noah-v1.sql) と migration 0049） | 今ある索引では、切っていない接続の全部を、合図のたびに読む事になる（1 分ごと）。足した索引は、つなぐ途中の接続だけを持つ（ふだんは 0 件）。片付ける物が無い時の後始末は、D1 へ 3 往復で、表を端から読む文は無い。拾う文の `WHERE` は、索引の式と同じに書く（`IN` の並びも。違うと、索引が使われない事を、試験と検証キット `validate-noah-v1.py` で確かめている） |
+| 巡回を止めている間（`NOAH_PATROL_ENABLED` が閉）は、後始末もしない | 合図は「閉じている間、何もしない」（97 の 4 章）のまま。依頼や接続の表が、まだ無い環境で、合図が失敗し続けない。その間、止まった依頼は、本人の「止める」で終えられる。巡回を開けた最初の合図で、残りが片付く |
+| 後始末が切った接続の理由は、その要求の応答か、待っている画面の読み直しにだけ出す。画面を開き直した後は、「接続」だけが出る | 切った接続は、一覧に出さない決まり（[74](spec-74-one-click-connect.md)）。理由を見せるのは、押した本人が、まだその画面に居る時だけで足りる |
 
 ### 9.6 見せる（ローンチ版。5 章を置き換える）
 
@@ -217,10 +237,12 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 
 つながると確かめた数（運営の画面）: 「動いた」の数（`SELECT COUNT(*) FROM noah_intake_families WHERE level = 2 AND listed = 1 AND withdrawn_at IS NULL AND hidden_at IS NULL`）と、握手まで確かめた数（同じ文で `level = 1`）を、台帳の件数とは別の行に出す。固定 adapter の 13 件は、別の行。
 
+作った形（L7）: `GET /api/noah/intake?state=1`（審査者だけ）の応答に `confirmed: { ran, handshake, fixed }` を足した（`lib/noah-intake-store.ts` の `status`）。`ran` と `handshake` は、一覧の件数と同じ数え方（載せている系列だけ。取り下げた物・隠した物は数えない）。`fixed` は、本人の Mac で動かす固定の型紙の数（`lib/noah-execution-contract.mjs` の `RECIPES`。今は 13）。画面は `components/noah-intake-review.tsx`: 「つながると確かめた数」の見出しの下に 3 行（動いた・握手まで・本人の Mac で動かす）。数の無い応答（古い版）でも、画面は出る。切り替えの状態・握手の結果の内訳・接続と依頼の数などは、[97](spec-97-launch-ops.md) の 6 章（L8）。
+
 ### 9.7 握手の対象と、最初の 1 巡
 
 - 巡回が握手するのは、口が「相手のサーバー」で、本人の鍵の入力が要らない候補だけ（86 の 10.3）。
-- 量産の系列（`family_id LIKE 'bulk:%'`）は、ローンチでは載せないので、握手もしない: 名寄せの直後に `UPDATE noah_intake_checks SET next_check_at = ? WHERE level = 0 AND candidate_id IN (SELECT id FROM noah_intake_candidates WHERE family_id LIKE 'bulk:%')` で 30 日後へ送る（9,070 件。標本では 24 host のうち 5 host しか応答しない）。
+- （L4 で入れた。`lib/noah-intake-sync.ts` の `regroupStatements`。期限が 1 日以内の物だけを送り、毎日は書き直さない）量産の系列（`family_id LIKE 'bulk:%'`）は、ローンチでは載せないので、握手もしない: 名寄せの直後に `UPDATE noah_intake_checks SET next_check_at = ? WHERE level = 0 AND candidate_id IN (SELECT id FROM noah_intake_candidates WHERE family_id LIKE 'bulk:%')` で 30 日後へ送る（9,070 件。標本では 24 host のうち 5 host しか応答しない）。
 - 最初の 1 巡は、量産でない約 31,400 件。同じ接続先へは 1 時間に 1 回までなので、1 つの接続先に候補が多い物（最大は 428 件）は、1 巡に日数が掛かる。それ以外は、1 回の合図で 16 件なら約 1.5 日、8 件なら約 3 日。
 - 1 巡の後は、7 日ごとの確かめ直しで、1 日に約 5,000 件（1 回の合図で 8 件あれば足りる）。
 
@@ -243,9 +265,21 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 | 定義が変わった | 握手の hash が変わる | `level` が変わらない。接続が `connected` のまま |
 | 量産 | 同じ名前空間・同じ host の候補 20 件 | 握手しない |
 | 並びの引き直し | 同じ UTC の日に合図を 3 回／日付が変わって 1 回 | 引き直しは 1 回ずつ |
-| 後始末 | `running` で lease 切れ／`queued` で 60 秒／`probing` で 30 秒 | `unknown`／`failed`／切れている。相手への要求は 0 回 |
+| 後始末 | `running` で lease 切れ（相手へ送った後／送る前）／`queued` で 60 秒／`probing` で 30 秒 | `unknown`／`failed`（送っていない）／`failed`／切れている。相手への要求は 0 回。遅れて動いた実行の場は、道具を呼ばず、届いた成果も採られない |
 | host の間隔 | 同じ host の候補が 5 件 | 1 時間に握手するのは 1 件 |
 | 取り下げ | `withdraw` | 一覧・検索・詳細・握手から外れる。行は残る。`restore` で戻る |
+
+試験のある所（L7 で `tests/noah-patrol.test.mjs` に足したのは、まだ試験の無かった行。10 本）:
+
+| 行 | 試験 |
+| --- | --- |
+| 見回りの間隔・1 回の失敗・2 回続けて失敗・混んでいる・定義が変わった（握手の表）・量産・host の間隔 | `tests/noah-probe.test.mjs`（L4） |
+| 動いたを付ける・動かし直しても上がらない | `tests/noah-ask.test.mjs`（L6） |
+| 並びの引き直し・取り下げ | `tests/noah-intake-store.test.mjs`（L3） |
+| 一覧の条件（純関数と、名寄せ・一覧の SQL が、表の 24 行で同じ結果） | `tests/noah-patrol.test.mjs` |
+| 相手のエラーは数えない・定義が変わっても接続は止めない・「動いた」を付ける時に本人の ID を書かない・つながると確かめた数 | `tests/noah-patrol.test.mjs` |
+| 後始末（依頼 2 本・接続 1 本・上限と時間 1 本・合図からの呼び出し 1 本・拾う文が使う索引 1 本） | `tests/noah-patrol.test.mjs` |
+| 画面: 後始末が切った接続に、理由と「接続」が出る／実行の場が無くなった依頼に、「止める」がもう一度出て、押すと止まる | `tests/noah-patrol.test.mjs`（2 本）、`tests/noah-ask-ui.test.mjs`（決まりの関数）、`tests/noah-intake-review.test.mjs`（運営の画面の数） |
 
 ### 9.10 完了の定義（L7）
 
@@ -253,3 +287,43 @@ task: [codex/tasks/88-noah-mass-probe.md](../../codex/tasks/88-noah-mass-probe.m
 - 手元で合図を回し、握手が通った 50 件のうち、相手を止めた 1 件が、2 回の握手の後に一覧から消える。
 - 同じ接続先への握手が、1 時間に 1 回を越えない事を、`noah_probe_hosts` の記録で確かめる。
 - `probeL2` と `noahSampleCalls` を作っていない。
+
+結果（2026-11-21）: 4 つとも通した。中身は、下の 9.11。
+
+### 9.11 実装の記録（L7。2026-11-21）
+
+入れた物:
+
+| ファイル | 中身 |
+| --- | --- |
+| `lib/noah-sweep.ts` | 後始末（9.5）。`createNoahSweep`・拾う文 `NOAH_SWEEP_SQL`・数 `NOAH_SWEEP_LIMITS` |
+| `lib/noah-intake-api.ts` | 巡回の合図の終わりに、後始末を呼ぶ。記録の `swept`（合わせた数）と、応答の `swept`（種類ごとの数） |
+| `lib/noah-ask-store.ts` | 終わらなかった時の文（`NOAH_ASK_END_MESSAGES`）、実行の場が無くなったかの判定（`noahAskRunGone`）、その依頼の終え方（`finishGoneNoahAsk`）。行の形に `tool_calls` |
+| `lib/noah-ask.ts` | 道具を呼ぶ直前に、相手へ送る印を付ける。「止める」は、実行の場が無くなった依頼を、その場で止める。成果を書けたかどうかを、書き込みの結果で見る（読み直しを 1 回やめた） |
+| `lib/noah-ask-view.ts`・`components/noah-connect-button.tsx` | 「止めています…」が 45 秒より長く続いた依頼に、「止める」をもう一度出す。後始末が切った接続の理由を出す |
+| `lib/noah-intake-store.ts`・`components/noah-intake-review.tsx` | つながると確かめた数（9.6） |
+| [noah-v1.sql](../contracts/noah-v1.sql)・`drizzle/0049_noah_connections_connecting.sql`（`drizzle-main/` も同じ）・`db/schema.ts` | つなぐ途中の接続だけを持つ索引。**本番 D1 へは適用していない** |
+| `tests/noah-patrol.test.mjs`（10 本）・`tests/noah-intake-review.test.mjs`（1 本を足した）・`tests/noah-ask-ui.test.mjs`（決まりの関数に足した） | 9.9 の表 |
+| `scripts/check-noah-patrol.mjs` | 受入（手元の D1。下） |
+
+受入の結果（`node --experimental-strip-types scripts/check-noah-patrol.mjs`。表は、Miniflare の D1。終わると消える。台帳も相手も、script の中の合成の物で、外へは通信しない。時計は、手で進める。合図は 40 回）:
+
+- 握手が通る相手 50（接続先は別々）と、同じ接続先を分け合う、別の物 3 件。最初の数分で 51 件が載り、残りの 2 件は、1 時間に 1 件ずつ握手して載った（53 件）。
+- **相手を 1 件止めた。** 次の見回り（7 日後）で 1 回目の失敗: 一覧に残り（53 件のまま）、6 時間後に確かめ直す。2 回続けて失敗で、一覧から消えた（52 件）。相手を戻すと、次の見回り（14 日後）で握手が通り、「まだ誰も動かしていない」に戻った（53 件）。
+- **同じ接続先への握手は、1 時間に 1 回を越えなかった。** 接続先の表（`noah_probe_hosts.last_probe_at`）を合図のたびに読み、時刻が進んだ 106 回の全部で、前の握手から 1 時間以上あいていた（一番近い物で 63 分）。相手が受けた要求の時刻でも、同じ（63 分）。握手の表から数える問い合わせ（[97](spec-97-launch-ops.md) の 6 章の「同じ接続先への握手の間隔」）も、確かめた時点の全部で 0。
+- **後始末:** 相手へ送った後に実行の場が落ちた依頼・握手の途中で落ちた依頼・始まらなかった依頼・握手の途中で止まった接続を 1 件ずつ作り、合図を 1 回送ると、`swept` は「結果不明 1・失敗 2・接続 1」。早すぎる合図（lease の中・60 秒の前・30 秒の前）では、片付けない。後始末の間、相手が受けた要求は増えない。止めていた要求を後から動かしても、道具は呼ばれず、届いた成果は採られず、切った接続は戻らない。終わっていない依頼は 0。
+- 片付ける物が無い時の後始末は、D1 へ 3 往復。道具を呼んだのは、本人が頼んだ 1 回だけ（巡回と後始末は、呼ばない）。家の端末への命令は、1 件も増えない。
+
+手元の実物での確かめ（2026-11-21 04:30〜04:40 JST。`npx vinext dev`・手元の D1・実在の台帳から載った系列・審査者の account・幅 390 の Chromium。**実行の場（開発サーバーの中の workerd）を、途中で止めて、本当に落ちた状態を作った**）:
+
+- **頼んだ直後に、実行の場が落ちた:** 「頼む」の応答（202）が返った所で止めた。依頼は `running`・印なし・Work は `running` のまま残り、サーバーを動かし直した後の画面は「進んでいます（52 秒）」と「止める」。合図を 1 回送ると、応答は `swept: { asksFailed: 1 }`、記録は `swept: 1`。画面は「できませんでした。途中で止まりました。相手のサーバーへは、送っていません。もう一度頼んでください。」に変わった。
+- **落ちた依頼に「止める」を押した:** もう 1 件、同じように落とした。lease の終わり際に「止める」を押すと「止めています…（相手のサーバーで始まっていれば、止められません）」。次の合図で `swept: { asksStopped: 1 }`、画面は「止めました。」。
+- **「接続」を押した直後に、実行の場が落ちた:** 握手の途中で止めた。接続は `probing` のまま残り、画面は「準備しています…」（押せない）と「切る」。30 秒たってから合図を 1 回送ると `swept: { connections: 1 }`。画面に「接続」が戻り、押すと、つながって、道具の一覧が開いた。切られた方の行には「つなぐ途中で止まりました。もう一度試してください。」が残る。
+- この 3 回の合図は、ふだんの巡回も行った（台帳の読み取りと、握手が合わせて 5 件。手元の上限は、1 回の合図で 2 件）。相手へ送ったのは、握手と、読み取りだけと宣言された一覧の道具の呼び出しだけ。終わった後、手元の接続は全部切り、終わっていない依頼は 0。
+- **手元の実物で通していない物:** 相手へ送った後に落ちた依頼（「結果不明」になる方）。止める時刻が、2 回とも握手の途中に当たった。受入の script（D1 の上）と試験で通した。運営の画面そのもの（`/noah/review`）も、手元では開けなかった（その画面が先に読む審査の API が、手元の D1 では 503 を返す。L7 の変更とは別の所）。数の API（`GET /api/noah/intake?state=1` の `confirmed`。手元の値は、動いた 1・握手まで 43・固定 13）と、画面の部品（試験の台）で確かめた。
+
+L5 で分かっていなかった事（[74](spec-74-one-click-connect.md) の 11.9。巡回の握手が通っていた相手が、接続の握手を断った）: **名乗りで分けられている、という事は無かった。** 同じ相手へ、2 時間近くあけて、握手を、名乗り 2 つ（`Noah/1`・`NoahBot/1`）で 1 回ずつ送ると、どちらも通った（道具は呼んでいない）。断られたのは、その時だけの事か、短い間に続いた握手（巡回の 33 分後）によるかの、どちらか。名乗りで相手を扱い分ける仕組みは、足さない。1 人の失敗で一覧から外さない決まりは、そのまま。接続が断られた数を運営の画面に出す所は、97 の 6 章（L8 の「接続」の行）。
+
+D1 への往復（[87](spec-87-tool-agent.md) の 11.8 の表の続き。`scripts/check-noah-ask.mjs` で数え直した）: 実行（成果が出た時）は 15〜16 → **14〜15**。握手の前後の「使える接続か」の確かめ（2 往復ずつ）は、残した: 握手の前の分をやめると、受け付けてから実行が始まるまでの間に取り下げられた物へ、握手を送り得る。受け付け 6・読む 2・一覧 1・止める 5 は、変わらない。
+
+残っている物: 運営の画面の、残りの数（切り替えの状態・握手の結果の内訳・接続と依頼の数。97 の 6 章 = L8）。依頼の成果を「成果データ」「実行中」に出す所（87 の 11.8）。

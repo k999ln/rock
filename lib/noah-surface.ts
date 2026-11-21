@@ -29,7 +29,7 @@ export function noahActionHref(mode: NoahSurfaceMode, base: string, target: stri
   const path = noahMacPath(target, agentId);
   if (mode === 'local') return path;
   if (target === 'register') return '/noah/agents/new?launch=1';
-  if (target === 'library' || target === 'work') return `/noah/launch#${target}`;
+  if (target === 'library' || target === 'work') return `/noah/activity${target === 'library' ? '?compose=1' : ''}#${target}`;
   return `${base}/mac?${new URLSearchParams({ target, ...(agentId ? { agent: agentId } : {}) })}`;
 }
 

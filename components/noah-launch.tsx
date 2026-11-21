@@ -46,9 +46,13 @@ const status: Record<string, string> = {
 };
 export default function NoahLaunch() {
   const params = useSearchParams(),
+    [compose, setCompose] = useState(
+      Boolean(params.get('agent')) || params.get('compose') === '1',
+    ),
     [agents, setAgents] = useState<Agent[]>([]),
     [state, setState] = useState<State | null>(null),
     [error, setError] = useState(''),
+    [readError, setReadError] = useState(''),
     [signedOut, setSignedOut] = useState(false),
     [device, setDevice] = useState(''),
     [selected, setSelected] = useState(params.get('agent') ?? ''),
@@ -66,10 +70,13 @@ export default function NoahLaunch() {
       d = (await r.json()) as State & { error?: string };
     if (r.status === 401) {
       setSignedOut(true);
+      setReadError('');
       setState(null);
       return;
     }
     if (!r.ok) throw new Error(d.error ?? 'Noahの応答を確認できません。');
+    if (signal?.aborted) return;
+    setReadError('');
     setState(d);
     setRetry((old) =>
       old &&
@@ -102,8 +109,10 @@ export default function NoahLaunch() {
       try {
         await refresh(c.signal);
       } catch (e) {
-        if (!c.signal.aborted)
-          setError(e instanceof Error ? e.message : '読込失敗');
+        if (!c.signal.aborted) {
+          setState(null);
+          setReadError(e instanceof Error ? e.message : '読込失敗');
+        }
       } finally {
         busy = false;
       }
@@ -139,6 +148,7 @@ export default function NoahLaunch() {
         throw new Error(d.error ?? 'Noahの応答を確認できません。');
       }
       accepted = true;
+      if (action === 'run') setCompose(false);
       setRetry(null);
       setNotice(
         action === 'stop'
@@ -176,24 +186,48 @@ export default function NoahLaunch() {
     online = state?.devices.some(
       (d) => d.id === device && d.online && !d.revoked,
     );
+  const macHref = `/noah/mac${selected ? `?agent=${encodeURIComponent(selected)}` : ''}`;
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
         <div>
-          <h1>Agentを使う</h1>
-          <p>集める、つなぐ、仕事を任せる。成果も停止もNoahで。</p>
+          <h1>実行中のAgent</h1>
         </div>
       </header>
       <nav className={styles.nav}>
-        <Link href="/noah/agents/new?launch=1">自分のAgentを登録</Link>
-        <Link href="/noah/publisher">掲載・公開を管理</Link>
-        <Link href="/noah/mac">Macを接続</Link>
-        {state?.canReview && <Link href="/noah/review">審査</Link>}
+        <button
+          className={styles.primary}
+          aria-expanded={compose}
+          aria-controls="library"
+          onClick={() => setCompose(!compose)}
+        >
+          {compose ? '依頼入力を閉じる' : '仕事を頼む'}
+        </button>
+        <Link href="/noah/explore">Agentを探す</Link>
+        <Link href="/noah/data">保存した成果</Link>
       </nav>
       {error && (
         <p role="alert" className={styles.error}>
           {error}
         </p>
+      )}
+      {readError && (
+        <p role="alert" className={styles.error}>
+          接続情報を読み込めませんでした。{readError}
+          <button
+            onClick={() =>
+              void refresh().catch((e) => {
+                setState(null);
+                setReadError(e instanceof Error ? e.message : '読込失敗');
+              })
+            }
+          >
+            接続情報を再読み込み
+          </button>
+        </p>
+      )}
+      {!state && !signedOut && !readError && (
+        <output>接続情報を読み込んでいます…</output>
       )}
       {notice && <output>{notice}</output>}
       {retry && (
@@ -212,174 +246,246 @@ export default function NoahLaunch() {
       {signedOut && (
         <section className={styles.notice}>
           <p>自分のAgentとMacを管理するにはサインインしてください。</p>
-          <Link href="/account?mode=login&returnTo=%2Fnoah%2Flaunch">
+          <Link
+            href={`/account?mode=login&returnTo=${encodeURIComponent(selected ? `/noah/activity?agent=${encodeURIComponent(selected)}#library` : '/noah/activity')}`}
+          >
             サインイン
           </Link>
         </section>
       )}
-      <section className={styles.notice}>
-        <h2>使うMac</h2>
-        {state && (
-          <>
-            <label>
-              接続先
-              <select
-                value={device}
-                onChange={(e) => setDevice(e.target.value)}
-              >
-                <option value="">Macを選択</option>
-                {state.devices
-                  .filter((d) => !d.revoked)
-                  .map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name} · {d.online ? '接続中' : 'オフライン'}
-                    </option>
-                  ))}
-              </select>
-            </label>
-            {!online && (
-              <p>
-                MacのNoah Runnerを起動してください。
-                <Link href="/noah/mac">初めての接続</Link>
+      {compose && (
+        <section className={styles.notice} id="library">
+          <h2>1. Agentを選ぶ</h2>
+          <details>
+            <summary>Agentを作る・公開する</summary>
+            <nav className={styles.nav}>
+              <Link href="/noah/agents/new?launch=1">自分のAgentを登録</Link>
+              <Link href="/noah/publisher">掲載・公開を管理</Link>
+              {state?.canReview && <Link href="/noah/review">審査</Link>}
+            </nav>
+          </details>
+          <details>
+            <summary>自分で登録したAgent</summary>
+            {state && !state.uploadedAgents.length && (
+              <p>まだ登録していません。</p>
+            )}
+            {state?.uploadedAgents.map((a) => (
+              <p key={a.id}>
+                <Link href={'/noah/agents/' + a.id}>
+                  {a.name} · {a.version}
+                </Link>
+                {' · '}
+                {a.ready
+                  ? '接続先のMacで実行できます'
+                  : '詳細で接続条件を確認してください'}
               </p>
-            )}
-            {device && (
-              <button
-                disabled={pending}
-                onClick={() => void act('revoke', { id: device })}
-              >
-                このMacの接続を解除
-              </button>
-            )}
-          </>
-        )}
-        <p>
-          AgentはMacの専用環境で処理します。あなたの画面・入力・ブラウザは操作しません。
-        </p>
-      </section>
-      <section className={styles.notice} id="library">
-        <h2>自分が登録したAgent</h2>
-        {!state?.uploadedAgents.length && <p>まだ登録していません。</p>}
-        {state?.uploadedAgents.map((a) => (
-          <p key={a.id}>
-            <Link href={'/noah/agents/' + a.id}>
-              {a.name} · {a.version}
-            </Link>
-            {' · '}
-            {a.ready
-              ? '接続先のMacで実行できます'
-              : '詳細で接続条件を確認してください'}
-          </p>
-        ))}
-        <h2>対応Agent・公開されたAgent</h2>
-        <p>
-          この一覧は対応した実行方式に絞っています。初回は本体とモデルの準備に時間がかかります。
-        </p>
-        <label>
-          Agentを選ぶ
-          <select
-            value={selected}
-            onChange={(e) => {
-              setSelected(e.target.value);
-              setConsent(false);
-            }}
-          >
-            <option value="">Agentを選択</option>
-            {selected && !chosen && (
-              <option value={selected}>選択した自分のAgent</option>
-            )}
-            {available.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name} ·{' '}
-                {a.kind === 'release'
-                  ? '審査済み公開版'
-                  : a.kind === 'upload'
-                    ? '自分のAgent'
-                    : '対応済みの限定実行'}
-              </option>
             ))}
-          </select>
-        </label>
-        {chosen && (
-          <>
-            <h3>{chosen.name}</h3>
-            <p>{chosen.summary}</p>
-            <p>
-              版：{chosen.version} ·{' '}
-              {chosen.model === 'codex-account'
-                ? '本人のCodexの利用枠を使用'
-                : '本人Macのローカル処理'}
-            </p>
-          </>
-        )}
-        <button
-          disabled={!state || !selected || !online || pending || Boolean(retry)}
-          onClick={() =>
-            void act('connect', {
-              id: crypto.randomUUID(),
-              deviceId: device,
-              agentId: selected,
-            })
-          }
-        >
-          {connection ? '再接続する' : '自分のNoahに追加して接続'}
-        </button>
-        {connection && (
-          <div>
-            <label>
-              依頼する仕事
-              <textarea
-                rows={5}
-                maxLength={12000}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="作ってほしい成果を具体的に入力してください"
-              />
-            </label>
-            {chosen?.model === 'codex-account' && (
-              <label>
-                <input
-                  type="checkbox"
-                  checked={consent}
-                  onChange={(e) => setConsent(e.target.checked)}
-                />
-                この依頼を本人のCodexへ送り、利用枠を使います
-              </label>
-            )}
-            <button
-              disabled={
-                pending ||
-                Boolean(retry) ||
-                !online ||
-                !prompt.trim() ||
-                (chosen?.model === 'codex-account' && !consent)
-              }
-              onClick={() =>
-                void act('run', {
-                  id: crypto.randomUUID(),
-                  deviceId: device,
-                  connectionId: connection.id,
-                  prompt,
-                  ...(consent ? { consent: 'codex-account/1' } : {}),
-                })
-              }
+          </details>
+          <label>
+            Agentを選ぶ
+            <select
+              value={selected}
+              onChange={(e) => {
+                setSelected(e.target.value);
+                setConsent(false);
+              }}
             >
-              この内容で実行
-            </button>
+              <option value="">Agentを選択</option>
+              {selected && !chosen && (
+                <option value={selected}>選択した自分のAgent</option>
+              )}
+              {available.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name} ·{' '}
+                  {a.kind === 'release'
+                    ? '審査済み公開版'
+                    : a.kind === 'upload'
+                      ? '自分のAgent'
+                      : '対応済みの限定実行'}
+                </option>
+              ))}
+            </select>
+          </label>
+          {chosen && (
+            <>
+              <h3>{chosen.name}</h3>
+              <details className={styles.agentDetails}>
+                <summary>できること・利用条件</summary>
+                <dl>
+                  <div>
+                    <dt>できること</dt>
+                    <dd>{chosen.summary}</dd>
+                  </div>
+                  <div>
+                    <dt>実行先</dt>
+                    <dd>
+                      {chosen.model === 'codex-account'
+                        ? '本人のCodexの利用枠を使用'
+                        : '本人Macのローカル処理'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>バージョン</dt>
+                    <dd>{chosen.version}</dd>
+                  </div>
+                </dl>
+              </details>
+            </>
+          )}
+          <div className={styles.notice}>
+            <h2>2. Macをつなぐ</h2>
+            {state && (
+              <>
+                <label>
+                  使うMac
+                  <select
+                    value={device}
+                    onChange={(e) => setDevice(e.target.value)}
+                  >
+                    <option value="">Macを選択</option>
+                    {state.devices
+                      .filter((d) => !d.revoked)
+                      .map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name} · {d.online ? '接続中' : 'オフライン'}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                {!online && (
+                  <p>
+                    Macが未接続です。
+                    <Link className={styles.primary} href={macHref}>
+                      Macをつなぐ
+                    </Link>
+                  </p>
+                )}
+                {device && (
+                  <button
+                    disabled={pending}
+                    onClick={() => void act('revoke', { id: device })}
+                  >
+                    このMacの接続を解除
+                  </button>
+                )}
+              </>
+            )}
+            <p>画面を操作せず、Macの専用環境で動きます。</p>
+          </div>
+          {!selected && <p>Agentを選んでください。</p>}
+          <button
+            disabled={
+              !state || !selected || !online || pending || Boolean(retry)
+            }
+            onClick={() =>
+              void act('connect', {
+                id: crypto.randomUUID(),
+                deviceId: device,
+                agentId: selected,
+              })
+            }
+          >
+            {connection ? '接続し直す' : 'このAgentをつなぐ'}
+          </button>
+          {connection && (
+            <div>
+              <h2>3. 仕事を頼む</h2>
+              <label>
+                依頼する仕事
+                <textarea
+                  rows={5}
+                  maxLength={12000}
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="作ってほしい成果を具体的に入力してください"
+                />
+              </label>
+              {chosen?.model === 'codex-account' && (
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                  />
+                  この依頼を本人のCodexへ送り、利用枠を使います
+                </label>
+              )}
+              <button
+                disabled={
+                  pending ||
+                  Boolean(retry) ||
+                  !online ||
+                  !prompt.trim() ||
+                  (chosen?.model === 'codex-account' && !consent)
+                }
+                onClick={() =>
+                  void act('run', {
+                    id: crypto.randomUUID(),
+                    deviceId: device,
+                    connectionId: connection.id,
+                    prompt,
+                    ...(consent ? { consent: 'codex-account/1' } : {}),
+                  })
+                }
+              >
+                この内容で実行
+              </button>
+            </div>
+          )}
+        </section>
+      )}
+      {state && (
+        <section className={styles.activityStats} aria-label="仕事の状況">
+          <div>
+            <strong>
+              {
+                state.commands.filter(
+                  (c) =>
+                    c.kind === 'run' && ['queued', 'claimed'].includes(c.state),
+                ).length
+              }
+            </strong>
+            <span>進行中</span>
+          </div>
+          <div>
+            <strong>
+              {state.jobs.filter((j) => j.noahExecution?.result).length}
+            </strong>
+            <span>届いた成果</span>
+          </div>
+          <div>
+            <strong>
+              {state.devices.filter((d) => d.online && !d.revoked).length}
+            </strong>
+            <span>接続中のMac</span>
+          </div>
+        </section>
+      )}
+      <section className={styles.activityList} id="work">
+        <h2>仕事と成果</h2>
+        {state && !state.commands.length && (
+          <div className={styles.empty}>
+            <p>まだ仕事はありません。</p>
+            <Link className={styles.primary} href="/noah/explore">
+              Agentを選んで始める
+            </Link>
           </div>
         )}
-      </section>
-      <section className={styles.notice} id="work">
-        <h2>接続と仕事</h2>
-        {!state?.commands.length && <p>まだ仕事はありません。</p>}
         {state?.commands.map((c) => {
           const job = state.jobs.find((j) => j.id === c.id)?.noahExecution;
           return (
-            <article key={c.id}>
+            <article
+              key={c.id}
+              className={styles.activityCard}
+              data-state={c.state}
+            >
               <h3>
                 {c.agent.name} · {c.kind === 'connect' ? '接続' : '仕事'}
               </h3>
               <p>
+                {['queued', 'claimed'].includes(c.state) && (
+                  <span className={styles.activityDot} aria-hidden="true" />
+                )}
                 {c.kind === 'connect' &&
                 c.state === 'succeeded' &&
                 !c.currentBoot
@@ -392,9 +498,13 @@ export default function NoahLaunch() {
               {c.result?.message && <p>{c.result.message}</p>}
               {job?.result && (
                 <>
+                  <h4>届いた成果</h4>
                   <pre style={{ whiteSpace: 'pre-wrap' }}>
                     {job.result.text}
                   </pre>
+                  <p>
+                    <Link href="/noah/data">成果一覧</Link>
+                  </p>
                   {job.result.files.map((f) => (
                     <p key={f.name}>
                       <button

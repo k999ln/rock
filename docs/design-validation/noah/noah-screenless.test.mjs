@@ -1,9 +1,8 @@
 // 画面を取らない: リポジトリにある本物の起動引数の検査と、面の見分けの検証。
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { auditNoahContainerArgs, auditNoahVmArgs, classifyNoahSurface, decideNoahSurface, noahPlacesForSurface, noahRuntimeDependencies } from '../../contracts/noah-screenless-v1.ts';
-import { containerArgs } from '../../../scripts/noah-isolated-runtime.mjs';
+import { containerArgs, engineArgs } from '../../../scripts/noah-isolated-runtime.mjs';
 import { terminalContainerArgs } from '../../../scripts/noah-terminal-runtime.mjs';
 import { RECIPES } from '../../../lib/noah-execution-contract.mjs';
 import { TERMINAL_SURFACE } from '../../../lib/noah-terminal-contract.mjs';
@@ -16,9 +15,7 @@ test('今の main の起動引数は、検査を通る', () => {
   assert.deepEqual(auditNoahContainerArgs(run()), []);
   assert.deepEqual(auditNoahContainerArgs(terminalContainerArgs('noah-stage-x', 'image', VOLUME, { root: '' }, 'main.mjs', 'node', true), { stage: true }), []);
   assert.deepEqual(TERMINAL_SURFACE, { schema: 'noah-isolation/1', mode: 'headless', hostDesktop: false, hostFiles: false, hostBrowser: false, network: 'none' });
-  // VM の起動引数は関数の中にあるので、ソースから読む（task 84 で、引数を返す関数を export する）
-  const source = readFileSync(new URL('../../../scripts/noah-isolated-runtime.mjs', import.meta.url), 'utf8');
-  const vm = /runCommand\('colima', \[([^\]]+)\]/.exec(source)[1].split(',').map((s) => s.trim().replace(/^'|'$/g, ''));
+  const vm = engineArgs();
   assert.equal(vm[0], 'start');
   assert.deepEqual(auditNoahVmArgs(vm), []);
 });

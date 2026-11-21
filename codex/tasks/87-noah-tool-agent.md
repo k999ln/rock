@@ -33,3 +33,20 @@
 - 手元で、鍵の要らない接続先へ入力欄から頼んで成果が出る。Mac を使わない。`POST` の後に `GET` を 1 回も呼ばなくても、Work に成果が入る。
 - 道具の説明に「前の指示を無視して…」と書いた接続先で、一覧に無い道具も、確認の要る道具も呼ばれない。
 - `npm run typecheck`、`npm run lint:product`、`npm run work:check`。本番への配備と migration の適用は行わない。
+
+## 開発進捗
+
+- 2026-11-21 03:00 JST: **L6（入力欄で頼む。仕様書 11 章）は Claude が作業中。** 枝は `claude/noah-ask-l6-20261121`（L5 の枝 `claude/noah-connect-l5-20261121` = [PR #342](https://github.com/k999ln/rock/pull/342) の上。[PR #344](https://github.com/k999ln/rock/pull/344)）。同じ範囲を、別の枝で作り始めない。
+- 入れる物（仕様書 11.1 のローンチまでの列）: migration `noah_asks`（番号は 0048 の予定。0045・0046 は Codex、0047 は接続の表）、`lib/workflow.ts`（`noahRemote`）、`lib/noah-remote-work.ts`、`lib/noah-ask.ts` と入口 2 つ（`/api/noah/ask`・`/api/noah/ask/[id]`）、画面（`components/noah-ask.tsx` に、道具を選ぶ・入力欄・確かめ。`components/noah-work-list.tsx`）、`tests/noah-ask.test.mjs`、手元の D1 での受入の script。
+- 入れない物: 1 文で頼む（モデル・`services/noah-relay`・`lib/noah-tool-agent.ts`・「あなたの番」）。本番への migration・配備・切り替え。
+- 順: 先に、画面に依らない所（表・Work・API・実行・試験）。次に画面。
+- 2026-11-21 03:40 JST: **L6 を入れた**（[PR #344](https://github.com/k999ln/rock/pull/344)。未マージ）。
+  - 入れた物: migration `0048_noah_asks`（`drizzle/`・`drizzle-main/`・`db/schema.ts`）、`lib/workflow.ts`（`noahRemote`）、`lib/noah-remote-work.ts`、`lib/noah-ask-store.ts`、`lib/noah-ask.ts`、入口 2 つ（`app/api/noah/ask/route.ts`・`[id]/route.ts`）、画面（`lib/noah-ask-view.ts`・`components/noah-ask.tsx`・`components/noah-work-list.tsx`）。接続を切ると、終わっていない依頼を止める（`lib/noah-connect.ts`）。
+  - 決めた事と理由・手元の実物での確かめ・出す時に気を付ける事は、[仕様書 87](../../docs/noah/spec-87-tool-agent.md) の 11.8。
+  - 確かめ方: `node --experimental-strip-types --test tests/noah-form.test.mjs tests/noah-ask.test.mjs tests/noah-ask-ui.test.mjs`。`npm run typecheck`、`npm run lint:product`、`npm run work:check`、`npm run test:api`、`npm run release:check`。
+  - **完了の定義のうち、通していない物:** 「確かめが要る道具へ、実在の相手で頼んで成果が出る」。手元の系列で見つかった、読み取りだけと宣言されていない使える道具は 1 個で、相手の事業者へ問い合わせを送る物だった。本人の許可なく送らない。送る手前の確かめの画面までを、実物で見た。呼ぶ所は、試験の中の相手で確かめた。
+  - 残り: 成果を「成果データ」（`/noah/data`）と「実行中」（`/noah/activity`）に出す所（Codex の `lib/noah-result-data.ts` は `noahExecution` だけを読む）。「利用人数」に依頼を数える所。受入の script（Miniflare の D1）。`running` のまま残った依頼の後始末は L7。
+  - 本番への migration・配備・切り替えは行っていない。
+- 2026-11-21 03:55 JST: **受入の script を足した**（上の「残り」のうちの 1 つ。`node --experimental-strip-types scripts/check-noah-ask.mjs`。表は Miniflare の D1、相手は合成の 17。外へは通信しない）。依頼 63 件（成果 42・失敗 14・結果不明 2・止めた 5）で、依頼と Work は 1 対 1・終わっていない物は 0・道具の呼び出しは 1 件につき 1 回まで。止める・切る・上限の SQL を、D1 の上で通した。D1 への往復は、受け付け 6・実行 15〜16（数え方と内訳は、仕様書 87 の 11.8）。
+  - GitHub のコード検査（CodeQL）が、試験の 2 か所（先頭だけに `^` が掛かる正規表現・URL を文字の先頭で比べる所）を指摘したので、書き直した（検査している中身は同じ）。自動検査は `verify`・`CodeQL` とも成功（`0fee854`）。`SPIDER / secrets` は、過去の commit 3 件の分で赤のまま（この PR の変更ではない）。
+

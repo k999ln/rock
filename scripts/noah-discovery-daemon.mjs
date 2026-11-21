@@ -60,6 +60,21 @@ export function startDiscoveryDaemon({
       const result = await response.json();
       if (!response.ok || result.ownerScope !== data.ownerScope)
         throw Error('Discovery unavailable');
+      // The new intake is optional while its migration/flags remain closed.
+      // Obtain its own current owner scope; never reuse a changed account's intent.
+      if (closed) return;
+      const intakeState = await fetcher(base + '/api/noah/intake?state=1', { signal, redirect: 'manual' });
+      if (intakeState.status !== 404) {
+        const intake = await intakeState.json();
+        if (!intakeState.ok || intake.ownerScope !== data.ownerScope) throw Error('Intake owner unavailable');
+        if (closed) return;
+        const intakeResponse = await fetcher(base + '/api/noah/intake', {
+          method: 'POST', signal, redirect: 'manual', body: '{}',
+          headers: { Origin: base, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': intake.ownerScope },
+        });
+        const intakeResult = await intakeResponse.json();
+        if (!intakeResponse.ok || intakeResult.ownerScope !== intake.ownerScope) throw Error('Intake unavailable');
+      }
       if (!closed)
         onStatus({
           state: 'checked',

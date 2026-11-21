@@ -32,3 +32,16 @@
 - `node --experimental-strip-types --test tests/noah-mouth-remote.test.mjs tests/noah-oauth.test.mjs tests/noah-probe.test.mjs tests/noah-oauth-service.test.mjs`（相手の振る舞い 17 通り、接続先の検査、取り方の決定 10 通り、`state` は 1 回だけ・10 分・本人だけ）。
 - 手元の巡回で、鍵の宣言が無い候補 100 件に握手の結果が付く。内訳を PR 本文に書く（実測: 応答 54.6%・401 が 34.8%・失敗 10.6%）。
 - `npm run sky:check`、`npm run typecheck`、`npm run lint:product`。
+
+## 実装の引き継ぎ（2026-11-21、PR #335）
+
+- 枝 `claude/noah-handshake-l4-20261120`（Claude）。L3 の点検の修正 [PR #339](https://github.com/k999ln/rock/pull/339) の上に積んだ PR。その下が L3 の [PR #332](https://github.com/k999ln/rock/pull/332)。main への直接 push・マージはしていない。
+- 範囲は仕様書 86 の 10 章だけ。相手の許可（OAuth。上の「やること」の 2・3）と `lib/noah-mouth-space.ts` は作っていない。401 を返した相手へは、初期化の 1 回しか送らない。
+- 置いた所: 握手・道具の一覧・呼び出し・接続先の検査は `lib/noah-mouth-mcp-remote.ts`、入力欄の関数は `lib/noah-form.ts`（どちらも、型契約から関数ごと移した。型契約の側は再 export）。握手 1 回（`probeL1`）と結果の書き方（`planNoahProbeWrite`）と見回りの間隔は `lib/noah-probe.ts`。巡回での握手（`probeDue`）は `lib/noah-intake-probe.ts`（`createIntakeStore` が出し、合図の入口が、台帳の巡回の後に呼ぶ）。
+- 仕様書 88 の 9.3（失敗が続いた物を外す・30 日で隠す・握手が通ると戻す）と 9.7（量産の系列を握手の対象から外す）も、ここで入れた（握手の結果を書く所と同じなので）。L7 に残るのは、後始末（9.5）と、つながると確かめた数（9.6）。「動いた」を付ける（9.2）は L6。
+- 決めた事（仕様書 86 の 10.3 の 10〜15 に書いた）: 401 の候補の次の握手は 30 日後。握手 1 件の待ち（12 秒）が残っていない合図は、新しい握手を始めない。握手の結果は、取り置きの値が変わっていない時だけ書く。系列の行は、載せる条件が変わった時だけ書く。手元の入口（`POST /api/noah/intake` に `{}`）は握手しない。
+- 製品試験: `node --experimental-strip-types --test tests/noah-mouth-remote.test.mjs tests/noah-form.test.mjs tests/noah-probe.test.mjs tests/noah-intake-*.test.mjs`（76 件）。型契約: `node --experimental-strip-types --test docs/design-validation/noah/noah-*.test.mjs`（61/61）、`python3 docs/design-validation/noah/validate-noah-v1.py`（10/10）。
+- 受入: `node --experimental-strip-types scripts/check-noah-probe.mjs`（合成。手元の D1。外へ通信しない）。`--live --records=<台帳の記録の .jsonl> --limit=100` で、実在の接続先へ握手だけを送る（道具は呼ばない。1 接続先に 1 回）。結果は仕様書 86 の 10.6: 通った 51・401 が 35・応答しない 11・形が合わない 2・つなげない 1。通った 51 のうち、入力欄で使える道具がある物は 50。
+- `scripts/check-noah-intake.mjs`（L3 の受入）は、握手を 0 件にして、台帳の取り込みだけの受入のままにした。
+- **残っている事**: 本番の Worker から、内部向けのアドレスを指す名前へ届かない事の確かめ（仕様書 86 の 10.3 の最後の手順。配備の後、出す前に 1 回。G3）。本番 migration・配備・切り替えは未実施。
+- CI の既知の残件: SPIDER / secrets が、main の履歴にある試験用の文字列（`docs/design-validation/noah/noah-connect.test.mjs:85` の 3 commit）を検出する。この PR の追加による検出ではない。

@@ -31,3 +31,11 @@
 - `node --experimental-strip-types --test tests/noah-surface-class.test.mjs tests/noah-screenless.test.mjs tests/noah-launch-close.test.mjs`。緩めた変更 15 通りが落ちる。
 - `npm run typecheck`、`npm run lint:product`、`npm run verify`。
 - PR 本文に、検査用の Mac での観測（4 項目の変化の数）か、まだ行っていない事を書く。
+
+## 開発進捗
+
+[PR #329](https://github.com/k999ln/rock/pull/329): L1の実装・ローカル検証済み。起動引数を変えずに `engineArgs()` を抽出し、監査の正本を `lib/noah-screenless-audit.mjs` へ移設。固定13件・Node/Python実行と配置・VMの18構成をverifyで検査する。15通りの緩和拒否と、overviewなしのpoll → start → finishによるWork成果保存を確認した。
+
+検証: `npm ci` と `npm ci --prefix sites/avocado-mini` の後、`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 成功（主テスト4,438成功・既存skip4・失敗0、仕事API1,918項目・CSV保存385項目、build含む）。関連30テスト・設計キット61件・DDL10項目も成功。使い捨てコピーの `terminalContainerArgs` に DISPLAY=:0 を追加した実CLIは終了コード1で拒否。途中の既存ブラウザー試験のタイムアウトは、単独4件成功と全体verifyの再成功を確認した。
+
+残件: 面の分類とMac実機の前面アプリ・窓・クリップボード・権限観測はローンチ後。実機OSの合格ではない。本番migration・配備・切り替えなし。PRは未マージ。GitHubの秘密値検査はmainから引き継いだ過去3コミットの合成テスト入力を検出している（詳細はPR）。検査・履歴・例外設定は変更していない。
