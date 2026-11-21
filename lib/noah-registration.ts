@@ -1,9 +1,12 @@
+import { profileField } from './noah-profile-contract.ts';
+import type { ResolvedRegistration, RegistrationDocument } from './noah-registration-profile.ts';
 import type { WorkJob } from './workflow.ts';
 import { noahPublicHttpsUrl, canonicalJson, sha256Hex } from './noah-connect-requirements.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import type { RegistrationProvider, RegistrationRecord, RegistrationState, RegistrationStatus } from './noah-registration-contract.ts';
 export type ConfiguredRegistration = RegistrationProvider & { executorUrl: string };
 export type RegistrationDependencies = {
+  resolveProfile?: (request:Request,provider:ConfiguredRegistration,reuse:unknown)=>Promise<ResolvedRegistration>;
   db: Pick<D1Database, 'prepare'>; providers: ConfiguredRegistration[]; token?: string;
   fetcher?: typeof fetch; now?: () => number; waitUntil?: (promise: Promise<unknown>) => void;
 };
@@ -35,9 +38,11 @@ export function parseRegistrationProviders(raw?: string): ConfiguredRegistration
       if (providerOrigin.pathname !== '/' || verification.origin !== providerOrigin.origin || terms.origin !== providerOrigin.origin) throw Error('Provider origin mismatch');
       const keys = new Set<string>();
       const fields = v.fields.map(f => {
-        if (!object(f) || typeof f.key !== 'string' || !/^[a-z][a-z0-9_]{0,39}$/.test(f.key) || ['constructor','prototype','__proto__'].includes(f.key) || keys.has(f.key) || !text(f.label, 80) || !['text','email','password'].includes(String(f.type)) || typeof f.required !== 'boolean' || !Number.isSafeInteger(f.maxLength) || Number(f.maxLength) < 1 || Number(f.maxLength) > 1024) throw Error('Invalid registration field');
+        if (!object(f) || typeof f.key !== 'string' || !/^[a-z][a-z0-9_]{0,39}$/.test(f.key) || ['constructor','prototype','__proto__'].includes(f.key) || keys.has(f.key) || !text(f.label, 80) || !['text','email','password','file'].includes(String(f.type)) || typeof f.required !== 'boolean' || !Number.isSafeInteger(f.maxLength) || Number(f.maxLength) < 1 || Number(f.maxLength) > 1024) throw Error('Invalid registration field');
+        if (f.profileField !== undefined && ((!profileField(f.profileField) && f.profileField !== 'identityDocument') || f.type === 'password')) throw Error('Invalid profile mapping');
+        if ((f.type === 'file') !== (f.profileField === 'identityDocument')) throw Error('Invalid document mapping');
         keys.add(f.key);
-        return { key: f.key, label: f.label, type: f.type as 'text' | 'email' | 'password', required: f.required, maxLength: Number(f.maxLength) };
+        return { key: f.key, label: f.label, type: f.type as 'text' | 'email' | 'password' | 'file', ...(f.profileField ? {profileField:f.profileField as import('./noah-registration-contract.ts').RegistrationField['profileField']} : {}), required: f.required, maxLength: Number(f.maxLength) };
       });
       return { id: v.id, name: v.name, agentIds: v.agentIds as string[], revision: Number(v.revision), providerOrigin: providerOrigin.origin,
         verificationUrl: verification.href, termsUrl: terms.href, termsVersion: v.termsVersion, executorName: v.executorName,
@@ -80,9 +85,9 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       verificationUrl: same && r.state === 'needs_user' ? provider.verificationUrl : null,
       returnTo: `/noah/launch?${new URLSearchParams({ agent: r.agentId })}#library` };
   }
-  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>): Promise<RegistrationState> {
+  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>): Promise<RegistrationState> {
     try {
-      const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values } : {}) }) });
+      const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values, ...(documents && Object.keys(documents).length ? {documents} : {}) } : {}) }) });
       if (!response.ok) { await response.body?.cancel(); return 'unknown'; }
       const reply = await readBounded(response.body);
       if (!object(reply) || reply.id !== id || !['running','needs_user','completed','failed','unknown'].includes(String(reply.state))) return 'unknown';
@@ -124,19 +129,24 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       if (!enabled) fail('登録Agentがまだ接続されていません。入力せずに時間をおいてご確認ください。', 503);
       if (request.headers.get('content-type')?.split(';')[0].trim() !== 'application/json') return json({ error: '入力の形式を確認してください。' }, 415);
       const input = await readBounded(request.body);
-      if (!object(input) || Object.keys(input).length !== 9 || !Object.keys(input).every(k => ['action','id','providerId','agentId','revision','termsVersion','values','consent','termsAccepted'].includes(k)) || input.action !== 'start' || !uuid(input.id) || input.consent !== true || input.termsAccepted !== true || !object(input.values)) fail('送信する内容と同意を確認してください。');
+      if (!object(input) || ![9,10].includes(Object.keys(input).length) || !Object.keys(input).every(k => ['action','id','providerId','agentId','revision','termsVersion','values','consent','termsAccepted','profile'].includes(k)) || input.action !== 'start' || !uuid(input.id) || input.consent !== true || input.termsAccepted !== true || !object(input.values)) fail('送信する内容と同意を確認してください。');
       const provider = deps.providers.find(p => p.id === input.providerId);
       if (!provider || !provider.agentIds.includes(String(input.agentId))) fail('登録先が見つかりません。Agentを選び直してください。', 404);
       if (input.revision !== provider.revision || input.termsVersion !== provider.termsVersion) fail('登録条件が更新されました。画面を開き直して確認してください。', 409);
+      if (input.profile !== undefined && !deps.resolveProfile) fail('保存情報はまだ使えません。',503);
+      const resolved=await deps.resolveProfile?.(request,provider,input.profile);
+      if(resolved && Object.keys(resolved.values).some(k=>Object.hasOwn(input.values as object,k))) fail('同じ項目を二重に指定できません。');
+      const supplied={...input.values,...resolved?.values};
       const values: Record<string, string> = {};
       if (Object.keys(input.values).some(k => !provider.fields.some(f => f.key === k))) fail('登録に使えない項目が含まれています。画面を開き直してください。');
       for (const field of provider.fields) {
-        const value = input.values[field.key] ?? '';
+        const value = supplied[field.key] ?? '';
+        if(field.type==='file' && value && !resolved?.documents[field.key])fail('保存した書類を選んでください。');
         if (typeof value !== 'string' || value.length > field.maxLength || hasControl(value) || (field.required && !value.trim()) || (value && field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))) fail('必要項目の形式と長さを確認してください。');
         values[field.key] = value;
       }
       const providerDigest = await sha256Hex(canonicalJson(provider));
-      const requestDigest = await registrationFingerprint(key, { providerDigest, agentId: input.agentId, termsVersion: provider.termsVersion, values });
+      const requestDigest = await registrationFingerprint(key, { providerDigest, agentId: input.agentId, termsVersion: provider.termsVersion, values, ...(resolved && Object.keys(resolved.documents).length ? {documents:resolved.documents}: {}) });
       const existing = await deps.db.prepare('SELECT payload FROM work_jobs WHERE user_id=? AND id=?').bind(owner, input.id).first<{ payload: string }>();
       if (existing) {
         const previous = await read(owner, input.id);
@@ -156,7 +166,10 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
         if (replay) { const saved = await read(owner, job.id); if (saved.noahRegistration.requestDigest === requestDigest) return json({ job: await present(saved) }); }
         fail('登録の受付上限または同じ仕事の内容を確認してください。時間をおいてお試しください。', 429);
       }
-      const run = callAgent(provider, job.id, values).then(state => settle(owner, job, state)).catch(() => {});
+      const run = (async()=>{
+        try { await resolved?.beforeSend(); } catch { await settle(owner,job,'failed'); return; }
+        await settle(owner,job,await callAgent(provider,job.id,values,resolved?.documents));
+      })().catch(() => {});
       if (deps.waitUntil) deps.waitUntil(run); else await run;
       return json({ job: await present(await read(owner, job.id)) }, 202);
     } catch (e) {

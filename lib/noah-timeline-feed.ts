@@ -1,9 +1,11 @@
+import type { NoahReadyItem } from './noah-ready-view.ts';
 import type { ResearchSummary } from './noah-research-types';
 import type { FeedbackFeedEntry } from './noah-feedback.ts';
 import type { SkySocialPost } from './sky-social';
 import { NOAH_SHELF_TEXT, type NoahShelfCard } from './noah-shelf-view.ts';
 
 export type NoahTimelineItem =
+  | { key:string; kind:'remote'; agent:NoahReadyItem }
   | { key: string; kind: 'agent'; agent: ResearchSummary }
   | { key: string; kind: 'post'; post: SkySocialPost }
   | { key: string; kind: 'feedback'; opinion: FeedbackFeedEntry }
@@ -35,6 +37,7 @@ export function mixNoahTimeline(
   posts: SkySocialPost[],
   opinions: FeedbackFeedEntry[] = [],
   cards: NoahShelfCard[] = [],
+  remote: NoahReadyItem[] = [],
 ): NoahTimelineItem[] {
   const publicPosts = posts.filter((post) => !post.community);
   const followed: NoahTimelineItem[] = publicPosts
@@ -74,13 +77,14 @@ export function mixNoahTimeline(
     seen = new Set<string>();
   for (
     let n = 0;
-    n < Math.max(Math.ceil(followed.length / 2), catalog.length, others.length, shelf.length);
+    n < Math.max(Math.ceil(followed.length / 2), catalog.length, others.length, shelf.length, remote.length);
     n++
   ) {
     for (const item of [
       followed[n * 2],
       followed[n * 2 + 1],
       others[n],
+      remote[n] ? {key:`remote:${remote[n].id}`,kind:'remote' as const,agent:remote[n]} : undefined,
       catalog[n],
       shelf[n],
     ]) {
@@ -120,14 +124,14 @@ export function selectNoahTimeline(
       item.kind !== 'agent' &&
       item.kind !== 'post' &&
       item.kind !== 'feedback' &&
-      item.kind !== 'card'
+      item.kind !== 'card' && item.kind !== 'remote'
     )
       return false;
     if (item.kind === 'post' && item.post.community) return false;
-    if (filter === 'agent' && item.kind !== 'agent') return false;
+    if (filter === 'agent' && item.kind !== 'agent' && item.kind !== 'remote') return false;
     if (!term) return true;
     const text =
-      item.kind === 'agent'
+      item.kind === 'remote' ? `${item.agent.name} ${item.agent.summary} ${item.agent.provider}` : item.kind === 'agent'
         ? `${item.agent.name} ${item.agent.summary} ${item.agent.author}`
         : item.kind === 'feedback'
           ? `${item.opinion.content} ${item.opinion.author} ${item.opinion.agentName}`

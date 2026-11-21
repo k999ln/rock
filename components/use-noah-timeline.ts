@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { NoahReadyItem } from '@/lib/noah-ready-view';
 import type { FeedbackFeedPage } from '@/lib/noah-feedback';
 import type { ResearchPage } from '@/lib/noah-research-types';
 import type { SkySocialState } from '@/lib/sky-social';
@@ -118,7 +119,8 @@ export function useNoahTimeline(
             )
           : Promise.resolve(undefined),
         includeSocial ? shelfCards(controller.signal) : Promise.resolve([]),
-      ]).then(([agents, social, opinions, shelf]) => {
+        mode==='public' && kind!=='related' ? json<{items?:NoahReadyItem[]}>(`/api/noah/intake?${new URLSearchParams({q:query.trim().slice(0,80)})}`,controller.signal) : Promise.resolve({items:[]}),
+      ]).then(([agents, social, opinions, shelf, remote]) => {
         if (controller.signal.aborted || version !== generation.current) return;
         const errors: string[] = [];
         if (agents.status === 'rejected')
@@ -141,6 +143,7 @@ export function useNoahTimeline(
             s?.posts ?? [],
             o?.entries ?? [],
             shelf.status === 'fulfilled' ? shelf.value : [],
+            remote.status==='fulfilled' && Array.isArray(remote.value.items)?remote.value.items.slice(0,12):[],
           ),
         });
       });
@@ -150,7 +153,7 @@ export function useNoahTimeline(
       controller.abort();
       pending.current?.abort();
     };
-  }, [key, endpoint, params, includeSocial]);
+  }, [key, endpoint, params, includeSocial, mode, kind, query]);
 
   const loadMore = useCallback(async () => {
     if (

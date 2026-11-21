@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import NoahRegistrationSheet from './noah-registration-sheet';
 import NoahAsk from './noah-ask';
 import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
@@ -93,14 +94,16 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
     <article className={styles.detail}>
       <header className={styles.cardHead}><h1>{detail.name}</h1><span className={styles.provider}>提供: {detail.provider}</span></header>
       <p className={styles.description}>{detail.summary || '（説明はありません）'}</p>
+<div className={styles.journey} aria-label="使い方"><div><b>01</b><strong>依頼する</strong><small>道具を選んで入力</small></div><span>→</span><div><b>02</b><strong>Agentが実行</strong><small>画面を離れてもOK</small></div><span>→</span><div><b>03</b><strong>成果を受け取る</strong><small>実行中・成果から確認</small></div></div>
       <ul className={styles.facts} aria-label="つなぎ方">{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{text}</li>)}</ul>
       {checked && <p className={styles.quiet}>{checked}</p>}
       {detail.host && <p className={styles.sendsTo}>{noahSendsToText(detail.host)}</p>}
       {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">提供者のページ（{new URL(detail.website).hostname}）</a></p>}
       <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
+      {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
     </article>
 
-    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
+    {live?.state === 'connected' && <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
     {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
     {signedIn && <div id="noah-agent-work" tabIndex={-1}><NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} /></div>}
     {/* 棚のカードから来た時: 試行の本人の報告と、5 人以上の報告の合計（切り替えが閉の間は、何も出ない）。頼んだ後に、入れられるかを読み直す。 */}

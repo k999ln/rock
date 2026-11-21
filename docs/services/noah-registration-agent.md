@@ -9,7 +9,7 @@
 - Wallet: 課金や契約の自動実行はしない。初期設定は無料の登録アダプターだけ。外部の料金・条件は同意画面で別に確認する。
 - hardware profile依存: フォーム・状態確認はブラウザのみ。既存Mac実行の認証・別端末共有は変更しない。
 - 失敗時: 送信後の不明は自動再登録せず、同じ実行IDで状態を照会。本人確認・CAPTCHAは本人へ戻す。
-- 記録: 仕事ID、ブラウザ用権限のhash、登録先ID/版、同意版、状態、期限。登録情報の原文、password、OTP、外部token、応答本文は記録しない。
+- 記録: 仕事ID、ブラウザ用権限のhash、登録先ID/版、同意版、状態、期限。仕事の記録には登録情報の原文、password、OTP、外部token、応答本文を保存しない。本人が選んだ再利用情報だけを、後述の暗号化保管へ分離して保存できる。
 
 ## 登録不要の範囲
 
@@ -20,7 +20,7 @@
 ## 設定と実行契約
 
 `NOAH_REGISTRATION_PROVIDERS` はJSON配列。各項目は `id,name,agentIds,revision,providerOrigin,verificationUrl,termsUrl,termsVersion,executorUrl,executorName,fields`。
-必要項目は `key,label,type,required,maxLength`（type=text/email/password）。revisionは1以上の整数、NOAH_REGISTRATION_AGENT_TOKENは32文字以上。executorUrlはHTTPS。外部の提供者と登録Agentの送信先を両方表示する。
+必要項目は `key,label,type,required,maxLength`（type=text/email/password/file）。revisionは1以上の整数、NOAH_REGISTRATION_AGENT_TOKENは32文字以上。executorUrlはHTTPS。外部の提供者と登録Agentの送信先を両方表示する。
 `NOAH_REGISTRATION_AGENT_TOKEN` は登録Agentのサーバー認証。公開APIへ返さない。
 未設定・不正設定では受付を閉じ、個人情報のフォームを出さない。架空の登録成功や未接続Agentを実行可能とは表示しない。
 
@@ -37,3 +37,19 @@
 
 
 2026-11-21 導線改善: 同じ登録の状態を表示中だけ5秒間隔で確認し、1回の表示では最大12回。外部の本人確認からタブへ戻ると状態を読み直す。背景では通信せず、完了/失敗で停止する。復元したブラウザの控えもGETの状態照会だけに使い、登録情報の自動再送はしない。未接続の登録先を使えると表示しない。
+
+
+## 共通情報と委任（2026-11-22 本人承認の追加開発）
+
+- 本人の認証で既存R2へ暗号化して保存する。AES-256-GCM、ランダムnonce、owner/用途をAADに固定。鍵はSites秘密設定 `NOAH_PROFILE_KEYS`（activeとkeys）、ブラウザ・Git・ログへ出さない。プロフィール/書類は公開データやWork本文に入れない。既存D1 schemaの変更は不要。
+- 基本/活動/受取口座/本人確認のメタデータを一度保存し、必要な項目だけ接続先へ渡す。本人確認書類はPNG/JPEG/PDF、1件5MiBまで、2件まで。認証した本人だけにattachmentとして返す。保存・削除・委任変更はETag相当の版を照合し、他画面の変更を上書きしない。
+- `GET/POST /api/noah/profile` は本人情報・接続先別の委任・一括停止を扱う。`/api/noah/profile/document` は書類の保存/本人ダウンロード。mutationはsame-origin、owner-scope、版、容量、型を検査。鍵未設定時は保存を閉じる。
+- 登録先設定のprofileFieldだけを共通情報と対応付ける。パスワードは保存/再利用しない。利用者が今回の提出先/規約/項目を確認して送信する。保存版が変わったら再確認。背景の実行直前にも委任停止と版を読み直す。
+- 任せる範囲は接続先・道具の定義hashごとに保存。任せない/一括停止は受付と送信直前に拒否、確認して実行は依頼ごとに確認、任せるも既存のBroker/Wallet/初回確認を省略しない。停止前に相手へ送った操作の取消を保証しない。
+- 合格条件: 他owner読取/更新0、平文の永続保存0、未選択項目の送信0、未同意送信0、版競合による上書き0、停止後の新規配送0、登録情報の再入力を2つ目の設定済み接続先で省略できる。UIは390px/desktopで確認する。
+
+### 送信アダプターへの保存情報の受け渡し
+
+`fields[].profileField` に保存先キーを明記した項目だけ再利用可能。passwordには指定不可。fileは `profileField: identityDocument` に限定する。ブラウザは `profile: {revision, fields: [外部項目key], documentId?}` と `X-Rock-Owner-Scope` を送る。値と再利用指定の二重指定、保存版の変更、本人変更は拒否する。書類は公開URLにせず、送信時だけ `documents: {外部項目key: {name, type, base64}}` に展開する。adapterはこの追加契約を受け付ける場合だけfile項目を宣言する。Workに残すのは鍵付き入力指紋と状態のみ。
+
+`NOAH_PROFILE_KEYS` は `{active:"v1",keys:{v1:"64桁のランダムhex"}}`。Sitesのsecretへ置く。最大3世代で旧keyを保持し、新規保存からactive keyに切り替える。旧keyを失うと復号できない。鍵や保管領域を利用できない場合、委任の検査は拒否し、停止や拒否設定を回避しない。`/api/noah/profile/documents` は認証・同一origin・本人scope・revisionを必須にする。取得は本人にattachmentとして返し、共有URLは発行しない。

@@ -29,6 +29,7 @@ import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 
 export type NoahConnectDependencies = IntakeDependencies & {
   flags: NoahFlags;
+  authorizeAction?: (owner:string,target:string,action:string,digest:string,confirmed:boolean)=>Promise<void>;
   /** つなげる数を、料金ごとのカードの数にする（task 113。切り替え NOAH_PLAN_LIMITS と、本人の料金の読み方）。無ければ、今の上限のまま。 */
   planLimits?: NoahPlanLimits;
   /** 応答を返した後に続ける仕事を預ける（Workers の waitUntil）。無ければ、その場で待つ。握手のセッションを閉じる要求に使う。 */

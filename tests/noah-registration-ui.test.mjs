@@ -22,6 +22,9 @@ function harness(fetcher, initial = []) {
         useRef(value) { const i = cursor++; return slots[i] ??= { current: value }; },
         useEffect(fn, deps) { const i = cursor++, old = slots[i]; if (!old || deps.some((v, n) => v !== old.deps[n])) { slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
       };
+      if (id === './use-noah-profile') return {useNoahProfile:()=>({profile:null,guest:true,error:'',save:async()=>null})};
+      if (id === '@/lib/noah-profile-contract') return {profileField:()=>false};
+      if (id === '@/lib/owner-intent') return {OWNER_SCOPE_HEADER:'X-Rock-Owner-Scope'};
       if (id === 'next/link') return { default: 'a' };
       if (id === 'lucide-react') return new Proxy({}, { get: (_, key) => String(key) });
       if (id.endsWith('.module.css')) return { default: {} };
@@ -50,8 +53,8 @@ function fill(h) { h.input('email','synthetic@example.com'); h.input('password',
 void test('registration UI requires recipient and terms consent, submits actual values, and stores only the capability', async t => {
   const h = harness(async (_u,o) => o.method === 'POST' ? Response.json({job:job('needs_user')}) : config()); t.after(() => h.close()); await h.flush(); fill(h);
   assert.match(h.text(), /https:\/\/executor.example.com/); assert.doesNotMatch(h.text(), /synthetic-private-value/);
-  assert.equal(h.button('この情報で登録Agentを実行').props.disabled,true); h.submit(); await h.flush(); assert.equal(h.calls.filter(c => c.options.method==='POST').length,0);
-  h.check('送信先と内容を確認'); assert.equal(h.button('この情報で登録Agentを実行').props.disabled,true); h.check('利用規約'); h.submit(); await h.flush();
+  assert.equal(h.button('この内容でつなぐ').props.disabled,true); h.submit(); await h.flush(); assert.equal(h.calls.filter(c => c.options.method==='POST').length,0);
+  h.check('送信先と内容を確認'); assert.equal(h.button('この内容でつなぐ').props.disabled,true); h.check('利用規約'); h.submit(); await h.flush();
   const post = h.calls.find(c => c.options.method==='POST'), body = JSON.parse(post.options.body);
   assert.equal(body.values.email,'synthetic@example.com'); assert.equal(body.values.password,'synthetic-private-value'); assert.equal(body.termsAccepted,true); assert.equal(body.agentId,'agent');
   assert.match(post.options.headers['X-Noah-Registration-Key'],/^[a-f0-9]{64}$/); assert.doesNotMatch(post.url,/synthetic|key=/);
@@ -71,7 +74,7 @@ void test('restored browser capability only checks an existing job; an empty reg
 });
 void test('editing reviewed values clears both approvals before another registration can start', async t => {
   const h = harness(async()=>config()); t.after(()=>h.close()); await h.flush(); fill(h); h.check('送信先と内容を確認'); h.check('利用規約'); h.click('入力内容を修正する'); h.input('email','changed@example.com'); h.submit();
-  assert.equal(h.button('この情報で登録Agentを実行').props.disabled,true); assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox'&&n.props.checked).length,0);
+  assert.equal(h.button('この内容でつなぐ').props.disabled,true); assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox'&&n.props.checked).length,0);
 });
 
 void test('registration resumes status checks and checks again on return without resending any registration', async t => {

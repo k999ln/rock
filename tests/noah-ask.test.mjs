@@ -4,6 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { NoahAgentError } from '../lib/noah-agent-upload.ts';
 import { createNoahAskService, NOAH_ASK_MESSAGES } from '../lib/noah-ask.ts';
 import { NOAH_ASK_STOP_MESSAGES } from '../lib/noah-ask-store.ts';
 import { NOAH_HOST_BUSY, noahToolSha256 } from '../lib/noah-form.ts';
@@ -591,4 +592,16 @@ void test('every list of asks names the agent of each ask; all of one person\'s 
   // 別の人の依頼は、混ざらない。
   assert.deepEqual((await b.asks()).body.asks.map((item) => [item.id, item.agentId]), [[uuid(12), familyId(1)]]);
   assert.equal((await w.as(null).asks()).status, 401);
+});
+
+void test('delegation gate rejects acceptance and rechecks revocation immediately before dispatch',async t=>{
+  const definition=lookup(),server=mcpServer({tools:[definition]});
+  const {w,a,connectionId}=await connected(t,server);
+  let denied=true,checks=0;
+  a.deps.authorizeAction=async(owner,target,action,digest,_confirmed)=>{checks++;assert.equal(owner,'owner-a');assert.equal(target,familyId(1));assert.equal(action,'lookup');assert.equal(digest,await shaOf(definition));if(denied)throw new NoahAgentError('任せない',403);};
+  const service=createNoahAskService(a.deps);
+  const input={id:uuid(901),connectionId,tool:'lookup',toolSha256:await shaOf(definition),input:{query:'synthetic'},confirm:false,screen:'narrow'};
+  await assert.rejects(()=>service.ask('owner-a',false,input),{status:403});assert.equal(w.asked().length,0);assert.equal(calls(server).length,0);
+  denied=false;const accepted=await service.ask('owner-a',false,input);assert.equal(accepted.status,202);
+  denied=true;await accepted.run();assert.equal(calls(server).length,0);assert.equal(w.asked()[0].state,'failed');assert.match(w.asked()[0].error,/任せない/);assert.equal(checks,3);
 });

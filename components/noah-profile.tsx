@@ -1,0 +1,56 @@
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft, ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, ShieldCheck, Trash2 } from 'lucide-react';
+import { NOAH_PROFILE_FIELDS, type NoahProfileView, type ProfileField, type DelegationMode } from '@/lib/noah-profile-contract';
+import { useNoahProfile } from './use-noah-profile';
+import styles from './noah-profile.module.css';
+export const delegationLabels:Record<DelegationMode,string>={allow:'任せる',confirm:'確認して実行',deny:'任せない'};
+export default function NoahProfile(){
+  const state=useNoahProfile();
+  return <main className={styles.page}>
+    <Link href="/noah" className={styles.back}><ArrowLeft size={17}/> タイムライン</Link>
+    <header className={styles.heading}><span className={styles.eyebrow}>YOUR NOAH</span><h1>あなたの準備、<br/>一度で。</h1><p>登録情報と、Agentに任せる範囲。</p></header>
+    {state.guest?<div className={styles.empty}><Fingerprint size={32}/><h2>次のAgentでも、入力は少なく。</h2><p>保存すると、必要な項目だけ使い回せます。</p><Link className={styles.primary} href="/noah/account?returnTo=%2Fnoah%2Fprofile">サインインして保存する <ArrowUpRight size={17}/></Link></div>:state.profile?<ProfileEditor key={state.profile.ownerScope} profile={state.profile} busy={state.busy} save={state.save}/>:!state.error?<output>保存情報を読み込んでいます…</output>:null}
+    {state.error&&<div role="alert" className={styles.error}>{state.error}<button type="button" onClick={()=>void state.reload()}>読み直す</button></div>}
+  </main>;
+}
+function ProfileEditor({profile,busy,save}:{profile:NoahProfileView;busy:boolean;save:(body:Record<string,unknown>|File)=>Promise<NoahProfileView|null>}){
+  const [fields,setFields]=useState(profile.fields),[notice,setNotice]=useState('');
+  const groups=[...new Set(Object.values(NOAH_PROFILE_FIELDS).map(f=>f.group))];
+  return <>
+    <div className={styles.privacy}><ShieldCheck size={18}/><span>本人だけの保存情報。渡す先と項目は、その都度確認。</span></div>
+    {!profile.available&&<output>保存機能は準備中です。</output>}
+    <form onSubmit={async e=>{e.preventDefault();const result=await save({action:'fields',fields});if(result)setNotice('保存しました。');}}>
+      <div className={styles.groups}>{groups.map(group=>{
+        const entries=Object.entries(NOAH_PROFILE_FIELDS).filter(([,field])=>field.group===group) as [ProfileField,(typeof NOAH_PROFILE_FIELDS)[ProfileField]][];
+        const count=entries.filter(([key])=>profile.fields[key]).length+(group==='本人確認'?profile.documents.length:0);
+        return <details key={group} className={styles.group}><summary><span>{group}</span><small>{count?`${count}項目を保存済み`:'必要なときに追加'}</small><Plus size={18}/></summary>
+          <div className={styles.inputs}>{entries.map(([key,field])=><label key={key}>{field.label}{key==='bio'||key==='skills'?<textarea value={fields[key]??''} maxLength={field.max} rows={3} onChange={e=>setFields({...fields,[key]:e.target.value})}/>:<input value={fields[key]??''} type={key==='email'?'email':key==='birthDate'||key==='identityExpiry'?'date':'text'} autoComplete={field.autocomplete} maxLength={field.max} onChange={e=>setFields({...fields,[key]:e.target.value})}/>}</label>)}</div>
+          {group==='本人確認'&&<div className={styles.documents}>
+            {profile.documents.map(doc=><div key={doc.id}><a href={`/api/noah/profile/documents/${doc.id}`}>{doc.name}</a><button type="button" aria-label={`${doc.name}を削除`} disabled={busy} onClick={()=>void save({action:'deleteDocument',id:doc.id})}><Trash2 size={17}/></button></div>)}
+            {profile.documents.length<2&&<label className={styles.upload}><Plus size={17}/> 書類を追加<input type="file" accept="application/pdf,image/jpeg,image/png" disabled={busy||!profile.available} onChange={e=>{const file=e.target.files?.[0];if(file)void save(file);e.target.value='';}}/></label>}<small>PDF・JPEG・PNG／1件5MBまで・2件まで</small>
+          </div>}
+        </details>;
+      })}</div>
+      <div className={styles.actions}><button className={styles.primary} disabled={busy||!profile.available}>{busy?'保存中…':<><Check size={17}/> 情報を保存</>}</button>{notice&&<output>{notice}</output>}</div>
+    </form>
+    <section className={styles.delegations}><div className={styles.sectionTitle}><div><span className={styles.eyebrow}>YOU’RE IN CONTROL</span><h2>任せる範囲</h2></div><button type="button" className={styles.pause} disabled={busy||!profile.available} onClick={()=>void save({action:'pause',paused:!profile.paused})}>{profile.paused?<Play size={16}/>:<Pause size={16}/>} {profile.paused?'再開する':'すべて停止'}</button></div>
+      {profile.paused&&<output className={styles.error}>新しい実行と、まだ送っていない依頼を停止中です。送信済みの操作は取り消されません。</output>}
+      {profile.grants.length===0?<p className={styles.muted}>Agentを使う画面で、操作ごとに設定できます。</p>:profile.grants.map(grant=><div className={styles.grant} key={`${grant.target}:${grant.action}`}><div><strong>{grant.name}</strong><small>{grant.label}</small></div><select aria-label={`${grant.label}を任せる範囲`} value={grant.mode} disabled={busy} onChange={e=>void save({action:'grant',grant:{...grant,mode:e.target.value}})}>{Object.entries(delegationLabels).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></div>)}
+      <Link className={styles.history} href="/noah/activity">実行の履歴と成果を見る <ArrowUpRight size={16}/></Link>
+    </section>
+  </>;
+}
+export function NoahDelegationPicker({target,name,action,digest,ownerScope,onMode}:{target:string;name:string;action:string;digest:string;ownerScope:string|null;onMode:(mode:DelegationMode|'loading'|'paused')=>void}){
+  const state=useNoahProfile(ownerScope),grant=state.profile?.grants.find(g=>g.target===target&&g.action===action);
+  const selected=grant?.mode==='deny'?'deny':grant?.digest===digest?grant.mode:grant?'confirm':'allow';
+  // The containing form derives its gate from this live policy; the server checks again before dispatch.
+  const effective=!state.busy&&state.profile?.available?(state.profile.paused?'paused':selected):'loading';
+  // Notify after rendering, never during another component's render.
+  return <PolicyControl {...{state,target,name,action,digest,onMode,effective,selected}}/>;
+}
+function PolicyControl({state,target,name,action,digest,onMode,effective,selected}:{state:ReturnType<typeof useNoahProfile>;target:string;name:string;action:string;digest:string;onMode:(mode:DelegationMode|'loading'|'paused')=>void;effective:DelegationMode|'loading'|'paused';selected:DelegationMode}){
+  useEffect(()=>onMode(effective),[effective,onMode]);
+  return <div className={styles.policy}><div><strong>この操作を任せる範囲</strong><Link href="/noah/profile">すべての設定 <ArrowUpRight size={14}/></Link></div><div className={styles.segment}>{Object.entries(delegationLabels).map(([mode,label])=><button type="button" key={mode} aria-pressed={selected===mode} disabled={state.busy||!state.profile?.available} onClick={()=>void state.save({action:'grant',grant:{target,name,action,label:action,digest,mode}})}>{label}</button>)}</div>{effective==='paused'&&<p>すべての委任を停止中です。</p>}{state.error&&<p role="alert">{state.error}<button type="button" onClick={()=>void state.reload()}>再確認</button></p>}<small>支払い・初回の書き込みに必要な確認は省略しません。</small></div>;
+}

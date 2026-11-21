@@ -14,6 +14,7 @@ import {
   Repeat2,
   Plus,
 } from 'lucide-react';
+import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import { researchKindLabels } from '@/lib/noah-research-types';
 import {
   noahTimelineCardFacts,
@@ -47,7 +48,7 @@ export default function NoahTimeline({
   );
   const { hasMore, loadMore } = feed,
     hasErrors = Boolean(feed.data?.errors.length);
-  const sentinel = useRef<HTMLDivElement>(null);
+  const sentinel = useRef<HTMLDivElement>(null), masonry=useRef<HTMLElement>(null);
   const items = selectNoahTimeline(feed.data?.items ?? [], filter, query);
   const feedback = useNoahFeedback(
     items.flatMap((item) =>
@@ -77,9 +78,18 @@ export default function NoahTimeline({
     observer.observe(sentinel.current);
     return () => observer.disconnect();
   }, [hasMore, loadMore, hasErrors]);
+  const layoutKey=items.map(item=>item.key).join('|');
+  useEffect(()=>{
+    const grid=masonry.current;if(!grid||typeof ResizeObserver==='undefined')return;
+    const cards=Array.from(grid.children) as HTMLElement[];
+    const size=(card:HTMLElement)=>{card.style.gridRowEnd=`span ${Math.ceil((card.getBoundingClientRect().height+12)/20)}`;};
+    grid.dataset.measured='true';cards.forEach(size);
+    const observer=new ResizeObserver(entries=>{for(const entry of entries)size(entry.target as HTMLElement);});cards.forEach(card=>observer.observe(card));
+    return()=>observer.disconnect();
+  },[layoutKey]);
   async function share(item: NoahTimelineItem) {
     const href =
-      item.kind === 'card'
+      item.kind==='remote'?noahReadyDetailHref(item.agent.id):item.kind === 'card'
         ? item.card.target
         : item.kind === 'agent'
         ? `${base}/agents/${item.agent.id}`
@@ -104,7 +114,7 @@ export default function NoahTimeline({
     <main className={styles.home}>
       <div className={styles.feedTop}>
         <header className={styles.timelineHeading}>
-          <h2>{filter === 'agent' ? 'Agent' : 'タイムライン'}</h2>
+          <h2>{filter === 'agent' ? 'Agentを見つける' : 'あなたの次の、できた。'}</h2>
           <a
             className={styles.filterButton}
             href={`${base}${filter === 'agent' ? '#timeline' : '#agents'}`}
@@ -136,8 +146,8 @@ export default function NoahTimeline({
           <Link href={`${base}/social#compose`} className={styles.composeEntry}>
             <span>
               <span className={styles.composeEyebrow}>YOUR TAKE</span>
-              <strong>使ってみて、どうだった？</strong>
-              <small>感想も、発見も、ちょっとした本音も。</small>
+              <strong>今日の発見を、ひとこと。</strong>
+              <small>使った人の声が、次の発見になる。</small>
             </span>
             <span className={styles.composeAction}>
               <Plus size={24} />
@@ -223,7 +233,7 @@ export default function NoahTimeline({
           <button onClick={feed.refresh}>再試行</button>
         </details>
       )}
-      <section aria-label="Noahの統合タイムライン">
+      <section ref={masonry} className={styles.masonry} aria-label="Noahの統合タイムライン">
         {items.map((item) => {
           if (item.kind === 'post' || item.kind === 'feedback') {
             const post =
@@ -314,6 +324,13 @@ export default function NoahTimeline({
               </article>
             );
           }
+          if(item.kind==='remote'){
+            const a=item.agent;
+            return <article key={item.key} className={styles.agentPost} data-feed-kind="remote"><div className={styles.agentLabel}><Bot size={14}/><span>スマホで使える</span><span>{a.section==='ran'?'成果の受取実績あり':'接続確認済み'}</span></div>
+              <Link href={noahReadyDetailHref(a.id)} className={styles.agentPreview}><span className={styles.agentMonogram} aria-hidden="true"><span>{a.name.slice(0,2).toUpperCase()}</span><Bot size={24}/><span className={styles.artCaption}>READY WHEN YOU ARE</span></span><div><span className={styles.publisher}>{a.provider}</span><h3>{a.name}</h3><p>{a.summary}</p></div><ArrowUpRight size={20}/></Link>
+              <footer className={styles.agentFooter}><span>{a.users}人が利用 · {a.tools}個の道具</span><Link className={styles.tryAgent} href={noahReadyDetailHref(a.id)}>使う ↗</Link></footer>
+            </article>;
+          }
           if (item.kind === 'card') {
             const card = item.card;
             return (
@@ -329,7 +346,7 @@ export default function NoahTimeline({
                 </div>
                 <Link href={card.target} className={styles.agentPreview}>
                   <span className={styles.agentMonogram} aria-hidden="true">
-                    {card.topicLabel.slice(0, 1)}
+                    <span>{card.topicLabel.slice(0, 2)}</span><Bot size={24}/><span className={styles.artCaption}>MAKE ROOM FOR MORE</span>
                   </span>
                   <div>
                     <span className={styles.publisher}>
@@ -369,7 +386,7 @@ export default function NoahTimeline({
                 className={styles.agentPreview}
               >
                 <span className={styles.agentMonogram} aria-hidden="true">
-                  {agent.name.slice(0, 1).toUpperCase()}
+                  <span>{agent.name.slice(0, 2).toUpperCase()}</span><Bot size={24}/><span className={styles.artCaption}>MEET YOUR NEXT AGENT</span>
                 </span>
                 <div>
                   <span className={styles.publisher}>

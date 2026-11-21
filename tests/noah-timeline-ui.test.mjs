@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
+import * as ready from '../lib/noah-ready-view.ts';
 import * as contract from '../lib/noah-timeline-feed.ts';
 const jsx = (type, props) => ({ type, props });
 const post = { id: 'post-fixture', content: 'Synthetic community post', author: { name: 'Test author' }, community: { id: 'community-fixture', name: '試験コミュニティー' }, createdAt: 1, replies: 0, following: true };
@@ -27,7 +28,7 @@ function render(hash = '#timeline', snapshot = { items, social: { profile: { id:
     'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' },
     'lucide-react': new Proxy({}, { get: (_, key) => String(key) }),
     '@/lib/noah-research-types': { researchKindLabels: { agent: 'Agent本体候補' } },
-    '@/lib/noah-timeline-feed': contract,
+    '@/lib/noah-timeline-feed': contract, '@/lib/noah-ready-view':ready,
     './use-noah-hash': { useNoahHash: () => hash },
     './use-noah-timeline': { useNoahTimeline: mode => { assert.equal(mode, 'public'); return ({ data: snapshot, loading: false, hasMore: false, refresh() {} }); } },
     './use-noah-feedback': { useNoahFeedback: () => ({rows:[],error:'',update(){},reload(){}}) },

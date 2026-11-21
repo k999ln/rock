@@ -52,7 +52,7 @@ export function screen(options = {}) {
   };
 
   const context = createContext({
-    console, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
+    console, queueMicrotask, File, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
     Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
     crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
     fetch: async (url, init = {}) => {

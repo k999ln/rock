@@ -108,6 +108,8 @@ export function createNoahAskService(deps: NoahAskDependencies) {
     // 使ってよい接続か（つながっている・取り下げられていない・同意した時から接続先が変わっていない）。使えなければ 404・409（NoahAgentError）。
     const { connection, familyKey, digest, toolsSha256, target } = await connections.usable(owner, input.connectionId);
 
+    await deps.authorizeAction?.(owner, familyKey, input.tool, input.toolSha256, input.confirm);
+
     // 頼む前の上限。越えていれば、Work も行も作らない。相手へも送らない。
     const at = now();
     const counts = await intakeStatement(db, NOAH_LISTING_SQL.gate, { owner, host: target.host, minute_ago: at - 60_000, day_ago: at - 86_400_000 })
@@ -236,6 +238,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
         if (!confirmed) return await fail(NOAH_ASK_MESSAGES.needsConfirm);
         if (!(await confirm(owner, row.connection_id, { name: tool.name, sha256: toolSha256 }))) return await fail(NOAH_ASK_MESSAGES.interrupted);
       }
+      await deps.authorizeAction?.(owner, again.familyKey, tool.name, toolSha256!, confirmed);
       // 呼ぶ直前に、「相手へ送る」の印（tool_calls=1）を付ける。止める事が頼まれていれば、付かない（呼ばない）。
       // 印を付けてから呼ぶので、実行の場が途中で落ちても、後始末（lib/noah-sweep.ts）が、「送っていない」と「送ったかもしれない」を分けられる。
       // 版（revision）は進めない: 画面が持っている版で、「止める」がそのまま通る。

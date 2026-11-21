@@ -1,4 +1,5 @@
-export type RegistrationField = { key: string; label: string; type: 'text' | 'email' | 'password'; required: boolean; maxLength: number };
+import type { ProfileField } from './noah-profile-contract.ts';
+export type RegistrationField = { key: string; label: string; type: 'text' | 'email' | 'password' | 'file'; profileField?: ProfileField | 'identityDocument'; required: boolean; maxLength: number };
 export type RegistrationProvider = {
   id: string; name: string; agentIds: string[]; revision: number; providerOrigin: string;
   verificationUrl: string; termsUrl: string; termsVersion: string;

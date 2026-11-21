@@ -12,9 +12,10 @@ import * as view from '../lib/noah-ready-view.ts';
 import * as resultData from '../lib/noah-result-data-contract.ts';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, uuid } from './fixtures/noah/connect-world.mjs';
+import * as profileContract from '../lib/noah-profile-contract.ts';
 import { screen } from './fixtures/noah/screen.mjs';
 
-const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-bot-notice': botNotice, '@/lib/noah-form': formLib };
+const MODULES = { '@/lib/noah-profile-contract':profileContract, '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-bot-notice': botNotice, '@/lib/noah-form': formLib };
 const DETAIL = 'components/noah-ready-detail.tsx';
 const LIST = 'components/noah-work-list.tsx';
 const lookup = tool('lookup', true, { description: 'Looks up a player.', inputSchema: { type: 'object', required: ['query'], properties: {
@@ -35,8 +36,10 @@ async function opened(t, server, options = {}) {
   await w.as('owner-a').connect(familyId(1), uuid(1));
   w.clear();
   const session = { user: 'owner-a' };
-  const fetch = w.browser(session, config);
-  const ui = screen({ fetch: options.fetch ? options.fetch(fetch) : fetch, modules: MODULES, now: w.f.time() });
+  const browser = w.browser(session, config);
+  let profile={...profileContract.emptyNoahProfile(),available:true,ownerScope:await ownerIntent.ownerScopeFor('owner-a')};
+  const fetch=async request=>{if(request.url==='/api/noah/profile'){if(request.method==='POST'){const body=request.body;profile={...profile,revision:profile.revision+1,...(body.action==='grant'?{grants:[body.grant]}:{})};}return {body:profile};}return browser(request);};
+  const ui = screen({ document:{hidden:false,addEventListener(){},removeEventListener(){}}, fetch: options.fetch ? options.fetch(fetch) : fetch, modules: MODULES, now: w.f.time() });
   const page = ui.mount(DETAIL, { id: familyId(1) });
   await page.flush();
   const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && page.text(page.nodes(node).find((child) => child.type === 'strong')) === name);
@@ -73,7 +76,8 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   await page.press(toolButton('lookup'));
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('stats'));
-  assert.ok(page.text(form()).startsWith(`stats入力は ${hostOf(1)} へ送られます。頼む`));
+  assert.ok(page.text(form()).startsWith('stats'));
+  assert.ok(page.text(form()).endsWith(`入力は ${hostOf(1)} へ送られます。頼む`));
   assert.equal(calls(server).length, 0);
 });
 

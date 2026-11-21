@@ -1,3 +1,4 @@
+import { noahProfileStore } from './noah-profile-server';
 import { env, waitUntil } from 'cloudflare:workers';
 import { database, requestUser } from './fund-store';
 import { parseNoahFlags } from './noah-flags';
@@ -13,6 +14,7 @@ export function noahIntakeDependencies() {
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     origin: noahPublicOrigin(config.NOAH_ORIGIN),
     fetcher: fetch, now: Date.now, waitUntil,
+    authorizeAction: noahProfileStore().authorize,
     // つなげる数を、料金ごとのカードの数にする（切り替え NOAH_PLAN_LIMITS。料金の読み方は、本人が決めるまで置かない。lib/noah-plan.ts）。
     planLimits: { open: parseNoahShelfFlags(config).planLimits, source: NOAH_PLAN_SOURCE },
     // 棚の、載せるかの見直し（巡回の合図の中で、10 分に 1 回まで。docs/noah/spec-110-shelf.md の 4 章）と、実績の数え直し（UTC の 1 日に 1 回。5 章）。

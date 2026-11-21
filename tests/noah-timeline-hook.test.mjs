@@ -28,7 +28,7 @@ const catalog=async url=>Response.json(url.startsWith('/api/noah/feedback?')?{en
 void test('all feed fetches no news, excludes community posts and gives followed posts priority',async t=>{
   const h=harness(catalog,async()=>({posts:[post('ordinary'),post('follow',true),post('private-group',true,{id:'group'})],cursor:null}));t.after(()=>h.close());await h.flush();
   // 棚（/api/noah/shelf）も 1 回読む。棚の形でない応答からは、何も足さない。
-  assert.equal(h.calls.length,4);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')||u.startsWith('/api/noah/feedback?')||u==='/api/noah/shelf'));
+  assert.equal(h.calls.length,5);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')||u.startsWith('/api/noah/feedback?')||u==='/api/noah/shelf'||u.startsWith('/api/noah/intake?')));
   assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['post:follow','post:ordinary','agent:agent']);
 });
 void test('shelf cards flow into the all feed after the Agent of each round; a closed shelf adds nothing and is not an error',async t=>{
