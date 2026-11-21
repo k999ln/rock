@@ -193,3 +193,16 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 - 公開HTTPで転送9件と撤去11件の404を確認。390pxブラウザで保存5カテゴリとカタログの検索欄1個、検索語付きタブ、横はみ出しなしを確認。匿名表示の確認であり、実利用者の非公開データ件数や実機OSの合格を意味しない。
 - 検証: 公開ソースのtypecheck/lint、変更関連テスト、Sites build/package成功。ローカル全体verifyは修正途中の旧URL期待値1件で停止（4,847 pass / 1 fail / 4 skip）。その期待値を修正し、関連20件を再実行して成功。最初の全体実行で遅延したmiiブラウザ試験は単独再試験と次の全体実行で成功。verifyの後続15コマンドは別途すべて成功（build・bundle/asset検査・API・mission/work/botまで）。最終typecheck/lintも成功。再ビルドしたローカル本番Workerでsecurity header 8経路とページ転送84検査が成功し、現行入力hashの記録を更新した。全体verifyの単一実行がexit 0になったという意味ではなく、旧期待値修正後の対象再試験と後続コマンドの成功を区別して記録する。
 - 画面証拠: `/Users/kaiya/.codex-work/visualizations/2026/11/21/01a1fe90-1f3f-7083-a3a9-f7e3cad0ea6a/noah-public-mobile-20261122/noah-178-saved.jpg`。
+
+
+### 2026-11-22 会員登録不要の公開179（PR #377）
+
+公開178の検索/保存統合source `e4392274eeaf56dcf7800aae736b18f94c68e4e1` にブラウザ専用保存権限を統合して公開。source `4a15190e49ef43da778ebdc21d344cc325d9f2b4`、deployment `appgdep_6b0207b6d7908191840a628b3ab3449a`、env16、succeeded。公開177の収集と法人入口、178の検索・保存カテゴリとMac/コミュニティ画面撤去を保持。追加migration・環境値変更なし。公開元のアーカイブSHA-256は `e3cab5f285005185eb9094ac3fda5289ec9eaa090b6313682721c5fd6e972574`。
+
+GitHub側は実装3e492b237、README/画面試験補完b53f82f95、画面整理0f0271dabの統合862eac033。公開sourceの収集componentと法人入口は別PR由来で、受入枝へ未統合の差分も最新公開sourceに保全。公開への反映は最新Sites sourceを土台にする。
+
+検証: 会員登録不要化の全体verifyは全工程exit0（root4,852 pass・4 skip・0 fail、API1,918・CSV385 assertions）。初回の既存pixel-cached-prepare待機1件失敗は単独17件成功後に全体を再実行して解消。公開178を統合したsourceはtypecheck/lint/build成功、Noah866件中865件成功、1件は収集部品の試験stub不足。部品境界を補い、失敗した画面分岐を含む4件を再実行して成功。テスト削除・除外なし。Git側の最終画面統合後は本番build、ローカルproduction8ルートのheader再測定を成功し、全体verifyを再実行中。
+
+公開APIの実試験（物理スマホとは別）: 未登録ブラウザ権限を発行し、無料Tiplineへの接続 `308a7122-bb34-4096-96a4-89d14c4f59c0` → 読取専用list_gta6_entries → Work `8ac2abf5-6005-4d34-88d5-be5c01549671` succeeded、成果130,948文字を受領。再取得で本文一致、別ブラウザ権限では404。Noah会員・外部アカウントの作成、投稿、課金なし。実行を再送していない。
+
+Pixel 10は公開179でログインなしのホーム表示・検索入力まで実測。その後端末ロックに戻り、本人へ解除を依頼した。画面保持のscrcpy control-only接続を再起動し、端末ロック自体は変更しない。端末上のAgent実行・成果表示はまだ未完了。公開APIの成功を実機合格や100人配布完了には昇格しない。
