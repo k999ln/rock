@@ -10,10 +10,45 @@ import { openCollectorStore } from '../scripts/noah-collector-store.mjs';
 import { collectXAgents } from '../scripts/noah-collector-x.mjs';
 import { normalizeDiscovery } from '../lib/noah-discovery-provider.ts';
 import { publishCollection } from '../scripts/noah-collector-publish.mjs';
+import * as collection from '../lib/noah-collection.ts';
+import { screen } from './fixtures/noah/screen.mjs';
 
 const NOW = Date.UTC(2026, 10, 22), KEY = randomBytes(32).toString('hex');
 const item = (source = 'github', extra = {}) => ({ id: `${source}:1`, source, name: 'Useful agent', summary: 'A public Agent repository', author: 'maker', url: 'https://github.com/maker/agent', sourceUrl: 'https://github.com/maker/agent', observedAt: NOW, expiresAt: NOW + 86_400_000, ...extra });
 const snapshot = (source = 'github', items = [item(source)], at = NOW) => ({ schema: 'noah-collection/1', source, collectedAt: at, items });
+
+void test('home includes GitHub and HF ratings even while the registry has many newer records', async () => {
+  const api = createCollectionApi({ bucket: bucket(), key: KEY, now: () => NOW + 10 });
+  const registry = Array.from({ length: 30 }, (_, i) => item('mcp-registry', { id: `mcp:${i}`, url: `https://github.com/maker/mcp-${i}`, sourceUrl: `https://registry.modelcontextprotocol.io/v0.1/servers/agent-${i}`, observedAt: NOW + 1 }));
+  assert.equal((await post(api, snapshot('mcp-registry', registry, NOW + 1))).status, 200);
+  await post(api, snapshot('github', [item('github', { metrics: { stars: 100 } })]));
+  await post(api, snapshot('huggingface', [item('huggingface', { id: 'hf:1', url: 'https://huggingface.co/spaces/maker/agent', sourceUrl: 'https://huggingface.co/spaces/maker/agent', metrics: { likes: 9 } })]));
+  const home = await (await api(new Request('https://avoado.si/api/noah/collection?view=home'))).json();
+  assert.deepEqual(home.items.slice(0, 3).map(row => row.source), ['mcp-registry', 'github', 'huggingface']);
+  assert.equal(home.items[2].metrics.likes, 9); assert.equal(home.total, 32);
+});
+
+void test('Noah home renders collected cards and refreshes external ratings while the page is visible', async () => {
+  let likes = 7;
+  const visibility = { hidden: false };
+  const ui = screen({ document: visibility, modules: {
+    '@/lib/noah-collection': collection,
+    './noah-surface-context': { useNoahSurface: () => undefined },
+    './noah-timeline': { default: () => 'Timeline' }, './noah-pin-home': { default: () => 'Pins' },
+  }, fetch: async request => {
+    assert.match(request.url, /\/api\/noah\/collection\?.*view=home/);
+    const row = item('huggingface', { sourceUrl: 'https://huggingface.co/spaces/maker/agent', metrics: { likes } });
+    return { body: { items: [{ ...row, sources: [row] }], total: 1, nextCursor: null, configured: true } };
+  } });
+  const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
+  await home.tick(200);
+  assert.match(home.text(), /新しく見つかったAgent/); assert.match(home.text(), /Hugging Face.*いいね 7/);
+  assert.ok(home.find('a').some(node => node.props.href === '/noah/agents'));
+  likes = 3; await home.tick(60000); await home.tick(200);
+  assert.match(home.text(), /いいね 3/);
+  const requests = ui.calls.length; visibility.hidden = true; await home.tick(60000); await home.tick(200);
+  assert.equal(ui.calls.length, requests);
+});
 function bucket() {
   const rows = new Map(); let generation = 0;
   return { rows, async get(key) { const row = rows.get(key); return row ? { etag: row.etag, async json() { return JSON.parse(row.text); } } : null; },

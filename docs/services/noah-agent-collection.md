@@ -44,3 +44,5 @@ GitHub ActionsのLinux runnerで5分ごとに期限を確認し、同じ収集�
 - チェックポイント: `POST /api/noah/collection/checkpoint`。認証付きread/write、R2キー固定、16MiBの要求上限、256MiBの復元上限。ETagが変わっていたら保存も掲載も拒否。停止したSQLiteだけを保存し、署名付き非公開状態の復元が失敗したら収集を開始しない。新規導入はMac常駐停止後に `scripts/noah-cloud-collector.mjs --dir <空の作業先> --origin https://avoado.si --bootstrap <停止した台帳の保存先>` で1回だけ行う。既存checkpointは上書きしない。
 - 診断/停止: GitHub Actionsの「Noah cloud Agent collection」で結果を読む。公開するログは件数・出所の状態・実行IDのみ。workflowをDisableすると定期収集が止まり、R2の台帳と掲載は残る。復旧はEnable後にRun workflow。
 - GitHubの[定期実行](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)は混雑時に遅延する。公開repoで60日活動がないと自動無効化されるため、[状態確認と再有効化](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)を運用に含める。Macを起動して再開する設計には戻さない。
+
+公開トップ `/noah` に出所を偏らせない収集カードを直接表示する。詳細な検索と一覧は `/noah/agents`。画面が表示中は60秒ごととフォーカス復帰時に再取得し、外部評価も更新する。
