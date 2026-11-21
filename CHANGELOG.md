@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahのサービス組み合わせに、候補作成・条件点検・匿名準備票・実成果承認の重複排除と専用Workerを追加。3準備ガイドをNoah版187に公開。紹介条件とASP再認証は未受入（toolkits/noah-affiliate-agents、PR #374）。
+
 - Noah法人si導入準備に、認証済みChromeの成果・承認・支払取得と0件を含む受領票・自動点検、公開記事のサイトマップを追加。実取得・本番保存を確認。紹介経路・ASP継続接続・銀行照合は未完了（toolkits/noah-affiliate-agents、PR #374）。
 
 - Noahの法人si導入準備を会員登録不要の公開Web/MCP、集客計画、ASP承認・支払・銀行照合・費用台帳として実装。継続実行器による自社記事公開を開始し、Noah版175に入口掲載。ASP/銀行自動取得は未接続、紹介は媒体許可と正式リンク確認まで停止（toolkits/noah-affiliate-agents、PR #374）。

@@ -12,7 +12,7 @@ const check = (yes, message) => {
 export async function collectRentracks(
   tab,
   target,
-  { now = Date.now(), from, to = businessToday(now) } = {},
+  { now = Date.now(), from, to = businessToday(now), includePayouts = true } = {},
 ) {
   from ||= new Date(Date.parse(to) - 364 * 86400000).toISOString().slice(0, 10);
   for (const d of [from, to])
@@ -120,6 +120,7 @@ export async function collectRentracks(
     );
     captured.push(c);
   }
+  if (!includePayouts) return captured;
   await tab.goto(payUrl);
   page = await tab.playwright.domSnapshot();
   check(

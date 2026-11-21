@@ -50,3 +50,13 @@
 - 関連24試験・oxlint成功。全体verifyは型検査/lintまで成功、Node 4,794試験中4,787成功・3失敗・4 skip。失敗は既存 `pixel-cached-prepare.test.mjs` の並列負荷下の待ち時間超過（preparing）。同ファイル単独17試験成功。テスト・対象外実装・履歴は変更していない。全体一括成功とは扱わない。
 - 本人の最新優先順位は銀行を並行とし、集客→相談→正式紹介→実成果取得を先行。新規媒体登録は送信しない。既存媒体用のHTTPS公式タグをそのまま保持する記事原稿をGit外へ準備。ブログ管理の認証と、Noahから既存媒体への条件適合した接続は未受入。
 - 全体verifyの `npm test` より後の全チェーン（パッケージ、課金、Web/API、build、公開asset、担当台帳）は別実行ですべて成功。
+
+### 2026-11-22 組み合わせAgentの追加
+本人の追加指示により `combination-*`、専用Worker、公開Noah導線と対応試験を追加。実bot/口座開設案件から始め、根拠付き組み合わせを共通評価する。正本 `docs/services/noah-revenue-combinations.md`。金融の取引実行は対象外。提携・媒体・成果地点の未確認を有効化しない。
+
+- 独立Worker `noah-revenue-agents` 版 `db87b9fb-a943-453d-8cbc-fb2a4f63eaf3`。3件の準備ガイド、初回alarm、無認証401、正式紹介0を実確認。MCPとHTTPは同じ判定。
+- Noah版187、source `d7627702d305655da7c511c9f22c2c9411da0433` に一覧/個別共有/準備票を公開。既存Noahの最新ホーム・他の変更を維持。
+- 6時間のASP読取を既存Chromeチャットへ設定。初回確認はログイン画面のため未取得、0件としての投入はなし。実承認・銀行入金は未受入。
+- Chromeで公開Noah一覧→詳細→匿名準備票を実操作。比較入力・未チェックでも準備資料が返り、条件不適合時の紹介URLなし。ログイン要求なし、未知IDは404画面。
+- 組み合わせ7試験成功（実Worker/SQLite、MCP、停止、永続復旧、重複、帰属、条件失効、候補作成）。Sites型検査・build成功。
+- `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 全チェーン成功。Node試験4,801件中4,797成功・4 skip・失敗0。最後の停止表示修正は専用7試験とoxlintで再検証。標準PATHでは署名試験がOpenSSL 3不足で停止したため、既設OpenSSL 3を選択して実行。
