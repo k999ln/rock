@@ -111,6 +111,11 @@ await test('模擬回線の入口を経由して0円申込、再開、実行、�
     assert.equal((await post('mobile', 'read', { id: input.id })).status, 303);
     assert.equal((await post('mobile', 'read', { id: input.id })).status, 303);
     assert.doesNotMatch(await page('public'), /更新があります/);
+    assert.equal((await post('mobile', 'stop', { id: input.id })).status, 409);
+    assert.equal(
+      (await post('mobile', 'stop', { id: newApproval() })).status,
+      404,
+    );
     assert.equal((await post('mobile', 'logout')).status, 303);
     assert.match(await page('mobile'), /招待コードで入る/);
     assert.equal((await f.trial.jobs('alice')).length, 1);
@@ -344,4 +349,53 @@ await test('成果の検収は元の台帳・選択・全件数と一致した�
   );
   const empty = runGuide(sampleOffers, 'osaka', 'rice');
   assert.equal(acceptGuideResult(null, 'osaka', 'rice', empty), false);
+});
+
+await test('Agentの実行中に期限が切れると成果を配達せず、同じ仕事の再送でも明細が増えない', async (t) => {
+  const f = fixture(t);
+  f.invite();
+  await phone(f.trial);
+  const input = request();
+  await f.trial.approve('alice', true, input);
+  f.advance(DELAY_MS);
+  // Hold the delivery check after the package returns, while its work is still marked running.
+  const originalPermit = f.trial.runtimePermit.bind(f.trial);
+  let validations = 0;
+  let arrived, resume;
+  const waiting = new Promise((resolve, reject) => {
+    const deadline = setTimeout(
+      () => reject(new Error('Delivery check did not start')),
+      15_000,
+    );
+    deadline.unref();
+    arrived = () => {
+      clearTimeout(deadline);
+      resolve();
+    };
+  });
+  const release = new Promise((resolve) => {
+    resume = resolve;
+  });
+  f.trial.runtimePermit = async (owner) => {
+    if (++validations === 2) {
+      arrived();
+      await release;
+    }
+    return originalPermit(owner);
+  };
+  const running = f.trial.recoverAlarms();
+  try {
+    await waiting;
+    await assert.rejects(f.trial.stop('alice', input.id), { status: 409 });
+    f.advance(TRIAL_MS);
+  } finally {
+    resume();
+  }
+  await running;
+  await f.trial.recoverAlarms();
+  const [row] = await f.trial.jobs('alice');
+  assert.equal(row.state, 'interrupted');
+  assert.equal(row.runs, null);
+  assert.equal(row.result, null);
+  assert.equal(await f.trial.hasUpdate('alice'), false);
 });

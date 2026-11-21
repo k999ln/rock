@@ -20,10 +20,14 @@ async function executionId(owner, id) {
 const json = (value, status = 200) => Response.json(value, { status });
 const uuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const sameLine = (job, permit) =>
+const mayRun = (job, permit) =>
   permit.active &&
   job.enrollment === permit.enrollment &&
-  job.device === permit.device;
+  job.device === permit.device &&
+  permit.now < permit.expires &&
+  job.package === PACKAGE &&
+  job.budget === 0 &&
+  withinFreeTrialBudget(permit.quote);
 
 export default {
   async fetch(request, env) {
@@ -133,13 +137,7 @@ export class TrialJobs {
       )
     )
       return;
-    if (
-      !sameLine(candidate, permit) ||
-      permit.expires <= permit.now ||
-      candidate.package !== PACKAGE ||
-      !withinFreeTrialBudget(permit.quote) ||
-      candidate.budget !== 0
-    ) {
+    if (!mayRun(candidate, permit)) {
       this.sql.exec(
         "UPDATE jobs SET state=CASE state WHEN 'running' THEN 'interrupted' ELSE 'stopped' END WHERE id=? AND state IN ('scheduled','running')",
         candidate.id,
@@ -194,6 +192,14 @@ export class TrialJobs {
       )
     )
       throw Error('成果が承認した試験用資料と一致しません。');
+    const atDelivery = await this.permit(candidate.owner);
+    if (!mayRun(candidate, atDelivery)) {
+      this.sql.exec(
+        "UPDATE jobs SET state='interrupted' WHERE id=? AND state='running'",
+        candidate.id,
+      );
+      return;
+    }
     const result = saved.result;
     this.ctx.storage.transactionSync(() => {
       if (
@@ -206,7 +212,7 @@ export class TrialJobs {
       this.sql.exec(
         "UPDATE jobs SET state='delivered',result=?,completed=? WHERE id=? AND state='running'",
         JSON.stringify(result),
-        permit.now,
+        atDelivery.now,
         candidate.id,
       );
       this.sql.exec(
@@ -225,15 +231,19 @@ export class TrialJobs {
       return json({ checked: true });
     }
     if (action === '/stop') {
-      if (
-        this.one(
-          "SELECT 1 AS running FROM jobs WHERE id=? AND owner=? AND state='running'",
-          input.id,
-          owner,
-        )
-      )
+      const job = this.one(
+        'SELECT state FROM jobs WHERE id=? AND owner=?',
+        input.id ?? '',
+        owner,
+      );
+      if (!job) return json({ error: '仕事が見つかりません。' }, 404);
+      if (job.state === 'stopped') return json({ stopped: true });
+      if (job.state !== 'scheduled')
         return json(
-          { error: 'この1回はすでに実行中です。結果を確認してください。' },
+          {
+            error:
+              'この回の実行はすでに始まりました。仕事の状態を確認してください。',
+          },
           409,
         );
       this.sql.exec(
