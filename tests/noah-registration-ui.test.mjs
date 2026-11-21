@@ -8,8 +8,11 @@ const provider = { id: 'example', name: 'Example', agentIds: ['agent'], revision
 const job = state => ({ id: 'job', providerName: 'Example', providerOrigin: provider.providerOrigin, state, expiresAt: Date.now() + 86400000, verificationUrl: provider.providerOrigin + '/verify', returnTo: '/noah/launch?agent=agent#library' });
 function harness(fetcher, initial = []) {
   const slots = [], effects = [], exports = {}, calls = [], storage = new Map(initial); let cursor = 0, tree;
+  const timers = new Map(), listeners = new Map(); let timerId=0;
+  const document = { hidden: false, addEventListener: (name, fn) => listeners.set(name, fn), removeEventListener: (name, fn) => { if(listeners.get(name)===fn) listeners.delete(name); } };
   const jsx = (type, props) => ({ type, props });
-  runInNewContext(code, { exports, URLSearchParams, Error, Date, crypto, Uint8Array, AbortController, queueMicrotask,
+  runInNewContext(code, { exports, URLSearchParams, Error, Date, crypto, Uint8Array, AbortController, AbortSignal, queueMicrotask, document,
+    setTimeout: (fn, ms) => { const id=++timerId; timers.set(id,{fn,ms}); return id; }, clearTimeout: id => timers.delete(id),
     sessionStorage: { getItem: k => storage.get(k), setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k) },
     fetch: async (url, options) => { calls.push({ url, options }); return fetcher(url, options); },
     require(id) {
@@ -30,7 +33,10 @@ function harness(fetcher, initial = []) {
   const text = value => Array.isArray(value) ? value.map(text).join('') : value && typeof value === 'object' ? text(value.props?.children) : value == null || typeof value === 'boolean' ? '' : String(value);
   const button = label => { const n = walk(tree).find(n => n.type === 'button' && text(n).includes(label)); assert.ok(n, label); return n; };
   render();
-  return { calls, storage, nodes: () => walk(tree), text: () => text(tree), button,
+  return { calls, storage, timers, document,
+    async tick() { const tasks=[...timers]; timers.clear(); for(const [,task] of tasks) await task.fn(); await this.flush(); },
+    async visibility(hidden) { document.hidden=hidden; listeners.get('visibilitychange')?.(); await this.flush(); },
+    nodes: () => walk(tree), text: () => text(tree), button,
     async flush() { for (let n=0;n<4;n++) { await new Promise(setImmediate); render(); } },
     input(name,value) { const n = walk(tree).find(n => n.type === 'input' && n.props.name === name); assert.ok(n); n.props.onChange({ target:{value} }); render(); },
     check(label) { const n = walk(tree).find(n => n.type === 'label' && text(n).includes(label)); const input = walk(n).find(n => n.type === 'input'); input.props.onChange({target:{checked:true}}); render(); },
@@ -66,4 +72,29 @@ void test('restored browser capability only checks an existing job; an empty reg
 void test('editing reviewed values clears both approvals before another registration can start', async t => {
   const h = harness(async()=>config()); t.after(()=>h.close()); await h.flush(); fill(h); h.check('送信先と内容を確認'); h.check('利用規約'); h.click('入力内容を修正する'); h.input('email','changed@example.com'); h.submit();
   assert.equal(h.button('この情報で登録Agentを実行').props.disabled,true); assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox'&&n.props.checked).length,0);
+});
+
+void test('registration resumes status checks and checks again on return without resending any registration', async t => {
+  const capability={id:crypto.randomUUID(),key:'c'.repeat(64)};
+  let state='needs_user';
+  const h=harness(async u=>u.includes('?job=') ? Response.json({job:job(state)}) : config(), [['noah-registration-work-v1',JSON.stringify(capability)]]);
+  t.after(()=>h.close()); await h.flush(); await h.tick();
+  assert.match(h.text(), /本人による確認を待っています/);
+  const before=h.calls.length;
+  await h.visibility(true); await h.tick(); assert.equal(h.calls.length,before);
+  state='completed'; await h.visibility(false);
+  assert.match(h.text(), /完了報告/); assert.ok(h.nodes().some(n=>n.props?.href===job('completed').returnTo));
+  assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);
+  assert.equal(h.timers.size,0);
+});
+void test('registration status polling stops after a bounded number of reads and clears on unmount', async t => {
+  const capability={id:crypto.randomUUID(),key:'d'.repeat(64)};
+  let reads=0;
+  const h=harness(async u=>u.includes('?job=') ? Response.json({job:job(++reads%2 ? 'running' : 'needs_user')}) : config(), [['noah-registration-work-v1',JSON.stringify(capability)]]);
+  t.after(()=>h.close()); await h.flush();
+  for(let i=0;i<20;i++) await h.tick();
+  // Even when the state changes, automatic reads stay bounded.
+  assert.ok(h.calls.filter(c=>c.url.includes('?job=')).length<=12);
+  assert.equal(h.timers.size,0);
+  h.close(); assert.equal(h.timers.size,0);
 });

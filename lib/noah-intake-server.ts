@@ -2,13 +2,14 @@ import { env, waitUntil } from 'cloudflare:workers';
 import { database, requestUser } from './fund-store';
 import { parseNoahFlags } from './noah-flags';
 import { noahPublicOrigin } from './noah-public-origin';
+import { noahReviewerAccess } from './noah-reviewer';
 import { NOAH_PLAN_SOURCE } from './noah-plan';
 import { parseNoahShelfFlags } from './noah-shelf';
 import { createNoahShelfStore } from './noah-shelf-store';
 export function noahIntakeDependencies() {
   const config = env as unknown as Record<string, string | undefined>;
-  return { db: database(), authenticate: requestUser,
-    reviewers: (config.NOAH_REVIEWER_USER_IDS ?? '').split(',').map(s => s.trim()).filter(Boolean),
+  const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
+  return { db: database(), ...access,
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     origin: noahPublicOrigin(config.NOAH_ORIGIN),
     fetcher: fetch, now: Date.now, waitUntil,

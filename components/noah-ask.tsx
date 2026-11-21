@@ -161,7 +161,7 @@ function NoahAskForm({ connectionId, ownerScope, host, tool, titled, confirmedHe
       });
       const body = await response.json() as { error?: string };
       operation.current = null;
-      if (response.status === 202 || response.status === 200) { setConfirming(null); setNotice('頼みました。下の「仕事」に出ます。'); onAsked(askId); } else setError(body.error ?? NOAH_ASK_TEXT.offline);
+      if (response.status === 202 || response.status === 200) { setConfirming(null); setNotice('受け付けました。'); onAsked(askId); } else setError(body.error ?? NOAH_ASK_TEXT.offline);
     } catch { setError(NOAH_ASK_TEXT.offline); } finally { setBusy(false); }
   }
   function submit() {
@@ -209,7 +209,7 @@ function NoahAskForm({ connectionId, ownerScope, host, tool, titled, confirmedHe
       <p className={styles.sendsTo}>{noahAskSendsToText(host)}</p>
       <div className={styles.actions}><button type="submit" className={styles.primary} disabled={busy} aria-busy={busy || undefined}>{busy ? NOAH_ASK_TEXT.sending : NOAH_ASK_TEXT.submit}</button></div>
     </>}
-    {notice && <output className={styles.notice}>{notice}</output>}
+    {notice && <div className={styles.actions}><output className={styles.notice}>{notice}</output><a className={styles.secondary} href="#noah-agent-work">進捗と成果を見る</a></div>}
     {error && <div className={styles.reason} role="alert"><p>{error}</p>{error.includes('変わりました') && <button type="button" className={styles.secondary} onClick={onChanged}>道具の一覧を読み直す</button>}</div>}
   </form>;
 }

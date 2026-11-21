@@ -122,7 +122,9 @@ void test('asking: checked before sending; the request carries the tool the pers
   // 相手が受けたのは、道具の名前と、型の付いた入力だけ。
   assert.deepEqual(calls(server)[0].body.params, { name: 'lookup', arguments: { query: 'cobalt', limit: 3, order: 'old' } });
   // 下の「仕事」に、成果の先頭 3 行が出る。「開く」で全文。https:// で始まる所だけが、行き先の host つきのリンク。
-  assert.match(page.text(), /頼みました。下の「仕事」に出ます。/);
+  assert.match(page.text(), /受け付けました。/);
+  assert.equal(page.find('a','進捗と成果を見る')[0].props.href,'#noah-agent-work');
+  assert.ok(page.nodes().some(node=>node.props.id==='noah-agent-work' && node.props.tabIndex===-1));
   assert.deepEqual(rows(), [`結果を受け取りましたlookup — ${hostOf(1)} の lookup が返した内容です。費用 0。1. cobalt\n2. second\n3. third開く`]);
   await page.click('開く');
   assert.match(rows()[0], /4\. fourth https:\/\/example\.org\/players\/7（example\.org）\.閉じる$/);
@@ -230,7 +232,7 @@ void test('a request that did not get through is sent again with the same ID; re
   await page.submit(form());
   const sent = asksSent(ui);
   assert.deepEqual([sent.length, sent[0].body.id === sent[1].body.id, w.asked().length, calls(server).length], [2, true, 1, 1]);
-  assert.match(page.text(form()), /頼みました。/);
+  assert.match(page.text(form()), /受け付けました。/);
   // 断られた時（切り替えが閉じた・上限など）は、その文を出す。
   const closed = await opened(t, mcpServer({ tools: [stats, lookup] }));
   await closed.page.press(closed.toolButton('stats'));

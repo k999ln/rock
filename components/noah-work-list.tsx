@@ -139,7 +139,7 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
     <ul className={styles.work}>{shown.map((ask) => {
       const view = noahAskRowView(ask, now), result = results[ask.id], opened = open[ask.id] === true;
       const preview = result ? noahResultPreview(result.text) : null, outline = result && opened && !raw[ask.id] ? noahResultOutline(result.text) : null;
-      return <li key={ask.id}>
+      return <li key={ask.id} id={`noah-work-${ask.id}`} tabIndex={-1}>
         <div className={styles.workHead}>
           <p className={styles.workState}>{ask.finishedAt === undefined ? <output>{view.text}</output> : view.text}</p>
           {view.stoppable && <button type="button" className={styles.secondary} onClick={() => void stop(ask)}>{NOAH_ASK_TEXT.stop}</button>}

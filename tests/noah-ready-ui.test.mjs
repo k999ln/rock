@@ -664,3 +664,17 @@ void test('the rules of the screens hold at every step of the loop: nothing cove
   assert.match(reopened.text(), /仕事/);
   assert.deepEqual(seen, ['一覧', '詳細（接続の前）', '道具の一覧', '入力欄', '進んでいる間', '成果', '確かめ', '切った後', '切った後に開き直す']);
 });
+
+void test('sign-in retains the selected shelf job and tool instead of returning to a generic Agent', async t => {
+  const w=await world(t,{[hostOf(1)]:mcpServer()});
+  const {ui}=browser(w,null);
+  const page=ui.mount(DETAIL,{id:familyId(1),tool:'selected tool',from:'pkg:school-work'}); await page.flush();
+  await page.click('接続');
+  const account=new URL(ui.visits[0],'https://avoado.si');
+  const back=new URL(account.searchParams.get('returnTo'),'https://avoado.si');
+  assert.equal(back.pathname,'/noah/ready/agent'); assert.equal(back.searchParams.get('id'),familyId(1));
+  assert.equal(back.searchParams.get('tool'),'selected tool'); assert.equal(back.searchParams.get('from'),'pkg:school-work');
+  assert.equal(posts(ui).length,0);
+  const safe=view.noahReadyDetailHref(familyId(1),{tool:'x'.repeat(129),from:'https://evil.example'});
+  assert.equal(safe,view.noahReadyDetailHref(familyId(1)));
+});

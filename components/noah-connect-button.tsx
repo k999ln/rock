@@ -18,11 +18,13 @@ type Reply = { id?: string; state?: string; revision?: number; error?: string; p
 const asConnection = (body: Reply): NoahReadyConnection | null =>
   typeof body.id === 'string' && typeof body.state === 'string' && typeof body.revision === 'number' ? { id: body.id, state: body.state, revision: body.revision, error: body.error ?? null } : null;
 
-export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link', packageId = null }: {
+export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link', packageId = null, initialTool = null }: {
   /** 系列の ID。 */
   agentId: string;
   /** 棚のカードから来た時、そのカードの ID（つなげる数を、カードで数えるため）。 */
   packageId?: string | null;
+  /** サインイン後も、選んでいた仕事の入力へ戻す。入力値はURLへ入れない。 */
+  initialTool?: string | null;
   /** 一覧に載せているか。載せていない物は、つなげない。 */
   listed: boolean;
   signedIn: boolean;
@@ -38,7 +40,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
   // 応答が届かなかった「接続」は、押し直した時に、同じ操作 ID で送る（行と握手が増えない）。応答が届いたら、次は新しい ID。
   const operation = useRef<string | null>(null), started = useRef(false);
-  const detail = noahReadyDetailHref(agentId);
+  const detail = noahReadyDetailHref(agentId, { tool: initialTool, from: packageId });
   const view = noahConnectButtonView({ connection, busy, listed });
 
   async function call(path: string, body?: unknown): Promise<{ status: number; body: Reply }> {
@@ -50,7 +52,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     return { status: response.status, body: await response.json() as Reply };
   }
   function leaveToSignIn(id: string) {
-    writeNoahConnectHandoff(window.sessionStorage, { agentId, id, at: Date.now() });
+    try { writeNoahConnectHandoff(window.sessionStorage, { agentId, id, at: Date.now() }); } catch { /* 保存できないブラウザでも、同じ詳細へログインして戻れる。 */ }
     window.location.assign(noahReadyAccountHref(detail));
   }
   /** 応答を、画面へ映す。つながった時は、動く所を 3 秒だけ出す。 */

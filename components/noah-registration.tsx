@@ -12,6 +12,7 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
   const [values, setValues] = useState<Record<string, string>>({}), [review, setReview] = useState(false), [consent, setConsent] = useState(false), [terms, setTerms] = useState(false);
   const [job, setJob] = useState<RegistrationStatus | null>(null), [pending, setPending] = useState<Pending | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState(''), [reload, setReload] = useState(0);
   const active = useRef({ generation: 0, mounted: false, busy: false });
+  const statusBudget = useRef({ id: '', reads: 0 });
   const provider = providers?.find(p => p.id === selected), generation = active.current.generation;
   useEffect(() => {
     const state = active.current; state.mounted = true;
@@ -41,7 +42,7 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
       }
       if (!ticket) return;
       const response = await fetch(`/api/noah/registration${start ? '' : `?job=${encodeURIComponent(ticket.id)}`}`, {
-        method: start ? 'POST' : 'GET', cache: 'no-store', headers: { 'X-Noah-Registration-Key': ticket.key, ...(start ? { 'Content-Type': 'application/json' } : {}) },
+        method: start ? 'POST' : 'GET', cache: 'no-store', signal: AbortSignal.timeout(25_000), headers: { 'X-Noah-Registration-Key': ticket.key, ...(start ? { 'Content-Type': 'application/json' } : {}) },
         ...(start ? { body: JSON.stringify({ action: 'start', id: ticket.id, providerId: provider!.id, agentId: agent, revision: provider!.revision, termsVersion: provider!.termsVersion, values, consent: true, termsAccepted: true }) } : {}),
       });
       // No credentials survive a dispatch, including uncertain outcomes.
@@ -54,6 +55,27 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
       if (active.current.mounted && current === active.current.generation) { setValues({}); setConsent(false); setTerms(false); setReview(false); setError(e instanceof Error ? e.message : '結果を確認できません。同じ仕事の状況を確認してください。'); }
     } finally { if (active.current.mounted && current === active.current.generation) { active.current.busy = false; setBusy(false); } }
   }
+  // 同じ登録の状態だけを読む。本人確認から戻った時も、登録情報は再送しない。
+  // 画面が裏の間は通信せず、1回の表示につき自動照会は12回まで。
+  useEffect(() => {
+    if (!pending || job?.state === 'completed' || job?.state === 'failed') return;
+    if (statusBudget.current.id !== pending.id) statusBudget.current = { id: pending.id, reads: 0 };
+    const budget = statusBudget.current;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const read = async () => {
+      clearTimeout(timer);
+      if (stopped || budget.reads >= 12) return;
+      if (!document.hidden && !active.current.busy) { budget.reads++; await run(false); }
+      if (!stopped && budget.reads < 12) timer = setTimeout(() => { void read(); }, 5000);
+    };
+    const returned = () => { if (!document.hidden) { budget.reads = 0; void read(); } };
+    timer = setTimeout(() => { void read(); }, job ? 5000 : 0);
+    document.addEventListener('visibilitychange', returned);
+    return () => { stopped = true; clearTimeout(timer); document.removeEventListener('visibilitychange', returned); };
+    // 登録IDと状態が変わった時だけ、同じ仕事の確認を始め直す。
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending?.id, pending?.key, job?.state]);
   function clear() {
     if (active.current.busy) return;
     active.current.generation++; setJob(null); setPending(null); setValues({}); setReview(false); setConsent(false); setTerms(false); setError('');
