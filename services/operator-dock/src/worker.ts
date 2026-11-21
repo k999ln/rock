@@ -1,4 +1,5 @@
 import { AccessAuthError, authorizeOperator } from './access-auth.ts';
+import { assignDistribution, operatorAssignments } from './distribution.ts';
 import { operatorControl } from './operator-control.ts';
 import { handleDeviceChannel } from './device-channel.ts';
 import { OperatorError } from './validation.ts';
@@ -99,6 +100,11 @@ const worker = {
     const url = new URL(request.url);
     try {
       requireSameOrigin(request);
+      if (url.pathname === '/api/distributions') {
+        if (request.method === 'GET') return json(await operatorAssignments(env.DB));
+        if (request.method === 'POST') return json(await assignDistribution(env.DB, await body(request)));
+        return json({ error: '対応していない操作です。' }, 405);
+      }
       if (url.pathname === '/api/devices') {
         const control = operatorControl(
           env.DB,

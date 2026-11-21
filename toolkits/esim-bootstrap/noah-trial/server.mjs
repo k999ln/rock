@@ -10,7 +10,14 @@ import {
   createDecipheriv,
 } from 'node:crypto';
 import { NoahTrial, newCredential, TRIAL_MS, TrialError } from './trial.mjs';
-import { base, esc, layout, screen } from './view.mjs';
+import { trialDock } from './dock.mjs';
+import { OperatorError } from '../../../services/operator-dock/src/validation.ts';
+import {
+  recipientAssignments,
+  recipientHasPending,
+  receiveAssignment,
+} from '../../../services/operator-dock/src/distribution.ts';
+import { base, esc, layout, screen, cloudScreen } from './view.mjs';
 
 async function readForm(req) {
   if (
@@ -78,7 +85,12 @@ function openSession(key, envelope) {
 }
 export async function startTrialServers(
   trial,
-  { publicPort = 0, mobilePort = 0 } = {},
+  {
+    publicPort = 0,
+    mobilePort = 0,
+    dockPort = 0,
+    dockPassword = newCredential(),
+  } = {},
 ) {
   const origins = {};
   const sessionKey = randomBytes(32);
@@ -104,23 +116,29 @@ export async function startTrialServers(
     [base + 'enroll', forMember((owner) => trial.enroll(owner))],
     [base + 'install', forMember((owner) => trial.install(owner))],
     [
-      base + 'approve',
-      forMember((owner, { dedicated, fields }) =>
-        trial.approve(owner, dedicated, fields),
-      ),
-    ],
-    [
-      base + 'read',
-      forMember((owner, { dedicated, fields }) =>
-        trial.receive(owner, dedicated, fields.id ?? ''),
-      ),
-    ],
-    [
-      base + 'stop',
+      base + 'receive',
       forMember(async (owner, { dedicated, fields }) => {
         await trial.gate(owner, dedicated);
-        await trial.stop(owner, fields.id ?? '');
+        if (Object.keys(fields).length !== 1)
+          throw new TrialError(400, '指定された配給を確認してください。');
+        await receiveAssignment(
+          await trial.runtime.distributionDb(),
+          owner,
+          fields.id,
+        );
       }),
+    ],
+    [
+      base + 'agents/start',
+      forMember((owner, { dedicated, fields }) =>
+        trial.cloudWork(owner, dedicated, 'start', fields),
+      ),
+    ],
+    [
+      base + 'agents/stop',
+      forMember((owner, { dedicated, fields }) =>
+        trial.cloudWork(owner, dedicated, 'stop', fields),
+      ),
     ],
     [base + 'revoke', forMember((owner) => trial.revoke(owner))],
     [
@@ -160,6 +178,21 @@ export async function startTrialServers(
           .find((v) => v.startsWith(cookie + '='))
           ?.slice(cookie.length + 1);
         const token = openSession(sessionKey, envelope);
+        if (req.method === 'GET' && path.split('?')[0] === base + 'agents') {
+          const account = trial.session(token);
+          if (!account)
+            throw new TrialError(401, '招待コードで入り直してください。');
+          const agent =
+            new URL(path, origin).searchParams.get('agent') ?? undefined;
+          const state = await trial.cloudWork(
+            account.owner,
+            dedicated,
+            'list',
+            { agent },
+          );
+          res.end(cloudScreen(state, randomUUID()));
+          return;
+        }
         if (req.method === 'GET' && path === base) {
           const session = trial.session(token);
           const order = session && trial.order(session.owner);
@@ -185,9 +218,21 @@ export async function startTrialServers(
                 session &&
                 (!order || order.state === 'requested') &&
                 (await trial.freeLineAvailable()),
-              jobs: verified ? await trial.jobs(session.owner) : [],
+              assignments: verified
+                ? await recipientAssignments(
+                    await trial.runtime.distributionDb(),
+                    session.owner,
+                  )
+                : [],
               notice:
-                !dedicated && session && (await trial.hasUpdate(session.owner)),
+                !dedicated &&
+                session &&
+                order?.access === 'active' &&
+                trial.phone(session.owner) &&
+                (await recipientHasPending(
+                  await trial.runtime.distributionDb(),
+                  session.owner,
+                )),
             }),
           );
           return;
@@ -199,14 +244,23 @@ export async function startTrialServers(
           throw new TrialError(403, 'この試験画面から操作してください。');
         const fields = await readForm(req);
         await action({ fields, res, token, dedicated });
-        res.writeHead(303, { Location: base });
+        res.writeHead(303, {
+          Location: path.startsWith(base + 'agents/')
+            ? base +
+              'agents' +
+              (fields.agent ? '?agent=' + encodeURIComponent(fields.agent) : '')
+            : base,
+        });
         res.end();
       } catch (error) {
-        res.statusCode = error instanceof TrialError ? error.status : 503;
+        res.statusCode =
+          error instanceof TrialError || error instanceof OperatorError
+            ? error.status
+            : 503;
         res.end(
           layout(
             '操作を確認してください',
-            `<p>${esc(error instanceof TrialError ? error.message : '状態を照合できませんでした。同じ試験画面から再試行してください。')}</p><a href="${base}">試験画面へ戻る</a>`,
+            `<p>${esc(error instanceof TrialError || error instanceof OperatorError ? error.message : '状態を照合できませんでした。同じ試験画面から再試行してください。')}</p><a href="${base}">試験画面へ戻る</a>`,
           ),
         );
       }
@@ -221,19 +275,35 @@ export async function startTrialServers(
     await closeServer(general);
     throw error;
   }
+  const dock = createServer(trialDock(trial, dockPassword));
+  try {
+    await listen(dock, dockPort);
+  } catch (error) {
+    await Promise.all([closeServer(general), closeServer(mobile)]);
+    throw error;
+  }
+  origins.dock = 'http://127.0.0.1:' + dock.address().port;
   origins.public = 'http://127.0.0.1:' + general.address().port;
   origins.mobile = 'http://127.0.0.1:' + mobile.address().port;
   cookie = 'noah_trial_' + general.address().port;
   try {
     await trial.recoverAlarms();
   } catch (error) {
-    await Promise.all([closeServer(general), closeServer(mobile)]);
+    await Promise.all([
+      closeServer(general),
+      closeServer(mobile),
+      closeServer(dock),
+    ]);
     throw error;
   }
   return {
     origins,
     async close() {
-      await Promise.all([closeServer(general), closeServer(mobile)]);
+      await Promise.all([
+        closeServer(general),
+        closeServer(mobile),
+        closeServer(dock),
+      ]);
     },
   };
 }
@@ -260,12 +330,37 @@ if (
     chmodSync(path, 0o600);
     trial.invite(randomUUID(), credential, Date.now() + TRIAL_MS);
   }
+  const dockKeyPath = join(dir, 'dock-password.txt');
+  try {
+    writeFileSync(dockKeyPath, newCredential(), { mode: 0o600, flag: 'wx' });
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+  }
+  const dockPassword = readFileSync(dockKeyPath, 'utf8').trim();
+  if (!/^[A-Za-z0-9_-]{43}$/.test(dockPassword))
+    throw new Error('Dockの認証ファイルを確認してください。');
   const servers = await startTrialServers(trial, {
+    dockPassword,
+    dockPort: 43873,
     publicPort: 43871,
     mobilePort: 43872,
   });
   console.log(
     `Noah 模擬回線　${servers.origins.public}${base}\n招待コードはこのMacの ${path} にあります。\n申込・Agent実行・事業者費用 0円。停止は Ctrl+C。`,
+  );
+  console.log(
+    '模擬運営Dock ' +
+      servers.origins.dock +
+      ' ／ operator ／ パスワードは ' +
+      dockKeyPath,
+  );
+  console.log(
+    '試験用受取人ID',
+    trial.db
+      .prepare('SELECT owner FROM trial_owners WHERE expires>?')
+      .all(trial.now())
+      .map((row) => row.owner)
+      .join(', '),
   );
   const shutdown = async () => {
     await servers.close();
