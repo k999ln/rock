@@ -111,7 +111,7 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     {providers === null && error && <button disabled={busy} onClick={() => setReload(n => n + 1)}>再読み込み</button>}
     {pending ? <section className={styles.panel} aria-label="登録の進捗"><h2>{job ? labels[job.state] : '登録の受付状況を確認してください'}</h2>
       {job && <><p>登録先：{job.providerName}（{job.providerOrigin}）</p><p>確認期限：{new Date(job.expiresAt).toLocaleString('ja-JP')}</p></>}
-      {job?.state === 'needs_user' && <><p>メール確認や本人確認など、登録先での操作が必要です。完了後にこの画面へ戻り、状況を確認してください。</p>{job.verificationUrl && <a href={job.verificationUrl} target="_blank" rel="noreferrer">登録先で確認する <ArrowRight size={16} /></a>}</>}
+      {job?.state === 'needs_user' && <><p>本人による確認が必要です。</p>{job.verificationUrl && (job.verificationUrl.startsWith('/noah/')?<Link href={job.verificationUrl}>確認を続ける <ArrowRight size={16}/></Link>:<a href={job.verificationUrl} target="_blank" rel="noreferrer">登録先で確認する <ArrowRight size={16} /></a>)}</>}
       {job?.state === 'completed' && <><p>実際の利用可否は、元のAgentへの接続時に確認します。</p><Link href={job.returnTo} onClick={onReturn}>Agentを使う <ArrowRight size={16} /></Link></>}
       {(!job || ['running','needs_user','unknown'].includes(job.state)) && <><p>同じ登録を繰り返さず、この仕事の状況を確認します。</p><button disabled={busy} onClick={() => { void run(false); }}>{busy ? '確認中…' : '登録の状況を確認'}</button></>}
       <details><summary>このブラウザから記録を消す</summary><p>登録処理は取り消されません。確認用の情報を消すと、この画面から状況を確認できなくなります。結果が不明な時は、登録先で状況を確認してから新しい依頼を行ってください。</p><button disabled={busy} onClick={clear}>ブラウザの確認情報を消す</button></details>

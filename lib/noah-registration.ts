@@ -37,6 +37,10 @@ export function parseRegistrationProviders(raw?: string): ConfiguredRegistration
       if (!object(v) || !identifier(v.id) || ids.has(v.id) || !text(v.name, 100) || !text(v.executorName, 100) || !Number.isSafeInteger(v.revision) || Number(v.revision) < 1 || !text(v.termsVersion, 100) || !Array.isArray(v.agentIds) || !v.agentIds.length || v.agentIds.length > 100 || !v.agentIds.every(id => text(id, 200)) || !Array.isArray(v.fields) || !v.fields.length || v.fields.length > 16) throw Error('Invalid registration provider');
       ids.add(v.id);
       const providerOrigin = publicUrl(v.providerOrigin), verification = publicUrl(v.verificationUrl), terms = publicUrl(v.termsUrl), executor = publicUrl(v.executorUrl);
+      if (v.execution !== undefined && v.execution !== 'browser') throw Error('Invalid executor');
+      const browser = v.execution === 'browser';
+      const mcpUrl = browser ? publicUrl(v.mcpUrl).href : undefined;
+      if (browser && (!v.requiresAccount || new URL(mcpUrl!).origin !== providerOrigin.origin)) throw Error('Browser account binding required');
       if (providerOrigin.pathname !== '/' || verification.origin !== providerOrigin.origin || terms.origin !== providerOrigin.origin) throw Error('Provider origin mismatch');
       const keys = new Set<string>();
       const fields = v.fields.map(f => {
@@ -46,9 +50,10 @@ export function parseRegistrationProviders(raw?: string): ConfiguredRegistration
         keys.add(f.key);
         return { key: f.key, label: f.label, type: f.type as 'text' | 'email' | 'password' | 'file', ...(f.profileField ? {profileField:f.profileField as import('./noah-registration-contract.ts').RegistrationField['profileField']} : {}), required: f.required, maxLength: Number(f.maxLength) };
       });
+      if(browser&&fields.some(f=>f.type==='file'))throw Error('Browser document upload is not enabled');
       return { id: v.id, name: v.name, agentIds: v.agentIds as string[], revision: Number(v.revision), providerOrigin: providerOrigin.origin,
         verificationUrl: verification.href, termsUrl: terms.href, termsVersion: v.termsVersion, executorName: v.executorName,
-        executorUrl: executor.href, executorOrigin: executor.origin, fields };
+        executorUrl: executor.href, executorOrigin: executor.origin, fields, ...(browser ? {execution:'browser' as const,requiresAccount:true,mcpUrl} : {}) };
     });
   } catch { return []; }
 }
@@ -84,7 +89,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
     const r = job.noahRegistration, provider = deps.providers.find(p => p.id === r.providerId);
     const same = provider && await sha256Hex(canonicalJson(provider)) === r.providerDigest;
     return { id: job.id, providerName: r.providerName, providerOrigin: r.providerOrigin, agentId: r.agentId, state: r.state, expiresAt: r.expiresAt,
-      verificationUrl: same && r.state === 'needs_user' ? provider.verificationUrl : null,
+      verificationUrl: same && r.state === 'needs_user' ? (provider.execution==='browser'?`/noah/registration/browser?job=${encodeURIComponent(job.id)}&provider=${encodeURIComponent(provider.id)}`:provider.verificationUrl) : null,
       returnTo: r.agentId.startsWith('mcp-registry:')?`/noah/ready/agent?id=${encodeURIComponent(r.agentId)}`:`/noah/agents/${encodeURIComponent(r.agentId)}` };
   }
   async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>, native?:RegistrationExecutor): Promise<RegistrationState> {

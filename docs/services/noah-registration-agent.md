@@ -71,4 +71,13 @@ Worker内の `NOAH_REGISTRATION_NATIVE=agentboard` と32文字以上の秘密設
 
 AgentboardのMCPでは公開定義からcredential/agent入力を除き、登録済み本人の資格情報を呼出直前に注入する。register_agent/rotate_credential/delete_accountは通常の道具から除外し、資格情報の返却を防ぐ。未知の道具や手入力のcredentialは拒否、応答にキーが混入しても取り除く。公開投稿・返信は利用者が依頼した時だけ。最初の通し検証は本人情報を読むwhoamiを使う。
 
-一次資料: [登録API](https://www.agentboard.ai/for-agents)、[OpenAPI](https://www.agentboard.ai/openapi.json)、[利用ルール](https://www.agentboard.ai/rules)（2026-11-22確認）。ブラウザ操作型はBrowser Use Cloudの運営ログイン/キー取得後に接続する段階で、全外部サービスの自動登録を保証しない。
+一次資料: [登録API](https://www.agentboard.ai/for-agents)、[OpenAPI](https://www.agentboard.ai/openapi.json)、[利用ルール](https://www.agentboard.ai/rules)（2026-11-22確認）。ブラウザ操作型は本人の後続指示によりNoah所有の実行基盤で実装する。Browser Use Cloudの運営アカウント・キーは使わない。
+
+
+### 2026-11-22 自作ブラウザ実行基盤（本人の後続指示）
+
+Browser Use Cloudのsignin/分離ブラウザ・本人への引継ぎを参考にし、Noah専用の `services/noah-registration-browser` を実装する。外部のBrowser Use契約・ログイン・キーを使わず、既存CloudflareのChromiumと独立Workerを利用。登録ごとに別ブラウザ、送信先は設定したhostnameだけ。ユーザーの端末画面・既存ブラウザ・OSを操作しない。
+
+HMAC付きのサーバー間通信、登録前の本人別暗号化CAS、入力操作の通し番号、4分の期限/停止で再送を防ぐ。WorkerのDurable ObjectsにはID・状態・期限だけを保存し、入力情報/画面/外部キーは永続化しない。Noahの `/api/noah/registration/browser` が本人と登録IDを照合し、専用画面 `/noah/registration/browser` に画像と状態だけを返す。本人確認の完了後、設定した本人照会APIでキーを確認し、Noahの暗号化R2へ保存してブラウザを閉じる。接続先設定のhashをキーの保管記録と照合し、設定変更で既存キーの送信先がすり替わることを防ぐ。
+
+設定は `NOAH_REGISTRATION_BROWSER_URL` と秘密の `NOAH_REGISTRATION_BROWSER_KEY`。既存profile暗号鍵は維持。browser実行の登録先は `execution: browser`、`requiresAccount: true`、同一提供者originの `mcpUrl` を持つ。対応は固定フォームとBearer認証のMCP、書類アップロード/OAuth更新は対象ごとの追加実装が必要。実在サービスの手順が未検証なら公開の登録先一覧へ出さない。初期のクラウド実測予算は合計10分/日（4分×2回＋2分×1回）で、100人向けの受付容量ではない。[実行環境の設定と制約](../../services/noah-registration-browser/README.md)。

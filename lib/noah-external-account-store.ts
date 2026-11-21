@@ -2,7 +2,7 @@ import { NoahAgentError } from './noah-agent-upload.ts';
 import { sha256Hex } from './noah-connect-requirements.ts';
 import { fromBase64, toBase64, type ProfileBucket, type ProfileKeys } from './noah-profile-store.ts';
 
-export type ExternalAccount = { version:1; job:string; state:'registering'|'registered'|'ready'|'failed'; credential?:string; externalId?:string; updatedAt:number };
+export type ExternalAccount = { version:1; job:string; state:'registering'|'registered'|'ready'|'failed'; credential?:string; externalId?:string; configurationDigest?:string; updatedAt:number };
 export type ExternalAccountSlot = { account:ExternalAccount|null; etag:string|null };
 /** Server-only: this store is deliberately absent from the profile response. */
 export function createNoahExternalAccountStore(bucket:ProfileBucket|undefined,keys:ProfileKeys|null,now=Date.now) {
