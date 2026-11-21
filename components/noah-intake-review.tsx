@@ -25,7 +25,26 @@ const onOff = (open: boolean) => (open ? '開' : '閉');
 const connections = (window: NoahLaunchWindow) => counts(Object.fromEntries(Object.entries(window.connections).map(([state, value]) => [state, value.count])), connectionLabels);
 const handshakeMs = (window: NoahLaunchWindow) => (window.probeMs == null ? 'まだありません' : `${window.probeMs} ミリ秒`);
 const screens = (window: NoahLaunchWindow) => `狭い ${window.screens.narrow} ／ 広い ${window.screens.wide}${window.screens.unknown ? ` ／ 不明 ${window.screens.unknown}` : ''}`;
+type ImportRow = Record<string, unknown>;
+type ImportFile = { schema: string; exportedAt: number; families: ImportRow[]; candidates: ImportRow[]; checks: ImportRow[] };
+/** 手元で計算した取り込みの結果（scripts/noah-local-patrol.mjs が書き出す）を、要求 1 回ずつ（系列 60・候補 240 まで）に分ける。lib/noah-intake-import.ts と同じ分け方。 */
+function importParts(all: ImportFile): ImportFile[] {
+  const members = new Map<unknown, ImportRow[]>(), checks = new Map(all.checks.map((row) => [row.candidate_id, row]));
+  for (const row of all.candidates) members.set(row.family_id, [...(members.get(row.family_id) ?? []), row]);
+  const empty = (): ImportFile => ({ schema: all.schema, exportedAt: all.exportedAt, families: [], candidates: [], checks: [] });
+  const parts: ImportFile[] = [];
+  let current = empty();
+  for (const family of all.families) {
+    const rows = (members.get(family.id) ?? []).slice(0, 240);
+    if (current.families.length >= 60 || current.candidates.length + rows.length > 240) { if (current.families.length) parts.push(current); current = empty(); }
+    current.families.push(family);
+    for (const row of rows) { current.candidates.push(row); const check = checks.get(row.id); if (check) current.checks.push(check); }
+  }
+  if (current.families.length) parts.push(current);
+  return parts;
+}
 export default function NoahIntakeReview({ ownerScope }: { ownerScope: string }) {
+  const [importing, setImporting] = useState(''), [imported, setImported] = useState('');
   const [state, setState] = useState<State | null>(null), [error, setError] = useState(''), [mouth, setMouth] = useState(''), [level, setLevel] = useState(''), [query, setQuery] = useState(''), [q, setQ] = useState(''), [offset, setOffset] = useState(0), [refresh, setRefresh] = useState(0), [pending, setPending] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
@@ -48,6 +67,27 @@ export default function NoahIntakeReview({ ownerScope }: { ownerScope: string })
       if (!response.ok || result.ownerScope !== ownerScope) throw Error(result.error ?? '再読込してから操作してください。');
       setRefresh(n => n + 1);
     } catch (e) { setError(e instanceof Error ? e.message : '保存できません。'); } finally { setPending(false); }
+  }
+  /** 取り込みの結果のファイルを、順に送る（同じファイルを何度送っても、同じ結果になる）。 */
+  async function importFile(file: { text: () => Promise<string> } | undefined) {
+    if (!file || pending || !state || state.ownerScope !== ownerScope) return;
+    setPending(true); setError(''); setImported('');
+    try {
+      let all: ImportFile;
+      try { all = JSON.parse(await file.text()) as ImportFile; } catch { throw Error('取り込みの結果のファイルを読めません。'); }
+      if (!all || all.schema !== 'noah-intake-import/1' || !Array.isArray(all.families) || !Array.isArray(all.candidates) || !Array.isArray(all.checks)) throw Error('取り込みの結果のファイルではありません。');
+      const parts = importParts(all);
+      let families = 0, listed = 0;
+      for (const [index, part] of parts.entries()) {
+        setImporting(`入れています… ${index + 1} / ${parts.length} 回`);
+        const response = await fetch('/api/noah/intake/import', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': ownerScope }, body: JSON.stringify(part) });
+        const result = await response.json() as { ownerScope?: string; error?: string; families?: number; listed?: number };
+        if (!response.ok || result.ownerScope !== ownerScope) throw Error(`${result.error ?? '入れられません。'}（${index + 1} 回目。同じファイルを、もう一度入れると続きから同じ結果になります）`);
+        families += result.families ?? 0; listed += result.listed ?? 0;
+      }
+      setImported(`入れました：系列 ${families.toLocaleString('ja-JP')}（一覧に載る物 ${listed.toLocaleString('ja-JP')}）。書き出した時刻 ${date(all.exportedAt)}`);
+      setRefresh(n => n + 1);
+    } catch (e) { setError(e instanceof Error ? e.message : '入れられません。'); } finally { setImporting(''); setPending(false); }
   }
   if (!state && !error) return null;
   return <section className={styles.intake} aria-labelledby="noah-intake-heading">
@@ -95,6 +135,11 @@ export default function NoahIntakeReview({ ownerScope }: { ownerScope: string })
       <p>載せていない理由：{Object.entries(state.reasons).map(([reason, count]) => `${labels[reason] ?? 'その他'} ${count}`).join(' ／ ') || 'ありません'}</p>
       <p>つなげない物の内訳：{Object.entries(state.unsupported).map(([reason, count]) => `${labels[reason] ?? 'その他'} ${count}`).join(' ／ ') || 'ありません'}</p>
       {state.warnings.map(warning => <output key={warning}>{warning}</output>)}
+      <h3>取り込みの結果を入れる</h3>
+      <p>本番の巡回を開けずに、手元で台帳を読んで握手した結果（scripts/noah-local-patrol.mjs が書き出す import.json）を入れます。一覧に載せる系列と、その候補・握手の行だけが入ります。何度入れても、同じ結果になります。</p>
+      <label>ファイルを選ぶ <input type="file" accept="application/json,.json" disabled={pending} onChange={event => { void importFile(event.target.files?.[0]); }} /></label>
+      {importing && <output>{importing}</output>}
+      {imported && <output>{imported}</output>}
     </>}
     <form onSubmit={event => { event.preventDefault(); setQ(query.trim()); setOffset(0); }}>
       <label>動く場所 <select value={mouth} onChange={event => { setMouth(event.target.value); setOffset(0); }}><option value="">すべて</option><option value="mcp-remote">相手のサーバー</option><option value="mcp-package">端末で動かす</option></select></label>

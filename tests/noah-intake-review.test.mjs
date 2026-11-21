@@ -47,7 +47,7 @@ void test('the confirmed counts are their own rows, apart from the registry coun
   // つながると確かめた数（spec-88 の 9.6）: 動いた・握手まで・固定の物を、台帳の件数とは別の行に出す。
   const h = harness(async () => Response.json({ ...snapshot(), listed: 12, confirmed: { ran: 5, handshake: 7, fixed: 13 } })); t.after(() => h.close()); await h.flush();
   assert.match(h.text(), /一覧に載せている数：12/);
-  assert.deepEqual(h.nodes().filter(n => n.type === 'h3').map(n => n.props.children), ['つながると確かめた数']);
+  assert.deepEqual(h.nodes().filter(n => n.type === 'h3').map(n => n.props.children), ['つながると確かめた数', '取り込みの結果を入れる']);
   for (const row of ['動いた（人が動かして、成果が出た）：5', '握手まで確かめた（まだ誰も動かしていない）：7', '本人の Mac で動かす（台帳とは別の、固定の物）：13']) assert.ok(h.text().includes(row), row);
   // 数の無い応答（古い版）でも、画面は出る。
   const old = harness(async () => Response.json(snapshot())); t.after(() => old.close()); await old.flush();
