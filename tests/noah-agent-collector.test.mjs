@@ -92,7 +92,7 @@ void test('watch waits between passes and aborting the wait releases the databas
 void test('a broken source does not prevent registry collection or overwrite a valid export with partial JSON', async t => {
   const dir = directory(t), net = world();
   const local = openCollectorStore(dir, { now: () => NOW }); t.after(() => local.close());
-  const state = await collectAgents({ local, directory: dir, now: () => NOW, budget, fetcher: (url, init) => String(url).includes('api.github.com') ? Promise.reject(Error('private error text')) : net.fetch(url, init) });
+  const state = await collectAgents({ local, directory: dir, now: () => NOW, budget, fetcher: (url, init) => new URL(String(url)).hostname === 'api.github.com' ? Promise.reject(Error('private error text')) : net.fetch(url, init) });
   assert.equal(state.state, 'degraded'); assert.equal(state.export.families, 1);
   assert.equal(state.errors[0].source, 'github');
   assert.ok(!readFileSync(join(dir, 'status.json'), 'utf8').includes('private error text'));
