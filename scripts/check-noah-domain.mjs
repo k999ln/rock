@@ -5,14 +5,15 @@ import { noahPublicOrigin } from '../lib/noah-public-origin.ts';
 export async function checkNoahDomain(origin, fetcher = fetch) {
   const base = noahPublicOrigin(origin);
   const checks = [
-    ['/noah', 'html'], ['/noah/explore', 'html'], ['/noah/account', 'html'], ['/noah/ready', 'html'], ['/noah/activity', 'html'], ['/noah/data', 'html'],
+    ['/noah', 'html'], ['/noah/explore', 'html'], ['/noah/account', 'html'], ['/noah/profile', 'html'], ['/noah/activity', 'html'], ['/noah/saved', 'html'],
+    ['/noah/ready', 'redirect', '/noah/explore?tab=ready'], ['/noah/data', 'redirect', '/noah/saved?tab=results'],
     ['/api/noah/intake?limit=0', 'catalog'],
-    ['/api/noah/connect', 'private'], ['/api/noah/ask', 'private'],
+    ['/api/noah/connect', 'private'], ['/api/noah/ask', 'private'], ['/api/noah/session', 'private'],
   ];
-  return Promise.all(checks.map(async ([path, kind]) => {
+  return Promise.all(checks.map(async ([path, kind, destination]) => {
     try {
       const response = await fetcher(`${base}${path}`, {
-        redirect: 'manual', headers: { Accept: kind === 'html' ? 'text/html' : 'application/json' },
+        redirect: 'manual', headers: { Accept: kind === 'html' || kind === 'redirect' ? 'text/html' : 'application/json' },
         signal: AbortSignal.timeout(15_000),
       });
       const status = response.status;
@@ -21,9 +22,14 @@ export async function checkNoahDomain(origin, fetcher = fetch) {
         ok = status === 200 && (response.headers.get('content-type') ?? '').includes('text/html');
         detail = ok ? 'page available' : 'page unavailable';
         await response.body?.cancel();
+      } else if (kind === 'redirect') {
+        const location = response.headers.get('location');
+        ok = [307, 308].includes(status) && !!location && new URL(location, base).href === `${base}${destination}`;
+        detail = ok ? 'canonical page redirect' : 'unexpected page redirect';
+        await response.body?.cancel();
       } else if (kind === 'private') {
         ok = status === 401;
-        detail = ok ? 'sign-in required' : 'unexpected anonymous response';
+        detail = ok ? 'browser ownership required' : 'unexpected anonymous response';
         await response.body?.cancel();
       } else {
         // limit=0 returns no catalog entries, only bounded counts and availability.

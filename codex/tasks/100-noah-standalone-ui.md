@@ -206,3 +206,6 @@ GitHub側は実装3e492b237、README/画面試験補完b53f82f95、画面整理0
 公開APIの実試験（物理スマホとは別）: 未登録ブラウザ権限を発行し、無料Tiplineへの接続 `308a7122-bb34-4096-96a4-89d14c4f59c0` → 読取専用list_gta6_entries → Work `8ac2abf5-6005-4d34-88d5-be5c01549671` succeeded、成果130,948文字を受領。再取得で本文一致、別ブラウザ権限では404。Noah会員・外部アカウントの作成、投稿、課金なし。実行を再送していない。
 
 Pixel 10は公開179でログインなしのホーム表示・検索入力まで実測。その後端末ロックに戻り、本人へ解除を依頼した。画面保持のscrcpy control-only接続を再起動し、端末ロック自体は変更しない。端末上のAgent実行・成果表示はまだ未完了。公開APIの成功を実機合格や100人配布完了には昇格しない。
+
+
+2026-11-22 最終Git統合検証（PR #377）: 862eac033で画面整理を取り込んだ後の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は全工程exit0。root4,856 pass・4 skip・0 fail（計4,860）、API1,918・CSV385 assertions、typecheck/lint/build/assetを含め成功。ログ `/tmp/noah-memberless-merged-verify.log`。公開スモーク検査に残った旧ready/dataの200期待を、正しい統合先への307/308と固定カテゴリ照合へ更新。専用3試験と再lint成功、公開12項目が成功。検査は読み取りのみでブラウザ権限を発行しない。Pixelの実機一周は端末解除待ちで、成功とは記録しない。

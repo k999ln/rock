@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahの画面統合後に全体verify成功（4,856 pass・4 skip）、公開導線12項目を確認。旧URLの正規転送とブラウザ保存権限を検査スクリプトへ反映（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
 - Noah会員登録不要化を公開179へ反映。178の画面整理を保持し、公開APIで接続→依頼→成果再表示と別所有者404を実測。Pixel一周は端末解除待ち（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 
 - NoahのREADMEから旧eSIM必須の開始説明を更新。収集・法人入口を保った画面分岐テストの部品境界を補い、4件成功を確認（[PR #377](https://github.com/k999ln/rock/pull/377)）。
