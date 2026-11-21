@@ -131,3 +131,8 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 2026-11-22 透過ロゴ公開170（PR #377 / 元変更d3646297a・PR #376）: 最新の公開169をSites sourceでfast-forwardし、layout・SVGと追記文書の7ファイルだけを追加。source `aa37341c7d3385efb5e0f6ccb30a0d1dabbb968c`、deployment `appgdep_6b01efb88d8c8191a25d365067b2a4b2`、公開時env16。ピン表示・eSIM対応・既存appleアイコンを保持。環境設定やmigrationの追加変更なし。公開HTMLのfavicon href、SVGの200/image/svg+xmlとGit原本のbyte一致、公開9項目、匿名session API 401を確認。eSIM連携は公開応答でも未設定。
 
 検証は統合先のtypecheck/lint/build成功、ロゴ作成側の全体verify成功（4,810 pass・4 skip、仕事API1,918・CSV385 assertions）を確認。eSIM本体の直前の全体verifyは4,829 pass・4 skip。背景透過は元PNGを保つSVGフィルターで、明暗両背景に白い矩形なし。追記文書の競合は両側を残して解消。
+
+
+2026-11-22 公開170の独立確認（デザイン担当、PR #376 / 受領PR #377）: deployment `appgdep_6b01efb88d8c8191a25d365067b2a4b2` のsucceeded/env16/source `aa37341c7d3385efb5e0f6ccb30a0d1dabbb968c`、公開Noahのrel=iconが `/brand/noah-icon-transparent.svg` であること、SVG本体をブラウザで表示できることを別担当も確認。確認用の幅と言語は復元済み。ロゴ作成側の全体verify 4,810 pass・4 skip・exit0を受領。
+
+確認範囲の区別: 前半の検索→依頼→成果・登録情報の一周は公開165/166時点の検査。公開170は169由来のピン風ホームを保持しており、メニュー「ホーム」と「タイムライン（/noah#timeline）」は同じピン画面になると独立担当から報告あり。以前の投稿＋Agentタイムラインへの切替は観測されていない。最新のピン仕様の意図との照合が未了なので、確定不具合や合格にせず確認事項として保持し、この受領ではUIを変更しない。

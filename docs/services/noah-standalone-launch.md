@@ -149,3 +149,8 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 公開167の受領（2026-11-22、PR #377）: source `787a2102c5c96e507bb2f9f8700af9aa0e926bfe`、deployment `appgdep_6b01ed1ab6748191aa5ceab9d71b1d47`、env15。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 全工程成功（4,829 pass・4 skip・0 fail、計4,833、仕事API1,918 assertions、CSV385 assertions）。初回は旧ログイン文言の期待1件が失敗し、接続確認への変更と元成果へのreturnToを検証する形へ修正後に全体を再実行。
 
 公開Chromeの390pxで新規フォーム0・横幅390px内、未設定表示、再確認、折り畳まれた既存ログインへの遷移、新規登録タブなしを確認。認証済みIABでは接続確認から元のwhoami成果へ自動復帰。公開9項目と未認証のsession API 401 / connected:false / esimConfigured:falseも確認。これらは公開Webと既存アカウントの受入で、実eSIMの発行・新しい端末への本人情報引継ぎの合格ではない。実eSIM設定・別利用者の本番一周・実機画像保存が残る。
+
+
+2026-11-22 公開170の独立確認（デザイン担当、PR #376 / 受領PR #377）: deployment `appgdep_6b01efb88d8c8191a25d365067b2a4b2` のsucceeded/env16/source `aa37341c7d3385efb5e0f6ccb30a0d1dabbb968c`、公開Noahのrel=iconが `/brand/noah-icon-transparent.svg` であること、SVG本体をブラウザで表示できることを別担当も確認。確認用の幅と言語は復元済み。ロゴ作成側の全体verify 4,810 pass・4 skip・exit0を受領。
+
+確認範囲の区別: 前半の検索→依頼→成果・登録情報の一周は公開165/166時点の検査。公開170は169由来のピン風ホームを保持しており、メニュー「ホーム」と「タイムライン（/noah#timeline）」は同じピン画面になると独立担当から報告あり。以前の投稿＋Agentタイムラインへの切替は観測されていない。最新のピン仕様の意図との照合が未了なので、確定不具合や合格にせず確認事項として保持し、この受領ではUIを変更しない。
