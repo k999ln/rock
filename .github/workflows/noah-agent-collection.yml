@@ -38,4 +38,9 @@ jobs:
         env:
           NOAH_COLLECTION_KEY: ${{ secrets.NOAH_COLLECTION_KEY }}
           NOAH_X_BEARER_TOKEN: ${{ secrets.NOAH_X_BEARER_TOKEN }}
-        run: node --experimental-strip-types scripts/noah-cloud-collector.mjs --dir "$RUNNER_TEMP/noah-collector" --origin https://avoado.si
+          # Optional free Smithery key; without it the Smithery source reports needs_credentials.
+          SMITHERY_API_KEY: ${{ secrets.SMITHERY_API_KEY }}
+          # Read-only job token, sent only to api.github.com search (contents: read).
+          GITHUB_TOKEN: ${{ github.token }}
+        # --import: handshake-passed families go into the Noah grid under a daily cap (task 121). Remove it to stop automatic listing.
+        run: node --experimental-strip-types scripts/noah-cloud-collector.mjs --dir "$RUNNER_TEMP/noah-collector" --origin https://avoado.si --import

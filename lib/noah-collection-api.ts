@@ -1,5 +1,5 @@
 import { boundedNoahBody } from './noah-agent-api.ts';
-import { NOAH_COLLECTION_LIMITS, NOAH_COLLECTION_PATH, NOAH_COLLECTION_SOURCES, parseCollectionSnapshot, verifyCollectionSignature, type NoahCollectionSnapshot } from './noah-collection.ts';
+import { NOAH_COLLECTION_LIMITS, NOAH_COLLECTION_PATH, NOAH_COLLECTION_SOURCES, noahCollectionBlocked, noahCollectionCards, parseCollectionSnapshot, verifyCollectionSignature, type NoahCollectionSnapshot } from './noah-collection.ts';
 
 type Bucket = Pick<R2Bucket, 'get' | 'put'>;
 const keyFor = (source: string) => `noah/collection/v1/${source}.json`;
@@ -11,24 +11,24 @@ export function createCollectionApi({ bucket, key, now = Date.now }: { bucket?: 
       if (url.pathname !== NOAH_COLLECTION_PATH) return json({ error: 'not_found' }, 404);
       if (request.method === 'GET') {
         const selected = url.searchParams.get('source') ?? '', q = (url.searchParams.get('q') ?? '').trim().toLowerCase();
-        const cursor = url.searchParams.get('cursor') ?? '0';
-        if (selected && !NOAH_COLLECTION_SOURCES.includes(selected as never) || q.length > 200 || !/^(0|[1-9]\d{0,4})$/.test(cursor)) return json({ error: 'collection_invalid' }, 400);
+        const cursor = url.searchParams.get('cursor') ?? '0', order = url.searchParams.get('order') ?? 'hot';
+        if (selected && !NOAH_COLLECTION_SOURCES.includes(selected as never) || q.length > 200 || !/^(0|[1-9]\d{0,4})$/.test(cursor) || !['hot', 'new'].includes(order)) return json({ error: 'collection_invalid' }, 400);
         if (!bucket) return json({ items: [], total: 0, nextCursor: null, configured: false });
         const sources = selected ? [selected] : NOAH_COLLECTION_SOURCES;
         const snapshots = await Promise.all(sources.map(async source => {
           const value = await bucket.get(keyFor(source));
           if (!value) return null;
-          return parseCollectionSnapshot(await value.json(), now());
+          // A malformed or older-schema snapshot of one source must not hide the others.
+          try { return parseCollectionSnapshot(await value.json(), now()); } catch { return null; }
         }));
-        const records = snapshots.flatMap(snapshot => snapshot?.items ?? []).filter(item => item.expiresAt > now() && (!q || `${item.name} ${item.summary} ${item.author}`.toLowerCase().includes(q)));
-        records.sort((a, b) => b.observedAt - a.observedAt || a.id.localeCompare(b.id));
-        // Several sources may point at the same project; show one card with all its provenance.
-        const grouped = new Map<string, typeof records>();
-        for (const item of records) { const list = grouped.get(item.url) ?? []; list.push(item); grouped.set(item.url, list); }
-        let all = [...grouped.values()].map(items => ({ ...items[0], sources: items.map(({ source, sourceUrl, author, metrics, observedAt }) => ({ source, sourceUrl, author, metrics, observedAt })), status: 'discovered' }));
+        // 公開する側でも、成人向けの語に当たる紹介は出さない（古い収集機の掲載や、Codex の受け取りの漏れに備える）。
+        const records = snapshots.flatMap(snapshot => snapshot?.items ?? []).filter(item => item.expiresAt > now() && !noahCollectionBlocked(item) && (!q || `${item.name} ${item.summary} ${item.author}`.toLowerCase().includes(q)));
+        // Several sources may point at the same project; show one card with all its provenance. New and easy first (lib/noah-collection.ts).
+        let all = noahCollectionCards(records, order as 'hot' | 'new').map(card => ({ ...card, status: 'discovered' }));
         if (url.searchParams.get('view') === 'home' && !selected) {
           // The home preview includes each available source instead of being filled by a registry sweep.
-          const queues = NOAH_COLLECTION_SOURCES.map(source => all.filter(item => item.source === source));
+          // Each round takes one card per source; the source whose best card ranks higher goes first.
+          const queues = NOAH_COLLECTION_SOURCES.map(source => all.filter(item => item.source === source)).filter(queue => queue.length).sort((a, b) => (order === 'new' ? b[0].createdAt - a[0].createdAt : b[0].hot - a[0].hot));
           const balanced: typeof all = [];
           for (let index = 0; balanced.length < all.length; index++) for (const queue of queues) if (queue[index]) balanced.push(queue[index]);
           all = balanced;

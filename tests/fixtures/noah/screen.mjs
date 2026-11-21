@@ -3,6 +3,7 @@
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
 import * as pins from '../../../lib/noah-pins.ts';
 import * as importParts from '../../../lib/noah-intake-import-parts.ts';
+import * as readyView from '../../../lib/noah-ready-view.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
@@ -99,6 +100,8 @@ export function screen(options = {}) {
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
       if (id === '@/lib/noah-intake-import-parts') return importParts;
+      // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
+      if (id === '@/lib/noah-ready-view') return readyView;
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
       throw Error(`画面の試験の台に、${id} がありません`);
     };

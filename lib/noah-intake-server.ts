@@ -9,6 +9,8 @@ export function noahIntakeDependencies() {
   return { db: database(), authenticate: requestUser,
     reviewers: (config.NOAH_REVIEWER_USER_IDS ?? '').split(',').map(s => s.trim()).filter(Boolean),
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
+    // 収集機（GitHub の定期実行）が、握手の済んだ系列を一覧へ入れる時の鍵（紹介の掲載と同じ。lib/noah-intake-import.ts）。
+    collectorKey: config.NOAH_COLLECTION_KEY,
     origin: config.NOAH_ORIGIN ? `https://${config.NOAH_ORIGIN}` : 'https://avoado.si',
     fetcher: fetch, now: Date.now, waitUntil,
     // つなげる数を、料金ごとのカードの数にする（切り替え NOAH_PLAN_LIMITS。料金の読み方は、本人が決めるまで置かない。lib/noah-plan.ts）。
