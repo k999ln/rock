@@ -136,3 +136,12 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 2026-11-22 公開170の独立確認（デザイン担当、PR #376 / 受領PR #377）: deployment `appgdep_6b01efb88d8c8191a25d365067b2a4b2` のsucceeded/env16/source `aa37341c7d3385efb5e0f6ccb30a0d1dabbb968c`、公開Noahのrel=iconが `/brand/noah-icon-transparent.svg` であること、SVG本体をブラウザで表示できることを別担当も確認。確認用の幅と言語は復元済み。ロゴ作成側の全体verify 4,810 pass・4 skip・exit0を受領。
 
 確認範囲の区別: 前半の検索→依頼→成果・登録情報の一周は公開165/166時点の検査。公開170は169由来のピン風ホームを保持しており、メニュー「ホーム」と「タイムライン（/noah#timeline）」は同じピン画面になると独立担当から報告あり。以前の投稿＋Agentタイムラインへの切替は観測されていない。最新のピン仕様の意図との照合が未了なので、確定不具合や合格にせず確認事項として保持し、この受領ではUIを変更しない。
+
+
+### 2026-11-22 公開172・4件修正のGit統合（PR #377）
+
+- UI担当の `b48d55109` を履歴ごとfast-forwardし、`codex/noah-100-user-acceptance-20261122` へpush。登録済み接続の再利用、画像未受取の表示、操作名/入力欄の6言語表示、ホームと `#timeline` の分離を保持。追加の選択肢翻訳もGitに含む。
+- 公開172は source `d9a2d4f26439a0d1a14a3139772880fba8d35738`、deployment `appgdep_6b01f571e5488191a24a375d6c212e65`、env16でsucceeded。171 source `566bc99d9776d83ca0fdde04b428b0f31ff941a8` の直接の後続で、収集API/収集処理を変更せず保持していることをsource差分で確認。このチャットから重複配備は行っていない。選択肢翻訳の追補公開はUI担当が継続中。
+- 統合後の関連31試験は31 pass / 0 fail。`npm run noah:check:domain` は公開9項目成功。全体verifyはUI担当で再検証中のため、今回の統合を全体合格とは扱わない。再開コマンド: `node --experimental-strip-types --test tests/noah-four-flow-fixes.test.mjs tests/noah-registration-ui.test.mjs tests/noah-ask-ui.test.mjs tests/noah-esim-access.test.mjs`。
+- Pixel 10 / Android 17のWi-Fi接続を再確認。画面がロックされているため、本人へ本体での解除を依頼。今回の実スマホによる登録→Agent利用→成果受取は未完了。既存の外部登録1件と以前の本人による成果表示の証拠とは分離する。
+- mainのPR #378にある無料eSIM試用workerは `services/noah-test-runtime/src/esim-trial/worker.mjs` のローカルfixtureであり、公開入口にmountされていない。これを本番eSIM本人連携の完了証拠には使わない。
