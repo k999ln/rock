@@ -19,4 +19,14 @@
 
 ## 引継ぎ
 
-検証結果とPRを完了時に追記する。
+[PR #380](https://github.com/k999ln/rock/pull/380)。Sites公開版171（source `566bc99d9776d83ca0fdde04b428b0f31ff941a8`）へ反映。https://avoado.si/noah/agents の実表示、Hugging Faceのいいね3件・1件の表示、検索、390px幅を確認。
+
+運営Macの `si.avoado.noah-agent-collector` を常駐起動。保存先は `work/noah-agent-collection-20261122`、実行checkoutは `work/noah-agent-collector-runtime-20261122`。初回常駐巡回でMCP候補4,000件・握手成功22件、GitHub20件、Hugging Face11件。公開APIへの4出所の署名付き送信が成功し、公開APIからHF11件を再取得。Macの停止/スリープ中は収集停止。Xの実収集は `NOAH_X_BEARER_TOKEN` 未設定のため `needs_credentials`。鍵はチャットやGitに記載せず、運営の権限600のruntime.envへ設定後サービスを再起動する。
+
+検証:
+- `npm run typecheck` / `npm run lint:product`: 成功。
+- 関連38試験、追加16試験、launch-ops17試験: 成功。公開ソースの収集/API/launch-ops33試験とSites本番build: 成功。
+- `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`: 全体は未通過。4,786試験中4,774成功・4skip・8失敗。新しい共通importを画面試験へ渡す1件を修正し、17試験再実行で成功。Pixelの時間制限5件は単独再実行で成功。
+- 残る2件は共有node_modulesのsymlinkでbracesの絶対パスが元checkoutになったことと、Miniの依存未導入でundici解決先がrootになったこと。既存のlock・製品・試験を変更していない。全体チェーン後半は未実行なのでPRはdraft。次担当は独立した依存導入環境で全体verifyを再実行する。
+
+停止: `node scripts/noah-collector-service.mjs --stop`。再開/常駐設定/外部評価の意味はサービス契約の運用節を参照。
