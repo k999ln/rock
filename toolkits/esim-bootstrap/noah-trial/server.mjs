@@ -76,37 +76,6 @@ function openSession(key, envelope) {
     return null;
   }
 }
-async function memberAction(trial, token, dedicated, action, fields) {
-  const session = trial.session(token);
-  if (!session) throw new TrialError(401, '招待コードで入り直してください。');
-  const owner = session.owner;
-  switch (action) {
-    case 'enroll':
-      await trial.enroll(owner);
-      break;
-    case 'install':
-      await trial.install(owner);
-      break;
-    case 'approve':
-      await trial.approve(owner, dedicated, fields);
-      break;
-    case 'read':
-      await trial.receive(owner, dedicated, fields.id ?? '');
-      break;
-    case 'stop':
-      await trial.gate(owner, dedicated);
-      await trial.stop(owner, fields.id ?? '');
-      break;
-    case 'revoke':
-      await trial.revoke(owner);
-      break;
-    case 'logout':
-      trial.logout(token);
-      break;
-    default:
-      throw new TrialError(404, '操作が見つかりません。');
-  }
-}
 export async function startTrialServers(
   trial,
   { publicPort = 0, mobilePort = 0 } = {},
@@ -114,6 +83,57 @@ export async function startTrialServers(
   const origins = {};
   const sessionKey = randomBytes(32);
   let cookie;
+  const cookieOptions = `; Path=${base}; HttpOnly; SameSite=Strict; Secure`;
+  const forMember = (act) => async (context) => {
+    const member = trial.session(context.token);
+    if (!member) throw new TrialError(401, '招待コードで入り直してください。');
+    await act(member.owner, context);
+  };
+  const actions = new Map([
+    [
+      base + 'login',
+      ({ fields, res }) => {
+        const token = trial.login(fields.invite ?? '');
+        const session = sealSession(sessionKey, token);
+        res.setHeader(
+          'Set-Cookie',
+          cookie + '=' + session + cookieOptions + '; Max-Age=86400',
+        );
+      },
+    ],
+    [base + 'enroll', forMember((owner) => trial.enroll(owner))],
+    [base + 'install', forMember((owner) => trial.install(owner))],
+    [
+      base + 'approve',
+      forMember((owner, { dedicated, fields }) =>
+        trial.approve(owner, dedicated, fields),
+      ),
+    ],
+    [
+      base + 'read',
+      forMember((owner, { dedicated, fields }) =>
+        trial.receive(owner, dedicated, fields.id ?? ''),
+      ),
+    ],
+    [
+      base + 'stop',
+      forMember(async (owner, { dedicated, fields }) => {
+        await trial.gate(owner, dedicated);
+        await trial.stop(owner, fields.id ?? '');
+      }),
+    ],
+    [base + 'revoke', forMember((owner) => trial.revoke(owner))],
+    [
+      base + 'logout',
+      forMember((_owner, { token, res }) => {
+        trial.logout(token);
+        res.setHeader(
+          'Set-Cookie',
+          cookie + '=' + cookieOptions + '; Max-Age=0',
+        );
+      }),
+    ],
+  ]);
   function handler(dedicated) {
     return async (req, res) => {
       const origin = dedicated ? origins.mobile : origins.public;
@@ -140,8 +160,8 @@ export async function startTrialServers(
           .find((v) => v.startsWith(cookie + '='))
           ?.slice(cookie.length + 1);
         const token = openSession(sessionKey, envelope);
-        const session = trial.session(token);
         if (req.method === 'GET' && path === base) {
+          const session = trial.session(token);
           const order = session && trial.order(session.owner);
           let verified = false;
           if (
@@ -172,30 +192,13 @@ export async function startTrialServers(
           );
           return;
         }
-        if (req.method !== 'POST' || !path.startsWith(base))
+        const action = actions.get(path);
+        if (req.method !== 'POST' || !action)
           throw new TrialError(404, 'ページが見つかりません。');
         if (req.headers.origin !== origin)
           throw new TrialError(403, 'この試験画面から操作してください。');
         const fields = await readForm(req);
-        const action = path.slice(base.length);
-        const cookieOptions = `; Path=${base}; HttpOnly; SameSite=Strict; Secure`;
-        if (action === 'login') {
-          const envelope = sealSession(
-            sessionKey,
-            trial.login(fields.invite ?? ''),
-          );
-          res.setHeader(
-            'Set-Cookie',
-            cookie + '=' + envelope + cookieOptions + '; Max-Age=86400',
-          );
-        } else {
-          await memberAction(trial, token, dedicated, action, fields);
-          if (action === 'logout')
-            res.setHeader(
-              'Set-Cookie',
-              cookie + '=' + cookieOptions + '; Max-Age=0',
-            );
-        }
+        await action({ fields, res, token, dedicated });
         res.writeHead(303, { Location: base });
         res.end();
       } catch (error) {

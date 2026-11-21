@@ -65,7 +65,20 @@ await test('模擬回線の入口を経由して0円申込、再開、実行、�
         await fetch(origins[line] + base, { headers: { Cookie: cookie ?? '' } })
       ).text();
     assert.match(await page('public'), /招待コードで入る/);
-    assert.equal((await post('public', 'enroll')).status, 401);
+    for (const action of [
+      'enroll',
+      'install',
+      'approve',
+      'read',
+      'stop',
+      'revoke',
+      'logout',
+    ])
+      assert.equal((await post('public', action)).status, 401, action);
+    assert.equal((await post('public', 'unknown')).status, 404);
+    const rejectedLogin = await post('public', 'login', { invite: 'invalid' });
+    assert.equal(rejectedLogin.status, 403);
+    assert.equal(rejectedLogin.headers.has('set-cookie'), false);
     const login = await post('public', 'login', { invite: credential });
     cookie = login.headers.get('set-cookie').split(';')[0];
     assert.match(login.headers.get('set-cookie'), /HttpOnly/);
