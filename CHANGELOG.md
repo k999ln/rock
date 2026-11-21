@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- task 101 の項目 1・4 として Noah の運営向け月別従量と移行の引き金、runner の同一 ID 再配送防止と合成 Cloudflare 復旧試験を追加（[PR #370](https://github.com/k999ln/rock/pull/370)）。
+
 - task 105 のクラウド新規受付に費用上限を追加し、Noah の日別 SLO、通知の振り分け、D1・R2 のローカル復元練習と運用手順を実装（[PR #368](https://github.com/k999ln/rock/pull/368)）。
 
 ## 2026-11-21

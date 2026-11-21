@@ -110,7 +110,7 @@
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 |
-| 101 | [101-compute-placement.md](101-compute-placement.md) | 黒殿の 1 ノードを Linux 版 runner の host にし、従量の引き金を測る | |
+| 101 | [101-compute-placement.md](101-compute-placement.md) | 黒殿の 1 ノードを Linux 版 runner の host にし、従量の引き金を測る | 項目 1・4 [#370](https://github.com/k999ln/rock/pull/370) |
 | 102 | [102-sim-proof-endorse.md](102-sim-proof-endorse.md) | SIM の証明（N1）: Endorse のトークンを確かめ、SIM を account に束ねる | |
 | 103 | [103-esim-churn-measure.md](103-esim-churn-measure.md) | 離脱率を測る: eSIM つきとカードだけを、同じ値段・同じ機能で比べる（集計の関数は実装済み） | |
 | 104 | [104-owner-key-encryption.md](104-owner-key-encryption.md) | 本人の鍵で暗号化（案 K）: Memory と成果のファイルを運営も読めない形に | |
