@@ -293,7 +293,7 @@ void test('request form opens inside activity and can be closed without leaving 
   assert.ok(!h.nodes.some((n) => n.type === 'select'));
 });
 
-void test('retired launch page redirects valid Agent selection into the unified page', async () => {
+void test('retired Mac launch page returns to activity without a Mac compose action', async () => {
   const source = ts.transpileModule(
     readFileSync(
       new URL('../app/noah/launch/page.tsx', import.meta.url),
@@ -307,9 +307,9 @@ void test('retired launch page redirects valid Agent selection into the unified 
     },
   ).outputText;
   for (const [agent, expected] of [
-    ['anicca', '/noah/activity?agent=anicca'],
-    [undefined, '/noah/activity?compose=1'],
-    ['https://example.test', '/noah/activity?compose=1'],
+    ['anicca', '/noah/activity'],
+    [undefined, '/noah/activity'],
+    ['https://example.test', '/noah/activity'],
   ]) {
     const exports = {};
     let destination;

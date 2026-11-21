@@ -85,6 +85,6 @@ export function NoahInstallationsList() {
     {loading && <output>このMacの接続状態を確認中…</output>}
     {!loading && !rows.length && !error && <p>タイムラインの詳細で「接続する」を押すと、ここに追加されます。</p>}
     <ul>{rows.map(r => <li key={r.id}><Link href={`/noah/agents/${r.id}`}>{r.name}</Link> — {labels[r.state] || r.state}</li>)}</ul>
-    <Link href="/noah/agents">Agentを探す →</Link>
+    <Link href="/noah/explore">Agentを探す →</Link>
   </section>;
 }

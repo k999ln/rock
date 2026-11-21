@@ -90,11 +90,13 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+検索は [Agentを探す](https://avoado.si/noah/explore)、保存は [保存したもの](https://avoado.si/noah/saved) にまとめています。検索は使えるAgent・カタログ・Tool、保存はボード・Agent・担当・成果・ファイルを切り替えます。旧URLは対応するカテゴリへ移り、Noah配下のMac専用・投稿・コミュニティー・大学別ページは撤去済みです。保存データは保持しています。
+
 読み込み中は花形ロゴだけがゆっくり動きます。対応端末ではタップ・選択・接続完了に短い振動が返り、メニューの「操作の設定」で切り替えを保存できます。動きを減らす端末設定ではロゴを静止します。
 
 配布先は **https://avoado.si/noah**。OSの運用開始を待たずに、Noah単体で使うサービスです。専用のタイムライン、Agentを探す（`/noah/explore`）、実行中、成果データ、ログイン（`/noah/account`）で完結します。Noah配下ではOSランタイムを起動せず、OSやMacの導入・端末接続を利用条件にしません。共通の本人認証と成果の保存・所有者分離を再利用します。2026-11-21に独立版154を公開し、承認された10本のDB追加と一覧・依頼受付の有効化を反映しました。公開ドメインの6画面200・一覧API200・未認証の接続/依頼401を確認済みです。2026-11-22に公開版156へ更新し、応答確認済みの172件を掲載しました。本人承認の掲載担当を設定し、公開環境の390px画面で読み取り専用Agent 1件の接続→依頼→成果受領→切断後の成果保持を確認済みです。172件すべての実行成功を保証する数ではありません。`npm run noah:check:domain` で公開側を確認できます。2026-11-22の公開版163では、本人承認のAgentboardアカウント1件の外部登録→暗号化キー保存→認証付き実行→成果保持まで確認しました。本人から実スマホでAgentの実行と成果を開けたとの回答も得ています。100人分の合成試験は通過していますが、本番100人の同時利用を保証するものではありません。
 
-以下の動画は、従来のMac向けカタログで「CowAgent」を選ぶ操作記録です。既存Macの管理は `/noah/mac/activity` に保持しています。スマホ向けの主導線はAgentの接続・依頼・成果受領で、Macを選ぶ操作は不要です。
+以下の動画は、従来のMac向けカタログで「CowAgent」を選ぶ操作記録です。Mac専用の公開ページは撤去済みです。記録動画は開発履歴として保持しています。スマホ向けの主導線はAgentの接続・依頼・成果受領で、Macを選ぶ操作は不要です。
 
 <a href="https://avoado.si/noah/agents">
   <picture>
@@ -105,7 +107,7 @@ npm run amc:cycle -- demo
 
 **[NoahのAgent一覧](https://avoado.si/noah/explore)**。スマホ向けは提供者のサーバーへ接続します。下の動画は従来のMac向け経路です。[Macの接続手順](#noah-mac)
 
-[CowAgentをMacで試す準備](https://avoado.si/noah/guides/cowagent-mac)では、18秒の操作例と最初に頼む会議メモの例を確認できます。
+現行の入口は [Agentを探す](https://avoado.si/noah/explore) です。Mac向けガイドの公開ページは撤去済みです。
 
 [CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
 
@@ -203,12 +205,12 @@ flowchart LR
 
 ![NoahのMac接続画面。RunnerのダウンロードからMacの登録までが中央に並ぶ](docs/assets/readme/noah-mac-handoff.png)
 
-*Web版のMac接続画面。中央にRunnerの入手先と、Macを承認する手順が並びます。* [Macを接続する](https://avoado.si/noah/mac)
+*Web版のMac接続画面。中央にRunnerの入手先と、Macを承認する手順が並びます。* （過去の画面。Mac専用ページは撤去済み）
 
 <details>
 <summary>Macの導入・実行・停止コマンドを開く</summary>
 
-**画面**　[自分のMacをNoahにつなぐ](https://avoado.si/noah/mac)　·　**対象**　Apple Silicon Mac
+**現行の入口**　[Agentを探す](https://avoado.si/noah/explore)　·　**対象**　Apple Silicon Mac
 
 1. 接続画面で「Mac用Noahをダウンロード」を選び、ZIPを展開して `Install.command` を開きます。
 2. ターミナルで次のコマンドを順に使います。`noah doctor` の診断で不足したものがあれば、接続画面の導入手順を確認します。`noah pair` で表示されたURLを開き、自分のアカウントでこのMacを承認します。

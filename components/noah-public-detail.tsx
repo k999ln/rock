@@ -7,8 +7,6 @@ import NoahRegistrationSheet from './noah-registration-sheet';
 import NoahAgentFeedback from './noah-agent-feedback';
 import { researchKindLabels, type ResearchDetail, type ResearchSummary } from '@/lib/noah-research-types';
 import styles from './noah-agent-catalog.module.css';
-import { noahActionHref } from '@/lib/noah-surface';
-import { recipeFor } from '@/lib/noah-execution-contract.mjs';
 
 export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: string; basePath?: string }) {
   const {t}=useNoahLocale();
@@ -35,7 +33,7 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
   }, [id, key]);
   const agent = entry?.kind === 'agent' || entry?.kind === 'candidate';
   return <div><main className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href={`${basePath}/agents`}>{t("← Agentを探す")}</Link></nav>
+    <nav className={styles.nav}><Link href={`${basePath}/explore?tab=catalog`}>{t("← Agentを探す")}</Link></nav>
     {error && <div role="alert" className={styles.error}>{t(error)} <button onClick={() => setAttempt(n => n + 1)}>{t("再試行")}</button></div>}
     {!entry && !error && <NoahLoading/>}
     {entry && <>
@@ -43,11 +41,9 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
       <div className={styles.facts}><div><small>{t("分類")}</small><strong>{t(researchKindLabels[entry.kind])}</strong></div><div><small>{t("確認状況")}</small><strong>{entry.level === 'primary' ? t("一次資料を確認") : t("資料確認待ち")}</strong></div></div>
       <section className={styles.notice}><h2>{agent ? t("このAgentを使う") : t("この関連資産について")}</h2>
         <p>{agent ? t("このAgentは紹介情報です。スマホで使える接続先は、対応一覧から選べます。") : t("Agentを作る・動かすための関連資産です。単独の業務Agentとは区別しています。")}</p>
-        {recipeFor(id) && <p><Link className={styles.primary} href={`/noah/launch?agent=${id}`}>{t("Noahで接続して使う")}</Link></p>}
         <p>{t("利用費用：")}{entry.price}</p><p>{t("ライセンス：")}{entry.license || '未確認'}{t("。利用条件は配布元で確認してください。")}</p>
-        {agent && !recipeFor(id) && <Link className={styles.primary} href={`/noah/explore?${new URLSearchParams({q:entry.name.slice(0,80)})}`}>{t("スマホで使えるAgentを探す")}</Link>}
+        {agent && <Link className={styles.primary} href={`/noah/explore?${new URLSearchParams({q:entry.name.slice(0,80)})}`}>{t("スマホで使えるAgentを探す")}</Link>}
         {agent && <NoahRegistrationSheet agentId={id}/>}
-        {agent && <details><summary>{t("Macでの利用条件")}</summary><a href={noahActionHref('public',basePath,'agent',id)}>{t("Mac版を確認 →")}</a></details>}
       </section>
       {agent && <NoahAgentFeedback key={id} id={id} />}
       <section className={styles.notice}><h2>{t("配布元・出典")}</h2><ul>{entry.sources.filter(source => /^https?:\/\//.test(source.url)).map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label || '配布元・資料を見る'} ↗</a><p>{source.url}</p></li>)}</ul></section>

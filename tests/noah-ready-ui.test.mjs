@@ -529,7 +529,7 @@ void test('the entry on the explore screen appears only for people who may see t
   // 一覧や詳細では現在の本番メニューを維持する。
   const shell = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
   await shell.flush();
-  assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agent', '実行中', '成果']);
+  assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agent', '実行中', '保存']);
 });
 
 // ---------------------------------------------------------------------------

@@ -54,7 +54,7 @@ void test('UI mixes posts and Agents with recommended, following and Agent-only 
   assert.ok(all.some(n=>n.props?.href==='/noah#timeline' && text(n)==='おすすめ'));
   assert.ok(nodes(render('#agents')).some(n=>n.props?.href==='/noah#timeline' && text(n)==='Agentのみ'));
   assert.ok(nodes(cards[1]).some(node => node.props?.href === '/noah/agents/agent'));
-  assert.ok(nodes(cards[0]).some(node => node.props?.href === '/noah/social?post=ordinary'));
+  assert.ok(!nodes(cards[0]).some(node => node.props?.href?.startsWith('/noah/social')));
 });
 void test('Agent filter narrows the same list and retired filters return to all without private management actions', () => {
   for (const [hash, expected] of [['#news', ['post','agent']], ['#agents', ['agent']], ['#communities', ['post','agent']], ['#following', ['post']]]) {
@@ -65,7 +65,7 @@ void test('Agent filter narrows the same list and retired filters return to all 
   }
 });
 
-void test('personal opinions preserve author, full text, attachment and observed reaction counts before catalog entries', () => {
+void test('personal opinions preserve author, full text, attachment without links to retired community actions', () => {
   const opinion = { ...post, id: 'opinion', community: null, content: '試験用の個人の見解。\nよかった点だけでなく、惜しかった点も残す。', attachment: { kind: 'agent', resource: 'test-agent' }, likes: 7, reposts: 2, replies: 3 };
   const tree = render('#timeline', { items: contract.mixNoahTimeline([items.find(i=>i.kind==='agent').agent],[opinion]), social: { profile: { id: 'test' } }, errors: [] });
   const cards = nodes(tree).filter(n=>n.type==='article');
@@ -74,7 +74,7 @@ void test('personal opinions preserve author, full text, attachment and observed
   assert.equal(text(content), opinion.content);
   assert.ok(text(cards[0]).includes('Test author'));
   assert.ok(text(cards[0]).includes('test-agent'));
-  assert.equal(text(nodes(cards[0]).find(n=>n.props?.['aria-label']==='いいね・詳細')), '7');
+  assert.ok(!nodes(cards[0]).some(n=>n.props?.['aria-label']==='いいね・詳細'));
   assert.ok(text(cards[1]).includes('Agent紹介'));
   assert.ok(!text(cards[0]).includes('Agent紹介'));
 });

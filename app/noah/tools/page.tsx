@@ -1,3 +1,3 @@
-import SkyWorkspace from '@/components/sky-workspace';
-export const metadata = {title:'Toolを探す — Noah'};
-export default function Page(){return <SkyWorkspace />;}
+import { redirect } from 'next/navigation';
+import { noahPageHref, type NoahPageParams } from '@/lib/noah-page-routes';
+export default async function Page({searchParams}:{searchParams:Promise<NoahPageParams>}) {redirect(noahPageHref('explore',await searchParams,'tools'));}
