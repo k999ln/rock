@@ -43,7 +43,7 @@ void test('Noah home renders collected cards and refreshes external ratings whil
   const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
   await home.tick(200);
   assert.match(home.text(), /新しく見つかったAgent/); assert.match(home.text(), /Hugging Face.*いいね 7/);
-  assert.ok(home.find('a').some(node => node.props.href === '/noah/agents'));
+  assert.ok(home.find('a').some(node => node.props.href === '/noah/agents#noah-collection'));
   likes = 3; await home.tick(60000); await home.tick(200);
   assert.match(home.text(), /いいね 3/);
   const requests = ui.calls.length; visibility.hidden = true; await home.tick(60000); await home.tick(200);
@@ -149,4 +149,33 @@ void test('external ratings retain their source, refresh downwards, and never cr
   assert.equal(view.items[0].sources[0].observedAt, clock);
   assert.equal('crowns' in view.items[0], false); assert.equal('users' in view.items[0], false);
   assert.throws(() => parseCollectionSnapshot(snapshot('huggingface', [{ ...card, metrics: { stars: 3 } }]), clock));
+});
+
+
+void test('collection home carries source and query to the full results and clear restores all results', async () => {
+  const make = (search = '') => screen({ search, modules: { '@/lib/noah-collection': collection }, fetch: async () => ({ body: { items: [], total: 0, nextCursor: null, configured: true } }) });
+  const ui = make(), home = ui.mount('components/noah-collection-feed.tsx', { compact: true });
+  await home.tick(200); await home.click('Hugging Face'); await home.type('日本語 Agent & tools'); await home.tick(200);
+  const href = home.find('a', 'すべて見る')[0].props.href, url = new URL(href, 'https://avoado.si');
+  assert.equal(url.searchParams.get('collectionSource'), 'huggingface'); assert.equal(url.searchParams.get('collectionQuery'), '日本語 Agent & tools');
+  assert.equal(url.hash, '#noah-collection');
+  const next = make(url.search), full = next.mount('components/noah-collection-feed.tsx'); await full.tick(200);
+  assert.equal(full.find('section')[0].props.id, 'noah-collection');
+  const request = new URL(next.calls.at(-1).url, 'https://avoado.si');
+  assert.equal(request.searchParams.get('source'), 'huggingface'); assert.equal(request.searchParams.get('q'), '日本語 Agent & tools');
+  assert.equal(full.find('input')[0].props.value, '日本語 Agent & tools');
+  await full.click('検索条件をクリア'); await full.tick(200);
+  const cleared = new URL(next.calls.at(-1).url, 'https://avoado.si');
+  assert.equal(cleared.searchParams.get('source'), ''); assert.equal(cleared.searchParams.get('q'), ''); assert.equal(cleared.searchParams.get('cursor'), '0');
+});
+void test('collection retry immediately recovers from an error without losing source or query', async () => {
+  let unavailable = true;
+  const ui = screen({ search: '?collectionSource=huggingface&collectionQuery=agent', modules: { '@/lib/noah-collection': collection }, fetch: async () => unavailable ? { status: 503 } : { body: { items: [], total: 0, nextCursor: null, configured: true } } });
+  const page = ui.mount('components/noah-collection-feed.tsx'); await page.tick(200);
+  assert.ok(page.nodes().some(node => node.props.role === 'alert'));
+  unavailable = false; await page.click('再試行'); await page.tick(200);
+  assert.equal(page.nodes().some(node => node.props.role === 'alert'), false);
+  const request = new URL(ui.calls.at(-1).url, 'https://avoado.si');
+  assert.equal(request.searchParams.get('source'), 'huggingface'); assert.equal(request.searchParams.get('q'), 'agent');
+  assert.equal(ui.calls.length, 2);
 });

@@ -2,6 +2,7 @@
 // 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
 import * as pins from '../../../lib/noah-pins.ts';
+import * as collection from '../../../lib/noah-collection.ts';
 import * as importParts from '../../../lib/noah-intake-import-parts.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
@@ -77,7 +78,7 @@ export function screen(options = {}) {
   if (options.document) context.document = options.document;
   context.window = {
     sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, String(value)); }, removeItem: (key) => { storage.delete(key); } },
-    location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: '', origin: 'https://noah.test' },
+    location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: options.search ?? '', origin: 'https://noah.test' },
     addEventListener() {}, removeEventListener() {},
     // 画面の幅（頼んだ画面の幅の区分に使う）。既定は、スマホの幅。
     innerWidth: options.width ?? 390,
@@ -96,6 +97,8 @@ export function screen(options = {}) {
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (options.modules?.[id]) return options.modules[id];
+      if (id === '@/lib/noah-collection') return collection;
+      if (id === 'next/navigation') return { useSearchParams: () => new URLSearchParams(options.search ?? '') };
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
       if (id === '@/lib/noah-intake-import-parts') return importParts;
