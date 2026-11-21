@@ -11,9 +11,11 @@ import { createCollectorNetwork } from './noah-collector-network.mjs';
 import { openCollectorStore, writeCollectorJson, collectorCounts, collectorSources, readCollectorStatus } from './noah-collector-store.mjs';
 import { collectXAgents } from './noah-collector-x.mjs';
 import { collectionSnapshots, publishCollection } from './noah-collector-publish.mjs';
+import { collectFeeds, feedLeads, feedStatus } from './noah-collector-feeds.mjs';
+import { importFamilies, importedFamilies } from './noah-collector-import.mjs';
 
 /** One bounded pass. Provider failures retain their own checkpoints and retry deadlines. */
-export async function collectAgents({ local, directory, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, signal, xToken, publishOrigin, publishKey }) {
+export async function collectAgents({ local, directory, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, signal, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken }) {
   const startedAt = now(), steps = {}, errors = [];
   const intake = createIntakeStore({ db: local.db, fetcher, now, budget });
   const discovery = createDiscoveryStore({ db: local.db, fetcher, now });
@@ -21,20 +23,29 @@ export async function collectAgents({ local, directory, fetcher, now = Date.now,
   if (!signal?.aborted) steps.discovery = await discovery.sync();
   if (!signal?.aborted) steps.registry = await intake.sync();
   if (!signal?.aborted) steps.probe = await intake.probeDue(now() + budget.seconds * 1000);
+  // 足した出所（task 121）。出所ごとに失敗を分け、形が変わった時（invalid_response）だけを、人が見る失敗にする。
+  if (!signal?.aborted) steps.feeds = await collectFeeds({ local, fetcher, now, signal, keys: { smithery: smitheryKey, github: githubToken } });
   const x = !signal?.aborted ? await collectXAgents({ local, fetcher, token: xToken, now }) : { status: 'stopped', items: [] };
   steps.x = { status: x.status, collected: x.items.length, nextAt: x.nextAt ?? null };
   local.assertLease();
   const exportedAt = now();
   const exported = await noahIntakeExport(local.db, exportedAt);
-  const candidates = local.sql.prepare(`SELECT c.id,c.provider,c.repository,c.revision,c.checked_at,v.metadata_json FROM noah_discovery_candidates c
+  // 握手の済んだ系列を、本番の一覧へ入れる（--import の時。上限の中で、変わった物だけ）。紹介のカードの「スマホで今すぐ」は、入れ終えた物だけ。
+  if (importOrigin && !signal?.aborted) {
+    try { steps.import = await importFamilies({ local, origin: importOrigin, key: publishKey, fetcher, now }); }
+    catch (error) { steps.import = { status: 'failed' }; errors.push({ source: 'import', code: error.message.startsWith('collector_') ? error.message : 'unavailable' }); }
+    if (steps.import?.status?.startsWith('http_')) errors.push({ source: 'import', code: steps.import.status });
+  }
+  const candidates = local.sql.prepare(`SELECT c.id,c.provider,c.repository,c.revision,c.checked_at,c.first_seen_at,v.metadata_json FROM noah_discovery_candidates c
     JOIN noah_discovery_versions v ON v.candidate_id=c.id AND v.revision=c.revision WHERE c.state='active' ORDER BY c.provider,c.id`).all()
     .map(({ metadata_json, ...row }) => ({ ...row, metadata: JSON.parse(metadata_json), verified: false }));
   writeCollectorJson(join(directory, 'discovery.json'), { schema: 'noah-discovery-export/1', exportedAt, candidates });
   writeCollectorJson(join(directory, 'import.json'), exported);
-  const snapshots = collectionSnapshots({ exported, discoveries: candidates, x, now: exportedAt });
+  const snapshots = collectionSnapshots({ exported, discoveries: candidates, x, now: exportedAt, leads: feedLeads(local, exportedAt), sent: importedFamilies(local.sql), xConfigured: !!xToken });
   writeCollectorJson(join(directory, 'collection.json'), { snapshots });
-  const sources = collectorSources(local.sql);
-  for (const source of sources) if (source.error_code) errors.push({ source: source.id, code: source.error_code });
+  const sources = [...collectorSources(local.sql), ...feedStatus(local.sql)];
+  for (const source of collectorSources(local.sql)) if (source.error_code) errors.push({ source: source.id, code: source.error_code });
+  for (const [id, feed] of Object.entries(steps.feeds ?? {})) if (feed.status === 'invalid_response') errors.push({ source: id, code: feed.status });
   if (xToken && !['updated', 'not_due', 'stopped'].includes(x.status)) errors.push({ source: 'x', code: x.status });
   if (publishOrigin && !signal?.aborted) {
     try { steps.publish = await publishCollection({ snapshots, origin: publishOrigin, key: publishKey, fetcher, now }); }
@@ -46,7 +57,7 @@ export async function collectAgents({ local, directory, fetcher, now = Date.now,
   return state;
 }
 
-export async function runCollector({ directory, watch = false, signal, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, onStatus = () => {}, wait = sleep, xToken, publishOrigin, publishKey }) {
+export async function runCollector({ directory, watch = false, signal, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, onStatus = () => {}, wait = sleep, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken }) {
   const local = openCollectorStore(directory, { now });
   const network = fetcher ? null : createCollectorNetwork();
   const controller = new AbortController();
@@ -61,7 +72,7 @@ export async function runCollector({ directory, watch = false, signal, fetcher, 
   try {
     do {
       if (stop.aborted) break;
-      last = await collectAgents({ local, directory, fetcher: transport, now, budget, signal: stop, xToken, publishOrigin, publishKey });
+      last = await collectAgents({ local, directory, fetcher: transport, now, budget, signal: stop, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken });
       if (leaseError) throw leaseError;
       onStatus(last);
       if (!watch || stop.aborted) break;
@@ -93,7 +104,7 @@ async function main() {
   const controller = new AbortController(), stop = () => controller.abort();
   process.once('SIGINT', stop); process.once('SIGTERM', stop);
   try {
-    const result = await runCollector({ ...options, xToken: process.env.NOAH_X_BEARER_TOKEN, publishKey: process.env.NOAH_COLLECTION_KEY, signal: controller.signal, onStatus: state => console.log(JSON.stringify(state)) });
+    const result = await runCollector({ ...options, xToken: process.env.NOAH_X_BEARER_TOKEN, publishKey: process.env.NOAH_COLLECTION_KEY, smitheryKey: process.env.SMITHERY_API_KEY || undefined, githubToken: process.env.GITHUB_TOKEN || undefined, signal: controller.signal, onStatus: state => console.log(JSON.stringify(state)) });
     if (!options.watch && result?.errors.length) process.exitCode = 1;
   } finally { process.off('SIGINT', stop); process.off('SIGTERM', stop); }
 }

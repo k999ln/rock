@@ -92,7 +92,7 @@ export function restoreCheckpoint(directory, checkpoint, now = Date.now()) {
   } finally { rmSync(temporary, { force: true }); }
 }
 
-export async function runCloudCollector({ directory, origin, key, xToken, runId, fetcher, now = Date.now, collect = runCollector, bootstrap }) {
+export async function runCloudCollector({ directory, origin, key, xToken, runId, fetcher, now = Date.now, collect = runCollector, bootstrap, importIntake = false, smitheryKey, githubToken }) {
   if (!/^(bootstrap|[0-9]{1,25})$/.test(runId)) throw Error('cloud_run_id');
   const network = fetcher ? null : createCollectorNetwork();
   const transport = fetcher ?? network.fetch;
@@ -107,20 +107,23 @@ export async function runCloudCollector({ directory, origin, key, xToken, runId,
     }
     if (!saved?.etag || !saved.checkpoint) throw Error('cloud_checkpoint_missing');
     restoreCheckpoint(directory, saved.checkpoint, now());
-    const status = await collect({ directory, fetcher: transport, now, xToken });
+    // 収集機の鍵と同じ鍵で、握手の済んだ系列を一覧へ入れる（--import。紹介の掲載より前に入れ、カードの「スマホで今すぐ」を入れ終えた物に合わせる）。
+    const status = await collect({ directory, fetcher: transport, now, xToken, smitheryKey, githubToken, ...(importIntake ? { importOrigin: origin, publishKey: key } : {}) });
     const checkpoint = encodeCheckpoint(directory, runId, Math.max(now(), saved.checkpoint.updatedAt + 1));
     // Commit progress before publishing. A stale runner cannot publish its snapshot.
     await request({ action: 'write', etag: saved.etag, checkpoint });
     const { snapshots } = JSON.parse(readFileSync(join(directory, 'collection.json'), 'utf8'));
     const published = await publishCollection({ snapshots, origin, key, fetcher: transport, now });
-    return { runId, updatedAt: checkpoint.updatedAt, previousRunId: saved.checkpoint.runId, counts: status.counts, errors: status.errors, x: status.steps.x.status, published };
+    return { runId, updatedAt: checkpoint.updatedAt, previousRunId: saved.checkpoint.runId, counts: status.counts, errors: status.errors, x: status.steps.x.status,
+      feeds: Object.fromEntries(Object.entries(status.steps.feeds ?? {}).map(([id, feed]) => [id, feed.status])), import: status.steps.import ?? null, published };
   } finally { await network?.close(); }
 }
 async function main() {
-  const { values } = parseArgs({ options: { dir: { type: 'string' }, origin: { type: 'string' }, bootstrap: { type: 'string' } } });
+  const { values } = parseArgs({ options: { dir: { type: 'string' }, origin: { type: 'string' }, bootstrap: { type: 'string' }, import: { type: 'boolean' } } });
   if (!values.dir || !values.origin) throw Error('cloud_arguments');
   const result = await runCloudCollector({ directory: resolve(values.dir), origin: values.origin, bootstrap: values.bootstrap && resolve(values.bootstrap),
-    key: process.env.NOAH_COLLECTION_KEY, xToken: process.env.NOAH_X_BEARER_TOKEN, runId: values.bootstrap ? 'bootstrap' : process.env.GITHUB_RUN_ID });
+    key: process.env.NOAH_COLLECTION_KEY, xToken: process.env.NOAH_X_BEARER_TOKEN, runId: values.bootstrap ? 'bootstrap' : process.env.GITHUB_RUN_ID,
+    importIntake: !!values.import, smitheryKey: process.env.SMITHERY_API_KEY || undefined, githubToken: process.env.GITHUB_TOKEN || undefined });
   console.log(JSON.stringify(result));
   if (result.errors?.length) process.exitCode = 1;
 }
