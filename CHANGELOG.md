@@ -1,3 +1,7 @@
+## 2026-11-22
+
+- task 105 のクラウド新規受付に費用上限を追加し、Noah の日別 SLO、通知の振り分け、D1・R2 のローカル復元練習と運用手順を実装（[PR #368](https://github.com/k999ln/rock/pull/368)）。
+
 ## 2026-11-21
 
 - 本人の「規定で進めて」（22:54）で、自社クラウドの K1〜K10 と eSIM の 11〜15 を決めた（Opus / Noelle）。07 に 1 行、03-esim 0 章と compute-placement 0 章を決定に、task 10〜13・101 に決めを反映、task 102〜105 を追加。`lib/cloud-cost.ts`（定価での実費と黒殿へ移す引き金）と `lib/churn-cohort.ts`（eSIM つきとカードだけの解約率と 3 か月の継続、Wilson の幅、判定）を実装し、`tests/cloud-cost.test.mjs`・`tests/churn-cohort.test.mjs`（23 本）を足した。README の eSIM の節を更新。
