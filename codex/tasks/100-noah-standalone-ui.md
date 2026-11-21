@@ -126,3 +126,8 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 公開Chromeの390pxで新規フォーム0・横幅390px内、未設定表示、再確認、折り畳まれた既存ログインへの遷移、新規登録タブなしを確認。認証済みIABでは接続確認から元のwhoami成果へ自動復帰。公開9項目と未認証のsession API 401 / connected:false / esimConfigured:falseも確認。これらは公開Webと既存アカウントの受入で、実eSIMの発行・新しい端末への本人情報引継ぎの合格ではない。実eSIM設定・別利用者の本番一周・実機画像保存が残る。
 
 2026-11-22 タブのロゴ修正（PR #376）: Noah配下のfaviconを白背景付きcompany-mark.pngからbrand/noah-icon-transparent.svgへ変更。正式ロゴの形状は維持。公開反映は配備担当と統合して確認する。
+
+
+2026-11-22 透過ロゴ公開170（PR #377 / 元変更d3646297a・PR #376）: 最新の公開169をSites sourceでfast-forwardし、layout・SVGと追記文書の7ファイルだけを追加。source `aa37341c7d3385efb5e0f6ccb30a0d1dabbb968c`、deployment `appgdep_6b01efb88d8c8191a25d365067b2a4b2`、公開時env16。ピン表示・eSIM対応・既存appleアイコンを保持。環境設定やmigrationの追加変更なし。公開HTMLのfavicon href、SVGの200/image/svg+xmlとGit原本のbyte一致、公開9項目、匿名session API 401を確認。eSIM連携は公開応答でも未設定。
+
+検証は統合先のtypecheck/lint/build成功、ロゴ作成側の全体verify成功（4,810 pass・4 skip、仕事API1,918・CSV385 assertions）を確認。eSIM本体の直前の全体verifyは4,829 pass・4 skip。背景透過は元PNGを保つSVGフィルターで、明暗両背景に白い矩形なし。追記文書の競合は両側を残して解消。
