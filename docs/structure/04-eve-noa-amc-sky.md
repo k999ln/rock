@@ -147,3 +147,5 @@ Noah移行の互換ToolKit: `toolkits/noah-agent-operations/` は既存の実行
 本人指示により[相談・運営Agent](../services/noah-affiliate-agents.md)をNoahの既存source/MCP契約へ接続する配布物として追加。相談の適合順位に非公開報酬を使わず、媒体許可・期限・提携・正式リンクを検査する。本人用運営口は別の認証境界とし、既存のWork/Broker/Walletを飛ばさない。
 
 実装・入力例・パッケージ生成・MCP配備準備は [toolkits/noah-affiliate-agents/](../../toolkits/noah-affiliate-agents/README.md)。
+
+2026-11-22 本人指示: [法人si導入準備Agent](../services/noah-business-si-agent.md)を、会員登録不要の公開相談と本人用運営として追加する。既存のaccount正本とBroker/Walletを置き換えず、相談本文を保存しない公開入力と、匿名の成果・入金照合台帳を分ける。実成果・入金・媒体承認は外部の証拠で判定する。

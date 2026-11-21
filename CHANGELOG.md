@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahの法人si導入準備を会員登録不要の公開Web/MCP、集客計画、ASP承認・支払・銀行照合・費用台帳として実装。継続実行器による自社記事公開を開始し、Noah版175に入口掲載。ASP/銀行自動取得は未接続、紹介は媒体許可と正式リンク確認まで停止（toolkits/noah-affiliate-agents、PR #374）。
+
 - Noah用のWeb・PC相談と紹介案件運営をsource ZIP/MCPキットとして追加。掲載条件検査・非公開情報の分離・下書き・実績集計を実装し、専用11試験とWorker dry-runを確認。本番登録・配備前（task101、[PR #374](https://github.com/k999ln/rock/pull/374)）。
 - Noahの0円申込・模擬専用回線・食料と日用品の案内をローカルWorkersで接続し、停止、成果受取、0円の使用記録を検証する試験を追加（PR #378）。
 - Noah のホームをピンタレスト風にした（task 115。Opus / Noelle。本人指示「Noahもっとピンタレストっぽく。redditとかgithubでUIとアルゴリズム取ってきて」と回答）。今動かせる Agent のグリッド（Gestalt の Masonry の決まりを書き写した・2〜6 列・分野の色の面と頭文字）、ボードへ保存（公開も選べる・フォロー）、「表示しない」、詳細の「これも使われています」、上の帯の検索とメニュー。並びは学習なし・乱数なし（X の For You の作りの形・Reddit の hot・Pinterest の Pixie を決まった値で。票 = 保存した人 + 2 × 成果が返った人 − 5 × 表示しない人）。表 6 つ（migration 0054）、`GET /api/noah/pins`・`GET`/`POST /api/noah/boards`。一般公開までは審査者だけ（一般の人は今のタイムライン）。試験 9 本（`tests/noah-pins.test.mjs`）。設計は `docs/noah/spec-115-pin-grid.md`、決定は docs/structure/07 の 2026-11-22。本番の migration・配備はしていない。
