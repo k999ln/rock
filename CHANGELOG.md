@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- eSIM の載せる先と計算の置き場所を設計した（Opus / Noelle。本人指示「早く設計して」）。`docs/structure/03-esim.md` に 0 章（スマホに売らず Hub・専用端末・車の回線と鍵にする、制度、訂正 3 点）、`docs/compute-placement.md`（従量で始め、引き金の後に黒殿の 1 ノードへ）、07 に 1 行、05・noah-own-device に参照、task 101。
+
 - Noah MVP L1〜L9 の PR を、今の main と合わせて 1 本にまとめた（Opus / Noelle。本人の回答「Claude の L4〜L9 を残す」「緑になったらマージして」。[PR #350](https://github.com/k999ln/rock/pull/350)）。README・CHANGELOG・task 一覧の衝突を、両側を残して解いた（README は main の作り直した構成を土台に、積み上げの 14 段落を字を変えずに写し、食い違う 4 か所だけ直した）。取り下げ・報告の窓口（D8）を、本人の決めた smash@avoado.si にして、`/noah/help#bot` の節と、一覧・詳細からの道を出した（`lib/noah-bot-notice.ts`）。本番の migration・配備・切り替えは、していない。
 
 - READMEで差し替え済みのmiiの帰宅画像とNoahの検索GIFを `docs/assets/readme/` から削除（[PR #348](https://github.com/k999ln/rock/pull/348)、task 99）。

@@ -82,6 +82,7 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [Chat MCP botコントロールルーム](chat-mcp-control-room-20260913.md)（設計）
 - [RockstarOS Chat 操作性改善](chat-usability-20260912.md)（設計）
 - [Cloud agent runtime and orchestration provider comparison](cloud-agent-provider-comparison-20261001.md)（設計）
+- [計算の置き場所 — どこで動かし、いつサーバーを持つか](compute-placement.md)（設計。2026-11-21。従量で始め、引き金の後に黒殿の 1 ノードへ）
 - [CSV仕事 — 市場確認記録](csv-business-market-evidence-20260915.ja.md)（設計）
 - [CSV仕事 v1 — セキュリティ・プライバシー運用](csv-business-security.ja.md)（設計）
 - [CSV仕事 v1 — 商品・実装・運用の正本](csv-business-v1.ja.md)（設計）
