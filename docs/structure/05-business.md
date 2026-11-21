@@ -6,7 +6,7 @@
 
 | # | 柱 | 何を売るか | 価格の候補 | 実装 | 状態 |
 | --- | --- | --- | --- | --- | --- |
-| 1 | **eSIM 月額** | RockstarOS の回線付き利用権。GB は売らない | 日本 ¥800 前後、米国 $8.88 を含む月額候補。採用・変更は本人が決める。カード・口座引落し | services/sky-billing, lib/rockstar-service-setup-billing.ts, Stripe | 骨格あり。provider 契約が要る（03-esim.md） |
+| 1 | **eSIM 月額** | RockstarOS の回線付き利用権。GB は売らない | 日本 ¥800 前後、米国 $8.88 を含む月額候補。採用・変更は本人が決める。カード・口座引落し | services/sky-billing, lib/rockstar-service-setup-billing.ts, Stripe | 骨格あり。provider 契約が要る（03-esim.md） |（2026-11-21: スマホには売らない。mii の Hub・専用端末・車の回線として機器のサービス料に含める。03 の 0 章）
 | 2 | **仕事からの天引き** | Eve/Sky 経由で本人が稼いだ分の一定率 | 率は Wallet の earnings 契約（既存）。回線料と同じ明細 | lib/wallet*.ts, lib/settlement.ts, app/api/earnings | 実装あり |
 | 3 | **mii ハード** | 建築に埋め込む端末（Column / Puck / Slot ＋ Hub） | 議事録最新は mii ¥160,000 / Pro ¥800,000（10-16）。設計書・3Dチャットの ¥410,000 は旧値→ **未決**（07 参照）。原価は後で | docs/avocado-mini-r5, 01-mii.md | 設計中。原価は task 20 |
 | 4 | **Sky** | 利用者の月額（10-16: ¥600 候補）。開発者からは手数料を取らない（10-07/10-10） | ¥600 月額候補。手数料 0 | lib/sky-*.ts, services/sky-billing | 実装あり |
@@ -14,6 +14,8 @@
 | — | データ販売 | **しない**（今は）。将来の option | — | — | — |
 
 「解約しにくい」は内部の見通しであり、売り文句にしない。UI と広告は「いつでも解約できる」を明記（03-esim.md §7）。
+
+計算の原価と、サーバーを持つ時機は [compute-placement.md](../compute-placement.md)（2026-11-21）。1 人月 45〜60 円で、月額の 1 割以下に保つ。
 
 ## 2. 現在の入口と検証順
 
