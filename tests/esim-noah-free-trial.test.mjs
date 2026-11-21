@@ -46,10 +46,11 @@ async function phone(trial, owner = 'alice') {
 }
 const request = () => ({ id: newApproval(), region: 'tokyo', item: 'rice' });
 
-await test('模擬回線の入口を経由して0円申込、再開、実行、通知、成果と使用量を照合する', async (t) => {
+await test('運営Dockの指定を本人の模擬回線に届け、受取と再送を照合する', async (t) => {
   const f = fixture(t);
   const credential = f.invite();
-  const servers = await startTrialServers(f.trial);
+  const dockPassword = newCredential();
+  const servers = await startTrialServers(f.trial, { dockPassword });
   const { origins } = servers;
   try {
     let cookie = '';
@@ -65,15 +66,7 @@ await test('模擬回線の入口を経由して0円申込、再開、実行、�
         await fetch(origins[line] + base, { headers: { Cookie: cookie ?? '' } })
       ).text();
     assert.match(await page('public'), /招待コードで入る/);
-    for (const action of [
-      'enroll',
-      'install',
-      'approve',
-      'read',
-      'stop',
-      'revoke',
-      'logout',
-    ])
+    for (const action of ['enroll', 'install', 'receive', 'revoke', 'logout'])
       assert.equal((await post('public', action)).status, 401, action);
     assert.equal((await post('public', 'unknown')).status, 404);
     const rejectedLogin = await post('public', 'login', { invite: 'invalid' });
@@ -93,35 +86,117 @@ await test('模擬回線の入口を経由して0円申込、再開、実行、�
     assert.ok(duplicate.every((r) => r.status === 303));
     assert.match(await page('public'), /模擬端末に追加する/);
     assert.equal((await post('public', 'install')).status, 303);
-    const input = request();
-    assert.equal((await post('public', 'approve', input)).status, 403);
-    assert.equal((await post('mobile', 'approve', input)).status, 303);
-    assert.equal((await post('mobile', 'approve', input)).status, 303);
-    assert.match(await page('mobile'), /案内を準備中/);
-    f.advance(DELAY_MS);
-    await f.trial.recoverAlarms(); // no browser request triggers the server-side work
-    assert.match(await page('public'), /更新があります/);
+    const initial = await page('mobile');
+    assert.match(initial, /いま指定されている配給はありません/);
     assert.doesNotMatch(
-      await page('public'),
-      /サンプル東会場|sample-tokyo-rice/,
+      initial,
+      /農家検索|希望を選ぶ|name="item"|name="region"/,
     );
-    assert.match(await page('mobile'), /サンプル東会場/);
-    assert.match(await page('mobile'), /Agent 1回 ／ 0円/);
-    assert.equal((await post('public', 'read', { id: input.id })).status, 403);
-    assert.equal((await post('mobile', 'read', { id: input.id })).status, 303);
-    assert.equal((await post('mobile', 'read', { id: input.id })).status, 303);
-    assert.doesNotMatch(await page('public'), /更新があります/);
-    assert.equal((await post('mobile', 'stop', { id: input.id })).status, 409);
+    assert.equal((await post('mobile', 'approve', request())).status, 404);
+    const dockUrl = origins.dock + '/api/distributions';
+    const auth =
+      'Basic ' + Buffer.from('operator:' + dockPassword).toString('base64');
+    const send = (data, origin = origins.dock) =>
+      fetch(dockUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: auth,
+          Origin: origin,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
     assert.equal(
-      (await post('mobile', 'stop', { id: newApproval() })).status,
+      (await fetch(dockUrl, { headers: { Cookie: cookie } })).status,
+      401,
+    );
+    assert.equal(
+      (
+        await fetch(origins.mobile + '/api/distributions', {
+          headers: { Cookie: cookie },
+        })
+      ).status,
       404,
     );
+    assert.match(
+      await (
+        await fetch(origins.dock, { headers: { Authorization: auth } })
+      ).text(),
+      /配給を指定/,
+    );
+    const input = {
+      id: newApproval(),
+      recipient: 'alice',
+      item: '試験用野菜セット',
+      quantity: '1箱',
+      pickup: '東会場・土曜午前',
+    };
+    assert.equal((await send(input, origins.mobile)).status, 403);
+    const attempts = await Promise.all([send(input), send(input)]);
+    assert.ok(attempts.every((r) => r.ok));
+    assert.equal((await send({ ...input, quantity: '2箱' })).status, 409);
+    f.invite('bob');
+    const other = {
+      ...input,
+      id: newApproval(),
+      recipient: 'bob',
+      item: '別の人の配給',
+    };
+    assert.ok((await send(other)).ok);
+    assert.match(await page('public'), /更新があります/);
+    assert.doesNotMatch(await page('public'), /試験用野菜セット|東会場/);
+    assert.match(await page('mobile'), /試験用野菜セット/);
+    assert.doesNotMatch(await page('mobile'), /別の人の配給/);
+    assert.equal(
+      (await post('public', 'receive', { id: input.id })).status,
+      403,
+    );
+    assert.equal(
+      (await post('mobile', 'receive', { id: other.id })).status,
+      404,
+    );
+    assert.equal(
+      (await post('mobile', 'receive', { id: input.id, recipient: 'bob' }))
+        .status,
+      400,
+    );
+    assert.equal(
+      (await post('mobile', 'receive', { id: input.id })).status,
+      303,
+    );
+    const rows = async () =>
+      (await fetch(dockUrl, { headers: { Authorization: auth } })).json();
+    const first = (await rows()).find((row) => row.id === input.id);
+    assert.ok(first.received_at > 0);
+    assert.equal(
+      (await post('mobile', 'receive', { id: input.id })).status,
+      303,
+    );
+    assert.equal(
+      (await rows()).find((row) => row.id === input.id).received_at,
+      first.received_at,
+    );
+    assert.equal((await rows()).length, 2);
+    assert.match(await page('mobile'), /受取済み/);
+    assert.doesNotMatch(await page('public'), /更新があります/);
     assert.equal((await post('mobile', 'logout')).status, 303);
     assert.match(await page('mobile'), /招待コードで入る/);
-    assert.equal((await f.trial.jobs('alice')).length, 1);
+    assert.equal((await f.trial.jobs('alice')).length, 0);
   } finally {
     await servers.close();
   }
+  await f.restart();
+  const db = await f.trial.runtime.distributionDb();
+  assert.equal(
+    (
+      await db
+        .prepare(
+          'SELECT count(*) AS total FROM distribution_assignments WHERE received_at IS NOT NULL',
+        )
+        .first()
+    ).total,
+    1,
+  );
 });
 
 await test('別の本人、同じ申込、不正な地域、失効を区別する', async (t) => {

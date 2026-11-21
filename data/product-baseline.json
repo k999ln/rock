@@ -1,4 +1,11 @@
 {
+  "noahDistribution": {
+    "decidedAt": "2026-11-22",
+    "managedBy": "operator_dock",
+    "fundedBy": "operator",
+    "recipientActions": ["view_assigned_goods", "acknowledge_receipt"],
+    "design": "docs/structure/04-eve-noa-amc-sky.md"
+  },
   "miiFirstNoahMinimumDecision": {
     "decidedAt": "2026-11-20",
     "decidedBy": "owner",

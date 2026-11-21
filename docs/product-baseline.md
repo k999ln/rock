@@ -8,6 +8,8 @@
 
 根拠は2026-11-20の本人の明示回答と[参照Noahチャット](codex://threads/01a19abe-44cd-7022-a582-02029247e935)。機械可読の正本は`data/product-baseline.json#miiFirstNoahMinimumDecision`。以前のSIM bundle主商品・OS先行の順位をこの回答で更新する。既存RQ01〜RQ49、保持するSource拡張、料金・金融・製造・実機の未受入gateは変更しない。以下の過去の決定と優先順位が異なる場合は本節を使う。
 
+2026-11-22の配給方針。運営が予算を持ち、Dockで配給品と受取人を指定する。利用者はNoahで自分に指定された内容を確認し、受け取る。[配給の設計](structure/04-eve-noa-amc-sky.md#noahの配給)。
+
 ## 2026-10-24 — MINI-02有限joint-allocation採用（要件/domain変更なし）
 
 main2.08/RQ01〜50、AMC/material/compose/gridと4要求を保持。排他的pose/共有sourceの有限同時割当だけを採用し、実光学/低眩しさ/全域/実同時viewer/停止/製造は未受入。[詳細](rockstaros-avocado-mini-complete-design.md#mini02-finite-joint-allocation)／[採用証拠](evidence/development-execution/mini-02-joint-main-adoption.json)。
