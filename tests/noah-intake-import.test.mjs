@@ -7,6 +7,7 @@ import { createIntakeImportApi, noahIntakeExport, noahIntakeImportParts, NOAH_IN
 import { createNoahConnectApi } from '../lib/noah-connect.ts';
 import { createNoahConnectPlanApi } from '../lib/noah-connect-plan-api.ts';
 import { parseNoahFlags } from '../lib/noah-flags.ts';
+import { splitNoahIntakeImport } from '../lib/noah-intake-import-parts.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { fixture } from './fixtures/noah/intake.mjs';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
@@ -171,6 +172,7 @@ void test('the operator screen sends the file in parts and reports what went in'
   const jsx = (type, props) => ({ type, props });
   runInNewContext(code, { exports, AbortController, URLSearchParams, Error, Date, JSON, Response, fetch: fetcher,
     require(id) {
+      if (id === '@/lib/noah-intake-import-parts') return { splitNoahIntakeImport };
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (id === 'react') return {
