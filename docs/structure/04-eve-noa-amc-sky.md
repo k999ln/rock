@@ -2,6 +2,8 @@
 
 ## 現在の入口と実装範囲
 
+2026-11-21: Noah の公開先は **https://avoado.si/noah**。スマホ向けの接続・依頼・成果は最新 main を土台に公開する。公開状態の読み取り確認は `node --experimental-strip-types scripts/check-noah-domain.mjs`。ページ200だけでは接続APIの配備を合格としない。本番DBへの適用は本人の承認後。
+
 製品の優先順位は[00 全体像](00-overview.md#1-一言で)、公開名と内部名は[06 名前](06-naming.md)を正本とする。公開Noahと内部Noaは別の役割。
 
 | 入口・機能 | 現在の契約と参照先 |

@@ -90,6 +90,8 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+配布先は **https://avoado.si/noah**。最新 main には、スマホだけで使える Agent の一覧（`/noah/ready`）、接続・依頼、実行中、成果データが入っています。公開側への反映は準備中で、2026-11-21の読み取り確認では新しい画面・APIは404、本番DBには接続の表がありません。`npm run noah:check:domain` で公開側を確認できます。認証付きAgentの遠隔接続は、この公開確認とは別に継続実装します。
+
 Noahはmiiの最小構成です。会議のメモを整理したいなら、公開カタログで「CowAgent」と検索して「詳細を見る」を開きます。配布元・費用・ライセンスを確認し、「Noahで接続して使う」から自分のMacを選ぶ画面へ進めます。
 
 <a href="https://avoado.si/noah/agents">
