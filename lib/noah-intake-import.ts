@@ -30,16 +30,40 @@ const columns = (list: readonly string[]) => list.join(',');
 const marks = (n: number) => Array.from({ length: n }, () => '?').join(',');
 
 /**
+ * 書き出す系列の数を絞る時の、並びと数。first（棚のカードが使う系列など）を先に、残りは、1 回で頼める道具を持つ物・読むだけの物・応答の速い物の順。
+ * 本番の D1 の書き込みは、新しく入れる系列 1 つで、表と索引を合わせて約 13 行（候補 6・握手 3・系列 4）。書き込みの枠が日ごとに決まっている時は、数を絞って、日を分けて入れる。
+ */
+export type NoahIntakeExportOptions = { limit?: number; first?: readonly string[] };
+
+/**
  * 手元の DB から、本番へ送る分を書き出す。載せている系列（取り下げ・隠していない物）と、その系列の候補全部と、その握手の行。
  * 手元の L2 は 1 に落とす（本番の「動いた」は、本番で人が動かした物だけ）。
  */
-export async function noahIntakeExport(db: Pick<IntakeDb, 'prepare'>, now: number): Promise<NoahIntakeImportPart> {
-  const families = (await db.prepare(`SELECT ${columns(FAMILY_COLUMNS)} FROM noah_intake_families WHERE listed = 1 AND level >= 1 AND withdrawn_at IS NULL AND hidden_at IS NULL ORDER BY id`).all<Row>()).results
-    .map((row) => ({ ...row, level: 1, l2_at: null, badge_hint: 'unverified' }));
+export async function noahIntakeExport(db: Pick<IntakeDb, 'prepare'>, now: number, options: NoahIntakeExportOptions = {}): Promise<NoahIntakeImportPart> {
+  const first = new Map((options.first ?? []).map((id, index) => [id, index]));
+  const ranked = (await db.prepare(`SELECT ${columns(FAMILY_COLUMNS.map((c) => `f.${c}`))}, k.read_only AS rank_read_only, k.latency_ms AS rank_latency FROM noah_intake_families f
+    LEFT JOIN noah_intake_checks k ON k.candidate_id = f.representative_id
+    WHERE f.listed = 1 AND f.level >= 1 AND f.withdrawn_at IS NULL AND f.hidden_at IS NULL ORDER BY f.id`).all<Row>()).results;
+  const order = (row: Row) => [first.get(String(row.id)) ?? Number.MAX_SAFE_INTEGER, row.one_tap === 1 ? 0 : 1, row.rank_read_only === 1 ? 0 : 1, Number(row.rank_latency ?? Number.MAX_SAFE_INTEGER)];
+  const sorted = options.limit === undefined && !first.size ? ranked : [...ranked].sort((a, b) => {
+    const x = order(a), y = order(b);
+    for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i] - y[i];
+    return String(a.id) < String(b.id) ? -1 : 1;
+  });
+  const chosen = options.limit === undefined ? sorted : sorted.slice(0, Math.max(0, options.limit));
+  const families = chosen.map((row): Row => {
+    const out: Row = {};
+    for (const key of FAMILY_COLUMNS) out[key] = row[key];
+    return { ...out, level: 1, l2_at: null, badge_hint: 'unverified' };
+  });
+  const ids = new Set(families.map((row) => String(row.id)));
   const candidates = (await db.prepare(`SELECT ${columns(CANDIDATE_COLUMNS.map((c) => `c.${c}`))} FROM noah_intake_candidates c JOIN noah_intake_families f ON f.id = c.family_id
-    WHERE f.listed = 1 AND f.level >= 1 AND f.withdrawn_at IS NULL AND f.hidden_at IS NULL ORDER BY c.family_id, c.id`).all<Row>()).results;
+    WHERE f.listed = 1 AND f.level >= 1 AND f.withdrawn_at IS NULL AND f.hidden_at IS NULL ORDER BY c.family_id, c.id`).all<Row>()).results
+    .filter((row) => ids.has(String(row.family_id)));
+  const candidateIds = new Set(candidates.map((row) => String(row.id)));
   const checks = (await db.prepare(`SELECT ${columns(CHECK_COLUMNS.map((c) => `k.${c}`))} FROM noah_intake_checks k JOIN noah_intake_candidates c ON c.id = k.candidate_id JOIN noah_intake_families f ON f.id = c.family_id
     WHERE f.listed = 1 AND f.level >= 1 AND f.withdrawn_at IS NULL AND f.hidden_at IS NULL ORDER BY k.candidate_id`).all<Row>()).results
+    .filter((row) => candidateIds.has(String(row.candidate_id)))
     .map((row) => (Number(row.level) === 2 ? { ...row, level: 1, l2_at: null } : row));
   return { schema: NOAH_INTAKE_IMPORT_SCHEMA, exportedAt: now, families, candidates, checks };
 }
@@ -127,7 +151,9 @@ function listingOf(family: Row, candidates: Row[], checks: Map<unknown, Row>) {
 }
 
 /**
- * 1 回分を入れる。候補は、新しく見た物（seen_at が新しい）だけを書き換える。握手の行は、新しく握手した物だけ。
+ * 1 回分を入れる。候補は、新しく見た物（seen_at が新しい）で、記録の中身が変わった物だけを書き換える。握手の行は、新しく握手した物で、
+ * 接続の仕方・道具の一覧・結果・段のどれかが変わった物だけ（応答の速さや確かめた時刻だけが変わった物は書かない）。系列も、変わった物だけ。
+ * 同じファイルを入れ直しても、本番の D1 の書き込みは増えない。返す rowsWritten は、この回に書いた行の数（D1 は索引を含む）。
  * 本番で人が動かした（L2）物は、道具の一覧が同じ間、L2 のまま。系列の取り下げ・隠した印・つないでいる人の数は、本番の値を残す。
  */
 export async function noahIntakeImport(db: IntakeDb, value: unknown, now: number) {
@@ -142,7 +168,9 @@ export async function noahIntakeImport(db: IntakeDb, value: unknown, now: number
         repository=excluded.repository, host=excluded.host, record_sha256=excluded.record_sha256, record_json=excluded.record_json, state=excluded.state, reason=excluded.reason,
         running=excluded.running, likes=excluded.likes, source_updated_at=excluded.source_updated_at, changed_at=excluded.changed_at, seen_at=excluded.seen_at,
         revision=noah_intake_candidates.revision+1
-      WHERE excluded.seen_at > noah_intake_candidates.seen_at`, ...values));
+      WHERE excluded.seen_at > noah_intake_candidates.seen_at AND (excluded.record_sha256 IS NOT noah_intake_candidates.record_sha256 OR excluded.family_id IS NOT noah_intake_candidates.family_id
+        OR excluded.group_key IS NOT noah_intake_candidates.group_key OR excluded.summary_ja IS NOT noah_intake_candidates.summary_ja OR excluded.state IS NOT noah_intake_candidates.state
+        OR excluded.reason IS NOT noah_intake_candidates.reason OR excluded.running IS NOT noah_intake_candidates.running)`, ...values));
   }
   for (const row of part.checks) {
     // 手元の L2 は入れない。
@@ -156,24 +184,39 @@ export async function noahIntakeImport(db: IntakeDb, value: unknown, now: number
         l2_at=CASE WHEN noah_intake_checks.level = 2 AND noah_intake_checks.tools_sha256 IS excluded.tools_sha256 AND excluded.level >= 1 THEN noah_intake_checks.l2_at ELSE NULL END,
         result=excluded.result, latency_ms=excluded.latency_ms, sample_json=excluded.sample_json, checked_at=excluded.checked_at, l1_at=COALESCE(noah_intake_checks.l1_at, excluded.l1_at),
         next_check_at=excluded.next_check_at, failures=excluded.failures, first_failure_at=excluded.first_failure_at, lease_until=0
-      WHERE COALESCE(excluded.checked_at, 0) > COALESCE(noah_intake_checks.checked_at, 0)`, ...values));
+      WHERE COALESCE(excluded.checked_at, 0) > COALESCE(noah_intake_checks.checked_at, 0) AND (excluded.mouth IS NOT noah_intake_checks.mouth OR excluded.surface IS NOT noah_intake_checks.surface
+        OR excluded.auth IS NOT noah_intake_checks.auth OR excluded.connect_sha256 IS NOT noah_intake_checks.connect_sha256 OR excluded.setup IS NOT noah_intake_checks.setup
+        OR excluded.oauth_json IS NOT noah_intake_checks.oauth_json OR excluded.tools_sha256 IS NOT noah_intake_checks.tools_sha256 OR excluded.tool_count IS NOT noah_intake_checks.tool_count
+        OR excluded.read_only IS NOT noah_intake_checks.read_only OR excluded.form_tools IS NOT noah_intake_checks.form_tools OR excluded.one_tap_tools IS NOT noah_intake_checks.one_tap_tools
+        OR excluded.result IS NOT noah_intake_checks.result OR excluded.level IS NOT MIN(noah_intake_checks.level, 1))`, ...values));
   }
+  // 本番で人が動かした（L2）握手の行を、系列の代表が持っているか（握手の行を書いた後に読む）。
+  const ranL2 = 'EXISTS (SELECT 1 FROM noah_intake_checks k WHERE k.candidate_id = excluded.representative_id AND k.level = 2)';
   for (const family of part.families) {
     const { listed, oneTap } = listingOf(family, part.candidates.filter((row) => row.family_id === family.id), checks);
+    // 変わった所が無い系列は、書かない（同じファイルを入れ直しても、本番の書き込みが増えない）。
     statements.push(prepare(`INSERT INTO noah_intake_families(id, representative_id, members, level, l2_at, badge_hint, listed, one_tap, shuffle, updated_at, revision)
       VALUES(?, ?, ?, 1, NULL, 'unverified', ?, ?, ?, ?, 1)
       ON CONFLICT(id) DO UPDATE SET representative_id=excluded.representative_id, members=excluded.members,
-        level=1, l2_at=NULL, badge_hint='unverified',
-        listed=excluded.listed, one_tap=excluded.one_tap, updated_at=excluded.updated_at, revision=noah_intake_families.revision+1`,
+        level=CASE WHEN ${ranL2} THEN 2 ELSE 1 END,
+        l2_at=CASE WHEN ${ranL2} THEN (SELECT k.l2_at FROM noah_intake_checks k WHERE k.candidate_id = excluded.representative_id) ELSE NULL END,
+        badge_hint=CASE WHEN ${ranL2} THEN 'one_click' ELSE 'unverified' END,
+        listed=excluded.listed, one_tap=excluded.one_tap, updated_at=excluded.updated_at, revision=noah_intake_families.revision+1
+      WHERE excluded.representative_id IS NOT noah_intake_families.representative_id OR excluded.members IS NOT noah_intake_families.members
+        OR excluded.listed IS NOT noah_intake_families.listed OR excluded.one_tap IS NOT noah_intake_families.one_tap
+        OR noah_intake_families.level IS NOT (CASE WHEN ${ranL2} THEN 2 ELSE 1 END)`,
     family.id, family.representative_id, Math.max(1, Number(family.members)), listed, oneTap, Math.abs(Number(family.shuffle ?? 0)) % 1_000_000_000, now));
   }
   // 系列は、候補と握手の行の後に書く（代表の候補を指すため）。1 回の書き込みは 40 文まで。
-  for (let index = 0; index < statements.length; index += 40) await db.batch(statements.slice(index, index + 40));
+  // 書いた行の数（D1 は表と索引を合わせた rows_written。無ければ、変えた行の数）を数えて返す。運営が、書き込みの枠を見ながら入れられるように。
+  let rowsWritten = 0;
+  const count = (results: unknown[]) => { for (const result of results) { const meta = (result as { meta?: { rows_written?: number; changes?: number } } | null)?.meta; rowsWritten += Number(meta?.rows_written ?? meta?.changes ?? 0) || 0; } };
+  for (let index = 0; index < statements.length; index += 40) count(await db.batch(statements.slice(index, index + 40)));
   // 本番で人が動かした系列は、握手の行が L2 のまま残る（道具の一覧が同じ間）。系列の段を、その握手の行に合わせる。
   const ids = part.families.map((row) => String(row.id));
-  await db.batch([prepare(`UPDATE noah_intake_families SET level = 2, l2_at = (SELECT k.l2_at FROM noah_intake_checks k WHERE k.candidate_id = noah_intake_families.representative_id), badge_hint = 'one_click'
-    WHERE id IN (${marks(ids.length)}) AND level < 2 AND EXISTS (SELECT 1 FROM noah_intake_checks k WHERE k.candidate_id = noah_intake_families.representative_id AND k.level = 2)`, ...ids)]);
-  return { families: part.families.length, candidates: part.candidates.length, checks: part.checks.length, listed: part.families.filter((family) => listingOf(family, part.candidates.filter((row) => row.family_id === family.id), checks).listed).length };
+  count(await db.batch([prepare(`UPDATE noah_intake_families SET level = 2, l2_at = (SELECT k.l2_at FROM noah_intake_checks k WHERE k.candidate_id = noah_intake_families.representative_id), badge_hint = 'one_click'
+    WHERE id IN (${marks(ids.length)}) AND level < 2 AND EXISTS (SELECT 1 FROM noah_intake_checks k WHERE k.candidate_id = noah_intake_families.representative_id AND k.level = 2)`, ...ids)]));
+  return { families: part.families.length, candidates: part.candidates.length, checks: part.checks.length, listed: part.families.filter((family) => listingOf(family, part.candidates.filter((row) => row.family_id === family.id), checks).listed).length, rowsWritten };
 }
 
 const json = (data: unknown, status = 200) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
