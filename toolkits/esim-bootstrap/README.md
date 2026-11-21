@@ -96,3 +96,13 @@ API調査の入口（2026-09-30公式資料確認、implementationはfixture-onl
 ## この変更の検証結果
 
 `node --experimental-strip-types --test tests/esim*.test.mjs`は現在59/59成功。raw-body HMAC、署名前parse禁止、body bound、duplicate delivery、numeric ICCIDのprecision保持、ICCID非保存、live/paid・owner・商品version照合、late callback correlation、API v2.5 request/response fixture、transaction dispatchの一回性、timeout stop、read-only order/assignment recovery、catalog更新後の価格snapshot再利用、scheduled batchからのbindingと重複pollなし、reference不明注文の除外、卸値上限超過拒否、server-side retail amount/package mapping、初期Agent Packのexact Package review/hash照合、端末attestation、Worker routeのD1保存と並行登録のidempotencyを検査する。`POST /api/esim/orders/{orderId}/issue`は認証済みownerのpaid Sky orderだけを扱い、bundle・卸値cap・retail amountはserver catalogから選ぶ。catalog version・rate numerator/denominator・fee reserve・minimum margin・provider quoteはcanonical JSON snapshotとSHA-256でorder rowに固定する。Provider debit gateはdefault-off。導入情報はAES-GCM暗号化し、owner/orderとひも付ける。本人認証付きdelivery request keyで応答消失から再取得し、利用者ack後に暗号文を消去する。為替比率とfee reserveは運営が与える設定値で、provider invoiceや決済明細から実証した値ではない。background callback inbox correlation、reference不明transactionの自動解決、Cloudflare production D1/secrets/cron acceptance、実provider署名、credentials、sandbox、実注文、実端末は未受入。GitHubへのpush・main統合は未実施。
+
+## 配給用の農産物を仕入れる
+
+運営担当者はMacで次を実行すると、[農家検索と買取相談の下書き](../noah-farm-sourcing/index.html)を開けます。回線の招待やサーバー起動は不要です。
+
+```sh
+open toolkits/noah-farm-sourcing/index.html
+```
+
+地域・品目を指定して農園の公式窓口を開くか、農林水産省の農業女子プロジェクトで全国から候補を探せます。希望数量・頻度・引取先・先方に伝える予算を入力し、下書きを編集してコピーしてください。運営が自分で連絡し、価格と受渡条件を合意します。ここで選んだ農園は模擬回線の配給台帳には追加されません。
