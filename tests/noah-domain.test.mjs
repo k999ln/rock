@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { checkNoahDomain } from '../scripts/check-noah-domain.mjs';
 
-test('public checks use only same-origin reads and distinguish pages, catalog and private APIs', async () => {
+void test('public checks use only same-origin reads and distinguish pages, catalog and private APIs', async () => {
   const calls = [];
   const checks = await checkNoahDomain(undefined, async (url, options) => {
     calls.push([url, options]);
@@ -16,7 +16,7 @@ test('public checks use only same-origin reads and distinguish pages, catalog an
     options.redirect === 'manual' && !options.method && !options.headers.Authorization));
 });
 
-test('redirects, disabled catalog and leaked private API are not a healthy release', async () => {
+void test('redirects, disabled catalog and leaked private API are not a healthy release', async () => {
   const checks = await checkNoahDomain(undefined, async (url) => {
     if (url.endsWith('limit=0')) return Response.json({ error: 'closed' }, { status: 404 });
     if (url.includes('/api/')) return Response.json({ records: [] });
