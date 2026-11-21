@@ -182,15 +182,11 @@ export function noahResultImageLinks(text: string): string[] {
   const links = new Set<string>();
   const add = (v: unknown, explicit = false) => {
     const url = noahResultUrl(v);
-    if (
-      url &&
-      !/^(localhost|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2[0-9]|3[01])\.|\[)/i.test(
-        new URL(url).hostname,
-      ) &&
-      !new URL(url).hostname.endsWith('.local') &&
-      (explicit || /\.(png|jpe?g|webp|gif)$/i.test(new URL(url).pathname))
-    )
-      links.add(url);
+    if (!url) return;
+    const parsed = new URL(url), host = parsed.hostname.replace(/\.$/, '').toLowerCase();
+    // Image previews fetch automatically: do not accept IP literals or local-only host names.
+    if (!host.includes('.') || host.includes(':') || /^[0-9.]+$/.test(host) || /(^|\.)(localhost|local|internal)$/.test(host)) return;
+    if (explicit || /\.(png|jpe?g|webp|gif)$/i.test(parsed.pathname)) links.add(url);
   };
   function walk(v: unknown, depth = 0, explicit = false) {
     if (depth > 4 || links.size >= 8) return;

@@ -32,7 +32,7 @@ void test('lists use titles and summaries, unsafe links remain unlinked, and par
 void test('external images are explicit, HTTPS only, and not local network targets',()=>{
   assert.deepEqual(noahResultImageLinks('{"image_url":"https://cdn.example.com/signed?id=1"}'),['https://cdn.example.com/signed?id=1']);
   assert.deepEqual(noahResultImageLinks('{"url":"https://example.com/account"}'),[]);
-  for(const url of ['http://example.com/a.png','https://user:pass@example.com/a.png','https://127.0.0.1/a.png','https://192.168.1.1/a.png'])assert.deepEqual(noahResultImageLinks(JSON.stringify({image_url:url})),[]);
+  for(const url of ['http://example.com/a.png','https://user:pass@example.com/a.png','https://127.0.0.1/a.png','https://192.168.1.1/a.png','https://0.0.0.0/a.png','https://100.64.0.1/a.png','https://printer.localhost/a.png','https://printer.internal/a.png','https://[::1]/a.png'])assert.deepEqual(noahResultImageLinks(JSON.stringify({image_url:url})),[]);
 });
 void test('image Save sends real File bytes to the native share sheet; cancellation does not claim gallery save',async()=>{
   const sent=[];const ui=screen({modules,navigator:{canShare:({files})=>files[0].type==='image/png',share:async data=>{sent.push(data);throw new DOMException('cancelled','AbortError');}}});
