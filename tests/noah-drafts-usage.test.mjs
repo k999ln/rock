@@ -4,6 +4,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { createNoahDraftApi } from '../lib/noah-drafts.ts';
+import { reportNoahAgentUsage } from '../toolkits/noah-agent-client/usage.mjs';
+import { parseSkyToolEvent, skyToolEventStore } from '../lib/sky-tool-events.ts';
 import { noahUsageReport } from '../lib/noah-usage.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { noahAgentTemplate } from '../lib/noah-agent-upload.ts';
@@ -14,6 +16,7 @@ function fixture(t) {
   const sqlite = new DatabaseSync(':memory:'); t.after(() => sqlite.close());
   for (const file of ['0021_sites_schema_convergence.sql','0033_noah_agent_uploads.sql','0034_noah_upload_refactor.sql','0035_noah_agent_drafts.sql','0037_noah_agent_invites.sql','0039_noah_invite_execution.sql','0040_noah_draft_storage.sql']) sqlite.exec(readFileSync(new URL('../drizzle/' + file, import.meta.url), 'utf8'));
   const db = { prepare(sql) { return { bind(...args) { return {
+    async run() { return { meta: { changes: sqlite.prepare(sql).run(...args).changes } }; },
     async first() { return sqlite.prepare(sql).get(...args) ?? null; },
     async all() { return { results: sqlite.prepare(sql).all(...args) }; },
   }; } }; } };
@@ -119,4 +122,59 @@ void test('draft preserves incomplete terminal settings but never accepts execut
   assert.equal(saved.draft.content.manifest.runtime.entrypoint,'');
   payload.content.manifest.runtime.command = 'open Safari';
   assert.equal((await api.put(await request('PUT',payload),randomUUID())).status,400);
+});
+
+void test('a provider can report a ready owned upload and safely retry the same execution', async t => {
+  const { db, sqlite } = fixture(t);
+  const agentId = randomUUID();
+  sqlite.prepare(`INSERT INTO noah_agent_uploads
+    (id, owner_id, manifest, manifest_sha256, upload_state, created_at)
+    VALUES (?, 'alice', ?, ?, 'ready', ?)`).run(agentId, JSON.stringify({ name: 'Usage fixture' }), 'a'.repeat(64), Date.now());
+
+  let owner = 'alice';
+  const token = 'sky_dev_' + randomUUID();
+  const input = {
+    noahUrl: 'https://noah.example', developerToken: token, agentId,
+    installationId: 'test-installation', eventId: randomUUID(), occurredAt: new Date().toISOString(),
+    durationMs: 200, outcome: 'succeeded',
+    async fetchImpl(url, init) {
+      assert.equal(url, 'https://noah.example/api/sky/tool-events');
+      assert.equal(init.method, 'POST');
+      assert.equal(init.redirect, 'error');
+      assert.equal(init.headers.Authorization, 'Bearer ' + token);
+      const event = parseSkyToolEvent(JSON.parse(init.body));
+      return Response.json(await skyToolEventStore(db).record(owner, event));
+    },
+  };
+  assert.deepEqual(await reportNoahAgentUsage(input), { recorded: true, replay: false });
+  assert.deepEqual(await reportNoahAgentUsage(input), { recorded: true, replay: true });
+  await assert.rejects(reportNoahAgentUsage({ ...input, durationMs: 201 }), { status: 403 });
+  owner = 'bob';
+  await assert.rejects(reportNoahAgentUsage(input), { status: 403 });
+  owner = 'alice';
+  sqlite.prepare("UPDATE noah_agent_uploads SET upload_state = 'pending' WHERE id = ?").run(agentId);
+  await assert.rejects(reportNoahAgentUsage({ ...input, eventId: randomUUID() }), { status: 403 });
+  sqlite.prepare("UPDATE noah_agent_uploads SET upload_state = 'ready', deleted_at = ? WHERE id = ?").run(Date.now(), agentId);
+  await assert.rejects(reportNoahAgentUsage({ ...input, eventId: randomUUID() }), { status: 403 });
+
+  const at = Date.now() + 1;
+  for (const [user, runs] of [['alice', 1], ['bob', 0]]) {
+    const report = await noahUsageReport(db, user, { scope: 'publisher', agent: 'noah-upload:' + agentId }, undefined, at);
+    const { metrics, costs } = report.sources.find(source => source.source === 'reported');
+    assert.equal(metrics.runs, runs);
+    assert.deepEqual(costs, []);
+  }
+});
+
+void test('the usage reporter validates the destination and retry identity before sending', async () => {
+  const input = {
+    noahUrl: 'https://noah.example', developerToken: 'sky_dev_' + randomUUID(),
+    eventId: randomUUID(), occurredAt: new Date().toISOString(), fetchImpl: assert.fail,
+  };
+  for (const url of ['http://noah.example', 'https://user@noah.example', 'https://noah.example/path']) {
+    await assert.rejects(reportNoahAgentUsage({ ...input, noahUrl: url }), /HTTPS origin/);
+  }
+  await assert.rejects(reportNoahAgentUsage({ ...input, occurredAt: undefined }), /timestamp/);
+  const fetchImpl = () => Promise.resolve(new Response('unavailable', { status: 503 }));
+  await assert.rejects(reportNoahAgentUsage({ ...input, fetchImpl }), { status: 503 });
 });
