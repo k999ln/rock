@@ -50,4 +50,4 @@
 - 2026-11-21 03:55 JST: **受入の script を足した**（上の「残り」のうちの 1 つ。`node --experimental-strip-types scripts/check-noah-ask.mjs`。表は Miniflare の D1、相手は合成の 17。外へは通信しない）。依頼 63 件（成果 42・失敗 14・結果不明 2・止めた 5）で、依頼と Work は 1 対 1・終わっていない物は 0・道具の呼び出しは 1 件につき 1 回まで。止める・切る・上限の SQL を、D1 の上で通した。D1 への往復は、受け付け 6・実行 15〜16（数え方と内訳は、仕様書 87 の 11.8）。
   - GitHub のコード検査（CodeQL）が、試験の 2 か所（先頭だけに `^` が掛かる正規表現・URL を文字の先頭で比べる所）を指摘したので、書き直した（検査している中身は同じ）。自動検査は `verify`・`CodeQL` とも成功（`0fee854`）。`SPIDER / secrets` は、過去の commit 3 件の分で赤のまま（この PR の変更ではない）。
 
-- 2026-11-21 18:00 JST: **「実行中」と「成果データ」に、頼んだ仕事を出した**（本人の回答「#349 にしか無い所は、後から上に小さく足す」。仕様書 11.9）。`GET /api/noah/ask` の行に `agentId`、`components/noah-work-list.tsx` の Agent をまたぐ形、頁から Codex の画面へ渡す `phoneWork`・`phoneResults`。残り: 成果データの書き出し・運営への提供に載せるか、「利用人数」に数えるか（本人）。
+- 2026-11-21 18:00 JST: **「実行中」と「成果データ」に、頼んだ仕事を出した**（本人の回答「#349 にしか無い所は、後から上に小さく足す」。[PR #352](https://github.com/k999ln/rock/pull/352)。仕様書 11.9）。`GET /api/noah/ask` の行に `agentId`、`components/noah-work-list.tsx` の Agent をまたぐ形、頁から Codex の画面へ渡す `phoneWork`・`phoneResults`。残り: 成果データの書き出し・運営への提供に載せるか、「利用人数」に数えるか（本人）。

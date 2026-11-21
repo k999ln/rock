@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- Noah の「実行中」と「成果データ」に、スマホから接続した Agent へ頼んだ仕事と成果を出した（Opus / Noelle。本人の回答「#349 にしか無い所は、後から上に小さく足す」。[PR #352](https://github.com/k999ln/rock/pull/352)、task87）。`GET /api/noah/ask` の行に Agent を添え、`components/noah-work-list.tsx` を Agent をまたげる形にし、頁から Codex の画面へ渡す。成果データの書き出し・運営への提供には、まだ載せていない（本人が決める）。
+
 - Noah MVP L1〜L9 の PR を、今の main と合わせて 1 本にまとめた（Opus / Noelle。本人の回答「Claude の L4〜L9 を残す」「緑になったらマージして」。[PR #350](https://github.com/k999ln/rock/pull/350)）。README・CHANGELOG・task 一覧の衝突を、両側を残して解いた（README は main の作り直した構成を土台に、積み上げの 14 段落を字を変えずに写し、食い違う 4 か所だけ直した）。取り下げ・報告の窓口（D8）を、本人の決めた smash@avoado.si にして、`/noah/help#bot` の節と、一覧・詳細からの道を出した（`lib/noah-bot-notice.ts`）。本番の migration・配備・切り替えは、していない。
 
 - READMEで差し替え済みのmiiの帰宅画像とNoahの検索GIFを `docs/assets/readme/` から削除（[PR #348](https://github.com/k999ln/rock/pull/348)、task 99）。
