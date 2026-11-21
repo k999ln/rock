@@ -212,16 +212,18 @@ export function parseAwesome(markdown, format) {
       const auth = text(cells[4].replace(/[^\p{L}\p{N} .+-]/gu, ''), 40);
       const url = site && projectUrl(site);
       if (!url) continue;
-      out.push({ name: text(cells[1], 200), url, summary: text(`${cells[2]}のリモートMCP（${auth || '認証不明'}）`, 300), auth });
+      out.push({ name: text(cells[1].replace(/[<>]/gu, ''), 200), url, summary: text(`${cells[2]}のリモートMCP（${auth || '認証不明'}）`, 300), auth });
       continue;
     }
     const match = LIST_LINE.exec(line);
     if (!match) continue;
     const url = projectUrl(match[2]);
     if (!url || /^https:\/\/(github\.com\/[^/]+\/awesome-|glama\.ai\/)/u.test(url)) continue;
-    const rest = match[3].replace(/\[!\[[^\]]*\]\([^)]*\)\]\([^)]*\)/gu, '').replace(/<[^>]+>/gu, '').replace(/\[([^\]]*)\]\([^)]*\)/gu, '$1').replace(/\*\*/gu, '');
+    const rest = match[3].replace(/\[!\[[^\]]*\]\([^)]*\)\]\([^)]*\)/gu, '').replace(/<[^>]+>/gu, '').replace(/\[([^\]]*)\]\([^)]*\)/gu, '$1').replace(/\*\*/gu, '')
+      // 表示は文字として出す（React が逃がす）が、HTML の断片が残らないよう、山括弧は 1 文字ずつ外す。
+      .replace(/[<>]/gu, '');
     const dash = rest.search(/\s[-–—]\s/u);
-    out.push({ name: text(match[1].replace(/[`*]/gu, ''), 200), url, summary: text(dash >= 0 ? rest.slice(dash + 3) : '', 300) });
+    out.push({ name: text(match[1].replace(/[`*<>]/gu, ''), 200), url, summary: text(dash >= 0 ? rest.slice(dash + 3) : '', 300) });
   }
   return out;
 }
