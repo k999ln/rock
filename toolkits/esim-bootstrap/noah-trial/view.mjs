@@ -160,7 +160,7 @@ export function cloudScreen(
             hidden('id', job.id) + hidden('agent', agent),
           )
         : '';
-      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p><dl>${sections}</dl>${stop}</li>`;
+      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p>${job.result && job.note ? '<p>' + esc(job.note) + '</p>' : ''}<dl>${sections}</dl>${stop}</li>`;
     })
     .join('');
   return layout(

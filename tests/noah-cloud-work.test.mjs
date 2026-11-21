@@ -9,7 +9,7 @@ import { esimCloudRequestScope } from '../lib/esim-cloud-access.ts';
 const root = '/api/noah/cloud-work';
 const request = (path, method = 'GET') =>
   new Request('https://noah.test' + path, { method });
-test('only the three cloud work routes accept the Noah grant; destinations come from registered bindings', () => {
+await test('only the three cloud work routes accept the Noah grant; destinations come from registered bindings', () => {
   assert.equal(esimCloudRequestScope(request(root)), 'noah');
   for (const action of ['start', 'stop'])
     assert.equal(
@@ -43,7 +43,7 @@ test('only the three cloud work routes accept the Noah grant; destinations come 
   );
 });
 
-test('private hosted entry binds the request to carrier proof and returns a background result without an open screen', async (t) => {
+await test('private hosted entry binds the request to carrier proof and returns a background result without an open screen', async (t) => {
   const { outputFiles } = buildSync({
     entryPoints: ['services/noah-test-runtime/src/cloud-entry.mjs'],
     bundle: true,
