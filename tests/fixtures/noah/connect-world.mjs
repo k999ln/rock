@@ -61,6 +61,7 @@ export async function world(t, servers, options = {}) {
       ...f.deps, flags: parseNoahFlags(config.env ?? options.env ?? OPEN), reviewers: config.reviewers ?? options.reviewers ?? [],
       authenticate: async () => { if (!user) throw Error('UNAUTHORIZED'); return user; },
       ...(config.waitUntil ? { waitUntil: config.waitUntil } : {}),
+      ...(config.planLimits ?? options.planLimits ? { planLimits: config.planLimits ?? options.planLimits } : {}),
     };
     const api = createNoahConnectApi(deps), planApi = createNoahConnectPlanApi(deps), askApi = createNoahAskApi(deps);
     const send = async (handler, method, path, body, headers) => {

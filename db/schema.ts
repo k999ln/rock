@@ -2556,6 +2556,14 @@ export const noahPackageSteps = sqliteTable('noah_package_steps', {
   check('noah_package_steps_check_6', sql`(${t.kind} IN ('owner','gap')) = (${t.ref} = '')`),
   index('noah_package_steps_ref').on(t.kind, t.ref),
 ]);
+// 接続が、どのカードの中でつながれたか。DDL は drizzle/0053_noah_package_connections.sql（docs/contracts/noah-shelf-v1.sql から移した。task 113）。
+// 同じカードの中の接続は、つなげる数を 1 と数える。カードの外の接続は、行を持たない。
+export const noahPackageConnections = sqliteTable('noah_package_connections', {
+  connectionId: text('connection_id').primaryKey().references(() => noahConnections.id),
+  packageId: text('package_id').notNull().references(() => noahPackages.id),
+}, t => [
+  index('noah_package_connections_package').on(t.packageId),
+]);
 // 棚の実績の集計と、見せた記録。DDL は drizzle/0052_noah_shelf_evidence.sql（docs/contracts/noah-shelf-v1.sql から移した。task 111）。
 // 集計と、全員を合わせた見せた記録に、本人の ID は無い。本人ごとの行は、履歴の利用に同意した本人の分と、本人が頼んだ「非表示」だけ。
 export const noahPackageEvidence = sqliteTable('noah_package_evidence', {

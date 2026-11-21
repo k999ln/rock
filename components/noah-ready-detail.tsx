@@ -97,7 +97,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
       {checked && <p className={styles.quiet}>{checked}</p>}
       {detail.host && <p className={styles.sendsTo}>{noahSendsToText(detail.host)}</p>}
       {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">提供者のページ（{new URL(detail.website).hostname}）</a></p>}
-      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" />
+      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} />
     </article>
 
     {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}

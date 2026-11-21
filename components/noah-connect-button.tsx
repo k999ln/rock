@@ -18,9 +18,11 @@ type Reply = { id?: string; state?: string; revision?: number; error?: string; p
 const asConnection = (body: Reply): NoahReadyConnection | null =>
   typeof body.id === 'string' && typeof body.state === 'string' && typeof body.revision === 'number' ? { id: body.id, state: body.state, revision: body.revision, error: body.error ?? null } : null;
 
-export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link' }: {
+export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link', packageId = null }: {
   /** 系列の ID。 */
   agentId: string;
+  /** 棚のカードから来た時、そのカードの ID（つなげる数を、カードで数えるため）。 */
+  packageId?: string | null;
   /** 一覧に載せているか。載せていない物は、つなげない。 */
   listed: boolean;
   signedIn: boolean;
@@ -71,7 +73,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     operation.current = id;
     const plan = await call(`/api/noah/connect-plan?${new URLSearchParams({ agent: agentId }).toString()}`);
     if (plan.status !== 200 || typeof plan.body.planSha256 !== 'string') { setError(plan.body.error ?? NOAH_READY_TEXT.offline); return; }
-    settle(await call('/api/noah/connect', { id, agentId, planSha256: plan.body.planSha256 }), id);
+    settle(await call('/api/noah/connect', { id, agentId, planSha256: plan.body.planSha256, ...(packageId ? { packageId } : {}) }), id);
   });
   const retry = (current: NoahReadyConnection) => run(async () => {
     settle(await call(`/api/noah/connect/${current.id}`, { action: 'retry', revision: current.revision }), null);
