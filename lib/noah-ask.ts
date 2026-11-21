@@ -219,7 +219,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
 
       // 握手（8 秒。枠は、受け付けた時に取ってある）。
       const { target } = await connections.usable(owner, row.connection_id);
-      const shaken = await hands.handshake(target, { slotTaken: true });
+      const shaken = await hands.handshake(target, { slotTaken: true, owner });
       if (!shaken.ok) return await fail(shaken.message);
       close = shaken.close;
       // 道具を名前で探す。本人が入力欄を開いた時と、定義が同じ時だけ呼ぶ。

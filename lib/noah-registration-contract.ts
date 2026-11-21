@@ -4,6 +4,7 @@ export type RegistrationProvider = {
   id: string; name: string; agentIds: string[]; revision: number; providerOrigin: string;
   verificationUrl: string; termsUrl: string; termsVersion: string;
   executorName: string; executorOrigin: string; fields: RegistrationField[];
+  requiresAccount?: boolean; notice?: string;
 };
 export type RegistrationState = 'running' | 'needs_user' | 'completed' | 'failed' | 'unknown';
 export type RegistrationRecord = {

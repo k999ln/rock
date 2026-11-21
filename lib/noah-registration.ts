@@ -5,7 +5,9 @@ import { noahPublicHttpsUrl, canonicalJson, sha256Hex } from './noah-connect-req
 import { NoahAgentError } from './noah-agent-upload.ts';
 import type { RegistrationProvider, RegistrationRecord, RegistrationState, RegistrationStatus } from './noah-registration-contract.ts';
 export type ConfiguredRegistration = RegistrationProvider & { executorUrl: string };
+export type RegistrationExecutor=(id:string,values?:Record<string,string>,documents?:Record<string,RegistrationDocument>)=>Promise<RegistrationState>;
 export type RegistrationDependencies = {
+  executor?: (request:Request,provider:ConfiguredRegistration)=>Promise<RegistrationExecutor|undefined>;
   resolveProfile?: (request:Request,provider:ConfiguredRegistration,reuse:unknown)=>Promise<ResolvedRegistration>;
   db: Pick<D1Database, 'prepare'>; providers: ConfiguredRegistration[]; token?: string;
   fetcher?: typeof fetch; now?: () => number; waitUntil?: (promise: Promise<unknown>) => void;
@@ -85,8 +87,9 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       verificationUrl: same && r.state === 'needs_user' ? provider.verificationUrl : null,
       returnTo: r.agentId.startsWith('mcp-registry:')?`/noah/ready/agent?id=${encodeURIComponent(r.agentId)}`:`/noah/agents/${encodeURIComponent(r.agentId)}` };
   }
-  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>): Promise<RegistrationState> {
+  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>, native?:RegistrationExecutor): Promise<RegistrationState> {
     try {
+      if(native)return await native(id,values,documents);
       const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values, ...(documents && Object.keys(documents).length ? {documents} : {}) } : {}) }) });
       if (!response.ok) { await response.body?.cancel(); return 'unknown'; }
       const reply = await readBounded(response.body);
@@ -121,7 +124,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
         if (enabled && provider && !['completed','failed'].includes(r.state) && now() - r.startedAt >= 20000 && now() - r.lastCheckedAt >= 5000 && await sha256Hex(canonicalJson(provider)) === r.providerDigest) {
           const expected = job.revision; r.lastCheckedAt = now();
           const result = await deps.db.prepare('UPDATE work_jobs SET payload=?,revision=revision+1 WHERE user_id=? AND id=? AND revision=?').bind(JSON.stringify({ ...job, revision: expected + 1 }), owner, id, expected).run();
-          if (result.meta.changes === 1) { job.revision++; await settle(owner, job, await callAgent(provider, id)); }
+          if (result.meta.changes === 1) { job.revision++; await settle(owner, job, await callAgent(provider, id,undefined,undefined,await deps.executor?.(request,provider))); }
           job = await read(owner, id);
         }
         return json({ job: await present(job) });
@@ -133,6 +136,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       const provider = deps.providers.find(p => p.id === input.providerId);
       if (!provider || !provider.agentIds.includes(String(input.agentId))) fail('登録先が見つかりません。Agentを選び直してください。', 404);
       if (input.revision !== provider.revision || input.termsVersion !== provider.termsVersion) fail('登録条件が更新されました。画面を開き直して確認してください。', 409);
+      const native=await deps.executor?.(request,provider);
       if (input.profile !== undefined && !deps.resolveProfile) fail('保存情報はまだ使えません。',503);
       const resolved=await deps.resolveProfile?.(request,provider,input.profile);
       if(resolved && Object.keys(resolved.values).some(k=>Object.hasOwn(input.values as object,k))) fail('同じ項目を二重に指定できません。');
@@ -168,7 +172,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       }
       const run = (async()=>{
         try { await resolved?.beforeSend(); } catch { await settle(owner,job,'failed'); return; }
-        await settle(owner,job,await callAgent(provider,job.id,values,resolved?.documents));
+        await settle(owner,job,await callAgent(provider,job.id,values,resolved?.documents,native));
       })().catch(() => {});
       if (deps.waitUntil) deps.waitUntil(run); else await run;
       return json({ job: await present(await read(owner, job.id)) }, 202);

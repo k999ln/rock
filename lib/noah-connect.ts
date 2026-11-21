@@ -151,7 +151,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
   async function probe(row: Row, target: NoahUserHandshakeTarget): Promise<Row> {
     let result: NoahUserHandshake | null = null, error: string = NOAH_CONNECT_MESSAGES.interrupted;
     try {
-      result = await handshake(target);
+      result = await handshake(target,{owner:row.owner_id});
       if (!result.ok) error = result.message;
       // 道具が 1 つも無い接続先は、頼める事が無い。握手の表には書かない（外すかどうかは、巡回が決める）。
       else if (result.handshake.tools.length < 1) error = NOAH_CONNECT_MESSAGES.noTools;
@@ -345,7 +345,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
     const at = now();
     const claimed = await prepare("UPDATE noah_connections SET last_used_at=? WHERE id=? AND owner_id=? AND state='connected' AND (last_used_at IS NULL OR last_used_at<=?)", at, id, owner, at - NOAH_CONNECT_LIMITS.toolsEveryMs).run();
     if (claimed.meta.changes !== 1) return failed(429, NOAH_CONNECT_MESSAGES.toolsWait);
-    const result = await handshake(target);
+    const result = await handshake(target,{owner});
     if (!result.ok) return failed(result.code === 'host_busy' || result.code === 'rate_limited' ? 429 : result.code === 'auth_required' || result.code === 'payment_required' ? 409 : 502, result.message);
     try {
       const definitions = new Map(result.handshake.tools.map((tool) => [tool.name, tool]));

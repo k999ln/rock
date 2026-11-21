@@ -59,3 +59,16 @@
 保存/登録ボタン直前に短い保存・再利用の文を表示し、説明版 `2026-11-22.1`、サーバー時刻、対象の項目名/書類IDを、情報本体と同一の暗号化R2オブジェクトへCAS保存する。古い説明版・保存競合・永続保存失敗では登録を送信しない。再利用停止はUIと登録resolverの双方で強制し、送信直前のrevision再確認で未送信分にも効く。パスワードは保存対象外。書類提出先の確認・規約同意は別に維持する。
 
 「今使える」は実際の公開接続一覧、「追加で使える」は設定済み登録先のrequired/profileFieldと本人の保存情報との差分から表示する。調査チャットの303種類は候補台帳であり、実行可能数ではない。Browser Use Agent（AG0045）、Skyvern（AG0270）は調査台帳でruntime/integration未試験。Browser Use公式v4は運営APIキーとクラウドrunを必要とする（https://github.com/browser-use/browser-use/blob/main/skills/cloud/references/api-v4.md 、2026-11-22確認）。キー/登録対象の実行先/本人確認の引継ぎが未設定の間は登録処理を開始しない。
+
+
+### 2026-11-22 公式APIの登録実行基盤
+
+本人指示により実行環境とキー設定を進める。最初の対応先はAgentboard（`mcp-registry:ai.agentboard/agentboard`）。公開名1項目を本人が確認してから `POST https://www.agentboard.ai/api/agents/register` を一度だけ呼び、発行されたキーを本人別の `noah-external/v1` R2領域へAES-GCMで保管する。暗号鍵は既存 `NOAH_PROFILE_KEYS` を用途分離のAADで使用。`GET /api/me` の本人IDとactive状態を確認してから登録完了とする。
+
+Worker内の `NOAH_REGISTRATION_NATIVE=agentboard` と32文字以上の秘密設定 `NOAH_REGISTRATION_AGENT_TOKEN` を設定して有効化する。実行環境は既存Noah Worker、追加の有料基盤・DB移行は不要。通常の委任/所有者/送信前確認を維持。発行キーの保管にはNoahログインが必要で、閲覧と公開の道具は従来どおり。公開名の外部公開とキー保管を入力前に明示する。
+
+登録開始前の暗号化CASで本人・接続先を確保し、重複操作/別ID/結果不明からの再登録を防ぐ。キー保管後の照会失敗はGETによる本人照会だけで復旧する。キーを失う応答切断は結果不明として止め、登録成功を捏造しない。本人以外の復号、キーのUI/Work/ログ保存、設定外URLへの送信、転送先への送信を拒否する。
+
+AgentboardのMCPでは公開定義からcredential/agent入力を除き、登録済み本人の資格情報を呼出直前に注入する。register_agent/rotate_credential/delete_accountは通常の道具から除外し、資格情報の返却を防ぐ。未知の道具や手入力のcredentialは拒否、応答にキーが混入しても取り除く。公開投稿・返信は利用者が依頼した時だけ。最初の通し検証は本人情報を読むwhoamiを使う。
+
+一次資料: [登録API](https://www.agentboard.ai/for-agents)、[OpenAPI](https://www.agentboard.ai/openapi.json)、[利用ルール](https://www.agentboard.ai/rules)（2026-11-22確認）。ブラウザ操作型はBrowser Use Cloudの運営ログイン/キー取得後に接続する段階で、全外部サービスの自動登録を保証しない。
