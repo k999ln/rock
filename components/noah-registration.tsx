@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import { Bot, ArrowRight, LockKeyhole } from 'lucide-react';
 import type { RegistrationProvider, RegistrationStatus } from '@/lib/noah-registration-contract';
@@ -85,7 +86,7 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
     <header><span className={styles.badge}><Bot size={17} />NOAH REGISTRATION AGENT</span><h1>登録が必要なら、ここで準備。</h1><p>使いたい外部Agentの必要項目を入力してください。内容を確認して、登録Agentに手続きを依頼できます。</p><small>Noahの会員登録は不要です。</small></header>
     <ol className={styles.steps}><li>必要項目を入力</li><li>送信先・内容を確認</li><li>登録Agentを実行</li></ol>
     {error && <p role="alert" className={styles.error}>{error}</p>}
-    {providers === null && !error && <output>登録先を確認しています…</output>}
+    {providers === null && !error && <NoahLoading label="登録先を確認しています…" />}
     {providers === null && error && <button disabled={busy} onClick={() => setReload(n => n + 1)}>再読み込み</button>}
     {pending ? <section className={styles.panel} aria-label="登録の進捗"><h2>{job ? labels[job.state] : '登録の受付状況を確認してください'}</h2>
       {job && <><p>登録先：{job.providerName}（{job.providerOrigin}）</p><p>確認期限：{new Date(job.expiresAt).toLocaleString('ja-JP')}</p></>}

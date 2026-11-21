@@ -22,6 +22,7 @@ function harness(fetcher, initial = []) {
         useRef(value) { const i = cursor++; return slots[i] ??= { current: value }; },
         useEffect(fn, deps) { const i = cursor++, old = slots[i]; if (!old || deps.some((v, n) => v !== old.deps[n])) { slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
       };
+      if (id === './noah-loading') return { default: 'noah-loading' };
       if (id === 'next/link') return { default: 'a' };
       if (id === 'lucide-react') return new Proxy({}, { get: (_, key) => String(key) });
       if (id.endsWith('.module.css')) return { default: {} };

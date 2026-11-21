@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import WorkspaceShell from './workspace-shell';
 import { downloadNoahFile, noahExecutionLabels } from './noah-execution-panel';
@@ -42,7 +43,7 @@ export default function NoahWork({ jobId }: { jobId?: string }) {
   return <WorkspaceShell title="Noah" tone="sky"><main className={styles.page}>
     <nav className={styles.nav}><Link href="/noah/agents">見つける</Link><Link href="/noah/library">自分のAgent</Link><Link href="/noah/work">仕事</Link><Link href="/noah/usage">利用状況</Link><Link href="/noah/outbox">送信履歴</Link></nav>
     <header className={styles.hero}><div><h1>{jobId ? '仕事の結果' : 'Agentに頼んだ仕事'}</h1><p>このMacで受け付けた依頼と成果を、画面を開き直しても確認できます。</p></div></header>
-    {loading && <output>仕事を読み込み中…</output>}
+    {loading && <NoahLoading label="仕事を読み込み中…" />}
     {error && <p role="alert" className={styles.error}>{error} <button onClick={() => setTick(n => n + 1)}>再試行</button></p>}
     {!jobId && !loading && !error && !jobs.length && <p>依頼した仕事はまだありません。Agentの詳細から接続して依頼できます。</p>}
     {jobs.map(item => <article key={item.id} className={styles.notice}><h2><Link href={`/noah/work/${item.id}`} style={{ display: 'block' }}>{item.title}</Link></h2><p>{item.noahExecution.prompt}</p><p>{item.noahExecution.exitCode !== undefined && item.noahExecution.exitCode !== 0 ? 'エラーを含む結果' : noahExecutionLabels[item.noahExecution.state]} · {new Date(item.createdAt).toLocaleString('ja-JP')}</p><Link href={agentPath(item.noahExecution.agentId)}>担当Agentを見る</Link></article>)}

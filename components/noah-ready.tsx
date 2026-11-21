@@ -9,6 +9,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { NOAH_READY_TEXT, noahConnectionStateText, noahReadyDetailHref, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import NoahLoading from './noah-loading';
 import NoahCard from './noah-card';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
@@ -136,7 +137,7 @@ export default function NoahReady({ shelf, initialQuery = '' }: { shelf?: ReactN
         </li>)}</ul>
       </section>}
 
-      {page.state === 'loading' && <p className={base.loading}><output>読み込んでいます…</output></p>}
+      {page.state === 'loading' && <p className={base.loading}><NoahLoading label="読み込んでいます…" /></p>}
       {page.state === 'error' && <div className={base.empty} role="alert"><p>{NOAH_READY_TEXT.unavailable}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>読み直す</button></div>}
       {page.state === 'ready' && (search ? <section className={styles.section} aria-labelledby="noah-ready-found">
         <h2 id="noah-ready-found">{NOAH_READY_TEXT.found}</h2>
@@ -153,7 +154,7 @@ export default function NoahReady({ shelf, initialQuery = '' }: { shelf?: ReactN
           {cards(fresh)}
         </section>}
       </>)}
-      {page.state === 'ready' && page.nextCursor && <div ref={sentinel} className={styles.more}><button type="button" className={styles.secondary} disabled={page.more} onClick={more}>{page.more ? '読み込んでいます…' : '続きを読む'}</button></div>}
+      {page.state === 'ready' && page.nextCursor && <div ref={sentinel} className={styles.more}><button type="button" className={styles.secondary} disabled={page.more} onClick={more}>{page.more ? <NoahLoading compact label="読み込んでいます…" /> : '続きを読む'}</button></div>}
 
       <footer className={styles.source}>
         <p>{NOAH_READY_TEXT.source}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{NOAH_READY_TEXT.report} →</Link></>}</p>

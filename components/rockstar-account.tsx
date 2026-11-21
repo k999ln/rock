@@ -1,6 +1,8 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { accountReturnNavigation } from '@/lib/eve-noah-navigation';
+import NoahLoading from './noah-loading';
+import { noahHaptic } from '@/lib/noah-haptics';
 import { noahReturnPath } from '@/lib/noah-navigation';
 /* oxlint-disable next/no-html-link-for-pages -- Legacy identity recovery uses top-level navigation. */
 /* oxlint-disable next/no-img-element -- Existing static company mark. */
@@ -84,6 +86,7 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
         result = await post({ action: 'verify', challengeId: options.challengeId, credential });
       }
       if (mode === 'recover') resetAccountHandoffs(window.sessionStorage);
+      if (noah) noahHaptic('success');
       setRecoveryCode(result.recoveryCode ?? null); setComplete(true); setSaved(false);
       await refresh();
     } catch (value) { setError(message(value)); }
@@ -128,7 +131,7 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
           {enteringPassword && <><label>ユーザーID<input name="username" type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} required pattern="[A-Za-z0-9][A-Za-z0-9_]{2,31}" minLength={3} maxLength={32} value={handle} onChange={e => setHandle(e.target.value)} placeholder="your_name" /><small>英数字と_で3〜32文字</small></label><label>{mode === 'recover' ? '新しいパスワード' : 'パスワード'}<input name="password" type="password" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} required minLength={8} maxLength={128} value={secret} onChange={e => setSecret(e.target.value)} placeholder="8文字以上" /></label>{mode !== 'login' && <label>パスワードをもう一度<input name="password-confirmation" type="password" autoComplete="new-password" required minLength={8} maxLength={128} value={confirmation} onChange={e => setConfirmation(e.target.value)} /></label>}</>}
           {kind === 'passkey' && <p className={styles.hint}>{supported ? 'この端末のパスキー、または別の対応端末で本人確認します。' : 'このブラウザではパスキーを使えません。ユーザーIDとパスワードへ切り替えてください。'}</p>}
           {mode !== 'login' && mode !== 'recover' && <p className={styles.hint}>{signedIn ? noah ? '今のデータへログイン方法を追加します。' : '今のデータへログイン方法を追加します。Pixelの接続は保持します。' : '登録だけで請求や有料実行は始まりません。'}</p>}
-          <button className={styles.primary} type="submit" disabled={busy || !access || kind === 'passkey' && !supported}><span className={busy ? styles.spinner : undefined} aria-hidden="true" />{busy ? '確認しています…' : kind === 'password' ? mode === 'login' ? 'ログイン' : mode === 'recover' ? '復旧して続ける' : '登録して続ける' : mode === 'login' ? 'パスキーでログイン' : mode === 'recover' ? '新しいパスキーで復旧' : 'パスキーを追加'}</button>
+          <button className={styles.primary} type="submit" disabled={busy || !access || kind === 'passkey' && !supported}><span className={busy && !noah ? styles.spinner : undefined} aria-hidden="true" />{busy ? noah ? <NoahLoading compact label="確認しています…" /> : '確認しています…' : kind === 'password' ? mode === 'login' ? 'ログイン' : mode === 'recover' ? '復旧して続ける' : '登録して続ける' : mode === 'login' ? 'パスキーでログイン' : mode === 'recover' ? '新しいパスキーで復旧' : 'パスキーを追加'}</button>
         </form>}
         <div className={styles.links}><button disabled={busy} onClick={() => change(mode === 'recover' ? 'recover' : signedIn ? 'add' : mode, kind === 'password' ? 'passkey' : 'password')}>{kind === 'password' ? 'パスキーを使う' : 'ユーザーIDとパスワードを使う'}</button><button disabled={busy} onClick={() => change(mode === 'recover' ? signedIn ? 'add' : 'login' : 'recover')}>{mode === 'recover' ? '戻る' : 'ログインできないとき'}</button>{signedIn && <button disabled={busy} onClick={() => void logout()}>ログアウト</button>}</div>
       </div>}

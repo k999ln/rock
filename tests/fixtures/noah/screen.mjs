@@ -92,9 +92,11 @@ export function screen(options = {}) {
       if (id === 'react') return hooks;
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx, Fragment };
       if (id === 'next/link') return { default: 'a' };
+      if (id === 'next/image') return { default: 'img' };
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (options.modules?.[id]) return options.modules[id];
+      if (id === '@/lib/noah-haptics') return load('lib/noah-haptics.ts');
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
       throw Error(`画面の試験の台に、${id} がありません`);
     };

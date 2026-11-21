@@ -31,6 +31,7 @@ function render(hash = '#timeline', snapshot = { items, social: { profile: { id:
     './use-noah-hash': { useNoahHash: () => hash },
     './use-noah-timeline': { useNoahTimeline: mode => { assert.equal(mode, 'public'); return ({ data: snapshot, loading: false, hasMore: false, refresh() {} }); } },
     './use-noah-feedback': { useNoahFeedback: () => ({rows:[],error:'',update(){},reload(){}}) },
+    './noah-loading': { default: 'noah-loading' },
     './noah-agent-feedback': { NoahAgentSignals: 'agent-feedback' },
     './noah-shell.module.css': { default: new Proxy({}, { get: (_, key) => String(key) }) },
   };

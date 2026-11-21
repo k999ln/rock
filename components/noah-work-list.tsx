@@ -12,6 +12,7 @@
  * 仕様: docs/noah/spec-87-tool-agent.md の 11.5。
  */
 import { useEffect, useRef, useState } from 'react';
+import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import { NOAH_ASK_TEXT, noahAskRowView, noahLinkParts, noahResultPreview, type NoahAskItem } from '@/lib/noah-ask-view';
 import { noahResultOutline } from '@/lib/noah-form';
@@ -127,7 +128,7 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
     if (!showEmpty) return null;
     const retry = () => { setListState('loading'); setAttempt(n => n + 1); };
     return <section className={styles.section} aria-live="polite">
-      {changedOwner || listState === 'loading' ? <output>読み込んでいます…</output>
+      {changedOwner || listState === 'loading' ? <NoahLoading label="読み込んでいます…" />
         : listState === 'signed-out' ? <><p>ログインすると、あなたの仕事と成果を確認できます。</p><Link className={styles.primary} href={`/noah/account?returnTo=${encodeURIComponent(only === 'succeeded' ? '/noah/data' : '/noah/activity')}`}>ログイン</Link><p><Link href="/noah/explore">Agentを見てみる</Link></p></>
         : listState === 'error' ? <div role="alert"><p>仕事を読み込めませんでした。</p><button className={styles.secondary} onClick={retry}>読み直す</button></div>
         : <><p>{only === 'succeeded' ? '成果はまだ届いていません。' : 'まだ仕事を頼んでいません。'}</p><Link className={styles.primary} href={only === 'succeeded' ? '/noah/activity' : '/noah/explore'}>{only === 'succeeded' ? '実行中を見る' : 'Agentを探す'}</Link></>}

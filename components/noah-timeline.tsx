@@ -1,6 +1,7 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Filters intentionally use the same timeline's hash. */
 import { useEffect, useRef, useState } from 'react';
+import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import {
   Bot,
@@ -189,11 +190,7 @@ export default function NoahTimeline({
       )}
       {notice && <output className={styles.status}>{notice}</output>}
       {feed.loading && (
-        <output className={styles.loading}>
-          タイムラインを読み込んでいます…
-          <span aria-hidden="true" />
-          <span aria-hidden="true" />
-        </output>
+        <NoahLoading label="タイムラインを読み込んでいます…" />
       )}
       {filter === 'all' &&
         feed.data?.social &&
@@ -419,7 +416,7 @@ export default function NoahTimeline({
             disabled={feed.moreLoading}
             onClick={() => void feed.loadMore()}
           >
-            {feed.moreLoading ? '読み込み中…' : '続きを読み込む'}
+            {feed.moreLoading ? <NoahLoading compact label="読み込み中…" /> : '続きを読み込む'}
           </button>
         </div>
       )}

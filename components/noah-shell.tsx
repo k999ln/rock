@@ -4,7 +4,7 @@ import { useEffect, useState, useId, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Activity, Bot, Home, PenLine, Compass, FolderOpen, UserRound, Search, MoreHorizontal, Menu, ChevronUp, ChevronRight, X } from 'lucide-react';
+import { Activity, Bot, Home, PenLine, Compass, FolderOpen, UserRound, Search, MoreHorizontal, Settings2, Menu, ChevronUp, ChevronRight, X } from 'lucide-react';
 import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
 import styles from './noah-service-shell.module.css';
 import { NoahSurfaceContext } from './noah-surface-context';
@@ -38,8 +38,9 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     { href: `${base}/activity`, label: '実行中', description: 'Agentの動きと届いた成果を見る', Icon: Activity, selected: pathname.endsWith('/activity') },
     { href: `${base}/data`, label: '成果データ', description: '受け取った結果を確認・保存する', Icon: FolderOpen, selected: pathname.endsWith('/data') || pathname.endsWith('/outputs') },
   ];
-  const currentPage = primary.find(item => item.selected)?.label ?? 'その他の画面';
+  const currentPage = primary.find(item => item.selected)?.label ?? (pathname.endsWith('/preferences') ? '操作の設定' : 'その他の画面');
   const secondary = [
+    { href: '/noah/preferences', label: '操作の設定', Icon: Settings2, selected: pathname.endsWith('/preferences') },
     { href: `${base}/registration`, label: '登録サポート', Icon: Bot, selected: pathname.endsWith('/registration') },
   ];
   return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
@@ -55,7 +56,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
               <button className={styles.menuTrigger} popoverTarget={menuId}><Menu size={24} /><strong>メニュー</strong><span>{currentPage}</span><ChevronUp size={18} /></button>
               <div ref={menu} id={menuId} popover="auto" className={styles.menuPanel}>
                 <div className={styles.menuHeading}><strong>メニュー</strong><button popoverTarget={menuId} popoverTargetAction="hide" aria-label="メニューを閉じる"><X size={20} /></button></div>
-                <nav aria-label="画面を選ぶ">{primary.map(({ href, label, description, Icon, selected }) => <a key={label} href={href} aria-current={selected ? 'page' : undefined} onClick={() => menu.current?.hidePopover()}><span className={styles.menuIcon}><Icon size={23} /></span><span className={styles.menuText}><strong>{label}</strong><small>{description}</small></span>{selected ? <span className={styles.currentBadge}>表示中</span> : <ChevronRight size={17} />}</a>)}</nav>
+                <nav aria-label="画面を選ぶ">{primary.map(({ href, label, description, Icon, selected }) => <a key={label} href={href} aria-current={selected ? 'page' : undefined} onClick={() => menu.current?.hidePopover()}><span className={styles.menuIcon}><Icon size={23} /></span><span className={styles.menuText}><strong>{label}</strong><small>{description}</small></span>{selected ? <span className={styles.currentBadge}>表示中</span> : <ChevronRight size={17} />}</a>)}<Link href="/noah/preferences" onClick={() => menu.current?.hidePopover()}><span className={styles.menuIcon}><Settings2 size={23}/></span><span className={styles.menuText}><strong>操作の設定</strong><small>タップの振動</small></span><ChevronRight size={17}/></Link></nav>
               </div>
             </div>
             <div className={styles.secondary}><nav aria-label="Noahのその他の機能">{secondary.map(({ href, label, Icon, selected }) => <Link key={label} href={href} aria-label={label} aria-current={selected ? 'page' : undefined}><Icon size={19} strokeWidth={1.6} /><span>{label}</span></Link>)}</nav></div>
