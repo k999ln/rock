@@ -11,6 +11,10 @@ import { collectXAgents } from '../scripts/noah-collector-x.mjs';
 import { normalizeDiscovery } from '../lib/noah-discovery-provider.ts';
 import { publishCollection } from '../scripts/noah-collector-publish.mjs';
 import * as collection from '../lib/noah-collection.ts';
+import * as researchTypes from '../lib/noah-research-types.ts';
+import * as surface from '../lib/noah-surface.ts';
+import * as brand from '../lib/web-brand.ts';
+import * as publicGuide from '../lib/noah-public-guide.ts';
 import { screen } from './fixtures/noah/screen.mjs';
 
 const NOW = Date.UTC(2026, 10, 22), KEY = randomBytes(32).toString('hex');
@@ -191,4 +195,16 @@ void test('shared catalog search keeps the chosen source, resets pagination and 
   assert.equal(updated.searchParams.get('source'), 'huggingface'); assert.equal(updated.searchParams.get('q'), 'second'); assert.equal(updated.searchParams.get('cursor'), '0');
   await page.click('検索条件をクリア'); await page.tick(200);
   const cleared = new URL(ui.calls.at(-1).url, 'https://avoado.si'); assert.equal(cleared.searchParams.get('q'), ''); assert.equal(cleared.searchParams.get('source'), '');
+});
+
+void test('the actual catalog uses one search for collected and researched Agents without losing source selection', async () => {
+  const ui = screen({ search: '?collectionSource=huggingface&collectionQuery=physics', modules: { '@/lib/noah-collection': collection, '@/lib/noah-research-types': researchTypes, '@/lib/noah-surface': surface, '@/lib/web-brand': brand, '@/lib/noah-public-guide': publicGuide }, fetch: async request => ({ body: request.url.includes('/collection?') ? { items: [], total: 0, nextCursor: null, configured: true } : { entries: [], total: 0, nextCursor: null, asOf: '2026-11-22' } }) });
+  const page = ui.mount('components/noah-public-catalog.tsx', { embedded: true }); await page.tick(200);
+  assert.equal(page.find('input').length, 1); assert.equal(page.find('input')[0].props.value, 'physics');
+  await page.type('translation'); await page.tick(200);
+  const collectionRequest = new URL(ui.calls.filter(c => c.url.includes('/collection?')).at(-1).url, 'https://avoado.si');
+  assert.equal(collectionRequest.searchParams.get('q'), 'translation'); assert.equal(collectionRequest.searchParams.get('source'), 'huggingface');
+  const catalogRequest = new URL(ui.calls.filter(c => c.url.includes('/public-catalog?')).at(-1).url, 'https://avoado.si'); assert.equal(catalogRequest.searchParams.get('q'), 'translation');
+  await page.click('検索条件をクリア'); await page.tick(200); assert.equal(page.find('input')[0].props.value, '');
+  const cleared = new URL(ui.calls.filter(c => c.url.includes('/collection?')).at(-1).url, 'https://avoado.si');assert.equal(cleared.searchParams.get('source'), '');assert.equal(cleared.searchParams.get('q'), '');
 });

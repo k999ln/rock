@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Bot, House, Laptop, Search, X } from 'lucide-react';
 import { COWAGENT_GUIDE_PATH } from '@/lib/noah-public-guide';
@@ -11,7 +12,8 @@ import styles from './noah-timeline.module.css';
 import NoahCollectionFeed from './noah-collection-feed';
 
 export default function NoahPublicCatalog({ basePath = '/noah', embedded = false }: { basePath?: string; embedded?: boolean }) {
-  const [query, setQuery] = useState(''), [kind, setKind] = useState('all');
+  const incoming = useSearchParams();
+  const [query, setQuery] = useState(() => (incoming.get('collectionQuery') ?? '').slice(0, 200)), [kind, setKind] = useState('all');
   const [result, setResult] = useState<{ key: string; page: ResearchPage | null; error: string } | null>(null);
   const [moreKey, setMoreKey] = useState(''), [attempt, setAttempt] = useState(0);
   const search = useRef<HTMLInputElement>(null), sentinel = useRef<HTMLDivElement>(null);
@@ -70,7 +72,7 @@ export default function NoahPublicCatalog({ basePath = '/noah', embedded = false
         {embedded && basePath === '/noah' && (
           <p className={styles.researchNote}><Link href={COWAGENT_GUIDE_PATH}>CowAgentをMacで試す準備を見る</Link></p>
         )}
-        <NoahCollectionFeed />
+        <NoahCollectionFeed searchQuery={query} onClearQuery={() => setQuery('')} />
         <div className={styles.feedLabel}><span>世界のAgentを見つける</span>{page && <span className={styles.resultCount}>{page.total.toLocaleString('ja-JP')}件</span>}</div>
         {page && <p className={styles.researchNote}>調査日 {page.asOf} · Agent候補と関連資産を含みます。掲載数は実行対応数ではありません。</p>}
         {loading && <output className={styles.loading}>カタログを読み込んでいます…</output>}

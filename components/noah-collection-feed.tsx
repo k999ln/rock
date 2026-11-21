@@ -20,7 +20,7 @@ export default function NoahCollectionFeed({ compact = false, searchQuery, onCle
   const allUrl = new URL(allResultsHref, 'https://avoado.si');
   const allParams = allUrl.searchParams;
   if (source) allParams.set('collectionSource', source);
-  if (effectiveQuery) allParams.set('collectionQuery', effectiveQuery);
+  if (effectiveQuery) { allParams.set('collectionQuery', effectiveQuery); allParams.set('q', effectiveQuery); }
   const allHref = `${allUrl.pathname}${allParams.size ? `?${allParams}` : ''}#noah-collection`;
   const clear = () => { setSource(''); setQuery(''); setCursor('0'); onClearQuery?.(); };
   const params = new URLSearchParams({ source, q: effectiveQuery, cursor, view: compact ? 'home' : 'recent' }).toString();
