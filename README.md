@@ -317,6 +317,8 @@ Cloud agentの実行前に単価・見積りと予算上限を確認し、実行
 
 開発用の模擬回線では、0円で1本申し込み、地域と品目を選ぶと、Noahの試験用Agentが配給候補を調べます。画面を閉じてもサーバー側で実行し、同じ本人が模擬専用回線で成果と使用量を確認できます。[Macで試す手順](toolkits/esim-bootstrap/README.md#noah-free-trial)
 
+配給用の食料を仕入れる担当者は、全国の農家を地域・品目から探し、運営予算での買取条件を下書きして公式窓口から直接相談できます。[Macで農家検索を開く手順](toolkits/esim-bootstrap/README.md#配給用の農産物を仕入れる)
+
 </details>
 
 <a name="status"></a>
