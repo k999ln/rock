@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useNoahLocale } from './noah-locale';
 import NoahLoading from './noah-loading';
 import RockstarAccount from './rockstar-account';
@@ -41,8 +42,8 @@ export default function NoahAccess() {
   }, [legacy, returnTo, revision]);
   if (legacy) return <RockstarAccount service="noah" />;
   const previous = `/noah/account?${new URLSearchParams({ method: 'existing', mode: 'login', returnTo })}`;
-  return <main className={styles.page}>
-    <header className={styles.top}><Link href="/noah">Noah</Link><Link href={returnTo}>{t('戻る')}</Link></header>
+  return <main className={`${styles.page} ${styles.noah}`}>
+    <header className={styles.top}><Link href="/noah"><Image src="/company-mark.png" alt="" width={32} height={32} unoptimized />Noah</Link><Link href={returnTo}>{t('戻る')}</Link></header>
     <section className={styles.card}>
       <h1>{t('接続して、そのまま使う')}</h1>
       <p className={styles.description}>{t('eSIMの本人確認を引き継ぎます。Noah用の新規登録は不要です。')}</p>
