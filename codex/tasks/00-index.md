@@ -61,7 +61,7 @@
 
 | 70 | [70-noah-route-unification.md](70-noah-route-unification.md) | 旧画面とNoahの統合・404修正 | ✅ 公開版149・Eveヘッダー確認済み・[PR #320](https://github.com/k999ln/rock/pull/320) |
 
-| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・OS独立UI/専用認証・公開版156・172件取込・本番読み取り専用1件の成果受領✅ [PR #358](https://github.com/k999ln/rock/pull/358)・外部登録/別利用者/実スマホ/別Mac未確認 |
+| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・OS独立UI/専用認証・公開版156・172件取込・本番読み取り専用1件の成果受領✅ [PR #358](https://github.com/k999ln/rock/pull/358)・本人Macの仕事詳細・配布Runner受入✅ [PR #366](https://github.com/k999ln/rock/pull/366)・外部登録/別利用者/実スマホ/別Mac未確認 |
 
 | 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | ✅ [PR #321](https://github.com/k999ln/rock/pull/321)・[PR #325](https://github.com/k999ln/rock/pull/325) |
 | 73 | [73-current-product-consolidation.md](73-current-product-consolidation.md) | 機能を保った重複・類似処理と現行説明の統合 | ✅ [PR #326](https://github.com/k999ln/rock/pull/326)・[PR #362](https://github.com/k999ln/rock/pull/362) |

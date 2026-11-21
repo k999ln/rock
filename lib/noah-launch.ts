@@ -318,6 +318,34 @@ export function createNoahLaunchService(deps: Deps) {
         })),
       ];
     },
+    async workDetail(owner: string, id: string) {
+      let row = await command(owner, id);
+      if (row?.kind === 'run' && row.state === 'claimed' && row.lease_until <= now()) {
+        await expire(owner);
+        row = await command(owner, id);
+      }
+      if (row?.kind !== 'run')
+        throw new NoahAgentError('この仕事が見つかりません。', 404);
+      const job = await jobs.get(owner, row.id);
+      const execution = job?.noahExecution;
+      return {
+        ownerScope: await ownerScopeFor(owner),
+        commands: [present(row)],
+        jobs:
+          job && execution
+            ? [
+                {
+                  id: job.id,
+                  noahExecution: {
+                    state: execution.state,
+                    result: execution.result,
+                    error: execution.error,
+                  },
+                },
+              ]
+            : [],
+      };
+    },
     async overview(owner: string) {
       await expire(owner);
       const devices = await db
@@ -834,8 +862,14 @@ export function createNoahLaunchApi(deps: Deps) {
       )
         return json({ agents: await service.catalog() });
       const owner = await deps.authenticate(request);
-      if (request.method === 'GET' && !isRunner)
-        return json(await service.overview(owner));
+      if (request.method === 'GET' && !isRunner) {
+        const work = new URL(request.url).searchParams.get('work');
+        return json(
+          work === null
+            ? await service.overview(owner)
+            : await service.workDetail(owner, work),
+        );
+      }
       if (request.method !== 'POST')
         return json({ error: '対応しない操作です。' }, 405);
       if (
