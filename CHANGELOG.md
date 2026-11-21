@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noah実機検証の復旧状況を更新。操作ツール未提供とPixelのWi-Fi切断を確認し、設定確認・現在の接続先を依頼（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
 - Noahの実機検証を更新：本人のPixel画面オープン報告とWi-Fi/点灯を確認。現在はMac側画面操作ツールの障害で未完了と記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 
 - Noah一周検査の4件と選択肢翻訳を公開173へ反映。登録済み/画像未受取/検索から成果保持/ホームと投稿一覧を公開ブラウザで確認。全体verify成功（4,844 pass・4 skip、API1,918、CSV385）。実機Androidの独立確認は別途継続（[PR #377](https://github.com/k999ln/rock/pull/377)）。
