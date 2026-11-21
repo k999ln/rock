@@ -1,5 +1,11 @@
 ## 2026-11-21
 
+- 本人の「規定で進めて」（22:54）で、自社クラウドの K1〜K10 と eSIM の 11〜15 を決めた（Opus / Noelle）。07 に 1 行、03-esim 0 章と compute-placement 0 章を決定に、task 10〜13・101 に決めを反映、task 102〜105 を追加。`lib/cloud-cost.ts`（定価での実費と黒殿へ移す引き金）と `lib/churn-cohort.ts`（eSIM つきとカードだけの解約率と 3 か月の継続、Wilson の幅、判定）を実装し、`tests/cloud-cost.test.mjs`・`tests/churn-cohort.test.mjs`（23 本）を足した。README の eSIM の節を更新。
+
+- 本人の回答（22:31）で eSIM と自社クラウドの設計を直した（Opus / Noelle）。`docs/structure/03-esim.md` 0 章にスマホと自社の端末の eSIM の違い・スマホの型 S/M・離脱率の仮説と測り方、`docs/compute-placement.md` 0 章に自社クラウドの案 A〜D・回線の終端 N1〜N3・本人の鍵 K・運用の設計。07 に 1 行。
+
+- eSIM の載せる先と計算の置き場所を設計した（Opus / Noelle。本人指示「早く設計して」）。`docs/structure/03-esim.md` に 0 章（スマホに売らず Hub・専用端末・車の回線と鍵にする、制度、訂正 3 点）、`docs/compute-placement.md`（従量で始め、引き金の後に黒殿の 1 ノードへ）、07 に 1 行、05・noah-own-device に参照、task 101。
+
 - Noah のつなげる数を、料金ごとのカードの数にした（task 113。Opus / Noelle。本人指示「続き最後までやって」。[PR #357](https://github.com/k999ln/rock/pull/357)、#355 の上の積み上げ）。表 `noah_package_connections`（migration 0053）、`lib/noah-plan.ts`、`lib/noah-connect.ts` のつなぐ前の上限（無料 6・有料 50。数えるのはカードで、同じカードの中の 2 本目は増やさない。7 枚目は 409「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」。もうつないである物は切らない）、`/noah/ready` の見出し「6 個のうち 4 個」。**どの利用権を有料と見るかは本人が決めるまで置いていない（`NOAH_PLAN_SOURCE` は null）ので、切り替え `NOAH_PLAN_LIMITS` を開けても、今は全員 50 のまま。** 試験 5 本（`tests/noah-plan-limits.test.mjs`）。変えた所は `docs/noah/spec-110-shelf.md` の 17 章。本番の migration・配備・切り替えは、していない。
 
 - Noah の棚の実績の並びと見せた記録（task 111）を実装した（Opus / Noelle。本人指示「続き最後までやって」。[PR #355](https://github.com/k999ln/rock/pull/355)、#354 の上の積み上げ）。表 `noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen`（migration 0052）。学習なしの並び（4 つの率の控えめな見積りの積・5 人未満は使わない・5 枚に 1 枚の試し・同じ領域を 3 枚続けない。`NOAH_SHELF_RANK` が開いている時だけ）、実績の数え直し（直近 90 日・1 日 1 回・巡回の合図の中）、カードの数（成果が返った割合・また使った人・最初の成果まで）、見せた記録（全員の数と、履歴に同意した本人の分だけ。`NOAH_SHELF_SEEN`）、「表示しない」、履歴を消すと見た記録も消える、タイムライン（`/noah`）に「Noah の棚」のカードを流す。試験 7 本（`tests/noah-shelf-rank.test.mjs` 5・タイムライン 2）。変えた所は `docs/noah/spec-110-shelf.md` の 16 章（本人の関心の点はまだ渡さない）。本番の migration・配備・切り替えは、していない。

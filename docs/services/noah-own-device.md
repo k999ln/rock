@@ -33,6 +33,8 @@
 
 ## 雲の作り（始める時）
 
+2026-11-21: 雲は Cloudflare の従量で始め、引き金（従量の請求が月 約 $190 を 2 か月続けて超える）の後に黒殿の 1 ノードへ移す。置き場所の値は `cloud` のまま。詳細は [compute-placement.md](../compute-placement.md)。
+
 - 専用 Worker から Cloudflare Sandbox を起動する（[noah-cloud-operation.md](noah-cloud-operation.md) の専用 Worker と同じ置き方）。Web の本体とは別の配備にし、runner と同じ認証付き API だけで話す。Sandbox は 1 つが 1 つの VM。認証と回数制限は用意されないので、こちらで持つ。
 - 本人ごとの端末は `noah_runner_devices` に platform=`cloud` の行として持ち、端末の一覧に出す。初めて必要になった接続の時に作る。
 - `noah_runner_commands` は「端末 1 台につき実行中 1 件」の一意制約（`noah_runner_one_claim`）を持つ。雲の端末は同時 3 件（候補）まで動かすので、同じ形の受け渡しを別の表で持つか、制約を platform 別にするかを実装で決める。既存の行の意味は変えない。
