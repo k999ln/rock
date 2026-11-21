@@ -2,6 +2,8 @@
 
 目的: provider 契約を待たずに「eSIM を入れる → Eve が開く → account 束縛 → 月額」を今の部品で動かす。
 
+配給の試験は[運営Dockから本人受取までの開発指示](../../docs/prompts/noah-esim-free-device-trial-20261122.md)を参照。
+
 ## 現行コード
 app/api/esim/**（catalog, order, issue, qr, install-proof, device-entitlement, reconcile, webhook）、lib/esim-*.ts、lib/esimgo-provider.ts、app/connect、components/esim-purchase-setup.tsx、components/rockstar-service-setup.tsx、lib/rockstar-entitlement-*.ts、services/sky-billing。
 
