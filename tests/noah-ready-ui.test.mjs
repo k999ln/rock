@@ -69,7 +69,7 @@ void test('the list: sections, one main button per card, badges in words, where 
   // 申し出の窓口への道（行き先は /noah/help#bot の節。宛先は本人が決めた物: docs/noah/mvp-launch.md の D8）。宛先が無い間は出さない事は、次の試験で見る。
   assert.notEqual(botNotice.NOAH_REPORT_CONTACT, null, '宛先は、本人が決めた物（2026-11-21）');
   assert.deepEqual(page.find('a', '報告・取り下げの申し出').map((node) => node.props.href), ['/noah/help#bot']);
-  assert.deepEqual(page.find('a', '自分の Mac で動かす Agent').map((node) => node.props.href), ['/noah/explore']);
+  assert.deepEqual(page.find('a', '自分の Mac で動かす Agent').map((node) => node.props.href), []);
   // 名前を押すと、詳細へ。系列の ID は query で渡す。
   assert.equal(page.nodes(of('Agent 1')).find((node) => node.type === 'a').props.href, `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`);
   // 未サインインの間は、本人の接続を読まない。相手へも送らない。
@@ -274,7 +274,7 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   connect.props.onClick();
   await page.flush();
   // サインインの画面へ移る。戻る先は、その Agent の詳細。置くのは、操作 ID と Agent の ID と時刻だけ。何も送らない。
-  assert.deepEqual(ui.visits, [`/account?returnTo=${encodeURIComponent(detailPath)}`]);
+  assert.deepEqual(ui.visits, [`/noah/account?returnTo=${encodeURIComponent(detailPath)}`]);
   const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
   assert.deepEqual(Object.keys(handoff).sort((a, b) => a.localeCompare(b)), ['agentId', 'at', 'id']);
   assert.deepEqual([handoff.agentId, handoff.at], [familyId(1), ui.time()]);
@@ -324,8 +324,8 @@ void test('a handoff is used only for its own agent, only once, and only for ten
   await page.flush();
   assert.deepEqual([posts(anonymous.ui).length, anonymous.ui.storage.has('noah-connect-handoff'), w.rows().length], [0, true, 0]);
   // 戻る先に渡すのは、/noah/ready で始まるパスだけ。
-  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/account?returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
-  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/account?returnTo=%2Fnoah%2Fready', path);
+  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/noah/account?returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
+  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/noah/account?returnTo=%2Fnoah%2Fready', path);
 });
 
 void test('the detail screen: where the input goes is shown before connecting; then the tools; then cutting', async (t) => {

@@ -79,6 +79,7 @@ export function screen(options = {}) {
     addEventListener() {}, removeEventListener() {},
     // 画面の幅（頼んだ画面の幅の区分に使う）。既定は、スマホの幅。
     innerWidth: options.width ?? 390,
+    setTimeout: context.setTimeout, clearTimeout: context.clearTimeout,
   };
 
   const loaded = new Map();

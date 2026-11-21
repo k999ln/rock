@@ -5,7 +5,7 @@ import { noahPublicOrigin } from '../lib/noah-public-origin.ts';
 export async function checkNoahDomain(origin, fetcher = fetch) {
   const base = noahPublicOrigin(origin);
   const checks = [
-    ['/noah', 'html'], ['/noah/ready', 'html'], ['/noah/activity', 'html'], ['/noah/data', 'html'],
+    ['/noah', 'html'], ['/noah/explore', 'html'], ['/noah/account', 'html'], ['/noah/ready', 'html'], ['/noah/activity', 'html'], ['/noah/data', 'html'],
     ['/api/noah/intake?limit=0', 'catalog'],
     ['/api/noah/connect', 'private'], ['/api/noah/ask', 'private'],
   ];

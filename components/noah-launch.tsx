@@ -249,7 +249,7 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
         <section className={styles.notice}>
           <p>自分のAgentとMacを管理するにはサインインしてください。</p>
           <Link
-            href={`/account?mode=login&returnTo=${encodeURIComponent(selected ? `/noah/activity?agent=${encodeURIComponent(selected)}#library` : '/noah/activity')}`}
+            href={`/noah/account?mode=login&returnTo=${encodeURIComponent(selected ? `/noah/activity?agent=${encodeURIComponent(selected)}#library` : '/noah/activity')}`}
           >
             サインイン
           </Link>

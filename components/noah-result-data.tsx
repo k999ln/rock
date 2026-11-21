@@ -112,7 +112,7 @@ export default function NoahResultData({ phoneResults }: { phoneResults?: ReactN
     <header><p>NOAH</p><h1>Agentの成果データ</h1><p>受け取った成果を探して、手元へ保存できます。選んだ成果だけをNoahの改善に提供することもできます。</p></header>
     {phoneResults}
     <p>ここにはWebに保存されたNoahのAgent成果を表示します。<Link href="/noah/outputs">ほかの保存した成果</Link> · <Link href="/noah/add/data">手元のファイルをまとめる</Link></p>
-    {error && <p role="alert">{error} <Link href="/account?returnTo=%2Fnoah%2Fdata">サインインを確認</Link></p>}
+    {error && <p role="alert">{error} <Link href="/noah/account?returnTo=%2Fnoah%2Fdata">サインインを確認</Link></p>}
     <div className={styles.actions}>
       <button disabled={pending} onClick={() => { void perform(() => load()); }}>読み直す</button>
       {page && <>

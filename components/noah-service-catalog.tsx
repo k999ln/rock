@@ -19,7 +19,7 @@ export default function NoahServiceCatalog({ compact = false, initialQuery = '' 
   const filtered = agents?.filter(a => `${a.name} ${a.summary}`.toLocaleLowerCase('ja-JP').includes(search));
   const shown = compact ? filtered?.slice(0, 3) : filtered;
   if (compact) return <div className={styles.suggestions} aria-label="使えるAgentの一覧">
-    {error ? <div role="alert"><p>一覧を取得できませんでした。</p><button onClick={() => { setError(''); setAgents(null); setRetry(n => n + 1); }}>再読み込み</button></div> : agents === null ? <output>読み込み中…</output> : shown?.length === 0 ? <p>公開中のAgentはまだありません。</p> : shown?.map(a => <Link key={a.id} href={`/noah/activity?${new URLSearchParams({ agent: a.id })}#library`} className={styles.suggestion}><span className={styles.suggestionAvatar}><Bot size={21} /></span><span><strong>{a.name}</strong><small>Macで使う · 接続条件を確認</small></span><ArrowUpRight size={16} /></Link>)}
+    {error ? <div role="alert"><p>一覧を取得できませんでした。</p><button onClick={() => { setError(''); setAgents(null); setRetry(n => n + 1); }}>再読み込み</button></div> : agents === null ? <output>読み込み中…</output> : shown?.length === 0 ? <p>公開中のAgentはまだありません。</p> : shown?.map(a => <Link key={a.id} href={`/noah/mac/activity?${new URLSearchParams({ agent: a.id })}#library`} className={styles.suggestion}><span className={styles.suggestionAvatar}><Bot size={21} /></span><span><strong>{a.name}</strong><small>Macで使う · 接続条件を確認</small></span><ArrowUpRight size={16} /></Link>)}
     <Link className={styles.suggestionMore} href="/noah/explore">さらに表示</Link>
   </div>;
   return <section aria-label="実行対応Agent" className={styles.catalog}>
@@ -32,7 +32,7 @@ export default function NoahServiceCatalog({ compact = false, initialQuery = '' 
       <div className={styles.agentGrid}>{shown?.map((a, i) => <article key={a.id} className={styles.agentCard}>
         <div className={styles.cardTop}><span className={styles.agentIcon} data-tone={i % 3}><Bot size={24} strokeWidth={1.6} /></span><span className={styles.badge}>{a.kind === 'release' ? '審査済み公開版' : '対応済みAgent'}</span></div>
         <h3>{a.name}</h3><p>{a.summary}</p>
-        <div className={styles.cardBottom}><span><Laptop size={14} />Macで使う</span><Link href={`/noah/activity?${new URLSearchParams({ agent: a.id })}#library`} aria-label={`${a.name}の接続条件を見る`}>接続条件を見る <ArrowUpRight size={16} /></Link></div>
+        <div className={styles.cardBottom}><span><Laptop size={14} />Macで使う</span><Link href={`/noah/mac/activity?${new URLSearchParams({ agent: a.id })}#library`} aria-label={`${a.name}の接続条件を見る`}>接続条件を見る <ArrowUpRight size={16} /></Link></div>
         {a.model === 'codex-account' && <p className={styles.registrationLink}><Link href={`/noah/registration?${new URLSearchParams({ agent: a.id })}`}>外部アカウントの登録を依頼する <ArrowUpRight size={13} /></Link></p>}
       </article>)}</div>
     </>}

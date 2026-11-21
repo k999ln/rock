@@ -140,7 +140,7 @@ export function NoahAgentSignals({
         <output className={styles.notice}>
           {notice}
           {auth && (
-            <Link href={`/account?returnTo=${encodeURIComponent(detailHref)}`}>
+            <Link href={`/noah/account?returnTo=${encodeURIComponent(detailHref)}`}>
               本人確認へ
             </Link>
           )}
@@ -381,7 +381,7 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
               href={
                 data.authenticated
                   ? '/noah/social#compose'
-                  : `/account?returnTo=${encodeURIComponent(`/noah/feedback/${id}#feedback`)}`
+                  : `/noah/account?returnTo=${encodeURIComponent(`/noah/feedback/${id}#feedback`)}`
               }
             >
               {data.authenticated

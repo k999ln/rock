@@ -324,7 +324,7 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.deepEqual([rowsOf(own).length, back(own)], [2, []]);
 });
 
-void test('the activity and data screens put the phone work list the page gives them inside their main, above their own lists', async () => {
+void test('standalone data shows remote work directly and legacy Mac wrappers preserve their inserted work list', async () => {
   // 頁（app/noah/activity・app/noah/data）が渡す物。部品は、こちらの一覧を読み込まない（受け取った物を置くだけ）。
   const marker = (name) => ({ type: 'aside', props: { id: name, children: name }, key: null });
   const document = { hidden: false, addEventListener() {}, removeEventListener() {} };
@@ -340,8 +340,7 @@ void test('the activity and data screens put the phone work list the page gives 
     '@/components/noah-work-list': { default: function NoahWorkList(props) { return { type: 'section', props: { 'data-list': JSON.stringify(props), children: [] }, key: null }; } },
   };
   const given = (page) => page.nodes().filter((node) => node.type === 'section').map((node) => JSON.parse(node.props['data-list']));
-  assert.deepEqual(given(await pageOf('app/noah/activity/page.tsx', stubs)), [{ ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' }]);
-  assert.deepEqual(given(await pageOf('app/noah/data/page.tsx', stubs)), [{ ownerScope: null, refresh: 0, only: 'succeeded', heading: '接続したAgentの成果' }]);
+  assert.deepEqual(given(await pageOf('app/noah/data/page.tsx', stubs)), [{ ownerScope: null, refresh: 0, only: 'succeeded', heading: '受け取った成果', showEmpty: true }]);
 
   // 部品の側: 受け取った物を、main の中、自分の一覧の上に置く。
   const placed = async (file, prop, modules) => {

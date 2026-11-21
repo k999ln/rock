@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- NoahをOS運用に依存しないサービスへ変更。`/noah`配下のOSランタイムを停止し、専用ログイン・スマホ向けAgent一覧・依頼/成果の主画面と読込失敗時の再試行を実装（[PR #358](https://github.com/k999ln/rock/pull/358)）。旧Mac導線は専用パスに保持。最新mainの棚・試行・評価・接続上限も取り込み済み。保存版152はこの変更を含まない旧候補。本番migration 0044〜0053・配備は未実施。
+
 - Noah の公開先 `https://avoado.si/noah` に向け、公開originの正規化・ローカル設定拒否・画面とAPIの読み取り確認を追加（[PR #358](https://github.com/k999ln/rock/pull/358)、task97）。本番は旧版で新しい画面/APIが404、接続表なし。公開用のSites保存版152を作成し（未配備）、migration 0044〜0049の適用と配備は本人確認待ち。認証付きAgentの接続は継続実装。
 
 - Noah のつなげる数を、料金ごとのカードの数にした（task 113。Opus / Noelle。本人指示「続き最後までやって」。[PR #357](https://github.com/k999ln/rock/pull/357)、#355 の上の積み上げ）。表 `noah_package_connections`（migration 0053）、`lib/noah-plan.ts`、`lib/noah-connect.ts` のつなぐ前の上限（無料 6・有料 50。数えるのはカードで、同じカードの中の 2 本目は増やさない。7 枚目は 409「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」。もうつないである物は切らない）、`/noah/ready` の見出し「6 個のうち 4 個」。**どの利用権を有料と見るかは本人が決めるまで置いていない（`NOAH_PLAN_SOURCE` は null）ので、切り替え `NOAH_PLAN_LIMITS` を開けても、今は全員 50 のまま。** 試験 5 本（`tests/noah-plan-limits.test.mjs`）。変えた所は `docs/noah/spec-110-shelf.md` の 17 章。本番の migration・配備・切り替えは、していない。

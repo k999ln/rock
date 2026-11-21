@@ -148,7 +148,7 @@ void test('running workspace keeps its own skip link usable without admitting ro
 });
 void test('root and pass-through layouts do not mount a second nav or change viewport/domain contracts', () => {
   const root = source('app/layout.tsx'); assert.match(root, /import '\.\/os-shell\.css'/);
-  assert.match(root, /viewportFit: 'cover'/); assert.match(root, /<CommunityOsRuntime \/>\{children\}/);
+  assert.match(root, /viewportFit: 'cover'/); assert.match(root, /<ApplicationRuntime \/>\{children\}/);
   for (const path of ['app/layout.tsx', 'app/os/layout.tsx', 'app/sky/layout.tsx'])
     assert.doesNotMatch(source(path), /<OsAppNavigation|<OsHeader/);
   assert.doesNotMatch(source('app/os-bottom-navigation.css'), /body\s*\{|\.home\s*\{|--os-bg\s*:/);

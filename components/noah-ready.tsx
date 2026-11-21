@@ -21,10 +21,10 @@ type Page = { state: 'loading' | 'ready' | 'closed' | 'error'; items: NoahReadyI
 const EMPTY: Page = { state: 'loading', items: [], nextCursor: null, counts: null, ownerScope: null, more: false };
 
 /** shelf: 一番上に出す棚（app/noah/ready/page.tsx が components/noah-shelf.tsx を渡す）。探している間は出さない。 */
-export default function NoahReady({ shelf }: { shelf?: ReactNode } = {}) {
+export default function NoahReady({ shelf, initialQuery = '' }: { shelf?: ReactNode; initialQuery?: string } = {}) {
   // 読んだ頁は、どの問い合わせ（探す語・絞り込み・やり直し）の物かと一緒に持つ。問い合わせが変わったら、届くまでは「読み込み中」。
   const [result, setResult] = useState<{ key: string; page: Page } | null>(null), [mineOf, setMineOf] = useState<{ scope: string; list: Mine[]; cards: Cards | null } | null>(null);
-  const [query, setQuery] = useState(''), [search, setSearch] = useState(''), [oneTap, setOneTap] = useState(false), [attempt, setAttempt] = useState(0);
+  const [query, setQuery] = useState(initialQuery.slice(0, 80)), [search, setSearch] = useState(''), [oneTap, setOneTap] = useState(false), [attempt, setAttempt] = useState(0);
   const epoch = useRef(0), sentinel = useRef<HTMLDivElement | null>(null);
   const key = `${search}\n${oneTap ? 1 : 0}\n${attempt}`;
   const page: Page = result?.key === key ? result.page : { ...EMPTY, ownerScope: result?.page.ownerScope ?? null };
@@ -156,7 +156,6 @@ export default function NoahReady({ shelf }: { shelf?: ReactNode } = {}) {
       {page.state === 'ready' && page.nextCursor && <div ref={sentinel} className={styles.more}><button type="button" className={styles.secondary} disabled={page.more} onClick={more}>{page.more ? '読み込んでいます…' : '続きを読む'}</button></div>}
 
       <footer className={styles.source}>
-        <p><Link href="/noah/explore">{NOAH_READY_TEXT.mac} →</Link></p>
         <p>{NOAH_READY_TEXT.source}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{NOAH_READY_TEXT.report} →</Link></>}</p>
       </footer>
     </>}

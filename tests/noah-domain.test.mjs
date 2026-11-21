@@ -10,7 +10,7 @@ void test('public checks use only same-origin reads and distinguish pages, catal
     if (url.includes('/api/')) return Response.json({ error: 'sign in' }, { status: 401 });
     return new Response('<html></html>', { headers: { 'content-type': 'text/html' } });
   });
-  assert.equal(checks.length, 7);
+  assert.equal(checks.length, 9);
   assert(checks.every(c => c.ok));
   assert(calls.every(([url, options]) => url.startsWith('https://avoado.si/') &&
     options.redirect === 'manual' && !options.method && !options.headers.Authorization));

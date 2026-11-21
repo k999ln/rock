@@ -1,8 +1,7 @@
-import NoahReadyEntry from '@/components/noah-ready-entry';
-import NoahServiceCatalog from '@/components/noah-service-catalog';
-import styles from '@/components/noah-service.module.css';
+import NoahReady from '@/components/noah-ready';
+import NoahShelf from '@/components/noah-shelf';
 export const metadata = { title: 'Agentを探す — Noah' };
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
   const params = await searchParams, query = typeof params.q === 'string' ? params.q.slice(0, 120) : '';
-  return <main className={styles.page}><header className={styles.exploreHeading}><span className={styles.eyebrow}>EXPLORE</span><h1>Agentを探す</h1><p>できることを確かめて、あなたの仕事に迎えよう。</p></header><NoahReadyEntry /><NoahServiceCatalog key={query} initialQuery={query} /></main>;
+  return <NoahReady key={query} initialQuery={query} shelf={<NoahShelf />} />;
 }

@@ -74,7 +74,7 @@ export const noahReadyDetailHref = (agentId: string) => `/noah/ready/agent?${new
 /** サインインの画面の場所。戻る先に渡すのは、/noah/ready で始まるパスだけ（それ以外は、一覧へ戻す）。 */
 export function noahReadyAccountHref(returnTo: string): string {
   const safe = /^\/noah\/ready(?:[/?#]|$)/.test(returnTo) && !/[\\\r\n]/.test(returnTo) && returnTo.length < 2000 ? returnTo : '/noah/ready';
-  return `/account?${new URLSearchParams({ returnTo: safe }).toString()}`;
+  return `/noah/account?${new URLSearchParams({ returnTo: safe }).toString()}`;
 }
 
 // ---------------------------------------------------------------------------

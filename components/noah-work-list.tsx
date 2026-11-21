@@ -21,7 +21,7 @@ import styles from './noah-ready.module.css';
 type Result = NonNullable<NoahAskItem['result']> & { note?: string };
 const FAST_MS = 1000, SLOW_MS = 3000, SLOW_AFTER_MS = 30_000;
 
-export default function NoahWorkList({ agentId, ownerScope, refresh, only, heading }: {
+export default function NoahWorkList({ agentId, ownerScope, refresh, only, heading, showEmpty = false }: {
   /**
    * 系列の ID。その Agent への依頼を、切った接続の分も含めて出す（切っても、受け取った成果は、ここに残る）。
    * 無い時は、本人の依頼を、Agent をまたいで出す（「実行中」「成果データ」の画面）。
@@ -35,16 +35,21 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
   only?: 'succeeded';
   /** 見出し。既定は「仕事」。 */
   heading?: string;
+  /** Standalone pages show loading, sign-in, failure and empty states instead of a blank page. */
+  showEmpty?: boolean;
 }) {
   const [asks, setAsks] = useState<NoahAskItem[]>([]), [results, setResults] = useState<Record<string, Result>>({}), [open, setOpen] = useState<Record<string, boolean>>({});
   const [raw, setRaw] = useState<Record<string, boolean>>({}), [now, setNow] = useState(() => Date.now()), [error, setError] = useState('');
   const [listScope, setListScope] = useState<string | null>(null);
+  const [listState, setListState] = useState<'loading' | 'ready' | 'signed-out' | 'error'>('loading'), [attempt, setAttempt] = useState(0);
+  const generation = useRef(0), seenScope = useRef<string | null>(null);
   const wanted = useRef(new Set<string>()), since = useRef<number | null>(null);
   const listUrl = agentId ? `/api/noah/ask?${new URLSearchParams({ agent: agentId }).toString()}` : '/api/noah/ask';
 
   // 一覧を読む。終わっていない依頼がある間だけ、続けて読む。
   const pending = asks.some((ask) => ask.finishedAt === undefined);
   useEffect(() => {
+    generation.current++; wanted.current.clear();
     let stopped = false, timer: ReturnType<typeof setTimeout> | null = null;
     const read = async () => {
       // 画面が裏の間は、読まない（戻った時に、次の回で読む）。
@@ -52,10 +57,22 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
       try {
         const response = await fetch(listUrl, { cache: 'no-store' });
         const body = await response.json() as { asks?: NoahAskItem[]; ownerScope?: string | null };
-        if (stopped || response.status !== 200 || !Array.isArray(body.asks)) return false;
+        if (stopped) return false;
+        if (response.status !== 200 || !Array.isArray(body.asks) || (ownerScope && body.ownerScope !== ownerScope)) {
+          setAsks([]); setResults({}); setListScope(null); seenScope.current = null; wanted.current.clear();
+          setListState(response.status === 401 ? 'signed-out' : 'error');
+          generation.current++;
+          return false;
+        }
+        const nextScope = typeof body.ownerScope === 'string' ? body.ownerScope : null;
+        if (nextScope !== seenScope.current) { generation.current++; setResults({}); wanted.current.clear(); seenScope.current = nextScope; }
+        setListState('ready');
         setAsks(body.asks); setListScope(typeof body.ownerScope === 'string' ? body.ownerScope : null); setNow(Date.now());
         return body.asks.some((ask) => ask.finishedAt === undefined);
-      } catch { return true; }
+      } catch {
+        if (!stopped) { setListState('error'); setAsks([]); setResults({}); setListScope(null); seenScope.current = null; wanted.current.clear(); generation.current++; }
+        return false;
+      }
     };
     const loop = async () => {
       const more = await read();
@@ -64,37 +81,29 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
       timer = setTimeout(() => { void loop(); }, Date.now() - since.current > SLOW_AFTER_MS ? SLOW_MS : FAST_MS);
     };
     void loop();
-    return () => { stopped = true; if (timer) clearTimeout(timer); };
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- This ref is a request generation, not a DOM node; cleanup invalidates outstanding reads.
+    return () => { stopped = true; generation.current++; if (timer) clearTimeout(timer); };
     // 読み直すのは、頼んだ時・つないだ時・切った時（refresh が変わる）。
-  }, [listUrl, refresh]);
+  }, [listUrl, refresh, ownerScope, attempt]);
 
   // 成果が出た依頼は、その文を 1 回だけ読む。
   useEffect(() => {
+    const epoch = generation.current;
     for (const ask of asks) {
       if (ask.state !== 'succeeded' || wanted.current.has(ask.id)) continue;
       wanted.current.add(ask.id);
       void fetch(`/api/noah/ask/${ask.id}`, { cache: 'no-store' }).then(async (response) => {
         const body = await response.json() as NoahAskItem;
+        if (generation.current !== epoch) return;
         if (response.status === 200 && body.result) setResults((old) => ({ ...old, [ask.id]: { ...body.result!, ...(body.note ? { note: body.note } : {}) } }));
         else wanted.current.delete(ask.id);
-      }).catch(() => { wanted.current.delete(ask.id); });
+      }).catch(() => { if (generation.current === epoch) wanted.current.delete(ask.id); });
     }
   }, [asks]);
 
-  const [bump, setBump] = useState(0);
-  // 「止める」を押した後は、状態が変わるまで読み続ける（上の読み直しを、もう一度始める）。
-  useEffect(() => {
-    if (bump === 0) return;
-    let stopped = false;
-    void fetch(listUrl, { cache: 'no-store' }).then(async (response) => {
-      const body = await response.json() as { asks?: NoahAskItem[] };
-      if (!stopped && response.status === 200 && Array.isArray(body.asks)) { setAsks(body.asks); setNow(Date.now()); }
-    }).catch(() => undefined);
-    return () => { stopped = true; };
-  }, [listUrl, bump]);
-
   async function stop(ask: NoahAskItem) {
     setError('');
+    const epoch = generation.current;
     const scope = ownerScope ?? listScope;
     try {
       const response = await fetch(`/api/noah/ask/${ask.id}`, {
@@ -102,16 +111,28 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
         body: JSON.stringify({ action: 'stop', revision: ask.revision }),
       });
       const body = await response.json() as NoahAskItem & { ask?: NoahAskItem; error?: string };
+      if (generation.current !== epoch) return;
       // 応答の今の状態を、その行へ映す（版が古かった時・もう終わっていた時は、添えられた今の行）。
       const next = response.status === 200 ? body : body.ask;
       if (next?.id) setAsks((old) => old.map((item) => (item.id === next.id ? { ...item, ...next } : item)));
       if (response.status !== 200 && response.status !== 409) setError(body.error ?? NOAH_ASK_TEXT.offline);
-    } catch { setError(NOAH_ASK_TEXT.offline); }
-    setBump((n) => n + 1);
+    } catch { if (generation.current === epoch) setError(NOAH_ASK_TEXT.offline); }
+    // Re-read through the same owner-checked loop, including after stopping the last job.
+    if (generation.current === epoch) setAttempt((n) => n + 1);
   }
 
-  const shown = only === 'succeeded' ? asks.filter((ask) => ask.state === 'succeeded') : asks;
-  if (shown.length === 0) return null;
+  const changedOwner = Boolean(ownerScope && listScope && ownerScope !== listScope);
+  const shown = changedOwner ? [] : only === 'succeeded' ? asks.filter((ask) => ask.state === 'succeeded') : asks;
+  if (shown.length === 0) {
+    if (!showEmpty) return null;
+    const retry = () => { setListState('loading'); setAttempt(n => n + 1); };
+    return <section className={styles.section} aria-live="polite">
+      {changedOwner || listState === 'loading' ? <output>読み込んでいます…</output>
+        : listState === 'signed-out' ? <><p>ログインすると、あなたの仕事と成果を確認できます。</p><Link className={styles.primary} href={`/noah/account?returnTo=${encodeURIComponent(only === 'succeeded' ? '/noah/data' : '/noah/activity')}`}>ログイン</Link><p><Link href="/noah/explore">Agentを見てみる</Link></p></>
+        : listState === 'error' ? <div role="alert"><p>仕事を読み込めませんでした。</p><button className={styles.secondary} onClick={retry}>読み直す</button></div>
+        : <><p>{only === 'succeeded' ? '成果はまだ届いていません。' : 'まだ仕事を頼んでいません。'}</p><Link className={styles.primary} href={only === 'succeeded' ? '/noah/activity' : '/noah/explore'}>{only === 'succeeded' ? '実行中を見る' : 'Agentを探す'}</Link></>}
+    </section>;
+  }
   return <section className={styles.section} aria-labelledby="noah-work-list">
     <h2 id="noah-work-list">{heading ?? NOAH_ASK_TEXT.work}{pending ? <small>進んでいます</small> : null}</h2>
     {error && <p className={styles.reason} role="alert">{error}</p>}
