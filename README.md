@@ -310,6 +310,8 @@ SIM/eSIMはRockstarOS導入時の回線に使います。対象機種と署名�
 
 eSIMは2種類で設計しています。スマホでは今の回線の横に入る2本目の回線（SMSなし）で、主な役目は契約と入口です。iPhoneはURL 1つでeSIMを追加し、その後にNoah・Eveを開きます。miiのHub・専用端末・車では、自社クラウドへ届く唯一の回線であり、SIMで端末を確かめる鍵にもなります。OS本体とAgentはSIMに入りません。「eSIMつき」と「カードだけ」を同じ値段・同じ機能で出し、解約率を比べる設計です。[自社クラウドの設計](docs/compute-placement.md)
 
+N1のSIM確認APIは、SORACOM Endorseの署名済みトークンを検証し、サインイン済みのaccountの紐付けと照合します。照合できない場合はパスキーによる本人確認に戻ります。[SIM確認APIの設定と使い方](codex/tasks/102-sim-proof-endorse.md)
+
 Cloud agentの実行前に単価・見積りと予算上限を確認し、実行後に項目別の使用量を照合します。商品料金、通信料、si使用料、外部実費、利用者自身の鍵での費用は個別に扱います。回線発行・本番決済は各providerとの接続試験が残っています。[SIM/eSIM設計](docs/structure/03-esim.md) · [料金と使用量](docs/sky-billing.md) · [導入試作](toolkits/esim-bootstrap/README.md)
 
 </details>

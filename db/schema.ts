@@ -1512,6 +1512,21 @@ export const esimProviderOrders = sqliteTable(
   ],
 );
 
+export const simBindings = sqliteTable('sim_bindings', {
+  id: text('id').primaryKey().notNull(),
+  ownerUserId: text('owner_user_id').notNull(),
+  simDigest: text('sim_digest').notNull(),
+  deviceDigest: text('device_digest').notNull(),
+  boundAt: integer('bound_at').notNull(),
+  revokedAt: integer('revoked_at'),
+}, (table) => [
+  uniqueIndex('sim_bindings_active_sim').on(table.simDigest).where(sql`${table.revokedAt} IS NULL`),
+  index('sim_bindings_sim_revoked').on(table.simDigest, table.revokedAt),
+  check('sim_bindings_sim_digest_check', sql`length(${table.simDigest}) = 64`),
+  check('sim_bindings_device_digest_check', sql`length(${table.deviceDigest}) = 64`),
+  check('sim_bindings_revoke_time_check', sql`${table.revokedAt} IS NULL OR ${table.revokedAt} >= ${table.boundAt}`),
+]);
+
 export const esimDeviceInstallChallenges = sqliteTable(
   'esim_device_install_challenges',
   {

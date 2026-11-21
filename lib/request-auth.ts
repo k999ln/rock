@@ -100,12 +100,16 @@ export async function requestGatewayUser(request: Request): Promise<string> {
   return pseudonymousEmailId(email);
 }
 
-export async function requestUser(request: Request): Promise<string> {
+export async function requestUser(
+  request: Request,
+  { allowEsimCloudIdentity = true, allowDeviceSession = true } = {},
+): Promise<string> {
   const authorization = request.headers.get('authorization') ?? '';
   if (
     authorization.startsWith('Bearer rock_esim_') ||
     authorization.startsWith('RockEsimProof')
   ) {
+    if (!allowEsimCloudIdentity) throw new Error('UNAUTHORIZED');
     const [{ env }, access] = await Promise.all([
       import('cloudflare:workers'),
       import('./esim-cloud-access.ts'),
@@ -115,6 +119,7 @@ export async function requestUser(request: Request): Promise<string> {
     return access.authenticateEsimCloudRequest(request, db, env);
   }
   if (authorization.startsWith('Bearer rock_session_')) {
+    if (!allowDeviceSession) throw new Error('UNAUTHORIZED');
     const [runtime, sessions] = await Promise.all([
       import('cloudflare:workers'),
       import('./rockstar-device-link.ts'),
@@ -168,7 +173,7 @@ export async function requestUser(request: Request): Promise<string> {
       throw error;
     if (error.message === 'ORIGIN') throw error;
   }
-  if (request.headers.get('cookie')?.includes('rock_esim_access=')) {
+  if (allowEsimCloudIdentity && request.headers.get('cookie')?.includes('rock_esim_access=')) {
     const [{ env }, access] = await Promise.all([
       import('cloudflare:workers'),
       import('./esim-cloud-access.ts'),
