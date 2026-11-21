@@ -144,3 +144,8 @@
 eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼・成果の既存本人APIへ適用。既存の支払済み注文・設置証明・端末との結び付き・現行審査・失効の検証は維持する。既存キーへ権限を自動追加せず、課金・掲載管理・認証鍵管理への権限も追加しない。SIM番号やIPアドレスを本人と見なさない。公開env15にeSIM連携設定はなく、本番eSIMでの無登録開始は未受入。契約・発行・支払・本番移行はこの変更では行わない。
 
 成果UIは公開165（source `25d9bdbaf8de0b3a4da828cedeb53d8eb81da7b8`、deployment `appgdep_6b01e954c6188191bfd3d966fcca9253`、env15）へ反映。独立確認担当が390pxでwhoamiカード・一覧14件、320px横溢れなしを確認。PNG実体の保存はローカルbyte一致の証拠で、実機ギャラリー保存は未受入。Pixel 10 / Android 17はWi-Fi経由で接続し、既存の長い消灯設定と給電中の画面保持を確認。端末は未ログインで、本人の訂正を受け新規登録・端末へのアカウント追加は進めていない。
+
+
+公開167の受領（2026-11-22、PR #377）: source `787a2102c5c96e507bb2f9f8700af9aa0e926bfe`、deployment `appgdep_6b01ed1ab6748191aa5ceab9d71b1d47`、env15。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 全工程成功（4,829 pass・4 skip・0 fail、計4,833、仕事API1,918 assertions、CSV385 assertions）。初回は旧ログイン文言の期待1件が失敗し、接続確認への変更と元成果へのreturnToを検証する形へ修正後に全体を再実行。
+
+公開Chromeの390pxで新規フォーム0・横幅390px内、未設定表示、再確認、折り畳まれた既存ログインへの遷移、新規登録タブなしを確認。認証済みIABでは接続確認から元のwhoami成果へ自動復帰。公開9項目と未認証のsession API 401 / connected:false / esimConfigured:falseも確認。これらは公開Webと既存アカウントの受入で、実eSIMの発行・新しい端末への本人情報引継ぎの合格ではない。実eSIM設定・別利用者の本番一周・実機画像保存が残る。
