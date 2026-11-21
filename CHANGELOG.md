@@ -8,6 +8,10 @@
 
 - Noah の棚とカード（task 110）を実装した（Opus / Noelle。本人指示「続き最後までやって」。[PR #353](https://github.com/k999ln/rock/pull/353)、#343 の上の積み上げ）。表 `noah_packages`・`noah_package_steps`（migration 0050。DDL 案から字を変えずに移した）、`lib/noah-shelf.ts`（型契約を関数ごと移した）・`lib/noah-shelf-store.ts`・`GET`/`POST /api/noah/shelf`、`/noah/ready` の一番上の棚（「稼ぐ・仕事を省く」「教育」「暮らし」。探している間は出さない）、`/noah/review` の「棚」の節。載るのは、審査者が自分で動かして成果を確かめた、今動く相手のサーバーの道具のカードだけ（読むたびに今の事実で判定。相手が止まる・道具が変わると、次の握手の後に外れ、理由が運営の画面に出る）。巡回の合図の中で 10 分に 1 回まで見直し、載せたカードの系列の握手を 24 時間以内へ早める。カードから開いた詳細は、その道具を最初から選ぶ。試験 28 本（`tests/noah-shelf.test.mjs` 17・`tests/noah-shelf-store.test.mjs` 11）。仕様から変えた所は `docs/noah/spec-110-shelf.md` の 15 章。**最初の 12 枚の案はローンチの範囲の外なので、棚はまだ空。** 本番の migration・配備・切り替え（`NOAH_SHELF_PUBLIC`）は、していない。
 
+- スマホでつなぐ Agent（台帳の Agent）の一覧のカードと詳細に、利用人数（「n 人が利用」。接続して頼み、成果が出た人を 1 人 1 回）を出した（Opus / Noelle。本人の回答「スマホの Agent に利用人数を出す」。[PR #356](https://github.com/k999ln/rock/pull/356)、task74）。Codex の利用人数（Mac の Agent）とは別の集まりなので混ぜない。migration なし、D1 への往復は一覧で増やさない。
+
+- Noah の「実行中」と「成果データ」に、スマホから接続した Agent へ頼んだ仕事と成果を出した（Opus / Noelle。本人の回答「#349 にしか無い所は、後から上に小さく足す」。[PR #352](https://github.com/k999ln/rock/pull/352)、task87）。`GET /api/noah/ask` の行に Agent を添え、`components/noah-work-list.tsx` を Agent をまたげる形にし、頁から Codex の画面へ渡す。成果データの書き出し・運営への提供には、まだ載せていない（本人が決める）。
+
 - Noah MVP L1〜L9 の PR を、今の main と合わせて 1 本にまとめた（Opus / Noelle。本人の回答「Claude の L4〜L9 を残す」「緑になったらマージして」。[PR #350](https://github.com/k999ln/rock/pull/350)）。README・CHANGELOG・task 一覧の衝突を、両側を残して解いた（README は main の作り直した構成を土台に、積み上げの 14 段落を字を変えずに写し、食い違う 4 か所だけ直した）。取り下げ・報告の窓口（D8）を、本人の決めた smash@avoado.si にして、`/noah/help#bot` の節と、一覧・詳細からの道を出した（`lib/noah-bot-notice.ts`）。本番の migration・配備・切り替えは、していない。
 
 - READMEで差し替え済みのmiiの帰宅画像とNoahの検索GIFを `docs/assets/readme/` から削除（[PR #348](https://github.com/k999ln/rock/pull/348)、task 99）。

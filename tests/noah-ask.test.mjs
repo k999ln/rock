@@ -9,6 +9,8 @@ import { NOAH_ASK_STOP_MESSAGES } from '../lib/noah-ask-store.ts';
 import { NOAH_HOST_BUSY, noahToolSha256 } from '../lib/noah-form.ts';
 import { NOAH_REMOTE_TEMPLATE } from '../lib/noah-remote-work.ts';
 import { applyWorkCommand, normalizeWorkJob } from '../lib/workflow.ts';
+import { ownerScopeFor } from '../lib/owner-intent.ts';
+import { createIntakeApi } from '../lib/noah-intake-api.ts';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, uuid, rpcs, handshakes } from './fixtures/noah/connect-world.mjs';
 
@@ -512,4 +514,81 @@ void test('the work of one agent: asks of cut connections stay listed with the n
   assert.equal((await w.as(null).asksOf(familyId(1))).status, 401);
   // 切り替えを閉じていても、本人の記録は読める。
   assert.equal((await w.as('owner-a', { env: {} }).asksOf(familyId(1))).body.asks.length, 3);
+});
+
+void test('the number of people who used an agent: one per person whose ask returned a result, cut connections included; failures and other agents do not count', async (t) => {
+  // 本人の決め（2026-11-21）: スマホの Agent の一覧と詳細に、利用人数を出す。数えるのは、接続して頼み、成果が出た人（1 人 1 回）。
+  const definition = lookup();
+  let fail = false;
+  const server = mcpServer({ tools: [definition], call: () => (fail ? { isError: true, content: [{ type: 'text', text: 'No data yet.' }] } : { content: [{ type: 'text', text: 'one' }] }) });
+  const other = mcpServer({ tools: [definition], call: () => ({ content: [{ type: 'text', text: 'two' }] }) });
+  const { w, a, connectionId } = await connected(t, server, { servers: { [hostOf(2)]: other } });
+  const intake = (who, query = '') => who.send(createIntakeApi(who.deps), 'GET', `/api/noah/intake?${query}`);
+  const usersOf = async (who) => Object.fromEntries((await intake(who)).body.items.map((item) => [item.id, item.users]));
+  const ask = async (who, n, connection) => { w.f.advance(1_000); assert.equal((await who.ask({ id: uuid(n), connectionId: connection, form: await form(definition, { query: 'q' }) })).status, 202); };
+  assert.deepEqual(await usersOf(a), { [familyId(1)]: 0, [familyId(2)]: 0 });
+
+  // owner-a: Agent 1 へ 2 回（成果）。切って、つなぎ直して、もう 1 回（成果）。→ 1 人のまま。
+  await ask(a, 10, connectionId);
+  await ask(a, 11, connectionId);
+  assert.equal((await a.act(connectionId, 'disconnect', (await a.get(connectionId)).body.revision)).status, 200);
+  w.f.advance(1_000);
+  assert.equal((await a.connect(familyId(1), uuid(2))).body.state, 'connected');
+  await ask(a, 12, uuid(2));
+  // owner-b: Agent 1 へ頼んだが、できなかった。→ 数えない。
+  const b = w.as('owner-b');
+  assert.equal((await b.connect(familyId(1), uuid(3))).body.state, 'connected');
+  fail = true;
+  await ask(b, 13, uuid(3));
+  fail = false;
+  assert.equal(w.asked('id=?', uuid(13))[0].state, 'failed');
+  // owner-c: Agent 1 へ（成果）、Agent 2 へも（成果）。owner-d: つないだだけ（頼んでいない）。
+  const c = w.as('owner-c'), d = w.as('owner-d');
+  assert.equal((await c.connect(familyId(1), uuid(4))).body.state, 'connected');
+  await ask(c, 14, uuid(4));
+  assert.equal((await c.connect(familyId(2), uuid(5))).body.state, 'connected');
+  await ask(c, 15, uuid(5));
+  assert.equal((await d.connect(familyId(2), uuid(6))).body.state, 'connected');
+  // owner-c は、Agent 2 との接続を切る。成果が出た後に切った人も、数えたまま。
+  assert.equal((await c.act(uuid(5), 'disconnect', (await c.get(uuid(5))).body.revision)).status, 200);
+
+  // 一覧（未サインインの人にも、同じ数が出る）と、詳細。
+  for (const who of [a, w.as(null)]) assert.deepEqual(await usersOf(who), { [familyId(1)]: 2, [familyId(2)]: 1 });
+  assert.equal((await intake(a, `id=${encodeURIComponent(familyId(1))}`)).body.users, 2);
+  assert.equal((await intake(w.as(null), `id=${encodeURIComponent(familyId(2))}`)).body.users, 1);
+  // 一覧は、行と利用人数を 1 回の batch で読む（D1 への往復を増やさない: batch の外の問い合わせは、前と同じ 3 つ。並べる順の 2 つと、件数）。
+  const batches = w.f.batches.length, queries = w.f.queries.length;
+  await intake(a);
+  const batch = w.f.batches.at(-1);
+  assert.deepEqual([w.f.batches.length - batches, batch.length, batch[1].includes('COUNT(DISTINCT c.owner_id)'), w.f.queries.length - queries - batch.length], [1, 2, true, 3]);
+});
+
+void test('every list of asks names the agent of each ask; all of one person\'s asks across agents come in one D1 round trip', async (t) => {
+  // 「実行中」「成果データ」の画面が読む入口（GET /api/noah/ask）。Agent をまたいで並べるので、行から、その Agent の詳細へ戻れるように、系列の ID を添える。
+  const definition = lookup();
+  const server = mcpServer({ tools: [definition], call: () => ({ content: [{ type: 'text', text: 'one' }] }) });
+  const other = mcpServer({ tools: [definition], call: () => ({ content: [{ type: 'text', text: 'two' }] }) });
+  const { w, a, connectionId } = await connected(t, server, { servers: { [hostOf(2)]: other } });
+  const ask = async (who, n, connection) => { w.f.advance(1_000); assert.equal((await who.ask({ id: uuid(n), connectionId: connection, form: await form(definition, { query: 'q' }) })).status, 202); };
+  await ask(a, 10, connectionId);
+  assert.equal((await a.connect(familyId(2), uuid(2))).body.state, 'connected');
+  await ask(a, 11, uuid(2));
+  // 切った接続の依頼も、どの Agent への物か分かる。
+  assert.equal((await a.act(connectionId, 'disconnect', (await a.get(connectionId)).body.revision)).status, 200);
+  const b = w.as('owner-b');
+  assert.equal((await b.connect(familyId(1), uuid(3))).body.state, 'connected');
+  await ask(b, 12, uuid(3));
+
+  const queries = w.f.queries.length;
+  const all = await a.asks();
+  assert.equal(w.f.queries.length - queries, 1, 'D1 への往復は 1');
+  assert.deepEqual([all.status, all.body.asks.map((item) => [item.id, item.agentId, item.state])], [200, [[uuid(11), familyId(2), 'succeeded'], [uuid(10), familyId(1), 'succeeded']]]);
+  assert.equal(all.body.ownerScope, await ownerScopeFor('owner-a'), '止める時に添える本人の印も、一覧と一緒に返る');
+  // Agent で絞った時・接続で絞った時も、同じく添える。1 件を読む時は、添えない（読む側が、もう知っている）。
+  assert.deepEqual((await a.asksOf(familyId(1))).body.asks.map((item) => item.agentId), [familyId(1)]);
+  assert.deepEqual((await a.asks(uuid(2))).body.asks.map((item) => item.agentId), [familyId(2)]);
+  assert.equal('agentId' in (await a.askGet(uuid(10))).body, false);
+  // 別の人の依頼は、混ざらない。
+  assert.deepEqual((await b.asks()).body.asks.map((item) => [item.id, item.agentId]), [[uuid(12), familyId(1)]]);
+  assert.equal((await w.as(null).asks()).status, 401);
 });

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import type { ReactNode } from 'react';
 import styles from './noah-agent-catalog.module.css';
 type Agent = {
   id: string;
@@ -44,7 +45,8 @@ const status: Record<string, string> = {
   cancelled: '停止済み',
   unknown: '結果不明・再実行なし',
 };
-export default function NoahLaunch() {
+/** `phoneWork`: スマホから、接続した Agent（相手のサーバー）へ頼んだ仕事の一覧（頁が渡す。無い人には何も出ない。docs/noah/spec-87-tool-agent.md の 11.9）。 */
+export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}) {
   const params = useSearchParams(),
     [compose, setCompose] = useState(
       Boolean(params.get('agent')) || params.get('compose') === '1',
@@ -461,6 +463,7 @@ export default function NoahLaunch() {
           </div>
         </section>
       )}
+      {phoneWork}
       <section className={styles.activityList} id="work">
         <h2>仕事と成果</h2>
         {state && !state.commands.length && (

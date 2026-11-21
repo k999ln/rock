@@ -137,6 +137,8 @@
 .page .result a,.page .outline a { color:#7546c8; text-decoration:underline; text-underline-offset:3px; }
 .result a small,.outline a small { color:#71717a; }
 .workActions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.workAgent { margin:6px 0 0; font-size:13px; }
+.workAgent a { display:inline-flex; align-items:center; min-height:44px; color:inherit; }
 
 .more { display:flex; justify-content:center; margin:26px 0 0; }
 .source { margin-top:40px; padding-top:18px; border-top:1px solid #ececef; color:#71717a; font-size:12px; line-height:1.9; }

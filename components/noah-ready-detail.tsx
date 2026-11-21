@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
-import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahAsk from './noah-ask';
 import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
@@ -57,7 +57,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
   const { detail } = loaded, signedIn = detail.ownerScope !== null;
   const live = connection && connection.state !== 'disconnected' ? connection : null;
   const checked = noahCheckedText(detail.checkedAt);
-  const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, noahPriceText(detail.connect.price), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
+  const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, noahPriceText(detail.connect.price), noahUsersText(detail.users), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
 
   async function cut(current: NoahReadyConnection) {
     if (cutting) return;
