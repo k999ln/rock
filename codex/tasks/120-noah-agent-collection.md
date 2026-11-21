@@ -66,3 +66,21 @@ Macの常駐は停止し、launchdの永続disableも確認。55,058,432バイ�
 実ブラウザのTinyFishはUSER_NOT_LOGGED_INで未実行。今回の試験台はReact部品の文言・イベント・API要求を確認するもので、CSS・実DOM・画面の描画は検証しない。390px/1280pxの実表示、キーボードフォーカス、スクリーンリーダー、ブラウザのhydration/consoleは未検証として残す。
 
 [PR #384](https://github.com/k999ln/rock/pull/384)。修正後の同じ操作試験11/11成功、掲載関連10試験・公開ソースの既存ホーム切替を含む14試験成功。typecheck/lint成功。実ブラウザの未検証範囲は上記のとおり。
+
+## 実Chromeでのスマホ表示・タップ試験（2026-11-22、PR #388）
+
+実際のGoogle Chrome 157.0.8103.79を独立した一時プロファイルで起動し、Playwrightのスマホ表示・touch入力で公開URLを操作。320/360/390/430×844とPC 1280×900を確認した。端末実機・Safari・スクリーンリーダーの試験とは区別する。
+
+再現した問題と修正:
+- ホームから「Semantic Shift」を検索すると「使えるAgent」だけを調べ、掲載済みのHugging FaceのAgentが見つからなかった。検索先を全出典のカタログに変更した。
+- メニュー34px幅、保存30px高、その他の操作28px、外部評価32px、検索クリア約26×32px等の小さい操作範囲を44px以上に拡張。横スクロール・2列表示は保持した。
+
+公開185（source `6f5e9f832a5b68dc23e9e84d559c8612b86f4e0e`、deployment `appgdep_6b0212a7f8b88191a7da30ccf12e17aa`）で再確認。並行更新の外部評価バッジと共有機能を保全して公開した。本番D1 migrationなし。
+
+- 5画面幅で26項目成功。横はみ出し・カード重なりなし、メニューと保存先/コメントの開閉、横スワイプ・HF絞り込み、外部リンク、検索と空結果からのクリア、未捕捉JSエラーなしを確認。
+- HF Semantic Shift Backendのいいね3件を確認。王冠やコメントの投稿は行わず、書き込みAPIをブラウザ試験で遮断した（匿名利用開始のsession APIのみ許可）。
+- 390pxで503応答を一度返す試験を行い、再試行から復旧。追加読み込みを20件→40件で別途確認し、試験の件数待ちも明示した。
+- 関連30試験、typecheck、変更ファイルのoxlint、Sites build成功。
+- `npm run verify` は再実行しても `release-readiness: Web security policy: local production response実測またはinput hashが不一致` で停止。全体検証の成功とはしない。前提のPR #386 とこの不一致が未解決のため #388 はdraft、main未統合。
+
+再実行: `scripts/test-noah-mobile-browser.mjs`。`playwright-core@1.65.1`は一時ディレクトリにインストールし、`NOAH_PLAYWRIGHT_PACKAGE`へそのindex.js、`NOAH_CHROME_PATH`へChrome実行ファイルを指定。既定は公開URL・上記5サイズ。`NOAH_TEST_WIDTH=390`で一つの幅を再試験できる。`NOAH_TEST_OUTPUT`へスクリーンショットとreport.jsonを保存する。今回の記録は `/tmp/noah-mobile-ux-20261122/published/`、追加読み込みの再確認は同ディレクトリの `pagination-final/`。

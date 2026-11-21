@@ -130,4 +130,4 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
-| 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ トップ掲載・クラウド移行 #380／UX修正 #384（実ブラウザ検証はtask本文。Xはキー待ち） |
+| 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ トップ掲載・クラウド移行 #380／UX修正 #384／スマホ実ブラウザ修正 #388（検証結果はtask本文。Xはキー待ち） |

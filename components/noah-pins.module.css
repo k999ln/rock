@@ -103,8 +103,8 @@
 .pin .meta { font-size:12px; color:#73717c; }
 .pin .save { opacity:1; }
 .sources { margin:4px; font-size:12px; color:#625477; }
-.sources summary { cursor:pointer; min-height:44px; display:flex; align-items:center; }
-.sources a { display:flex; align-items:center; min-height:44px; padding:5px 0; color:inherit; overflow-wrap:anywhere; }
+.sources summary { cursor:pointer; min-height:32px; display:flex; align-items:center; }
+.sources a { display:block; padding:5px 0; color:inherit; overflow-wrap:anywhere; }
 .feedbackSheet { position:fixed; margin:auto; width:min(660px,calc(100vw - 24px)); max-height:85svh; padding:16px; border:0; border-radius:20px; }
 .feedbackSheet::backdrop { background:#15111b66; }
 .closeFeedback { position:sticky; top:0; display:grid; place-items:center; margin-left:auto; width:44px; height:44px; border:0; background:#f4f1f8; border-radius:50%; z-index:1; }
@@ -116,3 +116,6 @@
 .feedHeading span { color:#76717f; font-size:14px; }
 
 .recovery { min-height:44px; padding:8px 14px; margin-bottom:12px; border:1px solid #e7e1ef; border-radius:22px; background:#fff; color:#625477; font:inherit; cursor:pointer; }
+
+.sources summary, .sources a { min-height:44px; }
+.sources a { display:flex; align-items:center; }
