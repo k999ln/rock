@@ -1,8 +1,91 @@
-# 計算の置き場所 — どこで動かし、いつサーバーを持つか（2026-11-21）
+# 自社クラウドの設計と、計算の置き場所（2026-11-21）
 
 決めの出典は [07](structure/07-decisions-from-minutes.md) の 2026-11-21。eSIM の決めは [03 の 0 章](structure/03-esim.md)。料率・月額の候補は [05](structure/05-business.md) のまま変えない。
 
-## 1. 一言で
+## 0. 自社クラウドの設計案（本人が選ぶ。2026-11-21 22:31 の本人の言葉「自社のクラウドをどう回すかと設計はどうするのかがまだ決まってない」）
+
+### 0.1 自社クラウドが利用者に出す物
+
+「自社クラウド」は、avokado が利用者に出す 1 つのクラウドのこと。iCloud と同じ役を持つ（[02 §1](structure/02-rockstaros.md)）。中身は次の 9 つ。
+
+| # | 出す物 | 今ある物 |
+| --- | --- | --- |
+| 1 | account（本人・パスキー・端末と eSIM の束縛） | `lib/rockstar-account.ts`、`lib/jennifer-passkey.ts`、`lib/rockstar-entitlement-*.ts` |
+| 2 | 仕事の台帳（Work・Job・Receipt、進行、停止） | `lib/workflow.ts`、`lib/work-*.ts`、Workflows |
+| 3 | 鍵と許可（Broker）・財布（Wallet）・請求 | `lib/a2a-broker-*.ts`、`lib/wallet*.ts`、`services/sky-billing` |
+| 4 | Noah の台帳（取り込み・握手・巡回・タイムライン） | task 85〜88、`services/noah-patrol-wake` |
+| 5 | 保存（成果・ファイル・Memory）と、端末をまたぐ続き | D1・R2 |
+| 6 | 実行（仕事ごとの隔離環境・常駐・中のブラウザ） | Mac の runner、`services/noah-test-runtime` |
+| 7 | モデル（中継・自前のモデル） | Mac のローカルモデル。中継の `services/noah-relay` は計画だけ（[mvp-launch.md](noah/mvp-launch.md) D3） |
+| 8 | 回線の終端（eSIM の通信が入る所） | 無し |
+| 9 | 運用（見張り・障害・更新・費用の上限・バックアップ） | `docs/sky-cloud-operations-runbook.md` |
+
+### 0.2 4 つの案
+
+| | 案 A Cloudflare だけ | **案 B Cloudflare ＋ 黒殿（既定）** | 案 C 自前クラウド（黒殿が本体） | 案 D 家の端末が本体 |
+| --- | --- | --- | --- | --- |
+| 1〜5 | Cloudflare（Workers・D1・Durable Objects・Workflows・R2） | Cloudflare | 黒殿（PostgreSQL を 2 台で複製、MinIO、自前の認証） | 雲は待ち合わせ・バックアップ・請求だけ。中身は各家の Hub・Mac |
+| 6 実行 | Cloudflare Containers（単発だけ。常駐は家の端末へ） | 単発は Cloudflare。常駐・重い物は黒殿 | 黒殿（k3s ＋ Firecracker か Kata で仕事ごとに VM） | 各家の Hub・Mac。端末が無い人は案 B の黒殿 |
+| 7 モデル | Workers AI | Workers AI → 引き金の後に黒殿（vLLM か SGLang） | 黒殿 | Hub の中の小さいモデル ＋ 黒殿 |
+| 8 回線の終端 | N1 | N1 → Hub が増えたら N2 | N2 | N1・N2 |
+| 黒殿とのつなぎ | 無し | 黒殿から外向きだけ（Cloudflare Tunnel。Workers からは Workers VPC で呼ぶ）。runner は今と同じ「取りに来る」 | Cloudflare は DNS・WAF・CDN・Tunnel だけ | 同左 |
+| 月の固定費 | $5 | $5 ＋ 黒殿の電気代（1 ノード満載で 2.7〜3.4 万円） | 黒殿の電気代 ＋ 回線 ＋ 2 か所目（災害対策） | 雲はほぼ 0 |
+| 運用の重さ | ほぼ 0 | 黒殿の機械を見る人が要る | 24 時間の障害対応・更新・故障の交換。2 人では回らない | 端末の更新の配布と故障の窓口 |
+| 強い所 | 0 人なら 0 円。今のコードのまま | GPU と常駐が安い。落ちたら案 A へ戻せる | データ・鍵・モデルを全部自社で握れる。「日本の中だけ」「抜かれない」と言える | 雲の原価が人数に比例しない。プライバシーが一番強い。mii の売りになる |
+| 弱い所 | GPU なし。常駐が 1 体月 $7.9。日本だけに置けない（D1 の jurisdiction は eu・us・fedramp だけ。apac は hint で保証なし） | 黒殿が 1 か所（冗長なし） | 今のコード（D1・Workers・Workflows 前提）の移植が大きい。2 か所目が要る | mii が出るまで成り立たない |
+| 向く時期 | 0〜500 人 | 500〜2 万人 | 2 万人を超えた後か、「データを外に出さない」が売り物になる時（企業・医療・教育） | mii の出荷後 |
+
+**提案: A（今）→ B（4 章の引き金）→ D（mii の出荷に合わせて）。C は、主権が売り物になる部分（企業の利用者、本人の鍵）だけ取り入れる。** 本人が C を最初から選ぶなら、移植の task を先に書く。
+
+### 0.3 回線の終端（eSIM の通信の入り方）
+
+| 案 | 道 | 費用（SORACOM の定価、2026-11-21） | 向く物 |
+| --- | --- | --- | --- |
+| **N1 インターネット経由 ＋ SIM の証明（既定）** | eSIM → SORACOM → インターネット → Workers。SIM の証明は Endorse（SORACOM の鍵で署名したトークン。IMSI・IMEI 入り。取った後は Wi-Fi でも使える）か Beam（HTTPS への変換） | Beam は 1 リクエスト 0.00099 円、月 10 万リクエストまで無料（転送先へのリクエストも 1 と数える）。Endorse の料金は未確認 | スマホの型 S、少ない数の Hub |
+| N2 閉域（インターネットを通らない） | eSIM → SORACOM VPG → IPsec（Door）→ 黒殿 | VPG Type-F（日本）1 時間 60.5 円 ≒ 月 45,012 円 ＋ Door 1 時間 12.1 円 ≒ 月 9,002 円 ＝ **月 約 5.4 万円の固定**。VPG を通る Beam は無料 | Hub が多くなった時、企業・施設の利用者 |
+| N3 自社 MVNO（自社のコア網） | 自社で加入者の管理と網の出口を持つ | 大きな投資。今は見積もらない | やらない |
+
+### 0.4 本人の鍵で暗号化する（案 K。どの案にも足せる）
+
+成果・Memory・ファイルを、本人のパスキーから作った鍵（WebAuthn の PRF 拡張）で暗号化する。運営は中身を読めない。
+
+- **使える所**: iOS・macOS の Safari 18 以降（iCloud キーチェーン）、Android の Chrome（Google パスワードマネージャー）、Windows Hello（2026-02 の更新以降）。
+- **使えない所**: 他社のパスワード管理（Bitwarden など）は PRF の値を返さないことが多い。
+- PRF は「あれば使う」扱いにし、無い人には復旧コードの鍵を出す。
+- **引き換え**: 推薦や検索に中身を使えない。鍵と復旧コードを両方無くすと戻せない。
+- 提案: 最初は Memory と成果のファイルだけ。仕事の状態と請求は運営が読める形のまま。
+
+### 0.5 回し方（運用の設計）
+
+| 項目 | 決め（案） |
+| --- | --- |
+| 体制 | 人は 2 人（ノエル・かいや）。見張りは Spider（読むだけ）、判定は Jev、手順書の実行は Codex か Claude。壊す操作・お金・本番の DB は人が承認する（AGENTS.md §6） |
+| 約束（SLO） | 受付の API は月 99.5%（月 3.6 時間まで止まってよい）。最初の成果は 95% が 30 秒以内。預かったデータの消失は 0 |
+| 見張る数 | エラー率、待ち行列の長さ、最初の成果までの秒数、従量の請求（日ごと）、黒殿の温度・電力・GPU |
+| 知らせ方 | スマホへの通知。夜中に起こすのは「データの消失・お金・安全」の 3 つだけ。他は朝 |
+| 変える手順 | PR → `npm run verify` → 試験の環境 → 本番（flag で少しずつ開ける）。戻す手順を先に書く |
+| 落ちた時 | 黒殿が落ちたら、仕事は lease が切れて結果不明になり、再実行しない。新しい仕事は Cloudflare へ回す。Cloudflare が落ちたら、受付を止めて端末側で待ち、状態のページに出す |
+| バックアップ | D1 の Time Travel（30 日）＋ 毎日 R2 へ書き出して黒殿へ写す。黒殿から R2 へは暗号化して写す。月 1 回、戻す練習をする |
+| 費用の上限 | 全体の月の上限（MVP $30、「1 文で頼む」を開ける時 $150）と、1 人あたりの上限。超えたら新しい実行を止めて知らせる |
+| 守り | 仕事ごとに別の VM。外向きは宣言した host だけ。鍵は中継が付ける。黒殿へ外から入る口は開けない（Tunnel は外向きだけ） |
+| 法務 | 個人情報を外国の事業者（Cloudflare）に預けることの説明。eSIM の届出の確認（[03 の 0.5](structure/03-esim.md)） |
+
+### 0.6 本人が決めること（決まるまで、既定で進める）
+
+| # | 決めること | 既定 |
+| --- | --- | --- |
+| K1 | 「自社のクラウド」は、自分たちの機械で全部回す（案 C）ことか、avokado が利用者に出すクラウドで中身は借り物でもいいか | 借り物でもいい（A → B → D） |
+| K2 | データを日本の中だけに置く必要があるか | 無い（必要なら C か、日本に置ける大手クラウド） |
+| K3 | 「運営も中身を読めない」（案 K）を売りにするか | Memory と成果のファイルだけ |
+| K4 | 黒殿を何ノード avokado に回すか（かいやの OK） | 1 ノード |
+| K5 | 止まっていい時間 | 月 3.6 時間（99.5%） |
+| K6 | 夜中の障害で誰が起きるか | 3 つ（消失・お金・安全）だけ起こす |
+| K7 | AI の運用担当にどこまで任せるか | 見る・知らせる・戻すまで |
+| K8 | 自前のモデルを動かす理由（安さ／検閲なし／データを出さない） | 安さ（引き金の後） |
+| K9 | 最初の 1 年のクラウドの月の上限 | $30 → $150 |
+| K10 | 閉域（N2、月 約 5.4 万円）を始める時 | Hub が 100 台を超えた時か、企業の利用者が付いた時 |
+
+## 1. 一言で（案 B の中身）
 
 **新しく買う・借りるサーバーは 0 台。** 受付・保存・単発の実行は Cloudflare の従量で始める。常駐とモデルは、引き金（4 章）を越えたら黒殿の 1 ノードへ移す。利益は月額から出し、計算の原価は月額の 1 割以下に保つ。
 
@@ -46,7 +129,7 @@
 | --- | --- | --- | --- | --- | --- |
 | スマホ（eSIM なし） | 600 円 | 0 | 22 円 | 45 円 | **533 円** |
 | スマホ（eSIM なし） | 800 円 | 0 | 29 円 | 45 円 | **726 円** |
-| （参考・やらない）スマホ ＋ eSIM | 800 円 | 385 円 | 29 円 | 45 円 | 341 円 |
+| スマホ ＋ eSIM（型 S。SORACOM planX1 の基本 $1.8 で計算） | 800 円 | 282 円 | 29 円 | 45 円 | **444 円** |
 | Hub（回線あり） | 800 円 | 385 円 | 29 円 | 23 円（モデルだけ） | 363 円 |
 | Hub（回線なし） | 800 円 | 0 | 29 円 | 23 円 | 748 円 |
 
@@ -125,4 +208,10 @@ task 95（Linux 版 runner）の検証機に、この 1 ノードを使う。Hub
 - [RunPod GPU pricing](https://www.runpod.io/pricing) — A40 $0.59、L4 $0.69、RTX 4090 $0.89、H100 PCIe $2.89（1 時間）。
 - [AWS 東京 m6i.4xlarge（DoiT）](https://www.doit.com/compute/spot/ap-northeast-1/m6i.4xlarge) — $0.992／時。
 - [SORACOM 日本カバレッジ IoT SIM](https://soracom.jp/services/air/japan_coverage/) — plan-K2 K2-500MB 月 385 円（税込）。
+- [SORACOM IoT SIM（eSIM プロファイル）](https://soracom.jp/services/air/cellular/pricing/price_iot_sim_esim_profile_download/) — planX1 基本 $1.8／月、日本 $0.02／MiB、承認制。
+- [SORACOM VPG の料金](https://soracom.jp/services/vpg/price/) — Type-F（日本）1 時間 60.5 円、Door 1 時間 12.1 円。
+- [SORACOM Beam](https://soracom.jp/services/beam/) — 1 リクエスト 0.00099 円、月 10 万リクエスト無料。[SORACOM Endorse](https://soracom.jp/services/endorse/) — SIM の認証トークン。
+- [Cloudflare Tunnel](https://developers.cloudflare.com/tunnel) — 外向きの接続だけ。Workers からは Workers VPC。
+- [D1 の data location](https://developers.cloudflare.com/d1/configuration/data-location/) — jurisdiction は eu・us・fedramp。apac は hint で保証なし。
+- [WebAuthn PRF の対応（Corbado）](https://www.corbado.com/blog/passkeys-prf-webauthn)。
 - 為替: [Wise USD/JPY](https://wise.com/us/currency-converter/usd-to-jpy-rate)、[Wise EUR/USD](https://wise.com/us/currency-converter/eur-to-usd-rate)。
