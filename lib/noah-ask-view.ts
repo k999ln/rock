@@ -1,3 +1,4 @@
+import type { NoahReceivedResult } from './noah-result-media.ts';
 /**
  * 頼む画面（道具を選ぶ・入力欄・確かめ・仕事の一覧）が使う、画面の文と、状態 → 見た目の決まり。
  *
@@ -19,7 +20,7 @@ export type NoahAskItem = {
   stopRequested: boolean; error?: string; createdAt: number; updatedAt: number; finishedAt?: number;
   /** 一覧で読んだ時だけ: その依頼の Agent（接続の系列の ID）。 */
   agentId?: string;
-  result?: { text: string; truncated: boolean; attachments: number }; note?: string;
+  result?: NoahReceivedResult; note?: string;
 };
 
 /** 画面の文（決まった文）。 */

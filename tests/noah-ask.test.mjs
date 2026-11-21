@@ -605,3 +605,14 @@ void test('delegation gate rejects acceptance and rechecks revocation immediatel
   denied=false;const accepted=await service.ask('owner-a',false,input);assert.equal(accepted.status,202);
   denied=true;await accepted.run();assert.equal(calls(server).length,0);assert.equal(w.asked()[0].state,'failed');assert.match(w.asked()[0].error,/任せない/);assert.equal(checks,3);
 });
+
+void test('image result bytes persist through MCP, Work and owner-only detail without entering the list', async (t) => {
+  const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aP1kAAAAASUVORK5CYII=';
+  const definition = stats(), waiting = [];
+  const server = mcpServer({tools:[definition],call:()=>({content:[{type:'image',mimeType:'image/png',data:png}]})});
+  const {w,a,connectionId}=await connected(t,server,{config:{waitUntil:work=>waiting.push(work)}});
+  await a.ask({id:uuid(810),connectionId,form:await form(definition,{})});await Promise.all(waiting);
+  const one=await a.askGet(uuid(810));assert.equal(one.status,200);assert.equal(one.body.result.images[0].data,png);assert.equal(one.body.result.images[0].mimeType,'image/png');
+  assert.equal((await w.as('owner-b').askGet(uuid(810))).status,404);
+  assert.equal('result' in (await a.asks(connectionId)).body.asks[0],false);
+});

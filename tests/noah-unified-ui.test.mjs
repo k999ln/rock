@@ -19,7 +19,7 @@ void test('locale negotiation uses supported device languages and falls back to 
   assert.equal(noahTranslate('en','あと 2 タップ'),'2 more taps');
 });
 void test('primary screens have translations for every literal UI message',()=>{
-  const files=['noah-ask','noah-card','noah-connect-button','noah-interaction','noah-loading','noah-profile-readiness','noah-profile','noah-ready-detail','noah-ready','noah-registration-browser','noah-registration-sheet','noah-registration','noah-shell','noah-timeline','noah-work-list','noah-task-detail','noah-agent-feedback','noah-public-detail','rockstar-account'];
+  const files=['noah-ask','noah-card','noah-connect-button','noah-interaction','noah-loading','noah-profile-readiness','noah-profile','noah-ready-detail','noah-ready','noah-registration-browser','noah-registration-sheet','noah-registration','noah-shell','noah-timeline','noah-work-list','noah-task-detail','noah-result-content','noah-agent-feedback','noah-public-detail','rockstar-account'];
   for(const file of files){const source=ts.createSourceFile(file,readFileSync(new URL(`../components/${file}.tsx`,import.meta.url),'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
     function visit(n){if(ts.isCallExpression(n)&&n.expression.getText(source)==='t'&&ts.isStringLiteral(n.arguments[0]))assert.ok(NOAH_MESSAGES[n.arguments[0].text],`${file}: ${n.arguments[0].text}`);ts.forEachChild(n,visit);}visit(source);
   }
