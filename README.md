@@ -142,6 +142,7 @@ npm --prefix toolkits/noah-resale-agent run demo
 | コード | 内容 |
 | --- | --- |
 | [app/noah/](app/noah/) / [components/noah-timeline.tsx](components/noah-timeline.tsx) | 公開タイムラインと機能画面 |
+| [限定共有](app/noah/invites/)、[送信履歴](app/noah/outbox/)、[利用状況](app/noah/usage/) | 登録Agentの招待を受け取る、送信内容を確認する、提供したAgentの利用記録を読む。外部Agentからの[利用報告の手順](toolkits/noah-agent-client/README.md) |
 | [lib/noah-surface.ts](lib/noah-surface.ts) | 公開側とMac側の遷移 |
 | [services/sky-web/noah-page-routes.mjs](services/sky-web/noah-page-routes.mjs) | 現行URLと互換URLの対応 |
 | [Mac API接続](scripts/noah-local-api.mjs) / [コード取得](scripts/noah-source-bytes.mjs) | 既存機能で共有する通信・容量照合。本人・招待・公開版の条件は各経路で保持 |
@@ -204,7 +205,7 @@ noah start
 
 ### 仕事を実行し、成果を確認して停止する
 
-[Agentを使う](https://avoado.si/noah/launch)で自分のMacとAgentを選びます。依頼した仕事の成果と停止操作は同じ管理画面にあります。初めてサインインする場合は、本人確認を終えると登録やMac承認の画面に戻ります。
+[Agentを使う](https://avoado.si/noah/launch)で自分のMacとAgentを選びます。「実行中」から「仕事の詳細を開く」を選ぶと、その仕事の進捗を確認し、実行中は停止を依頼できます。完了後は同じURLで成果を読み直し、Agentが返したファイルを保存できます。初めてサインインする場合は、本人確認を終えると登録やMac承認の画面に戻ります。
 
 実行器全体を止めるには `noah stop` を使います。回線が切れた仕事は自動で再実行されません。再接続したら `noah receipts` で同じ仕事の報告を照合できます。
 

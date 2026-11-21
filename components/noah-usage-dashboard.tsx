@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import WorkspaceShell from './workspace-shell';
 import type { NoahUsageReport, NoahUsageScope, NoahUsageSource } from '@/lib/noah-usage';
 import styles from './noah-agent-catalog.module.css';
@@ -12,11 +11,10 @@ function amount(minor: number, currency: string) {
   const format = new Intl.NumberFormat('ja-JP', { style: 'currency', currency });
   return format.format(minor / 10 ** (format.resolvedOptions().maximumFractionDigits ?? 2));
 }
-export default function NoahUsageDashboard() {
-  const search = useSearchParams(), [scope, setScope] = useState<NoahUsageScope>(search.get('scope') === 'publisher' ? 'publisher' : 'personal');
+export default function NoahUsageDashboard({ initialScope, agent }: { initialScope: 'personal' | 'publisher'; agent: string }) {
+  const [scope, setScope] = useState<NoahUsageScope>(initialScope);
   const [days, setDays] = useState(30), [source, setSource] = useState<NoahUsageSource>('platform_agent');
   const [report, setReport] = useState<NoahUsageReport | null>(null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
-  const agent = search.get('agent') || '';
   useEffect(() => {
     const controller = new AbortController(), query = new URLSearchParams({ scope, days: String(days), ...(agent ? { agent } : {}) });
     fetch(`/api/noah/usage?${query}`, { cache: 'no-store', signal: controller.signal }).then(async r => {
