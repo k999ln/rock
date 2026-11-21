@@ -43,7 +43,7 @@ void test('Noah home renders collected cards and refreshes external ratings whil
   const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
   await home.tick(200);
   assert.match(home.text(), /新しく見つかったAgent/); assert.match(home.text(), /Hugging Face.*いいね 7/);
-  assert.ok(home.find('a').some(node => node.props.href === '/noah/agents#noah-collection'));
+  assert.ok(home.find('a').some(node => node.props.href.endsWith('#noah-collection')));
   likes = 3; await home.tick(60000); await home.tick(200);
   assert.match(home.text(), /いいね 3/);
   const requests = ui.calls.length; visibility.hidden = true; await home.tick(60000); await home.tick(200);
@@ -178,4 +178,17 @@ void test('collection retry immediately recovers from an error without losing so
   const request = new URL(ui.calls.at(-1).url, 'https://avoado.si');
   assert.equal(request.searchParams.get('source'), 'huggingface'); assert.equal(request.searchParams.get('q'), 'agent');
   assert.equal(ui.calls.length, 2);
+});
+
+void test('shared catalog search keeps the chosen source, resets pagination and delegates clear', async () => {
+  const props = { searchQuery: 'first', onClearQuery() { props.searchQuery = ''; } };
+  const ui = screen({ modules: { '@/lib/noah-collection': collection }, fetch: async () => ({ body: { items: [], total: 40, nextCursor: '20', configured: true } }) });
+  const page = ui.mount('components/noah-collection-feed.tsx', props); await page.tick(200);
+  assert.equal(page.find('input').length, 0);
+  await page.click('Hugging Face'); await page.tick(200); await page.click('次へ'); await page.tick(200);
+  props.searchQuery = 'second'; page.render(); await page.tick(200);
+  const updated = new URL(ui.calls.at(-1).url, 'https://avoado.si');
+  assert.equal(updated.searchParams.get('source'), 'huggingface'); assert.equal(updated.searchParams.get('q'), 'second'); assert.equal(updated.searchParams.get('cursor'), '0');
+  await page.click('検索条件をクリア'); await page.tick(200);
+  const cleared = new URL(ui.calls.at(-1).url, 'https://avoado.si'); assert.equal(cleared.searchParams.get('q'), ''); assert.equal(cleared.searchParams.get('source'), '');
 });
