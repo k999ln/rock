@@ -12,6 +12,8 @@ export const NOAH_SHELF_TEXT = {
   operatorNote: 'Noah の説明',
   use: '使う',
   noNumbers: 'まだ数字はありません',
+  numbers: (n: { resultPercent: number | null; againPercent: number | null; seconds: number | null }) => [n.resultPercent !== null ? `成果が返った割合 ${n.resultPercent}%` : null, n.againPercent !== null ? `また使った人 ${n.againPercent}%` : null, n.seconds !== null ? `最初の成果まで 約 ${n.seconds < 60 ? `${n.seconds} 秒` : `${Math.round(n.seconds / 60)} 分`}` : null].filter((text): text is string => text !== null).join('・') || 'まだ数字はありません',
+  hide: '表示しない',
   trial: '新しく入りました',
   priceHint: (yen: number) => `先に売った人の最低額: ${yen.toLocaleString('ja-JP')} 円（約束ではありません）`,
   owner: (steps: number, minutes: number) => (steps ? `あなたがやる事 ${steps} つ・約 ${minutes} 分` : `あなたがやる事 0・約 ${minutes} 分`),
@@ -37,6 +39,8 @@ export type NoahShelfCard = {
   id: string; shelf: NoahShelfId; topic: NoahPackage['topic']; topicLabel: string; title: string; promise: string; give: string; get: string;
   priceHint: NoahPackage['priceHint'] | null; advice: boolean; runs: NoahRunPlace[]; ownerSteps: number; ownerMinutes: number;
   position: number; why: 'operator' | 'evidence' | 'trial' | 'personal'; target: string;
+  /** カードに出す数（切り替え NOAH_SHELF_RANK が開いていて、5 人以上の実績がある時だけ。割合は、数えたそのまま）。 */
+  numbers: { resultPercent: number | null; againPercent: number | null; seconds: number | null } | null;
 };
 /** 運営の画面の 1 枚。 */
 export type NoahShelfStateCard = {

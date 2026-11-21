@@ -312,4 +312,20 @@ DDL の検証（[validate-noah-shelf-v1.py](../design-validation/noah/validate-n
 | 棚の段の置き方 | `noah-ready.tsx` の一番上 | `app/noah/ready/page.tsx` が `<NoahShelf />` を `NoahReady` の `shelf` へ渡す（探している間は出さない） | 一覧の画面の試験（呼ぶ入口の数を数えている）を変えずに済む |
 | カードから開いた詳細 | — | `?tool=` の道具を、最初から選んでおく（使えない・無い道具なら、いつもの一覧） | 押した仕事の道具を、選び直さずに頼める |
 
-まだの物（この task の外）: 実績の並び・見せた記録・非表示（111）、家の端末・Noah の中の道具のカードと工程をつなぐカード（112）、料金ごとのつなげる数（113）、300 人の試行の記録（114）。**最初の 12 枚の案は、全部が家の端末・Noah の中の道具・先の決まっていない工程のカードなので、ローンチの範囲では 1 枚も載らない。棚に出すには、運営が、握手の通った相手のサーバーの道具 1 つのカードを置き、自分で動かして「確かめた」を押す（棚ごとに 5 枚以上が候補）。** 本番 D1 への migration と、切り替えは、行っていない。
+まだの物（この task の外）: ~~実績の並び・見せた記録・非表示（111）~~（16 章で作った）、家の端末・Noah の中の道具のカードと工程をつなぐカード（112）、料金ごとのつなげる数（113）、300 人の試行の記録（114）。**最初の 12 枚の案は、全部が家の端末・Noah の中の道具・先の決まっていない工程のカードなので、ローンチの範囲では 1 枚も載らない。棚に出すには、運営が、握手の通った相手のサーバーの道具 1 つのカードを置き、自分で動かして「確かめた」を押す（棚ごとに 5 枚以上が候補）。** 本番 D1 への migration と、切り替えは、行っていない。
+
+## 16. 実装で変えた所（task 111。2026-11-21）
+
+作った物: `drizzle/0052_noah_shelf_evidence.sql`（`noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen` を DDL 案から字を変えずに移した）、`db/schema.ts`、`lib/noah-shelf-store.ts` の `rollup`・`rollupIfDue`・`record`・`hide`・`noahShelfForget` と `list(viewer)`、`GET`・`POST /api/noah/shelf` の並び・見せた記録・`hide`・`opened`、`components/noah-shelf.tsx` のカードの数と「表示しない」、`components/noah-shelf-opened.tsx`（詳細を開いた時に 1 回数える）、`PUT /api/noah/recommendations` の履歴を消す・やめる時の `seen_forget`、タイムライン（`/noah`）への流し込み（`lib/noah-timeline-feed.ts` の `card` の種類・`components/use-noah-timeline.ts`・`components/noah-timeline.tsx`）。試験は `tests/noah-shelf-rank.test.mjs`（5 本）と、タイムラインの試験 2 本。
+
+| 所 | 仕様 | 実装 | 理由 |
+| --- | --- | --- | --- |
+| 本人の関心の点 | 今の `scoreNoahRecommendation` に、棚と領域をタグとして渡す | まだ渡さない（`personal: false`）。見飽き（開かずに 3 回）は使う | 今の点数表の「フォロー」「履歴」は Agent の作者と、Mac で動いた Agent のタグで、棚のカードに当たる物が無い。「興味」だけを足すと、点が 20 に偏る。札がそろってから（112）足す |
+| 見せた記録を書く時機 | 応答の後 | 応答の後（`waitUntil`）。無い所（試験）では、応答の前に書く | — |
+| 開いた記録 | 詳細を `from`・`pos` 付きで開いた時 | 詳細の画面が `POST /api/noah/shelf`（`{ action: "opened", id, pos }`）を 1 回送る。未サインインも数える。account の印は見ない（数だけ） | GET に書き込みを持たせない |
+| 「非表示」 | `POST`（サインイン済みの本人） | 同じ。並びの切り替えが閉でも、その本人の棚から外す（`rankNoahShelf` と同じ） | — |
+| 実績の数え直し | 1 日 1 回、巡回の合図の中 | UTC の日が変わって最初の合図（`rollupIfDue`）。棚の見直し（10 分に 1 回）の後 | — |
+| 表がまだ無い時 | — | `noah_package_evidence`・`noah_shelf_seen`・`noah_shelf_daily` が無い（本番へ未適用）時は、実績なし・記録なしとして、棚と推薦の設定を今までどおり動かす | 配備と migration の適用の順で、入口を壊さない |
+| タイムライン | 種類の 1 つとして、今の混合タイムラインへ | 最初の頁だけ、棚の 3 段を「各段の 1 枚目、各段の 2 枚目…」の順にして、1 巡に 1 枚（Agent の紹介の後）。出どころは「Noah の棚」。Agent の絞り込みでは出さない。棚が閉・読めない時は、何も足さない（誤りにしない） | — |
+
+カードの数の文: 「成果が返った割合 90%・また使った人 50%・最初の成果まで 約 20 秒」（5 人未満は「まだ数字はありません」）。**本番の migration・配備・切り替え（`NOAH_SHELF_RANK`・`NOAH_SHELF_SEEN`）は、していない。** 学習は足していない（11 章の条件がそろってから）。

@@ -9,6 +9,6 @@ export function noahIntakeDependencies() {
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     origin: config.NOAH_ORIGIN ? `https://${config.NOAH_ORIGIN}` : 'https://avoado.si',
     fetcher: fetch, now: Date.now, waitUntil,
-    // 棚の、載せるかの見直し（巡回の合図の中で、10 分に 1 回まで。docs/noah/spec-110-shelf.md の 4 章）。
-    shelfRecheck: () => createNoahShelfStore({ db: database(), now: Date.now }).recheckIfDue() };
+    // 棚の、載せるかの見直し（巡回の合図の中で、10 分に 1 回まで。docs/noah/spec-110-shelf.md の 4 章）と、実績の数え直し（UTC の 1 日に 1 回。5 章）。
+    shelfRecheck: async () => { const shelf = createNoahShelfStore({ db: database(), now: Date.now }); await shelf.recheckIfDue(); await shelf.rollupIfDue(); } };
 }
