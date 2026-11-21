@@ -1,6 +1,6 @@
 ## 2026-11-22
 
-- Noahの収集をGitHub Actionsと非公開R2 checkpointへ移し、Mac不要の定期収集・掲載・外部評価同期を実装（検証・クラウド移行中、PR #380）。
+- Noah公開トップにAgent収集・外部評価を表示し、公開版177へ反映。Mac常駐を停止し、クラウド2回の継続収集・掲載更新を確認。5分ごとのActions定期実行を有効化（[PR #380](https://github.com/k999ln/rock/pull/380)、task120。Xはキー待ち）。
 
 - Noahの継続Agent収集・出典別カード・外部評価同期を公開版171へ反映し、運営Macの常駐収集から署名付き自動掲載を確認。XはAPIキー待ち（task120、[PR #380](https://github.com/k999ln/rock/pull/380)）。
 - 配給担当者が地域・品目から全国の生産者を探し、6農園の公式窓口を開いて運営予算での買取を直接相談できるMac用ツールを追加（[PR #381](https://github.com/k999ln/rock/pull/381)）。
