@@ -145,3 +145,14 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 - 統合後の関連31試験は31 pass / 0 fail。`npm run noah:check:domain` は公開9項目成功。全体verifyはUI担当で再検証中のため、今回の統合を全体合格とは扱わない。再開コマンド: `node --experimental-strip-types --test tests/noah-four-flow-fixes.test.mjs tests/noah-registration-ui.test.mjs tests/noah-ask-ui.test.mjs tests/noah-esim-access.test.mjs`。
 - Pixel 10 / Android 17のWi-Fi接続を再確認。画面がロックされているため、本人へ本体での解除を依頼。今回の実スマホによる登録→Agent利用→成果受取は未完了。既存の外部登録1件と以前の本人による成果表示の証拠とは分離する。
 - mainのPR #378にある無料eSIM試用workerは `services/noah-test-runtime/src/esim-trial/worker.mjs` のローカルfixtureであり、公開入口にmountされていない。これを本番eSIM本人連携の完了証拠には使わない。
+
+
+### 2026-11-22 公開173・4件修正の最終ブラウザ確認（PR #377）
+
+公開173は source `5ffaf8a368024abf80dab143f63982906166d72c`、deployment `appgdep_6b01f759dec48191889bb73f60639103`、env16、succeeded。公開171の収集機能、既存eSIM・透過faviconを保持。追加した本番migrationはない。
+
+登録済みAgentboardは再読み込み後も入力欄0で「Agentを使う」へ進む。旧画像仕事 `069a8a81-d6dc-478a-b80c-9ad82d415d53` は「画像が未受取」として確認待ちへ分類。画像生成の成功や写真アプリへの保存は捏造しない。新規検索 `efa1d17f-577e-476a-83e0-aaddff997748` は5件を受領し、成果詳細を再読み込みしても保持。ホームのピンと投稿タイムラインを別に表示し、フォロー中/Agentのみ/戻る、直接の #timeline 読み込みを確認。英語の用途名/入力欄/選択肢、アラビア語RTL（320px）、タイムライン390pxで横はみ出しなし。言語を端末自動へ復元。画像実体未返却のAgentを自動再実行していない。
+
+最終 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` はexit0。ルート4,844 pass・4 skip（計4,848）、API1,918 assertions、CSV385 assertions、型/lint/本番build/資産検査を含め成功。初回の別worktree node_modules参照と不足したMini依存を独立配置で修復し、旧ラベルを期待していた2試験を新表示へ更新。CLI時間切れ2件は再検査成功。テスト削除や例外化なし。最終ログ `/tmp/noah-four-final-verify.log`。
+
+この記録は公開サイトをIABの390px/320pxで確認したもの。Android本体、写真アプリ内の保存完了、振動体感の独立確認は受入チャットで別途進行中であり、ここで実機合格とはしない。
