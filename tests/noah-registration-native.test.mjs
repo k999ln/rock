@@ -61,3 +61,14 @@ void test('real registration HTTP handler stores metadata only and returns to th
  const response=await api(new Request('https://avoado.si/api/noah/registration',{method:'POST',headers:{Origin:'https://avoado.si','Content-Type':'application/json','x-user':'alice','X-Rock-Owner-Scope':await ownerScopeFor('alice'),'X-Noah-Registration-Key':randomBytes(32).toString('hex')},body:JSON.stringify({action:'start',id:randomUUID(),providerId:'agentboard',agentId:AGENTBOARD_PROVIDER.agentIds[0],revision:1,termsVersion:AGENTBOARD_PROVIDER.termsVersion,values:{name:'Synthetic'},consent:true,termsAccepted:true})}));
  assert.equal(response.status,202);const body=await response.json();assert.equal(body.job.state,'completed');assert.match(body.job.returnTo,/noah\/ready\/agent/);assert.doesNotMatch(JSON.stringify(body),/agb_/);assert.doesNotMatch(JSON.stringify(sql.prepare('SELECT * FROM work_jobs').all()),/Synthetic|agb_/);
 });
+
+void test('operational diagnostics contain fixed phases and status only, never registration inputs or credentials',async()=>{
+ const f=fixture(),events=[];
+ const run=await createNoahNativeRegistration({store:f.store,authenticate:f.authenticate,fetcher:f.fetcher,observe:event=>events.push(event)})(await f.request(),AGENTBOARD_PROVIDER);
+ assert.equal(await run(randomUUID(),{name:'Private input'}),'completed');
+ assert.deepEqual(events,[{stage:'store_loaded',state:'empty'},{stage:'register_response',status:200},{stage:'verify_response',status:200}]);
+ assert.doesNotMatch(JSON.stringify(events),new RegExp(`${f.credential}|Private input|alice|external-alice`));
+ const broken=await createNoahNativeRegistration({store:{available:true,load:async()=>{throw Error('secret-in-storage-error');}},authenticate:f.authenticate,observe:event=>events.push(event)})(await f.request(),AGENTBOARD_PROVIDER);
+ await assert.rejects(()=>broken(randomUUID()));assert.deepEqual(events.at(-1),{stage:'store_load_failed'});
+ assert.doesNotMatch(JSON.stringify(events),/secret-in-storage-error/);
+});
