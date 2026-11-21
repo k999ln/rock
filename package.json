@@ -30,6 +30,7 @@
     "metadata:check": "node scripts/private-files.mjs require-unlocked && npm run project:check && npm run mission:check && npm run database:check && npm run work:check",
     "project:update": "npm run metadata:update",
     "project:check": "node scripts/project-status.mjs --check",
+    "noah:collect": "node --experimental-strip-types scripts/noah-agent-collector.mjs",
     "noah:screenless:check": "node scripts/check-noah-screenless.mjs",
     "repository:check": "node scripts/check-repository-map.mjs && node scripts/check-repository-hygiene.mjs",
     "version:check": "node scripts/check-version-boundaries.mjs",

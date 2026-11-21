@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { splitNoahIntakeImport } from '@/lib/noah-intake-import-parts';
 import type { IntakeStatus } from '@/lib/noah-intake-store';
 import type { NoahLaunchStatus, NoahLaunchWindow } from '@/lib/noah-launch-status';
 import styles from './noah-intake-review.module.css';
@@ -27,22 +28,7 @@ const handshakeMs = (window: NoahLaunchWindow) => (window.probeMs == null ? 'ま
 const screens = (window: NoahLaunchWindow) => `狭い ${window.screens.narrow} ／ 広い ${window.screens.wide}${window.screens.unknown ? ` ／ 不明 ${window.screens.unknown}` : ''}`;
 type ImportRow = Record<string, unknown>;
 type ImportFile = { schema: string; exportedAt: number; families: ImportRow[]; candidates: ImportRow[]; checks: ImportRow[] };
-/** 手元で計算した取り込みの結果（scripts/noah-local-patrol.mjs が書き出す）を、要求 1 回ずつ（系列 60・候補 240 まで）に分ける。lib/noah-intake-import.ts と同じ分け方。 */
-function importParts(all: ImportFile): ImportFile[] {
-  const members = new Map<unknown, ImportRow[]>(), checks = new Map(all.checks.map((row) => [row.candidate_id, row]));
-  for (const row of all.candidates) members.set(row.family_id, [...(members.get(row.family_id) ?? []), row]);
-  const empty = (): ImportFile => ({ schema: all.schema, exportedAt: all.exportedAt, families: [], candidates: [], checks: [] });
-  const parts: ImportFile[] = [];
-  let current = empty();
-  for (const family of all.families) {
-    const rows = (members.get(family.id) ?? []).slice(0, 240);
-    if (current.families.length >= 60 || current.candidates.length + rows.length > 240) { if (current.families.length) parts.push(current); current = empty(); }
-    current.families.push(family);
-    for (const row of rows) { current.candidates.push(row); const check = checks.get(row.id); if (check) current.checks.push(check); }
-  }
-  if (current.families.length) parts.push(current);
-  return parts;
-}
+
 export default function NoahIntakeReview({ ownerScope }: { ownerScope: string }) {
   const [importing, setImporting] = useState(''), [imported, setImported] = useState('');
   const [state, setState] = useState<State | null>(null), [error, setError] = useState(''), [mouth, setMouth] = useState(''), [level, setLevel] = useState(''), [query, setQuery] = useState(''), [q, setQ] = useState(''), [offset, setOffset] = useState(0), [refresh, setRefresh] = useState(0), [pending, setPending] = useState(false);
@@ -76,7 +62,7 @@ export default function NoahIntakeReview({ ownerScope }: { ownerScope: string })
       let all: ImportFile;
       try { all = JSON.parse(await file.text()) as ImportFile; } catch { throw Error('取り込みの結果のファイルを読めません。'); }
       if (!all || all.schema !== 'noah-intake-import/1' || !Array.isArray(all.families) || !Array.isArray(all.candidates) || !Array.isArray(all.checks)) throw Error('取り込みの結果のファイルではありません。');
-      const parts = importParts(all);
+      const parts = splitNoahIntakeImport(all);
       let families = 0, listed = 0, rows = 0;
       for (const [index, part] of parts.entries()) {
         setImporting(`入れています… ${index + 1} / ${parts.length} 回`);

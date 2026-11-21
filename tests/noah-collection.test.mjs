@@ -1,0 +1,97 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { createCollectionApi } from '../lib/noah-collection-api.ts';
+import { collectionSignature, parseCollectionSnapshot, NOAH_COLLECTION_PATH } from '../lib/noah-collection.ts';
+import { openCollectorStore } from '../scripts/noah-collector-store.mjs';
+import { collectXAgents } from '../scripts/noah-collector-x.mjs';
+import { publishCollection } from '../scripts/noah-collector-publish.mjs';
+
+const NOW = Date.UTC(2026, 10, 22), KEY = 'collection-test-signature-material-0000';
+const item = (source = 'github', extra = {}) => ({ id: `${source}:1`, source, name: 'Useful agent', summary: 'A public Agent repository', author: 'maker', url: 'https://github.com/maker/agent', sourceUrl: 'https://github.com/maker/agent', observedAt: NOW, expiresAt: NOW + 86_400_000, ...extra });
+const snapshot = (source = 'github', items = [item(source)], at = NOW) => ({ schema: 'noah-collection/1', source, collectedAt: at, items });
+function bucket() {
+  const rows = new Map(); let generation = 0;
+  return { rows, async get(key) { const row = rows.get(key); return row ? { etag: row.etag, async json() { return JSON.parse(row.text); } } : null; },
+    async put(key, value, options) {
+      const old = rows.get(key);
+      if (options.onlyIf.etagMatches && options.onlyIf.etagMatches !== old?.etag || options.onlyIf.etagDoesNotMatch === '*' && old) return null;
+      const etag = String(++generation); rows.set(key, { etag, text: value }); return { etag };
+    },
+  };
+}
+async function post(api, value, options = {}) {
+  const body = JSON.stringify(value), time = String(options.time ?? NOW);
+  const signature = await collectionSignature(options.key ?? KEY, time, options.signedBody ?? body);
+  return api(new Request(`https://avoado.si${NOAH_COLLECTION_PATH}`, { method: 'POST', body, headers: { 'content-type': 'application/json', 'x-noah-collector-time': time, 'x-noah-collector-signature': signature, ...options.headers } }));
+}
+
+void test('signed publication appears in public cards, merges duplicate projects with provenance, and searches by source', async () => {
+  const store = bucket(), api = createCollectionApi({ bucket: store, key: KEY, now: () => NOW });
+  const xItem = item('x', { sourceUrl: 'https://x.com/maker/status/1234', author: '@maker', summary: 'Xで紹介されたAgentのリンクです。内容と利用条件は配布元で確認できます。' });
+  const published = await publishCollection({ snapshots: [snapshot(), snapshot('x', [xItem])], origin: 'https://avoado.si', key: KEY, now: () => NOW, fetcher: (url, init) => api(new Request(url, init)) });
+  assert.equal(published.length, 2);
+  const all = await (await api(new Request(`https://avoado.si${NOAH_COLLECTION_PATH}`))).json();
+  assert.equal(all.total, 1); assert.equal(all.items[0].sources.length, 2); assert.equal(all.items[0].status, 'discovered');
+  const filtered = await (await api(new Request(`https://avoado.si${NOAH_COLLECTION_PATH}?source=x&q=useful`))).json();
+  assert.equal(filtered.total, 1); assert.equal(filtered.items[0].sources.length, 1);
+  assert.equal(JSON.stringify(all).includes(KEY), false);
+});
+
+void test('publication rejects forged bodies, old signatures, browser posts, stale snapshots and unexpected source URLs', async () => {
+  const store = bucket(), api = createCollectionApi({ bucket: store, key: KEY, now: () => NOW });
+  assert.equal((await post(api, snapshot(), { signedBody: '{}' })).status, 401);
+  assert.equal((await post(api, snapshot(), { time: NOW - 120_001 })).status, 401);
+  assert.equal((await post(api, snapshot(), { headers: { origin: 'https://avoado.si' } })).status, 403);
+  assert.equal((await post(api, snapshot('github', [item('github', { sourceUrl: 'https://elsewhere.example.com' })]))).status, 400);
+  assert.equal((await post(api, snapshot())).status, 200);
+  assert.equal((await post(api, snapshot('github', [], NOW - 1))).status, 409);
+  assert.deepEqual(await (await post(api, snapshot())).json(), { unchanged: true });
+  assert.throws(() => parseCollectionSnapshot(snapshot('github', [item('github', { url: 'https://127.0.0.1/private' })]), NOW));
+});
+
+void test('expired entries disappear and later empty snapshots remove previously published items', async () => {
+  const store = bucket(); let clock = NOW;
+  const api = createCollectionApi({ bucket: store, key: KEY, now: () => clock });
+  await post(api, snapshot()); clock += 86_400_001;
+  assert.equal((await (await api(new Request(`https://avoado.si${NOAH_COLLECTION_PATH}`))).json()).total, 0);
+  assert.equal((await post(api, snapshot('github', [], clock), { time: clock })).status, 200);
+  assert.equal((await (await api(new Request(`https://avoado.si${NOAH_COLLECTION_PATH}`))).json()).total, 0);
+});
+
+void test('X uses the official search, resumes pagination, and stores links without tweet bodies or tokens', async t => {
+  const directory = mkdtempSync(join(tmpdir(), 'noah-x-test-')); let clock = NOW;
+  const local = openCollectorStore(directory, { now: () => clock }); t.after(() => { local.close(); rmSync(directory, { recursive: true, force: true }); });
+  const calls = [], token = 'x-test-only-credential';
+  const fetcher = async (raw, init) => {
+    const url = new URL(raw); calls.push(url);
+    assert.equal(url.origin, 'https://api.x.com'); assert.equal(init.redirect, 'manual'); assert.equal(init.headers.Authorization, `Bearer ${token}`);
+    return Response.json({ data: [{ id: calls.length === 1 ? '999' : '998', author_id: '111', text: 'This post body must not be stored', entities: { urls: [{ expanded_url: 'https://github.com/Maker/Agent?tracking=unused' }] } }], includes: { users: [{ id: '111', username: 'maker' }] }, meta: calls.length === 1 ? { next_token: 'page2' } : {} });
+  };
+  const absent = await collectXAgents({ local, fetcher, now: () => clock }); assert.equal(absent.status, 'needs_credentials'); assert.equal(calls.length, 0);
+  const first = await collectXAgents({ local, fetcher, token, now: () => clock }); assert.equal(first.items.length, 1);
+  clock += 60_000;
+  const second = await collectXAgents({ local, fetcher, token, now: () => clock });
+  assert.equal(calls[1].searchParams.get('next_token'), 'page2');
+  assert.equal(second.items[0].url, 'https://github.com/maker/agent');
+  const saved = local.sql.prepare('SELECT state_json FROM _noah_collector_x').get().state_json;
+  assert.equal(JSON.parse(saved).sinceId, '999');
+  assert.ok(!saved.includes(token)); assert.ok(!saved.includes('post body'));
+  await collectXAgents({ local, fetcher, token, now: () => clock }); assert.equal(calls.length, 2);
+});
+
+void test('X 429 and partial-error pages preserve their checkpoint and expose a fixed status', async t => {
+  const directory = mkdtempSync(join(tmpdir(), 'noah-x-fail-')); let clock = NOW;
+  const local = openCollectorStore(directory, { now: () => clock }); t.after(() => { local.close(); rmSync(directory, { recursive: true, force: true }); });
+  let calls = 0;
+  const fetcher = async () => { calls++; return new Response(null, { status: 429, headers: { 'retry-after': '9000' } }); };
+  const failed = await collectXAgents({ local, fetcher, token: 'test', now: () => clock });
+  assert.equal(failed.status, 'rate_limited'); assert.equal(failed.nextAt, NOW + 9_000_000);
+  await collectXAgents({ local, fetcher, token: 'test', now: () => clock }); assert.equal(calls, 1);
+  clock = failed.nextAt; local.sql.prepare('UPDATE _noah_collector_lock SET expires_at=?').run(clock + 180_000);
+  const partial = await collectXAgents({ local, fetcher: async () => Response.json({ data: [], meta: {}, errors: [{ detail: 'secret' }] }), token: 'test', now: () => clock });
+  assert.equal(partial.status, 'invalid_response');
+  assert.equal(JSON.parse(local.sql.prepare('SELECT state_json FROM _noah_collector_x').get().state_json).sinceId, null);
+});

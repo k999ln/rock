@@ -125,3 +125,9 @@
 | 3 | 一般公開の時に出る | 115 | [../../docs/noah/spec-115-pin-grid.md](../../docs/noah/spec-115-pin-grid.md) | ピンタレスト風のホーム: 今動かせる Agent のグリッド、ボードへ保存・公開・フォロー、学習なしの並び（X の作りの形・Reddit hot・Pixie） | |
 
 カードを動かして確かめる事（[カード案](../../docs/services/noah-shelf.md) の 12 枚）、投稿・動画・人への連絡、切り替えを開ける事、本番の migration は、task ではなく本人と運営の作業。
+
+## Agent収集
+
+| # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- |
+| 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | 実装・検証中 |
