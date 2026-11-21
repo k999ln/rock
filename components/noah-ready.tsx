@@ -15,13 +15,15 @@ import styles from './noah-ready.module.css';
 
 type ListReply = { items?: NoahReadyItem[]; nextCursor?: string | null; counts?: { ran: number; new: number }; ownerScope?: string | null; error?: string };
 type Mine = NoahReadyConnection & { agentId: string; name: string; placeLabel: string | null };
+/** つなげる数を、料金ごとのカードの数にしている時だけ、入口が返す（task 113）。 */
+type Cards = { live: number; limit: number };
 type Page = { state: 'loading' | 'ready' | 'closed' | 'error'; items: NoahReadyItem[]; nextCursor: string | null; counts: { ran: number; new: number } | null; ownerScope: string | null; more: boolean };
 const EMPTY: Page = { state: 'loading', items: [], nextCursor: null, counts: null, ownerScope: null, more: false };
 
 /** shelf: 一番上に出す棚（app/noah/ready/page.tsx が components/noah-shelf.tsx を渡す）。探している間は出さない。 */
 export default function NoahReady({ shelf }: { shelf?: ReactNode } = {}) {
   // 読んだ頁は、どの問い合わせ（探す語・絞り込み・やり直し）の物かと一緒に持つ。問い合わせが変わったら、届くまでは「読み込み中」。
-  const [result, setResult] = useState<{ key: string; page: Page } | null>(null), [mineOf, setMineOf] = useState<{ scope: string; list: Mine[] } | null>(null);
+  const [result, setResult] = useState<{ key: string; page: Page } | null>(null), [mineOf, setMineOf] = useState<{ scope: string; list: Mine[]; cards: Cards | null } | null>(null);
   const [query, setQuery] = useState(''), [search, setSearch] = useState(''), [oneTap, setOneTap] = useState(false), [attempt, setAttempt] = useState(0);
   const epoch = useRef(0), sentinel = useRef<HTMLDivElement | null>(null);
   const key = `${search}\n${oneTap ? 1 : 0}\n${attempt}`;
@@ -83,15 +85,16 @@ export default function NoahReady({ shelf }: { shelf?: ReactNode } = {}) {
     if (scope === null) return;
     let stopped = false;
     void fetch('/api/noah/connect', { cache: 'no-store' }).then(async (response) => {
-      const body = await response.json() as { connections?: Mine[] };
+      const body = await response.json() as { connections?: Mine[]; cards?: Cards };
       const list = body.connections;
-      if (!stopped && response.status === 200 && Array.isArray(list)) setMineOf({ scope, list });
+      if (!stopped && response.status === 200 && Array.isArray(list)) setMineOf({ scope, list, cards: body.cards && Number.isSafeInteger(body.cards.live) && Number.isSafeInteger(body.cards.limit) ? body.cards : null });
     }).catch(() => undefined);
     return () => { stopped = true; };
   }, [scope]);
   // 別の account の接続を、混ぜない。
   const mine = mineOf !== null && mineOf.scope === scope ? mineOf.list : [];
-  const setMine = (next: (old: Mine[]) => Mine[]) => { if (scope !== null) setMineOf((old) => ({ scope, list: next(old !== null && old.scope === scope ? old.list : []) })); };
+  const planCards = mineOf !== null && mineOf.scope === scope ? mineOf.cards : null;
+  const setMine = (next: (old: Mine[]) => Mine[]) => { if (scope !== null) setMineOf((old) => ({ scope, list: next(old !== null && old.scope === scope ? old.list : []), cards: old !== null && old.scope === scope ? old.cards : null })); };
 
   const connectionOf = (agentId: string) => mine.find((connection) => connection.agentId === agentId) ?? null;
   const changed = (item: NoahReadyItem) => (connection: NoahReadyConnection) => setMine((old) => [
@@ -119,7 +122,7 @@ export default function NoahReady({ shelf }: { shelf?: ReactNode } = {}) {
       {!search && shelf}
 
       {working.length > 0 && !search && <section className={styles.section} aria-labelledby="noah-ready-connected">
-        <h2 id="noah-ready-connected">{NOAH_READY_TEXT.connected}</h2>
+        <h2 id="noah-ready-connected">{NOAH_READY_TEXT.connected}{planCards ? <small>{planCards.limit} 個のうち {planCards.live} 個</small> : null}</h2>
         <ul className={styles.connections}>{working.map((connection) => <li key={connection.id}>
           <span className={styles.connectionName}><strong>{connection.name}</strong><small>{connection.placeLabel ?? ''}</small></span>
           <Link className={styles.secondary} href={noahReadyDetailHref(connection.agentId)}>頼む</Link>
