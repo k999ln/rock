@@ -12,8 +12,8 @@
 import type { IntakeDb } from './noah-intake-db.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import {
-  NOAH_PACKAGE_LIMITS, NOAH_SHELVES, NOAH_TOPIC_LABELS, NoahShelfError, noahPackageListing, noahPackageSha256, noahPackageStepRows, parseNoahPackage, rankNoahShelf,
-  type NoahPackage, type NoahPackageListing, type NoahPackageReason, type NoahShelfId, type NoahStepFact,
+  NOAH_PACKAGE_LIMITS, NOAH_SHELVES, NOAH_TOPIC_LABELS, NoahShelfError, noahCardNumbers, noahEvidenceFromRow, noahPackageListing, noahPackageSha256, noahPackageStepRows, noahShelfBand, parseNoahPackage, rankNoahShelf,
+  type NoahCardEvidence, type NoahPackage, type NoahPackageListing, type NoahPackageReason, type NoahShelfId, type NoahStepFact,
 } from './noah-shelf.ts';
 import { canonicalJson } from './noah-connect-requirements.ts';
 import { NOAH_SHELF_REASON_TEXT, noahShelfTarget, type NoahShelfCard, type NoahShelfStateCard } from './noah-shelf-view.ts';
@@ -28,8 +28,89 @@ export const NOAH_SHELF_VERIFY_WINDOW_MS = 7 * 86_400_000;
 export const NOAH_SHELF_RECHECK_MS = 10 * 60_000;
 /** 棚のカードが使う系列を、握手で確かめ直す間隔（つないでいる人がいる系列と同じ。lib/noah-probe.ts の NOAH_CHECK_INTERVALS.connected）。 */
 export const NOAH_SHELF_PROBE_MS = 24 * 3_600_000;
+/** 実績を数える期間（古い実績が、いつまでも並びを決めないように）。数え直しは、巡回の合図の中で、UTC の 1 日に 1 回。 */
+export const NOAH_SHELF_EVIDENCE_DAYS = 90;
+const DAY = 86_400_000;
 /** 1 つの文に結ぶ値の数（D1 は 100 まで）と、1 回の書き込みに入れる文の数。 */
 const CHUNK = 90, BATCH = 40;
+
+/**
+ * 実績の数え直し（docs/contracts/noah-shelf-queries-v1.sql の evidence_rollup。:since を ? に、:now を ? に置き換えただけ。値は since・since・since・now の順）。
+ * 対象は、自動の工程が「相手のサーバーの道具 1 つ」だけのカード。本人の ID は数えるためだけに読み、書くのは数だけ。
+ */
+const EVIDENCE_ROLLUP = `WITH card AS (
+  SELECT s.package_id, s.ref AS family_key, s.tool
+    FROM noah_package_steps s
+   WHERE s.kind = 'family'
+     AND (SELECT COUNT(*) FROM noah_package_steps x WHERE x.package_id = s.package_id AND x.kind IN ('family','home','builtin')) = 1
+),
+conn AS (
+  SELECT card.package_id, card.tool, c.id, c.owner_id, c.created_at, c.connected_at
+    FROM card JOIN noah_connections c ON c.family_key = card.family_key
+   WHERE c.created_at > ?
+),
+ask AS (
+  SELECT conn.package_id, a.owner_id, a.state, a.created_at, a.finished_at
+    FROM conn JOIN noah_asks a ON a.owner_id = conn.owner_id AND a.created_at > ? AND a.connection_id = conn.id AND a.tool = conn.tool
+   WHERE a.finished_at IS NOT NULL
+),
+first_ok AS (
+  SELECT package_id, owner_id, MIN(finished_at) AS at FROM ask WHERE state = 'succeeded' GROUP BY package_id, owner_id
+),
+secs AS (
+  SELECT f.package_id, (f.at - (SELECT MIN(c.created_at) FROM conn c WHERE c.package_id = f.package_id AND c.owner_id = f.owner_id)) / 1000 AS seconds FROM first_ok f
+),
+ranked AS (
+  SELECT package_id, seconds, ROW_NUMBER() OVER (PARTITION BY package_id ORDER BY seconds) AS rn, COUNT(*) OVER (PARTITION BY package_id) AS n FROM secs
+),
+median AS (
+  SELECT package_id, CAST(AVG(seconds) AS INTEGER) AS seconds FROM ranked WHERE rn IN ((n + 1) / 2, (n + 2) / 2) GROUP BY package_id
+)
+INSERT INTO noah_package_evidence(package_id, people, connects, connected, asks, succeeded, reviewed, accepted, first_users, returned, median_seconds, since_at, computed_at)
+SELECT card.package_id,
+       (SELECT COUNT(DISTINCT owner_id) FROM conn WHERE conn.package_id = card.package_id),
+       (SELECT COUNT(*) FROM conn WHERE conn.package_id = card.package_id),
+       (SELECT COUNT(*) FROM conn WHERE conn.package_id = card.package_id AND connected_at IS NOT NULL),
+       (SELECT COUNT(*) FROM ask WHERE ask.package_id = card.package_id),
+       (SELECT COUNT(*) FROM ask WHERE ask.package_id = card.package_id AND state = 'succeeded'),
+       0, 0,
+       (SELECT COUNT(*) FROM first_ok f WHERE f.package_id = card.package_id),
+       (SELECT COUNT(*) FROM first_ok f WHERE f.package_id = card.package_id
+          AND EXISTS (SELECT 1 FROM ask a WHERE a.package_id = f.package_id AND a.owner_id = f.owner_id AND a.created_at >= (f.at / 86400000 + 1) * 86400000)),
+       (SELECT seconds FROM median m WHERE m.package_id = card.package_id),
+       ?, ?
+  FROM card WHERE true
+ON CONFLICT(package_id) DO UPDATE SET
+  people = excluded.people, connects = excluded.connects, connected = excluded.connected, asks = excluded.asks, succeeded = excluded.succeeded,
+  first_users = excluded.first_users, returned = excluded.returned, median_seconds = excluded.median_seconds, since_at = excluded.since_at, computed_at = excluded.computed_at`;
+/** 見せた記録（shown・seen・seen_hide・seen_forget・seen_forget_hidden）。 */
+const SHOWN = `INSERT INTO noah_shelf_daily(day, package_id, band, shown, opened) SELECT ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM noah_packages WHERE id = ?)
+ON CONFLICT(day, package_id, band) DO UPDATE SET shown = shown + excluded.shown, opened = opened + excluded.opened`;
+const SEEN = `INSERT INTO noah_shelf_seen(owner_id, package_id, shown, opened, hidden, first_at, last_at) SELECT ?, ?, ?, ?, 0, ?, ? WHERE EXISTS (SELECT 1 FROM noah_packages WHERE id = ?)
+ON CONFLICT(owner_id, package_id) DO UPDATE SET shown = shown + excluded.shown, opened = opened + excluded.opened, last_at = excluded.last_at`;
+const SEEN_HIDE = `INSERT INTO noah_shelf_seen(owner_id, package_id, shown, opened, hidden, first_at, last_at) VALUES(?, ?, 0, 0, ?, ?, ?)
+ON CONFLICT(owner_id, package_id) DO UPDATE SET hidden = excluded.hidden, last_at = excluded.last_at`;
+/** 表がまだ無い時（本番へ、この task の migration を適用する前）も、棚は今までどおり出す。 */
+const missingTable = (error: unknown) => error instanceof Error && /no such table: noah_(package_evidence|shelf_seen|shelf_daily)/u.test(error.message);
+/** UTC の yyyymmdd。 */
+const utcDay = (at: number) => { const d = new Date(at); return d.getUTCFullYear() * 10_000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate(); };
+
+/**
+ * 本人が、履歴の利用をやめた・履歴を消した時（PUT /api/noah/recommendations）。見た記録の行を消し、「非表示」は残して回数だけ 0 にする。
+ * 表がまだ無ければ、消す行も無い。
+ */
+export async function noahShelfForget(db: Pick<D1Database, 'prepare'>, owner: string) {
+  try {
+    // 呼ぶ側（推薦の設定の入口）が使うのと同じ読み方（all）で流す。
+    await db.prepare('DELETE FROM noah_shelf_seen WHERE owner_id = ? AND hidden = 0').bind(owner).all();
+    await db.prepare('UPDATE noah_shelf_seen SET shown = 0, opened = 0 WHERE owner_id = ? AND hidden = 1').bind(owner).all();
+  } catch (error) { if (!missingTable(error)) throw error; }
+}
+
+/** 誰に棚を出すか。byEvidence は切り替え NOAH_SHELF_RANK、seen は NOAH_SHELF_SEEN。本人の関心の点（personal）は、まだ渡さない（task 111 の 15 章）。 */
+export type NoahShelfViewer = { owner: string | null; byEvidence: boolean; seen: boolean };
+type SeenRow = { package_id: string; shown: number; opened: number; hidden: number };
+type EvidenceRow = { package_id: string; people: number; connects: number; connected: number; asks: number; succeeded: number; reviewed: number; accepted: number; first_users: number; returned: number; median_seconds: number | null };
 
 type CardRow = {
   id: string; shelf: NoahShelfId; topic: string; position: number; status: NoahPackage['status']; package_json: string; package_sha256: string;
@@ -72,17 +153,79 @@ export function createNoahShelfStore(deps: ShelfDependencies) {
   };
   const cardRows = async (where: string, ...args: (string | number)[]) => (await prepare(`SELECT ${CARD_COLUMNS} FROM noah_packages ${where}`, ...args).all<CardRow>()).results;
 
+  async function evidenceOf(ids: string[]): Promise<Map<string, NoahCardEvidence>> {
+    const out = new Map<string, NoahCardEvidence>();
+    try {
+      for (const part of chunks(ids)) {
+        const found = (await prepare(`SELECT package_id,people,connects,connected,asks,succeeded,reviewed,accepted,first_users,returned,median_seconds FROM noah_package_evidence WHERE package_id IN ${marks(part.length)}`, ...part).all<EvidenceRow>()).results;
+        // 形の違う行（数が合わない）は、無い物として扱う。
+        for (const row of found) { try { out.set(row.package_id, noahEvidenceFromRow(row)); } catch { /* 使わない。 */ } }
+      }
+    } catch (error) { if (!missingTable(error)) throw error; }
+    return out;
+  }
+  async function seenOf(owner: string): Promise<Map<string, { shown: number; opened: number; hidden: boolean }>> {
+    try {
+      const rows = (await prepare('SELECT package_id, shown, opened, hidden FROM noah_shelf_seen WHERE owner_id = ? LIMIT 1000', owner).all<SeenRow>()).results;
+      return new Map(rows.map((row) => [row.package_id, { shown: row.shown, opened: row.opened, hidden: row.hidden === 1 }]));
+    } catch (error) { if (missingTable(error)) return new Map(); throw error; }
+  }
+  /** 本人が履歴の利用に同意しているか（noah_recommendation_settings.history_enabled）。表が無い時は、同意していない物として扱う。 */
+  async function consented(owner: string) {
+    try { return (await prepare('SELECT history_enabled FROM noah_recommendation_settings WHERE owner_id = ?', owner).first<{ history_enabled: number }>())?.history_enabled === 1; }
+    catch (error) { if (error instanceof Error && /no such table: noah_recommendation_settings/u.test(error.message)) return false; throw error; }
+  }
+
+  /**
+   * 見せた記録（切り替え NOAH_SHELF_SEEN）。棚の一覧を返した時（shown）と、詳細を from・pos 付きで開いた時（opened）。
+   * 全員を合わせた数（日・カード・位置の区分）と、履歴の利用に同意した本人の、カードごとの回数。同意していない本人の行は作らない。
+   */
+  async function record(owner: string | null, cards: { id: string; position: number }[], kind: 'shown' | 'opened') {
+    if (!cards.length) return;
+    const at = now(), day = utcDay(at), mine = owner ? await consented(owner) : false;
+    const shown = kind === 'shown' ? 1 : 0, opened = kind === 'opened' ? 1 : 0;
+    const statements = cards.flatMap((card) => [
+      prepare(SHOWN, day, card.id, noahShelfBand(card.position), shown, opened, card.id),
+      ...(owner && mine ? [prepare(SEEN, owner, card.id, shown, opened, at, at, card.id)] : []),
+    ]);
+    try {
+      for (let index = 0; index < statements.length; index += BATCH) await db.batch(statements.slice(index, index + BATCH));
+    } catch (error) { if (!missingTable(error)) throw error; }
+  }
+  /** 本人の「非表示」（同意の有無に依らず受け付ける。本人が頼んだ事なので）。 */
+  async function hide(owner: string, id: string, hidden: boolean) {
+    if (!(await prepare('SELECT 1 AS ok FROM noah_packages WHERE id = ?', id).first())) throw new NoahAgentError('カードが見つかりません。', 404);
+    const at = now();
+    await prepare(SEEN_HIDE, owner, id, hidden ? 1 : 0, at, at).run();
+    return { id, hidden };
+  }
+  /** 実績の数え直し（直近 90 日）。 */
+  async function rollup() {
+    const at = now(), since = at - NOAH_SHELF_EVIDENCE_DAYS * DAY;
+    const written = await prepare(EVIDENCE_ROLLUP, since, since, since, at).run();
+    return { cards: written.meta.changes };
+  }
+  /** 巡回の合図から呼ぶ。UTC の日が変わって、まだ数え直していなければ、数え直す。 */
+  async function rollupIfDue() {
+    const last = await prepare('SELECT MAX(computed_at) AS at FROM noah_package_evidence').first<{ at: number | null }>();
+    if (last?.at != null && Math.floor(last.at / DAY) === Math.floor(now() / DAY)) return null;
+    return rollup();
+  }
+
   /** 棚の一覧（誰でも読める）。運営が確かめたカードを、今の事実で判定し直し、載る物だけを、棚ごとに並べる。 */
-  async function list(): Promise<{ shelves: { id: NoahShelfId; name: string; cards: NoahShelfCard[] }[] }> {
+  async function list(viewer: NoahShelfViewer = { owner: null, byEvidence: false, seen: false }): Promise<{ shelves: { id: NoahShelfId; name: string; cards: NoahShelfCard[] }[] }> {
     const rows = await cardRows("WHERE status='verified' ORDER BY shelf,position,id LIMIT ?", NOAH_SHELVES.length * NOAH_PACKAGE_LIMITS.cardsPerShelf);
     const pkgs = rows.flatMap((row) => { const pkg = parsed(row); return pkg ? [pkg] : []; });
     const families = await familyFacts(familyIds(pkgs));
+    // 実績（切り替えが開いている時だけ読む）と、本人の見た記録（「非表示」は、切り替えに依らず外す）。
+    const evidence = viewer.byEvidence ? await evidenceOf(pkgs.map((pkg) => pkg.id)) : new Map<string, NoahCardEvidence>();
+    const seen = viewer.owner ? await seenOf(viewer.owner) : new Map<string, { shown: number; opened: number; hidden: boolean }>();
     const shelves = NOAH_SHELVES.map((shelf) => {
       const live = pkgs.filter((pkg) => pkg.shelf === shelf.id).flatMap((pkg) => {
         const listing = listingOf(pkg, families);
         return listing.listed ? [{ pkg, listing }] : [];
       }).slice(0, NOAH_PACKAGE_LIMITS.cardsPerShelf);
-      const ranked = rankNoahShelf(live.map(({ pkg }) => ({ pkg, evidence: null })), { byEvidence: false, personal: false });
+      const ranked = rankNoahShelf(live.map(({ pkg }) => ({ pkg, evidence: evidence.get(pkg.id) ?? null, ...(seen.has(pkg.id) ? { seen: seen.get(pkg.id) } : {}) })), { byEvidence: viewer.byEvidence, personal: false });
       const byId = new Map(live.map((item) => [item.pkg.id, item]));
       const cards = ranked.flatMap((rank): NoahShelfCard[] => {
         const item = byId.get(rank.packageId);
@@ -95,6 +238,7 @@ export function createNoahShelfStore(deps: ShelfDependencies) {
           id: pkg.id, shelf: pkg.shelf, topic: pkg.topic, topicLabel: NOAH_TOPIC_LABELS[pkg.topic], title: pkg.title, promise: pkg.promise, give: pkg.give, get: pkg.get,
           priceHint: pkg.priceHint ?? null, advice: pkg.advice === 'health', runs: listing.runs, ownerSteps: listing.ownerSteps, ownerMinutes: listing.ownerMinutes,
           position: rank.position, why: rank.why, target: noahShelfTarget(remote.familyId, remote.tool, pkg.id, rank.position),
+          numbers: viewer.byEvidence ? noahCardNumbers(evidence.get(pkg.id) ?? null) : null,
         }];
       });
       return { id: shelf.id, name: shelf.name, cards };
@@ -264,5 +408,5 @@ export function createNoahShelfStore(deps: ShelfDependencies) {
     return recheck();
   }
 
-  return { list, state, put, verify, retire, review, recheck, recheckIfDue };
+  return { list, state, put, verify, retire, review, recheck, recheckIfDue, record, hide, rollup, rollupIfDue };
 }

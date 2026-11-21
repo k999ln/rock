@@ -10,9 +10,11 @@ import {
 import {
   appendNoahTimeline,
   mixNoahTimeline,
+  noahShelfTimelineCards,
   type NoahTimelineItem,
   type NoahTimelineFilter,
 } from '@/lib/noah-timeline-feed';
+import type { NoahShelfCard } from '@/lib/noah-shelf-view';
 import type { NoahSurfaceMode } from '@/lib/noah-surface';
 
 type Snapshot = {
@@ -44,6 +46,18 @@ async function socialPage(
   if (result.profile && setCommunityKeyProfile(result.profile.id))
     result = await communityFetch<SkySocialState>(path, undefined, signal);
   return result;
+}
+
+/** 棚のカード（最初の頁だけ）。閉じている（404）・読めない時は、何も足さない（タイムラインの誤りにしない）。 */
+async function shelfCards(signal: AbortSignal): Promise<NoahShelfCard[]> {
+  try {
+    const response = await fetch('/api/noah/shelf', { signal, cache: 'no-store' });
+    if (response.status !== 200 || !response.headers.get('content-type')?.includes('application/json')) return [];
+    const body = (await response.json()) as { shelves?: { cards?: NoahShelfCard[] }[] };
+    return Array.isArray(body.shelves) ? noahShelfTimelineCards(body.shelves) : [];
+  } catch {
+    return [];
+  }
 }
 
 export function useNoahTimeline(
@@ -103,7 +117,8 @@ export function useNoahTimeline(
               controller.signal,
             )
           : Promise.resolve(undefined),
-      ]).then(([agents, social, opinions]) => {
+        includeSocial ? shelfCards(controller.signal) : Promise.resolve([]),
+      ]).then(([agents, social, opinions, shelf]) => {
         if (controller.signal.aborted || version !== generation.current) return;
         const errors: string[] = [];
         if (agents.status === 'rejected')
@@ -125,6 +140,7 @@ export function useNoahTimeline(
             a?.entries ?? [],
             s?.posts ?? [],
             o?.entries ?? [],
+            shelf.status === 'fulfilled' ? shelf.value : [],
           ),
         });
       });

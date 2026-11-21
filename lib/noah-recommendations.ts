@@ -1,6 +1,7 @@
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError, noahSha256 } from './noah-agent-upload.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
+import { noahShelfForget } from './noah-shelf-store.ts';
 import { noahRuntimePreferences, normalizeRecommendationTag, type NoahRecommendationContext, type NoahRecommendationSettings } from './noah-recommendation-policy.ts';
 
 type Database = Pick<D1Database, 'prepare'>;
@@ -52,6 +53,8 @@ export function createNoahRecommendationsApi({ db, authenticate, clock = Date.no
           history_since=excluded.history_since,runtime=excluded.runtime,updated_at=excluded.updated_at WHERE revision=? RETURNING revision`)
           .bind(owner,Number(input.historyEnabled),since,input.runtime,clock(),input.revision).all();
         if (!saved.results.length) throw new NoahAgentError('別の画面で設定が変更されました。読み直してください。',409);
+        // 棚の見た記録も、同じ時に消す（「非表示」だけは残す。docs/noah/spec-110-shelf.md の 6 章）。
+        if (input.clearHistory || !input.historyEnabled) await noahShelfForget(db, owner);
       }
       return json({settings:await noahRecommendationSettings(db,owner),ownerScope:scope});
     } catch(e) {
