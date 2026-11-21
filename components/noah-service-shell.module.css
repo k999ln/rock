@@ -51,6 +51,86 @@
 .skip:focus {
   top: 12px;
 }
+.gridTopbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 72px;
+  padding: 8px 20px;
+  background: #fffffffa;
+  backdrop-filter: blur(14px);
+}
+.gridBrand, .gridMenuButton, .gridAccount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  color: inherit;
+}
+.gridBrand:hover, .gridMenuButton:hover, .gridAccount:hover {
+  background: #f7f5fa;
+}
+.gridBrand strong { font-size: 23px; letter-spacing: -1px; }
+.gridMenuButton { cursor: pointer; }
+.gridMenuButton svg { flex-shrink: 0; }
+.gridSearchSlot { flex: 1; min-width: 0; }
+.gridSearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 2px solid transparent;
+  border-radius: 24px;
+  background: #efeff1;
+}
+.gridSearch:focus-within { border-color: #a180df; background: #fff; }
+.gridSearch svg { flex-shrink: 0; color: #71717a; }
+.gridSearch input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+}
+.gridSearch input:focus-visible { outline: none; }
+.gridMenuPanel {
+  inset: 64px 12px auto auto;
+  width: min(20rem, calc(100vw - 24px));
+  max-height: calc(100svh - 76px);
+  margin: 0;
+  padding: 8px;
+  border: 1px solid #e8e5ee;
+  border-radius: 16px;
+  box-shadow: 0 10px 32px #20202424;
+  overflow-y: auto;
+}
+.gridMenuPanel a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.gridMenuPanel a:hover { background: #f7f5fa; }
+.gridBody { padding: 0 16px 48px; min-width: 0; }
+@media (max-width: 520px) {
+  .gridTopbar { gap: 5px; min-height: 58px; padding: 6px 8px; }
+  .gridBrand, .gridMenuButton, .gridAccount { padding-inline: 6px; }
+  .gridBrand strong, .gridMenuButton span { display: none; }
+  .gridBody { padding-inline: 8px; }
+}
 .body {
   display: grid;
   grid-template-columns: 220px minmax(0, 900px);

@@ -286,7 +286,10 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   const detail = ui.mount(DETAIL, { id: familyId(1) });
   await detail.flush();
   // 仕事の一覧（この Agent への、前の依頼と成果）は、つなぐ前から読む（サインイン済みの人だけ）。つないだ後に、読み直さない。
-  assert.deepEqual(ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['GET', '/api/noah/registration'], ['GET', '/api/noah/ask'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
+  const seen = ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]);
+  const pinCalls = ([, url]) => url === '/api/noah/boards' || url === '/api/noah/pins';
+  assert.deepEqual(seen.filter((call) => !pinCalls(call)), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['GET', '/api/noah/registration'], ['GET', '/api/noah/ask'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
+  assert.ok(seen.filter(pinCalls).every(([method]) => method === 'GET'));
   assert.equal(posts(ui)[0].body.id, handoff.id);
   assert.deepEqual([w.rows().length, w.rows()[0].id, w.rows()[0].state, w.rows()[0].owner_id], [1, handoff.id, 'connected', 'owner-a']);
   assert.match(detail.text(), /道具を選ぶ/);
@@ -344,7 +347,7 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.match(text, new RegExp(`最後に確かめた日 ${new Date(NOW).getMonth() + 1}/${new Date(NOW).getDate()}`));
   // 送り先は、接続の前に出ている。
   assert.match(text, new RegExp(`送信先: ${hostOf(1).replaceAll('.', '\\.')}`));
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続', '保存']);
   assert.doesNotMatch(text, /切る/);
   // 提供者のページは、別の tab で開く。行き先の host を出す。
   assert.deepEqual(page.find('a', '提供者のページ').map((node) => [page.text(node), node.props.href, node.props.target, node.props.rel]), [['提供者のページ（mizan.example.com）', 'https://mizan.example.com/about', '_blank', 'noopener noreferrer nofollow']]);
@@ -360,8 +363,8 @@ void test('the detail screen: where the input goes is shown before connecting; t
     'lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publish送る前に確かめますpublish の説明', 'configure入力欄ではまだ使えませんconfigure の説明',
   ]);
   assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
-  // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。
-  assert.deepEqual(actions(page), ['切る']);
+  // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。「保存」（ボードへ。task 115）は残る。
+  assert.deepEqual(actions(page), ['保存', '切る']);
   assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['lookup', 'stats', 'publish']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっています。切る切っても、受け取った成果は残ります。$/);
   // 「つなぎました」は 3 秒で消える。消えた後は、接続の欄（区切りの線）ごと出さない。
@@ -379,7 +382,7 @@ void test('the detail screen: where the input goes is shown before connecting; t
   // 切る。「接続」に戻る。道具の一覧は消える。記録は残る。
   await page.click('切る');
   assert.deepEqual([w.rows().length, w.rows()[0].state], [1, 'disconnected']);
-  assert.deepEqual(actions(page), ['接続']);
+  assert.deepEqual(actions(page), ['接続', '保存']);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   assert.equal([...ui.storage.keys()].filter((key) => key.startsWith('noah-tools:')).length, 0);
   // もう一度つなげる（新しい操作 ID）。
@@ -396,7 +399,7 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   server.options.status = 503;
   await page.click('接続');
   assert.match(page.text(), /相手のサーバーが応答しません。時間をおいて試してください。/);
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['もう一度', '切る']);
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['もう一度', '保存', '切る']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっていません。切る/);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   // 続けて押しても、相手へ握手を送り続けない。
@@ -409,7 +412,7 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   w.f.advance(5000);
   await page.click('もう一度');
   assert.equal(w.rows()[0].state, 'connected');
-  assert.deepEqual([w.rows().length, actions(page)], [1, ['切る']]);
+  assert.deepEqual([w.rows().length, actions(page)], [1, ['保存', '切る']]);
   assert.match(page.text(), /道具を選ぶ2 個/);
 });
 
@@ -523,7 +526,7 @@ void test('the entry on the explore screen appears only for people who may see t
   const retried = broken.ui.mount(ENTRY);
   await retried.flush();
   assert.deepEqual([links(retried).length, probes(broken.ui)], [1, 1]);
-  // 外枠の menu（Codex の file）は、変えていない: 行は 4 つのまま。
+  // 一覧や詳細では現在の本番メニューを維持する。
   const shell = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
   await shell.flush();
   assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agent', '実行中', '成果']);

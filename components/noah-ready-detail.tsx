@@ -18,6 +18,7 @@ import NoahAsk from './noah-ask';
 import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
 import NoahTrialReport from './noah-trial-report';
+import NoahPinExtras from './noah-pin-extras';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
 
@@ -106,6 +107,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
       {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a></p>}
       <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
+      {detail.listed && <NoahPinExtras key={`pin:${detail.id}`} item={detail} ownerScope={detail.ownerScope} />}
     </article>
 
     {live?.state === 'connected' && <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}

@@ -7,6 +7,7 @@
 - Noah公開167で利用開始を接続確認へ変更し、専用新規登録を撤去。明示されたNoah権限で同じ本人の登録情報・仕事・成果を使うAPIを追加。公開eSIM設定と実機での本人連携は未完了。成果カード・画像保存は公開165へ反映。最終verify 4,829成功・4skip、公開390pxと元成果への復帰を確認（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 
 - Noah公開版163/164でWorkersの外部登録・認証付き実行を修正し、実登録1件→成果保存と本人の実スマホでの成果表示を確認。失敗の再入力/履歴保持、匿名タイムライン、100人の合成分離試験を追加。全体verify 4,811成功・4skip。100人の段階試用手順を記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+- Noah のホームをピンタレスト風にした（task 115。Opus / Noelle。本人指示「Noahもっとピンタレストっぽく。redditとかgithubでUIとアルゴリズム取ってきて」と回答）。今動かせる Agent のグリッド（Gestalt の Masonry の決まりを書き写した・2〜6 列・分野の色の面と頭文字）、ボードへ保存（公開も選べる・フォロー）、「表示しない」、詳細の「これも使われています」、上の帯の検索とメニュー。並びは学習なし・乱数なし（X の For You の作りの形・Reddit の hot・Pinterest の Pixie を決まった値で。票 = 保存した人 + 2 × 成果が返った人 − 5 × 表示しない人）。表 6 つ（migration 0054）、`GET /api/noah/pins`・`GET`/`POST /api/noah/boards`。一般公開までは審査者だけ（一般の人は今のタイムライン）。試験 9 本（`tests/noah-pins.test.mjs`）。設計は `docs/noah/spec-115-pin-grid.md`、決定は docs/structure/07 の 2026-11-22。本番の migration・配備はしていない。
 
 - NoahにCowAgentのMac準備ガイド（18秒の操作動画・日本語字幕）と公開3ページのサイトマップを追加し、カタログ・README・YouTube投稿用の導線をつないだ。配備・投稿前（task 71、[PR #369](https://github.com/k999ln/rock/pull/369)）。
 
