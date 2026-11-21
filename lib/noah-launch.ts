@@ -54,6 +54,15 @@ type Command = {
   created_at: number;
   updated_at: number;
 };
+type RunnerRequest = {
+  id: string;
+  deviceId: string;
+  action: string;
+  agentId?: string;
+  connectionId?: string;
+  prompt?: string;
+  consent?: string;
+};
 type Payload = {
   pin: NoahAgentPin;
   connectionId?: string;
@@ -166,6 +175,21 @@ export function createNoahLaunchService(deps: Deps) {
       .bind(now(), owner, now())
       .run();
     await reconcileUnknown(owner);
+  }
+  async function placement(owner: string, input: RunnerRequest, id: string, requestDigest: string) {
+    const existing = await command(owner, id);
+    if (existing) {
+      if (existing.request_sha256 !== requestDigest)
+        throw new NoahAgentError('同じ操作IDの内容は変更できません。', 409);
+      return { kind: 'existing' as const, command: existing };
+    }
+
+    const current = await device(owner, input.deviceId);
+    if (!current) return { kind: 'unavailable' as const };
+    if (current.last_seen_at <= now() - LEASE) {
+      return input.action === 'run' ? { kind: 'cloud' as const } : { kind: 'unavailable' as const };
+    }
+    return { kind: 'runner' as const, device: current };
   }
   async function runner(
     owner: string,
@@ -414,32 +438,27 @@ export function createNoahLaunchService(deps: Deps) {
         ownerScope: await ownerScopeFor(owner),
       };
     },
-    async enqueue(
-      owner: string,
-      input: {
-        id: string;
-        deviceId: string;
-        action: string;
-        agentId?: string;
-        connectionId?: string;
-        prompt?: string;
-        consent?: string;
-      },
-    ) {
-      const id = noahUploadId(input.id),
-        d = await device(owner, input.deviceId);
-      if (!d || d.last_seen_at <= now() - LEASE)
+    async computePlacement(owner: string, input: RunnerRequest) {
+      return (await placement(owner, input, noahUploadId(input.id), await hash(input))).kind;
+    },
+    async enqueue(owner: string, input: RunnerRequest) {
+      const id = noahUploadId(input.id);
+      const requestDigest = await hash(input);
+      const target = await placement(owner, input, id, requestDigest);
+      if (target.kind === 'existing') {
+        const old = target.command;
+        if (old.state === 'claimed' && old.lease_until <= now()) {
+          await expire(owner);
+          return present((await command(owner, id)) ?? old);
+        }
+        return present(old);
+      }
+      if (target.kind !== 'runner')
         throw new NoahAgentError(
           'MacのNoah Runnerを起動・接続してください。',
           409,
         );
-      const requestDigest = await hash(input),
-        old = await command(owner, id);
-      if (old) {
-        if (old.request_sha256 !== requestDigest)
-          throw new NoahAgentError('同じ操作IDの内容は変更できません。', 409);
-        return present(old);
-      }
+      const d = target.device;
       let payload: Payload;
       if (input.action === 'connect') {
         const pin = await resolveNoahPin(deps, owner, text(input.agentId, 100));
