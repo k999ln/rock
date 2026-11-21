@@ -1,4 +1,4 @@
-import { importSPKI, importX509, jwtVerify } from 'jose';
+import { base64url, importSPKI, importX509, jwtVerify } from 'jose';
 
 export const MAX_SIM_PROOF_TOKEN_LENGTH = 8_192;
 
@@ -32,6 +32,10 @@ export async function verifySimProof(token: string, options: SimProofOptions): P
   }
 
   try {
+    const segments = token.split('.');
+    if (segments.length !== 3 || segments.some((part) =>
+      !part || base64url.encode(base64url.decode(part)) !== part)) return null;
+
     const { payload } = await jwtVerify(token, (header) => {
       const key = typeof header.kid === 'string' ? publicKeys.get(header.kid) : undefined;
       if (!key) throw new Error('SIM_PROOF_UNKNOWN_KEY');

@@ -73,6 +73,14 @@ const invalidTokens = {
     const first = signature[0] === 'A' ? 'B' : 'A';
     return `${header}.${payload}.${first}${signature.slice(1)}`;
   },
+  'signature recoded with nonzero unused bits': async () => {
+    const [header, payload, signature] = (await endorse()).split('.');
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    const last = alphabet.indexOf(signature.at(-1));
+    const recoded = signature.slice(0, -1) + alphabet[last + 1];
+    assert.deepEqual(Buffer.from(recoded, 'base64url'), Buffer.from(signature, 'base64url'));
+    return `${header}.${payload}.${recoded}`;
+  },
   'algorithm substitution': () => new SignJWT({ iss: 'https://soracom.io' })
     .setProtectedHeader({ alg: 'HS256', kid }).sign(new TextEncoder().encode(hashSecret)),
 };

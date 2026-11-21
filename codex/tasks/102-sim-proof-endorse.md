@@ -16,7 +16,7 @@ Hub・専用端末（いつも）と、スマホの型 S（データ回線にし
 
 ### 1. Endorse のトークン形式（SORACOM 公式資料）
 
-- 応答の `token` はヘッダー・ペイロード・署名を `.` で区切った JWT。ヘッダーの署名方式は `alg: RS256`。`kid` は署名鍵に対応する PEM ファイル名で、公開鍵は `https://s3-ap-northeast-1.amazonaws.com/soracom-public-keys/` の下から取得する。鍵の更新時期、旧鍵の提供期間、自動更新の仕様は公開資料に記載されていない。[トークン検証（英語）](https://docs.soracom.io/en/services/endorse/verification) · [認証トークンの検証（日本語）](https://users.soracom.io/ja-jp/docs/endorse/validate-token/)
+- 応答の `token` はヘッダー・ペイロード・署名を `.` で区切った JWT。ヘッダーの署名方式は `alg: RS256`。`kid` は署名鍵に対応する PEM ファイル名で、公開鍵は `https://s3-ap-northeast-1.amazonaws.com/soracom-public-keys/` の下から取得する。鍵の更新時期、旧鍵の提供期間、自動更新の仕様は公開資料に記載されていない。[トークン取得](https://docs.soracom.io/en/services/endorse/request) · [トークン検証（英語）](https://docs.soracom.io/en/services/endorse/verification) · [認証トークンの検証（日本語）](https://users.soracom.io/ja-jp/docs/endorse/validate-token/)
 - 公式例の JWT 項目は `iss`（`https://soracom.io`）、`aud`（`soracom-endorse-audience`）、`sub`（`soracom-endorse`）、`iat`、`nbf`、`exp`、`jti`。`imsi` と `imei` は `soracom-endorse-claim` オブジェクトの中にある。SIM グループ設定の `parametersToEndorse` で `imsi` と `imei` を有効にする。設定項目として `simId`、`msisdn`、`requestParameters` も選べる。[認証トークンの検証](https://users.soracom.io/ja-jp/docs/endorse/validate-token/) · [Endorse 設定](https://docs.soracom.io/en/services/endorse/configuration)
 - 有効期限は `exp`（Unix 時刻の秒）。グループの `tokenTimeoutSeconds` で変更でき、既定は発行から 600 秒。期限内は、Air for Cellular 経由で取得したトークンを別の回線から送れる。[Endorse 設定](https://docs.soracom.io/en/services/endorse/configuration) · [Endorse の特徴](https://users.soracom.io/ja-jp/docs/endorse/feature/)
 
