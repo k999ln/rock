@@ -1,6 +1,6 @@
-# 104 300 人の試行（経路の札・段の判定・本人の報告）
+# 114 300 人の試行（経路の札・段の判定・本人の報告）
 
-仕様: **[docs/noah/trial-300.md](../../docs/noah/trial-300.md)**（これ 1 本で足りる）。型と参照実装: docs/contracts/noah-shelf-v1.ts の `NOAH_TRIAL`・`noahTrialGate`・`noahTrialReach`・`noahEarnEstimate`・`noahTrialVia`。DDL 案: `noah_trial_channels`・`noah_trial_entries`・`noah_trial_reports`。問い合わせ: `trial_totals`・`trial_funnel`・`trial_earn`。先に 100 と 97（運営の画面）。
+仕様: **[docs/noah/trial-300.md](../../docs/noah/trial-300.md)**（これ 1 本で足りる）。型と参照実装: docs/contracts/noah-shelf-v1.ts の `NOAH_TRIAL`・`noahTrialGate`・`noahTrialReach`・`noahEarnEstimate`・`noahTrialVia`。DDL 案: `noah_trial_channels`・`noah_trial_entries`・`noah_trial_reports`。問い合わせ: `trial_totals`・`trial_funnel`・`trial_earn`。先に 110 と 97（運営の画面）。
 
 ## やること
 

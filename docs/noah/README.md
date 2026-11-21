@@ -18,8 +18,8 @@
 | 1 | —（出した後） | 89 | [ターミナルの口](spec-89-terminal-mouth.md) | `noah-mouth-v1.ts`、`noah-intake-v1.ts` | `noah-mouth.test.mjs` |
 | 2 | L8（全部） | 97 | [出すための運用](spec-97-launch-ops.md) | `noah-flags-v1.ts`、`noah-intake-v1.ts` | `noah-flags.test.mjs`、`noah-intake.test.mjs` |
 | 2 | L9（全部） | 90 | [手元だけの一周](spec-90-phone-only-loop.md) | （参照実装の全部をつなぐ） | `noah-loop.test.mjs`（通信しない一周。`tests/` には、本物の入口を通す版を足す） |
-| 1 | L5・L8 に足す（13 章） | 100 | [棚とパッケージ](spec-100-shelf.md)（101・102・103 も、この仕様書の章を使う） | `noah-shelf-v1.ts`、`noah-shelf-v1.sql`、`noah-shelf-queries-v1.sql` | `noah-shelf.test.mjs`、`validate-noah-shelf-v1.py` |
-| 2 | 出した直後 | 104 | [300 人に出す](trial-300.md) | `noah-shelf-v1.ts`（`NOAH_TRIAL` ほか）、`noah-shelf-v1.sql`（`noah_trial_*`） | 同上 |
+| 1 | L5・L8 に足す（13 章） | 110 | [棚とパッケージ](spec-110-shelf.md)（111・112・113 も、この仕様書の章を使う） | `noah-shelf-v1.ts`、`noah-shelf-v1.sql`、`noah-shelf-queries-v1.sql` | `noah-shelf.test.mjs`、`validate-noah-shelf-v1.py` |
+| 2 | 出した直後 | 114 | [300 人に出す](trial-300.md) | `noah-shelf-v1.ts`（`NOAH_TRIAL` ほか）、`noah-shelf-v1.sql`（`noah_trial_*`） | 同上 |
 
 段 2 以降の残り（83・92・94 など）の仕様書は、ローンチの後に同じ形で足す。それまでは詳細設計書の章が入口。
 

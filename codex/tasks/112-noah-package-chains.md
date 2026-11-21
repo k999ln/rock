@@ -1,6 +1,6 @@
-# 102 家の端末のカード・工程をつなぐカード・札の候補（出した後）
+# 112 家の端末のカード・工程をつなぐカード・札の候補（出した後）
 
-仕様: **[docs/noah/spec-100-shelf.md](../../docs/noah/spec-100-shelf.md)** の 3.1・4・7 章。型と参照実装: docs/contracts/noah-shelf-v1.ts の `noahHomeFingerprint`・`noahBuiltinFingerprint`・`parseNoahCardProposal`・`noahPackageCapabilities`。先に 100。関係する task: 33（工程の計画を Eve の依頼へつなぐ）、71・83（家の端末）、89（ターミナルの口）。
+仕様: **[docs/noah/spec-110-shelf.md](../../docs/noah/spec-110-shelf.md)** の 3.1・4・7 章。型と参照実装: docs/contracts/noah-shelf-v1.ts の `noahHomeFingerprint`・`noahBuiltinFingerprint`・`parseNoahCardProposal`・`noahPackageCapabilities`。先に 110。関係する task: 33（工程の計画を Eve の依頼へつなぐ）、71・83（家の端末）、89（ターミナルの口）。
 
 ## やること
 

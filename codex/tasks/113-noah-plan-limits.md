@@ -1,6 +1,6 @@
-# 103 つなげる数を、料金ごとにする（出した後）
+# 113 つなげる数を、料金ごとにする（出した後）
 
-仕様: **[docs/noah/spec-100-shelf.md](../../docs/noah/spec-100-shelf.md)** の 8 章。型と参照実装: docs/contracts/noah-shelf-v1.ts の `NOAH_PLAN_CARDS`・`noahLiveCards`・`noahPlanConnectGate`。DDL 案: `noah_package_connections`。問い合わせ: `live_cards`。先に 74（`noah_connections` と、つなぐ前の上限）と 100。
+仕様: **[docs/noah/spec-110-shelf.md](../../docs/noah/spec-110-shelf.md)** の 8 章。型と参照実装: docs/contracts/noah-shelf-v1.ts の `NOAH_PLAN_CARDS`・`noahLiveCards`・`noahPlanConnectGate`。DDL 案: `noah_package_connections`。問い合わせ: `live_cards`。先に 74（`noah_connections` と、つなぐ前の上限）と 110。
 
 本人の決定（2026-11-20）: 無料でも基本は使えて、5〜6 個つなげる。課金すると、もっとつなげる。値段は未定。
 

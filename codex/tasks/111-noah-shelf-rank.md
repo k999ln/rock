@@ -1,6 +1,6 @@
-# 101 実績の並びと、見せた記録（出した後）
+# 111 実績の並びと、見せた記録（出した後）
 
-仕様: **[docs/noah/spec-100-shelf.md](../../docs/noah/spec-100-shelf.md)** の 5・6・11 章。型と参照実装: docs/contracts/noah-shelf-v1.ts の `noahRate`・`noahCardScore`・`noahCardNumbers`・`rankNoahShelf`・`noahShelfBand`・`noahEvidenceFromRow`。DDL 案: `noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen`。問い合わせ: `evidence_rollup`・`evidence`・`shown`・`seen`・`seen_hide`・`seen_of_owner`・`seen_forget`・`seen_forget_hidden`。先に 100 と 87（`noah_asks`）。
+仕様: **[docs/noah/spec-110-shelf.md](../../docs/noah/spec-110-shelf.md)** の 5・6・11 章。型と参照実装: docs/contracts/noah-shelf-v1.ts の `noahRate`・`noahCardScore`・`noahCardNumbers`・`rankNoahShelf`・`noahShelfBand`・`noahEvidenceFromRow`。DDL 案: `noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen`。問い合わせ: `evidence_rollup`・`evidence`・`shown`・`seen`・`seen_hide`・`seen_of_owner`・`seen_forget`・`seen_forget_hidden`。先に 110 と 87（`noah_asks`）。
 
 ## やること
 

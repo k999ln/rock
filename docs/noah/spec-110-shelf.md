@@ -1,6 +1,6 @@
-# 仕様書 100 — 棚とパッケージ（選ぶ手間を無くす・学習なしの並び・札・つなげる数）
+# 仕様書 110 — 棚とパッケージ（選ぶ手間を無くす・学習なしの並び・札・つなげる数）
 
-task: [100 棚（ローンチ分）](../../codex/tasks/100-noah-shelf.md)、[101 実績の並びと見せた記録](../../codex/tasks/101-noah-shelf-rank.md)、[102 家の端末のカードと、工程をつなぐカード](../../codex/tasks/102-noah-package-chains.md)、[103 つなげる数](../../codex/tasks/103-noah-plan-limits.md)。300 人への出し方は [trial-300.md](trial-300.md)（task [104](../../codex/tasks/104-noah-trial-300.md)）。
+task: [110 棚（ローンチ分）](../../codex/tasks/110-noah-shelf.md)、[111 実績の並びと見せた記録](../../codex/tasks/111-noah-shelf-rank.md)、[112 家の端末のカードと、工程をつなぐカード](../../codex/tasks/112-noah-package-chains.md)、[113 つなげる数](../../codex/tasks/113-noah-plan-limits.md)。300 人への出し方は [trial-300.md](trial-300.md)（task [114](../../codex/tasks/114-noah-trial-300.md)）。
 型契約と参照実装: [noah-shelf-v1.ts](../contracts/noah-shelf-v1.ts)。DDL 案: [noah-shelf-v1.sql](../contracts/noah-shelf-v1.sql)。問い合わせ: [noah-shelf-queries-v1.sql](../contracts/noah-shelf-queries-v1.sql)。試験: [noah-shelf.test.mjs](../design-validation/noah/noah-shelf.test.mjs)（17 群）、[validate-noah-shelf-v1.py](../design-validation/noah/validate-noah-shelf-v1.py)（6 群。拒否を確かめた行 73）。最初のカード案: [fixtures/shelf-seed.json](../design-validation/noah/fixtures/shelf-seed.json)（12 枚。全部が下書き）。
 
 **ローンチまでに作る範囲は 13 章。** [ローンチの最小限](mvp-launch.md) の 13 章「入口の棚」を、作れる細かさにした物。それ以外（実績の並び、見せた記録、工程をつなぐカード、料金ごとの数）は、出した後。
@@ -183,7 +183,7 @@ task: [100 棚（ローンチ分）](../../codex/tasks/100-noah-shelf.md)、[101
 - 数えるのはカード: 同じカードの中の接続は、何本あっても 1（`noah_package_connections`・`live_cards`）。カードの外でつないだ物は、1 本が 1。
 - 無料で 6 枚つないである本人が 7 枚目を押した時の文: 「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」（409）。
 - 切り替えが閉の間は、全員が今の上限（50）。有料の値段と、月額の候補（¥600）に含めるかは、未定（本人が決める）。この仕様は、数を切り替える所だけを用意する。
-- 料金を本人の何から読むか（今の利用権の、どの行か）は、task 103 で、今の `lib/` の利用権の読み方に合わせて決める。
+- 料金を本人の何から読むか（今の利用権の、どの行か）は、task 113 で、今の `lib/` の利用権の読み方に合わせて決める。
 
 ## 9. 助言を含むカード（健康）
 
@@ -227,7 +227,7 @@ task: [100 棚（ローンチ分）](../../codex/tasks/100-noah-shelf.md)、[101
 | 売値の目安 | 「先に売った人の最低額: 3,000 円（約束ではありません）」 |
 | 載せていない理由（運営の画面） | 「外しました」「まだ動かして確かめていません」「専門家の確かめが、まだです」「工程をつなぐカードは、まだ出せません」「あなたの端末で動くカードは、まだ出せません」「工程の先がありません」「工程の先が、今は動きません」「確かめた時から、中身が変わりました。もう一度動かしてください」 |
 
-タイムライン（`/noah`）へ流す時は、カードを 1 つの種類として、今の混合タイムラインに入れる（種類と出どころを常に出す決まりのまま。出どころは「Noah の棚」）。流す順は 5 章の並び。これは出した後（task 101）。
+タイムライン（`/noah`）へ流す時は、カードを 1 つの種類として、今の混合タイムラインに入れる（種類と出どころを常に出す決まりのまま。出どころは「Noah の棚」）。流す順は 5 章の並び。これは出した後（task 111）。
 
 ## 11. 学習を足す時（今は足さない）
 
@@ -245,15 +245,15 @@ X の公開されている並び（[xai-org/x-algorithm](https://github.com/xai-
 
 | ファイル | 今 | 変える事 | task |
 | --- | --- | --- | --- |
-| `lib/noah-shelf.ts` | 無い | 型契約から、関数ごと移す（書き直さない） | 100 |
-| `drizzle/00NN_noah_shelf.sql`・`db/schema.ts` | 無い | DDL 案から、その task が使う表だけを移す | 100（`noah_packages`・`noah_package_steps`）、101（`noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen`）、102・103（`noah_package_connections`）、104（`noah_trial_*`） |
-| `lib/noah-shelf-facts.ts` | 無い | 新規。カードの工程 → 今の事実（`NoahStepFact`）。系列は `noah_intake_families`・`noah_intake_checks` の行と、握手で読んだ道具の定義の hash。固定 adapter は `RECIPES` から `noahHomeFingerprint`。Noah の中の道具は `compositionCapabilities` から `noahBuiltinFingerprint` | 100（系列）、102（残り） |
-| `lib/noah-shelf-store.ts` | 無い | 新規。`createNoahShelfStore({ db, now })` → `list(viewer)`・`put`・`verify`・`retire`・`review`・`recheck(familyId?)`・`rollup()`・`seen()` | 100・101 |
-| `lib/noah-shelf-api.ts`、`app/api/noah/shelf/route.ts` | 無い | 新規。10 章の 2 つの入口 | 100 |
-| `lib/noah-intake-store.ts`（85 が作る） | — | 握手・実行・取り下げの直後と、1 日 1 回の合図で `recheck` を呼ぶ。合図の中で `rollup` を呼ぶ | 100・101 |
-| `components/noah-shelf.tsx`、`components/noah-ready.tsx`、`components/noah-review.tsx` | — | 10 章 | 100 |
-| `lib/noah-timeline-feed.ts` | ある | カードを、種類の 1 つとして足す | 101 |
-| `lib/noah-connect.ts`（74 が作る） | — | つなぐ前の上限を `noahPlanConnectGate` に替える（切り替えが開いている時だけ） | 103 |
+| `lib/noah-shelf.ts` | 無い | 型契約から、関数ごと移す（書き直さない） | 110 |
+| `drizzle/00NN_noah_shelf.sql`・`db/schema.ts` | 無い | DDL 案から、その task が使う表だけを移す | 110（`noah_packages`・`noah_package_steps`）、111（`noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen`）、112・113（`noah_package_connections`）、114（`noah_trial_*`） |
+| `lib/noah-shelf-facts.ts` | 無い | 新規。カードの工程 → 今の事実（`NoahStepFact`）。系列は `noah_intake_families`・`noah_intake_checks` の行と、握手で読んだ道具の定義の hash。固定 adapter は `RECIPES` から `noahHomeFingerprint`。Noah の中の道具は `compositionCapabilities` から `noahBuiltinFingerprint` | 110（系列）、112（残り） |
+| `lib/noah-shelf-store.ts` | 無い | 新規。`createNoahShelfStore({ db, now })` → `list(viewer)`・`put`・`verify`・`retire`・`review`・`recheck(familyId?)`・`rollup()`・`seen()` | 110・111 |
+| `lib/noah-shelf-api.ts`、`app/api/noah/shelf/route.ts` | 無い | 新規。10 章の 2 つの入口 | 110 |
+| `lib/noah-intake-store.ts`（85 が作る） | — | 握手・実行・取り下げの直後と、1 日 1 回の合図で `recheck` を呼ぶ。合図の中で `rollup` を呼ぶ | 110・111 |
+| `components/noah-shelf.tsx`、`components/noah-ready.tsx`、`components/noah-review.tsx` | — | 10 章 | 110 |
+| `lib/noah-timeline-feed.ts` | ある | カードを、種類の 1 つとして足す | 111 |
+| `lib/noah-connect.ts`（74 が作る） | — | つなぐ前の上限を `noahPlanConnectGate` に替える（切り替えが開いている時だけ） | 113 |
 | `lib/sky-recipe-planner.ts`・`lib/noah-recommendation-policy.ts` | ある | 変えない（読むだけ） | — |
 
 ## 13. ローンチの範囲（[ローンチの最小限](mvp-launch.md) の L5 と L8 に足す分）
@@ -267,7 +267,7 @@ X の公開されている並び（[xai-org/x-algorithm](https://github.com/xai-
 - 見直す時機の ①〜③（4 章）。
 - [ローンチの最小限](mvp-launch.md) の G2 の読み替え: 出す前に運営が動かす 100 件は、3 つの棚の領域から選ぶ。**棚ごとに 5 枚以上が載ってから出す**（候補）。
 
-入れない物（出した後）: 実績の並びと見せた記録（101）。家の端末・Noah の中の道具のカード、工程をつなぐカード、札の候補（102）。料金ごとの数（103）。
+入れない物（出した後）: 実績の並びと見せた記録（111）。家の端末・Noah の中の道具のカード、工程をつなぐカード、札の候補（112）。料金ごとの数（113）。
 
 完了の定義:
 

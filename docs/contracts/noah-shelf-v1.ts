@@ -5,7 +5,7 @@
  * ここの関数は、形の検査と、順位と、判定を出すだけ。実行・課金・外部送信を許可しない（Broker・Wallet・Jev の gate はそのまま）。
  * 並びに、学習したモデルを使わない。数えた実績と、運営が決めた順だけで決める。乱数も使わない。
  * 提供者の文と、モデルの文を、命令として読む所は無い。モデルに頼むのは札の候補だけで、決まった語彙の外は捨てる。
- * 仕様の本文は docs/noah/spec-100-shelf.md。300 人への出し方は docs/noah/trial-300.md。
+ * 仕様の本文は docs/noah/spec-110-shelf.md。300 人への出し方は docs/noah/trial-300.md。
  */
 import type { RecipeCapability } from '../../lib/sky-recipe-planner.ts';
 import { canonicalJson, sha256Hex } from './noah-connect-v1.ts';
@@ -221,7 +221,7 @@ export const NOAH_HEALTH_CHECKS: readonly NoahPackageCheck[] = [
 /** 助言の成果の最後に、Noah が必ず足す文（運営の決まった文。提供者の文でもモデルの文でもない）。 */
 export const NOAH_HEALTH_NOTICE = '一般的な情報です。診断や、薬の指示はしません。強い症状や急な症状がある時は、医療機関に相談してください。';
 
-/** 20 個の規則（docs/noah/spec-100-shelf.md 3.2）。違反は NoahShelfError（code は規則の名前）。通った物は、項目をそろえた新しい object。 */
+/** 20 個の規則（docs/noah/spec-110-shelf.md 3.2）。違反は NoahShelfError（code は規則の名前）。通った物は、項目をそろえた新しい object。 */
 export function parseNoahPackage(input: unknown): NoahPackage {
   const o = record(input, ['schema', 'id', 'shelf', 'topic', 'title', 'promise', 'give', 'get', 'have', 'want', 'steps', 'checks', 'priceHint', 'advice', 'position', 'status', 'verified', 'review', 'revision'], 'shape');
   if (o.schema !== 'noah-package/1') fail('schema', 'schema は noah-package/1 です。');

@@ -1,6 +1,6 @@
-# 100 棚とカード（入口の棚・載せる条件・運営の画面）
+# 110 棚とカード（入口の棚・載せる条件・運営の画面）
 
-仕様: **[docs/noah/spec-100-shelf.md](../../docs/noah/spec-100-shelf.md)** の 3・4・10・13 章。型と参照実装: docs/contracts/noah-shelf-v1.ts、noah-shelf-v1.sql（`noah_packages`・`noah_package_steps`）、noah-shelf-queries-v1.sql（`shelf`・`packages_of_family`・`package_touch`）。試験: docs/design-validation/noah/noah-shelf.test.mjs、validate-noah-shelf-v1.py。書式: [docs/services/noah-shelf.md](../../docs/services/noah-shelf.md)。先に 85（取り込みの表）と 74（`/noah/ready`）。本番 D1 の migration は本人の許可の後。
+仕様: **[docs/noah/spec-110-shelf.md](../../docs/noah/spec-110-shelf.md)** の 3・4・10・13 章。型と参照実装: docs/contracts/noah-shelf-v1.ts、noah-shelf-v1.sql（`noah_packages`・`noah_package_steps`）、noah-shelf-queries-v1.sql（`shelf`・`packages_of_family`・`package_touch`）。試験: docs/design-validation/noah/noah-shelf.test.mjs、validate-noah-shelf-v1.py。書式: [docs/services/noah-shelf.md](../../docs/services/noah-shelf.md)。先に 85（取り込みの表）と 74（`/noah/ready`）。本番 D1 の migration は本人の許可の後。
 
 ## ローンチまで（[ローンチの最小限](../../docs/noah/mvp-launch.md) の L5 と L8 に足す。13 章「入口の棚」）
 
@@ -19,8 +19,8 @@
 
 ## 決めてある事（変えない）
 
-- 棚に載せるのは、運営が動かして確かめた、相手のサーバーの道具 1 つのカードだけ。家の端末のカードと、工程をつなぐカードは 102。
-- 並びは運営の順。実績の並びは 101。
+- 棚に載せるのは、運営が動かして確かめた、相手のサーバーの道具 1 つのカードだけ。家の端末のカードと、工程をつなぐカードは 112。
+- 並びは運営の順。実績の並びは 111。
 - カードの名前と 1 行の説明は運営の言葉。提供者の説明は作り替えず、別の段に出す。カードは権限も料金も足さない。
 - 切り替え `NOAH_SHELF_PUBLIC` は閉じたまま入れる。出す条件は、棚ごとに 5 枚以上（候補。決めるのは本人）。
 
