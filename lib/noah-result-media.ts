@@ -1,6 +1,7 @@
 /** Raster results only. Never interpret provider HTML/SVG or fetch a provider URL on the server. */
 export type NoahResultImage = { name: string; mimeType: string; data: string };
 export type NoahReceivedResult = {
+  delivery?: 'missing_image';
   text: string;
   truncated: boolean;
   attachments: number;

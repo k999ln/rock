@@ -1,4 +1,5 @@
 'use client';
+import {noahOperationLabel} from '@/lib/noah-operation-labels';
 /**
  * 頼んだ仕事の一覧（新しい順）と、成果。
  * - Agent の詳細の画面では、その Agent への依頼（GET /api/noah/ask?agent=。切った接続の分も含む）。
@@ -320,16 +321,9 @@ export default function NoahWorkList({
                   )}
                 </div>
                 <p className={styles.workTool}>
-                  <strong>{ask.tool ?? ''}</strong>
-                  {ask.state === 'succeeded' ? (
-                    <span>
-                      {' '}
-                      —{' '}
-                      {result?.note ??
-                        `${ask.host ?? '相手のサーバー'} が返した内容です。`}
-                    </span>
-                  ) : null}
+                  <strong>{t(noahOperationLabel(ask.tool))}</strong>
                 </p>
+                {result?.note&&<details><summary>{t('提供者の説明')}</summary>{result.note}</details>}
                 {result && (
                   <>
                     <NoahResultPreview result={result} />
@@ -400,7 +394,7 @@ export default function NoahWorkList({
                   <div className={ui.taskHead}>
                     <FileText size={25} />
                     <div>
-                      <strong>{ask.tool || t('仕事')}</strong>
+                      <strong>{t(noahOperationLabel(ask.tool))}</strong>
                       <small>{ask.host}</small>
                     </div>
                     <ChevronRight size={18} />

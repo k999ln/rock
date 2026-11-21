@@ -11,6 +11,7 @@ import { useNoahLocale } from './noah-locale';
  */
 import { NoahDelegationPicker } from './noah-profile';
 import type { DelegationMode } from '@/lib/noah-profile-contract';
+import {noahOperationLabel,noahInputLabel,noahChoiceLabel} from '@/lib/noah-operation-labels';
 import NoahLoading from './noah-loading';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
@@ -96,16 +97,17 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
   const shown = noahFilterTools(tools, word);
 
   return <section className={styles.section} aria-labelledby="noah-ask-tools">
-    <h2 id="noah-ask-tools">{only ? only.name : NOAH_ASK_TEXT.pick}{loaded.state === 'ready' && !only ? <small>{tools.length} {t("個")}</small> : null}</h2>
+    <h2 id="noah-ask-tools">{only ? t(noahOperationLabel(only.name)) : t(NOAH_ASK_TEXT.pick)}{loaded.state === 'ready' && !only ? <small>{tools.length} {t("個")}</small> : null}</h2>
     {loaded.state === 'loading' && <p className={styles.quiet}><NoahLoading label={t("相手のサーバーから、道具の一覧を読んでいます…")} /></p>}
     {loaded.state === 'error' && <div className={styles.quiet} role="alert"><p>{loaded.message}</p>{loaded.retry && <button type="button" className={styles.secondary} onClick={() => setAttempt((n) => n + 1)}>{t("読み直す")}</button>}</div>}
     {loaded.state === 'ready' && usable.length === 0 && <p className={styles.quiet}>{t(NOAH_ASK_TEXT.none)}</p>}
     {loaded.state === 'ready' && !only && <>
       {tools.length >= 13 && <label className={base.search}><span className={base.srOnly}>{t(NOAH_ASK_TEXT.filter)}</span><input type="search" value={word} maxLength={80} placeholder={t(NOAH_ASK_TEXT.filter)} onChange={(event) => setWord(event.target.value)} /></label>}
-      {shown.length === 0 ? <p className={styles.quiet}>{t(NOAH_ASK_TEXT.noMatch)}</p> : <ul className={styles.tools}>{shown.map((tool) => <li key={tool.name} data-usable={tool.usable || undefined}>
+      {shown.length === 0 ? <p className={styles.quiet}>{t(NOAH_ASK_TEXT.noMatch)}</p> : <ul className={styles.tools}>{shown.map((tool,index) => <li key={tool.name} data-usable={tool.usable || undefined}>
         {tool.usable
-          ? <button type="button" className={styles.toolButton} aria-pressed={current?.name === tool.name} onClick={() => setPicked(current?.name === tool.name ? null : tool.name)}><ToolRow tool={tool} /></button>
-          : <div className={styles.toolRow}><ToolRow tool={tool} /></div>}
+          ? <button type="button" className={styles.toolButton} data-tool-name={tool.name} aria-pressed={current?.name === tool.name} onClick={() => setPicked(current?.name === tool.name ? null : tool.name)}><ToolRow tool={tool} index={index} /></button>
+          : <div className={styles.toolRow}><ToolRow tool={tool} index={index} /></div>}
+        <details><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.summary}</p></details>
       </li>)}</ul>}
     </>}
     {loaded.state === 'ready' && current && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
@@ -113,13 +115,13 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
   </section>;
 }
 
-function ToolRow({ tool }: { tool: NoahAskTool }) {
+function ToolRow({ tool,index }: { tool: NoahAskTool;index:number }) {
   const {t}=useNoahLocale();
 
   return <>
-    <strong>{tool.name}</strong>
+    <strong>{t(noahOperationLabel(tool.name))}{noahOperationLabel(tool.name)==='操作'?` ${index+1}`:''}</strong>
     <span className={styles.marks}>{noahToolMarks(tool).map((mark) => <span key={mark}>{t(mark)}</span>)}</span>
-    {tool.summary && <p>{tool.summary}</p>}
+
   </>;
 }
 
@@ -192,7 +194,7 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
   }
 
   if (!form) return <div className={styles.form}>
-    {titled && <h3>{tool.name}</h3>}
+    {titled && <h3>{t(noahOperationLabel(tool.name))}</h3>}
     {missing ? <p className={styles.quiet}><NoahLoading/></p> : <div className={styles.quiet} role="alert"><p>{fetched?.error}</p><button type="button" className={styles.secondary} onClick={() => setAttempt((n) => n + 1)}>{t("読み直す")}</button></div>}
   </div>;
 
@@ -201,7 +203,8 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
   // 細かい設定の中に誤りがある時は、開いて見せる。
   const optionalProblem = optional.some((item) => item.name === problem?.field);
   return <form className={styles.form} noValidate onSubmit={(event) => { event.preventDefault(); submit(); }}>
-    {titled && <h3>{tool.name}</h3>}
+    {titled && <h3>{t(noahOperationLabel(tool.name))}</h3>}
+    <details><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.description||tool.summary}</p></details>
     {required.map(field)}
     {(optional.length > 0 || form.omitted > 0) && <details className={styles.more} open={optionalProblem || undefined}>
       <summary>{t(NOAH_ASK_TEXT.more)}（{optional.length}）</summary>
@@ -213,15 +216,15 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
     {confirming ? <fieldset className={styles.confirmBox}>
       <legend>{t("頼む前の確かめ")}</legend>
       <p>{tool.readOnly?t('入力内容を送り、この操作を実行します。'):t('この操作は、送信先のデータを変更・送信する可能性があります。')}</p>
-      <dl>{noahConfirmRows(fields, confirming).map((row) => <div key={row.label}><dt>{row.label}</dt><dd>{row.value}</dd></div>)}</dl>
+      <dl>{noahConfirmRows(fields.map(field=>({...field,label:t(noahInputLabel(field.name))})), confirming).map((row) => <div key={row.label}><dt>{row.label}</dt><dd>{row.value}</dd></div>)}</dl>
       <p className={styles.sendsTo}>{t('送信先: {host}',{host})}</p>
       <div className={styles.actions}>
         <button type="button" className={styles.secondary} disabled={busy} onClick={() => setConfirming(null)}>{t(NOAH_ASK_TEXT.cancel)}</button>
-        <button type="button" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined} onClick={confirm}>{busy ? <NoahLoading compact label={t(NOAH_ASK_TEXT.sending)} /> : NOAH_ASK_TEXT.confirm}</button>
+        <button type="button" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined} onClick={confirm}>{busy ? <NoahLoading compact label={t(NOAH_ASK_TEXT.sending)} /> : t(NOAH_ASK_TEXT.confirm)}</button>
       </div>
     </fieldset> : <>
       <p className={styles.sendsTo}>{t('送信先: {host}',{host})}</p>
-      <div className={styles.actions}><button type="submit" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined}>{busy ? <NoahLoading compact label={t(NOAH_ASK_TEXT.sending)} /> : NOAH_ASK_TEXT.submit}</button></div>
+      <div className={styles.actions}><button type="submit" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined}>{busy ? <NoahLoading compact label={t(NOAH_ASK_TEXT.sending)} /> : t(NOAH_ASK_TEXT.submit)}</button></div>
     </>}
     {notice && <div className={styles.actions}><output className={styles.notice}>{t(notice)}</output><a className={styles.secondary} href="#noah-agent-work">{t("進捗と成果を見る")}</a></div>}
     {error && <div className={styles.reason} role="alert"><p>{t(error)}</p>{error.includes('変わりました') && <button type="button" className={styles.secondary} onClick={onChanged}>{t("道具の一覧を読み直す")}</button>}</div>}
@@ -236,7 +239,7 @@ function Field({ id, field, value, error, onChange }: { id: string; field: NoahF
   const describedBy = [field.help ? `${id}-help` : '', error ? `${id}-error` : ''].filter(Boolean).join(' ') || undefined;
   const common = { id, 'aria-describedby': describedBy, 'aria-invalid': error ? true : undefined, 'aria-required': field.required || undefined };
   const choices = field.choices ?? [];
-  const toggle = (label: string, selected: boolean, onPress: () => void) => <button key={label} type="button" aria-pressed={selected} onClick={onPress}>{label}</button>;
+  const toggle = (label: string, selected: boolean, onPress: () => void) => <button key={label} type="button" aria-pressed={selected} onClick={onPress}>{t(noahChoiceLabel(label))}</button>;
   // 選んで答える欄（はい・いいえ、選択肢）は、ボタンの組。それ以外は、打つ欄。
   const group = field.kind === 'boolean' || (field.kind === 'choice' && choices.length <= 7) || (field.kind === 'list' && choices.length > 0);
   let control;
@@ -246,7 +249,7 @@ function Field({ id, field, value, error, onChange }: { id: string; field: NoahF
   else if (field.kind === 'choice' && choices.length <= 7) control = choices.map((choice) => toggle(String(choice), text === String(choice), () => onChange(text === String(choice) && !field.required ? '' : String(choice))));
   else if (field.kind === 'choice') control = <select {...common} className={styles.control} value={text} onChange={(event) => onChange(event.target.value)}>
     <option value="">{field.required ? t("選んでください") : t("指定しない")}</option>
-    {choices.map((choice) => <option key={String(choice)} value={String(choice)}>{String(choice)}</option>)}
+    {choices.map((choice) => <option key={String(choice)} value={String(choice)}>{t(noahChoiceLabel(String(choice)))}</option>)}
   </select>;
   else if (field.kind === 'list' && choices.length > 0) control = choices.map((choice) => { const label = String(choice), on = picked.includes(label); return toggle(label, on, () => onChange(on ? picked.filter((item) => item !== label) : [...picked, label])); });
   else if (field.kind === 'list') control = <textarea {...common} className={styles.control} rows={Math.min(8, Math.max(2, text.split('\n').length))} value={text} placeholder={t("1 行に 1 つ")} onChange={(event) => onChange(event.target.value)} />;
@@ -255,16 +258,16 @@ function Field({ id, field, value, error, onChange }: { id: string; field: NoahF
   else control = <textarea {...common} className={styles.control} rows={Math.min(8, Math.max(1, text.split('\n').length))} value={text} maxLength={field.maxLength} onChange={(event) => onChange(event.target.value)} />;
   const mark = field.required ? <span aria-hidden="true"> *</span> : null;
   const notes = <>
-    {field.help && <p id={`${id}-help`} className={styles.help}>{field.help}</p>}
+    {field.help && <details id={`${id}-help`} className={styles.help}><summary>{t('提供者の説明')}</summary><p>{field.label} · {field.help}</p></details>}
     {error && <p id={`${id}-error`} className={styles.fieldError} role="alert">{t(error)}</p>}
   </>;
-  if (group) return <fieldset className={styles.field} aria-describedby={describedBy}>
-    <legend className={styles.fieldLabel}>{field.label}{mark}</legend>
+  if (group) return <fieldset className={styles.field} data-field-name={field.name} aria-describedby={describedBy}>
+    <legend className={styles.fieldLabel}>{t(noahInputLabel(field.name))}{noahInputLabel(field.name)==='入力内容'?` (${field.name})`:''}{mark}</legend>
     <div className={styles.choices}>{control}</div>
     {notes}
   </fieldset>;
-  return <div className={styles.field}>
-    <label htmlFor={id} className={styles.fieldLabel}>{field.label}{mark}</label>
+  return <div className={styles.field} data-field-name={field.name}>
+    <label htmlFor={id} className={styles.fieldLabel}>{t(noahInputLabel(field.name))}{noahInputLabel(field.name)==='入力内容'?` (${field.name})`:''}{mark}</label>
     {control}
     {notes}
   </div>;

@@ -360,12 +360,12 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.match(page.text(), /道具を選ぶ4 個/);
   const rows = page.find('ul').at(-1);
   assert.deepEqual(page.nodes(rows).filter((node) => node.type === 'li').map((node) => page.text(node)), [
-    'lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publish送る前に確かめますpublish の説明', 'configure入力欄ではまだ使えませんconfigure の説明',
+    '操作 1読み取りだけ提供者の説明lookupLooks up a player.', '操作 2読み取りだけ押すだけ提供者の説明statsstats の説明', '操作 3送る前に確かめます提供者の説明publishpublish の説明', '操作 4入力欄ではまだ使えません提供者の説明configureconfigure の説明',
   ]);
   assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
   // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。「保存」（ボードへ。task 115）は残る。
   assert.deepEqual(actions(page), ['保存', '切る']);
-  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['lookup', 'stats', 'publish']);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['操作 1', '操作 2', '操作 3']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっています。切る切っても、受け取った成果は残ります。$/);
   // 「つなぎました」は 3 秒で消える。消えた後は、接続の欄（区切りの線）ごと出さない。
   assert.equal(page.find('output', 'につなぎました').length, 1);
@@ -600,7 +600,7 @@ void test('the rules of the screens hold at every step of the loop: nothing cove
   // --- 接続した後（道具の一覧）---
   await page.click('接続');
   rules(page, '道具の一覧');
-  const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && page.text(page.nodes(node).find((child) => child.type === 'strong')) === name);
+  const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && node.props['data-tool-name'] === name);
   const form = () => page.find('form')[0];
   const input = () => page.nodes(form()).find((node) => ['textarea', 'input'].includes(node.type));
 

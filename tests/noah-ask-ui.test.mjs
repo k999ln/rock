@@ -42,9 +42,9 @@ async function opened(t, server, options = {}) {
   const ui = screen({ document:{hidden:false,addEventListener(){},removeEventListener(){}}, fetch: options.fetch ? options.fetch(fetch) : fetch, modules: MODULES, now: w.f.time() });
   const page = ui.mount(DETAIL, { id: familyId(1) });
   await page.flush();
-  const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && page.text(page.nodes(node).find((child) => child.type === 'strong')) === name);
+  const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && node.props['data-tool-name'] === name);
   const field = (label) => {
-    const holder = page.nodes().find((node) => node.props.className === 'field' && page.text(page.nodes(node).find((child) => child.type === 'label' || child.type === 'legend')).startsWith(label));
+    const holder = page.nodes().find((node) => node.props.className === 'field' && node.props['data-field-name'] === (label==='Player'?'query':label));
     return holder ? page.nodes(holder).find((child) => ['textarea', 'input', 'select'].includes(child.type)) ?? holder : null;
   };
   const form = () => page.find('form')[0];
@@ -56,14 +56,14 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   const server = mcpServer({ tools: [lookup, nested, stats, publish] });
   const { page, toolButton, field, form } = await opened(t, server);
   // 使える道具は、押せる行。使えない道具は、押せない（印は文字）。
-  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publish送る前に確かめますPublishes a note.']);
-  assert.match(page.text(), /configure入力欄ではまだ使えません/);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['操作 1読み取りだけ', '操作 2読み取りだけ押すだけ', '操作 3送る前に確かめます']);
+  assert.match(page.text(), /操作 4入力欄ではまだ使えません提供者の説明configure/);
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('lookup'));
   assert.equal(toolButton('lookup').props['aria-pressed'], true);
   // 必須の欄を先に。任意の欄は「細かい設定（n）」の中。入力欄にできない設定は、数だけ。
   const text = page.text(form());
-  assert.ok(text.startsWith('lookupPlayer *A player id or name.細かい設定（3）limit'), text);
+  assert.match(text,/検索する内容 \*提供者の説明Player · A player id or name.細かい設定（3）件数/);
   assert.match(text, /ほかに 1 個の設定があります（入力欄では使えません）。/);
   // 既定の値は、欄に入れて見せる。整数の欄は、数の鍵盤。選択肢は、押して選ぶ。
   assert.deepEqual([field('limit').props.value, field('limit').props.inputMode, field('Player').props.maxLength], ['5', 'numeric', 200]);
@@ -76,7 +76,7 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   await page.press(toolButton('lookup'));
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('stats'));
-  assert.ok(page.text(form()).startsWith('stats'));
+  assert.ok(page.text(form()).startsWith('操作提供者の説明stats'));
   assert.ok(page.text(form()).endsWith(`送信先: ${hostOf(1)}頼む`));
   assert.equal(calls(server).length, 0);
 });
@@ -84,13 +84,13 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
 void test('one usable tool: the form is shown without a list; many tools: a filter appears', async (t) => {
   const single = await opened(t, mcpServer({ tools: [lookup, nested] }));
   assert.equal(single.page.find('button').filter((node) => node.props.className === 'toolButton').length, 0);
-  assert.ok(single.page.text(single.form()).startsWith('Player *'));
-  assert.deepEqual(single.page.find('h2').filter(node=>node.props.id==='noah-ask-tools').map((node) => single.page.text(node)), ['lookup']);
+  assert.ok(single.page.text(single.form()).includes('検索する内容 *'));
+  assert.deepEqual(single.page.find('h2').filter(node=>node.props.id==='noah-ask-tools').map((node) => single.page.text(node)), ['操作']);
   const many = await opened(t, mcpServer({ tools: [lookup, ...Array.from({ length: 13 }, (_, n) => tool(`tool_${n}`))] }));
   const filter = many.page.find('input').find((node) => node.props.type === 'search');
   assert.equal(filter.props.placeholder, '語で絞る（名前・説明）');
   await many.page.change(filter, 'PLAYER');
-  assert.deepEqual(many.page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => many.page.text(many.page.nodes(node).find((child) => child.type === 'strong'))), ['lookup']);
+  assert.deepEqual(many.page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => many.page.text(many.page.nodes(node).find((child) => child.type === 'strong'))), ['操作 1']);
   await many.page.change(many.page.find('input').find((node) => node.props.type === 'search'), 'zzzz');
   assert.match(many.page.text(), /合う道具が、ありません。/);
   // 12 個までは、絞る欄を出さない。
@@ -112,7 +112,7 @@ void test('asking: checked before sending; the request carries the tool the pers
   await page.change(field('limit'), 'many');
   await page.submit(form());
   assert.match(page.text(form()), /limit は整数で入れてください。/);
-  assert.equal(page.nodes(form()).find((node) => node.type === 'details').props.open, true);
+  assert.equal(page.nodes(form()).find((node) => node.type === 'details'&&node.props.className==='more').props.open, true);
   assert.equal(asksSent(ui).length, 0);
   // 直して頼む。
   await page.change(field('limit'), '3');
@@ -129,7 +129,7 @@ void test('asking: checked before sending; the request carries the tool the pers
   assert.match(page.text(), /受け付けました。/);
   assert.equal(page.find('a','進捗と成果を見る')[0].props.href,'#noah-agent-work');
   assert.ok(page.nodes().some(node=>node.props.id==='noah-agent-work' && node.props.tabIndex===-1));
-  assert.match(rows()[0], /結果を受け取りましたlookup/);
+  assert.match(rows()[0], /結果を受け取りました操作/);
   assert.match(rows()[0], /届いた文章1\. cobalt/);
   assert.equal(page.find('a','詳細を開く →')[0].props.href, `/noah/tasks/${sent.body.id}`);
   // 欄の値は残る。もう一度頼むと、新しい操作 ID。
@@ -151,7 +151,7 @@ void test('a tool that may change something is not sent on the first press: the 
   // 送らずに、確かめを出す。
   assert.equal(asksSent(ui).length, 0);
   const box = page.find('fieldset').find((node) => node.props.className === 'confirmBox');
-  assert.match(page.text(box), /この操作は、送信先のデータを変更・送信する可能性があります。texthello world送信先: agent-1\.example\.comやめる確かめて頼む$/);
+  assert.match(page.text(box), /この操作は、送信先のデータを変更・送信する可能性があります。入力内容hello world送信先: agent-1\.example\.comやめる確かめて頼む$/);
   // 「やめる」は、送らずに閉じる。値を変えた時も、確かめ直す。
   await page.click('やめる');
   assert.equal(page.find('fieldset').filter((node) => node.props.className === 'confirmBox').length, 0);
@@ -180,7 +180,7 @@ void test('the work list: progress is read while something is unfinished; stoppi
   await page.change(field('Player'), 'cobalt');
   await page.submit(form());
   // 受け付けた直後。相手のサーバーは、まだ返していない。
-  assert.match(rows()[0], /^進んでいます（0 秒）止めるlookup$/);
+  assert.match(rows()[0], /^進んでいます（0 秒）止める操作$/);
   const reads = () => ui.calls.filter((call) => call.method === 'GET' && call.url.startsWith('/api/noah/ask?')).length;
   const before = reads();
   w.f.advance(3000);
@@ -189,13 +189,13 @@ void test('the work list: progress is read while something is unfinished; stoppi
   assert.match(rows()[0], /^進んでいます（3 秒）/);
   // 「止める」: 止める事を頼む。まだ「止めました」とは出さない。
   await page.click('止める');
-  assert.match(rows()[0], /^止めています…（相手のサーバーで始まっていれば、止められません）lookup$/);
+  assert.match(rows()[0], /^止めています…（相手のサーバーで始まっていれば、止められません）操作$/);
   assert.equal(page.find('button', '止める').length, 0);
   // 相手が返した後: 止めた依頼の成果は、採らない。
   release();
   await Promise.all(waiting);
   await page.tick(1000);
-  assert.deepEqual([rows(), w.asked()[0].state], [['止めました。相手のサーバーで実行されたかは分かりません。lookup'], 'stopped']);
+  assert.deepEqual([rows(), w.asked()[0].state], [['止めました。相手のサーバーで実行されたかは分かりません。操作'], 'stopped']);
   // 終わった後は、読み続けない。
   const settled = reads();
   await page.tick(10_000);
@@ -207,7 +207,7 @@ void test('the work list: progress is read while something is unfinished; stoppi
   await page.submit(form());
   await Promise.all(waiting);
   await page.tick(1000);
-  assert.match(rows()[0], /^結果を受け取りましたstats — /);
+  assert.match(rows()[0], /^結果を受け取りました操作提供者の説明/);
   assert.match(rows()[0], /届いた一覧1件Cobalt/);
   assert.equal(page.find('a','詳細を開く →')[0].props.href, `/noah/tasks/${asksSent(ui).at(-1).body.id}`);
   // 道具が「できなかった」と返した時は、理由を出す。
@@ -216,7 +216,7 @@ void test('the work list: progress is read while something is unfinished; stoppi
   await page.submit(form());
   await Promise.all(waiting);
   await page.tick(1000);
-  assert.match(rows()[0], /^できませんでした。No data yet\.stats$/);
+  assert.match(rows()[0], /^できませんでした。No data yet\.操作$/);
 });
 
 void test('a request that did not get through is sent again with the same ID; refusals are shown where the button is', async (t) => {
@@ -282,9 +282,9 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.equal(page.text(page.find('h2')[0]), '接続したAgentの仕事進んでいます');
   const rows = rowsOf(page).map((row) => page.text(row));
   assert.equal(rows.length, 3);
-  assert.match(rows[0], /^進んでいます（\d+ 秒）止めるlookupこの Agent を開く →$/);
-  assert.match(rows[1], /^できませんでした。No data yet\.statsこの Agent を開く →$/);
-  assert.match(rows[2], /^結果を受け取りましたlookup — /);
+  assert.match(rows[0], /^進んでいます（\d+ 秒）止める操作この Agent を開く →$/);
+  assert.match(rows[1], /^できませんでした。No data yet\.操作この Agent を開く →$/);
+  assert.match(rows[2], /^結果を受け取りました操作提供者の説明/);
   assert.ok(rows[2].includes('found cobalt'));
   assert.deepEqual(back(page), [detail(2), detail(1), detail(1)]);
   assert.equal(rows.some((row) => row.includes('someone else')), false);
@@ -298,13 +298,13 @@ void test('the work list across agents (the activity and data screens): newest f
   release();
   await Promise.all(slow);
   await page.tick(1000);
-  assert.match(page.text(rowsOf(page)[0]), /^止めました。相手のサーバーで実行されたかは分かりません。lookup/);
+  assert.match(page.text(rowsOf(page)[0]), /^止めました。相手のサーバーで実行されたかは分かりません。操作/);
 
   // 「成果データ」: 成果が出た依頼だけ。
   const data = open('owner-a', { ownerScope: null, refresh: 0, only: 'succeeded', heading: '接続したAgentの成果' }).page;
   await data.flush();
   assert.equal(data.text(data.find('h2')[0]), '接続したAgentの成果');
-  assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りましたlookup — ')), [true]);
+  assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りました操作提供者の説明')), [true]);
   assert.deepEqual(back(data), [detail(1)]);
 
   // 成果が出た依頼が無い人の「成果データ」には、何も出さない（できなかった依頼は、「実行中」の側にだけ出る）。
@@ -313,7 +313,7 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.equal(failedOnly.text(), '');
   const failedRows = open('owner-d', { ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' }).page;
   await failedRows.flush();
-  assert.deepEqual(rowsOf(failedRows).map((row) => failedRows.text(row)), ['できませんでした。No data yet.statsこの Agent を開く →']);
+  assert.deepEqual(rowsOf(failedRows).map((row) => failedRows.text(row)), ['できませんでした。No data yet.操作この Agent を開く →']);
   // 未サインインの人・依頼が無い人には、何も出さない（見出しも出さない）。
   for (const user of [null, 'owner-c']) {
     const nobody = open(user, { ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' });

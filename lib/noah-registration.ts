@@ -7,6 +7,7 @@ import type { RegistrationProvider, RegistrationRecord, RegistrationState, Regis
 export type ConfiguredRegistration = RegistrationProvider & { executorUrl: string };
 export type RegistrationExecutor=(id:string,values?:Record<string,string>,documents?:Record<string,RegistrationDocument>)=>Promise<RegistrationState>;
 export type RegistrationDependencies = {
+  accountStates?: (request:Request,providers:ConfiguredRegistration[])=>Promise<Record<string, 'ready'|'pending'|'unavailable'>>;
   executor?: (request:Request,provider:ConfiguredRegistration)=>Promise<RegistrationExecutor|undefined>;
   resolveProfile?: (request:Request,provider:ConfiguredRegistration,reuse:unknown)=>Promise<ResolvedRegistration>;
   db: Pick<D1Database, 'prepare'>; providers: ConfiguredRegistration[]; token?: string;
@@ -115,7 +116,9 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       const id = url.searchParams.get('job');
       if (request.method === 'GET' && !id) {
         const agent = url.searchParams.get('agent');
-        return json({ providers: enabled ? deps.providers.filter(p => !agent || p.agentIds.includes(agent)).map(({ executorUrl: _internal, ...publicProvider }) => publicProvider) : [] });
+        const providers=enabled?deps.providers.filter(p=>!agent||p.agentIds.includes(agent)):[];
+        const states=await deps.accountStates?.(request,providers)??{};
+        return json({providers:providers.map(({executorUrl:_internal,...provider})=>({...provider,...(states[provider.id]?{accountState:states[provider.id]}:{})}))});
       }
       if (request.method === 'POST' && request.headers.get('origin') !== url.origin) return json({ error: 'Noahの画面から送信してください。' }, 403);
       const key = request.headers.get('X-Noah-Registration-Key');

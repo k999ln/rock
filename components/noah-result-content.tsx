@@ -259,7 +259,7 @@ export function NoahResultPreview({ result }: { result: NoahReceivedResult }) {
           <Icon size={26} />
         </div>
       )}
-      <strong>{t(view.title)}</strong>
+      <strong>{t(result.delivery==='missing_image'?'画像が未受取':view.title)}</strong>
       {view.count !== undefined && (
         <span className={styles.badge}>
           {t(view.kind === 'image' ? '{count}枚' : '{count}件', {
@@ -333,6 +333,7 @@ export default function NoahResultContent({
   if (compact) return <NoahResultPreview result={result} />;
   return (
     <section className={styles.content} aria-label={t('成果')}>
+      {result.delivery==='missing_image'&&<output>{t('画像は届いていません。届いた文章を確認できます。再実行は自動では行いません。')}</output>}
       <header className={styles.heading}>
         <h2>{t(view.title)}</h2>
         {view.count !== undefined && (

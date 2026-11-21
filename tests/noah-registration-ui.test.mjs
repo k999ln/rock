@@ -144,3 +144,12 @@ void test('a confirmed failure returns to input without a dispatch or losing its
  const unknown=harness(url=>Response.json(url.includes('?job=')?{job:job('unknown')}:{providers:[provider]}),[['noah-registration-work-v1',JSON.stringify(ticket)]]);t.after(()=>unknown.close());await unknown.flush();await unknown.tick();
  assert.equal(unknown.nodes().some(n=>n.type==='button'&&n.props.onClick?.name==='retryFailed'),false);
 });
+
+void test('registered service shows use without collecting or resending registration fields after reopening',async t=>{
+ const h=harness(async()=>Response.json({providers:[{...provider,accountState:'ready'}]}));t.after(()=>h.close());await h.flush();
+ assert.match(h.text(),/登録済みです/);assert.equal(h.nodes().filter(n=>n.type==='form'||n.type==='input').length,0);
+ assert.ok(h.nodes().some(n=>n.props?.href?.includes('/noah/ready/agent?id=agent')));assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);
+});
+void test('uncertain or unreadable account never offers a second registration',async t=>{
+ for(const accountState of ['pending','unavailable']){const h=harness(async()=>Response.json({providers:[{...provider,accountState}]}));t.after(()=>h.close());await h.flush();assert.equal(h.nodes().filter(n=>n.type==='form'||n.type==='input').length,0);assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);}
+});

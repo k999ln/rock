@@ -1,4 +1,5 @@
 'use client';
+import {noahOperationLabel} from '@/lib/noah-operation-labels';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, Trash2 } from 'lucide-react';
@@ -53,7 +54,7 @@ function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,ca
     {profile.consents.length>0&&<details className={styles.receipts}><summary>{t("保存・再利用の記録")}</summary>{[...profile.consents].reverse().map((c,i)=><p key={`${c.at}:${i}`}>{new Date(c.at).toLocaleString(locale)} · {c.action==='save'?t("保存への同意"):c.action==='reuse-stop'?t("再利用を停止"):t("再利用を再開")}<small>{c.fields.map(k=>NOAH_PROFILE_FIELDS[k].label).join('・')}{c.documents.length?`・書類${c.documents.length}件`:''} {t("· 説明")}{c.version}</small></p>)}</details>}
     <section id="permissions" className={styles.delegations}><div className={styles.sectionTitle}><div><h2>{t("任せる範囲")}</h2></div><button type="button" className={styles.pause} disabled={busy||!profile.available} onClick={()=>void save({action:'pause',paused:!profile.paused})}>{profile.paused?<Play size={16}/>:<Pause size={16}/>} {profile.paused?t("再開する"):t("すべて停止")}</button></div>
       {profile.paused&&<output className={styles.error}>{t("新しい実行と、まだ送っていない依頼を停止中です。送信済みの操作は取り消されません。")}</output>}
-      {profile.grants.length===0?<p className={styles.muted}>{t("Agentを使う画面で、操作ごとに設定できます。")}</p>:profile.grants.map(grant=><div className={styles.grant} key={`${grant.target}:${grant.action}`}><div><strong>{grant.name}</strong><small>{grant.label}</small></div><select aria-label={`${grant.label}を任せる範囲`} value={grant.mode} disabled={busy} onChange={e=>void save({action:'grant',grant:{...grant,mode:e.target.value}})}>{Object.entries(delegationLabels).map(([key,label])=><option key={key} value={key}>{t(label)}</option>)}</select></div>)}
+      {profile.grants.length===0?<p className={styles.muted}>{t("Agentを使う画面で、操作ごとに設定できます。")}</p>:profile.grants.map(grant=><div className={styles.grant} key={`${grant.target}:${grant.action}`}><div><strong>{grant.name}</strong><small>{t(noahOperationLabel(grant.action))}</small></div><select aria-label={t('{name}を任せる範囲',{name:t(noahOperationLabel(grant.action))})} value={grant.mode} disabled={busy} onChange={e=>void save({action:'grant',grant:{...grant,mode:e.target.value}})}>{Object.entries(delegationLabels).map(([key,label])=><option key={key} value={key}>{t(label)}</option>)}</select></div>)}
       <Link className={styles.history} href="/noah/activity">{t("実行の履歴と成果を見る")}<ArrowUpRight size={16}/></Link>
     </section>
   </>;

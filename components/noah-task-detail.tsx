@@ -1,4 +1,5 @@
 'use client';
+import {noahOperationLabel} from '@/lib/noah-operation-labels';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -143,7 +144,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
       {!ask && !error && <NoahLoading />}
       {ask && (
         <>
-          {!result && <h2>{ask.tool || t('仕事')}</h2>}
+          {!result && <h2>{t(noahOperationLabel(ask.tool))}</h2>}
           <p className={styles.meta}>{ask.host}</p>
           <output className={styles.state}>{t(noahWorkState(ask))}</output>
           {!result && (

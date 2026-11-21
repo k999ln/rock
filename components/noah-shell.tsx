@@ -20,6 +20,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   useEffect(() => {
     const update = () => {
       const currentHash = window.location.hash;
+      if(currentHash==='#noah-content')return;
       const legacy = noahLegacyHref(currentHash, effectiveMode, base);
       const post = new URLSearchParams(window.location.search).get('post');
       if (!pathname.endsWith('/social') && (currentHash.startsWith('#community=') || (post && /^[a-f0-9-]{36}$/i.test(post)))) {
@@ -34,7 +35,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   if (pathname === '/noah/account') return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}><div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>{children}</div></NoahSurfaceContext.Provider>;
   const timeline = `${base}#timeline`;
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
-  const gridHome = isTimeline && hash !== '#timeline';
+  const gridHome = isTimeline && !['#timeline','#following','#agents'].includes(hash);
   const primary = [
     { href: timeline, label: 'タイムライン', Icon: Home, selected: isTimeline },
     { href: `${base}/explore`, label: 'Agent', Icon: Bot, selected: pathname.endsWith('/explore') || pathname === `${base}/ready` },
@@ -54,18 +55,18 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     { href: `${base}/registration`, label: '登録サポート', Icon: Bot },
     ...secondary,
   ];
-  const nav = (mobile=false) => <nav className={mobile?styles.bottomNav:styles.desktopNav} aria-label={t('メインメニュー')}>{primary.map(({ href, label, Icon, selected }) => <Link key={href} href={href} aria-label={t(label)} aria-current={selected ? 'page' : undefined}><Icon size={22} strokeWidth={1.7}/><span>{t(label)}</span></Link>)}</nav>;
+  const nav = (mobile=false) => <nav className={mobile?styles.bottomNav:styles.desktopNav} aria-label={t('メインメニュー')}>{primary.map(({ href, label, Icon, selected }) => <a key={href} href={href} aria-label={t(label)} aria-current={selected ? 'page' : undefined}><Icon size={22} strokeWidth={1.7}/><span>{t(label)}</span></a>)}</nav>;
   if (gridHome) return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
     <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.gridTopbar}>
-        <Link href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/company-mark.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></Link>
+        <a href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/company-mark.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
         <search className={styles.gridSearchSlot}><form action={base} className={styles.gridSearch}>
           <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" maxLength={80} placeholder={t('Agentを探す')} type="search" />
         </form></search>
         <button type="button" className={styles.gridMenuButton} popoverTarget={gridMenuId} aria-label={t('メニュー')}><Menu size={22} /><span>{t('メニュー')}</span></button>
         <div ref={gridMenu} id={gridMenuId} popover="auto" className={styles.gridMenuPanel}>
-          <nav aria-label={t('メインメニュー')}>{gridItems.map(({ href, label, Icon }) => <Link key={href} href={href} onClick={() => gridMenu.current?.hidePopover()}><Icon size={19}/><span>{t(label)}</span></Link>)}</nav>
+          <nav aria-label={t('メインメニュー')}>{gridItems.map(({ href, label, Icon }) => <a key={href} href={href} onClick={() => gridMenu.current?.hidePopover()}><Icon size={19}/><span>{t(label)}</span></a>)}</nav>
           <Link href={`${base}/social#compose`} onClick={() => gridMenu.current?.hidePopover()}><Plus size={19}/>{t('投稿')}</Link>
         </div>
         <Link href={`/noah/account?returnTo=${encodeURIComponent(pathname)}`} className={styles.gridAccount} aria-label={t('アカウント')}><UserRound size={22}/></Link>
@@ -78,14 +79,14 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.mobileHeader}>
         {!isMain&&<Link href={`${base}/explore`} className={styles.back} aria-label={t('戻る')}><ArrowLeft size={22}/></Link>}
-        <Link href={base} className={styles.brand}><Image className={styles.mark} src="/company-mark.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></Link>
+        <a href={base} className={styles.brand}><Image className={styles.mark} src="/company-mark.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
         <div className={styles.headerActions}>{isTimeline&&<Link href={`${base}/social#compose`} className={styles.compose}><Plus size={16}/>{t('投稿')}</Link>}<Link href={`${base}/profile`} className={styles.profileLink} aria-label={t('登録情報を見る')}><UserRound size={20}/></Link></div>
       </header>
       <div className={styles.body} data-wide data-noah-home={isTimeline||undefined}>
         <aside className={styles.rail}><div className={styles.railInner}>
-          <Link href={base} className={styles.brand}><Image className={styles.mark} src="/company-mark.png" width={44} height={44} alt="" unoptimized/><strong>Noah</strong></Link>
+          <a href={base} className={styles.brand}><Image className={styles.mark} src="/company-mark.png" width={44} height={44} alt="" unoptimized/><strong>Noah</strong></a>
           {nav()}
-          <div className={styles.secondary}><nav aria-label={t('操作の設定')}>{secondary.map(({href,label,Icon})=><Link key={href} href={href}><Icon size={20}/><span>{t(label)}</span></Link>)}</nav></div>
+          <div className={styles.secondary}><nav aria-label={t('操作の設定')}>{secondary.map(({href,label,Icon})=><a key={href} href={href}><Icon size={20}/><span>{t(label)}</span></a>)}</nav></div>
           {isTimeline&&<Link href={`${base}/social#compose`} className={styles.post}><Plus size={20}/><span>{t('投稿')}</span></Link>}
           <Link href={`/noah/account?returnTo=${encodeURIComponent(pathname)}`} className={styles.account}><UserRound size={22}/><span>{t('アカウント')}</span></Link>
         </div></aside>

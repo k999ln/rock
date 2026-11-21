@@ -20,6 +20,7 @@ export type NoahAskItem = {
   stopRequested: boolean; error?: string; createdAt: number; updatedAt: number; finishedAt?: number;
   /** 一覧で読んだ時だけ: その依頼の Agent（接続の系列の ID）。 */
   agentId?: string;
+  delivery?: 'missing_image';
   result?: NoahReceivedResult; note?: string;
 };
 
@@ -105,12 +106,13 @@ const seconds = (ms: number) => { const s = Math.max(0, Math.floor(ms / 1000)); 
  */
 export const NOAH_ASK_STOP_AGAIN_MS = 45_000;
 /** 仕事の行の文と、止められるか。 */
-export function noahAskRowView(ask: Pick<NoahAskItem, 'state' | 'stopRequested' | 'error' | 'createdAt' | 'updatedAt'>, now: number): { text: string; stoppable: boolean; done: boolean } {
+export function noahAskRowView(ask: Pick<NoahAskItem, 'state' | 'stopRequested' | 'error' | 'createdAt' | 'updatedAt' | 'delivery'>, now: number): { text: string; stoppable: boolean; done: boolean } {
   if (ask.state === 'queued') return { text: ask.stopRequested ? '止めています…' : '順番を待っています', stoppable: !ask.stopRequested, done: false };
   if (ask.state === 'running') {
     if (!ask.stopRequested) return { text: `進んでいます（${seconds(now - ask.createdAt)}）`, stoppable: true, done: false };
     return { text: '止めています…（相手のサーバーで始まっていれば、止められません）', stoppable: now - ask.updatedAt > NOAH_ASK_STOP_AGAIN_MS, done: false };
   }
+  if(ask.delivery==='missing_image')return {text:'画像が未受取',stoppable:false,done:true};
   if (ask.state === 'succeeded') return { text: NOAH_ASK_TEXT.received, stoppable: false, done: true };
   if (ask.state === 'failed') return { text: `できませんでした。${ask.error ?? ''}`, stoppable: false, done: true };
   if (ask.state === 'stopped') return { text: ask.error ?? '止めました。', stoppable: false, done: true };

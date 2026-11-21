@@ -373,7 +373,7 @@ void test('the screen: a card opens the detail with its tool already chosen; an 
   // 使える道具が 2 つある接続でも、カードの道具の入力欄が、最初から開いている。
   const chosen = await open('lookup');
   assert.equal(chosen.find('form').length, 1);
-  assert.ok(chosen.text(chosen.find('form')[0]).startsWith('lookup'), chosen.text());
+  assert.ok(chosen.text(chosen.find('form')[0]).startsWith('操作提供者の説明lookup'), chosen.text());
   // 無い道具の名前なら、いつもの一覧から選ぶ。
   const fallback = await open('missing');
   assert.equal(fallback.find('form').length, 0);

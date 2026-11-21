@@ -445,7 +445,7 @@ void test('the screen: when a run is gone, 止める comes back after a while an
   assert.equal(stops(), 1);
   // 押すと、その場で止まる（相手へは、道具の呼び出しを送っていない）。
   await page.click('止める');
-  assert.deepEqual([rows()[0], stops(), w.asked()[0].state, w.asked()[0].error, calls(server).length], ['止めました。lookup', 0, 'stopped', null, 0]);
+  assert.deepEqual([rows()[0], stops(), w.asked()[0].state, w.asked()[0].error, calls(server).length], ['止めました。操作', 0, 'stopped', null, 0]);
   release(hold, 'tools/list');
   await settle(waiting);
   assert.deepEqual([w.asked()[0].state, calls(server).length], ['stopped', 0]);

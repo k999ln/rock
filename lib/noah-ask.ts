@@ -12,6 +12,7 @@
  * - 同じ操作 ID の再送は、今の状態を返す（もう 1 回呼ばない）。止めた後に届いた成果は、採らない。
  * 「1 文で頼む」（モデル・専用の Worker・「あなたの番」）は、出した後に足す。
  */
+import { noahDelivery, noahExpectsImage } from './noah-output-receipt.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { finishGoneNoahAsk, finishNoahAsk, noahAskRunGone, noahAskView, NOAH_ASK_COLUMNS, NOAH_ASK_END_MESSAGES, NOAH_ASK_STOP_MESSAGES, type NoahAskRow } from './noah-ask-store.ts';
@@ -87,7 +88,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
     const view = noahAskView(row);
     if (row.state !== 'succeeded') return view;
     const remote = (await jobs.get(row.owner_id, row.work_id))?.noahRemote;
-    return remote?.result ? { ...view, result: remote.result, ...(remote.note ? { note: remote.note } : {}) } : view;
+    return remote?.result ? { ...view, delivery:noahDelivery(row.host,row.tool,remote.result), result: {...remote.result,delivery:noahDelivery(row.host,row.tool,remote.result)}, ...(remote.note ? { note: remote.note } : {}) } : view;
   }
 
   /** `POST /api/noah/ask`。受け付けて、202 と、応答の後に続ける仕事（run）を返す。spec-87 の 11.3。 */
@@ -299,7 +300,12 @@ export function createNoahAskService(deps: NoahAskDependencies) {
       : agentId
         ? prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? AND connection_id IN (SELECT id FROM noah_connections WHERE owner_id=? AND family_key=?) ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, owner, agentId, NOAH_ASK_RUN_LIMITS.listed)
         : prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, NOAH_ASK_RUN_LIMITS.listed)).all<NoahAskRow>()).results;
-    return reply(200, { asks: rows.map(noahAskView) });
+    return reply(200, { asks: await Promise.all(rows.map(async row=>{
+      const view=noahAskView(row);
+      if(row.state!=='succeeded'||!noahExpectsImage(row.host,row.tool))return view;
+      const result=(await jobs.get(row.owner_id,row.work_id))?.noahRemote?.result;
+      return {...view,delivery:noahDelivery(row.host,row.tool,result)};
+    })) });
   }
 
   /**
