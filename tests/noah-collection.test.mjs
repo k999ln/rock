@@ -17,6 +17,22 @@ import * as brand from '../lib/web-brand.ts';
 import * as publicGuide from '../lib/noah-public-guide.ts';
 import { screen } from './fixtures/noah/screen.mjs';
 
+void test('source ratings are visible with provenance, keep zero and omit unavailable counts', () => {
+  const ui = screen({ modules: { '@/lib/noah-collection': collection } });
+  const view = ui.mount('components/noah-agent-source-ratings.tsx', { sources: [
+    { source: 'github', sourceUrl: 'https://github.com/maker/agent', observedAt: 1795302000000, metrics: { stars: 1234 } },
+    { source: 'huggingface', sourceUrl: 'https://huggingface.co/spaces/maker/agent', observedAt: 1795302000000, metrics: { likes: 0 } },
+    { source: 'mcp-registry', sourceUrl: 'https://registry.modelcontextprotocol.io/v0.1/servers/agent', observedAt: 1795302000000 },
+    { source: 'x', sourceUrl: 'https://x.com/maker/status/1234', observedAt: 1795302000000, metrics: { likes: 8, reposts: 2 } },
+  ] });
+  assert.equal(view.find('details').length, 0);
+  assert.equal(view.find('a').length, 4);
+  assert.match(view.text(), /GitHub/); assert.match(view.text(), /1,234/);
+  assert.deepEqual(view.find('span').map(n=>n.props['aria-label']).filter(Boolean), ['スター 1,234', 'いいね 0', 'いいね 8', 'リポスト 2']);
+  assert.deepEqual(view.find('a').map(n=>n.props.href), ['https://github.com/maker/agent','https://huggingface.co/spaces/maker/agent','https://registry.modelcontextprotocol.io/v0.1/servers/agent','https://x.com/maker/status/1234']);
+  assert.ok(view.find('a').every(n=>n.props.title.includes('確認')));
+});
+
 const NOW = Date.UTC(2026, 10, 22), KEY = randomBytes(32).toString('hex');
 const item = (source = 'github', extra = {}) => ({ id: `${source}:1`, source, name: 'Useful agent', summary: 'A public Agent repository', author: 'maker', url: 'https://github.com/maker/agent', sourceUrl: 'https://github.com/maker/agent', observedAt: NOW, expiresAt: NOW + 86_400_000, ...extra });
 const snapshot = (source = 'github', items = [item(source)], at = NOW) => ({ schema: 'noah-collection/1', source, collectedAt: at, items });

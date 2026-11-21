@@ -130,7 +130,7 @@ export function NoahAgentSignals({
           </strong>
           <span>{t("王冠")}</span>
         </button>
-        <Link href={detailHref} onClick={onComments ? event=>{event.preventDefault();onComments();} : undefined}>
+        <Link href={detailHref} aria-label={`${t("コメント")} ${summary ? summary.comments.toLocaleString('ja-JP') : "—"}`} onClick={onComments ? event=>{event.preventDefault();onComments();} : undefined}>
           <MessageCircle size={16} />
           <strong>
             {summary ? summary.comments.toLocaleString('ja-JP') : '—'}

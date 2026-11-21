@@ -220,3 +220,12 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 検証: typecheck・lint・関連47試験成功。Sites sourceの全体verify主試験4,895件中4,889成功/4 skip/2失敗。2件はcheckoutの過去GitオブジェクトとMini依存不足を補完後、該当16試験が成功。残り15検査（ビルド・公開ファイル・Work API1,918・CSV385等）を順次実行し全成功。単一のverify再実行完走とは区別する。ローカルproductionの8ルート/8共通ヘッダーも成功。
 
 再開: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。PR #377の `6efb722d3` を含む。Git側にない法人入口/Reviewer拡張は公開sourceで維持。PR #386はdraft、GitHubでのレビュー・マージは未完了。
+
+
+## 2026-11-22 評価元の実数を主表示（PR #386）
+
+✅ 本人指示「評価元から引っ張ってきて」に対応し、GitHubスター/Hugging Faceいいね/Xいいね・リポストを元リンクとともにカード上へ常時表示。取得できない項目は0で埋めず、Noah王冠との換算・加算はしない。取得は既存の署名付き収集のまま。whytapは公式GitHub APIのスター4、Semantic Shift Backendは公式HF APIのいいね3と一致。収集run44952758398成功。値は取得日時点のスナップショットであり、即時のリアルタイム値ではない。
+
+公開184 succeeded: source `4eca3969053fccbebdc435209039881321cfc697`、deployment `appgdep_6b0211c0c6448191ada1364154844a65`、env16。公開183の共有カード機能を取り込んで保持。公開ブラウザでGitHub★4/HFいいね3が展開なしで表示されること、390pxの横はみ出しなしを確認。端末の実機操作ではない。
+
+検証: 関連38試験と型検査成功。全体verifyは主試験4,892成功/4 skip、後続prebuildでローカルpreviewの保存先競合が発生。自分のpreviewを停止、既存と検証用storeを完全退避後にbuildと残り6工程成功。退避先 `/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/noah-ratings-preview-backup-u849t6ko`。183統合後は型検査・関連/共有41試験・build・bundle/assets・8ルート/8ヘッダー成功。単一verify再完走とは区別。ログ `/tmp/noah-ratings-verify.log`、`/tmp/noah-ratings-final-checks.log`、`/tmp/noah-ratings-merged-tests.log`。PRレビュー/マージは未完了。
