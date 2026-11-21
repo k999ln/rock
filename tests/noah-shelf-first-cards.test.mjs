@@ -10,7 +10,7 @@ const text = readFileSync(new URL('../data/noah-shelf-first-cards.json', import.
 const cards = JSON.parse(text);
 const H = 'a'.repeat(64);
 
-test('最初のカードは、どれも今の規則に合い、下書きで、ID と並びが重ならない', () => {
+void test('最初のカードは、どれも今の規則に合い、下書きで、ID と並びが重ならない', () => {
   assert.ok(Array.isArray(cards) && cards.length >= 15, '15 枚以上');
   for (const card of cards) {
     // 規則を通った物が、置いた物と同じ（項目の足し引きや、直しが要らない）。
@@ -24,7 +24,7 @@ test('最初のカードは、どれも今の規則に合い、下書きで、ID
   for (const shelf of NOAH_SHELVES) assert.ok(cards.filter((card) => card.shelf === shelf.id).length >= 4, `${shelf.name}に 4 枚以上`);
 });
 
-test('最初のカードは、健康の助言を含まず、金額で誘う語を使わない', () => {
+void test('最初のカードは、健康の助言を含まず、金額で誘う語を使わない', () => {
   for (const card of cards) {
     assert.notEqual(card.topic, 'health', card.id);
     assert.equal(card.advice, undefined, card.id);
@@ -32,7 +32,7 @@ test('最初のカードは、健康の助言を含まず、金額で誘う語�
   }
 });
 
-test('最初のカードは、相手のサーバーの道具 1 つで終わり、確かめた後は、ローンチの切り替え（つなぐ・家の端末は閉）のままで載る', () => {
+void test('最初のカードは、相手のサーバーの道具 1 つで終わり、確かめた後は、ローンチの切り替え（つなぐ・家の端末は閉）のままで載る', () => {
   for (const card of cards) {
     assert.equal(card.steps.length, 1, card.id);
     const [step] = card.steps;
@@ -51,6 +51,6 @@ test('最初のカードは、相手のサーバーの道具 1 つで終わり�
   }
 });
 
-test('最初のカードは、運営の画面の「カードを置く」の欄（16,000 文字まで）へ、ファイルのまま貼れる', () => {
+void test('最初のカードは、運営の画面の「カードを置く」の欄（16,000 文字まで）へ、ファイルのまま貼れる', () => {
   assert.ok(text.length <= 16_000, `${text.length} 文字`);
 });
