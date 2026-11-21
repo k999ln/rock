@@ -5,6 +5,27 @@ import {remoteCandidate} from '../lib/noah-remote-candidate.ts';
 import {recoverNoahRemote} from '../lib/noah-remote-recovery.ts';
 import {createNoahRemoteWork} from '../lib/noah-remote-work.ts';
 
+void test('regrouped bulk candidates are never probed through their retained singleton rows',async t=>{
+  const f=await remoteFixture(t,{probe:false});
+  const candidate=f.sql.prepare('SELECT * FROM noah_intake_candidates').get();
+  const check=f.sql.prepare('SELECT * FROM noah_intake_checks').get();
+  const family=f.sql.prepare('SELECT * FROM noah_intake_families').get();
+  const insert=(table,row)=>{const keys=Object.keys(row);f.sql.prepare(`INSERT INTO ${table} (${keys.join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).run(...Object.values(row));};
+  for(let i=1;i<20;i++){
+    const id=`mcp-registry:test.provider/phone-agent-${i}`;
+    insert('noah_intake_candidates',{...candidate,id,external_key:`test.provider/phone-agent-${i}`,family_id:id});
+    insert('noah_intake_checks',{...check,candidate_id:id});
+    insert('noah_intake_families',{...family,id,representative_id:id});
+  }
+  f.sql.prepare("UPDATE noah_intake_sources SET lease_id='test-bulk',lease_until=?").run(f.time()+60000);
+  await f.store.regroup('test-bulk');
+  assert.equal(f.sql.prepare("SELECT count(*) n FROM noah_intake_candidates WHERE family_id LIKE 'bulk:%'").get().n,20);
+  assert.equal(f.sql.prepare("SELECT count(*) n FROM noah_intake_families WHERE id NOT LIKE 'bulk:%' AND hidden_at IS NOT NULL").get().n,20);
+  assert.deepEqual(await f.store.probeDue(),[]);
+  assert.equal(f.requests.length,0);
+  assert.equal(f.sql.prepare('SELECT count(*) n FROM noah_probe_hosts').get().n,0);
+});
+
 void test('patrol separates provider health from user success; repeated success cannot bump ranking',async t=>{
   const f=await remoteFixture(t),c=await f.connect(),menu=(await f.request('tools',null,{id:c.id})).data.tools;
   assert.ok(menu.every(tool=>tool.form?.usable));

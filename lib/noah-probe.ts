@@ -185,7 +185,7 @@ export function createNoahProbe(deps: ProbeDependencies) {
     const rows = (
       await db
         .prepare(`${REMOTE_CANDIDATE_SQL} WHERE c.state='active' AND c.source='mcp-registry'
-      AND f.withdrawn_at IS NULL AND f.id NOT LIKE 'bulk:%'
+      AND c.family_id=f.id AND f.withdrawn_at IS NULL AND f.id NOT LIKE 'bulk:%'
       AND k.mouth='mcp-remote' AND k.setup=0 AND k.next_check_at<=? AND k.lease_until<=?
       AND NOT EXISTS(SELECT 1 FROM noah_probe_hosts h WHERE h.host=c.host AND (h.last_probe_at>? OR h.not_before>?))
       ORDER BY k.next_check_at,c.id LIMIT ?`)
