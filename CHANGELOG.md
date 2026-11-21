@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- READMEで差し替え済みのmiiの帰宅画像とNoahの検索GIFを `docs/assets/readme/` から削除（[PR #348](https://github.com/k999ln/rock/pull/348)、task 99）。
+
 - Noah の「棚とパッケージ」と「300 人への出し方」を、設計・参照実装・試験・task まで置いた（Fable / Noelle。本人の決定 11-19〜21「最初はパッケージ化」「1 つの仕事を最後までやる組合せ」「今動かせるもの」「どっちもお願い」「全部あなたに任せるから最後までやって」。[PR #343](https://github.com/k999ln/rock/pull/343)、task 100〜104）。① [docs/noah/spec-100-shelf.md](docs/noah/spec-100-shelf.md): 入口の棚（稼ぐ・仕事を省く／教育／暮らし）、カード `noah-package/1`（1 枚 ＝ 1 つの仕事を最後までやる組合せ）、載せる条件（運営が動かして確かめた、今動かせる物だけ。理由 8 つ）、**学習を使わない並び**（つながる率 × 成果が返る率 × 検収に通る率 × また使う率。5 人未満の実績は使わない。5 枚に 1 枚は新しいカードを試す。同じ領域を 3 枚続けない）、見せた記録、札、つなげる数（無料 6 枚・有料 50 枚）、健康の助言の条件、学習を足す条件。② [docs/noah/trial-300.md](docs/noah/trial-300.md): 30 → 100 → 300 の段と次へ進む条件、出し方の決まり（広告の単位はカード 1 枚。金額を約束しない）、稼げる額の式と測り方、守る決まり、先に要る物。③ docs/contracts/noah-shelf-v1.ts・noah-shelf-v1.sql・noah-shelf-queries-v1.sql（新しい表 9 個・問い合わせ 15 文）。④ 検証キットに noah-shelf.test.mjs（17 群）と validate-noah-shelf-v1.py（6 群）。全体で試験 78/78、DDL 10/10 と 6/6。⑤ 最初のカード案 12 枚（[docs/services/noah-shelf.md](docs/services/noah-shelf.md)。全部が下書きで、**動かした結果はまだ無い**。工程の先は今の main の 13 件と Noah の中の道具を指し、試験が照らす）。⑥ codex/tasks 100〜104。⑦ 決定を 07 に 6 行、00-overview の 0 章・04・noah-design の 8・9・10・12.5 章・mvp-launch の 13 章に反映。実装（`lib/`・画面・migration）と、カードを動かして確かめる事は、まだ。本番の migration・切り替え・投稿は行っていない。
 
 - Noahのスマホでの配布元確認とMacの接続準備をHiggsfieldで縦型CMに編集し、READMEとサロン向け投稿文から案内（[PR #341](https://github.com/k999ln/rock/pull/341)、task 99）。
