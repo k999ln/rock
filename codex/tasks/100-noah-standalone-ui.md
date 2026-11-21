@@ -142,6 +142,6 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 
 - UI担当の `b48d55109` を履歴ごとfast-forwardし、`codex/noah-100-user-acceptance-20261122` へpush。登録済み接続の再利用、画像未受取の表示、操作名/入力欄の6言語表示、ホームと `#timeline` の分離を保持。追加の選択肢翻訳もGitに含む。
 - 公開172は source `d9a2d4f26439a0d1a14a3139772880fba8d35738`、deployment `appgdep_6b01f571e5488191a24a375d6c212e65`、env16でsucceeded。171 source `566bc99d9776d83ca0fdde04b428b0f31ff941a8` の直接の後続で、収集API/収集処理を変更せず保持していることをsource差分で確認。このチャットから重複配備は行っていない。選択肢翻訳の追補公開はUI担当が継続中。
-- 統合後の関連31試験は31 pass / 0 fail。`npm run noah:check:domain` は公開9項目成功。全体verifyはUI担当で再検証中のため、今回の統合を全体合格とは扱わない。再開コマンド: `node --experimental-strip-types --test tests/noah-four-flow-fixes.test.mjs tests/noah-registration-ui.test.mjs tests/noah-ask-ui.test.mjs tests/noah-esim-access.test.mjs`。
+- 統合後の関連31試験は31 pass / 0 fail。`npm run typecheck` exit 0、`npm run noah:check:domain` は公開9項目成功。全体verifyはUI担当で再検証中のため、今回の統合を全体合格とは扱わない。再開コマンド: `node --experimental-strip-types --test tests/noah-four-flow-fixes.test.mjs tests/noah-registration-ui.test.mjs tests/noah-ask-ui.test.mjs tests/noah-esim-access.test.mjs`。
 - Pixel 10 / Android 17のWi-Fi接続を再確認。画面がロックされているため、本人へ本体での解除を依頼。今回の実スマホによる登録→Agent利用→成果受取は未完了。既存の外部登録1件と以前の本人による成果表示の証拠とは分離する。
 - mainのPR #378にある無料eSIM試用workerは `services/noah-test-runtime/src/esim-trial/worker.mjs` のローカルfixtureであり、公開入口にmountされていない。これを本番eSIM本人連携の完了証拠には使わない。
