@@ -13,7 +13,6 @@ import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
-import NoahCardFeedback from './noah-card-feedback';
 
 /** グリッドの 1 枚（GET /api/noah/pins の items の 1 件）。 */
 export type NoahPinView = NoahAgentCard;
@@ -99,7 +98,6 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
           {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
         </button>}
         <NoahAgentSourceRatings sources={item.sources} />
-        {item.feedbackId && <NoahCardFeedback id={item.feedbackId} />}
         {signedIn && !item.external && onHide && <details className={styles.more}>
           <summary aria-label="その他の操作"><MoreHorizontal size={18} /></summary>
           <button type="button" onClick={() => onHide(item.id)}>{NOAH_PIN_TEXT.hide}</button>
