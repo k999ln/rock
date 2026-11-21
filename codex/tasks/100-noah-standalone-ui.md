@@ -172,3 +172,8 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 公開175: source `c2e9f2d44a8ab2fef3a835170d63a51ce3cbf2d4`、deployment `appgdep_6b01fdb5bf7081918ade578924721a19`、env16、succeeded。並行して追加されたbusiness入口 `3c9f02a` を履歴ごとmergeして保持。最初のsource pushは先端更新により拒否され、統合・再build後に成功した。公開Arabic Name Calligraphy詳細で320/390/1280pxすべて間隔16px・重なりなし・横はみ出しなし。保存を押して保存先シートが開くこと、接続の中心が別ボタンに覆われていないことを確認。ローカルpreviewには対象Agentがないため、表示検証は公開画面で実施した。
 
 検証: 関連26試験、公開sourceのtypecheck/build成功。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` exit0、ルート4,844 pass / 4 skip / 0 fail、build・API・残りの全検査成功。ログ `/tmp/noah-button-verify.log`。スクリーンショットは `/Users/kaiya/.codex-work/visualizations/2026/11/21/01a1fe90-1f3f-7083-a3a9-f7e3cad0ea6a/noah-public-mobile-20261122/noah-175-button-spacing.jpg`。
+
+
+### 2026-11-22 会員制廃止へ切り替え（PR #377、実装中）
+
+本人のADB操作許可を受け、Pixel 10で公開175のホーム→Agentboard詳細→接続まで実測。操作接続は復旧した。旧方式はeSIM未設定/未ログインで停止したため、本人の「会員登録制やめて廃止して」に従ってログイン待ちを取りやめる。正本04と単体ローンチ仕様を更新し、ブラウザごとの保存権限で初回から使う実装を開始。公開175の接続/保存ボタン修正181c2b08aは統合済み。新方式の公開・スマホ一周・100人配布受入は未完了。

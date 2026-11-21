@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahの会員制廃止を最新仕様へ記録し実装着手。ADBでPixel操作を復旧、公開175の接続/保存修正を統合。新方式の公開・実機一周は未完了（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
 - Noah実機検証の復旧状況を更新。操作ツール未提供とPixelのWi-Fi切断を確認し、設定確認・現在の接続先を依頼（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 
 - Noahの実機検証を更新：本人のPixel画面オープン報告とWi-Fi/点灯を確認。現在はMac側画面操作ツールの障害で未完了と記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
