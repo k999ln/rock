@@ -32,14 +32,15 @@ export function createNoahProfileApi(deps:{store:NoahProfileStore;authenticate:(
       if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw new NoahAgentError('入力の形式を確認してください。',415);
       const input=JSON.parse(new TextDecoder().decode(await profileBody(request,30000))) as Record<string,unknown>;
       if(!input || typeof input!=='object' || Array.isArray(input) || !Number.isSafeInteger(input.revision))throw new NoahAgentError('情報を読み直してください。');
-      const allowed:Record<string,string[]>={fields:['fields'],grant:['grant'],pause:['paused'],deleteDocument:['id'],clear:[]};
+      const allowed:Record<string,string[]>={fields:['fields','consentVersion','reuse'],reuse:['enabled','consentVersion'],grant:['grant'],pause:['paused'],deleteDocument:['id'],clear:[]};
       const keys=allowed[String(input.action)];
       if(!keys || Object.keys(input).some(k=>!['action','revision',...keys].includes(k)))throw new NoahAgentError('操作を確認してください。');
       let profile;
       const revision=Number(input.revision);
       if(input.action==='deleteDocument')profile=await deps.store.removeDocument(user,revision,String(input.id));
       else profile=await deps.store.change(user,revision,p=>{
-        if(input.action==='fields')return {...p,fields:validateProfileFields(input.fields)};
+        if(input.action==='fields'){if(typeof input.reuse!=='boolean')throw new NoahAgentError('再利用の設定を確認してください。');const fields=validateProfileFields(input.fields);return deps.store.consent({...p,fields},input.consentVersion,input.reuse,Object.keys(fields) as (keyof typeof fields)[],[]);}
+        if(input.action==='reuse' && typeof input.enabled==='boolean')return deps.store.consent(p,input.consentVersion,input.enabled,Object.keys(p.fields) as (keyof typeof p.fields)[],p.documents.map(d=>d.id),input.enabled?'reuse-resume':'reuse-stop');
         if(input.action==='grant'){const grant=validateGrant(input.grant);return {...p,grants:[...p.grants.filter(g=>!(g.target===grant.target && g.action===grant.action)),grant]};}
         if(input.action==='pause' && typeof input.paused==='boolean')return {...p,paused:input.paused};
         if(input.action==='clear')return {...p,fields:{}};
@@ -52,10 +53,10 @@ export function createNoahProfileApi(deps:{store:NoahProfileStore;authenticate:(
       if(request.method!=='POST')return json({error:'対応しない操作です。'},405);
       const type=request.headers.get('content-type')??'';
       if(!['application/pdf','image/png','image/jpeg'].includes(type))throw new NoahAgentError('PDF・JPEG・PNGを選んでください。',415);
-      const name=decodeURIComponent(request.headers.get('X-Noah-File-Name')??'');
+      let name='';try{name=decodeURIComponent(request.headers.get('X-Noah-File-Name')??'');}catch{throw new NoahAgentError('ファイル名を確認してください。');}
       const revision=Number(request.headers.get('X-Noah-Profile-Revision'));
-      if(!Number.isSafeInteger(revision))throw new NoahAgentError('保存情報を読み直してください。');
-      return view(user,await deps.store.addDocument(user,revision,name,type,await profileBody(request,PROFILE_MAX_DOCUMENT)));
+      if(!request.headers.has('X-Noah-Profile-Revision')||!Number.isSafeInteger(revision))throw new NoahAgentError('保存情報を読み直してください。');
+      return view(user,await deps.store.addDocument(user,revision,name,type,await profileBody(request,PROFILE_MAX_DOCUMENT),request.headers.get('X-Noah-Consent-Version')??''));
     }),
     document:(request:Request,id:string)=>respond(async()=>{
       const user=await owner(request);const {meta,bytes}=await deps.store.document(user,id);

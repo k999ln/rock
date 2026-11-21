@@ -61,7 +61,7 @@ void test('needs-user continues through status-only calls; completed report neve
   await f.get(body.id, ticket); assert.equal(f.calls.length, 1);
   f.advance(21000); f.state('completed'); const response = await f.get(body.id, ticket); const data = await response.json();
   assert.equal(f.calls.length, 2); assert.equal(f.calls[1].body.action, 'status'); assert.equal('values' in f.calls[1].body, false);
-  assert.equal(data.job.state, 'completed'); assert.equal(data.job.verificationUrl, null); assert.equal(data.job.returnTo, '/noah/launch?agent=agent-one#library');
+  assert.equal(data.job.state, 'completed'); assert.equal(data.job.verificationUrl, null); assert.equal(data.job.returnTo, '/noah/agents/agent-one');
   const job = JSON.parse(f.row().payload); assert.equal(job.status, 'review'); assert.equal(job.steps.length, 0);
   f.advance(6000); await f.get(body.id, ticket); assert.equal(f.calls.length, 2);
 });

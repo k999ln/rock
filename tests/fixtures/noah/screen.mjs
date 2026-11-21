@@ -4,6 +4,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
+import * as profileContract from '../../../lib/noah-profile-contract.ts';
 
 const ROOT = new URL('../../../', import.meta.url);
 const Fragment = Symbol('Fragment');
@@ -72,7 +73,8 @@ export function screen(options = {}) {
     cancelAnimationFrame: (id) => { timers.delete(id); },
   });
   // 画面が裏の間は読み直さない、の試験のため（試験が、hidden を書き換える）。
-  if (options.document) context.document = options.document;
+  context.document = { hidden:false, addEventListener(){}, removeEventListener(){}, ...options.document };
+  if(options.document)context.document=Object.assign(options.document,{addEventListener:options.document.addEventListener??(()=>{}),removeEventListener:options.document.removeEventListener??(()=>{})});
   context.window = {
     sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, String(value)); }, removeItem: (key) => { storage.delete(key); } },
     location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: '', origin: 'https://noah.test' },
@@ -95,6 +97,7 @@ export function screen(options = {}) {
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (options.modules?.[id]) return options.modules[id];
+      if(id==='@/lib/noah-profile-contract')return profileContract;
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
       throw Error(`画面の試験の台に、${id} がありません`);
     };

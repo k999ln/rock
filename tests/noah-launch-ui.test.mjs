@@ -413,7 +413,7 @@ void test('a work detail clears the previous result on sign-out and returns to t
     await ui.poll();
     assert.doesNotMatch(text(ui.tree), /本人の試験成果/);
     const signIn = ui.nodes.find(
-      (n) => n.type === 'a' && n.props.href.startsWith('/account?'),
+      (n) => n.type === 'a' && n.props.href.startsWith('/noah/account?'),
     );
     assert.equal(
       new URL(signIn.props.href, 'https://example.test').searchParams.get(

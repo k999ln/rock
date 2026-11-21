@@ -83,7 +83,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
     const same = provider && await sha256Hex(canonicalJson(provider)) === r.providerDigest;
     return { id: job.id, providerName: r.providerName, providerOrigin: r.providerOrigin, agentId: r.agentId, state: r.state, expiresAt: r.expiresAt,
       verificationUrl: same && r.state === 'needs_user' ? provider.verificationUrl : null,
-      returnTo: `/noah/launch?${new URLSearchParams({ agent: r.agentId })}#library` };
+      returnTo: r.agentId.startsWith('mcp-registry:')?`/noah/ready/agent?id=${encodeURIComponent(r.agentId)}`:`/noah/agents/${encodeURIComponent(r.agentId)}` };
   }
   async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>): Promise<RegistrationState> {
     try {

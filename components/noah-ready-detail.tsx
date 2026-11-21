@@ -94,7 +94,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
     <article className={styles.detail}>
       <header className={styles.cardHead}><h1>{detail.name}</h1><span className={styles.provider}>提供: {detail.provider}</span></header>
       <p className={styles.description}>{detail.summary || '（説明はありません）'}</p>
-<div className={styles.journey} aria-label="使い方"><div><b>01</b><strong>依頼する</strong><small>道具を選んで入力</small></div><span>→</span><div><b>02</b><strong>Agentが実行</strong><small>画面を離れてもOK</small></div><span>→</span><div><b>03</b><strong>成果を受け取る</strong><small>実行中・成果から確認</small></div></div>
+<div className={styles.journey} aria-label="使い方"><div><span>01</span><strong>依頼する</strong><small>道具を選んで入力</small></div><span>→</span><div><span>02</span><strong>Agentが実行</strong><small>画面を離れてもOK</small></div><span>→</span><div><span>03</span><strong>成果を受け取る</strong><small>実行中・成果から確認</small></div></div>
       <ul className={styles.facts} aria-label="つなぎ方">{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{text}</li>)}</ul>
       {checked && <p className={styles.quiet}>{checked}</p>}
       {detail.host && <p className={styles.sendsTo}>{noahSendsToText(detail.host)}</p>}

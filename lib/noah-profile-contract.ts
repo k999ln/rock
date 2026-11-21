@@ -1,5 +1,6 @@
 export const NOAH_PROFILE_FIELDS = {
   name: { label: '氏名', group: '基本情報', max: 120, autocomplete: 'name' },
+  nameKana: { label: 'フリガナ', group: '基本情報', max: 120, autocomplete: 'off' },
   displayName: { label: '表示名', group: '基本情報', max: 80, autocomplete: 'nickname' },
   email: { label: 'メール', group: '基本情報', max: 320, autocomplete: 'email' },
   phone: { label: '電話番号', group: '基本情報', max: 40, autocomplete: 'tel' },
@@ -19,8 +20,11 @@ export type ProfileField = keyof typeof NOAH_PROFILE_FIELDS;
 export type DelegationMode = 'allow' | 'confirm' | 'deny';
 export type NoahDelegation = { target: string; name: string; action: string; label: string; digest: string; mode: DelegationMode };
 export type NoahIdentityDocument = { id: string; name: string; type: string; bytes: number; uploadedAt: number };
-export type NoahProfile = { revision: number; fields: Partial<Record<ProfileField, string>>; documents: NoahIdentityDocument[]; grants: NoahDelegation[]; paused: boolean };
+export const PROFILE_CONSENT_VERSION = '2026-11-22.1';
+export const PROFILE_CONSENT_TEXT = '入力した情報を暗号化して保存し、次の登録でも必要な項目だけ再利用します。提出先への送信は毎回確認します。';
+export type ProfileConsent = { version: string; at: number; action: 'save' | 'reuse-stop' | 'reuse-resume'; fields: ProfileField[]; documents: string[] };
+export type NoahProfile = { revision: number; fields: Partial<Record<ProfileField, string>>; documents: NoahIdentityDocument[]; grants: NoahDelegation[]; paused: boolean; reuseEnabled: boolean; consents: ProfileConsent[] };
 export type NoahProfileView = NoahProfile & { ownerScope: string; available: boolean };
-export const emptyNoahProfile = (): NoahProfile => ({ revision: 0, fields: {}, documents: [], grants: [], paused: false });
+export const emptyNoahProfile = (): NoahProfile => ({ revision: 0, fields: {}, documents: [], grants: [], paused: false, reuseEnabled: false, consents: [] });
 export const PROFILE_MAX_DOCUMENT = 5 * 1024 * 1024;
 export const profileField = (value: unknown): value is ProfileField => typeof value === 'string' && Object.hasOwn(NOAH_PROFILE_FIELDS, value);

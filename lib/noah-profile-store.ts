@@ -1,4 +1,4 @@
-import { emptyNoahProfile, NOAH_PROFILE_FIELDS, profileField, PROFILE_MAX_DOCUMENT, type NoahProfile, type NoahDelegation, type NoahIdentityDocument } from './noah-profile-contract.ts';
+import { emptyNoahProfile, PROFILE_CONSENT_VERSION, NOAH_PROFILE_FIELDS, profileField, PROFILE_MAX_DOCUMENT, type NoahProfile, type NoahDelegation, type NoahIdentityDocument } from './noah-profile-contract.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { sha256Hex } from './noah-connect-requirements.ts';
 
@@ -62,12 +62,13 @@ export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: 
     if (item.size > 128_000) bad('保存情報を確認できません。',503);
     const p = JSON.parse(new TextDecoder().decode(await unseal(owner,'profile',await item.text()))) as NoahProfile;
     if (!Number.isSafeInteger(p.revision) || p.revision < 1 || !p.fields || !Array.isArray(p.documents) || !Array.isArray(p.grants) || typeof p.paused !== 'boolean') bad('保存情報を確認できません。',503);
-    return {profile:p,etag:item.etag};
+    return {profile:{...p,reuseEnabled:p.reuseEnabled===true,consents:p.consents??[]},etag:item.etag};
   }
   async function save(owner: string, loaded: Loaded, next: NoahProfile) {
     next = {...next,revision:loaded.profile.revision+1};
     const encoded = encoder.encode(JSON.stringify(next));
-    if (encoded.byteLength > 80_000) bad('保存できる情報の上限です。不要な設定を整理してください。',413);
+    const revoking=(!next.reuseEnabled&&loaded.profile.reuseEnabled)||(next.paused&&!loaded.profile.paused);
+    if (encoded.byteLength > (revoking?80_000:76_000)) bad('保存できる情報の上限です。不要な設定を整理してください。',413);
     const result = await bucket!.put(await path(owner), await seal(owner,'profile',encoded), { onlyIf: loaded.etag ? {etagMatches:loaded.etag} : {etagDoesNotMatch:'*'}, httpMetadata:{contentType:'application/octet-stream',cacheControl:'private, no-store'} });
     if (!result) bad('別の画面で情報が更新されました。読み直してから保存してください。',409);
     return next;
@@ -84,7 +85,7 @@ export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: 
     if (!file || file.size > PROFILE_MAX_DOCUMENT * 1.5) bad('書類を取得できません。',404);
     return {meta, bytes:await unseal(owner,`document/${id}`,await file.text())};
   }
-  async function addDocument(owner:string, revision:number, name:string, type:string, bytes:Uint8Array) {
+  async function addDocument(owner:string, revision:number, name:string, type:string, bytes:Uint8Array, consentVersion?:string) {
     const signature = type==='application/pdf' ? new TextDecoder().decode(bytes.slice(0,5))==='%PDF-' : type==='image/png' ? [137,80,78,71,13,10,26,10].every((v,i)=>bytes[i]===v) : type==='image/jpeg' && bytes[0]===255 && bytes[1]===216 && bytes[2]===255;
     if (!signature || !bytes.length || bytes.length > PROFILE_MAX_DOCUMENT || !name || name.length>160 || controls(name)) bad('5MB以内のPDF・JPEG・PNGを選んでください。');
     const loaded = await load(owner);
@@ -93,13 +94,19 @@ export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: 
     const id=crypto.randomUUID(), slot=`document/${id}`, objectPath=await path(owner,slot);
     const meta:NoahIdentityDocument={id,name,type,bytes:bytes.length,uploadedAt:now()};
     await bucket!.put(objectPath,await seal(owner,slot,bytes),{onlyIf:{etagDoesNotMatch:'*'},httpMetadata:{contentType:'application/octet-stream',cacheControl:'private, no-store'}});
-    try { return await save(owner,loaded,{...loaded.profile,documents:[...loaded.profile.documents,meta]}); }
+    try { const next={...loaded.profile,documents:[...loaded.profile.documents,meta]}; return await save(owner,loaded,consentVersion===undefined?next:consent(next,consentVersion,true,[],[id])); }
     catch(e) { await bucket!.delete(objectPath); throw e; }
   }
   async function removeDocument(owner:string,revision:number,id:string) {
     if (!/^[a-f0-9-]{36}$/.test(id)) bad('書類を選び直してください。');
     const p=await change(owner,revision,p=>({...p,documents:p.documents.filter(d=>d.id!==id)}));
     await bucket!.delete(await path(owner,`document/${id}`)); return p;
+  }
+  function consent(p:NoahProfile,version:unknown,reuse:boolean,fields:(keyof typeof NOAH_PROFILE_FIELDS)[],documents:string[],action:'save'|'reuse-stop'|'reuse-resume'='save'):NoahProfile {
+    if(version!==PROFILE_CONSENT_VERSION) bad('保存・再利用の説明が更新されました。画面を読み直してください。',409);
+    if(action==='reuse-stop'&&!p.reuseEnabled)return p;
+    if(p.consents.length>=128&&action!=='reuse-stop') bad('保存の記録が上限に達しました。サポートへご連絡ください。',409);
+    return {...p,reuseEnabled:reuse,consents:[...p.consents,{version:PROFILE_CONSENT_VERSION,at:now(),action,fields,documents}]};
   }
   async function authorize(owner:string,target:string,action:string,digest:string,confirmed:boolean) {
     requireStore(); // Loss of a key must never bypass saved stops or denials.
@@ -110,6 +117,6 @@ export function createNoahProfileStore(bucket: ProfileBucket | undefined, keys: 
     const grant=grants.find(g=>g.digest===digest);
     if ((grant?.mode==='confirm' || (grants.length && !grant)) && !confirmed) bad('この操作は毎回の確認が必要です。内容を確認して実行してください。',409);
   }
-  return {available,load,change,document,addDocument,removeDocument,authorize};
+  return {available,load,change,document,addDocument,removeDocument,authorize,consent};
 }
 export type NoahProfileStore = ReturnType<typeof createNoahProfileStore>;

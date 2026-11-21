@@ -53,3 +53,9 @@
 `fields[].profileField` に保存先キーを明記した項目だけ再利用可能。passwordには指定不可。fileは `profileField: identityDocument` に限定する。ブラウザは `profile: {revision, fields: [外部項目key], documentId?}` と `X-Rock-Owner-Scope` を送る。値と再利用指定の二重指定、保存版の変更、本人変更は拒否する。書類は公開URLにせず、送信時だけ `documents: {外部項目key: {name, type, base64}}` に展開する。adapterはこの追加契約を受け付ける場合だけfile項目を宣言する。Workに残すのは鍵付き入力指紋と状態のみ。
 
 `NOAH_PROFILE_KEYS` は `{active:"v1",keys:{v1:"64桁のランダムhex"}}`。Sitesのsecretへ置く。最大3世代で旧keyを保持し、新規保存からactive keyに切り替える。旧keyを失うと復号できない。鍵や保管領域を利用できない場合、委任の検査は拒否し、停止や拒否設定を回避しない。`/api/noah/profile/documents` は認証・同一origin・本人scope・revisionを必須にする。取得は本人にattachmentとして返し、共有URLは発行しない。
+
+### 2026-11-22 保存同意と段階的な案内
+
+保存/登録ボタン直前に短い保存・再利用の文を表示し、説明版 `2026-11-22.1`、サーバー時刻、対象の項目名/書類IDを、情報本体と同一の暗号化R2オブジェクトへCAS保存する。古い説明版・保存競合・永続保存失敗では登録を送信しない。再利用停止はUIと登録resolverの双方で強制し、送信直前のrevision再確認で未送信分にも効く。パスワードは保存対象外。書類提出先の確認・規約同意は別に維持する。
+
+「今使える」は実際の公開接続一覧、「追加で使える」は設定済み登録先のrequired/profileFieldと本人の保存情報との差分から表示する。調査チャットの303種類は候補台帳であり、実行可能数ではない。Browser Use Agent（AG0045）、Skyvern（AG0270）は調査台帳でruntime/integration未試験。Browser Use公式v4は運営APIキーとクラウドrunを必要とする（https://github.com/browser-use/browser-use/blob/main/skills/cloud/references/api-v4.md 、2026-11-22確認）。キー/登録対象の実行先/本人確認の引継ぎが未設定の間は登録処理を開始しない。

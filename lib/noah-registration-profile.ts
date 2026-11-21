@@ -17,6 +17,7 @@ export function registrationProfileResolver(store:NoahProfileStore,authenticate:
     const profile=(await store.load(user)).profile;
     const values:Record<string,string>={},documents:Record<string,RegistrationDocument>={};
     if(reuse!==undefined){
+      if(!profile.reuseEnabled)throw new NoahAgentError('登録情報の再利用は停止中です。保存情報の設定から再開できます。',403);
       const v=reuse as {revision?:unknown;fields?:unknown;documentId?:unknown};
       if(!v || typeof v!=='object' || Array.isArray(v) || Object.keys(v).some(k=>!['revision','fields','documentId'].includes(k)) || v.revision!==profile.revision || !Array.isArray(v.fields) || v.fields.length>16 || new Set(v.fields).size!==v.fields.length)throw new NoahAgentError('保存情報が更新されました。使う項目を確認し直してください。',409);
       for(const key of v.fields){

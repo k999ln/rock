@@ -6,6 +6,7 @@ import { createNoahProfileStore, profileKeys, validateProfileFields } from '../l
 import { createNoahProfileApi } from '../lib/noah-profile-api.ts';
 import { registrationProfileResolver } from '../lib/noah-registration-profile.ts';
 import { createNoahRegistrationApi, parseRegistrationProviders } from '../lib/noah-registration.ts';
+import { PROFILE_CONSENT_VERSION } from '../lib/noah-profile-contract.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 function fixture(){
   const objects=new Map();let etag=0;
@@ -19,7 +20,7 @@ function fixture(){
 }
 const grant={target:'agent-one',name:'Agent',action:'read',label:'読む',digest:'a'.repeat(64),mode:'allow'};
 void test('owner vault is encrypted, authenticated, bounded and concurrent changes fail closed',async()=>{
-  const f=fixture();const saved=await f.api.collection(await f.request({action:'fields',revision:0,fields:{name:'Synthetic Alice',email:'alice@example.test',bankNumber:'0000123'}}));assert.equal(saved.status,200);
+  const f=fixture();const saved=await f.api.collection(await f.request({action:'fields',revision:0,consentVersion:PROFILE_CONSENT_VERSION,reuse:true,fields:{name:'Synthetic Alice',email:'alice@example.test',bankNumber:'0000123'}}));assert.equal(saved.status,200);
   const body=await saved.json();assert.equal(body.revision,1);assert.equal(body.fields.name,'Synthetic Alice');
   const raw=[...f.objects.values()].map(v=>v.text).join('');assert.doesNotMatch(raw,/Synthetic|alice@example|0000123/);
   assert.equal((await f.store.load('bob')).profile.revision,0);
@@ -31,7 +32,7 @@ void test('owner vault is encrypted, authenticated, bounded and concurrent chang
   assert.throws(()=>validateProfileFields({password:'secret'}));assert.throws(()=>validateProfileFields({birthDate:'2026-99-31'}));assert.throws(()=>validateProfileFields({birthDate:'2026-02-30'}));
 });
 void test('copied ciphertext, tampering and missing keys cannot expose data or bypass denials',async()=>{
-  const f=fixture();await f.store.change('alice',0,p=>({...p,fields:{name:'Private Alice'}}));const [path,value]=[...f.objects][0];
+  const f=fixture();await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{name:'Private Alice'}}));const [path,value]=[...f.objects][0];
   const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('bob'));const hex=Buffer.from(hash).toString('hex');f.objects.set(`noah-private/v1/${hex}/profile`,value);await assert.rejects(()=>f.store.load('bob'));
   f.objects.set(path,{...value,text:value.text.replace(/ciphertext":"./,'ciphertext":"!')});await assert.rejects(()=>f.store.load('alice'));
   await assert.rejects(()=>createNoahProfileStore(f.bucket,null).authorize('alice','agent','read','a'.repeat(64),true));
@@ -57,7 +58,7 @@ void test('allow, per-run confirmation, deny, changed definition and global paus
 });
 const providers=()=>parseRegistrationProviders(JSON.stringify(['one','two'].map(id=>({id,name:id,agentIds:[id],revision:1,providerOrigin:`https://${id}.example.com`,verificationUrl:`https://${id}.example.com/verify`,termsUrl:`https://${id}.example.com/terms`,termsVersion:'v1',executorName:'Agent',executorUrl:'https://registration.example.com/run',fields:[{key:'contact',label:'メール',type:'email',profileField:'email',required:true,maxLength:320},{key:'identity',label:'書類',type:'file',profileField:'identityDocument',required:false,maxLength:160}]}))));
 void test('two providers receive only explicitly mapped selected saved fields; revocation blocks deferred dispatch',async()=>{
-  const f=fixture();await f.store.change('alice',0,p=>({...p,fields:{email:'synthetic@example.test',bankNumber:'private-number',name:'Private Name'}}));
+  const f=fixture();await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{email:'synthetic@example.test',bankNumber:'private-number',name:'Private Name'}}));
   const resolve=registrationProfileResolver(f.store,f.authenticate),request=await f.request({});
   for(const provider of providers()){const resolved=await resolve(request,provider,{revision:1,fields:['contact']});assert.deepEqual(resolved.values,{contact:'synthetic@example.test'});assert.deepEqual(resolved.documents,{});await resolved.beforeSend();}
   await assert.rejects(()=>resolve(request,providers()[0],{revision:1,fields:['password']}));
@@ -65,7 +66,7 @@ void test('two providers receive only explicitly mapped selected saved fields; r
   const resolved=await resolve(request,providers()[0],{revision:1,fields:['contact']});await f.store.change('alice',1,p=>({...p,paused:true}));await assert.rejects(()=>resolved.beforeSend(),{status:403});
 });
 void test('selected document reaches resolver in memory, never as a public URL; stale profile is rejected',async()=>{
-  const f=fixture();const p=await f.store.addDocument('alice',0,'identity.pdf','application/pdf',new TextEncoder().encode('%PDF-1.7\nsynthetic'));
+  const f=fixture();const p=await f.store.addDocument('alice',0,'identity.pdf','application/pdf',new TextEncoder().encode('%PDF-1.7\nsynthetic'),PROFILE_CONSENT_VERSION);
   const resolve=registrationProfileResolver(f.store,f.authenticate),provider=providers()[0],request=await f.request({});
   const resolved=await resolve(request,provider,{revision:1,fields:['identity'],documentId:p.documents[0].id});assert.equal(resolved.documents.identity.type,'application/pdf');assert.match(Buffer.from(resolved.documents.identity.base64,'base64').toString(),/^%PDF/);assert.equal(resolved.values.identity,'identity.pdf');
   await f.store.change('alice',1,p=>({...p,fields:{name:'changed'}}));await assert.rejects(()=>resolved.beforeSend(),{status:409});
@@ -74,7 +75,7 @@ void test('selected document reaches resolver in memory, never as a public URL; 
 void test('registration HTTP dispatch reuses an encrypted profile across two providers without copying it into Work',async t=>{
  const f=fixture(),sql=new DatabaseSync(':memory:');t.after(()=>sql.close());sql.exec('CREATE TABLE work_jobs(id TEXT PRIMARY KEY,user_id TEXT,payload TEXT,revision INTEGER,updated_at TEXT)');
  const db={prepare(query){const s={args:[],bind(...args){return {...s,args};},async first(){return sql.prepare(query).get(...this.args)??null;},async run(){return {meta:{changes:Number(sql.prepare(query).run(...this.args).changes)}};}};return s;}};
- await f.store.change('alice',0,p=>({...p,fields:{email:'reusable@example.test',bankNumber:'private-bank'}}));
+ await f.store.change('alice',0,p=>({...p,reuseEnabled:true,fields:{email:'reusable@example.test',bankNumber:'private-bank'}}));
  const sent=[],api=createNoahRegistrationApi({db,providers:providers(),token:'synthetic-token-'.repeat(4),resolveProfile:registrationProfileResolver(f.store,f.authenticate),fetcher:async(url,init)=>{const body=JSON.parse(init.body);sent.push(body);return Response.json({id:body.id,state:'needs_user'});}});
  for(const provider of providers()){
   const response=await api(new Request('https://noah.test/api/noah/registration',{method:'POST',headers:{Origin:'https://noah.test','Content-Type':'application/json','X-Test-User':'alice','X-Rock-Owner-Scope':await ownerScopeFor('alice'),'X-Noah-Registration-Key':randomBytes(32).toString('hex')},body:JSON.stringify({action:'start',id:randomUUID(),providerId:provider.id,agentId:provider.id,revision:1,termsVersion:'v1',values:{},profile:{revision:1,fields:['contact']},consent:true,termsAccepted:true})}));
@@ -82,4 +83,14 @@ void test('registration HTTP dispatch reuses an encrypted profile across two pro
  }
  assert.equal(sent.length,2);assert.deepEqual(sent.map(v=>v.values),[{contact:'reusable@example.test',identity:''},{contact:'reusable@example.test',identity:''}]);
  assert.doesNotMatch(JSON.stringify(sql.prepare('SELECT * FROM work_jobs').all()),/reusable@example|private-bank/);
+});
+
+void test('save consent is atomic, versioned and required; reuse stop works even at the receipt limit',async()=>{
+ const f=fixture();
+ const missing=await f.api.collection(await f.request({action:'fields',revision:0,fields:{email:'a@example.test'},reuse:true}));assert.equal(missing.status,409);assert.equal((await f.store.load('alice')).profile.revision,0);
+ const saved=await f.api.collection(await f.request({action:'fields',revision:0,fields:{email:'a@example.test'},reuse:true,consentVersion:PROFILE_CONSENT_VERSION}));const p=await saved.json();assert.equal(saved.status,200);assert.equal(p.consents.length,1);assert.deepEqual(p.consents[0].fields,['email']);assert.equal(p.consents[0].version,PROFILE_CONSENT_VERSION);assert.ok(p.consents[0].at>0);
+ const resolve=registrationProfileResolver(f.store,f.authenticate),r=await f.request({});const pending=await resolve(r,providers()[0],{revision:1,fields:['contact']});
+ await f.store.change('alice',1,p=>({...p,consents:Array.from({length:128},()=>p.consents[0])}));
+ const stopped=await f.api.collection(await f.request({action:'reuse',revision:2,enabled:false,consentVersion:PROFILE_CONSENT_VERSION}));assert.equal(stopped.status,200);const end=await stopped.json();assert.equal(end.reuseEnabled,false);assert.equal(end.consents.length,129);assert.equal(end.fields.email,'a@example.test');
+ await assert.rejects(()=>resolve(r,providers()[0],{revision:end.revision,fields:['contact']}),{status:403});await assert.rejects(()=>pending.beforeSend(),{status:409});
 });
