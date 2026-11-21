@@ -6,6 +6,7 @@
  * 仕様: docs/noah/spec-74-one-click-connect.md の 11.4・11.5。
  */
 import { useEffect, useRef, useState } from 'react';
+import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
@@ -50,7 +51,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
   const back = <p className={styles.back}><Link href="/noah/ready">← {NOAH_READY_TEXT.title}</Link></p>;
   if (loaded.state !== 'ready') return <main className={`${base.page} ${styles.page}`}>
     {back}
-    {loaded.state === 'loading' && <p className={base.loading}><output>読み込んでいます…</output></p>}
+    {loaded.state === 'loading' && <p className={base.loading}><NoahLoading label="読み込んでいます…" /></p>}
     {loaded.state === 'missing' && <p className={base.empty}>{NOAH_READY_TEXT.missing}</p>}
     {loaded.state === 'error' && <div className={base.empty} role="alert"><p>{NOAH_READY_TEXT.unavailable}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>読み直す</button></div>}
   </main>;

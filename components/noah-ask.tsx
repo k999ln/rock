@@ -10,6 +10,7 @@
  */
 import { NoahDelegationPicker } from './noah-profile';
 import type { DelegationMode } from '@/lib/noah-profile-contract';
+import NoahLoading from './noah-loading';
 import { useEffect, useId, useRef, useState } from 'react';
 import {
   NOAH_ASK_TEXT, noahAskConfirmText, noahAskOmittedText, noahAskSendsToText, noahConfirmRows, noahFieldInitial, noahFilterTools, noahFormInput, noahScreenKind, noahToolMarks,
@@ -93,7 +94,7 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
 
   return <section className={styles.section} aria-labelledby="noah-ask-tools">
     <h2 id="noah-ask-tools">{only ? only.name : NOAH_ASK_TEXT.pick}{loaded.state === 'ready' && !only ? <small>{tools.length} 個</small> : null}</h2>
-    {loaded.state === 'loading' && <p className={styles.quiet}><output>相手のサーバーから、道具の一覧を読んでいます…</output></p>}
+    {loaded.state === 'loading' && <p className={styles.quiet}><NoahLoading label="相手のサーバーから、道具の一覧を読んでいます…" /></p>}
     {loaded.state === 'error' && <div className={styles.quiet} role="alert"><p>{loaded.message}</p>{loaded.retry && <button type="button" className={styles.secondary} onClick={() => setAttempt((n) => n + 1)}>読み直す</button>}</div>}
     {loaded.state === 'ready' && usable.length === 0 && <p className={styles.quiet}>{NOAH_ASK_TEXT.none}</p>}
     {loaded.state === 'ready' && !only && <>
@@ -209,11 +210,11 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
       <p className={styles.sendsTo}>{noahAskSendsToText(host)}</p>
       <div className={styles.actions}>
         <button type="button" className={styles.secondary} disabled={busy} onClick={() => setConfirming(null)}>{NOAH_ASK_TEXT.cancel}</button>
-        <button type="button" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined} onClick={confirm}>{busy ? NOAH_ASK_TEXT.sending : NOAH_ASK_TEXT.confirm}</button>
+        <button type="button" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined} onClick={confirm}>{busy ? <NoahLoading compact label={NOAH_ASK_TEXT.sending} /> : NOAH_ASK_TEXT.confirm}</button>
       </div>
     </fieldset> : <>
       <p className={styles.sendsTo}>{noahAskSendsToText(host)}</p>
-      <div className={styles.actions}><button type="submit" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined}>{busy ? NOAH_ASK_TEXT.sending : NOAH_ASK_TEXT.submit}</button></div>
+      <div className={styles.actions}><button type="submit" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined}>{busy ? <NoahLoading compact label={NOAH_ASK_TEXT.sending} /> : NOAH_ASK_TEXT.submit}</button></div>
     </>}
     {notice && <div className={styles.actions}><output className={styles.notice}>{notice}</output><a className={styles.secondary} href="#noah-agent-work">進捗と成果を見る</a></div>}
     {error && <div className={styles.reason} role="alert"><p>{error}</p>{error.includes('変わりました') && <button type="button" className={styles.secondary} onClick={onChanged}>道具の一覧を読み直す</button>}</div>}

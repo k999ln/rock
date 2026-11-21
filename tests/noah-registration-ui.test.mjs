@@ -25,6 +25,7 @@ function harness(fetcher, initial = []) {
       if (id === './use-noah-profile') return {useNoahProfile:()=>({profile:null,guest:true,error:'',save:async()=>null})};
       if (id === '@/lib/noah-profile-contract') return {profileField:()=>false};
       if (id === '@/lib/owner-intent') return {OWNER_SCOPE_HEADER:'X-Rock-Owner-Scope'};
+      if (id === './noah-loading') return { default: 'noah-loading' };
       if (id === 'next/link') return { default: 'a' };
       if (id === 'lucide-react') return new Proxy({}, { get: (_, key) => String(key) });
       if (id.endsWith('.module.css')) return { default: {} };
