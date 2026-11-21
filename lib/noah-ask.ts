@@ -339,7 +339,7 @@ const record = (value: unknown): value is Record<string, unknown> => !!value && 
 
 function failure(error: unknown) {
   if (error instanceof NoahAgentError) return json({ error: error.status === 413 ? '送信内容が大きすぎます。' : error.message }, error.status);
-  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'サインインしてください。' }, 401);
+  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
   return json({ error: '依頼を確かめられません。少し待ってから再試行してください。' }, 503);
 }
 

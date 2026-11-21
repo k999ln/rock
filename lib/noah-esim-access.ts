@@ -1,7 +1,7 @@
 /** Explicit Noah service permission; it never grants account, payment or listing administration. */
 export function noahEsimRequestScope(request: Request): 'noah' | null {
   const path = new URL(request.url).pathname, method = request.method;
-  if (method === 'GET' && path === '/api/noah/session') return 'noah';
+  if (['GET', 'POST'].includes(method) && path === '/api/noah/session') return 'noah';
   if (['GET', 'POST'].includes(method) && [
     '/api/noah/connect', '/api/noah/ask', '/api/noah/profile',
     '/api/noah/registration', '/api/noah/registration/browser',

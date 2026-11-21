@@ -100,7 +100,7 @@ export async function requestGatewayUser(request: Request): Promise<string> {
   return pseudonymousEmailId(email);
 }
 
-export async function requestUser(request: Request): Promise<string> {
+async function requestExistingUser(request: Request): Promise<string> {
   const authorization = request.headers.get('authorization') ?? '';
   if (
     authorization.startsWith('Bearer rock_esim_') ||
@@ -178,4 +178,15 @@ export async function requestUser(request: Request): Promise<string> {
     return access.authenticateEsimCloudRequest(request, db, env);
   }
   throw new Error('UNAUTHORIZED');
+}
+
+export async function requestUser(request: Request): Promise<string> {
+  try { return await requestExistingUser(request); }
+  catch (error) {
+    if (!(error instanceof Error) || error.message !== 'UNAUTHORIZED' || request.headers.has('authorization')) throw error;
+    const browser = await import('./noah-browser-session.ts');
+    if (!browser.noahBrowserRequestAllowed(request)) throw error;
+    const [{ env }, profile] = await Promise.all([import('cloudflare:workers'), import('./noah-profile-store.ts')]);
+    return browser.createNoahBrowserSessions(profile.profileKeys((env as unknown as { NOAH_PROFILE_KEYS?: string }).NOAH_PROFILE_KEYS)).authenticate(request);
+  }
 }

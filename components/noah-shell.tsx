@@ -69,7 +69,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
           <nav aria-label={t('メインメニュー')}>{gridItems.map(({ href, label, Icon }) => <a key={href} href={href} onClick={() => gridMenu.current?.hidePopover()}><Icon size={19}/><span>{t(label)}</span></a>)}</nav>
           <Link href={`${base}/social#compose`} onClick={() => gridMenu.current?.hidePopover()}><Plus size={19}/>{t('投稿')}</Link>
         </div>
-        <Link href={`/noah/account?returnTo=${encodeURIComponent(pathname)}`} className={styles.gridAccount} aria-label={t('アカウント')}><UserRound size={22}/></Link>
+        <Link href={`${base}/profile`} className={styles.gridAccount} aria-label={t('登録情報を見る')}><UserRound size={22}/></Link>
       </header>
       <div className={styles.gridBody} id="noah-content" tabIndex={-1}>{children}</div>
     </div>
@@ -88,7 +88,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
           {nav()}
           <div className={styles.secondary}><nav aria-label={t('操作の設定')}>{secondary.map(({href,label,Icon})=><a key={href} href={href}><Icon size={20}/><span>{t(label)}</span></a>)}</nav></div>
           {isTimeline&&<Link href={`${base}/social#compose`} className={styles.post}><Plus size={20}/><span>{t('投稿')}</span></Link>}
-          <Link href={`/noah/account?returnTo=${encodeURIComponent(pathname)}`} className={styles.account}><UserRound size={22}/><span>{t('アカウント')}</span></Link>
+          <Link href={`${base}/profile`} className={styles.account}><UserRound size={22}/><span>{t('登録情報')}</span></Link>
         </div></aside>
         <div className={styles.content} id="noah-content" tabIndex={-1} data-main-page={isMain||undefined}>{children}</div>
       </div>

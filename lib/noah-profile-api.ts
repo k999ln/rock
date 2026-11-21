@@ -19,11 +19,11 @@ export function createNoahProfileApi(deps:{store:NoahProfileStore;authenticate:(
   }
   async function respond(work:()=>Promise<Response>){try{return await work();}catch(e){
     if(e instanceof NoahAgentError)return json({error:e.message},e.status);
-    if(e instanceof Error && e.message==='UNAUTHORIZED')return json({error:'サインインすると登録情報を保存できます。'},401);
+    if(e instanceof Error && e.message==='UNAUTHORIZED')return json({error:'保存先を開けませんでした。もう一度お試しください。'},401);
     if(e instanceof SyntaxError)return json({error:'入力を確認してください。'},400);
     return json({error:'保存先に接続できません。もう一度お試しください。'},503);
   }}
-  const view=async(user:string,profile:Awaited<ReturnType<NoahProfileStore['load']>>['profile'])=>json({...profile,ownerScope:await ownerScopeFor(user),available:deps.store.available});
+  const view=async(user:string,profile:Awaited<ReturnType<NoahProfileStore['load']>>['profile'])=>json({...profile,ownerScope:await ownerScopeFor(user),available:deps.store.available,browserOwned:user.startsWith('noah-browser:')});
   return {
     collection:(request:Request)=>respond(async()=>{
       const user=await owner(request,request.method==='POST');

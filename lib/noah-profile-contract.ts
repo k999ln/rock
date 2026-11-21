@@ -24,7 +24,7 @@ export const PROFILE_CONSENT_VERSION = '2026-11-22.1';
 export const PROFILE_CONSENT_TEXT = '入力した情報を暗号化して保存し、次の登録でも必要な項目だけ再利用します。提出先への送信は毎回確認します。';
 export type ProfileConsent = { version: string; at: number; action: 'save' | 'reuse-stop' | 'reuse-resume'; fields: ProfileField[]; documents: string[] };
 export type NoahProfile = { revision: number; fields: Partial<Record<ProfileField, string>>; documents: NoahIdentityDocument[]; grants: NoahDelegation[]; paused: boolean; reuseEnabled: boolean; consents: ProfileConsent[] };
-export type NoahProfileView = NoahProfile & { ownerScope: string; available: boolean };
+export type NoahProfileView = NoahProfile & { ownerScope: string; available: boolean; browserOwned?: boolean };
 export const emptyNoahProfile = (): NoahProfile => ({ revision: 0, fields: {}, documents: [], grants: [], paused: false, reuseEnabled: false, consents: [] });
 export const PROFILE_MAX_DOCUMENT = 5 * 1024 * 1024;
 export const profileField = (value: unknown): value is ProfileField => typeof value === 'string' && Object.hasOwn(NOAH_PROFILE_FIELDS, value);

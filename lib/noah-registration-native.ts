@@ -30,7 +30,7 @@ export function createNoahNativeRegistration(deps:{store:NoahExternalAccountStor
   }
   return async(requestContext:Request,provider:ConfiguredRegistration):Promise<RegistrationExecutor|undefined>=>{
     if(provider.id!==AGENTBOARD_PROVIDER.id||provider.executorUrl!==AGENTBOARD_PROVIDER.executorUrl)return undefined;
-    let owner:string;try{owner=await deps.authenticate(requestContext);}catch{throw new NoahAgentError('接続キーを安全に保存するため、Noahにサインインしてください。',401);}
+    let owner:string;try{owner=await deps.authenticate(requestContext);}catch{throw new NoahAgentError('保存先を開けませんでした。もう一度お試しください。',401);}
     if(requestContext.method==='POST'&&requestContext.headers.get(OWNER_SCOPE_HEADER)!==await ownerScopeFor(owner))throw new NoahAgentError('アカウントが変わりました。画面を開き直してください。',409);
     if(!deps.store.available)throw new NoahAgentError('登録の実行環境は準備中です。',503);
     return async(id,values,documents)=>{

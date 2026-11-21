@@ -386,7 +386,7 @@ const plain = (value: unknown, min: number, max: number): value is string => typ
 
 function failure(error: unknown) {
   if (error instanceof NoahAgentError) return json({ error: error.status === 413 ? '送信内容が大きすぎます。' : error.message }, error.status);
-  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'サインインしてください。' }, 401);
+  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
   return json({ error: '接続を確かめられません。少し待ってから再試行してください。' }, 503);
 }
 
