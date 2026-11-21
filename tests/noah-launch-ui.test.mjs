@@ -33,7 +33,7 @@ function text(tree) {
         ? tree
         : '';
 }
-function harness(reply, activity = false) {
+function harness(reply, activity = false, props) {
   const calls = [],
     slots = [],
     effects = [],
@@ -74,6 +74,7 @@ function harness(reply, activity = false) {
       if (id.endsWith('.module.css')) return { default: {} };
       if (id === 'react')
         return {
+          useCallback: (fn) => fn,
           useState(initial) {
             const i = cursor++;
             slots[i] ??= { value: initial };
@@ -100,7 +101,7 @@ function harness(reply, activity = false) {
   });
   const render = () => {
     cursor = 0;
-    tree = exports.default();
+    tree = exports.default(props);
     effects.splice(0).forEach((fn) => fn());
   };
   render();
@@ -326,5 +327,52 @@ void test('retired launch page redirects valid Agent selection into the unified 
     });
     await exports.default({ searchParams: Promise.resolve({ agent }) });
     assert.equal(destination, expected);
+  }
+});
+
+void test('a saved Mac work link reads and stops only the selected run', async () => {
+  const id = '8f0e3ada-2339-40d0-acde-de6f674477d3';
+  const command = {
+    id,
+    kind: 'run',
+    state: 'claimed',
+    agent: { name: '試験Agent' },
+  };
+  const ui = harness(
+    (url, options) => {
+      if (options?.method === 'POST') {
+        assert.equal(url, '/api/noah/launch');
+        assert.deepEqual(JSON.parse(options.body), { action: 'stop', id });
+        assert.equal(options.headers['X-Rock-Owner-Scope'], 'fixture');
+        command.stopRequested = true;
+        return Response.json({});
+      }
+      assert.equal(url, '/api/noah/launch?work=' + id);
+      return Response.json({
+        ownerScope: 'fixture',
+        commands: [command],
+        jobs: [],
+      });
+    },
+    true,
+    { workId: id },
+  );
+  try {
+    await ui.flush();
+    assert.match(text(ui.tree), /仕事の詳細/);
+    assert.doesNotMatch(text(ui.tree), /仕事を頼む/);
+    const stop = ui.nodes.find(
+      (n) => n.type === 'button' && text(n) === '仕事を停止',
+    );
+    assert.ok(stop);
+    await stop.props.onClick();
+    await ui.flush();
+    assert.match(text(ui.tree), /停止要求を送信済み/);
+    assert.equal(
+      ui.calls.some((c) => c.url.includes('public=1')),
+      false,
+    );
+  } finally {
+    ui.close();
   }
 });

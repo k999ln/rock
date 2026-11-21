@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- NoahのMacで実行した仕事を個別URLから開いて停止・成果保存できるようにした。配布Runnerで接続・実行・ファイル照合・停止・切断を確認（[PR #366](https://github.com/k999ln/rock/pull/366)）。
+
 - Noahの限定共有・送信履歴・利用状況を登録Agentの画面から開けるようにし、外部Agentの利用報告を所有者確認付きで既存APIに統合（[PR #362](https://github.com/k999ln/rock/pull/362)、task 73）。
 
 - Noah のつなげる数を、料金ごとのカードの数にした（task 113。Opus / Noelle。本人指示「続き最後までやって」。[PR #357](https://github.com/k999ln/rock/pull/357)、#355 の上の積み上げ）。表 `noah_package_connections`（migration 0053）、`lib/noah-plan.ts`、`lib/noah-connect.ts` のつなぐ前の上限（無料 6・有料 50。数えるのはカードで、同じカードの中の 2 本目は増やさない。7 枚目は 409「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」。もうつないである物は切らない）、`/noah/ready` の見出し「6 個のうち 4 個」。**どの利用権を有料と見るかは本人が決めるまで置いていない（`NOAH_PLAN_SOURCE` は null）ので、切り替え `NOAH_PLAN_LIMITS` を開けても、今は全員 50 のまま。** 試験 5 本（`tests/noah-plan-limits.test.mjs`）。変えた所は `docs/noah/spec-110-shelf.md` の 17 章。本番の migration・配備・切り替えは、していない。
