@@ -100,8 +100,9 @@ for stmt in statements(BASE.read_text()):
 Q = named(QUERIES)
 NEW = ["noah_package_connections", "noah_package_evidence", "noah_package_steps", "noah_packages", "noah_shelf_daily", "noah_shelf_seen",
        "noah_trial_channels", "noah_trial_entries", "noah_trial_reports"]
-# 実装の task が drizzle/ へ移した表（task 110: drizzle/0050_noah_shelf.sql）。移した表と索引は、DDL 案と同じ定義であること。
-MOVED = {"noah_packages": ["noah_packages_shelf"], "noah_package_steps": ["noah_package_steps_ref"]}
+# 実装の task が drizzle/ へ移した表（task 110: drizzle/0050_noah_shelf.sql、task 114: 0051_noah_trial.sql）。移した表と索引は、DDL 案と同じ定義であること。
+MOVED = {"noah_packages": ["noah_packages_shelf"], "noah_package_steps": ["noah_package_steps_ref"],
+         "noah_trial_channels": [], "noah_trial_entries": ["noah_trial_entries_via"], "noah_trial_reports": ["noah_trial_reports_package"]}
 
 
 def ddl_twice():
