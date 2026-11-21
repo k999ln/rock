@@ -593,6 +593,14 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
     assert.equal(view.jobs[0].route, route);
     assert.match(view.jobs[0].result, /文字数 2/);
   }
+  const selected = await run('list', { work: start.id });
+  assert.equal(selected.work, start.id);
+  assert.deepEqual(
+    selected.jobs.map((j) => j.id),
+    [start.id],
+  );
+  assert.equal(selected.jobs[0].route, 'provider');
+  await assert.rejects(run('list', { work: newApproval() }), { status: 404 });
   const stopped = { id: newApproval(), route: 'provider', text: 'never send' };
   await run('start', stopped);
   await run('stop', { id: stopped.id });

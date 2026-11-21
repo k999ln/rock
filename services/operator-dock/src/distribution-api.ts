@@ -19,6 +19,7 @@ export function lineEligibility(
       throw new OperatorError('配給Agentの接続を準備しています。', 503);
     const response = await agent.fetch('https://notice.invalid/eligible', {
       method: 'POST',
+      signal: AbortSignal.timeout(8000),
       body: JSON.stringify({ owner }),
     });
     if (!response.ok)

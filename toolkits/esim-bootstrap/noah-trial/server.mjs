@@ -227,13 +227,14 @@ export async function startTrialServers(
           const account = trial.session(token);
           if (!account)
             throw new TrialError(401, '招待コードで入り直してください。');
-          const agent =
-            new URL(path, origin).searchParams.get('agent') ?? undefined;
+          const params = new URL(path, origin).searchParams;
+          const agent = params.get('agent') ?? undefined,
+            work = params.get('work') ?? undefined;
           const state = await trial.cloudWork(
             account.owner,
             dedicated,
             'list',
-            { agent },
+            { agent, work },
           );
           res.end(cloudScreen(state, randomUUID()));
           return;
@@ -279,7 +280,7 @@ export async function startTrialServers(
                 !dedicated &&
                 session &&
                 order?.access === 'active' &&
-                trial.phone(session.owner) &&
+                (await trial.runtimePermit(session.owner)).active &&
                 (await recipientHasPending(
                   await trial.runtime.distributionDb(),
                   session.owner,

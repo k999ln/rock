@@ -129,7 +129,7 @@ export function addressScreen(address, root = base, hosted = false) {
 }
 
 export function cloudScreen(
-  { packages, agent, routes, automaticRoute, preference, jobs },
+  { packages, agent, routes, automaticRoute, preference, jobs, work },
   id,
   { root = base + 'agents', hosted = false } = {},
 ) {
@@ -198,7 +198,7 @@ export function cloudScreen(
             hidden('id', job.id) + hidden('agent', agent),
           )
         : '';
-      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p><small>仕事番号 ${esc(job.id)}</small></p><p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p>${job.result && job.note ? '<p>' + esc(job.note) + '</p>' : ''}<dl>${sections}</dl>${stop}</li>`;
+      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p><small><a href="${esc(root)}?work=${encodeURIComponent(job.id)}">仕事番号 ${esc(job.id)}</a></small></p><p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p>${job.result && job.note ? '<p>' + esc(job.note) + '</p>' : ''}<dl>${sections}</dl>${stop}</li>`;
     })
     .join('');
   return layout(
@@ -219,7 +219,7 @@ export function cloudScreen(
         : '<p>利用可能な実行先がありません。</p>'
     }</section>
     <section><h2>仕事と成果</h2>${history ? '<ul>' + history + '</ul>' : '<p>依頼はありません。</p>'}
-    <a href="${esc(root)}?agent=${encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>${hosted ? '<p><a href="/api/noah/cloud-work/distribution">あなたへの配給</a></p>' : ''}`,
+    <a href="${esc(root)}?${work ? 'work=' + encodeURIComponent(work) : 'agent=' + encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>${hosted ? '<p><a href="/api/noah/cloud-work/distribution">あなたへの配給</a></p>' : ''}`,
     hosted ? 'eSIMクラウド' : '開発用・模擬回線',
   );
 }

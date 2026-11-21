@@ -20,6 +20,7 @@ export async function deliverNotices(
     const ask = (action: string) =>
       binding.fetch('https://notice.invalid/' + action, {
         method: 'POST',
+        signal: AbortSignal.timeout(8000),
         body: JSON.stringify({ id: row.id, owner: row.recipient }),
       });
     let state = 'waiting',
@@ -28,7 +29,8 @@ export async function deliverNotices(
       usage: number | null = null;
     try {
       let response = await ask('state');
-      if (response.status === 404) response = await ask('start');
+      const starting = response.status === 404;
+      if (starting) response = await ask('start');
       if (response.status === 403) state = 'stopped';
       else if (response.ok) {
         const job = (await response.json()) as {
@@ -38,7 +40,7 @@ export async function deliverNotices(
           readyAt?: number;
           usageYen?: number;
         };
-        if (job.id !== row.id) state = 'attention';
+        if (!job || job.id !== row.id) state = 'attention';
         else if (job.state === 'completed') {
           if (
             job.resultId === 'notice:' + row.id &&
@@ -53,10 +55,13 @@ export async function deliverNotices(
           } else state = 'attention';
         } else if (job.state === 'attention' || job.state === 'stopped')
           state = job.state;
+        else if (!starting && job.state !== 'queued' && job.state !== 'waiting')
+          state = 'attention';
       } else if (response.status < 500 && response.status !== 429)
         state = 'attention';
-    } catch {
-      /* A lost response is reconciled through the same assignment. */
+    } catch (error) {
+      if (error instanceof SyntaxError) state = 'attention';
+      /* Transport failures reconcile through the same assignment. */
     }
     const next = now + Math.min(60_000, 500 * 2 ** Math.min(7, row.attempts));
     await db

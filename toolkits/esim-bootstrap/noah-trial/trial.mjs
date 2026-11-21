@@ -210,6 +210,14 @@ export class NoahTrial {
       403,
       '結果とパッケージは模擬専用回線から開いてください。',
     );
+    const member = this.db
+      .prepare('SELECT expires FROM trial_owners WHERE owner=?')
+      .get(owner);
+    requireTrial(
+      member?.expires > this.now(),
+      403,
+      '試験回線の利用期限を確認してください。',
+    );
     const phone = this.phone(owner);
     requireTrial(phone, 403, 'この端末の回線を確認できませんでした。');
     await this.core.reconcile(owner, phone.id);

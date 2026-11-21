@@ -86,6 +86,7 @@ export default {
       return failure('専用回線から接続してください。', 403);
     let input = {
       agent: new URL(request.url).searchParams.get('agent') ?? undefined,
+      work: new URL(request.url).searchParams.get('work') ?? undefined,
     };
     let bodyBytes = new Uint8Array();
     if (request.method === 'POST') {

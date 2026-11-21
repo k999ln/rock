@@ -47,20 +47,33 @@ export class CloudWork {
     const action = new URL(request.url).pathname;
     const input = await request.json();
     const packages = this.packages();
-    const agent = input.agent ?? packages[0]?.id;
+    let selected;
+    if (action === '/list' && input.work !== undefined) {
+      if (!validId.test(input.work))
+        return json({ error: '仕事番号を確認してください。' }, 400);
+      selected = await this.storage.get('run:' + input.work);
+      if (!selected || selected.owner !== owner)
+        return json({ error: 'この仕事は見つかりません。' }, 404);
+    }
+    const agent = selected?.agent ?? input.agent ?? packages[0]?.id;
     const pkg = packages.find((item) => item.id === agent);
     if (action === '/list') {
-      if (!pkg)
+      if (!pkg && !selected)
         return json({ error: '利用できるパッケージがありません。' }, 404);
-      const ids = (await this.storage.get('recent')) ?? [];
-      const records = ids.length
-        ? await this.storage.get(ids.map((id) => 'run:' + id))
-        : new Map();
+      const ids = selected
+        ? [selected.id]
+        : ((await this.storage.get('recent')) ?? []);
+      const records = selected
+        ? new Map([['run:' + selected.id, selected]])
+        : ids.length
+          ? await this.storage.get(ids.map((id) => 'run:' + id))
+          : new Map();
       return json({
         packages: packages.map(({ id, name }) => ({ id, name })),
         agent,
-        automaticRoute: preferredRoute(pkg.routes)?.label,
-        routes: pkg.routes.map(({ id, label }) => ({ id, label })),
+        work: selected?.id,
+        automaticRoute: preferredRoute(pkg?.routes ?? [])?.label,
+        routes: (pkg?.routes ?? []).map(({ id, label }) => ({ id, label })),
         preference: (await this.storage.get('pref:' + agent)) ?? 'auto',
         jobs: ids
           .map((id) => records.get('run:' + id))

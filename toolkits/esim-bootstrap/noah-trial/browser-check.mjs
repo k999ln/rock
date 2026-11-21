@@ -196,6 +196,8 @@ try {
   await recipient.nav(mobile + base, '配送先を登録');
   await recipient.click('a[href$="address"]');
   await recipient.wait('配給の配送先');
+  await recipient.size(390);
+  await recipient.screenshot('distribution-address-form');
   await recipient.fill('form', {
     name: '試験用宛名',
     postal: '0000000',

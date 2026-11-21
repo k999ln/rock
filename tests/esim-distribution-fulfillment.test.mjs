@@ -246,6 +246,15 @@ await test('two handset sessions share one stock ledger, preserve address snapsh
     403,
   );
   assert.deepEqual(await stock(), [0, 6, 4, 1500]);
+  f.trial.db
+    .prepare('UPDATE trial_owners SET expires=? WHERE owner=?')
+    .run(Date.now() - 1000, 'qa-b');
+  assert.equal((await b.get('mobile', 'address')).status, 401);
+  assert.equal(
+    (await b.send('mobile', 'receive', { id: second.id })).status,
+    401,
+  );
+  assert.deepEqual(await stock(), [0, 6, 4, 1500]);
   t.diagnostic(
     JSON.stringify({
       assignment: first.id,
