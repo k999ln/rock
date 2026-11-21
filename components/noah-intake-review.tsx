@@ -77,15 +77,15 @@ export default function NoahIntakeReview({ ownerScope }: { ownerScope: string })
       try { all = JSON.parse(await file.text()) as ImportFile; } catch { throw Error('取り込みの結果のファイルを読めません。'); }
       if (!all || all.schema !== 'noah-intake-import/1' || !Array.isArray(all.families) || !Array.isArray(all.candidates) || !Array.isArray(all.checks)) throw Error('取り込みの結果のファイルではありません。');
       const parts = importParts(all);
-      let families = 0, listed = 0;
+      let families = 0, listed = 0, rows = 0;
       for (const [index, part] of parts.entries()) {
         setImporting(`入れています… ${index + 1} / ${parts.length} 回`);
         const response = await fetch('/api/noah/intake/import', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': ownerScope }, body: JSON.stringify(part) });
-        const result = await response.json() as { ownerScope?: string; error?: string; families?: number; listed?: number };
-        if (!response.ok || result.ownerScope !== ownerScope) throw Error(`${result.error ?? '入れられません。'}（${index + 1} 回目。同じファイルを、もう一度入れると続きから同じ結果になります）`);
-        families += result.families ?? 0; listed += result.listed ?? 0;
+        const result = await response.json() as { ownerScope?: string; error?: string; families?: number; listed?: number; rowsWritten?: number };
+        if (!response.ok || result.ownerScope !== ownerScope) throw Error(`${result.error ?? '入れられません。'}（${index + 1} 回目。ここまでに本番へ書いた行 ${rows.toLocaleString('ja-JP')}。同じファイルを、もう一度入れると、入った所は書かずに、続きから同じ結果になります）`);
+        families += result.families ?? 0; listed += result.listed ?? 0; rows += result.rowsWritten ?? 0;
       }
-      setImported(`入れました：系列 ${families.toLocaleString('ja-JP')}（一覧に載る物 ${listed.toLocaleString('ja-JP')}）。書き出した時刻 ${date(all.exportedAt)}`);
+      setImported(`入れました：系列 ${families.toLocaleString('ja-JP')}（一覧に載る物 ${listed.toLocaleString('ja-JP')}）。本番へ書いた行 ${rows.toLocaleString('ja-JP')}（索引を含む）。書き出した時刻 ${date(all.exportedAt)}`);
       setRefresh(n => n + 1);
     } catch (e) { setError(e instanceof Error ? e.message : '入れられません。'); } finally { setImporting(''); setPending(false); }
   }
@@ -136,7 +136,7 @@ export default function NoahIntakeReview({ ownerScope }: { ownerScope: string })
       <p>つなげない物の内訳：{Object.entries(state.unsupported).map(([reason, count]) => `${labels[reason] ?? 'その他'} ${count}`).join(' ／ ') || 'ありません'}</p>
       {state.warnings.map(warning => <output key={warning}>{warning}</output>)}
       <h3>取り込みの結果を入れる</h3>
-      <p>本番の巡回を開けずに、手元で台帳を読んで握手した結果（scripts/noah-local-patrol.mjs が書き出す import.json）を入れます。一覧に載せる系列と、その候補・握手の行だけが入ります。何度入れても、同じ結果になります。</p>
+      <p>本番の巡回を開けずに、手元で台帳を読んで握手した結果（scripts/noah-local-patrol.mjs が書き出す import.json）を入れます。一覧に載せる系列と、その候補・握手の行だけが入ります。何度入れても、同じ結果になります（変わっていない行は書きません）。新しい系列 1 つで、本番の D1 に約 13 行（索引を含む）を書きます。</p>
       <label>ファイルを選ぶ <input type="file" accept="application/json,.json" disabled={pending} onChange={event => { void importFile(event.target.files?.[0]); }} /></label>
       {importing && <output>{importing}</output>}
       {imported && <output>{imported}</output>}
