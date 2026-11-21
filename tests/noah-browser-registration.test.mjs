@@ -12,7 +12,7 @@ function fixture(){
  const bucket={get:async k=>{const o=records.get(k);return o?{...o,size:o.data.length,text:async()=>o.data}:null;},put:async(k,data,options)=>{const old=records.get(k);if(options.onlyIf.etagMatches&&old?.etag!==options.onlyIf.etagMatches||options.onlyIf.etagDoesNotMatch&&old)return null;const obj={data,etag:String(++etag)};records.set(k,obj);return obj;}};
  const store=createNoahExternalAccountStore(bucket,{active:'v1',keys:{v1:randomBytes(32).toString('hex')}});
  let verified=false,lost=false;
- const fetcher=async(url,init)=>{calls.push({url:String(url),init});assert.equal(init.redirect,'error');if(String(url)===provider.mcpUrl){assert.equal(new Headers(init.headers).get('Authorization'),`Bearer ${credential}`);return Response.json({echo:credential});}
+ const fetcher=async(url,init)=>{calls.push({url:String(url),init});assert.equal(init.redirect,'manual');if(String(url)===provider.mcpUrl){assert.equal(new Headers(init.headers).get('Authorization'),`Bearer ${credential}`);return Response.json({echo:credential});}
   assert.equal(String(url),endpoint);const b=JSON.parse(init.body);assert.equal(await authenticate(key,new Request(endpoint,{method:'POST',headers:init.headers}),init.body),true);
   if(lost)throw Error('lost response');return Response.json({id:b.id,state:b.action==='cancel'?'failed':'needs_user',sequence:b.input?.sequence??0,...(b.action==='frame'?{image:'YWJj'}:{}),...(b.action==='resume'&&verified?{verified:{credential,externalId:'example-user'}}:{})});};
  const deps={url:endpoint,key,store,providers:[provider],authenticate:async r=>{const u=r.headers.get('x-user');if(!u)throw Error('auth');return u;},fetcher};

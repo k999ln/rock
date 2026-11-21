@@ -31,7 +31,7 @@ void test('100 registrations survive duplicate taps, finish without polling, iso
   const store = createNoahExternalAccountStore(bucket, { active: 'test', keys: { test: randomBytes(32).toString('hex') } });
   const authenticate = async (request) => { const owner = request.headers.get('x-test-owner'); if (!owner) throw Error('UNAUTHORIZED'); return owner; };
   const fetcher = async (url, init) => {
-    assert.equal(init.redirect, 'error');
+    assert.equal(init.redirect, 'manual');
     if (String(url).endsWith('/api/agents/register')) {
       registrations++; const { name } = JSON.parse(init.body), credential = `agb_${randomBytes(32).toString('hex')}`;
       credentials.set(credential, name); return Response.json({ credential, agent: { id: name, status: 'active' } });

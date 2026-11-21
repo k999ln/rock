@@ -13,7 +13,7 @@ function fixture(){
  const objects=new Map();let sequence=0,registrations=0,verifications=0;const credential=`agb_${randomBytes(32).toString('hex')}`;
  const bucket={async get(k){const o=objects.get(k);return o?{size:o.text.length,etag:o.etag,text:async()=>o.text}:null;},async put(k,text,opts){const old=objects.get(k);if(opts?.onlyIf?.etagMatches&&old?.etag!==opts.onlyIf.etagMatches)return null;if(opts?.onlyIf?.etagDoesNotMatch==='*'&&old)return null;const v={text,etag:String(++sequence)};objects.set(k,v);return v;},async delete(k){objects.delete(k);}};
  const keys={active:'v1',keys:{v1:randomBytes(32).toString('hex')}},store=createNoahExternalAccountStore(bucket,keys);
- const calls=[],fetcher=async(url,init)=>{calls.push({url:String(url),init});assert.equal(init.redirect,'error');if(String(url).endsWith('/api/agents/register')){registrations++;assert.deepEqual(Object.keys(JSON.parse(init.body)),['name']);return Response.json({credential,agent:{id:'external-alice',status:'active'},untrusted:'ignore me'});}verifications++;assert.equal(init.headers.Authorization,`Bearer ${credential}`);return Response.json({agent:{id:'external-alice',status:'active'}});};
+ const calls=[],fetcher=async(url,init)=>{calls.push({url:String(url),init});assert.equal(init.redirect,'manual');if(String(url).endsWith('/api/agents/register')){registrations++;assert.deepEqual(Object.keys(JSON.parse(init.body)),['name']);return Response.json({credential,agent:{id:'external-alice',status:'active'},untrusted:'ignore me'});}verifications++;assert.equal(init.headers.Authorization,`Bearer ${credential}`);return Response.json({agent:{id:'external-alice',status:'active'}});};
  const authenticate=async r=>{const user=r.headers.get('x-user');if(!user)throw Error('UNAUTHORIZED');return user;};
  const request=async(user='alice',method='POST')=>new Request('https://avoado.si/api/noah/registration',{method,headers:{'x-user':user,'X-Rock-Owner-Scope':await ownerScopeFor(user)}});
  const executor=createNoahNativeRegistration({store,authenticate,fetcher});
@@ -71,4 +71,28 @@ void test('operational diagnostics contain fixed phases and status only, never r
  const broken=await createNoahNativeRegistration({store:{available:true,load:async()=>{throw Error('secret-in-storage-error');}},authenticate:f.authenticate,observe:event=>events.push(event)})(await f.request(),AGENTBOARD_PROVIDER);
  await assert.rejects(()=>broken(randomUUID()));assert.deepEqual(events.at(-1),{stage:'store_load_failed'});
  assert.doesNotMatch(JSON.stringify(events),/secret-in-storage-error/);
+});
+
+void test('only the known legacy pre-dispatch claim can return to the form; uncertain new dispatch stays fenced',async()=>{
+ const f=fixture(),id=randomUUID();
+ await f.store.save('alice','agentboard',await f.store.load('alice','agentboard'),{version:1,job:id,state:'registering',updatedAt:1});
+ const execute=await createNoahNativeRegistration({store:f.store,authenticate:f.authenticate,fetcher:f.fetcher,recoverUnsentLegacy:true})(await f.request(),AGENTBOARD_PROVIDER);
+ assert.equal(await execute(id),'failed');assert.equal(f.counts().registrations,0);
+ assert.equal(await execute(randomUUID(),{name:'Synthetic'}),'completed');assert.equal(f.counts().registrations,1);
+ const g=fixture();let count=0;
+ const uncertain=await createNoahNativeRegistration({store:g.store,authenticate:g.authenticate,fetcher:async()=>{count++;throw Error('lost response');},recoverUnsentLegacy:true})(await g.request(),AGENTBOARD_PROVIDER);
+ assert.equal(await uncertain(randomUUID(),{name:'Synthetic'}),'unknown');
+ assert.equal(await uncertain(randomUUID(),{name:'Synthetic'}),'unknown');assert.equal(count,1);
+});
+
+void test('actual Workers fetch can register and refuses a redirect before any second destination', {timeout:30000},async t=>{
+ const {build}=await import('esbuild'),{Miniflare,convertV4MiniflareOptions}=await import('miniflare');
+ const {outputFiles}=await build({stdin:{contents:`import {createNoahNativeRegistration,AGENTBOARD_PROVIDER} from './lib/noah-registration-native.ts';let account=null;const store={available:true,load:async()=>({account,etag:null}),save:async(_owner,_provider,_slot,value)=>{account=value;return {account,etag:null}}};export default {async fetch(request){const factory=createNoahNativeRegistration({store,authenticate:async()=> 'synthetic'});const run=await factory(request,AGENTBOARD_PROVIDER);return Response.json({state:await run(crypto.randomUUID(),{name:'Synthetic'})});}}`,resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'browser',target:'es2022'});
+ const calls=[];let redirected=false;
+ const outboundService=async request=>{calls.push(request.url);if(request.url.endsWith('/api/agents/register'))return redirected?new Response(null,{status:307,headers:{Location:'https://unapproved.example/register'}}):Response.json({credential:`agb_${'a'.repeat(64)}`,agent:{id:'synthetic',status:'active'}});assert.equal(request.url,'https://www.agentboard.ai/api/me');return Response.json({agent:{id:'synthetic',status:'active'}});};
+ const options={modules:true,compatibilityDate:'2026-04-01',script:outputFiles[0].text,outboundService};
+ let mf=new Miniflare(convertV4MiniflareOptions(options));t.after(()=>mf.dispose());
+ assert.equal((await(await mf.dispatchFetch('https://noah.test')).json()).state,'completed');assert.equal(calls.length,2);
+ await mf.dispose();redirected=true;calls.length=0;mf=new Miniflare(convertV4MiniflareOptions(options));
+ assert.equal((await(await mf.dispatchFetch('https://noah.test')).json()).state,'unknown');assert.deepEqual(calls,['https://www.agentboard.ai/api/agents/register']);
 });

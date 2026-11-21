@@ -20,7 +20,7 @@ export function createNoahBrowserRegistration(deps:Dependencies){
   async function call(user:string,provider:ConfiguredRegistration,id:string,action:string,extra:Record<string,unknown>={}):Promise<BrowserReply>{
     if(!available||!matches(provider))throw new NoahAgentError('登録の実行環境は準備中です。',503);
     const body=JSON.stringify({id,owner:await sha256Hex(user),providerId:provider.id,action,...extra}),time=String(Date.now());
-    const response=await fetcher(endpoint!,{method:'POST',redirect:'error',signal:AbortSignal.timeout(20000),headers:{'Content-Type':'application/json','X-Noah-Time':time,'X-Noah-Signature':await signature(deps.key!,time,body)},body});
+    const response=await fetcher(endpoint!,{method:'POST',redirect:'manual',signal:AbortSignal.timeout(20000),headers:{'Content-Type':'application/json','X-Noah-Time':time,'X-Noah-Signature':await signature(deps.key!,time,body)},body});
     if(!response.ok){await response.body?.cancel();throw new NoahAgentError(response.status===429?'登録用ブラウザが混み合っています。時間をおいて確認してください。':'登録の状態を確認できません。同じ仕事を開き直してください。',response.status===429?429:503);}
     const reply=await boundedJson(response,1_048_576) as BrowserReply;
     if(reply.id!==id||!['running','needs_user','completed','failed','unknown'].includes(reply.state))throw new NoahAgentError('登録の応答を確認できません。',503);
@@ -80,7 +80,7 @@ export function createNoahBrowserRegistration(deps:Dependencies){
       const target=input instanceof Request?input.url:String(input);if(target!==url)throw new NoahAgentError('接続先が変わりました。',409);
       const {account}=await deps.store.load(user,provider.id);if(account?.state!=='ready'||!account.credential||account.configurationDigest!==await digest(provider))throw new NoahAgentError('登録してから接続してください。',401);
       const headers=new Headers(init?.headers??(input instanceof Request?input.headers:undefined));headers.set('Authorization',`Bearer ${account.credential}`);
-      const response=await fetcher(input,{...init,headers,redirect:'error'});
+      const response=await fetcher(input,{...init,headers,redirect:'manual'});
       if(!response.ok){await response.body?.cancel();return new Response(null,{status:response.status});}
       // Bounded MCP replies; exact credential echo is stripped before Work or UI sees it.
       const reader=response.body?.getReader();let length=0,body='';const decoder=new TextDecoder();

@@ -21,7 +21,7 @@ export async function createNoahRegisteredMcpFetch(deps:{owner:string;url:string
     const url=input instanceof Request?input.url:String(input);
     if(url!==AGENTBOARD_MCP)throw Error('registered destination changed');
     const raw=typeof init?.body==='string'?JSON.parse(init.body):null;
-    if(!object(raw)||!['initialize','notifications/initialized','tools/list','tools/call'].includes(String(raw.method)))return deps.fetcher(input,{...init,redirect:'error'});
+    if(!object(raw)||!['initialize','notifications/initialized','tools/list','tools/call'].includes(String(raw.method)))return deps.fetcher(input,{...init,redirect:'manual'});
     let credential:string|undefined;
     if(raw.method==='tools/call'){
       const params=raw.params;
@@ -36,7 +36,7 @@ export async function createNoahRegisteredMcpFetch(deps:{owner:string;url:string
         init={...init,body:JSON.stringify(raw)};
       }
     }
-    const response=await deps.fetcher(input,{...init,redirect:'error'});
+    const response=await deps.fetcher(input,{...init,redirect:'manual'});
     if(!['tools/list','tools/call'].includes(String(raw.method)))return response;
     if(!response.ok){await response.body?.cancel();return error(raw.id,'接続先を確認できません。時間をおいて試してください。');}
     let reply;try{reply=await read(response,raw.id);}catch{return error(raw.id,'接続先の応答を確認できません。');}

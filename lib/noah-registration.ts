@@ -95,7 +95,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
   async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>, native?:RegistrationExecutor): Promise<RegistrationState> {
     try {
       if(native)return await native(id,values,documents);
-      const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values, ...(documents && Object.keys(documents).length ? {documents} : {}) } : {}) }) });
+      const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values, ...(documents && Object.keys(documents).length ? {documents} : {}) } : {}) }) });
       if (!response.ok) { await response.body?.cancel(); return 'unknown'; }
       const reply = await readBounded(response.body);
       if (!object(reply) || reply.id !== id || !['running','needs_user','completed','failed','unknown'].includes(String(reply.state))) return 'unknown';
