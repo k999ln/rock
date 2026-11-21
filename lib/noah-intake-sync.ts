@@ -14,6 +14,7 @@ export type IntakeSource = {
 export type IntakeDependencies = {
   db: IntakeDb; now?: () => number; fetcher?: typeof fetch; origin?: string;
   budget?: typeof NOAH_PATROL_BUDGET;
+  checkAddress?: (url: URL) => Promise<void>;
 };
 class IntakeBudgetExhausted extends Error {}
 class IntakeFailure extends Error {

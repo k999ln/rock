@@ -324,6 +324,7 @@ export type WorkToolObservation = {
   recordedAt: string;
 };
 export type WorkJob = {
+  noahRemote?: import('./noah-remote-work.ts').NoahRemoteExecution;
   noahRegistration?: import('./noah-registration-contract.ts').RegistrationRecord;
   resale?: import('./noah-resale.ts').ResaleState;
   noahOutbox?: import('./noah-outbox.ts').NoahOutbox;
@@ -408,6 +409,10 @@ function defaultWorkPlan(templateId: string, objective: string): WorkPlan {
   };
 }
 export function normalizeWorkJob(job: WorkJob): WorkJob {
+  if (job.templateId === 'noah-agent-remote') {
+    if (!job.noahRemote || job.noahRemote.mode !== 'form' || job.noahRemote.verification !== 'relay_observed_unverified' || job.noahRemote.chargeMinor !== 0 || job.status === 'completed' || job.steps.some(s => s.passed)) throw new WorkError('Noahの実行記録を確認してください。');
+    return job;
+  }
   if (job.templateId === 'noah-registration') {
     if (job.noahRegistration?.schema !== 'noah-registration/1' || job.noahRegistration.verification !== 'registration_agent_reported' || job.steps.length !== 0 || job.status === 'completed') throw new WorkError('登録Agentの記録を確認してください。');
     return job;
@@ -775,7 +780,7 @@ export function applyWorkCommand(
   if (job.templateId === 'noah-resale') throw new WorkError('Noahのリセール画面から操作してください。', 409);
   if (job.eveNews && command.action !== 'cancel') throw new WorkError('ニュース草稿は専用の参照検査を使ってください。掲載・真偽確認の完了にはできません。',409);
   if (job.eveTool?.planning?.commands.some(c => c.id === command.id)) throw new WorkError('同じ操作IDを別の操作へ使えません。', 409);
-  if (['noah-agent-local', 'noah-operation', 'noah-outbox'].includes(job.templateId)) throw new WorkError('Noahの専用実行画面から操作してください。', 409);
+  if (['noah-agent-local', 'noah-agent-remote', 'noah-operation', 'noah-outbox'].includes(job.templateId)) throw new WorkError('Noahの専用実行画面から操作してください。', 409);
   if (job.templateId === 'composition' && !['complete', 'cancel'].includes(command.action))
     throw new WorkError('組み合わせの計画・実行は専用画面から行ってください。', 409);
   const duplicate = job.events.find((event) => event.command.id === command.id);

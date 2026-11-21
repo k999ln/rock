@@ -78,13 +78,13 @@
 | 0 | （今の Mac の道。受入の残り） | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 最小構成: 本人の Mac で、選ぶ・接続・実行・成果の受け取り・停止 | 進行中（上の表） |
 | 0 | L1 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け | |
 | 1 | L3 | 85 | [85-noah-intake-ledger.md](85-noah-intake-ledger.md) | 外の台帳の取り込みと名寄せ、接続要件の下書き | ✅ L3 実装・ローカル受入 [PR #332](https://github.com/k999ln/rock/pull/332)（L2 #330 を base、未マージ・CI履歴検出あり） |
-| 1 | L2・L5 | 96 | [96-noah-connect-plan.md](96-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 |✅ L2 実装・ローカル検証 [PR #330](https://github.com/k999ln/rock/pull/330)（未マージ・CI履歴検出あり）。L5 未着手 |
-| 1 | L4 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | |
-| 1 | L6 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（入力欄で頼む・1 文で頼む） | |
-| 1 | L5 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | |
-| 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | |
+| 1 | L2・L5 | 96 | [96-noah-connect-plan.md](96-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 |✅ L2 実装・ローカル検証 [PR #330](https://github.com/k999ln/rock/pull/330)（未マージ・CI履歴検出あり）。L5 API・スマホ画面実装 [PR #349](https://github.com/k999ln/rock/pull/349)（本番受入未実施） |
+| 1 | L4 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | 実装・ローカル通し試験 [PR #349](https://github.com/k999ln/rock/pull/349)。実在100候補のL1確認（61応答・36認証・3接続不可）とMizanの成果受領、G3本番確認は残り |
+| 1 | L6 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（入力欄で頼む・1 文で頼む） | ✅ ローンチformの実装・ローカル一周 [PR #349](https://github.com/k999ln/rock/pull/349)。実機3接続先での受入は残り |
+| 1 | L5 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | ✅ ローンチ接続API・画面のローカル一周 [PR #349](https://github.com/k999ln/rock/pull/349)。実機の新規登録からの復帰は残り |
+| 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | 巡回・L2反映・中断回収を実装 [PR #349](https://github.com/k999ln/rock/pull/349)。100候補の巡回確認済み。停止・復帰を含む50件の受入は残り |
 | 1 | — | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package）。今ある Mac の隔離環境で | |
-| 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | |
+| 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | API一周・画面規則の自動試験、390pxで実在接続先の一周 [PR #349](https://github.com/k999ln/rock/pull/349)。本番実機1〜13は未受入 |
 | 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | |
 | 2 | — | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
 | 2 | — | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
