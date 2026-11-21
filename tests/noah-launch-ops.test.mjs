@@ -233,15 +233,19 @@ void test('the wake worker: one signed, empty POST to the fixed path, accepted b
 // 取り下げ・報告の窓口（5 章）。
 // ---------------------------------------------------------------------------
 
-void test('the notice for providers: in the help page as #bot, hidden until a contact is decided; its numbers are the ones the code uses', async (t) => {
+void test('the notice for providers: in the help page as #bot, shown with the contact the owner decided, hidden while there is none; its numbers are the ones the code uses', async (t) => {
   // 使い方の頁（/noah/help）の部品を、そのまま描く。外枠と、接続状態の読み取りは、この試験に関わらないので、空の物に替える。
   const stubs = { './workspace-shell': { default: (props) => ({ type: 'main', props: { children: props.children }, key: null }) }, '@/lib/use-sky-service-status': { useSkyServiceStatus: () => undefined } };
   const open = (notice) => screen({ fetch: async () => ({ status: 404, body: {} }), modules: { ...stubs, '@/lib/noah-bot-notice': notice } }).mount('components/sky-service-help.tsx');
   const section = (helpPage) => helpPage.nodes().filter((node) => node.type === 'section' && node.props.id === 'bot');
+  const withContact = (contact) => ({ ...botNotice, noahBotNotice: () => botNotice.noahBotNotice(contact) });
 
-  // 宛先が決まるまで: 節は、木の中にあるが、出さない（hidden）。宛先の文は、無い。
-  assert.equal(botNotice.NOAH_REPORT_CONTACT, null, '宛先は、本人が決める（docs/noah/mvp-launch.md の D8）。決まるまで null');
-  const undecided = open(botNotice);
+  // 本人が決めた宛先（docs/noah/mvp-launch.md の D8。2026-11-21）。同じ宛先に開発者向けの相談も届くので、件名で分ける。
+  const DECIDED = { label: 'smash@avoado.si', href: `mailto:smash@avoado.si?subject=${encodeURIComponent('Noah: 一覧の取り下げ・報告')}` };
+  assert.deepEqual(botNotice.NOAH_REPORT_CONTACT, DECIDED);
+
+  // 宛先が無い時（null に戻した時）: 節は、木の中にあるが、出さない（hidden）。宛先の文は、無い。
+  const undecided = open(withContact(null));
   assert.equal(section(undecided).length, 1);
   const [hiddenSection] = section(undecided);
   assert.equal(hiddenSection.props.hidden, true);
@@ -256,11 +260,14 @@ void test('the notice for providers: in the help page as #bot, hidden until a co
   assert.equal(numbers.userHandshakesPerMinute, NOAH_ASK_LIMITS.hostHandshakes);
   assert.equal(numbers.patrolHostEveryHours * HOUR, NOAH_PROBE.hostEveryMs);
   assert.equal(numbers.registryEveryHours * HOUR, NOAH_REGISTRY.everyMs);
-  const notice = botNotice.noahBotNotice();
+  const notice = botNotice.noahBotNotice(null);
   assert.ok(notice.paragraphs[0].includes(`${numbers.registryEveryHours} 時間に 1 回ほど読み`));
   assert.ok(notice.paragraphs[0].includes(`同じ接続先へは、${numbers.patrolHostEveryHours} 時間に 1 回までです`));
   assert.ok(notice.paragraphs[1].includes(`全員を合わせて 1 分に ${numbers.userHandshakesPerMinute} 回までです`));
   assert.deepEqual([notice.shown, notice.report], [false, null]);
+  // 既定（本人が決めた宛先）の文は、宛先の段が足されるだけ。他の段は同じ。
+  const decidedNotice = botNotice.noahBotNotice();
+  assert.deepEqual([decidedNotice.shown, decidedNotice.report.contact, decidedNotice.paragraphs, decidedNotice.source], [true, DECIDED, notice.paragraphs, notice.source]);
 
   // 文に書いた名乗りは、実際に送る名乗りと同じ（巡回は NoahBot/1、利用者の操作からは Noah/1。どちらも、この節の URL を持つ）。
   const agent = mcpServer();
@@ -275,9 +282,10 @@ void test('the notice for providers: in the help page as #bot, hidden until a co
   assert.equal((await w.as('owner-a').connect(familyId(1), uuid(1))).body.state, 'connected');
   assert.deepEqual([...new Set(agent.log.map((request) => request.headers['user-agent']))], ['Noah/1 (+https://avoado.si/noah/help#bot)']);
 
-  // 宛先が決まった後: 節が出て、宛先への道が、文の中に 1 つある。
-  for (const contact of [{ label: 'example.org の窓口', href: 'https://example.org/report' }, { label: 'report@example.org', href: 'mailto:report@example.org' }]) {
-    const decided = open({ ...botNotice, noahBotNotice: () => botNotice.noahBotNotice(contact) });
+  // 宛先がある時: 節が出て、宛先への道が、文の中に 1 つある。本人が決めた宛先（頁を、そのまま開いた時）と、別の形の宛先 2 つで見る。
+  const others = [{ label: 'example.org の窓口', href: 'https://example.org/report' }, { label: 'report@example.org', href: 'mailto:report@example.org' }];
+  for (const [notice, contact] of [[botNotice, DECIDED], ...others.map((other) => [withContact(other), other])]) {
+    const decided = open(notice);
     const [shown] = section(decided);
     assert.equal(shown.props.hidden, false);
     assert.ok(decided.text(shown).includes(`一覧から外してほしい時、説明が違う時、迷惑な内容を見つけた時は、${contact.label} へ知らせてください。台帳の記録を外した物・非推奨にした物は、1 時間以内に、Noah の一覧からも外れます。`));

@@ -185,6 +185,6 @@ task: [codex/tasks/90-noah-phone-only-loop.md](../../codex/tasks/90-noah-phone-o
 
 ### 9.7 次の担当へ
 
-- 本番の受入は、9.4 の表を、そのまま使う。行う前に要る事は、[97](spec-97-launch-ops.md) の 11.5（D8 の宛先）と、PR #346 の本文の「本人が行う事」。
+- 本番の受入は、9.4 の表を、そのまま使う。行う前に要る事は、PR #346 の本文の「本人が行う事」（D8 の宛先は、2026-11-21 に決まって入れた。[97](spec-97-launch-ops.md) の 11.7）。
 - 一周に段を足す時は、`tests/noah-phone-loop.test.mjs` の、同じ世界の中に足す（相手が受けた要求の数え方が、段 15 にまとまっている）。
 - 画面を足した時は、`tests/noah-ready-ui.test.mjs` の最後の試験の `rules()` を、その画面でも呼ぶ。

@@ -66,9 +66,9 @@ void test('the list: sections, one main button per card, badges in words, where 
   assert.doesNotMatch(page.text(of('Agent 3')), /押すだけで試せる/);
   // 出どころと、申し出の窓口、Mac で動かす Agent への道。
   assert.match(text, /出どころ: Official MCP Registry。Noah が作った物ではありません。説明は、提供者が書いた文のままです。/);
-  // 申し出の窓口への道は、宛先が決まるまで出さない（行き先の節 /noah/help#bot も、その間は出ない。docs/noah/spec-97-launch-ops.md の 5 章）。
-  assert.equal(botNotice.NOAH_REPORT_CONTACT, null, '宛先は、本人が決めるまで null');
-  assert.deepEqual(page.find('a', '報告・取り下げの申し出'), []);
+  // 申し出の窓口への道（行き先は /noah/help#bot の節。宛先は本人が決めた物: docs/noah/mvp-launch.md の D8）。宛先が無い間は出さない事は、次の試験で見る。
+  assert.notEqual(botNotice.NOAH_REPORT_CONTACT, null, '宛先は、本人が決めた物（2026-11-21）');
+  assert.deepEqual(page.find('a', '報告・取り下げの申し出').map((node) => node.props.href), ['/noah/help#bot']);
   assert.deepEqual(page.find('a', '自分の Mac で動かす Agent').map((node) => node.props.href), ['/noah/explore']);
   // 名前を押すと、詳細へ。系列の ID は query で渡す。
   assert.equal(page.nodes(of('Agent 1')).find((node) => node.type === 'a').props.href, `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`);
@@ -77,11 +77,13 @@ void test('the list: sections, one main button per card, badges in words, where 
   assert.deepEqual(w.net.hosts, []);
 });
 
-void test('the way to the report desk appears on the list and the detail screen only once a contact is decided', async (t) => {
+void test('the way to the report desk appears on the list and the detail screen only while there is a contact', async (t) => {
   const w = await world(t, { [hostOf(1)]: mcpServer() });
-  const decided = { ...MODULES, '@/lib/noah-bot-notice': { ...botNotice, NOAH_REPORT_CONTACT: { label: 'example.org の窓口', href: 'https://example.org/report' } } };
+  const contact = (value) => ({ ...MODULES, '@/lib/noah-bot-notice': { ...botNotice, NOAH_REPORT_CONTACT: value } });
   const hrefs = (page) => page.find('a', '報告・取り下げの申し出').map((node) => node.props.href);
-  for (const [modules, expected] of [[MODULES, []], [decided, ['/noah/help#bot']]]) {
+  const mail = (page) => page.nodes().filter((node) => node.type === 'a' && String(node.props.href).startsWith('mailto:'));
+  // 宛先が無い時（null）・本人が決めた宛先（そのまま）・別の形の宛先。
+  for (const [modules, expected] of [[contact(null), []], [MODULES, ['/noah/help#bot']], [contact({ label: 'example.org の窓口', href: 'https://example.org/report' }), ['/noah/help#bot']]]) {
     const ui = screen({ fetch: w.browser({ user: null }), modules, now: w.f.time() });
     const list = ui.mount(LIST);
     await list.flush();
@@ -91,8 +93,9 @@ void test('the way to the report desk appears on the list and the detail screen 
     await detail.flush();
     assert.match(detail.text(), /出どころ: Official MCP Registry/);
     assert.deepEqual(hrefs(detail), expected);
+    // 宛先そのもの（メールや URL）は、一覧・詳細には出さない。出すのは、/noah/help の節だけ。
+    assert.deepEqual([mail(list), mail(detail)], [[], []]);
   }
-  // 宛先そのもの（メールや URL）は、一覧・詳細には出さない。出すのは、/noah/help の節だけ。
   assert.deepEqual(w.net.hosts, []);
 });
 

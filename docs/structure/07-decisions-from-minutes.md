@@ -26,6 +26,10 @@
 
 | 日付 | 分野 | 決定・方針 | 適用範囲 |
 | --- | --- | --- | --- |
+| 2026-11-21 | Eve-Sky-Noa | 本人の回答：Codex の #349（L4〜L7 を、Claude の #335・#342・#344・#345 とは別に作り直した物。同じ表 `noah_connections`・`noah_asks` と同じファイル名で、中身が違う）と、Claude の L4〜L9 のうち、**Claude の L4〜L9 を残す**。#349 にしか無い「実行中・成果データの画面に成果を出す」所は、後から上に小さく足す。 | L1〜L9 を main と合わせた #350 を土台にする。#349 は使わない（閉じるかは Codex 側） |
+| 2026-11-21 | Git・文書 | 本人の回答：#350（L1〜L9 を今の main と合わせた物）は、CI が緑になったら main にマージしてよい。#337 の新しい 3 commit（Mac をアプリのボタンでつなぐ等）は、CI が直ってから別に入れる。 | #350 |
+| 2026-11-21 | Git・文書 | 本人の回答：Claude の commit は、作者 noellesugar99・コミッター Claude（署名付き。GitHub で Verified）でよい。前の commit（作者もコミッターも noellesugar99。Unverified の表示）は、書き換えない。 | この repo で Claude が作る commit |
+| 2026-11-21 | Eve-Sky-Noa | 本人の回答：外の道具・Agent を提供している方への、取り下げ・報告の窓口（D8）は smash@avoado.si。 | `lib/noah-bot-notice.ts` の `NOAH_REPORT_CONTACT`。`/noah/help#bot` の節と、一覧・詳細からの道が出る。docs/noah/mvp-launch.md の D8 |
 | 2026-11-20 | Eve-Sky-Noa | 本人指示：Noah を Agent を買ったり売ったりできるマーケットプレイスとしても使えるようにし、ユーザーが開発した Agent を載せてもらえるようにする。つながりやすさを強調し、ワンクリックで接続がされるよう工夫する。Agent をつなぐ時の登録が面倒でユーザーが離れないよう、いかにスムーズに登録できるかに焦点を当てる。載せる時はファイルをアップし、そこでリファクタと、モバイル用に使えるようにする圧縮をできるようにする。Eve は Agent をビルドする役割として入れる。 | [設計](../noah-agent-market-design.md)、docs/services の 7 枚（noah-one-click-connect / noah-own-device / noah-screenless / noah-agent-intake / eve-agent-build / noah-mobile-variant / noah-agent-purchase）、codex/tasks 73〜95。設計まで。コード・migration・公開は変えていない。 |
 | 2026-11-20 | Eve-Sky-Noa | 本人指示：「最終、みんながこの noah を使って agent を当たり前に自分の専用の端末に繋げて利用できるようにしたい」。PC の前に座ることを前提にしない。設計は本人の構想をもとにし、おかしい所は設計し直してよい。 | 10-15「pc のやリアルの物の前にたたなくてもものが作れる状態」、10-10「携帯はリモコン感覚」、10-16「エージェント専用端末」と同じ線。docs/noah-agent-market-design.md §1。02 §3・04 に反映。 |
 | 2026-11-20 | Eve-Sky-Noa | 本人指示：「agent 動かす時に、画面がジャックされるのは絶対にダメ」。方法は問わない（ターミナル、クラウド、Linux）。この事業の最適解を探す。 | 09-04・09-22 を確定の決まりにする。他人が作った Agent は、画面と入力装置の無い専用の端末でだけ動かす。本人の端末そのものを操作する Agent は受けない。設計 §4.2、docs/services/noah-screenless.md、04 に反映。 |

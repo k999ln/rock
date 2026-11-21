@@ -73,7 +73,7 @@ D1 の書き込みの内訳（1 日。索引の書き込みも 1 行と数える
 
 ## 5. 取り下げ・報告の窓口（`/noah/help` に `#bot` の節を足す）
 
-今の `/noah/help` は `components/sky-service-help.tsx`。`<section id="bot">` を 1 つ足す。文は下のとおり（`<宛先>` は本人が決める。D8。決まるまで、この節を出さない＝出さない間は、ローンチしない）。
+今の `/noah/help` は `components/sky-service-help.tsx`。`<section id="bot">` を 1 つ足す。文は下のとおり（`<宛先>` は本人が決める。D8。決まるまで、この節を出さない＝出さない間は、ローンチしない）。**2026-11-21 に、本人が smash@avoado.si と決めた（11.7）。**
 
 > **外の道具・Agent を提供している方へ**
 >
@@ -91,10 +91,10 @@ D1 の書き込みの内訳（1 日。索引の書き込みも 1 行と数える
 
 作った形（L8）:
 
-- 文と宛先は `lib/noah-bot-notice.ts`。宛先は、定数 `NOAH_REPORT_CONTACT`（`{ label, href }`。`href` は `mailto:` か `https://`）の 1 か所。**今は `null`（未定）。** 本人が決めたら、その 1 行を書き換える（環境変数にしない）。
+- 文と宛先は `lib/noah-bot-notice.ts`。宛先は、定数 `NOAH_REPORT_CONTACT`（`{ label, href }`。`href` は `mailto:` か `https://`）の 1 か所。**2026-11-21 に本人が決めた: `smash@avoado.si`（件名「Noah: 一覧の取り下げ・報告」付きの `mailto:`。同じ宛先に、開発者向けの相談も届くので、件名で分ける）。** 宛先を変える時も、その 1 行を書き換える（環境変数にしない）。
 - `null` の間、節 `<section id="bot">` は、頁の木の中に `hidden` で置く（見えない。文は、宛先の段を除いて入っている）。一覧と詳細の下の「報告・取り下げの申し出 →」（[74](spec-74-one-click-connect.md) の 5.2）も、出さない（行き先の節が見えない間、押しても何も出ない道を置かない）。宛先を入れると、節と、その道が、一緒に出る。
 - 文の中の数（1 時間に 1 回・1 分に 60 回）は、作りの数（`NOAH_PROBE.hostEveryMs`・`NOAH_REGISTRY.everyMs`・`NOAH_ASK_LIMITS.hostHandshakes`）と同じである事を、試験が見る。既定を変えた時は、`NOAH_BOT_NOTICE_NUMBERS` も直す。
-- **決める時期について（本人へ）:** 巡回の名乗り（`NoahBot/1 (+https://avoado.si/noah/help#bot)`）は、この節の URL を持つ。段 1（[ローンチの最小限](mvp-launch.md) の 9 章。巡回を開ける）の時点で宛先が未定だと、名乗りの URL を開いた提供者に、説明が出ない。**段 1 の前に D8 を決める事を勧める**（G5・G7 が求めるのは、段 3 の前まで）。
+- **決める時期について（本人へ）:** 巡回の名乗り（`NoahBot/1 (+https://avoado.si/noah/help#bot)`）は、この節の URL を持つ。段 1（[ローンチの最小限](mvp-launch.md) の 9 章。巡回を開ける）の時点で宛先が未定だと、名乗りの URL を開いた提供者に、説明が出ない。**段 1 の前に D8 を決める事を勧める**（G5・G7 が求めるのは、段 3 の前まで）。→ 2026-11-21 に決まった。
 
 取り下げの手順（運営）: 申し出を受けたら、運営の画面でその系列を開き、「取り下げる」（85 の 11.5 の `withdraw`）。その場で、一覧・検索・詳細から消え、握手が止まり、つないでいる人の新しい依頼が止まる。申し出た相手へ、外した事を返す。戻す時は「戻す」。
 
@@ -261,7 +261,7 @@ L3〜L7 で、もう入っていた物（作り直していない）: 切り替�
 
 ### 11.5 本人が決める事・行う事
 
-- **D8（取り下げ・報告の窓口の宛先）。** 入れる所は `lib/noah-bot-notice.ts` の `NOAH_REPORT_CONTACT` の 1 行（`{ label: '出す文', href: 'mailto:…' か 'https://…' }`）。段 1（巡回を開ける）の前に決める事を勧める（5 章）。
+- **D8（取り下げ・報告の窓口の宛先）。** 入れる所は `lib/noah-bot-notice.ts` の `NOAH_REPORT_CONTACT` の 1 行（`{ label: '出す文', href: 'mailto:…' か 'https://…' }`）。段 1（巡回を開ける）の前に決める事を勧める（5 章）。→ 2026-11-21 に決まり、入れた（11.7）。
 - 配備・適用・開ける順・戻し方の、そのまま行える一覧は、[PR #346](https://github.com/k999ln/rock/pull/346) の本文と、`services/noah-patrol-wake/README.md`。
 
 ### 11.6 次の担当へ
@@ -269,3 +269,10 @@ L3〜L7 で、もう入っていた物（作り直していない）: 切り替�
 - L9（受入。[90](spec-90-phone-only-loop.md)）が使う物: `tests/noah-launch-ops.test.mjs`（閉じた時の応答と、1 つの接続先だけを止める手順）、運営の画面の「見張る数」（G2・G4 を読む所）、`services/noah-patrol-wake/README.md`（段 1 の手順）。
 - 上限の既定（`NOAH_ASK_LIMITS`）・巡回の間隔（`NOAH_PROBE.hostEveryMs`）・台帳を読む間隔（`NOAH_REGISTRY.everyMs`）を変える時は、`lib/noah-bot-notice.ts` の `NOAH_BOT_NOTICE_NUMBERS` と、5 章の文も直す（試験が、ずれを見つける）。
 - 見張る数に行を足す時は、`createNoahLaunchStatus` の batch に文を足し、`tests/noah-launch-ops.test.mjs` の「each one equals a hand count」に、手で数えた値を足す（その試験の世界 `counted()` に、行を置く）。
+
+### 11.7 追記（2026-11-21。D8 の宛先を入れた）
+
+- 本人が、取り下げ・報告の窓口を smash@avoado.si と決めた（docs/structure/07-decisions-from-minutes.md）。`lib/noah-bot-notice.ts` の `NOAH_REPORT_CONTACT` を `{ label: 'smash@avoado.si', href: 'mailto:smash@avoado.si?subject=…' }` にした（件名は「Noah: 一覧の取り下げ・報告」。同じ宛先に、開発者向けの相談（`components/noah-developer-maintenance.tsx`）も届くので、件名で分ける）。
+- これで、`/noah/help` の `section#bot` が出る（`hidden` でない）。一覧と詳細の下に「報告・取り下げの申し出 →」が出て、`/noah/help#bot` へ進む。宛先そのものは、一覧と詳細には出さない（節の中だけ）。
+- 試験: `tests/noah-launch-ops.test.mjs`（宛先が本人の決めた物である事・宛先が無い時は節が隠れる事・ある時は節が出て、宛先への道が 1 つある事）と、`tests/noah-ready-ui.test.mjs`（宛先が無い時・本人の決めた宛先・別の形の宛先の 3 つで、一覧と詳細の道）。わざと壊した 5 通り（宛先を null に戻す・節を隠さない・一覧と詳細で宛先が無くても道を出す・件名を落とす）は、どれも試験が落とした。
+- 本番では、まだ確かめていない（G5 の取り下げの操作は、本人の許可の後）。

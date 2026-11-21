@@ -3,16 +3,23 @@
  *
  * - Noah が何者で、何を読み、何を送り、どう止めてもらえるかを、1 つの節で読めるようにする。
  * - 文の中の数は、作りの数と同じにする（上限の既定を変えた時は、ここも直す。試験が、ずれを見つける）。
- * - 窓口の宛先は、本人が決める（docs/noah/mvp-launch.md の D8）。**決まるまで、節も、そこへのリンクも、出さない**
- *   （出さない間は、一般には開けない: mvp-launch.md の G5）。宛先は、環境変数にしない（公開してよい文として、ここに書く）。
+ * - 窓口の宛先は、本人が決める（docs/noah/mvp-launch.md の D8。2026-11-21 に smash@avoado.si と決まった）。
+ *   **宛先が無い（null）間は、節も、そこへのリンクも、出さない**（出さない間は、一般には開けない: mvp-launch.md の G5）。
+ *   宛先は、環境変数にしない（公開してよい文として、ここに書く）。
  * 通信も保存もしない。仕様: docs/noah/spec-97-launch-ops.md の 5 章。
  */
 import { NOAH_ASK_LIMITS } from './noah-limits.ts';
 
 /** 窓口の宛先。label は画面に出す文、href は行き先（`mailto:` か `https://`）。 */
 export type NoahReportContact = { label: string; href: string };
-/** 本人が決めるまで null。 */
-export const NOAH_REPORT_CONTACT: NoahReportContact | null = null;
+/**
+ * 本人が決めた宛先（2026-11-21。docs/structure/07-decisions-from-minutes.md）。同じ宛先に開発者向けの相談も届くので、件名で分ける。
+ * null に戻すと、節と、一覧・詳細からの道が、出なくなる。
+ */
+export const NOAH_REPORT_CONTACT: NoahReportContact | null = {
+  label: 'smash@avoado.si',
+  href: `mailto:smash@avoado.si?subject=${encodeURIComponent('Noah: 一覧の取り下げ・報告')}`,
+};
 
 /** 文に出す数。巡回の間隔（lib/noah-probe.ts の `NOAH_PROBE.hostEveryMs`）と、台帳を読む間隔（1 時間）は、ここに写して持つ（画面の側へ、握手の作りを読み込ませない）。 */
 export const NOAH_BOT_NOTICE_NUMBERS = {
