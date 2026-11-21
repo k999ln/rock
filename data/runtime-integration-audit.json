@@ -144,7 +144,7 @@
       "app/chat/page.tsx",
       "app/connect/page.tsx",
       "app/layout.tsx",
-      "app/web-app-manifests.ts",
+      "app/manifest.ts",
       "app/page.tsx",
       "app/rockstaros/page.tsx",
       "app/sky/page.tsx",
