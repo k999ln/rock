@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noah用のWeb・PC相談と紹介案件運営をsource ZIP/MCPキットとして追加。掲載条件検査・非公開情報の分離・下書き・実績集計を実装し、専用11試験とWorker dry-runを確認。本番登録・配備前（task101、[PR #374](https://github.com/k999ln/rock/pull/374)）。
+
 - NoahにCowAgentのMac準備ガイド（18秒の操作動画・日本語字幕）と公開3ページのサイトマップを追加し、カタログ・README・YouTube投稿用の導線をつないだ。配備・投稿前（task 71、[PR #369](https://github.com/k999ln/rock/pull/369)）。
 
 ## 2026-11-21
