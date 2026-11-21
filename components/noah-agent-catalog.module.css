@@ -1,4 +1,4 @@
-.page { --os-text: var(--sky-text, #edf3f7); --os-muted: var(--sky-muted, #a0b1bc); --os-line: var(--sky-line, #2e3c47); --os-panel: var(--sky-panel, #151d25); --os-raised: #1b2630; --os-accent: var(--sky-accent, #c3e1f0); --os-accent-ink: #101b23; --os-focus: var(--os-accent); max-width: 1168px; margin: auto; color: var(--os-text); padding: 0 24px 60px; box-sizing: border-box; }
+.page { --os-text: var(--sky-text, #edf3f7); --os-muted: var(--sky-muted, #a0b1bc); --os-line: var(--sky-line, #2e3c47); --os-panel: var(--sky-panel, #151d25); --os-raised: var(--noah-raised, #1b2630); --os-accent: var(--sky-accent, #c3e1f0); --os-accent-ink: #101b23; --os-focus: var(--os-accent); max-width: 1168px; margin: auto; color: var(--os-text); padding: 0 24px 60px; box-sizing: border-box; }
 .formPage { max-width: 820px; }
 .nav, .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
 .nav { border-bottom: 1px solid var(--os-line); padding: 8px 0 18px; }
@@ -61,3 +61,22 @@
 @media (max-width: 800px) { .metrics { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } .hero { align-items: start; flex-direction: column; } }
 @media (max-width: 560px) { .page { padding-inline: 16px; } .grid, .columns, .import, .facts, .checks { grid-template-columns: 1fr; } .sectionTitle { align-items: start; flex-direction: column; gap: 6px; } .hero { padding-top: 28px; } }
+
+.activityStats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-block: 24px; border-bottom: 1px solid var(--os-line); }
+.activityStats > div { display: grid; gap: 4px; }
+.activityStats strong { font-size: 28px; font-weight: 700; }
+.activityStats span { color: var(--os-muted); font-size: 12px; }
+.activityList { padding-block: 24px; }
+.activityList > h2 { font-size: 18px; }
+.activityCard { border-top: 1px solid var(--os-line); padding-block: 24px; overflow-wrap: anywhere; }
+.activityCard h3 { margin: 0 0 12px; font-size: 18px; }
+.activityCard > p { font-size: 14px; line-height: 1.8; }
+.activityCard pre { padding: 16px; border-radius: 8px; background: var(--os-raised); max-height: 420px; overflow: auto; line-height: 1.8; font-size: 14px; }
+.activityDot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--os-accent); margin-right: 8px; animation: noahWorking 1.6s ease-in-out infinite; }
+@keyframes noahWorking { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .activityDot { animation: none; } }
+.agentDetails { border-block:1px solid var(--os-line); margin-bottom:16px; }
+.agentDetails summary { font-size:12px; color:var(--os-muted); }
+.agentDetails dl { display:grid; gap:14px; margin:0 0 16px; }
+.agentDetails dt { font-size:11px; color:var(--os-muted); }
+.agentDetails dd { margin:3px 0 0; font-size:13px; line-height:1.7; }

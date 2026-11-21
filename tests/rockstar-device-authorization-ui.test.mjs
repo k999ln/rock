@@ -140,3 +140,16 @@ void test('auth loss during consumed-code readback removes stale device details'
   assert.ok(!h.button('この端末を承認'));
   assert.equal(h.requests.filter(r => r.body).length, 0);
 });
+
+void test('signed-out device flow has one same-tab sign-in action retaining the code', async () => {
+  const h = harness({ status: 401, body: { error: 'sign_in_required' } });
+  await h.flush();
+  const login = h.links().find(n => n.props.children === 'サインインして続ける');
+  assert.ok(login);
+  assert.equal(login.props.target, undefined);
+  assert.equal(new URL(login.props.href, 'https://avoado.si').searchParams.get('returnTo'), '/connect/device?user_code=' + a);
+  assert.ok(h.text().includes('まず、サインイン'));
+  assert.ok(!h.text().includes('別タブでサインイン後'));
+  assert.ok(!h.button('この端末を承認'));
+  assert.equal(h.requests.filter(r => r.body).length, 0);
+});

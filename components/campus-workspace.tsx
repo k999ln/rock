@@ -702,7 +702,7 @@ export default function CampusWorkspace({
           <small>Campus</small>
         </Link>}
         <div className={styles.toplinks}>
-          <Link href={noah ? "/noah/features" : "/sky"}>{noah ? "機能一覧" : "Noah"}</Link>
+          <Link href={noah ? "/noah" : "/sky"}>{noah ? "タイムライン" : "Noah"}</Link>
           <Link href="/chat">Eve</Link>
           <Link href="/wallet" aria-label="Wallet">
             <WalletCards size={17} />

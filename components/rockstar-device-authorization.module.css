@@ -1,0 +1,18 @@
+.esimCatalog { margin:24px 0; color:#242127; }
+.esimCatalogTitle h1 { margin:0 0 12px; font-size:26px; }
+.esimCatalogTitle p { color:#655f6b; line-height:1.8; }
+.loginPanel,.notice { padding:20px; margin:18px 0; border:1px solid #e5ddec; border-radius:10px; background:#faf8fd; color:#242127; }
+.loginPanel h2 { margin:0 0 8px; font-size:18px; }
+.loginPanel p,.notice p { margin:0 0 14px; line-height:1.8; color:#655f6b; }
+.loginPanel .primary,.notice .primary,.offerForm .primary { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:12px 20px; box-sizing:border-box; border:0; border-radius:8px; background:#7546c8; color:#fff; font-size:15px; font-weight:650; text-decoration:none; cursor:pointer; }
+.offerForm { display:grid; gap:12px; margin:20px 0; }
+.offerForm input { padding:12px; min-height:48px; font:inherit; letter-spacing:.15em; border:1px solid #b9b0c4; border-radius:8px; }
+.esimPlanList { display:flex; gap:12px; flex-wrap:wrap; }
+.notice { display:block; line-height:1.8; }
+.retry { margin:20px 0; color:#655f6b; font-size:13px; }
+.retry summary { min-height:44px; display:flex; align-items:center; cursor:pointer; }
+.retry summary::after { content:'＋'; margin-left:12px; }
+.retry[open] summary::after { content:'−'; }
+.retry button { padding:8px 12px; }
+.esimCatalog :is(a,button,input,summary):focus-visible { outline:2px solid #7546c8; outline-offset:4px; }
+@media(max-width:600px) { .loginPanel { padding:18px; }.loginPanel .primary { width:100%; } }

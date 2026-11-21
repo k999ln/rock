@@ -1,0 +1,13 @@
+{
+  "node": {
+    "url": "https://nodejs.org/download/release/v24.22.3/node-v24.22.3-darwin-arm64.tar.xz",
+    "sha256": "1d64136c8a43d648d1b3bad10797a4c995b1ca032d2bde8799de43b37f058fe5",
+    "directory": "node-v24.22.3-darwin-arm64",
+    "maxBytes": 67108864
+  },
+  "homebrew": {
+    "url": "https://github.com/Homebrew/brew/releases/download/7.0.15/Homebrew.pkg",
+    "sha256": "af0827528fda9e8b653ac57815e1a003af588b7153749e8eb23d474afc60976c",
+    "maxBytes": 268435456
+  }
+}

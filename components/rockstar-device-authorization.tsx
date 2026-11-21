@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
-import styles from '@/components/sky-commerce.module.css';
+import styles from '@/components/rockstar-device-authorization.module.css';
 import { operationRequest, OperationRequestError, OperationResponseError } from '@/lib/operations-client';
 
 type DeviceAuthorization = { clientName: string; expiresAt: number };
@@ -28,7 +28,7 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
     setAuthorization(null);
     setSessions([]);
     setSignedIn(unauthorized ? false : null);
-    setMessage(unauthorized ? 'サインインを確認してください。' : mutation && uncertain
+    setMessage(unauthorized ? 'まだサインインしていません。下のボタンから進めてください。' : mutation && uncertain
       ? '操作結果が不明です。端末側の接続状態と接続中の端末を再確認してください。承認や解除は自動再送しません。'
       : '端末の状態を確認できませんでした。接続状態を再確認し、必要なら端末コードを確認し直してください。');
   }
@@ -121,10 +121,10 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
         <h1 id="device-link-title">RockstarOS端末を接続</h1>
         <p>端末に表示された8文字のコードを確認します。承認すると、このRockstar ID専用の端末セッションが発行されます。端末の接続はいつでも取り消せます。</p>
       </div>
-      {signedIn === false ? <div className={styles.notice}>
-        <p>端末を接続するにはRockstar IDでサインインしてください。</p>
-        <Link href={`/account?mode=login&returnTo=${encodeURIComponent(`/connect/device${/^[A-HJ-NP-Z2-9]{8}$/.test(code) ? `?user_code=${code}` : ''}`)}`} target="_blank" rel="noopener noreferrer">サインインして続ける</Link>
-        <p>別タブでサインイン後、この画面で端末の状態を再確認してください。</p>
+      {signedIn === false ? <div className={styles.loginPanel}>
+        <h2>まず、サインイン</h2><p>サインイン後、この端末の確認に戻ります。</p>
+        <Link href={`/account?mode=login&returnTo=${encodeURIComponent(`/connect/device${/^[A-HJ-NP-Z2-9]{8}$/.test(code) ? `?user_code=${code}` : ''}`)}`} className={styles.primary}>サインインして続ける</Link>
+
       </div> : signedIn === null ? <p>端末の状態を確認してから接続操作を行ってください。</p> : <form className={styles.offerForm} onSubmit={inspect}>
         <label htmlFor="rockstar-device-code">端末に表示されたコード</label>
         <input id="rockstar-device-code" autoComplete="one-time-code" autoCapitalize="characters"
@@ -142,8 +142,10 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
           <button disabled={busy} onClick={() => void decide('deny')}>拒否</button>
         </div>
       </div>}
-      {message && <output className={styles.notice} aria-live="polite">{message}</output>}
-      <button type="button" disabled={busy} onClick={() => void refreshSessions()}>端末の状態を再確認</button>
+      {message && signedIn !== false && <output className={styles.notice} aria-live="polite">{message}</output>}
+      {signedIn === false ? <details className={styles.retry}><summary>すでにサインインした場合</summary>
+        <button type="button" disabled={busy} onClick={() => void refreshSessions()}>端末の状態を再確認</button>
+      </details> : <button type="button" disabled={busy} onClick={() => void refreshSessions()}>端末の状態を再確認</button>}
     </section>
     {signedIn && <section className={styles.esimCatalog} aria-labelledby="device-sessions-title">
       <div className={styles.esimCatalogTitle}>

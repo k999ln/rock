@@ -116,7 +116,7 @@ export default function RockStudio() {
           <span className="studio-product-name">/ STUDIO</span>
         </div>}
         <div className="studio-chat-nav">
-          <Link href={noah ? "/noah/features" : "/sky"}>{noah ? "Noahの機能一覧" : "SKY"}</Link>
+          <Link href={noah ? "/noah" : "/sky"}>{noah ? "Noah" : "SKY"}</Link>
           <div className="studio-chat-private"><ShieldCheck size={15} />ソースコードの送信なし</div>
         </div>
       </header>
