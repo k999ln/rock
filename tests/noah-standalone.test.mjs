@@ -70,8 +70,8 @@ void test('standalone work distinguishes signed out, empty and failed reads, wit
   reply = { status: 401 };
   const signedOut = ui.mount('components/noah-work-list.tsx', { ownerScope: null, refresh: 0, only: 'succeeded', showEmpty: true });
   await signedOut.flush();
-  assert.match(signedOut.text(), /ログインすると/);
-  assert.equal(new URL(signedOut.find('a', 'ログイン')[0].props.href, 'https://avoado.si').searchParams.get('returnTo'), '/noah/data');
+  assert.match(signedOut.text(), /接続を確認すると/);
+  assert.equal(new URL(signedOut.find('a', '接続を確認して続ける')[0].props.href, 'https://avoado.si').searchParams.get('returnTo'), '/noah/data');
   assert.doesNotMatch(signedOut.text(), /成果はまだ/);
 });
 
