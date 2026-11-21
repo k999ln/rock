@@ -17,6 +17,8 @@ export type NoahAskTool = {
 export type NoahAskItem = {
   id: string; connectionId: string; workId: string; state: string; mode: string; revision: number; tool: string | null; host: string | null;
   stopRequested: boolean; error?: string; createdAt: number; updatedAt: number; finishedAt?: number;
+  /** 一覧で読んだ時だけ: その依頼の Agent（接続の系列の ID）。 */
+  agentId?: string;
   result?: { text: string; truncated: boolean; attachments: number }; note?: string;
 };
 
@@ -37,6 +39,8 @@ export const NOAH_ASK_TEXT = {
   open: '開く',
   close: '閉じる',
   stop: '止める',
+  /** Agent をまたぐ一覧（「実行中」「成果データ」）の行から、その Agent の詳細へ。 */
+  agent: 'この Agent を開く',
   raw: '元の形で見る',
   outline: '項目ごとに見る',
   received: '結果を受け取りました',

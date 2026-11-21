@@ -20,6 +20,14 @@ export function screen(options = {}) {
   // 描いている途中の部品・描いた後に動かす effect・状態が変わった印。画面（mount）ごとの物は、mount の中に持つ。
   let current = null, effects = [], dirty = false, mounts = 0;
 
+  /** useMemo・useCallback の値を、木の中の場所ごとに持つ。 */
+  const memo = (make, deps) => {
+    const instance = current, index = instance.cursor++, old = instance.slots[index];
+    if (old && deps && old.deps && deps.length === old.deps.length && deps.every((value, n) => Object.is(value, old.deps[n]))) return old.value;
+    const value = make();
+    instance.slots[index] = { value, deps };
+    return value;
+  };
   const hooks = {
     useState(initial) {
       const instance = current, index = instance.cursor++;
@@ -35,8 +43,9 @@ export function screen(options = {}) {
         effects.push(() => { slot.cleanup?.(); slot.cleanup = run() ?? undefined; });
       }
     },
-    useCallback: (fn) => fn,
-    useMemo: (fn) => fn(),
+    // React と同じく、deps が変わらない間は、前の値を返す（deps を渡さない時は、毎回作り直す）。
+    useCallback(fn, deps) { return memo(() => fn, deps); },
+    useMemo(make, deps) { return memo(make, deps); },
     useId: () => 'id',
     createContext: (value) => ({ Provider: Fragment, value }),
     useContext: (held) => held.value,
