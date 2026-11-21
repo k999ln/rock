@@ -50,6 +50,15 @@ void test('failed social feed leaves real Agent results and a retryable error',a
   assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['agent:agent']);assert.match(h.result.data.errors[0],/投稿：offline/);assert.equal(h.result.loading,false);
 });
 
+void test('a guest can browse public Agents without a sign-in error; permission and server failures remain visible',async t=>{
+  for(const status of [401,403,503]) {
+    const h=harness(catalog,async()=>{throw Object.assign(Error('account feed'),{status});});t.after(()=>h.close());await h.flush();
+    assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['agent:agent']);
+    assert.equal(h.result.data.errors.length,status===401?0:1);
+    assert.equal(h.result.data.social,undefined);
+  }
+});
+
 void test('public Agent comments join the personal timeline without needing a social profile',async t=>{
   const h=harness(async url=>url.startsWith('/api/noah/feedback?')?Response.json({entries:[{id:'review',agentId:'agent',agentName:'Agent',author:'Synthetic author',content:'Synthetic opinion',createdAt:10,replies:0}],cursor:null}):catalog(url),async()=>({profile:null,posts:[],cursor:null}));t.after(()=>h.close());await h.flush();
   assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['feedback:review','agent:agent']);

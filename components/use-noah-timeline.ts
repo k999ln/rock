@@ -42,7 +42,15 @@ async function socialPage(
   signal?: AbortSignal,
 ) {
   const path = `/api/sky/social?${new URLSearchParams({ mode: following ? 'following' : 'recommended', cursor })}`;
-  let result = await communityFetch<SkySocialState>(path, undefined, signal);
+  let result: SkySocialState;
+  try {
+    result = await communityFetch<SkySocialState>(path, undefined, signal);
+  } catch (error) {
+    // Browsing Noah is public; the account-only social feed is optional.
+    if (error instanceof Error && 'status' in error && error.status === 401)
+      return undefined;
+    throw error;
+  }
   if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
   if (result.profile && setCommunityKeyProfile(result.profile.id))
     result = await communityFetch<SkySocialState>(path, undefined, signal);
