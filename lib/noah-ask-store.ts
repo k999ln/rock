@@ -20,6 +20,8 @@ export type NoahAskRow = {
   tool_calls: number;
   error: string | null; revision: number;
   created_at: number; updated_at: number; finished_at: number | null;
+  /** 一覧で読む時だけ、接続の系列（Agent の ID）を添える。 */
+  family_key?: string | null;
 };
 export const NOAH_ASK_COLUMNS = 'id,owner_id,connection_id,work_id,request_sha256,mode,host,tool,tool_sha256,screen,state,stop_requested,lease_until,tool_calls,error,revision,created_at,updated_at,finished_at';
 
@@ -52,6 +54,7 @@ export function noahAskView(row: NoahAskRow) {
     ...(row.error ? { error: row.error } : {}),
     createdAt: row.created_at, updatedAt: row.updated_at,
     ...(row.finished_at !== null ? { finishedAt: row.finished_at } : {}),
+    ...(typeof row.family_key === 'string' ? { agentId: row.family_key } : {}),
   };
 }
 export type NoahAskView = ReturnType<typeof noahAskView>;

@@ -27,8 +27,18 @@ function harness(catalog,social,initial='all') {
 const catalog=async url=>Response.json(url.startsWith('/api/noah/feedback?')?{entries:[],cursor:null}:{entries:[{id:'agent',name:'Agent'}],nextCursor:null});
 void test('all feed fetches no news, excludes community posts and gives followed posts priority',async t=>{
   const h=harness(catalog,async()=>({posts:[post('ordinary'),post('follow',true),post('private-group',true,{id:'group'})],cursor:null}));t.after(()=>h.close());await h.flush();
-  assert.equal(h.calls.length,3);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')||u.startsWith('/api/noah/feedback?')));
+  // 棚（/api/noah/shelf）も 1 回読む。棚の形でない応答からは、何も足さない。
+  assert.equal(h.calls.length,4);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')||u.startsWith('/api/noah/feedback?')||u==='/api/noah/shelf'));
   assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['post:follow','post:ordinary','agent:agent']);
+});
+void test('shelf cards flow into the all feed after the Agent of each round; a closed shelf adds nothing and is not an error',async t=>{
+  const card=(id,shelf)=>({id,shelf,topic:'research',topicLabel:'調査',title:id,promise:'p',give:'g',get:'r',priceHint:null,advice:false,runs:['provider'],ownerSteps:0,ownerMinutes:1,position:1,why:'operator',target:`/noah/ready/agent?from=${id}`,numbers:null});
+  const shelves={shelves:[{id:'earn',name:'稼ぐ・仕事を省く',cards:[card('pkg:a','earn'),card('pkg:b','earn')]},{id:'learn',name:'教育',cards:[card('pkg:c','learn')]},{id:'life',name:'暮らし',cards:[]}]};
+  const open=harness(async url=>url==='/api/noah/shelf'?Response.json(shelves):catalog(url),async()=>({posts:[],cursor:null}));t.after(()=>open.close());await open.flush();
+  // 各段の 1 枚目、各段の 2 枚目…の順に、1 巡に 1 枚。
+  assert.deepEqual(Array.from(open.result.data.items,i=>i.key),['agent:agent','card:pkg:a','card:pkg:c','card:pkg:b']);
+  const closed=harness(async url=>url==='/api/noah/shelf'?Response.json({error:'見つかりません。'},{status:404}):catalog(url),async()=>({posts:[],cursor:null}));t.after(()=>closed.close());await closed.flush();
+  assert.deepEqual([Array.from(closed.result.data.items,i=>i.key),Array.from(closed.result.data.errors)],[['agent:agent'],[]]);
 });
 void test('Agent filter does not request social feed and an obsolete all-feed response cannot reappear',async t=>{
   let finish;const h=harness(catalog,()=>new Promise(resolve=>{finish=resolve;}));t.after(()=>h.close());await h.flush();h.setFilter('agent');await h.flush();

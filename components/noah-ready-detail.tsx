@@ -9,17 +9,19 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
-import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahAsk from './noah-ask';
 import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
+import NoahTrialReport from './noah-trial-report';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
 
 type Detail = NoahReadyItem & { listed: boolean; website: string | null; connection: NoahReadyConnection | null; ownerScope: string | null; error?: string };
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
-export default function NoahReadyDetail({ id }: { id: string }) {
+/** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
+export default function NoahReadyDetail({ id, tool = null, from = null }: { id: string; tool?: string | null; from?: string | null }) {
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
   const [cutting, setCutting] = useState(false), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
@@ -55,7 +57,7 @@ export default function NoahReadyDetail({ id }: { id: string }) {
   const { detail } = loaded, signedIn = detail.ownerScope !== null;
   const live = connection && connection.state !== 'disconnected' ? connection : null;
   const checked = noahCheckedText(detail.checkedAt);
-  const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, noahPriceText(detail.connect.price), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
+  const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, noahPriceText(detail.connect.price), noahUsersText(detail.users), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
 
   async function cut(current: NoahReadyConnection) {
     if (cutting) return;
@@ -95,12 +97,14 @@ export default function NoahReadyDetail({ id }: { id: string }) {
       {checked && <p className={styles.quiet}>{checked}</p>}
       {detail.host && <p className={styles.sendsTo}>{noahSendsToText(detail.host)}</p>}
       {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">提供者のページ（{new URL(detail.website).hostname}）</a></p>}
-      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" />
+      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} />
     </article>
 
-    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
+    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
     {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
     {signedIn && <NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} />}
+    {/* 棚のカードから来た時: 試行の本人の報告と、5 人以上の報告の合計（切り替えが閉の間は、何も出ない）。頼んだ後に、入れられるかを読み直す。 */}
+    {from && <NoahTrialReport key={`trial:${from}:${asked}`} packageId={from} />}
 
     {live && <section className={styles.section} aria-label="この接続">
       <div className={styles.cut}>

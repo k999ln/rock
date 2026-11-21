@@ -6,7 +6,7 @@
  * 仕様: docs/noah/spec-96-connect-plan.md の 6 章、spec-74-one-click-connect.md の 11.5。
  */
 import Link from 'next/link';
-import { noahBadgeText, noahPriceText, noahReadyDetailHref, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import { noahBadgeText, noahPriceText, noahReadyDetailHref, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
 import NoahConnectButton from './noah-connect-button';
 import styles from './noah-ready.module.css';
 
@@ -14,7 +14,7 @@ export default function NoahCard({ item, signedIn, ownerScope, connection, onCha
   item: NoahReadyItem; signedIn: boolean; ownerScope: string | null;
   connection: NoahReadyConnection | null; onChange: (connection: NoahReadyConnection) => void;
 }) {
-  const extras = [item.oneTap ? '押すだけで試せる' : null, item.tools > 0 ? `道具 ${item.tools} 個` : null].filter((text): text is string => text !== null);
+  const extras = [noahUsersText(item.users), item.oneTap ? '押すだけで試せる' : null, item.tools > 0 ? `道具 ${item.tools} 個` : null].filter((text): text is string => text !== null);
   return <article className={styles.card}>
     <header className={styles.cardHead}>
       <h3><Link className={styles.cardName} href={noahReadyDetailHref(item.id)}><span>{item.name}</span></Link></h3>

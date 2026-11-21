@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { NOAH_DATA_POLICY, type NoahDataResponse, type NoahDataDetail } from '@/lib/noah-result-data-contract';
 import { readOwnerScope, OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
+import type { ReactNode } from 'react';
 import styles from './noah-result-data.module.css';
 
 function download(value: BlobPart, name: string, type = 'application/json') {
@@ -10,7 +11,8 @@ function download(value: BlobPart, name: string, type = 'application/json') {
   link.href = url; link.download = name; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-export default function NoahResultData() {
+/** `phoneResults`: スマホから、接続した Agent（相手のサーバー）へ頼んで、成果が出た仕事（頁が渡す。無い人には何も出ない。docs/noah/spec-87-tool-agent.md の 11.9）。 */
+export default function NoahResultData({ phoneResults }: { phoneResults?: ReactNode } = {}) {
   const [page, setPage] = useState<NoahDataResponse | null>(null), [detail, setDetail] = useState<NoahDataDetail | null>(null);
   const [view, setView] = useState('personal'), [query, setQuery] = useState(''), [search, setSearch] = useState('');
   const [includeText, setIncludeText] = useState(false), [files, setFiles] = useState<string[]>([]), [consent, setConsent] = useState(false);
@@ -108,6 +110,7 @@ export default function NoahResultData() {
   }
   return <main className={styles.page}>
     <header><p>NOAH</p><h1>Agentの成果データ</h1><p>受け取った成果を探して、手元へ保存できます。選んだ成果だけをNoahの改善に提供することもできます。</p></header>
+    {phoneResults}
     <p>ここにはWebに保存されたNoahのAgent成果を表示します。<Link href="/noah/outputs">ほかの保存した成果</Link> · <Link href="/noah/add/data">手元のファイルをまとめる</Link></p>
     {error && <p role="alert">{error} <Link href="/account?returnTo=%2Fnoah%2Fdata">サインインを確認</Link></p>}
     <div className={styles.actions}>
