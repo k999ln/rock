@@ -8,7 +8,7 @@ void test('durable browser claim, handoff, duplicate input, completion and clean
  const ctx=context(),budgetCtx=context(),budget=new BrowserBudget(budgetCtx);let submits=0,launches=0,closed=0,done=false,viewport;
  const page={setViewport:async v=>{viewport=v;},setContent:async()=>{},waitForSelector:async()=>{},$eval:async()=>{},click:async()=>{submits++;},$:async()=>done?{}:null,close:async()=>{},screenshot:async()=>{assert.deepEqual(viewport,{width:390,height:640,deviceScaleFactor:1});return 'base64';},mouse:{click:async()=>{done=true;},wheel:async()=>{}},keyboard:{press:async()=>{},sendCharacter:async()=>{}}};
  const browser={newPage:async()=>page,pages:async()=>[page],sessionId:()=> 'isolated-session',disconnect:async()=>{},close:async()=>{closed++;}};
- const oldLaunch=puppeteer.launch,oldConnect=puppeteer.connect;puppeteer.launch=async(_env,options)=>{launches++;assert.deepEqual(options.guardrails,{allowedDomains:[]});return browser;};puppeteer.connect=async()=>browser;
+ const oldLaunch=puppeteer.launch.bind(puppeteer),oldConnect=puppeteer.connect.bind(puppeteer);puppeteer.launch=async(_env,options)=>{launches++;assert.deepEqual(options.guardrails,{allowedDomains:[]});return browser;};puppeteer.connect=async()=>browser;
  try{
   const runtime=new RegistrationSession(ctx,{BROWSER:{},BUDGET:{idFromName:v=>v,get:()=>({fetch:r=>budget.fetch(r)})}});
   const id=randomUUID(),base={id,owner:'a'.repeat(64),providerId:'fixture',recipe:{id:'fixture',revision:1,domains:[],fields:[{key:'name',selector:'#name'}],submit:'#start'}};
@@ -27,6 +27,6 @@ void test('budget serializes reservations and expiry closes the browser without 
  const initial=await Promise.all([budget.fetch(req('one')),budget.fetch(req('two'))]);assert.deepEqual(initial.map(r=>r.status),[200,429]);
  ctx.items.get('budget').last=0;assert.equal((await budget.fetch(req('one'))).status,409);assert.equal((await(await budget.fetch(req('two'))).json()).duration,240000);
  ctx.items.get('budget').last=0;assert.equal((await(await budget.fetch(req('three'))).json()).duration,120000);ctx.items.get('budget').last=0;assert.equal((await budget.fetch(req('four'))).status,429);
- const sessionCtx=context();sessionCtx.items.set('record',{session:'existing',state:'needs_user',expiresAt:0});let closed=0;const original=puppeteer.connect;puppeteer.connect=async()=>({close:async()=>{closed++;}});
+ const sessionCtx=context();sessionCtx.items.set('record',{session:'existing',state:'needs_user',expiresAt:0});let closed=0;const original=puppeteer.connect.bind(puppeteer);puppeteer.connect=async()=>({close:async()=>{closed++;}});
  try{await new RegistrationSession(sessionCtx,{BROWSER:{}}).alarm();assert.equal(closed,1);assert.equal(sessionCtx.items.get('record').session,null);assert.equal(sessionCtx.items.get('record').state,'unknown');}finally{puppeteer.connect=original;}
 });
