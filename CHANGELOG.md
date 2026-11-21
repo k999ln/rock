@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- 本人の「規定で進めて」（22:54）で、自社クラウドの K1〜K10 と eSIM の 11〜15 を決めた（Opus / Noelle）。07 に 1 行、03-esim 0 章と compute-placement 0 章を決定に、task 10〜13・101 に決めを反映、task 102〜105 を追加。`lib/cloud-cost.ts`（定価での実費と黒殿へ移す引き金）と `lib/churn-cohort.ts`（eSIM つきとカードだけの解約率と 3 か月の継続、Wilson の幅、判定）を実装し、`tests/cloud-cost.test.mjs`・`tests/churn-cohort.test.mjs`（23 本）を足した。README の eSIM の節を更新。
+
 - 本人の回答（22:31）で eSIM と自社クラウドの設計を直した（Opus / Noelle）。`docs/structure/03-esim.md` 0 章にスマホと自社の端末の eSIM の違い・スマホの型 S/M・離脱率の仮説と測り方、`docs/compute-placement.md` 0 章に自社クラウドの案 A〜D・回線の終端 N1〜N3・本人の鍵 K・運用の設計。07 に 1 行。
 
 - eSIM の載せる先と計算の置き場所を設計した（Opus / Noelle。本人指示「早く設計して」）。`docs/structure/03-esim.md` に 0 章（スマホに売らず Hub・専用端末・車の回線と鍵にする、制度、訂正 3 点）、`docs/compute-placement.md`（従量で始め、引き金の後に黒殿の 1 ノードへ）、07 に 1 行、05・noah-own-device に参照、task 101。

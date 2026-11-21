@@ -2,6 +2,8 @@
 
 目的: provider 契約を待たずに「eSIM を入れる → Eve が開く → account 束縛 → 月額」を今の部品で動かす。
 
+> **2026-11-21 の決め（[03 の 0 章](../../docs/structure/03-esim.md)・[07](../../docs/structure/07-decisions-from-minutes.md)）。** スマホは型 S（今の回線の横に入る 2 本目、SMS なし）。月額は「eSIM つき」と「カードだけ」を、同じ額・同じ機能の別の Stripe price で出す（離脱率を比べるため。task 103）。どちらもカードで請求する。
+
 ## 現行コード
 app/api/esim/**（catalog, order, issue, qr, install-proof, device-entitlement, reconcile, webhook）、lib/esim-*.ts、lib/esimgo-provider.ts、app/connect、components/esim-purchase-setup.tsx、components/rockstar-service-setup.tsx、lib/rockstar-entitlement-*.ts、services/sky-billing。
 
