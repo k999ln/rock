@@ -85,6 +85,9 @@ export async function installMacRunner({
 }
 if (
   process.argv[1] &&
+  ['noah-mac-install.mjs', 'install.mjs'].includes(
+    path.basename(process.argv[1]),
+  ) &&
   pathToFileURL(process.argv[1]).href === import.meta.url
 ) {
   const i = process.argv.indexOf('--root');

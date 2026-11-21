@@ -354,9 +354,9 @@ export default function NoahLaunch() {
                 </label>
                 {!online && (
                   <p>
-                    Macが未接続です。
+                    Macを接続してください。
                     <Link className={styles.primary} href={macHref}>
-                      Macをつなぐ
+                      アプリで接続する
                     </Link>
                   </p>
                 )}

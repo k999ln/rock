@@ -21,11 +21,17 @@ const output = path.resolve(
 if (!process.argv.includes('--out') || output === root)
   throw new Error('Use --out with a new output directory.');
 await mkdir(output, { recursive: true });
-const stage = path.join(output, 'Noah-Mac');
-await mkdir(stage);
+const app = path.join(output, 'Noah.app');
+await mkdir(app); // Refuse stale or symlinked application bundles.
+const resources = path.join(app, 'Contents/Resources');
+const stage = path.join(resources, 'payload');
+await mkdir(stage, { recursive: true });
 await build({
-  entryPoints: [path.join(root, 'scripts/noah-mac-runner.mjs')],
-  outfile: path.join(stage, 'scripts/noah-mac-runner.mjs'),
+  entryPoints: ['noah-mac-runner', 'noah-mac-onboarding'].map((name) =>
+    path.join(root, `scripts/${name}.mjs`),
+  ),
+  outdir: path.join(stage, 'scripts'),
+  outExtension: { '.js': '.mjs' },
   bundle: true,
   platform: 'node',
   target: 'node24',
@@ -57,15 +63,6 @@ await cp(
   path.join(root, 'scripts/noah-mac-install.mjs'),
   path.join(stage, 'install.mjs'),
 );
-await writeFile(
-  path.join(stage, 'Install.command'),
-  `#!/bin/zsh\nset -eu\ncd -- "$(dirname -- "$0")"\nexport PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"\nif ! command -v node >/dev/null; then\n  echo 'Node.js 24以上が必要です。https://nodejs.org/en/download からインストールして再実行してください。'\n  read '?Enterで閉じる'\n  exit 1\nfi\nnode install.mjs\nread '?Enterで閉じる'\n`,
-  { mode: 0o755 },
-);
-await writeFile(
-  path.join(stage, 'README.txt'),
-  'Noah Mac preview\nApple Silicon / macOS. Node.js 24+, Colima, Docker CLI, Ollama and Git are required.\nInstall.command installs only into your account. It does not log in or start jobs.\nThen use noah pair and noah start. Control jobs from https://avoado.si/noah/launch.\nInitial login and runtime installation require your own action.\nThis preview has not yet passed acceptance on a second Mac.\n',
-);
 const files = {};
 async function walk(dir) {
   for (const name of (await readdir(dir)).sort()) {
@@ -93,12 +90,69 @@ await writeFile(
     2,
   ) + '\n',
 );
+await cp(
+  path.join(root, 'scripts/noah-mac-app/runtime.json'),
+  path.join(resources, 'runtime.json'),
+);
+await cp(
+  path.join(root, 'public/company-mark.png'),
+  path.join(resources, 'company-mark.png'),
+);
+await mkdir(path.join(app, 'Contents/MacOS'));
+execFileSync(
+  '/usr/bin/xcrun',
+  [
+    'swiftc',
+    '-parse-as-library',
+    '-target',
+    'arm64-apple-macos15.0',
+    '-O',
+    path.join(root, 'scripts/noah-mac-app/NoahApp.swift'),
+    path.join(root, 'scripts/noah-mac-app/NoahLinks.swift'),
+    '-o',
+    path.join(app, 'Contents/MacOS/Noah'),
+  ],
+  { stdio: 'inherit' },
+);
+await writeFile(
+  path.join(app, 'Contents/Info.plist'),
+  `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleIdentifier</key><string>si.avoado.noah.mac</string>
+<key>CFBundleName</key><string>Noah</string>
+<key>CFBundleExecutable</key><string>Noah</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+<key>CFBundleVersion</key><string>1</string>
+<key>CFBundleShortVersionString</key><string>0.1.0</string>
+<key>LSMinimumSystemVersion</key><string>15.0</string>
+<key>LSMultipleInstancesProhibited</key><true/>
+<key>NSHighResolutionCapable</key><true/>
+<key>CFBundleURLTypes</key><array><dict>
+<key>CFBundleURLName</key><string>si.avoado.noah.connect</string>
+<key>CFBundleURLSchemes</key><array><string>noah</string></array>
+</dict></array>
+</dict></plist>
+`,
+);
+// Local preview only: ad-hoc signature, no signing keys or notarization claim.
+execFileSync('/usr/bin/codesign', ['--force', '--sign', '-', app], {
+  stdio: 'inherit',
+});
+execFileSync('/usr/bin/codesign', ['--verify', '--deep', '--strict', app], {
+  stdio: 'inherit',
+});
 const archive = path.join(output, 'Noah-Mac.zip');
-execFileSync('/usr/bin/ditto', ['-c', '-k', '--keepParent', stage, archive]);
+execFileSync('/usr/bin/ditto', ['-c', '-k', '--keepParent', app, archive]);
 const sha256 = createHash('sha256')
   .update(await readFile(archive))
   .digest('hex');
 await writeFile(archive + '.sha256', sha256 + '  Noah-Mac.zip\n');
 console.log(
-  JSON.stringify({ archive, sha256, files: Object.keys(files).length }),
+  JSON.stringify({
+    archive,
+    sha256,
+    files: Object.keys(files).length,
+    notarized: false,
+  }),
 );

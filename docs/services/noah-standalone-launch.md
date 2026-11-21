@@ -61,4 +61,15 @@
 
 - 最新の画面整理: `/noah/launch` の独立画面を廃止し、Agent指定を保持して `/noah/activity` へ転送する。「仕事を頼む」で同じページに接続・依頼入力を開閉し、依頼受付後は成果一覧へ戻る。メニューの重複する自分のAgent・仕事を実行中へ集約。
 
-- 表示は見出し・状態・操作を優先。Agentの能力/実行先/版は項目別の詳細へ、Mac接続は3ステップとコマンドコピーに整理する。必要なツール・停止・利用条件だけを展開して確認できる。
+- 表示は見出し・状態・操作を優先。Agentの能力/実行先/版は項目別の詳細へ、Mac接続は「Noahを開いて接続」と初回ダウンロードに整理する。必要な条件・停止だけを展開して確認できる。
+
+### ボタンで接続するMacアプリ（2026-11-21）
+
+- `/noah/mac` → `noah://connect?agent=<id>` → `Noah.app` の「接続する」。URLはAgent選択を渡すだけで、導入・本人確認・仕事を自動開始しない。画面にターミナルやコマンド入力を要求しない。
+- Apple Silicon / macOS 15以降。SwiftUIの単独アプリにRunnerと検証用manifestを同梱。Nodeは公式の固定版・SHA-256を照合してユーザー専用領域へ取得。実行ツールが不足した時だけ固定のHomebrew formulaを導入。Appleの開発ツールが無い場合はmacOSのインストール画面を開く。Homebrew自体が無い場合は公式の固定pkgを照合し、macOSインストーラーを開く。管理者の許可は本人が行う。
+- 初回は既存device authorizationをブラウザで承認。認証情報は既存の本人所有600ファイルに保存し、GUIイベントには渡さない。承認URLは公式origin・固定path・短いコードに限定する。既存認証を別originへ転送しない。
+- アプリからの接続は公式 `https://avoado.si` が対象。localhost previewへの認証転送・本番API配備は行わない。実接続は公開APIと本人承認が揃ってから別途受入する。
+- 導入前に重複起動を排除し、実行器の登録応答後だけ接続済みにする。アプリを閉じても接続を維持。停止・終了時は子プロセスと専用実行環境の終了を待つ。終了確認が失敗した時は停止済みにしない。画面・入力操作の権限を追加しない。
+- 配布ZIPはNoah.app一つ。現時点はad-hoc署名の開発プレビューで、Developer ID署名・公証・未導入の別Macの受入は未完了。Gatekeeper回避を利用者手順に含めない。本番配布を完了とは扱わない。
+- 合格条件: コマンドを入力せずGUIから準備/承認へ到達、準備失敗/拒否/二重起動で接続成功にしない、停止確認前に停止済みにしない、選択Agentを往復で維持。回帰: `tests/noah-mac-onboarding.test.mjs`、`tests/noah-mac-runner.test.mjs`、`tests/noah-launch-ui.test.mjs`。パッケージ: `node scripts/package-noah-mac.mjs --out <新しい出力先>`。
+- 取得元: [Node公式固定版](https://nodejs.org/download/release/v24.22.3/)、[Homebrew公式pkg](https://github.com/Homebrew/brew/releases/tag/7.0.15)、[公式導入条件](https://docs.brew.sh/Installation)。固定URL・上限・hashは `scripts/noah-mac-app/runtime.json`。

@@ -51,3 +51,7 @@ CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/no
 2026-11-21の説明削減: 実行中/依頼の長い説明を削除し、Agentの詳細をできること・実行先・版に分割。Mac接続を3ステップ、コピー可能なコマンド、項目別の展開パネルへ整理。実行同意・導入条件は保持。
 
 最終検証（2026-11-21）: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が全工程成功。ルート4,531成功・4 skip（計4,535）、ビルド・仕事API・CSV・設計・残りの検査を含む。途中で既存Eveブラウザ試験に待機タイムアウト1件を観測したが、単独2試験と最終全体試験の両方で成功。関連29試験、390px/1360px、実コンテナ一周、ローカル8ルート/8共通ヘッダーを確認。本番変更なし。
+
+2026-11-21のボタン接続: Mac手順のコマンド表示を撤去。SwiftUI Noah.appとGUI用準備処理を追加し、固定Node取得・不足ツールの導入・既存の本人承認・接続・停止をボタンへ集約。URLを開くだけでは起動しない。公式origin専用、開発プレビューのad-hoc署名。Developer ID公証、初期状態の別Mac、本番APIを含む通し受入は未完了。PR #337。
+
+検証（GUI接続追補）: 全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は終了0（4,542成功・4 skip、Work API 1,918、CSV 385）。最終差分は `node --experimental-strip-types --test tests/noah-mac-links.test.mjs tests/noah-mac-onboarding.test.mjs tests/noah-launch-ui.test.mjs tests/noah-mac-runner.test.mjs` の24件成功、lint成功。Swiftのビルド/ネイティブURL境界、同梱manifestの別保存先導入、公式固定Nodeのhash/起動、配布ZIPとHTTP取得のhash一致、ad-hoc署名を確認。Webの390px/1360pxとAgent保持の往復を確認。Macがロック中のためネイティブGUIのクリック試験は未実施。公証と本番/別Macの通し受入は残件。

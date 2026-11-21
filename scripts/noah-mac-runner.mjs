@@ -1,13 +1,7 @@
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import {
-  mkdir,
-  readdir,
-  writeFile,
-  rename,
-  open,
-} from 'node:fs/promises';
+import { mkdir, readdir, writeFile, rename, open } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { randomUUID, createHash } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -169,6 +163,7 @@ export async function pairRunner({
   fetcher = fetch,
   signal = new AbortController().signal,
   print = console.log,
+  onAuthorization = async () => {},
 }) {
   const api = runnerClient(origin, null, fetcher),
     started = await api.json('/api/rockstar/device-authorizations', {
@@ -182,6 +177,10 @@ export async function pairRunner({
     throw new Error('本人確認の応答を確認できません。');
   print(
     `NoahでこのMacを承認してください: ${origin}/connect/device?user_code=${started.userCode}`,
+  );
+  signal.throwIfAborted();
+  await onAuthorization(
+    `${origin}/connect/device?user_code=${started.userCode}`,
   );
   const end = Date.now() + Math.min(started.expiresIn, 600) * 1000;
   while (Date.now() < end) {
@@ -581,7 +580,11 @@ export async function main(args = process.argv.slice(2)) {
     await unlock();
   }
 }
-if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url)
+if (
+  process.argv[1] &&
+  path.basename(process.argv[1]) === 'noah-mac-runner.mjs' &&
+  pathToFileURL(process.argv[1]).href === import.meta.url
+)
   main().catch((e) => {
     console.error(e.message);
     process.exitCode = 1;

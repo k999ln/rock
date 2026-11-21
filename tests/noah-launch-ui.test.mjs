@@ -194,7 +194,9 @@ void test('connection steps follow the user action order and Mac setup preserves
   await h.flush();
   const value = text(h.tree);
   assert.ok(value.indexOf('1. Agentを選ぶ') < value.indexOf('2. Macをつなぐ'));
-  const link = h.nodes.find((n) => n.type === 'a' && text(n) === 'Macをつなぐ');
+  const link = h.nodes.find(
+    (n) => n.type === 'a' && text(n) === 'アプリで接続する',
+  );
   assert.equal(link.props.href, '/noah/mac?agent=anicca');
 });
 
@@ -326,5 +328,59 @@ void test('retired launch page redirects valid Agent selection into the unified 
     });
     await exports.default({ searchParams: Promise.resolve({ agent }) });
     assert.equal(destination, expected);
+  }
+});
+
+void test('Mac handoff keeps the selected Agent in both directions without command entry', () => {
+  const source = ts.transpileModule(
+    readFileSync(
+      new URL('../components/noah-mac-handoff.tsx', import.meta.url),
+      'utf8',
+    ),
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.ReactJSX,
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2022,
+      },
+    },
+  ).outputText;
+  const exports = {};
+  runInNewContext(source, {
+    exports,
+    encodeURIComponent,
+    require(id) {
+      if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
+      if (id === 'next/link') return { default: 'a' };
+      if (id === 'lucide-react') return {};
+      if (id.endsWith('.module.css')) return { default: {} };
+      throw new Error(id);
+    },
+  });
+  for (const [agent, query] of [
+    ['anicca', '?agent=anicca'],
+    ['../../secret', ''],
+  ]) {
+    const tree = exports.default({ initialAgent: agent }),
+      elements = nodes(tree);
+    assert.ok(
+      elements.some(
+        (n) => n.type === 'a' && n.props.href === `noah://connect${query}`,
+      ),
+    );
+    assert.ok(
+      elements.some(
+        (n) =>
+          n.type === 'a' &&
+          n.props.href === `/noah/activity${query || '?compose=1'}#library`,
+      ),
+    );
+    assert.ok(
+      !elements.some((n) => ['code', 'input', 'textarea'].includes(n.type)),
+    );
+    assert.doesNotMatch(
+      text(tree),
+      /Install\.command|brew install|noah pair|noah start/,
+    );
   }
 });
