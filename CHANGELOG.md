@@ -1,6 +1,7 @@
 ## 2026-11-22
 
 - NoahにCowAgentのMac準備ガイド（18秒の操作動画・日本語字幕）と公開3ページのサイトマップを追加し、カタログ・README・YouTube投稿用の導線をつないだ。配備・投稿前（task 71、[PR #369](https://github.com/k999ln/rock/pull/369)）。
+- Noahの主要12画面を指定の4タブ/2列デザインへ統一し、登録の保存再利用同意、ロゴ読み込み、振動設定、6言語UIとRTLを統合（app/noah・components/noah-*、[PR #376](https://github.com/k999ln/rock/pull/376)）。全体verify成功、公開反映は未実施。
 
 - Noahの公式API登録・本人別の暗号化キー保管・自作の分離ブラウザとスマホ本人確認を公開版161へ反映。全体verify 4,790成功・4skip、クラウドChromiumの合成手順とスマホ確認画面を検証。Dock入口は公開Noahへ修正。実サービスのブラウザ手順と100人向け容量は未受入（[PR #373](https://github.com/k999ln/rock/pull/373)）。
 

@@ -463,3 +463,486 @@ Object.assign(NOAH_SOCIAL_MESSAGES, {
     'جارٍ التحميل…',
   ],
 });
+
+Object.assign(NOAH_SOCIAL_MESSAGES, {
+  "フォローを解除": [
+    "Unfollow",
+    "取消关注",
+    "팔로우 취소",
+    "Dejar de seguir",
+    "إلغاء المتابعة"
+  ],
+  "フォローする": [
+    "Follow",
+    "关注",
+    "팔로우",
+    "Seguir",
+    "متابعة"
+  ],
+  "リンクをコピー": [
+    "Copy link",
+    "复制链接",
+    "링크 복사",
+    "Copiar enlace",
+    "نسخ الرابط"
+  ],
+  "投稿を削除": [
+    "Delete post",
+    "删除动态",
+    "게시물 삭제",
+    "Eliminar publicación",
+    "حذف المنشور"
+  ],
+  "表示を減らす": [
+    "Show less",
+    "收起",
+    "접기",
+    "Ver menos",
+    "عرض أقل"
+  ],
+  "さらに表示": [
+    "Show more",
+    "展开",
+    "더 보기",
+    "Ver más",
+    "عرض المزيد"
+  ],
+  "Mac版で使う条件を確認": [
+    "Check Mac requirements",
+    "查看Mac使用条件",
+    "Mac 사용 조건 확인",
+    "Ver requisitos de Mac",
+    "عرض متطلبات Mac"
+  ],
+  "自分のNoahに追加済み": [
+    "Added to your Noah",
+    "已添加到你的Noah",
+    "내 Noah에 추가됨",
+    "Añadido a tu Noah",
+    "تمت الإضافة إلى Noah"
+  ],
+  "Eveで使う準備": [
+    "Prepare for Eve",
+    "准备在Eve中使用",
+    "Eve 사용 준비",
+    "Preparar para Eve",
+    "التجهيز لـ Eve"
+  ],
+  "自分のNoahに追加": [
+    "Add to your Noah",
+    "添加到你的Noah",
+    "내 Noah에 추가",
+    "Añadir a tu Noah",
+    "إضافة إلى Noah"
+  ],
+  "配布元を開く": [
+    "Open source",
+    "打开来源",
+    "출처 열기",
+    "Abrir fuente",
+    "فتح المصدر"
+  ],
+  "ブックマークを解除": [
+    "Remove bookmark",
+    "取消收藏",
+    "북마크 해제",
+    "Quitar de guardados",
+    "إلغاء الحفظ"
+  ],
+  "ブックマークに保存": [
+    "Bookmark",
+    "收藏",
+    "북마크",
+    "Guardar",
+    "حفظ"
+  ],
+  "タイムラインに戻る": [
+    "Back to timeline",
+    "返回动态",
+    "타임라인으로",
+    "Volver al inicio",
+    "العودة للمنشورات"
+  ],
+  "タイムラインの切替": [
+    "Timeline view",
+    "切换动态",
+    "타임라인 전환",
+    "Vista del inicio",
+    "عرض المنشورات"
+  ],
+  "タイムラインを更新": [
+    "Refresh timeline",
+    "刷新动态",
+    "타임라인 새로 고침",
+    "Actualizar inicio",
+    "تحديث المنشورات"
+  ],
+  "投稿・保存": [
+    "Posts and bookmarks",
+    "动态与收藏",
+    "게시물과 북마크",
+    "Publicaciones y guardados",
+    "المنشورات والمحفوظات"
+  ],
+  "メニュー": [
+    "Menu",
+    "菜单",
+    "메뉴",
+    "Menú",
+    "القائمة"
+  ],
+  "投稿して、フォローしよう。": [
+    "Post and follow.",
+    "发布并关注。",
+    "게시하고 팔로우하세요.",
+    "Publica y sigue a otros.",
+    "انشر وتابع الآخرين."
+  ],
+  "サインインすると、フォロー、投稿と共有ができます。": [
+    "Sign in to follow, post and share.",
+    "登录后即可关注、发布和分享。",
+    "로그인하면 팔로우·게시·공유할 수 있습니다.",
+    "Inicia sesión para seguir, publicar y compartir.",
+    "سجّل الدخول للمتابعة والنشر والمشاركة."
+  ],
+  "サインインする": [
+    "Sign in",
+    "登录",
+    "로그인",
+    "Iniciar sesión",
+    "تسجيل الدخول"
+  ],
+  "Noahで使う公開名を決めよう。": [
+    "Choose your display name.",
+    "设置公开名称。",
+    "공개 이름을 정해 주세요.",
+    "Elige tu nombre público.",
+    "اختر اسمك العلني."
+  ],
+  "アカウントのメールアドレスは公開しません。ここで設定した名前が投稿に表示されます。": [
+    "Posts show this name. Your email stays private.",
+    "动态显示此名称，邮箱不会公开。",
+    "게시물에 이 이름이 표시됩니다. 이메일은 공개되지 않습니다.",
+    "Las publicaciones muestran este nombre. Tu correo sigue privado.",
+    "يظهر هذا الاسم في منشوراتك. يبقى بريدك خاصًا."
+  ],
+  "公開名": [
+    "Display name",
+    "公开名称",
+    "공개 이름",
+    "Nombre público",
+    "الاسم العلني"
+  ],
+  "Noahを始める": [
+    "Start Noah",
+    "开始使用Noah",
+    "Noah 시작",
+    "Empezar con Noah",
+    "ابدأ مع Noah"
+  ],
+  "投稿の設定": [
+    "Post settings",
+    "动态设置",
+    "게시물 설정",
+    "Ajustes de publicaciones",
+    "إعدادات المنشورات"
+  ],
+  "設定を閉じる": [
+    "Close settings",
+    "关闭设置",
+    "설정 닫기",
+    "Cerrar ajustes",
+    "إغلاق الإعدادات"
+  ],
+  "ブックマーク": [
+    "Bookmarks",
+    "收藏",
+    "북마크",
+    "Guardados",
+    "المحفوظات"
+  ],
+  "あなたのNoah": [
+    "Your Noah",
+    "你的Noah",
+    "나의 Noah",
+    "Tu Noah",
+    "Noah الخاص بك"
+  ],
+  "すべての投稿": [
+    "All posts",
+    "全部动态",
+    "모든 게시물",
+    "Todas las publicaciones",
+    "كل المنشورات"
+  ],
+  "Agentを使って感じたこと": [
+    "Your experience with an agent",
+    "使用Agent的感受",
+    "Agent 사용 후기",
+    "Tu experiencia con un agente",
+    "تجربتك مع وكيل"
+  ],
+  "いまどうしてる？": [
+    "What’s happening?",
+    "有什么新鲜事？",
+    "무슨 일이 있나요?",
+    "¿Qué está pasando?",
+    "ما الجديد؟"
+  ],
+  "返信を投稿": [
+    "Write a reply",
+    "写回复",
+    "답글 작성",
+    "Escribe una respuesta",
+    "اكتب ردًا"
+  ],
+  "何に使った？ よかった点、惜しかった点、あなたの感想を。": [
+    "What did you use it for? Share what worked and what could improve.",
+    "你用它做了什么？分享优点和改进建议。",
+    "어디에 사용했나요? 좋았던 점과 개선점을 알려 주세요.",
+    "¿Para qué lo usaste? Comparte lo bueno y lo que puede mejorar.",
+    "فيمَ استخدمته؟ شارك ما أعجبك وما يمكن تحسينه."
+  ],
+  "一緒に共有": [
+    "Attach",
+    "附加",
+    "첨부",
+    "Adjuntar",
+    "إرفاق"
+  ],
+  "共有する種類": [
+    "Attachment type",
+    "分享类型",
+    "공유 유형",
+    "Tipo de adjunto",
+    "نوع المرفق"
+  ],
+  "テキストだけ": [
+    "Text only",
+    "仅文字",
+    "텍스트만",
+    "Solo texto",
+    "نص فقط"
+  ],
+  "LLM・モデル": [
+    "Models",
+    "模型",
+    "모델",
+    "Modelos",
+    "نماذج"
+  ],
+  "データセット": [
+    "Dataset",
+    "数据集",
+    "데이터셋",
+    "Conjunto de datos",
+    "مجموعة بيانات"
+  ],
+  "Noahの公開Agent・Tool": [
+    "Public Noah agent or tool",
+    "Noah公开Agent或工具",
+    "Noah 공개 Agent·도구",
+    "Agente o herramienta pública de Noah",
+    "وكيل أو أداة عامة في Noah"
+  ],
+  "作品のURL": [
+    "Project URL",
+    "作品链接",
+    "작품 URL",
+    "URL del proyecto",
+    "رابط العمل"
+  ],
+  "OS構成の共有URL": [
+    "OS configuration URL",
+    "OS配置分享链接",
+    "OS 구성 공유 URL",
+    "URL de configuración del SO",
+    "رابط إعداد النظام"
+  ],
+  "ニュースのURL": [
+    "News URL",
+    "新闻链接",
+    "뉴스 URL",
+    "URL de noticia",
+    "رابط الخبر"
+  ],
+  "公開Tool": [
+    "Public tool",
+    "公开工具",
+    "공개 도구",
+    "Herramienta pública",
+    "أداة عامة"
+  ],
+  "選ぶ": [
+    "Choose",
+    "选择",
+    "선택",
+    "Elegir",
+    "اختر"
+  ],
+  "共有するHTTPS URL": [
+    "HTTPS URL to share",
+    "分享的HTTPS链接",
+    "공유할 HTTPS URL",
+    "URL HTTPS para compartir",
+    "رابط HTTPS للمشاركة"
+  ],
+  "作者/リポジトリ名": [
+    "Author/repository",
+    "作者/仓库名",
+    "작성자/저장소",
+    "Autor/repositorio",
+    "المؤلف/المستودع"
+  ],
+  "モデル・Agent・作品を添付": [
+    "Attach a model, agent or project",
+    "附加模型、Agent或作品",
+    "모델·Agent·작품 첨부",
+    "Adjuntar modelo, agente o proyecto",
+    "إرفاق نموذج أو وكيل أو عمل"
+  ],
+  "Eveの会話は自動共有されません。": [
+    "Eve conversations are not shared automatically.",
+    "Eve的对话不会自动分享。",
+    "Eve 대화는 자동 공유되지 않습니다.",
+    "Las conversaciones de Eve no se comparten automáticamente.",
+    "لا تُشارك محادثات Eve تلقائيًا."
+  ],
+  "メンバーのみ": [
+    "Members only",
+    "仅成员",
+    "멤버만",
+    "Solo miembros",
+    "الأعضاء فقط"
+  ],
+  "Noahに公開": [
+    "Public on Noah",
+    "在Noah公开",
+    "Noah에 공개",
+    "Público en Noah",
+    "عام في Noah"
+  ],
+  "ポストする": [
+    "Post",
+    "发布",
+    "게시",
+    "Publicar",
+    "نشر"
+  ],
+  "投稿を読み込んでいます": [
+    "Loading posts",
+    "正在加载动态",
+    "게시물 불러오는 중",
+    "Cargando publicaciones",
+    "جارٍ تحميل المنشورات"
+  ],
+  "投稿を読み込めませんでした。": [
+    "Could not load posts.",
+    "无法加载动态。",
+    "게시물을 불러오지 못했습니다.",
+    "No se pudieron cargar las publicaciones.",
+    "تعذر تحميل المنشورات."
+  ],
+  "会話をはじめよう。": [
+    "Start a conversation.",
+    "开始对话。",
+    "대화를 시작하세요.",
+    "Inicia una conversación.",
+    "ابدأ محادثة."
+  ],
+  "気になる投稿を、ここに。": [
+    "Keep interesting posts here.",
+    "把喜欢的动态保存在这里。",
+    "관심 있는 게시물을 모으세요.",
+    "Guarda aquí publicaciones interesantes.",
+    "احفظ المنشورات التي تهمك هنا."
+  ],
+  "ここから、つながっていこう。": [
+    "Connect with others.",
+    "从这里开始交流。",
+    "새로운 연결을 시작하세요.",
+    "Conecta con otros.",
+    "تواصل مع الآخرين."
+  ],
+  "最初の返信を投稿してみよう。": [
+    "Write the first reply.",
+    "写下第一条回复。",
+    "첫 답글을 작성해 보세요.",
+    "Escribe la primera respuesta.",
+    "اكتب أول رد."
+  ],
+  "投稿のブックマークを押すと保存できます。": [
+    "Tap the bookmark to save a post.",
+    "点击收藏即可保存动态。",
+    "북마크를 눌러 게시물을 저장하세요.",
+    "Pulsa el marcador para guardar una publicación.",
+    "اضغط علامة الحفظ لحفظ منشور."
+  ],
+  "人をフォローすると投稿が流れます。": [
+    "Follow people to see their posts.",
+    "关注他人以查看动态。",
+    "팔로우하면 게시물을 볼 수 있습니다.",
+    "Sigue a personas para ver sus publicaciones.",
+    "تابع الأشخاص لرؤية منشوراتهم."
+  ],
+  "まだ投稿がありません。最初の発見を共有してみよう。": [
+    "No posts yet. Share your first discovery.",
+    "暂无动态，分享你的第一个发现吧。",
+    "아직 게시물이 없습니다. 첫 발견을 공유해 보세요.",
+    "Aún no hay publicaciones. Comparte tu primer descubrimiento.",
+    "لا توجد منشورات بعد. شارك أول اكتشاف لك."
+  ],
+  "保存した投稿": [
+    "Saved posts",
+    "已收藏动态",
+    "저장한 게시물",
+    "Publicaciones guardadas",
+    "المنشورات المحفوظة"
+  ],
+  "Noahの投稿": [
+    "Noah posts",
+    "Noah动态",
+    "Noah 게시물",
+    "Publicaciones de Noah",
+    "منشورات Noah"
+  ],
+  "続きを見る": [
+    "Load more",
+    "加载更多",
+    "더 보기",
+    "Ver más",
+    "تحميل المزيد"
+  ],
+  "ここまでの投稿を読み終えました": [
+    "You’re all caught up.",
+    "你已看完所有动态。",
+    "모든 게시물을 읽었습니다.",
+    "Ya estás al día.",
+    "اطلعت على كل المنشورات."
+  ],
+  "いま届いている投稿は、ここまで": [
+    "You’re all caught up.",
+    "当前动态已全部显示。",
+    "현재 게시물은 여기까지입니다.",
+    "Ya estás al día.",
+    "هذه كل المنشورات الحالية."
+  ],
+  "新しい投稿が届くと、上にお知らせします。": [
+    "New posts will appear above.",
+    "新动态将显示在上方。",
+    "새 게시물이 오면 위에서 알려 드립니다.",
+    "Las nuevas publicaciones aparecerán arriba.",
+    "ستظهر المنشورات الجديدة في الأعلى."
+  ],
+  "Eveと話す": [
+    "Talk to Eve",
+    "与Eve交流",
+    "Eve와 대화",
+    "Hablar con Eve",
+    "تحدث مع Eve"
+  ]
+});
+
+Object.assign(NOAH_SOCIAL_MESSAGES, {'保存を開始しました':['Download started','已开始下载','다운로드 시작','Descarga iniciada','بدأ التنزيل']});
+
+Object.assign(NOAH_SOCIAL_MESSAGES, {'進んでいます':['In progress','进行中','진행 중','En curso','قيد التنفيذ']});

@@ -45,3 +45,17 @@ void test('task detail hides a result if its owner list does not contain the job
   const ui=screen({modules,fetch:async({url})=>({body:url==='/api/noah/ask'?{ownerScope:'different-owner',asks:[]}:item})});
   const page=ui.mount('components/noah-task-detail.tsx',{id:base.id});await page.flush();assert.doesNotMatch(page.text(),/Private result/);assert.match(page.text(),/仕事を読み込めませんでした/);
 });
+
+void test('Noah posts use the same locale, logo loader and Noah account return path',()=>{
+  const ui=screen({locale:'es',modules:{'./sky-social-timeline':{default:props=>({type:'section',props:{children:props.translate('ポストする'),'data-account':props.accountHref,'data-loader':Boolean(props.loadingIndicator)}})},'@/lib/noah-surface':{noahActionHref:()=>'/noah/library'}}});
+  const page=ui.mount('components/noah-social.tsx',{mode:'public'});const section=page.find('section')[0];assert.equal(page.text(section),'Publicar');assert.equal(section.props['data-account'],'/noah/account?returnTo=%2Fnoah%2Fsocial');assert.equal(section.props['data-loader'],true);
+});
+
+void test('profile readiness opens external registration for both saved and missing information',async()=>{
+  const provider={id:'p',name:'Provider',agentIds:['agent'],fields:[{key:'email',label:'メール',required:true,profileField:'email'}]};
+  for(const fields of [{},{email:'saved@example.com'}]){
+    const ui=screen({fetch:async({url})=>({body:url.includes('registration')?{providers:[provider]}:{items:[]}})});
+    const page=ui.mount('components/noah-profile-readiness.tsx',{profile:{reuseEnabled:true,fields,documents:[]}});await page.flush();
+    assert.equal(page.find('a','Provider')[0].props.href,'/noah/registration?agent=agent');
+  }
+});
