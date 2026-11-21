@@ -169,7 +169,8 @@ void test('a provider can report a ready owned upload and safely retry the same 
 void test('the usage reporter validates the destination and retry identity before sending', async () => {
   const input = {
     noahUrl: 'https://noah.example', developerToken: 'sky_dev_' + randomUUID(),
-    eventId: randomUUID(), occurredAt: new Date().toISOString(), fetchImpl: assert.fail,
+    eventId: randomUUID(), occurredAt: new Date().toISOString(),
+    fetchImpl() { throw new Error('Unexpected request during validation'); },
   };
   for (const url of ['http://noah.example', 'https://user@noah.example', 'https://noah.example/path']) {
     await assert.rejects(reportNoahAgentUsage({ ...input, noahUrl: url }), /HTTPS origin/);
