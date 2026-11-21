@@ -49,9 +49,9 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='',on
   return <section id="noah-collection" className={styles.home} aria-label="Agent一覧">
     <div className={styles.feedHeading}><h2>Agentを見つける</h2>{current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}</div>
     <div className={styles.filters} aria-label="Agentを絞り込む">{[['','すべて'],['noah','接続できる'],['discovered','新しく見つかった'],...NOAH_COLLECTION_SOURCES.map(s=>[s,NOAH_COLLECTION_LABELS[s]])].map(([value,label])=><button key={value} type="button" aria-pressed={source===value} onClick={()=>setSource(value)}>{label}</button>)}</div>
-    {(source || searchQuery && onClearQuery) && <button type="button" onClick={()=>{setSource('');onClearQuery?.();}}>検索条件をクリア</button>}
+    {(source || searchQuery && onClearQuery) && <button type="button" className={styles.recovery} onClick={()=>{setSource('');onClearQuery?.();}}>検索条件をクリア</button>}
     {!current && <div className={styles.status}><NoahLoading label="読み込んでいます…"/></div>}
-    {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
+    {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" className={styles.recovery} onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
     {current?.page?.items.length===0 && <p className={styles.status}>この条件のAgentはまだありません。</p>}
     {current?.page && <NoahPinGrid items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
     {current?.page?.nextCursor && <div className={styles.moreRow}><button type="button" disabled={current.more} onClick={()=>void more()}>{current.more?'読み込み中…':'もっと見る'}</button></div>}

@@ -60,7 +60,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
       <header className={styles.gridTopbar}>
         <a href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/company-mark.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
         <search className={styles.gridSearchSlot}><form action={`${base}/explore`} className={styles.gridSearch}>
-          <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" maxLength={80} placeholder={t('Agentを探す')} type="search" />
+          <input type="hidden" name="tab" value="catalog" /><input type="hidden" name="collectionSource" value="" /><Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" maxLength={80} placeholder={t('Agentを探す')} type="search" />
         </form></search>
         <button type="button" className={styles.gridMenuButton} popoverTarget={gridMenuId} aria-label={t('メニュー')}><Menu size={22} /><span>{t('メニュー')}</span></button>
         <div ref={gridMenu} id={gridMenuId} popover="auto" className={styles.gridMenuPanel}>
