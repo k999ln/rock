@@ -2556,3 +2556,43 @@ export const noahPackageSteps = sqliteTable('noah_package_steps', {
   check('noah_package_steps_check_6', sql`(${t.kind} IN ('owner','gap')) = (${t.ref} = '')`),
   index('noah_package_steps_ref').on(t.kind, t.ref),
 ]);
+// 300 人の試行（docs/noah/trial-300.md）。DDL は drizzle/0051_noah_trial.sql（docs/contracts/noah-shelf-v1.sql から移した。task 114）。
+// 経路の札は、運営が登録した物だけ。入口は、本人 1 人につき 1 行。報告は、本人が自分で入れる数だけ（文章は置かない）。
+export const noahTrialChannels = sqliteTable('noah_trial_channels', {
+  via: text('via').primaryKey(),
+  label: text('label').notNull(),
+  wave: integer('wave').notNull(),
+  createdAt: integer('created_at').notNull(),
+  closedAt: integer('closed_at'),
+}, t => [
+  check('noah_trial_channels_check_1', sql`${t.via} GLOB '[a-z0-9]*' AND ${t.via} NOT GLOB '*[^a-z0-9-]*' AND length(${t.via}) BETWEEN 1 AND 40`),
+  check('noah_trial_channels_check_2', sql`length(${t.label}) BETWEEN 1 AND 60`),
+  check('noah_trial_channels_check_3', sql`${t.wave} IN (1,2,3)`),
+]);
+export const noahTrialEntries = sqliteTable('noah_trial_entries', {
+  ownerId: text('owner_id').primaryKey(),
+  via: text('via').notNull().references(() => noahTrialChannels.via),
+  wave: integer('wave').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  check('noah_trial_entries_check_1', sql`${t.wave} IN (1,2,3)`),
+  index('noah_trial_entries_via').on(t.via, t.wave),
+]);
+export const noahTrialReports = sqliteTable('noah_trial_reports', {
+  ownerId: text('owner_id').notNull().references(() => noahTrialEntries.ownerId),
+  packageId: text('package_id').notNull().references(() => noahPackages.id),
+  listed: integer('listed').notNull(),
+  sold: integer('sold').notNull(),
+  netYen: integer('net_yen').notNull(),
+  minutes: integer('minutes').notNull(),
+  reportedAt: integer('reported_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.ownerId, t.packageId] }),
+  check('noah_trial_reports_check_1', sql`${t.listed} IN (0,1)`),
+  check('noah_trial_reports_check_2', sql`${t.sold} BETWEEN 0 AND 999`),
+  check('noah_trial_reports_check_3', sql`${t.netYen} BETWEEN 0 AND 100000000`),
+  check('noah_trial_reports_check_4', sql`${t.minutes} BETWEEN 0 AND 100000`),
+  check('noah_trial_reports_check_5', sql`${t.sold} = 0 OR ${t.listed} = 1`),
+  check('noah_trial_reports_check_6', sql`${t.netYen} = 0 OR ${t.sold} > 0`),
+  index('noah_trial_reports_package').on(t.packageId),
+]);
