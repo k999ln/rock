@@ -8,15 +8,15 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
-import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahPinInitials, type NoahPinTopic } from '@/lib/noah-pins';
+import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahPinInitials } from '@/lib/noah-pins';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
+import type { NoahAgentCard } from '@/lib/noah-agent-cards';
+import { NOAH_COLLECTION_LABELS } from '@/lib/noah-collection';
+import NoahCardFeedback from './noah-card-feedback';
 
 /** グリッドの 1 枚（GET /api/noah/pins の items の 1 件）。 */
-export type NoahPinView = {
-  id: string; name: string; provider: string; summary: string; host: string | null; users: number; oneTap: boolean;
-  topic: NoahPinTopic; shape: 0 | 1 | 2; savedIn: string[];
-};
+export type NoahPinView = NoahAgentCard;
 type BoardView = { id: string; name: string; visibility: 'private' | 'public'; pins: number; revision: number };
 
 const GAP = 16, MIN_COLUMN = 236;
@@ -71,6 +71,13 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
       return changed ? { width: columnWidth, map } : old;
     });
   }, [columnWidth, items, fonts]);
+  // Rating requests, expanded provenance and translations can change card height after mount.
+  useEffect(() => {
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer=new ResizeObserver(()=>setFonts(n=>n+1));
+    for (const card of cards.current.values()) observer.observe(card);
+    return ()=>observer.disconnect();
+  }, [items,width]);
   // 字の読み込みで高さが変わった時も、測り直す。
   useEffect(() => { void document.fonts?.ready.then(() => setFonts((n) => n + 1)); }, []);
   const known = heights.width === columnWidth ? heights.map : new Map<string, number>();
@@ -82,16 +89,18 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
       return <article key={item.id} ref={(element) => { if (element) cards.current.set(item.id, element); else cards.current.delete(item.id); }}
         className={`${styles.pin} ${styles.tone}`} style={{ width: columnWidth, transform: at ? `translate(${at.left}px, ${at.top}px)` : undefined, visibility: at ? 'visible' : 'hidden' }}
         data-topic={item.topic} data-shape={item.shape} aria-label={item.name}>
-        <a className={styles.face} href={noahReadyDetailHref(item.id)}>
+        <a className={styles.face} href={item.href ?? noahReadyDetailHref(item.id)} target={item.external ? "_blank" : undefined} rel={item.external ? "noopener noreferrer" : undefined}>
           <span className={styles.panel} aria-hidden="true"><span className={styles.initials}>{noahPinInitials(item.name)}</span><span className={styles.topicLabel}>{NOAH_PIN_TOPIC_LABELS[item.topic]}</span></span>
           <strong className={styles.name}>{item.name}</strong>
           {item.summary && <span className={styles.summary}>{item.summary}</span>}
-          <small className={styles.meta}>{item.host ?? item.provider}{item.users > 0 ? ` · ${item.users} 人が利用` : ''}{item.oneTap ? ' · 押すだけで試せる' : ''}</small>
+          <small className={styles.meta}>{item.host ?? item.provider} · {item.external ? '配布元で使う' : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
         </a>
-        <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
+        {!item.external && <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
           {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
-        </button>
-        {signedIn && onHide && <details className={styles.more}>
+        </button>}
+        {item.feedbackId && <NoahCardFeedback id={item.feedbackId} />}
+        {!!item.sources?.length && <details className={styles.sources}><summary>出典・外部の評価</summary>{item.sources.map(source=><a key={source.sourceUrl} href={source.sourceUrl} target="_blank" rel="noopener noreferrer" title={`${new Date(source.observedAt).toLocaleString('ja-JP')} 確認`}>{NOAH_COLLECTION_LABELS[source.source]}{source.metrics && Object.entries(source.metrics).map(([metric,count])=>` · ${metric==='stars'?'★':metric==='likes'?'いいね':'リポスト'} ${count?.toLocaleString('ja-JP')}`).join('')}</a>)}</details>}
+        {signedIn && !item.external && onHide && <details className={styles.more}>
           <summary aria-label="その他の操作"><MoreHorizontal size={18} /></summary>
           <button type="button" onClick={() => onHide(item.id)}>{NOAH_PIN_TEXT.hide}</button>
         </details>}

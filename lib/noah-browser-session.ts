@@ -9,7 +9,7 @@ const unauthorized = (): never => { throw Error('UNAUTHORIZED'); };
 export function noahBrowserRequestAllowed(request: Request): boolean {
   const path = new URL(request.url).pathname, method = request.method;
   if (method === 'GET' && [
-    '/api/noah/intake', '/api/noah/pins', '/api/noah/shelf', '/api/noah/usage',
+    '/api/noah/intake', '/api/noah/pins', '/api/noah/discover', '/api/noah/shelf', '/api/noah/usage',
     '/api/noah/connect-plan', '/api/noah/library', '/api/noah/invites',
     '/api/noah/agents', '/api/noah/public-catalog', '/api/noah/feed',
   ].includes(path)) return true;

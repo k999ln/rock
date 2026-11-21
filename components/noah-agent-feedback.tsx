@@ -35,6 +35,7 @@ async function mutation(body: unknown, scope: string | null) {
     throw Object.assign(Error(d.error || '保存できませんでした。'), {
       status: r.status,
     });
+  window.dispatchEvent(new Event('noah-feedback-changed'));
   return d as { summary: AgentFeedbackSummary };
 }
 export function NoahAgentSignals({
@@ -44,6 +45,8 @@ export function NoahAgentSignals({
   onChange,
   onRetry,
   detailHref,
+  compact = false,
+  onComments,
 }: {
   id: string;
   summary?: AgentFeedbackSummary;
@@ -51,6 +54,8 @@ export function NoahAgentSignals({
   onChange: (s: AgentFeedbackSummary) => void;
   onRetry: () => void;
   detailHref: string;
+  compact?: boolean;
+  onComments?: () => void;
 }) {
   const {t}=useNoahLocale();
 
@@ -102,7 +107,7 @@ export function NoahAgentSignals({
     }
   }
   return (
-    <div className={styles.signalsWrap}>
+    <div className={`${styles.signalsWrap} ${compact ? styles.compactSignals : ''}`}>
       <div className={styles.signals}>
         <span title={t("Noahで実行完了を確認できたアカウント数。同じアカウントは1人として集計。")}>
           <Users size={16} />
@@ -125,7 +130,7 @@ export function NoahAgentSignals({
           </strong>
           <span>{t("王冠")}</span>
         </button>
-        <Link href={detailHref}>
+        <Link href={detailHref} onClick={onComments ? event=>{event.preventDefault();onComments();} : undefined}>
           <MessageCircle size={16} />
           <strong>
             {summary ? summary.comments.toLocaleString('ja-JP') : '—'}

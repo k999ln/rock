@@ -53,6 +53,7 @@ type Deps = {
   publicAgent: (id: string) => Promise<boolean> | boolean;
   agentName?: (id: string) => Promise<string> | string;
   now?: () => number;
+  users?: (id: string) => Promise<number | undefined>;
 };
 const json = (value: unknown, status = 200) =>
   Response.json(value, {
@@ -150,7 +151,7 @@ export function createNoahFeedbackApi(deps: Deps) {
     return {
       agentId: id,
       ownerScope: owner ? await ownerScopeFor(owner) : null,
-      users: row.users,
+      users: (await deps.users?.(id)) ?? row.users,
       crowns: row.crowns,
       comments: row.comments,
       crowned: row.crowned === 1,
