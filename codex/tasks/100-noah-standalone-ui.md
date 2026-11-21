@@ -57,3 +57,14 @@ CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/no
 読み込みは正式花形ロゴだけに統一。対応端末の実タップは8ms、選択は12ms、確認済みの接続/認証成功は短い2回。非対応・非表示・OFF時は静かに処理する。設定は `/noah/preferences` で端末内に保存。動きを減らす設定では静止し、読み上げ用の状態名は保持する。登録・共通情報保存の成功時への接続は、登録デザイン実装との統合時に適用する。
 
 検証: 専用UI/振動テスト、型検査、product lint、production build。390pxのブラウザで設定切替・再読込保持・メニュー導線を確認。実機の振動の体感は未検証。全体verifyは変更後のローカルproduction応答のhash更新が必要なため統合側で再実行する。新規ローカルDBのnpm startは既存migration 0020のagent_delegations不足で停止した。既存データや本番DBは変更していない。
+
+
+## 2026-11-22 新デザイン・保存・委任の統合（PR #371）
+
+本人の新デザイン指示と指定チャットを確認し、投稿・Agent・成果の大小カード、正式花形ロゴ、単一メニュー、Agentの絞り込み/解除を実装。登録情報は基本・活動・口座・本人確認書類を本人別にAES-GCM暗号化して既存R2へ保存し、必要項目だけ再利用する。保存/再利用同意の説明版・時刻・対象を情報と同時に記録し、再利用停止、編集、操作ごとの任せる/毎回確認/任せない、全停止をAPIと送信直前で強制。ファイル選択中の画面維持、最大5MiB書類、保存後の実応答に限る成功振動も統合した。
+
+公開: 本人の既存の配備承認に基づき [avoado.si/noah](https://avoado.si/noah) へ保存版159を配備成功（source `cc69fa76dde53c44aa2f2312d6221b1199a3ebd5`、env revision 13）。既存157の調査カタログを保全。追加migrationなし。公開158で保存→reload保持→再利用停止、390px表示、公開の読み取り専用Agentで毎回確認→実依頼→成果受取、任せない設定の依頼抑止を確認。確認用の表示名は空へ戻し、再利用停止へ復元。159は確認文言と未保存時の表示修正を含む。
+
+検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` exit 0。ルート4,778成功・4 skip（計4,782）、package・build・API・設計・その他の検査成功。最初の全体実行中に既存Eveブラウザ起動timeoutが1件発生したが、単独2試験と全体再実行で成功。追補の20試験・typecheck・lint:product成功。合成の2登録先HTTPで保存情報の再利用と停止後の送信拒否、5MiBファイル往復、所有者分離、改ざん、同時更新、同意の一体保存を確認。ローカルproduction8ルート/8ヘッダーを実測しdata/web-security-response-current.json更新。`npm run noah:check:domain` 成功。
+
+再開: [PR #371](https://github.com/k999ln/rock/pull/371) は #358 上のdraft。外部登録先の実行環境・運営キー・本人確認handoffが未接続で、本番の自動登録は未完了。指定調査台帳303件は実行可能件数ではない。Browser Use/Skyvernは候補でruntime/integration未試験。対応登録先が未設定の間は登録ボタンを表示しない。実機の振動体感・別利用者の本番受入は未検証。
