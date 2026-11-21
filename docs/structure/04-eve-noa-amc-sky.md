@@ -142,6 +142,13 @@ Noahの最初の受入後に接続する応用系統。利用者像はかいや�
 
 Noah移行の互換ToolKit: `toolkits/noah-agent-operations/` は既存の実行テンプレート集合、`toolkits/noah-vscode/` は保存時整理の補助。単体ローンチの実行器は `scripts/noah-mac-runner.mjs`、導入は `scripts/noah-mac-install.mjs`、配布生成は `scripts/package-noah-mac.mjs`。
 
+## 2026-11-22 相談と紹介案件の運営
+
+本人指示により[相談・運営Agent](../services/noah-affiliate-agents.md)をNoahの既存source/MCP契約へ接続する配布物として追加。相談の適合順位に非公開報酬を使わず、媒体許可・期限・提携・正式リンクを検査する。本人用運営口は別の認証境界とし、既存のWork/Broker/Walletを飛ばさない。
+
+実装・入力例・パッケージ生成・MCP配備準備は [toolkits/noah-affiliate-agents/](../../toolkits/noah-affiliate-agents/README.md)。
+
+2026-11-22 本人指示: [法人si導入準備Agent](../services/noah-business-si-agent.md)を、会員登録不要の公開相談と本人用運営として追加する。既存のaccount正本とBroker/Walletを置き換えず、相談本文を保存しない公開入力と、匿名の成果・入金照合台帳を分ける。実成果・入金・媒体承認は外部の証拠で判定する。
 ## Noahの配給用農産物の調達
 
 2026-11-22 配給の調達準備には[運営用の農家検索](../../toolkits/noah-farm-sourcing/index.html)を使う。運営が公開窓口を選び、配給用の食料を運営予算で買い取れるか相談する。金額・数量・受け渡し条件の下書きは担当者のブラウザ内で扱い、実際の連絡と購入判断は担当者が行う。供給が決まるまでは配給案内の在庫へ反映しない。

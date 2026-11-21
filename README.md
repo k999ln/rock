@@ -140,6 +140,8 @@ npm --prefix toolkits/noah-resale-agent run demo
 
 </details>
 
+相談と紹介案件の運営を組み合わせるAgentは、[Noahアフィリエイトキット](toolkits/noah-affiliate-agents/README.md)で作成できます。相談用・本人用のソースZIPと、提供者サーバー用MCPを用意しています。法人向けの①は、会員登録不要の[si導入準備票](https://noah-business-si.mr-kirin999.workers.dev/)と、集客計画・ASP承認・支払・銀行明細照合・費用の運営台帳を提供します。[運営手順](toolkits/noah-affiliate-agents/BUSINESS.md)。媒体許可・正式広告リンクは未確認のため紹介停止中です。自社Webの記事公開・相談処理・記録済み実績の点検は継続実行器で動かします。ASP・銀行の自動取得と実成果・入金の通し確認は未実施で、一連の自動化は未完了です。
+
 <details>
 <summary>Noahの画面・接続・Toolのコード</summary>
 
