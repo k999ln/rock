@@ -35,3 +35,17 @@ Noahで選んだAgentを自分のMacで動かしたい方へ。Apple Silicon Mac
 ## 最初の1,000人への配布記録
 
 投稿後は、サロンの管理画面で確認できる投稿日時とユニーク閲覧者数を記録し、1,000人に届いたかを確かめます。延べ表示しか分からない場合や、複数のサロンで同じ人が見た可能性がある場合は「延べ表示」として記録します。Agentが動いたかは「結果を受け取った」という任意の報告を数えます。リンクを開いただけの人も含む閲覧数とは分けて扱います。
+
+## YouTubeで検索から来た人に案内する
+
+**動画タイトル**
+
+CowAgentをMacで試す準備｜Noahで配布元と接続条件を確認
+
+**動画の説明文**
+
+会議メモをAgentに整理してもらう前に、何を確認すればいいでしょうか。NoahでCowAgentを探し、配布元や利用条件を見て、接続画面へ進むところまでを18秒で紹介します。実行にはサインインとApple Silicon MacへのNoah Runnerの設定が必要です。操作ガイドはチャンネルプロフィールから開けます。
+
+ショート動画には先頭の18秒の既存素材を使い、チャンネルプロフィールに[操作ガイドのキャンペーンURL](https://avoado.si/noah/guides/cowagent-mac?utm_source=youtube&utm_medium=organic_video&utm_campaign=noah_cowagent_mac)を設定する。ショートの説明欄のURLはクリックできない。[YouTubeのリンク仕様](https://support.google.com/youtube/answer/13748639?hl=ja)
+
+配備後、未ログインで操作ガイド・CowAgent詳細・Mac接続案内を開く。Noahの公開URLは[サイトマップ](https://avoado.si/noah/sitemap.xml)で確認できる。投稿前と7・14・28日後に「CowAgent Mac 使い方」「Apple Silicon Mac で Agent を動かす」を同じ地域・端末条件で検索し、掲載位置とYouTube Studioで確認できるGoogle検索由来の外部流入を記録する。接続と初回成果は、出所を確認できる範囲で任意の到達報告を数える。

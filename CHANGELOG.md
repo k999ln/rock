@@ -1,3 +1,7 @@
+## 2026-11-22
+
+- NoahにCowAgentのMac準備ガイド（18秒の操作動画・日本語字幕）と公開3ページのサイトマップを追加し、カタログ・README・YouTube投稿用の導線をつないだ。配備・投稿前（task 71、[PR #369](https://github.com/k999ln/rock/pull/369)）。
+
 ## 2026-11-21
 
 - NoahのMacで実行した仕事を個別URLから開いて停止・成果保存できるようにした。配布Runnerで接続・実行・ファイル照合・停止・切断を確認（[PR #366](https://github.com/k999ln/rock/pull/366)）。
