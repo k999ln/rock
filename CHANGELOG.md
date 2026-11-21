@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- READMEで差し替え済みのmiiの帰宅画像とNoahの検索GIFを `docs/assets/readme/` から削除（[PR #348](https://github.com/k999ln/rock/pull/348)、task 99）。
+
 - Noahのスマホでの配布元確認とMacの接続準備をHiggsfieldで縦型CMに編集し、READMEとサロン向け投稿文から案内（[PR #341](https://github.com/k999ln/rock/pull/341)、task 99）。
 
 - READMEにmiiのデザイン映像とNoahの公開画面を使った操作デモを掲載し、オンラインサロン向けの18秒動画と投稿文を追加（[PR #340](https://github.com/k999ln/rock/pull/340)、task 99）。
