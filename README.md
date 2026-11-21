@@ -317,9 +317,10 @@ SIM/eSIMはRockstarOS導入時の回線に使います。対象機種と署名�
 
 Cloud agentの実行前に単価・見積りと予算上限を確認し、実行後に項目別の使用量を照合します。商品料金、通信料、si使用料、外部実費、利用者自身の鍵での費用は個別に扱います。回線発行・本番決済は各providerとの接続試験が残っています。[SIM/eSIM設計](docs/structure/03-esim.md) · [料金と使用量](docs/sky-billing.md) · [導入試作](toolkits/esim-bootstrap/README.md)
 
-開発用の模擬回線では、0円で1本申し込み、地域と品目を選ぶと、Noahの試験用Agentが配給候補を調べます。画面を閉じてもサーバー側で実行し、同じ本人が模擬専用回線で成果と使用量を確認できます。[Macで試す手順](toolkits/esim-bootstrap/README.md#noah-free-trial)
+配給は運営Dockで受取人・品目・数量・受取場所と日時を指定します。利用者は模擬専用回線で自分の配給を開き、受け取ったら「受け取りました」を押します。[Macで両方の画面を試す](toolkits/esim-bootstrap/README.md#noah-free-trial)
 
-配給用の食料を仕入れる担当者は、全国の農家を地域・品目から探し、運営予算での買取条件を下書きして公式窓口から直接相談できます。[Macで農家検索を開く手順](toolkits/esim-bootstrap/README.md#配給用の農産物を仕入れる)
+同じ模擬専用回線の「クラウドでAgentを使う」から、文章を渡して他のアプリに戻れます。提供元の専用クラウド・登録済みの接続先・Noahクラウドを別々のローカルWorkerで試せます。結果が届くまでサーバーが同じ依頼を照会し、仕事ごとに成果・未達・未確認を表示します。
+
 
 </details>
 

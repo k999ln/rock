@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>配給管理 · 運営Dock</title><link rel="stylesheet" href="/styles.css"><script defer src="/distributions.js"></script></head>
+<body><main class="shell"><h1>配給管理</h1><section class="panel"><h2>配給を指定</h2>
+<form id="allocation"><label>受取人のアカウントID<input name="recipient" required maxlength="160"></label>
+<label>配給品<input name="item" required maxlength="120"></label><label>数量・単位<input name="quantity" required maxlength="80"></label>
+<label>受取場所・日時<input name="pickup" required maxlength="240"></label><button type="submit">この人に配給を指定</button></form><p id="message" role="status"></p></section>
+<section class="panel"><h2>配給記録（最新100件）</h2><button type="button" id="refresh">更新</button><ul id="assignments"></ul></section></main></body></html>
