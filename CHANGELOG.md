@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahの主要12画面を指定の4タブ/2列デザインへ統一し、登録の保存再利用同意、ロゴ読み込み、振動設定、6言語UIとRTLを統合（app/noah・components/noah-*、[PR #376](https://github.com/k999ln/rock/pull/376)）。全体verify成功、公開反映は未実施。
+
 - Noahの公式API登録・本人別の暗号化キー保管・自作の分離ブラウザとスマホ本人確認を公開版161へ反映。全体verify 4,790成功・4skip、クラウドChromiumの合成手順とスマホ確認画面を検証。Dock入口は公開Noahへ修正。実サービスのブラウザ手順と100人向け容量は未受入（[PR #373](https://github.com/k999ln/rock/pull/373)）。
 
 - Noahを新しい投稿/Agentカードと登録情報の暗号化保存・再利用・操作ごとの委任に更新し、公開版159へ反映。保存/停止と公開Agentの実依頼・成果受取を確認、全体verify成功。外部登録executorは未接続（[PR #371](https://github.com/k999ln/rock/pull/371)）。
