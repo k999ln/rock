@@ -376,3 +376,52 @@ void test('a saved Mac work link reads and stops only the selected run', async (
     ui.close();
   }
 });
+
+void test('a work detail clears the previous result on sign-out and returns to that job after login', async () => {
+  const id = 'c39b709f-0f41-4c6c-be71-2ed81a9ddfa7';
+  let signedIn = true;
+  const ui = harness(
+    () =>
+      signedIn
+        ? Response.json({
+            ownerScope: 'fixture',
+            commands: [
+              {
+                id,
+                kind: 'run',
+                state: 'succeeded',
+                agent: { name: '試験Agent' },
+              },
+            ],
+            jobs: [
+              {
+                id,
+                noahExecution: {
+                  result: { text: '本人の試験成果', files: [] },
+                },
+              },
+            ],
+          })
+        : Response.json({}, { status: 401 }),
+    true,
+    { workId: id },
+  );
+  try {
+    await ui.flush();
+    assert.match(text(ui.tree), /本人の試験成果/);
+    signedIn = false;
+    await ui.poll();
+    assert.doesNotMatch(text(ui.tree), /本人の試験成果/);
+    const signIn = ui.nodes.find(
+      (n) => n.type === 'a' && n.props.href.startsWith('/account?'),
+    );
+    assert.equal(
+      new URL(signIn.props.href, 'https://example.test').searchParams.get(
+        'returnTo',
+      ),
+      '/noah/work/' + id,
+    );
+  } finally {
+    ui.close();
+  }
+});
