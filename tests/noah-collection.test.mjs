@@ -28,8 +28,9 @@ void test('home includes GitHub and HF ratings even while the registry has many 
   await post(api, snapshot('github', [item('github', { metrics: { stars: 100 } })]));
   await post(api, snapshot('huggingface', [item('huggingface', { id: 'hf:1', url: 'https://huggingface.co/spaces/maker/agent', sourceUrl: 'https://huggingface.co/spaces/maker/agent', metrics: { likes: 9 } })]));
   const home = await (await api(new Request('https://avoado.si/api/noah/collection?view=home'))).json();
-  assert.deepEqual(home.items.slice(0, 3).map(row => row.source), ['mcp-registry', 'github', 'huggingface']);
-  assert.equal(home.items[2].metrics.likes, 9); assert.equal(home.total, 32);
+  // Each source still appears in the first round; within it, the better-rated source goes first (task 121: new and easy first).
+  assert.deepEqual(home.items.slice(0, 3).map(row => row.source), ['github', 'huggingface', 'mcp-registry']);
+  assert.equal(home.items[1].metrics.likes, 9); assert.equal(home.total, 32);
 });
 
 void test('Noah home renders collected cards and refreshes external ratings while the page is visible', async () => {
