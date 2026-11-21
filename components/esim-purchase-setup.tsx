@@ -235,6 +235,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
           disabled={pending !== null} onClick={() => void manageCloud('revoke')}>アクセスキーを停止</button>}
       </div>
       {cloud.state === 'active' && <div className={styles.esimLinks}>
+        {cloud.key?.scopes.includes('noah') && <a className={styles.primary} href="/api/noah/cloud-work">NoahクラウドでAgentを使う</a>}
         <Link className={styles.secondary} href="/sky">smisを開く</Link>
         <Link className={styles.secondary} href="/work">依頼・進捗・費用を見る</Link>
       </div>}

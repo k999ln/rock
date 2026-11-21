@@ -40,6 +40,7 @@ export class NoahTrial {
     {
       now = Date.now,
       provider,
+      routeBindings,
       readOffers = () => sampleOffers,
       readQuote = () => trialExecutionQuote,
     } = {},
@@ -65,8 +66,10 @@ export class NoahTrial {
       CREATE TABLE IF NOT EXISTS trial_handset (
         slot INTEGER PRIMARY KEY CHECK(slot=1), owner TEXT NOT NULL, enrollment TEXT NOT NULL, device TEXT NOT NULL);
     `);
-    this.runtime = new TrialRuntime(directory, (owner) =>
-      this.runtimePermit(owner),
+    this.runtime = new TrialRuntime(
+      directory,
+      (owner) => this.runtimePermit(owner),
+      routeBindings,
     );
   }
   async close() {
@@ -249,6 +252,10 @@ export class NoahTrial {
       .prepare('SELECT owner FROM trial_owners')
       .all())
       await this.runtime.command(owner, 'wake');
+  }
+  async cloudWork(owner, dedicated, action, input = {}) {
+    await this.gate(owner, dedicated);
+    return this.runtime.command(owner, action, input, true);
   }
   jobs(owner) {
     return this.runtime.command(owner, 'list');

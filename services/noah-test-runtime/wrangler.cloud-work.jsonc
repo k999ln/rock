@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "noah-esim-cloud-work",
+  "main": "src/cloud-entry.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "durable_objects": { "bindings": [
+    { "name": "JOBS", "class_name": "CloudWork" },
+    { "name": "RESULTS", "class_name": "TextResult" }
+  ] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["CloudWork", "TextResult"] }],
+  "services": [{ "binding": "NOAH", "service": "noah-esim-cloud-work", "entrypoint": "NoahTextAgent" }]
+}

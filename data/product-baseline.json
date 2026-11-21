@@ -1,4 +1,11 @@
 {
+  "noahCloudExecution": {
+    "decidedAt": "2026-11-22",
+    "entry": "esim_authenticated_cloud",
+    "destinations": ["provider_cloud", "registered_endpoint", "noah_cloud"],
+    "execution": "screen_independent_durable_work",
+    "report": ["accomplished", "incomplete", "unverified"]
+  },
   "noahDistribution": {
     "decidedAt": "2026-11-22",
     "managedBy": "operator_dock",

@@ -22,6 +22,8 @@ function bundle(name) {
 }
 const controllerScript = bundle('worker');
 const packageScript = bundle('agent');
+const cloudWorkScript = bundle('cloud-work');
+const textAgentScript = bundle('text-agent');
 export class TrialError extends Error {
   constructor(status, message) {
     super(message);
@@ -29,7 +31,7 @@ export class TrialError extends Error {
   }
 }
 export class TrialRuntime {
-  constructor(directory, checkLine) {
+  constructor(directory, checkLine, routeBindings = {}) {
     this.secret = randomBytes(32).toString('base64url');
     const persist = join(directory, 'worker');
     const local = convertV4MiniflareOptions({
@@ -50,6 +52,37 @@ export class TrialRuntime {
             GUIDE: 'noah-trial-guide',
           },
         },
+        {
+          name: 'noah-cloud-work',
+          script: cloudWorkScript,
+          modules: true,
+          compatibilityDate: '2026-10-01',
+          durableObjects: { JOBS: { className: 'CloudWork', useSQLite: true } },
+          bindings: { BRIDGE: this.secret },
+          outboundService: () => new Response(null, { status: 403 }),
+          serviceBindings: {
+            LINE: async (req) =>
+              Response.json(await checkLine((await req.json()).owner)),
+            NOAH: 'noah-local-text',
+            PROVIDER: 'provider-local-text',
+            REGISTERED: 'registered-local-text',
+            ...routeBindings,
+          },
+        },
+        ...[
+          'noah-local-text',
+          'provider-local-text',
+          'registered-local-text',
+        ].map((name) => ({
+          name,
+          script: textAgentScript,
+          modules: true,
+          compatibilityDate: '2026-10-01',
+          durableObjects: {
+            RESULTS: { className: 'TextResult', useSQLite: true },
+          },
+          outboundService: () => new Response(null, { status: 403 }),
+        })),
         {
           name: 'noah-trial-distribution-store',
           script:
@@ -100,19 +133,22 @@ export class TrialRuntime {
       await db.prepare(statement).run();
     return db;
   }
-  async command(owner, action, input = {}) {
-    const response = await this.runtime.dispatchFetch(
-      'https://fixture.invalid/' + action,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer ' + this.secret,
-          'X-Trial-Owner': owner,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(input),
+  async command(owner, action, input = {}, cloudWork = false) {
+    const url = 'https://fixture.invalid/' + action;
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + this.secret,
+        'X-Trial-Owner': owner,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify(input),
+    };
+    const response = cloudWork
+      ? await (
+          await this.runtime.getWorker('noah-cloud-work')
+        ).fetch(url, options)
+      : await this.runtime.dispatchFetch(url, options);
     if (!response.ok) {
       const data = await response.json().catch(() => null);
       throw new TrialError(

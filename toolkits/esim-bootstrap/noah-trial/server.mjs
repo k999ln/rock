@@ -17,7 +17,7 @@ import {
   recipientHasPending,
   receiveAssignment,
 } from '../../../services/operator-dock/src/distribution.ts';
-import { base, esc, layout, screen } from './view.mjs';
+import { base, esc, layout, screen, cloudScreen } from './view.mjs';
 
 async function readForm(req) {
   if (
@@ -128,6 +128,18 @@ export async function startTrialServers(
         );
       }),
     ],
+    [
+      base + 'agents/start',
+      forMember((owner, { dedicated, fields }) =>
+        trial.cloudWork(owner, dedicated, 'start', fields),
+      ),
+    ],
+    [
+      base + 'agents/stop',
+      forMember((owner, { dedicated, fields }) =>
+        trial.cloudWork(owner, dedicated, 'stop', fields),
+      ),
+    ],
     [base + 'revoke', forMember((owner) => trial.revoke(owner))],
     [
       base + 'logout',
@@ -166,6 +178,21 @@ export async function startTrialServers(
           .find((v) => v.startsWith(cookie + '='))
           ?.slice(cookie.length + 1);
         const token = openSession(sessionKey, envelope);
+        if (req.method === 'GET' && path.split('?')[0] === base + 'agents') {
+          const account = trial.session(token);
+          if (!account)
+            throw new TrialError(401, '招待コードで入り直してください。');
+          const agent =
+            new URL(path, origin).searchParams.get('agent') ?? undefined;
+          const state = await trial.cloudWork(
+            account.owner,
+            dedicated,
+            'list',
+            { agent },
+          );
+          res.end(cloudScreen(state, randomUUID()));
+          return;
+        }
         if (req.method === 'GET' && path === base) {
           const session = trial.session(token);
           const order = session && trial.order(session.owner);
@@ -217,7 +244,13 @@ export async function startTrialServers(
           throw new TrialError(403, 'この試験画面から操作してください。');
         const fields = await readForm(req);
         await action({ fields, res, token, dedicated });
-        res.writeHead(303, { Location: base });
+        res.writeHead(303, {
+          Location: path.startsWith(base + 'agents/')
+            ? base +
+              'agents' +
+              (fields.agent ? '?agent=' + encodeURIComponent(fields.agent) : '')
+            : base,
+        });
         res.end();
       } catch (error) {
         res.statusCode =

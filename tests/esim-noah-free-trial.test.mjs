@@ -181,7 +181,10 @@ await test('運営Dockの指定を本人の模擬回線に届け、受取と再�
     assert.doesNotMatch(await page('public'), /更新があります/);
     assert.equal((await post('public', 'revoke')).status, 303);
     assert.doesNotMatch(await page('mobile'), /試験用野菜セット|東会場/);
-    assert.equal((await post('mobile', 'receive', { id: input.id })).status, 403);
+    assert.equal(
+      (await post('mobile', 'receive', { id: input.id })).status,
+      403,
+    );
     assert.equal((await post('mobile', 'logout')).status, 303);
     assert.match(await page('mobile'), /招待コードで入る/);
     assert.equal((await f.trial.jobs('alice')).length, 0);
@@ -476,4 +479,136 @@ await test('Agentの実行中に期限が切れると成果を配達せず、同
   assert.equal(row.runs, null);
   assert.equal(row.result, null);
   assert.equal(await f.trial.hasUpdate('alice'), false);
+});
+
+await test('an eSIM cloud job survives a closed screen, lost provider reply and host restart without redispatch', async (t) => {
+  let creations = 0,
+    reads = 0,
+    acknowledged = false;
+  const stored = new Map();
+  const provider = async (req) => {
+    const id = new URL(req.url).pathname.split('/').pop();
+    if (req.method === 'PUT') {
+      creations++;
+      assert.deepEqual(await req.json(), { text: 'abc' });
+      stored.set(id, { id, result: '3 characters' });
+      return new Response(null, { status: 503 });
+    }
+    reads++;
+    return stored.has(id)
+      ? acknowledged
+        ? Response.json(stored.get(id))
+        : new Response(null, { status: 202 })
+      : new Response(null, { status: 404 });
+  };
+  const f = fixture(t, { routeBindings: { PROVIDER: provider } });
+  f.invite();
+  await phone(f.trial);
+  const start = { id: newApproval(), text: 'abc', route: 'auto' };
+  const run = (action, input) =>
+    f.trial.cloudWork('alice', true, action, input);
+  await assert.rejects(
+    f.trial.cloudWork('alice', false, 'start', start),
+    /回線/,
+  );
+  await run('start', start);
+  // Only the server's alarm can contact the provider. No browser or status request drives execution.
+  const until = async (predicate) => {
+    const deadline = Date.now() + 20000;
+    while (!(await predicate())) {
+      if (Date.now() >= deadline)
+        assert.fail(
+          'Alarm failed to progress: ' +
+            JSON.stringify({
+              reads,
+              creations,
+              jobs: (await run('list')).jobs,
+            }),
+        );
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  };
+  await until(() => creations === 1);
+  assert.equal((await run('list')).jobs[0].route, 'provider');
+  await f.restart();
+  acknowledged = true;
+  await until(() => reads >= 2);
+  await until(async () => (await run('list')).jobs[0].state === 'completed');
+  await run('start', start);
+  const [saved] = (await run('list')).jobs;
+  assert.equal(saved.result, '3 characters');
+  assert.equal(creations, 1);
+  await assert.rejects(run('start', { ...start, route: 'noah' }), /依頼内容/);
+  for (const route of ['noah', 'registered']) {
+    const id = newApproval();
+    await run('start', { id, route, text: 'xy' });
+    await until(async () => (await run('list')).jobs[0].state === 'completed');
+    const view = await run('list');
+    assert.equal(view.preference, route);
+    assert.equal(view.jobs[0].route, route);
+    assert.match(view.jobs[0].result, /文字数 2/);
+  }
+  const stopped = { id: newApproval(), route: 'provider', text: 'never send' };
+  await run('start', stopped);
+  await run('stop', { id: stopped.id });
+  assert.equal((await run('list')).jobs[0].state, 'stopped');
+  await f.trial.revoke('alice');
+  await assert.rejects(run('list'), /回線/);
+  assert.equal(creations, 1);
+});
+
+await test('partial results remain readable and the same work keeps polling for its missing outcome', async (t) => {
+  let created = 0,
+    lookups = 0,
+    finish = false;
+  const partial = {
+    done: ['項目Aを集計'],
+    incomplete: ['項目Bは集計中'],
+    unverified: ['現物は未確認'],
+  };
+  const provider = async (req) => {
+    const id = new URL(req.url).pathname.split('/').pop();
+    if (req.method === 'PUT') {
+      created++;
+      return new Response(null, { status: 202 });
+    }
+    lookups++;
+    if (!created) return new Response(null, { status: 404 });
+    return Response.json({
+      id,
+      result: finish ? 'A+B' : 'A',
+      final: finish,
+      report: finish
+        ? {
+            done: [...partial.done, '項目Bを集計'],
+            incomplete: [],
+            unverified: partial.unverified,
+          }
+        : partial,
+    });
+  };
+  const f = fixture(t, { routeBindings: { REGISTERED: provider } });
+  f.invite();
+  await phone(f.trial);
+  const run = (action, input) =>
+    f.trial.cloudWork('alice', true, action, input);
+  await run('start', { id: newApproval(), route: 'registered', text: 'AB' });
+  const wait = async (state) => {
+    const until = Date.now() + 30000;
+    while (Date.now() < until) {
+      const job = (await run('list')).jobs[0];
+      if (job.report && job.state === state) return job;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    assert.fail('Timed out waiting for ' + state);
+  };
+  assert.deepEqual((await wait('waiting')).report, partial);
+  finish = true;
+  assert.deepEqual((await wait('completed')).report, {
+    done: ['項目Aを集計', '項目Bを集計'],
+    incomplete: [],
+    unverified: partial.unverified,
+  });
+  assert.equal(created, 1);
+  assert.ok(lookups >= 3);
 });

@@ -29,3 +29,25 @@ node --experimental-strip-types --test tests/esim-noah-free-trial.test.mjs tests
 ```
 
 本番の運営Dockの入口は専用のCloudflare Accessで本人を確認する。Mac上の3つの入口は模擬環境で、実機へのeSIM発行・実回線経路・本番受取サービスとの接続は別途受入が必要。
+
+
+### eSIMでクラウドのAgentを試す
+
+専用回線の画面から「クラウドでAgentを使う」を開く。「自動」は利用可能な提供元の実行先を優先する。実行先と文章を指定して「バックグラウンドで実行」を押すと、タブを閉じて別の作業ができる。再び開くと、同じ依頼の成果・未達・未確認を読める。0円試験では1人1件を同時実行でき、接続先の一時停止や応答消失は同じ依頼IDで再照合する。稼働中の仕事の実行先は固定される。Macでの試験中はホストを起動しておく。
+
+配備用の入口は `/api/noah/cloud-work`。eSIM導入済みで、有効な利用権に `noah` scope がある注文にリンクを表示する。Webの `NOAH_CLOUD_WORK` は非公開のクラウドWorkerへのサービスbinding。構成は `services/noah-test-runtime/wrangler.cloud-work.jsonc`。このリポジトリだけで実回線は発行されない。
+
+- クラウド側の `LINE` は本人の実回線を照合する信頼済みの事業者接続。WebはeSIM利用権を確認してから、事業者による証明を内部で渡す。サービスbindingの `POST /authorize` では署名、リプレイ、期限、実回線、account、HTTP method・URL・bodySha256との一致を確認し、`{active,account,owner}` を返す。ownerは一意で安定した不透明なID。任意のブラウザヘッダーを回線証明として受理しない。
+- 実行時の `POST /permit` は `{owner,agent,route}` を受け、現在有効な `active,enrollment,device,quote` を返す。無償試験はJPY建で利用者・運営双方の費用が0と確認できるものだけを受け付ける。実際の回線の発行・運用費と専用サーバーの費用は事業者の確認が必要。
+- Agentは文章入力と結果照会に対応するadapterを登録する。設定値 `NOAH_AGENT_ROUTES` の例は以下。各binding名は版を固定し、同じ名前を別接続先に再利用しない。URLや秘密を利用者入力から採用しない。設定済みの経路だけを表示する。
+
+```json
+[{"id":"text-check","name":"文章を確認","routes":[{"id":"vendor","kind":"provider","label":"提供元の専用環境","binding":"AGENT_VENDOR_V1"},{"id":"alternate","kind":"registered","label":"別の登録接続先","binding":"AGENT_PARTNER_V1"},{"id":"noah","kind":"noah","label":"Noahクラウド","binding":"NOAH"}]}]
+```
+
+adapterは `GET /jobs/<id>` で状態を返し、未作成時だけ404を返す。`PUT /jobs/<id>` は同じ入力・IDで一度だけ受け付ける。処理中は202。成果は `{id,result,final,report:{done,incomplete,unverified}}`。途中成果は同じIDで照会を継続する。停止はNoahの再実行・照会を止める。すでに外部が受け付けた処理の中断は外部側の確認が必要。実機・本番回線・有料接続は模擬試験の対象外。
+
+```sh
+node --experimental-strip-types --test --test-concurrency=1 tests/esim-noah-free-trial.test.mjs tests/noah-cloud-work.test.mjs
+npx --no-install wrangler deploy --dry-run --config services/noah-test-runtime/wrangler.cloud-work.jsonc
+```

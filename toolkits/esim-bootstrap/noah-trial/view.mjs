@@ -23,11 +23,11 @@ const form = (action, label, fields = '', secondary = false) =>
   `<form method="post" action="${base}${action}">${fields}<button${secondary ? ' class="secondary"' : ''}>${label}</button></form>`;
 const link = (origin, label) =>
   `<a class="action" href="${origin}${base}">${label}</a>`;
-export function layout(title, content) {
+export function layout(title, content, context = '開発用・模擬回線') {
   return `<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} · Noah</title>
   <style>
   *{box-sizing:border-box}body{margin:0;background:#f2f4f0;color:#16291f;font:16px/1.65 -apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif}main{max-width:41rem;margin:auto;padding:1.2rem 1.2rem 4rem}header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #bac8be;padding:.6rem 0 1rem}header b{font-size:1.45rem}small{font-size:.85rem;color:#405549}h1{font-size:clamp(1.7rem,5vw,2.35rem);line-height:1.25;margin:2rem 0 1rem}h2{font-size:1.25rem;line-height:1.4;margin:0 0 .6rem}section{background:white;border:1px solid #ced8d0;border-radius:.85rem;margin:1rem 0;padding:1.15rem}p{margin:.4rem 0 1rem}button,.action{display:inline-block;padding:.7rem 1rem;border:1px solid #214d37;background:#214d37;color:white;text-decoration:none;border-radius:.55rem;font:inherit;font-weight:600;cursor:pointer}.secondary{background:white;color:#214d37}.actions{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}form{margin:.55rem 0}label{display:block;margin:.6rem 0;color:#244b34}input,select{font:inherit;margin:.25rem 0;display:block;border:1px solid #84998a;padding:.55rem;border-radius:.4rem;width:100%;background:white;color:#16291f}dl{display:grid;grid-template-columns:6rem auto;gap:.3rem;margin:.7rem 0}dt{color:#405549}dd{margin:0}summary{cursor:pointer}footer{margin-top:1.5rem}button:focus-visible,a:focus-visible{outline:3px solid #ba6900;outline-offset:3px}
-  </style><body><main><header><b>Noah</b><small>開発用・模擬回線</small></header><h1>${esc(title)}</h1>${content}</main></body></html>`;
+  </style><body><main><header><b>Noah</b><small>${esc(context)}</small></header><h1>${esc(title)}</h1>${content}</main></body></html>`;
 }
 export function screen({
   session,
@@ -91,6 +91,93 @@ export function screen({
         : '<p>いま指定されている配給はありません。</p>',
     );
   }
-  const controls = `<footer><details><summary>試験回線の設定</summary><p>期限 ${date(session.expires)} JST</p>${order?.access === 'active' ? form('revoke', 'この試験回線を失効する', '', true) : ''}${form('logout', 'ログアウト', '', true)}</details></footer>`;
+  const agents =
+    dedicated && verified
+      ? `<p><a class="action" href="${base}agents">クラウドでAgentを使う</a></p>`
+      : '';
+  const controls = `${agents}<footer><details><summary>試験回線の設定</summary><p>期限 ${date(session.expires)} JST</p>${order?.access === 'active' ? form('revoke', 'この試験回線を失効する', '', true) : ''}${form('logout', 'ログアウト', '', true)}</details></footer>`;
   return display.replace('</main>', controls + '</main>');
+}
+
+export function cloudScreen(
+  { packages, agent, routes, preference, jobs },
+  id,
+  { root = base + 'agents', hosted = false } = {},
+) {
+  const jobForm = (action, label, fields) =>
+    `<form method="post" action="${esc(root)}/${action}">${fields}<button>${label}</button></form>`;
+  const agentName = packages.find((pkg) => pkg.id === agent)?.name ?? agent;
+  const menu =
+    packages.length > 1
+      ? '<nav aria-label="パッケージ">' +
+        packages
+          .map(
+            (pkg) =>
+              `<a href="${esc(root)}?agent=${encodeURIComponent(pkg.id)}">${esc(pkg.name)}</a>`,
+          )
+          .join(' · ') +
+        '</nav>'
+      : '';
+  const choices = [{ id: 'auto', label: '自動（提供元を優先）' }, ...routes];
+  const options = choices
+    .map(
+      (route) =>
+        `<option value="${esc(route.id)}"${route.id === preference ? ' selected' : ''}>${esc(route.label)}</option>`,
+    )
+    .join('');
+  const states = {
+    queued: '受付済み',
+    waiting: '結果を照会中',
+    completed: '完了',
+    attention: '確認が必要',
+    stopped: '停止',
+  };
+  const history = jobs
+    .map((job) => {
+      const label = job.routeLabel ?? job.route;
+      const report = job.report ?? {
+        done: ['依頼を受け付けました。'],
+        incomplete:
+          job.state === 'attention' || job.state === 'stopped'
+            ? [job.note]
+            : [],
+        unverified: ['最終成果はまだ確認されていません。'],
+      };
+      const sections = [
+        ['できたこと', report.done],
+        ['できなかったこと', report.incomplete],
+        ['未確認', report.unverified],
+      ]
+        .map(
+          ([title, items]) =>
+            `<dt>${title}</dt><dd>${items.length ? items.map(esc).join('<br>') : '報告された項目なし'}</dd>`,
+        )
+        .join('');
+      const stop = ['queued', 'waiting'].includes(job.state)
+        ? jobForm(
+            'stop',
+            '停止する',
+            hidden('id', job.id) + hidden('agent', agent),
+          )
+        : '';
+      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p><dl>${sections}</dl>${stop}</li>`;
+    })
+    .join('');
+  return layout(
+    'クラウドでAgentを使う',
+    `${menu}<section><h2>${esc(agentName)}</h2>
+    <p>${hosted ? 'この試験の実行料は0円です。' : '0円の模擬環境です。各接続先はこのMac上の別のWorkerで動きます。'}受付後は別のアプリに移れます。</p>
+    ${jobForm(
+      'start',
+      'バックグラウンドで実行',
+      hidden('id', id) +
+        hidden('agent', agent) +
+        '<label>実行先<select name="route">' +
+        options +
+        '</select></label><label>文章<input required name="text" maxlength="500"></label>',
+    )}</section>
+    <section><h2>仕事と成果</h2>${history ? '<ul>' + history + '</ul>' : '<p>依頼はありません。</p>'}
+    <a href="${esc(root)}?agent=${encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>`,
+    hosted ? 'eSIMクラウド' : '開発用・模擬回線',
+  );
 }

@@ -1,6 +1,6 @@
 ## 2026-11-22
 
-- 農家検索を削除し、運営Dockで指定した配給を本人の模擬専用回線で受領する流れに変更。朝9時までの[英語の開発プロンプト](docs/prompts/noah-esim-free-device-trial-20261122.md)を並行開発と照合し、入荷・在庫割当・Agent通知・定期配給の合格条件を記載（[PR #382](https://github.com/k999ln/rock/pull/382)）。
+- 農家検索を削除し、運営Dockで指定した配給を本人の模擬専用回線で受領する流れに変更。朝9時までの[英語の開発プロンプト](docs/prompts/noah-esim-free-device-trial-20261122.md)を並行開発と照合し、入荷・在庫割当・定期配給の合格条件を記載。eSIM用クラウド入口、Agent別の実行先選択、画面を閉じた後の結果照会と成果内訳を追加（[PR #382](https://github.com/k999ln/rock/pull/382)）。
 
 - 配給担当者が地域・品目から全国の生産者を探し、6農園の公式窓口を開いて運営予算での買取を直接相談できるMac用ツールを追加（[PR #381](https://github.com/k999ln/rock/pull/381)）。
 
