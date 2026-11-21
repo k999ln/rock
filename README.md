@@ -105,6 +105,8 @@ npm run amc:cycle -- demo
 
 **[NoahのAgent一覧](https://avoado.si/noah/explore)**。スマホ向けは提供者のサーバーへ接続します。下の動画は従来のMac向け経路です。[Macの接続手順](#noah-mac)
 
+[CowAgentをMacで試す準備](https://avoado.si/noah/guides/cowagent-mac)では、18秒の操作例と最初に頼む会議メモの例を確認できます。
+
 [CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
 
 <a name="noah-tools"></a>
@@ -274,7 +276,7 @@ node --experimental-strip-types --test docs/design-validation/noah/noah-loop.tes
 
 受入（MVP L9）は、スマホだけの一周の自動試験 `tests/noah-phone-loop.test.mjs`（取り込む → 見つける → 接続 → 道具 → 頼む → 受け取る → 切る を、画面が呼ぶのと同じ入口だけで通します。相手は合成の物で、外へは通信しません）と、画面の決まりの試験（`tests/noah-ready-ui.test.mjs`。画面を覆う部品が無い・提供者の文は字のまま・画面に出さない言葉が無い、を一周の全部の段で見ます）です。実機の確かめの表（[docs/noah/spec-90-phone-only-loop.md](docs/noah/spec-90-phone-only-loop.md) の 5 章）は、手元の開発サーバーと幅 390 のブラウザで通し、結果を 9.4 に書いてあります。**本番と、本物のスマホでは、まだ確かめていません。** この通しで、「切る」と、受け取った成果が画面から読めなくなる所を見つけて、直しました: Agent の詳細の「仕事」は、つないでいない時・切った後も、その Agent への前の依頼と成果を出します。進捗は [PR #347](https://github.com/k999ln/rock/pull/347) を参照してください。
 
-棚（task 110）は、`lib/noah-shelf.ts`・`lib/noah-shelf-store.ts`・`lib/noah-shelf-api.ts` と、`/noah/ready` の一番上の段（`components/noah-shelf.tsx`）・運営の画面の「棚」の節（`components/noah-shelf-review.tsx`）に実装しています。7 万件から選ばせずに、「稼ぐ・仕事を省く」「教育」「暮らし」の 3 段に、1 つの仕事を最後までやるカードを並べます。並びは学習なしの運営の順で、載るのは、運営が自分で動かして成果を確かめた、今動く相手のサーバーの道具のカードだけです（相手が止まる・道具が変わると、次の握手の後に外れ、運営の画面に理由が出ます）。カードを押すと、その道具を選んだ状態で詳細が開きます。表は migration 0050（`noah_packages`・`noah_package_steps`）。最初の 12 枚の案はローンチの範囲の外なので、棚はまだ空です。本番への適用・配備・切り替え（`NOAH_SHELF_PUBLIC`）はしていません。設計は `docs/noah/spec-110-shelf.md`。
+棚（task 110）は、`lib/noah-shelf.ts`・`lib/noah-shelf-store.ts`・`lib/noah-shelf-api.ts` と、`/noah/ready` の一番上の段（`components/noah-shelf.tsx`）・運営の画面の「棚」の節（`components/noah-shelf-review.tsx`）に実装しています。7 万件から選ばせずに、「稼ぐ・仕事を省く」「教育」「暮らし」の 3 段に、1 つの仕事を最後までやるカードを並べます。並びは学習なしの運営の順で、載るのは、運営が自分で動かして成果を確かめた、今動く相手のサーバーの道具のカードだけです（相手が止まる・道具が変わると、次の握手の後に外れ、運営の画面に理由が出ます）。カードを押すと、その道具を選んだ状態で詳細が開きます。表は migration 0050（`noah_packages`・`noah_package_steps`）。最初の 12 枚の案はローンチの範囲の外なので、別に、実在の Agent の道具を実際に呼んで確かめた 17 枚の下書き（`data/noah-shelf-first-cards.json`。運営の画面の「カードを置く」へそのまま貼る）を用意しました。運営が本番で 1 回ずつ動かして「確かめた」を押すと棚に出ます（`docs/noah/spec-110-shelf.md` の 18 章）。本番への適用・配備・切り替え（`NOAH_SHELF_PUBLIC`）はしていません。設計は `docs/noah/spec-110-shelf.md`。
 
 300 人の試行（task 114）は、`lib/noah-trial.ts`・`lib/noah-trial-api.ts` と、入口（`/noah/ready` と詳細の `?via=<札>`）・カードの詳細の下の本人の報告・運営の画面の「試行」の節に実装しています。経路の札は運営が登録した物だけを受け付け、本人 1 人につき入口は 1 行です。運営の画面に、段（30 → 100 → 300）ごとの 4 つの数と割合、次へ進むのに足りない条件、経路ごとの数、カードごとの報告の合計が出ます（5 人未満の経路とカードは出しません）。本人の報告は任意で、4 つの数（出品したか・売れた件数・手取り・掛けた分）だけ。金額は約束せず、5 人以上の測った合計だけを出します。表は migration 0051。本番への適用・配備・切り替え（`NOAH_TRIAL_OPEN`）と、投稿・動画・人への連絡はしていません。設計は `docs/noah/trial-300.md`。
 
