@@ -17,8 +17,8 @@ export default function NoahRemoteHub({
   fallback: ReactNode;
   results?: boolean;
 }) {
-  const params=useSearchParams();
-  const [macOpen,setMacOpen]=useState(false);
+  const params = useSearchParams();
+  const [macOpen, setMacOpen] = useState(false);
   const [state, setState] = useState<{
       enabled: boolean;
       scope: string | null;
@@ -33,11 +33,36 @@ export default function NoahRemoteHub({
       { signal: controller.signal },
     )
       .then((data) => setState({ enabled: true, scope: data.ownerScope }))
-      .catch((e) => {
+      .catch(async (e) => {
         if (controller.signal.aborted) return;
-        if (e instanceof NoahRemoteClientError && e.status === 404)
-          setState({ enabled: false, scope: null });
-        else setError(e.message);
+        if (e instanceof NoahRemoteClientError && e.status === 404) {
+          // Closing new requests never hides previously saved private results.
+          try {
+            const saved = await noahRemoteFetch<{
+              items: unknown[];
+              ownerScope: string;
+            }>('/api/noah/ask', { signal: controller.signal });
+            if (!controller.signal.aborted)
+              setState({
+                enabled: saved.items.length > 0,
+                scope: saved.ownerScope,
+              });
+          } catch (error) {
+            if (!controller.signal.aborted) {
+              if (
+                error instanceof NoahRemoteClientError &&
+                error.status === 401
+              )
+                setState({ enabled: false, scope: null });
+              else
+                setError(
+                  error instanceof Error
+                    ? error.message
+                    : '成果を読み込めませんでした。',
+                );
+            }
+          }
+        } else setError(e.message);
       });
     return () => controller.abort();
   }, [reload]);
@@ -80,9 +105,12 @@ export default function NoahRemoteHub({
               してください。
             </p>
           )}
-          <details className={styles.footer} onToggle={e=>setMacOpen(e.currentTarget.open)}>
+          <details
+            className={styles.footer}
+            onToggle={(e) => setMacOpen(e.currentTarget.open)}
+          >
             <summary>Macで動かした仕事</summary>
-            {macOpen&&fallback}
+            {macOpen && fallback}
           </details>
         </>
       )}

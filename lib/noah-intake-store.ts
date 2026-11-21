@@ -194,11 +194,20 @@ export function createIntakeStore(deps: IntakeDependencies) {
       if (offset >= 200) throw new NoahAgentError('検索は200件までです。');
       const limit = Math.min(21, 200 - offset);
       const rows = (
-        await intakeStatement(db, NOAH_LISTING_SQL.search, {
-          like: `%${q.replace(/[\\%_]/g, '\\$&')}%`,
-          limit,
-          offset,
-        }).all<{ id: string }>()
+        await intakeStatement(
+          db,
+          oneTap
+            ? NOAH_LISTING_SQL.search.replace(
+                'f.listed = 1',
+                'f.listed = 1 AND f.one_tap = 1',
+              )
+            : NOAH_LISTING_SQL.search,
+          {
+            like: `%${q.replace(/[\\%_]/g, '\\$&')}%`,
+            limit,
+            offset,
+          },
+        ).all<{ id: string }>()
       ).results;
       ids = rows.slice(0, 20).map((r) => ({ ...r, kind: 's' }));
       if (rows.length > 20) nextCursor = `s:${offset + 20}`;
@@ -217,11 +226,20 @@ export function createIntakeStore(deps: IntakeDependencies) {
         throw new NoahAgentError('ページの指定を確認してください。');
       if (match?.[1] !== 'n') {
         ids = (
-          await intakeStatement(db, NOAH_LISTING_SQL.ran, {
-            before_at: match ? Number(match[2]) : Number.MAX_SAFE_INTEGER,
-            after_id: match?.[3] ?? '',
-            limit: 21,
-          }).all<{ id: string; l2_at: number }>()
+          await intakeStatement(
+            db,
+            oneTap
+              ? NOAH_LISTING_SQL.ran.replace(
+                  'listed = 1',
+                  'listed = 1 AND one_tap = 1',
+                )
+              : NOAH_LISTING_SQL.ran,
+            {
+              before_at: match ? Number(match[2]) : Number.MAX_SAFE_INTEGER,
+              after_id: match?.[3] ?? '',
+              limit: 21,
+            },
+          ).all<{ id: string; l2_at: number }>()
         ).results.map((r) => ({ ...r, kind: 'r' }));
       }
       if (ids.length < 21)
@@ -401,17 +419,15 @@ export function createIntakeStore(deps: IntakeDependencies) {
       reasons,
       unsupported,
       listed: visible.ran + visible.new,
-      families: families
-        .slice(0, 20)
-        .map((r) => ({
-          id: r.id,
-          name: r.name,
-          members: r.members,
-          mouth: r.mouth,
-          level: r.level,
-          revision: r.revision,
-          withdrawn: r.withdrawn_at !== null,
-        })),
+      families: families.slice(0, 20).map((r) => ({
+        id: r.id,
+        name: r.name,
+        members: r.members,
+        mouth: r.mouth,
+        level: r.level,
+        revision: r.revision,
+        withdrawn: r.withdrawn_at !== null,
+      })),
       nextOffset: families.length > 20 ? offset + 20 : null,
     };
   }

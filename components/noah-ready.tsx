@@ -23,7 +23,9 @@ export default function NoahReady() {
   const [data, setData] = useState<Listing | null>(null),
     [connections, setConnections] = useState<NoahRemoteConnectionView[]>([]),
     [error, setError] = useState(''),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [disconnecting, setDisconnecting] = useState<string | null>(null),
+    [ownerScope, setOwnerScope] = useState<string | null>(null);
   const sentinel = useRef<HTMLDivElement>(null),
     generation = useRef(0),
     loadingMore = useRef(false);
@@ -34,6 +36,19 @@ export default function NoahReady() {
     setError('');
     setData(null);
     setConnections([]);
+    void noahRemoteFetch<{
+      items: NoahRemoteConnectionView[];
+      ownerScope: string;
+    }>('/api/noah/connect', { signal: controller.signal })
+      .then((mine) => {
+        if (generation.current === version) {
+          setConnections(mine.items);
+          setOwnerScope(mine.ownerScope);
+        }
+      })
+      .catch(() => {
+        if (generation.current === version) setOwnerScope(null);
+      });
     const timer = setTimeout(
       () => {
         const q = query.trim(),
@@ -52,15 +67,6 @@ export default function NoahReady() {
           .then(async (value) => {
             if (generation.current !== version) return;
             setData(value);
-            if (value.ownerScope) {
-              const mine = await noahRemoteFetch<{
-                items: NoahRemoteConnectionView[];
-              }>('/api/noah/connect', { signal: controller.signal });
-              if (generation.current === version)
-                setConnections(
-                  mine.items.filter((c) => c.state === 'connected'),
-                );
-            }
           })
           .catch((e) => {
             if (!controller.signal.aborted)
@@ -81,6 +87,30 @@ export default function NoahReady() {
       clearTimeout(timer);
     };
   }, [query, oneTap, reload]);
+  async function disconnect(connection: NoahRemoteConnectionView) {
+    if (!ownerScope || disconnecting) return;
+    setDisconnecting(connection.id);
+    setError('');
+    try {
+      const latest = await noahRemoteFetch<NoahRemoteConnectionView>(
+        '/api/noah/connect/' + connection.id,
+        { ownerScope },
+      );
+      await noahRemoteFetch('/api/noah/connect/' + connection.id, {
+        ownerScope,
+        body: { action: 'disconnect', revision: latest.revision },
+      });
+      setConnections((current) =>
+        current.filter((item) => item.id !== connection.id),
+      );
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : '接続の状態を読み直してください。',
+      );
+    } finally {
+      setDisconnecting(null);
+    }
+  }
   async function more() {
     if (!data?.nextCursor || loadingMore.current) return;
     loadingMore.current = true;
@@ -160,21 +190,29 @@ export default function NoahReady() {
         </div>
       )}
       {busy && (
-        <output className={styles.muted}>
-          Agentを読み込んでいます…
-        </output>
+        <output className={styles.muted}>Agentを読み込んでいます…</output>
       )}
       {!!connections.length && (
         <section>
-          <h2 className={styles.sectionTitle}>つながっているもの</h2>
+          <h2 className={styles.sectionTitle}>接続したAgent</h2>
           {connections.map((c) => (
-            <Link
-              className={styles.connected}
-              key={c.id}
-              href={`/noah/ready/agent?id=${encodeURIComponent(c.agentId)}`}
-            >
-              <span>{c.host}</span>頼む <ArrowRight size={16} />
-            </Link>
+            <div key={c.id} className={styles.connectionRow}>
+              <Link
+                className={styles.connected}
+                href={`/noah/ready/agent?id=${encodeURIComponent(c.agentId)}`}
+              >
+                <span>{c.host}</span>
+                {c.state === 'connected' ? '頼む' : '要確認'}{' '}
+                <ArrowRight size={16} />
+              </Link>
+              <button
+                className={styles.textButton}
+                disabled={!!disconnecting}
+                onClick={() => void disconnect(c)}
+              >
+                接続を切る
+              </button>
+            </div>
           ))}
         </section>
       )}

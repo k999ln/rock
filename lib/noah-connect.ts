@@ -323,6 +323,8 @@ export function createNoahConnectService(deps: RemoteDependencies) {
     id: string,
     input: Record<string, unknown>,
   ) {
+    if (Object.keys(input).some((k) => !['action', 'revision'].includes(k)))
+      throw new NoahAgentError('操作を確認してください。');
     const row = await get(owner, id);
     if (
       !Number.isSafeInteger(input.revision) ||
@@ -330,19 +332,23 @@ export function createNoahConnectService(deps: RemoteDependencies) {
     )
       throw new NoahAgentError('状態が変わりました。読み直してください。', 409);
     if (input.action === 'disconnect') {
-      await db
-        .prepare(
-          "UPDATE noah_connections SET state='disconnected',disconnected_at=?,updated_at=?,revision=revision+1 WHERE id=? AND revision=?",
-        )
-        .bind(now(), now(), id, row.revision)
-        .run();
-      // No remote cancellation guarantee: queued jobs never start; running results are discarded.
-      await db
-        .prepare(
-          'UPDATE noah_asks SET stop_requested=1,revision=revision+1,updated_at=? WHERE connection_id=? AND owner_id=? AND finished_at IS NULL',
-        )
-        .bind(now(), id, owner)
-        .run();
+      const updated = await db.batch([
+        db
+          .prepare(
+            "UPDATE noah_connections SET state='disconnected',disconnected_at=?,updated_at=?,revision=revision+1 WHERE id=? AND revision=?",
+          )
+          .bind(now(), now(), id, row.revision),
+        db
+          .prepare(
+            "UPDATE noah_asks SET stop_requested=1,revision=revision+1,updated_at=? WHERE connection_id=? AND owner_id=? AND finished_at IS NULL AND EXISTS(SELECT 1 FROM noah_connections WHERE id=? AND state='disconnected' AND revision=?)",
+          )
+          .bind(now(), id, owner, id, row.revision + 1),
+      ]);
+      if (!updated[0].meta.changes)
+        throw new NoahAgentError(
+          '状態が変わりました。読み直してください。',
+          409,
+        );
     } else if (input.action === 'retry' && row.state === 'failed') {
       requireRemoteEnabled(deps, owner, 'ask');
       if (now() - row.updated_at < 5000)

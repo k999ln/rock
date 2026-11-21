@@ -171,7 +171,7 @@ export default function NoahReadyDetail({ agentId }: { agentId: string }) {
           )}
           {connection && plan?.ownerScope && (
             <NoahWorkList
-              key={connection.id}
+              key={'work:' + connection.id}
               connectionId={connection.id}
               ownerScope={plan.ownerScope}
               refresh={jobs}

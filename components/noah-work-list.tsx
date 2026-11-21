@@ -204,7 +204,12 @@ export function ResultView({
   return (
     <div className={styles.result}>
       <div className={styles.preview}>
-        {result.text.split('\n').slice(0, 3).join('\n')}
+        {outline
+          ? outline
+              .slice(0, 3)
+              .map((row) => `${row.label}：${row.text}`)
+              .join('\n')
+          : result.text.split('\n').slice(0, 3).join('\n')}
       </div>
       <details>
         <summary>全文を開く</summary>

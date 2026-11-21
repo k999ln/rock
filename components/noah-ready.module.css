@@ -197,7 +197,11 @@
   font-weight: 500;
   color: #52525b;
 }
-.primary {
+.page .primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   min-height: 48px;
   border: 0;
   border-radius: 24px;
@@ -466,6 +470,10 @@
   max-width: 100%;
 }
 .preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
   margin: 16px 0;
 }
 .result {
@@ -537,4 +545,11 @@
   .spinner {
     animation: none;
   }
+}
+
+.connectionRow {
+  border-bottom: 1px solid #ececef;
+}
+.connectionRow .connected {
+  border: 0;
 }

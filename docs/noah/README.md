@@ -21,6 +21,10 @@
 
 段 2 以降の残り（83・92・94 など）の仕様書は、ローンチの後に同じ形で足す。それまでは詳細設計書の章が入口。
 
+## スマホ実装の受け渡し（2026-11-21）
+
+[PR #349](https://github.com/k999ln/rock/pull/349) は #337 を土台に、L4〜L7のローンチ範囲を一周につないだ開発ブランチです。`/noah/ready` → 接続 → 入力欄 → Work保存 → `/noah/activity`・`/noah/data` → 切断をローカルで検証。`tests/noah-phone-loop.test.mjs`、`tests/noah-ready-ui.test.mjs`、`tests/noah-connect.test.mjs`、`tests/noah-patrol.test.mjs`が再開時の入口です。追加migrationは0047・0048（drizzleとdrizzle-main）、本番適用は未実施。L4の100候補、L7の大量巡回、L9の本番スマホ実機1〜13は未受入。詳細な結果と検証コマンドはPR本文を参照してください。
+
 ## 別の機械で始める時
 
 設計・参照実装・試験・task は、全部 main に入っている。手元にしか無い物は無い。

@@ -203,7 +203,7 @@ export function createNoahAskService(deps: RemoteDependencies) {
     const updates = await db.batch([
       db
         .prepare(
-          'UPDATE noah_asks SET state=?,error=?,finished_at=?,updated_at=?,revision=revision+1,tool_calls=? WHERE id=? AND owner_id=? AND revision=? AND finished_at IS NULL',
+          `UPDATE noah_asks SET state=?,error=?,finished_at=?,updated_at=?,revision=revision+1,tool_calls=? WHERE id=? AND owner_id=? AND revision=? AND finished_at IS NULL AND (stop_requested=0 OR ?='stopped') AND (?='stopped' OR EXISTS(SELECT 1 FROM noah_connections WHERE id=noah_asks.connection_id AND state<>'disconnected'))`,
         )
         .bind(
           state,
@@ -214,6 +214,8 @@ export function createNoahAskService(deps: RemoteDependencies) {
           id,
           owner,
           row.revision,
+          state,
+          state,
         ),
       db
         .prepare(`UPDATE work_jobs SET payload=?,revision=?,updated_at=? WHERE id=? AND user_id=? AND revision=?
@@ -427,7 +429,8 @@ export function createNoahAskService(deps: RemoteDependencies) {
       !remoteObject(f.input) ||
       (f.confirm !== undefined && f.confirm !== true) ||
       (value.screen !== undefined &&
-        (typeof value.screen!=='string'||!['narrow', 'wide'].includes(value.screen))) ||
+        (typeof value.screen !== 'string' ||
+          !['narrow', 'wide'].includes(value.screen))) ||
       Object.keys(value).some(
         (k) => !['id', 'connectionId', 'form', 'screen'].includes(k),
       ) ||
