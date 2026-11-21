@@ -54,10 +54,15 @@
       </section>
       <section class="panel">
         <h2>配給を指定</h2>
+        <p>
+          配送先を登録した直近100人から選ぶか、受取人のIDを入力してください。
+        </p>
+        <datalist id="registered-recipients"></datalist>
         <form id="allocation">
           <label
             >受取人のアカウントID<input
               name="recipient"
+              list="registered-recipients"
               required
               maxlength="128"
           /></label>
@@ -86,6 +91,7 @@
             <label
               >受取人のアカウントID<input
                 name="recipient"
+                list="registered-recipients"
                 required
                 maxlength="128" /></label
             ><label

@@ -261,8 +261,12 @@ try {
   const lot = await ops.ev(
     'document.querySelector("#allocation select").options[1].value',
   );
+  const registeredRecipient = await ops.ev(
+    'document.querySelector("#registered-recipients option").value',
+  );
+  assert.equal(registeredRecipient, who);
   await ops.fill('#allocation', {
-    recipient: who,
+    recipient: registeredRecipient,
     lot_id: lot,
     units: '4',
     pickup: '模擬の受け渡し',

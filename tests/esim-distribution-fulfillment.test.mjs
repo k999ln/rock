@@ -128,6 +128,11 @@ await test('two handset sessions share one stock ledger, preserve address snapsh
       },
       body: body && JSON.stringify(body),
     });
+  assert.equal(
+    (await fetch(dock + '/api/distributions/recipients')).status,
+    401,
+  );
+  assert.deepEqual(await (await api('/recipients')).json(), []);
   const lot = sampleLot(),
     first = allocate(lot, 'qa-a', 4),
     second = allocate(lot, 'qa-b', 3);
@@ -151,6 +156,10 @@ await test('two handset sessions share one stock ledger, preserve address snapsh
     await (await b.get('mobile', 'address')).text(),
     /試験宛名A/,
   );
+  assert.deepEqual((await (await api('/recipients')).json()).sort(), [
+    'qa-a',
+    'qa-b',
+  ]);
   assert.equal((await api('', first)).status, 200);
   assert.equal((await api('', second)).status, 200);
   assert.equal((await api('', { ...first, recipient: 'qa-b' })).status, 409);

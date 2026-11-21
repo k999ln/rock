@@ -130,11 +130,15 @@ function renderAssignment(row) {
   return li;
 }
 async function refresh() {
-  const [rows, lots, recurring] = await Promise.all([
+  const [rows, lots, recurring, recipients] = await Promise.all([
     api(''),
     api('/lots'),
     api('/plans'),
+    api('/recipients'),
   ]);
+  document
+    .querySelector('#registered-recipients')
+    .replaceChildren(...recipients.map((id) => new Option(id, id)));
   const list = document.querySelector('#assignments');
   list.replaceChildren(...rows.map(renderAssignment));
   if (!rows.length) list.textContent = 'まだ指定された配給はありません。';

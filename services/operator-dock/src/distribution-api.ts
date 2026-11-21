@@ -63,6 +63,15 @@ export async function distributionApi(
       }
       return assignDistribution(db, input);
     }
+  } else if (path === '/api/distributions/recipients') {
+    if (method === 'GET') {
+      const { results } = await db
+        .prepare(
+          'SELECT recipient FROM distribution_addresses ORDER BY updated_at DESC,recipient LIMIT 100',
+        )
+        .all<{ recipient: string }>();
+      return results.map((row) => row.recipient);
+    }
   } else if (path === '/api/distributions/lots') {
     if (method === 'GET') return stockLedger(db);
     if (method === 'POST') return receiveLot(db, input);
