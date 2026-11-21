@@ -141,3 +141,7 @@ Noahの最初の受入後に接続する応用系統。利用者像はかいや�
 [外部Agentの利用報告SDK](../../toolkits/noah-agent-client/) は、提供者が自分の登録済みAgentの利用実績を送るために使う。[記録する項目と権限](../services/noah-agent-usage.md)
 
 Noah移行の互換ToolKit: `toolkits/noah-agent-operations/` は既存の実行テンプレート集合、`toolkits/noah-vscode/` は保存時整理の補助。単体ローンチの実行器は `scripts/noah-mac-runner.mjs`、導入は `scripts/noah-mac-install.mjs`、配布生成は `scripts/package-noah-mac.mjs`。
+
+## Noahの配給用農産物の調達
+
+2026-11-22 配給の調達準備には[運営用の農家検索](../../toolkits/noah-farm-sourcing/index.html)を使う。運営が公開窓口を選び、配給用の食料を運営予算で買い取れるか相談する。金額・数量・受け渡し条件の下書きは担当者のブラウザ内で扱い、実際の連絡と購入判断は担当者が行う。供給が決まるまでは配給案内の在庫へ反映しない。
