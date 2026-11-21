@@ -35,6 +35,8 @@ flowchart LR
 
 ## 3. account の続き（continuity）の契約
 
+2026-11-21 本人指示: Noahから使う共通accountのパスワードは8〜128文字。新規登録・ログイン・復旧で同じ条件とし、既存パスワードの変更は要求しない。scrypt・試行制限・本人の所有者照合は継続する。
+
 | 何が続くか | 実装場所 | 状態 |
 | --- | --- | --- |
 | 本人の identity と端末束縛（EID/ICCID、Android key attestation、Pro の TPM） | lib/rockstar-entitlement-*.ts, lib/esim-attested-device-activation.ts | 実装あり。eSIM の EID を束縛キーに追加（task 11） |

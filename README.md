@@ -90,7 +90,7 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
-配布先は **https://avoado.si/noah**。OSの運用開始を待たずに、Noah単体で使うサービスです。専用のタイムライン、Agentを探す（`/noah/explore`）、実行中、成果データ、ログイン（`/noah/account`）で完結します。Noah配下ではOSランタイムを起動せず、OSやMacの導入・端末接続を利用条件にしません。共通の本人認証と成果の保存・所有者分離を再利用します。公開側への反映は準備中で、2026-11-21の読み取り確認では新しい画面・APIは404、本番DBには接続の表がありません。`npm run noah:check:domain` で公開側を確認できます。認証付きAgentの遠隔接続は、この公開確認とは別に継続実装します。
+配布先は **https://avoado.si/noah**。OSの運用開始を待たずに、Noah単体で使うサービスです。専用のタイムライン、Agentを探す（`/noah/explore`）、実行中、成果データ、ログイン（`/noah/account`）で完結します。Noah配下ではOSランタイムを起動せず、OSやMacの導入・端末接続を利用条件にしません。共通の本人認証と成果の保存・所有者分離を再利用します。2026-11-21に独立版154を公開し、承認された10本のDB追加と一覧・依頼受付の有効化を反映しました。公開ドメインの6画面200・一覧API200・未認証の接続/依頼401を確認済みです。スマホ向けの接続可能一覧は現在0件で、確認済みAgentの投入と本番の接続→成果受領の受入が残っています。`npm run noah:check:domain` で公開側を確認できます。認証付きAgentの遠隔接続は、この公開確認とは別に継続実装します。
 
 以下の動画は、従来のMac向けカタログで「CowAgent」を選ぶ操作記録です。既存Macの管理は `/noah/mac/activity` に保持しています。スマホ向けの主導線はAgentの接続・依頼・成果受領で、Macを選ぶ操作は不要です。
 
@@ -101,7 +101,7 @@ npm run amc:cycle -- demo
   </picture>
 </a>
 
-**[NoahでAgentを試す](https://avoado.si/noah/agents)**。閲覧・検索はスマホからできます。仕事を実行するには、サインインして自分のApple Silicon MacにRunnerを設定します。[Macの接続手順](#noah-mac)
+**[NoahのAgent一覧](https://avoado.si/noah/explore)**。スマホ向けは提供者のサーバーへ接続します。下の動画は従来のMac向け経路です。[Macの接続手順](#noah-mac)
 
 [CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
 
@@ -112,7 +112,7 @@ npm run amc:cycle -- demo
 
 ### タイムラインと本人のライブラリ
 
-個人の感想・発見・評価の本文と作者を主役にしたタイムラインです。フォロー中の投稿と通常投稿をAgent紹介より先に表示し、紹介情報は「Agent紹介」と区別します。既定で全件表示し、「Agent」で絞り込んだ時だけ「すべてに戻る」を表示します。ニュースとコミュニティーは表示しません。検索・詳細から、利用したい担当やToolを確認できます。機能一覧は設けず、メニューからタイムライン・Agentを探す・実行中・成果データへ直接進みます。会社の正式花形ロゴを使用し、白地・チャコールの文字・紫のアクセントで、Xのような左ナビ・中央フィード・右検索/Agent欄の3カラムにしています。スマホ下部は現在地付きの「メニュー」1ボタンで、開くと4画面をアイコンと用途説明付きで選べます。Agentの探索は `/noah/explore` から行えます。「実行中」タブ（`/noah/activity`）に依頼入力・接続・Agentの実際の処理状態・成果・停止・ファイル保存を集約しました。旧 `/noah/launch` は選択Agentを保持して移動します。接続手順はAgent選択→Mac接続→依頼の順に案内し、接続案内から戻っても選んだAgentを維持します。フロントと登録Agent導線の開発は [PR #337](https://github.com/k999ln/rock/pull/337)、全体verify成功、本番配備は未実施です。 投稿やフォローにはサインインが必要です。[タイムライン](https://avoado.si/noah)
+個人の感想・発見・評価の本文と作者を主役にしたタイムラインです。フォロー中の投稿と通常投稿をAgent紹介より先に表示し、紹介情報は「Agent紹介」と区別します。既定で全件表示し、「Agent」で絞り込んだ時だけ「すべてに戻る」を表示します。ニュースとコミュニティーは表示しません。検索・詳細から、利用したい担当やToolを確認できます。機能一覧は設けず、メニューからタイムライン・Agentを探す・実行中・成果データへ直接進みます。会社の正式花形ロゴを使用し、白地・チャコールの文字・紫のアクセントで、Xのような左ナビ・中央フィード・右検索/Agent欄の3カラムにしています。スマホ下部は現在地付きの「メニュー」1ボタンで、開くと4画面をアイコンと用途説明付きで選べます。Agentの探索は `/noah/explore` から行えます。「実行中」タブ（`/noah/activity`）に依頼入力・接続・Agentの実際の処理状態・成果・停止・ファイル保存を集約しました。旧 `/noah/launch` は選択Agentを保持して移動します。スマホの主導線はAgent選択→接続→依頼→成果です。従来のMac接続は専用経路に残しています。フロントと登録Agent導線は [PR #337](https://github.com/k999ln/rock/pull/337)、独立版の公開は [PR #358](https://github.com/k999ln/rock/pull/358)に記録しています。 投稿やフォローにはサインインが必要です。[タイムライン](https://avoado.si/noah)
 
 <img src="docs/assets/cover-sky.gif" alt="Noahの発見と接続を表すコンセプト" width="340" />
 
@@ -122,9 +122,9 @@ AgentごとにNoahで実行完了を確認した利用人数、1アカウント1
 
 開発者向けの `/noah/developers` では、ユーザーの声の整理・改善提案・承認後のリファクタリング・回帰試験・PR納品を運用パッケージとして案内します。相談・見積もりは **smash@avoado.si** へのメールで受け付け、ページから対象Agentを添えたメールを作成できます。Webの申込フォーム・受付履歴・運営一覧は廃止。価格・SLA・課金・作業自動実行は未設定です。[継続改善パッケージ](docs/services/noah-developer-maintenance.md)。
 
-閲覧・検索は会員登録なし。外部Agentで登録が必要な場合は `/noah/registration` で必要項目と送信先・規約を確認し、登録Agentへ依頼できます。実際の登録先アダプターと秘密設定は未接続で、未設定時は入力欄を出しません。[登録Agentの設定・契約](docs/services/noah-registration-agent.md)。Mac接続など認証が必要な操作ではアカウント確認・ログイン・再確認を案内し、認証後は登録やMac承認の元の画面へ戻ります。登録・接続・実行・停止の本番通し受入と、別Macの実機受入は未完了です。現在の受入範囲と残件は[Noah単体ローンチ](codex/tasks/71-noah-standalone-launch.md)を参照してください。
+閲覧・検索は会員登録なし。外部Agentで登録が必要な場合は `/noah/registration` で必要項目と送信先・規約を確認し、登録Agentへ依頼できます。実際の登録先アダプターと秘密設定は未接続で、未設定時は入力欄を出しません。[登録Agentの設定・契約](docs/services/noah-registration-agent.md)。接続と成果保存に必要な本人確認は `/noah/account` で行い、Noahの元の画面へ戻ります。パスワードは8〜128文字とし、既存のパスワードも利用できます。登録・接続・実行・停止の本番通し受入と、別Macの実機受入は未完了です。現在の受入範囲と残件は[Noah単体ローンチ](codex/tasks/71-noah-standalone-launch.md)を参照してください。
 
-Agentの成果データは `/noah/data` で検索・JSON/ファイル出力できます。Webに保存済みのNoah実行成果を本人のWorkから読み、本人が選択・同意した成果だけを運営の品質確認・不具合調査へ提供します。撤回は運営向けの写しを削除し、元の仕事を削除した後でも本人の提供履歴から取り消せます。進捗は [PR #334](https://github.com/k999ln/rock/pull/334)。本番の表の適用・配備は未実施です。[範囲と提供条件](docs/services/noah-result-data.md)。
+Agentの成果データは `/noah/data` でリモートの完了した仕事を確認します。従来の成果検索・JSON/ファイル出力は `/noah/data/saved` に保持しています。Webに保存済みのNoah実行成果を本人のWorkから読み、本人が選択・同意した成果だけを運営の品質確認・不具合調査へ提供します。撤回は運営向けの写しを削除し、元の仕事を削除した後でも本人の提供履歴から取り消せます。実装は [PR #334](https://github.com/k999ln/rock/pull/334)、配備状況は [PR #358](https://github.com/k999ln/rock/pull/358)。本人が成果を取得・提供する本番通し受入は未完了です。[範囲と提供条件](docs/services/noah-result-data.md)。
 
 ### 本人用セレクト・リセール
 

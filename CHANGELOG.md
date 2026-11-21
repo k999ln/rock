@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- Noah独立版154を本人承認後に avoado.si/noah へ公開。追加DB 10本・20表と一覧/依頼受付を反映し、主要画面とAPIの9項目を確認。接続可能一覧0件のため本番通し受入は未完了。本人指示により共通アカウントの最小パスワードを8文字へ変更し、保存版155で公開。全体verify 4,753成功・4skip（[PR #358](https://github.com/k999ln/rock/pull/358)）。
+
 - NoahをOS運用に依存しないサービスへ変更。`/noah`配下のOSランタイムを停止し、専用ログイン・スマホ向けAgent一覧・依頼/成果の主画面と読込失敗時の再試行を実装（[PR #358](https://github.com/k999ln/rock/pull/358)）。旧Mac導線は専用パスに保持。最新mainの棚・試行・評価・接続上限も取り込み済み。独立版をSites保存版154として保存（未配備、source 6b69d009）。全体verify成功（4,745成功/4skip）、最新main統合後と公開用sourceのNoah 737件も成功。本番migration 0044〜0053・配備は未実施。
 
 - Noah の公開先 `https://avoado.si/noah` に向け、公開originの正規化・ローカル設定拒否・画面とAPIの読み取り確認を追加（[PR #358](https://github.com/k999ln/rock/pull/358)、task97）。本番は旧版で新しい画面/APIが404、接続表なし。公開用のSites保存版152を作成し（未配備）、migration 0044〜0049の適用と配備は本人確認待ち。認証付きAgentの接続は継続実装。
