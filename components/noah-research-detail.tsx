@@ -29,7 +29,7 @@ export default function NoahResearchDetail({ id }: { id: string }) {
   }, [id, attempt]);
   const agent = entry?.kind === 'agent' || entry?.kind === 'candidate';
   return <WorkspaceShell title="Noah" tone="sky"><div className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href="/noah/agents">← Agentタイムライン</Link><Link href="/noah/library">自分のAgent</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/explore">← Agentタイムライン</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link></nav>
     {error && <div className={styles.error} role="alert">{error} <button onClick={() => { setError(''); setAttempt(n => n + 1); }}>再試行</button></div>}
     {!entry && !error && <output>詳細を読み込んでいます…</output>}
     {entry && <>

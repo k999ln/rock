@@ -83,7 +83,7 @@ export default function NoahOutboxPage(){
     }catch(e){if(guard.current.active&&epoch===guard.current.mutationEpoch)setError((e as Error).message);}finally{guard.current.busy=false;if(guard.current.active)setPending(false);}
   }
   return <WorkspaceShell title="Noah" tone="sky"><main className={styles.page}>
-    <nav className={styles.nav}><Link href="/noah/agents">見つける</Link><Link href="/noah/library">自分のAgent</Link><Link href="/noah/work">仕事</Link><Link href="/noah/outbox">送信履歴</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/explore">見つける</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link><Link href="/noah/work">仕事</Link><Link href="/noah/outbox">送信履歴</Link></nav>
     <header className={styles.hero}><div><h1>Agentの情報を送る</h1><p>下書きを保存し、宛先・内容を確認してから送信します。画面を閉じても受付結果はここで確認できます。</p></div></header>
     {error&&<p role="alert">{error} <button onClick={()=>window.location.reload()}>画面を読み直す</button></p>}
     {listing?.targetError&&<p role="alert">{listing.targetError}</p>}

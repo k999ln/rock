@@ -55,7 +55,7 @@ export function DiscoveryDetail({ id }: { id: string }) {
   return (
     <WorkspaceShell title="Noah" tone="sky">
       <main className={styles.page}>
-        <Link href="/noah/agents">← タイムライン</Link>
+        <Link href="/noah/explore">← タイムライン</Link>
         {error && (
           <p role="alert">
             {error}{' '}

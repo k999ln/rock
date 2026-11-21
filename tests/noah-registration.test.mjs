@@ -32,7 +32,7 @@ void test('actual registration invocation receives approved fields exactly once 
   const f = fixture(t), ticket = key(), body = input(); const response = await f.start(body, ticket); const data = await response.json();
   assert.equal(response.status, 202); assert.equal(data.job.state, 'needs_user'); assert.equal(data.job.verificationUrl, provider().verificationUrl); assert.equal(f.calls.length, 1);
   assert.equal(f.calls[0].body.action, 'register'); assert.deepEqual(f.calls[0].body.values, body.values); assert.equal(f.calls[0].body.providerOrigin, provider().providerOrigin);
-  assert.equal(f.calls[0].url, provider().executorUrl); assert.equal(f.calls[0].init.redirect, 'error'); assert.match(f.calls[0].init.headers.Authorization, /^Bearer /);
+  assert.equal(f.calls[0].url, provider().executorUrl); assert.equal(f.calls[0].init.redirect, 'manual'); assert.match(f.calls[0].init.headers.Authorization, /^Bearer /);
   const raw = JSON.stringify(f.row()); for (const value of [ticket, body.values.email, body.values.password, 'must-not-store-response-secret', 'attacker.example']) assert.equal(raw.includes(value), false, value);
   const work = JSON.parse(f.row().payload); assert.equal(normalizeWorkJob(work), work); assert.equal(work.steps.length, 0); assert.equal(work.noahRegistration.verification, 'registration_agent_reported');
   assert.doesNotMatch(JSON.stringify(data), /synthetic-private|synthetic-user|requestDigest|providerDigest/);
@@ -61,7 +61,7 @@ void test('needs-user continues through status-only calls; completed report neve
   await f.get(body.id, ticket); assert.equal(f.calls.length, 1);
   f.advance(21000); f.state('completed'); const response = await f.get(body.id, ticket); const data = await response.json();
   assert.equal(f.calls.length, 2); assert.equal(f.calls[1].body.action, 'status'); assert.equal('values' in f.calls[1].body, false);
-  assert.equal(data.job.state, 'completed'); assert.equal(data.job.verificationUrl, null); assert.equal(data.job.returnTo, '/noah/launch?agent=agent-one#library');
+  assert.equal(data.job.state, 'completed'); assert.equal(data.job.verificationUrl, null); assert.equal(data.job.returnTo, '/noah/agents/agent-one');
   const job = JSON.parse(f.row().payload); assert.equal(job.status, 'review'); assert.equal(job.steps.length, 0);
   f.advance(6000); await f.get(body.id, ticket); assert.equal(f.calls.length, 2);
 });

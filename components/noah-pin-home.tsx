@@ -1,90 +1,60 @@
 'use client';
-/**
- * Noah のホーム（task 115。ピンタレスト風）。今動かせる Agent を、グリッドで眺めて、ボードへ保存する。
- * 並びはサーバーが決める（GET /api/noah/pins。学習なし）。上の帯の検索（?q=）は、取り込んだ一覧の語の検索（GET /api/noah/intake?q=）。
- * 一覧がまだ公開されていない間（入口が 404）は、fallback（今のタイムライン）を出す。審査者には、閉じていてもグリッドが出る。
- * 仕様: docs/noah/spec-115-pin-grid.md の 3 章。
- */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import Link from 'next/link';
-import { NOAH_PIN_TEXT, noahPinShape, noahPinTopic } from '@/lib/noah-pins';
-import NoahPinGrid, { type NoahPinView } from './noah-pin-grid';
+import { NOAH_COLLECTION_LABELS, NOAH_COLLECTION_SOURCES } from '@/lib/noah-collection';
+import NoahPinGrid, {type NoahPinView} from './noah-pin-grid';
+import NoahLoading from './noah-loading';
 import styles from './noah-pins.module.css';
-
-type Reply = { items?: NoahPinView[]; nextCursor?: string | null; ownerScope?: string | null; error?: string };
-type State = { key: string | null; status: 'loading' | 'ready' | 'closed' | 'error'; items: NoahPinView[]; cursor: string | null; ownerScope: string | null; more: boolean };
-
-/** 取り込んだ一覧の検索の 1 件を、グリッドの 1 枚にする（分野と形は、画面で決める。保存の印は、詳細で見る）。 */
-const fromSearch = (item: Omit<NoahPinView, 'topic' | 'shape' | 'savedIn'>): NoahPinView => ({ ...item, topic: noahPinTopic(item.name, item.summary), shape: noahPinShape(item.id), savedIn: [] });
-
-export default function NoahPinHome({ fallback }: { fallback: ReactNode }) {
-  const [query, setQuery] = useState<string | null>(null), [stored, setState] = useState<State>({ key: null, status: 'loading', items: [], cursor: null, ownerScope: null, more: false });
-  // 読んだ物は、どの検索の語の物かと一緒に持つ。語が変わったら、届くまでは「読み込み中」。
-  const state: State = stored.key === query ? stored : { key: query, status: 'loading', items: [], cursor: null, ownerScope: stored.ownerScope, more: false };
-  const sentinel = useRef<HTMLDivElement>(null), epoch = useRef(0);
-  useEffect(() => {
-    const read = () => setQuery(new URLSearchParams(window.location.search).get('q')?.trim().slice(0, 80) || '');
-    read();
-    window.addEventListener('popstate', read);
-    return () => window.removeEventListener('popstate', read);
-  }, []);
-  async function load(cursor: string | null) {
-    const url = query ? `/api/noah/intake?q=${encodeURIComponent(query)}${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}` : `/api/noah/pins${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`;
-    const response = await fetch(url, { cache: 'no-store' });
-    const body = await response.json() as Reply;
-    return { status: response.status, body: { ...body, items: query ? body.items?.map((item) => fromSearch(item)) : body.items } };
+type Page={items:NoahPinView[];nextCursor:string|null;ownerScope:string|null;total:number};
+export default function NoahPinHome({fallback,searchQuery='',initialSource='',onClearQuery}:{fallback?:ReactNode;searchQuery?:string;initialSource?:string;onClearQuery?:()=>void}) {
+  const [source,setSource]=useState(initialSource),[attempt,setAttempt]=useState(0);
+  const [state,setState]=useState<{key:string;page?:Page;error?:string;more?:boolean}>();
+  const key=new URLSearchParams({q:searchQuery,source,cursor:'0'}).toString(),current=state?.key===key?state:undefined;
+  const generation=useRef(0);
+  useEffect(()=>{
+    const version=++generation.current,controller=new AbortController();
+    void fetch(`/api/noah/discover?${key}`,{cache:'no-store',signal:controller.signal}).then(async r=>{
+      const page=await r.json() as Page & {error?:string};
+      if(!r.ok || !Array.isArray(page.items))throw Error(page.error??'一覧を読み込めませんでした。');
+      if(version===generation.current)setState({key,page});
+    }).catch(e=>{if(!controller.signal.aborted && version===generation.current)setState({key,error:e.message});});
+    return ()=>controller.abort();
+  },[key,attempt]);
+  useEffect(()=>{
+    const update=()=>{if(!document.hidden && (current?.page?.items.length??0)<=20)setAttempt(n=>n+1);};
+    const timer=setInterval(update,60_000);window.addEventListener('focus',update);
+    return ()=>{clearInterval(timer);window.removeEventListener('focus',update);};
+  },[current?.page?.items.length]);
+  async function more(){
+    if(!current?.page?.nextCursor || current.more)return;
+    const cursor=current.page.nextCursor,version=generation.current;
+    setState({...current,more:true,error:undefined});
+    try{
+      const params=new URLSearchParams(key);params.set('cursor',cursor);
+      const r=await fetch(`/api/noah/discover?${params}`,{cache:'no-store'}),page=await r.json() as Page & {error?:string};
+      if(!r.ok || !Array.isArray(page.items))throw Error(page.error??'続きを読み込めませんでした。');
+      if(version!==generation.current)return;
+      if(page.ownerScope!==current.page.ownerScope){setAttempt(n=>n+1);return;}
+      const known=new Set(current.page.items.map(i=>i.feedbackId??i.id));
+      setState({key,page:{...page,items:[...current.page.items,...page.items.filter(i=>!known.has(i.feedbackId??i.id))]}});
+    }catch(e){if(version===generation.current)setState({...current,error:e instanceof Error?e.message:'続きを読み込めませんでした。'});}
   }
-  useEffect(() => {
-    if (query === null) return;
-    const current = ++epoch.current, key = query;
-    const empty = { key, items: [], cursor: null, more: false };
-    void load(null).then(({ status, body }) => {
-      if (current !== epoch.current) return;
-      if (status === 404) { setState({ ...empty, status: 'closed', ownerScope: null }); return; }
-      if (status !== 200 || !Array.isArray(body.items)) { setState({ ...empty, status: 'error', ownerScope: null }); return; }
-      setState({ key, status: 'ready', items: body.items, cursor: body.nextCursor ?? null, ownerScope: body.ownerScope ?? null, more: false });
-    }).catch(() => { if (current === epoch.current) setState({ ...empty, status: 'error', ownerScope: null }); });
-    // 読み直すのは、検索の語が変わった時。
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
-  function more() {
-    if (state.status !== 'ready' || !state.cursor || state.more) return;
-    const current = epoch.current, cursor = state.cursor;
-    setState((old) => ({ ...old, more: true }));
-    void load(cursor).then(({ status, body }) => {
-      if (current !== epoch.current) return;
-      if (status !== 200 || !Array.isArray(body.items)) { setState((old) => ({ ...old, more: false, cursor: null })); return; }
-      const added = body.items;
-      setState((old) => ({ ...old, more: false, cursor: body.nextCursor ?? null, items: [...old.items, ...added.filter((item) => !old.items.some((seen) => seen.id === item.id))] }));
-    }).catch(() => { if (current === epoch.current) setState((old) => ({ ...old, more: false })); });
+  async function hide(id:string){
+    if(!current?.page)return;
+    const version=generation.current;
+    const r=await fetch('/api/noah/boards',{method:'POST',headers:{'Content-Type':'application/json','X-Rock-Owner-Scope':current.page.ownerScope??''},body:JSON.stringify({action:'hide',familyId:id})});
+    if(version!==generation.current)return;
+    if(r.ok)setState({...current,page:{...current.page,items:current.page.items.filter(i=>i.id!==id)}});
+    else setState({...current,error:'非表示にできませんでした。再試行してください。'});
   }
-  // 下まで来たら、続きを読む（見張りが使えない端末では、ボタンで）。
-  useEffect(() => {
-    const target = sentinel.current;
-    if (!target || typeof IntersectionObserver === 'undefined' || !state.cursor) return;
-    const observer = new IntersectionObserver((entries) => { if (entries.some((entry) => entry.isIntersecting)) more(); }, { rootMargin: '800px' });
-    observer.observe(target);
-    return () => observer.disconnect();
-    // 見張り直すのは、続きの印が変わった時。
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.cursor, state.more]);
-  async function hide(id: string) {
-    const response = await fetch('/api/noah/boards', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': state.ownerScope ?? '' }, body: JSON.stringify({ action: 'hide', familyId: id }) });
-    if (response.ok) setState((old) => ({ ...old, items: old.items.filter((item) => item.id !== id) }));
-  }
-
-  if (state.status === 'closed' && !query) return <>{fallback}</>;
-  const signedIn = state.ownerScope !== null;
-  return <main className={styles.home}>
-    <h1 className={styles.srOnly}>Noah</h1>
-    {query && <p className={styles.searchNote}>「{query}」の Agent <Link href="/noah">すべてに戻る</Link></p>}
-    {state.status === 'loading' && <p className={styles.status}><output>{NOAH_PIN_TEXT.more}</output></p>}
-    {state.status === 'closed' && <p className={styles.status}>{NOAH_PIN_TEXT.closed}</p>}
-    {state.status === 'error' && <p className={styles.status} role="alert">一覧を読めませんでした。少し後で開き直してください。</p>}
-    {state.status === 'ready' && (state.items.length === 0 ? <p className={styles.status}>{query ? '見つかりませんでした。別の語で探してください。' : NOAH_PIN_TEXT.empty}</p>
-      : <NoahPinGrid items={state.items} signedIn={signedIn} ownerScope={state.ownerScope}
-        onChange={(id, savedIn) => setState((old) => ({ ...old, items: old.items.map((item) => (item.id === id ? { ...item, savedIn } : item)) }))}
-        onHide={(id) => { void hide(id); }} />)}
-    {state.status === 'ready' && state.cursor && <div ref={sentinel} className={styles.moreRow}><button type="button" disabled={state.more} onClick={more}>{state.more ? NOAH_PIN_TEXT.more : '続きを読む'}</button></div>}
-  </main>;
+  return <section id="noah-collection" className={styles.home} aria-label="Agent一覧">
+    <div className={styles.feedHeading}><h2>Agentを見つける</h2>{current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}</div>
+    <div className={styles.filters} aria-label="Agentを絞り込む">{[['','すべて'],['noah','接続できる'],['discovered','新しく見つかった'],...NOAH_COLLECTION_SOURCES.map(s=>[s,NOAH_COLLECTION_LABELS[s]])].map(([value,label])=><button key={value} type="button" aria-pressed={source===value} onClick={()=>setSource(value)}>{label}</button>)}</div>
+    {(source || searchQuery && onClearQuery) && <button type="button" onClick={()=>{setSource('');onClearQuery?.();}}>検索条件をクリア</button>}
+    {!current && <div className={styles.status}><NoahLoading label="読み込んでいます…"/></div>}
+    {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
+    {current?.page?.items.length===0 && <p className={styles.status}>この条件のAgentはまだありません。</p>}
+    {current?.page && <NoahPinGrid items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
+    {current?.page?.nextCursor && <div className={styles.moreRow}><button type="button" disabled={current.more} onClick={()=>void more()}>{current.more?'読み込み中…':'もっと見る'}</button></div>}
+    {current?.error && !current.page && fallback}
+  </section>;
 }

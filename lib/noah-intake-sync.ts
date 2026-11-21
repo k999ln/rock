@@ -14,6 +14,8 @@ export type IntakeSource = {
 };
 export type IntakeDependencies = {
   db: IntakeDb; now?: () => number; fetcher?: typeof fetch; origin?: string;
+  /** Only user-initiated handshakes receive owner-specific credentials. Patrol never does. */
+  ownerFetch?: (owner:string,url:string)=>Promise<typeof fetch>;
   budget?: typeof NOAH_PATROL_BUDGET;
   /** 握手の前に、名前を引いた先のアドレスを確かめる差し込み口。Node で動かす時だけ渡す（Workers からは、内部のアドレスへ届かない。spec-86 の 4.4）。 */
   probeCheck?: (url: URL) => Promise<void>;

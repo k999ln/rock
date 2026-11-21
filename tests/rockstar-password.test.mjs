@@ -65,3 +65,24 @@ void test('CSRF, client-selected owner, weak passwords and duplicate handles fai
 void test('account revision fencing invalidates old password after passkey-side recovery',async t=>{
   const {sql,store}=fixture(t);const r=await signup(store);sql.exec('UPDATE rockstar_accounts SET revision=revision+1');await assert.rejects(store.authenticate(signed(r),now),/UNAUTHORIZED/);await assert.rejects(store.login(request(),{handle:'fixture_one',password:secret},null,now),/UNAUTHORIZED/);
 });
+
+void test('eight-character passwords work for signup, login and recovery with the same owner',async t=>{
+  const {store}=fixture(t), password='N0ah!8xy', replacement='New!8xyz';
+  const first=await store.enroll(request(),{mode:'signup',handle:'eight_char',password},null,now);
+  const owner=await store.authenticate(signed(first),now);
+  const login=await store.login(request(),{handle:'eight_char',password},null,now+1);
+  assert.equal(await store.authenticate(signed(login),now+1),owner);
+  const recovered=await store.enroll(request(),{mode:'recover',handle:'eight_char',password:replacement,recoveryCode:first.recoveryCode,confirmRevoke:true},null,now+2);
+  assert.equal(await store.authenticate(signed(recovered),now+2),owner);
+  await assert.rejects(store.authenticate(signed(login),now+2),/UNAUTHORIZED/);
+  await assert.rejects(store.login(request(),{handle:'eight_char',password},null,now+3),/UNAUTHORIZED/);
+  const next=await store.login(request(),{handle:'eight_char',password:replacement},null,now+4);
+  assert.equal(await store.authenticate(signed(next),now+4),owner);
+});
+void test('password length boundaries and obvious weak values are rejected before creating an account',async t=>{
+  const {sql,store}=fixture(t);
+  for(const password of ['N0ah!7x','x'.repeat(128)+'y','aaaaaaaa','password','12345678','123456789','qwertyui']) {
+    await assert.rejects(store.enroll(request(),{mode:'signup',handle:'boundary',password},null,now),/PASSWORD_INVALID/);
+  }
+  assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM rockstar_accounts').get().n,0);
+});

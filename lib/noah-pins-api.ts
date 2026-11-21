@@ -22,7 +22,7 @@ const json = (data: unknown, status = 200) => Response.json(data, { status, head
 function failure(error: unknown) {
   if (error instanceof NoahAgentError) return json({ error: error.message }, error.status);
   if (error instanceof SyntaxError) return json({ error: '入力形式を確認してください。' }, 400);
-  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'サインインしてください。' }, 401);
+  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
   if (error instanceof Error && error.message === 'ORIGIN') return json({ error: '同じNoahから操作してください。' }, 403);
   return json({ error: '一覧を確認できません。少し待ってから再試行してください。' }, 503);
 }
@@ -72,18 +72,18 @@ export function createNoahBoardsApi(deps: PinsApiDependencies) {
         const id = url.searchParams.get('id'), pin = url.searchParams.get('pin');
         // 詳細の「保存」の印: その Agent を、本人のどのボードに保存しているか。
         if (pin !== null) {
-          if (!owner) return json({ error: 'サインインしてください。' }, 401);
+          if (!owner) return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
           const [found] = await store.pins([familyIdOf(pin)], owner);
-          return json({ savedIn: found?.savedIn ?? [], ownerScope });
+          return json({ savedIn: found?.savedIn ?? [], feedbackId: (found as {feedbackId?:string}|undefined)?.feedbackId, ownerScope });
         }
         // 公開のボードは、未サインインでも読める。
         if (id !== null) return json({ ...await store.board(boardIdOf(id), owner, url.searchParams.get('cursor')), ownerScope });
-        if (!owner) return json({ error: 'サインインしてください。' }, 401);
+        if (!owner) return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
         return json({ ...await store.boards(owner), ownerScope });
       }
       if (request.headers.get('origin') !== url.origin) return json({ error: '同じNoahから操作してください。' }, 403);
       if (!request.headers.get('content-type')?.startsWith('application/json')) return json({ error: 'JSONで操作してください。' }, 415);
-      if (!owner) return json({ error: 'サインインしてください。' }, 401);
+      if (!owner) return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
       if (request.headers.get(OWNER_SCOPE_HEADER) !== ownerScope) return json({ error: 'アカウントが変わりました。再読込してください。' }, 409);
       const input: unknown = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await boundedNoahBody(request, 4_096)));
       if (!input || typeof input !== 'object' || Array.isArray(input)) throw new NoahAgentError('入力形式を確認してください。');

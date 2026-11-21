@@ -29,7 +29,7 @@ export default function NoahSaveRefactor() {
     } catch (e) { setOperationError(e instanceof Error ? e.message : '操作できません。'); }
     finally { setPending(''); }
   }
-  return <div className={ui.surface}><main className={`${styles.page} ${ui.content}`}><header><Link href="/noah/agents">← Noah</Link><h1>保存時リファクタ</h1><p>VS Codeで保存したコードを、Aiderが整理して保存します。</p></header>
+  return <div className={ui.surface}><main className={`${styles.page} ${ui.content}`}><header><Link href="/noah/explore">← Noah</Link><h1>保存時リファクタ</h1><p>VS Codeで保存したコードを、Aiderが整理して保存します。</p></header>
     <section className={styles.notice}><h2>使い始める</h2><ol><li><Link href="/noah/agents/research-ce4e58553bea6313acf7">Aiderの詳細</Link>で「接続する」を押します。</li><li>VS CodeにNoah拡張を入れ、対象コードを開いて「Noah: このファイルを保存時リファクタに接続」を実行します。</li><li>対応する .test.mjs を選び、この画面で「運用開始」を押します。</li></ol><p>最初の対応範囲は、外部依存なしの小さいJS/TSファイルとNodeテスト1つです。構文・TypeScriptの型・指定テストを検証します。元コードが失敗する場合や編集中の場合は反映しません。Mac・Noah・VS Codeの起動が必要です。</p></section>
     {operationError && <p role="alert" className={styles.error}>{operationError}</p>}
     {error && <p role="alert" className={styles.error}>{error}</p>}

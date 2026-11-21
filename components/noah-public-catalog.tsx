@@ -4,16 +4,16 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Bot, House, Laptop, Search, X } from 'lucide-react';
-import { COWAGENT_GUIDE_PATH } from '@/lib/noah-public-guide';
 import { researchKindLabels, type ResearchPage } from '@/lib/noah-research-types';
 import { noahActionHref } from '@/lib/noah-surface';
 import { webBrandIcon } from '@/lib/web-brand';
 import styles from './noah-timeline.module.css';
 import NoahCollectionFeed from './noah-collection-feed';
 
-export default function NoahPublicCatalog({ basePath = '/noah', embedded = false }: { basePath?: string; embedded?: boolean }) {
+export default function NoahPublicCatalog({ basePath = '/noah', embedded = false, initialQuery = '', onQueryChange }: { basePath?: string; embedded?: boolean; initialQuery?: string; onQueryChange?: (query:string)=>void }) {
   const incoming = useSearchParams();
-  const [query, setQuery] = useState(() => (incoming.get('collectionQuery') ?? '').slice(0, 200)), [kind, setKind] = useState('all');
+  const [query, setQuery] = useState(() => (initialQuery || incoming.get('collectionQuery') || '').slice(0, 200)), [kind, setKind] = useState('all');
+  useEffect(()=>{onQueryChange?.(query);},[query,onQueryChange]);
   const [result, setResult] = useState<{ key: string; page: ResearchPage | null; error: string } | null>(null);
   const [moreKey, setMoreKey] = useState(''), [attempt, setAttempt] = useState(0);
   const search = useRef<HTMLInputElement>(null), sentinel = useRef<HTMLDivElement>(null);
@@ -60,18 +60,15 @@ export default function NoahPublicCatalog({ basePath = '/noah', embedded = false
           <button onClick={() => search.current?.focus()}><Search size={25} /><span>検索</span></button>
           <a href={noahActionHref('public', basePath, 'library')}><Laptop size={25} /><span>自分のAgent</span></a>
         </nav>
-        <a className={styles.addButton} href={noahActionHref('public', basePath, 'register')}>MacでAgentを追加</a>
-        <p className={styles.researchNote}>追加・接続・仕事の実行は、Noahを起動したMacで利用できます。</p>
+        <a className={styles.addButton} href={noahActionHref('public', basePath, 'register')}>Agentを追加</a>
+        <p className={styles.researchNote}>紹介情報と実行対応のAgentを区別しています。</p>
       </div></aside>
       <main className={styles.feed}>
-        <header className={styles.feedHeader}><div className={styles.titleRow}><h1>Noah</h1><span>Agentが集まる場所</span></div></header>
+        <header className={styles.feedHeader}><div className={styles.titleRow}><h1>Agentを探す</h1><span>Agentが集まる場所</span></div></header>
         <section className={styles.discovery} aria-label="Agentを探す">
           <div className={styles.searchRow}><Search size={22} /><input ref={search} aria-label="Agentを検索" placeholder="どんな仕事を任せたい？" maxLength={200} value={query} onChange={e => setQuery(e.target.value)} />{query && <button aria-label="検索をクリア" onClick={() => setQuery('')}><X size={18} /></button>}</div>
           <div className={styles.filters} aria-label="分類で絞り込む">{[['all', 'すべて'], ['agent', 'Agent本体候補'], ['candidate', '分類確認待ち'], ['related', 'Tool・モデル等']].map(([value, label]) => <button key={value} aria-pressed={kind === value} className={kind === value ? styles.selectedFilter : ''} onClick={() => setKind(value)}>{label}</button>)}</div>
         </section>
-        {embedded && basePath === '/noah' && (
-          <p className={styles.researchNote}><Link href={COWAGENT_GUIDE_PATH}>CowAgentをMacで試す準備を見る</Link></p>
-        )}
         <NoahCollectionFeed searchQuery={query} onClearQuery={() => setQuery('')} />
         <div className={styles.feedLabel}><span>世界のAgentを見つける</span>{page && <span className={styles.resultCount}>{page.total.toLocaleString('ja-JP')}件</span>}</div>
         {page && <p className={styles.researchNote}>調査日 {page.asOf} · Agent候補と関連資産を含みます。掲載数は実行対応数ではありません。</p>}
@@ -92,7 +89,7 @@ export default function NoahPublicCatalog({ basePath = '/noah', embedded = false
       </main>
       <aside className={styles.rightRail}><div className={styles.rightInner}>
         <section className={styles.sidePanel}><h2>探す、選ぶ、使う。</h2><p>できることや配布元を見て、自分に合ったAgentを見つけよう。</p><Link className={styles.moreLink} href={`${basePath}/agents/anicca`}>Aniccaを見る <ArrowRight size={15} /></Link></section>
-        <section className={styles.sidePanel}><h2>MacのNoahへ</h2><p>接続・実行・停止は、起動中のMacのNoahで。スマホからMacを操作する接続は準備中です。</p><a className={styles.libraryLink} href={noahActionHref('public', basePath, 'library')}><Laptop size={20} />このMacのNoahを開く</a></section>
+
         <div className={styles.sideFooter}>Noah · avokado</div>
       </div></aside>
     </div>

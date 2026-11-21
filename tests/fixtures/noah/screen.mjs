@@ -1,12 +1,18 @@
+import * as collection from '../../../lib/noah-collection.ts';
+import * as importParts from '../../../lib/noah-intake-import-parts.ts';
+import * as operationLabels from '../../../lib/noah-operation-labels.ts';
 // 画面の部品（components/*.tsx）を、ブラウザなしで動かす台。
 // 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
 import * as pins from '../../../lib/noah-pins.ts';
-import * as collection from '../../../lib/noah-collection.ts';
-import * as importParts from '../../../lib/noah-intake-import-parts.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
+import { noahTranslate } from '../../../lib/noah-i18n.ts';
+import * as resultPresentation from '../../../lib/noah-result-presentation.ts';
+import * as resultMedia from '../../../lib/noah-result-media.ts';
+import * as workView from '../../../lib/noah-work-view.ts';
+import * as profileContract from '../../../lib/noah-profile-contract.ts';
 
 const ROOT = new URL('../../../', import.meta.url);
 const Fragment = Symbol('Fragment');
@@ -49,13 +55,14 @@ export function screen(options = {}) {
     // React と同じく、deps が変わらない間は、前の値を返す（deps を渡さない時は、毎回作り直す）。
     useCallback(fn, deps) { return memo(() => fn, deps); },
     useMemo(make, deps) { return memo(make, deps); },
+    useSyncExternalStore: (_subscribe,get)=>get(),
     useId: () => 'id',
     createContext: (value) => ({ Provider: Fragment, value }),
     useContext: (held) => held.value,
   };
 
   const context = createContext({
-    console, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
+    console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
     Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
     crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
     fetch: async (url, init = {}) => {
@@ -75,13 +82,15 @@ export function screen(options = {}) {
     cancelAnimationFrame: (id) => { timers.delete(id); },
   });
   // 画面が裏の間は読み直さない、の試験のため（試験が、hidden を書き換える）。
-  if (options.document) context.document = options.document;
+  context.document = { hidden:false, addEventListener(){}, removeEventListener(){}, ...options.document };
+  if(options.document)context.document=Object.assign(options.document,{addEventListener:options.document.addEventListener??(()=>{}),removeEventListener:options.document.removeEventListener??(()=>{})});
   context.window = {
     sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, String(value)); }, removeItem: (key) => { storage.delete(key); } },
     location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: options.search ?? '', origin: 'https://noah.test' },
     addEventListener() {}, removeEventListener() {},
     // 画面の幅（頼んだ画面の幅の区分に使う）。既定は、スマホの幅。
     innerWidth: options.width ?? 390,
+    setTimeout: context.setTimeout, clearTimeout: context.clearTimeout,
   };
 
   const loaded = new Map();
@@ -100,6 +109,15 @@ export function screen(options = {}) {
       if (options.modules?.[id]) return options.modules[id];
       if (id === '@/lib/noah-collection') return collection;
       if (id === 'next/navigation') return { useSearchParams: () => new URLSearchParams(options.search ?? '') };
+      if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
+      if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
+      if(id==='@/lib/noah-operation-labels')return operationLabels;
+      if(id==='@/lib/noah-work-view')return workView;
+      if(id==='@/lib/noah-result-presentation')return resultPresentation;
+      if(id==='@/lib/noah-result-media')return resultMedia;
+      if(id==='@/components/noah-work-page')return load('components/noah-work-page.tsx');
+      if(id==='@/lib/noah-profile-contract')return profileContract;
+      if (id === '@/lib/noah-haptics') return load('lib/noah-haptics.ts');
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
       if (id === '@/lib/noah-intake-import-parts') return importParts;
