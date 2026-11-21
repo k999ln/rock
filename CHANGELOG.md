@@ -1,6 +1,6 @@
 ## 2026-11-21
 
-- Noah の公開先 `https://avoado.si/noah` に向け、公開originの正規化・ローカル設定拒否・画面とAPIの読み取り確認を追加（[PR #358](https://github.com/k999ln/rock/pull/358)、task97）。本番は旧版で新しい画面/APIが404、接続表なし。最新版の公開用保存版を準備し、migration 0044〜0049の適用と配備は本人確認待ち。認証付きAgentの接続は継続実装。
+- Noah の公開先 `https://avoado.si/noah` に向け、公開originの正規化・ローカル設定拒否・画面とAPIの読み取り確認を追加（[PR #358](https://github.com/k999ln/rock/pull/358)、task97）。本番は旧版で新しい画面/APIが404、接続表なし。公開用のSites保存版152を作成し（未配備）、migration 0044〜0049の適用と配備は本人確認待ち。認証付きAgentの接続は継続実装。
 
 - スマホでつなぐ Agent（台帳の Agent）の一覧のカードと詳細に、利用人数（「n 人が利用」。接続して頼み、成果が出た人を 1 人 1 回）を出した（Opus / Noelle。本人の回答「スマホの Agent に利用人数を出す」。[PR #356](https://github.com/k999ln/rock/pull/356)、task74）。Codex の利用人数（Mac の Agent）とは別の集まりなので混ぜない。migration なし、D1 への往復は一覧で増やさない。
 
