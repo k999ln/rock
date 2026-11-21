@@ -9,7 +9,7 @@ type Loaded = { profile: NoahProfile; etag: string | null };
 function bad(message:string,status=400):never { throw new NoahAgentError(message,status); }
 const encoder = new TextEncoder();
 const controls=(s:string,allowNewline=false)=>Array.from(s).some(c=>{const n=c.charCodeAt(0);return n===127||(n<32&&!(allowNewline&&[9,10,13].includes(n)));});
-export const toBase64 = (bytes: Uint8Array): string => { let s = ''; for (const b of bytes) s += String.fromCharCode(b); return btoa(s); };
+export const toBase64 = (bytes: Uint8Array): string => { const chunks:string[]=[];for(let i=0;i<bytes.length;i+=32768)chunks.push(String.fromCharCode(...bytes.subarray(i,i+32768)));return btoa(chunks.join('')); };
 export const fromBase64 = (s: string) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 export function profileKeys(raw?: string): ProfileKeys | null {
   try {

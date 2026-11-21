@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { noahHaptic } from '@/lib/noah-haptics';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { PROFILE_CONSENT_VERSION, type NoahProfileView } from '@/lib/noah-profile-contract';
 export function useNoahProfile(expectedOwner?:string|null){
@@ -27,7 +28,7 @@ export function useNoahProfile(expectedOwner?:string|null){
       if(current!==epoch.current)return null;
       if(!response.ok){if(response.status===401||response.status===409)setProfile(null);throw Error(data.error??'保存できませんでした。');}
       if(data.ownerScope!==profile.ownerScope){setProfile(null);throw Error('アカウントが変わりました。');}
-      setProfile(data);return data;
+      setProfile(data);noahHaptic('success');return data;
     }catch(e){if(current===epoch.current)setError(e instanceof Error?e.message:'接続を確認してください。');return null;}
     finally{lock.current=false;if(current===epoch.current)setBusy(false);}
   }

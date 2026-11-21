@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import NoahLoading from './noah-loading';
+import { noahHaptic } from '@/lib/noah-haptics';
 import Link from 'next/link';
 import { Bot, ArrowRight, LockKeyhole } from 'lucide-react';
 import { useNoahProfile } from './use-noah-profile';
@@ -18,6 +19,7 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
   const [values, setValues] = useState<Record<string, string>>({}), [review, setReview] = useState(false), [consent, setConsent] = useState(false), [terms, setTerms] = useState(false);
   const [job, setJob] = useState<RegistrationStatus | null>(null), [pending, setPending] = useState<Pending | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState(''), [reload, setReload] = useState(0);
   const active = useRef({ generation: 0, mounted: false, busy: false });
+  const celebrated=useRef(''),observedPending=useRef('');
   const statusBudget = useRef({ id: '', reads: 0 });
   const provider = providers?.find(p => p.id === selected), generation = active.current.generation;
   const reusable=provider?.fields.filter(f=>vault.profile?.reuseEnabled && f.profileField && f.type!=='password' && (f.profileField==='identityDocument'?vault.profile?.documents.length:profileField(f.profileField)&&vault.profile?.fields[f.profileField]) && !excluded.includes(f.key)).map(f=>f.key)??[];
@@ -69,6 +71,8 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
       if (!active.current.mounted || current !== active.current.generation) return;
       if (!response.ok || !data.job) throw Error(data.error ?? '受付結果が不明です。登録し直さず、状況を確認してください。');
       setJob(data.job);
+      if(data.job.state==='running'||data.job.state==='needs_user')observedPending.current=data.job.id;
+      if(data.job.state==='completed'&&(start||observedPending.current===data.job.id)&&celebrated.current!==data.job.id){celebrated.current=data.job.id;noahHaptic('success');}
     } catch (e) {
       if (active.current.mounted && current === active.current.generation) { setValues({}); setConsent(false); setTerms(false); setReview(false); setError(e instanceof Error ? e.message : '結果を確認できません。同じ仕事の状況を確認してください。'); }
     } finally { if (active.current.mounted && current === active.current.generation) { active.current.busy = false; setBusy(false); } }
@@ -135,7 +139,7 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
         <button type="button" disabled={busy} onClick={() => { setReview(false); setConsent(false); setTerms(false); }}>入力内容を修正する</button>
       </section>}
       <p className={styles.hint}>{review&&saveNext&&vault.profile?.available?PROFILE_CONSENT_TEXT:null}</p>
-      <button className={styles.primary} type="submit" disabled={busy || (review && (!consent || !terms))}>{busy ? '依頼しています…' : review ? '同意して、この内容で登録' : '内容を確認する'}<ArrowRight size={17} /></button>
+      <button className={styles.primary} type="submit" disabled={busy || (review && (!consent || !terms))}>{busy ? <NoahLoading compact label="依頼しています…"/> : review ? '同意して、この内容で登録' : '内容を確認する'}<ArrowRight size={17} /></button>
     </form>}
     <p className={styles.footnote}>このブラウザで登録の仕事を確認できます。保存・引き継ぎ機能を使うためのNoahアカウントとは別の手続きです。</p><Link href="/noah#timeline">タイムラインへ戻る</Link>
   </main>;

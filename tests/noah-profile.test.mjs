@@ -94,3 +94,24 @@ void test('save consent is atomic, versioned and required; reuse stop works even
  const stopped=await f.api.collection(await f.request({action:'reuse',revision:2,enabled:false,consentVersion:PROFILE_CONSENT_VERSION}));assert.equal(stopped.status,200);const end=await stopped.json();assert.equal(end.reuseEnabled,false);assert.equal(end.consents.length,129);assert.equal(end.fields.email,'a@example.test');
  await assert.rejects(()=>resolve(r,providers()[0],{revision:end.revision,fields:['contact']}),{status:403});await assert.rejects(()=>pending.beforeSend(),{status:409});
 });
+
+void test('profile screen persists through the API, records consent and keeps file selection mounted',async()=>{
+ const {screen}=await import('./fixtures/noah/screen.mjs');
+ const ownerIntent=await import('../lib/owner-intent.ts');
+ const f=fixture(),listeners=new Set(),document={hidden:false,addEventListener(_name,fn){listeners.add(fn);},removeEventListener(_name,fn){listeners.delete(fn);}};
+ const ui=screen({document,modules:{'@/lib/owner-intent':ownerIntent},fetch:async r=>{
+  if(r.url==='/api/noah/profile'){const response=await f.api.collection(await f.request(r.body));return {status:response.status,body:await response.json()};}
+  if(r.url.startsWith('/api/noah/intake'))return {body:{items:[]}};
+  if(r.url.startsWith('/api/noah/registration'))return {body:{providers:[]}};
+  throw Error('Unexpected request');
+ }});
+ const page=ui.mount('components/noah-profile.tsx');await page.flush();
+ assert.doesNotMatch(page.text(),/再利用は停止中|再利用を再開/);
+ const name=page.find('label').find(n=>page.text(n)==='氏名');await page.change(page.nodes(name).find(n=>n.type==='input'),'Synthetic profile');
+ await page.submit(page.find('form')[0]);assert.match(page.text(),/保存済み/);const persisted=(await f.store.load('alice')).profile;assert.equal(persisted.fields.name,'Synthetic profile');assert.equal(persisted.consents.length,1);
+ const picker=page.find('input').find(n=>n.props.type==='file');await page.press(picker);document.hidden=true;listeners.forEach(fn=>fn());await page.flush();assert.equal(page.find('input').filter(n=>n.props.type==='file').length,1,'file chooser must not unmount during background transition');
+ document.hidden=false;listeners.forEach(fn=>fn());await page.flush();assert.match(page.text(),/Synthetic profile|保存済み/);
+ await page.click('再利用を停止');assert.equal((await f.store.load('alice')).profile.reuseEnabled,false);
+});
+
+void test('a maximum-size identity file survives the encrypted round trip',async()=>{const f=fixture(),bytes=new Uint8Array(5*1024*1024);bytes.set(new TextEncoder().encode('%PDF-1.7\n'));bytes[bytes.length-1]=255;const p=await f.store.addDocument('alice',0,'synthetic.pdf','application/pdf',bytes,PROFILE_CONSENT_VERSION);assert.deepEqual((await f.store.document('alice',p.documents[0].id)).bytes,bytes);});

@@ -1,18 +1,19 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, ShieldCheck, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, Trash2 } from 'lucide-react';
 import { NOAH_PROFILE_FIELDS, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, type NoahProfileView, type ProfileField, type DelegationMode } from '@/lib/noah-profile-contract';
 import { useNoahProfile } from './use-noah-profile';
 import styles from './noah-profile.module.css';
 import NoahProfileReadiness from './noah-profile-readiness';
+import NoahLoading from './noah-loading';
 export const delegationLabels:Record<DelegationMode,string>={allow:'任せる',confirm:'確認して実行',deny:'任せない'};
 export default function NoahProfile(){
   const state=useNoahProfile();
   return <main className={styles.page}>
     <Link href="/noah" className={styles.back}><ArrowLeft size={17}/> タイムライン</Link>
-    <header className={styles.heading}><span className={styles.eyebrow}>YOUR NOAH</span><h1>あなたの準備、<br/>一度で。</h1><p>登録情報と、Agentに任せる範囲。</p></header>
-    {state.guest?<div className={styles.empty}><Fingerprint size={32}/><h2>次のAgentでも、入力は少なく。</h2><p>保存すると、必要な項目だけ使い回せます。</p><Link className={styles.primary} href="/noah/account?returnTo=%2Fnoah%2Fprofile">サインインして保存する <ArrowUpRight size={17}/></Link></div>:state.profile?<ProfileEditor key={state.profile.ownerScope} profile={state.profile} busy={state.busy} save={state.save} beginFileSelection={state.beginFileSelection} endFileSelection={state.endFileSelection} cancelFileSelection={state.cancelFileSelection}/>:!state.error?<output>保存情報を読み込んでいます…</output>:null}
+    <header className={styles.heading}><h1>登録情報</h1><p>一度保存して、必要な項目だけ再利用。</p></header>
+    {state.guest?<div className={styles.empty}><Fingerprint size={32}/><h2>次のAgentでも、入力は少なく。</h2><p>保存すると、必要な項目だけ使い回せます。</p><Link className={styles.primary} href="/noah/account?returnTo=%2Fnoah%2Fprofile">サインインして保存する <ArrowUpRight size={17}/></Link></div>:state.profile?<ProfileEditor key={state.profile.ownerScope} profile={state.profile} busy={state.busy} save={state.save} beginFileSelection={state.beginFileSelection} endFileSelection={state.endFileSelection} cancelFileSelection={state.cancelFileSelection}/>:!state.error?<NoahLoading label="保存情報を読み込んでいます…"/>:null}
     {state.error&&<div role="alert" className={styles.error}>{state.error}<button type="button" onClick={()=>void state.reload()}>読み直す</button></div>}
   </main>;
 }
@@ -22,7 +23,7 @@ function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,ca
   useEffect(()=>{const input=fileInput.current;input?.addEventListener('cancel',cancelFileSelection);return()=>input?.removeEventListener('cancel',cancelFileSelection);},[cancelFileSelection]);
   const groups=[...new Set(Object.values(NOAH_PROFILE_FIELDS).map(f=>f.group))];
   return <>
-    <div className={styles.privacy}><ShieldCheck size={18}/><span>本人だけの保存情報。渡す先と項目は、その都度確認。</span></div>
+
     {!profile.available&&<output>保存機能は準備中です。</output>}
     <form onSubmit={async e=>{e.preventDefault();const result=await save({action:'fields',fields,consentVersion:PROFILE_CONSENT_VERSION,reuse:profile.consents.length===0||profile.reuseEnabled});if(result)setNotice('保存済み');}}>
       <div className={styles.groups}>{groups.map(group=>{
@@ -36,10 +37,10 @@ function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,ca
           </div>}
         </details>;
       })}</div>
-      <p className={styles.consent}>{profile.consents.length===0||profile.reuseEnabled?PROFILE_CONSENT_TEXT:'入力した情報を暗号化して保存します。再利用は停止したままです。'}</p><div className={styles.actions}><button className={styles.primary} disabled={busy||!profile.available}>{busy?'保存中…':<><Check size={17}/> 同意して保存</>}</button>{notice&&<output>{notice}</output>}</div>
+      <p className={styles.consent}>{profile.consents.length===0||profile.reuseEnabled?PROFILE_CONSENT_TEXT:'入力した情報を暗号化して保存します。再利用は停止したままです。'}</p><div className={styles.actions}><button className={styles.primary} disabled={busy||!profile.available}>{busy?<NoahLoading compact label="保存中…"/>:<><Check size={17}/> 同意して保存</>}</button>{notice&&<output>{notice}</output>}</div>
     </form>
-    <div className={styles.reuseControl}><span>{profile.reuseEnabled?'登録情報を再利用できます':'登録情報の再利用は停止中'}</span><button type="button" disabled={busy||!profile.available} onClick={()=>void save({action:'reuse',enabled:!profile.reuseEnabled,consentVersion:PROFILE_CONSENT_VERSION})}>{profile.reuseEnabled?'再利用を停止':'同意して再利用を再開'}</button></div>
-    {!profile.reuseEnabled&&<p className={styles.consent}>{PROFILE_CONSENT_TEXT}</p>}
+    {profile.consents.length>0&&<div className={styles.reuseControl}><span>{profile.reuseEnabled?'登録情報を再利用できます':'登録情報の再利用は停止中'}</span><button type="button" disabled={busy||!profile.available} onClick={()=>void save({action:'reuse',enabled:!profile.reuseEnabled,consentVersion:PROFILE_CONSENT_VERSION})}>{profile.reuseEnabled?'再利用を停止':'同意して再利用を再開'}</button></div>}
+    {profile.consents.length>0&&!profile.reuseEnabled&&<p className={styles.consent}>{PROFILE_CONSENT_TEXT}</p>}
     <NoahProfileReadiness profile={profile}/>
     {profile.consents.length>0&&<details className={styles.receipts}><summary>保存・再利用の記録</summary>{[...profile.consents].reverse().map((c,i)=><p key={`${c.at}:${i}`}>{new Date(c.at).toLocaleString('ja-JP')} · {c.action==='save'?'保存への同意':c.action==='reuse-stop'?'再利用を停止':'再利用を再開'}<small>{c.fields.map(k=>NOAH_PROFILE_FIELDS[k].label).join('・')}{c.documents.length?`・書類${c.documents.length}件`:''} · 説明 {c.version}</small></p>)}</details>}
     <section className={styles.delegations}><div className={styles.sectionTitle}><div><span className={styles.eyebrow}>YOU’RE IN CONTROL</span><h2>任せる範囲</h2></div><button type="button" className={styles.pause} disabled={busy||!profile.available} onClick={()=>void save({action:'pause',paused:!profile.paused})}>{profile.paused?<Play size={16}/>:<Pause size={16}/>} {profile.paused?'再開する':'すべて停止'}</button></div>
