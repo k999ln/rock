@@ -6,7 +6,7 @@ import { parseArgs } from 'node:util';
 import { gzipSync, gunzipSync } from 'node:zlib';
 import { DatabaseSync } from 'node:sqlite';
 import { collectionSignature } from '../lib/noah-collection.ts';
-import { NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYTES } from '../lib/noah-collector-checkpoint.ts';
+import { NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYTES, NOAH_CHECKPOINT_CHUNK_CHARS, checkpointChunkHash } from '../lib/noah-collector-checkpoint.ts';
 import { createCollectorNetwork } from './noah-collector-network.mjs';
 import { runCollector } from './noah-agent-collector.mjs';
 import { publishCollection } from './noah-collector-publish.mjs';
@@ -27,7 +27,7 @@ async function boundedResponse(response) {
 export function checkpointClient({ origin, key, fetcher, now = Date.now }) {
   const target = new URL(origin);
   if (target.protocol !== 'https:' || target.username || target.password || target.pathname !== '/' || target.search || target.hash || !key || key.length < 32) throw Error('cloud_configuration');
-  return async (value, { allowMissing = false } = {}) => {
+  const request = async (value, { allowMissing = false } = {}) => {
     const body = JSON.stringify(value), time = String(now());
     if (Buffer.byteLength(body) > NOAH_CHECKPOINT_BYTES) throw Error('cloud_checkpoint_too_large');
     const response = await fetcher(new URL(NOAH_CHECKPOINT_PATH, target), { method: 'POST', redirect: 'manual', body, signal: AbortSignal.timeout(60_000),
@@ -35,6 +35,30 @@ export function checkpointClient({ origin, key, fetcher, now = Date.now }) {
     if (response.status === 404 && allowMissing) { await response.body?.cancel(); return null; }
     if (!response.ok) { await response.body?.cancel(); throw Error(`cloud_checkpoint_http_${response.status}`); }
     return boundedResponse(response);
+  };
+  return async (value, options) => {
+    if (value.action === 'write' && value.checkpoint?.sqliteGzip?.length > NOAH_CHECKPOINT_CHUNK_CHARS) {
+      const { sqliteGzip, ...metadata } = value.checkpoint, chunks = [];
+      if (Math.ceil(sqliteGzip.length / NOAH_CHECKPOINT_CHUNK_CHARS) > 128) throw Error('cloud_checkpoint_too_large');
+      for (let offset = 0; offset < sqliteGzip.length; offset += NOAH_CHECKPOINT_CHUNK_CHARS) {
+        const data = sqliteGzip.slice(offset, offset + NOAH_CHECKPOINT_CHUNK_CHARS), hash = await checkpointChunkHash(data);
+        await request({ action: 'write_chunk', hash, data }); chunks.push(hash);
+      }
+      return request({ ...value, checkpoint: { ...metadata, schema: 'noah-collector-checkpoint/2', chunks } }, options);
+    }
+    const result = await request(value, options);
+    if (value.action === 'read' && result?.checkpoint?.schema === 'noah-collector-checkpoint/2') {
+      const { chunks, ...metadata } = result.checkpoint;
+      if (!Array.isArray(chunks) || !chunks.length || chunks.length > 128) throw Error('cloud_checkpoint_invalid');
+      const parts = [];
+      for (const hash of chunks) {
+        const part = await request({ action: 'read_chunk', hash });
+        if (typeof part.data !== 'string' || part.data.length > NOAH_CHECKPOINT_CHUNK_CHARS || await checkpointChunkHash(part.data) !== hash) throw Error('cloud_checkpoint_invalid');
+        parts.push(part.data);
+      }
+      result.checkpoint = { ...metadata, schema: 'noah-collector-checkpoint/1', sqliteGzip: parts.join('') };
+    }
+    return result;
   };
 }
 export function validateCollectorDatabase(path, now = Date.now()) {

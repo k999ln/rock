@@ -5,7 +5,7 @@
 - Noaがつなぐもの: 既存 `noah-intake-store` と `noah-discovery-store`。公式MCP台帳は全件と差分、GitHub・Hugging Faceは既存の最新検索窓を使う（全件収集とは呼ばない）。
 - AMCの工程: 1. 出所ごとの期限を確認 2. 上限内で取得 3. 既存の名寄せ 4. MCPの握手 5. 状態と掲載用ファイルを保存 6. 設定済みのNoahへ署名付きで掲載。各段の結果を数で記録する。
 - Jevの合格条件: 再起動後の頁位置保持、同じDBの多重起動拒否、429の待機、接続先の内部IP拒否、道具呼出0回、候補と接続確認済みの別集計、既存取込APIで読める出力を自動試験する。
-- 出力先: 収集機のSQLiteとJSON、Noahの `/noah/agents` にある「新しく見つかったAgent」。接続確認済みの取込ファイルは既存 `/noah/review/intake` でも使える。
+- 出力先: 収集機のSQLiteとJSON、Noahトップ `/noah` と `/noah/agents` にある「新しく見つかったAgent」。接続確認済みの取込ファイルは既存 `/noah/review/intake` でも使える。
 - Wallet: 新しい課金型なし。MCP・GitHub・Hugging Faceは公開APIを読む。Xは運営が用意したAPIキーと利用枠で読む（新規契約・購入は行わない）。提供者の道具・登録・課金は実行しない。
 - hardware profile 依存: 運営のNode実行環境。利用者のスマホ・画面は操作しない。
 - 失敗時: 出所ごとの待ち時間と頁位置を保存し、次の巡回で再開。停止時は現在の保存を終えて終了。ファイルは一時ファイルから置換し、途中のJSONを見せない。
@@ -41,7 +41,7 @@ GitHub ActionsのLinux runnerで5分ごとに期限を確認し、同じ収集�
 合格条件: Mac常駐停止後にクラウド実行が2回成功し、同じcheckpointの続きから収集して公開APIの確認日時が進むこと。失敗した出所の再試行時刻と候補を維持すること。クラウドの同時実行を1つに制限すること。XのAPIキー未設定は引き続き未稼働として表示する。新しい本番D1 migrationは行わない。
 
 - Workflow: `.github/workflows/noah-agent-collection.yml`。既定branch mainだけ、`ubuntu-latest`、実行上限8分、同時実行1つ。Gitの権限はread-only。Actions secretに `NOAH_COLLECTION_KEY`（Sitesと同じ値）と任意の `NOAH_X_BEARER_TOKEN` を設定する。secretは収集stepだけに渡す。
-- チェックポイント: `POST /api/noah/collection/checkpoint`。認証付きread/write、R2キー固定、16MiBの要求上限、256MiBの復元上限。ETagが変わっていたら保存も掲載も拒否。停止したSQLiteだけを保存し、署名付き非公開状態の復元が失敗したら収集を開始しない。新規導入はMac常駐停止後に `scripts/noah-cloud-collector.mjs --dir <空の作業先> --origin https://avoado.si --bootstrap <停止した台帳の保存先>` で1回だけ行う。既存checkpointは上書きしない。
+- チェックポイント: `POST /api/noah/collection/checkpoint`。認証付きread/write、R2キー固定、1要求16MiB以下、256MiBの復元上限。大きな台帳は3MiBのbase64断片をhash付きで送り、全断片を保存してからETag付きmanifestを置換する。復元時にもhashを照合し、途中失敗で前回の台帳を失わない。現行manifestが参照していない2時間以上前の断片は、保存成功後に最大1,000件ずつ回収する。ETagが変わっていたら保存も掲載も拒否。停止したSQLiteだけを保存し、署名付き非公開状態の復元が失敗したら収集を開始しない。新規導入はMac常駐停止後に `scripts/noah-cloud-collector.mjs --dir <空の作業先> --origin https://avoado.si --bootstrap <停止した台帳の保存先>` で1回だけ行う。既存checkpointは上書きしない。
 - 診断/停止: GitHub Actionsの「Noah cloud Agent collection」で結果を読む。公開するログは件数・出所の状態・実行IDのみ。workflowをDisableすると定期収集が止まり、R2の台帳と掲載は残る。復旧はEnable後にRun workflow。
 - GitHubの[定期実行](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)は混雑時に遅延する。公開repoで60日活動がないと自動無効化されるため、[状態確認と再有効化](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)を運用に含める。Macを起動して再開する設計には戻さない。
 

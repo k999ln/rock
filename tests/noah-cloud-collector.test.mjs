@@ -5,7 +5,7 @@ import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { createCollectorCheckpointApi, NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYTES } from '../lib/noah-collector-checkpoint.ts';
+import { createCollectorCheckpointApi, NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYTES, NOAH_CHECKPOINT_CHUNK_CHARS, checkpointChunkHash } from '../lib/noah-collector-checkpoint.ts';
 import { collectionSignature } from '../lib/noah-collection.ts';
 import { createCollectionApi } from '../lib/noah-collection-api.ts';
 import { openCollectorStore, writeCollectorJson } from '../scripts/noah-collector-store.mjs';
@@ -120,4 +120,47 @@ void test('cloud workflow uses hosted runners, only the canonical branch, read-o
   assert.match(workflow, /contents: read/); assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /group: noah-agent-collection-production/); assert.match(workflow, /cancel-in-progress: false/);
   assert.doesNotMatch(workflow, /self-hosted|upload-artifact|actions\/cache|pull_request_target/);
+});
+
+void test('large checkpoints use bounded immutable chunks and a failed upload never replaces committed progress', async () => {
+  const store = bucket(); let clock = NOW;
+  const api = createCollectorCheckpointApi({ bucket: store, key, now: () => clock });
+  const calls = [];
+  const request = checkpointClient({ origin: 'https://avoado.si', key, now: () => clock, fetcher: (url, init) => {
+    assert.ok(Buffer.byteLength(init.body) < NOAH_CHECKPOINT_CHUNK_CHARS + 1024);
+    calls.push(JSON.parse(init.body).action); return api(new Request(url, init));
+  } });
+  const checkpoint = { ...sample(NOW), sqliteGzip: gzipSync(randomBytes(13 * 1024 * 1024)).toString('base64') };
+  assert.ok(checkpoint.sqliteGzip.length > NOAH_CHECKPOINT_BYTES);
+  const saved = await request({ action: 'write', etag: null, checkpoint });
+  assert.deepEqual((await request({ action: 'read' })).checkpoint, checkpoint);
+  const manifest = await (await post(api, { action: 'read' })).json();
+  assert.equal(manifest.checkpoint.schema, 'noah-collector-checkpoint/2');
+  assert.equal('sqliteGzip' in manifest.checkpoint, false);
+  assert.ok(calls.filter(action => action === 'write_chunk').length > 5);
+  const changed = { ...manifest.checkpoint, updatedAt: ++clock, chunks: ['a'.repeat(64)] };
+  assert.equal((await post(api, { action: 'write', etag: saved.etag, checkpoint: changed }, { time: clock })).status, 409);
+  assert.deepEqual((await request({ action: 'read' })).checkpoint, checkpoint);
+  assert.equal((await post(api, { action: 'write_chunk', hash: 'a'.repeat(64), data: 'aaaa' }, { time: clock })).status, 400);
+  const firstPath = 'noah/collector/v2/chunks/' + manifest.checkpoint.chunks[0];
+  store.rows.get(firstPath).body = JSON.stringify({ data: 'aaaa' });
+  await assert.rejects(() => request({ action: 'read' }), /cloud_checkpoint_invalid/);
+});
+
+void test('checkpoint cleanup retains committed chunks and recent uploads, and cleanup errors do not undo a commit', async () => {
+  const store = bucket(), data = 'aaaa', hash = await checkpointChunkHash(data);
+  const prefix = 'noah/collector/v2/chunks/', removed = [];
+  store.list = async () => ({ objects: [
+    { key: prefix + hash, uploaded: new Date(NOW - 8_000_000) },
+    { key: prefix + 'old', uploaded: new Date(NOW - 8_000_000) },
+    { key: prefix + 'recent', uploaded: new Date(NOW - 1000) },
+  ] });
+  store.delete = async paths => { removed.push(...paths); };
+  const api = createCollectorCheckpointApi({ bucket: store, key, now: () => NOW });
+  await post(api, { action: 'write_chunk', hash, data });
+  const value = { schema: 'noah-collector-checkpoint/2', updatedAt: NOW - 1, runId: '123', chunks: [hash] };
+  const saved = await (await post(api, { action: 'write', etag: null, checkpoint: value })).json();
+  assert.deepEqual(removed, [prefix + 'old']);
+  store.list = async () => { throw Error('unavailable'); };
+  assert.equal((await post(api, { action: 'write', etag: saved.etag, checkpoint: { ...value, updatedAt: NOW } })).status, 200);
 });
