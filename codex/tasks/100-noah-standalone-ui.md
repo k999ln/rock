@@ -156,3 +156,6 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 最終 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` はexit0。ルート4,844 pass・4 skip（計4,848）、API1,918 assertions、CSV385 assertions、型/lint/本番build/資産検査を含め成功。初回の別worktree node_modules参照と不足したMini依存を独立配置で修復し、旧ラベルを期待していた2試験を新表示へ更新。CLI時間切れ2件は再検査成功。テスト削除や例外化なし。最終ログ `/tmp/noah-four-final-verify.log`。
 
 この記録は公開サイトをIABの390px/320pxで確認したもの。Android本体、写真アプリ内の保存完了、振動体感の独立確認は受入チャットで別途進行中であり、ここで実機合格とはしない。
+
+
+2026-11-22 実機再確認（PR #377）: 本人の解除回答を受けてPixel 10のWi-Fiミラーへ再接続したが、最新の画面は時計と鍵マークのまま。USBを抜いてもテスト中の表示を保つため、所有するscrcpyプロセスへ `--keep-active` を追加し、端末のAwakeを確認。既存の消灯時間設定2147483647は変更していない。画面ロックや本人確認を解除する処理は追加せず、Pixel本体でNoahを開くよう本人へ依頼。登録・Agent実行・成果受取の新しい実機証拠はまだない。
