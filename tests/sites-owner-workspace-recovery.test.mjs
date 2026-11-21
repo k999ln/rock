@@ -101,7 +101,7 @@ void test('a partial unrecorded recovery and two owners replay without replacing
   const run = () => migrate(drizzle(db), { migrationsFolder: folder.pathname });
   await run(); await run();
   assert.deepEqual((await db.prepare('SELECT * FROM eve_conversations ORDER BY owner_id').all()).results, before);
-  assert.equal((await db.prepare('SELECT COUNT(*) n FROM __drizzle_migrations').first()).n, 24);
+  assert.equal((await db.prepare('SELECT COUNT(*) n FROM __drizzle_migrations').first()).n, 25);
   assert.equal((await db.prepare('SELECT COUNT(*) n FROM eve_runtime_presence').first()).n,0);
 });
 
