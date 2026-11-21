@@ -112,6 +112,7 @@ Dock: Launch Servicesの起動先 `work/noah-standalone/native-package-final/Noa
 ローカル検証: 最終関連56試験、typecheck、lint成功。390px/320pxとアラビア語RTLで横はみ出しなし。検証用PNGを実ブラウザから保存し、元の191,359bytesとSHA256一致。これは写真アプリへの実機保存の確認ではない。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 全工程成功（ルート4,809成功・4 skip、計4,813。production build・仕事API1,918 assertions・CSV385 assertions等を含む）。ローカルproductionの8ルート/8共通ヘッダーもPASS。成果改善の追加公開は配備担当へ引継ぎ、公開後に独立確認する。
 
 
+<<<<<<< HEAD
 ### 2026-11-22: eSIMから本人を引き継ぐ（PR #377）
 
 本人訂正「esimにすんのにそれ以上会員もクソもない」により、Noahの入口を接続確認へ変更。`GET /api/noah/session` が既存の本人認証を観測し、確認済みなら元Agentへ戻る。新規Noah ID作成は表示せず、既存ログインは補助導線に保持。接続確認は再読込・前面復帰・15秒タイムアウトに対応し、未設定/未接続/障害を区別。
@@ -124,3 +125,6 @@ eSIMの明示的な `noah` scopeを接続・外部登録・登録情報・依頼
 公開167の受領（2026-11-22、PR #377）: source `787a2102c5c96e507bb2f9f8700af9aa0e926bfe`、deployment `appgdep_6b01ed1ab6748191aa5ceab9d71b1d47`、env15。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 全工程成功（4,829 pass・4 skip・0 fail、計4,833、仕事API1,918 assertions、CSV385 assertions）。初回は旧ログイン文言の期待1件が失敗し、接続確認への変更と元成果へのreturnToを検証する形へ修正後に全体を再実行。
 
 公開Chromeの390pxで新規フォーム0・横幅390px内、未設定表示、再確認、折り畳まれた既存ログインへの遷移、新規登録タブなしを確認。認証済みIABでは接続確認から元のwhoami成果へ自動復帰。公開9項目と未認証のsession API 401 / connected:false / esimConfigured:falseも確認。これらは公開Webと既存アカウントの受入で、実eSIMの発行・新しい端末への本人情報引継ぎの合格ではない。実eSIM設定・別利用者の本番一周・実機画像保存が残る。
+=======
+2026-11-22 タブのロゴ修正（PR #376）: Noah配下のfaviconを白背景付きcompany-mark.pngからbrand/noah-icon-transparent.svgへ変更。正式ロゴの形状は維持。公開反映は配備担当と統合して確認する。
+>>>>>>> d3646297a
