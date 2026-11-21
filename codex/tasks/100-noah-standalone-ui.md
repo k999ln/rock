@@ -68,3 +68,18 @@ CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/no
 検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` exit 0。ルート4,778成功・4 skip（計4,782）、package・build・API・設計・その他の検査成功。最初の全体実行中に既存Eveブラウザ起動timeoutが1件発生したが、単独2試験と全体再実行で成功。追補の20試験・typecheck・lint:product成功。合成の2登録先HTTPで保存情報の再利用と停止後の送信拒否、5MiBファイル往復、所有者分離、改ざん、同時更新、同意の一体保存を確認。ローカルproduction8ルート/8ヘッダーを実測しdata/web-security-response-current.json更新。`npm run noah:check:domain` 成功。
 
 再開: [PR #371](https://github.com/k999ln/rock/pull/371) は #358 上のdraft。外部登録先の実行環境・運営キー・本人確認handoffが未接続で、本番の自動登録は未完了。指定調査台帳303件は実行可能件数ではない。Browser Use/Skyvernは候補でruntime/integration未試験。対応登録先が未設定の間は登録ボタンを表示しない。実機の振動体感・別利用者の本番受入は未検証。
+
+
+## 2026-11-22 自作登録実行基盤・Dock入口（PR #373）
+
+本人の「自分のとこで開発したものを使う」に合わせ、Browser Use Cloudへの接続をやめ、Noah所有の専用Worker・分離Chromium・スマホ本人確認を実装。登録先固定のフォーム手順、HMAC、操作番号、仕事単位の排他、期限/取消、結果不明時の再実行禁止を設けた。鍵は本人別の暗号化R2へ保存し、接続時に許可した送信先へだけ注入する。ブラウザには画面と状態だけを返し、外部の本人照会が通るまで完了にしない。Agentboardの公式API登録も同じ入口に接続。`NOAH_PROFILE_KEYS` は維持。
+
+公開161: Sites source `0c04c6fa4debe3f4c8fd24eeef421fefc2e13a29`、saved version `appgver_05cd23fbc0b081918f3059e5e88b5d2e`、deployment `appgdep_6b01d301fa9081919ba4d130f0c7509f` が succeeded。環境revision15。別作業の公開160（CowAgentガイド）を保全して統合。`NOAH_REGISTRATION_NATIVE=agentboard` と登録用秘密、独立ブラウザのURL/共有秘密を設定。実行器のCloudflare version `00497509-070c-4713-903e-734dde890936`。既存D1へのmigrationなし。実行器用の新規Durable Objectsには仕事メタデータだけを保存する。
+
+検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` exit 0（ルート4,790成功・4skip、ビルド、仕事API1,918 assertions、CSV385 assertions、残りの検査も成功）。登録関連28試験、実行器7試験、型/lint成功。初回のSPIDER上限失敗は新サービスの依存物が未追跡として列挙されたためで、専用.gitignoreの追加後に単独4試験と全体を再実行して成功。テスト削除なし。実際のクラウドChromiumで合成フォーム入力→本人確認待ち→390×640画面→クリック→完了、未確認時の停止、重複操作409、終了を実測。再接続でviewportが初期値へ戻る問題を修正。これは外部登録をしない内部fixtureの受入。
+
+公開確認: `npm run noah:check:domain` は9項目成功（一覧172件、匿名の私有APIは401）。登録先一覧200、匿名browser API401。390pxで入力→送信先/内容/規約の確認、未同意時の登録ボタン無効、横はみ出しなしを確認。入力した合成名は送信せず画面移動で破棄。未ログインのタイムラインには投稿APIのサインイン要求が「一部取得失敗」と表示される既存残件があり、未解消。
+
+Dock: Launch Servicesの起動先 `work/noah-standalone/native-package-final/Noah.app` が旧Mac実行器だったため、元bundleを `work/noah-dock-backups/Noah-before-web-20261122-022613.zip` に保存し、`scripts/noah-web-app/NoahWebApp.swift` で入口を更新。Swiftビルド・ad-hoc署名の検査に成功。同じアプリの起動後、Chromeが `https://avoado.si/noah` を表示し、新しい端末認証タブを開かないことを確認。旧実行器・仕事・端末セッションは変更なし。一般配布用の公証済みアプリではない。
+
+未完了: 実在Agentboardアカウントの作成と成果受取までの本番一周、ブラウザ登録先ごとの手順/本人照会の受入、OAuth更新や書類提出の個別対応、100人向け容量。`NOAH_BROWSER_RECIPES=[]`、10ブラウザ分/UTC日（4+4+2分）の受入予算であり、全サービス対応/100人対応とは扱わない。実機スマホでの外部本人確認・振動体感も未検証。再開は `npm ci --prefix services/noah-registration-browser`、`npm --prefix services/noah-registration-browser test`、[運用手順](../../services/noah-registration-browser/README.md)。PRは #371 上の差分でmain未統合。
