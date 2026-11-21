@@ -25,12 +25,20 @@ function listing(row: Row, restore = false) {
   return noahListing({ source: row.source, familyId: row.id, candidateState: row.state, withdrawn: !restore && row.withdrawn_at !== null, hidden: row.hidden_at !== null,
     check: row.mouth ? { mouth: row.mouth, setup: !!row.setup, auth: row.auth, result: row.result, level: row.check_level, formTools: row.form_tools, oneTapTools: row.one_tap_tools } : null });
 }
-function item(row: Row, signedIn: boolean) {
+/**
+ * 利用人数: その系列へ、スマホから接続して頼み、成果が出た人の数（1 人 1 回。切った接続の分も数える）。
+ * 本人の決め（2026-11-21。docs/structure/07）。Codex の「利用人数」（Mac で動かした人）とは、別の Agent の集まり。
+ * 依頼の表を、接続の持ち主ごとの索引（noah_asks_owner）で引くので、読む行は、その系列を使った人の依頼の数まで。
+ */
+const USERS = (families: number) => `SELECT c.family_key AS family,COUNT(DISTINCT c.owner_id) AS users FROM noah_connections c
+ WHERE c.family_key IN (${Array.from({ length: families }, () => '?').join(',')})
+ AND EXISTS (SELECT 1 FROM noah_asks a WHERE a.owner_id=c.owner_id AND a.connection_id=c.id AND a.state='succeeded') GROUP BY c.family_key`;
+function item(row: Row, signedIn: boolean, users = 0) {
   const req = row.connect_json ? parseNoahConnect(JSON.parse(row.connect_json)) : null;
   // 計画の API（lib/noah-connect-plan-api.ts）と同じ関数で計算する（一覧の印と、詳細の印が、ずれない）。
   const plan = req ? planNoahConnection(req, noahLaunchPlanState({ signedIn, connectSha256: row.connect_sha256!, level: row.check_level, consentedSha256: null })) : null;
   return { id: row.id, name: row.name, provider: row.external_key.split('/')[0], summary: row.summary, host: row.host,
-    section: row.level === 2 ? 'ran' : 'new', tools: row.tool_count ?? 0, oneTap: (row.one_tap_tools ?? 0) > 0, checkedAt: row.checked_at,
+    section: row.level === 2 ? 'ran' : 'new', tools: row.tool_count ?? 0, oneTap: (row.one_tap_tools ?? 0) > 0, checkedAt: row.checked_at, users,
     connect: { badge: plan?.badge ?? 'blocked', taps: plan?.cost.taps ?? 0, typed: plan?.cost.typed ?? 0, place: plan?.place ?? null,
       placeLabel: noahPlaceLabel(plan?.place ?? null, row.host),
       need: plan?.need ?? (req ? null : '接続先を確認できません。'), level: row.check_level ?? 0, price: { model: 'free' }, note: null } };
@@ -75,9 +83,12 @@ export function createIntakeStore(deps: IntakeDependencies) {
       ids = ids.slice(0, 20);
     }
     if (params.get('limit') === '0') ids = [];
-    const rows = ids.length ? (await db.prepare(`${ROW} WHERE f.id IN (${ids.map(() => '?').join(',')})`).bind(...ids.map(r => r.id)).all<Row>()).results : [];
-    const byId = new Map(rows.map(r => [r.id, r]));
-    return { items: ids.flatMap(({ id }) => { const row = byId.get(id); return row && listing(row).listed ? [item(row, !!owner)] : []; }), nextCursor: params.get('limit') === '0' ? null : nextCursor, counts: await counts(), source: 'Official MCP Registry' };
+    // 行と利用人数を、1 回の batch で読む（D1 への往復を増やさない）。
+    const keys = ids.map(r => r.id);
+    const [rows, used] = keys.length ? (await db.batch([db.prepare(`${ROW} WHERE f.id IN (${keys.map(() => '?').join(',')})`).bind(...keys), db.prepare(USERS(keys.length)).bind(...keys)]))
+      .map((result) => result.results) as [Row[], { family: string; users: number }[]] : [[], []];
+    const byId = new Map(rows.map(r => [r.id, r])), users = new Map(used.map(r => [r.family, r.users]));
+    return { items: ids.flatMap(({ id }) => { const row = byId.get(id); return row && listing(row).listed ? [item(row, !!owner, users.get(id) ?? 0)] : []; }), nextCursor: params.get('limit') === '0' ? null : nextCursor, counts: await counts(), source: 'Official MCP Registry' };
   }
   async function detail(id: string, owner: string | null, reviewer: boolean) {
     const row = await db.prepare(`${ROW} WHERE f.id=?`).bind(id).first<Row>();
@@ -88,7 +99,8 @@ export function createIntakeStore(deps: IntakeDependencies) {
     if (!row || (!reviewer && !listed && !connection)) throw new NoahAgentError('Agentが見つかりません。', 404);
     let website: string | null = null;
     try { const record = JSON.parse(row.record_json) as { websiteUrl?: string }; if (record.websiteUrl) website = noahPublicHttpsUrl(record.websiteUrl, 'website').href; } catch { /* Untrusted informational link. */ }
-    return { ...item(row, !!owner), listed, members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection: connection ? { ...connection } : null };
+    const used = await db.prepare(USERS(1)).bind(id).first<{ users: number }>();
+    return { ...item(row, !!owner, used?.users ?? 0), listed, members: row.members, revision: row.revision, website, repository: row.repository, sourceUpdatedAt: row.source_updated_at, connection: connection ? { ...connection } : null };
   }
   async function status(params = new URLSearchParams()): Promise<IntakeStatus> {
     const mouth = params.get('mouth') ?? '', level = params.get('level') ?? '', q = (params.get('q') ?? '').trim(), offsetText = params.get('offset') ?? '0';

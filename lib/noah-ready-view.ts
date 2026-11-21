@@ -10,6 +10,8 @@
 export type NoahReadyItem = {
   id: string; name: string; provider: string; summary: string; host: string | null;
   section: 'ran' | 'new'; tools: number; oneTap: boolean; checkedAt: number | null;
+  /** 利用人数（スマホから接続して、成果が出た人。1 人 1 回）。 */
+  users: number;
   connect: {
     badge: 'one_click' | 'taps' | 'setup' | 'unverified' | 'blocked'; taps: number; typed: number;
     place: string | null; placeLabel: string | null; need: string | null; level: number;
@@ -145,4 +147,9 @@ export function noahConnectionStateText(state: string): string {
   if (PREPARING.includes(state)) return NOAH_READY_TEXT.preparing;
   if (state === 'failed') return 'つながっていません。';
   return '使えません。';
+}
+
+/** 利用人数の文（0 人の時は出さない）。 */
+export function noahUsersText(users: number): string | null {
+  return Number.isSafeInteger(users) && users > 0 ? `${users.toLocaleString('ja-JP')} 人が利用` : null;
 }
