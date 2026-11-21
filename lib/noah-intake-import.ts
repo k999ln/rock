@@ -10,6 +10,8 @@
  * - 手元の「動いた」（L2）は、本番の「人が動かした」ではないので、1 に落として入れる。本番で人が動かした（L2）系列は、道具の一覧が同じ間、L2 のまま。
  * - 取り下げ・隠した印・つないでいる人の数は、本番の値を残す（上書きしない）。
  */
+import { splitNoahIntakeImport, NOAH_INTAKE_IMPORT_LIMITS } from './noah-intake-import-parts.ts';
+export { NOAH_INTAKE_IMPORT_LIMITS } from './noah-intake-import-parts.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
@@ -18,7 +20,6 @@ import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 
 export const NOAH_INTAKE_IMPORT_SCHEMA = 'noah-intake-import/1';
 /** 1 回の要求で入れる系列の数と、本文の大きさ。 */
-export const NOAH_INTAKE_IMPORT_LIMITS = { families: 60, candidates: 240, bytes: 1_048_576 } as const;
 
 const CANDIDATE_COLUMNS = ['id', 'source', 'external_key', 'family_id', 'group_key', 'name', 'summary', 'summary_ja', 'repository', 'host', 'record_sha256', 'record_json', 'state', 'reason', 'running', 'likes', 'source_updated_at', 'first_seen_at', 'changed_at', 'seen_at', 'revision'] as const;
 const CHECK_COLUMNS = ['candidate_id', 'mouth', 'surface', 'auth', 'connect_json', 'connect_sha256', 'setup', 'oauth_json', 'tools_sha256', 'tool_count', 'read_only', 'form_tools', 'one_tap_tools', 'level', 'result', 'latency_ms', 'sample_json', 'checked_at', 'l1_at', 'l2_at', 'next_check_at', 'failures', 'first_failure_at'] as const;
@@ -70,26 +71,7 @@ export async function noahIntakeExport(db: Pick<IntakeDb, 'prepare'>, now: numbe
 
 /** 書き出した物を、要求 1 回ずつの大きさに分ける（系列ごとに、その候補と握手の行を一緒に）。 */
 export function noahIntakeImportParts(all: NoahIntakeImportPart): NoahIntakeImportPart[] {
-  const byFamily = new Map<string, Row[]>();
-  for (const candidate of all.candidates) { const key = String(candidate.family_id); byFamily.set(key, [...(byFamily.get(key) ?? []), candidate]); }
-  const checks = new Map(all.checks.map((row) => [String(row.candidate_id), row]));
-  const parts: NoahIntakeImportPart[] = [];
-  let current: NoahIntakeImportPart = { schema: NOAH_INTAKE_IMPORT_SCHEMA, exportedAt: all.exportedAt, families: [], candidates: [], checks: [] };
-  for (const family of all.families) {
-    const members = byFamily.get(String(family.id)) ?? [];
-    if (current.families.length >= NOAH_INTAKE_IMPORT_LIMITS.families || current.candidates.length + members.length > NOAH_INTAKE_IMPORT_LIMITS.candidates) {
-      if (current.families.length) parts.push(current);
-      current = { schema: NOAH_INTAKE_IMPORT_SCHEMA, exportedAt: all.exportedAt, families: [], candidates: [], checks: [] };
-    }
-    current.families.push(family);
-    for (const member of members.slice(0, NOAH_INTAKE_IMPORT_LIMITS.candidates)) {
-      current.candidates.push(member);
-      const check = checks.get(String(member.id));
-      if (check) current.checks.push(check);
-    }
-  }
-  if (current.families.length) parts.push(current);
-  return parts;
+  return splitNoahIntakeImport(all);
 }
 
 const fail = (message: string): never => { throw new NoahAgentError(`取り込みの結果: ${message}`); };

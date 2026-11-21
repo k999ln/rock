@@ -8,6 +8,7 @@ import { researchKindLabels, type ResearchPage } from '@/lib/noah-research-types
 import { noahActionHref } from '@/lib/noah-surface';
 import { webBrandIcon } from '@/lib/web-brand';
 import styles from './noah-timeline.module.css';
+import NoahCollectionFeed from './noah-collection-feed';
 
 export default function NoahPublicCatalog({ basePath = '/noah', embedded = false }: { basePath?: string; embedded?: boolean }) {
   const [query, setQuery] = useState(''), [kind, setKind] = useState('all');
@@ -69,6 +70,7 @@ export default function NoahPublicCatalog({ basePath = '/noah', embedded = false
         {embedded && basePath === '/noah' && (
           <p className={styles.researchNote}><Link href={COWAGENT_GUIDE_PATH}>CowAgentをMacで試す準備を見る</Link></p>
         )}
+        <NoahCollectionFeed />
         <div className={styles.feedLabel}><span>世界のAgentを見つける</span>{page && <span className={styles.resultCount}>{page.total.toLocaleString('ja-JP')}件</span>}</div>
         {page && <p className={styles.researchNote}>調査日 {page.asOf} · Agent候補と関連資産を含みます。掲載数は実行対応数ではありません。</p>}
         {loading && <output className={styles.loading}>カタログを読み込んでいます…</output>}
