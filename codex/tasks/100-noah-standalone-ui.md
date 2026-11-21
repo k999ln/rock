@@ -2,7 +2,7 @@
 
 本人指示: 「noah単体のサービス作る」。共通基盤を再利用し「Noah専用の画面・導線にする」を選択。「デザインは紫を基調」。
 
-正本: docs/structure/04-eve-noa-amc-sky.md、docs/services/noah-standalone-launch.md の専用フロント節。
+正本: docs/structure/00-overview.md §0、docs/structure/04-eve-noa-amc-sky.md、docs/services/noah-standalone-launch.md の専用フロント節。Noah全体とスマホ向け開発は docs/noah-design.md、docs/noah-detailed-design.md、docs/noah/mvp-launch.md と各仕様書の「ローンチの範囲」に従う。
 
 ## 範囲
 
@@ -63,3 +63,7 @@ CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/no
 2026-11-21の追加調査: HVMCの公式活動に加えNN/gの利用者調査とGOV.UKの調査手順を参照し、比較・連絡・段取りの手間→訴求→成果→操作→受入を正本に記録。一般化はサロン外の初見利用者でも別に確かめる。配布文は原稿のみ。Web実行・実provider・依頼の全経路保持は残件。
 
 検証（登録UX・調査追補）: 全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 終了0。4,546成功・4 skip（計4,550）、Work API1,918、CSV385。最後の投稿ボタン重なり修正後、typecheck/lint、登録API/UI・端末UI・timelineの34件、build、bundle/asset closureを再確認して成功。390px/1360pxの架空provider画面で入力→確認→編集と横はみ出しなし、未同意時の送信無効、投稿ボタン非表示を確認。実登録のPOSTは行っていない。ローカル証跡: work/noah-standalone/registration-ux-mobile.jpg、device-signin-mobile.jpg、registration-ux-verify.log。本番変更なし。PR #337。
+
+2026-11-21の設計照合: main `b58f6d8c0` の目的・優先3点・全体設計 §12・MVP §13と再開手順を取り込んだ。本人Mac契約とスマホMVPの範囲を明記し、先行体験を教育/暮らしとL1〜L9へ戻した。連絡文生成の独自優先・スマホ実行を新規検討候補とする記述を訂正。調査は用途選びと操作観察の補足。既存の登録なし閲覧/登録支援は保持し、匿名実行・実登録先・L4〜L9の受入は完了扱いにしない。今回の差分は文書のみ。PR #337。
+
+検証（設計照合）: `npm run design:check` と `git diff --check` 成功。同期した4文書はmain `b58f6d8c0` と一致し、対象文書のローカルリンク切れ0。今回の差分は文書のみで、全体verifyの直近成功は上記のコード変更時の結果。L4〜L9や外部登録の実受入を追加したものではない。
