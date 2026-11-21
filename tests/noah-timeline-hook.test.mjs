@@ -28,7 +28,7 @@ const catalog=async url=>Response.json(url.startsWith('/api/noah/feedback?')?{en
 void test('all feed fetches no news, excludes community posts and gives followed posts priority',async t=>{
   const h=harness(catalog,async()=>({posts:[post('ordinary'),post('follow',true),post('private-group',true,{id:'group'})],cursor:null}));t.after(()=>h.close());await h.flush();
   // 棚（/api/noah/shelf）も 1 回読む。棚の形でない応答からは、何も足さない。
-  assert.equal(h.calls.length,4);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')||u.startsWith('/api/noah/feedback?')||u==='/api/noah/shelf'));
+  assert.equal(h.calls.length,5);assert.ok(h.calls.every(u=>u.startsWith('/api/noah/public-catalog?')||u.startsWith('/api/sky/social?')||u.startsWith('/api/noah/feedback?')||u==='/api/noah/shelf'||u.startsWith('/api/noah/intake?')));
   assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['post:follow','post:ordinary','agent:agent']);
 });
 void test('shelf cards flow into the all feed after the Agent of each round; a closed shelf adds nothing and is not an error',async t=>{
@@ -48,6 +48,15 @@ void test('Agent filter does not request social feed and an obsolete all-feed re
 void test('failed social feed leaves real Agent results and a retryable error',async t=>{
   const h=harness(catalog,async()=>{throw Error('offline');});t.after(()=>h.close());await h.flush();
   assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['agent:agent']);assert.match(h.result.data.errors[0],/投稿：offline/);assert.equal(h.result.loading,false);
+});
+
+void test('a guest can browse public Agents without a sign-in error; permission and server failures remain visible',async t=>{
+  for(const status of [401,403,503]) {
+    const h=harness(catalog,async()=>{throw Object.assign(Error('account feed'),{status});});t.after(()=>h.close());await h.flush();
+    assert.deepEqual(Array.from(h.result.data.items,i=>i.key),['agent:agent']);
+    assert.equal(h.result.data.errors.length,status===401?0:1);
+    assert.equal(h.result.data.social,undefined);
+  }
 });
 
 void test('public Agent comments join the personal timeline without needing a social profile',async t=>{

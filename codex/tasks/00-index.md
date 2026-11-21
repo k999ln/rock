@@ -61,7 +61,7 @@
 
 | 70 | [70-noah-route-unification.md](70-noah-route-unification.md) | 旧画面とNoahの統合・404修正 | ✅ 公開版149・Eveヘッダー確認済み・[PR #320](https://github.com/k999ln/rock/pull/320) |
 
-| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・本人Macの仕事詳細・配布Runnerの受入 ✅ [PR #366](https://github.com/k999ln/rock/pull/366)・CowAgent検索流入ガイドの実装とローカル確認 ✅ [PR #369](https://github.com/k999ln/rock/pull/369)・本番通し/別Mac未確認 |
+| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・OS独立UI/専用認証・公開版156・172件取込・本番読み取り専用1件の成果受領✅ [PR #358](https://github.com/k999ln/rock/pull/358)・本人Macの仕事詳細・配布Runner受入✅ [PR #366](https://github.com/k999ln/rock/pull/366)・CowAgent検索流入ガイドの実装とローカル確認 ✅ [PR #369](https://github.com/k999ln/rock/pull/369)・外部登録/別利用者/実スマホ/別Mac未確認 |
 
 | 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | ✅ [PR #321](https://github.com/k999ln/rock/pull/321)・[PR #325](https://github.com/k999ln/rock/pull/325) |
 | 73 | [73-current-product-consolidation.md](73-current-product-consolidation.md) | 機能を保った重複・類似処理と現行説明の統合 | ✅ [PR #326](https://github.com/k999ln/rock/pull/326)・[PR #362](https://github.com/k999ln/rock/pull/362) |
@@ -86,7 +86,7 @@
 | 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | ✅ L7（見回りを保つ）実装・手元の受入 [PR #345](https://github.com/k999ln/rock/pull/345)（L6 の #344 を base、未マージ。本番への適用なし）: 止まった依頼と接続の後始末・道具を呼ぶ直前の「相手へ送る」の印・つながると確かめた数・索引を足す migration 0049。自動の見本（`probeL2`・`noahSampleCalls`）は作っていない（出した後） |
 | 1 | — | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package）。今ある Mac の隔離環境で | |
 | 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | ✅ L9（受入）の自動の試験と、手元での表の通し [PR #347](https://github.com/k999ln/rock/pull/347)（L8 の #346 を base、未マージ。**本番での確かめは、まだ**）: 一周の自動試験 `tests/noah-phone-loop.test.mjs`、画面の決まりを一周の全部の段で見る試験、実機の表の手元の結果（`spec-90` の 9.4）。表の通しで見つけた所を 1 つ直した（切った後も、Agent の詳細の「仕事」に成果を出す。`GET /api/noah/ask?agent=`）。残り: 本番で、スマホだけで、表の 1〜13（本人の許可の後） |
-| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8（出すための運用）実装 [PR #346](https://github.com/k999ln/rock/pull/346)（L7 の #345 を base、未マージ。**本番への配備・適用・切り替えなし**）: 運営の画面の「見張る数」（`lib/noah-launch-status.ts`）、`/noah/help` の `#bot` の節（`lib/noah-bot-notice.ts`。宛先 D8 は 2026-11-21 に本人が smash@avoado.si と決め、[PR #350](https://github.com/k999ln/rock/pull/350) で入れた）、専用の Worker の手順書（`services/noah-patrol-wake/README.md`）、試験 `tests/noah-launch-ops.test.mjs`（切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録・適用する物の形）。残り: 本番での G4〜G6 の確かめ（L9・本人の許可の後） |
+| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8（出すための運用）実装 [PR #346](https://github.com/k999ln/rock/pull/346)（L7 の #345 を base、未マージ。**本番への配備・適用・切り替えなし**）: 運営の画面の「見張る数」（`lib/noah-launch-status.ts`）、`/noah/help` の `#bot` の節（`lib/noah-bot-notice.ts`。宛先 D8 は 2026-11-21 に本人が smash@avoado.si と決め、[PR #350](https://github.com/k999ln/rock/pull/350) で入れた）、専用の Worker の手順書（`services/noah-patrol-wake/README.md`）、試験 `tests/noah-launch-ops.test.mjs`（切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録・適用する物の形）。残り: 本番での G4〜G6 の確かめ（L9・本人の許可の後）。公開版154・10本のDB追加・公開設定3項目を承認後に反映✅ [PR #358](https://github.com/k999ln/rock/pull/358)。公開版156で172件取込・9項目の公開確認成功。読み取り専用1件の成果受領を確認。全体受入は未完了。 |
 | 2 | — | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
 | 2 | — | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
 | 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | |
@@ -109,7 +109,7 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
-| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 |
+| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 / 新デザイン・登録情報・委任 PR #371（公開159） / 登録実行基盤・Dock入口 ✅ PR #373（公開161、実サービス登録・100人容量は未受入） / 最新12画面・6言語UI ✅ PR #376（公開163） / 実登録・認証付き成果・失敗復帰 ✅ PR #377（公開164、実スマホ成果は本人報告、100人は合成試験） / 成果カード・画像保存 ✅ PR #376（公開165） / eSIM本人引継ぎ ✅ PR #377（公開167・4,829試験成功、実eSIM連携は未設定） / 透過タブロゴ ✅ PR #377（公開170・独立確認済み） / 4件修正・公開ブラウザ一周 ✅ PR #377（公開173・全体verify 4,844成功/4skip、実機Androidは独立確認中） / 接続・保存の重なり修正 ✅ PR #377（公開175・320/390/1280px確認） / 検索・保存統合と不要ページ撤去 ✅ PR #377（公開178・390px確認） |
 
 ## 110 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
 

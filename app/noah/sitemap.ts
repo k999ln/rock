@@ -1,8 +1,3 @@
 import type { MetadataRoute } from 'next';
-import { COWAGENT_GUIDE_PATH, NOAH_PUBLIC_ORIGIN } from '@/lib/noah-public-guide';
-
-export default function sitemap(): MetadataRoute.Sitemap {
-  return ['/noah/agents', '/noah/mac', COWAGENT_GUIDE_PATH].map((path) => ({
-    url: NOAH_PUBLIC_ORIGIN + path,
-  }));
-}
+import { NOAH_PUBLIC_ORIGIN } from '@/lib/noah-public-origin';
+export default function sitemap():MetadataRoute.Sitemap{return ['/noah','/noah/explore','/noah/help'].map(path=>({url:NOAH_PUBLIC_ORIGIN+path}));}

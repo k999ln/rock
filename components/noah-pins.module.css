@@ -90,4 +90,8 @@
 @media (prefers-reduced-motion:reduce) { .panel,.save,.more summary { transition:none; } }
 .saveButton { min-height:44px; padding:0 22px; border:0; border-radius:22px; background:#792ddd; color:#fff; font-size:15px; font-weight:700; cursor:pointer; }
 .saveButton[data-saved] { background:#202024; }
+/* 詳細では接続と保存の押す範囲を離し、保存は補助操作として表示する。 */
+.detailSave { display:flex; justify-content:flex-end; margin-block-start:16px; }
+.detailSave .saveButton { min-height:46px; max-width:100%; padding:10px 22px; border:1px solid #dbc7ef; border-radius:10px; background:#fff; color:#7546c8; overflow-wrap:anywhere; }
+.detailSave .saveButton[data-saved] { background:#f3eefb; }
 @media (max-width:600px) { .sheet { margin:auto 0 0; width:100%; max-width:none; max-height:85svh; border-radius:20px 20px 0 0; padding-bottom:calc(20px + env(safe-area-inset-bottom)); } }

@@ -4,29 +4,26 @@ export const NOAH_PAGES = [
   ['purchases', 'purchases', '購入履歴'], ['sell', 'sell', '販売管理'],
   ['publish', 'publish', 'コード・SDKを公開'], ['register', 'register', 'Toolの掲載申請'],
   ['devices', 'devices', '端末・実行先'], ['network', 'network', '接続の管理'],
-  ['outputs', 'outputs', '保存した成果'], ['free-cloud', 'free-cloud', 'クラウドの設定'],
+  ['free-cloud', 'free-cloud', 'クラウドの設定'],
   ['linux', 'linux', 'Linuxの設定'], ['compute-grid', 'compute-grid', '計算資源'],
   ['esim', 'esim', '回線'], ['help', 'help', '使い方・制限'],
   ['billing', 'billing', '利用明細'], ['billing/provider-test', 'billing/provider-test', '課金接続テスト'],
   ['agents/citations', 'citations', '出典整理'], ['visual-scribe', 'visual-scribe', 'ビジュアル記録'],
-  ['add/zoom', 'add/zoom', 'Zoom連携'], ['campus', 'campus', '大学別コミュニティー'],
-  ['campus/:campusId', 'campus/:campusId', '大学別Noah'],
-  ['campus/:campusId/hub', 'campus/:campusId/hub', '大学のホーム'],
+  ['add/zoom', 'add/zoom', 'Zoom連携'],
   ['tools/:toolId', 'tools/:toolId', 'Toolの詳細'], ['code/:id', 'code/:id', '共有コード'],
 ];
 export const NOAH_LOCAL_LABS = ['add/linux','add/zoom/device','add/zoom/interpret','add/zoom/lab','apps/planner/lab'];
 export const NOAH_REDIRECTS = [
   ...['/sky', '/os/sky'].flatMap(prefix => [
-    [prefix, '/noah'], [prefix + '/agents', '/noah/saved'],
+    [prefix, '/noah'], [prefix + '/agents', '/noah/saved?tab=roles'],
+    [prefix + '/outputs', '/noah/saved?tab=files'],
     ...NOAH_PAGES.map(([from, to]) => [prefix + '/' + from, '/noah/' + to]),
   ]),
   ['/add', '/noah/add'], ['/add/data', '/noah/add/data'],
-  ['/campus', '/noah/community'], ['/guide', '/rockstaros/guide'],
+  ['/guide', '/rockstaros/guide'],
   ['/amc', '/os/eve?mode=tools&view=work'], ['/zema/amc', '/os/eve?mode=tools&view=work'],
-  ['/zema/library', '/noah/saved'], ['/studio', '/noah/publish'],
-  ['/noah/library', '/noah/launch#library'], ['/noah/work', '/noah/launch#work'],
-  ['/noah/models', '/noah/mac?target=models'],
-  ['/noah/public', '/noah'], ['/noah/public/agents', '/noah/agents'],
+  ['/zema/library', '/noah/saved?tab=roles'], ['/studio', '/noah/publish'],
+  ['/noah/public', '/noah'], ['/noah/public/agents', '/noah/explore?tab=catalog'],
   ['/noah/public/agents/:id', '/noah/agents/:id'],
 ];
 /** Exact segment matches: unknown pages remain 404; values never become redirect origins. */

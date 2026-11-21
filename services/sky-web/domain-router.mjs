@@ -243,7 +243,7 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
         const legacy = noahPageRedirect(path);
         if (legacy) return Response.redirect(noahRedirectURL(source, legacy).href, 308);
         if (source.hostname === MINI_PUBLIC_HOST && NOAH_LOCAL_LABS.some(lab => ['/sky/', '/os/sky/'].some(prefix => path.replace(/\/$/, '') === prefix + lab)))
-          return Response.redirect(noahRedirectURL(source, '/noah/local-tools').href, 307);
+          return Response.redirect(noahRedirectURL(source, '/noah/explore').href, 307);
       }
       // Owner-approved retirement of duplicate screens; keep installation guidance.
       if (source.hostname === MINI_PUBLIC_HOST) {

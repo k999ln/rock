@@ -1,4 +1,5 @@
 'use client';
+import { useNoahLocale } from './noah-locale';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
@@ -51,6 +52,8 @@ export function NoahAgentSignals({
   onRetry: () => void;
   detailHref: string;
 }) {
+  const {t}=useNoahLocale();
+
   const [busy, setBusy] = useState(false),
     [notice, setNotice] = useState(''),
     [auth, setAuth] = useState(false),
@@ -101,16 +104,16 @@ export function NoahAgentSignals({
   return (
     <div className={styles.signalsWrap}>
       <div className={styles.signals}>
-        <span title="Noahで実行完了を確認できたアカウント数。同じアカウントは1人として集計。">
+        <span title={t("Noahで実行完了を確認できたアカウント数。同じアカウントは1人として集計。")}>
           <Users size={16} />
           <strong>
             {summary ? summary.users.toLocaleString('ja-JP') : '—'}
           </strong>
-          <span>人が利用</span>
+          <span>{t("人が利用")}</span>
         </span>
         <button
           aria-label={
-            summary?.crowned ? '王冠の評価を取り消す' : '王冠で評価する'
+            summary?.crowned ? t("王冠の評価を取り消す") : t("王冠で評価する")
           }
           aria-pressed={summary?.crowned ?? false}
           disabled={!summary || busy}
@@ -120,29 +123,27 @@ export function NoahAgentSignals({
           <strong>
             {summary ? summary.crowns.toLocaleString('ja-JP') : '—'}
           </strong>
-          <span>王冠</span>
+          <span>{t("王冠")}</span>
         </button>
         <Link href={detailHref}>
           <MessageCircle size={16} />
           <strong>
             {summary ? summary.comments.toLocaleString('ja-JP') : '—'}
           </strong>
-          <span>コメント</span>
+          <span>{t("コメント")}</span>
         </Link>
       </div>
       {error && (
         <p className={styles.notice}>
-          評価を取得できませんでした。
-          <button onClick={onRetry}>再読み込み</button>
+          {t("評価を取得できませんでした。")}<button onClick={onRetry}>{t("再読み込み")}</button>
         </p>
       )}
       {notice && (
         <output className={styles.notice}>
-          {notice}
+          {t(notice)}
           {auth && (
-            <Link href={`/account?returnTo=${encodeURIComponent(detailHref)}`}>
-              本人確認へ
-            </Link>
+            <Link href={`/noah/account?returnTo=${encodeURIComponent(detailHref)}`}>
+              {t("本人確認へ")}</Link>
           )}
         </output>
       )}
@@ -150,6 +151,8 @@ export function NoahAgentSignals({
   );
 }
 export default function NoahAgentFeedback({ id }: { id: string }) {
+  const {t}=useNoahLocale();
+
   const [snapshot, setSnapshot] = useState<{
       id: string;
       data: AgentFeedbackPage;
@@ -308,17 +311,17 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
     <section
       id="feedback"
       className={styles.panel}
-      aria-label="Agentの評価とコメント"
+      aria-label={t("Agentの評価とコメント")}
     >
       <div className={styles.heading}>
         <span>COMMUNITY VOICES</span>
-        <h2>みんなの声</h2>
+        <h2>{t("みんなの声")}</h2>
         <p>{data?.agentName ?? "使って感じたことが、次の改善につながる。"}</p>
       </div>
       <NoahAgentSignals
         id={id}
         summary={data?.summary}
-        error={error}
+        error={t(error)}
         onRetry={() => setAttempt((n) => n + 1)}
         onChange={(summary) =>
           setSnapshot((s) =>
@@ -328,9 +331,8 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
         detailHref={`/noah/feedback/${id}#feedback`}
       />
       <p className={styles.caption}>
-        利用人数はNoahで実行完了を確認できたアカウント数。王冠は1アカウント1票で、取り消せます。
-      </p>
-      {!data && !error && <output>コメントを読み込んでいます…</output>}
+        {t("利用人数はNoahで実行完了を確認できたアカウント数。王冠は1アカウント1票で、取り消せます。")}</p>
+      {!data && !error && <output>{t("コメントを読み込んでいます…")}</output>}
       {data?.canComment ? (
         <form
           className={styles.composer}
@@ -341,10 +343,10 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
         >
           {reply && (
             <div className={styles.replying}>
-              <span>{reply.author}さんへの返信</span>
+              <span>{reply.author}{t("さんへの返信")}</span>
               <button
                 type="button"
-                aria-label="返信をやめる"
+                aria-label={t("返信をやめる")}
                 disabled={busy}
                 onClick={() => setReply(null)}
               >
@@ -353,8 +355,7 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
             </div>
           )}
           <label htmlFor={`feedback-${id}`}>
-            あなたの感想・改善してほしいこと
-          </label>
+            {t("あなたの感想・改善してほしいこと")}</label>
           <textarea
             ref={editor}
             id={`feedback-${id}`}
@@ -364,39 +365,27 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
             required
             maxLength={1000}
             rows={3}
-            placeholder="何に使った？ よかったところ、惜しかったところを教えて。"
+            placeholder={t("何に使った？ よかったところ、惜しかったところを教えて。")}
           />
           <div>
-            <small>公開名と本文は誰でも読めます。</small>
+            <small>{t("公開名と本文は誰でも読めます。")}</small>
             <button disabled={busy || !text.trim()}>
               <Send size={15} />
-              {busy ? '送信中…' : 'コメントする'}
+              {busy ? t("送信中…") : t("コメントする")}
             </button>
           </div>
         </form>
       ) : (
         data && (
           <p className={styles.setup}>
-            <Link
-              href={
-                data.authenticated
-                  ? '/noah/social#compose'
-                  : `/account?returnTo=${encodeURIComponent(`/noah/feedback/${id}#feedback`)}`
-              }
-            >
-              {data.authenticated
-                ? '公開名を設定してコメントする'
-                : '本人確認してコメントする'}{' '}
-              <ArrowUpRight size={15} />
-            </Link>
+            {data.authenticated ? <span>{t("コメントには公開名が必要です。")}</span> : <Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/feedback/${id}#feedback`)}`}>{t("本人確認してコメントする")} <ArrowUpRight size={15}/></Link>}
           </p>
         )
       )}
-      {notice && <output className={styles.notice}>{notice}</output>}
+      {notice && <output className={styles.notice}>{t(notice)}</output>}
       {data?.comments.length === 0 && (
         <p className={styles.empty}>
-          まだコメントはありません。最初の感想を聞かせてください。
-        </p>
+          {t("まだコメントはありません。最初の感想を聞かせてください。")}</p>
       )}
       <div>
         {data?.comments.map((c) => (
@@ -407,7 +396,7 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
             data-reply={!!c.parentId || undefined}
           >
             {c.deleted ? (
-              <p className={styles.empty}>このコメントは削除されました。</p>
+              <p className={styles.empty}>{t("このコメントは削除されました。")}</p>
             ) : (
               <>
                 <div className={styles.byline}>
@@ -439,13 +428,11 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
                       }}
                     >
                       <Reply size={15} />
-                      返信
-                    </button>
+                      {t("返信")}</button>
                   )}
                   {c.mine && (
                     <button disabled={busy} onClick={() => void remove(c)}>
-                      削除
-                    </button>
+                      {t("削除")}</button>
                   )}
                 </footer>
               </>
@@ -459,15 +446,14 @@ export default function NoahAgentFeedback({ id }: { id: string }) {
           disabled={busy}
           onClick={() => void more()}
         >
-          以前のコメントを見る
-        </button>
+          {t("以前のコメントを見る")}</button>
       )}
       <aside className={styles.developer}>
         <span>FOR DEVELOPERS</span>
-        <strong>ユーザーの声を、次のアップデートへ。</strong>
-        <p>要望の整理から改善・リファクタリング、検証済みPRの納品まで。</p>
+        <strong>{t("ユーザーの声を、次のアップデートへ。")}</strong>
+        <p>{t("要望の整理から改善・リファクタリング、検証済みPRの納品まで。")}</p>
         <Link href={`/noah/developers?agent=${encodeURIComponent(id)}`}>
-          運用パッケージを見る <ArrowUpRight size={15} />
+          {t("運用パッケージを見る")}<ArrowUpRight size={15} />
         </Link>
       </aside>
     </section>

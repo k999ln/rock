@@ -1,4 +1,5 @@
 import { sha256Hex } from './rockstar-entitlement-claim.ts';
+import { noahEsimRequestScope } from './noah-esim-access.ts';
 import { resolveEsimCloudGrant, type EsimCloudConfig, type EsimCloudGrant } from './esim-cloud-grant.ts';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
@@ -29,6 +30,8 @@ export function esimCloudRequestToken(request: Request) {
 
 /** This credential is for cloud work only, never account administration or payments. */
 export function esimCloudRequestScope(request: Request) {
+  const noah = noahEsimRequestScope(request);
+  if (noah) return noah;
   const { pathname } = new URL(request.url);
   const method = request.method;
   if ((method === 'GET' && pathname === '/api/noah/cloud-work') ||

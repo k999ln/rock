@@ -270,7 +270,7 @@ export default function NoahLaunch({
         <section className={styles.notice}>
           <p>自分のAgentとMacを管理するにはサインインしてください。</p>
           <Link
-            href={`/account?mode=login&returnTo=${encodeURIComponent(returnTo)}`}
+            href={`/noah/account?mode=login&returnTo=${encodeURIComponent(returnTo)}`}
           >
             サインイン
           </Link>
