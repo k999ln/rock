@@ -209,3 +209,14 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 
 
 2026-11-22 最終Git統合検証（PR #377）: 862eac033で画面整理を取り込んだ後の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は全工程exit0。root4,856 pass・4 skip・0 fail（計4,860）、API1,918・CSV385 assertions、typecheck/lint/build/assetを含め成功。ログ `/tmp/noah-memberless-merged-verify.log`。公開スモーク検査に残った旧ready/dataの200期待を、正しい統合先への307/308と固定カテゴリ照合へ更新。専用3試験と再lint成功、公開12項目が成功。検査は読み取りのみでブラウザ権限を発行しない。Pixelの実機一周は端末解除待ちで、成功とは記録しない。
+
+
+## 2026-11-22 共通カード・評価の統合（PR #386）
+
+✅ 既存ピンと収集Agentを `/api/noah/discover` の共通カード一覧へ統合。公開URLが一致する同一Agentは王冠・コメントIDを共有し、絞り込み・ボード・詳細も共通評価へ接続。外部スター/いいねは出典付き補助情報として折りたたみ、Noahの利用人数・王冠へ合算しない。紹介だけのAgentは配布元へ、接続確認済みは既存実行/保存導線へ進む。署名付き収集・ブラウザ所有者・本人別非表示・既存保存データは保全。DB migrationなし。
+
+公開182: source `b09c6976d2ff8f48c74502596ace3de68272b7a6`、deployment `appgdep_6b020d1c046481918a102e0d043c9d51` succeeded。公開APIは213件/先頭20件を返し、390px/590pxのブラウザで横はみ出しなし。同じAxadが全件/MCP絞り込みで王冠1を共有すること、取り消し後0、コメントダイアログを確認。試験票は残していない。物理スマホでの検証は今回行っていない。
+
+検証: typecheck・lint・関連47試験成功。Sites sourceの全体verify主試験4,895件中4,889成功/4 skip/2失敗。2件はcheckoutの過去GitオブジェクトとMini依存不足を補完後、該当16試験が成功。残り15検査（ビルド・公開ファイル・Work API1,918・CSV385等）を順次実行し全成功。単一のverify再実行完走とは区別する。ローカルproductionの8ルート/8共通ヘッダーも成功。
+
+再開: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。PR #377の `6efb722d3` を含む。Git側にない法人入口/Reviewer拡張は公開sourceで維持。PR #386はdraft、GitHubでのレビュー・マージは未完了。
