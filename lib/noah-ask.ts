@@ -289,11 +289,13 @@ export function createNoahAskService(deps: NoahAskDependencies) {
    * `agent`（系列の ID）を渡すと、その Agent への依頼を、**切った接続の分も含めて**返す（詳細の画面の「仕事」。切った後も、成果を読めるように）。
    */
   async function list(owner: string, connectionId: string | null, agentId: string | null = null): Promise<NoahAskReply> {
+    // 行ごとに、その依頼の Agent（接続の系列）を添える（「実行中」「成果データ」の画面は、Agent をまたいで並べるので、行から詳細へ戻れるように）。
+    const columns = `${NOAH_ASK_COLUMNS},(SELECT family_key FROM noah_connections WHERE noah_connections.id=noah_asks.connection_id) AS family_key`;
     const rows = (await (connectionId
-      ? prepare(`SELECT ${NOAH_ASK_COLUMNS} FROM noah_asks WHERE owner_id=? AND connection_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, connectionId, NOAH_ASK_RUN_LIMITS.listed)
+      ? prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? AND connection_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, connectionId, NOAH_ASK_RUN_LIMITS.listed)
       : agentId
-        ? prepare(`SELECT ${NOAH_ASK_COLUMNS} FROM noah_asks WHERE owner_id=? AND connection_id IN (SELECT id FROM noah_connections WHERE owner_id=? AND family_key=?) ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, owner, agentId, NOAH_ASK_RUN_LIMITS.listed)
-        : prepare(`SELECT ${NOAH_ASK_COLUMNS} FROM noah_asks WHERE owner_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, NOAH_ASK_RUN_LIMITS.listed)).all<NoahAskRow>()).results;
+        ? prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? AND connection_id IN (SELECT id FROM noah_connections WHERE owner_id=? AND family_key=?) ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, owner, agentId, NOAH_ASK_RUN_LIMITS.listed)
+        : prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, NOAH_ASK_RUN_LIMITS.listed)).all<NoahAskRow>()).results;
     return reply(200, { asks: rows.map(noahAskView) });
   }
 

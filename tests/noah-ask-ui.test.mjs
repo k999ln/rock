@@ -9,12 +9,14 @@ import * as askView from '../lib/noah-ask-view.ts';
 import * as botNotice from '../lib/noah-bot-notice.ts';
 import * as formLib from '../lib/noah-form.ts';
 import * as view from '../lib/noah-ready-view.ts';
+import * as resultData from '../lib/noah-result-data-contract.ts';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, uuid } from './fixtures/noah/connect-world.mjs';
 import { screen } from './fixtures/noah/screen.mjs';
 
 const MODULES = { '@/lib/owner-intent': ownerIntent, '@/lib/noah-ready-view': view, '@/lib/noah-ask-view': askView, '@/lib/noah-bot-notice': botNotice, '@/lib/noah-form': formLib };
 const DETAIL = 'components/noah-ready-detail.tsx';
+const LIST = 'components/noah-work-list.tsx';
 const lookup = tool('lookup', true, { description: 'Looks up a player.', inputSchema: { type: 'object', required: ['query'], properties: {
   query: { type: 'string', title: 'Player', description: 'A player id or name.', maxLength: 200 }, limit: { type: 'integer', default: 5 },
   order: { type: 'string', enum: ['new', 'old'] }, exact: { type: 'boolean' }, extra: { type: 'object' },
@@ -236,6 +238,132 @@ void test('a request that did not get through is sent again with the same ID; re
   await closed.page.submit(closed.form());
   assert.match(closed.page.text(closed.form()), /接続を確かめてください。/);
   assert.equal(closed.w.asked().length, 0);
+});
+
+void test('the work list across agents (the activity and data screens): newest first, each row leads back to its agent; only results on the data screen; the stop carries the list\'s owner mark; nothing for visitors', async (t) => {
+  // owner-a: Agent 1 へ 2 件（成果が出た・できなかった）、Agent 2 へ 1 件（相手が、まだ返していない）。owner-b: Agent 1 へ 1 件。
+  let release = null;
+  const one = mcpServer({ tools: [lookup, stats], call: (params) => (params.name === 'stats' ? { isError: true, content: [{ type: 'text', text: 'No data yet.' }] } : { content: [{ type: 'text', text: `found ${params.arguments.query}` }] }) });
+  const two = mcpServer({ tools: [lookup], before: async (body) => { if (body?.method === 'tools/call') await new Promise((resolve) => { release = resolve; }); } });
+  const w = await world(t, { [hostOf(1)]: one, [hostOf(2)]: two });
+  const waiting = [], background = { waitUntil: (work) => { waiting.push(work); } };
+  const sha = (definition) => formLib.noahToolSha256({ name: definition.name, description: definition.description ?? '', inputSchema: definition.inputSchema, readOnly: definition.annotations?.readOnlyHint === true });
+  const ask = async (who, n, connectionId, definition, input) => {
+    w.f.advance(1_000);
+    assert.equal((await who.ask({ id: uuid(n), connectionId, form: { tool: definition.name, toolSha256: await sha(definition), input } })).status, 202);
+  };
+  const a = w.as('owner-a', background), b = w.as('owner-b', background), d = w.as('owner-d', background);
+  assert.equal((await a.connect(familyId(1), uuid(1))).body.state, 'connected');
+  assert.equal((await a.connect(familyId(2), uuid(2))).body.state, 'connected');
+  assert.equal((await b.connect(familyId(1), uuid(3))).body.state, 'connected');
+  await ask(a, 10, uuid(1), lookup, { query: 'cobalt' });
+  await ask(a, 11, uuid(1), stats, {});
+  await ask(b, 13, uuid(3), lookup, { query: 'someone else' });
+  // owner-d: できなかった依頼だけ。
+  assert.equal((await d.connect(familyId(1), uuid(4))).body.state, 'connected');
+  await ask(d, 14, uuid(4), stats, {});
+  await Promise.all(waiting.splice(0));
+  await ask(a, 12, uuid(2), lookup, { query: 'slow' });
+  const slow = waiting.splice(0);
+
+  const open = (user, props) => {
+    const ui = screen({ fetch: w.browser({ user }, background), modules: MODULES, now: w.f.time() });
+    return { ui, page: ui.mount(LIST, props) };
+  };
+  const rowsOf = (page) => page.find('ul').filter((node) => node.props.className === 'work').flatMap((node) => page.nodes(node).filter((child) => child.type === 'li'));
+  const back = (page) => page.find('a', 'この Agent を開く').map((node) => node.props.href);
+  const detail = (i) => `/noah/ready/agent?id=${encodeURIComponent(familyId(i))}`;
+
+  // 「実行中」: 本人の依頼を、新しい順に、全部。行ごとに、その Agent の詳細への道。別の人の依頼は、出ない。
+  const { ui, page } = open('owner-a', { ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' });
+  await page.flush();
+  assert.equal(page.text(page.find('h2')[0]), '接続したAgentの仕事進んでいます');
+  const rows = rowsOf(page).map((row) => page.text(row));
+  assert.equal(rows.length, 3);
+  assert.match(rows[0], /^進んでいます（\d+ 秒）止めるlookupこの Agent を開く →$/);
+  assert.match(rows[1], /^できませんでした。No data yet\.statsこの Agent を開く →$/);
+  assert.match(rows[2], /^結果を受け取りましたlookup — /);
+  assert.ok(rows[2].includes('found cobalt'));
+  assert.deepEqual(back(page), [detail(2), detail(1), detail(1)]);
+  assert.equal(rows.some((row) => row.includes('someone else')), false);
+  // 「止める」は、一覧の応答が返した本人の印を添えて送る（受け付けられて、止めている所になる）。
+  await page.click('止める');
+  const stop = ui.calls.filter((call) => call.method === 'POST' && call.url === `/api/noah/ask/${uuid(12)}`);
+  assert.equal(stop.length, 1);
+  assert.equal(stop[0].headers[ownerIntent.OWNER_SCOPE_HEADER], await ownerIntent.ownerScopeFor('owner-a'));
+  assert.match(page.text(rowsOf(page)[0]), /^止めています…/);
+  assert.equal(w.asked('id=?', uuid(12))[0].stop_requested, 1);
+  release();
+  await Promise.all(slow);
+  await page.tick(1000);
+  assert.match(page.text(rowsOf(page)[0]), /^止めました。相手のサーバーで実行されたかは分かりません。lookup/);
+
+  // 「成果データ」: 成果が出た依頼だけ。
+  const data = open('owner-a', { ownerScope: null, refresh: 0, only: 'succeeded', heading: '接続したAgentの成果' }).page;
+  await data.flush();
+  assert.equal(data.text(data.find('h2')[0]), '接続したAgentの成果');
+  assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りましたlookup — ')), [true]);
+  assert.deepEqual(back(data), [detail(1)]);
+
+  // 成果が出た依頼が無い人の「成果データ」には、何も出さない（できなかった依頼は、「実行中」の側にだけ出る）。
+  const failedOnly = open('owner-d', { ownerScope: null, refresh: 0, only: 'succeeded', heading: '接続したAgentの成果' }).page;
+  await failedOnly.flush();
+  assert.equal(failedOnly.text(), '');
+  const failedRows = open('owner-d', { ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' }).page;
+  await failedRows.flush();
+  assert.deepEqual(rowsOf(failedRows).map((row) => failedRows.text(row)), ['できませんでした。No data yet.statsこの Agent を開く →']);
+  // 未サインインの人・依頼が無い人には、何も出さない（見出しも出さない）。
+  for (const user of [null, 'owner-c']) {
+    const nobody = open(user, { ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' });
+    await nobody.page.flush();
+    assert.deepEqual([nobody.page.text(), nobody.ui.calls.map((call) => call.url)], ['', ['/api/noah/ask']], String(user));
+  }
+  // Agent の詳細の画面（その Agent への依頼だけ）では、詳細へ戻る道は出さない（もう、そこに居る）。
+  const own = open('owner-a', { agentId: familyId(1), ownerScope: await ownerIntent.ownerScopeFor('owner-a'), refresh: 0 }).page;
+  await own.flush();
+  assert.deepEqual([rowsOf(own).length, back(own)], [2, []]);
+});
+
+void test('the activity and data screens put the phone work list the page gives them inside their main, above their own lists', async () => {
+  // 頁（app/noah/activity・app/noah/data）が渡す物。部品は、こちらの一覧を読み込まない（受け取った物を置くだけ）。
+  const marker = (name) => ({ type: 'aside', props: { id: name, children: name }, key: null });
+  const document = { hidden: false, addEventListener() {}, removeEventListener() {} };
+  const pageOf = async (file, modules) => {
+    const ui = screen({ fetch: async () => ({ status: 401, body: { error: 'サインインしてください。' } }), modules });
+    const page = ui.mount(file);
+    await page.flush();
+    return page;
+  };
+  const stubs = {
+    '@/components/noah-launch': { default: function NoahLaunch(props) { return { type: 'main', props: { 'data-screen': 'activity', children: props.phoneWork }, key: null }; } },
+    '@/components/noah-result-data': { default: function NoahResultData(props) { return { type: 'main', props: { 'data-screen': 'data', children: props.phoneResults }, key: null }; } },
+    '@/components/noah-work-list': { default: function NoahWorkList(props) { return { type: 'section', props: { 'data-list': JSON.stringify(props), children: [] }, key: null }; } },
+  };
+  const given = (page) => page.nodes().filter((node) => node.type === 'section').map((node) => JSON.parse(node.props['data-list']));
+  assert.deepEqual(given(await pageOf('app/noah/activity/page.tsx', stubs)), [{ ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' }]);
+  assert.deepEqual(given(await pageOf('app/noah/data/page.tsx', stubs)), [{ ownerScope: null, refresh: 0, only: 'succeeded', heading: '接続したAgentの成果' }]);
+
+  // 部品の側: 受け取った物を、main の中、自分の一覧の上に置く。
+  const placed = async (file, prop, modules) => {
+    const ui = screen({ fetch: async () => ({ status: 401, body: { error: 'サインインしてください。' } }), modules, document });
+    const page = ui.mount(file, { [prop]: marker('phone') });
+    await page.flush();
+    const main = page.find('main');
+    assert.equal(main.length, 1, file);
+    const inside = page.nodes(main[0]);
+    return { page, inside, at: inside.findIndex((node) => node.props.id === 'phone') };
+  };
+  const query = new URLSearchParams(''), navigation = { 'next/navigation': { useSearchParams: () => query } };
+  const activity = await placed('components/noah-launch.tsx', 'phoneWork', navigation);
+  const work = activity.inside.findIndex((node) => node.type === 'section' && node.props.id === 'work');
+  assert.ok(activity.at >= 0 && work > activity.at, '「実行中」: Mac の「仕事と成果」の上');
+  const data = await placed('components/noah-result-data.tsx', 'phoneResults', { ...navigation, '@/lib/owner-intent': ownerIntent, '@/lib/noah-result-data-contract': resultData });
+  const list = data.inside.findIndex((node) => node.type === 'ul');
+  assert.ok(data.at >= 0 && list > data.at, '「成果データ」: Mac の成果の一覧の上');
+  // 渡さない時は、前と同じ（何も足さない）。
+  const plain = screen({ fetch: async () => ({ status: 401, body: {} }), modules: navigation, document }).mount('components/noah-launch.tsx');
+  await plain.flush();
+  assert.equal(plain.nodes().some((node) => node.props.id === 'phone'), false);
 });
 
 void test('pure rules of the ask screens', () => {
