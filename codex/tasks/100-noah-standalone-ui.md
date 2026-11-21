@@ -209,3 +209,16 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 
 
 2026-11-22 最終Git統合検証（PR #377）: 862eac033で画面整理を取り込んだ後の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は全工程exit0。root4,856 pass・4 skip・0 fail（計4,860）、API1,918・CSV385 assertions、typecheck/lint/build/assetを含め成功。ログ `/tmp/noah-memberless-merged-verify.log`。公開スモーク検査に残った旧ready/dataの200期待を、正しい統合先への307/308と固定カテゴリ照合へ更新。専用3試験と再lint成功、公開12項目が成功。検査は読み取りのみでブラウザ権限を発行しない。Pixelの実機一周は端末解除待ちで、成功とは記録しない。
+
+
+### 2026-11-22 Pixel実機で会員登録なしの一周を確認（PR #377）
+
+本人の「端末がロックされないように設定して」に従い、Pixel 10 / Android 17の消灯後ロック猶予を30分（`secure lock_screen_lock_after_timeout=1800000`、変更前null）へ設定。既存の画面timeout `2147483647` と給電中保持 `15` は維持し、承認済みADBとscrcpyのcontrol-only / keep-active接続でテスト中の点灯を保持した。PIN・指紋・手動の電源ロックは変更せず、自動解除も実施していない。接続終了後も永久にロックしない設定ではない。
+
+実物のPixelのVanadiumから `https://avoado.si/noah/explore?q=Tipline` を開き、検索結果→Tipline詳細→接続→「ゲーム情報を調べる」→検索内容 `Cal` →「頼む」を1回だけタップ。「進捗と成果を見る」から受領した5件を表示し、成果詳細を開いた。その後、画面の「戻る」から `/noah/saved?tab=results` へ移動し、保存済みカードをタップして同じ成果を再表示できた。Workは `915cbf1d-6412-4bf0-8b8a-3618cf4ff084`、送信先は `tipline.brainy.ae`。Noahログイン、eSIM接続、外部アカウントの新規作成、投稿、課金、実行の再送は行っていない。操作中の画面ロック・外部アプリへの強制遷移は観測しなかった。
+
+今回の対象は公開ドメインの実UI。検査中のSitesメタデータは最新保存版182・activeを返した（カード統合担当の公開後）。この受入のための追加配備・ソース変更はない。タップは承認済みADBで行っており、スマホ単体の画面導線の合格であってMacなしのテスト操作や全OSの合格ではない。成果5件の受信・保存表示を確認したもので、外部提供者の文章の正確性を認定するものではない。
+
+画面証拠は `/Users/kaiya/.codex-work/visualizations/2026/11/20/01a1f8f6-e45c-7260-bc55-53b2712253bb/noah-pixel-20261122/` に保存。`noah-pixel-memberless-saved.png` SHA-256 `a4e62d8fcd9434cb11a1201f0d73cef1ce7c1614e746f2d6ada4610f9a9512fd`、`noah-pixel-memberless-reopened-loaded.png` SHA-256 `178d11c26c924212bd10be95abefc0601d800fed17436168f734f24f523951bc`。秘密値・cookie・本人の旧アカウント情報は取得せず、公開外部データの成果だけを確認した。
+
+検証は実機の上記操作と設定readback、文書差分の `git diff --check`。今回のリポジトリ変更は受入記録だけで、直前のコードに対する全体verify 4,856 pass・4 skip・0 failと公開12項目成功は上記の記録を参照。別チャットの公開182の全体試験をこの数値へ含めない。残件はブラウザ別保存での認証付き外部登録一周、別利用者の本番受入、写真アプリへの実画像保存、100人の本番負荷、任意のAgent実行。過去のAgentboard登録1件と本人による成果表示報告は別の証拠として保持する。
