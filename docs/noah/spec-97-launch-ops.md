@@ -290,3 +290,5 @@ L3〜L7 で、もう入っていた物（作り直していない）: 切り替�
 確認: `npm run noah:check:domain` は、公開ページ3枚とトップ、カタログAPI、未サインインでの接続/依頼APIを読むだけ。リダイレクト・404・非JSONのカタログ応答を成功にしない。200だけではスマホ接続の合格とせず、公開後にspec90の実接続・成果受領を行う。登録Agentは設定済み提供者だけが対象で、認証付きリモートAgentへの接続完了をこの配備準備の成果には含めない。
 
 保存版: **Sites version 152**（未配備）、source `0241a065dc51f5308d90b225f8425a79d58aaac3`。既存公開sourceを土台に、mainのNoah画面/API/Work連携・試験・追加migrationだけを移植し、Eve固有の画面変更は混ぜていない。保存版IDは `appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_a46206cb17f88191b8890a36194f3f6e`。アーカイブSHA-256は `61095db62e454eabca4b5b01a7fb6e9a7dc4a56e8a40a84f453abfb0f1d487d8`。公開設定の変更とdeploymentはまだ行っていない。
+
+検証結果: 公開用sourceはtypecheck・Workerビルド・Noah 677試験を通過。GitHub作業枝は全体verifyの試験4694件中4689成功・4skip・ブラウザ試験1件タイムアウト。同ファイルを単独再実行して2/2成功し、verifyの後続チェックもすべて成功（仕事API 1918 assertionsを含む）。本番スマホ実接続の合格ではない。
