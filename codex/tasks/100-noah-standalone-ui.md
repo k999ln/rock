@@ -90,3 +90,15 @@ CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/no
 Dock: Launch Servicesの起動先 `work/noah-standalone/native-package-final/Noah.app` が旧Mac実行器だったため、元bundleを `work/noah-dock-backups/Noah-before-web-20261122-022613.zip` に保存し、`scripts/noah-web-app/NoahWebApp.swift` で入口を更新。Swiftビルド・ad-hoc署名の検査に成功。同じアプリの起動後、Chromeが `https://avoado.si/noah` を表示し、新しい端末認証タブを開かないことを確認。旧実行器・仕事・端末セッションは変更なし。一般配布用の公証済みアプリではない。
 
 未完了: 実在Agentboardアカウントの作成と成果受取までの本番一周、ブラウザ登録先ごとの手順/本人照会の受入、OAuth更新や書類提出の個別対応、100人向け容量。`NOAH_BROWSER_RECIPES=[]`、10ブラウザ分/UTC日（4+4+2分）の受入予算であり、全サービス対応/100人対応とは扱わない。実機スマホでの外部本人確認・振動体感も未検証。再開は `npm ci --prefix services/noah-registration-browser`、`npm --prefix services/noah-registration-browser test`、[運用手順](../../services/noah-registration-browser/README.md)。PRは #371 上の差分でmain未統合。
+
+
+### 公開版163/164・スマホ成果受取（2026-11-22、PR #377）
+
+- [PR #377](https://github.com/k999ln/rock/pull/377) は #376 のブランチ上の差分。新しい12画面/6言語UIとmainの取込改善・棚下書き・Macガイドを保全。公開先は https://avoado.si/noah 。版163 source `c28881a1559d10a5a67ff54fd1c86026d2731f8c`、版164 source `a0edb4b70c354c13706305e8c8b72434e67dbccf`。164 deployment `appgdep_6b01e0f8316481919788bc56d7bea78b` は2026-11-22 03:21 JSTに成功。環境revision15を維持し、追加migration/環境変更なし。
+- Workersは `redirect:error` を送信前に拒否するため、登録と資格情報付きMCPを `manual` + 3xx拒否へ修正。旧版161/162の方式印なし・鍵なしの未送信予約だけ復旧し、新方式の応答不明は再送しない。ログは固定の段階・状態・HTTPコードだけで、入力・鍵・例外本文は記録しない。
+- 本人承認済みの公開名 `Noah-mobile-test-20261122` でAgentboardアカウントを1件だけ作成。今回だけの情報利用を選び、保存プロフィールは変更していない。本人別暗号化キーの保存・外部本人照会・キー入力なしの接続と `whoami`・本人のWork保存を確認。Work `01db125f-c850-4138-bedb-790a4c8b8b04` は画面移動後も成果一覧/詳細から開けた。投稿・課金・キーの変更や削除は行わない。
+- 本人へ実スマホで同じNoahアカウントからAgentboard→whoami→頼む→成果を開く確認を依頼し、2026-11-22に「開けた」と回答を受領。これは実スマホのAgent利用/成果表示の本人報告。外部アカウントの新規作成操作は390pxブラウザでの受入であり、本人が実スマホで新規作成した証拠とは分ける。機種/OS/振動体感/外部本人確認は未記録。
+- 164では確定した登録失敗の「もう一度」→再入力→reload→「以前の登録」→元の失敗記録への復帰を公開画面で確認。再入力へ戻るだけでは登録を送らない。受付記録を消す操作なし。匿名タイムラインの投稿401は閲覧を妨げず、403/503はエラーとして保持。
+- 全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 成功。ルート4,811成功・4skip・0失敗（計4,815）、build・仕事API・CSV・設計・担当検査まで成功。実workerdで登録/照会と転送拒否を検証。100所有者・200重複タップ・100登録、10提供者・100成果保存/切断後保持・別所有者404は合成試験で、外部アカウントや本番負荷を発生させていない。
+- 別のUI担当も公開163の390/320px、6言語・RTL・設定reload保持、読み取り専用Tiplineの14件成果、公開9項目/カタログ172件/匿名私有API401を確認。画像の写真アプリ保存や実機振動の証拠ではない。
+- 配布範囲: 少人数から100人を目指す試用。Agentboardの実応答は登録20件/IP/時。既定のNoah上限は引き上げない。ブラウザ手順は未設定、予算10ブラウザ分/UTC日。全172件の実行・任意サービス登録・100人同時利用は未受入。成果表示/画像保存の改善は別のUI作業として進行中。

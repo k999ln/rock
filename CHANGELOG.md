@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noah公開版163/164でWorkersの外部登録・認証付き実行を修正し、実登録1件→成果保存と本人の実スマホでの成果表示を確認。失敗の再入力/履歴保持、匿名タイムライン、100人の合成分離試験を追加。全体verify 4,811成功・4skip。100人の段階試用手順を記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
 - NoahにCowAgentのMac準備ガイド（18秒の操作動画・日本語字幕）と公開3ページのサイトマップを追加し、カタログ・README・YouTube投稿用の導線をつないだ。配備・投稿前（task 71、[PR #369](https://github.com/k999ln/rock/pull/369)）。
 - Noahの主要12画面を指定の4タブ/2列デザインへ統一し、登録の保存再利用同意、ロゴ読み込み、振動設定、6言語UIとRTLを統合（app/noah・components/noah-*、[PR #376](https://github.com/k999ln/rock/pull/376)）。全体verify成功、公開反映は未実施。
 
