@@ -161,6 +161,10 @@ CREATE INDEX IF NOT EXISTS noah_connections_device ON noah_connections(device_id
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS noah_connections_family ON noah_connections(family_key, state);
 --> statement-breakpoint
+-- つなぐ途中（planned〜probing）のまま止まった接続を、巡回の後始末が拾う（spec-88 の 9.5）。その接続だけを持つ、小さな索引。
+-- 問い合わせは、この WHERE と同じ式（IN の並びも同じ）で書く。式が違うと、この索引は使われない。
+CREATE INDEX IF NOT EXISTS noah_connections_connecting ON noah_connections(updated_at) WHERE disconnected_at IS NULL AND state IN ('planned','entitling','preparing','probing');
+--> statement-breakpoint
 -- 本人が入れた鍵（header・環境変数・URL の変数・引数）。暗号化した値だけを置く。一覧の API に出さない。
 CREATE TABLE IF NOT EXISTS noah_connection_secrets (
   connection_id TEXT NOT NULL REFERENCES noah_connections(id),

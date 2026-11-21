@@ -80,6 +80,8 @@
 | 道具を持つ担当 | 入力欄で頼む（道具を選ぶ画面つき。モデルを使わない。[仕様書 87](../noah/spec-87-tool-agent.md) の 11 章） | 1 文で頼む |
 | 接続試験と表示 | 握手まで（L1）と、本人の実行で付ける「動いた」（L2）。一覧は 2 段（[仕様書 88](../noah/spec-88-mass-probe.md) の 9 章） | Noah が自動で道具を呼ぶ見本 |
 | 礼儀と取り下げ | 全部。窓口は `/noah/help#bot`（[仕様書 97](../noah/spec-97-launch-ops.md) の 5 章） | 報告の数で自動で伏せる |
-| 保存と API | 取り込みの 5 表、`noah_connections`、`noah_asks`。巡回は、専用の Worker の毎分の合図で動く（手元の daemon ではなく） | 相手の許可の 3 表、鍵の表、継続運用、利用の記録 |
+| 保存と API | 取り込みの 5 表、`noah_connections`、`noah_asks`。巡回は、専用の Worker の毎分の合図で動く（手元の daemon ではなく）。合図の終わりに、途中で落ちた依頼と、つなぐ途中で止まった接続を片付ける（相手へは送らない。[仕様書 88](../noah/spec-88-mass-probe.md) の 9.5） | 相手の許可の 3 表、鍵の表、継続運用、利用の記録 |
+
+運用（巡回を起こす Worker の配備と止め方・切り替え・戻し方・運営の画面で見張る数・外の提供者への説明と窓口）は、[仕様書 97](../noah/spec-97-launch-ops.md)。配備の手順書は `services/noah-patrol-wake/README.md`。
 
 合格条件（出してよいかの判定）は、[ローンチの最小限](../noah/mvp-launch.md) の 8 章の G1〜G7。

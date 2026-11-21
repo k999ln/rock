@@ -77,16 +77,16 @@
 | 順 | ローンチ | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- | --- | --- |
 | 0 | （今の Mac の道。受入の残り） | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 最小構成: 本人の Mac で、選ぶ・接続・実行・成果の受け取り・停止 | 進行中（上の表） |
-| 0 | L1 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け | |
-| 1 | L3 | 85 | [85-noah-intake-ledger.md](85-noah-intake-ledger.md) | 外の台帳の取り込みと名寄せ、接続要件の下書き | |
-| 1 | L2・L5 | 96 | [96-noah-connect-plan.md](96-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 | |
-| 1 | L4 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | |
-| 1 | L6 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（入力欄で頼む・1 文で頼む） | |
-| 1 | L5 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | |
-| 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | |
+| 0 | L1 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け |✅ L1 実装・ローカル検証 [PR #329](https://github.com/k999ln/rock/pull/329)（未マージ・CI履歴検出あり）。面の分類・実機観測は後続 |
+| 1 | L3 | 85 | [85-noah-intake-ledger.md](85-noah-intake-ledger.md) | 外の台帳の取り込みと名寄せ、接続要件の下書き | ✅ L3 実装・ローカル受入 [PR #332](https://github.com/k999ln/rock/pull/332)（L2 #330 を base、未マージ・CI履歴検出あり）。点検の修正 [PR #339](https://github.com/k999ln/rock/pull/339)（#332 を base、未マージ） |
+| 1 | L2・L5 | 96 | [96-noah-connect-plan.md](96-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 |✅ L2 実装・ローカル検証 [PR #330](https://github.com/k999ln/rock/pull/330)（未マージ・CI履歴検出あり）。✅ L5: 計画の API とカード（`noah-card.tsx`）を実装・ローカル検証済み [PR #342](https://github.com/k999ln/rock/pull/342)（未マージ）。今ある 13 件（Mac の道）への組み込みは、出した後 |
+| 1 | L4 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | ✅ L4 実装・手元の受入 [PR #335](https://github.com/k999ln/rock/pull/335)（L3 の点検の修正 #339 を base、未マージ）。相手の許可（OAuth）・Space は、出した後 |
+| 1 | L6 | 87 | [87-noah-tool-agent.md](87-noah-tool-agent.md) | 道具を持つ担当（入力欄で頼む・1 文で頼む） | ✅ L6（入力欄で頼む）実装・手元の受入 [PR #344](https://github.com/k999ln/rock/pull/344)（L5 の #342 を base、未マージ。本番への適用なし）: migration 0048・依頼の API・実行・画面。読み取りだけと宣言されていない実在の道具は、呼んでいない（確かめの画面まで）。成果を「成果データ」「実行中」に出す所は、まだ。1 文で頼むは、出した後 |
+| 1 | L5 | 74 | [74-noah-one-click-connect.md](74-noah-one-click-connect.md) | 接続の API、その場のサインイン、Passport、切る | ✅ L5 実装・手元の受入 [PR #342](https://github.com/k999ln/rock/pull/342)（未マージ。本番への適用なし）: migration 0047・接続の API・道具の一覧の API・画面（`/noah/ready`・`/noah/ready/agent`）・その場のサインイン・探す画面の入口。手元の実物（幅 390）で「接続」1 回 →「頼む」を確かめた。出す場所とサインインの扱いは、既定で作った（本人確認待ち）。Passport・家の端末・相手の許可は、出した後 |
+| 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | ✅ L7（見回りを保つ）実装・手元の受入 [PR #345](https://github.com/k999ln/rock/pull/345)（L6 の #344 を base、未マージ。本番への適用なし）: 止まった依頼と接続の後始末・道具を呼ぶ直前の「相手へ送る」の印・つながると確かめた数・索引を足す migration 0049。自動の見本（`probeL2`・`noahSampleCalls`）は作っていない（出した後） |
 | 1 | — | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package）。今ある Mac の隔離環境で | |
-| 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | |
-| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | |
+| 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | ✅ L9（受入）の自動の試験と、手元での表の通し [PR #347](https://github.com/k999ln/rock/pull/347)（L8 の #346 を base、未マージ。**本番での確かめは、まだ**）: 一周の自動試験 `tests/noah-phone-loop.test.mjs`、画面の決まりを一周の全部の段で見る試験、実機の表の手元の結果（`spec-90` の 9.4）。表の通しで見つけた所を 1 つ直した（切った後も、Agent の詳細の「仕事」に成果を出す。`GET /api/noah/ask?agent=`）。残り: 本番で、スマホだけで、表の 1〜13（本人の許可の後） |
+| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8（出すための運用）実装 [PR #346](https://github.com/k999ln/rock/pull/346)（L7 の #345 を base、未マージ。**本番への配備・適用・切り替えなし**）: 運営の画面の「見張る数」（`lib/noah-launch-status.ts`）、`/noah/help` の `#bot` の節（`lib/noah-bot-notice.ts`。宛先 D8 は 2026-11-21 に本人が smash@avoado.si と決め、[PR #350](https://github.com/k999ln/rock/pull/350) で入れた）、専用の Worker の手順書（`services/noah-patrol-wake/README.md`）、試験 `tests/noah-launch-ops.test.mjs`（切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録・適用する物の形）。残り: 本番での G4〜G6 の確かめ（L9・本人の許可の後） |
 | 2 | — | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
 | 2 | — | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
 | 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | |
@@ -103,6 +103,13 @@
 | 並行 | — | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
 
 調査した残り 72 件を 1 件ずつ実行器で対応する作業は行わない（分類は [docs/noah-agent-census-20261120.md](../../docs/noah-agent-census-20261120.md)）。13 / 85 などの限定試験を、全体の合格と数えない。
+
+## 本人の追加指示
+
+| # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- |
+| 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
+| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 |
 
 ## 100 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
 

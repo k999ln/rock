@@ -142,16 +142,16 @@ sequenceDiagram
 | L1 | 画面を取らない検査 | 84 | `engineArgs()` の切り出し、`lib/noah-screenless-audit.mjs`、`scripts/check-noah-screenless.mjs`、`verify` の鎖、「閉じても進む」の回帰試験 | — |
 | L2 | 接続要件と計画（純関数） | 96 | `lib/noah-connect-requirements.ts`、`lib/noah-connect-plan.ts`、試験 | — |
 | L3 | 取り込みと一覧の土台 | 85 | migration（取り込みの 5 表）、`lib/noah-intake-draft.ts`・`-family.ts`・`-store.ts`（公式台帳、更新された物だけ、名寄せ、一覧・検索・集計）、`lib/noah-flags.ts`、巡回の入口（`/api/noah/intake/tick`）と `services/noah-patrol-wake/`、運営の画面の節 | L2 |
-| L4 | 握手 | 86 | `lib/noah-mouth-mcp-remote.ts`、`lib/noah-form.ts`、`lib/noah-probe.ts`、巡回での握手、系列への写し | L3 |
-| L5 | つなぐ | 74・96 | migration（`noah_connections`）、`lib/noah-connect.ts`（相手のサーバー）、計画の API、道具の一覧の API、`noah-card.tsx`・`noah-connect-button.tsx`・`noah-ready.tsx`・`noah-ready-detail.tsx`、その場のサインイン、navigation の 1 行 | L4 |
-| L6 | 頼む | 87 | migration（`noah_asks`）、`WorkJob.noahRemote`、`lib/noah-remote-work.ts`、`lib/noah-ask.ts`（入力欄だけ）、`noah-ask.tsx`・`noah-work-list.tsx`、本人の実行で「動いた」を付ける | L5 |
-| L7 | 見回りを保つ | 88 | 失敗が続いた物を外す、量産を握手の対象から外す、並びの引き直し、取り下げと戻し、止まった依頼と接続の後始末、つながると確かめた数 | L6 |
-| L8 | 出すための運用 | 97 | `/noah/help` の `#bot`、運営の画面（切り替えの状態・見張る数）、戻し方の手順書 | L3 |
-| L9 | 受入 | 90 | 一周の自動試験、画面の決まりの試験、実機の確かめの表 | L6 |
+| L4 | 握手 | 86 | `lib/noah-mouth-mcp-remote.ts`、`lib/noah-form.ts`、`lib/noah-probe.ts`、巡回での握手（`lib/noah-intake-probe.ts`）、系列への写し。握手の結果を書く所なので、失敗が続いた物を外す・30 日で隠す・量産を握手の対象から外す、も、ここで入れた | L3 |
+| L5 | つなぐ | 74・96 | migration（`noah_connections`）、`lib/noah-connect.ts`（相手のサーバー）、計画の API（`lib/noah-connect-source.ts`・`lib/noah-connect-plan-api.ts`）、道具の一覧の API、利用者の操作から始める握手（`lib/noah-user-handshake.ts`。接続先の枠・401 と 429 の扱い）、つないでいる人が居る系列を 24 時間ごとに確かめる（88 の 9.3）。画面（`noah-ready.tsx`・`noah-ready-detail.tsx`・`noah-card.tsx`・`noah-connect-button.tsx`・`noah-ask.tsx`（道具の一覧まで）、その場のサインイン、探す画面の入口 `noah-ready-entry.tsx`）。出す場所とサインインの扱いは、本人の返事を待ちながら、既定で作った（74 の 11.5 の最初の表） | L4 |
+| L6 | 頼む | 87 | migration（`noah_asks`）、`WorkJob.noahRemote`、`lib/noah-remote-work.ts`、`lib/noah-ask.ts`・`lib/noah-ask-store.ts`（入力欄だけ）、`noah-ask.tsx`・`noah-work-list.tsx`、本人の実行で「動いた」を付ける、切った時に終わっていない依頼を止める。成果を「成果データ」「実行中」に出す所は、まだ（87 の 11.8） | L5 |
+| L7 | 見回りを保つ | 88 | 止まった依頼と接続の後始末（`lib/noah-sweep.ts`。巡回の合図の終わりに行う。migration は、つなぐ途中の接続を拾う索引 1 つ）、道具を呼ぶ直前の「相手へ送る」の印、つながると確かめた数（失敗が続いた物を外す・量産を握手の対象から外す は L4 で、並びの引き直し・取り下げと戻し は L3 で入った） | L6 |
+| L8 | 出すための運用 | 97 | `/noah/help` の `#bot`（文と宛先は `lib/noah-bot-notice.ts`。宛先は 2026-11-21 に本人が決めた smash@avoado.si（D8）。宛先を null に戻すと、節も、一覧と詳細からの道も、出なくなる）、運営の画面の「見張る数」（`lib/noah-launch-status.ts`。切り替えの状態・台帳の巡回・まだ握手していない数・握手の結果・同じ接続先への握手・接続と依頼の数）、巡回を起こす Worker の配備と止め方の手順書（`services/noah-patrol-wake/README.md`）、切り替えを閉じた時の動きの試験（`tests/noah-launch-ops.test.mjs`）。**本番への配備・適用・切り替えは、行っていない** | L3 |
+| L9 | 受入 | 90 | 一周の自動試験（`tests/noah-phone-loop.test.mjs`。画面が呼ぶのと同じ入口だけで、取り込む → つなぐ → 頼む 3 種 → 受け取る → 切る）、画面の決まりの試験（一周の全部の段で）、実機の確かめの表（手元の結果は [90](spec-90-phone-only-loop.md) の 9.4。**本番の結果は、まだ**）。表の通しで見つけた所を 1 つ直した（切った後も、その Agent の画面に成果を出す） | L6 |
 
 L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 までで機能は全部そろい、L9 が「出してよいか」を判定する。
 
-移す先の対応（参照実装 → `lib/`）: `noah-connect-v1.ts` → `noah-connect-requirements.ts`・`noah-connect-plan.ts`（L2）。`noah-intake-v1.ts` → `noah-intake-draft.ts`・`noah-intake-family.ts`・`noah-intake-wake.ts`（L3）、`noahSampleCalls` は移さない（後）。`noah-flags-v1.ts` → `noah-flags.ts`（L3）。`noah-mouth-v1.ts` の握手・呼び出し・検査 → `noah-mouth-mcp-remote.ts`（L4）、相手の許可と起動の型紙は移さない（後）。`noah-form-v1.ts` → `noah-form.ts`（L4）。`noah-tool-agent-v1.ts` は移さない（後）。SQL は `noah-v1.sql` から、その PR の表だけを `drizzle/` へ。`noah-regroup-v1.sql` と `noah-listing-v1.sql` は、文字列のまま `lib/noah-intake-family.ts`・`lib/noah-intake-store.ts` へ。
+移す先の対応（参照実装 → `lib/`）: `noah-connect-v1.ts` → `noah-connect-requirements.ts`・`noah-connect-plan.ts`（L2）。`noah-intake-v1.ts` → `noah-intake-draft.ts`・`noah-intake-family.ts`・`noah-intake-wake.ts`（L3）、`noahSampleCalls` は移さない（後）。`noah-flags-v1.ts` → `noah-flags.ts`（L3）。`noah-mouth-v1.ts` の握手・呼び出し・検査 → `noah-mouth-mcp-remote.ts`（L4）、相手の許可と起動の型紙は移さない（後）。`noah-form-v1.ts` → `noah-form.ts`（L4）。`noah-intake-v1.ts` の見回りの間隔（`nextNoahCheck`）→ `noah-probe.ts`（L4）。`noah-tool-agent-v1.ts` は移さない（後）。SQL は `noah-v1.sql` から、その PR の表だけを `drizzle/` へ。`noah-regroup-v1.sql` と `noah-listing-v1.sql` は、文字列のまま `lib/noah-intake-family.ts`・`lib/noah-intake-store.ts` へ。
 
 ## 7. 本人が決める事（既定つき。決まるまで、既定で進める）
 
@@ -163,8 +163,8 @@ L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 
 | D4 | Noah が自動で道具を呼ぶ見本（`NOAH_PROBE_L2`） | 閉 | 開けると、出す日の「動いた」が最大約 7,000。読み取りだけと宣言された、入力の要らない道具を、接続先ごとに最大 3 回呼ぶ |
 | D5 | Cloudflare の契約 | **確かめが要る。** 巡回は Workers の有料の枠（CPU 時間・D1 の書き込み）が前提（[97](spec-97-launch-ops.md) 3 章） | 無料の枠のままでは、この線では出せない（CPU 時間と、D1 の書き込みの行数が足りない）。載せる数を大きく減らす、別の線が要る |
 | D6 | 巡回を起こす Worker の配備と、合図の鍵 | 配備しない（手元でだけ動く） | 配備すると、本番で毎分の巡回が始まる |
-| D7 | 本番 D1 への migration（3 本） | 適用しない | 適用すると、L3・L5・L6 が本番で動く |
-| D8 | 取り下げ・報告の窓口の宛先 | 未定（`/noah/help#bot` に載せる） | 宛先が無い間は出さない（8 章の G5） |
+| D7 | 本番 D1 への migration（4 本。L7 で、索引を足す 1 本が増えた） | 適用しない | 適用すると、L3・L5・L6・L7 が本番で動く |
+| D8 | 取り下げ・報告の窓口の宛先 | **決定（2026-11-21、本人）: smash@avoado.si**（`lib/noah-bot-notice.ts` の `NOAH_REPORT_CONTACT`。件名「Noah: 一覧の取り下げ・報告」付きの `mailto:`。`/noah/help#bot` に出る） | 宛先を外す（null）と、節と、一覧・詳細からの道が出なくなる（8 章の G5 が偽になる）。巡回の名乗りが、この節の URL を持つ（[97](spec-97-launch-ops.md) の 5 章） |
 | D9 | カードと道具の説明の言葉 | 提供者の原文のまま（英語が多い） | 訳すなら、モデルの契約が要る。Noah は文を作らない決まりも変わる |
 | D10 | 頼む回数の上限 | 同時 8 件、1 分 10 回、24 時間 200 回、1 つの接続先へ全員で 1 分 30 回 | 数だけ変える（`NOAH_ASK_LIMITS`） |
 | D11 | 量産の系列（60 系列・9,070 件）を載せないこと | 載せない | 載せるなら、1 枚のカードの中から 1 件ずつつなぐ画面が要る |
@@ -192,7 +192,7 @@ L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 
 | 段 | する事 | 見える変化 |
 | --- | --- | --- |
 | 0 | L1〜L9 を main へ。migration を適用。切り替えは全部閉 | 無し |
-| 1 | `services/noah-patrol-wake` を配備。`NOAH_PATROL_WAKE_KEY` を両方に置く。`NOAH_PATROL_ENABLED=true` | 審査者にだけ `/noah/ready` が見える。台帳の全件（約 70 分）→ 握手の 1 巡（既定の毎分 8 件で約 3 日。この間だけ `NOAH_PATROL_BUDGET` で 16 件にすると約 1.5 日）が進む |
+| 1 | `services/noah-patrol-wake` を配備。`NOAH_PATROL_WAKE_KEY` を両方に置く。`NOAH_PATROL_ENABLED=true`（手順は `services/noah-patrol-wake/README.md`。D8 の宛先は 2026-11-21 に入れた: 巡回の名乗りの URL を開いた提供者に、説明が出る） | 審査者にだけ `/noah/ready` が見える。台帳の全件（約 70 分）→ 握手の 1 巡（既定の毎分 8 件で約 3 日。この間だけ `NOAH_PATROL_BUDGET` で 16 件にすると約 1.5 日）が進む |
 | 2 | 審査者が、本番で G1〜G6 を確かめる。運営が 100 件動かす | 「動いた」が増える |
 | 3 | `NOAH_INTAKE_PUBLIC=true`、`NOAH_ASK_FORM=true`。navigation に「すぐ使える」が出る。開けた直後に、account を持っていない人の一周（[90](spec-90-phone-only-loop.md) の 5 章の 13）を確かめ、通らなければ閉じる | **ローンチ** |
 
@@ -208,7 +208,7 @@ L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 
 | 道具の説明や成果に、モデル向けの指示が仕込まれている | 入力欄で頼む道では、それを読むモデルが居ない。提供者の文は、文字として表示するだけ | 「1 文で頼む」を入れる時の対策（[87](spec-87-tool-agent.md) 6.4） |
 | 本人の入力が、思わぬ相手へ送られる | 接続の前と、頼む欄の下に「入力は <host> へ送られます。」。相手が別の host へ転送しても、従わない（送り先は、見せた host だけ）。握手の時から従わないので、そういう相手は一覧に載らない（実測: 276 のうち 1） | 転送先を見せた上でつなぐ作り |
 | 提供者が、Noah からの通信を望まない | 名乗り（`NoahBot/1` と説明の頁）。巡回の握手は、同じ接続先へ 1 時間に 1 回まで。429 と `Retry-After` を、巡回も利用者の操作も守る。取り下げの申し出で、握手も止める | — |
-| 台帳が止まる・形が変わる | 巡回は、失敗したら間隔を伸ばして続ける。前回の 9 割未満しか読めなかった全件の巡回では、取り下げを行わない。今ある一覧は、そのまま出し続ける | — |
+| 台帳が止まる・形が変わる | 巡回は、失敗したら間隔を伸ばして続ける（6 回続いたら、同じ印から読み直す）。形の違う記録は 1 件ずつ読み飛ばし、1 頁で 10 件を越えたら、その頁で止まる（合図は 500 を返し、失敗として残る）。全件の巡回で見えなくなった候補を取り下げるのは、持っている有効な候補の 9 割以上が見えた時だけ（半分だけ・空の一覧が何回続いても、取り下げない）。今ある一覧は、そのまま出し続ける（[85](spec-85-intake.md) の 5.1・11.8） | — |
 | 一覧と検索を、機械で大量に読まれる | 読めるのは、台帳に公開されている記録と、Noah が確かめた印だけ（鍵・本人の情報は無い）。サインインしていない人への同じ問い合わせは、60 秒持つ。検索の語は 2 文字以上 | 配備先の側の回数制限。検索用の表 |
 | 費用が増える | モデルを使わない。D1 の書き込みは月に約 700 万行の見込み（有料の枠に含まれる 5,000 万行の中。内訳は [97](spec-97-launch-ops.md) の 3 章）。握手は毎分 8〜16 件 | 利用が増えた時の上限 |
 | 相手の道具が、読み取りだけと宣言しながら、何かを変える | 宣言を信じるのは「確かめを省く」所だけ。見本の自動実行（D4）は閉じたまま | — |
@@ -271,5 +271,7 @@ L1 と L2 は並べて進められる。L8 は L3 の後ならいつでも。L7 
 入れない物（出した後）: その人に合う物を当てる並び（予測）、目的のタグを機械で付ける事、続けて任せる（毎朝・毎週の形）。どれも、利用の記録が貯まってから。
 
 決まっていない事: 「教育」は誰の何か。「暮らし」の最初の場面。最初の相手の国と言葉。棚の最低の件数。これが決まるまで、L1〜L4（検査・純関数・取り込み・握手）は、今の仕様のまま進められる（棚の影響を受けない）。
+
+2026-11-21（L1〜L9 を main と合わせた時の記録）: L5（#342）と L8（#346）は、この章の棚を入れずに作った（この章が、本人の確認待ちのため）。入口は、約 18,000 の一覧（「動いた」「まだ誰も動かしていない」）のまま。棚は、本人が決めた後に、別の PR で足す（棚の設計の案は #343）。
 
 **2026-11-21 に決めた事**（本人の決定と、任された既定）: 入口の棚は 2 段ではなく 3 段（「稼ぐ・仕事を省く」「教育」「暮らし」）。棚の持ち方は、カード `noah-package/1` と 2 つの表（`noah_packages`・`noah_package_steps`）。棚に置くのは、運営が動かして確かめた、相手のサーバーの道具 1 つのカード。棚の最低の件数は、棚ごとに 5 枚（候補）。教育は 18 歳以上の学生と社会人、相手は日本・日本語。作り方と完了の定義は [仕様書 100](spec-100-shelf.md) の 13 章（task 100。L5 と L8 に足す）。出した後の人への届け方と、数える物は [trial-300.md](trial-300.md)。L1〜L4 は、今の仕様のまま（棚の影響を受けない）。

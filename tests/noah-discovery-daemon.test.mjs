@@ -18,6 +18,7 @@ void test('daemon schedules independently of a page, sends owner intent and orig
     onStatus: (s) => statuses.push(s),
     fetcher: async (url, init) => {
       calls.push({ url, init });
+      if (url.includes('/intake')) return new Response(null, { status: 404 });
       if (init.method === 'POST') return new Promise((r) => (release = r));
       return Response.json({ ownerScope: scope });
     },
@@ -37,7 +38,7 @@ void test('daemon schedules independently of a page, sends owner intent and orig
   assert.equal(statuses[0].state, 'checked');
   daemon.close();
   await timers[0].f();
-  assert.equal(calls.length, 2);
+  assert.equal(calls.length, 3);
 });
 void test('missing owner, redirected reads and changed owner never count as a successful update', async () => {
   for (const variant of ['missing', 'redirect', 'changed']) {

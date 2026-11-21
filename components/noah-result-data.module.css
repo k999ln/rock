@@ -1,0 +1,15 @@
+.page { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; line-height: 1.7; }
+.page h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+.page h2 { margin-top: 28px; }
+.page a { text-decoration: underline; text-underline-offset: 3px; }
+.page button { border: 1px solid #7778; border-radius: 8px; padding: 10px 16px; color: inherit; background: transparent; cursor: pointer; text-align: left; overflow-wrap: anywhere; }
+.page button:disabled { opacity: .5; cursor: default; }
+.page input:not([type=checkbox]) { border: 1px solid #7778; border-radius: 6px; padding: 8px; background: transparent; color: inherit; max-width: 100%; }
+.page input[type=checkbox] { margin-right: 8px; }
+.page fieldset { border: 1px solid #7778; border-radius: 10px; margin: 18px 0; }
+.page fieldset label { display: block; overflow-wrap: anywhere; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 16px 0; }
+.list { list-style: none; padding: 0; display: grid; gap: 10px; }
+.list button { width: 100%; }
+.detail { border-top: 1px solid #7778; margin-top: 32px; overflow-wrap: anywhere; }
+.detail pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; padding: 18px; background: #8881; border-radius: 10px; }

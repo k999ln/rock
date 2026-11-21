@@ -94,7 +94,7 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
         !testConnection && !builtin && m.adapter !== 'source' && <div className={styles.actions}><button className={styles.primary} disabled={pending} onClick={() => void connect()}>{pending ? '確認しています…' : '接続する'}</button>
           {launchUrl && <a className={styles.primary} href={launchUrl} target="_blank" rel="noopener noreferrer">{m.adapter === 'local_app' ? 'Aniccaの設定画面を開く ↗' : 'Agentを使う ↗'}</a>}
           {launchUrl && m.adapter === 'local_app' && <button disabled={pending} onClick={() => void disconnectLocal()}>設定画面を停止</button>}</div>}
-      {remote && (builtin || m.runtime) && <p><Link href={`/noah/launch?agent=${id}`}>自分のMacを選んで接続・実行</Link></p>}
+      {remote && (builtin || m.runtime) && <p><Link href={`/noah/activity?agent=${id}`}>自分のMacを選んで接続・実行</Link></p>}
       {!remote && m.adapter === 'source' && (m.runtime && upload?.uploadState === 'ready' ? <NoahManagedInstallation key={id + scope} id={id} terminal /> : <p className={styles.notice}>コードを保存しています。実行方式と必要な環境の準備が完了すると接続できます。</p>)}
       {message && <output className={styles.notice}>{message}</output>}
       

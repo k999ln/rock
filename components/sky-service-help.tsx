@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import WorkspaceShell from './workspace-shell';
 import { useSkyServiceStatus } from '@/lib/use-sky-service-status';
+import { noahBotNotice } from '@/lib/noah-bot-notice';
 import styles from './sky-service-help.module.css';
 
 export default function SkyServiceHelp() {
   const service = useSkyServiceStatus();
+  // 外の道具・Agent を提供している方への説明（Noah の巡回と、利用者からの接続）。窓口の宛先が決まるまで、節は出さない（docs/noah/spec-97-launch-ops.md の 5 章）。
+  const bot = noahBotNotice();
   return <WorkspaceShell title="Noahの利用方法" tone="sky" hideTopActions contentClassName={styles.shell}>
     <article className={styles.page}>
       <Link href="/noah/marketplace">マーケットへ戻る</Link>
@@ -34,6 +37,12 @@ export default function SkyServiceHelp() {
         <ul><li>オンラインで利用します。オフライン実行や接続切れ中の停止完了は保証しません。</li><li>導入候補は、本体を実行できるツール数に含みません。LLMの一覧も接続先の候補です。</li><li>Instagram等の外部投稿・広告・請求には実サービスの接続と個別確認が必要です。ブラウザ簡易版の保存を外部操作の完了にしません。</li><li>実行結果の保存に失敗した場合は、結果を手元へ保存してから履歴を確認してください。結果不明の外部操作は重ねて実行しないでください。</li><li>CSVは1ファイル10MBまで。文章保存は20件まで。外部siには利用上限があります。</li></ul>
       </section>
       <section aria-labelledby="sky-help-providers"><h2 id="sky-help-providers">ツールを提供する</h2><p>掲載には作者・版・配布元・ライセンス・権限・料金・扱うデータを申告します。申請しただけで一般公開されることはありません。</p><p><Link href="/noah/register">掲載申請</Link> · <Link href="/noah/publish">SDK・Studio</Link> · <Link href="/noah/sell">販売設定</Link></p><p>基本登録・接続は0円。Tool売上のNoah手数料は10%。外部決済・API・モデル・cloudの費用は別です。決済の接続待ちでは購入・販売できません。</p></section>
+      <section id="bot" className={styles.notice} aria-labelledby="noah-help-bot" hidden={!bot.shown}>
+        <h2 id="noah-help-bot">{bot.title}</h2>
+        {bot.paragraphs.map(text => <p key={text}>{text}</p>)}
+        {bot.report && <p>{bot.report.before}<a href={bot.report.contact.href} {...(bot.report.contact.href.startsWith('https://') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{bot.report.contact.label}</a>{bot.report.after}</p>}
+        <p>{bot.source}</p>
+      </section>
       <section aria-labelledby="sky-help-trouble"><h2 id="sky-help-trouble">問題が起きたとき</h2><p>サインイン状態、ツールの利用条件、サービス接続状態を確認してください。PC専用ツールは接続アプリの状態も確認します。</p><p>開発中の不具合は<a href="https://github.com/k999ln/rock/issues" target="_blank" rel="noopener noreferrer">GitHubのIssue</a>で報告できます。公開されるため、原稿・CSV・個人情報・認証情報を添付せず、画面名・操作・時刻・エラー表示だけを記載してください。</p><p>このページは現在の実装を説明する利用案内です。商品の契約・返金条件は購入前に各商品で確認してください。</p></section>
     </article>
   </WorkspaceShell>;

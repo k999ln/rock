@@ -104,9 +104,17 @@ def ddl_twice():
     for name, sql in before.items():
         assert after.get(name) == sql, f"既存の定義が変わった: {name}"
     new = sorted(n for n in after if n not in before and db.execute("SELECT type FROM sqlite_master WHERE name=?", (n,)).fetchone()[0] == "table")
-    assert new == ["noah_asks", "noah_connection_secrets", "noah_connections", "noah_intake_candidates", "noah_intake_checks", "noah_intake_families",
+    expected = ["noah_asks", "noah_connection_secrets", "noah_connections", "noah_intake_candidates", "noah_intake_checks", "noah_intake_families",
                    "noah_intake_sources", "noah_oauth_clients", "noah_oauth_grants", "noah_oauth_states", "noah_probe_hosts", "noah_standing_works",
-                   "noah_usage_events"], new
+                   "noah_usage_events"]
+    assert new == [name for name in expected if name not in before], new
+    # Promoted launch tables must still be byte-equivalent SQLite definitions,
+    # including checks and indexes; they are no longer newly created by this draft.
+    contract = sqlite3.connect(":memory:")
+    contract.executescript(DDL.read_text())
+    for name, sql in contract.execute("SELECT name,sql FROM sqlite_master WHERE name LIKE 'noah_intake_%' OR name='noah_probe_hosts'"):
+        assert after.get(name) == sql, f"移植した定義が型契約と違う: {name}"
+    contract.close()
 
 
 check("既存の Noah の表がある", existing)
@@ -216,6 +224,14 @@ def connections():
     assert "noah_connections" in plan(db, mine, ("owner-1",))
     on_device = "SELECT id FROM noah_connections WHERE device_id=? AND state='connected'"
     assert "noah_connections_device" in plan(db, on_device, ("dev-1",)), plan(db, on_device, ("dev-1",))
+    # つなぐ途中で止まった接続を、巡回の後始末が拾う文（spec-88 の 9.5）。その接続だけを持つ索引を使い、表を端から読まない。
+    connecting = ("SELECT id,owner_id,state,revision FROM noah_connections WHERE disconnected_at IS NULL AND state IN ('planned','entitling','preparing','probing') "
+                  "AND place='provider' AND updated_at < ? ORDER BY updated_at LIMIT ?")
+    assert "SEARCH noah_connections USING INDEX noah_connections_connecting" in plan(db, connecting, (10**15, 50)), plan(db, connecting, (10**15, 50))
+    assert "SCAN" not in plan(db, connecting, (10**15, 50))
+    # IN の並びが違う文は、この索引を使えない（文は、索引の式と同じに書く）。
+    reordered = connecting.replace("('planned','entitling','preparing','probing')", "('probing','planned','entitling','preparing')")
+    assert "noah_connections_connecting" not in plan(db, reordered, (10**15, 50))
     put(db, "noah_connection_secrets", dict(connection_id=UUID.format(2), name="Authorization", value_ciphertext="v1:…", created_at=1))
     rejects(db, "INSERT INTO noah_connection_secrets(connection_id,name,value_ciphertext,created_at) VALUES(?,?,?,1)", (UUID.format(2), "Authorization", "v1:…"))
     rejects(db, "INSERT INTO noah_connection_secrets(connection_id,name,value_ciphertext,created_at) VALUES('none','K','v',1)")
@@ -381,6 +397,46 @@ def regroup():
         g.execute(stmt, {"threshold": T, "now": 200} if ":now" in stmt else {"threshold": T} if ":threshold" in stmt else {})
     assert g.execute("SELECT hidden_at FROM noah_intake_families WHERE id='hf-mcp-space:a/demo'").fetchone()[0] == 200
     assert dict(g.execute("SELECT id, family_id FROM noah_intake_candidates WHERE state='active'")) == {k: v for k, v in family.items() if k != "hf-mcp-space:a/demo"}
+
+    def rerun(now):
+        """名寄せを流して、系列の表を書いた行の数を返す（候補の表の書き直しは数えない）。"""
+        written = 0
+        for stmt in statements((REPO / "docs/contracts/noah-regroup-v1.sql").read_text()):
+            cursor = g.execute(stmt, {"threshold": T, "now": now} if ":now" in stmt else {"threshold": T} if ":threshold" in stmt else {})
+            body = "\n".join(line for line in stmt.splitlines() if not line.lstrip().startswith("--"))
+            if "UPDATE noah_intake_families" in body or "INSERT INTO noah_intake_families" in body:
+                written += cursor.rowcount
+        return written
+
+    # 本番では、候補は入った時に「1 件で 1 系列」の行を持つ。まとめた候補のその行は、候補が無いので隠れる
+    for cid, fid in family.items():
+        if cid != fid:
+            put(g, "noah_intake_families", dict(id=cid, representative_id=cid, members=1, level=0, badge_hint="unverified", listed=0, one_tap=0, shuffle=0, updated_at=1, revision=1))
+    assert rerun(210) == grouped, "まとめた候補の元の行だけを隠す"
+    assert g.execute("SELECT COUNT(*) FROM noah_intake_families WHERE hidden_at = 210").fetchone()[0] == grouped
+    # 隠してある行は、もう一度流しても書かない（全件の 2 割近くが量産の系列。毎回書き直すと、1 日に 1 万行を越える）
+    assert rerun(220) == 0, "変わらない名寄せは、系列の表を 1 行も書かない"
+    assert g.execute("SELECT hidden_at FROM noah_intake_families WHERE id='hf-mcp-space:a/demo'").fetchone()[0] == 200, "隠した時刻は、最初の値のまま"
+    # 候補が戻った系列は戻す（台帳に戻った物）。まとめたままの候補の元の行は、隠したまま
+    g.execute("UPDATE noah_intake_candidates SET state='active' WHERE id='hf-mcp-space:a/demo'")
+    assert rerun(230) == 1
+    assert g.execute("SELECT hidden_at, updated_at FROM noah_intake_families WHERE id='hf-mcp-space:a/demo'").fetchone() == (None, 230)
+    assert g.execute("SELECT COUNT(*) FROM noah_intake_families WHERE hidden_at = 210").fetchone()[0] == grouped
+    # 量産の系列がほどけた時も、元の行が戻る。候補の無くなった量産の系列は隠れる
+    g.execute("UPDATE noah_intake_candidates SET state='withdrawn' WHERE id=?", (bulk[0],))
+    rerun(240)
+    assert g.execute("SELECT hidden_at FROM noah_intake_families WHERE id='bulk:io.github.maker@gateway.maker.example'").fetchone()[0] == 240
+    assert g.execute("SELECT COUNT(*) FROM noah_intake_families WHERE hidden_at IS NULL AND id IN (%s)" % ",".join("?" * (T - 1)), bulk[1:]).fetchone()[0] == T - 1
+    assert g.execute("SELECT hidden_at FROM noah_intake_families WHERE id=?", (bulk[0],)).fetchone()[0] == 210, "取り下げになった候補の行は、隠したまま"
+    # 握手の失敗が続いて隠した系列（88 の 9.3。代表の first_failure_at がある）は、候補が有効でも、名寄せでは戻さない。握手が通った後に戻る
+    flaky = bulk[1]
+    put(g, "noah_intake_checks", checks() | dict(candidate_id=flaky, level=0, result="unreachable", failures=3, first_failure_at=5))
+    g.execute("UPDATE noah_intake_families SET hidden_at = 245 WHERE id=?", (flaky,))
+    rerun(250)
+    assert g.execute("SELECT hidden_at FROM noah_intake_families WHERE id=?", (flaky,)).fetchone()[0] == 245
+    g.execute("UPDATE noah_intake_checks SET level=1, result='ok', tools_sha256=?, l1_at=255, failures=0, first_failure_at=NULL WHERE candidate_id=?", (H, flaky))
+    rerun(260)
+    assert g.execute("SELECT hidden_at FROM noah_intake_families WHERE id=?", (flaky,)).fetchone()[0] is None
 
 
 check("名寄せの SQL が、参照実装と同じ系列と代表を作る", regroup)

@@ -14,13 +14,17 @@ export function configureNoahEngine(root,directory){if(!path.isAbsolute(director
 export const engineHome = root => engineHomes.get(path.resolve(root))??path.join(root, 'work/runtime-state/noah-engine/colima');
 export const engineSocket = root => `unix://${engineHome(root)}/noah-exec/docker.sock`;
 const docker = (root, args, options = {}) => runCommand('docker', ['--host', engineSocket(root), ...args], { env: localEnv(), ...options });
+export function engineArgs() {
+  return ['start', 'noah-exec', '--activate=false', '--ssh-config=false', '--mount', 'none', '--cpus', '2', '--memory', '4', '--disk', '40', '--root-disk', '10', '--runtime', 'docker', '--vm-type', 'vz', '--binfmt=false', '--network-address=false', '--network-host-addresses=false'];
+}
+
 let engineStarting;
 export async function ensureEngine(root, signal) {
   try { await docker(root, ['info', '--format', '{{.ServerVersion}}'], { signal, timeout: 5000 }); return; } catch { signal.throwIfAborted(); }
   if (!engineStarting) engineStarting = (async () => {
     // Colima ignores COLIMA_HOME if the directory does not already exist.
     await mkdir(engineHome(root), { recursive: true, mode: 0o700 });
-    await runCommand('colima', ['start', 'noah-exec', '--activate=false', '--ssh-config=false', '--mount', 'none', '--cpus', '2', '--memory', '4', '--disk', '40', '--root-disk', '10', '--runtime', 'docker', '--vm-type', 'vz', '--binfmt=false', '--network-address=false', '--network-host-addresses=false'],
+    await runCommand('colima', engineArgs(),
       { env: { ...localEnv(), COLIMA_HOME: engineHome(root), COLIMA_CACHE_HOME: path.join(root, 'work/runtime-state/noah-engine/cache') }, timeout: 300000 });
   })().finally(() => { engineStarting = null; });
   await engineStarting; signal.throwIfAborted();
