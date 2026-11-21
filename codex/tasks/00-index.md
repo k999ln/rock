@@ -77,7 +77,7 @@
 | 順 | ローンチ | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- | --- | --- |
 | 0 | （今の Mac の道。受入の残り） | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 最小構成: 本人の Mac で、選ぶ・接続・実行・成果の受け取り・停止 | 進行中（上の表） |
-| 0 | L1 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け | |
+| 0 | L1 | 84 | [84-noah-screenless-rule.md](84-noah-screenless-rule.md) | 画面を取らない決まりと検査、面の見分け |✅ L1 実装・ローカル検証 [PR #329](https://github.com/k999ln/rock/pull/329)（未マージ・CI履歴検出あり）。面の分類・実機観測は後続 |
 | 1 | L3 | 85 | [85-noah-intake-ledger.md](85-noah-intake-ledger.md) | 外の台帳の取り込みと名寄せ、接続要件の下書き | ✅ L3 実装・ローカル受入 [PR #332](https://github.com/k999ln/rock/pull/332)（L2 #330 を base、未マージ・CI履歴検出あり）。点検の修正 [PR #339](https://github.com/k999ln/rock/pull/339)（#332 を base、未マージ） |
 | 1 | L2・L5 | 96 | [96-noah-connect-plan.md](96-noah-connect-plan.md) | 接続要件 `noah-connect/1` と接続計画（純関数）、カードの手数表示 |✅ L2 実装・ローカル検証 [PR #330](https://github.com/k999ln/rock/pull/330)（未マージ・CI履歴検出あり）。✅ L5: 計画の API とカード（`noah-card.tsx`）を実装・ローカル検証済み [PR #342](https://github.com/k999ln/rock/pull/342)（未マージ）。今ある 13 件（Mac の道）への組み込みは、出した後 |
 | 1 | L4 | 86 | [86-noah-remote-mouth.md](86-noah-remote-mouth.md) | リモートの口（MCP・Space・相手の許可）と L1 の接続試験 | ✅ L4 実装・手元の受入 [PR #335](https://github.com/k999ln/rock/pull/335)（L3 の点検の修正 #339 を base、未マージ）。相手の許可（OAuth）・Space は、出した後 |
