@@ -2,7 +2,13 @@
 
 - Noah のホームをピンタレスト風にした（task 115。Opus / Noelle。本人指示「Noahもっとピンタレストっぽく。redditとかgithubでUIとアルゴリズム取ってきて」と回答）。今動かせる Agent のグリッド（Gestalt の Masonry の決まりを書き写した・2〜6 列・分野の色の面と頭文字）、ボードへ保存（公開も選べる・フォロー）、「表示しない」、詳細の「これも使われています」、上の帯の検索とメニュー。並びは学習なし・乱数なし（X の For You の作りの形・Reddit の hot・Pinterest の Pixie を決まった値で。票 = 保存した人 + 2 × 成果が返った人 − 5 × 表示しない人）。表 6 つ（migration 0054）、`GET /api/noah/pins`・`GET`/`POST /api/noah/boards`。一般公開までは審査者だけ（一般の人は今のタイムライン）。試験 9 本（`tests/noah-pins.test.mjs`）。設計は `docs/noah/spec-115-pin-grid.md`、決定は docs/structure/07 の 2026-11-22。本番の migration・配備はしていない。
 
+- NoahにCowAgentのMac準備ガイド（18秒の操作動画・日本語字幕）と公開3ページのサイトマップを追加し、カタログ・README・YouTube投稿用の導線をつないだ。配備・投稿前（task 71、[PR #369](https://github.com/k999ln/rock/pull/369)）。
+
 ## 2026-11-21
+
+- Noah の棚の最初のカード 17 枚（下書き）を用意した（Opus / Noelle。本人の回答「選んで用意して」）。`data/noah-shelf-first-cards.json`（稼ぐ・仕事を省く 7・教育 4・暮らし 6。健康は除く）。手元の巡回が一覧に載せた系列から選び、どれも相手のサーバーの道具 1 つで終わり、道具を 1 回ずつ実際に呼んで成果が返る事と、入力欄にできる事を確かめた（仕訳・インボイス番号・広告文の点検・自動化の仕様書・Web 調査・求人・法令・英語の発音・中国語・クイズ・算数ぬりえ・ふるさと納税・年末調整・手取り・紅葉・コインロッカー・保育園）。運営の画面の「カードを置く」へそのまま貼れる。試験 4 本（`tests/noah-shelf-first-cards.test.mjs`）。一覧と、置いてから載るまでの手順は `docs/noah/spec-110-shelf.md` の 18 章。本番へは、まだ置いていない。
+
+- Noah の取り込みと握手を手元で計算し、本番へ結果だけを入れる道を作った（Opus / Noelle。本人の問い「上手くローカルで計算できないの？」。[PR #359](https://github.com/k999ln/rock/pull/359)）。`scripts/noah-local-patrol.mjs`（本番と同じコードと migration の表を手元の SQLite で動かし、台帳を読み、握手し、一覧に載せる系列だけを書き出す）、`lib/noah-intake-import.ts`・`POST /api/noah/intake/import`（審査者だけ。手元の L2 は 1 に落とし、本番の L2・取り下げ・隠した印は残し、載せるかは本番の決まりで計算し直す）、運営の画面の「取り込みの結果を入れる」。本番の巡回（`NOAH_PATROL_ENABLED`）と有料の枠を開けなくても、一覧が使える。試験 4 本（`tests/noah-intake-import.test.mjs`）。手順は `docs/noah/spec-97-launch-ops.md` の 12 章。
 
 - NoahのMacで実行した仕事を個別URLから開いて停止・成果保存できるようにした。配布Runnerで接続・実行・ファイル照合・停止・切断を確認（[PR #366](https://github.com/k999ln/rock/pull/366)）。
 
