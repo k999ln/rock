@@ -12,7 +12,7 @@ import styles from './noah-registration.module.css';
 const STORAGE = 'noah-registration-work-v1';
 type Pending = { id: string; key: string };
 const labels = { running: '登録Agentが処理しています', needs_user: '本人による確認を待っています', completed: '登録Agentから完了報告が届きました', failed: '登録を完了できませんでした', unknown: '登録の結果を確認できていません' };
-export default function NoahRegistration({ agentId }: { agentId: string }) {
+export default function NoahRegistration({ agentId,onReturn }: { agentId: string;onReturn?:()=>void }) {
   const vault=useNoahProfile();
   const [excluded,setExcluded]=useState<string[]>([]),[documentId,setDocumentId]=useState(''),[saveNext,setSaveNext]=useState(true);
   const [providers, setProviders] = useState<RegistrationProvider[] | null>(null), [selected, setSelected] = useState(''), [agent, setAgent] = useState(agentId);
@@ -112,7 +112,7 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
     {pending ? <section className={styles.panel} aria-label="登録の進捗"><h2>{job ? labels[job.state] : '登録の受付状況を確認してください'}</h2>
       {job && <><p>登録先：{job.providerName}（{job.providerOrigin}）</p><p>確認期限：{new Date(job.expiresAt).toLocaleString('ja-JP')}</p></>}
       {job?.state === 'needs_user' && <><p>メール確認や本人確認など、登録先での操作が必要です。完了後にこの画面へ戻り、状況を確認してください。</p>{job.verificationUrl && <a href={job.verificationUrl} target="_blank" rel="noreferrer">登録先で確認する <ArrowRight size={16} /></a>}</>}
-      {job?.state === 'completed' && <><p>実際の利用可否は、元のAgentへの接続時に確認します。</p><Link href={job.returnTo}>Agentの利用へ戻る <ArrowRight size={16} /></Link></>}
+      {job?.state === 'completed' && <><p>実際の利用可否は、元のAgentへの接続時に確認します。</p><Link href={job.returnTo} onClick={onReturn}>Agentを使う <ArrowRight size={16} /></Link></>}
       {(!job || ['running','needs_user','unknown'].includes(job.state)) && <><p>同じ登録を繰り返さず、この仕事の状況を確認します。</p><button disabled={busy} onClick={() => { void run(false); }}>{busy ? '確認中…' : '登録の状況を確認'}</button></>}
       <details><summary>このブラウザから記録を消す</summary><p>登録処理は取り消されません。確認用の情報を消すと、この画面から状況を確認できなくなります。結果が不明な時は、登録先で状況を確認してから新しい依頼を行ってください。</p><button disabled={busy} onClick={clear}>ブラウザの確認情報を消す</button></details>
     </section> : providers?.length === 0 ? <section className={styles.panel}><h2>このAgentの登録担当は準備中です</h2><p>登録Agentの接続と必要項目が設定されると、ここから依頼できます。接続前に登録情報を集めることはありません。</p><Link href="/noah/explore">Agentを探す</Link></section> : provider?.requiresAccount && !vault.profile ? <section className={styles.panel}>{vault.guest?<><h2>接続を安全に引き継ぐ</h2><p>一度ログインすると、登録後はキーを入力せずに使えます。</p><Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/registration?agent=${agent}`)}`}>サインインして続ける</Link></>:vault.error?<><p role="alert">{vault.error}</p><button onClick={()=>{void vault.reload();}}>再読み込み</button></>:<NoahLoading label="アカウントを確認しています"/>}</section> : provider && <form onSubmit={e => { e.preventDefault(); if (review) void run(true); else setReview(true); }}>
