@@ -83,6 +83,7 @@
     "shared:sync": "node scripts/sync-shared-stripe.mjs --write",
     "shared:check": "node scripts/sync-shared-stripe.mjs --check",
     "spider:feedback": "node scripts/spider-feedback.mjs",
+    "noah:esim:trial": "node --experimental-strip-types toolkits/esim-bootstrap/noah-trial/server.mjs",
     "esim:demo": "node toolkits/esim-bootstrap/demo.mjs",
     "esim:test": "node --test tests/esim-bootstrap.test.mjs",
     "sky:a2a:workflow:test": "node --experimental-strip-types scripts/check-sky-a2a-workflow.mjs",

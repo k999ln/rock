@@ -1,0 +1,223 @@
+import { createServer } from 'node:http';
+import { readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { randomUUID } from 'node:crypto';
+import { NoahTrial, newCredential, TRIAL_MS, TrialError } from './trial.mjs';
+import { base, esc, layout, screen } from './view.mjs';
+
+async function readForm(req) {
+  if (
+    req.headers['content-type']?.split(';')[0] !==
+    'application/x-www-form-urlencoded'
+  )
+    throw new TrialError(415, 'フォームから送信してください。');
+  const chunks = [];
+  let length = 0;
+  for await (const chunk of req) {
+    length += chunk.length;
+    if (length > 2048) throw new TrialError(413, '入力が長すぎます。');
+    chunks.push(chunk);
+  }
+  const form = new URLSearchParams(Buffer.concat(chunks).toString('utf8'));
+  if (new Set(form.keys()).size !== [...form.keys()].length)
+    throw new TrialError(400, '入力が重複しています。');
+  return Object.fromEntries(form);
+}
+function listen(server, port) {
+  return new Promise((ok, fail) => {
+    server.once('error', fail);
+    server.listen(port, '127.0.0.1', () => {
+      server.off('error', fail);
+      ok();
+    });
+  });
+}
+const closeServer = (server) =>
+  new Promise((resolve) => {
+    server.close(resolve);
+    server.closeIdleConnections();
+  });
+export async function startTrialServers(
+  trial,
+  { publicPort = 0, mobilePort = 0 } = {},
+) {
+  const origins = {};
+  let cookie;
+  function handler(dedicated) {
+    return async (req, res) => {
+      const origin = dedicated ? origins.mobile : origins.public;
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('Referrer-Policy', 'same-origin');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader(
+        'Content-Security-Policy',
+        "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+      );
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      try {
+        if (!origin || req.headers.host !== new URL(origin).host)
+          throw new TrialError(403, 'ローカルの入口から開いてください。');
+        const path = req.url;
+        if (path === '/' && req.method === 'GET') {
+          res.writeHead(302, { Location: base });
+          res.end();
+          return;
+        }
+        const token = (req.headers.cookie ?? '')
+          .split(';')
+          .map((v) => v.trim())
+          .find((v) => v.startsWith(cookie + '='))
+          ?.slice(cookie.length + 1);
+        const session = trial.session(token);
+        if (req.method === 'GET' && path === base) {
+          const order = session && trial.order(session.owner);
+          let verified = false;
+          if (
+            dedicated &&
+            order?.state === 'enabled' &&
+            trial.phone(session.owner) &&
+            order.access === 'active'
+          ) {
+            await trial.gate(session.owner, true);
+            verified = true;
+          }
+          res.end(
+            screen({
+              session,
+              order,
+              dedicated,
+              verified,
+              origins,
+              installed: session && !!trial.phone(session.owner),
+              jobs: verified ? await trial.jobs(session.owner) : [],
+              notice:
+                !dedicated && session && (await trial.hasUpdate(session.owner)),
+            }),
+          );
+          return;
+        }
+        if (req.method !== 'POST' || !path.startsWith(base))
+          throw new TrialError(404, 'ページが見つかりません。');
+        if (req.headers.origin !== origin)
+          throw new TrialError(403, 'この試験画面から操作してください。');
+        const fields = await readForm(req);
+        const action = path.slice(base.length);
+        const cookieOptions = `; Path=${base}; HttpOnly; SameSite=Strict`;
+        if (action === 'login') {
+          const value = trial.login(fields.invite ?? '');
+          res.setHeader(
+            'Set-Cookie',
+            cookie + '=' + value + cookieOptions + '; Max-Age=86400',
+          );
+        } else {
+          if (!session)
+            throw new TrialError(401, '招待コードで入り直してください。');
+          const owner = session.owner;
+          switch (action) {
+            case 'enroll':
+              await trial.enroll(owner);
+              break;
+            case 'install':
+              await trial.install(owner);
+              break;
+            case 'approve':
+              await trial.approve(owner, dedicated, fields);
+              break;
+            case 'read':
+              await trial.receive(owner, dedicated, fields.id ?? '');
+              break;
+            case 'stop':
+              await trial.gate(owner, dedicated);
+              await trial.stop(owner, fields.id ?? '');
+              break;
+            case 'revoke':
+              await trial.revoke(owner);
+              break;
+            case 'logout':
+              trial.logout(token);
+              res.setHeader(
+                'Set-Cookie',
+                cookie + '=' + cookieOptions + '; Max-Age=0',
+              );
+              break;
+            default:
+              throw new TrialError(404, '操作が見つかりません。');
+          }
+        }
+        res.writeHead(303, { Location: base });
+        res.end();
+      } catch (error) {
+        res.statusCode = error instanceof TrialError ? error.status : 503;
+        res.end(
+          layout(
+            '操作を確認してください',
+            `<p>${esc(error instanceof TrialError ? error.message : '状態を照合できませんでした。同じ試験画面から再試行してください。')}</p><a href="${base}">試験画面へ戻る</a>`,
+          ),
+        );
+      }
+    };
+  }
+  const general = createServer(handler(false)),
+    mobile = createServer(handler(true));
+  await listen(general, publicPort);
+  try {
+    await listen(mobile, mobilePort);
+  } catch (error) {
+    await closeServer(general);
+    throw error;
+  }
+  origins.public = 'http://127.0.0.1:' + general.address().port;
+  origins.mobile = 'http://127.0.0.1:' + mobile.address().port;
+  cookie = 'noah_trial_' + general.address().port;
+  try {
+    await trial.recoverAlarms();
+  } catch (error) {
+    await Promise.all([closeServer(general), closeServer(mobile)]);
+    throw error;
+  }
+  return {
+    origins,
+    async close() {
+      await Promise.all([closeServer(general), closeServer(mobile)]);
+    },
+  };
+}
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
+) {
+  process.umask(0o077);
+  const dir = join(homedir(), '.local', 'share', 'noah', 'esim-trial');
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  const trial = new NoahTrial(dir);
+  const path = join(dir, 'invite.txt');
+  // A stable private file lets another browser recover the same invitation.
+  // Starting again never renews an expired invitation or grants a second order.
+  if (!trial.db.prepare('SELECT 1 FROM trial_owners LIMIT 1').get()) {
+    let credential;
+    try {
+      credential = readFileSync(path, 'utf8').trim();
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+      credential = newCredential();
+      writeFileSync(path, credential + '\n', { mode: 0o600, flag: 'wx' });
+    }
+    chmodSync(path, 0o600);
+    trial.invite(randomUUID(), credential, Date.now() + TRIAL_MS);
+  }
+  const servers = await startTrialServers(trial, {
+    publicPort: 43871,
+    mobilePort: 43872,
+  });
+  console.log(
+    `Noah 模擬回線　${servers.origins.public}${base}\n招待コードはこのMacの ${path} にあります。\n申込・Agent実行・事業者費用 0円。停止は Ctrl+C。`,
+  );
+  const shutdown = async () => {
+    await servers.close();
+    await trial.close();
+  };
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
+}
