@@ -1,0 +1,176 @@
+{
+  "note": "最初の棚のカード案（2026-11-21）。全部が下書き（draft）で、運営が自分で動かして成果を確かめるまで、棚には載らない。家の端末の Agent の ID は lib/noah-execution-contract.mjs の RECIPES、Noah の中の道具の ID は lib/work-composition.ts、売値の目安は lib/sky-gig-offers.ts の最低額。試験（noah-shelf.test.mjs）が、今の main と合っている事を確かめる。先が決まっていない工程（gap）は、動かして確かめた道具に置き換える。",
+  "packages": [
+    {
+      "schema": "noah-package/1", "id": "pkg:bug-fix", "shelf": "earn", "topic": "dev",
+      "title": "不具合を直す",
+      "promise": "不具合の報告とコードを渡すと、直したコードと、変えた所の説明が返ります。",
+      "give": "不具合の報告と、関係するコード（貼れる長さ）", "get": "直したコードと、変えた所の説明",
+      "have": ["bug-report", "code"], "want": "fixed-code",
+      "steps": [{ "ref": { "kind": "home", "agentId": "research-adc2fb98c295eaf3fc52" }, "consumes": ["bug-report", "code"], "produces": "fixed-code", "ownerMinutes": 2 }],
+      "checks": [
+        { "id": "lists-changes", "text": "変えたファイルと、変えた理由が書いてある", "judge": "rule" },
+        { "id": "addresses-report", "text": "報告された不具合に答えている", "judge": "jev" }
+      ],
+      "position": 10, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:cited-report", "shelf": "earn", "topic": "research",
+      "title": "テーマを調べてレポートにする",
+      "promise": "調べたいテーマを渡すと、出典つきのレポートが返ります。",
+      "give": "調べたいテーマ（1〜3 行）", "get": "出典つきのレポート",
+      "have": ["topic"], "want": "cited-report",
+      "steps": [{ "ref": { "kind": "gap", "note": "ネットを調べて出典を集める道具（動かして確かめた物）" }, "consumes": ["topic"], "produces": "cited-report", "ownerMinutes": 1 }],
+      "checks": [
+        { "id": "cites-sources", "text": "出典が 3 つ以上ある", "judge": "rule" },
+        { "id": "answers-topic", "text": "テーマに答えている", "judge": "jev" },
+        { "id": "lists-unknowns", "text": "確かめられなかった点が書いてある", "judge": "rule" }
+      ],
+      "priceHint": { "offerId": "research-report", "floorYen": 8000 },
+      "position": 20, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:inquiry-reply", "shelf": "earn", "topic": "support",
+      "title": "問い合わせに返信の下書きを作る",
+      "promise": "問い合わせの文と案内を渡すと、返信の下書きが返ります。送るのは本人です。",
+      "give": "問い合わせの文と、店や会社の案内", "get": "返信の下書き",
+      "have": ["inquiry", "guide"], "want": "reply-draft",
+      "steps": [{ "ref": { "kind": "home", "agentId": "research-ce4d82de8c3d6abcf0ee" }, "consumes": ["inquiry", "guide"], "produces": "reply-draft", "ownerMinutes": 2 }],
+      "checks": [
+        { "id": "answers-inquiry", "text": "問い合わせの全部の点に答えている", "judge": "jev" },
+        { "id": "uses-guide-only", "text": "案内に無い事を約束していない", "judge": "jev" }
+      ],
+      "position": 30, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:csv-cleanup", "shelf": "earn", "topic": "office",
+      "title": "CSV を整えて検査する",
+      "promise": "CSV を渡すと、重複や形のずれを直した CSV と、検査の結果が返ります。",
+      "give": "CSV（UTF-8・小さめ）", "get": "整えた CSV と、検査の結果",
+      "have": ["csv"], "want": "checked-csv",
+      "steps": [
+        { "ref": { "kind": "builtin", "toolId": "rockstar-csv-cleanup" }, "consumes": ["csv"], "produces": "cleaned-csv", "ownerMinutes": 1 },
+        { "ref": { "kind": "builtin", "toolId": "compose-check" }, "consumes": ["cleaned-csv"], "produces": "checked-csv", "ownerMinutes": 0 }
+      ],
+      "checks": [
+        { "id": "csv-structure", "text": "列の数が、全部の行でそろっている", "judge": "rule" },
+        { "id": "lists-changes", "text": "変えた内容の一覧がある", "judge": "rule" }
+      ],
+      "priceHint": { "offerId": "csv-cleanup", "floorYen": 3000 },
+      "position": 40, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:manuscript-free-edition", "shelf": "earn", "topic": "office",
+      "title": "原稿の出典を整えて無料公開版を作る",
+      "promise": "自分で書いた原稿を渡すと、出典を整え、無料で見せる範囲を切り出し、条件を検査します。",
+      "give": "自分で書いた原稿と、無料で見せる範囲", "get": "検査を通った、公開用の記事",
+      "have": ["text"], "want": "checked-article",
+      "steps": [
+        { "ref": { "kind": "builtin", "toolId": "mr-citations" }, "consumes": ["text"], "produces": "cited-text", "ownerMinutes": 0 },
+        { "ref": { "kind": "builtin", "toolId": "mr-free-article" }, "consumes": ["cited-text"], "produces": "article", "ownerMinutes": 2 },
+        { "ref": { "kind": "builtin", "toolId": "compose-check" }, "consumes": ["article"], "produces": "checked-article", "ownerMinutes": 0 }
+      ],
+      "checks": [
+        { "id": "required-phrases", "text": "必ず入れる文言が入っている", "judge": "rule" },
+        { "id": "length", "text": "文字数が、指定の範囲にある", "judge": "rule" }
+      ],
+      "position": 50, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:survey-analysis", "shelf": "earn", "topic": "office",
+      "title": "数字の入った文章を分析する",
+      "promise": "アンケートの結果など、数字の入った文章を渡すと、集計と読み取りのレポートが返ります。",
+      "give": "数字の入った文章（貼れる長さ）", "get": "集計と、読み取りのレポート",
+      "have": ["text"], "want": "analysis",
+      "steps": [{ "ref": { "kind": "home", "agentId": "research-c2eb6eb3ed6c5b5f0ca6" }, "consumes": ["text"], "produces": "analysis", "ownerMinutes": 2 }],
+      "checks": [
+        { "id": "shows-numbers", "text": "集計した数が書いてある", "judge": "rule" },
+        { "id": "separates-facts", "text": "読み取れる事と、読み取れない事を分けている", "judge": "jev" }
+      ],
+      "priceHint": { "offerId": "survey-analysis", "floorYen": 8000 },
+      "position": 60, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:sheet-script", "shelf": "earn", "topic": "dev",
+      "title": "表計算の作業をスクリプトにする",
+      "promise": "やりたい作業を文章で渡すと、表計算で動くスクリプトと、設定の手順が返ります。",
+      "give": "やりたい作業の説明", "get": "スクリプトと、設定の手順",
+      "have": ["text"], "want": "script",
+      "steps": [{ "ref": { "kind": "home", "agentId": "research-adc2fb98c295eaf3fc52" }, "consumes": ["text"], "produces": "script", "ownerMinutes": 3 }],
+      "checks": [
+        { "id": "has-steps", "text": "設定の手順が書いてある", "judge": "rule" },
+        { "id": "matches-request", "text": "頼んだ作業をしている", "judge": "jev" }
+      ],
+      "priceHint": { "offerId": "sheet-automation", "floorYen": 5000 },
+      "position": 70, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:meeting-notes", "shelf": "earn", "topic": "office",
+      "title": "会議メモを 3 行にまとめる",
+      "promise": "会議のメモを渡すと、決まったこと・担当・期限にまとめます。",
+      "give": "会議のメモ", "get": "決まったこと・担当・期限",
+      "have": ["notes"], "want": "summary",
+      "steps": [{ "ref": { "kind": "home", "agentId": "research-25a5f6ae5d1576507f83" }, "consumes": ["notes"], "produces": "summary", "ownerMinutes": 1 }],
+      "checks": [
+        { "id": "three-lines", "text": "決まったこと・担当・期限の 3 つがある", "judge": "rule" },
+        { "id": "no-additions", "text": "メモに無い事を足していない", "judge": "jev" }
+      ],
+      "position": 80, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:quiz-from-text", "shelf": "learn", "topic": "study",
+      "title": "文章から小テストを作る",
+      "promise": "教科書やノートの文章を渡すと、10 問の小テストと解説が返ります。",
+      "give": "勉強している文章（貼れる長さ）", "get": "10 問の小テストと、解説",
+      "have": ["text"], "want": "quiz",
+      "steps": [{ "ref": { "kind": "home", "agentId": "research-ce4d82de8c3d6abcf0ee" }, "consumes": ["text"], "produces": "quiz", "ownerMinutes": 1 }],
+      "checks": [
+        { "id": "ten-questions", "text": "問題が 10 問ある", "judge": "rule" },
+        { "id": "answers-in-text", "text": "答えが、渡した文章の中にある", "judge": "jev" }
+      ],
+      "position": 10, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:draft-feedback", "shelf": "learn", "topic": "study",
+      "title": "レポートの下書きを見てもらう",
+      "promise": "下書きを渡すと、構成の直し方と、誤りの指摘が返ります。書き直すのは本人です。",
+      "give": "レポートの下書き", "get": "構成の直し方と、誤りの指摘",
+      "have": ["text"], "want": "feedback",
+      "steps": [{ "ref": { "kind": "home", "agentId": "research-25a5f6ae5d1576507f83" }, "consumes": ["text"], "produces": "feedback", "ownerMinutes": 1 }],
+      "checks": [
+        { "id": "points-to-lines", "text": "どの文への指摘かが分かる", "judge": "jev" },
+        { "id": "no-rewrite", "text": "全文を書き直していない", "judge": "jev" }
+      ],
+      "position": 20, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:weekly-plan", "shelf": "life", "topic": "home",
+      "title": "やる事のメモを 1 週間の計画にする",
+      "promise": "やる事のメモを渡すと、曜日ごとの計画にします。",
+      "give": "やる事のメモ", "get": "曜日ごとの計画",
+      "have": ["notes"], "want": "plan",
+      "steps": [{ "ref": { "kind": "home", "agentId": "anicca" }, "consumes": ["notes"], "produces": "plan", "ownerMinutes": 2 }],
+      "checks": [
+        { "id": "has-days", "text": "曜日ごとに分かれている", "judge": "rule" },
+        { "id": "covers-all", "text": "メモの全部の項目が入っている", "judge": "jev" }
+      ],
+      "position": 10, "status": "draft", "revision": 1
+    },
+    {
+      "schema": "noah-package/1", "id": "pkg:health-notes", "shelf": "life", "topic": "health",
+      "title": "体調のメモを整理して助言をもらう",
+      "promise": "体調のメモを渡すと、整理した記録と、出典つきの一般的な助言が返ります。",
+      "give": "体調のメモ", "get": "整理した記録と、出典つきの一般的な助言",
+      "have": ["notes"], "want": "advice",
+      "steps": [{ "ref": { "kind": "gap", "note": "出典を調べて、一般的な助言を書く道具（動かして確かめた物）" }, "consumes": ["notes"], "produces": "advice", "ownerMinutes": 2 }],
+      "checks": [
+        { "id": "cites-sources", "text": "出典が 1 つ以上ある", "judge": "rule" },
+        { "id": "no-diagnosis-or-medication", "text": "診断と、薬の指示をしていない", "judge": "jev" },
+        { "id": "urgent-care-notice", "text": "強い症状・急な症状は医療機関へ、の注意がある", "judge": "rule" },
+        { "id": "keeps-record", "text": "メモの内容を変えずに整理している", "judge": "jev" }
+      ],
+      "advice": "health",
+      "position": 20, "status": "draft", "revision": 1
+    }
+  ]
+}

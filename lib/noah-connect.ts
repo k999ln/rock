@@ -22,11 +22,15 @@ import { noahConnectGate, noahToolForm, noahToolMenu, type NoahConfirmedTool } f
 import { intakeStatement } from './noah-intake-db.ts';
 import { NOAH_LISTING_SQL } from './noah-intake-listing.ts';
 import type { IntakeDependencies } from './noah-intake-sync.ts';
+import { NOAH_CARD_OF_FAMILY, NOAH_LIVE_CARDS, NOAH_SAME_PACKAGE, noahPlanActive, noahPlanOf, type NoahPlanLimits } from './noah-plan.ts';
+import { NOAH_PLAN_CARDS, noahPlanConnectGate } from './noah-shelf.ts';
 import { createNoahUserHandshake, type NoahUserHandshake, type NoahUserHandshakeTarget } from './noah-user-handshake.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 
 export type NoahConnectDependencies = IntakeDependencies & {
   flags: NoahFlags;
+  /** つなげる数を、料金ごとのカードの数にする（task 113。切り替え NOAH_PLAN_LIMITS と、本人の料金の読み方）。無ければ、今の上限のまま。 */
+  planLimits?: NoahPlanLimits;
   /** 応答を返した後に続ける仕事を預ける（Workers の waitUntil）。無ければ、その場で待つ。握手のセッションを閉じる要求に使う。 */
   waitUntil?: (promise: Promise<unknown>) => void;
 };
@@ -166,7 +170,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
   }
 
   /** `POST /api/noah/connect`。spec-74 の 11.3。 */
-  async function connect(owner: string, reviewer: boolean, input: { id: string; agentId: string; planSha256: string }): Promise<NoahConnectReply> {
+  async function connect(owner: string, reviewer: boolean, input: { id: string; agentId: string; planSha256: string; packageId?: string | null }): Promise<NoahConnectReply> {
     if (!noahAllowed(flags, 'ask', reviewer)) return failed(503, NOAH_CONNECT_MESSAGES.closed);
     const requestSha256 = await sha256Hex(canonicalJson({ agentId: input.agentId, planSha256: input.planSha256 }));
     // 同じ操作 ID の再送は、今の行を返す（握手をやり直さない。1 回目が一覧や計画を変えた後でも、同じ応答になる）。
@@ -194,7 +198,15 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
     // つなぐ前の上限。新しく行を作る時だけ数える。越えていれば、行を作らない。相手へ送らない。
     const at = now();
     const counts = await intakeStatement(db, NOAH_LISTING_SQL.connect_gate, { owner, minute_ago: at - 60_000, day_ago: at - 86_400_000 }).first<{ live: number; last_minute: number; last_day: number }>();
-    const gate = noahConnectGate({ live: counts?.live ?? 0, lastMinute: counts?.last_minute ?? 0, lastDay: counts?.last_day ?? 0 }, flags.askLimits);
+    // 料金ごとの数（切り替えが開いていて、料金の読み方がある時だけ）: 数えるのはカード。同じカードの中の 2 本目は、数を増やさない。
+    const limits = deps.planLimits;
+    const packageId = noahPlanActive(limits) && input.packageId && (await prepare(NOAH_CARD_OF_FAMILY, input.packageId, subject.familyId).first()) ? input.packageId : null;
+    let gate = noahConnectGate({ live: counts?.live ?? 0, lastMinute: counts?.last_minute ?? 0, lastDay: counts?.last_day ?? 0 }, flags.askLimits);
+    if (noahPlanActive(limits)) {
+      const cards = (await prepare(NOAH_LIVE_CARDS, owner).first<{ live_cards: number }>())?.live_cards ?? 0;
+      const same = packageId ? !!(await prepare(NOAH_SAME_PACKAGE, owner, packageId).first()) : false;
+      gate = noahPlanConnectGate(await noahPlanOf(limits.source, owner), { liveCards: cards, lastMinute: counts?.last_minute ?? 0, lastDay: counts?.last_day ?? 0 }, same ? 'same_package' : 'new_card');
+    }
     if (!gate.ok) return failed(gate.status, gate.message);
 
     // 行を入れ、握手の手前まで進める（1 回の書き込み）。入らなかった時は、同じ操作か、同じ系列の別の操作が、先に入っている。
@@ -204,6 +216,9 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
         VALUES(?,?,?,?,?,?,?,?,?,'provider','planned',?,?,?,?,1,?,?)`,
         input.id, owner, subject.familyId, subject.familyId, subject.digest, requestSha256, target.connectJson, target.connectSha256, planned.planSha256, consent, JSON.stringify(planned.price), plan.cost.taps, plan.cost.typed, at, at),
       prepare("UPDATE noah_connections SET state=?,revision=revision+1,updated_at=? WHERE id=? AND owner_id=? AND request_sha256=? AND revision=1 AND state='planned'", advance('planned', ...PREPARE), at, input.id, owner, requestSha256),
+      // カードの中でつないだ接続（同じ書き込みの中で。接続の行が入った時だけ）。
+      ...(packageId ? [prepare('INSERT OR IGNORE INTO noah_package_connections(connection_id, package_id) SELECT ?, ? WHERE EXISTS (SELECT 1 FROM noah_connections WHERE id=? AND owner_id=? AND request_sha256=?)',
+        input.id, packageId, input.id, owner, requestSha256)] : []),
     ]);
     if (inserted.meta.changes !== 1 || advanced.meta.changes !== 1) {
       const sameId = await again();
@@ -229,7 +244,11 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
   /** 本人の、切っていない接続（新しい順）。 */
   async function list(owner: string): Promise<NoahConnectReply> {
     const rows = (await prepare(MINE, owner, NOAH_CONNECT_LIMITS.listed).all<Row>()).results;
-    return reply(200, { connections: rows.map(view) });
+    // 料金ごとの数を使っている時は、つないでいるカードの数と、上限を添える（「6 個のうち 4 個」）。
+    const limits = deps.planLimits;
+    if (!noahPlanActive(limits)) return reply(200, { connections: rows.map(view) });
+    const plan = await noahPlanOf(limits.source, owner), live = (await prepare(NOAH_LIVE_CARDS, owner).first<{ live_cards: number }>())?.live_cards ?? 0;
+    return reply(200, { connections: rows.map(view), cards: { live, limit: NOAH_PLAN_CARDS[plan], plan } });
   }
 
   /** `disconnect`: 切る。記録は残る。切った後は、同じ系列をつなぎ直せる。切り替えが閉じていても、切れる。 */
@@ -392,13 +411,13 @@ export function createNoahConnectApi(deps: NoahConnectApiDependencies) {
       return failure(error);
     }
   };
-  const input = async (request: Request, keys: string[]) => {
+  const input = async (request: Request, keys: string[], optional: string[] = []) => {
     const bytes = await boundedNoahBody(request, NOAH_CONNECT_LIMITS.bodyBytes);
     let value: unknown;
     try { value = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new NoahAgentError('入力形式を確認してください。'); }
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw new NoahAgentError('入力形式を確認してください。');
     const record = value as Record<string, unknown>, given = Object.keys(record);
-    if (given.length !== keys.length || !given.every((key) => keys.includes(key))) throw new NoahAgentError('入力形式を確認してください。');
+    if (!keys.every((key) => given.includes(key)) || !given.every((key) => keys.includes(key) || optional.includes(key))) throw new NoahAgentError('入力形式を確認してください。');
     return record;
   };
   const missing = () => json({ error: NOAH_CONNECT_MESSAGES.missing }, 404);
@@ -406,9 +425,11 @@ export function createNoahConnectApi(deps: NoahConnectApiDependencies) {
   return {
     collection: (request: Request) => respond(request, ['GET', 'POST'], async ({ owner, reviewer }) => {
       if (request.method === 'GET') return service.list(owner);
-      const body = await input(request, ['id', 'agentId', 'planSha256']);
+      // packageId: 棚のカードから始めた接続（任意。つなげる数を、カードで数えるため）。
+      const body = await input(request, ['id', 'agentId', 'planSha256'], ['packageId']);
       if (typeof body.id !== 'string' || !UUID.test(body.id) || !plain(body.agentId, 3, 400) || typeof body.planSha256 !== 'string' || !HEX64.test(body.planSha256)) throw new NoahAgentError('操作ID・Agent・計画を確認してください。');
-      return service.connect(owner, reviewer, { id: body.id, agentId: body.agentId, planSha256: body.planSha256 });
+      if (body.packageId !== undefined && (typeof body.packageId !== 'string' || !/^pkg:[a-z0-9][a-z0-9-]{1,62}$/u.test(body.packageId))) throw new NoahAgentError('カードの ID を確認してください。');
+      return service.connect(owner, reviewer, { id: body.id, agentId: body.agentId, planSha256: body.planSha256, packageId: body.packageId ?? null });
     }),
     item: (request: Request, id: string) => respond(request, ['GET', 'POST'], async ({ owner, reviewer }) => {
       if (!UUID.test(id)) return missing();

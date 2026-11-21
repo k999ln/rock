@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { researchKindLabels } from '@/lib/noah-research-types';
 import {
+  noahTimelineCardFacts,
   selectNoahTimeline,
   timelineFilter,
   type NoahTimelineItem,
@@ -78,7 +79,9 @@ export default function NoahTimeline({
   }, [hasMore, loadMore, hasErrors]);
   async function share(item: NoahTimelineItem) {
     const href =
-      item.kind === 'agent'
+      item.kind === 'card'
+        ? item.card.target
+        : item.kind === 'agent'
         ? `${base}/agents/${item.agent.id}`
         : item.kind === 'feedback'
           ? `${base}/feedback/${item.opinion.agentId}#comment-${item.opinion.id}`
@@ -308,6 +311,44 @@ export default function NoahTimeline({
                     </button>
                   </footer>
                 </div>
+              </article>
+            );
+          }
+          if (item.kind === 'card') {
+            const card = item.card;
+            return (
+              <article
+                key={item.key}
+                className={styles.agentPost}
+                data-feed-kind="card"
+              >
+                <div className={styles.agentLabel}>
+                  <Bot size={14} />
+                  <span>仕事のカード</span>
+                  <span>Noah の棚</span>
+                </div>
+                <Link href={card.target} className={styles.agentPreview}>
+                  <span className={styles.agentMonogram} aria-hidden="true">
+                    {card.topicLabel.slice(0, 1)}
+                  </span>
+                  <div>
+                    <span className={styles.publisher}>
+                      {card.topicLabel} · Noah の説明
+                    </span>
+                    <h3>{card.title}</h3>
+                    <p>{card.promise}</p>
+                  </div>
+                  <ArrowUpRight size={20} />
+                </Link>
+                <footer className={styles.agentFooter}>
+                  <span>{noahTimelineCardFacts(card)}</span>
+                  <button
+                    aria-label="カードを共有"
+                    onClick={() => void share(item)}
+                  >
+                    <Share2 size={15} />
+                  </button>
+                </footer>
               </article>
             );
           }
