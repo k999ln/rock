@@ -38,7 +38,8 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     { href: `${base}/activity`, label: '実行中', description: 'Agentの動きと届いた成果を見る', Icon: Activity, selected: pathname.endsWith('/activity') },
     { href: `${base}/data`, label: '成果データ', description: '受け取った結果を確認・保存する', Icon: FolderOpen, selected: pathname.endsWith('/data') || pathname.endsWith('/outputs') },
   ];
-  const currentPage = primary.find(item => item.selected)?.label ?? 'その他の画面';
+  const registration = pathname.endsWith('/registration');
+  const currentPage = primary.find(item => item.selected)?.label ?? (registration ? '登録サポート' : 'その他の画面');
   const secondary = [
     { href: `${base}/registration`, label: '登録サポート', Icon: Bot, selected: pathname.endsWith('/registration') },
   ];
@@ -59,7 +60,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
               </div>
             </div>
             <div className={styles.secondary}><nav aria-label="Noahのその他の機能">{secondary.map(({ href, label, Icon, selected }) => <Link key={label} href={href} aria-label={label} aria-current={selected ? 'page' : undefined}><Icon size={19} strokeWidth={1.6} /><span>{label}</span></Link>)}</nav></div>
-            <Link href={`${base}/social#compose`} className={styles.post} aria-label="ポストする"><PenLine size={22} /><span>ポストする</span></Link>
+            {!registration && <Link href={`${base}/social#compose`} className={styles.post} aria-label="ポストする"><PenLine size={22} /><span>ポストする</span></Link>}
             <Link href={`/account?returnTo=${encodeURIComponent(pathname)}`} className={styles.account} aria-label="アカウント・保存・引き継ぎ"><span className={styles.avatar}><UserRound size={23} /></span><span><strong>アカウント</strong><small>保存・引き継ぎ</small></span><MoreHorizontal size={20} /></Link>
           </div>
         </aside>

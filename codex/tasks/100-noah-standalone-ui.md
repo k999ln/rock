@@ -55,3 +55,11 @@ CI残件: SPIDER / secretsは既存main履歴の3件（docs/design-validation/no
 2026-11-21のボタン接続: Mac手順のコマンド表示を撤去。SwiftUI Noah.appとGUI用準備処理を追加し、固定Node取得・不足ツールの導入・既存の本人承認・接続・停止をボタンへ集約。URLを開くだけでは起動しない。公式origin専用、開発プレビューのad-hoc署名。Developer ID公証、初期状態の別Mac、本番APIを含む通し受入は未完了。PR #337。
 
 検証（GUI接続追補）: 全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は終了0（4,542成功・4 skip、Work API 1,918、CSV 385）。最終差分は `node --experimental-strip-types --test tests/noah-mac-links.test.mjs tests/noah-mac-onboarding.test.mjs tests/noah-launch-ui.test.mjs tests/noah-mac-runner.test.mjs` の24件成功、lint成功。Swiftのビルド/ネイティブURL境界、同梱manifestの別保存先導入、公式固定Nodeのhash/起動、配布ZIPとHTTP取得のhash一致、ad-hoc署名を確認。Webの390px/1360pxとAgent保持の往復を確認。Macがロック中のためネイティブGUIのクリック試験は未実施。公証と本番/別Macの通し受入は残件。
+
+2026-11-21の実機確認・先行配布調査: Macロック解除後、Noah.appの起動/準備/承認画面/キャンセル/再接続を確認。ユーザー録画の両タブは未ログイン状態で、暗い背景のサインインリンクを見落とし再確認を繰り返す状態。公開GETはdevice-sessions401、launch200/13件。専用CSSと同一タブのサインイン復帰へ修正。認証済みの実接続は未確認。Holland Villageのメンバー100人への先行体験の公開調査と設計候補を正本へ追記。コード実行や公式提携の受入ではない。
+
+2026-11-21の登録UX追補: 必須項目入力と送信確認を別ステップにし、任意項目を折りたたみ。確認から編集へ戻る入力は画面内で保持し、同意を解除して再確認。単一候補の選択欄と重複する入力表示を省略。完了から対象Agent付きの /noah/activity へ直接復帰する。端末サインインの390px実画面と同一タブ/コード保持のログイン遷移を確認。登録・端末UI関連29件成功。100人向けの全経路での依頼下書き保存と、スマホ実行、実登録先の接続は未完了。
+
+2026-11-21の追加調査: HVMCの公式活動に加えNN/gの利用者調査とGOV.UKの調査手順を参照し、比較・連絡・段取りの手間→訴求→成果→操作→受入を正本に記録。一般化はサロン外の初見利用者でも別に確かめる。配布文は原稿のみ。Web実行・実provider・依頼の全経路保持は残件。
+
+検証（登録UX・調査追補）: 全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 終了0。4,546成功・4 skip（計4,550）、Work API1,918、CSV385。最後の投稿ボタン重なり修正後、typecheck/lint、登録API/UI・端末UI・timelineの34件、build、bundle/asset closureを再確認して成功。390px/1360pxの架空provider画面で入力→確認→編集と横はみ出しなし、未同意時の送信無効、投稿ボタン非表示を確認。実登録のPOSTは行っていない。ローカル証跡: work/noah-standalone/registration-ux-mobile.jpg、device-signin-mobile.jpg、registration-ux-verify.log。本番変更なし。PR #337。

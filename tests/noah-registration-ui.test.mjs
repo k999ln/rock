@@ -5,7 +5,7 @@ import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 const code = ts.transpileModule(readFileSync(new URL('../components/noah-registration.tsx', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
 const provider = { id: 'example', name: 'Example', agentIds: ['agent'], revision: 1, providerOrigin: 'https://provider.example.com', executorOrigin: 'https://executor.example.com', executorName: 'Registration Agent', termsUrl: 'https://provider.example.com/terms', termsVersion: '1', fields: [{ key: 'email', label: 'メール', type: 'email', required: true, maxLength: 100 }, { key: 'password', label: 'パスワード', type: 'password', required: true, maxLength: 100 }] };
-const job = state => ({ id: 'job', providerName: 'Example', providerOrigin: provider.providerOrigin, state, expiresAt: Date.now() + 86400000, verificationUrl: provider.providerOrigin + '/verify', returnTo: '/noah/launch?agent=agent#library' });
+const job = state => ({ id: 'job', providerName: 'Example', providerOrigin: provider.providerOrigin, state, expiresAt: Date.now() + 86400000, verificationUrl: provider.providerOrigin + '/verify', returnTo: '/noah/activity?compose=1&agent=agent#library' });
 function harness(fetcher, initial = []) {
   const slots = [], effects = [], exports = {}, calls = [], storage = new Map(initial); let cursor = 0, tree;
   const jsx = (type, props) => ({ type, props });
@@ -44,8 +44,8 @@ function fill(h) { h.input('email','synthetic@example.com'); h.input('password',
 void test('registration UI requires recipient and terms consent, submits actual values, and stores only the capability', async t => {
   const h = harness(async (_u,o) => o.method === 'POST' ? Response.json({job:job('needs_user')}) : config()); t.after(() => h.close()); await h.flush(); fill(h);
   assert.match(h.text(), /https:\/\/executor.example.com/); assert.doesNotMatch(h.text(), /synthetic-private-value/);
-  assert.equal(h.button('この情報で登録Agentを実行').props.disabled,true); h.submit(); await h.flush(); assert.equal(h.calls.filter(c => c.options.method==='POST').length,0);
-  h.check('送信先と内容を確認'); assert.equal(h.button('この情報で登録Agentを実行').props.disabled,true); h.check('利用規約'); h.submit(); await h.flush();
+  assert.equal(h.button('同意して登録を依頼').props.disabled,true); h.submit(); await h.flush(); assert.equal(h.calls.filter(c => c.options.method==='POST').length,0);
+  h.check('送信先と内容を確認'); assert.equal(h.button('同意して登録を依頼').props.disabled,true); h.check('利用規約'); h.submit(); await h.flush();
   const post = h.calls.find(c => c.options.method==='POST'), body = JSON.parse(post.options.body);
   assert.equal(body.values.email,'synthetic@example.com'); assert.equal(body.values.password,'synthetic-private-value'); assert.equal(body.termsAccepted,true); assert.equal(body.agentId,'agent');
   assert.match(post.options.headers['X-Noah-Registration-Key'],/^[a-f0-9]{64}$/); assert.doesNotMatch(post.url,/synthetic|key=/);
@@ -65,5 +65,20 @@ void test('restored browser capability only checks an existing job; an empty reg
 });
 void test('editing reviewed values clears both approvals before another registration can start', async t => {
   const h = harness(async()=>config()); t.after(()=>h.close()); await h.flush(); fill(h); h.check('送信先と内容を確認'); h.check('利用規約'); h.click('入力内容を修正する'); h.input('email','changed@example.com'); h.submit();
-  assert.equal(h.button('この情報で登録Agentを実行').props.disabled,true); assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox'&&n.props.checked).length,0);
+  assert.equal(h.button('同意して登録を依頼').props.disabled,true); assert.equal(h.nodes().filter(n=>n.type==='input'&&n.props.type==='checkbox'&&n.props.checked).length,0);
+});
+void test('registration shows one stage, keeps edits in memory, and leaves optional fields collapsed', async t => {
+  const h = harness(async () => Response.json({ providers: [{ ...provider, fields: [...provider.fields, { key: 'name', label: '呼び名', type: 'text', required: false, maxLength: 80 }] }] }));
+  t.after(() => h.close()); await h.flush();
+  const optional = h.nodes().find(n => n.type === 'details' && n.props.children?.some?.(c => c?.type === 'summary' && c.props.children === '任意の情報を追加'));
+  assert.ok(optional); assert.notEqual(optional.props.open, true);
+  assert.equal(h.nodes().filter(n => n.type === 'select').length, 0);
+  fill(h);
+  assert.equal(h.nodes().filter(n => n.type === 'input' && n.props.type !== 'checkbox').length, 0);
+  assert.match(h.text(), /synthetic@example.com/); assert.doesNotMatch(h.text(), /synthetic-private-value/);
+  h.click('入力内容を修正する');
+  assert.equal(h.nodes().find(n => n.type === 'input' && n.props.name === 'email').props.value, 'synthetic@example.com');
+  assert.equal(h.nodes().find(n => n.type === 'input' && n.props.name === 'password').props.value, 'synthetic-private-value');
+  assert.equal(h.storage.size, 0);
+  assert.equal(h.calls.some(c => c.options.method === 'POST'), false);
 });

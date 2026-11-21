@@ -12,6 +12,8 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
   const [values, setValues] = useState<Record<string, string>>({}), [review, setReview] = useState(false), [consent, setConsent] = useState(false), [terms, setTerms] = useState(false);
   const [job, setJob] = useState<RegistrationStatus | null>(null), [pending, setPending] = useState<Pending | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState(''), [reload, setReload] = useState(0);
   const active = useRef({ generation: 0, mounted: false, busy: false });
+  const stageHeading = useRef<HTMLHeadingElement | null>(null);
+  useEffect(() => { stageHeading.current?.focus(); }, [review]);
   const provider = providers?.find(p => p.id === selected), generation = active.current.generation;
   useEffect(() => {
     const state = active.current; state.mounted = true;
@@ -60,32 +62,34 @@ export default function NoahRegistration({ agentId }: { agentId: string }) {
     try { sessionStorage.removeItem(STORAGE); } catch { /* Private mode. */ }
   }
   return <main className={styles.page}>
-    <header><span className={styles.badge}><Bot size={17} />NOAH REGISTRATION AGENT</span><h1>登録が必要なら、ここで準備。</h1><p>使いたい外部Agentの必要項目を入力してください。内容を確認して、登録Agentに手続きを依頼できます。</p><small>Noahの会員登録は不要です。</small></header>
-    <ol className={styles.steps}><li>必要項目を入力</li><li>送信先・内容を確認</li><li>登録Agentを実行</li></ol>
+    <header><span className={styles.badge}><Bot size={17} />登録サポート</span><h1>{provider ? `${provider.name}を使う準備` : 'Agentを使う準備'}</h1><p>このサービスに必要な登録を、ここから進めます。</p><small>Noahの会員登録は不要です。</small></header>
+    {(provider || pending) && <ol className={styles.steps} aria-label="登録のステップ"><li aria-current={!pending && !review ? 'step' : undefined}>1 入力</li><li aria-current={!pending && review ? 'step' : undefined}>2 確認</li><li aria-current={pending ? 'step' : undefined}>3 登録・利用へ</li></ol>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {providers === null && !error && <output>登録先を確認しています…</output>}
     {providers === null && error && <button disabled={busy} onClick={() => setReload(n => n + 1)}>再読み込み</button>}
     {pending ? <section className={styles.panel} aria-label="登録の進捗"><h2>{job ? labels[job.state] : '登録の受付状況を確認してください'}</h2>
       {job && <><p>登録先：{job.providerName}（{job.providerOrigin}）</p><p>確認期限：{new Date(job.expiresAt).toLocaleString('ja-JP')}</p></>}
       {job?.state === 'needs_user' && <><p>メール確認や本人確認など、登録先での操作が必要です。完了後にこの画面へ戻り、状況を確認してください。</p>{job.verificationUrl && <a href={job.verificationUrl} target="_blank" rel="noreferrer">登録先で確認する <ArrowRight size={16} /></a>}</>}
-      {job?.state === 'completed' && <><p>実際の利用可否は、元のAgentへの接続時に確認します。</p><Link href={job.returnTo}>Agentの利用へ戻る <ArrowRight size={16} /></Link></>}
+      {job?.state === 'completed' && <><p>実際の利用可否は、元のAgentへの接続時に確認します。</p><Link className={styles.primary} href={job.returnTo}>Agentの利用へ戻る <ArrowRight size={16} /></Link></>}
       {(!job || ['running','needs_user','unknown'].includes(job.state)) && <><p>同じ登録を繰り返さず、この仕事の状況を確認します。</p><button disabled={busy} onClick={() => { void run(false); }}>{busy ? '確認中…' : '登録の状況を確認'}</button></>}
       <details><summary>このブラウザから記録を消す</summary><p>登録処理は取り消されません。確認用の情報を消すと、この画面から状況を確認できなくなります。結果が不明な時は、登録先で状況を確認してから新しい依頼を行ってください。</p><button disabled={busy} onClick={clear}>ブラウザの確認情報を消す</button></details>
     </section> : providers?.length === 0 ? <section className={styles.panel}><h2>このAgentの登録担当は準備中です</h2><p>登録Agentの接続と必要項目が設定されると、ここから依頼できます。接続前に登録情報を集めることはありません。</p><Link href="/noah/explore">Agentを探す</Link></section> : provider && <form onSubmit={e => { e.preventDefault(); if (review) void run(true); else setReview(true); }}>
-      <section className={styles.panel}><h2>1. 登録先と必要項目</h2><label>登録するサービス<select value={selected} disabled={busy || review} onChange={e => { setSelected(e.target.value); setAgent(agentId || providers?.find(p => p.id === e.target.value)?.agentIds[0] || ''); setValues({}); setConsent(false); setTerms(false); }}>
-        {providers?.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-      </select></label>{!agentId && <label>使うAgent<select value={agent} disabled={busy || review} onChange={e => { setAgent(e.target.value); setValues({}); setConsent(false); setTerms(false); }}>{provider.agentIds.map(id => <option key={id} value={id}>{id}</option>)}</select></label>}
-      {provider.fields.map(field => <label key={field.key}>{field.label}{field.required ? '（必須）' : '（任意）'}<input type={field.type} name={field.key} required={field.required} maxLength={field.maxLength} value={values[field.key] ?? ''} readOnly={review} disabled={busy} autoComplete={field.type === 'password' ? 'new-password' : field.type === 'email' ? 'email' : 'off'} onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))} /></label>)}
-      <p className={styles.hint}><LockKeyhole size={15} />入力内容は登録処理にだけ使い、Noahの仕事履歴には保存しません。</p></section>
-      {review && <section className={styles.panel}><h2>2. 送信する内容を確認</h2><p>登録先：{provider.name}（{provider.providerOrigin}）</p><p>処理する登録Agent：{provider.executorName}（{provider.executorOrigin}）</p>
-        <dl>{provider.fields.map(field => <div key={field.key}><dt>{field.label}</dt><dd>{field.type === 'password' ? (values[field.key] ? '入力済み（表示しません）' : '未入力') : values[field.key] || '未入力'}</dd></div>)}</dl>
-        <p>この登録Agentへ入力内容を渡し、指定した外部サービスへの登録を依頼します。本人確認が必要な場合は、途中であなたの操作を待ちます。</p>
+      {!review && <section className={styles.panel}><h2 ref={stageHeading} tabIndex={-1}>必要な情報を入力</h2>
+      {providers && providers.length > 1 && <label>登録するサービス<select value={selected} disabled={busy} onChange={e => { setSelected(e.target.value); setAgent(agentId || providers.find(p => p.id === e.target.value)?.agentIds[0] || ''); setValues({}); setConsent(false); setTerms(false); }}>
+        {providers.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+      </select></label>}{!agentId && provider.agentIds.length > 1 && <label>使うAgent<select value={agent} disabled={busy} onChange={e => { setAgent(e.target.value); setValues({}); setConsent(false); setTerms(false); }}>{provider.agentIds.map(id => <option key={id} value={id}>{id}</option>)}</select></label>}
+      {provider.fields.filter(field => field.required).map(field => <label key={field.key}>{field.label}<input type={field.type} name={field.key} required maxLength={field.maxLength} value={values[field.key] ?? ''} disabled={busy} autoComplete={field.type === 'password' ? 'new-password' : field.type === 'email' ? 'email' : 'off'} onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))} /></label>)}
+      {provider.fields.some(field => !field.required) && <details><summary>任意の情報を追加</summary>{provider.fields.filter(field => !field.required).map(field => <label key={field.key}>{field.label}（任意）<input type={field.type} name={field.key} maxLength={field.maxLength} value={values[field.key] ?? ''} disabled={busy} autoComplete={field.type === 'password' ? 'new-password' : field.type === 'email' ? 'email' : 'off'} onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))} /></label>)}</details>}
+      <p className={styles.hint}><LockKeyhole size={15} />入力だけでは送信しません。次の画面で確認できます。</p></section>}
+      {review && <section className={styles.panel}><h2 ref={stageHeading} tabIndex={-1}>この内容で登録します</h2><p>登録先：{provider.name}（{provider.providerOrigin}）</p><p>処理する登録Agent：{provider.executorName}（{provider.executorOrigin}）</p>
+        <dl>{provider.fields.filter(field => field.required || values[field.key]).map(field => <div key={field.key}><dt>{field.label}</dt><dd>{field.type === 'password' ? (values[field.key] ? '入力済み（表示しません）' : '未入力') : values[field.key] || '未入力'}</dd></div>)}</dl>
+        <p>登録Agentが手続きします。メール認証などが必要なときだけ、お知らせします。</p>
         <label className={styles.check}><input type="checkbox" checked={consent} disabled={busy} onChange={e => setConsent(e.target.checked)} />送信先と内容を確認し、登録Agentへこの情報を渡して登録を依頼します</label>
         <label className={styles.check}><input type="checkbox" checked={terms} disabled={busy} onChange={e => setTerms(e.target.checked)} /><span><a href={provider.termsUrl} target="_blank" rel="noreferrer">{provider.name}の利用規約</a>（{provider.termsVersion}）を確認し、同意します</span></label>
         <button type="button" disabled={busy} onClick={() => { setReview(false); setConsent(false); setTerms(false); }}>入力内容を修正する</button>
       </section>}
-      <button className={styles.primary} type="submit" disabled={busy || (review && (!consent || !terms))}>{busy ? '依頼しています…' : review ? 'この情報で登録Agentを実行' : '送信する内容を確認'}<ArrowRight size={17} /></button>
+      <button className={styles.primary} type="submit" disabled={busy || (review && (!consent || !terms))}>{busy ? '依頼しています…' : review ? '同意して登録を依頼' : '入力内容を確認'}<ArrowRight size={17} /></button>
     </form>}
-    <p className={styles.footnote}>このブラウザで登録の仕事を確認できます。保存・引き継ぎ機能を使うためのNoahアカウントとは別の手続きです。</p><Link href="/noah#timeline">タイムラインへ戻る</Link>
+    <details className={styles.footnote}><summary>入力情報と登録状況について</summary><p>入力情報は登録手続きだけに使い、Noahの仕事履歴やブラウザには保存しません。送信前にページを閉じると再入力が必要です。送信後はこのブラウザで状況を確認できます。</p></details><Link href="/noah#timeline">タイムラインへ戻る</Link>
   </main>;
 }
