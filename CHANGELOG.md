@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- タスク 102 の Endorse トークン仕様を公式資料で確認し、SIM の署名検証、account への紐付け・解除・照合 API、D1 migration 0054 を追加した。[PR #365](https://github.com/k999ln/rock/pull/365)
+
 - 本人の「規定で進めて」（22:54）で、自社クラウドの K1〜K10 と eSIM の 11〜15 を決めた（Opus / Noelle）。07 に 1 行、03-esim 0 章と compute-placement 0 章を決定に、task 10〜13・101 に決めを反映、task 102〜105 を追加。`lib/cloud-cost.ts`（定価での実費と黒殿へ移す引き金）と `lib/churn-cohort.ts`（eSIM つきとカードだけの解約率と 3 か月の継続、Wilson の幅、判定）を実装し、`tests/cloud-cost.test.mjs`・`tests/churn-cohort.test.mjs`（23 本）を足した。README の eSIM の節を更新。
 
 - 本人の回答（22:31）で eSIM と自社クラウドの設計を直した（Opus / Noelle）。`docs/structure/03-esim.md` 0 章にスマホと自社の端末の eSIM の違い・スマホの型 S/M・離脱率の仮説と測り方、`docs/compute-placement.md` 0 章に自社クラウドの案 A〜D・回線の終端 N1〜N3・本人の鍵 K・運用の設計。07 に 1 行。
