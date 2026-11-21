@@ -300,7 +300,7 @@ void test('Eve retains its app header while Noah has standalone navigation', () 
     assert.ok(all.some(n => n.type === './workspace-flow-navigation'));
   }
   assert.doesNotMatch(source('components/noah-shell.tsx'), /<ProductAppHeader/);
-  assert.match(source('components/noah-shell.tsx'), /aria-label="Noahの主要メニュー"/);
+  assert.match(source('components/noah-shell.tsx'), /aria-label=\{t\('メインメニュー'\)\}/);
   assert.match(source('components/noah-shell.tsx'), /label: 'タイムライン'/);
 });
 

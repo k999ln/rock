@@ -20,6 +20,7 @@ export default function NoahProfile(){
     {state.guest?<div className={styles.empty}><Fingerprint size={32}/><h2>{t("次のAgentでも、入力は少なく。")}</h2><p>{t("保存すると、必要な項目だけ使い回せます。")}</p><Link className={styles.primary} href="/noah/account?returnTo=%2Fnoah%2Fprofile">{t("サインインして保存する")}<ArrowUpRight size={17}/></Link></div>:state.profile?<ProfileEditor key={state.profile.ownerScope} profile={state.profile} busy={state.busy} save={state.save} beginFileSelection={state.beginFileSelection} endFileSelection={state.endFileSelection} cancelFileSelection={state.cancelFileSelection}/>:!state.error?<NoahLoading label={t("保存情報を読み込んでいます…")}/>:null}
     {state.error&&<div role="alert" className={styles.error}>{state.error}<button type="button" onClick={()=>void state.reload()}>{t("読み直す")}</button></div>}
     <NoahLanguageSetting/><NoahHapticsSetting/>
+    <Link className={styles.history} href="/noah/account?returnTo=%2Fnoah%2Fprofile">{t("アカウント")}<ArrowUpRight size={16}/></Link>
   </main>;
 }
 function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,cancelFileSelection}:{beginFileSelection:()=>void;endFileSelection:()=>void;cancelFileSelection:()=>void;profile:NoahProfileView;busy:boolean;save:(body:Record<string,unknown>|File)=>Promise<NoahProfileView|null>}){

@@ -140,15 +140,15 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
     </section>;
   }
   if(!showEmpty)return <section className={styles.section} aria-labelledby="noah-work-list">
-    <h2 id="noah-work-list">{heading ?? NOAH_ASK_TEXT.work}{pending ? <small>進んでいます</small> : null}</h2>
-    {error && <p className={styles.reason} role="alert">{error}</p>}
+    <h2 id="noah-work-list">{t(heading ?? NOAH_ASK_TEXT.work)}{pending ? <small>{t('進んでいます')}</small> : null}</h2>
+    {error && <p className={styles.reason} role="alert">{t(error)}</p>}
     <ul className={styles.work}>{shown.map((ask) => {
       const view = noahAskRowView(ask, now), result = results[ask.id], opened = open[ask.id] === true;
       const preview = result ? noahResultPreview(result.text) : null, outline = result && opened && !raw[ask.id] ? noahResultOutline(result.text) : null;
       return <li key={ask.id} id={`noah-work-${ask.id}`} tabIndex={-1}>
         <div className={styles.workHead}>
-          <p className={styles.workState}>{ask.finishedAt === undefined ? <output>{view.text}</output> : view.text}</p>
-          {view.stoppable && <button type="button" className={styles.secondary} onClick={() => void stop(ask)}>{NOAH_ASK_TEXT.stop}</button>}
+          <p className={styles.workState}>{ask.finishedAt === undefined ? <output>{locale==='ja'?view.text:t(noahWorkState(ask))}</output> : locale==='ja'?view.text:t(noahWorkState(ask))}</p>
+          {view.stoppable && <button type="button" className={styles.secondary} onClick={() => void stop(ask)}>{t(NOAH_ASK_TEXT.stop)}</button>}
         </div>
         <p className={styles.workTool}><strong>{ask.tool ?? ''}</strong>{ask.state === 'succeeded' ? <span> — {result?.note ?? `${ask.host ?? '相手のサーバー'} が返した内容です。`}</span> : null}</p>
         {result && !opened && <pre className={styles.result}><Linked text={preview!.text} /></pre>}
@@ -156,10 +156,10 @@ export default function NoahWorkList({ agentId, ownerScope, refresh, only, headi
           ? <dl className={styles.outline}>{outline.map((row, index) => <div key={`${index}:${row.label}`} data-depth={Math.min(row.depth, 4)}><dt>{row.label}</dt><dd><Linked text={row.text} /></dd></div>)}</dl>
           : <pre className={styles.result}><Linked text={result.text} /></pre>)}
         {result && <div className={styles.workActions}>
-          {(preview!.more || opened) && <button type="button" className={styles.secondary} aria-expanded={opened} onClick={() => setOpen((old) => ({ ...old, [ask.id]: !opened }))}>{opened ? NOAH_ASK_TEXT.close : NOAH_ASK_TEXT.open}</button>}
-          {opened && noahResultOutline(result.text) && <button type="button" className={styles.secondary} onClick={() => setRaw((old) => ({ ...old, [ask.id]: !old[ask.id] }))}>{raw[ask.id] ? NOAH_ASK_TEXT.outline : NOAH_ASK_TEXT.raw}</button>}
+          {(preview!.more || opened) && <button type="button" className={styles.secondary} aria-expanded={opened} onClick={() => setOpen((old) => ({ ...old, [ask.id]: !opened }))}>{t(opened ? NOAH_ASK_TEXT.close : NOAH_ASK_TEXT.open)}</button>}
+          {opened && noahResultOutline(result.text) && <button type="button" className={styles.secondary} onClick={() => setRaw((old) => ({ ...old, [ask.id]: !old[ask.id] }))}>{t(raw[ask.id] ? NOAH_ASK_TEXT.outline : NOAH_ASK_TEXT.raw)}</button>}
         </div>}
-        {!agentId && ask.agentId && <p className={styles.workAgent}><Link href={`/noah/ready/agent?id=${encodeURIComponent(ask.agentId)}`}>{NOAH_ASK_TEXT.agent} →</Link></p>}
+        {!agentId && ask.agentId && <p className={styles.workAgent}><Link href={`/noah/ready/agent?id=${encodeURIComponent(ask.agentId)}`}>{t(NOAH_ASK_TEXT.agent)} →</Link></p>}
       </li>;
     })}</ul>
   </section>;

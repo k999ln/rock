@@ -11,7 +11,6 @@ import {
 } from '@/lib/noah-ask-view';
 import { noahWorkStages, noahWorkState } from '@/lib/noah-work-view';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
-import { noahHaptic } from '@/lib/noah-haptics';
 import styles from './noah-unified.module.css';
 export default function NoahTaskDetail({ id }: { id: string }) {
   const { t, locale } = useNoahLocale();
@@ -83,6 +82,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
       if (!document.hidden) {
         setAsk(null);
         setScope(null);
+        setBusy(false);
         setAttempt((n) => n + 1);
       }
     };
@@ -130,8 +130,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
     link.download = `noah-${ask.id}.txt`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setNotice('保存しました');
-    noahHaptic('success');
+    setNotice('保存を開始しました');
   }
   async function share() {
     if (!ask?.result) return;
