@@ -30,9 +30,9 @@ void test('write guards enforce origin, account scope, strict JSON, reviewer and
   assert.equal((await api(request('https://noah.test', JSON.stringify({ action: 'withdraw', id, revision })))).status, 200);
   assert.equal((await api(request('https://noah.test', JSON.stringify({ action: 'restore', id, revision })))).status, 409);
 });
-void test('wake verifies timestamp, exact body, path and Origin before flags or database; signed enabled wake only fetches registry', async t => {
+void test('wake verifies timestamp, exact body, path and Origin before flags or database; signed enabled wake also probes eligible providers', async t => {
   let calls = 0;
-  const f = fixture(t, async url => { calls++; assert.equal(new URL(url).hostname, 'registry.modelcontextprotocol.io'); return page([entry(1)]); });
+  const f = fixture(t, async url => { calls++; if(new URL(url).hostname==='registry.modelcontextprotocol.io')return page([entry(1)]); return new Response(null,{status:401}); });
   const signature = await noahWakeSignature(key, String(NOW));
   const request = (overrides = {}) => new Request('https://noah.test' + (overrides.path ?? '/api/noah/intake/tick'), { method: 'POST', body: overrides.body ?? '{}', headers: { 'x-noah-time': String(NOW), 'x-noah-signature': signature, ...overrides.headers } });
   const tick = createIntakeTick(depsFor(f));
@@ -41,7 +41,7 @@ void test('wake verifies timestamp, exact body, path and Origin before flags or 
   assert.equal((await createIntakeTick(depsFor(f, { wakeKey: undefined }))(request())).status, 401);
   assert.deepEqual(await (await tick(request())).json(), { disabled: true }); assert.equal(f.queries.length, 0); assert.equal(calls, 0);
   const enabled = createIntakeTick(depsFor(f, { flags: parseNoahFlags({ NOAH_PATROL_ENABLED: 'true' }) }));
-  const response = await enabled(request()); assert.equal(response.status, 200); assert.deepEqual(await response.json(), { pages: 1, seen: 1, changed: 1, more: false }); assert.equal(calls, 1);
+  const response = await enabled(request()); assert.equal(response.status, 200); const result=await response.json();assert.deepEqual({...result,probes:undefined,recovery:undefined}, { pages: 1, seen: 1, changed: 1, more: false,probes:undefined,recovery:undefined });assert.equal(result.probes[0].result,'auth_required');assert.deepEqual(result.recovery,{connections:0,asks:0});assert.equal(calls, 2);
 });
 void test('flag parsing preserves safe defaults and flags malformed overrides for review', () => {
   const flags = parseNoahFlags({ NOAH_INTAKE_PUBLIC: 'TRUE', NOAH_PATROL_ENABLED: '1', NOAH_PATROL_BUDGET: '{"pages":0,"unknown":2}', NOAH_ASK_LIMITS: 'null', NOAH_MODEL_RELAY: 'live' });

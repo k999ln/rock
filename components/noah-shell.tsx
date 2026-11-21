@@ -14,6 +14,9 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const pathname = usePathname();
   const preview = pathname.startsWith('/noah/public');
   const effectiveMode = preview ? 'public' : mode, base = preview ? '/noah/public' : '/noah';
+  const [remoteReady,setRemoteReady]=useState(false);
+  useEffect(()=>{if(preview)return;const controller=new AbortController();void fetch('/api/noah/intake?limit=0',{cache:'no-store',signal:controller.signal}).then(r=>setRemoteReady(r.ok)).catch(()=>{});return()=>controller.abort();},[preview,pathname]);
+  const explore=remoteReady?'/noah/ready':`${base}/explore`;
   const [hash, setHash] = useState('');
   const menuId = useId(), menu = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -34,7 +37,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const isTimeline = pathname === base || pathname === '/' || pathname === '/os';
   const primary = [
     { href: timeline, label: 'タイムライン', description: 'みんなの投稿とAgentを見る', Icon: Home, selected: pathname === base || pathname === '/' || pathname === '/os' },
-    { href: `${base}/explore`, label: 'Agentを探す', description: '頼みたい仕事に合うAgentを見つける', Icon: Compass, selected: pathname.endsWith('/explore') },
+    { href: explore, label: 'Agentを探す', description: '頼みたい仕事に合うAgentを見つける', Icon: Compass, selected: pathname.endsWith('/explore') || pathname.startsWith('/noah/ready') },
     { href: `${base}/activity`, label: '実行中', description: 'Agentの動きと届いた成果を見る', Icon: Activity, selected: pathname.endsWith('/activity') },
     { href: `${base}/data`, label: '成果データ', description: '受け取った結果を確認・保存する', Icon: FolderOpen, selected: pathname.endsWith('/data') || pathname.endsWith('/outputs') },
   ];
@@ -60,15 +63,15 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
               </div>
             </div>
             <div className={styles.secondary}><nav aria-label="Noahのその他の機能">{secondary.map(({ href, label, Icon, selected }) => <Link key={label} href={href} aria-label={label} aria-current={selected ? 'page' : undefined}><Icon size={19} strokeWidth={1.6} /><span>{label}</span></Link>)}</nav></div>
-            {!registration && <Link href={`${base}/social#compose`} className={styles.post} aria-label="ポストする"><PenLine size={22} /><span>ポストする</span></Link>}
+            {!registration && isTimeline && <Link href={`${base}/social#compose`} className={styles.post} aria-label="ポストする"><PenLine size={22} /><span>ポストする</span></Link>}
             <Link href={`/account?returnTo=${encodeURIComponent(pathname)}`} className={styles.account} aria-label="アカウント・保存・引き継ぎ"><span className={styles.avatar}><UserRound size={23} /></span><span><strong>アカウント</strong><small>保存・引き継ぎ</small></span><MoreHorizontal size={20} /></Link>
           </div>
         </aside>
         <div className={styles.content} id="noah-content" tabIndex={-1}>{children}</div>
         {isTimeline && <aside className={styles.support} aria-label="検索とおすすめ">
           <div className={styles.supportInner}>
-            <search><form action={`${base}/explore`} className={styles.search}><Search size={20} /><input aria-label="Agentを探す" name="q" maxLength={120} placeholder="検索" type="search" /></form></search>
-            <section className={styles.supportCard}><h2>Agentと、できることを。</h2><p>気になるAgentを見つけて、あなたの仕事を頼んでみよう。</p><Link href={`${base}/explore`} className={styles.pill}>Agentを探す</Link></section>
+            <search><form action={explore} className={styles.search}><Search size={20} /><input aria-label="Agentを探す" name="q" maxLength={120} placeholder="検索" type="search" /></form></search>
+            <section className={styles.supportCard}><h2>Agentと、できることを。</h2><p>気になるAgentを見つけて、あなたの仕事を頼んでみよう。</p><Link href={explore} className={styles.pill}>Agentを探す</Link></section>
             <section className={styles.supportCard}><h2>使えるAgent</h2><NoahServiceCatalog compact /></section>
             <section className={styles.supportCard}><h2>外部Agentの登録</h2><p>アカウントが必要なAgentは、必要な情報を入力して登録Agentに依頼できます。</p><Link href={`${base}/registration`} className={styles.textLink}>登録を依頼する →</Link></section>
             <footer className={styles.supportFooter}><span>Noah · by avokado</span></footer>
