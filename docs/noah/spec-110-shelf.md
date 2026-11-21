@@ -293,3 +293,23 @@ X の公開されている並び（[xai-org/x-algorithm](https://github.com/xai-
 | 表との受け渡し | 工程の行、集計の行（DDL の検証が手で数えた値を、そのまま並びへ渡せる） |
 
 DDL の検証（[validate-noah-shelf-v1.py](../design-validation/noah/validate-noah-shelf-v1.py)）: 既存の migration と [noah-v1.sql](../contracts/noah-v1.sql) の後に、棚の DDL 案を 2 回流しても、どの定義も変わらない。新しい表は 9 個で、本文を置く列が無い。棚の一覧が索引を使い、並べ替えの一時の表を作らない。実績の数え直しが、手で数えた値（切ってつなぎ直した人、つながらなかった人、別の道具、期間より前、終わっていない依頼を含む 11 件の依頼）と同じになり、足し込まない。5 人未満の経路とカードを出さない。
+
+## 15. 実装で変えた所（task 110。2026-11-21）
+
+作った物: `drizzle/0050_noah_shelf.sql`（`drizzle-main/` に同じ物。`noah_packages`・`noah_package_steps` と索引 2 つを DDL 案から字を変えずに移した）、`db/schema.ts`、`lib/noah-shelf.ts`（型契約を関数ごと移した）、`lib/noah-shelf-view.ts`（画面の文と応答の形。画面の bundle へ入る）、`lib/noah-shelf-store.ts`、`lib/noah-shelf-api.ts`・`lib/noah-shelf-server.ts`・`app/api/noah/shelf/route.ts`、`components/noah-shelf.tsx`（`/noah/ready` の一番上）、`components/noah-shelf-review.tsx`（`/noah/review` の「棚」の節）。試験は `tests/noah-shelf.test.mjs`（検証キットと同じ 17 群）と `tests/noah-shelf-store.test.mjs`（11 本。13 章の完了の定義を、台帳・合成の接続先・本番と同じ migration の表で通す）。
+
+仕様から変えた所:
+
+| 所 | 仕様 | 実装 | 理由 |
+| --- | --- | --- | --- |
+| 載せるかの判定 | 握手・実行・取り下げの直後に `recheck(familyId)` を呼び、写しを読む | 棚を読むたびに、今の事実（系列の行と握手の表）から `noahPackageListing` で決め直す。表の `listed`・`reason` は、運営の画面と数える問い合わせのための写しで、巡回の合図の中の見直し（10 分に 1 回まで）が書く | 握手・依頼・取り下げの 3 か所のコードに手を入れずに、止まった系列が、次に棚を読んだ時から消える。読むのは、確かめたカード（最大 600 枚）と、その系列の行だけ |
+| `lib/noah-shelf-facts.ts` | 別の file | `lib/noah-shelf-store.ts` の中（系列の事実だけ。家の端末と Noah の中の道具は 112） | ローンチの範囲では、読むのが 1 つの文だけのため |
+| 道具の定義の印 | その道具 1 つの定義の hash | 系列の代表の、道具の一覧全部の hash（`noah_intake_checks.tools_sha256`） | 道具ごとの定義は、保存しない作り（spec-87）。同じ系列の別の道具が変わっても外れる（厳しい側） |
+| 24 時間ごとの握手 | `nextNoahCheck` に `connected: true` | 見直しが、載せているカードが使う系列の `next_check_at` を、最後の握手から 24 時間以内へ早める | 巡回の予定の計算を変えずに済む。早めるだけで、遅らせない |
+| 戻った系列 | 動かし直して `verify` した後に戻る | 道具の一覧が同じなら、人が動かし直して成果が返った（L2 に戻った）時に、確かめ直さずに戻る。一覧が変わっていれば、確かめ直すまで「確かめた時から、中身が変わりました」 | 確かめた中身（道具の一覧の hash）が同じなので、確かめ直す物が無い |
+| 外す | 確かめた記録は残す | 外すと、確かめた記録（`verified`）は消える（カードの規則: 確かめた記録は、確かめた状態の時だけ置く）。行は残る | 規則（3.2）と合わせた |
+| 見せる条件 | `NOAH_SHELF_PUBLIC` | `NOAH_SHELF_PUBLIC` と、取り込んだ一覧の切り替え（`NOAH_INTAKE_PUBLIC`）の両方。閉じていても、審査者は使える | カードの行き先が、取り込んだ Agent の詳細の画面のため |
+| 棚の段の置き方 | `noah-ready.tsx` の一番上 | `app/noah/ready/page.tsx` が `<NoahShelf />` を `NoahReady` の `shelf` へ渡す（探している間は出さない） | 一覧の画面の試験（呼ぶ入口の数を数えている）を変えずに済む |
+| カードから開いた詳細 | — | `?tool=` の道具を、最初から選んでおく（使えない・無い道具なら、いつもの一覧） | 押した仕事の道具を、選び直さずに頼める |
+
+まだの物（この task の外）: 実績の並び・見せた記録・非表示（111）、家の端末・Noah の中の道具のカードと工程をつなぐカード（112）、料金ごとのつなげる数（113）、300 人の試行の記録（114）。**最初の 12 枚の案は、全部が家の端末・Noah の中の道具・先の決まっていない工程のカードなので、ローンチの範囲では 1 枚も載らない。棚に出すには、運営が、握手の通った相手のサーバーの道具 1 つのカードを置き、自分で動かして「確かめた」を押す（棚ごとに 5 枚以上が候補）。** 本番 D1 への migration と、切り替えは、行っていない。

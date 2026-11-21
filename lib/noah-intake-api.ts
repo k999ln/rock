@@ -10,6 +10,8 @@ import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 export type IntakeApiDependencies = IntakeDependencies & {
   authenticate: (request: Request) => Promise<string>; reviewers: string[]; flags: NoahFlags; wakeKey?: string;
+  /** 棚の、載せるかの見直し（lib/noah-shelf-store.ts の recheckIfDue）。無ければ行わない。失敗しても、合図の結果は変えない。 */
+  shelfRecheck?: () => Promise<unknown>;
 };
 const json = (data: unknown, status = 200) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
 const body = async (request: Request, limit: number) => new TextDecoder('utf-8', { fatal: true }).decode(await boundedNoahBody(request, limit));
@@ -71,6 +73,8 @@ export function createIntakeTick(deps: IntakeApiDependencies) {
     // 後始末（止まった依頼と、つなぐ途中で止まった接続）。台帳や握手が失敗した合図でも、行う（別の表の仕事。相手へは、何も送らない）。
     let swept = noSweep();
     try { swept = await createNoahSweep(deps)(); } catch (error) { thrown ??= error; }
+    // 棚の見直し（別の表の仕事。棚の表がまだ無い時も、巡回の結果に影響させない）。
+    if (deps.shelfRecheck) try { await deps.shelfRecheck(); } catch { /* 棚は、次の合図で見直す。 */ }
     // 台帳を読めなかった・表を読み書きできなかった合図は、2xx にしない（合図を送る専用の Worker の実行が、失敗として残る。監視で、成功に見せない）。
     // 握手を 1 件でも試みた時は、その数を応答に足す（数だけ。接続先の名前は持たない）。後始末も、1 件でも片付けた時だけ、数を足す（誰の物かは持たない）。
     const attempted = probe.probes + probe.skippedHost > 0, sweptTotal = noahSweepTotal(swept);

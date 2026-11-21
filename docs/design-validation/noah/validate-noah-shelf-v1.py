@@ -100,6 +100,8 @@ for stmt in statements(BASE.read_text()):
 Q = named(QUERIES)
 NEW = ["noah_package_connections", "noah_package_evidence", "noah_package_steps", "noah_packages", "noah_shelf_daily", "noah_shelf_seen",
        "noah_trial_channels", "noah_trial_entries", "noah_trial_reports"]
+# 実装の task が drizzle/ へ移した表（task 110: drizzle/0050_noah_shelf.sql）。移した表と索引は、DDL 案と同じ定義であること。
+MOVED = {"noah_packages": ["noah_packages_shelf"], "noah_package_steps": ["noah_package_steps_ref"]}
 
 
 def ddl_twice():
@@ -111,7 +113,15 @@ def ddl_twice():
     for name, sql in before.items():
         assert after.get(name) == sql, f"既存の定義が変わった: {name}"
     new = sorted(n for n in after if n not in before and db.execute("SELECT type FROM sqlite_master WHERE name=?", (n,)).fetchone()[0] == "table")
-    assert new == NEW, new
+    moved = sorted(n for n in MOVED if n in before)
+    assert sorted(new + moved) == NEW, (new, moved)
+    # 移した表は、DDL 案だけを流した DB と、同じ定義（表も索引も）。
+    fresh = sqlite3.connect(":memory:")
+    for stmt in statements(DDL.read_text()):
+        fresh.executescript(stmt)
+    for table in moved:
+        for name in [table, *MOVED[table]]:
+            assert before.get(name) == fresh.execute("SELECT sql FROM sqlite_master WHERE name=?", (name,)).fetchone()[0], f"移した定義が DDL 案と違う: {name}"
     for table in NEW:   # 本文と本人の ID を置く列が、数える表に無い
         columns = [r[1] for r in db.execute(f"PRAGMA table_info({table})")]
         assert not any(c in columns for c in ("prompt", "input", "output", "body", "url")), (table, columns)
@@ -121,7 +131,7 @@ def ddl_twice():
                                 "seen_forget", "seen_forget_hidden", "live_cards", "trial_totals", "trial_funnel", "trial_earn"]), sorted(Q)
 
 
-check("棚の DDL 案を 2 回流しても壊れず、既存の定義も noah-v1.sql の定義も変えない。新しい表は 9 個", ddl_twice)
+check("棚の DDL 案を 2 回流しても壊れず、既存の定義も noah-v1.sql の定義も変えない。新しい表は 9 個（drizzle/ へ移した表は、DDL 案と同じ定義）", ddl_twice)
 
 
 def package(pid="pkg:weather", **change):
