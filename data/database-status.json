@@ -613,7 +613,7 @@
         "rock_wallet_challenges",
         "rock_wallet_operators"
       ],
-      "expectedAppliedThrough": "0004_rock_settlement_wallet.sql",
+      "expectedAppliedThrough": "0005_churn_subscription_end.sql",
       "tableCount": 13,
       "sourceStatus": "VERIFIED",
       "deployment": {
