@@ -243,12 +243,12 @@ export default function NoahWorkList({
           <NoahLoading label={t('読み込んでいます…')} />
         ) : listState === 'signed-out' ? (
           <>
-            <p>{t('ログインすると、あなたの仕事と成果を確認できます。')}</p>
+            <p>{t('接続を確認すると、あなたの仕事と成果が開きます。')}</p>
             <Link
               className={styles.primary}
               href={`/noah/account?returnTo=${encodeURIComponent(only === 'succeeded' ? '/noah/data' : '/noah/activity')}`}
             >
-              {t('ログイン')}
+              {t('接続を確認して続ける')}
             </Link>
             <p>
               <Link href="/noah/explore">{t('Agentを見てみる')}</Link>

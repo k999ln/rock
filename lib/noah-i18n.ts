@@ -1,4 +1,5 @@
 import { NOAH_RESULT_MESSAGES } from './noah-i18n-results.ts';
+import { NOAH_ACCESS_MESSAGES } from './noah-i18n-access.ts';
 import { NOAH_SOCIAL_MESSAGES } from './noah-i18n-social.ts';
 import { NOAH_ACCOUNT_MESSAGES } from './noah-i18n-account.ts';
 import { NOAH_EXTRA_MESSAGES } from './noah-i18n-extra.ts';
@@ -32,6 +33,7 @@ export const NOAH_MESSAGES: Record<
   ...NOAH_EXTRA_MESSAGES,
   ...NOAH_ACCOUNT_MESSAGES,
   ...NOAH_RESULT_MESSAGES,
+  ...NOAH_ACCESS_MESSAGES,
   タイムライン: ['Timeline', '动态', '타임라인', 'Inicio', 'المنشورات'],
   Agent: ['Agents', 'Agent', 'Agent', 'Agentes', 'الوكلاء'],
   実行中: ['In progress', '进行中', '진행 중', 'En curso', 'قيد التنفيذ'],

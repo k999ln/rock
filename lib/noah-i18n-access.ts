@@ -1,0 +1,14 @@
+export const NOAH_ACCESS_MESSAGES: Record<string, readonly [string, string, string, string, string]> = {
+  '接続して、そのまま使う': ['Connect and continue', '连接后直接使用', '연결하고 바로 사용하기', 'Conecta y continúa', 'اتصل وتابع'],
+  'eSIMの本人確認を引き継ぎます。Noah用の新規登録は不要です。': ['Use your verified eSIM identity. No separate Noah registration.', '使用已验证的eSIM身份，无需另行注册Noah。', 'eSIM으로 확인된 본인 정보를 사용합니다. Noah 별도 가입은 필요 없습니다.', 'Usa tu identidad verificada de eSIM. No necesitas otro registro en Noah.', 'استخدم هويتك المتحققة عبر eSIM. لا يلزم تسجيل منفصل في Noah.'],
+  '接続を確認しています…': ['Checking your connection…', '正在检查连接…', '연결 확인 중…', 'Comprobando tu conexión…', 'جارٍ التحقق من اتصالك…'],
+  'eSIM連携は準備中です。': ['eSIM access is not available yet.', 'eSIM接入尚未开放。', 'eSIM 연결을 준비하고 있습니다.', 'El acceso mediante eSIM aún no está disponible.', 'الوصول عبر eSIM غير متاح بعد.'],
+  'このブラウザに接続情報が届いていません。': ['This browser has not received your connection credentials.', '此浏览器尚未收到连接凭据。', '이 브라우저에 연결 정보가 아직 없습니다.', 'Este navegador aún no ha recibido tus credenciales de conexión.', 'لم يتلق هذا المتصفح بيانات الاتصال بعد.'],
+  '接続を確認できませんでした。': ['Could not check your connection.', '无法检查连接。', '연결을 확인하지 못했습니다.', 'No se pudo comprobar tu conexión.', 'تعذر التحقق من اتصالك.'],
+  '接続を再確認': ['Check again', '重新检查连接', '연결 다시 확인', 'Volver a comprobar', 'تحقق مرة أخرى'],
+  '以前のログインを使う': ['Use an existing login', '使用已有登录方式', '기존 로그인 사용', 'Usar un acceso existente', 'استخدم تسجيل دخول سابقًا'],
+  '保存済みの成果を引き継ぐ': ['Access your saved results', '打开已保存的成果', '저장된 결과 불러오기', 'Acceder a tus resultados guardados', 'افتح نتائجك المحفوظة'],
+  '接続を確認して続ける': ['Connect to continue', '确认连接后继续', '연결 확인 후 계속', 'Conectar para continuar', 'تحقق من الاتصال للمتابعة'],
+  '接続を確認すると、あなたの仕事と成果が開きます。': ['Connect to access your tasks and results.', '确认连接后，即可打开你的任务和成果。', '연결을 확인하면 내 작업과 결과를 볼 수 있습니다.', 'Conecta para ver tus tareas y resultados.', 'تحقق من الاتصال لفتح مهامك ونتائجك.'],
+  '接続を確認すると、登録情報と成果を引き継げます。': ['Connect to reuse your saved information and results.', '确认连接后，可继续使用已保存的信息和成果。', '연결을 확인하면 저장된 정보와 결과를 이어서 사용할 수 있습니다.', 'Conecta para recuperar tu información y resultados guardados.', 'تحقق من الاتصال لاستعادة بياناتك ونتائجك المحفوظة.'],
+};

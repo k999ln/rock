@@ -1,4 +1,4 @@
-import RockstarAccount from '@/components/rockstar-account';
+import NoahAccess from '@/components/noah-access';
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'アカウント — Noah' };
-export default function Page() { return <RockstarAccount service="noah" />; }
+export const metadata = { title: '利用開始 — Noah' };
+export default function Page() { return <NoahAccess />; }
