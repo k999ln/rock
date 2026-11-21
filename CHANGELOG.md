@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahのタブアイコンを白背景PNGから元画像を保持した透過ロゴSVGへ統一（app/noah/layout.tsx、PR #376）。
+
 - Noahの成果を要点・一覧カード・画像プレビューへ整理し、受信画像のWork保持と実画像ファイルの保存を追加（lib/noah-result-*・components/noah-result-content、PR #376）。全体verify・画像保存のbyte一致検証に成功。
 
 - Noahの主要12画面を指定の4タブ/2列デザインへ統一し、登録の保存再利用同意、ロゴ読み込み、振動設定、6言語UIとRTLを統合（app/noah・components/noah-*、[PR #376](https://github.com/k999ln/rock/pull/376)）。全体verify成功、公開反映は未実施。

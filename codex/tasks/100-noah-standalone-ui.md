@@ -99,3 +99,6 @@ Dock: Launch Servicesの起動先 `work/noah-standalone/native-package-final/Noa
 画像Fileをタップ前に用意し、画像保存ボタンは対応端末ではOSの共有/写真保存へ渡し、非対応では元画像をダウンロードする。OS保存完了は確認できないため「ギャラリー保存済み」と断定しない。キャンセル/失敗を区別。6言語のUIを保持。
 
 ローカル検証: 最終関連56試験、typecheck、lint成功。390px/320pxとアラビア語RTLで横はみ出しなし。検証用PNGを実ブラウザから保存し、元の191,359bytesとSHA256一致。これは写真アプリへの実機保存の確認ではない。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 全工程成功（ルート4,809成功・4 skip、計4,813。production build・仕事API1,918 assertions・CSV385 assertions等を含む）。ローカルproductionの8ルート/8共通ヘッダーもPASS。成果改善の追加公開は配備担当へ引継ぎ、公開後に独立確認する。
+
+
+2026-11-22 タブのロゴ修正（PR #376）: Noah配下のfaviconを白背景付きcompany-mark.pngからbrand/noah-icon-transparent.svgへ変更。正式ロゴの形状は維持。公開反映は配備担当と統合して確認する。
