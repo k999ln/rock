@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 234,
+    "tableCount": 240,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。"
   },
   "webSchema": {
-    "tableCount": 162,
+    "tableCount": 168,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -80,6 +80,9 @@
       "noah_agent_invites",
       "noah_agent_uploads",
       "noah_asks",
+      "noah_board_follows",
+      "noah_board_pins",
+      "noah_boards",
       "noah_connections",
       "noah_discovery_candidates",
       "noah_discovery_sources",
@@ -97,6 +100,9 @@
       "noah_package_evidence",
       "noah_package_steps",
       "noah_packages",
+      "noah_pin_hidden",
+      "noah_pin_rollups",
+      "noah_pin_stats",
       "noah_probe_hosts",
       "noah_recommendation_settings",
       "noah_result_contributions",
@@ -189,8 +195,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 34,
-    "latestMigration": "0053_noah_package_connections.sql",
+    "migrationCount": 35,
+    "latestMigration": "0054_noah_boards.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -261,6 +267,9 @@
           "noah_agent_invites",
           "noah_agent_uploads",
           "noah_asks",
+          "noah_board_follows",
+          "noah_board_pins",
+          "noah_boards",
           "noah_connections",
           "noah_discovery_candidates",
           "noah_discovery_sources",
@@ -278,6 +287,9 @@
           "noah_package_evidence",
           "noah_package_steps",
           "noah_packages",
+          "noah_pin_hidden",
+          "noah_pin_rollups",
+          "noah_pin_stats",
           "noah_probe_hosts",
           "noah_recommendation_settings",
           "noah_result_contributions",
@@ -343,7 +355,7 @@
           "sky_x_feed_state",
           "sky_x_oauth_states"
         ],
-        "tableCount": 98
+        "tableCount": 104
       },
       {
         "id": "marketplace",
@@ -473,6 +485,9 @@
         "noah_agent_invites",
         "noah_agent_uploads",
         "noah_asks",
+        "noah_board_follows",
+        "noah_board_pins",
+        "noah_boards",
         "noah_connections",
         "noah_discovery_candidates",
         "noah_discovery_sources",
@@ -490,6 +505,9 @@
         "noah_package_evidence",
         "noah_package_steps",
         "noah_packages",
+        "noah_pin_hidden",
+        "noah_pin_rollups",
+        "noah_pin_stats",
         "noah_probe_hosts",
         "noah_recommendation_settings",
         "noah_result_contributions",
@@ -576,8 +594,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0053_noah_package_connections.sql",
-      "tableCount": 162,
+      "expectedAppliedThrough": "0054_noah_boards.sql",
+      "tableCount": 168,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

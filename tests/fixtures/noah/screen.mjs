@@ -1,6 +1,7 @@
 // 画面の部品（components/*.tsx）を、ブラウザなしで動かす台。
 // 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
+import * as pins from '../../../lib/noah-pins.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
@@ -94,6 +95,8 @@ export function screen(options = {}) {
       if (id === 'lucide-react') return new Proxy({}, { get: (_, name) => String(name) });
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (options.modules?.[id]) return options.modules[id];
+      // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
+      if (id === '@/lib/noah-pins') return pins;
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
       throw Error(`画面の試験の台に、${id} がありません`);
     };

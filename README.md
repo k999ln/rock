@@ -112,6 +112,8 @@ Noahはmiiの最小構成です。会議のメモを整理したいなら、公�
 
 ### タイムラインと本人のライブラリ
 
+**ホームはピンタレスト風（task 115。2026-11-22）。** 今動かせる Agent（取り込んで握手が通った物）を、分野の色の面と頭文字のカードで 2〜6 列に敷き詰め、「保存」で自分のボードへまとめます（ボードは公開も選べ、公開ボードはフォローできる）。並びは学習なし・乱数なしで、X の For You の作りの形・Reddit の hot・Pinterest の Pixie を、数えた事実（保存した人・成果が返った人・表示しない人）だけで使います。上の帯に検索とメニュー。一般公開（`NOAH_INTAKE_PUBLIC`）までは審査者だけがグリッドを見て、一般の人には下のタイムラインが出ます。実装は `lib/noah-pins.ts`・`lib/noah-boards-store.ts`・`lib/noah-pins-api.ts`・`components/noah-pin-home.tsx`・`components/noah-pin-grid.tsx`・`components/noah-boards.tsx`、表は migration 0054。設計は `docs/noah/spec-115-pin-grid.md`。本番の migration・配備はしていません。
+
 個人の感想・発見・評価の本文と作者を主役にしたタイムラインです。フォロー中の投稿と通常投稿をAgent紹介より先に表示し、紹介情報は「Agent紹介」と区別します。既定で全件表示し、「Agent」で絞り込んだ時だけ「すべてに戻る」を表示します。ニュースとコミュニティーは表示しません。検索・詳細から、利用したい担当やToolを確認できます。機能一覧は設けず、メニューからタイムライン・Agentを探す・実行中・成果データへ直接進みます。会社の正式花形ロゴを使用し、白地・チャコールの文字・紫のアクセントで、Xのような左ナビ・中央フィード・右検索/Agent欄の3カラムにしています。スマホ下部は現在地付きの「メニュー」1ボタンで、開くと4画面をアイコンと用途説明付きで選べます。Agentの探索は `/noah/explore` から行えます。「実行中」タブ（`/noah/activity`）に依頼入力・接続・Agentの実際の処理状態・成果・停止・ファイル保存を集約しました。旧 `/noah/launch` は選択Agentを保持して移動します。接続手順はAgent選択→Mac接続→依頼の順に案内し、接続案内から戻っても選んだAgentを維持します。フロントと登録Agent導線の開発は [PR #337](https://github.com/k999ln/rock/pull/337)、全体verify成功、本番配備は未実施です。 投稿やフォローにはサインインが必要です。[タイムライン](https://avoado.si/noah)
 
 <img src="docs/assets/cover-sky.gif" alt="Noahの発見と接続を表すコンセプト" width="340" />
