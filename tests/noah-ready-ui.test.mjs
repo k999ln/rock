@@ -77,6 +77,34 @@ void test('the list: sections, one main button per card, badges in words, where 
   assert.deepEqual(w.net.hosts, []);
 });
 
+void test('the number of people who used an agent: on its card and its detail once someone got a result; nothing while nobody has', async (t) => {
+  // 本人の決め（2026-11-21）: スマホの Agent の一覧と詳細に、利用人数を出す（成果が出た人。1 人 1 回）。
+  const lookup = tool('lookup', true, { inputSchema: { type: 'object', required: ['q'], properties: { q: { type: 'string' } } } });
+  const w = await world(t, { [hostOf(1)]: mcpServer({ tools: [lookup], call: () => ({ content: [{ type: 'text', text: 'ok' }] }) }), [hostOf(2)]: mcpServer() });
+  const sha = await formLib.noahToolSha256({ name: lookup.name, description: lookup.description ?? '', inputSchema: lookup.inputSchema, readOnly: true });
+  for (const [user, n] of [['owner-a', 1], ['owner-b', 2]]) {
+    const who = w.as(user);
+    assert.equal((await who.connect(familyId(1), `00000000-0000-4000-8000-00000000010${n}`)).body.state, 'connected');
+    w.f.advance(1_000);
+    assert.equal((await who.ask({ id: `00000000-0000-4000-8000-00000000020${n}`, connectionId: `00000000-0000-4000-8000-00000000010${n}`, form: { tool: 'lookup', toolSha256: sha, input: { q: 'x' } } })).status, 202);
+  }
+  const { ui } = browser(w, null);
+  const list = ui.mount(LIST);
+  await list.flush();
+  const factsOf = (page, node) => page.nodes(node).filter((child) => child.type === 'li').map((child) => page.text(child));
+  const card = (name) => cards(list).find((node) => list.text(node).includes(name));
+  // 使った人がいる Agent のカードにだけ、「n 人が利用」。印・動く所・料金の 3 つは、そのまま先に並ぶ。
+  assert.deepEqual(factsOf(list, card('Agent 1')).slice(3, 4), ['2 人が利用']);
+  assert.equal(factsOf(list, card('Agent 2')).some((text) => text.endsWith('人が利用')), false);
+  // 詳細にも出る。
+  const detail = ui.mount(DETAIL, { id: familyId(1) });
+  await detail.flush();
+  const facts = detail.find('ul').find((node) => node.props['aria-label'] === 'つなぎ方');
+  assert.ok(factsOf(detail, facts).includes('2 人が利用'));
+  // 文の決まり: 0 人・数でない物は、出さない。大きい数は、桁を区切る。
+  assert.deepEqual([view.noahUsersText(0), view.noahUsersText(-1), view.noahUsersText(1.5), view.noahUsersText(12345)], [null, null, null, '12,345 人が利用']);
+});
+
 void test('the way to the report desk appears on the list and the detail screen only while there is a contact', async (t) => {
   const w = await world(t, { [hostOf(1)]: mcpServer() });
   const contact = (value) => ({ ...MODULES, '@/lib/noah-bot-notice': { ...botNotice, NOAH_REPORT_CONTACT: value } });
