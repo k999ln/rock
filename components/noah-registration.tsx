@@ -12,12 +12,15 @@ import type { RegistrationProvider, RegistrationStatus } from '@/lib/noah-regist
 import styles from './noah-registration.module.css';
 const STORAGE = 'noah-registration-work-v1';
 type Pending = { id: string; key: string };
+const HISTORY = `${STORAGE}-history`;
+const isPending = (v: unknown): v is Pending => !!v && typeof v === 'object' && 'id' in v && 'key' in v && typeof v.id === 'string' && /^[a-f0-9-]{36}$/.test(v.id) && typeof v.key === 'string' && /^[a-f0-9]{64}$/.test(v.key);
 const labels = { running: '登録Agentが処理しています', needs_user: '本人による確認を待っています', completed: '登録Agentから完了報告が届きました', failed: '登録を完了できませんでした', unknown: '登録の結果を確認できていません' };
 export default function NoahRegistration({ agentId,onReturn }: { agentId: string;onReturn?:()=>void }) {
   const {t,locale}=useNoahLocale();
   const vault=useNoahProfile();
   const [excluded,setExcluded]=useState<string[]>([]),[documentId,setDocumentId]=useState(''),[saveNext,setSaveNext]=useState(true);
   const [providers, setProviders] = useState<RegistrationProvider[] | null>(null), [selected, setSelected] = useState(''), [agent, setAgent] = useState(agentId);
+  const [history,setHistory]=useState<Pending[]>([]);
   const [values, setValues] = useState<Record<string, string>>({});
   const [job, setJob] = useState<RegistrationStatus | null>(null), [pending, setPending] = useState<Pending | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState(''), [reload, setReload] = useState(0);
   const active = useRef({ generation: 0, mounted: false, busy: false });
@@ -40,6 +43,8 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
       if (!controller.signal.aborted && current === state.generation) { setProviders(data.providers); setSelected(data.providers[0]?.id ?? ''); setAgent(agentId || data.providers[0]?.agentIds[0] || ''); }
     }).catch((e: unknown) => { if (!controller.signal.aborted) setError(e instanceof Error ? e.message : '登録先を確認できません。'); });
     try {
+      const older:unknown=JSON.parse(sessionStorage.getItem(HISTORY)??'[]');
+      if(Array.isArray(older))queueMicrotask(()=>{if(state.mounted&&current===state.generation)setHistory(older.filter(isPending));});
       const saved: unknown = JSON.parse(sessionStorage.getItem(STORAGE) ?? 'null');
       if (saved && typeof saved === 'object' && 'id' in saved && 'key' in saved && typeof saved.id === 'string' && /^[a-f0-9-]{36}$/.test(saved.id) && typeof saved.key === 'string' && /^[a-f0-9]{64}$/.test(saved.key)) { const restored = { id: saved.id, key: saved.key }; queueMicrotask(() => { if (state.mounted && current === state.generation) setPending(restored); }); }
     } catch { /* Storage is optional. Nothing sensitive is restored. */ }
@@ -103,6 +108,17 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     // 登録IDと状態が変わった時だけ、同じ仕事の確認を始め直す。
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [pending?.id, pending?.key, job?.state]);
+  function retryFailed() {
+    if(active.current.busy||job?.state!=='failed'||!pending)return;
+    const older=[...history.filter(p=>p.id!==pending.id),pending];
+    try{sessionStorage.setItem(HISTORY,JSON.stringify(older));sessionStorage.removeItem(STORAGE);}catch{/* The mounted screen still retains every ticket. */}
+    setHistory(older);active.current.generation++;setJob(null);setPending(null);setValues({});setError('');
+  }
+  function restore(ticket:Pending){
+    if(active.current.busy)return;
+    active.current.generation++;setPending(ticket);setJob(null);setValues({});setError('');
+    try{sessionStorage.setItem(STORAGE,JSON.stringify(ticket));}catch{/* In-memory operation still works. */}
+  }
   function clear() {
     if (active.current.busy) return;
     active.current.generation++; setJob(null); setPending(null); setValues({});    setError('');
@@ -118,6 +134,7 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
       {job?.state === 'needs_user' && <><p>{t("本人による確認が必要です。")}</p>{job.verificationUrl && (job.verificationUrl.startsWith('/noah/')?<Link href={job.verificationUrl}>{t("確認を続ける")}<ArrowRight size={16}/></Link>:<a href={job.verificationUrl} target="_blank" rel="noreferrer">{t("登録先で確認する")}<ArrowRight size={16} /></a>)}</>}
       {job?.state === 'completed' && <><p>{t("実際の利用可否は、元のAgentへの接続時に確認します。")}</p><Link href={job.returnTo} onClick={onReturn}>{t("Agentを使う")}<ArrowRight size={16} /></Link></>}
       {(!job || ['running','needs_user','unknown'].includes(job.state)) && <><p>{t("同じ登録を繰り返さず、この仕事の状況を確認します。")}</p><button disabled={busy} onClick={() => { void run(false); }}>{busy ? t("確認中…") : t("登録の状況を確認")}</button></>}
+      {job?.state==='failed'&&<button disabled={busy} onClick={retryFailed}>{t('もう一度')}</button>}
       <details><summary>{t("このブラウザから記録を消す")}</summary><p>{t("登録処理は取り消されません。確認用の情報を消すと、この画面から状況を確認できなくなります。結果が不明な時は、登録先で状況を確認してから新しい依頼を行ってください。")}</p><button disabled={busy} onClick={clear}>{t("ブラウザの確認情報を消す")}</button></details>
     </section> : providers?.length === 0 ? <section className={styles.panel}><h2>{t("このAgentの登録担当は準備中です")}</h2><p>{t("登録Agentの接続と必要項目が設定されると、ここから依頼できます。接続前に登録情報を集めることはありません。")}</p><Link href="/noah/explore">{t("Agentを探す")}</Link></section> : provider?.requiresAccount && !vault.profile ? <section className={styles.panel}>{vault.guest?<><h2>{t("接続を安全に引き継ぐ")}</h2><p>{t("一度ログインすると、登録後はキーを入力せずに使えます。")}</p><Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/registration?agent=${agent}`)}`}>{t("サインインして続ける")}</Link></>:vault.error?<><p role="alert">{vault.error}</p><button onClick={()=>{void vault.reload();}}>{t("再読み込み")}</button></>:<NoahLoading label={t("アカウントを確認しています")}/>}</section> : provider && <form onSubmit={e => { e.preventDefault(); void run(true); }}>
       <section className={styles.panel}>
@@ -135,6 +152,7 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
         <button className={styles.primary} type="submit" disabled={busy||vault.busy||missingRequired}>{busy?<NoahLoading compact/>:t('同意して登録')}<ArrowRight size={17}/></button>
       </section>
     </form>}
+    {history.some(p=>p.id!==pending?.id)&&<details><summary>{t('以前の登録')}</summary>{history.filter(p=>p.id!==pending?.id).map((ticket,index)=><button key={ticket.id} disabled={busy} onClick={()=>restore(ticket)}>{t('登録の状況を確認')} {index+1}</button>)}</details>}
     <Link href="/noah#timeline">{t("タイムラインへ戻る")}</Link>
   </main>;
 }

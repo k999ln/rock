@@ -3,6 +3,7 @@ export const NOAH_EXTRA_MESSAGES: Record<
   string,
   readonly [string, string, string, string, string]
 > = {
+  以前の登録: ['Previous registrations','以前的注册','이전 등록','Registros anteriores','التسجيلات السابقة'],
   メインメニュー: [
     'Main navigation',
     '主导航',

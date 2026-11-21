@@ -131,3 +131,16 @@ void test('failed saving retains typed input and never starts registration',asyn
   const h=harness(async()=>Response.json({providers:[p]}),[],{fail:true,profile:{...profileContract.emptyNoahProfile(),available:true,ownerScope:'owner-a'}});t.after(()=>h.close());await h.flush();h.input('email','retry@example.com');h.submit();await h.flush();
   assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);assert.equal(h.nodes().find(n=>n.type==='input').props.value,'retry@example.com');
 });
+
+void test('a confirmed failure returns to input without a dispatch or losing its receipt; unknown cannot retry',async t=>{
+ const ticket={id:'00000000-0000-4000-8000-000000000099',key:'a'.repeat(64)};
+ const respond=(url)=>Response.json(url.includes('?job=')?{job:{...job('failed'),id:ticket.id}}:{providers:[provider]});
+ const h=harness(respond,[['noah-registration-work-v1',JSON.stringify(ticket)]]);t.after(()=>h.close());await h.flush();await h.tick();
+ h.click('もう一度');await h.flush();assert.ok(h.nodes().some(n=>n.type==='form'));assert.match(h.text(),/以前の登録/);
+ assert.equal(JSON.parse(h.storage.get('noah-registration-work-v1-history'))[0].key,ticket.key);
+ assert.equal(h.calls.some(c=>c.options?.method==='POST'),false);
+ const restored=harness(respond,[...h.storage]);t.after(()=>restored.close());await restored.flush();restored.click('登録の状況を確認');await restored.flush();await restored.tick();
+ assert.match(restored.text(),/登録を完了できませんでした/);assert.equal(restored.calls.some(c=>c.options?.method==='POST'),false);
+ const unknown=harness(url=>Response.json(url.includes('?job=')?{job:job('unknown')}:{providers:[provider]}),[['noah-registration-work-v1',JSON.stringify(ticket)]]);t.after(()=>unknown.close());await unknown.flush();await unknown.tick();
+ assert.equal(unknown.nodes().some(n=>n.type==='button'&&n.props.onClick?.name==='retryFailed'),false);
+});
