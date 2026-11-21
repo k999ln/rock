@@ -1,4 +1,8 @@
-import { verifyBillingToken } from '../../../lib/billing-token.ts';
+import {
+  BILLING_CHURN_REPORT_PATH,
+  BILLING_CHURN_REPORT_SUBJECT,
+  verifyBillingToken,
+} from '../../../lib/billing-token.ts';
 import {
   BASE_MAINNET_CHAIN_ID,
   BASE_MAINNET_RPC_URL,
@@ -21,10 +25,13 @@ import {
   type EarningReceipt,
 } from './domain.ts';
 import { verifyReceiptSignature } from './receipt-signature.ts';
+import { readChurnReport } from './churn-report.ts';
 
 export interface Env {
   DB: D1Database;
   BILLING_SHARED_SECRET: string;
+  BILLING_CHURN_SHARED_SECRET?: string;
+  CHURN_ARMS?: string;
   SETTLEMENT_INGEST_SECRET: string;
   PAYOUT_ADAPTER_SECRET?: string;
   SKY_ORIGIN: string;
@@ -69,6 +76,18 @@ function bearer(request: Request) {
   const match = /^Bearer ([A-Za-z0-9._-]+)$/u.exec(authorization);
   if (!match) throw new Error('UNAUTHORIZED');
   return match[1];
+}
+
+async function churnReport(request: Request, env: Env) {
+  const secret = env.BILLING_CHURN_SHARED_SECRET ?? '';
+  if (request.method !== 'GET' || request.headers.has('origin') || secret.length < 32 ||
+      secret === env.BILLING_SHARED_SECRET || secret === env.SETTLEMENT_INGEST_SECRET ||
+      secret === env.PAYOUT_ADAPTER_SECRET) {
+    return response({ error: 'not_found' }, 404);
+  }
+  const token = await verifyBillingToken(bearer(request), secret);
+  if (token.sub !== BILLING_CHURN_REPORT_SUBJECT) throw new Error('UNAUTHORIZED');
+  return response(await readChurnReport(env.DB, env.CHURN_ARMS, Date.now()));
 }
 
 async function authorizeUser(request: Request, env: Env) {
@@ -1124,10 +1143,11 @@ function createBillingWorker(legacyFixture = false) {
     async fetch(request, env) {
       let origin: string | undefined;
       try {
+        const url = new URL(request.url);
+        if (url.pathname === BILLING_CHURN_REPORT_PATH) return await churnReport(request, env);
         const { skyOrigin } = configuration(env);
         origin =
           request.headers.get('origin') === skyOrigin ? skyOrigin : undefined;
-        const url = new URL(request.url);
         if (request.method === 'OPTIONS') {
           if (!origin) return new Response(null, { status: 403 });
           return new Response(null, { status: 204, headers: cors(origin) });

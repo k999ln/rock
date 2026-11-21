@@ -3,6 +3,8 @@ const encoder = new TextEncoder();
 export const BILLING_TOKEN_AUDIENCE = 'sky-billing';
 export const BILLING_TOKEN_ISSUER = 'sky-site';
 export const BILLING_TOKEN_TTL_SECONDS = 300;
+export const BILLING_CHURN_REPORT_PATH = '/v1/internal/churn';
+export const BILLING_CHURN_REPORT_SUBJECT = 'noah-churn-report';
 
 export type BillingTokenPayload = {
   v: 1;
