@@ -404,7 +404,8 @@ void test('the screen: a connection the cleanup cut shows its reason and 接続 
   release(hold, 'initialize');
   await page.flush();
   assert.match(page.text(), /つなぐ途中で止まりました。もう一度試してください。/);
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
+  // 「保存」（ボードへ。task 115）は、接続の状態にかかわらず出る。
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続', '保存']);
   // もう一度押すと、新しい操作として、つながる。
   w.f.advance(7_000);
   await page.click('接続');

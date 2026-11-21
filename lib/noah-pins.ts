@@ -19,10 +19,10 @@
 /** 分野。上から順に見て、最初に語が当たった物。どれにも当たらなければ other。足す時は、ここへ 1 行足す。 */
 export const NOAH_PIN_TOPICS = [
   { id: 'money', label: 'お金・税', words: ['税', '会計', '経理', '仕訳', '請求', 'インボイス', '給与', '年金', 'invoice', 'tax', 'accounting', 'payroll', 'finance', 'stock', 'crypto', 'bank', 'price', 'pricing', 'budget', 'payment'] },
-  { id: 'dev', label: '開発', words: ['github', 'git ', 'code', 'coding', 'developer', 'api', 'sdk', 'deploy', 'database', 'sql', 'kubernetes', 'docker', 'devops', 'debug', 'npm', 'python', 'typescript', 'manpage', 'cli', 'log'] },
+  { id: 'dev', label: '開発', words: ['github', 'git', 'code', 'coding', 'developer', 'api', 'sdk', 'deploy', 'database', 'sql', 'kubernetes', 'docker', 'devops', 'debug', 'npm', 'python', 'typescript', 'manpage', 'cli', 'log'] },
   { id: 'research', label: '調べもの', words: ['search', 'research', 'web', 'news', 'paper', 'arxiv', 'scholar', 'wiki', 'law', 'legal', '法令', '調べ', '検索', 'statistics', 'patent', 'docs', 'documentation'] },
   { id: 'work', label: '仕事', words: ['job', 'jobs', 'hiring', 'recruit', '求人', 'crm', 'sales', 'marketing', 'seo', 'email', 'calendar', 'meeting', 'project', 'task', 'invoice', 'contract', 'ad copy', '広告', 'business', 'company'] },
-  { id: 'learn', label: '学び', words: ['learn', 'lesson', 'course', 'quiz', 'study', 'school', 'teacher', 'student', 'tutor', 'dictionary', 'vocabulary', 'pronounce', 'language', 'math', '英語', '中国語', '学習', '勉強'] },
+  { id: 'learn', label: '学び', words: ['learn', 'lesson', 'course', 'quiz', 'study', 'school', 'teacher', 'student', 'tutor', 'dictionary', 'vocabulary', 'pronunciation', 'pronounce', 'language', 'math', 'mathemat', 'pinyin', 'speaking', 'exam', 'kids', '英語', '中国語', '学習', '勉強'] },
   { id: 'life', label: '暮らし', words: ['travel', 'hotel', 'weather', 'recipe', 'food', 'restaurant', 'map', 'transit', 'train', 'locker', 'toilet', 'shopping', 'home', 'family', 'childcare', '保育', '紅葉', '旅', '料理', 'event'] },
   { id: 'data', label: 'データ', words: ['data', 'dataset', 'csv', 'analytics', 'chart', 'metrics', 'sensor', 'iot', 'blockchain', 'onchain', 'geo', 'census', 'open data', 'registry', 'catalog'] },
   { id: 'media', label: '画像・動画・音', words: ['image', 'photo', 'video', 'audio', 'music', 'design', 'figma', 'color', 'font', 'icon', 'youtube', 'podcast', 'art', '画像', '動画', '音楽'] },
@@ -31,11 +31,19 @@ export const NOAH_PIN_TOPICS = [
 export type NoahPinTopic = (typeof NOAH_PIN_TOPICS)[number]['id'] | 'other';
 export const NOAH_PIN_TOPIC_LABELS: Record<NoahPinTopic, string> = { ...Object.fromEntries(NOAH_PIN_TOPICS.map((topic) => [topic.id, topic.label])), other: 'いろいろ' } as Record<NoahPinTopic, string>;
 
-/** 名前と説明から分野を決める。英字は小文字にしてから、語が含まれるかだけを見る。 */
+/** 英字の語の当たり方: 前は語の切れ目。6 文字以上の語は語幹として後ろを問わず、短い語は後ろも切れ目（api が rapid に、log が catalog に当たらないように）。 */
+const WORD_PATTERNS = new Map(NOAH_PIN_TOPICS.map((topic) => [topic.id, topic.words.map((word) => (/^[\x20-\x7e]+$/u.test(word)
+  ? new RegExp(`(?<![a-z0-9])${word.trim().replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}${word.trim().length >= 6 ? '' : '(?![a-z0-9])'}`, 'u')
+  : word))]));
+/** 名前と説明から分野を決める。英字は小文字にして、当たった語の数がいちばん多い分野（同じなら上の分野）。どれにも当たらなければ other。 */
 export function noahPinTopic(name: string, summary: string): NoahPinTopic {
   const text = ` ${name} ${summary} `.toLowerCase();
-  for (const topic of NOAH_PIN_TOPICS) if (topic.words.some((word) => text.includes(word))) return topic.id;
-  return 'other';
+  let best: NoahPinTopic = 'other', most = 0;
+  for (const topic of NOAH_PIN_TOPICS) {
+    const hits = (WORD_PATTERNS.get(topic.id) ?? []).filter((word) => (typeof word === 'string' ? text.includes(word) : word.test(text))).length;
+    if (hits > most) { best = topic.id; most = hits; }
+  }
+  return best;
 }
 
 /** 文字の並びから、決まった 32 bit の数（FNV-1a）。カードの高さと、色の濃さを決めるだけに使う（並びには使わない）。 */

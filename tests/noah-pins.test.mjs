@@ -18,6 +18,9 @@ void test('topics, shapes and initials are decided by fixed words and a fixed ha
   assert.equal(noahPinTopic('Keenable', 'Search the live web'), 'research');
   assert.equal(noahPinTopic('Ippuku', 'Find coin lockers and toilets in Japan'), 'life');
   assert.equal(noahPinTopic('Zzz', 'nothing to see'), 'other');
+  // 短い英字の語は、語の切れ目でだけ当たる（api が rapid に、log が catalog に当たらない）。当たった数の多い分野。
+  assert.equal(noahPinTopic('Rapid', 'a rapid dialog'), 'other');
+  assert.equal(noahPinTopic('Dengdeng', 'Chinese–English dictionary: pinyin, audio and widget code'), 'learn');
   assert.equal(noahPinShape('a'), noahPinShape('a'));
   assert.ok([0, 1, 2].includes(noahPinShape('mcp-registry:ai.shiwake/mcp')));
   assert.equal(noahPinInitials('job context'), 'JC');
