@@ -179,6 +179,9 @@ await test('運営Dockの指定を本人の模擬回線に届け、受取と再�
     assert.equal((await rows()).length, 2);
     assert.match(await page('mobile'), /受取済み/);
     assert.doesNotMatch(await page('public'), /更新があります/);
+    assert.equal((await post('public', 'revoke')).status, 303);
+    assert.doesNotMatch(await page('mobile'), /試験用野菜セット|東会場/);
+    assert.equal((await post('mobile', 'receive', { id: input.id })).status, 403);
     assert.equal((await post('mobile', 'logout')).status, 303);
     assert.match(await page('mobile'), /招待コードで入る/);
     assert.equal((await f.trial.jobs('alice')).length, 0);
