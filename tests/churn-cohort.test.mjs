@@ -9,7 +9,7 @@ const close = (actual, expected, label) => assert.ok(Math.abs(actual - expected)
 const sub = (arm, startIso, periodsPaid, endIso = null) => ({ arm, startedAt: at(startIso), periodsPaid, endedAt: endIso === null ? null : at(endIso) });
 const many = (n, make) => Array.from({ length: n }, (_, i) => make(i));
 
-test('Wilson の幅は既知の値と合う', () => {
+void test('Wilson の幅は既知の値と合う', () => {
   const zero = wilsonInterval(0, 10);
   close(zero.low, 0, '0/10 の下');
   close(zero.high, 0.2775327998628892, '0/10 の上');
@@ -20,12 +20,12 @@ test('Wilson の幅は既知の値と合う', () => {
   assert.throws(() => wilsonInterval(3, 2), RangeError);
 });
 
-test('暦月の足し算は、月末をその月の最後の日にそろえる', () => {
+void test('暦月の足し算は、月末をその月の最後の日にそろえる', () => {
   assert.equal(new Date(addUtcMonths(at('2026-11-30T12:00:00Z'), 3)).toISOString(), '2027-02-28T12:00:00.000Z');
   assert.equal(new Date(addUtcMonths(at('2026-01-15T00:00:00Z'), 12)).toISOString(), '2027-01-15T00:00:00.000Z');
 });
 
-test('試行の数え方: 解約した人は払った回数、続いている人は払った回数 − 1', () => {
+void test('試行の数え方: 解約した人は払った回数、続いている人は払った回数 − 1', () => {
   const asOf = at('2027-06-01T00:00:00Z');
   const rows = [
     ...many(5, () => sub('esim', '2027-01-01T00:00:00Z', 4, '2027-05-01T00:00:00Z')), // 4 回の試行・やめた 1
@@ -41,7 +41,7 @@ test('試行の数え方: 解約した人は払った回数、続いている人
   close(report.arms.card.monthlyChurn, 1, 'カードの月ごとの解約率');
 });
 
-test('3 か月の継続: 3 暦月以上たった人だけを分母にし、3 回以上払った人を数える', () => {
+void test('3 か月の継続: 3 暦月以上たった人だけを分母にし、3 回以上払った人を数える', () => {
   const asOf = at('2027-04-01T00:00:00Z');
   const rows = [
     ...many(3, () => sub('card', '2027-01-01T00:00:00Z', 3, '2027-04-01T00:00:00Z')), // 3 回払ってやめた → 続いた側
@@ -54,7 +54,7 @@ test('3 か月の継続: 3 暦月以上たった人だけを分母にし、3 回
   close(card.retention3Months, 0.6, '3 か月の継続');
 });
 
-test('5 人未満の組は、数を返さず、判定もしない', () => {
+void test('5 人未満の組は、数を返さず、判定もしない', () => {
   const rows = [...many(4, () => sub('esim', '2027-01-01T00:00:00Z', 5)), ...many(200, () => sub('card', '2026-01-01T00:00:00Z', 12))];
   const report = cohortChurn(rows, at('2027-06-01T00:00:00Z'));
   assert.equal(report.arms.esim.shown, false);
@@ -64,7 +64,7 @@ test('5 人未満の組は、数を返さず、判定もしない', () => {
   assert.equal(report.verdict, 'insufficient');
 });
 
-test('試行が 100 未満の組がある間は insufficient', () => {
+void test('試行が 100 未満の組がある間は insufficient', () => {
   const rows = [...many(20, () => sub('esim', '2027-01-01T00:00:00Z', 3)), ...many(20, () => sub('card', '2027-01-01T00:00:00Z', 3, '2027-04-01T00:00:00Z'))];
   assert.equal(cohortChurn(rows, at('2027-06-01T00:00:00Z')).verdict, 'insufficient');
 });
@@ -75,7 +75,7 @@ const arm = (name, cancels, trials) => [
   ...many(1, () => sub(name, '2026-01-01T00:00:00Z', trials - cancels + 1)),
 ];
 
-test('幅が重ならない時だけ、低い方を言う', () => {
+void test('幅が重ならない時だけ、低い方を言う', () => {
   const asOf = at('2027-12-01T00:00:00Z');
   const lower = cohortChurn([...arm('esim', 8, 400), ...arm('card', 30, 400)], asOf);
   assert.equal(lower.arms.esim.trials, 400);
@@ -84,18 +84,18 @@ test('幅が重ならない時だけ、低い方を言う', () => {
   assert.equal(cohortChurn([...arm('esim', 30, 400), ...arm('card', 8, 400)], asOf).verdict, 'card_lower');
 });
 
-test('幅が重なる時は unclear（言い切らない）', () => {
+void test('幅が重なる時は unclear（言い切らない）', () => {
   const report = cohortChurn([...arm('esim', 20, 400), ...arm('card', 26, 400)], at('2027-12-01T00:00:00Z'));
   assert.ok(report.arms.esim.monthlyChurnCi.high >= report.arms.card.monthlyChurnCi.low);
   assert.equal(report.verdict, 'unclear');
 });
 
-test('asOf より後に始まった契約は数えない', () => {
+void test('asOf より後に始まった契約は数えない', () => {
   const rows = [...many(5, () => sub('esim', '2027-01-01T00:00:00Z', 2)), sub('esim', '2027-09-01T00:00:00Z', 1)];
   assert.equal(cohortChurn(rows, at('2027-06-01T00:00:00Z')).arms.esim.people, 5);
 });
 
-test('おかしな行は受けない', () => {
+void test('おかしな行は受けない', () => {
   const asOf = at('2027-06-01T00:00:00Z');
   assert.throws(() => cohortChurn([sub('app', '2027-01-01T00:00:00Z', 1)], asOf), RangeError);
   assert.throws(() => cohortChurn([sub('esim', '2027-01-01T00:00:00Z', 0)], asOf), RangeError);
