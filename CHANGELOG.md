@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noah法人si導入準備に、認証済みChromeの成果・承認・支払取得と0件を含む受領票・自動点検、公開記事のサイトマップを追加。実取得・本番保存を確認。紹介経路・ASP継続接続・銀行照合は未完了（toolkits/noah-affiliate-agents、PR #374）。
+
 - Noahの法人si導入準備を会員登録不要の公開Web/MCP、集客計画、ASP承認・支払・銀行照合・費用台帳として実装。継続実行器による自社記事公開を開始し、Noah版175に入口掲載。ASP/銀行自動取得は未接続、紹介は媒体許可と正式リンク確認まで停止（toolkits/noah-affiliate-agents、PR #374）。
 
 - Noah用のWeb・PC相談と紹介案件運営をsource ZIP/MCPキットとして追加。掲載条件検査・非公開情報の分離・下書き・実績集計を実装し、専用11試験とWorker dry-runを確認。本番登録・配備前（task101、[PR #374](https://github.com/k999ln/rock/pull/374)）。

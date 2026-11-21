@@ -417,8 +417,61 @@ await test(
       assert.equal(answer.ok, true);
       assert.match(answer.blocks[0].text, /整理票/);
       assert.doesNotMatch(answer.blocks[0].text, /rentracks/);
+      const observation = {
+        schema: 'noah-source-observation/1',
+        stream: 'rentracks_payouts',
+        sourceUrl: 'https://manage.rentracks.jp/manage/detail_pay',
+        observedAt: new Date().toISOString(),
+        sha256: 'a'.repeat(64),
+        scope: null,
+        summary: {
+          totalRows: 0,
+          targetRows: 0,
+          pending: 0,
+          approved: 0,
+          rejected: 0,
+        },
+        rows: [],
+      };
+      assert.equal(
+        (
+          await req('/operations/api', {
+            action: 'source_observation',
+            observation,
+          })
+        ).status,
+        401,
+      );
+      const receipt = await (
+        await req(
+          '/operations/api',
+          { action: 'source_observation', observation },
+          owner,
+        )
+      ).json();
+      assert.equal(receipt.receipt.bankReceiptVerified, false);
+      assert.equal(
+        (
+          await (
+            await req(
+              '/operations/api',
+              { action: 'source_observation', observation },
+              owner,
+            )
+          ).json()
+        ).duplicate,
+        true,
+      );
       await mf.dispose();
       mf = new Miniflare(options);
+      const sources = await (
+        await req('/operations/api', { action: 'source_status' }, owner)
+      ).json();
+      assert.equal(
+        sources.find((s) => s.stream === 'rentracks_payouts').receipt.summary
+          .totalRows,
+        0,
+      );
       const restored = await (
         await req('/operations/api', { action: 'export' }, owner)
       ).json();
@@ -451,6 +504,20 @@ await test(
       assert.equal(guides.status, 200);
       assert.match(await guides.text(), /定例報告/);
       assert.match(await (await req('/guides/report')).text(), /guide-report/);
+      const sitemap = await req('/sitemap.xml');
+      assert.equal(sitemap.status, 200);
+      const xml = await sitemap.text();
+      assert.match(xml, /https:\/\/agent.example\/guides\/report/);
+      assert.doesNotMatch(xml, /operations|consult|brief/);
+      assert.match(
+        await (await req('/robots.txt')).text(),
+        /Sitemap: https:\/\/agent.example\/sitemap.xml/,
+      );
+      assert.match(
+        await (await req('/?campaign=private-tag')).text(),
+        /rel="canonical" href="https:\/\/agent.example\/"/,
+      );
+      assert.match(await (await req('/operations')).text(), /noindex,nofollow/);
       await req('/operations/api', { action: 'agent_stop' }, owner);
       const stopped = await (
         await req('/operations/api', { action: 'agent_status' }, owner)

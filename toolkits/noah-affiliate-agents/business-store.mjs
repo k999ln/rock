@@ -7,6 +7,7 @@ import {
   validateBusinessConfig,
 } from './business-core.mjs';
 import { emptyBusinessAgent, runBusinessAgent } from './business-runner.mjs';
+import { applySourceObservation, sourceStatus } from './business-sources.mjs';
 const response = (body, status = 200) => Response.json(body, { status });
 // A single provider-owned Durable Object, never an object chosen by a public input.
 export class BusinessLedger {
@@ -29,7 +30,10 @@ export class BusinessLedger {
           agent,
           (await tx.get('ledger')) || emptyBusinessLedger(),
           config,
-          { origin: 'https://noah-business-si.mr-kirin999.workers.dev' },
+          {
+            origin: 'https://noah-business-si.mr-kirin999.workers.dev',
+            sources: (await tx.get('sources')) || {},
+          },
         );
         if (result.ran) {
           await tx.put('agent', result.agent);
@@ -56,6 +60,31 @@ export class BusinessLedger {
       const v = await request.json();
       return await this.ctx.storage.transaction(async (tx) => {
         const state = (await tx.get('ledger')) || emptyBusinessLedger();
+        if (v.kind === 'source_observation') {
+          const result = applySourceObservation(
+            state,
+            (await tx.get('sources')) || {},
+            v.observation,
+            v.config,
+          );
+          if (!result.duplicate) {
+            await tx.put('ledger', result.ledger);
+            await tx.put('sources', result.sources);
+            const agent = (await tx.get('agent')) || emptyBusinessAgent();
+            if (agent.enabled) {
+              agent.nextRunAt = Date.now();
+              await tx.put('agent', agent);
+              await tx.setAlarm(agent.nextRunAt);
+            }
+          }
+          return response({
+            duplicate: result.duplicate,
+            revision: result.ledger.revision,
+            receipt: result.receipt,
+          });
+        }
+        if (v.kind === 'source_status')
+          return response(sourceStatus((await tx.get('sources')) || {}));
         if (
           [
             'agent_status',
@@ -88,7 +117,10 @@ export class BusinessLedger {
             );
           if (v.kind === 'articles')
             return response({ articles: Object.values(agent.articles) });
-          return response(agent);
+          return response({
+            ...agent,
+            sources: sourceStatus((await tx.get('sources')) || {}),
+          });
         }
         if (v.kind === 'snapshot') return response(state);
         if (v.kind === 'report')

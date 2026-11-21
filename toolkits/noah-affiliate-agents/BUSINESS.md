@@ -82,3 +82,25 @@ npx wrangler deploy --dry-run --config toolkits/noah-affiliate-agents/business.w
 自社記事は4つの業務別に公開し、確定成果20件以上・比較対象10件以上になるまで優劣を断定しない。条件が揃えば入金対応成果額と記録費用から既存記事の更新先を決める。未記録の費用があり得るため利益の確定とは呼ばない。新規の外部SNS投稿、広告購入、申込代行、送金は実行しない。
 
 **残件**: 実在するレントラックス実績取得接続、登録受取口座の確認、銀行の読み取り専用接続、許可済み媒体と正式URL、実成果・承認・入金の通し運用。これらが未接続なら工程状態は `needs_connection` / `needs_setup` のまま。timerや合成試験で完了にしない。
+
+
+## Chromeからの実取得
+
+`business-rentracks.mjs` は認証済みChromeで取得した注文表・選択中フィルターを検証し、対象案件の必要列だけを既存の鍵付き運営APIへ保存する。ブラウザ操作自体は提供しない。Cookieやプロファイルを取り出さない。CSVの手動編集は不要だが、このCLI単体を継続取得Agentとは呼ばない。
+
+取得時は `detail_sales` で全媒体・全広告主・全備考・全状態、売上日と承認日の両方を確認する。詳細期間は365日未満の差分で指定し、最大2000行に達したら期間を分割して全件取得する。年月日未選択、見出しの変更、未知の状態、小計不一致は保存しない。`detail_pay` は現時点で実確認できた「明細なし・小計0」の検証に対応。明細発生時は支払通知書の支払実施日・成果内訳を確認して対応する。支払予定日を実施日に読み替えない。
+
+端末内の対象設定は `offerId`・画面と完全一致する `productName`・登録媒体の `siteId`。媒体が未登録なら `siteId: null` のままにする。別媒体の匿名IDはNoahへ帰属しない。現在の対象以外の成果は件数だけ取得記録へ残す。
+
+```sh
+node toolkits/noah-affiliate-agents/business-rentracks.mjs /private/capture.private.json /private/target.private.json /private/business-secrets.private.json /private/receipt.private.json
+```
+
+送信先はこのWorkerの運営APIに固定。秘密はヘッダーだけに使い、リダイレクトを拒否する。取得受領票は0600で新規保存する。運営の `agent_status` / `source_status` で取得元・日時・期間・件数・hashを確認できる。0件と未接続を区別し、24時間経過した取得は `stale`。保存後は継続実行器を起動し、承認待ち点検・改善判断へ進む。単発の読取成功は `recurringConnectionVerified: false` のまま。
+
+銀行の `matchBankEntries` は口座一致・確認済み振込元・実入金・金額・日付・双方向の一意対応を検査する。これは照合ロジックの試験済み実装で、銀行の認証/明細取得接続の受入ではない。
+
+### Chrome取得器と検索導線
+`business-browser-collector.mjs` の `collectRentracks(tab, target)` は、支持されたCUAセッションの選択済みChrome Tabだけを使い、売上日/承認日の過去365日・全状態と支払画面を読み取る。ブラウザを独自起動せず、Cookieを抽出しない。取得値は0600のGit外ファイルへ保存し、上の同期処理で端末内正規化する。対象媒体フィルターが残る、見出し変更、全件未取得、未知の状態、支払通知書が必要な場合は成功扱いにしない。現時点で常駐スケジューラーに接続していないため、単独WorkerのalarmはASP画面を取得しない。
+
+公開記事は `/guides`、`/sitemap.xml` と `/robots.txt` に反映する。canonicalはキャンペーンqueryを除いたURL。運営画面はnoindexで、権限検査は従来どおりサーバー側で行う。媒体登録は本人が不要と回答したため送信しない。既存媒体の公開と編集認証を分け、正式タグを別媒体へ転用しない。

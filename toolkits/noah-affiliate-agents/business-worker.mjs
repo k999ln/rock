@@ -249,7 +249,8 @@ export async function handleBusiness(request, env) {
       priceNote:
         '相談票の作成は無料。紹介先の研修契約・料金は別です。広告を含む場合があります。',
     });
-  if (path === '/' && request.method === 'GET') return html(businessPage());
+  if (path === '/' && request.method === 'GET')
+    return html(businessPage(u.origin));
   if (
     (path === '/guides' || /^\/guides\/[a-z]+$/.test(path)) &&
     request.method === 'GET'
@@ -262,7 +263,54 @@ export async function handleBusiness(request, env) {
         : v.articles.find((x) => x.id === path.split('/')[2]);
     if (path !== '/guides' && !selected)
       return json({ error: 'not_found' }, 404);
-    return html(businessGuidePage(v.articles, selected));
+    return html(businessGuidePage(v.articles, selected, u.origin));
+  }
+  if (request.method === 'GET' && path === '/robots.txt')
+    return new Response(
+      'User-agent: *\nAllow: /\nDisallow: /operations\nDisallow: /consult/\nDisallow: /brief\nSitemap: ' +
+        u.origin +
+        '/sitemap.xml\n',
+      { headers: { ...headers, 'content-type': 'text/plain; charset=utf-8' } },
+    );
+  if (request.method === 'GET' && path === '/sitemap.xml') {
+    const r = await internal(env, { kind: 'articles' });
+    const v = await r.json();
+    const escape = (s) =>
+      String(s).replace(
+        /[&<>"']/g,
+        (c) =>
+          ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&apos;',
+          })[c],
+      );
+    const pages = [
+      { path: '/' },
+      { path: '/guides' },
+      ...v.articles.map((a) => ({
+        path: '/guides/' + a.id,
+        date: a.updatedOn,
+      })),
+    ];
+    const body =
+      '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+      pages
+        .map(
+          (p) =>
+            '<url><loc>' +
+            escape(u.origin + p.path) +
+            '</loc>' +
+            (p.date ? '<lastmod>' + escape(p.date) + '</lastmod>' : '') +
+            '</url>',
+        )
+        .join('') +
+      '</urlset>';
+    return new Response(body, {
+      headers: { ...headers, 'content-type': 'application/xml; charset=utf-8' },
+    });
   }
   if (path === '/operations' && request.method === 'GET')
     return html(operationsPage());
@@ -285,6 +333,20 @@ export async function handleBusiness(request, env) {
       let message;
       if (body.action === 'report' && Object.keys(body).length === 1)
         message = { kind: 'report', config };
+      else if (
+        body.action === 'source_status' &&
+        Object.keys(body).length === 1
+      )
+        message = { kind: 'source_status' };
+      else if (
+        body.action === 'source_observation' &&
+        Object.keys(body).length === 2
+      )
+        message = {
+          kind: 'source_observation',
+          observation: body.observation,
+          config,
+        };
       else if (
         ['agent_status', 'agent_start', 'agent_stop'].includes(body.action) &&
         Object.keys(body).length === 1

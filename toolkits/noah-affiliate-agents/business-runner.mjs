@@ -3,6 +3,7 @@ import {
   businessReport,
   applyBusinessCommand,
 } from './business-core.mjs';
+import { sourceStatus } from './business-sources.mjs';
 
 // This runner executes the connected stages. Missing external collectors remain
 // blocked, never simulated by a timer or inferred from an owner's bank name.
@@ -56,7 +57,7 @@ export function runBusinessAgent(
   current,
   ledger,
   config,
-  { now = Date.now(), origin } = {},
+  { now = Date.now(), origin, sources = {} } = {},
 ) {
   const agent = structuredClone(current),
     day = businessToday(now);
@@ -67,6 +68,9 @@ export function runBusinessAgent(
       (n, c) => n + c.approved + c.rejected,
       0,
     );
+  const observations = sourceStatus(sources, now);
+  const aspObserved = observations.every((s) => s.state === 'observed');
+  const stale = observations.some((s) => s.state === 'stale');
   // Preserve the initial exploration order until enough real final decisions exist.
   const ranked = report.campaigns
     .filter((c) => c.id.startsWith('guide-') && c.approved + c.rejected >= 10)
@@ -143,20 +147,31 @@ export function runBusinessAgent(
     },
     {
       id: 'asp_collection',
-      state: 'needs_connection',
-      detail:
-        'レントラックスの実績取得接続が未設定。手動取込を自動取得とは扱わない。',
+      state: stale
+        ? 'needs_attention'
+        : aspObserved
+          ? 'observed'
+          : 'needs_connection',
+      detail: stale
+        ? 'ASPの取得から24時間経過。再取得が必要です。'
+        : aspObserved
+          ? '認証済みChromeから注文・承認・支払を取得済み。取得時刻・範囲・件数は取得記録を参照。継続取得の接続は未受入。'
+          : 'ASPの注文・承認・支払を全て取得する接続が必要です。単発取得を継続接続とは扱いません。',
     },
     {
       id: 'approval_followup',
-      state: report.overdue.length ? 'needs_attention' : 'waiting_for_source',
+      state:
+        report.overdue.length || stale
+          ? 'needs_attention'
+          : aspObserved
+            ? 'observed'
+            : 'waiting_for_source',
       detail: `記録済みの承認待ち超過${report.overdue.length}件。ASPによる実際の決定を待つ。`,
     },
     {
       id: 'bank_reconciliation',
       state: 'needs_connection',
-      detail:
-        '受取口座と銀行の読み取り専用取得経路を確認中。支払予定を実入金にしない。',
+      detail: '銀行の読み取り専用取得経路は未接続。支払予定を実入金にしない。',
     },
     {
       id: 'improvement',
@@ -189,8 +204,15 @@ export function runBusinessAgent(
       published: shouldPublish ? articleId : null,
       fullFlowComplete: false,
       blockedStages: agent.stages
-        .filter((s) => ['needs_connection', 'needs_setup'].includes(s.state))
+        .filter(
+          (s) =>
+            s.id === 'asp_collection' ||
+            ['needs_connection', 'needs_setup', 'needs_attention'].includes(
+              s.state,
+            ),
+        )
         .map((s) => s.id),
+      recurringCollectionVerified: false,
     },
   ].slice(-100);
   return { agent, ledger, ran: true };
