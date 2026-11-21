@@ -110,6 +110,7 @@
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 |
+| 101 | [101-noah-affiliate-agents.md](101-noah-affiliate-agents.md) | Noah向け相談・紹介案件運営のZIPとMCP | 実装中 |
 
 ## 110 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
 

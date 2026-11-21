@@ -138,6 +138,8 @@ npm --prefix toolkits/noah-resale-agent run demo
 
 </details>
 
+相談と紹介案件の運営を組み合わせるAgentは、[Noahアフィリエイトキット](toolkits/noah-affiliate-agents/README.md)で作成できます。相談用・本人用のソースZIPと、提供者サーバー用MCPを用意しています。媒体許可・正式広告リンク・配備先の設定とNoahへの登録は未実施です。
+
 <details>
 <summary>Noahの画面・接続・Toolのコード</summary>
 
