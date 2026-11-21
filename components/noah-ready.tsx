@@ -1,11 +1,11 @@
 'use client';
 /**
  * 「すぐ使える Agent」の一覧（/noah/ready）。相手のサーバーで動き、握手が通った物だけが並ぶ。スマホだけで、選んで、つなげる。
- * 上から: 語で探す／つながっているもの・つながっていないもの（サインイン済みで、切っていない接続がある時）／動いた／まだ誰も動かしていない／出どころ。
+ * 上から: 語で探す／棚（shelf。運営が確かめた仕事のカード。探している間は出さない）／つながっているもの・つながっていないもの（サインイン済みで、切っていない接続がある時）／動いた／まだ誰も動かしていない／出どころ。
  * 並びと、載せるかどうかは、サーバーが決める（GET /api/noah/intake）。ここは、返った順に出すだけ。
  * 仕様: docs/noah/spec-74-one-click-connect.md の 11.5、spec-88-mass-probe.md の 9.6。
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { NOAH_READY_TEXT, noahConnectionStateText, noahReadyDetailHref, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
@@ -18,7 +18,8 @@ type Mine = NoahReadyConnection & { agentId: string; name: string; placeLabel: s
 type Page = { state: 'loading' | 'ready' | 'closed' | 'error'; items: NoahReadyItem[]; nextCursor: string | null; counts: { ran: number; new: number } | null; ownerScope: string | null; more: boolean };
 const EMPTY: Page = { state: 'loading', items: [], nextCursor: null, counts: null, ownerScope: null, more: false };
 
-export default function NoahReady() {
+/** shelf: 一番上に出す棚（app/noah/ready/page.tsx が components/noah-shelf.tsx を渡す）。探している間は出さない。 */
+export default function NoahReady({ shelf }: { shelf?: ReactNode } = {}) {
   // 読んだ頁は、どの問い合わせ（探す語・絞り込み・やり直し）の物かと一緒に持つ。問い合わせが変わったら、届くまでは「読み込み中」。
   const [result, setResult] = useState<{ key: string; page: Page } | null>(null), [mineOf, setMineOf] = useState<{ scope: string; list: Mine[] } | null>(null);
   const [query, setQuery] = useState(''), [search, setSearch] = useState(''), [oneTap, setOneTap] = useState(false), [attempt, setAttempt] = useState(0);
@@ -114,6 +115,8 @@ export default function NoahReady() {
           <button type="button" aria-pressed={oneTap} onClick={() => setOneTap(true)}>押すだけで試せる</button>
         </fieldset>}
       </search>
+
+      {!search && shelf}
 
       {working.length > 0 && !search && <section className={styles.section} aria-labelledby="noah-ready-connected">
         <h2 id="noah-ready-connected">{NOAH_READY_TEXT.connected}</h2>

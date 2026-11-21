@@ -5,6 +5,8 @@ import { createNoahAskApi } from '../../../lib/noah-ask.ts';
 import { createNoahConnectApi } from '../../../lib/noah-connect.ts';
 import { createNoahConnectPlanApi } from '../../../lib/noah-connect-plan-api.ts';
 import { parseNoahFlags } from '../../../lib/noah-flags.ts';
+import { createNoahShelfApi } from '../../../lib/noah-shelf-api.ts';
+import { parseNoahShelfFlags } from '../../../lib/noah-shelf.ts';
 import { ownerScopeFor } from '../../../lib/owner-intent.ts';
 import { fixture, entry, page } from './intake.mjs';
 import { network } from './mcp-server.mjs';
@@ -99,6 +101,7 @@ export async function world(t, servers, options = {}) {
       : /^\/api\/noah\/connect\/[^/]+$/.test(path) ? (incoming) => api.item(incoming, path.split('/')[4])
       : path === '/api/noah/ask' ? askApi.collection
       : /^\/api\/noah\/ask\/[^/]+$/.test(path) ? (incoming) => askApi.item(incoming, path.split('/')[4])
+      : path === '/api/noah/shelf' ? createNoahShelfApi({ ...deps, shelfFlags: parseNoahShelfFlags(config.env ?? options.env ?? OPEN) })
       : null;
     if (!route) return { status: 404, body: { error: '見つかりません。' } };
     const response = await route(new Request(url, {

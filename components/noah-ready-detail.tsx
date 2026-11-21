@@ -19,7 +19,8 @@ import styles from './noah-ready.module.css';
 type Detail = NoahReadyItem & { listed: boolean; website: string | null; connection: NoahReadyConnection | null; ownerScope: string | null; error?: string };
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
-export default function NoahReadyDetail({ id }: { id: string }) {
+/** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。 */
+export default function NoahReadyDetail({ id, tool = null }: { id: string; tool?: string | null }) {
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
   const [cutting, setCutting] = useState(false), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
@@ -98,7 +99,7 @@ export default function NoahReadyDetail({ id }: { id: string }) {
       <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" />
     </article>
 
-    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
+    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
     {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
     {signedIn && <NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} />}
 

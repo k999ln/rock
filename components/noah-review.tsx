@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import NoahIntakeReview from './noah-intake-review';
+import NoahShelfReview from './noah-shelf-review';
 import { SKY_REVIEW_CHECKS } from '@/lib/sky-tool-review';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import styles from './noah-agent-catalog.module.css';
@@ -101,6 +102,7 @@ export default function NoahReview() {
     <main className={styles.page}>
       <h1>Agentの審査</h1>
       {scope && <NoahIntakeReview key={scope} ownerScope={scope} />}
+      {scope && <NoahShelfReview key={`shelf:${scope}`} ownerScope={scope} />}
       <p>
         作者とは別の審査担当者が、提出された固定版を確認します。審査の合格後に公開一覧へ載ります。
       </p>

@@ -34,8 +34,10 @@ function readKept(connectionId: string): { host: string; tools: NoahAskTool[] } 
   }
 }
 
-export default function NoahAsk({ connectionId, ownerScope, onUnusable, onAsked }: {
+export default function NoahAsk({ connectionId, initialTool = null, ownerScope, onUnusable, onAsked }: {
   connectionId: string;
+  /** 最初に選んでおく道具の名前（棚のカードから来た時）。使えない道具なら、一覧を出す。 */
+  initialTool?: string | null;
   ownerScope: string | null;
   /** 道具の一覧を開いた時に、その接続が使えなくなっていた（取り下げ・接続先の変更）。詳細の画面が、接続を読み直す。 */
   onUnusable: () => void;
@@ -48,7 +50,7 @@ export default function NoahAsk({ connectionId, ownerScope, onUnusable, onAsked 
     const kept = readKept(connectionId);
     return kept ? { attempt: 0, loaded: { state: 'ready', host: kept.host, tools: kept.tools } } : null;
   });
-  const [picked, setPicked] = useState<string | null>(null), [word, setWord] = useState('');
+  const [picked, setPicked] = useState<string | null>(initialTool), [word, setWord] = useState('');
   // この画面で、本人が確かめた道具（名前と、その時の定義の hash）。同じ道具を続けて頼む時に、確かめ直さない。
   const [confirmedHere] = useState(() => new Set<string>());
   const loaded: Loaded = result?.attempt === attempt ? result.loaded : { state: 'loading' };
