@@ -9,6 +9,7 @@ export const NOAH_COLLECTION_LIMITS = { items: 500, bytes: 1_048_576, maxAgeMs: 
 export type NoahCollectionItem = {
   id: string; source: NoahCollectionSource; name: string; summary: string; author: string;
   url: string; sourceUrl: string; observedAt: number; expiresAt: number;
+  metrics?: { stars?: number; likes?: number; reposts?: number };
   // Collection cards are discoveries, never an execution entitlement.
 };
 export type NoahCollectionSnapshot = { schema: 'noah-collection/1'; source: NoahCollectionSource; collectedAt: number; items: NoahCollectionItem[] };
@@ -40,7 +41,16 @@ export function parseCollectionSnapshot(value: unknown, now: number): NoahCollec
     if (typeof observedAt !== 'number' || typeof expiresAt !== 'number' || !Number.isSafeInteger(observedAt) || !Number.isSafeInteger(expiresAt) || observedAt < 1 || observedAt > at || expiresAt <= observedAt || expiresAt > observedAt + maxAge) return fail();
     // Posts are referenced by URL; their text is not republished as an Agent description.
     if (source === 'x' && (summary !== 'Xで紹介されたAgentのリンクです。内容と利用条件は配布元で確認できます。' || !author.startsWith('@'))) return fail();
-    return { id, source, name, summary, author, url, sourceUrl, observedAt, expiresAt };
+    const metrics: NonNullable<NoahCollectionItem['metrics']> = {};
+    if (raw.metrics !== undefined) {
+      if (!object(raw.metrics)) return fail();
+      const allowedMetrics = source === 'github' ? ['stars'] : source === 'huggingface' ? ['likes'] : source === 'x' ? ['likes', 'reposts'] : [];
+      for (const [metric, count] of Object.entries(raw.metrics)) {
+        if (!allowedMetrics.includes(metric) || typeof count !== 'number' || !Number.isSafeInteger(count) || count < 0) return fail();
+        metrics[metric as keyof typeof metrics] = count;
+      }
+    }
+    return { id, source, name, summary, author, url, sourceUrl, observedAt, expiresAt, ...(Object.keys(metrics).length ? { metrics } : {}) };
   });
   return { schema: 'noah-collection/1', source, collectedAt: at, items };
 }

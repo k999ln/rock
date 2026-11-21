@@ -19,7 +19,7 @@ export function collectionSnapshots({ exported, discoveries, x, now }) {
     const metadata = row.metadata, observedAt = row.checked_at;
     if (observedAt + NOAH_COLLECTION_LIMITS.maxAgeMs <= now) continue;
     const url = xAgentProject(metadata.url) ?? metadata.url;
-    add({ id: row.id, source: row.provider, name: text(metadata.name, 200), summary: text(metadata.summary, 500), author: text(metadata.author, 200), url, sourceUrl: metadata.url, observedAt, expiresAt: observedAt + NOAH_COLLECTION_LIMITS.maxAgeMs });
+    add({ id: row.id, source: row.provider, name: text(metadata.name, 200), summary: text(metadata.summary, 500), author: text(metadata.author, 200), url, sourceUrl: metadata.url, observedAt, expiresAt: observedAt + NOAH_COLLECTION_LIMITS.maxAgeMs, ...(metadata.metrics ? { metrics: metadata.metrics } : {}) });
   }
   const candidates = new Map(exported.candidates.map(row => [row.id, row]));
   const checks = new Map(exported.checks.map(row => [row.candidate_id, row]));

@@ -7,6 +7,7 @@ import { createCollectionApi } from '../lib/noah-collection-api.ts';
 import { collectionSignature, parseCollectionSnapshot, NOAH_COLLECTION_PATH } from '../lib/noah-collection.ts';
 import { openCollectorStore } from '../scripts/noah-collector-store.mjs';
 import { collectXAgents } from '../scripts/noah-collector-x.mjs';
+import { normalizeDiscovery } from '../lib/noah-discovery-provider.ts';
 import { publishCollection } from '../scripts/noah-collector-publish.mjs';
 
 const NOW = Date.UTC(2026, 10, 22), KEY = 'collection-test-signature-material-0000';
@@ -94,4 +95,22 @@ void test('X 429 and partial-error pages preserve their checkpoint and expose a 
   const partial = await collectXAgents({ local, fetcher: async () => Response.json({ data: [], meta: {}, errors: [{ detail: 'secret' }] }), token: 'test', now: () => clock });
   assert.equal(partial.status, 'invalid_response');
   assert.equal(JSON.parse(local.sql.prepare('SELECT state_json FROM _noah_collector_x').get().state_json).sinceId, null);
+});
+
+void test('external ratings retain their source, refresh downwards, and never create Noah ratings', async () => {
+  const hf = { _id: 'a'.repeat(24), id: 'maker/agent', private: false, sha: 'b'.repeat(40), sdk: 'gradio', likes: 84 };
+  assert.deepEqual(normalizeDiscovery('huggingface', hf).metrics, { likes: 84 });
+  assert.equal(normalizeDiscovery('huggingface', { ...hf, likes: undefined }).metrics, undefined);
+  assert.equal(normalizeDiscovery('huggingface', { ...hf, likes: -1 }).metrics, undefined);
+  const store = bucket(); let clock = NOW;
+  const api = createCollectionApi({ bucket: store, key: KEY, now: () => clock });
+  const card = item('huggingface', { url: 'https://huggingface.co/spaces/maker/agent', sourceUrl: 'https://huggingface.co/spaces/maker/agent', metrics: { likes: 84 } });
+  assert.equal((await post(api, snapshot('huggingface', [card]))).status, 200);
+  clock += 1000;
+  assert.equal((await post(api, snapshot('huggingface', [{ ...card, metrics: { likes: 81 }, observedAt: clock }], clock), { time: clock })).status, 200);
+  const view = await (await api(new Request(`https://avoado.si${NOAH_COLLECTION_PATH}`))).json();
+  assert.deepEqual(view.items[0].sources[0].metrics, { likes: 81 });
+  assert.equal(view.items[0].sources[0].observedAt, clock);
+  assert.equal('crowns' in view.items[0], false); assert.equal('users' in view.items[0], false);
+  assert.throws(() => parseCollectionSnapshot(snapshot('huggingface', [{ ...card, metrics: { stars: 3 } }]), clock));
 });

@@ -25,7 +25,7 @@ export function createCollectionApi({ bucket, key, now = Date.now }: { bucket?: 
         // Several sources may point at the same project; show one card with all its provenance.
         const grouped = new Map<string, typeof records>();
         for (const item of records) { const list = grouped.get(item.url) ?? []; list.push(item); grouped.set(item.url, list); }
-        const all = [...grouped.values()].map(items => ({ ...items[0], sources: items.map(({ source, sourceUrl, author }) => ({ source, sourceUrl, author })), status: 'discovered' }));
+        const all = [...grouped.values()].map(items => ({ ...items[0], sources: items.map(({ source, sourceUrl, author, metrics, observedAt }) => ({ source, sourceUrl, author, metrics, observedAt })), status: 'discovered' }));
         const offset = Number(cursor), items = all.slice(offset, offset + 20);
         return json({ items, total: all.length, nextCursor: offset + 20 < all.length ? String(offset + 20) : null, configured: true });
       }

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { NOAH_COLLECTION_LABELS, NOAH_COLLECTION_SOURCES, type NoahCollectionItem } from '@/lib/noah-collection';
 import styles from './noah-collection-feed.module.css';
 
-type Card = NoahCollectionItem & { sources: Pick<NoahCollectionItem, 'source' | 'sourceUrl' | 'author'>[] };
+type Card = NoahCollectionItem & { sources: Pick<NoahCollectionItem, 'source' | 'sourceUrl' | 'author' | 'metrics' | 'observedAt'>[] };
 type Page = { items: Card[]; total: number; nextCursor: string | null; configured: boolean };
 export default function NoahCollectionFeed() {
   const [source, setSource] = useState(''), [query, setQuery] = useState(''), [cursor, setCursor] = useState('0');
@@ -34,8 +34,11 @@ export default function NoahCollectionFeed() {
       <div className={styles.source}>{item.sources.map(source => NOAH_COLLECTION_LABELS[source.source]).filter((v, i, all) => all.indexOf(v) === i).join(' · ')}</div>
       <h3><a href={item.url} target="_blank" rel="noopener noreferrer">{item.name}</a></h3>
       <p>{item.summary}</p><span className={styles.note}>{item.author}</span>
+      <div className={styles.metrics}>{item.sources.filter(source => source.metrics && Object.keys(source.metrics).length).map((source, i) => <a key={`${source.sourceUrl}-rating-${i}`} href={source.sourceUrl} target="_blank" rel="noopener noreferrer" title={`${new Date(source.observedAt).toLocaleString('ja-JP')} 確認`}>
+        {NOAH_COLLECTION_LABELS[source.source]} {Object.entries(source.metrics!).map(([metric, count]) => `${metric === 'stars' ? 'スター' : metric === 'reposts' ? 'リポスト' : 'いいね'} ${count.toLocaleString('ja-JP')}`).join(' · ')}
+      </a>)}</div>
       <div className={styles.links}>{item.sources.map((source, i) => <a key={`${source.sourceUrl}-${i}`} href={source.sourceUrl} target="_blank" rel="noopener noreferrer">{NOAH_COLLECTION_LABELS[source.source]}の出典</a>)}</div>
-      <small>{new Date(item.observedAt).toLocaleDateString('ja-JP')} 確認 · 接続未確認</small>
+      <small>{new Date(item.observedAt).toLocaleString('ja-JP')} 確認 · 外部の反応はNoah内の評価と別集計</small>
     </article>)}</div>
     <div className={styles.pagination}>{cursor !== '0' && <button onClick={() => setCursor(String(Math.max(0, Number(cursor) - 20)))}>前へ</button>}{current?.data?.nextCursor && <button onClick={() => setCursor(current.data!.nextCursor!)}>次へ</button>}</div>
   </section>;

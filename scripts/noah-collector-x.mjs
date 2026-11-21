@@ -31,7 +31,7 @@ export async function collectXAgents({ local, fetcher, token, now = Date.now }) 
   if (!token) return { status: 'needs_credentials', items: state.items.filter(item => item.expiresAt > at), nextAt: null };
   if (state.nextAt > at) return { status: state.error ?? 'not_due', items: state.items.filter(item => item.expiresAt > at), nextAt: state.nextAt };
   const url = new URL('https://api.x.com/2/tweets/search/recent');
-  url.search = new URLSearchParams({ query: X_AGENT_QUERY, max_results: '100', 'tweet.fields': 'entities,author_id,created_at', expansions: 'author_id', 'user.fields': 'username' }).toString();
+  url.search = new URLSearchParams({ query: X_AGENT_QUERY, max_results: '100', 'tweet.fields': 'entities,author_id,created_at,public_metrics', expansions: 'author_id', 'user.fields': 'username' }).toString();
   // Recent search only covers seven days. A stale cursor starts a new recent window.
   if (state.lastSuccessAt && at - state.lastSuccessAt > 6 * 86_400_000) { state.sinceId = null; state.cursor = null; state.newestId = null; }
   if (state.sinceId) url.searchParams.set('since_id', state.sinceId);
@@ -61,9 +61,14 @@ export async function collectXAgents({ local, fetcher, token, now = Date.now }) 
         const project = xAgentProject(link.expanded_url);
         if (!project) continue;
         const id = `x:${post.id}:${project}`;
+        const metrics = {};
+        for (const [api, field] of [['like_count', 'likes'], ['retweet_count', 'reposts']]) {
+          const count = post.public_metrics?.[api];
+          if (Number.isSafeInteger(count) && count >= 0) metrics[field] = count;
+        }
         items.set(id, { id, source: 'x', name: project.split('/').slice(-2).join('/'), author: `@${username}`,
           summary: 'Xで紹介されたAgentのリンクです。内容と利用条件は配布元で確認できます。',
-          url: project, sourceUrl: collectionUrl(`https://x.com/${username}/status/${post.id}`), observedAt: at, expiresAt: at + NOAH_COLLECTION_LIMITS.xAgeMs });
+          url: project, sourceUrl: collectionUrl(`https://x.com/${username}/status/${post.id}`), observedAt: at, expiresAt: at + NOAH_COLLECTION_LIMITS.xAgeMs, ...(Object.keys(metrics).length ? { metrics } : {}) });
       }
     }
     state.items = [...items.values()].sort((a, b) => b.observedAt - a.observedAt || a.id.localeCompare(b.id)).slice(0, NOAH_COLLECTION_LIMITS.items);

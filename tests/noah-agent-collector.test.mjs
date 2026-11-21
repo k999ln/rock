@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { collectAgents, runCollector, collectorArguments } from '../scripts/noah-agent-collector.mjs';
 import { openCollectorStore, readCollectorStatus, COLLECTOR_LEASE_MS } from '../scripts/noah-collector-store.mjs';
+import { collectorServicePlist } from '../scripts/noah-collector-service.mjs';
 import { collectorLookup, collectorPublicAddress, createCollectorNetwork } from '../scripts/noah-collector-network.mjs';
 import { noahIntakeImportParts, parseNoahIntakeImportPart, createIntakeImportApi } from '../lib/noah-intake-import.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
@@ -131,4 +132,12 @@ void test('large collection imports respect UTF-8 byte limits and preserve every
   assert.deepEqual(parts.flatMap(p => p.candidates), all.candidates);
   const oversized = { ...all, families: [all.families[0]], candidates: Array.from({ length: 241 }, (_, i) => ({ id: `member-${i}`, family_id: 'family-0' })), checks: [] };
   assert.throws(() => splitNoahIntakeImport(oversized), /上限/);
+});
+
+void test('background service restarts and loads secrets from a private env file rather than plist arguments', () => {
+  const plist = collectorServicePlist({ node: '/node', script: '/repo/collector.mjs', directory: '/data', envFile: '/private/runtime.env', origin: 'https://avoado.si' });
+  assert.match(plist, /<key>KeepAlive<\/key><true\/>/);
+  assert.match(plist, /--env-file=\/private\/runtime.env/);
+  assert.match(plist, /--watch/); assert.match(plist, /--publish/);
+  assert.ok(!plist.includes('NOAH_COLLECTION_KEY='));
 });

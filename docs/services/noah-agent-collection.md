@@ -27,3 +27,9 @@
 - `NOAH_X_BEARER_TOKEN`: 収集機だけ。Xの公式検索へだけ送り、掲載データ・ログへ出さない。未設定は `needs_credentials`、他の収集は継続。
 - `npm run noah:collect -- --watch --publish https://avoado.si` で定期収集から掲載まで。取得側・掲載側の失敗は `status.json` に分けて残す。
 - Xは [公式Recent Search](https://docs.x.com/x-api/posts/search/quickstart/recent-search) の認証・頁送りを使う。最新7日間の検索であり全履歴取得ではない。1回1頁、続きは次の巡回。完了後は2時間待機し、429では指定された時刻まで待つ。
+
+## 随時更新と外部の評価（2026-11-22 本人指示）
+
+- 収集器は60秒ごとに期限を確認する。MCPは初回全件→毎時差分、GitHub/Hugging Faceは2時間ごとの検索と既知候補の再確認、Xは頁送り中60秒・完了後2時間。API制限の待ち時間を優先する。
+- GitHubの `stargazers_count`、Hugging Face Spaceの `likes`、X投稿の `public_metrics` を出所付きで保存・表示する。値の減少も反映し、値が無い場合は0と補わない。Noahの王冠・利用人数・コメントへ加算しない。外部の反応は動作・品質の保証ではない。
+- macOSでは `scripts/noah-collector-service.mjs --install --dir <保存先> --env-file <権限600の設定ファイル> --origin https://avoado.si` でログイン時起動・異常終了時再開を設定できる。`--status`で稼働を確認、`--stop`で停止。設定ファイルと保存先はGit外。Macが停止中は更新しない。
