@@ -8,7 +8,10 @@ import { join } from 'node:path';
 import { EsimBootstrap, FixtureEsimProvider } from '../core.mjs';
 
 import { TrialError, TrialRuntime } from './runtime.mjs';
-import { sampleOffers } from '../../../services/noah-test-runtime/src/esim-trial/guide.mjs';
+import {
+  sampleOffers,
+  trialExecutionQuote,
+} from '../../../services/noah-test-runtime/src/esim-trial/guide.mjs';
 export {
   PACKAGE,
   DELAY_MS,
@@ -34,10 +37,16 @@ function requireTrial(condition, status, message) {
 export class NoahTrial {
   constructor(
     directory,
-    { now = Date.now, provider, readOffers = () => sampleOffers } = {},
+    {
+      now = Date.now,
+      provider,
+      readOffers = () => sampleOffers,
+      readQuote = () => trialExecutionQuote,
+    } = {},
   ) {
     this.now = now;
     this.readOffers = readOffers;
+    this.readQuote = readQuote;
     this.provider =
       provider ??
       new FixtureEsimProvider(join(directory, 'fixture-provider.sqlite'));
@@ -113,6 +122,20 @@ export class NoahTrial {
       )
       .get(owner);
   }
+  async freeLineAvailable() {
+    try {
+      const q = await this.provider.quoteFreeTrial();
+      return (
+        q?.currency === 'JPY' &&
+        q.autoRenew === false &&
+        ['issueMinor', 'recurringMinor', 'trafficMinor', 'endMinor'].every(
+          (key) => q[key] === 0,
+        )
+      );
+    } catch {
+      return false;
+    }
+  }
   async enroll(owner) {
     const row = this.core.createFixtureEnrollment(
       owner,
@@ -124,8 +147,14 @@ export class NoahTrial {
       403,
       'この試験回線は失効しています。',
     );
-    if (row.state === 'requested') await this.core.provision(owner, row.id);
-    else await this.core.reconcile(owner, row.id);
+    if (row.state === 'requested') {
+      requireTrial(
+        await this.freeLineAvailable(),
+        409,
+        '事業者側の0円条件を確認できるまで、申込は準備待ちです。',
+      );
+      await this.core.provision(owner, row.id);
+    } else await this.core.reconcile(owner, row.id);
     return this.order(owner);
   }
   async install(owner) {
@@ -147,8 +176,7 @@ export class NoahTrial {
       409,
       'この模擬端末には別の回線が登録されています。',
     );
-    if ((await this.provider.lookup(order.id))?.state === 'issued')
-      this.provider.setState(order.id, 'enabled');
+    this.provider.enableIssued(order.id);
     await this.core.reconcile(owner, order.id);
     this.core.registerFixtureDevice(owner, device, capabilities);
   }
@@ -195,6 +223,7 @@ export class NoahTrial {
     }
     return {
       active: true,
+      quote: this.readQuote(),
       enrollment: phone.id,
       device: phone.device,
       now,

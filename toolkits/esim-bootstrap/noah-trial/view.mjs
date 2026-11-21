@@ -39,7 +39,11 @@ export function layout(title, content, { refresh = false } = {}) {
 function jobCard(job) {
   const summary = `${regions[job.region]}・${goods[job.item]}`;
   if (job.state === 'scheduled')
-    return `<section><h2>${summary}の案内を準備中</h2><p>${date(job.due)} に1回実行します。画面を閉じてもサーバーが続けます。</p>${form('stop', 'この仕事を停止', hidden('id', job.id), true)}</section>`;
+    return `<section><h2>${summary}の案内を準備中</h2><p>${date(job.due)}  JSTに1回実行します。画面を閉じてもサーバーが続けます。</p>${form('stop', 'この仕事を停止', hidden('id', job.id), true)}</section>`;
+  if (job.state === 'running')
+    return `<section><h2>${summary}の案内を実行中</h2><p>承認した1回の成果を確認しています。</p></section>`;
+  if (job.state === 'interrupted')
+    return `<section><h2>${summary}の確認を終了しました</h2><p>回線または利用条件が変わり、実行結果を確定できませんでした。請求は0円です。</p></section>`;
   if (job.state === 'stopped')
     return `<section><h2>${summary}</h2><p>停止済み　実行 0回 ／ 0円</p></section>`;
   const result = JSON.parse(job.result);
@@ -58,6 +62,7 @@ export function screen({
   dedicated,
   verified,
   installed,
+  freeLine,
   jobs = [],
   notice,
   origins,
@@ -68,10 +73,17 @@ export function screen({
       `<p>このMacの模擬端末で、回線の申込からAgentの成果受取まで試せます。</p><section><h2>招待コードで入る</h2>${form('login', '続ける', '<label>テスト用招待コード<input name="invite" type="password" required maxlength="128" autocomplete="off"></label>')}</section>`,
     );
   let display;
-  if (!order)
+  if ((!order || order.state === 'requested') && !freeLine)
+    display = layout(
+      '試験回線は準備待ちです',
+      '<p>発行料・通信料と自動更新の条件を確認できると、0円で申し込めます。</p><a href="' +
+        base +
+        '">提供状況を再確認する</a>',
+    );
+  else if (!order)
     display = layout(
       '試験回線を申し込む',
-      `<section><h2>テスト用eSIM　0円</h2><p>このMac内で使える模擬回線を1本発行します。実機へのeSIM追加と通信事業者への発注は行いません。</p><dl><dt>発行・通信</dt><dd>0円</dd><dt>自動更新</dt><dd>なし</dd><dt>利用期限</dt><dd>${date(session.expires)} JST</dd></dl>${form('enroll', '0円で申し込む')}</section>`,
+      `<section><h2>テスト用eSIM　0円</h2><p>このMac内で使える模擬回線を1本発行します。実機へのeSIM追加と通信事業者への発注は行いません。</p><dl><dt>発行・通信</dt><dd>0円</dd><dt>請求先</dt><dd>なし（利用者・運営とも0円）</dd><dt>自動更新</dt><dd>なし</dd><dt>利用期限</dt><dd>${date(session.expires)} JST</dd></dl>${form('enroll', '0円で申し込む')}</section>`,
     );
   else if (order.access === 'revoked')
     display = layout(
@@ -94,7 +106,9 @@ export function screen({
       `<section><h2>${notice ? '更新があります' : '模擬回線を追加しました'}</h2><p>専用回線の入口で、パッケージと届いた成果を確認できます。</p>${link(origins.mobile, '模擬専用回線でNoahを開く')}</section>`,
     );
   else {
-    const pending = jobs.some((j) => j.state === 'scheduled');
+    const pending = jobs.some((j) =>
+      ['scheduled', 'running'].includes(j.state),
+    );
     const formFields =
       field('地域', 'region', regions) +
       field('品目', 'item', goods) +

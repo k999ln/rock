@@ -4,19 +4,23 @@ import { randomBytes } from 'node:crypto';
 import { join } from 'node:path';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 
-const entry = fileURLToPath(
-  new URL(
-    '../../../services/noah-test-runtime/src/esim-trial/worker.mjs',
-    import.meta.url,
-  ),
-);
-const script = buildSync({
-  entryPoints: [entry],
-  bundle: true,
-  format: 'esm',
-  platform: 'browser',
-  write: false,
-}).outputFiles[0].text;
+function bundle(name) {
+  const entry = fileURLToPath(
+    new URL(
+      '../../../services/noah-test-runtime/src/esim-trial/' + name + '.mjs',
+      import.meta.url,
+    ),
+  );
+  return buildSync({
+    entryPoints: [entry],
+    bundle: true,
+    format: 'esm',
+    platform: 'browser',
+    write: false,
+  }).outputFiles[0].text;
+}
+const controllerScript = bundle('worker');
+const packageScript = bundle('agent');
 export class TrialError extends Error {
   constructor(status, message) {
     super(message);
@@ -29,16 +33,33 @@ export class TrialRuntime {
     const persist = join(directory, 'worker');
     const local = convertV4MiniflareOptions({
       host: '127.0.0.1',
-      script,
-      modules: true,
-      compatibilityDate: '2026-10-01',
-      durableObjects: { JOBS: { className: 'TrialJobs', useSQLite: true } },
       durableObjectsPersist: persist,
-      bindings: { BRIDGE: this.secret },
-      outboundService: () => new Response(null, { status: 403 }),
-      serviceBindings: {
-        LINE: async (req) => Response.json(await checkLine(await req.text())),
-      },
+      workers: [
+        {
+          name: '',
+          script: controllerScript,
+          modules: true,
+          compatibilityDate: '2026-10-01',
+          durableObjects: { JOBS: { className: 'TrialJobs', useSQLite: true } },
+          bindings: { BRIDGE: this.secret },
+          outboundService: () => new Response(null, { status: 403 }),
+          serviceBindings: {
+            LINE: async (req) =>
+              Response.json(await checkLine(await req.text())),
+            GUIDE: 'noah-trial-guide',
+          },
+        },
+        {
+          name: 'noah-trial-guide',
+          script: packageScript,
+          modules: true,
+          compatibilityDate: '2026-10-01',
+          durableObjects: {
+            EXECUTIONS: { className: 'GuideExecution', useSQLite: true },
+          },
+          outboundService: () => new Response(null, { status: 403 }),
+        },
+      ],
     });
     this.runtime = new Miniflare({
       ...local,

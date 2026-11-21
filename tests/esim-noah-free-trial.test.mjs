@@ -258,3 +258,77 @@ await test(
     assert.equal(JSON.parse(job.result).entries[0].id, 'sample-tokyo-rice');
   },
 );
+
+await test('無料か判断できない事業者条件では発行せず、無料を確認後に同じ申込で再開する', async (t) => {
+  const provider = new FixtureEsimProvider(':memory:');
+  const quote = provider.quoteFreeTrial.bind(provider);
+  const f = fixture(t, { provider });
+  f.invite();
+  const bad = [
+    null,
+    { ...quote(), recurringMinor: 30 },
+    { ...quote(), autoRenew: true },
+    { ...quote(), endMinor: undefined },
+  ];
+  let order;
+  for (const value of bad) {
+    provider.quoteFreeTrial = () => value;
+    assert.equal(await f.trial.freeLineAvailable(), false);
+    await assert.rejects(f.trial.enroll('alice'), { status: 409 });
+    order = f.trial.order('alice');
+    assert.equal(order.state, 'requested');
+    assert.equal(await provider.lookup(order.id), null);
+  }
+  provider.quoteFreeTrial = quote;
+  assert.equal((await f.trial.enroll('alice')).id, order.id);
+  await Promise.all([f.trial.install('alice'), f.trial.install('alice')]);
+  assert.equal((await provider.lookup(order.id)).version, 2);
+});
+
+await test('利用者または運営の費用が不明・有料なら新規承認と予定された実行を止める', async (t) => {
+  let price = { currency: 'JPY', customerMinor: 0, operatorMinor: 0 };
+  const f = fixture(t, { readQuote: () => price });
+  f.invite();
+  await phone(f.trial);
+  const free = price;
+  for (const changed of [
+    { ...free, operatorMinor: 1 },
+    { ...free, customerMinor: 1 },
+    { ...free, currency: 'USD' },
+    null,
+  ]) {
+    price = changed;
+    await assert.rejects(f.trial.approve('alice', true, request()), {
+      status: 409,
+    });
+  }
+  price = free;
+  await f.trial.approve('alice', true, request());
+  price = { ...free, operatorMinor: null };
+  f.advance(DELAY_MS);
+  await f.trial.recoverAlarms();
+  const [job] = await f.trial.jobs('alice');
+  assert.equal(job.state, 'stopped');
+  assert.equal(job.runs, null);
+});
+
+await test('成果の検収は元の台帳・選択・全件数と一致したときだけ通る', async () => {
+  const { sampleOffers, runGuide, acceptGuideResult } =
+    await import('../services/noah-test-runtime/src/esim-trial/guide.mjs');
+  const good = runGuide(sampleOffers, 'tokyo', 'rice');
+  assert.ok(acceptGuideResult(sampleOffers, 'tokyo', 'rice', good));
+  assert.equal(acceptGuideResult(sampleOffers, 'osaka', 'rice', good), false);
+  assert.equal(
+    acceptGuideResult(sampleOffers, 'tokyo', 'rice', { ...good, entries: [] }),
+    false,
+  );
+  assert.equal(
+    acceptGuideResult(sampleOffers, 'tokyo', 'rice', {
+      ...good,
+      source: '別の資料',
+    }),
+    false,
+  );
+  const empty = runGuide(sampleOffers, 'osaka', 'rice');
+  assert.equal(acceptGuideResult(null, 'osaka', 'rice', empty), false);
+});

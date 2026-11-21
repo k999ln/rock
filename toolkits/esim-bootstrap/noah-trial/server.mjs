@@ -3,7 +3,12 @@ import { readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import {
+  randomUUID,
+  randomBytes,
+  createCipheriv,
+  createDecipheriv,
+} from 'node:crypto';
 import { NoahTrial, newCredential, TRIAL_MS, TrialError } from './trial.mjs';
 import { base, esc, layout, screen } from './view.mjs';
 
@@ -39,11 +44,75 @@ const closeServer = (server) =>
     server.close(resolve);
     server.closeIdleConnections();
   });
+// Only an opaque, authenticated envelope enters the browser. Restarting the host
+// rotates its key; the same local invite recovers the account and its work.
+function sealSession(key, token) {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([
+    cipher.update(token, 'utf8'),
+    cipher.final(),
+  ]);
+  return Buffer.concat([iv, cipher.getAuthTag(), encrypted]).toString(
+    'base64url',
+  );
+}
+function openSession(key, envelope) {
+  if (typeof envelope !== 'string' || !/^[a-zA-Z0-9_-]{95}$/.test(envelope))
+    return null;
+  try {
+    const bytes = Buffer.from(envelope, 'base64url');
+    const decipher = createDecipheriv(
+      'aes-256-gcm',
+      key,
+      bytes.subarray(0, 12),
+    );
+    decipher.setAuthTag(bytes.subarray(12, 28));
+    return Buffer.concat([
+      decipher.update(bytes.subarray(28)),
+      decipher.final(),
+    ]).toString('utf8');
+  } catch {
+    return null;
+  }
+}
+async function memberAction(trial, token, dedicated, action, fields) {
+  const session = trial.session(token);
+  if (!session) throw new TrialError(401, '招待コードで入り直してください。');
+  const owner = session.owner;
+  switch (action) {
+    case 'enroll':
+      await trial.enroll(owner);
+      break;
+    case 'install':
+      await trial.install(owner);
+      break;
+    case 'approve':
+      await trial.approve(owner, dedicated, fields);
+      break;
+    case 'read':
+      await trial.receive(owner, dedicated, fields.id ?? '');
+      break;
+    case 'stop':
+      await trial.gate(owner, dedicated);
+      await trial.stop(owner, fields.id ?? '');
+      break;
+    case 'revoke':
+      await trial.revoke(owner);
+      break;
+    case 'logout':
+      trial.logout(token);
+      break;
+    default:
+      throw new TrialError(404, '操作が見つかりません。');
+  }
+}
 export async function startTrialServers(
   trial,
   { publicPort = 0, mobilePort = 0 } = {},
 ) {
   const origins = {};
+  const sessionKey = randomBytes(32);
   let cookie;
   function handler(dedicated) {
     return async (req, res) => {
@@ -65,11 +134,12 @@ export async function startTrialServers(
           res.end();
           return;
         }
-        const token = (req.headers.cookie ?? '')
+        const envelope = (req.headers.cookie ?? '')
           .split(';')
           .map((v) => v.trim())
           .find((v) => v.startsWith(cookie + '='))
           ?.slice(cookie.length + 1);
+        const token = openSession(sessionKey, envelope);
         const session = trial.session(token);
         if (req.method === 'GET' && path === base) {
           const order = session && trial.order(session.owner);
@@ -91,6 +161,10 @@ export async function startTrialServers(
               verified,
               origins,
               installed: session && !!trial.phone(session.owner),
+              freeLine:
+                session &&
+                (!order || order.state === 'requested') &&
+                (await trial.freeLineAvailable()),
               jobs: verified ? await trial.jobs(session.owner) : [],
               notice:
                 !dedicated && session && (await trial.hasUpdate(session.owner)),
@@ -104,47 +178,23 @@ export async function startTrialServers(
           throw new TrialError(403, 'この試験画面から操作してください。');
         const fields = await readForm(req);
         const action = path.slice(base.length);
-        const cookieOptions = `; Path=${base}; HttpOnly; SameSite=Strict`;
+        const cookieOptions = `; Path=${base}; HttpOnly; SameSite=Strict; Secure`;
         if (action === 'login') {
-          const value = trial.login(fields.invite ?? '');
+          const envelope = sealSession(
+            sessionKey,
+            trial.login(fields.invite ?? ''),
+          );
           res.setHeader(
             'Set-Cookie',
-            cookie + '=' + value + cookieOptions + '; Max-Age=86400',
+            cookie + '=' + envelope + cookieOptions + '; Max-Age=86400',
           );
         } else {
-          if (!session)
-            throw new TrialError(401, '招待コードで入り直してください。');
-          const owner = session.owner;
-          switch (action) {
-            case 'enroll':
-              await trial.enroll(owner);
-              break;
-            case 'install':
-              await trial.install(owner);
-              break;
-            case 'approve':
-              await trial.approve(owner, dedicated, fields);
-              break;
-            case 'read':
-              await trial.receive(owner, dedicated, fields.id ?? '');
-              break;
-            case 'stop':
-              await trial.gate(owner, dedicated);
-              await trial.stop(owner, fields.id ?? '');
-              break;
-            case 'revoke':
-              await trial.revoke(owner);
-              break;
-            case 'logout':
-              trial.logout(token);
-              res.setHeader(
-                'Set-Cookie',
-                cookie + '=' + cookieOptions + '; Max-Age=0',
-              );
-              break;
-            default:
-              throw new TrialError(404, '操作が見つかりません。');
-          }
+          await memberAction(trial, token, dedicated, action, fields);
+          if (action === 'logout')
+            res.setHeader(
+              'Set-Cookie',
+              cookie + '=' + cookieOptions + '; Max-Age=0',
+            );
         }
         res.writeHead(303, { Location: base });
         res.end();
