@@ -401,3 +401,12 @@ void test('pure rules of the ask screens', () => {
   assert.deepEqual([noahScreenKind(599), noahScreenKind(600)], ['narrow', 'wide']);
   assert.deepEqual(noahFilterTools([{ name: 'Lookup', summary: 'finds' }, { name: 'x', summary: 'LOOK here' }, { name: 'y', summary: '' }], ' look ').map((tool) => tool.name), ['Lookup', 'x']);
 });
+
+void test('confirm delegation asks for each read-only run without describing it as a write',async t=>{
+ const server=mcpServer({tools:[stats]});const {w,ui,page,form}=await opened(t,server);
+ await page.click('確認して実行');await page.submit(form());
+ assert.equal(asksSent(ui).length,0);assert.match(page.text(),/「確認して実行」の設定で/);assert.doesNotMatch(page.text(),/読み取りだけ」と宣言されていません/);
+ await page.click('確かめて頼む');assert.equal(asksSent(ui).length,1);assert.equal(asksSent(ui)[0].body.form.confirm,true);
+ w.f.advance(1000);await page.submit(form());assert.equal(asksSent(ui).length,1);assert.match(page.text(),/頼む前の確かめ/);
+ await page.click('任せない');assert.equal(page.find('button','確かめて頼む')[0].props.disabled,true);assert.equal(asksSent(ui).length,1);
+});

@@ -25,7 +25,7 @@ function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,ca
   return <>
 
     {!profile.available&&<output>保存機能は準備中です。</output>}
-    <form onSubmit={async e=>{e.preventDefault();const result=await save({action:'fields',fields,consentVersion:PROFILE_CONSENT_VERSION,reuse:profile.consents.length===0||profile.reuseEnabled});if(result)setNotice('保存済み');}}>
+    <form onChange={()=>setNotice('')} onSubmit={async e=>{e.preventDefault();setNotice('');const result=await save({action:'fields',fields,consentVersion:PROFILE_CONSENT_VERSION,reuse:profile.consents.length===0||profile.reuseEnabled});if(result)setNotice('保存済み');}}>
       <div className={styles.groups}>{groups.map(group=>{
         const entries=Object.entries(NOAH_PROFILE_FIELDS).filter(([,field])=>field.group===group) as [ProfileField,(typeof NOAH_PROFILE_FIELDS)[ProfileField]][];
         const count=entries.filter(([key])=>profile.fields[key]).length+(group==='本人確認'?profile.documents.length:0);

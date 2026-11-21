@@ -205,7 +205,7 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
     {agentId && <NoahDelegationPicker target={agentId} name={agentName??host} action={tool.name} digest={tool.sha256} ownerScope={ownerScope} onMode={setPolicy}/>}
     {confirming ? <fieldset className={styles.confirmBox}>
       <legend>頼む前の確かめ</legend>
-      <p>{noahAskConfirmText(tool.name)}</p>
+      <p>{tool.readOnly?`${tool.name} を実行します。「確認して実行」の設定で、送る前に確認しています。`:noahAskConfirmText(tool.name)}</p>
       <dl>{noahConfirmRows(fields, confirming).map((row) => <div key={row.label}><dt>{row.label}</dt><dd>{row.value}</dd></div>)}</dl>
       <p className={styles.sendsTo}>{noahAskSendsToText(host)}</p>
       <div className={styles.actions}>
