@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "avocado-operator-dock",
-  "main": "src/worker.ts",
+  "main": "src/recipient-entry.ts",
   "compatibility_date": "2026-09-15",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
@@ -11,6 +11,8 @@
     "html_handling": "none",
     "not_found_handling": "404-page"
   },
+  "triggers": { "crons": ["* * * * *"] },
+  "services": [{ "binding": "DISTRIBUTION_AGENT", "service":"noah-esim-cloud-work", "entrypoint":"NoahDistributionAgent" }],
   "d1_databases": [
     {
       "binding": "DB",

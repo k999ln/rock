@@ -1,15 +1,17 @@
 import { readFileSync } from 'node:fs';
 import { timingSafeEqual } from 'node:crypto';
 import {
-  assignDistribution,
-  operatorAssignments,
-} from '../../../services/operator-dock/src/distribution.ts';
+  distributionApi,
+  isDistributionApi,
+  lineEligibility,
+} from '../../../services/operator-dock/src/distribution-api.ts';
 import { OperatorError } from '../../../services/operator-dock/src/validation.ts';
 
 const files = new Map([
   ['/', ['distributions.html', 'text/html; charset=utf-8']],
   ['/distributions.html', ['distributions.html', 'text/html; charset=utf-8']],
   ['/distributions.js', ['distributions.js', 'application/javascript']],
+  ['/distributions.css', ['distributions.css', 'text/css']],
   ['/styles.css', ['styles.css', 'text/css']],
 ]);
 export function trialDock(trial, password) {
@@ -48,13 +50,17 @@ export function trialDock(trial, password) {
           ),
         );
       }
-      if (req.url !== '/api/distributions')
+      if (!isDistributionApi(req.url))
         throw new OperatorError('ページが見つかりません。', 404);
       res.setHeader('Content-Type', 'application/json');
       if (req.method === 'GET')
         return res.end(
           JSON.stringify(
-            await operatorAssignments(await trial.runtime.distributionDb()),
+            await distributionApi(
+              await trial.runtime.distributionDb(),
+              req.url,
+              req.method,
+            ),
           ),
         );
       if (req.method !== 'POST')
@@ -76,16 +82,17 @@ export function trialDock(trial, password) {
       } catch {
         throw new OperatorError('入力を確認してください。');
       }
-      if (
-        typeof input?.recipient !== 'string' ||
-        !trial.db
-          .prepare('SELECT 1 FROM trial_owners WHERE owner=? AND expires>?')
-          .get(input.recipient, trial.now())
-      )
-        throw new OperatorError('有効な試験アカウントを指定してください。');
       res.end(
         JSON.stringify(
-          await assignDistribution(await trial.runtime.distributionDb(), input),
+          await distributionApi(
+            await trial.runtime.distributionDb(),
+            req.url,
+            req.method,
+            input,
+            lineEligibility(
+              await trial.runtime.runtime.getWorker('noah-distribution-agent'),
+            ),
+          ),
         ),
       );
     } catch (error) {

@@ -3,8 +3,10 @@ import { withinFreeTrialBudget } from './guide.mjs';
 import { cloudPackages, routeId, parseWorkReport } from './cloud-packages.mjs';
 
 const json = (value, status = 200) => Response.json(value, { status });
+const preferredRoute = (routes) =>
+  routes.find((r) => r.kind === 'provider') ?? routes[0];
 const validId =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const terminal = new Set(['completed', 'stopped', 'attention']);
 
 export default {
@@ -28,6 +30,9 @@ export class CloudWork {
     this.storage = ctx.storage;
     this.env = env;
   }
+  packages() {
+    return cloudPackages(this.env);
+  }
   async permit(owner, agent, route) {
     const response = await this.env.LINE.fetch('https://line.invalid/permit', {
       method: 'POST',
@@ -41,7 +46,7 @@ export class CloudWork {
     const owner = request.headers.get('X-Trial-Owner');
     const action = new URL(request.url).pathname;
     const input = await request.json();
-    const packages = cloudPackages(this.env);
+    const packages = this.packages();
     const agent = input.agent ?? packages[0]?.id;
     const pkg = packages.find((item) => item.id === agent);
     if (action === '/list') {
@@ -54,6 +59,7 @@ export class CloudWork {
       return json({
         packages: packages.map(({ id, name }) => ({ id, name })),
         agent,
+        automaticRoute: preferredRoute(pkg.routes)?.label,
         routes: pkg.routes.map(({ id, label }) => ({ id, label })),
         preference: (await this.storage.get('pref:' + agent)) ?? 'auto',
         jobs: ids
@@ -83,7 +89,7 @@ export class CloudWork {
           await tx.put(key, {
             ...job,
             state: 'stopped',
-            note: 'Noahの処理と結果照会を停止しました。',
+            note: 'Noahの処理と結果照会を停止しました。接続先での中断は未確認です。',
           });
           await tx.delete('active');
           await tx.deleteAlarm();
@@ -106,7 +112,7 @@ export class CloudWork {
     const available = pkg.routes;
     const route =
       input.route === 'auto'
-        ? (available.find((r) => r.kind === 'provider') ?? available[0])
+        ? preferredRoute(available)
         : available.find((r) => r.id === input.route);
     if (!route) return json({ error: '選択した接続先は利用できません。' }, 422);
     const permit = await this.permit(owner, agent, route.id);
@@ -206,7 +212,7 @@ export class CloudWork {
         state: 'stopped',
         note: '回線・利用期限・費用条件を確認してください。',
       };
-    const registered = cloudPackages(this.env)
+    const registered = this.packages()
       .find((pkg) => pkg.id === job.agent)
       ?.routes.find(
         (route) => route.id === job.route && route.binding === job.binding,
@@ -265,8 +271,17 @@ export class CloudWork {
       }
       pieces.push(chunk.value);
     }
-    const payload = JSON.parse(await new Blob(pieces).text());
+    let payload;
+    try {
+      payload = JSON.parse(await new Blob(pieces).text());
+    } catch {
+      return {
+        state: 'attention',
+        note: '接続先から読める形式の成果が届きませんでした。',
+      };
+    }
     if (
+      !payload ||
       payload.id !== reference ||
       typeof payload.result !== 'string' ||
       !payload.result.trim() ||

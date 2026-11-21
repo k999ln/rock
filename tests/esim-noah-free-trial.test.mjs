@@ -12,6 +12,8 @@ import {
   TRIAL_MS,
 } from '../toolkits/esim-bootstrap/noah-trial/trial.mjs';
 import { startTrialServers } from '../toolkits/esim-bootstrap/noah-trial/server.mjs';
+import { receiveLot } from '../services/operator-dock/src/distribution-stock.ts';
+import { registerAddress } from '../services/operator-dock/src/distribution-address.ts';
 import { base } from '../toolkits/esim-bootstrap/noah-trial/view.mjs';
 
 function fixture(t, options = {}) {
@@ -124,25 +126,68 @@ await test('運営Dockの指定を本人の模擬回線に届け、受取と再�
       ).text(),
       /配給を指定/,
     );
+    const db = await f.trial.runtime.distributionDb();
+    const lot = (item) =>
+      receiveLot(db, {
+        id: newApproval(),
+        item,
+        supplier: '試験用',
+        units: 2,
+        unit: '箱',
+        cost_yen: 0,
+        freight_yen: 0,
+      });
     const input = {
       id: newApproval(),
       recipient: 'alice',
-      item: '試験用野菜セット',
-      quantity: '1箱',
+      lot_id: (await lot('試験用野菜セット')).id,
+      units: 1,
       pickup: '東会場・土曜午前',
     };
     assert.equal((await send(input, origins.mobile)).status, 403);
+    const address = {
+      name: '配送試験A',
+      postal: '０１２－３４５６',
+      prefecture: '東京都',
+      city: '架空試験市',
+      street: '架空試験町1',
+      building: '',
+    };
+    assert.equal((await send(input)).status, 409);
+    assert.equal((await post('public', 'address', address)).status, 403);
+    assert.equal(
+      (await post('mobile', 'address', { ...address, recipient: 'bob' }))
+        .status,
+      400,
+    );
+    assert.equal(
+      (await post('mobile', 'address', { ...address, postal: '1' })).status,
+      400,
+    );
+    assert.equal((await post('mobile', 'address', address)).status, 303);
     const attempts = await Promise.all([send(input), send(input)]);
     assert.ok(attempts.every((r) => r.ok));
-    assert.equal((await send({ ...input, quantity: '2箱' })).status, 409);
+    assert.equal((await send({ ...input, units: 2 })).status, 409);
     f.invite('bob');
     const other = {
       ...input,
       id: newApproval(),
       recipient: 'bob',
-      item: '別の人の配給',
+      lot_id: (await lot('別の人の配給')).id,
     };
+    await f.trial.enroll('bob');
+    await f.trial.install('bob', 2);
+    await registerAddress(await f.trial.runtime.distributionDb(), 'bob', {
+      ...address,
+      name: '配送試験B',
+    });
     assert.ok((await send(other)).ok);
+    const deadline = Date.now() + 15000;
+    while (
+      !(await page('public')).includes('更新があります') &&
+      Date.now() < deadline
+    )
+      await new Promise((r) => setTimeout(r, 100));
     assert.match(await page('public'), /更新があります/);
     assert.doesNotMatch(await page('public'), /試験用野菜セット|東会場/);
     assert.match(await page('mobile'), /試験用野菜セット/);
@@ -531,8 +576,8 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
   await until(() => creations === 1);
   assert.equal((await run('list')).jobs[0].route, 'provider');
   await f.restart();
+  await until(() => reads >= 3);
   acknowledged = true;
-  await until(() => reads >= 2);
   await until(async () => (await run('list')).jobs[0].state === 'completed');
   await run('start', start);
   const [saved] = (await run('list')).jobs;

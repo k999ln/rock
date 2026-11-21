@@ -1,7 +1,139 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>配給管理 · 運営Dock</title><link rel="stylesheet" href="/styles.css"><script defer src="/distributions.js"></script></head>
-<body><main class="shell"><h1>配給管理</h1><section class="panel"><h2>配給を指定</h2>
-<form id="allocation"><label>受取人のアカウントID<input name="recipient" required maxlength="160"></label>
-<label>配給品<input name="item" required maxlength="120"></label><label>数量・単位<input name="quantity" required maxlength="80"></label>
-<label>受取場所・日時<input name="pickup" required maxlength="240"></label><button type="submit">この人に配給を指定</button></form><p id="message" role="status"></p></section>
-<section class="panel"><h2>配給記録（最新100件）</h2><button type="button" id="refresh">更新</button><ul id="assignments"></ul></section></main></body></html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>配給管理 · 運営Dock</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/distributions.css" />
+    <script defer src="/distributions.js"></script>
+  </head>
+  <body>
+    <main class="shell distribution">
+      <h1>配給管理</h1>
+      <p id="message" role="status" aria-live="polite"></p>
+      <section class="panel">
+        <h2>入荷を記録</h2>
+        <form id="lot">
+          <label
+            >仕入先の管理名<input
+              name="supplier"
+              required
+              maxlength="120" /></label
+          ><label>配給品<input name="item" required maxlength="120" /></label>
+          <label
+            >入荷数<input
+              type="number"
+              name="units"
+              required
+              min="1"
+              max="1000000000" /></label
+          ><label
+            >単位<input name="unit" required maxlength="24" placeholder="箱"
+          /></label>
+          <label
+            >仕入額（円、未確定は空欄）<input
+              name="cost_yen"
+              type="number"
+              min="0"
+              max="1000000000" /></label
+          ><label
+            >送料（円、未確定は空欄）<input
+              name="freight_yen"
+              type="number"
+              min="0"
+              max="1000000000"
+          /></label>
+          <button type="submit">入荷済みとして記録</button>
+        </form>
+      </section>
+      <section class="panel">
+        <h2>入荷と残数</h2>
+        <ul id="lots"></ul>
+      </section>
+      <section class="panel">
+        <h2>配給を指定</h2>
+        <form id="allocation">
+          <label
+            >受取人のアカウントID<input
+              name="recipient"
+              required
+              maxlength="128"
+          /></label>
+          <label>入荷ロット<select name="lot_id" required></select></label
+          ><label
+            >配給数<input
+              name="units"
+              type="number"
+              min="1"
+              max="1000000000"
+              required
+          /></label>
+          <label
+            >受け渡しの案内<input
+              name="pickup"
+              required
+              maxlength="240" /></label
+          ><button type="submit">この人に配給を指定</button>
+        </form>
+      </section>
+      <section class="panel">
+        <h2>定期配給</h2>
+        <details>
+          <summary>新しい配給計画</summary>
+          <form id="plan">
+            <label
+              >受取人のアカウントID<input
+                name="recipient"
+                required
+                maxlength="128" /></label
+            ><label
+              >基準の配給品・単位<select name="template_lot" required></select
+            ></label>
+            <label
+              >1回の配給数<input
+                type="number"
+                name="units"
+                min="1"
+                max="1000000000"
+                required /></label
+            ><label
+              >受け渡しの案内<input name="pickup" maxlength="180" required
+            /></label>
+            <label
+              >初回の開始（日本時間）<input
+                name="first_at"
+                type="datetime-local"
+                required /></label
+            ><label
+              >繰り返す間隔（日）<input
+                name="interval_days"
+                type="number"
+                min="1"
+                max="366"
+                required
+            /></label>
+            <label
+              >受取枠の長さ（時間）<input
+                name="window_hours"
+                type="number"
+                min="1"
+                max="168"
+                required
+            /></label>
+            <button type="submit">定期配給を開始</button>
+          </form>
+        </details>
+        <ul id="plans"></ul>
+        <h3>実行した配給枠</h3>
+        <ul id="windows"></ul>
+      </section>
+      <section class="panel">
+        <h2>配給記録（最新100件）</h2>
+        <button type="button" id="refresh">更新</button>
+        <ul id="assignments"></ul>
+      </section>
+    </main>
+  </body>
+</html>

@@ -65,6 +65,11 @@ export class NoahTrial {
         digest TEXT PRIMARY KEY, owner TEXT NOT NULL REFERENCES trial_owners(owner));
       CREATE TABLE IF NOT EXISTS trial_handset (
         slot INTEGER PRIMARY KEY CHECK(slot=1), owner TEXT NOT NULL, enrollment TEXT NOT NULL, device TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS trial_handsets (
+        slot INTEGER PRIMARY KEY CHECK(slot>0), owner TEXT NOT NULL UNIQUE, enrollment TEXT NOT NULL, device TEXT NOT NULL UNIQUE);
+      INSERT OR IGNORE INTO trial_handsets SELECT * FROM trial_handset;
+      CREATE TABLE IF NOT EXISTS trial_session_keys(slot INTEGER PRIMARY KEY, key BLOB NOT NULL);
+
     `);
     this.runtime = new TrialRuntime(
       directory,
@@ -160,22 +165,30 @@ export class NoahTrial {
     } else await this.core.reconcile(owner, row.id);
     return this.order(owner);
   }
-  async install(owner) {
+  sessionKey(slot) {
+    this.db
+      .prepare('INSERT OR IGNORE INTO trial_session_keys VALUES(?,?)')
+      .run(slot, randomBytes(32));
+    return this.db
+      .prepare('SELECT key FROM trial_session_keys WHERE slot=?')
+      .get(slot).key;
+  }
+  async install(owner, slot = 1) {
     const order = this.order(owner);
     requireTrial(
       order?.access === 'active' && ['issued', 'enabled'].includes(order.state),
       409,
       '模擬回線の発行を先に確認してください。',
     );
-    const device = 'fixture-handset-1';
+    const device = 'fixture-handset-' + slot;
     this.db
-      .prepare('INSERT OR IGNORE INTO trial_handset VALUES(1,?,?,?)')
-      .run(owner, order.id, device);
+      .prepare('INSERT OR IGNORE INTO trial_handsets VALUES(?,?,?,?)')
+      .run(slot, owner, order.id, device);
     const phone = this.db
-      .prepare('SELECT * FROM trial_handset WHERE slot=1')
-      .get();
+      .prepare('SELECT * FROM trial_handsets WHERE slot=?')
+      .get(slot);
     requireTrial(
-      phone.owner === owner && phone.enrollment === order.id,
+      phone?.owner === owner && phone.enrollment === order.id,
       409,
       'この模擬端末には別の回線が登録されています。',
     );
@@ -185,9 +198,9 @@ export class NoahTrial {
   }
   phone(owner) {
     const row = this.db
-      .prepare(`SELECT h.device, e.id FROM trial_handset h JOIN esim_enrollments e ON h.enrollment=e.id
+      .prepare(`SELECT h.slot,h.device, e.id FROM trial_handsets h JOIN esim_enrollments e ON h.enrollment=e.id
       JOIN esim_devices d ON d.id=h.device AND d.owner=h.owner
-      WHERE h.slot=1 AND h.owner=? AND e.owner=h.owner AND e.state='enabled' AND e.access='active'`)
+      WHERE h.owner=? AND e.owner=h.owner AND e.state='enabled' AND e.access='active'`)
       .get(owner);
     return row;
   }

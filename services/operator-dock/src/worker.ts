@@ -1,5 +1,7 @@
 import { AccessAuthError, authorizeOperator } from './access-auth.ts';
-import { assignDistribution, operatorAssignments } from './distribution.ts';
+import {distributionApi, isDistributionApi, lineEligibility} from './distribution-api.ts';
+import { runPlans } from './distribution-plans.ts';
+import { deliverNotices } from './distribution-notices.ts';
 import { operatorControl } from './operator-control.ts';
 import { handleDeviceChannel } from './device-channel.ts';
 import { OperatorError } from './validation.ts';
@@ -7,6 +9,7 @@ import { OperatorError } from './validation.ts';
 type Env = {
   ASSETS: Fetcher;
   DB: D1Database;
+  DISTRIBUTION_AGENT?: Fetcher;
   CF_ACCESS_TEAM_DOMAIN?: string;
   CF_ACCESS_AUD?: string;
   ROCK_OPERATOR_SUB?: string;
@@ -76,6 +79,10 @@ function denied(request: Request, error: AccessAuthError) {
 }
 
 const worker = {
+  async scheduled(_event: ScheduledController, env: Env) {
+    await runPlans(env.DB, lineEligibility(env.DISTRIBUTION_AGENT));
+    await deliverNotices(env.DB, env.DISTRIBUTION_AGENT);
+  },
   async fetch(request: Request, env: Env) {
     const initialUrl = new URL(request.url);
     if (initialUrl.pathname.startsWith('/api/device/v1/')) {
@@ -100,10 +107,11 @@ const worker = {
     const url = new URL(request.url);
     try {
       requireSameOrigin(request);
-      if (url.pathname === '/api/distributions') {
-        if (request.method === 'GET') return json(await operatorAssignments(env.DB));
-        if (request.method === 'POST') return json(await assignDistribution(env.DB, await body(request)));
-        return json({ error: '対応していない操作です。' }, 405);
+      if (isDistributionApi(url.pathname)) {
+        const input = request.method === 'POST' ? await body(request) : undefined;
+        return json(await distributionApi(
+          env.DB, url.pathname, request.method, input, lineEligibility(env.DISTRIBUTION_AGENT),
+        ));
       }
       if (url.pathname === '/api/devices') {
         const control = operatorControl(

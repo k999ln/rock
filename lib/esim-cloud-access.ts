@@ -1,3 +1,4 @@
+import {distributionAction} from './noah-distribution-routes.mjs';
 import { sha256Hex } from './rockstar-entitlement-claim.ts';
 import { resolveEsimCloudGrant, type EsimCloudConfig, type EsimCloudGrant } from './esim-cloud-grant.ts';
 
@@ -31,6 +32,7 @@ export function esimCloudRequestToken(request: Request) {
 export function esimCloudRequestScope(request: Request) {
   const { pathname } = new URL(request.url);
   const method = request.method;
+  if (distributionAction(method,pathname)) return 'noah';
   if ((method === 'GET' && pathname === '/api/noah/cloud-work') ||
       (method === 'POST' && ['/api/noah/cloud-work/start', '/api/noah/cloud-work/stop'].includes(pathname))) return 'noah';
   if (method === 'GET' && ['/api/rockstar/device-home', '/api/rockstar/entitlements'].includes(pathname)) return 'rockstaros_access';
