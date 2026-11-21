@@ -1,5 +1,7 @@
 ## 2026-11-21
 
+- Noah の公開先 `https://avoado.si/noah` に向け、公開originの正規化・ローカル設定拒否・画面とAPIの読み取り確認を追加（[PR #358](https://github.com/k999ln/rock/pull/358)、task97）。本番は旧版で新しい画面/APIが404、接続表なし。最新版の公開用保存版を準備し、migration 0044〜0049の適用と配備は本人確認待ち。認証付きAgentの接続は継続実装。
+
 - スマホでつなぐ Agent（台帳の Agent）の一覧のカードと詳細に、利用人数（「n 人が利用」。接続して頼み、成果が出た人を 1 人 1 回）を出した（Opus / Noelle。本人の回答「スマホの Agent に利用人数を出す」。[PR #356](https://github.com/k999ln/rock/pull/356)、task74）。Codex の利用人数（Mac の Agent）とは別の集まりなので混ぜない。migration なし、D1 への往復は一覧で増やさない。
 
 - Noah の「実行中」と「成果データ」に、スマホから接続した Agent へ頼んだ仕事と成果を出した（Opus / Noelle。本人の回答「#349 にしか無い所は、後から上に小さく足す」。[PR #352](https://github.com/k999ln/rock/pull/352)、task87）。`GET /api/noah/ask` の行に Agent を添え、`components/noah-work-list.tsx` を Agent をまたげる形にし、頁から Codex の画面へ渡す。成果データの書き出し・運営への提供には、まだ載せていない（本人が決める）。

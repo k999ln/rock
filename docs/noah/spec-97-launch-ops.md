@@ -276,3 +276,15 @@ L3〜L7 で、もう入っていた物（作り直していない）: 切り替�
 - これで、`/noah/help` の `section#bot` が出る（`hidden` でない）。一覧と詳細の下に「報告・取り下げの申し出 →」が出て、`/noah/help#bot` へ進む。宛先そのものは、一覧と詳細には出さない（節の中だけ）。
 - 試験: `tests/noah-launch-ops.test.mjs`（宛先が本人の決めた物である事・宛先が無い時は節が隠れる事・ある時は節が出て、宛先への道が 1 つある事）と、`tests/noah-ready-ui.test.mjs`（宛先が無い時・本人の決めた宛先・別の形の宛先の 3 つで、一覧と詳細の道）。わざと壊した 5 通り（宛先を null に戻す・節を隠さない・一覧と詳細で宛先が無くても道を出す・件名を落とす）は、どれも試験が落とした。
 - 本番では、まだ確かめていない（G5 の取り下げの操作は、本人の許可の後）。
+
+## 12. 公開ドメインへの反映準備（2026-11-21、PR #358）
+
+本人の「ドメインちゃんと使って」「ローカルじゃなくて」に従い、配布先を `https://avoado.si/noah` とする。Sites の既存公開サイト（project `appgprj_6abdfad4c5648191bcae957913bd02fa`）を使い、DNSと公開範囲を保持する。#349 は取り込まず、#350・#352・#356が入ったmainのNoahを土台にする。
+
+公開前の読み取り結果: `/noah` は200。`/noah/ready`・`/noah/activity`・`/noah/data`・カタログ/接続/依頼APIは404。本番DBの `noah_connections` は未作成。新しい画面とバックエンドを一緒に反映する必要がある。
+
+適用候補は `drizzle-main/0044_noah_intake.sql`〜`0049_noah_connections_connecting.sql` の6本。候補台帳・成果提供・評価/コメント・接続・依頼の11表と索引を追加する。既存データの削除や既存表の再作成は含まない。配備前に本番のmigration履歴と照合する。SitesはWorker更新の前にmigrationを適用するので、以前の「本番migrationはしない」の指示を確認するまでdeployを呼ばない。
+
+公開時の設定候補は `NOAH_ORIGIN=avoado.si`、`NOAH_INTAKE_PUBLIC=true`、`NOAH_ASK_FORM=true`。巡回の鍵・Worker・初期取り込みは4章の手順で行い、`NOAH_PROBE_L2=false`と`NOAH_MODEL_RELAY=off`を維持する。環境設定を変えるだけで配備済みとは扱わない。
+
+確認: `npm run noah:check:domain` は、公開ページ3枚とトップ、カタログAPI、未サインインでの接続/依頼APIを読むだけ。リダイレクト・404・非JSONのカタログ応答を成功にしない。200だけではスマホ接続の合格とせず、公開後にspec90の実接続・成果受領を行う。登録Agentは設定済み提供者だけが対象で、認証付きリモートAgentへの接続完了をこの配備準備の成果には含めない。
