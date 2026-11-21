@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 234,
+    "tableCount": 237,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。"
   },
   "webSchema": {
-    "tableCount": 162,
+    "tableCount": 165,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -33,6 +33,9 @@
       "automation_fund_memberships",
       "automation_funds",
       "book_records",
+      "cloud_admission_probes",
+      "cloud_execution_timings",
+      "cloud_usage_records",
       "coconala_team_cases",
       "csv_billing_accounts",
       "csv_job_events",
@@ -189,8 +192,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 34,
-    "latestMigration": "0053_noah_package_connections.sql",
+    "migrationCount": 35,
+    "latestMigration": "0054_cloud_operations.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -208,6 +211,9 @@
         "label": "仕事・実行・端末・基本台帳",
         "tables": [
           "book_records",
+          "cloud_admission_probes",
+          "cloud_execution_timings",
+          "cloud_usage_records",
           "devices",
           "eve_conversations",
           "eve_device_commands",
@@ -238,7 +244,7 @@
           "tool_runs",
           "work_jobs"
         ],
-        "tableCount": 30
+        "tableCount": 33
       },
       {
         "id": "sky",
@@ -426,6 +432,9 @@
         "automation_fund_memberships",
         "automation_funds",
         "book_records",
+        "cloud_admission_probes",
+        "cloud_execution_timings",
+        "cloud_usage_records",
         "coconala_team_cases",
         "csv_billing_accounts",
         "csv_job_events",
@@ -576,8 +585,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0053_noah_package_connections.sql",
-      "tableCount": 162,
+      "expectedAppliedThrough": "0054_cloud_operations.sql",
+      "tableCount": 165,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

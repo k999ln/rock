@@ -12,6 +12,7 @@ import { executeReservedRemoteAiText } from '../lib/remote-ai-text-execution.ts'
 import { encryptRemoteAiTextInput } from '../lib/remote-ai-text-input.ts';
 import { workStore } from '../lib/work-store.ts';
 import { createWorkJob, applyWorkCommand } from '../lib/workflow.ts';
+import { ingestCloudUsage } from '../lib/cloud-operations-store.ts';
 
 const owner = 'synthetic-owner';
 function database(t) {
@@ -85,6 +86,22 @@ function response(id = 'resp_fixture', usage = { input_tokens: 10, output_tokens
     output: [{ type: 'message', content: [{ type: 'output_text', text: 'Synthetic private result' }] }] });
 }
 const code = expected => error => error.code === expected;
+
+void test('the cloud cap blocks a new remote text approval and preserves an existing reservation', async (t) => {
+  const f = await fixture(t);
+  assert.equal((await f.reserve()).state, 'reserved');
+  const now = Date.now();
+  const nextQuote = await prepareRemoteAiTextQuote(f.verified, { ...f.intent, requestId: randomUUID() }, now);
+  const { record: next } = await f.store.create(nextQuote, f.verified, f.parent.id, 1, false);
+  await ingestCloudUsage(f.db, { id: 'meter-cap', userId: owner, usage: {
+    kind: 'container', at: now, vcpuSeconds: 1_500_001, gibSeconds: 0, gbSeconds: 0,
+  } }, now);
+  await assert.rejects(f.store.reserve(owner, next.id, next.approvalDigest, now, { totalUsd: 30, userUsd: 30 }),
+    { code: 'CLOUD_MONTHLY_CAP_REACHED' });
+  assert.equal((await f.store.get(owner, next.id)).state, 'quoted');
+  assert.equal((await f.queueInput()).inserted, true);
+  assert.ok(f.sqlite.prepare("SELECT 1 FROM cloud_execution_timings WHERE source='remote_text' AND execution_id=?").get(f.record.id));
+});
 
 void test('saved quotes are private, immutable and idempotent without retaining input', async t => {
   const f = await fixture(t);

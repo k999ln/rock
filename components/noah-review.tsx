@@ -6,6 +6,7 @@ import NoahTrialReview from './noah-trial-review';
 import { SKY_REVIEW_CHECKS } from '@/lib/sky-tool-review';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import styles from './noah-agent-catalog.module.css';
+import NoahCloudOperations from './noah-cloud-operations';
 const labels: Record<string, string> = {
   sourcePinned: '配布コードの固定版',
   rights: '配布する権利',
@@ -198,6 +199,7 @@ export default function NoahReview() {
           )}
         </section>
       )}
+      {scope && <NoahCloudOperations key={`cloud:${scope}`} ownerScope={scope} />}
     </main>
   );
 }

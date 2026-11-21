@@ -258,6 +258,7 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0051_noah_trial.sql',
     '0052_noah_shelf_evidence.sql',
     '0053_noah_package_connections.sql',
+    '0054_cloud_operations.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -550,9 +551,13 @@ await test('fresh and current production D1 databases converge without losing re
   for (const { name } of tables)
     await db.prepare(`DROP TABLE "${String(name)}"`).run();
   await db.prepare('DELETE FROM __drizzle_migrations').run();
-  await db.prepare(
-    'CREATE TABLE remote_ai_text_executions (id text PRIMARY KEY NOT NULL, owner_user_id text NOT NULL, state text NOT NULL)',
-  ).run();
+  // Include the baseline execution tables referenced by later triggers.
+  const baseline = readMain('0021_sites_schema_convergence.sql').split('--> statement-breakpoint');
+  for (const name of ['remote_ai_text_executions', 'agent_delegation_events', 'work_jobs']) {
+    const create = baseline.find(statement => statement.trim().startsWith(`CREATE TABLE IF NOT EXISTS \`${name}\` (`));
+    assert.ok(create, name);
+    await db.prepare(create).run();
+  }
   await db.prepare(
     'CREATE TABLE sky_recurring_contracts (owner_id text NOT NULL, status text NOT NULL, access_until integer NOT NULL, period_start integer NOT NULL, period_end integer NOT NULL)',
   ).run();
@@ -574,6 +579,6 @@ await test('fresh and current production D1 databases converge without losing re
   }
   assert.equal(Number((await db.prepare(
     'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
-  ).first()).created_at), 4102444800025);
+  ).first()).created_at), 4102444800026);
   assert.equal(JSON.parse(readFileSync(mainFolder+'meta/_journal.json', 'utf8')).entries.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
 });

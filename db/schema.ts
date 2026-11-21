@@ -2,12 +2,53 @@ import {
   sqliteTable,
   text,
   integer,
+  real,
   index,
   uniqueIndex,
   check,
   primaryKey,
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
+
+export const cloudUsageRecords = sqliteTable('cloud_usage_records', {
+  id: text('id').primaryKey().notNull(),
+  userId: text('user_id'),
+  observedAt: integer('observed_at').notNull(),
+  usageJson: text('usage_json').notNull(),
+  priceVersion: text('price_version').notNull(),
+  costUsd: real('cost_usd'),
+}, (t) => [
+  index('idx_cloud_usage_observed_at').on(t.observedAt),
+  check('cloud_usage_observed_at_check', sql`${t.observedAt} >= 0`),
+  check('cloud_usage_json_check', sql`json_valid(${t.usageJson})`),
+  check('cloud_usage_cost_check', sql`${t.costUsd} >= 0`),
+]);
+
+export const cloudAdmissionProbes = sqliteTable('cloud_admission_probes', {
+  slotAt: integer('slot_at').primaryKey().notNull(),
+  observedAt: integer('observed_at').notNull(),
+  statusCode: integer('status_code'),
+  latencyMs: integer('latency_ms').notNull(),
+  ok: integer('ok').notNull(),
+}, (t) => [
+  check('cloud_probe_slot_check', sql`${t.slotAt} >= 0 AND ${t.slotAt} % 300000 = 0`),
+  check('cloud_probe_observed_check', sql`${t.observedAt} >= ${t.slotAt} AND ${t.observedAt} < ${t.slotAt} + 300000`),
+  check('cloud_probe_status_check', sql`${t.statusCode} BETWEEN 100 AND 599`),
+  check('cloud_probe_latency_check', sql`${t.latencyMs} >= 0`),
+  check('cloud_probe_ok_check', sql`${t.ok} IN (0, 1)`),
+]);
+
+export const cloudExecutionTimings = sqliteTable('cloud_execution_timings', {
+  source: text('source').notNull(),
+  executionId: text('execution_id').notNull(),
+  admittedAt: integer('admitted_at').notNull(),
+  firstResultAt: integer('first_result_at'),
+}, (t) => [
+  primaryKey({ columns: [t.source, t.executionId] }),
+  index('idx_cloud_execution_admitted_at').on(t.admittedAt),
+  check('cloud_execution_source_check', sql`${t.source} IN ('remote_text', 'a2a', 'free_cloud')`),
+  check('cloud_execution_result_check', sql`${t.firstResultAt} >= ${t.admittedAt}`),
+]);
 
 export const noahDiscoverySources = sqliteTable('noah_discovery_sources', {
   id: text('id').primaryKey(), leaseId: text('lease_id'), leaseUntil: integer('lease_until').notNull().default(0),
