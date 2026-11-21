@@ -1,4 +1,4 @@
-import osManifest from '@/app/manifest';
+import osManifest from '@/app/web-app-manifests';
 import { CAMPUSES, CAMPUS_IDS, type CampusId } from '@/lib/campus';
 
 export async function GET(_request: Request, {params}: {params: Promise<{campusId: string}>}) {

@@ -4,6 +4,7 @@ import { ArrowUpRight, ArrowRight, CircleHelp, Cable, Layers, Smartphone } from 
 import WorkspaceShell from '@/components/workspace-shell';
 import { RockstarEntitlementClaim } from '@/components/rockstar-entitlement-claim';
 import { DeviceConnection } from '@/components/device-connection';
+import { EsimPurchaseSetup } from '@/components/esim-purchase-setup';
 import styles from '@/components/connection-workspace.module.css';
 import legacy from '@/components/sky-commerce.module.css';
 export const metadata: Metadata = {
@@ -16,10 +17,20 @@ const steps = [
   ['端末で開いて、仕事を依頼する', '確認済み端末だけRockstarOS導入へ進み、その他は既存OSのアプリまたはブラウザを使います。見積と上限を承認したCloud作業は端末がオフラインでも続き、再接続後に進捗・結果・明細を受け取れます。'],
 ];
 
-export default function ConnectPage() {
+export default async function ConnectPage({ searchParams }: {
+  searchParams: Promise<{ esimOrder?: string }>;
+}) {
+  const { esimOrder } = await searchParams;
+  const installOrder = typeof esimOrder === 'string' &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(esimOrder)
+    ? esimOrder : null;
   return <WorkspaceShell title="接続" hideTopActions hideAccountAccess>
     <div className={styles.page}>
       <header className={styles.heading}><span>YOUR ENVIRONMENT</span><h1>利用環境をつなぐ</h1><p>使う端末と能力を選び、Eveで仕事を始める準備を。</p><p>Web・対応アプリは同じアカウントで利用できます。Web版を使うためにSIM/eSIMを購入する必要はありません。</p></header>
+      {installOrder && <section id="ios-esim" className={styles.panel} aria-labelledby="ios-esim-title">
+        <h2 id="ios-esim-title">iPhone・iPadのeSIM設定</h2>
+        <EsimPurchaseSetup key={installOrder} orderId={installOrder} iosConnect />
+      </section>}
       <section className={styles.start} aria-labelledby="connect-start"><h2 id="connect-start">何をつなぎますか？</h2><div className={styles.cards}>
         <Link href="/connect/device"><Smartphone size={25}/><strong>端末をつなぐ</strong><span>端末の8文字コードを確認し、本人の接続として承認・管理します。</span><b>端末コードを確認 <ArrowUpRight size={17}/></b></Link>
         <Link href="/#sky"><Layers size={25}/><strong>Agent・Toolを追加</strong><span>必要な能力を探し、送信先・利用条件を確認して追加します。</span><b>能力を探す <ArrowUpRight size={17}/></b></Link>

@@ -309,6 +309,8 @@ Eveに頼んだ仕事を別の画面で開くために、RockstarOSは本人の�
 
 SIM/eSIMはRockstarOS導入時の回線に使います。対象機種と署名・復旧条件がそろった端末にはnative OSを案内し、そのほかの対応端末ではclientやブラウザを使います。OS本体は端末に置き、本人確認・回線・サービス利用権・インストール状態をそれぞれ管理します。
 
+iPhone・iPadでは、対象注文の購入履歴から `/connect` へ進み、iOS 17.4以降の導入リンクまたはQRコードを使います。導入後はSafariで `/connect/done` を開き、Eveをホーム画面に追加できます。iPhone実機確認は未実施です。
+
 Cloud agentの実行前に単価・見積りと予算上限を確認し、実行後に項目別の使用量を照合します。商品料金、通信料、si使用料、外部実費、利用者自身の鍵での費用は個別に扱います。回線発行・本番決済は各providerとの接続試験が残っています。[SIM/eSIM設計](docs/structure/03-esim.md) · [料金と使用量](docs/sky-billing.md) · [導入試作](toolkits/esim-bootstrap/README.md)
 
 </details>

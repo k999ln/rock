@@ -5,6 +5,9 @@ import { readSkyEveSelection } from '@/lib/sky-eve-connections';
 export const metadata: Metadata = {
   title: 'Eve — RockstarOS',
   description: 'PixelでもWebでも、同じ会話・仕事・成果から続きを。',
+  applicationName: 'Eve',
+  manifest: '/connect/eve.webmanifest',
+  appleWebApp: { capable: true, title: 'Eve', statusBarStyle: 'default' },
 };
 export const dynamic = 'force-dynamic';
 export default async function EvePage({

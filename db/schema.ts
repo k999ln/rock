@@ -1512,6 +1512,30 @@ export const esimProviderOrders = sqliteTable(
   ],
 );
 
+export const esimIosInstallDeclarations = sqliteTable(
+  'esim_ios_install_declarations',
+  {
+    skyOrderId: text('sky_order_id').notNull().references(() => skyCommerceOrders.id),
+    ownerUserId: text('owner_user_id').notNull(),
+    profileDigest: text('profile_digest').notNull().references(() => esimProviderProfileBindings.profileDigest),
+    declaredAt: integer('declared_at').notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.skyOrderId, table.ownerUserId, table.profileDigest] })],
+);
+
+export const esimGoProfileStatusEvents = sqliteTable(
+  'esim_go_profile_status_events',
+  {
+    callbackDigest: text('callback_digest').primaryKey().notNull().references(() => esimProviderWebhookInbox.callbackDigest),
+    profileStatus: text('profile_status', { enum: ['Downloaded', 'Installed', 'Released'] }).notNull(),
+    eventAt: integer('event_at').notNull(),
+  },
+  (table) => [
+    check('esim_go_profile_status_check', sql`${table.profileStatus} IN ('Downloaded', 'Installed', 'Released')`),
+    check('esim_go_profile_event_time_check', sql`${table.eventAt} >= 0`),
+  ],
+);
+
 export const esimDeviceInstallChallenges = sqliteTable(
   'esim_device_install_challenges',
   {

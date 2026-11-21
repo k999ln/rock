@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 234,
+    "tableCount": 236,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。"
   },
   "webSchema": {
-    "tableCount": 162,
+    "tableCount": 164,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -46,6 +46,8 @@
       "esim_device_gateway_keys",
       "esim_device_install_challenges",
       "esim_device_install_receipts",
+      "esim_go_profile_status_events",
+      "esim_ios_install_declarations",
       "esim_provider_orders",
       "esim_provider_profile_bindings",
       "esim_provider_webhook_inbox",
@@ -189,8 +191,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 34,
-    "latestMigration": "0053_noah_package_connections.sql",
+    "migrationCount": 35,
+    "latestMigration": "0055_esim_ios_install.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -384,6 +386,8 @@
           "esim_device_gateway_keys",
           "esim_device_install_challenges",
           "esim_device_install_receipts",
+          "esim_go_profile_status_events",
+          "esim_ios_install_declarations",
           "esim_provider_orders",
           "esim_provider_profile_bindings",
           "esim_provider_webhook_inbox",
@@ -398,7 +402,7 @@
           "rockstar_service_entitlements",
           "rockstar_service_setups"
         ],
-        "tableCount": 22
+        "tableCount": 24
       }
     ]
   },
@@ -439,6 +443,8 @@
         "esim_device_gateway_keys",
         "esim_device_install_challenges",
         "esim_device_install_receipts",
+        "esim_go_profile_status_events",
+        "esim_ios_install_declarations",
         "esim_provider_orders",
         "esim_provider_profile_bindings",
         "esim_provider_webhook_inbox",
@@ -576,8 +582,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0053_noah_package_connections.sql",
-      "tableCount": 162,
+      "expectedAppliedThrough": "0055_esim_ios_install.sql",
+      "tableCount": 164,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",
