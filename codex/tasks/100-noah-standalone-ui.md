@@ -315,3 +315,20 @@ PR #377はGitHubの全7チェック成功後にmain `093cddc419196f74f1cd3f3f802
 手元証跡は `work/noah-192-checks/`（Git対象外）。`pixel-connection-audit.json` SHA256 `4e71b7f5b0edb30a740d1233cb7f1ea635c84eed59afa155ef998fbb1746f525`、`pixel-connection-pop.opus` `2fc34feffc5fb72ac5afff5a07256808c76492c01d19046381571be385525a39`、`pixel-vibration.txt` `1d85086e2dddb761d33b9a335e89b78c9e0f51007d6bf011f4197f7acef7981b`、`pixel-result-after-reload.json` `266e1a7ecb1e6a3e21687f8cefdd5bf3170e68fdc8548fc13a3cda857ff449df`。`full-verify.log` `21544ff567c3a3cdc791fe7428c440c85e43e3223b8558d482503e6338d357da`。端末通知や他の振動履歴を含みうる原画像/ログはリポジトリへ保存しない。
 
 再開: 上記verifyとPR #392の最終HEADチェック。実機一周は完了、最終CI成功とmain受入はPRへ追記する。接続ボタンの深さ・「操作1/2」の用途表示は別のUX改善候補として保持し、本変更で画面を作り替えない。
+
+
+### 2026-11-22 公開195を保全した接続位置・操作名のGit受入（PR #394）
+
+公開195 source `b39807b92ecf543fbbd228d5180c71bc7b5fa481` と、接続位置・操作名を直した公開196 source `1bf5e4f79f90abbfa72c9b95f81975a3aa6bf100` をmain `ba203d366a09aa0c539150969422c1816616a396` 上へ統合（実装 `9711b56228151eeee29c12d4e2a6648221538ba1`）。公開196 deployment `appgdep_6b02695e115c81919fd6c5f0f42eac17` succeeded / env17をSitesで照合。195のNoah内詳細・評価・隔離Space表示・非公開取込/下書きと、192の音/振動を維持した。移植35ファイル中31は公開196とbyte一致。README・構造04/決定07・カードはmainの説明と収集表示を残して統合した。
+
+Agent名・短い説明・料金・送信先の直後に接続を配置し、用途名と提供者説明から操作を選ぶ。フォームは選択行の直下へ表示。長い紹介・共有は後段へまとめ、実際のTool名・入力・委任・確認・権限は変更しない。会員登録不要とMac専用画面撤去の説明を維持する。
+
+作業中にPR #390の195受入がmain `c4078a52650a8944f6fbd37e0ddc0bb6bafc9fa1` へ入ったため、通常merge `b23d48b4` で取り込んだ。READMEの取込説明、設計・決定・task120の記録を保全し、接続位置を旧配置へ戻さず、二重importと同文の決定行だけを整理。統合後のapp/lib/componentsは上記実装から変更なし、試験fixtureの差分は空行1つのみ。
+
+検証: 統合実装で `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` の単一実行がexit0。主4,951成功・5skip・0失敗、型/lint/build、仕事API1,918・CSV385 assertions、mission/work/botまで成功。公開 `https://avoado.si` の8経路・8共通ヘッダーもPASS。最初の既定loopback確認はサーバー未起動で接続拒否だったため、公開HTTPSを明示して再実行。最終の全履歴SPIDER・CodeQL・全体CIはPR #394のHEADに結び付けて記録する。
+
+Pixel 10 / Android17 / Vanadiumの実サービスで、ホーム検索→BeevR→Noah内詳細→接続→用途名8件を当方でも確認。411×801 CSS pxの初期画面で接続ボタンはy568〜612px・高さ44px、横はみ出しなし。タップからロゴ59ms、終了1,829ms、道具表示2,811ms（計画391ms・接続1,352ms）。「サービス一覧を見る」を選ぶと同じ行内にフォームが出た。並行チャットの端末操作再開時は操作を止め、隠れた画面の委任ボタンが無効になる既存の所有者再確認を回避しない。
+
+公開196の成果受入は並行担当のGit `6c032868` と実機記録も確認済み。`list_services` の新規成果 `e2830784-5f4d-40d1-9da6-0995e2b3a858` が10件返り、同じ用途名で表示され、再読み込み後も10件保持・横はみ出しなし。証拠 `/tmp/noah-intuitive-pixel-result.json`・`/tmp/noah-intuitive-pixel-result.png`。当方の追加再確認結果はPRへ追記する。全Agentの実行や新規外部登録、実eSIMの受入を意味しない。
+
+当方の証跡は `work/noah-195-checks/`（Git対象外）。`full-verify.log` SHA256 `072e03dcd8943aec4f796c2108fb5e6498bdeb67d6b41b0fb3f632b5e66a907e`、`pixel-connect-position.png` `9543037479c8f4a0b595b734ad08e5a4b06a9de24114b72e47024e103eb5b1bb`、`pixel-connection.json` `c78b77ac5ff2c71bd4933efb856a53b8d36668c299964cddab7ba718f2324dac`、`public-security-final.json` `23dddf65091747acc6f8f61c73dce00dea4f61e9f4617987ca278140b77b4d5d`。再開コマンドは上記verify。最終HEADの全CIとマージ結果は [PR #394](https://github.com/k999ln/rock/pull/394) を参照する。公開196の追加配備・migrationは本PRから行わない。
