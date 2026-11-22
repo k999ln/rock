@@ -90,7 +90,7 @@ raise SystemExit(s.get('code', 0))
         self.assertNotEqual(str(self.repository), observed['cwd'])
         self.assertFalse(any(key.startswith('GITLEAKS_') for key in observed['env']))
         self.assertNotIn('GIT_EXTERNAL_DIFF', observed['env'])
-        for flag in ('--ignore-gitleaks-allow', '--redact=100', '--log-level=error', '--timeout=180', '--max-decode-depth=2', '--max-archive-depth=0', '--report-path=-'):
+        for flag in ('--ignore-gitleaks-allow', '--redact=100', '--log-level=error', '--timeout=600', '--max-decode-depth=2', '--max-archive-depth=0', '--report-path=-'):
             self.assertIn(flag, observed['args'])
         options = next(x for x in observed['args'] if x.startswith('--log-opts='))
         self.assertIn('--no-ext-diff --no-textconv', options)

@@ -21,7 +21,9 @@ VERSION = '8.30.1'
 MAX_FINDINGS = 100
 MAX_ANNOTATIONS = 20
 MAX_CAPTURE_BYTES = 256 * 1024
-PROCESS_TIMEOUT = 210
+# Private-repository runners have fewer CPU cores than public runners. Keep the
+# full-history inspection bounded without cutting off a valid scan at 3 minutes.
+PROCESS_TIMEOUT = 630
 SHA = re.compile(r'(?:[0-9a-f]{40}|[0-9a-f]{64})\Z')
 PATH = re.compile(r'[A-Za-z0-9._/-]{1,240}\Z')
 RULE = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,79}\Z')
@@ -197,7 +199,7 @@ def scan(repository, gitleaks, config):
             command = [str(gitleaks), 'git', str(repository), '--config', str(config),
                        '--gitleaks-ignore-path', str(ignore), '--ignore-gitleaks-allow',
                        '--redact=100', '--log-level=error', '--no-banner', '--no-color',
-                       '--max-decode-depth=2', '--max-archive-depth=0', '--timeout=180',
+                       '--max-decode-depth=2', '--max-archive-depth=0', '--timeout=600',
                        '--exit-code=1', '--report-format=template', '--report-template', str(template),
                        '--report-path=-',
                        '--log-opts=--full-history --text --no-ext-diff --no-textconv --no-renames -m --format=medium ' + head]
