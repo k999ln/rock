@@ -259,6 +259,10 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0052_noah_shelf_evidence.sql',
     '0053_noah_package_connections.sql',
     '0054_noah_boards.sql',
+    '0055_noah_teikibin.sql',
+    '0056_sim_bindings.sql',
+    '0057_esim_ios_install.sql',
+    '0058_cloud_operations.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -551,9 +555,13 @@ await test('fresh and current production D1 databases converge without losing re
   for (const { name } of tables)
     await db.prepare(`DROP TABLE "${String(name)}"`).run();
   await db.prepare('DELETE FROM __drizzle_migrations').run();
-  await db.prepare(
-    'CREATE TABLE remote_ai_text_executions (id text PRIMARY KEY NOT NULL, owner_user_id text NOT NULL, state text NOT NULL)',
-  ).run();
+  // Include the baseline execution tables referenced by later triggers.
+  const baseline = readMain('0021_sites_schema_convergence.sql').split('--> statement-breakpoint');
+  for (const name of ['remote_ai_text_executions', 'agent_delegation_events', 'work_jobs']) {
+    const create = baseline.find(statement => statement.trim().startsWith(`CREATE TABLE IF NOT EXISTS \`${name}\` (`));
+    assert.ok(create, name);
+    await db.prepare(create).run();
+  }
   await db.prepare(
     'CREATE TABLE sky_recurring_contracts (owner_id text NOT NULL, status text NOT NULL, access_until integer NOT NULL, period_start integer NOT NULL, period_end integer NOT NULL)',
   ).run();
@@ -564,17 +572,27 @@ await test('fresh and current production D1 databases converge without losing re
   assert.ok(await db.prepare(
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'remote_ai_text_send_claims'",
   ).first());
-  // Verify every added Noah table/index through the real D1 migrator, not only
+  // Verify every added Noah, SIM and iOS eSIM table/index through the real D1 migrator, not only
   // its journal watermark. Each prepared statement must reach the database.
-  for (const name of readdirSync(mainFolder).filter(n => /^00\d+_noah.*\.sql$/.test(n))) {
+  for (const name of readdirSync(mainFolder).filter(n => /^00\d+_(noah.*|sim_bindings|esim_ios_install)\.sql$/.test(n))) {
     const sql = readMain(name);
     assert.doesNotMatch(sql, /\b(?:INSERT|UPDATE|DELETE|DROP)\b/i);
     for (const match of sql.matchAll(/CREATE (?:UNIQUE )?(TABLE|INDEX)(?: IF NOT EXISTS)? ([a-z_]+)/g)) {
       assert.ok(await db.prepare('SELECT 1 FROM sqlite_master WHERE type=? AND name=?').bind(match[1].toLowerCase(), match[2]).first(), match[2]);
     }
   }
+  // The cloud operations migration guards writes with triggers, so it is checked
+  // separately: every table, index and trigger it creates must reach the database.
+  {
+    const sql = readMain('0058_cloud_operations.sql');
+    const created = [...sql.matchAll(/CREATE (?:UNIQUE )?(TABLE|INDEX|TRIGGER)(?: IF NOT EXISTS)? ([a-z0-9_]+)/g)];
+    assert.ok(created.some(match => match[1] === 'TRIGGER'));
+    for (const match of created) {
+      assert.ok(await db.prepare('SELECT 1 FROM sqlite_master WHERE type=? AND name=?').bind(match[1].toLowerCase(), match[2]).first(), match[2]);
+    }
+  }
   assert.equal(Number((await db.prepare(
     'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
-  ).first()).created_at), 4102444800026);
+  ).first()).created_at), 4102444800030);
   assert.equal(JSON.parse(readFileSync(mainFolder+'meta/_journal.json', 'utf8')).entries.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
 });

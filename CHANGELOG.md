@@ -1,5 +1,11 @@
 ## 2026-11-22
 
+- task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
+- task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
+- task 105（自社クラウドの費用上限・見張り・復元練習、Codex の #368）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0058 に付け直し、その表・索引・trigger が migrator で全部入る事の試験を足した（[PR #413](https://github.com/k999ln/rock/pull/413)）。
+- task 13（iOS の eSIM 導入と Eve のホーム画面、Codex の #372）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0057 に付け直し、接続画面の見出しは main の新しい文にした。手元の本番ビルドで応答ヘッダを測り直した。iPhone 実機の確かめは未実施（[PR #412](https://github.com/k999ln/rock/pull/412)）。
+- task 102（SIM の証明、Codex の #365）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0056 に付け直し、会員登録の廃止の後は、このブラウザの本人に SIM を束ねる形にした（[PR #411](https://github.com/k999ln/rock/pull/411)）。
+- Noahの定期便の台帳を作った（task124、Opus / Noelle。本人の決定「配給制にする」「現金で渡す」「本人の分から差し引く」）。Agentが実際に稼いだ現金だけを月ごとに締め、作業料（いつも現金）と全員への等分（今は現金、仕入先とつながったら物）に分ける。有料は、等分が値段以上の月だけ等分から差し引く。締めは途中で止まっても続きから動き、振込の一覧はCSVで出す（振込は本人が押す）。口座番号は持たずHMACだけ。切り替えは閉のままで、本番の動きは変わらない。migration 0055の本番適用は本人の許可の後。棚・300人の試行・公開の審査者の操作が本番で使えなかった（IDだけを見ていた）のも直した（[PR #410](https://github.com/k999ln/rock/pull/410)）。
 - Noahの推し活のエージェントを、ネットで調べた困り事に合わせて作り直した（task122、Opus / Noelle。本人の問い「推し活遠征アプリですでにできることじゃない？ペインポイントおさえてる？」と回答「ネットで調べて必要なことは」）。今あるアプリ（FanFun・おしきゅん・チケットカレンダー・推し活支出管理）は予定を手で入れて知らせるまで。主役を、①公式の告知・発売の期間を公開の出典から自動で集める、②当落の日・宿の無料取消の期限・交通の早割の締切を突き合わせ、当落の前に押さえ外れたら期限内に取り消し当たったら安い部屋を拾う、③公式のリセールと詐欺の注意、に絞った。困り事6つを出典付きで `NOAH_OSHI_PAINS` に。仕様11.2。
 - eSIM と自社クラウドの設計（PR #360）を、11-22 の本人方針に合わせて main に入れた（Opus / Noelle。本人指示「それでやって」）。月額を取らない・会員登録の廃止・スマホの eSIM はクラウドへの鍵、が 11-21 の決めより優先する所に「11-22 で更新」と印を付けた。離脱率の測り方を、解約率から「続けて使う割合」に変えた（`codex/tasks/103-esim-churn-measure.md`、`lib/churn-cohort.ts` の説明）。03-esim の §1・§2・§7 は、main の新しい文（専用eSIM の導入手順・閉じた後の動作）を土台にした。
 
@@ -110,10 +116,16 @@
 - Noahの読み込みを花形ロゴに統一し、タップ・選択・接続成功の短い振動、保存されるOFF設定、動きを減らす表示を追加（task100、[PR #371](https://github.com/k999ln/rock/pull/371)へ統合）。
 
 - Noah公開版156でログイン後の選択保持・登録状態の再確認・進捗/成果への導線を反映。本人承認の掲載担当を設定し172件を取り込み、公開環境のスマホ幅で読み取り専用1件の接続→成果受領→切断後の保持を確認。全体verify 4,759成功・4skip（[PR #358](https://github.com/k999ln/rock/pull/358)）。
+- iPhone・iPadのeSIM導入リンクとQR、Eveのホーム画面追加、導入宣言と事業者通知の照合を実装。iPhone実機確認は未実施（[PR #372](https://github.com/k999ln/rock/pull/372)、task 13）。
+- task 101 の項目 1・4 として Noah の運営向け月別従量と移行の引き金、runner の同一 ID 再配送防止と合成 Cloudflare 復旧試験を追加（[PR #370](https://github.com/k999ln/rock/pull/370)）。
+
+- task 105 のクラウド新規受付に費用上限を追加し、Noah の日別 SLO、通知の振り分け、D1・R2 のローカル復元練習と運用手順を実装（[PR #368](https://github.com/k999ln/rock/pull/368)）。
 
 ## 2026-11-21
 
-- 本人の「規定で進めて」（22:54）で、自社クラウドの K1〜K10 と eSIM の 11〜15 を決めた（Opus / Noelle）。07 に 1 行、03-esim 0 章と compute-placement 0 章を決定に、task 10〜13・101 に決めを反映、task 102〜105 を追加。`lib/cloud-cost.ts`（定価での実費と黒殿へ移す引き金）と `lib/churn-cohort.ts`（eSIM つきとカードだけの解約率と 3 か月の継続、Wilson の幅、判定）を実装し、`tests/cloud-cost.test.mjs`・`tests/churn-cohort.test.mjs`（23 本）を足した。README の eSIM の節を更新。（[PR #360](https://github.com/k999ln/rock/pull/360)）
+- タスク 102 で公式資料に基づく Endorse トークンの署名検証、SIM の account への紐付け・解除・照合 API、D1 migration 0056（main への統合の時に 0054 から付け直し）を追加した。[PR #365](https://github.com/k999ln/rock/pull/365)
+
+- 本人の「規定で進めて」（22:54）で、自社クラウドの K1〜K10 と eSIM の 11〜15 を決めた（Opus / Noelle）。07 に 1 行、03-esim 0 章と compute-placement 0 章を決定に、task 10〜13・101 に決めを反映、task 102〜105 を追加。`lib/cloud-cost.ts`（定価での実費と黒殿へ移す引き金）と `lib/churn-cohort.ts`（eSIM つきとカードだけの解約率と 3 か月の継続、Wilson の幅、判定）を実装し、`tests/cloud-cost.test.mjs`・`tests/churn-cohort.test.mjs`（23 本）を足した。README の eSIM の節を更新。
 
 - 本人の回答（22:31）で eSIM と自社クラウドの設計を直した（Opus / Noelle）。`docs/structure/03-esim.md` 0 章にスマホと自社の端末の eSIM の違い・スマホの型 S/M・離脱率の仮説と測り方、`docs/compute-placement.md` 0 章に自社クラウドの案 A〜D・回線の終端 N1〜N3・本人の鍵 K・運用の設計。07 に 1 行。（[PR #360](https://github.com/k999ln/rock/pull/360)）
 
