@@ -1,6 +1,6 @@
 ## 2026-11-22
 
-- デザイン参照ライブラリを rock に入れた（Opus / Noelle。本人指示「実際に使えるように参照ライブラリの雛形を作って…AGENTS.mdに追記する文も入れて」）。Codex の雛形（ノエルの Mac の中だけにあった）を、Noah の実際の参照 4 枚（図解のカード・余白の写真の並び・今のピンのグリッド・よりみちのタイムラインとトーク）で埋め、`design/references/` に置いた。AGENTS.md に「9. 画面を作る時」を足した（[PR #REFLIB](https://github.com/k999ln/rock/pull/REFLIB)）。
+- デザイン参照ライブラリを rock に入れた（Opus / Noelle。本人指示「実際に使えるように参照ライブラリの雛形を作って…AGENTS.mdに追記する文も入れて」）。Codex の雛形（ノエルの Mac の中だけにあった）を、Noah の実際の参照 4 枚（図解のカード・余白の写真の並び・今のピンのグリッド・よりみちのタイムラインとトーク）で埋め、`design/references/` に置いた。AGENTS.md に「9. 画面を作る時」を足した（[PR #422](https://github.com/k999ln/rock/pull/422)）。
 - task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
 - task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
 - task 105（自社クラウドの費用上限・見張り・復元練習、Codex の #368）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0058 に付け直し、その表・索引・trigger が migrator で全部入る事の試験を足した（[PR #413](https://github.com/k999ln/rock/pull/413)）。
