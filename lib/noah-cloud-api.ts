@@ -96,7 +96,13 @@ export function createNoahCloudApi(deps: Dependencies) {
         const history = (await jobs.list(owner)).filter(job => job.noahRemote?.cloud?.projectId === project).slice(0, 20);
         return json({ ...state, ownerScope: scope, jobs: history.map(view), profile: { key: profile, ...NOAH_CLOUD_PROFILES[profile] } });
       }
-      if (['connect', 'start'].includes(String(action))) await deps.authorize(owner, project, action === 'connect' ? 'connect' : 'run', await noahCloudDigest(JSON.stringify(NOAH_CLOUD_PROFILES[profile])), input.confirm === true);
+      if (['connect', 'start'].includes(String(action))) {
+        try { await deps.authorize(owner, project, action === 'connect' ? 'connect' : 'run', await noahCloudDigest(JSON.stringify(NOAH_CLOUD_PROFILES[profile])), input.confirm === true); }
+        catch (error) {
+          if (error instanceof NoahAgentError && error.status === 409) return json({ error: error.message, confirmationRequired: true }, 409);
+          throw error;
+        }
+      }
       if (action === 'connect') {
         if (!noahCloudId(input.id)) throw new NoahAgentError('操作IDを確認してください。');
         return json({ ...await call({ action, id: input.id }), ownerScope: scope }, 202);

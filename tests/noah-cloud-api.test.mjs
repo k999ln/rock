@@ -5,15 +5,16 @@ import { noahProjectDetail } from '../lib/noah-project-api.ts';
 import { noahBrowserRequestAllowed } from '../lib/noah-browser-session.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { fixture } from './fixtures/noah/intake.mjs';
+import { NoahAgentError } from '../lib/noah-agent-upload.ts';
 
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const project = 'project-' + 'a'.repeat(64), origin = 'https://noah.test';
 const entry = { card: { id: project, feedbackId: project, href: 'https://github.com/NousResearch/hermes-agent', name: 'Hermes', sources: [] }, families: [] };
 async function world(t) {
-  const f = fixture(t); let owner = 'owner-a', listed = true, denied = false, count = 0, admissionStatus = 200, receipt;
+  const f = fixture(t); let owner = 'owner-a', listed = true, denied = false, confirmRequired = false, count = 0, admissionStatus = 200, receipt;
   const secret = crypto.randomUUID() + crypto.randomUUID();
   const records = new Map();
-  const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, authenticate: async () => owner, directory: async () => listed ? [entry] : [], authorize: async () => { if (denied) throw Error('DENIED'); }, runtime: async input => {
+  const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, authenticate: async () => owner, directory: async () => listed ? [entry] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
     count++;
     if (input.action === 'start') { receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, profile: input.profile, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
     if (input.action === 'job') return Response.json(records.get(input.jobId));
@@ -22,7 +23,7 @@ async function world(t) {
   const request = async (body, headers = {}) => api(new Request(origin + '/api/noah/cloud-agents', { method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': await ownerScopeFor(owner), ...headers }, body: JSON.stringify({ projectId: project, ...body }) }));
   const resultApi = createNoahCloudResultApi({ db: f.db, receiptKey: secret, now: f.time });
   const deliver = (job, patch = {}, headers = {}) => resultApi(new Request(origin + '/api/noah/cloud-agents/result', { method: 'POST', headers: { Authorization: `Bearer ${secret}`, ...headers }, body: JSON.stringify({ ticket: receipt, job, ...patch }) }));
-  return { f, api, records, request, deliver, admission: status => { admissionStatus = status; }, calls: () => count, owner: v => { owner = v; }, listed: v => { listed = v; }, deny: () => { denied = true; } };
+  return { f, api, records, request, deliver, requireConfirmation: () => { confirmRequired = true; }, admission: status => { admissionStatus = status; }, calls: () => count, owner: v => { owner = v; }, listed: v => { listed = v; }, deny: () => { denied = true; } };
 }
 void test('cloud capability is only offered for reviewed distributions when deployed, keeping provider choice', () => {
   assert.equal(noahProjectDetail(entry).connection.kind, 'setup');
@@ -83,4 +84,10 @@ void test('budget rejection leaves a failed Work, not a permanently running spin
   assert.equal((await w.request({ action: 'start', jobId: id(1), connectionId: id(2), prompt: 'hello' })).status, 429);
   const saved = JSON.parse(w.f.sql.prepare('SELECT payload FROM work_jobs WHERE id=?').get(id(1)).payload);
   assert.equal(saved.noahRemote.state, 'failed');
+});
+void test('a saved per-operation confirmation is required before dispatch', async t => {
+  const w = await world(t); w.requireConfirmation();
+  const input = { action: 'start', jobId: id(1), connectionId: id(2), prompt: 'hello' };
+  const first = await w.request(input); assert.equal(first.status, 409); assert.equal((await first.json()).confirmationRequired, true); assert.equal(w.calls(), 0);
+  assert.equal((await w.request({ ...input, confirm: true })).status, 202); assert.equal(w.calls(), 1);
 });

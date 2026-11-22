@@ -13,7 +13,8 @@ try {
   for (const width of [320, 390, 1280]) {
     const context = await browser.newContext({ viewport: { width, height: 844 }, isMobile: width < 500, hasTouch: true, locale: 'ja-JP' });
     const page = await context.newPage(); page.setDefaultTimeout(20000);
-    let connection = null, jobs = [], starts = 0, failRead = false;
+    let connection = null, jobs = [], starts = 0, failRead = false, rejectStart = false, requireConfirmation = false;
+    const attempts = [];
     const errors = []; page.on('pageerror', e => errors.push(e.message));
     await context.route('**/api/noah/discover/project?**', route => route.fulfill({ json: { card: { id: project, name: 'Hermes Agent', summary: '文章とファイルを作成するAgent', provider: 'NousResearch', sources: [{ source: 'github', sourceUrl: 'https://github.com/NousResearch/hermes-agent', observedAt: Date.now(), metrics: { stars: 265164 } }] }, connection: { kind: 'cloud', profile: 'hermes', providerFamilyId: null } } }));
     await context.route('**/api/noah/cloud-agents**', async route => {
@@ -27,7 +28,12 @@ try {
       const data = req.postDataJSON();
       if (data.action === 'connect') connection = { id: data.id, state: 'preparing' };
       if (data.action === 'disconnect') connection = { ...connection, state: 'disconnected' };
-      if (data.action === 'start') { starts++; jobs.unshift({ id: data.jobId, prompt: data.prompt, state: 'running', files: [] }); }
+      if (data.action === 'start') {
+        if (requireConfirmation && !data.confirm) return route.fulfill({ status: 409, json: { error: '毎回確認してください', confirmationRequired: true } });
+        attempts.push(data.jobId);
+        if (rejectStart) { rejectStart = false; jobs.unshift({ id: data.jobId, prompt: data.prompt, state: 'failed', files: [], error: '利用枠が埋まっています' }); return route.fulfill({ status: 429, json: { error: '利用枠が埋まっています' } }); }
+        starts++; jobs.unshift({ id: data.jobId, prompt: data.prompt, state: 'running', files: [] });
+      }
       if (data.action === 'stop') jobs = jobs.map(j => j.id === data.jobId ? { ...j, state: 'cancelled' } : j);
       return route.fulfill({ json: { ownerScope: 'scope-a', connection } });
     });
@@ -43,7 +49,9 @@ try {
       const submit = panel.getByRole('button', { name: '依頼する', exact: true }); await submit.tap();
       await panel.getByText('実行中', { exact: true }).waitFor(); assert.equal(starts, 1); assert.equal(await submit.isDisabled(), true);
       await panel.getByRole('button', { name: '停止', exact: true }).tap(); await panel.getByText('停止済み', { exact: true }).waitFor();
-      await prompt.fill('ファイルを作成して'); await submit.tap(); await panel.getByText('実行中', { exact: true }).waitFor();
+      rejectStart = true; await prompt.fill('ファイルを作成して'); await submit.tap(); await panel.getByText('実行できませんでした', { exact: true }).waitFor(); assert.equal(await prompt.inputValue(), 'ファイルを作成して');
+      requireConfirmation = true; await submit.tap(); await panel.getByRole('button', { name: '確認して依頼', exact: true }).tap();
+      await panel.getByText('実行中', { exact: true }).waitFor(); assert.notEqual(attempts.at(-1), attempts.at(-2), 'a rejected admission can be explicitly retried with a new ID');
       jobs[0] = { ...jobs[0], state: 'returned', result: { text: '合計2000を保存しました。' }, files: [{ name: 'total.txt', base64: 'MjAwMAo=', bytes: 5 }] };
       // A new page in the same owner context reads persisted API results.
       await page.reload({ waitUntil: 'domcontentloaded' }); await panel.getByText('結果を受け取りました', { exact: true }).waitFor();
