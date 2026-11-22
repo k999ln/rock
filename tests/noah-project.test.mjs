@@ -19,9 +19,9 @@ void test('project GET is read-only and opening a public Space checks the exact 
   const calls=[];const api=createNoahProjectApi({directory:async()=>[space()],fetcher:async(url,options)=>{calls.push([url,options]);return url.includes('/api/spaces/')?Response.json(info):new Response('<html></html>',{headers:{'content-type':'text/html; charset=utf-8'}});}});
   const detail=await (await api(request())).json();assert.equal(detail.connection.kind,'space');assert.equal(calls.length,0,'viewing a card must not start a provider request');
   assert.deepEqual(await (await api(request('&open=space'))).json(),{url:'https://maker-agent.hf.space/'});
-  assert.equal(calls[0][0],'https://huggingface.co/api/spaces/maker/agent');assert.equal(calls[0][1].redirect,'error');
+  assert.equal(calls[0][0],'https://huggingface.co/api/spaces/maker/agent');assert.equal(calls[0][1].redirect,'manual');
   assert.ok(calls[0][1].signal);assert.equal((await api(new Request(request(),{method:'POST'}))).status,405);
-  assert.equal(calls[1][0],'https://maker-agent.hf.space/');assert.equal(calls[1][1].redirect,'error');
+  assert.equal(calls[1][0],'https://maker-agent.hf.space/');assert.equal(calls[1][1].redirect,'manual');
 });
 void test('API-only responses and providers refusing embedding stay inside Noah with an actionable error',async()=>{
   for(const headers of [{'content-type':'application/json'},{'content-type':'text/html','x-frame-options':'SAMEORIGIN'},{'content-type':'text/html','content-security-policy':"default-src *; frame-ancestors 'self'"}]){
@@ -44,4 +44,19 @@ void test('Space validation rejects private, gated, stopped, wrong-identity and 
   for(const fetcher of [async()=>new Response('x'.repeat(262145)),async()=>new Response(null,{status:429}),async()=>{throw Error('timeout');}]){
     assert.equal((await createNoahProjectApi({directory:async()=>[space()],fetcher})(request('&open=space'))).status,503);
   }
+});
+
+void test('Cloudflare runtime validates provider requests and rejects redirects before embedding',async()=>{
+  const {build}=await import('esbuild'),{Miniflare,convertV4MiniflareOptions}=await import('miniflare');
+  const bundle=await build({stdin:{contents:`import {createNoahProjectApi} from './lib/noah-project-api.ts';export default {fetch(request,env){return createNoahProjectApi({directory:async()=>[${JSON.stringify(space())}],fetcher:(url,options)=>env.PROVIDER.fetch(new Request(url,options))})(request)}}`,resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'neutral',external:['node:*'],logLevel:'silent'});
+  const calls=[];let redirect=false;
+  const worker=new Miniflare(convertV4MiniflareOptions({modules:true,compatibilityDate:'2026-08-18',compatibilityFlags:['nodejs_compat'],script:bundle.outputFiles[0].text,serviceBindings:{PROVIDER:request=>{
+    calls.push({url:request.url,redirect:request.redirect});
+    if(redirect)return new Response(null,{status:302,headers:{location:'https://other.test/'}});
+    return request.url.includes('/api/spaces/')?Response.json(info):new Response('<html></html>',{headers:{'content-type':'text/html'}});
+  }}}));
+  try{
+    const response=await worker.dispatchFetch(request('&open=space').url);assert.equal(response.status,200);assert.deepEqual(await response.json(),{url:'https://maker-agent.hf.space/'});assert.equal(calls.length,2);
+    redirect=true;assert.equal((await worker.dispatchFetch(request('&open=space').url)).status,503);assert.equal(calls.length,3,'redirect destination must not be fetched');
+  }finally{await worker.dispose()}
 });

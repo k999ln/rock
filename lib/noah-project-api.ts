@@ -21,7 +21,7 @@ export function noahProjectDetail(entry: DirectoryEntry): NoahProjectDetail {
 
 async function spaceHost(repository: string, fetcher: typeof fetch, origin: string) {
   const response = await fetcher(`https://huggingface.co/api/spaces/${repository.split('/').map(encodeURIComponent).join('/')}`, {
-    redirect: 'error', signal: AbortSignal.timeout(8000), headers: { Accept: 'application/json' },
+    redirect: 'manual', signal: AbortSignal.timeout(8000), headers: { Accept: 'application/json' },
   });
   if (!response.ok || !response.body) { await response.body?.cancel(); throw Error('space_unavailable'); }
   const reader = response.body.getReader(), chunks: Uint8Array[] = []; let length = 0;
@@ -38,7 +38,7 @@ async function spaceHost(repository: string, fetcher: typeof fetch, origin: stri
   const host = new URL(info.host);
   if (host.protocol !== 'https:' || !/^[a-z0-9][a-z0-9-]*\.hf\.space$/.test(host.hostname) || host.username || host.password || host.port || host.pathname !== '/' || host.search || host.hash) throw Error('space_unavailable');
   if (!['RUNNING', 'SLEEPING'].includes(info.runtime?.stage)) throw Error('space_unavailable');
-  const page = await fetcher(host.href, { redirect: 'error', signal: AbortSignal.timeout(8000), headers: { Accept: 'text/html' } });
+  const page = await fetcher(host.href, { redirect: 'manual', signal: AbortSignal.timeout(8000), headers: { Accept: 'text/html' } });
   await page.body?.cancel();
   if (!page.ok) throw Error('space_unavailable');
   if (!/^text\/html(?:;|$)/i.test(page.headers.get('content-type') ?? '')) throw Error('space_api_only');
