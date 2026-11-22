@@ -109,4 +109,4 @@
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・Macアプリで接続・100人試用と既存MVPの設計照合・開発者向けメール相談 | ✅ PR #337 |
-| 101 | [101-noah-verified-agent-catalog.md](101-noah-verified-agent-catalog.md) | 本体確認台帳・出典・未確定候補・更新取り込み（個別精査・全件接続・本番反映は残る） | 実装検証中 |
+| 101 | [101-noah-verified-agent-catalog.md](101-noah-verified-agent-catalog.md) | 本体確認台帳・出典・未確定候補・更新取り込み（確認不能52件・全件接続・本番反映は残る） | ✅ 台帳機能のみ PR #396・調査/接続は未完 |

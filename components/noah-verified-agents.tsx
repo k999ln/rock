@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { VerifiedRegistry } from '@/lib/noah-verified-registry';
 import styles from './noah-timeline.module.css';
 
-const labels: Record<string, string> = { agent: '本体を確認', unverifiable: '未確定・追加精査待ち', merged: '同一系列・関連配布', historical: '旧系統', announced: '提供開始前', template: 'テンプレート', framework: '開発基盤', tool: '道具・画面', model: 'モデル', resource: '教材・評価資料', other: 'その他・本体条件未充足' };
+const labels: Record<string, string> = { agent: '本体を確認', unverifiable: '確認不能・公開根拠不足', merged: '同一系列・関連配布', historical: '旧系統', announced: '提供開始前', template: 'テンプレート', framework: '開発基盤', tool: '道具・画面', model: 'モデル', resource: '教材・評価資料', other: 'その他・本体条件未充足' };
 
 export default function NoahVerifiedAgents() {
   const [data, setData] = useState<VerifiedRegistry | null>(null), [error, setError] = useState('');
@@ -45,7 +45,7 @@ export default function NoahVerifiedAgents() {
       {data && <p>{data.summary.families.toLocaleString('ja-JP')}系列 · {data.summary.categories}分類 · 今回 {data.summary.added}系列追加</p>}
     </header>
     <p className={styles.researchNote}>公開資料から本体として確認した製品・実装です。研究試作を含みます。掲載はNoahでの接続・実行の合格を意味しません。</p>
-    {data && <p className={styles.researchNote}>調査日 {data.asOf} · 候補 {data.summary.reviewed.toLocaleString('ja-JP')}件を再点検 · 未確定 {data.summary.unresolved.toLocaleString('ja-JP')}件（追加精査待ちを含む）。世界総数ではありません。配信された台帳の変更を60秒ごと・画面復帰時に確認します。</p>}
+    {data && <p className={styles.researchNote}>調査日 {data.asOf} · 候補 {data.summary.reviewed.toLocaleString('ja-JP')}件を再点検 · 確認不能 {data.summary.unresolved.toLocaleString('ja-JP')}件（非公開実装・実行入口・同一性の根拠不足等）。世界総数ではありません。配信された台帳の変更を60秒ごと・画面復帰時に確認します。</p>}
     {data && <p className={styles.researchNote}>個別精査 {data.summary.individuallyReviewed.toLocaleString('ja-JP')}件 · 自動一次選別 {data.summary.automatedTriage.toLocaleString('ja-JP')}件。全候補の全ソースを個別に精査した結果ではありません。</p>}
     <div className={styles.filters}>
       <button aria-pressed={view === 'products'} onClick={() => { setView('products'); setPage(0); }}>本体一覧</button>
