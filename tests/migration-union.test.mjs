@@ -260,6 +260,8 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0053_noah_package_connections.sql',
     '0054_noah_boards.sql',
     '0055_noah_teikibin.sql',
+    '0056_sim_bindings.sql',
+    '0057_esim_ios_install.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -565,9 +567,9 @@ await test('fresh and current production D1 databases converge without losing re
   assert.ok(await db.prepare(
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'remote_ai_text_send_claims'",
   ).first());
-  // Verify every added Noah table/index through the real D1 migrator, not only
+  // Verify every added Noah, SIM and iOS eSIM table/index through the real D1 migrator, not only
   // its journal watermark. Each prepared statement must reach the database.
-  for (const name of readdirSync(mainFolder).filter(n => /^00\d+_noah.*\.sql$/.test(n))) {
+  for (const name of readdirSync(mainFolder).filter(n => /^00\d+_(noah.*|sim_bindings|esim_ios_install)\.sql$/.test(n))) {
     const sql = readMain(name);
     assert.doesNotMatch(sql, /\b(?:INSERT|UPDATE|DELETE|DROP)\b/i);
     for (const match of sql.matchAll(/CREATE (?:UNIQUE )?(TABLE|INDEX)(?: IF NOT EXISTS)? ([a-z_]+)/g)) {
@@ -576,6 +578,6 @@ await test('fresh and current production D1 databases converge without losing re
   }
   assert.equal(Number((await db.prepare(
     'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
-  ).first()).created_at), 4102444800027);
+  ).first()).created_at), 4102444800029);
   assert.equal(JSON.parse(readFileSync(mainFolder+'meta/_journal.json', 'utf8')).entries.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
 });

@@ -23,7 +23,7 @@
 | 10 | [10-esim-provider-research.md](10-esim-provider-research.md) | ARF 対応 MVNE 候補比較と RFQ 質問票 | |
 | 11 | [11-esim-first-live.md](11-esim-first-live.md) | eSIM発行・導入証明 → 端末利用権 → Eve／Noahへ。回線月額の照合 | 導入設計整理済み。実回線・実機受入は未完了。✅ Noahの0円模擬回線・成果受取（PR #378）。運営Dockの指定配給・本人受取（模擬環境）と朝9時の開発指示 ✅ [#382](https://github.com/k999ln/rock/pull/382)。✅ 住所登録・ロット在庫・通知Agent・定期配給を模擬回線で検証（[PR #387](https://github.com/k999ln/rock/pull/387)）。✅ 購入履歴から設定を再開し、利用権を照合して案内（[PR #389](https://github.com/k999ln/rock/pull/389)） |
 | 12 | [12-android-carrier-client.md](12-android-carrier-client.md) | carrier privileges を使う Android client と Play 自動導入 | |
-| 13 | [13-ios-universal-link.md](13-ios-universal-link.md) | iOS universal link 導入と PWA 起動 | |
+| 13 | [13-ios-universal-link.md](13-ios-universal-link.md) | iOS universal link 導入と PWA 起動 | コード [#372](https://github.com/k999ln/rock/pull/372)（main への統合は [PR #412](https://github.com/k999ln/rock/pull/412)。iPhone実機確認は未実施） |
 
 ## 20 番台: mii
 
@@ -111,7 +111,7 @@
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 / 新デザイン・登録情報・委任 PR #371（公開159） / 登録実行基盤・Dock入口 ✅ PR #373（公開161、実サービス登録・100人容量は未受入） / 最新12画面・6言語UI ✅ PR #376（公開163） / 実登録・認証付き成果・失敗復帰 ✅ PR #377（公開164、実スマホ成果は本人報告、100人は合成試験） / 成果カード・画像保存 ✅ PR #376（公開165） / eSIM本人引継ぎ ✅ PR #377（公開167・4,829試験成功、実eSIM連携は未設定） / 透過タブロゴ ✅ PR #377（公開170・独立確認済み） / 4件修正・公開ブラウザ一周 ✅ PR #377（公開173・全体verify 4,844成功/4skip、実機Androidは独立確認中） / 接続・保存の重なり修正 ✅ PR #377（公開175・320/390/1280px確認） / 検索・保存統合と不要ページ撤去 ✅ PR #377（公開178・390px確認） / 会員登録不要 ✅ PR #377（公開179、PixelでTiplineの接続→成果受取→保存から再表示を実測。外部登録・100人負荷は別） / 外部新規登録から成果再表示 ✅ PR #377（Pixel実測、本番100ブラウザ/400要求・同時5人を確認。100人同時実行とeSIMは未受入） / 共通カード・評価統合 ✅ PR #386（公開182、390px/590px・評価反映/取り消し確認） / 元サイト評価の常時表示 ✅ PR #386（公開184、GitHub/HF実数照合） / 元サイト評価へ一本化 ✅ PR #386（公開186、共有機能lint残件あり） / 最新公開機能のGit統合と全体verify ✅ PR #377（公開189、CI 4,931成功/4skip） / SPIDER履歴8候補の解消・公開191の保持 ✅ PR #377（実スキャナー20試験と全履歴0候補、最終全体CIはPR参照） / 公開192の接続演出・Pixel一周 ✅ PR #392（全体verify 4,942成功/5skip、実再生音・振動完了・新規成果10件再表示。最終CI/マージはPR参照） / 公開195を保全した接続位置・用途名 ✅ PR #394（公開195・196保全＋197の縦崩れ修正、verify 4,951成功/5skip、Pixel新規成果10件・再表示。最終CI/マージはPR参照） ／ ✅ GitHub mainと本番のソース照合手順 [#398](https://github.com/k999ln/rock/pull/398)、公開198の取り込み [#399](https://github.com/k999ln/rock/pull/399) / 登録429待機・本番100ブラウザ検査 PR #400（公開・Pixel再受入中） |
 | 101 | [101-compute-placement.md](101-compute-placement.md) | 黒殿の 1 ノードを Linux 版 runner の host にし、従量の引き金を測る | |
-| 102 | [102-sim-proof-endorse.md](102-sim-proof-endorse.md) | SIM の証明（N1）: Endorse のトークンを確かめ、SIM を account に束ねる | |
+| 102 | [102-sim-proof-endorse.md](102-sim-proof-endorse.md) | SIM の証明（N1）: Endorse のトークンを確かめ、SIM を account に束ねる | ✅ [PR #365](https://github.com/k999ln/rock/pull/365)（main への統合は [PR #411](https://github.com/k999ln/rock/pull/411)） |
 | 103 | [103-esim-churn-measure.md](103-esim-churn-measure.md) | 続けて使う割合を測る: eSIM を入れた人と入れていない人を、同じ機能で比べる（集計の関数は実装済み） | |
 | 104 | [104-owner-key-encryption.md](104-owner-key-encryption.md) | 本人の鍵で暗号化（案 K）: Memory と成果のファイルを運営も読めない形に | |
 | 105 | [105-cloud-operations.md](105-cloud-operations.md) | 自社クラウドの回し方: 約束・見張り・知らせ・費用の上限・バックアップ | |

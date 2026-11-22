@@ -1513,6 +1513,45 @@ export const esimProviderOrders = sqliteTable(
   ],
 );
 
+export const esimIosInstallDeclarations = sqliteTable(
+  'esim_ios_install_declarations',
+  {
+    skyOrderId: text('sky_order_id').notNull().references(() => skyCommerceOrders.id),
+    ownerUserId: text('owner_user_id').notNull(),
+    profileDigest: text('profile_digest').notNull().references(() => esimProviderProfileBindings.profileDigest),
+    declaredAt: integer('declared_at').notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.skyOrderId, table.ownerUserId, table.profileDigest] })],
+);
+
+export const esimGoProfileStatusEvents = sqliteTable(
+  'esim_go_profile_status_events',
+  {
+    callbackDigest: text('callback_digest').primaryKey().notNull().references(() => esimProviderWebhookInbox.callbackDigest),
+    profileStatus: text('profile_status', { enum: ['Downloaded', 'Installed', 'Released'] }).notNull(),
+    eventAt: integer('event_at').notNull(),
+  },
+  (table) => [
+    check('esim_go_profile_status_check', sql`${table.profileStatus} IN ('Downloaded', 'Installed', 'Released')`),
+    check('esim_go_profile_event_time_check', sql`${table.eventAt} >= 0`),
+  ],
+);
+
+export const simBindings = sqliteTable('sim_bindings', {
+  id: text('id').primaryKey().notNull(),
+  ownerUserId: text('owner_user_id').notNull(),
+  simDigest: text('sim_digest').notNull(),
+  deviceDigest: text('device_digest').notNull(),
+  boundAt: integer('bound_at').notNull(),
+  revokedAt: integer('revoked_at'),
+}, (table) => [
+  uniqueIndex('sim_bindings_active_sim').on(table.simDigest).where(sql`${table.revokedAt} IS NULL`),
+  index('sim_bindings_sim_revoked').on(table.simDigest, table.revokedAt),
+  check('sim_bindings_sim_digest_check', sql`length(${table.simDigest}) = 64`),
+  check('sim_bindings_device_digest_check', sql`length(${table.deviceDigest}) = 64`),
+  check('sim_bindings_revoke_time_check', sql`${table.revokedAt} IS NULL OR ${table.revokedAt} >= ${table.boundAt}`),
+]);
+
 export const esimDeviceInstallChallenges = sqliteTable(
   'esim_device_install_challenges',
   {

@@ -357,6 +357,10 @@ Eveに頼んだ仕事を別の画面で開くために、RockstarOSは本人の�
 
 スマホのeSIMと、miiのHub・専用端末・車のeSIMは、入るデータは同じ種類でも、できることが違います。ふつうのスマホは、データ通信に同時に使える回線が1本だけです（Appleの説明「one cellular data network at a time」）。そのため「RockstarOSの通信だけを専用回線へ流す」は、機種と事業者ごとに実機で確かめてから案内します。OS本体とAgentはSIMに入りません。[2種類のeSIMの違い](docs/structure/03-esim.md#0-載せる先と回線の型2026-11-21) · [自社クラウドの設計](docs/compute-placement.md)
 
+N1のSIM確認APIは、SORACOM Endorseの署名済みトークンを検証し、本人（このブラウザの保存権限、または端末の接続）とSIMの紐付けと照合を行います。照合できない場合は、SIMで確かめたことにはしません。[SIM確認APIの設定と使い方](codex/tasks/102-sim-proof-endorse.md)
+
+iPhone・iPadでは、対象注文の購入履歴から `/connect` へ進み、iOS 17.4以降の導入リンクまたはQRコードを使います。導入後はSafariで `/connect/done` を開き、Eveをホーム画面に追加できます。iPhone実機確認は未実施です。
+
 
 </details>
 

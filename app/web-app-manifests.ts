@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-export default function manifest(): MetadataRoute.Manifest {
+export default function rockstarOsManifest(): MetadataRoute.Manifest {
   return {
     id: '/',
     name: 'RockstarOS',
@@ -36,5 +36,16 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'maskable',
       },
     ],
+  };
+}
+
+export function eveManifest(): MetadataRoute.Manifest {
+  return {
+    ...rockstarOsManifest(),
+    id: '/os/eve',
+    name: 'Eve',
+    short_name: 'Eve',
+    description: 'Eveで依頼・仕事・成果を同じアカウントで引き継ぐ。',
+    start_url: '/os/eve',
   };
 }

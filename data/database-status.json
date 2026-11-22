@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 250,
+    "tableCount": 253,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。"
   },
   "webSchema": {
-    "tableCount": 173,
+    "tableCount": 176,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -46,6 +46,8 @@
       "esim_device_gateway_keys",
       "esim_device_install_challenges",
       "esim_device_install_receipts",
+      "esim_go_profile_status_events",
+      "esim_ios_install_declarations",
       "esim_provider_orders",
       "esim_provider_profile_bindings",
       "esim_provider_webhook_inbox",
@@ -136,6 +138,7 @@
       "rockstar_entitlement_issuer_rate_limits",
       "rockstar_service_entitlements",
       "rockstar_service_setups",
+      "sim_bindings",
       "sky_a2a_agent_connections",
       "sky_activation_codes",
       "sky_agent_settings",
@@ -200,8 +203,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 36,
-    "latestMigration": "0055_noah_teikibin.sql",
+    "migrationCount": 38,
+    "latestMigration": "0057_esim_ios_install.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -406,6 +409,8 @@
           "esim_device_gateway_keys",
           "esim_device_install_challenges",
           "esim_device_install_receipts",
+          "esim_go_profile_status_events",
+          "esim_ios_install_declarations",
           "esim_provider_orders",
           "esim_provider_profile_bindings",
           "esim_provider_webhook_inbox",
@@ -418,9 +423,10 @@
           "rockstar_entitlement_issuer_deliveries",
           "rockstar_entitlement_issuer_rate_limits",
           "rockstar_service_entitlements",
-          "rockstar_service_setups"
+          "rockstar_service_setups",
+          "sim_bindings"
         ],
-        "tableCount": 22
+        "tableCount": 25
       }
     ]
   },
@@ -461,6 +467,8 @@
         "esim_device_gateway_keys",
         "esim_device_install_challenges",
         "esim_device_install_receipts",
+        "esim_go_profile_status_events",
+        "esim_ios_install_declarations",
         "esim_provider_orders",
         "esim_provider_profile_bindings",
         "esim_provider_webhook_inbox",
@@ -551,6 +559,7 @@
         "rockstar_entitlement_issuer_rate_limits",
         "rockstar_service_entitlements",
         "rockstar_service_setups",
+        "sim_bindings",
         "sky_a2a_agent_connections",
         "sky_activation_codes",
         "sky_agent_settings",
@@ -609,8 +618,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0055_noah_teikibin.sql",
-      "tableCount": 173,
+      "expectedAppliedThrough": "0057_esim_ios_install.sql",
+      "tableCount": 176,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

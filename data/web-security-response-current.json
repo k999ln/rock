@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-22T05:30:30Z",
+  "observedAt": "2026-11-22T10:58:58Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
-    "origin": "http://127.0.0.1:8862",
+    "origin": "http://127.0.0.1:8787",
     "productionBuild": true
   },
   "inputs": {
@@ -16,10 +16,15 @@
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
     "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
     "next.config.ts": "47c918d3dfe3b4befb17954d9a8f01b6b7f6abc282b775cd7257748f96e51170",
-    "scripts/check-web-security-response.mjs": "f275e48737343d9634682b6b908f256c07a5adad60c172ac1eee0d4e43792399",
-    "scripts/web-security-evidence.mjs": "d0d46eabaf8abc6cf669547a014c9fe9821f761fe360f5ae4c9281c19f35cc47",
+    "scripts/check-web-security-response.mjs": "23b7770716b07c1e430fc5fc14765261029a30b41f07cc82ef5c01f6a517b4e8",
+    "scripts/web-security-evidence.mjs": "751b59ad59ef3af165c7d30aaa93af7e686c3e3e6dae75d8eee86aa6d9e482cf",
     "public/sw.js": "d4cf54192afefde19c97414f2be8b45d4e9f3194818cb1de1482f0f7e662177d",
-    "app/manifest.ts": "01fda7a72ab73b2e0f22f965353330c424825790ba51dc6c086ab29034efce86",
+    "app/web-app-manifests.ts": "a21b04baaea3c479e32b55af9aa064c950c625754b665064abc44736f1313ddc",
+    "app/manifest.webmanifest/route.ts": "ab4342223ee7614d1b17a427a3e49f0d23806f39c854b37debfe179196674e75",
+    "app/layout.tsx": "a904e718b81a7796224222af0232f0082a59dc744c3ddc4db15e6ce3b2317b8c",
+    "app/connect/eve.webmanifest/route.ts": "dc48fec51ab25b31ed24d1ba386d673d6903ecfa4622f488634cf3f9b4a7baa3",
+    "app/connect/done/page.tsx": "589e6d2c76df455ff2c38d2314fc7b136afdd68a5f43d59694c087aa505206c7",
+    "app/os/eve/page.tsx": "0b8eabfa0524548c2eabefaaa9fffa7bc16acae55cc46b45cc766de20d616f76",
     "app/page.tsx": "d86a547f5575e2692da7b9abf6ca3b5e4abcb9da64a0f42d08b1e3f9eaa0759f",
     "lib/os-entry.ts": "57343aecfc336ea43f259e7ecfe38aceaf75e07d1da6f8c1e9c9cf0b5b570143",
     "app/noah/page.tsx": "5dd56610143c92329b669391bc7f23383d03a4dbd8992ba5fb6a20ec1e7338ef",
@@ -32,7 +37,7 @@
   "result": {
     "schema": "rockstaros-web-security-response-check/1",
     "status": "PASS",
-    "baseOrigin": "http://127.0.0.1:8862",
+    "baseOrigin": "http://127.0.0.1:8787",
     "universalHeaders": 8,
     "routes": [
       "/",
@@ -42,8 +47,15 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-RvD5NgFv.js"
-    ]
+      "/_next/static/chunks/index-AQL0LMP_.js"
+    ],
+    "evePwa": {
+      "manifest": "/connect/eve.webmanifest",
+      "pages": [
+        "/connect/done",
+        "/os/eve"
+      ]
+    }
   },
   "boundary": {
     "sitesDeploymentVerified": false,
