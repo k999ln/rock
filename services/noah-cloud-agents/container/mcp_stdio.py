@@ -86,6 +86,8 @@ def main():
                     {'role': 'user', 'content': prompt}]
         functions = [{'type': 'function', 'function': {'name': t['name'], 'description': t.get('description', ''), 'parameters': t['inputSchema']}} for t in tools]
         names = {t['name'] for t in tools}
+        completed_tools = 0
+        reminders = 0
         for _ in range(8):
             body = json.dumps({'model': 'noah-cloud', 'messages': messages, 'tools': functions, 'stream': False}).encode()
             request = urllib.request.Request('http://127.0.0.1:8080/v1/chat/completions', body, {'Content-Type': 'application/json'})
@@ -97,6 +99,12 @@ def main():
             messages.append(message)
             calls = message.get('tool_calls', [])
             if not calls:
+                if not completed_tools:
+                    if reminders:
+                        raise ValueError('No official tool completed')
+                    reminders += 1
+                    messages.append({'role': 'user', 'content': 'No tool has run yet. Use the provided tool-calling interface to perform the requested operation. Text or JSON in a normal response does not execute a tool. Do not report completion without a successful tool result.'})
+                    continue
                 text = message.get('content')
                 if not isinstance(text, str) or not text.strip():
                     raise ValueError('No final response')
@@ -107,11 +115,16 @@ def main():
             for call in calls:
                 name = call['function']['name']
                 if name not in names:
-                    raise ValueError('Unknown tool')
+                    # Never repair a name into an executable operation. Let the model retry
+                    # within the existing call budget, with an explicit failed tool result.
+                    messages.append({'role': 'tool', 'tool_call_id': call['id'], 'content': json.dumps({'isError': True, 'error': 'Unknown tool. Use an exact name from the provided tool definitions. No operation ran.'})})
+                    continue
                 args = json.loads(call['function']['arguments'])
                 if not isinstance(args, dict):
                     raise ValueError('Invalid arguments')
                 result = client.rpc('tools/call', {'name': name, 'arguments': args})
+                if result.get('isError') is not True:
+                    completed_tools += 1
                 messages.append({'role': 'tool', 'tool_call_id': call['id'], 'content': json.dumps(result)})
         raise ValueError('Model call limit')
     finally:
