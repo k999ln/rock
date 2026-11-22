@@ -24,20 +24,6 @@
   },
   "values": [
     {
-      "candidateSha256": "0141b9abccd02fb198b4df6ed8d824518fe9b3ce156a2b5520d5dbe0dcec02cb",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "docs/evidence/rockstar-runtime-host-ui.json",
-        "line": 45,
-        "field": [
-          "packages/rockstaros-runtime/src/credential-vault.mjs"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "0280f7ac68cce3d3e6d4bfdab784727498beda5e023f480927170edd1857e143",
       "classification": "idempotency-fixture",
       "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
@@ -134,35 +120,6 @@
         ]
       },
       "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "0d27b3b13712dcefb793eb3387054d7b4c205004f67d37c15159ca4da8dcc6d4",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"7dd170a2ed58b0751a680872f4f854a3d0c04058\", \"path\": \"lib/passkey-browser.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
-        "path": "docs/evidence/rockstar-independent-account.json",
-        "line": 22,
-        "field": [
-          "lib/passkey-browser.ts"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "0e1bc60ff33dfc94677d079ad344002265704b9c8cd068d07e19092e8d85546f",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"6304fb59408c01f443ad5b8fa83cd4f19d1fdcdb\", \"path\": \"drizzle-legacy/github-main-before-avoado-alignment/drizzle/0015_jennifer_passkey_access.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
-        "line": 7,
-        "field": [
-          "0015_jennifer_passkey_access.sql",
-          "drizzle/0015_jennifer_passkey_access.sql"
-        ]
-      },
-      "exactPathCount": 2
     },
     {
       "candidateSha256": "0edeb8338fd723ccc944437e6d1bf0666c4cb210a7a1d7c80bcdc0c7c4fbc439",
@@ -479,20 +436,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "32c673525a76fe806df7246f5ecc48546b5c63f3aff2a1cd79fec0d39e8897ab",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"a713230b61bf93ab9a0fd011c7be3674064602da\", \"path\": \"lib/jennifer-passkey.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "250ff2223e80b594648248c8a4ebafc825ccffec",
-        "path": "docs/evidence/rockstar-independent-account.json",
-        "line": 20,
-        "field": [
-          "lib/jennifer-passkey.ts"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "34d04aa0f8ac6cead710dc959ffaf9b19eac06252701fe81f0aa7bff0d667c7d",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_wallet_auth_backend.py",
@@ -505,20 +448,6 @@
         ]
       },
       "exactPathCount": 14
-    },
-    {
-      "candidateSha256": "352b48b7f5ec736fd8f39d9f4c080810598c492b9e3147a6b9aaaf6f6f2d9168",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "docs/evidence/source-runtime-device-binding.json",
-        "line": 391,
-        "field": [
-          "scripts/check-work-api.mjs"
-        ]
-      },
-      "exactPathCount": 1
     },
     {
       "candidateSha256": "38dddea32433380e0b925c0917963ae4e62faf3b6eda620dadf14f39ef45081c",
@@ -562,20 +491,6 @@
         ]
       },
       "exactPathCount": 2
-    },
-    {
-      "candidateSha256": "39d2dac72f9ca81bb37239ca738c99386652a831d020889008dc34d64d566d28",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"5b8522f8ad921aa0e48c51a39971701835a113d5\", \"path\": \"components/os-account-access.tsx\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
-        "path": "docs/evidence/rockstar-independent-account.json",
-        "line": 27,
-        "field": [
-          "components/os-account-access.tsx"
-        ]
-      },
-      "exactPathCount": 1
     },
     {
       "candidateSha256": "39d97e4303a155d357088abb6f901eeadc593231b1d69ddb6345f5b6355e6dea",
@@ -660,20 +575,6 @@
         ]
       },
       "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "42f04d5454f66001f1ff6c24d7c8d2a43eef5c5c37c1b72061e3ffde7743376e",
-      "classification": "public-artifact-digest",
-      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
-      "source": {
-        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
-        "path": "docs/evidence/development-execution/mini-08-access-review.json",
-        "line": 12,
-        "field": [
-          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1fixture_access.py"
-        ]
-      },
-      "exactPathCount": 2
     },
     {
       "candidateSha256": "461e4c90262204d7b3cfbfc1a4975f97b91796f070e1b4baeee401c4a73e12fb",
@@ -761,20 +662,6 @@
       "exactPathCount": 2
     },
     {
-      "candidateSha256": "4afdc542ed96cc1ef2ad2f1d0741570decd558bb2e4df4a1f9126969dc6865ba",
-      "classification": "public-upstream-signer-fingerprint",
-      "evidence": "GrapheneOS official allowed_signers (https://grapheneos.org/allowed_signers) and successful git verify-tag 2026100200. This is the public ED25519 signer fingerprint already pinned in os/physical/frankel-source-lock.json, not private key material.",
-      "source": {
-        "commit": "d448c56cae43ad8ac7c087741ee139f86cf0cb52",
-        "path": "docs/evidence/phone-source-verification.json",
-        "line": 32,
-        "field": [
-          "/signatureResult"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "4b7d31e53c47e954b7f270c13a398ea7fab4e01c3ff13674850727d2e27930b3",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /artifact_sha256/gx00-cross-game-keys-independent.log",
@@ -801,20 +688,6 @@
         ]
       },
       "exactPathCount": 14
-    },
-    {
-      "candidateSha256": "4c817caf92309f13600389d543a25c08840cf256e654194e718a9f9d670d5c02",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "docs/evidence/source-readiness-alignment.json",
-        "line": 261,
-        "field": [
-          "scripts/check-work-api.mjs"
-        ]
-      },
-      "exactPathCount": 1
     },
     {
       "candidateSha256": "4ebbe859de728e527bf2c053d3d7dabc7745b6c0c95cdf9dd7952317c3000b1f",
@@ -852,20 +725,6 @@
         "path": "systems/rock-star-os/os/system/README.md",
         "line": 31,
         "field": []
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "4fdd8116142f386e82ec2b53f2b2dcdecc762b9734e798248706a1475dd2b59f",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"b75050db5f4266da6a94b61361082e385b265960\", \"path\": \"drizzle-legacy/github-main-before-avoado-alignment/drizzle/0029_sky_x_account_oauth.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
-        "line": 21,
-        "field": [
-          "drizzle/0029_sky_x_account_oauth.sql"
-        ]
       },
       "exactPathCount": 1
     },
@@ -1137,20 +996,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "7212f0dd21584d4f90554b0fc274ec294a29c789202f136223cb79268d5e86d6",
-      "classification": "public-artifact-digest",
-      "evidence": "Recomputed SHA-256 of compact sorted-key UTF-8 tokenizer.* GGUF metadata excluding tokenizer.chat_template. Public Unsloth Qwen3-4B-Instruct-2507 Q4_K_M revision a06e946bb6b655725eafa393f4a9745d460374c9, full weights SHA-256 3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597. This is metadata, not a credential. Exact path AND value only.",
-      "source": {
-        "commit": "acca1942fbec9c8ff2d44f97f7e825162400bfe8",
-        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
-        "line": 126,
-        "field": [
-          "/models/3/profile/tokenizerSha256"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "7353ca263e52ca13b9ef78ed2661c23dae2f6667ee5553483a81f84d71e9254d",
       "classification": "idempotency-fixture",
       "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
@@ -1202,21 +1047,6 @@
         "line": 77,
         "field": [
           "/business/jobs/6/key"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "767a923a0076a130204d7965126da18653e46f2d146a630c4fd75efbbf45515b",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"68ddda758908d4a39c01b2ac514e33be0a627397\", \"path\": \"drizzle-main/0029_rockstar_password_accounts.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "data/avoado-published-migration-lineage.json",
-        "line": 15,
-        "field": [
-          "drizzle-main/0029_rockstar_password_accounts.sql",
-          "drizzle/0029_rockstar_password_accounts.sql"
         ]
       },
       "exactPathCount": 1
@@ -1404,21 +1234,6 @@
       "exactPathCount": 2
     },
     {
-      "candidateSha256": "833a2a5ea7f7806f58baae3dd637069c231c408738c9385993e42628b5754658",
-      "classification": "public-artifact-digest",
-      "evidence": "SHA-256 of tracked lib/sky-code-api.ts, recomputed from its exact source bytes; duplicated in canonical and Sites source inventories, not a credential.",
-      "source": {
-        "commit": "8a81e58046bbaaa043e26fbffc1920c71f1729e7",
-        "path": "docs/evidence/sky-code-timeline.json",
-        "line": 15,
-        "field": [
-          "/canonical/sourceSha256/lib~1sky-code-api.ts",
-          "/siteCandidate/sharedImplementationHashes/lib~1sky-code-api.ts"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "8391982128793b76e68a6d541c3cf3ae5177819a252441611045df63caea5093",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/ui/test_auth.inc",
@@ -1489,20 +1304,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "8a096df6808c7a1b83d5ac2788613ff6d4b4833419931e20fb6dc72e341f0640",
-      "classification": "public-artifact-digest",
-      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
-      "source": {
-        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
-        "path": "docs/evidence/development-execution/mini-08-access-review.json",
-        "line": 17,
-        "field": [
-          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1test_access_adapters.py"
-        ]
-      },
-      "exactPathCount": 2
-    },
-    {
       "candidateSha256": "8a889499e161ee6d62660304613275f57036d0a0702d51fd8df7317d3dcb4248",
       "classification": "idempotency-fixture",
       "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
@@ -1512,20 +1313,6 @@
         "line": 257,
         "field": [
           "/business/jobs/24/key"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "8abd230eaff56705611ae95c4276b21b6bdfba90bf556dffb439aa1d483e8f9b",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"9f240e2a563a5b8fc987f069e12467603c2fd0c1\", \"path\": \"scripts/device-binding-api-acceptance.mjs\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "docs/evidence/source-runtime-device-binding.json",
-        "line": 34,
-        "field": [
-          "scripts/device-binding-api-acceptance.mjs"
         ]
       },
       "exactPathCount": 1
@@ -1738,20 +1525,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "9e80c28302e916e16cb3b16f061ad30ec5c01bf062f84f39306c0ee516668207",
-      "classification": "public-artifact-digest",
-      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/access_session.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
-      "source": {
-        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
-        "path": "docs/evidence/development-execution/mini-08-access-review.json",
-        "line": 8,
-        "field": [
-          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1access_session.py"
-        ]
-      },
-      "exactPathCount": 2
-    },
-    {
       "candidateSha256": "a268e896ff265e585be2cea9cfe27883b3a75677c7785667b87793e7918caeec",
       "classification": "idempotency-fixture",
       "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
@@ -1808,20 +1581,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "a72d91a418e27915f4243a134f7fe1eaa1497f7ff01ed13099e1c7de64a52d53",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"3185e1e014cdb2c46f1cdd54e0a4c29b337ded64\", \"path\": \"drizzle-legacy/github-main-before-avoado-alignment/drizzle/0027_community_os_keys.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
-        "line": 19,
-        "field": [
-          "drizzle/0027_community_os_keys.sql"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "a77281b2f151388c8a068b58e9369461a166a187dfc431906e356653c160fc2b",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_profile.py",
@@ -1845,20 +1604,6 @@
         "line": 289,
         "field": [
           "/power_records/1/key"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "aa3a02d87a6981a7059991d9cdad4e57445de49e78e53f1e72b0cb3835760229",
-      "classification": "public-artifact-digest",
-      "evidence": "Recomputed SHA-256 of external CI_FIX_TOKEN_PARITY.json: CPU-only equality of all64 full/prefix token arrays and assistant offsets,128 vectors,0 model calls. This is an integrity digest, not a credential. Exact path AND exact literal value only. Historical scan counts and reviewedHead remain unchanged.",
-      "source": {
-        "commit": "4afd0284340381cfa28ae319ea6646d0a4a9bf53",
-        "path": "docs/evidence/development-execution/eve-semantic-quality.json",
-        "line": 187,
-        "field": [
-          "/evidenceHashes/CI_FIX_TOKEN_PARITY.json"
         ]
       },
       "exactPathCount": 1
@@ -1921,31 +1666,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "b112c9dc389ca44de72cc0d3a732746a423354b9fffedbc467449a8601ea3269",
-      "classification": "synthetic-rejection-test",
-      "evidence": "Deliberately sequential mixed-case dummy input in the looksLikeNoahSecret rejection test; asserts true for a token-shaped string. Never used for authentication or external requests.",
-      "source": {
-        "commit": "51df5ceaf4460a7bb189e3ed7c2f8c18558171fb",
-        "path": "docs/design-validation/noah/noah-connect.test.mjs",
-        "line": 85
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "b14ac262a42934982764bf5028f2e8aa56f6c3e21902dff09cb69a7209fb0b94",
-      "classification": "public-artifact-digest",
-      "evidence": "SHA-256 recomputed from repository source bytes: lib/esim-cloud-access.ts",
-      "source": {
-        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
-        "path": "docs/evidence/esim-main-integration.json",
-        "line": 37,
-        "field": [
-          "/sourceHashes/lib/esim-cloud-access.ts"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "b1e4d746555ac024b70c78c979c9103941b4dc95351cb439860d581b58236e39",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/mcp_broker/service_access.py",
@@ -1984,17 +1704,6 @@
         ]
       },
       "exactPathCount": 14
-    },
-    {
-      "candidateSha256": "b714cc8766cd7108e0e7daf220f5a64b3894d6ceb099c917e1bbf7f261c4e801",
-      "classification": "browser-storage-name",
-      "evidence": "Public localStorage preference name for on/off vibration; read and written by noahHapticsEnabled/setNoahHaptics. It is not an authenticator or a service credential.",
-      "source": {
-        "commit": "e4b108e02c840c4cd524c13721a23377efee2399",
-        "path": "lib/noah-haptics.ts",
-        "line": 2
-      },
-      "exactPathCount": 1
     },
     {
       "candidateSha256": "b753fb3b2b1c639e4d22f6bd0673f2ca1083eade9bf20e94aaf60d2c4292cfb9",
@@ -2095,20 +1804,6 @@
       "exactPathCount": 2
     },
     {
-      "candidateSha256": "c032871f0530db5014e56d8fc5d4b249c0949abbde2eb202fdc9383b260cca56",
-      "classification": "public-artifact-digest",
-      "evidence": "SHA-256 recomputed from repository source bytes: tests/esim-cloud-access.test.mjs",
-      "source": {
-        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
-        "path": "docs/evidence/esim-main-integration.json",
-        "line": 41,
-        "field": [
-          "/sourceHashes/tests/esim-cloud-access.test.mjs"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "c10d77a8ead4b81458402f46d378671cd1d95683726158cb04542b4519c5cb35",
       "classification": "idempotency-fixture",
       "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
@@ -2121,20 +1816,6 @@
         ]
       },
       "exactPathCount": 2
-    },
-    {
-      "candidateSha256": "c1a87b943863be63857ddd47491d78d5a093bfefa4adad3e42bdc2c3b354e24e",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"dc4500433e47197bc1e880abfc187199272a9cab\", \"path\": \"lib/request-auth.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
-        "path": "docs/evidence/rockstar-independent-account.json",
-        "line": 21,
-        "field": [
-          "lib/request-auth.ts"
-        ]
-      },
-      "exactPathCount": 1
     },
     {
       "candidateSha256": "c1e332d0ddcda7e9e61b58e6076dcebc57688084207d83307c0095d0eec05808",
@@ -2192,20 +1873,6 @@
         ]
       },
       "exactPathCount": 15
-    },
-    {
-      "candidateSha256": "c47c5fb1543c62cce962938ba5d208e2b5f413860061ec9a94248370a4986ac7",
-      "classification": "synthetic-handoff-fixture",
-      "evidence": "{\"method\": \"literal UUID used only by pure parser/envelope unit tests; no external request or authentication\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "2d0b589537804bd10088d56478e4a9afd4697574",
-        "path": "tests/avocado-handoff.test.mjs",
-        "line": 5,
-        "field": [
-          "token"
-        ]
-      },
-      "exactPathCount": 1
     },
     {
       "candidateSha256": "c6877ed6a42662cac95ad40bc568b398f61ac4d9dc6ab113d5d11ea04bd6265a",
@@ -2335,20 +2002,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "d130682d1942226b7eeb8dda0e3e5489c384e4685af1007ce0c383fcd7801e6d",
-      "classification": "public-artifact-digest",
-      "evidence": "SHA-256 of sorted-key compact UTF-8 JSON of GGUF tokenizer.* excluding tokenizer.chat_template. Recomputed from official Qwen3-0.6B Q8_0, revision 23749fefcc72300e3a2ad315e1317431b06b590a, weight SHA-256 9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031; public metadata digest, not a credential.",
-      "source": {
-        "commit": "663da184f12345d938d488e19d8f044a9921db7f",
-        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
-        "line": 22,
-        "field": [
-          "/models/0/profile/tokenizerSha256"
-        ]
-      },
-      "exactPathCount": 2
-    },
-    {
       "candidateSha256": "d4d948319d160b3dfa146412d4b6a9ccf7409cd192105bda7e4e8ec46c362ef5",
       "classification": "idempotency-fixture",
       "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
@@ -2404,36 +2057,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "dc978ef3bea4109f34a607e5abeedc2b65062a06bd2ca64cafb37117cdda6974",
-      "classification": "public-source-commit",
-      "evidence": "{\"method\": \"existing Git commit; each archived path verified at this commit\", \"commit\": \"7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "data/archived-paths.json",
-        "line": 1028,
-        "field": [
-          "drizzle/0015_jennifer_passkey_access.sql",
-          "drizzle/0027_community_os_keys.sql",
-          "drizzle/0029_sky_x_account_oauth.sql"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "de28223ef80b7695a71bb2d6a264789ea82c85d0a5e879451469edf6f967edaf",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"8c524c5d66d5caa556a8937339d7c4137d1b0371\", \"path\": \"lib/jennifer-passkey.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
-        "path": "docs/evidence/rockstar-independent-account.json",
-        "line": 20,
-        "field": [
-          "lib/jennifer-passkey.ts"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "de59dbc63f7d624f78a7045f13d31249db5fab098a3b161c48b03e8212f56cfb",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /patchedSourceHashes/components/execution-access.tsx",
@@ -2457,20 +2080,6 @@
         "line": 457,
         "field": [
           "/business/jobs/44/key"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "e2299419b5488da50106604f002ba5e59a22be1a04d115cdbe909ac510c3c8a9",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "docs/evidence/source-runtime-device-binding.json",
-        "line": 31,
-        "field": [
-          "scripts/runtime-device-api-acceptance.mjs"
         ]
       },
       "exactPathCount": 1
@@ -2589,20 +2198,6 @@
       "exactPathCount": 1
     },
     {
-      "candidateSha256": "f0e944b3454651c049591e0b833e9eb745b674ef3d4327c564f60660f389ab34",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "docs/evidence/source-runtime-device-binding.json",
-        "line": 30,
-        "field": [
-          "scripts/check-work-api.mjs"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
       "candidateSha256": "f17d96a305b752ef1208cbd276480e662962fee262ea7a8342cdace34545d357",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /artifact_sha256/review-gx00-cross-game-keys.py",
@@ -2640,48 +2235,6 @@
         "line": 1,
         "field": [
           "/cycles/1/business/jobs/1/key"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "f3f755dbc3896642a32d540ec64f9a6efa3d034e972e6991bc283bff5ce124ec",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"eddf2dca5565baaec1c938c5ab7c51d10f3c54e6\", \"path\": \"app/os-design-tokens.css\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
-        "path": "docs/evidence/common-os-entry-alignment.json",
-        "line": 146,
-        "field": [
-          "app/os-design-tokens.css"
-        ]
-      },
-      "exactPathCount": 1
-    },
-    {
-      "candidateSha256": "f6fcc71149d22754b2ddb3f36458495bf4216eb2e3f62421efda082c0e058867",
-      "classification": "public-artifact-digest",
-      "evidence": "SHA-256 of sorted-key compact UTF-8 JSON of GGUF tokenizer.* excluding tokenizer.chat_template, independently recomputed from official Qwen2.5-1.5B Instruct Q4_K_M at revision 91cad51170dc346986eccefdc2dd33a9da36ead9. Exact weights SHA-256 6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e; public metadata, not a credential.",
-      "source": {
-        "commit": "3fc6d0a5f30dd3bb936b98231ad972bb0006d9c3",
-        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
-        "line": 50,
-        "field": [
-          "/models/1/profile/tokenizerSha256"
-        ]
-      },
-      "exactPathCount": 2
-    },
-    {
-      "candidateSha256": "f7b0468cb42fc124aba7c4141a5892f66c3b2c391819beb4745e1f0de8a4db29",
-      "classification": "public-artifact-digest",
-      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"58f3dc1245195006a2d67940ac429e366b4534de\", \"path\": \"scripts/check-rockstar-account-api.mjs\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
-      "source": {
-        "commit": "250ff2223e80b594648248c8a4ebafc825ccffec",
-        "path": "docs/evidence/rockstar-independent-account.json",
-        "line": 29,
-        "field": [
-          "scripts/check-rockstar-account-api.mjs"
         ]
       },
       "exactPathCount": 1
@@ -2727,6 +2280,63 @@
       "exactPathCount": 8
     },
     {
+      "candidateSha256": "4afdc542ed96cc1ef2ad2f1d0741570decd558bb2e4df4a1f9126969dc6865ba",
+      "classification": "public-upstream-signer-fingerprint",
+      "evidence": "GrapheneOS official allowed_signers (https://grapheneos.org/allowed_signers) and successful git verify-tag 2026100200. This is the public ED25519 signer fingerprint already pinned in os/physical/frankel-source-lock.json, not private key material.",
+      "source": {
+        "commit": "d448c56cae43ad8ac7c087741ee139f86cf0cb52",
+        "path": "docs/evidence/phone-source-verification.json",
+        "line": 32,
+        "field": [
+          "/signatureResult"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "833a2a5ea7f7806f58baae3dd637069c231c408738c9385993e42628b5754658",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 of tracked lib/sky-code-api.ts, recomputed from its exact source bytes; duplicated in canonical and Sites source inventories, not a credential.",
+      "source": {
+        "commit": "8a81e58046bbaaa043e26fbffc1920c71f1729e7",
+        "path": "docs/evidence/sky-code-timeline.json",
+        "line": 15,
+        "field": [
+          "/canonical/sourceSha256/lib~1sky-code-api.ts",
+          "/siteCandidate/sharedImplementationHashes/lib~1sky-code-api.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b14ac262a42934982764bf5028f2e8aa56f6c3e21902dff09cb69a7209fb0b94",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: lib/esim-cloud-access.ts",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 37,
+        "field": [
+          "/sourceHashes/lib/esim-cloud-access.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "c032871f0530db5014e56d8fc5d4b249c0949abbde2eb202fdc9383b260cca56",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: tests/esim-cloud-access.test.mjs",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 41,
+        "field": [
+          "/sourceHashes/tests/esim-cloud-access.test.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
       "candidateSha256": "fd8d4da4650880b8e72f266b8036b2647bf7b258e3cd19d92a487cf38b4b8d60",
       "classification": "public-artifact-digest",
       "evidence": "SHA-256 recomputed from repository source bytes: drizzle/0060_esim_cloud_access_keys.sql",
@@ -2737,6 +2347,396 @@
         "field": [
           "/sourceHashes/drizzle/0060_esim_cloud_access_keys.sql"
         ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "d130682d1942226b7eeb8dda0e3e5489c384e4685af1007ce0c383fcd7801e6d",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 of sorted-key compact UTF-8 JSON of GGUF tokenizer.* excluding tokenizer.chat_template. Recomputed from official Qwen3-0.6B Q8_0, revision 23749fefcc72300e3a2ad315e1317431b06b590a, weight SHA-256 9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031; public metadata digest, not a credential.",
+      "source": {
+        "commit": "663da184f12345d938d488e19d8f044a9921db7f",
+        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "line": 22,
+        "field": [
+          "/models/0/profile/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "f6fcc71149d22754b2ddb3f36458495bf4216eb2e3f62421efda082c0e058867",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 of sorted-key compact UTF-8 JSON of GGUF tokenizer.* excluding tokenizer.chat_template, independently recomputed from official Qwen2.5-1.5B Instruct Q4_K_M at revision 91cad51170dc346986eccefdc2dd33a9da36ead9. Exact weights SHA-256 6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e; public metadata, not a credential.",
+      "source": {
+        "commit": "3fc6d0a5f30dd3bb936b98231ad972bb0006d9c3",
+        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "line": 50,
+        "field": [
+          "/models/1/profile/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "7212f0dd21584d4f90554b0fc274ec294a29c789202f136223cb79268d5e86d6",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of compact sorted-key UTF-8 tokenizer.* GGUF metadata excluding tokenizer.chat_template. Public Unsloth Qwen3-4B-Instruct-2507 Q4_K_M revision a06e946bb6b655725eafa393f4a9745d460374c9, full weights SHA-256 3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597. This is metadata, not a credential. Exact path AND value only.",
+      "source": {
+        "commit": "acca1942fbec9c8ff2d44f97f7e825162400bfe8",
+        "path": "android/automation/src/debug/assets/rock-local-model-catalog.json",
+        "line": 126,
+        "field": [
+          "/models/3/profile/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "9e80c28302e916e16cb3b16f061ad30ec5c01bf062f84f39306c0ee516668207",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/access_session.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
+      "source": {
+        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+        "path": "docs/evidence/development-execution/mini-08-access-review.json",
+        "line": 8,
+        "field": [
+          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1access_session.py"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "42f04d5454f66001f1ff6c24d7c8d2a43eef5c5c37c1b72061e3ffde7743376e",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/fixture_access.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
+      "source": {
+        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+        "path": "docs/evidence/development-execution/mini-08-access-review.json",
+        "line": 12,
+        "field": [
+          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1fixture_access.py"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "8a096df6808c7a1b83d5ac2788613ff6d4b4833419931e20fb6dc72e341f0640",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of public systems/rock-star-os/targets/avocado-mini/tethering/test_access_adapters.py at 1beb9df33c00babcd5ff227a441c2b51e7d5e135. Source integrity evidence, not a credential; exact two evidence paths AND exact value only.",
+      "source": {
+        "commit": "1beb9df33c00babcd5ff227a441c2b51e7d5e135",
+        "path": "docs/evidence/development-execution/mini-08-access-review.json",
+        "line": 17,
+        "field": [
+          "/sourceSha256/systems~1rock-star-os~1targets~1avocado-mini~1tethering~1test_access_adapters.py"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "aa3a02d87a6981a7059991d9cdad4e57445de49e78e53f1e72b0cb3835760229",
+      "classification": "public-artifact-digest",
+      "evidence": "Recomputed SHA-256 of external CI_FIX_TOKEN_PARITY.json: CPU-only equality of all64 full/prefix token arrays and assistant offsets,128 vectors,0 model calls. This is an integrity digest, not a credential. Exact path AND exact literal value only. Historical scan counts and reviewedHead remain unchanged.",
+      "source": {
+        "commit": "4afd0284340381cfa28ae319ea6646d0a4a9bf53",
+        "path": "docs/evidence/development-execution/eve-semantic-quality.json",
+        "line": 187,
+        "field": [
+          "/evidenceHashes/CI_FIX_TOKEN_PARITY.json"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "767a923a0076a130204d7965126da18653e46f2d146a630c4fd75efbbf45515b",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"68ddda758908d4a39c01b2ac514e33be0a627397\", \"path\": \"drizzle-main/0029_rockstar_password_accounts.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "data/avoado-published-migration-lineage.json",
+        "line": 15,
+        "field": [
+          "drizzle-main/0029_rockstar_password_accounts.sql",
+          "drizzle/0029_rockstar_password_accounts.sql"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "4c817caf92309f13600389d543a25c08840cf256e654194e718a9f9d670d5c02",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "docs/evidence/source-readiness-alignment.json",
+        "line": 261,
+        "field": [
+          "scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "dc978ef3bea4109f34a607e5abeedc2b65062a06bd2ca64cafb37117cdda6974",
+      "classification": "public-source-commit",
+      "evidence": "{\"method\": \"existing Git commit; each archived path verified at this commit\", \"commit\": \"7bbb4b27ab6ca3b1d42bef4643c9dda8cb8ba0c6\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "data/archived-paths.json",
+        "line": 1028,
+        "field": [
+          "drizzle/0015_jennifer_passkey_access.sql",
+          "drizzle/0027_community_os_keys.sql",
+          "drizzle/0029_sky_x_account_oauth.sql"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "f3f755dbc3896642a32d540ec64f9a6efa3d034e972e6991bc283bff5ce124ec",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"eddf2dca5565baaec1c938c5ab7c51d10f3c54e6\", \"path\": \"app/os-design-tokens.css\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "docs/evidence/common-os-entry-alignment.json",
+        "line": 146,
+        "field": [
+          "app/os-design-tokens.css"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "f0e944b3454651c049591e0b833e9eb745b674ef3d4327c564f60660f389ab34",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "docs/evidence/source-runtime-device-binding.json",
+        "line": 30,
+        "field": [
+          "scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "e2299419b5488da50106604f002ba5e59a22be1a04d115cdbe909ac510c3c8a9",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "docs/evidence/source-runtime-device-binding.json",
+        "line": 31,
+        "field": [
+          "scripts/runtime-device-api-acceptance.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "8abd230eaff56705611ae95c4276b21b6bdfba90bf556dffb439aa1d483e8f9b",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"9f240e2a563a5b8fc987f069e12467603c2fd0c1\", \"path\": \"scripts/device-binding-api-acceptance.mjs\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "docs/evidence/source-runtime-device-binding.json",
+        "line": 34,
+        "field": [
+          "scripts/device-binding-api-acceptance.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "352b48b7f5ec736fd8f39d9f4c080810598c492b9e3147a6b9aaaf6f6f2d9168",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "docs/evidence/source-runtime-device-binding.json",
+        "line": 391,
+        "field": [
+          "scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "0141b9abccd02fb198b4df6ed8d824518fe9b3ce156a2b5520d5dbe0dcec02cb",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"historical receipt field explicitly records SHA-256 of named source input; original bytes were not found in reachable history\", \"recomputed\": false, \"boundary\": \"Classification of an integrity field, not independent acceptance of the historical measurement\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "docs/evidence/rockstar-runtime-host-ui.json",
+        "line": 45,
+        "field": [
+          "packages/rockstaros-runtime/src/credential-vault.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "0e1bc60ff33dfc94677d079ad344002265704b9c8cd068d07e19092e8d85546f",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"6304fb59408c01f443ad5b8fa83cd4f19d1fdcdb\", \"path\": \"drizzle-legacy/github-main-before-avoado-alignment/drizzle/0015_jennifer_passkey_access.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
+        "line": 7,
+        "field": [
+          "0015_jennifer_passkey_access.sql",
+          "drizzle/0015_jennifer_passkey_access.sql"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "a72d91a418e27915f4243a134f7fe1eaa1497f7ff01ed13099e1c7de64a52d53",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"3185e1e014cdb2c46f1cdd54e0a4c29b337ded64\", \"path\": \"drizzle-legacy/github-main-before-avoado-alignment/drizzle/0027_community_os_keys.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
+        "line": 19,
+        "field": [
+          "drizzle/0027_community_os_keys.sql"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "4fdd8116142f386e82ec2b53f2b2dcdecc762b9734e798248706a1475dd2b59f",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"b75050db5f4266da6a94b61361082e385b265960\", \"path\": \"drizzle-legacy/github-main-before-avoado-alignment/drizzle/0029_sky_x_account_oauth.sql\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "bf2ea7b9c5a78028d3afaea3b7c59b94cfef9d46",
+        "path": "drizzle-legacy/github-main-before-avoado-alignment/provenance.json",
+        "line": 21,
+        "field": [
+          "drizzle/0029_sky_x_account_oauth.sql"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "32c673525a76fe806df7246f5ecc48546b5c63f3aff2a1cd79fec0d39e8897ab",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"a713230b61bf93ab9a0fd011c7be3674064602da\", \"path\": \"lib/jennifer-passkey.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "250ff2223e80b594648248c8a4ebafc825ccffec",
+        "path": "docs/evidence/rockstar-independent-account.json",
+        "line": 20,
+        "field": [
+          "lib/jennifer-passkey.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "f7b0468cb42fc124aba7c4141a5892f66c3b2c391819beb4745e1f0de8a4db29",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"58f3dc1245195006a2d67940ac429e366b4534de\", \"path\": \"scripts/check-rockstar-account-api.mjs\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "250ff2223e80b594648248c8a4ebafc825ccffec",
+        "path": "docs/evidence/rockstar-independent-account.json",
+        "line": 29,
+        "field": [
+          "scripts/check-rockstar-account-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "de28223ef80b7695a71bb2d6a264789ea82c85d0a5e879451469edf6f967edaf",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"8c524c5d66d5caa556a8937339d7c4137d1b0371\", \"path\": \"lib/jennifer-passkey.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
+        "path": "docs/evidence/rockstar-independent-account.json",
+        "line": 20,
+        "field": [
+          "lib/jennifer-passkey.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "c1a87b943863be63857ddd47491d78d5a093bfefa4adad3e42bdc2c3b354e24e",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"dc4500433e47197bc1e880abfc187199272a9cab\", \"path\": \"lib/request-auth.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
+        "path": "docs/evidence/rockstar-independent-account.json",
+        "line": 21,
+        "field": [
+          "lib/request-auth.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "0d27b3b13712dcefb793eb3387054d7b4c205004f67d37c15159ca4da8dcc6d4",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"7dd170a2ed58b0751a680872f4f854a3d0c04058\", \"path\": \"lib/passkey-browser.ts\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
+        "path": "docs/evidence/rockstar-independent-account.json",
+        "line": 22,
+        "field": [
+          "lib/passkey-browser.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "39d2dac72f9ca81bb37239ca738c99386652a831d020889008dc34d64d566d28",
+      "classification": "public-artifact-digest",
+      "evidence": "{\"method\": \"sha256 of reachable named source blob\", \"recomputed\": true, \"blob\": \"5b8522f8ad921aa0e48c51a39971701835a113d5\", \"path\": \"components/os-account-access.tsx\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "32bdc0f49447f265e0c8b0756dcdc6605df07798",
+        "path": "docs/evidence/rockstar-independent-account.json",
+        "line": 27,
+        "field": [
+          "components/os-account-access.tsx"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "c47c5fb1543c62cce962938ba5d208e2b5f413860061ec9a94248370a4986ac7",
+      "classification": "synthetic-handoff-fixture",
+      "evidence": "{\"method\": \"literal UUID used only by pure parser/envelope unit tests; no external request or authentication\"}; exact path AND literal only; source review: .github/spider/avoado-source-review.json",
+      "source": {
+        "commit": "2d0b589537804bd10088d56478e4a9afd4697574",
+        "path": "tests/avocado-handoff.test.mjs",
+        "line": 5,
+        "field": [
+          "token"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b112c9dc389ca44de72cc0d3a732746a423354b9fffedbc467449a8601ea3269",
+      "classification": "synthetic-rejection-test",
+      "evidence": "Deliberately sequential mixed-case dummy input in the looksLikeNoahSecret rejection test; asserts true for a token-shaped string. Never used for authentication or external requests.",
+      "source": {
+        "commit": "51df5ceaf4460a7bb189e3ed7c2f8c18558171fb",
+        "path": "docs/design-validation/noah/noah-connect.test.mjs",
+        "line": 85
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b714cc8766cd7108e0e7daf220f5a64b3894d6ceb099c917e1bbf7f261c4e801",
+      "classification": "browser-storage-name",
+      "evidence": "Public localStorage preference name for on/off vibration; read and written by noahHapticsEnabled/setNoahHaptics. It is not an authenticator or a service credential.",
+      "source": {
+        "commit": "e4b108e02c840c4cd524c13721a23377efee2399",
+        "path": "lib/noah-haptics.ts",
+        "line": 2
       },
       "exactPathCount": 1
     }

@@ -1,7 +1,7 @@
 import { collectionUrl, NOAH_COLLECTION_SOURCES, noahCollectionBlocked, noahCollectionCards, parseCollectionSnapshot } from './noah-collection.ts';
 import { sha256Hex } from './noah-connect-requirements.ts';
 import { noahPinShape, noahPinTopic } from './noah-pins.ts';
-import type { NoahAgentCard } from './noah-agent-cards.ts';
+import type { NoahAgentCard, NoahAgentSource } from './noah-agent-cards.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
 
 type Family = { id: string; name: string; summary: string; external_key: string; repository: string | null; record_json: string; connect_json: string | null };

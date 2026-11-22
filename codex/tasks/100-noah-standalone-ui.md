@@ -283,3 +283,12 @@ GitHub main `6c80b1378` とPR #386 `b8f87f087` を履歴ごと統合し、公開
 公開QA: 390pxでホーム→メニュー→保存5カテゴリ→Agent検索（Axad）→詳細→保存シート開閉→ホームを確認。詳細の接続/保存ボタンは非重複、共有操作と元サイト評価を保持。390px・1280pxで横はみ出しなし。表示幅を復元した。公開ドメインの読み取り専用12検査が成功。外部登録・仕事の新規実行は今回の回帰では増やしていない。Pixel実機の外部登録一周は前節の受入を参照。
 
 CIの区別: Release signing・SPIDER repair・CodeQL・Rock star verificationは成功。SPIDER repository securityだけは [run 44977284349](https://github.com/k999ln/rock/actions/runs/44977284349) / job 137069898394で停止。履歴中の `lib/noah-haptics.ts:2` の公開localStorage設定名が5件、`docs/design-validation/noah/noah-connect.test.mjs:85` の過去テスト値が3件、計8候補。固定された審査済みpolicyの検査であり、除外追加・検査無効化・履歴書換えは行っていない。全CI greenやmainへのマージ完了とは記録しない。PR #377はmain向けdraftを保持。
+
+
+### 2026-11-22 SPIDER履歴検査の修正と公開190の保全（PR #377）
+
+検知8件の原文を確認し、公開localStorage設定名（5履歴）と `looksLikeNoahSecret` の合成拒否入力（3履歴）の2値と判定。`.github/spider/gitleaks.toml` で既存の既定規則を継承し、規則・完全なファイルパス・完全な値のANDだけを追加した。監査根拠を `public-value-provenance.json` の追加レビューへ記録し、過去レビューの件数とHEADは保持した。履歴書換え、規則停止、ディレクトリ一括除外は行わない。CIのcontrolは検証済みポリシーcommit `9ea66b48ff69cce88f5f8b160ba3885ca1a1cc1a` に固定する。
+
+Gitleaks 8.30.1公式配布のchecksum照合済みMacバイナリで `GITLEAKS_BINARY=... python3 -B -m unittest discover -s tests -p 'test_spider_*.py'` は20件成功。同一パスへの別値・別プロバイダー鍵と、同じ値の別パスコピーは引き続き検出。最初のローカル履歴走査はSCANNER_FAILEDで未完了のため、クリーンの証拠には使わない。全履歴の確定結果は固定版ポリシーを使用するGitHub Actionsで確認する。
+
+main `062fbb456` の検索・モバイル試験修正を統合し、公開中の並び替えボタン・掲載可否判定・共有機能を保持。統合後の関連21試験・型検査成功。公開190/source `4401738ccc3160cc34c4eae10c497ddb465ebbcd`（並行担当Git `4dae9492e`）のホーム告知撤去も取り込み、法人/組合せの独立ページとデータは維持した。最初の手元verifyはOpenSSL 3のPATH不足で停止したため、修正した環境で全体を再実行する。検査完了・main統合の結果はPRへ追記する。
