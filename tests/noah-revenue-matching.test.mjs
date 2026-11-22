@@ -127,6 +127,7 @@ await test('DOの値上限内で3千件の索引と一覧を分割保存し世�
         total: 3000,
         cards: Array.from({ length: 3000 }, (_, i) => ({
           ...card(i),
+          name: 'あ'.repeat(200),
           domains: ['website'],
         })),
       },

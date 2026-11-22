@@ -37,10 +37,10 @@ export async function saveRevenue(storage, input) {
     const previous = key === 'index' ? old?.index : old?.discovery?.[key];
     let count = 0;
     if (target) {
-      for (let start = 0; start < target[rows].length; start += 200)
+      for (let start = 0; start < target[rows].length; start += 100)
         await storage.put(
           `revenue.${key}.${count++}`,
-          target[rows].slice(start, start + 200),
+          target[rows].slice(start, start + 100),
         );
       delete target[rows];
       target.shards = count;

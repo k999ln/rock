@@ -66,11 +66,21 @@ export function matchRevenueCandidates(cards, index) {
   const offers = validateOfferIndex(index).offers,
     groups = {},
     samples = [];
+  // Index by purpose: avoid a full agents × offers scan on every alarm.
+  const byDomain = new Map();
+  for (const offer of offers)
+    for (const domain of offer.domains) {
+      if (!byDomain.has(domain)) byDomain.set(domain, []);
+      byDomain.get(domain).push(offer);
+    }
   let total = 0;
-  for (const card of cards)
-    for (const offer of offers) {
+  for (const card of cards) {
+    const candidates = new Map();
+    for (const domain of card.domains)
+      for (const offer of byDomain.get(domain) || [])
+        candidates.set(offer.id, offer);
+    for (const offer of candidates.values()) {
       const shared = card.domains.filter((d) => offer.domains.includes(d));
-      if (!shared.length) continue;
       total++;
       for (const domain of shared) groups[domain] = (groups[domain] || 0) + 1;
       if (samples.length < 250)
@@ -87,6 +97,7 @@ export function matchRevenueCandidates(cards, index) {
           ],
         });
     }
+  }
   return {
     scannedAgents: cards.length,
     scannedPartneredOffers: offers.length,
