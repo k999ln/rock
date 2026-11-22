@@ -1,6 +1,6 @@
 /** Durable transport state; this is never an executable script supplied by a provider. */
 export type NoahProviderRun = {
-  protocol: 'gradio';
+  protocol: 'gradio' | 'mcp';
   projectId: string;
   repository: string;
   origin: string;

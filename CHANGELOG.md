@@ -1,4 +1,6 @@
 ## 2026-11-22
+- Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
+
 
 - 旧 main の #415 までの履歴と移行先の Gradio 実行・タップ設定を統合し、開発・PR の参照先を iceiceice999/rock に揃えた（[PR #6](https://github.com/iceiceice999/rock/pull/6)）。
 - task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
