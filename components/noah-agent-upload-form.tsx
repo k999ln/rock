@@ -258,7 +258,7 @@ export default function NoahAgentUploadForm() {
           <label>コードのファイル名<input required maxLength={120} value={codeName} onChange={e => { setCodeName(e.target.value); setId(''); }} placeholder="agent.ts" /></label>
           <label>コード（UTF-8・64KiBまで）<textarea required rows={12} spellCheck={false} value={code} onChange={e => { setCode(e.target.value); setId(''); }} placeholder="ここにAgentのコードを貼り付けてください" /></label>
         </div>}
-        <details open={!!importRevision}><summary>GitHub・Hugging Faceからコードを取得</summary><div className={styles.fields}>
+        <details open={!!importRevision || !!importMessage}><summary>GitHub・Hugging Faceからコードを取得</summary><div className={styles.fields}>
           <label>公開リポジトリのURL<input type="url" value={manifest.sourceUrl || ''} onChange={e => change({ sourceUrl: e.target.value || null })} placeholder="https://huggingface.co/spaces/作者/Agent" /></label>
           <label>取得するブランチ・commit（任意）<input value={importRevision} maxLength={100} onChange={e => setImportRevision(e.target.value)} placeholder="未指定なら既定の版" /></label>
           <button type="button" disabled={!scope || !rights || pending || !manifest.sourceUrl} onClick={() => { void importSource(); }}>コードを取得する</button>

@@ -35,7 +35,7 @@ try{
  await check('GitHub card opens internal setup and retains repository URL',async()=>{
   const github=await (await context.request.get(`${base}/api/noah/discover?source=github&q=boss-agent-cli`)).json();const card=github.items[0];assert.ok(card);await open(card);
   assert.equal(await page.locator('a[target="_blank"]').count(),0);await page.getByRole('link',{name:'Noahで取込・設定する',exact:true}).tap();await page.waitForURL('**/noah/agents/new?**');inside();
-  assert.equal(new URL(page.url()).searchParams.get('sourceUrl'),card.href);await page.screenshot({path:`${output}/github-setup.png`});return {name:card.name,url:page.url()};
+  assert.equal(new URL(page.url()).searchParams.get('sourceUrl'),card.href);await page.getByRole('heading',{name:'Agentのコード',exact:true}).waitFor();const repository=page.getByLabel('公開リポジトリのURL',{exact:true});await repository.waitFor();await page.waitForFunction(expected=>[...document.querySelectorAll('input[type=url]')].some(input=>input.value===expected),card.href);assert.equal(await repository.inputValue(),card.href);await page.screenshot({path:`${output}/github-setup.png`});return {name:card.name,url:page.url()};
  });
  await check('verified project resolves to existing Noah connection plan',async()=>{
   const ready=await (await context.request.get(`${base}/api/noah/discover?source=noah`)).json();const card=ready.items.find(c=>c.feedbackId);assert.ok(card);
