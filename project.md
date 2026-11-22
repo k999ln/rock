@@ -1,14 +1,14 @@
 # 現在の開発・統合状況
 
-更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
+更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `6c9b3db6c663ddab56665c466642dab30e929fbd`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
 
 ## 今開発しているもの
 
 6つの大項目で、できたこと・残っていること・関連する後続作業を整理する。担当は各taskの既存担当、台帳の整合は統合・公開担当si。作業者が全項目を同時に実行中という意味ではない。
 
-- **画面をジャックさせない技術（task84・89・91）**: コンテナ/VMの起動引数の検査、画面への接続を許す変更の拒否、画面を閉じてもWorkへ成果が入る回帰試験は現mainに統合済み（[旧PR #329](https://github.com/k999ln/rock/pull/329)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。[task84](codex/tasks/84-noah-screenless-rule.md)の工程3で、依存・実行記録から必要な画面と入力を分類する関数を実装。残りは受付への組み込みと、Mac実機で前面アプリ・窓・クリップボード・権限が変わらないことの観測。ココナラ案件探索・提案下書き・保存/停止はMacの限定経路を確認（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。汎用クラウドブラウザの受入は別。
+- **画面をジャックさせない技術（task84・89・91）**: コンテナ/VMの起動引数の検査、画面への接続を許す変更の拒否、画面を閉じてもWorkへ成果が入る回帰試験は現mainに統合済み（[旧PR #329](https://github.com/k999ln/rock/pull/329)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。[task84](codex/tasks/84-noah-screenless-rule.md)の工程3で、依存・実行記録から必要な画面と入力を分類する関数を実装（[PR #22](https://github.com/iceiceice999/rock/pull/22)）。残りは受付への組み込みと、Mac実機で前面アプリ・窓・クリップボード・権限が変わらないことの観測。ココナラ案件探索・提案下書き・保存/停止はMacの限定経路を確認（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。汎用クラウドブラウザの受入は別。
 - **eSIM導入（task11〜13・102・103）**: 模擬回線での導入・利用権照合、SIM証明の検証/紐付け、iOS導入導線、継続利用の集計は実装・統合の記録がある（[タスク一覧](codex/tasks/00-index.md)）。残りは事業者設定、実回線の発行承認、実回線経由の疎通、iPhone/Androidの導入から成果までの受入。PixelでのNoah確認はWi-Fi経由であり、eSIM受入ではない。
-- **クラウドシステムの設計（task75・101-compute・104・105・125-cloud）**: 実行場所・本人分離・受付/停止・成果保存の設計と、固定CLI6種のLinux隔離試験/コードをmainへ統合（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。費用上限・監視・通知の振り分け・復元練習も実装統合の記録がある。有料Containersの本番配備はWorkers Paidの契約判断待ち。別経路の[PR #18](https://github.com/iceiceice999/rock/pull/18)には無料Workersで公式MCP3種を動かす実装とMemory/Filesystemの実モデル成功記録、[PR #19](https://github.com/iceiceice999/rock/pull/19)には実モデル通信修正と6種の個別成功記録がある。両PRを統合した公開210で無料3種を有効化。3件ともブラウザを閉じた後に完了し、成果の再表示とファイル保存を確認した（[公開210の本番受入](codex/tasks/125-noah-cloud-agents.md#公開210の本番受入)）。有料Containersは本番配備待ち。本番の通知/cron/バックアップも別途受入する。Memoryと成果ファイルを本人の鍵で暗号化するtask104は設計/タスクがあり、実装完了は未確認。
+- **クラウドシステムの設計（task75・101-compute・104・105・125-cloud）**: 実行場所・本人分離・受付/停止・成果保存の設計と、固定CLI6種のLinux隔離試験/コードをmainへ統合（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。費用上限・監視・通知の振り分け・復元練習も実装統合の記録がある。有料Containersの本番配備はWorkers Paidの契約判断待ち。別経路の[PR #18](https://github.com/iceiceice999/rock/pull/18)には無料Workersで公式MCP3種を動かす実装とMemory/Filesystemの実モデル成功記録、[PR #19](https://github.com/iceiceice999/rock/pull/19)には実モデル通信修正と6種の個別成功記録がある。両PRを統合した公開210で無料3種を有効化。3件ともブラウザを閉じた後に完了し、成果の再表示とファイル保存を確認した（[公開210の本番受入](https://github.com/iceiceice999/rock/pull/21)）。有料Containersは本番配備待ち。本番の通知/cron/バックアップも別途受入する。Memoryと成果ファイルを本人の鍵で暗号化するtask104は設計/タスクがあり、実装完了は未確認。
 - **Agentを集めるシステム（task85・88・120・121・125-scout）**: 公式台帳の取り込み/名寄せ、複数出所の収集、GitHubの急上昇・Product Huntへの拡張を統合。本番収集を復旧し、毎時の予備実行を設定（[PR #16](https://github.com/iceiceice999/rock/pull/16)）。残りは24時間の鮮度確認、旧mainから新リポジトリへの実行先移行、Xの7日継続掲載。復旧1回を72時間巡回の合格にはしない。作者の本人確認・引き取り・掲載管理はtask81の後続範囲。
 - **Agentの接続（task74・86・87・93・96・123）**: 公開MCPの接続→入力→実処理→保存→再表示を本番で限定確認（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。残りは全掲載Agentの実行対応、OAuth/鍵、接続先別の受入。1,762件の監査や定義取得を全件実行成功とは数えない。更新・版の固定・前の版への復帰・別環境への移行はtask93、Agentの試用/売買/利用権はtask78の後続範囲で、決済はsandbox受入が前提。
 - **受け皿のシステム（Noah、task90・99・100・114ほか）**: 画面・本人別の依頼受付・Work/成果保存・停止/再表示を統合。PixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。公開209で登録して保存した成果を、公開210のPixelでもキャッシュなしで再表示できた（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。残りは仕様表1〜13の同一候補受入、100人同時外部実行、300人の実ユーザー試行。以下の仕事・運営機能もこの受け皿につなぐ。
@@ -37,7 +37,7 @@
 
 ## 検証と再開
 
-前回照合したmain `b56d8e83` は[総合verify](https://github.com/iceiceice999/rock/actions/runs/45038039086)とセキュリティ検査が成功。PR #17もmain統合済み。今回の基準はPR #19とPR #18を統合したmain `16a9eae6`。
+前回照合したmain `b56d8e83` は[総合verify](https://github.com/iceiceice999/rock/actions/runs/45038039086)とセキュリティ検査が成功。PR #17もmain統合済み。PR #18・#19統合後、[PR #20](https://github.com/iceiceice999/rock/pull/20)の最終HEADは[全体検証](https://github.com/iceiceice999/rock/actions/runs/45040967626)を含む7件が成功し、main `6c9b3db6` に統合された。
 
 旧PR #329・#330・#332・#339・#335・#342・#344〜#347・#352・#358のHEADが現在のmainに含まれることをGitで照合した。#342・#344〜#347は旧PR自体が未マージで閉じられたため「コード統合済み」と記す。今回の検証手順・結果は[task72](codex/tasks/72-current-code-and-readme.md)、機械可読の照合記録は `data/project-status.json` の `progressLedgerReconciliation` に置く。
 

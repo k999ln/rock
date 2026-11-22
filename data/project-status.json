@@ -13179,7 +13179,7 @@
   "progressLedgerReconciliation": {
     "updatedAt": "2026-11-23",
     "repository": "iceiceice999/rock",
-    "baseMain": "16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617",
+    "baseMain": "6c9b3db6c663ddab56665c466642dab30e929fbd",
     "task": "codex/tasks/72-current-code-and-readme.md",
     "owner": "統合・公開担当si",
     "method": "GitHub PR/CIの読取とgit merge-base --is-ancestorによる統合照合。本番操作・過去実機試験の再実行はしていない。",
@@ -13294,7 +13294,7 @@
       "https://github.com/iceiceice999/rock/pull/10",
       "https://github.com/iceiceice999/rock/pull/14",
       "https://github.com/iceiceice999/rock/pull/16",
-      "codex/tasks/125-noah-cloud-agents.md",
+      "https://github.com/iceiceice999/rock/pull/21",
       "https://github.com/iceiceice999/rock/pull/19"
     ],
     "boundaries": [
@@ -13314,8 +13314,15 @@
       "受け皿のシステム"
     ],
     "initialBaseMain": "42cf4b619ee19bcb47612250d70539457dec1977",
-    "pendingPullRequests": [],
-    "pullRequest": "https://github.com/iceiceice999/rock/pull/20",
+    "pendingPullRequests": [
+      {
+        "number": 21,
+        "url": "https://github.com/iceiceice999/rock/pull/21",
+        "state": "OPEN",
+        "scope": "main 6c9b3db6照合時点。無料3種の本番受入の記録と保存済み添付の表示修正。"
+      }
+    ],
+    "pullRequest": "https://github.com/iceiceice999/rock/pull/22",
     "mergedPullRequests": [
       {
         "number": 17,
@@ -13339,6 +13346,13 @@
         "state": "MERGED",
         "scope": "公開210で無料Workersの公式MCP3種を有効化。ブラウザ全閉中のWork完了、再表示とファイル保存を3件確認。",
         "mergeCommit": "16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617"
+      },
+      {
+        "number": 20,
+        "url": "https://github.com/iceiceice999/rock/pull/20",
+        "state": "MERGED",
+        "mergeCommit": "6c9b3db6c663ddab56665c466642dab30e929fbd",
+        "scope": "6分野の進捗台帳。最終HEADの7チェック成功を確認して統合。"
       }
     ]
   }
