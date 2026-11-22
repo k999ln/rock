@@ -15,4 +15,13 @@ if not isinstance(data, dict) or not isinstance(data.get('job_summary'), str) or
     raise RuntimeError('BOSS returned an incomplete interview preparation')
 if any(not isinstance(q, dict) or not isinstance(q.get('question'), str) or not q['question'].strip() for q in data['questions']):
     raise RuntimeError('BOSS returned an invalid question')
-pathlib.Path('/tmp/final-response.txt').write_text(json.dumps(body['data'], ensure_ascii=False, indent=2))
+pathlib.Path('/workspace/interview-preparation.json').write_text(json.dumps(data, ensure_ascii=False, indent=2))
+lines = [data['job_summary'].strip()]
+for index, question in enumerate(data['questions'], 1):
+    lines.extend(['', str(index) + '. ' + question['question'].strip()])
+    if isinstance(question.get('framework'), str):
+        lines.append(question['framework'].strip())
+tips = [tip.strip() for tip in data['preparation_tips'] if isinstance(tip, str) and tip.strip()]
+if tips:
+    lines.extend(['', '準備のポイント', *['・' + tip for tip in tips]])
+pathlib.Path('/tmp/final-response.txt').write_text('\n'.join(lines))
