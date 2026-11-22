@@ -89,7 +89,7 @@ await test('運営Dockの指定を本人の模擬回線に届け、受取と再�
     assert.match(await page('public'), /模擬端末に追加する/);
     assert.equal((await post('public', 'install')).status, 303);
     const initial = await page('mobile');
-    assert.match(initial, /いま指定されている配給はありません/);
+    assert.match(initial, /いま指定されている定期便はありません/);
     assert.doesNotMatch(
       initial,
       /農家検索|希望を選ぶ|name="item"|name="region"/,

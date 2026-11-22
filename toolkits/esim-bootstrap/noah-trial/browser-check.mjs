@@ -228,7 +228,7 @@ try {
   await recipient.wait('模擬専用回線でNoahを開く');
   await recipient.nav(mobile + base, '配送先を登録');
   await recipient.click('a[href$="address"]');
-  await recipient.wait('配給の配送先');
+  await recipient.wait('定期便の配送先');
   await recipient.size(390);
   await recipient.screenshot('distribution-address-form');
   await recipient.fill('form', {

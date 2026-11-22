@@ -138,8 +138,8 @@ export async function receiveAssignment(
       .first();
     throw new OperatorError(
       available
-        ? '配給を受け取る前に配送先を登録してください。'
-        : 'この配給は見つかりません。',
+        ? '定期便を受け取る前に配送先を登録してください。'
+        : 'この定期便は見つかりません。',
       available ? 409 : 404,
     );
   }
