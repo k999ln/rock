@@ -94,6 +94,8 @@ npm run amc:cycle -- demo
 
 掲載リポジトリやパッケージは「使う」で提供元の公開接続定義を確認します。GitHub・npm・Dockerの公式配布記録を照合し、接続できるものはNoah内で入力・実行・成果保存へ進みます。本人認証や未対応のCLIが必要な場合は理由を表示します。掲載・定義取得・実行成功は区別します。
 
+CLIの管理クラウドは [task125](codex/tasks/125-noah-cloud-agents.md) で実装中です。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。モデルは試験用固定応答です。本番クラウドは利用先確定と実モデル受入待ちです。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
+
 Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別AgentへのURLを渡せます。公開掲載中のAgentの名前・説明を共有カードへ反映し、接続情報や本人の成果は共有しません。
 
 `https://avoado.si/` と `https://avoado.si/noah` の共有情報は、Noahのタイトル・説明・1200×630 PNGを返します。X用の大型画像カードとOpen Graphを初期HTMLに含め、画像添付なしでURL共有に使えます。
@@ -171,6 +173,8 @@ npm --prefix toolkits/noah-resale-agent run demo
 相談と紹介案件の運営を組み合わせるAgentは、[Noahアフィリエイトキット](toolkits/noah-affiliate-agents/README.md)で作成できます。相談用・本人用のソースZIPと、提供者サーバー用MCPを用意しています。法人向けの①は、会員登録不要の[si導入準備票](https://noah-business-si.mr-kirin999.workers.dev/)と、集客計画・ASP承認・支払・銀行明細照合・費用の運営台帳を提供します。[運営手順](toolkits/noah-affiliate-agents/BUSINESS.md)。提携済み法人研修の正式広告を登録済みブログに掲載し、対象相談からその記事へ案内します。広告タグは原文のまま保持し、Noah自体の媒体承認や個別相談への成果帰属を推測しません。自社Webの記事公開・相談処理・記録済み実績の点検は継続実行器で動かします。認証済みChromeからASP注文・承認・支払の単発取得と件数記録に対応し、取得期限切れを表示します。ASPの継続取得・銀行の読取接続・実入金の通し確認は未受入で、一連の自動化は未完了です。 収集Agent一覧と提携済み案件の用途照合、完全取得世代の保存、公開条件の定期再確認は[組み合わせ運営](toolkits/noah-affiliate-agents/COMBINATIONS.md)へ統合しています。外部候補は動作・媒体証拠が揃うまで公開せず、自社の稼働先とも区別します。Sites206で共通の「使う」から相談票の作成・保存・再読込を確認済みです。15分の自動再判定を実測し、ASPの6時間取得と提携索引の毎日更新を設定しています。Chromeの利用可能性に依存する継続取得の次回成功と、実承認・入金は未受入です。詳しい記録はtask101を参照してください。
 
 [サービスとAgentの組み合わせ](https://avoado.si/noah/combinations)では、公式の対応関係を確認した3件の準備ガイドを公開しています。組み合わせ候補の作成・条件判定・準備票・許可済み紹介・実成果の承認追跡を同じ処理で扱います。[追加と運営の手順](toolkits/noah-affiliate-agents/COMBINATIONS.md)。金融案件の提携・媒体・正式リンクは未受入のため紹介停止中。15分の条件点検は稼働、6時間のChrome読取は設定済みですが、初回は認証切れで未取得です。
+
+公開サイト診断と紹介の組み合わせとして、WordPress保守相談とEC制作準備を追加実装しています。管理許可とURL公開送信への同意を確認して無料の外部診断を実行し、希望に合う場合だけ登録済みブログへ案内します。媒体の実成果集計とNoah個別利用への帰属を分けます。[仕様と条件](docs/services/noah-site-diagnostics.md)。本番Noahへの反映・通し受入は進行中です。
 
 <details>
 <summary>Noahの画面・接続・Toolのコード</summary>

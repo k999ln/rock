@@ -5,7 +5,7 @@ import type { NoahAgentCard, NoahAgentSource } from './noah-agent-cards.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
 
 type Family = { id: string; name: string; summary: string; external_key: string; repository: string | null; record_json: string; connect_json: string | null };
-export type DirectoryEntry = { firstParty?: 'business-training'; card: NoahAgentCard; families: string[]; observedAt: number; createdAt?: number; hot?: number };
+export type DirectoryEntry = { firstParty?: 'business-training' | 'wordpress-maintenance' | 'ec-production'; card: NoahAgentCard; families: string[]; observedAt: number; createdAt?: number; hot?: number };
 export type DirectoryDependencies = { db: IntakeDb; bucket?: Pick<R2Bucket, 'get'>; listed: boolean; now?: () => number };
 // Exact project URLs only: a shared host or a similar name never establishes identity.
 export function noahProjectUrl(value: unknown): string | null {

@@ -1,8 +1,9 @@
 ## 2026-11-22
-
 - Noahの自律収集の変更とtask 125・126を正本へ移植した（[PR #13](https://github.com/iceiceice999/rock/pull/13)）。本番の復旧・配備と運用確認はtask 125に記録する。
+- Noahの各チャット差分（固定CLI6種、公開サイト診断2種、ココナラ下書き、Pixel受入記録）を統合し、全体verify成功。クラウドCLI本番配備は未完了（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。
 - NoahからDaisukeのAniccaでココナラの公開募集を探索し、Macで提案の下書きを受け取り、停止できるようにした（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。
 - Noah公開203のPixel実機受入をREADME・task100・作業一覧へ記録。ポコ音の録音、振動完了、Agentboard新規登録→認証付き実行→成果の再読込保持を確認（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
+- NoahのCLI実行器に公式Memory/FilesystemとNode 24固定環境を追加。依頼分離・ファイル作成/読込・領域外拒否をLinuxで検証。クラウド配備は未完了（[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
 - Noahの法人Agent統合をSites206で公開し、共通実行・保存・再読込と自動再判定を実測。提供元とNoahの保存範囲を明記（[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
 - Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
 
@@ -22,6 +23,13 @@
 
 - Noahの配給（画面では「定期便」）のお金の決まりを記録。本人の取り分はゆくゆく全部物、仕入先とつながるまでは現金。何割かは未定、残りはAgentを作った人と運営の分。利用者全員への等分は物・寄与の分は作業料として現金。箱はおまかせ。eSIMは最初は必須にしない。渡す前に税理士・弁護士に確認。受け取る人が見る「配給」を「定期便」に変えた（04「Noahの配給」、[PR #404](https://github.com/k999ln/rock/pull/404)）。
 - Noahの稼ぎ方の設計図に推し活を足した（task122、Opus / Noelle。本人指示「推し活向けのイベント予約とかグッズかう代行自動ボットもいれて」）。推し活の手伝いはNoahのエージェント1つ（公式の告知を見張る・予定に入れる・知らせる・遠征を探す・家計簿。申込と支払いは本人が押す。値段はNoahの料金に従う）として定義し、会社の稼ぎ方は海外向けの購入代行（後回し。人の速さ・数量制限の内・チケットは扱わない・古物の要否は本人が確かめる）、予定まとめ、遠征の紹介、絵柄なしの用品の物販の37件（合計470件）。抽選・先着への自動申込、転売、買い占め、複数アカウント、待機列の回避、版権グッズは作らない（理由と出典付き）。仕様 `docs/noah/spec-122-business-blueprints.md` の11章、試験1本追加。
+
+- Noahの全掲載を対象に提供元の公式定義解決・MCP入力/Work保存・対応状況点検を追加。TimeとSequential Thinkingの固定CLIを隔離環境で検証し、guessit-jsの実MCP結果保存を確認。本番クラウド未配備・全件受入は継続中（task125、[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
+
+- GitHub新アカウントのプロフィールを整理し、rock全74ブランチの履歴保持を照合。過去PR 28件の復元用ブランチと403件のPR記録を新rockへ保全し、取得し直したバックアップのhashを確認。移行後CIの全履歴検査時間・CodeQL読取権限を調整（[PR #1](https://github.com/iceiceice999/rock/pull/1)、本番受入は未完了）。
+
+- Noahの公式CLI管理クラウド、接続・停止・結果保存と提供元接続の選択を実装。公式2配布物の隔離実行と3幅Chrome試験を確認。本番配備・実モデル受入はWorkers Paid利用先の確定待ち（task125、[新rock PR #1](https://github.com/iceiceice999/rock/pull/1)、旧 #402、Draft）。
+
 
 - 移行先privateリポジトリのCodeQLにActions読取権限を追加し、全履歴SPIDERの検査時間を有界で延長。固定版スキャナ・既存検知規則・失敗時の拒否は維持（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 

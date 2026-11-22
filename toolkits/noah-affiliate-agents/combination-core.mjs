@@ -1,3 +1,4 @@
+import { validBusinessLink } from './business-core.mjs';
 const assert = (ok, message) => {
   if (!ok) throw new Error(message);
 };
@@ -74,6 +75,32 @@ export function validateCombinationConfig(config) {
   }
   return config;
 }
+export function validRegisteredArticle(s) {
+  const a = s.registeredArticle;
+  try {
+    const u = new URL(a.url),
+      link = new URL(s.affiliateUrl);
+    return (
+      a.approved === true &&
+      a.tagVerified === true &&
+      typeof a.reference === 'string' &&
+      a.reference.length > 0 &&
+      u.origin === 'https://kirin8038.livedoor.blog' &&
+      a.mediaOrigin === u.origin &&
+      /^\/archives\/\d+\.html$/.test(u.pathname) &&
+      !u.search &&
+      !u.hash &&
+      !u.username &&
+      !u.password &&
+      a.siteId === s.siteId &&
+      validBusinessLink(s.affiliateUrl) &&
+      link.searchParams.get('idx').split('.')[2] === s.siteId &&
+      link.searchParams.get('idx').split('.')[4] === s.offer.id
+    );
+  } catch {
+    return false;
+  }
+}
 export function combinationVerdict(s, now = Date.now()) {
   const reasons = [];
   if (!s.tool.serviceKeys.includes(s.offer.serviceKey))
@@ -96,7 +123,12 @@ export function combinationVerdict(s, now = Date.now()) {
   )
     reasons.push('source_stale');
   if (s.offer.partnered !== true) reasons.push('partnership_pending');
-  if (s.mediaApproved !== true || !/^\d+$/.test(s.siteId ?? ''))
+  if (
+    (s.registeredArticle
+      ? !validRegisteredArticle(s)
+      : s.mediaApproved !== true) ||
+    !/^\d+$/.test(s.siteId ?? '')
+  )
     reasons.push('media_pending');
   if (s.contentApproved !== true) reasons.push('content_pending');
   if (!s.offer.channels.includes('owned_web'))
@@ -219,6 +251,10 @@ export function prepareCombination(
     (x) => x.id === input.schemeId && x.guideApproved === true,
   );
   assert(selected, '公開中の組み合わせではありません。');
+  assert(
+    !selected.execution,
+    'この組み合わせは専用の診断操作から実行してください。',
+  );
   const s = { ...selected, enabled: current.enabled && selected.enabled };
   const verdict = combinationVerdict(s, now),
     eligible =
@@ -322,6 +358,36 @@ export function applyCombinationObservation(
       '成果の形式が不正です。',
     );
     seen.add(row.id);
+    const mediaScheme = config.schemes.find(
+      (s) =>
+        s.offer.id === offerId &&
+        s.siteId === row.siteId &&
+        validRegisteredArticle(s),
+    );
+    if (mediaScheme) {
+      state.mediaOrders ||= {};
+      const old = state.mediaOrders[row.id];
+      assert(
+        !old || (old.schemeId === mediaScheme.id && old.siteId === row.siteId),
+        '媒体成果の帰属が変わりました。',
+      );
+      assert(
+        !old ||
+          old.status === 'pending' ||
+          (old.status === row.status && old.rewardYen === row.rewardYen),
+        '確定媒体成果の変更は確認が必要です。',
+      );
+      state.mediaOrders[row.id] = {
+        id: row.id,
+        schemeId: mediaScheme.id,
+        siteId: row.siteId,
+        offerId,
+        status: row.status,
+        rewardYen: row.rewardYen,
+        sourceRef: row.sourceRef,
+        observedAt: observation.observedAt,
+      };
+    }
     const lead = row.uix && state.leads[row.uix];
     const scheme = lead && config.schemes.find((s) => s.id === lead.schemeId);
     if (
@@ -378,6 +444,26 @@ export function combinationReport(state, config) {
       costYen = state.costs[s.id] ?? null;
     return {
       id: s.id,
+      diagnostics: state.diagnosticCounts?.[s.id] ?? {
+        executions: 0,
+        referrals: 0,
+      },
+      registeredMedia: s.registeredArticle
+        ? (() => {
+            const media = Object.values(state.mediaOrders ?? {}).filter(
+              (o) => o.schemeId === s.id,
+            );
+            return {
+              attribution: 'media_only',
+              pending: media.filter((o) => o.status === 'pending').length,
+              approved: media.filter((o) => o.status === 'approved').length,
+              rejected: media.filter((o) => o.status === 'rejected').length,
+              approvedYen: media
+                .filter((o) => o.status === 'approved')
+                .reduce((n, o) => n + o.rewardYen, 0),
+            };
+          })()
+        : null,
       referralCount: Object.values(state.leads).filter(
         (l) => l.schemeId === s.id,
       ).length,
