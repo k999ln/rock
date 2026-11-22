@@ -1,5 +1,10 @@
 ## 2026-11-22
 
+- avoado.siの公開元をGitHub mainに統一し、Macと本番のGitツリーを照合する手順をAGENTS.mdに追加。公開版のAgent共有に関する記録を取り込んだ（[PR #398](https://github.com/k999ln/rock/pull/398)）。
+
+- 公開Agent詳細に個別共有・URLコピー・X投稿リンク、公開条件を確認する個別OG/Twitter情報とPNG生成を追加（Sites公開ソース、専用PRなし）。
+- Noahの公開入口 `/`・`/noah` にOpen Graph・X大型画像カードと公開PNGを追加（Sites公開ソース、専用PRなし）。
+
 - Noah公開195・196を保全して接続位置・用途名を統合し、検索先詳細の操作名が縦に崩れるCSS競合を公開197で修正。全体verify・3幅ブラウザ試験・Pixelの検索→接続→新規成果10件→再読み込みを確認（task100、[PR #394](https://github.com/k999ln/rock/pull/394)）。
 
 - Noahの稼ぎ方の設計図の1段目（task122。Opus / Noelle。本人指示「アフィに登録して案件選んで動画作ってSNS運用させてLPつくって…すべての商売の手段として自動化したい」）。分類表から433件（紹介250・受注48・デジタル商品90・広告収益24・物販16・アプリ5）の設計図を作り、登録から入金の確認までの工程を自動・押すだけ・本人・本人が確かめるに分けて理由を付け、確かめたエージェントだけを工程に当てて並べる。アカウントを作る順、Eveが作る能力の一覧、稼いだ分だけの予算、14日・10件で続けるか止めるかの式。`scripts/noah-business-plan.mjs` で公開の一覧172件・集めた紹介1,000件から計画を書き出す（確かめたエージェントは0、Eveが作る能力20）。試験7本（`tests/noah-business.test.mjs`）。仕様 `docs/noah/spec-122-business-blueprints.md`。[PR #391](https://github.com/k999ln/rock/pull/391)。

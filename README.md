@@ -90,6 +90,10 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別AgentへのURLを渡せます。公開掲載中のAgentの名前・説明を共有カードへ反映し、接続情報や本人の成果は共有しません。
+
+`https://avoado.si/` と `https://avoado.si/noah` の共有情報は、Noahのタイトル・説明・1200×630 PNGを返します。X用の大型画像カードとOpen Graphを初期HTMLに含め、画像添付なしでURL共有に使えます。
+
 検索は [Agentを探す](https://avoado.si/noah/explore)、保存は [保存したもの](https://avoado.si/noah/saved) にまとめています。検索は使えるAgent・カタログ・Tool、保存はボード・Agent・担当・成果・ファイルを切り替えます。旧URLは対応するカテゴリへ移り、Noah配下のMac専用・投稿・コミュニティー・大学別ページは撤去済みです。保存データは保持しています。
 
 Agent詳細の最初に料金・送信先と接続ボタンを表示します。接続後は用途名で操作を選び、その行の下から依頼できます。スマホの操作一覧も、用途名・説明・確認事項を縦に並べて読めます。長い紹介は「Agentの詳細」で開けます。
