@@ -2,6 +2,8 @@
 
 - Noahの公式CLI管理クラウド、接続・停止・結果保存と提供元接続の選択を実装。公式2配布物の隔離実行と3幅Chrome試験を確認。本番配備・実モデル受入はCloudflare認証待ち（task123、[PR #402](https://github.com/k999ln/rock/pull/402)、Draft）。
 
+- Noahの登録先429に対する待機時刻表示・本人別の再送防止と、本番100ブラウザの限定検査スクリプトを追加。公開199/mainのUIを保全して全体verify成功、公開とPixelの新規登録一周は受入中（task100、[PR #400](https://github.com/k999ln/rock/pull/400)）。
+
 - 第198版で公開したホーム・検索・Agentの操作画面・Hugging Face再表示の変更をGitHub mainに取り込み、ココナラの入口を保全（[PR #399](https://github.com/k999ln/rock/pull/399)）。
 
 - avoado.siの公開元をGitHub mainに統一し、Macと本番のGitツリーを照合する手順をAGENTS.mdに追加。公開版のAgent共有に関する記録を取り込んだ（[PR #398](https://github.com/k999ln/rock/pull/398)）。

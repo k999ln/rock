@@ -7,6 +7,7 @@ import { AGENTBOARD_PROVIDER,AGENTBOARD_MCP,createNoahNativeRegistration } from 
 import { createNoahRegisteredMcpFetch } from '../lib/noah-registered-mcp.ts';
 import { createNoahRegistrationApi } from '../lib/noah-registration.ts';
 import { noahMcpHandshake,noahMcpCall } from '../lib/noah-mouth-mcp-remote.ts';
+import { createRegistrationAccountStates } from '../lib/noah-registration-availability.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { sha256Hex } from '../lib/noah-connect-requirements.ts';
 function fixture(){
@@ -95,4 +96,45 @@ void test('actual Workers fetch can register and refuses a redirect before any s
  assert.equal((await(await mf.dispatchFetch('https://noah.test')).json()).state,'completed');assert.equal(calls.length,2);
  await mf.dispose();redirected=true;calls.length=0;mf=new Miniflare(convertV4MiniflareOptions(options));
  assert.equal((await(await mf.dispatchFetch('https://noah.test')).json()).state,'unknown');assert.deepEqual(calls,['https://www.agentboard.ai/api/agents/register']);
+});
+
+void test('provider 429 preserves a retry deadline across reload and new tickets without repeating registration', async()=>{
+ const f=fixture();let at=Date.now(), sent=0, limited=true;
+ const execute=await createNoahNativeRegistration({store:f.store,authenticate:f.authenticate,now:()=>at,fetcher:async(url,init)=>{
+  if((typeof url==='string'?url:url instanceof URL?url.href:url.url).endsWith('/api/agents/register')){sent++;if(limited)return new Response(null,{status:429,headers:{'Retry-After':'120'}});}
+  return f.fetcher(url,init);
+ }})(await f.request(),AGENTBOARD_PROVIDER);
+ const id=randomUUID(),until=at+120000;
+ assert.deepEqual(await execute(id,{name:'Synthetic'}),{state:'failed',retryAt:until});
+ const states=createRegistrationAccountStates({store:f.store,authenticate:f.authenticate,now:()=>at});
+ assert.deepEqual(await states(await f.request(),[AGENTBOARD_PROVIDER]),{agentboard:{accountState:'cooldown',retryAt:until}});
+ assert.deepEqual(await states(await f.request('bob'),[AGENTBOARD_PROVIDER]),{});
+ assert.deepEqual(await execute(randomUUID(),{name:'Double tap'}),{state:'failed',retryAt:until});
+ assert.deepEqual(await execute(id),{state:'failed',retryAt:until});
+ assert.equal(sent,1);
+ at=until+1;limited=false;
+ assert.deepEqual(await states(await f.request(),[AGENTBOARD_PROVIDER]),{});
+ assert.equal(await execute(randomUUID(),{name:'Synthetic'}),'completed');assert.equal(sent,2);
+ assert.equal((await f.store.load('alice','agentboard')).account.retryAt,undefined);
+});
+
+void test('registration rate-limit headers use a bounded deadline and never retain upstream bodies', async()=>{
+ const at=Date.now();
+ for(const [header,expected] of [[null,at+3600000],['invalid',at+3600000],[new Date(Math.floor(at/1000)*1000+180000).toUTCString(),Math.floor(at/1000)*1000+180000],['999999',at+86400000]]){
+  const f=fixture(),execute=await createNoahNativeRegistration({store:f.store,authenticate:f.authenticate,now:()=>at,fetcher:async()=>new Response('untrusted provider body',{status:429,headers:header?{'Retry-After':header}:{}})})(await f.request(),AGENTBOARD_PROVIDER);
+  assert.deepEqual(await execute(randomUUID(),{name:'Synthetic'}),{state:'failed',retryAt:expected});
+  assert.doesNotMatch(JSON.stringify((await f.store.load('alice','agentboard')).account),/untrusted|Synthetic/);
+ }
+});
+
+void test('registration HTTP response preserves the rate-limit receipt and returns only availability on reload',async t=>{
+ const sql=new DatabaseSync(':memory:'),retryAt=Date.now()+120000;t.after(()=>sql.close());sql.exec('CREATE TABLE work_jobs(id TEXT PRIMARY KEY,user_id TEXT,payload TEXT,revision INTEGER,updated_at TEXT)');
+ const db={prepare(query){const s={args:[],bind(...args){return {...s,args};},async first(){return sql.prepare(query).get(...this.args)??null;},async run(){return {meta:{changes:Number(sql.prepare(query).run(...this.args).changes)}};}};return s;}};
+ const api=createNoahRegistrationApi({db,providers:[AGENTBOARD_PROVIDER],token:randomBytes(32).toString('hex'),executor:async()=>async()=>({state:'failed',retryAt}),accountStates:async()=>({agentboard:{accountState:'cooldown',retryAt}})});
+ const id=randomUUID(),key=randomBytes(32).toString('hex');
+ const response=await api(new Request('https://avoado.si/api/noah/registration',{method:'POST',headers:{Origin:'https://avoado.si','Content-Type':'application/json','X-Noah-Registration-Key':key},body:JSON.stringify({action:'start',id,providerId:'agentboard',agentId:AGENTBOARD_PROVIDER.agentIds[0],revision:1,termsVersion:AGENTBOARD_PROVIDER.termsVersion,values:{name:'Synthetic'},consent:true,termsAccepted:true})}));
+ assert.equal(response.status,202);assert.deepEqual(Object.fromEntries(Object.entries((await response.json()).job).filter(([k])=>['state','retryAt'].includes(k))),{state:'failed',retryAt});
+ const get=await api(new Request(`https://avoado.si/api/noah/registration?job=${id}`,{headers:{'X-Noah-Registration-Key':key}}));assert.equal((await get.json()).job.retryAt,retryAt);
+ const available=(await (await api(new Request('https://avoado.si/api/noah/registration'))).json()).providers[0];assert.equal(available.accountState,'cooldown');assert.equal(available.retryAt,retryAt);assert.equal(available.executorUrl,undefined);
+ assert.doesNotMatch(sql.prepare('SELECT payload FROM work_jobs').get().payload,/Synthetic|untrusted/);
 });
