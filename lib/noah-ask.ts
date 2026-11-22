@@ -1,3 +1,4 @@
+import { createNoahProviderRuntime, providerWorkView, type ProviderDependencies } from './noah-provider-runtime.ts';
 /**
  * 頼む（入力欄から、つないだ相手の道具を 1 回呼ぶ）。受け付け・実行・読む・止める。
  *
@@ -29,7 +30,7 @@ import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { workStore } from './work-store.ts';
 
 export type NoahAskDependencies = NoahConnectDependencies;
-export type NoahAskApiDependencies = NoahConnectApiDependencies;
+export type NoahAskApiDependencies = NoahConnectApiDependencies & Pick<ProviderDependencies, 'providerDirectory'>;
 
 /** 数値は候補。 */
 export const NOAH_ASK_RUN_LIMITS = {
@@ -348,7 +349,7 @@ function failure(error: unknown) {
  * どれも、サインイン済みの本人だけ。書き込みは、同じ Noah の画面から（Origin）、始めた時と同じ account で（ownerScope）、JSON で。
  */
 export function createNoahAskApi(deps: NoahAskApiDependencies) {
-  const service = createNoahAskService(deps);
+  const service = createNoahAskService(deps), provider = createNoahProviderRuntime(deps);
   type Context = { owner: string; reviewer: boolean; url: URL };
   const respond = async (request: Request, methods: string[], handle: (context: Context) => Promise<NoahAskReply | Response>) => {
     try {
@@ -381,7 +382,9 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
         if (connection !== null && !UUID.test(connection)) return json({ asks: [] });
         // 系列の ID は、一覧・計画の入口と同じ長さの範囲だけを受ける（それ以外は、何も無い物として答える）。
         if (connection === null && agent !== null && (agent.length < 3 || agent.length > 400)) return json({ asks: [] });
-        return service.list(owner, connection, connection === null ? agent : null);
+        const listed=await service.list(owner, connection, connection === null ? agent : null);
+        if(connection===null && deps.providerDirectory){const added=await provider.list(owner,agent);if(added.length)listed.body.asks=[...(listed.body.asks as {updatedAt:number}[]),...added].sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,50);}
+        return listed;
       }
       const value = await body(request);
       // 1 文で頼む（prompt）は、まだ受けない。
@@ -403,9 +406,14 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
     }),
     item: (request: Request, id: string) => respond(request, ['GET', 'POST'], async ({ owner }) => {
       if (!UUID.test(id)) return missing();
-      if (request.method === 'GET') return service.get(owner, id);
+      const providerJob=deps.providerDirectory?await provider.get(owner,id):null;
+      if (request.method === 'GET') {
+        if(providerJob){void provider.wake(owner,id);return reply(200,providerWorkView(providerJob,true) as unknown as Record<string,unknown>);}
+        return service.get(owner, id);
+      }
       const value = await body(request);
       if (Object.keys(value).length !== 2 || value.action !== 'stop' || !Number.isSafeInteger(value.revision) || Number(value.revision) < 1) throw new NoahAgentError('操作と版を確認してください。');
+      if(providerJob){const stopped=await provider.stop(owner,id,Number(value.revision));return stopped?reply(200,providerWorkView(stopped,true) as unknown as Record<string,unknown>):reply(404,{error:'依頼が見つかりません。'});}
       return service.stop(owner, id, Number(value.revision));
     }),
   };

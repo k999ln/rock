@@ -1,6 +1,7 @@
 ## 2026-11-22
 
 - Noahの通常タップに低遅延のポコ音・振動・押下反応と設定内の試聴を追加し、評価数のないMCP Registry表示をカードから除去。接続成功音・既存ミュート・元サイト評価を保持（task100、PRは受入時に追記）。
+- Noahに公開Gradio Agentの入力・実行受付・成果保存を追加。二重実行防止、結果通信維持、6言語、過去成果の再表示を検証し、全体verify成功。公開後・Pixelは受入中（task100、[PR #2](https://github.com/iceiceice999/rock/pull/2)）。
 
 - Noahの登録先429に対する待機時刻表示・本人別の再送防止と、本番100ブラウザの限定検査スクリプトを追加。公開199/mainのUIを保全して全体verify成功、公開とPixelの新規登録一周は受入中（task100、[PR #400](https://github.com/k999ln/rock/pull/400)）。
 
