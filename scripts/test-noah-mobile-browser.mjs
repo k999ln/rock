@@ -35,10 +35,10 @@ try{
    const ratings=page.locator('article [aria-label="評価元の評価"] a');await size(await ratings.count()?ratings.first():page.locator('article summary').filter({hasText:'出典・外部の評価'}).first());
    await page.screenshot({path:`${output}/home-${width}.png`});return {cards:await page.locator('article').count()};
   });
-  await check(`${width}: menu, save and comments open/close`,async()=>{
+  await check(`${width}: menu and save open/close, original ratings only`,async()=>{
    await press(page.getByLabel('メニュー',{exact:true}));await page.locator('[popover]:popover-open').waitFor();await page.screenshot({path:`${output}/menu-${width}.png`});await press(page.getByLabel('メニュー',{exact:true}));
    await press(page.locator('article button[aria-label$="を保存"]').first());await page.locator('dialog[open]').waitFor();await size(page.getByRole('button',{name:'閉じる',exact:true}));await press(page.getByRole('button',{name:'閉じる',exact:true}));
-   await press(page.locator('article').first().getByRole('link').filter({hasText:'コメント'}));await page.locator('dialog[open]').waitFor();await press(page.getByLabel('評価を閉じる'));assert.equal(await page.locator('dialog[open]').count(),0);
+   assert.equal(await page.getByLabel('王冠で評価する',{exact:true}).count(),0);assert.equal(await page.locator('dialog[open]').count(),0);
   });
   await check(`${width}: filter swipe, rating and external card`,async()=>{
    const filters=page.locator('[aria-label="Agentを絞り込む"]');if(mobile)await swipe(page,context,filters);

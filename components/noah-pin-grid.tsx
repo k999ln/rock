@@ -13,6 +13,7 @@ import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
+import { NOAH_COLLECTION_RUN_LABELS } from '@/lib/noah-collection';
 
 /** グリッドの 1 枚（GET /api/noah/pins の items の 1 件）。 */
 export type NoahPinView = NoahAgentCard;
@@ -92,7 +93,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
           <span className={styles.panel} aria-hidden="true"><span className={styles.initials}>{noahPinInitials(item.name)}</span><span className={styles.topicLabel}>{NOAH_PIN_TOPIC_LABELS[item.topic]}</span></span>
           <strong className={styles.name}>{item.name}</strong>
           {item.summary && <span className={styles.summary}>{item.summary}</span>}
-          <small className={styles.meta}>{item.host ?? item.provider} · {item.external ? '配布元で使う' : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
+          <small className={styles.meta}>{item.host ?? item.provider} · {item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.external ? '配布元で使う' : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
         </a>
         {!item.external && <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
           {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}

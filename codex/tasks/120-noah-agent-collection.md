@@ -84,3 +84,13 @@ Macの常駐は停止し、launchdの永続disableも確認。55,058,432バイ�
 - `npm run verify` は再実行しても `release-readiness: Web security policy: local production response実測またはinput hashが不一致` で停止。全体検証の成功とはしない。前提のPR #386 とこの不一致が未解決のため #388 はdraft、main未統合。
 
 再実行: `scripts/test-noah-mobile-browser.mjs`。`playwright-core@1.65.1`は一時ディレクトリにインストールし、`NOAH_PLAYWRIGHT_PACKAGE`へそのindex.js、`NOAH_CHROME_PATH`へChrome実行ファイルを指定。既定は公開URL・上記5サイズ。`NOAH_TEST_WIDTH=390`で一つの幅を再試験できる。`NOAH_TEST_OUTPUT`へスクリーンショットとreport.jsonを保存する。今回の記録は `/tmp/noah-mobile-ux-20261122/published/`、追加読み込みの再確認は同ディレクトリの `pagination-final/`。
+
+## verify不一致の修正と最新変更の統合（2026-11-22、PR #388）
+
+本人指示「verifyの不一致も直して、テストを通してPRをマージして」に基づき、mainのPR #385と前提PR #386の最新変更を統合。追加収集元・新着/使いやすさの並び替え・動かし方・すべての外部評価指標を共通カードでも保持した。破損した一出所のスナップショットは他出所の一覧を止めず、掲載対象外の項目は除外する。最新の本人指示による王冠/コメント列の撤去を保持し、ブラウザ試験も現在の操作に合わせた。公開185で実施したコメント開閉試験は当時の結果として上に残す。
+
+不一致は、検索修正で変わった `components/noah-shell.tsx` と保存済み実測のinput hashの差だった。独立checkoutにroot/Miniの依存を導入し、`npm run build` の生成物をlocal Wranglerで起動。`node scripts/check-web-security-response.mjs http://127.0.0.1:8796 --record-local-production` で8経路を実際に要求し、全8ヘッダー・転送・Service Worker・manifest・アイコン・JSの検査に成功して `data/web-security-response-current.json` を更新した。検査条件・過去のevidenceは変更していない。本番への配備やD1 migrationを行った記録ではない。
+
+統合後の関連32試験、typecheck、lint、production buildは成功。全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` はexit 0。主要4,926試験のうち4,922成功・失敗0・既定4skip、仕事API1,918項目、CSV保存385項目、package/Mini/public preview/build/配信ファイル/AMC/作業部屋/Botまで成功した。ローカルの全体ログは `/tmp/noah-full-verify-20261122.log`。
+
+この検証中にmainへPR #387が入ったため、それも取り込み、最終コミットのGitHub CIを確認してから #388をmainへマージする。CIとマージ結果はPR本文を参照。XのAPIキー待ちと実機iPhone/Safari未検証は今回のverify修正の対象外で、そのまま残る。
