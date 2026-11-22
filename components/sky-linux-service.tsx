@@ -5,6 +5,7 @@ import { operationRequest, OperationRequestError } from '@/lib/operations-client
 import { SkyNotice } from './sky-feedback';
 import WorkspaceShell from './workspace-shell';
 import type {
+  linuxMonthUsage,
   LinuxWorkspace,
   LinuxListing,
   LinuxTerms,
@@ -19,6 +20,7 @@ type View = {
   workspace: { revision: number; payload: LinuxWorkspace } | null;
   access: { canRead: boolean; canExport: boolean; canExecute: boolean; reason: string | null } | null;
   currentMonthMaximumMinor: number | null;
+  currentMonthUsage?: ReturnType<typeof linuxMonthUsage> | null;
   creatorEarnings: {
     period: string;
     state: string;
@@ -255,6 +257,26 @@ export default function SkyLinuxService() {
         >
           状態を更新
         </button>
+        <section id="monthly-statement" aria-labelledby="monthly-statement-heading">
+          <h2 id="monthly-statement-heading">専用クラウドの使用額・請求明細</h2>
+          <p>契約したRockstar IDで明細を確認できます。基本料は利用期間に応じて計算し、確定した使用料と合わせて月別の請求書に記録します。</p>
+          {readState === 'ready' && visible() && (workspace ? <>
+            {workspace.mode === 'sandbox' && <p>テスト契約の明細です。実際の引き落としはありません。</p>}
+            {workspace.serviceStartAt === null ? <p>専用クラウドの利用開始待ちです。</p> :
+              view?.currentMonthUsage ? <>
+                <h3>{view.currentMonthUsage.period} の利用状況（UTC集計・米ドル）</h3>
+                <dl>
+                  <div><dt>契約の基本月額</dt><dd>{dollars(view.currentMonthUsage.baseMinor)}</dd></div>
+                  <div><dt>確定した計算使用料</dt><dd>{dollars(view.currentMonthUsage.computeMinor)}</dd></div>
+                  <div><dt>確定したAgent利用料</dt><dd>{dollars(view.currentMonthUsage.authorMinor)}</dd></div>
+                  <div><dt>予約中の金額（請求未確定）</dt><dd>{dollars(view.currentMonthUsage.reservedMinor)}</dd></div>
+                  <div><dt>承認した月間上限</dt><dd>{dollars(workspace.terms.monthlyCapMinor)}</dd></div>
+                </dl>
+              </> : <p>今月の使用額は未確認です。</p>}
+            {workspace.invoices.length ? <a href="#issued-statements">発行済みの月別明細を見る</a> : <p>発行済みの月別明細はありません。</p>}
+          </> : <p>このアカウントで表示できる専用クラウドの契約明細はありません。</p>)}
+          <p><Link href="/noah/usage">Agentごとの利用記録</Link> · <Link href="/noah/purchases">eSIMの購入履歴・領収書</Link></p>
+        </section>
         {readState === 'ready' && visible() && <>
         {!view?.enabled && (
           <p className={styles.notice}>
@@ -530,7 +552,7 @@ export default function SkyLinuxService() {
                 </p>
                 <p>
                   実行予約上限 {dollars(j.reservedMinor)} / 確定使用分{' '}
-                  {dollars(j.computeMinor + j.authorMinor)}
+                  {j.receiptId ? dollars(j.computeMinor + j.authorMinor) : '確定額の記録なし'}
                 </p>
                 {j.run.text && (
                   <>
@@ -566,7 +588,7 @@ export default function SkyLinuxService() {
         )}
         {workspace && (
           <section>
-            <h2>月ごとの請求と作者への配分</h2>
+            <h2 id="issued-statements">月ごとの請求と作者への配分</h2>
             {workspace.invoices.map((i) => (
               <article key={i.id}>
                 <h3>
@@ -593,7 +615,7 @@ export default function SkyLinuxService() {
                     disabled={busy}
                     onClick={() => void payment(i.id, 'collect')}
                   >
-                    支払い方法・請求書を開く
+                    {dollars(i.amountMinor)}の支払い手続きに進む
                   </button>
                 )}
                 <button
@@ -604,7 +626,6 @@ export default function SkyLinuxService() {
                 </button>
               </article>
             ))}
-            <Link href="/sky/payments">支払いと明細</Link>
           </section>
         )}
         {!!view?.creatorEarnings.length && (

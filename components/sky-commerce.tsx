@@ -140,7 +140,7 @@ function ErrorNotice({ error, returnTo }: { error: Error | null; returnTo: strin
 }
 
 export function CommerceNavigation() {
-  return <nav className={styles.navigation} aria-label="マーケットの管理"><Link href="/noah/esim"><Smartphone size={16} /> eSIMプラン</Link><Link href="/noah/purchases"><ShoppingBag size={16} /> 購入したツール</Link><Link href="/noah/sell"><Store size={16} /> 販売する</Link></nav>;
+  return <nav className={styles.navigation} aria-label="マーケットの管理"><Link href="/noah/esim"><Smartphone size={16} /> eSIMプラン</Link><Link href="/noah/purchases"><ShoppingBag size={16} /> 購入履歴</Link><Link href="/noah/sell"><Store size={16} /> 販売する</Link></nav>;
 }
 
 function TestMode({ mode }: { mode: CommerceStatus['mode'] }) {
@@ -281,9 +281,9 @@ export function SkyPurchases() {
         .finally(() => { busy.current = false; });
     }
   }, [orderId, canceled, refresh]);
-  return <CommercePage title="購入したツール" description="支払い状況と、siへの接続先をここに。">
+  return <CommercePage title="購入履歴" description="注文ごとの支払いと領収書を確認できます。eSIMの設定を再開するには、購入した回線の「状態を確認」を押してください。">
     {canceled && <output className={styles.notice}>決済を途中で閉じました。支払いが必要な場合は、購入履歴から再開できます。</output>}
-    <ErrorNotice error={error || actionError} returnTo="/sky/purchases" />
+    <ErrorNotice error={error || actionError} returnTo="/noah/purchases" />
     {loading && !data && <output className={styles.loading}>購入履歴を読み込んでいます…</output>}
     {data && <><TestMode mode={data.mode} />{!data.configured && <NotConfigured />}{data.purchases.length > 0 ? <div className={styles.orderList}>{data.purchases.map((order) => <OrderCard key={order.id} order={order} busy={busyOrder !== null} onRefresh={() => void reconcile(order.id)} />)}</div> : data.configured && <section className={styles.empty}><ShoppingBag size={28} /><h2>購入したツールはまだありません</h2><p>気になるツールを選び、料金と利用条件を確認できます。</p><Link className={styles.primary} href="/noah/marketplace">マーケットを見る <ArrowRight size={16} /></Link></section>}</>}
     {error && !(error instanceof CommerceError && error.status === 401) && <button className={styles.secondary} disabled={loading} onClick={() => void refresh()} type="button">もう一度読み込む</button>}

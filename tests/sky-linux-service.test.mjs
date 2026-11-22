@@ -12,6 +12,7 @@ import {
   verifyLinuxEnvelope,
   verifyLinuxWorker,
   linuxMonthTotal,
+  linuxMonthUsage,
   linuxPeriod,
   parseLinuxTerms,
   linuxText,
@@ -25,6 +26,18 @@ import { createSkyToolPackageDraft, skyToolPackageSha256 } from '../lib/sky-tool
 const now = Date.UTC(2026, 9, 1),
   end = Date.UTC(2026, 10, 1),
   sha = 'a'.repeat(64);
+void test('monthly view separates receipted charges from reservations, cancellations and other months', () => {
+  const period = '2026-11';
+  const job = { period, state: 'running', reservedMinor: 100, computeMinor: 0, authorMinor: 0, receiptId: null };
+  const workspace = { terms: { baseMinor: 1600 }, jobs: [job,
+    { ...job, state: 'completed', receiptId: 'receipt', computeMinor: 12, authorMinor: 7 },
+    { ...job, state: 'cancelled' }, { ...job, period: '2026-10' }] };
+  assert.deepEqual(linuxMonthUsage(workspace, period), {
+    period, baseMinor: 1600, computeMinor: 12, authorMinor: 7, reservedMinor: 100, maximumMinor: 1719,
+  });
+  assert.equal(linuxMonthTotal(workspace, period), 1719);
+});
+
 const terms = {
   schema: 'sky.linux-terms/1',
   version: 'fixture-only',

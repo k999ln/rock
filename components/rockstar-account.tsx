@@ -1,5 +1,6 @@
 'use client';
 import { useNoahLocale } from './noah-locale';
+import NoahContractLinks from './noah-contract-links';
 import { useSearchParams } from 'next/navigation';
 import { accountReturnNavigation } from '@/lib/eve-noah-navigation';
 import NoahLoading from './noah-loading';
@@ -119,6 +120,7 @@ export default function RockstarAccount({ service = 'os' }: { service?: 'os' | '
       <p className={styles.eyebrow}>{noah ? 'NOAH ACCOUNT' : 'YOUR OWN SPACE'}</p>
       <h1 id="account-title">{complete || configured ? noah ? t("あなたのNoahへ。") : t("自分のNoahとEveへ。") : mode === 'login' ? t("おかえりなさい。") : mode === 'recover' ? t("続きを、取り戻そう。") : noah ? t("あなたの成果を、ここに。") : t("登録して、はじめよう。")}</h1>
       <p className={styles.description}>{noah ? signedIn ? t("Agentとの仕事と成果を引き継げます。") : t("Agentの接続と成果を保存できます。閲覧だけなら登録は不要です。") : signedIn ? t("今までの会話・仕事・成果を引き継ぎます。") : t("自分のNoahとEveを、PixelでもWebでも。ChatGPTアカウントは必要ありません。")}</p>
+      {signedIn && !recoveryCode && <NoahContractLinks />}
       {recoveryCode ? <div className={styles.notice}>
         <h2>{t("復旧コードを安全な場所に保存")}</h2><p>{t("ログイン方法を失ったときに必要です。一度だけ表示します。パスワード管理アプリなどへ保存し、チャットや投稿には送らないでください。")}</p>
         <textarea aria-label={t("復旧コード")} value={recoveryCode} readOnly rows={3} spellCheck={false} />

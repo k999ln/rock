@@ -219,6 +219,18 @@ void test('newer initial owner read wins and unmount rejects all late state writ
   second.reply(1, ack(8)); await second.flush(); assert.equal(second.lateWrites, 0); assert.equal(second.calls.length, 2);
 });
 
+void test('the contract statement shows receipted charges and reservations only while the owner view is current', async () => {
+  const h = harness(), current = view();
+  current.currentMonthUsage = { period: '2026-11', baseMinor: 1600, computeMinor: 316,
+    authorMinor: 427, reservedMinor: 538, maximumMinor: 2881 };
+  h.reply(0, current); await h.flush();
+  const statement = () => h.nodes().find(node => node.props?.id === 'monthly-statement');
+  assert.match(h.text(statement()), /2026-11/);
+  for (const amount of ['$3.16', '$4.27', '$5.38']) assert.ok(h.text(statement()).includes(amount), amount);
+  h.setVisibility('hidden');
+  assert.doesNotMatch(h.text(statement()), /2026-11|3\.16|4\.27|5\.38/);
+});
+
 void test('current null usage total stays unconfirmed and does not use a measured16USD fallback', async () => {
   const h = harness(), current = view(); current.currentMonthMaximumMinor = null;
   h.reply(0, current); await h.flush(); assert.match(h.text(), /現在の費用は未確認/);
@@ -226,7 +238,7 @@ void test('current null usage total stays unconfirmed and does not use a measure
 });
 
 void test('known saved ack never upgrades fresh execution access, invoice payment or job completion', async () => {
-  const h = await loaded(), payment = h.button('支払い方法・請求書を開く');
+  const h = await loaded(), payment = h.button('の支払い手続きに進む');
   h.click('仕事を停止する'); payment.props.onClick(); h.render();
   h.reply(1, ack(8)); await h.flush(); noPrivate(h);
   assert.match(h.text(), /閲覧権限・契約の利用開始・入金・仕事の完了は確認できません/);

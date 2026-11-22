@@ -26,7 +26,7 @@ const messages: Record<string, string> = {
     '専用Linuxの準備証拠を待っています。準備依頼の受付と、利用可能な状態は別です。',
   service_restricted:
     '契約・未払い・使用量の照合待ちで、新しい実行を制限しています。保存済みデータは保持されています。',
-  active: 'Sky・Eveを使える準備が整いました。',
+  active: '専用クラウドの準備ができました。Noahで最初のAgentを選べます。',
 };
 async function fetchSetupView(signal?: AbortSignal) {
   const response = await fetch('/api/rockstar/service-setup', {
@@ -106,16 +106,14 @@ export default function RockstarServiceSetup() {
     terms = setup?.terms,
     state = view?.access.state;
   return (
-    <WorkspaceShell title="Sky・Eveの利用開始" hideTopActions>
+    <WorkspaceShell title="RockstarOSの利用開始" hideTopActions>
       <main id="workspace-main" className={styles.setup} aria-busy={busy}>
         <header>
-          <h1>自分のSky・Eveを使い始める</h1>
-          <p>
-            月額16ドルの利用枠付きプラン。超過分は事前に承認した上限内で月末に明細化します。
-          </p>
+          <h1>eSIMからNoahを使い始める</h1>
+          <p>回線を追加したら、<Link href="/noah/purchases">購入履歴・eSIM設定</Link>で端末の状態を確認してください。専用クラウドを使う方は、ここで基本料・利用枠・超過単価・上限を確認します。</p>
         </header>
         <output className={styles.notice}>
-          {state ? messages[state] : '利用開始の状態を確認しています…'}
+          {state ? messages[state] : error ? '利用開始の状態は未確認です。' : '利用開始の状態を確認しています…'}
         </output>
         {view?.readiness.osReady && !setup ? (
           <section>
@@ -150,7 +148,7 @@ export default function RockstarServiceSetup() {
             ) : (
               <p>
                 確認済みの利用権がありません。
-                <Link href="/sky/esim">eSIMの追加・確認へ</Link>
+                <Link href="/noah/esim">eSIMの対応状況を確認する</Link>
               </p>
             )}
           </section>
@@ -187,7 +185,7 @@ export default function RockstarServiceSetup() {
               </div>
             </dl>
             <p>
-              今の引落額は0ドル。実際の請求はサービス利用開始後、基本料と確定した使用量を月末に集計します。
+              この手続きでの引落額は0ドルです。専用クラウドが利用開始になると、基本料と確定した使用料を月末に集計し、このRockstar IDの契約に登録した支払い方法へ請求します。eSIMの購入代金は購入履歴で確認できます。
             </p>
             <p>
               <a
@@ -271,14 +269,14 @@ export default function RockstarServiceSetup() {
                 <Link className="rock-button" href="/chat">
                   Eveに依頼する
                 </Link>
-                <Link className="rock-button" href="/sky">
-                  Skyで探す・追加する
+                <Link className="rock-button" href="/noah/explore">
+                  Noahで最初のAgentを選ぶ
                 </Link>
               </nav>
             ) : null}
             {setup.workspaceId ? (
-              <Link href="/sky/linux">
-                契約・使用額・保存済みの仕事を確認する
+              <Link href="/noah/linux#monthly-statement">
+                専用クラウドの使用額・請求明細を見る
               </Link>
             ) : null}
           </section>

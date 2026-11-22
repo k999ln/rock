@@ -294,3 +294,5 @@ Gitleaks 8.30.1公式配布のchecksum照合済みMacバイナリで `GITLEAKS_B
 main `062fbb456` の検索・モバイル試験修正を統合し、公開中の並び替えボタン・掲載可否判定・共有機能を保持。統合後の関連21試験・型検査成功。公開190/source `4401738ccc3160cc34c4eae10c497ddb465ebbcd`（並行担当Git `4dae9492e`）のホーム告知撤去も取り込み、法人/組合せの独立ページとデータは維持した。最初の手元verifyはOpenSSL 3のPATH不足で停止したため、修正した環境で全体を再実行する。検査完了・main統合の結果はPRへ追記する。
 
 GitHub Actions [SPIDER run44979417145](https://github.com/k999ln/rock/actions/runs/44979417145)、job137076412997で `8e178d08981307e7b499044cc6df6e340a36ba51` の全HEAD到達履歴検査が成功し、`SPIDER clean: 0 candidates` を確認。固定ポリシー試験・秘密値を出さない境界試験・SPIDER修復回帰も成功した。最終全体CIとmain統合はPR #377に最新HEADを結び付けて記録する。
+
+追補: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は統合実装 `8e178d08` と記録更新 `1d5552f3` の内容で全工程exit0（主4,933成功/5skip/0失敗、API1,918、CSV385、ビルド・mission/work/botまで）。その後mainへ入ったPR #389 / `6692661b` も履歴ごと取り込み、eSIM再開・利用明細の115試験と統合production buildが成功。再ビルドしたローカルWorkerの8経路/8ヘッダーを実測し `data/web-security-response-current.json` を再採取した。新規の空ローカルD1は共通基盤テーブルがないため起動用migrationが停止し、ヘッダー実測は直接local Workerを起動して実施（本番DBは操作していない）。最終統合HEADの全CIをPRに記録して受け入れる。
