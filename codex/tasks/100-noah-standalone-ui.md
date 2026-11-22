@@ -249,3 +249,12 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 公開189 succeeded: Sites source `5775d59af94d4eca6a676ba625d54dfa9314a78d`（親 `9714ad8d13286b329a1dd655d54cc842305c74cf`）、deployment `appgdep_6b02585027588191bca3c5320550f2a2`、env17。公開188の収集・組合せ機能と元サイト評価への一本化を保全。ホーム・一覧API・Agent詳細のHTTP 200を確認。これは物理端末の操作試験ではない。
 
 修正7ファイルはSitesのGit sourceに保存済み: `components/noah-agent-share.tsx`、`components/noah-combination-form.tsx`、`lib/noah-agent-share.ts`、`tests/fixtures/noah/screen.mjs`、`tests/noah-agent-share.test.mjs`、`tests/noah-patrol.test.mjs`、`tests/noah-ready-ui.test.mjs`。共有・組合せの導入元はGitHub main/本PRに未収録のため、部分的に複製せず公開側の正確なSHAを受領票として記録する。差分控え `/tmp/noah-lint-clean-20261122.patch`。次担当は当該機能をGitHubへ受け入れる際にこの修正版を使用する。PRレビュー/マージは未完了。
+
+
+## 2026-11-22 ホームをAgent検索・利用へ統一（PR #386）
+
+✅ 本人指示によりホームから法人向け導入準備と組合せガイドの告知枠を撤去し、共通Agent一覧だけを表示する。検索・絞り込み・詳細からの接続・保存・元サイト評価は維持する。独立した案内ページや保存済みデータの削除は行わない。公開/ローカル両モードの既存画面試験を更新した。
+
+公開190 succeeded: source `4401738ccc3160cc34c4eae10c497ddb465ebbcd`、deployment `appgdep_6b025c16feb0819199236dba677fe33b`、env17。公開189のlint修正と他の変更を維持。Git側のホーム部品も同じ実装へ揃え、設計正本04・決定07・READMEを更新。
+
+検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0。主4,907 pass・4 skip・0 fail、型/lint/build、bundle/assets、Work API1,918・CSV385、mission/work/botまで成功。Git側の関連4試験も成功。公開ホームと一覧APIがHTTP200、公開クライアントの参照先と画面ファイルが今回のbuildに一致し、法人/組合せ告知文がホーム部品に含まれないことを確認。初回HTMLはブラウザ保存先準備を表示するため、HTMLだけで読込後の画面を確認したとは扱わない。今回はブラウザ操作・実機の目視確認を行っていない。ログ `/tmp/noah-home-focus-verify.log`、`/tmp/noah-home-focus-tests.log`、`/tmp/noah-home-focus-git-tests.log`。PRレビュー/マージは未完了。

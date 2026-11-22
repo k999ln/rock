@@ -1,5 +1,6 @@
 ## 2026-11-22
 
+- Noahホームから法人向け・組合せガイドの告知枠を外し、Agent検索・一覧へ統一。全体verify成功、公開190へ反映（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 - Noah公開ソースのlint7件と共有UI試験の読み込み・期待値を修正し、全体verifyを単一実行で完走（4,907 pass・4 skip、API1,918・CSV385）。公開189へ反映（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 - Noahのカードと掲載Agent詳細から利用人数・王冠・コメント列を外し、元サイト評価へ一本化。公開186・390px/590pxを確認。全体verifyは別の共有機能の既存lintで停止（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 - Noahの評価元で付いたGitHubスター/Hugging Faceいいね等をカードに常時表示。元APIの実数と公開184の表示・390pxレイアウトを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
