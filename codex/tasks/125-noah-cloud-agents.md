@@ -46,3 +46,5 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 公式stdio4配布物のprobe/実ツールがnetwork noneのLinuxで成功。Memory生成物/次の依頼の空の記憶、Filesystem生成物/読戻し/領域外とsymlink拒否、成果hashを確認。モデルはfixture。関連68試験成功。
 - 22:40 JSTの実API確認: kirin.999@icloud.comは旧環境の管理と既存7 Workersの読取が可能。smash@avoado.siの権限はSuper Administratorだが招待はpending。新ログイン用の分離OAuthも旧メールで認証され、新ログイン自身での管理は未確認。Containersは401 Workers Paid requiredを維持。契約・本番CLI有効化は未実施。
 - 今回追加後の型/lint・Worker/amd64イメージdry-runも成功。全体verifyは本人が指示した全チャット統合担当の最新統合版へ集約し、PR #1のSHA/検証結果を渡す。実クラウド受入は引き続き未完了として保持する。
+
+- 本番掲載のMemory/FilesystemはDockerページであることを確認し、Docker公式mcp-registryの配布記録が同じ公式上流のsrc/memory・src/filesystemを指すことを照合して別名登録。掲載カードから固定CLIへ解決する19試験が成功。
