@@ -90,6 +90,8 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+CLIの管理クラウドは [task123](codex/tasks/123-noah-cloud-agents.md) で実装中です。Hermesとboss-agent-cliの固定版を依頼ごとの隔離環境で動かし、Noah内で接続・入力・停止・結果保存を行います。公式配布物のローカル実行とスマホ幅の操作試験は通過しました。本番はCloudflareの配備権限と実モデルの受入待ちです。提供元の確認済みMCP/APIへの直接接続も維持します。
+
 検索は [Agentを探す](https://avoado.si/noah/explore)、保存は [保存したもの](https://avoado.si/noah/saved) にまとめています。検索は使えるAgent・カタログ・Tool、保存はボード・Agent・担当・成果・ファイルを切り替えます。旧URLは対応するカテゴリへ移り、Noah配下のMac専用・投稿・コミュニティー・大学別ページは撤去済みです。保存データは保持しています。
 
 Agent詳細の最初に料金・送信先と接続ボタンを表示します。接続後は用途名で操作を選び、その行の下から依頼できます。スマホの操作一覧も、用途名・説明・確認事項を縦に並べて読めます。長い紹介は「Agentの詳細」で開けます。

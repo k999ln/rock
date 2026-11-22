@@ -1,4 +1,5 @@
 import type { NoahReceivedResult } from './noah-result-media.ts';
+import type { NoahCloudFile, NoahCloudProfile } from './noah-cloud-contract.ts';
 /**
  * 相手のサーバーで動く仕事（置き場所が provider）の、Work の記録。
  *
@@ -36,6 +37,8 @@ export type NoahRemoteExecution = {
   /** 成果に添える 1 行（「<host> の <道具> が返した内容です。費用 0。」）。 */
   note?: string;
   error?: string;
+  /** Managed-cloud results keep the existing unverified Work/owner boundary. */
+  cloud?: { projectId: string; profile: NoahCloudProfile; files?: NoahCloudFile[] };
 };
 
 const iso = (at: number) => new Date(at).toISOString();

@@ -1,0 +1,19 @@
+{
+  "name": "noah-cloud-agents",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-22",
+  "containers": [{ "class_name": "NoahCloudJob", "scheduling_policy": "durable_object", "images": { "base": { "dockerfile": "./container/Dockerfile" } } }],
+  "durable_objects": { "bindings": [
+    { "name": "JOBS", "class_name": "NoahCloudJob" },
+    { "name": "CONNECTIONS", "class_name": "NoahCloudConnection" },
+    { "name": "BUDGET", "class_name": "NoahCloudBudget" }
+  ] },
+  "exports": {
+    "NoahCloudJob": { "type": "durable-object", "storage": "sqlite" },
+    "NoahCloudConnection": { "type": "durable-object", "storage": "sqlite" },
+    "NoahCloudBudget": { "type": "durable-object", "storage": "sqlite" }
+  },
+  "ai": { "binding": "AI" },
+  "observability": { "enabled": true },
+  "limits": { "cpu_ms": 30000 }
+}
