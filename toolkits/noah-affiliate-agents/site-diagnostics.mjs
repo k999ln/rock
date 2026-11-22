@@ -316,6 +316,26 @@ export async function executeSiteDiagnosis(
   );
   return siteResult(s.id, input, raw, new Date(now).toISOString());
 }
+export function siteReportText(result) {
+  return [
+    result.title,
+    '対象: ' + result.target,
+    '確認日時: ' + result.checkedAt,
+    '確認元: ' + result.provider,
+    result.sourceUrl,
+    '',
+    '公開ページの診断結果',
+    ...result.findings.map((x) => '・' + x.item + '（' + x.status + '）'),
+    '',
+    '相談前に整理すること',
+    ...result.preparation.map((x) => '・' + x),
+    '',
+    result.nextAction,
+    ...(result.referralUrl
+      ? ['相談先と条件を確認する（広告を含む記事）', result.referralUrl]
+      : []),
+  ].join('\n');
+}
 export function completeSiteDiagnosis(
   s,
   input,

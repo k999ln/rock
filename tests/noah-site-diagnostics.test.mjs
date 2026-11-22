@@ -22,6 +22,7 @@ import {
   prepareCombination,
 } from '../toolkits/noah-affiliate-agents/combination-core.mjs';
 import { prepareProviderMcp } from '../lib/noah-provider-mcp.ts';
+import { noahResultPresentation } from '../lib/noah-result-presentation.ts';
 import {
   noahRevenueDirectory,
   noahRevenueTarget,
@@ -524,8 +525,19 @@ await test(
             })
           ).json();
         assert.equal(res.result.isError, false, JSON.stringify(res));
-        const result = JSON.parse(res.result.content[0].text);
+        const result = res.result.structuredContent;
         assert.equal(result.referralUrl, s.registeredArticle.url);
+        const displayed = noahResultPresentation({
+          text: res.result.content[0].text,
+          truncated: false,
+          attachments: 0,
+        });
+        assert.equal(displayed.kind, 'text');
+        assert.ok(displayed.summary.includes(result.findings[0].item));
+        assert.ok(displayed.summary.includes(result.findings[0].status));
+        assert.ok(displayed.summary.includes(result.preparation[0]));
+        assert.ok(displayed.summary.includes('広告を含む記事'));
+        assert.ok(displayed.summary.includes(s.registeredArticle.url));
         assert.equal(calls, before + 1);
         const cached = await req('/api/diagnose/' + s.id, {
           ...inputs[s.id],

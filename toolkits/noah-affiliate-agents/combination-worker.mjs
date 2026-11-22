@@ -6,6 +6,7 @@ import {
   sitePublications,
   executeSiteDiagnosis,
   completeSiteDiagnosis,
+  siteReportText,
 } from './site-diagnostics.mjs';
 import { diagnosticPage } from './site-diagnostics-page.mjs';
 import {
@@ -549,8 +550,15 @@ const worker = {
             schemeId: siteId,
             input: v.params.arguments,
           });
+          const result = await r.json();
           return ok({
-            content: [{ type: 'text', text: JSON.stringify(await r.json()) }],
+            content: [
+              {
+                type: 'text',
+                text: r.ok ? siteReportText(result) : result.error,
+              },
+            ],
+            ...(r.ok ? { structuredContent: result } : {}),
             isError: !r.ok,
           });
         }
