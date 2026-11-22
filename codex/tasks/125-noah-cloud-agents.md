@@ -54,3 +54,19 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - [PR #12](https://github.com/iceiceice999/rock/pull/12)でCLI `9f888cc36`、公開サイト診断 `e88bab58d` と、mainに入ったココナラ `9bd709013`・Pixel受入記録を統合。追記文書は両側を保持。
 - 統合 `7c543a79d` の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が全工程成功。主要5,155成功・5skip・失敗0、仕事API1,918、CSV385。型検査・lint・ビルド・資産欠落0も成功。後続mainマージ `49fc3cd2f` は同一tree。GitHubの最終検査結果とマージSHAはPRに記録する。
 - CLI本番配備・実モデル受入、共通Noah画面での追加診断受入は別工程。検査成功を本番実行・実注文・承認・入金の成功として扱わない。
+
+
+<a id="pixel-209-and-real-model"></a>
+
+## 2026-11-23 実モデルとPixelの再検証
+
+- 公開209はmain `42cf4b619ee19bcb47612250d70539457dec1977` と同じtree `fde361844ba21fd581f3ea10a60ba87d4682f1e9`。Sites source `459c0439f778bb605e6b52179be886a8cc2b1e6a`、deployment `appgdep_6b02fea378e08191a30436c416c25aa7` succeeded、env17。既存のデザインと機能は変更していない。同じ内容の重複配備は実施しなかった。
+- 実モデル `@cf/openai/gpt-oss-20b` が返すTool呼出の本文 `null` を次の入力へ渡すとHTTP400になることを実APIで再現。空文字列へ正規化し、Tool ID・引数・結果は維持する。回帰試験9件成功。
+- 公式stdio実行器は、Toolを一度も実行しない文章だけの「完了」を受け付けない。1回だけ実操作を促し、それでも実操作がなければ失敗にする。未知の道具名は書き換えて実行せず、未実行のエラーをモデルへ返す。既存の8回/240秒上限は維持。
+- ARM64 Linux・network none・非rootの隔離コンテナに固定版の公式6配布物を入れ、ホストから実Workers AIへ中継。キーはコンテナへ渡していない。Timeの現在時刻、Sequential Thinking、Memoryの作成/読戻しと `memory.jsonl`、Filesystemの作成/読戻しと `result.txt`、Hermesの `total.txt=2000`、bossの面接質問5件を確認。モデル応答はfixtureではない。Filesystemはモデルの不正な道具名/応答で失敗した試行もあり、再試行の成功と分けて記録。6種を同一実行で全件成功したとは扱わない。Containers本番はWorkers Paid未契約の拒否を再確認し、有料契約はしていない。
+- `scripts/test-noah-cloud-stdio.mjs` は公式パッケージで8シナリオ成功（モデルはfixture）。通常処理に加え、文章だけの完了からの復帰、未知Toolを実行しない復帰、文章だけの完了を2回返した時の失敗、Memoryの依頼間分離、Filesystemの領域外/symlink拒否を含む。
+- Pixel 10の公開209で `Noah-Pixel-209-20261123` を新規登録（今回だけ使用）→登録202/完了200→plan/connect/tools200→認証付き `whoami` 202→成果の詳細200→キャッシュを使わない再読込後も名前と「利用中」を表示。Work `5f64b90b-f569-4578-9bd1-f0444dd3c6eb`。この試験用ブラウザの所有者に限定され、既存本人の保存データは変更していない。411pxで横溢れなし。最初の読み込みにDNS失敗があったが、再読込後は完走し、登録の重複送信はなし。
+- Pixelで通常タップの16ms振動と接続成功の `[12,45,12]`、Web Audioのrunning状態での再生開始を確認。Androidのvibrator_managerも対応する12ms×2のfinishedを記録。今回の音は再生処理の確認で、録音による音質評価はしていない（公開203の実録音はtask100に保持）。
+- 証拠は `work/noah-tap-feedback/work/noah-production-209/` の `publication.json`、`model-probe.json`、`real-model-guarded.log`、`model-filesystem-diagnostic.log`、`stdio-regressions.log`、`pixel-roundtrip.json`、`pixel-feedback.json`、`pixel-vibrator.txt`、`pixel-result-reloaded.png`。キーや本人の既存データを含めず、途中の失敗も保存。全体verifyとGit/公開の最終結果は受入後に追記する。
+
+- [PR #19](https://github.com/iceiceice999/rock/pull/19): `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0（主要5,163成功・5skip・失敗0、API1,918・CSV385、型/lint/build/資産/mission/work/bot成功）。最終の記録と試験出力表示の更新後にも `npm run design:check` / `npm run lint:product` 成功。GitHub CI・マージ・公開の状態はPRへ追記する。
