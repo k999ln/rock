@@ -78,6 +78,18 @@
 - 正本が分かれた後に k999ln/rock に入った #415 までは、Codex が iceiceice999/rock へ統合済み（iceiceice999 #6・k999ln #420）。残りはこの PR だけ。
 - 収集機の Actions の鍵（`NOAH_COLLECTION_KEY`・`SMITHERY_API_KEY`・`NOAH_R2_*`）は、今は k999ln にある。iceiceice999 で動かす時は、ノエルが Actions の secret に入れる。移し終えるまで、k999ln の Actions は止めない（2 つが同時に掲載すると、新しい方が上書きする。どちらか 1 つにしてから切り替える）。
 
+### 3.7 収集機が止まっている（2026-11-22 21:40 JST に分かった事）
+
+- 本番の紹介は、2026-11-22 07:30Z（16:30 JST）から更新されていない（`/api/noah/collection` の各出所の `observedAt`）。
+- 5 分ごとの予定（cron `3-58/5 * * * *`）は、この日 2 回しか動いていない（00:41Z・07:30Z）。GitHub の予定は、短い間隔だと大きく遅れたり飛ばされたりする。
+- 2 回とも掲載はできたが、discovery の `github` が `unavailable` で終了コード 1 になり、失敗の扱いになっている。
+- Codex の手動の実行（2 時間ごと）は、枝 `codex/noah-social-collection` から起動している。job の条件 `github.ref == 'refs/heads/main'` で飛ばされ、何もしていない（結果は success に見える）。
+- 直す事:
+  1. 手動で起動する時は main から起動する（`gh workflow run noah-agent-collection.yml --ref main`）。
+  2. 正本を iceiceice999/rock に移す時は、job の条件の repository を `iceiceice999/rock` にし、secret を入れる（3.6）。
+  3. GitHub の予定は当てにしない。予備として、Codex のスケジュールで 1 時間ごとに、main から手動の実行を起動する。
+- 合格: 本番の hackernews の列の `observedAt` が、2 時間より古くならない状態が 24 時間続く。
+
 ## 4. 合格条件
 
 - 本番の X の列と「Noahが読んだ」の列に、7 日続けて、毎日新しい紹介が入る。
