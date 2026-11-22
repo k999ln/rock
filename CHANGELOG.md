@@ -1,5 +1,5 @@
 ## 2026-11-23
-- NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、PR準備中）。
+- NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。
 
 ## 2026-11-22
 - Noahの収集停止の記録を正本へ移植し、旧mainの手動実行とCodexの毎時実行で収集を復旧。24時間の鮮度と正本への実行先切り替えは追跡中（[PR #15](https://github.com/iceiceice999/rock/pull/15)、[PR #16](https://github.com/iceiceice999/rock/pull/16)、[復旧実行](https://github.com/k999ln/rock/actions/runs/45032700818)）。

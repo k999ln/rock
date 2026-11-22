@@ -135,3 +135,5 @@
 - 証拠は非公開work/noah-affiliate-delivery-20261122の `growth-articles.private.json`、`growth-journal.private.json`、`growth-after-status.private.json` と `growth-*.jpg`。運営鍵・広告タグはGitへ含めない。
 - 未完了: Rentracksは現在ログイン切れで新しい成果取得は未実施。最後の実ASP観測2026-11-22T13:50:26.830Zは2件とも注文/承認0。次回自動実行の成功、実顧客獲得、申込、広告主承認をまだ実証していない。ログイン依頼済み。古い0を現在の結果とみなさない。
 - 検証: 関連10試験成功。全体verifyは未変更eve-smith-mii-browserのtimeoutで初回失敗し単独2試験成功。全体verifyの再実行が全工程成功（主要5,164 pass / 5 skip / 0 fail、API1,918、CSV385、build等）。
+
+- Git: [PR #17](https://github.com/iceiceice999/rock/pull/17)。全体verify成功のコードa635654acと公開受入を保持。
