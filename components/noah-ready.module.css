@@ -162,3 +162,17 @@
 .agentDetails > summary { min-height:48px; display:list-item; align-content:center; cursor:pointer; font-size:14px; color:#62596b; }
 .tools .toolDescription { font-size:14px; line-height:1.5; margin-top:6px; }
 .tools .form { margin:8px 12px 12px; }
+
+/* Keep operation names and status chips on independent rows, including narrow phones. */
+.section .tools .toolButton,.section .tools .toolRow{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;align-items:start;text-align:start;}
+.tools .toolButton strong,.tools .toolRow strong{display:block;min-width:0;font-size:16px;line-height:1.5;margin:0;}
+.tools .marks{display:flex;flex-wrap:wrap;gap:6px;min-width:0;}
+.tools .marks span{font-size:14px;white-space:normal;word-break:normal;overflow-wrap:normal;}
+.tools .toolExplanation{padding:0 16px 8px;font-size:14px;}
+.tools .toolExplanation summary,.permissionOptions summary{min-height:44px;cursor:pointer;padding:10px 0;}
+.tools .toolExplanation p{display:block;overflow:visible;white-space:normal;-webkit-line-clamp:unset;}
+.tools .form{padding:12px;margin:0 8px 12px;}
+.form .toolExplanation{padding:8px 0 0;}
+.permissionOptions{margin:0;font-size:14px;}
+.permissionOptions[open]{margin-bottom:12px;}
+.form .sendsTo{margin-top:8px;padding:6px 10px;}

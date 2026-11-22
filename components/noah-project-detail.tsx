@@ -55,11 +55,11 @@ export default function NoahProjectDetail({ id }: { id: string }) {
       </section>
       {detail.connection.kind === 'cloud' ? null : detail.connection.kind === 'ready' ? <NoahReadyDetail id={detail.connection.familyId} internalOnly /> : detail.connection.kind === 'space' ? <section className={styles.connection} aria-label="Noah内で使う">
         <h2>Noahで使う</h2><p>この画面でAgentの利用画面を開きます。入力は提供者のHugging Face Spaceに送られます。</p>
-        <button className={styles.primary} disabled={opening} onClick={() => void openSpace()}>{opening ? '接続先を確認しています…' : url ? '接続をやり直す' : '接続して使う'}</button>
+        <button className={styles.primary} hidden={Boolean(url)} disabled={opening} onClick={() => void openSpace()}>{opening ? '接続先を確認しています…' : '利用画面を開く'}</button>
         {error && <p><Link className={styles.back} href={`/noah/agents/new?${new URLSearchParams({ sourceUrl: `https://huggingface.co/spaces/${detail.connection.repository}`, name: detail.card.name })}`}>Noahで取込・設定する</Link></p>}
-        {url && <><div className={styles.frameHeader}><span>利用画面 · {new URL(url).hostname}</span><button onClick={() => { setUrl(''); setFrameLoaded(false); setSlow(false); }}>閉じる</button></div>
+        {url && <><div className={styles.frameHeader}><span>利用画面 · {new URL(url).hostname}</span><button disabled={opening} onClick={() => void openSpace()}>再読み込み</button><button onClick={() => { setUrl(''); setFrameLoaded(false); setSlow(false); }}>閉じる</button></div>
           {!frameLoaded && <NoahLoading compact label="利用画面を読み込んでいます…" />}
-          {slow && <output>起動に時間がかかっています。表示できない場合は「接続をやり直す」を押してください。</output>}
+          {slow && <output>起動に時間がかかっています。表示できない場合は「再読み込み」を押してください。</output>}
           <iframe className={styles.frame} title={`${detail.card.name}の利用画面`} src={url} sandbox="allow-scripts allow-same-origin allow-forms allow-downloads" referrerPolicy="no-referrer" onLoad={() => { setFrameLoaded(true); setSlow(false); }} />
           <p className={styles.muted}>利用画面に停止や認証の案内が出る場合は、その状態に従ってください。画面の表示だけでは処理の成功を意味しません。</p></>}
       </section> : <section className={styles.connection} aria-label="接続の準備">
