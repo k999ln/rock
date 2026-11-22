@@ -38,7 +38,9 @@ export default function NoahAgentUploadForm() {
   const processingController = useRef<AbortController | null>(null);
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/__noah/upload-refactor', { signal: controller.signal, cache: 'no-store' }).then(async r => { const data = r.ok ? await r.json() as { available?: boolean } : null; if (!controller.signal.aborted) setProcessorAvailable(data?.available === true); }).catch(() => { if (!controller.signal.aborted) setProcessorAvailable(false); });
+    // 検証の実行先が無い所（スマホ・公開版）では、固定テストの整理を最初から外す。付けたままだと、テンプレートのまま保存した時に必ず失敗する。
+    const settle = (available: boolean) => { if (controller.signal.aborted) return; setProcessorAvailable(available); if (!available) setVerifiedRefactor(false); };
+    fetch('/__noah/upload-refactor', { signal: controller.signal, cache: 'no-store' }).then(async r => { const data = r.ok ? await r.json() as { available?: boolean } : null; settle(data?.available === true); }).catch(() => settle(false));
     return () => controller.abort();
   }, []);
   useEffect(() => {
@@ -265,7 +267,7 @@ export default function NoahAgentUploadForm() {
           <p>公開コード・設定・ライセンスを32ファイルまで取得します。モデルの重み、非公開・利用条件付きの配布物は含みません。取得記録をZIPに残します。</p>
           {importMessage && <output aria-live="polite">{importMessage}</output>}
         </div></details>
-        <label className={styles.check}><input type="checkbox" checked={verifiedRefactor} onChange={e => { setVerifiedRefactor(e.target.checked); setId(''); }} />固定テストで確認して整理する（JS・TS・Python）</label>
+        <label className={styles.check}><input type="checkbox" checked={verifiedRefactor} disabled={processorAvailable === false} onChange={e => { setVerifiedRefactor(e.target.checked); setId(''); }} />固定テストで確認して整理する（JS・TS・Python）</label>
         <p>{processorAvailable === null ? '検証する実行先を確認中…' : processorAvailable ? 'このMacの隔離環境で変更前後を検証します。コードを外部モデルへ送りません。' : '固定テストを実行する接続先がありません。構文整理のみの保存も選べます。'}</p>
         <details><summary>単一ファイル・貼り付けコードに固定テストを添付</summary><div className={styles.fields}>
           <label>テストのファイル名<input maxLength={120} value={testName} onChange={e => { setTestName(e.target.value); setId(''); }} placeholder="agent.test.mjs または test_agent.py" /></label>

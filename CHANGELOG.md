@@ -1,3 +1,6 @@
+## 2026-11-23
+- Noah を知らない人の目で一周して確かめた（Opus / Noelle。本人指示「ユーザーエクスピリエンスを辿ってデバグしてほしい（略）全部一個一個因数分解してちゃんといますぐ全機能が使えるか確かめて欲しい」）。日本語で探すと 0 件だった（「画像」「翻訳」「要約」など）のを、英語の語幹にも広げて直した。「自分のAgentを追加」がテンプレートのまま保存できなかったのを直した。保存したものに出ていたサインインと Mac の節、運営でない人の「Noah全体」、44px より小さい押す所、呼ぶたびに全件を作り直す公開一覧を直した。全体の流れの図・機能ごとの表・抜け道の表を docs/noah/ux-audit-2026-11-22.md に、残りを task 127 に書いた（[PR #UXAUDIT](https://github.com/iceiceice999/rock/pull/UXAUDIT)）。
+
 ## 2026-11-22
 - NoahからDaisukeのAniccaでココナラの公開募集を探索し、Macで提案の下書きを受け取り、停止できるようにした（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。
 - Noah公開203のPixel実機受入をREADME・task100・作業一覧へ記録。ポコ音の録音、振動完了、Agentboard新規登録→認証付き実行→成果の再読込保持を確認（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。

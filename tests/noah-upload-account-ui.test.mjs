@@ -107,3 +107,15 @@ void test('collected repository handoff opens the internal import fields after o
   assert.ok(h.nodes().some(n=>n.type==='input'&&n.props.value==='Collected Agent'));
   assert.match(h.text(),/固定commitを記録/);
 });
+
+void test('without a test runner the fixed-test refactor starts off and cannot be turned on, so the template saves', async t => {
+  // 公開版（スマホ）には検証の実行先が無い（/__noah/upload-refactor は 404）。付けたままだと、テンプレートのまま保存した時に必ず失敗していた。
+  const h = harness(async url => url === '/api/noah/agents' ? reply(200, { ownerScope: 'owner-a' }) : reply(200, { ownerScope: 'owner-a', drafts: [] }));
+  t.after(() => h.unmount()); await h.flush();
+  const label = h.nodes().find(n => n.type === 'label' && /固定テストで確認して整理する/.test(JSON.stringify(n.props.children)));
+  assert.ok(label);
+  const box = [label.props.children].flat().find(n => n && n.type === 'input' && n.props.type === 'checkbox');
+  assert.equal(box.props.checked, false);
+  assert.equal(box.props.disabled, true);
+  assert.match(h.text(), /固定テストを実行する接続先がありません/);
+});

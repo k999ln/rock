@@ -141,3 +141,4 @@
 | 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
 | 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | Codex へ |
 | 124 | [124-noah-teikibin-ledger.md](124-noah-teikibin-ledger.md) | 定期便の台帳（入金・費用・寄与の記録、月の締め、作業料と等分、有料の差し引き、振込の一覧、物の割当） | 🔶 台帳と画面 [PR #410](https://github.com/k999ln/rock/pull/410)（切り替えは閉。開ける前に要る事は仕様の 12 章） |
+| 127 | [127-noah-ux-debug.md](127-noah-ux-debug.md) | Noah の全機能を知らない人の目で確かめて直す（全体の上限・公平な枠・設定を返さない・本番の一周・未確認の165件・44px・サインインの行き先・Mac だけの画面・検索の続き・repository-map の正本） | 🔶 調べと 1 回目の直し（Claude、2026-11-22。[ux-audit](../../docs/noah/ux-audit-2026-11-22.md)）。D1〜D13 は未着手 |

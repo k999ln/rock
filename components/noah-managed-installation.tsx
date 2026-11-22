@@ -69,17 +69,21 @@ export default function NoahManagedInstallation({ id, terminal = false }: { id: 
 
 export function NoahInstallationsList() {
   const [rows, setRows] = useState<Installation[]>([]), [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true), [hidden, setHidden] = useState(false);
   useEffect(() => {
     return startNoahVisiblePolling(async signal => {
       try {
-        const data = await result(await fetch('/__noah/installations', { cache: 'no-store', signal }));
+        const response = await fetch('/__noah/installations', { cache: 'no-store', signal });
+        // 取り寄せは Mac の実行ホストだけの機能。公開版（/__noah が無い所）では、節ごと出さない。
+        if (response.status === 404) { if (!signal.aborted) { setHidden(true); setLoading(false); } return 600_000; }
+        const data = await result(response);
         if (!Array.isArray(data.installations)) throw new Error('取り寄せ一覧を確認できません。');
         if (!signal.aborted) { setRows(data.installations); setError(''); }
       } catch (e) { if (!signal.aborted) { setRows([]); setError(e instanceof Error ? e.message : '取得できませんでした。'); } }
       if (!signal.aborted) setLoading(false);
     }, 10000);
   }, []);
+  if (hidden) return null;
   return <section className={styles.notice}><h2>このMacに取り寄せたAgent</h2><p>本体・接続状態・停止と削除を管理できます。</p>
     {error && <output>{error}</output>}
     {loading && <output>このMacの接続状態を確認中…</output>}
