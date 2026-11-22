@@ -275,4 +275,11 @@ eSIMは本人回答「未発行。対応先と費用を確認してから導入�
 
 GitHub main `6c80b1378` とPR #386 `b8f87f087` を履歴ごと統合し、公開188 source `9714ad8d13286b329a1dd655d54cc842305c74cf` に先行していた共有カード/OG画像・法人入口・組み合わせ準備票・モバイルCSS・出典付き調査候補を受入。主画面とカードの元サイト評価を保全し、Git側の配給/Dock・eSIM模擬系・最新の正規URL検査は巻き戻していない。公開環境への追加migrationや実eSIM発行は含まない。
 
-並行担当の7ファイル修正を取り込み、制御文字の拒否範囲を維持したlint解消と、画面fixtureへの実共有モジュール登録/期待値更新を適用。試験の削除・除外はなし。型・lint・production build成功、ローカルHTTP8経路を実測し `data/web-security-response-current.json` を更新。統合後の単一 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は実行中で、結果と公開SHAは完走後に追記する。
+並行担当の7ファイル修正を取り込み、制御文字の拒否範囲を維持したlint解消と、画面fixtureへの実共有モジュール登録/期待値更新を適用。試験の削除・除外はなし。型・lint・production build成功、ローカルHTTP8経路を実測し `data/web-security-response-current.json` を更新。統合後のGitコミット `2371674dde7683db47ef2eb2651a8e6a0ce3bd00` は [GitHub Actions run 44977284409](https://github.com/k999ln/rock/actions/runs/44977284409) の単一 `npm run verify` が全工程成功。主4,931 pass・4 skip・0 fail、型/lint/build、仕事API1,918・CSV385 assertions、mission/work/botまで成功した。手元で開始した別実行はチャット中断後に終了状態と一時ログを回収できなかったため、その実行を成功証拠には用いない。
+
+
+公開189は source `5775d59af94d4eca6a676ba625d54dfa9314a78d`、deployment `appgdep_6b02585027588191bca3c5320550f2a2`、env revision 17、native status succeededを確認。公開側も単一verifyが全工程成功（4,907 pass・4 skip・0 fail、API1,918・CSV385）。188からの変更は上記7ファイルだけで、最新デザイン・共有・法人入口・組み合わせ・登録不要の権限を保持した。GitのNoah関連420ファイルと公開修正版を比較し、Git mainに先行するeSIM画面以外は一致を確認。公開時点以後、別チャットでホームの法人/組み合わせ告知を外す追加指示が進行中であり、この189の受入には含めない。重複配備は行わない。
+
+公開QA: 390pxでホーム→メニュー→保存5カテゴリ→Agent検索（Axad）→詳細→保存シート開閉→ホームを確認。詳細の接続/保存ボタンは非重複、共有操作と元サイト評価を保持。390px・1280pxで横はみ出しなし。表示幅を復元した。公開ドメインの読み取り専用12検査が成功。外部登録・仕事の新規実行は今回の回帰では増やしていない。Pixel実機の外部登録一周は前節の受入を参照。
+
+CIの区別: Release signing・SPIDER repair・CodeQL・Rock star verificationは成功。SPIDER repository securityだけは [run 44977284349](https://github.com/k999ln/rock/actions/runs/44977284349) / job 137069898394で停止。履歴中の `lib/noah-haptics.ts:2` の公開localStorage設定名が5件、`docs/design-validation/noah/noah-connect.test.mjs:85` の過去テスト値が3件、計8候補。固定された審査済みpolicyの検査であり、除外追加・検査無効化・履歴書換えは行っていない。全CI greenやmainへのマージ完了とは記録しない。PR #377はmain向けdraftを保持。
