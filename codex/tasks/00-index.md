@@ -138,3 +138,4 @@
 | 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ トップ掲載・クラウド移行 #380／UX修正 #384／スマホ実ブラウザ・verify不一致修正 #388／本番反映・ロード表示・内部接続 #390（検証結果はtask本文。Xはキー待ち） |
 | 121 | [121-noah-collect-more.md](121-noah-collect-more.md) | 集める場所を増やす（HN・GitHub MCP・HF MCP Space・npm・Docker・awesome一覧・Smithery、Codexが読むX/Reddit/Bluesky）・新しく使いやすい順・握手済みの系列を一覧へ自動で入れる | ✅ #385（本番の配備は Codex） |
 | 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
+| 123 | [123-noah-teikibin-ledger.md](123-noah-teikibin-ledger.md) | 定期便の台帳（入金・費用・寄与の記録、月の締め、作業料と等分、有料の差し引き、振込の一覧、物の割当） | 🔶 台帳と画面 [PR #409](https://github.com/k999ln/rock/pull/409)（切り替えは閉。開ける前に要る事は仕様の 12 章） |
