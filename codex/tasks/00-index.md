@@ -115,7 +115,7 @@
 | 103 | [103-esim-churn-measure.md](103-esim-churn-measure.md) | 続けて使う割合を測る: eSIM を入れた人と入れていない人を、同じ機能で比べる（集計の関数は実装済み） | ✅ [PR #415](https://github.com/k999ln/rock/pull/415)（使い続けた割合。月額の版 #364 は入れない） |
 | 104 | [104-owner-key-encryption.md](104-owner-key-encryption.md) | 本人の鍵で暗号化（案 K）: Memory と成果のファイルを運営も読めない形に | |
 | 105 | [105-cloud-operations.md](105-cloud-operations.md) | 自社クラウドの回し方: 約束・見張り・知らせ・費用の上限・バックアップ | ✅ [#368](https://github.com/k999ln/rock/pull/368)（main への統合は [PR #413](https://github.com/k999ln/rock/pull/413)。本番の migration・通知・cron は本人の許可の後） |
-| 101（紹介） | [101-noah-affiliate-agents.md](101-noah-affiliate-agents.md) | Noah向け相談・紹介案件運営のZIPとMCP | ✅ [PR #374](https://github.com/k999ln/rock/pull/374)（法人相談→登録媒体の正式広告を稼働。Chrome実取得・6時間追跡を接続。実承認・銀行照合は未受入） |
+| 101（紹介） | [101-noah-affiliate-agents.md](101-noah-affiliate-agents.md) | Noah向け相談・紹介案件運営のZIPとMCP | ✅ [PR #374](https://github.com/k999ln/rock/pull/374)（法人相談→登録媒体の正式広告を稼働。Chrome実取得・6時間追跡を接続。実承認・銀行照合は未受入）  / 統合実装 [PR #8](https://github.com/iceiceice999/rock/pull/8)（本番接続受入中） |
 
 ## 110 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
 
