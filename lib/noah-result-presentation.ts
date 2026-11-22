@@ -57,6 +57,127 @@ const fields = (value: Record<string, unknown>) =>
       label: labels[key] ?? key.replaceAll('_', ' '),
       value: str(value),
     }));
+const LIST_KEYS = ['entries', 'items', 'results', 'records', 'data'];
+const skipSpace = (s: string, i: number) => {
+  while (i < s.length && /\s/.test(s[i])) i += 1;
+  return i;
+};
+/** Index just after the complete JSON value that starts at `i`, or -1 when the text ends before the value does. */
+function jsonValueEnd(s: string, i: number): number {
+  const open = s[i];
+  if (open === '"') {
+    for (let j = i + 1; j < s.length; j += 1) {
+      if (s[j] === '\\') j += 1;
+      else if (s[j] === '"') return j + 1;
+    }
+    return -1;
+  }
+  if (open === '{' || open === '[') {
+    let depth = 0;
+    for (let j = i; j < s.length; j += 1) {
+      const c = s[j];
+      if (c === '"') {
+        const end = jsonValueEnd(s, j);
+        if (end < 0) return -1;
+        j = end - 1;
+      } else if (c === '{' || c === '[') depth += 1;
+      else if (c === '}' || c === ']') {
+        depth -= 1;
+        if (depth === 0) return j + 1;
+      }
+    }
+    return -1;
+  }
+  // A number, true, false or null counts as whole only when a separator follows; a clipped "12" may have been "1234".
+  let j = i;
+  while (j < s.length && !/[\s,\]}]/.test(s[j])) j += 1;
+  const next = skipSpace(s, j);
+  return next < s.length && /[,\]}]/.test(s[next]) ? j : -1;
+}
+/** Where the list inside a top-level object starts: a known list key first, otherwise the first array value. */
+function topLevelListStart(s: string): number {
+  let i = skipSpace(s, 1), firstArray = -1;
+  while (i < s.length && s[i] === '"') {
+    const keyEnd = jsonValueEnd(s, i);
+    if (keyEnd < 0) break;
+    let key = '';
+    try {
+      key = JSON.parse(s.slice(i, keyEnd)) as string;
+    } catch {
+      break;
+    }
+    i = skipSpace(s, keyEnd);
+    if (s[i] !== ':') break;
+    const valueStart = skipSpace(s, i + 1);
+    if (s[valueStart] === '[') {
+      if (LIST_KEYS.includes(key)) return valueStart;
+      if (firstArray < 0) firstArray = valueStart;
+    }
+    const valueEnd = jsonValueEnd(s, valueStart);
+    // The text ran out inside this value. When it is an array, that is where the bulk of the result was.
+    if (valueEnd < 0) return s[valueStart] === '[' ? valueStart : firstArray;
+    i = skipSpace(s, valueEnd);
+    if (s[i] !== ',') break;
+    i = skipSpace(s, i + 1);
+  }
+  return firstArray;
+}
+/**
+ * A result that was clipped for length is no longer valid JSON. Recover only the list items that arrived whole,
+ * exactly as the provider sent them; an item cut in the middle is dropped, never completed or guessed.
+ * Returns null when no list is found or no item arrived whole.
+ */
+export function noahPartialJsonList(text: string, maxItems = 1000): unknown[] | null {
+  const s = text.trimStart();
+  const start = s.startsWith('[') ? 0 : s.startsWith('{') ? topLevelListStart(s) : -1;
+  if (start < 0) return null;
+  const items: unknown[] = [];
+  let i = skipSpace(s, start + 1);
+  while (items.length < maxItems && i < s.length && s[i] !== ']') {
+    const end = jsonValueEnd(s, i);
+    if (end < 0) break;
+    try {
+      items.push(JSON.parse(s.slice(i, end)));
+    } catch {
+      break;
+    }
+    i = skipSpace(s, end);
+    if (s[i] !== ',') break;
+    i = skipSpace(s, i + 1);
+  }
+  return items.length ? items : null;
+}
+function listPresentation(
+  base: NoahResultPresentation,
+  list: unknown[],
+): NoahResultPresentation {
+  const cards = list.map((item, index): NoahResultCard =>
+    object(item)
+      ? {
+          title:
+            first(item, ['title', 'name', 'label', 'handle']) ||
+            `${index + 1}`,
+          text: first(item, [
+            'summary',
+            'description',
+            'text',
+            'content',
+            'message',
+          ]),
+          href: noahResultUrl(item.url ?? item.href ?? item.link),
+        }
+      : { title: str(item) || `${index + 1}`, text: '' },
+  );
+  return {
+    ...base,
+    kind: 'list',
+    title: '届いた一覧',
+    summary: '',
+    cards,
+    count: list.length,
+    raw: true,
+  };
+}
 /** Deterministic presentation, not an invented summary or a claim that provider content is verified. */
 export function noahResultPresentation(
   result: NoahReceivedResult,
@@ -97,6 +218,8 @@ export function noahResultPresentation(
   try {
     value = JSON.parse(text);
   } catch {
+    const partial = result.truncated && /^[{[]/.test(text) ? noahPartialJsonList(text) : null;
+    if (partial) return listPresentation(base, partial);
     if (/^[{[]/.test(text))
       return {
         ...base,
@@ -133,38 +256,11 @@ export function noahResultPresentation(
   const list = Array.isArray(value)
     ? value
     : object(value)
-      ? (['entries', 'items', 'results', 'records', 'data']
+      ? (LIST_KEYS
           .map((k) => value[k])
           .find(Array.isArray) ?? Object.values(value).find(Array.isArray))
       : undefined;
-  if (Array.isArray(list)) {
-    const cards = list.map((item, index): NoahResultCard =>
-      object(item)
-        ? {
-            title:
-              first(item, ['title', 'name', 'label', 'handle']) ||
-              `${index + 1}`,
-            text: first(item, [
-              'summary',
-              'description',
-              'text',
-              'content',
-              'message',
-            ]),
-            href: noahResultUrl(item.url ?? item.href ?? item.link),
-          }
-        : { title: str(item) || `${index + 1}`, text: '' },
-    );
-    return {
-      ...base,
-      kind: 'list',
-      title: '届いた一覧',
-      summary: '',
-      cards,
-      count: list.length,
-      raw: true,
-    };
-  }
+  if (Array.isArray(list)) return listPresentation(base, list);
   if (object(value))
     return {
       ...base,
