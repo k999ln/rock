@@ -104,3 +104,9 @@
 既存combination Workerへ公開サイト診断2種を追加。編集範囲はsite-diagnostics関連、既存combination/revenueの公開と台帳、lib/noah-revenue-directoryとDirectoryEntryの固定型、試験/記録。provider/Workの本体は変更しない。合格条件はdocs/services/noah-site-diagnostics.md。実条件/正式タグ/外部診断の証拠はGit外。
 
 - 追加2種の実MCP呼出しを本人の公開サイトで確認。提携・条件・媒体用原文タグとブログ公開2件をChromeで検証。関連48試験・型検査・Worker dry-run成功。現在は旧Workerの配備と共通Noahへの反映を受入中。実注文/承認は追加対象0件。統合担当がこのコミットを取り込んだ版で全体verifyとPR番号を記録する。
+
+## 2026-11-22 全チャット差分の統合検証（PR #12）
+
+- [PR #12](https://github.com/iceiceice999/rock/pull/12)でCLI `9f888cc36`、公開サイト診断 `e88bab58d` と、mainに入ったココナラ `9bd709013`・Pixel受入記録を統合。追記文書は両側を保持。
+- 統合 `7c543a79d` の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が全工程成功。主要5,155成功・5skip・失敗0、仕事API1,918、CSV385。型検査・lint・ビルド・資産欠落0も成功。後続mainマージ `49fc3cd2f` は同一tree。GitHubの最終検査結果とマージSHAはPRに記録する。
+- CLI本番配備・実モデル受入、共通Noah画面での追加診断受入は別工程。検査成功を本番実行・実注文・承認・入金の成功として扱わない。

@@ -97,7 +97,7 @@
 | 3 | — | 93 | [93-noah-library-lifecycle.md](93-noah-library-lifecycle.md) | 入れ替える（更新・戻す・切る・移す） | |
 | 4 | — | 95 | [95-noah-on-mii-contract.md](95-noah-on-mii-contract.md) | mii で使うための契約（Linux の host で同じ受入、声と表示の模擬） | |
 | 並行 | — | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | Noahのクラウド実行。Macを閉じた後の仕事・停止・従量の照合 | 設計整理済み。一般Agentの実行・有料受入は未完了 |
-| 並行 | — | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | ✅ [PR #393](https://github.com/k999ln/rock/pull/393) ココナラの本人Mac経路・合成取引で実機確認。クラウド汎用ブラウザは継続。✅ [PR #11](https://github.com/iceiceice999/rock/pull/11) Daisukeの公開案件探索・提案下書き・停止 |
+| 並行 | — | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | ✅ [PR #393](https://github.com/k999ln/rock/pull/393) ココナラの本人Mac経路・合成取引で実機確認。クラウド汎用ブラウザは継続。✅ [PR #11](https://github.com/iceiceice999/rock/pull/11) Daisukeの公開案件探索・提案下書き・停止  / ✅ 全体検査・差分統合 [PR #12](https://github.com/iceiceice999/rock/pull/12) |
 | 並行 | — | 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
 | 並行 | — | 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
 | 並行 | — | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
@@ -115,7 +115,7 @@
 | 103 | [103-esim-churn-measure.md](103-esim-churn-measure.md) | 続けて使う割合を測る: eSIM を入れた人と入れていない人を、同じ機能で比べる（集計の関数は実装済み） | ✅ [PR #415](https://github.com/k999ln/rock/pull/415)（使い続けた割合。月額の版 #364 は入れない） |
 | 104 | [104-owner-key-encryption.md](104-owner-key-encryption.md) | 本人の鍵で暗号化（案 K）: Memory と成果のファイルを運営も読めない形に | |
 | 105 | [105-cloud-operations.md](105-cloud-operations.md) | 自社クラウドの回し方: 約束・見張り・知らせ・費用の上限・バックアップ | ✅ [#368](https://github.com/k999ln/rock/pull/368)（main への統合は [PR #413](https://github.com/k999ln/rock/pull/413)。本番の migration・通知・cron は本人の許可の後） |
-| 101（紹介） | [101-noah-affiliate-agents.md](101-noah-affiliate-agents.md) | Noah向け相談・紹介案件運営のZIPとMCP | ✅ [PR #374](https://github.com/k999ln/rock/pull/374)（法人相談→登録媒体の正式広告を稼働。Chrome実取得・6時間追跡を接続。実承認・銀行照合は未受入）  / ✅ 統合 [PR #8](https://github.com/iceiceice999/rock/pull/8)（Sites206で実行・保存・再読込を受入。実承認・入金は未受入） |
+| 101（紹介） | [101-noah-affiliate-agents.md](101-noah-affiliate-agents.md) | Noah向け相談・紹介案件運営のZIPとMCP | ✅ [PR #374](https://github.com/k999ln/rock/pull/374)（法人相談→登録媒体の正式広告を稼働。Chrome実取得・6時間追跡を接続。実承認・銀行照合は未受入）  / ✅ 統合 [PR #8](https://github.com/iceiceice999/rock/pull/8)（Sites206で実行・保存・再読込を受入。実承認・入金は未受入）  / ✅ 診断2種コード統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)（全体verify成功。共通Noahの追加診断本番受入は継続） |
 
 ## 110 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
 
@@ -141,4 +141,4 @@
 | 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
 | 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | Codex へ |
 | 124 | [124-noah-teikibin-ledger.md](124-noah-teikibin-ledger.md) | 定期便の台帳（入金・費用・寄与の記録、月の締め、作業料と等分、有料の差し引き、振込の一覧、物の割当） | 🔶 台帳と画面 [PR #410](https://github.com/k999ln/rock/pull/410)（切り替えは閉。開ける前に要る事は仕様の 12 章） |
-| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | 新rock #1 Draft（旧 #402）・固定CLI6種/実装・Linux受入済、全体統合中、Workers Paid利用先・実モデル受入待ち |
+| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | ✅ 固定CLI6種の実装・全体検査・統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)（旧 #1/#402）。Linux受入済。本番CLI未配備・実モデル未受入 |

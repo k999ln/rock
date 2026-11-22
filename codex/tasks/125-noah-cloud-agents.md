@@ -48,3 +48,9 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 今回追加後の型/lint・Worker/amd64イメージdry-runも成功。全体verifyは本人が指示した全チャット統合担当の最新統合版へ集約し、PR #1のSHA/検証結果を渡す。実クラウド受入は引き続き未完了として保持する。
 
 - 本番掲載のMemory/FilesystemはDockerページであることを確認し、Docker公式mcp-registryの配布記録が同じ公式上流のsrc/memory・src/filesystemを指すことを照合して別名登録。掲載カードから固定CLIへ解決する19試験が成功。
+
+## 2026-11-22 全チャット差分の統合検証（PR #12）
+
+- [PR #12](https://github.com/iceiceice999/rock/pull/12)でCLI `9f888cc36`、公開サイト診断 `e88bab58d` と、mainに入ったココナラ `9bd709013`・Pixel受入記録を統合。追記文書は両側を保持。
+- 統合 `7c543a79d` の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が全工程成功。主要5,155成功・5skip・失敗0、仕事API1,918、CSV385。型検査・lint・ビルド・資産欠落0も成功。後続mainマージ `49fc3cd2f` は同一tree。GitHubの最終検査結果とマージSHAはPRに記録する。
+- CLI本番配備・実モデル受入、共通Noah画面での追加診断受入は別工程。検査成功を本番実行・実注文・承認・入金の成功として扱わない。
