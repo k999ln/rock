@@ -3,12 +3,9 @@ import { headers } from 'next/headers';
 import ColumbiaFeed from '@/app/sky/campus/[campusId]/columbia-feed';
 import OsHomeEntry from '@/components/os-home-entry';
 import { campusForHost } from '@/lib/campus-host';
+import { noahShareMetadata } from '@/lib/noah-share-metadata';
 
-const homeMetadata: Metadata = {
-  title: 'RockstarOS — 自分のSI環境を、どこからでも',
-  description:
-    '会員登録・ログインしてsmisの能力を追加し、Eveの会話・仕事・成果を同じアカウントで引き継ぐWebOS。',
-};
+const homeMetadata: Metadata = noahShareMetadata('/');
 
 const columbiaMetadata: Metadata = {
   title: 'smis for Columbia — Avocado',

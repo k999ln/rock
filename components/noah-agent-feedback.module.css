@@ -10,6 +10,6 @@
 
 .compactSignals { margin:6px 0 0; }
 .compactSignals .signals { display:flex; flex-wrap:wrap; gap:4px; }
-.compactSignals .signals > span,.compactSignals .signals > button,.compactSignals .signals > a { display:inline-flex; align-items:center; justify-content:center; gap:4px; min-height:40px; padding:4px 7px; font-size:13px; }
+.compactSignals .signals > span,.compactSignals .signals > button,.compactSignals .signals > a { display:inline-flex; align-items:center; justify-content:center; gap:4px; min-width:44px; min-height:44px; padding:4px 7px; font-size:13px; }
 .compactSignals .signals > span > span,.compactSignals .signals > button > span,.compactSignals .signals > a > span { display:none; }
 .compactSignals .notice { font-size:12px; }

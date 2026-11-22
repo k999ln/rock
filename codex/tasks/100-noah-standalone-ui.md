@@ -269,3 +269,10 @@ eSIMは本人回答「未発行。対応先と費用を確認してから導入�
 公開186 succeeded: source `7d4674768ce1497855244b2a29d609fc0c40052c`、deployment `appgdep_6b021379697c81919c0fee022d64b782`、env16。最新source6f5e9f8のモバイルUXと183共有カードを保全。公開ブラウザで一覧の王冠/コメント操作が0件であること、Axad詳細の元出典と保存/接続が残ること、390px/590pxで横はみ出しなしを確認。
 
 検証: 型検査・関連28試験・build・公開bundle/assets・8ルート/8ヘッダー成功。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は、今回変更していない共有機能のlint6件で停止。`lib/noah-agent-share.ts` 7/13 no-control-regex、`components/noah-agent-share.tsx` 34 prefer-tag-over-role、`tests/noah-agent-share.test.mjs` 6/14/23 no-floating-promises。テスト削除や検査除外は行わず、担当チャットへ共有。全体検査成功とはしない。ログ `/tmp/noah-only-source-verify.log`、関連 `/tmp/noah-only-source-tests.log`。修正後の全体verify・PRレビュー/マージは未完了。
+
+
+### 2026-11-22 最新公開188のGit統合（PR #377）
+
+GitHub main `6c80b1378` とPR #386 `b8f87f087` を履歴ごと統合し、公開188 source `9714ad8d13286b329a1dd655d54cc842305c74cf` に先行していた共有カード/OG画像・法人入口・組み合わせ準備票・モバイルCSS・出典付き調査候補を受入。主画面とカードの元サイト評価を保全し、Git側の配給/Dock・eSIM模擬系・最新の正規URL検査は巻き戻していない。公開環境への追加migrationや実eSIM発行は含まない。
+
+並行担当の7ファイル修正を取り込み、制御文字の拒否範囲を維持したlint解消と、画面fixtureへの実共有モジュール登録/期待値更新を適用。試験の削除・除外はなし。型・lint・production build成功、ローカルHTTP8経路を実測し `data/web-security-response-current.json` を更新。統合後の単一 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は実行中で、結果と公開SHAは完走後に追記する。

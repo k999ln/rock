@@ -11,7 +11,7 @@ export type ResearchSummary = {
 export type ResearchDetail = Omit<ResearchSummary, 'detailPath'> & {
   asOf: string; identity: 'name_group' | 'distribution';
   connection: 'existing_anicca' | 'not_tested'; price: string; license: string;
-  sources: { url: string; label: string; type: 'directory' | 'primary' }[];
+  sources: { url: string; label: string; type: 'directory' | 'primary' | 'citation' }[];
   references: { dataset: string; ref: string }[]; notes: string[];
 };
 export type ResearchPage = {

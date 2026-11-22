@@ -1,11 +1,11 @@
-import { collectionUrl, NOAH_COLLECTION_SOURCES, parseCollectionSnapshot, type NoahCollectionItem } from './noah-collection.ts';
+import { collectionUrl, NOAH_COLLECTION_SOURCES, noahCollectionBlocked, noahCollectionCards, parseCollectionSnapshot } from './noah-collection.ts';
 import { sha256Hex } from './noah-connect-requirements.ts';
 import { noahPinShape, noahPinTopic } from './noah-pins.ts';
 import type { NoahAgentCard, NoahAgentSource } from './noah-agent-cards.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
 
 type Family = { id: string; name: string; summary: string; external_key: string; repository: string | null; record_json: string; connect_json: string | null };
-export type DirectoryEntry = { card: NoahAgentCard; families: string[]; observedAt: number };
+export type DirectoryEntry = { card: NoahAgentCard; families: string[]; observedAt: number; createdAt?: number; hot?: number };
 export type DirectoryDependencies = { db: IntakeDb; bucket?: Pick<R2Bucket, 'get'>; listed: boolean; now?: () => number };
 // Exact project URLs only: a shared host or a similar name never establishes identity.
 export function noahProjectUrl(value: unknown): string | null {
@@ -33,7 +33,8 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
       WHERE f.listed=1 AND f.withdrawn_at IS NULL AND f.hidden_at IS NULL ORDER BY f.id`).all<Family>() : Promise.resolve({ results: [] as Family[] }),
     Promise.all(NOAH_COLLECTION_SOURCES.map(async source => {
       const object = await deps.bucket?.get(`noah/collection/v1/${source}.json`);
-      return object ? parseCollectionSnapshot(await object.json(), now) : null;
+      if (!object) return null;
+      try { return parseCollectionSnapshot(await object.json(), now); } catch { return null; }
     })),
   ]);
   const entries = new Map<string, DirectoryEntry>();
@@ -45,23 +46,44 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
     if (existing) { existing.families.push(row.id); continue; }
     entries.set(feedbackId, { families: [row.id], observedAt: 0, card: { ...base(row.id, row.name, row.summary, row.external_key.split('/')[0], url), feedbackId } });
   }
-  const records: NoahCollectionItem[] = snapshots.flatMap(snapshot => snapshot?.items ?? []).filter(item => item.expiresAt > now);
-  records.sort((a,b) => b.observedAt-a.observedAt || a.id.localeCompare(b.id));
-  for (const item of records) {
-    const url = noahProjectUrl(item.url)!;
+  const listedIds = new Set(rows.results.map(row => row.id));
+  const records = snapshots.flatMap(snapshot => snapshot?.items ?? [])
+    .filter(item => item.expiresAt > now && !noahCollectionBlocked(item))
+    .map(item => ({ ...item, url: noahProjectUrl(item.url) ?? item.url,
+      run: item.run === 'phone' && !listedIds.has(item.familyId ?? '') ? undefined : item.run }));
+  for (const item of noahCollectionCards(records)) {
+    const url = item.url;
     const feedbackId = await noahCardIdentity(url, item.id);
     const entry = entries.get(feedbackId) ?? { families: [], observedAt: item.observedAt,
       card: { ...base(feedbackId, item.name, item.summary, item.author, url), feedbackId, href: url, external: true } };
-    const source: NoahAgentSource = { source: item.source, sourceUrl: item.sourceUrl, author: item.author, metrics: item.metrics, observedAt: item.observedAt };
-    if (!entry.card.sources?.some(s => s.sourceUrl === source.sourceUrl)) entry.card.sources = [...(entry.card.sources ?? []), source];
-    entry.observedAt = Math.max(entry.observedAt, item.observedAt);
+    const seen = new Set<string>();
+    entry.card.sources = item.sources.filter((source: NoahAgentSource) => {
+      if (seen.has(source.sourceUrl)) return false;
+      seen.add(source.sourceUrl);
+      return true;
+    });
+    entry.card.run = item.run;
+    if (item.run === 'phone' && item.familyId && !entry.families.length) {
+      entry.families.push(item.familyId);
+      entry.card.id = item.familyId;
+      entry.card.href = undefined;
+      entry.card.external = false;
+    }
+    entry.observedAt = Math.max(...item.sources.map(source => source.observedAt));
+    entry.createdAt = item.createdAt;
+    entry.hot = item.hot;
     entries.set(feedbackId, entry);
   }
   return [...entries.values()];
 }
-export function selectNoahDirectory(entries: DirectoryEntry[], source: string, query: string) {
+export function selectNoahDirectory(entries: DirectoryEntry[], source: string, query: string, order: 'hot' | 'new' = 'hot') {
   const q = query.trim().toLowerCase();
   return entries.filter(entry => (!source || source === 'noah' ? !source || entry.families.length > 0 : source === 'discovered' ? !!entry.card.sources?.length : entry.card.sources?.some(s => s.source === source))
     && (!q || `${entry.card.name} ${entry.card.summary} ${entry.card.provider}`.toLowerCase().includes(q)))
-    .sort((a,b) => b.observedAt-a.observedAt || a.card.id.localeCompare(b.card.id));
+    .sort((a,b) => {
+      const rank = source === 'noah' ? b.observedAt-a.observedAt : order === 'new'
+        ? (b.createdAt ?? 0)-(a.createdAt ?? 0)
+        : (b.hot ?? -Infinity)-(a.hot ?? -Infinity);
+      return rank || a.card.id.localeCompare(b.card.id);
+    });
 }

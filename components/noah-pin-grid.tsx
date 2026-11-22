@@ -9,6 +9,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
 import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahPinInitials } from '@/lib/noah-pins';
+import { NOAH_COLLECTION_RUN_LABELS } from '@/lib/noah-collection';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
@@ -92,7 +93,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
           <span className={styles.panel} aria-hidden="true"><span className={styles.initials}>{noahPinInitials(item.name)}</span><span className={styles.topicLabel}>{NOAH_PIN_TOPIC_LABELS[item.topic]}</span></span>
           <strong className={styles.name}>{item.name}</strong>
           {item.summary && <span className={styles.summary}>{item.summary}</span>}
-          <small className={styles.meta}>{item.host ?? item.provider} · {item.external ? '配布元で使う' : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
+          <small className={styles.meta}>{item.host ?? item.provider} · {item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.external ? '配布元で使う' : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
         </a>
         {!item.external && <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
           {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
@@ -158,7 +159,7 @@ export function NoahSaveSheet({ pin, signedIn, ownerScope, onClose, onChange }: 
   return <dialog ref={dialog} className={styles.sheet} onClose={onClose} aria-labelledby="noah-save-title">
     <header><h2 id="noah-save-title">{NOAH_PIN_TEXT.saveTo}</h2><button type="button" onClick={() => dialog.current?.close()} aria-label="閉じる"><X size={20} /></button></header>
     <p className={styles.sheetPin}>{pin.name}</p>
-    {!signedIn ? <p><Link href={`/account?returnTo=${encodeURIComponent(typeof window === 'undefined' ? '/noah' : window.location.pathname + window.location.search)}`}>{NOAH_PIN_TEXT.signIn}</Link></p> : <>
+    {!signedIn ? <p><Link href={`/noah/account?returnTo=${encodeURIComponent(typeof window === 'undefined' ? '/noah' : window.location.pathname + window.location.search)}`}>{NOAH_PIN_TEXT.signIn}</Link></p> : <>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {boards === null && !error && <p><output>{NOAH_PIN_TEXT.more}</output></p>}
       {boards && boards.length > 0 && <ul className={styles.boardList}>{boards.map((board) => <li key={board.id}>
