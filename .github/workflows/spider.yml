@@ -19,7 +19,8 @@ jobs:
   secrets:
     name: SPIDER / secrets
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    # 全部の履歴を読む。履歴が伸びると時間も伸びるので、gitleaks の上限（600 秒）より長くする。
+    timeout-minutes: 15
     steps:
       - name: Read candidate history as data
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
