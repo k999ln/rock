@@ -90,6 +90,8 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+CLIの管理クラウドは [task123](codex/tasks/123-noah-cloud-agents.md) で実装中です。Hermesとboss-agent-cliの固定版を依頼ごとの隔離環境で動かし、Noah内で接続・入力・停止・結果保存を行います。公式配布物のローカル実行とスマホ幅の操作試験は通過しました。本番はCloudflareの配備権限と実モデルの受入待ちです。提供元の確認済みMCP/APIへの直接接続も維持します。
+
 Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別AgentへのURLを渡せます。公開掲載中のAgentの名前・説明を共有カードへ反映し、接続情報や本人の成果は共有しません。
 
 `https://avoado.si/` と `https://avoado.si/noah` の共有情報は、Noahのタイトル・説明・1200×630 PNGを返します。X用の大型画像カードとOpen Graphを初期HTMLに含め、画像添付なしでURL共有に使えます。
