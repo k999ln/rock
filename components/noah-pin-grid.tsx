@@ -14,6 +14,7 @@ import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
+import { NOAH_COLLECTION_RUN_LABELS } from '@/lib/noah-collection';
 
 /** グリッドの 1 枚（GET /api/noah/pins の items の 1 件）。 */
 export type NoahPinView = NoahAgentCard;

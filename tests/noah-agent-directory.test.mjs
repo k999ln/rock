@@ -61,3 +61,18 @@ void test('the same shared feedback ID has one owner vote, supports undo, and ne
   const stale=await post(true,0);assert.equal(stale.status,409);
   const undo=await post(false,1);assert.equal(undo.status,200);assert.equal((await undo.json()).summary.crowns,0);
 });
+
+void test('unified discovery retains source ranking, run hints and malformed-source isolation', async () => {
+  const records = {github:[
+    collected('github','https://github.com/a/popular',{id:'popular',createdAt:NOW-1000,metrics:{stars:1000},run:'mac'}),
+    collected('github','https://github.com/a/recent',{id:'recent',createdAt:NOW,metrics:{stars:0},run:'key'}),
+    collected('github','https://github.com/a/blocked',{id:'blocked',name:'NSFW generator',createdAt:NOW}),
+  ]};
+  const valid=bucket(records);
+  const entries=await readNoahDirectory({db:db([]),listed:true,now:()=>NOW,bucket:{get:async key=>key.endsWith('/huggingface.json')?{json:async()=>({schema:'broken'})}:valid.get(key)}});
+  assert.equal(entries.length,2);
+  assert.match(selectNoahDirectory(entries,'github','')[0].card.href,/popular$/);
+  assert.match(selectNoahDirectory(entries,'github','','new')[0].card.href,/recent$/);
+  assert.equal(selectNoahDirectory(entries,'github','')[0].card.run,'mac');
+  assert.equal(selectNoahDirectory(entries,'github','')[0].card.sources[0].metrics.stars,1000);
+});

@@ -1,7 +1,7 @@
 import { collectionUrl, NOAH_COLLECTION_SOURCES, noahCollectionBlocked, noahCollectionCards, parseCollectionSnapshot } from './noah-collection.ts';
 import { sha256Hex } from './noah-connect-requirements.ts';
 import { noahPinShape, noahPinTopic } from './noah-pins.ts';
-import type { NoahAgentCard, NoahAgentSource } from './noah-agent-cards.ts';
+import type { NoahAgentCard } from './noah-agent-cards.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
 
 type Family = { id: string; name: string; summary: string; external_key: string; repository: string | null; record_json: string; connect_json: string | null };
@@ -54,7 +54,7 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
   for (const item of noahCollectionCards(records)) {
     const url = item.url;
     const feedbackId = await noahCardIdentity(url, item.id);
-    const entry = entries.get(feedbackId) ?? { families: [], observedAt: item.observedAt,
+    const entry: DirectoryEntry = entries.get(feedbackId) ?? { families: [], observedAt: item.observedAt,
       card: { ...base(feedbackId, item.name, item.summary, item.author, url), feedbackId, href: url, external: true } };
     const seen = new Set<string>();
     entry.card.sources = item.sources.filter((source: NoahAgentSource) => {

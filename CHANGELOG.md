@@ -1,5 +1,10 @@
 ## 2026-11-22
 
+- Noah検索修正後のWeb security実測/input hash不一致を再実測で解消し、全体verify成功（主要4,922成功・4skip、API1,918、CSV385）。追加収集元・並び替え・外部評価を共通カードへ統合（task120、[PR #388](https://github.com/k999ln/rock/pull/388)）。
+- Noahを実Chromeのスマホ表示で確認し、収集Agentが見つからないホーム検索と小さいタップ範囲を修正。再実行用ブラウザ試験を追加（task120、[PR #388](https://github.com/k999ln/rock/pull/388)）。
+- Noahのカードと掲載Agent詳細から利用人数・王冠・コメント列を外し、元サイト評価へ一本化。公開186・390px/590pxを確認。全体verifyは別の共有機能の既存lintで停止（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
+- Noahの評価元で付いたGitHubスター/Hugging Faceいいね等をカードに常時表示。元APIの実数と公開184の表示・390pxレイアウトを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
+- Noahの既存Agentと収集Agentを共通カード・王冠/コメントへ統合し公開182へ反映。390px/590pxの表示、絞り込み間の評価引継ぎと取り消しを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 - Noah公開189の最新UI/機能を保持してGitへ統合。GitHub全体verifyは4,931成功・4skip・0失敗、公開側も4,907成功。390/1280pxと主要導線を確認し、SPIDERの履歴検知8件は別残件として記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 
 - Noahの最新公開188にある共有カード・組み合わせ・法人入口・モバイル表示・出典付き調査候補をGitへ統合。mainの配給/eSIM実装と実機受入記録を保持し、共有部品のlintと画面試験を修正（[PR #377](https://github.com/k999ln/rock/pull/377)）。
@@ -9,9 +14,6 @@
 - Pixel 10の画面保持・消灯後30分の自動ロック猶予を設定し、公開Noahを会員登録なしで接続→依頼→成果5件受取→保存から再表示まで実機確認（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 
 
-- Noahのカードと掲載Agent詳細から利用人数・王冠・コメント列を外し、元サイト評価へ一本化。公開186・390px/590pxを確認。全体verifyは別の共有機能の既存lintで停止（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
-- Noahの評価元で付いたGitHubスター/Hugging Faceいいね等をカードに常時表示。元APIの実数と公開184の表示・390pxレイアウトを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
-- Noahの既存Agentと収集Agentを共通カード・王冠/コメントへ統合し公開182へ反映。390px/590pxの表示、絞り込み間の評価引継ぎと取り消しを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 
 - Noahの専用回線に配送先登録を追加。運営Dockで入荷・定期配給・運営負担額を記録し、本人向け通知から受取までを模擬環境で照合した。Dockは台帳の復旧後にエラー表示を解消し、外部Agentの空の成功応答・不正な完了フラグは同じ仕事番号で要確認にする（[PR #387](https://github.com/k999ln/rock/pull/387)）。
 - Noahの集める場所を増やした（task121。Opus / Noelle。本人指示「twitterとかredditとか、github repoとか他に考えられる場所探して、常に新しく使いやすいものが上に」）。Hacker News・GitHubのMCPの新着・Hugging FaceのMCP Space・npm・DockerのMCP一覧・awesome一覧・Smithery（鍵がある時）を5分ごとの収集に追加し、CodexがX・Reddit・Blueskyで読んだリンクを受け取る口（`scripts/noah-collector-social.mjs`）を用意。「新しく見つかったAgent」を新しく使いやすい順（学習・乱数なし）に並べ、動かし方（スマホで今すぐ・ブラウザ・Mac・鍵）を表示。握手の済んだ系列を収集機が1日400系列まで一覧へ自動で入れる（署名付き・変わった物だけ）。グリッドのお試しは新しく握手が通った順。試験10本（`tests/noah-collection-sources.test.mjs`）。[PR #385](https://github.com/k999ln/rock/pull/385)。本番の配備はCodex。

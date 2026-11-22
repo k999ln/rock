@@ -217,3 +217,22 @@ void test('the actual catalog uses one search for collected and researched Agent
   await page.click('検索条件をクリア'); await page.tick(200); assert.equal(page.find('input')[0].props.value, '');
   const cleared = new URL(ui.calls.filter(c => c.url.includes('/discover?')).at(-1).url, 'https://avoado.si');assert.equal(cleared.searchParams.get('source'), '');assert.equal(cleared.searchParams.get('q'), '');
 });
+
+void test('unified source badges preserve additional collection metrics and zero counts',()=>{
+  const ui=screen();
+  const page=ui.mount('components/noah-agent-source-ratings.tsx',{sources:[
+    {source:'hackernews',sourceUrl:'https://news.ycombinator.com/item?id=1',observedAt:NOW,metrics:{points:12,comments:0}},
+    {source:'npm',sourceUrl:'https://www.npmjs.com/package/test',observedAt:NOW,metrics:{downloads:200}},
+  ]});
+  const labels=page.nodes().map(node=>node.props['aria-label']);
+  assert.ok(labels.includes('点 12'));assert.ok(labels.includes('コメント 0'));assert.ok(labels.includes('週の取得 200'));
+});
+
+void test('changing discovery order keeps query and source but starts pagination again',async()=>{
+  const ui=screen({modules:{'./noah-pin-grid':{default:()=>null}},fetch:async()=>({body:{items:[],total:40,nextCursor:'20',ownerScope:null}})});
+  const page=ui.mount('components/noah-pin-home.tsx',{searchQuery:'agent',initialSource:'npm'});await page.flush();
+  await page.click('もっと見る');await page.flush();
+  await page.change(page.find('select')[0],'new');await page.flush();
+  const params=new URL(ui.calls.at(-1).url,'https://avoado.si').searchParams;
+  assert.equal(params.get('order'),'new');assert.equal(params.get('q'),'agent');assert.equal(params.get('source'),'npm');assert.equal(params.get('cursor'),'0');
+});
