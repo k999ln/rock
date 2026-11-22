@@ -1,6 +1,6 @@
-# 75 専用の端末（雲）— 端末を持たない人の置き場所
+# 75 Noahのクラウド実行 — Macを閉じていても受け取れる仕事
 
-設計: docs/noah-design.md §3.7、docs/noah-agent-market-design.md §4.1・§6、docs/services/noah-own-device.md。先に 96・74・84。個別の残件。本線（本人の Mac → mii の Hub）の後ろで、本人の許可が出た時に始める。
+設計は[依頼・予定・停止・精算の流れ](../../docs/services/noah-own-device.md#クラウドで依頼して受け取るまで)、docs/noah-design.md §3.7、docs/noah-agent-market-design.md §4.1・§6。先に 96・74・84。以下は Cloudflare Sandbox を使う場合の実装案。予定は task 92、利用明細は task 94 と組み合わせて受け入れる。
 
 ## 先に要る本人の許可
 

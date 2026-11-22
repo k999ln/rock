@@ -29,6 +29,16 @@
   padding: 36px;
   box-shadow: 0 20px 70px #25382e08;
 }
+.contractLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 16px 0 24px;
+}
+.contractLinks a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
 .eyebrow {
   font-size: 11px;
   letter-spacing: 0.18em;

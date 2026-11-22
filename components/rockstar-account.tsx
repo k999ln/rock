@@ -109,6 +109,11 @@ export default function RockstarAccount() {
       <p className={styles.eyebrow}>YOUR OWN SPACE</p>
       <h1 id="account-title">{complete || configured ? '自分のNoahとEveへ。' : mode === 'login' ? 'おかえりなさい。' : mode === 'recover' ? '続きを、取り戻そう。' : '登録して、はじめよう。'}</h1>
       <p className={styles.description}>{signedIn ? '今までの会話・仕事・成果を引き継ぎます。' : '自分のNoahとEveを、PixelでもWebでも。ChatGPTアカウントは必要ありません。'}</p>
+      {signedIn && !recoveryCode && <nav className={styles.contractLinks} aria-label="契約と利用状況">
+        <Link href="/noah/purchases">購入履歴・eSIM設定</Link>
+        <Link href="/noah/usage">Agentの利用記録</Link>
+        <Link href="/noah/linux#monthly-statement">クラウドの使用額・請求明細</Link>
+      </nav>}
       {recoveryCode ? <div className={styles.notice}>
         <h2>復旧コードを安全な場所に保存</h2><p>ログイン方法を失ったときに必要です。一度だけ表示します。パスワード管理アプリなどへ保存し、チャットや投稿には送らないでください。</p>
         <textarea aria-label="復旧コード" value={recoveryCode} readOnly rows={3} spellCheck={false} />

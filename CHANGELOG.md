@@ -1,5 +1,6 @@
 ## 2026-11-22
 
+- Noahの購入履歴からeSIM設定を再開し、端末利用権の確認後にAgent一覧へ進める案内と、契約ごとの確定使用料・予約額の明細を追加した（task 11・94、[PR #389](https://github.com/k999ln/rock/pull/389)）。
 - Noahの専用回線に配送先登録を追加。運営Dockで入荷・定期配給・運営負担額を記録し、本人向け通知から受取までを模擬環境で照合した。Dockは台帳の復旧後にエラー表示を解消し、外部Agentの空の成功応答・不正な完了フラグは同じ仕事番号で要確認にする（[PR #387](https://github.com/k999ln/rock/pull/387)）。
 - Noahの集める場所を増やした（task121。Opus / Noelle。本人指示「twitterとかredditとか、github repoとか他に考えられる場所探して、常に新しく使いやすいものが上に」）。Hacker News・GitHubのMCPの新着・Hugging FaceのMCP Space・npm・DockerのMCP一覧・awesome一覧・Smithery（鍵がある時）を5分ごとの収集に追加し、CodexがX・Reddit・Blueskyで読んだリンクを受け取る口（`scripts/noah-collector-social.mjs`）を用意。「新しく見つかったAgent」を新しく使いやすい順（学習・乱数なし）に並べ、動かし方（スマホで今すぐ・ブラウザ・Mac・鍵）を表示。握手の済んだ系列を収集機が1日400系列まで一覧へ自動で入れる（署名付き・変わった物だけ）。グリッドのお試しは新しく握手が通った順。試験10本（`tests/noah-collection-sources.test.mjs`）。[PR #385](https://github.com/k999ln/rock/pull/385)。本番の配備はCodex。
 - Noahの収集欄をUX操作試験し、全件表示での検索条件引継ぎ・条件クリア・通信失敗時の再試行を修正（task120、[PR #384](https://github.com/k999ln/rock/pull/384)）。

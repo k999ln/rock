@@ -7,7 +7,7 @@ export const NOAH_PAGES = [
   ['outputs', 'outputs', '保存した成果'], ['free-cloud', 'free-cloud', 'クラウドの設定'],
   ['linux', 'linux', 'Linuxの設定'], ['compute-grid', 'compute-grid', '計算資源'],
   ['esim', 'esim', '回線'], ['help', 'help', '使い方・制限'],
-  ['billing', 'billing', '利用明細'], ['billing/provider-test', 'billing/provider-test', '課金接続テスト'],
+  ['billing', 'billing', '月次請求のテスト'], ['billing/provider-test', 'billing/provider-test', '課金接続テスト'],
   ['agents/citations', 'citations', '出典整理'], ['visual-scribe', 'visual-scribe', 'ビジュアル記録'],
   ['add/zoom', 'add/zoom', 'Zoom連携'], ['campus', 'campus', '大学別コミュニティー'],
   ['campus/:campusId', 'campus/:campusId', '大学別Noah'],
