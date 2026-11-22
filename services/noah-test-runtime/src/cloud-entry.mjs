@@ -43,7 +43,7 @@ export default {
     if (!account) return failure('利用者を確認してください。', 403);
     const recipient = async (owner, fields = {}) => {
       if (!env.RECIPIENT)
-        return failure('配給台帳との接続を準備しています。', 503);
+        return failure('定期便の台帳との接続を準備しています。', 503);
       const h = { 'X-Noah-Account': account };
       if (owner) h['X-Noah-Owner'] = owner;
       const r = await env.RECIPIENT.fetch(
@@ -52,7 +52,7 @@ export default {
       );
       if (!r.ok)
         return failure(
-          (await r.json()).error ?? '配給情報を読み込めません。',
+          (await r.json()).error ?? '定期便の情報を読み込めません。',
           r.status,
         );
       const data = await r.json(),
@@ -66,13 +66,13 @@ export default {
         distribution === 'notice'
           ? layout(
               'お知らせ',
-              `<p>${data.updated ? '更新があります。' : '新しいお知らせはありません。'}</p><a href="${distributionRoot}">専用回線で配給を開く</a>`,
+              `<p>${data.updated ? '更新があります。' : '新しいお知らせはありません。'}</p><a href="${distributionRoot}">専用回線で定期便を開く</a>`,
               'Noah',
             )
           : distribution === 'address'
             ? addressScreen(data.address, path, true)
             : layout(
-                'あなたへの配給',
+                'あなたへの定期便',
                 distributionContent(data.registered, data.assignments, path),
                 'eSIMクラウド',
               );
