@@ -71,3 +71,17 @@ GitHub ActionsのLinux runnerで5分ごとに期限を確認し、同じ収集�
 - 紹介のカードの「スマホで今すぐ」と「Noahで開く」は、一覧へ入れ終えて載っている系列だけ。
 - グリッドのお試し（まだ実績の無い物）は、新しく握手が通った順。押すだけで試せる物は 3 日分新しく扱う（`NOAH_PIN_RANK.freshOneTapMs`）。
 - 合格条件: 出所ごとの期限・失敗の待ち（Retry-After）・ETag の保持、1 つの出所の失敗で他が止まらない、初回の一覧が新着にならない、投稿本文・利用者名・追跡の引数の不保存、署名の別 path・偽造・Origin 付きの拒否、変わった物だけ・日の上限、鍵の無い収集機が X を上書きしない。`tests/noah-collection-sources.test.mjs`。
+
+## Noah が自分で探す（2026-11-22 task 125）
+
+本人指示「こういう便利機能を私がツイッターで検索するんじゃなくて Noah にやらせたい」。Switch（sandbox-quantum/switch）を拾えなかった原因は 3 つだった。X は誰も読んでいなかった。GitHub は作られて 14 日以内の MCP の repo だけを読んでいた。Product Hunt は読んでいなかった。
+
+| 出所 | 読み方 | 間隔 |
+| --- | --- | --- |
+| GitHub の急な伸び（`github-rising`） | Agent の道具の話題ごとに、直近 7 日に更新があるスター 300 以上の repo を 100 件。スターの数を残し、1 日に 50 以上かつ全体の 2% 以上伸びた物を拾う。出た時は、Noah が初めて伸びを確かめた時 | 6 時間 |
+| GitHub の新着（`github-mcp`） | MCP に加えて ai-agents・multi-agent・agent-orchestration・claude-code・codex の話題 | 2 時間 |
+| Product Hunt（`producthunt`） | 公開の Atom フィード。Agent・AI の道具の語がある物だけ。作った人の名前は載せない | 6 時間 |
+| Noahが読んだ（`noah-read`） | Codex の Luna Max が、Noah 用の X アカウントのリスト「Noah scouts」（`data/noah-scout-curators.json`）を 1 日 1 回読み、投稿・引用元・配布元まで読んで日本語で書いた理解。1 枚のカードの説明の先頭に出る | 1 日 |
+
+本番の受け口が新しい出所をまだ知らない間（Sites の配備の前）は、収集機はその出所を `not_ready` として飛ばし、失敗にしない。
+

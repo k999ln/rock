@@ -1,5 +1,6 @@
 ## 2026-11-22
 
+- Noah が Switch（sandbox-quantum/switch）を自分で拾えなかった原因を直した（task 125、Opus / Noelle。本人指示「こういう便利機能を私がツイッターで検索するんじゃなくて Noah にやらせたい」）。GitHub は Agent の道具の話題（ai-agents・multi-agent・agent-orchestration・claude-code・codex）も読み、作られたのが前でも 1 日に 50 以上かつ 2% 以上スターが伸びた repo を拾う。Product Hunt の公開フィードから Agent・AI の道具だけを拾う。Codex の Luna Max が毎日 X を読み、配布元まで読んで日本語で書いた理解を「Noahが読んだ」として載せる口を作った。まとめ役 20 人は `data/noah-scout-curators.json`。配備・X のアカウント・毎日の読み取りは Codex（`codex/tasks/125-noah-scout.md`）。トップの最初の列をパッケージにする指示書も書いた（`codex/tasks/126-noah-packages-first.md`、[PR #421](https://github.com/k999ln/rock/pull/421)）。
 - 旧 main の #415 までの履歴と移行先の Gradio 実行・タップ設定を統合し、開発・PR の参照先を iceiceice999/rock に揃えた（[PR #6](https://github.com/iceiceice999/rock/pull/6)）。
 - task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
 - task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
