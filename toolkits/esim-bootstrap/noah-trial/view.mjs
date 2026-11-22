@@ -45,7 +45,7 @@ export function screen({
   if (!session)
     return layout(
       '無料テストへの招待',
-      `<p>このMacの模擬端末で、回線を追加し、自分に届いた配給を確認できます。</p><section><h2>招待コードで入る</h2>${form('login', '続ける', '<label>テスト用招待コード<input name="invite" type="password" required maxlength="128" autocomplete="off"></label>')}</section>`,
+      `<p>このMacの模擬端末で、回線を追加し、自分に届いた定期便を確認できます。</p><section><h2>招待コードで入る</h2>${form('login', '続ける', '<label>テスト用招待コード<input name="invite" type="password" required maxlength="128" autocomplete="off"></label>')}</section>`,
     );
   let display;
   if ((!order || order.state === 'requested') && !freeLine)
@@ -63,7 +63,7 @@ export function screen({
   else if (order.access === 'revoked')
     display = layout(
       '試験回線は失効しました',
-      '<p>この回線からの配給の閲覧・受取を終了しました。</p>',
+      '<p>この回線からの定期便の閲覧・受取を終了しました。</p>',
     );
   else if (!['issued', 'enabled'].includes(order.state))
     display = layout(
@@ -78,11 +78,11 @@ export function screen({
   else if (!dedicated || !verified)
     display = layout(
       '回線とお知らせ',
-      `<section><h2>${notice ? '更新があります' : '模擬回線を追加しました'}</h2><p>専用回線を開くと、自分に指定された配給を確認できます。</p>${link(origins.mobile, selectedAgent ? '専用回線で選んだAgentに戻る' : '模擬専用回線でNoahを開く')}</section>`,
+      `<section><h2>${notice ? '更新があります' : '模擬回線を追加しました'}</h2><p>専用回線を開くと、自分に指定された定期便を確認できます。</p>${link(origins.mobile, selectedAgent ? '専用回線で選んだAgentに戻る' : '模擬専用回線でNoahを開く')}</section>`,
     );
   else {
     display = layout(
-      'あなたへの配給',
+      'あなたへの定期便',
       distributionContent(registered, assignments, base),
     );
   }
@@ -96,7 +96,7 @@ export function screen({
 
 export function distributionContent(registered, assignments, root) {
   return (
-    `<section><h2>配送先</h2><p>${registered ? '登録済みです。変更は次の配給指定から反映されます。' : '配給を受け取るには、先に配送先を登録してください。'}</p><a href="${root}address">${registered ? '配送先を確認・変更' : '配送先を登録'}</a></section>` +
+    `<section><h2>配送先</h2><p>${registered ? '登録済みです。変更は次の定期便の指定から反映されます。' : '定期便を受け取るには、先に配送先を登録してください。'}</p><a href="${root}address">${registered ? '配送先を確認・変更' : '配送先を登録'}</a></section>` +
     (assignments.length
       ? assignments
           .map(
@@ -104,7 +104,7 @@ export function distributionContent(registered, assignments, root) {
               `<section><h2>${esc(a.item)}</h2><p>${esc(a.quantity)}</p><p>${esc(a.pickup)}</p>${a.received_at == null ? (registered ? `<form method="post" action="${root}receive">${hidden('id', a.id)}<button>受け取りました</button></form>` : '<p>受取には配送先登録が必要です。</p>') : '<p>受取済み</p>'}</section>`,
           )
           .join('')
-      : '<p>いま指定されている配給はありません。</p>')
+      : '<p>いま指定されている定期便はありません。</p>')
   );
 }
 
@@ -123,8 +123,8 @@ export function addressScreen(address, root = base, hosted = false) {
     )
     .join('');
   return layout(
-    '配給の配送先',
-    `<p>配給品を届けるため、運営が配送先を確認します。${hosted ? '' : '試験には架空の宛名と住所を入力してください。'}</p><form method="post" action="${root}address">${fields}<button>配送先を保存</button></form><a href="${hosted ? root.slice(0, -1) : root}">配給に戻る</a>`,
+    '定期便の配送先',
+    `<p>定期便の品物を届けるため、運営が配送先を確認します。${hosted ? '' : '試験には架空の宛名と住所を入力してください。'}</p><form method="post" action="${root}address">${fields}<button>配送先を保存</button></form><a href="${hosted ? root.slice(0, -1) : root}">定期便に戻る</a>`,
     hosted ? 'eSIMクラウド' : undefined,
   );
 }
@@ -220,7 +220,7 @@ export function cloudScreen(
         : '<p>利用可能な実行先がありません。</p>'
     }</section>
     <section><h2>仕事と成果</h2>${history ? '<ul>' + history + '</ul>' : '<p>依頼はありません。</p>'}
-    <a href="${esc(root)}?${work ? 'work=' + encodeURIComponent(work) : 'agent=' + encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>${hosted ? '<p><a href="/api/noah/cloud-work/distribution">あなたへの配給</a></p>' : ''}`,
+    <a href="${esc(root)}?${work ? 'work=' + encodeURIComponent(work) : 'agent=' + encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>${hosted ? '<p><a href="/api/noah/cloud-work/distribution">あなたへの定期便</a></p>' : ''}`,
     hosted ? 'eSIMクラウド' : '開発用・模擬回線',
   );
 }
