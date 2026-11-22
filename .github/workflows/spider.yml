@@ -19,7 +19,7 @@ jobs:
   secrets:
     name: SPIDER / secrets
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     steps:
       - name: Read candidate history as data
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -33,8 +33,8 @@ jobs:
       - name: Read pinned scanner and reviewed policy
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: k999ln/rock
-          ref: 9ea66b48ff69cce88f5f8b160ba3885ca1a1cc1a
+          repository: iceiceice999/rock
+          ref: 821e1cda832bde9b4558392b3acb3e0e279583ec
           path: control
           persist-credentials: false
           sparse-checkout-cone-mode: false
