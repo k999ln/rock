@@ -54,6 +54,8 @@ export const NOAH_CAPABILITIES = {
   'budget.ledger': { label: '推し活の家計簿をつける', keywords: ['budget', 'expense', 'ledger', 'finance tracker', '家計簿'] },
   'proxy.intake': { label: '代行の依頼・見積もり・前払いを受ける', keywords: ['order form', 'quote', 'invoice', 'checkout', 'stripe', '見積'] },
   'shipping.label': { label: '国際発送の送り状・税関の書類を作る', keywords: ['shipping', 'customs', 'label', 'ems', 'dhl', 'fedex', '発送'] },
+  'travel.fare': { label: '交通の早割の締切と払い戻しの手数料を比べる', keywords: ['fare', 'flight', 'shinkansen', 'train', 'airline', 'bus', '運賃', '新幹線'] },
+  'travel.hold': { label: '無料で取り消せる宿を押さえ、取消の期限を見張る', keywords: ['hotel', 'booking', 'reservation', 'cancel', 'availability', '宿', 'ホテル'] },
 } as const;
 export type NoahCapability = keyof typeof NOAH_CAPABILITIES;
 
@@ -208,24 +210,47 @@ const step = (id: string, label: string, kind: NoahStepKind, extra: Omit<NoahBlu
  * 申込と、支払いを伴う予約は、必ず本人が押す（NOAH_OSHI_EXCLUDED）。会員番号などは本人の端末の中だけに置く。
  * 遠征の宿・交通の候補に紹介の案件（アフィリエイト）を使う時は、広告の表示（PR）を付ける（会社の稼ぎ方 oshi:expedition-affiliate）。
  */
+/**
+ * 推し活の困り事（2026-11-22 にネットで調べた物。本人の回答「ネットで調べて必要なことは」）。強さは、数のある調査か、報道の事例かで決めた。
+ * 今あるアプリ（FanFun・おしきゅん・オシカツ・推し活支出管理・チケットカレンダー）は、予定を人が手で入れ、記録して知らせるまで。宿・交通を実際に取る・取り消す・比べる物は無い。
+ */
+export const NOAH_OSHI_PAINS = [
+  { id: 'info-missing', label: '推しの情報を追う時間と見逃し', strength: 'high', evidence: '出演情報を調べるのに時間を使う 67.5%、見逃してストレス 64.4%（パナソニック、2024 年、800 人）。チケットの発売日のアプリには「プレイガイドの先行が抜ける・手で足せない」の声', sources: ['https://ascii.jp/elem/000/004/240/4240940/', 'https://apps.apple.com/jp/app/id1528279062'] },
+  { id: 'money', label: 'お金が足りない（遠征 1 回 約 5.9 万円、いちばんは交通費）', strength: 'high', evidence: '悩みの 1 位「お金が足りない」28.4%（タニタ、2026 年、1,000 人）。遠征 1 回の平均 約 5.9 万円、使い道の 1 位は交通費 53.7%（Oshicoco、2026 年、664 人）', sources: ['https://api-img.tanita.co.jp/files/user/news/pdf/2026/fanactivities_research.pdf', 'https://www.commercepick.com/archives/90611'] },
+  { id: 'hotel', label: '宿が取れない・高くなる・当落の前に押さえる必要', strength: 'high', evidence: '札幌の公演で市内がほぼ満室、1 泊 約 3 万円（普段の 3〜4 倍）、遠くの宿の予約と大量の取消。定番の対処は「無料キャンセルで当落の前に仮押さえ」、取消の期限は多くが 2 日前', sources: ['https://gendai.media/articles/-/160927', 'https://oshikatu-life.com/live-hotel-trouble-solutions/'] },
+  { id: 'time', label: '時間が足りない', strength: 'medium', evidence: '悩みの 2 位 19.4%（タニタ、2026 年）', sources: ['https://api-img.tanita.co.jp/files/user/news/pdf/2026/fanactivities_research.pdf'] },
+  { id: 'resale-fraud', label: 'SNS でのチケットの譲渡の詐欺', strength: 'medium', evidence: '国民生活センターが 2026-10-06 に注意喚起。公式のリセール（定価）を使うよう勧める', sources: ['https://www.kokusen.go.jp/news/data/n-20261006_1.html'] },
+  { id: 'goods-soldout', label: 'グッズの売り切れと物販の長い列', strength: 'medium', evidence: '人気のグッズは昼前に売り切れ。事前の通販が会場の売上の半分以上、売り切れの品は事後通販で 2〜2.5 か月かかる物も', sources: ['https://www.businessinsider.jp/article/260929/'] },
+] as const;
+/**
+ * 推し活のエージェント（Noah のエージェント 1 つ。本人の回答 2026-11-22「noah のエージェントの一個だよ」）。値段は Noah の料金のつなげる数に従う。
+ * 今あるアプリとかぶる所（手で入れる予定・家計簿だけ）は、主役にしない。主役は、困り事の強い 3 つ:
+ *   ① 抜けない情報: 推しの公式の告知・出演・発売の期間を、公開の出典から自動で集める（手で入れない。出典のリンク付き）。
+ *   ② 安い遠征: 当落の日・宿の無料取消の期限・交通の早割の締切を突き合わせ、当落の前に押さえ、外れたら期限内に取り消し、当たったら安い・近い部屋を拾う。
+ *   ③ 安全: チケットは公式のリセールへ。SNS の譲渡の詐欺を知らせる。
+ * 申込・予約・取消・支払いは、必ず本人が押す（NOAH_OSHI_EXCLUDED）。会員番号などは本人の端末の中だけに置く。分野は 6 つ全部、言葉は日本語から。
+ */
 export const NOAH_OSHI_AGENT = {
   id: 'noah-oshi', label: '推し活', languages: ['ja', 'en', 'zh-Hant', 'zh-Hans', 'ko'] as const, startLanguage: 'ja' as const,
   steps: [
-    step('register', '推しを登録する（名前・公式サイト・公式 X・FC の有無・地域・月の予算）', 'human', { reason: '何を推すかは本人が決める' }),
-    step('watch', '公式の告知（FC 先行・オフィシャル先行・プレイガイド先行・一般発売・公式リセール・事前通販・会場物販・コラボカフェの予約）を見張る', 'auto', { capability: 'oshi.watch' }),
-    step('calendar', '受付開始・締切・当落・入金締切・発券・公演日を予定に入れる', 'auto', { capability: 'calendar.schedule' }),
-    step('notify', '受付開始の 30 分前と開始時、締切の 24 時間前と 3 時間前、入金締切の 24 時間前に知らせる', 'auto', { capability: 'notify.push' }),
-    step('prepare', '申込の頁を開き、要る物（会員番号・同行者・支払い方法）がそろっているか確かめる', 'auto', { capability: 'oshi.watch' }),
-    step('apply', '抽選・先着に申し込む', 'tap', { reason: '販売の規約が BOT・自動入力を禁じ、名義と本人確認の一致を求める。押すのは本人' }),
-    step('travel', '当選したら、公演地と日付から宿・交通の空き・値段・取消の決まりを出す', 'auto', { capability: 'travel.search' }),
-    step('travel-book', '宿・交通を予約する', 'tap', { reason: '支払いを伴うので、本人が金額と条件を見て押す' }),
-    step('resale', '公式リセール・再販・再入荷を知らせる（買うのは本人）', 'auto', { capability: 'oshi.watch' }),
-    step('budget', '推し活の家計簿（月の上限・使った額・残り）', 'auto', { capability: 'budget.ledger' }),
+    step('register', '推しを登録する（名前・公式サイト・公式 X・FC の有無・住んでいる地域・月の上限）', 'human', { reason: '何を推すかは本人が決める' }),
+    step('collect', '公式の告知・出演・発売の期間（FC 先行・プレイガイド先行・一般発売・公式リセール・事前通販・受注生産の締切・コラボカフェの予約）を公開の出典から集める', 'auto', { capability: 'oshi.watch' }),
+    step('schedule', '当落の日・入金締切・発券を含めて予定に入れ、受付の前と締切の前に知らせる', 'auto', { capability: 'calendar.schedule' }),
+    step('apply', '抽選・先着に申し込む', 'tap', { reason: '販売の規約が BOT・自動入力を禁じ、名義と本人確認の一致を求める。押すのは本人（Noah は申込の頁と要る物を用意する）' }),
+    step('trip-plan', '申し込んだ公演ごとに、当落の日・宿の無料取消の期限・交通の早割の締切を突き合わせ、「今押さえる／当落を待つ」を、費用の差と一緒に出す', 'auto', { capability: 'travel.fare' }),
+    step('hotel-hold', '当落の前に、無料で取り消せる宿を押さえる', 'tap', { reason: '予約は本人が金額と取消の条件を見て押す' }),
+    step('hotel-release', '外れた公演の宿を、無料の期限の内に取り消す（期限の前に知らせ、1 タップで取り消す）', 'tap', { reason: '取消は戻せない操作なので、本人が押す' }),
+    step('hotel-better', '当たった公演は、会場に近い・安い部屋の空きを見張って知らせる', 'auto', { capability: 'travel.hold' }),
+    step('official-resale', 'チケットは公式のリセールの出品を知らせ、SNS の譲渡の詐欺を知らせる', 'auto', { capability: 'oshi.watch' }),
+    step('goods-preorder', '事前通販・受注生産の締切と、再入荷を知らせる（会場の列と売り切れを避ける）', 'auto', { capability: 'oshi.watch' }),
+    step('cap', '遠征とグッズの費用を、月の上限と比べて出す', 'auto', { capability: 'budget.ledger' }),
   ],
+  /** 主役の困り事（NOAH_OSHI_PAINS の id）と、それに当たる工程。 */
+  answers: { 'info-missing': ['collect', 'schedule'], money: ['trip-plan', 'hotel-release', 'cap'], hotel: ['hotel-hold', 'hotel-release', 'hotel-better'], time: ['collect', 'trip-plan'], 'resale-fraud': ['official-resale'], 'goods-soldout': ['goods-preorder'] } as Record<string, readonly string[]>,
   /** 見張りの間隔（公開の頁だけ。変わった時だけ読む）。 */
   polling: { officialMs: 15 * 60_000, restockMs: 5 * 60_000 },
-  /** 知らせる時（受付開始・締切・入金締切からの差、ミリ秒）。 */
-  reminders: { applyOpens: [-30 * 60_000, 0], applyCloses: [-24 * 3_600_000, -3 * 3_600_000], paymentDue: [-24 * 3_600_000] },
+  /** 知らせる時（受付開始・締切・入金締切・宿の無料取消の期限からの差、ミリ秒）。 */
+  reminders: { applyOpens: [-30 * 60_000, 0], applyCloses: [-24 * 3_600_000, -3 * 3_600_000], paymentDue: [-24 * 3_600_000], freeCancel: [-24 * 3_600_000, -6 * 3_600_000] },
 };
 
 // ---------------------------------------------------------------------------

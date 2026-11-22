@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_OSHI_AGENT, NOAH_OSHI_EXCLUDED, NOAH_OSHI_FANDOMS, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
+  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_OSHI_AGENT, NOAH_OSHI_EXCLUDED, NOAH_OSHI_FANDOMS, NOAH_OSHI_PAINS, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
   noahBusinessAllowance, noahBusinessCanSpend, noahEveBacklog, noahPlanBlueprints, noahTrialDecision,
 } from '../lib/noah-business.ts';
 import { businessMarkdown, businessReport } from '../scripts/noah-business-plan.mjs';
@@ -105,14 +105,20 @@ void test('report: verified mappings for agents no longer listed are ignored; th
   for (const [capability, ids] of Object.entries(data.verified)) { assert.ok(NOAH_CAPABILITIES[capability], capability); assert.ok(Array.isArray(ids)); }
 });
 
-void test('推し活: one Noah agent (priced by Noah\'s plan) watches, schedules and reminds; applying and paying are always the fan\'s own tap', () => {
+void test('推し活: one Noah agent aimed at the researched pains — complete info, cheaper trips, safety; applying, booking and cancelling are the fan\'s own tap', () => {
   const steps = new Map(NOAH_OSHI_AGENT.steps.map((s) => [s.id, s]));
-  for (const id of ['watch', 'calendar', 'notify', 'prepare', 'travel', 'resale', 'budget']) assert.equal(steps.get(id).kind, 'auto', id);
-  assert.equal(steps.get('apply').kind, 'tap', 'no bot applies to a lottery or first-come sale');
-  assert.match(steps.get('apply').reason, /BOT/);
-  assert.equal(steps.get('travel-book').kind, 'tap', 'paid bookings are confirmed by the person');
+  for (const id of ['collect', 'schedule', 'trip-plan', 'hotel-better', 'official-resale', 'goods-preorder', 'cap']) assert.equal(steps.get(id).kind, 'auto', id);
+  for (const id of ['apply', 'hotel-hold', 'hotel-release']) assert.equal(steps.get(id).kind, 'tap', id);
+  assert.match(steps.get('apply').reason, /BOT/); assert.match(steps.get('hotel-release').reason, /戻せない/);
   for (const s of NOAH_OSHI_AGENT.steps) if (s.capability) assert.ok(NOAH_CAPABILITIES[s.capability], s.id);
-  assert.equal(NOAH_OSHI_AGENT.startLanguage, 'ja'); assert.deepEqual([...NOAH_OSHI_AGENT.reminders.applyOpens], [-1_800_000, 0]);
+  // 困り事は出典付き。強い困り事には、必ず工程が当たる。工程の ID は実在する。
+  for (const pain of NOAH_OSHI_PAINS) {
+    assert.ok(pain.sources.length && pain.sources.every((u) => u.startsWith('https://')), pain.id);
+    const answer = NOAH_OSHI_AGENT.answers[pain.id] ?? [];
+    if (pain.strength === 'high') assert.ok(answer.length, `${pain.id} has an answer`);
+    for (const id of answer) assert.ok(steps.has(id), `${pain.id} → ${id}`);
+  }
+  assert.equal(NOAH_OSHI_AGENT.startLanguage, 'ja'); assert.deepEqual([...NOAH_OSHI_AGENT.reminders.freeCancel], [-86_400_000, -21_600_000]);
   assert.ok(NOAH_OSHI_AGENT.polling.officialMs >= 15 * 60_000 && NOAH_OSHI_AGENT.polling.restockMs >= 5 * 60_000, 'polite polling');
 });
 
