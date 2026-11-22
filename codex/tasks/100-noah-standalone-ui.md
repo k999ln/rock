@@ -271,3 +271,16 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 実機: Wi-Fi ADBで本人のPixel 10（Android 17、Vanadium、約411×802 CSS px）を操作。BeevRを検索→詳細→接続→read-only `list_services` を依頼→10件の一覧を受領。成果 `3db12788-4d6b-40bc-b8f2-febc920c0e8d` は再読み込み後も保持され、公開192後も再表示できた。初回の計画486ms+接続1,823ms、道具取得1,142ms。公開192の再接続ではロゴ表示86ms、成功振動2,275ms、音開始2,286ms、ロゴ終了2,293ms（計測開始基準）。接続API1,738ms+計画456ms。実ブラウザのAPI呼出をそのまま通す観測で1回ずつ確認し、Android vibrator_managerのfinished記録と端末の再生音の録音でも確認。観測用ラッパーはページ移動で解除、録音とADB forwardを終了した。
 
 証拠: `/tmp/noah-connection-loading-pixel.png`、`/tmp/noah-mobile-result.png`、`/tmp/noah-connect-pixel-audit.json`、`/tmp/noah-vibrator-after.txt`、`/tmp/noah-connection-pop.opus`、`/tmp/noah-connect-live-assets.json`。この一件の接続成功を全Agentの成功率とは扱わない。見つかった使いにくさは、詳細から接続ボタンまで長いこと、道具の「操作1・操作2」表示では内容を開く必要があること。今回の接続演出とは別の残件として引き継ぐ。PRレビュー/マージは未完了。
+
+
+## 2026-11-22 接続位置と操作名の改善（PR #386）
+
+✅ 本人指示により、Agent詳細の先頭に名前・2行の説明・料金・送信先と接続を配置。長い紹介と共有は「Agentの詳細」にまとめ、接続後はすぐ「何をしますか？」へ進む。「操作1/2」は用途名と提供者の短い説明へ変更し、未知の操作は元の名前を読める形で保持する。選んだ行の直下に入力フォームを出し、用途名による絞り込みも対応。成果・委任も同じラベルを使う。既知の用途名は6言語。API名・引数・hash・権限・確認・音/振動は維持する。
+
+公開196 succeeded: source `1bf5e4f79f90abbfa72c9b95f81975a3aa6bf100`、deployment `appgdep_6b02695e115c81919fd6c5f0f42eac17`、env17。193からの変更をcommit `b1a89d3dd3528671337e43c92cce24af30f8b87b` へ保存後、並行公開195の `b39807b92ecf543fbbd228d5180c71bc7b5fa481` と通常merge。構造04・決定07の両側と、195の取込/ブラウザ本人の修正を保全した。GitHub側は共有・内部project詳細を新規導入せず、既存詳細へ同じ導線変更を移植した。
+
+検証: 193+今回変更で `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` 単一exit0（4,920 pass・4 skip・0 fail、型/lint/build、API1,918・CSV385、mission/work/bot）。最初の実行の旧表示期待1件を更新して完走。195統合後は型/lint/関連79試験/build/bundle/assets/API1,918・CSV385を再確認し成功。統合後に全体verifyチェーンの再実行はしていない。GitHub側でも型/lint/関連58試験成功。テスト削除・検査除外なし。
+
+表示: ローカルの合成APIでChromeの320/390/1280pxを確認。接続の上端はスマホ273.75px・高さ49.25pxで初期画面内。説明が長くても横はみ出しなし。選択行直下のフォーム、8用途名、ブラウザエラー0を確認。公開196はPixel 10 / Android17 / Vanadiumで既存BeevR接続を再利用し「サービス一覧を見る」→頼む→10件成果を実行。成果 `e2830784-5f4d-40d1-9da6-0995e2b3a858` は再読み込み後も保持、横はみ出しなし。他の接続は切断しなかった。
+
+証拠: `/tmp/noah-intuitive-verify-final.log`、`/tmp/noah-intuitive-verify-final.exit`（0）、`/tmp/noah-intuitive-merged-tests.log`、`/tmp/noah-intuitive-merged-build.log`、`/tmp/noah-intuitive-browser.json`、`/tmp/noah-intuitive-connect-390.png`、`/tmp/noah-intuitive-pixel-tools.png`、`/tmp/noah-intuitive-pixel-form.png`、`/tmp/noah-intuitive-pixel-result.json`、`/tmp/noah-intuitive-pixel-result.png`。前節の接続位置/操作名の残件は本節で解消。未知の提供者名・説明は原文を保持するため、全操作を日本語化したとは扱わない。PRレビュー/マージは未完了。

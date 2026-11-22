@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noah詳細の接続を先頭へ移し、操作番号を用途名と説明へ変更。入力を選択行の直下へ配置し、公開196・Pixel 10の実依頼と10件成果保持を確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
+
 - Noah接続時の透過ロゴ画面・成功音・振動を公開192へ反映。Pixel 10で検索→接続→10件の成果受取・再表示、成功音の録音と振動実行を確認。全体verify成功（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 
 - Noahホームから法人向け・組合せガイドの告知枠を外し、Agent検索・一覧へ統一。全体verify成功、公開190へ反映（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。

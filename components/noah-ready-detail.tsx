@@ -98,21 +98,27 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
     {back}
     <article className={styles.detail}>
       <header className={styles.cardHead}><h1>{detail.name}</h1><span className={styles.provider}>{t("提供:")} {detail.provider}</span></header>
-      <h2>{t('すること')}</h2><p className={styles.description}>{detail.summary || t('（説明はありません）')}</p>
-<NoahAgentVisual name={detail.name} summary={detail.summary}/>
-      <div className={styles.journey}><div><strong>{t('依頼する')}</strong></div><span>→</span><div><strong>{t('実行')}</strong></div><span>→</span><div><strong>{t('受取')}</strong></div></div>
-      <ul className={styles.facts} aria-label={t("つなぎ方")}>{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{t(text)}</li>)}</ul>
-      {checked && <p className={styles.quiet}>{t(checked)}</p>}
-      {detail.host && <p className={styles.sendsTo}>{t('送信先: {host}',{host:detail.host})}</p>}
-      {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a></p>}
+      <p className={styles.introSummary}>{detail.summary || t('（説明はありません）')}</p>
+      <div className={styles.connectionMeta}>
+        <span>{t(noahPriceText(detail.connect.price))}</span>
+        {detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}
+      </div>
       <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
-      {detail.listed && <NoahPinExtras key={`pin:${detail.id}`} item={detail} ownerScope={detail.ownerScope} />}
     </article>
 
     {live?.state === 'connected' && <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
     {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
     {signedIn && <div id="noah-agent-work" tabIndex={-1}><NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} /></div>}
+    <details className={styles.agentDetails}>
+      <summary>{t('Agentの詳細')}</summary>
+      <p className={styles.description}>{detail.summary || t('（説明はありません）')}</p>
+      <NoahAgentVisual name={detail.name} summary={detail.summary}/>
+      <ul className={styles.facts} aria-label={t("つなぎ方")}>{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{t(text)}</li>)}</ul>
+      {checked && <p className={styles.quiet}>{t(checked)}</p>}
+      {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a></p>}
+    </details>
+    {detail.listed && <NoahPinExtras key={`pin:${detail.id}`} item={detail} ownerScope={detail.ownerScope} />}
     {/* 棚のカードから来た時: 試行の本人の報告と、5 人以上の報告の合計（切り替えが閉の間は、何も出ない）。頼んだ後に、入れられるかを読み直す。 */}
     {from && <NoahTrialReport key={`trial:${from}:${asked}`} packageId={from} />}
 
