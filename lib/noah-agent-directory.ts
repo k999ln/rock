@@ -5,7 +5,7 @@ import type { NoahAgentCard, NoahAgentSource } from './noah-agent-cards.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
 
 type Family = { id: string; name: string; summary: string; external_key: string; repository: string | null; record_json: string; connect_json: string | null };
-export type DirectoryEntry = { card: NoahAgentCard; families: string[]; observedAt: number; createdAt?: number; hot?: number };
+export type DirectoryEntry = { firstParty?: 'business-training'; card: NoahAgentCard; families: string[]; observedAt: number; createdAt?: number; hot?: number };
 export type DirectoryDependencies = { db: IntakeDb; bucket?: Pick<R2Bucket, 'get'>; listed: boolean; now?: () => number };
 // Exact project URLs only: a shared host or a similar name never establishes identity.
 export function noahProjectUrl(value: unknown): string | null {
@@ -78,7 +78,7 @@ export async function readNoahDirectory(deps: DirectoryDependencies): Promise<Di
 }
 export function selectNoahDirectory(entries: DirectoryEntry[], source: string, query: string, order: 'hot' | 'new' = 'hot') {
   const q = query.trim().toLowerCase();
-  return entries.filter(entry => (!source || source === 'noah' ? !source || entry.families.length > 0 : source === 'discovered' ? !!entry.card.sources?.length : entry.card.sources?.some(s => s.source === source))
+  return entries.filter(entry => (!source || source === 'noah' ? !source || entry.families.length > 0 || !!entry.firstParty : source === 'discovered' ? !!entry.card.sources?.length : entry.card.sources?.some(s => s.source === source))
     && (!q || `${entry.card.name} ${entry.card.summary} ${entry.card.provider}`.toLowerCase().includes(q)))
     .sort((a,b) => {
       const rank = source === 'noah' ? b.observedAt-a.observedAt : order === 'new'
