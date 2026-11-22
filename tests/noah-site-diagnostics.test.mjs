@@ -454,6 +454,7 @@ await test(
     let mf = new Miniflare(options);
     const req = (p, v, auth = false) =>
         mf.dispatchFetch('https://agent.example' + p, {
+          redirect: 'manual',
           method: v ? 'POST' : 'GET',
           headers: {
             'content-type': 'application/json',
@@ -501,6 +502,36 @@ await test(
         await new Promise((r) => setTimeout(r, 25));
       }
       assert.equal((await (await req('/api/revenue')).json()).items.length, 2);
+      const entry =
+        '/start/wordpress-maintenance?source=blog&url=https://evil.example';
+      const preview = await req(entry);
+      assert.equal(preview.status, 302);
+      assert.match(
+        preview.headers.get('location'),
+        /^https:\/\/avoado\.si\/noah\/discover\/agent\?id=project-/,
+      );
+      assert.equal(
+        (await (await owner({ action: 'status' })).json()).acquisition.rows
+          .length,
+        0,
+      );
+      // Node's fetch transport overwrites Sec-Fetch-Mode with cors. Navigation
+      // classification is tested separately; exercise the real storage here.
+      const ns = await mf.getDurableObjectNamespace('COMBINATIONS');
+      await ns.get(ns.idFromName('owner')).fetch('https://internal/', {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'acquisition',
+          schemeId: 'wordpress-maintenance',
+          source: 'blog',
+          count: true,
+        }),
+      });
+      assert.equal(
+        (await (await owner({ action: 'status' })).json()).acquisition.rows[0]
+          .navigationRequests,
+        1,
+      );
       for (const s of schemes) {
         const p = '/consult/site/' + s.id + '/mcp';
         const list = await (
@@ -547,6 +578,7 @@ await test(
         assert.equal(calls, before + 1);
       }
       await owner({ action: 'stop' });
+      assert.equal((await req(entry)).status, 503);
       assert.equal(
         (
           await req(
@@ -562,6 +594,7 @@ await test(
       assert.equal(status.enabled, false);
       assert.equal(status.report[0].diagnostics.executions, 2);
       assert.equal(status.report[0].diagnostics.referrals, 1);
+      assert.equal(status.acquisition.rows[0].navigationRequests, 1);
     } finally {
       await mf.dispose();
       await rm(dir, { recursive: true, force: true });
