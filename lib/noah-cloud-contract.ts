@@ -25,13 +25,13 @@ export const NOAH_CLOUD_PROFILES = {
   memory: {
     name: 'Memory', repository: 'https://github.com/modelcontextprotocol/servers/tree/main/src/memory', version: '2.2.1',
     package: '@modelcontextprotocol/server-memory', sha256: '95edf215d0a23f40e20581d6cd0ca46c0c6be85d7bdfa1dcb4c20662a0fbca2d',
-    aliases: ['https://www.npmjs.com/package/@modelcontextprotocol/server-memory'],
+    aliases: ['https://hub.docker.com/r/mcp/memory', 'https://www.npmjs.com/package/@modelcontextprotocol/server-memory'],
     description: '依頼した情報を公式Memory MCPで整理し、関係をファイルに保存します。記憶はこの依頼の中だけで使い、次回には引き継ぎません。',
   },
   filesystem: {
     name: 'Filesystem', repository: 'https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem', version: '2.4.0',
     package: '@modelcontextprotocol/server-filesystem', sha256: 'a785e3dadbf58a5fce6fbb006b883c925772c254e880da4866a4c418fc746e3f',
-    aliases: ['https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem'],
+    aliases: ['https://hub.docker.com/r/mcp/filesystem', 'https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem'],
     description: '公式Filesystem MCPで文章やコードのファイルを作成・整理します。この依頼専用の作業場所を使い、端末のファイルにはアクセスしません。',
   },
 } as const;
