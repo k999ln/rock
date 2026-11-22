@@ -90,6 +90,13 @@
   3. GitHub の予定は当てにしない。予備として、Codex のスケジュールで 1 時間ごとに、main から手動の実行を起動する。
 - 合格: 本番の hackernews の列の `observedAt` が、2 時間より古くならない状態が 24 時間続く。
 
+#### 2026-11-22 復旧の記録
+
+- [正本 PR #13](https://github.com/iceiceice999/rock/pull/13) と [正本 PR #15](https://github.com/iceiceice999/rock/pull/15) で移植を完了。
+- 旧 `k999ln/rock` の `main` を手動で起動し、[Actions 45032700818](https://github.com/k999ln/rock/actions/runs/45032700818) の収集ジョブが成功。[本番の Hacker News](https://avoado.si/api/noah/collection?source=hackernews&order=new) は78件から84件へ進み、取得した20件の `observedAt` が16:30:40から23:25:37 JSTに更新された。
+- Codex の毎時の予備実行 `noah-2` を有効化。鮮度2時間以内の連続24時間は観測中。
+- GitHub の正本には収集用シークレットが未登録。旧 `main` を本番の掲載元として維持し、正本側は設定と明示的な有効化を待つ。切り替え手順は [収集機の運用](../../docs/services/noah-agent-collection.md#クラウド常時運用2026-11-22-本人追加指示)。
+
 ## 4. 合格条件
 
 - 本番の X の列と「Noahが読んだ」の列に、7 日続けて、毎日新しい紹介が入る。

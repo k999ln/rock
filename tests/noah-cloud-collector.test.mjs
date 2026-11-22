@@ -116,7 +116,8 @@ void test('missing or unavailable cloud state aborts before collection or public
 });
 void test('cloud workflow uses hosted runners, only the canonical branch, read-only Git and one publisher', () => {
   const workflow = readFileSync(new URL('../.github/workflows/noah-agent-collection.yml', import.meta.url), 'utf8');
-  assert.match(workflow, /runs-on: ubuntu-latest/); assert.match(workflow, /github\.ref == 'refs\/heads\/main'/);
+  assert.match(workflow, /if: github\.repository == 'iceiceice999\/rock' && github\.ref == 'refs\/heads\/main' && vars\.NOAH_COLLECTION_ACTIVE == 'true'/);
+  assert.match(workflow, /runs-on: ubuntu-latest/);
   assert.match(workflow, /contents: read/); assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /group: noah-agent-collection-production/); assert.match(workflow, /cancel-in-progress: false/);
   assert.doesNotMatch(workflow, /self-hosted|upload-artifact|actions\/cache|pull_request_target/);
