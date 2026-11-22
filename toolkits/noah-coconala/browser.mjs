@@ -25,7 +25,7 @@ async function navigate(page, url) {
 }
 async function readback(page, url, check) {
   // Read again from the site. A toast, the clicked button or an echoed draft is not a receipt.
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 6; attempt++) {
     await page.waitForTimeout(350 * (attempt + 1));
     await navigate(page, url);
     if (await check()) return;
@@ -188,15 +188,19 @@ async function apply(page, job, begin) {
   begin();
   await submit.click();
   await optionalModal(page, '投稿前にご確認ください', '応募する');
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const added = (await offerLinks(page)).filter((url) => !before.has(url));
+  // Keep the submitting document alive while its request completes.
+  const receiptPage = await page.context().newPage();
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const added = (await offerLinks(receiptPage)).filter(
+      (url) => !before.has(url),
+    );
     for (const detail of added.slice(0, 5)) {
-      await navigate(page, detail);
-      const id = page.locator('#OfferRequestId');
+      await navigate(receiptPage, detail);
+      const id = receiptPage.locator('#OfferRequestId');
       if ((await id.count()) === 1 && (await id.inputValue()) === job.target)
         return;
     }
-    await page.waitForTimeout(450);
+    await receiptPage.waitForTimeout(350 * (attempt + 1));
   }
   throw Error('応募履歴に案件番号が見つかりません。');
 }
@@ -214,8 +218,8 @@ async function talkroom(page, job, begin, file) {
         (await checkbox.isEnabled()),
     );
   if (await checkbox.count()) requireValue(!(await checkbox.isChecked()));
-  const matching = () =>
-    page
+  const matching = (room) =>
+    room
       .locator('.d-talkroomMessage:not(.d-talkroomMessage-isOthers)')
       .evaluateAll(
         (rows, { text, name }) =>
@@ -233,7 +237,7 @@ async function talkroom(page, job, begin, file) {
           ).length,
         { text: job.message, name: job.filename },
       );
-  const before = await matching();
+  const before = await matching(page);
   const message = form.locator('textarea[placeholder="メッセージを入力"]');
   await message.fill(job.message);
   requireValue(page.url() === url);
@@ -265,15 +269,17 @@ async function talkroom(page, job, begin, file) {
   await form.getByRole('button', { name: '送信', exact: true }).click();
   if (formal)
     await optionalModal(page, /納品/, /^(納品する|納品として送信|送信する)$/);
+  const receiptPage = await page.context().newPage();
+  const receiptProgress = receiptPage.locator('.d-talkroomStep_label-current');
   await readback(
-    page,
+    receiptPage,
     url,
     async () =>
       (!formal ||
         ['納品送付', '取引完了'].includes(
-          (await progress.innerText()).trim(),
+          (await receiptProgress.innerText()).trim(),
         )) &&
-      (await matching()) > before,
+      (await matching(receiptPage)) > before,
   );
 }
 // Read-only page assets linked by Coconala. An unrecognized destination leaves the operation unconfirmed.

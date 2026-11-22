@@ -1,5 +1,5 @@
 // Test-only stdio entry. All browser traffic is fulfilled locally; never load a user profile.
-import { readFile, writeFile, appendFile } from 'node:fs/promises';
+import { readFile, writeFile, appendFile, rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { serve } from '../server.mjs';
 import { launchProfile, runBrowserJob } from '../browser.mjs';
@@ -26,11 +26,18 @@ async function fixture(route) {
     }[url.pathname];
     if (!key) return route.abort();
     state[key].push(req.postDataJSON());
-    await writeFile(stateFile, JSON.stringify(state));
+    const nextState = stateFile + '.tmp';
+    await writeFile(nextState, JSON.stringify(state));
+    await rename(nextState, stateFile);
     return route.fulfill({ json: { ok: true } });
   }
-  const head =
-    '<meta charset=utf-8><script>const post=(path,obj)=>fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)});</script>';
+  // Leaving the submitting page early would cancel this delayed form submission.
+  const head = `<meta charset=utf-8><script>
+    async function post(path, obj) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(obj) });
+    }
+  </script>`;
   let body = '';
   switch (url.pathname) {
     case '/mypage/direct_message/101':
