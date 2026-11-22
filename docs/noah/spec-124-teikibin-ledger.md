@@ -1,0 +1,327 @@
+# 定期便の台帳（task 124）
+
+2026-11-22。Noah の利用者に、Agent が稼いだお金の一部を渡すための台帳の仕様書。実際に入ったお金と費用を記録し、月ごとに締め、全員への等分と、寄与の作業料を決め、有料の分を差し引き、現金の払い出しか、定期便（物）への置き換えを記録する。
+
+この台帳は、お金を送らない（AGENTS.md §6）。払い出しの一覧を作り、振込は運営（本人）が行い、その結果を記録する。切り替え `NOAH_TEIKIBIN` の既定は閉。閉の間、利用者には額を見せない。
+
+## 0. なぜ作るか
+
+本人の目標は「みんなが Agent を使って、より生活が豊かになること」。その形の一つとして、本人は 2026-11-22 に「配給制にする」と決めた。この仕様書は、その決定を、壊れない台帳の仕組みにする。
+
+一番大事な事は、無いお金を配らない事。この repo の [Sky の収益ループ](../sky-earn-parity.md) には、同じ型のココナラ自動運用の公開の成績がある。「直近30日は注文3件 ¥39,500、応募19件で返信0」。例に出た「1人に15万円」を300人に渡すと月4,500万円で、この実績の約1,100倍になる。だから、この台帳は、実際に入ったお金だけを原資にし、締めた月の実数だけを利用者に見せる。見込みや目標の額は、利用者に見せない。
+
+## 1. 本人の決定（引用）
+
+| 日時 | 本人の言葉 | この仕様書での扱い |
+| --- | --- | --- |
+| 11-22 13:04 | 「配給制にする。例えば20万のうち15万もらえるとして、農家とかと連動できた段階ですぐに配給制に切り替えたい」 | 形（現金か物か）を月ごとに持つ（4.4 章の `form`） |
+| 11-22 13:04 | 「ほんとにお金欲しい人はエージェント作る側になってお金稼げばいいけど一般ユーザは配給。オイシックスみたいなオシャレな感じ」 | Agent を作った人へ払った分は費用の一つ（`creator_share`）。利用者の画面は 9 章 |
+| 11-22 回答 | 「ゆくゆくは15万が全部配給、でも今はまず現金で、5万はエージェント作った人への収益とうちらに入る分もろもろ含む、15万は例だから何割あげるとか決めてはいないけど」 | 本人の分の率（`dividend_bps`）は締めのたびに運営が入れる。既定は 0 |
+| 11-22 回答 | 受け取るのは「Noahに登録した人全員」と「寄与した人」。「等分は物、寄与の分は現金」 | 等分＝`dividend`、寄与＝作業料（`fee`）。作業料はいつも現金 |
+| 11-22 回答 | 1人1回は「Esimで一個でいいけど最初はEsim必須にしない、Noah単体で今日売り出せる形にしたい」 | 確かめ方は `bank_account` と `esim_line` の2つ（5 章 R9） |
+| 11-22 回答 | 箱の中身は「おまかせ（選ばない）」。画面での呼び名は「定期便」 | 物の中身は運営が Dock で決める（4.5 章 `goods_ref`） |
+| 11-22 回答 | 「今日は無料で出す、有料は後」。有料の中身は「つなげる数 6→50、Noah クラウドで動かせる、定期便の上乗せ」。払い方は「本人の分から差し引く」 | 差し引き（5 章 R7）。有料かどうかの読み方（8.4 章） |
+
+もう一つ、2026-11-22 のカウンセル（5人の評議）の指摘を採った。「本人の分」を、会社が本人に借りている物（積み上がる権利）として扱うと、払えない借りが積み上がる。そこで、本人の分は**締めた月に、実際の余剰から決まる給付**として扱う。締める前は、誰にも何も借りていない。差し引きも、締めて決まった給付からだけ行う。
+
+## 2. 言葉
+
+画面と、この仕様書と、コードで、同じ物は同じ言葉で呼ぶ。
+
+| 言葉 | 意味 |
+| --- | --- |
+| 入金 | 外から実際に入ったお金。見込み・社内のやりとり・Agent 同士の発注は入れない（`income`） |
+| 返金 | 入金のうち、返したお金（`refund`） |
+| 手数料 | 売り場（ココナラなど）に引かれたお金（`platform_fee`） |
+| 実費 | クラウド・AI など、外へ払ったお金（`direct_cost`） |
+| 作った人の分 | Agent を作った人へ払ったお金（`creator_share`） |
+| 月 | 締めの単位。日本時間の暦の月。書き方は `YYYY-MM` |
+| 締め | その月の記録を固め、分け方を決める事。締めた月の記録は変えない |
+| 余剰 | 入金 − 返金 − 手数料 − 実費 − 作った人の分 − 予備 − 作業料 |
+| 予備 | 返金に備えて残すお金。入金（返金を引いた後）× 予備の率 |
+| 本人の分の率 | 余剰のうち、利用者へ回す率。未定の間は 0 |
+| 等分 | 余剰 × 本人の分の率 を、確かめた人の数で分けた額。端数は ID の順に 1 円ずつ |
+| 作業料 | 検収に通った寄与の量 × 単価。寄与は計算資源・人の確認・紹介の3種類 |
+| 差し引き | 有料にしたい人の分を、その月の等分から引く事 |
+| 払い出し | 現金で渡す事。振込は運営が行い、台帳には結果だけを書く |
+| 定期便 | 物で渡す事。仕入先とつながった後、等分を物に置き換える |
+| 受け取り番号 | 利用者ごとの 8 文字の番号（例 `K7QM-2XPA`）。運営が本人を確かめる時に使う |
+| 確かめた人 | 運営が、振込先の名義か eSIM の回線で、1人1回を確かめた人。等分を受けるのは、確かめた人だけ |
+
+## 3. 変える所
+
+| 所 | 変える事 |
+| --- | --- |
+| `drizzle/0055_noah_teikibin.sql`・`drizzle/meta/_journal.json`・`db/schema.ts` | 4 章の5つの表を足す。本番への適用は、本人の許可の後 |
+| `lib/noah-teikibin.ts`（新） | 通信も保存もしない部分: 切り替えの読み方、月の扱い、締めの計算（`lib/sky-company-order.ts` の `settleCompanyOrder` を使う）、入力の検査、受け取り番号、確かめの鍵 |
+| `lib/noah-teikibin-store.ts`（新） | D1 の読み書き。締めの途中で止まっても、やり直せる（7 章） |
+| `lib/noah-teikibin-api.ts`（新） | 入口 `GET`・`POST /api/noah/teikibin`（8 章） |
+| `lib/noah-teikibin-server.ts`（新）・`app/api/noah/teikibin/route.ts`（新） | 依存と環境変数の読み方。入口は 2 行 |
+| `app/noah/teikibin/page.tsx`・`components/noah-teikibin.tsx`（新） | 利用者の画面「あなたの定期便」（9.1 章） |
+| `app/noah/review/teikibin/page.tsx`・`components/noah-teikibin-operator.tsx`（新） | 運営の画面（審査者だけ。9.2 章） |
+| `lib/noah-i18n-teikibin.ts`（新）・`lib/noah-i18n.ts` | 利用者の画面の文の、6 言語 |
+| `lib/noah-intake-server.ts` | 切り替えが開いている時、有料の読み方（`NOAH_PLAN_SOURCE` の代わり）に台帳を使う（8.4 章） |
+| `lib/noah-shelf-server.ts`・`lib/noah-trial-server.ts`・`lib/noah-release-server.ts` | 審査者を `noahReviewerAccess` で読む（`NOAH_REVIEWER_OWNER_SCOPES` も効くように）。本番は `NOAH_REVIEWER_USER_IDS` が無く、これらの運営の操作が使えなかった |
+| `tests/noah-teikibin.test.mjs`（新）・`tests/noah-unified-ui.test.mjs` | 10 章の試験。利用者の画面を、文の 6 言語の検査に足す |
+
+## 4. 表
+
+### 4.1 `noah_teikibin_people`（受け取る人）
+
+| 列 | 型 | 意味 |
+| --- | --- | --- |
+| `id` | text（UUID） | 受け取る人の ID |
+| `owner_id` | text、一意 | Noah の本人（このブラウザの保存権限の持ち主） |
+| `code` | text、一意 | 受け取り番号 |
+| `identity_key` | text | 確かめた身元の鍵付きの要約（HMAC-SHA256、16 進）。生の口座番号・回線番号は持たない |
+| `method` | text | `bank_account` か `esim_line` |
+| `verified_by`・`verified_at` | text・integer | 確かめた運営と時刻 |
+| `revoked_at`・`revoked_by`・`revoke_reason` | integer・text・text | 受け取りを止めた時刻・運営・理由（重複が見つかった時など） |
+| `plan_opt_in` | integer（0/1） | 有料を、本人の分から払いたいか |
+| `created_at` | integer | 申し込んだ時刻 |
+
+`identity_key` は、止めていない人の中で一意（同じ口座・同じ回線で2人分は受け取れない）。
+
+### 4.2 `noah_teikibin_entries`（入金と費用）
+
+| 列 | 型 | 意味 |
+| --- | --- | --- |
+| `id` | text（UUID） | |
+| `month` | text | `YYYY-MM` |
+| `kind` | text | `income`・`refund`・`platform_fee`・`direct_cost`・`creator_share` |
+| `amount_minor` | integer | 円。1 以上 10 億以下 |
+| `source` | text | 出どころ（`coconala`・`noah`・`cloud`・`ai`・`bank`・`other`） |
+| `reference` | text | 出どころの受領番号など。同じ `kind` と `reference` の行は、取り消していない物の中で1つだけ |
+| `note` | text | 運営のメモ（200 字まで） |
+| `recorded_by`・`created_at` | text・integer | 書いた運営と時刻 |
+| `voided_at`・`voided_by`・`void_reason` | | 取り消した時刻・運営・理由 |
+
+### 4.3 `noah_teikibin_contributions`（寄与）
+
+| 列 | 型 | 意味 |
+| --- | --- | --- |
+| `id` | text（UUID） | |
+| `month` | text | `YYYY-MM` |
+| `person_id` | text | 受け取る人（確かめた人だけ） |
+| `kind` | text | `compute`（検証に通った計算）・`judgment`（人の確認）・`referral`（紹介） |
+| `accepted_units`・`unit_rate_minor` | integer | 検収に通った量と、割り当てた時の単価（円） |
+| `reference` | text | 検収の記録の番号。取り消していない物の中で一意 |
+| `recorded_by`・`created_at`・`voided_at`・`voided_by`・`void_reason` | | 4.2 章と同じ |
+
+### 4.4 `noah_teikibin_months`（締め）
+
+| 列 | 型 | 意味 |
+| --- | --- | --- |
+| `month` | text、主キー | `YYYY-MM` |
+| `state` | text | `closing`（締めの途中）か `closed`（締めた） |
+| `form` | text | 等分の渡し方。`cash`（現金）か `goods`（定期便） |
+| `reserve_bps`・`dividend_bps` | integer | 予備の率・本人の分の率（1万分率） |
+| `plan_price_minor` | integer か null | 有料の値段（円）。null なら差し引かない |
+| `people` | integer | 等分を受けた、確かめた人の数 |
+| `lines` | integer | 人ごとの結果の数（等分を受けた人と、作業料だけの人を合わせた数） |
+| `net_cash_minor`・`fees_minor`・`reserve_minor`・`surplus_minor`・`pool_minor`・`company_minor`・`shortfall_minor` | integer | 計算の結果（6 章） |
+| `settlement` | text（JSON） | 計算の入力と、人ごとの結果の全部。締めの途中で止まった時は、これから続ける |
+| `digest` | text | 入力の要約（SHA-256）。下書きを見た時と、締める時で、入力が同じかを確かめる |
+| `closed_by`・`started_at`・`closed_at` | | |
+
+### 4.5 `noah_teikibin_lines`（人ごとの結果）
+
+主キーは（`month`, `person_id`）。
+
+| 列 | 意味 |
+| --- | --- |
+| `fee_minor`・`dividend_minor`・`deduction_minor` | 作業料・等分・差し引き |
+| `cash_minor`・`goods_minor` | 現金で渡す額・物で渡す額。`fee + dividend − deduction = cash + goods` |
+| `paid_plan` | この月に差し引いたか（1 なら、次の月は有料） |
+| `payout_state` | `none`（現金なし）・`pending`（振込待ち）・`held`（保留）・`paid`（振込済み） |
+| `payout_ref`・`paid_by`・`paid_at` | 振込の記録の番号（全部の行で一意）・運営・時刻 |
+| `goods_state` | `none`・`pending`（割当待ち）・`assigned`（Dock で割り当てた） |
+| `goods_ref`・`assigned_by`・`assigned_at` | Dock の割当の ID・運営・時刻 |
+
+## 5. 規則
+
+| 番号 | 規則 | 破った時 |
+| --- | --- | --- |
+| R1 | 入金は、実際に入った額だけを書く。見込みは書かない | （運営の画面の注記で守る） |
+| R2 | 同じ `kind` と `reference` の記録は1つだけ。同じ内容の送り直しは、今の行を返す | 内容が違えば 409「同じ番号の記録が、違う内容であります。」 |
+| R3 | 締めた月（締めの途中も）の記録は、足しも取り消しもしない | 409「締めた月は変えられません。次の月に調整の行を入れてください。」 |
+| R4 | 記録できる月は、2026-01 から今の月まで。先の月には書かない | 400「月を確かめてください。」 |
+| R5 | 後の月を締めた後に、前の月は締めない | 409「後の月が締めてあります。」 |
+| R6 | 今の月は締めない（月が終わってから締める） | 409「月が終わってから締めてください。」 |
+| R7 | 差し引きは、有料の値段があり、本人が有料を選んでいて、その月の等分が値段以上の時だけ。等分が足りない時は差し引かない（次の月は無料のまま） | — |
+| R8 | 等分を受けるのは、締めた時点で確かめてあり、止めていない人だけ | — |
+| R9 | 身元の鍵は、止めていない人の中で一意。生の口座番号・回線番号は保存しない（鍵 `NOAH_TEIKIBIN_KEY` で HMAC にする） | 409「この口座（回線）は、もう別の受け取り番号で確かめてあります。」。鍵が無ければ 503 |
+| R10 | 振込済みにできるのは `pending` の行だけ。振込の番号は全部の行で一意 | 409「この行は、振込待ちではありません。」「この振込の番号は、もう使われています。」 |
+| R11 | 保留は `pending` → `held`、戻すのは `held` → `pending` だけ | 409 |
+| R12 | 定期便の割当は、`goods_state` が `pending` の行だけ | 409 |
+| R13 | 締める時は、運営が最後に見た下書きの `digest` と、今の入力の `digest` が同じ時だけ | 409「記録が変わりました。もう一度、下書きを見てください。」 |
+| R14 | 利用者に見せる額は、締めた月の実数だけ。見込み・目標・平均は見せない | — |
+| R15 | 切り替え `NOAH_TEIKIBIN` が閉の間、利用者の GET は `{ open: false }` だけを返す。申し込みも受けない。審査者は、閉でも全部使える | 404「見つかりません。」（POST） |
+| R16 | 書き込みは、同じ Origin・本人の印（`X-Rock-Owner-Scope`）・JSON・本文 4 KiB まで。運営の操作は審査者だけ | 403・409・415・413 |
+| R17 | 1か月に締められる人は 5,000 人まで、記録は種類ごとに 5,000 行まで | 409「この月の数が上限を超えています。」 |
+
+## 6. 計算
+
+締めの計算は、`lib/sky-company-order.ts` の `settleCompanyOrder` を、その月の合計で1回呼ぶ。新しい分け方の式は作らない。
+
+| `settleCompanyOrder` の入力 | 台帳から入れる物 |
+| --- | --- |
+| `orderId` | `noah-teikibin-YYYY-MM` |
+| `cashReceivedMinor` | 取り消していない `income` の合計 |
+| `refundsMinor` | `refund` の合計（入金を超えたら締めない: 409） |
+| `platformFeeMinor` | `platform_fee` の合計 |
+| `directCostsMinor` | `direct_cost` と `creator_share` の合計 |
+| `reserveBps`・`dividendBps` | 締める時に運営が入れる率 |
+| `contributions` | 取り消していない寄与（`participantRef` は受け取る人の ID） |
+| `dividendParticipants` | 確かめてあり、止めていない人の ID |
+
+その後、人ごとに差し引きと渡し方を決める。
+
+1. `deduction = (値段がある && 本人が有料を選んでいる && dividend >= 値段) ? 値段 : 0`
+2. `form = cash` の月: `cash = fee + dividend − deduction`、`goods = 0`
+3. `form = goods` の月: `cash = fee`（作業料はいつも現金）、`goods = dividend − deduction`
+4. `payout_state = cash > 0 ? pending : none`、`goods_state = goods > 0 ? pending : none`
+5. 全員の `cash + goods + deduction` の合計は、全員の `fee + dividend` の合計と一致する（一致しなければ締めない）
+
+余剰が負の月は、等分は 0 で、足りない分は会社の持ち出し（`shortfall_minor`）。作業料は、余剰が負でも払う（作業料は会社の債務）。
+
+運営の画面には、約束してよい額も出す。`basicIncomeCoverage` に、締めた月の `pool_minor`（等分に回した額）と、今の確かめた人の数を入れる。約束の基準は、平均ではなく、最も少なかった月。利用者の画面には出さない（R14）。
+
+## 7. 処理の順
+
+### 7.1 記録（入金・費用・寄与）
+
+1. 審査者か・Origin・本人の印・JSON を確かめる（R16）。
+2. 月の形と範囲を確かめる（R4）。その月に `noah_teikibin_months` の行があれば止める（R3）。
+3. 同じ `kind`・`reference` の行があれば、内容が同じなら今の行を返し、違えば止める（R2）。
+4. 書く。`INSERT … WHERE NOT EXISTS (締めの行) AND (その月の行数) < 5000`。行が増えなければ、3 か R3 か R17 のどれかを読み直して答える。
+
+### 7.2 締め
+
+1. 下書き（`GET ?preview=…`）: 入力を読み、6 章の計算をし、`digest` と結果を返す。書かない。
+2. 締める（`POST close`）: もう一度入力を読み、計算し、`digest` が下書きと同じかを確かめる（R13）。R5・R6・R17 を確かめる。
+3. `noah_teikibin_months` に `state = closing` と `settlement`（入力と人ごとの結果の全部）を1行で書く。同じ月の行が既にあれば、書かない。
+4. 人ごとの結果を `noah_teikibin_lines` に書く。1回の batch に 45 文、1文に 9 人まで（D1 の、1文 100 個の値・1回 50 文の上限の内）。`INSERT OR IGNORE` なので、やり直しても2重にならない。
+5. 書いた行の数が `lines` と一致したら、`state = closed`・`closed_at` にする。
+6. 3〜5 の途中で止まったら、もう一度 `close` を送る。`closing` の行があれば、保存した `settlement` から 4 と 5 だけを続ける（入力を読み直さない。止まった後に確かめた人が増えても、結果は変わらない）。
+
+### 7.3 払い出し
+
+1. 運営は `GET ?export=YYYY-MM` で、振込待ちの一覧（受け取り番号・額）を CSV で受け取る。口座番号は台帳に無いので、運営が自分の記録と合わせる。
+2. 運営が振り込む（台帳の外。Claude は振り込まない）。
+3. 運営は行ごとに `POST paid`（受け取り番号・振込の番号）を送る。`pending` の行だけが `paid` になる（R10）。
+
+### 7.4 定期便（物）
+
+1. `form = goods` の月は、等分が `goods_minor` になる。
+2. 運営は Dock で、その人に品物を割り当てる（今の [配給の指定](../structure/04-eve-noa-amc-sky.md#noahの配給)）。
+3. 運営は `POST goods`（受け取り番号・Dock の割当の ID）を送る。`pending` の行だけが `assigned` になる（R12）。
+
+## 8. 入口 `/api/noah/teikibin`
+
+応答は全部 `Cache-Control: no-store, private`。
+
+### 8.1 利用者の GET
+
+| 状態 | 返す物 |
+| --- | --- |
+| サインインしていない | `{ open, signedIn: false }` |
+| 切り替えが閉（審査者でない） | `{ open: false, signedIn: true, ownerScope }` |
+| 開 | `{ open: true, signedIn: true, person, months, planPriceMinor, ownerScope }` |
+
+`person` は `{ code, verified, revoked, planOptIn }` か null。`months` は、締めた月の本人の行（新しい順、最大 24）。各行は `{ month, form, feeMinor, dividendMinor, deductionMinor, cashMinor, goodsMinor, paidPlan, payoutState, goodsState, paidAt }`。`planPriceMinor` は、最後に締めた月の有料の値段（無ければ null）。
+
+### 8.2 利用者の POST
+
+| `action` | 入力 | すること |
+| --- | --- | --- |
+| `join` | なし | 受け取る人の行を作る（あれば今の行を返す）。受け取り番号を返す |
+| `plan` | `optIn`（真偽） | 有料を本人の分から払うかを変える |
+
+### 8.3 運営の入口（審査者だけ）
+
+| 入口 | すること |
+| --- | --- |
+| `GET ?state=1` | 締めた月の一覧、今の月、受け取る人の数（全員・確かめた人・止めた人）、鍵があるか、約束してよい額（`target` で1人あたりの目標額を渡せる） |
+| `GET ?month=YYYY-MM` | その月の記録（入金・費用・寄与）と合計。締めてあれば締めの結果 |
+| `GET ?preview=YYYY-MM&reserve=&dividend=&price=&form=` | 締めの下書き（7.2 章の 1） |
+| `GET ?people=1&after=` | 受け取る人の一覧（受け取り番号の順に 200 人ずつ） |
+| `GET ?payouts=YYYY-MM` | その月の人ごとの結果（500 行まで） |
+| `GET ?export=YYYY-MM` | 振込待ちの CSV |
+| `POST entry` | `month`・`kind`・`amount`・`source`・`reference`・`note` |
+| `POST void-entry` | `id`・`reason` |
+| `POST contribution` | `month`・`code`・`kind`・`units`・`rate`・`reference` |
+| `POST void-contribution` | `id`・`reason` |
+| `POST verify` | `code`・`method`・`identity`（生の値。HMAC にして捨てる） |
+| `POST revoke` | `code`・`reason` |
+| `POST close` | `month`・`form`・`reserveBps`・`dividendBps`・`planPrice`（null 可）・`digest` |
+| `POST paid` | `month`・`code`・`payoutRef` |
+| `POST hold`・`release` | `month`・`code` |
+| `POST goods` | `month`・`code`・`assignmentRef` |
+
+### 8.4 有料かどうかの読み方
+
+`lib/noah-plan.ts` の `NOAH_PLAN_SOURCE` の代わりに、切り替え `NOAH_TEIKIBIN` が開いている時だけ、台帳から読む。本人の行が、日本時間で前の月にあり、その月が締めてあり、`paid_plan = 1` なら有料。それ以外は無料。有料の数（つなげる数 50）を使うのは、さらに切り替え `NOAH_PLAN_LIMITS` が開いている時だけ（今の仕組みのまま）。
+
+## 9. 画面と文言
+
+### 9.1 利用者「あなたの定期便」（`/noah/teikibin`）
+
+- 切り替えが閉の時: 見出し「定期便」、本文「Agent が実際に稼いだお金の一部を、Noah を使う人に届ける準備をしています。始まる時に、ここでお知らせします。」。額は出さない。
+- 開の時:
+  - 見出し「あなたの定期便」。説明「Agent が実際に稼いだお金を月ごとに締めて、使っている人に等しく分けます。今は現金で、仕入先とつながったら、運営が選んだ食べ物や日用品が届きます。」
+  - 申し込む前: ボタン「受け取りを申し込む」。
+  - 申し込んだ後、確かめる前: 「受け取り番号」と番号。「運営があなたを確かめると、次の締めから受け取れます。」
+  - 確かめた後: 「受け取れます」。
+  - 止めた人: 「受け取りは止まっています。」
+  - 締めた月の一覧: 月・等分・作業料・差し引き・受け取り方（現金／定期便）・状態（振込待ち／保留／振込済み／届ける準備中／届けます）。行が無ければ「まだ締めた月はありません。」
+  - 有料: 値段がある時だけ。切り替え「有料（つなげる数 50・クラウド・定期便の上乗せ）を、本人の分から払う」と、「等分が値段より少ない月は、差し引かず、次の月は無料のままです。」
+  - 注記: 「受け取った額は、収入として扱われる場合があります。」
+- 見た目: 白地にやわらかい色の箱、数字は大きく、1か月が1枚のカード（Oisix の箱のように、届く物が主役）。スマホ幅を先に作る。
+
+### 9.2 運営（`/noah/review/teikibin`、審査者だけ。日本語だけ）
+
+上から: 約束してよい額（目標額を入れると、足りない額を出す）、月を選ぶ、記録（入金・費用の追加と取り消し）、寄与、受け取る人（確かめる・止める）、締め（率・形・値段 → 下書き → 締める）、払い出し（CSV・振込済み・保留・定期便の割当）。
+
+## 10. 試験（`tests/noah-teikibin.test.mjs`）
+
+| 試験 | 確かめる規則 |
+| --- | --- |
+| 締めの計算: 合計が入金と一致する・作業料は余剰が負でも払う・率 0 の間は等分 0・端数は ID の順 | 6 章 |
+| 差し引き: 等分が値段以上の時だけ・物の月は等分から引く・合計の一致 | R7・6 章 |
+| 同じ番号の記録: 同じ内容は今の行・違う内容は 409・取り消した後は書ける | R2 |
+| 締めた月は変えない・先の月は書かない・今の月は締めない・後の月の後に前の月は締めない | R3〜R6 |
+| 確かめた人だけが等分を受ける・止めた人は外れる | R8 |
+| 同じ口座で2人は確かめない・鍵が無ければ 503・生の値を保存しない | R9 |
+| 振込済みは1回だけ・振込の番号は一意・保留と戻し | R10・R11 |
+| 定期便の割当は1回だけ | R12 |
+| 下書きの後に記録が増えたら、締めない | R13 |
+| 締めの途中で止まっても、もう一度送ると続きから終わり、結果が同じ | 7.2 章の 6 |
+| 利用者には締めた月の実数だけ・閉の間は額を返さない・申し込みも受けない | R14・R15 |
+| 運営の操作は審査者だけ・Origin・本人の印 | R16 |
+| 有料の読み方: 前の月に差し引いた人だけ有料 | 8.4 章 |
+| 画面: 閉の時は額を出さない・申し込み・番号・月の一覧・6 言語の文 | 9.1 章 |
+
+## 11. 完了の定義
+
+- 10 章の試験が全部通る。今ある試験も通る。
+- 切り替えを閉じたままで、本番の動きは何も変わらない（新しい表を読む入口は、審査者か、開けた後だけ）。
+- migration は `drizzle/` に入る。本番への適用は本人の許可の後。
+
+## 12. 開ける前に要る事（本人と運営）
+
+1. 税理士・弁護士の回答（質問表）。受け取る人の収入・生活保護・扶養、景品の上限、資金移動業などに当たらないか。
+2. 本番の migration（0055）の適用と、鍵 `NOAH_TEIKIBIN_KEY`（32 文字以上の秘密）の設定。
+3. 最初の月の入金と費用の記録（実際の受領番号つき）。
+4. 本人の分の率と、有料の値段を決める。
+5. 切り替え `NOAH_TEIKIBIN` を開け、メニュー（`components/noah-shell.tsx` の `secondary`）に「定期便」を足す。閉の間は、メニューに出さない（額の無い告知でも、受け取れると思わせないため）。
+
+## 13. 決めていない事
+
+| 事 | 今の扱い |
+| --- | --- |
+| 本人の分の率（「20万のうち15万」は例） | 締めのたびに運営が入れる。既定 0 |
+| 有料の値段 | 締めのたびに運営が入れる。既定 null（差し引かない） |
+| eSIM を必須にしない間の、1人1回の確かめ方 | 振込先の口座で確かめる（`bank_account`）。口座を集めてよいかは、質問表の Q17 |
+| 利用規約・プライバシーポリシー（受け取り番号と口座の扱い） | 開ける前に用意する |
+| 定期便の仕入先と、物の値段の数え方（仕入値か売値か） | 質問表の Q2。Dock の割当の時に決める |

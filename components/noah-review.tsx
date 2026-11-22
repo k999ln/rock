@@ -1,11 +1,14 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import NoahIntakeReview from './noah-intake-review';
 import NoahShelfReview from './noah-shelf-review';
 import NoahTrialReview from './noah-trial-review';
+import NoahRetentionReview from './noah-retention-review';
 import { SKY_REVIEW_CHECKS } from '@/lib/sky-tool-review';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import styles from './noah-agent-catalog.module.css';
+import NoahCloudOperations from './noah-cloud-operations';
 const labels: Record<string, string> = {
   sourcePinned: '配布コードの固定版',
   rights: '配布する権利',
@@ -102,9 +105,12 @@ export default function NoahReview() {
   return (
     <main className={styles.page}>
       <h1>Agentの審査</h1>
+      {/* 定期便の台帳（task 124）。審査者だけが開ける別の画面。 */}
+      {scope && <p><Link href="/noah/review/teikibin">定期便の台帳（入金・締め・払い出し）を開く</Link></p>}
       {scope && <NoahIntakeReview key={scope} ownerScope={scope} />}
       {scope && <NoahShelfReview key={`shelf:${scope}`} ownerScope={scope} />}
       {scope && <NoahTrialReview key={`trial:${scope}`} ownerScope={scope} />}
+      {scope && <NoahRetentionReview key={`retention:${scope}`} ownerScope={scope} />}
       <p>
         作者とは別の審査担当者が、提出された固定版を確認します。審査の合格後に公開一覧へ載ります。
       </p>
@@ -198,6 +204,7 @@ export default function NoahReview() {
           )}
         </section>
       )}
+      {scope && <NoahCloudOperations key={`cloud:${scope}`} ownerScope={scope} />}
     </main>
   );
 }

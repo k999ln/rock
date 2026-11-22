@@ -1,0 +1,139 @@
+/* 運営の画面「定期便の台帳」。読みやすさ優先の、表と入力欄だけの画面。 */
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+  display: grid;
+  gap: 18px;
+  color: var(--os-text, #202024);
+}
+.header h1 {
+  margin: 0 0 6px;
+  font-size: 1.5rem;
+}
+.header p {
+  margin: 4px 0;
+}
+.card {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--os-line, #e8e5ee);
+  background: var(--os-panel, #fff);
+  overflow-x: auto;
+}
+.card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.help {
+  margin: 0;
+  color: var(--os-muted, #71717a);
+  line-height: 1.6;
+}
+.warn {
+  margin: 0;
+  color: #b42318;
+}
+.notice {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--os-raised, #f7f5fa);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+.grid label,
+.card > label,
+.inline label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+input,
+select {
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--os-line, #e8e5ee);
+  font: inherit;
+}
+button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--os-line, #e8e5ee);
+  background: var(--os-raised, #f7f5fa);
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.danger {
+  background: #b42318;
+  border-color: #b42318;
+  color: #fff;
+  font-weight: 600;
+}
+.link {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-accent, #7628df);
+  text-decoration: underline;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px 16px;
+  margin: 0;
+}
+.facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--os-line, #e8e5ee);
+  padding-top: 6px;
+}
+.facts dt {
+  color: var(--os-muted, #71717a);
+}
+.facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.table th,
+.table td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--os-line, #e8e5ee);
+  vertical-align: top;
+  white-space: nowrap;
+}
+.voided {
+  color: var(--os-muted, #71717a);
+  text-decoration: line-through;
+}
+.preview {
+  display: grid;
+  gap: 10px;
+}

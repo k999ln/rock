@@ -46,6 +46,16 @@ export const NOAH_CAPABILITIES = {
   'ads.run': { label: '広告を出す', keywords: ['ads', 'advertising', 'campaign', 'meta ads', 'google ads', '広告'] },
   'order.fulfill': { label: '注文を届ける', keywords: ['order', 'fulfillment', 'shipping', 'print on demand', 'printful', '発送'] },
   'app.build': { label: 'アプリを作る・更新する', keywords: ['ios', 'swift', 'xcode', 'app store', 'build', 'testflight'] },
+  // 推し活（2026-11-22 本人指示「推し活向けのイベント予約とかグッズかう代行自動ボットもいれて」）。
+  'oshi.watch': { label: '公式の告知（申込・発売・再販）を見張る', keywords: ['rss', 'feed', 'monitor', 'watch', 'alert', 'notify', 'announcement', '告知'] },
+  'calendar.schedule': { label: '申込の期間・締切・当落・入金を予定に入れる', keywords: ['calendar', 'schedule', 'reminder', 'ical', '予定'] },
+  'notify.push': { label: '時間になったら知らせる', keywords: ['push', 'notification', 'notify', 'line', 'telegram', '通知'] },
+  'travel.search': { label: '遠征の宿・交通を探す', keywords: ['hotel', 'travel', 'flight', 'train', 'booking', 'rail', 'bus', '宿', '旅行'] },
+  'budget.ledger': { label: '推し活の家計簿をつける', keywords: ['budget', 'expense', 'ledger', 'finance tracker', '家計簿'] },
+  'proxy.intake': { label: '代行の依頼・見積もり・前払いを受ける', keywords: ['order form', 'quote', 'invoice', 'checkout', 'stripe', '見積'] },
+  'shipping.label': { label: '国際発送の送り状・税関の書類を作る', keywords: ['shipping', 'customs', 'label', 'ems', 'dhl', 'fedex', '発送'] },
+  'travel.fare': { label: '交通の早割の締切と払い戻しの手数料を比べる', keywords: ['fare', 'flight', 'shinkansen', 'train', 'airline', 'bus', '運賃', '新幹線'] },
+  'travel.hold': { label: '無料で取り消せる宿を押さえ、取消の期限を見張る', keywords: ['hotel', 'booking', 'reservation', 'cancel', 'availability', '宿', 'ホテル'] },
 } as const;
 export type NoahCapability = keyof typeof NOAH_CAPABILITIES;
 
@@ -108,6 +118,10 @@ export const NOAH_ACCOUNTS: readonly NoahAccount[] = [
   A('meta-ads', 'Meta 広告', 'ads', ['email', 'phone']),
   A('google-ads', 'Google 広告', 'ads', ['email', 'phone']),
   A('apple-developer', 'Apple Developer Program', 'developer', ['email', 'phone', 'identity', 'bank', 'tax']),
+  A('official-shops', '公式通販のアカウント（作品・事務所ごと）', 'marketplace', ['email', 'phone', 'address'], { publishByTap: true, facts: [
+    { text: 'チケットぴあの規約は、自動入力のソフトや BOT での利用、転売目的の取得、営利目的の転売を禁じ、購入者と入場者の名義の一致を求める（18 条 1 項 15 号・1 号・19 号、9 条 3 項）。公式通販も、作る時に規約の自動購入・代行・転送の扱いを確かめる。', source: 'https://t.pia.jp/info/terms-sp.jsp' },
+  ] }),
+  A('japan-post', '日本郵便（国際郵便マイページ）', 'hosting', ['email', 'address', 'phone']),
 ];
 const ACCOUNT = new Map(NOAH_ACCOUNTS.map(a => [a.id, a]));
 
@@ -176,6 +190,68 @@ export const NOAH_ADS_THEMES = [['explainer', '解説'], ['news', '業界の話�
 export const NOAH_COMMERCE = [['shopify-dropship', 'Shopify（無在庫）', 'shopify'], ['base-dropship', 'BASE（無在庫）', 'base-shop'], ['suzuri-pod', 'SUZURI（受注生産）', 'suzuri'], ['kdp-books', 'Amazon KDP（本）', 'amazon-kdp']] as const;
 export const NOAH_COMMERCE_NICHES = [['apparel', '服'], ['accessories', '小物'], ['pets', 'ペット'], ['kitchen', '台所'], ['stationery', '文具'], ['books', '本']] as const;
 export const NOAH_APP_CATEGORIES = [['utility', '便利な道具'], ['education', '学び'], ['health-log', '記録'], ['fortune', '占い'], ['game', 'ゲーム']] as const;
+/**
+ * 推し活の分野。fan は、どの分野の推し活か（アイドル・アニメ・VTuber・声優・ゲーム・舞台）。
+ * 作らない物（NOAH_OSHI_EXCLUDED）: 本人の代わりに抽選へ申し込む・先着の販売を自動で買う・複数のアカウント・転売・待機列や CAPTCHA を避ける・作品の絵柄を使った自作グッズ。
+ */
+export const NOAH_OSHI_FANDOMS = [['idol', 'アイドル'], ['anime', 'アニメ'], ['vtuber', 'VTuber'], ['voice-actor', '声優'], ['game', 'ゲーム'], ['stage', '舞台・2.5次元']] as const;
+export const NOAH_OSHI_EXCLUDED = [
+  { id: 'ticket-auto-apply', label: 'チケットの抽選・先着へ、本人の代わりに自動で申し込む', reason: 'チケット販売の規約が BOT・自動入力を禁じ、名義と本人確認の一致を求める（チケットぴあ 18 条 1 項 15 号・9 条 3 項）', source: 'https://t.pia.jp/info/terms-sp.jsp' },
+  { id: 'ticket-resale', label: 'チケットを仕入れて売る', reason: 'チケット不正転売禁止法（2019-06-14 施行）と、販売の規約の転売の禁止', source: 'https://www.bunka.go.jp/seisaku/bunka_gyosei/ticket_resale_ban/' },
+  { id: 'limited-sniping', label: '数量限定・先着のグッズを自動で買い占める', reason: '通販の規約の自動購入・数量制限に反し、ファンが買えなくなる。アカウント停止の恐れ', source: 'https://t.pia.jp/info/terms-sp.jsp' },
+  { id: 'multi-account', label: '複数のアカウント・他人名義で申し込む', reason: '名義の一致と 1 人 1 申込の決まりに反する', source: 'https://t.pia.jp/info/terms-sp.jsp' },
+  { id: 'queue-bypass', label: '待機列・CAPTCHA・購入数の上限を避ける', reason: '販売側の決まりを技術で外す行為（本人の会話の決まりでも行わない）', source: 'https://t.pia.jp/info/terms-sp.jsp' },
+  { id: 'fan-made-goods', label: '作品の絵柄・ロゴを使ったグッズを作って売る', reason: '著作権・商標の権利者の許諾が要る', source: 'https://www.bunka.go.jp/seisaku/chosakuken/' },
+] as const;
+const step = (id: string, label: string, kind: NoahStepKind, extra: Omit<NoahBlueprintStep, 'id' | 'label' | 'kind'> = {}): NoahBlueprintStep => ({ id, label, kind, ...extra });
+/**
+ * 推し活のエージェント（Noah のエージェント 1 つ。本人の回答 2026-11-22「noah のエージェントの一個だよ」）。値段は Noah の料金のつなげる数に従う。
+ * 分野は 6 つ全部（本人の回答）。言葉は日本語から始め、英語・中国語・韓国語を足す。各工程の能力は、Eve が確かめるか作る（足りない物は Eve の一覧に入る）。
+ * 申込と、支払いを伴う予約は、必ず本人が押す（NOAH_OSHI_EXCLUDED）。会員番号などは本人の端末の中だけに置く。
+ * 遠征の宿・交通の候補に紹介の案件（アフィリエイト）を使う時は、広告の表示（PR）を付ける（会社の稼ぎ方 oshi:expedition-affiliate）。
+ */
+/**
+ * 推し活の困り事（2026-11-22 にネットで調べた物。本人の回答「ネットで調べて必要なことは」）。強さは、数のある調査か、報道の事例かで決めた。
+ * 今あるアプリ（FanFun・おしきゅん・オシカツ・推し活支出管理・チケットカレンダー）は、予定を人が手で入れ、記録して知らせるまで。宿・交通を実際に取る・取り消す・比べる物は無い。
+ */
+export const NOAH_OSHI_PAINS = [
+  { id: 'info-missing', label: '推しの情報を追う時間と見逃し', strength: 'high', evidence: '出演情報を調べるのに時間を使う 67.5%、見逃してストレス 64.4%（パナソニック、2024 年、800 人）。チケットの発売日のアプリには「プレイガイドの先行が抜ける・手で足せない」の声', sources: ['https://ascii.jp/elem/000/004/240/4240940/', 'https://apps.apple.com/jp/app/id1528279062'] },
+  { id: 'money', label: 'お金が足りない（遠征 1 回 約 5.9 万円、いちばんは交通費）', strength: 'high', evidence: '悩みの 1 位「お金が足りない」28.4%（タニタ、2026 年、1,000 人）。遠征 1 回の平均 約 5.9 万円、使い道の 1 位は交通費 53.7%（Oshicoco、2026 年、664 人）', sources: ['https://api-img.tanita.co.jp/files/user/news/pdf/2026/fanactivities_research.pdf', 'https://www.commercepick.com/archives/90611'] },
+  { id: 'hotel', label: '宿が取れない・高くなる・当落の前に押さえる必要', strength: 'high', evidence: '札幌の公演で市内がほぼ満室、1 泊 約 3 万円（普段の 3〜4 倍）、遠くの宿の予約と大量の取消。定番の対処は「無料キャンセルで当落の前に仮押さえ」、取消の期限は多くが 2 日前', sources: ['https://gendai.media/articles/-/160927', 'https://oshikatu-life.com/live-hotel-trouble-solutions/'] },
+  { id: 'time', label: '時間が足りない', strength: 'medium', evidence: '悩みの 2 位 19.4%（タニタ、2026 年）', sources: ['https://api-img.tanita.co.jp/files/user/news/pdf/2026/fanactivities_research.pdf'] },
+  { id: 'resale-fraud', label: 'SNS でのチケットの譲渡の詐欺', strength: 'medium', evidence: '国民生活センターが 2026-10-06 に注意喚起。公式のリセール（定価）を使うよう勧める', sources: ['https://www.kokusen.go.jp/news/data/n-20261006_1.html'] },
+  { id: 'goods-soldout', label: 'グッズの売り切れと物販の長い列', strength: 'medium', evidence: '人気のグッズは昼前に売り切れ。事前の通販が会場の売上の半分以上、売り切れの品は事後通販で 2〜2.5 か月かかる物も', sources: ['https://www.businessinsider.jp/article/260929/'] },
+] as const;
+/**
+ * 推し活のエージェント（Noah のエージェント 1 つ。本人の回答 2026-11-22「noah のエージェントの一個だよ」）。値段は Noah の料金のつなげる数に従う。
+ * 今あるアプリとかぶる所（手で入れる予定・家計簿だけ）は、主役にしない。主役は、困り事の強い 3 つ:
+ *   ① 抜けない情報: 推しの公式の告知・出演・発売の期間を、公開の出典から自動で集める（手で入れない。出典のリンク付き）。
+ *   ② 安い遠征: 当落の日・宿の無料取消の期限・交通の早割の締切を突き合わせ、当落の前に押さえ、外れたら期限内に取り消し、当たったら安い・近い部屋を拾う。
+ *   ③ 安全: チケットは公式のリセールへ。SNS の譲渡の詐欺を知らせる。
+ * 申込・予約・取消・支払いは、必ず本人が押す（NOAH_OSHI_EXCLUDED）。会員番号などは本人の端末の中だけに置く。分野は 6 つ全部、言葉は日本語から。
+ */
+export const NOAH_OSHI_AGENT = {
+  id: 'noah-oshi', label: '推し活', languages: ['ja', 'en', 'zh-Hant', 'zh-Hans', 'ko'] as const, startLanguage: 'ja' as const,
+  steps: [
+    step('register', '推しを登録する（名前・公式サイト・公式 X・FC の有無・住んでいる地域・月の上限）', 'human', { reason: '何を推すかは本人が決める' }),
+    step('collect', '公式の告知・出演・発売の期間（FC 先行・プレイガイド先行・一般発売・公式リセール・事前通販・受注生産の締切・コラボカフェの予約）を公開の出典から集める', 'auto', { capability: 'oshi.watch' }),
+    step('schedule', '当落の日・入金締切・発券を含めて予定に入れ、受付の前と締切の前に知らせる', 'auto', { capability: 'calendar.schedule' }),
+    step('apply', '抽選・先着に申し込む', 'tap', { reason: '販売の規約が BOT・自動入力を禁じ、名義と本人確認の一致を求める。押すのは本人（Noah は申込の頁と要る物を用意する）' }),
+    step('trip-plan', '申し込んだ公演ごとに、当落の日・宿の無料取消の期限・交通の早割の締切を突き合わせ、「今押さえる／当落を待つ」を、費用の差と一緒に出す', 'auto', { capability: 'travel.fare' }),
+    step('hotel-hold', '当落の前に、無料で取り消せる宿を押さえる', 'tap', { reason: '予約は本人が金額と取消の条件を見て押す' }),
+    step('hotel-release', '外れた公演の宿を、無料の期限の内に取り消す（期限の前に知らせ、1 タップで取り消す）', 'tap', { reason: '取消は戻せない操作なので、本人が押す' }),
+    step('hotel-better', '当たった公演は、会場に近い・安い部屋の空きを見張って知らせる', 'auto', { capability: 'travel.hold' }),
+    step('official-resale', 'チケットは公式のリセールの出品を知らせ、SNS の譲渡の詐欺を知らせる', 'auto', { capability: 'oshi.watch' }),
+    step('goods-preorder', '事前通販・受注生産の締切と、再入荷を知らせる（会場の列と売り切れを避ける）', 'auto', { capability: 'oshi.watch' }),
+    step('cap', '遠征とグッズの費用を、月の上限と比べて出す', 'auto', { capability: 'budget.ledger' }),
+  ],
+  /** 主役の困り事（NOAH_OSHI_PAINS の id）と、それに当たる工程。 */
+  answers: { 'info-missing': ['collect', 'schedule'], money: ['trip-plan', 'hotel-release', 'cap'], hotel: ['hotel-hold', 'hotel-release', 'hotel-better'], time: ['collect', 'trip-plan'], 'resale-fraud': ['official-resale'], 'goods-soldout': ['goods-preorder'] } as Record<string, readonly string[]>,
+  /** 見張りの間隔（公開の頁だけ。変わった時だけ読む）。 */
+  polling: { officialMs: 15 * 60_000, restockMs: 5 * 60_000 },
+  /** 知らせる時（受付開始・締切・入金締切・宿の無料取消の期限からの差、ミリ秒）。 */
+  reminders: { applyOpens: [-30 * 60_000, 0], applyCloses: [-24 * 3_600_000, -3 * 3_600_000], paymentDue: [-24 * 3_600_000], freeCancel: [-24 * 3_600_000, -6 * 3_600_000] },
+};
 
 // ---------------------------------------------------------------------------
 // 設計図
@@ -189,13 +265,14 @@ export type NoahBlueprintStep = {
   costYen?: number;
 };
 export type NoahBlueprint = {
-  id: string; model: 'affiliate' | 'gig' | 'digital' | 'ads' | 'commerce' | 'app'; label: string;
+  id: string; model: 'affiliate' | 'gig' | 'digital' | 'ads' | 'commerce' | 'app' | 'oshi'; label: string;
   accounts: string[]; steps: NoahBlueprintStep[]; finance: boolean;
+  /** 後回しにした理由（本人の決め事）。並びでは、後回しでない物の後に置く。 */
+  hold?: string;
   /** 実際に稼げている事例（出典付き。task 122 の 2 段目で集める。ここでは空から始める）。 */
   evidence: { url: string; claim: string; checkedAt: number }[];
 };
 
-const step = (id: string, label: string, kind: NoahStepKind, extra: Omit<NoahBlueprintStep, 'id' | 'label' | 'kind'> = {}): NoahBlueprintStep => ({ id, label, kind, ...extra });
 /** アカウントを作る工程。本人確認・パスワード・確認コード・口座は本人。それ以外（入力内容・手順・規約の要点）は Noah が用意する。 */
 const signUp = (account: string): NoahBlueprintStep[] => {
   const a = ACCOUNT.get(account);
@@ -278,6 +355,51 @@ export function noahBlueprints(): NoahBlueprint[] {
     step('build', 'アプリを作る・更新する', 'auto', { capability: 'app.build' }), step('store-page', 'ストアの説明と画像を作る', 'auto', { capability: 'content.image' }),
     step('submit', '審査に出す', 'tap', { account: 'apple-developer', reason: 'App Store の審査の提出は本人が押す' }), ...measure(),
   ] });
+  for (const [fan, fanLabel] of NOAH_OSHI_FANDOMS) {
+    // 推し活の手伝い（見張る・予定・知らせ・遠征・家計簿）は、稼ぎ方の設計図ではなく、Noah のエージェント 1 つ（NOAH_OSHI_AGENT）。
+    // 値段は Noah の料金（無料でつなげる数、課金でもっと）に従う（本人の回答 2026-11-22「noah のエージェントの一個だよ」）。
+    // 2. 海外のファン向けの購入代行（公式通販・事前通販）。数量制限と規約を守り、人の速さで買う。チケットは扱わない。
+    for (const channelId of ['x', 'instagram', 'tiktok'] as const) {
+      const channel = NOAH_CHANNELS.find(c => c.id === channelId)!;
+      push({ id: `oshi:proxy-overseas:${fan}:${channelId}`, model: 'oshi', label: `${fanLabel}グッズの海外向け購入代行 × ${channel.label}`, finance: false, hold: '後回し（本人 2026-11-22「代行は後回し」）', steps: [
+        ...signUp('stripe'), ...signUp('official-shops'), ...signUp('japan-post'), ...signUp(channel.account),
+        step('license', '古物商の許可が要るかを確かめる', 'review', { reason: '代わりに買って渡す形でも、新品の買い取り・売り渡しは古物に当たる場合がある。所轄の警察署・行政書士に確かめる（本人）' }),
+        step('shop-rules', '公式通販の規約（代行・転売・海外転送・数量制限）を確かめる', 'auto', { capability: 'research.market' }),
+        step('page', '代行の頁（手数料・送料・届く日数・扱わない物）を作る', 'auto', { capability: 'site.build' }),
+        step('legal-notice', '特定商取引法の表示（名義・連絡先）を確かめる', 'review', { reason: '名義はノエル個人。表示する住所・電話の出し方は本人が決める' }),
+        step('intake', '依頼・見積もり・前払いを受ける', 'auto', { capability: 'proxy.intake' }),
+        step('buy', '公式通販で買う', 'tap', { account: 'official-shops', reason: '購入は運営が人の速さで押す（自動購入・数量の上限を超える買い方・先着の買い占めはしない）' }),
+        step('receive', '届いた物を確かめる', 'human', { reason: '物を手に取って確かめる（傷・数・中身）' }),
+        step('label', '国際発送の送り状と税関の書類を作る', 'auto', { capability: 'shipping.label' }),
+        step('ship', '梱包して出す', 'human', { reason: '梱包と持ち込み（集荷）は人の手' }),
+        step('support', '依頼者に返信する', 'auto', { capability: 'support.reply' }),
+        ...produce(channel.format), publishStep(channel), ...measure(),
+      ] });
+    }
+    // 3. 推し活の予定のまとめ（事実と日付だけ。画像・本文は転載しない）× ブログの広告収益。
+    push({ id: `oshi:calendar-media:${fan}`, model: 'oshi', label: `${fanLabel}のイベントの予定まとめ × ブログ`, finance: false, steps: [
+      ...signUp('hosting'), ...signUp('adsense'),
+      step('watch', '公式の告知を見張る', 'auto', { capability: 'oshi.watch' }),
+      step('article', '日付・会場・申込の期間を記事にする（公式の画像・本文は転載しない）', 'auto', { capability: 'content.article' }),
+      step('publish', '記事を出す', 'auto', { capability: 'publish.blog' }), ...measure(),
+    ] });
+  }
+  // 4. 遠征（宿・交通）の紹介 × 場所。推し活の遠征の需要に、旅行の案件を当てる。
+  for (const channel of NOAH_CHANNELS) push({ id: `oshi:expedition-affiliate:${channel.id}`, model: 'oshi', label: `推し活の遠征（宿・交通）の紹介 × ${channel.label}`, finance: false, steps: [
+    ...signUp('asp-valuecommerce'), ...signUp(channel.account),
+    step('media:asp-valuecommerce', 'ASP に載せる場（媒体）を登録する', 'tap', { account: 'asp-valuecommerce', reason: '媒体の登録と提携の申請は ASP の画面で本人が押す' }),
+    step('offers', '宿・交通の案件を比べて選ぶ', 'auto', { capability: 'research.offer' }),
+    step('research', '公演の会場と日程から、宿が足りない日を調べる', 'auto', { capability: 'travel.search' }),
+    ...produce(channel.format), step('disclose', '広告の表示（PR）を点検する', 'auto', { capability: 'compliance.check' }), publishStep(channel), ...measure(),
+  ] });
+  // 5. 推し活の汎用の用品（トレカケース・缶バッジの入れ物など。作品の絵柄は使わない）の物販。
+  for (const [kind, label, account] of NOAH_COMMERCE.filter(([k]) => k !== 'kdp-books')) push({ id: `oshi:supplies:${kind}`, model: 'oshi', label: `推し活の用品（絵柄なし） × ${label}`, finance: false, steps: [
+    ...signUp(account), step('research', '売れ筋と仕入れ先を調べる', 'auto', { capability: 'research.offer' }),
+    step('rights', '作品の絵柄・ロゴ・名前を使っていない事を確かめる', 'auto', { capability: 'compliance.check' }),
+    step('make', '商品の画像・説明を作る', 'auto', { capability: 'content.image' }), step('listing', '商品を出す', 'auto', { capability: 'publish.listing', account }),
+    step('fulfill', '注文を届ける', 'auto', { capability: 'order.fulfill' }), step('support', '問い合わせに答える', 'auto', { capability: 'support.reply' }),
+    ...signUp('x').slice(1), step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x' }), ...measure(),
+  ] });
   return out;
 }
 
@@ -324,7 +446,7 @@ export function noahPlanBlueprints(verified: NoahVerifiedCapabilities = {}, owne
     const costYen = steps.reduce((sum, s) => sum + (s.costYen ?? 0), 0), newAccounts = b.accounts.filter(a => !owned.has(a)).length;
     const score = Math.round((100 * covered / Math.max(1, steps.length) - 5 * humanSteps - 2 * tapSteps - reviewSteps - 3 * newAccounts - costYen / 1000 + 10 * b.evidence.length) * 100) / 100;
     return { ...b, steps, covered, gaps, humanSteps, tapSteps, reviewSteps, costYen, newAccounts, score };
-  }).sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
+  }).sort((a, b) => Number(!!a.hold) - Number(!!b.hold) || b.score - a.score || a.id.localeCompare(b.id));
 }
 /** アカウントを作る順: 作ると、上位 limit 件の設計図のうち、いくつで登録の工程が無くなるか（多い順）。要る物も出す。 */
 export function noahAccountKit(plans: readonly NoahBlueprintPlan[], limit = 100) {

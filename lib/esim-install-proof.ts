@@ -181,3 +181,52 @@ export function trustedEsimInstallIssuerKeyResolver(configuration: unknown): Esi
     return Uint8Array.from(entry.publicKeyHex.match(/.{2}/g)!, (byte) => Number.parseInt(byte, 16));
   };
 }
+
+type IosInstallDatabase = Pick<D1Database, 'prepare'>;
+export type IosEveEntitlementState = 'not_declared' | 'awaiting_provider' | 'active' | 'provider_released';
+
+const IOS_BOUND_ORDER = `FROM esim_provider_orders p
+  JOIN sky_commerce_orders o ON o.id = p.sky_order_id AND o.buyer_user_id = p.owner_user_id
+  JOIN esim_provider_profile_bindings b ON b.sky_order_id = o.id AND b.owner_user_id = o.buyer_user_id
+    AND b.provider = p.provider AND b.profile_digest = p.profile_digest
+    AND b.package_key = o.package_key AND b.manifest_sha256 = o.manifest_sha256`;
+const IOS_ELIGIBLE_ORDER = `WHERE o.id = ? AND o.buyer_user_id = ?
+  AND o.mode = 'live' AND o.status = 'paid' AND o.refunded_minor = 0
+  AND p.provider = 'esim-go-v3' AND p.state = 'profile_bound'
+  AND p.package_key = o.package_key AND p.manifest_sha256 = o.manifest_sha256`;
+/** Account-level evidence for Eve on iOS. Native device and cloud grants still
+ * require the signed install and gateway receipts.
+ */
+export async function readIosEveEntitlement(
+  db: IosInstallDatabase, ownerUserId: string, orderId: string,
+): Promise<IosEveEntitlementState | null> {
+  const row = await db.prepare(`SELECT d.declared_at AS declaredAt,
+    (SELECT e.profile_status FROM esim_provider_webhook_inbox i
+      JOIN esim_go_profile_status_events e ON e.callback_digest = i.callback_digest
+      WHERE i.provider = b.provider AND i.sky_order_id = b.sky_order_id AND i.owner_user_id = b.owner_user_id
+        AND i.profile_digest = b.profile_digest AND i.event_type = 'ProfileStatusChange'
+        AND e.event_at >= p.created_at AND e.event_at <= i.received_at + 300000
+      ORDER BY e.event_at DESC, (e.profile_status = 'Released') DESC, i.callback_digest LIMIT 1
+    ) AS profileStatus
+    ${IOS_BOUND_ORDER}
+    LEFT JOIN esim_ios_install_declarations d ON d.sky_order_id = b.sky_order_id
+      AND d.owner_user_id = b.owner_user_id AND d.profile_digest = b.profile_digest
+    ${IOS_ELIGIBLE_ORDER}`)
+    .bind(orderId, ownerUserId)
+    .first<{ declaredAt: number | null; profileStatus: string | null }>();
+  if (!row) return null;
+  if (row.declaredAt === null) return 'not_declared';
+  if (row.profileStatus === 'Released') return 'provider_released';
+  return row.profileStatus === 'Downloaded' || row.profileStatus === 'Installed' ? 'active' : 'awaiting_provider';
+}
+
+export async function declareIosEsimInstall(
+  db: IosInstallDatabase, ownerUserId: string, orderId: string, now = Date.now(),
+): Promise<IosEveEntitlementState | null> {
+  await db.prepare(`INSERT INTO esim_ios_install_declarations (sky_order_id, owner_user_id, profile_digest, declared_at)
+    SELECT b.sky_order_id, b.owner_user_id, b.profile_digest, ?
+    ${IOS_BOUND_ORDER} ${IOS_ELIGIBLE_ORDER}
+    ON CONFLICT (sky_order_id, owner_user_id, profile_digest) DO NOTHING`)
+    .bind(now, orderId, ownerUserId).run();
+  return readIosEveEntitlement(db, ownerUserId, orderId);
+}

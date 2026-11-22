@@ -121,7 +121,7 @@ Agent詳細の最初に料金・送信先と接続ボタンを表示します。
 
 現行の入口は [Agentを探す](https://avoado.si/noah/explore) です。Mac向けガイドの公開ページは撤去済みです。
 
-[CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
+[CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/iceiceice999/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/iceiceice999/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/iceiceice999/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
 
 <a name="noah-tools"></a>
 
@@ -363,6 +363,12 @@ Eveに頼んだ仕事を別の画面で開くために、RockstarOSは本人の�
 
 同じ模擬専用回線の「クラウドでAgentを使う」から、文章を渡して他のアプリに戻れます。提供元の専用クラウド・登録済みの接続先・Noahクラウドを別々のローカルWorkerで試せます。結果が届くまでサーバーが同じ依頼を照会し、仕事ごとに成果・未達・未確認を表示します。
 
+スマホのeSIMと、miiのHub・専用端末・車のeSIMは、入るデータは同じ種類でも、できることが違います。ふつうのスマホは、データ通信に同時に使える回線が1本だけです（Appleの説明「one cellular data network at a time」）。そのため「RockstarOSの通信だけを専用回線へ流す」は、機種と事業者ごとに実機で確かめてから案内します。OS本体とAgentはSIMに入りません。[2種類のeSIMの違い](docs/structure/03-esim.md#0-載せる先と回線の型2026-11-21) · [自社クラウドの設計](docs/compute-placement.md)
+
+N1のSIM確認APIは、SORACOM Endorseの署名済みトークンを検証し、本人（このブラウザの保存権限、または端末の接続）とSIMの紐付けと照合を行います。照合できない場合は、SIMで確かめたことにはしません。[SIM確認APIの設定と使い方](codex/tasks/102-sim-proof-endorse.md)
+
+iPhone・iPadでは、対象注文の購入履歴から `/connect` へ進み、iOS 17.4以降の導入リンクまたはQRコードを使います。導入後はSafariで `/connect/done` を開き、Eveをホーム画面に追加できます。iPhone実機確認は未実施です。
+
 
 </details>
 
@@ -385,7 +391,7 @@ miiの販売・予約は受け付けておらず、価格と発売日は未定�
 
 ### この作業フォルダで始める
 
-複数の作業フォルダを使うときは、最初に `git status -sb` で現在のブランチと未コミットの変更を確認します。共通の作業方針は[GitHubのmainのREADME](https://github.com/k999ln/rock/blob/main/README.md)で確認できます。
+複数の作業フォルダを使うときは、最初に `git status -sb` で現在のブランチと未コミットの変更を確認します。開発とPRは `iceiceice999/rock` に集約します。共通の作業方針は[GitHubのmainのREADME](https://github.com/iceiceice999/rock/blob/main/README.md)で確認できます。
 
 リポジトリのルートで依存を入れて開発サーバーを起動し、ターミナルに表示されたURLの `/noah` または `/os/eve` を開きます。Node.js・npmと依存の指定は[package.json](package.json)と[package-lock.json](package-lock.json)にあります。
 

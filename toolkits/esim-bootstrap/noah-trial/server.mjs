@@ -147,7 +147,7 @@ export async function startTrialServers(
       forMember(async (owner, { dedicated, fields }) => {
         await trial.gate(owner, dedicated);
         if (Object.keys(fields).length !== 1)
-          throw new TrialError(400, '指定された配給を確認してください。');
+          throw new TrialError(400, '指定された定期便を確認してください。');
         await receiveAssignment(
           await trial.runtime.distributionDb(),
           owner,

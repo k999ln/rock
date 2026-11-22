@@ -1,10 +1,14 @@
 const MAX_BODY_BYTES = 64 * 1024;
 const ICCID_PATTERN = /^[0-9]{18,22}$/;
+const PROFILE_STATUS_CHANGE = 'ProfileStatusChange';
+const ALERT_TYPE = /^[A-Za-z][A-Za-z0-9_-]{0,63}$/;
+type EsimGoProfileStatus = 'Downloaded' | 'Installed' | 'Released';
 
 export type EsimGoWebhookEvent = {
   eventType: string;
   callbackDigest: string;
   profileDigest: string | null;
+  profileStatusChange?: { status: EsimGoProfileStatus; eventAt: number };
 };
 
 type EsimGoProfileBinding = {
@@ -109,13 +113,13 @@ function topLevelIccid(text: string): string | null {
 }
 
 export async function persistEsimGoWebhook(
-  db: Pick<D1Database, 'prepare'>,
+  db: Pick<D1Database, 'prepare' | 'batch'>,
   event: EsimGoWebhookEvent,
   now: number,
 ): Promise<'accepted' | 'duplicate'> {
   if (!Number.isSafeInteger(now) || now < 0) throw new Error('INVALID_CLOCK');
   if (!/^[a-f0-9]{64}$/.test(event.callbackDigest)) throw new Error('INVALID_DIGEST');
-  const result = await db.prepare(`
+  const insert = db.prepare(`
     INSERT OR IGNORE INTO esim_provider_webhook_inbox
       (callback_digest, provider, event_type, received_at, state, profile_digest, owner_user_id, sky_order_id)
     SELECT ?, 'esim-go-v3', ?, ?,
@@ -123,7 +127,15 @@ export async function persistEsimGoWebhook(
       ?, b.owner_user_id, b.sky_order_id
     FROM (SELECT 1) AS seed
     LEFT JOIN esim_provider_profile_bindings b ON b.profile_digest = ?
-  `).bind(event.callbackDigest, event.eventType, now, event.profileDigest, event.profileDigest).run();
+  `).bind(event.callbackDigest, event.eventType, now, event.profileDigest, event.profileDigest);
+  const lifecycle = event.profileStatusChange;
+  const [result] = lifecycle && event.profileDigest
+    ? await db.batch([
+      insert,
+      db.prepare(`INSERT OR IGNORE INTO esim_go_profile_status_events (callback_digest, profile_status, event_at)
+        VALUES (?, ?, ?)`).bind(event.callbackDigest, lifecycle.status, lifecycle.eventAt),
+    ])
+    : [await insert.run()];
   return (result.meta?.changes ?? 0) === 0 ? 'duplicate' : 'accepted';
 }
 
@@ -214,8 +226,8 @@ export async function verifyEsimGoV3Body(
   }
   catch { throw new Error('INVALID_BODY'); }
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('INVALID_BODY');
-  const alertType = (value as Record<string, unknown>).alertType;
-  if (typeof alertType !== 'string' || !/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(alertType))
+  const { alertType, profileStatus, eventTime } = value as Record<string, unknown>;
+  if (typeof alertType !== 'string' || !ALERT_TYPE.test(alertType))
     throw new Error('INVALID_EVENT_TYPE');
   const callbackDigestBytes = await hmac(dedupeSecret, new Uint8Array([
     ...new TextEncoder().encode('rockstar-esim-go-callback-inbox-v1\0'), ...rawBody,
@@ -224,7 +236,14 @@ export async function verifyEsimGoV3Body(
   const iccid = topLevelIccid(text);
   const profileDigest = iccid === null ? null
     : await esimGoProfileDigest(iccid, profileHashSecret);
-  return { eventType: alertType, callbackDigest, profileDigest };
+  const eventAt = typeof eventTime === 'string' &&
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(eventTime)
+    ? Date.parse(eventTime) : NaN;
+  const profileStatusChange: EsimGoWebhookEvent['profileStatusChange'] = alertType === PROFILE_STATUS_CHANGE && profileDigest &&
+    (profileStatus === 'Downloaded' || profileStatus === 'Installed' || profileStatus === 'Released') &&
+    Number.isSafeInteger(eventAt) && eventAt >= 0
+    ? { status: profileStatus, eventAt } : undefined;
+  return { eventType: alertType, callbackDigest, profileDigest, ...(profileStatusChange ? { profileStatusChange } : {}) };
 }
 
 export async function readEsimGoV3Request(
