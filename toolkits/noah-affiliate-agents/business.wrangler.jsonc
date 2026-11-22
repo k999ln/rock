@@ -1,0 +1,34 @@
+{
+  "name": "noah-business-si",
+  "main": "business-worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "NOAH_ORIGIN": "https://avoado.si"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BUSINESS_LEDGER",
+        "class_name": "BusinessLedger"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "business-v1",
+      "new_sqlite_classes": [
+        "BusinessLedger"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": false
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  }
+}

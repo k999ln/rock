@@ -1,0 +1,11 @@
+{
+  "name": "noah-revenue-agents",
+  "main": "combination-worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "durable_objects": {"bindings": [{"name": "COMBINATIONS", "class_name": "CombinationLedger"}]},
+  "migrations": [{"tag": "combinations-v1", "new_sqlite_classes": ["CombinationLedger"]}],
+  "triggers": {"crons": ["*/5 * * * *"]},
+  "observability": {"enabled": false}
+}
