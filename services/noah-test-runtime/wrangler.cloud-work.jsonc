@@ -7,8 +7,11 @@
   "preview_urls": false,
   "durable_objects": { "bindings": [
     { "name": "JOBS", "class_name": "CloudWork" },
-    { "name": "RESULTS", "class_name": "TextResult" }
+    { "name": "RESULTS", "class_name": "TextResult" },
+    { "name": "NOTICES", "class_name": "DistributionWork" }
   ] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["CloudWork", "TextResult"] }],
-  "services": [{ "binding": "NOAH", "service": "noah-esim-cloud-work", "entrypoint": "NoahTextAgent" }]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["CloudWork", "TextResult"] },
+    { "tag": "v2", "new_sqlite_classes": ["DistributionWork"] }],
+  "services": [{ "binding": "NOAH", "service": "noah-esim-cloud-work", "entrypoint": "NoahTextAgent" },
+    { "binding":"RECIPIENT", "service":"avocado-operator-dock", "entrypoint":"RecipientDistribution" }]
 }

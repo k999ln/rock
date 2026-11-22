@@ -3,8 +3,10 @@ import { withinFreeTrialBudget } from './guide.mjs';
 import { cloudPackages, routeId, parseWorkReport } from './cloud-packages.mjs';
 
 const json = (value, status = 200) => Response.json(value, { status });
+const preferredRoute = (routes) =>
+  routes.find((r) => r.kind === 'provider') ?? routes[0];
 const validId =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const terminal = new Set(['completed', 'stopped', 'attention']);
 
 export default {
@@ -28,6 +30,9 @@ export class CloudWork {
     this.storage = ctx.storage;
     this.env = env;
   }
+  packages() {
+    return cloudPackages(this.env);
+  }
   async permit(owner, agent, route) {
     const response = await this.env.LINE.fetch('https://line.invalid/permit', {
       method: 'POST',
@@ -41,20 +46,34 @@ export class CloudWork {
     const owner = request.headers.get('X-Trial-Owner');
     const action = new URL(request.url).pathname;
     const input = await request.json();
-    const packages = cloudPackages(this.env);
-    const agent = input.agent ?? packages[0]?.id;
+    const packages = this.packages();
+    let selected;
+    if (action === '/list' && input.work !== undefined) {
+      if (!validId.test(input.work))
+        return json({ error: '仕事番号を確認してください。' }, 400);
+      selected = await this.storage.get('run:' + input.work);
+      if (!selected || selected.owner !== owner)
+        return json({ error: 'この仕事は見つかりません。' }, 404);
+    }
+    const agent = selected?.agent ?? input.agent ?? packages[0]?.id;
     const pkg = packages.find((item) => item.id === agent);
     if (action === '/list') {
-      if (!pkg)
+      if (!pkg && !selected)
         return json({ error: '利用できるパッケージがありません。' }, 404);
-      const ids = (await this.storage.get('recent')) ?? [];
-      const records = ids.length
-        ? await this.storage.get(ids.map((id) => 'run:' + id))
-        : new Map();
+      const ids = selected
+        ? [selected.id]
+        : ((await this.storage.get('recent')) ?? []);
+      const records = selected
+        ? new Map([['run:' + selected.id, selected]])
+        : ids.length
+          ? await this.storage.get(ids.map((id) => 'run:' + id))
+          : new Map();
       return json({
         packages: packages.map(({ id, name }) => ({ id, name })),
         agent,
-        routes: pkg.routes.map(({ id, label }) => ({ id, label })),
+        work: selected?.id,
+        automaticRoute: preferredRoute(pkg?.routes ?? [])?.label,
+        routes: (pkg?.routes ?? []).map(({ id, label }) => ({ id, label })),
         preference: (await this.storage.get('pref:' + agent)) ?? 'auto',
         jobs: ids
           .map((id) => records.get('run:' + id))
@@ -83,7 +102,7 @@ export class CloudWork {
           await tx.put(key, {
             ...job,
             state: 'stopped',
-            note: 'Noahの処理と結果照会を停止しました。',
+            note: 'Noahの処理と結果照会を停止しました。接続先での中断は未確認です。',
           });
           await tx.delete('active');
           await tx.deleteAlarm();
@@ -106,7 +125,7 @@ export class CloudWork {
     const available = pkg.routes;
     const route =
       input.route === 'auto'
-        ? (available.find((r) => r.kind === 'provider') ?? available[0])
+        ? preferredRoute(available)
         : available.find((r) => r.id === input.route);
     if (!route) return json({ error: '選択した接続先は利用できません。' }, 422);
     const permit = await this.permit(owner, agent, route.id);
@@ -206,7 +225,7 @@ export class CloudWork {
         state: 'stopped',
         note: '回線・利用期限・費用条件を確認してください。',
       };
-    const registered = cloudPackages(this.env)
+    const registered = this.packages()
       .find((pkg) => pkg.id === job.agent)
       ?.routes.find(
         (route) => route.id === job.route && route.binding === job.binding,
@@ -252,7 +271,10 @@ export class CloudWork {
       };
     const reader = response.body?.getReader();
     if (!reader)
-      return { state: 'waiting', note: '成果の到着を待っています。' };
+      return {
+        state: 'attention',
+        note: '接続先の成功応答に成果がありません。',
+      };
     const pieces = [];
     let bytes = 0;
     for (;;) {
@@ -265,9 +287,19 @@ export class CloudWork {
       }
       pieces.push(chunk.value);
     }
-    const payload = JSON.parse(await new Blob(pieces).text());
+    let payload;
+    try {
+      payload = JSON.parse(await new Blob(pieces).text());
+    } catch {
+      return {
+        state: 'attention',
+        note: '接続先から読める形式の成果が届きませんでした。',
+      };
+    }
     if (
+      !payload ||
       payload.id !== reference ||
+      (payload.final !== undefined && typeof payload.final !== 'boolean') ||
       typeof payload.result !== 'string' ||
       !payload.result.trim() ||
       payload.result.length > 2048

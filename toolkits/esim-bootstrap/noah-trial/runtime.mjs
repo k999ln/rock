@@ -22,6 +22,7 @@ function bundle(name) {
 }
 const controllerScript = bundle('worker');
 const packageScript = bundle('agent');
+const distributionScript = bundle('distribution-work');
 const cloudWorkScript = bundle('cloud-work');
 const textAgentScript = bundle('text-agent');
 export class TrialError extends Error {
@@ -68,6 +69,20 @@ export class TrialRuntime {
             REGISTERED: 'registered-local-text',
             ...routeBindings,
           },
+        },
+        {
+          name: 'noah-distribution-agent',
+          script: distributionScript,
+          modules: true,
+          compatibilityDate: '2026-10-01',
+          durableObjects: {
+            NOTICES: { className: 'DistributionWork', useSQLite: true },
+          },
+          serviceBindings: {
+            LINE: async (req) =>
+              Response.json(await checkLine((await req.json()).owner)),
+          },
+          outboundService: () => new Response(null, { status: 403 }),
         },
         ...[
           'noah-local-text',
@@ -122,15 +137,39 @@ export class TrialRuntime {
       'DISTRIBUTIONS',
       'noah-trial-distribution-store',
     );
-    const sql = readFileSync(
-      new URL(
-        '../../../services/operator-dock/migrations/0003_distribution.sql',
-        import.meta.url,
-      ),
-      'utf8',
-    );
-    for (const statement of sql.split(';').filter((part) => part.trim()))
-      await db.prepare(statement).run();
+    await db
+      .prepare(
+        'CREATE TABLE IF NOT EXISTS trial_applied_migrations(name TEXT PRIMARY KEY)',
+      )
+      .run();
+    for (const name of [
+      '0003_distribution',
+      '0004_distribution_fulfillment',
+      '0005_distribution_plans',
+    ]) {
+      if (
+        await db
+          .prepare('SELECT 1 FROM trial_applied_migrations WHERE name=?')
+          .bind(name)
+          .first()
+      )
+        continue;
+      const sql = readFileSync(
+        new URL(
+          '../../../services/operator-dock/migrations/' + name + '.sql',
+          import.meta.url,
+        ),
+        'utf8',
+      );
+      const statements = sql
+        .split(';')
+        .filter((part) => part.trim())
+        .map((part) => db.prepare(part));
+      await db.batch([
+        ...statements,
+        db.prepare('INSERT INTO trial_applied_migrations VALUES(?)').bind(name),
+      ]);
+    }
     return db;
   }
   async command(owner, action, input = {}, cloudWork = false) {
