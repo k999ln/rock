@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-11-20
+更新日: 2026-11-23
 
 ## 全体
 
@@ -10,7 +10,7 @@
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 393 task中 114 done、48 in progress、230 planned、1 blocked
-- 現在milestone: Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合
+- 現在milestone: Noahの現main統合・限定本番受入・運用と集客の残件を照合
 
 ## 保存境界と配備状態
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。
+PR #18・#19統合後の本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
