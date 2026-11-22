@@ -172,6 +172,8 @@ npm --prefix toolkits/noah-resale-agent run demo
 
 [サービスとAgentの組み合わせ](https://avoado.si/noah/combinations)では、公式の対応関係を確認した3件の準備ガイドを公開しています。組み合わせ候補の作成・条件判定・準備票・許可済み紹介・実成果の承認追跡を同じ処理で扱います。[追加と運営の手順](toolkits/noah-affiliate-agents/COMBINATIONS.md)。金融案件の提携・媒体・正式リンクは未受入のため紹介停止中。15分の条件点検は稼働、6時間のChrome読取は設定済みですが、初回は認証切れで未取得です。
 
+公開サイト診断と紹介の組み合わせとして、WordPress保守相談とEC制作準備を追加実装しています。管理許可とURL公開送信への同意を確認して無料の外部診断を実行し、希望に合う場合だけ登録済みブログへ案内します。媒体の実成果集計とNoah個別利用への帰属を分けます。[仕様と条件](docs/services/noah-site-diagnostics.md)。本番Noahへの反映・通し受入は進行中です。
+
 <details>
 <summary>Noahの画面・接続・Toolのコード</summary>
 
