@@ -1,6 +1,9 @@
 .loading { display:flex; align-items:center; justify-content:center; min-height:112px; padding:24px; }
 .compact { display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; min-width:24px; min-height:24px; }
 .brand { display:flex; flex-direction:column; align-items:center; gap:14px; }
+.page { display:flex; align-items:center; justify-content:center; min-height:calc(100svh - 64px); padding:24px; }
+.page .brand { gap:20px; }
+.identity { display:flex; align-items:center; gap:12px; color:#24212a; font-size:24px; font-weight:600; letter-spacing:-.6px; }
 .mark { display:block; object-fit:contain; }
 .track { display:block; position:relative; width:64px; height:2px; overflow:hidden; border-radius:2px; background:#eeecf1; }
 .track > span { display:block; width:24px; height:100%; border-radius:inherit; background:#8c6abb; animation:noah-progress 1.8s ease-in-out infinite; }

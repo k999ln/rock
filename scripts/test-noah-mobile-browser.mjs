@@ -56,12 +56,12 @@ try{
    await press(page.locator('article button[aria-label$="を保存"]').first());await page.locator('dialog[open]').waitFor();await size(page.getByRole('button',{name:'閉じる',exact:true}));await press(page.getByRole('button',{name:'閉じる',exact:true}));
    assert.equal(await page.getByLabel('王冠で評価する',{exact:true}).count(),0);assert.equal(await page.locator('dialog[open]').count(),0);
   });
-  await check(`${width}: filter swipe, rating and external card`,async()=>{
+  await check(`${width}: filter swipe, rating and internal Agent detail`,async()=>{
    const filters=page.locator('[aria-label="Agentを絞り込む"]');if(mobile)await swipe(page,context,filters);
    const filtered=page.waitForResponse(r=>r.url().includes('/api/noah/discover?')&&r.url().includes('huggingface'));await press(filters.getByRole('button',{name:'Hugging Face',exact:true}));const listing=await (await filtered).json();await ready(page);
    const card=page.locator('article').filter({hasText:'Semantic Shift Backend'});await card.waitFor();if(await card.locator('[aria-label="評価元の評価"]').count()){await card.getByLabel(/^いいね /).waitFor();assert.match(await card.locator('[aria-label="評価元の評価"]').innerText(),/Hugging Face/);}else{await press(card.getByText('出典・外部の評価',{exact:true}));await card.locator('details[open] a').waitFor();assert.match(await card.locator('details[open]').innerText(),/Hugging Face.*いいね/);}await page.waitForTimeout(250);await noOverlap(page);
    const source=listing.items.find(item=>item.name==='Semantic Shift Backend')?.sources?.find(item=>item.source==='huggingface');assert.equal(typeof source?.metrics?.likes,'number');await card.getByLabel(`いいね ${source.metrics.likes.toLocaleString('ja-JP')}`,{exact:true}).waitFor();await card.screenshot({path:`${output}/external-rating-${width}.png`});
-   const popupPromise=page.waitForEvent('popup');await press(card.locator('a').first());const popup=await popupPromise;await popup.waitForURL('https://huggingface.co/**');await popup.close();
+   const previous=page.url(),tabs=context.pages().length;await press(card.locator('a').first());await page.waitForURL('**/noah/discover/agent?**');await page.getByRole('button',{name:'接続して使う',exact:true}).waitFor();assert.equal(new URL(page.url()).origin,new URL(base).origin);assert.equal(context.pages().length,tabs);await noOverflow(page);await size(page.getByRole('button',{name:'接続して使う',exact:true}));assert.equal(await page.locator('a[target="_blank"]').count(),0);await page.screenshot({path:`${output}/agent-detail-${width}.png`});await page.goto(previous);await ready(page);await press(page.locator('[aria-label="Agentを絞り込む"]').getByRole('button',{name:'Hugging Face',exact:true}));await ready(page);
    await size(page.getByRole('button',{name:'検索条件をクリア',exact:true}));await press(page.getByRole('button',{name:'検索条件をクリア',exact:true}));await ready(page);
    return {source:source.sourceUrl,likes:source.metrics.likes};
   });

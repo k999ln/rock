@@ -126,6 +126,8 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-intake-import-parts') return importParts;
       // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
       if (id === '@/lib/noah-ready-view') return readyView;
+      if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
+
       if (id === '@/lib/noah-agent-share') return agentShare;
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
       throw Error(`画面の試験の台に、${id} がありません`);

@@ -170,3 +170,18 @@ void test('access gate waits for persisted ownership and retries outages without
   failed = false; await page.click('再試行'); assert.equal(page.text(), 'Private tasks');
   assert.deepEqual(s.calls.map(c => c.method), ['POST', 'POST']);
 });
+
+void test('browser private intake allows only its exact customer methods and UUID resources',async()=>{
+  const sessions=createNoahBrowserSessions(keyset()),cookie=(await sessions.issue(request())).split(';')[0],id=crypto.randomUUID();
+  for(const [path,methods] of [
+    ['/api/noah/drafts',['GET']],['/api/noah/import',['POST']],['/api/noah/agents',['GET','POST']],
+    ['/api/noah/drafts/storage',['GET','POST']],[`/api/noah/drafts/${id}`,['GET','PUT','DELETE']],
+    [`/api/noah/drafts/${id}/restore`,['POST']],[`/api/noah/agents/${id}`,['GET','DELETE']],
+    [`/api/noah/agents/${id}/source`,['GET']],[`/api/noah/drafts/${id}/source`,['GET']],
+  ])for(const method of methods)assert.ok((await sessions.authenticate(request(path,{method,cookie}))).startsWith('noah-browser:'));
+  for(const path of ['/api/noah/agents/publish','/api/noah/drafts/not-a-uuid',`/api/noah/agents/${id}/publish`,'/api/noah/intake/import','/api/noah/publisher','/api/noah/runner','/api/billing']){
+    for(const method of ['GET','POST','PUT','DELETE'])await assert.rejects(()=>sessions.authenticate(request(path,{method,cookie})),/UNAUTHORIZED/);
+  }
+  for(const method of ['PUT','DELETE','PATCH'])await assert.rejects(()=>sessions.authenticate(request('/api/noah/agents',{method,cookie})),/UNAUTHORIZED/);
+  await assert.rejects(()=>sessions.authenticate(request(`/api/noah/drafts/${id}`,{method:'PUT',cookie,origin:'https://other.test'})),/ORIGIN/);
+});

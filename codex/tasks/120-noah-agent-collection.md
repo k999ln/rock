@@ -98,3 +98,21 @@ Macの常駐は停止し、launchdの永続disableも確認。55,058,432バイ�
 PRのCodeQL指摘に合わせ、ブラウザ試験の既定出力先を `mkdtemp` で実行ごとに作成する権限700の専用ディレクトリへ変更した（指定した `NOAH_TEST_OUTPUT` は従来どおり）。実際の収集順が変わって先頭20件に保存可能なAgentがない場合にも、画面の「接続できる」で対象を選んでから保存操作を検証する。変更後に公開URLを実Chrome・390pxで再試験し6/6成功。記録は `/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/noah-mobile-browser-d1FEOs/report.json`。
 
 別のSPIDER履歴検査は9候補を検出した（[実行44977185487](https://github.com/k999ln/rock/actions/runs/44977185487)）。6件は `lib/noah-haptics.ts` の公開localStorage設定名、3件は旧 `docs/design-validation/noah/noah-connect.test.mjs` の秘密文字列検出器の合成テスト。値の用途をソースと過去commitで確認した。検出規則・固定control・履歴を変更せず、全体verifyの結果とは分けてPRに記録する。
+
+## 本番反映とロード表示の見直し（2026-11-22）
+
+本人指示によりPR #388の本番反映とスマホ操作を確認し、「ロード画面ださい」の追加指示へ対応。公開189のsourceを開き、すでにあるホーム検索・44pxタップ範囲・並び替え・保存先のNoah専用導線を保持し、外部評価の追加指標表示を反映する。一覧はカード型のプレースホルダー、その他は小さな正式ロゴと細い進行中表示へ変更した。動きを減らす設定と読み上げ通知は維持し、進捗率を作らない。
+
+関連試験はGit側23件・公開source側21件、公開sourceのtypecheckが成功。公開sourceの390pxプレビューでカード型ロードと横はみ出しなしを確認。再実行用ブラウザ試験に、通信待ち中の表示・reduced motion・Hugging Face表示値と一覧APIの値の照合を追加。公開ビルド・本番確認・CIの結果はこの変更のPR本文へ記録する。追加のDB migrationは含めない。
+
+[PR #390](https://github.com/k999ln/rock/pull/390)。公開190のホーム整理を取り込み、公開191（source `8f1882262a0f2d587491f3298d3f1c277da702dc`、deployment `appgdep_6b025e3f01b88191b95a760e59befc05`）が成功。実Chrome 157で320/360/390/430×844と1280×900の31/31項目を確認。検索・空結果の解除・メニュー/保存先の開閉・横スワイプ・外部リンク・503後の再試行・20→40件の追加読込・ロード中の表示・reduced motionが通り、未捕捉JSエラーなし。Hugging Faceのいいね3件は一覧API・画面・公式APIで一致し、GitHub boss-agent-cliのスター2,286件もAPIと画面で一致。追加migrationなし。
+
+証跡は `work/noah-production-qa-20261122/published-191/` のreport.jsonとスクリーンショット、同階層のexternal-rating-proof.json/github-rating-proof.json。端末実機・Safariの合格とはしない。ローカル全体verifyはPythonの版で既存fixtureが失敗（標準Pythonではhashlib.file_digestがなく、3.12ではmacOS用MCPの3.13以上という条件を満たさない）。対応するPython 3.15で関連45試験は再実行成功。全体の最終判定はPRのGitHub CIに記録する。
+
+## 配布元へ移動しない内部接続（2026-11-22、PR #390）
+
+収集カードと評価バッジをNoah内の詳細へ統一。掲載済み系列は既存の接続・依頼へ、公開Spaceは公式APIの同一repo・公開状態・host・HTML・埋込可否を確認して隔離iframeへ表示する。CLI・API専用・停止・埋込拒否は未接続の理由とNoah内の取込設定を出す。任意GitHubコードの自動実行や全件の実行成功は主張しない。ブラウザ本人の非公開取込・下書きAPIにもOrigin・owner scope・所有者分離・容量上限を適用する。
+
+公開194（source `42a54ac2e5567cb3fd4fd32925a49b56c6d5fa0e`）で実Chromeの5画面幅31/31成功。公開Spaceの実入力とAPI専用エラー、既存系列の内部詳細を確認。BaseEdge Labs Catalogは本番で接続200/connectedから切断disconnectedまで確認し、Tool実行は0件。追加確認で下書きAPIのブラウザ認証欠落を検出して修正し、本人境界・下書き・URL引継ぎ43試験が成功。Cloudflareのredirectモード差異は実workerd回帰試験を含む6試験で確認。追加migrationなし。
+
+全体verifyは統合commit `ffdcd922` でexit 0（主要4,942成功・5skip、API1,918項目、CSV385項目）。最終修正後のCI・公開版・取込URLの実画面確認結果はPR本文へ記録する。証跡は `work/noah-production-qa-20261122/published-194/`、`live-connection-proof.json`、`private-intake-tests.log`。実機Safariの合格ではない。
