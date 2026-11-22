@@ -1,7 +1,7 @@
 ## 2026-11-22
 
-- Noahにココナラの返信・応募・正式納品を追加。本人のMacで専用Chromeの画面非占有と、タブを閉じた後の納品照合を確認した。
-
+- Noahにココナラの返信・応募・正式納品を追加。本人のMacで専用Chromeの画面非占有と、タブを閉じた後の納品照合を確認した（[PR #393](https://github.com/k999ln/rock/pull/393)）。
+- Noah公開192の接続ロゴ・成功音/振動と個別設定を最新mainへ受入。全体verify成功、Pixelで検索→接続→新規成果10件→再表示を実測し、再生音と振動完了を記録（task100、[PR #392](https://github.com/k999ln/rock/pull/392)）。
 - NoahのSPIDER履歴検知を、公開の振動設定名と秘密値拒否テストの2組に限定して分類。固定版ポリシー・別値/別パスの検出20試験と全履歴0候補を確認し、公開190のホーム整理・191の読み込み表示とmainのモバイル修正を保持して統合（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 - Noahの購入履歴からeSIM設定を再開し、端末利用権の確認後にAgent一覧へ進める案内と、契約ごとの確定使用料・予約額の明細を追加した（task 11・94、[PR #389](https://github.com/k999ln/rock/pull/389)）。
 - Noah検索修正後のWeb security実測/input hash不一致を再実測で解消し、全体verify成功（主要4,922成功・4skip、API1,918、CSV385）。追加収集元・並び替え・外部評価を共通カードへ統合（task120、[PR #388](https://github.com/k999ln/rock/pull/388)）。
