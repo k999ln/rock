@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
+  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_OSHI_AGENT, NOAH_OSHI_EXCLUDED, NOAH_OSHI_FANDOMS, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
   noahBusinessAllowance, noahBusinessCanSpend, noahEveBacklog, noahPlanBlueprints, noahTrialDecision,
 } from '../lib/noah-business.ts';
 import { businessMarkdown, businessReport } from '../scripts/noah-business-plan.mjs';
@@ -14,7 +14,7 @@ const DAY = 86_400_000;
 void test('blueprints: hundreds of ways to earn, from the taxonomy, the same every time, each from sign-up to payout', () => {
   const all = noahBlueprints();
   assert.ok(all.length >= 400, `${all.length}`);
-  assert.deepEqual(new Set(all.map((b) => b.model)), new Set(['affiliate', 'gig', 'digital', 'ads', 'commerce', 'app']));
+  assert.deepEqual(new Set(all.map((b) => b.model)), new Set(['affiliate', 'gig', 'digital', 'ads', 'commerce', 'app', 'oshi']));
   assert.equal(new Set(all.map((b) => b.id)).size, all.length, 'ids are unique');
   assert.deepEqual(noahBlueprints(), all, 'deterministic');
   const accounts = new Set(NOAH_ACCOUNTS.map((a) => a.id));
@@ -103,4 +103,32 @@ void test('report: verified mappings for agents no longer listed are ignored; th
   const data = JSON.parse(readFileSync(new URL('../data/noah-business-capabilities.json', import.meta.url), 'utf8'));
   assert.equal(data.schema, 'noah-business-capabilities/1');
   for (const [capability, ids] of Object.entries(data.verified)) { assert.ok(NOAH_CAPABILITIES[capability], capability); assert.ok(Array.isArray(ids)); }
+});
+
+void test('推し活: one Noah agent (priced by Noah\'s plan) watches, schedules and reminds; applying and paying are always the fan\'s own tap', () => {
+  const steps = new Map(NOAH_OSHI_AGENT.steps.map((s) => [s.id, s]));
+  for (const id of ['watch', 'calendar', 'notify', 'prepare', 'travel', 'resale', 'budget']) assert.equal(steps.get(id).kind, 'auto', id);
+  assert.equal(steps.get('apply').kind, 'tap', 'no bot applies to a lottery or first-come sale');
+  assert.match(steps.get('apply').reason, /BOT/);
+  assert.equal(steps.get('travel-book').kind, 'tap', 'paid bookings are confirmed by the person');
+  for (const s of NOAH_OSHI_AGENT.steps) if (s.capability) assert.ok(NOAH_CAPABILITIES[s.capability], s.id);
+  assert.equal(NOAH_OSHI_AGENT.startLanguage, 'ja'); assert.deepEqual([...NOAH_OSHI_AGENT.reminders.applyOpens], [-1_800_000, 0]);
+  assert.ok(NOAH_OSHI_AGENT.polling.officialMs >= 15 * 60_000 && NOAH_OSHI_AGENT.polling.restockMs >= 5 * 60_000, 'polite polling');
+});
+
+void test('推し活: the company earns from trips and supplies now; overseas proxy buying is on hold, human-paced, and never tickets', () => {
+  const all = noahBlueprints(), oshi = all.filter((b) => b.model === 'oshi'), byId = new Map(all.map((b) => [b.id, b]));
+  assert.ok(!oshi.some((b) => b.id.startsWith('oshi:assistant:')), 'the assistant is a Noah agent, not a separate subscription');
+  const proxy = byId.get('oshi:proxy-overseas:anime:x');
+  assert.match(proxy.hold, /後回し/);
+  assert.equal(proxy.steps.find((s) => s.id === 'buy').kind, 'tap'); assert.match(proxy.steps.find((s) => s.id === 'buy').reason, /人の速さ/);
+  assert.equal(proxy.steps.find((s) => s.id === 'license').kind, 'review');
+  for (const id of ['receive', 'ship']) assert.equal(proxy.steps.find((s) => s.id === id).kind, 'human', id);
+  const plans = noahPlanBlueprints({}), firstHeld = plans.findIndex((p) => p.hold);
+  assert.ok(firstHeld > 0 && plans.slice(firstHeld).every((p) => p.hold), 'held blueprints come after all others');
+  assert.equal(oshi.filter((b) => b.id.startsWith('oshi:proxy-overseas:')).length, NOAH_OSHI_FANDOMS.length * 3);
+  assert.ok(!oshi.some((b) => /ticket|チケット/u.test(b.id) || b.steps.some((s) => /チケットを(仕入|売)|転売する|買い占め/u.test(s.label))));
+  assert.ok(byId.get('oshi:supplies:suzuri-pod').steps.some((s) => s.id === 'rights' && s.capability === 'compliance.check'));
+  for (const ex of NOAH_OSHI_EXCLUDED) assert.ok(ex.reason && ex.source.startsWith('https://'), ex.id);
+  assert.deepEqual(NOAH_OSHI_EXCLUDED.map((e) => e.id), ['ticket-auto-apply', 'ticket-resale', 'limited-sniping', 'multi-account', 'queue-bypass', 'fan-made-goods']);
 });
