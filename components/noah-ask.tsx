@@ -94,7 +94,7 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
   // 使える道具が 1 つだけなら、一覧を出さずに、入力欄を出す。
   const only = usable.length === 1 ? usable[0] : null;
   const current = only ?? usable.find((tool) => tool.name === picked) ?? null;
-  const shown = noahFilterTools(tools, word);
+  const shown = noahFilterTools(tools, word, (tool) => t(noahOperationLabel(tool.name)));
 
   return <section className={styles.section} aria-labelledby="noah-ask-tools">
     <h2 id="noah-ask-tools">{only ? t(noahOperationLabel(only.name)) : t(NOAH_ASK_TEXT.pick)}{loaded.state === 'ready' && !only ? <small>{tools.length} {t("個")}</small> : null}</h2>
@@ -103,23 +103,26 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
     {loaded.state === 'ready' && usable.length === 0 && <p className={styles.quiet}>{t(NOAH_ASK_TEXT.none)}</p>}
     {loaded.state === 'ready' && !only && <>
       {tools.length >= 13 && <label className={base.search}><span className={base.srOnly}>{t(NOAH_ASK_TEXT.filter)}</span><input type="search" value={word} maxLength={80} placeholder={t(NOAH_ASK_TEXT.filter)} onChange={(event) => setWord(event.target.value)} /></label>}
-      {shown.length === 0 ? <p className={styles.quiet}>{t(NOAH_ASK_TEXT.noMatch)}</p> : <ul className={styles.tools}>{shown.map((tool,index) => <li key={tool.name} data-usable={tool.usable || undefined}>
+      {shown.length === 0 ? <p className={styles.quiet}>{t(NOAH_ASK_TEXT.noMatch)}</p> : <ul className={styles.tools}>{shown.map((tool) => <li key={tool.name} data-usable={tool.usable || undefined}>
         {tool.usable
-          ? <button type="button" className={styles.toolButton} data-tool-name={tool.name} aria-pressed={current?.name === tool.name} onClick={() => setPicked(current?.name === tool.name ? null : tool.name)}><ToolRow tool={tool} index={index} /></button>
-          : <div className={styles.toolRow}><ToolRow tool={tool} index={index} /></div>}
+          ? <button type="button" className={styles.toolButton} data-tool-name={tool.name} aria-pressed={current?.name === tool.name} onClick={() => setPicked(current?.name === tool.name ? null : tool.name)}><ToolRow tool={tool} /></button>
+          : <div className={styles.toolRow}><ToolRow tool={tool} /></div>}
+        {loaded.state === 'ready' && current?.name === tool.name && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
+      titled={!only} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
         <details><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.summary}</p></details>
       </li>)}</ul>}
     </>}
-    {loaded.state === 'ready' && current && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
+    {loaded.state === 'ready' && only && current && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
       titled={!only} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
   </section>;
 }
 
-function ToolRow({ tool,index }: { tool: NoahAskTool;index:number }) {
+function ToolRow({ tool }: { tool: NoahAskTool }) {
   const {t}=useNoahLocale();
 
   return <>
-    <strong>{t(noahOperationLabel(tool.name))}{noahOperationLabel(tool.name)==='操作'?` ${index+1}`:''}</strong>
+    <strong>{t(noahOperationLabel(tool.name))}</strong>
+    {tool.summary && <p className={styles.toolDescription}>{tool.summary}</p>}
     <span className={styles.marks}>{noahToolMarks(tool).map((mark) => <span key={mark}>{t(mark)}</span>)}</span>
 
   </>;
