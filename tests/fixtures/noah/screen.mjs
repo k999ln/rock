@@ -140,8 +140,10 @@ export function screen(options = {}) {
   }
 
   /** 画面を 1 つ開く（開くたびに、新しい画面。前に開いた画面の状態は、引き継がない。sessionStorage と時計は、同じ tab の物として共有する）。 */
+  /** file は 'components/x.tsx'（default の部品）か 'components/x.tsx#名前'（名前の付いた部品）。 */
   function mount(file, props = {}) {
-    const Component = load(file).default, root = `screen${++mounts}`;
+    const [path, exported = 'default'] = file.split('#');
+    const Component = load(path)[exported], root = `screen${++mounts}`;
     const instances = new Map();
     let tree = null, visited = new Set();
     /** 関数の部品を、入れ子で描く。返すのは、HTML の要素だけの木。 */
