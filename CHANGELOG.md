@@ -1,4 +1,5 @@
 ## 2026-11-22
+- **緊急の安全の直し**: avoado.si の React Server Components の部品（react-server-dom-webpack 19.2.8）に、11-10 公開の「認証なしで外からコードを動かせる」穴（CVE-2026-126187、critical）があったので、直った 19.2.9 に上げた（react・react-dom も同じ版。11-11 の Dependabot の枝は react-server-dom-webpack だけを 19.3.1 にしていて、react と版が合わない）。shadcn の CLI が引く body-parser・systeminformation・qs・hono なども直った版に上げた。根の npm audit は 18 件（critical 1・high 3）→ 10 件（critical 0・high 1）。本番の公開が要る（Opus / Noelle）（[PR #SECFIX](https://github.com/iceiceice999/rock/pull/SECFIX)）。
 - NoahからDaisukeのAniccaでココナラの公開募集を探索し、Macで提案の下書きを受け取り、停止できるようにした（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。
 - Noah公開203のPixel実機受入をREADME・task100・作業一覧へ記録。ポコ音の録音、振動完了、Agentboard新規登録→認証付き実行→成果の再読込保持を確認（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 - Noahの法人Agent統合をSites206で公開し、共通実行・保存・再読込と自動再判定を実測。提供元とNoahの保存範囲を明記（[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
