@@ -94,7 +94,7 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
   // 使える道具が 1 つだけなら、一覧を出さずに、入力欄を出す。
   const only = usable.length === 1 ? usable[0] : null;
   const current = only ?? usable.find((tool) => tool.name === picked) ?? null;
-  const shown = noahFilterTools(tools, word);
+  const shown = noahFilterTools(tools, word, (tool) => t(noahOperationLabel(tool.name)));
 
   return <section className={styles.section} aria-labelledby="noah-ask-tools">
     <h2 id="noah-ask-tools">{only ? t(noahOperationLabel(only.name)) : t(NOAH_ASK_TEXT.pick)}{loaded.state === 'ready' && !only ? <small>{tools.length} {t("個")}</small> : null}</h2>
@@ -103,23 +103,26 @@ export default function NoahAsk({ agentId, agentName, connectionId, initialTool 
     {loaded.state === 'ready' && usable.length === 0 && <p className={styles.quiet}>{t(NOAH_ASK_TEXT.none)}</p>}
     {loaded.state === 'ready' && !only && <>
       {tools.length >= 13 && <label className={base.search}><span className={base.srOnly}>{t(NOAH_ASK_TEXT.filter)}</span><input type="search" value={word} maxLength={80} placeholder={t(NOAH_ASK_TEXT.filter)} onChange={(event) => setWord(event.target.value)} /></label>}
-      {shown.length === 0 ? <p className={styles.quiet}>{t(NOAH_ASK_TEXT.noMatch)}</p> : <ul className={styles.tools}>{shown.map((tool,index) => <li key={tool.name} data-usable={tool.usable || undefined}>
+      {shown.length === 0 ? <p className={styles.quiet}>{t(NOAH_ASK_TEXT.noMatch)}</p> : <ul className={styles.tools}>{shown.map((tool) => <li key={tool.name} data-usable={tool.usable || undefined}>
         {tool.usable
-          ? <button type="button" className={styles.toolButton} data-tool-name={tool.name} aria-pressed={current?.name === tool.name} onClick={() => setPicked(current?.name === tool.name ? null : tool.name)}><ToolRow tool={tool} index={index} /></button>
-          : <div className={styles.toolRow}><ToolRow tool={tool} index={index} /></div>}
-        <details><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.summary}</p></details>
+          ? <button type="button" className={styles.toolButton} data-tool-name={tool.name} aria-pressed={current?.name === tool.name} onClick={() => setPicked(current?.name === tool.name ? null : tool.name)}><ToolRow tool={tool} /></button>
+          : <div className={styles.toolRow}><ToolRow tool={tool} /></div>}
+        {loaded.state === 'ready' && current?.name === tool.name && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
+      titled={false} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
+        {current?.name !== tool.name && <details className={styles.toolExplanation}><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.summary}</p></details>}
       </li>)}</ul>}
     </>}
-    {loaded.state === 'ready' && current && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
-      titled={!only} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
+    {loaded.state === 'ready' && only && current && <NoahAskForm key={`${current.name}:${current.sha256}`} connectionId={connectionId} agentId={agentId} agentName={agentName} ownerScope={ownerScope} host={loaded.host} tool={current}
+      titled={false} confirmedHere={confirmedHere} onAsked={onAsked} onChanged={reload} />}
   </section>;
 }
 
-function ToolRow({ tool,index }: { tool: NoahAskTool;index:number }) {
+function ToolRow({ tool }: { tool: NoahAskTool }) {
   const {t}=useNoahLocale();
 
   return <>
-    <strong>{t(noahOperationLabel(tool.name))}{noahOperationLabel(tool.name)==='操作'?` ${index+1}`:''}</strong>
+    <strong>{t(noahOperationLabel(tool.name))}</strong>
+
     <span className={styles.marks}>{noahToolMarks(tool).map((mark) => <span key={mark}>{t(mark)}</span>)}</span>
 
   </>;
@@ -204,7 +207,6 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
   const optionalProblem = optional.some((item) => item.name === problem?.field);
   return <form className={styles.form} noValidate onSubmit={(event) => { event.preventDefault(); submit(); }}>
     {titled && <h3>{t(noahOperationLabel(tool.name))}</h3>}
-    <details><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.description||tool.summary}</p></details>
     {required.map(field)}
     {(optional.length > 0 || form.omitted > 0) && <details className={styles.more} open={optionalProblem || undefined}>
       <summary>{t(NOAH_ASK_TEXT.more)}（{optional.length}）</summary>
@@ -212,7 +214,7 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
       {form.omitted > 0 && <p className={styles.quiet}>{noahAskOmittedText(form.omitted)}</p>}
     </details>}
     {problem && !fields.some((item) => item.name === problem.field) && <p className={styles.fieldError} role="alert">{problem.message}</p>}
-    {agentId && <NoahDelegationPicker target={agentId} name={agentName??host} action={tool.name} digest={tool.sha256} ownerScope={ownerScope} onMode={setPolicy}/>}
+    {agentId && <details className={styles.permissionOptions} open={policy==='deny'||policy==='paused'||undefined}><summary>{t('任せる範囲')} · {t(policy==='loading'?'確認中':policy==='confirm'?'確認して実行':policy==='deny'?'任せない':policy==='paused'?'停止中':'任せる')}</summary><NoahDelegationPicker target={agentId} name={agentName??host} action={tool.name} digest={tool.sha256} ownerScope={ownerScope} onMode={setPolicy}/></details>}
     {confirming ? <fieldset className={styles.confirmBox}>
       <legend>{t("頼む前の確かめ")}</legend>
       <p>{tool.readOnly?t('入力内容を送り、この操作を実行します。'):t('この操作は、送信先のデータを変更・送信する可能性があります。')}</p>
@@ -227,6 +229,7 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
       <div className={styles.actions}><button type="submit" className={styles.primary} disabled={busy||blocked} aria-busy={busy || undefined}>{busy ? <NoahLoading compact label={t(NOAH_ASK_TEXT.sending)} /> : t(NOAH_ASK_TEXT.submit)}</button></div>
     </>}
     {notice && <div className={styles.actions}><output className={styles.notice}>{t(notice)}</output><a className={styles.secondary} href="#noah-agent-work">{t("進捗と成果を見る")}</a></div>}
+    <details className={styles.toolExplanation}><summary>{t('提供者の説明')}</summary><code>{tool.name}</code><p>{tool.description||tool.summary}</p></details>
     {error && <div className={styles.reason} role="alert"><p>{t(error)}</p>{error.includes('変わりました') && <button type="button" className={styles.secondary} onClick={onChanged}>{t("道具の一覧を読み直す")}</button>}</div>}
   </form>;
 }

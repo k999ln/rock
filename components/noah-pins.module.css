@@ -123,3 +123,15 @@
 
 .sources summary, .sources a { min-height:44px; }
 .sources a { display:flex; align-items:center; }
+
+.sourceBadge{display:inline-flex;align-items:center;flex-wrap:wrap;gap:5px;min-height:32px;padding:7px 10px;border-radius:10px;background:#f2edf9;color:#624c84;font-size:13px;box-sizing:border-box}.sourceBadge>span{display:inline-flex;align-items:center;gap:3px}
+
+.explore{max-width:1200px;margin:auto;padding:16px 20px 100px;min-width:0;}
+.explore h1{font-size:24px;margin:8px 0 16px;}
+.explore .home{padding:0;}
+.searchBox{display:flex;align-items:center;gap:10px;padding:0 12px;background:#f5f3f8;border-radius:14px;margin-bottom:14px;}
+.searchBox input{flex:1;min-width:0;min-height:48px;border:0;background:transparent;font-size:16px;color:inherit;}
+.searchBox button{display:grid;place-items:center;width:44px;height:44px;border:0;background:transparent;flex-shrink:0;}
+.sourceFilter{font-size:14px;margin-bottom:12px;}
+.sourceFilter>summary{cursor:pointer;min-height:44px;padding:12px 0;}
+.sourceFilter>a{display:inline-flex;min-height:44px;align-items:center;}

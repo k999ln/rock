@@ -42,3 +42,14 @@ void test('home and timeline select different content from the current hash',()=
  for(const value of ['#timeline','#following','#agents']){hash=value;assert.equal(ui.mount('components/noah-home.tsx').text(),'POST TIMELINE');}
  hash='';for(const mode of ['local','public'])assert.equal(ui.mount('components/noah-home.tsx',{mode}).text(),'PIN HOME');
 });
+
+void test('operation labels distinguish provider tools and translate known purposes without changing IDs', () => {
+ const names=['search_beevr','get_pricing','list_services','list_case_studies','get_case_study','list_articles','get_article','about_beevr'];
+ const before=[...names];
+ for(const locale of NOAH_LOCALES){const labels=names.map(name=>noahTranslate(locale,noahOperationLabel(name)));assert.equal(new Set(labels).size,names.length);assert.ok(labels.every(label=>label && !/^操作(?: \d+)?$/.test(label)));if(locale!=='ja')assert.ok(labels.every((label,i)=>label!==noahOperationLabel(names[i])));}
+ assert.deepEqual(names,before);
+ assert.equal(noahOperationLabel('findCustomerOrders'),'find Customer Orders');
+ assert.equal(noahOperationLabel('list_custom_widgets'),'list custom widgets');
+ assert.equal(noahOperationLabel('constructor'),'constructor');
+ assert.equal(noahOperationLabel('__'),'__');
+});

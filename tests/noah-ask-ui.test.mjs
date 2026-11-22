@@ -56,11 +56,13 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   const server = mcpServer({ tools: [lookup, nested, stats, publish] });
   const { page, toolButton, field, form } = await opened(t, server);
   // 使える道具は、押せる行。使えない道具は、押せない（印は文字）。
-  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['操作 1読み取りだけ', '操作 2読み取りだけ押すだけ', '操作 3送る前に確かめます']);
-  assert.match(page.text(), /操作 4入力欄ではまだ使えません提供者の説明configure/);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['情報を検索読み取りだけ', '統計を見る読み取りだけ押すだけ', '公開する送る前に確かめます']);
+  assert.match(page.text(), /設定する入力欄ではまだ使えません提供者の説明configure/);
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('lookup'));
   assert.equal(toolButton('lookup').props['aria-pressed'], true);
+  const selectedRow = page.find('li').find(node => page.nodes(node).includes(toolButton('lookup')));
+  assert.ok(page.nodes(selectedRow).includes(form()), 'input is immediately inside the selected operation row');
   // 必須の欄を先に。任意の欄は「細かい設定（n）」の中。入力欄にできない設定は、数だけ。
   const text = page.text(form());
   assert.match(text,/検索する内容 \*提供者の説明Player · A player id or name.細かい設定（3）件数/);
@@ -76,8 +78,9 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   await page.press(toolButton('lookup'));
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('stats'));
-  assert.ok(page.text(form()).startsWith('操作提供者の説明stats'));
-  assert.ok(page.text(form()).endsWith(`送信先: ${hostOf(1)}頼む`));
+  assert.ok(page.text(form()).includes('提供者の説明stats'));
+  assert.equal(page.find('h3',form()).length,0,'the selected operation heading is not repeated');
+  assert.ok(page.text(form()).includes(`送信先: ${hostOf(1)}頼む`));
   assert.equal(calls(server).length, 0);
 });
 
@@ -85,12 +88,14 @@ void test('one usable tool: the form is shown without a list; many tools: a filt
   const single = await opened(t, mcpServer({ tools: [lookup, nested] }));
   assert.equal(single.page.find('button').filter((node) => node.props.className === 'toolButton').length, 0);
   assert.ok(single.page.text(single.form()).includes('検索する内容 *'));
-  assert.deepEqual(single.page.find('h2').filter(node=>node.props.id==='noah-ask-tools').map((node) => single.page.text(node)), ['操作']);
+  assert.deepEqual(single.page.find('h2').filter(node=>node.props.id==='noah-ask-tools').map((node) => single.page.text(node)), ['情報を検索']);
   const many = await opened(t, mcpServer({ tools: [lookup, ...Array.from({ length: 13 }, (_, n) => tool(`tool_${n}`))] }));
   const filter = many.page.find('input').find((node) => node.props.type === 'search');
   assert.equal(filter.props.placeholder, '語で絞る（名前・説明）');
   await many.page.change(filter, 'PLAYER');
-  assert.deepEqual(many.page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => many.page.text(many.page.nodes(node).find((child) => child.type === 'strong'))), ['操作 1']);
+  assert.deepEqual(many.page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => many.page.text(many.page.nodes(node).find((child) => child.type === 'strong'))), ['情報を検索']);
+  await many.page.change(filter, '情報を検索');
+  assert.deepEqual(many.page.find('button').filter(node => node.props.className === 'toolButton').map(node => node.props['data-tool-name']), ['lookup']);
   await many.page.change(many.page.find('input').find((node) => node.props.type === 'search'), 'zzzz');
   assert.match(many.page.text(), /合う道具が、ありません。/);
   // 12 個までは、絞る欄を出さない。
@@ -129,7 +134,7 @@ void test('asking: checked before sending; the request carries the tool the pers
   assert.match(page.text(), /受け付けました。/);
   assert.equal(page.find('a','進捗と成果を見る')[0].props.href,'#noah-agent-work');
   assert.ok(page.nodes().some(node=>node.props.id==='noah-agent-work' && node.props.tabIndex===-1));
-  assert.match(rows()[0], /結果を受け取りました操作/);
+  assert.match(rows()[0], /結果を受け取りました情報を検索/);
   assert.match(rows()[0], /届いた文章1\. cobalt/);
   assert.equal(page.find('a','詳細を開く →')[0].props.href, `/noah/tasks/${sent.body.id}`);
   // 欄の値は残る。もう一度頼むと、新しい操作 ID。
@@ -180,7 +185,7 @@ void test('the work list: progress is read while something is unfinished; stoppi
   await page.change(field('Player'), 'cobalt');
   await page.submit(form());
   // 受け付けた直後。相手のサーバーは、まだ返していない。
-  assert.match(rows()[0], /^進んでいます（0 秒）止める操作$/);
+  assert.match(rows()[0], /^進んでいます（0 秒）止める情報を検索$/);
   const reads = () => ui.calls.filter((call) => call.method === 'GET' && call.url.startsWith('/api/noah/ask?')).length;
   const before = reads();
   w.f.advance(3000);
@@ -189,13 +194,13 @@ void test('the work list: progress is read while something is unfinished; stoppi
   assert.match(rows()[0], /^進んでいます（3 秒）/);
   // 「止める」: 止める事を頼む。まだ「止めました」とは出さない。
   await page.click('止める');
-  assert.match(rows()[0], /^止めています…（相手のサーバーで始まっていれば、止められません）操作$/);
+  assert.match(rows()[0], /^止めています…（相手のサーバーで始まっていれば、止められません）情報を検索$/);
   assert.equal(page.find('button', '止める').length, 0);
   // 相手が返した後: 止めた依頼の成果は、採らない。
   release();
   await Promise.all(waiting);
   await page.tick(1000);
-  assert.deepEqual([rows(), w.asked()[0].state], [['止めました。相手のサーバーで実行されたかは分かりません。操作'], 'stopped']);
+  assert.deepEqual([rows(), w.asked()[0].state], [['止めました。相手のサーバーで実行されたかは分かりません。情報を検索'], 'stopped']);
   // 終わった後は、読み続けない。
   const settled = reads();
   await page.tick(10_000);
@@ -207,7 +212,7 @@ void test('the work list: progress is read while something is unfinished; stoppi
   await page.submit(form());
   await Promise.all(waiting);
   await page.tick(1000);
-  assert.match(rows()[0], /^結果を受け取りました操作提供者の説明/);
+  assert.match(rows()[0], /^結果を受け取りました統計を見る提供者の説明/);
   assert.match(rows()[0], /届いた一覧1件Cobalt/);
   assert.equal(page.find('a','詳細を開く →')[0].props.href, `/noah/tasks/${asksSent(ui).at(-1).body.id}`);
   // 道具が「できなかった」と返した時は、理由を出す。
@@ -216,7 +221,7 @@ void test('the work list: progress is read while something is unfinished; stoppi
   await page.submit(form());
   await Promise.all(waiting);
   await page.tick(1000);
-  assert.match(rows()[0], /^できませんでした。No data yet\.操作$/);
+  assert.match(rows()[0], /^できませんでした。No data yet\.統計を見る$/);
 });
 
 void test('a request that did not get through is sent again with the same ID; refusals are shown where the button is', async (t) => {
@@ -282,9 +287,9 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.equal(page.text(page.find('h2')[0]), '接続したAgentの仕事進んでいます');
   const rows = rowsOf(page).map((row) => page.text(row));
   assert.equal(rows.length, 3);
-  assert.match(rows[0], /^進んでいます（\d+ 秒）止める操作この Agent を開く →$/);
-  assert.match(rows[1], /^できませんでした。No data yet\.操作この Agent を開く →$/);
-  assert.match(rows[2], /^結果を受け取りました操作提供者の説明/);
+  assert.match(rows[0], /^進んでいます（\d+ 秒）止める情報を検索この Agent を開く →$/);
+  assert.match(rows[1], /^できませんでした。No data yet\.統計を見るこの Agent を開く →$/);
+  assert.match(rows[2], /^結果を受け取りました情報を検索提供者の説明/);
   assert.ok(rows[2].includes('found cobalt'));
   assert.deepEqual(back(page), [detail(2), detail(1), detail(1)]);
   assert.equal(rows.some((row) => row.includes('someone else')), false);
@@ -298,13 +303,13 @@ void test('the work list across agents (the activity and data screens): newest f
   release();
   await Promise.all(slow);
   await page.tick(1000);
-  assert.match(page.text(rowsOf(page)[0]), /^止めました。相手のサーバーで実行されたかは分かりません。操作/);
+  assert.match(page.text(rowsOf(page)[0]), /^止めました。相手のサーバーで実行されたかは分かりません。情報を検索/);
 
   // 「成果データ」: 成果が出た依頼だけ。
   const data = open('owner-a', { ownerScope: null, refresh: 0, only: 'succeeded', heading: '接続したAgentの成果' }).page;
   await data.flush();
   assert.equal(data.text(data.find('h2')[0]), '接続したAgentの成果');
-  assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りました操作提供者の説明')), [true]);
+  assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りました情報を検索提供者の説明')), [true]);
   assert.deepEqual(back(data), [detail(1)]);
 
   // 成果が出た依頼が無い人の「成果データ」には、何も出さない（できなかった依頼は、「実行中」の側にだけ出る）。
@@ -313,7 +318,7 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.equal(failedOnly.text(), '');
   const failedRows = open('owner-d', { ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' }).page;
   await failedRows.flush();
-  assert.deepEqual(rowsOf(failedRows).map((row) => failedRows.text(row)), ['できませんでした。No data yet.操作この Agent を開く →']);
+  assert.deepEqual(rowsOf(failedRows).map((row) => failedRows.text(row)), ['できませんでした。No data yet.統計を見るこの Agent を開く →']);
   // 未サインインの人・依頼が無い人には、何も出さない（見出しも出さない）。
   for (const user of [null, 'owner-c']) {
     const nobody = open(user, { ownerScope: null, refresh: 0, heading: '接続したAgentの仕事' });

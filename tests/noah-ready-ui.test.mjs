@@ -31,7 +31,7 @@ function browser(w, user, extra = {}) {
 }
 const posts = (ui) => ui.calls.filter((call) => call.method === 'POST');
 const cards = (page) => page.find('article');
-/** 道具を選ぶ行（押せる）を除いた、画面のボタンの文。 */
+/** 何をしますか？行（押せる）を除いた、画面のボタンの文。 */
 const actions = (page) => page.find('button').filter((node) => node.props.className !== 'toolButton').map((node) => page.text(node));
 const buttonsIn = (page, node) => page.nodes(node).filter((child) => child.type === 'button' || (child.type === 'a' && child.props.className === 'primary'));
 
@@ -292,7 +292,7 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   assert.ok(seen.filter(pinCalls).every(([method]) => method === 'GET'));
   assert.equal(posts(ui)[0].body.id, handoff.id);
   assert.deepEqual([w.rows().length, w.rows()[0].id, w.rows()[0].state, w.rows()[0].owner_id], [1, handoff.id, 'connected', 'owner-a']);
-  assert.match(detail.text(), /道具を選ぶ/);
+  assert.match(detail.text(), /何をしますか？/);
   assert.equal(ui.storage.has('noah-connect-handoff'), false, '続きは、1 回しか使わない');
   // もう一度開いても、つなぎ直さない。
   const reopened = ui.mount(DETAIL, { id: familyId(1) });
@@ -347,25 +347,28 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.match(text, new RegExp(`最後に確かめた日 ${new Date(NOW).getMonth() + 1}/${new Date(NOW).getDate()}`));
   // 送り先は、接続の前に出ている。
   assert.match(text, new RegExp(`送信先: ${hostOf(1).replaceAll('.', '\\.')}`));
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['共有', 'URLをコピー', '接続', '保存']);
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続', '共有', 'URLをコピー', '保存']);
   assert.doesNotMatch(text, /切る/);
   // 提供者のページは、別の tab で開く。行き先の host を出す。
   assert.deepEqual(page.find('a', '提供者のページ').map((node) => [page.text(node), node.props.href, node.props.target, node.props.rel]), [['提供者のページ（mizan.example.com）', 'https://mizan.example.com/about', '_blank', 'noopener noreferrer nofollow']]);
   assert.match(text, /出どころ: Official MCP Registry。Noah が作った物ではありません。/);
+  assert.ok(text.indexOf(`送信先: ${hostOf(1)}`) < text.indexOf('接続'));
+  assert.ok(text.indexOf('接続') < text.indexOf('Agentの詳細'));
+  assert.equal(page.find('details').find(node => node.props.className === 'agentDetails').props.open, undefined);
   assert.equal(handshakes(server), 0, '開いただけでは、相手へ送らない');
 
   // 「接続」1 回で、道具の一覧まで出る。
   await page.click('接続');
   assert.equal(w.rows()[0].state, 'connected');
-  assert.match(page.text(), /道具を選ぶ4 個/);
-  const rows = page.find('ul').at(-1);
+  assert.match(page.text(), /何をしますか？4 個/);
+  const rows = page.find('ul').find(node => node.props.className === 'tools');
   assert.deepEqual(page.nodes(rows).filter((node) => node.type === 'li').map((node) => page.text(node)), [
-    '操作 1読み取りだけ提供者の説明lookupLooks up a player.', '操作 2読み取りだけ押すだけ提供者の説明statsstats の説明', '操作 3送る前に確かめます提供者の説明publishpublish の説明', '操作 4入力欄ではまだ使えません提供者の説明configureconfigure の説明',
+    '情報を検索読み取りだけ提供者の説明lookupLooks up a player.', '統計を見る読み取りだけ押すだけ提供者の説明statsstats の説明', '公開する送る前に確かめます提供者の説明publishpublish の説明', '設定する入力欄ではまだ使えません提供者の説明configureconfigure の説明',
   ]);
   assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
   // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。「保存」（ボードへ。task 115）は残る。
   assert.deepEqual(actions(page), ['共有', 'URLをコピー', '保存', '切る']);
-  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['操作 1', '操作 2', '操作 3']);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['情報を検索', '統計を見る', '公開する']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっています。切る切っても、受け取った成果は残ります。$/);
   // 「つなぎました」は 3 秒で消える。消えた後は、接続の欄（区切りの線）ごと出さない。
   assert.equal(page.find('output', 'につなぎました').length, 1);
@@ -376,13 +379,13 @@ void test('the detail screen: where the input goes is shown before connecting; t
   const shakes = handshakes(server);
   const reopened = ui.mount(DETAIL, { id: familyId(1) });
   await reopened.flush();
-  assert.match(reopened.text(), /道具を選ぶ4 個/);
+  assert.match(reopened.text(), /何をしますか？4 個/);
   assert.equal(handshakes(server), shakes);
 
   // 切る。「接続」に戻る。道具の一覧は消える。記録は残る。
   await page.click('切る');
   assert.deepEqual([w.rows().length, w.rows()[0].state], [1, 'disconnected']);
-  assert.deepEqual(actions(page), ['共有', 'URLをコピー', '接続', '保存']);
+  assert.deepEqual(actions(page), ['接続', '共有', 'URLをコピー', '保存']);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   assert.equal([...ui.storage.keys()].filter((key) => key.startsWith('noah-tools:')).length, 0);
   // もう一度つなげる（新しい操作 ID）。
@@ -399,7 +402,7 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   server.options.status = 503;
   await page.click('接続');
   assert.match(page.text(), /相手のサーバーが応答しません。時間をおいて試してください。/);
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['共有', 'URLをコピー', 'もう一度', '保存', '切る']);
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['もう一度', '共有', 'URLをコピー', '保存', '切る']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっていません。切る/);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   // 続けて押しても、相手へ握手を送り続けない。
@@ -413,7 +416,7 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   await page.click('もう一度');
   assert.equal(w.rows()[0].state, 'connected');
   assert.deepEqual([w.rows().length, actions(page)], [1, ['共有', 'URLをコピー', '保存', '切る']]);
-  assert.match(page.text(), /道具を選ぶ2 個/);
+  assert.match(page.text(), /何をしますか？2 個/);
 });
 
 void test('the detail screen: a withdrawn agent says so, offers no button to use it, and can be cut', async (t) => {

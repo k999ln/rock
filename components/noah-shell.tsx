@@ -45,6 +45,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const secondary = [
     { href: `${base}/profile`, label: '登録情報', Icon: ShieldCheck },
     { href: `${base}/profile#permissions`, label: '任せる範囲', Icon: Settings2 },
+    { href: '/noah/coconala', label: 'ココナラの仕事', Icon: Bot },
     { href: `${base}/preferences`, label: '操作の設定', Icon: Globe },
   ];
   const gridItems = [
@@ -59,8 +60,14 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
       <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
       <header className={styles.gridTopbar}>
         <a href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/company-mark.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
-        <search className={styles.gridSearchSlot}><form action={`${base}/explore`} className={styles.gridSearch}>
-          <input type="hidden" name="tab" value="catalog" /><input type="hidden" name="collectionSource" value="" /><Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" maxLength={80} placeholder={t('Agentを探す')} type="search" />
+        <search className={styles.gridSearchSlot}><form action={`${base}/explore`} className={styles.gridSearch} onSubmit={event=>{
+          event.preventDefault();
+          const params=new URLSearchParams(window.location.search),data=new FormData(event.currentTarget);
+          const word=data.get('q');
+          const next=new URLSearchParams({q:typeof word==='string'?word:'',collectionSource:params.get('collectionSource')??'noah'});
+          window.location.assign(`${base}/explore?${next}`);
+        }}>
+          <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" maxLength={80} placeholder={t('Agentを探す')} type="search" />
         </form></search>
         <button type="button" className={styles.gridMenuButton} popoverTarget={gridMenuId} aria-label={t('メニュー')}><Menu size={22} /><span>{t('メニュー')}</span></button>
         <div ref={gridMenu} id={gridMenuId} popover="auto" className={styles.gridMenuPanel}>

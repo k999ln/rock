@@ -19,7 +19,7 @@ import { screen } from './fixtures/noah/screen.mjs';
 
 void test('source ratings are visible with provenance, keep zero and omit unavailable counts', () => {
   const ui = screen({ modules: { '@/lib/noah-collection': collection } });
-  const view = ui.mount('components/noah-agent-source-ratings.tsx', { sources: [
+  const view = ui.mount('components/noah-agent-source-ratings.tsx', { detailHref: '/noah/discover/agent?id=project-test#ratings', sources: [
     { source: 'github', sourceUrl: 'https://github.com/maker/agent', observedAt: 1795302000000, metrics: { stars: 1234 } },
     { source: 'huggingface', sourceUrl: 'https://huggingface.co/spaces/maker/agent', observedAt: 1795302000000, metrics: { likes: 0 } },
     { source: 'mcp-registry', sourceUrl: 'https://registry.modelcontextprotocol.io/v0.1/servers/agent', observedAt: 1795302000000 },
@@ -29,7 +29,7 @@ void test('source ratings are visible with provenance, keep zero and omit unavai
   assert.equal(view.find('a').length, 4);
   assert.match(view.text(), /GitHub/); assert.match(view.text(), /1,234/);
   assert.deepEqual(view.find('span').map(n=>n.props['aria-label']).filter(Boolean), ['スター 1,234', 'いいね 0', 'いいね 8', 'リポスト 2']);
-  assert.deepEqual(view.find('a').map(n=>n.props.href), ['https://github.com/maker/agent','https://huggingface.co/spaces/maker/agent','https://registry.modelcontextprotocol.io/v0.1/servers/agent','https://x.com/maker/status/1234']);
+  assert.ok(view.find('a').every(n=>n.props.href === '/noah/discover/agent?id=project-test#ratings' && !n.props.target));
   assert.ok(view.find('a').every(n=>n.props.title.includes('確認')));
 });
 
@@ -173,13 +173,13 @@ void test('external ratings retain their source, refresh downwards, and never cr
 });
 
 
-void test('collection source and query use the unified grid and clear restores all results', async () => {
+void test('collection source and query use the unified grid and clear keeps the chosen source', async () => {
   const ui=screen({search:'?collectionSource=huggingface&collectionQuery=日本語',modules:{'./noah-pin-grid':{default:()=>null}},fetch:async()=>({body:{items:[],total:0,nextCursor:null,ownerScope:null}})});
   const page=ui.mount('components/noah-collection-feed.tsx');await page.tick(200);
   assert.equal(page.find('input')[0].props.value,'日本語');
   let request=new URL(ui.calls.at(-1).url,'https://avoado.si');assert.equal(request.pathname,'/api/noah/discover');assert.equal(request.searchParams.get('source'),'huggingface');assert.equal(request.searchParams.get('q'),'日本語');
   await page.click('検索条件をクリア');await page.tick(200);
-  request=new URL(ui.calls.at(-1).url,'https://avoado.si');assert.equal(request.searchParams.get('source'),'');assert.equal(request.searchParams.get('q'),'');
+  request=new URL(ui.calls.at(-1).url,'https://avoado.si');assert.equal(request.searchParams.get('source'),'huggingface');assert.equal(request.searchParams.get('q'),'');
 });
 void test('collection retry immediately recovers from an error without losing source or query', async () => {
   let unavailable = true;
@@ -203,19 +203,19 @@ void test('shared catalog search keeps the chosen source, resets pagination and 
   const updated = new URL(ui.calls.at(-1).url, 'https://avoado.si');
   assert.equal(updated.searchParams.get('source'), 'huggingface'); assert.equal(updated.searchParams.get('q'), 'second'); assert.equal(updated.searchParams.get('cursor'), '0');
   await page.click('検索条件をクリア'); await page.tick(200);
-  const cleared = new URL(ui.calls.at(-1).url, 'https://avoado.si'); assert.equal(cleared.searchParams.get('q'), ''); assert.equal(cleared.searchParams.get('source'), '');
+  const cleared = new URL(ui.calls.at(-1).url, 'https://avoado.si'); assert.equal(cleared.searchParams.get('q'), ''); assert.equal(cleared.searchParams.get('source'), 'huggingface');
 });
 
-void test('the actual catalog uses one search for collected and researched Agents without losing source selection', async () => {
+void test('the actual catalog uses one result feed without losing source selection', async () => {
   const ui = screen({ search: '?collectionSource=huggingface&collectionQuery=physics', modules: { './noah-pin-grid': { default: ({items})=>JSON.stringify(items) }, '@/lib/noah-collection': collection, '@/lib/noah-research-types': researchTypes, '@/lib/noah-surface': surface, '@/lib/web-brand': brand, '@/lib/noah-public-guide': publicGuide }, fetch: async request => ({ body: request.url.includes('/discover?') ? { items: [], total: 0, nextCursor: null, configured: true } : { entries: [], total: 0, nextCursor: null, asOf: '2026-11-22' } }) });
   const page = ui.mount('components/noah-public-catalog.tsx', { embedded: true }); await page.tick(200);
   assert.equal(page.find('input').length, 1); assert.equal(page.find('input')[0].props.value, 'physics');
   await page.type('translation'); await page.tick(200);
   const collectionRequest = new URL(ui.calls.filter(c => c.url.includes('/discover?')).at(-1).url, 'https://avoado.si');
   assert.equal(collectionRequest.searchParams.get('q'), 'translation'); assert.equal(collectionRequest.searchParams.get('source'), 'huggingface');
-  const catalogRequest = new URL(ui.calls.filter(c => c.url.includes('/public-catalog?')).at(-1).url, 'https://avoado.si'); assert.equal(catalogRequest.searchParams.get('q'), 'translation');
+  assert.equal(ui.calls.filter(c=>c.url.includes('/public-catalog?')).length,0);
   await page.click('検索条件をクリア'); await page.tick(200); assert.equal(page.find('input')[0].props.value, '');
-  const cleared = new URL(ui.calls.filter(c => c.url.includes('/discover?')).at(-1).url, 'https://avoado.si');assert.equal(cleared.searchParams.get('source'), '');assert.equal(cleared.searchParams.get('q'), '');
+  const cleared = new URL(ui.calls.filter(c => c.url.includes('/discover?')).at(-1).url, 'https://avoado.si');assert.equal(cleared.searchParams.get('source'), 'huggingface');assert.equal(cleared.searchParams.get('q'), '');
 });
 
 void test('unified source badges preserve additional collection metrics and zero counts',()=>{

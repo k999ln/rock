@@ -13,7 +13,7 @@ function harness(fetcher, initial = [], profileOptions = {}) {
   const timers = new Map(), listeners = new Map(); let timerId=0;
   const document = { hidden: false, addEventListener: (name, fn) => listeners.set(name, fn), removeEventListener: (name, fn) => { if(listeners.get(name)===fn) listeners.delete(name); } };
   const jsx = (type, props) => ({ type, props });
-  runInNewContext(code, { exports, URLSearchParams, Error, Date, crypto, Uint8Array, AbortController, AbortSignal, queueMicrotask, document,
+  runInNewContext(code, { exports, URLSearchParams, Error, Date:profileOptions.now?class extends Date{static now(){return profileOptions.now();}}:Date, crypto, Uint8Array, AbortController, AbortSignal, queueMicrotask, document,
     setTimeout: (fn, ms) => { const id=++timerId; timers.set(id,{fn,ms}); return id; }, clearTimeout: id => timers.delete(id),
     sessionStorage: { getItem: k => storage.get(k), setItem: (k,v) => storage.set(k,v), removeItem: k => storage.delete(k) },
     fetch: async (url, options) => { calls.push({ url, options }); return fetcher(url, options); },
@@ -21,7 +21,7 @@ function harness(fetcher, initial = [], profileOptions = {}) {
       if(id==='./noah-locale')return {useNoahLocale:()=>({t:x=>x,locale:'ja'})};
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
       if (id === 'react') return {
-        useState(value) { const i = cursor++; slots[i] ??= { value }; return [slots[i].value, v => { slots[i].value = typeof v === 'function' ? v(slots[i].value) : v; }]; },
+        useState(value) { const i = cursor++; slots[i] ??= { value: typeof value === 'function' ? value() : value }; return [slots[i].value, v => { slots[i].value = typeof v === 'function' ? v(slots[i].value) : v; }]; },
         useRef(value) { const i = cursor++; return slots[i] ??= { current: value }; },
         useEffect(fn, deps) { const i = cursor++, old = slots[i]; if (!old || deps.some((v, n) => v !== old.deps[n])) { slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
       };
@@ -152,4 +152,20 @@ void test('registered service shows use without collecting or resending registra
 });
 void test('uncertain or unreadable account never offers a second registration',async t=>{
  for(const accountState of ['pending','unavailable']){const h=harness(async()=>Response.json({providers:[{...provider,accountState}]}));t.after(()=>h.close());await h.flush();assert.equal(h.nodes().filter(n=>n.type==='form'||n.type==='input').length,0);assert.equal(h.calls.filter(c=>c.options.method==='POST').length,0);}
+});
+
+void test('rate limited receipt waits until its deadline and never automatically registers again',async t=>{
+ let at=Date.now();const until=at+120000,ticket={id:'00000000-0000-4000-8000-000000000098',key:'a'.repeat(64)};
+ const h=harness(url=>Response.json(url.includes('?job=')?{job:{...job('failed'),id:ticket.id,retryAt:until}}:{providers:[provider]}),[['noah-registration-work-v1',JSON.stringify(ticket)]],{now:()=>at});t.after(()=>h.close());
+ await h.flush();await h.tick();assert.match(h.text(),/受付再開の目安/);assert.equal(h.button('もう一度').props.disabled,true);
+ h.button('もう一度').props.onClick();await h.flush();assert.equal(h.nodes().some(n=>n.type==='form'),false);
+ at=until+1;await h.tick();assert.equal(h.button('もう一度').props.disabled,false);assert.equal(h.calls.some(c=>c.options?.method==='POST'),false);
+ h.click('もう一度');await h.flush();assert.equal(h.nodes().some(n=>n.type==='form'),true);assert.equal(h.calls.some(c=>c.options?.method==='POST'),false);
+});
+
+void test('a reopened rate limited account hides input and offers only a timed availability check',async t=>{
+ let at=Date.now();const until=at+120000;
+ const h=harness(async()=>Response.json({providers:[{...provider,accountState:'cooldown',retryAt:until}]}),[],{now:()=>at});t.after(()=>h.close());await h.flush();
+ assert.match(h.text(),/受付再開の目安/);assert.equal(h.button('再読み込み').props.disabled,true);assert.equal(h.nodes().some(n=>n.type==='form'||n.type==='input'),false);
+ at=until+1;await h.tick();assert.equal(h.button('再読み込み').props.disabled,false);assert.equal(h.calls.some(c=>c.options?.method==='POST'),false);
 });

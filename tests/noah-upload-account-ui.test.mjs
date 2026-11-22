@@ -20,7 +20,7 @@ function harness(fetcher, search = '?launch=1') {
   };
   const jsx = (type, props) => ({ type, props });
   runInNewContext(code, {
-    exports, Error, AbortController, AbortSignal, URLSearchParams, crypto, TextEncoder,
+    exports, Error, AbortController, AbortSignal, URL, URLSearchParams, crypto, TextEncoder,
     window: { location: { search }, addEventListener() {}, removeEventListener() {} },
     setTimeout(fn, ms) { const id = setTimeout(() => fn(), ms); timers.add(id); return id; }, clearTimeout,
     fetch: async (url, options) => { calls.push({ url, options }); return url === '/__noah/upload-refactor' ? reply(404, {}) : fetcher(url, options); },
@@ -96,4 +96,14 @@ void test('registration return and draft changes preserve public mode without ac
   assert.equal(noahUploadPath(`?launch=1&draft=${id}`, ''), '/noah/agents/new?launch=1');
   assert.equal(noahUploadPath('', id), `/noah/agents/new?draft=${id}`);
   assert.equal(noahUploadPath('?launch=1&return_to=https://evil.test&draft=../../secret'), '/noah/agents/new?launch=1');
+});
+
+void test('collected repository handoff opens the internal import fields after owner restoration',async t=>{
+  const sourceUrl='https://github.com/maker/agent';
+  const h=harness(async url=>url==='/api/noah/agents'?reply(200,{ownerScope:'owner-a'}):reply(200,{ownerScope:'owner-a',drafts:[]}),`?${new URLSearchParams({sourceUrl,name:'Collected Agent'})}`);
+  t.after(()=>h.unmount());await h.flush();
+  assert.ok(h.nodes().some(n=>n.type==='input'&&n.props.type==='url'&&n.props.value===sourceUrl));
+  assert.ok(h.nodes().some(n=>n.type==='details'&&n.props.open===true));
+  assert.ok(h.nodes().some(n=>n.type==='input'&&n.props.value==='Collected Agent'));
+  assert.match(h.text(),/固定commitを記録/);
 });
