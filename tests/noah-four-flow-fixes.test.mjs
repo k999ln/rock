@@ -37,8 +37,8 @@ void test('purpose labels translate in all six languages without changing API va
 });
 void test('home and timeline select different content from the current hash',()=>{
  let hash='';
- const ui=screen({modules:{'./noah-business-entry':{default:()=>null},'./noah-collection-feed':{default:()=>null},'./noah-surface-context':{useNoahSurface:()=>({hash})},'./noah-pin-home':{default:()=>({type:'main',props:{children:'PIN HOME'}})},'./noah-timeline':{default:()=>({type:'main',props:{children:'POST TIMELINE'}})}}});
- assert.equal(ui.mount('components/noah-home.tsx').text(),'PIN HOME');
+ const ui=screen({modules:{'./noah-collection-feed':{default:()=>null},'./noah-surface-context':{useNoahSurface:()=>({hash})},'./noah-pin-home':{default:()=>({type:'main',props:{children:'PIN HOME'}})},'./noah-timeline':{default:()=>({type:'main',props:{children:'POST TIMELINE'}})}}});
+ for(const mode of ['local','public'])assert.equal(ui.mount('components/noah-home.tsx',{mode}).text(),'PIN HOME');
  for(const value of ['#timeline','#following','#agents']){hash=value;assert.equal(ui.mount('components/noah-home.tsx').text(),'POST TIMELINE');}
- hash='';assert.equal(ui.mount('components/noah-home.tsx').text(),'PIN HOME');
+ hash='';for(const mode of ['local','public'])assert.equal(ui.mount('components/noah-home.tsx',{mode}).text(),'PIN HOME');
 });

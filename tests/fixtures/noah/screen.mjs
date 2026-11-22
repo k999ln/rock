@@ -6,6 +6,7 @@ import * as operationLabels from '../../../lib/noah-operation-labels.ts';
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
 import * as pins from '../../../lib/noah-pins.ts';
 import * as readyView from '../../../lib/noah-ready-view.ts';
+import * as agentShare from '../../../lib/noah-agent-share.ts';
 import { existsSync, readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
@@ -125,6 +126,8 @@ export function screen(options = {}) {
       // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
       if (id === '@/lib/noah-ready-view') return readyView;
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
+
+      if (id === '@/lib/noah-agent-share') return agentShare;
       if (id.startsWith('./')) return load(`components/${id.slice(2)}.${existsSync(new URL(`components/${id.slice(2)}.tsx`, ROOT)) ? 'tsx' : 'ts'}`);
       throw Error(`画面の試験の台に、${id} がありません`);
     };

@@ -13,6 +13,7 @@ export function noahIntakeDependencies() {
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
   return { db: database(), ...access,
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
+    // 収集機（GitHub の定期実行）が、握手の済んだ系列を一覧へ入れる時の鍵（紹介の掲載と同じ。lib/noah-intake-import.ts）。
     collectorKey: config.NOAH_COLLECTION_KEY,
     origin: noahPublicOrigin(config.NOAH_ORIGIN),
     fetcher: fetch, now: Date.now, waitUntil,

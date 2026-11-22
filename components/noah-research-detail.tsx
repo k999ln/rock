@@ -48,7 +48,7 @@ export default function NoahResearchDetail({ id }: { id: string }) {
       {agent && <NoahAgentFeedback key={id} id={id} />}
       <section className={styles.notice}><h2>配布元・出典</h2>
         <p>{entry.identity === 'name_group' ? '紹介サイトの名称グループです。同名の掲載が同一製品かは未確定です。' : '配布元・公式資料の確認先です。リンクを開いただけではNoahからの接続は完了しません。'}</p>
-        <ul>{entry.sources.map(s => <li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.type === 'directory' ? '紹介記事を見る' : '配布元・資料を見る'} ↗</a><p>{s.url}</p></li>)}</ul>
+        <ul>{entry.sources.map(s => <li key={s.url}><a href={s.url} target="_blank" rel="noopener noreferrer">{s.type === 'citation' ? s.label : s.type === 'directory' ? '紹介記事を見る' : '配布元・資料を見る'} ↗</a><p>{s.url}</p></li>)}</ul>
       </section>
       <section className={styles.notice}><h2>確認した情報</h2>
         <p>{entry.tags.join(' · ')}</p><ul>{entry.notes.map((note, n) => <li key={n}>{note}</li>)}</ul>
