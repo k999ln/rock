@@ -5,6 +5,9 @@
 //
 // 使い方:
 //   node --experimental-strip-types scripts/noah-local-patrol.mjs [--db work/noah-local/intake.sqlite] [--minutes 60] [--out work/noah-local/import.json]
+//     [--export-only] [--limit 2000] [--first data/noah-shelf-first-cards.json]
+// --limit: 書き出す系列の数を絞る（本番の D1 の書き込みは、新しい系列 1 つで約 13 行。日ごとの枠がある時は、日を分けて増やす）。
+// --first: 先に入れる系列。棚のカードのファイル（カードの工程が使う系列）か、系列の ID の配列の JSON。残りは、1 回で頼める道具を持つ物・読むだけの物・応答の速い物の順。
 // 何度でも続きから動く（台帳の頁の位置と、握手の予定は、DB に残る）。同じ接続先へは 1 時間に 1 回しか握手しない（本番と同じ決まり）。
 // 名乗りは本番と同じ NoahBot/1。相手へ送るのは握手（initialize・tools/list）だけで、道具は呼ばない。
 import { DatabaseSync } from 'node:sqlite';
@@ -20,6 +23,15 @@ const dbPath = resolve(root, arg('--db', 'work/noah-local/intake.sqlite'));
 const outPath = resolve(root, arg('--out', 'work/noah-local/import.json'));
 const minutes = Number(arg('--minutes', '60'));
 const exportOnly = process.argv.includes('--export-only');
+const limitArg = arg('--limit', null), firstArg = arg('--first', null);
+const limit = limitArg === null ? undefined : Number(limitArg);
+if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw Error('--limit は 0 以上の整数です。');
+/** --first のファイルから、系列の ID を読む（カードの配列なら、工程が使う系列。文字の配列なら、そのまま）。 */
+const first = firstArg === null ? [] : (() => {
+  const value = JSON.parse(readFileSync(resolve(root, firstArg), 'utf8'));
+  if (!Array.isArray(value)) throw Error('--first は、配列の JSON です。');
+  return [...new Set(value.flatMap((item) => (typeof item === 'string' ? [item] : (item?.steps ?? []).flatMap((step) => (step?.ref?.kind === 'family' ? [step.ref.familyId] : [])))))];
+})();
 mkdirSync(dirname(dbPath), { recursive: true });
 
 const fresh = !existsSync(dbPath);
@@ -76,9 +88,11 @@ if (!exportOnly) {
   }
 }
 // 3. 本番へ送る分（一覧に載せる系列と、その候補・握手の行）を書き出す。
-const exported = await noahIntakeExport(db, Date.now());
+const exported = await noahIntakeExport(db, Date.now(), { limit, first });
+const missing = first.filter((id) => !exported.families.some((family) => family.id === id));
 mkdirSync(dirname(outPath), { recursive: true });
 writeFileSync(outPath, JSON.stringify(exported));
-const totals = sql.prepare("SELECT (SELECT COUNT(*) FROM noah_intake_candidates) AS candidates, (SELECT COUNT(*) FROM noah_intake_checks WHERE result='unchecked') AS unchecked, (SELECT COUNT(*) FROM noah_intake_checks WHERE level>=1) AS passed, (SELECT COUNT(*) FROM noah_intake_families WHERE listed=1) AS listed").get();
-log({ step: 'export', out: outPath, families: exported.families.length, candidates: exported.candidates.length, bytes: Buffer.byteLength(JSON.stringify(exported)), ...totals });
+const totals = sql.prepare("SELECT (SELECT COUNT(*) FROM noah_intake_candidates) AS registry, (SELECT COUNT(*) FROM noah_intake_checks WHERE result='unchecked') AS unchecked, (SELECT COUNT(*) FROM noah_intake_checks WHERE level>=1) AS passed, (SELECT COUNT(*) FROM noah_intake_families WHERE listed=1) AS listed").get();
+// 本番の D1 に書く行の目安（新しく入れる時。候補 6・握手 3・系列 4 の、表と索引）。入れ直しで変わっていない物は 0。
+log({ step: 'export', out: outPath, families: exported.families.length, candidates: exported.candidates.length, bytes: Buffer.byteLength(JSON.stringify(exported)), rowsIfNew: exported.candidates.length * 9 + exported.families.length * 4, firstMissing: missing, ...totals });
 sql.close();

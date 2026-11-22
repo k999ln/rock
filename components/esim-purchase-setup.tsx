@@ -219,19 +219,20 @@ export function EsimPurchaseSetup({ orderId, iosConnect = false }: { orderId: st
   const iosQr = iosCard && showQr ? esimInstallQr(iosCard.cardData) : null;
   const androidUrl = !iosConnect && safeAndroidInstallUrl(material?.androidInstallUrl);
   const hasStatus = status !== null;
+  const eligibleOrder = status && status.state !== 'not_esim_order' && status.state !== 'not_eligible';
 
   return <section className={styles.esimSetup} aria-label="eSIMの導入">
     <div className={styles.esimSetupHeader}>
-      <div><h4><Smartphone size={16} /> eSIMの設定</h4><p>この注文がeSIM商品かを確認し、準備済みの端末導入情報を表示します。</p></div>
+      <div><h4><Smartphone size={16} /> eSIMの設定</h4><p>回線の追加後も、この注文から端末の確認とNoahの利用案内を開けます。</p></div>
       <button className={styles.secondary} type="button" onClick={() => void checkStatus()} disabled={pending !== null}>
         <RefreshCw size={14} />{pending === 'status' ? '確認中…' : hasStatus ? '状態を更新' : '状態を確認'}
       </button>
     </div>
     {status && <output className={styles.esimState}><ShieldCheck size={15} />{stateLabel(status)}</output>}
-    {!iosConnect && status && status.state !== 'not_esim_order' && status.state !== 'not_eligible' &&
+    {!iosConnect && eligibleOrder &&
       <p className={status.esimDeviceEntitlementState === 'active' ? styles.success : styles.notice}>
         {status.esimDeviceEntitlementState === 'active'
-          ? '認証済み端末ゲートウェイがeSIM導入と初期Agent Packの状態を確認し、この端末の利用権が有効です。'
+          ? 'この端末の利用権を確認しました。Noahは、Agentを選んで仕事を頼み、成果を受け取る場所です。'
           : status.esimDeviceEntitlementState === 'revoked_or_stale'
             ? '端末利用権の証明が現在の信頼条件またはPackage版と一致しません。同期が回復するまで機能を利用できません。'
             : status.deviceInstallState === 'verified_installed_enabled'
@@ -255,9 +256,14 @@ export function EsimPurchaseSetup({ orderId, iosConnect = false }: { orderId: st
             : '導入宣言を受け付けました。事業者からのダウンロード通知を確認中です。'}</output>}
       <Link className={styles.secondary} href="/connect/done">SafariでEveをホーム画面に追加</Link>
     </section>}
+    {eligibleOrder && status.esimDeviceEntitlementState === 'active' &&
+      <nav className={styles.esimLinks} aria-label="eSIM追加後の案内">
+        <Link className={styles.primary} href="/noah/explore">Noahで最初のAgentを選ぶ</Link>
+        <Link className={styles.secondary} href="/connect/service">専用クラウドの契約条件を確認</Link>
+      </nav>}
     {cloud && <section className={styles.esimMaterial} aria-label="専用クラウドへのアクセス">
       <h4><ShieldCheck size={16} /> RockstarOSクラウドアクセス</h4>
-      <output>{cloud.state === 'active' ? 'アクセスキーは有効です。smisで、契約に含まれる機能を使えます。'
+      <output>{cloud.state === 'active' ? 'このブラウザのアクセスキーは有効です。契約の範囲でクラウドに接続できます。'
         : cloud.state === 'revoked' ? 'アクセスキーを停止しました。利用期間内であれば再発行できます。'
         : cloud.state === 'expired' ? 'アクセスキーの期限が切れました。利用期間内であれば再発行できます。'
         : cloud.state === 'suspended' ? '現在の利用条件を確認できないため、クラウドアクセスを停止しています。'
@@ -276,10 +282,13 @@ export function EsimPurchaseSetup({ orderId, iosConnect = false }: { orderId: st
           disabled={pending !== null} onClick={() => void manageCloud('revoke')}>アクセスキーを停止</button>}
       </div>
       {cloud.state === 'active' && <div className={styles.esimLinks}>
-        <Link className={styles.secondary} href="/sky">smisを開く</Link>
+        {cloud.key?.scopes.includes('noah') && <><form method="get" action="/api/noah/cloud-work"><button className={styles.primary} type="submit">NoahクラウドでAgentを使う</button></form>
+          <form method="get" action="/api/noah/cloud-work/distribution/notice"><button className={styles.secondary} type="submit">定期便のお知らせ</button></form></>}
+        {cloud.key?.scopes.includes('sky') && <Link className={styles.secondary} href="/noah">Noahを開く</Link>}
         <Link className={styles.secondary} href="/work">依頼・進捗・費用を見る</Link>
       </div>}
-      <p className={styles.subtle}>クラウド作業の料金は実行前の見積・上限・承認で確認します。携帯電話料金との合算請求は未対応です。</p>
+      <p className={styles.subtle}>有料の仕事は見積と上限を確認してから依頼します。専用クラウドの月次請求は、契約したRockstar IDに登録した支払い方法で精算します。携帯電話料金との合算請求は未対応です。</p>
+      <div className={styles.esimLinks}><Link href="/noah/usage">Agentの利用記録</Link><Link href="/noah/linux#monthly-statement">専用クラウドの使用額・請求明細</Link></div>
     </section>}
     {!iosConnect && status?.starterAgentPack && <div className={styles.notice}>
       <p>注文に固定された初期pack: {status.starterAgentPack.id} v{status.starterAgentPack.version}（{status.starterAgentPack.packageCount}件）。内容は注文時のPackage参照に基づきます。</p>
@@ -301,6 +310,7 @@ export function EsimPurchaseSetup({ orderId, iosConnect = false }: { orderId: st
         {pending === 'material' ? '安全に取得中…' : '導入情報を表示'}
       </button>}
     {material && <div className={styles.esimMaterial}>
+      <p>スマホの設定で回線を追加したら、この購入履歴に戻り「状態を更新」を押してください。画面を閉じた場合は、同じRockstar IDの「登録情報」→「購入履歴・eSIM設定」から再開できます。</p>
       <p className={styles.notice}>この情報はeSIMの追加に使う秘密情報です。本人の端末でのみ表示し、第三者へ共有しないでください。</p>
       <div className={styles.esimLinks}>
         {iosLink && iosCard && <a className={styles.primary} href={iosCard.url} rel="noreferrer" referrerPolicy="no-referrer">

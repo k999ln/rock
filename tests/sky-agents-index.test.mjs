@@ -4,9 +4,9 @@ import { readFileSync } from 'node:fs';
 
 void test('Saved Sky Agents index opens the same owner management inside Noah', () => {
   const source = readFileSync('app/sky/agents/page.tsx', 'utf8');
-  assert.match(source, /redirect\('\/noah\/saved'\)/);
+  assert.match(source, /redirect\('\/noah\/saved\?tab=roles'\)/);
   assert.doesNotMatch(source, /citations/);
-  assert.match(readFileSync('app/noah/saved/page.tsx', 'utf8'), /<SkyAgentLibrary/);
+  assert.match(readFileSync('components/noah-saved.tsx', 'utf8'), /<SkyAgentLibrary/);
   assert.match(readFileSync('components/home-screen.tsx', 'utf8'), /<SkyAgentLibrary embedded/);
   const library = readFileSync('components/sky-agent-library.tsx', 'utf8');
   assert.match(library, /fetch\('\/api\/sky\/agents', \{ method: 'PUT'/);

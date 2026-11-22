@@ -2,7 +2,7 @@ import { tmpdir } from 'node:os';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
   createCurrentNativeSbom,
@@ -16,6 +16,8 @@ import {
   validateReleaseReadiness,
   validateWebSecurityPolicy,
 } from '../scripts/release-readiness-lib.mjs';
+
+import { WEB_SECURITY_INPUTS } from '../scripts/web-security-evidence.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const read = (name) => JSON.parse(readFileSync(resolve(root, name), 'utf8'));
@@ -755,4 +757,25 @@ void test('historical private delivery cannot be promoted to current public or o
   const wrongOrigin = structuredClone(readiness);
   wrongOrigin.policy.ownerPrivateSitesHosting = '.openai/hosting.json';
   assert.throws(() => validateMatrix({ matrix: wrongOrigin }), /歴史的な本人限定Siteと現行公開Siteの境界/);
+});
+
+void test('local production security receipts accept another loopback port, never a remote or mismatched origin', () => {
+  const fixture = mkdtempSync(resolve(tmpdir(), 'noah-web-security-'));
+  try {
+    for (const file of [...WEB_SECURITY_INPUTS, 'data/web-security-response-current.json']) {
+      const target = resolve(fixture, file); mkdirSync(resolve(target, '..'), { recursive: true }); cpSync(resolve(root, file), target);
+    }
+    const evidence = read('data/web-security-response-current.json');
+    const write = (origin, resultOrigin = origin) => {
+      const changed = structuredClone(evidence); changed.server.origin = origin; changed.result.baseOrigin = resultOrigin;
+      writeFileSync(resolve(fixture, 'data/web-security-response-current.json'), JSON.stringify(changed));
+    };
+    write('http://127.0.0.1:8789');
+    assert.equal(validateWebSecurityPolicy({ root: fixture, policy: webSecurityPolicy, readiness }).status, 'PASS_SOURCE_POLICY');
+    for (const origin of ['https://avoado.si', 'http://example.com:8789', 'http://127.0.0.1.evil.test:8789', 'http://127.0.0.1:99999']) {
+      write(origin); assert.throws(() => validateWebSecurityPolicy({ root: fixture, policy: webSecurityPolicy, readiness }), /local production/);
+    }
+    write('http://127.0.0.1:8789', 'http://127.0.0.1:8787');
+    assert.throws(() => validateWebSecurityPolicy({ root: fixture, policy: webSecurityPolicy, readiness }), /local production/);
+  } finally { rmSync(fixture, { recursive: true, force: true }); }
 });

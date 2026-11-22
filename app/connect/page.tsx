@@ -26,12 +26,13 @@ export default async function ConnectPage({ searchParams }: {
     ? esimOrder : null;
   return <WorkspaceShell title="接続" hideTopActions hideAccountAccess>
     <div className={styles.page}>
-      <header className={styles.heading}><span>YOUR ENVIRONMENT</span><h1>利用環境をつなぐ</h1><p>使う端末と能力を選び、Eveで仕事を始める準備を。</p><p>Web・対応アプリは同じアカウントで利用できます。Web版を使うためにSIM/eSIMを購入する必要はありません。</p></header>
+      <header className={styles.heading}><span>YOUR ENVIRONMENT</span><h1>利用環境をつなぐ</h1><p>使う端末と能力を選び、Eveで仕事を始める準備を。</p><p>公開版のNoahは普段の回線で開けます。専用eSIM付きのクラウドは、購入履歴から回線と端末の利用権を確認します。</p></header>
       {installOrder && <section id="ios-esim" className={styles.panel} aria-labelledby="ios-esim-title">
         <h2 id="ios-esim-title">iPhone・iPadのeSIM設定</h2>
         <EsimPurchaseSetup key={installOrder} orderId={installOrder} iosConnect />
       </section>}
       <section className={styles.start} aria-labelledby="connect-start"><h2 id="connect-start">何をつなぎますか？</h2><div className={styles.cards}>
+        <Link href="/noah/purchases"><Cable size={25}/><strong>eSIMの設定を再開</strong><span>回線を追加したら、購入した注文で端末の状態を確認します。</span><b>購入履歴・eSIM設定 <ArrowUpRight size={17}/></b></Link>
         <Link href="/connect/device"><Smartphone size={25}/><strong>端末をつなぐ</strong><span>端末の8文字コードを確認し、本人の接続として承認・管理します。</span><b>端末コードを確認 <ArrowUpRight size={17}/></b></Link>
         <Link href="/#sky"><Layers size={25}/><strong>Agent・Toolを追加</strong><span>必要な能力を探し、送信先・利用条件を確認して追加します。</span><b>能力を探す <ArrowUpRight size={17}/></b></Link>
       </div></section>

@@ -1,0 +1,250 @@
+.content {
+  min-width: 0;
+  margin-block: 20px;
+  color: #24202b;
+}
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.heading h2 {
+  font-size: 22px;
+  margin: 0;
+  letter-spacing: -0.035em;
+}
+.badge {
+  background: #f0e6ff;
+  color: #6621b4;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.prose {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 16px;
+  line-height: 1.85;
+}
+.accountName {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+  margin-block: 18px;
+}
+.fields {
+  border: 1px solid #e9e3ee;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.fields > div {
+  display: grid;
+  grid-template-columns: minmax(80px, 1fr) minmax(0, 2fr);
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0ecf4;
+}
+.fields > div:last-child {
+  border-bottom: 0;
+}
+.fields dt {
+  font-size: 13px;
+  color: #7d7386;
+}
+.fields dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.cards {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.cards > li {
+  display: flex;
+  gap: 12px;
+  border: 1px solid #e9e3ee;
+  padding: 17px;
+  border-radius: 16px;
+  background: white;
+  min-width: 0;
+}
+.cards > li > div {
+  min-width: 0;
+}
+.number {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #f2eafd;
+  color: #7130bf;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+.cards h3 {
+  margin: 1px 0 8px;
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.cards p {
+  font-size: 14px;
+  color: #665d70;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.content a {
+  color: #7025c7;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  overflow-wrap: anywhere;
+}
+.actions,
+.imageResult figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block: 14px;
+}
+.primary,
+.secondary {
+  min-height: 44px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.primary {
+  background: #7224d3;
+  color: white;
+  border: 1px solid #7224d3;
+}
+.secondary {
+  background: white;
+  color: #6322ac;
+  border: 1px solid #e1d5ee;
+}
+.primary:disabled,
+.secondary:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 3px solid #b898ef;
+  outline-offset: 3px;
+}
+.gallery {
+  display: grid;
+  gap: 18px;
+}
+.imageResult {
+  margin: 0;
+  border: 1px solid #e8e0ed;
+  border-radius: 16px;
+  padding: 10px;
+  min-width: 0;
+}
+.imageResult img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 65vh;
+  object-fit: contain;
+  background: #f5f2f8;
+  border-radius: 10px;
+}
+.imageResult figcaption {
+  margin-bottom: 0;
+}
+.raw {
+  margin-top: 24px;
+  border-top: 1px solid #ede7f1;
+  padding-top: 12px;
+  color: #81748b;
+  font-size: 13px;
+}
+.raw summary {
+  cursor: pointer;
+  padding-block: 10px;
+}
+.raw pre {
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 12px;
+  background: #f7f5f9;
+  color: #61576a;
+}
+.muted {
+  color: #83788d;
+  font-size: 12px;
+}
+.preview {
+  min-width: 0;
+  background: #faf8fd;
+  border-radius: 10px;
+  padding: 14px;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+.previewIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: #eee2fb;
+  color: #7b3cbd;
+}
+.preview strong {
+  font-size: 15px;
+}
+.previewText {
+  margin: 0;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.preview ul {
+  padding-inline-start: 16px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #74677f;
+}
+.preview li {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+.thumbnail {
+  width: 100%;
+  height: auto;
+  max-height: 190px;
+  object-fit: contain;
+  border-radius: 8px;
+}

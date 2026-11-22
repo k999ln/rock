@@ -24,6 +24,9 @@ void test('all imported public records have one stable detail and source coverag
   assert.equal(index.rows.length, records.length);
   assert.equal(new Set(records.map(r => r.id)).size, records.length);
   const sources = new Map(), counts = {}, kinds = {};
+  const article = read('data/noah-research-sources/explorax-github-100.json');
+  const articleByPosition = new Map(article.repositories.map(item => [String(item.position), item]));
+  const citedRecords = new Map();
   for (const r of records) {
     assert.ok(catalog.get(r.id));
     assert.equal(catalog.get(r.id).entry.detailPath, locations.get(r.id));
@@ -33,10 +36,20 @@ void test('all imported public records have one stable detail and source coverag
     for (const s of r.sources) {
       assert.equal(new URL(s.url).protocol, 'https:');
       assert.equal(new URL(s.url).username, '');
+      if (s.type === 'citation') continue;
       assert.ok(!sources.has(s.url), `duplicate URL ${s.url}`);
       sources.set(s.url, r.id);
     }
-    for (const ref of r.references) counts[ref.dataset] = (counts[ref.dataset] || 0) + 1;
+    for (const ref of r.references) {
+      counts[ref.dataset] = (counts[ref.dataset] || 0) + 1;
+      if (ref.dataset !== 'explorax_github_100') continue;
+      assert.ok(!citedRecords.has(ref.ref));
+      const item = articleByPosition.get(ref.ref);
+      assert.ok(r.sources.some(s => s.type === 'citation' && s.url === article.sourceUrl));
+      assert.ok(r.sources.some(s => s.type === 'primary' && s.url === `https://github.com/${item.repository.toLowerCase()}`));
+      if (item.archived) assert.ok(r.notes.some(note => note.includes('アーカイブ済み')));
+      citedRecords.set(ref.ref, r.id);
+    }
     kinds[r.kind] = (kinds[r.kind] || 0) + 1;
   }
   assert.deepEqual(counts, index.stats.coverage);
@@ -51,6 +64,9 @@ void test('all imported public records have one stable detail and source coverag
   assert.equal(counts.ongoing_research, snapshot('expansion').reduce((n, x) => n + x.records.length, 0));
   assert.equal(counts.x_leads, snapshot('discovery').x.leads.length);
   assert.equal(counts.discovery_examples, snapshot('discovery').examples.length);
+  assert.equal(counts.explorax_github_100, articleByPosition.size);
+  assert.equal(new Set(citedRecords.values()).size, articleByPosition.size);
+  assert.equal(catalog.list(params({ q: 'exploraX_' })).total, articleByPosition.size);
   assert.equal(records.filter(r => r.id === 'anicca').length, 1);
   // Stable repository ID merges a renamed source; names alone do not merge repos.
   assert.equal(records.filter(r => r.references.some(x => x.ref === 'GH003')).length, 1);

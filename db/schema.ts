@@ -6,6 +6,7 @@ import {
   uniqueIndex,
   check,
   primaryKey,
+  real,
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
@@ -1536,6 +1537,21 @@ export const esimGoProfileStatusEvents = sqliteTable(
   ],
 );
 
+export const simBindings = sqliteTable('sim_bindings', {
+  id: text('id').primaryKey().notNull(),
+  ownerUserId: text('owner_user_id').notNull(),
+  simDigest: text('sim_digest').notNull(),
+  deviceDigest: text('device_digest').notNull(),
+  boundAt: integer('bound_at').notNull(),
+  revokedAt: integer('revoked_at'),
+}, (table) => [
+  uniqueIndex('sim_bindings_active_sim').on(table.simDigest).where(sql`${table.revokedAt} IS NULL`),
+  index('sim_bindings_sim_revoked').on(table.simDigest, table.revokedAt),
+  check('sim_bindings_sim_digest_check', sql`length(${table.simDigest}) = 64`),
+  check('sim_bindings_device_digest_check', sql`length(${table.deviceDigest}) = 64`),
+  check('sim_bindings_revoke_time_check', sql`${table.revokedAt} IS NULL OR ${table.revokedAt} >= ${table.boundAt}`),
+]);
+
 export const esimDeviceInstallChallenges = sqliteTable(
   'esim_device_install_challenges',
   {
@@ -2588,6 +2604,75 @@ export const noahPackageConnections = sqliteTable('noah_package_connections', {
 }, t => [
   index('noah_package_connections_package').on(t.packageId),
 ]);
+// ピンタレスト風の一覧のボード・フォロー・数えた実績・「表示しない」。DDL は drizzle/0054_noah_boards.sql（task 115。docs/noah/spec-115-pin-grid.md の 4 章）。
+// 実績（noah_pin_stats）は全員の合計で、本人の ID は無い。本人ごとの行は、本人が作ったボード・保存・フォロー・「表示しない」だけ。
+export const noahBoards = sqliteTable('noah_boards', {
+  id: text('id').primaryKey(),
+  ownerId: text('owner_id').notNull(),
+  name: text('name').notNull(),
+  visibility: text('visibility').notNull().default('private'),
+  pins: integer('pins').notNull().default(0),
+  followers: integer('followers').notNull().default(0),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+  revision: integer('revision').notNull().default(1),
+}, t => [
+  index('noah_boards_owner').on(t.ownerId, sql`${t.updatedAt} DESC`),
+  check('noah_boards_name', sql`length(${t.name}) BETWEEN 1 AND 40`),
+  check('noah_boards_visibility', sql`${t.visibility} IN ('private', 'public')`),
+  check('noah_boards_pins', sql`${t.pins} >= 0`),
+  check('noah_boards_followers', sql`${t.followers} >= 0`),
+  check('noah_boards_revision', sql`${t.revision} >= 1`),
+]);
+export const noahBoardPins = sqliteTable('noah_board_pins', {
+  boardId: text('board_id').notNull().references(() => noahBoards.id),
+  familyId: text('family_id').notNull().references(() => noahIntakeFamilies.id),
+  ownerId: text('owner_id').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.boardId, t.familyId] }),
+  index('noah_board_pins_family').on(t.familyId, t.boardId),
+  index('noah_board_pins_owner').on(t.ownerId, sql`${t.createdAt} DESC`),
+  index('noah_board_pins_board').on(t.boardId, sql`${t.createdAt} DESC`),
+]);
+export const noahBoardFollows = sqliteTable('noah_board_follows', {
+  boardId: text('board_id').notNull().references(() => noahBoards.id),
+  followerId: text('follower_id').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.boardId, t.followerId] }),
+  index('noah_board_follows_follower').on(t.followerId, sql`${t.createdAt} DESC`),
+]);
+export const noahPinStats = sqliteTable('noah_pin_stats', {
+  familyId: text('family_id').primaryKey().references(() => noahIntakeFamilies.id),
+  savers: integer('savers').notNull().default(0),
+  succeeded: integer('succeeded').notNull().default(0),
+  hides: integer('hides').notNull().default(0),
+  votes: integer('votes').notNull().default(0),
+  hot: real('hot').notNull().default(0),
+  anchorAt: integer('anchor_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, t => [
+  index('noah_pin_stats_hot').on(sql`${t.hot} DESC`, t.familyId).where(sql`${t.votes} > 0`),
+  check('noah_pin_stats_savers', sql`${t.savers} >= 0`),
+  check('noah_pin_stats_succeeded', sql`${t.succeeded} >= 0`),
+  check('noah_pin_stats_hides', sql`${t.hides} >= 0`),
+]);
+export const noahPinHidden = sqliteTable('noah_pin_hidden', {
+  ownerId: text('owner_id').notNull(),
+  familyId: text('family_id').notNull().references(() => noahIntakeFamilies.id),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.ownerId, t.familyId] }),
+  index('noah_pin_hidden_family').on(t.familyId),
+]);
+export const noahPinRollups = sqliteTable('noah_pin_rollups', {
+  id: text('id').primaryKey(),
+  day: text('day').notNull(),
+  startedAt: integer('started_at').notNull(),
+}, t => [
+  check('noah_pin_rollups_id', sql`${t.id} = 'succeeded'`),
+]);
 // 棚の実績の集計と、見せた記録。DDL は drizzle/0052_noah_shelf_evidence.sql（docs/contracts/noah-shelf-v1.sql から移した。task 111）。
 // 集計と、全員を合わせた見せた記録に、本人の ID は無い。本人ごとの行は、履歴の利用に同意した本人の分と、本人が頼んだ「非表示」だけ。
 export const noahPackageEvidence = sqliteTable('noah_package_evidence', {
@@ -2684,4 +2769,143 @@ export const noahTrialReports = sqliteTable('noah_trial_reports', {
   check('noah_trial_reports_check_5', sql`${t.sold} = 0 OR ${t.listed} = 1`),
   check('noah_trial_reports_check_6', sql`${t.netYen} = 0 OR ${t.sold} > 0`),
   index('noah_trial_reports_package').on(t.packageId),
+]);
+
+// 定期便の台帳（受け取る人・入金と費用・寄与・月の締め・人ごとの結果）。DDL は drizzle/0055_noah_teikibin.sql（task 124。docs/noah/spec-124-teikibin-ledger.md の 4 章）。
+// 生の口座番号・回線番号は持たない（identity_key は HMAC）。お金は送らない（振込は運営が行い、結果だけを書く）。
+export const noahTeikibinPeople = sqliteTable('noah_teikibin_people', {
+  id: text('id').primaryKey(),
+  ownerId: text('owner_id').notNull(),
+  code: text('code').notNull(),
+  identityKey: text('identity_key'),
+  method: text('method'),
+  verifiedBy: text('verified_by'),
+  verifiedAt: integer('verified_at'),
+  revokedAt: integer('revoked_at'),
+  revokedBy: text('revoked_by'),
+  revokeReason: text('revoke_reason'),
+  planOptIn: integer('plan_opt_in').notNull().default(0),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  uniqueIndex('noah_teikibin_people_owner').on(t.ownerId),
+  uniqueIndex('noah_teikibin_people_code').on(t.code),
+  uniqueIndex('noah_teikibin_people_identity').on(t.identityKey).where(sql`${t.identityKey} IS NOT NULL AND ${t.revokedAt} IS NULL`),
+  check('noah_teikibin_people_code_length', sql`length(${t.code}) = 9`),
+  check('noah_teikibin_people_identity_length', sql`${t.identityKey} IS NULL OR length(${t.identityKey}) = 64`),
+  check('noah_teikibin_people_method', sql`${t.method} IS NULL OR ${t.method} IN ('bank_account', 'esim_line')`),
+  check('noah_teikibin_people_plan', sql`${t.planOptIn} IN (0, 1)`),
+  check('noah_teikibin_people_verified', sql`(${t.identityKey} IS NULL) = (${t.verifiedAt} IS NULL) AND (${t.identityKey} IS NULL) = (${t.method} IS NULL)`),
+]);
+export const noahTeikibinEntries = sqliteTable('noah_teikibin_entries', {
+  id: text('id').primaryKey(),
+  month: text('month').notNull(),
+  kind: text('kind').notNull(),
+  amountMinor: integer('amount_minor').notNull(),
+  source: text('source').notNull(),
+  reference: text('reference').notNull(),
+  note: text('note').notNull().default(''),
+  recordedBy: text('recorded_by').notNull(),
+  createdAt: integer('created_at').notNull(),
+  voidedAt: integer('voided_at'),
+  voidedBy: text('voided_by'),
+  voidReason: text('void_reason'),
+}, t => [
+  uniqueIndex('noah_teikibin_entries_reference').on(t.kind, t.reference).where(sql`${t.voidedAt} IS NULL`),
+  index('noah_teikibin_entries_month').on(t.month, t.createdAt),
+  check('noah_teikibin_entries_month_length', sql`length(${t.month}) = 7`),
+  check('noah_teikibin_entries_kind', sql`${t.kind} IN ('income', 'refund', 'platform_fee', 'direct_cost', 'creator_share')`),
+  check('noah_teikibin_entries_amount', sql`${t.amountMinor} BETWEEN 1 AND 1000000000`),
+  check('noah_teikibin_entries_source', sql`${t.source} IN ('coconala', 'noah', 'cloud', 'ai', 'bank', 'other')`),
+  check('noah_teikibin_entries_reference_length', sql`length(${t.reference}) BETWEEN 3 AND 120`),
+  check('noah_teikibin_entries_note', sql`length(${t.note}) <= 200`),
+]);
+export const noahTeikibinContributions = sqliteTable('noah_teikibin_contributions', {
+  id: text('id').primaryKey(),
+  month: text('month').notNull(),
+  personId: text('person_id').notNull().references(() => noahTeikibinPeople.id),
+  kind: text('kind').notNull(),
+  acceptedUnits: integer('accepted_units').notNull(),
+  unitRateMinor: integer('unit_rate_minor').notNull(),
+  reference: text('reference').notNull(),
+  recordedBy: text('recorded_by').notNull(),
+  createdAt: integer('created_at').notNull(),
+  voidedAt: integer('voided_at'),
+  voidedBy: text('voided_by'),
+  voidReason: text('void_reason'),
+}, t => [
+  uniqueIndex('noah_teikibin_contributions_reference').on(t.reference).where(sql`${t.voidedAt} IS NULL`),
+  index('noah_teikibin_contributions_month').on(t.month, t.personId),
+  check('noah_teikibin_contributions_month_length', sql`length(${t.month}) = 7`),
+  check('noah_teikibin_contributions_kind', sql`${t.kind} IN ('compute', 'judgment', 'referral')`),
+  check('noah_teikibin_contributions_units', sql`${t.acceptedUnits} BETWEEN 0 AND 100000000`),
+  check('noah_teikibin_contributions_rate', sql`${t.unitRateMinor} BETWEEN 0 AND 1000000`),
+  check('noah_teikibin_contributions_reference_length', sql`length(${t.reference}) BETWEEN 3 AND 120`),
+]);
+export const noahTeikibinMonths = sqliteTable('noah_teikibin_months', {
+  month: text('month').primaryKey(),
+  state: text('state').notNull(),
+  form: text('form').notNull(),
+  reserveBps: integer('reserve_bps').notNull(),
+  dividendBps: integer('dividend_bps').notNull(),
+  planPriceMinor: integer('plan_price_minor'),
+  people: integer('people').notNull(),
+  lines: integer('lines').notNull(),
+  netCashMinor: integer('net_cash_minor').notNull(),
+  feesMinor: integer('fees_minor').notNull(),
+  reserveMinor: integer('reserve_minor').notNull(),
+  surplusMinor: integer('surplus_minor').notNull(),
+  poolMinor: integer('pool_minor').notNull(),
+  companyMinor: integer('company_minor').notNull(),
+  shortfallMinor: integer('shortfall_minor').notNull(),
+  settlement: text('settlement').notNull(),
+  digest: text('digest').notNull(),
+  closedBy: text('closed_by').notNull(),
+  startedAt: integer('started_at').notNull(),
+  closedAt: integer('closed_at'),
+}, t => [
+  check('noah_teikibin_months_month_length', sql`length(${t.month}) = 7`),
+  check('noah_teikibin_months_state', sql`${t.state} IN ('closing', 'closed')`),
+  check('noah_teikibin_months_form', sql`${t.form} IN ('cash', 'goods')`),
+  check('noah_teikibin_months_reserve', sql`${t.reserveBps} BETWEEN 0 AND 10000`),
+  check('noah_teikibin_months_dividend', sql`${t.dividendBps} BETWEEN 0 AND 10000`),
+  check('noah_teikibin_months_price', sql`${t.planPriceMinor} IS NULL OR ${t.planPriceMinor} BETWEEN 1 AND 1000000`),
+  check('noah_teikibin_months_people', sql`${t.people} BETWEEN 0 AND 5000`),
+  check('noah_teikibin_months_lines', sql`${t.lines} BETWEEN 0 AND 10000`),
+  check('noah_teikibin_months_fees', sql`${t.feesMinor} >= 0`),
+  check('noah_teikibin_months_reserve_minor', sql`${t.reserveMinor} >= 0`),
+  check('noah_teikibin_months_pool', sql`${t.poolMinor} >= 0`),
+  check('noah_teikibin_months_shortfall', sql`${t.shortfallMinor} >= 0`),
+  check('noah_teikibin_months_digest', sql`length(${t.digest}) = 64`),
+  check('noah_teikibin_months_closed', sql`(${t.state} = 'closed') = (${t.closedAt} IS NOT NULL)`),
+]);
+export const noahTeikibinLines = sqliteTable('noah_teikibin_lines', {
+  month: text('month').notNull().references(() => noahTeikibinMonths.month),
+  personId: text('person_id').notNull().references(() => noahTeikibinPeople.id),
+  feeMinor: integer('fee_minor').notNull(),
+  dividendMinor: integer('dividend_minor').notNull(),
+  deductionMinor: integer('deduction_minor').notNull(),
+  cashMinor: integer('cash_minor').notNull(),
+  goodsMinor: integer('goods_minor').notNull(),
+  paidPlan: integer('paid_plan').notNull(),
+  payoutState: text('payout_state').notNull(),
+  payoutRef: text('payout_ref'),
+  paidBy: text('paid_by'),
+  paidAt: integer('paid_at'),
+  goodsState: text('goods_state').notNull(),
+  goodsRef: text('goods_ref'),
+  assignedBy: text('assigned_by'),
+  assignedAt: integer('assigned_at'),
+}, t => [
+  primaryKey({ columns: [t.month, t.personId] }),
+  uniqueIndex('noah_teikibin_lines_payout_ref').on(t.payoutRef).where(sql`${t.payoutRef} IS NOT NULL`),
+  index('noah_teikibin_lines_person').on(t.personId, t.month),
+  check('noah_teikibin_lines_amounts', sql`${t.feeMinor} >= 0 AND ${t.dividendMinor} >= 0 AND ${t.deductionMinor} >= 0 AND ${t.cashMinor} >= 0 AND ${t.goodsMinor} >= 0`),
+  check('noah_teikibin_lines_paid_plan', sql`${t.paidPlan} IN (0, 1)`),
+  check('noah_teikibin_lines_payout_state', sql`${t.payoutState} IN ('none', 'pending', 'held', 'paid')`),
+  check('noah_teikibin_lines_goods_state', sql`${t.goodsState} IN ('none', 'pending', 'assigned')`),
+  check('noah_teikibin_lines_balance', sql`${t.feeMinor} + ${t.dividendMinor} - ${t.deductionMinor} = ${t.cashMinor} + ${t.goodsMinor}`),
+  check('noah_teikibin_lines_payout_none', sql`(${t.payoutState} = 'none') = (${t.cashMinor} = 0)`),
+  check('noah_teikibin_lines_goods_none', sql`(${t.goodsState} = 'none') = (${t.goodsMinor} = 0)`),
+  check('noah_teikibin_lines_paid_ref', sql`(${t.payoutState} = 'paid') = (${t.payoutRef} IS NOT NULL)`),
+  check('noah_teikibin_lines_goods_ref', sql`(${t.goodsState} = 'assigned') = (${t.goodsRef} IS NOT NULL)`),
 ]);

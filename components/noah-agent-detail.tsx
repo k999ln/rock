@@ -63,7 +63,7 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
         const stopped = await fetch(`/__noah/connections/${id}/disconnect`, { method: 'POST', headers: { 'Content-Type': 'application/json', [OWNER_SCOPE_HEADER]: scope }, body: '{}' });
         if (!stopped.ok) throw new Error('テストAgentの停止を確認してから削除してください。');
       }
-      const r = await fetch(`/api/noah/agents/${id}`, { method: 'DELETE', headers: { [OWNER_SCOPE_HEADER]: scope } }); const d = await r.json() as { error?: string }; if (!r.ok) throw new Error(d.error); router.push('/noah/agents'); }
+      const r = await fetch(`/api/noah/agents/${id}`, { method: 'DELETE', headers: { [OWNER_SCOPE_HEADER]: scope } }); const d = await r.json() as { error?: string }; if (!r.ok) throw new Error(d.error); router.push('/noah/saved?tab=agents'); }
     catch (e) { setError((e as Error).message); } finally { setPending(false); }
   }
   async function retryUpload() {
@@ -78,7 +78,7 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
     } catch (e) { setError((e as Error).message); } finally { setPending(false); }
   }
   return <div className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href="/noah/agents">← Agent一覧</Link><Link href="/noah/library">自分のAgent</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link></nav>
     {error && <div role="alert" className={styles.error}>{error} {!m && <button onClick={() => setAttempt(n => n + 1)}>再試行</button>}</div>}
     {!m && !error && <output>読み込んでいます…</output>}
     {m && <>

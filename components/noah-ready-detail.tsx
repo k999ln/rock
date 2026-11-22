@@ -6,14 +6,20 @@
  * 仕様: docs/noah/spec-74-one-click-connect.md の 11.4・11.5。
  */
 import { useEffect, useRef, useState } from 'react';
+import { useNoahLocale } from './noah-locale';
+import NoahAgentVisual from './noah-agent-visual';
+import NoahAgentShare from './noah-agent-share';
+import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
-import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahSendsToText, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import { NOAH_READY_TEXT, noahBadgeText, noahCheckedText, noahConnectionStateText, noahPriceText, noahUsersText, type NoahReadyConnection, type NoahReadyItem } from '@/lib/noah-ready-view';
+import NoahRegistrationSheet from './noah-registration-sheet';
 import NoahAsk from './noah-ask';
 import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
 import NoahTrialReport from './noah-trial-report';
+import NoahPinExtras from './noah-pin-extras';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
 
@@ -21,7 +27,8 @@ type Detail = NoahReadyItem & { listed: boolean; website: string | null; connect
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null }: { id: string; tool?: string | null; from?: string | null }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean }) {
+  const {t}=useNoahLocale();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
   const [cutting, setCutting] = useState(false), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
@@ -46,12 +53,12 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
     }).catch(() => done({ state: 'error' }));
   }, [id, attempt, valid]);
 
-  const back = <p className={styles.back}><Link href="/noah/ready">← {NOAH_READY_TEXT.title}</Link></p>;
+  const back = <p className={styles.back}><Link href="/noah/explore">← {t(NOAH_READY_TEXT.title)}</Link></p>;
   if (loaded.state !== 'ready') return <main className={`${base.page} ${styles.page}`}>
     {back}
-    {loaded.state === 'loading' && <p className={base.loading}><output>読み込んでいます…</output></p>}
-    {loaded.state === 'missing' && <p className={base.empty}>{NOAH_READY_TEXT.missing}</p>}
-    {loaded.state === 'error' && <div className={base.empty} role="alert"><p>{NOAH_READY_TEXT.unavailable}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>読み直す</button></div>}
+    {loaded.state === 'loading' && <p className={base.loading}><NoahLoading label={t("読み込んでいます…")} /></p>}
+    {loaded.state === 'missing' && <p className={base.empty}>{t(NOAH_READY_TEXT.missing)}</p>}
+    {loaded.state === 'error' && <div className={base.empty} role="alert"><p>{t(NOAH_READY_TEXT.unavailable)}</p><button type="button" onClick={() => setAttempt((n) => n + 1)}>{t("読み直す")}</button></div>}
   </main>;
 
   const { detail } = loaded, signedIn = detail.ownerScope !== null;
@@ -91,30 +98,41 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
   return <main className={`${base.page} ${styles.page}`}>
     {back}
     <article className={styles.detail}>
-      <header className={styles.cardHead}><h1>{detail.name}</h1><span className={styles.provider}>提供: {detail.provider}</span></header>
-      <p className={styles.description}>{detail.summary || '（説明はありません）'}</p>
-      <ul className={styles.facts} aria-label="つなぎ方">{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{text}</li>)}</ul>
-      {checked && <p className={styles.quiet}>{checked}</p>}
-      {detail.host && <p className={styles.sendsTo}>{noahSendsToText(detail.host)}</p>}
-      {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">提供者のページ（{new URL(detail.website).hostname}）</a></p>}
-      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} />
+      <header className={styles.cardHead}><h1>{detail.name}</h1><span className={styles.provider}>{t("提供:")} {detail.provider}</span></header>
+      <p className={styles.introSummary}>{detail.summary || t('（説明はありません）')}</p>
+      <div className={styles.connectionMeta}>
+        <span>{t(noahPriceText(detail.connect.price))}</span>
+        {detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}
+      </div>
+      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
+      {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
     </article>
 
-    {live?.state === 'connected' && <NoahAsk key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
+    {live?.state === 'connected' && <NoahAsk agentId={detail.id} agentName={detail.name} key={live.id} connectionId={live.id} initialTool={tool} ownerScope={detail.ownerScope} onUnusable={() => refresh(live)} onAsked={() => setAsked((n) => n + 1)} />}
     {/* 仕事（この Agent への依頼と成果）。つないでいない時・切った後も、前に受け取った成果を出す。サインインしていない人には、出さない。 */}
-    {signedIn && <NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} />}
+    {signedIn && <div id="noah-agent-work" tabIndex={-1}><NoahWorkList key={`work:${detail.id}`} agentId={detail.id} ownerScope={detail.ownerScope} refresh={asked} /></div>}
+    <details className={styles.agentDetails}>
+      <summary>{t('Agentの詳細')}</summary>
+      <p className={styles.description}>{detail.summary || t('（説明はありません）')}</p>
+      <NoahAgentVisual name={detail.name} summary={detail.summary}/>
+      <ul className={styles.facts} aria-label={t("つなぎ方")}>{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{t(text)}</li>)}</ul>
+      {checked && <p className={styles.quiet}>{t(checked)}</p>}
+      {detail.website && <p className={styles.quiet}>{internalOnly ? <span>提供元: {detail.website}</span> : <a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a>}</p>}
+      {detail.listed && <NoahAgentShare id={detail.id} name={detail.name} summary={detail.summary} />}
+    </details>
+    {detail.listed && <NoahPinExtras key={`pin:${detail.id}`} item={detail} ownerScope={detail.ownerScope} />}
     {/* 棚のカードから来た時: 試行の本人の報告と、5 人以上の報告の合計（切り替えが閉の間は、何も出ない）。頼んだ後に、入れられるかを読み直す。 */}
     {from && <NoahTrialReport key={`trial:${from}:${asked}`} packageId={from} />}
 
-    {live && <section className={styles.section} aria-label="この接続">
+    {live && <section className={styles.section} aria-label={t("この接続")}>
       <div className={styles.cut}>
-        <p>{noahConnectionStateText(live.state)}</p>
-        <button type="button" className={styles.secondary} disabled={cutting} onClick={() => void cut(live)}>{cutting ? '切っています…' : '切る'}</button>
+        <p>{t(noahConnectionStateText(live.state))}</p>
+        <button type="button" className={styles.secondary} disabled={cutting} onClick={() => void cut(live)}>{cutting ? t("切っています…") : t("切る")}</button>
       </div>
-      <p className={styles.quiet}>{NOAH_READY_TEXT.cutNote}</p>
-      {error && <p className={styles.reason} role="alert">{error}</p>}
+      <p className={styles.quiet}>{t(NOAH_READY_TEXT.cutNote)}</p>
+      {error && <p className={styles.reason} role="alert">{t(error)}</p>}
     </section>}
 
-    <footer className={styles.source}><p>{NOAH_READY_TEXT.source}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{NOAH_READY_TEXT.report} →</Link></>}</p></footer>
+    <footer className={styles.source}><p>{t(NOAH_READY_TEXT.source)}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{t(NOAH_READY_TEXT.report)} →</Link></>}</p></footer>
   </main>;
 }

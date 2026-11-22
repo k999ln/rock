@@ -7,6 +7,7 @@ import { createIntakeImportApi, noahIntakeExport, noahIntakeImportParts, NOAH_IN
 import { createNoahConnectApi } from '../lib/noah-connect.ts';
 import { createNoahConnectPlanApi } from '../lib/noah-connect-plan-api.ts';
 import { parseNoahFlags } from '../lib/noah-flags.ts';
+import { splitNoahIntakeImport } from '../lib/noah-intake-import-parts.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { fixture } from './fixtures/noah/intake.mjs';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
@@ -40,10 +41,13 @@ void test('export from the local run, import into an empty production: the same 
   assert.ok(exported.candidates.every((row) => row.source === 'mcp-registry'));
 
   const prod = production(t, w);
+  let written = 0;
   for (const part of noahIntakeImportParts(exported)) {
     const reply = await prod.send(part);
     assert.equal(reply.status, 200, JSON.stringify(reply.body));
+    written += reply.body.rowsWritten;
   }
+  assert.ok(written >= 6, `書いた行 ${written}`);
   assert.deepEqual(await listedIds(prod.f.store), local);
   const detail = await prod.f.store.detail(familyId(1), null, false);
   assert.equal(detail.name, 'Agent 1');
@@ -55,11 +59,50 @@ void test('export from the local run, import into an empty production: the same 
   const connected = await (await api.collection(new Request(`${ORIGIN}/api/noah/connect`, { method: 'POST', headers: { Origin: ORIGIN, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': await ownerScopeFor('owner-a') }, body: JSON.stringify({ id: uuid(1), agentId: familyId(1), planSha256: plan.planSha256 }) }))).json();
   assert.equal(connected.state, 'connected', JSON.stringify(connected));
 
-  // 同じ物を 2 回入れても、同じ一覧（候補と握手の行は、新しく見た物だけを書き換える）。
+  // 同じ物を 2 回入れても、同じ一覧で、本番には 1 行も書かない（候補と握手の行と系列は、中身が変わった物だけを書き換える）。
   const before = prod.f.sql.prepare('SELECT id, revision FROM noah_intake_candidates ORDER BY id').all().map((row) => ({ ...row }));
-  for (const part of noahIntakeImportParts(exported)) assert.equal((await prod.send(part)).status, 200);
+  const familiesBefore = prod.f.sql.prepare('SELECT id, revision FROM noah_intake_families ORDER BY id').all().map((row) => ({ ...row }));
+  for (const part of noahIntakeImportParts(exported)) {
+    const reply = await prod.send(part);
+    assert.equal(reply.status, 200);
+    assert.equal(reply.body.rowsWritten, 0);
+  }
   assert.deepEqual(prod.f.sql.prepare('SELECT id, revision FROM noah_intake_candidates ORDER BY id').all().map((row) => ({ ...row })), before);
+  assert.deepEqual(prod.f.sql.prepare('SELECT id, revision FROM noah_intake_families ORDER BY id').all().map((row) => ({ ...row })), familiesBefore);
   assert.deepEqual(await listedIds(prod.f.store), local);
+  // 手元で、1 時間後にもう一度握手して、台帳も読み直した（確かめた時刻・応答の速さ・見た時刻だけが変わった）。入れ直しても、書かない。
+  const later = {
+    ...exported,
+    candidates: exported.candidates.map((row) => ({ ...row, seen_at: row.seen_at + 3_600_000 })),
+    checks: exported.checks.map((row) => ({ ...row, checked_at: row.checked_at + 3_600_000, latency_ms: 5, next_check_at: row.next_check_at + 3_600_000 })),
+  };
+  for (const part of noahIntakeImportParts(later)) assert.equal((await prod.send(part)).body.rowsWritten, 0);
+  // 道具の一覧が変わった時は、書く。
+  const changed = { ...later, checks: later.checks.map((row) => ({ ...row, checked_at: row.checked_at + 1, tools_sha256: 'c'.repeat(64) })) };
+  let rewritten = 0;
+  for (const part of noahIntakeImportParts(changed)) rewritten += (await prod.send(part)).body.rowsWritten;
+  assert.equal(rewritten, 2);
+  assert.deepEqual(prod.f.sql.prepare('SELECT DISTINCT tools_sha256 FROM noah_intake_checks').all().map((row) => row.tools_sha256), ['c'.repeat(64)]);
+});
+
+void test('the export can be narrowed: the families the shelf cards use first, then the easiest to use, up to a count', async (t) => {
+  const w = await world(t, {
+    [hostOf(1)]: mcpServer({ tools: [tool('lookup')] }), [hostOf(2)]: mcpServer({ tools: [tool('stats')] }), [hostOf(3)]: mcpServer({ tools: [tool('more')] }),
+  });
+  const all = await noahIntakeExport(w.f.db, w.f.time());
+  assert.equal(all.families.length, 3);
+  const narrow = await noahIntakeExport(w.f.db, w.f.time(), { limit: 2, first: [familyId(3)] });
+  assert.equal(narrow.families.length, 2);
+  assert.equal(narrow.families[0].id, familyId(3));
+  const ids = new Set(narrow.families.map((row) => row.id));
+  assert.ok(narrow.candidates.every((row) => ids.has(row.family_id)));
+  assert.equal(narrow.checks.length, narrow.candidates.length);
+  assert.ok(narrow.checks.every((row) => narrow.candidates.some((c) => c.id === row.candidate_id)));
+  // 書き出した物は、そのまま入れられる。
+  const prod = production(t, w);
+  for (const part of noahIntakeImportParts(narrow)) assert.equal((await prod.send(part)).status, 200);
+  assert.deepEqual(await listedIds(prod.f.store), [...ids].sort((a, b) => (a < b ? -1 : 1)));
+  assert.equal((await noahIntakeExport(w.f.db, w.f.time(), { limit: 0 })).families.length, 0);
 });
 
 void test('the local "ran" (L2) is not imported as people having run it; production L2 stays while the tools are the same, and drops when they change', async (t) => {
@@ -129,6 +172,7 @@ void test('the operator screen sends the file in parts and reports what went in'
   const jsx = (type, props) => ({ type, props });
   runInNewContext(code, { exports, AbortController, URLSearchParams, Error, Date, JSON, Response, fetch: fetcher,
     require(id) {
+      if (id === '@/lib/noah-intake-import-parts') return { splitNoahIntakeImport };
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
       if (id === 'react') return {
@@ -146,7 +190,8 @@ void test('the operator screen sends the file in parts and reports what went in'
   assert.ok(input);
   input.props.onChange({ target: { files: [{ text: async () => JSON.stringify(exported) }] } });
   await flush();
-  assert.ok(text(tree).includes('入れました：系列 2（一覧に載る物 2）'), text(tree));
+  assert.ok(text(tree).includes('入れました：系列 2（一覧に載る物 2）。本番へ書いた行 '), text(tree));
+  assert.ok(!text(tree).includes('本番へ書いた行 0（'), text(tree));
   assert.deepEqual(calls.filter((url) => url === '/api/noah/intake/import').length, 1);
   assert.equal(prod.f.sql.prepare('SELECT COUNT(*) n FROM noah_intake_families WHERE listed = 1').get().n, 2);
   // 違うファイルは、送らない。

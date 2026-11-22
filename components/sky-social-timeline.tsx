@@ -90,6 +90,9 @@ export default function SkySocialTimeline({
   discovery,
   externalFeed,
   agentManagementHref,
+  accountHref = "/signin-with-chatgpt?return_to=%2F%23timeline",
+  translate = (source:string)=>source,
+  loadingIndicator,
 }: {
   fullHome?: boolean;
   postsOnly?: boolean;
@@ -98,7 +101,12 @@ export default function SkySocialTimeline({
   discovery?: ReactNode;
   externalFeed?: ReactNode;
   agentManagementHref?: string;
+  accountHref?: string;
+  translate?: (source:string)=>string;
+  loadingIndicator?: ReactNode;
 } = {}) {
+  const t=translate;
+
   const [data, setData] = useState(empty),
     [mode, setMode] = useState<'recommended' | 'following' | 'bookmarks'>(
       initialView === 'bookmarks' ? 'bookmarks' : 'recommended',
@@ -717,7 +725,7 @@ export default function SkySocialTimeline({
           <div className={styles.postMain}>
             <header className={styles.postHeader}>
               <strong>{article.publisher}</strong>
-              <span className={styles.handle}>ニュース</span>
+              <span className={styles.handle}>{"ニュース"}</span>
               <span className={styles.dot}>·</span>
               <time
                 dateTime={article.seenAt}
@@ -738,8 +746,8 @@ export default function SkySocialTimeline({
               <ArrowUpRight size={16} />
             </a>
             <div className={styles.newsMeta}>
-              媒体の原文 · {newsTimestampLabel(article)}
-              {item.stale ? ' · 前回取得分' : ''}
+              {"媒体の原文 ·"}{newsTimestampLabel(article)}
+              {item.stale ? " · 前回取得分" : ''}
             </div>
             <div className={styles.newsActions}>
               <button
@@ -750,11 +758,9 @@ export default function SkySocialTimeline({
                   );
                 }}
               >
-                この話題をもっと
-              </button>
+                {"この話題をもっと"}</button>
               <a href={newsSourceHandoff(article, item.stale)}>
-                Eveで資料メモを作る
-              </a>
+                {"Eveで資料メモを作る"}</a>
               <button
                 onClick={() => {
                   writeHomeIntent(
@@ -764,7 +770,7 @@ export default function SkySocialTimeline({
                   router.push('/chat');
                 }}
               >
-                Eveと話す <MessageCircle size={15} />
+                {t("Eveと話す")}<MessageCircle size={15} />
               </button>
             </div>
           </div>
@@ -843,12 +849,11 @@ export default function SkySocialTimeline({
                         })
                       }
                     >
-                      {post.following ? 'フォローを解除' : 'フォローする'}
+                      {post.following ? t("フォローを解除") : t("フォローする")}
                     </button>
                   )}
                   <button onClick={() => void sharePost(post)}>
-                    リンクをコピー
-                  </button>
+                    {t("リンクをコピー")}</button>
                   {(post.mine || selected?.owned) && (
                     <button
                       disabled={busy}
@@ -862,8 +867,7 @@ export default function SkySocialTimeline({
                           );
                       }}
                     >
-                      投稿を削除
-                    </button>
+                      {t("投稿を削除")}</button>
                   )}
                   {selected?.owned && !post.mine && (
                     <button
@@ -877,8 +881,7 @@ export default function SkySocialTimeline({
                           });
                       }}
                     >
-                      参加を解除
-                    </button>
+                      {"参加を解除"}</button>
                   )}
                 </div>
               </details>
@@ -903,14 +906,14 @@ export default function SkySocialTimeline({
                   setExpanded((old) => ({ ...old, [post.id]: !old[post.id] }))
                 }
               >
-                {expanded[post.id] ? '表示を減らす' : 'さらに表示'}
+                {expanded[post.id] ? t("表示を減らす") : t("さらに表示")}
               </button>
             )}
             {post.attachment && (
               <div className={styles.shared}>
                 <small>
                   {post.attachment.kind === 'community-os'
-                    ? 'コミュニティーOS'
+                    ? "コミュニティーOS"
                     : post.attachment.kind.toUpperCase()}
                 </small>
                 <strong>
@@ -933,18 +936,17 @@ export default function SkySocialTimeline({
                         ?.scrollIntoView({ block: 'start' });
                     }}
                   >
-                    このOSを確認して追加
-                  </button>
+                    {"このOSを確認して追加"}</button>
                 ) : ['model', 'dataset', 'space', 'agent'].includes(
                     post.attachment.kind,
                   ) ? (
-                  agentManagementHref ? <Link href={agentManagementHref}>Mac版で使う条件を確認 <ArrowUpRight size={15} /></Link> : attachmentAdded ? (
+                  agentManagementHref ? <Link href={agentManagementHref}>{t("Mac版で使う条件を確認")}<ArrowUpRight size={15} /></Link> : attachmentAdded ? (
                     <>
-                      <small>自分のNoahに追加済み</small>
+                      <small>{t("自分のNoahに追加済み")}</small>
                       <button
                         disabled={sourceHandoff.preparing} onClick={() => prepareAttachment(post.attachment!)}
                       >
-                        Eveで使う準備 <ArrowUpRight size={15} />
+                        {t("Eveで使う準備")}<ArrowUpRight size={15} />
                       </button>
                     </>
                   ) : (
@@ -957,8 +959,7 @@ export default function SkySocialTimeline({
                       }
                     >
                       <Plus size={15} />
-                      自分のNoahに追加
-                    </button>
+                      {t("自分のNoahに追加")}</button>
                   )
                 ) : (
                   <a
@@ -967,15 +968,14 @@ export default function SkySocialTimeline({
                     rel="noopener noreferrer"
                   >
                     {post.attachment.kind === 'edition'
-                      ? '共有された構成を見る'
-                      : '配布元を開く'}{' '}
+                      ? "共有された構成を見る"
+                      : t("配布元を開く")}{' '}
                     <ArrowUpRight size={15} />
                   </a>
                 )}
                 {post.attachment.kind === 'edition' && (
                   <small>
-                    URLの共有です。OSの導入・更新は個別に適合と権限を確認します。
-                  </small>
+                    {"URLの共有です。OSの導入・更新は個別に適合と権限を確認します。"}</small>
                 )}
               </div>
             )}
@@ -1010,7 +1010,7 @@ export default function SkySocialTimeline({
               </button>
               <button
                 aria-label={
-                  post.bookmarked ? 'ブックマークを解除' : 'ブックマークに保存'
+                  post.bookmarked ? t("ブックマークを解除") : t("ブックマークに保存")
                 }
                 aria-pressed={post.bookmarked}
                 className={post.bookmarked ? styles.bookmarked : undefined}
@@ -1023,7 +1023,7 @@ export default function SkySocialTimeline({
                 />
               </button>
               <button
-                aria-label="投稿を共有"
+                aria-label={t("投稿を共有")}
                 onClick={() => void sharePost(post)}
               >
                 <Share2 size={18} />
@@ -1044,14 +1044,14 @@ export default function SkySocialTimeline({
       aria-labelledby="sky-social-title"
     >
       {!communityPage && <header className={styles.heading}>
-        <h2 id="sky-social-title">{postsOnly ? '投稿' : 'ニュースとつながり'}</h2>
+        <h2 id="sky-social-title">{postsOnly ? t("投稿") : "ニュースとつながり"}</h2>
       </header>}
       <div className={styles.timelineTop}>
         {communityPage ? (
           <div className={styles.threadHeading}>
             {!communityDirectory && (
               <button
-                aria-label="コミュニティーの一覧に戻る"
+                aria-label={"コミュニティーの一覧に戻る"}
                 onClick={() => {
                   setCommunityId('');
                   setThreadId('');
@@ -1070,7 +1070,7 @@ export default function SkySocialTimeline({
         ) : threadId ? (
           <div className={styles.threadHeading}>
             <button
-              aria-label="タイムラインに戻る"
+              aria-label={t("タイムラインに戻る")}
               onClick={() => {
                 setThreadId('');
                 setText('');
@@ -1079,39 +1079,38 @@ export default function SkySocialTimeline({
             >
               <ArrowLeft size={20} />
             </button>
-            <strong>投稿</strong>
+            <strong>{t("投稿")}</strong>
           </div>
         ) : (
           <div
             className={styles.topTabs}
             role="tablist"
-            aria-label="タイムラインの切替"
+            aria-label={t("タイムラインの切替")}
           >
             <button
               role="tab"
               aria-selected={mode === 'recommended'}
               onClick={() => returnToTimeline('recommended')}
             >
-              {postsOnly ? '投稿' : fullHome ? 'あなたへ' : 'おすすめ'}
+              {postsOnly ? t("投稿") : fullHome ? "あなたへ" : t("おすすめ")}
             </button>
             {!postsOnly && <button
               role="tab"
               aria-selected={mode === 'following'}
               onClick={() => returnToTimeline('following')}
             >
-              {fullHome ? 'つながり' : 'フォロー中'}
+              {fullHome ? "つながり" : t("フォロー中")}
             </button>}
             {mode === 'bookmarks' && (
               <button role="tab" aria-selected>
-                保存済み
-              </button>
+                {t("保存済み")}</button>
             )}
           </div>
         )}
         <button
           className={styles.topIcon}
           aria-label={
-            communityPage ? 'コミュニティーを更新' : 'タイムラインを更新'
+            communityPage ? "コミュニティーを更新" : t("タイムラインを更新")
           }
           disabled={loading}
           onClick={() => {
@@ -1127,16 +1126,16 @@ export default function SkySocialTimeline({
         {!communityPage && (
           <button
             className={`${styles.topIcon} ${styles.menuButton}`}
-            aria-label={postsOnly ? '投稿・保存' : '投稿・保存・コミュニティー'}
+            aria-label={postsOnly ? t("投稿・保存") : "投稿・保存・コミュニティー"}
             aria-expanded={management}
             onClick={() => setManagement((v) => !v)}
           >
             <SlidersHorizontal size={18} />
-            <span>メニュー</span>
+            <span>{t("メニュー")}</span>
           </button>
         )}
       </div>
-      {mode === 'bookmarks' && !communityPage && !threadId && <button type="button" className={styles.returnToTimeline} onClick={() => returnToTimeline()}><ArrowLeft size={16} />タイムラインに戻る</button>}
+      {mode === 'bookmarks' && !communityPage && !threadId && <button type="button" className={styles.returnToTimeline} onClick={() => returnToTimeline()}><ArrowLeft size={16} />{t("タイムラインに戻る")}</button>}
       {continuousEnabled && (
         <div className={styles.liveControls}>
           <div className={styles.liveLine}>
@@ -1149,20 +1148,20 @@ export default function SkySocialTimeline({
             />
             <span>
               {!live
-                ? '自動更新を停止中'
+                ? "自動更新を停止中"
                 : continuous.newsError || liveError
-                  ? '接続状況を確認'
+                  ? "接続状況を確認"
                   : continuous.newsLoading && !continuous.items.length
-                    ? '新着を確認中'
-                    : '自動更新中'}
+                    ? "新着を確認中"
+                    : "自動更新中"}
             </span>
             <button aria-pressed={live} onClick={() => setLive((v) => !v)}>
-              {live ? '一時停止' : '再開'}
+              {live ? "一時停止" : "再開"}
             </button>
           </div>
           <details className={styles.feedPreferences}>
-            <summary>話題と表示設定</summary>
-            <div className={styles.topicChips} aria-label="読みたい話題">
+            <summary>{"話題と表示設定"}</summary>
+            <div className={styles.topicChips} aria-label={"読みたい話題"}>
               {[
                 ['all', 'すべて'],
                 ['technology', 'テクノロジー'],
@@ -1181,13 +1180,12 @@ export default function SkySocialTimeline({
               ))}
             </div>
             <details className={styles.rankingNote}>
-              <summary>この流れについて</summary>
+              <summary>{"この流れについて"}</summary>
               <p>
-                フォロー、保存・いいねした投稿の言葉、この画面で開いたニュースの話題、新しさを使って並べています。5件に1件は違う話題を探し、同じ配信元の連続を抑えます。日本語の話題にも対応します。先頭にいると新着を自動表示し、読み進めている間や入力・文字選択中は通知に留めます。閲覧の話題はこの画面を閉じると消えます。ニュースは公開RSSとGDELTから取得する媒体原文リンクです。RSSの配信日時とGDELTの検出時刻を区別し、内容の正確さを保証する判定には使いません。
-              </p>
+                {"フォロー、保存・いいねした投稿の言葉、この画面で開いたニュースの話題、新しさを使って並べています。5件に1件は違う話題を探し、同じ配信元の連続を抑えます。日本語の話題にも対応します。先頭にいると新着を自動表示し、読み進めている間や入力・文字選択中は通知に留めます。閲覧の話題はこの画面を閉じると消えます。ニュースは公開RSSとGDELTから取得する媒体原文リンクです。RSSの配信日時とGDELTの検出時刻を区別し、内容の正確さを保証する判定には使いません。"}</p>
               {refreshedAt > 0 && (
                 <small>
-                  投稿の確認 {new Date(refreshedAt).toLocaleTimeString('ja-JP')}
+                  {"投稿の確認"}{new Date(refreshedAt).toLocaleTimeString('ja-JP')}
                 </small>
               )}
             </details>
@@ -1197,28 +1195,26 @@ export default function SkySocialTimeline({
           )}
           {continuous.newsError && (
             <details className={styles.newsConnection}>
-              <summary>{continuous.items.length ? 'ニュースの更新を確認できません' : 'ニュースを取得できません'}</summary>
+              <summary>{continuous.items.length ? "ニュースの更新を確認できません" : "ニュースを取得できません"}</summary>
               <p>{continuous.newsError}</p>
-              <button disabled={continuous.newsLoading} onClick={continuous.retry}>{continuous.newsLoading?'確認中…':'もう一度取得する'}</button>
-              <a href="/#news-plugins">配信元を確認</a>
+              <button disabled={continuous.newsLoading} onClick={continuous.retry}>{continuous.newsLoading?t("確認中…"):"もう一度取得する"}</button>
+              <a href="/#news-plugins">{"配信元を確認"}</a>
             </details>
           )}
           {continuous.newsEmpty && (
             <output className={styles.feedStatus}>
-              この話題の新着はまだありません。別の話題も見ることができます。
-            </output>
+              {"この話題の新着はまだありません。別の話題も見ることができます。"}</output>
           )}
           {continuous.stale && (
             <output className={styles.feedStatus}>
               {continuous.selection === 'headline-keywords'
-                ? '接続待ちのため、前回のニュースを見出しの言葉で絞り込んでいます。'
-                : 'ニュースは前回取得分を表示しています。'}
+                ? "接続待ちのため、前回のニュースを見出しの言葉で絞り込んでいます。"
+                : "ニュースは前回取得分を表示しています。"}
             </output>
           )}
           {continuous.newsLoading && !continuous.items.length && (
             <output className={styles.feedStatus}>
-              ニュースを受信しています…
-            </output>
+              {"ニュースを受信しています…"}</output>
           )}
         </div>
       )}
@@ -1236,43 +1232,39 @@ export default function SkySocialTimeline({
             });
           }}
         >
-          <Radio size={15} /> 新着 {continuous.pending} 件を見る
-        </button>
+          <Radio size={15} /> {"新着"}{continuous.pending} {"件を見る"}</button>
       )}
       {error && (communityPage ? (
         <div className={styles.error} role="alert">
-          <strong>コミュニティーを読み込めませんでした</strong>
-          <p>{error}</p>
-          <button disabled={loading} onClick={() => void load()}>もう一度読み込む</button>
+          <strong>{"コミュニティーを読み込めませんでした"}</strong>
+          <p>{t(error)}</p>
+          <button disabled={loading} onClick={() => void load()}>{"もう一度読み込む"}</button>
         </div>
       ) : (
         <details className={styles.error}>
-          <summary>コミュニティーの読み込みを確認できません</summary>
-          <p>{error}</p><button disabled={loading} onClick={() => void load()}>再読み込み</button>
+          <summary>{t(postsOnly?"投稿を読み込めませんでした。":"コミュニティーの読み込みを確認できません")}</summary>
+          <p>{t(error)}</p><button disabled={loading} onClick={() => void load()}>{t("再読み込み")}</button>
         </details>
       ))}
-      {notice && <output className={styles.notice}>{notice}</output>}
+      {notice && <output className={styles.notice}>{t(notice)}</output>}
       {communityDirectory && !error && !loading && refreshedAt > 0 && (
         <output className={styles.communityStatus}>
-          更新しました · 参加中 {data.communities.length}件 · {new Date(refreshedAt).toLocaleTimeString('ja-JP')}
+          {"更新しました · 参加中"}{data.communities.length}{"件 ·"}{new Date(refreshedAt).toLocaleTimeString('ja-JP')}
         </output>
       )}
       {signedOut ? (
         <div className={styles.welcome}>
           <Users size={28} />
-          <h3>{postsOnly ? '投稿して、フォローしよう。' : 'アカウントから、コミュニティーへ。'}</h3>
+          <h3>{postsOnly ? t("投稿して、フォローしよう。") : "アカウントから、コミュニティーへ。"}</h3>
           <p>
-            {postsOnly ? 'サインインすると、フォロー、投稿と共有ができます。' : 'サインインすると、コミュニティーの作成・参加、フォロー、投稿と共有ができます。'}
+            {postsOnly ? t("サインインすると、フォロー、投稿と共有ができます。") : "サインインすると、コミュニティーの作成・参加、フォロー、投稿と共有ができます。"}
           </p>
-          <a href="/signin-with-chatgpt?return_to=%2F%23timeline" target="_top">
-            サインインする
-          </a>
+          <a href={accountHref} target="_top">
+            {t("サインインする")}</a>
         </div>
       ) : !data.profile && loading ? (
         <output className={styles.loading}>
-          <LoaderCircle size={22} className={styles.spinning} />
-          読み込み中
-        </output>
+          {loadingIndicator??<><LoaderCircle size={22} className={styles.spinning}/>{t("読み込み中")}</>}</output>
       ) : !data.profile && error ? null : !data.profile ? (
         <form
           className={styles.welcome}
@@ -1281,20 +1273,18 @@ export default function SkySocialTimeline({
             void act({ action: 'profile', name: publicName });
           }}
         >
-          <h3>Noahで使う公開名を決めよう。</h3>
+          <h3>{t("Noahで使う公開名を決めよう。")}</h3>
           <p>
-            アカウントのメールアドレスは公開しません。ここで設定した名前が投稿に表示されます。
-          </p>
+            {t("アカウントのメールアドレスは公開しません。ここで設定した名前が投稿に表示されます。")}</p>
           <label>
-            公開名
-            <input
+            {t("公開名")}<input
               required
               maxLength={60}
               value={publicName}
               onChange={(e) => setPublicName(e.target.value)}
             />
           </label>
-          <button disabled={busy || loading}>Noahを始める</button>
+          <button disabled={busy || loading}>{t("Noahを始める")}</button>
         </form>
       ) : (
         <>
@@ -1302,13 +1292,13 @@ export default function SkySocialTimeline({
             <aside
               className={styles.sidebar}
               data-open={management}
-              aria-label={postsOnly ? '投稿の設定' : 'コミュニティー'}
+              aria-label={postsOnly ? t("投稿の設定") : "コミュニティー"}
               hidden={!management || communityPage}
             >
               <div className={styles.panelHeading}>
-                <strong>{postsOnly ? '投稿・保存' : '投稿・保存・コミュニティー'}</strong>
+                <strong>{postsOnly ? t("投稿・保存") : "投稿・保存・コミュニティー"}</strong>
                 <button
-                  aria-label="設定を閉じる"
+                  aria-label={t("設定を閉じる")}
                   onClick={() => setManagement(false)}
                 >
                   <X size={20} />
@@ -1324,15 +1314,14 @@ export default function SkySocialTimeline({
                 }}
               >
                 <Bookmark size={20} />
-                ブックマーク
-              </button>
+                {t("ブックマーク")}</button>
               <div className={styles.identity}>
                 <span className={styles.avatar}>
                   {data.profile.name.slice(0, 1)}
                 </span>
                 <div>
                   <strong>{data.profile.name}</strong>
-                  <small>あなたのNoah</small>
+                  <small>{t("あなたのNoah")}</small>
                 </div>
               </div>
               <button
@@ -1341,13 +1330,12 @@ export default function SkySocialTimeline({
                   returnToTimeline();
                 }}
               >
-                すべての投稿
-              </button>
+                {t("すべての投稿")}</button>
               {!postsOnly && <>
               <div className={styles.sideHeading}>
-                <h3>コミュニティー</h3>
+                <h3>{"コミュニティー"}</h3>
                 <button
-                  aria-label="コミュニティーを作る"
+                  aria-label={"コミュニティーを作る"}
                   onClick={() => {
                     setCommunityForm((v) => !v);
                     setManagement(false);
@@ -1377,13 +1365,13 @@ export default function SkySocialTimeline({
                   <span>
                     {c.name}
                     <small>
-                      {c.unlocked ? `参加中 · ${c.members}人` : '専用鍵が必要'}
+                      {c.unlocked ? `参加中 · ${c.members}人` : "専用鍵が必要"}
                     </small>
                   </span>
                 </button>
               ))}
               {!data.communities.length && (
-                <p>最初の場所を作って、仲間と共有しよう。</p>
+                <p>{"最初の場所を作って、仲間と共有しよう。"}</p>
               )}
               <button
                 onClick={() => {
@@ -1392,18 +1380,16 @@ export default function SkySocialTimeline({
                 }}
               >
                 <Plus size={16} />
-                コミュニティーを作る
-              </button>
+                {"コミュニティーを作る"}</button>
               <button
                 onClick={() => {
                   setJoinForm(true);
                   setManagement(false);
                 }}
               >
-                招待鍵で参加する
-              </button>
+                {"招待鍵で参加する"}</button>
               </>}
-              <Link href="/#sky-manage">担当とLLMを設定 →</Link>
+              <Link href="/#sky-manage">{"担当とLLMを設定 →"}</Link>
             </aside>
             <div className={styles.stream}>
               {communityDirectory && !communityForm && !joinForm && (
@@ -1438,9 +1424,9 @@ export default function SkySocialTimeline({
                   className={styles.communityForm}
                   onSubmit={createCommunity}
                 >
-                  <h3>新しいコミュニティー</h3>
+                  <h3>{"新しいコミュニティー"}</h3>
                   <label>
-                    名前（必須） · {name.length}/60
+                    {"名前（必須） ·"}{name.length}/60
                     <input
                       ref={nameInput}
                       required
@@ -1450,7 +1436,7 @@ export default function SkySocialTimeline({
                     />
                   </label>
                   <label>
-                    説明（任意） · {description.length}/300
+                    {"説明（任意） ·"}{description.length}/300
                     <textarea
                       maxLength={300}
                       value={description}
@@ -1458,51 +1444,46 @@ export default function SkySocialTimeline({
                     />
                   </label>
                   <label>
-                    参加ルール（必須） · {rules.length}/500
+                    {"参加ルール（必須） ·"}{rules.length}/500
                     <textarea
                       required
                       maxLength={500}
                       value={rules}
                       onChange={(e) => setRules(e.target.value)}
-                      placeholder="例：相手を尊重し、共有前に確認する"
+                      placeholder={"例：相手を尊重し、共有前に確認する"}
                     />
                   </label>
                   <p>
-                    専用鍵を持つメンバーだけが入れます。作成後に自分の鍵をバックアップし、参加者には別の招待鍵を渡してください。
-                  </p>
-                  <p>会話履歴・認証情報・支払権限は共有されません。</p>
+                    {"専用鍵を持つメンバーだけが入れます。作成後に自分の鍵をバックアップし、参加者には別の招待鍵を渡してください。"}</p>
+                  <p>{"会話履歴・認証情報・支払権限は共有されません。"}</p>
                   <div>
-                    <button className={styles.formPrimary} disabled={busy}>作成する</button>
+                    <button className={styles.formPrimary} disabled={busy}>{"作成する"}</button>
                     <button
                       type="button"
                       onClick={() => setCommunityForm(false)}
                     >
-                      閉じる
-                    </button>
+                      {t("閉じる")}</button>
                   </div>
                 </form>
               )}
               {joinForm && <section className={styles.communityForm} aria-labelledby="join-title">
-                <h3 id="join-title">コミュニティーに参加</h3>
-                <p>招待リンクを貼るか、招待ファイルを選んでください。QRコードは端末のカメラで開くこともできます。個人用鍵や復旧鍵は共有しないでください。</p>
+                <h3 id="join-title">{"コミュニティーに参加"}</h3>
+                <p>{"招待リンクを貼るか、招待ファイルを選んでください。QRコードは端末のカメラで開くこともできます。個人用鍵や復旧鍵は共有しないでください。"}</p>
                 <label>
-                  招待リンク
-                  <textarea ref={inviteInput} value={invitationText} maxLength={2000}
+                  {"招待リンク"}<textarea ref={inviteInput} value={invitationText} maxLength={2000}
                     aria-invalid={Boolean(inviteError)} aria-describedby={inviteError ? 'invitation-error' : undefined}
                     onChange={(e) => { setInvitationText(e.target.value); setInviteError(''); setInvitePreview(null); setInvite(null); }}
-                    placeholder="招待リンクまたは招待鍵を貼り付け" />
+                    placeholder={"招待リンクまたは招待鍵を貼り付け"} />
                 </label>
                 {inviteError && <p id="invitation-error" role="alert" className={styles.formError}>{inviteError}</p>}
-                <label>招待ファイルを選ぶ
-                  <input type="file" accept=".json,application/json,text/plain" onChange={(e) => {
+                <label>{"招待ファイルを選ぶ"}<input type="file" accept=".json,application/json,text/plain" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
                     if (file.size > 2000) { setInviteError('招待ファイルのサイズを確認してください。'); return; }
                     void file.text().then(value => { setInvitationText(value); setInviteError(''); setInvite(null); setInvitePreview(null); }).catch(() => setInviteError('招待ファイルを読み込めませんでした。'));
                   }} />
                 </label>
-                <label>QRコードの画像を選ぶ
-                  <input type="file" accept="image/*" onChange={(e) => {
+                <label>{"QRコードの画像を選ぶ"}<input type="file" accept="image/*" onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
                     const Detector = (window as Window & { BarcodeDetector?: new (options: { formats: string[] }) => { detect: (image: ImageBitmap) => Promise<Array<{ rawValue: string }>> } }).BarcodeDetector;
@@ -1519,8 +1500,8 @@ export default function SkySocialTimeline({
                   }} />
                 </label>
                 <div className={styles.formActions}>
-                  <button type="button" className={styles.formPrimary} disabled={busy || !invitationText.trim()} onClick={() => void previewInvitation()}>招待を確認する</button>
-                  <button type="button" onClick={() => { setJoinForm(false); setInvite(null); setInvitePreview(null); setInviteError(''); }}>閉じる</button>
+                  <button type="button" className={styles.formPrimary} disabled={busy || !invitationText.trim()} onClick={() => void previewInvitation()}>{"招待を確認する"}</button>
+                  <button type="button" onClick={() => { setJoinForm(false); setInvite(null); setInvitePreview(null); setInviteError(''); }}>{t("閉じる")}</button>
                 </div>
               </section>}
               {lockedCommunity && (
@@ -1535,7 +1516,7 @@ export default function SkySocialTimeline({
               )}
               {invite && (
                 <div className={styles.communityForm}>
-                  <h3>コミュニティーへの招待</h3>
+                  <h3>{"コミュニティーへの招待"}</h3>
                   {!invitePreview ? (
                     <button
                       disabled={busy}
@@ -1547,8 +1528,7 @@ export default function SkySocialTimeline({
                         )
                       }
                     >
-                      場所とルールを確認
-                    </button>
+                      {"場所とルールを確認"}</button>
                   ) : (
                     <>
                       <strong>{invitePreview.name}</strong>
@@ -1560,8 +1540,7 @@ export default function SkySocialTimeline({
                           checked={acceptedRules}
                           onChange={(e) => setAcceptedRules(e.target.checked)}
                         />
-                        ルールを確認しました
-                      </label>
+                        {"ルールを確認しました"}</label>
                       <button
                         disabled={busy || !acceptedRules}
                         onClick={() =>
@@ -1582,8 +1561,7 @@ export default function SkySocialTimeline({
                           )
                         }
                       >
-                        参加する
-                      </button>
+                        {"参加する"}</button>
                     </>
                   )}
                   <button
@@ -1592,8 +1570,7 @@ export default function SkySocialTimeline({
                       setInvitePreview(null);
                     }}
                   >
-                    閉じる
-                  </button>
+                    {t("閉じる")}</button>
                 </div>
               )}
               {showPosts && (
@@ -1602,13 +1579,13 @@ export default function SkySocialTimeline({
                     <div className={styles.communityIntro}>
                       <span>
                         {selected.visibility === 'members'
-                          ? 'メンバー限定'
-                          : '公開コミュニティー'}
+                          ? "メンバー限定"
+                          : "公開コミュニティー"}
                       </span>
                       <h3>{selected.name}</h3>
                       <p>{selected.description}</p>
                       <details>
-                        <summary>参加ルール</summary>
+                        <summary>{"参加ルール"}</summary>
                         <p className={styles.rules}>{selected.rules}</p>
                       </details>
                       {selected.owned ? (
@@ -1629,8 +1606,7 @@ export default function SkySocialTimeline({
                               )
                             }
                           >
-                            招待鍵を発行
-                          </button>
+                            {"招待鍵を発行"}</button>
                           <button
                             disabled={busy}
                             onClick={() => {
@@ -1648,12 +1624,10 @@ export default function SkySocialTimeline({
                                 );
                             }}
                           >
-                            コミュニティーを終了
-                          </button>
+                            {"コミュニティーを終了"}</button>
                           {inviteUrl && (
                             <label>
-                              この招待鍵を渡した人が参加できます。自分のアクセス鍵とは別です。再発行で前の招待は無効になります。
-                              <input
+                              {"この招待鍵を渡した人が参加できます。自分のアクセス鍵とは別です。再発行で前の招待は無効になります。"}<input
                                 readOnly
                                 value={inviteUrl}
                                 onFocus={(e) => e.target.select()}
@@ -1670,8 +1644,7 @@ export default function SkySocialTimeline({
                             )
                           }
                         >
-                          参加を解除
-                        </button>
+                          {"参加を解除"}</button>
                       )}
                     </div>
                   )}
@@ -1697,7 +1670,7 @@ export default function SkySocialTimeline({
                           ? `${data.thread.author.name}に返信`
                           : selected
                             ? `${selected.name}に共有`
-                            : postsOnly ? 'Agentを使って感じたこと' : 'いまどうしてる？'}
+                            : postsOnly ? t("Agentを使って感じたこと") : t("いまどうしてる？")}
                       </label>
                       <textarea
                         id="sky-post"
@@ -1713,14 +1686,13 @@ export default function SkySocialTimeline({
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         placeholder={
-                          data.thread ? '返信を投稿' : postsOnly ? '何に使った？ よかった点、惜しかった点、あなたの感想を。' : 'いまどうしてる？'
+                          data.thread ? t("返信を投稿") : postsOnly ? t("何に使った？ よかった点、惜しかった点、あなたの感想を。") : t("いまどうしてる？")
                         }
                       />
                       <div className={styles.attach} hidden={!attachmentOpen}>
                         <label>
-                          一緒に共有
-                          <select
-                            aria-label="共有する種類"
+                          {t("一緒に共有")}<select
+                            aria-label={t("共有する種類")}
                             value={attachmentKind}
                             onChange={(e) => {
                               setAttachmentKind(
@@ -1729,26 +1701,25 @@ export default function SkySocialTimeline({
                               setResource('');
                             }}
                           >
-                            <option value="none">テキストだけ</option>
-                            <option value="model">LLM・モデル</option>
-                            <option value="dataset">データセット</option>
+                            <option value="none">{t("テキストだけ")}</option>
+                            <option value="model">{t("LLM・モデル")}</option>
+                            <option value="dataset">{t("データセット")}</option>
                             <option value="space">Spaces</option>
-                            <option value="agent">Noahの公開Agent・Tool</option>
-                            <option value="work">作品のURL</option>
-                            <option value="edition">OS構成の共有URL</option>
-                            <option value="news">ニュースのURL</option>
+                            <option value="agent">{t("Noahの公開Agent・Tool")}</option>
+                            <option value="work">{t("作品のURL")}</option>
+                            <option value="edition">{t("OS構成の共有URL")}</option>
+                            <option value="news">{t("ニュースのURL")}</option>
                           </select>
                         </label>
                         {attachmentKind !== 'none' &&
                           (attachmentKind === 'agent' ? (
                             <label>
-                              公開Tool
-                              <select
+                              {t("公開Tool")}<select
                                 required
                                 value={resource}
                                 onChange={(e) => setResource(e.target.value)}
                               >
-                                <option value="">選ぶ</option>
+                                <option value="">{t("選ぶ")}</option>
                                 {catalog.map((t) => (
                                   <option key={t.id} value={t.id}>
                                     {t.name}
@@ -1762,7 +1733,7 @@ export default function SkySocialTimeline({
                                 attachmentKind,
                               )
                                 ? 'Hugging Face ID'
-                                : '共有するHTTPS URL'}
+                                : t("共有するHTTPS URL")}
                               <input
                                 required
                                 maxLength={300}
@@ -1772,7 +1743,7 @@ export default function SkySocialTimeline({
                                   ['model', 'dataset', 'space'].includes(
                                     attachmentKind,
                                   )
-                                    ? '作者/リポジトリ名'
+                                    ? t("作者/リポジトリ名")
                                     : 'https://'
                                 }
                               />
@@ -1783,7 +1754,7 @@ export default function SkySocialTimeline({
                         <div className={styles.composerTools}>
                           <button
                             type="button"
-                            aria-label="モデル・Agent・作品を添付"
+                            aria-label={t("モデル・Agent・作品を添付")}
                             aria-expanded={attachmentOpen}
                             onClick={() => {
                               if (attachmentOpen && !resource.trim())
@@ -1793,10 +1764,10 @@ export default function SkySocialTimeline({
                           >
                             <Link2 size={20} />
                           </button>
-                          <small title="Eveの会話は自動共有されません。">
+                          <small title={t("Eveの会話は自動共有されません。")}>
                             {data.thread?.community || selected
-                              ? 'メンバーのみ'
-                              : 'Noahに公開'}
+                              ? t("メンバーのみ")
+                              : t("Noahに公開")}
                           </small>
                         </div>
                         <div className={styles.sendControls}>
@@ -1805,10 +1776,10 @@ export default function SkySocialTimeline({
                           )}
                           <button disabled={busy || !text.trim()}>
                             {busy
-                              ? '送信中…'
+                              ? t("送信中…")
                               : data.thread
-                                ? '返信'
-                                : 'ポストする'}
+                                ? t("返信")
+                                : t("ポストする")}
                           </button>
                         </div>
                       </footer>
@@ -1818,8 +1789,7 @@ export default function SkySocialTimeline({
                     <output className={styles.loading}>
                       <LoaderCircle size={22} className={styles.spinning} />
                       <span className={styles.srOnly}>
-                        投稿を読み込んでいます
-                      </span>
+                        {t("投稿を読み込んでいます")}</span>
                     </output>
                   )}
                   {!loading &&
@@ -1834,24 +1804,23 @@ export default function SkySocialTimeline({
                         <Users size={26} />
                         <h3>
                           {threadId
-                            ? '会話をはじめよう。'
+                            ? t("会話をはじめよう。")
                             : mode === 'bookmarks'
-                              ? '気になる投稿を、ここに。'
-                              : 'ここから、つながっていこう。'}
+                              ? t("気になる投稿を、ここに。")
+                              : t("ここから、つながっていこう。")}
                         </h3>
                         <p>
                           {threadId
-                            ? '最初の返信を投稿してみよう。'
+                            ? t("最初の返信を投稿してみよう。")
                             : mode === 'bookmarks'
-                              ? '投稿のブックマークを押すと保存できます。'
+                              ? t("投稿のブックマークを押すと保存できます。")
                               : mode === 'following'
-                                ? (postsOnly ? '人をフォローすると投稿が流れます。' : '人をフォローするか、コミュニティーに参加すると投稿が流れます。')
-                                : 'まだ投稿がありません。最初の発見を共有してみよう。'}
+                                ? (postsOnly ? t("人をフォローすると投稿が流れます。") : "人をフォローするか、コミュニティーに参加すると投稿が流れます。")
+                                : t("まだ投稿がありません。最初の発見を共有してみよう。")}
                         </p>
                         {!threadId && mode !== 'bookmarks' && (
                           <a href="/os/eve" className={styles.emptyAction}>
-                            Eveで仕事を始める ↗
-                          </a>
+                            {"Eveで仕事を始める ↗"}</a>
                         )}
                       </div>
                     )}
@@ -1859,12 +1828,12 @@ export default function SkySocialTimeline({
                     role="feed"
                     aria-label={
                       threadId
-                        ? '返信'
+                        ? t("返信")
                         : mode === 'bookmarks'
-                          ? '保存した投稿'
+                          ? t("保存した投稿")
                           : communityPage
                             ? `${selected?.name || 'コミュニティー'}の投稿`
-                            : 'Noahの投稿'
+                            : t("Noahの投稿")
                     }
                     aria-busy={loading}
                   >
@@ -1902,21 +1871,20 @@ export default function SkySocialTimeline({
                       disabled={loading}
                       onClick={() => void loadMore()}
                     >
-                      続きを見る
-                    </button>
+                      {t("続きを見る")}</button>
                   )}
                   {continuousEnabled && !loading && !moreAvailable && (
                     <div className={styles.feedEnd}>
                       <Radio size={20} />
                       <strong>
                         {continuous.atLimit
-                          ? 'ここまでの投稿を読み終えました'
-                          : 'いま届いている投稿は、ここまで'}
+                          ? t("ここまでの投稿を読み終えました")
+                          : t("いま届いている投稿は、ここまで")}
                       </strong>
                       <p>
                         {live
-                          ? '新しい投稿が届くと、上にお知らせします。'
-                          : '自動更新は停止中です。いつでも再開できます。'}
+                          ? t("新しい投稿が届くと、上にお知らせします。")
+                          : "自動更新は停止中です。いつでも再開できます。"}
                       </p>
                       <button
                         onClick={() => {
@@ -1924,8 +1892,7 @@ export default function SkySocialTimeline({
                           void load();
                         }}
                       >
-                        新しい流れを読む
-                      </button>
+                        {"新しい流れを読む"}</button>
                     </div>
                   )}
                   {!threadId &&
@@ -1933,7 +1900,7 @@ export default function SkySocialTimeline({
                     mode === 'recommended' &&
                     discovery && (
                       <details className={styles.discoveryMore}>
-                        <summary>LLM・Agent・機能を見つける</summary>
+                        <summary>{"LLM・Agent・機能を見つける"}</summary>
                         {discovery}
                       </details>
                     )}
@@ -1944,7 +1911,7 @@ export default function SkySocialTimeline({
         </>
       )}
       {!data.profile && continuousEnabled && (
-        <div role="feed" aria-label="公開ニュース">
+        <div role="feed" aria-label={"公開ニュース"}>
           {continuous.items.map((item) =>
             item.kind === 'news' ? renderNews(item) : null,
           )}
@@ -1954,8 +1921,7 @@ export default function SkySocialTimeline({
               className={styles.moreButton}
               onClick={() => continuous.append()}
             >
-              続きを見る
-            </button>
+              {t("続きを見る")}</button>
           )}
         </div>
       )}

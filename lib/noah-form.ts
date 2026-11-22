@@ -1,3 +1,5 @@
+import { noahResultImageLinks } from './noah-result-presentation.ts';
+import { noahResultImage, NOAH_IMAGE_BASE64_LIMIT, type NoahReceivedResult, type NoahResultImage } from './noah-result-media.ts';
 /**
  * Noah 入力欄で頼む（モデルを使わない）: 道具の定義から入力欄を作り、入力を道具の引数へ直し、結果を文字にする。
  * ローンチの最小限（docs/noah/mvp-launch.md）で、相手のサーバーの Agent を使う唯一の道。
@@ -377,18 +379,25 @@ function clip(value: string, maxBytes: number): { text: string; truncated: boole
 }
 
 /**
- * 道具の結果を、成果の文にする。文字の部分をつなぎ、画像などは件数だけを書く（保存は後の task）。
+ * 道具の結果を、成果の文にする。文字の部分をつなぎ、対応する画像は実体を保持し、未対応の添付は件数を書く。
  * 文字の部分が無く、構造のある結果だけの時は、その JSON を整えて出す。HTML としては解釈しない。
  */
-export function noahResultText(result: { content: unknown; blocks?: unknown[] }, maxBytes: number = NOAH_FORM_LIMITS.resultBytes): { text: string; truncated: boolean; attachments: number } {
+export function noahResultText(result: { content: unknown; blocks?: unknown[] }, maxBytes: number = NOAH_FORM_LIMITS.resultBytes): NoahReceivedResult {
   const blocks = Array.isArray(result.blocks) ? result.blocks : Array.isArray(result.content) ? result.content : [];
   const texts: string[] = [];
   const others = new Map<string, number>();
+  const images: NoahResultImage[] = []; const imageUrls: string[] = []; let imageBytes = 0;
   for (const block of blocks as { type?: unknown; text?: unknown }[]) {
     if (block?.type === 'text' && typeof block.text === 'string') {
       if (block.text.trim()) texts.push(block.text.trim());
     } else if (block && typeof block === 'object') {
-      const label = ATTACHMENT[String(block.type)] ?? 'ファイル';
+      const image = noahResultImage(block, images.length);
+      if (image && images.length < 8 && imageBytes + image.data.length <= NOAH_IMAGE_BASE64_LIMIT) { images.push(image); imageBytes += image.data.length; }
+      const resource = block as { type?: unknown; mimeType?: unknown; uri?: unknown };
+      if (resource.type === 'resource_link' && /^image\/(png|jpeg|gif|webp)$/.test(String(resource.mimeType)) && imageUrls.length < 8) {
+        imageUrls.push(...noahResultImageLinks(JSON.stringify({image_url:resource.uri})));
+      }
+      const label = image ? '画像' : ATTACHMENT[String(block.type)] ?? 'ファイル';
       others.set(label, (others.get(label) ?? 0) + 1);
     }
   }
@@ -402,7 +411,7 @@ export function noahResultText(result: { content: unknown; blocks?: unknown[] },
   const suffix = '\n（長いので切りました）';
   const joined = [body, ...notes].filter(Boolean).join('\n');
   const clipped = clip(joined, maxBytes - new TextEncoder().encode(suffix).byteLength);
-  return { text: clipped.truncated ? clipped.text + suffix : clipped.text, truncated: clipped.truncated, attachments };
+  return { text: clipped.truncated ? clipped.text + suffix : clipped.text, truncated: clipped.truncated, attachments, ...(images.length ? { images } : {}), ...(imageUrls.length ? { imageUrls: [...new Set(imageUrls)] } : {}) };
 }
 
 export type NoahOutlineRow = { depth: number; label: string; text: string };

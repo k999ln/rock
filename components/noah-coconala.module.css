@@ -1,0 +1,24 @@
+.page {
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+  max-width: 38rem;
+  display: grid;
+  gap: 1rem;
+  line-height: 1.55;
+}
+.page h1, .page h2 { font-weight: 650; }
+.page label { display: grid; gap: .3rem; }
+.page input, .page textarea, .page select {
+  display: block; width: 100%; padding: .65rem .8rem;
+  border: 1px solid var(--border, #b8b6bf); border-radius: .5rem;
+  background: var(--background, white); font: inherit;
+}
+.page fieldset, .page section { display: grid; gap: .8rem; }
+.page button {
+  min-height: 44px; border-radius: .6rem; background: #573883;
+  color: white; padding: .55rem .9rem;
+}
+.page button:disabled { opacity: .55; }
+.page details { border-block: 1px solid var(--border, #ddd); padding: .7rem 0; }
+.page summary { cursor: pointer; }
+.page pre { padding: .8rem; overflow: auto; }

@@ -1,4 +1,5 @@
 'use client';
+import { useNoahLocale } from './noah-locale';
 /**
  * 接続のボタン。「接続」を 1 回押すと、計画を読み、つなぎ、「頼む」に変わる。失敗の時は、理由と「もう一度」。
  * 未サインインの人が押した時は、続き（操作 ID と Agent の ID だけ）を置いて、サインインの画面へ移る。
@@ -13,16 +14,21 @@ import {
   takeNoahConnectHandoff, writeNoahConnectHandoff, type NoahReadyConnection,
 } from '@/lib/noah-ready-view';
 import styles from './noah-ready.module.css';
+import NoahLoading from './noah-loading';
+import { noahHaptic } from '@/lib/noah-haptics';
+import { prepareNoahConnectionSound, type NoahConnectionSound } from '@/lib/noah-connection-sound';
 
 type Reply = { id?: string; state?: string; revision?: number; error?: string; placeLabel?: string | null; planSha256?: string; connection?: NoahReadyConnection };
 const asConnection = (body: Reply): NoahReadyConnection | null =>
   typeof body.id === 'string' && typeof body.state === 'string' && typeof body.revision === 'number' ? { id: body.id, state: body.state, revision: body.revision, error: body.error ?? null } : null;
 
-export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link', packageId = null }: {
+export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link', packageId = null, initialTool = null }: {
   /** 系列の ID。 */
   agentId: string;
   /** 棚のカードから来た時、そのカードの ID（つなげる数を、カードで数えるため）。 */
   packageId?: string | null;
+  /** サインイン後も、選んでいた仕事の入力へ戻す。入力値はURLへ入れない。 */
+  initialTool?: string | null;
   /** 一覧に載せているか。載せていない物は、つなげない。 */
   listed: boolean;
   signedIn: boolean;
@@ -35,11 +41,21 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
   /** つながった後の主ボタン。一覧では「頼む」（詳細へ移る）。詳細では出さない（すぐ下に、道具の一覧が出る）。 */
   askAs?: 'link' | 'none';
 }) {
+  const {t}=useNoahLocale();
+
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
   // 応答が届かなかった「接続」は、押し直した時に、同じ操作 ID で送る（行と握手が増えない）。応答が届いたら、次は新しい ID。
   const operation = useRef<string | null>(null), started = useRef(false);
-  const detail = noahReadyDetailHref(agentId);
+  const sound = useRef<NoahConnectionSound | null>(null), feedbackPending = useRef(false), inFlight = useRef(false);
+  const detail = noahReadyDetailHref(agentId, { tool: initialTool, from: packageId });
   const view = noahConnectButtonView({ connection, busy, listed });
+  function clearFeedback() { feedbackPending.current = false; sound.current?.dispose(); sound.current = null; }
+  function connectedFeedback() {
+    if (!feedbackPending.current) return;
+    feedbackPending.current = false;
+    noahHaptic('success'); sound.current?.play(); sound.current = null;
+  }
+  useEffect(() => () => clearFeedback(), []);
 
   async function call(path: string, body?: unknown): Promise<{ status: number; body: Reply }> {
     const response = await fetch(path, {
@@ -50,7 +66,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     return { status: response.status, body: await response.json() as Reply };
   }
   function leaveToSignIn(id: string) {
-    writeNoahConnectHandoff(window.sessionStorage, { agentId, id, at: Date.now() });
+    try { writeNoahConnectHandoff(window.sessionStorage, { agentId, id, at: Date.now() }); } catch { /* 保存できないブラウザでも、同じ詳細へログインして戻れる。 */ }
     window.location.assign(noahReadyAccountHref(detail));
   }
   /** 応答を、画面へ映す。つながった時は、動く所を 3 秒だけ出す。 */
@@ -58,27 +74,32 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     operation.current = null;
     const next = asConnection(reply.body) ?? reply.body.connection ?? null;
     if (next) onChange(next);
-    if (reply.status === 401 && id) { leaveToSignIn(id); return; }
-    if (reply.status !== 200) { setError(reply.body.error ?? NOAH_READY_TEXT.offline); return; }
-    if (next?.state === 'connected') setNotice(`${reply.body.placeLabel ?? '相手のサーバー'}につなぎました`);
+    if (reply.status === 401 && id) { clearFeedback(); leaveToSignIn(id); return; }
+    if (reply.status !== 200) { clearFeedback(); setError(reply.body.error ?? NOAH_READY_TEXT.offline); return; }
+    if (next?.state === 'connected') { setNotice(`${reply.body.placeLabel ?? '相手のサーバー'}につなぎました`); connectedFeedback(); }
     // つなぐ途中で止まって、後始末が切った接続: 理由を出す（ボタンは「接続」に戻る。押すと、新しい操作として、つなぎ直す）。
-    else if (next?.state === 'disconnected' && next.error) setError(next.error);
+    else if (!next || !noahConnectionPreparing(next.state)) { clearFeedback(); if (next?.error) setError(next.error); }
   }
   async function run(action: () => Promise<void>) {
-    if (busy) return;
+    if (inFlight.current) return;
+    inFlight.current = true; feedbackPending.current = true;
     setBusy(true); setError(''); setNotice('');
-    try { await action(); } catch { setError(NOAH_READY_TEXT.offline); } finally { setBusy(false); }
+    try { await action(); } catch { clearFeedback(); setError(NOAH_READY_TEXT.offline); } finally { inFlight.current = false; setBusy(false); }
   }
   const connect = (id: string) => run(async () => {
     operation.current = id;
     const plan = await call(`/api/noah/connect-plan?${new URLSearchParams({ agent: agentId }).toString()}`);
-    if (plan.status !== 200 || typeof plan.body.planSha256 !== 'string') { setError(plan.body.error ?? NOAH_READY_TEXT.offline); return; }
+    if (plan.status !== 200 || typeof plan.body.planSha256 !== 'string') { clearFeedback(); setError(plan.body.error ?? NOAH_READY_TEXT.offline); return; }
     settle(await call('/api/noah/connect', { id, agentId, planSha256: plan.body.planSha256, ...(packageId ? { packageId } : {}) }), id);
   });
   const retry = (current: NoahReadyConnection) => run(async () => {
     settle(await call(`/api/noah/connect/${current.id}`, { action: 'retry', revision: current.revision }), null);
   });
   function press() {
+    if (view.disabled || inFlight.current) return;
+    if (signedIn && (view.action === 'connect' || view.action === 'retry')) {
+      sound.current?.dispose(); sound.current = prepareNoahConnectionSound();
+    }
     if (view.action === 'connect') {
       const id = operation.current ?? crypto.randomUUID();
       if (!signedIn) leaveToSignIn(id); else void connect(id);
@@ -106,11 +127,13 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     if (!pendingId) return;
     let stopped = false, tries = 0;
     const timer = setInterval(() => {
-      if (++tries > 20) { clearInterval(timer); if (!stopped) setError(NOAH_READY_TEXT.slow); return; }
+      if (++tries > 20) { clearInterval(timer); if (!stopped) { clearFeedback(); setError(NOAH_READY_TEXT.slow); } return; }
       void call(`/api/noah/connect/${pendingId}`).then((reply) => {
         const next = asConnection(reply.body);
-        if (stopped || !next) return;
+        if (stopped || reply.status !== 200 || !next) return;
         onChange(next);
+        if (next.state === 'connected') connectedFeedback();
+        else if (!noahConnectionPreparing(next.state)) clearFeedback();
         // 待っている間に、後始末が切った: 理由を出す（ボタンは「接続」に戻る）。
         if (next.state === 'disconnected' && next.error) setError(next.error);
       }).catch(() => undefined);
@@ -121,14 +144,16 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
   }, [pendingId]);
 
   const note = error || view.note;
+  const waiting = busy || (!!pendingId && !error);
   const main = view.label === null ? null : view.action === 'ask'
-    ? (askAs === 'link' ? <Link className={styles.primary} href={detail}>{view.label}</Link> : null)
-    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{view.label}</button>;
+    ? (askAs === 'link' ? <Link className={styles.primary} href={detail}>{t(view.label)}</Link> : null)
+    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{busy ? <NoahLoading compact label={t(view.label)} /> : view.label}</button>;
   // 出す物が無い時（詳細の画面で、つながった後）は、区切りの線も出さない。
   if (!main && !notice && !note) return null;
   return <div className={styles.connect}>
+    {waiting && <div className={styles.connectionOverlay} data-noah-connection-loading="true"><NoahLoading variant="connection" label={t('接続しています…')} /></div>}
     {main}
-    {notice && <output className={styles.notice}>{notice}</output>}
+    {notice && <output className={styles.notice}>{t(notice)}</output>}
     {note && <p className={styles.reason} role={error ? 'alert' : undefined}>{note}</p>}
   </div>;
 }

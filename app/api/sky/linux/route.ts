@@ -6,7 +6,7 @@ import {
   type LinuxServiceConfig,
 } from '@/lib/sky-linux-service-store';
 import {
-  linuxMonthTotal,
+  linuxMonthUsage,
   linuxPeriod,
   parseLinuxTerms,
   linuxRequestText,
@@ -68,9 +68,9 @@ export async function GET(request: Request) {
       eligibleOrders = await store.eligibleOrders(owner),
       creatorEarnings = await store.creatorEarnings(owner);
     const { workspace: doc, access } = await ownerResponse(store, owner);
-    let currentMonthMaximumMinor: number | null = null;
+    let currentMonthUsage: ReturnType<typeof linuxMonthUsage> | null = null;
     if (doc && access?.reason !== 'dispatch_schema_unsupported') {
-      try { currentMonthMaximumMinor = linuxMonthTotal(doc.payload, linuxPeriod(Date.now())); }
+      try { currentMonthUsage = linuxMonthUsage(doc.payload, linuxPeriod(Date.now())); }
       catch { /* Dispatch metadata is not the retained-data ACL. */ }
     }
     return json({
@@ -83,7 +83,8 @@ export async function GET(request: Request) {
       workspace: doc,
       creatorEarnings,
       access,
-      currentMonthMaximumMinor,
+      currentMonthMaximumMinor: currentMonthUsage?.maximumMinor ?? null,
+      currentMonthUsage,
     });
   } catch (error) {
     return failure(error);

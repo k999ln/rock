@@ -141,7 +141,7 @@ const result = {
     ...(evePwa ? { evePwa } : {}),
 };
 if (process.argv.includes('--record-local-production')) {
-  if (base.origin !== 'http://127.0.0.1:8787') throw new Error('Local production evidence requires port 8787');
+  if (base.protocol !== 'http:' || base.hostname !== '127.0.0.1') throw new Error('Local production evidence requires an IPv4 loopback origin');
   const config = JSON.parse(readFileSync(resolve(root, 'dist/server/wrangler.json'), 'utf8'));
   if (!config.main || !config.assets) throw new Error('Production Worker build is required');
   writeFileSync(resolve(root, WEB_SECURITY_EVIDENCE_PATH), JSON.stringify({

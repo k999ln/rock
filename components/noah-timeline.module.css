@@ -41,9 +41,9 @@
 .searchAvatar { color: #cbd0d3; }
 .searchRow input { background: transparent; width: 100%; min-width: 0; border: 0; border-radius: 0; padding: 12px 0; font-size: 18px; outline: none; }
 .searchRow input::placeholder { color: #777e84; opacity: 1; }
-.searchRow > button { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; }
+.searchRow > button { flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; }
 .filters { display: flex; gap: 5px; padding: 8px 0 0 50px; flex-wrap: wrap; }
-.filters button { min-height: 34px; padding: 6px 11px; color: var(--muted); border-radius: 99px; font-size: 12px; }
+.filters button { min-height: 44px; padding: 6px 11px; color: var(--muted); border-radius: 99px; font-size: 12px; }
 .filters button:hover { background: #15191b; }
 .filters .selectedFilter { color: var(--accent); background: #14231c; }
 .feedLabel { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); padding: 14px 18px 3px 72px; }

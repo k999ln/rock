@@ -2,6 +2,8 @@
 
 正本: docs/structure/03-esim.md。この task は**調べて表にする**。契約の判断は本人。
 
+> **2026-11-21 の決め（[03 の 0 章](../../docs/structure/03-esim.md)・[07](../../docs/structure/07-decisions-from-minutes.md)）。** 第一候補は SORACOM（Hub の IoT SIM のチップ型と、スマホの型 S の eSIM profile を同じ事業者で）。比べる候補は IIJ と 1GLOBAL。スマホの型 S は ARF が無くても成り立つ（役目は契約と入口）。質問票に足す: ① eSIM profile（承認制）を、消費者のスマホ向けに自社のサービスと一緒に出せるか ② SGP.32 に対応したチップ型の有無 ③ Endorse・Beam・VPG の料金と、Endorse のトークンの形 ④ SIM の中に端末の鍵を置く applet（GSMA IoT SAFE）を載せられるか ⑤ 無効化・削除を禁止するルール（PPR）を自社の端末の profile に付けられるか ⑥ SMS なしのデータ専用で、2026-05 の法改正の本人確認の対象になるか ⑦ 電気通信事業の届出の要否についての事業者の見解。
+
 ## 背景（Codex が前提にしてよいこと）
 - 売るのは GB ではなく RockstarOS の回線付き利用権（月額）。
 - Android で「eSIM を入れたら client が自動で入る」には、profile の access rule（ARF / BF76）に当社 client の署名証明書ハッシュが入っていること、かつ Google の carrier partner として Play 自動導入が有効なことが要る。
@@ -21,3 +23,6 @@
 
 ## やらないこと
 - 契約・申込・問い合わせ送信（本人がやる）。価格の決定。
+
+
+2026-11-22 Noah先行導入: 本人はeSIM未発行で、対応先・費用の確認後に導入する方針。[SORACOM候補の費用・実機条件・未送信の確認文案](../../docs/esim/noah-pilot-rfq.md)を追加（PR #377）。8社比較・ARF対応確認のタスク全体完了ではない。
