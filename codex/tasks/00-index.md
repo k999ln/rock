@@ -21,7 +21,7 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 10 | [10-esim-provider-research.md](10-esim-provider-research.md) | ARF 対応 MVNE 候補比較と RFQ 質問票 | |
-| 11 | [11-esim-first-live.md](11-esim-first-live.md) | esim-go sandbox → Eve 起動 → account 束縛 → Stripe 月額 | ✅ Noahの0円模擬回線・成果受取（PR #378）。運営Dockの指定配給・本人受取（模擬環境）と朝9時の開発指示 ✅ [#382](https://github.com/k999ln/rock/pull/382)。✅ 住所登録・ロット在庫・通知Agent・定期配給を模擬回線で検証（[PR #387](https://github.com/k999ln/rock/pull/387)）。実回線は未受入 |
+| 11 | [11-esim-first-live.md](11-esim-first-live.md) | eSIM発行・導入証明 → 端末利用権 → Eve／Noahへ。回線月額の照合 | 導入設計整理済み。実回線・実機受入は未完了。✅ Noahの0円模擬回線・成果受取（PR #378）。運営Dockの指定配給・本人受取（模擬環境）と朝9時の開発指示 ✅ [#382](https://github.com/k999ln/rock/pull/382)。✅ 住所登録・ロット在庫・通知Agent・定期配給を模擬回線で検証（[PR #387](https://github.com/k999ln/rock/pull/387)）。✅ 購入履歴から設定を再開し、利用権を照合して案内（[PR #389](https://github.com/k999ln/rock/pull/389)） |
 | 12 | [12-android-carrier-client.md](12-android-carrier-client.md) | carrier privileges を使う Android client と Play 自動導入 | |
 | 13 | [13-ios-universal-link.md](13-ios-universal-link.md) | iOS universal link 導入と PWA 起動 | |
 
@@ -89,14 +89,14 @@
 | 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8（出すための運用）実装 [PR #346](https://github.com/k999ln/rock/pull/346)（L7 の #345 を base、未マージ。**本番への配備・適用・切り替えなし**）: 運営の画面の「見張る数」（`lib/noah-launch-status.ts`）、`/noah/help` の `#bot` の節（`lib/noah-bot-notice.ts`。宛先 D8 は 2026-11-21 に本人が smash@avoado.si と決め、[PR #350](https://github.com/k999ln/rock/pull/350) で入れた）、専用の Worker の手順書（`services/noah-patrol-wake/README.md`）、試験 `tests/noah-launch-ops.test.mjs`（切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録・適用する物の形）。残り: 本番での G4〜G6 の確かめ（L9・本人の許可の後）。公開版154・10本のDB追加・公開設定3項目を承認後に反映✅ [PR #358](https://github.com/k999ln/rock/pull/358)。公開版156で172件取込・9項目の公開確認成功。読み取り専用1件の成果受領を確認。全体受入は未完了。 |
 | 2 | — | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
 | 2 | — | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
-| 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | |
+| 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | ✅ 利用者の専用クラウド契約で確定額と予約額を分けて表示（[PR #389](https://github.com/k999ln/rock/pull/389)） |
 | 3 | — | 81 | [81-noah-connect-patrol.md](81-noah-connect-patrol.md) | 作者の引き取り、取り下げ、並び順 | |
 | 3 | — | 76 | [76-eve-build-autofill.md](76-eve-build-autofill.md) | 載せる 1 画面と自動入力（見分ける） | |
 | 3 | — | 77 | [77-eve-build-normalize.md](77-eve-build-normalize.md) | 整える・接続試験と接続証明・機械審査 | |
 | 3 | — | 78 | [78-noah-agent-purchase.md](78-noah-agent-purchase.md) | 試用、仮売上 → 接続の確認 → 確定、直した版の権利 | |
 | 3 | — | 93 | [93-noah-library-lifecycle.md](93-noah-library-lifecycle.md) | 入れ替える（更新・戻す・切る・移す） | |
 | 4 | — | 95 | [95-noah-on-mii-contract.md](95-noah-on-mii-contract.md) | mii で使うための契約（Linux の host で同じ受入、声と表示の模擬） | |
-| 並行 | — | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | 専用の端末（雲）: 端末を持たない人の置き場所 | |
+| 並行 | — | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | Noahのクラウド実行。Macを閉じた後の仕事・停止・従量の照合 | 設計整理済み。一般Agentの実行・有料受入は未完了 |
 | 並行 | — | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | |
 | 並行 | — | 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
 | 並行 | — | 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
