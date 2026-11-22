@@ -34,6 +34,7 @@ export default function NoahUsageDashboard({ initialScope, agent }: { initialSco
     {agent && <p className={styles.notice}>特定のAgentを表示中。<Link href="/noah/usage">すべて表示する</Link></p>}
     {scope === 'publisher' && <p className={styles.muted}>提供したAgentだけを表示します。Noahの利用者は匿名化ID、外部Agentの利用元は提供者からの申告として表示します。</p>}
     {scope === 'operator' && <p className={styles.muted}>全体表示はサーバーで許可された運営アカウント限定です。</p>}
+    {scope === 'personal' && <p className={styles.notice}>ここには選んだ期間の実行記録と、確認できた費用を表示します。契約月の金額は<Link href="/noah/linux#monthly-statement">専用クラウドの使用額・請求明細</Link>、回線の購入代金は<Link href="/noah/purchases">購入履歴</Link>で確認できます。</p>}
     {error && <div role="alert" className={styles.error}>{error}<button onClick={() => { reset(); setAttempt(n => n + 1); }}>再確認</button></div>}
     {!report && !error && <output>記録を読み込んでいます…</output>}
     {report && <>

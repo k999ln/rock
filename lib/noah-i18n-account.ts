@@ -2,6 +2,10 @@ export const NOAH_ACCOUNT_MESSAGES: Record<
   string,
   readonly [string, string, string, string, string]
 > = {
+  契約と利用状況: ['Plan and usage', '合约与用量', '계약 및 사용 현황', 'Contrato y uso', 'العقد والاستخدام'],
+  '購入履歴・eSIM設定': ['Purchases and eSIM setup', '购买记录与 eSIM 设置', '구매 내역 및 eSIM 설정', 'Compras y configuración de eSIM', 'المشتريات وإعداد eSIM'],
+  Agentの利用記録: ['Agent usage history', 'Agent 使用记录', 'Agent 사용 기록', 'Historial de uso de agentes', 'سجل استخدام الوكلاء'],
+  'クラウドの使用額・請求明細': ['Cloud usage and billing', '云端用量与账单', '클라우드 사용 요금 및 청구 명세', 'Uso y facturación de la nube', 'استخدام السحابة والفواتير'],
   Noahのアカウント: [
     'Noah account',
     'Noah账户',
