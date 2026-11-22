@@ -1,6 +1,6 @@
 ## 2026-11-22
 
-- avoado.siの公開元をGitHub mainに統一し、Macと本番のGitツリーを照合する手順をAGENTS.mdに追加。公開版のAgent共有に関する記録を取り込んだ。
+- avoado.siの公開元をGitHub mainに統一し、Macと本番のGitツリーを照合する手順をAGENTS.mdに追加。公開版のAgent共有に関する記録を取り込んだ（[PR #398](https://github.com/k999ln/rock/pull/398)）。
 
 - 公開Agent詳細に個別共有・URLコピー・X投稿リンク、公開条件を確認する個別OG/Twitter情報とPNG生成を追加（Sites公開ソース、専用PRなし）。
 - Noahの公開入口 `/`・`/noah` にOpen Graph・X大型画像カードと公開PNGを追加（Sites公開ソース、専用PRなし）。
