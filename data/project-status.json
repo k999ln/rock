@@ -1378,7 +1378,7 @@
   },
   "updatedAt": "2026-11-23",
   "milestone": "Noahの現main統合・限定本番受入・運用と集客の残件を照合",
-  "nextAction": "PR #17のCIとmain統合、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。CLI本番配備・実モデル、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
+  "nextAction": "PR #18・#19のCI・main統合と本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -13179,7 +13179,7 @@
   "progressLedgerReconciliation": {
     "updatedAt": "2026-11-23",
     "repository": "iceiceice999/rock",
-    "baseMain": "42cf4b619ee19bcb47612250d70539457dec1977",
+    "baseMain": "b56d8e83b39fd946e4f5330eba0907bf36425172",
     "task": "codex/tasks/72-current-code-and-readme.md",
     "owner": "統合・公開担当si",
     "method": "GitHub PR/CIの読取とgit merge-base --is-ancestorによる統合照合。本番操作・過去実機試験の再実行はしていない。",
@@ -13284,7 +13284,7 @@
     ],
     "mainVerification": {
       "status": "success",
-      "url": "https://github.com/iceiceice999/rock/actions/runs/45033873402",
+      "url": "https://github.com/iceiceice999/rock/actions/runs/45038039086",
       "scope": "baseMainの既存CI。本更新の検証とは別"
     },
     "productionEvidenceRefs": [
@@ -13294,20 +13294,11 @@
       "https://github.com/iceiceice999/rock/pull/14",
       "https://github.com/iceiceice999/rock/pull/16"
     ],
-    "openPullRequest": {
-      "number": 17,
-      "url": "https://github.com/iceiceice999/rock/pull/17",
-      "head": "d84074b181fc8cdae58a38bf9451d3c753ec6046",
-      "state": "OPEN",
-      "verify": "SUCCESS",
-      "security": "SUCCESS",
-      "acceptance": "記事/X公開はPR本文の記録。main未統合。実注文/承認・次回6時間運用は未実証。"
-    },
     "boundaries": [
       "掲載/接続定義取得を全Agent実行成功にしない",
       "Pixelブラウザの限定受入を実機OSや100人同時外部実行の合格にしない",
       "収集の復旧1回を24時間/72時間の継続合格にしない",
-      "CLIのLinux試験を本番配備・実モデル受入にしない",
+      "CLIのLinux試験・実モデルの個別成功をNoah本番配備や全体受入にしない",
       "旧タスク393件は今回再検収せず、件数を製品完成率にしない"
     ],
     "historicalPullRequestRepository": "k999ln/rock",
@@ -13318,6 +13309,30 @@
       "Agentを集めるシステム",
       "Agentの接続",
       "受け皿のシステム"
+    ],
+    "initialBaseMain": "42cf4b619ee19bcb47612250d70539457dec1977",
+    "mergedPullRequest": {
+      "number": 17,
+      "url": "https://github.com/iceiceice999/rock/pull/17",
+      "head": "d84074b181fc8cdae58a38bf9451d3c753ec6046",
+      "state": "MERGED",
+      "verify": "SUCCESS",
+      "security": "SUCCESS",
+      "acceptance": "記事/Xと計測をmainへ統合。実注文/承認・次回6時間運用は未実証。"
+    },
+    "pendingPullRequests": [
+      {
+        "number": 18,
+        "url": "https://github.com/iceiceice999/rock/pull/18",
+        "state": "OPEN",
+        "scope": "無料Workersの公式MCP3種。Memory/Filesystem実モデル成功はPR記録。Noah有効化・全閉画面後の本番一周は未受入。"
+      },
+      {
+        "number": 19,
+        "url": "https://github.com/iceiceice999/rock/pull/19",
+        "state": "OPEN",
+        "scope": "実モデル通信修正と6種の個別成功記録。修正未公開。Containers本番受入や6種一括の成功とは区別。"
+      }
     ]
   }
 }

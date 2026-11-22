@@ -10,6 +10,13 @@ import {
 } from './site-diagnostics.mjs';
 import { diagnosticPage } from './site-diagnostics-page.mjs';
 import {
+  SITE_DESTINATIONS,
+  acquisitionSource,
+  isAcquisitionNavigation,
+  recordAcquisition,
+  acquisitionReport,
+} from './site-acquisition.mjs';
+import {
   advanceDiscovery,
   validateOfferIndex,
   matchRevenueCandidates,
@@ -130,6 +137,10 @@ export class CombinationLedger {
   }
   async alarm() {
     await this.ctx.storage.transaction(async (tx) => {
+      await tx.put(
+        'acquisition',
+        acquisitionReport(await tx.get('acquisition')).rows,
+      );
       const current = (await tx.get('state')) || emptyCombinationState();
       if (!current.enabled) {
         if ((await tx.get('revenue'))?.enabled)
@@ -240,6 +251,29 @@ export class CombinationLedger {
         config = configFor(this.env);
       if (input.action === 'diagnose')
         return await this.diagnose(input.schemeId, input.input);
+      if (input.action === 'acquisition') {
+        return this.ctx.storage.transaction(async (tx) => {
+          const state = await tx.get('state'),
+            pipeline = await loadRevenue(tx);
+          if (
+            !Object.hasOwn(SITE_DESTINATIONS, input.schemeId) ||
+            !sitePublications(config, state, pipeline).some(
+              (s) => s.id === 'noah-' + input.schemeId,
+            )
+          )
+            return json({ error: '条件を確認中です。' }, 503);
+          if (input.count === true)
+            await tx.put(
+              'acquisition',
+              recordAcquisition(
+                await tx.get('acquisition'),
+                input.schemeId,
+                input.source,
+              ),
+            );
+          return json({ url: SITE_DESTINATIONS[input.schemeId] });
+        });
+      }
       if (input.action === 'revenue_sync') {
         await this.reconcileRevenue();
         return json({ reconciled: true });
@@ -314,6 +348,7 @@ export class CombinationLedger {
               nextRunAt: state.nextRunAt,
               report: combinationReport(state, config),
               receipts: state.receipts,
+              acquisition: acquisitionReport(await tx.get('acquisition')),
               config: config.schemes.map((s) => ({
                 id: s.id,
                 verdict: combinationVerdict(s),
@@ -506,6 +541,25 @@ const worker = {
         )
           return json({ error: 'Unknown action' }, 400);
         return call(v.action, v);
+      }
+      const entryMatch =
+        /^\/start\/(wordpress-maintenance|ec-production)$/.exec(url.pathname);
+      if (entryMatch && ['GET', 'HEAD'].includes(request.method)) {
+        const response = await call('acquisition', {
+          schemeId: entryMatch[1],
+          source: acquisitionSource(url.searchParams.get('source')),
+          count: isAcquisitionNavigation(request),
+        });
+        if (!response.ok) return response;
+        const destination = (await response.json()).url;
+        return new Response(null, {
+          status: 302,
+          headers: {
+            ...common,
+            Location: destination,
+            'X-Robots-Tag': 'noindex',
+          },
+        });
       }
       const siteMatch =
         /^\/(?:consult\/site\/([a-z-]+)\/mcp|api\/diagnose\/([a-z-]+)|agent\/([a-z-]+))$/.exec(

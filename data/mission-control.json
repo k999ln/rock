@@ -195,7 +195,7 @@
         "docs/evidence/spider-agent-preflight-read.json"
       ],
       "acceptanceGate": "全project taskにちょうど一つのprimary squadが明記され、各squadにGoal、対象範囲、証拠、次taskと合格条件がある。",
-      "nextAction": "G04: iceiceice999/rockの現mainとPR #17を基準に、統合・本番受入・収集の継続観測を分けて追跡する。最新照合はdata/project-status.jsonのprogressLedgerReconciliationとcodex/tasks/00-index.md。AMC01の製品間Interface整理は継続。",
+      "nextAction": "G04: iceiceice999/rockの現mainとPR #18・#19を基準に、統合・本番受入・収集の継続観測を分けて追跡する。最新照合はdata/project-status.jsonのprogressLedgerReconciliationとcodex/tasks/00-index.md。AMC01の製品間Interface整理は継続。",
       "relatedTasks": [],
       "nextTaskIds": [
         "G04",

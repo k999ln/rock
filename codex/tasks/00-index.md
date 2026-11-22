@@ -4,7 +4,7 @@
 終わったら CHANGELOG.md 先頭に 1 行、ここに ✅ と PR 番号。
 
 
-進捗の正本は `iceiceice999/rock`。2026-11-23 に main `42cf4b619ee19bcb47612250d70539457dec1977` と GitHub PR/CI を照合した。現在の開発項目と残件は [project.md](../../project.md)。✅ は記載した範囲の確認済みを表し、タスク全体・全Agent・一般公開の合格を意味しない。空欄は未照合であり、未着手と断定しない。
+進捗の正本は `iceiceice999/rock`。2026-11-23 に main `b56d8e83b39fd946e4f5330eba0907bf36425172` と GitHub PR/CI を照合した。現在の開発項目と残件は [project.md](../../project.md)。✅ は記載した範囲の確認済みを表し、タスク全体・全Agent・一般公開の合格を意味しない。空欄は未照合であり、未着手と断定しない。
 
 旧PR #342・#344〜#347 は未マージで閉じられているが、そのHEADは現在のmainの祖先に含まれる。旧PRの状態と、コードのmain統合を区別する。過去のCI履歴検出を現在の失敗として扱わず、対象SHAの検証結果を参照する。
 
@@ -120,7 +120,7 @@
 | 103 | [103-esim-churn-measure.md](103-esim-churn-measure.md) | 続けて使う割合を測る: eSIM を入れた人と入れていない人を、同じ機能で比べる（集計の関数は実装済み） | ✅ [PR #415](https://github.com/k999ln/rock/pull/415)（使い続けた割合。月額の版 #364 は入れない） |
 | 104 | [104-owner-key-encryption.md](104-owner-key-encryption.md) | 本人の鍵で暗号化（案 K）: Memory と成果のファイルを運営も読めない形に | |
 | 105 | [105-cloud-operations.md](105-cloud-operations.md) | 自社クラウドの回し方: 約束・見張り・知らせ・費用の上限・バックアップ | ✅ [#368](https://github.com/k999ln/rock/pull/368)（main への統合は [PR #413](https://github.com/k999ln/rock/pull/413)。本番の migration・通知・cron は本人の許可の後） |
-| 101（紹介） | [101-noah-affiliate-agents.md](101-noah-affiliate-agents.md) | Noah向け相談・紹介案件運営のZIPとMCP | ✅ 法人相談と保存範囲を本番受入（[PR #8](https://github.com/iceiceice999/rock/pull/8)・[PR #9](https://github.com/iceiceice999/rock/pull/9)）。WordPress/EC診断2種はSites208で本文・保存・再読込を受入（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。🔶 集客導線・計測 [PR #17](https://github.com/iceiceice999/rock/pull/17) は全7チェック成功・未マージ。記事/X公開はPR記録。最後の観測で対象2件の注文/承認0、最新取得はログイン切れ。入金・次回6時間運用は未受入 |
+| 101（紹介） | [101-noah-affiliate-agents.md](101-noah-affiliate-agents.md) | Noah向け相談・紹介案件運営のZIPとMCP | ✅ 法人相談と保存範囲を本番受入（[PR #8](https://github.com/iceiceice999/rock/pull/8)・[PR #9](https://github.com/iceiceice999/rock/pull/9)）。WordPress/EC診断2種はSites208で本文・保存・再読込を受入（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。✅ 集客導線・計測 [PR #17](https://github.com/iceiceice999/rock/pull/17) は全7チェック成功・main統合済み。記事/X公開はPR記録。最後の観測で対象2件の注文/承認0、最新取得はログイン切れ。入金・次回6時間運用は未受入 |
 
 ## 110 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
 
@@ -146,6 +146,6 @@
 | 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
 | 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | 進行中。公開MCPの自動接続・限定本番受入 [PR #7](https://github.com/iceiceice999/rock/pull/7)、CLI6種の実装統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)。全掲載Agentの実行対応、OAuth/鍵、本番CLI・実モデルは未受入 |
 | 124 | [124-noah-teikibin-ledger.md](124-noah-teikibin-ledger.md) | 定期便の台帳（入金・費用・寄与の記録、月の締め、作業料と等分、有料の差し引き、振込の一覧、物の割当） | 🔶 台帳と画面 [PR #410](https://github.com/k999ln/rock/pull/410)（切り替えは閉。開ける前に要る事は仕様の 12 章） |
-| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | ✅ 固定CLI6種の実装・全体検査・統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)（旧 #1/#402）。Linux受入済。本番CLI未配備・実モデル未受入 |
+| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | ✅ 固定CLI6種の実装・Linux試験を統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)。Containers本番は未受入。🔶 無料Workersの公式MCP3種 [PR #18](https://github.com/iceiceice999/rock/pull/18)、実モデル通信修正と個別成功記録 [PR #19](https://github.com/iceiceice999/rock/pull/19) は未マージ。本番Noahの無料経路有効化・閉画面後の一周は残り |
 | 125 | [125-noah-scout.md](125-noah-scout.md) | Noah が自分で探す（GitHub の急に伸びた repo・Agent の道具の話題・Product Hunt、Codex の Luna Max が毎日 X を読んで配布元まで理解した「Noahが読んだ」）・Switch を載せる・iceiceice999/rock への移行 | ✅ 自律収集の移植 [PR #13](https://github.com/iceiceice999/rock/pull/13)・停止調査 [PR #15](https://github.com/iceiceice999/rock/pull/15)・本番収集の復旧 [PR #16](https://github.com/iceiceice999/rock/pull/16)。毎時予備実行を設定済み。24時間の鮮度維持・新リポジトリへの実行先移行・Xの7日継続掲載は未確認 |
 | 126 | [126-noah-packages-first.md](126-noah-packages-first.md) | トップの最初の列をパッケージ（1 つの仕事を最後までやる組合せ）にし、単発は下。Eve が Switch の部屋の形を手本に組む | 指示書を現mainへ統合 [PR #13](https://github.com/iceiceice999/rock/pull/13)。パッケージを先頭へ出す実装は未着手（task125の後） |
