@@ -64,6 +64,7 @@ export function screen(options = {}) {
   };
 
   const context = createContext({
+    FormData: class {constructor(form){this.form=form;}get(key){return this.form.values?.[key]??null;}},
     console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
     Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
     crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
@@ -88,7 +89,8 @@ export function screen(options = {}) {
   if(options.document)context.document=Object.assign(options.document,{addEventListener:options.document.addEventListener??(()=>{}),removeEventListener:options.document.removeEventListener??(()=>{})});
   context.window = {
     sessionStorage: { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => { storage.set(key, String(value)); }, removeItem: (key) => { storage.delete(key); } },
-    location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, hash: '', search: options.search ?? '', origin: 'https://noah.test' },
+    location: { assign: (href) => { visits.push(String(href)); }, replace: (href) => { visits.push(String(href)); }, href: `https://noah.test/noah${options.search??''}`, hash: '', search: options.search ?? '', origin: 'https://noah.test' },
+    history: {state:null,replaceState(_state,_title,href){ const url=new URL(href,'https://noah.test'); context.window.location.href=url.href;context.window.location.search=url.search;}},
     addEventListener() {}, removeEventListener() {},
     // 画面の幅（頼んだ画面の幅の区分に使う）。既定は、スマホの幅。
     innerWidth: options.width ?? 390,

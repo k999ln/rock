@@ -56,8 +56,8 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   const server = mcpServer({ tools: [lookup, nested, stats, publish] });
   const { page, toolButton, field, form } = await opened(t, server);
   // 使える道具は、押せる行。使えない道具は、押せない（印は文字）。
-  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['情報を検索Looks up a player.読み取りだけ', '統計を見るstats の説明読み取りだけ押すだけ', '公開するPublishes a note.送る前に確かめます']);
-  assert.match(page.text(), /設定するconfigure の説明入力欄ではまだ使えません提供者の説明configure/);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(node)), ['情報を検索読み取りだけ', '統計を見る読み取りだけ押すだけ', '公開する送る前に確かめます']);
+  assert.match(page.text(), /設定する入力欄ではまだ使えません提供者の説明configure/);
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('lookup'));
   assert.equal(toolButton('lookup').props['aria-pressed'], true);
@@ -78,8 +78,9 @@ void test('choosing a tool: usable ones can be pressed; the form shows required 
   await page.press(toolButton('lookup'));
   assert.equal(page.find('form').length, 0);
   await page.press(toolButton('stats'));
-  assert.ok(page.text(form()).startsWith('統計を見る提供者の説明stats'));
-  assert.ok(page.text(form()).endsWith(`送信先: ${hostOf(1)}頼む`));
+  assert.ok(page.text(form()).includes('提供者の説明stats'));
+  assert.equal(page.find('h3',form()).length,0,'the selected operation heading is not repeated');
+  assert.ok(page.text(form()).includes(`送信先: ${hostOf(1)}頼む`));
   assert.equal(calls(server).length, 0);
 });
 
