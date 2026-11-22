@@ -1,4 +1,5 @@
 {
+  "account_id": "ae3e6c52c0a9e50aab66a6e4184aa09e",
   "name": "noah-revenue-agents",
   "main": "combination-worker.mjs",
   "compatibility_date": "2026-10-01",
