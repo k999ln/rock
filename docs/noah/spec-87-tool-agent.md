@@ -65,6 +65,7 @@ type NoahRemoteExecution = {
 
 - 成果に添える 1 行（Work の `events` に足す）: 「<作者か提供者> の <Agent の名前> が、<使った道具> を使いました。費用 <金額か「未計測」>。」
 - 成果の文は 131,072 bytes まで（`LIMITS.resultBytes`）。越えたら切って、「（長いので切りました）」を足す。
+  - 切れた成果が JSON の一覧なら、画面は、最後まで届いた項目だけを一覧で出し、「成果の一部を表示しています」を 1 回だけ添える（`noahResultWholeItems`: 一番外の一覧か、一番外の物のすぐ下の一覧。項目の後ろに `,` か閉じ括弧が届いた物だけ。途中で切れた項目は捨て、値を補わない）。項目が 1 つも届いていなければ、今までどおり「受け取ったデータ」と元のデータだけを出す。2026-11-22 の本番確認（Tipline の一覧 413 件が 128 KiB で切れ、画面に何も並ばなかった。届いていた 326 件を出せる）による。
 - 終わった Work は `review`（止めた時は `cancelled`）。`steps` は通した事にしない（`normalizeWorkJob` に `noah-agent-remote` の枝を足す: `noahRemote` があり、`verification` が `relay_observed_unverified`、`chargeMinor` が 0、通った step が無い事。今の `noah-agent-local` の枝と同じ形）。
 
 ### 4.2 `noah_asks`（進み具合。本文は置かない）
