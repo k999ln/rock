@@ -8,6 +8,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
+import NoahAgentShare from './noah-agent-share';
 import NoahLoading from './noah-loading';
 import Link from 'next/link';
 import { NOAH_REPORT_CONTACT } from '@/lib/noah-bot-notice';
@@ -98,6 +99,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
     {back}
     <article className={styles.detail}>
       <header className={styles.cardHead}><h1>{detail.name}</h1><span className={styles.provider}>{t("提供:")} {detail.provider}</span></header>
+      {detail.listed && <NoahAgentShare id={detail.id} name={detail.name} summary={detail.summary} />}
       <h2>{t('すること')}</h2><p className={styles.description}>{detail.summary || t('（説明はありません）')}</p>
 <NoahAgentVisual name={detail.name} summary={detail.summary}/>
       <div className={styles.journey}><div><strong>{t('依頼する')}</strong></div><span>→</span><div><strong>{t('実行')}</strong></div><span>→</span><div><strong>{t('受取')}</strong></div></div>

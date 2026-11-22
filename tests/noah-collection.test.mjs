@@ -232,7 +232,7 @@ void test('changing discovery order keeps query and source but starts pagination
   const ui=screen({modules:{'./noah-pin-grid':{default:()=>null}},fetch:async()=>({body:{items:[],total:40,nextCursor:'20',ownerScope:null}})});
   const page=ui.mount('components/noah-pin-home.tsx',{searchQuery:'agent',initialSource:'npm'});await page.flush();
   await page.click('もっと見る');await page.flush();
-  await page.change(page.find('select')[0],'new');await page.flush();
+  await page.click('出た順');await page.flush();
   const params=new URL(ui.calls.at(-1).url,'https://avoado.si').searchParams;
   assert.equal(params.get('order'),'new');assert.equal(params.get('q'),'agent');assert.equal(params.get('source'),'npm');assert.equal(params.get('cursor'),'0');
 });

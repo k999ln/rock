@@ -211,6 +211,37 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 2026-11-22 最終Git統合検証（PR #377）: 862eac033で画面整理を取り込んだ後の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は全工程exit0。root4,856 pass・4 skip・0 fail（計4,860）、API1,918・CSV385 assertions、typecheck/lint/build/assetを含め成功。ログ `/tmp/noah-memberless-merged-verify.log`。公開スモーク検査に残った旧ready/dataの200期待を、正しい統合先への307/308と固定カテゴリ照合へ更新。専用3試験と再lint成功、公開12項目が成功。検査は読み取りのみでブラウザ権限を発行しない。Pixelの実機一周は端末解除待ちで、成功とは記録しない。
 
 
+### 2026-11-22 Pixel実機で会員登録なしの一周を確認（PR #377）
+
+本人の「端末がロックされないように設定して」に従い、Pixel 10 / Android 17の消灯後ロック猶予を30分（`secure lock_screen_lock_after_timeout=1800000`、変更前null）へ設定。既存の画面timeout `2147483647` と給電中保持 `15` は維持し、承認済みADBとscrcpyのcontrol-only / keep-active接続でテスト中の点灯を保持した。PIN・指紋・手動の電源ロックは変更せず、自動解除も実施していない。接続終了後も永久にロックしない設定ではない。
+
+実物のPixelのVanadiumから `https://avoado.si/noah/explore?q=Tipline` を開き、検索結果→Tipline詳細→接続→「ゲーム情報を調べる」→検索内容 `Cal` →「頼む」を1回だけタップ。「進捗と成果を見る」から受領した5件を表示し、成果詳細を開いた。その後、画面の「戻る」から `/noah/saved?tab=results` へ移動し、保存済みカードをタップして同じ成果を再表示できた。Workは `915cbf1d-6412-4bf0-8b8a-3618cf4ff084`、送信先は `tipline.brainy.ae`。Noahログイン、eSIM接続、外部アカウントの新規作成、投稿、課金、実行の再送は行っていない。操作中の画面ロック・外部アプリへの強制遷移は観測しなかった。
+
+今回の対象は公開ドメインの実UI。検査中のSitesメタデータは最新保存版182・activeを返した（カード統合担当の公開後）。この受入のための追加配備・ソース変更はない。タップは承認済みADBで行っており、スマホ単体の画面導線の合格であってMacなしのテスト操作や全OSの合格ではない。成果5件の受信・保存表示を確認したもので、外部提供者の文章の正確性を認定するものではない。
+
+画面証拠は `/Users/kaiya/.codex-work/visualizations/2026/11/20/01a1f8f6-e45c-7260-bc55-53b2712253bb/noah-pixel-20261122/` に保存。`noah-pixel-memberless-saved.png` SHA-256 `a4e62d8fcd9434cb11a1201f0d73cef1ce7c1614e746f2d6ada4610f9a9512fd`、`noah-pixel-memberless-reopened-loaded.png` SHA-256 `178d11c26c924212bd10be95abefc0601d800fed17436168f734f24f523951bc`。秘密値・cookie・本人の旧アカウント情報は取得せず、公開外部データの成果だけを確認した。
+
+検証は実機の上記操作と設定readback、文書差分の `git diff --check`。今回のリポジトリ変更は受入記録だけで、直前のコードに対する全体verify 4,856 pass・4 skip・0 failと公開12項目成功は上記の記録を参照。別チャットの公開182の全体試験をこの数値へ含めない。残件はブラウザ別保存での認証付き外部登録一周、別利用者の本番受入、写真アプリへの実画像保存、100人の本番負荷、任意のAgent実行。過去のAgentboard登録1件と本人による成果表示報告は別の証拠として保持する。
+
+
+### 2026-11-22 Pixelで外部登録から認証付き成果まで（PR #377）
+
+Pixel 10 / Android 17 / Vanadiumで、既存のブラウザ保存権限を利用し、公開NoahのAgentboard詳細→「登録して使う」→公開名 `Noah-Pixel-Pilot-20261122` を入力→「今回だけ使う」→送信先/規約確認→「同意して登録」を1回タップ。登録の受付確認・完了報告を経て「Agentを使う」→「接続」→「アカウントを確認（whoami）」→「頼む」1回→成果受取まで実測した。キーの入力・表示・コピー、旧本人アカウントからの移送はない。Noahログイン・投稿・課金なし。合成の表示名は再利用プロフィールへ保存していない。外部アカウントは1件だけ作成し、登録の再送なし。
+
+成果は `Noah-Pixel-Pilot-20261122` / `noah-pixel-pilot-20261122` / 利用中を表示。Work `05767f3d-174d-4da9-baad-270e557fd718`。詳細の「戻る」→ `/noah/saved?tab=results` → Agentboardカード→同じ名前・状態の成果詳細を再表示。先に受領したTipline成果も同じ保存画面に残っていた。操作中の画面ロックや外部アプリへの強制移動はなし。承認済みADBでスマホ画面を操作した結果であり、実回線eSIM・iPhone・任意サービスの登録・画像の写真アプリ保存の受入ではない。
+
+登録開始時に公開183、試験中に別担当の184/185が配備。成果詳細への初回移動で1回「This page couldn’t load」を観測し、表示されたReloadで同じWorkを復元した。公開185は native status succeeded / env16（source `6f5e9f832a5b68dc23e9e84d559c8612b86f4e0e`、deployment `appgdep_6b0212a7f8b88191a7da30ccf12e17aa`）。公開更新が重なったが、画面エラーの原因は未確定であり、修正済みと記載しない。その後の保存一覧→詳細は再読込操作なしで成功。今回こちらからの配備や環境設定変更はない。
+
+本番限定負荷: 2026-11-22 06:57 JSTにブラウザ権限100個を発行し、同時5人で各4要求（発行、GET session、空の本人ask一覧、上記Pixel Workへの別所有者GET）を実施。400/400成功、独立cookie100個、他人の成果404は100/100。全体8,556ms、中央値155ms、95パーセンタイル182ms、最大438ms。cookieはメモリ内のみ、外部登録や仕事は増やさず、DB保存を追加しない。これは100人同時・100外部サービス実行の負荷保証ではない。再現用の一時スクリプト `/tmp/noah-pilot-production-smoke.mjs` と集計 `/tmp/noah-pilot-production-smoke.json` を保持し、永続記録はこの段落とPR本文。秘密値は集計しない。
+
+再検証: `node --experimental-strip-types --test tests/noah-cohort-capacity.test.mjs` 2件成功（合成100所有者・200タップ・100登録、10提供者・100成果・100別所有者拒否）。`npm run noah:check:domain` 公開12項目成功。最新main 97898c519の `node --experimental-strip-types --test tests/noah-cloud-work.test.mjs` 2件成功（別checkout、合成LINEのローカルworkerd。実キャリア接続ではない）。アプリコードの変更はなく、今回全体verifyを再実行したという意味ではない。直前Gitコードの全体verify 4,856 pass / 4 skipは前節の記録を参照。
+
+画面証拠: `/Users/kaiya/.codex-work/visualizations/2026/11/20/01a1f8f6-e45c-7260-bc55-53b2712253bb/noah-pixel-20261122/`。`noah-pixel-agentboard-terms.png` SHA-256 `e4eac3c1a810a1c9c4846d34c4f4819d588b9e678af28724f9d47189edcb9ebf`、`noah-pixel-agentboard-saved.png` `23bbae35101d7f3c22f2ba934b2535aa2379a3ebb935e85206d32039e63eec90`、`noah-pixel-agentboard-reopened.png` `ec95f855e07b1ddc2424b10aa8297e15ddb9744015cf42aaa5678bc8d4a5980d`。読込エラーと復帰の画像も同じフォルダに保存。
+
+100人向けの配布文を会員登録不要・「保存」の「成果」へ訂正し、旧Mac向け案内は配布しない旨を明記。まず10人ずつ、外部登録枠と実到達を確認して拡大する運用を維持。別利用者の通し受入、ブラウザ型の実登録手順・容量、全Agentの実行、読み込みエラー原因の確定は残る。
+
+eSIMは本人回答「未発行。対応先と費用を確認してから導入する」に従い、[候補費用と未送信の質問票](../../docs/esim/noah-pilot-rfq.md)を作成。公開env16に実発行事業者の設定なし。PixelのeUICC featureと有効なeUICC packageは読み取り確認したが、EID/ICCIDは取得せず、回線追加・契約・AWS有料作成・発行は行っていない。正式見積りと対応条件の確認後に実eSIM→専用クラウドを受け入れる。
+
 ## 2026-11-22 共通カード・評価の統合（PR #386）
 
 ✅ 既存ピンと収集Agentを `/api/noah/discover` の共通カード一覧へ統合。公開URLが一致する同一Agentは王冠・コメントIDを共有し、絞り込み・ボード・詳細も共通評価へ接続。外部スター/いいねは出典付き補助情報として折りたたみ、Noahの利用人数・王冠へ合算しない。紹介だけのAgentは配布元へ、接続確認済みは既存実行/保存導線へ進む。署名付き収集・ブラウザ所有者・本人別非表示・既存保存データは保全。DB migrationなし。
@@ -238,3 +269,32 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 公開186 succeeded: source `7d4674768ce1497855244b2a29d609fc0c40052c`、deployment `appgdep_6b021379697c81919c0fee022d64b782`、env16。最新source6f5e9f8のモバイルUXと183共有カードを保全。公開ブラウザで一覧の王冠/コメント操作が0件であること、Axad詳細の元出典と保存/接続が残ること、390px/590pxで横はみ出しなしを確認。
 
 検証: 型検査・関連28試験・build・公開bundle/assets・8ルート/8ヘッダー成功。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は、今回変更していない共有機能のlint6件で停止。`lib/noah-agent-share.ts` 7/13 no-control-regex、`components/noah-agent-share.tsx` 34 prefer-tag-over-role、`tests/noah-agent-share.test.mjs` 6/14/23 no-floating-promises。テスト削除や検査除外は行わず、担当チャットへ共有。全体検査成功とはしない。ログ `/tmp/noah-only-source-verify.log`、関連 `/tmp/noah-only-source-tests.log`。修正後の全体verify・PRレビュー/マージは未完了。
+
+
+### 2026-11-22 最新公開188のGit統合（PR #377）
+
+GitHub main `6c80b1378` とPR #386 `b8f87f087` を履歴ごと統合し、公開188 source `9714ad8d13286b329a1dd655d54cc842305c74cf` に先行していた共有カード/OG画像・法人入口・組み合わせ準備票・モバイルCSS・出典付き調査候補を受入。主画面とカードの元サイト評価を保全し、Git側の配給/Dock・eSIM模擬系・最新の正規URL検査は巻き戻していない。公開環境への追加migrationや実eSIM発行は含まない。
+
+並行担当の7ファイル修正を取り込み、制御文字の拒否範囲を維持したlint解消と、画面fixtureへの実共有モジュール登録/期待値更新を適用。試験の削除・除外はなし。型・lint・production build成功、ローカルHTTP8経路を実測し `data/web-security-response-current.json` を更新。統合後のGitコミット `2371674dde7683db47ef2eb2651a8e6a0ce3bd00` は [GitHub Actions run 44977284409](https://github.com/k999ln/rock/actions/runs/44977284409) の単一 `npm run verify` が全工程成功。主4,931 pass・4 skip・0 fail、型/lint/build、仕事API1,918・CSV385 assertions、mission/work/botまで成功した。手元で開始した別実行はチャット中断後に終了状態と一時ログを回収できなかったため、その実行を成功証拠には用いない。
+
+
+公開189は source `5775d59af94d4eca6a676ba625d54dfa9314a78d`、deployment `appgdep_6b02585027588191bca3c5320550f2a2`、env revision 17、native status succeededを確認。公開側も単一verifyが全工程成功（4,907 pass・4 skip・0 fail、API1,918・CSV385）。188からの変更は上記7ファイルだけで、最新デザイン・共有・法人入口・組み合わせ・登録不要の権限を保持した。GitのNoah関連420ファイルと公開修正版を比較し、Git mainに先行するeSIM画面以外は一致を確認。公開時点以後、別チャットでホームの法人/組み合わせ告知を外す追加指示が進行中であり、この189の受入には含めない。重複配備は行わない。
+
+公開QA: 390pxでホーム→メニュー→保存5カテゴリ→Agent検索（Axad）→詳細→保存シート開閉→ホームを確認。詳細の接続/保存ボタンは非重複、共有操作と元サイト評価を保持。390px・1280pxで横はみ出しなし。表示幅を復元した。公開ドメインの読み取り専用12検査が成功。外部登録・仕事の新規実行は今回の回帰では増やしていない。Pixel実機の外部登録一周は前節の受入を参照。
+
+CIの区別: Release signing・SPIDER repair・CodeQL・Rock star verificationは成功。SPIDER repository securityだけは [run 44977284349](https://github.com/k999ln/rock/actions/runs/44977284349) / job 137069898394で停止。履歴中の `lib/noah-haptics.ts:2` の公開localStorage設定名が5件、`docs/design-validation/noah/noah-connect.test.mjs:85` の過去テスト値が3件、計8候補。固定された審査済みpolicyの検査であり、除外追加・検査無効化・履歴書換えは行っていない。全CI greenやmainへのマージ完了とは記録しない。PR #377はmain向けdraftを保持。
+
+
+### 2026-11-22 SPIDER履歴検査の修正と公開190の保全（PR #377）
+
+検知8件の原文を確認し、公開localStorage設定名（5履歴）と `looksLikeNoahSecret` の合成拒否入力（3履歴）の2値と判定。`.github/spider/gitleaks.toml` で既存の既定規則を継承し、規則・完全なファイルパス・完全な値のANDだけを追加した。監査根拠を `public-value-provenance.json` の追加レビューへ記録し、過去レビューの件数とHEADは保持した。履歴書換え、規則停止、ディレクトリ一括除外は行わない。CIのcontrolは検証済みポリシーcommit `9ea66b48ff69cce88f5f8b160ba3885ca1a1cc1a` に固定する。
+
+Gitleaks 8.30.1公式配布のchecksum照合済みMacバイナリで `GITLEAKS_BINARY=... python3 -B -m unittest discover -s tests -p 'test_spider_*.py'` は20件成功。同一パスへの別値・別プロバイダー鍵と、同じ値の別パスコピーは引き続き検出。最初のローカル履歴走査はSCANNER_FAILEDで未完了のため、クリーンの証拠には使わない。全履歴の確定結果は固定版ポリシーを使用するGitHub Actionsで確認する。
+
+main `062fbb456` の検索・モバイル試験修正を統合し、公開中の並び替えボタン・掲載可否判定・共有機能を保持。統合後の関連21試験・型検査成功。公開190/source `4401738ccc3160cc34c4eae10c497ddb465ebbcd`（並行担当Git `4dae9492e`）のホーム告知撤去も取り込み、法人/組合せの独立ページとデータは維持した。最初の手元verifyはOpenSSL 3のPATH不足で停止したため、修正した環境で全体を再実行する。検査完了・main統合の結果はPRへ追記する。
+
+GitHub Actions [SPIDER run44979417145](https://github.com/k999ln/rock/actions/runs/44979417145)、job137076412997で `8e178d08981307e7b499044cc6df6e340a36ba51` の全HEAD到達履歴検査が成功し、`SPIDER clean: 0 candidates` を確認。固定ポリシー試験・秘密値を出さない境界試験・SPIDER修復回帰も成功した。最終全体CIとmain統合はPR #377に最新HEADを結び付けて記録する。
+
+追補: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は統合実装 `8e178d08` と記録更新 `1d5552f3` の内容で全工程exit0（主4,933成功/5skip/0失敗、API1,918、CSV385、ビルド・mission/work/botまで）。その後mainへ入ったPR #389 / `6692661b` も履歴ごと取り込み、eSIM再開・利用明細の115試験と統合production buildが成功。再ビルドしたローカルWorkerの8経路/8ヘッダーを実測し `data/web-security-response-current.json` を再採取した。新規の空ローカルD1は共通基盤テーブルがないため起動用migrationが停止し、ヘッダー実測は直接local Workerを起動して実施（本番DBは操作していない）。最終統合HEADの全CIをPRに記録して受け入れる。
+
+公開191の追加差分 `bc23805ee70c93eb2b4410a7b09bae323b6faaf5` の読み込み表示（カードのプレースホルダー、花形マーク、動きを減らす設定への対応）とブラウザ試験を保全。公開元評価の拡張はmainから既に取り込み済み。関連25試験・型検査・lint成功。以後の接続音/振動の新規変更は並行チャットが担当し、本PRから公開サイトを再配備せず公開の最新版を維持する。

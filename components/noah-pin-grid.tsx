@@ -159,7 +159,7 @@ export function NoahSaveSheet({ pin, signedIn, ownerScope, onClose, onChange }: 
   return <dialog ref={dialog} className={styles.sheet} onClose={onClose} aria-labelledby="noah-save-title">
     <header><h2 id="noah-save-title">{NOAH_PIN_TEXT.saveTo}</h2><button type="button" onClick={() => dialog.current?.close()} aria-label="閉じる"><X size={20} /></button></header>
     <p className={styles.sheetPin}>{pin.name}</p>
-    {!signedIn ? <p><Link href={`/account?returnTo=${encodeURIComponent(typeof window === 'undefined' ? '/noah' : window.location.pathname + window.location.search)}`}>{NOAH_PIN_TEXT.signIn}</Link></p> : <>
+    {!signedIn ? <p><Link href={`/noah/account?returnTo=${encodeURIComponent(typeof window === 'undefined' ? '/noah' : window.location.pathname + window.location.search)}`}>{NOAH_PIN_TEXT.signIn}</Link></p> : <>
       {error && <p role="alert" className={styles.error}>{error}</p>}
       {boards === null && !error && <p><output>{NOAH_PIN_TEXT.more}</output></p>}
       {boards && boards.length > 0 && <ul className={styles.boardList}>{boards.map((board) => <li key={board.id}>

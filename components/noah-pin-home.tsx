@@ -6,7 +6,8 @@ import NoahLoading from './noah-loading';
 import styles from './noah-pins.module.css';
 type Page={items:NoahPinView[];nextCursor:string|null;ownerScope:string|null;total:number};
 export default function NoahPinHome({fallback,searchQuery='',initialSource='',onClearQuery}:{fallback?:ReactNode;searchQuery?:string;initialSource?:string;onClearQuery?:()=>void}) {
-  const [source,setSource]=useState(initialSource),[order,setOrder]=useState('hot'),[attempt,setAttempt]=useState(0);
+  const [source,setSource]=useState(initialSource),[attempt,setAttempt]=useState(0);
+  const [order,setOrder]=useState<'hot'|'new'>('hot');
   const [state,setState]=useState<{key:string;page?:Page;error?:string;more?:boolean}>();
   const key=new URLSearchParams({q:searchQuery,source,order,cursor:'0'}).toString(),current=state?.key===key?state:undefined;
   const generation=useRef(0);
@@ -47,11 +48,14 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='',on
     else setState({...current,error:'非表示にできませんでした。再試行してください。'});
   }
   return <section id="noah-collection" className={styles.home} aria-label="Agent一覧">
-    <div className={styles.feedHeading}><h2>Agentを見つける</h2>{current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}</div>
+    <div className={styles.feedHeading}><h2>{source && source!=='noah'?'新しく見つかったAgent':'Agentを見つける'}</h2>{current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}</div>
     <div className={styles.filters} aria-label="Agentを絞り込む">{[['','すべて'],['noah','接続できる'],['discovered','新しく見つかった'],...NOAH_COLLECTION_SOURCES.map(s=>[s,NOAH_COLLECTION_LABELS[s]])].map(([value,label])=><button key={value} type="button" aria-pressed={source===value} onClick={()=>setSource(value)}>{label}</button>)}</div>
-    <select className={styles.recovery} aria-label="並び" value={order} onChange={event=>setOrder(event.target.value)}><option value="hot">新しく使いやすい順</option><option value="new">出た順</option></select>
+    {source!=='noah' && <div className={styles.filters} aria-label="並び">
+      <button type="button" aria-pressed={order==='hot'} onClick={()=>setOrder('hot')}>新しく使いやすい順</button>
+      <button type="button" aria-pressed={order==='new'} onClick={()=>setOrder('new')}>出た順</button>
+    </div>}
     {(source || searchQuery && onClearQuery) && <button type="button" className={styles.recovery} onClick={()=>{setSource('');onClearQuery?.();}}>検索条件をクリア</button>}
-    {!current && <div className={styles.status}><NoahLoading label="読み込んでいます…"/></div>}
+    {!current && <NoahLoading label="読み込んでいます…" variant="cards"/>}
     {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" className={styles.recovery} onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
     {current?.page?.items.length===0 && <p className={styles.status}>この条件のAgentはまだありません。</p>}
     {current?.page && <NoahPinGrid items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
