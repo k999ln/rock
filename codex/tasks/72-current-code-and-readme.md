@@ -63,3 +63,5 @@ main統合: PR321は`37ef2bfd`へmerge済み。merge後verifyはbrowser fixture�
 仕上げ時の再照合: PR #17がmainへ統合されたため、最新main `b56d8e83b39fd946e4f5330eba0907bf36425172` を通常mergeで取り込み、追記履歴を両側保全。現mainのverify run45038039086も成功。新PR #18（無料Workersの公式MCP3種）・#19（実モデル通信修正）の未マージ作業と個別成功の記録を追記し、Noah本番の全体受入とは分けた。
 
 本更新の検証: 初期base42cf4b6上の全verifyは主要5,162成功・5skip・失敗0、型/lint/build、Web asset欠落0、仕事API1,918・CSV385まで成功。末尾work:checkでH1生成文書の未同期を検出し、生成同期後にwork:check・bot:check成功。先行試行の共有依存パス由来2失敗は、同じlockの専用コピーへ変更後、該当13試験と上記主要試験全体で解消。最新main取り込み後は進捗・設計・DB・mission・work・botと差分を再検査する。ローカルverifyの単一実行exit0とは記載しない。
+
+台帳更新: [PR #20](https://github.com/iceiceice999/rock/pull/20)。最新main取り込み後のproject:check・design:check・database:check・mission:check・work:check・bot:check・git diff --checkは成功。最終独立検収も合格。最終HEADのCIとmain統合はPRを参照する。

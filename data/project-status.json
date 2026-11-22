@@ -13333,6 +13333,7 @@
         "state": "OPEN",
         "scope": "実モデル通信修正と6種の個別成功記録。修正未公開。Containers本番受入や6種一括の成功とは区別。"
       }
-    ]
+    ],
+    "pullRequest": "https://github.com/iceiceice999/rock/pull/20"
   }
 }
