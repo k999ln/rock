@@ -83,3 +83,7 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 証拠は `work/noah-tap-feedback/work/noah-production-209/` の `publication.json`、`model-probe.json`、`real-model-guarded.log`、`model-filesystem-diagnostic.log`、`stdio-regressions.log`、`pixel-roundtrip.json`、`pixel-feedback.json`、`pixel-vibrator.txt`、`pixel-result-reloaded.png`。キーや本人の既存データを含めず、途中の失敗も保存。全体verifyとGit/公開の最終結果は受入後に追記する。
 
 - [PR #19](https://github.com/iceiceice999/rock/pull/19): `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0（主要5,163成功・5skip・失敗0、API1,918・CSV385、型/lint/build/資産/mission/work/bot成功）。最終の記録と試験出力表示の更新後にも `npm run design:check` / `npm run lint:product` 成功。GitHub CI・マージ・公開の状態はPRへ追記する。
+
+## 公開210のスマホ検索補正（2026-11-23）
+
+PixelでMemoryを検索した際、従来の掲載familyだけを対象にした「接続できる」では公式CLIが出ず、「すべて」に切り替える必要があった。詳細の固定配布元・対応profile判定を一覧でも利用し、設定済みの無料クラウド3種類を含める。未設定・無料版非対応・類似URLは含めず、保存/評価IDや一覧デザインは維持。関連14試験成功。全体検査とPR・公開結果は受入後に記録する。

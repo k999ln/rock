@@ -1,12 +1,32 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createNoahProjectApi, noahProjectDetail } from '../lib/noah-project-api.ts';
+import { createNoahProjectApi, noahProjectDetail, withNoahCloudAvailability } from '../lib/noah-project-api.ts';
+import { selectNoahDirectory } from '../lib/noah-agent-directory.ts';
+import { NOAH_FREE_CLOUD_PROFILES } from '../lib/noah-cloud-contract.ts';
 import { noahCardHref } from '../lib/noah-project-view.ts';
 const id=`project-${'a'.repeat(64)}`;
 const entry=(href='https://github.com/maker/agent')=>({card:{id,feedbackId:id,name:'Agent',summary:'Works',provider:'maker',host:new URL(href).hostname,external:true,href,sources:[{source:'github',sourceUrl:href,observedAt:123,author:'maker',metrics:{stars:5}}]},families:[],observedAt:123});
 const request=(query='')=>new Request(`https://noah.test/api/noah/discover/project?id=${id}${query}`);
 const space=()=>entry('https://huggingface.co/spaces/maker/agent');
 const info={id:'maker/agent',private:false,host:'https://maker-agent.hf.space',runtime:{stage:'RUNNING'}};
+void test('deployed official CLI profiles appear in connectable search without inventing listed families',()=>{
+  const rows=['memory','filesystem','sequentialthinking'].map(name=>({...entry(`https://hub.docker.com/r/mcp/${name}`),card:{...entry(`https://hub.docker.com/r/mcp/${name}`).card,name}}));
+  const before=structuredClone(rows), available=withNoahCloudAvailability(rows,true,NOAH_FREE_CLOUD_PROFILES);
+  assert.equal(selectNoahDirectory(available,'noah','').length,3);
+  const memory=selectNoahDirectory(available,'noah','Memory')[0];
+  assert.equal(noahProjectDetail(memory,true,NOAH_FREE_CLOUD_PROFILES).connection.profile,'memory');
+  assert.equal(memory.card.run,'phone');assert.deepEqual(memory.families,[]);
+  assert.equal(memory.card.feedbackId,rows[0].card.feedbackId);assert.equal(noahCardHref(memory.card),noahCardHref(rows[0].card));
+  assert.deepEqual(rows,before,'availability must not mutate the source cards or their saved identities');
+});
+void test('disabled, unsupported and lookalike CLI entries stay out of connectable search',()=>{
+  const rows=[entry('https://hub.docker.com/r/mcp/memory'),entry('https://github.com/NousResearch/hermes-agent'),entry('https://hub.docker.com/r/other/memory'),entry('https://github.com/modelcontextprotocol/servers')];
+  const available=withNoahCloudAvailability(rows,true,NOAH_FREE_CLOUD_PROFILES);
+  assert.equal(selectNoahDirectory(available,'noah','').length,1);
+  assert.equal(selectNoahDirectory(withNoahCloudAvailability(available,false,NOAH_FREE_CLOUD_PROFILES),'noah','').length,0);
+  assert.equal(selectNoahDirectory(withNoahCloudAvailability(rows,true,[]),'noah','').length,0);
+  assert.equal(selectNoahDirectory(available,'','').length,4,'all entries remain discoverable');
+});
 void test('collected cards and ready families resolve internally without treating provenance as execution',async()=>{
   const row=entry(); assert.match(noahCardHref(row.card),/^\/noah\/discover\/agent\?id=project-/);
   const setup=noahProjectDetail(row).connection;assert.equal(setup.kind,'setup');assert.equal(new URL(setup.importHref,'https://noah.test').searchParams.get('sourceUrl'),row.card.href);
