@@ -18,7 +18,12 @@ replies = {}
 lock = threading.Lock()
 started = False
 child = None
-PROFILE = {'hermes': ('hermes-agent', '0.19.0', 'from run_agent import AIAgent'), 'boss': ('boss-agent-cli', '3.4.151', 'import boss_agent_cli')}
+PROFILE = {
+    'hermes': ('0.19.0', '/opt/hermes/bin/python', '/opt/noah/hermes_sdk.py',
+               "from run_agent import AIAgent; import importlib.metadata; assert importlib.metadata.version('hermes-agent') == '0.19.0'"),
+    'boss': ('3.4.151', '/opt/boss/bin/python', '/opt/noah/boss_cli.py',
+             "import boss_agent_cli; import importlib.metadata; assert importlib.metadata.version('boss-agent-cli') == '3.4.151'"),
+}
 # Inherited hard bounds also apply to subprocesses created by official Agent tools.
 resource.setrlimit(resource.RLIMIT_FSIZE, (8 * 1024 * 1024, 8 * 1024 * 1024))
 resource.setrlimit(resource.RLIMIT_NPROC, (96, 96))
@@ -116,7 +121,7 @@ class Server(http.server.BaseHTTPRequestHandler):
                 finally:
                     replies.pop(call_id, None)
                 return
-            if self.path != '/run' or value.get('profile') not in PROFILE:
+            if self.path != '/run' or not isinstance(value.get('profile'), str) or value['profile'] not in PROFILE:
                 self.output({'error': 'not_found'}, 404)
                 return
             with lock:
@@ -124,9 +129,9 @@ class Server(http.server.BaseHTTPRequestHandler):
                     self.output({'error': 'already_started'}, 409)
                     return
                 started = True
-            profile = value['profile']; package, version, probe = PROFILE[profile]
+            profile = value['profile']; version, python, adapter, probe = PROFILE[profile]
             if value.get('mode') == 'probe':
-                subprocess.run(['/opt/' + profile + '/bin/python', '-c', probe + '; import importlib.metadata; assert importlib.metadata.version(' + repr(package) + ') == ' + repr(version)], check=True, timeout=35, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run([python, '-c', probe], check=True, timeout=35, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 self.output({'type': 'probe', 'profile': profile, 'version': version})
                 return
             prompt = value.get('prompt')
@@ -134,9 +139,8 @@ class Server(http.server.BaseHTTPRequestHandler):
                 raise ValueError('invalid prompt')
             pathlib.Path('/tmp/request.txt').write_text(prompt)
             env = dict(os.environ, OPENAI_BASE_URL='http://127.0.0.1:8080/v1', NOAH_MODEL='noah-cloud', NO_COLOR='1')
-            adapter = 'hermes_sdk.py' if profile == 'hermes' else 'boss_cli.py'
             log = open('/tmp/run.log', 'wb')
-            child = subprocess.Popen(['/opt/' + profile + '/bin/python', '/opt/noah/' + adapter], env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+            child = subprocess.Popen([python, adapter], env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
             def finish():
                 try:
                     status = child.wait(timeout=210)
