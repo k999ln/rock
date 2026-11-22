@@ -112,9 +112,11 @@ export function createNoahBoardsStore(deps: BoardsDependencies) {
       read<{ id: string; l2_at: number }>('ran', `SELECT f.id, f.l2_at FROM noah_intake_families f LEFT JOIN noah_pin_stats s ON s.family_id = f.id
         WHERE f.level = 2 AND ${LISTED} AND COALESCE(s.votes, 0) <= 0 AND (f.l2_at < ? OR (f.l2_at = ? AND f.id > ?)) ORDER BY f.l2_at DESC, f.id LIMIT ?`,
       [state.ran?.[0] ?? Number.MAX_SAFE_INTEGER, state.ran?.[0] ?? Number.MAX_SAFE_INTEGER, state.ran?.[1] ?? '', want]),
-      read<{ id: string; shuffle: number }>('fresh', `SELECT f.id, f.shuffle FROM noah_intake_families f LEFT JOIN noah_pin_stats s ON s.family_id = f.id
-        WHERE f.level = 1 AND ${LISTED} AND COALESCE(s.votes, 0) <= 0 AND (f.shuffle < ? OR (f.shuffle = ? AND f.id > ?)) ORDER BY f.shuffle DESC, f.id LIMIT ?`,
-      [state.fresh?.[0] ?? 1_000_000_000, state.fresh?.[0] ?? 1_000_000_000, state.fresh?.[1] ?? '', want]),
+      // まだ実績の無い物は、新しく握手が通った順。押すだけで試せる物は 3 日分新しく扱う（task 121「新しく使いやすい物が上」。NOAH_PIN_RANK.freshOneTapMs）。
+      read<{ id: string; fresh: number }>('fresh', `SELECT id, fresh FROM (SELECT f.id, COALESCE(k.l1_at, f.updated_at) + f.one_tap * ${NOAH_PIN_RANK.freshOneTapMs} AS fresh FROM noah_intake_families f
+        LEFT JOIN noah_intake_checks k ON k.candidate_id = f.representative_id LEFT JOIN noah_pin_stats s ON s.family_id = f.id
+        WHERE f.level = 1 AND ${LISTED} AND COALESCE(s.votes, 0) <= 0) WHERE fresh < ? OR (fresh = ? AND id > ?) ORDER BY fresh DESC, id LIMIT ?`,
+      [state.fresh?.[0] ?? Number.MAX_SAFE_INTEGER, state.fresh?.[0] ?? Number.MAX_SAFE_INTEGER, state.fresh?.[1] ?? '', want]),
     ]);
     const personalIds = first && owner ? await personal(owner) : [];
     const all = await pins([...new Set([...personalIds, ...popularRows.map((r) => r.id), ...ranRows.map((r) => r.id), ...freshRows.map((r) => r.id)])], owner);
@@ -134,7 +136,7 @@ export function createNoahBoardsStore(deps: BoardsDependencies) {
     };
     advance('popular', popularRows, (row) => row.hot);
     advance('ran', ranRows, (row) => row.l2_at);
-    advance('fresh', freshRows, (row) => row.shuffle);
+    advance('fresh', freshRows, (row) => row.fresh);
     for (const id of personalIds) if (taken.has(id)) next.shown.push(id);
     for (const id of state.shown) if (!next.shown.includes(id)) next.shown.push(id);
     next.shown = next.shown.slice(0, 30);

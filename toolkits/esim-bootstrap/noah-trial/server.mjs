@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { routeId } from '../../../services/noah-test-runtime/src/esim-trial/cloud-packages.mjs';
 import { readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -10,6 +11,13 @@ import {
   createDecipheriv,
 } from 'node:crypto';
 import { NoahTrial, newCredential, TRIAL_MS, TrialError } from './trial.mjs';
+import {
+  registerAddress,
+  recipientAddress,
+} from '../../../services/operator-dock/src/distribution-address.ts';
+import { lineEligibility } from '../../../services/operator-dock/src/distribution-api.ts';
+import { runPlans } from '../../../services/operator-dock/src/distribution-plans.ts';
+import { deliverNotices } from '../../../services/operator-dock/src/distribution-notices.ts';
 import { trialDock } from './dock.mjs';
 import { OperatorError } from '../../../services/operator-dock/src/validation.ts';
 import {
@@ -17,9 +25,16 @@ import {
   recipientHasPending,
   receiveAssignment,
 } from '../../../services/operator-dock/src/distribution.ts';
-import { base, esc, layout, screen, cloudScreen } from './view.mjs';
+import {
+  base,
+  esc,
+  layout,
+  screen,
+  cloudScreen,
+  addressScreen,
+} from './view.mjs';
 
-async function readForm(req) {
+async function readForm(req, maxBytes) {
   if (
     req.headers['content-type']?.split(';')[0] !==
     'application/x-www-form-urlencoded'
@@ -29,7 +44,7 @@ async function readForm(req) {
   let length = 0;
   for await (const chunk of req) {
     length += chunk.length;
-    if (length > 2048) throw new TrialError(413, '入力が長すぎます。');
+    if (length > maxBytes) throw new TrialError(413, '入力が長すぎます。');
     chunks.push(chunk);
   }
   const form = new URLSearchParams(Buffer.concat(chunks).toString('utf8'));
@@ -90,10 +105,11 @@ export async function startTrialServers(
     mobilePort = 0,
     dockPort = 0,
     dockPassword = newCredential(),
+    handsetSlot = 1,
   } = {},
 ) {
   const origins = {};
-  const sessionKey = randomBytes(32);
+  const sessionKey = trial.sessionKey(handsetSlot);
   let cookie;
   const cookieOptions = `; Path=${base}; HttpOnly; SameSite=Strict; Secure`;
   const forMember = (act) => async (context) => {
@@ -114,7 +130,18 @@ export async function startTrialServers(
       },
     ],
     [base + 'enroll', forMember((owner) => trial.enroll(owner))],
-    [base + 'install', forMember((owner) => trial.install(owner))],
+    [base + 'install', forMember((owner) => trial.install(owner, handsetSlot))],
+    [
+      base + 'address',
+      forMember(async (owner, { dedicated, fields }) => {
+        await trial.gate(owner, dedicated);
+        await registerAddress(
+          await trial.runtime.distributionDb(),
+          owner,
+          fields,
+        );
+      }),
+    ],
     [
       base + 'receive',
       forMember(async (owner, { dedicated, fields }) => {
@@ -172,24 +199,65 @@ export async function startTrialServers(
           res.end();
           return;
         }
-        const envelope = (req.headers.cookie ?? '')
+        const cookies = (req.headers.cookie ?? '')
           .split(';')
-          .map((v) => v.trim())
-          .find((v) => v.startsWith(cookie + '='))
-          ?.slice(cookie.length + 1);
-        const token = openSession(sessionKey, envelope);
+          .map((v) => v.trim());
+        const cookieValue = (name) =>
+          cookies.find((v) => v.startsWith(name + '='))?.slice(name.length + 1);
+        const token = openSession(sessionKey, cookieValue(cookie));
+        const selectionKey = cookie + '_selected';
+        const selection = cookieValue(selectionKey);
+        const clearSelection = () =>
+          res.setHeader(
+            'Set-Cookie',
+            selectionKey + '=' + cookieOptions + '; Max-Age=0',
+          );
+        const accountHere = trial.session(token);
+        const handset = accountHere && trial.phone(accountHere.owner);
+        if (dedicated && handset && handset.slot !== handsetSlot)
+          throw new TrialError(403, 'この端末の回線を確認できませんでした。');
+        if (req.method === 'GET' && path === base + 'address') {
+          const member = trial.session(token);
+          if (!member)
+            throw new TrialError(401, '招待コードで入り直してください。');
+          await trial.gate(member.owner, dedicated);
+          res.end(
+            addressScreen(
+              await recipientAddress(
+                await trial.runtime.distributionDb(),
+                member.owner,
+              ),
+            ),
+          );
+          return;
+        }
         if (req.method === 'GET' && path.split('?')[0] === base + 'agents') {
           const account = trial.session(token);
+          const params = new URL(path, origin).searchParams;
+          const agent = params.get('agent') ?? undefined,
+            work = params.get('work') ?? undefined;
+          if (
+            routeId(agent) &&
+            !work &&
+            (!account || !dedicated || !trial.phone(account.owner))
+          ) {
+            res.setHeader(
+              'Set-Cookie',
+              selectionKey + '=' + agent + cookieOptions + '; Max-Age=900',
+            );
+            res.writeHead(303, { Location: base });
+            res.end();
+            return;
+          }
           if (!account)
             throw new TrialError(401, '招待コードで入り直してください。');
-          const agent =
-            new URL(path, origin).searchParams.get('agent') ?? undefined;
           const state = await trial.cloudWork(
             account.owner,
             dedicated,
             'list',
-            { agent },
+            { agent, work },
           );
+          if (selection) clearSelection();
           res.end(cloudScreen(state, randomUUID()));
           return;
         }
@@ -205,6 +273,15 @@ export async function startTrialServers(
           ) {
             await trial.gate(session.owner, true);
             verified = true;
+            if (routeId(selection)) {
+              clearSelection();
+              res.writeHead(303, {
+                Location:
+                  base + 'agents?agent=' + encodeURIComponent(selection),
+              });
+              res.end();
+              return;
+            }
           }
           res.end(
             screen({
@@ -212,12 +289,19 @@ export async function startTrialServers(
               order,
               dedicated,
               verified,
+              selectedAgent: routeId(selection) ? selection : undefined,
               origins,
               installed: session && !!trial.phone(session.owner),
               freeLine:
                 session &&
                 (!order || order.state === 'requested') &&
                 (await trial.freeLineAvailable()),
+              registered:
+                verified &&
+                !!(await recipientAddress(
+                  await trial.runtime.distributionDb(),
+                  session.owner,
+                )),
               assignments: verified
                 ? await recipientAssignments(
                     await trial.runtime.distributionDb(),
@@ -228,7 +312,7 @@ export async function startTrialServers(
                 !dedicated &&
                 session &&
                 order?.access === 'active' &&
-                trial.phone(session.owner) &&
+                (await trial.runtimePermit(session.owner)).active &&
                 (await recipientHasPending(
                   await trial.runtime.distributionDb(),
                   session.owner,
@@ -242,8 +326,21 @@ export async function startTrialServers(
           throw new TrialError(404, 'ページが見つかりません。');
         if (req.headers.origin !== origin)
           throw new TrialError(403, 'この試験画面から操作してください。');
-        const fields = await readForm(req);
+        const fields = await readForm(
+          req,
+          path === base + 'address' ? 8192 : 2048,
+        );
         await action({ fields, res, token, dedicated });
+        if (
+          selection &&
+          (path === base + 'logout' || path === base + 'revoke')
+        ) {
+          const already = res.getHeader('Set-Cookie');
+          res.setHeader('Set-Cookie', [
+            ...(already ? [String(already)] : []),
+            selectionKey + '=' + cookieOptions + '; Max-Age=0',
+          ]);
+        }
         res.writeHead(303, {
           Location: path.startsWith(base + 'agents/')
             ? base +
@@ -296,9 +393,32 @@ export async function startTrialServers(
     ]);
     throw error;
   }
+  let processing;
+  const tick = () => {
+    if (!processing)
+      processing = (async () => {
+        const db = await trial.runtime.distributionDb();
+        const agent = await trial.runtime.runtime.getWorker(
+          'noah-distribution-agent',
+        );
+        await runPlans(db, lineEligibility(agent), trial.now());
+        await deliverNotices(db, agent);
+      })()
+        .catch(() => {
+          /* Durable pending rows are retried on the next tick. */
+        })
+        .finally(() => {
+          processing = undefined;
+        });
+  };
+  tick();
+  const timer = setInterval(tick, 300);
+  timer.unref();
   return {
     origins,
     async close() {
+      clearInterval(timer);
+      await processing;
       await Promise.all([
         closeServer(general),
         closeServer(mobile),

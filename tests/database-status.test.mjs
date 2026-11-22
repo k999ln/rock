@@ -19,11 +19,10 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 241);
-  assert.deepEqual(
-    report.boundaries.filter(({ tables }) => tables.includes('distribution_assignments')).map(({ id }) => id),
-    ['operator-dock-d1'],
-  );
+  assert.equal(report.summary.tableCount, 245);
+  for (const table of ['distribution_assignments','distribution_lots','distribution_addresses','distribution_plans','distribution_occurrences']) {
+    assert.deepEqual(report.boundaries.filter(boundary=>boundary.tables.includes(table)).map(b=>b.id),['operator-dock-d1'],table);
+  }
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');

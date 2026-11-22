@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 241,
+    "tableCount": 245,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -654,15 +654,19 @@
         "services/operator-dock/migrations/"
       ],
       "tables": [
+        "distribution_addresses",
         "distribution_assignments",
+        "distribution_lots",
+        "distribution_occurrences",
+        "distribution_plans",
         "operator_audit_events",
         "operator_device_commands",
         "operator_device_request_nonces",
         "operator_managed_devices",
         "operator_webauthn_assertions"
       ],
-      "expectedAppliedThrough": "0003_distribution.sql",
-      "tableCount": 6,
+      "expectedAppliedThrough": "0005_distribution_plans.sql",
+      "tableCount": 10,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / isolated Operator Dock Worker",

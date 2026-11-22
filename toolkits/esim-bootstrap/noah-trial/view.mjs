@@ -37,6 +37,8 @@ export function screen({
   installed,
   freeLine,
   assignments = [],
+  registered,
+  selectedAgent,
   notice,
   origins,
 }) {
@@ -76,19 +78,12 @@ export function screen({
   else if (!dedicated || !verified)
     display = layout(
       '回線とお知らせ',
-      `<section><h2>${notice ? '更新があります' : '模擬回線を追加しました'}</h2><p>専用回線を開くと、自分に指定された配給を確認できます。</p>${link(origins.mobile, '模擬専用回線でNoahを開く')}</section>`,
+      `<section><h2>${notice ? '更新があります' : '模擬回線を追加しました'}</h2><p>専用回線を開くと、自分に指定された配給を確認できます。</p>${link(origins.mobile, selectedAgent ? '専用回線で選んだAgentに戻る' : '模擬専用回線でNoahを開く')}</section>`,
     );
   else {
     display = layout(
       'あなたへの配給',
-      assignments.length
-        ? assignments
-            .map(
-              (a) =>
-                `<section><h2>${esc(a.item)}</h2><p>${esc(a.quantity)}</p><p>${esc(a.pickup)}</p>${a.received_at == null ? form('receive', '受け取りました', hidden('id', a.id)) : '<p>受取済み</p>'}</section>`,
-            )
-            .join('')
-        : '<p>いま指定されている配給はありません。</p>',
+      distributionContent(registered, assignments, base),
     );
   }
   const agents =
@@ -99,8 +94,43 @@ export function screen({
   return display.replace('</main>', controls + '</main>');
 }
 
+export function distributionContent(registered, assignments, root) {
+  return (
+    `<section><h2>配送先</h2><p>${registered ? '登録済みです。変更は次の配給指定から反映されます。' : '配給を受け取るには、先に配送先を登録してください。'}</p><a href="${root}address">${registered ? '配送先を確認・変更' : '配送先を登録'}</a></section>` +
+    (assignments.length
+      ? assignments
+          .map(
+            (a) =>
+              `<section><h2>${esc(a.item)}</h2><p>${esc(a.quantity)}</p><p>${esc(a.pickup)}</p>${a.received_at == null ? (registered ? `<form method="post" action="${root}receive">${hidden('id', a.id)}<button>受け取りました</button></form>` : '<p>受取には配送先登録が必要です。</p>') : '<p>受取済み</p>'}</section>`,
+          )
+          .join('')
+      : '<p>いま指定されている配給はありません。</p>')
+  );
+}
+
+export function addressScreen(address, root = base, hosted = false) {
+  const fields = [
+    ['name', '宛名', 'name', 80],
+    ['postal', '郵便番号', 'postal-code', 10],
+    ['prefecture', '都道府県', 'address-level1', 16],
+    ['city', '市区町村', 'address-level2', 80],
+    ['street', '町名・番地', 'address-line1', 140],
+    ['building', '建物名・部屋番号（任意）', 'address-line2', 100],
+  ]
+    .map(
+      ([name, label, autocomplete, max]) =>
+        `<label>${label}<input name="${name}" autocomplete="shipping ${autocomplete}" maxlength="${max}" value="${esc(address?.[name] ?? '')}"${name === 'building' ? '' : ' required'}></label>`,
+    )
+    .join('');
+  return layout(
+    '配給の配送先',
+    `<p>配給品を届けるため、運営が配送先を確認します。${hosted ? '' : '試験には架空の宛名と住所を入力してください。'}</p><form method="post" action="${root}address">${fields}<button>配送先を保存</button></form><a href="${hosted ? root.slice(0, -1) : root}">配給に戻る</a>`,
+    hosted ? 'eSIMクラウド' : undefined,
+  );
+}
+
 export function cloudScreen(
-  { packages, agent, routes, preference, jobs },
+  { packages, agent, routes, automaticRoute, preference, jobs, work },
   id,
   { root = base + 'agents', hosted = false } = {},
 ) {
@@ -118,13 +148,22 @@ export function cloudScreen(
           .join(' · ') +
         '</nav>'
       : '';
-  const choices = [{ id: 'auto', label: '自動（提供元を優先）' }, ...routes];
-  const options = choices
-    .map(
-      (route) =>
-        `<option value="${esc(route.id)}"${route.id === preference ? ' selected' : ''}>${esc(route.label)}</option>`,
-    )
-    .join('');
+  const choices = [
+    { id: 'auto', label: '自動（' + (automaticRoute ?? '接続先待ち') + '）' },
+    ...routes,
+  ];
+  const unavailable =
+    preference !== 'auto' && !routes.some((r) => r.id === preference);
+  const options =
+    (unavailable
+      ? '<option selected disabled value="">前回の実行先は利用できません。選び直してください。</option>'
+      : '') +
+    choices
+      .map(
+        (route) =>
+          `<option value="${esc(route.id)}"${route.id === preference ? ' selected' : ''}>${esc(route.label)}</option>`,
+      )
+      .join('');
   const states = {
     queued: '受付済み',
     waiting: '結果を照会中',
@@ -160,24 +199,28 @@ export function cloudScreen(
             hidden('id', job.id) + hidden('agent', agent),
           )
         : '';
-      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p>${job.result && job.note ? '<p>' + esc(job.note) + '</p>' : ''}<dl>${sections}</dl>${stop}</li>`;
+      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p><small><a href="${esc(root)}?work=${encodeURIComponent(job.id)}">仕事番号 ${esc(job.id)}</a></small></p><p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p>${job.result && job.note ? '<p>' + esc(job.note) + '</p>' : ''}<dl>${sections}</dl>${stop}</li>`;
     })
     .join('');
   return layout(
     'クラウドでAgentを使う',
     `${menu}<section><h2>${esc(agentName)}</h2>
     <p>${hosted ? 'この試験の実行料は0円です。' : '0円の模擬環境です。各接続先はこのMac上の別のWorkerで動きます。'}受付後は別のアプリに移れます。</p>
-    ${jobForm(
-      'start',
-      'バックグラウンドで実行',
-      hidden('id', id) +
-        hidden('agent', agent) +
-        '<label>実行先<select name="route">' +
-        options +
-        '</select></label><label>文章<input required name="text" maxlength="500"></label>',
-    )}</section>
+    ${
+      routes.length
+        ? jobForm(
+            'start',
+            'バックグラウンドで実行',
+            hidden('id', id) +
+              hidden('agent', agent) +
+              '<label>実行先<select required name="route">' +
+              options +
+              '</select></label><label>文章<input required name="text" maxlength="500"></label>',
+          )
+        : '<p>利用可能な実行先がありません。</p>'
+    }</section>
     <section><h2>仕事と成果</h2>${history ? '<ul>' + history + '</ul>' : '<p>依頼はありません。</p>'}
-    <a href="${esc(root)}?agent=${encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>`,
+    <a href="${esc(root)}?${work ? 'work=' + encodeURIComponent(work) : 'agent=' + encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>${hosted ? '<p><a href="/api/noah/cloud-work/distribution">あなたへの配給</a></p>' : ''}`,
     hosted ? 'eSIMクラウド' : '開発用・模擬回線',
   );
 }

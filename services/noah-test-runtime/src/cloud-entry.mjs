@@ -1,4 +1,13 @@
-import { cloudScreen } from '../../../toolkits/esim-bootstrap/noah-trial/view.mjs';
+import {
+  distributionAction,
+  distributionRoot,
+} from '../../../lib/noah-distribution-routes.mjs';
+import {
+  cloudScreen,
+  distributionContent,
+  layout,
+  addressScreen,
+} from '../../../toolkits/esim-bootstrap/noah-trial/view.mjs';
 export { CloudWork } from './esim-trial/cloud-work.mjs';
 export { TextResult } from './esim-trial/text-agent.mjs';
 import textAgent from './esim-trial/text-agent.mjs';
@@ -19,25 +28,68 @@ export default {
     // the account. LINE separately verifies the carrier evidence for this request.
     if (!env.LINE) return failure('実回線の接続確認を準備しています。', 503);
     const { pathname } = new URL(request.url);
+    const distribution = distributionAction(request.method, pathname);
     const action =
-      request.method === 'GET' && pathname === root
+      distribution ??
+      (request.method === 'GET' && pathname === root
         ? 'list'
         : request.method === 'POST' && pathname === root + '/start'
           ? 'start'
           : request.method === 'POST' && pathname === root + '/stop'
             ? 'stop'
-            : null;
+            : null);
     if (!action) return failure('操作を確認してください。', 404);
     const account = request.headers.get('X-Noah-Account');
     if (!account) return failure('利用者を確認してください。', 403);
+    const recipient = async (owner, fields = {}) => {
+      if (!env.RECIPIENT)
+        return failure('配給台帳との接続を準備しています。', 503);
+      const h = { 'X-Noah-Account': account };
+      if (owner) h['X-Noah-Owner'] = owner;
+      const r = await env.RECIPIENT.fetch(
+        'https://recipient.invalid/' + distribution,
+        { method: 'POST', headers: h, body: JSON.stringify(fields) },
+      );
+      if (!r.ok)
+        return failure(
+          (await r.json()).error ?? '配給情報を読み込めません。',
+          r.status,
+        );
+      const data = await r.json(),
+        path = distributionRoot + '/';
+      if (['save-address', 'receive'].includes(distribution))
+        return new Response(null, {
+          status: 303,
+          headers: { ...headers, Location: distributionRoot },
+        });
+      const html =
+        distribution === 'notice'
+          ? layout(
+              'お知らせ',
+              `<p>${data.updated ? '更新があります。' : '新しいお知らせはありません。'}</p><a href="${distributionRoot}">専用回線で配給を開く</a>`,
+              'Noah',
+            )
+          : distribution === 'address'
+            ? addressScreen(data.address, path, true)
+            : layout(
+                'あなたへの配給',
+                distributionContent(data.registered, data.assignments, path),
+                'eSIMクラウド',
+              );
+      return new Response(html, {
+        headers: { ...headers, 'Content-Type': 'text/html; charset=utf-8' },
+      });
+    };
+    if (distribution === 'notice') return recipient(null);
     const evidence = request.headers.get('X-Noah-Carrier-Proof');
     if (!evidence || evidence.length > 8192)
       return failure('専用回線から接続してください。', 403);
     let input = {
       agent: new URL(request.url).searchParams.get('agent') ?? undefined,
+      work: new URL(request.url).searchParams.get('work') ?? undefined,
     };
     let bodyBytes = new Uint8Array();
-    if (action !== 'list') {
+    if (request.method === 'POST') {
       if (
         request.headers.get('content-type')?.split(';')[0] !==
         'application/x-www-form-urlencoded'
@@ -92,6 +144,7 @@ export default {
       !/^[a-zA-Z0-9._:-]{1,128}$/.test(grant.owner)
     )
       return failure('回線の利用者が一致しません。', 403);
+    if (distribution) return recipient(grant.owner, input);
     const jobs = env.JOBS.get(env.JOBS.idFromName(grant.owner));
     const response = await jobs.fetch('https://jobs.invalid/' + action, {
       method: 'POST',
@@ -128,5 +181,13 @@ import { WorkerEntrypoint } from 'cloudflare:workers';
 export class NoahTextAgent extends WorkerEntrypoint {
   fetch(request) {
     return textAgent.fetch(request, this.env);
+  }
+}
+
+export { DistributionWork } from './esim-trial/distribution-work.mjs';
+import { dispatchNotice } from './esim-trial/distribution-work.mjs';
+export class NoahDistributionAgent extends WorkerEntrypoint {
+  fetch(request) {
+    return dispatchNotice(request, this.env);
   }
 }

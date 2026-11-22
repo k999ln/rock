@@ -21,7 +21,7 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 10 | [10-esim-provider-research.md](10-esim-provider-research.md) | ARF 対応 MVNE 候補比較と RFQ 質問票 | |
-| 11 | [11-esim-first-live.md](11-esim-first-live.md) | esim-go sandbox → Eve 起動 → account 束縛 → Stripe 月額 | ✅ Noahの0円模擬回線・成果受取（PR #378）。運営Dockの指定配給・本人受取（模擬環境）と朝9時の開発指示 ✅ [#382](https://github.com/k999ln/rock/pull/382)。実回線は未受入 |
+| 11 | [11-esim-first-live.md](11-esim-first-live.md) | esim-go sandbox → Eve 起動 → account 束縛 → Stripe 月額 | ✅ Noahの0円模擬回線・成果受取（PR #378）。運営Dockの指定配給・本人受取（模擬環境）と朝9時の開発指示 ✅ [#382](https://github.com/k999ln/rock/pull/382)。✅ 住所登録・ロット在庫・通知Agent・定期配給を模擬回線で検証（[PR #387](https://github.com/k999ln/rock/pull/387)）。実回線は未受入 |
 | 12 | [12-android-carrier-client.md](12-android-carrier-client.md) | carrier privileges を使う Android client と Play 自動導入 | |
 | 13 | [13-ios-universal-link.md](13-ios-universal-link.md) | iOS universal link 導入と PWA 起動 | |
 
@@ -110,3 +110,25 @@
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
 | 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 / 新デザイン・登録情報・委任 PR #371（公開159） / 登録実行基盤・Dock入口 ✅ PR #373（公開161、実サービス登録・100人容量は未受入） / 最新12画面・6言語UI ✅ PR #376（公開163） / 実登録・認証付き成果・失敗復帰 ✅ PR #377（公開164、実スマホ成果は本人報告、100人は合成試験） / 成果カード・画像保存 ✅ PR #376（公開165） / eSIM本人引継ぎ ✅ PR #377（公開167・4,829試験成功、実eSIM連携は未設定） / 透過タブロゴ ✅ PR #377（公開170・独立確認済み） / 4件修正・公開ブラウザ一周 ✅ PR #377（公開173・全体verify 4,844成功/4skip、実機Androidは独立確認中） / 接続・保存の重なり修正 ✅ PR #377（公開175・320/390/1280px確認） / 検索・保存統合と不要ページ撤去 ✅ PR #377（公開178・390px確認） / 会員登録不要 ✅ PR #377（公開179、PixelでTiplineの接続→成果受取→保存から再表示を実測。外部登録・100人負荷は別） / 外部新規登録から成果再表示 ✅ PR #377（Pixel実測、本番100ブラウザ/400要求・同時5人を確認。100人同時実行とeSIMは未受入） / 共通カード・評価統合 ✅ PR #386（公開182、390px/590px・評価反映/取り消し確認） / 元サイト評価の常時表示 ✅ PR #386（公開184、GitHub/HF実数照合） / 元サイト評価へ一本化 ✅ PR #386（公開186、共有機能lint残件あり） |
+
+## 110 番台: Noah — 棚とパッケージ、300 人の試行（2026-11-21）
+
+本人の決定（11-19〜21。[07](../../docs/structure/07-decisions-from-minutes.md)）: 領域ごとのパッケージ、1 つの仕事を最後までやる組合せ、今動かせる物だけ、入口の棚は「稼ぐ・仕事を省く」「教育」「暮らし」、無料は 6 枚までつなげる、まず 300 人に試してもらう。設計は [docs/noah/spec-110-shelf.md](../../docs/noah/spec-110-shelf.md)（110〜113 が、同じ仕様書の章を分けて使う）と [docs/noah/trial-300.md](../../docs/noah/trial-300.md)（114）。型契約と参照実装は docs/contracts/noah-shelf-v1.ts、試験は docs/design-validation/noah/noah-shelf.test.mjs と validate-noah-shelf-v1.py。
+
+| 順 | ローンチ | # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | L5・L8 に足す | 110 | [110-noah-shelf.md](110-noah-shelf.md) | 棚とカード: カードの形、載せる条件（今動かせる物だけ）、運営が動かして確かめる、`/noah/ready` の棚、運営の画面 |✅ [#353](https://github.com/k999ln/rock/pull/353) |
+| 2 | —（出した後） | 111 | [111-noah-shelf-rank.md](111-noah-shelf-rank.md) | 実績の並び（学習なし）、見せた記録、カードをタイムラインへ流す |✅ [#355](https://github.com/k999ln/rock/pull/355) |
+| 2 | —（出した後） | 112 | [112-noah-package-chains.md](112-noah-package-chains.md) | 家の端末のカード、工程をつなぐカード、札の候補、工程の計画へのつなぎ | |
+| 2 | —（出した後） | 113 | [113-noah-plan-limits.md](113-noah-plan-limits.md) | つなげる数を料金ごとに（無料 6 枚・有料 50 枚。数えるのはカード） |✅ [#357](https://github.com/k999ln/rock/pull/357) |
+| 2 | 出した直後 | 114 | [114-noah-trial-300.md](114-noah-trial-300.md) | 300 人の試行: 経路の札、段を終えたかの判定、本人の報告（売れた件数・手取り・掛けた分） |✅ [#354](https://github.com/k999ln/rock/pull/354) |
+| 3 | 一般公開の時に出る | 115 | [../../docs/noah/spec-115-pin-grid.md](../../docs/noah/spec-115-pin-grid.md) | ピンタレスト風のホーム: 今動かせる Agent のグリッド、ボードへ保存・公開・フォロー、学習なしの並び（X の作りの形・Reddit hot・Pixie） |✅ [#375](https://github.com/k999ln/rock/pull/375) |
+
+カードを動かして確かめる事（[カード案](../../docs/services/noah-shelf.md) の 12 枚）、投稿・動画・人への連絡、切り替えを開ける事、本番の migration は、task ではなく本人と運営の作業。
+
+## Agent収集
+
+| # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- |
+| 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ トップ掲載・クラウド移行 #380／UX修正 #384（実ブラウザ検証はtask本文。Xはキー待ち） |
+| 121 | [121-noah-collect-more.md](121-noah-collect-more.md) | 集める場所を増やす（HN・GitHub MCP・HF MCP Space・npm・Docker・awesome一覧・Smithery、Codexが読むX/Reddit/Bluesky）・新しく使いやすい順・握手済みの系列を一覧へ自動で入れる | ✅ #385（本番の配備は Codex） |
