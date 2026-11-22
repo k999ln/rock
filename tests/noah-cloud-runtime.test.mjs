@@ -27,6 +27,7 @@ void test('runtime is private and never accepts browser origins or unknown profi
   assert.equal((await worker.fetch(make({ Authorization: `Bearer ${key}`, Origin: 'https://avoado.si' }), env)).status, 404);
   assert.equal((await worker.fetch(make({ Authorization: `Bearer ${key}` }, { profile: '__proto__' }), env)).status, 400);
   assert.equal((await worker.fetch(make({ Authorization: `Bearer ${key}` }), env)).status, 200);
+  assert.equal((await worker.fetch(make({ Authorization: `Bearer ${key}` }, { action: 'start', distribution: 'b'.repeat(64) }), env)).status, 409);
   assert.equal(calls, 1);
 });
 void test('global budget serializes admission, keeps midnight leases, and releases only the given job', async () => {

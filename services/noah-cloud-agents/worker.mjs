@@ -23,6 +23,7 @@ export default {
     try {
       const body = await read(request);
       if (!body || !/^[a-f0-9]{64}$/.test(body.owner) || !/^project-[a-f0-9]{64}$/.test(body.project) || !Object.hasOwn(profiles, body.profile) || !['status', 'connect', 'disconnect', 'start', 'job', 'stop'].includes(body.action)) return json({ error: 'invalid_request' }, 400);
+      if (['connect', 'start'].includes(body.action) && body.distribution !== profiles[body.profile].sha256) return json({ error: 'Agentの配布版が更新されました。画面を読み直してください。' }, 409);
       return await rpc(env.CONNECTIONS.getByName(`${body.owner}:${body.project}:${body.profile}`), body);
     } catch { return json({ error: 'runtime_unavailable' }, 503); }
   },
@@ -118,14 +119,14 @@ export class NoahCloudJob extends DurableObject {
     const input = await request.json();
     if (input.action === 'start') {
       const response = await this.ctx.blockConcurrencyWhile(async () => {
-        const fingerprint = await noahCloudDigest(JSON.stringify([input.owner, input.id, input.profile, input.mode, input.prompt]));
+        const fingerprint = await noahCloudDigest(JSON.stringify([input.owner, input.id, input.profile, profiles[input.profile].sha256, input.mode, input.prompt]));
         const previous = await this.ctx.storage.get('job');
         if (previous) return previous.fingerprint === fingerprint ? json(this.view(previous)) : json({ error: '同じ依頼IDの内容は変更できません。' }, 409);
+        if (input.receipt !== undefined && (typeof input.receipt !== 'string' || !/^[\w-]{40,2048}$/.test(input.receipt))) return json({ error: 'invalid_receipt' }, 400);
         const budget = await rpc(this.env.BUDGET.getByName('global'), { action: 'admit', id: `${input.owner}:${input.id}`, owner: input.owner, mode: input.mode });
         if (!budget.ok) return budget;
         const at = Date.now();
-        if (input.receipt !== undefined && (typeof input.receipt !== 'string' || !/^[\w-]{40,2048}$/.test(input.receipt))) return json({ error: 'invalid_receipt' }, 400);
-        const job = { id: input.id, owner: input.owner, profile: input.profile, mode: input.mode, fingerprint, prompt: input.prompt, receipt: input.receipt, state: 'queued', createdAt: at, deadlineAt: at + limits.seconds * 1000, calls: 0 };
+        const job = { id: input.id, owner: input.owner, profile: input.profile, version: profiles[input.profile].version, distribution: profiles[input.profile].sha256, mode: input.mode, fingerprint, prompt: input.prompt, receipt: input.receipt, state: 'queued', createdAt: at, deadlineAt: at + limits.seconds * 1000, calls: 0 };
         await this.ctx.storage.put('job', job); await this.ctx.storage.setAlarm(job.deadlineAt);
         this.running = true;
         this.ctx.waitUntil(this.execute().finally(() => { this.running = false; }));
@@ -202,7 +203,7 @@ export class NoahCloudJob extends DurableObject {
       if (!response.ok) throw Error('公式Agentを起動できませんでした。');
       if (job.mode === 'probe') {
         const result = await read(response, 4096);
-        if (result.type !== 'probe' || result.profile !== job.profile || result.version !== profiles[job.profile].version) throw Error('公式Agentの版を確認できませんでした。');
+        if (result.type !== 'probe' || result.profile !== job.profile || result.version !== job.version) throw Error('公式Agentの版を確認できませんでした。');
         await this.end('returned'); return;
       }
       const reader = response.body.getReader(), decoder = new TextDecoder(); let buffer = '', result, events = 0;
@@ -216,7 +217,7 @@ export class NoahCloudJob extends DurableObject {
             const event = JSON.parse(buffer.slice(0, end)); buffer = buffer.slice(end + 1);
             if (++events > limits.modelCalls + 1 || result) throw Error('実行器の応答順を確認できません。');
             job = await this.ctx.storage.get('job'); if (!job || terminal(job.state)) return;
-            if (event.type === 'result') { if (event.version !== profiles[job.profile].version) throw Error('配布版が変わりました。'); result = await noahCloudResult(event, job.calls); continue; }
+            if (event.type === 'result') { if (event.version !== job.version) throw Error('配布版が変わりました。'); result = await noahCloudResult(event, job.calls); continue; }
             if (event.type !== 'model_request' || !/^[a-f0-9]{32}$/.test(event.id) || job.calls >= limits.modelCalls) throw Error('モデル呼出の上限または順序を確認してください。');
             const modelInput = noahCloudModelInput(event.body);
             const admitted = await this.ctx.blockConcurrencyWhile(async () => {

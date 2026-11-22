@@ -38,7 +38,7 @@ export type NoahRemoteExecution = {
   note?: string;
   error?: string;
   /** Managed-cloud results keep the existing unverified Work/owner boundary. */
-  cloud?: { projectId: string; profile: NoahCloudProfile; files?: NoahCloudFile[] };
+  cloud?: { projectId: string; profile: NoahCloudProfile; version: string; files?: NoahCloudFile[] };
 };
 
 const iso = (at: number) => new Date(at).toISOString();

@@ -21,7 +21,7 @@ export function noahCloudProfile(repository: string): NoahCloudProfile | null {
 export const noahCloudId = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(value);
 export type NoahCloudFile = { name: string; base64: string; bytes: number; sha256: string };
 export type NoahCloudResult = { text: string; files: NoahCloudFile[]; exitCode: number; calls: number };
-export type NoahCloudJob = { id: string; profile: NoahCloudProfile; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; result?: NoahCloudResult; error?: string; calls: number };
+export type NoahCloudJob = { id: string; profile: NoahCloudProfile; version: string; distribution: string; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; result?: NoahCloudResult; error?: string; calls: number };
 export type NoahCloudConnection = { id: string; profile: NoahCloudProfile; state: 'preparing' | 'connected' | 'failed' | 'disconnected'; revision: number; probeId: string; activeJob: string | null; jobs: string[]; error?: string };
 export async function noahCloudDigest(value: string): Promise<string> {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
