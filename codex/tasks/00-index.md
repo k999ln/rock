@@ -142,3 +142,4 @@
 | 124 | [124-noah-teikibin-ledger.md](124-noah-teikibin-ledger.md) | 定期便の台帳（入金・費用・寄与の記録、月の締め、作業料と等分、有料の差し引き、振込の一覧、物の割当） | 🔶 台帳と画面 [PR #410](https://github.com/k999ln/rock/pull/410)（切り替えは閉。開ける前に要る事は仕様の 12 章） |
 | 125 | [125-noah-scout.md](125-noah-scout.md) | Noah が自分で探す（GitHub の急に伸びた repo・Agent の道具の話題・Product Hunt、Codex の Luna Max が毎日 X を読んで配布元まで理解した「Noahが読んだ」）・Switch を載せる・iceiceice999/rock への移行 | 収集機の側は Claude [PR #421](https://github.com/k999ln/rock/pull/421)。配備・X のアカウント・毎日の読み取りは Codex へ |
 | 126 | [126-noah-packages-first.md](126-noah-packages-first.md) | トップの最初の列をパッケージ（1 つの仕事を最後までやる組合せ）にし、単発は下。Eve が Switch の部屋の形を手本に組む | Codex へ |
+| 127 | [127-noah-agent-explain.md](127-noah-agent-explain.md) | 全部の Agent の説明画面（押した先に「何を渡すと、何が、どの順で返るか」を段の図で出す・道具に札を付ける・17,046 系列の札付けと確かめ・PR #424 を iceiceice999/rock へ移す） | Codex へ |

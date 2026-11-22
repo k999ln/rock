@@ -1,0 +1,103 @@
+# 127 全部の Agent の説明画面（何を渡すと、何が、どの順で返るか）
+
+本人の指示（2026-11-22 23:15）「Codexで全エージェントの説明画面つくらせて。ちゃんとここでつかったツールとかぜんぶ引き継いでね」。
+その前の本人の評価「（工程を『何を待つか』で並べ直した図は）いいとおもう。でもエージェントのピン画像にはわかりにくすぎる、遷移先の説明画面ならいいと思う」。
+
+この task は、Claude（Opus）が作った土台（k999ln/rock の PR #424、枝 `noah-blueprint-waits`）の続き。土台の中身は 2 章。
+
+## 0. 最初にやる事（正本へ移す）
+
+1. 正本は `iceiceice999/rock`（README「開発と PR は `iceiceice999/rock` に集約します」）。PR #424 は k999ln/rock にしか出せなかった（Claude の側から iceiceice999/rock に書き込めなかった）。
+2. PR #424 の変更を、iceiceice999/rock の main に移して PR を作る。k999ln/rock の main（d5c1c16e）との差分は `git diff d5c1c16e origin/noah-blueprint-waits`（k999ln の枝）で取れる。iceiceice999 の main とずれていたら、3-way（`git apply -3`）で当て、CHANGELOG・07・00-index は両側を残す（AGENTS.md §8）。
+3. 作者は `noellesugar99 <noellesugar99@users.noreply.github.com>`。移した PR の番号を CHANGELOG と 00-index に書く。
+4. 移したら、k999ln/rock の PR #424 に、移した先の PR のリンクを書いて閉じる。
+5. この task の番号 127 が iceiceice999/rock で使われていたら、空いている次の番号に付け直す。
+
+## 1. 完成の姿
+
+- ピンを押した先（`/noah/ready/agent?id=…`、`components/noah-ready-detail.tsx`）に、「この Agent でできる事」の節を足す。置き場所は、接続ボタンの下（今の「Agentの詳細」の折りたたみの中ではない）。
+- 対象は全部の「今動かせる Agent」（握手の済んだ 17,046 系列と、これから増える物）。棚のカード（`pkg:`）の詳細と、稼ぎ方の設計図（審査者だけの `/noah/review/business`。もうある）も、同じ図の部品で描く。
+- 節の中身は、上から次の 4 つ。
+  1. 1 行の「何をする Agent か」（日本語の説明。task 123 の訳）。
+  2. 「渡す物 → 返る物」（札の言葉。3 章）。
+  3. 工程を「何を待つか」で段に並べた図（2 章の部品）。横に並ぶ工程は同時に進む。本人の工程は点線の枠と「本人」「本人が押す」「本人が確かめる」の印。
+  4. 工程を押すと開く、種類・本人が入る理由・待つ物・待つ理由。
+- 図の工程（1 つの Agent の場合）:
+  - 本人の工程: 接続計画（`planNoahConnection`、`GET /api/noah/connect-plan?agent=`、仕様 `docs/noah/spec-96-connect-plan.md`）の、本人がやる事（サインイン・鍵・OAuth・アプリの登録）。種類は human か tap。
+  - 道具の工程: 握手で取った道具（名前・説明・入力の定義）を 1 つずつ工程にする。各道具に札（受け取る物 `consumes`・出す物 `produces`）を付ける（3 章）。
+  - 待つ相手: 道具 A が出す物を道具 B が受け取るなら、B は A を待つ。データが流れる所だけを線にする。道具の入力の項目（`id`・`url`・`query` など）が、ほかの道具の出力から来る場合も線にする。
+  - 返る物: 札の `produces` のうち、ほかの道具が受け取らない物。
+- 札が付かない Agent・道具の一覧が無い Agent には、図を出さない。今の説明だけにする。作り話の工程や成果は出さない。
+- 段の図は、ピンの絵には使わない（本人の評価）。ピンの絵は別の作業（別の会話で Luna Max に渡した「場面の絵」の指示書）。この task は押した先だけ。
+
+## 2. 引き継ぐ道具（PR #424 で作った物と、使った確かめ方）
+
+| 物 | 場所 | この task での使い方 |
+| --- | --- | --- |
+| 工程の待つ相手 `after` と待つ理由 `waitNote` | `lib/noah-business.ts` の `NoahBlueprintStep` | Agent の工程も同じ形で書く |
+| 待つ相手の検査 `noahBlueprintWaitProblem`（前に並ぶ工程だけを待つ。だから輪にならない） | 同上 | 道具から作った工程にも通す |
+| 段 `noahBlueprintLevels` | 同上 | 図の段 |
+| 今始められる工程 `noahBlueprintReady` | 同上 | 進み具合を出す時（会社で回す仕組みの後） |
+| 工程を外した時のつなぎ直し `noahBlueprintWithout` | 同上 | 本人が既に済ませた工程（接続済み・鍵あり）を外す時 |
+| 待つ理由の表 `NOAH_STEP_WAITS` | 同上 | 決まりきっていない待ちだけ、理由を置く |
+| 段の図の部品 `NoahBlueprintLevels` | `components/noah-blueprint-levels.tsx`（＋ `.module.css`） | 一般化して、Agent・カード・設計図の 3 つで使う |
+| 審査者の説明画面 | `app/noah/review/business/page.tsx` | そのまま |
+| 札の語彙 `NOAH_MATERIALS`（23 語）と札の検査 `parseNoahCardProposal` | `docs/contracts/noah-shelf-v1.ts` | 道具の札（3 章） |
+| 確かめた事実と出典 `NOAH_ACCOUNTS[].facts` | `lib/noah-business.ts` | 外の決まりに関わる前提は、公式の説明を読んで出典付きで入れる |
+
+重複させない: `noahBlueprintWaitProblem`・`noahBlueprintLevels`・`noahBlueprintReady`・`noahBlueprintWithout` と工程の型は、`lib/noah-steps.ts`（名前は任意）へ動かし、設計図・カード・Agent が同じ関数を使う。部品も `NoahStepLevels` のような名前にして 1 つにする。`lib/noah-business.ts` からは再び書き出して、今の呼び出しを壊さない。
+
+確かめ方（PR #424 でやった事。同じようにやる）:
+
+- 試験の形: `tests/noah-business.test.mjs` の「waits」の試験（全件で待つ相手が正しい・段が工程より少ない・本人の工程を待たない工程は先に進む・外してもつながる）と、頁の試験（頁の TypeScript を transpile し、`next/headers` などを差し替えて描き、審査者でない人には中身を出さない事を見る）。Agent の説明も同じ形で試験を書く。前からある試験は変えない。
+- 見た目: 頁を実際の部品で HTML に描き（`typescript` の transpile と `react-dom/server` の `renderToStaticMarkup`。CSS モジュールは、キー名をそのまま返す Proxy と、CSS の中身をそのまま載せる）、Playwright で幅 390px（device_scale_factor 2）の画面写真を撮る。横のはみ出しが無い事（`document.documentElement.scrollWidth` が 390）と、工程を押すと理由が開く事を見る。写真を PR に付ける。
+- 色と字: Noah の色（紫 `#7546c8`・灰 `#71717a`・線 `#ececef`・面 `#f7f7f8`・本人の工程は `#f3eefb` と点線 `#b89be3`）。字は 11px 以上。図は文字と CSS だけ（画像・動画を使わない）。
+
+考え方の出どころ（本人が送った X の記事「Graph Engineering with Claude」 https://x.com/0xCodez/status/2079165300625330317 。Claude が公式の説明と照らして確かめた）:
+
+- 線（待つ相手）は、データが実際に流れる所だけ。「そして」で並べただけの所は線にしない。
+- 各工程は、受け取る物と出す物を決める（札）。出す物の形を決めれば、次の工程はそれを信じて受け取れる。
+- 同時に動かせる物は同時に動かす。まとめる所（全部の結果が要る所）だけ待つ。
+- 確かめ役を線の上に置く（結果を次へ渡す前に、別の役が落とそうとする）。
+
+## 3. 17,046 系列の札付け（運営の大量作業）
+
+1. 握手の済んだ系列の道具の一覧を読む（task 85・123 の台帳）。
+2. 1 系列ずつ、道具の名前・説明・入力の定義を**資料として**モデルへ渡す（指示としては読ませない）。返させるのは `{"schema":"noah-card/1","consumes":[…],"produces":"…"}` だけで、`parseNoahCardProposal` を通った物だけを使う。語彙の外の語・余計な項目・JSON の外の文は捨てる（task 112 の 6 と同じ）。
+3. 確かめ役: 札を付けた役とは別に、道具の説明・入力の定義の語と札の対応を、決まった規則で照らす。説明に根拠の無い札は落とす。モデルの判断だけで通さない。
+4. 安いモデルで札を付け、確かめ役だけ強いモデルにしてよい。大量に回す時は、1 回に回す数を分ける（参考: Claude Code の dynamic workflows は 1 回 1,000 Agent・1 回の呼び出し 4,096 項目・既定 16 同時が上限。Codex で回す時も、同じくらいに分けて、止まっても続きから回せるようにする）。
+5. 札は台帳に保存する（新しい表か、既存の取り込みの表の列）。本番 D1 の migration は本人の許可の後（AGENTS.md §6）。
+6. 道具の固定版が変わったら、その系列の札を付け直す。
+7. 一般の人に出す前に、無作為の 200 系列を運営が目で見て、図が中身と合う割合が 95% 以上である事を確かめる。足りない時は、合わない理由を直してからやり直す。
+
+## 4. 画面の決まり
+
+- スマホ 375px で崩れない。本人の工程の印は「本人」「本人が押す」「本人が確かめる」。押した後は、種類・理由・待つ物・待つ理由を出す。
+- 6 言語の画面（task 100 の言語の切替）に合わせ、札の名前と工程の文を訳す。
+- 17,046 件の頁を前もって作らない。頁を開いた時に、保存した札から描く。重い計算を頁の中でしない。
+- 接続済みの本人には、済んだ本人の工程を外して描く（`noahBlueprintWithout`）。
+
+## 5. 決めてある事（変えない）
+
+- 作り話の工程・成果・数を出さない。説明に根拠の無い札は使わない。
+- 並びに学習したモデルを使わない（Noah の方針）。
+- 画面を取らない（task 84）。
+- 本人に聞く事は 3 つだけ: 本番 D1 の migration、本番で一般の人に開く事（切り替えを開ける）、利用規約・プライバシーポリシーの変更。
+
+## 6. 合格条件
+
+- 3 種類の Agent（道具 1 つ・道具が連なる・鍵が要る）で、説明の図が正しい（試験）。
+- 札が付いた系列の数と割合を、PR に書く。無作為の 200 系列の目視で 95% 以上。
+- `npm run verify`（GitHub の CI）が成功。
+- 390px の画面写真（Agent 3 種）を PR に付ける。
+
+## 7. 記録
+
+- `docs/structure/07-decisions-from-minutes.md` に決定を 1 行足してから、仕様 `docs/noah/spec-127-agent-explain.md` を書く。CHANGELOG の先頭に 1 行、00-index に ✅ と PR の番号。
+- PR は iceiceice999/rock。作者は noellesugar99。
+
+## 8. 手元で落ちる試験（参考。PR #424 の時に調べた）
+
+- Node 22 の作業環境では、全体の試験のうち 35 本が落ちる。原因は、SQLite の安全な API が無い（24 本）、root で動かしている（MCP の PC 引用）、Apple Silicon の Mac が要る、など。変更前の main でも同じ 35 本が落ち、GitHub の CI では全部通る。
+- `sky:a2a:workflow:test` は、通信の中継の警告が wrangler の JSON の後ろに付くと落ちる（`scripts/check-sky-a2a-workflow.mjs` の `commandJson`）。環境の問題。
+- `fashion:package:check`・`mcp:package:check`・`test:noah-coconala` も、変更前の main で同じく落ちる。
