@@ -1,5 +1,6 @@
 ## 2026-11-22
 
+- task 105（自社クラウドの費用上限・見張り・復元練習、Codex の #368）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0058 に付け直し、その表・索引・trigger が migrator で全部入る事の試験を足した（[PR #INTEGRATE105](https://github.com/k999ln/rock/pull/INTEGRATE105)）。
 - task 13（iOS の eSIM 導入と Eve のホーム画面、Codex の #372）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0057 に付け直し、接続画面の見出しは main の新しい文にした。手元の本番ビルドで応答ヘッダを測り直した。iPhone 実機の確かめは未実施（[PR #412](https://github.com/k999ln/rock/pull/412)）。
 - task 102（SIM の証明、Codex の #365）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0056 に付け直し、会員登録の廃止の後は、このブラウザの本人に SIM を束ねる形にした（[PR #411](https://github.com/k999ln/rock/pull/411)）。
 - Noahの定期便の台帳を作った（task124、Opus / Noelle。本人の決定「配給制にする」「現金で渡す」「本人の分から差し引く」）。Agentが実際に稼いだ現金だけを月ごとに締め、作業料（いつも現金）と全員への等分（今は現金、仕入先とつながったら物）に分ける。有料は、等分が値段以上の月だけ等分から差し引く。締めは途中で止まっても続きから動き、振込の一覧はCSVで出す（振込は本人が押す）。口座番号は持たずHMACだけ。切り替えは閉のままで、本番の動きは変わらない。migration 0055の本番適用は本人の許可の後。棚・300人の試行・公開の審査者の操作が本番で使えなかった（IDだけを見ていた）のも直した（[PR #410](https://github.com/k999ln/rock/pull/410)）。

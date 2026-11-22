@@ -7,7 +7,6 @@ import {
   uniqueIndex,
   check,
   primaryKey,
-  real,
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
