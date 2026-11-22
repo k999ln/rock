@@ -98,3 +98,9 @@ Macの常駐は停止し、launchdの永続disableも確認。55,058,432バイ�
 PRのCodeQL指摘に合わせ、ブラウザ試験の既定出力先を `mkdtemp` で実行ごとに作成する権限700の専用ディレクトリへ変更した（指定した `NOAH_TEST_OUTPUT` は従来どおり）。実際の収集順が変わって先頭20件に保存可能なAgentがない場合にも、画面の「接続できる」で対象を選んでから保存操作を検証する。変更後に公開URLを実Chrome・390pxで再試験し6/6成功。記録は `/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/noah-mobile-browser-d1FEOs/report.json`。
 
 別のSPIDER履歴検査は9候補を検出した（[実行44977185487](https://github.com/k999ln/rock/actions/runs/44977185487)）。6件は `lib/noah-haptics.ts` の公開localStorage設定名、3件は旧 `docs/design-validation/noah/noah-connect.test.mjs` の秘密文字列検出器の合成テスト。値の用途をソースと過去commitで確認した。検出規則・固定control・履歴を変更せず、全体verifyの結果とは分けてPRに記録する。
+
+## 本番反映とロード表示の見直し（2026-11-22）
+
+本人指示によりPR #388の本番反映とスマホ操作を確認し、「ロード画面ださい」の追加指示へ対応。公開189のsourceを開き、すでにあるホーム検索・44pxタップ範囲・並び替え・保存先のNoah専用導線を保持し、外部評価の追加指標表示を反映する。一覧はカード型のプレースホルダー、その他は小さな正式ロゴと細い進行中表示へ変更した。動きを減らす設定と読み上げ通知は維持し、進捗率を作らない。
+
+関連試験はGit側23件・公開source側21件、公開sourceのtypecheckが成功。公開sourceの390pxプレビューでカード型ロードと横はみ出しなしを確認。再実行用ブラウザ試験に、通信待ち中の表示・reduced motion・Hugging Face表示値と一覧APIの値の照合を追加。公開ビルド・本番確認・CIの結果はこの変更のPR本文へ記録する。追加のDB migrationは含めない。

@@ -1,5 +1,6 @@
 ## 2026-11-22
 
+- Noahのロード画面をカード型プレースホルダーと小さなロゴに変更。スマホの読み込み・動きを減らす設定・外部評価の実数照合をブラウザ試験へ追加（task120、PR準備中）。
 - Noah検索修正後のWeb security実測/input hash不一致を再実測で解消し、全体verify成功（主要4,922成功・4skip、API1,918、CSV385）。追加収集元・並び替え・外部評価を共通カードへ統合（task120、[PR #388](https://github.com/k999ln/rock/pull/388)）。
 - Noahを実Chromeのスマホ表示で確認し、収集Agentが見つからないホーム検索と小さいタップ範囲を修正。再実行用ブラウザ試験を追加（task120、[PR #388](https://github.com/k999ln/rock/pull/388)）。
 - Noahのカードと掲載Agent詳細から利用人数・王冠・コメント列を外し、元サイト評価へ一本化。公開186・390px/590pxを確認。全体verifyは別の共有機能の既存lintで停止（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。

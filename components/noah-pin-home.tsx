@@ -51,7 +51,7 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='',on
     <div className={styles.filters} aria-label="Agentを絞り込む">{[['','すべて'],['noah','接続できる'],['discovered','新しく見つかった'],...NOAH_COLLECTION_SOURCES.map(s=>[s,NOAH_COLLECTION_LABELS[s]])].map(([value,label])=><button key={value} type="button" aria-pressed={source===value} onClick={()=>setSource(value)}>{label}</button>)}</div>
     <select className={styles.recovery} aria-label="並び" value={order} onChange={event=>setOrder(event.target.value)}><option value="hot">新しく使いやすい順</option><option value="new">出た順</option></select>
     {(source || searchQuery && onClearQuery) && <button type="button" className={styles.recovery} onClick={()=>{setSource('');onClearQuery?.();}}>検索条件をクリア</button>}
-    {!current && <div className={styles.status}><NoahLoading label="読み込んでいます…"/></div>}
+    {!current && <NoahLoading label="読み込んでいます…" variant="cards"/>}
     {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" className={styles.recovery} onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
     {current?.page?.items.length===0 && <p className={styles.status}>この条件のAgentはまだありません。</p>}
     {current?.page && <NoahPinGrid items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
