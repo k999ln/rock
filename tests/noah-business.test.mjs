@@ -156,22 +156,23 @@ void test('waits: every step says what it waits for, only earlier steps, so the 
   assert.throws(() => noahBlueprintLevels([{ id: 'a', label: 'A', kind: 'auto', after: ['a'] }]));
 });
 
-void test('waits: FX × YouTube is the drawing Noelle liked — 19 steps in 10 levels; scripts and the LP are made while the partnership application waits', () => {
+void test('waits: FX × YouTube — 19 steps in 11 levels (the ASP sign-up needs the channel first); scripts and the LP are made while the partnership application waits', () => {
   const fx = noahBlueprints().find((b) => b.id === 'affiliate:fx:youtube');
   assert.equal(fx.steps.length, 19);
   assert.deepEqual(noahBlueprintLevels(fx.steps).map((level) => level.map((s) => s.id)), [
-    ['rules:asp-a8', 'rules:youtube', 'research'], ['signup:asp-a8', 'signup:youtube'], ['media:asp-a8', 'offers'], ['apply', 'script', 'lp'],
+    ['rules:youtube', 'rules:asp-a8', 'research'], ['signup:youtube'], ['signup:asp-a8'], ['media:asp-a8', 'offers'], ['apply', 'script', 'lp'],
     ['video', 'voice', 'lp-host'], ['disclose'], ['finance-review'], ['publish:youtube'], ['track'], ['decide', 'payout'],
   ]);
   const step = (id) => fx.steps.find((s) => s.id === id);
   assert.equal(step('media:asp-a8').waitNote, NOAH_STEP_WAITS.media);
+  assert.deepEqual(step('signup:asp-a8').after, ['rules:asp-a8', 'signup:youtube'], 'the ASP asks for the channel at sign-up');
   assert.deepEqual(step('publish:youtube').after, ['finance-review', 'apply', 'signup:youtube'], 'the link goes up only after the partnership and the checks');
   // 本人の工程（提携の申し込み）を待っていない工程は、先に進む。
   const done = new Set(['rules:asp-a8', 'rules:youtube', 'research', 'signup:asp-a8', 'signup:youtube', 'media:asp-a8', 'offers']);
   assert.deepEqual(noahBlueprintReady(fx.steps, done).map((s) => s.id), ['apply', 'script', 'lp']);
   done.add('script'); done.add('lp');
   assert.deepEqual(noahBlueprintReady(fx.steps, done).map((s) => s.id), ['apply', 'video', 'voice', 'lp-host'], 'video, voice and hosting go on while apply waits');
-  assert.deepEqual(noahBlueprintReady(fx.steps, new Set()).map((s) => s.id), ['rules:asp-a8', 'rules:youtube', 'research'], 'at the start, nothing waits for a person');
+  assert.deepEqual(noahBlueprintReady(fx.steps, new Set()).map((s) => s.id), ['rules:youtube', 'rules:asp-a8', 'research'], 'at the start, nothing waits for a person');
 });
 
 void test('waits: monetization (AdSense, YouTube Partner) is applied for after something is published; drafts and research do not wait for sign-up', () => {
@@ -241,4 +242,21 @@ void test('the blueprint page (/noah/review/business) shows plans only to an aut
   assert.equal(levels.props.steps.length, 19);
   assert.match(JSON.stringify(nodes(detail.page).map((n) => n.props?.children).filter((c) => typeof c === 'string' || Array.isArray(c))), /待つ相手の前提/);
   assert.equal((await render('reviewer', 'no-such-plan')).name, 'List', 'an unknown id falls back to the list');
+});
+
+// 2026-11-22 に確かめた事実（出典付き）: ASP は登録の時に載せる場の情報を入れる。AdSense は独自のコンテンツ、YouTube パートナーは公開した動画の再生で決まる。
+void test('waits: every ASP sign-up waits for the place it will advertise on; the checked facts carry https sources', () => {
+  for (const b of noahBlueprints()) {
+    for (const s of b.steps) {
+      const account = NOAH_ACCOUNTS.find((a) => `signup:${a.id}` === s.id);
+      if (account?.kind !== 'asp') continue;
+      assert.equal(s.waitNote, NOAH_STEP_WAITS.aspSignup, `${b.id}/${s.id}`);
+      assert.ok(s.after.some((id) => id.startsWith('signup:')), `${b.id}/${s.id}: waits for the channel sign-up`);
+    }
+  }
+  for (const id of ['asp-a8', 'asp-accesstrade', 'adsense', 'youtube-partner']) {
+    const facts = NOAH_ACCOUNTS.find((a) => a.id === id).facts ?? [];
+    assert.ok(facts.length && facts.every((f) => f.text && f.source.startsWith('https://')), id);
+  }
+  assert.match(NOAH_ACCOUNTS.find((a) => a.id === 'youtube-partner').facts.map((f) => f.text).join(' '), /2027-02-01/);
 });

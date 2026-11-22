@@ -75,10 +75,15 @@ export type NoahAccount = {
 };
 const A = (id: string, label: string, kind: NoahAccount['kind'], needs: NoahAccountNeed[], extra: Partial<NoahAccount> = {}): NoahAccount => ({ id, label, kind, needs, ...extra });
 export const NOAH_ACCOUNTS: readonly NoahAccount[] = [
-  A('asp-a8', 'A8.net', 'asp', ['email', 'address', 'bank', 'site']),
+  A('asp-a8', 'A8.net', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
+    { text: '会員登録の途中で、載せる場（サイト）の情報を入れる。サイトが無ければ A8 のブログ（ファンブログ）を作る形。初回の登録にサイトの審査は無い。', source: 'https://www.onamae.com/column/affiliate/32/' },
+    { text: '案件の報酬・成果の条件・否認の条件は、ログインした後の「プログラム検索」で見る。提携の申請は、案件によって審査があり、断られる事もある。', source: 'https://www.onamae.com/column/affiliate/32/' },
+  ] }),
   A('asp-moshimo', 'もしもアフィリエイト', 'asp', ['email', 'address', 'bank', 'site']),
   A('asp-afb', 'afb', 'asp', ['email', 'address', 'bank', 'site']),
-  A('asp-accesstrade', 'アクセストレード', 'asp', ['email', 'address', 'bank', 'site']),
+  A('asp-accesstrade', 'アクセストレード', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
+    { text: '登録の最後に、アフィリエイトを始めるサイトの情報（サイト名・サイトの URL など）を入れる。', source: 'https://www.onamae.com/column/affiliate/47/' },
+  ] }),
   A('asp-valuecommerce', 'バリューコマース', 'asp', ['email', 'address', 'bank', 'site']),
   A('amazon-associates', 'Amazonアソシエイト', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
     { text: 'ブログが無くても、X・Instagram・YouTube などの SNS の URL で申し込める。', source: 'https://www.onamae.com/column/affiliate/43/' },
@@ -112,8 +117,13 @@ export const NOAH_ACCOUNTS: readonly NoahAccount[] = [
   A('shopify', 'Shopify', 'marketplace', ['email', 'phone', 'identity', 'bank', 'address']),
   A('base-shop', 'BASE', 'marketplace', ['email', 'bank', 'address']),
   A('hosting', 'サイトの置き場所とドメイン', 'hosting', ['email', 'address']),
-  A('adsense', 'Google AdSense', 'payments', ['email', 'address', 'bank', 'site', 'tax']),
-  A('youtube-partner', 'YouTube パートナープログラム', 'payments', ['email', 'bank', 'tax']),
+  A('adsense', 'Google AdSense', 'payments', ['email', 'address', 'bank', 'site', 'tax'], { facts: [
+    { text: '関連性の高い独自のオリジナル コンテンツが要る。独自性のないコンテンツや著作権で保護されたコンテンツを載せたサイトには、広告を表示できない。', source: 'https://support.google.com/adsense/answer/7299563?hl=ja' },
+  ] }),
+  A('youtube-partner', 'YouTube パートナープログラム', 'payments', ['email', 'bank', 'tax'], { facts: [
+    { text: '今の条件は、登録者 1,000 人以上と、直近 12 か月の公開長尺動画の総再生時間 4,000 時間以上（または直近 90 日の有効なショートの視聴 1,000 万回以上）。数えるのは公開した動画だけ。審査は通常 1 か月ほど。', source: 'https://support.google.com/youtube/answer/82839?hl=ja' },
+    { text: '2027-02-01 から新しく申し込む人は、直近 365 日の有効な公開動画の総再生時間 8,000 時間、または直近 90 日の有効な公開ショートの視聴 2,000 万回が要る（2026-08-11 の発表）。', source: 'https://blog.youtube/intl/ja-jp/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/' },
+  ] }),
   A('stripe', 'Stripe', 'payments', ['email', 'phone', 'identity', 'bank', 'address']),
   A('meta-ads', 'Meta 広告', 'ads', ['email', 'phone']),
   A('google-ads', 'Google 広告', 'ads', ['email', 'phone']),
@@ -277,13 +287,14 @@ export type NoahBlueprintStep = {
  * 直す時は、この文と、設計図の工程の after を一緒に直す（試験 tests/noah-business.test.mjs が、待つ相手のつながりを確かめる）。
  */
 export const NOAH_STEP_WAITS = {
-  media: '媒体の登録には、載せる場（チャンネル・サイト）の URL が要る。だから、ASP と載せる場の両方の登録を待つ',
+  aspSignup: 'ASP の登録では、載せる場（サイト・SNS）の名前と URL を入れる（A8.net は無ければ A8 のブログを作る形、アクセストレードも登録の最後にサイトの情報を入れる、Amazon アソシエイトは SNS の URL で申し込める）。だから、載せる場を作った後に ASP に登録する',
+  media: 'ASP の会員登録で入れた載せる場を、提携の申し込みに使う媒体として確かめる。だから、ASP の登録を待つ',
   offers: '案件の一覧と条件（単価・承認率）は、ASP に登録してから見られる',
   research: '需要と競合は公開の情報で調べられるので、何も待たない（登録の審査を待つ間に進める）',
   draft: '出品・販売の頁の文は、登録の前に下書きできる',
   publishAffiliate: '紹介のリンクを載せるのは、提携が通り、広告の表示と表現の点検が済んでから',
   publishExpedition: '紹介のリンクを載せるのは、媒体の登録と、広告の表示の点検が済んでから',
-  monetize: '収益化の審査（AdSense・YouTube パートナー プログラム）は、出した物がある場で受ける。だから、出した後に申し込む',
+  monetize: '収益化の審査は、出した物がある場で受ける（AdSense は独自のコンテンツを見る。YouTube パートナーは公開した動画の登録者と再生時間で決まる）。だから、出した後に申し込む',
   deliver: '注文は、出品と応募のどちらからも来る。両方の口を開けてから、納品に入る',
   orders: '注文と問い合わせは、商品を出した後に来る',
   storePage: 'ストアの画像は、出来たアプリの画面から作る',
@@ -309,6 +320,8 @@ const signUp = (account: string): NoahBlueprintStep[] => {
     signUpStep(account, [`rules:${account}`]),
   ];
 };
+/** 規約の確認と登録。登録は、規約の確認と waits（ほかの登録など）を待つ。 */
+const signUpAfter = (account: string, waits: readonly string[], waitNote: string): NoahBlueprintStep[] => [signUp(account)[0], signUpStep(account, [`rules:${account}`, ...waits], waitNote)];
 /** 登録の工程だけ（規約の確認の工程を置かない所）。after は、その登録が待つ物。 */
 const signUpStep = (account: string, after: readonly string[], waitNote?: string): NoahBlueprintStep => {
   const a = ACCOUNT.get(account);
@@ -344,8 +357,8 @@ export function noahBlueprints(): NoahBlueprint[] {
     const made = produce(channel.format, ['offers', 'research']);
     const checked = vertical.finance ? 'finance-review' : 'disclose';
     push({ id: `affiliate:${vertical.id}:${channel.id}`, model: 'affiliate', label: `${vertical.label}の紹介 × ${channel.label}`, finance: !!vertical.finance, steps: [
-      ...signUp(asp), ...signUp(channel.account),
-      step(`media:${asp}`, 'ASP に載せる場（媒体）を登録する', 'tap', { account: asp, reason: '媒体の登録と提携の申請は ASP の画面で本人が押す（Noah は説明文と申請の中身を用意する）', after: [`signup:${asp}`, `signup:${channel.account}`], waitNote: NOAH_STEP_WAITS.media }),
+      ...signUp(channel.account), ...signUpAfter(asp, [`signup:${channel.account}`], NOAH_STEP_WAITS.aspSignup),
+      step(`media:${asp}`, 'ASP に載せる場（媒体）を登録する', 'tap', { account: asp, reason: '媒体の登録と提携の申請は ASP の画面で本人が押す（Noah は説明文と申請の中身を用意する）', after: [`signup:${asp}`], waitNote: NOAH_STEP_WAITS.media }),
       step('offers', '案件を比べて選ぶ（単価・承認率・条件）', 'auto', { capability: 'research.offer', after: [`signup:${asp}`], waitNote: NOAH_STEP_WAITS.offers }),
       step('apply', '案件に提携を申し込む', 'tap', { account: asp, reason: '提携の申請は ASP の画面で本人が押す', after: ['offers', `media:${asp}`] }),
       step('research', '需要と競合を調べる', 'auto', { capability: 'research.market', after: [], waitNote: NOAH_STEP_WAITS.research }),
@@ -434,8 +447,8 @@ export function noahBlueprints(): NoahBlueprint[] {
   for (const channel of NOAH_CHANNELS) {
     const made = produce(channel.format, ['offers', 'research']);
     push({ id: `oshi:expedition-affiliate:${channel.id}`, model: 'oshi', label: `推し活の遠征（宿・交通）の紹介 × ${channel.label}`, finance: false, steps: [
-      ...signUp('asp-valuecommerce'), ...signUp(channel.account),
-      step('media:asp-valuecommerce', 'ASP に載せる場（媒体）を登録する', 'tap', { account: 'asp-valuecommerce', reason: '媒体の登録と提携の申請は ASP の画面で本人が押す', after: ['signup:asp-valuecommerce', `signup:${channel.account}`], waitNote: NOAH_STEP_WAITS.media }),
+      ...signUp(channel.account), ...signUpAfter('asp-valuecommerce', [`signup:${channel.account}`], NOAH_STEP_WAITS.aspSignup),
+      step('media:asp-valuecommerce', 'ASP に載せる場（媒体）を登録する', 'tap', { account: 'asp-valuecommerce', reason: '媒体の登録と提携の申請は ASP の画面で本人が押す', after: ['signup:asp-valuecommerce'], waitNote: NOAH_STEP_WAITS.media }),
       step('offers', '宿・交通の案件を比べて選ぶ', 'auto', { capability: 'research.offer', after: ['signup:asp-valuecommerce'], waitNote: NOAH_STEP_WAITS.offers }),
       step('research', '公演の会場と日程から、宿が足りない日を調べる', 'auto', { capability: 'travel.search', after: [], waitNote: NOAH_STEP_WAITS.research }),
       ...made, step('disclose', '広告の表示（PR）を点検する', 'auto', { capability: 'compliance.check', after: finals(made) }),
