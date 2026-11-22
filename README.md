@@ -387,7 +387,7 @@ miiの販売・予約は受け付けておらず、価格と発売日は未定�
 
 ### この作業フォルダで始める
 
-複数の作業フォルダを使うときは、最初に `git status -sb` で現在のブランチと未コミットの変更を確認します。共通の作業方針は[GitHubのmainのREADME](https://github.com/iceiceice999/rock/blob/main/README.md)で確認できます。
+複数の作業フォルダを使うときは、最初に `git status -sb` で現在のブランチと未コミットの変更を確認します。開発とPRは `iceiceice999/rock` に集約します。共通の作業方針は[GitHubのmainのREADME](https://github.com/iceiceice999/rock/blob/main/README.md)で確認できます。
 
 リポジトリのルートで依存を入れて開発サーバーを起動し、ターミナルに表示されたURLの `/noah` または `/os/eve` を開きます。Node.js・npmと依存の指定は[package.json](package.json)と[package-lock.json](package-lock.json)にあります。
 
