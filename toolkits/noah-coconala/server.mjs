@@ -76,6 +76,12 @@ export async function serve(
     };
   }
   const io = createInterface({ input: process.stdin });
+  // The Connector owns this worker. A disconnected pipe must never leave a background sender.
+  // SQLite commits the send boundary first; Chrome exits when the private Playwright pipe closes.
+  const stop = () => process.exit(0);
+  process.once('SIGTERM', stop);
+  process.once('SIGINT', stop);
+  io.once('close', stop);
   io.on('line', async (line) => {
     let id = null;
     try {

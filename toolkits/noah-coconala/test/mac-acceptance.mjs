@@ -153,14 +153,6 @@ try {
     await sent;
     if (row.action === 'deliver') {
       await page.close();
-      for (let i = 0; i < 100; i++) {
-        if (
-          JSON.parse(await readFile(join(root, 'site.json'), 'utf8')).deliver
-            .length
-        )
-          break;
-        await pause(120);
-      }
       page = await owner.newPage();
       await openNoah();
       for (let i = 0; i < 8; i++) {

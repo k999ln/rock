@@ -75,7 +75,22 @@ export default function NoahCoconala() {
   }
   async function connect() {
     const { token: key } = await post<{ token: string }>('/connect', {});
-    await post(server + 'connect', {}, key);
+    const registry = await fetch(base + '/servers', {
+      cache: 'no-store',
+      redirect: 'error',
+      credentials: 'omit',
+      headers: { Authorization: 'Bearer ' + key },
+      signal: AbortSignal.timeout(6000),
+    });
+    if (!registry.ok) throw Error('Macの接続情報を確認できません。');
+    const { servers } = (await registry.json()) as {
+      servers: { id: string; state: string }[];
+    };
+    const entry = servers.find((item) => item.id === 'noah-coconala');
+    if (!entry) throw Error('ココナラ専用の接続プログラムを起動してください。');
+    if (entry.state === 'connecting')
+      throw Error('接続中です。少し待ってから接続してください。');
+    if (entry.state !== 'connected') await post(server + 'connect', {}, key);
     setToken(key);
     setLast(localStorage.getItem('noah.coconala.receipt') ?? '');
     setNotice('専用ブラウザの実行器に接続しました。');
