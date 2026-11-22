@@ -1,0 +1,4 @@
+{
+  "schema": "rockstaros-mcp-registry/1",
+  "servers": [{"id":"noah-coconala","name":"ココナラ","description":"専用のChromeで返信・応募・正式な納品を実行します。","transport":"stdio","command":"node","args":["server.mjs"],"cwd":".","env":["HOME"],"required":true}]
+}
