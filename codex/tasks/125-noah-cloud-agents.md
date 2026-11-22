@@ -68,3 +68,5 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - Pixel 10の公開209で `Noah-Pixel-209-20261123` を新規登録（今回だけ使用）→登録202/完了200→plan/connect/tools200→認証付き `whoami` 202→成果の詳細200→キャッシュを使わない再読込後も名前と「利用中」を表示。Work `5f64b90b-f569-4578-9bd1-f0444dd3c6eb`。この試験用ブラウザの所有者に限定され、既存本人の保存データは変更していない。411pxで横溢れなし。最初の読み込みにDNS失敗があったが、再読込後は完走し、登録の重複送信はなし。
 - Pixelで通常タップの16ms振動と接続成功の `[12,45,12]`、Web Audioのrunning状態での再生開始を確認。Androidのvibrator_managerも対応する12ms×2のfinishedを記録。今回の音は再生処理の確認で、録音による音質評価はしていない（公開203の実録音はtask100に保持）。
 - 証拠は `work/noah-tap-feedback/work/noah-production-209/` の `publication.json`、`model-probe.json`、`real-model-guarded.log`、`model-filesystem-diagnostic.log`、`stdio-regressions.log`、`pixel-roundtrip.json`、`pixel-feedback.json`、`pixel-vibrator.txt`、`pixel-result-reloaded.png`。キーや本人の既存データを含めず、途中の失敗も保存。全体verifyとGit/公開の最終結果は受入後に追記する。
+
+- [PR #19](https://github.com/iceiceice999/rock/pull/19): `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0（主要5,163成功・5skip・失敗0、API1,918・CSV385、型/lint/build/資産/mission/work/bot成功）。最終の記録と試験出力表示の更新後にも `npm run design:check` / `npm run lint:product` 成功。GitHub CI・マージ・公開の状態はPRへ追記する。
