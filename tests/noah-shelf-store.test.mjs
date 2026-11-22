@@ -373,7 +373,13 @@ void test('the screen: a card opens the detail with its tool already chosen; an 
   // 使える道具が 2 つある接続でも、カードの道具の入力欄が、最初から開いている。
   const chosen = await open('lookup');
   assert.equal(chosen.find('form').length, 1);
-  assert.ok(chosen.text(chosen.find('form')[0]).startsWith('情報を検索提供者の説明lookup'), chosen.text());
+  assert.ok(chosen.find('button').some(node => node.props['data-tool-name'] === 'lookup' && node.props['aria-pressed'] === true));
+  const formText = chosen.text(chosen.find('form')[0]);
+  assert.ok(chosen.text().includes('情報を検索'), chosen.text());
+  assert.ok(formText.startsWith('検索する内容'), formText);
+  assert.ok(formText.includes('提供者の説明lookup'), formText);
+  assert.ok(formText.indexOf(askView.NOAH_ASK_TEXT.submit) >= 0 &&
+    formText.indexOf(askView.NOAH_ASK_TEXT.submit) < formText.indexOf('提供者の説明lookup'), formText);
   // 無い道具の名前なら、いつもの一覧から選ぶ。
   const fallback = await open('missing');
   assert.equal(fallback.find('form').length, 0);
