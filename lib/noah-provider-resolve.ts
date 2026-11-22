@@ -1,5 +1,6 @@
 /** Discover executable metadata from the listed distribution, never from an aggregator's prose. */
 import type { DirectoryEntry } from './noah-agent-directory.ts';
+import { noahRevenueTarget } from './noah-revenue-directory.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { noahSourceRepository } from './noah-source-import.ts';
 import { draftFromRegistry, type RegistryServer } from './noah-intake-draft.ts';
@@ -36,6 +37,8 @@ export function noahProjectSources(entry: DirectoryEntry): string[] {
   return [...new Set([entry.card.href, ...(entry.card.sources ?? []).filter(s => ['github', 'huggingface', 'npm', 'docker', 'mcp-registry'].includes(s.source)).map(s => s.sourceUrl)].filter((s): s is string => typeof s === 'string'))];
 }
 export async function resolveNoahProvider(entry: DirectoryEntry, fetcher: typeof fetch = fetch): Promise<NoahProviderTarget> {
+  const reviewed = await noahRevenueTarget(entry);
+  if (reviewed) return reviewed;
   const sources = noahProjectSources(entry), signal = AbortSignal.timeout(20000);
   async function text(url: string) {
     const response = await fetcher(url, { redirect: 'manual', signal, headers: { Accept: 'application/json, text/plain', 'User-Agent': 'Noah/1' } });

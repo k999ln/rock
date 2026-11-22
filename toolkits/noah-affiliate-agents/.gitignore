@@ -1,0 +1,6 @@
+/work/
+/.wrangler/
+/.dev.vars
+/.dev.vars.*
+/catalog.private.json
+/*.zip
