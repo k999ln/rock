@@ -6,6 +6,8 @@
 
 模擬専用回線での配送先登録、入荷・定期配給、Agentの接続先切替・バックグラウンド実行・結果受取の試験は[運営Dockから本人受取までの開発指示](../../docs/prompts/noah-esim-free-device-trial-20261122.md)を参照。
 
+> **2026-11-21 の決め（[03 の 0 章](../../docs/structure/03-esim.md)・[07](../../docs/structure/07-decisions-from-minutes.md)）。** スマホは型 S（今の回線の横に入る 2 本目、SMS なし）。2026-11-22 に利用者から月額は取らない形へ変わったので、月額の Stripe の流れ（下の 2・4）は、本人が有料を決めるまで作らない。続けて使う割合は task 103 で比べる。
+
 ## 現行コード
 app/api/esim/**（catalog, order, issue, qr, install-proof, device-entitlement, reconcile, webhook）、lib/esim-*.ts、lib/esimgo-provider.ts、app/connect、components/esim-purchase-setup.tsx、components/rockstar-service-setup.tsx、lib/rockstar-entitlement-*.ts、services/sky-billing。
 
