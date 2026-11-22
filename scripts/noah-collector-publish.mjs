@@ -9,7 +9,7 @@ const text = (value, max) => Array.from(String(value ?? '')).map(char => char.ch
  * X は、公式 API の鍵が有る時だけ出す（鍵の無い収集機が、運営の Codex が送った X の紹介を、空で上書きしないため）。Reddit・Bluesky は、ここでは出さない。
  */
 export function collectionSnapshots({ exported, discoveries, x, now, leads = [], sent = new Set(), xConfigured = x?.status !== 'needs_credentials' }) {
-  const sources = ['github', 'huggingface', 'mcp-registry', 'hackernews', 'npm', 'docker', 'smithery', 'awesome', ...(xConfigured ? ['x'] : [])];
+  const sources = ['github', 'huggingface', 'mcp-registry', 'hackernews', 'npm', 'docker', 'smithery', 'awesome', 'producthunt', ...(xConfigured ? ['x'] : [])];
   const pending = new Map(sources.map(source => [source, []]));
   const add = item => {
     const list = pending.get(item.source);
@@ -62,7 +62,12 @@ export function collectionSnapshots({ exported, discoveries, x, now, leads = [],
   });
 }
 
-export async function publishCollection({ snapshots, origin, key, fetcher, now = Date.now }) {
+/**
+ * 本番の受け口が、まだ知らないかもしれない出所（task 125 で足した物）。本番の配備（Codex）より先に収集機が動いても、
+ * その出所の 400 は「まだ受け付けていない」（not_ready）として、失敗にしない。形の誤りは送る前に同じ決まり（parseCollectionSnapshot）で落としてある。
+ */
+export const NOAH_COLLECTION_NEW_SOURCES = new Set(['producthunt', 'noah-read']);
+export async function publishCollection({ snapshots, origin, key, fetcher, now = Date.now, optional = NOAH_COLLECTION_NEW_SOURCES }) {
   const target = new URL(origin);
   if (target.protocol !== 'https:' || target.username || target.password || target.pathname !== '/' || target.search || target.hash || !key || key.length < 32) throw Error('collector_publish_configuration');
   const results = [];
@@ -75,6 +80,7 @@ export async function publishCollection({ snapshots, origin, key, fetcher, now =
     const response = await fetcher(new URL(NOAH_COLLECTION_PATH, target), { method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(20_000), body,
       headers: { 'Content-Type': 'application/json', 'x-noah-collector-time': timestamp, 'x-noah-collector-signature': await collectionSignature(key, timestamp, body) } });
     await response.body?.cancel();
+    if (response.status === 400 && optional.has(snapshot.source)) { results.push({ source: snapshot.source, status: 'not_ready' }); continue; }
     if (!response.ok) { failure ??= `collector_publish_http_${response.status}`; continue; }
     results.push({ source: snapshot.source, items: snapshot.items.length });
   }
