@@ -1,4 +1,6 @@
 ## 2026-11-22
+- Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
+
 
 - Noahの公開Agent一覧と提携案件の非公開索引に、完全取得・候補照合・公開条件の定期点検と自社MCPの共通一覧接続を追加。本番統合は受入中（task101、[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
 

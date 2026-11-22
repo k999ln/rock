@@ -11,7 +11,9 @@ const id = 'project-' + 'a'.repeat(64),
   scope = 'owner-v1:' + 'b'.repeat(64),
   digest = 'c'.repeat(64),
   host = 'https://example-demo.hf.space';
+const mcp = process.env.NOAH_TEST_PROVIDER_KIND === 'mcp';
 const plan = {
+  protocol: mcp ? 'mcp' : 'gradio',
   projectId: id,
   name: '文章を整える',
   repository: 'example/demo',
@@ -23,6 +25,7 @@ const plan = {
       label: '文章を整える',
       digest,
       fields: [
+        ...(mcp ? [{ name: 'topics', label: '対象', kind: 'list', itemKind: 'text', optional: false }] : []),
         { name: 'message', label: '文章', kind: 'text', optional: false },
         {
           name: 'length',
@@ -71,7 +74,7 @@ try {
               provider: 'example',
               sources: [],
             },
-            connection: { kind: 'space', repository: 'example/demo' },
+            connection: mcp ? { kind: 'setup', importHref: null } : { kind: 'space', repository: 'example/demo' },
           },
         });
       if (path === '/api/noah/provider') {
@@ -127,25 +130,23 @@ try {
       });
     });
     await page.goto(`${base}/noah/discover/agent?id=${id}`);
-    await page.getByRole('button', { name: '使う', exact: true }).click();
+    const press = locator => width < 600 ? locator.tap() : locator.click();
+    await press(page.getByRole('button', { name: '使う', exact: true }));
     await page
       .getByLabel('文章', { exact: true })
       .fill('長い文章を短くしてください。');
+    if (mcp) await page.getByLabel('対象（1行に1件）', { exact: true }).fill('東京\nロンドン');
     assert.equal(
       await page.getByLabel('長さ', { exact: true }).getAttribute('min'),
       '64',
     );
-    await page
-      .getByRole('button', { name: '送信して実行', exact: true })
-      .click();
+    await press(page.getByRole('button', { name: '送信して実行', exact: true }));
     await page
       .getByRole('button', { name: '同じ依頼の受付を確認', exact: true })
       .waitFor();
-    assert.equal(await page.locator('textarea').isDisabled(), true);
+    assert.equal(await page.getByLabel('文章', { exact: true }).isDisabled(), true);
     await page.screenshot({ path: `${out}/request-${width}.png` });
-    await page
-      .getByRole('button', { name: '同じ依頼の受付を確認', exact: true })
-      .click();
+    await press(page.getByRole('button', { name: '同じ依頼の受付を確認', exact: true }));
     await page.waitForURL('**/noah/tasks/**');
     await page
       .getByRole('heading', { name: '成果の詳細', exact: true })
@@ -158,6 +159,7 @@ try {
     assert.equal(sent.length, 2);
     assert.equal(sent[0].id, sent[1].id);
     assert.deepEqual(sent[0].input, sent[1].input);
+    if (mcp) assert.equal(sent[0].input.topics, '東京\nロンドン');
     assert.ok(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

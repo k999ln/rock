@@ -136,7 +136,7 @@
 
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
-| 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ トップ掲載・クラウド移行 #380／UX修正 #384／スマホ実ブラウザ・verify不一致修正 #388／本番反映・ロード表示・内部接続 #390（検証結果はtask本文。Xはキー待ち） |
+| 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ トップ掲載・クラウド移行 #380／UX修正 #384／スマホ実ブラウザ・verify不一致修正 #388／本番反映・ロード表示・内部接続 #390（検証結果はtask本文。Xはキー待ち）  ／ ✅ 公開MCPの自動接続・保存・スマホ模擬試験 [#7](https://github.com/iceiceice999/rock/pull/7)（全体検証・本番受入中） |
 | 121 | [121-noah-collect-more.md](121-noah-collect-more.md) | 集める場所を増やす（HN・GitHub MCP・HF MCP Space・npm・Docker・awesome一覧・Smithery、Codexが読むX/Reddit/Bluesky）・新しく使いやすい順・握手済みの系列を一覧へ自動で入れる | ✅ #385（本番の配備は Codex） |
 | 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
 | 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | Codex へ |

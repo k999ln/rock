@@ -116,3 +116,8 @@ PRのCodeQL指摘に合わせ、ブラウザ試験の既定出力先を `mkdtemp
 公開194（source `42a54ac2e5567cb3fd4fd32925a49b56c6d5fa0e`）で実Chromeの5画面幅31/31成功。公開Spaceの実入力とAPI専用エラー、既存系列の内部詳細を確認。BaseEdge Labs Catalogは本番で接続200/connectedから切断disconnectedまで確認し、Tool実行は0件。追加確認で下書きAPIのブラウザ認証欠落を検出して修正し、本人境界・下書き・URL引継ぎ43試験が成功。Cloudflareのredirectモード差異は実workerd回帰試験を含む6試験で確認。追加migrationなし。
 
 全体verifyは統合commit `ffdcd922` でexit 0（主要4,942成功・5skip、API1,918項目、CSV385項目）。最終修正後のCI・公開版・取込URLの実画面確認結果はPR本文へ記録する。証跡は `work/noah-production-qa-20261122/published-194/`、`live-connection-proof.json`、`private-intake-tests.log`。実機Safariの合格ではない。
+
+## 2026-11-22 全掲載の提供元接続
+公開接続の自動照合、MCP入力/実行、本人別Work保存を追加。既存Gradio導線と外部評価を維持。CLIの隔離クラウドは別PR #1で継続。検証と公開証拠は今回PRへ記録する。全件実行完了ではない。
+
+PR: [iceiceice999/rock #7](https://github.com/iceiceice999/rock/pull/7)。Chromeの320/390/1280pxでMCP/Gradioの入力・タップ・通信断・再表示を確認。公開guessit MCPへの実処理とローカルSQLite再読込を確認済み。本番受入・全体verifyの最終結果はPR本文に記録する。CLIは別PR #1。
