@@ -362,7 +362,7 @@ PR #400に記録。mainの公開正本ルール（PR #398）を受け、公開19
 統合版 `2acb6763` の全体verifyを単一実行で最後まで成功（主4,971成功・5skip・0失敗、API1,918・CSV385、型/lint/build、mission/work/bot）。ログ `work/noah-pilot-197/full-verify-integrated-final.log`。直前のMac実行は既存PC citationsのプロセス終了確認1件で失敗し、同じ試験の単独再確認と全体再実行で成功。該当コード・試験の削除や緩和はしていない。GitHubの同HEADもverify/SPIDER/CodeQL全件成功。最新main統合後の最終CIと公開、Pixelでの新規登録の再受入はPR本文へ追記する。
 
 
-### 2026-11-22 通常タップの反応と出典表示（PR #3・公開受入中）
+### 2026-11-22 通常タップの反応と出典表示（PR #3・公開203受入済み）
 
 本人の「タップする時ポコとか効果音とかバイブ」「端末のスペックを最大限に使って」に対応。ボタン・メニュー・選択に95msの音と16/24msの振動を付け、接続成功の音/振動は別に保持する。既存の音/振動設定を再利用し、設定内で反応を試せる。AudioContextはinteractiveで一つを再利用、連打は同時発音を抑え、10秒無操作でsuspend、非表示/ミュート/離脱で解放。遅れたresumeは古い操作音を再生しない。押下アニメーションは動きを減らす設定を尊重する。
 
@@ -377,3 +377,36 @@ PR #400に記録。mainの公開正本ルール（PR #398）を受け、公開19
 GitHub受入先: [PR #3](https://github.com/iceiceice999/rock/pull/3)。main `a0bea729` のGradio実行受け皿を通常merge `aa785c14` で保持。追記型文書の衝突は両側を残した。統合後の全体verifyとCIを確認してから、Sitesは最新mainとGit treeが一致する版を公開する。
 
 検査環境の追補: private移行後のCodeQLはworkflow-run APIの403、SPIDERは180秒でSCANNER_FAILEDを再現。CodeQLのjobにactions:readだけ追加（contents:read/security-events:writeは維持）。全履歴スキャナは600秒・外側630秒・job15分の有界検査へ延長し、ルール/例外/全HEAD到達履歴/秘密値非出力/失敗時の拒否を維持。検証済みスキャナcommit `4c7b18c44ec9b73a3b980938eac0f3c2ca6cf1e7` を移行先repoから固定取得する。候補HEADに追従しない。スキャナ境界5成功/実バイナリ未指定1skip、workflow4成功。最終CIの結果は別途記録する。
+
+
+<a id="pixel-203-acceptance"></a>
+
+#### 追補: 公開203のPixel実機受入（2026-11-22、PR #3）
+
+[PR #3](https://github.com/iceiceice999/rock/pull/3)はmain `18b7fc3a38c7a37f56596faa4de17df8c2207d57`へ通常merge済み。Sites source `3672a40a9ba4337d2dd298e983b0119ec296aa29`とGit tree `cec6d47eb597a72084bac2e3f30cf96fce7c51cc`を照合して公開203へ反映。deployment `appgdep_6b02a94789fc8191ad1c07beb122fd24` succeeded / env17。これは203の受入記録であり、後続公開の版番号や最新mainを置き換えない。
+
+統合後の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は単一exit0、主4,992成功・5skip・0失敗、API1,918・CSV385、型/lint/build・mission/work/botまで成功。最終HEAD `d07428e8` のGitHub verify、SPIDER secrets/repair/web測定、CodeQL JS/TS・Python・集約は全件成功。SPIDER run45002239471は到達全2,599コミット、historyScanCompleted=true、0候補。ローカルの重複履歴試験はCI成功後に中止し、合格の証拠には数えていない。
+
+本人が解除したPixel 10（Android 17 / Vanadium、CSS 411×801）上で、許可済みADB/CDPから公開サービスを操作した。
+
+- 「反応を試す」のタップで実AudioContextのrunningと発音を確認し、端末の再生録音に約50msの音を検出。Android vibrator_managerでVanadiumの24ms振動がfinished。模擬呼び出しだけではないが、本人の聞こえ方・体感の評価とは区別する。
+- 既存登録の再利用: 登録済み画面→Agentを使う→アカウントを確認→頼む→成果 `741b4116-6f92-4453-9537-0b6223a883fa`。再読み込み後も保持。
+- 新規登録: 既存データを残した分離テスト画面で公開名 `Noah-Pixel-203-20261122` を入力し、「今回だけ使う」→「同意して登録」。登録API202→状態200→登録完了。外部テストアカウントは1件、429なし、投稿・課金なし。
+- 登録完了後「Agentを使う」→「接続」→「アカウントを確認」→「頼む」→「進捗と成果を見る」→「詳細を開く」。新アカウント名と利用中の状態を受信。成果 `9256eca9-e525-4de6-beee-76ce342985ab` はキャッシュを使わない再読み込み後も保持。画面幅/scrollWidthとも411px。Androidの画面階層でも同じ成果URLを確認。キーの手入力とNoahの会員登録は不要。
+- 計測用のイベント記録には二重ラッパーによる重複があるため、記録数を実イベント数とは扱わず、録音とAndroid完了結果を証拠とする。
+
+検査後に分離したテスト画面を終了し、通常ブラウザの成果画面へ戻した。録音・計測ラッパー・ADB forwardを終了。通常ブラウザの保存データと音/振動設定は保持。秘密・cookie・発行キー・全画面階層はGitへ入れない。新規登録側の成果はテストブラウザの所有権が必要で、URLだけでは別の利用者から取得できない。
+
+合格範囲はAgentboard公式API方式の新規登録・認証付き読み取り・成果保存。任意サービスのブラウザ登録、100人同時の外部登録/実行、Agent本体のバックグラウンド実行、実eSIMを合格としない。従来の本番100ブラウザ/同時5フローの限定読み取り試験も、外部100人同時実行とは区別する。
+
+証拠は `work/noah-tap-feedback/work/noah-pixel-203/` に保存（Git対象外）。再検査は同じPixel/公開版を確認し、設定の「反応を試す」と、許可済みの新規テスト名から上記UI操作を行う。結果不明時は登録を再送せず同じ受付を照会する。今回の文書反映時の検査結果は後続PR本文に記録する。
+
+| 証拠 | SHA256 |
+| --- | --- |
+| `tap-feedback-confirmed.opus` | `c54a3471203a4a9a9c688fe8ae628a4ff643b3be2695f2f58e73f8d10201508f` |
+| `audio-detection.txt` | `9f2a8d21a0e354e5300cba143e697d8048bd2733f8d453175d7def2b979a9742` |
+| `vibration-confirmed.txt` | `7dc71780992685157c0a1877a0e5c75a5e09602ee220801314aea7c3c147af2f` |
+| `fresh-registered.png` | `62d277a78b63eb733a183576d42f7b5bdba85d34b93a85949d7ce4de0178ed2c` |
+| `fresh-result-reloaded.json` | `f1b064468b8c22ccb36cc12b6f1c85dad4e12b2798f15c9af407870e3cb9b2cd` |
+| `fresh-result-reloaded.png` | `5d445cf825738e37ad4afa60ee3b0a4e2f60dc40f0d59de50079f372db6b8b67` |
+| `physical-result-url.txt` | `4bc32299e9ae36b8a597e24400abcd608d079de7760bb32ca34dab120d2c6d82` |
