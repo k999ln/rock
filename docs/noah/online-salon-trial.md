@@ -12,6 +12,8 @@
 
 最初の案内は10人ずつ。Agentboardの新規登録に進む案内は1時間に10人までを運用上の目安とし、既存の共有送信元の利用も考慮する。これは提供者の枠を予約する仕組みではない。Agentboardの既知の登録上限20件/IP/時、未設定のブラウザ型登録、別利用者の受入範囲は[運用仕様14章](spec-97-launch-ops.md)を参照。下記のMac向け動画・本文は過去の案内として保存しており、現在のスマホ試用には配らない。Mac向けページは撤去済み。eSIM配布は回線発行・専用接続の実機受入後に別途案内する。
 
+運営の再確認は `node scripts/check-noah-pilot-production.mjs https://avoado.si <実機で確認した成果UUID>`。100ブラウザ・同時5フローで受付/再訪/空の成果一覧/別所有者の成果拒否を調べ、cookieを出力・保存せず集計だけを返す。外部登録・Agentの実行・保存データ作成は行わない。2026-11-22 14:17 JSTは400/400成功、95パーセンタイル203ms。疑似100人の登録と実行は `tests/noah-cohort-capacity.test.mjs`、実機の通し検査と公開版はtask100へ分けて記録する。
+
 
 [投稿に添付する動画をダウンロード（MP4・18秒・約1.5 MB）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4)。縦長（4:5）で、音を消したまま見られます。動画を添付し、以下の本文をコピーしてください。
 

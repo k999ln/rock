@@ -3,11 +3,11 @@ import type { ResolvedRegistration, RegistrationDocument } from './noah-registra
 import type { WorkJob } from './workflow.ts';
 import { noahPublicHttpsUrl, canonicalJson, sha256Hex } from './noah-connect-requirements.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
-import type { RegistrationProvider, RegistrationRecord, RegistrationState, RegistrationStatus } from './noah-registration-contract.ts';
+import type { RegistrationProvider, RegistrationRecord, RegistrationState, RegistrationOutcome, RegistrationAvailability, RegistrationStatus } from './noah-registration-contract.ts';
 export type ConfiguredRegistration = RegistrationProvider & { executorUrl: string };
-export type RegistrationExecutor=(id:string,values?:Record<string,string>,documents?:Record<string,RegistrationDocument>)=>Promise<RegistrationState>;
+export type RegistrationExecutor=(id:string,values?:Record<string,string>,documents?:Record<string,RegistrationDocument>)=>Promise<RegistrationOutcome>;
 export type RegistrationDependencies = {
-  accountStates?: (request:Request,providers:ConfiguredRegistration[])=>Promise<Record<string, 'ready'|'pending'|'unavailable'>>;
+  accountStates?: (request:Request,providers:ConfiguredRegistration[])=>Promise<Record<string, RegistrationAvailability>>;
   executor?: (request:Request,provider:ConfiguredRegistration)=>Promise<RegistrationExecutor|undefined>;
   resolveProfile?: (request:Request,provider:ConfiguredRegistration,reuse:unknown)=>Promise<ResolvedRegistration>;
   db: Pick<D1Database, 'prepare'>; providers: ConfiguredRegistration[]; token?: string;
@@ -90,10 +90,11 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
     const r = job.noahRegistration, provider = deps.providers.find(p => p.id === r.providerId);
     const same = provider && await sha256Hex(canonicalJson(provider)) === r.providerDigest;
     return { id: job.id, providerName: r.providerName, providerOrigin: r.providerOrigin, agentId: r.agentId, state: r.state, expiresAt: r.expiresAt,
+      ...(r.state==='failed'&&r.retryAt?{retryAt:r.retryAt}:{}),
       verificationUrl: same && r.state === 'needs_user' ? (provider.execution==='browser'?`/noah/registration/browser?job=${encodeURIComponent(job.id)}&provider=${encodeURIComponent(provider.id)}`:provider.verificationUrl) : null,
       returnTo: r.agentId.startsWith('mcp-registry:')?`/noah/ready/agent?id=${encodeURIComponent(r.agentId)}`:`/noah/agents/${encodeURIComponent(r.agentId)}` };
   }
-  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>, native?:RegistrationExecutor): Promise<RegistrationState> {
+  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>, native?:RegistrationExecutor): Promise<RegistrationOutcome> {
     try {
       if(native)return await native(id,values,documents);
       const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values, ...(documents && Object.keys(documents).length ? {documents} : {}) } : {}) }) });
@@ -103,9 +104,12 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       return reply.state as RegistrationState;
     } catch { return 'unknown'; }
   }
-  async function settle(owner: string, job: RegistrationWork, state: RegistrationState) {
+  async function settle(owner: string, job: RegistrationWork, outcome: RegistrationOutcome) {
+    const state=typeof outcome==='string'?outcome:outcome.state;
     const expected = job.revision;
     job.noahRegistration.state = state; job.noahRegistration.lastCheckedAt = now();
+    if(typeof outcome!=='string')job.noahRegistration.retryAt=outcome.retryAt;
+    else delete job.noahRegistration.retryAt;
     job.status = state === 'running' || state === 'needs_user' ? 'active' : 'review';
     await update(owner, job, expected);
   }
@@ -118,7 +122,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
         const agent = url.searchParams.get('agent');
         const providers=enabled?deps.providers.filter(p=>!agent||p.agentIds.includes(agent)):[];
         const states=await deps.accountStates?.(request,providers)??{};
-        return json({providers:providers.map(({executorUrl:_internal,...provider})=>({...provider,...(states[provider.id]?{accountState:states[provider.id]}:{})}))});
+        return json({providers:providers.map(({executorUrl:_internal,...provider})=>{const state=states[provider.id];return {...provider,...(typeof state==='string'?{accountState:state}:state??{})};})});
       }
       if (request.method === 'POST' && request.headers.get('origin') !== url.origin) return json({ error: 'Noahの画面から送信してください。' }, 403);
       const key = request.headers.get('X-Noah-Registration-Key');

@@ -45,6 +45,7 @@ export function createNoahNativeRegistration(deps:{store:NoahExternalAccountStor
         observe({stage:'legacy_unsent_recovered'});return 'failed';
       }
       if(slot.account?.credential)return verify(owner,slot);
+      if(slot.account?.state==='failed'&&slot.account.retryAt&&slot.account.retryAt>now())return {state:'failed',retryAt:slot.account.retryAt};
       if(!values)return slot.account?.state==='failed'?'failed':'unknown';
       if(Object.keys(values).some(k=>k!=='name')||!values.name?.trim()||values.name.length>80)throw new NoahAgentError('使う名前を確認してください。');
       // An uncertain attempt is never repeated, even with a different UI ticket.
@@ -53,7 +54,16 @@ export function createNoahNativeRegistration(deps:{store:NoahExternalAccountStor
       try{
         const response=await request('/api/agents/register',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':id},body:JSON.stringify({name:values.name.trim()})});
         observe({stage:'register_response',status:response.status});
-        if(!response.ok){await response.body?.cancel();if([400,422,429].includes(response.status))await deps.store.save(owner,'agentboard',slot,{...slot.account!,state:'failed'});return [400,422,429].includes(response.status)?'failed':'unknown';}
+        if(response.status===429){
+          const header=response.headers.get('retry-after')?.trim();
+          const parsed=header&&/^\d+$/.test(header)?now()+Number(header)*1000:header?Date.parse(header):NaN;
+          // Missing/invalid Retry-After uses the provider's one-hour registration window.
+          const retryAt=Number.isSafeInteger(parsed)&&parsed>now()?Math.min(parsed,now()+86400000):now()+3600000;
+          await response.body?.cancel();
+          await deps.store.save(owner,'agentboard',slot,{...slot.account!,state:'failed',retryAt});
+          return {state:'failed',retryAt};
+        }
+        if(!response.ok){await response.body?.cancel();if([400,422].includes(response.status))await deps.store.save(owner,'agentboard',slot,{...slot.account!,state:'failed'});return [400,422].includes(response.status)?'failed':'unknown';}
         const body=await nativeRegistrationJson(response);
         if(!object(body)||typeof body.credential!=='string'||!/^agb_[a-f0-9]{32,256}$/.test(body.credential)||!object(body.agent)||typeof body.agent.id!=='string'||body.agent.id.length>160)return 'unknown';
         // Save before verification: polling can finish verification without registering again.
