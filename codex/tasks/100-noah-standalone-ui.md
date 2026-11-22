@@ -238,3 +238,14 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 公開186 succeeded: source `7d4674768ce1497855244b2a29d609fc0c40052c`、deployment `appgdep_6b021379697c81919c0fee022d64b782`、env16。最新source6f5e9f8のモバイルUXと183共有カードを保全。公開ブラウザで一覧の王冠/コメント操作が0件であること、Axad詳細の元出典と保存/接続が残ること、390px/590pxで横はみ出しなしを確認。
 
 検証: 型検査・関連28試験・build・公開bundle/assets・8ルート/8ヘッダー成功。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は、今回変更していない共有機能のlint6件で停止。`lib/noah-agent-share.ts` 7/13 no-control-regex、`components/noah-agent-share.tsx` 34 prefer-tag-over-role、`tests/noah-agent-share.test.mjs` 6/14/23 no-floating-promises。テスト削除や検査除外は行わず、担当チャットへ共有。全体検査成功とはしない。ログ `/tmp/noah-only-source-verify.log`、関連 `/tmp/noah-only-source-tests.log`。修正後の全体verify・PRレビュー/マージは未完了。
+
+
+## 2026-11-22 残存lintと全体検査を解消（PR #386）
+
+✅ 本人指示「残ってるlintエラーも全部直して、全体検査まで通して」に対応。公開188の共有機能6件と組合せフォーム1件のlintを修正。C0/DELの判定範囲を維持して文字コード比較へ変更、statusをoutputへ、node:testのPromiseをvoidへ、Reactのフォーム型をSubmitEventへ更新。共有部品を画面試験へ実モジュールで読み込み、共有・URLコピーを含む期待値と接続通知消去の検査を更新した。テスト削除・除外・ルール抑制なし。
+
+全体検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行でexit0。主試験4,911件中4,907 pass・4 skip・0 fail。typecheck/lint/build、公開bundle/assets、Work API1,918・CSV385 assertions、mission/work/botまで成功。関連57試験も全成功。ログ `/tmp/noah-full-verify-final.log`、関連 `/tmp/noah-lint-integration-tests.log`。以前の節のlint停止・単一verify未完了は本節で解消。
+
+公開189 succeeded: Sites source `5775d59af94d4eca6a676ba625d54dfa9314a78d`（親 `9714ad8d13286b329a1dd655d54cc842305c74cf`）、deployment `appgdep_6b02585027588191bca3c5320550f2a2`、env17。公開188の収集・組合せ機能と元サイト評価への一本化を保全。ホーム・一覧API・Agent詳細のHTTP 200を確認。これは物理端末の操作試験ではない。
+
+修正7ファイルはSitesのGit sourceに保存済み: `components/noah-agent-share.tsx`、`components/noah-combination-form.tsx`、`lib/noah-agent-share.ts`、`tests/fixtures/noah/screen.mjs`、`tests/noah-agent-share.test.mjs`、`tests/noah-patrol.test.mjs`、`tests/noah-ready-ui.test.mjs`。共有・組合せの導入元はGitHub main/本PRに未収録のため、部分的に複製せず公開側の正確なSHAを受領票として記録する。差分控え `/tmp/noah-lint-clean-20261122.patch`。次担当は当該機能をGitHubへ受け入れる際にこの修正版を使用する。PRレビュー/マージは未完了。
