@@ -72,3 +72,34 @@ Locally implemented and verified: durable job/recovery source, owner scoping, si
 Not accepted: production D1 migration/readback, production secret custody, live Provider sandbox or invoice matching, funded production Wallet settlement, carrier activation, Android APK/device runtime, and exact-model RockstarOS install/recovery. Local tests, usage rows, or successful SIM entitlement claims do not prove any of these.
 
 See [cloud continuity contract](sky-cloud-continuity.md), [current account-led product baseline](product-baseline.md), and [provider contract readiness](provider-contract-readiness-20260930.md).
+
+## 自社クラウドの運用（task 105）
+
+### 費用上限と受付
+
+- 集計は UTC の暦月。実費の計算は `lib/cloud-cost.ts` の定価表を使用する。表示額は計測した Containers と Workers AI の定価換算で、税・地域差・無料枠・通信・ログを含む請求書の額とは別に照合する。
+- `CLOUD_MONTHLY_CAP_USD` の既定は USD 30。「1 文で頼む」の開始時に承認された場合だけ USD 150 を設定する。`CLOUD_USER_MONTHLY_CAP_USD` は承認された 1 人の上限。個別設定が空なら全体上限を適用する。
+- 実行担当が計測した利用量を内部 API `POST /api/internal/cloud-operations?source=usage` に送る。専用の `CLOUD_USAGE_INGEST_TOKEN` で認証し、`id`、`userId`、`usage` を送る。`id` は計測元で一意な不変の ID、`usage` は `lib/cloud-cost.ts` の `CloudUsage`、`at` は Unix ミリ秒。ユーザーに帰属する利用には実行主体と同じ内部 ID を使い、共有の Containers 利用に限り `userId: null` が使える。同じ ID と内容の再送は重複計上しない。
+- 記録済みの実費が全体または本人の上限に達したら、承認・新規受付 API は理由付きで 429 を返す。単価未確定の行がある場合は不足分を確認するまで新規受付を保留する。受付済みの仕事の結果取得・再照会・取消・照合は続ける。進行中や遅れて届く実費の分だけ、最終請求は受付時の集計を上回り得る。
+- 上限に達したら `/noah/review` の「クラウド運営」で月・記録済み費用・未確定単価を確認し、計測元との照合と実行中の仕事の把握を行う。全体枠や個人枠の変更は本人の承認後。上限に達した仕事を別 ID で作り直さない。
+
+### 受付・最初の成果・通知
+
+- 独立した試験環境から、5 分ごとに `CLOUD_PROBE_TOKEN` を使って `node scripts/probe-cloud-admission.mjs <試験サイトのオリジン>` を実行する。プローブは受付と同じ D1 の実費クエリを使い、上限判定が応答することを確かめる。意図どおり上限で受付が閉じていても、判定が正常に返れば成功。合成の見積、仕事、外部送信は発生しない。
+- 観測 JSON は試験側に保管し、同じプローブ資格情報で `POST /api/internal/cloud-operations?source=probe` に送る。アプリに届かない間の失敗も試験側に残し、復旧後に送る。各 UTC 5 分枠の最初の観測を保持する。プローブの資格情報では費用イベントを書けない。
+- `/noah/review` では、受付の成功・観測・予定を日別に照合する。月 99.5% が目標で、観測のない枠は未計測。最初の成果の目標は受け付けた実行の 95% が 30 秒以内。受付から 30 秒が過ぎても成果がない実行は未達に数え、成果を観測できた実行の p95 秒数も表示する。保存データの消失の目標は 0 件で、下の復元練習で試験データの同一性を確かめる。
+- 消失・お金・安全は今すぐ、ほかは朝のまとめへ振り分ける。送信は運用担当が通知先を承認してから開始する。
+
+### 障害時
+
+1. **黒殿の停止**。lease が切れた仕事は結果不明として、同じ job ID と既存の受領記録を照合する。二重実行を避け、新規だけを承認済みの Cloudflare 実行先へ回す。復旧後に記録と実行先を確認して戻す。
+2. **Cloudflare の停止**。新規受付を閉じ、端末では下書きを保持し、別系統の状態ページに停止を掲載する。復旧時は受付と D1 の健全性を確認し、受付済みの仕事は同じ ID の状態を問い合わせる。記録のない依頼も自動で二重送信しない。
+3. **データ・お金・安全への影響**。上の振り分けに従い運用担当へ引き継ぐ。Spider は閲覧まで。運用担当は状況確認・通知・許可済み復旧を行い、破壊的操作・費用変更・本番 DB の操作は本人が承認する。
+
+### D1 の日次 R2 バックアップと復元練習
+
+1. 承認後の日次ジョブでは D1 の SQL エクスポートを要求し、完了後に期限付き URL から取得する。D1 の識別子、UTC の取得時刻、SQL の SHA-256、保存先の世代を記録し、アクセス制御した非公開の R2 へ保管する。アップロード後にサイズと SHA-256 を照合する。エクスポートが他の D1 リクエストをブロックする時間を考慮して実行枠を決める。[D1 のエクスポートとインポート](https://developers.cloudflare.com/d1/best-practices/import-export-data/) · [Cloudflare の D1 → R2 バックアップ例](https://developers.cloudflare.com/workflows/examples/backup-d1/)
+2. 月に 1 回、隔離した空の試験 D1 に R2 の書き出しを戻す。主キー順の行とスキーマの SHA-256、表ごとの行数、参照関係を照合する。異なる場合はバックアップ成功として扱わず、障害の時系列と失敗した世代を保存する。D1 Time Travel は有料枠で 30 日で、対象 DB を上書きするため本番への適用は承認後。[D1 Time Travel](https://developers.cloudflare.com/d1/reference/time-travel/)
+3. ローカルで `node scripts/check-cloud-d1-restore.mjs` を実行すると、一時 D1 を SQL に書き出し、一時 R2 を経由して空の一時 D1 に戻す。合成データ 2 表の行数と、スキーマと行を含む SHA-256 を検証する。黒殿への複製は task 101 の後に扱う。
+
+試験環境の計測元と上記手順を検証してから、本番の計測元、通知先、定期実行、書き出し先の承認へ進む。

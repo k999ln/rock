@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
+- task 105（自社クラウドの費用上限・見張り・復元練習、Codex の #368）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0058 に付け直し、その表・索引・trigger が migrator で全部入る事の試験を足した（[PR #413](https://github.com/k999ln/rock/pull/413)）。
 - task 13（iOS の eSIM 導入と Eve のホーム画面、Codex の #372）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0057 に付け直し、接続画面の見出しは main の新しい文にした。手元の本番ビルドで応答ヘッダを測り直した。iPhone 実機の確かめは未実施（[PR #412](https://github.com/k999ln/rock/pull/412)）。
 - task 102（SIM の証明、Codex の #365）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0056 に付け直し、会員登録の廃止の後は、このブラウザの本人に SIM を束ねる形にした（[PR #411](https://github.com/k999ln/rock/pull/411)）。
 - Noahの定期便の台帳を作った（task124、Opus / Noelle。本人の決定「配給制にする」「現金で渡す」「本人の分から差し引く」）。Agentが実際に稼いだ現金だけを月ごとに締め、作業料（いつも現金）と全員への等分（今は現金、仕入先とつながったら物）に分ける。有料は、等分が値段以上の月だけ等分から差し引く。締めは途中で止まっても続きから動き、振込の一覧はCSVで出す（振込は本人が押す）。口座番号は持たずHMACだけ。切り替えは閉のままで、本番の動きは変わらない。migration 0055の本番適用は本人の許可の後。棚・300人の試行・公開の審査者の操作が本番で使えなかった（IDだけを見ていた）のも直した（[PR #410](https://github.com/k999ln/rock/pull/410)）。
@@ -108,6 +110,9 @@
 
 - Noah公開版156でログイン後の選択保持・登録状態の再確認・進捗/成果への導線を反映。本人承認の掲載担当を設定し172件を取り込み、公開環境のスマホ幅で読み取り専用1件の接続→成果受領→切断後の保持を確認。全体verify 4,759成功・4skip（[PR #358](https://github.com/k999ln/rock/pull/358)）。
 - iPhone・iPadのeSIM導入リンクとQR、Eveのホーム画面追加、導入宣言と事業者通知の照合を実装。iPhone実機確認は未実施（[PR #372](https://github.com/k999ln/rock/pull/372)、task 13）。
+- task 101 の項目 1・4 として Noah の運営向け月別従量と移行の引き金、runner の同一 ID 再配送防止と合成 Cloudflare 復旧試験を追加（[PR #370](https://github.com/k999ln/rock/pull/370)）。
+
+- task 105 のクラウド新規受付に費用上限を追加し、Noah の日別 SLO、通知の振り分け、D1・R2 のローカル復元練習と運用手順を実装（[PR #368](https://github.com/k999ln/rock/pull/368)）。
 
 ## 2026-11-21
 
