@@ -55,7 +55,7 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='',on
       <button type="button" aria-pressed={order==='new'} onClick={()=>setOrder('new')}>出た順</button>
     </div>}
     {(source || searchQuery && onClearQuery) && <button type="button" className={styles.recovery} onClick={()=>{setSource('');onClearQuery?.();}}>検索条件をクリア</button>}
-    {!current && <div className={styles.status}><NoahLoading label="読み込んでいます…"/></div>}
+    {!current && <NoahLoading label="読み込んでいます…" variant="cards"/>}
     {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" className={styles.recovery} onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
     {current?.page?.items.length===0 && <p className={styles.status}>この条件のAgentはまだありません。</p>}
     {current?.page && <NoahPinGrid items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}

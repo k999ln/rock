@@ -296,3 +296,5 @@ main `062fbb456` の検索・モバイル試験修正を統合し、公開中の
 GitHub Actions [SPIDER run44979417145](https://github.com/k999ln/rock/actions/runs/44979417145)、job137076412997で `8e178d08981307e7b499044cc6df6e340a36ba51` の全HEAD到達履歴検査が成功し、`SPIDER clean: 0 candidates` を確認。固定ポリシー試験・秘密値を出さない境界試験・SPIDER修復回帰も成功した。最終全体CIとmain統合はPR #377に最新HEADを結び付けて記録する。
 
 追補: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は統合実装 `8e178d08` と記録更新 `1d5552f3` の内容で全工程exit0（主4,933成功/5skip/0失敗、API1,918、CSV385、ビルド・mission/work/botまで）。その後mainへ入ったPR #389 / `6692661b` も履歴ごと取り込み、eSIM再開・利用明細の115試験と統合production buildが成功。再ビルドしたローカルWorkerの8経路/8ヘッダーを実測し `data/web-security-response-current.json` を再採取した。新規の空ローカルD1は共通基盤テーブルがないため起動用migrationが停止し、ヘッダー実測は直接local Workerを起動して実施（本番DBは操作していない）。最終統合HEADの全CIをPRに記録して受け入れる。
+
+公開191の追加差分 `bc23805ee70c93eb2b4410a7b09bae323b6faaf5` の読み込み表示（カードのプレースホルダー、花形マーク、動きを減らす設定への対応）とブラウザ試験を保全。公開元評価の拡張はmainから既に取り込み済み。関連25試験・型検査・lint成功。以後の接続音/振動の新規変更は並行チャットが担当し、本PRから公開サイトを再配備せず公開の最新版を維持する。

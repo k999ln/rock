@@ -30,6 +30,16 @@ try{
   // saved-board writes and Agent execution even if a selector regresses.
   await page.route('**/api/noah/**',async route=>{const req=route.request(),url=new URL(req.url());if(!['GET','HEAD'].includes(req.method()) && url.pathname!=='/api/noah/session')return route.abort();return route.continue();});
   const press=locator=>mobile?locator.tap():locator.click();
+  await check(`${width}: loading layout and reduced motion`,async()=>{
+   let release;const pending=new Promise(resolve=>{release=resolve;}),hold=async route=>{await pending;await route.continue();};
+   await page.route('**/api/noah/discover?**',hold);
+   try{
+    await page.goto(`${base}/noah`,{waitUntil:'domcontentloaded'});const loading=page.locator('#noah-collection output');await loading.waitFor();await noOverflow(page);
+    assert.equal(await loading.getAttribute('aria-live'),'polite');await page.screenshot({path:`${output}/loading-${width}.png`});
+    await page.emulateMedia({reducedMotion:'reduce'});assert.ok(await loading.evaluate(e=>[e,...e.querySelectorAll('*')].every(n=>getComputedStyle(n).animationName==='none')),'loading animation ignores reduced motion');
+   }finally{release();await page.unroute('**/api/noah/discover?**',hold);await page.emulateMedia({reducedMotion:'no-preference'});}
+   await ready(page);
+  });
   await check(`${width}: layout and touch targets`,async()=>{
    await page.goto(`${base}/noah`,{waitUntil:'domcontentloaded'});await ready(page);await noOverflow(page);await noOverlap(page);
    await size(page.getByLabel('メニュー',{exact:true}));await size(page.getByLabel('登録情報を見る',{exact:true}));
@@ -48,10 +58,12 @@ try{
   });
   await check(`${width}: filter swipe, rating and external card`,async()=>{
    const filters=page.locator('[aria-label="Agentを絞り込む"]');if(mobile)await swipe(page,context,filters);
-   const filtered=page.waitForResponse(r=>r.url().includes('/api/noah/discover?')&&r.url().includes('huggingface'));await press(filters.getByRole('button',{name:'Hugging Face',exact:true}));await filtered;await ready(page);
+   const filtered=page.waitForResponse(r=>r.url().includes('/api/noah/discover?')&&r.url().includes('huggingface'));await press(filters.getByRole('button',{name:'Hugging Face',exact:true}));const listing=await (await filtered).json();await ready(page);
    const card=page.locator('article').filter({hasText:'Semantic Shift Backend'});await card.waitFor();if(await card.locator('[aria-label="評価元の評価"]').count()){await card.getByLabel(/^いいね /).waitFor();assert.match(await card.locator('[aria-label="評価元の評価"]').innerText(),/Hugging Face/);}else{await press(card.getByText('出典・外部の評価',{exact:true}));await card.locator('details[open] a').waitFor();assert.match(await card.locator('details[open]').innerText(),/Hugging Face.*いいね/);}await page.waitForTimeout(250);await noOverlap(page);
+   const source=listing.items.find(item=>item.name==='Semantic Shift Backend')?.sources?.find(item=>item.source==='huggingface');assert.equal(typeof source?.metrics?.likes,'number');await card.getByLabel(`いいね ${source.metrics.likes.toLocaleString('ja-JP')}`,{exact:true}).waitFor();await card.screenshot({path:`${output}/external-rating-${width}.png`});
    const popupPromise=page.waitForEvent('popup');await press(card.locator('a').first());const popup=await popupPromise;await popup.waitForURL('https://huggingface.co/**');await popup.close();
    await size(page.getByRole('button',{name:'検索条件をクリア',exact:true}));await press(page.getByRole('button',{name:'検索条件をクリア',exact:true}));await ready(page);
+   return {source:source.sourceUrl,likes:source.metrics.likes};
   });
   await check(`${width}: home search finds collected Agent and clears`,async()=>{
    const search=page.getByLabel('Agentを探す',{exact:true});await press(search);await search.fill('Semantic Shift');await search.press('Enter');await ready(page);assert.equal(new URL(page.url()).searchParams.get('tab'),'catalog');assert.match(await page.locator('#noah-collection').innerText(),/Semantic Shift Backend/);await noOverflow(page);
