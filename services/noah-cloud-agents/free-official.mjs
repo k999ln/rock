@@ -49,7 +49,7 @@ export async function officialSession(profile) {
             if (item.isDirectory()) { await visit(path, `${name}/`); continue; }
             if (!item.isFile()) throw Error('通常ファイルだけ保存できます。');
             // Inspect and read the same open file, never reopen a checked path.
-            const handle = await fs.open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+            const handle = await fs.open(path, constants.O_RDONLY | constants.O_NOFOLLOW, 0o600);
             try {
               const stat = await handle.stat();
               if (!stat.isFile()) throw Error('通常ファイルだけ保存できます。');
