@@ -1,4 +1,6 @@
 ## 2026-11-22
+- Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（PR作成後記録）。
+
 
 - 移行先privateリポジトリのCodeQLにActions読取権限を追加し、全履歴SPIDERの検査時間を有界で延長。固定版スキャナ・既存検知規則・失敗時の拒否は維持（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 

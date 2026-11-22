@@ -2,6 +2,8 @@ import { NoahAgentError, noahSha256 } from './noah-agent-upload.ts';
 import type { NoahConnectApiDependencies } from './noah-connect.ts';
 import type { DirectoryEntry } from './noah-agent-directory.ts';
 import { noahProjectDetail } from './noah-project-api.ts';
+import { resolveNoahProvider } from './noah-provider-resolve.ts';
+import { prepareProviderMcp, providerMcpInput, callProviderMcp } from './noah-provider-mcp.ts';
 import { noahAllowed } from './noah-flags.ts';
 import {
   prepareProvider,
@@ -23,7 +25,7 @@ export type ProviderDependencies = NoahConnectApiDependencies & {
   providerDirectory?: () => Promise<DirectoryEntry[]>;
 };
 const ACTIVE =
-  "json_extract(payload,'$.noahRemote.provider.protocol')='gradio' AND json_extract(payload,'$.noahRemote.state') IN ('queued','running')";
+  "json_extract(payload,'$.noahRemote.provider.protocol') IN ('gradio','mcp') AND json_extract(payload,'$.noahRemote.state') IN ('queued','running')";
 const UUID = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/;
 const reject = (message: string, status = 409): never => {
   throw new NoahAgentError(message, status);
@@ -67,7 +69,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
     fetcher = deps.fetcher ?? fetch;
   const get = async (owner: string, id: string) => {
     const job = UUID.test(id) ? await jobs.get(owner, id) : null;
-    return job?.noahRemote?.provider?.protocol === 'gradio' ? job : null;
+    return job?.noahRemote?.provider && ['gradio', 'mcp'].includes(job.noahRemote.provider.protocol) ? job : null;
   };
   async function plan(projectId: string): Promise<ProviderPlan> {
     if (!/^project-[a-f0-9]{64}$/.test(projectId))
@@ -77,16 +79,14 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
     );
     if (!entry) return reject('このAgentは現在掲載されていません。', 404);
     const { connection } = noahProjectDetail(entry);
-    if (connection.kind !== 'space')
-      return reject(
-        'このAgentの実行方式が変わりました。詳細を開き直してください。',
-      );
-    const prepared = await prepareProvider(connection.repository, fetcher);
+    const target = connection.kind === 'space' ? connection : await resolveNoahProvider(entry, fetcher);
+    const prepared = target.kind === 'space' ? await prepareProvider(target.repository, fetcher) : await prepareProviderMcp(target.url, fetcher, deps.probeCheck);
     for (const endpoint of prepared.endpoints)
       endpoint.digest = await noahSha256(
         new TextEncoder().encode(
           JSON.stringify([
-            connection.repository,
+            target.repository,
+            target.kind,
             prepared.host,
             prepared.prefix,
             endpoint.digest,
@@ -96,7 +96,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
     return {
       projectId,
       name: entry.card.name,
-      repository: connection.repository,
+      repository: target.repository,
       ...prepared,
     };
   }
@@ -263,7 +263,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
         provider: {
           ...p,
           phase: 'dispatching' as const,
-          leaseUntil: now() + 30000,
+          leaseUntil: now() + (p.protocol === 'mcp' ? 120000 : 30000),
         },
       },
     };
@@ -278,7 +278,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
       if (
         !endpoint ||
         endpoint.digest !== r.toolSha256 ||
-        fresh.host !== p.origin
+        fresh.host !== p.origin || (fresh.protocol ?? 'gradio') !== p.protocol
       )
         throw new NoahAgentError(
           '実行先や入力欄が変わりました。Agentを開き直してください。',
@@ -298,6 +298,16 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
         current.noahRemote!.state !== 'running'
       )
         return;
+      if (p.protocol === 'mcp') {
+        const result = await callProviderMcp(p.origin, endpoint, p.data[0], fetcher, deps.probeCheck, async () => {
+          if (!noahAllowed(deps.flags, 'ask', reviewer)) return false;
+          await deps.authorizeAction?.(owner, p.projectId, p.api, r.toolSha256!, true);
+          const latest = await get(owner, id);
+          return !!latest && latest.revision === job!.revision && latest.noahRemote!.state === 'running';
+        }, () => { sent = true; });
+        if (result) await finish(owner, job, { state: 'returned', result, used: [p.api], note: '提供元から届いた成果をNoahに保存しました。' });
+        return;
+      }
       sent = true;
       const response = await fetcher(
         `${p.origin}${p.prefix}/call/${encodeURIComponent(p.api)}`,
@@ -395,7 +405,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
       );
     if (!endpoint)
       return reject('入力欄が更新されました。Agentを開き直してください。');
-    const data = providerInput(endpoint, input.input);
+    const data = prepared.protocol === 'mcp' ? [providerMcpInput(endpoint, input.input)] : providerInput(endpoint, input.input);
     await deps.authorizeAction?.(
       owner,
       input.projectId,
@@ -421,7 +431,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
         at,
       );
     job.noahRemote!.provider = {
-      protocol: 'gradio',
+      protocol: prepared.protocol ?? 'gradio',
       projectId: input.projectId,
       repository: prepared.repository,
       origin: prepared.host,
@@ -437,8 +447,8 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
     const created = await db
       .prepare(`INSERT INTO work_jobs (id,user_id,payload,revision,updated_at) SELECT ?,?,?,?,?
       WHERE (SELECT COUNT(*) FROM work_jobs WHERE user_id=? AND ${ACTIVE})<3
-      AND (SELECT COUNT(*) FROM work_jobs WHERE user_id=? AND json_extract(payload,'$.noahRemote.provider.protocol')='gradio' AND updated_at>?)<6
-      AND (SELECT COUNT(*) FROM work_jobs WHERE user_id=? AND json_extract(payload,'$.noahRemote.provider.protocol')='gradio' AND json_extract(payload,'$.createdAt')>?)<100
+      AND (SELECT COUNT(*) FROM work_jobs WHERE user_id=? AND json_extract(payload,'$.noahRemote.provider.protocol') IN ('gradio','mcp') AND updated_at>?)<6
+      AND (SELECT COUNT(*) FROM work_jobs WHERE user_id=? AND json_extract(payload,'$.noahRemote.provider.protocol') IN ('gradio','mcp') AND json_extract(payload,'$.createdAt')>?)<100
       AND (SELECT COUNT(*) FROM work_jobs WHERE json_extract(payload,'$.noahRemote.provider.origin')=? AND updated_at>?)<12
       ON CONFLICT(id) DO NOTHING`)
       .bind(
@@ -470,7 +480,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
   async function list(owner: string, projectId: string | null = null) {
     const rows = await db
       .prepare(
-        `SELECT payload FROM work_jobs WHERE user_id=? AND json_extract(payload,'$.noahRemote.provider.protocol')='gradio' ${projectId ? "AND json_extract(payload,'$.noahRemote.provider.projectId')=?" : ''} ORDER BY updated_at DESC,id DESC LIMIT 50`,
+        `SELECT payload FROM work_jobs WHERE user_id=? AND json_extract(payload,'$.noahRemote.provider.protocol') IN ('gradio','mcp') ${projectId ? "AND json_extract(payload,'$.noahRemote.provider.projectId')=?" : ''} ORDER BY updated_at DESC,id DESC LIMIT 50`,
       )
       .bind(...(projectId ? [owner, projectId] : [owner]))
       .all<{ payload: string }>();

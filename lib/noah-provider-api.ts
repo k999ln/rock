@@ -123,6 +123,29 @@ export function createNoahProviderApi(deps: ProviderDependencies) {
           confirm: true,
         },
       );
+      if (accepted.run && accepted.job.noahRemote?.provider?.protocol === 'mcp') {
+        // Keep the invocation's own request alive; Workers waitUntil alone lasts 30s.
+        const encoder = new TextEncoder();
+        let alive = true;
+        const stream = new ReadableStream<Uint8Array>({
+          start(controller) {
+            const heartbeat = setInterval(() => { if (alive) controller.enqueue(encoder.encode(' ')); }, 10000);
+            const work = (async () => {
+              try {
+                await accepted.run!();
+                const current = await runtime.get(owner, accepted.job.id);
+                if (alive) controller.enqueue(encoder.encode(JSON.stringify({ ...providerWorkView(current ?? accepted.job), ownerScope })));
+              } finally {
+                clearInterval(heartbeat);
+                if (alive) { alive = false; controller.close(); }
+              }
+            })().catch(error => { if (alive) { alive = false; controller.error(error); } });
+            deps.waitUntil?.(work);
+          },
+          cancel() { alive = false; },
+        });
+        return new Response(stream, { status: 202, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
+      }
       if (accepted.run) {
         const work = accepted.run().catch(() => undefined);
         if (deps.waitUntil) deps.waitUntil(work);

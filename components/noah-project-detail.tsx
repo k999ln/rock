@@ -47,7 +47,7 @@ export default function NoahProjectDetail({ id }: { id: string }) {
     {error && <div role="alert" className={styles.error}><p>{error}</p>{!detail && <button onClick={() => { setDetail(null); setError(''); setAttempt(n => n + 1); }}>読み直す</button>}</div>}
     {detail && <>
       {detail.connection.kind !== 'ready' && <header><p className={styles.eyebrow}>Noah · Agent</p><h1>{detail.card.name}</h1><p className={styles.summary}>{detail.card.summary}</p><p className={styles.muted}>提供: {detail.card.provider}</p></header>}
-      {detail.connection.kind === 'space' && <NoahProviderRunner key={id} projectId={id}/>}
+      {(detail.connection.kind === 'space' || detail.connection.kind === 'setup') && <NoahProviderRunner key={id} projectId={id}/>}
       <section id="ratings" className={styles.ratings} aria-label="出典と外部評価">
         <h2>外部の評価</h2>
         <NoahAgentSourceRatings sources={detail.card.sources} />
@@ -62,11 +62,10 @@ export default function NoahProjectDetail({ id }: { id: string }) {
           {slow && <output>起動に時間がかかっています。表示できない場合は「再読み込み」を押してください。</output>}
           <iframe className={styles.frame} title={`${detail.card.name}の利用画面`} src={url} sandbox="allow-scripts allow-same-origin allow-forms allow-downloads" referrerPolicy="no-referrer" onLoad={() => { setFrameLoaded(true); setSlow(false); }} />
           <p className={styles.muted}>利用画面に停止や認証の案内が出る場合は、その状態に従ってください。画面の表示だけでは処理の成功を意味しません。</p></>}
-      </section></details></> : <section className={styles.connection} aria-label="接続の準備">
-        <h2>接続の準備</h2><p>このAgentはまだNoahから実行できません。コードの取込と、モデル・実行環境の設定が必要です。</p>
-        {detail.connection.importHref ? <Link className={styles.primary} href={detail.connection.importHref}>Noahで取込・設定する</Link> : <Link className={styles.primary} href="/noah/agents/new">Noahで接続を設定する</Link>}
-        <p className={styles.muted}>配布元を開かず、Noah内で設定を続けられます。取込だけでは接続完了になりません。</p>
-      </section>}
+      </section></details></> : <details className={styles.connection}><summary>自分で実行設定を追加する</summary>
+        <p>通常は「使う」から提供元の接続先を確認できます。自分で接続を追加する場合だけ、取込・設定を開いてください。</p>
+        <Link className={styles.back} href={detail.connection.importHref ?? '/noah/agents/new'}>取込・設定</Link>
+      </details>}
     </>}
   </div>;
 }

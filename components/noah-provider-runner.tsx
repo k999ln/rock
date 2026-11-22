@@ -141,7 +141,8 @@ export default function NoahProviderRunner({
       typeof value === 'number' ||
       typeof value === 'boolean'
         ? String(value)
-        : '';
+        : Array.isArray(value) ? value.join('\n') : '';
+    const label = f.label + (f.kind === 'list' ? t('（1行に1件）') : '');
     const change = (v: unknown) =>
       setValues((old) => ({ ...old, [f.name]: v }));
     return (
@@ -150,10 +151,11 @@ export default function NoahProviderRunner({
         htmlFor={`${fieldPrefix}-${f.name}`}
         className={styles.field}
       >
-        <span>{f.label}</span>
+        <span>{label}</span>
         {f.kind === 'boolean' ? (
           <input
             id={`${fieldPrefix}-${f.name}`}
+            aria-label={label}
             type="checkbox"
             checked={value === true}
             onChange={(e) => change(e.target.checked)}
@@ -161,6 +163,7 @@ export default function NoahProviderRunner({
         ) : f.kind === 'choice' ? (
           <select
             id={`${fieldPrefix}-${f.name}`}
+            aria-label={label}
             value={JSON.stringify(value)}
             required={!f.optional}
             onChange={(e) => change(JSON.parse(e.target.value))}
@@ -177,6 +180,7 @@ export default function NoahProviderRunner({
         ) : f.kind === 'number' ? (
           <input
             id={`${fieldPrefix}-${f.name}`}
+            aria-label={label}
             type="number"
             min={f.minimum}
             max={f.maximum}
@@ -190,6 +194,7 @@ export default function NoahProviderRunner({
         ) : (
           <textarea
             id={`${fieldPrefix}-${f.name}`}
+            aria-label={label}
             rows={3}
             required={!f.optional}
             maxLength={8000}
@@ -205,7 +210,7 @@ export default function NoahProviderRunner({
       <h2>{t('Noahで使う')}</h2>
       {!plan && (
         <>
-          <p>{t('入力して頼む。成果はNoahに残ります。')}</p>
+          <p>{t('提供元の接続先を確認し、この画面で入力して実行できます。届いた成果はNoahに残ります。')}</p>
           <button
             type="button"
             className={styles.primary}
@@ -232,6 +237,7 @@ export default function NoahProviderRunner({
           }}
         >
           <fieldset disabled={busy || uncertain}>
+            {endpoint.description && <p>{endpoint.description}</p>}
             {plan.endpoints.length > 1 && (
               <label className={styles.field}>
                 <span>{t('何をしますか？')}</span>
