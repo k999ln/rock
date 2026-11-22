@@ -36,6 +36,8 @@ export const NOAH_MESSAGES: Record<
   ...NOAH_RESULT_MESSAGES,
   ...NOAH_FLOW_MESSAGES,
   ...NOAH_ACCESS_MESSAGES,
+  '登録先の受付が混み合っています。': ['The service is temporarily limiting registrations.', '注册服务暂时限制请求。', '서비스에서 일시적으로 등록을 제한하고 있습니다.', 'El servicio está limitando temporalmente los registros.', 'تحدّ الخدمة مؤقتًا من عمليات التسجيل.'],
+  '受付再開の目安: {time}': ['Registration may resume at {time}', '预计可再次注册的时间：{time}', '등록 재개 예상: {time}', 'Hora prevista para volver a registrarse: {time}', 'الوقت المتوقع لاستئناف التسجيل: {time}'],
   タイムライン: ['Timeline', '动态', '타임라인', 'Inicio', 'المنشورات'],
   Agent: ['Agents', 'Agent', 'Agent', 'Agentes', 'الوكلاء'],
   実行中: ['In progress', '进行中', '진행 중', 'En curso', 'قيد التنفيذ'],

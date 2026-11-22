@@ -27,6 +27,17 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
   const celebrated=useRef(''),observedPending=useRef('');
   const statusBudget = useRef({ id: '', reads: 0 });
   const provider = providers?.find(p => p.id === selected), generation = active.current.generation;
+  const retryAt=provider?.accountState==='cooldown'?provider.retryAt:job?.state==='failed'?job.retryAt:undefined;
+  const [clock,setClock]=useState(()=>Date.now());
+  const cooling=typeof retryAt==='number'&&retryAt>clock;
+  useEffect(()=>{
+    if(!retryAt)return;
+    const refresh=()=>setClock(Date.now());
+    const timer=setTimeout(refresh,Math.min(Math.max(retryAt-Date.now(),1),2147483647));
+    document.addEventListener('visibilitychange',refresh);
+    return()=>{clearTimeout(timer);document.removeEventListener('visibilitychange',refresh);};
+  },[retryAt]);
+  const cooldownNotice=retryAt?<p>{t('受付再開の目安: {time}',{time:new Date(retryAt).toLocaleString(locale)})}</p>:null;
   const reusable=provider?.fields.filter(f=>vault.profile?.reuseEnabled && f.profileField && f.type!=='password' && (f.profileField==='identityDocument'?vault.profile?.documents.length:profileField(f.profileField)&&vault.profile?.fields[f.profileField]) && !excluded.includes(f.key)).map(f=>f.key)??[];
   const missingRequired=provider?.fields.some(f=>f.required&&!reusable.includes(f.key)&&(!values[f.key]?.trim()||f.type==='file'))??true;
   const usedDocument=documentId||vault.profile?.documents[0]?.id||'';
@@ -109,7 +120,7 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [pending?.id, pending?.key, job?.state]);
   function retryFailed() {
-    if(active.current.busy||job?.state!=='failed'||!pending)return;
+    if(active.current.busy||job?.state!=='failed'||!pending||(job.retryAt&&job.retryAt>Date.now()))return;
     const older=[...history.filter(p=>p.id!==pending.id),pending];
     try{sessionStorage.setItem(HISTORY,JSON.stringify(older));sessionStorage.removeItem(STORAGE);}catch{/* The mounted screen still retains every ticket. */}
     setHistory(older);active.current.generation++;setJob(null);setPending(null);setValues({});setError('');
@@ -130,12 +141,12 @@ export default function NoahRegistration({ agentId,onReturn }: { agentId: string
     {providers === null && !error && <NoahLoading label={t("登録先を確認しています…")} />}
     {providers === null && error && <button disabled={busy} onClick={() => setReload(n => n + 1)}>{t("再読み込み")}</button>}
     {provider?.accountState&&providers&&providers.length>1&&<label>{t('登録するサービス')}<select value={selected} disabled={busy} onChange={e=>{setSelected(e.target.value);setAgent(agentId||providers.find(p=>p.id===e.target.value)?.agentIds[0]||'');setValues({});}}>{providers.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>}
-    {provider?.accountState ? <section className={styles.panel}><h2>{provider.name}</h2><p>{t(provider.accountState==='ready'?'登録済みです。保存した接続で使えます。':provider.accountState==='pending'?'登録を確認中です。情報は再送しません。':'登録状況を取得できません。再読み込みしてください。')}</p>{provider.accountState==='ready'?<Link href={`/noah/ready/agent?id=${encodeURIComponent(agent)}`} onClick={onReturn}>{t('Agentを使う')}<ArrowRight size={16}/></Link>:<button disabled={busy} onClick={()=>setReload(n=>n+1)}>{t('再読み込み')}</button>}{pending&&provider.accountState==='pending'&&<button disabled={busy} onClick={()=>{void run(false);}}>{t('登録の状況を確認')}</button>}</section> : pending ? <section className={styles.panel} aria-label={t("登録の進捗")}><h2>{job ? t(labels[job.state]) : t("登録の受付状況を確認してください")}</h2>
+    {provider?.accountState ? <section className={styles.panel}><h2>{provider.name}</h2><p>{t(provider.accountState==='ready'?'登録済みです。保存した接続で使えます。':provider.accountState==='pending'?'登録を確認中です。情報は再送しません。':provider.accountState==='cooldown'?'登録先の受付が混み合っています。':'登録状況を取得できません。再読み込みしてください。')}</p>{provider.accountState==='cooldown'&&cooldownNotice}{provider.accountState==='ready'?<Link href={`/noah/ready/agent?id=${encodeURIComponent(agent)}`} onClick={onReturn}>{t('Agentを使う')}<ArrowRight size={16}/></Link>:<button disabled={busy||cooling} onClick={()=>setReload(n=>n+1)}>{t('再読み込み')}</button>}{pending&&provider.accountState==='pending'&&<button disabled={busy} onClick={()=>{void run(false);}}>{t('登録の状況を確認')}</button>}</section> : pending ? <section className={styles.panel} aria-label={t("登録の進捗")}><h2>{job ? t(labels[job.state]) : t("登録の受付状況を確認してください")}</h2>
       {job && <><p>{t("登録先：")}{job.providerName}（{job.providerOrigin}）</p><p>{t("確認期限：")}{new Date(job.expiresAt).toLocaleString(locale)}</p></>}
       {job?.state === 'needs_user' && <><p>{t("本人による確認が必要です。")}</p>{job.verificationUrl && (job.verificationUrl.startsWith('/noah/')?<Link href={job.verificationUrl}>{t("確認を続ける")}<ArrowRight size={16}/></Link>:<a href={job.verificationUrl} target="_blank" rel="noreferrer">{t("登録先で確認する")}<ArrowRight size={16} /></a>)}</>}
       {job?.state === 'completed' && <><p>{t("実際の利用可否は、元のAgentへの接続時に確認します。")}</p><Link href={job.returnTo} onClick={onReturn}>{t("Agentを使う")}<ArrowRight size={16} /></Link></>}
       {(!job || ['running','needs_user','unknown'].includes(job.state)) && <><p>{t("同じ登録を繰り返さず、この仕事の状況を確認します。")}</p><button disabled={busy} onClick={() => { void run(false); }}>{busy ? t("確認中…") : t("登録の状況を確認")}</button></>}
-      {job?.state==='failed'&&<button disabled={busy} onClick={retryFailed}>{t('もう一度')}</button>}
+      {job?.state==='failed'&&<>{retryAt&&<p>{t('登録先の受付が混み合っています。')}</p>}{cooldownNotice}<button disabled={busy||cooling} onClick={retryFailed}>{t('もう一度')}</button></>}
       <details><summary>{t("このブラウザから記録を消す")}</summary><p>{t("登録処理は取り消されません。確認用の情報を消すと、この画面から状況を確認できなくなります。結果が不明な時は、登録先で状況を確認してから新しい依頼を行ってください。")}</p><button disabled={busy} onClick={clear}>{t("ブラウザの確認情報を消す")}</button></details>
     </section> : providers?.length === 0 ? <section className={styles.panel}><h2>{t("このAgentの登録担当は準備中です")}</h2><p>{t("登録Agentの接続と必要項目が設定されると、ここから依頼できます。接続前に登録情報を集めることはありません。")}</p><Link href="/noah/explore">{t("Agentを探す")}</Link></section> : provider?.requiresAccount && !vault.profile ? <section className={styles.panel}>{vault.guest?<><h2>{t("接続を安全に引き継ぐ")}</h2><p>{t("接続を確認すると、登録情報と成果を引き継げます。")}</p><Link href={`/noah/account?returnTo=${encodeURIComponent(`/noah/registration?agent=${agent}`)}`}>{t("接続を確認して続ける")}</Link></>:vault.error?<><p role="alert">{vault.error}</p><button onClick={()=>{void vault.reload();}}>{t("再読み込み")}</button></>:<NoahLoading label={t("保存情報を読み込んでいます…")}/>}</section> : provider && <form onSubmit={e => { e.preventDefault(); void run(true); }}>
       <section className={styles.panel}>

@@ -2,7 +2,7 @@ import { NoahAgentError } from './noah-agent-upload.ts';
 import { sha256Hex } from './noah-connect-requirements.ts';
 import { fromBase64, toBase64, type ProfileBucket, type ProfileKeys } from './noah-profile-store.ts';
 
-export type ExternalAccount = { version:1; job:string; state:'registering'|'registered'|'ready'|'failed'; credential?:string; externalId?:string; configurationDigest?:string; updatedAt:number };
+export type ExternalAccount = { version:1; job:string; state:'registering'|'registered'|'ready'|'failed'; credential?:string; externalId?:string; configurationDigest?:string; updatedAt:number; retryAt?:number };
 export type ExternalAccountSlot = { account:ExternalAccount|null; etag:string|null };
 /** Server-only: this store is deliberately absent from the profile response. */
 export function createNoahExternalAccountStore(bucket:ProfileBucket|undefined,keys:ProfileKeys|null,now=Date.now) {
@@ -27,6 +27,7 @@ export function createNoahExternalAccountStore(bucket:ProfileBucket|undefined,ke
       const decoded=await crypto.subtle.decrypt({name:'AES-GCM',iv:fromBase64(envelope.nonce),additionalData:aad(owner,provider,envelope.key)},await key(envelope.key),fromBase64(envelope.ciphertext));
       const account=JSON.parse(new TextDecoder().decode(decoded)) as ExternalAccount;
       if(account.version!==1||!['registering','registered','ready','failed'].includes(account.state)||typeof account.job!=='string'||(account.credential!==undefined&&(typeof account.credential!=='string'||account.credential.length>2048)))throw Error('record');
+      if(account.retryAt!==undefined&&(!Number.isSafeInteger(account.retryAt)||account.retryAt<0||account.state!=='failed'))throw Error('retry time');
       return {account,etag:item.etag};
     } catch {throw new NoahAgentError('接続情報を確認できません。時間をおいてお試しください。',503);}
   }

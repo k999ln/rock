@@ -345,3 +345,18 @@ Pixel監査で、検索から開く `/noah/discover/agent` の共通ボタン指
 2026-11-22 13:26〜13:27 JST、Pixel 10で公開197のホーム検索→BeevR内部詳細→再接続→用途名「サービス一覧を見る」→頼む→成果詳細を実タップで一周。接続ボタンは初期画面y568〜612px、計画358ms・接続1,429ms・道具取得1,002ms。8操作すべての用途名は高さ20.57px、確認事項22.57px、縦崩れなし。新規依頼は1回、成果 `/noah/tasks/e2fece64-f654-409c-ad91-5e8072e29af0` に10件受信し、キャッシュ無視の再読み込み後も本文一致・横はみ出し/警告なし。今回のADB forwardは終了。認証付き新規登録や全Agentの受入を意味せず、既存の登録実機記録は保持する。
 
 証跡（Git対象外）: `pixel-197-layout.json` SHA256 `665de9f32c792f0a528e6c18b5221cece98305c65273195dca8409db58a0d3b3`、`pixel-197-tools.png` `621cac14750b05925f4549fa5e5a402e7121f26f2ecfbe959d1f6890299c6337`、`pixel-197-result-reload.json` `fc00442ddcc54a72ad5cf6b1924b9bb923994ff243a8184356a481d7ba02e9f9`、`layout-after-197/tool-layout-report.json` `af56d49cf534c659806b94af119922e2cf3bb3f392c175d03f2ee5638b8b1ae4`。ブラウザ再実行は `NOAH_PLAYWRIGHT_PACKAGE=/absolute/playwright-core/index.js NOAH_TEST_OUTPUT=/absolute/ignored/output node scripts/test-noah-tool-layout-browser.mjs`（Chrome、URL既定は公開HTTPS、必要時 `NOAH_TEST_URL`）。mainの追加変更を通常mergeして保持し、最終HEADの全チェックとマージ結果はPR #394へ記録する。
+
+
+### 2026-11-22 登録が必要なAgentのスマホ試用・受付制限対策（進行中）
+
+本人指示により、公開198の画面改善を保持して外部登録から成果再表示までの再受入を進める。Agentboardの429にはRetry-Afterに応じた再開目安を表示し、期限を本人別の暗号化保存とWorkメタデータへ残す。別受付ID・再読込でも期限前に再送せず、期限後も本人操作のみ。既存所有者・登録キー・成果を移動または削除しない。
+
+登録/画面/疑似100人/再現スクリプトの関連29試験成功。公開198を基準に型・lint・build・bundle・asset検査成功。Git全体verifyは単一実行exit0、主4,970成功/5skip/0fail、API1,918・CSV385、型/lint/build、mission/work/botまで成功。新規外部登録の今回のPixel一周と公開反映はまだ未完了。
+
+2026-11-22 14:17 JST、本番100ブラウザ・同時5フローの400要求がすべて成功。独立保存権限100、他所有者の成果404は100/100、9,408ms、中央値160ms、p95 203ms、最大664ms。`scripts/check-noah-pilot-production.mjs` を永続化した。cookieはメモリのみ、外部登録/接続/実行/成果作成はしない。検査対象は既に実機確認した非公開成果 e2fece64-f654-409c-ad91-5e8072e29af0。外部100人同時実行や実ユーザー100人の受入ではない。
+
+PR #400に記録。mainの公開正本ルール（PR #398）を受け、公開198 source 98243a58の19ファイルをGitへ取り込み、mainのココナラ入口・eSIM導線・共有情報も保全した。棚から道具を選ぶ試験を新しい表示位置に合わせ、選択済みの道具と入力フォーム/説明を検査する。統合後38関連試験成功。header用のローカルproductionで8ルート・8共通headerを再採取した。通常のローカル起動は既存storeの重複列、新規storeの不足表でmigrationが停止したため、両storeを保持し、header検査だけを同じbuild/runtimeの別storeで実施した。本番migrationはしていない。最新統合の全体verifyとCIを再実行する。
+
+公開199 source `7d52c37687acc0816923298c30bd3fd5d44bab11` と main `78ec5ac6` のGitツリー `a4ae5e11fef113476c44e5302761d4e4a3b04504` が一致することを確認し、PR #399を通常mergeで保持。棚試験は入力を先に示すmainの検査と、選択中の道具を調べる本PRの検査の両方を保持した。
+
+統合版 `2acb6763` の全体verifyを単一実行で最後まで成功（主4,971成功・5skip・0失敗、API1,918・CSV385、型/lint/build、mission/work/bot）。ログ `work/noah-pilot-197/full-verify-integrated-final.log`。直前のMac実行は既存PC citationsのプロセス終了確認1件で失敗し、同じ試験の単独再確認と全体再実行で成功。該当コード・試験の削除や緩和はしていない。GitHubの同HEADもverify/SPIDER/CodeQL全件成功。最新main統合後の最終CIと公開、Pixelでの新規登録の再受入はPR本文へ追記する。
