@@ -1,5 +1,5 @@
 ## 2026-11-23
-- Noahへ無料枠の公式MCPクラウド実行器を追加。永続alarm、依頼分離、期限・停止、対応profile限定、掲載削除後の停止を実装（PR提出準備中）。
+- Noahへ無料枠の公式MCPクラウド実行器を追加。永続alarm、依頼分離、期限・停止、対応profile限定、掲載削除後の停止を実装（[PR #18](https://github.com/iceiceice999/rock/pull/18)、Noah本番受入は継続中）。
 
 ## 2026-11-22
 - Noahの収集停止の記録を正本へ移植し、旧mainの手動実行とCodexの毎時実行で収集を復旧。24時間の鮮度と正本への実行先切り替えは追跡中（[PR #15](https://github.com/iceiceice999/rock/pull/15)、[PR #16](https://github.com/iceiceice999/rock/pull/16)、[復旧実行](https://github.com/k999ln/rock/actions/runs/45032700818)）。

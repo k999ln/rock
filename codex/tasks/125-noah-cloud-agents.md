@@ -66,3 +66,5 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 共通の実行中/成果一覧と仕事詳細へ、本人の保存済みcloud Workを統合。閲覧は実行器を起動せず、結果本文・成果ファイルを再表示する。停止は既存cloud APIの本人/Origin/実行器停止処理を通し、停止失敗を完了表示にしない。
 - コールバックで保存した成果の再表示、他所有者拒否、Agent/接続の条件、版の競合、停止失敗をSQLiteで確認。既存cloud/providerを含む32試験成功。本番実測はまだ行っていない。
 - 本番受入は、開始後のjobId付きGET（結果を取得して保存する経路）を遮断し、Chrome全体を終了してから保存済み履歴だけを確認する。閉鎖後の保存時刻、実モデル呼出、成果ファイルの内容/hash、新しいChromeでの再表示を確認する。Cookieや運営鍵を試験記録へ保存しない。
+
+無料実行器と共通成果を [PR #18](https://github.com/iceiceice999/rock/pull/18) に統合。依存追加に伴うlicense件数の期待値を実台帳へ更新し、release関連40試験成功。最終全体verifyとGitHub CIは実行中。新しいWorkerは旧accountの `noah-free-cloud-agents`、Noah本番の有効化はまだ行っていない。
