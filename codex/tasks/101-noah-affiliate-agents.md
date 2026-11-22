@@ -84,3 +84,7 @@
 - Chromeの認証済み注文/承認/支払を再取得して旧businessへ保存。対象成果0件・支払0件、別媒体の否認3件は対象外。既存6時間自動取得の処理先を統合worktreeへ更新し、target chatとACTIVEを保持。
 - 本人が一度新アカウントへの移設を選択した後、旧アカウント継続へ訂正。新アカウントの空Workerは配置済みだが紹介を無効化し、台帳/Noah URLは移設しなかった。旧Workerのaccount_idを固定。
 - 関連試験は成功。初回全体verifyのMini依存1件は正しいnpm ci後に成功、main追加依存も同期。最終全体verify/共通Noah実行/次回alarmは続けて受入中。
+
+- mainのprovider PR #7（bb2e44e34）を統合し、レビュー済み自社レーン→固定MCPのresolver結線を追加。実business Workerを模擬環境で呼び、匿名準備票→共通SQLite Work→再読込→他所有者拒否→同じ依頼の非再実行まで検証。関連21試験成功。
+- 主要Node試験5,121件の失敗0（5skip）。後続coconala依存を正しいnpm ciで同期して単独成功、残る全検証工程は別実行でbuild・asset・API1,918・CSV385・担当台帳まで成功。一括実行成功とは区別する。
+- 本番Workerを用途索引照合・日本語の保存サイズ上限に対応した版e21be6e1-a4c2-4503-96f1-c13243b31604へ更新。既存の索引/完全世代/台帳を保持。
