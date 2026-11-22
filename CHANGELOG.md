@@ -1,6 +1,6 @@
 ## 2026-11-22
 
-- 第198版で公開したホーム・検索・Agentの操作画面・Hugging Face再表示の変更をGitHub mainに取り込み、ココナラの入口を保全。
+- 第198版で公開したホーム・検索・Agentの操作画面・Hugging Face再表示の変更をGitHub mainに取り込み、ココナラの入口を保全（[PR #399](https://github.com/k999ln/rock/pull/399)）。
 
 - avoado.siの公開元をGitHub mainに統一し、Macと本番のGitツリーを照合する手順をAGENTS.mdに追加。公開版のAgent共有に関する記録を取り込んだ（[PR #398](https://github.com/k999ln/rock/pull/398)）。
 
