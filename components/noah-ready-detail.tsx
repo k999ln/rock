@@ -27,7 +27,7 @@ type Detail = NoahReadyItem & { listed: boolean; website: string | null; connect
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null }: { id: string; tool?: string | null; from?: string | null }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean }) {
   const {t}=useNoahLocale();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
@@ -106,7 +106,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null }: { id: 
       <ul className={styles.facts} aria-label={t("つなぎ方")}>{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{t(text)}</li>)}</ul>
       {checked && <p className={styles.quiet}>{t(checked)}</p>}
       {detail.host && <p className={styles.sendsTo}>{t('送信先: {host}',{host:detail.host})}</p>}
-      {detail.website && <p className={styles.quiet}><a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a></p>}
+      {detail.website && <p className={styles.quiet}>{internalOnly ? <span>提供元: {detail.website}</span> : <a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a>}</p>}
       <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
       {detail.listed && <NoahPinExtras key={`pin:${detail.id}`} item={detail} ownerScope={detail.ownerScope} />}

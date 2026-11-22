@@ -13,6 +13,15 @@ export function noahBrowserRequestAllowed(request: Request): boolean {
     '/api/noah/connect-plan', '/api/noah/library', '/api/noah/invites',
     '/api/noah/agents', '/api/noah/public-catalog', '/api/noah/feed',
   ].includes(path)) return true;
+  // Private source intake shares this browser's owner; review/publish/runner APIs remain excluded.
+  if (method === 'GET' && path === '/api/noah/drafts') return true;
+  if (method === 'POST' && ['/api/noah/import', '/api/noah/agents'].includes(path)) return true;
+  if (['GET', 'POST'].includes(method) && path === '/api/noah/drafts/storage') return true;
+  const uploadId = '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}';
+  if (['GET', 'PUT', 'DELETE'].includes(method) && new RegExp(`^/api/noah/drafts/${uploadId}$`, 'i').test(path)) return true;
+  if (method === 'POST' && new RegExp(`^/api/noah/drafts/${uploadId}/restore$`, 'i').test(path)) return true;
+  if (['GET', 'DELETE'].includes(method) && new RegExp(`^/api/noah/agents/${uploadId}$`, 'i').test(path)) return true;
+  if (method === 'GET' && new RegExp(`^/api/noah/(drafts|agents)/${uploadId}/source$`, 'i').test(path)) return true;
   if (['GET', 'POST'].includes(method) && [
     '/api/noah/session', '/api/noah/connect', '/api/noah/ask', '/api/noah/profile',
     '/api/noah/registration', '/api/noah/registration/browser',

@@ -406,3 +406,7 @@ macOSでHomebrewのOpenSSL 3を使う場合は `PATH=/opt/homebrew/opt/openssl@3
 ページの途中から別の項目に移るときは、GitHubのファイル上部にある「Outline」から各章や操作の見出しを選べます。[GitHubの目次の使い方](https://docs.github.com/ja/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes#auto-generated-table-of-contents-for-markdown-files)
 
 [目次に戻る](#contents)
+
+収集したAgentのカードはNoah内の詳細画面を開き、外部評価・出典・接続を確認できます。掲載済みの接続先は既存の接続と依頼へ、公開Spaceは確認した利用画面をNoah内へ表示します。未対応の実行先・API専用Spaceは未接続と表示し、Noah内の取込・設定へ進みます。
+
+Noahのブラウザ本人は、会員登録なしで自分専用のAgent取込と下書きの保存へ進めます。コードの保存権利確認・容量上限・本人別の分離を保ち、公開や実行の権限は別に判定します。

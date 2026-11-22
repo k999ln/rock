@@ -101,10 +101,10 @@ export default function NoahAgentUploadForm() {
         const savedId = new URLSearchParams(window.location.search).get('draft');
         if (!savedId) {
           const params=new URLSearchParams(window.location.search),sourceUrl=params.get('sourceUrl'),revision=params.get('revision');
-          if(sourceUrl&&sourceUrl.length<=500&&revision&&/^[a-f0-9]{40}$/.test(revision)) {
+          if(sourceUrl&&sourceUrl.length<=500&&(!revision||/^[a-f0-9]{40}$/.test(revision))) {
             const url=new URL(sourceUrl);
             if(url.protocol==='https:'&&!url.username&&!url.password&&!url.port&&!url.search&&!url.hash&&['github.com','huggingface.co'].includes(url.hostname)) {
-              setManifest(current=>({...current,sourceUrl,adapter:'source',endpointUrl:null}));setImportRevision(revision);setCodeMode('file');setRights(false);setImportMessage('公開候補のURLと固定commitを引き継ぎました。利用条件を確認してから取得してください。');
+              setManifest(current=>({...current,name:params.get('name')?.slice(0,120)||current.name,sourceUrl,adapter:'source',endpointUrl:null}));setImportRevision(revision||'');setCodeMode('file');setRights(false);setImportMessage(revision?'公開候補のURLと固定commitを引き継ぎました。利用条件を確認してから取得してください。':'AgentのURLを引き継ぎました。利用条件を確認して取得すると、固定commitを記録します。');
             }
           }
           return;
@@ -258,7 +258,7 @@ export default function NoahAgentUploadForm() {
           <label>コードのファイル名<input required maxLength={120} value={codeName} onChange={e => { setCodeName(e.target.value); setId(''); }} placeholder="agent.ts" /></label>
           <label>コード（UTF-8・64KiBまで）<textarea required rows={12} spellCheck={false} value={code} onChange={e => { setCode(e.target.value); setId(''); }} placeholder="ここにAgentのコードを貼り付けてください" /></label>
         </div>}
-        <details open={!!importRevision}><summary>GitHub・Hugging Faceからコードを取得</summary><div className={styles.fields}>
+        <details open={!!importRevision || !!importMessage}><summary>GitHub・Hugging Faceからコードを取得</summary><div className={styles.fields}>
           <label>公開リポジトリのURL<input type="url" value={manifest.sourceUrl || ''} onChange={e => change({ sourceUrl: e.target.value || null })} placeholder="https://huggingface.co/spaces/作者/Agent" /></label>
           <label>取得するブランチ・commit（任意）<input value={importRevision} maxLength={100} onChange={e => setImportRevision(e.target.value)} placeholder="未指定なら既定の版" /></label>
           <button type="button" disabled={!scope || !rights || pending || !manifest.sourceUrl} onClick={() => { void importSource(); }}>コードを取得する</button>
