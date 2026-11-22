@@ -35,6 +35,9 @@ void test('database status inventories every boundary and keeps production readb
   );
   assert.equal(report.webSchema.tableCount, 176);
   assert.equal(report.webSchema.migrationCount, 38);
+  assert.ok(report.webSchema.tables.includes('sim_bindings'));
+  assert.ok(report.webSchema.tables.includes('esim_go_profile_status_events'));
+  assert.ok(report.webSchema.tables.includes('esim_ios_install_declarations'));
   for (const name of ['sky_linux_service_documents','sky_linux_service_receipts','rockstar_service_setups']) { assert.ok(report.webSchema.tables.includes(name)); assert.ok(report.webSchema.sourceOnlyTables.includes(name)); }
   assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('eve_runtime_presence'));

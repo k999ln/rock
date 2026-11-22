@@ -567,9 +567,9 @@ await test('fresh and current production D1 databases converge without losing re
   assert.ok(await db.prepare(
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'remote_ai_text_send_claims'",
   ).first());
-  // Verify every added Noah table/index through the real D1 migrator, not only
+  // Verify every added Noah, SIM and iOS eSIM table/index through the real D1 migrator, not only
   // its journal watermark. Each prepared statement must reach the database.
-  for (const name of readdirSync(mainFolder).filter(n => /^00\d+_noah.*\.sql$/.test(n))) {
+  for (const name of readdirSync(mainFolder).filter(n => /^00\d+_(noah.*|sim_bindings|esim_ios_install)\.sql$/.test(n))) {
     const sql = readMain(name);
     assert.doesNotMatch(sql, /\b(?:INSERT|UPDATE|DELETE|DROP)\b/i);
     for (const match of sql.matchAll(/CREATE (?:UNIQUE )?(TABLE|INDEX)(?: IF NOT EXISTS)? ([a-z_]+)/g)) {
