@@ -1,8 +1,8 @@
-import NoahReadyEntry from '@/components/noah-ready-entry';
-import NoahServiceCatalog from '@/components/noah-service-catalog';
-import styles from '@/components/noah-service.module.css';
-export const metadata = { title: 'Agentを探す — Noah' };
-export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
-  const params = await searchParams, query = typeof params.q === 'string' ? params.q.slice(0, 120) : '';
-  return <main className={styles.page}><header className={styles.exploreHeading}><span className={styles.eyebrow}>EXPLORE</span><h1>Agentを探す</h1><p>できることを確かめて、あなたの仕事に迎えよう。</p></header><NoahReadyEntry /><NoahServiceCatalog key={query} initialQuery={query} /></main>;
+import NoahExplore from '@/components/noah-explore';
+import NoahTrialEntry from '@/components/noah-trial-entry';
+import { NOAH_EXPLORE_TABS, noahPageTab, type NoahPageParams } from '@/lib/noah-page-routes';
+export const metadata={title:'Agentを探す — Noah'};
+export default async function Page({searchParams}:{searchParams:Promise<NoahPageParams>}) {
+ const p=await searchParams,tab=noahPageTab(p.tab,NOAH_EXPLORE_TABS,'ready'),q=typeof p.q==='string'?p.q.slice(0,200):'',via=typeof p.via==='string'?p.via:'';
+ return <><NoahTrialEntry via={via}/><NoahExplore key={tab+'|'+q} initialTab={tab} initialQuery={q} via={via}/></>;
 }

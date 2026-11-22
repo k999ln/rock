@@ -21,7 +21,7 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 10 | [10-esim-provider-research.md](10-esim-provider-research.md) | ARF 対応 MVNE 候補比較と RFQ 質問票 | |
-| 11 | [11-esim-first-live.md](11-esim-first-live.md) | esim-go sandbox → Eve 起動 → account 束縛 → Stripe 月額 | |
+| 11 | [11-esim-first-live.md](11-esim-first-live.md) | eSIM発行・導入証明 → 端末利用権 → Eve／Noahへ。回線月額の照合 | 導入設計整理済み。実回線・実機受入は未完了。✅ Noahの0円模擬回線・成果受取（PR #378）。運営Dockの指定配給・本人受取（模擬環境）と朝9時の開発指示 ✅ [#382](https://github.com/k999ln/rock/pull/382)。✅ 住所登録・ロット在庫・通知Agent・定期配給を模擬回線で検証（[PR #387](https://github.com/k999ln/rock/pull/387)）。✅ 購入履歴から設定を再開し、利用権を照合して案内（[PR #389](https://github.com/k999ln/rock/pull/389)） |
 | 12 | [12-android-carrier-client.md](12-android-carrier-client.md) | carrier privileges を使う Android client と Play 自動導入 | |
 | 13 | [13-ios-universal-link.md](13-ios-universal-link.md) | iOS universal link 導入と PWA 起動 | |
 
@@ -61,10 +61,10 @@
 
 | 70 | [70-noah-route-unification.md](70-noah-route-unification.md) | 旧画面とNoahの統合・404修正 | ✅ 公開版149・Eveヘッダー確認済み・[PR #320](https://github.com/k999ln/rock/pull/320) |
 
-| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・本番通し/別Mac未確認 |
+| 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・OS独立UI/専用認証・公開版156・172件取込・本番読み取り専用1件の成果受領✅ [PR #358](https://github.com/k999ln/rock/pull/358)・本人Macの仕事詳細・配布Runner受入✅ [PR #366](https://github.com/k999ln/rock/pull/366)・CowAgent検索流入ガイドの実装とローカル確認 ✅ [PR #369](https://github.com/k999ln/rock/pull/369)・外部登録/別利用者/実スマホ/別Mac未確認 |
 
 | 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | ✅ [PR #321](https://github.com/k999ln/rock/pull/321)・[PR #325](https://github.com/k999ln/rock/pull/325) |
-| 73 | [73-current-product-consolidation.md](73-current-product-consolidation.md) | 機能を保った重複・類似処理と現行説明の統合 | ✅ [PR #326](https://github.com/k999ln/rock/pull/326) |
+| 73 | [73-current-product-consolidation.md](73-current-product-consolidation.md) | 機能を保った重複・類似処理と現行説明の統合 | ✅ [PR #326](https://github.com/k999ln/rock/pull/326)・[PR #362](https://github.com/k999ln/rock/pull/362) |
 | 98 | [98-product-cleanup.md](98-product-cleanup.md) | miiの商品案内・画像と旧画面の整理 | ✅ [PR #327](https://github.com/k999ln/rock/pull/327) |
 | 99 | [99-readme-entrypoints.md](99-readme-entrypoints.md) | READMEからNoah公開版・Mac・miiの作業先を選ぶ | ✅ [PR #331](https://github.com/k999ln/rock/pull/331)・[PR #333](https://github.com/k999ln/rock/pull/333)・[PR #336](https://github.com/k999ln/rock/pull/336)・[PR #338](https://github.com/k999ln/rock/pull/338)・[PR #340](https://github.com/k999ln/rock/pull/340)・[PR #341](https://github.com/k999ln/rock/pull/341)・[PR #348](https://github.com/k999ln/rock/pull/348) |
 
@@ -86,18 +86,18 @@
 | 1 | L7 | 88 | [88-noah-mass-probe.md](88-noah-mass-probe.md) | 大量の接続試験と見回り、つながると確かめた数 | ✅ L7（見回りを保つ）実装・手元の受入 [PR #345](https://github.com/k999ln/rock/pull/345)（L6 の #344 を base、未マージ。本番への適用なし）: 止まった依頼と接続の後始末・道具を呼ぶ直前の「相手へ送る」の印・つながると確かめた数・索引を足す migration 0049。自動の見本（`probeL2`・`noahSampleCalls`）は作っていない（出した後） |
 | 1 | — | 89 | [89-noah-terminal-mouth.md](89-noah-terminal-mouth.md) | ターミナルの口（ACP・MCP の package）。今ある Mac の隔離環境で | |
 | 2 | L9 | 90 | [90-noah-phone-only-loop.md](90-noah-phone-only-loop.md) | 手元だけの一周（PC の前に座らない受入）。出してよいかの判定 | ✅ L9（受入）の自動の試験と、手元での表の通し [PR #347](https://github.com/k999ln/rock/pull/347)（L8 の #346 を base、未マージ。**本番での確かめは、まだ**）: 一周の自動試験 `tests/noah-phone-loop.test.mjs`、画面の決まりを一周の全部の段で見る試験、実機の表の手元の結果（`spec-90` の 9.4）。表の通しで見つけた所を 1 つ直した（切った後も、Agent の詳細の「仕事」に成果を出す。`GET /api/noah/ask?agent=`）。残り: 本番で、スマホだけで、表の 1〜13（本人の許可の後） |
-| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8（出すための運用）実装 [PR #346](https://github.com/k999ln/rock/pull/346)（L7 の #345 を base、未マージ。**本番への配備・適用・切り替えなし**）: 運営の画面の「見張る数」（`lib/noah-launch-status.ts`）、`/noah/help` の `#bot` の節（`lib/noah-bot-notice.ts`。宛先 D8 は 2026-11-21 に本人が smash@avoado.si と決め、[PR #350](https://github.com/k999ln/rock/pull/350) で入れた）、専用の Worker の手順書（`services/noah-patrol-wake/README.md`）、試験 `tests/noah-launch-ops.test.mjs`（切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録・適用する物の形）。残り: 本番での G4〜G6 の確かめ（L9・本人の許可の後） |
+| 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8（出すための運用）実装 [PR #346](https://github.com/k999ln/rock/pull/346)（L7 の #345 を base、未マージ。**本番への配備・適用・切り替えなし**）: 運営の画面の「見張る数」（`lib/noah-launch-status.ts`）、`/noah/help` の `#bot` の節（`lib/noah-bot-notice.ts`。宛先 D8 は 2026-11-21 に本人が smash@avoado.si と決め、[PR #350](https://github.com/k999ln/rock/pull/350) で入れた）、専用の Worker の手順書（`services/noah-patrol-wake/README.md`）、試験 `tests/noah-launch-ops.test.mjs`（切り替え・合図・窓口の文・上限の上書き・見張る数・戻し方・記録・適用する物の形）。残り: 本番での G4〜G6 の確かめ（L9・本人の許可の後）。公開版154・10本のDB追加・公開設定3項目を承認後に反映✅ [PR #358](https://github.com/k999ln/rock/pull/358)。公開版156で172件取込・9項目の公開確認成功。読み取り専用1件の成果受領を確認。全体受入は未完了。 |
 | 2 | — | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
 | 2 | — | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
-| 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | |
+| 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | ✅ 利用者の専用クラウド契約で確定額と予約額を分けて表示（[PR #389](https://github.com/k999ln/rock/pull/389)） |
 | 3 | — | 81 | [81-noah-connect-patrol.md](81-noah-connect-patrol.md) | 作者の引き取り、取り下げ、並び順 | |
 | 3 | — | 76 | [76-eve-build-autofill.md](76-eve-build-autofill.md) | 載せる 1 画面と自動入力（見分ける） | |
 | 3 | — | 77 | [77-eve-build-normalize.md](77-eve-build-normalize.md) | 整える・接続試験と接続証明・機械審査 | |
 | 3 | — | 78 | [78-noah-agent-purchase.md](78-noah-agent-purchase.md) | 試用、仮売上 → 接続の確認 → 確定、直した版の権利 | |
 | 3 | — | 93 | [93-noah-library-lifecycle.md](93-noah-library-lifecycle.md) | 入れ替える（更新・戻す・切る・移す） | |
 | 4 | — | 95 | [95-noah-on-mii-contract.md](95-noah-on-mii-contract.md) | mii で使うための契約（Linux の host で同じ受入、声と表示の模擬） | |
-| 並行 | — | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | 専用の端末（雲）: 端末を持たない人の置き場所 | |
-| 並行 | — | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | |
+| 並行 | — | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | Noahのクラウド実行。Macを閉じた後の仕事・停止・従量の照合 | 設計整理済み。一般Agentの実行・有料受入は未完了 |
+| 並行 | — | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | ✅ [PR #393](https://github.com/k999ln/rock/pull/393) ココナラの本人Mac経路・合成取引で実機確認。クラウド汎用ブラウザは継続 |
 | 並行 | — | 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
 | 並行 | — | 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
 | 並行 | — | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
@@ -109,10 +109,10 @@
 | # | ファイル | 一言 | 状態 |
 | --- | --- | --- | --- |
 | 99 | [99-noah-result-data.md](99-noah-result-data.md) | 成果の本人用検索・出力と同意付き運営提供・撤回 | ✅ PR #334 |
-| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 |
+| 100 | [100-noah-standalone-ui.md](100-noah-standalone-ui.md) | Noahの専用UI・登録Agent・利用人数/王冠/コメント・実行中タブ・接続案内・開発者向けメール相談 | ✅ PR #337 / 新デザイン・登録情報・委任 PR #371（公開159） / 登録実行基盤・Dock入口 ✅ PR #373（公開161、実サービス登録・100人容量は未受入） / 最新12画面・6言語UI ✅ PR #376（公開163） / 実登録・認証付き成果・失敗復帰 ✅ PR #377（公開164、実スマホ成果は本人報告、100人は合成試験） / 成果カード・画像保存 ✅ PR #376（公開165） / eSIM本人引継ぎ ✅ PR #377（公開167・4,829試験成功、実eSIM連携は未設定） / 透過タブロゴ ✅ PR #377（公開170・独立確認済み） / 4件修正・公開ブラウザ一周 ✅ PR #377（公開173・全体verify 4,844成功/4skip、実機Androidは独立確認中） / 接続・保存の重なり修正 ✅ PR #377（公開175・320/390/1280px確認） / 検索・保存統合と不要ページ撤去 ✅ PR #377（公開178・390px確認） / 会員登録不要 ✅ PR #377（公開179、PixelでTiplineの接続→成果受取→保存から再表示を実測。外部登録・100人負荷は別） / 外部新規登録から成果再表示 ✅ PR #377（Pixel実測、本番100ブラウザ/400要求・同時5人を確認。100人同時実行とeSIMは未受入） / 共通カード・評価統合 ✅ PR #386（公開182、390px/590px・評価反映/取り消し確認） / 元サイト評価の常時表示 ✅ PR #386（公開184、GitHub/HF実数照合） / 元サイト評価へ一本化 ✅ PR #386（公開186、共有機能lint残件あり） / 最新公開機能のGit統合と全体verify ✅ PR #377（公開189、CI 4,931成功/4skip） / SPIDER履歴8候補の解消・公開191の保持 ✅ PR #377（実スキャナー20試験と全履歴0候補、最終全体CIはPR参照） / 公開192の接続演出・Pixel一周 ✅ PR #392（全体verify 4,942成功/5skip、実再生音・振動完了・新規成果10件再表示。最終CI/マージはPR参照） / 公開195を保全した接続位置・用途名 ✅ PR #394（公開195・196保全＋197の縦崩れ修正、verify 4,951成功/5skip、Pixel新規成果10件・再表示。最終CI/マージはPR参照） ／ ✅ GitHub mainと本番のソース照合手順 [#398](https://github.com/k999ln/rock/pull/398)、公開198の取り込み [#399](https://github.com/k999ln/rock/pull/399) / 登録429待機・本番100ブラウザ検査 PR #400（公開・Pixel再受入中） |
 | 101 | [101-compute-placement.md](101-compute-placement.md) | 黒殿の 1 ノードを Linux 版 runner の host にし、従量の引き金を測る | |
 | 102 | [102-sim-proof-endorse.md](102-sim-proof-endorse.md) | SIM の証明（N1）: Endorse のトークンを確かめ、SIM を account に束ねる | |
-| 103 | [103-esim-churn-measure.md](103-esim-churn-measure.md) | 離脱率を測る: eSIM つきとカードだけを、同じ値段・同じ機能で比べる（集計の関数は実装済み） | |
+| 103 | [103-esim-churn-measure.md](103-esim-churn-measure.md) | 続けて使う割合を測る: eSIM を入れた人と入れていない人を、同じ機能で比べる（集計の関数は実装済み） | |
 | 104 | [104-owner-key-encryption.md](104-owner-key-encryption.md) | 本人の鍵で暗号化（案 K）: Memory と成果のファイルを運営も読めない形に | |
 | 105 | [105-cloud-operations.md](105-cloud-operations.md) | 自社クラウドの回し方: 約束・見張り・知らせ・費用の上限・バックアップ | |
 
@@ -127,5 +127,14 @@
 | 2 | —（出した後） | 112 | [112-noah-package-chains.md](112-noah-package-chains.md) | 家の端末のカード、工程をつなぐカード、札の候補、工程の計画へのつなぎ | |
 | 2 | —（出した後） | 113 | [113-noah-plan-limits.md](113-noah-plan-limits.md) | つなげる数を料金ごとに（無料 6 枚・有料 50 枚。数えるのはカード） |✅ [#357](https://github.com/k999ln/rock/pull/357) |
 | 2 | 出した直後 | 114 | [114-noah-trial-300.md](114-noah-trial-300.md) | 300 人の試行: 経路の札、段を終えたかの判定、本人の報告（売れた件数・手取り・掛けた分） |✅ [#354](https://github.com/k999ln/rock/pull/354) |
+| 3 | 一般公開の時に出る | 115 | [../../docs/noah/spec-115-pin-grid.md](../../docs/noah/spec-115-pin-grid.md) | ピンタレスト風のホーム: 今動かせる Agent のグリッド、ボードへ保存・公開・フォロー、学習なしの並び（X の作りの形・Reddit hot・Pixie） |✅ [#375](https://github.com/k999ln/rock/pull/375) |
 
 カードを動かして確かめる事（[カード案](../../docs/services/noah-shelf.md) の 12 枚）、投稿・動画・人への連絡、切り替えを開ける事、本番の migration は、task ではなく本人と運営の作業。
+
+## Agent収集
+
+| # | ファイル | 一言 | 状態 |
+| --- | --- | --- | --- |
+| 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ トップ掲載・クラウド移行 #380／UX修正 #384／スマホ実ブラウザ・verify不一致修正 #388／本番反映・ロード表示・内部接続 #390（検証結果はtask本文。Xはキー待ち） |
+| 121 | [121-noah-collect-more.md](121-noah-collect-more.md) | 集める場所を増やす（HN・GitHub MCP・HF MCP Space・npm・Docker・awesome一覧・Smithery、Codexが読むX/Reddit/Bluesky）・新しく使いやすい順・握手済みの系列を一覧へ自動で入れる | ✅ #385（本番の配備は Codex） |
+| 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |

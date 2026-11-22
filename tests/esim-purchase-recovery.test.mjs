@@ -71,8 +71,33 @@ function harness() {
   async function click(label) { const target = button(label); assert.ok(target, label); assert.ok(!target.props.disabled, label);
     target.props.onClick(); render(); await flush(); }
   render();
-  return { replies, requests, deadlines, controllers, button, text: () => text(tree), click, flush, render };
+  return { replies, requests, deadlines, controllers, button, text: () => text(tree),
+    links: () => nodes(tree).map(node => node.props?.href).filter(Boolean), click, flush, render };
 }
+void test('installation gives a return path and offers the first Agent only after device access is verified', async () => {
+  const h = harness();
+  await showMaterial(h);
+  assert.ok(h.text().includes('購入履歴・eSIM設定'));
+  assert.ok(!h.links().includes('/noah/explore'));
+  h.replies.push({ body: { ...ready, deviceInstallState: 'verified_installed_enabled' } }, { body: cloud });
+  await h.click('状態を更新');
+  assert.ok(!h.links().includes('/noah/explore'));
+  h.replies.push({ body: { ...ready, esimDeviceEntitlementState: 'active' } }, { body: cloud });
+  await h.click('状態を更新');
+  for (const href of ['/noah/explore','/connect/service','/noah/usage','/noah/linux#monthly-statement'])
+    assert.ok(h.links().includes(href), href);
+  h.replies.push({ body: { ...ready, esimDeviceEntitlementState: 'revoked_or_stale' } }, { body: cloud });
+  await h.click('状態を更新');
+  assert.ok(!h.links().includes('/noah/explore'));
+  assert.ok(h.requests.filter(request => request.options.method === 'POST').length === 1);
+});
+void test('a Sky-scoped active key keeps its workspace link without offering the Noah cloud runner', async () => {
+  const h = harness();
+  h.replies.push({ body: ready }, { body: { ...cloud, state: 'active', key: { scopes: ['sky'] } } });
+  await h.click('状態を確認');
+  assert.ok(h.links().includes('/noah'));
+  assert.ok(!h.text().includes('NoahクラウドでAgentを使う'));
+});
 async function showMaterial(h) {
   h.replies.push({ body: ready }, { body: cloud }); await h.click('状態を確認');
   h.replies.push({ body: { material } }); await h.click('導入情報を表示');

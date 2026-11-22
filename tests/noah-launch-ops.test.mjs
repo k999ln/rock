@@ -19,6 +19,7 @@ import { createContext, runInContext } from 'node:vm';
 import ts from 'typescript';
 import { NOAH_ASK_MESSAGES } from '../lib/noah-ask.ts';
 import * as botNotice from '../lib/noah-bot-notice.ts';
+import * as importParts from '../lib/noah-intake-import-parts.ts';
 import { NOAH_CONNECT_MESSAGES } from '../lib/noah-connect.ts';
 import { noahAllowed, parseNoahFlags } from '../lib/noah-flags.ts';
 import { NOAH_HOST_BUSY, noahToolSha256 } from '../lib/noah-form.ts';
@@ -570,7 +571,7 @@ void test('the watched numbers: the registry patrol is called stopped only after
 void test('the watched numbers: on the review screen, as sentences (no wide table)', async (t) => {
   const { w, A, B, C } = await counted(t);
   const ownerScope = await ownerScopeFor('reviewer');
-  const ui = screen({ fetch: w.browser({ user: 'reviewer' }, { env: { NOAH_PATROL_ENABLED: 'true' }, reviewers: ['reviewer'] }), modules: {}, now: w.f.time() });
+  const ui = screen({ fetch: w.browser({ user: 'reviewer' }, { env: { NOAH_PATROL_ENABLED: 'true' }, reviewers: ['reviewer'] }), modules: { '@/lib/noah-intake-import-parts': importParts }, now: w.f.time() });
   const review = ui.mount('components/noah-intake-review.tsx', { ownerScope });
   await review.flush();
   const text = review.text();

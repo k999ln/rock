@@ -12,7 +12,8 @@ function download(value: BlobPart, name: string, type = 'application/json') {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 /** `phoneResults`: スマホから、接続した Agent（相手のサーバー）へ頼んで、成果が出た仕事（頁が渡す。無い人には何も出ない。docs/noah/spec-87-tool-agent.md の 11.9）。 */
-export default function NoahResultData({ phoneResults }: { phoneResults?: ReactNode } = {}) {
+export default function NoahResultData({ phoneResults, embedded=false }: { phoneResults?: ReactNode; embedded?:boolean } = {}) {
+  const Heading=embedded?'h2':'h1';
   const [page, setPage] = useState<NoahDataResponse | null>(null), [detail, setDetail] = useState<NoahDataDetail | null>(null);
   const [view, setView] = useState('personal'), [query, setQuery] = useState(''), [search, setSearch] = useState('');
   const [includeText, setIncludeText] = useState(false), [files, setFiles] = useState<string[]>([]), [consent, setConsent] = useState(false);
@@ -109,10 +110,10 @@ export default function NoahResultData({ phoneResults }: { phoneResults?: ReactN
     setDetail({ ...detail, contribution: data.contribution }); resetSelection(); setNotice('運営向けの写しを削除しました。元の成果は残っています。');
   }
   return <main className={styles.page}>
-    <header><p>NOAH</p><h1>Agentの成果データ</h1><p>受け取った成果を探して、手元へ保存できます。選んだ成果だけをNoahの改善に提供することもできます。</p></header>
+    <header><p>NOAH</p><Heading>Agentの成果データ</Heading><p>受け取った成果を探して、手元へ保存できます。選んだ成果だけをNoahの改善に提供することもできます。</p></header>
     {phoneResults}
-    <p>ここにはWebに保存されたNoahのAgent成果を表示します。<Link href="/noah/outputs">ほかの保存した成果</Link> · <Link href="/noah/add/data">手元のファイルをまとめる</Link></p>
-    {error && <p role="alert">{error} <Link href="/account?returnTo=%2Fnoah%2Fdata">サインインを確認</Link></p>}
+    <p>ここにはWebに保存されたNoahのAgent成果を表示します。<Link href="/noah/saved?tab=files">ほかの保存した成果</Link> · <Link href="/noah/add/data">手元のファイルをまとめる</Link></p>
+    {error && <p role="alert">{error} <Link href="/noah/account?returnTo=%2Fnoah%2Fdata">サインインを確認</Link></p>}
     <div className={styles.actions}>
       <button disabled={pending} onClick={() => { void perform(() => load()); }}>読み直す</button>
       {page && <>

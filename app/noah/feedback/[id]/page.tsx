@@ -10,8 +10,8 @@ export default async function Page({
     <main style={{ maxWidth: 760, margin: 'auto', padding: '24px 20px' }}>
       <Link
         href={
-          id.startsWith('release-')
-            ? '/noah#agents'
+          (id.startsWith('release-') || id.startsWith('project-'))
+            ? '/noah'
             : `/noah/agents/${encodeURIComponent(id)}`
         }
       >

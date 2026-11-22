@@ -47,7 +47,7 @@ export default function NoahInstanceDetail({id}:{id:string}) {
     finally{sending.current=false;setBusy(false);setTick(n=>n+1);}
   }
   return <WorkspaceShell title="Noah" tone="sky"><main className={styles.page}>
-    <nav className={styles.nav}><Link href="/noah/library">← 自分のAgent</Link><Link href="/noah/work">すべての版の仕事・成果</Link><Link href="/noah/agents/new">新しい版を登録</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/saved?tab=agents">← 自分のAgent</Link><Link href="/noah/work">すべての版の仕事・成果</Link><Link href="/noah/agents/new">新しい版を登録</Link></nav>
     <h1>{record?.active?.name||record?.pending?.pin.name||record?.last?.pin.name||'Agentの版管理'}</h1>
     {readError&&<p role="alert" className={styles.error}>{readError}</p>}
     {error&&<p role="alert" className={styles.error}>{error}</p>}

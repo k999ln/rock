@@ -1380,3 +1380,17 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:tests/avocado\-handoff\.test\.mjs)\z''']
 regexes = ['''\A3f2d610a\-9c27\-4f06\-b3dc\-01e7fb7a731c\z''']
+
+[[rules.allowlists]]
+description = "browser-storage-name b714cc8766cd"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:lib/noah\-haptics\.ts)\z''']
+regexes = ['''\Anoah\-haptics\-v1\z''']
+
+[[rules.allowlists]]
+description = "synthetic-rejection-test b112c9dc389c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/design\-validation/noah/noah\-connect\.test\.mjs)\z''']
+regexes = ['''\AA1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6\z''']

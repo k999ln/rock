@@ -196,6 +196,34 @@ def build():
             add('ongoing_research', batch['query'] + ':' + item['id'], item['name'], item['url'],
                 stable='github:' + item['id'], author=item['name'].split('/')[0], tags=['GitHub'],
                 note='追加調査中の公開リポジトリ候補。分類と接続は未確認です。')
+    article_path = INPUT / 'explorax-github-100.json'
+    article_raw = article_path.read_bytes()
+    article = json.loads(article_raw)
+    article_url = canonical(article['sourceUrl'])
+    article_input = {'name': 'explorax_github_100', 'sourceFile': article_path.name,
+                     'snapshotSha256': digest(article_raw)}
+    for item in article['repositories']:
+        repository = item['repository']
+        url = canonical('https://github.com/' + repository)
+        listed_url = canonical('https://github.com/' + item['listedRepository'])
+        stable = 'github:' + item['githubId']
+        existing = stable_ids.get(stable) or url_ids.get(url) or url_ids.get(listed_url)
+        if existing:
+            stable_ids[stable] = existing
+        kind = item['kind']
+        category = item['category']
+        tags = ['GitHub', 'exploraX_', category]
+        if url != listed_url:
+            tags.append(item['listedRepository'])
+        row = add(article_input['name'], item['position'], repository, url, kind=kind,
+                  summary=f'{category}の公開リポジトリ。記事の掲載候補で、Noahでの接続と実行は未確認です。',
+                  author=repository.split('/')[0], tags=tags, stable=stable,
+                  note=f"{article['checkedAt']} にGitHubで公開リポジトリを確認しました。",
+                  evidence=['GitHubでアーカイブ済みです。'] if item.get('archived') else [])
+        if not existing:
+            row['asOf'] = article['checkedAt']
+        if not any(source['url'] == article_url for source in row['sources']):
+            row['sources'].append({'url': article_url, 'label': article['sourceLabel'], 'type': 'citation'})
     # Keep explicit identity observations in the corresponding details.
     for finding in review['identityFindings']:
         ids = set(finding['sources'])
@@ -228,7 +256,7 @@ def build():
              'nameGroups': len(sources['census']['groups']), 'sourceReferences': sum(coverage.values()),
              'coverage': dict(coverage), 'integrationTested': 0}
     output(ROOT / 'data/noah-research-index.json', encode({'revision': revision, 'asOf': manifest['asOf'], 'threadId': THREAD, 'stats': stats, 'rows': index}) + b'\n')
-    output(INPUT / 'receipt.json', encode({'revision': revision, 'stats': stats, 'inputs': manifest['inputs'],
+    output(INPUT / 'receipt.json', encode({'revision': revision, 'stats': stats, 'inputs': [*manifest['inputs'], article_input],
         'limitations': ['名称groupと配布物の件数。世界のAgent種類数ではない。', '実行環境/価格/利用条件は資料確認または未確認。全候補の動作試験なし。', '追加調査はsnapshot後に自動同期されない。']}) + b'\n')
     if not CHECK and old_revision and old_revision != revision:
         if not re.fullmatch('[a-f0-9]{16}', old_revision):

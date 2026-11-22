@@ -1,0 +1,11 @@
+{
+  "name": "noah-collector-runtime",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "undici": "7.30.1",
+    "fflate": "0.7.5",
+    "typescript": "5.9.3"
+  }
+}

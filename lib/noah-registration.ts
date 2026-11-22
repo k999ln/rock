@@ -1,9 +1,15 @@
+import { profileField } from './noah-profile-contract.ts';
+import type { ResolvedRegistration, RegistrationDocument } from './noah-registration-profile.ts';
 import type { WorkJob } from './workflow.ts';
 import { noahPublicHttpsUrl, canonicalJson, sha256Hex } from './noah-connect-requirements.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
-import type { RegistrationProvider, RegistrationRecord, RegistrationState, RegistrationStatus } from './noah-registration-contract.ts';
+import type { RegistrationProvider, RegistrationRecord, RegistrationState, RegistrationOutcome, RegistrationAvailability, RegistrationStatus } from './noah-registration-contract.ts';
 export type ConfiguredRegistration = RegistrationProvider & { executorUrl: string };
+export type RegistrationExecutor=(id:string,values?:Record<string,string>,documents?:Record<string,RegistrationDocument>)=>Promise<RegistrationOutcome>;
 export type RegistrationDependencies = {
+  accountStates?: (request:Request,providers:ConfiguredRegistration[])=>Promise<Record<string, RegistrationAvailability>>;
+  executor?: (request:Request,provider:ConfiguredRegistration)=>Promise<RegistrationExecutor|undefined>;
+  resolveProfile?: (request:Request,provider:ConfiguredRegistration,reuse:unknown)=>Promise<ResolvedRegistration>;
   db: Pick<D1Database, 'prepare'>; providers: ConfiguredRegistration[]; token?: string;
   fetcher?: typeof fetch; now?: () => number; waitUntil?: (promise: Promise<unknown>) => void;
 };
@@ -32,16 +38,23 @@ export function parseRegistrationProviders(raw?: string): ConfiguredRegistration
       if (!object(v) || !identifier(v.id) || ids.has(v.id) || !text(v.name, 100) || !text(v.executorName, 100) || !Number.isSafeInteger(v.revision) || Number(v.revision) < 1 || !text(v.termsVersion, 100) || !Array.isArray(v.agentIds) || !v.agentIds.length || v.agentIds.length > 100 || !v.agentIds.every(id => text(id, 200)) || !Array.isArray(v.fields) || !v.fields.length || v.fields.length > 16) throw Error('Invalid registration provider');
       ids.add(v.id);
       const providerOrigin = publicUrl(v.providerOrigin), verification = publicUrl(v.verificationUrl), terms = publicUrl(v.termsUrl), executor = publicUrl(v.executorUrl);
+      if (v.execution !== undefined && v.execution !== 'browser') throw Error('Invalid executor');
+      const browser = v.execution === 'browser';
+      const mcpUrl = browser ? publicUrl(v.mcpUrl).href : undefined;
+      if (browser && (!v.requiresAccount || new URL(mcpUrl!).origin !== providerOrigin.origin)) throw Error('Browser account binding required');
       if (providerOrigin.pathname !== '/' || verification.origin !== providerOrigin.origin || terms.origin !== providerOrigin.origin) throw Error('Provider origin mismatch');
       const keys = new Set<string>();
       const fields = v.fields.map(f => {
-        if (!object(f) || typeof f.key !== 'string' || !/^[a-z][a-z0-9_]{0,39}$/.test(f.key) || ['constructor','prototype','__proto__'].includes(f.key) || keys.has(f.key) || !text(f.label, 80) || !['text','email','password'].includes(String(f.type)) || typeof f.required !== 'boolean' || !Number.isSafeInteger(f.maxLength) || Number(f.maxLength) < 1 || Number(f.maxLength) > 1024) throw Error('Invalid registration field');
+        if (!object(f) || typeof f.key !== 'string' || !/^[a-z][a-z0-9_]{0,39}$/.test(f.key) || ['constructor','prototype','__proto__'].includes(f.key) || keys.has(f.key) || !text(f.label, 80) || !['text','email','password','file'].includes(String(f.type)) || typeof f.required !== 'boolean' || !Number.isSafeInteger(f.maxLength) || Number(f.maxLength) < 1 || Number(f.maxLength) > 1024) throw Error('Invalid registration field');
+        if (f.profileField !== undefined && ((!profileField(f.profileField) && f.profileField !== 'identityDocument') || f.type === 'password')) throw Error('Invalid profile mapping');
+        if ((f.type === 'file') !== (f.profileField === 'identityDocument')) throw Error('Invalid document mapping');
         keys.add(f.key);
-        return { key: f.key, label: f.label, type: f.type as 'text' | 'email' | 'password', required: f.required, maxLength: Number(f.maxLength) };
+        return { key: f.key, label: f.label, type: f.type as 'text' | 'email' | 'password' | 'file', ...(f.profileField ? {profileField:f.profileField as import('./noah-registration-contract.ts').RegistrationField['profileField']} : {}), required: f.required, maxLength: Number(f.maxLength) };
       });
+      if(browser&&fields.some(f=>f.type==='file'))throw Error('Browser document upload is not enabled');
       return { id: v.id, name: v.name, agentIds: v.agentIds as string[], revision: Number(v.revision), providerOrigin: providerOrigin.origin,
         verificationUrl: verification.href, termsUrl: terms.href, termsVersion: v.termsVersion, executorName: v.executorName,
-        executorUrl: executor.href, executorOrigin: executor.origin, fields };
+        executorUrl: executor.href, executorOrigin: executor.origin, fields, ...(browser ? {execution:'browser' as const,requiresAccount:true,mcpUrl} : {}) };
     });
   } catch { return []; }
 }
@@ -77,21 +90,26 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
     const r = job.noahRegistration, provider = deps.providers.find(p => p.id === r.providerId);
     const same = provider && await sha256Hex(canonicalJson(provider)) === r.providerDigest;
     return { id: job.id, providerName: r.providerName, providerOrigin: r.providerOrigin, agentId: r.agentId, state: r.state, expiresAt: r.expiresAt,
-      verificationUrl: same && r.state === 'needs_user' ? provider.verificationUrl : null,
-      returnTo: `/noah/launch?${new URLSearchParams({ agent: r.agentId })}#library` };
+      ...(r.state==='failed'&&r.retryAt?{retryAt:r.retryAt}:{}),
+      verificationUrl: same && r.state === 'needs_user' ? (provider.execution==='browser'?`/noah/registration/browser?job=${encodeURIComponent(job.id)}&provider=${encodeURIComponent(provider.id)}`:provider.verificationUrl) : null,
+      returnTo: r.agentId.startsWith('mcp-registry:')?`/noah/ready/agent?id=${encodeURIComponent(r.agentId)}`:`/noah/agents/${encodeURIComponent(r.agentId)}` };
   }
-  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>): Promise<RegistrationState> {
+  async function callAgent(provider: ConfiguredRegistration, id: string, values?: Record<string, string>, documents?:Record<string,RegistrationDocument>, native?:RegistrationExecutor): Promise<RegistrationOutcome> {
     try {
-      const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values } : {}) }) });
+      if(native)return await native(id,values,documents);
+      const response = await fetcher(provider.executorUrl, { method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(20000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${deps.token}`, 'Idempotency-Key': id }, body: JSON.stringify({ action: values ? 'register' : 'status', id, providerId: provider.id, providerOrigin: provider.providerOrigin, termsVersion: provider.termsVersion, ...(values ? { values, ...(documents && Object.keys(documents).length ? {documents} : {}) } : {}) }) });
       if (!response.ok) { await response.body?.cancel(); return 'unknown'; }
       const reply = await readBounded(response.body);
       if (!object(reply) || reply.id !== id || !['running','needs_user','completed','failed','unknown'].includes(String(reply.state))) return 'unknown';
       return reply.state as RegistrationState;
     } catch { return 'unknown'; }
   }
-  async function settle(owner: string, job: RegistrationWork, state: RegistrationState) {
+  async function settle(owner: string, job: RegistrationWork, outcome: RegistrationOutcome) {
+    const state=typeof outcome==='string'?outcome:outcome.state;
     const expected = job.revision;
     job.noahRegistration.state = state; job.noahRegistration.lastCheckedAt = now();
+    if(typeof outcome!=='string')job.noahRegistration.retryAt=outcome.retryAt;
+    else delete job.noahRegistration.retryAt;
     job.status = state === 'running' || state === 'needs_user' ? 'active' : 'review';
     await update(owner, job, expected);
   }
@@ -102,7 +120,9 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       const id = url.searchParams.get('job');
       if (request.method === 'GET' && !id) {
         const agent = url.searchParams.get('agent');
-        return json({ providers: enabled ? deps.providers.filter(p => !agent || p.agentIds.includes(agent)).map(({ executorUrl: _internal, ...publicProvider }) => publicProvider) : [] });
+        const providers=enabled?deps.providers.filter(p=>!agent||p.agentIds.includes(agent)):[];
+        const states=await deps.accountStates?.(request,providers)??{};
+        return json({providers:providers.map(({executorUrl:_internal,...provider})=>{const state=states[provider.id];return {...provider,...(typeof state==='string'?{accountState:state}:state??{})};})});
       }
       if (request.method === 'POST' && request.headers.get('origin') !== url.origin) return json({ error: 'Noahの画面から送信してください。' }, 403);
       const key = request.headers.get('X-Noah-Registration-Key');
@@ -116,7 +136,7 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
         if (enabled && provider && !['completed','failed'].includes(r.state) && now() - r.startedAt >= 20000 && now() - r.lastCheckedAt >= 5000 && await sha256Hex(canonicalJson(provider)) === r.providerDigest) {
           const expected = job.revision; r.lastCheckedAt = now();
           const result = await deps.db.prepare('UPDATE work_jobs SET payload=?,revision=revision+1 WHERE user_id=? AND id=? AND revision=?').bind(JSON.stringify({ ...job, revision: expected + 1 }), owner, id, expected).run();
-          if (result.meta.changes === 1) { job.revision++; await settle(owner, job, await callAgent(provider, id)); }
+          if (result.meta.changes === 1) { job.revision++; await settle(owner, job, await callAgent(provider, id,undefined,undefined,await deps.executor?.(request,provider))); }
           job = await read(owner, id);
         }
         return json({ job: await present(job) });
@@ -124,19 +144,25 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
       if (!enabled) fail('登録Agentがまだ接続されていません。入力せずに時間をおいてご確認ください。', 503);
       if (request.headers.get('content-type')?.split(';')[0].trim() !== 'application/json') return json({ error: '入力の形式を確認してください。' }, 415);
       const input = await readBounded(request.body);
-      if (!object(input) || Object.keys(input).length !== 9 || !Object.keys(input).every(k => ['action','id','providerId','agentId','revision','termsVersion','values','consent','termsAccepted'].includes(k)) || input.action !== 'start' || !uuid(input.id) || input.consent !== true || input.termsAccepted !== true || !object(input.values)) fail('送信する内容と同意を確認してください。');
+      if (!object(input) || ![9,10].includes(Object.keys(input).length) || !Object.keys(input).every(k => ['action','id','providerId','agentId','revision','termsVersion','values','consent','termsAccepted','profile'].includes(k)) || input.action !== 'start' || !uuid(input.id) || input.consent !== true || input.termsAccepted !== true || !object(input.values)) fail('送信する内容と同意を確認してください。');
       const provider = deps.providers.find(p => p.id === input.providerId);
       if (!provider || !provider.agentIds.includes(String(input.agentId))) fail('登録先が見つかりません。Agentを選び直してください。', 404);
       if (input.revision !== provider.revision || input.termsVersion !== provider.termsVersion) fail('登録条件が更新されました。画面を開き直して確認してください。', 409);
+      const native=await deps.executor?.(request,provider);
+      if (input.profile !== undefined && !deps.resolveProfile) fail('保存情報はまだ使えません。',503);
+      const resolved=await deps.resolveProfile?.(request,provider,input.profile);
+      if(resolved && Object.keys(resolved.values).some(k=>Object.hasOwn(input.values as object,k))) fail('同じ項目を二重に指定できません。');
+      const supplied={...input.values,...resolved?.values};
       const values: Record<string, string> = {};
       if (Object.keys(input.values).some(k => !provider.fields.some(f => f.key === k))) fail('登録に使えない項目が含まれています。画面を開き直してください。');
       for (const field of provider.fields) {
-        const value = input.values[field.key] ?? '';
+        const value = supplied[field.key] ?? '';
+        if(field.type==='file' && value && !resolved?.documents[field.key])fail('保存した書類を選んでください。');
         if (typeof value !== 'string' || value.length > field.maxLength || hasControl(value) || (field.required && !value.trim()) || (value && field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))) fail('必要項目の形式と長さを確認してください。');
         values[field.key] = value;
       }
       const providerDigest = await sha256Hex(canonicalJson(provider));
-      const requestDigest = await registrationFingerprint(key, { providerDigest, agentId: input.agentId, termsVersion: provider.termsVersion, values });
+      const requestDigest = await registrationFingerprint(key, { providerDigest, agentId: input.agentId, termsVersion: provider.termsVersion, values, ...(resolved && Object.keys(resolved.documents).length ? {documents:resolved.documents}: {}) });
       const existing = await deps.db.prepare('SELECT payload FROM work_jobs WHERE user_id=? AND id=?').bind(owner, input.id).first<{ payload: string }>();
       if (existing) {
         const previous = await read(owner, input.id);
@@ -156,7 +182,10 @@ export function createNoahRegistrationApi(deps: RegistrationDependencies) {
         if (replay) { const saved = await read(owner, job.id); if (saved.noahRegistration.requestDigest === requestDigest) return json({ job: await present(saved) }); }
         fail('登録の受付上限または同じ仕事の内容を確認してください。時間をおいてお試しください。', 429);
       }
-      const run = callAgent(provider, job.id, values).then(state => settle(owner, job, state)).catch(() => {});
+      const run = (async()=>{
+        try { await resolved?.beforeSend(); } catch { await settle(owner,job,'failed'); return; }
+        await settle(owner,job,await callAgent(provider,job.id,values,resolved?.documents,native));
+      })().catch(() => {});
       if (deps.waitUntil) deps.waitUntil(run); else await run;
       return json({ job: await present(await read(owner, job.id)) }, 202);
     } catch (e) {

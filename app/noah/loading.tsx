@@ -1,1 +1,1 @@
-export { default } from '@/app/sky/loading';
+export { default } from '@/components/noah-loading';

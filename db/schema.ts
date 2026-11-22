@@ -6,6 +6,7 @@ import {
   uniqueIndex,
   check,
   primaryKey,
+  real,
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
@@ -2563,6 +2564,75 @@ export const noahPackageConnections = sqliteTable('noah_package_connections', {
   packageId: text('package_id').notNull().references(() => noahPackages.id),
 }, t => [
   index('noah_package_connections_package').on(t.packageId),
+]);
+// ピンタレスト風の一覧のボード・フォロー・数えた実績・「表示しない」。DDL は drizzle/0054_noah_boards.sql（task 115。docs/noah/spec-115-pin-grid.md の 4 章）。
+// 実績（noah_pin_stats）は全員の合計で、本人の ID は無い。本人ごとの行は、本人が作ったボード・保存・フォロー・「表示しない」だけ。
+export const noahBoards = sqliteTable('noah_boards', {
+  id: text('id').primaryKey(),
+  ownerId: text('owner_id').notNull(),
+  name: text('name').notNull(),
+  visibility: text('visibility').notNull().default('private'),
+  pins: integer('pins').notNull().default(0),
+  followers: integer('followers').notNull().default(0),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+  revision: integer('revision').notNull().default(1),
+}, t => [
+  index('noah_boards_owner').on(t.ownerId, sql`${t.updatedAt} DESC`),
+  check('noah_boards_name', sql`length(${t.name}) BETWEEN 1 AND 40`),
+  check('noah_boards_visibility', sql`${t.visibility} IN ('private', 'public')`),
+  check('noah_boards_pins', sql`${t.pins} >= 0`),
+  check('noah_boards_followers', sql`${t.followers} >= 0`),
+  check('noah_boards_revision', sql`${t.revision} >= 1`),
+]);
+export const noahBoardPins = sqliteTable('noah_board_pins', {
+  boardId: text('board_id').notNull().references(() => noahBoards.id),
+  familyId: text('family_id').notNull().references(() => noahIntakeFamilies.id),
+  ownerId: text('owner_id').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.boardId, t.familyId] }),
+  index('noah_board_pins_family').on(t.familyId, t.boardId),
+  index('noah_board_pins_owner').on(t.ownerId, sql`${t.createdAt} DESC`),
+  index('noah_board_pins_board').on(t.boardId, sql`${t.createdAt} DESC`),
+]);
+export const noahBoardFollows = sqliteTable('noah_board_follows', {
+  boardId: text('board_id').notNull().references(() => noahBoards.id),
+  followerId: text('follower_id').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.boardId, t.followerId] }),
+  index('noah_board_follows_follower').on(t.followerId, sql`${t.createdAt} DESC`),
+]);
+export const noahPinStats = sqliteTable('noah_pin_stats', {
+  familyId: text('family_id').primaryKey().references(() => noahIntakeFamilies.id),
+  savers: integer('savers').notNull().default(0),
+  succeeded: integer('succeeded').notNull().default(0),
+  hides: integer('hides').notNull().default(0),
+  votes: integer('votes').notNull().default(0),
+  hot: real('hot').notNull().default(0),
+  anchorAt: integer('anchor_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, t => [
+  index('noah_pin_stats_hot').on(sql`${t.hot} DESC`, t.familyId).where(sql`${t.votes} > 0`),
+  check('noah_pin_stats_savers', sql`${t.savers} >= 0`),
+  check('noah_pin_stats_succeeded', sql`${t.succeeded} >= 0`),
+  check('noah_pin_stats_hides', sql`${t.hides} >= 0`),
+]);
+export const noahPinHidden = sqliteTable('noah_pin_hidden', {
+  ownerId: text('owner_id').notNull(),
+  familyId: text('family_id').notNull().references(() => noahIntakeFamilies.id),
+  createdAt: integer('created_at').notNull(),
+}, t => [
+  primaryKey({ columns: [t.ownerId, t.familyId] }),
+  index('noah_pin_hidden_family').on(t.familyId),
+]);
+export const noahPinRollups = sqliteTable('noah_pin_rollups', {
+  id: text('id').primaryKey(),
+  day: text('day').notNull(),
+  startedAt: integer('started_at').notNull(),
+}, t => [
+  check('noah_pin_rollups_id', sql`${t.id} = 'succeeded'`),
 ]);
 // 棚の実績の集計と、見せた記録。DDL は drizzle/0052_noah_shelf_evidence.sql（docs/contracts/noah-shelf-v1.sql から移した。task 111）。
 // 集計と、全員を合わせた見せた記録に、本人の ID は無い。本人ごとの行は、履歴の利用に同意した本人の分と、本人が頼んだ「非表示」だけ。

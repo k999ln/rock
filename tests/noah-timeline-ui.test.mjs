@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
+import * as ready from '../lib/noah-ready-view.ts';
 import * as contract from '../lib/noah-timeline-feed.ts';
 const jsx = (type, props) => ({ type, props });
 const post = { id: 'post-fixture', content: 'Synthetic community post', author: { name: 'Test author' }, community: { id: 'community-fixture', name: '試験コミュニティー' }, createdAt: 1, replies: 0, following: true };
@@ -23,36 +24,40 @@ function render(hash = '#timeline', snapshot = { items, social: { profile: { id:
   const exports = {}, source = readFileSync(new URL('../components/noah-timeline.tsx', import.meta.url), 'utf8');
   const code = ts.transpileModule(source, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const modules = {
+    './noah-locale': {useNoahLocale:()=>({t:x=>x,locale:'ja'})},
+    './noah-agent-visual': {default:'agent-visual'},
     react: { useState: value => [value, () => {}], useRef: () => ({ current: null }), useEffect() {} },
     'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' },
     'lucide-react': new Proxy({}, { get: (_, key) => String(key) }),
     '@/lib/noah-research-types': { researchKindLabels: { agent: 'Agent本体候補' } },
-    '@/lib/noah-timeline-feed': contract,
+    '@/lib/noah-timeline-feed': contract, '@/lib/noah-ready-view':ready,
     './use-noah-hash': { useNoahHash: () => hash },
     './use-noah-timeline': { useNoahTimeline: mode => { assert.equal(mode, 'public'); return ({ data: snapshot, loading: false, hasMore: false, refresh() {} }); } },
     './use-noah-feedback': { useNoahFeedback: () => ({rows:[],error:'',update(){},reload(){}}) },
+    './noah-loading': { default: 'noah-loading' },
     './noah-agent-feedback': { NoahAgentSignals: 'agent-feedback' },
     './noah-shell.module.css': { default: new Proxy({}, { get: (_, key) => String(key) }) },
   };
   runInNewContext(code, { exports, URL, Date, require(name) { assert.ok(name in modules, name); return modules[name]; } });
   return exports.default({ mode: 'public', base: '/noah' });
 }
-void test('UI defaults to all posts and Agents with one Agent filter link and no tab bar', () => {
+void test('UI mixes posts and Agents with recommended, following and Agent-only controls', () => {
   const tree = render(), all = nodes(tree);
   assert.equal(all.filter(node => node.props?.['aria-label'] === 'Noahの統合タイムライン').length, 1);
   const cards = all.filter(node => node.type === 'article');
   assert.deepEqual(cards.map(card => card.props['data-feed-kind']), ['post', 'agent']);
   assert.doesNotMatch(text(tree), /試験コミュニティー|ニュース/);
   assert.ok(!all.some(n=>n.props?.['aria-label']==='タイムラインの種類'));
-  assert.ok(all.some(n=>n.props?.href==='/noah#agents' && text(n)==='Agent'));
+  assert.ok(all.some(n=>n.props?.href==='/noah#agents' && text(n)==='Agentのみ'));
   assert.ok(!text(tree).includes('すべてに戻る'));
-  assert.ok(all.some(n=>n.props?.href==='/noah/activity' && text(n)==='実行中'));
-  assert.ok(nodes(render('#agents')).some(n=>n.props?.href==='/noah#timeline' && text(n)==='すべてに戻る'));
+  assert.ok(all.some(n=>n.props?.href==='/noah#following' && text(n)==='フォロー中'));
+  assert.ok(all.some(n=>n.props?.href==='/noah#timeline' && text(n)==='おすすめ'));
+  assert.ok(nodes(render('#agents')).some(n=>n.props?.href==='/noah#timeline' && text(n)==='Agentのみ'));
   assert.ok(nodes(cards[1]).some(node => node.props?.href === '/noah/agents/agent'));
-  assert.ok(nodes(cards[0]).some(node => node.props?.href === '/noah/social?post=ordinary'));
+  assert.ok(!nodes(cards[0]).some(node => node.props?.href?.startsWith('/noah/social')));
 });
 void test('Agent filter narrows the same list and retired filters return to all without private management actions', () => {
-  for (const [hash, expected] of [['#news', ['post','agent']], ['#agents', ['agent']], ['#communities', ['post','agent']], ['#following', ['post','agent']]]) {
+  for (const [hash, expected] of [['#news', ['post','agent']], ['#agents', ['agent']], ['#communities', ['post','agent']], ['#following', ['post']]]) {
     const all = nodes(render(hash));
     assert.deepEqual(all.filter(node => node.type === 'article').map(node => node.props['data-feed-kind']), expected);
     assert.equal(all.filter(node => node.props?.['aria-label'] === 'Noahの統合タイムライン').length, 1);
@@ -60,7 +65,7 @@ void test('Agent filter narrows the same list and retired filters return to all 
   }
 });
 
-void test('personal opinions preserve author, full text, attachment and observed reaction counts before catalog entries', () => {
+void test('personal opinions preserve author, full text, attachment without links to retired community actions', () => {
   const opinion = { ...post, id: 'opinion', community: null, content: '試験用の個人の見解。\nよかった点だけでなく、惜しかった点も残す。', attachment: { kind: 'agent', resource: 'test-agent' }, likes: 7, reposts: 2, replies: 3 };
   const tree = render('#timeline', { items: contract.mixNoahTimeline([items.find(i=>i.kind==='agent').agent],[opinion]), social: { profile: { id: 'test' } }, errors: [] });
   const cards = nodes(tree).filter(n=>n.type==='article');
@@ -69,16 +74,16 @@ void test('personal opinions preserve author, full text, attachment and observed
   assert.equal(text(content), opinion.content);
   assert.ok(text(cards[0]).includes('Test author'));
   assert.ok(text(cards[0]).includes('test-agent'));
-  assert.equal(text(nodes(cards[0]).find(n=>n.props?.['aria-label']==='いいね・詳細')), '7');
+  assert.ok(!nodes(cards[0]).some(n=>n.props?.['aria-label']==='いいね・詳細'));
   assert.ok(text(cards[1]).includes('Agent紹介'));
   assert.ok(!text(cards[0]).includes('Agent紹介'));
 });
 void test('setup, successful empty posts, and failed retrieval are distinct without fabricated opinions', () => {
   const agentItems = items.filter(i=>i.kind==='agent');
   const setup = render('#timeline', { items: agentItems, social: { profile: null, posts: [] }, errors: [] });
-  assert.ok(text(setup).includes('公開名を設定できます'));
+  assert.equal(nodes(setup).filter(n=>n.props?.['data-feed-kind']==='agent').length,1);
   const empty = render('#timeline', { items: agentItems, social: { profile: { id: 'test' }, posts: [] }, errors: [] });
-  assert.ok(text(empty).includes('表示できる投稿はまだありません'));
+  assert.equal(nodes(empty).filter(n=>n.props?.['data-feed-kind']==='agent').length,1);
   const failed = render('#timeline', { items: agentItems, errors: ['投稿：offline'] });
   assert.ok(text(failed).includes('投稿：offline'));
   assert.ok(!text(failed).includes('表示できる投稿はまだありません'));
