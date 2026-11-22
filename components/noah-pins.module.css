@@ -22,6 +22,8 @@
 .face { display:block; color:inherit; text-decoration:none; }
 .panel { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; aspect-ratio:4 / 3; padding:14px; border-radius:16px; overflow:hidden; background:var(--pin-bg); color:var(--pin-ink); transition:filter .15s; }
 .pin[data-shape="1"] .panel { aspect-ratio:1 / 1; }
+.scene { display:block; border-radius:16px; overflow:hidden; line-height:0; transition:filter .15s; } /* 場面の絵（spec-115 の 9 章）。高さは絵の型が決める。 */
+.face:hover .scene { filter:brightness(.96); }
 .pin[data-shape="2"] .panel { aspect-ratio:4 / 5; }
 .face:hover .panel { filter:brightness(.94); }
 .initials { font-size:clamp(30px, 7vw, 52px); font-weight:800; letter-spacing:-1.5px; line-height:1; }
@@ -100,7 +102,7 @@
 .boardEdit .danger { color:#b42318; }
 .related { margin-top:36px; }
 .related h2 { font-size:18px; margin:0 0 12px; }
-@media (prefers-reduced-motion:reduce) { .panel,.save,.more summary { transition:none; } }
+@media (prefers-reduced-motion:reduce) { .panel,.scene,.save,.more summary { transition:none; } }
 .saveButton { min-height:44px; padding:0 22px; border:0; border-radius:22px; background:#a14206; color:#fff; font-size:15px; font-weight:700; cursor:pointer; }
 .saveButton[data-saved] { background:#202024; }
 /* 詳細では接続と保存の押す範囲を離し、保存は補助操作として表示する。 */

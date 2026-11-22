@@ -5,6 +5,8 @@ import * as operationLabels from '../../../lib/noah-operation-labels.ts';
 // 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
 import * as pins from '../../../lib/noah-pins.ts';
+import * as pinScene from '../../../lib/noah-pin-scene.ts';
+import * as shelfScenes from '../../../lib/noah-pin-scenes-shelf.ts';
 import * as readyView from '../../../lib/noah-ready-view.ts';
 import * as agentShare from '../../../lib/noah-agent-share.ts';
 import { existsSync, readFileSync } from 'node:fs';
@@ -132,6 +134,9 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-tap-sound') return load('lib/noah-tap-sound.ts');
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
+      // ピンの場面の絵の形と、棚の 17 枚の絵（spec-115 の 9 章）。決まった表だけの式なので、本物をそのまま渡す。
+      if (id === '@/lib/noah-pin-scene') return pinScene;
+      if (id === '@/lib/noah-pin-scenes-shelf') return shelfScenes;
       if (id === '@/lib/noah-intake-import-parts') return importParts;
       // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
       if (id === '@/lib/noah-ready-view') return readyView;

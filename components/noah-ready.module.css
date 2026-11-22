@@ -25,6 +25,7 @@
 
 .cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
 .card,.detail { display:flex; flex-direction:column; min-width:0; background:#fff; border:1px solid #ececef; border-radius:12px; padding:20px; }
+.shelfScene { display:block; margin:-10px -10px 22px; border-radius:10px; overflow:hidden; line-height:0; } /* 棚のカードの上の場面の絵（spec-115 の 9 章）。 */
 .cardHead { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; min-width:0; }
 .cardHead h3,.cardHead h1 { margin:0; min-width:0; overflow-wrap:anywhere; letter-spacing:-.35px; }
 .cardHead h3 { font-size:17px; margin:-12px 0; }
