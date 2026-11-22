@@ -298,3 +298,20 @@ GitHub Actions [SPIDER run44979417145](https://github.com/k999ln/rock/actions/ru
 追補: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は統合実装 `8e178d08` と記録更新 `1d5552f3` の内容で全工程exit0（主4,933成功/5skip/0失敗、API1,918、CSV385、ビルド・mission/work/botまで）。その後mainへ入ったPR #389 / `6692661b` も履歴ごと取り込み、eSIM再開・利用明細の115試験と統合production buildが成功。再ビルドしたローカルWorkerの8経路/8ヘッダーを実測し `data/web-security-response-current.json` を再採取した。新規の空ローカルD1は共通基盤テーブルがないため起動用migrationが停止し、ヘッダー実測は直接local Workerを起動して実施（本番DBは操作していない）。最終統合HEADの全CIをPRに記録して受け入れる。
 
 公開191の追加差分 `bc23805ee70c93eb2b4410a7b09bae323b6faaf5` の読み込み表示（カードのプレースホルダー、花形マーク、動きを減らす設定への対応）とブラウザ試験を保全。公開元評価の拡張はmainから既に取り込み済み。関連25試験・型検査・lint成功。以後の接続音/振動の新規変更は並行チャットが担当し、本PRから公開サイトを再配備せず公開の最新版を維持する。
+
+
+### 2026-11-22 公開192のGit受入とPixel一周検証（PR #392）
+
+PR #377はGitHubの全7チェック成功後にmain `093cddc419196f74f1cd3f3f802383fd2e8d47f0` へマージ済み。このmainを基点とした独立枝に、公開192 source `68d2765c8f1d7defa97c31e58a3013f8b3a6d9a4` の接続演出を受入（実装 `e5604f75594973964423570aa7895e1d4c3c3c7c`）。実装・試験9ファイルは公開ソースとbyte一致し、設計/READMEは両側を保持。公開191の通常ローダー、ホーム告知撤去、元評価・検索・保存、mainのeSIM再開/利用明細を維持した。
+
+接続の実タップで音声を無音解除し、サーバーがconnectedを返した時だけ短いポコ音と成功振動を1回通知する。重複タップ、非表示、失敗/中断、音OFFに対応し、音と振動の設定は独立。待機中の透過花形ロゴは操作を遮らず、演出用の待ち時間は足さない。公開192は deployment `appgdep_6b0261f7b79881918e11ebc32fee6eb3` succeeded / env17で既に提供中。本受入で再配備、migration、契約は行わない。
+
+検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` の単一実行がexit0。主4,942成功・5skip・0失敗、型/lint/build、仕事API1,918・CSV385 assertions、mission/work/botまで成功。関連31試験も成功。追加2ファイルは固定版Gitleaks 8.30.1で検知0（SPIDERポリシー変更なし）。全履歴のSPIDER/CodeQLを含む最終HEADのCIとマージ結果は [PR #392](https://github.com/k999ln/rock/pull/392) に記録する。
+
+実機: 本人承認済みADBでPixel 10 / Android 17 / Vanadiumの公開 `avoado.si/noah` を操作。ホーム検索でBeevRを探し、詳細で接続し直してread-only `list_services` を新規依頼、10件の成果詳細を開き、キャッシュ無視の再読み込み後も同じ内容を受信できた。411×801 CSS px、横はみ出し・エラー表示なし。新規依頼は1回。外部への投稿・課金は含まない。今回の確認範囲はこの公開Agentの接続/成果で、認証付きAgentboardの登録一周は前節の実機記録を保持する。
+
+2026-11-22 12:39 JSTの実測: タップからロゴ表示30ms、成功振動1,885ms、音開始1,889ms（AudioContext running）、ロゴ消去1,899ms。計画API340ms、接続API1,504ms。実機の再生音をscrcpyのplayback/dupで録音し、22.343〜22.415秒に音声区間を確認。Android `vibrator_manager` も12:39:58.253 / .319の12ms×2がfinished。JS通知だけを音/振動成功としない。計測ラッパーは元の処理へそのまま転送し、最終再読み込みで破棄。録音と今回のADB forwardは終了し、Pixelは成果画面を表示したまま。
+
+手元証跡は `work/noah-192-checks/`（Git対象外）。`pixel-connection-audit.json` SHA256 `4e71b7f5b0edb30a740d1233cb7f1ea635c84eed59afa155ef998fbb1746f525`、`pixel-connection-pop.opus` `2fc34feffc5fb72ac5afff5a07256808c76492c01d19046381571be385525a39`、`pixel-vibration.txt` `1d85086e2dddb761d33b9a335e89b78c9e0f51007d6bf011f4197f7acef7981b`、`pixel-result-after-reload.json` `266e1a7ecb1e6a3e21687f8cefdd5bf3170e68fdc8548fc13a3cda857ff449df`。`full-verify.log` `21544ff567c3a3cdc791fe7428c440c85e43e3223b8558d482503e6338d357da`。端末通知や他の振動履歴を含みうる原画像/ログはリポジトリへ保存しない。
+
+再開: 上記verifyとPR #392の最終HEADチェック。実機一周は完了、最終CI成功とmain受入はPRへ追記する。接続ボタンの深さ・「操作1/2」の用途表示は別のUX改善候補として保持し、本変更で画面を作り替えない。
