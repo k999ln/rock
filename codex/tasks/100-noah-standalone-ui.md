@@ -354,3 +354,5 @@ Pixel監査で、検索から開く `/noah/discover/agent` の共通ボタン指
 登録/画面/疑似100人/再現スクリプトの関連29試験成功。公開198を基準に型・lint・build・bundle・asset検査成功。Git全体verifyは単一実行exit0、主4,970成功/5skip/0fail、API1,918・CSV385、型/lint/build、mission/work/botまで成功。新規外部登録の今回のPixel一周と公開反映はまだ未完了。
 
 2026-11-22 14:17 JST、本番100ブラウザ・同時5フローの400要求がすべて成功。独立保存権限100、他所有者の成果404は100/100、9,408ms、中央値160ms、p95 203ms、最大664ms。`scripts/check-noah-pilot-production.mjs` を永続化した。cookieはメモリのみ、外部登録/接続/実行/成果作成はしない。検査対象は既に実機確認した非公開成果 e2fece64-f654-409c-ad91-5e8072e29af0。外部100人同時実行や実ユーザー100人の受入ではない。
+
+PR #400に記録。mainの公開正本ルール（PR #398）を受け、公開198 source 98243a58の19ファイルをGitへ取り込み、mainのココナラ入口・eSIM導線・共有情報も保全した。棚から道具を選ぶ試験を新しい表示位置に合わせ、選択済みの道具と入力フォーム/説明を検査する。統合後38関連試験成功。header用のローカルproductionで8ルート・8共通headerを再採取した。通常のローカル起動は既存storeの重複列、新規storeの不足表でmigrationが停止したため、両storeを保持し、header検査だけを同じbuild/runtimeの別storeで実施した。本番migrationはしていない。最新統合の全体verifyとCIを再実行する。

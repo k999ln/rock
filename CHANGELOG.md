@@ -1,6 +1,6 @@
 ## 2026-11-22
 
-- Noahの登録先429に対する待機時刻表示・本人別の再送防止と、本番100ブラウザの限定検査スクリプトを追加。全体verify成功、公開とPixelの新規登録一周は受入中（task100）。
+- Noahの登録先429に対する待機時刻表示・本人別の再送防止と、本番100ブラウザの限定検査スクリプトを追加。公開198のUIを保全してmainへ統合中、公開とPixelの新規登録一周は受入中（task100、[PR #400](https://github.com/k999ln/rock/pull/400)）。
 
 - avoado.siの公開元をGitHub mainに統一し、Macと本番のGitツリーを照合する手順をAGENTS.mdに追加。公開版のAgent共有に関する記録を取り込んだ（[PR #398](https://github.com/k999ln/rock/pull/398)）。
 
