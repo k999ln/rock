@@ -1,5 +1,5 @@
 ## 2026-11-23
-- Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正のPR番号は作成後追記）。
+- Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正 [PR #21](https://github.com/iceiceice999/rock/pull/21)）。
 - Noahへ無料枠の公式MCPクラウド実行器を追加。永続alarm、依頼分離、期限・停止、対応profile限定、掲載削除後の停止を実装（[PR #18](https://github.com/iceiceice999/rock/pull/18)、Noah本番受入は継続中）。
 - Noahの実モデル継続時のHTTP400と未実行の完了報告を修正し、公開209のPixelで外部登録→認証付き実行→成果の再読込を再検証（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。
 - NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。

@@ -107,6 +107,6 @@ PR: 無料実行器・共通成果は [#18](https://github.com/iceiceice999/rock
 
 証拠はローカル `work/noah-cloud-production-acceptance-20261122/run-1795363012731/`、`run-1795363047378/`、`run-1795363081869/` のreport.json/result.png、停止は `work/noah-production-qa-20261122/free-cli-research/mobile-stop/report.json` とstopped.png。公開出所は同free-cli-research/publication.json。受入scriptは同acceptanceディレクトリのclosed-browser.cjs / run-suite.cjs。これらの作業用ファイルには認証Cookieを保存していない。
 
-受入で、保存済みcloudFilesにも「添付の内容は保存されていません」と出る汎用注記の不整合を発見。共通結果表示へ保存済み添付数を渡し、未保存の添付がある場合だけ注記を出すよう補正した。次版での表示再確認と最終検査は後続PRへ記録する。
+受入で、保存済みcloudFilesにも「添付の内容は保存されていません」と出る汎用注記の不整合を発見。共通結果表示へ保存済み添付数を渡し、未保存の添付がある場合だけ注記を出すよう補正した。表示補正と受入記録は [PR #21](https://github.com/iceiceice999/rock/pull/21)。次版での表示再確認と最終検査は同PRへ記録する。
 
 検証基点: PR18の最終head `1a12b4bb4ac77b954cfa33c0d93105413a1e94e9` でローカル全体verify全工程成功（主要5,175成功/5skip/失敗0、API1,918、CSV385）、GitHub全8チェックSUCCESS。新規課金・本番D1 migration・外部申込なし。残る制約は無料枠上限、未対応CLI3種、新ログイン管理移行、実機Pixelでの新クラウド受入。
