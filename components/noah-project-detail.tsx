@@ -6,6 +6,7 @@ import { NOAH_COLLECTION_LABELS } from '@/lib/noah-collection';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
 import NoahReadyDetail from './noah-ready-detail';
 import NoahLoading from './noah-loading';
+import NoahCloudAgent from './noah-cloud-agent';
 import NoahProviderRunner from './noah-provider-runner';
 import styles from './noah-project-detail.module.css';
 
@@ -47,13 +48,14 @@ export default function NoahProjectDetail({ id }: { id: string }) {
     {error && <div role="alert" className={styles.error}><p>{error}</p>{!detail && <button onClick={() => { setDetail(null); setError(''); setAttempt(n => n + 1); }}>読み直す</button>}</div>}
     {detail && <>
       {detail.connection.kind !== 'ready' && <header><p className={styles.eyebrow}>Noah · Agent</p><h1>{detail.card.name}</h1><p className={styles.summary}>{detail.card.summary}</p><p className={styles.muted}>提供: {detail.card.provider}</p></header>}
+      {detail.connection.kind === 'cloud' && <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} />}
       {(detail.connection.kind === 'space' || detail.connection.kind === 'setup') && <NoahProviderRunner key={id} projectId={id}/>}
       <section id="ratings" className={styles.ratings} aria-label="出典と外部評価">
         <h2>外部の評価</h2>
         <NoahAgentSourceRatings sources={detail.card.sources} />
         <details><summary>出典・確認日時</summary><ul>{detail.card.sources?.map(source => <li key={source.sourceUrl}><strong>{NOAH_COLLECTION_LABELS[source.source]}</strong><span>{source.sourceUrl}</span><time dateTime={new Date(source.observedAt).toISOString()}>{new Date(source.observedAt).toLocaleString('ja-JP')} 確認</time></li>)}</ul></details>
       </section>
-      {detail.connection.kind === 'ready' ? <NoahReadyDetail id={detail.connection.familyId} internalOnly /> : detail.connection.kind === 'space' ? <><details><summary>提供元の画面を開く</summary><section className={styles.connection} aria-label="Noah内で使う">
+      {detail.connection.kind === 'cloud' ? null : detail.connection.kind === 'ready' ? <NoahReadyDetail id={detail.connection.familyId} internalOnly /> : detail.connection.kind === 'space' ? <><details><summary>提供元の画面を開く</summary><section className={styles.connection} aria-label="Noah内で使う">
         <h2>Noahで使う</h2><p>この画面でAgentの利用画面を開きます。入力は提供者のHugging Face Spaceに送られます。</p>
         <button className={styles.primary} hidden={Boolean(url)} disabled={opening} onClick={() => void openSpace()}>{opening ? '接続先を確認しています…' : '利用画面を開く'}</button>
         {error && <p><Link className={styles.back} href={`/noah/agents/new?${new URLSearchParams({ sourceUrl: `https://huggingface.co/spaces/${detail.connection.repository}`, name: detail.card.name })}`}>Noahで取込・設定する</Link></p>}
