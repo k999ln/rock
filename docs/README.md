@@ -48,7 +48,7 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [担当別workstream](workstreams/README.md) — ROCK／EXTERNAL／JOINT／OWNER、taskと検証入口。
 - [機能別の作業部屋](../workspaces/README.md) — 現行の一意な担当と前提。
 - [Tool・Agent総覧](agents-and-tools.md) — カタログと実行役の役割。
-- [Campus／NFC](sky-nfc-columbia.md) — OS不要のブラウザ入口。タグ、本人、学生利用枠、購入・実行権を分ける。
+- [Campus／NFC](sky-nfc-columbia.md) — Columbia大学の学生向け。OS不要のブラウザ入口。タグ、本人、学生利用枠、購入・実行権を分ける。
 
 ## 詳細資料の索引
 
@@ -56,7 +56,6 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 
 - [A2A Cloud Agent価格見積拡張（契約準備）](a2a-pricing-extension.md)（設計）
 - [Agent Control Plane v1](agent-control-plane.md)（設計）
-- [エージェント・Tool総覧 — 何があって、それぞれ何をするか](agents-and-tools.md)（設計）
 - [RockstarOS canonical memory and model projections](ai-memory-architecture.md)（設計）
 - [RockstarOS — アカウントサービスを支えるsi・Agent共通runtime設計](ai-native-os-architecture.md)（設計）
 - [RockstarOS siネイティブOS設計—Sol独立監査](ai-native-os-design-audit.md)（監査・記録）
@@ -169,7 +168,6 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [Sky MCP導入・利用体験の改善](sky-mcp-usability-20260912.md)（設計）
 - [旧Mr. Hub自動化のSky導入設計](sky-mr-automation-candidates.md)（設計）
 - [Sky — Toolチームと開発者還元](sky-network-economy.md)（設計）
-- [Sky NFCカード — Columbia大学の学生向け入口（設計）](sky-nfc-columbia.md)（設計）
 - [Sky 特許出願アシスタント](sky-patent-assistant-20260912.md)（設計）
 - [Sky「サブスク顧問」接続 — 2026-09-12](sky-rockstar-ledger-20260912.md)（設計）
 - [Skyの役割エージェント仕様 — 2026-09-12](sky-role-agents-20260912.md)（設計）
@@ -194,3 +192,11 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 新しい情報は該当する正本・workstreamへ統合する。不要な重複分冊や日付付き入口を増やさず、移動・削除では参照・索引・検査・復元commitを同時更新する。
 
 - [Noah本人用リセール](services/noah-select-resale.md) — 3担当・共有予算・Web/CLI・停止と照合の現行契約。
+- [Noah の設計書（全体）](noah-design.md)（行き先、具体的なスキーム、機能ごとの設計、要る技術と作り方、作る順番、7 つの問いへの答え）。
+- [Noah 詳細設計書（バックエンド・フロント・UX）](noah-detailed-design.md)（機能ごとの体験と文言、画面と状態、API・データ・状態遷移、試験、開発の進め方、決定待ちの既定値）。実装はこれを見て進める。
+- [Noah ローンチの最小限（MVP）](noah/mvp-launch.md)（本人指示 11-20。出すまでに作る範囲の線、作る順 L1〜L9、出す前に確かめる事 G1〜G7、本人が決める事 13 個、実測の出どころ）。**出すまでは、これと、各実装仕様書の「ローンチの範囲」の章だけを見て作る。**
+- [Noah 実装仕様書（作業単位ごと）](noah/README.md)（task 1 枚につき 1 本。今あるコードのどこをどう変えるか、規則の全表、画面と文言、処理の順、試験。84・85・96・86・87・74・88・89・90・97。各仕様書の最後が「ローンチの範囲」）。動く型契約と参照実装は [contracts/](contracts/) の `noah-*`、実データでの試験と実測は [design-validation/noah/](design-validation/noah/README.md)。
+- [Noah の棚とパッケージ](noah/spec-110-shelf.md)（本人の決定 11-19〜21。入口の棚「稼ぐ・仕事を省く」「教育」「暮らし」、カード 1 枚 ＝ 1 つの仕事を最後までやる組合せ、今動かせる物だけを載せる条件、学習を使わない並び、札、つなげる数。書式は [services/noah-shelf.md](services/noah-shelf.md)、最初のカード案 12 枚もそこ）。
+- [Noah を 300 人に出す](noah/trial-300.md)（30 → 100 → 300 の段と次へ進む条件、出し方の決まり、稼げる額の式と測り方、守る決まり、先に要る物）。
+- [Noah — 接続・実行・取り込み・市場の設計（詳細）](noah-agent-market-design.md)。書式は [services/noah-one-click-connect.md](services/noah-one-click-connect.md)、[services/noah-own-device.md](services/noah-own-device.md)、[services/noah-screenless.md](services/noah-screenless.md)、[services/noah-agent-intake.md](services/noah-agent-intake.md)、[services/eve-agent-build.md](services/eve-agent-build.md)、[services/noah-mobile-variant.md](services/noah-mobile-variant.md)、[services/noah-agent-purchase.md](services/noah-agent-purchase.md)。task は codex/tasks 74〜97（73 は main の別の task）。
+- [外にある Agent の実測（2026-11-20）](noah-agent-census-20261120.md)（上の設計の根拠。MCP の公式台帳・Hugging Face・ACP の件数と、鍵なしでつながる割合、調査した 85 件の分類）。

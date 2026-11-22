@@ -1,0 +1,13 @@
+FROM node:24.11.1-bookworm-slim@sha256:48abc13a19400ca3985071e287bd405a1d99306770eb81d61202fb6b65cf0b57
+RUN apt-get update && apt-get install -y --no-install-recommends python3 git ripgrep ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /opt/dsh
+COPY dsh/package.json dsh/package-lock.json ./
+RUN npm ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org && npm cache clean --force
+RUN useradd --uid 10001 --create-home agent
+COPY runner.py dsh_cli.py /opt/noah/
+# Load the fixed native binary from the read-only image. The upstream loader's
+# default /tmp copy cannot execute on Noah's intentionally noexec scratch mounts.
+ENV HOME=/home/agent PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DO_NOT_TRACK=1 DSH_TELEMETRY_DISABLED=1 NARB_DISABLE_NATIVE_CACHE=1 NODE_OPTIONS=--max-old-space-size=512
+USER 10001:10001
+WORKDIR /workspace
+ENTRYPOINT ["python3", "/opt/noah/runner.py"]

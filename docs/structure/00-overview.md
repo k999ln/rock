@@ -2,12 +2,35 @@
 
 このフォルダ `docs/structure/` が**設計の正本**。他の docs/ は歴史と詳細。矛盾したらここが勝つ。
 
+## 0. 目的（なぜ作るか。2026-11-20 本人の言葉）
+
+| | |
+| --- | --- |
+| 大きな目的 | **みんなが Agent を使って、生活がより豊かになる。** |
+| 最初の目的 | **教育と、身の回りの生活が、少しでも便利に、効率よくなる。** 「豊かになる」は意味が広く、訴求しにくい。だから、まずここに絞って進める |
+| 残る物の基準 | わかりやすく便利になる物が残っていく |
+| 行き着く所 | Noah が無いと生きていけない、と言われる所まで持っていく |
+
+Agent を使う時・運営する時に、一番重く見る 3 つ（迷った時は、これを先にする）:
+
+1. **どんな Agent にも、1 クリックでスムーズにつながる。**
+2. **登録が要る場合でも、どこかでそれを解決して、利用者を離れさせない。**
+3. **Agent が動く時に、画面をジャックしない。** ターミナルで動かす形でもよい。画面を取らない方法を探して、作る。
+
+この章は「なぜ」と「何を先にするか」。下の 1 章からは「何を作るか」と「どう作るか」。Noah の設計がこの 3 つにどう答えているか、足りない所、今の品揃えと並びの現状は [Noah の設計書](../noah-design.md) の 12 章。出典は [07](07-decisions-from-minutes.md) の 2026-11-20（21:51・21:54・21:57）の行。
+
+まだ決まっていない事（本人確認待ち）: 「教育」は誰の何を便利にするか。「身の回りの生活」で最初に狙う場面。最初の相手の国と言葉。
+
+2026-11-21 に決めた事（本人の決定「どっちもお願い」と、任された既定。変えるのは本人）: Noah の入口の棚は「稼ぐ・仕事を省く」（開発・調査・顧客対応）「教育」「暮らし」の 3 段。教育の最初の相手は、18 歳以上の学生と社会人。暮らしの最初のカードは、やる事の計画と、体調のメモの整理（助言は、専門家に確かめてから）。最初の相手は日本・日本語。作りは [Noah の棚とパッケージ](../noah/spec-110-shelf.md)、出し方は [Noah を 300 人に出す](../noah/trial-300.md)。
+
 ## 1. 一言で
+
+**主商品はmii、最小構成の出発点はNoah。** [Noahの公開版](../noah/mvp-launch.md)ではスマホから提供者のサーバー上のAgentに依頼し、成果を受け取って接続を切る。本人Macでの接続・実行・成果受領・停止も検証し、miiで声と空間表示を使う体験へつなぐ。Eveは依頼窓口、RockstarOSは共通基盤、SIM/eSIMはOS導入の仕組み。[最新方針](../product-baseline.md)。
 
 > **一つの account、一つの OS（RockstarOS）、どのハードでも続きから動く。**
 > 話す相手は **Eve**。Eve が目的を決め、**Noa** が道具とAgentをつないで形にし、それを **mii** で見て触る。
 
-Apple が iOS / macOS / watchOS を「同じ Apple ID、同じ体験」で束ねているのと同じ構造。違いは、avokado は**ハードを選ばない**こと。mii（建築・部屋に埋め込む端末）、持っているスマホ（eSIMで入る）、Pro（AI専用PC）、将来はロケット・車・工場設備まで、RockstarOS がハードごとに最適化されて載るが、OS は一つ、account は一つ。
+目指す構造は、一つのaccountと共通契約を複数の対応ハードで使うこと。対応はhardware profileごとに検証する。mii（建築・部屋に埋め込む端末）、持っているスマホ（適合するclient・導入経路）、Pro（AI専用PC）、将来はロケット・車・工場設備まで、共通のRockstarOS契約を使い、OSは一つ、accountは一つ。全機種での導入や同期の完成を意味しない。
 
 ## 2. 層の絵
 
@@ -18,7 +41,7 @@ flowchart TB
   end
   subgraph HW[ハード（どれでも）]
     M[mii<br/>部屋・建築に埋め込む<br/>4 Tower + Hub + 表示層]
-    S[スマホ<br/>eSIM で RockstarOS が入る]
+    S[スマホ<br/>対応client・OS導入経路]
     PRO[Pro<br/>AI専用PC（今回は範囲外）]
     X[将来: 車・工場・ロケット等<br/>hardware profile を足すだけ]
   end
@@ -28,7 +51,7 @@ flowchart TB
     REC[recovery / sync]
     HP[hardware profile<br/>mii / phone / pro / ...]
   end
-  subgraph SV[サービス層（ユーザーには Eve だけ見える）]
+  subgraph SV[サービス層（公開入口は Noah と Eve）]
     EVE[Eve 会話→Goal]
     NOA[Noa 道具・Agentをつなぐ]
     AMC[AMC 工程分解・担当・合格条件]
@@ -57,10 +80,10 @@ flowchart TB
 | **mii** | 部屋・建築に埋め込む物理端末。RockstarOS 搭載 | **扱う**（01-mii.md） |
 | **RockstarOS** | 一つの実行基盤。全ハード共通 | **扱う**（02-rockstaros.md） |
 | **Eve** | 話しかける相手。依頼→仕事→成果の窓口 | **扱う**（04-eve-noa-amc-sky.md） |
-| **Sky** | Agent・Tool・情報を見つけてつなぐ場所 | **扱う**（04） |
+| **Noah** | Agentを集める・つなげる・載せる最小構成 | **扱う**（04） |
 | Pro | AI専用PC | 範囲外（既存docsのまま） |
 
-配布できるものは **eSIM**（03-esim.md）。mii を持っていない人は eSIM で RockstarOS に入る。
+SIM/eSIMは **OS導入の仕組み**（03-esim.md）。Noahの本人Mac版はMacで接続・実行・停止を確かめる。スマホ向け公開版は提供者のサーバーで実行し、利用者はブラウザで成果を受け取る。どちらもmiiやSIMの導入前から使える設計とする。
 
 ## 4. 読み順
 
@@ -76,10 +99,8 @@ flowchart TB
 | Kaiya の PDF（Issue01）への指摘 | [08-pdf-review.md](08-pdf-review.md) |
 | リポのどこを直せばよいか（Codex向け） | [09-repo-layout.md](09-repo-layout.md) |
 
-## 5. この整理で変えたこと（2026-11-02）
+## 5. 現在の説明と履歴の置き場所
 
-- README を「PRの受領票」から「中の人向けの構造図」に書き換えた。日付付きの更新履歴は CHANGELOG.md に全文移した（削除していない）。
-- 旧 README / AGENTS / project.md / PROJECTS.md は `archive/root-snapshot-20261029/` に原本のまま保存。branch `archive/pre-restructure-20261102-main-1daf5c3` に整理前の main 全体がある。
-- Smith → Noa、Jennifer → AMC へ統合、avocadoMini → mii、Zema → Eve/Work（06-naming.md）。
-- eSIM の定義を「データ付きbundle」から「RockstarOS の鍵付き回線」へ（03-esim.md）。
-- Codex への指示書は `codex/tasks/` に1件1ファイル（`codex/tasks/00-index.md`）。
+- 現在の製品の使い方・画像・コードは[README](../../README.md)、進捗は[project](../../project.md)。
+- 方針の変更理由は[07 決定](07-decisions-from-minutes.md)、過去の変更記録は[CHANGELOG](../../CHANGELOG.md)。旧説明を現在の入口へ複製しない。
+- 構成や受入の詳細は上の対応表へリンクし、同じ契約を複数文書で独立して定義しない。

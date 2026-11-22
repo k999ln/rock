@@ -2,12 +2,14 @@
 
 ## 1. 決定
 
+**手持ちのスマホでは、RockstarOSは普段のiOS・Androidに、本人が選んだパッケージの機能を足す。** 利用者はいつものホーム画面やアプリを使いながら、Noahに任せた仕事の結果や確認依頼を受け取る。RockstarOSは、どのパッケージに何を許したか、いくらまで使えるか、結果は誰に届くかを本人のアカウントで管理する。
+
 | 問い | 決定 |
 | --- | --- |
 | OS はいくつか | **一つ。** mii 用・スマホ用・Pro 用・ロケット用の「別OS」は作らない。ハードごとの差は **hardware profile** に閉じ込める |
 | 正本は端末か人か | **人（account）。** 端末は account の「今いる場所」。機種変更・mii の追加・Pro の購入・ロケット搭載でも、同じ account の続きから動く（iCloud と同じ役割をうちが持つ） |
-| 「OSが入る」とは | スマホの場合: eSIM で account と回線が束なり、RockstarOS client（Android: carrier app として自動導入 / iOS: PWA or App Store）が開く。実体は cloud runtime ＋ 端末 client（03-esim.md）。mii・Pro・Pixel の場合: native RockstarOS（Buildroot / GrapheneOS 系）がそのまま載る |
-| ユーザーに見せる名前 | 端末名として **RockstarOS** を見せてよい。中の Eve / Noa / AMC / Jev / Spider / Sky のうち、ユーザーが話す相手は **Eve だけ** |
+| 端末でどう使い始めるか | 手持ちの対応スマホでは、専用eSIMを追加する。パッケージの選択・操作・成果の取得は、本人の専用eSIM経由で利用権を確認できた時に限る。最初のMac版Noahは既存macOS上で動かす。専用端末のnative OSには機種ごとの適合・署名・復旧・実機受入が必要。[専用回線での利用条件](03-esim.md#専用回線での利用条件) |
+| ユーザーに見せる名前 | 端末名として **RockstarOS** を見せてよい。中の Eve / Noa / AMC / Jev / Spider / Sky のうち、公開入口は **Eve と Noah**（名称は06）。Eveは依頼窓口、Noahは最小構成として単独利用できる |
 
 ## 2. 一つの OS の中身（全ハード共通）
 
@@ -35,6 +37,8 @@ flowchart LR
 
 ## 3. account の続き（continuity）の契約
 
+2026-11-21 本人指示: Noahから使う共通accountのパスワードは8〜128文字。新規登録・ログイン・復旧で同じ条件とし、既存パスワードの変更は要求しない。scrypt・試行制限・本人の所有者照合は継続する。
+
 | 何が続くか | 実装場所 | 状態 |
 | --- | --- | --- |
 | 本人の identity と端末束縛（EID/ICCID、Android key attestation、Pro の TPM） | lib/rockstar-entitlement-*.ts, lib/esim-attested-device-activation.ts | 実装あり。eSIM の EID を束縛キーに追加（task 11） |
@@ -42,9 +46,10 @@ flowchart LR
 | Eve との会話の文脈・Memory | lib/eve-*.ts, ai-memory-architecture.md | 端末跨ぎの同期規約が未定（task 30） |
 | Wallet 残高・天引き契約 | lib/wallet*.ts, lib/settlement.ts, services/sky-billing | 実装あり |
 | 権限・予算 | lib/agent-control-plane.ts, lib/a2a-broker-*.ts | 実装あり |
+| つないだ Agent（接続の条件と置き場所） | lib/noah-instances.ts, noah_runner_devices, [services/noah-one-click-connect.md](../services/noah-one-click-connect.md) | 接続は端末ごと。account を正本にし、端末を足す・替える時にまとめて移す（2026-11-20。Mac でつないだ物を mii でそのまま使う。task 74・93・95） |
 | mii の空間キャリブレーション | なし | profile 固有。account には紐づけない（部屋に紐づく） |
 
-ルール: **account に紐づくものは cloud が正本、端末は cache。** mii のオフライン動作（Hub の local LLM）は cache で動き、復帰時に Receipt を同期する。
+設計原則: **accountに紐づく仕事の正本はaccount側、端末はcache。** 本人Macの私有ファイルとWebの保存先を自動で同一視しない。オフラインのReceipt照合と別端末での再開はそれぞれの受入で確認する。miiのHub内推論・復帰時同期は後続の端末受入対象。
 
 ## 4. 今の実装との差分（何を足すか）
 

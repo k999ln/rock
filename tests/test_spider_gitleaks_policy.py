@@ -120,6 +120,22 @@ class PolicyStructureTests(unittest.TestCase):
                            (expected_path, value + "\n"), (expected_path, "new-synthetic-value")]:
             self.assertFalse(pair(path, text))
 
+    def test_noah_public_values_are_bound_to_their_reviewed_paths(self):
+        expected = {
+            "lib/noah-haptics.ts": ("b714cc8766cd7108e0e7daf220f5a64b3894d6ceb099c917e1bbf7f261c4e801", "browser-storage-name"),
+            "docs/design-validation/noah/noah-connect.test.mjs": ("b112c9dc389ca44de72cc0d3a732746a423354b9fffedbc467449a8601ea3269", "synthetic-rejection-test"),
+        }
+        records = json.loads((POLICY.parent / "public-value-provenance.json").read_text())["values"]
+        for path, (digest, classification) in expected.items():
+            entries = [(v, p) for v, p in reviewed_public_entries() if path in p]
+            self.assertEqual(len(entries), 1)
+            value, paths = entries[0]
+            self.assertEqual(paths, [path])
+            self.assertEqual(hashlib.sha256(value.encode()).hexdigest(), digest)
+            record = next(r for r in records if r["candidateSha256"] == digest)
+            self.assertEqual(record["classification"], classification)
+            self.assertEqual(record["source"]["path"], path)
+
     def test_reviewed_public_fixture_bytes_have_not_changed(self):
         self.assertEqual(hashlib.sha256((ROOT / PEM_PATH).read_bytes()).hexdigest(),
                          "c4932a9b6b97423b249a53e58d706f820185467464699038ed7ca5b29815ba03")
@@ -236,6 +252,23 @@ class RealScannerPolicyTests(unittest.TestCase):
         self.assertEqual(self.scan(expected_path, json.dumps({"CI_FIX_TOKEN_PARITY.json": changed}), return_locations=True), {(expected_path, 1)})
         canary = "gh" + "p_" + hashlib.sha256(b"new Eve allowed-path provider canary").hexdigest()[:36]
         self.assertIn("github-pat", self.scan(expected_path, json.dumps({"providerCredential": canary})))
+
+    def test_noah_preference_and_rejection_fixture_allow_only_reviewed_values(self):
+        for path, prefix in [
+            ("lib/noah-haptics.ts", "export const NOAH_HAPTICS_KEY = "),
+            ("docs/design-validation/noah/noah-connect.test.mjs", "token="),
+        ]:
+            with self.subTest(path=path):
+                value, paths = next((v, p) for v, p in reviewed_public_entries() if path in p)
+                self.assertEqual(paths, [path])
+                source = prefix + json.dumps(value) + ";\n"
+                self.assertEqual(self.scan(path, source, policy=False), {"generic-api-key"})
+                self.assertEqual(self.scan(path, source), set())
+                self.assertIn("generic-api-key", self.scan(path + ".copy", source))
+                replacement = "spider-canary-" + hashlib.sha256(("noah:" + path).encode()).hexdigest()
+                self.assertIn("generic-api-key", self.scan(path, prefix + json.dumps(replacement)))
+                provider = "gh" + "p_" + hashlib.sha256(("provider:" + path).encode()).hexdigest()[:36]
+                self.assertIn("github-pat", self.scan(path, "credential=" + json.dumps(provider)))
 
     def test_public_pem_is_detected_by_defaults_and_only_exact_path_is_allowed(self):
         source = (ROOT / PEM_PATH).read_text()

@@ -9,7 +9,7 @@
 | **avokado** | 会社・ブランド | — | avocado, AVOKADO（大文字はロゴ表記のみ可） |
 | **mii** | 建築・暮らしに埋め込む物理端末 | avocadomini.si（将来 mii.si を検討） | avocadoMini, avocado mini, Mini, R5（R5は設計世代の番号として内部で残す） |
 | **Eve** | 話しかける相手。依頼→仕事→成果の窓口 | avoado.si/os/eve（eve.si は過去PDFの表記） | Zema（旧名。仕事の実行層の意味で内部名に残す）, イブ |
-| **Noah** | 情報・Agent・Tool・コミュニティを見つけてEveへ渡す公開入口 | avoado.si/#timeline | Jennifer, Smith, Sky, smis（公開画面の旧名） |
+| **Noah** | Agentを集める・つなげる・載せる最小構成。情報・Tool・コミュニティとEveへの導線も持つ | avoado.si/noah | Jennifer, Smith, Sky, smis（公開画面の旧名） |
 | **RockstarOS** | どのハードでも同じ実行基盤。端末名として表示してよい | — | Rockstar OS, Rock, rock, rocketstar（別物: docs/rocketstar-design は旧設計資料）, dev.rock（内部識別子として残す） |
 | **Pro** | AI専用PC（今は構造整理の対象外） | avocadopro.si | avocado Pro, avokadoPro |
 

@@ -1,6 +1,6 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
-2026-10-15確定方針: 商品入口は通信とsi利用権をまとめるeSIM bundle。accountは本人・仕事・成果・費用の正本、GrapheneOS派生OSは対応Pixel向け候補で、MiniのIoT LTEやProは別profile。料金率と実発行/課金/flashの未受入gateは維持する。[基盤設計](native-os-integration.md)の6層と32項目を優先する。
+2026-11-20本人確定方針: 主商品はmii。最小構成から始める商品はNoahで、まず本人MacでAgentの選択・接続・実行・成果受領・停止を完成させる。次に声でEveへ依頼し、空間表示を見たり触ったりして仕事を進めるmiiの体験へつなぐ。SIM/eSIMはOS導入の仕組み。既存料金と実発行/課金/flash/製造の未受入gateは維持する。
 
 2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はsi-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[siネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 
@@ -8,18 +8,18 @@
 
 ## 1. 製品価値と共通基盤の区分
 
-**目指す体験: accountからJenniferへ依頼し、Skyで能力を選び、Zemaで進捗・確認・成果・費用を追える。**
+**目指す体験: miiで声からEveへ依頼し、空間の表示を見て触りながら仕事を進める。最初の完成条件は本人Mac上のNoah。**
 
 SIM/eSIM購入claimを通信＋si利用権商品のaccount bindingへ再利用する。試用や既存OS client/browser経路は残し、回線の有無をOS権限と同一にしない。RockstarOS/Coreはidentity・capability・approval・job recoveryを担い、Skyが「どのAgent/Toolを使うか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用・itemized usage・確認済み資金」を扱う。LLMとAgentはcloud-firstで、端末内inferenceは対応端末の任意能力として追加する。job success、納品、売上、入金は別eventとし、仕事完了だけで収益を記帳しない。
 
 | 区分 | この設計での扱い |
 | --- | --- |
-| 利用者の確定指示 | 通信＋si利用権bundleを入口としたRockstarOS/Sky/Zema/cloud LLM/Agent service access、account正本、透明なusage料金、短いonboarding。実発行は未受入で、Miniの国内IoT LTEは別profile。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
+| 利用者の確定指示 | 主商品mii、最小構成Noah、本人MacでのAgent実行、SIM/eSIMはOS導入の仕組み。account正本と透明なusage料金。実発行は未受入で、Miniの国内IoT LTEは別profile。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
 | 具体化した設計案 | 最初の実用検証を一つの業務に集中し、同じ商品の実行・成果・状態確認・復旧を通す。配布と販売の入口を開発と同時に設計する |
-| 検証する仮説 | 初期利用者は文章・記事・提案を納品する個人事業主/クリエイター。候補商品は既存の引用整理。結果と状態を探す負担の削減が選ばれる理由になる |
+| 検証する仮説 | 最初の本人Mac試験から、どのAgent・仕事が継続的に使われるかを確認する。商用の初期顧客像・需要は未確定 |
 | 未実証 | 需要、継続率、支払意思、競争優位、市場規模、独占、世界初、利益、実機対応、本番金融。設計への記載を実証に換算しない |
 
-引用整理は最初の検証候補であり、OSを文章専用へ転換する決定ではない。PC・cloud・self-hostを一律に後回しにせず、選定商品に必要な実行先を接続する。
+初回検証は本人Macで対応済みAgentを選び、接続・実行・成果受領・停止まで通す。Noahの対応Agent全体、cloud・self-host・物理端末の範囲は、それぞれの実行契約と受入で追加する。
 
 ## 2. 8原則から設計への変換
 
@@ -35,6 +35,19 @@ SIM/eSIM購入claimを通信＋si利用権商品のaccount bindingへ再利用�
 | 創業チーム | 製品判断、OS、安全な資金接続、商品供給、利用者支援の責任を分ける | 役割の実名担当・決裁者・障害時の連絡先を決める。株式比率や雇用条件をsiが決定しない |
 
 ## 3. 最初の商品と一周の利用体験
+
+最初の実行対象は本人のMac。対応済みAgentと自作Node/Pythonを使い、Noahの「集める・つなげる・載せる」を通す。Eve全体・native OS・mii実機・全Agent対応を、Noahの最小受入の前提にしない。
+
+1. 同じNoahでAgentを見つけ、作者・固定版・実行条件を確認して本人の一覧へ追加する。
+2. 本人Macを承認して接続し、対象Agentの実行環境と必要な設定を確認する。
+3. 依頼と必要な権限・外部送信・費用上限を確認して明示実行する。Macの裏側で処理し、本人の画面操作を奪わない。
+4. 正常完了した成果を受け取り、同じ仕事から再表示する。開始・途中停止だけで成果受領合格にしない。
+5. 実行中停止と停止確認、切断・再送・再起動後の照合を行い、結果不明の依頼を自動再送しない。
+6. 最小受入後、既存の作者登録→独立審査→公開→別利用者・別Macの受入と、miiの声/Eve/空間表示の体験へ進む。各到達点の証拠を分ける。
+
+### 旧文章pilotの設計例（履歴・後続候補）
+
+以下は以前の文章pilotの設計であり、現在の最初の対象や着手順ではない。既存のrecipe、保存・復旧、費用の契約を再利用する場合の資料として保持する。
 
 最初の対象仮説は「文章を納品する個人事業主のうち、引用整理を反復し、複数の実行結果を手作業で探している人」。文書を扱う全員を対象市場としない。この問題が見つからなければ、既存商品の中から別の反復業務を選び直す。
 
@@ -53,7 +66,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 
 ### 調査を加えた戦略の具体化
 
-[横断調査設計](service-design/07-ecosystem-strategy-and-data.md)は、共通account/仕事/権限/費用/成果を維持し、Miniの建築設置・Proの重い計算・hostの実作用を別adapterで補う。建築・内装・音響専門家を先行利用者にするPR #130は調査時点で未統合の別版であり、本節の文章pilotを黙って置き換えない。比較は同一品質での操作時間、初回成果再表示、保存/復旧、実測費用と再利用で行い、39資料の追加やTool件数だけで優位性を宣言しない。
+[横断調査設計](service-design/07-ecosystem-strategy-and-data.md)は、共通account/仕事/権限/費用/成果を維持し、Miniの建築設置・Proの重い計算・hostの実作用を別adapterで補う。建築・内装・音響専門家を先行利用者にするPR #130は調査時点で未統合の別版であり、当時の文章pilotと比較する候補だった。現在の初回受入は上記の本人Mac上のNoah。比較は同一品質での操作時間、初回成果再表示、保存/復旧、実測費用と再利用で行い、39資料の追加やTool件数だけで優位性を宣言しない。
 
 ## 4. systemごとの責任と既存資産
 
@@ -72,7 +85,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 
 ## 5. 現在地と開発順
 
-現行順序は共通設計第9節のCore/応用別trackに従う。所有GL066での試験署名APKはLocal si、Sky/Zema、固定Tool、実再起動、非破壊backupを確認済み。full build/flash、production署名、鍵喪失復旧は未受入。直近はmodel互換/記憶/副作用分類/Sky能力交渉の契約を具体化し、原稿Toolと非金融Game/IP候補を同じ基盤で検証する。後続の収益ProviderとFundは独立gateとする。
+現行順序は、本人MacのNoahで選択・接続・実行・成果受領・停止を完成させ、次にmiiの声/Eve/空間表示の体験を受け入れる。共通Core・Pixel・QEMUの既存工程は独立して維持し、正式署名・全OS build・flash・復旧は対象ごとの証拠で判定する。収益ProviderとFundは独立gateのままとする。
 
 以下のSHA、D6、RLS01の表は**2026-09-09の設計時点の履歴**。現在の未完了taskや優先順位ではない。現在の進捗は[全体構成](system-composition.md)と進捗JSONを参照する。
 

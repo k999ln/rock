@@ -1376,9 +1376,9 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-11-19",
-  "milestone": "Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合",
-  "nextAction": "検証済みコードのGitHub/main状態はPR321を確認する。保存済み独自コードを端末runtime、共有/精算、mediaの順で現行契約と照合し、未受入を実装合格へ置き換えない。",
+  "updatedAt": "2026-11-20",
+  "milestone": "Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合",
+  "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -4621,7 +4621,7 @@
         "sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png",
         "sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png",
         "sites/avocado-mini/public/images/motion-tower-satin-four-point.png",
-        "sites/avocado-mini/public/images/avocado-mini-kit.png",
+        "public/rockstaros/avocado-mini-kit-p0.png",
         "sites/avocado-mini/public/images/avocado-mini-head-p0.png",
         "sites/avocado-mini/public/images/avocado-mini-base-p0.png",
         "docs/workstreams/05-web-pwa-sites.md",
@@ -12778,7 +12778,7 @@
   },
   "currentGitRefresh": {
     "status": "verified_source",
-    "updatedAt": "2026-11-19",
+    "updatedAt": "2026-11-20",
     "taskIds": [
       "G04",
       "DOC01"
@@ -12793,7 +12793,7 @@
     "backupVerifiedFiles": 2075,
     "candidate": "work/git-refresh-20261119/candidate",
     "githubSaved": true,
-    "next": "PRの同一SHA CIとmain受入を確認する。保全した独自コードはdomainごとにschema/API/機種条件を照合し、既存main機能を退行させず順次再受入する。",
+    "next": "PR325の最新CI/main状態を確認し、本人MacのNoahの成果受領まで閉じる。保全した旧sourceは現行契約との整合と必要性を確認して採用する。",
     "candidateBranch": "codex/latest-code-readme-20261119",
     "adoptedChanges": [
       "PR320 Noah/Eve route unification",
@@ -12810,11 +12810,16 @@
       "Agent share/outcomes and author settlement with legacy schema",
       "independent media editing candidates"
     ],
-    "sourceSha": "0211c1892d19ec2c484da4057ed73f33dcd1fd38",
+    "sourceSha": "4ebe83cd700d1fa8a0eda55e24104918da7658a9",
     "pullRequest": "https://github.com/k999ln/rock/pull/321",
     "mainIntegration": {
+      "merged": true,
+      "mergeSha": "37ef2bfd5217677fddb766d27e8828248f75c3e6",
       "authority": "https://github.com/k999ln/rock/pull/321",
-      "rule": "Read the current PR merged state and exact main-SHA checks; this source record does not predict merge completion."
+      "latestVerifiedMain": "697be21c3d81ee600162375110b2498028450c58",
+      "latestMainChecks": 6,
+      "latestMainChecksSuccessful": 6,
+      "initialMergeVerify": "browser fixtureのowner-bound source handoff待機がtimeout。後続mainでは同試験を含むverify成功。"
     },
     "preservedRuntime": {
       "branch": "codex/preserved-runtime-source-20261119",
@@ -12838,6 +12843,21 @@
       "independentReview": {
         "plannerAndResearch": "pass; 27 independent tests; inequality correction applied",
         "resaleAndRoleEntries": "pass; 24 independent tests; 26 JSON paths and 167 links exist"
+      },
+      "latestMainIntegration": {
+        "sourceSha": "4ebe83cd700d1fa8a0eda55e24104918da7658a9",
+        "mainBase": "aa533e1df550410e95c50903ffa705fdaec740ff",
+        "ciChecks": 8,
+        "ciSuccess": 8,
+        "verifyRun": "https://github.com/k999ln/rock/actions/runs/44566222805",
+        "nodeTests": 4426,
+        "passed": 4422,
+        "failed": 0,
+        "skipped": 4,
+        "independentTestsPassed": 71,
+        "genericActionsRejected": 16,
+        "initialLocalFailure": "merge作業中の変更path数がSPIDER上限超過。commit固定後の対象4試験は成功。上限の緩和なし。",
+        "localFullVerifyExitCode": 0
       }
     },
     "preservedSources": {
@@ -12857,6 +12877,48 @@
           "procedureDescription": 1
         }
       }
+    },
+    "latestMainIntegrated": "aa533e1df550410e95c50903ffa705fdaec740ff",
+    "readmeFollowup": {
+      "authority": "https://github.com/k999ln/rock/pull/325",
+      "scope": "mii主商品・Noah最小構成の明示方針同期、READMEの履歴整理、参照Noahの未保存3差分、非同期試験の完了待機",
+      "baseMain": "697be21c3d81ee600162375110b2498028450c58",
+      "focusedBaselineAndCodexTests": 12,
+      "focusedNoahAndDeviceTests": 26,
+      "typecheck": "pass",
+      "independentDirectionReview": "pass",
+      "independentDeviceReview": "pass",
+      "productionAcceptanceChanged": false,
+      "validation": {
+        "runtimeSourceSha": "ce0ffd69924e8bd1e61ebad3d3850738f94dd3dc",
+        "localFullVerifyExitCode": 0,
+        "nodeTests": 4433,
+        "passed": 4429,
+        "failed": 0,
+        "skipped": 4,
+        "verificationScope": "統合作業木の全verify。追補した差分は対象試験・型・設計/進捗検査でも確認。最終commit単位のCIはPR325を正本に確認。",
+        "exactCommitCiAuthority": "https://github.com/k999ln/rock/pull/325"
+      }
+    },
+    "referenceNoahDelta": {
+      "sourceThread": "codex://threads/01a19abe-44cd-7022-a582-02029247e935",
+      "baseSha": "697be21c3d81ee600162375110b2498028450c58",
+      "files": [
+        {
+          "path": "components/noah-launch.tsx",
+          "sha256": "e4ffcaea96d48ff7da045ceac279e6a85f0f075e839f03973b468350b7a2dc13"
+        },
+        {
+          "path": "components/rockstar-device-authorization.tsx",
+          "sha256": "bb33256473bc37a3950f073cd4ea05c13187b4811843f900a9ecda3b85b08222"
+        },
+        {
+          "path": "tests/rockstar-device-authorization-ui.test.mjs",
+          "sha256": "602c7ae37a5e96beab27a3f3591468c7908b6c24427b1b3c0e11e0055b9a3cf2"
+        }
+      ],
+      "scope": "承認済みコードの再送抑止・使用済みコードから実端末状態を再確認・接続/停止の受付案内",
+      "originalWorktreeModified": false
     }
   },
   "noahSelectResaleAgents": {
@@ -13055,5 +13117,63 @@
       ],
       "next": "Use demo; initialize private workspace; configure own official API and total/per-item budget; accept real sandbox lifecycle before production"
     }
+  },
+  "currentProductDirection": {
+    "decidedAt": "2026-11-20",
+    "decidedBy": "owner",
+    "source": "Current chat explicit answers; referenced Noah chat",
+    "referenceThread": "codex://threads/01a19abe-44cd-7022-a582-02029247e935",
+    "primaryProduct": "mii",
+    "minimumStartingProduct": "Noah",
+    "initialTarget": "owner_mac",
+    "firstAcceptance": [
+      "select_agent",
+      "connect_owner_mac",
+      "execute",
+      "receive_result",
+      "stop_running_execution"
+    ],
+    "nextMiiExperience": "speak_to_Eve_and_progress_work_by_seeing_and_touching_spatial_display",
+    "simEsimRole": "os_installation_system",
+    "noahScope": "collect_connect_publish; start with supported agents and owner Node/Python packages; keep broader agent support as remaining work",
+    "osRole": "shared_runtime_and_permission_identity_budget_storage_recovery_contracts",
+    "eveRole": "request_and_work_interface_then_voice_spatial_experience_on_mii",
+    "supersedes": [
+      "SIM/eSIM bundle as primary product",
+      "Noah as ultimate primary product",
+      "OS-first or Eve-automatic-completion as first product acceptance"
+    ],
+    "runtimeAcceptanceChanged": false,
+    "pricingChanged": false,
+    "deviceManufacturingApproved": false,
+    "liveIssuanceEnabled": false,
+    "autoFlashAllowed": false
+  },
+  "currentProductConsolidation": {
+    "task": "codex/tasks/73-current-product-consolidation.md",
+    "baseMain": "c4d7c2732d899ccabe23654a62f89f2704cbaa8c",
+    "scope": "Noah/Eveの共通通信・コード取得・現行説明の整理。固有機能と本人/招待/審査/停止条件を保持",
+    "focusedTests": 143,
+    "boundaryTests": 4,
+    "fullVerification": "pass",
+    "productionAcceptanceChanged": false,
+    "focusedGroups": {
+      "noahAndEve": 83,
+      "sharedBoundaryAndFollowup": 48,
+      "gitContext": 12
+    },
+    "verifyExitCode": 0,
+    "nodeTests": 4438,
+    "passed": 4434,
+    "failed": 0,
+    "skipped": 4,
+    "integrationAuthority": "https://github.com/k999ln/rock/pull/326",
+    "macPackage": {
+      "sha256": "7b1f66fd3e569179082e2dbe6e3760bed539510c013bccfe09b9be0ebcc11cd4",
+      "files": 129,
+      "bundleImport": "pass",
+      "freshMacAccepted": false
+    },
+    "gitFailureCleanup": "all parallel Git reads settle before failure returns; deterministic regression passes"
   }
 }

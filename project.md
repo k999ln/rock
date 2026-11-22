@@ -1,25 +1,22 @@
 # 現在の開発・統合状況
 
-更新日: 2026-11-19。製品要件は[product baseline](docs/product-baseline.md)、現在の名称は[名称正本](docs/structure/06-naming.md)。
+更新日: 2026-11-20。現在の優先順位は[構成正本](docs/structure/00-overview.md)、名称は[名称正本](docs/structure/06-naming.md)、要件の検査入力は[product baseline](docs/product-baseline.md)。
 
-## 現在の統合ソース
+## 今回の整理
 
-G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保存、main統合まで実施する。READMEは現在の製品説明・コード・利用方法・未完了だけを載せ、日付ごとの受領票はCHANGELOGへ分離する。
+[task73](codex/tasks/73-current-product-consolidation.md)でNoah/Eveの共通通信・コード取得・型検査と現行説明を整理済み。本人MacでAgent選択・接続・実行・成果受領・停止を完成させ、その後にmiiの声/Eve/空間操作へ進む優先順位を維持する。
 
-- 基点: GitHub main `1cb703d0fe81314b450d0bf315721c7b18c0c979`。
-- 最新のNoah/Eve画面統一、工程計画と会社受注計算、mii研究、AMCの有限実行、Noahリセール、役割定義を集約し、全verifyと独立検収が成功。
-- PR308のMATOU aliasはmainに既存のため再移植しない。
-- 旧作業木の2,082pathはGit外へ退避し、現存2,075fileをhash読戻し確認。main同一354pathと生成物/ローカル設定357pathを分離した。
-- Pixel/portable、Mini実装候補、Agent共有/作者精算などは現mainのschema/APIへ未再受入。旧コードを現在の保存処理へ上書きせず保全する。
-- 本番DB適用・公開更新・実売買・実課金・Pixel書込みはこのGit統合の実行に含まれない。
+- MacのAPI接続、私有/招待/公開版の取得容量照合、Eveの仕事の読み書きを共通化。本人・招待期限・審査・revision・停止の条件は保持する。
+- 設計の入口・名称・OS導入の説明を正本への参照へ揃える。公開Webのdevice sessionとlocalhostの認証を混ぜない。
+- 前回の整理は[PR325](https://github.com/k999ln/rock/pull/325)でmain `c4d7c273`へ統合し同一SHAのCI成功。保全原本と未移植の固有機能は[task72](codex/tasks/72-current-code-and-readme.md)を参照する。
 
 ## 検証と再開
 
-`0211c1892`で全verify成功。本体4,053件中4,049成功・失敗0・skip4、build/API/Web asset検査も成功。独立検収の指摘は修正・再検収済み。保存とmain統合の現在状態は[PR321](https://github.com/k999ln/rock/pull/321)、ソース検証と保全先は `data/project-status.json#currentGitRefresh` と[task71](codex/tasks/71-current-code-and-readme.md)を参照する。
+対象試験は先行83件・追補48件・Git後処理12件が成功。`npm run verify`はexit0、本体4,438件中4,434成功・失敗0・skip4、build/APIも成功。Mac配布ZIP生成とbundle読込みも確認。最終commitの同一SHA CIとmain統合状態は[PR326](https://github.com/k999ln/rock/pull/326)を正本に確認する。変更はGit整理と共通処理の保守であり、Noahの別Mac通し受入・mii実機・本番公開の完了とは区別する。
 
 ## 全taskの作業進捗
 <!-- project-status:start -->
-最終更新: 2026-11-19 / Eve・Noahの現行コードと未保存の独自実装を検証してGitHub mainへ統合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-11-20 / Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -271,7 +268,7 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) · [記録](scripts/amc-autonomy-store.mjs) · [記録](tests/amc-autonomy-store-read.test.mjs) · [記録](scripts/amc-parallel.mjs) · [記録](tests/amc-workspace-snapshot.test.mjs) · [記録](docs/evidence/spider-workspace-snapshot-read.json) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
-| WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](public/rockstaros/avocado-mini-kit-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とsiの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
@@ -436,5 +433,5 @@ G04 / DOC01 / ROCK。本人指示により最新コードの整理、GitHub保�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 検証済みコードのGitHub/main状態はPR321を確認する。保存済み独自コードを端末runtime、共有/精算、mediaの順で現行契約と照合し、未受入を実装合格へ置き換えない。
+次の作業: Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。
 <!-- project-status:end -->

@@ -53,11 +53,19 @@ export function skyToolPackageStore(db: Database) {
       const packageKey = skyToolPackageKey(manifest);
       const manifestSha256 = await skyToolPackageSha256(manifest);
       const createdAt = Date.now();
+      const artifact = manifest.source.artifact;
       const result = await db
         .prepare(
           `INSERT OR IGNORE INTO sky_tool_packages
           (package_key, tool_id, version, user_id, manifest, manifest_sha256, status, created_at, updated_at, published_at)
-          VALUES (?, ?, ?, ?, ?, ?, 'submitted', ?, ?, NULL)
+          SELECT ?, ?, ?, ?, ?, ?, 'submitted', ?, ?, NULL
+          WHERE NOT EXISTS (SELECT 1 FROM sky_tool_packages WHERE tool_id = ? AND user_id <> ?)
+          ${artifact ? `AND EXISTS (SELECT 1 FROM noah_agent_uploads WHERE id=? AND owner_id=? AND deleted_at IS NULL
+            AND upload_state='ready' AND manifest_sha256=? AND source_sha256=? AND source_name=? AND source_bytes=?
+            AND COALESCE(original_sha256,source_sha256)=?
+            ${artifact.runtime ? `AND json_valid(manifest)
+              AND json_extract(manifest,'$.runtime.schema')=? AND json_extract(manifest,'$.runtime.language')=?
+              AND json_extract(manifest,'$.runtime.entrypoint')=? AND json_extract(manifest,'$.runtime.model')=?` : ''})` : ''}
           RETURNING package_key`,
         )
         .bind(
@@ -69,6 +77,10 @@ export function skyToolPackageStore(db: Database) {
           manifestSha256,
           createdAt,
           createdAt,
+          manifest.id,
+          userId,
+          ...(artifact ? [artifact.uploadId, userId, artifact.uploadManifestSha256, artifact.sha256, artifact.name, artifact.bytes, artifact.originalSha256] : []),
+          ...(artifact?.runtime ? [artifact.runtime.schema, artifact.runtime.language, artifact.runtime.entrypoint, artifact.runtime.model] : []),
         )
         .all();
       return result.results.length
@@ -82,6 +94,25 @@ export function skyToolPackageStore(db: Database) {
             publishedAt: null,
           }
         : null;
+    },
+
+    async getOwner(userId: string, packageKey: string): Promise<StoredSkyToolPackage | null> {
+      const row = await db.prepare(`SELECT package_key AS packageKey, manifest, manifest_sha256 AS manifestSha256,
+        status, created_at AS createdAt, published_at AS publishedAt,
+        EXISTS (SELECT 1 FROM sky_tool_package_reviews r WHERE r.package_key=sky_tool_packages.package_key
+          AND r.manifest_sha256=sky_tool_packages.manifest_sha256 AND r.decision='verified'
+          AND (r.expires_at IS NULL OR r.expires_at>?)) AS reviewValid
+        FROM sky_tool_packages WHERE package_key=? AND user_id=?`).bind(Date.now(), packageKey, userId)
+        .first<{ packageKey: string; manifest: string; manifestSha256: string; status: SkyToolPackageStatus; createdAt: number; publishedAt: number | null; reviewValid: number }>();
+      return row ? stored(row) : null;
+    },
+
+    async withdraw(userId: string, packageKey: string, expectedSha256: string, expectedStatus: SkyToolPackageStatus): Promise<boolean> {
+      // Compare the displayed status as well as the immutable version. A concurrent review must be re-read.
+      const result = await db.prepare(`UPDATE sky_tool_packages SET status='revoked',updated_at=?
+        WHERE user_id=? AND package_key=? AND manifest_sha256=? AND status=? AND status<>'revoked' RETURNING package_key`)
+        .bind(Date.now(),userId,packageKey,expectedSha256,expectedStatus).all();
+      return result.results.length === 1;
     },
 
     async listOwner(userId: string): Promise<StoredSkyToolPackage[]> {

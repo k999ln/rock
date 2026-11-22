@@ -237,6 +237,28 @@ await test('the canonical main Site uses its live-D1 additive lineage without lo
     '0030_sky_agent_settings.sql',
     '0031_owner_workspace_schema_recovery.sql',
     '0032_eve_runtime_presence.sql',
+    '0033_noah_agent_uploads.sql',
+    '0034_noah_upload_refactor.sql',
+    '0035_noah_agent_drafts.sql',
+    '0036_noah_feed_preferences.sql',
+    '0037_noah_agent_invites.sql',
+    '0038_noah_instances.sql',
+    '0039_noah_invite_execution.sql',
+    '0040_noah_draft_storage.sql',
+    '0041_noah_discovery.sql',
+    '0042_noah_recommendations.sql',
+    '0043_noah_runner.sql',
+    '0044_noah_intake.sql',
+    '0045_noah_result_data.sql',
+    '0046_noah_feedback.sql',
+    '0047_noah_connections.sql',
+    '0048_noah_asks.sql',
+    '0049_noah_connections_connecting.sql',
+    '0050_noah_shelf.sql',
+    '0051_noah_trial.sql',
+    '0052_noah_shelf_evidence.sql',
+    '0053_noah_package_connections.sql',
+    '0054_noah_boards.sql',
   ]);
   const sqlite = new DatabaseSync(':memory:');
   const split = (sql) => sql
@@ -542,8 +564,17 @@ await test('fresh and current production D1 databases converge without losing re
   assert.ok(await db.prepare(
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'remote_ai_text_send_claims'",
   ).first());
+  // Verify every added Noah table/index through the real D1 migrator, not only
+  // its journal watermark. Each prepared statement must reach the database.
+  for (const name of readdirSync(mainFolder).filter(n => /^00\d+_noah.*\.sql$/.test(n))) {
+    const sql = readMain(name);
+    assert.doesNotMatch(sql, /\b(?:INSERT|UPDATE|DELETE|DROP)\b/i);
+    for (const match of sql.matchAll(/CREATE (?:UNIQUE )?(TABLE|INDEX)(?: IF NOT EXISTS)? ([a-z_]+)/g)) {
+      assert.ok(await db.prepare('SELECT 1 FROM sqlite_master WHERE type=? AND name=?').bind(match[1].toLowerCase(), match[2]).first(), match[2]);
+    }
+  }
   assert.equal(Number((await db.prepare(
     'SELECT created_at FROM __drizzle_migrations ORDER BY created_at DESC LIMIT 1',
-  ).first()).created_at), 4102444800004);
+  ).first()).created_at), 4102444800026);
   assert.equal(JSON.parse(readFileSync(mainFolder+'meta/_journal.json', 'utf8')).entries.find(e=>e.tag==='0031_owner_workspace_schema_recovery').when,4102444800003);
 });

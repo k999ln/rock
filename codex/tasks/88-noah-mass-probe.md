@@ -1,0 +1,49 @@
+# 88 大量の接続試験と見回り（見本まで確かめる・印を保つ・つながると確かめた数）
+
+仕様: **[docs/noah/spec-88-mass-probe.md](../../docs/noah/spec-88-mass-probe.md)**。型と参照実装: docs/contracts/noah-intake-v1.ts の `noahSampleCalls`・`nextNoahCheck`。先に 86・87。
+
+## ローンチまで（先に、この範囲だけを出す。[ローンチの最小限](../../docs/noah/mvp-launch.md) の L7）
+
+仕様書の **9 章** だけを見て作る。完了の定義も、その章にある。
+
+- 先に要る PR: L6（87 のローンチ分）
+- やる: 下の「やること」の 2（本人の実行で「動いた」。9.2）、3（失敗の扱いは 9.3: 1 回目は 6 時間後に確かめ直し、2 回続けたら外す）、6（礼儀・取り下げ）
+- やる: 後始末（9.5）、並びの引き直し、量産を握手の対象から外す（9.7）、つながると確かめた数（9.6）
+- やらない（出した後）: 1（`probeL2`・`noahSampleCalls`。Noah が自動で道具を呼ぶ見本。本人が決めるまで作らない）
+- やらない（出した後）: 4（定義が変わった時に、接続を止めて聞き直す作り。ローンチでは 9.4 のとおり、止めない）
+- やらない（出した後）: 5 のうち、公開の頁の検索向けの項目
+
+## やること（全部。ローンチの後に、残りをやる）
+
+1. lib/noah-probe.ts: `probeL2(candidate, handshake)`。条件 4 つ（鍵なし・全部が読み取りだけ・定義から埋まる入力がある・その接続の続き）を全部満たす時だけ、候補を上から最大 3 つ呼び、最初に成功した物を見本にする（仕様書 4.1）。flag `NOAH_PROBE_L2` が閉じている間は呼ばない。
+2. lib/noah-ask.ts: 依頼が成功で終わった時、その系列を L2 にする（道具の定義が同じ時だけ。見本も本人の ID も書かない。4.2）。
+3. 見回り: `nextNoahCheck` の間隔。2 回続けて応答しなければ印を外し、最初の失敗から 30 日で隠す。握手が通れば戻す（4.3）。
+4. 道具の定義が変わった時: checks を L1 に戻し、つないでいる接続を `needs_action` にして聞き直す。確かめるまで新しい依頼は 409（4.4）。
+5. 見せる: タイムラインは L2 が 7 日以内の系列だけ。検索は L1 以下も出して「まだ誰も動かしていない」。系列ごとの公開のページ。運営の画面に「つながると確かめた数」（仕様書 5 章の問い合わせ）。
+6. 礼儀: 名乗り、同じ host へ 1 時間に 1 回、429 を守る、寝ている Space へ接続しない、取り下げ（4.5）。app/noah/help に見回りの説明。
+
+## 決めてある事（変えない）
+
+- 読み取りだけと宣言されていない道具を、自動で呼ばない。鍵や許可の要る接続先を、自動で呼ばない。入力の文字列を Noah が作らない。
+- 巡回は読むだけ。作者の版と説明を書き換えない。道具の定義の本文・依頼・成果（見本の先頭 500 文字を除く）を保存しない。
+
+## 合格条件
+
+- `node --experimental-strip-types --test tests/noah-probe-l2.test.mjs tests/noah-intake-store.test.mjs`（仕様書 6 章の 13 行）。
+- 手元で flag を開け、鍵なしで握手が通った 50 件を回して、L2 が付いた数と、付かなかった理由を PR 本文に書く（標本では、握手が通った物の 36% が自動で確かめられる）。
+- 同じ host への握手が 1 時間に 1 回を越えない。接続先を止めると、2 回目の見回りでタイムラインから消え、戻すと戻る。
+- `npm run typecheck`、`npm run lint:product`。
+
+## 開発進捗
+
+- 2026-11-21 04:05 JST: **L7（見回りを保つ。仕様書 9 章）は Claude が作業中。** 枝は `claude/noah-patrol-l7-20261121`（L6 の枝 `claude/noah-ask-l6-20261121` = [PR #344](https://github.com/k999ln/rock/pull/344) の上）。同じ範囲を、別の枝で作り始めない。
+- L7 で入れる物（9 章のうち、まだ入っていない物）: 後始末（9.5。`lease_until` を過ぎた `running` の依頼を `unknown` に・60 秒たった `queued` を `failed` に・30 秒たった途中の接続を切る。巡回の合図の終わりに、それぞれ 50 件まで。相手へは送らない）、つながると確かめた数（9.6。運営の画面）、`tests/noah-patrol.test.mjs`（9.9 のうち、まだ試験の無い行）、手元の D1 での受入（9.10）。
+- すでに入っている物（作り直さない）: 本人の実行で「動いた」を付ける（9.2 = L6 の `lib/noah-ask.ts`）、握手の失敗の扱い（9.3 = L4 の `lib/noah-probe.ts`）、道具の定義が変わった時（9.4 = L4）、並びの引き直し・取り下げと戻し（L3）、量産を握手の対象から外す（9.7 = L4）。
+- 入れない物: `probeL2`・`noahSampleCalls`（Noah が自動で道具を呼ぶ見本）。本番への migration・配備・切り替え。
+- 2026-11-21 04:50 JST: **L7 を入れた**（[PR #345](https://github.com/k999ln/rock/pull/345)。未マージ）。
+  - 入れた物: 後始末 `lib/noah-sweep.ts`（巡回の合図 `lib/noah-intake-api.ts` の終わりに呼ぶ）、道具を呼ぶ直前の「相手へ送る」の印と、実行の場が無くなった依頼をその場で止める「止める」（`lib/noah-ask.ts`・`lib/noah-ask-store.ts`）、画面の出口（`lib/noah-ask-view.ts`・`components/noah-connect-button.tsx`）、つながると確かめた数（`lib/noah-intake-store.ts`・`components/noah-intake-review.tsx`）、索引を足す migration `0049_noah_connections_connecting`（`drizzle/`・`drizzle-main/`・`db/schema.ts`・型契約）。
+  - 決めた事と理由・受入の結果・手元の実物での確かめは、[仕様書 88](../../docs/noah/spec-88-mass-probe.md) の 9.5・9.11。
+  - 確かめ方: `node --experimental-strip-types --test tests/noah-patrol.test.mjs tests/noah-intake-store.test.mjs tests/noah-ask.test.mjs tests/noah-probe.test.mjs`。`node --experimental-strip-types scripts/check-noah-patrol.mjs`（手元の D1。外へは通信しない）。`python3 docs/design-validation/noah/validate-noah-v1.py`、`npm run typecheck`、`npm run lint:product`、`npm run database:check`、`npm run release:check`。
+  - 完了の定義（9.10）の 4 つは、通した。手元の実物で通していない物: 相手へ送った後に落ちた依頼（「結果不明」になる方。受入の script と試験で通した）。運営の画面そのもの（手元では、審査の API が 503 を返して開けない。数の API と、画面の部品の試験で確かめた）。
+  - 残り: 運営の画面の、残りの数（97 の 6 章 = L8）。依頼の成果を「成果データ」「実行中」に出す所（87 の 11.8）。
+  - 本番への migration・配備・切り替えは行っていない。

@@ -2,15 +2,228 @@
 
 このファイルは「何日に何を変えたか」を残す場所です。製品の説明はREADME.md、仕組みの説明はdocs/structure/ にあります。Codexは日常作業でこのファイルを読む必要はありません（読むのは「以前どう変えたか」を調べる時だけ）。
 
-書き方: 新しい日付を上に足す。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
+書き方: 新しい日付を、この説明のすぐ下（最初の `## 日付` の上）に足す。ファイルの1行目には足さない。1件1〜3行。PR番号・main SHA・証拠へのリンクはここに残す。
 
-## 2026-11-19 — 名前の整理（Fable / Noelle）
+## 2026-11-22 — 名前の整理（Opus / Noelle）
 
-- 廃止した名前 Sky を、仕事の一周と収益ループの文書・タスクから外した（docs/work-loop.md、docs/earn-loop-parity.md へ改名）。[名前の正本](docs/structure/06-naming.md)に Sky の廃止を明記。この CHANGELOG で題名より上に入っていた 11-18・11-19 の記録を題名の下へ移した。
+- 廃止した名前 Sky を、仕事の一周と収益ループの文書・タスクから外した（docs/work-loop.md、docs/earn-loop-parity.md、codex/tasks/33-recipe-planner-wiring.md へ改名）。[名前の正本](docs/structure/06-naming.md)に Sky の廃止を明記。題名より上に入っていた 11-19〜11-22 の記録を題名の下へ移し、AGENTS.md の追記位置の書き方を直した（[PR #323](https://github.com/k999ln/rock/pull/323)）。
+
+## 2026-11-22
+
+- Noahの稼ぎ方の設計図に推し活を足した（task122、Opus / Noelle。本人指示「推し活向けのイベント予約とかグッズかう代行自動ボットもいれて」）。推し活の手伝いはNoahのエージェント1つ（公式の告知を見張る・予定に入れる・知らせる・遠征を探す・家計簿。申込と支払いは本人が押す。値段はNoahの料金に従う）として定義し、会社の稼ぎ方は海外向けの購入代行（後回し。人の速さ・数量制限の内・チケットは扱わない・古物の要否は本人が確かめる）、予定まとめ、遠征の紹介、絵柄なしの用品の物販の37件（合計470件）。抽選・先着への自動申込、転売、買い占め、複数アカウント、待機列の回避、版権グッズは作らない（理由と出典付き）。仕様 `docs/noah/spec-122-business-blueprints.md` の11章、試験1本追加。
+- Noahの登録先429に対する待機時刻表示・本人別の再送防止と、本番100ブラウザの限定検査スクリプトを追加。公開199/mainのUIを保全して全体verify成功、公開とPixelの新規登録一周は受入中（task100、[PR #400](https://github.com/k999ln/rock/pull/400)）。
+
+- 第198版で公開したホーム・検索・Agentの操作画面・Hugging Face再表示の変更をGitHub mainに取り込み、ココナラの入口を保全（[PR #399](https://github.com/k999ln/rock/pull/399)）。
+
+- avoado.siの公開元をGitHub mainに統一し、Macと本番のGitツリーを照合する手順をAGENTS.mdに追加。公開版のAgent共有に関する記録を取り込んだ（[PR #398](https://github.com/k999ln/rock/pull/398)）。
+
+- 公開Agent詳細に個別共有・URLコピー・X投稿リンク、公開条件を確認する個別OG/Twitter情報とPNG生成を追加（Sites公開ソース、専用PRなし）。
+- Noahの公開入口 `/`・`/noah` にOpen Graph・X大型画像カードと公開PNGを追加（Sites公開ソース、専用PRなし）。
+
+- Noah公開195・196を保全して接続位置・用途名を統合し、検索先詳細の操作名が縦に崩れるCSS競合を公開197で修正。全体verify・3幅ブラウザ試験・Pixelの検索→接続→新規成果10件→再読み込みを確認（task100、[PR #394](https://github.com/k999ln/rock/pull/394)）。
+
+- Noahの稼ぎ方の設計図の1段目（task122。Opus / Noelle。本人指示「アフィに登録して案件選んで動画作ってSNS運用させてLPつくって…すべての商売の手段として自動化したい」）。分類表から433件（紹介250・受注48・デジタル商品90・広告収益24・物販16・アプリ5）の設計図を作り、登録から入金の確認までの工程を自動・押すだけ・本人・本人が確かめるに分けて理由を付け、確かめたエージェントだけを工程に当てて並べる。アカウントを作る順、Eveが作る能力の一覧、稼いだ分だけの予算、14日・10件で続けるか止めるかの式。`scripts/noah-business-plan.mjs` で公開の一覧172件・集めた紹介1,000件から計画を書き出す（確かめたエージェントは0、Eveが作る能力20）。試験7本（`tests/noah-business.test.mjs`）。仕様 `docs/noah/spec-122-business-blueprints.md`。[PR #391](https://github.com/k999ln/rock/pull/391)。
+
+- Noahにココナラの返信・応募・正式納品を追加。本人のMacで専用Chromeの画面非占有と、タブを閉じた後の納品照合を確認した（[PR #393](https://github.com/k999ln/rock/pull/393)）。
+
+- Noahの収集カード・外部評価を内部詳細へ統一し、確認済み接続と公開Spaceの利用画面をNoah内へ結線。未対応・API専用・埋込拒否は理由付きで取込設定へ案内。初期ロード表示も調整（PR #390）。
+
+- Noahのロード画面をカード型プレースホルダーと小さなロゴに変更し公開191へ反映。スマホの読み込み・動きを減らす設定・外部評価の実数照合をブラウザ試験へ追加（task120、[PR #390](https://github.com/k999ln/rock/pull/390)）。
+
+- Noahで長い一覧の成果（131,072 bytesで切れたJSON）が画面に1件も並ばなかった不具合を修正。最後まで届いた項目だけを一覧で出し、「成果の一部を表示しています」を1回にした。本番のTipline（一覧413件）で接続→頼む→成功を実測し、届いていた326件を取り出せることを確認（spec-87、[PR #395](https://github.com/k999ln/rock/pull/395)）。
+- Noah公開192の接続ロゴ・成功音/振動と個別設定を最新mainへ受入。全体verify成功、Pixelで検索→接続→新規成果10件→再表示を実測し、再生音と振動完了を記録（task100、[PR #392](https://github.com/k999ln/rock/pull/392)）。
+- NoahのSPIDER履歴検知を、公開の振動設定名と秘密値拒否テストの2組に限定して分類。固定版ポリシー・別値/別パスの検出20試験と全履歴0候補を確認し、公開190のホーム整理・191の読み込み表示とmainのモバイル修正を保持して統合（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+- Noahの購入履歴からeSIM設定を再開し、端末利用権の確認後にAgent一覧へ進める案内と、契約ごとの確定使用料・予約額の明細を追加した（task 11・94、[PR #389](https://github.com/k999ln/rock/pull/389)）。
+- Noah検索修正後のWeb security実測/input hash不一致を再実測で解消し、全体verify成功（主要4,922成功・4skip、API1,918、CSV385）。追加収集元・並び替え・外部評価を共通カードへ統合（task120、[PR #388](https://github.com/k999ln/rock/pull/388)）。
+- Noahを実Chromeのスマホ表示で確認し、収集Agentが見つからないホーム検索と小さいタップ範囲を修正。再実行用ブラウザ試験を追加（task120、[PR #388](https://github.com/k999ln/rock/pull/388)）。
+- Noahのカードと掲載Agent詳細から利用人数・王冠・コメント列を外し、元サイト評価へ一本化。公開186・390px/590pxを確認。全体verifyは別の共有機能の既存lintで停止（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
+- Noahの評価元で付いたGitHubスター/Hugging Faceいいね等をカードに常時表示。元APIの実数と公開184の表示・390pxレイアウトを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
+- Noahの既存Agentと収集Agentを共通カード・王冠/コメントへ統合し公開182へ反映。390px/590pxの表示、絞り込み間の評価引継ぎと取り消しを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
+- Noah公開189の最新UI/機能を保持してGitへ統合。GitHub全体verifyは4,931成功・4skip・0失敗、公開側も4,907成功。390/1280pxと主要導線を確認し、SPIDERの履歴検知8件は別残件として記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noahの最新公開188にある共有カード・組み合わせ・法人入口・モバイル表示・出典付き調査候補をGitへ統合。mainの配給/eSIM実装と実機受入記録を保持し、共有部品のlintと画面試験を修正（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noah: Pixel実機で会員登録なしの外部登録→認証付きAgent実行→成果保存/再表示と、本番100ブラウザ・400要求の所有者分離を確認。100人向け配布文を現行導線へ訂正し、eSIM・専用クラウド候補の費用/未送信質問票を記録（task100、docs/noah、docs/esim、PR #377）。
+
+- Pixel 10の画面保持・消灯後30分の自動ロック猶予を設定し、公開Noahを会員登録なしで接続→依頼→成果5件受取→保存から再表示まで実機確認（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+
+
+- Noahの専用回線に配送先登録を追加。運営Dockで入荷・定期配給・運営負担額を記録し、本人向け通知から受取までを模擬環境で照合した。Dockは台帳の復旧後にエラー表示を解消し、外部Agentの空の成功応答・不正な完了フラグは同じ仕事番号で要確認にする（[PR #387](https://github.com/k999ln/rock/pull/387)）。
+- Noahの集める場所を増やした（task121。Opus / Noelle。本人指示「twitterとかredditとか、github repoとか他に考えられる場所探して、常に新しく使いやすいものが上に」）。Hacker News・GitHubのMCPの新着・Hugging FaceのMCP Space・npm・DockerのMCP一覧・awesome一覧・Smithery（鍵がある時）を5分ごとの収集に追加し、CodexがX・Reddit・Blueskyで読んだリンクを受け取る口（`scripts/noah-collector-social.mjs`）を用意。「新しく見つかったAgent」を新しく使いやすい順（学習・乱数なし）に並べ、動かし方（スマホで今すぐ・ブラウザ・Mac・鍵）を表示。握手の済んだ系列を収集機が1日400系列まで一覧へ自動で入れる（署名付き・変わった物だけ）。グリッドのお試しは新しく握手が通った順。試験10本（`tests/noah-collection-sources.test.mjs`）。[PR #385](https://github.com/k999ln/rock/pull/385)。本番の配備はCodex。
+- Noahの収集欄をUX操作試験し、全件表示での検索条件引継ぎ・条件クリア・通信失敗時の再試行を修正（task120、[PR #384](https://github.com/k999ln/rock/pull/384)）。
+- 農家検索を削除し、運営Dockで指定した配給を本人の模擬専用回線で受領する流れに変更。朝9時までの[英語の開発プロンプト](docs/prompts/noah-esim-free-device-trial-20261122.md)を並行開発と照合し、入荷・在庫割当・定期配給の合格条件を記載。eSIM用クラウド入口、Agent別の実行先選択、画面を閉じた後の結果照会と成果内訳を追加（[PR #382](https://github.com/k999ln/rock/pull/382)）。
+
+- Noah公開トップにAgent収集・外部評価を表示し、公開版177へ反映。Mac常駐を停止し、クラウド2回の継続収集・掲載更新を確認。5分ごとのActions定期実行を有効化（[PR #380](https://github.com/k999ln/rock/pull/380)、task120。Xはキー待ち）。
+
+- Noahの継続Agent収集・出典別カード・外部評価同期を公開版171へ反映し、運営Macの常駐収集から署名付き自動掲載を確認。XはAPIキー待ち（task120、[PR #380](https://github.com/k999ln/rock/pull/380)）。
+- 配給担当者が地域・品目から全国の生産者を探し、6農園の公式窓口を開いて運営予算での買取を直接相談できるMac用ツールを追加（[PR #381](https://github.com/k999ln/rock/pull/381)）。
+
+- Noahの0円申込・模擬専用回線・食料と日用品の案内をローカルWorkersで接続し、停止、成果受取、0円の使用記録を検証する試験を追加（PR #378）。
+
+- Noah のホームをピンタレスト風にした（task 115。Opus / Noelle。本人指示「Noahもっとピンタレストっぽく。redditとかgithubでUIとアルゴリズム取ってきて」と回答）。今動かせる Agent のグリッド（Gestalt の Masonry の決まりを書き写した・2〜6 列・分野の色の面と頭文字）、ボードへ保存（公開も選べる・フォロー）、「表示しない」、詳細の「これも使われています」、上の帯の検索とメニュー。並びは学習なし・乱数なし（X の For You の作りの形・Reddit の hot・Pinterest の Pixie を決まった値で。票 = 保存した人 + 2 × 成果が返った人 − 5 × 表示しない人）。表 6 つ（migration 0054）、`GET /api/noah/pins`・`GET`/`POST /api/noah/boards`。一般公開までは審査者だけ（一般の人は今のタイムライン）。試験 9 本（`tests/noah-pins.test.mjs`）。[PR #375](https://github.com/k999ln/rock/pull/375)。設計は `docs/noah/spec-115-pin-grid.md`、決定は docs/structure/07 の 2026-11-22。本番の migration・配備はしていない。
+
+- Noahの画面統合後に全体verify成功（4,856 pass・4 skip）、公開導線12項目を確認。旧URLの正規転送とブラウザ保存権限を検査スクリプトへ反映（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noah会員登録不要化を公開179へ反映。178の画面整理を保持し、公開APIで接続→依頼→成果再表示と別所有者404を実測。Pixel一周は端末解除待ち（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- NoahのREADMEから旧eSIM必須の開始説明を更新。収集・法人入口を保った画面分岐テストの部品境界を補い、4件成功を確認（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noahの登録なし自動開始とブラウザ専用保存権限を実装。既存データと管理権限を分離し、接続→成果再表示をAPI試験。公開・実機一周は検証中（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noahの会員制廃止を最新仕様へ記録し実装着手。ADBでPixel操作を復旧、公開175の接続/保存修正を統合。新方式の公開・実機一周は未完了（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noah実機検証の復旧状況を更新。操作ツール未提供とPixelのWi-Fi切断を確認し、設定確認・現在の接続先を依頼（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noahの実機検証を更新：本人のPixel画面オープン報告とWi-Fi/点灯を確認。現在はMac側画面操作ツールの障害で未完了と記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+- Noahの検索入口を /noah/explore、保存を /noah/saved に統合し、Mac・コミュニティ系11ページを撤去。公開178で旧URL転送9件と390px表示を確認。保存APIとデータ、収集・法人入口は保全（PR #377）。
+
+- NoahのAgent詳細で接続と保存の間隔を16px確保し、保存を白地の補助ボタンに変更。公開175へ反映し320/390/1280pxで重なりなし、全体verify成功（PR #377）。
+
+- Noah一周検査の4件と選択肢翻訳を公開173へ反映。登録済み/画像未受取/検索から成果保持/ホームと投稿一覧を公開ブラウザで確認。全体verify成功（4,844 pass・4 skip、API1,918、CSV385）。実機Androidの独立確認は別途継続（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noah公開172の4件修正を受入ブランチへ統合・pushし、171収集機能の保全と関連31試験/公開9項目を確認。実機一周は画面ロック解除待ちとして記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noahの一周検査4件を修正：登録済み接続の再利用、画像未受取の明示、6言語の操作名、ホーム/タイムライン分離。公開172へ反映、選択肢の訳語追補と最終検証を継続中（PR #377）。
+
+- Noah公開170の透過faviconの独立確認を受領し、一周検査165/166と公開170の確認範囲を分離。ホーム/タイムラインの同一表示は仕様照合待ちとして記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noahの透過タブロゴを公開170へ反映。公開169のピン表示と167のeSIM対応を保持し、公開HTML・SVG実体一致・9項目を確認（[PR #377](https://github.com/k999ln/rock/pull/377)、元変更 PR #376）。
+
+- Noah公開167で利用開始を接続確認へ変更し、専用新規登録を撤去。明示されたNoah権限で同じ本人の登録情報・仕事・成果を使うAPIを追加。公開eSIM設定と実機での本人連携は未完了。成果カード・画像保存は公開165へ反映。最終verify 4,829成功・4skip、公開390pxと元成果への復帰を確認（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+
+- Noah公開版163/164でWorkersの外部登録・認証付き実行を修正し、実登録1件→成果保存と本人の実スマホでの成果表示を確認。失敗の再入力/履歴保持、匿名タイムライン、100人の合成分離試験を追加。全体verify 4,811成功・4skip。100人の段階試用手順を記録（[PR #377](https://github.com/k999ln/rock/pull/377)）。
+- Noah のホームをピンタレスト風にした（task 115。Opus / Noelle。本人指示「Noahもっとピンタレストっぽく。redditとかgithubでUIとアルゴリズム取ってきて」と回答）。今動かせる Agent のグリッド（Gestalt の Masonry の決まりを書き写した・2〜6 列・分野の色の面と頭文字）、ボードへ保存（公開も選べる・フォロー）、「表示しない」、詳細の「これも使われています」、上の帯の検索とメニュー。並びは学習なし・乱数なし（X の For You の作りの形・Reddit の hot・Pinterest の Pixie を決まった値で。票 = 保存した人 + 2 × 成果が返った人 − 5 × 表示しない人）。表 6 つ（migration 0054）、`GET /api/noah/pins`・`GET`/`POST /api/noah/boards`。一般公開までは審査者だけ（一般の人は今のタイムライン）。試験 9 本（`tests/noah-pins.test.mjs`）。設計は `docs/noah/spec-115-pin-grid.md`、決定は docs/structure/07 の 2026-11-22。本番の migration・配備はしていない。
+
+- NoahにCowAgentのMac準備ガイド（18秒の操作動画・日本語字幕）と公開3ページのサイトマップを追加し、カタログ・README・YouTube投稿用の導線をつないだ。配備・投稿前（task 71、[PR #369](https://github.com/k999ln/rock/pull/369)）。
+
+- Noahのタブアイコンを白背景PNGから元画像を保持した透過ロゴSVGへ統一（app/noah/layout.tsx、PR #376）。
+
+- Noahの成果を要点・一覧カード・画像プレビューへ整理し、受信画像のWork保持と実画像ファイルの保存を追加（lib/noah-result-*・components/noah-result-content、PR #376）。全体verify・画像保存のbyte一致検証に成功。
+
+- Noahの主要12画面を指定の4タブ/2列デザインへ統一し、登録の保存再利用同意、ロゴ読み込み、振動設定、6言語UIとRTLを統合（app/noah・components/noah-*、[PR #376](https://github.com/k999ln/rock/pull/376)）。全体verify成功、公開反映は未実施。
+
+- Noahの公式API登録・本人別の暗号化キー保管・自作の分離ブラウザとスマホ本人確認を公開版161へ反映。全体verify 4,790成功・4skip、クラウドChromiumの合成手順とスマホ確認画面を検証。Dock入口は公開Noahへ修正。実サービスのブラウザ手順と100人向け容量は未受入（[PR #373](https://github.com/k999ln/rock/pull/373)）。
+
+- Noahを新しい投稿/Agentカードと登録情報の暗号化保存・再利用・操作ごとの委任に更新し、公開版159へ反映。保存/停止と公開Agentの実依頼・成果受取を確認、全体verify成功。外部登録executorは未接続（[PR #371](https://github.com/k999ln/rock/pull/371)）。
+
+- Noahの読み込みを花形ロゴに統一し、タップ・選択・接続成功の短い振動、保存されるOFF設定、動きを減らす表示を追加（task100、[PR #371](https://github.com/k999ln/rock/pull/371)へ統合）。
+
+- Noah公開版156でログイン後の選択保持・登録状態の再確認・進捗/成果への導線を反映。本人承認の掲載担当を設定し172件を取り込み、公開環境のスマホ幅で読み取り専用1件の接続→成果受領→切断後の保持を確認。全体verify 4,759成功・4skip（[PR #358](https://github.com/k999ln/rock/pull/358)）。
+
+## 2026-11-21
+
+- Noah の取り込みの結果を、本番の書き込みを抑えて入れられるようにした（Opus / Noelle。本人指示「全部やって今つかえる状態にして」）。入れる処理は、変わっていない候補・握手の行・系列を書かない（同じファイルや、1 時間後に握手し直しただけのファイルを入れ直しても 0 行）。1 回ごとに書いた行の数（D1 は索引を含む）を返し、運営の画面に合計を出す。手元の書き出しに `--limit`（数を絞る）と `--first`（棚のカードが使う系列を先に）を足した。本番の D1 の日ごとの上限が確かめられていないので、最初は 2,000 系列（約 2.6 万行）から入れる。新しい系列 1 つで約 13 行（索引を含む。以前の「約 3 行」を直した）。試験 1 本を足し、1 本を広げた（`tests/noah-intake-import.test.mjs`）。`docs/noah/spec-97-launch-ops.md` の 12 章。
+
+- Noah の棚の最初のカード 17 枚（下書き）を用意した（Opus / Noelle。本人の回答「選んで用意して」）。`data/noah-shelf-first-cards.json`（稼ぐ・仕事を省く 7・教育 4・暮らし 6。健康は除く）。手元の巡回が一覧に載せた系列から選び、どれも相手のサーバーの道具 1 つで終わり、道具を 1 回ずつ実際に呼んで成果が返る事と、入力欄にできる事を確かめた（仕訳・インボイス番号・広告文の点検・自動化の仕様書・Web 調査・求人・法令・英語の発音・中国語・クイズ・算数ぬりえ・ふるさと納税・年末調整・手取り・紅葉・コインロッカー・保育園）。運営の画面の「カードを置く」へそのまま貼れる。試験 4 本（`tests/noah-shelf-first-cards.test.mjs`）。一覧と、置いてから載るまでの手順は `docs/noah/spec-110-shelf.md` の 18 章。本番へは、まだ置いていない。
+
+- Noah の取り込みと握手を手元で計算し、本番へ結果だけを入れる道を作った（Opus / Noelle。本人の問い「上手くローカルで計算できないの？」。[PR #359](https://github.com/k999ln/rock/pull/359)）。`scripts/noah-local-patrol.mjs`（本番と同じコードと migration の表を手元の SQLite で動かし、台帳を読み、握手し、一覧に載せる系列だけを書き出す）、`lib/noah-intake-import.ts`・`POST /api/noah/intake/import`（審査者だけ。手元の L2 は 1 に落とし、本番の L2・取り下げ・隠した印は残し、載せるかは本番の決まりで計算し直す）、運営の画面の「取り込みの結果を入れる」。本番の巡回（`NOAH_PATROL_ENABLED`）と有料の枠を開けなくても、一覧が使える。試験 4 本（`tests/noah-intake-import.test.mjs`）。手順は `docs/noah/spec-97-launch-ops.md` の 12 章。
+
+- Noahのログインで選んだ仕事・道具を保持し、依頼受付から進捗/成果へ直結。登録Agentは同じ仕事の状態だけを表示中と本人確認から戻った時に再確認し、背景/完了時は停止する（[PR #358](https://github.com/k999ln/rock/pull/358)）。
+
+- Noah独立版154を本人承認後に avoado.si/noah へ公開。追加DB 10本・20表と一覧/依頼受付を反映し、主要画面とAPIの9項目を確認。接続可能一覧0件のため本番通し受入は未完了。本人指示により共通アカウントの最小パスワードを8文字へ変更し、保存版155で公開。全体verify 4,753成功・4skip（[PR #358](https://github.com/k999ln/rock/pull/358)）。
+
+- NoahをOS運用に依存しないサービスへ変更。`/noah`配下のOSランタイムを停止し、専用ログイン・スマホ向けAgent一覧・依頼/成果の主画面と読込失敗時の再試行を実装（[PR #358](https://github.com/k999ln/rock/pull/358)）。旧Mac導線は専用パスに保持。最新mainの棚・試行・評価・接続上限も取り込み済み。独立版をSites保存版154として保存（未配備、source 6b69d009）。全体verify成功（4,745成功/4skip）、最新main統合後と公開用sourceのNoah 737件も成功。本番migration 0044〜0053・配備は未実施。
+
+- Noah の公開先 `https://avoado.si/noah` に向け、公開originの正規化・ローカル設定拒否・画面とAPIの読み取り確認を追加（[PR #358](https://github.com/k999ln/rock/pull/358)、task97）。本番は旧版で新しい画面/APIが404、接続表なし。公開用のSites保存版152を作成し（未配備）、migration 0044〜0049の適用と配備は本人確認待ち。認証付きAgentの接続は継続実装。
+
+- NoahのMacで実行した仕事を個別URLから開いて停止・成果保存できるようにした。配布Runnerで接続・実行・ファイル照合・停止・切断を確認（[PR #366](https://github.com/k999ln/rock/pull/366)）。
+
+- Noahの限定共有・送信履歴・利用状況を登録Agentの画面から開けるようにし、外部Agentの利用報告を所有者確認付きで既存APIに統合（[PR #362](https://github.com/k999ln/rock/pull/362)、task 73）。
+
+- Noah のつなげる数を、料金ごとのカードの数にした（task 113。Opus / Noelle。本人指示「続き最後までやって」。[PR #357](https://github.com/k999ln/rock/pull/357)、#355 の上の積み上げ）。表 `noah_package_connections`（migration 0053）、`lib/noah-plan.ts`、`lib/noah-connect.ts` のつなぐ前の上限（無料 6・有料 50。数えるのはカードで、同じカードの中の 2 本目は増やさない。7 枚目は 409「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」。もうつないである物は切らない）、`/noah/ready` の見出し「6 個のうち 4 個」。**どの利用権を有料と見るかは本人が決めるまで置いていない（`NOAH_PLAN_SOURCE` は null）ので、切り替え `NOAH_PLAN_LIMITS` を開けても、今は全員 50 のまま。** 試験 5 本（`tests/noah-plan-limits.test.mjs`）。変えた所は `docs/noah/spec-110-shelf.md` の 17 章。本番の migration・配備・切り替えは、していない。
+
+- Noah の棚の実績の並びと見せた記録（task 111）を実装した（Opus / Noelle。本人指示「続き最後までやって」。[PR #355](https://github.com/k999ln/rock/pull/355)、#354 の上の積み上げ）。表 `noah_package_evidence`・`noah_shelf_daily`・`noah_shelf_seen`（migration 0052）。学習なしの並び（4 つの率の控えめな見積りの積・5 人未満は使わない・5 枚に 1 枚の試し・同じ領域を 3 枚続けない。`NOAH_SHELF_RANK` が開いている時だけ）、実績の数え直し（直近 90 日・1 日 1 回・巡回の合図の中）、カードの数（成果が返った割合・また使った人・最初の成果まで）、見せた記録（全員の数と、履歴に同意した本人の分だけ。`NOAH_SHELF_SEEN`）、「表示しない」、履歴を消すと見た記録も消える、タイムライン（`/noah`）に「Noah の棚」のカードを流す。試験 7 本（`tests/noah-shelf-rank.test.mjs` 5・タイムライン 2）。変えた所は `docs/noah/spec-110-shelf.md` の 16 章（本人の関心の点はまだ渡さない）。本番の migration・配備・切り替えは、していない。
+
+- Noah の 300 人の試行（task 114）を実装した（Opus / Noelle。本人指示「続き最後までやって」。[PR #354](https://github.com/k999ln/rock/pull/354)、#353 の上の積み上げ）。表 `noah_trial_channels`・`noah_trial_entries`・`noah_trial_reports`（migration 0051）、`lib/noah-trial.ts`・`GET`/`POST /api/noah/trial`、`?via=<札>` の入口（サインインまで tab に持ち、1 回だけ送る）、カードの詳細の下の本人の報告（任意。4 つの数だけ）、`/noah/review` の「試行」の節（段ごとの 4 つの数と割合・足りない条件・経路ごと・カードごとの合計。5 人未満は出さない。札を足す・閉じる）。金額は約束せず、5 人以上の測った合計だけを出す。試験 7 本（`tests/noah-trial.test.mjs`）。変えた所は `docs/noah/trial-300.md` の 10 章。本番の migration・配備・切り替え（`NOAH_TRIAL_OPEN`）と、投稿・動画・人への連絡は、していない。
+
+- Noah の棚とカード（task 110）を実装した（Opus / Noelle。本人指示「続き最後までやって」。[PR #353](https://github.com/k999ln/rock/pull/353)、#343 の上の積み上げ）。表 `noah_packages`・`noah_package_steps`（migration 0050。DDL 案から字を変えずに移した）、`lib/noah-shelf.ts`（型契約を関数ごと移した）・`lib/noah-shelf-store.ts`・`GET`/`POST /api/noah/shelf`、`/noah/ready` の一番上の棚（「稼ぐ・仕事を省く」「教育」「暮らし」。探している間は出さない）、`/noah/review` の「棚」の節。載るのは、審査者が自分で動かして成果を確かめた、今動く相手のサーバーの道具のカードだけ（読むたびに今の事実で判定。相手が止まる・道具が変わると、次の握手の後に外れ、理由が運営の画面に出る）。巡回の合図の中で 10 分に 1 回まで見直し、載せたカードの系列の握手を 24 時間以内へ早める。カードから開いた詳細は、その道具を最初から選ぶ。試験 28 本（`tests/noah-shelf.test.mjs` 17・`tests/noah-shelf-store.test.mjs` 11）。仕様から変えた所は `docs/noah/spec-110-shelf.md` の 15 章。**最初の 12 枚の案はローンチの範囲の外なので、棚はまだ空。** 本番の migration・配備・切り替え（`NOAH_SHELF_PUBLIC`）は、していない。
+
+- スマホでつなぐ Agent（台帳の Agent）の一覧のカードと詳細に、利用人数（「n 人が利用」。接続して頼み、成果が出た人を 1 人 1 回）を出した（Opus / Noelle。本人の回答「スマホの Agent に利用人数を出す」。[PR #356](https://github.com/k999ln/rock/pull/356)、task74）。Codex の利用人数（Mac の Agent）とは別の集まりなので混ぜない。migration なし、D1 への往復は一覧で増やさない。
+
+- Noah の「実行中」と「成果データ」に、スマホから接続した Agent へ頼んだ仕事と成果を出した（Opus / Noelle。本人の回答「#349 にしか無い所は、後から上に小さく足す」。[PR #352](https://github.com/k999ln/rock/pull/352)、task87）。`GET /api/noah/ask` の行に Agent を添え、`components/noah-work-list.tsx` を Agent をまたげる形にし、頁から Codex の画面へ渡す。成果データの書き出し・運営への提供には、まだ載せていない（本人が決める）。
+
+- Noah MVP L1〜L9 の PR を、今の main と合わせて 1 本にまとめた（Opus / Noelle。本人の回答「Claude の L4〜L9 を残す」「緑になったらマージして」。[PR #350](https://github.com/k999ln/rock/pull/350)）。README・CHANGELOG・task 一覧の衝突を、両側を残して解いた（README は main の作り直した構成を土台に、積み上げの 14 段落を字を変えずに写し、食い違う 4 か所だけ直した）。取り下げ・報告の窓口（D8）を、本人の決めた smash@avoado.si にして、`/noah/help#bot` の節と、一覧・詳細からの道を出した（`lib/noah-bot-notice.ts`）。本番の migration・配備・切り替えは、していない。
+
+- READMEで差し替え済みのmiiの帰宅画像とNoahの検索GIFを `docs/assets/readme/` から削除（[PR #348](https://github.com/k999ln/rock/pull/348)、task 99）。
+
+- Noah MVP L9（受入）を実装した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #347](https://github.com/k999ln/rock/pull/347)、task90。L8 の #346 の上の積み上げ）。スマホだけの一周の自動試験 `tests/noah-phone-loop.test.mjs`（2 本。画面が呼ぶのと同じ入口と、署名の付いた巡回の合図だけを呼ぶ: 取り込む → 見つける → 計画 → つなぐ → 道具 3 つ → 頼む（押すだけ・入力あり・確かめ）→ 同時 → 動いた → 受け取る → 切る。頼んだ後、読み直しを呼ばずに成果が Work に入る。利用者の操作から始めた握手 8 回・相手が受けた握手 9 回・道具の呼び出し 5 回。本人の端末の表は、読みも書きもしない。相手が受けた要求に、本人の ID は無い。切り替えを閉じると、一覧 404・接続と依頼 503）。画面の決まりを、一周の 9 つの段で見る試験（`tests/noah-ready-ui.test.mjs` に 1 本: 画面を覆う部品が無い・提供者の文は字のまま・画面に出さない言葉が無い・台帳との関係を書いていない・画面が裏の間と、終わった後は、読み直さない）。**実機の確かめの表（`docs/noah/spec-90-phone-only-loop.md` の 5 章）を、手元の開発サーバーと幅 390 の Chromium で通して、通らない所を 1 つ見つけて直した:** 「切る」と、Agent の詳細の「仕事」が一覧ごと消え、「切っても、受け取った成果は残ります。」と書いてある成果を、その画面から読めなかった。仕事の一覧を、接続ではなく、その Agent で読むようにした（`GET /api/noah/ask?agent=<系列の ID>`。切った接続の分も含めて、新しい 50 件。D1 への往復は 1。`lib/noah-ask.ts`・`components/noah-work-list.tsx`・`components/noah-ready-detail.tsx`。試験 1 本と、受入の script `scripts/check-noah-ask.mjs` に確かめを足した）。手元の結果は `spec-90` の 9.4（1〜7・10〜12 は通った。5 は「やめる」まで。8・9・13 は手元では行えない）。**本番と、本物のスマホでは、確かめていない（配備・migration の適用・切り替えは、本人の許可の後）。**
+
+- Noah MVP L8（出すための運用）を実装した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #346](https://github.com/k999ln/rock/pull/346)、task97。L7 の #345 の上の積み上げ）。運営の画面（`/noah/review` の「取り込み」の節）に「見張る数」を足した（`lib/noah-launch-status.ts`。`GET /api/noah/intake?state=1` の `launch`）: 切り替えの状態、台帳の巡回（この 2 時間、成功も読み取りの開始も無ければ「止まっています」）、まだ握手していない数、握手の結果、同じ接続先へ 1 時間に 2 回以上握手した数、混んでいる接続先、直近 24 時間と 7 日の接続・握手の時間・依頼・つないだ人・成果が出た人・頼んだ画面の幅、戻ってきた人、失敗の多い接続先。16 文を 1 回の batch で数え、5 分の間は同じ値を返す。出すのは数だけ（本人の ID・依頼の中身は無い。接続先の名前は、依頼が 5 件以上あり、失敗か結果不明がある物だけ）。画面は、期間ごとの数を、表でなく 1 行ずつの文で出す（スマホの幅で、はみ出さない）。使い方の頁 `/noah/help` に、外の道具・Agent を提供している方への説明の節 `#bot` を足した（文は `lib/noah-bot-notice.ts`。数は、作りの数と同じである事を試験が見る）。**取り下げ・報告の窓口の宛先（D8）が未定のため、節は `hidden` で置き、一覧と詳細の「報告・取り下げの申し出」の道も、まだ出さない**（宛先を入れる所は `NOAH_REPORT_CONTACT` の 1 行）。巡回を起こす専用の Worker の手順書（`services/noah-patrol-wake/README.md`: 鍵・配備・動いているかの見方・止め方・鍵の替え方）。その Worker は、鍵を置く前に配備した時も、何も送らずに、設定が違うと分かる文で失敗する。試験 18 本を足した（`tests/noah-launch-ops.test.mjs` 17: 切り替え 4 群・合図と専用の Worker・窓口の文・上限の上書き・見張る数（手で数えた値と同じ）・戻し方（一覧 404・接続と依頼 503・進んでいる依頼は最後まで・1 つの接続先だけを止める）・合図の記録・本番へ適用する 4 本の migration の形。`tests/noah-ready-ui.test.mjs` 1）。手元の実物（`npx vinext dev`・手元の D1・実在の台帳から載った系列・幅 390 の Chromium）で、運営の画面の数（まだ握手していない 31,846 が、前からある「載せていない理由」の同じ数と一致）、切り替えを閉じた時の見え方（接続は「今は、新しい接続を受け付けていません。」、一覧は「まだ公開していません。」）、宛先を入れた時の節の見え方を確かめた。専用の Worker は `wrangler deploy --dry-run` を通した（1.84 KiB。配備していない）。**本番への配備・migration の適用・切り替えは、行っていない。**
+
+- Noah MVP L7（見回りを保つ）を実装した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #345](https://github.com/k999ln/rock/pull/345)、task88。L6 の #344 の上の積み上げ）。巡回の合図の終わりに、後始末を行う（`lib/noah-sweep.ts`）: 実行の場が持つ時間（30 秒）を過ぎて 5 秒たった `running` の依頼を終え、60 秒たった `queued` の依頼を「失敗」に、つなぐ途中のまま 30 秒たった接続を切る。それぞれ 50 件まで・10 秒まで。相手へは、何も送らない。道具を呼ぶ直前に、依頼へ「相手へ送る」の印（`tool_calls=1`）を付けるようにし、落ちた依頼を、印があれば「結果不明」、無ければ「失敗（相手のサーバーへは、送っていません。もう一度頼んでください）」に分ける（取り直して呼び直さない）。本人の「止める」は、実行の場が無くなった依頼を、その場で止める。画面は、「止めています…」が 45 秒より長く続いた依頼に「止める」をもう一度出し、後始末が切った接続には、理由と「接続」を出す。つなぐ途中の接続だけを持つ索引を足す migration 0049（`drizzle/`・`drizzle-main/`・型契約 `docs/contracts/noah-v1.sql`。本番 D1 へは適用していない）。運営の画面に「つながると確かめた数」（動いた・握手まで・本人の Mac で動かす物）。試験 11 本を足した（`tests/noah-patrol.test.mjs` 10・`tests/noah-intake-review.test.mjs` 1）。手元の D1（Miniflare）での受入 `scripts/check-noah-patrol.mjs`: 握手が通った 50 件のうち、止めた 1 件が、2 回続けて失敗した所で一覧から消え、戻すと戻った。同じ接続先への握手は、106 回の全部で 1 時間以上あいた。手元の実物（開発サーバーの実行の場を、途中で止めた）で、落ちた依頼と、つなぐ途中で止まった接続が、合図 1 回で片付く事を確かめた。L5 で接続を断った相手は、名乗りの違いによる物ではなかった（どちらの名乗りでも、握手が通った）。実行の D1 への往復は 15〜16 → 14〜15。自動の見本（`probeL2`）は作っていない。配備・切り替えはしていない。記録は `docs/noah/spec-88-mass-probe.md` の 9.5・9.11。
+
+- Noah MVP L6（入力欄で頼む）を実装した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #344](https://github.com/k999ln/rock/pull/344)、task87。L5 の #342 の上の積み上げ）。依頼の表 `noah_asks` を足す migration 0048（`drizzle/`・`drizzle-main/`。本番 D1 へは適用していない）。つないだ相手の道具を、入力欄から 1 回呼ぶ `POST /api/noah/ask`（202 を返した後に続ける。握手 8 秒・呼び出し 20 秒。失敗しても呼び直さない）、読む `GET /api/noah/ask`・`/api/noah/ask/[id]`、止める `POST /api/noah/ask/[id]`（`lib/noah-ask.ts`・`lib/noah-ask-store.ts`・`lib/noah-remote-work.ts`）。成果の正本は Work（`noah-agent-remote`。確認待ちのまま・費用 0）で、Work と依頼の行は 1 回の書き込みで一緒に入れ、一緒に終える。本人が入力欄を開いた時と定義が同じ道具だけを呼ぶ。読み取りだけと宣言されていない道具は、最初の 1 回、画面で確かめてから。入力欄に無い項目は渡さない。止めた後に届いた成果は採らない。接続を切ると、終わっていない依頼を止める。成功した依頼で、その系列が「動いた」になる。画面は、詳細の中の、道具を選ぶ・入力欄・確かめ・仕事の一覧と成果（`components/noah-ask.tsx`・`noah-work-list.tsx`）。試験 20 本（`tests/noah-ask.test.mjs` 13・`tests/noah-ask-ui.test.mjs` 7）。手元の D1（Miniflare）での受入 `scripts/check-noah-ask.mjs`（合成の相手 17・依頼 63 件。依頼と Work は 1 対 1。止める・切る・上限を D1 の上で通した。D1 への往復は、受け付け 6・実行 15〜16）。手元の実物（幅 390 のブラウザ・手元の D1・実在の相手）で、押すだけの道具と、入力のある道具を頼んで成果が出て（受け付けてから 0.9〜1.1 秒）、頼んだ直後に画面を閉じても Work に成果が残った。**読み取りだけと宣言されていない実在の道具は、呼んでいない**（見つかった 1 個は、相手の事業者へ問い合わせを送る道具だった。送る手前の確かめの画面までを見た）。成果を「成果データ」「実行中」に出す所と、1 文で頼む機能は、まだ。配備・切り替えはしていない。記録は `docs/noah/spec-87-tool-agent.md` の 11.8。
+
+- Noah MVP L5（つなぐ）の画面を実装し、L5 の完了の定義を手元で通した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #342](https://github.com/k999ln/rock/pull/342)、task74・96）。`/noah/ready`（すぐ使える Agent の一覧）と `/noah/ready/agent`（詳細）を足した（`components/noah-ready.tsx`・`noah-ready-detail.tsx`・`noah-card.tsx`・`noah-connect-button.tsx`・`noah-ask.tsx`、`lib/noah-ready-view.ts`）。カードの「接続」を 1 回押すと「頼む」に変わる。詳細は、送り先（入力が送られる接続先）を接続の前に出し、つないだ後は、道具の一覧と「切る」。未サインインの人が押した時は、サインインから戻った画面が、同じ操作 ID で、押し直さずに続ける。入口は、「Agentを探す」の一番上に 1 つ（`components/noah-ready-entry.tsx`。見せてよい時＝切り替えが開いている・審査者にだけ出る。menu と外枠の file は変えていない）。出す場所（別の画面と、探す画面の入口）と、つなぐ時のサインインは、本人の返事を待ちながら、既定で作った（変える時に直す所は、仕様書 11.5）。Codex の #337 の続き（menu が 4 つに・説明を減らす）を取り込み、画面の文も短くした。試験 13 本（`tests/noah-ready-ui.test.mjs`。L5 の合計 45 本）。手元の実物（幅 390 のブラウザ・手元の D1・実在の台帳から載った 39 件）で、実在の系列 5 つの「接続」を 1 回ずつ押し、4 つが 1 回で「頼む」になった（残りの 1 つは、相手が断り、画面は理由と「もう一度」を出した。送ったのは握手だけ。道具は呼んでいない）。未サインインからの続きは、試験の台だけで確かめた。本番への適用・配備・切り替えはしていない。記録は `docs/noah/spec-74-one-click-connect.md` の 11.9。
+
+- Noah MVP L5（つなぐ）の、画面の前までを実装した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #342](https://github.com/k999ln/rock/pull/342)、task74・96。握手の L4（#335）と、成果データ（#334）・Noah の画面（#337）を合わせた枝の上の積み上げ）。接続の表 `noah_connections` を足す migration 0047（`drizzle/`・`drizzle-main/`。本番 D1 へは適用していない）。計画を読む `GET /api/noah/connect-plan`、1 回の要求で握手まで終えてつなぐ `POST /api/noah/connect`、やり直す・切る `POST /api/noah/connect/[id]`、つないだ相手の道具の一覧 `GET /api/noah/connect/[id]/tools`（`lib/noah-connect.ts`・`lib/noah-connect-source.ts`・`lib/noah-connect-plan-api.ts`・`lib/noah-user-handshake.ts`）。つなげるのは、一覧に載せている系列だけ。送るのは握手だけで、道具は呼ばない。同じ操作の再送は握手をやり直さない。つなぐ前の上限（切っていない接続 50・60 秒に 10・24 時間に 100）と、接続先の枠（全員合わせて 60 秒に 60 回）を越えた時は、相手へ送らない。相手が 401・402 を返したら、その場で一覧から外す。429 は、相手が言った時刻まで待つ。同意した時から接続先が変わった接続は、黙って新しい相手へ送らず、切ってつなぎ直してもらう。見回りは、つないでいる人が居る系列を 24 時間ごとに確かめる。試験 32 本（`tests/noah-connect.test.mjs`・`tests/noah-connect-plan-api.test.mjs`）、手元の D1 での受入（`scripts/check-noah-connect.mjs`。合成 14 件。実在の接続先 6 件のうち載った 3 件は、3 件とも 1 回でつながり、道具の一覧が開いた）。画面とその場のサインインは、置く場所とサインインの扱いを本人に確かめてから作る。配備・切り替えはしていない。記録は `docs/noah/spec-74-one-click-connect.md` の 11.8。
+
+- Noahに「実行中」タブを追加し、依頼入力・接続・実際の処理状態・成果・停止を一画面へ集約し、旧管理画面を転送に変更。接続手順と選択Agentの復帰を整理し、取得失敗の空表示を修正。実コンテナの隔離・実行・保存・停止を再実行可能な検証へ追加。全体verify成功（4,531成功・4 skip）（[PR #337](https://github.com/k999ln/rock/pull/337)、task100）。
+
+- Noahの継続改善パッケージを smash@avoado.si へのメール受付に変更。Web申込フォーム・履歴・運営一覧を撤去し、旧受付APIは保存/開示を停止。既存記録とmigration履歴を保持（[PR #337](https://github.com/k999ln/rock/pull/337)、task100）。
+
+- Noahの個人の感想を中心にしたタイムライン、利用人数・王冠1人1票・コメント/返信を追加。開発者向け継続改善パッケージと個別見積もりの保存/閲覧を実装。関連40試験・全体verify成功（4,524成功・4 skip）。価格・課金・作業自動実行は未設定、本番変更なし（[PR #337](https://github.com/k999ln/rock/pull/337)、task100）。
+
+- Noah MVP L4（握手までの接続試験）を実装した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #335](https://github.com/k999ln/rock/pull/335)、task86。L3 の点検の修正 #339 の上の積み上げ）。相手のサーバーの口（握手・道具の一覧・呼び出し・接続先の検査）と入力欄の関数を、型契約から `lib/noah-mouth-mcp-remote.ts`・`lib/noah-form.ts` へ移した。巡回の合図のたびに、鍵の要らない候補へ握手し（1 回に 8 件・同時に 4 件・同じ接続先へは 1 時間に 1 回・別の接続先への転送には従わない・道具は呼ばない）、結果を握手の表へ書いて、系列へ写す（`lib/noah-probe.ts`・`lib/noah-intake-probe.ts`）。応答しないのが 2 回続いたら一覧から外し、30 日で隠し、握手が通ると戻す。量産の系列・取り下げた系列は握手しない。試験 37 件を足した（取り込み・握手・入力欄で 76 件）。実在の接続先 100 件の受入: 通った 51・401 が 35・応答しない 11・形が合わない 2・つなげない 1（通った物の 98% に、入力欄で使える道具）。手元の D1 の受入 script は `scripts/check-noah-probe.mjs`。本番 migration・配備・切り替えなし。出す前に確かめる事が 1 つ残る（本番の Worker から、内部向けのアドレスへ届かない事。86 の 10.3）。
+
+- Noahに会社の正式花形ロゴと白・チャコール・紫の配色を適用。スマホ下部5項目を1メニューへ統合し、既定の全件表示からAgent絞り込み/解除に変更。ニュース・コミュニティー・機能一覧の導線を廃止。390px/1360pxの表示・操作と全体verify成功（4,506成功・4 skip）を確認（[PR #337](https://github.com/k999ln/rock/pull/337)、task100）。
+
+- Noah の「棚とパッケージ」と「300 人への出し方」を、設計・参照実装・試験・task まで置いた（Fable / Noelle。本人の決定 11-19〜21「最初はパッケージ化」「1 つの仕事を最後までやる組合せ」「今動かせるもの」「どっちもお願い」「全部あなたに任せるから最後までやって」。[PR #343](https://github.com/k999ln/rock/pull/343)、task 110〜114）。① [docs/noah/spec-110-shelf.md](docs/noah/spec-110-shelf.md): 入口の棚（稼ぐ・仕事を省く／教育／暮らし）、カード `noah-package/1`（1 枚 ＝ 1 つの仕事を最後までやる組合せ）、載せる条件（運営が動かして確かめた、今動かせる物だけ。理由 8 つ）、**学習を使わない並び**（つながる率 × 成果が返る率 × 検収に通る率 × また使う率。5 人未満の実績は使わない。5 枚に 1 枚は新しいカードを試す。同じ領域を 3 枚続けない）、見せた記録、札、つなげる数（無料 6 枚・有料 50 枚）、健康の助言の条件、学習を足す条件。② [docs/noah/trial-300.md](docs/noah/trial-300.md): 30 → 100 → 300 の段と次へ進む条件、出し方の決まり（広告の単位はカード 1 枚。金額を約束しない）、稼げる額の式と測り方、守る決まり、先に要る物。③ docs/contracts/noah-shelf-v1.ts・noah-shelf-v1.sql・noah-shelf-queries-v1.sql（新しい表 9 個・問い合わせ 15 文）。④ 検証キットに noah-shelf.test.mjs（17 群）と validate-noah-shelf-v1.py（6 群）。全体で試験 78/78、DDL 10/10 と 6/6。⑤ 最初のカード案 12 枚（[docs/services/noah-shelf.md](docs/services/noah-shelf.md)。全部が下書きで、**動かした結果はまだ無い**。工程の先は今の main の 13 件と Noah の中の道具を指し、試験が照らす）。⑥ codex/tasks 110〜114。⑦ 決定を 07 に 6 行、00-overview の 0 章・04・noah-design の 8・9・10・12.5 章・mvp-launch の 13 章に反映。実装（`lib/`・画面・migration）と、カードを動かして確かめる事は、まだ。本番の migration・切り替え・投稿は行っていない。
+
+- Noahのスマホでの配布元確認とMacの接続準備をHiggsfieldで縦型CMに編集し、READMEとサロン向け投稿文から案内（[PR #341](https://github.com/k999ln/rock/pull/341)、task 99）。
+
+- READMEにmiiのデザイン映像とNoahの公開画面を使った操作デモを掲載し、オンラインサロン向けの18秒動画と投稿文を追加（[PR #340](https://github.com/k999ln/rock/pull/340)、task 99）。
+
+## 2026-11-20
+
+- Noah MVP L3 の点検で見つけた所を直した（Fable / Noelle。本人指示「そのまま開発して実装して」。[PR #339](https://github.com/k999ln/rock/pull/339)、task85。#332 の上の積み上げ）。握手済みの候補の記録が、版や説明だけ更新されても、握手の記録と一覧を保つ（消すのは、接続先に関わる項目が変わった時だけ）。形の違う記録は 1 件ずつ読み飛ばす（1 頁で 10 件を越えたら止める）。台帳を読めなかった合図は、500 と件数の 1 行。名寄せは、隠した系列を 1 回だけ書き、候補が戻った系列を戻す。取り下げは、持っている有効な候補の 9 割以上が見えた時だけ。続けて 6 回の失敗で、同じ印から読み直す。直す前の実装で落ちる試験 11 件を足し、設計書（85 の 5.1・11.8、88、97、名寄せの SQL）も直した。本番 migration・配備・切り替えなし。
+
+- Noahを白地・紫のX型3カラムタイムラインとスマホ下部ナビへ変更し、外部Agentの必要項目入力・同意・登録Agent実行・状態照会を追加。全体verify成功（4,503成功・4 skip）。実登録先は未接続、本番変更なし（[PR #337](https://github.com/k999ln/rock/pull/337)、task100）。
+
+- NoahのWeb保存済みAgent成果を `/noah/data` で検索・出力し、本人が選択・同意した成果を運営へ提供・撤回できるように実装。元Work削除後の撤回と通信断時の再送を保持。全体verifyと最終21群成功。本番migration・配備・切り替えなし（[PR #334](https://github.com/k999ln/rock/pull/334)、task99）。
+
+- Noah MVP L3の公式台帳取り込み・再開可能な巡回・一覧API・運営画面とローカルD1受入コマンドを実装。全体verify、製品23群、実台帳68,964件＋差分1頁・合成65,000件のローカルD1受入が成功。本番migration・配備・切り替えなし（[PR #332](https://github.com/k999ln/rock/pull/332)、task85）。
+
+- Noah MVP L2の接続要件・計画・状態遷移を `lib/noah-connect-requirements.ts`・`lib/noah-connect-plan.ts` へ移設し、設計側を再exportへ集約。製品9群と全体verify成功。API・画面はL5で接続（[PR #330](https://github.com/k999ln/rock/pull/330)、task96）。
+
+- READMEにmii公式の筐体全景とセンサー部の接写を掲載し、Proの紹介・画像・表の記載を外した（[PR #338](https://github.com/k999ln/rock/pull/338)、task 99）。
+
+- ルートREADMEをmii公式サイトに合わせ、帰宅のビジュアルと5本の短編からEve・Noahの実画面、接続構成、実機の検証状況へ進む構成に更新（[PR #336](https://github.com/k999ln/rock/pull/336)、task 99）。
+
+- READMEを更新日・ハイライト・縦目次・機能別記事の順に改め、Noahの検索デモ、Eveの実画面、Macの停止手順とスマホ版の入出力例を追加（[PR #333](https://github.com/k999ln/rock/pull/333)、task 99）。
+
+- READMEを機能別のハイライト・目次・実画面・検証手順で整理し、設計の入口でもNoahのスマホ向け公開版とMacのRunner開発を区別（[PR #331](https://github.com/k999ln/rock/pull/331)、task99）。
+
+- 目的と、一番重く見る 3 つを、設計の正本に書いた（Fable / Noelle。本人指示「ここまでを git に更新してあげて」）。① docs/structure/00-overview.md の 0 章: 大きな目的（みんなが Agent を使って、生活がより豊かになる）、最初の目的（教育と身の回りの生活が、少しでも便利に・効率よくなる）、重点 3 つ（どんな Agent にも 1 クリックでつながる／登録が要っても離れさせない／画面をジャックしない）。② docs/noah-design.md の 12 章: 3 つへの設計の対応と足りない所、全部の Agent につながるまでの型ごとの数と順、今の Noah の現状（動かせるのは 13 件・調査カタログ 79,643 件は接続を確かめた物が 0・並びは点数の足し算で予測なし）、最初の目的に合わせて変える所（提案）。③ docs/noah/mvp-launch.md の 13 章: 入口を「教育」「暮らし」の棚にする案。④ docs/structure/07 に本人の言葉 4 行。**設計の文書だけ。実装（lib/・app/）と本番は変えていない。**
+
+- Noah MVP L1の隔離起動引数の検査を `lib/noah-screenless-audit.mjs` と通常verifyへ追加。18構成・15通りの緩和拒否・画面を閉じた後のWork保存を検証し、全体verify成功。実機観測は後続（[PR #329](https://github.com/k999ln/rock/pull/329)、task84）。
+
+- Noah の設計を、別の機械から始められるようにした（Fable / Noelle。本人指示「main に入れて、別の PC が git にアクセスして開発が進めれるようにして」）。docs/noah/README.md に「別の機械で始める時」（clone → `npm ci` → 検証キット → 読む順 → 最初の PR は L1 と L2）を足した。main を別の場所へ取り出して確かめた: `npm ci` の後は試験 61/61・DDL 10/10。`npm ci` が無いと `noah-screenless.test.mjs` だけが読めない（今の起動スクリプトが `fflate` を使う）ので、検証キットの README の「`npm install` は要らない」を直した。
+
+- Noah の検証キットの試験で、鍵らしい作り物の文字列を、試験の中で組み立てる形へ直した（docs/design-validation/noah/noah-connect.test.mjs。Fable / Noelle）。main へ上げた後、SPIDER / secrets が、試験に直に書いていた作り物の 1 行（commit 5b7cde3 と、それを含む merge の 80b3810）を鍵の候補として検出したため。本物の鍵ではない。今のファイルからは消えるが、履歴には残るので、検査は、例外（policy と control commit の更新。owner review）が入るまで赤のまま。**この変更では、`.github/spider/` と workflow を触っていない。履歴も書き換えていない。** 検証キットは試験 61/61。PR #328。
+
+- miiの商品案内を4本のTower＋別体Hubに統一し、商品サイトの画像11点を原本から生成。追加機能の表示名、重複索引、未使用の旧画面・CSSを整理（[PR #327](https://github.com/k999ln/rock/pull/327)、task98）。
+
+- Noah の「ローンチの最小限（MVP）」の線を引き、線の内側を実装できる所まで詰めた（Fable / Noelle。本人指示「ローンチするのに最小限って意味の mvp」）。① docs/noah/mvp-launch.md: 出す物（スマホだけで、相手のサーバーで動く Agent を、選ぶ・接続・入力欄から頼む・受け取る・切る）、入れる物と後にする物、作る順 L1〜L9、出す前に確かめる事 G1〜G7、本人が決める事 13 個（既定つき）、危ない所、数える物。② 各実装仕様書（84・85・96・86・87・74・88）の最後に「ローンチの範囲」の章、新しい仕様書 2 本（90 手元だけの一周、97 出すための運用）、task 97。③ 参照実装を足した: 入力欄で頼む（docs/contracts/noah-form-v1.ts。道具を選ぶ画面・入力欄・確かめの記録・結果の文・つなぐ前と頼む前の上限）、切り替え（noah-flags-v1.ts）、一覧・上限・接続先ごとの枠の問い合わせ（noah-listing-v1.sql。1 つの接続先へ、利用者の操作から始める握手は、全員合わせて 60 秒に 60 回まで）、公式台帳の「更新された物だけ」の読み方・一覧に載せる条件・巡回を起こす合図（noah-intake-v1.ts）、別の host への転送に従わない使い方と 410 の扱い（noah-mouth-v1.ts）、表の列と索引（noah-v1.sql）。④ 実データ: 参照実装の握手を、標本の 500 接続先に通した（通った 276）。その道具 3,699 個の 95.5% が入力欄で使える。載る見込みは約 18,000 系列。1 時間あけた 2 回目の握手では、道具 3,563 個の定義は 1 つも変わらず、別の host へ転送する相手は 276 のうち 1。検証キットは試験 61/61、DDL 10/10。**本番の migration・配備・切り替え・契約は行っていない。実装（lib/・app/）も変えていない。**
+
+- Noah の設計の中身を詰めた（Fable / Noelle）。① 作業単位ごとの実装仕様書 8 本（docs/noah/。84・85・96・86・87・74・88・89。今あるコードのどのファイル・関数をどう変えるか、規則の全表、画面と文言、処理の順、試験）。② 動く型契約と参照実装 5 本と DDL 案（docs/contracts/noah-*。接続要件と接続計画、取り込み、口と相手の許可と起動の型紙、道具を持つ担当、画面を取らない検査、新しい表 13 個、名寄せの SQL）。③ 検証キット（docs/design-validation/noah/。公式台帳の実記録と実際の握手の写しを使った試験 41 群、DDL を一時 DB へ流す検証 9 群。`npm run typecheck` エラー 0）。公式台帳の有効な 66,608 件を参照実装に全部通し、今の main の隔離環境の起動引数が検査を通ることを確かめた。実データに通して直した所（取り込みを別の表にする、面を 2 段で決める、配布の中身を Noah が固定する、ほか）を 07 に記録した。task 8 枚を、仕様書を指す形に書き直した。コード（app・lib）は変えていない。
+
+- Noah 全体の設計書を置いた（Fable / Noelle）。主商品 mii・最小構成 Noah・最初は本人の Mac（PR #325 の本人確定方針）に順番を合わせ、行き先（みんなが Agent を自分の専用の端末につないで使う。PC の前に座らない）、具体的なスキーム（お金・つなぐ・動かす・集める・載せる／売る・端末・データ）、進捗報告の 11 項目ごとの設計、要る技術と作り方の表、作る順番、7 つの問い（技術・タイミング・独占・人材・販売・持続性・隠れた真実）への答えを 1 冊にした。実装する Agent がそのまま進められる詳細設計書（機能ごとに UX → フロント → バックエンド → 試験、データ定義、状態遷移、開発の進め方、決定待ちの既定値）を別に置いた。接続・実行・取り込み・市場の背景は別の文書へ分けた。外の台帳を読み取りだけで実測（MCP の公式台帳 66,608 件、鍵なしで応答する host は標本の 54.6%、Hugging Face の「agent」は 0.7% しか動いていない）し、残り 72 件を分類。`docs/noah-design.md`、`docs/noah-detailed-design.md`、`docs/noah-agent-market-design.md`、`docs/noah-agent-census-20261120.md`、`docs/services/`（noah-one-click-connect・noah-own-device・noah-screenless・noah-agent-intake・eve-agent-build・noah-mobile-variant・noah-agent-purchase）、`codex/tasks/73`〜`95`、07 に本人指示と提案、02・04 に 1 か所ずつ。設計まで。コード・migration・契約・公開は変えていない。
+
+- Noah/EveのMac API接続・コード取得・型検査・仕事通信を共通化し、構成/事業/READMEを本人MacのNoah→miiへ同期。本人・招待・審査・停止条件と既存機能を保持し、Git読取り失敗時の子処理回収も修正（[PR #326](https://github.com/k999ln/rock/pull/326)、task73）。
+
+- 本人回答に基づき、主商品mii・最小構成Noah・本人Macの先行受入・SIM/eSIMのOS導入役割を正本へ同期。Codex実行の再送試験を、回数固定の待機から実処理の完了待機へ修正（task72）。
+
+- READMEのNoah案内を現在の動作へ同期（task72）。
+
+- Noah公開登録の未ログイン時停止・無効な再確認、ChatGPTログインへの循環、下書きの公開モード消失を修正。登録/運用/Mac承認を既存accountへ接続し、outbox競合試験の誤った勝者固定も解消。全体verify成功、本番の登録→実行→停止は有効セッション確認待ち（[PR #324](https://github.com/k999ln/rock/pull/324)）。
 
 ## 2026-11-19
 
 - 最新のNoah/Eve、仕事計画、mii設計研究、AMC・リセール・全社担当を統合候補へ集約。READMEを現在の利用方法と受入範囲へ整理し、進捗生成を現行project.mdへ移動。探索打切りと競合quorumを修正（[PR #321](https://github.com/k999ln/rock/pull/321)）。
+
+- Noah単体ローンチの登録・独立審査・別利用者実行を開発ブランチへ統合し、認証付きMac Runner・配布ZIP・停止確認を追加。12件の失敗・移行整合性・ファイル読取競合を修正し、全体verifyとローカルAPI/実コンテナの接続→実行→停止を確認。公開はリリース工程、別Mac実機は未確認（[PR #322](https://github.com/k999ln/rock/pull/322)）。
 
 ## 2026-11-18
 
@@ -279,4 +492,3 @@ Offline apply now requires an owned private0700 parent for both source copy and 
 開発者向け: PR248でmain統合・同SHA CI確認済みのservice attachment検証は、入力から分離したsnapshotを返します。フィールド・署名wire・API引数・TTLは維持し、object identityの同一性を前提にせずfieldを扱います。成功値をdispatch許可にせず、現在factsと既存atomic gateを確認してください。[契約](docs/rockstaros-complete-design.md#esim-attachment-async-binding)。
 
 開発の現在primaryはmiiの成立判断1件です。実行queueと所有・証拠段階は[data/development-model-routing.json](data/development-model-routing.json)のcurrentExecution、運用と残gateは[Git作業入口](docs/workstreams/10-git-ci-operations.md#execution-recovery-20261028)を参照してください。`npm run mission:check`は宣言の矛盾を拒否しますが、実GitHub/物理受入の証明は独立検収で確認します。
-

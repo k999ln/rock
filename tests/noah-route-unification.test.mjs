@@ -12,13 +12,13 @@ void test('each known old page moves once to its canonical page, retaining selec
     assert.equal(response.status,308,path);
     const target=new URL(response.headers.get('location'));
     assert.equal(target.origin,'https://avoado.si');
-    assert.equal(target.pathname,destination.split('?')[0].replace(/:\w+/g,'fixture'));
+    assert.equal(target.pathname,destination.split(/[?#]/)[0].replace(/:\w+/g,'fixture'));
     assert.deepEqual(target.searchParams.getAll('tag'),['a','b']);
-    assert.equal(target.hash,'#result');
+    assert.equal(target.hash,new URL(destination,'https://avoado.si').hash||'#result');
     assert.equal(noahPageRedirect(target.pathname),null,'destination cannot redirect back');
   }
 });
-void test('Noah pages reuse the original features, including dynamic Tool/code/campus pages',()=>{
+void test('Noah pages reuse the original features, including dynamic Tool/code pages',()=>{
   for(const [source,destination] of NOAH_PAGES){
     const file=new URL('../app/noah/'+destination.replace(/:(\w+)/g,'[$1]')+'/page.tsx',import.meta.url);
     assert.equal(existsSync(file),true,destination);
@@ -35,7 +35,7 @@ void test('retired AMC cannot form a cycle or change the fixed work view',async(
 void test('local labs get public guidance while local runtime and its permission checks remain reachable',async()=>{
   for(const lab of NOAH_LOCAL_LABS){
     const publicResponse=await app.fetch(new Request('https://avoado.si/os/sky/'+lab));
-    assert.equal(publicResponse.status,307);assert.equal(new URL(publicResponse.headers.get('location')).pathname,'/noah/local-tools');
+    assert.equal(publicResponse.status,307);assert.equal(new URL(publicResponse.headers.get('location')).pathname,'/noah/explore');
     const localResponse=await app.fetch(new Request('http://127.0.0.1:8787/os/sky/'+lab));
     assert.equal(localResponse.status,200);assert.equal(await localResponse.text(),'/sky/'+lab);
     assert.match(readFileSync(new URL('../app/sky/'+lab+'/page.tsx',import.meta.url),'utf8'),/notFound\(/);

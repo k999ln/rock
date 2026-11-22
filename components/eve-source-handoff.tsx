@@ -91,7 +91,7 @@ export function EveSourceHandoff({context,onDraft}:{context:ReturnType<typeof us
   if(!context.handoff && !context.selection && !context.error && !context.checking)return null;
   return <section aria-label="SkyからEveへの引継ぎ">
     {context.checking && <output>選んだ出典を確認しています…</output>}
-    {context.handoff && <><p>Skyで選んだ依頼です。入力へ読み込み、編集してから送信してください。既存の未送信入力は読み込み時に置き換わります。</p><pre>{context.handoff.text}</pre><button type="button" disabled={context.checking} onClick={()=>void context.apply(onDraft)}>依頼を入力欄へ読み込む</button></>}
+    {context.handoff && <><p>Noahで選んだ依頼です。入力へ読み込み、編集してから送信してください。既存の未送信入力は読み込み時に置き換わります。</p><pre>{context.handoff.text}</pre><button type="button" disabled={context.checking} onClick={()=>void context.apply(onDraft)}>依頼を入力欄へ読み込む</button></>}
     {context.selection && <p>選択した出典: {context.selection.plugin.resource} · 配布元の版: {context.selection.plugin.metadata.revision ?? '未確認'}。保存した情報との一致を送信前に再確認します。</p>}
     {context.error && <p role="alert">{context.error}</p>}
     <button type="button" onClick={context.clear}>出典の引継ぎを取り消す</button>

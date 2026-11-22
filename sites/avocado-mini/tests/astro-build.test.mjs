@@ -51,8 +51,8 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.match(home, /href="https:\/\/avocadopro\.si\/"/);
   assert.match(home, /home-promo-mini/);
   assert.match(home, /home-promo-pro/);
-  assert.match(mini, /AVOCADOMINI R5 \/ PRODUCT VISION/);
-  assert.match(mini, /One device\./);
+  assert.match(mini, /MII \/ SPATIAL COMPUTER/);
+  assert.match(mini, /Ask Eve by voice/);
   assert.match(mini, /id="experience"/);
   assert.match(mini, /href="\/create\/"/);
   assert.match(mini, /id="status"/);
@@ -84,6 +84,29 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.match(creator, /Submitted games are not published automatically/);
   assert.equal(existsSync(new URL('client/create.js', outputRoot)), true);
   assert.equal(existsSync(new URL('client/downloads/mini-browser-game-starter.zip', outputRoot)), true);
+});
+
+test('the standalone site serves the original image bytes at the existing public URLs', () => {
+  const repo = new URL('../../../', import.meta.url);
+  const images = new URL('client/images/', outputRoot);
+  const pairs = [
+    ['avocado-mini-kit.png', 'public/rockstaros/avocado-mini-kit-p0.png'],
+    ['tower-concept.png', 'public/rockstaros/avocado-mini-tower-concept.png'],
+    ['r5/avocado-mini-r5-concept.png', 'sites/avocado-mini/public/images/avocadomini-r5-slim-form-reference.png'],
+  ];
+  const expectedDrawings = [
+    'R5-E01-power-safety.png',
+    'R5-M01-envelope.png',
+    'R5-M02-functional-stack.png',
+    'R5-O01-services.png',
+    'R5-O02-consent.png',
+    'R5-S01-scaling.png',
+    'R5-U01-startup.png',
+    'R5-V01-camera-geometry.png',
+  ];
+  for (const name of expectedDrawings) pairs.push(['r5/' + name, 'docs/avocado-mini-r5/package/drawings/' + name]);
+  for (const [alias, source] of pairs) assert.deepEqual(readFileSync(new URL(alias, images)), readFileSync(new URL(source, repo)), alias);
+  assert.ok(built('client/_site-pages/home/index.html').includes('src="/images/avocadomini-r5-slim-form-reference.png"'));
 });
 
 test('home fragment navigation, carousel controls, and metadata remain valid', () => {
@@ -171,7 +194,7 @@ test('benefit-first journey ends in a truthful price and support path', () => {
   assert.match(home, /Want to see this become real/);
   assert.match(mini, /See what is real today/);
   assert.match(pro, /No final price or checkout yet/);
-  assert.match(status, /AVOCADOMINI R5 \/ STATUS/);
+  assert.match(status, /MII \/ DEVELOPMENT STATUS/);
   assert.match(status, /NO RESERVATION/);
   assert.match(status, /PRICE NOT SET/);
   assert.match(status, /Older Tower20 E3 images and prices are historical/);
@@ -183,6 +206,11 @@ test('benefit-first journey ends in a truthful price and support path', () => {
 test('current Mini pages present the R5 concept and unaccepted product gates', () => {
   const mini = built('client/_site-pages/mini/index.html');
   const status = built('client/preorder/index.html');
+  for (const page of [mini, status, built('client/_site-pages/home/index.html'), built('client/crowdfunding/index.html')]) {
+    assert.match(page, /four Towers and (?:a )?separate Hub/i);
+    assert.doesNotMatch(page, /no separate Edge Hub|one self-contained unit/i);
+  }
+  assert.match(mini, /single Tower is planned for limited Eve interactions/);
   assert.match(mini, /Design and feasibility stage/);
   assert.match(mini, /Not accepted/);
   assert.match(mini, /Sales/);

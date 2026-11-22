@@ -9,6 +9,8 @@ import {
   type SkyPermission,
   type SkyPricing,
 } from './sky-submission.ts';
+import { parseNoahArtifact, type NoahArtifact } from './noah-artifact.ts';
+import { validTerminalTextSchema } from './noah-terminal-contract.mjs';
 
 export const SKY_TOOL_PACKAGE_SCHEMA = 'sky-tool-package/1' as const;
 export const SKY_TOOL_SOURCE_KINDS = [
@@ -52,6 +54,7 @@ export type SkyToolPackage = {
     kind: SkyToolSourceKind;
     url: string | null;
     license: string;
+    artifact?: NoahArtifact;
   };
   llm: {
     purpose: string;
@@ -265,7 +268,13 @@ export function parseSkyToolPackage(value: unknown): SkyToolPackage {
     ['id', 'displayName', 'supportUrl'],
     '開発者情報',
   );
-  const source = exactObject(root.source, ['kind', 'url', 'license'], 'ソース');
+  const sourceValue = object(root.source, 'ソース');
+  const source = exactObject(sourceValue, ['kind', 'url', 'license', ...('artifact' in sourceValue ? ['artifact'] : [])], 'ソース');
+  let artifact: NoahArtifact | undefined;
+  if ('artifact' in source) {
+    try { artifact = parseNoahArtifact(source.artifact); }
+    catch { throw new SkySubmissionError('配布ファイルの固定版を確認してください。'); }
+  }
   const llm = exactObject(
     root.llm,
     ['purpose', 'useWhen', 'doNotUseWhen'],
@@ -350,6 +359,13 @@ export function parseSkyToolPackage(value: unknown): SkyToolPackage {
     throw new SkySubmissionError('外部変更・金融操作は実行ごとの確認が必要です。');
   if (connectionType === 'rock_recipe' && executionTargets.some((target) => target !== 'device_local'))
     throw new SkySubmissionError('Rock recipeの実行場所は端末内だけです。');
+  if (artifact?.runtime && (connectionType !== 'rock_recipe' || endpointUrl !== null || connectivity !== 'offline' ||
+    permissions.some(p => !['read_user_input', 'write_results'].includes(p)) || sideEffects.some(p => !['none', 'local_write'].includes(p)) ||
+    execution.confirmation !== 'per_run' || execution.maxAttempts !== 1 || execution.idempotency !== 'required' ||
+    !Number.isInteger(execution.timeoutSeconds) || (execution.timeoutSeconds as number) > 240))
+    throw new SkySubmissionError('画面なしコードは端末内・外部通信なし・入力と成果のみ・毎回確認・再送防止・240秒以内で指定してください。');
+  if (artifact?.runtime && (!validTerminalTextSchema(io.inputSchema, 'prompt') || !validTerminalTextSchema(io.outputSchema, 'text')))
+    throw new SkySubmissionError('画面なしテンプレートの入力は文章prompt、結果は文章textの各1項目です。生成ファイルはNoahの成果添付として保存します。');
   if (root.rightsConfirmed !== true)
     throw new SkySubmissionError('掲載権限と記載内容を確認してください。');
 
@@ -386,6 +402,7 @@ export function parseSkyToolPackage(value: unknown): SkyToolPackage {
         source.kind !== 'inline_code',
       ),
       license: string(source.license, 'ライセンス', 2, 100),
+      ...(artifact ? { artifact } : {}),
     },
     llm: {
       purpose: string(llm.purpose, '目的', 10, 500),

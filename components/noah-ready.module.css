@@ -1,0 +1,178 @@
+/* 「すぐ使える」の一覧と詳細。色・角の丸み・字の大きさは、Agent を探す画面（noah-service.module.css）の物に合わせる。新しい色は足さない。 */
+/* リンクの色と下線は、必ず `.page` を前に付けて書く（外枠の `.shell a { color:inherit; text-decoration:none }` と同じ強さだと、読み込みの順で、色が変わる）。 */
+.page { max-width:1160px; }
+.page h1 { overflow-wrap:anywhere; }
+.back { margin:0 0 18px; font-size:13px; }
+.page .back a { color:#7546c8; display:inline-flex; align-items:center; min-height:44px; }
+
+/* 「Agentを探す」の一番上に出す入口（components/noah-ready-entry.tsx）。 */
+.entry { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; margin:0 0 22px; padding:14px 18px; border:1px solid #dbc7ef; border-radius:12px; background:#f3eefb; }
+.entryText { min-width:0; }
+.entryText strong { display:block; color:#202024; font-size:15px; letter-spacing:-.2px; }
+.entryText small { color:#52525b; font-size:12px; }
+.entryCount { flex-shrink:0; color:#7546c8; font-size:13px; font-weight:650; white-space:nowrap; }
+
+.filters { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0; padding:0; border:0; min-width:0; }
+.filters button { min-height:44px; padding:0 16px; border:1px solid #ececef; border-radius:22px; background:#fff; color:#52525b; font-size:13px; cursor:pointer; }
+.filters button[aria-pressed="true"] { border-color:#7546c8; background:#f3eefb; color:#7546c8; font-weight:650; }
+
+.section { margin-top:34px; min-width:0; }
+.section h2 { display:flex; align-items:baseline; flex-wrap:wrap; gap:10px; margin:0 0 6px; font-size:19px; letter-spacing:-.4px; }
+.section h2 small { font-size:12px; font-weight:400; color:#71717a; letter-spacing:0; }
+.sectionNote { margin:0 0 16px; color:#71717a; font-size:12px; line-height:1.8; }
+.quiet { margin:10px 0 0; color:#71717a; font-size:12px; line-height:1.8; overflow-wrap:anywhere; }
+.page .quiet a { color:#7546c8; text-decoration:underline; text-underline-offset:3px; display:inline-flex; align-items:center; min-height:44px; }
+
+.cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.card,.detail { display:flex; flex-direction:column; min-width:0; background:#fff; border:1px solid #ececef; border-radius:12px; padding:20px; }
+.cardHead { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; min-width:0; }
+.cardHead h3,.cardHead h1 { margin:0; min-width:0; overflow-wrap:anywhere; letter-spacing:-.35px; }
+.cardHead h3 { font-size:17px; margin:-12px 0; }
+.cardHead h1 { font-size:24px; }
+/* 名前は、詳細への入口（つなぐ前に、送り先と説明を読む道）。押す所の高さを 44px にする（見た目の行の高さは変えない）。名前は 1 行で切る。 */
+.cardName { display:flex; align-items:center; min-height:44px; min-width:44px; color:inherit; }
+.cardName span { display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.provider { color:#71717a; font-size:11px; overflow-wrap:anywhere; }
+/* 説明は 2 行で切る（カードの高さを、読み込みの前後で変えない）。 */
+.summary { margin:10px 0 14px; color:#52525b; font-size:13px; line-height:1.8; min-height:calc(13px * 1.8 * 2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.description { margin:14px 0; color:#52525b; font-size:14px; line-height:1.9; white-space:pre-wrap; overflow-wrap:anywhere; }
+.facts { display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
+.facts li { font-size:11px; color:#71717a; background:#f7f7f8; border:1px solid #ececef; border-radius:20px; padding:4px 9px; overflow-wrap:anywhere; }
+.facts li.badge { color:#7546c8; border-color:#dbc7ef; background:#f3eefb; font-weight:650; }
+/* 棚のカード（components/noah-shelf.tsx）。渡す物・受け取る物は 2 行で切る。「Noah の説明」は、カードの文が運営の言葉である印。 */
+.shelfIo { display:grid; gap:4px; margin:0 0 14px; font-size:12px; line-height:1.7; }
+.shelfIo div { display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px; min-width:0; }
+.shelfIo dt { color:#71717a; }
+.shelfIo dd { margin:0; color:#202024; min-width:0; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.shelfPrice { margin:12px 0 0; color:#52525b; font-size:12px; line-height:1.7; overflow-wrap:anywhere; }
+.shelfNote { margin:10px 0 0; color:#a1a1aa; font-size:11px; }
+.shelfHide { min-height:44px; padding:0 12px; border:0; background:transparent; color:#71717a; font-size:12px; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+/* 試行の本人の報告（components/noah-trial-report.tsx）。欄は縦に並べ、押す所は 44px。 */
+.trialForm { display:grid; gap:12px; padding:16px; border:1px solid #ececef; border-radius:12px; background:#fff; }
+.trialForm fieldset { display:flex; flex-wrap:wrap; gap:8px; margin:0; padding:0; border:0; }
+.trialForm legend { margin-bottom:6px; font-size:13px; color:#52525b; }
+.trialForm fieldset button { min-height:44px; padding:0 16px; border:1px solid #dbc7ef; border-radius:22px; background:#fff; color:#7546c8; font-size:14px; }
+.trialForm fieldset button[aria-pressed="true"] { background:#7546c8; color:#fff; }
+.trialForm label { display:grid; gap:4px; font-size:13px; color:#52525b; }
+.trialForm input { min-height:44px; padding:8px 12px; border:1px solid #ececef; border-radius:10px; font-size:16px; }
+.trialForm .primary { justify-self:end; }
+.sendsTo { margin:14px 0 0; padding:12px 14px; border-radius:10px; background:#f7f7f8; color:#202024; font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
+
+/* 横に並んだカードの主ボタンを、下でそろえる（名前や説明の行数が違っても、同じ高さに出る）。 */
+.card .facts { margin-bottom:16px; }
+.card .connect { margin-top:auto; }
+.connect { display:flex; flex-direction:column; align-items:flex-end; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid #ececef; }
+.primary,.secondary { display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:112px; padding:0 22px; border-radius:22px; font-size:14px; font-weight:650; cursor:pointer; text-decoration:none; }
+.primary,a.primary,.page a.primary { border:1px solid #7546c8; background:#7546c8; color:#fff; }
+.primary:disabled { opacity:.6; cursor:default; }
+.secondary,.page a.secondary { border:1px solid #dbc7ef; background:#fff; color:#7546c8; }
+.secondary:disabled { opacity:.6; cursor:default; }
+.notice { align-self:stretch; color:#7546c8; font-size:12px; text-align:right; }
+.reason { align-self:stretch; margin:0; color:#202024; font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
+
+/* 詳細の下: 今の接続の状態と「切る」。 */
+.cut { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border:1px solid #ececef; border-radius:12px; background:#fff; }
+.cut p { margin:0; font-size:14px; font-weight:650; min-width:0; }
+
+.connections { list-style:none; margin:0; padding:0; border:1px solid #ececef; border-radius:12px; background:#fff; }
+.connections li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; }
+.connections li + li { border-top:1px solid #ececef; }
+.connectionName { min-width:0; }
+.connectionName strong { display:block; font-size:14px; overflow-wrap:anywhere; }
+.connectionName small { color:#71717a; font-size:11px; overflow-wrap:anywhere; }
+
+.tools { list-style:none; margin:14px 0 0; padding:0; border:1px solid #ececef; border-radius:12px; background:#fff; }
+.tools li { padding:14px 16px; min-width:0; color:#71717a; }
+.tools li + li { border-top:1px solid #ececef; }
+.tools li[data-usable] { color:#202024; }
+.tools strong { font-size:14px; overflow-wrap:anywhere; margin-right:8px; }
+.tools p { margin:6px 0 0; color:#52525b; font-size:12px; line-height:1.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+/* 道具を選ぶ行（押せる）。行の全部が、押す所。 */
+.tools .toolButton,.tools .toolRow { display:block; width:100%; min-height:44px; padding:14px 16px; border:0; background:none; text-align:left; color:inherit; font:inherit; }
+.toolButton { cursor:pointer; }
+.toolButton[aria-pressed="true"] { background:#f3eefb; }
+.tools li:has(.toolButton),.tools li:has(.toolRow) { padding:0; }
+.marks { display:inline-flex; flex-wrap:wrap; gap:6px; vertical-align:middle; }
+.marks span { font-size:11px; color:#71717a; background:#f7f7f8; border:1px solid #ececef; border-radius:20px; padding:2px 8px; }
+
+/* 入力欄。 */
+.form { margin-top:16px; padding:18px; border:1px solid #ececef; border-radius:12px; background:#fff; min-width:0; }
+.form h3 { margin:0 0 14px; font-size:16px; overflow-wrap:anywhere; }
+.field { display:block; margin:0 0 16px; padding:0; border:0; min-width:0; }
+.fieldLabel { display:block; margin:0 0 6px; padding:0; font-size:13px; font-weight:650; color:#202024; overflow-wrap:anywhere; }
+.control { display:block; width:100%; min-height:44px; padding:10px 12px; border:1px solid #dbc7ef; border-radius:10px; background:#fff; color:#202024; font:inherit; font-size:16px; line-height:1.6; resize:vertical; }
+.control:focus-visible { outline:2px solid #7546c8; outline-offset:1px; }
+.control[aria-invalid="true"] { border-color:#202024; border-width:2px; }
+.help { margin:6px 0 0; color:#71717a; font-size:12px; line-height:1.7; overflow-wrap:anywhere; }
+.fieldError { margin:6px 0 0; color:#202024; font-size:13px; font-weight:650; line-height:1.7; overflow-wrap:anywhere; }
+.fieldError::before { content:'! '; }
+.choices { display:flex; flex-wrap:wrap; gap:8px; }
+.choices button { min-height:44px; padding:0 16px; border:1px solid #ececef; border-radius:22px; background:#fff; color:#52525b; font-size:13px; cursor:pointer; overflow-wrap:anywhere; }
+.choices button[aria-pressed="true"] { border-color:#7546c8; background:#f3eefb; color:#7546c8; font-weight:650; }
+.form details.more { display:block; margin:0 0 16px; }
+.form details.more summary { min-height:44px; display:flex; align-items:center; color:#7546c8; font-size:13px; cursor:pointer; }
+.actions { display:flex; justify-content:flex-end; gap:10px; margin-top:14px; }
+.confirmBox { margin:0; padding:14px; border:1px solid #dbc7ef; border-radius:10px; background:#f7f7f8; min-width:0; }
+.confirmBox legend { padding:0 6px; font-size:12px; color:#7546c8; font-weight:650; }
+.confirmBox p { margin:0 0 10px; font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
+.confirmBox dl { margin:0 0 10px; }
+.confirmBox .sendsTo { margin:0 0 12px; padding:0; background:none; font-weight:650; }
+.confirmBox dl div,.outline div { display:flex; gap:10px; padding:4px 0; font-size:13px; min-width:0; }
+.confirmBox dt,.outline dt { flex-shrink:0; max-width:40%; color:#71717a; overflow-wrap:anywhere; }
+.confirmBox dd,.outline dd { margin:0; min-width:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+
+/* 仕事の一覧と成果。 */
+.work { list-style:none; margin:14px 0 0; padding:0; border:1px solid #ececef; border-radius:12px; background:#fff; }
+.work li { padding:14px 16px; min-width:0; }
+.work li + li { border-top:1px solid #ececef; }
+.workHead { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.workState { margin:0; font-size:14px; font-weight:650; min-width:0; overflow-wrap:anywhere; }
+.workTool { margin:4px 0 0; color:#52525b; font-size:12px; line-height:1.8; overflow-wrap:anywhere; }
+.result { margin:10px 0 0; padding:12px 14px; border-radius:10px; background:#f7f7f8; color:#202024; font:inherit; font-size:13px; line-height:1.8; white-space:pre-wrap; overflow-wrap:anywhere; max-height:60vh; overflow:auto; }
+.outline { margin:10px 0 0; padding:12px 14px; border-radius:10px; background:#f7f7f8; max-height:60vh; overflow:auto; }
+.outline div[data-depth="1"] { padding-left:14px; }
+.outline div[data-depth="2"] { padding-left:28px; }
+.outline div[data-depth="3"] { padding-left:42px; }
+.outline div[data-depth="4"] { padding-left:56px; }
+.page .result a,.page .outline a { color:#7546c8; text-decoration:underline; text-underline-offset:3px; }
+.result a small,.outline a small { color:#71717a; }
+.workActions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.workAgent { margin:6px 0 0; font-size:13px; }
+.workAgent a { display:inline-flex; align-items:center; min-height:44px; color:inherit; }
+
+.more { display:flex; justify-content:center; margin:26px 0 0; }
+.connectionOverlay { position:fixed; inset:0; z-index:1500; display:grid; place-items:center; background:rgba(255,255,255,.97); pointer-events:none; }
+.source { margin-top:40px; padding-top:18px; border-top:1px solid #ececef; color:#71717a; font-size:12px; line-height:1.9; }
+.source p { margin:0 0 6px; }
+.page .source a { color:#7546c8; text-decoration:underline; text-underline-offset:3px; display:inline-flex; align-items:center; min-height:44px; }
+
+@media(max-width:1100px) { .cards { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:700px) { .cards { grid-template-columns:1fr; } .card,.detail { padding:18px; } .cardHead h1 { font-size:21px; } .connect { align-items:stretch; } .notice { text-align:left; } .actions { flex-direction:column-reverse; } .actions .primary,.actions .secondary { width:100%; } }
+/* Detail and execution share the new discovery canvas. */
+.page{max-width:880px;margin:auto}.detail{border-radius:22px;border-color:#e8e2ef;background:#fff;padding:28px}.cardHead h1{font-size:32px;line-height:1.25;letter-spacing:-1px}.description{font-size:16px;line-height:1.85;color:#706779}.primary{background:#7544cb;border-radius:999px;min-height:48px;padding:12px 24px;font-size:15px}.secondary{border-radius:999px;min-height:42px}.section{margin-top:24px}.section h2{font-size:22px}.form{padding:24px;border-radius:18px;background:#fff;border:1px solid #e9e2ef}.form input,.form textarea,.form select{font-size:16px}.sendsTo{font-size:12px;line-height:1.7}.journey{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;background:#f7f3fc;border-radius:14px;padding:22px 16px;margin:24px 0}.journey>div{display:grid;gap:8px;text-align:center;font-size:13px}.journey b{color:#8f6dba;font-size:11px;font-weight:500}.journey small{font-size:11px;color:#84768f}.journey>span{color:#b199cc}.quiet{font-size:13px}@media(max-width:600px){.detail{padding:22px 18px}.cardHead h1{font-size:27px}.form{padding:18px 14px}.journey{gap:5px;padding:18px 10px}.journey>div{font-size:12px}.journey small{font-size:10px}}
+/* Shared spacing and controls for the approved twelve-screen flow. */
+.page{max-width:800px;padding:24px}.page h1{font-size:26px}.cards{display:grid;grid-template-columns:1fr;gap:10px}.compactCard{min-width:0;border:1px solid #e6deee;border-radius:12px;background:#fff}.compactCard>a{display:flex;align-items:center;gap:12px;padding:14px;min-height:86px}.compactCard>a>div{min-width:0;flex:1}.compactCard h3{font-size:16px;margin:0 0 4px;overflow-wrap:anywhere}.compactCard p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.5;margin:0 0 5px;color:#6a6173}.compactCard small{font-size:11px;color:#7628df}.compactCard>a>svg{flex-shrink:0;color:#9c8baa}.section h2{font-size:18px;margin-bottom:12px}.sectionNote{font-size:12px;margin:0 0 10px}.curated{margin:14px 0;color:#796986;font-size:13px}.curated>summary{cursor:pointer;min-height:40px}.detail{border:0;border-radius:0;padding:0}.detail h2{font-size:16px;margin:22px 0 0}.cardHead h1{font-size:26px}.description{font-size:15px;margin:12px 0}.journey{margin:16px 0;padding:18px 8px;background:#faf7fd}.primary,.secondary{border-radius:10px;min-height:46px}.primary,.page a.primary{background:#7628df;border-color:#7628df}.form{padding:18px;border-radius:12px}.connect .primary{width:100%}.connect{align-items:stretch}.source{font-size:11px}.page .search{border-radius:10px}.section .tools{border-radius:12px}.form .actions{justify-content:stretch}.form .actions .primary{flex:1}.notice{text-align:start}.sendsTo{padding:10px 12px}.outline div{padding-inline-start:0}
+@media(max-width:600px){.page{padding:16px}.cardHead h1{font-size:23px}.section h2{font-size:18px}.form{padding:14px}.compactCard>a{padding:12px}.compactCard h3{font-size:15px}.actions{flex-wrap:wrap}.journey small{display:none}}
+
+/* Keep the primary action above lengthy provider material. */
+.introSummary { margin:10px 0 12px; font-size:15px; line-height:1.6; color:#62596b; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.connectionMeta { display:flex; flex-wrap:wrap; gap:6px 16px; color:#62596b; font-size:14px; line-height:1.5; overflow-wrap:anywhere; }
+.detail .connect { margin-top:12px; padding-top:0; border-top:0; }
+.agentDetails { margin-top:24px; border-top:1px solid #e6deee; padding-top:8px; }
+.agentDetails > summary { min-height:48px; display:list-item; align-content:center; cursor:pointer; font-size:14px; color:#62596b; }
+.tools .toolDescription { font-size:14px; line-height:1.5; margin-top:6px; }
+.tools .form { margin:8px 12px 12px; }
+
+/* Keep operation names and status chips on independent rows, including narrow phones. */
+.section .tools .toolButton,.section .tools .toolRow{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;align-items:start;text-align:start;}
+.tools .toolButton strong,.tools .toolRow strong{display:block;min-width:0;font-size:16px;line-height:1.5;margin:0;}
+.tools .marks{display:flex;flex-wrap:wrap;gap:6px;min-width:0;}
+.tools .marks span{font-size:14px;white-space:normal;word-break:normal;overflow-wrap:normal;}
+.tools .toolExplanation{padding:0 16px 8px;font-size:14px;}
+.tools .toolExplanation summary,.permissionOptions summary{min-height:44px;cursor:pointer;padding:10px 0;}
+.tools .toolExplanation p{display:block;overflow:visible;white-space:normal;-webkit-line-clamp:unset;}
+.tools .form{padding:12px;margin:0 8px 12px;}
+.form .toolExplanation{padding:8px 0 0;}
+.permissionOptions{margin:0;font-size:14px;}
+.permissionOptions[open]{margin-bottom:12px;}
+.form .sendsTo{margin-top:8px;padding:6px 10px;}

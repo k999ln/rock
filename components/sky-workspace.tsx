@@ -241,17 +241,22 @@ function dwellBucket(duration: number) {
 }
 
 export default function SkyWorkspace({
+  initialQuery = '',
+  onQueryChange,
   initialMcpOpen = false,
   initialPublishOpen = false,
   campusId,
 }: {
+  initialQuery?: string;
+  onQueryChange?: (query:string)=>void;
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
   campusId?: CampusId;
 }) {
   const [inspected, setInspected] = useState<Automation | null>(null);
   const service = useSkyServiceStatus();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initialQuery.slice(0,200));
+  useEffect(()=>{onQueryChange?.(query);},[query,onQueryChange]);
   const [feedMode, setFeedMode] = useState<SkyFeedMode>('recommended');
   const [scope, setScope] = useState<FeedScope>('すべて');
   const [selected, setSelected] = useState<Automation | null>(null);

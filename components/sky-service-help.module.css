@@ -6,6 +6,8 @@
 .page section { border-top: 1px solid var(--sky-line); padding: 24px 0; scroll-margin-top: 24px; }
 .page p, .page li, .page dd { line-height: 1.8; overflow-wrap: anywhere; }
 .page p, .page li { color: var(--sky-muted); }
+/* 段が続く節（外の提供者への説明）は、段の間をあける。 */
+.notice p + p { margin-top: 14px; }
 .page li + li { margin-top: 10px; }
 .page a { color: var(--sky-text); text-underline-offset: 4px; }
 .page a:focus-visible { outline: 2px solid var(--sky-accent); outline-offset: 4px; }

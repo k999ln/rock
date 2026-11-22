@@ -148,7 +148,7 @@ void test('running workspace keeps its own skip link usable without admitting ro
 });
 void test('root and pass-through layouts do not mount a second nav or change viewport/domain contracts', () => {
   const root = source('app/layout.tsx'); assert.match(root, /import '\.\/os-shell\.css'/);
-  assert.match(root, /viewportFit: 'cover'/); assert.match(root, /<CommunityOsRuntime \/>\{children\}/);
+  assert.match(root, /viewportFit: 'cover'/); assert.match(root, /<ApplicationRuntime \/>\{children\}/);
   for (const path of ['app/layout.tsx', 'app/os/layout.tsx', 'app/sky/layout.tsx'])
     assert.doesNotMatch(source(path), /<OsAppNavigation|<OsHeader/);
   assert.doesNotMatch(source('app/os-bottom-navigation.css'), /body\s*\{|\.home\s*\{|--os-bg\s*:/);
@@ -281,7 +281,7 @@ void test('Noah embeds existing workspace once, preserving connection and runnin
   assert.equal(documentEvents.size,0);assert.equal(windowEvents.size,0);
 });
 
-void test('Eve uses the same two-tab header as Noah while retaining private content and workspace navigation', () => {
+void test('Eve retains its app header while Noah has standalone navigation', () => {
   for (const pathname of ['/chat', '/os/eve', '/os/eve/remix']) {
     const Shell = compile('components/workspace-shell.tsx', {
       'next/navigation': { usePathname: () => pathname },
@@ -299,8 +299,9 @@ void test('Eve uses the same two-tab header as Noah while retaining private cont
     assert.ok(all.includes(child));
     assert.ok(all.some(n => n.type === './workspace-flow-navigation'));
   }
-  assert.match(source('components/noah-shell.tsx'), /<ProductAppHeader active="noah"/);
-  assert.match(source('components/noah-shell.tsx'), /label: 'コミュニティーに参加'/);
+  assert.doesNotMatch(source('components/noah-shell.tsx'), /<ProductAppHeader/);
+  assert.match(source('components/noah-shell.tsx'), /aria-label=\{t\('メインメニュー'\)\}/);
+  assert.match(source('components/noah-shell.tsx'), /label: 'タイムライン'/);
 });
 
 void test('shared app header preserves running guards, actions, and the active Eve query by preventing a reset', () => {

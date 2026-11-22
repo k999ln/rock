@@ -29,6 +29,16 @@
   padding: 36px;
   box-shadow: 0 20px 70px #25382e08;
 }
+.contractLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 16px 0 24px;
+}
+.contractLinks a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
 .eyebrow {
   font-size: 11px;
   letter-spacing: 0.18em;
@@ -248,3 +258,18 @@
 @keyframes account-check { to { stroke-dashoffset: 0; } }
 @keyframes account-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .card, .step, .notice, .success, .success path, .spinner { animation: none; } .success path { stroke-dashoffset: 0; } .primary, .tabs button, .links button, .form input { transition: none; } .primary:active:not(:disabled), .tabs button:active:not(:disabled), .links button:active:not(:disabled) { transform: none; } }
+
+.noah { background:#fff; color:#202024; min-height:70svh; padding:24px 20px 48px; color-scheme:light; }
+.noah .top { margin-bottom:32px; font-size:16px; }
+.noah .card { background:#fff; border-color:#ececef; box-shadow:none; border-radius:16px; }
+.noah .primary { background:#7546c8; color:#fff; border-color:#7546c8; }
+.noah .tabs button[aria-pressed='true'] { color:#7546c8; border-color:#7546c8; background:#f3eefb; }
+.noah :is(.eyebrow,.links button) { color:#7546c8; }
+.noah :is(.description,.footer,.hint) { color:#71717a; }
+.noah :is(input,textarea):focus-visible { outline:2px solid #7546c8; outline-offset:2px; }
+
+.noah .tabs { background:#f7f7f8; }
+.noah .form input:not([type="checkbox"]) { background:#fff; color:#202024; border-color:#dddde2; }
+.noah .primary:hover:not(:disabled) { background:#643ab0; box-shadow:none; }
+.noah .top { max-width:520px; }
+@media(max-width:600px) { .noah .card { padding:24px 20px; } .noah .card h1 { font-size:26px; } }

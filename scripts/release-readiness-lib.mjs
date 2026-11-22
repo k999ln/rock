@@ -1051,7 +1051,9 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(localEvidence.observedAt || '') ||
     localEvidence.scope !== 'LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT' ||
     localEvidence.server?.runtime !== 'wrangler-local' ||
-    localEvidence.server?.origin !== 'http://127.0.0.1:8787' ||
+    !/^http:\/\/127\.0\.0\.1(?::[1-9][0-9]{0,4})?$/.test(localEvidence.server?.origin || '') ||
+    !URL.canParse(localEvidence.server?.origin || '') ||
+    localEvidence.result?.baseOrigin !== localEvidence.server.origin ||
     localEvidence.server?.productionBuild !== true ||
     !exactRecord(localEvidence.inputs, localInputs) ||
     localEvidence.result?.status !== 'PASS' ||

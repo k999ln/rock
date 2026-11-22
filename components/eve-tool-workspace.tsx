@@ -3,14 +3,10 @@ import SkyUsageDetails from './sky-usage-details';
 import { useEffect, useRef, useState } from 'react';
 import type { WorkJob } from '@/lib/workflow';
 import { evePlannerPrompt, EVE_PLANNER_MAX_ATTEMPTS } from '@/lib/eve-plan-candidate';
+import { createEveWorkClient } from '@/lib/eve-work-client';
 import styles from './eve-tool-workspace.module.css';
 type Result = { job: WorkJob; historySaved?: boolean };
-async function api<T>(query = '', value?: unknown, method = 'PATCH'): Promise<T> {
-  const response = await fetch(`/api/eve/tool-work${query}`, { method: value ? method : 'GET', cache: 'no-store', credentials: 'same-origin', ...(value ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) } : {}) });
-  const data = await response.json() as T & { error?: string };
-  if (!response.ok) throw new Error(data.error ?? '仕事を読み書きできません。');
-  return data;
-}
+const api = createEveWorkClient('tool-work', '仕事を読み書きできません。');
 export default function EveToolWorkspace({ threadId, onThread }: { threadId: string; onThread: (id: string) => void }) {
   const [jobs, setJobs] = useState<WorkJob[]>([]), [savedCurrent, setCurrent] = useState<WorkJob | null>(null);
   const [objective, setObjective] = useState('原稿内の引用を出典欄へ整理し、リンク先を保持する'), [source, setSource] = useState('');

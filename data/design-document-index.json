@@ -4315,8 +4315,7 @@
         "scripts/check-sky-a2a-workflow.mjs",
         "scripts/check-work-api.mjs",
         "scripts/check-csv-storage.mjs",
-        "app/avocado-mini/page.tsx",
-        "app/avocado-mini/design.module.css"
+        "app/avocado-mini/page.tsx"
       ],
       "tests": [
         "tests/sky-domain-staging.test.mjs",
@@ -4729,5 +4728,27 @@
     "localOwnerOnly": true,
     "productionTradingAccepted": false,
     "sharedWorkReducer": "lib/workflow.ts"
+  },
+  "currentProductConsolidation": {
+    "authority": [
+      "docs/structure/00-overview.md",
+      "docs/structure/04-eve-noa-amc-sky.md",
+      "docs/services/noah-standalone-launch.md",
+      "docs/structure/05-business.md"
+    ],
+    "source": [
+      "scripts/noah-local-api.mjs",
+      "scripts/noah-source-bytes.mjs",
+      "lib/eve-work-client.ts",
+      "scripts/noah-source-typecheck.mjs"
+    ],
+    "verification": [
+      "tests/noah-local-api.test.mjs",
+      "tests/eve-work-client.test.mjs",
+      "tests/noah-save-refactor.test.mjs",
+      "tests/noah-project-refactor.test.mjs"
+    ],
+    "boundary": "共有するのは通信/取得のみ。本人・招待期限・審査・利用権・停止の条件と公開Runnerのdevice sessionを保持",
+    "publicDeployed": false
   }
 }
