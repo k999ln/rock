@@ -92,7 +92,7 @@ npm run amc:cycle -- demo
 
 公開Gradio APIに対応するAgentは、詳細の「使う」から入力して実行でき、進捗と成果をNoahの同じ仕事画面に保存します。実行中は仕事詳細を開いたままにし、保存された成果は後から再表示できます。結果通信が途切れた場合は自動再実行しません。APIのないコード紹介や提供元のGPU制限は、準備・失敗理由を表示します。
 
-CLIの管理クラウドは [task123](codex/tasks/123-noah-cloud-agents.md) で実装中です。Hermesとboss-agent-cliの固定版を依頼ごとの隔離環境で動かし、Noah内で接続・入力・停止・結果保存を行います。公式配布物のローカル実行とスマホ幅の操作試験は通過しました。配備権限の認証は完了し、本番はWorkers Paidの利用先確定と実モデルの受入待ちです。提供元の確認済みMCP/APIへの直接接続も維持します。
+CLIの管理クラウドは [task123](codex/tasks/123-noah-cloud-agents.md) で実装中です。Hermes・boss-agent-cli・Time・Sequential Thinkingの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの2配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、モデルは試験用固定応答です。本番クラウドは利用先確定と実モデル受入待ちです。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
 
 Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別AgentへのURLを渡せます。公開掲載中のAgentの名前・説明を共有カードへ反映し、接続情報や本人の成果は共有しません。
 

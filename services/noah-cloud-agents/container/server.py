@@ -23,6 +23,10 @@ PROFILE = {
                "from run_agent import AIAgent; import importlib.metadata; assert importlib.metadata.version('hermes-agent') == '0.19.0'"),
     'boss': ('3.4.151', '/opt/boss/bin/python', '/opt/noah/boss_cli.py',
              "import boss_agent_cli; import importlib.metadata; assert importlib.metadata.version('boss-agent-cli') == '3.4.151'"),
+    'time': ('2026.11.18', '/opt/time/bin/python', '/opt/noah/mcp_stdio.py',
+             "import subprocess, importlib.metadata; assert importlib.metadata.version('mcp-server-time') == '2026.11.18'; subprocess.run(['/opt/time/bin/python','/opt/noah/mcp_stdio.py','--probe'],check=True,timeout=30)"),
+    'thinking': ('2.2.0', '/usr/local/bin/python', '/opt/noah/mcp_stdio.py',
+                 "import json, subprocess; assert json.load(open('/opt/mcp-node/node_modules/@modelcontextprotocol/server-sequential-thinking/package.json'))['version'] == '2.2.0'; subprocess.run(['/usr/local/bin/python','/opt/noah/mcp_stdio.py','--probe'],check=True,timeout=30)"),
 }
 # Inherited hard bounds also apply to subprocesses created by official Agent tools.
 resource.setrlimit(resource.RLIMIT_FSIZE, (8 * 1024 * 1024, 8 * 1024 * 1024))
@@ -130,15 +134,15 @@ class Server(http.server.BaseHTTPRequestHandler):
                     return
                 started = True
             profile = value['profile']; version, python, adapter, probe = PROFILE[profile]
+            env = dict(os.environ, OPENAI_BASE_URL='http://127.0.0.1:8080/v1', NOAH_MODEL='noah-cloud', NOAH_CLOUD_PROFILE=profile, NO_COLOR='1')
             if value.get('mode') == 'probe':
-                subprocess.run([python, '-c', probe], check=True, timeout=35, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run([python, '-c', probe], env=env, check=True, timeout=35, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 self.output({'type': 'probe', 'profile': profile, 'version': version})
                 return
             prompt = value.get('prompt')
             if not isinstance(prompt, str) or not 0 < len(prompt.encode()) <= 12000:
                 raise ValueError('invalid prompt')
             pathlib.Path('/tmp/request.txt').write_text(prompt)
-            env = dict(os.environ, OPENAI_BASE_URL='http://127.0.0.1:8080/v1', NOAH_MODEL='noah-cloud', NO_COLOR='1')
             log = open('/tmp/run.log', 'wb')
             child = subprocess.Popen([python, adapter], env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
             def finish():

@@ -2,27 +2,29 @@ import type { DirectoryEntry } from './noah-agent-directory.ts';
 import type { NoahProjectDetail } from './noah-project-view.ts';
 import { noahSourceRepository } from './noah-source-import.ts';
 import { noahCloudProfile } from './noah-cloud-contract.ts';
+import { noahProjectSources } from './noah-provider-resolve.ts';
 
 type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
 /** Resolve only an existing public catalog identity. The caller cannot supply a fetch URL or execution target. */
 export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false): NoahProjectDetail {
   const { card } = entry;
-  if (cloudEnabled) for (const source of [card.href, ...(card.sources ?? []).map(item => item.sourceUrl)]) {
+  if (cloudEnabled) for (const source of noahProjectSources(entry)) {
     if (typeof source !== 'string') continue;
     const profile = noahCloudProfile(source);
     if (profile) return { card, connection: { kind: 'cloud', profile, providerFamilyId: entry.families.includes(card.id) ? card.id : null } };
   }
   if (entry.families.includes(card.id)) return { card, connection: { kind: 'ready', familyId: card.id } };
   // A source URL is provenance; social post URLs are never execution targets.
-  for (const value of [card.href, ...(card.sources ?? []).map(source => source.sourceUrl)]) {
+  let importHref: string | null = null;
+  for (const value of noahProjectSources(entry)) {
     try {
       const repo = noahSourceRepository(value);
       if (repo.provider === 'huggingface' && repo.kind === 'spaces') return { card, connection: { kind: 'space', repository: `${repo.owner}/${repo.repo}` } };
-      return { card, connection: { kind: 'setup', importHref: `/noah/agents/new?${new URLSearchParams({ sourceUrl: repo.url, name: card.name })}` } };
+      importHref ??= `/noah/agents/new?${new URLSearchParams({ sourceUrl: repo.url, name: card.name })}`;
     } catch { /* Not a supported source repository. */ }
   }
-  return { card, connection: { kind: 'setup', importHref: null } };
+  return { card, connection: { kind: 'setup', importHref } };
 }
 
 async function spaceHost(repository: string, fetcher: typeof fetch, origin: string) {

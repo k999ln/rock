@@ -1,5 +1,6 @@
 /** Public Gradio transport. Only official HF identities and their fixed hf.space origin are used. */
 import { noahSha256, NoahAgentError } from './noah-agent-upload.ts';
+import type { NoahToolForm } from './noah-form.ts';
 import {
   noahRasterMime,
   type NoahReceivedResult,
@@ -7,21 +8,26 @@ import {
 export type ProviderField = {
   name: string;
   label: string;
-  kind: 'text' | 'number' | 'boolean' | 'choice' | 'fixed';
+  kind: 'text' | 'number' | 'boolean' | 'choice' | 'fixed' | 'list';
   optional: boolean;
   minimum?: number;
   maximum?: number;
   integer?: boolean;
   value?: unknown;
   choices?: (string | number | boolean)[];
+  itemKind?: 'text' | 'number';
 };
 export type ProviderEndpoint = {
   name: string;
   label: string;
+  description?: string;
   digest: string;
   fields: ProviderField[];
+  form?: Extract<NoahToolForm, { usable: true }>;
+  toolDigest?: string;
 };
 export type ProviderPlan = {
+  protocol?: 'gradio' | 'mcp';
   projectId: string;
   name: string;
   repository: string;

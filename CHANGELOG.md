@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahの全掲載を対象に提供元の公式定義解決・MCP入力/Work保存・対応状況点検を追加。TimeとSequential Thinkingの固定CLIを隔離環境で検証し、guessit-jsの実MCP結果保存を確認。本番クラウド未配備・全件受入は継続中（task123、[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
+
 - GitHub新アカウントのプロフィールを整理し、rock全74ブランチの履歴保持を照合。過去PR 28件の復元用ブランチと403件のPR記録を新rockへ保全し、取得し直したバックアップのhashを確認。移行後CIの全履歴検査時間・CodeQL読取権限を調整（[PR #1](https://github.com/iceiceice999/rock/pull/1)、本番受入は未完了）。
 
 - Noahの公式CLI管理クラウド、接続・停止・結果保存と提供元接続の選択を実装。公式2配布物の隔離実行と3幅Chrome試験を確認。本番配備・実モデル受入はWorkers Paid利用先の確定待ち（task123、[新rock PR #1](https://github.com/iceiceice999/rock/pull/1)、旧 #402、Draft）。

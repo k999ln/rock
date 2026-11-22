@@ -81,7 +81,7 @@ export default function NoahCloudAgent({ projectId, profile, providerFamilyId }:
           <div className={styles.connected}><span>接続済み</span><button disabled={pending} onClick={() => void act('disconnect')}>切断</button></div>
           <form onSubmit={event => { event.preventDefault(); void act('start'); }}>
             <label htmlFor={`cloud-prompt-${profile}`}>{profile === 'boss' ? '面接を準備したい求人票' : '何をしてほしいですか'}</label>
-            <textarea id={`cloud-prompt-${profile}`} value={prompt} maxLength={12000} onChange={event => { setPrompt(event.target.value); setConfirmation(null); }} placeholder={profile === 'boss' ? '求人票の仕事内容・応募条件を貼り付ける' : '例: 1200と800の合計を計算し、total.txtに保存して'} rows={5} disabled={pending} />
+            <textarea id={`cloud-prompt-${profile}`} value={prompt} maxLength={12000} onChange={event => { setPrompt(event.target.value); setConfirmation(null); }} placeholder={profile === 'boss' ? '求人票の仕事内容・応募条件を貼り付ける' : profile === 'time' ? '例: 東京の現在時刻とロンドンとの時差を教えて' : profile === 'thinking' ? '例: 小さなサービスを公開するまでの作業順を整理して' : '例: 1200と800の合計を計算し、total.txtに保存して'} rows={5} disabled={pending} />
             <button className={styles.primary} disabled={pending || !prompt.trim() || state.jobs.some(active)}>{pending ? '受付中…' : '依頼する'}</button>
           </form>
         </> : <><button className={styles.primary} disabled={pending} onClick={() => void act('connect')}>{pending ? '接続中…' : '接続して使う'}</button>{state.connection?.error && <p role="alert">{state.connection.error}</p>}</>}

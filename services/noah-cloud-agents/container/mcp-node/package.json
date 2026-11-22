@@ -1,0 +1,8 @@
+{
+  "name": "noah-reviewed-mcp-profiles",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "@modelcontextprotocol/server-sequential-thinking": "2.2.0"
+  }
+}

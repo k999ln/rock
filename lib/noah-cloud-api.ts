@@ -7,6 +7,7 @@ import { createNoahRemoteWork, finishNoahRemoteWork, startNoahRemoteWork } from 
 import { workStore } from './work-store.ts';
 import type { WorkJob } from './workflow.ts';
 import { noahCloudReceipt, readNoahCloudReceipt } from './noah-cloud-receipt.ts';
+import { noahProjectSources } from './noah-provider-resolve.ts';
 
 type Dependencies = {
   authenticate: (request: Request) => Promise<string>;
@@ -20,7 +21,7 @@ type Dependencies = {
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie, Authorization', 'X-Content-Type-Options': 'nosniff' } });
 const active = (job: WorkJob) => ['queued', 'running'].includes(job.noahRemote?.state ?? '');
 export function noahCloudEntry(entry: DirectoryEntry) {
-  for (const url of [entry.card.href, ...(entry.card.sources ?? []).map(source => source.sourceUrl)]) {
+  for (const url of noahProjectSources(entry)) {
     if (typeof url !== 'string') continue;
     const profile = noahCloudProfile(url); if (profile) return profile;
   }

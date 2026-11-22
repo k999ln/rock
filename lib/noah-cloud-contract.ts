@@ -10,13 +10,28 @@ export const NOAH_CLOUD_PROFILES = {
     package: 'boss-agent-cli', sha256: '7d4b8834ab195964167c4dd8b07df82e4cc83c7f801124307ff8f386bbc4bef4',
     description: '入力した求人票から面接の準備と質問を作成します。求人検索・応募には求人サービスの本人認証が必要です。',
   },
+  time: {
+    name: 'Time', repository: 'https://github.com/modelcontextprotocol/servers/tree/main/src/time', version: '2026.11.18',
+    package: 'mcp-server-time', sha256: 'acb3ba2e0faf812ce49989fbe74d363501cf7720c8d7a103debef9815e838a34',
+    aliases: ['https://hub.docker.com/r/mcp/time', 'https://pypi.org/project/mcp-server-time'],
+    description: '公式Time MCPで現在時刻とタイムゾーンを確認・変換します。端末の設定は不要です。',
+  },
+  thinking: {
+    name: 'Sequential Thinking', repository: 'https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking', version: '2.2.0',
+    package: '@modelcontextprotocol/server-sequential-thinking', sha256: '7179c26a1a9fe99769832daeb41477cdd1e80f6e2d0301528c5b39888becd22d',
+    aliases: ['https://hub.docker.com/r/mcp/sequentialthinking', 'https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking'],
+    description: '公式Sequential Thinking MCPで課題を段階に分け、実行案をまとめます。依頼ごとに独立した環境で処理します。',
+  },
 } as const;
 export type NoahCloudProfile = keyof typeof NOAH_CLOUD_PROFILES;
 export const NOAH_CLOUD_LIMITS = Object.freeze({ seconds: 240, modelCalls: 8, promptBytes: 12000, outputBytes: 131072, modelInputBytes: 131072, outputTokens: 2048, files: 12, fileBytes: 32768, totalFileBytes: 65536, dailyJobs: 50, ownerDailyJobs: 10, concurrent: 2 });
 export const NOAH_CLOUD_MODEL = '@cf/openai/gpt-oss-20b';
 export function noahCloudProfile(repository: string): NoahCloudProfile | null {
   const normalized = repository.replace(/\.git\/?$/, '').replace(/\/$/, '').toLowerCase();
-  return (Object.keys(NOAH_CLOUD_PROFILES) as NoahCloudProfile[]).find(key => NOAH_CLOUD_PROFILES[key].repository.toLowerCase() === normalized) ?? null;
+  return (Object.keys(NOAH_CLOUD_PROFILES) as NoahCloudProfile[]).find(key => {
+    const profile = NOAH_CLOUD_PROFILES[key];
+    return [profile.repository, ...('aliases' in profile ? profile.aliases : [])].some(url => url.toLowerCase() === normalized);
+  }) ?? null;
 }
 export const noahCloudId = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(value);
 export type NoahCloudFile = { name: string; base64: string; bytes: number; sha256: string };

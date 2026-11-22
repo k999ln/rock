@@ -17,4 +17,8 @@
 
 ## 検証
 
+追加した標準入出力MCPの実配布物試験はrootから `NOAH_TEST_IMAGE=<built-image> node scripts/test-noah-cloud-stdio.mjs`。TimeとSequential Thinkingを非root・network none・共有mountなしのLinux containerで起動し、公式ツールを実行する。モデルは固定応答のため、これを本番モデルの合格とは扱わない。npmは固定package-lockとignore-scripts、PyPIは公式wheelのSHA-256を使用する。
+
+提供元接続は `tests/noah-provider-mcp.test.mjs` / `tests/noah-provider-resolve.test.mjs`、ブラウザは `NOAH_TEST_PROVIDER_KIND=mcp` を指定した `scripts/test-noah-provider-browser.mjs` で検証する。全掲載の読取点検は `node --experimental-strip-types scripts/noah-agent-coverage.mjs --input <catalog-snapshot.json> --output <report.json> --live`。公開メタデータと握手だけを行い、道具・申込・支払は実行しない。件ごとに対応状況を保存し、definition_confirmedを実行成功へ昇格しない。
+
 rootで `node --experimental-strip-types --test tests/noah-cloud-*.test.mjs`、`npm run verify`。実ブラウザのfixture試験は `scripts/test-noah-cloud-browser.mjs` に `NOAH_TEST_URL`、`NOAH_TEST_OUTPUT`、`NOAH_PLAYWRIGHT_PACKAGE` を指定する。fixtureの合格と実クラウドでの合格を区別する。
