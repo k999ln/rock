@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
+  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_OSHI_EXCLUDED, NOAH_OSHI_FANDOMS, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
   noahBusinessAllowance, noahBusinessCanSpend, noahEveBacklog, noahPlanBlueprints, noahTrialDecision,
 } from '../lib/noah-business.ts';
 import { businessMarkdown, businessReport } from '../scripts/noah-business-plan.mjs';
@@ -14,7 +14,7 @@ const DAY = 86_400_000;
 void test('blueprints: hundreds of ways to earn, from the taxonomy, the same every time, each from sign-up to payout', () => {
   const all = noahBlueprints();
   assert.ok(all.length >= 400, `${all.length}`);
-  assert.deepEqual(new Set(all.map((b) => b.model)), new Set(['affiliate', 'gig', 'digital', 'ads', 'commerce', 'app']));
+  assert.deepEqual(new Set(all.map((b) => b.model)), new Set(['affiliate', 'gig', 'digital', 'ads', 'commerce', 'app', 'oshi']));
   assert.equal(new Set(all.map((b) => b.id)).size, all.length, 'ids are unique');
   assert.deepEqual(noahBlueprints(), all, 'deterministic');
   const accounts = new Set(NOAH_ACCOUNTS.map((a) => a.id));
@@ -103,4 +103,24 @@ void test('report: verified mappings for agents no longer listed are ignored; th
   const data = JSON.parse(readFileSync(new URL('../data/noah-business-capabilities.json', import.meta.url), 'utf8'));
   assert.equal(data.schema, 'noah-business-capabilities/1');
   for (const [capability, ids] of Object.entries(data.verified)) { assert.ok(NOAH_CAPABILITIES[capability], capability); assert.ok(Array.isArray(ids)); }
+});
+
+void test('推し活: the assistant watches, schedules and reminds, but applying and paying are always the fan\'s own tap; proxy buying is human-paced and never tickets', () => {
+  const all = noahBlueprints(), oshi = all.filter((b) => b.model === 'oshi'), byId = new Map(all.map((b) => [b.id, b]));
+  assert.equal(oshi.filter((b) => b.id.startsWith('oshi:assistant:')).length, NOAH_OSHI_FANDOMS.length);
+  const assistant = byId.get('oshi:assistant:idol');
+  for (const id of ['watch', 'calendar', 'notify', 'travel', 'budget']) assert.equal(assistant.steps.find((s) => s.id === id).kind, 'auto', id);
+  assert.equal(assistant.steps.find((s) => s.id === 'apply').kind, 'tap', 'no bot applies to a lottery or first-come sale');
+  assert.match(assistant.steps.find((s) => s.id === 'apply').reason, /BOT/);
+  assert.equal(assistant.steps.find((s) => s.id === 'travel-book').kind, 'tap', 'paid bookings are confirmed by the person');
+  const proxy = byId.get('oshi:proxy-overseas:anime:x');
+  assert.equal(proxy.steps.find((s) => s.id === 'buy').kind, 'tap');
+  assert.match(proxy.steps.find((s) => s.id === 'buy').reason, /人の速さ/);
+  assert.equal(proxy.steps.find((s) => s.id === 'license').kind, 'review', 'whether a secondhand dealer licence is needed is checked first');
+  for (const id of ['receive', 'ship']) assert.equal(proxy.steps.find((s) => s.id === id).kind, 'human', id);
+  // チケットを扱う設計図・転売・自作の版権グッズは無い。除外した物は、理由と出典を持つ。
+  assert.ok(!oshi.some((b) => /ticket|チケット/u.test(b.id) || b.steps.some((s) => /チケットを(仕入|売)|転売する|買い占め/u.test(s.label))));
+  assert.ok(byId.get('oshi:supplies:suzuri-pod').steps.some((s) => s.id === 'rights' && s.capability === 'compliance.check'));
+  for (const ex of NOAH_OSHI_EXCLUDED) assert.ok(ex.reason && ex.source.startsWith('https://'), ex.id);
+  assert.deepEqual(NOAH_OSHI_EXCLUDED.map((e) => e.id), ['ticket-auto-apply', 'ticket-resale', 'limited-sniping', 'multi-account', 'queue-bypass', 'fan-made-goods']);
 });
