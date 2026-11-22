@@ -12,6 +12,8 @@ import {
   TRIAL_MS,
 } from '../toolkits/esim-bootstrap/noah-trial/trial.mjs';
 import { startTrialServers } from '../toolkits/esim-bootstrap/noah-trial/server.mjs';
+import { receiveLot } from '../services/operator-dock/src/distribution-stock.ts';
+import { registerAddress } from '../services/operator-dock/src/distribution-address.ts';
 import { base } from '../toolkits/esim-bootstrap/noah-trial/view.mjs';
 
 function fixture(t, options = {}) {
@@ -124,25 +126,68 @@ await test('運営Dockの指定を本人の模擬回線に届け、受取と再�
       ).text(),
       /配給を指定/,
     );
+    const db = await f.trial.runtime.distributionDb();
+    const lot = (item) =>
+      receiveLot(db, {
+        id: newApproval(),
+        item,
+        supplier: '試験用',
+        units: 2,
+        unit: '箱',
+        cost_yen: 0,
+        freight_yen: 0,
+      });
     const input = {
       id: newApproval(),
       recipient: 'alice',
-      item: '試験用野菜セット',
-      quantity: '1箱',
+      lot_id: (await lot('試験用野菜セット')).id,
+      units: 1,
       pickup: '東会場・土曜午前',
     };
     assert.equal((await send(input, origins.mobile)).status, 403);
+    const address = {
+      name: '配送試験A',
+      postal: '０１２－３４５６',
+      prefecture: '東京都',
+      city: '架空試験市',
+      street: '架空試験町1',
+      building: '',
+    };
+    assert.equal((await send(input)).status, 409);
+    assert.equal((await post('public', 'address', address)).status, 403);
+    assert.equal(
+      (await post('mobile', 'address', { ...address, recipient: 'bob' }))
+        .status,
+      400,
+    );
+    assert.equal(
+      (await post('mobile', 'address', { ...address, postal: '1' })).status,
+      400,
+    );
+    assert.equal((await post('mobile', 'address', address)).status, 303);
     const attempts = await Promise.all([send(input), send(input)]);
     assert.ok(attempts.every((r) => r.ok));
-    assert.equal((await send({ ...input, quantity: '2箱' })).status, 409);
+    assert.equal((await send({ ...input, units: 2 })).status, 409);
     f.invite('bob');
     const other = {
       ...input,
       id: newApproval(),
       recipient: 'bob',
-      item: '別の人の配給',
+      lot_id: (await lot('別の人の配給')).id,
     };
+    await f.trial.enroll('bob');
+    await f.trial.install('bob', 2);
+    await registerAddress(await f.trial.runtime.distributionDb(), 'bob', {
+      ...address,
+      name: '配送試験B',
+    });
     assert.ok((await send(other)).ok);
+    const deadline = Date.now() + 15000;
+    while (
+      !(await page('public')).includes('更新があります') &&
+      Date.now() < deadline
+    )
+      await new Promise((r) => setTimeout(r, 100));
     assert.match(await page('public'), /更新があります/);
     assert.doesNotMatch(await page('public'), /試験用野菜セット|東会場/);
     assert.match(await page('mobile'), /試験用野菜セット/);
@@ -531,8 +576,8 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
   await until(() => creations === 1);
   assert.equal((await run('list')).jobs[0].route, 'provider');
   await f.restart();
+  await until(() => reads >= 3);
   acknowledged = true;
-  await until(() => reads >= 2);
   await until(async () => (await run('list')).jobs[0].state === 'completed');
   await run('start', start);
   const [saved] = (await run('list')).jobs;
@@ -548,6 +593,14 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
     assert.equal(view.jobs[0].route, route);
     assert.match(view.jobs[0].result, /文字数 2/);
   }
+  const selected = await run('list', { work: start.id });
+  assert.equal(selected.work, start.id);
+  assert.deepEqual(
+    selected.jobs.map((j) => j.id),
+    [start.id],
+  );
+  assert.equal(selected.jobs[0].route, 'provider');
+  await assert.rejects(run('list', { work: newApproval() }), { status: 404 });
   const stopped = { id: newApproval(), route: 'provider', text: 'never send' };
   await run('start', stopped);
   await run('stop', { id: stopped.id });
@@ -555,6 +608,42 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
   await f.trial.revoke('alice');
   await assert.rejects(run('list'), /回線/);
   assert.equal(creations, 1);
+});
+
+await test('an empty successful response or invalid completion flag needs review on the original work ID', async (t) => {
+  let starts = 0;
+  const provider = async (request) => {
+    if (request.method === 'GET') return new Response(null, { status: 404 });
+    starts++;
+    const { text } = await request.json();
+    if (text === 'missing body') return new Response(null, { status: 204 });
+    const id = new URL(request.url).pathname.split('/').pop();
+    return Response.json({ id, result: 'partial text', final: 'false' });
+  };
+  const f = fixture(t, { routeBindings: { PROVIDER: provider } });
+  f.invite();
+  await phone(f.trial);
+  const run = (action, input) =>
+    f.trial.cloudWork('alice', true, action, input);
+  for (const [i, text] of ['missing body', 'invalid flag'].entries()) {
+    const input = { id: newApproval(), route: 'provider', text };
+    await run('start', input);
+    let job;
+    const deadline = Date.now() + 15000;
+    do {
+      [job] = (await run('list', { work: input.id })).jobs;
+      if (job.state !== 'queued') break;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    } while (Date.now() < deadline);
+    assert.equal(job.state, 'attention', text);
+    assert.equal(job.result, undefined);
+    await run('start', input);
+    await f.restart();
+    const [reopened] = (await run('list', { work: input.id })).jobs;
+    assert.equal(reopened.id, input.id);
+    assert.equal(reopened.state, 'attention');
+    assert.equal(starts, i + 1);
+  }
 });
 
 await test('partial results remain readable and the same work keeps polling for its missing outcome', async (t) => {
@@ -611,4 +700,49 @@ await test('partial results remain readable and the same work keeps polling for 
   });
   assert.equal(created, 1);
   assert.ok(lookups >= 3);
+});
+
+await test('selecting an Agent before enrollment returns to that package over the simulated dedicated line', async (t) => {
+  const f = fixture(t),
+    invite = f.invite(),
+    server = await startTrialServers(f.trial);
+  t.after(() => server.close());
+  const { public: ordinary, mobile } = server.origins;
+  const first = await fetch(ordinary + base + 'agents?agent=text-check', {
+    redirect: 'manual',
+  });
+  assert.equal(first.status, 303);
+  assert.equal(first.headers.get('location'), base);
+  const selected = first.headers.get('set-cookie').split(';')[0];
+  let cookies = selected;
+  const post = async (action, fields = {}) =>
+    fetch(ordinary + base + action, {
+      method: 'POST',
+      headers: { Origin: ordinary, Cookie: cookies },
+      body: new URLSearchParams(fields),
+      redirect: 'manual',
+    });
+  const login = await post('login', { invite });
+  cookies += '; ' + login.headers.get('set-cookie').split(';')[0];
+  await post('enroll');
+  await post('install');
+  const home = await fetch(ordinary + base, { headers: { Cookie: cookies } });
+  assert.match(await home.text(), /選んだAgentに戻る/);
+  const go = await fetch(mobile + base, {
+    headers: { Cookie: cookies },
+    redirect: 'manual',
+  });
+  assert.equal(go.status, 303);
+  assert.equal(go.headers.get('location'), base + 'agents?agent=text-check');
+  const card = await fetch(mobile + go.headers.get('location'), {
+    headers: { Cookie: cookies },
+  });
+  assert.match(await card.text(), /文章の文字数/);
+  assert.equal((await f.trial.cloudWork('alice', true, 'list')).jobs.length, 0);
+  const hostile = await fetch(
+    ordinary + base + 'agents?agent=https%3A%2F%2Fexample.invalid',
+    { redirect: 'manual' },
+  );
+  assert.equal(hostile.status, 401);
+  assert.equal(hostile.headers.get('location'), null);
 });

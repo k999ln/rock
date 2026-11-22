@@ -333,7 +333,7 @@ SIM/eSIMはRockstarOS導入時の回線に使います。対象機種と署名�
 
 Cloud agentの実行前に単価・見積りと予算上限を確認し、実行後に項目別の使用量を照合します。商品料金、通信料、si使用料、外部実費、利用者自身の鍵での費用は個別に扱います。回線発行・本番決済は各providerとの接続試験が残っています。[SIM/eSIM設計](docs/structure/03-esim.md) · [料金と使用量](docs/sky-billing.md) · [導入試作](toolkits/esim-bootstrap/README.md)
 
-配給は運営Dockで受取人・品目・数量・受取場所と日時を指定します。利用者は模擬専用回線で自分の配給を開き、受け取ったら「受け取りました」を押します。[Macで両方の画面を試す](toolkits/esim-bootstrap/README.md#noah-free-trial)
+配給を受け取る人は、最初にNoahの模擬専用回線で配送先を登録します。運営がDockで入荷と割当を記録すると、画面を閉じていてもAgentが本人向けのお知らせを作ります。届いたら「受け取りました」を押します。[Macで両方の画面を試す](toolkits/esim-bootstrap/README.md#noah-free-trial)
 
 同じ模擬専用回線の「クラウドでAgentを使う」から、文章を渡して他のアプリに戻れます。提供元の専用クラウド・登録済みの接続先・Noahクラウドを別々のローカルWorkerで試せます。結果が届くまでサーバーが同じ依頼を照会し、仕事ごとに成果・未達・未確認を表示します。
 

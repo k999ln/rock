@@ -10,7 +10,10 @@
     "decidedAt": "2026-11-22",
     "managedBy": "operator_dock",
     "fundedBy": "operator",
-    "recipientActions": ["view_assigned_goods", "acknowledge_receipt"],
+    "recipientActions": ["register_delivery_address", "view_assigned_goods", "acknowledge_receipt"],
+    "allocation": "received_stock_with_registered_recipient_address",
+    "addressChangesApplyTo": "future_allocations",
+    "ordinaryConnection": "generic_update_only",
     "design": "docs/structure/04-eve-noa-amc-sky.md"
   },
   "miiFirstNoahMinimumDecision": {
