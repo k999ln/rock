@@ -1,5 +1,7 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
+2026-11-23 無料クラウド実行: 固定した公式Memory/Filesystem/Sequential ThinkingのJavaScript本体をWorkersへ組み込み、依頼専用VFSとSQLite Durable Objectのalarmで実行する。プラン変更をせず、無料枠・日次予約・実受入済profileの制限を保持する。[境界と合格条件](../services/noah-cloud-agents.md#無料枠の公式javascript実行)
+
 2026-11-22 CLI対応の継続: MemoryとFilesystemの公式固定版は依頼ごとの作業領域だけを使う。記憶ファイルも成果物としてWorkへ保存し、次回の自動読込や利用者端末のファイル操作は提供しない。配備先は元のCloudflare account IDへ固定する。
 2026-11-22 全掲載Agentへの接続対応: 収集した配布元と公式の実行定義を照合し、提供元MCP/Spaceの入力と成果保存をNoah内で扱う。CLIは固定版を検証したprofileから拡張する。掲載、接続候補の発見、握手、実処理成功を区別し、全件の対応状況と残る条件を集計する。運営契約・提供元の本人認証・権限ゲートは省略しない。[実行方式と受入](../services/noah-cloud-agents.md)
 

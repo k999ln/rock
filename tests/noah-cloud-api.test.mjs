@@ -19,6 +19,7 @@ async function world(t) {
   const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, authenticate: async () => owner, directory: async () => listed ? [entry] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
     count++;
     if (input.action === 'start') { receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, profile: input.profile, version, distribution, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
+    if (input.action === 'stop' && records.has(input.jobId)) { const stopped = {...records.get(input.jobId),state:'cancelled'}; records.set(input.jobId,stopped); return Response.json(stopped); }
     if (input.action === 'job') return records.has(input.jobId) ? Response.json(records.get(input.jobId)) : Response.json({ error: 'not_found' }, { status: 404 });
     return Response.json({ connection: null });
   } });
@@ -111,4 +112,15 @@ void test('a saved per-operation confirmation is required before dispatch', asyn
   const input = { action: 'start', jobId: id(1), connectionId: id(2), prompt: 'hello' };
   const first = await w.request(input); assert.equal(first.status, 409); assert.equal((await first.json()).confirmationRequired, true); assert.equal(w.calls(), 0);
   assert.equal((await w.request({ ...input, confirm: true })).status, 202); assert.equal(w.calls(), 1);
+});
+
+void test('owned jobs stay stoppable after catalog removal while new work and other owners remain rejected', async t => {
+  const w = await world(t);
+  await w.request({action:'start',jobId:id(700),connectionId:id(701),prompt:'running'});
+  w.listed(false);
+  assert.equal((await w.api(new Request(`${origin}/api/noah/cloud-agents?projectId=${project}&jobId=${id(700)}`))).status,200);
+  assert.equal((await w.request({action:'start',jobId:id(702),connectionId:id(701),prompt:'new'})).status,404);
+  assert.equal((await (await w.request({action:'stop',jobId:id(700)})).json()).job.state,'cancelled');
+  w.owner('another-owner');
+  assert.equal((await w.request({action:'stop',jobId:id(700)})).status,404);
 });
