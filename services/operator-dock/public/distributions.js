@@ -287,11 +287,18 @@ bindForm(
   (r) => ({ ...r, units: Number(r.units) }),
   '配給を指定しました。',
 );
-document.querySelector('#refresh').addEventListener('click', () =>
-  refresh().catch((e) => {
-    message.textContent = e.message;
-  }),
-);
-refresh().catch((e) => {
-  message.textContent = e.message;
-});
+async function refreshRecords() {
+  const button = document.querySelector('#refresh');
+  button.disabled = true;
+  try {
+    await refresh();
+    message.textContent = '';
+  } catch (error) {
+    message.textContent =
+      error.message + ' 「更新」を押して再試行してください。';
+  } finally {
+    button.disabled = false;
+  }
+}
+document.querySelector('#refresh').addEventListener('click', refreshRecords);
+void refreshRecords();

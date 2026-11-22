@@ -248,6 +248,28 @@ try {
     'Notes',
   );
   await ops.nav(dock + '/', '入荷を記録');
+  await ops.wait('入荷記録はありません');
+  const originalDb = trial.runtime.distributionDb;
+  try {
+    trial.runtime.distributionDb = async () => {
+      throw Error('synthetic storage outage');
+    };
+    await ops.click('#refresh');
+    await until(
+      () =>
+        ops.ev(
+          'document.querySelector("#message").textContent.includes("再試行")',
+        ),
+      'Dock retry action',
+    );
+  } finally {
+    trial.runtime.distributionDb = originalDb;
+  }
+  await ops.click('#refresh');
+  await until(
+    () => ops.ev('document.querySelector("#message").textContent === ""'),
+    'Dock recovered',
+  );
   await ops.fill('#lot', {
     supplier: '試験仕入先',
     item: '試験セット',
@@ -314,7 +336,7 @@ try {
   );
   await ops.screenshot('distribution-stock');
   console.log(
-    'PASS Mac Chrome, independent operator and recipient sessions, 320/390px, address required, recipient tab closed before allocation, unrelated typing, generic notice, result, receipt and hidden-by-default shipping address.',
+    'PASS Mac Chrome, independent operator and recipient sessions, 320/390px, address required, Dock storage retry and recovery, recipient tab closed before allocation, unrelated typing, generic notice, result, receipt and hidden-by-default shipping address.',
   );
   // Submit identical text through three different bindings using the real form.
   for (const route of ['noah', 'provider', 'registered']) {
