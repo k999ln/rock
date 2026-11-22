@@ -66,6 +66,7 @@ export default function NoahPublicCatalog({ basePath = '/noah', embedded = false
           <div className={styles.filters} aria-label="分類で絞り込む">{[['all', 'すべて'], ['agent', 'Agent本体候補'], ['candidate', '分類確認待ち'], ['related', 'Tool・モデル等']].map(([value, label]) => <button key={value} aria-pressed={kind === value} className={kind === value ? styles.selectedFilter : ''} onClick={() => setKind(value)}>{label}</button>)}</div>
         </section>
         <div className={styles.feedLabel}><span>世界のAgentを見つける</span>{page && <span className={styles.resultCount}>{page.total.toLocaleString('ja-JP')}件</span>}</div>
+        <p className={styles.researchNote}><Link href={`${basePath}/agents/verified`}>重複を除いた本体一覧・候補の判定理由を見る</Link></p>
         {page && <p className={styles.researchNote}>調査日 {page.asOf} · Agent候補と関連資産を含みます。掲載数は実行対応数ではありません。</p>}
         {loading && <output className={styles.loading}>カタログを読み込んでいます…</output>}
         <section aria-label="Agentのタイムライン">{page?.entries.map(entry => <article className={styles.post} key={entry.id}>
