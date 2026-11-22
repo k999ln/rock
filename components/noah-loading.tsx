@@ -4,8 +4,12 @@ import Image from 'next/image';
 import styles from './noah-loading.module.css';
 
 /** Decorative placeholders stay silent; one status announces the pending request. */
-export default function NoahLoading({ label = '読み込み中', compact = false, variant = 'default' }: { label?: string; compact?: boolean; variant?: 'default' | 'cards' }) {
+export default function NoahLoading({ label = '読み込み中', compact = false, variant = 'default' }: { label?: string; compact?: boolean; variant?: 'default' | 'cards' | 'connection' }) {
   const {t,locale}=useNoahLocale();
+  if (variant === 'connection') return <output aria-live="polite" className={styles.connection}>
+    <Image src="/brand/noah-icon-transparent.svg" width={88} height={88} alt="" aria-hidden="true" unoptimized className={styles.connectionMark} />
+    <span className={styles.srOnly}>{label}</span>
+  </output>;
   const cards = !compact && variant === 'cards';
   return <output aria-live="polite" className={cards ? styles.cards : compact ? styles.compact : styles.loading}>
     <span className={styles.srOnly}>{locale==='ja'?label:t('読み込み中')}</span>

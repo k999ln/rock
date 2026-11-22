@@ -141,6 +141,7 @@
 .workAgent a { display:inline-flex; align-items:center; min-height:44px; color:inherit; }
 
 .more { display:flex; justify-content:center; margin:26px 0 0; }
+.connectionOverlay { position:fixed; inset:0; z-index:1500; display:grid; place-items:center; background:rgba(255,255,255,.97); pointer-events:none; }
 .source { margin-top:40px; padding-top:18px; border-top:1px solid #ececef; color:#71717a; font-size:12px; line-height:1.9; }
 .source p { margin:0 0 6px; }
 .page .source a { color:#7546c8; text-decoration:underline; text-underline-offset:3px; display:inline-flex; align-items:center; min-height:44px; }
