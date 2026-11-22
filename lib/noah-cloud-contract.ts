@@ -36,6 +36,11 @@ export const NOAH_CLOUD_PROFILES = {
   },
 } as const;
 export type NoahCloudProfile = keyof typeof NOAH_CLOUD_PROFILES;
+export const NOAH_FREE_CLOUD_PROFILES: readonly NoahCloudProfile[] = ['memory', 'thinking', 'filesystem'];
+export function noahCloudSupported(mode?: string): readonly NoahCloudProfile[] {
+  return mode === 'free' ? NOAH_FREE_CLOUD_PROFILES : Object.keys(NOAH_CLOUD_PROFILES) as NoahCloudProfile[];
+}
+export const NOAH_FREE_CLOUD_LIMITS = Object.freeze({ dailyJobs: 10, ownerDailyJobs: 3, modelCalls: 4, outputTokens: 1024, modelInputBytes: 32768 });
 export const NOAH_CLOUD_LIMITS = Object.freeze({ seconds: 240, modelCalls: 8, promptBytes: 12000, outputBytes: 131072, modelInputBytes: 131072, outputTokens: 2048, files: 12, fileBytes: 32768, totalFileBytes: 65536, dailyJobs: 50, ownerDailyJobs: 10, concurrent: 2 });
 export const NOAH_CLOUD_MODEL = '@cf/openai/gpt-oss-20b';
 export function noahCloudProfile(repository: string): NoahCloudProfile | null {

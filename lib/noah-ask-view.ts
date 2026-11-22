@@ -1,4 +1,5 @@
 import type { NoahReceivedResult } from './noah-result-media.ts';
+import type { NoahCloudFile } from './noah-cloud-contract.ts';
 /**
  * 頼む画面（道具を選ぶ・入力欄・確かめ・仕事の一覧）が使う、画面の文と、状態 → 見た目の決まり。
  *
@@ -22,6 +23,7 @@ export type NoahAskItem = {
   agentId?: string;
   delivery?: 'missing_image';
   result?: NoahReceivedResult; note?: string;
+  cloudFiles?: NoahCloudFile[];
 };
 
 /** 画面の文（決まった文）。 */

@@ -1,18 +1,18 @@
 import type { DirectoryEntry } from './noah-agent-directory.ts';
 import type { NoahProjectDetail } from './noah-project-view.ts';
 import { noahSourceRepository } from './noah-source-import.ts';
-import { noahCloudProfile } from './noah-cloud-contract.ts';
+import { noahCloudProfile, type NoahCloudProfile } from './noah-cloud-contract.ts';
 import { noahProjectSources } from './noah-provider-resolve.ts';
 
-type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean };
+type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[] };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
 /** Resolve only an existing public catalog identity. The caller cannot supply a fetch URL or execution target. */
-export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false): NoahProjectDetail {
+export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false, cloudProfiles?: readonly NoahCloudProfile[]): NoahProjectDetail {
   const { card } = entry;
   if (cloudEnabled) for (const source of noahProjectSources(entry)) {
     if (typeof source !== 'string') continue;
     const profile = noahCloudProfile(source);
-    if (profile) return { card, connection: { kind: 'cloud', profile, providerFamilyId: entry.families.includes(card.id) ? card.id : null } };
+    if (profile && (!cloudProfiles || cloudProfiles.includes(profile))) return { card, connection: { kind: 'cloud', profile, providerFamilyId: entry.families.includes(card.id) ? card.id : null } };
   }
   if (entry.families.includes(card.id)) return { card, connection: { kind: 'ready', familyId: card.id } };
   // A source URL is provenance; social post URLs are never execution targets.
@@ -64,7 +64,7 @@ export function createNoahProjectApi(deps: Dependencies) {
     try {
       const entry = (await deps.directory()).find(row => row.card.feedbackId === id || row.card.id === id);
       if (!entry) return json({ error: 'このAgentは現在掲載されていません。' }, 404);
-      const detail = noahProjectDetail(entry, deps.cloudEnabled);
+      const detail = noahProjectDetail(entry, deps.cloudEnabled, deps.cloudProfiles);
       if (open === 'space') {
         if (detail.connection.kind !== 'space') return json({ error: 'このAgentの接続先は変更されています。詳細を読み直してください。' }, 409);
         try { return json({ url: await spaceHost(detail.connection.repository, deps.fetcher ?? fetch, new URL(request.url).origin) }); }
