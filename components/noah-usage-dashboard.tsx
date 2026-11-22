@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import WorkspaceShell from './workspace-shell';
-import type { NoahUsageReport, NoahUsageScope, NoahUsageSource } from '@/lib/noah-usage';
+import type { NoahCloudUsageReport, NoahUsageReport, NoahUsageScope, NoahUsageSource } from '@/lib/noah-usage';
 import styles from './noah-agent-catalog.module.css';
 const scopes: [NoahUsageScope,string][] = [['personal','自分の利用'],['publisher','提供したAgent'],['operator','Noah全体']];
 const sourceLabels: Record<NoahUsageSource,string> = { platform_agent: 'Noah経由の外部Agent', local_agent: 'このMacで実行したAgent', model: 'LLMの利用', reported: 'Agentからの利用報告' };
@@ -10,6 +10,29 @@ const duration = (ms: number | null) => ms === null ? '未計測' : `${(ms / 100
 function amount(minor: number, currency: string) {
   const format = new Intl.NumberFormat('ja-JP', { style: 'currency', currency });
   return format.format(minor / 10 ** (format.resolvedOptions().maximumFractionDigits ?? 2));
+}
+const usd = new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'USD', maximumFractionDigits: 6 });
+function CloudUsage({ cloud }: { cloud: NoahCloudUsageReport }) {
+  const { current, currentMonth, remainingUsd, trigger } = cloud;
+  return <section aria-labelledby="noah-cloud-usage">
+    <div className={styles.sectionTitle}><h2 id="noah-cloud-usage">クラウドの従量</h2><span>UTC の暦月・定価換算</span></div>
+    <div className={styles.metrics}>
+      <div><small>今月の従量（{currentMonth}）</small><strong>{current ? usd.format(current.totalUsd) : '未計測'}</strong></div>
+      <div><small>引き金（{usd.format(trigger.thresholdUsd)}）まで</small><strong>{remainingUsd === null ? '未確定' : usd.format(remainingUsd)}</strong></div>
+    </div>
+    {current && current.unpriced > 0 && <p className={styles.muted}>単価未確定 {current.unpriced} 件。表示額は下限です。</p>}
+    <p>{trigger.triggered
+      ? `終了済みの月が ${trigger.streak} か月連続で引き金を超えました。`
+      : `終了済みの月で ${trigger.consecutive} か月連続の超過が判定条件です。現在は ${trigger.streak} か月連続です。`}</p>
+    {!!cloud.months.length && <div className={styles.tableWrap}><table>
+      <caption>月別の実費</caption>
+      <thead><tr><th scope="col">月</th><th scope="col">Containers</th><th scope="col">Workers AI</th><th scope="col">合計</th><th scope="col">単価未確定</th></tr></thead>
+      <tbody>{cloud.months.slice().reverse().map(month => <tr key={month.month}>
+        <th scope="row">{month.month}</th><td>{usd.format(month.containersUsd)}</td><td>{usd.format(month.modelsUsd)}</td>
+        <td>{usd.format(month.totalUsd)}{month.unpriced ? '（下限）' : ''}</td><td>{month.unpriced}</td>
+      </tr>)}</tbody>
+    </table></div>}
+  </section>;
 }
 export default function NoahUsageDashboard({ initialScope, agent }: { initialScope: 'personal' | 'publisher'; agent: string }) {
   const [scope, setScope] = useState<NoahUsageScope>(initialScope);
@@ -38,6 +61,8 @@ export default function NoahUsageDashboard({ initialScope, agent }: { initialSco
     {error && <div role="alert" className={styles.error}>{error}<button onClick={() => { reset(); setAttempt(n => n + 1); }}>再確認</button></div>}
     {!report && !error && <output>記録を読み込んでいます…</output>}
     {report && <>
+      {scope === 'operator' && report.cloud && <CloudUsage cloud={report.cloud} />}
+      {scope === 'operator' && report.cloudError && <p role="alert">{report.cloudError}</p>}
       <div className={styles.sectionTitle}><h2>記録の種類</h2><span>種類をまたいで実行回数を合算しません</span></div>
       <div className={styles.actions}>{report.sources.map(s => <button key={s.source} aria-pressed={source === s.source} onClick={() => setSource(s.source)}>{sourceLabels[s.source]} · {s.metrics.runs}</button>)}</div>
       {selected && <>

@@ -43,7 +43,7 @@
           "status": "pass",
           "evidence": [
             "package.json",
-            "app/manifest.ts",
+            "app/web-app-manifests.ts",
             "public/rock-icon-maskable.svg",
             "tests/pwa-installability.test.mjs",
             "docs/validation.md"

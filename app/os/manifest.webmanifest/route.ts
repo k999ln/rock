@@ -1,4 +1,4 @@
-import osManifest from '@/app/manifest';
+import osManifest from '@/app/web-app-manifests';
 
 export function GET() {
   return Response.json({ ...osManifest(), id: '/os', start_url: '/os' }, {

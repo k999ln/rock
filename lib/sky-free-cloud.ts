@@ -3,6 +3,7 @@ import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import { applyWorkCommand, createWorkJob, WorkError, type WorkJob } from './workflow.ts';
 import { workStore } from './work-store.ts';
 import { skyRecurringUsage } from './sky-recurring-plan.ts';
+import { assertCloudBudget, cloudBudget, type CloudBudgetEnv } from './cloud-operations.ts';
 import type { ModelCandidate } from './sky-model-routing.ts';
 
 const ORIGIN = 'https://text.pollinations.ai';
@@ -27,6 +28,7 @@ export async function discoverFreeCloudModels(fetcher: typeof fetch = fetch): Pr
 export async function runFreeCloudText(input: {
   db: DB; owner: string; id: string; prompt: string; model: string; agentBinding?: {id:string;revision:number};
   consent: boolean; runtime: FreeCloudRuntime; fetcher?: typeof fetch; clock?: () => number; autoContinue?: boolean; enqueue?: boolean; retryClock?: () => number;
+  budgetEnv?: CloudBudgetEnv;
 }) {
   if (!freeCloudEnabled(input.runtime, input.owner) || input.consent !== true)
     throw new WorkError('無料Cloudの接続設定と外部送信への同意が必要です。', 403);
@@ -48,6 +50,8 @@ export async function runFreeCloudText(input: {
   }
   const plan = await skyRecurringUsage(input.db,input.owner,(input.clock ?? Date.now)());
   if (plan.reason !== 'available') throw new WorkError(`Skyプランで停止しています: ${plan.reason}`,403);
+  const budget = !saved && input.budgetEnv ? cloudBudget(input.budgetEnv) : undefined;
+  await assertCloudBudget(input.db, input.owner, Date.now(), budget);
   const fetcher = input.fetcher ?? fetch;
   const candidates = await discoverFreeCloudModels(fetcher);
   if (!candidates.some(m=>m.model===input.model)) {
@@ -56,7 +60,7 @@ export async function runFreeCloudText(input: {
   }
   const fresh = createWorkJob({id:input.id,templateId:'free-cloud-text',title:'無料Cloudの文章生成'});
   fresh.freeCloud = { agentBinding:input.agentBinding,requestDigest:digest, model:input.model, state:input.enqueue?'queued':'prepared', source:CLASSIC_FREE_SOURCE,backgroundPrompt:input.enqueue?input.prompt:undefined,backgroundConsent:input.enqueue===true, autoContinue:input.autoContinue===true,retryDeadline:retryNow()+600000,attempts:0 };
-  const created = saved ?? await store.create(input.owner,fresh);
+  const created = saved ?? await store.create(input.owner, fresh, undefined, budget);
   if (!created || created.freeCloud?.requestDigest!==digest) throw new WorkError('依頼IDが競合しています。',409);
   if(input.enqueue)return created;
   if (created.freeCloud.state!=='queued' && created.freeCloud.state!=='prepared' && !(saved && created.freeCloud.state==='waiting')) return created;

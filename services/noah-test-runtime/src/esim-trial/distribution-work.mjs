@@ -3,7 +3,7 @@ import { withinFreeTrialBudget } from './guide.mjs';
 
 const reference =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const genericNotice = '配給のお知らせがあります。';
+const genericNotice = '定期便のお知らせがあります。';
 
 // Only the operator's private service binding can enter this namespace.
 // One assignment owns its alarm; a manual text job never occupies its slot.
@@ -12,7 +12,7 @@ export class DistributionWork extends CloudWork {
     return [
       {
         id: 'distribution-notice',
-        name: '配給のお知らせ',
+        name: '定期便のお知らせ',
         routes: [{ id: 'noah', kind: 'noah', label: 'Noah', binding: 'SELF' }],
       },
     ];
@@ -76,7 +76,7 @@ export class DistributionWork extends CloudWork {
       readyAt: Date.now(),
       usageYen: 0,
       report: {
-        done: ['本人用の配給通知を作成しました。'],
+        done: ['本人用の定期便のお知らせを作成しました。'],
         incomplete: [],
         unverified: ['物品の到着は本人の受取申告で確認します。'],
       },

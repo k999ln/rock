@@ -88,11 +88,15 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
       const contents=readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url),'utf8');
       for (const statement of contents.split('--> statement-breakpoint')) if(statement.trim()) await db.prepare(statement.trim()).run();
     }
+    const cloudMigration = readFileSync(new URL('../drizzle/0058_cloud_operations.sql', import.meta.url), 'utf8');
+    for (const statement of cloudMigration.split('--> statement-breakpoint')) {
+      if (statement.trim()) await db.prepare(statement.trim()).run();
+    }
     let authenticatedOwner = owner;
     const env = { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false', ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: localAuthority ? owner : 'local-preview:another-fixture' };
     const deps = new Map([['cloudflare:workers', { env }],
       ['@/lib/fund-store', { database: () => db, requestUser: async () => authenticatedOwner }]]);
-    for (const name of ['sky-agent-requirements', 'request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
+    for (const name of ['sky-agent-requirements', 'request-auth', 'bounded-stream', 'owner-intent', 'operations', 'a2a-delegation-store', 'cloud-operations', 'work-store', 'workflow', 'rockstar-service-access', 'sky-agent-library', 'sky-agent-library-store', 'sky-tool-package', 'sky-package-runtime'])
       deps.set(`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url)));
     for (const name of ['a2a-price-quote', 'a2a-usage-receipt', 'jennifer-execution-store', 'jennifer-amc-execution', 'a2a-agent-directory', 'sky-tool-package-store', 'sky-package-runtime-binding', 'sky-package-runtime-binding-store'])
       deps.set(`@/lib/${name}`, {});

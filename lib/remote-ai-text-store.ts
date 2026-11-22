@@ -9,6 +9,8 @@ import {
   type RemoteAiTextPriceResult,
 } from './remote-ai-text-pricing.ts';
 
+import { assertCloudBudget, cloudAdmissionGuard, type CloudBudget } from './cloud-operations.ts';
+
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
 type RecurringContractBinding = {
   schema: 'sky.recurring-quote-binding/1';
@@ -290,12 +292,13 @@ export class RemoteAiTextStore {
     if (!row || !sameRequest(row)) throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
     return { record: row, inserted: row.id === id };
   }
-  async reserve(owner: string, id: string, approval: string, now = Date.now()) {
+  async reserve(owner: string, id: string, approval: string, now = Date.now(), budget?: CloudBudget) {
     const current = await this.get(owner, id);
     if (!current) throw new RemoteAiTextStoreError('NOT_FOUND');
     if (approval !== current.approvalDigest) throw new RemoteAiTextStoreError('APPROVAL_MISMATCH');
     if (['reserved', 'sending', 'completed', 'unreconciled'].includes(current.state)) return current;
     if (current.state !== 'quoted') throw new RemoteAiTextStoreError('INVALID_STATE');
+    const guard = cloudAdmissionGuard(owner, now, budget);
     try {
       await this.db.batch([
         this.db.prepare(`INSERT INTO agent_delegation_budget_pools
@@ -304,15 +307,19 @@ export class RemoteAiTextStore {
           FROM remote_ai_text_executions WHERE owner_user_id = ? AND id = ? AND state = 'quoted'
             AND approval_digest = ? AND expires_at > ?
             AND ${recurringBindingMatches('remote_ai_text_executions')}
-          ON CONFLICT(owner_user_id, parent_job_id) DO NOTHING`).bind(now, now, owner, id, approval, now),
+            ${guard.sql}
+          ON CONFLICT(owner_user_id, parent_job_id) DO NOTHING`).bind(now, now, owner, id, approval, now, ...guard.bindings),
         this.db.prepare(`UPDATE remote_ai_text_executions SET state = 'reserved', revision = revision + 1, updated_at = ?
           WHERE owner_user_id = ? AND id = ? AND state = 'quoted' AND approval_digest = ?
-            AND ${recurringBindingMatches('remote_ai_text_executions')}`).bind(now, owner, id, approval),
+            AND ${recurringBindingMatches('remote_ai_text_executions')} ${guard.sql}`)
+          .bind(now, owner, id, approval, ...guard.bindings),
       ]);
     } catch { throw new RemoteAiTextStoreError('BUDGET_UNAVAILABLE'); }
     const row = await this.get(owner, id);
-    if (!row || !['reserved', 'sending', 'completed', 'unreconciled'].includes(row.state))
+    if (!row || !['reserved', 'sending', 'completed', 'unreconciled'].includes(row.state)) {
+      await assertCloudBudget(this.db, owner, now, budget);
       throw new RemoteAiTextStoreError('BUDGET_UNAVAILABLE');
+    }
     return row;
   }
   async claimDispatch(owner: string, id: string, approval: string, now = Date.now()) {
