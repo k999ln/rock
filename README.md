@@ -203,6 +203,9 @@ flowchart LR
 
 最初の実行先は本人のApple Silicon Macです。Runnerを入れ、自分のアカウントとMacを結ぶと、Noahの管理画面でAgentへの依頼、成果の確認、停止に進めます。
 
+Noahのメニューにある「ココナラの仕事」から、Macの専用Chromeで返信・公開依頼への応募・添付付きの正式な納品を実行できます。宛先と内容を確認して送ると、別の作業を続けながら受付番号で結果を確認できます。[初回ログインと使い方](toolkits/noah-coconala/README.md)
+
+
 ![NoahのMac接続画面。RunnerのダウンロードからMacの登録までが中央に並ぶ](docs/assets/readme/noah-mac-handoff.png)
 
 *Web版のMac接続画面。中央にRunnerの入手先と、Macを承認する手順が並びます。* （過去の画面。Mac専用ページは撤去済み）

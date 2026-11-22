@@ -45,6 +45,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const secondary = [
     { href: `${base}/profile`, label: '登録情報', Icon: ShieldCheck },
     { href: `${base}/profile#permissions`, label: '任せる範囲', Icon: Settings2 },
+    { href: '/noah/coconala', label: 'ココナラの仕事', Icon: Bot },
     { href: `${base}/preferences`, label: '操作の設定', Icon: Globe },
   ];
   const gridItems = [

@@ -131,6 +131,7 @@ export default function SkyToolWorkspace({
             <div>
               <p className={styles.eyebrow}>{tool.category}</p>
               <h1 id="sky-tool-title">{tool.name}</h1>
+              {tool.id === 'coconala' && <Link className={styles.skyLink} href="/noah/coconala">Noahで返信・応募・納品する <ArrowUpRight size={15} /></Link>}
               <p className={styles.status} aria-label="現在の利用状態">
                 {tool.status === 'candidate' ? (
                   <CircleDashed size={14} />

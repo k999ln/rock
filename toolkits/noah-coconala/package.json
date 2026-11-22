@@ -1,0 +1,9 @@
+{
+  "name": "noah-coconala",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": { "start": "node mac.mjs start", "login": "node mac.mjs login", "test": "node --test test/*.test.mjs" },
+  "dependencies": { "playwright-core": "1.65.1" }
+}
