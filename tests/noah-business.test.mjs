@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_OSHI_EXCLUDED, NOAH_OSHI_FANDOMS, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
+  NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_OSHI_AGENT, NOAH_OSHI_EXCLUDED, NOAH_OSHI_FANDOMS, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
   noahBusinessAllowance, noahBusinessCanSpend, noahEveBacklog, noahPlanBlueprints, noahTrialDecision,
 } from '../lib/noah-business.ts';
 import { businessMarkdown, businessReport } from '../scripts/noah-business-plan.mjs';
@@ -105,20 +105,28 @@ void test('report: verified mappings for agents no longer listed are ignored; th
   for (const [capability, ids] of Object.entries(data.verified)) { assert.ok(NOAH_CAPABILITIES[capability], capability); assert.ok(Array.isArray(ids)); }
 });
 
-void test('推し活: the assistant watches, schedules and reminds, but applying and paying are always the fan\'s own tap; proxy buying is human-paced and never tickets', () => {
+void test('推し活: one Noah agent (priced by Noah\'s plan) watches, schedules and reminds; applying and paying are always the fan\'s own tap', () => {
+  const steps = new Map(NOAH_OSHI_AGENT.steps.map((s) => [s.id, s]));
+  for (const id of ['watch', 'calendar', 'notify', 'prepare', 'travel', 'resale', 'budget']) assert.equal(steps.get(id).kind, 'auto', id);
+  assert.equal(steps.get('apply').kind, 'tap', 'no bot applies to a lottery or first-come sale');
+  assert.match(steps.get('apply').reason, /BOT/);
+  assert.equal(steps.get('travel-book').kind, 'tap', 'paid bookings are confirmed by the person');
+  for (const s of NOAH_OSHI_AGENT.steps) if (s.capability) assert.ok(NOAH_CAPABILITIES[s.capability], s.id);
+  assert.equal(NOAH_OSHI_AGENT.startLanguage, 'ja'); assert.deepEqual([...NOAH_OSHI_AGENT.reminders.applyOpens], [-1_800_000, 0]);
+  assert.ok(NOAH_OSHI_AGENT.polling.officialMs >= 15 * 60_000 && NOAH_OSHI_AGENT.polling.restockMs >= 5 * 60_000, 'polite polling');
+});
+
+void test('推し活: the company earns from trips and supplies now; overseas proxy buying is on hold, human-paced, and never tickets', () => {
   const all = noahBlueprints(), oshi = all.filter((b) => b.model === 'oshi'), byId = new Map(all.map((b) => [b.id, b]));
-  assert.equal(oshi.filter((b) => b.id.startsWith('oshi:assistant:')).length, NOAH_OSHI_FANDOMS.length);
-  const assistant = byId.get('oshi:assistant:idol');
-  for (const id of ['watch', 'calendar', 'notify', 'travel', 'budget']) assert.equal(assistant.steps.find((s) => s.id === id).kind, 'auto', id);
-  assert.equal(assistant.steps.find((s) => s.id === 'apply').kind, 'tap', 'no bot applies to a lottery or first-come sale');
-  assert.match(assistant.steps.find((s) => s.id === 'apply').reason, /BOT/);
-  assert.equal(assistant.steps.find((s) => s.id === 'travel-book').kind, 'tap', 'paid bookings are confirmed by the person');
+  assert.ok(!oshi.some((b) => b.id.startsWith('oshi:assistant:')), 'the assistant is a Noah agent, not a separate subscription');
   const proxy = byId.get('oshi:proxy-overseas:anime:x');
-  assert.equal(proxy.steps.find((s) => s.id === 'buy').kind, 'tap');
-  assert.match(proxy.steps.find((s) => s.id === 'buy').reason, /人の速さ/);
-  assert.equal(proxy.steps.find((s) => s.id === 'license').kind, 'review', 'whether a secondhand dealer licence is needed is checked first');
+  assert.match(proxy.hold, /後回し/);
+  assert.equal(proxy.steps.find((s) => s.id === 'buy').kind, 'tap'); assert.match(proxy.steps.find((s) => s.id === 'buy').reason, /人の速さ/);
+  assert.equal(proxy.steps.find((s) => s.id === 'license').kind, 'review');
   for (const id of ['receive', 'ship']) assert.equal(proxy.steps.find((s) => s.id === id).kind, 'human', id);
-  // チケットを扱う設計図・転売・自作の版権グッズは無い。除外した物は、理由と出典を持つ。
+  const plans = noahPlanBlueprints({}), firstHeld = plans.findIndex((p) => p.hold);
+  assert.ok(firstHeld > 0 && plans.slice(firstHeld).every((p) => p.hold), 'held blueprints come after all others');
+  assert.equal(oshi.filter((b) => b.id.startsWith('oshi:proxy-overseas:')).length, NOAH_OSHI_FANDOMS.length * 3);
   assert.ok(!oshi.some((b) => /ticket|チケット/u.test(b.id) || b.steps.some((s) => /チケットを(仕入|売)|転売する|買い占め/u.test(s.label))));
   assert.ok(byId.get('oshi:supplies:suzuri-pod').steps.some((s) => s.id === 'rights' && s.capability === 'compliance.check'));
   for (const ex of NOAH_OSHI_EXCLUDED) assert.ok(ex.reason && ex.source.startsWith('https://'), ex.id);

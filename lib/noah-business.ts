@@ -201,6 +201,32 @@ export const NOAH_OSHI_EXCLUDED = [
   { id: 'queue-bypass', label: '待機列・CAPTCHA・購入数の上限を避ける', reason: '販売側の決まりを技術で外す行為（本人の会話の決まりでも行わない）', source: 'https://t.pia.jp/info/terms-sp.jsp' },
   { id: 'fan-made-goods', label: '作品の絵柄・ロゴを使ったグッズを作って売る', reason: '著作権・商標の権利者の許諾が要る', source: 'https://www.bunka.go.jp/seisaku/chosakuken/' },
 ] as const;
+const step = (id: string, label: string, kind: NoahStepKind, extra: Omit<NoahBlueprintStep, 'id' | 'label' | 'kind'> = {}): NoahBlueprintStep => ({ id, label, kind, ...extra });
+/**
+ * 推し活のエージェント（Noah のエージェント 1 つ。本人の回答 2026-11-22「noah のエージェントの一個だよ」）。値段は Noah の料金のつなげる数に従う。
+ * 分野は 6 つ全部（本人の回答）。言葉は日本語から始め、英語・中国語・韓国語を足す。各工程の能力は、Eve が確かめるか作る（足りない物は Eve の一覧に入る）。
+ * 申込と、支払いを伴う予約は、必ず本人が押す（NOAH_OSHI_EXCLUDED）。会員番号などは本人の端末の中だけに置く。
+ * 遠征の宿・交通の候補に紹介の案件（アフィリエイト）を使う時は、広告の表示（PR）を付ける（会社の稼ぎ方 oshi:expedition-affiliate）。
+ */
+export const NOAH_OSHI_AGENT = {
+  id: 'noah-oshi', label: '推し活', languages: ['ja', 'en', 'zh-Hant', 'zh-Hans', 'ko'] as const, startLanguage: 'ja' as const,
+  steps: [
+    step('register', '推しを登録する（名前・公式サイト・公式 X・FC の有無・地域・月の予算）', 'human', { reason: '何を推すかは本人が決める' }),
+    step('watch', '公式の告知（FC 先行・オフィシャル先行・プレイガイド先行・一般発売・公式リセール・事前通販・会場物販・コラボカフェの予約）を見張る', 'auto', { capability: 'oshi.watch' }),
+    step('calendar', '受付開始・締切・当落・入金締切・発券・公演日を予定に入れる', 'auto', { capability: 'calendar.schedule' }),
+    step('notify', '受付開始の 30 分前と開始時、締切の 24 時間前と 3 時間前、入金締切の 24 時間前に知らせる', 'auto', { capability: 'notify.push' }),
+    step('prepare', '申込の頁を開き、要る物（会員番号・同行者・支払い方法）がそろっているか確かめる', 'auto', { capability: 'oshi.watch' }),
+    step('apply', '抽選・先着に申し込む', 'tap', { reason: '販売の規約が BOT・自動入力を禁じ、名義と本人確認の一致を求める。押すのは本人' }),
+    step('travel', '当選したら、公演地と日付から宿・交通の空き・値段・取消の決まりを出す', 'auto', { capability: 'travel.search' }),
+    step('travel-book', '宿・交通を予約する', 'tap', { reason: '支払いを伴うので、本人が金額と条件を見て押す' }),
+    step('resale', '公式リセール・再販・再入荷を知らせる（買うのは本人）', 'auto', { capability: 'oshi.watch' }),
+    step('budget', '推し活の家計簿（月の上限・使った額・残り）', 'auto', { capability: 'budget.ledger' }),
+  ],
+  /** 見張りの間隔（公開の頁だけ。変わった時だけ読む）。 */
+  polling: { officialMs: 15 * 60_000, restockMs: 5 * 60_000 },
+  /** 知らせる時（受付開始・締切・入金締切からの差、ミリ秒）。 */
+  reminders: { applyOpens: [-30 * 60_000, 0], applyCloses: [-24 * 3_600_000, -3 * 3_600_000], paymentDue: [-24 * 3_600_000] },
+};
 
 // ---------------------------------------------------------------------------
 // 設計図
@@ -216,11 +242,12 @@ export type NoahBlueprintStep = {
 export type NoahBlueprint = {
   id: string; model: 'affiliate' | 'gig' | 'digital' | 'ads' | 'commerce' | 'app' | 'oshi'; label: string;
   accounts: string[]; steps: NoahBlueprintStep[]; finance: boolean;
+  /** 後回しにした理由（本人の決め事）。並びでは、後回しでない物の後に置く。 */
+  hold?: string;
   /** 実際に稼げている事例（出典付き。task 122 の 2 段目で集める。ここでは空から始める）。 */
   evidence: { url: string; claim: string; checkedAt: number }[];
 };
 
-const step = (id: string, label: string, kind: NoahStepKind, extra: Omit<NoahBlueprintStep, 'id' | 'label' | 'kind'> = {}): NoahBlueprintStep => ({ id, label, kind, ...extra });
 /** アカウントを作る工程。本人確認・パスワード・確認コード・口座は本人。それ以外（入力内容・手順・規約の要点）は Noah が用意する。 */
 const signUp = (account: string): NoahBlueprintStep[] => {
   const a = ACCOUNT.get(account);
@@ -304,23 +331,12 @@ export function noahBlueprints(): NoahBlueprint[] {
     step('submit', '審査に出す', 'tap', { account: 'apple-developer', reason: 'App Store の審査の提出は本人が押す' }), ...measure(),
   ] });
   for (const [fan, fanLabel] of NOAH_OSHI_FANDOMS) {
-    // 1. 推し活の手伝い（会社が月額で出す）。見張る・予定に入れる・知らせる・遠征を探す・家計簿。申込と購入は、必ず本人が押す。
-    push({ id: `oshi:assistant:${fan}`, model: 'oshi', label: `${fanLabel}の推し活の手伝い（月額）`, finance: false, steps: [
-      ...signUp('stripe'), ...signUp('x'),
-      step('watch', '公式の告知（申込・発売・再販・公式リセール）を見張る', 'auto', { capability: 'oshi.watch' }),
-      step('calendar', '申込の期間・締切・当落・入金を予定に入れる', 'auto', { capability: 'calendar.schedule' }),
-      step('notify', '受付が始まる前・締切の前に知らせる', 'auto', { capability: 'notify.push' }),
-      step('apply', '抽選・先着に申し込む', 'tap', { reason: '申込は本人が押す（販売の規約は BOT・自動入力を禁じ、名義と本人確認の一致を求める）。Noah は申込の頁を開き、本人の端末の自動入力で済む所まで用意する' }),
-      step('travel', '遠征の宿・交通を探す', 'auto', { capability: 'travel.search' }),
-      step('travel-book', '宿・交通を予約する', 'tap', { reason: '支払いを伴う予約は、本人が金額と条件を確かめて押す' }),
-      step('budget', '推し活の家計簿をつける', 'auto', { capability: 'budget.ledger' }),
-      step('page', '申込みの頁を作る', 'auto', { capability: 'site.build' }), step('disclose', '料金・解約の表示を点検する', 'auto', { capability: 'compliance.check' }),
-      step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x' }), ...measure(),
-    ] });
+    // 推し活の手伝い（見張る・予定・知らせ・遠征・家計簿）は、稼ぎ方の設計図ではなく、Noah のエージェント 1 つ（NOAH_OSHI_AGENT）。
+    // 値段は Noah の料金（無料でつなげる数、課金でもっと）に従う（本人の回答 2026-11-22「noah のエージェントの一個だよ」）。
     // 2. 海外のファン向けの購入代行（公式通販・事前通販）。数量制限と規約を守り、人の速さで買う。チケットは扱わない。
     for (const channelId of ['x', 'instagram', 'tiktok'] as const) {
       const channel = NOAH_CHANNELS.find(c => c.id === channelId)!;
-      push({ id: `oshi:proxy-overseas:${fan}:${channelId}`, model: 'oshi', label: `${fanLabel}グッズの海外向け購入代行 × ${channel.label}`, finance: false, steps: [
+      push({ id: `oshi:proxy-overseas:${fan}:${channelId}`, model: 'oshi', label: `${fanLabel}グッズの海外向け購入代行 × ${channel.label}`, finance: false, hold: '後回し（本人 2026-11-22「代行は後回し」）', steps: [
         ...signUp('stripe'), ...signUp('official-shops'), ...signUp('japan-post'), ...signUp(channel.account),
         step('license', '古物商の許可が要るかを確かめる', 'review', { reason: '代わりに買って渡す形でも、新品の買い取り・売り渡しは古物に当たる場合がある。所轄の警察署・行政書士に確かめる（本人）' }),
         step('shop-rules', '公式通販の規約（代行・転売・海外転送・数量制限）を確かめる', 'auto', { capability: 'research.market' }),
@@ -405,7 +421,7 @@ export function noahPlanBlueprints(verified: NoahVerifiedCapabilities = {}, owne
     const costYen = steps.reduce((sum, s) => sum + (s.costYen ?? 0), 0), newAccounts = b.accounts.filter(a => !owned.has(a)).length;
     const score = Math.round((100 * covered / Math.max(1, steps.length) - 5 * humanSteps - 2 * tapSteps - reviewSteps - 3 * newAccounts - costYen / 1000 + 10 * b.evidence.length) * 100) / 100;
     return { ...b, steps, covered, gaps, humanSteps, tapSteps, reviewSteps, costYen, newAccounts, score };
-  }).sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
+  }).sort((a, b) => Number(!!a.hold) - Number(!!b.hold) || b.score - a.score || a.id.localeCompare(b.id));
 }
 /** アカウントを作る順: 作ると、上位 limit 件の設計図のうち、いくつで登録の工程が無くなるか（多い順）。要る物も出す。 */
 export function noahAccountKit(plans: readonly NoahBlueprintPlan[], limit = 100) {
