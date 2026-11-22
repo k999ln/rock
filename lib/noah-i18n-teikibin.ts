@@ -1,4 +1,4 @@
-/** 定期便の利用者の画面（components/noah-teikibin.tsx。task 123）の文。en / zh-CN / ko / es / ar の順。 */
+/** 定期便の利用者の画面（components/noah-teikibin.tsx。task 124）の文。en / zh-CN / ko / es / ar の順。 */
 export const NOAH_TEIKIBIN_MESSAGES: Record<string, readonly [string, string, string, string, string]> = {
   定期便: ['Regular delivery', '定期配送', '정기 배송', 'Entrega periódica', 'التوصيل الدوري'],
   あなたの定期便: ['Your regular delivery', '你的定期配送', '나의 정기 배송', 'Tu entrega periódica', 'توصيلك الدوري'],

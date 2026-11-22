@@ -1,5 +1,5 @@
 /**
- * 定期便の台帳の入口（task 123）。GET・POST /api/noah/teikibin。仕様: docs/noah/spec-123-teikibin-ledger.md の 8 章。
+ * 定期便の台帳の入口（task 124）。GET・POST /api/noah/teikibin。仕様: docs/noah/spec-124-teikibin-ledger.md の 8 章。
  *
  * - 利用者: 自分の定期便を読む（締めた月の実数だけ。R14）。申し込む（join）・有料を本人の分から払うかを選ぶ（plan）。
  *   切り替え NOAH_TEIKIBIN が閉の間は、額を返さず、申し込みも受けない（R15）。審査者は閉でも使える。

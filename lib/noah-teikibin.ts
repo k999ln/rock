@@ -1,5 +1,5 @@
 /**
- * 定期便の台帳の、通信も保存もしない部分（task 123。仕様: docs/noah/spec-123-teikibin-ledger.md）。
+ * 定期便の台帳の、通信も保存もしない部分（task 124。仕様: docs/noah/spec-124-teikibin-ledger.md）。
  *
  * - 切り替えの読み方（NOAH_TEIKIBIN・NOAH_TEIKIBIN_KEY）、月の扱い（日本時間の暦の月）、入力の検査。
  * - 受け取り番号と、確かめた身元の鍵（HMAC。生の口座番号・回線番号は残さない）。

@@ -2732,7 +2732,7 @@ export const noahTrialReports = sqliteTable('noah_trial_reports', {
   index('noah_trial_reports_package').on(t.packageId),
 ]);
 
-// 定期便の台帳（受け取る人・入金と費用・寄与・月の締め・人ごとの結果）。DDL は drizzle/0055_noah_teikibin.sql（task 123。docs/noah/spec-123-teikibin-ledger.md の 4 章）。
+// 定期便の台帳（受け取る人・入金と費用・寄与・月の締め・人ごとの結果）。DDL は drizzle/0055_noah_teikibin.sql（task 124。docs/noah/spec-124-teikibin-ledger.md の 4 章）。
 // 生の口座番号・回線番号は持たない（identity_key は HMAC）。お金は送らない（振込は運営が行い、結果だけを書く）。
 export const noahTeikibinPeople = sqliteTable('noah_teikibin_people', {
   id: text('id').primaryKey(),

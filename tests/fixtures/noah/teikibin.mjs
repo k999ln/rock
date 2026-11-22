@@ -1,4 +1,4 @@
-// 定期便の台帳（task 123）の試験の台。本番と同じ migration（0055）を、メモリの SQLite に流し、D1 の形（prepare・bind・first・all・run・batch）で包む。
+// 定期便の台帳（task 124）の試験の台。本番と同じ migration（0055）を、メモリの SQLite に流し、D1 の形（prepare・bind・first・all・run・batch）で包む。
 // batch は 1 回 50 文・1 文 100 個の値まで（D1 の上限と同じ）。hooks.failBatch が真を返す batch は、途中で失敗させる（締めの途中で止まった時の試験）。
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';

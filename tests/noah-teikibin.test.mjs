@@ -1,4 +1,4 @@
-// 定期便の台帳（task 123）。仕様: docs/noah/spec-123-teikibin-ledger.md の 10 章の表を、上から順に確かめる。
+// 定期便の台帳（task 124）。仕様: docs/noah/spec-124-teikibin-ledger.md の 10 章の表を、上から順に確かめる。
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {

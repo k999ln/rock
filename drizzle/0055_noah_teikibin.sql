@@ -1,7 +1,7 @@
 -- Noah: 定期便の台帳（2026-11-22 の本人の決定「配給制にする」）。入金と費用・寄与・受け取る人・月の締め・人ごとの結果。
--- Teikibin ledger task 123: entries, contributions, people, monthly closes and per-person lines. Apply locally; production application requires explicit authorization.
+-- Teikibin ledger task 124: entries, contributions, people, monthly closes and per-person lines. Apply locally; production application requires explicit authorization.
 -- 本番 D1 への適用は、本人の明示の許可の後（AGENTS.md §6）。既存の表は変えない。お金は送らない（振込は運営が行い、結果だけを書く）。
--- 仕様: docs/noah/spec-123-teikibin-ledger.md の 4 章。
+-- 仕様: docs/noah/spec-124-teikibin-ledger.md の 4 章。
 
 -- 受け取る人。owner_id は Noah の本人。identity_key は確かめた身元の HMAC（生の口座番号・回線番号は持たない）。
 CREATE TABLE IF NOT EXISTS noah_teikibin_people (

@@ -1,5 +1,5 @@
 /**
- * 定期便の台帳の読み書き（task 123。仕様: docs/noah/spec-123-teikibin-ledger.md の 4 章・7 章）。
+ * 定期便の台帳の読み書き（task 124。仕様: docs/noah/spec-124-teikibin-ledger.md の 4 章・7 章）。
  *
  * 誰が操作してよいか（審査者か・本人か）は、入口（lib/noah-teikibin-api.ts）が決める。ここは、規則（R2〜R13）を守って読み書きするだけ。
  * 締めは、途中で止まっても、同じ操作をもう一度送れば、保存した結果から続ける（7.2 章の 6）。
