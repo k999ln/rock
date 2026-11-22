@@ -39,13 +39,12 @@ if (command === 'stage' && file) {
     new URL('./registry.json', import.meta.url),
   );
   const origin = file ?? 'https://avoado.si';
-  if (
-    ![
-      'https://avoado.si',
-      'http://127.0.0.1:3000',
-      'http://localhost:3000',
-    ].includes(origin)
-  )
+  const supportedOrigins = new Set([
+    'https://avoado.si',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+  ]);
+  if (!supportedOrigins.has(origin))
     throw Error('NoahのURLを指定してください。');
   const { server, hub } = await createConnector({
     registryPath,
