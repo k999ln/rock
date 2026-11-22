@@ -4,7 +4,7 @@ import {
   prepareBusinessBrief,
   validateBusinessConfig,
   businessBlockers,
-  withTracking,
+  businessReferralUrl,
 } from './business-core.mjs';
 import {
   businessPage,
@@ -191,9 +191,9 @@ async function brief(input, config, env, channel) {
   });
   const tracked = recorded.ok;
   const ready = tracked && permitted;
-  const referralUrl = ready ? withTracking(config.affiliateUrl, uix) : null;
+  const referralUrl = ready ? businessReferralUrl(config, uix) : null;
   const next = ready
-    ? `広告：${config.publicName}\n${config.publicDescription}\n相談はご自身の意思で公式フォームからお申し込みください。研修の契約・費用は別です。\n${referralUrl}`
+    ? `広告：${config.publicName}\n${config.publicDescription}\n${config.registeredArticle ? '登録済みブログの記事で相談先の説明をご確認ください。記事内の広告リンクから公式フォームへ進めます。' : '相談はご自身の意思で公式フォームからお申し込みください。'}研修の契約・費用は別です。\n${referralUrl}`
     : result.eligible
       ? '相談票は完成しました。紹介先への案内は準備中です。申込せずこの整理票を利用できます。'
       : '対象と希望に合わせて、この整理票から次の進め方を検討してください。';
@@ -203,6 +203,10 @@ async function brief(input, config, env, channel) {
     eligible: result.eligible,
     referralAvailable: ready,
     referralUrl,
+    attribution:
+      config.registeredArticle || !config.trackingApproved
+        ? 'media_only'
+        : 'consultation',
     trackingRecorded: tracked,
     consultationId: tracked ? uix : null,
     hoursPerMonth: result.hoursPerMonth,

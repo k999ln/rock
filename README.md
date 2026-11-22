@@ -140,7 +140,7 @@ npm --prefix toolkits/noah-resale-agent run demo
 
 </details>
 
-相談と紹介案件の運営を組み合わせるAgentは、[Noahアフィリエイトキット](toolkits/noah-affiliate-agents/README.md)で作成できます。相談用・本人用のソースZIPと、提供者サーバー用MCPを用意しています。法人向けの①は、会員登録不要の[si導入準備票](https://noah-business-si.mr-kirin999.workers.dev/)と、集客計画・ASP承認・支払・銀行明細照合・費用の運営台帳を提供します。[運営手順](toolkits/noah-affiliate-agents/BUSINESS.md)。媒体許可・正式広告リンクは未確認のため紹介停止中です。自社Webの記事公開・相談処理・記録済み実績の点検は継続実行器で動かします。認証済みChromeからASP注文・承認・支払の単発取得と件数記録に対応し、取得期限切れを表示します。ASPの継続取得・銀行の読取接続・実入金の通し確認は未受入で、一連の自動化は未完了です。
+相談と紹介案件の運営を組み合わせるAgentは、[Noahアフィリエイトキット](toolkits/noah-affiliate-agents/README.md)で作成できます。相談用・本人用のソースZIPと、提供者サーバー用MCPを用意しています。法人向けの①は、会員登録不要の[si導入準備票](https://noah-business-si.mr-kirin999.workers.dev/)と、集客計画・ASP承認・支払・銀行明細照合・費用の運営台帳を提供します。[運営手順](toolkits/noah-affiliate-agents/BUSINESS.md)。提携済み法人研修の正式広告を登録済みブログに掲載し、対象相談からその記事へ案内します。広告タグは原文のまま保持し、Noah自体の媒体承認や個別相談への成果帰属を推測しません。自社Webの記事公開・相談処理・記録済み実績の点検は継続実行器で動かします。認証済みChromeからASP注文・承認・支払の単発取得と件数記録に対応し、取得期限切れを表示します。ASPの継続取得・銀行の読取接続・実入金の通し確認は未受入で、一連の自動化は未完了です。
 
 [サービスとAgentの組み合わせ](https://avoado.si/noah/combinations)では、公式の対応関係を確認した3件の準備ガイドを公開しています。組み合わせ候補の作成・条件判定・準備票・許可済み紹介・実成果の承認追跡を同じ処理で扱います。[追加と運営の手順](toolkits/noah-affiliate-agents/COMBINATIONS.md)。金融案件の提携・媒体・正式リンクは未受入のため紹介停止中。15分の条件点検は稼働、6時間のChrome読取は設定済みですが、初回は認証切れで未取得です。
 

@@ -198,7 +198,11 @@ export function normalizeRentracksCapture(capture, target) {
     const status = states[r[8]];
     summary[status]++;
     // Other media and offers remain local and never contribute to Noah revenue.
-    if (r[5] !== target.productName) continue;
+    if (
+      r[5] !== target.productName ||
+      (target.siteId && r[12] !== target.siteId)
+    )
+      continue;
     rows.push({
       id: r[3],
       offerId: target.offerId,

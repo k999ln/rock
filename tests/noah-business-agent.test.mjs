@@ -11,6 +11,7 @@ import {
   validateBusinessConfig,
   businessBlockers,
   withTracking,
+  businessReferralUrl,
   emptyBusinessLedger,
   applyBusinessCommand,
   businessReport,
@@ -34,6 +35,7 @@ const config = {
   publicName: '合成研修',
   publicDescription: '合成の説明',
   affiliateUrl: 'https://www.rentracks.jp/adx/r.html?idx=0.1.2.3.4&dna=5',
+  trackingApproved: true,
   partnered: true,
   mediaApproved: true,
   contentApproved: true,
@@ -138,6 +140,44 @@ await test('媒体・文面・期限・正式リンクの不足は独立に閉�
     new URL(withTracking(config.affiliateUrl, uix)).searchParams.get('uix'),
     uix,
   );
+});
+await test('登録記事は媒体承認を分離し、正式タグを改変せず相談IDを外へ渡さない', () => {
+  const article = {
+    url: 'https://publisher.example/articles/1',
+    mediaOrigin: 'https://publisher.example',
+    siteId: '2',
+    approved: true,
+    tagVerified: true,
+    reference: 'synthetic-ui-proof',
+  };
+  const c = { ...config, mediaApproved: false, registeredArticle: article };
+  assert.deepEqual(businessBlockers(c, 'web', now), []);
+  assert.equal(businessReferralUrl(c, uix), article.url);
+  assert.equal(
+    businessReferralUrl({ ...config, trackingApproved: false }, uix),
+    config.affiliateUrl,
+  );
+  for (const patch of [{ approved: false }, { tagVerified: false }])
+    assert.ok(
+      businessBlockers(
+        { ...c, registeredArticle: { ...article, ...patch } },
+        'web',
+        now,
+      ).length,
+    );
+  for (const patch of [
+    { siteId: '99' },
+    { url: 'https://evil.example/post' },
+    { url: article.url + '?token=x' },
+    { url: 'javascript:alert(1)' },
+    { reference: '' },
+  ])
+    assert.throws(() =>
+      validateBusinessConfig({
+        ...c,
+        registeredArticle: { ...article, ...patch },
+      }),
+    );
 });
 await test('成果→承認→支払→銀行を分離し、重複・差額・古い版・不正列を拒否', () => {
   let s = command(emptyBusinessLedger(), 'campaign', campaign);
@@ -361,7 +401,18 @@ await test(
         },
         durableObjectsPersist: dir,
         bindings: {
-          BUSINESS_CONFIG_JSON: JSON.stringify(config),
+          BUSINESS_CONFIG_JSON: JSON.stringify({
+            ...config,
+            mediaApproved: false,
+            registeredArticle: {
+              url: 'https://publisher.example/articles/1',
+              mediaOrigin: 'https://publisher.example',
+              siteId: '2',
+              approved: true,
+              tagVerified: true,
+              reference: 'synthetic-ui-proof',
+            },
+          }),
           OPERATIONS_TOKEN: token,
           NOAH_ORIGIN: 'https://avoado.si',
         },
@@ -389,7 +440,9 @@ await test(
       );
       const first = await (await req('/brief', input)).json();
       assert.equal(first.referralAvailable, true);
-      assert.match(first.referralUrl, /uix=nb\./);
+      assert.equal(first.referralUrl, 'https://publisher.example/articles/1');
+      assert.equal(first.attribution, 'media_only');
+      assert.doesNotMatch(first.referralUrl, /uix|rentracks/);
       assert.doesNotMatch(JSON.stringify(first), /PRIVATE|rewardYen|12000/);
       const snapshot = await (
         await req('/operations/api', { action: 'export' }, owner)

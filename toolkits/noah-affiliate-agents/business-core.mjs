@@ -122,6 +122,8 @@ export function validateBusinessConfig(v) {
       'rewardYen',
       'approvalDays',
       'enabled',
+      'registeredArticle',
+      'trackingApproved',
     ]),
     '設定の形式を確認してください。',
   );
@@ -159,7 +161,56 @@ export function validateBusinessConfig(v) {
     v.affiliateUrl === null || validBusinessLink(v.affiliateUrl),
     '媒体用の正式広告URLを指定してください。',
   );
+  check(
+    v.trackingApproved === undefined || typeof v.trackingApproved === 'boolean',
+    '追跡許可の形式を確認してください。',
+  );
+  if (v.registeredArticle !== undefined) {
+    const a = v.registeredArticle;
+    check(
+      keys(a, [
+        'url',
+        'mediaOrigin',
+        'siteId',
+        'approved',
+        'tagVerified',
+        'reference',
+      ]) &&
+        typeof a.approved === 'boolean' &&
+        typeof a.tagVerified === 'boolean' &&
+        /^\d+$/.test(a.siteId) &&
+        txt(a.reference, 200),
+      '登録媒体の証拠を確認してください。',
+    );
+    let valid = false;
+    try {
+      const u = new URL(a.url),
+        origin = new URL(a.mediaOrigin);
+      valid =
+        u.protocol === 'https:' &&
+        u.origin === a.mediaOrigin &&
+        origin.pathname === '/' &&
+        !u.username &&
+        !u.password &&
+        !u.search &&
+        !u.hash &&
+        u.pathname !== '/' &&
+        validBusinessLink(v.affiliateUrl) &&
+        new URL(v.affiliateUrl).searchParams.get('idx').split('.')[2] ===
+          a.siteId;
+    } catch {
+      /* Invalid destinations stay closed. */
+    }
+    check(valid, '登録媒体の記事と正式タグのサイトIDを確認してください。');
+  }
   return v;
+}
+export function businessReferralUrl(config, uix) {
+  const c = validateBusinessConfig(config);
+  if (c.registeredArticle) return c.registeredArticle.url;
+  return c.trackingApproved === true
+    ? withTracking(c.affiliateUrl, uix)
+    : c.affiliateUrl;
 }
 export function validBusinessLink(value) {
   try {
@@ -187,7 +238,11 @@ export function businessBlockers(config, channel, now = Date.now()) {
   return [
     !c.enabled && '紹介停止中',
     !c.partnered && '未提携',
-    !c.mediaApproved && 'Noah媒体の掲載許可未確認',
+    (c.registeredArticle ? !c.registeredArticle.approved : !c.mediaApproved) &&
+      '掲載媒体の許可未確認',
+    c.registeredArticle &&
+      !c.registeredArticle.tagVerified &&
+      '記事内の正式タグ未確認',
     !c.contentApproved && '公開文面未確認',
     !c.approvalReference && '許可の証拠なし',
     !c.affiliateUrl && '正式リンク未設定',

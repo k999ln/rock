@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noah法人相談から登録済み媒体の記事への正式紹介を開始。媒体証拠の分離、広告タグの原文保持、対象媒体の成果抽出とChrome実取得を確認（toolkits/noah-affiliate-agents、PR #374）。
+
 - Noahのサービス組み合わせに、候補作成・条件点検・匿名準備票・実成果承認の重複排除と専用Workerを追加。3準備ガイドをNoah版187に公開。紹介条件とASP再認証は未受入（toolkits/noah-affiliate-agents、PR #374）。
 
 - Noah法人si導入準備に、認証済みChromeの成果・承認・支払取得と0件を含む受領票・自動点検、公開記事のサイトマップを追加。実取得・本番保存を確認。紹介経路・ASP継続接続・銀行照合は未完了（toolkits/noah-affiliate-agents、PR #374）。

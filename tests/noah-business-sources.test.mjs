@@ -109,7 +109,7 @@ await test('real UI format: reject/reward are separate, identifiers preserve zer
   );
   const c = capture();
   c.rows[0][12] = '111111';
-  assert.equal(normalizeRentracksCapture(c, target).rows[0].uix, null);
+  assert.equal(normalizeRentracksCapture(c, target).rows.length, 0);
 });
 await test('other offers are counted but not attributed; zero is an observed result', () => {
   const c = capture();
