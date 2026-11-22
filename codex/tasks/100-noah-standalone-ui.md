@@ -362,7 +362,7 @@ PR #400に記録。mainの公開正本ルール（PR #398）を受け、公開19
 統合版 `2acb6763` の全体verifyを単一実行で最後まで成功（主4,971成功・5skip・0失敗、API1,918・CSV385、型/lint/build、mission/work/bot）。ログ `work/noah-pilot-197/full-verify-integrated-final.log`。直前のMac実行は既存PC citationsのプロセス終了確認1件で失敗し、同じ試験の単独再確認と全体再実行で成功。該当コード・試験の削除や緩和はしていない。GitHubの同HEADもverify/SPIDER/CodeQL全件成功。最新main統合後の最終CIと公開、Pixelでの新規登録の再受入はPR本文へ追記する。
 
 
-### 2026-11-22 通常タップの反応と出典表示（受入中）
+### 2026-11-22 通常タップの反応と出典表示（PR #3・公開受入中）
 
 本人の「タップする時ポコとか効果音とかバイブ」「端末のスペックを最大限に使って」に対応。ボタン・メニュー・選択に95msの音と16/24msの振動を付け、接続成功の音/振動は別に保持する。既存の音/振動設定を再利用し、設定内で反応を試せる。AudioContextはinteractiveで一つを再利用、連打は同時発音を抑え、10秒無操作でsuspend、非表示/ミュート/離脱で解放。遅れたresumeは古い操作音を再生しない。押下アニメーションは動きを減らす設定を尊重する。
 
@@ -373,3 +373,5 @@ PR #400に記録。mainの公開正本ルール（PR #398）を受け、公開19
 再実行: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`、`NOAH_TEST_URL=http://localhost:8872 NOAH_PLAYWRIGHT_PACKAGE=/absolute/playwright-core node scripts/test-noah-tap-feedback-browser.mjs`。試験出力はmkdtempの専用一時ディレクトリへ保存し、実APIへ依頼/登録は送らない。
 
 追補: 全体verifyは単一実行exit0、主4,974成功/5skip/0失敗、仕事API1,918・CSV385、型/lint/build・mission/work/botまで成功。ログは `work/noah-tap-checks/full-verify.log`（Git対象外）。最新mainのGradio実行受け皿を取り込んだ後の受入はPRへ記録する。
+
+GitHub受入先: [PR #3](https://github.com/iceiceice999/rock/pull/3)。main `a0bea729` のGradio実行受け皿を通常merge `aa785c14` で保持。追記型文書の衝突は両側を残した。統合後の全体verifyとCIを確認してから、Sitesは最新mainとGit treeが一致する版を公開する。
