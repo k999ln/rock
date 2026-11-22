@@ -1,10 +1,25 @@
 ## 2026-11-22
+- Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
 
-- Noahの全掲載を対象に提供元の公式定義解決・MCP入力/Work保存・対応状況点検を追加。TimeとSequential Thinkingの固定CLIを隔離環境で検証し、guessit-jsの実MCP結果保存を確認。本番クラウド未配備・全件受入は継続中（task123、[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
+
+- 旧 main の #415 までの履歴と移行先の Gradio 実行・タップ設定を統合し、開発・PR の参照先を iceiceice999/rock に揃えた（[PR #6](https://github.com/iceiceice999/rock/pull/6)）。
+- task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
+- task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
+- task 105（自社クラウドの費用上限・見張り・復元練習、Codex の #368）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0058 に付け直し、その表・索引・trigger が migrator で全部入る事の試験を足した（[PR #413](https://github.com/k999ln/rock/pull/413)）。
+- task 13（iOS の eSIM 導入と Eve のホーム画面、Codex の #372）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0057 に付け直し、接続画面の見出しは main の新しい文にした。手元の本番ビルドで応答ヘッダを測り直した。iPhone 実機の確かめは未実施（[PR #412](https://github.com/k999ln/rock/pull/412)）。
+- task 102（SIM の証明、Codex の #365）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0056 に付け直し、会員登録の廃止の後は、このブラウザの本人に SIM を束ねる形にした（[PR #411](https://github.com/k999ln/rock/pull/411)）。
+- Noahの定期便の台帳を作った（task124、Opus / Noelle。本人の決定「配給制にする」「現金で渡す」「本人の分から差し引く」）。Agentが実際に稼いだ現金だけを月ごとに締め、作業料（いつも現金）と全員への等分（今は現金、仕入先とつながったら物）に分ける。有料は、等分が値段以上の月だけ等分から差し引く。締めは途中で止まっても続きから動き、振込の一覧はCSVで出す（振込は本人が押す）。口座番号は持たずHMACだけ。切り替えは閉のままで、本番の動きは変わらない。migration 0055の本番適用は本人の許可の後。棚・300人の試行・公開の審査者の操作が本番で使えなかった（IDだけを見ていた）のも直した（[PR #410](https://github.com/k999ln/rock/pull/410)）。
+- Noahの推し活のエージェントを、ネットで調べた困り事に合わせて作り直した（task122、Opus / Noelle。本人の問い「推し活遠征アプリですでにできることじゃない？ペインポイントおさえてる？」と回答「ネットで調べて必要なことは」）。今あるアプリ（FanFun・おしきゅん・チケットカレンダー・推し活支出管理）は予定を手で入れて知らせるまで。主役を、①公式の告知・発売の期間を公開の出典から自動で集める、②当落の日・宿の無料取消の期限・交通の早割の締切を突き合わせ、当落の前に押さえ外れたら期限内に取り消し当たったら安い部屋を拾う、③公式のリセールと詐欺の注意、に絞った。困り事6つを出典付きで `NOAH_OSHI_PAINS` に。仕様11.2。
+- eSIM と自社クラウドの設計（PR #360）を、11-22 の本人方針に合わせて main に入れた（Opus / Noelle。本人指示「それでやって」）。月額を取らない・会員登録の廃止・スマホの eSIM はクラウドへの鍵、が 11-21 の決めより優先する所に「11-22 で更新」と印を付けた。離脱率の測り方を、解約率から「続けて使う割合」に変えた（`codex/tasks/103-esim-churn-measure.md`、`lib/churn-cohort.ts` の説明）。03-esim の §1・§2・§7 は、main の新しい文（専用eSIM の導入手順・閉じた後の動作）を土台にした。
+
+- Noahの配給（画面では「定期便」）のお金の決まりを記録。本人の取り分はゆくゆく全部物、仕入先とつながるまでは現金。何割かは未定、残りはAgentを作った人と運営の分。利用者全員への等分は物・寄与の分は作業料として現金。箱はおまかせ。eSIMは最初は必須にしない。渡す前に税理士・弁護士に確認。受け取る人が見る「配給」を「定期便」に変えた（04「Noahの配給」、[PR #404](https://github.com/k999ln/rock/pull/404)）。
+- Noahの稼ぎ方の設計図に推し活を足した（task122、Opus / Noelle。本人指示「推し活向けのイベント予約とかグッズかう代行自動ボットもいれて」）。推し活の手伝いはNoahのエージェント1つ（公式の告知を見張る・予定に入れる・知らせる・遠征を探す・家計簿。申込と支払いは本人が押す。値段はNoahの料金に従う）として定義し、会社の稼ぎ方は海外向けの購入代行（後回し。人の速さ・数量制限の内・チケットは扱わない・古物の要否は本人が確かめる）、予定まとめ、遠征の紹介、絵柄なしの用品の物販の37件（合計470件）。抽選・先着への自動申込、転売、買い占め、複数アカウント、待機列の回避、版権グッズは作らない（理由と出典付き）。仕様 `docs/noah/spec-122-business-blueprints.md` の11章、試験1本追加。
+
+- Noahの全掲載を対象に提供元の公式定義解決・MCP入力/Work保存・対応状況点検を追加。TimeとSequential Thinkingの固定CLIを隔離環境で検証し、guessit-jsの実MCP結果保存を確認。本番クラウド未配備・全件受入は継続中（task125、[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
 
 - GitHub新アカウントのプロフィールを整理し、rock全74ブランチの履歴保持を照合。過去PR 28件の復元用ブランチと403件のPR記録を新rockへ保全し、取得し直したバックアップのhashを確認。移行後CIの全履歴検査時間・CodeQL読取権限を調整（[PR #1](https://github.com/iceiceice999/rock/pull/1)、本番受入は未完了）。
 
-- Noahの公式CLI管理クラウド、接続・停止・結果保存と提供元接続の選択を実装。公式2配布物の隔離実行と3幅Chrome試験を確認。本番配備・実モデル受入はWorkers Paid利用先の確定待ち（task123、[新rock PR #1](https://github.com/iceiceice999/rock/pull/1)、旧 #402、Draft）。
+- Noahの公式CLI管理クラウド、接続・停止・結果保存と提供元接続の選択を実装。公式2配布物の隔離実行と3幅Chrome試験を確認。本番配備・実モデル受入はWorkers Paid利用先の確定待ち（task125、[新rock PR #1](https://github.com/iceiceice999/rock/pull/1)、旧 #402、Draft）。
 
 
 - 移行先privateリポジトリのCodeQLにActions読取権限を追加し、全履歴SPIDERの検査時間を有界で延長。固定版スキャナ・既存検知規則・失敗時の拒否は維持（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
@@ -31,6 +46,7 @@
 
 - Noahのロード画面をカード型プレースホルダーと小さなロゴに変更し公開191へ反映。スマホの読み込み・動きを減らす設定・外部評価の実数照合をブラウザ試験へ追加（task120、[PR #390](https://github.com/k999ln/rock/pull/390)）。
 
+- Noahで長い一覧の成果（131,072 bytesで切れたJSON）が画面に1件も並ばなかった不具合を修正。最後まで届いた項目だけを一覧で出し、「成果の一部を表示しています」を1回にした。本番のTipline（一覧413件）で接続→頼む→成功を実測し、届いていた326件を取り出せることを確認（spec-87、[PR #395](https://github.com/k999ln/rock/pull/395)）。
 - Noah公開192の接続ロゴ・成功音/振動と個別設定を最新mainへ受入。全体verify成功、Pixelで検索→接続→新規成果10件→再表示を実測し、再生音と振動完了を記録（task100、[PR #392](https://github.com/k999ln/rock/pull/392)）。
 - NoahのSPIDER履歴検知を、公開の振動設定名と秘密値拒否テストの2組に限定して分類。固定版ポリシー・別値/別パスの検出20試験と全履歴0候補を確認し、公開190のホーム整理・191の読み込み表示とmainのモバイル修正を保持して統合（[PR #377](https://github.com/k999ln/rock/pull/377)）。
 - Noahの購入履歴からeSIM設定を再開し、端末利用権の確認後にAgent一覧へ進める案内と、契約ごとの確定使用料・予約額の明細を追加した（task 11・94、[PR #389](https://github.com/k999ln/rock/pull/389)）。
@@ -110,9 +126,20 @@
 - Noahの読み込みを花形ロゴに統一し、タップ・選択・接続成功の短い振動、保存されるOFF設定、動きを減らす表示を追加（task100、[PR #371](https://github.com/k999ln/rock/pull/371)へ統合）。
 
 - Noah公開版156でログイン後の選択保持・登録状態の再確認・進捗/成果への導線を反映。本人承認の掲載担当を設定し172件を取り込み、公開環境のスマホ幅で読み取り専用1件の接続→成果受領→切断後の保持を確認。全体verify 4,759成功・4skip（[PR #358](https://github.com/k999ln/rock/pull/358)）。
+- iPhone・iPadのeSIM導入リンクとQR、Eveのホーム画面追加、導入宣言と事業者通知の照合を実装。iPhone実機確認は未実施（[PR #372](https://github.com/k999ln/rock/pull/372)、task 13）。
+- task 101 の項目 1・4 として Noah の運営向け月別従量と移行の引き金、runner の同一 ID 再配送防止と合成 Cloudflare 復旧試験を追加（[PR #370](https://github.com/k999ln/rock/pull/370)）。
+
+- task 105 のクラウド新規受付に費用上限を追加し、Noah の日別 SLO、通知の振り分け、D1・R2 のローカル復元練習と運用手順を実装（[PR #368](https://github.com/k999ln/rock/pull/368)）。
 
 ## 2026-11-21
 
+- タスク 102 で公式資料に基づく Endorse トークンの署名検証、SIM の account への紐付け・解除・照合 API、D1 migration 0056（main への統合の時に 0054 から付け直し）を追加した。[PR #365](https://github.com/k999ln/rock/pull/365)
+
+- 本人の「規定で進めて」（22:54）で、自社クラウドの K1〜K10 と eSIM の 11〜15 を決めた（Opus / Noelle）。07 に 1 行、03-esim 0 章と compute-placement 0 章を決定に、task 10〜13・101 に決めを反映、task 102〜105 を追加。`lib/cloud-cost.ts`（定価での実費と黒殿へ移す引き金）と `lib/churn-cohort.ts`（eSIM つきとカードだけの解約率と 3 か月の継続、Wilson の幅、判定）を実装し、`tests/cloud-cost.test.mjs`・`tests/churn-cohort.test.mjs`（23 本）を足した。README の eSIM の節を更新。
+
+- 本人の回答（22:31）で eSIM と自社クラウドの設計を直した（Opus / Noelle）。`docs/structure/03-esim.md` 0 章にスマホと自社の端末の eSIM の違い・スマホの型 S/M・離脱率の仮説と測り方、`docs/compute-placement.md` 0 章に自社クラウドの案 A〜D・回線の終端 N1〜N3・本人の鍵 K・運用の設計。07 に 1 行。（[PR #360](https://github.com/k999ln/rock/pull/360)）
+
+- eSIM の載せる先と計算の置き場所を設計した（Opus / Noelle。本人指示「早く設計して」）。`docs/structure/03-esim.md` に 0 章（スマホに売らず Hub・専用端末・車の回線と鍵にする、制度、訂正 3 点）、`docs/compute-placement.md`（従量で始め、引き金の後に黒殿の 1 ノードへ）、07 に 1 行、05・noah-own-device に参照、task 101。（[PR #360](https://github.com/k999ln/rock/pull/360)）
 - Noah の取り込みの結果を、本番の書き込みを抑えて入れられるようにした（Opus / Noelle。本人指示「全部やって今つかえる状態にして」）。入れる処理は、変わっていない候補・握手の行・系列を書かない（同じファイルや、1 時間後に握手し直しただけのファイルを入れ直しても 0 行）。1 回ごとに書いた行の数（D1 は索引を含む）を返し、運営の画面に合計を出す。手元の書き出しに `--limit`（数を絞る）と `--first`（棚のカードが使う系列を先に）を足した。本番の D1 の日ごとの上限が確かめられていないので、最初は 2,000 系列（約 2.6 万行）から入れる。新しい系列 1 つで約 13 行（索引を含む。以前の「約 3 行」を直した）。試験 1 本を足し、1 本を広げた（`tests/noah-intake-import.test.mjs`）。`docs/noah/spec-97-launch-ops.md` の 12 章。
 
 - Noah の棚の最初のカード 17 枚（下書き）を用意した（Opus / Noelle。本人の回答「選んで用意して」）。`data/noah-shelf-first-cards.json`（稼ぐ・仕事を省く 7・教育 4・暮らし 6。健康は除く）。手元の巡回が一覧に載せた系列から選び、どれも相手のサーバーの道具 1 つで終わり、道具を 1 回ずつ実際に呼んで成果が返る事と、入力欄にできる事を確かめた（仕訳・インボイス番号・広告文の点検・自動化の仕様書・Web 調査・求人・法令・英語の発音・中国語・クイズ・算数ぬりえ・ふるさと納税・年末調整・手取り・紅葉・コインロッカー・保育園）。運営の画面の「カードを置く」へそのまま貼れる。試験 4 本（`tests/noah-shelf-first-cards.test.mjs`）。一覧と、置いてから載るまでの手順は `docs/noah/spec-110-shelf.md` の 18 章。本番へは、まだ置いていない。

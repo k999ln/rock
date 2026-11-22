@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'NoahとEveの会話・仕事・成果を同じアカウントで引き継ぐRockstarOS WebOS Developer Preview。',
   applicationName: 'RockstarOS',
+  manifest: '/manifest.webmanifest',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {
     capable: true,

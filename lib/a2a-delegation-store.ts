@@ -1,5 +1,6 @@
 import type { A2AUsageReceipt } from './a2a-usage-receipt.ts';
 import type { A2ALiveUsageSnapshot } from './a2a-live-usage.ts';
+import { assertCloudBudget, cloudAdmissionGuard, type CloudBudget } from './cloud-operations.ts';
 import {
   A2ADelegationStoreError,
   A2A_MAX_REDELEGATION_DEPTH,
@@ -62,7 +63,7 @@ const remoteToLocal: Record<string, A2ADelegationState> = {
   TASK_STATE_REJECTED: 'remote_rejected',
 };
 
-export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
+export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>, budget?: CloudBudget) {
   async function get(ownerUserId: string, id: string) {
     return db
       .prepare(`SELECT ${a2aDelegationColumns} FROM agent_delegations WHERE owner_user_id = ? AND id = ?`)
@@ -662,7 +663,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
             AND artifacts_captured = 1`)
           .bind(crypto.randomUUID(), revision + 1, now, ownerUserId, id, revision + 1),
       ]);
-      if (results[0]?.meta.changes !== 1 || results[1]?.meta.changes !== 1)
+      if (results[0]?.meta.changes !== 1 || (results[1]?.meta.changes ?? 0) < 1)
         throw new A2ADelegationStoreError(
           '成果の受領記録を保存できませんでした。',
           'delegation_revision_conflict',
@@ -934,6 +935,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
           },
         );
       const nextRevision = current.revision + 1;
+      const guard = cloudAdmissionGuard(ownerUserId, now, budget);
       let results: Awaited<ReturnType<typeof db.batch>>;
       try {
         results = await db.batch([
@@ -945,8 +947,9 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
             FROM agent_delegations d
             WHERE d.owner_user_id = ? AND d.id = ? AND d.revision = ?
               AND d.state = 'awaiting_approval'
+              ${guard.sql}
           ON CONFLICT(owner_user_id, parent_job_id) DO NOTHING`)
-            .bind(now, now, ownerUserId, id, current.revision),
+            .bind(now, now, ownerUserId, id, current.revision, ...guard.bindings),
           db.prepare(`INSERT INTO agent_delegation_budget_reservations (
             delegation_id, owner_user_id, parent_job_id, currency,
             reserved_minor, settled_minor, state, created_at, updated_at
@@ -961,8 +964,9 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
               AND d.state = 'awaiting_approval'
               AND d.budget_limit_minor <= d.parent_budget_limit_minor
               AND p.reserved_minor + p.settled_minor + d.budget_limit_minor <= p.budget_limit_minor
+              ${guard.sql}
           ON CONFLICT(delegation_id) DO NOTHING`)
-            .bind(now, now, ownerUserId, id, current.revision),
+            .bind(now, now, ownerUserId, id, current.revision, ...guard.bindings),
           db.prepare(`INSERT INTO agent_delegation_inputs (
             delegation_id, owner_user_id, payload_ciphertext, nonce, input_sha256,
             key_version, expires_at, created_at
@@ -1009,6 +1013,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
       // Inserting a held reservation also updates the shared pool through a
       // trigger, so D1 can report more than one changed row for this statement.
       if ((results[1]?.meta.changes ?? 0) < 1) {
+        await assertCloudBudget(db, ownerUserId, now, budget);
         const pool = await getBudget(ownerUserId, current.parentJobId);
         if (pool && (pool.currency !== current.budgetCurrency ||
           pool.budgetLimitMinor !== current.parentBudgetLimitMinor))
@@ -1026,7 +1031,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
           '承認条件が同時に更新されました。状態を再読込してください。',
           'delegation_revision_conflict',
         );
-      if (results[4]?.meta.changes !== 1)
+      if ((results[4]?.meta.changes ?? 0) < 1)
         throw new A2ADelegationStoreError(
           '承認記録を保存できませんでした。',
           'delegation_event_write_failed',

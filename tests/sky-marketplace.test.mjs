@@ -5,6 +5,7 @@ import { catalog } from '../lib/catalog.ts';
 import { marketplaceCommissionMinor, marketplaceProviderNetMinor } from '../lib/sky-marketplace-policy.ts';
 import { skyAiMarketplaceEntries } from '../lib/sky-ai-marketplace.ts';
 import { skyToolDetailActionLabel, skyToolUiState } from '../lib/sky-tool-ui.ts';
+import { esimIosInstallCard } from '../lib/esim-ios-install.ts';
 import {
   catalogHostMismatch,
   detectSkyHost,
@@ -31,7 +32,10 @@ void test('Sky paid-order eSIM setup is owner-driven, does not issue profiles, a
   assert.match(esimPurchase, /action: 'fetch'/);
   assert.match(esimPurchase, /action: 'acknowledge'/);
   assert.match(esimPurchase, /sessionStorage/);
-  assert.ok(esimPurchase.includes("'esimsetup.apple.com'"));
+  assert.equal(new URL(esimIosInstallCard({
+    smdpAddress: 'rsp.example.test', matchingId: 'synthetic-code',
+  }).url).origin, 'https://esimsetup.apple.com');
+  assert.match(esimPurchase, /href=\{iosCard\.url\} rel="noreferrer" referrerPolicy="no-referrer"/);
   assert.ok(esimPurchase.includes("'esimsetup.android.com'"));
   assert.match(esimPurchase, /referrerPolicy="no-referrer"/);
   assert.match(esimPurchase, /導入情報を表示/);

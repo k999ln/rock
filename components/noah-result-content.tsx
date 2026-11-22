@@ -300,12 +300,13 @@ export default function NoahResultContent({
     view = useMemo(() => noahResultPresentation(result), [result]);
   const [limit, setLimit] = useState(8),
     [notice, setNotice] = useState('');
-  const summary = [
-    '成果の一部を表示しています',
-    '詳細を開いて内容を確認できます',
-  ].includes(view.summary)
-    ? t(view.summary)
-    : view.summary;
+  // 「一部」の注記は、下の注記（result.truncated）が出すので、ここでは二度出さない。
+  const summary =
+    view.summary === '成果の一部を表示しています'
+      ? ''
+      : view.summary === '詳細を開いて内容を確認できます'
+        ? t(view.summary)
+        : view.summary;
   function save() {
     saveFile(
       new Blob([result.text], { type: 'text/plain;charset=utf-8' }),

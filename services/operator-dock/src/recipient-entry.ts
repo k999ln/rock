@@ -63,7 +63,7 @@ export class RecipientDistribution extends WorkerEntrypoint<Env> {
           error:
             error instanceof OperatorError
               ? error.message
-              : '配給情報を読み込めません。再試行してください。',
+              : '定期便の情報を読み込めません。再試行してください。',
         },
         { status: error instanceof OperatorError ? error.status : 503 },
       );

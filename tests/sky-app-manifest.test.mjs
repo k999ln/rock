@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import osManifest from '../app/manifest.ts';
+import osManifest from '../app/web-app-manifests.ts';
 import { skyAppManifest } from '../lib/sky-app-manifest.ts';
 
 void test('Sky installs with a separate identity and opens inside its marketplace scope', () => {

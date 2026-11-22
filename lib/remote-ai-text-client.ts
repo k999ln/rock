@@ -1,7 +1,9 @@
 import {readSkyUsageObservation,type SkyUsageObservation} from './sky-usage-observation.ts';
 import type { TextGenerationUsage } from './llm-providers.ts';
 import type { EveEstimateSourceRef } from './eve-text-job.ts';
+import { CLOUD_BUDGET_MESSAGES } from './cloud-operations.ts';
 const messages: Record<string, string> = {
+  ...CLOUD_BUDGET_MESSAGES,
   UNAUTHORIZED: 'サインインの有効期限が切れました。再度サインインして続けてください。',
   SERVICE_ENTITLEMENT_REQUIRED: 'この機能の利用権を確認できません。接続状態を確認してください。',
   RATE_LIMITED: '確認回数が上限に達しました。少し待ってから状態を更新してください。',

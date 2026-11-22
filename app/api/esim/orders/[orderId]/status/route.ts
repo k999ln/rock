@@ -4,7 +4,7 @@ import { describeEsimStarterAgentPack, EsimPlanCatalogError, selectEsimOrderPric
 import { skyToolPackageStore } from '@/lib/sky-tool-package-store';
 import { trustedEsimDeviceGatewayKeyFingerprint } from '@/lib/esim-device-entitlement';
 import { esimDeviceEntitlementStore } from '@/lib/esim-device-entitlement-store';
-import { hasTrustedEsimInstallIssuerKey } from '@/lib/esim-install-proof';
+import { hasTrustedEsimInstallIssuerKey, readIosEveEntitlement } from '@/lib/esim-install-proof';
 
 function json(body: unknown, status = 200) {
   return Response.json(body, {
@@ -157,6 +157,8 @@ export async function GET(request: Request, context: { params: Promise<{ orderId
       deviceInstallState: installationVerified ? 'verified_installed_enabled' : 'unverified',
       esimDeviceEntitlementState: entitlementActive ? 'active'
         : row.entitlementActivatedAt !== null ? 'revoked_or_stale' : 'not_connected',
+      iosEveEntitlementState: row.profileBound === 1
+        ? await readIosEveEntitlement(database(), ownerUserId, orderId) : null,
       starterPackActivationState: entitlementActive ? 'active_on_authenticated_device'
         : installationVerified ? 'awaiting_authenticated_device_gateway' : 'awaiting_install_proof',
       starterPackActivatedAt: entitlementActive ? row.entitlementActivatedAt : null,

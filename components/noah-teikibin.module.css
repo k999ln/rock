@@ -1,0 +1,176 @@
+/* 「あなたの定期便」。届く物が主役の、白地にやわらかい色の箱。スマホ幅を先に作る。色は Noah の外枠の変数を使う。 */
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: grid;
+  gap: 20px;
+  color: var(--os-text, #202024);
+}
+.hero {
+  padding: 28px 22px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #fff8ec 0%, #f1f8ee 100%);
+  border: 1px solid var(--os-line, #e8e5ee);
+}
+.hero h1 {
+  margin: 0 0 10px;
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+}
+.hero p {
+  margin: 0;
+  line-height: 1.75;
+  color: var(--os-muted, #71717a);
+}
+.preview {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--os-raised, #f7f5fa);
+  font-size: 0.9rem;
+}
+.status {
+  display: grid;
+  gap: 6px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: var(--os-panel, #fff);
+  border: 1px solid var(--os-line, #e8e5ee);
+}
+.status p {
+  margin: 0;
+  line-height: 1.6;
+}
+.label {
+  font-size: 0.85rem;
+  color: var(--os-muted, #71717a);
+}
+.code {
+  font-size: 1.8rem;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+.primary {
+  min-height: 48px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #3f7d4e;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.plan {
+  display: grid;
+  gap: 8px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  border: 1px dashed var(--os-line, #e8e5ee);
+}
+.plan label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.5;
+  min-height: 44px;
+}
+.plan input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+.months {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.box {
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: var(--os-panel, #fff);
+  border: 1px solid var(--os-line, #e8e5ee);
+  box-shadow: 0 1px 0 rgba(32, 32, 36, 0.04);
+}
+.box header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.box h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eaf4e6;
+  color: #2f5f3a;
+  font-size: 0.8rem;
+}
+.amount {
+  display: grid;
+  gap: 2px;
+  margin: 14px 0 10px;
+}
+.amount span {
+  font-size: 0.85rem;
+  color: var(--os-muted, #71717a);
+}
+.amount strong {
+  font-size: 2rem;
+  font-variant-numeric: tabular-nums;
+}
+.detail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin: 0;
+}
+.detail div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--os-line, #e8e5ee);
+  padding-top: 8px;
+}
+.detail dt {
+  color: var(--os-muted, #71717a);
+}
+.detail dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.muted {
+  margin: 0;
+  color: var(--os-muted, #71717a);
+  line-height: 1.6;
+}
+.note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--os-muted, #71717a);
+}
+.alert {
+  margin: 0;
+  color: #b42318;
+}
+@media (max-width: 420px) {
+  .detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

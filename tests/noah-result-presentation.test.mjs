@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { noahResultText } from '../lib/noah-form.ts';
-import { noahResultPresentation, noahResultImageLinks } from '../lib/noah-result-presentation.ts';
+import { noahResultPresentation, noahResultImageLinks, noahResultWholeItems } from '../lib/noah-result-presentation.ts';
 import { noahResultImage, noahImageFile, NOAH_IMAGE_BASE64_LIMIT } from '../lib/noah-result-media.ts';
 import { finishNoahRemoteWork, createNoahRemoteWork } from '../lib/noah-remote-work.ts';
 import * as askView from '../lib/noah-ask-view.ts';
@@ -28,6 +28,24 @@ void test('lists use titles and summaries, unsafe links remain unlinked, and par
   const view=noahResultPresentation(received(JSON.stringify({count:2,entries:[{title:'One',summary:'A',url:'https://example.com/a'},{title:'Two',url:'javascript:alert(1)'}]})));
   assert.equal(view.count,2);assert.equal(view.cards[0].href,'https://example.com/a');assert.equal(view.cards[1].href,undefined);
   const partial=noahResultPresentation({...received('{"entries":[{"title":"Cut'),truncated:true});assert.equal(partial.kind,'data');assert.equal(partial.summary,'成果の一部を表示しています');
+});
+const cutList=(entries,before)=>{const full=JSON.stringify({count:413,entries});return {...received(full.slice(0,full.indexOf(before)+3)+'\n（長いので切りました）'),truncated:true};};
+void test('a long list cut mid-way shows only the entries that arrived whole, and nothing is completed',()=>{
+  const result=cutList([{id:'a',title:'One, [x] {y} "q"',summary:'A',url:'https://example.com/a'},{id:'b',title:'Two',tags:['t1','t2']},{id:'c',title:'Three'}],'Three');
+  const view=noahResultPresentation(result);
+  assert.equal(view.kind,'list');assert.deepEqual(view.cards.map(c=>c.title),['One, [x] {y} "q"','Two']);assert.equal(view.cards[0].href,'https://example.com/a');
+  assert.equal(view.count,2);assert.equal(view.summary,'成果の一部を表示しています');
+  assert.deepEqual(noahResultWholeItems('[1,22,3'),[1,22]);assert.deepEqual(noahResultWholeItems('{"rows":[[1,2],[3,4],[5'),{rows:[[1,2],[3,4]]});
+  assert.equal(noahResultWholeItems('{"entries":[{"title":"Cut'),undefined);assert.equal(noahResultWholeItems('{"a":1,"b":[}'),undefined);
+  assert.equal(noahResultPresentation({...result,truncated:false}).kind,'data');
+});
+void test('the result page shows whole entries of a cut list and says once that it is partial',async()=>{
+  const result=cutList(Array.from({length:30},(_,i)=>({id:`e${i}`,title:`Entry ${i}`,summary:`S${i}`})),'Entry 20');
+  const ui=screen({modules});const page=ui.mount('components/noah-result-content.tsx',{id:'r',result});await page.flush();
+  assert.deepEqual(page.find('h3').map(h=>page.text(h)),Array.from({length:8},(_,i)=>`Entry ${i}`));assert.match(page.text(),/届いた一覧20件/);
+  assert.equal(page.text().split('成果の一部を表示しています').length-1,1);
+  const preview=ui.mount('components/noah-result-content.tsx',{id:'r',result,compact:true});await preview.flush();
+  assert.deepEqual(preview.find('li').map(li=>preview.text(li)),['Entry 0','Entry 1','Entry 2']);assert.equal(preview.text().split('成果の一部を表示しています').length-1,1);
 });
 void test('external images are explicit, HTTPS only, and not local network targets',()=>{
   assert.deepEqual(noahResultImageLinks('{"image_url":"https://cdn.example.com/signed?id=1"}'),['https://cdn.example.com/signed?id=1']);
