@@ -1,4 +1,4 @@
-import osManifest from '@/app/manifest';
+import osManifest from '@/app/web-app-manifests';
 import { skyAppManifest } from '@/lib/sky-app-manifest';
 
 export function GET() {

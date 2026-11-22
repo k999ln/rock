@@ -1,5 +1,6 @@
 import {NEWS_EVALUATION_HISTORY_SQL} from './eve-news-learning.ts';
 import { normalizeWorkJob, type WorkJob } from './workflow.ts';
+import { assertCloudBudget, cloudAdmissionGuard, type CloudBudget } from './cloud-operations.ts';
 
 export function workStore(db: Pick<D1Database, 'prepare'>) {
   async function get(user: string, id: string): Promise<WorkJob | null> {
@@ -162,14 +163,22 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         .bind(user, rootJobId).all<{ payload: string }>();
       return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
     },
-    async create(user: string, job: WorkJob, historyFence?: { threadId: string }) {
+    async create(user: string, job: WorkJob, historyFence?: { threadId: string }, budget?: CloudBudget) {
+      const now = Date.now();
+      const freeCloudBudget = job.freeCloud ? budget : undefined;
+      const guard = cloudAdmissionGuard(user, now, freeCloudBudget);
       await db
         .prepare(
-          historyFence ? 'INSERT INTO work_jobs (id, user_id, payload, revision, updated_at) SELECT ?, ?, ?, ?, ? WHERE NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at!=0) ON CONFLICT(id) DO NOTHING' : 'INSERT INTO work_jobs (id, user_id, payload, revision, updated_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO NOTHING',
+          `INSERT INTO work_jobs (id, user_id, payload, revision, updated_at)
+          SELECT ?, ?, ?, ?, ? WHERE 1 = 1
+          ${historyFence ? 'AND NOT EXISTS(SELECT 1 FROM eve_conversations WHERE owner_id=? AND id=? AND deleted_at!=0)' : ''}
+          ${guard.sql} ON CONFLICT(id) DO NOTHING`,
         )
-        .bind(job.id, user, JSON.stringify(job), job.revision, job.updatedAt, ...(historyFence ? [user,historyFence.threadId] : []))
+        .bind(job.id, user, JSON.stringify(job), job.revision, job.updatedAt, ...(historyFence ? [user,historyFence.threadId] : []), ...guard.bindings)
         .run();
-      return get(user, job.id);
+      const saved = await get(user, job.id);
+      if (!saved) await assertCloudBudget(db, user, now, freeCloudBudget);
+      return saved;
     },
     /** Bind only if the saved owner's enabled role is still the selected revision at insertion. */
     async createAgentBound(user: string, job: WorkJob, reviewedManifest?: string, reviewExpiresAt?: number) {
@@ -219,7 +228,7 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
           ...(learningTrainingFence?[user,learningTrainingFence.contentSha256,learningTrainingFence.dataSha256]:[]),
         )
         .run();
-      return result.meta.changes === 1;
+      return result.meta.changes === 1 || (job.freeCloud?.state === 'completed' && result.meta.changes > 0);
     },
   };
 }

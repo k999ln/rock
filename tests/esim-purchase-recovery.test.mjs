@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { runInNewContext } from 'node:vm';
+import * as iosInstall from '../lib/esim-ios-install.ts';
 
 const require = createRequire(new URL('../package.json', import.meta.url));
 const ts = require('typescript');
@@ -15,7 +16,7 @@ const ready = { orderId, state: 'profile_bound_install_material_ready', installM
 const cloud = { available: false, state: 'not_issued', key: null, accessExpiresAt: null };
 const material = { smdpAddress: 'fixture.example', matchingId: 'synthetic-install-code', iccid: 'synthetic-iccid' };
 
-function harness() {
+function harness({ iosConnect = false, userAgent = '' } = {}) {
   const slots = [], replies = [], requests = [], deadlines = [], controllers = [];
   let cursor = 0, tree;
   const react = {
@@ -38,7 +39,7 @@ function harness() {
     return Response.json(next.body, { status: next.status ?? 200 });
   };
   const globals = {
-    crypto, URL, Error, fetch: transport,
+    crypto, URL, Error, fetch: transport, navigator: { userAgent },
     AbortSignal: { timeout(ms) { deadlines.push(ms); const control = new AbortController(); controllers.push(control); return control.signal; } },
     sessionStorage: { getItem: () => null, setItem() {} },
   };
@@ -51,14 +52,16 @@ function harness() {
     ...globals, exports, require(id) {
       if (id === 'react') return react;
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
-      if (id === 'next/link') return inert;
+      if (id === 'next/link') return 'a';
+      if (id === 'next/image') return 'img';
       if (id === '@/lib/operations-client') return operationExports;
+      if (id === '@/lib/esim-ios-install') return iosInstall;
       if (id === 'lucide-react') return new Proxy({}, { get: () => inert });
       if (id.endsWith('.module.css')) return {};
       throw Error(id);
     },
   });
-  function render() { cursor = 0; tree = exports.EsimPurchaseSetup({ orderId }); }
+  function render() { cursor = 0; tree = exports.EsimPurchaseSetup({ orderId, iosConnect }); }
   function nodes(node, out = []) {
     if (Array.isArray(node)) node.forEach((child) => nodes(child, out));
     else if (node && typeof node === 'object') { out.push(node); nodes(node.props?.children, out); }
@@ -71,7 +74,7 @@ function harness() {
   async function click(label) { const target = button(label); assert.ok(target, label); assert.ok(!target.props.disabled, label);
     target.props.onClick(); render(); await flush(); }
   render();
-  return { replies, requests, deadlines, controllers, button, text: () => text(tree),
+  return { replies, requests, deadlines, controllers, button, text: () => text(tree), nodes: () => nodes(tree),
     links: () => nodes(tree).map(node => node.props?.href).filter(Boolean), click, flush, render };
 }
 void test('installation gives a return path and offers the first Agent only after device access is verified', async () => {
@@ -176,3 +179,24 @@ void test('a sign-in redirect clears cached access without following the redirec
   assert.ok(h.text().includes('サインインが必要'));
   assert.equal(h.requests.at(-1).options.redirect, 'manual');
 });
+
+for (const [version, supportsLink] of [['17_3', false], ['17_4', true]]) {
+  void test(`iOS ${version} exposes the correct install path and lets the account declare after setup`, async () => {
+    const h = harness({ iosConnect: true, userAgent: `Mozilla/5.0 (iPhone; CPU iPhone OS ${version} like Mac OS X)` });
+    h.replies.push({ body: { ...ready, iosEveEntitlementState: 'not_declared' } });
+    await h.click('状態を確認');
+    h.replies.push({ body: { material } });
+    await h.click('導入情報を表示');
+    const link = h.nodes().find(({ props }) => props.href?.startsWith('https://esimsetup.apple.com/'));
+    assert.equal(Boolean(link), supportsLink);
+    if (link) assert.equal(link.props.referrerPolicy, 'no-referrer');
+    await h.click('QRコードを表示');
+    assert.ok(h.nodes().some(({ type, props }) => type === 'img' && props.src.startsWith('data:image/gif;')));
+    h.replies.push({ body: { iosEveEntitlementState: 'awaiting_provider' } });
+    await h.click('eSIMの導入を宣言');
+    assert.ok(h.text().includes('ダウンロード通知を確認中'));
+    assert.ok(h.nodes().some(({ props }) => props.href === '/connect/done'));
+    assert.equal(h.requests.at(-1).options.body, undefined);
+    assert.match(h.requests.at(-1).path, /\/install-proof\/ios$/);
+  });
+}

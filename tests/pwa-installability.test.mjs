@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import manifest from '../app/manifest.ts';
+import manifest, { eveManifest } from '../app/web-app-manifests.ts';
 
 const root = resolve(import.meta.dirname, '..');
 
@@ -25,6 +25,17 @@ void test('PWA identity uses RockstarOS while navigation stays on the compatibil
   assert.equal(value.lang, 'ja');
   assert.equal(value.dir, 'ltr');
   assert.equal(value.prefer_related_applications, false);
+});
+
+void test('the Eve home-screen app starts directly in Eve and has its own identity', () => {
+  const eve = eveManifest();
+  assert.equal(eve.name, 'Eve');
+  assert.equal(eve.short_name, 'Eve');
+  assert.equal(eve.id, '/os/eve');
+  assert.equal(eve.start_url, '/os/eve');
+  assert.equal(eve.scope, '/');
+  assert.equal(eve.display, 'standalone');
+  assert.deepEqual(eve.icons, manifest().icons);
 });
 
 void test('PWA provides exact install icons and an opaque full-bleed maskable icon', () => {

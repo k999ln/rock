@@ -2,9 +2,9 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "0bf53ccf22589e3725547e7a198abc19e774ac2fff52909dcb71068e41b37a26",
-  "packageEntries": 973,
-  "uniqueComponents": 930,
+  "packageLockSha256": "744b1a05b63b2d095ae177925a80865dbdf653685ca6aa50c9075268a2e90be6",
+  "packageEntries": 974,
+  "uniqueComponents": 931,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
@@ -74,7 +74,7 @@
     },
     {
       "expression": "MIT",
-      "uniqueComponents": 767,
+      "uniqueComponents": 768,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -94,7 +94,7 @@
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 879,
+    "standard-license-text-and-notice": 880,
     "reciprocal-source-terms-review": 41,
     "license-choice-review": 9,
     "attribution-review": 1

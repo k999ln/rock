@@ -8,7 +8,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
-import { NOAH_CAPABILITIES, noahAccountKit, noahAgentsFor, noahEveBacklog, noahPlanBlueprints } from '../lib/noah-business.ts';
+import { NOAH_CAPABILITIES, NOAH_OSHI_AGENT, noahAccountKit, noahAgentsFor, noahEveBacklog, noahPlanBlueprints } from '../lib/noah-business.ts';
 
 const UA = 'NoahBot/1 (+https://avoado.si/noah/help#bot)';
 async function readJson(fetcher, url) {
@@ -55,7 +55,9 @@ export function businessReport({ runnable, discovered, verified = {}, owned = ne
   const coverage = Object.keys(NOAH_CAPABILITIES).map(capability => ({ capability, label: NOAH_CAPABILITIES[capability].label, verified: usable[capability]?.length ?? 0, runnable: noahAgentsFor(capability, runnable).length, discovered: noahAgentsFor(capability, discovered).length }));
   const byModel = {};
   for (const plan of plans) byModel[plan.model] = (byModel[plan.model] ?? 0) + 1;
-  return { schema: 'noah-business-plan/1', generatedAt: now, blueprints: plans.length, byModel, agents: { runnable: runnable.length, discovered: discovered.length }, coverage, accounts: noahAccountKit(plans), eve: backlog,
+  // Noah の推し活エージェントの工程ごとに、確かめたエージェントがあるか（無い能力は Eve が確かめるか作る）。
+  const oshiAgent = NOAH_OSHI_AGENT.steps.map(step => ({ id: step.id, label: step.label, kind: step.kind, capability: step.capability ?? null, ready: !step.capability || (usable[step.capability]?.length ?? 0) > 0 }));
+  return { schema: 'noah-business-plan/1', generatedAt: now, oshiAgent, blueprints: plans.length, byModel, agents: { runnable: runnable.length, discovered: discovered.length }, coverage, accounts: noahAccountKit(plans), eve: backlog,
     top: plans.slice(0, 30).map(p => ({ id: p.id, label: p.label, score: p.score, covered: p.covered, steps: p.steps.length, human: p.humanSteps, tap: p.tapSteps, review: p.reviewSteps, costYen: p.costYen, gaps: p.gaps, accounts: p.accounts })), plans };
 }
 const kindLabel = { auto: '自動', tap: '押すだけ', human: '本人', review: '本人が確かめる' };
@@ -71,6 +73,7 @@ export function businessMarkdown(report) {
     ...report.eve.map(e => `| ${e.label}（${e.capability}） | ${e.blocked} | ${e.runnable.map(d => d.name).slice(0, 4).join('・') || '—'} | ${e.discovered.map(d => d.name).slice(0, 4).join('・') || '—'} |`), '',
     '## 能力ごとのエージェントの数', '', '| 能力 | 確かめた | 語で当たった候補（今動かせる） | 語で当たった候補（集めた紹介） |', '|---|---|---|---|',
     ...report.coverage.map(c => `| ${c.label} | ${c.verified} | ${c.runnable} | ${c.discovered} |`), '',
+    '## Noah の推し活エージェント（工程と、能力の用意）', '', ...report.oshiAgent.map((s, i) => `${i + 1}. [${kindLabel[s.kind]}] ${s.label}${s.capability ? `（${s.capability}: ${s.ready ? '確かめたエージェントあり' : 'Eve が用意する'}）` : ''}`), '',
     `## 1 位の工程（${report.plans[0]?.label ?? '—'}）`, '', ...(report.plans[0]?.steps ?? []).map((s, i) => `${i + 1}. [${kindLabel[s.kind]}] ${s.label}${s.reason ? ` — ${s.reason}` : ''}`), ''];
   return lines.join('\n');
 }

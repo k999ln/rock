@@ -36,7 +36,7 @@ function webDomains(tables) {
     {
       id: 'core',
       label: '仕事・実行・端末・基本台帳',
-      matches: (name) => core.has(name) || name.startsWith('jennifer_') || name.startsWith('eve_') || name.startsWith('rockstar_account') || name.startsWith('rockstar_password_'),
+      matches: (name) => core.has(name) || name.startsWith('cloud_') || name.startsWith('jennifer_') || name.startsWith('eve_') || name.startsWith('rockstar_account') || name.startsWith('rockstar_password_'),
     },
     {
       id: 'sky',
@@ -53,7 +53,7 @@ function webDomains(tables) {
       id: 'business',
       label: '自動化ファンド・受託案件・事業補助',
       matches: (name) =>
-        name === 'mercari_revenue_plans' || name === 'coconala_team_cases' || name.startsWith('automation_') || name.startsWith('esim_') || name.startsWith('rockstar_service_') || name.startsWith('rockstar_entitlement_') || name.startsWith('rockstar_device_') || name.startsWith('rockstar_a2a_broker_'),
+        name === 'mercari_revenue_plans' || name === 'coconala_team_cases' || name.startsWith('automation_') || name.startsWith('esim_') || name === 'sim_bindings' || name.startsWith('rockstar_service_') || name.startsWith('rockstar_entitlement_') || name.startsWith('rockstar_device_') || name.startsWith('rockstar_a2a_broker_'),
     },
   ];
   const groups = definitions.map(({ id, label }) => ({
