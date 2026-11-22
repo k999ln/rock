@@ -221,6 +221,8 @@ flowchart LR
 
 最初の実行先は本人のApple Silicon Macです。Runnerを入れ、自分のアカウントとMacを結ぶと、Noahの管理画面でAgentへの依頼、成果の確認、停止に進めます。
 
+[DaisukeのココナラAgent](https://avoado.si/noah/coconala/agent) はMacで公開案件を探し、選んだ理由と提案の下書きをNoahに表示します。Noahから停止できます。
+
 Noahのメニューにある「ココナラの仕事」から、Macの専用Chromeで返信・公開依頼への応募・添付付きの正式な納品を実行できます。宛先と内容を確認して送ると、別の作業を続けながら受付番号で結果を確認できます。[初回ログインと使い方](toolkits/noah-coconala/README.md)
 
 

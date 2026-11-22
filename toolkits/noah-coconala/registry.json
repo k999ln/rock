@@ -1,4 +1,35 @@
 {
   "schema": "rockstaros-mcp-registry/1",
-  "servers": [{"id":"noah-coconala","name":"ココナラ","description":"専用のChromeで返信・応募・正式な納品を実行します。","transport":"stdio","command":"node","args":["server.mjs"],"cwd":".","env":["HOME"],"required":true}]
+  "servers": [
+    {
+      "id": "noah-coconala",
+      "name": "ココナラ",
+      "description": "専用のChromeで返信・応募・正式な納品を実行します。",
+      "transport": "stdio",
+      "command": "node",
+      "args": [
+        "server.mjs"
+      ],
+      "cwd": ".",
+      "env": [
+        "HOME"
+      ],
+      "required": true
+    },
+    {
+      "id": "noah-anicca-draft",
+      "name": "DaisukeのココナラAgent",
+      "description": "公開募集の探索と提案の下書き",
+      "transport": "stdio",
+      "command": "node",
+      "args": [
+        "draft-server.mjs"
+      ],
+      "cwd": ".",
+      "env": [
+        "HOME"
+      ],
+      "required": true
+    }
+  ]
 }

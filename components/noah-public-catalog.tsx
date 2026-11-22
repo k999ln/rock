@@ -17,6 +17,7 @@ export default function NoahPublicCatalog({basePath='/noah',embedded=false,initi
   return <main className={styles.explore} data-noah-catalog={embedded?'embedded':undefined} data-via={via||undefined}>
     <h1>{t('Agentを探す')}</h1>
     <search className={styles.searchBox}><Search size={20} aria-hidden="true"/><input type="search" aria-label={t('Agentを検索')} placeholder={t('Agent名・できること')} maxLength={200} value={query} onChange={e=>search(e.target.value)}/>{query&&<button type="button" aria-label={t('検索をクリア')} onClick={()=>search('')}><X size={20}/></button>}</search>
+    {query.trim() && ['daisuke','anicca','ココナラ','coconala'].some(word=>query.toLowerCase().includes(word)) && <p><Link href="/noah/coconala/agent">DaisukeのココナラAgent · Macで案件を探して提案を下書き</Link></p>}
     <NoahPinHome searchQuery={query} initialSource={params.get('collectionSource')??initialSource} onClearQuery={()=>search('')}/>
     <details className={styles.sourceFilter}><summary>{t('Toolを探す')}</summary><Link href={`${basePath}/explore?tab=tools&q=${encodeURIComponent(query)}`}>{t('Toolを探す')}</Link></details>
   </main>;

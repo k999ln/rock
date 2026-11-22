@@ -97,7 +97,7 @@
 | 3 | — | 93 | [93-noah-library-lifecycle.md](93-noah-library-lifecycle.md) | 入れ替える（更新・戻す・切る・移す） | |
 | 4 | — | 95 | [95-noah-on-mii-contract.md](95-noah-on-mii-contract.md) | mii で使うための契約（Linux の host で同じ受入、声と表示の模擬） | |
 | 並行 | — | 75 | [75-noah-own-device-cloud.md](75-noah-own-device-cloud.md) | Noahのクラウド実行。Macを閉じた後の仕事・停止・従量の照合 | 設計整理済み。一般Agentの実行・有料受入は未完了 |
-| 並行 | — | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | ✅ [PR #393](https://github.com/k999ln/rock/pull/393) ココナラの本人Mac経路・合成取引で実機確認。クラウド汎用ブラウザは継続 |
+| 並行 | — | 91 | [91-noah-device-browser.md](91-noah-device-browser.md) | 専用の端末の中のブラウザと画面、のぞく | ✅ [PR #393](https://github.com/k999ln/rock/pull/393) ココナラの本人Mac経路・合成取引で実機確認。クラウド汎用ブラウザは継続。✅ [PR #11](https://github.com/iceiceice999/rock/pull/11) Daisukeの公開案件探索・提案下書き・停止 |
 | 並行 | — | 79 | [79-noah-mobile-variant.md](79-noah-mobile-variant.md) | スマホ内版（宣言型への圧縮と実機の確認） | |
 | 並行 | — | 80 | [80-eve-to-noah.md](80-eve-to-noah.md) | 担当を載せる、Eve で改良、0 クリック | |
 | 並行 | — | 82 | [82-noah-provider-place.md](82-noah-provider-place.md) | 提供者サーバー型（利用権の受け渡し、A2A、許可の再利用） | |
