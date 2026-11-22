@@ -23,7 +23,7 @@
 - **G04**: 重複するsi・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する — 詳細: `npm run work -- G04`
 - **AMC01**: 現行3製品とOSの責任表・未決事項台帳をレビューする — 詳細: `npm run work -- AMC01`
 
-G04: 欠落台帳と既存PRを現行mainへ整合させ、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。
+G04: iceiceice999/rockの現mainとPR #17を基準に、統合・本番受入・収集の継続観測を分けて追跡する。最新照合はdata/project-status.jsonのprogressLedgerReconciliationとcodex/tasks/00-index.md。AMC01の製品間Interface整理は継続。
 
 ## 守る条件・残課題
 

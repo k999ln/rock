@@ -2,7 +2,7 @@
   "schema": "avokado-mission-control/3",
   "name": "avokado Mission Control",
   "shortName": "AMC",
-  "updatedAt": "2026-10-12",
+  "updatedAt": "2026-11-23",
   "purpose": "RockstarOS、avocadoMini、avokadoPro、rocketstarを責任単位へ分け、各部隊のGoal、進捗段階、規則、依存、証拠、次の作業を同じ基準で管理する。",
   "authority": {
     "progress": "data/mission-control.json",
@@ -195,7 +195,7 @@
         "docs/evidence/spider-agent-preflight-read.json"
       ],
       "acceptanceGate": "全project taskにちょうど一つのprimary squadが明記され、各squadにGoal、対象範囲、証拠、次taskと合格条件がある。",
-      "nextAction": "G04: 欠落台帳と既存PRを現行mainへ整合させ、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。",
+      "nextAction": "G04: iceiceice999/rockの現mainとPR #17を基準に、統合・本番受入・収集の継続観測を分けて追跡する。最新照合はdata/project-status.jsonのprogressLedgerReconciliationとcodex/tasks/00-index.md。AMC01の製品間Interface整理は継続。",
       "relatedTasks": [],
       "nextTaskIds": [
         "G04",
