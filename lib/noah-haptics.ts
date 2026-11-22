@@ -1,7 +1,7 @@
 export type NoahHaptic = 'tap' | 'select' | 'success';
 export const NOAH_HAPTICS_KEY = 'noah-haptics-v1';
 const CHANGE = 'noah-haptics-change';
-const patterns: Record<NoahHaptic, number | number[]> = { tap: 8, select: 12, success: [12, 45, 12] };
+const patterns: Record<NoahHaptic, number | number[]> = { tap: 16, select: 24, success: [12, 45, 12] };
 let memoryPreference: boolean | undefined;
 let lastAt = -Infinity;
 
@@ -50,5 +50,5 @@ export function noahControlFeedback(target: EventTarget | null, trusted: boolean
   if (!trusted || typeof Element === 'undefined' || !(target instanceof Element)) return null;
   const control = target.closest('button, a[href], summary, input[type="checkbox"], input[type="radio"], [role="button"], [role="switch"], [role="tab"]');
   if (!control || control.closest('[inert], [aria-disabled="true"], [data-noah-haptic="off"]') || control.matches(':disabled')) return null;
-  return control.matches('input, [role="switch"], [role="tab"], [aria-pressed], [aria-expanded]') ? 'select' : 'tap';
+  return control.matches('input, [role="switch"], [role="tab"], [aria-pressed], [aria-expanded], [popovertarget]') ? 'select' : 'tap';
 }

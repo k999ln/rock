@@ -57,4 +57,4 @@
 ## 8. マージ時
 
 - 追記型文書（CHANGELOG, docs/structure/07, 各設計書の日付節）は両側を保全。README.md と data/*.json は新しい側を土台に古い側の差分だけ足す。片側で丸ごと解決しない。
-- avoado.si のリリースは GitHub `origin/main` を正本とする。公開済みソースに独自の変更があれば先に PR で main に取り込む。Sites の版を有効にする前に、最新 main と保存する Sites ソースの両方で `git rev-parse 'HEAD^{tree}'` を照合する。照合には追跡ファイルの内容、パス、実行属性が含まれる。検証した main の SHA と公開版を記録する。
+- avoado.si のリリースは GitHub `iceiceice999/rock` の `origin/main` を正本とする。新しい変更と PR はこのリポジトリに集約する。公開済みソースに独自の変更があれば先に PR で main に取り込む。Sites の版を有効にする前に、最新 main と保存する Sites ソースの両方で `git rev-parse 'HEAD^{tree}'` を照合する。照合には追跡ファイルの内容、パス、実行属性が含まれる。検証した main の SHA と公開版を記録する。
