@@ -3,6 +3,8 @@
 // 本文の転載はしない: 投稿（Hacker News）は題名とリンクと数だけ。awesome 一覧は MIT の一覧の、1 行の説明だけ。
 // 鍵が要る所: Smithery（無料の鍵 SMITHERY_API_KEY が有る時だけ）。Glama・PulseMCP は鍵と表示義務・申請が要るので読まない。
 // X・Reddit・Bluesky は、運営の Codex が読んだリンクを scripts/noah-collector-social.mjs で受け取る（ここでは読まない）。
+// task 125（2026-11-22）: Switch（sandbox-quantum/switch）を拾えなかった事への直し。GitHub は MCP だけでなく Agent の道具（複数の Agent の連携・Claude Code・Codex）も読み、
+// 作られたのが前でも急に伸びた物（github-rising）を拾う。Product Hunt の公開フィードも読む。
 import { NOAH_COLLECTION_LIMITS, collectionUrl, collectionMaxAge } from '../lib/noah-collection.ts';
 import { looksLikeNoahSecret } from '../lib/noah-connect-requirements.ts';
 import { xAgentProject } from './noah-collector-x.mjs';
@@ -12,6 +14,8 @@ const HOUR = 3_600_000, DAY = 24 * HOUR;
 export const NOAH_FEEDS = {
   hackernews: { source: 'hackernews', everyMs: 30 * 60_000 },
   'github-mcp': { source: 'github', everyMs: 2 * HOUR },
+  'github-rising': { source: 'github', everyMs: 6 * HOUR },
+  producthunt: { source: 'producthunt', everyMs: 6 * HOUR },
   'huggingface-mcp': { source: 'huggingface', everyMs: 2 * HOUR },
   npm: { source: 'npm', everyMs: 6 * HOUR },
   docker: { source: 'docker', everyMs: 6 * HOUR },
@@ -105,15 +109,18 @@ async function hackernews({ fetcher, now }) {
   return [...items.values()];
 }
 
-// ---- GitHub の MCP の新着（公開の検索 API。直近 14 日に作られた物を、スターの多い順）。
-export const GITHUB_MCP_QUERIES = ['topic:mcp-server', 'topic:model-context-protocol', 'topic:mcp', '"mcp server" in:name,description'];
+// ---- GitHub の Agent の道具の新着（公開の検索 API。直近 14 日に作られた物を、スターの多い順）。
+/** Agent の道具の話題。MCP に加えて、複数の Agent の連携・Claude Code・Codex の道具（Switch のような物）も読む。 */
+export const GITHUB_AGENT_TOPICS = ['topic:mcp-server', 'topic:model-context-protocol', 'topic:mcp', 'topic:ai-agents', 'topic:multi-agent', 'topic:agent-orchestration', 'topic:claude-code', 'topic:codex'];
+export const GITHUB_MCP_QUERIES = [...GITHUB_AGENT_TOPICS, '"mcp server" in:name,description'];
+// GitHub の定期実行の鍵（読むだけ）が有れば使う（未認証の検索は、共有の IP で混みやすい）。api.github.com だけへ送り、転送は追わない。
+const githubHeaders = keys => ({ Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...(keys.github ? { Authorization: `Bearer ${keys.github}` } : {}) });
 async function githubMcp({ fetcher, now, keys = {} }) {
   const since = new Date(now - 14 * DAY).toISOString().slice(0, 10), items = new Map();
   for (const query of GITHUB_MCP_QUERIES) {
     const url = new URL('https://api.github.com/search/repositories');
     url.search = new URLSearchParams({ q: `${query} created:>=${since} fork:false archived:false`, sort: 'stars', order: 'desc', per_page: '50' }).toString();
-    // GitHub の定期実行の鍵（読むだけ）が有れば使う（未認証の検索は、共有の IP で混みやすい）。api.github.com だけへ送り、転送は追わない。
-    const page = json((await get(fetcher, url, { now, headers: { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...(keys.github ? { Authorization: `Bearer ${keys.github}` } : {}) } })).body);
+    const page = json((await get(fetcher, url, { now, headers: githubHeaders(keys) })).body);
     if (!Array.isArray(page?.items)) throw new FeedFailure('invalid_response');
     for (const repo of page.items) {
       const full = typeof repo?.full_name === 'string' ? repo.full_name : '';
@@ -127,6 +134,51 @@ async function githubMcp({ fetcher, now, keys = {} }) {
     }
   }
   return [...items.values()];
+}
+
+// ---- GitHub の、前からある Agent の道具が急に伸びた物（task 125）。
+// Switch（2026-11-18 に Switch Buddy を発表。repo は前からある）のように、作られたのは前でも、新しい版や発表で話題になった物を拾う。
+// 検索は「直近 7 日に更新があり、スター 300 以上」の物を、話題ごとにスターの多い順で 100 件。スターの数を毎回、収集機の状態に残し、1 日あたりの伸びを比べる。
+// 急に伸びた = 1 日に 50 以上、かつ全体の 2% 以上（何万スターの定番が毎日少しずつ増えるのは、急な伸びにしない）。比べる相手は 6 時間以上前・2 日以内の、いちばん古い数。
+// 初めて見た repo は比べる相手が無いので出さない（次の回から）。出た時は、急な伸びを Noah が初めて確かめた時（収集機の初めて見た時の決まり）。
+export const GITHUB_RISING = { topics: GITHUB_AGENT_TOPICS, minStars: 300, perDay: 50, share: 0.02, minGapMs: 6 * HOUR, keepMs: 2 * DAY, points: 10 };
+/** スターの記録（[時刻, 数] の並び）と今の数から、急に伸びたか。伸びた時は 1 日あたりの伸び、そうでなければ null。 */
+export function githubRisingRate(points, stars, now, rule = GITHUB_RISING) {
+  const base = points.find(([at]) => at < now && now - at >= rule.minGapMs && now - at <= rule.keepMs);
+  if (!base) return null;
+  const perDay = (stars - base[1]) / ((now - base[0]) / DAY);
+  return perDay >= rule.perDay && perDay >= rule.share * stars ? perDay : null;
+}
+async function githubRising({ fetcher, now, state, keys = {} }) {
+  const since = new Date(now - 7 * DAY).toISOString().slice(0, 10), seen = new Map();
+  for (const topic of GITHUB_RISING.topics) {
+    const url = new URL('https://api.github.com/search/repositories');
+    url.search = new URLSearchParams({ q: `${topic} pushed:>=${since} stars:>=${GITHUB_RISING.minStars} fork:false archived:false`, sort: 'stars', order: 'desc', per_page: '100' }).toString();
+    const page = json((await get(fetcher, url, { now, headers: githubHeaders(keys) })).body);
+    if (!Array.isArray(page?.items)) throw new FeedFailure('invalid_response');
+    for (const repo of page.items) {
+      const full = typeof repo?.full_name === 'string' ? repo.full_name : '';
+      const project = xAgentProject(`https://github.com/${full}`);
+      if (!project || repo.private || repo.fork || count(repo.stargazers_count) === undefined) continue;
+      seen.set(project.slice('https://github.com/'.length), repo);
+    }
+  }
+  const history = state.stars ?? {}, items = [];
+  for (const [key, repo] of seen) {
+    const points = (history[key] ?? []).filter(([at]) => at < now && now - at <= GITHUB_RISING.keepMs);
+    if (githubRisingRate(points, repo.stargazers_count, now) !== null) {
+      const project = `https://github.com/${key}`;
+      items.push(lead('github', {
+        id: `github-rising:${key}`, name: safe(text(repo.name, 200)) || key, summary: safe(text(repo.description, 500)), author: text(repo.owner?.login, 200) || key.split('/')[0],
+        url: project, sourceUrl: project, metrics: metricsOf([['stars', repo.stargazers_count]]),
+      }, now));
+    }
+    history[key] = [...points, [now, repo.stargazers_count]].slice(-GITHUB_RISING.points);
+  }
+  // 今回の検索に出ず、記録も古くなった repo は忘れる（状態が際限なく育たないように）。
+  for (const key of Object.keys(history)) if (!seen.has(key) && !history[key].some(([at]) => now - at <= GITHUB_RISING.keepMs)) delete history[key];
+  state.stars = history;
+  return items;
 }
 
 // ---- Hugging Face の MCP の Space（タグ mcp-server）。新しく作られた順と、いいねの多い順。ブラウザで試せる。
@@ -257,6 +309,36 @@ async function awesome({ fetcher, now, state }) {
   return items;
 }
 
+// ---- Product Hunt（公開の Atom フィード https://www.producthunt.com/feed。新しい約 50 件）。task 125。
+// Agent・AI の道具の語がある物だけ。載せるのは題名・ひと言の説明（製品の紹介文の 1 段落目）・Product Hunt の頁のリンクだけ。作った人の名前は載せない。
+// 転送先（/r/p/…）は追わない。出た時は、Product Hunt に出た日（published）。
+export const PRODUCTHUNT_TOPIC = /\b(?:ai agents?|agents?|agentic|mcp|model context protocol|claude|codex|copilot|llm|multi-agent)\b/iu;
+const ENTITIES = { lt: '<', gt: '>', amp: '&', quot: '"', apos: "'", '#39': "'", nbsp: ' ' };
+const decodeXml = value => value.replace(/&(lt|gt|amp|quot|apos|#39|nbsp);/gu, (_, name) => ENTITIES[name]);
+export function parseProductHunt(xml) {
+  const out = [];
+  for (const entry of xml.split('<entry>').slice(1, 101)) {
+    const id = /<id>tag:www\.producthunt\.com,2005:Post\/(\d{1,12})<\/id>/u.exec(entry)?.[1];
+    const link = /<link rel="alternate" type="text\/html" href="(https:\/\/www\.producthunt\.com\/(?:products|posts)\/[a-z0-9][a-z0-9-]{0,119})"\s*\/>/u.exec(entry)?.[1];
+    const title = /<title>([^<]{1,300})<\/title>/u.exec(entry)?.[1];
+    if (!id || !link || !title) continue;
+    const html = decodeXml(/<content type="html">([\s\S]{0,20000}?)<\/content>/u.exec(entry)?.[1] ?? '');
+    const first = /<p>([\s\S]*?)<\/p>/u.exec(html)?.[1] ?? '';
+    out.push({ id, url: link, name: text(decodeXml(title), 200), summary: text(decodeXml(withoutTags(first)), 300), publishedAt: iso(/<published>([^<]{1,40})<\/published>/u.exec(entry)?.[1]) });
+  }
+  return out;
+}
+async function producthunt({ fetcher, now }) {
+  const { body } = await get(fetcher, 'https://www.producthunt.com/feed', { now, limit: 2 * 1024 * 1024, headers: { Accept: 'application/atom+xml' } });
+  if (!body.includes('<feed')) throw new FeedFailure('invalid_response');
+  const items = [];
+  for (const entry of parseProductHunt(body)) {
+    if (!entry.name || !PRODUCTHUNT_TOPIC.test(`${entry.name} ${entry.summary}`) || looksLikeNoahSecret(entry.name) || looksLikeNoahSecret(entry.summary)) continue;
+    items.push(lead('producthunt', { id: `producthunt:${entry.id}`, name: entry.name, summary: entry.summary, author: 'Product Hunt', url: entry.url, sourceUrl: entry.url, ...(entry.publishedAt ? { createdAt: entry.publishedAt } : {}) }, now));
+  }
+  return items;
+}
+
 // ---- Smithery（鍵が有る時だけ。並べ替えが無いので、頁を順に回る。1 回 20 頁 = 2,000 件）。
 async function smithery({ fetcher, now, state, keys }) {
   if (!keys.smithery) throw new FeedFailure('needs_credentials');
@@ -286,7 +368,7 @@ async function smithery({ fetcher, now, state, keys }) {
   return items;
 }
 
-const READERS = { hackernews, 'github-mcp': githubMcp, 'huggingface-mcp': huggingfaceMcp, npm, docker, awesome, smithery };
+const READERS = { hackernews, 'github-mcp': githubMcp, 'github-rising': githubRising, producthunt, 'huggingface-mcp': huggingfaceMcp, npm, docker, awesome, smithery };
 
 /** 収集機の SQLite の、出所の状態と、集めた紹介の表（手元だけ。本番の表ではない）。 */
 export function feedTables(sql) {
