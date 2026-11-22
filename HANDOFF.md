@@ -12,8 +12,9 @@
 | 2 | `claude/ice/noah-collector-steady` | `claude/noah-collector-steady` | `17e1abf170e4761c7b5b6b2646f7c7af12c138ae` | fix(noah): 1 回きりの出所の失敗で、収集の実行全体を落とさない | `COLLECT` | `pr/collector.md` |
 | 3 | `claude/ice/noah-board-picks` | `claude/noah-board-picks` | `e2c2fc043a1ac1312abb28ed717f7152022458d7` | feat(noah): ボードに「このボードに合う Agent」を出す | `BOARDPICK` | `pr/boardpicks.md` |
 | 4 | `claude/ice/design-references` | `claude/design-references` | `f9ee0b25ca7b75b23e6fb85605752e060b633902` | docs(design): Noah のデザイン参照ライブラリと、画面を作る時の決まり | `REFLIB` | `pr/reflib.md` |
+| 5 | `claude/ice/noah-ux-audit` | `claude/noah-ux-audit` | `c49ed0bdeb06` で始まる commit | fix(noah): 知らない人の目で一周して、日本語の検索・Agent の追加・保存の画面・小さい押す所を直す（task 127） | `UXAUDIT` | `pr/ux.md` |
 
-どれも main `b310b319`（#11）の上の 1 commit。SSH の署名つきで、作者は `noellesugar99 <noellesugar99@users.noreply.github.com>`、committer は Claude。
+どれも main `b310b319`（#11）の上の 1 commit。5 は 2026-11-23 00:09 に足した（本人の指示 2026-11-22 23:10「ユーザーエクスピリエンスを辿ってデバグしてほしい」の 1 回目の直し）。SSH の署名つきで、作者は `noellesugar99 <noellesugar99@users.noreply.github.com>`、committer は Claude。
 
 ## 手順
 
@@ -54,7 +55,7 @@
        --author='noellesugar99 <noellesugar99@users.noreply.github.com>'
      git push origin claude/noah-collector-steady   # fast-forward だけ
      ```
-     check が全部通ったら、2 → 3 → 4 の順にマージする。
+     check が全部通ったら、2 → 3 → 4 → 5 の順にマージする。5 の CHANGELOG は `## 2026-11-23` の新しい節なので、ほかとはぶつからない事が多い。
 6. 安全の直しが main に入ったら、avoado.si（Sites）を main から公開し直す必要がある。公開はノエルか Codex がする。AGENTS.md の 8 のとおり、公開の前に main と Sites ソースの `git rev-parse 'HEAD^{tree}'` を照合する。これを報告に書く。
 7. 旧リポジトリの PR（k999ln/rock#416・#417・#418・#422）は、前のセッションが「移した」と書いて閉じた。新しい PR の番号は、報告に書く。
 
