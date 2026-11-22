@@ -220,3 +220,21 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 検証: typecheck・lint・関連47試験成功。Sites sourceの全体verify主試験4,895件中4,889成功/4 skip/2失敗。2件はcheckoutの過去GitオブジェクトとMini依存不足を補完後、該当16試験が成功。残り15検査（ビルド・公開ファイル・Work API1,918・CSV385等）を順次実行し全成功。単一のverify再実行完走とは区別する。ローカルproductionの8ルート/8共通ヘッダーも成功。
 
 再開: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify`。PR #377の `6efb722d3` を含む。Git側にない法人入口/Reviewer拡張は公開sourceで維持。PR #386はdraft、GitHubでのレビュー・マージは未完了。
+
+
+## 2026-11-22 評価元の実数を主表示（PR #386）
+
+✅ 本人指示「評価元から引っ張ってきて」に対応し、GitHubスター/Hugging Faceいいね/Xいいね・リポストを元リンクとともにカード上へ常時表示。取得できない項目は0で埋めず、Noah王冠との換算・加算はしない。取得は既存の署名付き収集のまま。whytapは公式GitHub APIのスター4、Semantic Shift Backendは公式HF APIのいいね3と一致。収集run44952758398成功。値は取得日時点のスナップショットであり、即時のリアルタイム値ではない。
+
+公開184 succeeded: source `4eca3969053fccbebdc435209039881321cfc697`、deployment `appgdep_6b0211c0c6448191ada1364154844a65`、env16。公開183の共有カード機能を取り込んで保持。公開ブラウザでGitHub★4/HFいいね3が展開なしで表示されること、390pxの横はみ出しなしを確認。端末の実機操作ではない。
+
+検証: 関連38試験と型検査成功。全体verifyは主試験4,892成功/4 skip、後続prebuildでローカルpreviewの保存先競合が発生。自分のpreviewを停止、既存と検証用storeを完全退避後にbuildと残り6工程成功。退避先 `/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/noah-ratings-preview-backup-u849t6ko`。183統合後は型検査・関連/共有41試験・build・bundle/assets・8ルート/8ヘッダー成功。単一verify再完走とは区別。ログ `/tmp/noah-ratings-verify.log`、`/tmp/noah-ratings-final-checks.log`、`/tmp/noah-ratings-merged-tests.log`。PRレビュー/マージは未完了。
+
+
+## 2026-11-22 元サイト評価へ一本化（PR #386）
+
+✅ 本人指示「下の0が並んでる評価はいらないから、元サイトの評価にまとめて」に対応。共通カードと掲載Agent詳細からNoah内利用人数・王冠・コメントの列を撤去。元サイトの数値/リンクはそのまま表示し、過去の評価記録は削除しない。詳細の保存状態APIは同じカードの出典を返して再利用する。
+
+公開186 succeeded: source `7d4674768ce1497855244b2a29d609fc0c40052c`、deployment `appgdep_6b021379697c81919c0fee022d64b782`、env16。最新source6f5e9f8のモバイルUXと183共有カードを保全。公開ブラウザで一覧の王冠/コメント操作が0件であること、Axad詳細の元出典と保存/接続が残ること、390px/590pxで横はみ出しなしを確認。
+
+検証: 型検査・関連28試験・build・公開bundle/assets・8ルート/8ヘッダー成功。`PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は、今回変更していない共有機能のlint6件で停止。`lib/noah-agent-share.ts` 7/13 no-control-regex、`components/noah-agent-share.tsx` 34 prefer-tag-over-role、`tests/noah-agent-share.test.mjs` 6/14/23 no-floating-promises。テスト削除や検査除外は行わず、担当チャットへ共有。全体検査成功とはしない。ログ `/tmp/noah-only-source-verify.log`、関連 `/tmp/noah-only-source-tests.log`。修正後の全体verify・PRレビュー/マージは未完了。

@@ -12,8 +12,7 @@ import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahPinInitials } from '@/lib/noa
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
-import { NOAH_COLLECTION_LABELS } from '@/lib/noah-collection';
-import NoahCardFeedback from './noah-card-feedback';
+import NoahAgentSourceRatings from './noah-agent-source-ratings';
 
 /** グリッドの 1 枚（GET /api/noah/pins の items の 1 件）。 */
 export type NoahPinView = NoahAgentCard;
@@ -98,8 +97,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
         {!item.external && <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
           {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
         </button>}
-        {item.feedbackId && <NoahCardFeedback id={item.feedbackId} />}
-        {!!item.sources?.length && <details className={styles.sources}><summary>出典・外部の評価</summary>{item.sources.map(source=><a key={source.sourceUrl} href={source.sourceUrl} target="_blank" rel="noopener noreferrer" title={`${new Date(source.observedAt).toLocaleString('ja-JP')} 確認`}>{NOAH_COLLECTION_LABELS[source.source]}{source.metrics && Object.entries(source.metrics).map(([metric,count])=>` · ${metric==='stars'?'★':metric==='likes'?'いいね':'リポスト'} ${count?.toLocaleString('ja-JP')}`).join('')}</a>)}</details>}
+        <NoahAgentSourceRatings sources={item.sources} />
         {signedIn && !item.external && onHide && <details className={styles.more}>
           <summary aria-label="その他の操作"><MoreHorizontal size={18} /></summary>
           <button type="button" onClick={() => onHide(item.id)}>{NOAH_PIN_TEXT.hide}</button>
