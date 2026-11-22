@@ -96,6 +96,8 @@ npm run amc:cycle -- demo
 
 CLIの管理クラウドは [task125](codex/tasks/125-noah-cloud-agents.md) で実装中です。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。モデルは試験用固定応答です。無料のWorkers実行器を追加し、公式JavaScript本体を使ったMemory/Filesystemの実モデル処理とファイルhashを旧クラウドで確認しました。Sequential Thinkingを含む3種はworkerdの公式Tool試験に成功。Noahの本番画面・閉鎖後の保存受入は継続中です。Python/shellを要する残り3種は本番未対応です。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
 
+管理クラウドの依頼と保存済み成果は、共通の「実行中」「保存したもの → 成果」から開く実装を追加しています。成果の閲覧でAgentを再実行せず、本文・ファイル保存・停止を同じ仕事画面で扱います。本番で画面を閉じた後の実行継続と成果受取は、無料枠の実行器と合わせて受入中です。
+
 Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別AgentへのURLを渡せます。公開掲載中のAgentの名前・説明を共有カードへ反映し、接続情報や本人の成果は共有しません。
 
 `https://avoado.si/` と `https://avoado.si/noah` の共有情報は、Noahのタイトル・説明・1200×630 PNGを返します。X用の大型画像カードとOpen Graphを初期HTMLに含め、画像添付なしでURL共有に使えます。
