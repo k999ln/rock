@@ -1,6 +1,6 @@
 ## 2026-11-22
 
-- task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #INTEGRATE101](https://github.com/k999ln/rock/pull/INTEGRATE101)）。
+- task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
 - task 105（自社クラウドの費用上限・見張り・復元練習、Codex の #368）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0058 に付け直し、その表・索引・trigger が migrator で全部入る事の試験を足した（[PR #413](https://github.com/k999ln/rock/pull/413)）。
 - task 13（iOS の eSIM 導入と Eve のホーム画面、Codex の #372）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0057 に付け直し、接続画面の見出しは main の新しい文にした。手元の本番ビルドで応答ヘッダを測り直した。iPhone 実機の確かめは未実施（[PR #412](https://github.com/k999ln/rock/pull/412)）。
 - task 102（SIM の証明、Codex の #365）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0056 に付け直し、会員登録の廃止の後は、このブラウザの本人に SIM を束ねる形にした（[PR #411](https://github.com/k999ln/rock/pull/411)）。
