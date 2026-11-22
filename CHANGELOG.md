@@ -4,6 +4,10 @@
 
 - Noahの公式CLI管理クラウド、接続・停止・結果保存と提供元接続の選択を実装。公式2配布物の隔離実行と3幅Chrome試験を確認。本番配備・実モデル受入はWorkers Paid利用先の確定待ち（task123、[新rock PR #1](https://github.com/iceiceice999/rock/pull/1)、旧 #402、Draft）。
 
+
+- 移行先privateリポジトリのCodeQLにActions読取権限を追加し、全履歴SPIDERの検査時間を有界で延長。固定版スキャナ・既存検知規則・失敗時の拒否は維持（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
+
+- Noahの通常タップに低遅延のポコ音・振動・押下反応と設定内の試聴を追加し、評価数のないMCP Registry表示をカードから除去。接続成功音・既存ミュート・元サイト評価を保持（task100、[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 - Noahに公開Gradio Agentの入力・実行受付・成果保存を追加。二重実行防止、結果通信維持、6言語、過去成果の再表示を検証し、全体verify成功。公開後・Pixelは受入中（task100、[PR #2](https://github.com/iceiceice999/rock/pull/2)）。
 
 - Noahの登録先429に対する待機時刻表示・本人別の再送防止と、本番100ブラウザの限定検査スクリプトを追加。公開199/mainのUIを保全して全体verify成功、公開とPixelの新規登録一周は受入中（task100、[PR #400](https://github.com/k999ln/rock/pull/400)）。
