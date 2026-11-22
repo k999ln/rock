@@ -99,3 +99,8 @@
 - 公開MCPの保存説明は、提供元の本文非保存とNoahの依頼・成果保存を区別する。
 - 独立したChrome 157 / 390px・タッチ試験でも、一覧検索→使う→実行→保存→reload→保存一覧から同一Work再表示が成功。外部遷移0・申込なし。証拠はGit外の `work/noah-production-qa-20261122/revenue-production-mobile/report.json`。Sites206のtreeは `2e0f4eafec9915b274074f79e1296346b4e7a7d3`。
 - 保存範囲の補正文言を既存business Worker版 `5ae9e805-5917-4db3-9ef4-c181753c277b` へ配備し、公開MCP tools/listで提供元とNoahの保存説明を確認。実行schema・紹介判定・台帳は変更なし。
+
+## 2026-11-22 追加の提携案件との実行連携（作業中）
+既存combination Workerへ公開サイト診断2種を追加。編集範囲はsite-diagnostics関連、既存combination/revenueの公開と台帳、lib/noah-revenue-directoryとDirectoryEntryの固定型、試験/記録。provider/Workの本体は変更しない。合格条件はdocs/services/noah-site-diagnostics.md。実条件/正式タグ/外部診断の証拠はGit外。
+
+- 追加2種の実MCP呼出しを本人の公開サイトで確認。提携・条件・媒体用原文タグとブログ公開2件をChromeで検証。関連48試験・型検査・Worker dry-run成功。現在は旧Workerの配備と共通Noahへの反映を受入中。実注文/承認は追加対象0件。統合担当がこのコミットを取り込んだ版で全体verifyとPR番号を記録する。

@@ -12,7 +12,12 @@ const check = (yes, message) => {
 export async function collectRentracks(
   tab,
   target,
-  { now = Date.now(), from, to = businessToday(now), includePayouts = true } = {},
+  {
+    now = Date.now(),
+    from,
+    to = businessToday(now),
+    includePayouts = true,
+  } = {},
 ) {
   from ||= new Date(Date.parse(to) - 364 * 86400000).toISOString().slice(0, 10);
   for (const d of [from, to])
@@ -69,9 +74,13 @@ export async function collectRentracks(
     await tab.playwright.getByRole('checkbox', { name, exact: true }).check();
   for (const basis of ['0', '1']) {
     await tab.playwright.locator('#idTermType').selectOption(basis);
-    await tab.playwright
-      .getByRole('button', { name: '再表示', exact: true })
-      .click();
+    await tab.playwright.expectNavigation(
+      () =>
+        tab.playwright
+          .getByRole('button', { name: '再表示', exact: true })
+          .click(),
+      { waitUntil: 'domcontentloaded', timeout: 15000 },
+    );
     page = await tab.playwright.domSnapshot();
     check(
       page.includes('ログアウト') &&

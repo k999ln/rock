@@ -1,4 +1,14 @@
 import {
+  SITE_ADAPTERS,
+  siteTool,
+  siteInput,
+  siteReady,
+  sitePublications,
+  executeSiteDiagnosis,
+  completeSiteDiagnosis,
+} from './site-diagnostics.mjs';
+import { diagnosticPage } from './site-diagnostics-page.mjs';
+import {
   advanceDiscovery,
   validateOfferIndex,
   matchRevenueCandidates,
@@ -139,10 +149,96 @@ export class CombinationLedger {
     });
     await this.reconcileRevenue();
   }
+  async diagnose(id, raw) {
+    const input = siteInput(id, raw),
+      config = configFor(this.env),
+      scheme = config.schemes.find((s) => s.id === id);
+    const state =
+        (await this.ctx.storage.get('state')) || emptyCombinationState(),
+      pipeline = await this.ctx.storage.transaction((tx) => loadRevenue(tx));
+    if (!siteReady(scheme, state, pipeline))
+      throw Error('条件の確認中、または紹介受付を停止しています。');
+    const cacheKey =
+      'diagnosis.' +
+      id +
+      '.' +
+      Array.from(
+        new Uint8Array(
+          await crypto.subtle.digest(
+            'SHA-256',
+            new TextEncoder().encode(input.url),
+          ),
+        ),
+      )
+        .map((x) => x.toString(16).padStart(2, '0'))
+        .join('');
+    this.diagnosticFlights ||= new Map();
+    let report = await this.ctx.storage.get(cacheKey);
+    if (!report || Date.now() - Date.parse(report.checkedAt) > 86400000) {
+      if (!this.diagnosticFlights.has(cacheKey)) {
+        const flight = (async () => {
+          await this.ctx.storage.transaction(async (tx) => {
+            const key = 'diagnosis-rate.' + id,
+              old = await tx.get(key),
+              hour = Math.floor(Date.now() / 3600000),
+              rate = old?.hour === hour ? old : { hour, count: 0 };
+            if (rate.count >= SITE_ADAPTERS[id].limit)
+              throw Error(
+                '無料診断の利用上限です。次の時間帯に再実行してください。',
+              );
+            rate.count++;
+            await tx.put(key, rate);
+          });
+          const result = await executeSiteDiagnosis(scheme, input);
+          await this.ctx.storage.transaction(async (tx) => {
+            const keys = (await tx.get('diagnosis-cache-index')) || [];
+            const fresh = keys.filter(
+              (x) => x.key !== cacheKey && Date.now() - x.at < 86400000,
+            );
+            fresh.push({ key: cacheKey, at: Date.now() });
+            const keep = fresh.slice(-100),
+              remove = keys.filter((x) => !keep.some((k) => k.key === x.key));
+            for (const x of remove) await tx.delete(x.key);
+            await tx.put(cacheKey, result);
+            await tx.put('diagnosis-cache-index', keep);
+          });
+          return result;
+        })();
+        this.diagnosticFlights.set(cacheKey, flight);
+      }
+      try {
+        report = await this.diagnosticFlights.get(cacheKey);
+      } finally {
+        this.diagnosticFlights.delete(cacheKey);
+      }
+    }
+    return this.ctx.storage.transaction(async (tx) => {
+      const latest = (await tx.get('state')) || emptyCombinationState(),
+        revenue = await loadRevenue(tx);
+      const { result, record } = completeSiteDiagnosis(scheme, input, report, {
+        state: latest,
+        pipeline: revenue,
+      });
+      latest.diagnosticCounts ||= {};
+      const counts = (latest.diagnosticCounts[id] ||= {
+        executions: 0,
+        referrals: 0,
+      });
+      counts.executions++;
+      if (record.referralIssued) counts.referrals++;
+      latest.receipts.push({ kind: 'diagnosis', ...record });
+      latest.receipts = latest.receipts.slice(-100);
+      latest.revision++;
+      await tx.put('state', latest);
+      return json(result);
+    });
+  }
   async fetch(request) {
     try {
       const input = await request.json(),
         config = configFor(this.env);
+      if (input.action === 'diagnose')
+        return await this.diagnose(input.schemeId, input.input);
       if (input.action === 'revenue_sync') {
         await this.reconcileRevenue();
         return json({ reconciled: true });
@@ -159,7 +255,12 @@ export class CombinationLedger {
         return this.ctx.storage.transaction(async (tx) => {
           const state = await loadRevenue(tx);
           if (input.action === 'revenue_public')
-            return json({ items: revenuePublications(state) });
+            return json({
+              items: [
+                ...revenuePublications(state),
+                ...sitePublications(config, await tx.get('state'), state),
+              ],
+            });
           if (input.action === 'revenue_status')
             return json({
               enabled: state.enabled,
@@ -181,7 +282,10 @@ export class CombinationLedger {
                 : null,
               matches: state.matches,
               business: state.business,
-              published: revenuePublications(state),
+              published: [
+                ...revenuePublications(state),
+                ...sitePublications(config, await tx.get('state'), state),
+              ],
             });
           if (input.expectedRevision !== state.revision)
             return json({ error: 'revision_conflict' }, 409);
@@ -217,7 +321,12 @@ export class CombinationLedger {
           case 'guides':
             return json(
               config.schemes
-                .filter((s) => s.guideApproved && state.articles[s.id])
+                .filter(
+                  (s) =>
+                    s.guideApproved &&
+                    state.articles[s.id] &&
+                    !SITE_ADAPTERS[s.id],
+                )
                 .map((s) =>
                   publicCombination({
                     ...s,
@@ -294,7 +403,7 @@ export class CombinationLedger {
 }
 function page(title, content, script = '', path = '/') {
   return new Response(
-    `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)} · Noah</title><meta name="description" content="使いたいサービスと必要な準備を確認。対応するAgentとサービスの組み合わせを、出典とともに整理します。"><link rel="canonical" href="${ORIGIN}${escape(path)}"><style>body{margin:0;background:#fff;color:#182432;font:16px/1.8 system-ui,sans-serif}header,main,footer{max-width:960px;margin:auto;padding:24px}header{border-bottom:1px solid #ddd}a{color:#174c9c}h1{font-size:clamp(28px,5vw,42px);line-height:1.4}h2{font-size:24px}article,section{border:1px solid #d9e0e7;border-radius:14px;padding:24px;margin:24px 0}label{display:block;margin:18px 0}select,button,input{font:inherit;padding:10px;border:1px solid #a9b6c4;border-radius:7px}button{background:#183f70;color:white;cursor:pointer}button:disabled{opacity:.5}small{color:#4d5c6b}.tag{color:#40516b}.result{white-space:pre-wrap}footer{font-size:14px}nav{display:flex;gap:20px}[hidden]{display:none!important}</style></head><body><header><nav><a href="https://avoado.si/noah">Noah</a><a href="/">サービスの接続準備</a></nav></header><main>${content}</main><footer>金融商品の元本や利益は保証されません。口座開設・入金・運用設定は、公式サービスで本人が判断して行ってください。</footer>${script ? `<script>${script}</script>` : ''}</body></html>`,
+    `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)} · Noah</title><meta name="description" content="使いたいサービスと必要な準備を確認。対応するAgentとサービスの組み合わせを、出典とともに整理します。"><link rel="canonical" href="${ORIGIN}${escape(path)}"><style>body{margin:0;background:#fff;color:#182432;font:16px/1.8 system-ui,sans-serif}header,main,footer{max-width:960px;margin:auto;padding:24px}header{border-bottom:1px solid #ddd}a{color:#174c9c}h1{font-size:clamp(28px,5vw,42px);line-height:1.4}h2{font-size:24px}article,section{border:1px solid #d9e0e7;border-radius:14px;padding:24px;margin:24px 0}label{display:block;margin:18px 0}select,button,input{font:inherit;padding:10px;border:1px solid #a9b6c4;border-radius:7px}button{background:#183f70;color:white;cursor:pointer}button:disabled{opacity:.5}small{color:#4d5c6b}.tag{color:#40516b}.result{white-space:pre-wrap}footer{font-size:14px}nav{display:flex;gap:20px}[hidden]{display:none!important}</style></head><body><header><nav><a href="https://avoado.si/noah">Noah</a><a href="/">サービスの接続準備</a></nav></header><main>${content}</main><footer>申込・契約・支払いは、公式サービスの条件を確認してご自身で判断してください。</footer>${script ? `<script>${script}</script>` : ''}</body></html>`,
     {
       headers: {
         ...common,
@@ -397,6 +506,63 @@ const worker = {
           return json({ error: 'Unknown action' }, 400);
         return call(v.action, v);
       }
+      const siteMatch =
+        /^\/(?:consult\/site\/([a-z-]+)\/mcp|api\/diagnose\/([a-z-]+)|agent\/([a-z-]+))$/.exec(
+          url.pathname,
+        );
+      const siteId =
+        siteMatch && (siteMatch[1] || siteMatch[2] || siteMatch[3]);
+      if (siteId && SITE_ADAPTERS[siteId]) {
+        if (
+          request.headers.has('origin') &&
+          ![url.origin, 'https://avoado.si'].includes(
+            request.headers.get('origin'),
+          )
+        )
+          return json({ error: 'Origin not allowed' }, 403);
+        const publications = await (await call('revenue_public')).json();
+        if (!publications.items?.some((x) => x.id === 'noah-' + siteId))
+          return json({ error: '条件を確認中です。' }, 503);
+        if (siteMatch[3] && request.method === 'GET')
+          return diagnosticPage(siteId, page);
+        if (request.method !== 'POST')
+          return json({ error: 'POST required' }, 405);
+        const v = await body(request);
+        if (siteMatch[2])
+          return call('diagnose', { schemeId: siteId, input: v });
+        const ok = (result) =>
+          json({ jsonrpc: '2.0', id: v.id ?? null, result });
+        if (v.method === 'initialize')
+          return ok({
+            protocolVersion: '2024-11-05',
+            capabilities: { tools: {} },
+            serverInfo: { name: 'noah-' + siteId, version: '1.0.0' },
+          });
+        if (v.method === 'notifications/initialized')
+          return new Response(null, { status: 202 });
+        if (v.method === 'tools/list') return ok({ tools: [siteTool(siteId)] });
+        if (
+          v.method === 'tools/call' &&
+          v.params?.name === siteTool(siteId).name
+        ) {
+          const r = await call('diagnose', {
+            schemeId: siteId,
+            input: v.params.arguments,
+          });
+          return ok({
+            content: [{ type: 'text', text: JSON.stringify(await r.json()) }],
+            isError: !r.ok,
+          });
+        }
+        return json(
+          {
+            jsonrpc: '2.0',
+            id: v.id ?? null,
+            error: { code: -32601, message: 'Method not found' },
+          },
+          400,
+        );
+      }
       if (request.method === 'GET' && url.pathname === '/api/revenue')
         return call('revenue_public');
       if (request.method === 'GET' && url.pathname === '/robots.txt')
@@ -412,6 +578,20 @@ const worker = {
         (request.method === 'GET' && url.pathname.startsWith('/agent/'))
       ) {
         const guides = await (await call('guides')).json();
+        if (Array.isArray(guides)) {
+          const publication = await (await call('revenue_public')).json();
+          for (const row of publication.items ?? []) {
+            const id = row.id.replace(/^noah-/, '');
+            if (SITE_ADAPTERS[id])
+              guides.push({
+                id,
+                title: row.title,
+                summary: row.summary,
+                state: 'ready',
+                note: '公開サイトを実診断し、希望者へ広告を含む相談先をご案内します。',
+              });
+          }
+        }
         if (!Array.isArray(guides))
           return json({ error: 'Service unavailable' }, 503);
         if (url.pathname === '/') return listPage(guides);
