@@ -6,7 +6,7 @@
 
 合格条件: 公式Agentの実クラウド処理、本人/Origin/再送/停止/上限/鍵非露出、スマホで接続→依頼→結果再表示。公開結果・CI・PRは受入後に記録する。
 
-状態: 実装中。2026-11-22にCloudflareのcontainers:write/ai:write追加認証は成功。現在のsmash@avoado.siアカウントはWorkers Paid未契約のため、Containers APIが配備を拒否。契約済みアカウント選択または有料化の本人判断待ち。
+状態: 実装中。2026-11-22にCloudflareのcontainers:write/ai:write追加認証は成功。新旧両アカウントとも、Containers APIがWorkers Paid未契約を理由に配備を拒否。新ログインから旧環境を管理する選択は承認済み。有料化は未承認。
 
 PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft、旧 [k999ln/rock #402](https://github.com/k999ln/rock/pull/402)）。実クラウド受入・マージ・本番公開は未完了。公開198とGit mainの変更を両側保全して統合済み。
 
@@ -21,7 +21,7 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 全体 `npm run verify` は最新main統合後に終了0で成功（2026-11-22）。その後の配布版照合はAPI/実行器18試験・typecheck・lintを再実行して成功。途中で見つけた依存フォルダの除外漏れはサービスの.gitignoreで修正。別toolkitの依存不足は `npm ci --prefix toolkits/noah-coconala --ignore-scripts` で解消し、その試験は合格。
 
 再開:
-1. CloudflareのWorkers Paid利用可能なアカウントを確定する。追加OAuth認証は完了済み。サービスに固定したWranglerを使い、`--config ./wrangler.jsonc` を明示する。認証情報をログに出さない。
+1. 旧Cloudflare環境を維持し、新ログインへ管理権限を追加する。CLI配備はWorkers Paidの契約判断が別途必要。追加OAuth認証は完了済み。サービスに固定したWranglerを使い、`--config ./wrangler.jsonc` を明示する。認証情報をログに出さない。
 2. READMEに従い実行器の配備・サーバー間secretを設定し、実モデルで公式Agentの実行・停止・結果保存を確認。
 3. GitHubの検証を通してPRをマージ。本番Sitesを最新mainと同じGit treeへ同期し、treeを照合してから公開。Secretsはnative Sites環境設定へ登録する。
 4. 本番の実Chromeスマホ幅で検索→接続→依頼→結果/外部評価を確認し、task・CHANGELOG・READMEへ実測の公開版を追記する。未確認の段階では✅を付けない。
@@ -34,6 +34,8 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 新GitHubにActions Secretsは未登録。旧収集用secret、X/Smithery認証、スケジュールの移行は別途必要。旧アカウントのSecretsを読み出して移したとは扱わない。
 
 ## 全掲載への拡張（2026-11-22）
-直接接続は新PR #7へ分離し先行公開する。CLIはHermes/BossにTime/Sequential Thinkingを追加。公式配布物の固定版・hashを照合し、Linuxコンテナ内network=noneで初期化/道具一覧/実ツール応答を確認（モデル応答はfixture）。実クラウド・実モデルの成功とは扱わない。
+直接接続はPR #7へ分離し、マージ後に本番Sites205へ公開済み。Chrome390pxのタップで検索→公式MCP接続→実行→保存一覧→再読込と外部評価の表示を確認。CLIはHermes/BossにTime/Sequential Thinkingを追加。公式配布物の固定版・hashを照合し、Linuxコンテナ内network=noneで初期化/道具一覧/実ツール応答を確認（モデル応答はfixture）。実クラウド・実モデルの成功とは扱わない。
 全1,762件の定義監査: 既存接続170、定義確認187（MCP54/Gradio133）、固定CLI4、追加対応1401。個別にguessit公開MCPの実実行とSQLite保存/再読込/別所有者拒否を確認。秘密や個人入力を監査ファイルへ保存しない。
-旧Cloudflareアカウントへ戻す本人指示を連携先から受領。旧OAuthではContainers権限未取得、契約状態APIは403のため利用プラン未判定。新規有料契約はしていない。新main/PR #7取り込みと最終検証を継続する。
+旧Cloudflareアカウントへ戻す本人指示を連携先から受領。旧OAuthのContainers/AI権限追加後も、Containers APIが401 Workers Paid requiredを返すことを実確認。新規有料契約はしていない。新main/PR #7取り込みと最終検証を継続する。
+
+最終検証更新: 新main統合後のクラウド/提供元67試験は成功。外付けTMPDIRで全体verifyを試した際に無関係なAMC試験が時間切れ・停止したため、内蔵ディスクで当該69試験を再実行して成功。全体verifyを内蔵TMPDIRで再実行中。
