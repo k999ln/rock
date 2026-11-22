@@ -269,7 +269,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
         {pending === 'material' ? '安全に取得中…' : '導入情報を表示'}
       </button>}
     {material && <div className={styles.esimMaterial}>
-      <p>スマホの設定で回線を追加したら、この購入履歴に戻り「状態を更新」を押してください。画面を閉じた場合は、同じRockstar IDの「アカウント」→「購入履歴・eSIM設定」から再開できます。</p>
+      <p>スマホの設定で回線を追加したら、この購入履歴に戻り「状態を更新」を押してください。画面を閉じた場合は、同じRockstar IDの「登録情報」→「購入履歴・eSIM設定」から再開できます。</p>
       <p className={styles.notice}>この情報はeSIMの追加に使う秘密情報です。本人の端末でのみ表示し、第三者へ共有しないでください。</p>
       <div className={styles.esimLinks}>
         {appleUrl && <a className={styles.primary} href={appleUrl} rel="noreferrer" referrerPolicy="no-referrer">Apple端末に追加 <ExternalLink size={14} /></a>}

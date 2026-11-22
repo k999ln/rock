@@ -18,19 +18,19 @@ export function noahHomeView(hash: string): NoahHomeView {
 }
 
 export function noahLegacyHref(hash: string, mode: NoahSurfaceMode, base: string): string | null {
-  if (hash === '#sky') return `${base}/tools`;
-  if (['#catalog', '#optional-features'].includes(hash)) return `${base}/agents`;
-  if (hash === '#sky-manage') return mode === 'public' ? `${base}/saved` : noahActionHref(mode, base, 'library');
+  if (hash === '#sky') return `${base}/explore?tab=tools`;
+  if (['#catalog', '#optional-features'].includes(hash)) return `${base}/explore?tab=catalog`;
+  if (hash === '#sky-manage') return mode === 'public' ? `${base}/saved?tab=roles` : noahActionHref(mode, base, 'library');
   return null;
 }
 
 /** These are navigation destinations, never authentication or execution grants. */
 export function noahActionHref(mode: NoahSurfaceMode, base: string, target: string, agentId = '') {
-  const path = noahMacPath(target, agentId);
-  if (mode === 'local') return path;
-  if (target === 'register') return '/noah/agents/new?launch=1';
-  if (target === 'library' || target === 'work') return `/noah/activity${target === 'library' ? '?compose=1' : ''}#${target}`;
-  return `${base}/mac?${new URLSearchParams({ target, ...(agentId ? { agent: agentId } : {}) })}`;
+  if (target === 'register') return '/noah/agents/new';
+  if (target === 'library') return `${base}/saved?tab=agents`;
+  if (target === 'work') return `${base}/activity`;
+  if (target === 'agent' && /^[a-zA-Z0-9_-]{1,160}$/.test(agentId)) return `${base}/agents/${agentId}`;
+  return `${base}/explore`;
 }
 
 export function noahMacPath(target: string, agentId = '') {

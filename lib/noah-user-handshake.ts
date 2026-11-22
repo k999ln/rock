@@ -98,9 +98,10 @@ export function createNoahUserHandshake(deps: IntakeDependencies & { hostHandsha
    * 接続先の枠を取り、握手する。失敗は、理由の符号と、本人に見せる文にして返す（投げない）。
    * `slotTaken`: 枠を、先に取ってある（依頼は、受け付ける前に `take` で取る。握手で、もう 1 つ取らない）。
    */
-  async function handshake(target: NoahUserHandshakeTarget, options: { slotTaken?: boolean } = {}): Promise<NoahUserHandshake> {
+  async function handshake(target: NoahUserHandshakeTarget, options: { slotTaken?: boolean; owner?:string } = {}): Promise<NoahUserHandshake> {
     if (!options.slotTaken && !(await take(target.host))) return { ok: false, code: 'host_busy', message: NOAH_HOST_BUSY };
-    const ctx: NoahMouthContext = { fetch: guarded, headers };
+    const scoped=options.owner&&deps.ownerFetch?await deps.ownerFetch(options.owner,target.url):null;
+    const ctx: NoahMouthContext = { fetch: scoped?createNoahGuardedFetch(scoped,{sameHost:true,redirects:0,...(deps.probeCheck?{check:deps.probeCheck}:{})}):guarded, headers };
     const started = now();
     try {
       const result = await noahMcpHandshake(target.url, { ...ctx, signal: AbortSignal.timeout(NOAH_USER_HANDSHAKE_MS) });

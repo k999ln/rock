@@ -1,4 +1,5 @@
 'use client';
+import { useNoahLocale } from './noah-locale';
 /**
  * 接続のボタン。「接続」を 1 回押すと、計画を読み、つなぎ、「頼む」に変わる。失敗の時は、理由と「もう一度」。
  * 未サインインの人が押した時は、続き（操作 ID と Agent の ID だけ）を置いて、サインインの画面へ移る。
@@ -13,16 +14,20 @@ import {
   takeNoahConnectHandoff, writeNoahConnectHandoff, type NoahReadyConnection,
 } from '@/lib/noah-ready-view';
 import styles from './noah-ready.module.css';
+import NoahLoading from './noah-loading';
+import { noahHaptic } from '@/lib/noah-haptics';
 
 type Reply = { id?: string; state?: string; revision?: number; error?: string; placeLabel?: string | null; planSha256?: string; connection?: NoahReadyConnection };
 const asConnection = (body: Reply): NoahReadyConnection | null =>
   typeof body.id === 'string' && typeof body.state === 'string' && typeof body.revision === 'number' ? { id: body.id, state: body.state, revision: body.revision, error: body.error ?? null } : null;
 
-export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link', packageId = null }: {
+export default function NoahConnectButton({ agentId, listed, signedIn, ownerScope, connection, onChange, resume = false, askAs = 'link', packageId = null, initialTool = null }: {
   /** 系列の ID。 */
   agentId: string;
   /** 棚のカードから来た時、そのカードの ID（つなげる数を、カードで数えるため）。 */
   packageId?: string | null;
+  /** サインイン後も、選んでいた仕事の入力へ戻す。入力値はURLへ入れない。 */
+  initialTool?: string | null;
   /** 一覧に載せているか。載せていない物は、つなげない。 */
   listed: boolean;
   signedIn: boolean;
@@ -35,10 +40,12 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
   /** つながった後の主ボタン。一覧では「頼む」（詳細へ移る）。詳細では出さない（すぐ下に、道具の一覧が出る）。 */
   askAs?: 'link' | 'none';
 }) {
+  const {t}=useNoahLocale();
+
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
   // 応答が届かなかった「接続」は、押し直した時に、同じ操作 ID で送る（行と握手が増えない）。応答が届いたら、次は新しい ID。
   const operation = useRef<string | null>(null), started = useRef(false);
-  const detail = noahReadyDetailHref(agentId);
+  const detail = noahReadyDetailHref(agentId, { tool: initialTool, from: packageId });
   const view = noahConnectButtonView({ connection, busy, listed });
 
   async function call(path: string, body?: unknown): Promise<{ status: number; body: Reply }> {
@@ -50,7 +57,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     return { status: response.status, body: await response.json() as Reply };
   }
   function leaveToSignIn(id: string) {
-    writeNoahConnectHandoff(window.sessionStorage, { agentId, id, at: Date.now() });
+    try { writeNoahConnectHandoff(window.sessionStorage, { agentId, id, at: Date.now() }); } catch { /* 保存できないブラウザでも、同じ詳細へログインして戻れる。 */ }
     window.location.assign(noahReadyAccountHref(detail));
   }
   /** 応答を、画面へ映す。つながった時は、動く所を 3 秒だけ出す。 */
@@ -60,7 +67,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
     if (next) onChange(next);
     if (reply.status === 401 && id) { leaveToSignIn(id); return; }
     if (reply.status !== 200) { setError(reply.body.error ?? NOAH_READY_TEXT.offline); return; }
-    if (next?.state === 'connected') setNotice(`${reply.body.placeLabel ?? '相手のサーバー'}につなぎました`);
+    if (next?.state === 'connected') { setNotice(`${reply.body.placeLabel ?? '相手のサーバー'}につなぎました`); noahHaptic('success'); }
     // つなぐ途中で止まって、後始末が切った接続: 理由を出す（ボタンは「接続」に戻る。押すと、新しい操作として、つなぎ直す）。
     else if (next?.state === 'disconnected' && next.error) setError(next.error);
   }
@@ -122,13 +129,13 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
 
   const note = error || view.note;
   const main = view.label === null ? null : view.action === 'ask'
-    ? (askAs === 'link' ? <Link className={styles.primary} href={detail}>{view.label}</Link> : null)
-    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{view.label}</button>;
+    ? (askAs === 'link' ? <Link className={styles.primary} href={detail}>{t(view.label)}</Link> : null)
+    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{busy ? <NoahLoading compact label={t(view.label)} /> : view.label}</button>;
   // 出す物が無い時（詳細の画面で、つながった後）は、区切りの線も出さない。
   if (!main && !notice && !note) return null;
   return <div className={styles.connect}>
     {main}
-    {notice && <output className={styles.notice}>{notice}</output>}
+    {notice && <output className={styles.notice}>{t(notice)}</output>}
     {note && <p className={styles.reason} role={error ? 'alert' : undefined}>{note}</p>}
   </div>;
 }

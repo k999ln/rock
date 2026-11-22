@@ -17,10 +17,11 @@ function Collage({ board }: { board: Board }) {
   return <span className={styles.collage} aria-hidden="true">{covers.map((cover, index) => <span key={cover?.id ?? `empty-${index}`} className={styles.tone} data-topic={cover?.topic ?? 'other'}>{cover ? noahPinInitials(cover.name) : ''}</span>)}</span>;
 }
 const boardCards = (boards: Board[]) => <ul className={styles.boardCards}>{boards.map((board) => <li key={board.id} className={styles.boardCard}>
-  <Link href={`/noah/boards/${board.id}`}><Collage board={board} /><strong>{board.name}</strong><small>{board.pins} 件 · {board.visibility === 'public' ? `公開${board.followers ? ` · フォロー ${board.followers}` : ''}` : '自分だけ'}</small></Link>
+  <Link href={`/noah/saved?board=${encodeURIComponent(board.id)}`}><Collage board={board} /><strong>{board.name}</strong><small>{board.pins} 件 · {board.visibility === 'public' ? `公開${board.followers ? ` · フォロー ${board.followers}` : ''}` : '自分だけ'}</small></Link>
 </li>)}</ul>;
 
-export function NoahBoardsPage() {
+export function NoahBoardsPage({embedded=false}:{embedded?:boolean}={}) {
+  const Heading=embedded?'h2':'h1';
   const [state, setState] = useState<{ status: 'loading' | 'ready' | 'signin' | 'closed' | 'error'; mine: Board[]; following: Board[] }>({ status: 'loading', mine: [], following: [] });
   useEffect(() => {
     void fetch('/api/noah/boards', { cache: 'no-store' }).then(async (response) => {
@@ -32,10 +33,10 @@ export function NoahBoardsPage() {
     }).catch(() => setState((old) => ({ ...old, status: 'error' })));
   }, []);
   return <main className={styles.boardsPage}>
-    <h1>{NOAH_PIN_TEXT.boards}</h1>
+    <Heading>{NOAH_PIN_TEXT.boards}</Heading>
     <p className={styles.boardsLead}>ホームの Agent の「保存」で、ボードを作って集めます。公開したボードは、他の人がフォローできます。</p>
     {state.status === 'loading' && <p className={styles.status}><output>{NOAH_PIN_TEXT.more}</output></p>}
-    {state.status === 'signin' && <p className={styles.status}><Link href="/account?returnTo=%2Fnoah%2Fboards">{NOAH_PIN_TEXT.signIn}</Link></p>}
+    {state.status === 'signin' && <p className={styles.status}><Link href="/noah/account?returnTo=%2Fnoah%2Fsaved">{NOAH_PIN_TEXT.signIn}</Link></p>}
     {state.status === 'closed' && <p className={styles.status}>{NOAH_PIN_TEXT.closed}</p>}
     {state.status === 'error' && <p className={styles.status} role="alert">ボードを読めませんでした。少し後で開き直してください。</p>}
     {state.status === 'ready' && <>
@@ -106,7 +107,7 @@ export function NoahBoardPage({ id }: { id: string }) {
       <input aria-label={NOAH_PIN_TEXT.boardName} value={name} maxLength={40} onChange={(event) => setName(event.target.value)} />
       <button type="submit" disabled={pending || !name.trim() || name.trim() === board.name}>名前を変える</button>
       <label><input type="checkbox" checked={board.visibility === 'public'} disabled={pending} onChange={(event) => { void send({ action: 'update', id: board.id, revision: board.revision, visibility: event.target.checked ? 'public' : 'private' }).then((ok) => { if (ok) void load(null); }); }} />公開する</label>
-      <button type="button" className={styles.danger} disabled={pending} onClick={() => { if (window.confirm(`ボード「${board.name}」を消しますか？中の保存も消えます（Agent は消えません）。`)) void send({ action: 'remove', id: board.id, revision: board.revision }).then((ok) => { if (ok) window.location.href = '/noah/boards'; }); }}>ボードを消す</button>
+      <button type="button" className={styles.danger} disabled={pending} onClick={() => { if (window.confirm(`ボード「${board.name}」を消しますか？中の保存も消えます（Agent は消えません）。`)) void send({ action: 'remove', id: board.id, revision: board.revision }).then((ok) => { if (ok) window.location.href = '/noah/saved'; }); }}>ボードを消す</button>
     </form>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {items.length === 0 ? <p className={styles.status}>{NOAH_PIN_TEXT.boardEmpty}</p>

@@ -63,7 +63,7 @@ void test('signed-out registration offers usable sign-in and retry, then loads d
   t.after(() => h.unmount()); await h.flush();
   assert.match(h.text(), /サインインすると、自分のAgent/);
   assert.doesNotMatch(h.text(), /保存した下書きを確認中/);
-  assert.ok(h.nodes().some(n => n.type === 'a' && n.props.href === '/account?mode=login&returnTo=%2Fnoah%2Fagents%2Fnew%3Flaunch%3D1'));
+  assert.ok(h.nodes().some(n => n.type === 'a' && n.props.href === '/noah/account?mode=login&returnTo=%2Fnoah%2Fagents%2Fnew%3Flaunch%3D1'));
   assert.equal(h.calls.some(c => c.url === '/api/noah/drafts'), false);
   assert.equal(h.nodes().find(n => n.type === 'fieldset').disabled, true);
   authenticated = true; h.click('アカウントを再確認'); await h.flush();
