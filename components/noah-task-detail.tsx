@@ -192,7 +192,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
             </p>
           )}
           {result && ask.result && (
-            <NoahResultContent key={ask.id} result={ask.result} id={ask.id} />
+            <NoahResultContent key={ask.id} result={ask.result} id={ask.id} savedAttachments={ask.cloudFiles?.length ?? 0} />
           )}
           {result && !!ask.cloudFiles?.length && <NoahManagedFiles files={ask.cloudFiles} />}
           {noahAskRowView(ask, now).stoppable && (

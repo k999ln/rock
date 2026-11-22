@@ -41,4 +41,4 @@ Workers FreeとSQLite Durable Objects、Workers AIの無料割当を使い、有
 
 受付後は永続alarmが実行を開始し、ブラウザGETなしで既存の宛先票からWorkへ結果を送る。実行中の再起動は再送せず結果不明。停止は永続状態で以後のモデル/Tool送信と結果採用を閉じる。すでに提供元で始まったモデル計算自体の中断を保証するものではない。公式ツールは依頼専用の/tmp/workspaceのみを使い、外部fetchや利用者端末にはつながない。出力ファイルは既存上限とhashを検証する。
 
-追加受入: 実workerdで公式Tool呼出、VFSの依頼間分離、直接パス/リンクによる領域外拒否を確認する。本番で実モデル/Tool呼出と成果hash、Chrome全終了後のWork保存、同一ID非再実行、別owner拒否、停止後の追加操作なしを確認してから各profileをUIで有効にする。本番受入は未完了。
+追加受入: 実workerdで公式Tool呼出、VFSの依頼間分離、直接パス/リンクによる領域外拒否を確認する。本番で実モデル/Tool呼出と成果hash、Chrome全終了後のWork保存、同一ID非再実行、別owner拒否、停止後の追加操作なしを確認してから各profileをUIで有効にする。2026-11-23、Sites210で3profileの実モデル/公式Tool処理とChrome全終了後のD1保存・再表示・download/hashを確認し、別依頼の停止/再送非実行/別owner拒否も確認した。端末条件と配備版、成果の証拠は [task125](../../codex/tasks/125-noah-cloud-agents.md#2026-11-23-本番の画面閉鎖後受取停止) に記録する。
