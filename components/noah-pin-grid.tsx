@@ -9,12 +9,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
 import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahPinInitials } from '@/lib/noah-pins';
+import { noahCardHref, noahProjectHref } from '@/lib/noah-project-view';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
 import { NOAH_COLLECTION_RUN_LABELS } from '@/lib/noah-collection';
-import { noahCardHref, noahProjectHref } from '@/lib/noah-project-view';
 
 /** グリッドの 1 枚（GET /api/noah/pins の items の 1 件）。 */
 export type NoahPinView = NoahAgentCard;

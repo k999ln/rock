@@ -27,7 +27,7 @@ export type NoahAskItem = {
 /** 画面の文（決まった文）。 */
 export const NOAH_ASK_TEXT = {
   tools: '道具',
-  pick: '道具を選ぶ',
+  pick: '何をしますか？',
   filter: '語で絞る（名前・説明）',
   none: '入力欄で使える道具が、今はありません。',
   noMatch: '合う道具が、ありません。',
@@ -62,9 +62,9 @@ export function noahToolMarks(tool: Pick<NoahAskTool, 'usable' | 'readOnly' | 'r
   return [tool.readOnly ? '読み取りだけ' : null, tool.readOnly && tool.required === 0 ? '押すだけ' : null, tool.needsConfirm ? '送る前に確かめます' : null].filter((mark): mark is string => mark !== null);
 }
 /** 語で絞る（名前と説明。大文字と小文字を分けない）。 */
-export function noahFilterTools<T extends Pick<NoahAskTool, 'name' | 'summary'>>(tools: T[], word: string): T[] {
+export function noahFilterTools<T extends Pick<NoahAskTool, 'name' | 'summary'>>(tools: T[], word: string, label: (tool: T) => string = (tool) => tool.name): T[] {
   const needle = word.trim().toLowerCase();
-  return needle ? tools.filter((tool) => tool.name.toLowerCase().includes(needle) || tool.summary.toLowerCase().includes(needle)) : tools;
+  return needle ? tools.filter((tool) => tool.name.toLowerCase().includes(needle) || label(tool).toLowerCase().includes(needle) || tool.summary.toLowerCase().includes(needle)) : tools;
 }
 
 /** 入力欄の値（画面が持つ形）。選択肢から複数を選ぶ欄だけが、並び。それ以外は、文字。 */
