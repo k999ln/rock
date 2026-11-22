@@ -405,7 +405,9 @@ await test('ASPの登録媒体成果だけを媒体集計し、個人帰属/入�
   );
 });
 await test('追加2件も共通Noahカードと固定resolverで実行可能', async () => {
-  const items = sitePublications(config, state, pipeline, now),
+  // The HTTP response is generated after the directory request starts.
+  // Its timestamp must stay tied to the completed scheduled evaluation.
+  const items = sitePublications(config, state, pipeline, now + 100),
     entries = await noahRevenueDirectory(
       async () => Response.json({ items }),
       now,

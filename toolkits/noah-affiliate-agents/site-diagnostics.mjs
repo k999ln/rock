@@ -174,7 +174,7 @@ export function sitePublications(config, state, pipeline, now = Date.now()) {
       summary: SITE_ADAPTERS[s.id].summary,
       url: SITE_ORIGIN + '/agent/' + s.id,
       mcp: SITE_ORIGIN + '/consult/site/' + s.id + '/mcp',
-      checkedAt: new Date(now).toISOString(),
+      checkedAt: state.lastRunAt,
       attribution: 'registered_media',
       approval: 'external_observation_only',
     }));
