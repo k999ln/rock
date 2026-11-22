@@ -52,7 +52,7 @@ NOAH_DISTRIBUTION_CAPACITY=1000 node --experimental-strip-types --test tests/esi
 [{"id":"text-check","name":"文章を確認","routes":[{"id":"vendor","kind":"provider","label":"提供元の専用環境","binding":"AGENT_VENDOR_V1"},{"id":"alternate","kind":"registered","label":"別の登録接続先","binding":"AGENT_PARTNER_V1"},{"id":"noah","kind":"noah","label":"Noahクラウド","binding":"NOAH"}]}]
 ```
 
-adapterは `GET /jobs/<id>` で状態を返し、未作成時だけ404を返す。`PUT /jobs/<id>` は同じ入力・IDで一度だけ受け付ける。処理中は202。成果は `{id,result,final,report:{done,incomplete,unverified}}`。途中成果は同じIDで照会を継続する。停止はNoahの再実行・照会を止める。すでに外部が受け付けた処理の中断は外部側の確認が必要。実機・本番回線・有料接続は模擬試験の対象外。
+adapterは `GET /jobs/<id>` で状態を返し、未作成時だけ404を返す。`PUT /jobs/<id>` は同じ入力・IDで一度だけ受け付ける。処理中は202。成果は `{id,result,final,report:{done,incomplete,unverified}}`。途中成果は同じIDで照会を継続する。成功応答が空の場合や完了フラグの形式が不正な場合は、その仕事を「確認が必要」にして自動照会を終了する。停止はNoahの再実行・照会を止める。すでに外部が受け付けた処理の中断は外部側の確認が必要。実機・本番回線・有料接続は模擬試験の対象外。
 
 ```sh
 node --experimental-strip-types --test --test-concurrency=1 tests/esim-noah-free-trial.test.mjs tests/noah-cloud-work.test.mjs

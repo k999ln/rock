@@ -271,7 +271,10 @@ export class CloudWork {
       };
     const reader = response.body?.getReader();
     if (!reader)
-      return { state: 'waiting', note: '成果の到着を待っています。' };
+      return {
+        state: 'attention',
+        note: '接続先の成功応答に成果がありません。',
+      };
     const pieces = [];
     let bytes = 0;
     for (;;) {
@@ -296,6 +299,7 @@ export class CloudWork {
     if (
       !payload ||
       payload.id !== reference ||
+      (payload.final !== undefined && typeof payload.final !== 'boolean') ||
       typeof payload.result !== 'string' ||
       !payload.result.trim() ||
       payload.result.length > 2048

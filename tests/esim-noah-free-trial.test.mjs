@@ -610,6 +610,42 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
   assert.equal(creations, 1);
 });
 
+await test('an empty successful response or invalid completion flag needs review on the original work ID', async (t) => {
+  let starts = 0;
+  const provider = async (request) => {
+    if (request.method === 'GET') return new Response(null, { status: 404 });
+    starts++;
+    const { text } = await request.json();
+    if (text === 'missing body') return new Response(null, { status: 204 });
+    const id = new URL(request.url).pathname.split('/').pop();
+    return Response.json({ id, result: 'partial text', final: 'false' });
+  };
+  const f = fixture(t, { routeBindings: { PROVIDER: provider } });
+  f.invite();
+  await phone(f.trial);
+  const run = (action, input) =>
+    f.trial.cloudWork('alice', true, action, input);
+  for (const [i, text] of ['missing body', 'invalid flag'].entries()) {
+    const input = { id: newApproval(), route: 'provider', text };
+    await run('start', input);
+    let job;
+    const deadline = Date.now() + 15000;
+    do {
+      [job] = (await run('list', { work: input.id })).jobs;
+      if (job.state !== 'queued') break;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    } while (Date.now() < deadline);
+    assert.equal(job.state, 'attention', text);
+    assert.equal(job.result, undefined);
+    await run('start', input);
+    await f.restart();
+    const [reopened] = (await run('list', { work: input.id })).jobs;
+    assert.equal(reopened.id, input.id);
+    assert.equal(reopened.state, 'attention');
+    assert.equal(starts, i + 1);
+  }
+});
+
 await test('partial results remain readable and the same work keeps polling for its missing outcome', async (t) => {
   let created = 0,
     lookups = 0,
