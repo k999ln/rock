@@ -154,7 +154,7 @@ await test('実行器の条件と停止・鮮度を再確認し、承認報酬�
   const fetcher = async (_url, options) =>
     Response.json(
       JSON.parse(options.body).action === 'report'
-        ? { launchBlockers: [], approvedYen: 0, privateValue: 'PRIVATE' }
+        ? { offerId: '123', launchBlockers: [], approvedYen: 0, privateValue: 'PRIVATE' }
         : {
             enabled: true,
             lastRunAt: at,
@@ -170,11 +170,17 @@ await test('実行器の条件と停止・鮮度を再確認し、承認報酬�
     fetcher,
   });
   assert.equal(business.ready, true);
-  const state = { enabled: true, business };
+  const state = { enabled: true, business, index: validateOfferIndex(index) };
+  assert.equal(business.offerId, '123');
+  for (const invalid of [
+    { ...state, index: null },
+    { ...state, index: { offers: [] } },
+    { ...state, business: { ...business, offerId: '456' } },
+  ]) assert.deepEqual(revenuePublications(invalid, now), []);
   assert.equal(revenuePublications(state, now).length, 1);
   assert.doesNotMatch(
     JSON.stringify(revenuePublications(state, now)),
-    /PRIVATE|approvedYen|rewardYen|siteId/,
+    /PRIVATE|approvedYen|rewardYen|siteId|offerId/,
   );
   assert.equal(revenuePublications(state, now + 1200001).length, 0);
   assert.equal(
@@ -238,7 +244,7 @@ await test(
             });
           return Response.json(
             (await request.json()).action === 'report'
-              ? { launchBlockers: [] }
+              ? { offerId: '123', launchBlockers: [] }
               : {
                   enabled: true,
                   lastRunAt: at,

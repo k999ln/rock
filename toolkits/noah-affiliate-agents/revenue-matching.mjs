@@ -249,6 +249,9 @@ export function revenuePublications(pipeline, now = Date.now()) {
   if (
     !pipeline?.enabled ||
     !proof?.ready ||
+    !pipeline.index?.offers?.some(
+      (offer) => offer.id === proof.offerId && offer.partnered === true,
+    ) ||
     now - Date.parse(proof.checkedAt) > 20 * 60000 ||
     Date.parse(proof.checkedAt) > now ||
     !Number.isFinite(Date.parse(proof.checkedAt))
@@ -297,7 +300,12 @@ export async function observeBusinessAdapter(
       read('agent_status'),
       read('report'),
     ]);
+    const offerId =
+      typeof report.offerId === 'string' && /^[0-9]{1,20}$/.test(report.offerId)
+        ? report.offerId
+        : null;
     const ready =
+      offerId !== null &&
       agent.enabled === true &&
       Array.isArray(report.launchBlockers) &&
       report.launchBlockers.length === 0 &&
@@ -308,6 +316,7 @@ export async function observeBusinessAdapter(
       Date.parse(agent.lastRunAt) <= now;
     return {
       checkedAt,
+      offerId,
       ready,
       reason: ready ? null : 'business_gates_closed',
       runCount: agent.runCount,

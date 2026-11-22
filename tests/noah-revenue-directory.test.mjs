@@ -161,11 +161,14 @@ await test('自社MCPから匿名準備票を作り、共通Workへ保存・再�
     return mf.dispatchFetch(url, init);
   };
   try {
-    const entries = await noahRevenueDirectory(async () =>
-      Response.json({
-        items: [{ ...item, checkedAt: new Date().toISOString() }],
+    const observedAt = Date.now();
+    const entries = await noahRevenueDirectory(
+      async () => Response.json({
+        items: [{ ...item, checkedAt: new Date(observedAt).toISOString() }],
       }),
+      observedAt,
     );
+    assert.equal(entries.length, 1);
     const f = fixture(t, fetcher),
       deps = {
         ...f.deps,

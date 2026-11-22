@@ -726,6 +726,7 @@ export function businessReport(raw, config, now = Date.now()) {
     .map((c) => c.id);
   return {
     schema: 'noah-business-report/1',
+    offerId: config.offerId,
     revision: s.revision,
     totals: {
       pendingYen: sum(pending),
