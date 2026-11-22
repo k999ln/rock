@@ -21,7 +21,7 @@ void test('SPIDER scans both requested languages on branch pushes, PRs, daily an
 void test('scan job has minimal permissions and only pinned official actions', () => {
   assert.match(workflow, /^permissions: \{\}$/m);
   const permissions = workflow.match(/^    permissions:\n((?:      [\w-]+: [\w]+\n)+)/m)?.[1];
-  assert.equal(permissions, '      contents: read\n      security-events: write\n');
+  assert.equal(permissions, '      contents: read\n      actions: read\n      security-events: write\n');
   const actions = [...workflow.matchAll(/^\s+uses: ([^\s#]+)/gm)].map(match => match[1]);
   assert.deepEqual(actions, [
     'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',

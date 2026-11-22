@@ -122,7 +122,8 @@ export function screen(options = {}) {
       if(id==='@/components/noah-work-page')return load('components/noah-work-page.tsx');
       if(id==='@/lib/noah-profile-contract')return profileContract;
       if (id === '@/lib/noah-haptics') return load('lib/noah-haptics.ts');
-      if (id === '@/lib/noah-connection-sound') return load('lib/noah-connection-sound.ts');
+      if (id === '@/lib/noah-connection-sound' || id === './noah-connection-sound') return load('lib/noah-connection-sound.ts');
+      if (id === '@/lib/noah-tap-sound') return load('lib/noah-tap-sound.ts');
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
       if (id === '@/lib/noah-intake-import-parts') return importParts;

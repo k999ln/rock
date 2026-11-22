@@ -8,7 +8,7 @@ import { sha256Hex, looksLikeNoahSecret } from './noah-connect-requirements.ts';
 export const NOAH_COLLECTION_SOURCES = ['mcp-registry', 'github', 'huggingface', 'hackernews', 'npm', 'docker', 'smithery', 'awesome', 'x', 'reddit', 'bluesky'] as const;
 export type NoahCollectionSource = typeof NOAH_COLLECTION_SOURCES[number];
 export const NOAH_COLLECTION_LABELS: Record<NoahCollectionSource, string> = {
-  'mcp-registry': 'MCP公式台帳', github: 'GitHub', huggingface: 'Hugging Face', hackernews: 'Hacker News', npm: 'npm', docker: 'Docker',
+  'mcp-registry': 'MCP Registry', github: 'GitHub', huggingface: 'Hugging Face', hackernews: 'Hacker News', npm: 'npm', docker: 'Docker',
   smithery: 'Smithery', awesome: 'awesome一覧', x: 'X', reddit: 'Reddit', bluesky: 'Bluesky',
 };
 /**

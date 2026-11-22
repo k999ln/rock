@@ -26,11 +26,20 @@ void test('source ratings are visible with provenance, keep zero and omit unavai
     { source: 'x', sourceUrl: 'https://x.com/maker/status/1234', observedAt: 1795302000000, metrics: { likes: 8, reposts: 2 } },
   ] });
   assert.equal(view.find('details').length, 0);
-  assert.equal(view.find('a').length, 4);
+  assert.equal(view.find('a').length, 3);
+  assert.doesNotMatch(view.text(), /MCP Registry|台帳/);
   assert.match(view.text(), /GitHub/); assert.match(view.text(), /1,234/);
   assert.deepEqual(view.find('span').map(n=>n.props['aria-label']).filter(Boolean), ['スター 1,234', 'いいね 0', 'いいね 8', 'リポスト 2']);
   assert.ok(view.find('a').every(n=>n.props.href === '/noah/discover/agent?id=project-test#ratings' && !n.props.target));
   assert.ok(view.find('a').every(n=>n.props.title.includes('確認')));
+});
+
+void test('a listing source without metrics is not presented as a rating', () => {
+  const ui = screen({ modules: { '@/lib/noah-collection': collection } });
+  const view = ui.mount('components/noah-agent-source-ratings.tsx', { sources: [
+    { source: 'mcp-registry', sourceUrl: 'https://registry.modelcontextprotocol.io/v0.1/servers/agent', observedAt: 1795302000000, metrics: {} },
+  ] });
+  assert.equal(view.find('div').length, 0);
 });
 
 const NOW = Date.UTC(2026, 10, 22), KEY = randomBytes(32).toString('hex');
