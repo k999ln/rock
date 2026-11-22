@@ -174,7 +174,7 @@ export function sitePublications(config, state, pipeline, now = Date.now()) {
       summary: SITE_ADAPTERS[s.id].summary,
       url: SITE_ORIGIN + '/agent/' + s.id,
       mcp: SITE_ORIGIN + '/consult/site/' + s.id + '/mcp',
-      checkedAt: new Date(now).toISOString(),
+      checkedAt: state.lastRunAt,
       attribution: 'registered_media',
       approval: 'external_observation_only',
     }));
@@ -191,6 +191,18 @@ const jpChecks = {
   'mixed-content': '画像などにHTTP読み込みが混ざっていないか確認する',
   'robots-txt': '検索エンジンのアクセス設定を確認する',
   canonical: '正規URLを確認する',
+};
+const ecChecks = {
+  'Content without JavaScript': 'JavaScriptなしでの主要内容の表示',
+  'Organization / store schema': '運営者・店舗の構造化データ',
+  'WebSite schema': 'サイトの構造化データ',
+  'llms.txt': 'si向けのサイト案内（llms.txt）',
+  'Product structured data (sampled page)': '確認ページの商品構造化データ',
+  'AI crawler access (robots.txt)': 'siクローラーのアクセス設定',
+  Sitemap: 'サイトマップ',
+  'Homepage title, description & OpenGraph':
+    'トップページのタイトル・説明・共有情報',
+  'Served over HTTPS': 'HTTPS接続',
 };
 export function siteResult(id, input, raw, checkedAt) {
   if (!raw || typeof raw.text !== 'string' || raw.truncated || !raw.text.trim())
@@ -232,14 +244,30 @@ export function siteResult(id, input, raw, checkedAt) {
     )
       throw Error('対象ページの診断結果を確認できませんでした。');
     // Free result only. External prose is data, never an instruction or a paid upgrade.
-    findings = raw.text
-      .split('\n')
-      .filter((l) => l.startsWith('- **'))
-      .slice(0, 12)
-      .map((l) => ({
-        item: l.replace(/^- \*\*([^*]+)\*\*.*/, '$1').slice(0, 160),
-        status: '提供元の無料レポートを参照',
-      }));
+    findings = [];
+    let status = null;
+    for (const line of raw.text.split('\n')) {
+      if (line.startsWith('## ')) {
+        const group = /^## (Needs fixing|Warnings|Passing) \(\d+\)\s*$/.exec(
+          line,
+        )?.[1];
+        status =
+          {
+            'Needs fixing': '要確認',
+            Warnings: '確認推奨',
+            Passing: '確認済み',
+          }[group] ?? null;
+      }
+      const label = /^- \*\*([^*]+)\*\*/.exec(line)?.[1];
+      if (
+        status &&
+        label &&
+        Object.hasOwn(ecChecks, label) &&
+        findings.length < 12
+      )
+        findings.push({ item: ecChecks[label], status });
+    }
+    if (!findings.length) throw Error('診断項目の形式が変わりました。');
     sourceUrl = 'https://agenticcart.ai/mcp-server';
   }
   return {
@@ -287,6 +315,26 @@ export async function executeSiteDiagnosis(
     () => {},
   );
   return siteResult(s.id, input, raw, new Date(now).toISOString());
+}
+export function siteReportText(result) {
+  return [
+    result.title,
+    '対象: ' + result.target,
+    '確認日時: ' + result.checkedAt,
+    '確認元: ' + result.provider,
+    result.sourceUrl,
+    '',
+    '公開ページの診断結果',
+    ...result.findings.map((x) => '・' + x.item + '（' + x.status + '）'),
+    '',
+    '相談前に整理すること',
+    ...result.preparation.map((x) => '・' + x),
+    '',
+    result.nextAction,
+    ...(result.referralUrl
+      ? ['相談先と条件を確認する（広告を含む記事）', result.referralUrl]
+      : []),
+  ].join('\n');
 }
 export function completeSiteDiagnosis(
   s,
