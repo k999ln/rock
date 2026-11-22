@@ -1,0 +1,32 @@
+{
+  "schema": "noah-scout-curators/1",
+  "decidedAt": "2026-11-22",
+  "decision": "本人の回答（2026-11-22）「Claude が最初の 20 人を選ぶ」。その後は、紹介したリンクが Noah に載った回数の多い人を Noah が候補に足す（task 125 の 3 章）。",
+  "list": {
+    "name": "Noah scouts",
+    "owner": "Noah 用の X アカウント（本人が新しく作る。パスワード・確認コードは本人が入れる）",
+    "visibility": "private"
+  },
+  "curators": [
+    { "handle": "Claude_Digest", "name": "Claude Code Digest", "lang": "ja", "why": "Claude Code・Codex まわりの新しい道具の速報。Switch Buddy の紹介で本人が見ていた。", "evidence": "本人のスクリーンショット（2026-11-22 19:32）" },
+    { "handle": "ClaudeCode_love", "name": "Claude Code Studio", "lang": "ja", "why": "Claude Code の拡張・道具（graphify など）の紹介。", "evidence": "https://weel.co.jp/media/tech/claude-code-codex-skill-plugin/" },
+    { "handle": "so_ainsight", "name": "そう", "lang": "ja", "why": "話題の AI の repo（mattpocock/skills など）の紹介。", "evidence": "https://weel.co.jp/media/tech/claude-code-codex-skill-plugin/" },
+    { "handle": "iru_cection", "name": "いる科", "lang": "ja", "why": "Claude の skill・plugin を作って紹介（imozuru）。", "evidence": "https://weel.co.jp/media/tech/claude-code-codex-skill-plugin/" },
+    { "handle": "techtalkjp", "name": "coji 溝口浩二", "lang": "ja", "why": "開発者として Claude Code の道具を実際に使った報告。", "evidence": "https://weel.co.jp/media/tech/claude-code-codex-skill-plugin/" },
+    { "handle": "chimolog7", "name": "やっぱもちです。", "lang": "ja", "why": "AI の道具の使い比べと紹介。", "evidence": "https://weel.co.jp/media/tech/claude-code-codex-skill-plugin/" },
+    { "handle": "masahirochaen", "name": "チャエン", "lang": "ja", "why": "最新の AI の道具の紹介（日本語で最も広く読まれている一人）。", "evidence": "https://shift-ai.co.jp/blog/16883/" },
+    { "handle": "SuguruKun_ai", "name": "すぐる", "lang": "ja", "why": "仕事に使う AI の道具と使い方。", "evidence": "https://shift-ai.co.jp/blog/16883/" },
+    { "handle": "shota7180", "name": "木内翔大", "lang": "ja", "why": "生成 AI の動向と仕事での使い方。", "evidence": "https://shift-ai.co.jp/blog/16883/" },
+    { "handle": "usutaku_channel", "name": "usutaku", "lang": "ja", "why": "初心者向けの AI の道具の使い方。", "evidence": "https://shift-ai.co.jp/blog/16883/" },
+    { "handle": "tom_doerr", "name": "Tom Dörr", "lang": "en", "why": "GitHub の repo と Agent を毎日紹介（約 20 万人が読む）。", "evidence": "https://superx.so/creators/tom_doerr" },
+    { "handle": "swyx", "name": "swyx", "lang": "en", "why": "AI の開発の道具の発見と発表。", "evidence": "https://usefulai.com/feeds/x-accounts" },
+    { "handle": "simonw", "name": "Simon Willison", "lang": "en", "why": "LLM の道具を公開で試して書く。", "evidence": "https://usefulai.com/feeds/x-accounts" },
+    { "handle": "steipete", "name": "Peter Steinberger", "lang": "en", "why": "Agent で開発する作業の流れと道具。", "evidence": "https://laoujin.github.io/Atlas/research/2026-04-28-high-signal-ai-software-creators-to-follow-in-2026/x-twitter-accounts/" },
+    { "handle": "bcherny", "name": "Boris Cherny", "lang": "en", "why": "Claude Code の新しい機能と使い方（作った本人）。", "evidence": "https://usefulai.com/feeds/x-accounts" },
+    { "handle": "gdb", "name": "Greg Brockman", "lang": "en", "why": "Codex の設定と使い方。", "evidence": "https://usefulai.com/feeds/x-accounts" },
+    { "handle": "AnthropicAI", "name": "Anthropic", "lang": "en", "why": "Claude と Claude Code の公式の発表。", "evidence": "https://usefulai.com/feeds/x-accounts" },
+    { "handle": "LangChain", "name": "LangChain", "lang": "en", "why": "Agent の道具と作り方の発表。", "evidence": "https://usefulai.com/feeds/x-accounts" },
+    { "handle": "_akhaliq", "name": "AK", "lang": "en", "why": "新しい AI のデモと論文を毎日紹介。", "evidence": "https://laoujin.github.io/Atlas/research/2026-04-28-high-signal-ai-software-creators-to-follow-in-2026/x-twitter-accounts/" },
+    { "handle": "omarsar0", "name": "Elvis Saravia", "lang": "en", "why": "Agent を作る人向けに選んだ研究と道具。", "evidence": "https://usefulai.com/feeds/x-accounts" }
+  ]
+}
