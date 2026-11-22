@@ -1,5 +1,15 @@
 # Noahでココナラの仕事をする
 
+## DaisukeのココナラAgent
+
+MacでPython 3.9以降とOllamaを使います。`ollama list` に `qwen3:4b` があることを確認し、接続プログラムを `npm start` で起動します。Noahの「Agentを探す」で「Daisuke」または「ココナラ」を検索し、[Agent](https://avoado.si/noah/coconala/agent)を選びます。「案件を探して下書きする」で開始し、結果が出たら、案件名から公開元を開けます。下書きと選定理由は本人Mac内に保存され、同じブラウザで再び開けます。実行中または停止後のページURLを保存すると、同じMacの別ブラウザからもその下書きを開けます。Ollamaには公開募集だけを渡します。公開募集の読み取りにログインは不要です。
+
+Macが起きている間は直前の探索が終わってから15分後に次を開始します。「Agentを停止」は進行中の読み取り・生成プロセスの終了を待ち、次の探索を取り消します。Macの接続プログラムを再起動した場合は中断として表示します。
+
+Daisuke134/anicca の固定版の Apply から `application_eligibility.py` の判定、`application_planner.py` の `planner_prompt` と共通方針、`buyer_voice.py` の文体、`work_fit.py` の分類を使います。下書き用には公開本文を渡し、元の出品者の履歴や実績を読み込む部分を除きました。Noah側が取得、ローカルモデルへの入力、成果の保存・停止を担当します。通常の出品・応募・交渉・納品の自動実行器は起動しません。[上流の固定版](https://github.com/Daisuke134/anicca/tree/5ea3222c3280c5a96172e9eedb1b733e3576ca73/skills/earn/gig) · [MITライセンス](anicca/LICENSE)
+
+## 手動の返信・応募・納品
+
 MacでNoahのメニューから「ココナラの仕事」を開きます。実行中は専用のヘッドレスChromeが仕事を続けます。Macと接続プログラムは起動しておいてください。依頼後は別のアプリに移ることも、Noahのタブを閉じることもできます。
 
 ## 最初の接続

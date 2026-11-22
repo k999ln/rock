@@ -1,5 +1,7 @@
 'use client';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
+import { macPost as post } from './noah-coconala-mac';
 import styles from './noah-coconala.module.css';
 
 const base = 'http://127.0.0.1:38483';
@@ -20,32 +22,6 @@ type Action = keyof typeof names;
 type Args = Record<string, string | number>;
 type Pending = { action: Action; args: Args; ticket: string };
 type Receipt = { requestId: string; state: string; message: string };
-async function post<T>(path: string, body: unknown, token = ''): Promise<T> {
-  const response = await fetch(base + path, {
-    method: 'POST',
-    redirect: 'error',
-    cache: 'no-store',
-    credentials: 'omit',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: 'Bearer ' + token } : {}),
-    },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(65000),
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    const message =
-      data &&
-      typeof data === 'object' &&
-      'message' in data &&
-      typeof data.message === 'string'
-        ? data.message
-        : 'Macとの接続を確認してください。';
-    throw Error(message);
-  }
-  return data as T;
-}
 export default function NoahCoconala() {
   const [action, choose] = useState<Action>('reply'),
     [token, setToken] = useState(''),
@@ -162,6 +138,7 @@ export default function NoahCoconala() {
   return (
     <main className={styles.page}>
       <h1 className="text-2xl font-semibold">ココナラの仕事</h1>
+      <Link className={styles.agentLink} href="/noah/coconala/agent">DaisukeのココナラAgent · 案件を探して下書き</Link>
       {!token && (
         <>
           <p>ココナラにログインした専用のChromeを、このMacの裏で動かします。</p>
