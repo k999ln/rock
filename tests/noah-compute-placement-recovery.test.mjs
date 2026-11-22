@@ -35,7 +35,7 @@ async function cloudFixture(t) {
   }));
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
-  const migration = readFileSync(new URL('../drizzle/0054_cloud_operations.sql', import.meta.url), 'utf8');
+  const migration = readFileSync(new URL('../drizzle/0058_cloud_operations.sql', import.meta.url), 'utf8');
   for (const statement of migration.split('--> statement-breakpoint').slice(0, 2)) await db.prepare(statement).run();
   await db.prepare(`CREATE TABLE rehearsal_requests
     (id TEXT PRIMARY KEY, owner TEXT NOT NULL, request_digest TEXT NOT NULL, admitted_at INTEGER NOT NULL)`).run();

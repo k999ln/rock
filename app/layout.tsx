@@ -1,4 +1,4 @@
-import CommunityOsRuntime from '@/components/community-os-runtime';
+import ApplicationRuntime from '@/components/application-runtime';
 import './community-os.css';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     'NoahとEveの会話・仕事・成果を同じアカウントで引き継ぐRockstarOS WebOS Developer Preview。',
   applicationName: 'RockstarOS',
+  manifest: '/manifest.webmanifest',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {
     capable: true,
@@ -30,7 +31,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body><CommunityOsRuntime />{children}</body>
+      <body><ApplicationRuntime />{children}</body>
     </html>
   );
 }

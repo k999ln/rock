@@ -125,8 +125,8 @@ export default function NoahModels() {
     <WorkspaceShell title="Noah" tone="sky">
       <main className={styles.page}>
         <nav className={styles.nav}>
-          <Link href="/noah/agents">見つける</Link>
-          <Link href="/noah/library">自分のAgent</Link>
+          <Link href="/noah/explore">見つける</Link>
+          <Link href="/noah/saved?tab=agents">自分のAgent</Link>
           <Link href="/noah/work">仕事・成果</Link>
         </nav>
         <header className={styles.hero}>

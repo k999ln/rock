@@ -12,6 +12,7 @@
  * - 同じ操作 ID の再送は、今の状態を返す（もう 1 回呼ばない）。止めた後に届いた成果は、採らない。
  * 「1 文で頼む」（モデル・専用の Worker・「あなたの番」）は、出した後に足す。
  */
+import { noahDelivery, noahExpectsImage } from './noah-output-receipt.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { finishGoneNoahAsk, finishNoahAsk, noahAskRunGone, noahAskView, NOAH_ASK_COLUMNS, NOAH_ASK_END_MESSAGES, NOAH_ASK_STOP_MESSAGES, type NoahAskRow } from './noah-ask-store.ts';
@@ -87,7 +88,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
     const view = noahAskView(row);
     if (row.state !== 'succeeded') return view;
     const remote = (await jobs.get(row.owner_id, row.work_id))?.noahRemote;
-    return remote?.result ? { ...view, result: remote.result, ...(remote.note ? { note: remote.note } : {}) } : view;
+    return remote?.result ? { ...view, delivery:noahDelivery(row.host,row.tool,remote.result), result: {...remote.result,delivery:noahDelivery(row.host,row.tool,remote.result)}, ...(remote.note ? { note: remote.note } : {}) } : view;
   }
 
   /** `POST /api/noah/ask`。受け付けて、202 と、応答の後に続ける仕事（run）を返す。spec-87 の 11.3。 */
@@ -107,6 +108,8 @@ export function createNoahAskService(deps: NoahAskDependencies) {
     if (!noahAllowed(flags, 'ask', reviewer)) return failed(503, NOAH_ASK_MESSAGES.closed);
     // 使ってよい接続か（つながっている・取り下げられていない・同意した時から接続先が変わっていない）。使えなければ 404・409（NoahAgentError）。
     const { connection, familyKey, digest, toolsSha256, target } = await connections.usable(owner, input.connectionId);
+
+    await deps.authorizeAction?.(owner, familyKey, input.tool, input.toolSha256, input.confirm);
 
     // 頼む前の上限。越えていれば、Work も行も作らない。相手へも送らない。
     const at = now();
@@ -217,7 +220,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
 
       // 握手（8 秒。枠は、受け付けた時に取ってある）。
       const { target } = await connections.usable(owner, row.connection_id);
-      const shaken = await hands.handshake(target, { slotTaken: true });
+      const shaken = await hands.handshake(target, { slotTaken: true, owner });
       if (!shaken.ok) return await fail(shaken.message);
       close = shaken.close;
       // 道具を名前で探す。本人が入力欄を開いた時と、定義が同じ時だけ呼ぶ。
@@ -236,6 +239,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
         if (!confirmed) return await fail(NOAH_ASK_MESSAGES.needsConfirm);
         if (!(await confirm(owner, row.connection_id, { name: tool.name, sha256: toolSha256 }))) return await fail(NOAH_ASK_MESSAGES.interrupted);
       }
+      await deps.authorizeAction?.(owner, again.familyKey, tool.name, toolSha256!, confirmed);
       // 呼ぶ直前に、「相手へ送る」の印（tool_calls=1）を付ける。止める事が頼まれていれば、付かない（呼ばない）。
       // 印を付けてから呼ぶので、実行の場が途中で落ちても、後始末（lib/noah-sweep.ts）が、「送っていない」と「送ったかもしれない」を分けられる。
       // 版（revision）は進めない: 画面が持っている版で、「止める」がそのまま通る。
@@ -296,7 +300,12 @@ export function createNoahAskService(deps: NoahAskDependencies) {
       : agentId
         ? prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? AND connection_id IN (SELECT id FROM noah_connections WHERE owner_id=? AND family_key=?) ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, owner, agentId, NOAH_ASK_RUN_LIMITS.listed)
         : prepare(`SELECT ${columns} FROM noah_asks WHERE owner_id=? ORDER BY updated_at DESC,id DESC LIMIT ?`, owner, NOAH_ASK_RUN_LIMITS.listed)).all<NoahAskRow>()).results;
-    return reply(200, { asks: rows.map(noahAskView) });
+    return reply(200, { asks: await Promise.all(rows.map(async row=>{
+      const view=noahAskView(row);
+      if(row.state!=='succeeded'||!noahExpectsImage(row.host,row.tool))return view;
+      const result=(await jobs.get(row.owner_id,row.work_id))?.noahRemote?.result;
+      return {...view,delivery:noahDelivery(row.host,row.tool,result)};
+    })) });
   }
 
   /**
@@ -330,7 +339,7 @@ const record = (value: unknown): value is Record<string, unknown> => !!value && 
 
 function failure(error: unknown) {
   if (error instanceof NoahAgentError) return json({ error: error.status === 413 ? '送信内容が大きすぎます。' : error.message }, error.status);
-  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'サインインしてください。' }, 401);
+  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
   return json({ error: '依頼を確かめられません。少し待ってから再試行してください。' }, 503);
 }
 

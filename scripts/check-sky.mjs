@@ -158,7 +158,7 @@ for (const path of [
 
 for (const path of [
   'app/layout.tsx',
-  'app/manifest.ts',
+  'app/web-app-manifests.ts',
   'app/rockstaros/page.tsx',
   'app/rockstaros/guide/page.tsx',
   'components/sky-workspace.tsx',

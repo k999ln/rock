@@ -1,9 +1,12 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Check, ExternalLink, RefreshCw, ShieldCheck, Smartphone } from 'lucide-react';
 import type { EsimInstallMaterial } from '@/lib/esim-install-material';
+import type { IosEveEntitlementState } from '@/lib/esim-install-proof';
+import { esimInstallQr, esimIosInstallCard, supportsIosEsimLink } from '@/lib/esim-ios-install';
 import { operationRequest, OperationRequestError, OperationResponseError } from '@/lib/operations-client';
 import styles from '@/components/sky-commerce.module.css';
 
@@ -13,6 +16,7 @@ type EsimStatus = {
   providerProfileBoundToOrder?: boolean;
   deviceInstallState?: 'unverified' | 'verified_installed_enabled';
   esimDeviceEntitlementState?: 'not_connected' | 'active' | 'revoked_or_stale';
+  iosEveEntitlementState?: IosEveEntitlementState | null;
   starterPackActivationState?: 'awaiting_install_proof' | 'awaiting_authenticated_device_gateway' | 'active_on_authenticated_device';
   starterPackActivatedAt?: number | null;
   starterAgentPack?: {
@@ -55,12 +59,12 @@ function unknownRequestOutcome() {
   return new Error('通信の応答を確認できず、操作の結果が不明です。接続を確認して「状態を確認」してください。');
 }
 
-function safeInstallUrl(value: unknown, host: 'esimsetup.apple.com' | 'esimsetup.android.com') {
+function safeAndroidInstallUrl(value: unknown) {
   if (typeof value !== 'string') return null;
   try {
     const url = new URL(value);
     const carddata = url.searchParams.get('carddata');
-    return url.protocol === 'https:' && url.hostname === host && url.pathname === '/esim_qrcode_provisioning' &&
+    return url.protocol === 'https:' && url.hostname === 'esimsetup.android.com' && url.pathname === '/esim_qrcode_provisioning' &&
       !url.username && !url.password && !url.hash && carddata?.startsWith('LPA:1$') ? url.href : null;
   } catch {
     return null;
@@ -116,12 +120,14 @@ function stateLabel(status: EsimStatus) {
   }
 }
 
-export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
+export function EsimPurchaseSetup({ orderId, iosConnect = false }: { orderId: string; iosConnect?: boolean }) {
   const [status, setStatus] = useState<EsimStatus | null>(null);
   const [material, setMaterial] = useState<EsimInstallMaterial | null>(null);
-  const [pending, setPending] = useState<'status' | 'material' | 'ack' | 'cloud' | null>(null);
+  const [pending, setPending] = useState<'status' | 'material' | 'ack' | 'cloud' | 'iosDeclare' | null>(null);
   const [cloud, setCloud] = useState<CloudAccess | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [iosLink, setIosLink] = useState(false);
+  const [showQr, setShowQr] = useState(false);
   const deliveryKey = useRef<string | null>(null);
 
   function clearCachedAccess() {
@@ -140,13 +146,28 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
       setStatus(result);
       if (!result.installMaterialAvailable || result.installMaterialAcknowledged ||
         ['not_esim_order', 'not_eligible'].includes(result.state)) setMaterial(null);
-      if (!['not_esim_order', 'not_eligible'].includes(result.state)) setCloud(await cloudRequest(orderId));
+      if (!iosConnect && !['not_esim_order', 'not_eligible'].includes(result.state)) setCloud(await cloudRequest(orderId));
     } catch (cause) {
       clearCachedAccess();
       setError(cause instanceof Error ? cause.message : 'eSIMの状態を確認できませんでした。');
     } finally {
       setPending(null);
     }
+  }
+
+  async function declareIosInstall() {
+    setPending('iosDeclare');
+    setError(null);
+    try {
+      const result = await operationRequest<{ iosEveEntitlementState: IosEveEntitlementState }>(
+        `/api/esim/orders/${encodeURIComponent(orderId)}/install-proof/ios`, 'POST',
+      );
+      setStatus((current) => current ? { ...current, iosEveEntitlementState: result.iosEveEntitlementState } : current);
+    } catch (cause) {
+      clearCachedAccess();
+      setError(cause instanceof OperationResponseError ? unknownRequestOutcome().message :
+        '導入宣言を確認できませんでした。サインインと注文の状態を確認してください。');
+    } finally { setPending(null); }
   }
 
   async function manageCloud(action: 'issue' | 'rotate' | 'revoke') {
@@ -168,6 +189,8 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
         action: 'fetch', deliveryRequestId: deliveryRequestId(orderId, deliveryKey),
       });
       setMaterial(result.material);
+      setIosLink(iosConnect && supportsIosEsimLink(navigator.userAgent));
+      setShowQr(false);
       setStatus((current) => current ? { ...current, state: 'profile_bound_install_material_ready' } : current);
     } catch (cause) {
       clearCachedAccess();
@@ -192,31 +215,55 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
     }
   }
 
-  const appleUrl = safeInstallUrl(material?.appleInstallUrl, 'esimsetup.apple.com');
-  const androidUrl = safeInstallUrl(material?.androidInstallUrl, 'esimsetup.android.com');
+  const iosCard = iosConnect && material ? esimIosInstallCard(material) : null;
+  const iosQr = iosCard && showQr ? esimInstallQr(iosCard.cardData) : null;
+  const androidUrl = !iosConnect && safeAndroidInstallUrl(material?.androidInstallUrl);
   const hasStatus = status !== null;
+  const eligibleOrder = status && status.state !== 'not_esim_order' && status.state !== 'not_eligible';
 
   return <section className={styles.esimSetup} aria-label="eSIMの導入">
     <div className={styles.esimSetupHeader}>
-      <div><h4><Smartphone size={16} /> eSIMの設定</h4><p>この注文がeSIM商品かを確認し、準備済みの端末導入情報を表示します。</p></div>
+      <div><h4><Smartphone size={16} /> eSIMの設定</h4><p>回線の追加後も、この注文から端末の確認とNoahの利用案内を開けます。</p></div>
       <button className={styles.secondary} type="button" onClick={() => void checkStatus()} disabled={pending !== null}>
         <RefreshCw size={14} />{pending === 'status' ? '確認中…' : hasStatus ? '状態を更新' : '状態を確認'}
       </button>
     </div>
     {status && <output className={styles.esimState}><ShieldCheck size={15} />{stateLabel(status)}</output>}
-    {status && status.state !== 'not_esim_order' && status.state !== 'not_eligible' &&
+    {!iosConnect && eligibleOrder &&
       <p className={status.esimDeviceEntitlementState === 'active' ? styles.success : styles.notice}>
         {status.esimDeviceEntitlementState === 'active'
-          ? '認証済み端末ゲートウェイがeSIM導入と初期Agent Packの状態を確認し、この端末の利用権が有効です。'
+          ? 'この端末の利用権を確認しました。Noahは、Agentを選んで仕事を頼み、成果を受け取る場所です。'
           : status.esimDeviceEntitlementState === 'revoked_or_stale'
             ? '端末利用権の証明が現在の信頼条件またはPackage版と一致しません。同期が回復するまで機能を利用できません。'
             : status.deviceInstallState === 'verified_installed_enabled'
               ? '署名付き証明でeSIM導入を確認しました。RockstarOSの端末ゲートウェイ利用権はまだ有効化されていません。'
               : '端末へのeSIM追加完了は未確認です。導入情報を表示しただけでは、端末適合やOS利用開始を確認したことになりません。'}
       </p>}
+    {status?.iosEveEntitlementState && !iosConnect &&
+      <Link className={styles.secondary} href={`/connect?esimOrder=${encodeURIComponent(orderId)}#ios-esim`}>
+        iPhone・iPadで設定と導入確認
+      </Link>}
+    {status?.iosEveEntitlementState && iosConnect && <section className={styles.esimMaterial} aria-label="Eveの導入確認">
+      <p>iPhone・iPadの「設定」でeSIMの追加が完了したら、導入を宣言してください。</p>
+      {status.iosEveEntitlementState === 'not_declared'
+        ? <button className={styles.secondary} type="button" onClick={() => void declareIosInstall()} disabled={pending !== null}>
+            {pending === 'iosDeclare' ? '保存中…' : 'eSIMの導入を宣言'}
+          </button>
+        : <output className={styles.esimState}>{status.iosEveEntitlementState === 'active'
+          ? '事業者のダウンロード通知を照合し、この注文に付帯するEve利用権が有効になりました。'
+          : status.iosEveEntitlementState === 'provider_released'
+            ? '事業者がこのeSIMの解除を通知しました。'
+            : '導入宣言を受け付けました。事業者からのダウンロード通知を確認中です。'}</output>}
+      <Link className={styles.secondary} href="/connect/done">SafariでEveをホーム画面に追加</Link>
+    </section>}
+    {eligibleOrder && status.esimDeviceEntitlementState === 'active' &&
+      <nav className={styles.esimLinks} aria-label="eSIM追加後の案内">
+        <Link className={styles.primary} href="/noah/explore">Noahで最初のAgentを選ぶ</Link>
+        <Link className={styles.secondary} href="/connect/service">専用クラウドの契約条件を確認</Link>
+      </nav>}
     {cloud && <section className={styles.esimMaterial} aria-label="専用クラウドへのアクセス">
       <h4><ShieldCheck size={16} /> RockstarOSクラウドアクセス</h4>
-      <output>{cloud.state === 'active' ? 'アクセスキーは有効です。smisで、契約に含まれる機能を使えます。'
+      <output>{cloud.state === 'active' ? 'このブラウザのアクセスキーは有効です。契約の範囲でクラウドに接続できます。'
         : cloud.state === 'revoked' ? 'アクセスキーを停止しました。利用期間内であれば再発行できます。'
         : cloud.state === 'expired' ? 'アクセスキーの期限が切れました。利用期間内であれば再発行できます。'
         : cloud.state === 'suspended' ? '現在の利用条件を確認できないため、クラウドアクセスを停止しています。'
@@ -235,12 +282,15 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
           disabled={pending !== null} onClick={() => void manageCloud('revoke')}>アクセスキーを停止</button>}
       </div>
       {cloud.state === 'active' && <div className={styles.esimLinks}>
-        <Link className={styles.secondary} href="/sky">smisを開く</Link>
+        {cloud.key?.scopes.includes('noah') && <><form method="get" action="/api/noah/cloud-work"><button className={styles.primary} type="submit">NoahクラウドでAgentを使う</button></form>
+          <form method="get" action="/api/noah/cloud-work/distribution/notice"><button className={styles.secondary} type="submit">定期便のお知らせ</button></form></>}
+        {cloud.key?.scopes.includes('sky') && <Link className={styles.secondary} href="/noah">Noahを開く</Link>}
         <Link className={styles.secondary} href="/work">依頼・進捗・費用を見る</Link>
       </div>}
-      <p className={styles.subtle}>クラウド作業の料金は実行前の見積・上限・承認で確認します。携帯電話料金との合算請求は未対応です。</p>
+      <p className={styles.subtle}>有料の仕事は見積と上限を確認してから依頼します。専用クラウドの月次請求は、契約したRockstar IDに登録した支払い方法で精算します。携帯電話料金との合算請求は未対応です。</p>
+      <div className={styles.esimLinks}><Link href="/noah/usage">Agentの利用記録</Link><Link href="/noah/linux#monthly-statement">専用クラウドの使用額・請求明細</Link></div>
     </section>}
-    {status?.starterAgentPack && <div className={styles.notice}>
+    {!iosConnect && status?.starterAgentPack && <div className={styles.notice}>
       <p>注文に固定された初期pack: {status.starterAgentPack.id} v{status.starterAgentPack.version}（{status.starterAgentPack.packageCount}件）。内容は注文時のPackage参照に基づきます。</p>
       <ul>{status.starterAgentPack.packages.map((item) => <li key={item.packageKey}>
         <strong>{item.name || item.packageKey}</strong>{' '}
@@ -260,11 +310,19 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
         {pending === 'material' ? '安全に取得中…' : '導入情報を表示'}
       </button>}
     {material && <div className={styles.esimMaterial}>
+      <p>スマホの設定で回線を追加したら、この購入履歴に戻り「状態を更新」を押してください。画面を閉じた場合は、同じRockstar IDの「登録情報」→「購入履歴・eSIM設定」から再開できます。</p>
       <p className={styles.notice}>この情報はeSIMの追加に使う秘密情報です。本人の端末でのみ表示し、第三者へ共有しないでください。</p>
       <div className={styles.esimLinks}>
-        {appleUrl && <a className={styles.primary} href={appleUrl} rel="noreferrer" referrerPolicy="no-referrer">Apple端末に追加 <ExternalLink size={14} /></a>}
+        {iosLink && iosCard && <a className={styles.primary} href={iosCard.url} rel="noreferrer" referrerPolicy="no-referrer">
+          iOS 17.4以降の端末に追加 <ExternalLink size={14} />
+        </a>}
+        {iosCard && <button className={styles.secondary} type="button" aria-expanded={showQr} onClick={() => setShowQr(!showQr)}>
+          {showQr ? 'QRコードを隠す' : 'QRコードを表示'}
+        </button>}
         {androidUrl && <a className={styles.primary} href={androidUrl} rel="noreferrer" referrerPolicy="no-referrer">Android端末に追加 <ExternalLink size={14} /></a>}
       </div>
+      {iosCard && !iosLink && <p className={styles.subtle}>iOS 17.4未満の場合は、別の画面にQRコードを表示し、iPhone・iPadのカメラで読み取ります。</p>}
+      {iosQr && <Image unoptimized src={iosQr} width={260} height={260} alt="eSIMの設定用QRコード" className={styles.esimQr} />}
       <details className={styles.esimManual}>
         <summary>手動で設定する場合</summary>
         <dl>
@@ -274,7 +332,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
         </dl>
       </details>
       <p className={styles.subtle}>端末の「モバイル通信プランを追加」から進みます。eSIM対応、SIMロック、対応周波数、対象地域を端末と通信プランの両方で確認してください。</p>
-      <p className={styles.notice}>Androidでは通常、OSの追加確認が表示される場合があります。無人で導入・有効化できるかは、端末の管理形態と通信会社の権限により異なります。確認が終わっても署名付き証明が届くまでは、RockstarOSの利用開始とは判定しません。</p>
+      {!iosConnect && <p className={styles.notice}>Androidでは通常、OSの追加確認が表示される場合があります。無人で導入・有効化できるかは、端末の管理形態と通信会社の権限により異なります。確認が終わっても署名付き証明が届くまでは、RockstarOSの利用開始とは判定しません。</p>}
       <button className={styles.textButton} type="button" onClick={() => void eraseMaterial()} disabled={pending !== null}>
         <Check size={14} />{pending === 'ack' ? '消去中…' : '導入情報を確認したのでサーバーから消去'}
       </button>

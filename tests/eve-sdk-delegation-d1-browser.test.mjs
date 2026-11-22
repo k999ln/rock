@@ -88,7 +88,7 @@ void test('Eve and Smith SDK job is the same D1 parent accepted by delegation ro
       const contents=readFileSync(new URL(`../drizzle-legacy/github-main-before-avoado-alignment/drizzle/${file}`, import.meta.url),'utf8');
       for (const statement of contents.split('--> statement-breakpoint')) if(statement.trim()) await db.prepare(statement.trim()).run();
     }
-    const cloudMigration = readFileSync(new URL('../drizzle/0054_cloud_operations.sql', import.meta.url), 'utf8');
+    const cloudMigration = readFileSync(new URL('../drizzle/0058_cloud_operations.sql', import.meta.url), 'utf8');
     for (const statement of cloudMigration.split('--> statement-breakpoint')) {
       if (statement.trim()) await db.prepare(statement.trim()).run();
     }

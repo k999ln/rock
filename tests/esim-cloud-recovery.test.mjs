@@ -12,6 +12,7 @@ import { runInNewContext } from 'node:vm';
 import * as cloudAccess from '../lib/esim-cloud-access.ts';
 import * as cloudGrant from '../lib/esim-cloud-grant.ts';
 import { requestUser } from '../lib/request-auth.ts';
+import { createNoahSessionApi } from '../lib/noah-esim-access.ts';
 import {
   createSkyToolPackageDraft,
   skyToolPackageKey,
@@ -326,6 +327,34 @@ function workRoute(f) {
     body: JSON.stringify({ id: randomUUID(), templateId: 'article', title: 'Synthetic eSIM scope test' }),
   }));
 }
+
+void test('Noah uses the verified eSIM owner with an explicit scope and rechecks entitlement on every request', async t => {
+  const f = await fixture(t);
+  const oldKey = await f.store.issue(f.owner, f.order(), null);
+  const policies = JSON.parse(f.config.ESIM_CLOUD_ACCESS_POLICIES_JSON);
+  f.config.ESIM_CLOUD_ACCESS_POLICIES_JSON = JSON.stringify([{ ...policies[0], scopes: [...policies[0].scopes, 'noah'] }]);
+  const orderId = f.order(), key = await f.store.issue(f.owner, orderId, null);
+  const req = (path, method = 'GET', token = key.token, origin = 'https://avoado.si') => new Request(`https://avoado.si${path}`, {
+    method, headers: { cookie: `rock_esim_access=${token}`, origin },
+  });
+  const authenticate = request => authenticateEsimCloudRequest(request, f.db, f.config);
+  for (const [path, method] of [['/api/noah/session', 'GET'], ['/api/noah/profile', 'GET'], ['/api/noah/registration', 'POST'], ['/api/noah/ask', 'POST'], ['/api/noah/ask/result-id', 'GET']]) {
+    assert.equal(await authenticate(req(path, method)), f.owner);
+  }
+  await assert.rejects(authenticate(req('/api/noah/session', 'GET', oldKey.token)), /UNAUTHORIZED/, 'older scopes never gain Noah automatically');
+  await assert.rejects(authenticate(req('/api/os/access')), /UNAUTHORIZED/);
+  await assert.rejects(authenticate(req('/api/noah/publisher', 'POST')), /UNAUTHORIZED/);
+  await assert.rejects(authenticate(req('/api/noah/ask', 'POST', key.token, 'https://evil.test')), /ORIGIN/);
+  const session = createNoahSessionApi({ authenticate, esimConfigured: true });
+  assert.deepEqual(await (await session(req('/api/noah/session'))).json(), { connected: true });
+  f.sqlite.prepare('UPDATE sky_commerce_orders SET refunded_minor=1 WHERE id=?').run(orderId);
+  assert.equal((await session(req('/api/noah/session'))).status, 401);
+  f.sqlite.prepare('UPDATE sky_commerce_orders SET refunded_minor=0 WHERE id=?').run(orderId);
+  assert.equal((await session(req('/api/noah/session'))).status, 200);
+  await assert.rejects(f.store.authenticate(key.token, 'noah', key.expiresAt), /UNAUTHORIZED/);
+  await f.store.revoke(f.owner, orderId, key.id);
+  assert.equal((await session(req('/api/noah/session'))).status, 401);
+});
 
 void test('account scope finds the original eSIM key behind 100 newer keys for another scope', async t => {
   const f = await fixture(t);

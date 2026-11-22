@@ -389,6 +389,12 @@ export class FixtureEsimProvider {
   close() {
     this.db.close();
   }
+  quoteFreeTrial() {
+    return { currency: 'JPY', issueMinor: 0, recurringMinor: 0, trafficMinor: 0, endMinor: 0, autoRenew: false };
+  }
+  enableIssued(enrollmentId) {
+    this.db.prepare("UPDATE fixture_profiles SET state='enabled', version=version+1 WHERE enrollment_id=? AND state='issued'").run(enrollmentId);
+  }
   async issue(enrollmentId) {
     identifier(enrollmentId);
     const profileRef =

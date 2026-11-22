@@ -39,7 +39,7 @@ void test('cloud metering, probe and reviewer permissions stay separate in worke
   }));
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
-  const migration = readFileSync(new URL('../drizzle/0054_cloud_operations.sql', import.meta.url), 'utf8');
+  const migration = readFileSync(new URL('../drizzle/0058_cloud_operations.sql', import.meta.url), 'utf8');
   for (const statement of migration.split('--> statement-breakpoint')) {
     if (statement.trim().startsWith('CREATE TRIGGER')) break;
     await db.prepare(statement).run();

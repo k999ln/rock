@@ -101,10 +101,10 @@ export default function NoahAgentUploadForm() {
         const savedId = new URLSearchParams(window.location.search).get('draft');
         if (!savedId) {
           const params=new URLSearchParams(window.location.search),sourceUrl=params.get('sourceUrl'),revision=params.get('revision');
-          if(sourceUrl&&sourceUrl.length<=500&&revision&&/^[a-f0-9]{40}$/.test(revision)) {
+          if(sourceUrl&&sourceUrl.length<=500&&(!revision||/^[a-f0-9]{40}$/.test(revision))) {
             const url=new URL(sourceUrl);
             if(url.protocol==='https:'&&!url.username&&!url.password&&!url.port&&!url.search&&!url.hash&&['github.com','huggingface.co'].includes(url.hostname)) {
-              setManifest(current=>({...current,sourceUrl,adapter:'source',endpointUrl:null}));setImportRevision(revision);setCodeMode('file');setRights(false);setImportMessage('公開候補のURLと固定commitを引き継ぎました。利用条件を確認してから取得してください。');
+              setManifest(current=>({...current,name:params.get('name')?.slice(0,120)||current.name,sourceUrl,adapter:'source',endpointUrl:null}));setImportRevision(revision||'');setCodeMode('file');setRights(false);setImportMessage(revision?'公開候補のURLと固定commitを引き継ぎました。利用条件を確認してから取得してください。':'AgentのURLを引き継ぎました。利用条件を確認して取得すると、固定commitを記録します。');
             }
           }
           return;
@@ -228,12 +228,12 @@ export default function NoahAgentUploadForm() {
     finally { setPending(false); processingController.current = null; }
   }
   return <div className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href="/noah/agents">← Agent一覧</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link></nav>
     <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENT</span><h1>自分のAgentを追加</h1><p>コードを選ぶ、または貼り付ける。対応するコードは整理して保存します。<br />元コードも残し、追加したAgentは自分だけの一覧に入ります。</p></div></header>
     {!scope && <section className={styles.notice} aria-label="アカウントの確認">
       {accountChecking ? <output>アカウントを確認中…</output> : <>
         <p>{signedOut ? 'サインインすると、自分のAgentの登録と下書きの保存ができます。' : 'アカウントの確認後に登録できます。'}</p>
-        <Link className={styles.primary} href={`/account?mode=login&returnTo=${encodeURIComponent(returnPath)}`}>サインインして登録を続ける</Link>
+        <Link className={styles.primary} href={`/noah/account?mode=login&returnTo=${encodeURIComponent(returnPath)}`}>サインインして登録を続ける</Link>
         <button type="button" onClick={() => { setAccountChecking(true); setSignedOut(false); setError(''); setAttempt(n => n + 1); }}>アカウントを再確認</button>
       </>}
     </section>}
@@ -258,7 +258,7 @@ export default function NoahAgentUploadForm() {
           <label>コードのファイル名<input required maxLength={120} value={codeName} onChange={e => { setCodeName(e.target.value); setId(''); }} placeholder="agent.ts" /></label>
           <label>コード（UTF-8・64KiBまで）<textarea required rows={12} spellCheck={false} value={code} onChange={e => { setCode(e.target.value); setId(''); }} placeholder="ここにAgentのコードを貼り付けてください" /></label>
         </div>}
-        <details open={!!importRevision}><summary>GitHub・Hugging Faceからコードを取得</summary><div className={styles.fields}>
+        <details open={!!importRevision || !!importMessage}><summary>GitHub・Hugging Faceからコードを取得</summary><div className={styles.fields}>
           <label>公開リポジトリのURL<input type="url" value={manifest.sourceUrl || ''} onChange={e => change({ sourceUrl: e.target.value || null })} placeholder="https://huggingface.co/spaces/作者/Agent" /></label>
           <label>取得するブランチ・commit（任意）<input value={importRevision} maxLength={100} onChange={e => setImportRevision(e.target.value)} placeholder="未指定なら既定の版" /></label>
           <button type="button" disabled={!scope || !rights || pending || !manifest.sourceUrl} onClick={() => { void importSource(); }}>コードを取得する</button>

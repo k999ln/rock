@@ -182,7 +182,8 @@ task: [110 棚（ローンチ分）](../../codex/tasks/110-noah-shelf.md)、[111
 
 - 数えるのはカード: 同じカードの中の接続は、何本あっても 1（`noah_package_connections`・`live_cards`）。カードの外でつないだ物は、1 本が 1。
 - 無料で 6 枚つないである本人が 7 枚目を押した時の文: 「無料でつなげるのは 6 個までです。使っていないものを切ると、空きができます。」（409）。
-- 切り替えが閉の間は、全員が今の上限（50）。有料の値段と、月額の候補（¥600）に含めるかは、未定（本人が決める）。この仕様は、数を切り替える所だけを用意する。
+- 切り替えが閉の間は、全員が今の上限（50）。この仕様は、数を切り替える所だけを用意する。
+- 払い方（2026-11-22 本人回答）: 有料の分は、本人の財布から月額で払うのではなく、Agent の利益のうちの本人の分から差し引く（[07](../structure/07-decisions-from-minutes.md)、[配給のお金の決まり](../structure/04-eve-noa-amc-sky.md#noahの配給)）。Noah は今日、無料で出す。有料で増やす候補は、つなげる数 6→50、Noah クラウドでの実行、定期便の上乗せ。値段と、差し引く仕組みは、本人の分を渡し始める時に決める。
 - 料金を本人の何から読むか（今の利用権の、どの行か）は、task 113 で、今の `lib/` の利用権の読み方に合わせて決める。
 
 ## 9. 助言を含むカード（健康）
@@ -342,4 +343,40 @@ DDL の検証（[validate-noah-shelf-v1.py](../design-validation/noah/validate-n
 | 上限の時 | 409 と決まった文 | 同じ（`noahPlanConnectGate`）。行を作らず、相手へ送らない。もうつないである物は切らない | — |
 | 見出しの数 | 「6 個のうち 4 個」 | `GET /api/noah/connect` が、料金ごとの数を使っている時だけ `cards` を返し、画面が見出しに添える | — |
 
-**本人が決める事**: 有料の値段と、どの月額の型に含めるか（月額の候補 ¥600 に含めるか）。決まるまで、つなげる数は全員 50 のまま。本番の migration・配備・切り替えは、していない。
+**本人が決める事**: 有料の値段（払い方は 2026-11-22 に「本人の分から差し引く」と決まった。8 章）。決まるまで、つなげる数は全員 50 のまま。本番の migration・配備・切り替えは、していない。
+
+## 18. 最初の棚のカード（2026-11-21）
+
+本人の回答「選んで用意して」（カードは Claude が実在の Agent から選んで用意し、本人か運営が確かめる。健康は除く）への答え。**17 枚**を `data/noah-shelf-first-cards.json` に置いた（稼ぐ・仕事を省く 7・教育 4・暮らし 6）。どれも下書きで、相手のサーバーの道具 1 つで終わる（ローンチの切り替え `NOAH_SHELF_CHAINS`・`NOAH_SHELF_HOME` が閉じたままで載る範囲）。ファイルは、運営の画面の「カードを置く」へ、そのまま貼れる（配列はまとめて置かれる。16,000 文字の欄に収まる）。試験は `tests/noah-shelf-first-cards.test.mjs`（4 本: 今の規則に合う・健康と誘う語が無い・確かめた後に載り、L2 が無い間は載らない・貼れる大きさ）。
+
+選び方: 手元の巡回（[97](spec-97-launch-ops.md) の 12 章）が一覧に載せた系列（この時 1,878。鍵の要らない物）から、日本の人の仕事・勉強・暮らしで使う物を選び、**道具を 1 回ずつ実際に呼んで、成果が返る事を確かめた**（名乗りは本番と同じ `NoahBot/1`。秒数は、接続から成果までの、この時の 1 回の値）。入力欄にできるか（`noahToolForm`）も、全部確かめた。
+
+| カード | 棚 | Agent（host）・道具 | 確かめた入力 | 秒 |
+| --- | --- | --- | --- | --- |
+| `pkg:keihi-kamoku` 経費の勘定科目と仕訳を決める | 稼ぐ | mcp.shiwake.ai・`kanjo_kamoku_kensaku` | 取引先との打ち合わせのカフェ代 | 0.9 |
+| `pkg:invoice-bango` インボイスの登録番号を確かめる | 稼ぐ | mcp.shiwake.ai・`invoice_toroku_bango_check` | T と 13 桁の番号 1 件 | 1.4 |
+| `pkg:koukoku-hyougen` 広告文の言い過ぎを点検する | 稼ぐ | mcp.vesperagent.ai・`check_japanese_ad_copy` | 「飲むだけで必ず痩せる…」 | 0.7 |
+| `pkg:jidouka-shiyou` 手作業の自動化の仕様書を下書きする | 稼ぐ | mcp.vesperagent.ai・`draft_automation_spec` | 請求書の発行（手順 3 つ） | 0.5 |
+| `pkg:web-shirabe` 出典つきで、今の情報を調べる | 稼ぐ | api.keenable.ai・`search_web_pages` | ふるさと納税 ポイント付与 禁止 | 0.4 |
+| `pkg:kyujin-sagasi` 希望に近い求人を探す | 稼ぐ | beta.jobcontext.app・`search_by_meaning` | 未経験からの経理事務、在宅あり | 2.5 |
+| `pkg:houritsu-sagasi` 仕事に関係する法律を探す | 稼ぐ | japan-data-mcp.netlify.app・`search_japanese_law` | フリーランス | 2.2 |
+| `pkg:eigo-hatsuon` 英単語の発音を確かめる | 教育 | mcp.speakeroo.app・`how_to_pronounce` | comfortable | 1.1 |
+| `pkg:chugokugo-tango` 中国語の単語を調べる | 教育 | dengdeng.app・`look_up_word` | 学习 | 0.5 |
+| `pkg:quiz-sagasi` みんなで遊べるクイズを探す | 教育 | polemia.ai・`find_quizzes` | Japan | 1.4 |
+| `pkg:kodomo-nurie` 子どもの算数ぬりえを探す | 教育 | www.sageteacher.ai・`search_printables` | （空。最新から） | 1.2 |
+| `pkg:furusato-jogen` ふるさと納税の上限の目安を出す | 暮らし | mcp.shiwake.ai・`furusato_nozei_jogen` | 年収 500 万円 | 0.5 |
+| `pkg:nencho-shisan` 年末調整で戻る額を試算する | 暮らし | mcp.shiwake.ai・`nencho_kanpu_shisan` | 年収 500 万・社保 72 万・源泉 12 万 | 0.5 |
+| `pkg:tedori` 月給の手取りを計算する | 暮らし | mcp.shiwake.ai・`kyuyo_tedori_keisan` | 月 30 万円・35 歳・東京都 | 0.4 |
+| `pkg:koyo-mikoro` 紅葉の見頃の場所を探す | 暮らし | api.roamtime.ai・`find_peak_spots` | 2026-11-28・Kyoto | 0.6 |
+| `pkg:coin-locker` 近くのコインロッカー・トイレを探す | 暮らし | api.ippuku.app・`find_nearby_places` | kyoto/gion・コインロッカー | 0.7 |
+| `pkg:hoikuen` 保育園の情報を調べる | 暮らし | mcp.kikaret.ai・`search_facilities` | さくら保育園 | 3.8 |
+
+選ばなかった物と理由: 英語のスピーチの指摘（speakeroo の `analyze_transcript`。成果まで 19.8 秒で、依頼の上限 20 秒に近すぎる）、自動化で浮く時間の見積り（vesper の `estimate_automation_savings`。入力が表の形で、入力欄にできない）、宿を探す（vibebooking。箱根・東京で 0 件。京都だけ返った）、AI の講座（apexai.academy。多くが有料の講座）、数学の問題（limpide。フランス語・英語の高校の範囲）、コマンドの説明書（manpage。成果が 277 KB と大きすぎる）、Web 検索の 2 つ目（Exa。Keenable と重なる）。
+
+置いてから載るまで（運営。本番の配備と、取り込みの結果を入れた後）:
+
+1. `/noah/review` の「棚」の「カードを置く」へ、`data/noah-shelf-first-cards.json` の中身を貼って「置く」。17 枚が下書きで置かれる（「棚に出ている数：0 ／ カード 17 枚」）。
+2. カードごとに、その Agent の詳細（`/noah/ready/agent?id=<系列の ID>&tool=<道具>`。系列の ID は、カードの `steps[0].ref.familyId`）で「接続」し、上の表の入力のような物で 1 回頼み、成果が返るのを見る（これで、その系列に人が動かした記録 L2 が付く）。
+3. `/noah/review` へ戻り、そのカードの「確かめた」を押す（直近 7 日に、自分で頼んで成果が返った記録がある時だけ通る）。「棚に出ています」になれば、`/noah/ready` の一番上と、タイムラインに出る。
+
+季節で外す物: `pkg:koyo-mikoro`（見頃の予想は 12 月中旬まで）と `pkg:furusato-jogen`（2026 年中の寄附の計算）は、年が明けたら「外す」。`pkg:nencho-shisan` は令和 8 年分の計算。税の 4 枚は、相手が「一般的な計算の例で、個別の税務判断ではありません」と成果に書く（カードの文も、金額を約束しない）。
