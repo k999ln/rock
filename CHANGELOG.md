@@ -1,5 +1,5 @@
 ## 2026-11-22
-- Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（PR作成後記録）。
+- Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
 
 
 - 旧 main の #415 までの履歴と移行先の Gradio 実行・タップ設定を統合し、開発・PR の参照先を iceiceice999/rock に揃えた（[PR #6](https://github.com/iceiceice999/rock/pull/6)）。

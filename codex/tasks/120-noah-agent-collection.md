@@ -119,3 +119,5 @@ PRのCodeQL指摘に合わせ、ブラウザ試験の既定出力先を `mkdtemp
 
 ## 2026-11-22 全掲載の提供元接続
 公開接続の自動照合、MCP入力/実行、本人別Work保存を追加。既存Gradio導線と外部評価を維持。CLIの隔離クラウドは別PR #1で継続。検証と公開証拠は今回PRへ記録する。全件実行完了ではない。
+
+PR: [iceiceice999/rock #7](https://github.com/iceiceice999/rock/pull/7)。Chromeの320/390/1280pxでMCP/Gradioの入力・タップ・通信断・再表示を確認。公開guessit MCPへの実処理とローカルSQLite再読込を確認済み。本番受入・全体verifyの最終結果はPR本文に記録する。CLIは別PR #1。
