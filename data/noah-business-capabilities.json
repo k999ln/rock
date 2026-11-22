@@ -1,0 +1,5 @@
+{
+  "schema": "noah-business-capabilities/1",
+  "note": "能力 → その工程を実際にこなすと確かめたエージェントの ID（task 122）。語で当たっただけの候補は入れない。確かめ方は docs/noah/spec-122-business-blueprints.md の 5 章。",
+  "verified": {}
+}

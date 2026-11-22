@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -18,16 +18,16 @@ type Command = {
   kind: string;
   state: string;
   stopRequested: boolean;
-  currentBoot: boolean;
+  currentBoot?: boolean;
   agent: { agentId: string; name: string };
   result?: { message?: string; workId?: string };
 };
 type State = {
   canReview?: boolean;
   ownerScope: string;
-  devices: { id: string; name: string; online: boolean; revoked: boolean }[];
+  devices?: { id: string; name: string; online: boolean; revoked: boolean }[];
   commands: Command[];
-  uploadedAgents: (Agent & { ready: boolean })[];
+  uploadedAgents?: (Agent & { ready: boolean })[];
   jobs: {
     id: string;
     noahExecution?: {
@@ -46,7 +46,10 @@ const status: Record<string, string> = {
   unknown: '結果不明・再実行なし',
 };
 /** `phoneWork`: スマホから、接続した Agent（相手のサーバー）へ頼んだ仕事の一覧（頁が渡す。無い人には何も出ない。docs/noah/spec-87-tool-agent.md の 11.9）。 */
-export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}) {
+export default function NoahLaunch({
+  phoneWork,
+  workId,
+}: { phoneWork?: ReactNode; workId?: string } = {}) {
   const params = useSearchParams(),
     [compose, setCompose] = useState(
       Boolean(params.get('agent')) || params.get('compose') === '1',
@@ -67,43 +70,52 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
       scope: string;
     } | null>(null),
     [notice, setNotice] = useState('');
-  async function refresh(signal?: AbortSignal) {
-    const r = await fetch('/api/noah/launch', { signal, cache: 'no-store' }),
-      d = (await r.json()) as State & { error?: string };
-    if (r.status === 401) {
-      setSignedOut(true);
+  const refresh = useCallback(
+    async (signal?: AbortSignal) => {
+      const url = workId
+        ? '/api/noah/launch?work=' + encodeURIComponent(workId)
+        : '/api/noah/launch';
+      const r = await fetch(url, { signal, cache: 'no-store' }),
+        d = (await r.json()) as State & { error?: string };
+      if (signal?.aborted) return;
+      if (r.status === 401) {
+        setSignedOut(true);
+        setReadError('');
+        setState(null);
+        return;
+      }
+      if (!r.ok) throw new Error(d.error ?? 'Noahの応答を確認できません。');
       setReadError('');
-      setState(null);
-      return;
-    }
-    if (!r.ok) throw new Error(d.error ?? 'Noahの応答を確認できません。');
-    if (signal?.aborted) return;
-    setReadError('');
-    setState(d);
-    setRetry((old) =>
-      old &&
-      (old.scope !== d.ownerScope ||
-        d.commands.some((c) => c.id === old.body.id))
-        ? null
-        : old,
-    );
-    setSignedOut(false);
-    setDevice(
-      (old) =>
-        old || d.devices.find((v: { online: boolean }) => v.online)?.id || '',
-    );
-  }
+      setState(d);
+      setRetry((old) =>
+        old &&
+        (old.scope !== d.ownerScope ||
+          d.commands.some((c) => c.id === old.body.id))
+          ? null
+          : old,
+      );
+      setSignedOut(false);
+      setDevice(
+        (old) =>
+          old ||
+          d.devices?.find((v: { online: boolean }) => v.online)?.id ||
+          '',
+      );
+    },
+    [workId],
+  );
   useEffect(() => {
     const c = new AbortController();
-    void fetch('/api/noah/launch?public=1', { signal: c.signal })
-      .then(async (r) => {
-        const d = (await r.json()) as { agents: Agent[]; error?: string };
-        if (!r.ok) throw new Error(d.error ?? 'Noahの応答を確認できません。');
-        setAgents(d.agents);
-      })
-      .catch((e) => {
-        if (!c.signal.aborted) setError(e.message);
-      });
+    if (!workId)
+      void fetch('/api/noah/launch?public=1', { signal: c.signal })
+        .then(async (r) => {
+          const d = (await r.json()) as { agents: Agent[]; error?: string };
+          if (!r.ok) throw new Error(d.error ?? 'Noahの応答を確認できません。');
+          setAgents(d.agents);
+        })
+        .catch((e) => {
+          if (!c.signal.aborted) setError(e.message);
+        });
     let busy = false;
     const tick = async () => {
       if (busy || document.hidden) return;
@@ -127,7 +139,7 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
       clearInterval(timer);
       document.removeEventListener('visibilitychange', tick);
     };
-  }, []);
+  }, [workId, refresh]);
   async function act(action: string, body: Record<string, unknown>) {
     if (!state || pending) return;
     setPending(true);
@@ -172,7 +184,7 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
     }
   }
   const available = [
-      ...(state?.uploadedAgents.filter((a) => a.ready) ?? []),
+      ...(state?.uploadedAgents?.filter((a) => a.ready) ?? []),
       ...agents,
     ],
     chosen = available.find((a) => a.id === selected),
@@ -185,26 +197,35 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
         c.currentBoot &&
         !c.stopRequested,
     ),
-    online = state?.devices.some(
+    online = state?.devices?.some(
       (d) => d.id === device && d.online && !d.revoked,
     );
+  const returnTo = workId
+    ? `/noah/work/${encodeURIComponent(workId)}`
+    : selected
+      ? `/noah/activity?agent=${encodeURIComponent(selected)}#library`
+      : '/noah/activity';
   const macHref = `/noah/mac${selected ? `?agent=${encodeURIComponent(selected)}` : ''}`;
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
         <div>
-          <h1>実行中のAgent</h1>
+          <h1>{workId ? '仕事の詳細' : '実行中のAgent'}</h1>
         </div>
       </header>
       <nav className={styles.nav}>
-        <button
-          className={styles.primary}
-          aria-expanded={compose}
-          aria-controls="library"
-          onClick={() => setCompose(!compose)}
-        >
-          {compose ? '依頼入力を閉じる' : '仕事を頼む'}
-        </button>
+        {workId ? (
+          <Link href="/noah/activity#work">仕事の一覧へ</Link>
+        ) : (
+          <button
+            className={styles.primary}
+            aria-expanded={compose}
+            aria-controls="library"
+            onClick={() => setCompose(!compose)}
+          >
+            {compose ? '依頼入力を閉じる' : '仕事を頼む'}
+          </button>
+        )}
         <Link href="/noah/explore">Agentを探す</Link>
         <Link href="/noah/data">保存した成果</Link>
       </nav>
@@ -249,13 +270,13 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
         <section className={styles.notice}>
           <p>自分のAgentとMacを管理するにはサインインしてください。</p>
           <Link
-            href={`/account?mode=login&returnTo=${encodeURIComponent(selected ? `/noah/activity?agent=${encodeURIComponent(selected)}#library` : '/noah/activity')}`}
+            href={`/noah/account?mode=login&returnTo=${encodeURIComponent(returnTo)}`}
           >
             サインイン
           </Link>
         </section>
       )}
-      {compose && (
+      {!workId && compose && (
         <section className={styles.notice} id="library">
           <h2>1. Agentを選ぶ</h2>
           <details>
@@ -268,10 +289,10 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
           </details>
           <details>
             <summary>自分で登録したAgent</summary>
-            {state && !state.uploadedAgents.length && (
+            {state && !state.uploadedAgents?.length && (
               <p>まだ登録していません。</p>
             )}
-            {state?.uploadedAgents.map((a) => (
+            {state?.uploadedAgents?.map((a) => (
               <p key={a.id}>
                 <Link href={'/noah/agents/' + a.id}>
                   {a.name} · {a.version}
@@ -346,7 +367,7 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
                   >
                     <option value="">Macを選択</option>
                     {state.devices
-                      .filter((d) => !d.revoked)
+                      ?.filter((d) => !d.revoked)
                       .map((d) => (
                         <option key={d.id} value={d.id}>
                           {d.name} · {d.online ? '接続中' : 'オフライン'}
@@ -436,7 +457,7 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
           )}
         </section>
       )}
-      {state && (
+      {!workId && state && (
         <section className={styles.activityStats} aria-label="仕事の状況">
           <div>
             <strong>
@@ -457,7 +478,7 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
           </div>
           <div>
             <strong>
-              {state.devices.filter((d) => d.online && !d.revoked).length}
+              {state.devices?.filter((d) => d.online && !d.revoked).length}
             </strong>
             <span>接続中のMac</span>
           </div>
@@ -498,6 +519,11 @@ export default function NoahLaunch({ phoneWork }: { phoneWork?: ReactNode } = {}
                     ? '停止要求を送信済み'
                     : (status[c.state] ?? c.state)}
               </p>
+              {!workId && c.kind === 'run' && (
+                <Link href={`/noah/work/${encodeURIComponent(c.id)}`}>
+                  仕事の詳細を開く
+                </Link>
+              )}
               {c.result?.message && <p>{c.result.message}</p>}
               {job?.result && (
                 <>

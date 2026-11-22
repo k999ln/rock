@@ -46,9 +46,10 @@ const request = async (path, redirectTo = null) => {
 };
 
 const home = await request('/');
+const localOrigin = ['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname);
 const usesOsAlias = base.hostname === 'avoado.si' || base.hostname.endsWith('.avoado.si') ||
-  ['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname);
-const unifiedNoah = base.hostname === 'avoado.si' || ['127.0.0.1', 'localhost', '[::1]'].includes(base.hostname);
+  localOrigin;
+const unifiedNoah = base.hostname === 'avoado.si' || localOrigin;
 await request('/sky', unifiedNoah ? '/noah' : usesOsAlias ? '/os/sky' : '/');
 const worker = await request('/sw.js');
 for (const [key, value] of Object.entries(policy.routeHeaders['/sw.js'])) {
@@ -104,6 +105,26 @@ for (const [key, value] of Object.entries(policy.routeHeaders['/_next/static/*']
   exactHeader(staticResponse, key, value, staticAsset);
 }
 
+let evePwa;
+if (localOrigin) {
+  const eveManifestPath = '/connect/eve.webmanifest';
+  const eveResponse = await request(eveManifestPath);
+  if (!eveResponse.headers.get('content-type')?.startsWith('application/manifest+json'))
+    throw new Error('web-security-response: Eve manifest content type');
+  const eve = await eveResponse.json();
+  if (manifestBody.name !== 'RockstarOS' || eve.name !== 'Eve' || eve.short_name !== 'Eve' ||
+      eve.id !== '/os/eve' || eve.start_url !== '/os/eve' || eve.display !== 'standalone')
+    throw new Error('web-security-response: Eve or RockstarOS manifest identity');
+  const pages = ['/connect/done', '/os/eve'];
+  for (const path of pages) {
+    const page = await request(path);
+    const tags = [...(await page.text()).matchAll(/<link\b[^>]*\brel="manifest"[^>]*>/gi)];
+    if (tags.length !== 1 || !tags[0][0].includes(`href="${eveManifestPath}"`))
+      throw new Error(`web-security-response: ${path} must reference only the Eve manifest`);
+  }
+  evePwa = { manifest: eveManifestPath, pages };
+}
+
 const result = {
     schema: 'rockstaros-web-security-response-check/1',
     status: 'PASS',
@@ -117,9 +138,10 @@ const result = {
       ...requiredIcons.map(({ src }) => src),
       staticAsset,
     ],
+    ...(evePwa ? { evePwa } : {}),
 };
 if (process.argv.includes('--record-local-production')) {
-  if (base.origin !== 'http://127.0.0.1:8787') throw new Error('Local production evidence requires port 8787');
+  if (base.protocol !== 'http:' || base.hostname !== '127.0.0.1') throw new Error('Local production evidence requires an IPv4 loopback origin');
   const config = JSON.parse(readFileSync(resolve(root, 'dist/server/wrangler.json'), 'utf8'));
   if (!config.main || !config.assets) throw new Error('Production Worker build is required');
   writeFileSync(resolve(root, WEB_SECURITY_EVIDENCE_PATH), JSON.stringify({

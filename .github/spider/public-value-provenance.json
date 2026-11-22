@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 192,
+  "distinctValues": 194,
   "classifications": {
     "idempotency-fixture": 87,
     "public-artifact-digest": 82,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
-    "synthetic-rejection-test": 1,
-    "browser-storage-name": 2,
+    "synthetic-rejection-test": 2,
+    "browser-storage-name": 3,
     "public-rfc8032-key": 1,
     "idempotency-example": 2,
     "public-attestation-root": 4,
@@ -2717,6 +2717,28 @@
         ]
       },
       "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b112c9dc389ca44de72cc0d3a732746a423354b9fffedbc467449a8601ea3269",
+      "classification": "synthetic-rejection-test",
+      "evidence": "Deliberately sequential mixed-case dummy input in the looksLikeNoahSecret rejection test; asserts true for a token-shaped string. Never used for authentication or external requests.",
+      "source": {
+        "commit": "51df5ceaf4460a7bb189e3ed7c2f8c18558171fb",
+        "path": "docs/design-validation/noah/noah-connect.test.mjs",
+        "line": 85
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b714cc8766cd7108e0e7daf220f5a64b3894d6ceb099c917e1bbf7f261c4e801",
+      "classification": "browser-storage-name",
+      "evidence": "Public localStorage preference name for on/off vibration; read and written by noahHapticsEnabled/setNoahHaptics. It is not an authenticator or a service credential.",
+      "source": {
+        "commit": "e4b108e02c840c4cd524c13721a23377efee2399",
+        "path": "lib/noah-haptics.ts",
+        "line": 2
+      },
+      "exactPathCount": 1
     }
   ],
   "supplementalReviews": [
@@ -2792,5 +2814,16 @@
     "recordedOn": "2026-10-11",
     "basis": "Union of reviewed exact exceptions from current main, eSIM evidence hashes and Zema storage paths. Recomputed all 5 eSIM source SHA-256 values at f9c858706601e43ad5da526d94e408fb3daf0c31; the 3 matching digest exceptions are public source hashes. Historical occurrences/reviewedHead remain the original scan snapshot.",
     "policySha256": "36d30ae624943c4587d9453668a0cb149168d06da7a71de008ec8d2e7b586c9b"
-  }
+  },
+  "additionalReviews": [
+    {
+      "reviewedHead": "ed02602796bde4d307b5282d8dfd642dad251223",
+      "paths": [
+        "lib/noah-haptics.ts",
+        "docs/design-validation/noah/noah-connect.test.mjs"
+      ],
+      "distinctValues": 2,
+      "evidence": "Noah haptics preference and historical secret-rejection fixture; exact path/value pairs only. Original reviewedHead/occurrences describe the original audit batch."
+    }
+  ]
 }

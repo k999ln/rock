@@ -244,7 +244,35 @@
       "idx": 34,
       "version": "6",
       "when": 4102444800026,
-      "tag": "0054_cloud_operations",
+      "tag": "0054_noah_boards",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "6",
+      "when": 4102444800027,
+      "tag": "0055_noah_teikibin",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 4102444800028,
+      "tag": "0056_sim_bindings",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "6",
+      "when": 4102444800029,
+      "tag": "0057_esim_ios_install",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "6",
+      "when": 4102444800030,
+      "tag": "0058_cloud_operations",
       "breakpoints": true
     }
   ]

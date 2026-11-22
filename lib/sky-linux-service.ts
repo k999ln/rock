@@ -366,22 +366,27 @@ function priceCpu(
   };
   return rate(after) - rate(before);
 }
+export function linuxMonthUsage(w: LinuxWorkspace, period: string) {
+  let computeMinor = 0;
+  let authorMinor = 0;
+  let reservedMinor = 0;
+  for (const job of w.jobs) {
+    if (job.period !== period) continue;
+    if (job.receiptId) {
+      computeMinor += job.computeMinor;
+      authorMinor += job.authorMinor;
+    } else if (job.state !== 'cancelled') {
+      reservedMinor += job.reservedMinor;
+    }
+  }
+  const baseMinor = w.terms.baseMinor;
+  return {
+    period, baseMinor, computeMinor, authorMinor, reservedMinor,
+    maximumMinor: baseMinor + computeMinor + authorMinor + reservedMinor,
+  };
+}
 export function linuxMonthTotal(w: LinuxWorkspace, period: string) {
-  return (
-    w.terms.baseMinor +
-    w.jobs
-      .filter((j) => j.period === period)
-      .reduce(
-        (sum, j) =>
-          sum +
-          (j.receiptId
-            ? j.computeMinor + j.authorMinor
-            : ['cancelled'].includes(j.state)
-              ? 0
-              : j.reservedMinor),
-        0,
-      )
-  );
+  return linuxMonthUsage(w, period).maximumMinor;
 }
 export type LinuxEvent = {
   schema: 'sky.linux-event/1';

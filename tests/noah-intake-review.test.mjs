@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
+import { splitNoahIntakeImport } from '../lib/noah-intake-import-parts.ts';
 const code = ts.transpileModule(readFileSync(new URL('../components/noah-intake-review.tsx', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
 const snapshot = () => ({ sources: [], mouths: { remote: 3, remoteReady: 2, terminal: 1, terminalReady: 0 }, reasons: { not_checked: 3 }, unsupported: {}, listed: 0, warnings: [], ownerScope: 'reviewer-scope', families: [{ id: 'mcp-registry:provider/name', name: 'Test Agent', members: 1, mouth: 'mcp-remote', level: 0, revision: 2, withdrawn: false }], nextOffset: null });
 function harness(fetcher) {
@@ -11,6 +12,7 @@ function harness(fetcher) {
   runInNewContext(code, { exports, AbortController, URLSearchParams, Error, Date,
     fetch: async (url, init) => { calls.push({ url, init }); return fetcher(url, init); },
     require(id) {
+      if (id === '@/lib/noah-intake-import-parts') return { splitNoahIntakeImport };
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
       // 見た目（CSS）は、ここでは確かめない。class の名前だけを返す。
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };
@@ -47,7 +49,7 @@ void test('the confirmed counts are their own rows, apart from the registry coun
   // つながると確かめた数（spec-88 の 9.6）: 動いた・握手まで・固定の物を、台帳の件数とは別の行に出す。
   const h = harness(async () => Response.json({ ...snapshot(), listed: 12, confirmed: { ran: 5, handshake: 7, fixed: 13 } })); t.after(() => h.close()); await h.flush();
   assert.match(h.text(), /一覧に載せている数：12/);
-  assert.deepEqual(h.nodes().filter(n => n.type === 'h3').map(n => n.props.children), ['つながると確かめた数']);
+  assert.deepEqual(h.nodes().filter(n => n.type === 'h3').map(n => n.props.children), ['つながると確かめた数', '取り込みの結果を入れる']);
   for (const row of ['動いた（人が動かして、成果が出た）：5', '握手まで確かめた（まだ誰も動かしていない）：7', '本人の Mac で動かす（台帳とは別の、固定の物）：13']) assert.ok(h.text().includes(row), row);
   // 数の無い応答（古い版）でも、画面は出る。
   const old = harness(async () => Response.json(snapshot())); t.after(() => old.close()); await old.flush();

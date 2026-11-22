@@ -1,0 +1,13 @@
+.surface { display:contents; }
+.surface :global(:is(button,a[href],summary,[role="button"],[role="tab"])) { -webkit-tap-highlight-color:transparent; }
+@media (prefers-reduced-motion:no-preference) {
+  .surface :global(:is(button,a[href],summary,[role="button"],[role="tab"])) { transition:scale 110ms ease-out; }
+  .surface :global(:is(button,a[href],summary,[role="button"],[role="tab"]):not(:disabled):not([aria-disabled="true"]):active) { scale:.98; }
+}
+.setting { color:#202024; }
+.setting label { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:60px; padding:12px 0; cursor:pointer; }
+.setting strong,.setting small { display:block; }
+.setting strong { font-size:15px; font-weight:600; }
+.setting small { color:#71717a; font-size:12px; margin-top:4px; }
+.setting input { width:22px; height:22px; accent-color:#7546c8; cursor:pointer; }
+.setting input:focus-visible { outline:3px solid #a180df; outline-offset:3px; }

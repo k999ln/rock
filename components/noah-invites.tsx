@@ -93,7 +93,7 @@ export function NoahSharedDetail({id}:{id:string}) {
       setAgent(d.agent);window.history.replaceState(window.history.state,'',`/noah/invites/${id}`);setTick(n=>n+1);
     }catch(e){setError(e instanceof Error?e.message:'招待を確認できません。');}finally{lock.current=false;setBusy(false);}
   }
-  return <WorkspaceShell title="Noah" tone="sky"><main className={`${styles.page} ${styles.formPage}`}><nav className={styles.nav}><Link href="/noah/library">自分のAgent</Link><Link href="/noah">タイムライン</Link></nav><h1>Agentの限定共有</h1>
+  return <WorkspaceShell title="Noah" tone="sky"><main className={`${styles.page} ${styles.formPage}`}><nav className={styles.nav}><Link href="/noah/saved?tab=agents">自分のAgent</Link><Link href="/noah">タイムライン</Link></nav><h1>Agentの限定共有</h1>
     {!loaded && <output>招待を確認中…</output>}
     {!agent && loaded && token && scope && <section className={styles.notice}><p>このアカウントで招待を受け取ると、共有されたAgentの内容を確認できます。Agentの実行は開始しません。</p><button disabled={busy} onClick={()=>{void claim();}}>このアカウントで受け取る</button></section>}
     {signedOut && <p><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(`/noah/invites/${id}`)}`}>サインイン</Link>して、招待リンクをもう一度開いてください。</p>}

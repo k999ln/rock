@@ -244,16 +244,16 @@ void test('avoado.si keeps RockstarOS at /os and canonicalizes old Sky under /no
     new Request('https://avoado.si/os/sky/outputs?source=nfc'),
   );
   assert.equal(sky.status, 308);
-  assert.equal(sky.headers.get('location'), 'https://avoado.si/noah/outputs?source=nfc');
+  assert.equal(sky.headers.get('location'), 'https://avoado.si/noah/saved?source=nfc&tab=files');
   assert.equal((await app.fetch(new Request(sky.headers.get('location')))).status, 200);
-  assert.deepEqual(seen, ['/os', '/noah/outputs']);
+  assert.deepEqual(seen, ['/os', '/noah/saved']);
   const old = await app.fetch(
     new Request('https://avoado.si/sky/outputs?source=nfc'),
   );
   assert.equal(old.status, 308);
   assert.equal(
     old.headers.get('location'),
-    'https://avoado.si/noah/outputs?source=nfc',
+    'https://avoado.si/noah/saved?source=nfc&tab=files',
   );
 });
 
@@ -401,14 +401,14 @@ void test('local common OS links preserve canonical Sky aliases and request owne
       headers: { cookie: 'synthetic-local-session=1' },
     }));
     assert.equal(response.status, 308);
-    assert.equal(response.headers.get('location'), `http://${host}/noah/saved?source=common-nav`);
+    assert.equal(response.headers.get('location'), `http://${host}/noah/saved?source=common-nav&tab=roles`);
     const canonical = await app.fetch(new Request(response.headers.get('location'), {headers: {cookie: 'synthetic-local-session=1'}}));
     assert.equal((await canonical.json()).path, '/noah/saved');
-    assert.equal(seen[0].url, `http://${host}/noah/saved?source=common-nav`);
+    assert.equal(seen[0].url, `http://${host}/noah/saved?source=common-nav&tab=roles`);
     assert.equal(seen[0].headers.get('cookie'), 'synthetic-local-session=1');
     const redirect = await app.fetch(new Request(`http://${host}/sky/agents?revision=2`));
     assert.equal(redirect.status, 308);
-    assert.equal(redirect.headers.get('location'), `http://${host}/noah/saved?revision=2`);
+    assert.equal(redirect.headers.get('location'), `http://${host}/noah/saved?revision=2&tab=roles`);
     const post = new Request(`http://${host}/os/sky/agents`, { method: 'POST',
       headers: { origin: `http://${host}`, 'content-type': 'application/json' },
       body: JSON.stringify({ synthetic: true }),

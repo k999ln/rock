@@ -29,6 +29,7 @@ import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 
 export type NoahConnectDependencies = IntakeDependencies & {
   flags: NoahFlags;
+  authorizeAction?: (owner:string,target:string,action:string,digest:string,confirmed:boolean)=>Promise<void>;
   /** つなげる数を、料金ごとのカードの数にする（task 113。切り替え NOAH_PLAN_LIMITS と、本人の料金の読み方）。無ければ、今の上限のまま。 */
   planLimits?: NoahPlanLimits;
   /** 応答を返した後に続ける仕事を預ける（Workers の waitUntil）。無ければ、その場で待つ。握手のセッションを閉じる要求に使う。 */
@@ -150,7 +151,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
   async function probe(row: Row, target: NoahUserHandshakeTarget): Promise<Row> {
     let result: NoahUserHandshake | null = null, error: string = NOAH_CONNECT_MESSAGES.interrupted;
     try {
-      result = await handshake(target);
+      result = await handshake(target,{owner:row.owner_id});
       if (!result.ok) error = result.message;
       // 道具が 1 つも無い接続先は、頼める事が無い。握手の表には書かない（外すかどうかは、巡回が決める）。
       else if (result.handshake.tools.length < 1) error = NOAH_CONNECT_MESSAGES.noTools;
@@ -344,7 +345,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
     const at = now();
     const claimed = await prepare("UPDATE noah_connections SET last_used_at=? WHERE id=? AND owner_id=? AND state='connected' AND (last_used_at IS NULL OR last_used_at<=?)", at, id, owner, at - NOAH_CONNECT_LIMITS.toolsEveryMs).run();
     if (claimed.meta.changes !== 1) return failed(429, NOAH_CONNECT_MESSAGES.toolsWait);
-    const result = await handshake(target);
+    const result = await handshake(target,{owner});
     if (!result.ok) return failed(result.code === 'host_busy' || result.code === 'rate_limited' ? 429 : result.code === 'auth_required' || result.code === 'payment_required' ? 409 : 502, result.message);
     try {
       const definitions = new Map(result.handshake.tools.map((tool) => [tool.name, tool]));
@@ -385,7 +386,7 @@ const plain = (value: unknown, min: number, max: number): value is string => typ
 
 function failure(error: unknown) {
   if (error instanceof NoahAgentError) return json({ error: error.status === 413 ? '送信内容が大きすぎます。' : error.message }, error.status);
-  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: 'サインインしてください。' }, 401);
+  if (error instanceof Error && error.message === 'UNAUTHORIZED') return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
   return json({ error: '接続を確かめられません。少し待ってから再試行してください。' }, 503);
 }
 

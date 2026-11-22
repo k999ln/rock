@@ -43,6 +43,21 @@ function item(row: Row, signedIn: boolean, users = 0) {
       placeLabel: noahPlaceLabel(plan?.place ?? null, row.host),
       need: plan?.need ?? (req ? null : '接続先を確認できません。'), level: row.check_level ?? 0, price: { model: 'free' }, note: null } };
 }
+/**
+ * 系列の ID の並びから、一覧のカード（NoahReadyItem の形）を作る。並びはそのまま、載せていない物は落とす。
+ * 一覧（list）と、ピンタレスト風の一覧（lib/noah-boards-store.ts）が同じ関数を使う（カードの中身と、印がずれない）。D1 の 1 文の引数の上限（100）を越えないよう、90 件ずつ読む。
+ */
+export async function noahReadyItems(db: IntakeDependencies['db'], ids: readonly string[], signedIn: boolean) {
+  const keys = [...new Set(ids)], byId = new Map<string, Row>(), users = new Map<string, number>();
+  for (let index = 0; index < keys.length; index += 90) {
+    const part = keys.slice(index, index + 90), marks = part.map(() => '?').join(',');
+    const [rows, used] = (await db.batch([db.prepare(`${ROW} WHERE f.id IN (${marks})`).bind(...part), db.prepare(USERS(part.length)).bind(...part)])).map((result) => result.results) as [Row[], { family: string; users: number }[]];
+    for (const row of rows) byId.set(row.id, row);
+    for (const row of used) users.set(row.family, row.users);
+  }
+  return ids.flatMap((id) => { const row = byId.get(id); return row && listing(row).listed ? [item(row, signedIn, users.get(id) ?? 0)] : []; });
+}
+export type NoahReadyListItem = ReturnType<typeof item>;
 export type IntakeStatus = {
   sources: Pick<IntakeSource, 'id' | 'next_run_at' | 'last_success_at' | 'error_code' | 'failure_count' | 'observed' | 'withdrawn' | 'request_count' | 'sweep_started_at'>[];
   mouths: { remote: number; terminal: number; remoteReady: number; terminalReady: number }; families: { id: string; name: string; members: number; mouth: string | null; level: number; revision: number; withdrawn: boolean }[]; nextOffset: number | null; reasons: Record<string, number>; unsupported: Record<string, number>; listed: number;
@@ -84,11 +99,7 @@ export function createIntakeStore(deps: IntakeDependencies) {
     }
     if (params.get('limit') === '0') ids = [];
     // 行と利用人数を、1 回の batch で読む（D1 への往復を増やさない）。
-    const keys = ids.map(r => r.id);
-    const [rows, used] = keys.length ? (await db.batch([db.prepare(`${ROW} WHERE f.id IN (${keys.map(() => '?').join(',')})`).bind(...keys), db.prepare(USERS(keys.length)).bind(...keys)]))
-      .map((result) => result.results) as [Row[], { family: string; users: number }[]] : [[], []];
-    const byId = new Map(rows.map(r => [r.id, r])), users = new Map(used.map(r => [r.family, r.users]));
-    return { items: ids.flatMap(({ id }) => { const row = byId.get(id); return row && listing(row).listed ? [item(row, !!owner, users.get(id) ?? 0)] : []; }), nextCursor: params.get('limit') === '0' ? null : nextCursor, counts: await counts(), source: 'Official MCP Registry' };
+    return { items: ids.length ? await noahReadyItems(db, ids.map(r => r.id), !!owner) : [], nextCursor: params.get('limit') === '0' ? null : nextCursor, counts: await counts(), source: 'Official MCP Registry' };
   }
   async function detail(id: string, owner: string | null, reviewer: boolean) {
     const row = await db.prepare(`${ROW} WHERE f.id=?`).bind(id).first<Row>();

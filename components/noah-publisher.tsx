@@ -49,7 +49,7 @@ export default function NoahPublisher() {
   async function readFile(file:File|undefined){if(!file)return;if(file.size>131072){setError('公開仕様は128 KiB以下にしてください。');return;}try{const v=await file.text();parseSkyToolPackage(JSON.parse(v));edit(v);setError('');}catch(e){setError(e instanceof Error?e.message:'仕様ファイルを確認してください。');}}
   function save(){try{const manifest=parseSkyToolPackage(JSON.parse(code)), upload=uploads.find(a=>a.id===uploadId);if(uploadId&&!upload)throw new Error('選択した登録版を読み直してください。');void mutate('POST',{manifest,confirmations:{...checks,distributeSource},...(upload?{upload:{id:upload.id,manifestSha256:upload.manifestSha256,sourceSha256:upload.source!.sha256}}:{})});}catch(e){setError(e instanceof Error?e.message:'仕様を確認してください。');}}
   return <main className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href="/noah/agents">見つける</Link><Link href="/noah/library">自分のAgent</Link><Link href="/noah/sell">販売管理</Link><Link href="/noah/usage?scope=publisher">利用状況</Link><Link href="/noah/developers">継続改善を依頼</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/explore">見つける</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link><Link href="/noah/sell">販売管理</Link><Link href="/noah/usage?scope=publisher">利用状況</Link><Link href="/noah/developers">継続改善を依頼</Link></nav>
     <header className={styles.hero}><div><span className={styles.eyebrow}>PUBLISH YOUR AGENT</span><h1>Agentを公開する</h1><p>使い方・料金・接続方法を登録して審査へ提出します。本人用のコードは自動公開されません。</p></div></header>
     {error&&<p role="alert" className={styles.error}>{error} {!blocked&&<button onClick={()=>void load()}>読み直す</button>}</p>}
     {notice&&<output className={styles.notice}>{notice}</output>}

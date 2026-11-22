@@ -49,3 +49,10 @@ void test('shelf cards are one kind in the timeline: the Agent filter leaves the
   assert.equal(noahTimelineCardFacts(cards[0]), '相手のサーバー · あなたがやる事 0・約 1 分 · まだ数字はありません');
   assert.equal(noahTimelineCardFacts({ ...cards[0], numbers: { resultPercent: 90, againPercent: 50, seconds: 20 } }), '相手のサーバー · あなたがやる事 0・約 1 分 · 成果が返った割合 90%・また使った人 50%・最初の成果まで 約 20 秒');
 });
+
+void test('executable remote Agents join personal opinions without being labelled as research or fabricating usage',()=>{
+ const remote={id:'mcp-registry:test/one',name:'Remote reader',summary:'Read public data',provider:'Provider',users:0};
+ const feed=mixNoahTimeline(agents,posts,[],[],[remote]);
+ assert.deepEqual(feed.map(i=>i.kind),['post','remote','agent']);assert.equal(feed[1].agent.users,0);
+ assert.deepEqual(selectNoahTimeline(feed,'agent','remote').map(i=>i.key),['remote:mcp-registry:test/one']);
+});

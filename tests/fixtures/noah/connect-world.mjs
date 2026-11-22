@@ -8,6 +8,7 @@ import { parseNoahFlags } from '../../../lib/noah-flags.ts';
 import { createNoahShelfApi } from '../../../lib/noah-shelf-api.ts';
 import { createNoahTrialApi } from '../../../lib/noah-trial-api.ts';
 import { parseNoahShelfFlags } from '../../../lib/noah-shelf.ts';
+import { emptyNoahProfile } from '../../../lib/noah-profile-contract.ts';
 import { ownerScopeFor } from '../../../lib/owner-intent.ts';
 import { fixture, entry, page } from './intake.mjs';
 import { network } from './mcp-server.mjs';
@@ -96,6 +97,7 @@ export async function world(t, servers, options = {}) {
   const browser = (session, config = {}) => async (request) => {
     const { deps, api, planApi, askApi } = as(session.user, config);
     const url = new URL(request.url, ORIGIN), path = url.pathname;
+    if(path==='/api/noah/profile')return session.user?{body:{...emptyNoahProfile(),available:true,ownerScope:await ownerScopeFor(session.user)}}:{status:401,body:{error:'UNAUTHORIZED'}};
     const route = path === '/api/noah/intake' ? createIntakeApi(deps)
       : path === '/api/noah/connect-plan' ? planApi
       : path === '/api/noah/connect' ? api.collection
