@@ -21,6 +21,10 @@ export default {async fetch(request,env) {
   const input=await request.json(), s=await officialSession(input.profile);
   try {
     if(input.link) { await fs.mkdir('/tmp/outside'); await fs.writeFile('/tmp/outside/secret','not-yours'); await fs.symlink('/tmp/outside','/tmp/workspace/link'); }
+    if(input.snapshotSize !== undefined) {
+      await fs.writeFile('/tmp/workspace/boundary.bin',new Uint8Array(input.snapshotSize).fill(197));
+      try { return Response.json({files:await s.files()}); } catch(error) { return Response.json({error:error.message},{status:422}); }
+    }
     const results=[];
     for(const call of input.calls??[]) results.push(await s.call(call.name,call.args));
     return Response.json({tools:s.tools,results,files:input.link?[]:await s.files()});
@@ -52,6 +56,12 @@ void test('official packages run in workerd with request-isolated memory and enf
   assert.equal(Buffer.from(files.files[0].base64,'base64').toString(),'official file');assert.equal(files.results[2].isError,true);
   const link=await run({profile:'filesystem',link:true,calls:[{name:'read_text_file',args:{path:'/tmp/workspace/link/secret'}}]});assert.equal(link.results[0].isError,true);
   const thought=await run({profile:'thinking',calls:[{name:'sequentialthinking',args:{thought:'Make a short plan',thoughtNumber:1,totalThoughts:1,nextThoughtNeeded:false}}]});assert.equal(thought.results[0].structuredContent.thoughtHistoryLength,1);
+  for(const size of [0,32768]) {
+    const snapshot=await run({profile:'filesystem',snapshotSize:size});
+    const bytes=Buffer.from(snapshot.files[0].base64,'base64');assert.equal(bytes.length,size);assert.ok(bytes.every(b=>b===197));
+  }
+  const oversized=await w.mf.dispatchFetch('https://runtime/official',{method:'POST',body:JSON.stringify({profile:'filesystem',snapshotSize:32769})});
+  assert.equal(oversized.status,422);assert.match((await oversized.json()).error,/容量が上限/);
 });
 void test('alarm executes official tool and delivers hashed results without any job GET, then refuses replay and another owner',async t=>{
   const w=await world(t,async input=>input.messages.at(-1).role==='tool'?{choices:[{finish_reason:'stop',message:{content:'情報を保存しました。'}}]}:{choices:[{finish_reason:'tool_calls',message:{content:null,tool_calls:[{id:'call1',type:'function',function:{name:'create_entities',arguments:JSON.stringify({entities:[{name:'closed-browser-nonce',entityType:'test',observations:['saved']} ]})}}]}}]});

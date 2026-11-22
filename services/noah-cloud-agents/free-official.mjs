@@ -2,7 +2,7 @@ import { createServer as memory } from '@modelcontextprotocol/server-memory/dist
 import { createServer as thinking } from '@modelcontextprotocol/server-sequential-thinking/dist/index.js';
 import { createServer as filesystem } from '@modelcontextprotocol/server-filesystem/dist/server.js';
 import { Client } from '@modelcontextprotocol/client';
-import { promises as fs } from 'node:fs';
+import { promises as fs, constants } from 'node:fs';
 import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS as limits, NOAH_FREE_CLOUD_PROFILES, noahCloudDigest } from '../../lib/noah-cloud-contract.ts';
 
 const workspace = '/tmp/workspace';
@@ -48,10 +48,24 @@ export async function officialSession(profile) {
             if (name.split('/').length > 8) throw Error('成果のフォルダが深すぎます。');
             if (item.isDirectory()) { await visit(path, `${name}/`); continue; }
             if (!item.isFile()) throw Error('通常ファイルだけ保存できます。');
-            const stat = await fs.stat(path); total += stat.size;
-            if (stat.size > limits.fileBytes || total > limits.totalFileBytes || files.length >= limits.files - 1) throw Error('成果ファイルの容量が上限を超えました。');
-            const bytes = await fs.readFile(path);
-            files.push({ name, base64: bytes.toString('base64'), bytes: bytes.length, sha256: Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), n => n.toString(16).padStart(2, '0')).join('') });
+            // Inspect and read the same open file, never reopen a checked path.
+            const handle = await fs.open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+            try {
+              const stat = await handle.stat();
+              if (!stat.isFile()) throw Error('通常ファイルだけ保存できます。');
+              if (stat.size > limits.fileBytes || total + stat.size > limits.totalFileBytes || files.length >= limits.files - 1) throw Error('成果ファイルの容量が上限を超えました。');
+              const buffer = Buffer.alloc(limits.fileBytes + 1);
+              let bytesRead = 0;
+              while (bytesRead < buffer.length) {
+                const chunk = await handle.read(buffer, bytesRead, buffer.length - bytesRead, bytesRead);
+                if (!chunk.bytesRead) break;
+                bytesRead += chunk.bytesRead;
+              }
+              total += bytesRead;
+              if (bytesRead > limits.fileBytes || total > limits.totalFileBytes) throw Error('成果ファイルの容量が上限を超えました。');
+              const bytes = buffer.subarray(0, bytesRead);
+              files.push({ name, base64: bytes.toString('base64'), bytes: bytes.length, sha256: Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), n => n.toString(16).padStart(2, '0')).join('') });
+            } finally { await handle.close(); }
           }
         };
         await visit(workspace); return files;
