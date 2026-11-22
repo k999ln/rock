@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-22T05:30:30Z",
+  "observedAt": "2026-11-22T07:43:28Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
-    "origin": "http://127.0.0.1:8862",
+    "origin": "http://127.0.0.1:8796",
     "productionBuild": true
   },
   "inputs": {
@@ -32,7 +32,7 @@
   "result": {
     "schema": "rockstaros-web-security-response-check/1",
     "status": "PASS",
-    "baseOrigin": "http://127.0.0.1:8862",
+    "baseOrigin": "http://127.0.0.1:8796",
     "universalHeaders": 8,
     "routes": [
       "/",
@@ -42,7 +42,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-RvD5NgFv.js"
+      "/_next/static/chunks/index-BOtBiPMR.js"
     ]
   },
   "boundary": {

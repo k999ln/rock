@@ -1,3 +1,4 @@
+import type { NoahProviderRun } from './noah-provider-types.ts';
 import type { NoahReceivedResult } from './noah-result-media.ts';
 import type { NoahCloudFile, NoahCloudProfile } from './noah-cloud-contract.ts';
 /**
@@ -14,6 +15,7 @@ import type { WorkJob } from './workflow.ts';
 export const NOAH_REMOTE_TEMPLATE = 'noah-agent-remote';
 
 export type NoahRemoteExecution = {
+  provider?: NoahProviderRun;
   /** どの接続の、どの版か。 */
   connectionId: string; familyKey: string; digest: string;
   /** agent: 1 文で頼む（出した後）。form: 入力欄から、道具を 1 回呼ぶ。 */
