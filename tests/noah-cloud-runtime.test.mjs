@@ -48,6 +48,19 @@ void test('model routing and caps are server-owned; result hashes and paths are 
   assert.equal(noahCloudProfile('https://github.com/NousResearch/hermes-agent.git'), 'hermes');
   assert.equal(noahCloudProfile('https://github.com/NousResearch/hermes-agent/evil'), null);
 });
+void test('a tool-only model reply can resume with the official tool result', () => {
+  const call = { id: 'time-call', type: 'function', function: { name: 'get_current_time', arguments: '{"timezone":"Asia/Tokyo"}' } };
+  const messages = [
+    { role: 'user', content: 'What time is it in Tokyo?' },
+    { role: 'assistant', content: null, tool_calls: [call] },
+    { role: 'tool', tool_call_id: call.id, content: '{"timezone":"Asia/Tokyo","datetime":"2026-11-23T00:07:47+09:00"}' },
+  ];
+  const input = noahCloudModelInput({ messages });
+  assert.ok(input.messages.every(message => typeof message.content === 'string'), 'Workers AI rejects null content on continuation');
+  assert.deepEqual(input.messages[1].tool_calls, [call]);
+  assert.deepEqual(input.messages[2], messages[2], 'the result must remain bound to the tool call');
+  assert.equal(messages[1].content, null, 'do not mutate the Agent transcript');
+});
 function jobWorld({ holdModel = false } = {}) {
   const ctx = context(); let starts = 0, stops = 0, calls = 0, writer, completeModel;
   const encoder = new TextEncoder();

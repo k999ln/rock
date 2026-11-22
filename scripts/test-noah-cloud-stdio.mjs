@@ -24,6 +24,15 @@ async function guest(test) {
 }
 const cases = [
   { profile: 'time', steps: [{ name: 'get_current_time', args: { timezone: 'Asia/Tokyo' }, match: /Asia\/Tokyo/ }] },
+  { profile: 'time', steps: [
+    { modelText: 'The current time has been checked.' },
+    { name: 'get_current_time', args: { timezone: 'Asia/Tokyo' }, match: /Asia\/Tokyo/ },
+  ] },
+  { profile: 'time', steps: [
+    { name: 'get_current_time<|channel|>commentary', args: { timezone: 'Asia/Tokyo' }, unknown: true, denied: true, match: /No operation ran/ },
+    { name: 'get_current_time', args: { timezone: 'Asia/Tokyo' }, match: /Asia\/Tokyo/ },
+  ] },
+  { profile: 'time', failure: true, steps: [{ modelText: 'Done.' }, { modelText: 'Done.' }] },
   { profile: 'thinking', steps: [{ name: 'sequentialthinking', args: { thought: 'Define the task, then test one small working result.', thoughtNumber: 1, totalThoughts: 1, nextThoughtNeeded: false }, match: /thoughtNumber/ }] },
   { profile: 'memory', file: 'memory.jsonl', steps: [
     { name: 'read_graph', args: {}, absent: /NoahQARecord/ },
@@ -39,7 +48,7 @@ const cases = [
   // A second new memory guest must not inherit the first request's graph.
   { profile: 'memory', steps: [{ name: 'read_graph', args: {}, absent: /NoahQARecord/ }] },
 ];
-for (const { profile, steps, file } of cases) {
+for (const { profile, steps, file, failure } of cases) {
   await guest(async c => { const probe = await request(c, '/run', { profile, mode: 'probe' }).json(); assert.equal(probe.type, 'probe'); assert.equal(probe.profile, profile); });
   await guest(async c => {
     if (profile === 'filesystem') await exec('docker', ['exec', c, 'python', '-c', "import os; os.symlink('/etc', '/workspace/escape')"]);
@@ -54,21 +63,35 @@ for (const { profile, steps, file } of cases) {
         assert.equal(event.type, 'model_request'); calls++;
         if (calls > 1) {
           const previous = steps[calls - 2];
-          const reply = event.body.messages.filter(m => m.role === 'tool').at(-1); assert.ok(reply);
-          const actual = JSON.parse(reply.content);
-          assert.equal(actual.isError === true, Boolean(previous.denied), JSON.stringify(actual));
-          if (previous.match) assert.match(JSON.stringify(actual), previous.match);
-          if (previous.absent) assert.doesNotMatch(JSON.stringify(actual), previous.absent);
+          if (previous.modelText) {
+            assert.equal(event.body.messages.at(-1).role, 'user');
+            assert.match(event.body.messages.at(-1).content, /No tool has run yet/);
+          } else {
+            const reply = event.body.messages.filter(m => m.role === 'tool').at(-1); assert.ok(reply);
+            const actual = JSON.parse(reply.content);
+            assert.equal(actual.isError === true, Boolean(previous.denied), JSON.stringify(actual));
+            if (previous.match) assert.match(JSON.stringify(actual), previous.match);
+            if (previous.absent) assert.doesNotMatch(JSON.stringify(actual), previous.absent);
+          }
         }
         const step = steps[calls - 1];
         let message = { role: 'assistant', content: 'Official MCP tool completed.' };
-        if (step) {
-          assert.ok(event.body.tools.some(t => t.function.name === step.name), step.name);
+        if (step?.modelText) {
+          message = { role: 'assistant', content: step.modelText };
+        } else if (step) {
+          assert.equal(event.body.tools.some(t => t.function.name === step.name), !step.unknown, step.name);
           message = { role: 'assistant', content: null, tool_calls: [{ id: 'call_' + calls, type: 'function', function: { name: step.name, arguments: JSON.stringify(step.args) } }] };
         }
         assert.ok(calls <= steps.length + 1);
         await request(c, '/model-reply', { id: event.id, body: { choices: [{ message, finish_reason: step ? 'tool_calls' : 'stop' }] } }).json();
       }
+    }
+    if (failure) {
+      assert.equal(result?.exitCode, 1, 'text-only claims cannot become successful work');
+      assert.equal(calls, steps.length);
+      assert.deepEqual(result.files, []);
+      console.log(JSON.stringify({ profile, model: 'fixture', textOnlyCompletion: 'rejected', calls }));
+      return;
     }
     assert.equal(result?.exitCode, 0, JSON.stringify(result)); assert.equal(result.text, 'Official MCP tool completed.'); assert.equal(calls, steps.length + 1);
     const verified = await noahCloudResult(result, calls);
@@ -76,6 +99,6 @@ for (const { profile, steps, file } of cases) {
       const saved = verified.files.find(f => f.name === file); assert.ok(saved, JSON.stringify(verified.files));
       assert.match(Buffer.from(saved.base64, 'base64').toString(), /NoahQARecord/);
     } else assert.equal(verified.files.length, 0);
-    console.log(JSON.stringify({ profile, officialTools: steps.map(s => s.name), files: verified.files.map(f => f.name), network: 'none', model: 'fixture', probe: 'passed', run: 'passed', calls }));
+    console.log(JSON.stringify({ profile, officialTools: steps.filter(s => s.name && !s.unknown).map(s => s.name), recoveryCases: steps.filter(s => s.modelText || s.unknown).length, files: verified.files.map(f => f.name), network: 'none', model: 'fixture', probe: 'passed', run: 'passed', calls }));
   });
 }

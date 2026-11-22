@@ -4,7 +4,7 @@
 終わったら CHANGELOG.md 先頭に 1 行、ここに ✅ と PR 番号。
 
 
-進捗の正本は `iceiceice999/rock`。2026-11-23 に main `b56d8e83b39fd946e4f5330eba0907bf36425172` と GitHub PR/CI を照合した。現在の開発項目と残件は [project.md](../../project.md)。✅ は記載した範囲の確認済みを表し、タスク全体・全Agent・一般公開の合格を意味しない。空欄は未照合であり、未着手と断定しない。
+進捗の正本は `iceiceice999/rock`。2026-11-23 に main `4644580cc929d71c1fab7ada714de5d166d48228` と GitHub PR/CI を照合した。現在の開発項目と残件は [project.md](../../project.md)。✅ は記載した範囲の確認済みを表し、タスク全体・全Agent・一般公開の合格を意味しない。空欄は未照合であり、未着手と断定しない。
 
 旧PR #342・#344〜#347 は未マージで閉じられているが、そのHEADは現在のmainの祖先に含まれる。旧PRの状態と、コードのmain統合を区別する。過去のCI履歴検出を現在の失敗として扱わず、対象SHAの検証結果を参照する。
 
@@ -68,7 +68,7 @@
 
 | 71 | [71-noah-standalone-launch.md](71-noah-standalone-launch.md) | 登録・独立審査・別ユーザーの実行・Mac配布 | 進行中・[PR #322](https://github.com/k999ln/rock/pull/322)公開済み・登録認証導線修正✅ [PR #324](https://github.com/k999ln/rock/pull/324)・OS独立UI/専用認証・公開版156・172件取込・本番読み取り専用1件の成果受領✅ [PR #358](https://github.com/k999ln/rock/pull/358)・本人Macの仕事詳細・配布Runner受入✅ [PR #366](https://github.com/k999ln/rock/pull/366)・CowAgent検索流入ガイドの実装とローカル確認 ✅ [PR #369](https://github.com/k999ln/rock/pull/369)。Pixelの限定登録・成果再表示は [PR #10](https://github.com/iceiceice999/rock/pull/10) で確認済み。別利用者・別Macと任意サービスの登録は未確認 |
 
-| 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | ✅ [PR #321](https://github.com/k999ln/rock/pull/321)・[PR #325](https://github.com/k999ln/rock/pull/325) / ✅ 11-23進捗台帳の更新 [PR #20](https://github.com/iceiceice999/rock/pull/20)（main未統合、最終CIはPR参照） |
+| 72 | [72-current-code-and-readme.md](72-current-code-and-readme.md) | 最新コードとREADMEの整理・検証・GitHub統合 | ✅ [PR #321](https://github.com/k999ln/rock/pull/321)・[PR #325](https://github.com/k999ln/rock/pull/325) / ✅ 11-23進捗台帳の更新 [PR #20](https://github.com/iceiceice999/rock/pull/20)（最終CIと統合状態はPR参照） |
 | 73 | [73-current-product-consolidation.md](73-current-product-consolidation.md) | 機能を保った重複・類似処理と現行説明の統合 | ✅ [PR #326](https://github.com/k999ln/rock/pull/326)・[PR #362](https://github.com/k999ln/rock/pull/362) |
 | 98 | [98-product-cleanup.md](98-product-cleanup.md) | miiの商品案内・画像と旧画面の整理 | ✅ [PR #327](https://github.com/k999ln/rock/pull/327) |
 | 99 | [99-readme-entrypoints.md](99-readme-entrypoints.md) | READMEからNoah公開版・Mac・miiの作業先を選ぶ | ✅ [PR #331](https://github.com/k999ln/rock/pull/331)・[PR #333](https://github.com/k999ln/rock/pull/333)・[PR #336](https://github.com/k999ln/rock/pull/336)・[PR #338](https://github.com/k999ln/rock/pull/338)・[PR #340](https://github.com/k999ln/rock/pull/340)・[PR #341](https://github.com/k999ln/rock/pull/341)・[PR #348](https://github.com/k999ln/rock/pull/348) |
@@ -144,8 +144,8 @@
 | 120 | [120-noah-agent-collection.md](120-noah-agent-collection.md) | 4出所のAgent継続収集・再開・Noahへの自動掲載 | ✅ 継続収集と公開MCP接続を現mainへ統合。[PR #7](https://github.com/iceiceice999/rock/pull/7) でSites205の接続→実処理→保存→再表示を本番受入。全掲載Agentの実行受入は残り。収集の運用残件はtask125-scout |
 | 121 | [121-noah-collect-more.md](121-noah-collect-more.md) | 集める場所を増やす（HN・GitHub MCP・HF MCP Space・npm・Docker・awesome一覧・Smithery、Codexが読むX/Reddit/Bluesky）・新しく使いやすい順・握手済みの系列を一覧へ自動で入れる | ✅ #385（本番の配備は Codex） |
 | 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
-| 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | 進行中。公開MCPの自動接続・限定本番受入 [PR #7](https://github.com/iceiceice999/rock/pull/7)、CLI6種の実装統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)。全掲載Agentの実行対応、OAuth/鍵、本番CLI・実モデルは未受入 |
+| 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | 進行中。公開MCPの自動接続・限定本番受入 [PR #7](https://github.com/iceiceice999/rock/pull/7)、CLI6種の実装統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)。全掲載Agentの実行対応、OAuth/鍵、本番CLI全体は未受入。6種の実モデル個別成功はPR #19に記録 |
 | 124 | [124-noah-teikibin-ledger.md](124-noah-teikibin-ledger.md) | 定期便の台帳（入金・費用・寄与の記録、月の締め、作業料と等分、有料の差し引き、振込の一覧、物の割当） | 🔶 台帳と画面 [PR #410](https://github.com/k999ln/rock/pull/410)（切り替えは閉。開ける前に要る事は仕様の 12 章） |
-| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | ✅ 固定CLI6種の実装・Linux試験を統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)。Containers本番は未受入。🔶 無料Workersの公式MCP3種 [PR #18](https://github.com/iceiceice999/rock/pull/18)、実モデル通信修正と個別成功記録 [PR #19](https://github.com/iceiceice999/rock/pull/19) は未マージ。本番Noahの無料経路有効化・閉画面後の一周は残り |
+| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | ✅ 固定CLI6種の実装・Linux試験を統合 [PR #12](https://github.com/iceiceice999/rock/pull/12)。Containers本番は未受入。🔶 無料Workersの公式MCP3種 [PR #18](https://github.com/iceiceice999/rock/pull/18) は未マージ。✅ [PR #19](https://github.com/iceiceice999/rock/pull/19) はmain統合済み。6種の実モデル個別成功と応答失敗の例、公開209のPixel登録一周を記録。本番Noahの無料経路有効化・閉画面後の一周は残り |
 | 125 | [125-noah-scout.md](125-noah-scout.md) | Noah が自分で探す（GitHub の急に伸びた repo・Agent の道具の話題・Product Hunt、Codex の Luna Max が毎日 X を読んで配布元まで理解した「Noahが読んだ」）・Switch を載せる・iceiceice999/rock への移行 | ✅ 自律収集の移植 [PR #13](https://github.com/iceiceice999/rock/pull/13)・停止調査 [PR #15](https://github.com/iceiceice999/rock/pull/15)・本番収集の復旧 [PR #16](https://github.com/iceiceice999/rock/pull/16)。毎時予備実行を設定済み。24時間の鮮度維持・新リポジトリへの実行先移行・Xの7日継続掲載は未確認 |
 | 126 | [126-noah-packages-first.md](126-noah-packages-first.md) | トップの最初の列をパッケージ（1 つの仕事を最後までやる組合せ）にし、単発は下。Eve が Switch の部屋の形を手本に組む | 指示書を現mainへ統合 [PR #13](https://github.com/iceiceice999/rock/pull/13)。パッケージを先頭へ出す実装は未着手（task125の後） |

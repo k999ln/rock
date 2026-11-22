@@ -1,5 +1,6 @@
 ## 2026-11-23
 - Noahの進捗を現main・旧PRの祖先・既存本番受入記録と照合し、task索引・project.md・README・進捗JSON・H1の次作業を同期。未確認の運用・集客・実機受入は残件として保持（[PR #20](https://github.com/iceiceice999/rock/pull/20)）。
+- Noahの実モデル継続時のHTTP400と未実行の完了報告を修正し、公開209のPixelで外部登録→認証付き実行→成果の再読込を再検証（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。
 - NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。
 
 ## 2026-11-22

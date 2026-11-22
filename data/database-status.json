@@ -15,7 +15,7 @@
     "planned": 230,
     "blocked": 1,
     "milestone": "Noahの現main統合・限定本番受入・運用と集客の残件を照合",
-    "nextAction": "PR #18・#19のCI・main統合と本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。"
+    "nextAction": "PR #18の統合と#19を含む本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。"
   },
   "webSchema": {
     "tableCount": 179,
