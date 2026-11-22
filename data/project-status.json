@@ -1378,7 +1378,7 @@
   },
   "updatedAt": "2026-11-23",
   "milestone": "Noahの現main統合・限定本番受入・運用と集客の残件を照合",
-  "nextAction": "PR #18・#19統合後の本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
+  "nextAction": "無料3種で観測した添付表示の再確認、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -13293,7 +13293,9 @@
       "https://github.com/iceiceice999/rock/pull/9",
       "https://github.com/iceiceice999/rock/pull/10",
       "https://github.com/iceiceice999/rock/pull/14",
-      "https://github.com/iceiceice999/rock/pull/16"
+      "https://github.com/iceiceice999/rock/pull/16",
+      "codex/tasks/125-noah-cloud-agents.md",
+      "https://github.com/iceiceice999/rock/pull/19"
     ],
     "boundaries": [
       "掲載/接続定義取得を全Agent実行成功にしない",
@@ -13328,14 +13330,14 @@
         "number": 19,
         "url": "https://github.com/iceiceice999/rock/pull/19",
         "state": "MERGED",
-        "scope": "実モデル通信修正と6種の個別成功・応答失敗例、公開209のPixel再確認。Containers本番受入は残る。",
+        "scope": "実モデル通信修正、6種の個別成功と応答失敗例を記録。公開209でPixel登録・保存。公開210で同じ成果のキャッシュなし再読込を確認。有料Containersは本番未配備。",
         "mergeCommit": "4644580cc929d71c1fab7ada714de5d166d48228"
       },
       {
         "number": 18,
         "url": "https://github.com/iceiceice999/rock/pull/18",
         "state": "MERGED",
-        "scope": "無料Workersの公式MCP3種。Memory/Filesystem実モデル成功はPR記録。Noah有効化・全閉画面後の本番一周は未受入。",
+        "scope": "公開210で無料Workersの公式MCP3種を有効化。ブラウザ全閉中のWork完了、再表示とファイル保存を3件確認。",
         "mergeCommit": "16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617"
       }
     ]

@@ -83,3 +83,17 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 証拠は `work/noah-tap-feedback/work/noah-production-209/` の `publication.json`、`model-probe.json`、`real-model-guarded.log`、`model-filesystem-diagnostic.log`、`stdio-regressions.log`、`pixel-roundtrip.json`、`pixel-feedback.json`、`pixel-vibrator.txt`、`pixel-result-reloaded.png`。キーや本人の既存データを含めず、途中の失敗も保存。全体verifyとGit/公開の最終結果は受入後に追記する。
 
 - [PR #19](https://github.com/iceiceice999/rock/pull/19): `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0（主要5,163成功・5skip・失敗0、API1,918・CSV385、型/lint/build/資産/mission/work/bot成功）。最終の記録と試験出力表示の更新後にも `npm run design:check` / `npm run lint:product` 成功。GitHub CI・マージ・公開の状態はPRへ追記する。
+
+## 公開210の本番受入
+
+2026-11-23、無料WorkersのMemory・Filesystem・Sequential Thinkingを本番Noahから各1件実行した。Chromeを完全終了し、再起動前に3件すべてでD1の共通Workが `succeeded` になったことを確認。再起動後に保存一覧から同じ成果を開き、ファイルのダウンロードも3件成功した。試験時、保存済みファイルの横に「添付の内容は保存されていません」と表示される不整合を観測した。
+
+| 実行先 | 成功した操作 | Work完了（JST） | モデル呼出 | 受領票のSHA-256 |
+| --- | --- | --- | ---: | --- |
+| Memory | `create_entities` | 00:57:07.605 | 2 | `bf69c69effff660abededbcc44f4bf7f8dd78e2dc62416fa43316d4f61a16732` |
+| Filesystem | `write_file` | 00:57:42.828 | 2 | `1531db859cb0c68015d7bda6348dc3f0c6e47e6c28ed98295964f0969f1445d1` |
+| Sequential Thinking | `sequentialthinking` 3回 | 00:58:26.465 | 4 | `5ff402dcabb39936fd463abd78eff26fd9dd0e751322ec2883c715afcbfb2ae0` |
+
+Git外の受領票は `work/noah-cloud-production-acceptance-20261122/` 内の `run-1795363012731/report.json`、`run-1795363047378/report.json`、`run-1795363081869/report.json`。各記録で `passed`、`openedFromSavedResults`、`downloadVerified` が真。対象は公開210で有効な無料3種。有料Containersは本番未配備。
+
+Pixelでは公開209で登録・認証付き実行・保存した成果を、公開210で「保存」から開き、キャッシュを使わず再読込して同じ内容を確認した。411px幅で横溢れなし。公開210はmain `16a9eae6` と同じGit treeを配備した。[公開210とPixelの受入記録](https://github.com/iceiceice999/rock/pull/19)

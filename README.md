@@ -94,7 +94,7 @@ npm run amc:cycle -- demo
 
 掲載リポジトリやパッケージは「使う」で提供元の公開接続定義を確認します。GitHub・npm・Dockerの公式配布記録を照合し、接続できるものはNoah内で入力・実行・成果保存へ進みます。本人認証や未対応のCLIが必要な場合は理由を表示します。掲載・定義取得・実行成功は区別します。
 
-CLIの管理クラウドは [task125](codex/tasks/125-noah-cloud-agents.md) で実装中です。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。固定応答の検査に加え、実モデル `gpt-oss-20b` で6配布物の道具実行・成果生成の成功例を手元の隔離Linuxで確認しました。空本文による継続通信の失敗を修正し、道具を実行しない完了報告は受け付けません。モデルの形式エラーによる失敗例もあり、本番クラウドでの受入とは区別します。無料のWorkers実行器を追加し、公式JavaScript本体を使ったMemory/Filesystemの実モデル処理とファイルhashを旧クラウドで確認しました。Sequential Thinkingを含む3種はworkerdの公式Tool試験に成功。Noahの本番画面・閉鎖後の保存受入は継続中です。Python/shellを要する残り3種は本番未対応です。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
+CLIの管理クラウドは [task125](codex/tasks/125-noah-cloud-agents.md) で実装中です。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。固定応答の検査に加え、実モデル `gpt-oss-20b` で6配布物の道具実行・成果生成の成功例を手元の隔離Linuxで確認しました。空本文による継続通信の失敗を修正し、道具を実行しない完了報告は受け付けません。モデルの形式エラーによる失敗例もあり、本番クラウドでの受入とは区別します。無料のWorkers実行器を追加し、公式JavaScript本体を使ったMemory/Filesystemの実モデル処理とファイルhashを旧クラウドで確認しました。公開210でMemory・Filesystem・Sequential Thinkingを1件ずつ実行し、ブラウザを閉じた後に仕事が完了しました。3件とも「保存した成果」から開き直し、ファイルをダウンロードできました。[公開210の本番受入](codex/tasks/125-noah-cloud-agents.md#公開210の本番受入)。Python/shellを要する残り3種は本番未対応です。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
 
 管理クラウドの依頼と保存済み成果は、共通の「実行中」「保存したもの → 成果」から開く実装を追加しています。成果の閲覧でAgentを再実行せず、本文・ファイル保存・停止を同じ仕事画面で扱います。本番で画面を閉じた後の実行継続と成果受取は、無料枠の実行器と合わせて受入中です。
 
@@ -299,7 +299,7 @@ node --experimental-strip-types --test docs/design-validation/noah/noah-loop.tes
 <details>
 <summary>公開版の作りと、手元で確かめたこと（MVP L1〜L9）</summary>
 
-開発時は `npm run noah:screenless:check` で、固定Agent・登録コード・VMの起動引数を検査します。画面・音・hostファイルへアクセスする変更を通常の `npm run verify` で検出します。画面を閉じた後の成果保存はローカルDBの回帰試験で確認し、Mac実機での画面観測は未実施です。
+開発時は `npm run noah:screenless:check` で、固定Agent・登録コード・VMの起動引数を検査します。画面・音・hostファイルへアクセスする変更を通常の `npm run verify` で検出します。画面を閉じた後の成果保存はローカルDBの回帰試験で確認しました。Agentの依存関係や審査済みの実行記録から、必要な画面・入力と実行先の候補を判定する関数も実装しました。受付への組み込みとMacでの4項目の実機観測は[task84](codex/tasks/84-noah-screenless-rule.md)で追跡します。
 
 接続要件の検査・接続計画・状態遷移の純関数は `lib/noah-connect-requirements.ts` と `lib/noah-connect-plan.ts` に置いています。L2の純関数とL5の画面・APIへの接続は現mainに統合済みです。計画の計算だけでは権限や利用権は発行しません。
 
