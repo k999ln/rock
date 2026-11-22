@@ -1,4 +1,5 @@
 ## 2026-11-22
+- Noah の Agent 収集で、1 回きりの出所の失敗（GitHub の一時的な不調・混雑）で実行全体が「失敗」になっていたのを直した（Opus / Noelle。本人の問い「毎日更新してくれるシステム作ってって前いったけどできた？」）。本番への取り込み・掲載の失敗、形が変わった応答、X の鍵、同じ出所が 6 回続けて失敗した時だけを「人が見る失敗」にする。毎回の実行の要約に、台帳・握手・一覧に載る数と、出所ごとの数と失敗を出す）（[PR #COLLECT](https://github.com/iceiceice999/rock/pull/COLLECT)）。
 - NoahからDaisukeのAniccaでココナラの公開募集を探索し、Macで提案の下書きを受け取り、停止できるようにした（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。
 - Noah公開203のPixel実機受入をREADME・task100・作業一覧へ記録。ポコ音の録音、振動完了、Agentboard新規登録→認証付き実行→成果の再読込保持を確認（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 - Noahの法人Agent統合をSites206で公開し、共通実行・保存・再読込と自動再判定を実測。提供元とNoahの保存範囲を明記（[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
