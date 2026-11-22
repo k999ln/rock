@@ -6,7 +6,7 @@
 
 ## 全体
 
-- データ境界: 6、table: 240
+- データ境界: 6、table: 241
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 393 task中 114 done、48 in progress、230 planned、1 blocked
@@ -18,7 +18,7 @@
 | --- | --- | ---: | --- | --- | --- | --- |
 | Web D1 | Webサービス状態 | 168 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
-| Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
+| Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 6 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 19 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
 | Android Work Engine SQLite | Android work・artifact・run・event | 24 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
 | Android Platform Core SQLite | component登録・owner承認・OS側ledger | 11 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
@@ -57,9 +57,9 @@
 
 </details>
 
-<details><summary>Operator Dock D1: 5 table</summary>
+<details><summary>Operator Dock D1: 6 table</summary>
 
-`operator_audit_events`、`operator_device_commands`、`operator_device_request_nonces`、`operator_managed_devices`、`operator_webauthn_assertions`
+`distribution_assignments`、`operator_audit_events`、`operator_device_commands`、`operator_device_request_nonces`、`operator_managed_devices`、`operator_webauthn_assertions`
 
 次の確認: ownerが専用hostname、Cloudflare Access application、D1を作成後、0001・0002適用、production credential設定、端末attestation登録と認証済みreadbackを行う
 

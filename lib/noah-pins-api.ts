@@ -74,7 +74,7 @@ export function createNoahBoardsApi(deps: PinsApiDependencies) {
         if (pin !== null) {
           if (!owner) return json({ error: '保存先を開けませんでした。もう一度お試しください。' }, 401);
           const [found] = await store.pins([familyIdOf(pin)], owner);
-          return json({ savedIn: found?.savedIn ?? [], ownerScope });
+          return json({ savedIn: found?.savedIn ?? [], feedbackId: (found as {feedbackId?:string}|undefined)?.feedbackId, sources: (found as {sources?: unknown}|undefined)?.sources, ownerScope });
         }
         // 公開のボードは、未サインインでも読める。
         if (id !== null) return json({ ...await store.board(boardIdOf(id), owner, url.searchParams.get('cursor')), ownerScope });

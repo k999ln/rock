@@ -1,15 +1,18 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Bot, House, Laptop, Search, X } from 'lucide-react';
 import { researchKindLabels, type ResearchPage } from '@/lib/noah-research-types';
 import { noahActionHref } from '@/lib/noah-surface';
 import { webBrandIcon } from '@/lib/web-brand';
 import styles from './noah-timeline.module.css';
+import NoahCollectionFeed from './noah-collection-feed';
 
 export default function NoahPublicCatalog({ basePath = '/noah', embedded = false, initialQuery = '', onQueryChange }: { basePath?: string; embedded?: boolean; initialQuery?: string; onQueryChange?: (query:string)=>void }) {
-  const [query, setQuery] = useState(initialQuery.slice(0,200)), [kind, setKind] = useState('all');
+  const incoming = useSearchParams();
+  const [query, setQuery] = useState(() => (initialQuery || incoming.get('collectionQuery') || '').slice(0, 200)), [kind, setKind] = useState('all');
   useEffect(()=>{onQueryChange?.(query);},[query,onQueryChange]);
   const [result, setResult] = useState<{ key: string; page: ResearchPage | null; error: string } | null>(null);
   const [moreKey, setMoreKey] = useState(''), [attempt, setAttempt] = useState(0);
@@ -66,6 +69,7 @@ export default function NoahPublicCatalog({ basePath = '/noah', embedded = false
           <div className={styles.searchRow}><Search size={22} /><input ref={search} aria-label="Agentを検索" placeholder="どんな仕事を任せたい？" maxLength={200} value={query} onChange={e => setQuery(e.target.value)} />{query && <button aria-label="検索をクリア" onClick={() => setQuery('')}><X size={18} /></button>}</div>
           <div className={styles.filters} aria-label="分類で絞り込む">{[['all', 'すべて'], ['agent', 'Agent本体候補'], ['candidate', '分類確認待ち'], ['related', 'Tool・モデル等']].map(([value, label]) => <button key={value} aria-pressed={kind === value} className={kind === value ? styles.selectedFilter : ''} onClick={() => setKind(value)}>{label}</button>)}</div>
         </section>
+        <NoahCollectionFeed searchQuery={query} onClearQuery={() => setQuery('')} />
         <div className={styles.feedLabel}><span>世界のAgentを見つける</span>{page && <span className={styles.resultCount}>{page.total.toLocaleString('ja-JP')}件</span>}</div>
         {page && <p className={styles.researchNote}>調査日 {page.asOf} · Agent候補と関連資産を含みます。掲載数は実行対応数ではありません。</p>}
         {loading && <output className={styles.loading}>カタログを読み込んでいます…</output>}

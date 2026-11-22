@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
+import { splitNoahIntakeImport } from '../lib/noah-intake-import-parts.ts';
 const code = ts.transpileModule(readFileSync(new URL('../components/noah-intake-review.tsx', import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
 const snapshot = () => ({ sources: [], mouths: { remote: 3, remoteReady: 2, terminal: 1, terminalReady: 0 }, reasons: { not_checked: 3 }, unsupported: {}, listed: 0, warnings: [], ownerScope: 'reviewer-scope', families: [{ id: 'mcp-registry:provider/name', name: 'Test Agent', members: 1, mouth: 'mcp-remote', level: 0, revision: 2, withdrawn: false }], nextOffset: null });
 function harness(fetcher) {
@@ -11,6 +12,7 @@ function harness(fetcher) {
   runInNewContext(code, { exports, AbortController, URLSearchParams, Error, Date,
     fetch: async (url, init) => { calls.push({ url, init }); return fetcher(url, init); },
     require(id) {
+      if (id === '@/lib/noah-intake-import-parts') return { splitNoahIntakeImport };
       if (id === 'react/jsx-runtime') return { jsx, jsxs: jsx };
       // 見た目（CSS）は、ここでは確かめない。class の名前だけを返す。
       if (id.endsWith('.module.css')) return { default: new Proxy({}, { get: (_, name) => String(name) }) };

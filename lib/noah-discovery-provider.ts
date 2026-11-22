@@ -15,6 +15,7 @@ export type DiscoveryMetadata = {
   commit: string | null;
   language: string | null;
   sdk: string | null;
+  metrics?: { stars?: number; likes?: number };
 };
 export type DiscoveryKnown = {
   id: string;
@@ -140,6 +141,8 @@ export function normalizeDiscovery(
     commit: sha(provider === 'github' ? commit : v.sha),
     language: text(v.language, 80) || null,
     sdk: provider === 'huggingface' ? text(v.sdk, 80) || null : null,
+    ...(provider === 'github' && Number.isSafeInteger(v.stargazers_count) && Number(v.stargazers_count) >= 0 ? { metrics: { stars: Number(v.stargazers_count) } } : {}),
+    ...(provider === 'huggingface' && Number.isSafeInteger(v.likes) && Number(v.likes) >= 0 ? { metrics: { likes: Number(v.likes) } } : {}),
   };
 }
 async function boundedJson(response: Response) {

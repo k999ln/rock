@@ -1,0 +1,41 @@
+name: Noah cloud Agent collection
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '3-58/5 * * * *'
+
+permissions:
+  contents: read
+
+# One publisher across schedule/manual runs and branches. Never cancel a checkpoint write.
+concurrency:
+  group: noah-agent-collection-production
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: github.repository == 'k999ln/rock' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts
+            lib
+            drizzle
+            services/noah-collector-runtime
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '26.12.1'
+      - name: Install locked collector dependencies
+        run: |
+          npm ci --prefix services/noah-collector-runtime --ignore-scripts --no-audit --no-fund
+          ln -s services/noah-collector-runtime/node_modules node_modules
+      - name: Restore, collect, checkpoint, and publish
+        env:
+          NOAH_COLLECTION_KEY: ${{ secrets.NOAH_COLLECTION_KEY }}
+          NOAH_X_BEARER_TOKEN: ${{ secrets.NOAH_X_BEARER_TOKEN }}
+        run: node --experimental-strip-types scripts/noah-cloud-collector.mjs --dir "$RUNNER_TEMP/noah-collector" --origin https://avoado.si
