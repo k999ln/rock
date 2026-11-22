@@ -2,6 +2,8 @@
 - Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
 
 
+- Noahの公開Agent一覧と提携案件の非公開索引に、完全取得・候補照合・公開条件の定期点検と自社MCPの共通一覧接続を追加。本番統合は受入中（task101、[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
+
 - 旧 main の #415 までの履歴と移行先の Gradio 実行・タップ設定を統合し、開発・PR の参照先を iceiceice999/rock に揃えた（[PR #6](https://github.com/iceiceice999/rock/pull/6)）。
 - task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
 - task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
@@ -66,6 +68,16 @@
 - Noah公開トップにAgent収集・外部評価を表示し、公開版177へ反映。Mac常駐を停止し、クラウド2回の継続収集・掲載更新を確認。5分ごとのActions定期実行を有効化（[PR #380](https://github.com/k999ln/rock/pull/380)、task120。Xはキー待ち）。
 
 - Noahの継続Agent収集・出典別カード・外部評価同期を公開版171へ反映し、運営Macの常駐収集から署名付き自動掲載を確認。XはAPIキー待ち（task120、[PR #380](https://github.com/k999ln/rock/pull/380)）。
+
+- Noah法人相談から登録済み媒体の記事への正式紹介を開始。媒体証拠の分離、広告タグの原文保持、対象媒体の成果抽出とChrome実取得を確認（toolkits/noah-affiliate-agents、PR #374）。
+
+- Noahのサービス組み合わせに、候補作成・条件点検・匿名準備票・実成果承認の重複排除と専用Workerを追加。3準備ガイドをNoah版187に公開。紹介条件とASP再認証は未受入（toolkits/noah-affiliate-agents、PR #374）。
+
+- Noah法人si導入準備に、認証済みChromeの成果・承認・支払取得と0件を含む受領票・自動点検、公開記事のサイトマップを追加。実取得・本番保存を確認。紹介経路・ASP継続接続・銀行照合は未完了（toolkits/noah-affiliate-agents、PR #374）。
+
+- Noahの法人si導入準備を会員登録不要の公開Web/MCP、集客計画、ASP承認・支払・銀行照合・費用台帳として実装。継続実行器による自社記事公開を開始し、Noah版175に入口掲載。ASP/銀行自動取得は未接続、紹介は媒体許可と正式リンク確認まで停止（toolkits/noah-affiliate-agents、PR #374）。
+
+- Noah用のWeb・PC相談と紹介案件運営をsource ZIP/MCPキットとして追加。掲載条件検査・非公開情報の分離・下書き・実績集計を実装し、専用11試験とWorker dry-runを確認。本番登録・配備前（task101、[PR #374](https://github.com/k999ln/rock/pull/374)）。
 - 配給担当者が地域・品目から全国の生産者を探し、6農園の公式窓口を開いて運営予算での買取を直接相談できるMac用ツールを追加（[PR #381](https://github.com/k999ln/rock/pull/381)）。
 
 - Noahの0円申込・模擬専用回線・食料と日用品の案内をローカルWorkersで接続し、停止、成果受取、0円の使用記録を検証する試験を追加（PR #378）。

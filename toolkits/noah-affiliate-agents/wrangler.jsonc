@@ -1,0 +1,8 @@
+{
+  "name": "noah-affiliate-agents",
+  "main": "mcp.mjs",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": false,
+  "vars": { "NOAH_ORIGIN": "https://avoado.si" },
+  "observability": { "enabled": false }
+}
