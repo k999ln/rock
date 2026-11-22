@@ -1,4 +1,5 @@
 ## 2026-11-22
+- NoahのWordPress/EC診断2種をSites208で実行・保存・再読込まで受入し、掲載時刻と成果本文の表示を補正。登録媒体への紹介・6時間の成果取得を接続、実注文/承認は0件（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。
 - Noahの自律収集の変更とtask 125・126を正本へ移植した（[PR #13](https://github.com/iceiceice999/rock/pull/13)）。本番の復旧・配備と運用確認はtask 125に記録する。
 - Noahの各チャット差分（固定CLI6種、公開サイト診断2種、ココナラ下書き、Pixel受入記録）を統合し、全体verify成功。クラウドCLI本番配備は未完了（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。
 - NoahからDaisukeのAniccaでココナラの公開募集を探索し、Macで提案の下書きを受け取り、停止できるようにした（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。
