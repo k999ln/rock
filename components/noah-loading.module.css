@@ -5,3 +5,8 @@
 @keyframes noah-flower { 0%,100% { transform:rotate(-12deg) scale(.94); opacity:.72; } 50% { transform:rotate(12deg) scale(1); opacity:1; } }
 @media(prefers-reduced-motion:reduce) { .flower { animation:none; } }
 .loading{min-height:200px;background:radial-gradient(ellipse at center,#f8f3ff55,transparent 60%)}.loading .flower{width:64px;height:64px}.compact .flower{width:24px;height:24px}
+
+.connection { display:grid; place-items:center; }
+.connectionMark { width:88px; height:88px; object-fit:contain; animation:noah-connect-breathe 1.4s ease-in-out infinite; }
+@keyframes noah-connect-breathe { 0%,100% { transform:scale(.94) rotate(-6deg); opacity:.75; } 50% { transform:scale(1.06) rotate(6deg); opacity:1; } }
+@media(prefers-reduced-motion:reduce) { .connectionMark { animation:none; } }

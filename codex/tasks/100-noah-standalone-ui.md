@@ -258,3 +258,16 @@ Pixel 10は公開179でログインなしのホーム表示・検索入力まで
 公開190 succeeded: source `4401738ccc3160cc34c4eae10c497ddb465ebbcd`、deployment `appgdep_6b025c16feb0819199236dba677fe33b`、env17。公開189のlint修正と他の変更を維持。Git側のホーム部品も同じ実装へ揃え、設計正本04・決定07・READMEを更新。
 
 検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0。主4,907 pass・4 skip・0 fail、型/lint/build、bundle/assets、Work API1,918・CSV385、mission/work/botまで成功。Git側の関連4試験も成功。公開ホームと一覧APIがHTTP200、公開クライアントの参照先と画面ファイルが今回のbuildに一致し、法人/組合せ告知文がホーム部品に含まれないことを確認。初回HTMLはブラウザ保存先準備を表示するため、HTMLだけで読込後の画面を確認したとは扱わない。今回はブラウザ操作・実機の目視確認を行っていない。ログ `/tmp/noah-home-focus-verify.log`、`/tmp/noah-home-focus-tests.log`、`/tmp/noah-home-focus-git-tests.log`。PRレビュー/マージは未完了。
+
+
+## 2026-11-22 実機一周と接続フィードバック（PR #386）
+
+✅ 接続を押すと透過した花形ロゴだけの待機画面を表示し、APIで接続成功を確認してから短いポコ音と成功振動を一度返す。クリック時に音声を無音で有効化し、重複タップ・通信失敗・再表示では成功音を鳴らさない。音と振動は端末別に設定し、動きを減らす設定では静止する。人工的な待ち時間は追加しない。
+
+公開192 succeeded: Sites source `68d2765c8f1d7defa97c31e58a3013f8b3a6d9a4`（親191 `8f1882262a0f2d587491f3298d3f1c277da702dc`）、deployment `appgdep_6b0261f7b79881918e11ebc32fee6eb3`、env17。191の通常ローダー/カードスケルトンを維持し、接続専用variantを追加。公開Agent詳細HTTP200、配信された音・接続・ロゴの3資産のSHA256がbuildと一致。
+
+全体検証: `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` の単一実行が最終bot検査まで成功。主4,916件中4,912 pass・4 skip・0 fail。typecheck/lint/build、bundle/assets、Work API1,918・CSV385、mission/work/botを含む。関連34試験も成功。GitHub受入側でも型/lint/関連34試験を成功させた。ログ `/tmp/noah-connect-feel-verify.log`、`/tmp/noah-connect-feel-tests.log`、`/tmp/noah-connect-feel-git-tests.log`。
+
+実機: Wi-Fi ADBで本人のPixel 10（Android 17、Vanadium、約411×802 CSS px）を操作。BeevRを検索→詳細→接続→read-only `list_services` を依頼→10件の一覧を受領。成果 `3db12788-4d6b-40bc-b8f2-febc920c0e8d` は再読み込み後も保持され、公開192後も再表示できた。初回の計画486ms+接続1,823ms、道具取得1,142ms。公開192の再接続ではロゴ表示86ms、成功振動2,275ms、音開始2,286ms、ロゴ終了2,293ms（計測開始基準）。接続API1,738ms+計画456ms。実ブラウザのAPI呼出をそのまま通す観測で1回ずつ確認し、Android vibrator_managerのfinished記録と端末の再生音の録音でも確認。観測用ラッパーはページ移動で解除、録音とADB forwardを終了した。
+
+証拠: `/tmp/noah-connection-loading-pixel.png`、`/tmp/noah-mobile-result.png`、`/tmp/noah-connect-pixel-audit.json`、`/tmp/noah-vibrator-after.txt`、`/tmp/noah-connection-pop.opus`、`/tmp/noah-connect-live-assets.json`。この一件の接続成功を全Agentの成功率とは扱わない。見つかった使いにくさは、詳細から接続ボタンまで長いこと、道具の「操作1・操作2」表示では内容を開く必要があること。今回の接続演出とは別の残件として引き継ぐ。PRレビュー/マージは未完了。

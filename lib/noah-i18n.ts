@@ -358,6 +358,8 @@ export const NOAH_MESSAGES: Record<
     'إيقاف الكل',
   ],
   再開する: ['Resume', '恢复', '재개', 'Reanudar', 'استئناف'],
+  '接続しています…': ['Connecting…', '正在连接…', '연결 중…', 'Conectando…', 'جارٍ الاتصال…'],
+  接続完了の音: ['Connection sound', '连接完成提示音', '연결 완료 소리', 'Sonido de conexión', 'صوت اكتمال الاتصال'],
   タップの振動: [
     'Tap vibration',
     '触控振动',
