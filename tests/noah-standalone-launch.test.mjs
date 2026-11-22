@@ -70,6 +70,30 @@ void test('author submits fixed bytes, independent reviewer approves, another us
   const job = await f.jobs.get(buyer, r.id);
   assert.equal(job.noahExecution.state, 'returned');
   assert.deepEqual(job.noahExecution.result, outcome);
+  const detail = (owner, id) =>
+    f.api(
+      new Request(origin + '/api/noah/launch?work=' + id, {
+        headers: { 'test-owner': owner },
+      }),
+    );
+  const response = await detail(buyer, r.id);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('cache-control'), /no-store/);
+  const view = await response.json();
+  assert.equal(view.ownerScope, await ownerScopeFor(buyer));
+  assert.deepEqual(
+    view.commands.map((v) => v.id),
+    [r.id],
+  );
+  assert.deepEqual(
+    view.jobs.map((v) => v.id),
+    [r.id],
+  );
+  assert.deepEqual(view.jobs[0].noahExecution.result, outcome);
+  assert.equal('claimSha256' in view.jobs[0].noahExecution, false);
+  assert.equal((await detail('author-fixture', r.id)).status, 404);
+  assert.equal((await detail(buyer, c.id)).status, 404);
+  assert.equal((await detail(buyer, 'invalid')).status, 400);
   assert.equal(await f.jobs.get('author-fixture', r.id), null);
   assert.deepEqual((await f.service.overview('other')).commands, []);
   await assert.rejects(f.service.stop('other', c.id), { status: 404 });

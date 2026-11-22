@@ -1,4 +1,4 @@
-import CommunityOsRuntime from '@/components/community-os-runtime';
+import ApplicationRuntime from '@/components/application-runtime';
 import './community-os.css';
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
@@ -30,7 +30,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body><CommunityOsRuntime />{children}</body>
+      <body><ApplicationRuntime />{children}</body>
     </html>
   );
 }

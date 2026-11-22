@@ -27,8 +27,8 @@ const worker = new Miniflare(convertV4MiniflareOptions({
 }));
 after(() => worker.dispose());
 const db = await worker.getD1Database('DB');
-const migration = readFileSync(new URL('../drizzle/0054_sim_bindings.sql', import.meta.url), 'utf8');
-assert.equal(migration, readFileSync(new URL('../drizzle-main/0054_sim_bindings.sql', import.meta.url), 'utf8'));
+const migration = readFileSync(new URL('../drizzle/0056_sim_bindings.sql', import.meta.url), 'utf8');
+assert.equal(migration, readFileSync(new URL('../drizzle-main/0056_sim_bindings.sql', import.meta.url), 'utf8'));
 for (const sql of migration.split('--> statement-breakpoint')) await db.prepare(sql).run();
 
 function endorse({ imsiValue = imsi, imeiValue = imei, claims = {}, signingKey = key.privateKey, keyId = kid } = {}) {

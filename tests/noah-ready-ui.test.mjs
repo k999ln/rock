@@ -31,7 +31,7 @@ function browser(w, user, extra = {}) {
 }
 const posts = (ui) => ui.calls.filter((call) => call.method === 'POST');
 const cards = (page) => page.find('article');
-/** 道具を選ぶ行（押せる）を除いた、画面のボタンの文。 */
+/** 何をしますか？行（押せる）を除いた、画面のボタンの文。 */
 const actions = (page) => page.find('button').filter((node) => node.props.className !== 'toolButton').map((node) => page.text(node));
 const buttonsIn = (page, node) => page.nodes(node).filter((child) => child.type === 'button' || (child.type === 'a' && child.props.className === 'primary'));
 
@@ -43,8 +43,8 @@ void test('the list: sections, one main button per card, badges in words, where 
   assert.match(page.text(), /読み込んでいます/);
   await page.flush();
   const text = page.text();
-  assert.match(text, /すぐ使える Agent/);
-  assert.match(text, /スマホだけで使えます。あなたの端末では何も動きません。/);
+  assert.deepEqual(page.find('h1').map(node=>page.text(node)),['Agent']);
+  assert.equal(page.find('button','商品紹介').length,1); // Purpose-first entry replaces the explanatory lead.
   // 段: 動いた（人が動かした物）が先、握手だけの物が後。件数も出る。
   assert.ok(text.indexOf('人が動かして、成果が返った物です。') < text.indexOf('Noah が、応答する事だけを確かめた物です。'));
   assert.deepEqual(page.find('h2').map((node) => page.text(node)), ['動いた1 件', 'まだ誰も動かしていない2 件']);
@@ -69,7 +69,7 @@ void test('the list: sections, one main button per card, badges in words, where 
   // 申し出の窓口への道（行き先は /noah/help#bot の節。宛先は本人が決めた物: docs/noah/mvp-launch.md の D8）。宛先が無い間は出さない事は、次の試験で見る。
   assert.notEqual(botNotice.NOAH_REPORT_CONTACT, null, '宛先は、本人が決めた物（2026-11-21）');
   assert.deepEqual(page.find('a', '報告・取り下げの申し出').map((node) => node.props.href), ['/noah/help#bot']);
-  assert.deepEqual(page.find('a', '自分の Mac で動かす Agent').map((node) => node.props.href), ['/noah/explore']);
+  assert.deepEqual(page.find('a', '自分の Mac で動かす Agent').map((node) => node.props.href), []);
   // 名前を押すと、詳細へ。系列の ID は query で渡す。
   assert.equal(page.nodes(of('Agent 1')).find((node) => node.type === 'a').props.href, `/noah/ready/agent?id=${encodeURIComponent(familyId(1))}`);
   // 未サインインの間は、本人の接続を読まない。相手へも送らない。
@@ -274,7 +274,7 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   connect.props.onClick();
   await page.flush();
   // サインインの画面へ移る。戻る先は、その Agent の詳細。置くのは、操作 ID と Agent の ID と時刻だけ。何も送らない。
-  assert.deepEqual(ui.visits, [`/account?returnTo=${encodeURIComponent(detailPath)}`]);
+  assert.deepEqual(ui.visits, [`/noah/account?returnTo=${encodeURIComponent(detailPath)}`]);
   const handoff = JSON.parse(ui.storage.get('noah-connect-handoff'));
   assert.deepEqual(Object.keys(handoff).sort((a, b) => a.localeCompare(b)), ['agentId', 'at', 'id']);
   assert.deepEqual([handoff.agentId, handoff.at], [familyId(1), ui.time()]);
@@ -286,10 +286,13 @@ void test('not signed in: pressing 接続 goes to sign-in, and the detail screen
   const detail = ui.mount(DETAIL, { id: familyId(1) });
   await detail.flush();
   // 仕事の一覧（この Agent への、前の依頼と成果）は、つなぐ前から読む（サインイン済みの人だけ）。つないだ後に、読み直さない。
-  assert.deepEqual(ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['GET', '/api/noah/ask'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
+  const seen = ui.calls.slice(calls).map((call) => [call.method, call.url.split('?')[0]]);
+  const pinCalls = ([, url]) => url === '/api/noah/boards' || url === '/api/noah/pins';
+  assert.deepEqual(seen.filter((call) => !pinCalls(call)), [['GET', '/api/noah/intake'], ['GET', '/api/noah/connect-plan'], ['GET', '/api/noah/registration'], ['GET', '/api/noah/ask'], ['POST', '/api/noah/connect'], ['GET', `/api/noah/connect/${handoff.id}/tools`]]);
+  assert.ok(seen.filter(pinCalls).every(([method]) => method === 'GET'));
   assert.equal(posts(ui)[0].body.id, handoff.id);
   assert.deepEqual([w.rows().length, w.rows()[0].id, w.rows()[0].state, w.rows()[0].owner_id], [1, handoff.id, 'connected', 'owner-a']);
-  assert.match(detail.text(), /道具を選ぶ/);
+  assert.match(detail.text(), /何をしますか？/);
   assert.equal(ui.storage.has('noah-connect-handoff'), false, '続きは、1 回しか使わない');
   // もう一度開いても、つなぎ直さない。
   const reopened = ui.mount(DETAIL, { id: familyId(1) });
@@ -324,8 +327,8 @@ void test('a handoff is used only for its own agent, only once, and only for ten
   await page.flush();
   assert.deepEqual([posts(anonymous.ui).length, anonymous.ui.storage.has('noah-connect-handoff'), w.rows().length], [0, true, 0]);
   // 戻る先に渡すのは、/noah/ready で始まるパスだけ。
-  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/account?returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
-  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/account?returnTo=%2Fnoah%2Fready', path);
+  assert.equal(view.noahReadyAccountHref('/noah/ready/agent?id=x'), '/noah/account?returnTo=%2Fnoah%2Fready%2Fagent%3Fid%3Dx');
+  for (const path of ['https://evil.example/noah/ready', '//evil.example', '/noah/readymade', '/account', '/noah/ready\r\n/x']) assert.equal(view.noahReadyAccountHref(path), '/noah/account?returnTo=%2Fnoah%2Fready', path);
 });
 
 void test('the detail screen: where the input goes is shown before connecting; then the tools; then cutting', async (t) => {
@@ -343,43 +346,46 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.deepEqual(page.find('li').slice(0, 4).map((node) => page.text(node)), ['まだ誰も動かしていない', `相手のサーバー（${hostOf(1)}）`, '無料', '道具 4 個']);
   assert.match(text, new RegExp(`最後に確かめた日 ${new Date(NOW).getMonth() + 1}/${new Date(NOW).getDate()}`));
   // 送り先は、接続の前に出ている。
-  assert.match(text, new RegExp(`入力は ${hostOf(1).replaceAll('.', '\\.')} へ送られます。Noah が送るのは、あなたが入力した内容だけです。`));
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
+  assert.match(text, new RegExp(`送信先: ${hostOf(1).replaceAll('.', '\\.')}`));
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続', '共有', 'URLをコピー', '保存']);
   assert.doesNotMatch(text, /切る/);
   // 提供者のページは、別の tab で開く。行き先の host を出す。
   assert.deepEqual(page.find('a', '提供者のページ').map((node) => [page.text(node), node.props.href, node.props.target, node.props.rel]), [['提供者のページ（mizan.example.com）', 'https://mizan.example.com/about', '_blank', 'noopener noreferrer nofollow']]);
   assert.match(text, /出どころ: Official MCP Registry。Noah が作った物ではありません。/);
+  assert.ok(text.indexOf(`送信先: ${hostOf(1)}`) < text.indexOf('接続'));
+  assert.ok(text.indexOf('接続') < text.indexOf('Agentの詳細'));
+  assert.equal(page.find('details').find(node => node.props.className === 'agentDetails').props.open, undefined);
   assert.equal(handshakes(server), 0, '開いただけでは、相手へ送らない');
 
   // 「接続」1 回で、道具の一覧まで出る。
   await page.click('接続');
   assert.equal(w.rows()[0].state, 'connected');
-  assert.match(page.text(), /道具を選ぶ4 個/);
-  const rows = page.find('ul').at(-1);
+  assert.match(page.text(), /何をしますか？4 個/);
+  const rows = page.find('ul').find(node => node.props.className === 'tools');
   assert.deepEqual(page.nodes(rows).filter((node) => node.type === 'li').map((node) => page.text(node)), [
-    'lookup読み取りだけLooks up a player.', 'stats読み取りだけ押すだけstats の説明', 'publish送る前に確かめますpublish の説明', 'configure入力欄ではまだ使えませんconfigure の説明',
+    '情報を検索読み取りだけ提供者の説明lookupLooks up a player.', '統計を見る読み取りだけ押すだけ提供者の説明statsstats の説明', '公開する送る前に確かめます提供者の説明publishpublish の説明', '設定する入力欄ではまだ使えません提供者の説明configureconfigure の説明',
   ]);
   assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
-  // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。
-  assert.deepEqual(actions(page), ['切る']);
-  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['lookup', 'stats', 'publish']);
+  // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。「保存」（ボードへ。task 115）は残る。
+  assert.deepEqual(actions(page), ['共有', 'URLをコピー', '保存', '切る']);
+  assert.deepEqual(page.find('button').filter((node) => node.props.className === 'toolButton').map((node) => page.text(page.nodes(node).find((child) => child.type === 'strong'))), ['情報を検索', '統計を見る', '公開する']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっています。切る切っても、受け取った成果は残ります。$/);
   // 「つなぎました」は 3 秒で消える。消えた後は、接続の欄（区切りの線）ごと出さない。
   assert.equal(page.find('output', 'につなぎました').length, 1);
   await page.tick(3000);
-  assert.equal(page.find('output').length, 0);
+  assert.deepEqual(page.find('output').map((node) => page.text(node)), [''], '接続の通知は消え、共有用の空の通知欄だけ残る');
   assert.equal(page.find('div').filter((node) => node.props.className === 'connect').length, 0);
   // 開き直しても、5 分の間は、道具の一覧を読み直さない（相手へ握手を送らない）。
   const shakes = handshakes(server);
   const reopened = ui.mount(DETAIL, { id: familyId(1) });
   await reopened.flush();
-  assert.match(reopened.text(), /道具を選ぶ4 個/);
+  assert.match(reopened.text(), /何をしますか？4 個/);
   assert.equal(handshakes(server), shakes);
 
   // 切る。「接続」に戻る。道具の一覧は消える。記録は残る。
   await page.click('切る');
   assert.deepEqual([w.rows().length, w.rows()[0].state], [1, 'disconnected']);
-  assert.deepEqual(actions(page), ['接続']);
+  assert.deepEqual(actions(page), ['接続', '共有', 'URLをコピー', '保存']);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   assert.equal([...ui.storage.keys()].filter((key) => key.startsWith('noah-tools:')).length, 0);
   // もう一度つなげる（新しい操作 ID）。
@@ -396,7 +402,7 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   server.options.status = 503;
   await page.click('接続');
   assert.match(page.text(), /相手のサーバーが応答しません。時間をおいて試してください。/);
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['もう一度', '切る']);
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['もう一度', '共有', 'URLをコピー', '保存', '切る']);
   assert.match(page.text(page.find('section').at(-1)), /^つながっていません。切る/);
   assert.doesNotMatch(page.text(), /読み取りだけ/);
   // 続けて押しても、相手へ握手を送り続けない。
@@ -409,8 +415,8 @@ void test('the detail screen: a failure shows its reason and もう一度; press
   w.f.advance(5000);
   await page.click('もう一度');
   assert.equal(w.rows()[0].state, 'connected');
-  assert.deepEqual([w.rows().length, actions(page)], [1, ['切る']]);
-  assert.match(page.text(), /道具を選ぶ2 個/);
+  assert.deepEqual([w.rows().length, actions(page)], [1, ['共有', 'URLをコピー', '保存', '切る']]);
+  assert.match(page.text(), /何をしますか？2 個/);
 });
 
 void test('the detail screen: a withdrawn agent says so, offers no button to use it, and can be cut', async (t) => {
@@ -449,7 +455,7 @@ void test('the detail screen: unknown agents, malformed IDs, unlisted agents see
     await page.flush();
     assert.match(page.text(), /この Agent は、見つかりませんでした。/, id);
     assert.equal(page.find('button').length, 0);
-    assert.deepEqual(page.find('a', 'すぐ使える Agent').map((node) => node.props.href), ['/noah/ready']);
+    assert.deepEqual(page.find('a', 'すぐ使える Agent').map((node) => node.props.href), ['/noah/explore']);
   }
   // 形の違う ID は、問い合わせない。
   const malformed = browser(w, 'owner-a');
@@ -523,10 +529,10 @@ void test('the entry on the explore screen appears only for people who may see t
   const retried = broken.ui.mount(ENTRY);
   await retried.flush();
   assert.deepEqual([links(retried).length, probes(broken.ui)], [1, 1]);
-  // 外枠の menu（Codex の file）は、変えていない: 行は 4 つのまま。
+  // 一覧や詳細では現在の本番メニューを維持する。
   const shell = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
   await shell.flush();
-  assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agentを探す', '実行中', '成果データ']);
+  assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['タイムライン', 'Agent', '実行中', '保存']);
 });
 
 // ---------------------------------------------------------------------------
@@ -597,7 +603,7 @@ void test('the rules of the screens hold at every step of the loop: nothing cove
   // --- 接続した後（道具の一覧）---
   await page.click('接続');
   rules(page, '道具の一覧');
-  const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && page.text(page.nodes(node).find((child) => child.type === 'strong')) === name);
+  const toolButton = (name) => page.find('button').find((node) => node.props.className === 'toolButton' && node.props['data-tool-name'] === name);
   const form = () => page.find('form')[0];
   const input = () => page.nodes(form()).find((node) => ['textarea', 'input'].includes(node.type));
 
@@ -663,4 +669,18 @@ void test('the rules of the screens hold at every step of the loop: nothing cove
   assert.ok(reopened.text().includes(`found cobalt ${TRAP}`));
   assert.match(reopened.text(), /仕事/);
   assert.deepEqual(seen, ['一覧', '詳細（接続の前）', '道具の一覧', '入力欄', '進んでいる間', '成果', '確かめ', '切った後', '切った後に開き直す']);
+});
+
+void test('sign-in retains the selected shelf job and tool instead of returning to a generic Agent', async t => {
+  const w=await world(t,{[hostOf(1)]:mcpServer()});
+  const {ui}=browser(w,null);
+  const page=ui.mount(DETAIL,{id:familyId(1),tool:'selected tool',from:'pkg:school-work'}); await page.flush();
+  await page.click('接続');
+  const account=new URL(ui.visits[0],'https://avoado.si');
+  const back=new URL(account.searchParams.get('returnTo'),'https://avoado.si');
+  assert.equal(back.pathname,'/noah/ready/agent'); assert.equal(back.searchParams.get('id'),familyId(1));
+  assert.equal(back.searchParams.get('tool'),'selected tool'); assert.equal(back.searchParams.get('from'),'pkg:school-work');
+  assert.equal(posts(ui).length,0);
+  const safe=view.noahReadyDetailHref(familyId(1),{tool:'x'.repeat(129),from:'https://evil.example'});
+  assert.equal(safe,view.noahReadyDetailHref(familyId(1)));
 });

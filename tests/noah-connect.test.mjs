@@ -590,7 +590,7 @@ void test('other people, other origins and malformed requests', async (t) => {
     assert.equal((await user.tools(id)).status, 404);
   }
   // 未サインイン。
-  for (const response of [await nobody.connect(familyId(1), uuid(2), plan), await nobody.list(), await nobody.get(uuid(1)), await nobody.act(uuid(1), 'disconnect', 3), await nobody.tools(uuid(1))]) assert.deepEqual(brief(response), [401, null, 'サインインしてください。']);
+  for (const response of [await nobody.connect(familyId(1), uuid(2), plan), await nobody.list(), await nobody.get(uuid(1)), await nobody.act(uuid(1), 'disconnect', 3), await nobody.tools(uuid(1))]) assert.deepEqual(brief(response), [401, null, '保存先を開けませんでした。もう一度お試しください。']);
   // 別の Origin、違う ownerScope、JSON でない本文。
   const body = { id: uuid(2), agentId: familyId(1), planSha256: plan };
   assert.equal((await user.raw(body, { Origin: 'https://elsewhere.test' })).status, 403);

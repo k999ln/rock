@@ -100,9 +100,11 @@ export async function requestGatewayUser(request: Request): Promise<string> {
   return pseudonymousEmailId(email);
 }
 
-export async function requestUser(
+type RequestUserOptions = { allowEsimCloudIdentity?: boolean; allowDeviceSession?: boolean };
+
+async function requestExistingUser(
   request: Request,
-  { allowEsimCloudIdentity = true, allowDeviceSession = true } = {},
+  { allowEsimCloudIdentity = true, allowDeviceSession = true }: RequestUserOptions = {},
 ): Promise<string> {
   const authorization = request.headers.get('authorization') ?? '';
   if (
@@ -183,4 +185,15 @@ export async function requestUser(
     return access.authenticateEsimCloudRequest(request, db, env);
   }
   throw new Error('UNAUTHORIZED');
+}
+
+export async function requestUser(request: Request, options: RequestUserOptions = {}): Promise<string> {
+  try { return await requestExistingUser(request, options); }
+  catch (error) {
+    if (!(error instanceof Error) || error.message !== 'UNAUTHORIZED' || request.headers.has('authorization')) throw error;
+    const browser = await import('./noah-browser-session.ts');
+    if (!browser.noahBrowserRequestAllowed(request)) throw error;
+    const [{ env }, profile] = await Promise.all([import('cloudflare:workers'), import('./noah-profile-store.ts')]);
+    return browser.createNoahBrowserSessions(profile.profileKeys((env as unknown as { NOAH_PROFILE_KEYS?: string }).NOAH_PROFILE_KEYS)).authenticate(request);
+  }
 }

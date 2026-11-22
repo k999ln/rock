@@ -404,7 +404,8 @@ void test('the screen: a connection the cleanup cut shows its reason and 接続 
   release(hold, 'initialize');
   await page.flush();
   assert.match(page.text(), /つなぐ途中で止まりました。もう一度試してください。/);
-  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続']);
+  // 「保存」（ボードへ。task 115）は、接続の状態にかかわらず出る。
+  assert.deepEqual(page.find('button').map((node) => page.text(node)), ['接続', '共有', 'URLをコピー', '保存']);
   // もう一度押すと、新しい操作として、つながる。
   w.f.advance(7_000);
   await page.click('接続');
@@ -444,7 +445,7 @@ void test('the screen: when a run is gone, 止める comes back after a while an
   assert.equal(stops(), 1);
   // 押すと、その場で止まる（相手へは、道具の呼び出しを送っていない）。
   await page.click('止める');
-  assert.deepEqual([rows()[0], stops(), w.asked()[0].state, w.asked()[0].error, calls(server).length], ['止めました。lookup', 0, 'stopped', null, 0]);
+  assert.deepEqual([rows()[0], stops(), w.asked()[0].state, w.asked()[0].error, calls(server).length], ['止めました。情報を検索', 0, 'stopped', null, 0]);
   release(hold, 'tools/list');
   await settle(waiting);
   assert.deepEqual([w.asked()[0].state, calls(server).length], ['stopped', 0]);

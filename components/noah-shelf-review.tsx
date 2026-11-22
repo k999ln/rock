@@ -29,7 +29,7 @@ export default function NoahShelfReview({ ownerScope }: { ownerScope: string }) 
   }, [ownerScope, refresh]);
 
   async function send(body: Record<string, unknown>, done: string) {
-    if (pending || !state || state.ownerScope !== ownerScope) return;
+    if (!state || state.ownerScope !== ownerScope) return false;
     setPending(true); setError(''); setNotice('');
     try {
       const response = await fetch('/api/noah/shelf', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': ownerScope }, body: JSON.stringify(body) });
@@ -40,12 +40,18 @@ export default function NoahShelfReview({ ownerScope }: { ownerScope: string }) 
       return true;
     } catch (e) { setError(e instanceof Error ? e.message : '保存できません。'); return false; } finally { setPending(false); }
   }
+  /** カードを置く。JSON の配列なら、1 枚ずつ順に置く（最初の案をまとめて置く時）。置いたカードは下書き。 */
   async function put() {
     let input: unknown;
     try { input = JSON.parse(draft); } catch { setError('カードの JSON を確認してください。'); return; }
-    const id = input && typeof input === 'object' && !Array.isArray(input) ? (input as { id?: unknown }).id : undefined;
-    const existing = state?.cards.find((card) => card.id === id);
-    if (await send({ action: 'put', package: input, revision: existing?.revision ?? null }, '置きました')) setDraft('');
+    const list = Array.isArray(input) ? input : [input];
+    let placed = 0;
+    for (const card of list) {
+      const id = card && typeof card === 'object' ? (card as { id?: unknown }).id : undefined;
+      const existing = state?.cards.find((row) => row.id === id);
+      if (!(await send({ action: 'put', package: card, revision: existing?.revision ?? null }, list.length > 1 ? `${++placed} / ${list.length} 枚を置きました` : '置きました'))) return;
+    }
+    setDraft('');
   }
   function reviewed(card: NoahShelfStateCard) {
     const at = Date.parse(expert[card.id] ?? '');
@@ -77,7 +83,7 @@ export default function NoahShelfReview({ ownerScope }: { ownerScope: string }) 
         </form>}
       </div>)}
       <form onSubmit={(event) => { event.preventDefault(); void put(); }}>
-        <label>カードを置く（noah-package/1 の JSON。同じ ID のカードは書き換え、下書きに戻ります）<textarea value={draft} rows={8} maxLength={16_000} onChange={(event) => setDraft(event.target.value)} /></label>
+        <label>カードを置く（noah-package/1 の JSON。配列なら、まとめて置きます。同じ ID のカードは書き換え、下書きに戻ります）<textarea value={draft} rows={8} maxLength={16_000} onChange={(event) => setDraft(event.target.value)} /></label>
         <button type="submit" disabled={pending || !draft.trim()}>置く</button>
       </form>
       {state.warnings.map((warning) => <output key={warning}>{warning}</output>)}

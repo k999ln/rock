@@ -1,0 +1,8 @@
+.share { margin: 1rem 0; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.actions button, .actions a { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; border: 1px solid #ccd4dd; border-radius: .65rem; padding: .6rem .85rem; background: #fff; color: #1b2733; font: inherit; font-size: .95rem; text-decoration: none; cursor: pointer; }
+.actions button:hover, .actions a:hover { background: #f1f5f9; }
+.actions button:focus-visible, .actions a:focus-visible, .url:focus-visible { outline: 2px solid #2463eb; outline-offset: 3px; }
+.status { display: block; color: #465463; font-size: .875rem; margin-top: .4rem; }
+.status:empty { display: none; }
+.url { box-sizing: border-box; width: 100%; margin-top: .5rem; padding: .7rem; font: inherit; font-size: 1rem; color: #1b2733; background: #fff; border: 1px solid #ccd4dd; border-radius: .5rem; }

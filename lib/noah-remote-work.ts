@@ -1,3 +1,4 @@
+import type { NoahReceivedResult } from './noah-result-media.ts';
 /**
  * 相手のサーバーで動く仕事（置き場所が provider）の、Work の記録。
  *
@@ -30,8 +31,8 @@ export type NoahRemoteExecution = {
   modelCalls: number; toolCalls: number; inputTokens: number; outputTokens: number;
   chargeMinor: 0; verification: 'relay_observed_unverified';
   startedAt?: number; completedAt?: number;
-  /** 成果の文（文字として出す。HTML として解釈しない）。truncated: 長いので切った。attachments: 画像などの数（保存していない）。 */
-  result?: { text: string; truncated: boolean; attachments: number };
+  /** 成果の文（文字として出す。HTML として解釈しない）。truncated: 長いので切った。attachments: 添付の数。images: 検査済みラスター画像の実体。 */
+  result?: NoahReceivedResult;
   /** 成果に添える 1 行（「<host> の <道具> が返した内容です。費用 0。」）。 */
   note?: string;
   error?: string;
@@ -67,7 +68,7 @@ export function startNoahRemoteWork(job: WorkJob, at: number): WorkJob {
 }
 
 export type NoahRemoteOutcome =
-  | { state: 'returned'; result: { text: string; truncated: boolean; attachments: number }; note: string; used: string[] }
+  | { state: 'returned'; result: NoahReceivedResult; note: string; used: string[] }
   | { state: 'failed' | 'cancelled' | 'unknown'; error: string; used?: string[] };
 
 /**
