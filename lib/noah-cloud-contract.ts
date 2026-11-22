@@ -67,7 +67,8 @@ export function noahCloudModelInput(value: unknown) {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw Error('モデル入力を確認できません。');
     const m = raw as Record<string, unknown>;
     if (!['system', 'developer', 'user', 'assistant', 'tool'].includes(String(m.role)) || m.content !== null && typeof m.content !== 'string') throw Error('テキストのモデル入力だけを利用できます。');
-    return { role: m.role === 'developer' ? 'system' : m.role, content: m.content, ...(typeof m.tool_call_id === 'string' ? { tool_call_id: m.tool_call_id } : {}), ...(Array.isArray(m.tool_calls) ? { tool_calls: m.tool_calls } : {}) };
+    // Workers AI can return null for tool-only replies, but requires text on the next input.
+    return { role: m.role === 'developer' ? 'system' : m.role, content: m.content ?? '', ...(typeof m.tool_call_id === 'string' ? { tool_call_id: m.tool_call_id } : {}), ...(Array.isArray(m.tool_calls) ? { tool_calls: m.tool_calls } : {}) };
   });
   if (body.tools !== undefined && (!Array.isArray(body.tools) || body.tools.length > 32 || body.tools.some(t => !t || t.type !== 'function' || typeof t.function?.name !== 'string'))) throw Error('モデルの操作定義を確認できません。');
   // Do not forward a guest's model, endpoint, authorization, stream, or token limit.
