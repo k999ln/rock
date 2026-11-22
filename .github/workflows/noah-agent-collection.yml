@@ -2,6 +2,11 @@ name: Noah cloud Agent collection
 
 on:
   workflow_dispatch:
+    inputs:
+      social_leads:
+        description: Validated public links and metrics JSON
+        required: false
+        type: string
   schedule:
     - cron: '3-58/5 * * * *'
 
@@ -44,3 +49,70 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         # --import: handshake-passed families go into the Noah grid under a daily cap (task 121). Remove it to stop automatic listing.
         run: node --experimental-strip-types scripts/noah-cloud-collector.mjs --dir "$RUNNER_TEMP/noah-collector" --origin https://avoado.si --import
+
+  publish-social:
+    if: >-
+      github.repository == 'k999ln/rock' &&
+      github.ref == 'refs/heads/codex/noah-social-collection' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.actor == 'noellesugar99' &&
+      github.triggering_actor == 'noellesugar99' &&
+      inputs.social_leads != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts
+            lib
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '26.12.1'
+      - uses: actions/cache/restore@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+        with:
+          path: ${{ runner.temp }}/noah-social/social.json
+          key: noah-social-state-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: noah-social-state-v1-
+      - name: Validate the dispatch and public endpoint
+        run: |
+          mkdir -p "$RUNNER_TEMP/noah-social"
+          node --input-type=module - <<'JS'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          let data;
+          try { data = JSON.parse(event.inputs.social_leads); }
+          catch { throw new Error('invalid_public_lead_json'); }
+          const now = Date.now();
+          if (!Array.isArray(data?.leads) || !data.leads.length || data.leads.length > 500 ||
+              data.leads.some(lead => {
+                const at = Date.parse(lead?.postedAt);
+                return !Number.isFinite(at) || at > now || now - at >= 86_400_000 ||
+                  Object.keys(lead).some(key => !['source', 'post', 'project', 'postedAt', 'metrics'].includes(key));
+              })) throw new Error('invalid_public_lead_batch');
+          writeFileSync(join(process.env.RUNNER_TEMP, 'noah-social', 'leads.json'), JSON.stringify(data), { mode: 0o600 });
+          JS
+          dir="$RUNNER_TEMP/noah-social"
+          node --experimental-strip-types scripts/noah-collector-social.mjs --file "$dir/leads.json" --dir "$dir" --dry-run |
+            jq -e 'select(.accepted > 0 and (.rejected | length == 0))'
+          test "$(curl --fail --silent --show-error --max-time 15 -o /dev/null -w '%{http_code}' 'https://avoado.si/api/noah/collection?order=new&source=hackernews')" = 200
+          if [ ! -s "$dir/social.json" ]; then
+            for source in x reddit bluesky; do
+              if jq -e --arg source "$source" 'any(.leads[]; .source == $source)' "$dir/leads.json" > /dev/null; then
+                curl --fail --silent --show-error --max-time 15 "https://avoado.si/api/noah/collection?source=$source" |
+                  jq -e '.configured == true and .total == 0' > /dev/null
+              fi
+            done
+          fi
+      - name: Publish with the existing collection key
+        env:
+          NOAH_COLLECTION_KEY: ${{ secrets.NOAH_COLLECTION_KEY }}
+        run: |
+          dir="$RUNNER_TEMP/noah-social"
+          node --experimental-strip-types scripts/noah-collector-social.mjs --file "$dir/leads.json" --dir "$dir" --publish https://avoado.si
+      - uses: actions/cache/save@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+        with:
+          path: ${{ runner.temp }}/noah-social/social.json
+          key: noah-social-state-v1-${{ github.run_id }}-${{ github.run_attempt }}
