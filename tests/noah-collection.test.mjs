@@ -19,7 +19,7 @@ import { screen } from './fixtures/noah/screen.mjs';
 
 void test('source ratings are visible with provenance, keep zero and omit unavailable counts', () => {
   const ui = screen({ modules: { '@/lib/noah-collection': collection } });
-  const view = ui.mount('components/noah-agent-source-ratings.tsx', { sources: [
+  const view = ui.mount('components/noah-agent-source-ratings.tsx', { detailHref: '/noah/discover/agent?id=project-test#ratings', sources: [
     { source: 'github', sourceUrl: 'https://github.com/maker/agent', observedAt: 1795302000000, metrics: { stars: 1234 } },
     { source: 'huggingface', sourceUrl: 'https://huggingface.co/spaces/maker/agent', observedAt: 1795302000000, metrics: { likes: 0 } },
     { source: 'mcp-registry', sourceUrl: 'https://registry.modelcontextprotocol.io/v0.1/servers/agent', observedAt: 1795302000000 },
@@ -29,7 +29,7 @@ void test('source ratings are visible with provenance, keep zero and omit unavai
   assert.equal(view.find('a').length, 4);
   assert.match(view.text(), /GitHub/); assert.match(view.text(), /1,234/);
   assert.deepEqual(view.find('span').map(n=>n.props['aria-label']).filter(Boolean), ['スター 1,234', 'いいね 0', 'いいね 8', 'リポスト 2']);
-  assert.deepEqual(view.find('a').map(n=>n.props.href), ['https://github.com/maker/agent','https://huggingface.co/spaces/maker/agent','https://registry.modelcontextprotocol.io/v0.1/servers/agent','https://x.com/maker/status/1234']);
+  assert.ok(view.find('a').every(n=>n.props.href === '/noah/discover/agent?id=project-test#ratings' && !n.props.target));
   assert.ok(view.find('a').every(n=>n.props.title.includes('確認')));
 });
 

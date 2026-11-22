@@ -123,3 +123,5 @@
 
 .sources summary, .sources a { min-height:44px; }
 .sources a { display:flex; align-items:center; }
+
+.sourceBadge{display:inline-flex;align-items:center;flex-wrap:wrap;gap:5px;min-height:32px;padding:7px 10px;border-radius:10px;background:#f2edf9;color:#624c84;font-size:13px;box-sizing:border-box}.sourceBadge>span{display:inline-flex;align-items:center;gap:3px}

@@ -101,10 +101,10 @@ export default function NoahAgentUploadForm() {
         const savedId = new URLSearchParams(window.location.search).get('draft');
         if (!savedId) {
           const params=new URLSearchParams(window.location.search),sourceUrl=params.get('sourceUrl'),revision=params.get('revision');
-          if(sourceUrl&&sourceUrl.length<=500&&revision&&/^[a-f0-9]{40}$/.test(revision)) {
+          if(sourceUrl&&sourceUrl.length<=500&&(!revision||/^[a-f0-9]{40}$/.test(revision))) {
             const url=new URL(sourceUrl);
             if(url.protocol==='https:'&&!url.username&&!url.password&&!url.port&&!url.search&&!url.hash&&['github.com','huggingface.co'].includes(url.hostname)) {
-              setManifest(current=>({...current,sourceUrl,adapter:'source',endpointUrl:null}));setImportRevision(revision);setCodeMode('file');setRights(false);setImportMessage('公開候補のURLと固定commitを引き継ぎました。利用条件を確認してから取得してください。');
+              setManifest(current=>({...current,name:params.get('name')?.slice(0,120)||current.name,sourceUrl,adapter:'source',endpointUrl:null}));setImportRevision(revision||'');setCodeMode('file');setRights(false);setImportMessage(revision?'公開候補のURLと固定commitを引き継ぎました。利用条件を確認してから取得してください。':'AgentのURLを引き継ぎました。利用条件を確認して取得すると、固定commitを記録します。');
             }
           }
           return;
