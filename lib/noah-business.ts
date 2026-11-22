@@ -293,7 +293,13 @@ export type NoahAgentRef = { id: string; name: string; summary: string };
 export function noahAgentsFor(capability: NoahCapability, agents: readonly NoahAgentRef[]) {
   const words = NOAH_CAPABILITIES[capability].keywords;
   if (!words.length) return [];
-  return agents.filter(a => { const text = `${a.name} ${a.summary}`.toLowerCase(); return words.some(w => (/^[a-z0-9 .]+$/u.test(w) ? new RegExp(`(^|[^a-z0-9])${w.replace(/\./gu, '\\.')}([^a-z0-9]|$)`, 'u').test(text) : text.includes(w))); });
+  return agents.filter(a => { const text = `${a.name} ${a.summary}`.toLowerCase(); return words.some(w => (/^[a-z0-9 .]+$/u.test(w) ? hasWord(text, w) : text.includes(w))); });
+}
+/** 英数字の語は、前後が英数字でない所だけで当てる（「app」が「happy」に当たらない）。 */
+function hasWord(text: string, word: string) {
+  const alnum = (c: string | undefined) => !!c && /[a-z0-9]/u.test(c);
+  for (let at = text.indexOf(word); at >= 0; at = text.indexOf(word, at + 1)) if (!alnum(text[at - 1]) && !alnum(text[at + word.length])) return true;
+  return false;
 }
 /** Noah の中で決まった式で動かす能力（エージェントが要らない）。 */
 export const NOAH_BUILTIN_CAPABILITIES: readonly NoahCapability[] = ['optimize.rules'];
