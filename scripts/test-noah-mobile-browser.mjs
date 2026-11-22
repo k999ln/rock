@@ -5,13 +5,15 @@
  */
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 const require = createRequire(import.meta.url);
 const {chromium} = require(process.env.NOAH_PLAYWRIGHT_PACKAGE || 'playwright-core');
-const output=resolve(process.env.NOAH_TEST_OUTPUT || '/tmp/noah-mobile-browser');
+const output=process.env.NOAH_TEST_OUTPUT ? resolve(process.env.NOAH_TEST_OUTPUT) : await mkdtemp(join(tmpdir(),'noah-mobile-browser-'));
 const base=process.env.NOAH_TEST_URL || 'https://avoado.si';
-await mkdir(output,{recursive:true});
+await mkdir(output,{recursive:true,mode:0o700});
+console.log(`Browser report directory: ${output}`);
 const browser=await chromium.launch({executablePath:process.env.NOAH_CHROME_PATH,headless:true});
 const report={browser:browser.version(),base,startedAt:new Date().toISOString(),checks:[]};
 async function check(name,run){try{const detail=await run();report.checks.push({name,pass:true,detail});console.log(`PASS ${name}`);}catch(error){const message=error.message.split('Call log:')[0].trim();report.checks.push({name,pass:false,error:message});console.log(`FAIL ${name}: ${message}`);}}
@@ -31,9 +33,13 @@ try{
   await check(`${width}: layout and touch targets`,async()=>{
    await page.goto(`${base}/noah`,{waitUntil:'domcontentloaded'});await ready(page);await noOverflow(page);await noOverlap(page);
    await size(page.getByLabel('メニュー',{exact:true}));await size(page.getByLabel('登録情報を見る',{exact:true}));
-   if(mobile){await size(page.locator('article button[aria-label$="を保存"]').first());if(await page.locator('article summary[aria-label="その他の操作"]').count())await size(page.locator('article summary[aria-label="その他の操作"]').first());}
    const ratings=page.locator('article [aria-label="評価元の評価"] a');await size(await ratings.count()?ratings.first():page.locator('article summary').filter({hasText:'出典・外部の評価'}).first());
-   await page.screenshot({path:`${output}/home-${width}.png`});return {cards:await page.locator('article').count()};
+   await page.screenshot({path:`${output}/home-${width}.png`});const cards=await page.locator('article').count();
+   // The live ranking may put external-only cards on the entire first page.
+   // Select the product's connectable filter before testing saved-board actions.
+   const connected=page.waitForResponse(r=>r.url().includes('/api/noah/discover?')&&new URL(r.url()).searchParams.get('source')==='noah');await press(page.locator('[aria-label="Agentを絞り込む"]').getByRole('button',{name:'接続できる',exact:true}));await connected;await page.locator('article button[aria-label$="を保存"]').first().waitFor();
+   if(mobile){await size(page.locator('article button[aria-label$="を保存"]').first());if(await page.locator('article summary[aria-label="その他の操作"]').count())await size(page.locator('article summary[aria-label="その他の操作"]').first());}
+   await noOverflow(page);await noOverlap(page);return {cards};
   });
   await check(`${width}: menu and save open/close, original ratings only`,async()=>{
    await press(page.getByLabel('メニュー',{exact:true}));await page.locator('[popover]:popover-open').waitFor();await page.screenshot({path:`${output}/menu-${width}.png`});await press(page.getByLabel('メニュー',{exact:true}));

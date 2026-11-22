@@ -94,3 +94,7 @@ Macの常駐は停止し、launchdの永続disableも確認。55,058,432バイ�
 統合後の関連32試験、typecheck、lint、production buildは成功。全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` はexit 0。主要4,926試験のうち4,922成功・失敗0・既定4skip、仕事API1,918項目、CSV保存385項目、package/Mini/public preview/build/配信ファイル/AMC/作業部屋/Botまで成功した。ローカルの全体ログは `/tmp/noah-full-verify-20261122.log`。
 
 この検証中にmainへPR #387が入ったため、それも取り込み、最終コミットのGitHub CIを確認してから #388をmainへマージする。CIとマージ結果はPR本文を参照。XのAPIキー待ちと実機iPhone/Safari未検証は今回のverify修正の対象外で、そのまま残る。
+
+PRのCodeQL指摘に合わせ、ブラウザ試験の既定出力先を `mkdtemp` で実行ごとに作成する権限700の専用ディレクトリへ変更した（指定した `NOAH_TEST_OUTPUT` は従来どおり）。実際の収集順が変わって先頭20件に保存可能なAgentがない場合にも、画面の「接続できる」で対象を選んでから保存操作を検証する。変更後に公開URLを実Chrome・390pxで再試験し6/6成功。記録は `/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/noah-mobile-browser-d1FEOs/report.json`。
+
+別のSPIDER履歴検査は9候補を検出した（[実行44977185487](https://github.com/k999ln/rock/actions/runs/44977185487)）。6件は `lib/noah-haptics.ts` の公開localStorage設定名、3件は旧 `docs/design-validation/noah/noah-connect.test.mjs` の秘密文字列検出器の合成テスト。値の用途をソースと過去commitで確認した。検出規則・固定control・履歴を変更せず、全体verifyの結果とは分けてPRに記録する。
