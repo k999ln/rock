@@ -1,5 +1,6 @@
 {
   "name": "noah-cloud-agents",
+  "account_id": "ae3e6c52c0a9e50aab66a6e4184aa09e",
   "main": "worker.mjs",
   "compatibility_date": "2026-11-22",
   "containers": [{ "class_name": "NoahCloudJob", "scheduling_policy": "durable_object", "images": { "base": { "dockerfile": "./container/Dockerfile" } } }],

@@ -141,4 +141,4 @@
 | 122 | [122-noah-business-blueprints.md](122-noah-business-blueprints.md) | 稼ぎ方の設計図（分類表から433件・工程の種類と理由・確かめたエージェントだけ当てる・アカウントを作る順・Eveが作る物・稼いだ分だけの予算・続けるか止めるか） | 1段目 #391 |
 | 123 | [123-noah-all-agents-usable.md](123-noah-all-agents-usable.md) | 約7万件のうち使える物を全部使えるようにする（握手済み17,046系列の本番投入・量産の系列・OAuth/鍵・手元の配布のクラウド実行・説明の日本語化・全画面の言語切替・日本語の規約） | Codex へ |
 | 124 | [124-noah-teikibin-ledger.md](124-noah-teikibin-ledger.md) | 定期便の台帳（入金・費用・寄与の記録、月の締め、作業料と等分、有料の差し引き、振込の一覧、物の割当） | 🔶 台帳と画面 [PR #410](https://github.com/k999ln/rock/pull/410)（切り替えは閉。開ける前に要る事は仕様の 12 章） |
-| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | 新rock #1 Draft（旧 #402）・実装/ローカル受入済、Workers Paid利用先・実モデル受入待ち |
+| 125 | [125-noah-cloud-agents.md](125-noah-cloud-agents.md) | CLIの管理クラウド・提供元への直接接続・Noah内で実行 | 新rock #1 Draft（旧 #402）・固定CLI6種/実装・Linux受入済、全体統合中、Workers Paid利用先・実モデル受入待ち |

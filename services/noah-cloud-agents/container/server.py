@@ -27,6 +27,10 @@ PROFILE = {
              "import subprocess, importlib.metadata; assert importlib.metadata.version('mcp-server-time') == '2026.11.18'; subprocess.run(['/opt/time/bin/python','/opt/noah/mcp_stdio.py','--probe'],check=True,timeout=30)"),
     'thinking': ('2.2.0', '/usr/local/bin/python', '/opt/noah/mcp_stdio.py',
                  "import json, subprocess; assert json.load(open('/opt/mcp-node/node_modules/@modelcontextprotocol/server-sequential-thinking/package.json'))['version'] == '2.2.0'; subprocess.run(['/usr/local/bin/python','/opt/noah/mcp_stdio.py','--probe'],check=True,timeout=30)"),
+    'memory': ('2.2.1', '/usr/local/bin/python', '/opt/noah/mcp_stdio.py',
+               "import json, subprocess; assert json.load(open('/opt/mcp-node/node_modules/@modelcontextprotocol/server-memory/package.json'))['version'] == '2.2.1'; subprocess.run(['/usr/local/bin/python','/opt/noah/mcp_stdio.py','--probe'],check=True,timeout=30)"),
+    'filesystem': ('2.4.0', '/usr/local/bin/python', '/opt/noah/mcp_stdio.py',
+                   "import json, subprocess; assert json.load(open('/opt/mcp-node/node_modules/@modelcontextprotocol/server-filesystem/package.json'))['version'] == '2.4.0'; subprocess.run(['/usr/local/bin/python','/opt/noah/mcp_stdio.py','--probe'],check=True,timeout=30)"),
 }
 # Inherited hard bounds also apply to subprocesses created by official Agent tools.
 resource.setrlimit(resource.RLIMIT_FSIZE, (8 * 1024 * 1024, 8 * 1024 * 1024))

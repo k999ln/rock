@@ -94,7 +94,7 @@ npm run amc:cycle -- demo
 
 掲載リポジトリやパッケージは「使う」で提供元の公開接続定義を確認します。GitHub・npm・Dockerの公式配布記録を照合し、接続できるものはNoah内で入力・実行・成果保存へ進みます。本人認証や未対応のCLIが必要な場合は理由を表示します。掲載・定義取得・実行成功は区別します。
 
-CLIの管理クラウドは [task125](codex/tasks/125-noah-cloud-agents.md) で実装中です。Hermes・boss-agent-cli・Time・Sequential Thinkingの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの2配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、モデルは試験用固定応答です。本番クラウドは利用先確定と実モデル受入待ちです。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
+CLIの管理クラウドは [task125](codex/tasks/125-noah-cloud-agents.md) で実装中です。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。モデルは試験用固定応答です。本番クラウドは利用先確定と実モデル受入待ちです。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
 
 Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別AgentへのURLを渡せます。公開掲載中のAgentの名前・説明を共有カードへ反映し、接続情報や本人の成果は共有しません。
 

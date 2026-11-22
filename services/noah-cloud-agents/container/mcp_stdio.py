@@ -10,14 +10,17 @@ import urllib.request
 
 COMMANDS = {
     'time': ['/opt/time/bin/python', '-m', 'mcp_server_time', '--local-timezone=UTC'],
-    'thinking': ['/usr/bin/node', '/opt/mcp-node/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js'],
+    'thinking': ['/usr/local/bin/node', '/opt/mcp-node/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js'],
+    'memory': ['/usr/local/bin/node', '/opt/mcp-node/node_modules/@modelcontextprotocol/server-memory/dist/index.js'],
+    'filesystem': ['/usr/local/bin/node', '/opt/mcp-node/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js', '/workspace'],
 }
 
 
 class MCP:
     def __init__(self, profile):
         self.process = subprocess.Popen(COMMANDS[profile], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                        stderr=subprocess.DEVNULL, env=dict(os.environ, DISABLE_THOUGHT_LOGGING='true'))
+                                        stderr=subprocess.DEVNULL, env=dict(os.environ, DISABLE_THOUGHT_LOGGING='true',
+                                                                          MEMORY_FILE_PATH='/workspace/memory.jsonl'))
         self.responses = queue.Queue(maxsize=32)
         self.next_id = 0
 
@@ -79,7 +82,7 @@ def main():
         if '--probe' in sys.argv:
             return
         prompt = pathlib.Path('/tmp/request.txt').read_text()
-        messages = [{'role': 'system', 'content': 'Use the provided official tools when needed. Give the user the useful result in their language. Never claim an operation succeeded unless its tool returned successfully.'},
+        messages = [{'role': 'system', 'content': 'Use the provided official tools when needed. Give the user the useful result in their language. Never claim an operation succeeded unless its tool returned successfully. Files belong only to this request, in /workspace; the user device and previous requests are unavailable. Keep exported files below 32 KiB each and 64 KiB total, at most 12 files. Memory is scoped to this request and exported as memory.jsonl, not automatically carried to the next request.'},
                     {'role': 'user', 'content': prompt}]
         functions = [{'type': 'function', 'function': {'name': t['name'], 'description': t.get('description', ''), 'parameters': t['inputSchema']}} for t in tools]
         names = {t['name'] for t in tools}

@@ -33,6 +33,17 @@ void test('cloud capability is only offered for reviewed distributions when depl
   assert.equal(noahProjectDetail({ ...entry, card: { ...entry.card, id: 'family' }, families: ['family'] }, true).connection.providerFamilyId, 'family');
   assert.equal(noahProjectDetail({ ...entry, card: { ...entry.card, href: 'https://github.com/unknown/code' } }, true).connection.kind, 'setup');
 });
+void test('official stdio packages use cloud execution only after deployment and never match lookalike URLs', () => {
+  for (const profile of ['time', 'thinking', 'memory', 'filesystem']) {
+    const reviewed = NOAH_CLOUD_PROFILES[profile];
+    for (const href of [reviewed.repository, ...reviewed.aliases]) {
+      const candidate = { ...entry, card: { ...entry.card, href } };
+      assert.equal(noahProjectDetail(candidate).connection.kind, 'setup');
+      assert.equal(noahProjectDetail(candidate, true).connection.profile, profile);
+      assert.equal(noahProjectDetail({ ...candidate, card: { ...candidate.card, href: href + '-fake' } }, true).connection.kind, 'setup');
+    }
+  }
+});
 void test('browser permission is confined to the customer cloud API', () => {
   assert.equal(noahBrowserRequestAllowed(new Request(origin + '/api/noah/cloud-agents')), true);
   assert.equal(noahBrowserRequestAllowed(new Request(origin + '/api/noah/cloud-agents/admin', { method: 'POST' })), false);
