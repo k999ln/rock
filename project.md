@@ -1,6 +1,6 @@
 # 現在の開発・統合状況
 
-更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `6c9b3db6c663ddab56665c466642dab30e929fbd`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
+更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `21518016a125a78307c19b10b50f0e219d29ba20`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
 
 ## 今開発しているもの
 
@@ -8,9 +8,9 @@
 
 - **画面をジャックさせない技術（task84・89・91）**: コンテナ/VMの起動引数の検査、画面への接続を許す変更の拒否、画面を閉じてもWorkへ成果が入る回帰試験は現mainに統合済み（[旧PR #329](https://github.com/k999ln/rock/pull/329)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。[task84](codex/tasks/84-noah-screenless-rule.md)の工程3で、依存・実行記録から必要な画面と入力を分類する関数を実装（[PR #22](https://github.com/iceiceice999/rock/pull/22)）。残りは受付への組み込みと、Mac実機で前面アプリ・窓・クリップボード・権限が変わらないことの観測。ココナラ案件探索・提案下書き・保存/停止はMacの限定経路を確認（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。汎用クラウドブラウザの受入は別。
 - **eSIM導入（task11〜13・102・103）**: 模擬回線での導入・利用権照合、SIM証明の検証/紐付け、iOS導入導線、継続利用の集計は実装・統合の記録がある（[タスク一覧](codex/tasks/00-index.md)）。残りは事業者設定、実回線の発行承認、実回線経由の疎通、iPhone/Androidの導入から成果までの受入。PixelでのNoah確認はWi-Fi経由であり、eSIM受入ではない。
-- **クラウドシステムの設計（task75・101-compute・104・105・125-cloud）**: 実行場所・本人分離・受付/停止・成果保存の設計と、固定CLI6種のLinux隔離試験/コードをmainへ統合（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。費用上限・監視・通知の振り分け・復元練習も実装統合の記録がある。有料Containersの本番配備はWorkers Paidの契約判断待ち。別経路の[PR #18](https://github.com/iceiceice999/rock/pull/18)には無料Workersで公式MCP3種を動かす実装とMemory/Filesystemの実モデル成功記録、[PR #19](https://github.com/iceiceice999/rock/pull/19)には実モデル通信修正と6種の個別成功記録がある。両PRを統合した公開210で無料3種を有効化。3件ともブラウザを閉じた後に完了し、成果の再表示とファイル保存を確認した（[公開210の本番受入](https://github.com/iceiceice999/rock/pull/21)）。有料Containersは本番配備待ち。本番の通知/cron/バックアップも別途受入する。Memoryと成果ファイルを本人の鍵で暗号化するtask104は設計/タスクがあり、実装完了は未確認。
+- **クラウドシステムの設計（task75・101-compute・104・105・125-cloud）**: 実行場所・本人分離・受付/停止・成果保存の設計と、固定CLI6種のLinux隔離試験/コードをmainへ統合（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。費用上限・監視・通知の振り分け・復元練習も実装統合の記録がある。有料Containersの本番配備はWorkers Paidの契約判断待ち。別経路の[PR #18](https://github.com/iceiceice999/rock/pull/18)には無料Workersで公式MCP3種を動かす実装とMemory/Filesystemの実モデル成功記録、[PR #19](https://github.com/iceiceice999/rock/pull/19)には実モデル通信修正と6種の個別成功記録がある。両PRを統合した公開210で無料3種を有効化。3件ともブラウザを閉じた後に完了し、成果の再表示とファイル保存を確認した。公開211でMemoryを再試験し、Chromeを閉じている間の成果保存、再表示、ダウンロード、保存済み添付の誤注記の解消を確認した（[PR #21の本番受入](https://github.com/iceiceice999/rock/pull/21)）。有料Containersは本番配備待ち。本番の通知/cron/バックアップも別途受入する。Memoryと成果ファイルを本人の鍵で暗号化するtask104は設計/タスクがあり、実装完了は未確認。
 - **Agentを集めるシステム（task85・88・120・121・125-scout）**: 公式台帳の取り込み/名寄せ、複数出所の収集、GitHubの急上昇・Product Huntへの拡張を統合。本番収集を復旧し、毎時の予備実行を設定（[PR #16](https://github.com/iceiceice999/rock/pull/16)）。残りは24時間の鮮度確認、旧mainから新リポジトリへの実行先移行、Xの7日継続掲載。復旧1回を72時間巡回の合格にはしない。作者の本人確認・引き取り・掲載管理はtask81の後続範囲。
-- **Agentの接続（task74・86・87・93・96・123）**: 公開MCPの接続→入力→実処理→保存→再表示を本番で限定確認（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。残りは全掲載Agentの実行対応、OAuth/鍵、接続先別の受入。1,762件の監査や定義取得を全件実行成功とは数えない。更新・版の固定・前の版への復帰・別環境への移行はtask93、Agentの試用/売買/利用権はtask78の後続範囲で、決済はsandbox受入が前提。
+- **Agentの接続（task74・86・87・93・96・123）**: 「接続できる」の検索に、有効なクラウド実行環境が対応する公式CLIを含める変更をmainへ統合（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。公開MCPの接続→入力→実処理→保存→再表示を本番で限定確認（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。残りは全掲載Agentの実行対応、OAuth/鍵、接続先別の受入。1,762件の監査や定義取得を全件実行成功とは数えない。更新・版の固定・前の版への復帰・別環境への移行はtask93、Agentの試用/売買/利用権はtask78の後続範囲で、決済はsandbox受入が前提。
 - **受け皿のシステム（Noah、task90・99・100・114ほか）**: 画面・本人別の依頼受付・Work/成果保存・停止/再表示を統合。PixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。公開209で登録して保存した成果を、公開210のPixelでもキャッシュなしで再表示できた（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。残りは仕様表1〜13の同一候補受入、100人同時外部実行、300人の実ユーザー試行。以下の仕事・運営機能もこの受け皿につなぐ。
 
 ### 6項目の設計書の具体度
@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | [画面保護](docs/noah/spec-84-screenless.md) | 入力、5つの面の判定順、配置先、起動引数の検査、Macで観測する4項目。関数と試験単位まで指定 | Macで窓・権限などを観測する方法の確定と汎用経路の実測 |
 | [eSIM](docs/structure/03-esim.md) | 発行結果不明時の照会、回線・本人・端末の照合、紛失・失効時の動作、iPhone／Androidの合格条件 | 事業者の試験条件と端末別に専用回線を選ぶ手段 |
-| [クラウド実行](docs/services/noah-own-device.md) | 依頼単位の分離、入力、版、費用上限、停止・重複・遅延応答、成果の受取を定義 | 無料3種は閉画面後の完了・成果保存まで本番確認済み。有料Containersの配備、運用環境での監視・復元が残る |
+| [クラウド実行](docs/services/noah-own-device.md) | 依頼単位の分離、入力、版、費用上限、停止・重複・遅延応答、成果の受取を定義 | 無料3種は公開210で閉画面後の成果保存まで確認。公開211でMemoryの添付表示も再検証済み。有料Containersの配備、運用環境での監視・復元が残る |
 | [Agent収集](docs/services/noah-agent-collection.md) | 出所、重複の統合、接続確認、署名付き掲載、取得制限時の待機、途中再開を定義 | 新しい実行元への移行と、鮮度・継続掲載の期間観測 |
 | [Agent接続](docs/noah/spec-74-one-click-connect.md) | 接続の再試行、重複・競合、解除、入力・実行・保存の判定条件がある。[接続計画](docs/noah/spec-96-connect-plan.md)も参照 | 提供元ごとのOAuth・鍵・実行環境の整備と受入 |
 | [Noahの受け皿](docs/noah/spec-90-phone-only-loop.md) | スマホの自動試験15段と実機受入13項目、応答が途切れた場合の表示・再試行の扱いを定義 | 同一候補で13項目を通す受入、多人数での実行と利用実績 |
@@ -37,11 +37,11 @@
 
 ## 検証と再開
 
-前回照合したmain `b56d8e83` は[総合verify](https://github.com/iceiceice999/rock/actions/runs/45038039086)とセキュリティ検査が成功。PR #17もmain統合済み。PR #18・#19統合後、[PR #20](https://github.com/iceiceice999/rock/pull/20)の最終HEADは[全体検証](https://github.com/iceiceice999/rock/actions/runs/45040967626)を含む7件が成功し、main `6c9b3db6` に統合された。
+前回照合したmain `b56d8e83` は[総合verify](https://github.com/iceiceice999/rock/actions/runs/45038039086)とセキュリティ検査が成功。PR #17もmain統合済み。PR #18・#19統合後、[PR #20](https://github.com/iceiceice999/rock/pull/20)の最終HEADは[全体検証](https://github.com/iceiceice999/rock/actions/runs/45040967626)を含む7件が成功し、main `6c9b3db6` に統合された。公開211は[PR #21](https://github.com/iceiceice999/rock/pull/21)統合時のmain `8669c94f` と同一tree。照合対象のmain `21518016` は検索の[PR #23](https://github.com/iceiceice999/rock/pull/23)も含む。
 
 旧PR #329・#330・#332・#339・#335・#342・#344〜#347・#352・#358のHEADが現在のmainに含まれることをGitで照合した。#342・#344〜#347は旧PR自体が未マージで閉じられたため「コード統合済み」と記す。今回の検証手順・結果は[task72](codex/tasks/72-current-code-and-readme.md)、機械可読の照合記録は `data/project-status.json` の `progressLedgerReconciliation` に置く。
 
-再開順は、① 無料3種で観測した添付表示の再確認、有料Containersの配備判断、② 収集の継続観測と実行先移行、③ 診断利用から注文・承認までの実測。CLI本番配備などの契約・承認条件は各taskに残す。
+再開順は、① Pixel実機での無料クラウドの実行、有料Containersの配備判断、② 収集の継続観測と実行先移行、③ 診断利用から注文・承認までの実測。CLI本番配備などの契約・承認条件は各taskに残す。
 
 以下の旧タスク台帳393件は、今回個別に再検収していない。Noahの新しい番号付きtaskは上の一覧を参照し、旧台帳の完了件数を製品完成率にしない。
 
@@ -464,5 +464,5 @@
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 無料3種で観測した添付表示の再確認、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
+次の作業: Pixel実機での無料クラウドの実行、有料Containersの配備判断、収集の24時間鮮度と実行先移行、紹介の実注文/承認を進める。全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
 <!-- project-status:end -->

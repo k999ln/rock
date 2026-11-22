@@ -6,11 +6,11 @@
 
 合格条件: 公式Agentの実クラウド処理、本人/Origin/再送/停止/上限/鍵非露出、スマホで接続→依頼→結果再表示。公開結果・CI・PRは受入後に記録する。
 
-状態: 実装中。2026-11-22にCloudflareのcontainers:write/ai:write追加認証は成功。新旧両アカウントとも、Containers APIがWorkers Paid未契約を理由に配備を拒否。新ログインから旧環境を管理する選択は承認済み。有料化は未承認。
+状態（2026-11-23）: 公式Memory・Filesystem・Sequential Thinkingの無料Workers実行と、画面を閉じた後の成果受取をSites210で本番受入済み。停止・再送非実行・別所有者拒否も確認。Hermes・boss・Timeは本番未対応で、任意CLI全体の実行合格ではない。新ログインから旧環境への管理移行は未確認、有料化・新規契約なし。
 
-PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft、旧 [k999ln/rock #402](https://github.com/k999ln/rock/pull/402)）。実クラウド受入・マージ・本番公開は未完了。公開198とGit mainの変更を両側保全して統合済み。
+PR: 無料実行器・共通成果は [#18](https://github.com/iceiceice999/rock/pull/18)、従来コンテナ修正・Pixel記録は [#19](https://github.com/iceiceice999/rock/pull/19)。旧 [#1](https://github.com/iceiceice999/rock/pull/1) / [k999ln #402](https://github.com/k999ln/rock/pull/402) の経緯は以下に保持する。
 
-確認済み:
+初期実装の確認（2026-11-22、当時の状態）:
 - 公開一覧1,762件の取得と、全件の接続定義点検を開始。GitHub/npm/Dockerの公式定義からMCPへ接続する共通経路、MCPの入力とWork保存、標準入出力CLI profileの拡張を追加。全件の実行合格ではない。
 - 実提供元guessit-jsの公開MCPへ入力し、実結果を本番と同じschemaのローカルSQLite Workへ保存。別runtimeでの再読込、別owner拒否、同一ID再送の再実行なしを確認。
 - Time 2026.11.18とSequential Thinking 2.2.0をnetwork noneのLinux containerでprobeし、公式ツールを呼出して結果を取得。モデル応答はfixture。本番クラウドの配備未完了は継続。
@@ -20,7 +20,7 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - `scripts/test-noah-cloud-browser.mjs`: Chrome 320/390/1280px、接続・入力・タップ・停止・結果再表示・ファイル保存・読込障害からの復帰。API fixtureによるUI試験。
 - 全体 `npm run verify` は最新main統合後に終了0で成功（2026-11-22）。その後の配布版照合はAPI/実行器18試験・typecheck・lintを再実行して成功。途中で見つけた依存フォルダの除外漏れはサービスの.gitignoreで修正。別toolkitの依存不足は `npm ci --prefix toolkits/noah-coconala --ignore-scripts` で解消し、その試験は合格。
 
-再開:
+当初の再開手順（2026-11-22、無料版公開前）:
 1. 旧Cloudflare環境を維持し、新ログインへ管理権限を追加する。CLI配備はWorkers Paidの契約判断が別途必要。追加OAuth認証は完了済み。サービスに固定したWranglerを使い、`--config ./wrangler.jsonc` を明示する。認証情報をログに出さない。
 2. READMEに従い実行器の配備・サーバー間secretを設定し、実モデルで公式Agentの実行・停止・結果保存を確認。
 3. GitHubの検証を通してPRをマージ。本番Sitesを最新mainと同じGit treeへ同期し、treeを照合してから公開。Secretsはnative Sites環境設定へ登録する。
@@ -83,3 +83,33 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 証拠は `work/noah-tap-feedback/work/noah-production-209/` の `publication.json`、`model-probe.json`、`real-model-guarded.log`、`model-filesystem-diagnostic.log`、`stdio-regressions.log`、`pixel-roundtrip.json`、`pixel-feedback.json`、`pixel-vibrator.txt`、`pixel-result-reloaded.png`。キーや本人の既存データを含めず、途中の失敗も保存。全体verifyとGit/公開の最終結果は受入後に追記する。
 
 - [PR #19](https://github.com/iceiceice999/rock/pull/19): `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0（主要5,163成功・5skip・失敗0、API1,918・CSV385、型/lint/build/資産/mission/work/bot成功）。最終の記録と試験出力表示の更新後にも `npm run design:check` / `npm run lint:product` 成功。GitHub CI・マージ・公開の状態はPRへ追記する。
+
+## 公開210のスマホ検索補正（2026-11-23）
+
+PixelでMemoryを検索した際、従来の掲載familyだけを対象にした「接続できる」では公式CLIが出ず、「すべて」に切り替える必要があった。詳細の固定配布元・対応profile判定を一覧でも利用し、設定済みの無料クラウド3種類を含める。未設定・無料版非対応・類似URLは含めず、保存/評価IDや一覧デザインは維持。[PR #23](https://github.com/iceiceice999/rock/pull/23)。修正head018aaeaf8で全体verify単一exit0（主要5,177成功/5skip/0fail、API1,918、CSV385、型/lint/build/資産/mission/work/bot成功）。PR #20/#21の内容を保持した統合後の関連18試験も成功。最終headのCI・マージ・公開結果はPRへ記録する。
+
+## 2026-11-23 本番の画面閉鎖後受取・停止
+
+- 公開: Sites210 / env18、main `16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617`、Sites source `d39bae2e498c5ebebf69d29f7cd843c2aaac72de`、同一tree `2ee821d56b488268944d613b919e4dfac081a6e0`。deployment `appgdep_6b03102cfa388191b44965b3498eab31` がsucceeded。無料Worker版 `debcd483-f69b-4a0b-a5e8-eac0964fc59b`。
+- 実行条件: Chrome157.0.8103.79、390×844px/touch。各依頼をNoah UIから接続・送信し、queued受理後にChromeプロセス全体を終了。15秒間HTTPも送らず、その後は実行器へ通信しない共通 `/api/noah/ask/:id` のD1読取だけでsucceededを確認した。jobId付きcloud GETは送らず、閲覧による結果保存を除外。モデルfixtureなし。Cookie・運営鍵は記録しない。
+- 新しいChromeへ同じセッションをメモリ内で復元し、「保存したもの → 成果」→仕事詳細→再読込→ファイルdownloadを実操作。全件、本文・成果hash一致、横溢れ/JS例外なし。実機Pixelでの新クラウド検査ではない。
+
+| 公式profile | Work | Chrome終了 UTC | D1保存 UTC | 実モデル回数 / 公式Tool | 保存ファイル |
+| --- | --- | --- | --- | --- | --- |
+| memory 2.2.1 | `2ce85ea7-1da6-42e7-9327-9175dbb16281` | 2026-11-22T15:57:04.645Z | 2026-11-22T15:57:07.605Z | 2 / create_entities × 1 | memory.jsonl, noah-execution.json |
+| filesystem 2.4.0 | `3f08c6ca-1dca-4e33-ac89-332afd4ef3d9` | 2026-11-22T15:57:40.063Z | 2026-11-22T15:57:42.828Z | 2 / write_file × 1 | total.txt, noah-execution.json |
+| thinking 2.2.0 | `1e0238d5-7abd-46be-b197-bd7917c6d66a` | 2026-11-22T15:58:13.355Z | 2026-11-22T15:58:26.465Z | 4 / sequentialthinking × 3 | noah-execution.json |
+
+成果のSHA-256（downloadした実bytesと一致）:
+
+- memory `memory.jsonl`: `6d844fd92d98b40854e6fed3bd060636f2dd96f6916a3b7f603b933d33679571`。
+- filesystem `total.txt`: `4146b7ad487eec28c783029bc192e30f610fbf229d791f9eb3abc4ecd040a502`。
+- thinking `noah-execution.json`: `ffa413017317524d7d0c2ee97b1c3587700b3dacd43874a3fb91fcc09aa910ae`。
+
+停止の別担当受入: Thinking Work `8af51dd6-02d5-4c28-94c9-683a01e77185` を接続→running→タップ停止。6秒後と再読込後もcancelledで成果なし。同じstart再送は200/cancelled、別所有者は404。実行中のmodelCallsは公開APIに出ないため、停止した依頼のモデル開始回数や計算自体の中断は断定しない。
+
+証拠はローカル `work/noah-cloud-production-acceptance-20261122/run-1795363012731/`、`run-1795363047378/`、`run-1795363081869/` のreport.json/result.png、停止は `work/noah-production-qa-20261122/free-cli-research/mobile-stop/report.json` とstopped.png。公開出所は同free-cli-research/publication.json。受入scriptは同acceptanceディレクトリのclosed-browser.cjs / run-suite.cjs。これらの作業用ファイルには認証Cookieを保存していない。
+
+受入で、保存済みcloudFilesにも「添付の内容は保存されていません」と出る汎用注記の不整合を発見。共通結果表示へ保存済み添付数を渡し、未保存の添付がある場合だけ注記を出すよう補正した。表示補正と受入記録は [PR #21](https://github.com/iceiceice999/rock/pull/21)。次版での表示再確認と最終検査は同PRへ記録する。
+
+検証基点: PR18の最終head `1a12b4bb4ac77b954cfa33c0d93105413a1e94e9` でローカル全体verify全工程成功（主要5,175成功/5skip/失敗0、API1,918、CSV385）、GitHub全8チェックSUCCESS。新規課金・本番D1 migration・外部申込なし。残る制約は無料枠上限、未対応CLI3種、新ログイン管理移行、実機Pixelでの新クラウド受入。

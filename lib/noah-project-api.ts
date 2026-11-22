@@ -27,6 +27,14 @@ export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false, c
   return { card, connection: { kind: 'setup', importHref } };
 }
 
+/** Use the detail page's exact distribution and runtime checks for the connectable list too. */
+export function withNoahCloudAvailability(entries: DirectoryEntry[], cloudEnabled = false, cloudProfiles?: readonly NoahCloudProfile[]): DirectoryEntry[] {
+  return entries.map(entry => {
+    const available = noahProjectDetail(entry, cloudEnabled, cloudProfiles).connection.kind === 'cloud';
+    return { ...entry, cloudAvailable: available, card: available ? { ...entry.card, run: 'phone' } : entry.card };
+  });
+}
+
 async function spaceHost(repository: string, fetcher: typeof fetch, origin: string) {
   const response = await fetcher(`https://huggingface.co/api/spaces/${repository.split('/').map(encodeURIComponent).join('/')}`, {
     redirect: 'manual', signal: AbortSignal.timeout(8000), headers: { Accept: 'application/json' },

@@ -1,5 +1,7 @@
 ## 2026-11-23
 - NoahがAgentに必要な画面・入力と実行先の候補を判定する関数を実装し、設計キットと製品の判定を統一。進捗台帳に6項目の設計の具体度を追記（[PR #22](https://github.com/iceiceice999/rock/pull/22)）。
+- Noahの「接続できる」検索に、有効な実行環境で対応している公式CLIを含める。詳細と同じ配布元・profile判定で、未設定や類似URLを除外し、カードの保存・評価IDとデザインを保持（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。
+- Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正 [PR #21](https://github.com/iceiceice999/rock/pull/21)）。
 - Noahの進捗を現main・旧PRの祖先・既存本番受入記録と照合し、task索引・project.md・README・進捗JSON・H1の次作業を同期。未確認の運用・集客・実機受入は残件として保持（[PR #20](https://github.com/iceiceice999/rock/pull/20)）。
 - Noahへ無料枠の公式MCPクラウド実行器を追加。永続alarm、依頼分離、期限・停止、対応profile限定、掲載削除後の停止を実装（[PR #18](https://github.com/iceiceice999/rock/pull/18)、Noah本番受入は継続中）。
 - Noahの実モデル継続時のHTTP400と未実行の完了報告を修正し、公開209のPixelで外部登録→認証付き実行→成果の再読込を再検証（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。
