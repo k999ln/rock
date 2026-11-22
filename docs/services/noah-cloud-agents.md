@@ -32,3 +32,13 @@
 2026-11-22のローカル受入: 公式2配布物をLinux/amd64の外部通信なしコンテナで起動し、HermesのToolによる `total.txt=2000`、bossの5問の面接準備を確認。モデルは固定応答を使った試験であり、実クラウドのモデル受入ではない。実Chromeの320/390/1280pxではAPI fixtureを使ってタップ・接続・停止・結果再表示・ファイル保存を確認。Cloudflare `containers:write` の認証は完了したが、新旧両環境でWorkers Paid requiredを実確認。実クラウド受入が完了するまで本番CLI機能は有効化しない。
 
 2026-11-22 追加CLIの受入: Node 24の固定イメージで公式Memory/Filesystemの初期化とツールを実行。Memoryは依頼内の情報整理とmemory.jsonl出力、次の独立guestが空の記憶で開始することを確認。Filesystemは専用/workspace内の作成/読込と成果のhash照合、領域外の直接パスとsymlinkの拒否を確認。モデルはfixtureであり、実クラウド受入は継続して未完了。新ログイン用OAuthは既存認証と別保存にし、配備先は旧account IDへ固定する。
+
+## 無料枠の公式JavaScript実行
+
+2026-11-23の最新指示により、追加料金を発生させずに進める。Memory 2.2.1 / Filesystem 2.4.0 / Sequential Thinking 2.2.0の公式npm本体をfactoryから呼ぶ。shellプロセス・コンテナではなく、公式ツール実装をWorkersへ組み込む方式。bundlerで解決できないversion.jsの動的package.json読込だけを固定manifestの値に置換し、ツール実装やパス検査は書き換えない。
+
+Workers FreeとSQLite Durable Objects、Workers AIの無料割当を使い、有料モデル・Gateway・契約変更を使わない。無料枠超過はCloudflare側のエラーで停止する。運営側でも全体10件/UTC日、本人3件/UTC日、同時2件、モデル4回、出力1024tokens/回、入力32768bytes/回を上限にする。別機能と共有の無料割当を使うため、上限未満でも空きがない日は実行できない。
+
+受付後は永続alarmが実行を開始し、ブラウザGETなしで既存の宛先票からWorkへ結果を送る。実行中の再起動は再送せず結果不明。停止は永続状態で以後のモデル/Tool送信と結果採用を閉じる。すでに提供元で始まったモデル計算自体の中断を保証するものではない。公式ツールは依頼専用の/tmp/workspaceのみを使い、外部fetchや利用者端末にはつながない。出力ファイルは既存上限とhashを検証する。
+
+追加受入: 実workerdで公式Tool呼出、VFSの依頼間分離、直接パス/リンクによる領域外拒否を確認する。本番で実モデル/Tool呼出と成果hash、Chrome全終了後のWork保存、同一ID非再実行、別owner拒否、停止後の追加操作なしを確認してから各profileをUIで有効にする。本番受入は未完了。

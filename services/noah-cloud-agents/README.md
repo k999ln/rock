@@ -2,6 +2,16 @@
 
 契約・上限は [サービス設計](../../docs/services/noah-cloud-agents.md)。公開ディレクトリの検証済みprofileだけを実行し、Noah APIが本人・委任・Workを管理する。
 
+## 追加料金なしの実行器
+
+rootで `npm ci --ignore-scripts`、このディレクトリで固定Wranglerの `deploy --config ./wrangler.free.jsonc` を使う。DockerとContainersは不要。`build-free.mjs` は固定npmの公式MCP factoryを梱包し、版情報の動的requireとimport.meta.urlの梱包先のみ補正する。Toolの実装・パス検査は変更しない。公式Thinkingの入力ログは公開オプションで無効化する。
+
+Workers Freeの旧accountへ `noah-free-cloud-agents` を配置する。Noahのsecretと同じ `NOAH_CLOUD_KEY`、Sitesへ `NOAH_CLOUD_URL=https://noah-free-cloud-agents.mr-kirin999.workers.dev` と `NOAH_CLOUD_MODE=free` を設定し、対応3種だけを公開する。URL/keyだけで有効化せず、必ずmodeも同時設定する。Noahに入力した本文は実モデルへ送信し、元のWorkに保存される。追加の課金・Gateway・有料モデルは使わない。
+
+全体10件/UTC日・本人3件/日・同時2件・モデル4回/応答1024tokens・入力32768bytes、既存240秒/成果上限を保持。Cloudflareの共有無料枠が先に尽きた場合もエラーで停止する。alarmが仕事を開始し、結果だけを既存callbackへ送る。停止は以後のモデル/Tool開始とlate結果の採用を閉じる。すでに提供元が開始したモデル計算の物理中断は保証しない。
+
+検証はrootで `node --experimental-strip-types --test tests/noah-free-cloud.test.mjs tests/noah-cloud-runtime.test.mjs tests/noah-cloud-api.test.mjs`。公式本体・SQLite alarm・呼出と停止競合・期限・隔離・配布版・実成果hashを検査する。旧コンテナ版は以下に残し、追加料金なしの依頼では配備しない。
+
 ## 配備
 
 このディレクトリで `npm ci`。Dockerが利用できる環境で `npm run check` がWorkerとamd64イメージを検証する。rootのWranglerや他サービスの設定を拾わないよう、各scriptは明示した `./wrangler.jsonc` を使用する。

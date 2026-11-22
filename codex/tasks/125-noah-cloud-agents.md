@@ -55,6 +55,19 @@ PR: [iceiceice999/rock #1](https://github.com/iceiceice999/rock/pull/1)（Draft�
 - 統合 `7c543a79d` の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が全工程成功。主要5,155成功・5skip・失敗0、仕事API1,918、CSV385。型検査・lint・ビルド・資産欠落0も成功。後続mainマージ `49fc3cd2f` は同一tree。GitHubの最終検査結果とマージSHAはPRに記録する。
 - CLI本番配備・実モデル受入、共通Noah画面での追加診断受入は別工程。検査成功を本番実行・実注文・承認・入金の成功として扱わない。
 
+## 追加料金なしの継続（2026-11-23）
+
+新ログインの招待を再取得したAPIはまだpending、新ログインのChromeでも旧環境は権限エラー。管理移行の受入は未完了。課金変更は行わず、固定した旧accountへ無料Workerを配備した。
+
+公式Memory/Filesystem/ThinkingのfactoryをWorkersへ組み込み、workerdでTool・記憶分離・領域外/symlink拒否・alarmだけの結果送達・停止と遅延応答・期限を検査。実クラウドではMemoryとFilesystemが実モデル2回で成果を返し、ファイルhashを確認。Noah公開画面と画面閉鎖後のWork保存は統合後の独立受入を待つ。無料版のPython/shell対応は未完了。
+## 画面閉鎖後の成果受取（2026-11-23、受入中）
+
+- 本人の追加指示で、クラウド実行と画面を閉じた後の成果受取を進める。連携先チャットでの本人指定「追加料金なし」を保持し、新規有料契約は行わない。無料枠の公式実装組込は実行器担当が検証する。
+- 共通の実行中/成果一覧と仕事詳細へ、本人の保存済みcloud Workを統合。閲覧は実行器を起動せず、結果本文・成果ファイルを再表示する。停止は既存cloud APIの本人/Origin/実行器停止処理を通し、停止失敗を完了表示にしない。
+- コールバックで保存した成果の再表示、他所有者拒否、Agent/接続の条件、版の競合、停止失敗をSQLiteで確認。既存cloud/providerを含む32試験成功。本番実測はまだ行っていない。
+- 本番受入は、開始後のjobId付きGET（結果を取得して保存する経路）を遮断し、Chrome全体を終了してから保存済み履歴だけを確認する。閉鎖後の保存時刻、実モデル呼出、成果ファイルの内容/hash、新しいChromeでの再表示を確認する。Cookieや運営鍵を試験記録へ保存しない。
+
+無料実行器と共通成果を [PR #18](https://github.com/iceiceice999/rock/pull/18) に統合。依存追加に伴うlicense件数の期待値を実台帳へ更新し、release関連40試験成功。最終全体verifyとGitHub CIは実行中。新しいWorkerは旧accountの `noah-free-cloud-agents`、Noah本番の有効化はまだ行っていない。
 
 <a id="pixel-209-and-real-model"></a>
 

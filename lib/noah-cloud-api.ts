@@ -1,7 +1,7 @@
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import type { DirectoryEntry } from './noah-agent-directory.ts';
-import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS, noahCloudDigest, noahCloudId, noahCloudProfile, noahCloudResult, type NoahCloudJob } from './noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS, noahCloudDigest, noahCloudId, noahCloudProfile, noahCloudResult, type NoahCloudJob, type NoahCloudProfile } from './noah-cloud-contract.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { createNoahRemoteWork, finishNoahRemoteWork, startNoahRemoteWork } from './noah-remote-work.ts';
 import { workStore } from './work-store.ts';
@@ -17,6 +17,7 @@ type Dependencies = {
   authorize: (owner: string, target: string, action: string, digest: string, confirmed: boolean) => Promise<void>;
   now?: () => number;
   receiptKey?: string;
+  profiles?: readonly NoahCloudProfile[];
 };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie, Authorization', 'X-Content-Type-Options': 'nosniff' } });
 const active = (job: WorkJob) => ['queued', 'running'].includes(job.noahRemote?.state ?? '');
@@ -30,7 +31,7 @@ export function noahCloudEntry(entry: DirectoryEntry) {
 /** The only server-to-runtime path. Credentials never reach the browser or container. */
 export function noahCloudRuntime(config: { url?: string; key?: string }, fetcher: typeof fetch = fetch) {
   return async (body: Record<string, unknown>) => {
-    if (!config.url || !/^https:\/\/noah-cloud-agents\.[a-z0-9-]+\.workers\.dev$/.test(config.url) || !config.key || config.key.length < 32) throw new NoahAgentError('クラウド実行環境を準備しています。', 503);
+    if (!config.url || !/^https:\/\/(?:noah-cloud-agents|noah-free-cloud-agents)\.[a-z0-9-]+\.workers\.dev$/.test(config.url) || !config.key || config.key.length < 32) throw new NoahAgentError('クラウド実行環境を準備しています。', 503);
     const response = await fetcher(`${config.url}/rpc`, { method: 'POST', headers: { Authorization: `Bearer ${config.key}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body), redirect: 'manual', signal: AbortSignal.timeout(20000) });
     if (response.status >= 300 && response.status < 400) { await response.body?.cancel(); throw new NoahAgentError('クラウド接続先の転送は許可されていません。', 502); }
     return response;
@@ -82,10 +83,17 @@ export function createNoahCloudApi(deps: Dependencies) {
       const input = mutate ? JSON.parse(new TextDecoder().decode(await boundedNoahBody(request, 16000))) as Record<string, unknown> : Object.fromEntries(new URL(request.url).searchParams);
       if (!input || Array.isArray(input) || Object.keys(input).some(key => !['action', 'projectId', 'id', 'jobId', 'connectionId', 'prompt', 'confirm'].includes(key)) || typeof input.projectId !== 'string' || !/^project-[a-f0-9]{64}$/.test(input.projectId)) throw new NoahAgentError('Agentの指定を確認してください。');
       const project = input.projectId;
-      const entry = (await deps.directory()).find(row => row.card.feedbackId === project || row.card.id === project), profile = entry && noahCloudEntry(entry);
-      if (!entry || !profile) throw new NoahAgentError('このAgentのクラウド実行は現在利用できません。', 404);
       const action = mutate ? input.action : input.jobId ? 'job' : 'status';
       if (!['status', 'connect', 'disconnect', 'start', 'job', 'stop'].includes(String(action)) || !mutate && !['status', 'job'].includes(String(action))) throw new NoahAgentError('操作を確認してください。');
+      // Existing owned work remains stoppable/readable after catalog removal or outage.
+      const existing = ['job', 'stop'].includes(String(action)) && noahCloudId(input.jobId) ? await jobs.get(owner, input.jobId) : null;
+      const existingCloud = existing?.noahRemote?.cloud;
+      const existingAction = ['job', 'stop'].includes(String(action));
+      if (existingAction && (!existingCloud || existingCloud.projectId !== project || !Object.hasOwn(NOAH_CLOUD_PROFILES, existingCloud.profile))) throw new NoahAgentError('依頼が見つかりません。', 404);
+      const entry = existingAction ? undefined : (await deps.directory()).find(row => row.card.feedbackId === project || row.card.id === project);
+      const profile = existingAction ? existingCloud!.profile : entry && noahCloudEntry(entry);
+      if (!profile) throw new NoahAgentError('このAgentのクラウド実行は現在利用できません。', 404);
+      if (!existingAction && deps.profiles && !deps.profiles.includes(profile)) throw new NoahAgentError('このAgentは無料クラウドの対応準備中です。', 403);
       const call = async (extra: Record<string, unknown>) => {
         const response = await deps.runtime({ owner: runtimeOwner, project, profile, distribution: NOAH_CLOUD_PROFILES[profile].sha256, ...extra });
         const body = JSON.parse(new TextDecoder().decode(await boundedNoahBody(new Request('https://runtime.invalid', { method: 'POST', body: response.body, duplex: 'half' } as RequestInit), 262144))) as Record<string, unknown>;
@@ -117,7 +125,7 @@ export function createNoahCloudApi(deps: Dependencies) {
         if (work && (work.noahRemote?.cloud?.projectId !== project || work.noahRemote?.inputSha256 !== hash)) throw new NoahAgentError('同じ依頼IDの内容は変更できません。', 409);
         if (work && !active(work)) return json({ job: view(work), ownerScope: scope });
         if (!work) {
-          const created = createNoahRemoteWork(input.jobId, { connectionId: input.connectionId, familyKey: project, digest: NOAH_CLOUD_PROFILES[profile].sha256, agentName: entry.card.name, host: 'Noahクラウド', tool: 'cloud-agent', toolSha256: NOAH_CLOUD_PROFILES[profile].sha256, toolsSha256: NOAH_CLOUD_PROFILES[profile].sha256, args: { prompt: input.prompt }, inputSha256: hash }, now());
+          const created = createNoahRemoteWork(input.jobId, { connectionId: input.connectionId, familyKey: project, digest: NOAH_CLOUD_PROFILES[profile].sha256, agentName: entry!.card.name, host: 'Noahクラウド', tool: 'cloud-agent', toolSha256: NOAH_CLOUD_PROFILES[profile].sha256, toolsSha256: NOAH_CLOUD_PROFILES[profile].sha256, args: { prompt: input.prompt }, inputSha256: hash }, now());
           created.noahRemote = { ...created.noahRemote!, prompt: input.prompt, cloud: { projectId: project, profile, version: NOAH_CLOUD_PROFILES[profile].version } };
           work = await jobs.create(owner, created);
           if (!work) throw new NoahAgentError('依頼IDが使用されています。', 409);

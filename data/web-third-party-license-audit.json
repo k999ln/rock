@@ -2,9 +2,9 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "744b1a05b63b2d095ae177925a80865dbdf653685ca6aa50c9075268a2e90be6",
-  "packageEntries": 974,
-  "uniqueComponents": 931,
+  "packageLockSha256": "eca6c5c75368aa3673b71585ec7623e2656a422bba329db406c6237f8ac4cac2",
+  "packageEntries": 984,
+  "uniqueComponents": 941,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
@@ -24,7 +24,7 @@
     },
     {
       "expression": "Apache-2.0",
-      "uniqueComponents": 54,
+      "uniqueComponents": 59,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -39,7 +39,7 @@
     },
     {
       "expression": "BlueOak-1.0.0",
-      "uniqueComponents": 2,
+      "uniqueComponents": 4,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -91,10 +91,15 @@
       "expression": "MPL-2.0",
       "uniqueComponents": 27,
       "reviewClass": "reciprocal-source-terms-review"
+    },
+    {
+      "expression": "SEE LICENSE IN LICENSE",
+      "uniqueComponents": 3,
+      "reviewClass": "standard-license-text-and-notice"
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 880,
+    "standard-license-text-and-notice": 890,
     "reciprocal-source-terms-review": 41,
     "license-choice-review": 9,
     "attribution-review": 1

@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import { NOAH_CLOUD_PROFILES as profiles, NOAH_CLOUD_LIMITS as limits, NOAH_CLOUD_MODEL, noahCloudId, noahCloudDigest, noahCloudModelInput, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES as profiles, NOAH_CLOUD_LIMITS as limits, NOAH_FREE_CLOUD_LIMITS, noahCloudSupported, NOAH_CLOUD_MODEL, noahCloudId, noahCloudDigest, noahCloudModelInput, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
 
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' } });
 const terminal = state => ['returned', 'failed', 'cancelled', 'unknown'].includes(state);
@@ -23,6 +23,7 @@ export default {
     try {
       const body = await read(request);
       if (!body || !/^[a-f0-9]{64}$/.test(body.owner) || !/^project-[a-f0-9]{64}$/.test(body.project) || !Object.hasOwn(profiles, body.profile) || !['status', 'connect', 'disconnect', 'start', 'job', 'stop'].includes(body.action)) return json({ error: 'invalid_request' }, 400);
+      if (!noahCloudSupported(env.NOAH_CLOUD_MODE).includes(body.profile)) return json({ error: 'このAgentは無料クラウドの対応準備中です。' }, 403);
       if (['connect', 'start'].includes(body.action) && body.distribution !== profiles[body.profile].sha256) return json({ error: 'Agentの配布版が更新されました。画面を読み直してください。' }, 409);
       return await rpc(env.CONNECTIONS.getByName(`${body.owner}:${body.project}:${body.profile}`), body);
     } catch { return json({ error: 'runtime_unavailable' }, 503); }
@@ -35,12 +36,13 @@ export class NoahCloudBudget extends DurableObject {
     const input = await request.json();
     return this.ctx.blockConcurrencyWhile(async () => {
       const now = Date.now(), day = new Date(now).toISOString().slice(0, 10);
+      const quota = this.env.NOAH_CLOUD_MODE === 'free' ? NOAH_FREE_CLOUD_LIMITS : limits;
       let state = await this.ctx.storage.get('budget');
       if (!state || state.day !== day) state = { day, jobs: 0, probes: 0, owners: {}, leases: state?.leases ?? {} };
       for (const [id, lease] of Object.entries(state.leases)) if (lease.until <= now) delete state.leases[id];
       if (input.action === 'release') { delete state.leases[input.id]; await this.ctx.storage.put('budget', state); return json({ ok: true }); }
       if (state.leases[input.id]) return json({ ok: true });
-      if (Object.keys(state.leases).length >= limits.concurrent || (input.mode === 'run' ? state.jobs >= limits.dailyJobs || (state.owners[input.owner] ?? 0) >= limits.ownerDailyJobs : state.probes >= 100)) return json({ error: 'クラウドの利用枠が埋まっています。時間をおいて再試行してください。' }, 429);
+      if (Object.keys(state.leases).length >= limits.concurrent || (input.mode === 'run' ? state.jobs >= quota.dailyJobs || (state.owners[input.owner] ?? 0) >= quota.ownerDailyJobs : state.probes >= 100)) return json({ error: 'クラウドの利用枠が埋まっています。時間をおいて再試行してください。' }, 429);
       if (input.mode === 'run') { state.jobs++; state.owners[input.owner] = (state.owners[input.owner] ?? 0) + 1; } else state.probes++;
       state.leases[input.id] = { until: now + (limits.seconds + 30) * 1000 };
       await this.ctx.storage.put('budget', state); return json({ ok: true });
@@ -128,8 +130,7 @@ export class NoahCloudJob extends DurableObject {
         const at = Date.now();
         const job = { id: input.id, owner: input.owner, profile: input.profile, version: profiles[input.profile].version, distribution: profiles[input.profile].sha256, mode: input.mode, fingerprint, prompt: input.prompt, receipt: input.receipt, state: 'queued', createdAt: at, deadlineAt: at + limits.seconds * 1000, calls: 0 };
         await this.ctx.storage.put('job', job); await this.ctx.storage.setAlarm(job.deadlineAt);
-        this.running = true;
-        this.ctx.waitUntil(this.execute().finally(() => { this.running = false; }));
+        await this.schedule(job);
         return json(this.view(job), 202);
       });
       return response;
@@ -138,23 +139,27 @@ export class NoahCloudJob extends DurableObject {
     if (!job) return json({ error: 'not_found' }, 404);
     if (input.action === 'stop' && !terminal(job.state)) await this.end('cancelled', '本人の操作で停止しました。');
     // A restarted coordinator never blindly replays an admitted command.
-    else if (!terminal(job.state) && !this.running) await this.end('unknown', '実行環境が再起動しました。結果を確認できないため再実行していません。');
+    else if (!terminal(job.state) && !this.running) await this.recover(job);
     job = await this.ctx.storage.get('job'); return json(this.view(job));
   }
   view({ owner: _owner, prompt: _prompt, fingerprint: _fingerprint, receipt: _receipt, delivered: _delivered, ...job }) { return job; }
+  async schedule() { this.running = true; this.ctx.waitUntil(this.execute().finally(() => { this.running = false; })); }
+  async recover() { await this.end('unknown', '実行環境が再起動しました。結果を確認できないため再実行していません。'); }
+  async stopRuntime(state) { await this.ctx.container.destroy(state); }
   async end(state, error, result) {
-    await this.ctx.blockConcurrencyWhile(async () => {
-      const job = await this.ctx.storage.get('job'); if (!job || terminal(job.state)) return;
+    const changed = await this.ctx.blockConcurrencyWhile(async () => {
+      const job = await this.ctx.storage.get('job'); if (!job || terminal(job.state)) return false;
       // Serialize destruction with the only start and all state writes. Bound this short gate.
       let timer;
-      try { await Promise.race([this.ctx.container.destroy(state), new Promise((_, reject) => { timer = setTimeout(() => reject(Error('stop_timeout')), 10000); })]); }
+      try { await Promise.race([this.stopRuntime(state), new Promise((_, reject) => { timer = setTimeout(() => reject(Error('stop_timeout')), 10000); })]); }
       catch { state = 'unknown'; error = '実行環境の停止を確認できませんでした。'; result = undefined; }
       finally { clearTimeout(timer); }
       await this.ctx.storage.put('job', { ...job, state, completedAt: Date.now(), ...(error ? { error } : {}), ...(result ? { result } : {}) });
       if (state !== 'unknown') await rpc(this.env.BUDGET.getByName('global'), { action: 'release', id: `${job.owner}:${job.id}` });
       await this.ctx.storage.setAlarm(Date.now() + 60000);
+      return true;
     });
-    await this.deliver();
+    if (changed) await this.deliver();
   }
   async deliver() {
     const job = await this.ctx.storage.get('job'); if (!job || !terminal(job.state)) return;
