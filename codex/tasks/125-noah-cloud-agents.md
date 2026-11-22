@@ -84,6 +84,9 @@ PR: 無料実行器・共通成果は [#18](https://github.com/iceiceice999/rock
 
 - [PR #19](https://github.com/iceiceice999/rock/pull/19): `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が単一実行exit0（主要5,163成功・5skip・失敗0、API1,918・CSV385、型/lint/build/資産/mission/work/bot成功）。最終の記録と試験出力表示の更新後にも `npm run design:check` / `npm run lint:product` 成功。GitHub CI・マージ・公開の状態はPRへ追記する。
 
+## 公開210のスマホ検索補正（2026-11-23）
+
+PixelでMemoryを検索した際、従来の掲載familyだけを対象にした「接続できる」では公式CLIが出ず、「すべて」に切り替える必要があった。詳細の固定配布元・対応profile判定を一覧でも利用し、設定済みの無料クラウド3種類を含める。未設定・無料版非対応・類似URLは含めず、保存/評価IDや一覧デザインは維持。[PR #23](https://github.com/iceiceice999/rock/pull/23)。修正head018aaeaf8で全体verify単一exit0（主要5,177成功/5skip/0fail、API1,918、CSV385、型/lint/build/資産/mission/work/bot成功）。PR #20/#21の内容を保持した統合後の関連18試験も成功。最終headのCI・マージ・公開結果はPRへ記録する。
 
 ## 2026-11-23 本番の画面閉鎖後受取・停止
 
