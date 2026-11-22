@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import {
   NOAH_ACCOUNTS, NOAH_AFFILIATE_VERTICALS, NOAH_CAPABILITIES, NOAH_OSHI_AGENT, NOAH_OSHI_EXCLUDED, NOAH_OSHI_FANDOMS, NOAH_OSHI_PAINS, NOAH_BUSINESS_SEED_YEN, noahAccountKit, noahAgentsFor, noahBlueprints,
   noahBusinessAllowance, noahBusinessCanSpend, noahEveBacklog, noahPlanBlueprints, noahTrialDecision,
+  NOAH_STEP_WAITS, noahBlueprintLevels, noahBlueprintReady, noahBlueprintWaitProblem, noahBlueprintWithout,
 } from '../lib/noah-business.ts';
 import { businessMarkdown, businessReport } from '../scripts/noah-business-plan.mjs';
 
@@ -137,4 +138,107 @@ void test('推し活: the company earns from trips and supplies now; overseas pr
   assert.ok(byId.get('oshi:supplies:suzuri-pod').steps.some((s) => s.id === 'rights' && s.capability === 'compliance.check'));
   for (const ex of NOAH_OSHI_EXCLUDED) assert.ok(ex.reason && ex.source.startsWith('https://'), ex.id);
   assert.deepEqual(NOAH_OSHI_EXCLUDED.map((e) => e.id), ['ticket-auto-apply', 'ticket-resale', 'limited-sniping', 'multi-account', 'queue-bypass', 'fan-made-goods']);
+});
+
+// 2026-11-22 本人の評価「（工程を『何を待つか』で並べ直した図は）いいとおもう」: 工程は待つ相手が全部終わったら始め、同時に進められる物は同時に進める。
+void test('waits: every step says what it waits for, only earlier steps, so the list order still works one by one; same steps, fewer levels', () => {
+  for (const b of noahBlueprints()) {
+    assert.equal(noahBlueprintWaitProblem(b.steps), null, b.id);
+    const levels = noahBlueprintLevels(b.steps);
+    assert.equal(levels.flat().length, b.steps.length, `${b.id}: every step is in one level`);
+    assert.ok(levels.length < b.steps.length, `${b.id}: some steps run at the same time (${levels.length} levels for ${b.steps.length} steps)`);
+    assert.deepEqual(levels.at(-1).map((s) => s.id), ['decide', 'payout'], `${b.id}: the last level decides and checks the payout`);
+    for (const s of b.steps) if (s.waitNote) assert.ok(Object.values(NOAH_STEP_WAITS).includes(s.waitNote), `${b.id}/${s.id}: the reason comes from the table`);
+  }
+  // 待つ相手の書き方を間違えた設計図は、段にしない。
+  assert.match(noahBlueprintWaitProblem([{ id: 'a', label: 'A', kind: 'auto', after: ['b'] }, { id: 'b', label: 'B', kind: 'auto', after: [] }]), /前に無い工程/);
+  assert.match(noahBlueprintWaitProblem([{ id: 'a', label: 'A', kind: 'auto' }]), /何を待つか/);
+  assert.throws(() => noahBlueprintLevels([{ id: 'a', label: 'A', kind: 'auto', after: ['a'] }]));
+});
+
+void test('waits: FX × YouTube is the drawing Noelle liked — 19 steps in 10 levels; scripts and the LP are made while the partnership application waits', () => {
+  const fx = noahBlueprints().find((b) => b.id === 'affiliate:fx:youtube');
+  assert.equal(fx.steps.length, 19);
+  assert.deepEqual(noahBlueprintLevels(fx.steps).map((level) => level.map((s) => s.id)), [
+    ['rules:asp-a8', 'rules:youtube', 'research'], ['signup:asp-a8', 'signup:youtube'], ['media:asp-a8', 'offers'], ['apply', 'script', 'lp'],
+    ['video', 'voice', 'lp-host'], ['disclose'], ['finance-review'], ['publish:youtube'], ['track'], ['decide', 'payout'],
+  ]);
+  const step = (id) => fx.steps.find((s) => s.id === id);
+  assert.equal(step('media:asp-a8').waitNote, NOAH_STEP_WAITS.media);
+  assert.deepEqual(step('publish:youtube').after, ['finance-review', 'apply', 'signup:youtube'], 'the link goes up only after the partnership and the checks');
+  // 本人の工程（提携の申し込み）を待っていない工程は、先に進む。
+  const done = new Set(['rules:asp-a8', 'rules:youtube', 'research', 'signup:asp-a8', 'signup:youtube', 'media:asp-a8', 'offers']);
+  assert.deepEqual(noahBlueprintReady(fx.steps, done).map((s) => s.id), ['apply', 'script', 'lp']);
+  done.add('script'); done.add('lp');
+  assert.deepEqual(noahBlueprintReady(fx.steps, done).map((s) => s.id), ['apply', 'video', 'voice', 'lp-host'], 'video, voice and hosting go on while apply waits');
+  assert.deepEqual(noahBlueprintReady(fx.steps, new Set()).map((s) => s.id), ['rules:asp-a8', 'rules:youtube', 'research'], 'at the start, nothing waits for a person');
+});
+
+void test('waits: monetization (AdSense, YouTube Partner) is applied for after something is published; drafts and research do not wait for sign-up', () => {
+  const byId = new Map(noahBlueprints().map((b) => [b.id, b]));
+  for (const id of ['ads:ai:youtube', 'ads:ai:blog', 'oshi:calendar-media:anime']) {
+    const steps = byId.get(id).steps, signup = steps.find((s) => /^signup:(adsense|youtube-partner)$/u.test(s.id));
+    assert.ok(signup.after.some((a) => a.startsWith('publish')), `${id}: ${signup.after.join(', ')}`);
+    assert.equal(signup.waitNote, NOAH_STEP_WAITS.monetize);
+    assert.ok(steps.find((s) => s.id === 'track').after.includes(signup.id), `${id}: revenue is read once monetization is on`);
+  }
+  assert.deepEqual(byId.get('gig:translation:coconala')?.steps.find((s) => s.id === 'listing').after ?? [], []);
+  for (const b of byId.values()) {
+    const research = b.steps.find((s) => s.id === 'research');
+    if (research) assert.deepEqual(research.after, [], `${b.id}: research waits for nothing`);
+  }
+});
+
+void test('waits: dropping steps (owned accounts) keeps the chain — whoever waited for a dropped step waits for what it waited for', () => {
+  const steps = [
+    { id: 'rules:a', label: 'r', kind: 'auto', after: [] }, { id: 'signup:a', label: 's', kind: 'human', after: ['rules:a'] },
+    { id: 'x', label: 'x', kind: 'auto', after: [] }, { id: 'use', label: 'u', kind: 'auto', after: ['signup:a', 'x'] },
+  ];
+  assert.deepEqual(noahBlueprintWithout(steps, (s) => s.id.endsWith(':a')).map((s) => [s.id, s.after]), [['x', []], ['use', ['x']]]);
+  const all = ['youtube', 'youtube-partner', 'asp-a8', 'x', 'instagram', 'tiktok', 'hosting', 'adsense', 'coconala', 'apple-developer'];
+  for (const owned of [new Set(['youtube', 'youtube-partner']), new Set(all)]) {
+    for (const p of noahPlanBlueprints({}, owned)) {
+      assert.equal(noahBlueprintWaitProblem(p.steps), null, p.id);
+      assert.ok(!p.steps.some((s) => s.after.some((id) => id.endsWith(':youtube') && id.startsWith('signup'))), `${p.id}: no step waits for a dropped sign-up`);
+    }
+  }
+  const ads = noahPlanBlueprints({}, new Set(['youtube', 'youtube-partner'])).find((p) => p.id === 'ads:ai:youtube');
+  assert.deepEqual(ads.steps.find((s) => s.id === 'track').after, ['publish:youtube']);
+});
+
+void test('the blueprint page (/noah/review/business) shows plans only to an authenticated reviewer; ?id= opens the leveled explanation', async () => {
+  const { runInNewContext } = await import('node:vm');
+  const ts = (await import('typescript')).default;
+  const { noahReviewerAccess } = await import('../lib/noah-reviewer.ts');
+  const business = await import('../lib/noah-business.ts');
+  const jsx = (type, props) => ({ type, props });
+  const source = ts.transpileModule(readFileSync(new URL('../app/noah/review/business/page.tsx', import.meta.url), 'utf8'), { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const capabilities = JSON.parse(readFileSync(new URL('../data/noah-business-capabilities.json', import.meta.url), 'utf8'));
+  const nodes = (tree) => (tree && typeof tree === 'object' ? [tree, ...[tree.props?.children].flat(Infinity).flatMap(nodes)] : []);
+  const render = async (owner, id) => {
+    const deps = noahReviewerAccess(async (request) => { assert.equal(request.headers.get('cookie'), 'session-fixture'); if (!owner) throw Error('UNAUTHORIZED'); return owner; }, 'reviewer', '');
+    const modules = {
+      'react/jsx-runtime': { jsx, jsxs: jsx, Fragment: 'fragment' }, 'next/headers': { headers: async () => new Headers({ cookie: 'session-fixture' }) }, 'next/link': { default: 'a' },
+      '@/data/noah-business-capabilities.json': { default: capabilities }, '@/components/noah-blueprint-levels': { default: 'levels' }, '@/lib/noah-business': business,
+      '@/lib/noah-intake-server': { noahIntakeDependencies: () => deps }, '@/components/noah-service.module.css': { default: {} }, '@/components/noah-blueprint-levels.module.css': { default: {} },
+    };
+    const exports = {};
+    runInNewContext(source, { exports, Request, encodeURIComponent, require: (name) => { assert.ok(name in modules, name); return modules[name]; } });
+    const tree = await exports.default({ searchParams: Promise.resolve(id ? { id } : {}) });
+    return typeof tree.type === 'function' ? { name: tree.type.name, page: tree.type(tree.props) } : { name: tree.type, page: tree };
+  };
+  for (const owner of ['other-owner', null]) {
+    const { page } = await render(owner, 'affiliate:fx:youtube');
+    assert.equal(page.type, 'main');
+    assert.ok(!nodes(page).some((n) => n.type === 'levels' || (n.type === 'a' && String(n.props.href).includes('?id='))), `${owner}: nothing of the plans`);
+  }
+  const list = await render('reviewer');
+  assert.equal(list.name, 'List');
+  assert.equal(nodes(list.page).filter((n) => n.type === 'a' && String(n.props.href).startsWith('/noah/review/business?id=')).length, business.noahBlueprints().length);
+  const detail = await render('reviewer', 'affiliate:fx:youtube');
+  assert.equal(detail.name, 'Detail');
+  const levels = nodes(detail.page).find((n) => n.type === 'levels');
+  assert.equal(levels.props.steps.length, 19);
+  assert.match(JSON.stringify(nodes(detail.page).map((n) => n.props?.children).filter((c) => typeof c === 'string' || Array.isArray(c))), /待つ相手の前提/);
+  assert.equal((await render('reviewer', 'no-such-plan')).name, 'List', 'an unknown id falls back to the list');
 });
