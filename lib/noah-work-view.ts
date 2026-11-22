@@ -8,6 +8,7 @@ export function noahWorkState(
   if (ask.delivery==='missing_image')return '画像が未受取';
   if (ask.state === 'succeeded') return '応答を受信';
   if (ask.state === 'failed') return '失敗';
+  if (ask.state === 'unknown') return '結果を確認できません';
   if (ask.state === 'cancelled' || ask.state === 'stopped') return '停止済み';
   if (ask.stopRequested) return '停止を確認中';
   if (ask.state === 'queued') return '順番待ち';
