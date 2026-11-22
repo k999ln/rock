@@ -267,6 +267,13 @@
       "when": 4102444800029,
       "tag": "0057_esim_ios_install",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "6",
+      "when": 4102444800030,
+      "tag": "0058_cloud_operations",
+      "breakpoints": true
     }
   ]
 }

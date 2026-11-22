@@ -1,4 +1,5 @@
 import { NoahAgentError, noahSha256 } from './noah-agent-upload.ts';
+import { cloudTrigger, utcMonth, type CloudMonth, type CloudTriggerState } from './cloud-cost.ts';
 export type NoahUsageScope = 'personal' | 'publisher' | 'operator';
 export type NoahUsageSource = 'platform_agent' | 'local_agent' | 'model' | 'reported';
 export type UsageMetrics = { runs: number; succeeded: number; failed: number; other: number; durationMs: number | null; measuredDurationRuns: number; knownCostRuns: number };
@@ -7,7 +8,48 @@ export type UsageRow = { id: string; agentRef: string; name: string; actorId: st
 export type NoahUsageReport = {
   scope: NoahUsageScope; days: number; from: number; to: number; operatorAllowed: boolean;
   sources: { source: NoahUsageSource; metrics: UsageMetrics; costs: { currency: string; amountMinor: number }[]; agents: UsageGroup[]; users: UsageGroup[]; recent: UsageRow[] }[];
+  cloud?: NoahCloudUsageReport;
+  cloudError?: string;
 };
+
+export type NoahCloudUsageReport = {
+  months: CloudMonth[];
+  currentMonth: string;
+  current: CloudMonth | null;
+  remainingUsd: number | null;
+  trigger: CloudTriggerState;
+};
+
+export async function noahCloudUsageReport(
+  db: Pick<D1Database, 'prepare'>,
+  triggerConfig?: string,
+  now = Date.now(),
+): Promise<NoahCloudUsageReport> {
+  const configured = triggerConfig ?? '190';
+  const thresholdUsd = Number(configured);
+  if (!/^\d+(\.\d{1,6})?$/u.test(configured) || !Number.isFinite(thresholdUsd)) {
+    throw new NoahAgentError('移行の引き金の金額設定を確認してください。', 503);
+  }
+  const currentMonth = utcMonth(now);
+  const date = new Date(now);
+  const from = Date.UTC(date.getUTCFullYear(), date.getUTCMonth() - 11, 1);
+  // Metering derives cost_usd from cloud-cost.ts when a trusted usage record is accepted.
+  const { results: months } = await db.prepare(`SELECT
+    strftime('%Y-%m', observed_at / 1000, 'unixepoch') AS month,
+    ROUND(COALESCE(SUM(CASE WHEN json_extract(usage_json, '$.kind') = 'container' THEN cost_usd END), 0), 6) AS containersUsd,
+    ROUND(COALESCE(SUM(CASE WHEN json_extract(usage_json, '$.kind') = 'model' THEN cost_usd END), 0), 6) AS modelsUsd,
+    ROUND(COALESCE(SUM(cost_usd), 0), 6) AS totalUsd,
+    COUNT(*) - COUNT(cost_usd) AS unpriced, COUNT(*) AS records
+    FROM cloud_usage_records
+    WHERE observed_at BETWEEN ? AND ?
+    GROUP BY month ORDER BY month`).bind(from, now).all<CloudMonth>();
+  const current = months.find((month) => month.month === currentMonth) ?? null;
+  const remainingUsd = current && (current.unpriced === 0 || current.totalUsd >= thresholdUsd)
+    ? Math.max(0, Math.round((thresholdUsd - current.totalUsd) * 1e6) / 1e6)
+    : null;
+  return { months, currentMonth, current, remainingUsd, trigger: cloudTrigger(months, now, { thresholdUsd }) };
+}
+
 export function noahUsageOperatorAllowed(owner: string, configured: unknown) {
   if (typeof configured !== 'string') return false;
   try { const ids = JSON.parse(configured); return Array.isArray(ids) && ids.length <= 100 && ids.every(id => typeof id === 'string' && id.length > 0 && id.length <= 256) && ids.includes(owner); }

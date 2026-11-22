@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import { cloudBudget, CloudBudgetError, cloudBudgetResponse, type CloudBudgetEnv } from '@/lib/cloud-operations';
 import { database } from '@/lib/fund-store';
 import { authorizeRemoteAiRequest } from '@/lib/remote-ai-guard';
 import { LlmProviderError } from '@/lib/llm-providers';
@@ -58,10 +59,15 @@ export async function POST(request: Request, context: Context) {
         current.quote.ceiling.modelId, current.quote.ceiling.currency);
       if (verified.digest !== current.verifiedRate.digest) throw new RemoteAiTextStoreError('QUOTE_CONFLICT');
     }
-    const row = body.action === 'approve' ? await store.reserve(owner, id, body.approvalDigest)
+    const budget = body.action === 'approve' && current.state === 'quoted'
+      ? cloudBudget(env as unknown as CloudBudgetEnv)
+      : undefined;
+    const row = body.action === 'approve' ? await store.reserve(owner, id, body.approvalDigest, Date.now(), budget)
       : await store.cancelBeforeSend(owner, id, body.approvalDigest);
     return remoteAiTextJson({ execution: row ? remoteAiTextPublicRecord(row) : null, providerSubmission: 'not_performed' });
-  } catch (error) { return remoteAiTextHttpError(error); }
+  } catch (error) {
+    return error instanceof CloudBudgetError ? cloudBudgetResponse(error) : remoteAiTextHttpError(error);
+  }
 }
 export async function DELETE(request: Request, context: Context) {
   try {

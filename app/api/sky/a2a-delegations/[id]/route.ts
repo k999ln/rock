@@ -1,4 +1,5 @@
 import { readBoundedStream } from '@/lib/bounded-stream';
+import { cloudBudget, CloudBudgetError, cloudBudgetResponse, type CloudBudgetEnv } from '@/lib/cloud-operations';
 import {
   a2aDelegationStore,
   A2ADelegationStoreError,
@@ -41,6 +42,7 @@ async function readBody(request: Request) {
 }
 
 function errorResponse(error: unknown) {
+  if (error instanceof CloudBudgetError) return cloudBudgetResponse(error);
   if (error instanceof A2ADelegationStoreError) {
     const status =
       error.code.includes('conflict') || error.code.includes('mismatch')
@@ -235,7 +237,8 @@ export async function PATCH(request: Request, context: Context) {
         id,
         digests.inputSha256,
       );
-      delegation = await store.approve(owner, id, input.authorizationSha256, encrypted);
+      delegation = await a2aDelegationStore(database(), cloudBudget(env as unknown as CloudBudgetEnv))
+        .approve(owner, id, input.authorizationSha256, encrypted);
     } else if (
       input.action === 'cancel' &&
       input.authorizationSha256 === undefined &&
