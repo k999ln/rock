@@ -27,3 +27,13 @@
 金融案件は現行条件の再確認・提携・実媒体・正式リンクが未受入で、報酬対象の紹介は0件。銀行着金の確認も未受入。新規媒体登録は本人が不要と回答しており送信しない。申請・問い合わせ・取引を勝手に実行しない。実際の成果承認までの通し受入が終わるまで、全工程自動化や収益獲得の完了とは扱わない。
 
 試験: `node --test tests/noah-combinations.test.mjs tests/noah-business-sources.test.mjs`。合成データは試験内のみ。実ASP・銀行へ試験注文を作らない。
+
+## 収集Agentと提携済み案件の照合
+
+`revenue-sync.mjs build-index capture.private.json output.private.json` は全ページ件数と重複を確認し、提携中だけの用途索引を作る。単価・顧客・銀行・広告タグを索引へ含めない。元の取得日を保持し、変換日を現行条件の確認日へ置き換えない。
+
+`revenue-sync.mjs sync index.private.json secrets.private.json --start` は既存Workerのowner認証で索引更新・開始・1回の照合を行う。以降は同じDOのalarmが15分ごとに進める。`revenue_status` は完全世代・取得中ページ・候補理由・自社Agentの公開判定を返す。`revenue_stop` はexpectedRevision付きで停止し、公開一覧を直ちに空にする。候補一覧は最大250件のサンプルと全件集計で、全件が承認されたという意味ではない。
+
+自社Agentは `BUSINESS_OPERATIONS_TOKEN` で既存の法人実行器の条件を読み、固定先だけを `/api/revenue` へ公開する。外部収集Agentは用途が一致しても実行証拠・対応/媒体確認がない間は要確認。Noahの公開一覧では自社の専用レーンとして扱い、MCP公式登録や第三者収集実績を創作しない。提供元実行は収集担当の共通Work/所有者ゲートへ統合する。
+
+この統合の本番適用には、既存WorkerのCloudflare配備権限、最新mainのSites反映、provider担当のMCP対応commitが必要。コードの試験成功だけで本番適用済みと記録しない。

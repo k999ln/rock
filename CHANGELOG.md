@@ -1,5 +1,7 @@
 ## 2026-11-22
 
+- Noahの公開Agent一覧と提携案件の非公開索引に、完全取得・候補照合・公開条件の定期点検と自社MCPの共通一覧接続を追加。本番統合は受入中（task101、PR作成後に番号記録）。
+
 - 移行先privateリポジトリのCodeQLにActions読取権限を追加し、全履歴SPIDERの検査時間を有界で延長。固定版スキャナ・既存検知規則・失敗時の拒否は維持（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 
 - Noahの通常タップに低遅延のポコ音・振動・押下反応と設定内の試聴を追加し、評価数のないMCP Registry表示をカードから除去。接続成功音・既存ミュート・元サイト評価を保持（task100、[PR #3](https://github.com/iceiceice999/rock/pull/3)）。

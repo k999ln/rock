@@ -1,4 +1,12 @@
 import {
+  advanceDiscovery,
+  validateOfferIndex,
+  matchRevenueCandidates,
+  revenuePublications,
+  observeBusinessAdapter,
+} from './revenue-matching.mjs';
+import { loadRevenue, saveRevenue } from './revenue-storage.mjs';
+import {
   validateCombinationConfig,
   emptyCombinationState,
   runCombinations,
@@ -78,11 +86,44 @@ export class CombinationLedger {
     this.ctx = ctx;
     this.env = env;
   }
+  async reconcileRevenue() {
+    if (this.revenueFlight) return this.revenueFlight;
+    this.revenueFlight = (async () => {
+      const current = await this.ctx.storage.transaction((tx) =>
+        loadRevenue(tx),
+      );
+      if (!current.enabled) return;
+      const [discovery, business] = await Promise.all([
+        advanceDiscovery(current.discovery),
+        observeBusinessAdapter(this.env.BUSINESS_OPERATIONS_TOKEN),
+      ]);
+      await this.ctx.storage.transaction(async (tx) => {
+        const latest = await loadRevenue(tx);
+        // A stop or index replacement while fetching cancels this generation.
+        if (!latest.enabled || latest.revision !== current.revision) return;
+        latest.discovery = discovery;
+        latest.business = business;
+        latest.matches =
+          latest.index && discovery.snapshot
+            ? matchRevenueCandidates(discovery.snapshot.cards, latest.index)
+            : null;
+        latest.updatedAt = new Date().toISOString();
+        await saveRevenue(tx, latest);
+      });
+    })();
+    try {
+      await this.revenueFlight;
+    } finally {
+      this.revenueFlight = null;
+    }
+  }
   async alarm() {
     await this.ctx.storage.transaction(async (tx) => {
       const current = (await tx.get('state')) || emptyCombinationState();
       if (!current.enabled) {
-        await tx.deleteAlarm();
+        if ((await tx.get('revenue'))?.enabled)
+          await tx.setAlarm(Date.now() + 900000);
+        else await tx.deleteAlarm();
         return;
       }
       try {
@@ -96,11 +137,64 @@ export class CombinationLedger {
         await tx.setAlarm(current.nextRunAt);
       }
     });
+    await this.reconcileRevenue();
   }
   async fetch(request) {
     try {
       const input = await request.json(),
         config = configFor(this.env);
+      if (input.action === 'revenue_sync') {
+        await this.reconcileRevenue();
+        return json({ reconciled: true });
+      }
+      if (
+        [
+          'revenue_status',
+          'revenue_index',
+          'revenue_start',
+          'revenue_stop',
+          'revenue_public',
+        ].includes(input.action)
+      ) {
+        return this.ctx.storage.transaction(async (tx) => {
+          const state = await loadRevenue(tx);
+          if (input.action === 'revenue_public')
+            return json({ items: revenuePublications(state) });
+          if (input.action === 'revenue_status')
+            return json({
+              enabled: state.enabled,
+              revision: state.revision,
+              updatedAt: state.updatedAt,
+              catalog: {
+                complete: !!state.discovery?.snapshot,
+                total: state.discovery?.snapshot?.total ?? null,
+                checkedAt: state.discovery?.snapshot?.checkedAt ?? null,
+                pending: state.discovery?.cycle?.cards.length ?? 0,
+                error: state.discovery?.error ?? null,
+              },
+              index: state.index
+                ? {
+                    count: state.index.offers.length,
+                    checkedAt: state.index.checkedAt,
+                    sourceSha256: state.index.sourceSha256,
+                  }
+                : null,
+              matches: state.matches,
+              business: state.business,
+              published: revenuePublications(state),
+            });
+          if (input.expectedRevision !== state.revision)
+            return json({ error: 'revision_conflict' }, 409);
+          if (input.action === 'revenue_index')
+            state.index = validateOfferIndex(input.index);
+          if (input.action === 'revenue_start') state.enabled = true;
+          if (input.action === 'revenue_stop') state.enabled = false;
+          state.revision++;
+          await saveRevenue(tx, state);
+          if (state.enabled) await tx.setAlarm(Date.now());
+          return json({ revision: state.revision, enabled: state.enabled });
+        });
+      }
       return await this.ctx.storage.transaction(async (tx) => {
         let state = (await tx.get('state')) || emptyCombinationState(),
           result;
@@ -143,7 +237,10 @@ export class CombinationLedger {
             result = { enabled: false };
             break;
           case 'watchdog':
-            if (state.enabled && !(await tx.getAlarm()))
+            if (
+              (state.enabled || (await tx.get('revenue'))?.enabled) &&
+              !(await tx.getAlarm())
+            )
               await tx.setAlarm(Date.now());
             return json({ enabled: state.enabled });
           case 'prepare': {
@@ -283,10 +380,25 @@ const worker = {
         if (request.method !== 'POST')
           return json({ error: 'POST required' }, 405);
         const v = await body(request);
-        if (!['status', 'start', 'stop', 'observe', 'cost'].includes(v.action))
+        if (
+          ![
+            'status',
+            'start',
+            'stop',
+            'observe',
+            'cost',
+            'revenue_status',
+            'revenue_index',
+            'revenue_start',
+            'revenue_stop',
+            'revenue_sync',
+          ].includes(v.action)
+        )
           return json({ error: 'Unknown action' }, 400);
         return call(v.action, v);
       }
+      if (request.method === 'GET' && url.pathname === '/api/revenue')
+        return call('revenue_public');
       if (request.method === 'GET' && url.pathname === '/robots.txt')
         return new Response(
           'User-agent: *\nAllow: /\nDisallow: /operations\nSitemap: ' +

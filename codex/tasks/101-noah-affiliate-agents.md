@@ -72,3 +72,8 @@
 - 全体verifyはNode 4,802件中4,795成功・3失敗・4 skipで停止。対象外のmiiブラウザ試験にChrome起動ポート/画面待機の失敗があり、当該2ファイルを `--test-concurrency=1` で再実行すると5件すべて成功。テスト削除・待ち時間緩和・対象外実装の変更はなし。一括verify成功とは扱わない。
 - 公開後のalarmを実確認: run32（02:32:55 UTC）からrun33（02:47:55 UTC）へ操作なしで進み、紹介runningを維持。次回03:02:55 UTC。Chromeの6時間取得の次回成功とは区別する。
 - Node試験より後のverify全チェーンを別実行し、パッケージ・課金・公開Web・本番build・asset・API（1,918 assertions）・担当台帳まで成功。ログはGit外へ保存。
+
+## 2026-11-22 収集担当との統合（作業中）
+本人の継続指示により revenue-* の定期一覧取得、非公開提携案件索引、候補の照合・証拠ゲート・公開状態・取得履歴と試験を追加。provider/Work実行は収集担当の契約を再利用し、独自の実行権限を作らない。登録済み法人MCPを最初の稼働先とする。未知の組み合わせは要確認、承認額は既存ASP台帳の実観測のみ。
+
+統合の編集範囲に `lib/noah-revenue-*`、共通directoryの自社レーン、`app/api/noah/revenue/catalog` を追加。外部Registryを偽装せず、固定公開ゲートを通った自社Agentだけを本人scope/Workの既存providerへ渡す。収集担当とのhandoffでproviderは別担当と合意。
