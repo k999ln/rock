@@ -1,0 +1,93 @@
+.panel {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #eae6ef;
+  border-radius: 20px;
+  background: white;
+  font-size: 16px;
+  min-width: 0;
+}
+.panel h2 {
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+.panel p {
+  line-height: 1.6;
+}
+.panel fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.field {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+  font-size: 16px;
+}
+.field input:not([type='checkbox']),
+.field textarea,
+.field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid #d9d2e3;
+  border-radius: 12px;
+  font: inherit;
+  background: white;
+  color: #242329;
+}
+.field input[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+  accent-color: #7650b8;
+}
+.panel summary {
+  min-height: 44px;
+  align-content: center;
+  cursor: pointer;
+}
+.panel .primary {
+  width: 100%;
+  min-height: 48px;
+  background: #7650b8;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+}
+.panel button:disabled {
+  opacity: 0.6;
+}
+.destination {
+  font-size: 14px;
+  color: #62596b;
+  overflow-wrap: anywhere;
+}
+.error {
+  background: #fff5f3;
+  color: #8a3c32;
+  padding: 12px;
+  border-radius: 12px;
+}
+.panel a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #64517e;
+}
+.panel :focus-visible {
+  outline: 3px solid #ad8ae5;
+  outline-offset: 3px;
+}
+@media (max-width: 520px) {
+  .panel {
+    padding: 18px 14px;
+  }
+}

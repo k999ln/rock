@@ -32,7 +32,7 @@ void test('tap and selection use short pulses, success is distinct, duplicate ta
   assert.equal(h.api.noahHaptic('tap'), false);
   h.advance(80); assert.equal(h.api.noahHaptic('select'), true);
   assert.equal(h.api.noahHaptic('success'), true);
-  assert.deepEqual(h.calls, [8, 12, [12, 45, 12]]);
+  assert.deepEqual(h.calls, [16, 24, [12, 45, 12]]);
 });
 
 void test('disabled, hidden, inactive, unsupported and policy-blocked environments stay silent', () => {

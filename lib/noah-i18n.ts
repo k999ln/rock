@@ -378,6 +378,9 @@ export const NOAH_MESSAGES: Record<
   '公開する': ['Publish', '发布', '게시하기', 'Publicar', 'نشر'],
   '設定する': ['Configure', '配置', '설정하기', 'Configurar', 'إعداد'],
   接続完了の音: ['Connection sound', '连接完成提示音', '연결 완료 소리', 'Sonido de conexión', 'صوت اكتمال الاتصال'],
+  'タップ・接続の音': ['Tap and connection sounds', '轻触和连接提示音', '탭 및 연결 소리', 'Sonidos al tocar y conectar', 'أصوات النقر والاتصال'],
+  '反応を試す': ['Try the feedback', '试试反馈效果', '반응 미리 보기', 'Probar la respuesta', 'تجربة الاستجابة'],
+  'このブラウザは振動に対応していません': ['This browser does not support vibration', '此浏览器不支持振动', '이 브라우저는 진동을 지원하지 않습니다', 'Este navegador no admite vibración', 'هذا المتصفح لا يدعم الاهتزاز'],
   タップの振動: [
     'Tap vibration',
     '触控振动',

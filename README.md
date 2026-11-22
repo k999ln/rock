@@ -90,9 +90,13 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+公開Gradio APIに対応するAgentは、詳細の「使う」から入力して実行でき、進捗と成果をNoahの同じ仕事画面に保存します。実行中は仕事詳細を開いたままにし、保存された成果は後から再表示できます。結果通信が途切れた場合は自動再実行しません。APIのないコード紹介や提供元のGPU制限は、準備・失敗理由を表示します。
+
 Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別AgentへのURLを渡せます。公開掲載中のAgentの名前・説明を共有カードへ反映し、接続情報や本人の成果は共有しません。
 
 `https://avoado.si/` と `https://avoado.si/noah` の共有情報は、Noahのタイトル・説明・1200×630 PNGを返します。X用の大型画像カードとOpen Graphを初期HTMLに含め、画像添付なしでURL共有に使えます。
+
+カードには元サイトの実際の評価数だけを表示します。件数のないMCP Registry等は詳細の出典で確認でき、評価として表示しません。
 
 ホームには接続できるAgentが先に並びます。指定した条件を保持して検索し、共通カードの一つの結果一覧に表示します。法人向け導入準備・組合せガイドの告知枠はホームから外しています。
 
@@ -100,7 +104,7 @@ Agent詳細の「共有」「URLをコピー」「Xで紹介」から、個別Ag
 
 Agent詳細の最初に料金・送信先と接続ボタンを表示します。接続後は用途名で操作を選び、その行の下から依頼できます。スマホの操作一覧も、用途名・説明・確認事項を縦に並べて読めます。長い紹介は「Agentの詳細」で開けます。任せる範囲・提供者の説明は開いて確認でき、必要入力と実行を選んだ行の近くに表示します。
 
-一覧の読み込み中はカードの形を表示し、通常の待機は花形ロゴと細い進行表示を使います。接続中は透過花形ロゴの待機画面を表示し、接続成功が確定した時だけ短いポコ音と振動を返します。音と振動は操作の設定で個別に切り替えられます。対応端末ではタップ・選択・接続完了に短い振動が返り、メニューの「操作の設定」で切り替えを保存できます。動きを減らす端末設定では読み込みのアニメーションを停止します。
+一覧の読み込み中はカードの形を表示し、通常の待機は花形ロゴと細い進行表示を使います。接続中は透過花形ロゴの待機画面を表示し、接続成功が確定した時だけ短いポコ音と振動を返します。通常のボタン・メニュー・選択にも短いポコ音と振動を返します。音は低遅延の共通再生器を使い回し、連打を重ねず、操作のない間や非表示時には停止します。メニューの「操作の設定」で音と振動を個別に切り替え、「反応を試す」で確認できます。以前のミュート設定も保持します。動きを減らす端末設定では読み込み・押下のアニメーションを停止します。振動は対応する端末とブラウザで利用できます。
 
 配布先は **https://avoado.si/noah**。OSの運用開始を待たずに、Noah単体で使うサービスです。専用のタイムライン、Agentを探す（`/noah/explore`）、実行中、保存（成果を含む）で完結します。Noahの会員登録やログインは不要です。Noah配下ではOSランタイムを起動せず、OSやMacの導入・端末接続を利用条件にしません。共通の本人認証と成果の保存・所有者分離を再利用します。2026-11-21に独立版154を公開し、承認された10本のDB追加と一覧・依頼受付の有効化を反映しました。公開ドメインの6画面200・一覧API200・未認証の接続/依頼401を確認済みです。2026-11-22に公開版156へ更新し、応答確認済みの172件を掲載しました。本人承認の掲載担当を設定し、公開環境の390px画面で読み取り専用Agent 1件の接続→依頼→成果受領→切断後の成果保持を確認済みです。172件すべての実行成功を保証する数ではありません。`npm run noah:check:domain` で公開側を確認できます。2026-11-22の公開版163では、本人承認のAgentboardアカウント1件の外部登録→暗号化キー保存→認証付き実行→成果保持まで確認しました。本人から実スマホでAgentの実行と成果を開けたとの回答も得ています。100人分の合成試験は通過していますが、本番100人の同時利用を保証するものではありません。
 
@@ -117,7 +121,7 @@ Agent詳細の最初に料金・送信先と接続ボタンを表示します。
 
 現行の入口は [Agentを探す](https://avoado.si/noah/explore) です。Mac向けガイドの公開ページは撤去済みです。
 
-[CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/k999ln/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
+[CowAgentの操作動画（18秒）](https://raw.githubusercontent.com/iceiceice999/rock/main/docs/assets/readme/noah-first-agent.mp4) · [スマホで配布元を確かめるCM（20秒）](https://raw.githubusercontent.com/iceiceice999/rock/main/docs/assets/readme/noah-cm-phone-source.mp4) · [Macをつなぐ準備のCM（20秒）](https://raw.githubusercontent.com/iceiceice999/rock/main/docs/assets/readme/noah-cm-mac-runner.mp4) · [サロン用の投稿文](docs/noah/online-salon-trial.md)
 
 <a name="noah-tools"></a>
 
@@ -383,7 +387,7 @@ miiの販売・予約は受け付けておらず、価格と発売日は未定�
 
 ### この作業フォルダで始める
 
-複数の作業フォルダを使うときは、最初に `git status -sb` で現在のブランチと未コミットの変更を確認します。共通の作業方針は[GitHubのmainのREADME](https://github.com/k999ln/rock/blob/main/README.md)で確認できます。
+複数の作業フォルダを使うときは、最初に `git status -sb` で現在のブランチと未コミットの変更を確認します。開発とPRは `iceiceice999/rock` に集約します。共通の作業方針は[GitHubのmainのREADME](https://github.com/iceiceice999/rock/blob/main/README.md)で確認できます。
 
 リポジトリのルートで依存を入れて開発サーバーを起動し、ターミナルに表示されたURLの `/noah` または `/os/eve` を開きます。Node.js・npmと依存の指定は[package.json](package.json)と[package-lock.json](package-lock.json)にあります。
 

@@ -19,7 +19,7 @@ void test('locale negotiation uses supported device languages and falls back to 
   assert.equal(noahTranslate('en','あと 2 タップ'),'2 more taps');
 });
 void test('primary screens have translations for every literal UI message',()=>{
-  const files=['noah-ask','noah-card','noah-connect-button','noah-interaction','noah-loading','noah-profile-readiness','noah-profile','noah-ready-detail','noah-ready','noah-registration-browser','noah-registration-sheet','noah-registration','noah-shell','noah-timeline','noah-work-list','noah-task-detail','noah-result-content','noah-agent-feedback','noah-public-detail','noah-teikibin','rockstar-account'];
+  const files=['noah-provider-runner','noah-ask','noah-card','noah-connect-button','noah-interaction','noah-loading','noah-profile-readiness','noah-profile','noah-ready-detail','noah-ready','noah-registration-browser','noah-registration-sheet','noah-registration','noah-shell','noah-timeline','noah-work-list','noah-task-detail','noah-result-content','noah-agent-feedback','noah-public-detail','noah-teikibin','rockstar-account'];
   for(const file of files){const source=ts.createSourceFile(file,readFileSync(new URL(`../components/${file}.tsx`,import.meta.url),'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
     function visit(n){if(ts.isCallExpression(n)&&n.expression.getText(source)==='t'&&ts.isStringLiteral(n.arguments[0]))assert.ok(NOAH_MESSAGES[n.arguments[0].text],`${file}: ${n.arguments[0].text}`);ts.forEachChild(n,visit);}visit(source);
   }
@@ -32,15 +32,15 @@ void test('work groups prioritize attention and never invent progress beyond rem
 });
 const base={id:'job-1',state:'running',revision:2,host:'example.com',tool:'Research',createdAt:1,updatedAt:2};
 const modules={'@/lib/noah-ask-view':askView,'@/lib/owner-intent':ownerIntent};
-void test('task detail verifies owner membership and stops with the displayed revision and owner scope',async()=>{
-  let item={...base};
+void test('task detail uses the owned item response and stops with its displayed revision and owner scope',async()=>{
+  let item={...base,ownerScope:'scope-a'};
   const ui=screen({modules,fetch:async request=>{
     if(request.method==='POST'){item={...item,stopRequested:true};return {body:item};}
     return {body:request.url==='/api/noah/ask'?{ownerScope:'scope-a',asks:[item]}:item};
   }});const page=ui.mount('components/noah-task-detail.tsx',{id:base.id});await page.flush();
   await page.click('停止');const sent=ui.calls.find(c=>c.method==='POST');assert.equal(sent.headers[ownerIntent.OWNER_SCOPE_HEADER],'scope-a');assert.deepEqual(sent.body,{action:'stop',revision:2});assert.match(page.text(),/停止を確認中/);
 });
-void test('task detail hides a result if its owner list does not contain the job',async()=>{
+void test('task detail hides a result without an authenticated item owner scope',async()=>{
   const item={...base,state:'succeeded',finishedAt:3,result:{text:'Private result'}};
   const ui=screen({modules,fetch:async({url})=>({body:url==='/api/noah/ask'?{ownerScope:'different-owner',asks:[]}:item})});
   const page=ui.mount('components/noah-task-detail.tsx',{id:base.id});await page.flush();assert.doesNotMatch(page.text(),/Private result/);assert.match(page.text(),/仕事を読み込めませんでした/);
@@ -58,4 +58,11 @@ void test('profile readiness opens external registration for both saved and miss
     const page=ui.mount('components/noah-profile-readiness.tsx',{profile:{reuseEnabled:true,fields,documents:[]}});await page.flush();
     assert.equal(page.find('a','Provider')[0].props.href,'/noah/registration?agent=agent');
   }
+});
+
+void test('saved task detail remains accessible even beyond the fifty-item list window',async()=>{
+ const item={...base,state:'succeeded',finishedAt:3,ownerScope:'scope-a',result:{text:'Older saved result'}};
+ const ui=screen({modules,fetch:async({url})=>{assert.equal(url,'/api/noah/ask/'+base.id);return {body:item};}});
+ const page=ui.mount('components/noah-task-detail.tsx',{id:base.id});await page.flush();
+ assert.match(page.text(),/Older saved result/);assert.equal(ui.calls.length,1);
 });
