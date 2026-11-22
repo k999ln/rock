@@ -74,6 +74,8 @@ export const NOAH_PIN_RANK = {
   hotSeconds: 45_000, hotEpoch: 1_134_028_003,
   /** 5 枚に 1 枚は、まだ実績の無い新しい物を試しに出す（X の新しい投稿のお試し・棚の 5 枚に 1 枚と同じ考え）。 */
   trialEvery: 5,
+  /** お試しの並び: 新しく握手が通った順。押すだけで試せる物は、この分（3 日）新しく扱う（task 121）。 */
+  freshOneTapMs: 259_200_000,
   /** 同じ提供者が、近くに続いてよい数（直近 lookback 枚の中で）。X の同じ作者が続くと下げる決まりの代わり。 */
   sameProviderWithin: 6, sameProviderMax: 1,
   /** 同じ分野が続いてよい枚数。 */
@@ -147,7 +149,7 @@ export function noahPixieScores(queries: readonly NoahPixieQuery[], edges: reado
 export type NoahPinCandidate = { id: string; provider: string; topic: NoahPinTopic };
 /**
  * 候補の出所。personal: フォローしたボードに新しく入った物と、本人へのおすすめ（最初の頁だけ）。popular: 票のある物の hot の順。
- * ran: 人が動かして成果が返った物（新しい順）。fresh: まだ実績の無い物（その日の並び）。
+ * ran: 人が動かして成果が返った物（新しい順）。fresh: まだ実績の無い物（新しく握手が通った順。押すだけで試せる物を先に）。
  */
 export type NoahPinSources = { personal: NoahPinCandidate[]; popular: NoahPinCandidate[]; ran: NoahPinCandidate[]; fresh: NoahPinCandidate[] };
 /** 席の順。5 枚目ごとに fresh（お試し）。本人へのおすすめがあれば、3 枚目ごとに混ぜる。 */
@@ -193,7 +195,7 @@ export function noahComposePins(sources: NoahPinSources, size: number, exclude: 
 // ---------------------------------------------------------------------------
 
 export type NoahPinCursor = {
-  /** popular: 最後に出した物の [hot, id]。ran: [l2_at, id]。fresh: [shuffle, id]。null はその出所を最初から（または読み切った）。 */
+  /** popular: 最後に出した物の [hot, id]。ran: [l2_at, id]。fresh: [握手が通った時 + 押すだけの加点, id]。null はその出所を最初から（または読み切った）。 */
   popular: [number, string] | null; ran: [number, string] | null; fresh: [number, string] | null;
   /** 読み切った出所。 */
   done: ('popular' | 'ran' | 'fresh')[];

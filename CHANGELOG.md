@@ -4,6 +4,7 @@
 - Noahのカードと掲載Agent詳細から利用人数・王冠・コメント列を外し、元サイト評価へ一本化。公開186・390px/590pxを確認。全体verifyは別の共有機能の既存lintで停止（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 - Noahの評価元で付いたGitHubスター/Hugging Faceいいね等をカードに常時表示。元APIの実数と公開184の表示・390pxレイアウトを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
 - Noahの既存Agentと収集Agentを共通カード・王冠/コメントへ統合し公開182へ反映。390px/590pxの表示、絞り込み間の評価引継ぎと取り消しを確認（task100、[PR #386](https://github.com/k999ln/rock/pull/386)）。
+- Noahの集める場所を増やした（task121。Opus / Noelle。本人指示「twitterとかredditとか、github repoとか他に考えられる場所探して、常に新しく使いやすいものが上に」）。Hacker News・GitHubのMCPの新着・Hugging FaceのMCP Space・npm・DockerのMCP一覧・awesome一覧・Smithery（鍵がある時）を5分ごとの収集に追加し、CodexがX・Reddit・Blueskyで読んだリンクを受け取る口（`scripts/noah-collector-social.mjs`）を用意。「新しく見つかったAgent」を新しく使いやすい順（学習・乱数なし）に並べ、動かし方（スマホで今すぐ・ブラウザ・Mac・鍵）を表示。握手の済んだ系列を収集機が1日400系列まで一覧へ自動で入れる（署名付き・変わった物だけ）。グリッドのお試しは新しく握手が通った順。試験10本（`tests/noah-collection-sources.test.mjs`）。[PR #385](https://github.com/k999ln/rock/pull/385)。本番の配備はCodex。
 - Noahの収集欄をUX操作試験し、全件表示での検索条件引継ぎ・条件クリア・通信失敗時の再試行を修正（task120、[PR #384](https://github.com/k999ln/rock/pull/384)）。
 - 農家検索を削除し、運営Dockで指定した配給を本人の模擬専用回線で受領する流れに変更。朝9時までの[英語の開発プロンプト](docs/prompts/noah-esim-free-device-trial-20261122.md)を並行開発と照合し、入荷・在庫割当・定期配給の合格条件を記載。eSIM用クラウド入口、Agent別の実行先選択、画面を閉じた後の結果照会と成果内訳を追加（[PR #382](https://github.com/k999ln/rock/pull/382)）。
 

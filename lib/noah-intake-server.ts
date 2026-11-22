@@ -13,6 +13,7 @@ export function noahIntakeDependencies() {
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
   return { db: database(), ...access,
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
+    collectorKey: config.NOAH_COLLECTION_KEY,
     origin: noahPublicOrigin(config.NOAH_ORIGIN),
     fetcher: fetch, now: Date.now, waitUntil,
     authorizeAction: noahProfileStore().authorize,
