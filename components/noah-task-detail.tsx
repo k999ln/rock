@@ -1,5 +1,5 @@
 'use client';
-import {noahOperationLabel} from '@/lib/noah-operation-labels';
+import { noahOperationLabel } from '@/lib/noah-operation-labels';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -32,35 +32,23 @@ export default function NoahTaskDetail({ id }: { id: string }) {
         return;
       }
       try {
-        const [response, owner] = await Promise.all([
-          fetch(`/api/noah/ask/${encodeURIComponent(id)}`, {
-            cache: 'no-store',
-            signal: controller.signal,
-          }),
-          fetch('/api/noah/ask', {
-            cache: 'no-store',
-            signal: controller.signal,
-          }),
-        ]);
-        const [data, list] = await Promise.all([
-          response.json() as Promise<NoahAskItem>,
-          owner.json() as Promise<{
-            ownerScope?: string;
-            asks?: NoahAskItem[];
-          }>,
-        ]);
+        const response = await fetch(
+          `/api/noah/ask/${encodeURIComponent(id)}`,
+          { cache: 'no-store', signal: controller.signal },
+        );
+        const data = (await response.json()) as NoahAskItem & {
+          ownerScope?: string;
+        };
         if (epoch !== generation.current) return;
         if (
           !response.ok ||
-          !owner.ok ||
           data.id !== id ||
-          typeof list.ownerScope !== 'string' ||
-          !list.asks?.some((item) => item.id === data.id)
+          typeof data.ownerScope !== 'string'
         )
           throw Error('仕事を読み込めませんでした。');
         setNow(Date.now());
         setAsk(data);
-        setScope(list.ownerScope ?? null);
+        setScope(data.ownerScope ?? null);
         setError('');
         timer = setTimeout(
           () => void read(),
@@ -93,6 +81,41 @@ export default function NoahTaskDetail({ id }: { id: string }) {
       document.removeEventListener('visibilitychange', returned);
     };
   }, [id, attempt, invalidate]);
+  // One long response keeps the provider stream alive. Do not cancel it on a
+  // focus refresh; the common status API remains the source of displayed state.
+  const receiving = useRef<string | null>(null);
+  useEffect(() => {
+    if (
+      ask?.mode !== 'provider' ||
+      ask.finishedAt !== undefined ||
+      !scope ||
+      receiving.current === id
+    )
+      return;
+    receiving.current = id;
+    void fetch(`/api/noah/provider?work=${encodeURIComponent(id)}`, {
+      cache: 'no-store',
+    })
+      .then(async (response) => {
+        const reader = response.body?.getReader();
+        if (reader) {
+          try {
+            while (!(await reader.read()).done) {
+              /* consume keep-alives */
+            }
+          } finally {
+            reader.releaseLock();
+          }
+        }
+      })
+      .catch(() => undefined)
+      .finally(() => {
+        setTimeout(() => {
+          receiving.current = null;
+          setAttempt((n) => n + 1);
+        }, 3000);
+      });
+  }, [ask, id, scope]);
   async function stop() {
     if (!ask || !scope || busy) return;
     setBusy(true);
@@ -156,6 +179,11 @@ export default function NoahTaskDetail({ id }: { id: string }) {
               ))}
             </ol>
           )}
+          {ask.mode === 'provider' && ask.finishedAt === undefined && (
+            <p className={styles.meta}>
+              {t('成果が届くまで、この画面を開いたままにしてください。')}
+            </p>
+          )}
           {ask.error && (
             <p role="alert" className={styles.error}>
               {ask.error}
@@ -188,7 +216,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
           {ask.agentId && (
             <Link
               className={styles.back}
-              href={`/noah/ready/agent?id=${encodeURIComponent(ask.agentId)}`}
+              href={`${ask.mode === 'provider' ? '/noah/discover/agent' : '/noah/ready/agent'}?id=${encodeURIComponent(ask.agentId)}`}
             >
               {t('この Agent を開く')}
             </Link>

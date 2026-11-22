@@ -74,8 +74,8 @@
 
 ### 3.6 正本の移行
 
-- この PR は、この会話の仕組みの都合で k999ln/rock に出した。iceiceice999/rock へ移す。
-- 正本が分かれた後に k999ln/rock に入った PR も、全部まとめて移す: #395・#397・#404・#360・#406・#407・#410・#412（#411 を含む）・#414・#415 と、この PR。
+- この PR（k999ln/rock #421）は、この会話の仕組みの都合で k999ln/rock に出した。iceiceice999/rock へ移す。
+- 正本が分かれた後に k999ln/rock に入った #415 までは、Codex が iceiceice999/rock へ統合済み（iceiceice999 #6・k999ln #420）。残りはこの PR だけ。
 - 収集機の Actions の鍵（`NOAH_COLLECTION_KEY`・`SMITHERY_API_KEY`・`NOAH_R2_*`）は、今は k999ln にある。iceiceice999 で動かす時は、ノエルが Actions の secret に入れる。移し終えるまで、k999ln の Actions は止めない（2 つが同時に掲載すると、新しい方が上書きする。どちらか 1 つにしてから切り替える）。
 
 ## 4. 合格条件

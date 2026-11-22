@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-11-22T10:58:58Z",
+  "observedAt": "2026-11-22T11:52:04Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
-    "origin": "http://127.0.0.1:8787",
+    "origin": "http://127.0.0.1:18857",
     "productionBuild": true
   },
   "inputs": {
@@ -37,7 +37,7 @@
   "result": {
     "schema": "rockstaros-web-security-response-check/1",
     "status": "PASS",
-    "baseOrigin": "http://127.0.0.1:8787",
+    "baseOrigin": "http://127.0.0.1:18857",
     "universalHeaders": 8,
     "routes": [
       "/",
@@ -47,7 +47,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-AQL0LMP_.js"
+      "/_next/static/chunks/index-L7ILJv-C.js"
     ],
     "evePwa": {
       "manifest": "/connect/eve.webmanifest",

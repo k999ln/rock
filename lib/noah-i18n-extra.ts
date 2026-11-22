@@ -3,6 +3,21 @@ export const NOAH_EXTRA_MESSAGES: Record<
   string,
   readonly [string, string, string, string, string]
 > = {
+  "Noahで使う": ["Use in Noah", "在 Noah 中使用", "Noah에서 사용", "Usar en Noah", "استخدام في Noah"],
+  "入力して頼む。成果はNoahに残ります。": ["Enter your request. Results stay in Noah.", "输入请求，结果将保存在 Noah 中。", "요청을 입력하세요. 결과는 Noah에 저장됩니다.", "Escribe tu solicitud. Los resultados se guardan en Noah.", "أدخل طلبك. تُحفظ النتائج في Noah."],
+  "準備中…": ["Preparing…", "准备中…", "준비 중…", "Preparando…", "جارٍ التحضير…"],
+  "使う": ["Use", "使用", "사용", "Usar", "استخدام"],
+  "準備しています…": ["Getting ready…", "正在准备…", "준비하고 있습니다…", "Preparando…", "جارٍ التجهيز…"],
+  "入力内容を送り、選んだ処理を実行します。": ["Send this input to run the selected action.", "发送输入内容并执行所选操作。", "입력 내용을 보내 선택한 작업을 실행합니다.", "Envía estos datos para ejecutar la acción elegida.", "أرسل هذه المدخلات لتنفيذ الإجراء المحدد."],
+  "成果が届くまで画面を開いたままにしてください。": ["Keep this page open until the result arrives.", "请保持此页面打开，直到收到结果。", "결과가 도착할 때까지 화면을 열어 두세요.", "Mantén esta página abierta hasta recibir el resultado.", "أبقِ هذه الصفحة مفتوحة حتى تصل النتيجة."],
+  "受け付けています…": ["Submitting…", "提交中…", "접수 중…", "Enviando…", "جارٍ إرسال الطلب…"],
+  "同じ依頼の受付を確認": ["Check this request", "确认此请求的接收状态", "이 요청의 접수 확인", "Comprobar esta solicitud", "التحقق من هذا الطلب"],
+  "送信して実行": ["Send and run", "发送并执行", "보내고 실행", "Enviar y ejecutar", "إرسال وتنفيذ"],
+  "実行中を確認": ["View ongoing work", "查看运行中的任务", "진행 중인 작업 보기", "Ver tareas en curso", "عرض العمل الجاري"],
+  "結果を確認できません": ["Result unavailable", "无法确认结果", "결과를 확인할 수 없습니다", "Resultado no disponible", "النتيجة غير متاحة"],
+  "通信が途切れました。同じ依頼の受付を確認できます。": ["Connection lost. You can check the same request.", "连接中断。您可以确认同一请求的接收状态。", "연결이 끊겼습니다. 같은 요청의 접수 상태를 확인할 수 있습니다.", "Se perdió la conexión. Puedes comprobar la misma solicitud.", "انقطع الاتصال. يمكنك التحقق من الطلب نفسه."],
+  "成果が届くまで、この画面を開いたままにしてください。": ["Keep this page open until the result arrives.", "请保持此页面打开，直到收到结果。", "결과가 도착할 때까지 화면을 열어 두세요.", "Mantén esta página abierta hasta recibir el resultado.", "أبقِ هذه الصفحة مفتوحة حتى تصل النتيجة."],
+
   以前の登録: ['Previous registrations','以前的注册','이전 등록','Registros anteriores','التسجيلات السابقة'],
   メインメニュー: [
     'Main navigation',

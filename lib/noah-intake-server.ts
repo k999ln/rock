@@ -1,3 +1,5 @@
+import { noahAgentDirectory } from './noah-agent-directory-server';
+import { createNoahProviderRuntime } from './noah-provider-runtime';
 import { noahProfileStore } from './noah-profile-server';
 import { noahRegistrationRuntime } from './noah-registration-runtime-server';
 import { env, waitUntil } from 'cloudflare:workers';
@@ -12,7 +14,7 @@ import { createNoahShelfStore } from './noah-shelf-store';
 export function noahIntakeDependencies() {
   const config = env as unknown as Record<string, string | undefined>;
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
-  return { db: database(), ...access,
+  const dependencies = { db: database(), ...access, providerDirectory: noahAgentDirectory,
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     // 収集機（GitHub の定期実行）が、握手の済んだ系列を一覧へ入れる時の鍵（紹介の掲載と同じ。lib/noah-intake-import.ts）。
     collectorKey: config.NOAH_COLLECTION_KEY,
@@ -23,5 +25,7 @@ export function noahIntakeDependencies() {
     // つなげる数を、料金ごとのカードの数にする（切り替え NOAH_PLAN_LIMITS。料金の読み方は、本人が決めるまで置かない。lib/noah-plan.ts）。
     planLimits: { open: parseNoahShelfFlags(config).planLimits, source: noahTeikibinPlanSource(config) ?? NOAH_PLAN_SOURCE },
     // 棚の、載せるかの見直し（巡回の合図の中で、10 分に 1 回まで。docs/noah/spec-110-shelf.md の 4 章）と、実績の数え直し（UTC の 1 日に 1 回。5 章）。
-    shelfRecheck: async () => { const shelf = createNoahShelfStore({ db: database(), now: Date.now }); await shelf.recheckIfDue(); await shelf.rollupIfDue(); } };
+    shelfRecheck: async () => { const shelf = createNoahShelfStore({ db: database(), now: Date.now }); await shelf.recheckIfDue(); await shelf.rollupIfDue(); },
+    providerRecheck: async () => { await createNoahProviderRuntime(dependencies).sweep(); } };
+  return dependencies;
 }
