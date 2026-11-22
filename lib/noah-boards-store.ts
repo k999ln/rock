@@ -171,6 +171,25 @@ export function createNoahBoardsStore(deps: BoardsDependencies) {
     return pins(scored.slice(0, NOAH_PIN_RANK.related).map((row) => row.familyId), owner);
   }
 
+  /**
+   * ボードのおすすめ（本人の指示「どのボードに保存したかでおすすめが変わるように」）: そのボードの新しい保存 20 件を起点に、
+   * 他の人のボードを経て Pixie で行き着く物。ボードに入っている物と、見る人が「表示しない」にした物は出さない。
+   * 5 人より少ない人の保存からは出さない（noahPixieScores の決まり）。持ち主か、公開のボードだけ。
+   */
+  async function boardPicks(id: string, viewer: string | null) {
+    const row = await prepare(`SELECT ${BOARD_COLUMNS} FROM noah_boards WHERE id = ?`, id).first<BoardRow>();
+    if (!row || (row.visibility !== 'public' && row.owner_id !== viewer)) throw new NoahAgentError('ボードが見つかりません。', 404);
+    const queries = (await prepare('SELECT family_id, created_at FROM noah_board_pins WHERE board_id = ? ORDER BY created_at DESC LIMIT ?', id, NOAH_PIN_RANK.personalQueries)
+      .all<{ family_id: string; created_at: number }>()).results.map((pin) => ({ familyId: pin.family_id, savedAt: Number(pin.created_at) }));
+    if (!queries.length) return [];
+    const inBoard = new Set((await prepare('SELECT family_id FROM noah_board_pins WHERE board_id = ? LIMIT ?', id, NOAH_BOARD_LIMITS.pinsPerBoard)
+      .all<{ family_id: string }>()).results.map((pin) => pin.family_id));
+    const hidden = viewer ? new Set((await prepare('SELECT family_id FROM noah_pin_hidden WHERE owner_id = ? LIMIT 2000', viewer)
+      .all<{ family_id: string }>()).results.map((pin) => pin.family_id)) : new Set<string>();
+    const scored = noahPixieScores(queries, await edges(queries.map((query) => query.familyId), row.owner_id), now(), new Set([...inBoard, ...hidden]));
+    return pins(scored.slice(0, NOAH_PIN_RANK.related).map((pick) => pick.familyId), viewer);
+  }
+
   // --- ボード ---------------------------------------------------------------
 
   const boardOf = (row: BoardRow, viewer: string | null, following: boolean, covers: NoahBoard['covers']): NoahBoard => ({
@@ -285,5 +304,5 @@ export function createNoahBoardsStore(deps: BoardsDependencies) {
     return { familyId, hidden: on };
   }
 
-  return { feed, related, pins, boards, board, create, update, remove, save, unsave, follow, hide, recount, rollupIfDue };
+  return { feed, related, boardPicks, pins, boards, board, create, update, remove, save, unsave, follow, hide, recount, rollupIfDue };
 }

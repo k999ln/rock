@@ -1,4 +1,5 @@
 ## 2026-11-22
+- Noah のボードに「このボードに合う Agent」を足した（Opus / Noelle。本人指示「どのボードに保存したかでおすすめが変わるようにして。ボードごとの違いを実際に触って見たい」）。ボードの保存を起点に、他の人のボードから Pixie で行き着く物を出す。ボードが違えば違う物が出て、保存するとその場で変わる。学習なし・5 人より少ない人の保存からは出さない）（[PR #BOARDPICK](https://github.com/iceiceice999/rock/pull/BOARDPICK)）。
 - NoahからDaisukeのAniccaでココナラの公開募集を探索し、Macで提案の下書きを受け取り、停止できるようにした（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。
 - Noah公開203のPixel実機受入をREADME・task100・作業一覧へ記録。ポコ音の録音、振動完了、Agentboard新規登録→認証付き実行→成果の再読込保持を確認（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 - Noahの法人Agent統合をSites206で公開し、共通実行・保存・再読込と自動再判定を実測。提供元とNoahの保存範囲を明記（[PR #8](https://github.com/iceiceice999/rock/pull/8)）。

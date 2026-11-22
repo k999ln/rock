@@ -51,6 +51,8 @@ export function NoahBoardPage({ id }: { id: string }) {
   const [board, setBoard] = useState<Board | null>(null), [items, setItems] = useState<NoahPinView[]>([]), [cursor, setCursor] = useState<string | null>(null);
   const [ownerScope, setOwnerScope] = useState<string | null>(null), [status, setStatus] = useState<'loading' | 'ready' | 'missing' | 'error'>('loading');
   const [error, setError] = useState(''), [pending, setPending] = useState(false), [name, setName] = useState(''), [more, setMore] = useState(false);
+  // 「このボードに合う Agent」（ボードの保存を起点にしたおすすめ）。ボードごとに違う物が出る。
+  const [picks, setPicks] = useState<NoahPinView[] | null>(null), [picksFor, setPicksFor] = useState(0);
   const sentinel = useRef<HTMLDivElement>(null);
   /** 読むだけ（状態は変えない）。 */
   async function fetchBoard(next: string | null) {
@@ -74,6 +76,14 @@ export function NoahBoardPage({ id }: { id: string }) {
     // 読み直すのは、ボードが変わった時。
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+  useEffect(() => {
+    let stopped = false;
+    void fetch(`/api/noah/pins?board=${encodeURIComponent(id)}`, { cache: 'no-store' }).then(async (response) => {
+      const body = await response.json() as { items?: NoahPinView[] };
+      if (!stopped) setPicks(response.ok && Array.isArray(body.items) ? body.items : null);
+    }).catch(() => { if (!stopped) setPicks(null); });
+    return () => { stopped = true; };
+  }, [id, picksFor]);
   useEffect(() => {
     const target = sentinel.current;
     if (!target || typeof IntersectionObserver === 'undefined' || !cursor) return;
@@ -112,7 +122,13 @@ export function NoahBoardPage({ id }: { id: string }) {
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {items.length === 0 ? <p className={styles.status}>{NOAH_PIN_TEXT.boardEmpty}</p>
       : <NoahPinGrid items={items} signedIn={ownerScope !== null} ownerScope={ownerScope}
-        onChange={(familyId, savedIn) => setItems((old) => (board.mine && !savedIn.includes(board.id) ? old.filter((item) => item.id !== familyId) : old.map((item) => (item.id === familyId ? { ...item, savedIn } : item))))} />}
+        onChange={(familyId, savedIn) => { setItems((old) => (board.mine && !savedIn.includes(board.id) ? old.filter((item) => item.id !== familyId) : old.map((item) => (item.id === familyId ? { ...item, savedIn } : item)))); setPicksFor((n) => n + 1); }} />}
     {cursor && <div ref={sentinel} className={styles.moreRow}><button type="button" disabled={more} onClick={() => { setMore(true); void load(cursor).finally(() => setMore(false)); }}>{more ? NOAH_PIN_TEXT.more : '続きを読む'}</button></div>}
+    {picks && picks.length > 0 && <section className={styles.related} aria-labelledby="noah-board-picks">
+      <h2 id="noah-board-picks">{NOAH_PIN_TEXT.boardPicks}</h2>
+      <p className={styles.status}>{NOAH_PIN_TEXT.boardPicksNote}</p>
+      <NoahPinGrid items={picks} signedIn={ownerScope !== null} ownerScope={ownerScope}
+        onChange={(familyId, savedIn) => { setPicks((old) => old?.map((item) => (item.id === familyId ? { ...item, savedIn } : item)) ?? null); if (savedIn.includes(board.id)) { void load(null); setPicksFor((n) => n + 1); } }} />
+    </section>}
   </main>;
 }
