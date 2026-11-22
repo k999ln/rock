@@ -93,11 +93,15 @@ export function noahResultPresentation(
       count: imageLinks.length,
       raw: true,
     };
-  let value: unknown;
+  let value: unknown,
+    partial = false;
   try {
     value = JSON.parse(text);
   } catch {
-    if (/^[{[]/.test(text))
+    if (!/^[{[]/.test(text)) return base;
+    // 長いので切れた一覧は、最後まで届いた項目だけを出す（切れた項目は捨て、補わない）。
+    value = result.truncated ? noahResultWholeItems(text) : undefined;
+    if (value === undefined)
       return {
         ...base,
         kind: 'data',
@@ -107,7 +111,7 @@ export function noahResultPresentation(
           : '詳細を開いて内容を確認できます',
         raw: true,
       };
-    return base;
+    partial = true;
   }
   if (
     object(value) &&
@@ -159,7 +163,7 @@ export function noahResultPresentation(
       ...base,
       kind: 'list',
       title: '届いた一覧',
-      summary: '',
+      summary: partial ? '成果の一部を表示しています' : '',
       cards,
       count: list.length,
       raw: true,
@@ -170,11 +174,57 @@ export function noahResultPresentation(
       ...base,
       kind: 'data',
       title: '受け取ったデータ',
-      summary: first(value, ['summary', 'message', 'description']),
+      summary: partial
+        ? '成果の一部を表示しています'
+        : first(value, ['summary', 'message', 'description']),
       fields: fields(value),
       raw: true,
     };
   return { ...base, summary: str(value), raw: true };
+}
+
+/**
+ * 長いので切れた JSON から、最後まで届いた項目だけを取り出す。対象は、一番外の一覧か、一番外の物のすぐ下の一覧。
+ * 項目の後ろに `,` か閉じ括弧が届いた物だけを残し、途中で切れた項目は捨てる。値を補ったり推し量ったりしない。
+ * 取り出せる項目が無ければ undefined。
+ */
+export function noahResultWholeItems(text: string): unknown {
+  const stack: string[] = [];
+  const atList = () =>
+    stack.join('') === '[' || stack.join('') === '{[';
+  let quoted = false,
+    escaped = false,
+    cut = -1,
+    open: string[] = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (escaped) escaped = false;
+      else if (c === '\\') escaped = true;
+      else if (c === '"') quoted = false;
+    } else if (c === '"') quoted = true;
+    else if (c === '{' || c === '[') stack.push(c);
+    else if (c === '}' || c === ']') {
+      if (stack.pop() !== (c === '}' ? '{' : '[')) return undefined;
+      if (atList()) {
+        cut = i + 1;
+        open = stack.slice();
+      }
+    } else if (c === ',' && atList()) {
+      cut = i;
+      open = stack.slice();
+    }
+  }
+  if (cut < 0) return undefined;
+  const close = open
+    .reverse()
+    .map((c) => (c === '{' ? '}' : ']'))
+    .join('');
+  try {
+    return JSON.parse(text.slice(0, cut) + close);
+  } catch {
+    return undefined;
+  }
 }
 
 /** Explicit image fields/Markdown only; ordinary links are not fetched as images. */
