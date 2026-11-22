@@ -70,11 +70,16 @@ export function noahCheckedText(checkedAt: number | null): string | null {
 }
 
 /** 詳細の画面の場所。系列の ID は `/` を含むので、パスに入れずに query で渡す。 */
-export const noahReadyDetailHref = (agentId: string) => `/noah/ready/agent?${new URLSearchParams({ id: agentId }).toString()}`;
+export function noahReadyDetailHref(agentId: string, context: { tool?: string | null; from?: string | null } = {}) {
+  const params = new URLSearchParams({ id: agentId });
+  if (context.tool && context.tool.length <= 128) params.set('tool', context.tool);
+  if (context.from && /^pkg:[a-z0-9][a-z0-9-]{1,62}$/u.test(context.from)) params.set('from', context.from);
+  return `/noah/ready/agent?${params}`;
+}
 /** サインインの画面の場所。戻る先に渡すのは、/noah/ready で始まるパスだけ（それ以外は、一覧へ戻す）。 */
 export function noahReadyAccountHref(returnTo: string): string {
   const safe = /^\/noah\/ready(?:[/?#]|$)/.test(returnTo) && !/[\\\r\n]/.test(returnTo) && returnTo.length < 2000 ? returnTo : '/noah/ready';
-  return `/account?${new URLSearchParams({ returnTo: safe }).toString()}`;
+  return `/noah/account?${new URLSearchParams({ returnTo: safe }).toString()}`;
 }
 
 // ---------------------------------------------------------------------------

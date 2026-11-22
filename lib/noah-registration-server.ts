@@ -1,7 +1,11 @@
 import { env, waitUntil } from 'cloudflare:workers';
-import { database } from './fund-store';
+import { noahProfileStore } from './noah-profile-server';
+import { registrationProfileResolver } from './noah-registration-profile';
+import { database, requestUser } from './fund-store';
 import { createNoahRegistrationApi, parseRegistrationProviders } from './noah-registration';
+import { noahRegistrationRuntime } from './noah-registration-runtime-server';
 export function noahRegistrationApi() {
   const config = env as unknown as Record<string, string | undefined>;
-  return createNoahRegistrationApi({ db: database(), providers: parseRegistrationProviders(config.NOAH_REGISTRATION_PROVIDERS), token: config.NOAH_REGISTRATION_AGENT_TOKEN, waitUntil });
+  const runtime=noahRegistrationRuntime();
+  return createNoahRegistrationApi({ db: database(), providers: [...parseRegistrationProviders(config.NOAH_REGISTRATION_PROVIDERS).filter(p=>p.execution!=='browser'&&!runtime.providers.some(v=>v.id===p.id)),...runtime.providers], executor:runtime.executor, accountStates:runtime.accountStates, token: config.NOAH_REGISTRATION_AGENT_TOKEN, waitUntil, resolveProfile:registrationProfileResolver(noahProfileStore(),requestUser) });
 }

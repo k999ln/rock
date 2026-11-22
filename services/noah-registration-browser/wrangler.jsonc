@@ -1,0 +1,13 @@
+{
+  "name": "noah-registration-browser",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "browser": { "binding": "BROWSER" },
+  "durable_objects": { "bindings": [{ "name": "SESSIONS", "class_name": "RegistrationSession" }, { "name": "BUDGET", "class_name": "BrowserBudget" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RegistrationSession", "BrowserBudget"] }],
+  "observability": { "enabled": false },
+  "vars": { "NOAH_BROWSER_RECIPES": "[]" }
+}

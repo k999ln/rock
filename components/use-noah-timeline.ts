@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { NoahReadyItem } from '@/lib/noah-ready-view';
 import type { FeedbackFeedPage } from '@/lib/noah-feedback';
 import type { ResearchPage } from '@/lib/noah-research-types';
 import type { SkySocialState } from '@/lib/sky-social';
@@ -41,7 +42,15 @@ async function socialPage(
   signal?: AbortSignal,
 ) {
   const path = `/api/sky/social?${new URLSearchParams({ mode: following ? 'following' : 'recommended', cursor })}`;
-  let result = await communityFetch<SkySocialState>(path, undefined, signal);
+  let result: SkySocialState;
+  try {
+    result = await communityFetch<SkySocialState>(path, undefined, signal);
+  } catch (error) {
+    // Browsing Noah is public; the account-only social feed is optional.
+    if (error instanceof Error && 'status' in error && error.status === 401)
+      return undefined;
+    throw error;
+  }
   if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
   if (result.profile && setCommunityKeyProfile(result.profile.id))
     result = await communityFetch<SkySocialState>(path, undefined, signal);
@@ -118,7 +127,8 @@ export function useNoahTimeline(
             )
           : Promise.resolve(undefined),
         includeSocial ? shelfCards(controller.signal) : Promise.resolve([]),
-      ]).then(([agents, social, opinions, shelf]) => {
+        mode==='public' && kind!=='related' ? json<{items?:NoahReadyItem[]}>(`/api/noah/intake?${new URLSearchParams({q:query.trim().slice(0,80)})}`,controller.signal) : Promise.resolve({items:[]}),
+      ]).then(([agents, social, opinions, shelf, remote]) => {
         if (controller.signal.aborted || version !== generation.current) return;
         const errors: string[] = [];
         if (agents.status === 'rejected')
@@ -141,6 +151,7 @@ export function useNoahTimeline(
             s?.posts ?? [],
             o?.entries ?? [],
             shelf.status === 'fulfilled' ? shelf.value : [],
+            remote.status==='fulfilled' && Array.isArray(remote.value.items)?remote.value.items.slice(0,12):[],
           ),
         });
       });
@@ -150,7 +161,7 @@ export function useNoahTimeline(
       controller.abort();
       pending.current?.abort();
     };
-  }, [key, endpoint, params, includeSocial]);
+  }, [key, endpoint, params, includeSocial, mode, kind, query]);
 
   const loadMore = useCallback(async () => {
     if (

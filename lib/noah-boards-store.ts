@@ -12,7 +12,7 @@ import {
   type NoahPinCandidate, type NoahPinCursor, type NoahPinSources, type NoahPinTopic, type NoahPixieEdge,
 } from './noah-pins.ts';
 
-export type BoardsDependencies = { db: IntakeDb; now?: () => number; uuid?: () => string };
+export type BoardsDependencies = { db: IntakeDb; now?: () => number; uuid?: () => string; decoratePins?: (pins: NoahPin[]) => Promise<NoahPin[]> };
 export type NoahBoard = { id: string; name: string; visibility: 'private' | 'public'; pins: number; followers: number; revision: number; mine: boolean; following: boolean; covers: { id: string; name: string; topic: NoahPinTopic }[] };
 export type NoahPin = NoahReadyListItem & { topic: NoahPinTopic; shape: 0 | 1 | 2; savedIn: string[] };
 
@@ -89,7 +89,8 @@ export function createNoahBoardsStore(deps: BoardsDependencies) {
         }
       }
     }
-    return items.map((item) => ({ ...item, topic: noahPinTopic(item.name, item.summary), shape: noahPinShape(item.id), savedIn: saved.get(item.id) ?? [] }));
+    const result=items.map((item) => ({ ...item, topic: noahPinTopic(item.name, item.summary), shape: noahPinShape(item.id), savedIn: saved.get(item.id) ?? [] }));
+    return deps.decoratePins ? deps.decoratePins(result) : result;
   }
   const candidate = (pin: NoahPin): NoahPinCandidate => ({ id: pin.id, provider: pin.provider, topic: pin.topic });
 

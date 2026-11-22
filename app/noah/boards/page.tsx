@@ -1,4 +1,3 @@
-import { NoahBoardsPage } from '@/components/noah-boards';
-export const metadata = { title: 'ボード — Noah' };
-// 本人のボードとフォロー中のボード（task 115。docs/noah/spec-115-pin-grid.md）。
-export default function Page() { return <NoahBoardsPage />; }
+import { redirect } from 'next/navigation';
+import { noahPageHref, type NoahPageParams } from '@/lib/noah-page-routes';
+export default async function Page({searchParams}:{searchParams:Promise<NoahPageParams>}) {redirect(noahPageHref('saved',await searchParams,'boards'));}

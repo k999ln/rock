@@ -228,12 +228,12 @@ export default function NoahAgentUploadForm() {
     finally { setPending(false); processingController.current = null; }
   }
   return <div className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href="/noah/agents">← Agent一覧</Link></nav>
+    <nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link></nav>
     <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENT</span><h1>自分のAgentを追加</h1><p>コードを選ぶ、または貼り付ける。対応するコードは整理して保存します。<br />元コードも残し、追加したAgentは自分だけの一覧に入ります。</p></div></header>
     {!scope && <section className={styles.notice} aria-label="アカウントの確認">
       {accountChecking ? <output>アカウントを確認中…</output> : <>
         <p>{signedOut ? 'サインインすると、自分のAgentの登録と下書きの保存ができます。' : 'アカウントの確認後に登録できます。'}</p>
-        <Link className={styles.primary} href={`/account?mode=login&returnTo=${encodeURIComponent(returnPath)}`}>サインインして登録を続ける</Link>
+        <Link className={styles.primary} href={`/noah/account?mode=login&returnTo=${encodeURIComponent(returnPath)}`}>サインインして登録を続ける</Link>
         <button type="button" onClick={() => { setAccountChecking(true); setSignedOut(false); setError(''); setAttempt(n => n + 1); }}>アカウントを再確認</button>
       </>}
     </section>}

@@ -66,3 +66,35 @@ Macの常駐は停止し、launchdの永続disableも確認。55,058,432バイ�
 実ブラウザのTinyFishはUSER_NOT_LOGGED_INで未実行。今回の試験台はReact部品の文言・イベント・API要求を確認するもので、CSS・実DOM・画面の描画は検証しない。390px/1280pxの実表示、キーボードフォーカス、スクリーンリーダー、ブラウザのhydration/consoleは未検証として残す。
 
 [PR #384](https://github.com/k999ln/rock/pull/384)。修正後の同じ操作試験11/11成功、掲載関連10試験・公開ソースの既存ホーム切替を含む14試験成功。typecheck/lint成功。実ブラウザの未検証範囲は上記のとおり。
+
+## 実Chromeでのスマホ表示・タップ試験（2026-11-22、PR #388）
+
+実際のGoogle Chrome 157.0.8103.79を独立した一時プロファイルで起動し、Playwrightのスマホ表示・touch入力で公開URLを操作。320/360/390/430×844とPC 1280×900を確認した。端末実機・Safari・スクリーンリーダーの試験とは区別する。
+
+再現した問題と修正:
+- ホームから「Semantic Shift」を検索すると「使えるAgent」だけを調べ、掲載済みのHugging FaceのAgentが見つからなかった。検索先を全出典のカタログに変更した。
+- メニュー34px幅、保存30px高、その他の操作28px、外部評価32px、検索クリア約26×32px等の小さい操作範囲を44px以上に拡張。横スクロール・2列表示は保持した。
+
+公開185（source `6f5e9f832a5b68dc23e9e84d559c8612b86f4e0e`、deployment `appgdep_6b0212a7f8b88191a7da30ccf12e17aa`）で再確認。並行更新の外部評価バッジと共有機能を保全して公開した。本番D1 migrationなし。
+
+- 5画面幅で26項目成功。横はみ出し・カード重なりなし、メニューと保存先/コメントの開閉、横スワイプ・HF絞り込み、外部リンク、検索と空結果からのクリア、未捕捉JSエラーなしを確認。
+- HF Semantic Shift Backendのいいね3件を確認。王冠やコメントの投稿は行わず、書き込みAPIをブラウザ試験で遮断した（匿名利用開始のsession APIのみ許可）。
+- 390pxで503応答を一度返す試験を行い、再試行から復旧。追加読み込みを20件→40件で別途確認し、試験の件数待ちも明示した。
+- 関連30試験、typecheck、変更ファイルのoxlint、Sites build成功。
+- `npm run verify` は再実行しても `release-readiness: Web security policy: local production response実測またはinput hashが不一致` で停止。全体検証の成功とはしない。前提のPR #386 とこの不一致が未解決のため #388 はdraft、main未統合。
+
+再実行: `scripts/test-noah-mobile-browser.mjs`。`playwright-core@1.65.1`は一時ディレクトリにインストールし、`NOAH_PLAYWRIGHT_PACKAGE`へそのindex.js、`NOAH_CHROME_PATH`へChrome実行ファイルを指定。既定は公開URL・上記5サイズ。`NOAH_TEST_WIDTH=390`で一つの幅を再試験できる。`NOAH_TEST_OUTPUT`へスクリーンショットとreport.jsonを保存する。今回の記録は `/tmp/noah-mobile-ux-20261122/published/`、追加読み込みの再確認は同ディレクトリの `pagination-final/`。
+
+## verify不一致の修正と最新変更の統合（2026-11-22、PR #388）
+
+本人指示「verifyの不一致も直して、テストを通してPRをマージして」に基づき、mainのPR #385と前提PR #386の最新変更を統合。追加収集元・新着/使いやすさの並び替え・動かし方・すべての外部評価指標を共通カードでも保持した。破損した一出所のスナップショットは他出所の一覧を止めず、掲載対象外の項目は除外する。最新の本人指示による王冠/コメント列の撤去を保持し、ブラウザ試験も現在の操作に合わせた。公開185で実施したコメント開閉試験は当時の結果として上に残す。
+
+不一致は、検索修正で変わった `components/noah-shell.tsx` と保存済み実測のinput hashの差だった。独立checkoutにroot/Miniの依存を導入し、`npm run build` の生成物をlocal Wranglerで起動。`node scripts/check-web-security-response.mjs http://127.0.0.1:8796 --record-local-production` で8経路を実際に要求し、全8ヘッダー・転送・Service Worker・manifest・アイコン・JSの検査に成功して `data/web-security-response-current.json` を更新した。検査条件・過去のevidenceは変更していない。本番への配備やD1 migrationを行った記録ではない。
+
+統合後の関連32試験、typecheck、lint、production buildは成功。全体 `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` はexit 0。主要4,926試験のうち4,922成功・失敗0・既定4skip、仕事API1,918項目、CSV保存385項目、package/Mini/public preview/build/配信ファイル/AMC/作業部屋/Botまで成功した。ローカルの全体ログは `/tmp/noah-full-verify-20261122.log`。
+
+この検証中にmainへPR #387が入ったため、それも取り込み、最終コミットのGitHub CIを確認してから #388をmainへマージする。CIとマージ結果はPR本文を参照。XのAPIキー待ちと実機iPhone/Safari未検証は今回のverify修正の対象外で、そのまま残る。
+
+PRのCodeQL指摘に合わせ、ブラウザ試験の既定出力先を `mkdtemp` で実行ごとに作成する権限700の専用ディレクトリへ変更した（指定した `NOAH_TEST_OUTPUT` は従来どおり）。実際の収集順が変わって先頭20件に保存可能なAgentがない場合にも、画面の「接続できる」で対象を選んでから保存操作を検証する。変更後に公開URLを実Chrome・390pxで再試験し6/6成功。記録は `/var/folders/w0/370ws_yn0gl9m1b5816bqks00000gn/T/noah-mobile-browser-d1FEOs/report.json`。
+
+別のSPIDER履歴検査は9候補を検出した（[実行44977185487](https://github.com/k999ln/rock/actions/runs/44977185487)）。6件は `lib/noah-haptics.ts` の公開localStorage設定名、3件は旧 `docs/design-validation/noah/noah-connect.test.mjs` の秘密文字列検出器の合成テスト。値の用途をソースと過去commitで確認した。検出規則・固定control・履歴を変更せず、全体verifyの結果とは分けてPRに記録する。

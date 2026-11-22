@@ -7,15 +7,17 @@ import { useEffect, useState } from 'react';
 import { NOAH_PIN_TEXT, noahPinShape, noahPinTopic } from '@/lib/noah-pins';
 import NoahPinGrid, { NoahSaveSheet, type NoahPinView } from './noah-pin-grid';
 import styles from './noah-pins.module.css';
+import NoahAgentSourceRatings from './noah-agent-source-ratings';
 
 export default function NoahPinExtras({ item, ownerScope }: { item: Omit<NoahPinView, 'topic' | 'shape' | 'savedIn'>; ownerScope: string | null }) {
   const signedIn = ownerScope !== null;
+  const [sources,setSources]=useState<NoahPinView['sources']>(item.sources);
   const [savedIn, setSavedIn] = useState<string[]>([]), [open, setOpen] = useState(false), [related, setRelated] = useState<NoahPinView[] | null>(null);
   useEffect(() => {
     let stopped = false;
     if (signedIn) void fetch(`/api/noah/boards?pin=${encodeURIComponent(item.id)}`, { cache: 'no-store' }).then(async (response) => {
-      const body = await response.json() as { savedIn?: string[] };
-      if (!stopped && response.ok && Array.isArray(body.savedIn)) setSavedIn(body.savedIn);
+      const body = await response.json() as { savedIn?: string[]; sources?: NoahPinView['sources'] };
+      if (!stopped && response.ok && Array.isArray(body.savedIn)) {setSavedIn(body.savedIn);setSources(body.sources);}
     }).catch(() => undefined);
     void fetch(`/api/noah/pins?related=${encodeURIComponent(item.id)}`, { cache: 'no-store' }).then(async (response) => {
       const body = await response.json() as { items?: NoahPinView[] };
@@ -25,7 +27,8 @@ export default function NoahPinExtras({ item, ownerScope }: { item: Omit<NoahPin
   }, [item.id, signedIn]);
   const pin: NoahPinView = { ...item, topic: noahPinTopic(item.name, item.summary), shape: noahPinShape(item.id), savedIn };
   return <>
-    <p><button type="button" className={styles.saveButton} data-saved={savedIn.length > 0 || undefined} onClick={() => setOpen(true)}>{savedIn.length ? `${NOAH_PIN_TEXT.saved}（${savedIn.length}）` : NOAH_PIN_TEXT.save}</button></p>
+    <NoahAgentSourceRatings sources={sources} />
+    <div className={styles.detailSave}><button type="button" className={styles.saveButton} data-saved={savedIn.length > 0 || undefined} onClick={() => setOpen(true)}>{savedIn.length ? `${NOAH_PIN_TEXT.saved}（${savedIn.length}）` : NOAH_PIN_TEXT.save}</button></div>
     {open && <NoahSaveSheet pin={pin} signedIn={signedIn} ownerScope={ownerScope} onClose={() => setOpen(false)} onChange={setSavedIn} />}
     {related && related.length > 0 && <section className={styles.related} aria-labelledby="noah-related">
       <h2 id="noah-related">{NOAH_PIN_TEXT.related}</h2>

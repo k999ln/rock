@@ -148,7 +148,7 @@ void test('running workspace keeps its own skip link usable without admitting ro
 });
 void test('root and pass-through layouts do not mount a second nav or change viewport/domain contracts', () => {
   const root = source('app/layout.tsx'); assert.match(root, /import '\.\/os-shell\.css'/);
-  assert.match(root, /viewportFit: 'cover'/); assert.match(root, /<CommunityOsRuntime \/>\{children\}/);
+  assert.match(root, /viewportFit: 'cover'/); assert.match(root, /<ApplicationRuntime \/>\{children\}/);
   for (const path of ['app/layout.tsx', 'app/os/layout.tsx', 'app/sky/layout.tsx'])
     assert.doesNotMatch(source(path), /<OsAppNavigation|<OsHeader/);
   assert.doesNotMatch(source('app/os-bottom-navigation.css'), /body\s*\{|\.home\s*\{|--os-bg\s*:/);
@@ -300,9 +300,8 @@ void test('Eve retains its app header while Noah has standalone navigation', () 
     assert.ok(all.some(n => n.type === './workspace-flow-navigation'));
   }
   assert.doesNotMatch(source('components/noah-shell.tsx'), /<ProductAppHeader/);
-  assert.match(source('components/noah-shell.tsx'), /aria-label="Noahの主要メニュー"/);
-  // 2026-11-22: ホームはピンタレスト風（task 115）。メニューの最初は「ホーム」。
-  assert.match(source('components/noah-shell.tsx'), /label: 'ホーム'/);
+  assert.match(source('components/noah-shell.tsx'), /aria-label=\{t\('メインメニュー'\)\}/);
+  assert.match(source('components/noah-shell.tsx'), /label: 'タイムライン'/);
 });
 
 void test('shared app header preserves running guards, actions, and the active Eve query by preventing a reset', () => {

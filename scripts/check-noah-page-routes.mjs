@@ -12,7 +12,7 @@ async function get(path, expectedStatus, expectedPath) {
   await response.arrayBuffer(); results.push({path,status:response.status,destination});
   return destination;
 }
-const pages=new Set(['/noah','/noah/features','/noah/tools','/noah/saved','/noah/local-tools']);
+const pages=new Set(['/noah','/noah/explore?tab=tools','/noah/saved','/noah/explore']);
 for(const [from,to] of NOAH_REDIRECTS) {
   if(from.includes(':id')) continue; // A real shared-code/catalog record is not fabricated by this route check.
   const source=from.replace(':campusId','nyu').replace(':toolId','mr-citations');
@@ -23,7 +23,9 @@ for(const [from,to] of NOAH_REDIRECTS) {
   pages.add(actual.pathname+actual.search);
 }
 for(const path of pages) await get(path,200);
-if(base.hostname==='avoado.si') for(const lab of NOAH_LOCAL_LABS) await get('/os/sky/'+lab,307,'/noah/local-tools');
+await get('/noah/features',307,'/noah');
+await get('/noah/tools',307,'/noah/explore');
+if(base.hostname==='avoado.si') for(const lab of NOAH_LOCAL_LABS) await get('/os/sky/'+lab,307,'/noah/explore');
 await get('/noah/unknown-route-check',404);
 const report={status:'PASS',baseOrigin:base.origin,checkedAt:new Date().toISOString(),checks:results.length,results};
 if(process.argv[3]) writeFileSync(process.argv[3],JSON.stringify(report,null,2)+'\n');

@@ -13,6 +13,7 @@
     "build": "vinext build && node scripts/stage-sky-domain-router.mjs && node scripts/stage-sites-migration-lineage.mjs && node scripts/stage-public-asset-retirements.mjs && node scripts/stage-secure-assets.mjs",
     "site:prepare-package": "node scripts/prepare-sites-package-lineage.mjs",
     "start": "node scripts/start-local-web.mjs",
+    "noah:check:domain": "node --experimental-strip-types scripts/check-noah-domain.mjs",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx components/*.ts services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",
     "format": "oxfmt",
