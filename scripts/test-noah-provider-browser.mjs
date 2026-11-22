@@ -1,10 +1,12 @@
 /** Synthetic browser acceptance; provider transport/persistence are tested separately with real SQLite. */
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { chromium } from '../toolkits/noah-coconala/node_modules/playwright-core/index.mjs';
 const base = process.env.NOAH_TEST_URL ?? 'http://localhost:8796',
-  out = process.env.NOAH_TEST_OUTPUT ?? '/tmp/noah-provider-browser-results';
-await mkdir(out, { recursive: true });
+  out = await mkdtemp(join(tmpdir(), 'noah-provider-browser-'));
+console.log('Browser evidence directory:', out);
 const id = 'project-' + 'a'.repeat(64),
   scope = 'owner-v1:' + 'b'.repeat(64),
   digest = 'c'.repeat(64),
