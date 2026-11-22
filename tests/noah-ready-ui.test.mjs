@@ -363,7 +363,7 @@ void test('the detail screen: where the input goes is shown before connecting; t
   assert.match(page.text(), /何をしますか？4 個/);
   const rows = page.find('ul').find(node => node.props.className === 'tools');
   assert.deepEqual(page.nodes(rows).filter((node) => node.type === 'li').map((node) => page.text(node)), [
-    '情報を検索Looks up a player.読み取りだけ提供者の説明lookupLooks up a player.', '統計を見るstats の説明読み取りだけ押すだけ提供者の説明statsstats の説明', '公開するpublish の説明送る前に確かめます提供者の説明publishpublish の説明', '設定するconfigure の説明入力欄ではまだ使えません提供者の説明configureconfigure の説明',
+    '情報を検索読み取りだけ提供者の説明lookupLooks up a player.', '統計を見る読み取りだけ押すだけ提供者の説明statsstats の説明', '公開する送る前に確かめます提供者の説明publishpublish の説明', '設定する入力欄ではまだ使えません提供者の説明configureconfigure の説明',
   ]);
   assert.equal(server.log.filter((request) => request.rpc === 'tools/call').length, 0, '道具は呼ばない');
   // つないだ後は、主ボタンを出さない（すぐ下に道具がある）。「切る」と、今の状態（文字）が出る。使える道具の行は、押せる。「保存」（ボードへ。task 115）は残る。
