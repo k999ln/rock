@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Readable } from 'node:stream';
+import { noahCloudResult } from '../lib/noah-cloud-contract.ts';
 const exec = promisify(execFile), image = process.env.NOAH_TEST_IMAGE ?? 'noah-cloud-agents:all-agents-20261122';
 const script = 'import sys,urllib.request; b=sys.stdin.buffer.read(); r=urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:8080"+sys.argv[1],data=b,headers={"Content-Type":"application/json"}),timeout=225)\nwhile True:\n b=r.read1(4096)\n if not b: break\n sys.stdout.buffer.write(b); sys.stdout.buffer.flush()';
 const request = (container, path, body) => {
@@ -21,34 +22,60 @@ async function guest(test) {
     return await test(container);
   } finally { await exec('docker', ['rm', '-f', container]); }
 }
-for (const profile of ['time', 'thinking']) {
+const cases = [
+  { profile: 'time', steps: [{ name: 'get_current_time', args: { timezone: 'Asia/Tokyo' }, match: /Asia\/Tokyo/ }] },
+  { profile: 'thinking', steps: [{ name: 'sequentialthinking', args: { thought: 'Define the task, then test one small working result.', thoughtNumber: 1, totalThoughts: 1, nextThoughtNeeded: false }, match: /thoughtNumber/ }] },
+  { profile: 'memory', file: 'memory.jsonl', steps: [
+    { name: 'read_graph', args: {}, absent: /NoahQARecord/ },
+    { name: 'create_entities', args: { entities: [{ name: 'NoahQARecord', entityType: 'task', observations: ['Write a small working result.'] }] }, match: /NoahQARecord/ },
+    { name: 'read_graph', args: {}, match: /NoahQARecord/ },
+  ] },
+  { profile: 'filesystem', file: 'result.txt', steps: [
+    { name: 'write_file', args: { path: '/workspace/result.txt', content: 'NoahQARecord' }, match: /success/i },
+    { name: 'read_text_file', args: { path: '/workspace/result.txt' }, match: /NoahQARecord/ },
+    { name: 'read_text_file', args: { path: '/etc/passwd' }, denied: true },
+    { name: 'read_text_file', args: { path: '/workspace/escape/passwd' }, denied: true },
+  ] },
+  // A second new memory guest must not inherit the first request's graph.
+  { profile: 'memory', steps: [{ name: 'read_graph', args: {}, absent: /NoahQARecord/ }] },
+];
+for (const { profile, steps, file } of cases) {
   await guest(async c => { const probe = await request(c, '/run', { profile, mode: 'probe' }).json(); assert.equal(probe.type, 'probe'); assert.equal(probe.profile, profile); });
   await guest(async c => {
-    const response = request(c, '/run', { profile, mode: 'run', prompt: profile === 'time' ? '東京の現在時刻を確認して。' : '小さなプロジェクトを始める順番を考えて。' });
+    if (profile === 'filesystem') await exec('docker', ['exec', c, 'python', '-c', "import os; os.symlink('/etc', '/workspace/escape')"]);
+    const response = request(c, '/run', { profile, mode: 'run', prompt: '依頼の情報を公式ツールで確認して結果を保存して。' });
     let buffer = '', calls = 0, result;
-    const name = profile === 'time' ? 'get_current_time' : 'sequentialthinking';
+    const decoder = new TextDecoder();
     for await (const chunk of response.body) {
-      buffer += new TextDecoder().decode(chunk);
+      buffer += decoder.decode(chunk, { stream: true });
       while (buffer.includes('\n')) {
         const split = buffer.indexOf('\n'), event = JSON.parse(buffer.slice(0, split)); buffer = buffer.slice(split + 1);
         if (event.type === 'result') { result = event; continue; }
         assert.equal(event.type, 'model_request'); calls++;
-        let message;
-        if (calls === 1) {
-          assert.ok(event.body.tools.some(t => t.function.name === name));
-          const args = profile === 'time' ? { timezone: 'Asia/Tokyo' } : { thought: 'Define the task, then test one small working result.', thoughtNumber: 1, totalThoughts: 1, nextThoughtNeeded: false };
-          message = { role: 'assistant', content: null, tool_calls: [{ id: 'call_1', type: 'function', function: { name, arguments: JSON.stringify(args) } }] };
-        } else {
-          const reply = event.body.messages.find(m => m.role === 'tool'); assert.ok(reply);
-          const actual = JSON.parse(reply.content); assert.notEqual(actual.isError, true);
-          assert.match(JSON.stringify(actual), profile === 'time' ? /Asia\/Tokyo/ : /thoughtNumber/);
-          message = { role: 'assistant', content: 'Official MCP tool completed.' };
+        if (calls > 1) {
+          const previous = steps[calls - 2];
+          const reply = event.body.messages.filter(m => m.role === 'tool').at(-1); assert.ok(reply);
+          const actual = JSON.parse(reply.content);
+          assert.equal(actual.isError === true, Boolean(previous.denied), JSON.stringify(actual));
+          if (previous.match) assert.match(JSON.stringify(actual), previous.match);
+          if (previous.absent) assert.doesNotMatch(JSON.stringify(actual), previous.absent);
         }
-        assert.ok(calls <= 2);
-        await request(c, '/model-reply', { id: event.id, body: { choices: [{ message, finish_reason: calls === 1 ? 'tool_calls' : 'stop' }] } }).json();
+        const step = steps[calls - 1];
+        let message = { role: 'assistant', content: 'Official MCP tool completed.' };
+        if (step) {
+          assert.ok(event.body.tools.some(t => t.function.name === step.name), step.name);
+          message = { role: 'assistant', content: null, tool_calls: [{ id: 'call_' + calls, type: 'function', function: { name: step.name, arguments: JSON.stringify(step.args) } }] };
+        }
+        assert.ok(calls <= steps.length + 1);
+        await request(c, '/model-reply', { id: event.id, body: { choices: [{ message, finish_reason: step ? 'tool_calls' : 'stop' }] } }).json();
       }
     }
-    assert.equal(result?.exitCode, 0, JSON.stringify(result)); assert.equal(result.text, 'Official MCP tool completed.'); assert.equal(calls, 2);
-    console.log(JSON.stringify({ profile, officialTool: name, network: 'none', model: 'fixture', probe: 'passed', run: 'passed', calls }));
+    assert.equal(result?.exitCode, 0, JSON.stringify(result)); assert.equal(result.text, 'Official MCP tool completed.'); assert.equal(calls, steps.length + 1);
+    const verified = await noahCloudResult(result, calls);
+    if (file) {
+      const saved = verified.files.find(f => f.name === file); assert.ok(saved, JSON.stringify(verified.files));
+      assert.match(Buffer.from(saved.base64, 'base64').toString(), /NoahQARecord/);
+    } else assert.equal(verified.files.length, 0);
+    console.log(JSON.stringify({ profile, officialTools: steps.map(s => s.name), files: verified.files.map(f => f.name), network: 'none', model: 'fixture', probe: 'passed', run: 'passed', calls }));
   });
 }

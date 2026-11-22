@@ -1,4 +1,5 @@
 ## 2026-11-22
+- NoahのCLI実行器に公式Memory/FilesystemとNode 24固定環境を追加。依頼分離・ファイル作成/読込・領域外拒否をLinuxで検証。クラウド配備は未完了（[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
 - Noahの法人Agent統合をSites206で公開し、共通実行・保存・再読込と自動再判定を実測。提供元とNoahの保存範囲を明記（[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
 - Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
 

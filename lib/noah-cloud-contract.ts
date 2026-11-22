@@ -22,6 +22,18 @@ export const NOAH_CLOUD_PROFILES = {
     aliases: ['https://hub.docker.com/r/mcp/sequentialthinking', 'https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking'],
     description: '公式Sequential Thinking MCPで課題を段階に分け、実行案をまとめます。依頼ごとに独立した環境で処理します。',
   },
+  memory: {
+    name: 'Memory', repository: 'https://github.com/modelcontextprotocol/servers/tree/main/src/memory', version: '2.2.1',
+    package: '@modelcontextprotocol/server-memory', sha256: '95edf215d0a23f40e20581d6cd0ca46c0c6be85d7bdfa1dcb4c20662a0fbca2d',
+    aliases: ['https://www.npmjs.com/package/@modelcontextprotocol/server-memory'],
+    description: '依頼した情報を公式Memory MCPで整理し、関係をファイルに保存します。記憶はこの依頼の中だけで使い、次回には引き継ぎません。',
+  },
+  filesystem: {
+    name: 'Filesystem', repository: 'https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem', version: '2.4.0',
+    package: '@modelcontextprotocol/server-filesystem', sha256: 'a785e3dadbf58a5fce6fbb006b883c925772c254e880da4866a4c418fc746e3f',
+    aliases: ['https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem'],
+    description: '公式Filesystem MCPで文章やコードのファイルを作成・整理します。この依頼専用の作業場所を使い、端末のファイルにはアクセスしません。',
+  },
 } as const;
 export type NoahCloudProfile = keyof typeof NOAH_CLOUD_PROFILES;
 export const NOAH_CLOUD_LIMITS = Object.freeze({ seconds: 240, modelCalls: 8, promptBytes: 12000, outputBytes: 131072, modelInputBytes: 131072, outputTokens: 2048, files: 12, fileBytes: 32768, totalFileBytes: 65536, dailyJobs: 50, ownerDailyJobs: 10, concurrent: 2 });

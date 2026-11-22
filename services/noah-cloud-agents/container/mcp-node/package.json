@@ -3,6 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
+    "@modelcontextprotocol/server-filesystem": "2.4.0",
+    "@modelcontextprotocol/server-memory": "2.2.1",
     "@modelcontextprotocol/server-sequential-thinking": "2.2.0"
   }
 }
