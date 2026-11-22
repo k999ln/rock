@@ -159,7 +159,7 @@ export class CombinationLedger {
     if (!siteReady(scheme, state, pipeline))
       throw Error('条件の確認中、または紹介受付を停止しています。');
     const cacheKey =
-      'diagnosis.' +
+      'diagnosis.v2.' +
       id +
       '.' +
       Array.from(
