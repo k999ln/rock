@@ -104,3 +104,7 @@ PRのCodeQL指摘に合わせ、ブラウザ試験の既定出力先を `mkdtemp
 本人指示によりPR #388の本番反映とスマホ操作を確認し、「ロード画面ださい」の追加指示へ対応。公開189のsourceを開き、すでにあるホーム検索・44pxタップ範囲・並び替え・保存先のNoah専用導線を保持し、外部評価の追加指標表示を反映する。一覧はカード型のプレースホルダー、その他は小さな正式ロゴと細い進行中表示へ変更した。動きを減らす設定と読み上げ通知は維持し、進捗率を作らない。
 
 関連試験はGit側23件・公開source側21件、公開sourceのtypecheckが成功。公開sourceの390pxプレビューでカード型ロードと横はみ出しなしを確認。再実行用ブラウザ試験に、通信待ち中の表示・reduced motion・Hugging Face表示値と一覧APIの値の照合を追加。公開ビルド・本番確認・CIの結果はこの変更のPR本文へ記録する。追加のDB migrationは含めない。
+
+[PR #390](https://github.com/k999ln/rock/pull/390)。公開190のホーム整理を取り込み、公開191（source `8f1882262a0f2d587491f3298d3f1c277da702dc`、deployment `appgdep_6b025e3f01b88191b95a760e59befc05`）が成功。実Chrome 157で320/360/390/430×844と1280×900の31/31項目を確認。検索・空結果の解除・メニュー/保存先の開閉・横スワイプ・外部リンク・503後の再試行・20→40件の追加読込・ロード中の表示・reduced motionが通り、未捕捉JSエラーなし。Hugging Faceのいいね3件は一覧API・画面・公式APIで一致し、GitHub boss-agent-cliのスター2,286件もAPIと画面で一致。追加migrationなし。
+
+証跡は `work/noah-production-qa-20261122/published-191/` のreport.jsonとスクリーンショット、同階層のexternal-rating-proof.json/github-rating-proof.json。端末実機・Safariの合格とはしない。ローカル全体verifyはPythonの版で既存fixtureが失敗（標準Pythonではhashlib.file_digestがなく、3.12ではmacOS用MCPの3.13以上という条件を満たさない）。対応するPython 3.15で関連45試験は再実行成功。全体の最終判定はPRのGitHub CIに記録する。
