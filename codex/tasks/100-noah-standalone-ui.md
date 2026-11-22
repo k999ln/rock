@@ -375,3 +375,5 @@ PR #400に記録。mainの公開正本ルール（PR #398）を受け、公開19
 追補: 全体verifyは単一実行exit0、主4,974成功/5skip/0失敗、仕事API1,918・CSV385、型/lint/build・mission/work/botまで成功。ログは `work/noah-tap-checks/full-verify.log`（Git対象外）。最新mainのGradio実行受け皿を取り込んだ後の受入はPRへ記録する。
 
 GitHub受入先: [PR #3](https://github.com/iceiceice999/rock/pull/3)。main `a0bea729` のGradio実行受け皿を通常merge `aa785c14` で保持。追記型文書の衝突は両側を残した。統合後の全体verifyとCIを確認してから、Sitesは最新mainとGit treeが一致する版を公開する。
+
+検査環境の追補: private移行後のCodeQLはworkflow-run APIの403、SPIDERは180秒でSCANNER_FAILEDを再現。CodeQLのjobにactions:readだけ追加（contents:read/security-events:writeは維持）。全履歴スキャナは600秒・外側630秒・job15分の有界検査へ延長し、ルール/例外/全HEAD到達履歴/秘密値非出力/失敗時の拒否を維持。検証済みスキャナcommit `4c7b18c44ec9b73a3b980938eac0f3c2ca6cf1e7` を移行先repoから固定取得する。候補HEADに追従しない。スキャナ境界5成功/実バイナリ未指定1skip、workflow4成功。最終CIの結果は別途記録する。
