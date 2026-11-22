@@ -16,7 +16,7 @@ export function lineEligibility(
 ) {
   return async (owner: string) => {
     if (!agent)
-      throw new OperatorError('配給Agentの接続を準備しています。', 503);
+      throw new OperatorError('定期便のAgentとの接続を準備しています。', 503);
     const response = await agent.fetch('https://notice.invalid/eligible', {
       method: 'POST',
       signal: AbortSignal.timeout(8000),
