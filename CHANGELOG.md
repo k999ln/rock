@@ -1,6 +1,7 @@
 ## 2026-11-22
 
 - **緊急の安全の直し**: avoado.si の React Server Components の部品（react-server-dom-webpack 19.2.8）に、11-10 公開の「認証なしで外からコードを動かせる」穴（CVE-2026-126187、critical）があったので、直った 19.2.9 に上げた（react・react-dom も同じ版）。あわせて、開発の道具（shadcn の CLI）が引く body-parser・systeminformation・qs・hono などを、直った版に上げた。根の依存の穴は 18 件（critical 1・high 3）から 10 件（critical 0・high 1。残りは開発用の vite・vinext の版上げが要る物）。本番の公開が要る（Opus / Noelle、[PR #417](https://github.com/k999ln/rock/pull/417)）。
+- task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
 - task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
 - task 105（自社クラウドの費用上限・見張り・復元練習、Codex の #368）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0058 に付け直し、その表・索引・trigger が migrator で全部入る事の試験を足した（[PR #413](https://github.com/k999ln/rock/pull/413)）。
 - task 13（iOS の eSIM 導入と Eve のホーム画面、Codex の #372）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。migration を 0057 に付け直し、接続画面の見出しは main の新しい文にした。手元の本番ビルドで応答ヘッダを測り直した。iPhone 実機の確かめは未実施（[PR #412](https://github.com/k999ln/rock/pull/412)）。
