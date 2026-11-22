@@ -88,7 +88,7 @@
 .tools strong { font-size:14px; overflow-wrap:anywhere; margin-right:8px; }
 .tools p { margin:6px 0 0; color:#52525b; font-size:12px; line-height:1.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
 /* 道具を選ぶ行（押せる）。行の全部が、押す所。 */
-.toolButton,.toolRow { display:block; width:100%; min-height:44px; padding:14px 16px; border:0; background:none; text-align:left; color:inherit; font:inherit; }
+.tools .toolButton,.tools .toolRow { display:block; width:100%; min-height:44px; padding:14px 16px; border:0; background:none; text-align:left; color:inherit; font:inherit; }
 .toolButton { cursor:pointer; }
 .toolButton[aria-pressed="true"] { background:#f3eefb; }
 .tools li:has(.toolButton),.tools li:has(.toolRow) { padding:0; }

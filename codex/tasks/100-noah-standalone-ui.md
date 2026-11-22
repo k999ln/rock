@@ -332,3 +332,16 @@ Pixel 10 / Android17 / Vanadiumの実サービスで、ホーム検索→BeevR�
 公開196の成果受入は並行担当のGit `6c032868` と実機記録も確認済み。`list_services` の新規成果 `e2830784-5f4d-40d1-9da6-0995e2b3a858` が10件返り、同じ用途名で表示され、再読み込み後も10件保持・横はみ出しなし。証拠 `/tmp/noah-intuitive-pixel-result.json`・`/tmp/noah-intuitive-pixel-result.png`。当方の追加再確認結果はPRへ追記する。全Agentの実行や新規外部登録、実eSIMの受入を意味しない。
 
 当方の証跡は `work/noah-195-checks/`（Git対象外）。`full-verify.log` SHA256 `072e03dcd8943aec4f796c2108fb5e6498bdeb67d6b41b0fb3f632b5e66a907e`、`pixel-connect-position.png` `9543037479c8f4a0b595b734ad08e5a4b06a9de24114b72e47024e103eb5b1bb`、`pixel-connection.json` `c78b77ac5ff2c71bd4933efb856a53b8d36668c299964cddab7ba718f2324dac`、`public-security-final.json` `23dddf65091747acc6f8f61c73dce00dea4f61e9f4617987ca278140b77b4d5d`。再開コマンドは上記verify。最終HEADの全CIとマージ結果は [PR #394](https://github.com/k999ln/rock/pull/394) を参照する。公開196の追加配備・migrationは本PRから行わない。
+
+
+#### 追補: 検索先詳細の縦崩れ解消・公開197・Pixel一周
+
+Pixel監査で、検索から開く `/noah/discover/agent` の共通ボタン指定が操作行を横並びに上書きし、用途名と確認事項が縦に細く折り返されることを再現。`.tools .toolButton` / `.tools .toolRow` で本来の縦配置を保ち、Tool・入力・確認・権限・接続音/振動は変更しない。掲載詳細 `/noah/ready/agent` だけでは再現しなかったため、実際の検索先を開く `scripts/test-noah-tool-layout-browser.mjs` を追加。API応答は合成し、提供者へ送信しない。公開196では320pxのタイトル/説明の位置検査が失敗し、197では320/390/1280pxすべて成功。各幅の接続は初期画面内、フォームは選択行内、横はみ出し・pageerrorなし。
+
+公開197: source `054df9a38f177c305671fa8c4dd507a74a35f343`（親196）、deployment `appgdep_6b026e7ad46081918f78cf2535ce14f9` succeeded / env17。Sites source差分はCSSとブラウザ試験だけ。195/196のデザインと機能を保全し、migration・環境変更はない。
+
+修正を含む `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` は単一exit0、主4,951成功・5skip・0失敗、型/lint/build・API1,918・CSV385・mission/work/botまで成功。直前のPATH指定なし実行はOpenSSL 3不足で停止し、環境を補正して先頭から再実行した。最終ログ `work/noah-195-checks/full-verify-layout-final.log` SHA256 `fabaf9f11fb1724b07c058cdb826bc5e760360d642b1777e609fa4388ccd132a`。Sites側も型/lint/build成功。
+
+2026-11-22 13:26〜13:27 JST、Pixel 10で公開197のホーム検索→BeevR内部詳細→再接続→用途名「サービス一覧を見る」→頼む→成果詳細を実タップで一周。接続ボタンは初期画面y568〜612px、計画358ms・接続1,429ms・道具取得1,002ms。8操作すべての用途名は高さ20.57px、確認事項22.57px、縦崩れなし。新規依頼は1回、成果 `/noah/tasks/e2fece64-f654-409c-ad91-5e8072e29af0` に10件受信し、キャッシュ無視の再読み込み後も本文一致・横はみ出し/警告なし。今回のADB forwardは終了。認証付き新規登録や全Agentの受入を意味せず、既存の登録実機記録は保持する。
+
+証跡（Git対象外）: `pixel-197-layout.json` SHA256 `665de9f32c792f0a528e6c18b5221cece98305c65273195dca8409db58a0d3b3`、`pixel-197-tools.png` `621cac14750b05925f4549fa5e5a402e7121f26f2ecfbe959d1f6890299c6337`、`pixel-197-result-reload.json` `fc00442ddcc54a72ad5cf6b1924b9bb923994ff243a8184356a481d7ba02e9f9`、`layout-after-197/tool-layout-report.json` `af56d49cf534c659806b94af119922e2cf3bb3f392c175d03f2ee5638b8b1ae4`。ブラウザ再実行は `NOAH_PLAYWRIGHT_PACKAGE=/absolute/playwright-core/index.js NOAH_TEST_OUTPUT=/absolute/ignored/output node scripts/test-noah-tool-layout-browser.mjs`（Chrome、URL既定は公開HTTPS、必要時 `NOAH_TEST_URL`）。mainの追加変更を通常mergeして保持し、最終HEADの全チェックとマージ結果はPR #394へ記録する。
