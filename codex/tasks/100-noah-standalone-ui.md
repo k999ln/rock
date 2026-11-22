@@ -292,3 +292,5 @@ CIの区別: Release signing・SPIDER repair・CodeQL・Rock star verification�
 Gitleaks 8.30.1公式配布のchecksum照合済みMacバイナリで `GITLEAKS_BINARY=... python3 -B -m unittest discover -s tests -p 'test_spider_*.py'` は20件成功。同一パスへの別値・別プロバイダー鍵と、同じ値の別パスコピーは引き続き検出。最初のローカル履歴走査はSCANNER_FAILEDで未完了のため、クリーンの証拠には使わない。全履歴の確定結果は固定版ポリシーを使用するGitHub Actionsで確認する。
 
 main `062fbb456` の検索・モバイル試験修正を統合し、公開中の並び替えボタン・掲載可否判定・共有機能を保持。統合後の関連21試験・型検査成功。公開190/source `4401738ccc3160cc34c4eae10c497ddb465ebbcd`（並行担当Git `4dae9492e`）のホーム告知撤去も取り込み、法人/組合せの独立ページとデータは維持した。最初の手元verifyはOpenSSL 3のPATH不足で停止したため、修正した環境で全体を再実行する。検査完了・main統合の結果はPRへ追記する。
+
+GitHub Actions [SPIDER run44979417145](https://github.com/k999ln/rock/actions/runs/44979417145)、job137076412997で `8e178d08981307e7b499044cc6df6e340a36ba51` の全HEAD到達履歴検査が成功し、`SPIDER clean: 0 candidates` を確認。固定ポリシー試験・秘密値を出さない境界試験・SPIDER修復回帰も成功した。最終全体CIとmain統合はPR #377に最新HEADを結び付けて記録する。
