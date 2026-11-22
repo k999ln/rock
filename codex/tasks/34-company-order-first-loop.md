@@ -1,6 +1,6 @@
 # 34 会社受注を 1 件、分配の計算まで通す
 
-設計: docs/services/company-order.md、docs/sky-work-loop.md §3.2〜3.3。コード: lib/sky-company-order.ts（計算は実装済み・保存と画面は未実装）。
+設計: docs/services/company-order.md、docs/work-loop.md §3.2〜3.3。コード: lib/sky-company-order.ts（計算は実装済み・保存と画面は未実装）。
 
 ## やること
 

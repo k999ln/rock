@@ -170,7 +170,7 @@ task: [110 棚（ローンチ分）](../../codex/tasks/110-noah-shelf.md)、[111
 
 - 札は、工程が「何を受け取り、何を出すか」を、決まった語（`NOAH_MATERIALS`）で書いた物。カードの工程には、運営が書く。
 - 取り込んだ道具に札の候補を付ける時だけ、モデルを使う。モデルへ渡すのは、その道具の名前・説明・入力の定義（**資料として**。指示としては読ませない）と、語彙の一覧。受け取るのは、この形の JSON だけ: `{"schema":"noah-card/1","consumes":["csv"],"produces":["cleaned-csv"]}`。語彙の外の語、余計な項目、JSON の外の文は、全部捨てる（`parseNoahCardProposal`）。候補は、運営が確かめるまで、棚のカードには使わない。
-- カードの工程は、そのまま工程の計画（`planRecipes`）の「能力」になる（`noahPackageCapabilities`。ID は `<カードの ID>.s<工程の番号>`）。先が決まっていない工程（`gap`）は `available: false` になり、計画は「この型の素材を作れる能力が無い」と返す。それが、Noa が Noah で探す時の検索語になる（task [33](../../codex/tasks/33-sky-recipe-planner-wiring.md) の 4）。
+- カードの工程は、そのまま工程の計画（`planRecipes`）の「能力」になる（`noahPackageCapabilities`。ID は `<カードの ID>.s<工程の番号>`）。先が決まっていない工程（`gap`）は `available: false` になり、計画は「この型の素材を作れる能力が無い」と返す。それが、Noa が Noah で探す時の検索語になる（task [33](../../codex/tasks/33-recipe-planner-wiring.md) の 4）。
 - 領域をまたぐ整理（11-19 の本人の構想の後半）は、札がそろった後に、同じ型を受け取る・出す工程を、棚をまたいで引くことで行う（「PDF から表を作る」工程は、経理のカードにも、健康の記録のカードにも使える）。新しい表は要らない。
 
 ## 8. つなげる数（切り替え `NOAH_PLAN_LIMITS`）

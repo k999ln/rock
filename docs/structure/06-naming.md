@@ -22,7 +22,7 @@
 | **AMC** | avokado Mission Control。Goalを工程に分解し、担当・順序・合格条件を持つ | lib/amc-*.ts, lib/jennifer-amc-*.ts, data/amc/, app/amc | **Jennifer**（project chief of staff。役割がAMCと重複するためAMCへ統合。lib/jennifer-*.ts は amc/ 配下へ） |
 | **Jev** | 成果を独立に評価する remote evaluator。権限は持たない | lib/jev-*.ts, app/api/jev-evaluation | — |
 | **Spider** | コードと接続先を巡回して不具合・権限逸脱を探す検査役（雲が歩く軌跡のアニメーション） | lib/spider-*.ts, components/spider-workspace.tsx, toolkits/spider-guard, .github/workflows/spider-codeql.yml | — |
-| **Sky** | Marketplace・Hub・MCP/A2A・SDK | lib/sky-*.ts, app/sky, services/sky-web | — |
+| **Sky**（廃止） | 2026-11-18 に公開画面を Noah へ統合。名前としては使わない。Marketplace・Hub・MCP/A2A・SDK の機能は Noah（見つける・接続する）と Noa（つなぐ）の下に置く | lib/sky-*.ts, app/sky, services/sky-web は互換のための識別子として残す（`/sky` は Noah の画面へ移送） | 新しい文書・画面・ファイル名に Sky を使わない |
 | **Work / Job / Receipt** | 仕事の状態遷移・保存・署名済み領収 | lib/workflow.ts, lib/work-*.ts, lib/receipt-signature.ts | Zema（実行層の旧名） |
 | **Broker** | 本人の承認・予算・端末の権限を実行に渡す門番 | lib/a2a-broker-*.ts, lib/agent-control-plane.ts | — |
 | **Wallet** | 残高・予約・台帳・精算（天引きの実装場所） | lib/wallet*.ts, lib/settlement.ts, services/sky-billing | Fund（旧名の一部） |
@@ -32,7 +32,7 @@
 
 ## 使ってはいけない言い換え
 
-- 「Smith」→ Noa。「Zema」→ 文脈で Eve（会話）か Work（実行）。「Jennifer」→ AMC。
+- 「Smith」→ Noa。「Zema」→ 文脈で Eve（会話）か Work（実行）。「Jennifer」→ AMC。「Sky」→ 文脈で Noah（見つける・追加・接続）か Eve（依頼・仕事）。
 - 「avocadoMini」→ mii。「Mini」単独は mii の意味でなら可、ただし新規本文では mii。
 - 「si」= AI の表記（2026-10-13の決定）。本文の AI 表記は si のまま。API/enum/パスは変えない。
 - 製品が何個あるかを数えるときは外側の表だけを数える（会社1、物理端末1、入口1、場所1、基盤1、PC1）。
