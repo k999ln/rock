@@ -69,7 +69,7 @@ async function auth(request, secret) {
 const briefTool = {
   name: 'prepare_business_training',
   description:
-    '法人の業務を棚卸しし、現状時間の計算と研修相談票を返します。会員登録不要。社名・メール・秘密情報は入力しないでください。本文は保存せず、匿名の利用・紹介識別子のみ記録します。',
+    '法人の業務を棚卸しし、現状時間の計算と研修相談票を返します。会員登録不要。社名・メール・秘密情報は入力しないでください。提供元側では入力本文を保存せず、匿名の利用・紹介識別子のみ記録します。Noahで実行すると、依頼と成果が自分の保存先に残ります。',
   inputSchema: {
     type: 'object',
     properties: BUSINESS_FIELDS,
