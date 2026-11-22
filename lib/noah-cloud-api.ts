@@ -122,6 +122,12 @@ export function createNoahCloudApi(deps: Dependencies) {
           if (!work) throw new NoahAgentError('依頼IDが使用されています。', 409);
         }
         if (now() - Date.parse(work.createdAt) > NOAH_CLOUD_LIMITS.seconds * 1000) {
+          // Read an already-admitted result before classifying an old lost response.
+          // This path must never send another start, even if the runtime lost its record.
+          try {
+            const remote = await call({ action: 'job', jobId: work.id });
+            return json({ job: view(await receive(deps.db, owner, work, remote as unknown as NoahCloudJob, now)), ownerScope: scope });
+          } catch (error) { if (!(error instanceof NoahAgentError) || error.status !== 404) throw error; }
           const unknown = finishNoahRemoteWork(work, { state: 'unknown', error: '受付の期限を過ぎました。二重実行を避けるため自動再送していません。' }, now());
           await jobs.update(owner, unknown, work.revision); return json({ job: view(unknown), ownerScope: scope });
         }

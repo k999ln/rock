@@ -19,7 +19,7 @@ async function world(t) {
   const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, authenticate: async () => owner, directory: async () => listed ? [entry] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
     count++;
     if (input.action === 'start') { receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, profile: input.profile, version, distribution, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
-    if (input.action === 'job') return Response.json(records.get(input.jobId));
+    if (input.action === 'job') return records.has(input.jobId) ? Response.json(records.get(input.jobId)) : Response.json({ error: 'not_found' }, { status: 404 });
     return Response.json({ connection: null });
   } });
   const request = async (body, headers = {}) => api(new Request(origin + '/api/noah/cloud-agents', { method: 'POST', headers: { Origin: origin, 'Content-Type': 'application/json', 'X-Rock-Owner-Scope': await ownerScopeFor(owner), ...headers }, body: JSON.stringify({ projectId: project, ...body }) }));
@@ -60,7 +60,14 @@ void test('cloud results remain owner-bound, stored as unverified Work, and repl
 void test('an old uncertain start is not automatically replayed', async t => {
   const w = await world(t), input = { action: 'start', jobId: id(1), connectionId: id(2), prompt: 'hello' };
   await w.request(input); w.f.advance(241000); const count = w.calls();
-  const response = await w.request(input); assert.equal((await response.json()).job.state, 'unknown'); assert.equal(w.calls(), count);
+  w.records.delete(id(1));
+  const response = await w.request(input); assert.equal((await response.json()).job.state, 'unknown'); assert.equal(w.calls(), count + 1); assert.equal(w.records.has(id(1)), false, 'only a read is sent; no new runtime record');
+});
+void test('a late start retry recovers the existing result instead of overwriting it as unknown', async t => {
+  const w = await world(t), input = { action: 'start', jobId: id(1), connectionId: id(2), prompt: 'hello' };
+  await w.request(input); w.f.advance(241000);
+  w.records.set(id(1), { id: id(1), profile: 'hermes', version, distribution, mode: 'run', state: 'returned', calls: 1, result: { text: 'existing result', files: [], exitCode: 0 } });
+  assert.equal((await (await w.request(input)).json()).job.result.text, 'existing result');
 });
 void test('runtime routing rejects unconfigured hosts and does not follow a redirect', async () => {
   let calls = 0;
