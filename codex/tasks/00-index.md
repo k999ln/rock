@@ -150,4 +150,4 @@
 | 125 | [125-noah-scout.md](125-noah-scout.md) | Noah が自分で探す（GitHub の急に伸びた repo・Agent の道具の話題・Product Hunt、Codex の Luna Max が毎日 X を読んで配布元まで理解した「Noahが読んだ」）・Switch を載せる・iceiceice999/rock への移行 | ✅ 自律収集の移植 [PR #13](https://github.com/iceiceice999/rock/pull/13)・停止調査 [PR #15](https://github.com/iceiceice999/rock/pull/15)・本番収集の復旧 [PR #16](https://github.com/iceiceice999/rock/pull/16)・チェックポイントのタイムアウト修正 [PR #26](https://github.com/iceiceice999/rock/pull/26)。毎時予備実行を設定済み。24時間の鮮度維持・新リポジトリへの実行先移行・Xの7日継続掲載は未確認 |
 | 126 | [126-noah-packages-first.md](126-noah-packages-first.md) | トップの最初の列をパッケージ（1 つの仕事を最後までやる組合せ）にし、単発は下。Eve が Switch の部屋の形を手本に組む | 指示書を現mainへ統合 [PR #13](https://github.com/iceiceice999/rock/pull/13)。パッケージを先頭へ出す実装は未着手（task125の後） |
 
-| 127 | [127-noah-live-agent-families.md](127-noah-live-agent-families.md) | 786系列の接続・本番稼働記録・利用可能一覧の更新 | 実装・受入中（PR #28） |
+| 127 | [127-noah-live-agent-families.md](127-noah-live-agent-families.md) | 786系列の接続・本番稼働記録・利用可能一覧の更新 | ✅ 初回本番受入5系列・残り接続継続（PR #28） |

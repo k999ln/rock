@@ -11,6 +11,7 @@ const heldSpaces = new Set([
   'kaushikpaul/ai-agentic-coder',
   'agents-mcp-hackathon/opensorus',
   'oshawoetta/pokemon_agents',
+  'sdajani/co-scientist-public-demo',
 ]);
 export function noahHostedProviderHeld(repository: string) {
   return heldSpaces.has(repository.toLowerCase());

@@ -449,4 +449,4 @@ macOSでHomebrewのOpenSSL 3を使う場合は `PATH=/opt/homebrew/opt/openssl@3
 
 Noahのブラウザ本人は、会員登録なしで自分専用のAgent取込と下書きの保存へ進めます。コードの保存権利確認・容量上限・本人別の分離を保ち、公開や実行の権限は別に判定します。
 
-確認済みの786系列は `/noah/agents/verified` で検索できます。接続条件の調査と本番の稼働状態を分け、成果受領・定義変更・失敗・確認期限を10秒ごとに表示へ反映します。すべての系列が接続済みという意味ではありません。[接続と稼働表示](docs/noah/spec-127-live-agent-families.md)
+確認済みの786系列は `/noah/agents/verified` で検索できます。接続条件の調査と本番の稼働状態を分け、成果受領・定義変更・失敗・確認期限を10秒ごとに表示へ反映します。すべての系列が接続済みという意味ではありません。[接続と稼働表示](docs/noah/spec-127-live-agent-families.md)・[初回本番受入](docs/noah/acceptance-127-live-agent-families.md)
