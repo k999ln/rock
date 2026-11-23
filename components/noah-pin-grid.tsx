@@ -8,7 +8,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
-import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahPinInitials } from '@/lib/noah-pins';
+import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahCardOrigin, noahPinInitials } from '@/lib/noah-pins';
 import { noahCardHref, noahProjectHref } from '@/lib/noah-project-view';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
@@ -94,7 +94,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
           <span className={styles.panel} aria-hidden="true"><span className={styles.initials}>{noahPinInitials(item.name)}</span><span className={styles.topicLabel}>{NOAH_PIN_TOPIC_LABELS[item.topic]}</span></span>
           <strong className={styles.name}>{item.name}</strong>
           {item.summary && <span className={styles.summary}>{item.summary}</span>}
-          <small className={styles.meta}>{item.host ?? item.provider} · {item.external ? 'Noahで接続を確認' : item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
+          <small className={styles.meta}>{noahCardOrigin(item)} · {item.external ? 'Noahで接続を確認' : item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
         </a>
         {!item.external && <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
           {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}

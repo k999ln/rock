@@ -28,13 +28,15 @@
 
 ### D3 設定の有無を、知らない人に返さない（抜け道 S4・重さ 低）
 
+- **2026-11-23 Claude が済ませた**（枝 `claude/ice2/noah-launch`）: `entitlement-deliveries` は、鍵（Bearer）の無い人に 401 だけを返す（`tests/rockstar-entitlement-delivery-unconfigured.test.mjs`）。`/api/sky/service-status` は、Sky の画面が使う、意図した公開の前提の情報（コードの注記。秘密の値は返さない）なので、変えない。
+
 - わかっている事: `/api/internal/rockstar/entitlement-deliveries` は、知らない人に `SELLER_REGISTRY_UNCONFIGURED` を返す。`/api/sky/service-status` は、支払い・法務 AI などの設定の有無を返す。
 - やる事: 本人の確かめを、設定の確かめより先にする。知らない人には 401 か 404 だけ。
 - 合格: `scripts/noah-public-probe.mjs` で、2 つとも 401 か 404。
 
 ### D4 受取口座と本人確認の書類（抜け道 S9・本人の判断 Q3）
 
-- 本人の判断を待つ。決まったら、その形で作る（例: 見る前にパスキーで確かめる、ブラウザだけの本人には置かせない）。
+- **2026-11-23 決めて、Claude が済ませた**（枝 `claude/ice2/noah-launch`）: ブラウザだけの本人には、新しく置かせない（API が 403。画面は入力と書類の追加を出さず、理由を書く）。前に置いた物は、読む・消す事だけできる。サインインした本人は今までどおり（`tests/noah-profile-signed-in-only.test.mjs`）。
 
 ### D5 本番の一周（spec-90 の 5 章の表の 1〜13）
 
@@ -55,17 +57,23 @@
 
 ### D8 サインインの行き先
 
+- 2026-11-23 Claude が調べた: `/noah/account` は、元の画面へ戻すだけだが、戻った先で「ブラウザだけの本人」が自動で作られるので、ブラウザの本人で足りる画面では、行き止まりにならない。行き止まりになり得るのは、本当のサインインが要る画面（例: `noah-launch.tsx` の「自分のAgentとMacを管理するには」）。ただし、その行き先は既存の試験（`tests/noah-launch-ui.test.mjs` など）が `/noah/account?…` で固定している。試験を書き換えずに直せないので、本人の判断に回す。
+
 - わかっている事: いくつかの画面の「サインイン」は `/noah/account?mode=login&returnTo=…` へ行く。`/noah/account` は会員の表を外したので、すぐ元の画面へ戻る（サインインにならない）。使っている所: `components/noah-agent-feedback.tsx`・`noah-agent-upload-form.tsx`・`noah-boards.tsx`・`noah-launch.tsx`・`noah-pin-grid.tsx`。
 - やる事: ブラウザの本人で足りる所は、リンクを出さない。本当にサインインが要る所（招待の受け取りなど）は、`/signin-with-chatgpt?return_to=…` にする。
 - 合格: Noah の画面に、`/noah/account` へ行く「サインイン」が無い試験。
 
 ### D9 Mac だけの機能を、公開の画面で分かるようにする（本人の判断 Q1・Q5）
 
+- **2026-11-23 決めて、Claude が済ませた**（枝 `claude/ice2/noah-launch`）: 「ココナラの仕事」は Mac で開いた時だけメニューに出す（`tests/noah-mac-menu.test.mjs`）。「自分のAgentを追加」でコードを選ぶと、Mac で動く事とスマホから使う道を書く（`tests/noah-upload-runs-on.test.mjs`）。`/noah/billing` は 404（`tests/noah-billing-page-hidden.test.mjs`）。`/noah/free-cloud` は、どこからもリンクが無く、運営でない人には API が 401 なので、残した。
+
 - わかっている事: メニューの「ココナラの仕事」は「このMacに接続」だけ。追加した Agent の詳細は「自分のMacを選んで接続・実行」だけ。「自分のAgentを追加」のテンプレートは、Mac の中のモデル（qwen3:4b）を使う形。`/noah/billing`（月次請求のテスト）は公開のままで、中の API は 404。`/noah/free-cloud` は運営 1 人だけが使える会話の画面。
 - やる事: 本人の判断が要らない物（`/noah/billing` と、運営でない人の `/noah/free-cloud`）は、公開の画面から外す（404 か、`/noah` へ戻す）。ほかは本人の判断を待つ。
 - 合格: 知らない人が開いて、先へ進めない画面が無い（D7 の道具と、各画面の文で確かめる）。
 
 ### D10 ホームの並びと、Noah 自身の案内（本人の判断 Q4）
+
+- **2026-11-23 決めて、Claude が印を付けた**（枝 `claude/ice2/noah-launch`）: 出し続ける。カードの下の行を「Noahの案内（広告を含む）」にした（`tests/noah-card-origin.test.mjs`）。送信先の名前は詳細の画面に出す。残り: 並びの決まりを spec-115 と合わせる事。
 
 - わかっている事: ホームの先頭 3 件は、Noah 自身の「広告を含む」案内。提供元が `noah-revenue-agents.mr-kirin999.workers.dev` と出る。「接続できる」の並びは、確かめた時刻の新しい順（`selectNoahDirectory` の `source === 'noah'`）で、人気の順ではない。
 - やる事: 本人の判断の後で、提供元の名前と「Noah の案内（広告を含む）」の印を直す。並びの決まりを spec-115 と合わせる。

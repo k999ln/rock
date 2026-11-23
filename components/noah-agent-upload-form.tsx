@@ -13,6 +13,9 @@ import { bundleUploadTest, processUpload } from '@/lib/noah-upload-processing-cl
 import styles from './noah-agent-catalog.module.css';
 const permissionLabels = { read_input: '入力を読む', write_files: 'ファイルを書き込む', network: '外部通信', external_account: '外部アカウントを使う', external_write: '投稿・外部データの変更', financial: '決済・金融操作' };
 export { permissionLabels };
+/** コードを保存した Agent が動く場所（決め: 2026-11-23、本人「好きにしていいよ」。使い勝手の確かめ 9 章の Q1）。 */
+const NOAH_SOURCE_RUNS_ON = 'コードを保存したAgentは、MacのNoah（このMacの隔離環境）で動きます。スマホやブラウザだけでは動かせません。スマホから使うAgentは「MCPサーバーに接続する」か「専用のWeb画面を開く」を選んでください。';
+
 export default function NoahAgentUploadForm() {
   const router = useRouter();
   const [manifest, setManifest] = useState<NoahAgentManifest>({ ...noahAgentTemplate, name: '', summary: '', author: '', adapter: 'source', endpointUrl: null, priceNote: '' });
@@ -283,6 +286,7 @@ export default function NoahAgentUploadForm() {
       <label>どう使うAgent？<select value={manifest.adapter} onChange={e => { const { runtime: _runtime, ...base } = manifest; setManifest({ ...base, adapter: e.target.value as NoahAgentManifest['adapter'], endpointUrl: e.target.value === 'source' ? null : '' }); setId(''); }}>
         <option value="source">コードを保存して実行先を準備する</option><option value="web">専用のWeb画面を開く</option><option value="mcp_http">MCPサーバーに接続する</option><option value="a2a">A2A対応Agentに接続する</option>{manifest.adapter === 'local_app' && <option value="local_app">対応済みローカルアプリ</option>}
       </select></label>
+      {manifest.adapter === 'source' && <p role="note">{NOAH_SOURCE_RUNS_ON}</p>}
       {manifest.adapter === 'source' && <section className={styles.notice}><h2>画面を使わない実行</h2>
         <label><input type="checkbox" checked={Boolean(manifest.runtime)} onChange={e => {
           if (e.target.checked) change({ runtime: { schema: 'noah-terminal/1', language: 'node', entrypoint: 'main.mjs', model: 'none' }, permissions: ['read_input', 'write_files'] });

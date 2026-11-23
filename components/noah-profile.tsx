@@ -3,7 +3,7 @@ import {noahOperationLabel} from '@/lib/noah-operation-labels';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowUpRight, Check, Fingerprint, Pause, Play, Plus, Trash2 } from 'lucide-react';
-import { NOAH_PROFILE_FIELDS, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, type NoahProfileView, type ProfileField, type DelegationMode } from '@/lib/noah-profile-contract';
+import { NOAH_PROFILE_FIELDS, NOAH_PROFILE_SIGNED_IN_GROUPS, NOAH_PROFILE_SIGNED_IN_ONLY, PROFILE_CONSENT_VERSION, PROFILE_CONSENT_TEXT, type NoahProfileView, type ProfileField, type DelegationMode } from '@/lib/noah-profile-contract';
 import { useNoahProfile } from './use-noah-profile';
 import styles from './noah-profile.module.css';
 import NoahProfileReadiness from './noah-profile-readiness';
@@ -41,11 +41,16 @@ function ProfileEditor({profile,busy,save,beginFileSelection,endFileSelection,ca
       <div className={styles.groups}>{groups.map(group=>{
         const entries=Object.entries(NOAH_PROFILE_FIELDS).filter(([,field])=>field.group===group) as [ProfileField,(typeof NOAH_PROFILE_FIELDS)[ProfileField]][];
         const count=entries.filter(([key])=>profile.fields[key]).length+(group==='本人確認'?profile.documents.length:0);
+        // ブラウザだけの本人は、お金の受取口座と本人確認を新しく置けない（サーバーも断る）。置いた物は読んで消せる。
+        const locked=Boolean(profile.browserOwned)&&NOAH_PROFILE_SIGNED_IN_GROUPS.includes(group);
+        if(locked&&!count)return <details key={group} className={styles.group}><summary><span>{t(group)}</span><small>{t('サインインした本人だけ')}</small><Plus size={18}/></summary><p className={styles.muted}>{t(NOAH_PROFILE_SIGNED_IN_ONLY)}</p></details>;
         return <details key={group} className={styles.group}><summary><span>{t(group)}</span><small>{count?t('{count}項目を保存済み',{count}):t("必要なときに追加")}</small><Plus size={18}/></summary>
-          <div className={styles.inputs}>{entries.map(([key,field])=><label key={key}>{t(field.label)}{key==='bio'||key==='skills'?<textarea value={fields[key]??''} maxLength={field.max} rows={3} onChange={e=>setFields({...fields,[key]:e.target.value})}/>:<input value={fields[key]??''} type={key==='email'?'email':key==='birthDate'||key==='identityExpiry'?'date':'text'} autoComplete={field.autocomplete} maxLength={field.max} onChange={e=>setFields({...fields,[key]:e.target.value})}/>}</label>)}</div>
+          {locked&&<p className={styles.muted}>{t(NOAH_PROFILE_SIGNED_IN_ONLY)}</p>}
+          <div className={styles.inputs}>{entries.map(([key,field])=><label key={key}>{t(field.label)}{key==='bio'||key==='skills'?<textarea value={fields[key]??''} maxLength={field.max} rows={3} onChange={e=>setFields({...fields,[key]:e.target.value})}/>:<input value={fields[key]??''} readOnly={locked} type={key==='email'?'email':key==='birthDate'||key==='identityExpiry'?'date':'text'} autoComplete={field.autocomplete} maxLength={field.max} onChange={e=>setFields({...fields,[key]:e.target.value})}/>}</label>)}</div>
+          {locked&&entries.some(([key])=>profile.fields[key])&&<button type="button" disabled={busy} onClick={()=>{const rest=Object.fromEntries(Object.entries(fields).filter(([key])=>!entries.some(([name])=>name===key)));setFields(rest);void save({action:'fields',fields:rest,consentVersion:PROFILE_CONSENT_VERSION,reuse:profile.consents.length===0||profile.reuseEnabled});}}><Trash2 size={17}/> {t('{group}を消す',{group:t(group)})}</button>}
           {group==='本人確認'&&<div className={styles.documents}>
             {profile.documents.map(doc=><div key={doc.id}><a href={`/api/noah/profile/documents/${doc.id}`}>{doc.name}</a><button type="button" aria-label={`${doc.name}を削除`} disabled={busy} onClick={()=>void save({action:'deleteDocument',id:doc.id})}><Trash2 size={17}/></button></div>)}
-            {profile.documents.length<2&&<label className={styles.upload}><Plus size={17}/> {t("書類を追加")}<input type="file" accept="application/pdf,image/jpeg,image/png" disabled={busy||!profile.available} ref={fileInput} onClick={beginFileSelection} onChange={async e=>{const file=e.target.files?.[0];e.target.value='';try{if(file)await save(file);}finally{endFileSelection();}}}/></label>}<small>{t("PDF・JPEG・PNG／1件5MBまで・2件まで")}</small><small>{t("「書類を追加」で、暗号化保存と次の登録での再利用に同意します。提出先は毎回確認します。")}</small>
+            {!locked&&profile.documents.length<2&&<label className={styles.upload}><Plus size={17}/> {t("書類を追加")}<input type="file" accept="application/pdf,image/jpeg,image/png" disabled={busy||!profile.available} ref={fileInput} onClick={beginFileSelection} onChange={async e=>{const file=e.target.files?.[0];e.target.value='';try{if(file)await save(file);}finally{endFileSelection();}}}/></label>}<small>{t("PDF・JPEG・PNG／1件5MBまで・2件まで")}</small><small>{t("「書類を追加」で、暗号化保存と次の登録での再利用に同意します。提出先は毎回確認します。")}</small>
           </div>}
         </details>;
       })}</div>

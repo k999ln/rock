@@ -1,14 +1,20 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Hash destinations work in the local OS as well. */
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, Search } from 'lucide-react';
-import { noahLegacyHref, type NoahSurfaceMode } from '@/lib/noah-surface';
+import { noahLegacyHref, noahMacMenuAllowed, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
 import { NoahSurfaceContext } from './noah-surface-context';
+
+const noSubscription = () => () => {};
+function macMenuOnThisDevice() {
+  const agent = navigator as Navigator & { userAgentData?: { platform?: string } };
+  return noahMacMenuAllowed(agent.userAgentData?.platform || navigator.platform || '', navigator.maxTouchPoints ?? 0);
+}
 
 export default function NoahShell({ children, mode = 'local' }: { children: ReactNode; mode?: NoahSurfaceMode }) {
   const pathname = usePathname();
@@ -17,6 +23,8 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const effectiveMode = preview ? 'public' : mode, base = preview ? '/noah/public' : '/noah';
   const [hash, setHash] = useState('');
   const gridMenuId = useId(), gridMenu = useRef<HTMLDivElement>(null);
+  // Mac だけの画面は、Mac で開いた時だけメニューに出す（サーバーの描画と最初の描画は出さず、端末が分かってから出す）。
+  const macMenu = useSyncExternalStore(noSubscription, macMenuOnThisDevice, () => false);
   useEffect(() => {
     const update = () => {
       const currentHash = window.location.hash;
@@ -45,7 +53,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const secondary = [
     { href: `${base}/profile`, label: '登録情報', Icon: ShieldCheck },
     { href: `${base}/profile#permissions`, label: '任せる範囲', Icon: Settings2 },
-    { href: '/noah/coconala', label: 'ココナラの仕事', Icon: Bot },
+    ...(macMenu ? [{ href: '/noah/coconala', label: 'ココナラの仕事', Icon: Bot }] : []),
     { href: `${base}/preferences`, label: '操作の設定', Icon: Globe },
   ];
   const gridItems = [
