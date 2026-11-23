@@ -93,7 +93,7 @@ export default function NoahVerifiedAgents() {
     {error && <p role="alert">{error} {data ? '直前に取得できた一覧を表示しています。' : ''}</p>}
     {view === 'products' ? products.slice(start, start + 25).map(p => <article className={styles.post} key={p.familyId}>
       <div className={styles.postContent}><h2 className={styles.postTitle}>{p.name}</h2><p>{p.publisher} · {p.category}{p.added ? ' · 今回追加' : ''}</p>
-        <p className={styles.postText}>{p.summary}</p><p className={styles.researchNote}>{p.status}</p>
+        <p className={styles.postText}>{p.summary}</p><p className={styles.researchNote}>調査時の状態：{p.status}</p>
         {p.id === 'AG0734' && <p>架空店舗の商品・注文データを使うデモです。実店舗の商品情報ではありません。</p>}
         <p>{liveLabels[liveById.get(p.id)?.status ?? 'unverified']}</p>
         {liveById.get(p.id)?.checkedAt && <p className={styles.researchNote}>接続確認：{new Date(liveById.get(p.id)!.checkedAt!).toLocaleString('ja-JP')}</p>}
