@@ -20,6 +20,8 @@
   - `tsc --noEmit`・`lint:product`・`repository:check`・`project:check`・`design:check`・`release:check`・`schema:check`・`database:check`: 通った。
   - gitleaks（`.github/spider/gitleaks.toml`）: どの commit も 0 件。
 
+- 2026-11-23: main `9cb7f5d1`（#32）を merge した後、4 本（収集・ボード・デザインの参照・一周の確かめ）を重ねて、もう一度流した。`npm test`: 5,222 本のうち 5,182 本が通った（4 本は skip）。落ちた 36 本（名前は 35）は、全部、手を入れていない main `9cb7f5d1` でも同じ名前で落ちる（新しく落ちた物は 0）。`tsc --noEmit`・`lint:product`・`repository:check`・`project:check`・`design:check`・`release:check`・`schema:check`・`database:check`: 通った。gitleaks: 0 件。
+
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 https://claude.ai/code/session_01JzDjJ2sHXBQS8oDJ7NBhAu

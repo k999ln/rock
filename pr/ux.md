@@ -2,7 +2,7 @@
 
 本人の指示（2026-11-22 23:10）「ユーザーエクスピリエンスを辿ってデバグしてほしい（略）全部一個一個因数分解してちゃんといますぐ全機能が使えるか確かめて欲しい（略）Codexにもデバグやらせるからそれ用の指示も（略）全体の流れをMD図で表して、言葉や矢印でも説明して（略）抜け道があるかどうかとかぜんぶぜんぶ込みで第三者視点で調べて改善点を最終形までもってってね」。
 
-本番（avoado.si、Sites 206）を、知らない人のスマホ幅で**読むだけ**で開いて調べた。書き込む操作は、同じ main を手元で本番と同じ形に build して押した。結果は [docs/noah/ux-audit-2026-11-22.md](../blob/main/docs/noah/ux-audit-2026-11-22.md) にまとめた（全体の流れの図・言葉と矢印の説明・機能ごとの表 21 行・抜け道の表 10 行・自前のサーバーかクラウドか・本人に聞く事 5 つ）。残りは [task 127](../blob/main/codex/tasks/127-noah-ux-debug.md) に小項目 D1〜D13 で書いた。
+本番（avoado.si、Sites 206）を、知らない人のスマホ幅で**読むだけ**で開いて調べた。書き込む操作は、同じ main を手元で本番と同じ形に build して押した。結果は [docs/noah/ux-audit-2026-11-22.md](../blob/main/docs/noah/ux-audit-2026-11-22.md) にまとめた（全体の流れの図・言葉と矢印の説明・機能ごとの表 21 行・抜け道の表 10 行・自前のサーバーかクラウドか・本人に聞く事 5 つ）。残りは [task 128](../blob/main/codex/tasks/128-noah-ux-debug.md) に小項目 D1〜D13 で書いた。
 
 ## 直した事
 
@@ -17,7 +17,7 @@
 
 確かめの道具を 2 つ足した（どちらも読むだけ）: `scripts/noah-public-walk.mjs`（スマホ幅で開いて、はみ出し・小さい押す所・失敗した API を出す）、`scripts/noah-public-probe.mjs`（GET を返す API を、知らない人とブラウザの本人の 2 通りで呼ぶ）。
 
-## わかった事（直していない物は task 127 と本人の判断へ）
+## わかった事（直していない物は task 128 と本人の判断へ）
 
 - 追加した自分の Agent は「このMacの隔離環境」でしか動かない。スマホの人は動かせない（本人の判断 Q1）。
 - 外部への登録の代行は、Agentboard の 1 件だけ。
@@ -33,6 +33,8 @@
 - `tsc --noEmit`・`lint:product`・`repository:check`・`project:check`・`design:check`: 通った。
 - 手元の build で、「自分のAgentを追加」をテンプレートのまま保存できた。`scripts/noah-public-walk.mjs` で、ホームの小さい押す所が 0 になった。
 - 本番で書き込む確かめ（接続・依頼・ボード・登録情報）は、本人の許可を待っている（文書の 8 章）。
+
+- 2026-11-23: main `9cb7f5d1`（#32）を merge した後、4 本（収集・ボード・デザインの参照・一周の確かめ）を重ねて、もう一度流した。`npm test`: 5,222 本のうち 5,182 本が通った（4 本は skip）。落ちた 36 本（名前は 35）は、全部、手を入れていない main `9cb7f5d1` でも同じ名前で落ちる（新しく落ちた物は 0）。`tsc --noEmit`・`lint:product`・`repository:check`・`project:check`・`design:check`・`release:check`・`schema:check`・`database:check`: 通った。gitleaks: 0 件。
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
