@@ -16,6 +16,7 @@
 
 .frameHeader button{flex-shrink:0;min-width:64px}.frameHeader span{min-width:0}
 
+.usage, .jobFacts { scroll-margin-top: 5rem; }
 .overview, .jobFacts {
   padding-block: 1rem;
   border-block: 1px solid #e5e5e8;

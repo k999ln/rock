@@ -46,6 +46,7 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
     } catch (e) { setError(e instanceof Error ? e.message : '接続できませんでした。'); }
     finally { setOpening(false); }
   }
+  const usageLink = <a href="#noah-project-use">{t('利用条件を見る')}</a>;
   if (firstJob) {
     const job = detail?.firstJob?.id === firstJob ? detail.firstJob : undefined;
     return <main className={styles.page}>
@@ -54,8 +55,9 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
       {error && <div className={styles.error} role="alert"><p>{t(error)}</p><button type="button" onClick={() => { setError(''); setAttempt(n => n + 1); }}>{t('読み直す')}</button></div>}
       {detail && (!job ? <p><output>{t('この仕事は現在利用できません。別の目的を選んでください。')}</output></p> : <>
         <NoahProductHeader name={detail.card.name || job.id} title={t(job.title)} topic={detail.card.topic}
-          attribution={[detail.card.name, detail.card.provider].filter(Boolean).join(' · ')} />
-        <dl className={styles.jobFacts}>
+          attribution={[detail.card.name, detail.card.provider].filter(Boolean).join(' · ')}
+          action={usageLink} />
+        <dl className={styles.jobFacts} id="noah-project-use" tabIndex={-1}>
           <div><dt>{t('用意するもの')}</dt><dd>{t(job.input)}</dd></div>
           <div><dt>{t('受け取れるもの')}</dt><dd>{t(job.output)}</dd></div>
         </dl>
@@ -72,15 +74,19 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
     {detail && <>
       {detail.connection.kind !== 'ready' && <>
         <NoahProductHeader name={detail.card.name} topic={detail.card.topic}
-          attribution={detail.card.provider ? `${t('提供:')} ${detail.card.provider}` : undefined} />
+          attribution={detail.card.provider ? `${t('提供:')} ${detail.card.provider}` : undefined}
+          action={usageLink} />
         <div className={styles.overview}>
           {detail.card.topic && <p className={styles.category}>{t('カテゴリ')} · {t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}</p>}
           {detail.card.summary && <p className={styles.summary}>{detail.card.summary}</p>}
         </div>
       </>}
       {detail.connection.kind === 'ready' && <NoahReadyDetail id={detail.connection.familyId} internalOnly />}
-      {detail.connection.kind === 'cloud' && <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} />}
-      {(detail.connection.kind === 'space' || detail.connection.kind === 'setup') && <NoahProviderRunner key={id} projectId={id}/>}
+      {detail.connection.kind !== 'ready' && <div id="noah-project-use" tabIndex={-1} className={styles.usage}>
+        {detail.connection.kind === 'cloud'
+          ? <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} />
+          : <NoahProviderRunner key={id} projectId={id}/>}
+      </div>}
       {!!detail.card.sources?.length && <section id="ratings" className={styles.ratings} aria-label="出典と外部評価">
         <h2>外部の評価</h2>
         <NoahAgentSourceRatings sources={detail.card.sources} />

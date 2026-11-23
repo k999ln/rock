@@ -48,7 +48,7 @@
   background: linear-gradient(0deg, #281004e6, transparent 76%), #381604 url('/brand/noah-cloud-glass.webp') center / cover no-repeat;
 }
 .featureArt[data-memory] {
-  background: linear-gradient(0deg, #041347d9, #071c721a 49%, transparent 75%), #112679 url('/brand/noah-memory-today.webp') center / cover no-repeat;
+  background: linear-gradient(0deg, #020d3be8, #041346a8 24%, #07175f24 49%, transparent 72%), #112679 url('/brand/noah-memory-today.webp') center / cover no-repeat;
 }
 .featureArt > small { font-size: 14px; font-weight: 700; line-height: 1.3; }
 .featureArt h2 {
@@ -62,7 +62,7 @@
   overflow-wrap: anywhere;
 }
 .featureArt[data-memory] h2 { max-inline-size: 9em; }
-:global([lang="ja"]) .featureArt[data-memory] h2 { max-inline-size: 8em; }
+.phrase { display: block; }
 .featureFoot, .row { display: flex; align-items: center; }
 .featureFoot { min-height: 78px; gap: 12px; padding: 10px 20px; box-sizing: border-box; }
 .featureIcon, .appIcon { width: 51px; height: 51px; flex: none; }

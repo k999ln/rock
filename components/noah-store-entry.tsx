@@ -37,7 +37,7 @@ function TodayHeading() {
 }
 
 export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob & { href: string })[]; items: NoahAgentCard[] }) {
-  const { t } = useNoahLocale();
+  const { locale, t } = useNoahLocale();
   // firstJobs contains only requests whose execution path can currently be offered.
   const job = jobs?.find(option => option.id === 'memory') ?? jobs?.[0];
   const project = job ? new URL(job.href, 'https://avoado.si').searchParams.get('id') : null;
@@ -61,7 +61,9 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
         <Link className={styles.coverLink} href={feature.href}>
           <div className={styles.featureArt} data-memory={memory || undefined}>
             <small>{t('ピックアップ')}</small>
-            <h2>{feature.title}</h2>
+            <h2 aria-label={feature.title}>{memory && locale === 'ja'
+              ? feature.title.split(/(?<=、)/u).map(phrase => <span className={styles.phrase} key={phrase}>{phrase}</span>)
+              : feature.title}</h2>
           </div>
           <div className={styles.featureFoot}>
             <NoahAppIcon name={feature.name} topic={card?.topic} className={styles.featureIcon} />
