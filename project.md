@@ -1,22 +1,44 @@
 # 現在の開発・統合状況
 
-更新日: 2026-11-20。現在の優先順位は[構成正本](docs/structure/00-overview.md)、名称は[名称正本](docs/structure/06-naming.md)、要件の検査入力は[product baseline](docs/product-baseline.md)。
+更新日: 2026-11-23。開発・PRの正本は [iceiceice999/rock](https://github.com/iceiceice999/rock)。今回の照合対象は main `16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617`。製品方針は[構成正本](docs/structure/00-overview.md)、個別の進捗は[タスク一覧](codex/tasks/00-index.md)に置く。
 
-## 今回の整理
+## 今開発しているもの
 
-[task73](codex/tasks/73-current-product-consolidation.md)でNoah/Eveの共通通信・コード取得・型検査と現行説明を整理済み。本人MacでAgent選択・接続・実行・成果受領・停止を完成させ、その後にmiiの声/Eve/空間操作へ進む優先順位を維持する。
+6つの大項目で、できたこと・残っていること・関連する後続作業を整理する。担当は各taskの既存担当、台帳の整合は統合・公開担当si。作業者が全項目を同時に実行中という意味ではない。
 
-- MacのAPI接続、私有/招待/公開版の取得容量照合、Eveの仕事の読み書きを共通化。本人・招待期限・審査・revision・停止の条件は保持する。
-- 設計の入口・名称・OS導入の説明を正本への参照へ揃える。公開Webのdevice sessionとlocalhostの認証を混ぜない。
-- 前回の整理は[PR325](https://github.com/k999ln/rock/pull/325)でmain `c4d7c273`へ統合し同一SHAのCI成功。保全原本と未移植の固有機能は[task72](codex/tasks/72-current-code-and-readme.md)を参照する。
+- **画面をジャックさせない技術（task84・89・91）**: コンテナ/VMの起動引数の検査、画面への接続を許す変更の拒否、画面を閉じてもWorkへ成果が入る回帰試験は現mainに統合済み（[旧PR #329](https://github.com/k999ln/rock/pull/329)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。残りは利用する画面の分類と、Mac実機で前面アプリ・窓・クリップボード・権限が変わらないことの観測。ココナラ案件探索・提案下書き・保存/停止はMacの限定経路を確認（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。汎用クラウドブラウザの受入は別。
+- **eSIM導入（task11〜13・102・103）**: 模擬回線での導入・利用権照合、SIM証明の検証/紐付け、iOS導入導線、継続利用の集計は実装・統合の記録がある（[タスク一覧](codex/tasks/00-index.md)）。残りは事業者設定、実回線の発行承認、実回線経由の疎通、iPhone/Androidの導入から成果までの受入。PixelでのNoah確認はWi-Fi経由であり、eSIM受入ではない。
+- **クラウドシステムの設計（task75・101-compute・104・105・125-cloud）**: 実行場所・本人分離・受付/停止・成果保存の設計と、固定CLI6種のLinux隔離試験/コードをmainへ統合（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。費用上限・監視・通知の振り分け・復元練習も実装統合の記録がある。有料Containersの本番配備はWorkers Paidの契約判断待ち。別経路の[PR #18](https://github.com/iceiceice999/rock/pull/18)には無料Workersで公式MCP3種を動かす実装とMemory/Filesystemの実モデル成功記録、[PR #19](https://github.com/iceiceice999/rock/pull/19)には実モデル通信修正と6種の個別成功記録がある。両PRはmain統合済み。Noahの無料経路有効化・画面全閉鎖後の一周とContainers本番受入は残り。本番の通知/cron/バックアップも別途受入する。Memoryと成果ファイルを本人の鍵で暗号化するtask104は設計/タスクがあり、実装完了は未確認。
+- **Agentを集めるシステム（task85・88・120・121・125-scout）**: 公式台帳の取り込み/名寄せ、複数出所の収集、GitHubの急上昇・Product Huntへの拡張を統合。本番収集を復旧し、毎時の予備実行を設定（[PR #16](https://github.com/iceiceice999/rock/pull/16)）。残りは24時間の鮮度確認、旧mainから新リポジトリへの実行先移行、Xの7日継続掲載。復旧1回を72時間巡回の合格にはしない。作者の本人確認・引き取り・掲載管理はtask81の後続範囲。
+- **Agentの接続（task74・86・87・93・96・123）**: 公開MCPの接続→入力→実処理→保存→再表示を本番で限定確認（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。残りは全掲載Agentの実行対応、OAuth/鍵、接続先別の受入。1,762件の監査や定義取得を全件実行成功とは数えない。更新・版の固定・前の版への復帰・別環境への移行はtask93、Agentの試用/売買/利用権はtask78の後続範囲で、決済はsandbox受入が前提。
+- **受け皿のシステム（Noah、task90・99・100・114ほか）**: 画面・本人別の依頼受付・Work/成果保存・停止/再表示を統合。PixelでAgentboard新規登録→認証付き実行→成果再読込、音・振動を確認（[PR #10](https://github.com/iceiceice999/rock/pull/10)）。残りは仕様表1〜13の同一候補受入、100人同時外部実行、300人の実ユーザー試行。以下の仕事・運営機能もこの受け皿につなぐ。
+
+受け皿につなぐ個別の仕事・後続機能:
+
+- **診断・集客・紹介（task101-noah-affiliate）**: WordPress/EC診断2種の本文・保存・再読込はSites208で受入（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。記事/Xの導線・計測は[PR #17](https://github.com/iceiceice999/rock/pull/17)で全7チェック成功・main統合済み。最後の実ASP観測（11-22 22:50 JST）は対象2件とも注文/承認0。ログイン切れで最新成果は未取得。実顧客獲得・次回6時間運用は未実証。
+- **パッケージと商売の工程（task112・122・126）**: 複数Agentで1つの仕事を終えるパッケージを先頭に出す指示書は統合済み（[PR #13](https://github.com/iceiceice999/rock/pull/13)）、実装はこれから。商売の設計図は第1段階の記録があり、検証した能力を当てはめて会社の工程を回す部分は後続。
+- **Eveで作る・改良する（task76・77・80）**: Agentの取込/正規化、作成・改良してNoahへ載せる設計とタスクがある。各taskの実装完了は今回未確認。0クリックなどの本人確認条件は維持する。
+- **継続・定期実行（task92）**: 日時や他Agentの成果を起点に予定を起動し、回数・期間・費用の上限で止める設計。account側の予定管理全体の受入は未確認。個別収集の定期実行をこの全体合格に転用しない。
+- **定期便の台帳（task124）**: 入金・費用・寄与・分配の台帳と画面は実装済み（[旧PR #410](https://github.com/k999ln/rock/pull/410)）。切り替えは閉。本番適用・有効化前の条件はtask124/仕様12章で管理する。実入金・送金の成功ではない。
+- **miiへの接続（task95）**: 同じrunnerをLinuxへ移し、声・表示を含む受入へつなぐ設計。実装完了は今回未確認。mii実機の完成とは分ける。
 
 ## 検証と再開
 
-対象試験は先行83件・追補48件・Git後処理12件が成功。`npm run verify`はexit0、本体4,438件中4,434成功・失敗0・skip4、build/APIも成功。Mac配布ZIP生成とbundle読込みも確認。最終commitの同一SHA CIとmain統合状態は[PR326](https://github.com/k999ln/rock/pull/326)を正本に確認する。変更はGit整理と共通処理の保守であり、Noahの別Mac通し受入・mii実機・本番公開の完了とは区別する。
+前回照合したmain `b56d8e83` は[総合verify](https://github.com/iceiceice999/rock/actions/runs/45038039086)とセキュリティ検査が成功。PR #17もmain統合済み。今回の基準はPR #19とPR #18を統合したmain `16a9eae6`。
+
+旧PR #329・#330・#332・#339・#335・#342・#344〜#347・#352・#358のHEADが現在のmainに含まれることをGitで照合した。#342・#344〜#347は旧PR自体が未マージで閉じられたため「コード統合済み」と記す。今回の検証手順・結果は[task72](codex/tasks/72-current-code-and-readme.md)、機械可読の照合記録は `data/project-status.json` の `progressLedgerReconciliation` に置く。
+
+再開順は、① PR #18・#19統合後の本番受入の確認、② 収集の継続観測と実行先移行、③ 診断利用から注文・承認までの実測。CLI本番配備などの契約・承認条件は各taskに残す。
+
+[図解設計書](docs/noah/illustrated-specifications.md)と[PDF版](docs/assets/noah-illustrated-specifications.pdf)で、製品全体、機能仕様、事業スキーム、受入の残件を参照できる。
+
+初めて使う人が目的から仕事を選び、保存した成果を開き直す導線を[PR #24](https://github.com/iceiceice999/rock/pull/24)で開発。法人・店舗には保守や改修の相談資料、個人には担当を整理して見返せるメモを案内する。[eSIMの専用回線](docs/structure/03-esim.md)、[本人の仕事を実行するクラウド](docs/services/noah-cloud-agents.md)、[Eveとの関係、作者の売上・作業料・等分と現物への引渡し](docs/noah/eve-distribution-and-rewards.md)の図と受入状況も同PRに追加。[画面・API・データの構造図と70点の受入手順](docs/noah/first-use-architecture.md)で、本番受入と初見利用者による評価を追跡する。
+
+以下の旧タスク台帳393件は、今回個別に再検収していない。Noahの新しい番号付きtaskは上の一覧を参照し、旧台帳の完了件数を製品完成率にしない。
 
 ## 全taskの作業進捗
 <!-- project-status:start -->
-最終更新: 2026-11-20 / Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
+最終更新: 2026-11-23 / Noahの現main統合・限定本番受入・運用と集客の残件を照合 / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -433,5 +455,5 @@
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。
+次の作業: PR #18・#19統合後の本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。
 <!-- project-status:end -->

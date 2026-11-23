@@ -31,10 +31,18 @@ export async function collectCombinationObservations(
     includePayouts: false,
   });
   const observations = captures.flatMap((c) =>
-    [...targets.values()].map((target) => ({
-      ...normalizeRentracksCapture(c, target),
-      offerId: target.offerId,
-    })),
+    [...targets.values()].map((target) => {
+      const observation = normalizeRentracksCapture(c, target);
+      return {
+        ...observation,
+        offerId: target.offerId,
+        siteId: target.siteId,
+        rows: observation.rows.map((row) => ({
+          ...row,
+          siteId: target.siteId,
+        })),
+      };
+    }),
   );
   return { captures, observations };
 }

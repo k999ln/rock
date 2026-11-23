@@ -1,4 +1,5 @@
 import { createNoahProviderRuntime, providerWorkView, type ProviderDependencies } from './noah-provider-runtime.ts';
+import { isNoahManagedWork, noahManagedWorkView, listNoahManagedWork } from './noah-managed-work.ts';
 /**
  * 頼む（入力欄から、つないだ相手の道具を 1 回呼ぶ）。受け付け・実行・読む・止める。
  *
@@ -30,7 +31,9 @@ import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { workStore } from './work-store.ts';
 
 export type NoahAskDependencies = NoahConnectDependencies;
-export type NoahAskApiDependencies = NoahConnectApiDependencies & Pick<ProviderDependencies, 'providerDirectory'>;
+export type NoahAskApiDependencies = NoahConnectApiDependencies & Pick<ProviderDependencies, 'providerDirectory'> & {
+  cloudApi?: (request: Request) => Promise<Response>;
+};
 
 /** 数値は候補。 */
 export const NOAH_ASK_RUN_LIMITS = {
@@ -384,6 +387,8 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
         if (connection === null && agent !== null && (agent.length < 3 || agent.length > 400)) return json({ asks: [] });
         const listed=await service.list(owner, connection, connection === null ? agent : null);
         if(connection===null && deps.providerDirectory){const added=await provider.list(owner,agent);if(added.length)listed.body.asks=[...(listed.body.asks as {updatedAt:number}[]),...added].sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,50);}
+        const managed = deps.cloudApi ? await listNoahManagedWork(deps.db, owner, connection, agent) : [];
+        if (managed.length) listed.body.asks = [...(listed.body.asks as {updatedAt:number}[]), ...managed].sort((a,b) => b.updatedAt-a.updatedAt).slice(0,50);
         return listed;
       }
       const value = await body(request);
@@ -406,6 +411,23 @@ export function createNoahAskApi(deps: NoahAskApiDependencies) {
     }),
     item: (request: Request, id: string) => respond(request, ['GET', 'POST'], async ({ owner }) => {
       if (!UUID.test(id)) return missing();
+      const managed = deps.cloudApi ? await workStore(deps.db).get(owner, id) : null;
+      if (isNoahManagedWork(managed)) {
+        if (request.method === 'GET') return reply(200, noahManagedWorkView(managed, true) as unknown as Record<string,unknown>);
+        const value = await body(request);
+        if (Object.keys(value).length !== 2 || value.action !== 'stop' || !Number.isSafeInteger(value.revision) || Number(value.revision) < 1) throw new NoahAgentError('操作と版を確認してください。');
+        if (value.revision !== managed.revision) throw new NoahAgentError('仕事の状態が更新されました。読み直してください。', 409);
+        if (!['queued', 'running'].includes(managed.noahRemote!.state)) return reply(200, noahManagedWorkView(managed, true) as unknown as Record<string,unknown>);
+        if (!deps.cloudApi) throw new NoahAgentError('クラウドに接続できません。時間をおいて再試行してください。', 503);
+        const stopped = await deps.cloudApi(new Request(new URL('/api/noah/cloud-agents', request.url), {
+          method: 'POST', headers: request.headers,
+          body: JSON.stringify({ action: 'stop', projectId: managed.noahRemote!.cloud!.projectId, jobId: id }),
+        }));
+        if (!stopped.ok) return stopped;
+        await stopped.body?.cancel();
+        const saved = await workStore(deps.db).get(owner, id);
+        return isNoahManagedWork(saved) ? reply(200, noahManagedWorkView(saved, true) as unknown as Record<string,unknown>) : missing();
+      }
       const providerJob=deps.providerDirectory?await provider.get(owner,id):null;
       if (request.method === 'GET') {
         if(providerJob){void provider.wake(owner,id);return reply(200,providerWorkView(providerJob,true) as unknown as Record<string,unknown>);}

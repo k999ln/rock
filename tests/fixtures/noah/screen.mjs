@@ -65,7 +65,7 @@ export function screen(options = {}) {
 
   const context = createContext({
     FormData: class {constructor(form){this.form=form;}get(key){return this.form.values?.[key]??null;}},
-    console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController,
+    console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController, AbortSignal,
     Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
     crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
     fetch: async (url, init = {}) => {

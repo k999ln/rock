@@ -1,0 +1,7 @@
+[project]
+name = "noah-python-cloud-agents"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = ["mcp-server-time==2026.11.18", "uvicorn==0.40.0", "starlette==0.52.1", "openai==2.24.0", "httpx==0.28.1", "python-dotenv", "pyyaml", "jinja2", "tenacity", "rich", "requests", "platformdirs"]
+[dependency-groups]
+dev = ["workers-py", "workers-runtime-sdk"]

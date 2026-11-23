@@ -3,13 +3,14 @@ import { sha256Hex, looksLikeNoahSecret } from './noah-connect-requirements.ts';
 
 /**
  * 集めた Agent の紹介（R2 の出所ごとのスナップショット）。task 120 で 4 出所、task 121 で出所を増やし、並びを「新しく・使いやすい物が上」にした。
+ * task 125 で Product Hunt と「Noahが読んだ」（運営の Codex が投稿から配布元まで読み、日本語で理解を書いた紹介）を足した。
  * 紹介は発見であって、実行の権利ではない。スマホから動く物（run: 'phone'）だけが、Noah の一覧（グリッド）の系列を指す。
  */
-export const NOAH_COLLECTION_SOURCES = ['mcp-registry', 'github', 'huggingface', 'hackernews', 'npm', 'docker', 'smithery', 'awesome', 'x', 'reddit', 'bluesky'] as const;
+export const NOAH_COLLECTION_SOURCES = ['mcp-registry', 'github', 'huggingface', 'hackernews', 'npm', 'docker', 'smithery', 'awesome', 'producthunt', 'noah-read', 'x', 'reddit', 'bluesky'] as const;
 export type NoahCollectionSource = typeof NOAH_COLLECTION_SOURCES[number];
 export const NOAH_COLLECTION_LABELS: Record<NoahCollectionSource, string> = {
   'mcp-registry': 'MCP Registry', github: 'GitHub', huggingface: 'Hugging Face', hackernews: 'Hacker News', npm: 'npm', docker: 'Docker',
-  smithery: 'Smithery', awesome: 'awesome一覧', x: 'X', reddit: 'Reddit', bluesky: 'Bluesky',
+  smithery: 'Smithery', awesome: 'awesome一覧', producthunt: 'Product Hunt', 'noah-read': 'Noahが読んだ', x: 'X', reddit: 'Reddit', bluesky: 'Bluesky',
 };
 /**
  * 公開の紹介に出さない語（成人向け・顔の差し替え・脱衣など）。Noah は利用規約上、成人向けの道具を紹介しない。名前・説明・配布元の URL のどれかに当たれば、載せない。
@@ -29,7 +30,7 @@ export const NOAH_COLLECTION_LIMITS = { items: 500, bytes: 1_048_576, maxAgeMs: 
 /** 出所ごとの数（外部の反応）。Noah の王冠・利用人数へは足さない。並びの加点にだけ使う。 */
 export const NOAH_COLLECTION_METRICS: Record<NoahCollectionSource, readonly string[]> = {
   'mcp-registry': [], github: ['stars'], huggingface: ['likes'], hackernews: ['points', 'comments'], npm: ['downloads'], docker: ['pulls', 'stars'],
-  smithery: ['uses'], awesome: [], x: ['likes', 'reposts'], reddit: ['upvotes', 'comments'], bluesky: ['likes', 'reposts'],
+  smithery: ['uses'], awesome: [], producthunt: [], 'noah-read': [], x: ['likes', 'reposts'], reddit: ['upvotes', 'comments'], bluesky: ['likes', 'reposts'],
 };
 export const NOAH_COLLECTION_METRIC_LABELS: Record<string, string> = {
   stars: 'スター', likes: 'いいね', reposts: 'リポスト', points: '点', comments: 'コメント', downloads: '週の取得', pulls: '取得', uses: '接続', upvotes: '賛成',
@@ -78,6 +79,9 @@ function sourceUrlOf(source: NoahCollectionSource, value: unknown) {
     npm: url.hostname === 'www.npmjs.com' && /^\/package\/(?:@[a-z0-9][a-z0-9._~-]{0,213}\/)?[a-z0-9][a-z0-9._~-]{0,213}$/u.test(path),
     docker: url.hostname === 'hub.docker.com' && /^\/r\/[a-z0-9][a-z0-9._-]{0,254}\/[a-z0-9][a-z0-9._-]{0,254}$/u.test(path),
     smithery: url.hostname === 'smithery.ai' && /^\/servers\/[\x21-\x7e]{1,300}$/u.test(path),
+    producthunt: url.hostname === 'www.producthunt.com' && /^\/(?:products|posts)\/[a-z0-9][a-z0-9-]{0,119}$/u.test(path),
+    // 「Noahが読んだ」の出典は、運営が読んだ配布元の頁（README・公式の説明）。https の公開の頁なら、どの場所でもよい。
+    'noah-read': true,
     reddit: url.hostname === 'www.reddit.com' && /^\/r\/[A-Za-z0-9_]{2,21}\/comments\/[a-z0-9]{1,12}(?:\/[A-Za-z0-9_-]{0,120})?\/?$/u.test(path),
     bluesky: url.hostname === 'bsky.app' && /^\/profile\/[A-Za-z0-9.:-]{3,253}\/post\/[a-z0-9]{10,16}$/u.test(path),
   }[source];
@@ -167,8 +171,9 @@ export function noahCollectionCards(items: NoahCollectionItem[], order: 'hot' | 
   const grouped = new Map<string, NoahCollectionItem[]>();
   for (const item of items) { const list = grouped.get(item.url) ?? []; list.push(item); grouped.set(item.url, list); }
   const cards = [...grouped.values()].map((list): NoahCollectionCard => {
-    // 1 枚の名前・説明は、投稿（決まった説明文）より、配布元の説明を持つ出所を先にする。
-    const sorted = [...list].sort((a, b) => Number(NOAH_COLLECTION_SOCIAL.includes(a.source as never)) - Number(NOAH_COLLECTION_SOCIAL.includes(b.source as never)) || b.observedAt - a.observedAt || a.id.localeCompare(b.id));
+    // 1 枚の名前・説明は、「Noahが読んだ」（配布元まで読んで日本語で書いた理解）を最初に、次に配布元の説明を持つ出所、投稿（決まった説明文）は最後。
+    const order = (source: NoahCollectionSource) => (source === 'noah-read' ? 0 : NOAH_COLLECTION_SOCIAL.includes(source as never) ? 2 : 1);
+    const sorted = [...list].sort((a, b) => order(a.source) - order(b.source) || b.observedAt - a.observedAt || a.id.localeCompare(b.id));
     const head = sorted[0];
     const run = RUN_ORDER.find(r => list.some(item => item.run === r));
     const familyId = list.find(item => item.run === 'phone' && item.familyId)?.familyId;
