@@ -30,6 +30,7 @@ function render(file, name, replies) {
       if (id === '@/lib/owner-intent') return { OWNER_SCOPE_HEADER: 'X-Rock-Owner-Scope' };
       if (id.endsWith('.module.css')) return { default: {} };
       if (id === './noah-instances') return { NoahInstanceAdd: () => null };
+      if (id === './noah-agent-pin') return { NoahAgentPin: 'agent-pin', NoahAgentPinGrid: 'agent-pin-grid' };
       if (id === './noah-execution-panel') return { default: () => null };
       if (['@/lib/noah-execution-contract.mjs', '@/lib/noah-agent-requirements.mjs'].includes(id)) return { recipeFor: () => null, requirementsFor: () => null };
       throw Error(id);
