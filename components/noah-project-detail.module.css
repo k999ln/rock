@@ -16,3 +16,6 @@
 @media(max-width:520px){.page{padding:16px 16px 64px}.ratings,.connection{padding:18px 14px;border-radius:16px}.frame{min-height:480px}.primary{width:100%;box-sizing:border-box}}
 
 .frameHeader button{flex-shrink:0;min-width:64px}.frameHeader span{min-width:0}
+.jobFacts { display: grid; gap: 10px; margin: 12px 0 20px; }
+.jobFacts dt { color: #645d6c; font-size: 13px; }
+.jobFacts dd { margin: 2px 0 0; line-height: 1.55; }
