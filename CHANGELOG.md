@@ -23,6 +23,7 @@
 
 ## 2026-11-22
 - Noah のボードに「このボードに合う Agent」を足した（Opus / Noelle。本人指示「どのボードに保存したかでおすすめが変わるようにして。ボードごとの違いを実際に触って見たい」）。ボードの保存を起点に、他の人のボードから Pixie で行き着く物を出す。ボードが違えば違う物が出て、保存するとその場で変わる。学習なし・5 人より少ない人の保存からは出さない）（[PR #BOARDPICK](https://github.com/iceiceice999/rock/pull/BOARDPICK)）。
+- デザイン参照ライブラリを rock に入れた（Opus / Noelle。本人指示「実際に使えるように参照ライブラリの雛形を作って…AGENTS.mdに追記する文も入れて」）。Codex の雛形（ノエルの Mac の中だけにあった）を、Noah の実際の参照 4 枚（図解のカード・余白の写真の並び・今のピンのグリッド・よりみちのタイムラインとトーク）で埋め、`design/references/` に置いた。AGENTS.md に「9. 画面を作る時」を足した（[PR #REFLIB](https://github.com/iceiceice999/rock/pull/REFLIB)）。
 - Noahの収集停止の記録を正本へ移植し、旧mainの手動実行とCodexの毎時実行で収集を復旧。24時間の鮮度と正本への実行先切り替えは追跡中（[PR #15](https://github.com/iceiceice999/rock/pull/15)、[PR #16](https://github.com/iceiceice999/rock/pull/16)、[復旧実行](https://github.com/k999ln/rock/actions/runs/45032700818)）。
 - NoahのWordPress/EC診断2種をSites208で実行・保存・再読込まで受入し、掲載時刻と成果本文の表示を補正。登録媒体への紹介・6時間の成果取得を接続、実注文/承認は0件（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。
 - Noahの自律収集の変更とtask 125・126を正本へ移植した（[PR #13](https://github.com/iceiceice999/rock/pull/13)）。本番の復旧・配備と運用確認はtask 125に記録する。

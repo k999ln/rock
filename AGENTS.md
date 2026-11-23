@@ -58,3 +58,9 @@
 
 - 追記型文書（CHANGELOG, docs/structure/07, 各設計書の日付節）は両側を保全。README.md と data/*.json は新しい側を土台に古い側の差分だけ足す。片側で丸ごと解決しない。
 - avoado.si のリリースは GitHub `iceiceice999/rock` の `origin/main` を正本とする。新しい変更と PR はこのリポジトリに集約する。公開済みソースに独自の変更があれば先に PR で main に取り込む。Sites の版を有効にする前に、最新 main と保存する Sites ソースの両方で `git rev-parse 'HEAD^{tree}'` を照合する。照合には追跡ファイルの内容、パス、実行属性が含まれる。検証した main の SHA と公開版を記録する。
+
+## 9. 画面を作る時（デザイン参照ライブラリ）
+
+- 画面を作る・変える前に `design/references/README.md` と、対象の画面に関係する参照画像を見る。`moodboard/` は色・書体・写真・余白、`components/` は部品の置き方と動き。
+- 今あるデザインの値と共通の部品（`components/*.module.css`・`components/noah-*`）を使って、参照の意図を入れる。参照を写して新しい部品を増やさない。
+- 作った後は、対象の画面をスマホ（390 px）と PC（1280 px）の幅で開き、README の「確かめる点」と見比べる。参照を足したら README に追記する。
