@@ -31,9 +31,10 @@ class NoahPythonJob(DurableObject):
     async def probe(self, profile):
         if profile not in {'time', 'boss', 'hermes'}:
             raise ValueError('Unsupported profile')
-        async with RUN_LOCK:
-            import adapters
-            return True
+        # Import is synchronous and cached. Do not queue a connection probe
+        # behind a running job that is waiting for its model capability.
+        import adapters
+        return True
 
     async def execute(self, encoded, capability):
         if len(encoded.encode()) > 16384:

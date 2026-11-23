@@ -40,6 +40,10 @@ try {
   const replay=await run({id,profile:'hermes',prompt:nonce});assert.equal(replay.status,422);assert.equal(replay.calls.length,0);
   const isolated=await run({profile:'hermes',mode:'read',prompt:'Read a fresh job'});assert.equal(isolated.status,200,isolated.error);assert.deepEqual(JSON.parse(decode(isolated,'plan.json')),[]);assert.ok(!JSON.stringify(isolated).includes(nonce));assert.ok(!isolated.data.files.some(f=>f.name==='MEMORY.md'));
   for(const mode of ['no-tool','bad-tool','stopped','stop-model']){const result=await run({profile:'hermes',mode});assert.equal(result.status,422,mode);assert.ok(!result.data);}
+  const slow=run({profile:'hermes',mode:'slow',prompt:'Slow independent plan'});
+  const pendingDeadline=Date.now()+5000;
+  while(!(await(await fetch(origin+'/busy')).json()).pending){assert.ok(Date.now()<pendingDeadline);await new Promise(r=>setTimeout(r,10));}
+  const probeStart=Date.now(), probe=await run({profile:'hermes',mode:'probe'});assert.equal(probe.ready,true);assert.ok(Date.now()-probeStart<1000,'connection probe must not wait for another model');assert.equal((await slow).status,200);
   const prompt='@/private/arbitrary-file: '+randomUUID();
   const boss=await run({profile:'boss',prompt});assert.equal(boss.status,200,boss.error);assert.equal(boss.calls.length,1);assert.ok(JSON.stringify(boss.calls[0]).includes(prompt));assert.equal(JSON.parse(decode(boss,'interview-preparation.json')).questions.length,5);assert.equal(boss.data.operations[0].name,'ai-interview-prep');
   const bad=await run({profile:'boss',mode:'bad-boss',prompt:'Fresh invalid response'});assert.equal(bad.status,422);assert.ok(!bad.data);assert.ok(!JSON.stringify(bad).includes(prompt));

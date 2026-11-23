@@ -1,5 +1,6 @@
 // Local-only deterministic model fixture. Never deployed with the private Worker.
 import { RpcTarget } from 'cloudflare:workers';
+let pending = false;
 class Model extends RpcTarget {
   calls = [];
   constructor(input) { super(); this.input = input; }
@@ -7,6 +8,7 @@ class Model extends RpcTarget {
   async complete(encoded) {
     const input = JSON.parse(encoded);
     this.calls.push(input);
+    if(this.input.mode === 'slow' && this.calls.length === 1){pending=true;await new Promise(r=>setTimeout(r,1500));pending=false;}
     if (this.input.mode === 'stop-model') throw Error('stopped during model');
     const nonce = this.input.prompt;
     let message = { role: 'assistant', content: nonce };
@@ -26,8 +28,10 @@ class Model extends RpcTarget {
 }
 export default {async fetch(request, env) {
   if (new URL(request.url).pathname === '/ready') return new Response('ready');
+  if (new URL(request.url).pathname === '/busy') return Response.json({pending});
   const input = await request.json(), stub = env.PYTHON.getByName(input.id), model = new Model(input);
   try {
+    if(input.mode==='probe') return Response.json({ready:await stub.probe(input.profile)});
     if (input.profile === 'time') return Response.json({tools:JSON.parse(await stub.tools()),result:JSON.parse(await stub.call(input.tool,JSON.stringify(input.arguments)))});
     const data = JSON.parse(await stub.execute(JSON.stringify(input),model));
     return Response.json({data,calls:model.calls});
