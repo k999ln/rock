@@ -7,3 +7,7 @@
 .policy .segment{display:flex;flex-wrap:wrap;}
 .policy .segment button{flex:1 1 auto;font-size:14px;min-height:44px;white-space:normal;}
 .policy>div:first-child{flex-wrap:wrap;}
+/* 押せる所は 44px 以上（spec-90 の 5 章の 1）。 */
+.back,.history,.policy a{min-height:44px}
+.readiness a{display:inline-flex;align-items:center;min-height:44px}
+.receipts summary{display:flex;align-items:center;min-height:44px;cursor:pointer}

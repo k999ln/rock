@@ -36,6 +36,9 @@
   margin: 16px 0 24px;
 }
 .contractLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: inherit;
   text-underline-offset: 3px;
 }

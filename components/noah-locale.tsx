@@ -104,6 +104,7 @@ export function NoahLanguageSetting() {
       <strong>{t('言語')}</strong>
       <select
         aria-label={t('言語')}
+        style={{ minHeight: 44 }}
         value={choice}
         onChange={(e) => setChoice(e.target.value)}
       >

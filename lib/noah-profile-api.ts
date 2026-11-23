@@ -1,4 +1,4 @@
-import { emptyNoahProfile, PROFILE_MAX_DOCUMENT } from './noah-profile-contract.ts';
+import { emptyNoahProfile, NOAH_PROFILE_SIGNED_IN_ONLY, PROFILE_MAX_DOCUMENT, profileField, profileFieldSignedInOnly } from './noah-profile-contract.ts';
 import { validateProfileFields, validateGrant, type NoahProfileStore } from './noah-profile-store.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { OWNER_SCOPE_HEADER, ownerScopeFor } from './owner-intent.ts';
@@ -9,6 +9,8 @@ export async function profileBody(request:Request,max:number) {
   try { while(true){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>max){await reader.cancel();throw new NoahAgentError('保存できるサイズを超えています。',413);}chunks.push(part.value);} } finally {reader.releaseLock();}
   const bytes=new Uint8Array(size);let offset=0;for(const part of chunks){bytes.set(part,offset);offset+=part.length;}return bytes;
 }
+/** ブラウザだけの本人（Cookie の保存先）。お金の受取口座と本人確認の書類は、新しく置かせない（NOAH_PROFILE_SIGNED_IN_GROUPS）。 */
+const browserOnly=(user:string)=>user.startsWith('noah-browser:');
 export function createNoahProfileApi(deps:{store:NoahProfileStore;authenticate:(request:Request)=>Promise<string>}) {
   async function owner(request:Request,write=false){
     const user=await deps.authenticate(request);
@@ -39,7 +41,7 @@ export function createNoahProfileApi(deps:{store:NoahProfileStore;authenticate:(
       const revision=Number(input.revision);
       if(input.action==='deleteDocument')profile=await deps.store.removeDocument(user,revision,String(input.id));
       else profile=await deps.store.change(user,revision,p=>{
-        if(input.action==='fields'){if(typeof input.reuse!=='boolean')throw new NoahAgentError('再利用の設定を確認してください。');const fields=validateProfileFields(input.fields);return deps.store.consent({...p,fields},input.consentVersion,input.reuse,Object.keys(fields) as (keyof typeof fields)[],[]);}
+        if(input.action==='fields'){if(typeof input.reuse!=='boolean')throw new NoahAgentError('再利用の設定を確認してください。');const fields=validateProfileFields(input.fields);if(browserOnly(user)&&Object.entries(fields).some(([key,value])=>profileField(key)&&profileFieldSignedInOnly(key)&&value!==p.fields[key]))throw new NoahAgentError(NOAH_PROFILE_SIGNED_IN_ONLY,403);return deps.store.consent({...p,fields},input.consentVersion,input.reuse,Object.keys(fields) as (keyof typeof fields)[],[]);}
         if(input.action==='reuse' && typeof input.enabled==='boolean')return deps.store.consent(p,input.consentVersion,input.enabled,Object.keys(p.fields) as (keyof typeof p.fields)[],p.documents.map(d=>d.id),input.enabled?'reuse-resume':'reuse-stop');
         if(input.action==='grant'){const grant=validateGrant(input.grant);return {...p,grants:[...p.grants.filter(g=>!(g.target===grant.target && g.action===grant.action)),grant]};}
         if(input.action==='pause' && typeof input.paused==='boolean')return {...p,paused:input.paused};
@@ -51,6 +53,7 @@ export function createNoahProfileApi(deps:{store:NoahProfileStore;authenticate:(
     documents:(request:Request)=>respond(async()=>{
       const user=await owner(request,true);
       if(request.method!=='POST')return json({error:'対応しない操作です。'},405);
+      if(browserOnly(user))throw new NoahAgentError(NOAH_PROFILE_SIGNED_IN_ONLY,403);
       const type=request.headers.get('content-type')??'';
       if(!['application/pdf','image/png','image/jpeg'].includes(type))throw new NoahAgentError('PDF・JPEG・PNGを選んでください。',415);
       let name='';try{name=decodeURIComponent(request.headers.get('X-Noah-File-Name')??'');}catch{throw new NoahAgentError('ファイル名を確認してください。');}

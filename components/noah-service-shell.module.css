@@ -288,6 +288,7 @@
   }
   .mobileHeader .brand {
     margin: 0;
+    min-height: 44px;
   }
   .mobileHeader .brand strong {
     font-size: 25px;
@@ -307,7 +308,7 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    min-height: 34px;
+    min-height: 44px;
     padding: 5px 10px;
     border-radius: 9px;
     background: #a14206;
@@ -315,8 +316,8 @@
     font-size: 13px;
   }
   .profileLink {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     display: grid;
     place-items: center;
     border-radius: 50%;
@@ -325,7 +326,7 @@
   .back {
     display: grid;
     place-items: center;
-    min-width: 32px;
+    min-width: 44px;
     min-height: 44px;
   }
   .bottomNav {

@@ -151,3 +151,4 @@
 | 126 | [126-noah-packages-first.md](126-noah-packages-first.md) | トップの最初の列をパッケージ（1 つの仕事を最後までやる組合せ）にし、単発は下。Eve が Switch の部屋の形を手本に組む | 指示書を現mainへ統合 [PR #13](https://github.com/iceiceice999/rock/pull/13)。パッケージを先頭へ出す実装は未着手（task125の後） |
 | 127 | [127-noah-live-agent-families.md](127-noah-live-agent-families.md) | 786系列の接続・本番稼働記録・利用可能一覧の更新 | ✅ 初回本番受入5系列・残り接続継続（PR #28 / #33） |
 | 128 | [128-noah-agent-explain.md](128-noah-agent-explain.md) | 全部の Agent の説明画面（押した先に「何を渡すと、何が、どの順で返るか」を段の図で出す・道具に札を付ける・17,046 系列の札付けと確かめ・PR #424 を iceiceice999/rock へ移す） | ✅ 詳細画面と手元の札付け・目視集計を実装 [PR #27](https://github.com/iceiceice999/rock/pull/27)。実データの札付き件数・割合、200系列の目視、本番 D1・一般公開は未実施 |
+| 129 | [129-noah-ux-debug.md](129-noah-ux-debug.md) | Noah の全機能を知らない人の目で確かめて直す（全体の上限・公平な枠・設定を返さない・本番の一周・未確認の165件・44px・サインインの行き先・Mac だけの画面・検索の続き・repository-map の正本） | 🔶 調べと 1 回目の直し（Claude、2026-11-22。[ux-audit](../../docs/noah/ux-audit-2026-11-22.md)）。D1〜D13 は未着手 |
