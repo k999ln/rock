@@ -1,6 +1,7 @@
 import * as collection from '../../../lib/noah-collection.ts';
 import * as importParts from '../../../lib/noah-intake-import-parts.ts';
 import * as operationLabels from '../../../lib/noah-operation-labels.ts';
+import * as currencyFormat from '../../../lib/currency-format.ts';
 // 画面の部品（components/*.tsx）を、ブラウザなしで動かす台。
 // 部品のファイルを TypeScript で JS に直し、小さな React の代わり（関数の部品を入れ子で描く・useState・useRef・useEffect を、木の中の場所ごとに持つ）で動かす。
 // fetch・sessionStorage・location・時計（setTimeout・setInterval）は、試験が渡す物。見た目（CSS）は確かめない。確かめるのは、出る文・押せる物・送る要求。
@@ -122,6 +123,7 @@ export function screen(options = {}) {
       if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
       if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
       if(id==='@/lib/noah-operation-labels')return operationLabels;
+      if(id==='@/lib/currency-format')return currencyFormat;
       if(id==='@/lib/noah-agent-explanation')return explanation;
       if(id==='@/lib/noah-shelf')return shelfContract;
       if(id==='@/lib/noah-steps')return stepGraph;

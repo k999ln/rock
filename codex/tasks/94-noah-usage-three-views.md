@@ -20,3 +20,9 @@
 - 提供者が、利用者個人を特定できる値を取得できない。
 - 月の上限に達した本人の新しい実行が止まり、理由が表示される。
 - tests/noah-usage-views.test.mjs、`npm run typecheck`、`npm run lint:product`。
+
+## 2026-11-24　本人の成果に付く明細
+
+共通の仕事詳細と以前に本人が保存した成果に、依頼単位の使用量と料金の根拠を表示する。契約者はマイAgentの成果一覧から専用Linuxの仕事を開き、CPU実測・確定額・予約額を個別に確認できる。提供元からの未取得額や有料換算を実請求には計上しない。対象試験は `tests/noah-managed-work.test.mjs`、`tests/noah-ask-ui.test.mjs`、`tests/noah-result-data.test.mjs`、`tests/sky-linux-service-reconciliation.test.mjs`。
+
+[PR #46](https://github.com/iceiceice999/rock/pull/46)。全体検証 `npm run verify` は主要5,329件成功・5件スキップ・失敗0で最終工程まで完走。ローカルChromeで合成データによる日英・アラビア語の成果再表示と、契約別の確定・予約額を確認した。本番の実請求照合は未受入。
