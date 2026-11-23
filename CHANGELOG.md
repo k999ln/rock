@@ -1,5 +1,5 @@
 ## 2026-11-23
-- NoahでTodayの特集を先頭に置き、Agentのアイコン、商品詳細とストアのナビゲーションを更新。
+- NoahでTodayの特集を先頭に置き、Agentのアイコン、商品詳細とストアのナビゲーションを更新。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
 - Noahのストア、専用eSIMの仕事別利用明細、提供元の選択、専用Linux仮想画面でのagent-desktop実行を追加。[実行仕様](docs/services/noah-managed-desktop.md) · [PR #37](https://github.com/iceiceice999/rock/pull/37)
 - avoado.si の React 関連 3 パッケージを 19.2.9 に統一し、CVE-2026-126187 と shadcn CLI の依存脆弱性を修正（[PR #36](https://github.com/iceiceice999/rock/pull/36)）。
 - Noah の「Noahが読んだ」を、リポジトリのファイル `data/noah-scout/leads.json` からクラウドの収集機が載せる形にした（task 125、Opus / Noelle）。読んだ人（Codex の Luna Max・Claude）はファイルに足す PR を出すだけで、運営の Mac に掲載の鍵を置かなくてよい。ファイルに無い出所は送らないので、前の掲載を空で上書きしない。最初の 1 件として、本人が「これいれて」と言った Switch（sandbox-quantum/switch）を、README・LICENSE・公式の手順書まで読んで日本語で書いた。 [正本 PR #34](https://github.com/iceiceice999/rock/pull/34)・[旧PR #426](https://github.com/k999ln/rock/pull/426)
