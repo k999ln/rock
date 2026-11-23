@@ -27,6 +27,18 @@ Claude のセッションには k999ln/rock（旧リポジトリ）が付いて�
 
 main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった。5〜7 は、それを merge 済み（ぶつかった所は Claude が解いた。応答の見出しの確かめも測り直した）。1〜3 はぶつからない。4 は `CHANGELOG.md` だけがぶつかる（`tools/merge-changelog.py` で両方の行を残せる）。どの枝も migration を足していない（`drizzle/` を触っていない）。
 
+## いまの手順（23:55。これが最新。下の「速くするための変更」より優先）
+
+いま: 1（収集）は #38、2（ボード）は #40 でマージ済み（main `cab0dc49`）。3（参照ライブラリ）は Codex が #42 にした（先 `c060ad57`）。
+
+1. **#42 はそのまま**: check が通ったらマージする。
+2. **4〜9 は 1 つの PR にする**: 枝は `claude/ice2/noah-all` = `f2aef440af92756f4b497b63341d9796ba2f3df3`。main `cab0dc49` と #42 の先 `c060ad57` を merge 済みで、CHANGELOG の `#BOARDPICK` は `40`、`#REFLIB` は `42` に直してある（コードの中身は `9cbabc6c` と同じで、確かめ済み）。本文は `pr/all.md`。
+   - #42 がマージされたら、この枝に main を merge する（#42 の merge commit だけなので、ぶつからないはず）。
+   - PR の番号 N が出たら、残りの印を N に直す: `perl -pi -e 's/(#|pull\/)(UXAUDIT|LAUNCH|QUOTA|TAPS|SEARCHWORDS|STORETAPS)\b/${1}N/g' CHANGELOG.md`
+   - check が全部通ったらマージして、avoado.si を main から公開し直す（下の手順の 6・7）。
+3. 4（一周の確かめ）を単独で進めかけていたら、それはやめる（単独の PR を作っていたら、閉じてよい。こちらのスレッドの PR だけ）。
+4. #39・#41（kaiya.kk）は触らない。#41 が先に main に入って、`noah-all` が CHANGELOG 以外（`components/noah-shell.tsx`・`data/web-security-response-current.json`）でぶつかったら、止めて教える。こちらで解いて `noah-all` を進める（force push はしない）。
+
 ## 速くするための変更（23:25）
 
 1（収集）は PR #38 でマージ済み。2（ボード）は PR #39 で進めてよい。**3〜9 は、1 本にまとめた枝 `claude/ice2/noah-all`（`9cbabc6c8644`）で 1 つの PR にする**（2〜9 と main `97cf7cfe` を merge 済み。本文は `pr/all.md`）。こうすると、CHANGELOG のぶつかりで CI を 7 回待たずに済む。
