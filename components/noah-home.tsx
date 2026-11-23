@@ -3,7 +3,7 @@ import { useNoahSurface } from './noah-surface-context';
 import NoahTimeline from './noah-timeline';
 import NoahPinHome from './noah-pin-home';
 import type { NoahSurfaceMode } from '@/lib/noah-surface';
-// ホームは、ピンタレスト風のグリッド（task 115。2026-11-22 の本人の決定）。今動かせる Agent の一覧がまだ公開されていない間は、今のタイムラインを出す。
+// The store and saved hash links share the same Agent and Work routes.
 export default function NoahHome({ mode = 'local', base = '/noah' }: { mode?: NoahSurfaceMode; base?: string }) {
   const surface=useNoahSurface();
   if(['#timeline','#following','#agents'].includes(surface?.hash??''))return <NoahTimeline mode={mode} base={base}/>;

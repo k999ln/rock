@@ -9,10 +9,11 @@ import { NoahInstallationsList } from './noah-managed-installation';
 import { NoahInstancesList } from './noah-instances';
 import { adapterLabels } from './noah-agent-catalog';
 import styles from './noah-agent-catalog.module.css';
+import myStyles from './noah-my.module.css';
 type Library = { ownerScope: string; uploads: NoahUpload[]; roles: SkyLibraryAgent[]; shared: NoahSharedAgent[]; releases?: {packageKey:string;manifestSha256:string;name:string;version:string}[] };
 
 export default function NoahLibrary({embedded=false}:{embedded?:boolean}={}) {
-  const Heading=embedded?'h2':'h1';
+  const Container=embedded?'section':'main';
   const [data, setData] = useState<Library | null>(null);
   const [error, setError] = useState(''), [loading, setLoading] = useState(true), [attempt, setAttempt] = useState(0), [query, setQuery] = useState('');
   useEffect(() => {
@@ -28,9 +29,9 @@ export default function NoahLibrary({embedded=false}:{embedded?:boolean}={}) {
     return () => controller.abort();
   }, [attempt]);
   const matches = data?.uploads.filter(a => `${a.manifest.name} ${a.manifest.summary}`.toLowerCase().includes(query.trim().toLowerCase())) || [];
-  return <WorkspaceShell title="Noah" tone="sky"><main className={styles.page}>
+  const content = <Container className={styles.page} aria-label={embedded ? "自分のAgent" : undefined}>
     {!embedded && <nav className={styles.nav}><Link href="/noah/explore">見つける</Link><Link href="/noah/activity">仕事・成果</Link><Link href="/noah/usage">利用状況</Link><Link href="/noah/marketplace">マーケット</Link><Link href="/noah/purchases">購入履歴</Link><Link href="/noah/publisher">公開する</Link></nav>}
-    <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENTS</span><Heading>自分のAgent</Heading><p>接続したAgentに仕事を頼む。自作Agentの内容や接続先を管理する。</p></div><Link className={styles.primary} href="/noah/agents/new">Agentを追加</Link></header>
+    {embedded ? <div className={myStyles.libraryActions}><Link href="/noah/agents/new">Agentを追加</Link></div> : <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENTS</span><h1>自分のAgent</h1><p>接続したAgentに仕事を頼む。自作Agentの内容や接続先を管理する。</p></div><Link className={styles.primary} href="/noah/agents/new">Agentを追加</Link></header>}
     <NoahInstancesList />
     <NoahInstallationsList />
     {!!data?.releases?.length && <section className={styles.notice}><h2>購入・出品した配布版</h2><p>接続時に、現在の審査・購入利用権を再確認します。</p><ul>{data.releases.map(r=><li key={r.packageKey}><Link href={`/noah/releases/${r.manifestSha256}`}>{r.name} · v{r.version} — 詳細・接続</Link></li>)}</ul></section>}
@@ -43,5 +44,6 @@ export default function NoahLibrary({embedded=false}:{embedded?:boolean}={}) {
     </section>
     {!!data?.shared.length && <section className={styles.notice}><h2>招待で受け取ったAgent</h2><ul>{data.shared.map(a=><li key={a.inviteId}><Link href={`/noah/invites/${a.inviteId}`}>{a.manifest.name} · v{a.manifest.version}</Link> · {a.executionAllowed?'接続・実行可':a.access==='source'?'閲覧・コード取得':'閲覧'} · {new Date(a.expiresAt).toLocaleDateString('ja-JP')}まで</li>)}</ul></section>}
     {!!data?.roles.length && <section className={styles.notice}><h2>保存済みの担当設定 · {data.roles.length}件</h2><p>以前に作成した文章担当やToolの設定も保持しています。</p><ul>{data.roles.map(a => <li key={a.id}>{a.name} · {a.model} · {a.enabled ? '設定が有効' : '利用停止中'}</li>)}</ul><Link href="/noah/saved?tab=roles">担当設定を編集する</Link></section>}
-  </main></WorkspaceShell>;
+  </Container>;
+  return embedded ? content : <WorkspaceShell title="Noah" tone="sky">{content}</WorkspaceShell>;
 }

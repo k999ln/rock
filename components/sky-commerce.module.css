@@ -116,3 +116,6 @@
   .orderHeading > .status { margin-left: 54px; }
   .actions > .primary, .actions > .secondary { flex: 1 1 auto; }
 }
+:global([data-noah-standalone]) .primary { background:var(--noah-action,#a14206); color:#fff; }
+:global([data-noah-standalone]) .primary:hover { background:#843300; }
+:global([data-noah-standalone]) .checkbox input { accent-color:#a14206; }

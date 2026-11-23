@@ -36,7 +36,8 @@ export function esimCloudRequestScope(request: Request) {
   const { pathname } = new URL(request.url);
   const method = request.method;
   if (distributionAction(method,pathname)) return 'noah';
-  if ((method === 'GET' && pathname === '/api/noah/cloud-work') ||
+  if ((['GET', 'POST'].includes(method) && pathname === '/api/noah/cloud-work/metered') ||
+      (method === 'GET' && pathname === '/api/noah/cloud-work') ||
       (method === 'POST' && ['/api/noah/cloud-work/start', '/api/noah/cloud-work/stop'].includes(pathname))) return 'noah';
   if (method === 'GET' && ['/api/rockstar/device-home', '/api/rockstar/entitlements'].includes(pathname)) return 'rockstaros_access';
   if (method === 'POST' && ['/api/llm/estimate', '/api/llm/text'].includes(pathname)) return 'rockstaros_access';
@@ -67,6 +68,14 @@ export function esimCloudAccessStore(db: Database, runtime: unknown) {
     return db.prepare(`SELECT ${columns} FROM esim_cloud_access_keys
       WHERE owner_user_id=? AND sky_order_id=? AND replaced_by_id IS NULL`)
       .bind(owner, order).first<Key>();
+  }
+  async function authenticateContext(secret: string, scope: string, now = Date.now()) {
+    if (!TOKEN.test(secret)) throw new Error('UNAUTHORIZED');
+    const key = await db.prepare(`SELECT ${columns} FROM esim_cloud_access_keys
+      WHERE token_sha256=? AND revoked_at IS NULL AND expires_at>? AND active_slot=sky_order_id`)
+      .bind(await sha256Hex(secret), now).first<Key>();
+    if (!key || !await usable(key, scope, now)) throw new Error('UNAUTHORIZED');
+    return { owner: key.ownerUserId, order: key.orderId, device: key.deviceRef };
   }
   async function usable(key: Key, scope?: string, now = Date.now()) {
     if (key.revokedAt !== null || key.expiresAt <= now) return false;
@@ -141,13 +150,9 @@ export function esimCloudAccessStore(db: Database, runtime: unknown) {
       // A browser may currently use another order's key; revoking this order must not erase it.
       return result.matchesRequestToken === 1;
     },
+    authenticateContext,
     async authenticate(secret: string, scope: string, now = Date.now()) {
-      if (!TOKEN.test(secret)) throw new Error('UNAUTHORIZED');
-      const key = await db.prepare(`SELECT ${columns} FROM esim_cloud_access_keys
-        WHERE token_sha256=? AND revoked_at IS NULL AND expires_at>? AND active_slot=sky_order_id`)
-        .bind(await sha256Hex(secret), now).first<Key>();
-      if (!key || !await usable(key, scope, now)) throw new Error('UNAUTHORIZED');
-      return key.ownerUserId;
+      return (await authenticateContext(secret, scope, now)).owner;
     },
     async listActive(owner: string, now = Date.now()) {
       // Do not touch the optional migration when this offering is disabled.
@@ -188,13 +193,17 @@ export function esimCloudAccessStore(db: Database, runtime: unknown) {
 }
 
 export async function authenticateEsimCloudRequest(request: Request, db: Database, config: unknown) {
+  return (await authenticateEsimCloudContext(request, db, config)).owner;
+}
+
+export async function authenticateEsimCloudContext(request: Request, db: Database, config: unknown) {
   const scope = esimCloudRequestScope(request);
   const secret = esimCloudRequestToken(request);
   if (!scope || !secret) throw new Error('UNAUTHORIZED');
   // Cookie credentials are ambient: writes must come from the same origin.
   if (!request.headers.get('authorization')?.startsWith('Bearer rock_esim_') && request.method !== 'GET' &&
       request.headers.get('origin') !== new URL(request.url).origin) throw new Error('ORIGIN');
-  return esimCloudAccessStore(db, config).authenticate(secret, scope);
+  return esimCloudAccessStore(db, config).authenticateContext(secret, scope);
 }
 
 /** Stop reading at the management request limit, including chunked requests. */

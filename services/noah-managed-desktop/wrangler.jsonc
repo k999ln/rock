@@ -1,0 +1,7 @@
+{
+  "name": "noah-managed-desktop-bridge",
+  "main": "bridge.mjs",
+  "compatibility_date": "2026-11-22",
+  "workers_dev": false,
+  "preview_urls": false
+}

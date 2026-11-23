@@ -90,6 +90,8 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+[Noahのストア](https://avoado.si/noah)でAgentを探し、詳細から接続できます。購入・作者の掲載管理はストアから、自分のAgent・実行中の仕事・保存した成果は[マイAgent](https://avoado.si/noah/my)から開けます。専用eSIMの対応条件を確認し、利用権のある注文で自社クラウドの仕事・成果・従量料金を開けます。外部Agentに依頼するときは、提供元と送信先を確認します。[eSIMの導入](https://avoado.si/connect)
+
 **[Eve・Noah 図解設計書](docs/noah/illustrated-specifications.md)**　利用者の操作、画面とバックエンド、eSIM、作者収益・作業料・定期便までを8枚の図で読めます。[共有用PDF](docs/assets/noah-illustrated-specifications.pdf)
 
 公開ホームに「何をしたいですか？」という入口を追加しました。「お店・会社のサイト運営」では保守・制作会社との打ち合わせに使う診断結果と確認事項を、「自分のメモ整理」では誰が何を担当するか、あとから見返せるメモを受け取れます。その時に受付可能な仕事を選べます。選ぶ前に受け取れる成果が分かり、詳細で入力・送信先を確かめて本人が依頼します。完了後は「保存した成果を見る」から開き直せます。画面とバックエンドの接続、データの取得元、初めて使う人に試してもらう手順は[初回利用の構造図](docs/noah/first-use-architecture.md)にまとめています。

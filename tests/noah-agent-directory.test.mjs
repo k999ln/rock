@@ -45,6 +45,13 @@ void test('directory pagination does not duplicate cards and preserves browser o
   const first=await get('');assert.equal(first.status,200);assert.equal(first.body.ownerScope,scope);assert.equal(first.body.items.length,20);
   const second=await get('?cursor='+first.body.nextCursor);assert.equal(second.body.items.length,5);assert.equal(second.body.nextCursor,null);
   assert.equal(new Set([...first.body.items,...second.body.items].map(i=>i.feedbackId)).size,25);
+  entries.forEach((entry,index)=>{entry.card.topic=index<22?'data':'learn';});
+  const category=await get('?topic=data&source=github&q=documents');
+  assert.equal(category.body.total,22);assert.equal(category.body.items.length,20);
+  const tail=await get('?topic=data&source=github&q=documents&cursor='+category.body.nextCursor);
+  assert.equal(tail.body.nextCursor,null);assert.equal(tail.body.items.length,2);
+  assert.ok([...category.body.items,...tail.body.items].every(card=>card.topic==='data'));
+  assert.equal((await get('?topic=unknown')).status,400);
   assert.equal((await get('?source=bogus')).status,400);assert.equal((await get('?cursor=-1')).status,400);
   const unavailable=createNoahDirectoryApi({db:w.f.db,authenticate:async()=>{throw Error('AUTH_UNAVAILABLE');},directory:async()=>entries});
   assert.equal((await unavailable(new Request('https://noah.test/api/noah/discover'))).status,503,'authentication failure cannot expose an empty anonymous scope');
