@@ -1,11 +1,11 @@
-# 引き継ぎ 2: 8 本の枝を iceiceice999/rock に入れて、avoado.si を公開し直す（2026-11-23）
+# 引き継ぎ 2: 9 本の枝を iceiceice999/rock に入れて、avoado.si を公開し直す（2026-11-23）
 
 本人（ノエル）の言葉:
 
 - 2026-11-22 22:55 ごろ「push・PR・マージまで」（iceiceice999/rock への push・PR・マージを許可）。
 - 2026-11-23 21:43「好きにしていいよ／だから早く完成品世に出したい」。
 
-安全の直し（React 19.2.9）は、Codex が PR #36 で入れた（main `35afadfc`）。ここに書くのは、その後の 8 本。
+安全の直し（React 19.2.9）は、Codex が PR #36 で入れた（main `35afadfc`）。ここに書くのは、その後の 9 本。
 
 Claude のセッションには k999ln/rock（旧リポジトリ）が付いていて、同じ名前の iceiceice999/rock は付けられない。だから枝は旧リポジトリの `claude/ice2/*` に置いた。k999ln/rock は public なので、付けなくても読める。
 
@@ -21,6 +21,7 @@ Claude のセッションには k999ln/rock（旧リポジトリ）が付いて�
 | 6 | `claude/ice2/noah-quota` | `f239bda2b870`（同じく進めた） | fix(noah): ブラウザだけの本人を、全員まとめた 1 日の上限で抑える（抜け道 S1・task 128 の D1） | `QUOTA` | `pr/quota.md` |
 | 7 | `claude/ice2/noah-taps` | `c8ba8b5ae271` | fix(noah): 残っていた小さい押す所を 44px にする（task 128 の D7） | `TAPS` | `pr/taps.md` |
 | 8 | `claude/ice2/noah-search-words` | `183c31fba346` | fix(noah): 日本語の検索で 0 件だった、よく頼まれる仕事の語 15 個を足す（task 128 の D11） | `SEARCHWORDS` | `pr/search-words.md` |
+| 9 | `claude/ice2/noah-store-taps` | `6d5d24e21c7f` | fix(noah): Agent Store の行と詳細の小さい押す所を 44px にする（task 128 の D7） | `STORETAPS` | `pr/store-taps.md` |
 
 1〜4 は main `9cb7f5d1`（#32）を merge 済み。5 は 4 の上の 2 commit（2 つ目は、1 つ目で 404 にした `/noah/billing` を、既存の試験に合わせて元に戻した物）、6 は 5 の上の 1 commit なので、4 → 5 → 6 の順にマージする。どれも SSH の署名つき、作者は `noellesugar99 <noellesugar99@users.noreply.github.com>`、committer は Claude。
 
@@ -31,13 +32,13 @@ main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった�
 1. 取ってきて、表の commit と同じか確かめる。違ったら止めて報告する。
    ```bash
    git fetch https://github.com/k999ln/rock 'refs/heads/claude/ice2/*:refs/remotes/staging2/*'
-   git rev-parse staging2/noah-collector-steady staging2/noah-board-picks staging2/design-references staging2/noah-ux-audit staging2/noah-launch staging2/noah-quota staging2/noah-taps staging2/noah-search-words
+   git rev-parse staging2/noah-collector-steady staging2/noah-board-picks staging2/design-references staging2/noah-ux-audit staging2/noah-launch staging2/noah-quota staging2/noah-taps staging2/noah-search-words staging2/noah-store-taps
    ```
 2. 1 本ずつ push して PR を作る（フォークからでもよい）。本文は `pr/*.md`。
 3. PR の番号が出たら、その枝の CHANGELOG の仮の印を番号にする（1 commit 足す。force push はしない）。5・6 は 4 を含むので、`#UXAUDIT` も 4 の番号に、6 は `#LAUNCH` も 5 の番号にする（同じ行を同じ文に直しておけば、main を merge した時にぶつからない）。
 4. main を merge する（`git merge origin/main`）。CHANGELOG.md だけがぶつかった時は `python3 tools/merge-changelog.py CHANGELOG.md` で両方の行を残す。ほかの file がぶつかったら止めて報告する。
-5. check（ci.yml の verify など）が全部 success・neutral・skipped になったら、1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 の順にマージする。1 本マージしたら、次の枝に main を merge し直して、check を待つ。落ちた check があれば、マージせずに、落ちた試験の名前と、main の直近の同じ check でも落ちているかを報告する。
-6. 8 本が main に入ったら、avoado.si（Sites）を main から公開し直す。AGENTS.md の 8 のとおり、公開の前に main と Sites ソースの `git rev-parse 'HEAD^{tree}'` を照合する。migration は無いので、Sites の配備で SQL は増えない（PR #36 と同じく、アップロードする成果物に migration を足さない）。
+5. check（ci.yml の verify など）が全部 success・neutral・skipped になったら、1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 の順にマージする。1 本マージしたら、次の枝に main を merge し直して、check を待つ。落ちた check があれば、マージせずに、落ちた試験の名前と、main の直近の同じ check でも落ちているかを報告する。
+6. 9 本が main に入ったら、avoado.si（Sites）を main から公開し直す。AGENTS.md の 8 のとおり、公開の前に main と Sites ソースの `git rev-parse 'HEAD^{tree}'` を照合する。migration は無いので、Sites の配備で SQL は増えない（PR #36 と同じく、アップロードする成果物に migration を足さない）。
 7. 公開の後、スマホ幅で次を確かめて、結果を報告に書く（読むだけ。書き込まない）:
    - `/noah/explore?q=画像` が 0 件でない（前は 0 件）。
    - ホームの Noah 自身の案内の下の行が「Noahの案内（広告を含む）」。
@@ -46,7 +47,7 @@ main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった�
 
 ## 報告に書く事
 
-PR の番号（8 本）、マージした commit、公開した Sites の版、公開の前の tree の照合、7 の結果。
+PR の番号（9 本）、マージした commit、公開した Sites の版、公開の前の tree の照合、7 の結果。
 
 ## してはいけない事
 
