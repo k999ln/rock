@@ -255,7 +255,7 @@ export const noahBoardVisibility = (value: unknown): 'private' | 'public' | null
 /** 画面の文（決まった文）。 */
 export const NOAH_PIN_TEXT = {
   save: '保存', saved: '保存済み', saveTo: '保存先', newBoard: '新しいボード', boardName: 'ボードの名前', public: '公開する（他の人も見られる・フォローできる）',
-  create: '作って保存', hide: '表示しない', related: 'これも使われています', boards: 'ボード', myBoards: 'あなたのボード', following: 'フォロー中のボード',
+  create: '作って保存', hide: '表示しない', related: 'これも使われています', boardPicks: 'このボードに合う Agent', boardPicksNote: 'このボードの Agent を一緒に保存している人が多い物です。保存するほど、ボードごとに変わります。', boards: 'ボード', myBoards: 'あなたのボード', following: 'フォロー中のボード',
   follow: 'フォロー', unfollow: 'フォロー中', empty: 'まだ並べられる Agent がありません。少し後で開いてください。', signIn: '保存するには、サインインしてください。',
   closed: 'この一覧は、準備中です。', boardEmpty: 'このボードには、まだ Agent がありません。', more: '読み込んでいます…',
 };
