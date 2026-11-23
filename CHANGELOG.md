@@ -1,4 +1,5 @@
 ## 2026-11-24
+- Noah の「注目のAgent」の「すべて見る」（スマホ幅で 73×40px）を 44px にした。公開の後の本番で、`/noah` の下の 6 画面のうち小さい押す所はこれだけだった（Opus / Noelle。task 129 の D7。[PR #54](https://github.com/iceiceice999/rock/pull/54)）。
 - Noah の 300 人の試行のお金の決めを記録した（Opus / Noelle。本人回答 2026-11-24）: 試行の間（300 人が集まるまで）は無料で、本人の分（定期便）も配らない。300 人が集まった次の月から、定期便と、有料（600 円）の本人の分からの差し引きを始める。本人の分は余剰の 75%、Agent を作った人の分は売上の 20%（[PR #51](https://github.com/iceiceice999/rock/pull/51)）。
 - マイAgentの成果詳細に仕事別の使用量・料金を追加。専用クラウドはCPUと予約・確定額、外部提供元の未報告分は未確定と表示（task 94、[PR #46](https://github.com/iceiceice999/rock/pull/46)）。
 - Noah の札なし説明で、握手と版が一致する道具を接続と依頼の間に表示する。入力は定義上の項目名・型、出力定義がなければ「未確認」。Sites v227 の公開済み画面も正本へ統合。 [PR #50](https://github.com/iceiceice999/rock/pull/50)
