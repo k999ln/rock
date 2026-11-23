@@ -2,7 +2,9 @@
 
 2026-11-20。[Noah の設計書（全体）](../noah-design.md) と [詳細設計書](../noah-detailed-design.md) の下の層。**作業単位 1 つ（＝ `codex/tasks/` の 1 枚＝ 1 PR）につき 1 本**で、その単位を実装するのに要る事を全部書く: 今あるコードのどこをどう変えるか、入出力の形、規則の全表、画面と文言、処理の順、試験、完了の定義。
 
-全体を横断して読む場合は、[利用者の画面・eSIM・クラウド](first-use-architecture.md)と、[EveからNoahへの接続・現金の報酬・物の定期便](eve-distribution-and-rewards.md)を参照する。
+まず[Eve・Noah 図解設計書](illustrated-specifications.md)で、製品の全体設計、機能仕様と事業スキームを8枚の図でたどれる。[PDF版](../assets/noah-illustrated-specifications.pdf)
+
+機能ごとの実装根拠を読む場合は、[利用者の画面・eSIM・クラウド](first-use-architecture.md)と、[EveからNoahへの接続・現金の報酬・物の定期便](eve-distribution-and-rewards.md)を参照する。
 
 読む順は、task 1 枚 → その仕様書 1 本 → 仕様書が指す型契約（[docs/contracts/](../contracts/)）と試験（[docs/design-validation/noah/](../design-validation/noah/README.md)）。それ以外は読まなくてよい。
 

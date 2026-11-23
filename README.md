@@ -90,6 +90,8 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+**[Eve・Noah 図解設計書](docs/noah/illustrated-specifications.md)**　利用者の操作、画面とバックエンド、eSIM、作者収益・作業料・定期便までを8枚の図で読めます。[共有用PDF](docs/assets/noah-illustrated-specifications.pdf)
+
 公開ホームに「何をしたいですか？」という入口を追加しました。「お店・会社のサイト運営」では保守・制作会社との打ち合わせに使う診断結果と確認事項を、「自分のメモ整理」では誰が何を担当するか、あとから見返せるメモを受け取れます。その時に受付可能な仕事を選べます。選ぶ前に受け取れる成果が分かり、詳細で入力・送信先を確かめて本人が依頼します。完了後は「保存した成果を見る」から開き直せます。画面とバックエンドの接続、データの取得元、初めて使う人に試してもらう手順は[初回利用の構造図](docs/noah/first-use-architecture.md)にまとめています。
 
 基盤の仕様は[専用eSIMの発行・端末への導入・利用時の回線照合](docs/structure/03-esim.md)、[Noahクラウドの受付・実行・成果保存](docs/services/noah-cloud-agents.md)、[自社設備を含むクラウドの配置と運用](docs/compute-placement.md)にあります。公開NoahはWi-Fiや今のSIMで使えます。専用eSIMを必要とするRockstarOSの入口は模擬回線まで検証しています。Eveで担当を作る作者、Noahで依頼する利用者、外部から実入金を照合する運営のつながりは[報酬と定期便の構造図・計算例](docs/noah/eve-distribution-and-rewards.md)で確認できます。

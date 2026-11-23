@@ -420,3 +420,5 @@ GitHub受入先: [PR #3](https://github.com/iceiceice999/rock/pull/3)。main `a0
 [PR #24](https://github.com/iceiceice999/rock/pull/24)。Chromeの320・390・1280pxで3目的の明示送信を確認。候補なしは実ローカルAPI、実行・保存先は模擬応答を使用。Memoryは成果一覧を経て同じWorkを再読込し、依頼数が増えないことを確認した。
 
 PR #24の追補で、受付可能な目的を「お店・会社のサイト運営」「自分のメモ整理」にまとめ、仕事の成果を誰がどう使うかを6言語で表示。空の区分を出さない回帰試験を追加した。[法人・個人それぞれの受入方法](../../docs/noah/first-use-architecture.md#法人と個人に何を届けるか)と[Eve・定期便・報酬の仕様](../../docs/noah/eve-distribution-and-rewards.md)を参照。
+
+[Eve・Noah 図解設計書](../../docs/noah/illustrated-specifications.md)と[共有用PDF](../../docs/assets/noah-illustrated-specifications.pdf)に、画面からAPI・権限・保存先・受入までと、売上・報酬・物流を接続する条件をまとめた（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
