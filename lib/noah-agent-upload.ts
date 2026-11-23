@@ -1,4 +1,4 @@
-import { parseTerminalRuntime } from './noah-terminal-contract.mjs';
+import { parseNoahRuntime } from './noah-runtime-contract.mjs';
 export const NOAH_SOURCE_LIMIT = 10 * 1024 * 1024;
 export const NOAH_CODE_LIMIT = 64 * 1024;
 export const NOAH_MANIFEST_LIMIT = 32 * 1024;
@@ -9,7 +9,7 @@ export type NoahAgentManifest = {
   author: string; license: string; sourceUrl: string | null;
   adapter: (typeof NOAH_ADAPTERS)[number]; endpointUrl: string | null;
   permissions: (typeof NOAH_PERMISSIONS)[number][]; priceNote: string;
-  runtime?: ReturnType<typeof parseTerminalRuntime>;
+  runtime?: ReturnType<typeof parseNoahRuntime>;
 };
 export class NoahAgentError extends Error {
   status: number;
@@ -58,7 +58,7 @@ export function parseNoahAgentManifest(value: unknown): NoahAgentManifest {
   let runtime: NoahAgentManifest['runtime'];
   if ('runtime' in v) {
     if (adapter !== 'source' || v.permissions.some(p => !['read_input', 'write_files'].includes(p))) throw new NoahAgentError('コードテンプレートは隔離したソース実行です。外部通信・アカウント・資金操作の権限は付与できません。');
-    try { runtime = parseTerminalRuntime(v.runtime); } catch (e) { throw new NoahAgentError((e as Error).message); }
+    try { runtime = parseNoahRuntime(v.runtime); } catch (e) { throw new NoahAgentError((e as Error).message); }
   }
   return { schema: 'noah-agent/1', id, version, name: text(v.name, '名前', 100), summary: text(v.summary, 'できる仕事', 2000),
     author: text(v.author, '作者', 100), license: text(v.license, 'ライセンス', 100),

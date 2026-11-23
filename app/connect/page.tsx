@@ -26,15 +26,16 @@ export default async function ConnectPage({ searchParams }: {
     ? esimOrder : null;
   return <WorkspaceShell title="接続" hideTopActions hideAccountAccess>
     <div className={styles.page}>
-      <header className={styles.heading}><span>YOUR ENVIRONMENT</span><h1>利用環境をつなぐ</h1><p>使う端末と能力を選び、Eveで仕事を始める準備を。</p><p>公開版のNoahは普段の回線で開けます。専用eSIM付きのクラウドは、購入履歴から回線と端末の利用権を確認します。</p></header>
+      <header className={styles.heading}><h1>利用環境をつなぐ</h1><p>Noahの専用クラウドを使うには、スマホに専用eSIMを追加し、購入した注文で回線と端末の利用権を確認します。接続後はAgentに仕事を任せ、成果・利用量・料金を確認できます。</p></header>
       {installOrder && <section id="ios-esim" className={styles.panel} aria-labelledby="ios-esim-title">
         <h2 id="ios-esim-title">iPhone・iPadのeSIM設定</h2>
         <EsimPurchaseSetup key={installOrder} orderId={installOrder} iosConnect />
       </section>}
       <section className={styles.start} aria-labelledby="connect-start"><h2 id="connect-start">何をつなぎますか？</h2><div className={styles.cards}>
+        <Link href="/noah/esim"><Smartphone size={25}/><strong>専用eSIMで始める</strong><span>対応機種とプランの提供条件を確認します。</span><b>対応プランを見る <ArrowUpRight size={17}/></b></Link>
         <Link href="/noah/purchases"><Cable size={25}/><strong>eSIMの設定を再開</strong><span>回線を追加したら、購入した注文で端末の状態を確認します。</span><b>購入履歴・eSIM設定 <ArrowUpRight size={17}/></b></Link>
         <Link href="/connect/device"><Smartphone size={25}/><strong>端末をつなぐ</strong><span>端末の8文字コードを確認し、本人の接続として承認・管理します。</span><b>端末コードを確認 <ArrowUpRight size={17}/></b></Link>
-        <Link href="/#sky"><Layers size={25}/><strong>Agent・Toolを追加</strong><span>必要な能力を探し、送信先・利用条件を確認して追加します。</span><b>能力を探す <ArrowUpRight size={17}/></b></Link>
+        <Link href="/noah"><Layers size={25}/><strong>NoahでAgentを探す</strong><span>普段の回線でも公開Agentを探し、送信先や利用条件を確認できます。</span><b>ストアを開く <ArrowUpRight size={17}/></b></Link>
       </div></section>
       <section id="capabilities" className={styles.panel}><h2>追加した接続を確認する</h2><p>接続を追加しただけでは、仕事は実行されません。Eveで担当・実行先・権限・費用上限を確認します。</p><nav aria-label="接続後の操作"><Link href="/os/sky/network">サービス接続・権限を確認 <ArrowUpRight size={17}/></Link><Link href="/#sky-manage">担当・モデル・接続を管理 <ArrowUpRight size={17}/></Link><Link href="/os/eve">Eveで依頼を準備 <ArrowUpRight size={17}/></Link><Link href="/account?returnTo=%2Fconnect%2Fservice">アカウントを確認 <ArrowUpRight size={17}/></Link></nav></section>
       <details className={styles.panel}><summary><Cable size={20}/> このPCのMCP接続を設定</summary><p>既存の接続アプリを使う場合はこちら。起動・送信先・許可を確認して接続します。</p><DeviceConnection/></details>
