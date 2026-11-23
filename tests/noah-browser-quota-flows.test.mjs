@@ -7,7 +7,7 @@ import { createNoahBrowserSessions } from '../lib/noah-browser-session.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { NOAH_BROWSER_DAILY, NOAH_BROWSER_QUOTA_MESSAGE, noahQuotaWindow } from '../lib/noah-browser-quota.ts';
 
-// task 128 の D1・抜け道 S1 の、本物の入口での確かめ: ブラウザだけの本人を全員まとめた 1 日の上限に達したら、
+// task 129 の D1・抜け道 S1 の、本物の入口での確かめ: ブラウザだけの本人を全員まとめた 1 日の上限に達したら、
 // 新しい接続・依頼・コードの取り込み・下書きのファイルは 429 で断り、相手へも R2 へも送らない。サインインした本人は数えない。
 const ORIGIN = 'https://noah.test';
 const keyset = () => ({ active: 'a', keys: { a: randomBytes(32).toString('hex') } });

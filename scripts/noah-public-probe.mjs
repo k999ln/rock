@@ -3,7 +3,7 @@
 // 使い方: node scripts/noah-public-probe.mjs https://avoado.si [--json]
 // 見る事: 200 を返す API に、他人の物・運営の物・設定の中身が無いか。500 番台が無いか。
 // --json を付けると、全部の結果を JSON で標準出力に出す（ファイルには書かない。残す時は、出力を自分で保存する）。
-// task 128（docs/noah/ux-audit-2026-11-22.md の 4 章）。
+// task 129（docs/noah/ux-audit-2026-11-22.md の 4 章）。
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 

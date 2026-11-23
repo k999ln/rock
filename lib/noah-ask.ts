@@ -84,7 +84,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
   const prepare = (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).bind(...args);
   const connections = createNoahConnectService(deps);
   const hands = createNoahUserHandshake({ ...deps, hostHandshakes: flags.askLimits.hostHandshakes });
-  // ブラウザだけの本人を全員まとめた、1 日の依頼の上限（task 128 の D1）。
+  // ブラウザだけの本人を全員まとめた、1 日の依頼の上限（task 129 の D1）。
   const browserQuota = createNoahBrowserQuota(db, now);
   const readOne = (owner: string, id: string) => prepare(ONE, id, owner).first<NoahAskRow>();
   /** 応答の後に回してよい仕事（握手のセッションを閉じる要求）。 */

@@ -4,7 +4,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { applySourceSandboxSchema } from '../scripts/sky-monthly-sandbox-db.mjs';
 import { createNoahBrowserQuota, NOAH_BROWSER_DAILY, noahQuotaWindow } from '../lib/noah-browser-quota.ts';
 
-// task 128 の D1・抜け道 S1: ブラウザだけの本人は Cookie を捨てるだけで何人でも作れるので、
+// task 129 の D1・抜け道 S1: ブラウザだけの本人は Cookie を捨てるだけで何人でも作れるので、
 // 本人ごとの上限だけでは全体が増え続ける。ブラウザだけの本人を全員まとめた 1 日の上限を掛ける。
 // 新しい表は作らず、アカウントの回数表（本番に既にある）を使う。
 

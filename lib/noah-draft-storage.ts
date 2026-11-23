@@ -45,7 +45,7 @@ export function createNoahDraftStorage(db: Db, bucket?: DraftBucket, now = () =>
       if (!bucket) throw new NoahAgentError('ファイル保存先が未設定です。', 503);
       await reconcileReferences(owner);
       const key = `${await prefix(owner)}${draftId}/${command}/${sha256}`, time = now();
-      // 新しいファイルだけ、ブラウザだけの本人を全員まとめた 1 日の上限に数える（task 128 の D1）。同じファイルの送り直しは数えない。
+      // 新しいファイルだけ、ブラウザだけの本人を全員まとめた 1 日の上限に数える（task 129 の D1）。同じファイルの送り直しは数えない。
       if (noahBrowserOwner(owner) && !(await object(owner, key))) {
         const quota = createNoahBrowserQuota(db, now);
         if (!(await quota.take(owner, 'draftObjects')) || !(await quota.take(owner, 'uploadBytes', bytes.length))) throw new NoahAgentError(NOAH_BROWSER_QUOTA_MESSAGE, 429);

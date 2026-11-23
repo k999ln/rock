@@ -109,7 +109,7 @@ export const NOAH_SEARCH_SYNONYMS: Readonly<Record<string, readonly string[]>> =
   ペット: ['pet', 'dog', 'cat'],
   犬: ['dog'],
   猫: ['cat'],
-  // 2026-11-23（task 128 の D11）: よく頼まれる仕事の語 70 個を 1,957 件の一覧に当て、0 件だった語を足した。
+  // 2026-11-23（task 129 の D11）: よく頼まれる仕事の語 70 個を 1,957 件の一覧に当て、0 件だった語を足した。
   プレゼン: ['presentation', 'slide', 'deck', 'powerpoint', 'pptx'],
   スライド: ['slide', 'deck', 'powerpoint', 'pptx', 'presentation'],
   予約: ['booking', 'reserv', 'appointment', 'schedul'],

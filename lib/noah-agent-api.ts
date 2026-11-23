@@ -54,7 +54,7 @@ export function createNoahAgentApi(deps: {
       const user = await owner(request, true);
       if (!request.headers.get('content-type')?.startsWith('application/json')) throw new NoahAgentError('JSONで取得先を指定してください。', 415);
       const input: unknown = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await boundedNoahBody(request, 2048)));
-      // GitHub・Hugging Face の API の枠は Noah 全体で共有する。ブラウザだけの本人を全員まとめた 1 日の上限（task 128 の D1）。
+      // GitHub・Hugging Face の API の枠は Noah 全体で共有する。ブラウザだけの本人を全員まとめた 1 日の上限（task 129 の D1）。
       if (!(await createNoahBrowserQuota(deps.db).take(user, 'imports'))) throw new NoahAgentError(NOAH_BROWSER_QUOTA_MESSAGE, 429);
       const result = await importNoahSource(input, deps.fetcher);
       return new Response(new Uint8Array(result.bytes), { headers: { 'Content-Type': 'application/zip', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff',
@@ -127,7 +127,7 @@ export function createNoahAgentApi(deps: {
       if (manifest.adapter === 'source' && !source) throw new NoahAgentError('ソース登録にはコードまたはファイルが必要です。');
       if (processingReference && (!source || !deps.resolveProcessing)) throw new NoahAgentError('原本または整理結果の確認先がありません。', 503);
       const store = noahAgentStore(deps.db, user);
-      // 新しい登録だけ、ブラウザだけの本人を全員まとめた 1 日の上限に数える（task 128 の D1）。同じ ID の送り直しは数えない。
+      // 新しい登録だけ、ブラウザだけの本人を全員まとめた 1 日の上限に数える（task 129 の D1）。同じ ID の送り直しは数えない。
       if (noahBrowserOwner(user) && !(await store.get(id))) {
         const quota = createNoahBrowserQuota(deps.db);
         if (!(await quota.take(user, 'agents')) || (sourceBytes && !(await quota.take(user, 'uploadBytes', sourceBytes.byteLength))))

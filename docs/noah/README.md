@@ -26,7 +26,7 @@
 | 2 | ローンチの後 | 122 | [稼ぎ方の設計図と、会社で回す自動の流れ](spec-122-business-blueprints.md) | `lib/noah-business.ts`、`data/noah-business-capabilities.json` | `noah-business.test.mjs` |
 | 2 | ローンチの後（切り替えは閉） | 124 | [定期便の台帳（入金・締め・払い出し）](spec-124-teikibin-ledger.md) | `lib/noah-teikibin.ts`、`lib/noah-teikibin-store.ts`、`drizzle/0055_noah_teikibin.sql` | `noah-teikibin.test.mjs` |
 | 2 | 出した直後 | 114 | [300 人に出す](trial-300.md) | `noah-shelf-v1.ts`（`NOAH_TRIAL` ほか）、`noah-shelf-v1.sql`（`noah_trial_*`） | 同上 |
-| 3 | 出した後の確かめ | 128 | [使い勝手と抜け道の確かめ（2026-11-22）](ux-audit-2026-11-22.md)（全体の流れの図・機能ごとの表・抜け道） | `lib/noah-search-terms.ts`、`scripts/noah-public-walk.mjs`、`scripts/noah-public-probe.mjs` | `noah-search-terms.test.mjs`、`noah-library-public-sections.test.mjs`、`noah-usage-operator-tab.test.mjs`、`noah-revenue-catalog-cache.test.mjs` |
+| 3 | 出した後の確かめ | 129 | [使い勝手と抜け道の確かめ（2026-11-22）](ux-audit-2026-11-22.md)（全体の流れの図・機能ごとの表・抜け道） | `lib/noah-search-terms.ts`、`scripts/noah-public-walk.mjs`、`scripts/noah-public-probe.mjs` | `noah-search-terms.test.mjs`、`noah-library-public-sections.test.mjs`、`noah-usage-operator-tab.test.mjs`、`noah-revenue-catalog-cache.test.mjs` |
 
 段 2 以降の残り（83・92・94 など）の仕様書は、ローンチの後に同じ形で足す。それまでは詳細設計書の章が入口。
 

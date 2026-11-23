@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-// task 128 の D7 の続き: PR #37（Noah Agent Store）の行の形で、評価の札のリンクが 30px、「その他の操作」が 38px、
+// task 129 の D7 の続き: PR #37（Noah Agent Store）の行の形で、評価の札のリンクが 30px、「その他の操作」が 38px、
 // 詳細の「利用条件を見る」が 40px だった（本番の avoado.si で、スマホ幅・触れる画面で測った）。
 const css = (file) => readFileSync(new URL(`../components/${file}`, import.meta.url), 'utf8');
 

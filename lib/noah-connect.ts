@@ -141,7 +141,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
   const { db, flags } = deps, now = deps.now ?? Date.now;
   const prepare = (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).bind(...args);
   const { handshake } = createNoahUserHandshake({ ...deps, hostHandshakes: flags.askLimits.hostHandshakes });
-  // ブラウザだけの本人を全員まとめた、1 日の新しい接続の上限（task 128 の D1）。
+  // ブラウザだけの本人を全員まとめた、1 日の新しい接続の上限（task 129 の D1）。
   const browserQuota = createNoahBrowserQuota(db, now);
   const readOne = (owner: string, id: string) => prepare(ONE, id, owner).first<Row>();
   /** セッションを閉じる要求は、本人を待たせない（結果と状態を書き終えた後に送る。届かなくても、結果は変わらない）。 */

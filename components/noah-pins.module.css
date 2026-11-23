@@ -190,7 +190,7 @@
 .explore > h1 { font-size:clamp(28px,3.2vw,38px); line-height:1.2; letter-spacing:-.05em; }
 .statusLink { display:inline-flex; align-items:center; min-height:44px; font-size:14px; color:#913c04; }
 
-/* 押す所は 44px 以上（task 128 の D7）: ストアの行の評価の札（リンク）と「その他の操作」を、スマホの幅と触れる画面では 44px に（PR #37 の行の形は 30px・38px だった）。 */
+/* 押す所は 44px 以上（task 129 の D7）: ストアの行の評価の札（リンク）と「その他の操作」を、スマホの幅と触れる画面では 44px に（PR #37 の行の形は 30px・38px だった）。 */
 @media (max-width:680px), (hover:none) {
   .storeItem .sources a { min-height:44px; }
   .storeItem .more summary { width:44px; height:44px; }

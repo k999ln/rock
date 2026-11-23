@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { NOAH_SEARCH_SYNONYMS, noahSearchMatcher, noahSearchTerms } from '../lib/noah-search-terms.ts';
 
-// task 128 の D11: よく頼まれる仕事の語 70 個を、本番の「すべて」1,957 件（2026-11-22 に読んだ物）に当てると、
+// task 129 の D11: よく頼まれる仕事の語 70 個を、本番の「すべて」1,957 件（2026-11-22 に読んだ物）に当てると、
 // 15 個が 0 件だった（プレゼン・スライド・予約・価格・比較・宿題・SNS・運動・ダイエット・タスク・メモ・日記・
 // カスタマーサポート・電話・占い）。英語の語幹を足して、どれも 1 件以上になるようにした。
 const cards = [

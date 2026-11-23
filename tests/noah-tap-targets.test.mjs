@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-// task 128 の D7: 押す所は 44px 以上。scripts/noah-public-walk.mjs で、主な 9 画面（幅 390）に残っていた物:
+// task 129 の D7: 押す所は 44px 以上。scripts/noah-public-walk.mjs で、主な 9 画面（幅 390）に残っていた物:
 // 「下書きを再開・新規登録」25px・「下書きの保存量」23px・「Agentを確認する →」19px（保存・追加・利用状況の画面）、
 // 「Agentを探す」23px・「タイムラインへ戻る」19px（登録サポートの画面）。どれも文字だけのリンクと、開け閉めの見出し。
 const css = (file) => readFileSync(new URL(`../components/${file}`, import.meta.url), 'utf8');
