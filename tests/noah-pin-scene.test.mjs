@@ -1,5 +1,6 @@
 // ピンの図解（バージョン TAKE。spec-115 の 9 章）の試験: 形の確かめ（図の名前・札の数・図ごとの字の上限・余計な項目）・棚の 17 枚（形が通る・札はカードの文にある言葉だけ・同じ図は 2 枚まで）・
-// 全部の図が描ける（札が 1 回ずつ絵に出る・絵の外へはみ出さない・字が小さすぎない・作り話の数が無い・壊れた数が無い）・動き（時刻 u の純関数・初めは札が無い・途中が動く・止める時刻）・
+// 全部の図が描ける（札が 1 回ずつ絵に出る・絵の外へはみ出さない・字が小さすぎない・作り話の数が無い・壊れた数が無い）・
+// 動き「ぽよん」（時刻 u の純関数・初めは札が無い・途中が動く・止める時には揺れが収まっている）・
 // しょうへいさんの図解パックの許諾の表示・Luna Max への説明・Luna Max が書く 1 枚（題・入れる物・返る物・図解）の確かめ。
 // 絵は canvas に描くので、node の中では、描く命令を書き留める小さな代わり（recorder）で確かめる。字の幅は noahPinLabelWidth と同じ数え方（英字 0.6・他 1）。
 // 本物のブラウザでの見た目（390px と 1280px・動き）は、作った人が画面で確かめた（docs/noah/spec-115-pin-grid.md の 9 章）。
@@ -126,30 +127,45 @@ void test('every finished diagram shows each label once, inside the picture, at 
     for (const box of shown) {
       // 字は絵（539×208）の中に収まり、字の大きさは 14 以上（絵の幅 539 のうち。元の図のいちばん小さい字は 16）。
       assert.ok(box.left >= 2 && box.right <= W - 2 && box.top >= 2 && box.bottom <= H - 2, `${item.template}: 「${box.text}」がはみ出す（${box.left.toFixed(0)}〜${box.right.toFixed(0)}, ${box.top.toFixed(0)}〜${box.bottom.toFixed(0)}）`);
-      assert.ok(box.size >= 14, `${item.template}: 「${box.text}」の字が ${box.size}`);
+      assert.ok(box.size >= 14 - 1e-6, `${item.template}: 「${box.text}」の字が ${box.size}`);
       // 札でない字は、順番の数字（1〜8）と、フローチャートのひし形の「?」だけ（72%・30%・10人中3人・100 のような作り話の数は描かない）。
       if (!item.labels.includes(box.text)) assert.match(box.text, /^([1-8]|\?)$/, `${item.template}: 札でない字「${box.text}」`);
     }
   }
 });
 
-void test('every diagram builds itself as a pure function of time: blank labels first, moving parts, then a finished picture that holds', () => {
+void test('every diagram builds itself with the poyon motion as a pure function of time: blank labels first, moving parts, then a settled picture that holds', () => {
   const source = readFileSync(new URL('../lib/noah-pin-diagram.ts', import.meta.url), 'utf8');
   // 時刻の純関数（乱数・時計を使わない）。同じ u なら、同じ絵。
   assert.doesNotMatch(source, /Math\.random|Date\.|performance\.|new Date/);
   for (const [template, spec] of TEMPLATES) {
-    const item = scene(template, shortLabels(spec)), hold = noahPinHold(template);
-    assert.ok(hold > 3 && hold <= 4, `${template}: 止める時刻 ${hold}`);
-    assert.deepEqual(drawAt(item, 1.3).log, drawAt(item, 1.3).log, `${template}: 同じ時刻で絵が違う`);
+    const item = scene(template, shortLabels(spec)), hold = noahPinHold(template), name = template;
+    assert.ok(hold > 3 && hold <= 4, `${name}: 止める時刻 ${hold}`);
+    assert.deepEqual(drawAt(item, 1.3).log, drawAt(item, 1.3).log, `${name}: 同じ時刻で絵が違う`);
     // 初め（u = 0）は札が見えない（スイムレーン図のレーンの名前だけは、元の図と同じく骨組み）。描く命令も、止めた時より少ない。
     const first = drawAt(item, 0), last = drawAt(item, hold);
     const early = first.texts.filter((box) => box.alpha > 0.001 && item.labels.includes(box.text)).map((box) => box.text);
-    assert.deepEqual(early, template === 'swimlane' ? item.labels : [], `${template}: 初めから札が見える`);
-    assert.ok(first.log.length < last.log.length, `${template}: 初めの絵が、止めた時より多い`);
+    assert.deepEqual(early, template === 'swimlane' ? item.labels : [], `${name}: 初めから札が見える`);
+    assert.ok(first.log.length < last.log.length, `${name}: 初めの絵が、止めた時より多い`);
     // 途中が動く（0〜止める時刻の間に、違う絵が 4 枚以上ある）。
     const frames = new Set([0, 0.5, 1, 1.5, 2, 2.5, 3, hold].map((u) => drawAt(item, u).log.join('|')));
-    assert.ok(frames.size >= 4, `${template}: 動く途中が ${frames.size} 枚`);
+    assert.ok(frames.size >= 4, `${name}: 動く途中が ${frames.size} 枚`);
+    // 止める時には、もう揺れていない（止める 0.15 秒前と、札の位置・大きさ・濃さが 0.5 以内で同じ。揺れの途中で急に止まらない）。
+    const before = drawAt(item, hold - 0.15).texts.filter((box) => box.alpha > 0.001);
+    const after = last.texts.filter((box) => box.alpha > 0.001);
+    assert.equal(before.length, after.length, `${name}: 止める前後で字の数が違う`);
+    for (const [i, box] of after.entries()) {
+      const was = before[i];
+      for (const key of ['left', 'right', 'top', 'bottom', 'size']) assert.ok(Math.abs(box[key] - was[key]) < 0.5, `${name}: 「${box.text}」が止める直前まで動いている（${key} ${was[key].toFixed(1)} → ${box[key].toFixed(1)}）`);
+      assert.ok(Math.abs(box.alpha - was.alpha) < 0.01, `${name}: 「${box.text}」の濃さが止める直前まで変わる`);
+    }
   }
+  // ぽよん: 箱は、出始めてすぐ縦に伸び、行き過ぎた所で横につぶれ（縦横が逆に伸び縮みする）、最後は元の形（#001 のばね＋#011 の伸び縮み）。
+  const tree = scene('tree', shortLabels(NOAH_PIN_TEMPLATES.tree)), root = (u) => drawAt(tree, u).texts.find((box) => box.text === '札1');
+  const ratio = (box) => (box.right - box.left) / (box.bottom - box.top), still = ratio(root(4));
+  assert.ok(ratio(root(0.4 + 0.08)) < still * 0.95, '伸びる時に縦長になっていない');
+  assert.ok(ratio(root(0.4 + 0.3)) > still * 1.05, '戻る時に横につぶれていない');
+  assert.ok(Math.max(...[0.15, 0.2, 0.25].map((t) => root(0.4 + t).size)) > root(4).size * 1.1, '行き過ぎて大きくならない');
   // 部品: canvas 1 つ。サーバーで描いた時は空の面（字は無い）。読み上げには出さない。画面に入った時に 1 回動き、動きを減らす設定の人には組み上がった形を出す。
   const component = readFileSync(new URL('../components/noah-pin-scene.tsx', import.meta.url), 'utf8');
   assert.match(component, /prefers-reduced-motion: reduce/);
