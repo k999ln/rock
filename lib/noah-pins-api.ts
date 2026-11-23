@@ -1,6 +1,6 @@
 /**
  * ピンタレスト風の一覧の入口（task 115）。
- * GET /api/noah/pins: 一覧の 1 頁（?cursor=）。?related=<系列の ID> で「これも使われています」。サインイン不要（保存の印は、サインインした本人の分だけ）。
+ * GET /api/noah/pins: 一覧の 1 頁（?cursor=）。?related=<系列の ID> で「これも使われています」。?board=<ボードの ID> で「このボードに合う Agent」（持ち主か、公開のボード）。サインイン不要（保存の印は、サインインした本人の分だけ）。
  * GET /api/noah/boards: 本人のボードとフォロー中のボード（サインイン）。?id=<ボード> で 1 つのボード（持ち主か、公開のボード。?cursor=）。?pin=<系列の ID> で、その Agent を保存している本人のボード。
  * POST /api/noah/boards: サインインした本人の操作（create・update・remove・save・unsave・follow・unfollow・hide・unhide）。
  * 見せてよいかは、取り込んだ一覧と同じ（切り替え NOAH_INTAKE_PUBLIC。閉じていても審査者は使える）。閉じている間は 404（画面は、今のタイムラインのまま）。
@@ -51,6 +51,8 @@ export function createNoahPinsApi(deps: PinsApiDependencies) {
       const url = new URL(request.url), ownerScope = owner ? await ownerScopeFor(owner) : null;
       const related = url.searchParams.get('related');
       if (related !== null) return json({ items: await store.related(familyIdOf(related), owner), ownerScope });
+      const board = url.searchParams.get('board');
+      if (board !== null) return json({ items: await store.boardPicks(boardIdOf(board), owner), ownerScope });
       const page = await store.feed(owner, url.searchParams.get('cursor'));
       // 成果が返った人の数の数え直し（UTC の 1 日に 1 回）。応答の後に行い、失敗しても一覧は返す。
       const work = store.rollupIfDue().catch(() => undefined);

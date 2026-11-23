@@ -16,6 +16,7 @@
 - NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。
 
 ## 2026-11-22
+- Noah のボードに「このボードに合う Agent」を足した（Opus / Noelle。本人指示「どのボードに保存したかでおすすめが変わるようにして。ボードごとの違いを実際に触って見たい」）。ボードの保存を起点に、他の人のボードから Pixie で行き着く物を出す。ボードが違えば違う物が出て、保存するとその場で変わる。学習なし・5 人より少ない人の保存からは出さない）（[PR #40](https://github.com/iceiceice999/rock/pull/40)）。
 - Noah の Agent 収集で、1 回きりの出所の失敗（GitHub の一時的な不調・混雑）で実行全体が「失敗」になっていたのを直した（Opus / Noelle。本人の問い「毎日更新してくれるシステム作ってって前いったけどできた？」）。本番への取り込み・掲載の失敗、形が変わった応答、X の鍵、同じ出所が 6 回続けて失敗した時だけを「人が見る失敗」にする。毎回の実行の要約に、台帳・握手・一覧に載る数と、出所ごとの数と失敗を出す）（[PR #38](https://github.com/iceiceice999/rock/pull/38)）。
 - Noahの収集停止の記録を正本へ移植し、旧mainの手動実行とCodexの毎時実行で収集を復旧。24時間の鮮度と正本への実行先切り替えは追跡中（[PR #15](https://github.com/iceiceice999/rock/pull/15)、[PR #16](https://github.com/iceiceice999/rock/pull/16)、[復旧実行](https://github.com/k999ln/rock/actions/runs/45032700818)）。
 - NoahのWordPress/EC診断2種をSites208で実行・保存・再読込まで受入し、掲載時刻と成果本文の表示を補正。登録媒体への紹介・6時間の成果取得を接続、実注文/承認は0件（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。
