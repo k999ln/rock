@@ -36,7 +36,7 @@ export default function SkyServiceHelp() {
       <section id="limits" aria-labelledby="sky-help-limits"><h2 id="sky-help-limits">対応環境と既知の制限</h2>
         <ul><li>オンラインで利用します。オフライン実行や接続切れ中の停止完了は保証しません。</li><li>導入候補は、本体を実行できるツール数に含みません。LLMの一覧も接続先の候補です。</li><li>Instagram等の外部投稿・広告・請求には実サービスの接続と個別確認が必要です。ブラウザ簡易版の保存を外部操作の完了にしません。</li><li>実行結果の保存に失敗した場合は、結果を手元へ保存してから履歴を確認してください。結果不明の外部操作は重ねて実行しないでください。</li><li>CSVは1ファイル10MBまで。文章保存は20件まで。外部siには利用上限があります。</li></ul>
       </section>
-      <section aria-labelledby="noah-help-mac"><h2 id="noah-help-mac">自分のMacでAgentを動かす</h2><p>Apple Silicon Macを実行先に選ぶ人は、専用のLinux環境を使えます。</p><Link href="/noah/mac">Mac用Noahと導入手順を見る</Link></section>
+      <section aria-labelledby="noah-help-mac"><h2 id="noah-help-mac">自分のMacでAgentを動かす</h2><p>Apple Silicon Macを実行先に選ぶ人は、専用のLinux環境を使えます。</p><Link href="/noah/devices#mac">Mac用Noahと導入手順を見る</Link></section>
       <section aria-labelledby="sky-help-providers"><h2 id="sky-help-providers">ツールを提供する</h2><p>掲載には作者・版・配布元・ライセンス・権限・料金・扱うデータを申告します。申請しただけで一般公開されることはありません。</p><p><Link href="/noah/register">掲載申請</Link> · <Link href="/noah/publish">SDK・Studio</Link> · <Link href="/noah/sell">販売設定</Link></p><p>基本登録・接続は0円。Tool売上のNoah手数料は10%。外部決済・API・モデル・cloudの費用は別です。決済の接続待ちでは購入・販売できません。</p></section>
       <section id="bot" className={styles.notice} aria-labelledby="noah-help-bot" hidden={!bot.shown}>
         <h2 id="noah-help-bot">{bot.title}</h2>

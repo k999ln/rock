@@ -3,7 +3,6 @@ import { NOAH_MODELS } from '@/lib/noah-model-catalog.mjs';
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowLeft,
   ArrowUpRight,
   Check,
   ChevronDown,
@@ -48,23 +47,19 @@ export default function NoahMacHandoff({
     : '';
   const launchHref = agent ? `/noah/agents/${encodeURIComponent(agent)}` : '/noah/my';
   return (
-    <main className={styles.page}>
-      <Link href={launchHref} className={styles.back}>
-        <ArrowLeft size={16} />
-        Agentに戻る
-      </Link>
+    <section id="mac" className={styles.page} aria-labelledby="noah-mac-title">
       <header>
         <span className={styles.icon}>
           <Laptop size={25} />
         </span>
-        <h1>Macをつなぐ</h1>
+        <h2 id="noah-mac-title">Macをつなぐ</h2>
         <span className={styles.chip}>Apple Silicon Mac</span>
       </header>
       <ol className={styles.steps}>
         <li>
           <span className={styles.number}>1</span>
           <div>
-            <h2>Noahを入れる</h2>
+            <h3>Noahを入れる</h3>
             <a
               className={styles.download}
               href="/noah-downloads/Noah-Mac.zip"
@@ -123,7 +118,7 @@ export default function NoahMacHandoff({
         <li>
           <span className={styles.number}>2</span>
           <div>
-            <h2>このMacを登録</h2>
+            <h3>このMacを登録</h3>
             <p>ターミナルで実行 → 表示されたURLで承認</p>
             <Command value="noah pair" />
           </div>
@@ -131,7 +126,7 @@ export default function NoahMacHandoff({
         <li>
           <span className={styles.number}>3</span>
           <div>
-            <h2>Noahを起動</h2>
+            <h3>Noahを起動</h3>
             <Command value="noah start" />
             <Link className={styles.continue} href={launchHref}>
               Agentを使う
@@ -184,6 +179,6 @@ export default function NoahMacHandoff({
           </div>
         </dl>
       </details>
-    </main>
+    </section>
   );
 }

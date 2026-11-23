@@ -1,4 +1,5 @@
 export const NOAH_FLOW_MESSAGES:Record<string,readonly [string,string,string,string,string]> = {
+  '自分のAgent': ['My agents', '我的 Agent', '내 Agent', 'Mis agentes', 'وكلائي'],
   '利用条件を見る': ['View usage terms', '查看使用条件', '이용 조건 보기', 'Ver condiciones de uso', 'عرض شروط الاستخدام'],
   'ピックアップ': ['Featured', '精选', '추천', 'Destacado', 'اختيار مميز'],
   '注目のAgent': ['Agents to explore', '值得探索的 Agent', '주목할 Agent', 'Agentes para explorar', 'وكلاء للاستكشاف'],
