@@ -51,6 +51,12 @@ export function validatePythonResult(profile, raw) {
       model_empty_content: 'モデルから本文を受け取れませんでした。',
       model_json_invalid: '面接準備の応答を読み取れませんでした。',
       boss_command_failed: '公式bossの処理に失敗しました。',
+      hermes_initialization_failed: 'Hermesの準備に失敗しました。',
+      hermes_conversation_failed: 'Hermesが応答の処理を完了できませんでした。',
+      hermes_incomplete: 'Hermesの処理が完了しませんでした。',
+      hermes_result_invalid: 'Hermesの成果を保存できませんでした。',
+      hermes_unverified_tool: 'Hermesの道具の実行を確認できませんでした。',
+      hermes_no_successful_tool: 'Hermesの道具が正常に完了しませんでした。',
       execution_stopped: '実行が停止したか、時間の上限に達しました。',
     };
     const code = value.error.code;

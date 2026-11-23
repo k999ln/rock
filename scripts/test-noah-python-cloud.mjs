@@ -41,7 +41,7 @@ try {
   assert.ok(hermes.calls.every(v=>Buffer.byteLength(JSON.stringify(v))<32768));
   const replay=await run({id,profile:'hermes',prompt:nonce});assert.equal(replay.status,422);assert.equal(replay.calls.length,0);
   const isolated=await run({profile:'hermes',mode:'read',prompt:'Read a fresh job'});assert.equal(isolated.status,200,isolated.error);assert.deepEqual(JSON.parse(decode(isolated,'plan.json')),[]);assert.ok(!JSON.stringify(isolated).includes(nonce));assert.ok(!isolated.data.files.some(f=>f.name==='MEMORY.md'));
-  for(const mode of ['no-tool','bad-tool','stopped','stop-model']){const result=await run({profile:'hermes',mode});assert.equal(result.status,422,mode);assert.ok(!result.data);}
+  for(const mode of ['no-tool','bad-tool','stopped','stop-model']){const result=await run({profile:'hermes',mode});assert.equal(result.status,422,mode);assert.ok(!result.data);if(mode==='no-tool')assert.equal(result.error.code,'hermes_no_successful_tool');}
   const slow=run({profile:'hermes',mode:'slow',prompt:'Slow independent plan'});
   const pendingDeadline=Date.now()+5000;
   while(!(await(await fetch(origin+'/busy')).json()).pending){assert.ok(Date.now()<pendingDeadline);await new Promise(r=>setTimeout(r,10));}

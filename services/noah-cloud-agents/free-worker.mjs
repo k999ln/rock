@@ -41,10 +41,10 @@ export class NoahFreeCloudJob extends NoahCloudJob {
   async runModel(value) {
     const owner = await this.live();
     const input = { ...noahCloudModelInput(value), max_tokens: limits.outputTokens };
+    if (['boss', 'hermes'].includes(owner.profile)) input.reasoning_effort = 'low';
     if (owner.profile === 'boss') {
       // The official command requests five JSON questions. Reserve the fixed
       // output budget for that result rather than a long reasoning preamble.
-      input.reasoning_effort = 'low';
       input.response_format = { type: 'json_object' };
       const instruction = 'Return one compact JSON object in the requested language. Keep every string brief (at most 40 characters), exactly five questions, one evaluation point per question and two preparation tips. Do not omit the official fields.';
       if (input.messages[0].role === 'system') input.messages[0].content += '\n' + instruction;

@@ -32,6 +32,11 @@ void test('boss requests concise JSON with low reasoning without increasing its 
   const w=world({model:async(_,value)=>{input=value;return {choices:[]};},execute:async(_,bridge)=>{await bridge.complete(JSON.stringify({messages:[{role:'system',content:'Official instruction'},{role:'user',content:'A job description'}],reasoning_effort:'high',max_tokens:9999}));return JSON.stringify(valid());}});
   await w.job.execute();assert.equal(input.reasoning_effort,'low');assert.deepEqual(input.response_format,{type:'json_object'});assert.equal(input.max_tokens,1024);assert.equal(w.calls(),1);assert.ok(input.messages[0].content.startsWith('Official instruction'));assert.equal(input.messages[1].content,'A job description');
 });
+void test('Hermes keeps its official tool schema and fixed model budget with low reasoning',async()=>{
+  let input;const tools=[{type:'function',function:{name:'todo',parameters:{type:'object'}}}];
+  const w=world({profile:'hermes',model:async(_,value)=>{input=value;return {choices:[]};},execute:async(_,bridge)=>{await bridge.complete(JSON.stringify({messages:[{role:'user',content:'Plan'}],tools}));return JSON.stringify({...valid(),operations:[{...valid().operations[0],name:'todo'}]});}});
+  await w.job.execute();assert.equal(input.reasoning_effort,'low');assert.equal(input.response_format,undefined);assert.equal(input.max_tokens,1024);assert.deepEqual(input.tools,tools);assert.equal(w.calls(),1);
+});
 void test('stop during Python model RPC wins over late output without blocking the admission gate',async()=>{
   let release;const held=new Promise(r=>{release=r;});
   const w=world({model:async()=>held,execute:async(_,bridge)=>{await bridge.complete(JSON.stringify({messages:[{role:'user',content:'fixture'}]}));return JSON.stringify(valid());}});
