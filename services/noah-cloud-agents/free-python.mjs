@@ -57,6 +57,8 @@ export function validatePythonResult(profile, raw) {
       hermes_result_invalid: 'Hermesの成果を保存できませんでした。',
       hermes_unverified_tool: 'Hermesの道具の実行を確認できませんでした。',
       hermes_no_successful_tool: 'Hermesの道具が正常に完了しませんでした。',
+      hermes_tool_not_called: 'Hermesが道具を実行しなかったため成果を確定できませんでした。',
+      hermes_tool_failed: 'Hermesの道具がエラーを返しました。',
       execution_stopped: '実行が停止したか、時間の上限に達しました。',
     };
     const code = value.error.code;

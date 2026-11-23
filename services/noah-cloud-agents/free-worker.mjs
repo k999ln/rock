@@ -55,6 +55,7 @@ export class NoahFreeCloudJob extends NoahCloudJob {
     await this.ctx.blockConcurrencyWhile(async () => {
       const latest = await this.live();
       if (latest.calls >= limits.modelCalls) throw Error('無料枠のモデル呼出上限に達しました。');
+      if (latest.profile === 'hermes' && latest.calls === 0 && input.tools?.length) input.tool_choice = 'required';
       deadline = latest.deadlineAt;
       await this.ctx.storage.put('job', { ...latest, calls: latest.calls + 1 });
       model = this.env.AI.run(NOAH_CLOUD_MODEL, input);

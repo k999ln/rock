@@ -77,10 +77,12 @@ def hermes(prompt, home):
                 except ValueError:
                     ok = False
                 operations.append(operation(call['name'], call['arguments'], content, ok))
-        if not any(op['ok'] for op in operations) or len(operations) > 12:
-            raise ExecutionError('hermes_no_successful_tool')
         if MODEL_STATUS.get():
             raise ExecutionError(MODEL_STATUS.get())
+        if not operations:
+            raise ExecutionError('hermes_tool_not_called')
+        if not any(op['ok'] for op in operations) or len(operations) > 12:
+            raise ExecutionError('hermes_tool_failed')
         if not isinstance(result.get('final_response'), str) or not result['final_response'].strip():
             raise ExecutionError('model_empty_content')
         files = [file('plan.json', json.dumps(agent._todo_store.read(), ensure_ascii=False, indent=2))]
