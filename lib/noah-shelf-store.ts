@@ -153,6 +153,12 @@ export function createNoahShelfStore(deps: ShelfDependencies) {
   };
   const cardRows = async (where: string, ...args: (string | number)[]) => (await prepare(`SELECT ${CARD_COLUMNS} FROM noah_packages ${where}`, ...args).all<CardRow>()).results;
 
+  async function detail(id: string): Promise<NoahPackage | null> {
+    const row = await prepare(`SELECT ${CARD_COLUMNS} FROM noah_packages WHERE id=? AND status='verified'`, id).first<CardRow>();
+    const pkg = row && parsed(row);
+    return pkg && listingOf(pkg, await familyFacts(familyIds([pkg]))).listed ? pkg : null;
+  }
+
   async function evidenceOf(ids: string[]): Promise<Map<string, NoahCardEvidence>> {
     const out = new Map<string, NoahCardEvidence>();
     try {
@@ -408,5 +414,5 @@ export function createNoahShelfStore(deps: ShelfDependencies) {
     return recheck();
   }
 
-  return { list, state, put, verify, retire, review, recheck, recheckIfDue, record, hide, rollup, rollupIfDue };
+  return { list, detail, state, put, verify, retire, review, recheck, recheckIfDue, record, hide, rollup, rollupIfDue };
 }

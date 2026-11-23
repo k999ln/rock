@@ -301,7 +301,13 @@ export function checkNoahToolArgs(schema: unknown, args: unknown): string | null
 
 /** 道具 1 つの定義の hash。本人が見た定義と、呼ぶ時の定義が同じかを確かめるのに使う。 */
 export function noahToolSha256(tool: NoahToolDef): Promise<string> {
-  return sha256Hex(canonicalJson({ name: tool.name, description: tool.description, inputSchema: tool.inputSchema, readOnly: tool.readOnly }));
+  return sha256Hex(canonicalJson({
+    name: tool.name,
+    description: tool.description,
+    inputSchema: tool.inputSchema,
+    ...(tool.outputSchema === undefined ? {} : { outputSchema: tool.outputSchema }),
+    readOnly: tool.readOnly,
+  }));
 }
 
 /** 本人が確かめた、読み取りだけでない道具。名前と、その時の定義の hash の組。定義が変わったら、確かめ直す。 */

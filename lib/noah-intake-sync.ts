@@ -5,6 +5,7 @@ import { NOAH_LISTING_SQL } from './noah-intake-listing.ts';
 import { NOAH_PATROL_BUDGET } from './noah-intake-wake.ts';
 import { intakeStatement, type IntakeDb } from './noah-intake-db.ts';
 import { NOAH_PROBE } from './noah-probe.ts';
+import type { NoahToolDef } from './noah-mouth-mcp-remote.ts';
 
 export type IntakeSource = {
   id: string; lease_id: string | null; lease_until: number; next_run_at: number;
@@ -19,6 +20,17 @@ export type IntakeDependencies = {
   budget?: typeof NOAH_PATROL_BUDGET;
   /** 握手の前に、名前を引いた先のアドレスを確かめる差し込み口。Node で動かす時だけ渡す（Workers からは、内部のアドレスへ届かない。spec-86 の 4.4）。 */
   probeCheck?: (url: URL) => Promise<void>;
+  /**
+   * A local-only observer for a successful representative handshake.  The
+   * intake database never receives the tool definitions; the callback is
+   * invoked only after the checks/family write has committed.
+   */
+  onCommittedRepresentativeHandshake?: (capture: {
+    familyId: string;
+    candidateId: string;
+    toolsSha256: string;
+    tools: readonly NoahToolDef[];
+  }) => void | Promise<void>;
 };
 /** 1 回の巡回の結果。skipped は、形が違って読み飛ばした記録の数（ある時だけ）。error は、台帳を読めなかった・書けなかった時の理由。 */
 export type IntakeOutcome = { pages: number; seen: number; changed: number; more: boolean; skipped?: number; error?: 'unavailable' | 'rate_limited' | 'invalid_response' };

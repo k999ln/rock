@@ -13,6 +13,7 @@ import { NOAH_PLAN_SOURCE } from './noah-plan';
 import { noahTeikibinPlanSource } from './noah-teikibin-server';
 import { parseNoahShelfFlags } from './noah-shelf';
 import { createNoahShelfStore } from './noah-shelf-store';
+import { readNoahAgentExplanation } from './noah-explanation-source';
 export function noahIntakeDependencies() {
   const config = env as unknown as Record<string, string | undefined>;
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
@@ -22,6 +23,8 @@ export function noahIntakeDependencies() {
       authorize: noahProfileStore().authorize, receiptKey: config.NOAH_CLOUD_KEY,
       runtime: noahCloudRuntime({ url: config.NOAH_CLOUD_URL, key: config.NOAH_CLOUD_KEY }) }),
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
+    explainPublic: config.NOAH_EXPLAIN_PUBLIC === 'true',
+    explainAgent: (input: Parameters<typeof readNoahAgentExplanation>[1]) => readNoahAgentExplanation(database(), input),
     // 収集機（GitHub の定期実行）が、握手の済んだ系列を一覧へ入れる時の鍵（紹介の掲載と同じ。lib/noah-intake-import.ts）。
     collectorKey: config.NOAH_COLLECTION_KEY,
     origin: noahPublicOrigin(config.NOAH_ORIGIN),

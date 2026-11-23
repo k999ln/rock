@@ -15,6 +15,9 @@ import * as resultPresentation from '../../../lib/noah-result-presentation.ts';
 import * as resultMedia from '../../../lib/noah-result-media.ts';
 import * as workView from '../../../lib/noah-work-view.ts';
 import * as profileContract from '../../../lib/noah-profile-contract.ts';
+import * as explanation from '../../../lib/noah-agent-explanation.ts';
+import * as shelfContract from '../../../lib/noah-shelf.ts';
+import * as stepGraph from '../../../lib/noah-steps.ts';
 
 const ROOT = new URL('../../../', import.meta.url);
 const Fragment = Symbol('Fragment');
@@ -119,6 +122,9 @@ export function screen(options = {}) {
       if(id.startsWith('./')&&options.modules?.[`@/components/${id.slice(2)}`])return options.modules[`@/components/${id.slice(2)}`];
       if(id==='./noah-locale')return {useNoahLocale:()=>({t:(text,values)=>noahTranslate(options.locale??'ja',text,values),locale:options.locale??'ja'}),NoahLanguageSetting:()=>null};
       if(id==='@/lib/noah-operation-labels')return operationLabels;
+      if(id==='@/lib/noah-agent-explanation')return explanation;
+      if(id==='@/lib/noah-shelf')return shelfContract;
+      if(id==='@/lib/noah-steps')return stepGraph;
       if(id==='@/lib/noah-work-view')return workView;
       if(id==='@/lib/noah-result-presentation')return resultPresentation;
       if(id==='@/lib/noah-result-media')return resultMedia;

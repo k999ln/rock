@@ -22,10 +22,12 @@ import NoahWorkList from './noah-work-list';
 import NoahConnectButton from './noah-connect-button';
 import NoahTrialReport from './noah-trial-report';
 import NoahPinExtras from './noah-pin-extras';
+import { NoahExplanationSection, NoahPackageExplanation } from './noah-agent-explanation';
+import type { NoahExplanation } from '@/lib/noah-agent-explanation';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
 
-type Detail = NoahReadyItem & { listed: boolean; website: string | null; connection: NoahReadyConnection | null; ownerScope: string | null; error?: string };
+type Detail = NoahReadyItem & { listed: boolean; website: string | null; connection: NoahReadyConnection | null; ownerScope: string | null; explanation?: NoahExplanation; summaryJa?: string | null; error?: string };
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
@@ -108,6 +110,8 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
         {detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}
       </div>
       <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
+      {detail.explanation && <NoahExplanationSection explanation={detail.explanation} summary={detail.summary} summaryJa={detail.summaryJa} connected={live?.state === 'connected'} />}
+      {from && <NoahPackageExplanation key={from} id={from} familyId={detail.id} tool={tool} />}
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
     </article>
 

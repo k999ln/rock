@@ -33,6 +33,18 @@
 .cardName { display:flex; align-items:center; min-height:44px; min-width:44px; color:inherit; }
 .cardName span { display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
 .provider { color:#71717a; font-size:11px; overflow-wrap:anywhere; }
+.explanation { min-width:0; margin-top:18px; padding-top:16px; border-top:1px solid #ececef; overflow-wrap:anywhere; }
+.detail .explanation h2 { margin:0 0 7px; color:#202024; font-size:17px; }
+.explanationSummary { margin:0 0 12px; color:#52525b; font-size:13px; line-height:1.65; }
+.explanationSource { margin:0 0 12px; color:#52525b; font-size:12px; }
+.explanationSource summary { min-height:32px; color:#7546c8; cursor:pointer; }
+.explanationIo { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:start; gap:8px; margin:0 0 16px; }
+.explanationIo div { padding:9px 10px; border:1px solid #ececef; border-radius:8px; background:#f7f7f8; }
+.explanationIo span { align-self:center; color:#7546c8; }
+.explanationIo dt { color:#52525b; font-size:11px; font-weight:650; }
+.explanationIo dd { margin:4px 0 0; color:#202024; font-size:13px; }
+.explanationIo ul { display:flex; flex-wrap:wrap; gap:4px 9px; list-style:none; margin:0; padding:0; }
+.explanationHint { margin:0 0 8px; color:#71717a; font-size:12px; line-height:1.6; }
 /* 説明は 2 行で切る（カードの高さを、読み込みの前後で変えない）。 */
 .summary { margin:10px 0 14px; color:#52525b; font-size:13px; line-height:1.8; min-height:calc(13px * 1.8 * 2); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
 .description { margin:14px 0; color:#52525b; font-size:14px; line-height:1.9; white-space:pre-wrap; overflow-wrap:anywhere; }

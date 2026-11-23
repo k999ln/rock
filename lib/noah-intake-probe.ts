@@ -10,7 +10,7 @@ import { intakeStatement } from './noah-intake-db.ts';
 import { noahListing, NOAH_LISTING_SQL, type NoahListingInput } from './noah-intake-listing.ts';
 import type { IntakeDependencies } from './noah-intake-sync.ts';
 import { NOAH_PATROL_BUDGET } from './noah-intake-wake.ts';
-import { createNoahGuardedFetch, type NoahMouthContext } from './noah-mouth-mcp-remote.ts';
+import { createNoahGuardedFetch, type NoahHandshakeSnapshot, type NoahMouthContext } from './noah-mouth-mcp-remote.ts';
 import { NOAH_PROBE, planNoahProbeWrite, probeL1, type NoahCheckState, type NoahProbeOutcome, type NoahProbeWrite } from './noah-probe.ts';
 
 /** 合図 1 回の握手の数（合図の 1 行に出す。接続先の名前は持たない）。 */
@@ -146,7 +146,11 @@ export function createIntakeProbe(deps: IntakeDependencies) {
         busy.push(item.row.candidate_id); counts.skippedHost++; return false;
       });
       if (!going.length) continue;
-      const outcomes = await Promise.all(going.map(item => probeL1(item.url, ctx, now)));
+      const outcomes = await Promise.all(going.map(async item => {
+        let handshake: NoahHandshakeSnapshot | undefined;
+        const outcome = await probeL1(item.url, ctx, now, (snapshot) => { handshake = snapshot; });
+        return { outcome, handshake };
+      }));
       counts.probes += going.length;
       await save(going, outcomes, lease, counts);
     }
@@ -160,9 +164,9 @@ export function createIntakeProbe(deps: IntakeDependencies) {
   }
 
   /** 握手の結果を握手の表へ書き、書けた物だけを、その候補が代表の系列へ写す（次の名寄せを待たない）。 */
-  async function save(going: Target[], outcomes: NoahProbeOutcome[], lease: number, counts: IntakeProbeCounts) {
+  async function save(going: Target[], outcomes: { outcome: NoahProbeOutcome; handshake?: NoahHandshakeSnapshot }[], lease: number, counts: IntakeProbeCounts) {
     const at = now();
-    const writes = going.map((item, index) => planNoahProbeWrite(noahCheckState(item.row), outcomes[index], { now: at, connected: item.family.connected === 1 }));
+    const writes = going.map((item, index) => planNoahProbeWrite(noahCheckState(item.row), outcomes[index].outcome, { now: at, connected: item.family.connected === 1 }));
     const first: D1PreparedStatement[] = [];
     for (const [index, write] of writes.entries()) {
       const s = write.state, item = going[index];
@@ -174,6 +178,7 @@ export function createIntakeProbe(deps: IntakeDependencies) {
     const written = await db.batch(first);
 
     const second: D1PreparedStatement[] = [];
+    const captures: { familyId: string; candidateId: string; toolsSha256: string; tools: NoahHandshakeSnapshot['tools'] }[] = [];
     for (const [index, write] of writes.entries()) {
       // 取り置きが変わっていた（取り込みが握手の記録を消した・別の合図が取り直した）結果は、書かれていない。系列にも写さない。
       if (written[index]?.meta.changes !== 1) continue;
@@ -184,8 +189,23 @@ export function createIntakeProbe(deps: IntakeDependencies) {
       else if (s.result === 'rate_limited') counts.rateLimited++;
       if (write.toolsChanged) counts.toolsChanged++;
       second.push(...noahFamilyWrites(db, family, row.candidate_id, write, at));
+      const snapshot = outcomes[index].handshake;
+      // Keep raw provider metadata out of D1.  Capture only a successful,
+      // committed representative handshake, and only when the summary hash
+      // matches the definitions that were observed in that handshake.
+      if (s.result === 'ok' && family.representative_id === row.candidate_id && snapshot && snapshot.toolsSha256 === s.toolsSha256) {
+        captures.push({ familyId: family.family_id, candidateId: row.candidate_id, toolsSha256: snapshot.toolsSha256, tools: snapshot.tools });
+      }
     }
     if (second.length) await db.batch(second);
+    // This callback is deliberately after both DB batches.  A local writer
+    // failure must not make an already committed patrol result roll back or
+    // make the next patrol repeat a network request.
+    if (captures.length && deps.onCommittedRepresentativeHandshake) {
+      await Promise.all(captures.map(async (capture) => {
+        try { await deps.onCommittedRepresentativeHandshake!(capture); } catch { /* optional local capture */ }
+      }));
+    }
   }
 
   return { probeDue };
