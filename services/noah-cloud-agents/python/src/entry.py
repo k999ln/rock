@@ -65,6 +65,7 @@ class NoahPythonJob(DurableObject):
             raise ValueError('Invalid request')
         async with RUN_LOCK:
             from adapters import CAPABILITY, Stopped, hermes, boss, live
+            from runtime_shared import ExecutionError
             if await self.ctx.storage.get('started'):
                 raise ValueError('Execution already admitted; not replayed')
             await self.ctx.storage.put('started', True)
@@ -80,7 +81,13 @@ class NoahPythonJob(DurableObject):
                     raise ValueError('Result too large')
                 return value
             except Stopped:
-                raise ValueError('Execution stopped or expired') from None
+                return json.dumps({'error': {'code': 'execution_stopped'}})
+            except ExecutionError as exc:
+                return json.dumps({'error': {'code': exc.code}})
+            except Exception:
+                # Upstream tracebacks can contain private input and are longer
+                # than the saved Work error. Never transmit them to the UI.
+                return json.dumps({'error': {'code': 'official_execution_failed'}})
             finally:
                 CAPABILITY.reset(token)
                 shutil.rmtree(home)

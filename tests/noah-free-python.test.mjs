@@ -41,6 +41,13 @@ void test('a pending Python execution expires and a pending Time tool can be sto
 void test('Python results require actual successful permitted operations and cannot forge the receipt',()=>{
   for(const value of [{...valid(),operations:[]},{...valid(),operations:[{...valid().operations[0],ok:false}]},{...valid(),operations:[{...valid().operations[0],name:'terminal'}]},{...valid(),files:[{name:'noah-execution.json'}]}])assert.throws(()=>validatePythonResult('boss',JSON.stringify(value)));
 });
+void test('Python error envelopes retain a fixed cause without returning upstream private text or a result',async()=>{
+  for(const code of ['model_output_limit','model_response_shape','model_empty_content','model_json_invalid']) {
+    const w=world({execute:async()=>JSON.stringify({...valid(),error:{code,message:'private prompt and traceback'}})});
+    await w.job.execute();assert.equal(w.data.get('job').state,'failed');assert.ok(w.data.get('job').error.includes(code));assert.ok(!w.data.get('job').error.includes('private'));assert.equal(w.data.get('job').result,undefined);
+  }
+  assert.throws(()=>validatePythonResult('boss',JSON.stringify({error:{code:'private error'}})),error=>!error.message.includes('private'));
+});
 
 void test('each official Python profile has a distinct binding with no fallback to another isolate',()=>{
   const ids=[];

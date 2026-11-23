@@ -5,7 +5,7 @@ import httpx
 import boss_agent_cli.commands.ai_cmd as boss_commands
 import boss_agent_cli.ai.service as boss_service
 from model_transport import BoundTransport
-from runtime_shared import MODEL, OUTPUT, file, operation
+from runtime_shared import MODEL, OUTPUT, MODEL_STATUS, ExecutionError, file, operation
 
 class BossHttp:
     def __getattr__(self, name):
@@ -24,7 +24,8 @@ boss_commands.handle_output = boss_output
 
 def boss_error(ctx, command, **kwargs):
     # Do not print prompts, local paths, or upstream errors into shared logs.
-    raise ValueError('Official boss command did not return a valid preparation')
+    code = MODEL_STATUS.get() or ('model_json_invalid' if kwargs.get('code') == 'AI_PARSE_ERROR' else 'boss_command_failed')
+    raise ExecutionError(code) from None
 
 boss_commands.handle_error_output = boss_error
 
@@ -37,6 +38,7 @@ def boss(prompt, home):
     salt.write_bytes(os.urandom(16))
     salt.chmod(0o600)
     output_token = OUTPUT.set(None)
+    status_token = MODEL_STATUS.set(None)
     try:
         context = {'data_dir': home, 'json': True}
         boss_commands.ai_group.main(['config', '--provider', 'custom', '--model', MODEL, '--api-key', 'rpc', '--base-url', 'https://noah-model.internal/v1', '--max-tokens', '1024'], obj=context, standalone_mode=False)
@@ -60,3 +62,4 @@ def boss(prompt, home):
         return {'text': '\n'.join(lines), 'files': [file('interview-preparation.json', serialized)], 'operations': [operation('ai-interview-prep', prompt, serialized)]}
     finally:
         OUTPUT.reset(output_token)
+        MODEL_STATUS.reset(status_token)

@@ -49,5 +49,9 @@ try {
   const prompt='@/private/arbitrary-file: '+randomUUID();
   const boss=await run({profile:'boss',prompt});assert.equal(boss.status,200,boss.error);assert.equal(boss.calls.length,1);assert.ok(JSON.stringify(boss.calls[0]).includes(prompt));assert.equal(JSON.parse(decode(boss,'interview-preparation.json')).questions.length,5);assert.equal(boss.data.operations[0].name,'ai-interview-prep');
   const bad=await run({profile:'boss',mode:'bad-boss',prompt:'Fresh invalid response'});assert.equal(bad.status,422);assert.ok(!bad.data);assert.ok(!JSON.stringify(bad).includes(prompt));
+  for(const [mode,code] of [['missing-choices','model_response_shape'],['empty-content','model_empty_content'],['output-limit','model_output_limit'],['invalid-json','model_json_invalid']]) {
+    const failed=await run({profile:'boss',mode,prompt:'Safe failure classification'});
+    assert.equal(failed.status,422);assert.deepEqual(failed.error,{code});assert.equal(failed.calls.length,1);assert.ok(!failed.data);
+  }
   console.log('Python workerd: official Time, Hermes todo/memory, boss CLI; hashes, isolation, replay, stop/error gates and @input passed. Model responses were fixtures.');
 } finally {try{if(typeof child.pid==='number')process.kill(-child.pid,'SIGTERM');}catch{}await new Promise(r=>setTimeout(r,200));await rm(temporary,{recursive:true,force:true});}

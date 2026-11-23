@@ -23,7 +23,10 @@ class Model extends RpcTarget {
     } else {
       message.content = this.input.mode === 'bad-boss' ? '{}' : JSON.stringify({job_summary:nonce,questions:Array.from({length:5},(_,i)=>({question:`Question ${i+1}: ${nonce}`,framework:'Use an example'})),preparation_tips:[nonce]});
     }
-    return JSON.stringify({id:'fixture',object:'chat.completion',created:1,choices:[{index:0,finish_reason:message.tool_calls?'tool_calls':'stop',message}]});
+    if(this.input.mode==='missing-choices') return JSON.stringify({response:'private model text'});
+    if(this.input.mode==='empty-content' || this.input.mode==='output-limit') message.content=null;
+    if(this.input.mode==='invalid-json') message.content='private incomplete JSON {';
+    return JSON.stringify({id:'fixture',object:'chat.completion',created:1,choices:[{index:0,finish_reason:this.input.mode==='output-limit'?'length':message.tool_calls?'tool_calls':'stop',message}]});
   }
 }
 export default {async fetch(request, env) {
@@ -34,6 +37,7 @@ export default {async fetch(request, env) {
     if(input.mode==='probe') return Response.json({ready:await stub.probe(input.profile)});
     if (input.profile === 'time') return Response.json({tools:JSON.parse(await stub.tools()),result:JSON.parse(await stub.call(input.tool,JSON.stringify(input.arguments)))});
     const data = JSON.parse(await stub.execute(JSON.stringify(input),model));
+    if(data.error) return Response.json({error:data.error,calls:model.calls},{status:422});
     return Response.json({data,calls:model.calls});
   } catch (error) { return Response.json({error:String(error),calls:model.calls},{status:422}); }
 }};

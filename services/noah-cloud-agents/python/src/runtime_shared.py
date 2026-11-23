@@ -8,6 +8,13 @@ from pyodide.ffi import run_sync
 MODEL = '@cf/openai/gpt-oss-20b'
 CAPABILITY = ContextVar('noah_model_capability')
 OUTPUT = ContextVar('noah_boss_output')
+MODEL_STATUS = ContextVar('noah_model_status', default=None)
+
+class ExecutionError(Exception):
+    """Only a fixed error code crosses the private RPC boundary."""
+    def __init__(self, code):
+        self.code = code
+        super().__init__(code)
 
 class Stopped(BaseException):
     """Bypass upstream model retries after the coordinator closes admission."""
@@ -25,6 +32,17 @@ def model_response(payload):
     except Exception as exc:
         raise Stopped('Model admission closed') from exc
     live()
+    choice = body.get('choices', [None])[0] if isinstance(body, dict) and body.get('choices') else None
+    if not isinstance(choice, dict):
+        MODEL_STATUS.set('model_response_shape')
+    elif choice.get('finish_reason') == 'length':
+        MODEL_STATUS.set('model_output_limit')
+    elif not isinstance(choice.get('message'), dict) or not (choice['message'].get('content') or choice['message'].get('tool_calls')):
+        MODEL_STATUS.set('model_empty_content')
+    else:
+        MODEL_STATUS.set(None)
+    if not isinstance(body, dict):
+        raise ExecutionError('model_response_shape')
     body.setdefault('id', 'noah')
     body.setdefault('object', 'chat.completion')
     body.setdefault('created', 0)
