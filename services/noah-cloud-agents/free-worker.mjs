@@ -1,7 +1,7 @@
 import worker, { NoahCloudJob, NoahCloudConnection, NoahCloudBudget } from './worker.mjs';
 import { officialSession, executionFile } from './free-official.mjs';
 import { pythonProfiles, pythonJob, timeSession, PythonModelBridge, validatePythonResult } from './free-python.mjs';
-import { NOAH_FREE_CLOUD_LIMITS as limits, NOAH_CLOUD_MODEL, noahCloudModelInput, noahCloudDigest, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
+import { NOAH_FREE_CLOUD_LIMITS as limits, NOAH_CLOUD_MODEL, noahCloudModelInput, noahCloudDigest, noahCloudResult, noahCloudCallNeuronsCap, noahCloudReplyUsage } from '../../lib/noah-cloud-contract.ts';
 export { NoahCloudConnection, NoahCloudBudget };
 export default worker;
 const terminal = job => !job || ['returned', 'failed', 'cancelled', 'unknown'].includes(job.state);
@@ -50,19 +50,45 @@ export class NoahFreeCloudJob extends NoahCloudJob {
       if (input.messages[0].role === 'system') input.messages[0].content += '\n' + instruction;
       else input.messages.unshift({ role: 'system', content: instruction });
     }
-    let model, deadline;
+    let model, deadline, inputBytes, refusal;
     await this.ctx.blockConcurrencyWhile(async () => {
       const latest = await this.live();
-      if (latest.calls >= limits.modelCalls) throw Error('無料枠のモデル呼出上限に達しました。');
+      // 断る理由は、この区間の外で投げる（区間の中で投げると、Durable Object が作り直され、失敗の結果を返せない）。
+      if (latest.calls >= limits.modelCalls) { refusal = '無料枠のモデル呼出上限に達しました。'; return; }
       if (latest.profile === 'hermes' && latest.calls === 0 && input.tools?.length) input.tool_choice = 'required';
-      if (new TextEncoder().encode(JSON.stringify(input)).length > limits.modelInputBytes) throw Error('無料枠のモデル入力上限に達しました。依頼を短くしてください。');
+      inputBytes = new TextEncoder().encode(JSON.stringify(input)).length;
+      if (inputBytes > limits.modelInputBytes) { refusal = '無料枠のモデル入力上限に達しました。依頼を短くしてください。'; return; }
+      // 1 件の上限（取り置いた分）を超えるかを、呼ぶ前に確かめる（トークンは 1 バイト以上なので、入力のバイト数を上限にする）。
+      if ((latest.usage?.neurons ?? 0) + noahCloudCallNeuronsCap(inputBytes, input.max_tokens) > limits.jobNeurons) { refusal = 'この依頼は、無料のクラウドの 1 件の上限を超えます。依頼を短くするか、小さく分けてください。'; return; }
       deadline = latest.deadlineAt;
       await this.ctx.storage.put('job', { ...latest, calls: latest.calls + 1 });
       model = this.env.AI.run(NOAH_CLOUD_MODEL, input);
     });
-    const reply = await this.modelResponse(model, deadline);
+    if (refusal) throw Error(refusal);
+    let reply;
+    try { reply = await this.modelResponse(model, deadline); }
+    catch (error) {
+      // 止めた・時間切れでも、モデルは使われているかもしれない。少なく数えないように、その 1 回の上限で数える。
+      await this.count(noahCloudReplyUsage(null, inputBytes, input.max_tokens));
+      throw error;
+    }
+    await this.count(noahCloudReplyUsage(reply, inputBytes, input.max_tokens));
     await this.live();
     return reply;
+  }
+  /** 使ったモデルの量を、依頼と、全体の 1 日の枠（BUDGET）に足す。依頼が止められた後に返ってきた分も数える。 */
+  async count(used) {
+    const job = await this.ctx.blockConcurrencyWhile(async () => {
+      const latest = await this.ctx.storage.get('job'); if (!latest) return null;
+      const usage = latest.usage ?? { inputTokens: 0, outputTokens: 0, neurons: 0 };
+      const next = { ...latest, usage: { inputTokens: usage.inputTokens + used.inputTokens, outputTokens: usage.outputTokens + used.outputTokens, neurons: usage.neurons + used.neurons } };
+      await this.ctx.storage.put('job', next); return next;
+    });
+    if (!job) return;
+    try {
+      const response = await this.env.BUDGET.getByName('global').fetch('https://runtime.internal/', { method: 'POST', body: JSON.stringify({ action: 'use', id: `${job.owner}:${job.id}`, owner: job.owner, neurons: used.neurons }) });
+      await response.body?.cancel();
+    } catch { /* 数え損ねても、依頼の結果は捨てない。取り置きは、依頼が終わると外れる。 */ }
   }
   async execute() {
     try {

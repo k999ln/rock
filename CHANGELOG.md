@@ -1,3 +1,6 @@
+## 2026-11-24
+- Noah の無料のクラウドを、件数（全体 1 日 10 件・本人 3 件）ではなく、Workers AI の無料割当の中で使ったモデルの量（neuron）で数えるようにした（Opus / Noelle。本人「クラウドのシステム作って」「cloudflareでいいから最初は」、Workers Paid はまだ申し込まない）: 全体 8,000・本人 2,400・1 件 1,200 neuron。1 件ごとの使った量を Work に残し、画面に有料プランの値段での額を並べる。上限を超える呼び出しは呼ぶ前に止め、失敗として結果を返す（[PR #CLOUDNEURONS](https://github.com/iceiceice999/rock/pull/CLOUDNEURONS)）。
+
 ## 2026-11-23
 - NoahのAgent詳細と棚のカードに、検査済みの札と接続計画から「渡す物 → 返る物」と工程の待ち順を表示する。6言語対応、審査者の設計図と表示を共用。実データの札付け・200系列の目視・一般公開は未完了（task 128（旧 127）、[PR #27](https://github.com/iceiceice999/rock/pull/27)）。
 - Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、Agent 説明画面の引継ぎ（旧 task 127、現 task 128）を追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。

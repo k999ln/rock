@@ -142,7 +142,7 @@ sequenceDiagram
 
 | 場面 | 契約と受入条件 |
 | --- | --- |
-| 選択・受付 | 詳細 `GET /api/noah/discover/project?id=…` で配布元・実行方式を示す。`POST /api/noah/cloud-agents` が本人、同一 Origin、許可、接続 ID と固定 profile を確認し、サーバー鍵で `POST /rpc`。無料枠は実行全体10件／UTC日、本人3件／日、同時2件。接続試験は100件／日で同時枠を共有する。超過時は429。1実行は240秒・モデル最大4回。[受付 API](../../lib/noah-cloud-api.ts)・[上限](../../lib/noah-cloud-contract.ts) |
+| 選択・受付 | 詳細 `GET /api/noah/discover/project?id=…` で配布元・実行方式を示す。`POST /api/noah/cloud-agents` が本人、同一 Origin、許可、接続 ID と固定 profile を確認し、サーバー鍵で `POST /rpc`。無料枠は使ったモデルの量で数える（全体 8,000 neuron／UTC日、本人 2,400、1 件 1,200。件数の上限は全体60件・本人12件）。同時2件。接続試験は100件／日で同時枠を共有する。超過時は429。1実行は240秒・モデル最大4回。[受付 API](../../lib/noah-cloud-api.ts)・[上限](../../lib/noah-cloud-contract.ts) |
 | 実行・保管 | 専用 Worker の Durable Object が接続・予算・仕事を保持し、alarm が依頼専用の作業領域で公式ツールを動かす。`POST /api/noah/cloud-agents/result` はサーバー間認証と AES-GCM 宛先票を照合。D1 `work_jobs` に本人の本文 `payload.noahRemote.result` と添付 `cloud.files`（実体・名・バイト数・SHA-256）を版照合して保存する。R2 `noah/collection/v1/{source}.json` の用途は公開候補の目録。本人の添付は D1 から返す。[Worker](../../services/noah-cloud-agents/worker.mjs)・[成果保存](../../lib/noah-cloud-api.ts)・[目録](../../lib/noah-agent-directory.ts) |
 | 再送・停止 | 同じ ID・入力の再送は既存の依頼を返し、内容の変更は409、別所有者からの読取は404。保存に失敗した場合は結果通知だけを10分ごと・最大30日再送する。停止後は追加のモデル／ツール操作と遅着結果の採用を閉じる。すでに提供元で動く推論の停止時刻は未観測。実行中の再起動や停止確認失敗は `unknown` として残す。[復旧と失敗時の扱い](../services/noah-cloud-agents.md) |
 
