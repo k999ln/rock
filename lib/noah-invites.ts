@@ -2,7 +2,7 @@ import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError, noahSha256, noahUploadId, type NoahAgentManifest } from './noah-agent-upload.ts';
 import { OWNER_SCOPE_HEADER, ownerScopeFor } from './owner-intent.ts';
 import { NOAH_INVITE_VALID } from './noah-invite-contract.mjs';
-import { parseTerminalRuntime } from './noah-terminal-contract.mjs';
+import { parseNoahRuntime } from './noah-runtime-contract.mjs';
 
 type InviteRow = { id: string; owner_id: string; upload_id: string; manifest_sha256: string; source_sha256: string | null; token_sha256: string; execution_allowed: number;
   input_sha256: string; recipient_id: string | null; access_scope: 'view' | 'source'; expires_at: number; max_uses: number; revision: number; revoked_at: number | null; created_at: number; used_count?: number };
@@ -68,7 +68,7 @@ export function createNoahInviteApi(deps: { db: Pick<D1Database, 'prepare'>; aut
       let checkedManifest: string | null = null;
       if (v.executionAllowed === true) {
         const upload = await deps.db.prepare('SELECT manifest FROM noah_agent_uploads WHERE id=? AND owner_id=? AND deleted_at IS NULL AND upload_state=\'ready\'').bind(agentId, owner).first<{manifest:string}>();
-        try { if (!upload) throw new Error(); parseTerminalRuntime(JSON.parse(upload.manifest).runtime); checkedManifest = upload.manifest; }
+        try { if (!upload) throw new Error(); parseNoahRuntime(JSON.parse(upload.manifest).runtime); checkedManifest = upload.manifest; }
         catch { throw new NoahAgentError('実行定義のある保存済みコードだけを実行共有できます。', 422); }
       }
       const result = await deps.db.prepare(`INSERT OR IGNORE INTO noah_agent_invites(id,owner_id,upload_id,manifest_sha256,source_sha256,token_sha256,input_sha256,recipient_id,access_scope,expires_at,max_uses,revision,created_at,execution_allowed)

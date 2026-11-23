@@ -1,0 +1,102 @@
+.hub {
+  --os-bg: #fff;
+  --os-text: #251c17;
+  --os-line: #e3dbd4;
+  --os-muted: #675c52;
+  --os-raised: #faf7f3;
+  --os-panel: #fff;
+  --os-accent: #a63e0b;
+  --os-focus: #a63e0b;
+  --os-accent-ink: #fff;
+  --sky-text: #251c17;
+  --sky-muted: #675c52;
+  --sky-line: #e3dbd4;
+  --sky-panel: #fff;
+  --noah-raised: #faf7f3;
+  --sky-accent: #a63e0b;
+  width: min(100%, 760px);
+  margin-inline: auto;
+  padding: clamp(16px, 3vw, 28px) clamp(12px, 3vw, 24px) 24px;
+  box-sizing: border-box;
+  color: #251c17;
+}
+.hub > h1 {
+  margin: 0 0 16px;
+  font-size: clamp(28px, 5vw, 38px);
+  line-height: 1.18;
+  letter-spacing: -0.04em;
+}
+.segments {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  margin: 0 0 18px;
+  padding: 3px;
+  background: #f3efea;
+  border-radius: 14px;
+}
+.segments a {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 5px;
+  border-radius: 11px;
+  box-sizing: border-box;
+  color: #564a42;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.segments a[aria-current='page'] {
+  color: #983907;
+  background: #fff;
+  box-shadow: 0 1px 4px #4725091a;
+}
+.segments a:focus-visible,
+.filters a:focus-visible {
+  outline: 2px solid #a33d0a;
+  outline-offset: 2px;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid #e3dbd4;
+}
+.filters a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: 12px;
+  color: #675c52;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+}
+.filters a[aria-current='page'] {
+  color: #983907;
+  border-bottom-color: #bc510f;
+}
+.libraryActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 8px;
+}
+.libraryActions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 12px;
+  color: #943905;
+  font-weight: 650;
+}
+@media (max-width: 380px) {
+  .segments a,
+  .filters a {
+    font-size: 13px;
+  }
+}

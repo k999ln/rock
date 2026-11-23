@@ -30,7 +30,13 @@ void test('the public home opens available tasks directly with their expected ou
   const region = home.find('section').find(s => s.props.id === 'first-jobs');
   assert.equal(region.props.tabIndex, -1);
   assert.equal(home.find('section')[0], region);
-  assert.ok(home.find('h1').some(h => h.props.id === region.props['aria-labelledby']));
+  assert.equal(home.find('h1', 'Agentストア').length, 1);
+  assert.ok(home.find('h2').some(h => h.props.id === region.props['aria-labelledby']));
+  assert.equal(home.find('a', '専用クラウドを開く')[0].props.href, '/api/noah/cloud-work');
+  assert.equal(home.find('a', 'eSIMでつなぐ専用クラウド')[0].props.href, '/connect');
+  assert.equal(home.find('a', 'Agentを買う')[0].props.href, '/noah/marketplace');
+  assert.equal(home.find('a', 'Agentを載せる')[0].props.href, '/noah/publisher');
+  assert.equal(home.find('a', 'ピックアップ')[0].props.href, choices.find(job => job.id === 'memory').href);
   const links = home.nodes(region).filter(n => n.type === 'a');
   assert.deepEqual(links.map(link => link.props.href), [...choices.slice(1).map(job => job.href), '/noah/explore', '/noah/saved?tab=results']);
   for (const [index, job] of choices.slice(1).entries()) {
@@ -52,8 +58,8 @@ void test('the public home shows a purpose section only when it has a usable tas
     const ui = screen({ modules, fetch: async () => ({ body: pageReply(available) }) });
     const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
     await home.flush();
-    assert.equal(home.find('h2', visible).length, 1);
-    assert.equal(home.find('h2', hidden).length, 0);
+    assert.equal(home.find('h3', visible).length, 1);
+    assert.equal(home.find('h3', hidden).length, 0);
     for (const lang of NOAH_LOCALES.filter(lang => lang !== 'ja')) {
       assert.notEqual(noahTranslate(lang, visible), visible);
     }
@@ -85,7 +91,8 @@ void test('loading the next page of cards preserves the selected task links with
   await home.click('もっと見る');
   assert.equal(ui.calls.length, 2);
   assert.ok(!ui.calls[1].url.includes('firstJobs'));
-  assert.deepEqual(home.find('a').slice(0, choices.length).map(link => link.props.href), choices.map(job => job.href));
+  const region = home.find('section').find(section => section.props.id === 'first-jobs');
+  assert.deepEqual(home.nodes(region).filter(node => node.type === 'a').slice(0, choices.length).map(link => link.props.href), choices.map(job => job.href));
 });
 
 void test('hiding a card reached on a later page also removes its matching task from the home', async () => {

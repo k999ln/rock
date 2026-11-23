@@ -8,13 +8,15 @@ import { isReleaseAgentId } from '../lib/noah-release-contract.mjs';
 
 export const terminalUploadId = id => typeof id === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(id);
 const pin = a => JSON.stringify([a.id, a.manifestSha256, a.source?.sha256, a.manifest.runtime, a.manifest.version, a.release, a.invite]);
+const desktopScope = '専用仮想画面はローカルLinux/Pythonの試作です。画面の読み取りと入力にはagent-desktopを使えます。macOS・Windows専用アプリ、外部サイトの操作は未対応です。';
 
 // Connections are host caches. Upload ownership and immutable pins remain in D1;
 // every execution and model call rechecks them using the authenticated API.
 export function createTerminalInstallations({ root, prepare = prepareTerminalRuntime }) {
   const slots = new Map(); let closing = false;
   const view = (id, slot) => ({ id, name: slot?.agent?.manifest.name || 'コードテンプレート', state: slot?.state || 'idle',
-    busy: Boolean(slot?.task), canAcquire: true, automaticRuntime: true, message: slot?.message || '接続すると専用環境を準備します。本人の画面にはアクセスしません。',
+    busy: Boolean(slot?.task), canAcquire: true, automaticRuntime: true, message: (slot?.message || '接続すると専用環境を準備します。本人の画面にはアクセスしません。') +
+      (slot?.agent?.manifest.runtime.schema === 'noah-desktop/1' ? ` ${desktopScope}` : ''),
     ...(slot?.state === 'connected' ? { execution: slot.runtime.execution } : {}) });
   const api = {
     async get(scope, id) { return view(id, slots.get(`${scope}/${id}`)); },
@@ -42,10 +44,14 @@ export function createTerminalInstallations({ root, prepare = prepareTerminalRun
             prepared.run = (prompt, signal, onCall) => runWithInviteGrant({ run: ({ signal }) => run(prompt, signal, onCall), input: { signal }, expiresAt: agent.invite.expiresAt, revalidate: () => prepared.revalidate() });
           }
           await slot.runtime.revalidate(); slot.controller.signal.throwIfAborted();
-          slot.state = 'connected'; slot.message = '画面を使わない専用環境に接続しました。依頼を入力できます。';
+          slot.state = 'connected'; slot.message = agent.manifest.runtime.schema === 'noah-desktop/1'
+            ? '専用の仮想画面を使う準備ができました。依頼すると専用環境内で起動します。'
+            : '画面を使わない専用環境に接続しました。依頼を入力できます。';
         } catch (e) {
           await slot.runtime?.stop(); slot.runtime = null;
           slot.state = slot.controller.signal.aborted ? 'disconnected' : 'failed'; slot.message = e instanceof Error ? e.message : '接続できませんでした。';
+          if (slot.state === 'failed' && slot.agent?.manifest.runtime.schema === 'noah-desktop/1')
+            slot.message += ' 専用画面の準備ができなかったため、依頼の処理は開始していません。本人の画面で代わりに実行することはありません。元の作業を続けられます。';
         } finally { slot.task = null; }
       })();
       return view(id, slot);
