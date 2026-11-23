@@ -13,6 +13,9 @@ import { bundleUploadTest, processUpload } from '@/lib/noah-upload-processing-cl
 import styles from './noah-agent-catalog.module.css';
 const permissionLabels = { read_input: '入力を読む', write_files: 'ファイルを書き込む', network: '外部通信', external_account: '外部アカウントを使う', external_write: '投稿・外部データの変更', financial: '決済・金融操作' };
 export { permissionLabels };
+/** コードを保存した Agent が動く場所（決め: 2026-11-23、本人「好きにしていいよ」。使い勝手の確かめ 9 章の Q1）。 */
+const NOAH_SOURCE_RUNS_ON = 'コードを保存したAgentは、自分のMacのNoahで動きます（Noahの専用環境で動かせるのは、運営が確認したパッケージだけです）。スマホやブラウザだけでは、まだ動かせません。スマホから使うAgentは「MCPサーバーに接続する」か「専用のWeb画面を開く」を選んでください。';
+
 export default function NoahAgentUploadForm() {
   const router = useRouter();
   const [manifest, setManifest] = useState<NoahAgentManifest>({ ...noahAgentTemplate, name: '', summary: '', author: '', adapter: 'source', endpointUrl: null, priceNote: '' });
@@ -38,7 +41,9 @@ export default function NoahAgentUploadForm() {
   const processingController = useRef<AbortController | null>(null);
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/__noah/upload-refactor', { signal: controller.signal, cache: 'no-store' }).then(async r => { const data = r.ok ? await r.json() as { available?: boolean } : null; if (!controller.signal.aborted) setProcessorAvailable(data?.available === true); }).catch(() => { if (!controller.signal.aborted) setProcessorAvailable(false); });
+    // 検証の実行先が無い所（スマホ・公開版）では、固定テストの整理を最初から外す。付けたままだと、テンプレートのまま保存した時に必ず失敗する。
+    const settle = (available: boolean) => { if (controller.signal.aborted) return; setProcessorAvailable(available); if (!available) setVerifiedRefactor(false); };
+    fetch('/__noah/upload-refactor', { signal: controller.signal, cache: 'no-store' }).then(async r => { const data = r.ok ? await r.json() as { available?: boolean } : null; settle(data?.available === true); }).catch(() => settle(false));
     return () => controller.abort();
   }, []);
   useEffect(() => {
@@ -265,7 +270,7 @@ export default function NoahAgentUploadForm() {
           <p>公開コード・設定・ライセンスを32ファイルまで取得します。モデルの重み、非公開・利用条件付きの配布物は含みません。取得記録をZIPに残します。</p>
           {importMessage && <output aria-live="polite">{importMessage}</output>}
         </div></details>
-        <label className={styles.check}><input type="checkbox" checked={verifiedRefactor} onChange={e => { setVerifiedRefactor(e.target.checked); setId(''); }} />固定テストで確認して整理する（JS・TS・Python）</label>
+        <label className={styles.check}><input type="checkbox" checked={verifiedRefactor} disabled={processorAvailable === false} onChange={e => { setVerifiedRefactor(e.target.checked); setId(''); }} />固定テストで確認して整理する（JS・TS・Python）</label>
         <p>{processorAvailable === null ? '検証する実行先を確認中…' : processorAvailable ? 'このMacの隔離環境で変更前後を検証します。コードを外部モデルへ送りません。' : '固定テストを実行する接続先がありません。構文整理のみの保存も選べます。'}</p>
         <details><summary>単一ファイル・貼り付けコードに固定テストを添付</summary><div className={styles.fields}>
           <label>テストのファイル名<input maxLength={120} value={testName} onChange={e => { setTestName(e.target.value); setId(''); }} placeholder="agent.test.mjs または test_agent.py" /></label>
@@ -281,6 +286,7 @@ export default function NoahAgentUploadForm() {
       <label>どう使うAgent？<select value={manifest.adapter} onChange={e => { const { runtime: _runtime, ...base } = manifest; setManifest({ ...base, adapter: e.target.value as NoahAgentManifest['adapter'], endpointUrl: e.target.value === 'source' ? null : '' }); setId(''); }}>
         <option value="source">コードを保存して実行先を準備する</option><option value="web">専用のWeb画面を開く</option><option value="mcp_http">MCPサーバーに接続する</option><option value="a2a">A2A対応Agentに接続する</option>{manifest.adapter === 'local_app' && <option value="local_app">対応済みローカルアプリ</option>}
       </select></label>
+      {manifest.adapter === 'source' && <p role="note">{NOAH_SOURCE_RUNS_ON}</p>}
       {manifest.adapter === 'source' && <section className={styles.notice}><h2>自分の操作を妨げない専用環境</h2>
         <label><input type="checkbox" checked={Boolean(manifest.runtime)} onChange={e => {
           if (e.target.checked) change({ runtime: { schema: 'noah-terminal/1', language: 'node', entrypoint: 'main.mjs', model: 'none' }, permissions: ['read_input', 'write_files'] });

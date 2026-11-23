@@ -38,12 +38,14 @@ export default function NoahUsageDashboard({ initialScope, agent }: { initialSco
   const [scope, setScope] = useState<NoahUsageScope>(initialScope);
   const [days, setDays] = useState(30), [source, setSource] = useState<NoahUsageSource>('platform_agent');
   const [report, setReport] = useState<NoahUsageReport | null>(null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
+  // 「Noah全体」は運営だけ。サーバーが operatorAllowed を返した人にだけ見せる（押して 403 になるボタンを出さない）。
+  const [operatorAllowed, setOperatorAllowed] = useState(false);
   useEffect(() => {
     const controller = new AbortController(), query = new URLSearchParams({ scope, days: String(days), ...(agent ? { agent } : {}) });
     fetch(`/api/noah/usage?${query}`, { cache: 'no-store', signal: controller.signal }).then(async r => {
       const data = await r.json() as NoahUsageReport & { error?: string };
       if (!r.ok) throw new Error(data.error || '利用状況を読み込めません。');
-      if (!controller.signal.aborted) setReport(data);
+      if (!controller.signal.aborted) { setReport(data); setOperatorAllowed(data.operatorAllowed === true); }
     }).catch(e => { if (!controller.signal.aborted) setError(e.message); });
     return () => controller.abort();
   }, [scope, days, agent, attempt]);
@@ -53,7 +55,7 @@ export default function NoahUsageDashboard({ initialScope, agent }: { initialSco
     <nav className={styles.nav}><Link href="/noah/explore">Agent一覧</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link><Link href="/noah/agents/new">Agentを追加</Link></nav>
     <header className={styles.hero}><div><span className={styles.eyebrow}>USAGE</span><h1>誰が、何を、<br />どのくらい使ったか。</h1><p>利用回数、結果、計測時間、確認できた費用を見渡す。</p></div>
       <label>期間 <select value={days} onChange={e => { reset(); setDays(Number(e.target.value)); }}><option value={7}>過去7日</option><option value={30}>過去30日</option><option value={90}>過去90日</option></select></label></header>
-    <div className={styles.actions} aria-label="閲覧範囲">{scopes.map(([value,label]) => <button key={value} aria-pressed={scope === value} className={scope === value ? styles.primary : undefined} onClick={() => { if (value !== scope) { reset(); setScope(value); } }}>{label}</button>)}</div>
+    <div className={styles.actions} aria-label="閲覧範囲">{scopes.filter(([value]) => value !== 'operator' || operatorAllowed || scope === 'operator').map(([value,label]) => <button key={value} aria-pressed={scope === value} className={scope === value ? styles.primary : undefined} onClick={() => { if (value !== scope) { reset(); setScope(value); } }}>{label}</button>)}</div>
     {agent && <p className={styles.notice}>特定のAgentを表示中。<Link href="/noah/usage">すべて表示する</Link></p>}
     {scope === 'publisher' && <p className={styles.muted}>提供したAgentだけを表示します。Noahの利用者は匿名化ID、外部Agentの利用元は提供者からの申告として表示します。</p>}
     {scope === 'operator' && <p className={styles.muted}>全体表示はサーバーで許可された運営アカウント限定です。</p>}

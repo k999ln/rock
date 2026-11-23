@@ -259,3 +259,14 @@ export const NOAH_PIN_TEXT = {
   follow: 'フォロー', unfollow: 'フォロー中', empty: 'まだ並べられる Agent がありません。少し後で開いてください。', signIn: '保存するには、サインインしてください。',
   closed: 'この一覧は、準備中です。', boardEmpty: 'このボードには、まだ Agent がありません。', more: '読み込んでいます…',
 };
+
+// ---------------------------------------------------------------------------
+// カードの下の小さい行の、最初の語（誰の物か）。
+// ---------------------------------------------------------------------------
+
+/** Noah 自身の紹介の窓口（広告を含む）の印。workers.dev などの送信先の名前だけでは、誰の案内か分からないため（決め: 2026-11-23）。 */
+export const NOAH_AD_NOTICE = 'Noahの案内（広告を含む）';
+/** ふつうは送信先の名前（無ければ提供元）。Noah 自身の窓口は、その印。送信先は詳細の画面に出す。 */
+export function noahCardOrigin(card: { host: string | null; provider: string; notice?: 'noah-ad' }): string {
+  return card.notice === 'noah-ad' ? NOAH_AD_NOTICE : card.host ?? card.provider;
+}

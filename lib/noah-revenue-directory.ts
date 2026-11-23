@@ -109,6 +109,7 @@ export async function noahRevenueDirectory(
           summary: spec.summary,
           provider: 'Noah',
           host: new URL(spec.landing).hostname,
+          notice: 'noah-ad',
           href: spec.landing,
           external: true,
           users: 0,

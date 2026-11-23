@@ -1,4 +1,5 @@
 import { NoahAgentError, noahSha256, noahUploadId } from './noah-agent-upload.ts';
+import { createNoahBrowserQuota, NOAH_BROWSER_QUOTA_MESSAGE, noahBrowserOwner } from './noah-browser-quota.ts';
 
 export const NOAH_DRAFT_STORAGE = { bytes: 64 * 1024 * 1024, objects: 512, drafts: 32, trashMs: 7 * 86400000, orphanMs: 86400000, writeMs: 15 * 60000 } as const;
 export type DraftBucket = Pick<R2Bucket, 'get' | 'put'> & Partial<Pick<R2Bucket, 'list' | 'delete'>>;
@@ -44,6 +45,11 @@ export function createNoahDraftStorage(db: Db, bucket?: DraftBucket, now = () =>
       if (!bucket) throw new NoahAgentError('ファイル保存先が未設定です。', 503);
       await reconcileReferences(owner);
       const key = `${await prefix(owner)}${draftId}/${command}/${sha256}`, time = now();
+      // 新しいファイルだけ、ブラウザだけの本人を全員まとめた 1 日の上限に数える（task 129 の D1）。同じファイルの送り直しは数えない。
+      if (noahBrowserOwner(owner) && !(await object(owner, key))) {
+        const quota = createNoahBrowserQuota(db, now);
+        if (!(await quota.take(owner, 'draftObjects')) || !(await quota.take(owner, 'uploadBytes', bytes.length))) throw new NoahAgentError(NOAH_BROWSER_QUOTA_MESSAGE, 429);
+      }
       await db.prepare(`INSERT OR IGNORE INTO noah_draft_objects(object_key,owner_id,draft_id,bytes,sha256,state,write_expires_at,created_at,updated_at)
         SELECT ?,?,?,?,?,'writing',?,?,? WHERE ${draftInputBytesSql}+${draftObjectBytesSql}+?<=?
         AND (SELECT COUNT(*) FROM noah_draft_objects WHERE owner_id=? AND state!='deleted')<? RETURNING object_key`)

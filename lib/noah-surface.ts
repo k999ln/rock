@@ -41,3 +41,12 @@ export function noahMacPath(target: string, agentId = '') {
   };
   return Object.hasOwn(paths, target) ? paths[target] : '/noah/library';
 }
+
+/**
+ * Mac だけで動く画面（このMacの接続を使う物。今は「ココナラの仕事」）を、メニューに出してよい端末か。
+ * スマホ・タブレットの人は、開いても先へ進めない。iPad は Mac と名乗るが、触れる画面なので除く。
+ * 画面そのものは消さない（URL で開けば今までどおり使える）。決め: 2026-11-23（本人「好きにしていいよ」）。
+ */
+export function noahMacMenuAllowed(platform: string, maxTouchPoints: number): boolean {
+  return /^mac/i.test(platform.trim()) && maxTouchPoints <= 1;
+}
