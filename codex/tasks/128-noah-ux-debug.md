@@ -65,7 +65,7 @@
 
 ### D9 Mac だけの機能を、公開の画面で分かるようにする（本人の判断 Q1・Q5）
 
-- **2026-11-23 決めて、Claude が済ませた**（枝 `claude/ice2/noah-launch`）: 「ココナラの仕事」は Mac で開いた時だけメニューに出す（`tests/noah-mac-menu.test.mjs`）。「自分のAgentを追加」でコードを選ぶと、Mac で動く事とスマホから使う道を書く（`tests/noah-upload-runs-on.test.mjs`）。`/noah/billing` は 404（`tests/noah-billing-page-hidden.test.mjs`）。`/noah/free-cloud` は、どこからもリンクが無く、運営でない人には API が 401 なので、残した。
+- **2026-11-23 決めて、Claude が済ませた**（枝 `claude/ice2/noah-launch`）: 「ココナラの仕事」は Mac で開いた時だけメニューに出す（`tests/noah-mac-menu.test.mjs`）。「自分のAgentを追加」でコードを選ぶと、Mac で動く事とスマホから使う道を書く（`tests/noah-upload-runs-on.test.mjs`）。`/noah/billing` は、既存の試験（`tests/noah-route-unification.test.mjs`）が `/sky/billing` と同じ画面として固定しているので、残した（リンクも sitemap も無い）。外すなら、`services/sky-web/noah-page-routes.mjs` の対応表と試験を、本人の判断で変える。`/noah/free-cloud` は、どこからもリンクが無く、運営でない人には API が 401 なので、残した。
 
 - わかっている事: メニューの「ココナラの仕事」は「このMacに接続」だけ。追加した Agent の詳細は「自分のMacを選んで接続・実行」だけ。「自分のAgentを追加」のテンプレートは、Mac の中のモデル（qwen3:4b）を使う形。`/noah/billing`（月次請求のテスト）は公開のままで、中の API は 404。`/noah/free-cloud` は運営 1 人だけが使える会話の画面。
 - やる事: 本人の判断が要らない物（`/noah/billing` と、運営でない人の `/noah/free-cloud`）は、公開の画面から外す（404 か、`/noah` へ戻す）。ほかは本人の判断を待つ。
