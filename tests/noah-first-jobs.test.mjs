@@ -27,7 +27,7 @@ const deployed = rows => withNoahCloudAvailability(rows, true, ['memory']);
 const enabled = rows => rows.filter(row => row.href).map(row => row.id);
 const get = (api, path) => api(new Request(new URL(path, 'https://avoado.si')));
 
-test('初回の仕事は正式な診断2件と有効なMemoryに同一サイト内で案内する', async () => {
+void test('初回の仕事は正式な診断2件と有効なMemoryに同一サイト内で案内する', async () => {
   const choices = await noahFirstJobs([...diagnostics, ...deployed([impostor, memory])], true, now);
   assert.deepEqual(enabled(choices), ['wordpress-maintenance', 'ec-production', 'memory']);
   for (const choice of choices) {
@@ -45,7 +45,7 @@ test('初回の仕事は正式な診断2件と有効なMemoryに同一サイト�
   assert.deepEqual(enabled(await noahFirstJobs(deployed([impostor]), true, now)), []);
 });
 
-test('非公開・期限切れ・停止・同じIDで上書きされた候補からは仕事を始められない', async () => {
+void test('非公開・期限切れ・停止・同じIDで上書きされた候補からは仕事を始められない', async () => {
   assert.deepEqual(enabled(await noahFirstJobs(diagnostics, false, now)), []);
   assert.deepEqual(enabled(await noahFirstJobs(diagnostics, true, now + 20 * 60000 + 1)), []);
   assert.deepEqual(enabled(await noahFirstJobs(withNoahCloudAvailability([memory], false), true, now)), []);
@@ -53,7 +53,7 @@ test('非公開・期限切れ・停止・同じIDで上書きされた候補か
   assert.deepEqual(enabled(await noahFirstJobs([shadow, ...diagnostics], true, now)), ['ec-production']);
 });
 
-test('初回データは最初の頁でだけ取得し、一覧の順位や件数・検索結果に依存しない', async () => {
+void test('初回データは最初の頁でだけ取得し、一覧の順位や件数・検索結果に依存しない', async () => {
   let lookups = 0;
   const entries = [...diagnostics, ...deployed([memory])];
   const api = createNoahDirectoryApi({
@@ -72,7 +72,7 @@ test('初回データは最初の頁でだけ取得し、一覧の順位や件�
   assert.equal((await (await get(api, request + '&firstJobs=1&cursor=20')).json()).firstJobs, undefined);
 });
 
-test('詳細の仕事を再照合し、他用途のID・掲載終了・接続停止は実行へ案内しない', async () => {
+void test('詳細の仕事を再照合し、他用途のID・掲載終了・接続停止は実行へ案内しない', async () => {
   const rows = [...diagnostics, ...deployed([memory])];
   let live = rows;
   const api = createNoahProjectApi({ directory: async () => live, publicAsk: true, cloudEnabled: true, cloudProfiles: ['memory'] });
