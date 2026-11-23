@@ -12,6 +12,16 @@
 export const NOAH_STEP_KINDS = ['auto', 'tap', 'human', 'review'] as const;
 export type NoahStepKind = (typeof NOAH_STEP_KINDS)[number];
 
+export type NoahStepDataLink = { from: string; material: string };
+export type NoahStepFlow = {
+  inputs: readonly string[];
+  outputs: readonly string[];
+  dataFrom?: readonly NoahStepDataLink[];
+  gate?: boolean;
+  branch?: string;
+  repeat?: string;
+};
+
 /**
  * 待つ相手を持つ工程の共通形。
  *
@@ -30,6 +40,8 @@ export type NoahStep = {
   after?: readonly string[];
   /** 待つ相手が必要な理由。決まりきった待ちには付けなくてよい。 */
   waitNote?: string;
+  /** 受け渡す物に根拠がある時だけ記録する。after には設定などの前提も含められる。 */
+  flow?: NoahStepFlow;
 };
 
 /**
@@ -41,7 +53,7 @@ export type NoahStep = {
 export function noahBlueprintWaitProblem<T extends NoahStep>(
   steps: readonly T[],
 ): string | null {
-  const seen = new Set<string>();
+  const seen = new Map<string, T>();
   for (const step of steps) {
     if (seen.has(step.id)) return `工程の ID が重複しています（${step.id}）。`;
     if (!step.after)
@@ -51,7 +63,13 @@ export function noahBlueprintWaitProblem<T extends NoahStep>(
     const missing = step.after.find((id) => !seen.has(id));
     if (missing)
       return `「${step.label}」が、前に無い工程（${missing}）を待っています。`;
-    seen.add(step.id);
+    if (step.flow) {
+      for (const { from, material } of step.flow.dataFrom ?? []) {
+        if (!step.after.includes(from) || !seen.get(from)?.flow?.outputs.includes(material) || !step.flow.inputs.includes(material))
+          return `「${step.label}」に、前の工程の出力と一致しない受け渡しがあります（${material}）。`;
+      }
+    }
+    seen.set(step.id, step);
   }
   return null;
 }
@@ -108,7 +126,13 @@ export function noahBlueprintWithout<T extends NoahStep>(
   for (const step of steps) {
     const after = expand(step.after ?? []);
     if (drop(step)) dropped.set(step.id, after);
-    else out.push({ ...step, after });
+    else {
+      const flow = step.flow;
+      out.push({
+        ...step, after,
+        ...(flow?.dataFrom ? { flow: { ...flow, dataFrom: flow.dataFrom.filter(({ from }) => !dropped.has(from)) } } : {}),
+      });
+    }
   }
   return out;
 }

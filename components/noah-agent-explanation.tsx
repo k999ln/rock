@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { NOAH_MATERIALS } from '@/lib/noah-shelf';
+import { NOAH_MATERIALS, type NoahMaterial } from '@/lib/noah-shelf';
 import { noahExplanationWithConnection, type NoahExplanation } from '@/lib/noah-agent-explanation';
 import { useNoahLocale } from './noah-locale';
 import { NoahStepLevels } from './noah-step-levels';
@@ -45,13 +45,15 @@ export function NoahExplanationSection({ explanation, summary, summaryJa, connec
       <div><dt>{t('返る物')}</dt><dd>{materialList(flow.produces)}</dd></div>
     </dl>
     <p className={styles.explanationHint}>{t('同じ段の工程は並行して進められます。')}</p>
-    <NoahStepLevels steps={steps} labels={{
+    <NoahStepLevels steps={steps} flowLabel={t}
+      materialLabel={(material) => t(Object.hasOwn(NOAH_MATERIALS, material) ? NOAH_MATERIALS[material as NoahMaterial] : material)}
+      labels={{
       ariaLabel: t('工程の段（横に並ぶ工程は同時に進む）'),
       levelLabel: (level) => t('{level} 段目', { level }),
       kindLabel: t('種類'), kind: { auto: t('Agent の道具'), tap: t('本人が押す'), human: t('本人が行う'), review: t('本人が確かめる') },
       tag: { tap: t('本人が押す'), human: t('本人'), review: t('本人が確かめる') },
       reasonLabel: t('本人が入る理由'), waitsLabel: t('待つ物'), noWaits: t('なし（最初から始められる）'), waitReasonLabel: t('待つ理由'),
-    }} />
+      }} />
   </section>;
 }
 

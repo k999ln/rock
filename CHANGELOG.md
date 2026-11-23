@@ -1,3 +1,6 @@
+## 2026-11-24
+- Noah の遷移先で各工程の入出力、名前付きのデータの線、並行・合流・点検を表示する。札用の `0060_noah_intake_tool_labels` を追加し、記事番号と運用手順を [task 128](codex/tasks/128-noah-agent-explain.md#9-graph-engineering-with-claude-の使い方) に記録。実データの受入と本番反映は運用記録で追う。
+
 ## 2026-11-23
 - NoahのAgent詳細と棚のカードに、検査済みの札と接続計画から「渡す物 → 返る物」と工程の待ち順を表示する。6言語対応、審査者の設計図と表示を共用。実データの札付け・200系列の目視・一般公開は未完了（task 128（旧 127）、[PR #27](https://github.com/iceiceice999/rock/pull/27)）。
 - Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、Agent 説明画面の引継ぎ（旧 task 127、現 task 128）を追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。

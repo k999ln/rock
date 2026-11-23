@@ -86,6 +86,8 @@ readCurrentNoahAgentLabels(db, { familyId, candidateId, toolsSha256 })
 
 [0059 の SQL 下書き](drafts/0059_noah_intake_tool_labels.sql) に置く。
 
+正本の 0059 は稼働情報の表に使用済み。公開用の表と索引は [0060 の migration](../../drizzle-main/0060_noah_intake_tool_labels.sql) に追加した。適用の記録は配備側で管理する。道具定義の原本は採取先に置き、公開用の表は札・ハッシュ・根拠だけを持つ。
+
 An offline sink may write these rows to a local export after review. There is no default sink in the module, so calling the label pipeline cannot mutate production by accident.
 The draft table's primary key includes `manifest_sha256`; a later fixed generation is appended rather than overwriting an older generation. `NOAH_LABEL_UPSERT_SQL` is an adapter shape only and is never executed by this module.
 ## 再開と無効化
