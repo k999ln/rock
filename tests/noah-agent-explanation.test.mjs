@@ -211,3 +211,38 @@ void test('the reviewer blueprint passes the script to two parallel jobs and gat
   assert.ok(next.flow.dataFrom.every(({ from }) => !from.startsWith('signup:')));
   assert.ok(plan.steps.every(({ flow }) => flow && !flow.branch && !flow.repeat));
 });
+
+void test('without labels, verified handshake tools share a display stage between connect and request', async () => {
+  const { currentNoahHandshakeTools, noahHandshakeTool } = await import('../lib/noah-handshake-tools.ts');
+  const { noahAgentConnectionExplanation } = await import('../lib/noah-agent-explanation.ts');
+  const tools = [
+    noahHandshakeTool({
+      name: 'lookup_cars', description: 'Look up available cars.',
+      inputSchema: { type: 'object', properties: {
+        make: { type: 'string', default: 'must not display' }, zip: { type: ['string', 'null'] },
+      } },
+    }),
+    noahHandshakeTool({
+      name: 'lookup_dealers', description: 'Look up dealers.',
+      inputSchema: { type: 'object', properties: { model: { type: 'string' } } },
+      outputSchema: { type: 'object', properties: { dealers: { type: 'array' } } },
+    }),
+  ];
+  const digest = '1'.repeat(64), series = { candidateId: 'car-provider', toolsSha256: digest, tools };
+  assert.deepEqual(currentNoahHandshakeTools(series, 'wrong-provider', digest, 2), []);
+  assert.deepEqual(currentNoahHandshakeTools(series, 'car-provider', '2'.repeat(64), 2), []);
+  assert.deepEqual(currentNoahHandshakeTools(series, 'car-provider', digest, 1), []);
+  const explanation = noahAgentConnectionExplanation([], false, currentNoahHandshakeTools(series, 'car-provider', digest, 2));
+  assert.deepEqual(explanation.steps.at(-1).after, ['connect:open']);
+  const html = await renderNoahExplanationFixture('single', { explanation });
+  const section = html.slice(html.indexOf('data-noah-explanation="steps"'), html.indexOf('</section>', html.indexOf('data-noah-explanation="steps"')));
+  assert.ok(section.indexOf('data-noah-tool') > section.indexOf('接続'));
+  assert.ok(section.indexOf('data-noah-tool') < section.indexOf('依頼する'));
+  assert.equal((section.match(/class="number"/g) ?? []).length, 3);
+  assert.equal((section.match(/data-noah-tool=/g) ?? []).length, 2);
+  assert.match(section, /make: string · zip: string \| null/);
+  assert.match(section, /返る物<\/span>未確認/);
+  assert.match(section, /返る物<\/span>dealers: array/);
+  assert.match(section, /Look up available cars\./);
+  assert.doesNotMatch(section, /class="(?:wire|transfers)"|must not display/);
+});

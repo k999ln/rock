@@ -27,6 +27,8 @@
 .wire:dir(rtl)::after { transform:rotate(-45deg); }
 .gate { display:inline-block; padding:0 4px; border:1px dashed #8a62c1; border-radius:4px; background:#f3eefb; color:#5b329e; font-size:11px; font-weight:600; }
 .stepTitle .gate { margin-inline-end:6px; }
+.toolIo { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-block-start:5px; font-size:12px; color:#3f3f46; overflow-wrap:anywhere; }
+.toolDescription { margin:0; padding:0 11px 10px; font-size:12px; color:#52525b; white-space:pre-wrap; overflow-wrap:anywhere; }
 .stepIo { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:start; gap:5px; margin-block-start:5px; margin-inline-end:-13px; color:#3f3f46; font-size:12px; }
 .portLabel { display:block; color:#65656e; font-size:11px; }
 .stepArrow { align-self:center; color:#7546c8; }
