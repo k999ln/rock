@@ -107,6 +107,8 @@ export default function NoahReview() {
       <h1>Agentの審査</h1>
       {/* 定期便の台帳（task 124）。審査者だけが開ける別の画面。 */}
       {scope && <p><Link href="/noah/review/teikibin">定期便の台帳（入金・締め・払い出し）を開く</Link></p>}
+      {/* 稼ぎ方の設計図（task 122）。工程を「何を待つか」で段に並べた説明。審査者だけ。 */}
+      {scope && <p><Link href="/noah/review/business">稼ぎ方の設計図（工程の段）を開く</Link></p>}
       {scope && <NoahIntakeReview key={scope} ownerScope={scope} />}
       {scope && <NoahShelfReview key={`shelf:${scope}`} ownerScope={scope} />}
       {scope && <NoahTrialReview key={`trial:${scope}`} ownerScope={scope} />}
