@@ -80,3 +80,7 @@
 .agentDetails dl { display:grid; gap:14px; margin:0 0 16px; }
 .agentDetails dt { font-size:11px; color:var(--os-muted); }
 .agentDetails dd { margin:3px 0 0; font-size:13px; line-height:1.7; }
+
+/* 押す所は 44px 以上（task 128 の D7）: 見出しの横と、空の時の文字のリンク（「下書きを再開・新規登録」「Agentを確認する →」）、開け閉めの見出し（「下書きの保存量」）。 */
+.page .sectionTitle a, .page .empty a { display:inline-flex; align-items:center; min-height:44px; }
+.formPage summary { padding-block:11px; }
