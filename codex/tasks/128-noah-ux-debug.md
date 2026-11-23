@@ -7,7 +7,7 @@
 ## やり方（全部の小項目で同じ）
 
 - 1 つの小項目を 1 つの PR にする。PR 本文に「わかった事・やった事・確かめた事・次の事」を書く。
-- 確かめの道具: `node scripts/noah-public-walk.mjs <origin> [画面の一覧]`（スマホ幅で開く。はみ出し・44px より小さい押す所・失敗した API）と、`node scripts/noah-public-probe.mjs <origin> [出力.json]`（GET を返す API を、知らない人とブラウザの本人の 2 通りで呼ぶ）。どちらも読むだけ。
+- 確かめの道具: `node scripts/noah-public-walk.mjs <origin> [画面の一覧]`（スマホ幅で開く。はみ出し・44px より小さい押す所・失敗した API）と、`node scripts/noah-public-probe.mjs <origin> [--json]`（GET を返す API を、知らない人とブラウザの本人の 2 通りで呼ぶ。`--json` は全部の結果を標準出力に出す。ファイルには書かない）。どちらも読むだけ。
 - 本番で書き込む確かめ（接続・依頼・保存・登録情報）は、本人の許可がある時だけ。許可が無い時は、手元で本番と同じ形に build して確かめる（`npm run build` の後、`dist/server/.dev.vars` に試験用の `NOAH_PROFILE_KEYS` と `ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID=""` を入れて wrangler で動かす。値は試験用だけ。本物の鍵を入れない）。
 - してはいけない事は AGENTS.md の 6 のとおり。特に: 本番 D1 への migration の適用、外部への登録・申込の送信、試験の削除と書き換え。
 - 判断が要る所（下の「本人の判断」）は、作らずに本人に聞く。

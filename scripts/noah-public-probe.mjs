@@ -1,23 +1,25 @@
 #!/usr/bin/env node
 // 公開の API を、知らない人（Cookie なし）とブラウザだけの本人（Cookie あり）の 2 通りで、GET だけで呼ぶ。読むだけ。書き込む API は呼ばない。
-// 使い方: node scripts/noah-public-probe.mjs https://avoado.si [出力.json]
+// 使い方: node scripts/noah-public-probe.mjs https://avoado.si [--json]
 // 見る事: 200 を返す API に、他人の物・運営の物・設定の中身が無いか。500 番台が無いか。
+// --json を付けると、全部の結果を JSON で標準出力に出す（ファイルには書かない。残す時は、出力を自分で保存する）。
 // task 128（docs/noah/ux-audit-2026-11-22.md の 4 章）。
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const base = (process.argv[2] || 'https://avoado.si').replace(/\/$/, '');
-const out = process.argv[3] || '';
+const asJson = process.argv.includes('--json');
 const root = new URL('../', import.meta.url).pathname;
 // GET でも動く物（合図・Webhook・戻り先）は呼ばない。
 const skip = /tick|webhook|callback|cron|scheduled/i;
 
 function routes(dir) {
   const found = [];
-  for (const name of readdirSync(dir)) {
-    const path = join(dir, name);
-    if (statSync(path).isDirectory()) found.push(...routes(path));
-    else if (name === 'route.ts') {
+  // 種類は readdir の結果で見る（stat で確かめてから読むと、その間に入れ替わる余地がある）。
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) found.push(...routes(path));
+    else if (entry.isFile() && entry.name === 'route.ts') {
       const source = readFileSync(path, 'utf8');
       const methods = new Set([...source.matchAll(/^export[^\n]*\b(GET|POST|PUT|PATCH|DELETE)\b/gm)].map((m) => m[1]));
       if (methods.has('GET')) found.push('/' + relative(join(root, 'app'), dir).split('\\').join('/'));
@@ -45,7 +47,7 @@ for (const route of routes(join(root, 'app/api')).sort()) {
     await new Promise((resolve) => setTimeout(resolve, 120));
   }
 }
-if (out) writeFileSync(out, JSON.stringify(results, null, 1));
+if (asJson) { console.log(JSON.stringify(results, null, 1)); process.exit(0); }
 const counts = {};
 for (const r of results) if (!r.skipped) counts[r.status] = (counts[r.status] || 0) + 1;
 console.log(`cookie issued: ${!!cookie}; status counts: ${JSON.stringify(counts)}`);
