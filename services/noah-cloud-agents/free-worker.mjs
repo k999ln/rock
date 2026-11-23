@@ -39,12 +39,23 @@ export class NoahFreeCloudJob extends NoahCloudJob {
     return job;
   }
   async runModel(value) {
+    const owner = await this.live();
     const input = { ...noahCloudModelInput(value), max_tokens: limits.outputTokens };
-    if (new TextEncoder().encode(JSON.stringify(input)).length > limits.modelInputBytes) throw Error('無料枠のモデル入力上限に達しました。依頼を短くしてください。');
+    if (['boss', 'hermes'].includes(owner.profile)) input.reasoning_effort = 'low';
+    if (owner.profile === 'boss') {
+      // The official command requests five JSON questions. Reserve the fixed
+      // output budget for that result rather than a long reasoning preamble.
+      input.response_format = { type: 'json_object' };
+      const instruction = 'Return one compact JSON object in the requested language. Keep every string brief (at most 40 characters), exactly five questions, one evaluation point per question and two preparation tips. Do not omit the official fields.';
+      if (input.messages[0].role === 'system') input.messages[0].content += '\n' + instruction;
+      else input.messages.unshift({ role: 'system', content: instruction });
+    }
     let model, deadline;
     await this.ctx.blockConcurrencyWhile(async () => {
       const latest = await this.live();
       if (latest.calls >= limits.modelCalls) throw Error('無料枠のモデル呼出上限に達しました。');
+      if (latest.profile === 'hermes' && latest.calls === 0 && input.tools?.length) input.tool_choice = 'required';
+      if (new TextEncoder().encode(JSON.stringify(input)).length > limits.modelInputBytes) throw Error('無料枠のモデル入力上限に達しました。依頼を短くしてください。');
       deadline = latest.deadlineAt;
       await this.ctx.storage.put('job', { ...latest, calls: latest.calls + 1 });
       model = this.env.AI.run(NOAH_CLOUD_MODEL, input);

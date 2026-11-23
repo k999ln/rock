@@ -16,7 +16,7 @@ Workers Freeの旧accountへ `noah-free-cloud-agents` を配置する。Noahのs
 
 `python/` はTime 2026.11.18、boss 3.4.151、Hermes 0.19.0の固定wheelを使用する。`python3 prepare.py` で配布物SHA-256を照合し、公式ソースを改変せず梱包する。Hermesの対話画面・メッセージ連携の任意モジュールだけを除外する。対応はTimeの公式3ツール、bossの `ai interview-prep`（質問5件）、Hermesの公式AIAgent＋todo/memory。モデル輸送を同じ無料Workers AIへのRPCに置き換え、モデル回数・入力・期限・停止は従来の依頼で一元管理する。`run_sync` でモデル応答を待つ間も親DOの停止gateを占有しない。
 
-固定Wranglerはこのサービスの `npm ci` で用意する。Python 3.13以上とuv 0.13.4以上で `python/` 内から `uv sync --locked`、`uv run pywrangler sync`、`python3 prepare.py`。依存はuv.lock/pylock.tomlを保持し、更新する場合は再検証する。`uv run pywrangler deploy --config ./wrangler.jsonc` で先に非公開Python Workerを配置し、続けてこのサービスの `wrangler deploy --config ./wrangler.free.jsonc` でbindingを結線する。Python Workerに公開URL・モデル鍵・一般外部通信を渡さない。既存無料アカウントを固定し、D1 migrationやプラン変更は不要。
+固定Wranglerはこのサービスの `npm ci` で用意する。Python 3.13以上とuv 0.13.4以上で `python/` 内から `uv sync --locked`、`uv run pywrangler sync`、`python3 prepare.py`。依存はuv.lock/pylock.tomlを保持し、更新する場合は再検証する。`wrangler.jsonc`（Time）、`wrangler.boss.jsonc`、`wrangler.hermes.jsonc` の順に `uv run pywrangler deploy --config <config>` で非公開Python Workerを配置し、続けてこのサービスの `wrangler deploy --config ./wrangler.free.jsonc` でbindingを結線する。3つのWorkerは別isolateを使い、Time/boss/Hermesの依存を同居させない。各Workerは固定profile以外を拒否する。Python Workerに公開URL・モデル鍵・一般外部通信を渡さない。既存無料アカウントを固定し、D1 migrationやプラン変更は不要。
 
 rootの `node scripts/test-noah-python-cloud.mjs` はローカルworkerdで公式3種、ファイルhash、同一isolateの次の依頼の空のtodo/メモ、再送、停止、不正Tool、bossの先頭@入力を検証する。固定モデルの試験であり本番受入とは区別する。`NOAH_PYTHON_WRANGLER` で固定Wranglerの絶対パスを指定できる。通常回帰には `tests/noah-free-python.test.mjs` を含め、RPC経由の4回上限・遅延結果・時間切れ・Time停止を検証する。
 

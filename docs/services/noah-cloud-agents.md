@@ -13,7 +13,7 @@
 
 ## 本番で依頼を動かす仕組み（2026-11-23）
 
-利用者は `avoado.si/noah` で仕事を選び、入力と送信先を確認して依頼する。無料の管理クラウドで受け付けるのは公式の Memory、Filesystem、Sequential Thinking。スマホや Mac は受付と閲覧を担当し、送信後にブラウザを終了しても実行器が結果を保存する。[公開画面](../../components/noah-cloud-agent.tsx)・[対応する配布物と上限](../../lib/noah-cloud-contract.ts)
+利用者は `avoado.si/noah` で仕事を選び、入力と送信先を確認して依頼する。無料の管理クラウドで受け付けるのは公式の Memory、Filesystem、Sequential Thinking、Time、boss の面接準備、Hermes の計画・依頼内メモ。スマホや Mac は受付と閲覧を担当し、送信後にブラウザを終了しても実行器が結果を保存する。[公開画面](../../components/noah-cloud-agent.tsx)・[対応する配布物と上限](../../lib/noah-cloud-contract.ts)
 
 ![Noahクラウドの受付からWorkへの保存まで](../assets/noah-cloud-architecture.png)
 
@@ -23,6 +23,7 @@
 | --- | --- |
 | Sites の Noah Web/API | 画面と同じホストで本人を解決する。D1 の公開掲載系列と R2 の `noah/collection/v1/{source}.json` を読み、配布元と固定した実行方式を照合する。掲載は公開、依頼・履歴・成果は本人単位で扱う。[ディレクトリ](../../lib/noah-agent-directory-server.ts)・[収集データの読取](../../lib/noah-agent-directory.ts)・[本人の解決](../../lib/request-auth.ts) |
 | 専用 Worker `noah-free-cloud-agents` | Node.js と esbuild で公式 npm 3種を束ね、Cloudflare Workers の `nodejs_compat` で動かす。依頼ごとの仮想ディレクトリ `/tmp/workspace` を公式ツールが使い、モデル呼出は Worker の `AI` binding が担当する。利用者の端末や常駐 Node.js サーバーの起動は不要。[ビルド](../../services/noah-cloud-agents/build-free.mjs)・[配置](../../services/noah-cloud-agents/wrangler.free.jsonc)・[公式ツール](../../services/noah-cloud-agents/free-official.mjs) |
+| 非公開Python Workers | Time・boss・Hermesを固定bindingで別Workerへ振り分け、異なるprofileのRPCを拒否する。公式配布物をhash照合し、依頼別の一時領域と直列化で状態を分離する。モデルと日次枠は共通Workerで管理し、運営鍵をPythonへ渡さない。[Python接続](../../services/noah-cloud-agents/free-python.mjs)・[実行入口](../../services/noah-cloud-agents/python/src/entry.py) |
 | SQLite Durable Objects | `CONNECTIONS` は本人のハッシュ・project・profile ごとに接続状態と直近の依頼 ID を保持。全体で一つの `BUDGET` は UTC 日次の利用数と同時枠、`JOBS` は本人のハッシュ・依頼 ID ごとの入力、版、期限、進行、結果送達状態を保持する。依頼を動かすのは `JOBS` の永続 alarm。[受付と状態遷移](../../services/noah-cloud-agents/worker.mjs)・[無料実行](../../services/noah-cloud-agents/free-worker.mjs) |
 | Sites の D1 `work_jobs` | `user_id` と依頼 ID で本人の Work を取得し、`revision` が一致する場合だけ更新する。本文は `payload.noahRemote.result`、ファイルは `payload.noahRemote.cloud.files` に名前・バイト数・SHA-256・base64 本体を保存する。Web は本人のファイルを Blob に戻してダウンロードする。この経路の R2 は公開の収集目録に使う。[結果の受取](../../lib/noah-cloud-api.ts)・[Work の保存](../../lib/work-store.ts)・[ダウンロード](../../components/noah-managed-files.tsx) |
 
@@ -62,7 +63,7 @@ sequenceDiagram
 
 公開 MCP や Gradio Space は提供元が処理する。`GET /api/noah/provider?project=…` が正規の送信先・操作・入力定義を返し、利用者が確認した `POST /api/noah/provider` を受けてから再照合して送る。公開サイト診断では管理許可と外部診断への同意を求める。成果を同じ本人の Work に保存するが、提供元での処理中は結果画面を開くよう案内する。[提供元の受付](../../lib/noah-provider-api.ts)・[定義の再照合](../../lib/noah-provider-runtime.ts)・[サイト診断](noah-site-diagnostics.md)
 
-固定した Linux CLI を動かす有料 Containers、本人ごとの専用 Sandbox、常駐処理を黒殿へ移す構成は拡張対象。公式6配布物の ARM64 Linux 隔離試験ではホストから実モデルへ中継した。Hermes・boss・Time の本番起動と新ログインへの管理移行は未完了。運用の設計目標は受付 API の月99.5%、最初の成果が95%で30秒以内、預かったデータの消失0。D1 の日次 R2 バックアップと復元訓練は別の運用作業で、本番定期実行・100人同時利用・月間 SLO 達成の実測は残る。[計算配置 §0.5・§4](../compute-placement.md)・[Sandbox 案 task75](../../codex/tasks/75-noah-own-device-cloud.md)・[運用 task105](../../codex/tasks/105-cloud-operations.md)・[隔離試験 task125](../../codex/tasks/125-noah-cloud-agents.md)
+固定した Linux CLI を動かす有料 Containers、本人ごとの専用 Sandbox、常駐処理を黒殿へ移す構成は拡張対象。公式6配布物の ARM64 Linux 隔離試験ではホストから実モデルへ中継した。Time・boss面接準備・Hermes計画/依頼内メモはPython Workersで本番実行・保存を受入済み。任意CLI全体と新ログイン自身による旧環境管理は未受入。運用の設計目標は受付 API の月99.5%、最初の成果が95%で30秒以内、預かったデータの消失0。D1 の日次 R2 バックアップと復元訓練は別の運用作業で、本番定期実行・100人同時利用・月間 SLO 達成の実測は残る。[計算配置 §0.5・§4](../compute-placement.md)・[Sandbox 案 task75](../../codex/tasks/75-noah-own-device-cloud.md)・[運用 task105](../../codex/tasks/105-cloud-operations.md)・[隔離試験 task125](../../codex/tasks/125-noah-cloud-agents.md)
 
 ### 本番で確認した範囲
 
@@ -71,6 +72,7 @@ sequenceDiagram
 | Sites210、Chrome 157・390×844px タッチ | 3種類を各1件送信し、Chrome 全終了後15秒は HTTP を送らず、共通 Work の読取で D1 保存を確認。Memory は実モデル2回・成功した公式操作1回、Filesystem は2回・1回、Sequential Thinking は4回・3回。再起動後の表示・ダウンロード・ファイルハッシュ、別件で停止・同じ依頼の再送・別所有者の404も確認。[task125 の受領票](../../codex/tasks/125-noah-cloud-agents.md#2026-11-23-本番の画面閉鎖後受取停止) |
 | Sites211、Chrome | 添付表示の修正後、Memory 1件を再測。Chrome 終了から約3.6秒後に D1 保存。再起動後に `memory.jsonl` 145バイトをダウンロードしてハッシュを照合し、保存済み添付の表示も確認。[PR #21 の公開後受入](https://github.com/iceiceice999/rock/pull/21) |
 | Sites212、Pixel 10・Android 17・Vanadium、411px | 「接続できる」から Memory を検索・接続・依頼し、保存一覧から成果を開いて再読み込み。実モデル2回、公式 `create_entities` 成功1回、`memory.jsonl` 136バイトと実行記録の実体・ハッシュを照合。Pixel のダウンロード操作はこの試験の対象外。[PR #23 の実機受入](https://github.com/iceiceice999/rock/pull/23) |
+| Sites216、Chrome 157・390×844px タッチ | Time・boss・Hermesを各1件、実モデルと公式処理で実行。Chrome全終了後15秒無通信中のD1保存、再起動後の保存一覧・再読込・download/hashを確認。モデルは順に2回・1回・3回。対応機能と失敗からの補正は [task125](../../codex/tasks/125-noah-cloud-agents.md#sites216での公式python3種の受入) に記録。 |
 
 ## 境界
 
@@ -108,8 +110,10 @@ Workers FreeとSQLite Durable Objects、Workers AIの無料割当を使い、有
 
 2026-11-23の追加指示。公式Hermes Agent 0.19.0の会話ループとTodo/Memory、boss-agent-cli 3.4.151のinterview-prepコマンド、Time 2026.11.18のMCP factoryをPython Workersへ組み込む。配布物のSHA-256を検証して展開し、公式ソースは変更しない。OSシェル、Hermesの汎用ファイル操作・追加Tool・長期記憶、bossの求人検索・応募は提供しない。Hermesの計画と依頼内の記憶、bossの面接準備、Timeの変換結果を成果ファイルとして保存する。
 
-PythonのVFSはisolateで共有されるため、依頼ごとにUUIDの一時領域を作り、公式Hermesのcontext-local homeとインスタンス別Storeを使う。Python実行をisolate内で直列化し、終了時に領域とContextを必ず破棄する。モデル輸送は運営鍵を渡さないRPC capabilityで固定モデルへ中継し、既存の日次10件・本人3件・同時2件・240秒・モデル4回の同一予約で数える。JS coordinatorは長いPython呼出を開始gateの外で待ち、停止・期限後のモデル/Tool受付と結果採用を閉じる。Pythonの外部公開URL・任意URL入力・OSプロセス起動は設けない。
+Time/boss/Hermesはそれぞれ別Workerへ固定し、別profileのRPCを拒否する。Timeの接続確認ではschema生成と公式UTC時刻ツールも動かし、単なるimport成功を準備完了としない。PythonのVFSはisolateで共有されるため、依頼ごとにUUIDの一時領域を作り、公式Hermesのcontext-local homeとインスタンス別Storeを使う。Python実行をisolate内で直列化し、終了時に領域とContextを必ず破棄する。モデル輸送は運営鍵を渡さないRPC capabilityで固定モデルへ中継し、既存の日次10件・本人3件・同時2件・240秒・モデル4回の同一予約で数える。JS coordinatorは長いPython呼出を開始gateの外で待ち、停止・期限後のモデル/Tool受付と結果採用を閉じる。Pythonの外部公開URL・任意URL入力・OSプロセス起動は設けない。
 
-互換層は非対話コールバック、無効化したバックグラウンドログ、固定RPCモデル輸送、公式設定への一時保存に限定する。モデルの出力やfixture成功を公式Tool成功と扱わず、成功した操作名・入力/応答hashと固定配布版を実行記録へ残す。結果は既存Work callbackで送達し、保存済みの再表示は実行を起こさない。本番D1 migration・有料プラン変更は不要。
+互換層は非対話コールバック、無効化したバックグラウンドログ、固定RPCモデル輸送、公式設定への一時保存に限定する。boss/Hermesは同じ出力上限内で推論量をlowに固定し、bossはJSONの簡潔な出力を指定する。Hermesが初回に道具を実行せず本文だけを返した場合、公式会話履歴を用いて1回だけ道具の実行を促す。同一依頼のモデル4回・240秒枠に含め、道具未実行のままなら失敗とする。モデルの出力やfixture成功を公式Tool成功と扱わず、成功した操作名・入力/応答hashと固定配布版を実行記録へ残す。結果は既存Work callbackで送達し、保存済みの再表示は実行を起こさない。本番D1 migration・有料プラン変更は不要。
 
 合格条件: 3profileで公式処理成功・実モデル1回以上・成果hash一致、画面閉鎖後に閲覧なしでWork保存、再表示/ダウンロード、異なる依頼の記憶非共有、同一IDの非再実行、停止/期限後の結果不採用。既存3profileと全体verifyの合格を保つ。本番受入前のprofileは完成扱いにしない。
+
+2026-11-23、Sites216でTime・boss・Hermesの実モデル/公式処理、Chrome全終了後15秒無通信中のD1保存、保存一覧からの再表示・再読込・成果download/hashを確認した。初回のメモリ上限失敗、出力打切り、道具未実行と補正の経緯、公開版/実行器版は [task125](../../codex/tasks/125-noah-cloud-agents.md#sites216での公式python3種の受入) に保持する。新規課金・D1 migration・実応募は行っていない。

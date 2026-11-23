@@ -1,6 +1,6 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
-2026-11-23 Python無料実行の拡張: Hermesの計画・情報整理、bossの面接準備、Timeの公式Python処理を依頼別の専用Durable Objectへ組み込む。配布物の固定hashと機能制限を保ち、実行・保存を本番受入してから公開する。[契約](../services/noah-cloud-agents.md#無料枠の公式python実行)
+2026-11-23 Python無料実行の拡張: Hermesの計画・情報整理、bossの面接準備、Timeの公式Python処理をprofileごとの別Worker・依頼別Durable Objectへ組み込む。isolateに異なる公式実装を同居させず、モデルと利用枠は共通実行器で管理する。配布物の固定hashと機能制限を保ち、実行・保存を本番受入してから公開する。[契約](../services/noah-cloud-agents.md#無料枠の公式python実行)
 
 2026-11-23 無料クラウド実行: 固定した公式Memory/Filesystem/Sequential ThinkingのJavaScript本体をWorkersへ組み込み、依頼専用VFSとSQLite Durable Objectのalarmで実行する。プラン変更をせず、無料枠・日次予約・実受入済profileの制限を保持する。[境界と合格条件](../services/noah-cloud-agents.md#無料枠の公式javascript実行)
 
