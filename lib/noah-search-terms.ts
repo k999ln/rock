@@ -109,6 +109,23 @@ export const NOAH_SEARCH_SYNONYMS: Readonly<Record<string, readonly string[]>> =
   ペット: ['pet', 'dog', 'cat'],
   犬: ['dog'],
   猫: ['cat'],
+  // 2026-11-23（task 128 の D11）: よく頼まれる仕事の語 70 個を 1,957 件の一覧に当て、0 件だった語を足した。
+  プレゼン: ['presentation', 'slide', 'deck', 'powerpoint', 'pptx'],
+  スライド: ['slide', 'deck', 'powerpoint', 'pptx', 'presentation'],
+  予約: ['booking', 'reserv', 'appointment', 'schedul'],
+  価格: ['price', 'pricing', 'cost'],
+  値段: ['price', 'pricing', 'cost'],
+  比較: ['compar', 'versus'],
+  宿題: ['homework', 'assignment', 'tutor'],
+  sns: ['social', 'twitter', 'instagram', 'tiktok', 'linkedin', 'bluesky'],
+  運動: ['exercise', 'fitness', 'workout'],
+  ダイエット: ['diet', 'nutrition', 'calorie', 'fitness'],
+  タスク: ['task', 'todo', 'to-do'],
+  メモ: ['note', 'notion', 'obsidian'],
+  日記: ['journal', 'diary'],
+  カスタマーサポート: ['customer support', 'helpdesk', 'help desk', 'customer service', 'support ticket'],
+  電話: ['phone', 'telephon', 'voip', 'sms'],
+  占い: ['tarot', 'astrolog', 'horoscope'],
 };
 
 /** 語の間の残り。辞書の語を拾えた時、これだけで出来た残りは捨てる。 */
