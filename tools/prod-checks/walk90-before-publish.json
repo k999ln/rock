@@ -1,0 +1,53 @@
+{
+ "base": "https://avoado.si",
+ "at": "2026-11-23T15:12:51.873Z",
+ "rows": {
+  "1": {
+   "overflowPx": 0
+  },
+  "2": {
+   "agent": "お金・税",
+   "url": "https://avoado.si/noah/discover/agent?id=project-fe10f04248ccb8a9cc4bde8c4a89b4d315b9edc7ef3b3b17fde2892b83cbc9b5",
+   "secondsToTools": 1.892,
+   "stayedOnScreen": true,
+   "ok": true
+  },
+  "3": {
+   "tool": "list_markets",
+   "secondsToResult": 3.051,
+   "ok": true
+  },
+  "4": {
+   "tool": "search_cars",
+   "fields": [
+    "検索する内容 *",
+    "",
+    "",
+    ""
+   ],
+   "errorsShown": 2,
+   "nothingSent": true
+  },
+  "5": {
+   "skipped": "本番では送らない。手元の試験で確かめる"
+  },
+  "6": {
+   "resultsInWorkList": 3,
+   "ok": true
+  },
+  "7": {
+   "movedTo": "調べもの",
+   "url": "https://avoado.si/noah/discover/agent?id=project-112257a1569da68b327149024b8d2e3f19cb30e29145b1783122e15f7f0271e4",
+   "ok": true
+  },
+  "10": {
+   "pressed": true,
+   "resultsKept": 3,
+   "connectedHeadingOnReady": 0,
+   "ok": true
+  }
+ },
+ "notes": [
+  "closed at 2026-11-23T15:14:12.205Z"
+ ]
+}

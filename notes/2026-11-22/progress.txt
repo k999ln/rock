@@ -1,0 +1,137 @@
+2026-11-22 / 11-23 Noah session progress (Claude, author noellesugar99)
+
+Latest instruction (11-23 21:43): 「好きにしていいよ／だから早く完成品世に出したい」 -> Claude decides; ship fast.
+
+Route to iceiceice999/rock
+- This session has k999ln/rock attached; iceiceice999/rock cannot be attached (same repo name). Branches are staged in k999ln/rock `claude/ice2/*`; the Codex app on Noelle's Mac (window 1622, chat 「修正して avoado.si を再公開」) pushes, opens PRs, merges and publishes Sites.
+- Typing into that chat: app_click the field by coordinate (700,722), then app_type with coordinate + mode "replace"; send with app_key "return" at (892,640).
+
+Done (11-23 evening)
+- Security: Codex merged PR #36 (React 19.2.9) as main 35afadfc and published Sites v220 (CI 8/8, npm audit critical 0, no 19.2.8 in served JS, no D1 migration).
+- Re-merged main 9cb7f5d1 into the four earlier branches (ice2/*), renumbered my audit task 127 -> 128 (main took 127 for live agent families).
+- New branch ice2/noah-launch (43f45e48): decisions Q1-Q5 recorded in docs/structure/07 (2026-11-23 line):
+  Q1 code agents stay Mac-only, upload form says so; Q2 定期便 stays closed; Q3 browser-only identities cannot add payout account / ID documents (API 403, UI locked, old data read/delete only);
+  Q4 Noah's own ad cards show 「Noahの案内（広告を含む）」; Q5 「ココナラの仕事」 menu item only on a Mac (useSyncExternalStore).
+  D3: entitlement-deliveries returns 401 to callers without a Bearer token. /noah/billing 404 was reverted (existing route-unification test pins it).
+  Web security evidence re-recorded (noah-shell.tsx is an input) -> release:check passes.
+- New branch ice2/noah-quota (c5129571): lib/noah-browser-quota.ts, daily UTC caps for all browser-only identities together (asks 10k, connections 5k, agents 500, draft files 10k, upload bytes 4GiB, imports 300); counted in existing rockstar_account_rate_limits (no migration); 429 with Japanese reason; signed-in owners not counted.
+- Handoff: k999ln/rock branch claude/ice2/handoff (c34d6541) HANDOFF.md + pr/*.md for 6 branches. Message sent to Codex at ~22:57.
+
+Staged branches (k999ln/rock)
+- claude/ice2/noah-collector-steady d5dcc8f7, claude/ice2/noah-board-picks e8c52a2e, claude/ice2/design-references a3a2fca6,
+  claude/ice2/noah-ux-audit 6146e310, claude/ice2/noah-launch 43f45e48, claude/ice2/noah-quota c5129571, claude/ice2/handoff c34d6541.
+- Old claude/ice/* branches are superseded (kept, not force-pushed).
+
+Verification
+- Stack of 4 on main 9cb7f5d1: npm test 5,222 / 5,182 pass; 36 failures (35 names) all fail on untouched main too. tsc, lint, all checks pass, gitleaks 0.
+- With launch: one new failure found (route-unification, billing) -> reverted. Full run with launch + quota in progress (scratchpad stack3-test.txt).
+
+Open / next
+1. Watch Codex: 6 PRs, merges in order, Sites publish; then run scripts/noah-public-walk.mjs and the 7 screen checks on production.
+2. Production write tests (connect, ask, board, profile) are allowed now (「好きにしていいよ」) -> run after publish with synthetic data, delete afterwards.
+3. Remaining task 128 items for Codex/Noelle: D2 (Turnstile needs external setup), D5, D6 (165 unverified agents), D7 (44px everywhere), D8 (sign-in links pinned by tests), D10 ordering, D11 search words, D12 repository-map.
+4. CowAgent: recommend Noelle points the YouTube link to https://avoado.si/noah.
+5. Final report to Noelle: わかった事・やった事・次の事 with diffs.
+
+Update 23:20
+- PR #37 (Noah Agent Store, author kaiya.kk = Noelle's other Codex thread) was live in production before it merged; it merged into main as f285200f at ~23:05. Production is React 19.2.9.
+- Merged f285200f into launch (2ce2d5b1, conflicts in noah-shell / noah-pin-grid / noah-agent-upload-form / security evidence resolved; evidence re-recorded on a 19.2.9 build; release:check passes) and quota (f239bda2, clean).
+- Q1 note reworded to match PR #37's managed desktop (operator packages only): 「自分のMacのNoahで動きます（Noahの専用環境で動かせるのは、運営が確認したパッケージだけです）」.
+- New 7th branch claude/ice2/noah-taps c8ba8b5a: remaining 44px targets (walk shows small 0 on the 4 screens).
+- Handoff updated to 7 branches (claude/ice2/handoff c827ac82). Codex told twice (PR #37 note, new heads); PR #38 = collector created.
+- Baseline production acceptance (v220, before my branches): connect+ask works (Carfinity list_markets succeeded, 11,192 chars); CCAPI now needs the provider's permission; board create/remove OK; profile save OK; bank number accepted (pre-Q3). Clear step hit a revision conflict, so one anonymous test profile keeps synthetic displayName and a fake bank number (unreachable without its cookie). Script fixed (prod/accept.mjs).
+- Full suite on main f285200f + all 7 branches running (scratchpad final-test.txt).
+
+Update 23:55
+- Codex (window 1622 chat 「修正して avoado.si を再公開」) went per-branch: #38 collector merged (97cf7cfe), #40 board merged (cab0dc49), #42 design-references opened (head c060ad57, CHANGELOG records #42). It then started branch 4 (codex/ice2-noah-ux-audit) alone.
+- Queued 追記4/追記5/訂正 never applied (AXPress does nothing on Codex's React buttons). Keyboard works: shift+tab to the queue row's button, then "space". All three queued messages deleted that way.
+- noah-all moved to f2aef440 (k999ln claude/ice2/noah-all, fast-forward): #BOARDPICK->40, #REFLIB->42, merged #42 head c060ad57 (contains main cab0dc49). Only CHANGELOG differs from 9cbabc6c (order of two lines + numbers). project/repository/release/design/version checks PASS.
+- Handoff 2ae3dccd: HANDOFF.md 「いまの手順（23:55）」 (#42 as is; 4-9 one PR from noah-all f2aef440; drop the single ux-audit PR), pr/all.md now covers 4-9.
+- Sending 追記6 is blocked: another session/Noelle is navigating window 1622 (it flips to 「PR #426をrock mainへ移行」), and ChatGPT(Codex) is frontmost so focus moves are refused. Opened a separate window 2303 for this chat (to close afterwards).
+- PR #41 (kaiya) still open; test-merge into noah-all f2aef440 conflicts in CHANGELOG, components/noah-shell.tsx, data/web-security-response-current.json (scratchpad/resolve-shell-41.py ready).
+
+Update 00:40
+- 追記6 delivered (00:00): Codex switched to noah-all; #42 merged (main 39304fe9); PR #43 = noah-all + main + CHANGELOG #43 (849ee69f).
+- PR #43 CodeQL failed: 2 alerts in scripts/noah-public-probe.mjs (stat-then-read race; network data written to file). Fixed in 3f0b7341 (readdir withFileTypes; --json to stdout only; task 128 usage line). Pushed k999ln claude/ice2/noah-all = 3f0b7341 (fast-forward). 追記7 sent: fast-forward #43 to 3f0b7341, merge when green, then STOP without publishing.
+- Production is Sites v225, published by the other thread from fc197b2f (tree != main) and includes PR #41 (unmerged). Publishing main would remove #41's screens, so per AGENTS.md §8 publish waits until #41 is in main.
+- PR #41 head 5e16872e now also conflicts with #43 in components/noah-pin-grid.tsx (their NoahAgentPin rewrite drops noahCardOrigin -> Q4). scratchpad/resolve-pingrid-41.py + resolve-shell-41.py dry-run clean.
+- Codex app UI: AXPress does nothing on its React buttons. What works: keyboard (shift+tab to the button, then "space"), or a 1px app_drag on the button (raw press). Typing: click the textarea (focus), then app_type element_index + overwrite_existing (AXValue). Window 1622 is shared with another session; I opened window 2303 for this chat (close it at the end).
+- Production walk (spec-90 §5, 390px, v225 before our publish): rows 1,2,3,4,6,7,10 pass (Carfinity list_markets 3.1s; reopen after 60s shows 3 results; cut keeps results). Row 5 not tried in production (would send to a third party if broken). Rows 8,9,11-13 need a real phone/passkey/operator.
+- Baseline screens on v225: 画像 0件, ad notice absent, phone menu has Coconala, profile not locked, upload note absent, Linux menu has Coconala.
+- D12 finding: iceiceice999/rock history is re-rooted (816 commits); 4 of 6 archived-path restore commits exist only in k999ln/rock, so repository-map + archived-paths need a "restore from k999ln/rock" rule, not just a name swap.
+
+Update 00:42
+- Main moved to 3c822702 = PR #25 (another thread: Noah blueprint waits port). It took task 128 (128-noah-agent-explain.md), so our audit task is now 129 (codex/tasks/129-noah-ux-debug.md; index row, links and "task 128" mentions in our own lines/comments updated; test logic untouched).
+- noah-all = 47093b8c (3f0b7341 + merge of main 3c822702; CHANGELOG + 00-index conflicts resolved). Checks (project/repository/release/design/version), tsc, 43 related tests pass. Pushed k999ln claude/ice2/noah-all (fast-forward). 追記8 sent and applied (1px drag on 今すぐ反映).
+- Offered resolution for PR #41: k999ln claude/ice2/pr41-on-main = a6195ddd (merge of #41 5e16872e onto 3f0b7341, Q4/Q5 kept, evidence re-recorded PASS, + 「すべて見る」 44px fix with test). #41 has since moved to 2d6b0927 (cover picker), so this branch is a reference, not a drop-in.
+- Full suite on a6195ddd: 5,277 tests, 5,234 pass, 39 fail; 6 names beyond the old baseline: 2 dependency-resolution tests (symlinked node_modules), 2 library-section tests, noah-free-cloud/python (local node_modules lacks @modelcontextprotocol/server-* declared in package.json). On noah-all 47093b8c only free-cloud/python fail, for the same missing-package reason.
+- Production v225 small targets (walk): /noah 「すべて見る」 73x40; /noah/ready and /noah/explore 「Noah」 102x39 and 「登録情報を見る」 36x36 (the last two are fixed by our D7 branch once published).
+
+Update 01:30 (11-24)
+- PR #43 merged: main 5631fa7c (01:16). All 9 branches are in main (#38, #40, #42, #43). Not published: production v225 is the other thread's unmerged #41; publish waits for #41 (AGENTS.md §8).
+- Along the way: main took #25 then #27 (task 128 = agent explain) -> our audit task renumbered to 129; two more main merges into noah-all (47093b8c, b0818a0a); CodeQL fix 3f0b7341.
+- New request (00:45) 「クラウドのシステム作って／100人とかいったら黒字化するよね？／cloudflareでいいから最初は」. Answers: pay by deducting from Agent profit (keep 11-22 decision); Workers Paid: not yet.
+- Numbers sent: typical job ~¥0.5 (gpt-oss-20b), 100 users x 30 jobs/month ~¥1,700/month incl. $5; revenue depends on the payment model. Code agents in the cloud need Workers Paid (Containers / Dynamic Workers are Paid-only).
+- Built: k999ln claude/ice2/noah-cloud-neurons = cadd58b1: free cloud counted by Workers AI neurons (8,000/day global, 2,400/owner, 1,200/job reserved; NOAH_CLOUD_DAILY_NEURONS can lower), usage per job saved to Work and shown; refusals moved outside blockConcurrencyWhile (throwing inside reset the DO and lost the failure result). New test file (6) + 84 related tests pass; full suite 5,319/5,281 with only environmental failures. 追記10 sent to Codex: PR, merge, redeploy only noah-free-cloud-agents, no Sites publish.
+
+Update 01:55 (11-24)
+- PR #44 (cloud neurons) created by Codex from claude/ice2/noah-cloud-neurons + CHANGELOG placeholder -> #44 (head 3b71e46c). CI running; Codex will merge when green.
+- Free Worker redeploy is blocked on a Cloudflare login: Wrangler on the Mac has no valid auth for the old account (mr-kirin999 workers.dev, account pinned in wrangler.free.jsonc). Codex opened the Cloudflare login in Chrome and asked the owner to sign in. Only Noelle can do that (no passwords by Claude). Until then the deployed free Worker keeps the old count limits; Sites/Worker order is safe either way.
+- New PR #45 (another thread, noellesugar99 fork): "Show evidenced material flow in Noah Agent explanations", adds migration 0060, CHANGELOG "## 2026-11-24" -> will conflict in CHANGELOG with whichever of #44/#45 merges second (not ours to touch).
+- PR #41 moved to 1cca7753 (merged #27 at 00:58, not #43) -> conflicts with main in the same 5 files. Refreshed reference: k999ln claude/ice2/pr41-on-main-2 = e4762277 (b378f5bf merge: #41 layout + Q4 noahCardOrigin + Q5 macMenu; CHANGELOG/index keep both; evidence re-recorded PASS) + 「すべて見る」 44px fix with test. 115 related tests, typecheck and 5 checks pass.
+
+Update 01:50 (11-24)
+- PR #44 merged by Codex after 7 CI checks passed: main 6283f6a6 (01:43). Codex is now on the free Worker redeploy (needs the Cloudflare login on the Mac; SendUserMessage sent to Noelle at ~01:40 asking her to sign in and tell Codex).
+- #41 reference refreshed again: k999ln claude/ice2/pr41-on-main-2 = 8c5be853 (= e4762277 + merge of main 6283f6a6; CHANGELOG and lib/noah-i18n.ts keep both sides, no duplicate keys). typecheck + 5 checks pass; related tests 129/130 (the 1 failure is tests/noah-free-cloud-neurons bundling the Worker without the @modelcontextprotocol packages in this worktree's shared node_modules; cloud files are identical to main and pass in cloudwt).
+- Local branches in rock-ice now track their pushed copies; rock-ice is checked out on claude/ice2/noah-all (same name as the pushed branch) so the stop hook sees nothing unpushed.
+
+Update 02:25 (11-24)
+- New request 01:52: 「300人は最初無料で回させてそのうち収益から天引きする形で利益フェルミ推定というか計算しといて」. Built a Sheets artifact "Noah 300人の利益試算" (https://claude.ai/artifact/KsF5u8VBCtGvhHB4xwYFUJ; sheets まとめ / 12か月 / 前提 / 月の計算; all formulas; inputs yellow on 前提).
+- Model = spec-124 settlement (settleCompanyOrder): surplus = income − refund − platform fee − direct cost − creator share − reserve − contribution fees; pool = surplus × d; equal share = pool / N; deduction only if share >= price (R7); company = surplus − pool + deductions − bank transfer fees.
+- Answers from Noelle (AskUserQuestion x2): 収益 = company-run Agent sales; free period = until 300 people (3 months: 30/100/300); no distribution during free period; d = 75%; price 600 yen; creator share 20%; buyer-referral rate "わからない" (S2/S3 placeholders, measure in stage 1).
+- Results (creator 20%): S1 39.5k/month -> per person 14 yen, company 5,836 (free, 300 ppl) / 1,040 (after), 12m −51,984; S2 160k -> 180 yen, 71,858 / 12,340, 12m 192,635; S3 400k -> 545 yen, 217,269 / 37,292, 12m 659,702 (deduction does not start: 545 < 600); S4 60M (1 person 200k example) -> 103,420 yen, 41.4M / 10.3M, 12m 152M. Break-even gross: 100 yen/person 93k; 600 yen 438k; 2,000 yen (goods box viable) 1.40M; 150k (example) 103M.
+- Key finding: starting teikibin+deduction cuts company profit ~5x (75% of surplus goes out); deduction adds at most N x 5% x 600 = 9,000/month. Profit is set by company-run Agent sales and d, not by the deduction.
+- Sources fetched: GMO Aozora other-bank transfer 100 yen from 2026-08-17 (sogyotecho); 60-size shipping 820-910 yen Kanto (stockcrew 2026-09); Cloudflare pricing (earlier). Repo: trial-300, spec-124, spec-110 §8, structure/04, compute-placement, sky-earn-parity.
+- Recorded the answers as decisions: k999ln claude/ice2/noah-trial-money = 0ba447ad (docs/structure/07, trial-300 §2 rows 6/10, spec-124 §1, spec-110 §8, CHANGELOG #TRIALMONEY). 5 checks + 71 doc tests pass. 追記11 sent to Codex (PR, merge; no deploy/publish).
+- Codex on 追記10: PR #44 merged 6283f6a6 (7 checks); free Worker build OK but Wrangler OAuth timed out -> not deployed; /health 200 (old version). Needs Noelle to approve the Cloudflare login when Codex reopens it.
+- Main is now 5fa0ee22 (#45 merged 02:11). pr41-on-main-2 (8c5be853) is based on 6283f6a6 -> will need another main merge before use.
+
+Update 05:15 (11-24)
+- Codex made PR #51 from claude/ice2/noah-trial-money (0ba447ad + merge of main 89fee198 + CHANGELOG #51, head c7396371). 07 ordered by time (04:08, 02:20, 01:00). 5 docs files only. CI running; Codex merges when green. Could not read the PR page (GitHub rate limit) to confirm the body footer.
+- Main moved: #45 (02:11) and #48 (04:52) merged -> 89fee198. Other open PRs: #46 (kaiya.kk), #47, #49, #50 (other threads). Monitor now watches #40-#59.
+- #41 reference refreshed: claude/ice2/pr41-on-main-2 = 9ee7658a (8c5be853 + main 89fee198; CHANGELOG / 00-index row 128 / 07 keep both). typecheck + 5 checks + 139 related tests pass.
+- Found: codex/tasks/00-index.md row 129 still says "D1〜D13 は未着手" although D1, D3, D4, D7 (main 9 screens), D9, D10, D11 are done (task file is correct). Fix with the next docs change.
+- Free Worker still not redeployed (Wrangler OAuth timed out; needs Noelle's approval).
+
+Update 05:20 (11-24)
+- Main 06bfe89e = PR #50 (other thread, "noah-sites-v227-reconcile"): brought #41's commits (1cca7753 etc.) into main via 570c6b06 and kept Q4 (meta={<>{noahCardOrigin(item)} · {runStatus}</>}). So the publish blocker (#41 not in main) is gone.
+- Production still lacks main: entitlement-deliveries 503 (expects 401), ad notice not in /noah/ready JS.
+- 追記12 queued in Codex chat 2303: after #51 merges, check the current published version/source; if not already from main >= 06bfe89e, verify per AGENTS.md §8 that the published source has nothing missing from main, publish avoado.si from main once, apply no production D1 migration (0060 stays unapplied), report version + commit.
+- Detector b5h40a6he waits for 401 on entitlement-deliveries (= main is live). Then run prod/accept.mjs, walk90.cjs, screens.cjs, noah-public-walk, published.mjs.
+
+Update 05:30 (11-24)
+- Production now serves main (published ~05:18 by another thread after PR #50). Checked live at 05:18-05:26:
+  - entitlement-deliveries 401 (was 503) = main's code is live.
+  - prod/accept.mjs: 16/16 OK (search 画像 120 / 翻訳 12 / 要約 12, ad notice, Cloud World Model connect -> scenario.list -> succeeded -> disconnect, board create/remove, profile save, bank account refused 403 for the anonymous store, profile cleared).
+  - prod/screens.cjs: search 画像 shows 3 cards, ad notice yes (no old host), phone menu Coconala 0, profile payout/identity locked (2), no file inputs.
+  - prod/mac-menu.cjs (new; overrides navigator.platform / maxTouchPoints / userAgentData because headless Chromium reports Linux): Mac 1, Linux 0 = Q5 works.
+  - prod/walk90.cjs: rows 1 (overflow 0), 2 (tools in 3.5s), 3 (result in 3.3s), 4 (errors shown, nothing sent), 6 (3 results kept), 7 (moved to next Agent), 10 (cut + reopen keeps 3 results) pass; row 5 skipped on production by design.
+  - scripts/noah-public-walk.mjs: overflow 0 on 6 pages; small targets: only /noah 「すべて見る」 73x40. GET /api/noah/trial?me=1 404 on /noah/ready and /noah/explore is by design (NOAH_TRIAL_OPEN closed -> 本人向けは 404, lib/noah-trial-api.ts).
+- Fix for the last small target: k999ln claude/ice2/noah-store-heading-tap = 682fceab on main ca38ad01: .listHeading a min-height 40 -> 44px; tests/noah-store-heading-tap.test.mjs (fails on main, passes after); 00-index row 129 corrected (D1/D3/D4/D7/D9/D10/D11 done; left D2, D5 device rows, D6, D8, D12, D13); task 129 D7 note; CHANGELOG #HEADINGTAP. 5 checks exit 0; 11 store tests pass.
+- 追記13 queued in Codex chat 2303 (after 追記12): PR for 682fceab, replace #HEADINGTAP, merge on green, then publish main once (AGENTS.md §8 tree check, no D1 migration, 0060 unapplied) unless another thread already published a main with the fix.
+- Main is ca38ad01 (#46 merged). PR #51 (our money decisions) at b4cbd43b in CI. #52 (other thread) moved to c38c448d.
+- claude/ice2/pr41-on-main-2 is now obsolete (#41's UI reached main through #50). Kept only as reference; remove its worktree at the end.
+- 05:33: the Mac dropped off the bridge (asleep/offline) while Codex was still waiting on #51 CI; 追記12 and 追記13 stay queued in Codex chat 2303 and continue when the Mac wakes. Nothing on iceiceice999/rock can move from the cloud side (no PR/merge rights there).
+- HANDOFF.md updated with this state: k999ln claude/ice2/handoff = 5bcb953e (signed).
+- Worktrees docwt and pr41wt removed (both clean and pushed). Kept: tapwt (until the 44px fix is merged), h2wt (handoff).
+- Watchers: b3nxmqjei (main + PR heads #40-#59), bujmhx9z6 (one-shot: main moves past ca38ad01). After the 追記13 publish: rerun scripts/noah-public-walk.mjs against avoado.si (expect 「すべて見る」 >= 44px, small 0) and prod/screens.cjs + mac-menu.cjs.
+- 06:05: PR-heads watcher b3nxmqjei expired; re-armed as blk6qbyuw (same command). One-shot bujmhx9z6 still waiting for main to move past ca38ad01. Mac still off the bridge.
+- ~06:35: Mac back. The Codex app had restarted (its update notice is gone) and asked "Resume 4 chats?". Chose "Keep paused" (the other 3 belong to other threads/Noelle: likely 「当てて道具一覧を公開」「Noah収集機能を配備」「Complete Noah task 127 validation」) and opened only ours (now window 92, 「修正して avoado.si を再公開」), which resumed: Codex took 追記12 (checking the live version + #51 CI/merge in parallel).
+- New PR #53 (kaiya.kk, theater; a7e4b9f5, 53 files) also edits codex/tasks/00-index.md row 129 (appends 「。✅ シアターの上映と保存導線」), CHANGELOG and 129-noah-ux-debug.md. Queued 追記14: if #53 lands first, row 129 = our status sentence + 「。✅ シアターの上映と保存導線」; CHANGELOG / 129 file keep both; do not touch #53.
+
+Update 07:10 (11-24)
+- Noelle 07:00-07:03: 「結局稼ぐやつ全部試してみて収益化の利益の平均を取って」 (+ healthcare = goal-type agents, would like ~800 yen/month), 「オープンソースのエージェントってさ、今何があるんやろ…調べてみよう」, 「Git 上がった？ ここまで全部あげて」, 「まず今の状態でgitあげて／で最後までやって／で終わったやつをまたgitにあげて／どのgitがわかってる？接続してる？」. She also typed 「これgitにあげて」 in 前提!A1 (sheet revision 12; 14 now, inputs unchanged).
+- Git: iceiceice999/rock is the real repo. This session cannot attach it (add_repo refuses: k999ln/rock has the same name). Route = push to k999ln/rock claude/ice2/* -> Codex (Mac) opens PR on iceiceice999/rock and merges.
+- PR #51 merged: main 71014dfd.
+- Sheet -> Git: rebuilt the sheet's model in Python (scratchpad/profit/model.py), matched 504 values of the sheet (0 mismatches), generated docs/noah/trial-300-profit.md (+ docs/noah/README.md row 114 link, CHANGELOG #TRIALPROFIT). k999ln claude/ice2/noah-trial-profit = 67421771 (signed). 5 checks exit 0; doc tests 17/19 (2 fail on main too: typescript package missing in this checkout).
+- Next: notes + prod check scripts to the handoff branch; 追記15 to Codex (PR + merge of noah-trial-profit); then the earning-blueprint average and the open-source agent survey; push results again.

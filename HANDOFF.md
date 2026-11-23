@@ -27,7 +27,15 @@ Claude のセッションには k999ln/rock（旧リポジトリ）が付いて�
 
 main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった。5〜7 は、それを merge 済み（ぶつかった所は Claude が解いた。応答の見出しの確かめも測り直した）。1〜3 はぶつからない。4 は `CHANGELOG.md` だけがぶつかる（`tools/merge-changelog.py` で両方の行を残せる）。どの枝も migration を足していない（`drizzle/` を触っていない）。
 
-## 今の状態（11-24 05:35。これが最新）
+## 今の状態（11-24 07:10。これが最新）
+
+- PR #51（300 人の試行のお金の決め）はマージ済み（main `71014dfd`）。Mac が戻り、Codex のアプリが更新で再起動していた。「4 つのチャットを再開するか」は「止めたまま」を選び、こちらのチャット（「修正して avoado.si を再公開」、窓 92）だけ開いて再開した。ほかの 3 つ（「当てて道具一覧を公開」「Noah収集機能を配備」「Complete Noah task 127 validation」）は止まったまま。本人が開けば動く。
+- Codex に並んでいる: 追記12（公開の版の確かめ）→ 追記13（44px の直しの PR・マージ・main から 1 回公開）→ 追記14（#53 と 00-index の 129 の行がぶつかった時の解き方）。
+- 本人（07:03）「まず今の状態でgitあげて／で最後までやって／で終わったやつをまたgitにあげて」。表「Noah 300人の利益試算」を `docs/noah/trial-300-profit.md` に写した: `claude/ice2/noah-trial-profit`（`67421771`。CHANGELOG の印 `TRIALPROFIT`）。表の式を組み直した計算（`tools/profit-model/model.py`）が表の値 504 個と一致。
+- ノート（`notes/2026-11-22/` の progress.txt・tests.json・init.sh）と、本番の確かめの道具（`tools/prod-checks/`。受入・画面・Mac のメニュー・一周。Cookie の file は入れない）をこの枝に置いた。
+- 次（本人の 07:00 の頼み）: 稼ぐ設計図（spec-122 の 470 件）を全部試した時の利益の平均、オープンソースのエージェントの今の一覧と、もっと良い組み合わせ。終わったら、またこの枝と PR に上げる。
+
+## 今の状態（11-24 05:35）
 
 - **公開は済んだ**: 別スレッドの PR #50（noah-sites-v227-reconcile）が #41 の画面を main に入れ（main `06bfe89e`。Q4 の `noahCardOrigin` は残った）、05:18 ごろ別スレッドが main から avoado.si を出した。#41 待ちは終わり。`claude/ice2/pr41-on-main-2` はもう要らない。
 - 本番で確かめた（Claude、05:18〜05:26）: entitlement-deliveries 401（main の版）、受入 16/16、一周の行 1・2・3・4・6・7・10（5 は本番では送らない）、画面（検索「画像」3 件・広告の表示・スマホのメニューにココナラ無し・受取口座と本人確認はサインインした本人だけ）、Mac だけのメニュー（Mac 1・Linux 0）、6 画面ではみ出し 0。`/api/noah/trial?me=1` の 404 は、試行の切り替えが閉じているからで、決めた通り（`lib/noah-trial-api.ts`）。

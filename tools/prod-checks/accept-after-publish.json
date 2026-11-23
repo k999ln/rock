@@ -1,0 +1,103 @@
+{
+ "base": "https://avoado.si",
+ "at": "2026-11-23T20:22:02.552Z",
+ "steps": [
+  {
+   "step": "session",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "profile-read",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "search 画像",
+   "ok": true,
+   "total": 120
+  },
+  {
+   "step": "search 翻訳",
+   "ok": true,
+   "total": 12
+  },
+  {
+   "step": "search 要約",
+   "ok": true,
+   "total": 12
+  },
+  {
+   "step": "noah-ad-notice",
+   "ok": true,
+   "count": 1,
+   "notices": [
+    "noah-ad"
+   ]
+  },
+  {
+   "step": "connect Cloud World Model",
+   "ok": true,
+   "status": 200,
+   "state": "connected"
+  },
+  {
+   "step": "tools Cloud World Model",
+   "ok": true,
+   "status": 200,
+   "count": 10,
+   "chosen": "scenario.list"
+  },
+  {
+   "step": "ask Cloud World Model",
+   "ok": true,
+   "status": 202
+  },
+  {
+   "step": "result Cloud World Model",
+   "ok": true,
+   "state": "succeeded",
+   "chars": 4430,
+   "sample": "{\"scenarios\":[{\"id\":\"aks-multi-fault-cascade\",\"scenarioId\":\"aks-multi-fault-casc"
+  },
+  {
+   "step": "disconnect Cloud World Model",
+   "ok": true,
+   "status": 200,
+   "state": "disconnected"
+  },
+  {
+   "step": "board-create",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "board-remove",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "profile-save",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "profile-bank-refused",
+   "ok": true,
+   "status": 403,
+   "error": "お金の受取口座と本人確認の書類は、サインインした本人だけが保存できます。このブラウザだけの保存先は、同じ端末を使う人が開けるためです。"
+  },
+  {
+   "step": "profile-clear",
+   "ok": true,
+   "status": 200
+  }
+ ],
+ "asked": {
+  "item": "Cloud World Model",
+  "tool": "scenario.list",
+  "state": "succeeded"
+ },
+ "passed": 16,
+ "failed": []
+}

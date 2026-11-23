@@ -1,0 +1,8 @@
+/noah: overflow 0px; small 1 — A"すべて見る" 73x40
+/noah/ready: overflow 0px; small 0
+   API >= 400: GET /api/noah/trial?me=1 404
+/noah/explore: overflow 0px; small 0
+   API >= 400: GET /api/noah/trial?me=1 404
+/noah/profile: overflow 0px; small 0
+/noah/saved: overflow 0px; small 0
+/noah/activity: overflow 0px; small 0

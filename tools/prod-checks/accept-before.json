@@ -1,0 +1,140 @@
+{
+ "base": "https://avoado.si",
+ "at": "2026-11-23T13:54:31.214Z",
+ "steps": [
+  {
+   "step": "session",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "profile-read",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "search 画像",
+   "ok": true,
+   "total": 4
+  },
+  {
+   "step": "search 翻訳",
+   "ok": true,
+   "total": 2
+  },
+  {
+   "step": "search 要約",
+   "ok": false,
+   "total": 0
+  },
+  {
+   "step": "noah-ad-notice",
+   "ok": false,
+   "count": 1,
+   "notices": [
+    null
+   ]
+  },
+  {
+   "step": "connect CCAPI",
+   "ok": true,
+   "status": 200,
+   "state": "connected"
+  },
+  {
+   "step": "tools CCAPI",
+   "ok": true,
+   "status": 200,
+   "count": 11,
+   "chosen": "get_balance"
+  },
+  {
+   "step": "ask CCAPI",
+   "ok": true,
+   "status": 202
+  },
+  {
+   "step": "result CCAPI",
+   "ok": false,
+   "state": "failed",
+   "chars": 0,
+   "sample": "",
+   "error": "この Agent は、相手の許可が要るようになりました。まだ対応していません。"
+  },
+  {
+   "step": "disconnect CCAPI",
+   "ok": true,
+   "status": 200,
+   "state": "disconnected"
+  },
+  {
+   "step": "connect Carfinity car marketplace",
+   "ok": true,
+   "status": 200,
+   "state": "connected"
+  },
+  {
+   "step": "tools Carfinity car marketplace",
+   "ok": true,
+   "status": 200,
+   "count": 7,
+   "chosen": "list_markets"
+  },
+  {
+   "step": "ask Carfinity car marketplace",
+   "ok": true,
+   "status": 202
+  },
+  {
+   "step": "result Carfinity car marketplace",
+   "ok": true,
+   "state": "succeeded",
+   "chars": 11192,
+   "sample": "- New York, NY (new-york-ny): 183,738 cars\n- Los Angeles, CA (los-angeles-ca): 1"
+  },
+  {
+   "step": "disconnect Carfinity car marketplace",
+   "ok": true,
+   "status": 200,
+   "state": "disconnected"
+  },
+  {
+   "step": "board-create",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "board-remove",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "profile-save",
+   "ok": true,
+   "status": 200
+  },
+  {
+   "step": "profile-bank-refused",
+   "ok": false,
+   "status": 200
+  },
+  {
+   "step": "profile-clear",
+   "ok": false,
+   "status": 409
+  }
+ ],
+ "asked": {
+  "item": "Carfinity car marketplace",
+  "tool": "list_markets",
+  "state": "succeeded"
+ },
+ "passed": 16,
+ "failed": [
+  "search 要約",
+  "noah-ad-notice",
+  "result CCAPI",
+  "profile-bank-refused",
+  "profile-clear"
+ ]
+}

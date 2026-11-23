@@ -1,0 +1,50 @@
+{
+ "base": "https://avoado.si",
+ "at": "2026-11-23T20:22:23.243Z",
+ "rows": {
+  "1": {
+   "overflowPx": 0
+  },
+  "2": {
+   "agent": "www.cloudworldmodel.ai · スマホで今すぐ",
+   "url": "https://avoado.si/noah/discover/agent?id=project-8bf42c1b5e18eb2225d30f6220c40b3f2236ad677d64c517ceea0ed8a1cb832a",
+   "secondsToTools": 3.462,
+   "stayedOnScreen": true,
+   "ok": true
+  },
+  "3": {
+   "tool": "scenario.list",
+   "secondsToResult": 3.341,
+   "ok": true
+  },
+  "4": {
+   "tool": "scenario.get",
+   "fields": [
+    "入力内容 (scenarioId) *"
+   ],
+   "errorsShown": 2,
+   "nothingSent": true
+  },
+  "5": {
+   "skipped": "本番では送らない。手元の試験で確かめる"
+  },
+  "6": {
+   "resultsInWorkList": 3,
+   "ok": true
+  },
+  "7": {
+   "movedTo": "mcp.cloudbrowser.ai · スマホで今すぐ",
+   "url": "https://avoado.si/noah/discover/agent?id=project-7725e8920c23ad64a3a37077a9ef3e8497794f8bf251ffaad2411081a223b9d3",
+   "ok": true
+  },
+  "10": {
+   "pressed": true,
+   "resultsKept": 3,
+   "connectedHeadingOnReady": 0,
+   "ok": true
+  }
+ },
+ "notes": [
+  "closed at 2026-11-23T20:23:46.164Z"
+ ]
+}
