@@ -1,4 +1,5 @@
 ## 2026-11-23
+- Noahに、Agent名を知らずに目的から依頼と成果再表示へ進む入口を追加。画面・API・保存先・初見利用者での検証方法を[構造図](docs/noah/first-use-architecture.md)に記録。
 - Noahの「接続できる」検索に、有効な実行環境で対応している公式CLIを含める。詳細と同じ配布元・profile判定で、未設定や類似URLを除外し、カードの保存・評価IDとデザインを保持（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。
 - Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正 [PR #21](https://github.com/iceiceice999/rock/pull/21)）。
 - Noahの進捗を現main・旧PRの祖先・既存本番受入記録と照合し、task索引・project.md・README・進捗JSON・H1の次作業を同期。未確認の運用・集客・実機受入は残件として保持（[PR #20](https://github.com/iceiceice999/rock/pull/20)）。
