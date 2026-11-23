@@ -83,8 +83,9 @@ export default function NoahCloudAgent({ projectId, profile, providerFamilyId }:
           <div className={styles.connected}><span>{t('接続済み')}</span><button disabled={pending} onClick={() => void act('disconnect')}>{t('切断')}</button></div>
           <form onSubmit={event => { event.preventDefault(); void act('start'); }}>
             <label htmlFor={`cloud-prompt-${profile}`}>{profile === 'boss' ? '面接を準備したい求人票' : profile === 'memory' ? t('整理したいメモ') : '何をしてほしいですか'}</label>
-            <textarea id={`cloud-prompt-${profile}`} value={prompt} maxLength={12000} onChange={event => { setPrompt(event.target.value); setConfirmation(null); }} placeholder={profile === 'boss' ? '求人票の仕事内容・応募条件を貼り付ける' : profile === 'time' ? '例: 東京の現在時刻とロンドンとの時差を教えて' : profile === 'thinking' ? '例: 小さなサービスを公開するまでの作業順を整理して' : profile === 'memory' ? t('例：春の展示会は田中さんが会場、森さんが招待状を担当。人と担当の関係をまとめて。') : '例: 1200と800の合計を計算し、total.txtに保存して'} rows={5} disabled={pending} />
+            <textarea id={`cloud-prompt-${profile}`} value={prompt} maxLength={12000} onChange={event => { setPrompt(event.target.value); setConfirmation(null); }} placeholder={profile === 'boss' ? '求人票の仕事内容・応募条件を貼り付ける' : profile === 'time' ? '例: 東京の現在時刻とロンドンとの時差を教えて' : profile === 'hermes' ? '例: 小さなサービスを公開する3工程の計画を作り、重要な条件をメモして' : profile === 'thinking' ? '例: 小さなサービスを公開するまでの作業順を整理して' : profile === 'memory' ? t('例：春の展示会は田中さんが会場、森さんが招待状を担当。人と担当の関係をまとめて。') : '例: 1200と800の合計を計算し、total.txtに保存して'} rows={5} disabled={pending} />
             <button className={styles.primary} disabled={pending || !prompt.trim() || state.jobs.some(active)}>{t(pending ? '受付中…' : '依頼する')}</button>
+
           </form>
         </> : <><button className={styles.primary} disabled={pending} onClick={() => void act('connect')}>{t(pending ? '接続中…' : '接続して使う')}</button>{state.connection?.error && <p role="alert">{t(state.connection.error)}</p>}</>}
         {!!state.jobs.length && <div className={styles.history}><h3>{t('依頼と結果')}</h3>{state.jobs.map(job => <article key={job.id}>

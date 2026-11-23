@@ -3,7 +3,7 @@ import { createServer as thinking } from '@modelcontextprotocol/server-sequentia
 import { createServer as filesystem } from '@modelcontextprotocol/server-filesystem/dist/server.js';
 import { Client } from '@modelcontextprotocol/client';
 import { promises as fs, constants } from 'node:fs';
-import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS as limits, NOAH_FREE_CLOUD_PROFILES, noahCloudDigest } from '../../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS as limits, noahCloudDigest } from '../../lib/noah-cloud-contract.ts';
 
 const workspace = '/tmp/workspace';
 const filesystemTools = new Set(['read_text_file', 'write_file', 'append_file', 'edit_file', 'create_directory', 'list_directory', 'directory_tree', 'get_file_info', 'list_allowed_directories']);
@@ -22,7 +22,7 @@ function compactSchema(value) {
   return Object.fromEntries(Object.entries(value).filter(([key]) => !['description', 'examples', '$schema'].includes(key)).map(([key, val]) => [key, compactSchema(val)]));
 }
 export async function officialSession(profile) {
-  if (!NOAH_FREE_CLOUD_PROFILES.includes(profile)) throw Error('unsupported_profile');
+  if (!['memory', 'thinking', 'filesystem'].includes(profile)) throw Error('unsupported_profile');
   await fs.mkdir(workspace, { recursive: true });
   const server = profile === 'memory' ? memory(`${workspace}/memory.jsonl`, 'legacy', undefined, { maxEntities: 100, maxRelations: 200, maxFileBytes: limits.fileBytes }) : profile === 'thinking' ? thinking() : filesystem([workspace]);
   const client = new Client({ name: 'noah-free-cloud', version: '1.0.0' });
@@ -74,7 +74,7 @@ export async function officialSession(profile) {
     };
   } catch (error) { await client.close(); await server.close(); throw error; }
 }
-export async function executionFile(profile, operations) {
-  const text = JSON.stringify({ profile, version: NOAH_CLOUD_PROFILES[profile].version, distribution: NOAH_CLOUD_PROFILES[profile].sha256, runtime: 'official-mcp-workers', operations });
+export async function executionFile(profile, operations, runtime = 'official-mcp-workers') {
+  const text = JSON.stringify({ profile, version: NOAH_CLOUD_PROFILES[profile].version, distribution: NOAH_CLOUD_PROFILES[profile].sha256, runtime, operations });
   return { name: 'noah-execution.json', base64: Buffer.from(text).toString('base64'), bytes: new TextEncoder().encode(text).length, sha256: await noahCloudDigest(text) };
 }

@@ -6,11 +6,19 @@
 
 rootで `npm ci --ignore-scripts`、このディレクトリで固定Wranglerの `deploy --config ./wrangler.free.jsonc` を使う。DockerとContainersは不要。`build-free.mjs` は固定npmの公式MCP factoryを梱包し、版情報の動的requireとimport.meta.urlの梱包先のみ補正する。Toolの実装・パス検査は変更しない。公式Thinkingの入力ログは公開オプションで無効化する。
 
-Workers Freeの旧accountへ `noah-free-cloud-agents` を配置する。Noahのsecretと同じ `NOAH_CLOUD_KEY`、Sitesへ `NOAH_CLOUD_URL=https://noah-free-cloud-agents.mr-kirin999.workers.dev` と `NOAH_CLOUD_MODE=free` を設定し、対応3種だけを公開する。URL/keyだけで有効化せず、必ずmodeも同時設定する。Noahに入力した本文は実モデルへ送信し、元のWorkに保存される。追加の課金・Gateway・有料モデルは使わない。
+Workers Freeの旧accountへ `noah-free-cloud-agents` を配置する。Noahのsecretと同じ `NOAH_CLOUD_KEY`、Sitesへ `NOAH_CLOUD_URL=https://noah-free-cloud-agents.mr-kirin999.workers.dev` と `NOAH_CLOUD_MODE=free` を設定し、検証を通した6種の対応範囲だけを公開する。URL/keyだけで有効化せず、必ずmodeも同時設定する。Noahに入力した本文は実モデルへ送信し、元のWorkに保存される。追加の課金・Gateway・有料モデルは使わない。
 
 全体10件/UTC日・本人3件/日・同時2件・モデル4回/応答1024tokens・入力32768bytes、既存240秒/成果上限を保持。Cloudflareの共有無料枠が先に尽きた場合もエラーで停止する。alarmが仕事を開始し、結果だけを既存callbackへ送る。停止は以後のモデル/Tool開始とlate結果の採用を閉じる。すでに提供元が開始したモデル計算の物理中断は保証しない。
 
 検証はrootで `node --experimental-strip-types --test tests/noah-free-cloud.test.mjs tests/noah-cloud-runtime.test.mjs tests/noah-cloud-api.test.mjs`。公式本体・SQLite alarm・呼出と停止競合・期限・隔離・配布版・実成果hashを検査する。旧コンテナ版は以下に残し、追加料金なしの依頼では配備しない。
+
+## 公式Pythonの無料実行
+
+`python/` はTime 2026.11.18、boss 3.4.151、Hermes 0.19.0の固定wheelを使用する。`python3 prepare.py` で配布物SHA-256を照合し、公式ソースを改変せず梱包する。Hermesの対話画面・メッセージ連携の任意モジュールだけを除外する。対応はTimeの公式3ツール、bossの `ai interview-prep`（質問5件）、Hermesの公式AIAgent＋todo/memory。モデル輸送を同じ無料Workers AIへのRPCに置き換え、モデル回数・入力・期限・停止は従来の依頼で一元管理する。`run_sync` でモデル応答を待つ間も親DOの停止gateを占有しない。
+
+固定Wranglerはこのサービスの `npm ci` で用意する。Python 3.13以上とuv 0.13.4以上で `python/` 内から `uv sync --locked`、`uv run pywrangler sync`、`python3 prepare.py`。依存はuv.lock/pylock.tomlを保持し、更新する場合は再検証する。`uv run pywrangler deploy --config ./wrangler.jsonc` で先に非公開Python Workerを配置し、続けてこのサービスの `wrangler deploy --config ./wrangler.free.jsonc` でbindingを結線する。Python Workerに公開URL・モデル鍵・一般外部通信を渡さない。既存無料アカウントを固定し、D1 migrationやプラン変更は不要。
+
+rootの `node scripts/test-noah-python-cloud.mjs` はローカルworkerdで公式3種、ファイルhash、同一isolateの次の依頼の空のtodo/メモ、再送、停止、不正Tool、bossの先頭@入力を検証する。固定モデルの試験であり本番受入とは区別する。`NOAH_PYTHON_WRANGLER` で固定Wranglerの絶対パスを指定できる。通常回帰には `tests/noah-free-python.test.mjs` を含め、RPC経由の4回上限・遅延結果・時間切れ・Time停止を検証する。
 
 ## 配備
 
