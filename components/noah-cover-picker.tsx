@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
+import { Check, ImagePlus, Images, Minus, Sparkles } from 'lucide-react';
 import { NOAH_COVER_LIMIT, NOAH_COVER_TYPES } from '@/lib/noah-cover';
 import css from './noah-cover-picker.module.css';
 
@@ -91,11 +92,16 @@ export default function NoahCoverPicker({ name, summary, id, value, onChange, ex
 
   return <fieldset className={css.picker}>
     <legend>Agentの表紙</legend>
-    <div className={css.options}>
-      <label><input type="radio" name={group} checked={value.kind === 'upload'} onChange={() => choose({ kind: 'upload' })} />自分の画像・動画を使う</label>
-      <label><input type="radio" name={group} checked={value.kind === 'generate'} onChange={() => void generate()} />おまかせで動画を作る</label>
-      {existing && <label><input type="radio" name={group} checked={value.kind === 'existing'} onChange={() => choose({ kind: 'existing' })} />登録済みの表紙を使う</label>}
-      <label><input type="radio" name={group} checked={value.kind === 'later'} onChange={() => choose({ kind: 'later' })} />表紙を指定しない</label>
+    <div className={css.options} data-existing={Boolean(existing)}>
+      {([
+        { kind:'upload', label:'自分の画像・動画を使う', title:'画像・動画', Icon:ImagePlus },
+        { kind:'generate', label:'おまかせで動画を作る', title:'おまかせ生成', Icon:Sparkles },
+        ...(existing ? [{ kind:'existing' as const, label:'登録済みの表紙を使う', title:'登録済み', Icon:Images }] : []),
+        { kind:'later', label:'表紙を指定しない', title:'表紙なし', Icon:Minus },
+      ] as const).map(({kind,label,title,Icon}) => <label key={kind} data-selected={value.kind === kind}>
+        <input type="radio" name={group} checked={value.kind === kind} onChange={() => kind === 'generate' ? void generate() : choose({kind})} />
+        <Icon size={20} strokeWidth={1.8} aria-hidden="true" /><span aria-hidden="true">{title}</span><span className={css.srOnly}>{label}</span>
+      </label>)}
     </div>
     {value.kind === 'upload' && <label className={css.upload}>画像・動画を選ぶ
       <input type="file" accept={formats.join(',')} onChange={event => chooseFile(event.currentTarget.files?.[0])} />
@@ -110,9 +116,10 @@ export default function NoahCoverPicker({ name, summary, id, value, onChange, ex
       {media.type.startsWith('video/') ? <video aria-label="Agentの表紙動画のプレビュー" src={media.src} controls muted playsInline preload="metadata" /> :
         /* oxlint-disable-next-line next/no-img-element -- The preview reads a selected local Blob or a private authenticated original. */
         <img src={media.src} alt="Agentの表紙のプレビュー" />}
-      <figcaption>表紙のプレビュー</figcaption>
-      {value.kind === 'generate' && (value.accepted ? <output>この動画を表紙に使います</output> :
-        <button type="button" onClick={() => onChange({ ...value, accepted:true })}>この動画を使う</button>)}
+      <figcaption><span>表紙のプレビュー</span>
+        {value.kind === 'generate' && (value.accepted ? <output><Check size={15} aria-hidden="true" />この動画を表紙に使います</output> :
+          <button type="button" onClick={() => onChange({ ...value, accepted:true })}>この動画を使う</button>)}
+      </figcaption>
     </figure>}
     {error?.brief === brief && <p role="alert">{error.text}</p>}
   </fieldset>;
