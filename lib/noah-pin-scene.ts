@@ -43,6 +43,12 @@ export type NoahPinTemplate = keyof typeof NOAH_PIN_TEMPLATES;
 /** 1 枚の絵。 */
 export type NoahPinScene = { template: NoahPinTemplate; labels: string[]; parts: string[]; variant: string | null };
 
+/**
+ * 絵の右上の、何も置かない所（幅 300 の絵の座標。x より右で、かつ y より上）。グリッドの保存のボタンが、スマホの 2 列（カードの幅 約 160px〜）で覆う所。
+ * 型を足す時も、札・✓・地図のピン・硬貨のような大事な形は、ここに置かない（字が入らない事は tests/noah-pin-scene.test.mjs が確かめる）。
+ */
+export const NOAH_PIN_KEEP_OUT = { x: 195, y: 100 } as const;
+
 /** 札の言葉の長さの上限（字の数。英字・数字・記号は 0.6 字で数える）。スマホの 2 列で、札が絵からはみ出さない長さ。 */
 export const NOAH_PIN_LABEL_MAX = 8;
 /** 吹き出し・単語の言葉は、少し長くてよい（字の数。数え方は同じ）。 */

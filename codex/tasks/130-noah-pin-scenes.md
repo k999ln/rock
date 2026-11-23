@@ -13,7 +13,7 @@
 | 物 | 場所 | 中身 |
 | --- | --- | --- |
 | 絵の形 | `lib/noah-pin-scene.ts` | 場面の型 16 個（`NOAH_PIN_TEMPLATES`）。型ごとに、札の言葉の数・部品・種類が決まっている。座標は書かない。`parseNoahPinScene`（絵だけ）と `parseNoahPin`（題・入れる物・返る物・絵の 1 枚）で確かめる。AI に渡す型の説明は `noahPinTemplateGuide()` |
-| 描く部品 | `components/noah-pin-scene.tsx` | 型と札から、幅 300 の SVG を描く。外の画像・字・部品は使わない。右上（保存の押す所）には何も置かない |
+| 描く部品 | `components/noah-pin-scene.tsx` | 型と札から、幅 300 の SVG を描く。外の画像・字・部品は使わない。右上（保存の押す所。`NOAH_PIN_KEEP_OUT`）には何も置かない。画面に入った時に 1 回だけ、型の仕事を演じて止まる（本人の決定 2026-11-24「画面に入った時に1回」。動き方は `components/noah-pin-scene.module.css`）。動きは型が持つので、Luna Max が書く JSON は変わらない |
 | 見本 17 枚 | `lib/noah-pin-scenes-shelf.ts` | 棚の最初のカード 17 枚の絵。札は、カードの題・説明・入れる物・返る物にそのままある言葉だけ（試験が確かめる）。**AI に渡す見本はこれ** |
 | グリッド | `components/noah-pin-grid.tsx` | カードに `pin`（`NoahAgentCard.pin`）がある時は、場面の絵・日本語の題・「入れる物 → 返る物」を出す。無い時は今のまま（名前・説明・頭文字の面） |
 | 棚 | `components/noah-shelf.tsx` | 17 枚のカードの上に場面の絵 |
@@ -55,6 +55,7 @@
 ### 2.5 型が足りない時
 - `skip` の `no_template` が全体の 10% を超えたら、多い物から型を足す（`lib/noah-pin-scene.ts` の表と `components/noah-pin-scene.tsx` の両方。試験も）。足した型は、本人に画面を見せてから使う。
 - 絵柄（淡い空と地面・紺の髪と黄色い服の人・白い札・影なし）は変えない。札の字は幅 300 のうち 19 以上（スマホの 2 列で 11px 以上）。
+- 足した型にも、画面に入った時に 1 回演じる動く部分を 1 つ以上入れる（`<M>` で囲む。動かすのは形・透明度・線の描き足しだけ）。札・✓・地図のピンのような大事な形は、右上の `NOAH_PIN_KEEP_OUT` に置かない。どちらも `tests/noah-pin-scene.test.mjs` が確かめる。
 
 ## 3. 合格条件
 - グリッドの 1 頁目（30 件）の全部に `pin` が出る（審査者の表示で）。

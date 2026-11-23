@@ -99,7 +99,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
         data-topic={item.topic} data-shape={item.shape} aria-label={item.name}>
         <a className={styles.face} href={href}>
           {item.pin && !store
-            ? <span className={styles.scene} aria-hidden="true"><NoahPinSceneArt scene={item.pin.scene} /></span>
+            ? <span className={styles.scene} aria-hidden="true"><NoahPinSceneArt scene={item.pin.scene} ready={Boolean(at)} /></span>
             : <span className={styles.panel} aria-hidden="true"><span className={styles.initials}>{noahPinInitials(item.name)}</span><span className={styles.topicLabel}>{NOAH_PIN_TOPIC_LABELS[item.topic]}</span></span>}
           <div className={styles.pinCopy}><strong className={styles.name}>{item.pin?.title ?? item.name}</strong>
           {item.pin ? <span className={styles.summary}>{item.pin.give} → {item.pin.get}</span> : item.summary && <span className={styles.summary}>{item.summary}</span>}

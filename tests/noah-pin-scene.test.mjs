@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { runInThisContext } from 'node:vm';
 import ts from 'typescript';
-import { NOAH_PIN_PARTS, NOAH_PIN_TEMPLATES, noahPinTemplateGuide, parseNoahPin, parseNoahPinScene } from '../lib/noah-pin-scene.ts';
+import { NOAH_PIN_KEEP_OUT, NOAH_PIN_LABEL_MAX, NOAH_PIN_PARTS, NOAH_PIN_TEMPLATES, NOAH_PIN_WORD_MAX, noahPinLabelWidth, noahPinTemplateGuide, parseNoahPin, parseNoahPinScene } from '../lib/noah-pin-scene.ts';
 import { NOAH_SHELF_SCENE_SOURCE, NOAH_SHELF_SCENES } from '../lib/noah-pin-scenes-shelf.ts';
 import * as sceneLib from '../lib/noah-pin-scene.ts';
 
@@ -17,7 +17,8 @@ function loadArt() {
   const code = ts.transpileModule(readFileSync(new URL('../components/noah-pin-scene.tsx', import.meta.url), 'utf8'),
     { compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS } }).outputText;
   const unit = { exports: {} };
-  const local = (id) => (id === '@/lib/noah-pin-scene' ? sceneLib : require(id));
+  // CSS の部品は、画面の試験の台と同じく、組の名前をそのまま返す（className に「m pop」のように出る）。
+  const local = (id) => (id === '@/lib/noah-pin-scene' ? sceneLib : id.endsWith('.module.css') ? { default: new Proxy({}, { get: (_, name) => String(name) }) } : require(id));
   runInThisContext(`(function (exports, require, module) {${code}\n})`)(unit.exports, local, unit);
   return unit.exports.default;
 }
@@ -84,6 +85,52 @@ void test('every template draws: labels appear, numbers never break, and the hei
     assert.ok((svg.match(/<(rect|path|circle|ellipse|polygon|line|text)\b/g) ?? []).length >= 9 + 2 * 2, `${part} が描かれていない`);
   }
   for (const scene of Object.values(NOAH_SHELF_SCENES)) assert.ok(!/NaN|undefined/.test(draw(scene)));
+});
+
+void test('every template acts out its job once: a moving part, a still picture by default, and only light properties animate', () => {
+  const motion = readFileSync(new URL('../components/noah-pin-scene.module.css', import.meta.url), 'utf8');
+  const source = readFileSync(new URL('../components/noah-pin-scene.tsx', import.meta.url), 'utf8');
+  const sample = (template, spec, variant) => ({ template, labels: Array.from({ length: spec.labels }, (_, i) => `札${i + 1}`), parts: (spec.parts ?? []).map((choices) => choices[0]), variant });
+  for (const [template, spec] of Object.entries(NOAH_PIN_TEMPLATES)) {
+    for (const variant of spec.variants ?? [null]) {
+      const svg = draw(sample(template, spec, variant));
+      // 動く部分が 1 つ以上ある（その型の仕事を演じる）。
+      assert.match(svg, /class="m (pop|rise|slide|draw|grow|drop|scan|arc|pull)"/, `${template}/${variant}: 動く部分が無い`);
+      // サーバーで描いた絵は止まった絵（data-motion は、画面に入るのを待つ時に、画面の側で付ける）。
+      assert.ok(!svg.includes('data-motion'), `${template}/${variant}: 初めから動く印がある`);
+      assert.match(svg, /^<svg class="art"/);
+    }
+  }
+  // 線を描く動きで囲む線には、長さ 1 の印がある（無いと点線になる）。
+  for (const svg of Object.entries(NOAH_PIN_TEMPLATES).map(([template, spec]) => draw(sample(template, spec, spec.variants?.[0] ?? null)))) {
+    for (const [, inner] of svg.matchAll(/<g class="m draw"[^>]*>(<[^>]+>)/g)) assert.match(inner, /pathLength="1"/, inner);
+  }
+  // 使った動き方は、全部 CSS にある。キーフレームで動かすのは、形（transform）・透明度・線の描き足しだけ（重い描き直しを起こさない）。
+  for (const [, kind] of source.matchAll(/k="(\w+)"/g)) assert.match(motion, new RegExp(`\\.art\\[data-motion\\] \\.${kind} \\{[^}]*animation-name: \\w+`), kind);
+  const frames = [...motion.matchAll(/@keyframes \w+ \{(.*)\}\n/g)].map(([, body]) => body);
+  assert.ok(frames.length >= 9);
+  for (const body of frames) for (const [, property] of body.matchAll(/([a-z-]+):/g)) assert.ok(['opacity', 'transform', 'stroke-dashoffset'].includes(property), property);
+  // 動きを減らす設定の人には動かさない。
+  assert.match(motion, /@media \(prefers-reduced-motion: reduce\) \{ \.m \{ animation: none !important; \} \}/);
+  assert.match(source, /prefers-reduced-motion: reduce/);
+});
+
+void test('no word is drawn under the save button (top right), even with the longest labels', () => {
+  const decode = (text) => text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"');
+  const longest = (template, index) => 'あ'.repeat((template === 'speak' || template === 'word') && index === 0 ? NOAH_PIN_WORD_MAX : NOAH_PIN_LABEL_MAX);
+  for (const [template, spec] of Object.entries(NOAH_PIN_TEMPLATES)) {
+    for (const variant of spec.variants ?? [null]) {
+      for (const labels of [Array.from({ length: spec.labels }, (_, i) => `札${i + 1}`), Array.from({ length: spec.labels }, (_, i) => longest(template, i))]) {
+        const svg = draw({ template, labels, parts: (spec.parts ?? []).map((choices) => choices[0]), variant });
+        for (const [, attrs, content] of svg.matchAll(/<text ([^>]*)>([^<]*)<\/text>/g)) {
+          const number = (name) => Number(new RegExp(`${name}="([^"]+)"`).exec(attrs)?.[1]);
+          const x = number('x'), y = number('y'), size = number('font-size'), width = noahPinLabelWidth(decode(content)) * size;
+          const right = /text-anchor="middle"/.test(attrs) ? x + width / 2 : x + width, top = y - size * 0.9;
+          assert.ok(!(right > NOAH_PIN_KEEP_OUT.x && top < NOAH_PIN_KEEP_OUT.y), `${template}/${variant}: 「${decode(content)}」が保存のボタンの下（右 ${right.toFixed(0)}・上 ${top.toFixed(0)}）`);
+        }
+      }
+    }
+  }
 });
 
 void test('the guide for Luna Max lists every template with its parts and variants', () => {
