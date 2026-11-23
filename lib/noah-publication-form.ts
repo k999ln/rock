@@ -1,6 +1,10 @@
 import { createSkyToolPackageDraft, parseSkyToolPackage, type SkyToolSourceKind } from './sky-tool-package.ts';
 import { SkySubmissionError, type SkyConnectionType, type SkyPermission, type SkyPricing, type SkyExecutionTarget } from './sky-submission.ts';
 
+export function noahPublicationAgentId(ownerScope: string, uploadId: string) {
+  return `dev.noah-${ownerScope.replace('owner-v1:', '').slice(0, 16)}.agent-${uploadId}`;
+}
+
 export type PublicationField = { name: string; label: string; type: 'string' | 'number' | 'integer' | 'boolean'; required: boolean };
 export type PublicationForm = {
   id: string; version: string; name: string; summary: string; developerName: string; developerId: string;

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import EveSyncWorkspace from '@/components/eve-sync-workspace';
 import SkyChatWorkspace from '@/components/sky-chat-workspace';
 import { readSkyEveSelection } from '@/lib/sky-eve-connections';
+import { engineeringEveDraft } from '@/lib/noah-engineering-eve';
 export const metadata: Metadata = {
   title: 'Eve — RockstarOS',
   description: 'PixelでもWebでも、同じ会話・仕事・成果から続きを。',
@@ -15,6 +16,8 @@ export default async function EvePage({
 }: {
   searchParams: Promise<{
     mode?: string;
+    engineering?: string;
+    lang?: string;
     thread?: string;
     device?: string;
     deviceAgent?: string;
@@ -25,6 +28,7 @@ export default async function EvePage({
   }>;
 }) {
   const params = await searchParams;
+  const initialDraft = engineeringEveDraft(params.engineering, params.lang);
   return params.mode === 'tools' ? (
     <SkyChatWorkspace />
   ) : (
@@ -36,7 +40,9 @@ export default async function EvePage({
         params.modelHash,
         params.runtime,
         params.modelScheme,
+        initialDraft,
       ].join(':')}
+      initialDraft={initialDraft}
       initialSelection={readSkyEveSelection(params)}
       initialThreadId={
         params.thread && /^[a-f0-9-]{36}$/.test(params.thread)

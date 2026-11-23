@@ -1,0 +1,38 @@
+.page {
+  --ink: #28231f;
+  --accent: #a44208;
+  --line: #e5ded7;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  padding: clamp(14px, 3vw, 34px) clamp(16px, 4vw, 48px) 64px;
+  color: var(--ink);
+}
+.heading { margin: 0 0 clamp(20px, 3vw, 30px); }
+.heading h1 { font-size: clamp(1.7rem, 4vw, 2.95rem); font-weight: 750; line-height: 1.18; letter-spacing: -.045em; margin: 6px 0 0; overflow-wrap: anywhere; }
+.back, .textLink, .empty a, .next { display: inline-flex; min-height: 44px; align-items: center; gap: .45rem; text-decoration: none; }
+.back { color: var(--accent); font-size: .92rem; font-weight: 640; }
+.actions { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-block: 1px solid var(--line); margin: 22px 0; }
+.actions a { color: var(--ink); display: grid; grid-template-columns: 1fr auto; gap: .65rem .3rem; padding: 17px 13px; position: relative; text-decoration: none; font-weight: 650; line-height: 1.4; }
+.actions a + a { border-inline-start: 1px solid var(--line); }
+.actions .icon { grid-column: 1 / -1; color: var(--accent); }
+.actions .arrow { align-self: center; color: #78675a; }
+.actions a[aria-current], .actions a:hover { background: #fff4e9; }
+.actions a[aria-current] { box-shadow: inset 0 -3px #d9681f; }
+.work { scroll-margin-block-start: 22px; min-width: 0; }
+.work > h2 { font-size: clamp(1.35rem, 3vw, 1.85rem); margin: 22px 0 17px; line-height: 1.25; }
+.select { display: grid; gap: 6px; font-weight: 600; margin: 12px 0 22px; max-width: 33rem; }
+.select select { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid #b9afa7; border-radius: 9px; color: var(--ink); background: white; font: inherit; }
+.textLink, .empty a { color: var(--accent); font-weight: 640; }
+.empty p { margin: 0; }
+.empty a { margin-inline-end: 20px; }
+.next { background: var(--accent); color: white; padding: 2px 16px; border-radius: 9px; margin: 16px 0 4px; font-weight: 650; }
+.status button { min-height: 44px; }
+.page :is(a,select,button):focus-visible { outline: 3px solid #ba540f; outline-offset: 2px; }
+@media (max-width: 680px) {
+  .actions { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .actions a { padding: 14px 12px; }
+  .actions a:nth-child(3) { border-inline-start: 0; }
+  .actions a:nth-child(n + 3) { border-block-start: 1px solid var(--line); }
+}

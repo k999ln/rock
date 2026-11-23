@@ -18,9 +18,19 @@ export { permissionLabels };
 /** コードを保存した Agent が動く場所（決め: 2026-11-23、本人「好きにしていいよ」。使い勝手の確かめ 9 章の Q1）。 */
 const NOAH_SOURCE_RUNS_ON = 'コードを保存したAgentは、自分のMacのNoahで動きます（Noahの専用環境で動かせるのは、運営が確認したパッケージだけです）。スマホやブラウザだけでは、まだ動かせません。スマホから使うAgentは「MCPサーバーに接続する」か「専用のWeb画面を開く」を選んでください。';
 
-export default function NoahAgentUploadForm() {
+type UploadFormProps = {
+  engineeringMode?: 'create' | 'connect';
+  onRegistered?: (id: string) => void;
+};
+function blankManifest(connect: boolean): NoahAgentManifest {
+  return { ...noahAgentTemplate, name: '', summary: '', author: '', adapter: connect ? 'mcp_http' : 'source', endpointUrl: null, priceNote: '' };
+}
+export default function NoahAgentUploadForm({ engineeringMode, onRegistered }: UploadFormProps = {}) {
+  const connect = engineeringMode === 'connect';
+  const mounted = useRef(true);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
   const router = useRouter();
-  const [manifest, setManifest] = useState<NoahAgentManifest>({ ...noahAgentTemplate, name: '', summary: '', author: '', adapter: 'source', endpointUrl: null, priceNote: '' });
+  const [manifest, setManifest] = useState<NoahAgentManifest>(blankManifest(connect));
   const [source, setSource] = useState<File | null>(null), [scope, setScope] = useState('');
   const [id, setId] = useState(''), [rights, setRights] = useState(false), [pending, setPending] = useState(false), [error, setError] = useState('');
   const [cover, setCover] = useState<CoverChoice>({ kind: 'later' });
@@ -59,9 +69,9 @@ export default function NoahAgentUploadForm() {
       const data = await r.json() as { ownerScope: string; error?: string }; if (!r.ok || !data.ownerScope) throw new Error(data.error || 'アカウントを確認できません。');
       if (!controller.signal.aborted) { setScope(data.ownerScope); setError(''); }
     }).catch(e => { if (!controller.signal.aborted) { setScope(''); setError(e instanceof Error && e.name === 'TimeoutError' ? 'アカウントの確認が時間切れになりました。再確認してください。' : 'アカウントを確認できません。通信を確認して再試行してください。'); } })
-      .finally(() => { if (!controller.signal.aborted) { setReturnPath(noahUploadPath(window.location.search)); setAccountChecking(false); } });
+      .finally(() => { if (!controller.signal.aborted) { setReturnPath(noahUploadPath(window.location.search, undefined, engineeringMode)); setAccountChecking(false); } });
     return () => controller.abort();
-  }, [attempt]);
+  }, [attempt, engineeringMode]);
   const draftContent = JSON.stringify({ manifest, codeMode, codeName, code: rights ? code : '', rights, validation: { enabled: verifiedRefactor, testName, testCode: rights ? testCode : '' } });
   useEffect(() => {
     if (!source || !rights) return;
@@ -90,14 +100,15 @@ export default function NoahAgentUploadForm() {
       const data = await response.json() as { draft: NoahDraft; error?: string };
       if (response.status === 410) draftRetry.current = null;
       if (!response.ok) throw new Error(data.error || '下書きを保存できません。');
+      if (!mounted.current) return false;
       draft.current.revision = data.draft.revision; draft.current.saved = draftSignature; draftRetry.current = null;
       setDrafts(rows => [{ id: data.draft.id, name: typeof data.draft.content.manifest.name === 'string' && data.draft.content.manifest.name || '名前未設定', revision: data.draft.revision, updatedAt: data.draft.updatedAt }, ...rows.filter(d => d.id !== data.draft.id)]);
       setStorageTick(n=>n+1); setDraftRevision(data.draft.revision); setDraftMessage(`下書き保存済み · ${new Date(data.draft.updatedAt).toLocaleTimeString('ja-JP')}`);
-      window.history.replaceState(window.history.state, '', noahUploadPath(window.location.search, draft.current.id));
+      window.history.replaceState(window.history.state, '', noahUploadPath(window.location.search, draft.current.id, engineeringMode));
       return true;
     } catch (e) { setDraftError(e instanceof Error ? e.message : '下書きを保存できません。'); setDraftMessage('未保存の変更があります'); return false; }
     finally { draft.current.busy = false; }
-  }, [scope, draftLoading, restoreFailed, hashing, hasInput, draftSignature, draftContent, source, rights]);
+  }, [scope, draftLoading, restoreFailed, hashing, hasInput, draftSignature, draftContent, source, rights, engineeringMode]);
   useEffect(() => {
     if (!scope || restoreStarted.current) return;
     restoreStarted.current = true;
@@ -157,7 +168,7 @@ export default function NoahAgentUploadForm() {
   async function openDraft(savedId: string) {
     if (pending || draft.current.busy || draftLoading || hashing) return;
     if ((code || source || testCode) && !rights) { setDraftError('保存権利を確認すると、入力中のコードを保存して別の下書きを開けます。'); return; }
-    if (await saveDraft()) window.location.assign(noahUploadPath(window.location.search, savedId));
+    if (await saveDraft()) window.location.assign(noahUploadPath(window.location.search, savedId, engineeringMode));
   }
   async function removeDraft(savedId: string, revision: number) {
     if (draft.current.busy || pending) return;
@@ -169,9 +180,9 @@ export default function NoahAgentUploadForm() {
       setStorageTick(n=>n+1);
       if (draft.current.id === savedId) {
         draft.current = { id:'', revision:0, saved:'', busy:true }; draftRetry.current = null;
-        setManifest({ ...noahAgentTemplate, name:'', summary:'', author:'', adapter:'source', endpointUrl:null, priceNote:'' });
+        setManifest(blankManifest(connect));
         setCode(''); setSource(null); setRights(false); setId(''); setCover({ kind: 'later' }); setDraftRevision(0);
-        window.history.replaceState(window.history.state, '', noahUploadPath(window.location.search, ''));
+        window.history.replaceState(window.history.state, '', noahUploadPath(window.location.search, '', engineeringMode));
       }
       setDraftError(''); setDraftMessage('下書きを削除しました。');
     } catch (e) { setDraftError(e instanceof Error ? e.message : '削除できません。'); }
@@ -239,13 +250,17 @@ export default function NoahAgentUploadForm() {
       const response = await fetch('/api/noah/agents', { method: 'POST', headers, body, signal: controller.signal });
       const data = await response.json() as { agent: { id: string }; error?: string }; if (!response.ok) throw new Error(data.error || '保存できませんでした。');
       draft.current.saved = draftSignature;
-      router.push(`/noah/agents/${data.agent.id}`);
+      if (!mounted.current) return;
+      if (data.agent.id !== uploadId) throw new Error('登録した版を確認できません。保存結果を確認してください。');
+      if (onRegistered) onRegistered(data.agent.id);
+      else router.push(`/noah/agents/${data.agent.id}`);
     } catch (e) { setError(controller.signal.aborted ? '整理を停止しました。入力は残っています。' : e instanceof Error ? e.message : '保存先に接続できません。再試行してください。'); if (controller.signal.aborted) setId(''); }
     finally { setPending(false); processingController.current = null; }
   }
-  return <div className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link></nav>
-    <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENT</span><h1>自分のAgentを追加</h1><p>コードを選ぶ、または貼り付ける。対応するコードは整理して保存します。<br />元コードも残し、追加したAgentは自分だけの一覧に入ります。</p></div></header>
+  const externalForm = connect && ['mcp_http', 'web', 'a2a'].includes(manifest.adapter) && !source && !code;
+  return <div className={engineeringMode ? styles.formPage : `${styles.page} ${styles.formPage}`}>
+    {!engineeringMode && <><nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link></nav>
+    <header className={styles.hero}><div><span className={styles.eyebrow}>YOUR AGENT</span><h1>自分のAgentを追加</h1><p>コードを選ぶ、または貼り付ける。対応するコードは整理して保存します。<br />元コードも残し、追加したAgentは自分だけの一覧に入ります。</p></div></header></>}
     {!scope && <section className={styles.notice} aria-label="アカウントの確認">
       {accountChecking ? <output>アカウントを確認中…</output> : <>
         <p>{signedOut ? 'サインインすると、自分のAgentの登録と下書きの保存ができます。' : 'アカウントの確認後に登録できます。'}</p>
@@ -263,7 +278,7 @@ export default function NoahAgentUploadForm() {
     </section>
     {scope && <NoahDraftStoragePanel key={scope} scope={scope} refresh={storageTick} disabled={pending || draftLoading || hashing} onRestored={(restoredId)=>{ void openDraft(restoredId); }} />}
     <form onSubmit={save}><fieldset disabled={!scope || accountChecking || pending || draftLoading || restoreFailed} className={styles.fields}>
-      <section className={styles.notice} aria-labelledby="source-heading"><h2 id="source-heading">Agentのコード</h2><p>登録時に自動リファクタ · 元コードを保管</p>
+      {externalForm ? <label className={styles.check}><input type="checkbox" required checked={rights} onChange={e => setRights(e.target.checked)} />提供元の利用条件を確認し、この接続情報を自分のNoahに保存します。</label> : <section className={styles.notice} aria-labelledby="source-heading"><h2 id="source-heading">Agentのコード</h2><p>登録時に自動リファクタ · 元コードを保管</p>
         <p>専用画面を作らずに始められます。ターミナル用テンプレートには処理コードと固定テストが入っています。</p>
         <div className={styles.actions}>{(['node', 'python'] as const).map(language => <button key={language} type="button" onClick={() => {
           const t = noahTerminalTemplate(language); setManifest(t.manifest); setSource(new File([new Uint8Array(t.bytes)], t.name, { type: 'application/zip' })); setCodeMode('file'); setId(''); setRights(false);
@@ -289,8 +304,8 @@ export default function NoahAgentUploadForm() {
           <small>テストは原本と一緒に保存し、整理担当Agentによる書き換えを拒否します。ZIPの場合は .test.mjs または test_名前.py を中に入れてください。</small>
         </div></details>
         <small>固定テストがない、依存が未対応、または検証が失敗した場合は原本を保ち、理由を表示します。検証は64ファイル・合計1MiBまで、整理Agentの入力は12KBまでです。構文整理のみの場合はJS/TSの限定ルールを適用し、型・動作は検証しません。秘密情報は含めないでください。</small>
-      </section>
-      <div className={styles.import}><label>定義JSONを読み込む<input type="file" accept=".json,application/json" onChange={e => { void importDefinition(e.target.files?.[0]); e.target.value = ''; }} /></label><button type="button" onClick={template}>テンプレートをダウンロード</button></div>
+      </section>}
+      {!externalForm && <div className={styles.import}><label>定義JSONを読み込む<input type="file" accept=".json,application/json" onChange={e => { void importDefinition(e.target.files?.[0]); e.target.value = ''; }} /></label><button type="button" onClick={template}>テンプレートをダウンロード</button></div>}
       <label>Agentの名前<input required maxLength={100} value={manifest.name} onChange={e => change({ name: e.target.value })} placeholder="例：毎朝のニュース担当" /></label>
       <label>何をしてくれるAgent？<textarea required rows={4} maxLength={2000} value={manifest.summary} onChange={e => change({ summary: e.target.value })} placeholder="できる仕事、必要な入力、受け取れる成果を書いてください。" /></label>
       <NoahCoverPicker key={scope} name={manifest.name} summary={manifest.summary} value={cover}
@@ -307,7 +322,7 @@ export default function NoahAgentUploadForm() {
       {cover.kind !== 'later' && <small>表紙は「自分のNoahに保存」で登録します。下書きから再開するときは、表紙を選び直してください。</small>}
       <div className={styles.columns}><label>作者<input required maxLength={100} value={manifest.author} onChange={e => change({ author: e.target.value })} /></label><label>版<input required value={manifest.version} onChange={e => change({ version: e.target.value })} placeholder="1.0.0" /></label></div>
       <label>どう使うAgent？<select value={manifest.adapter} onChange={e => { const { runtime: _runtime, ...base } = manifest; setManifest({ ...base, adapter: e.target.value as NoahAgentManifest['adapter'], endpointUrl: e.target.value === 'source' ? null : '' }); setId(''); }}>
-        <option value="source">コードを保存して実行先を準備する</option><option value="web">専用のWeb画面を開く</option><option value="mcp_http">MCPサーバーに接続する</option><option value="a2a">A2A対応Agentに接続する</option>{manifest.adapter === 'local_app' && <option value="local_app">対応済みローカルアプリ</option>}
+        {!externalForm && <option value="source">コードを保存して実行先を準備する</option>}<option value="web">専用のWeb画面を開く</option><option value="mcp_http">MCPサーバーに接続する</option><option value="a2a">A2A対応Agentに接続する</option>{manifest.adapter === 'local_app' && <option value="local_app">対応済みローカルアプリ</option>}
       </select></label>
       {manifest.adapter === 'source' && <p role="note">{NOAH_SOURCE_RUNS_ON}</p>}
       {manifest.adapter === 'source' && <section className={styles.notice}><h2>自分の操作を妨げない専用環境</h2>
@@ -335,7 +350,7 @@ export default function NoahAgentUploadForm() {
         <small>取得する場合は上の「GitHub・Hugging Faceからコードを取得」を使います。参照URLの入力だけでは取得しません。</small>
         <div className={styles.columns}><label>識別名<input required value={manifest.id} onChange={e => change({ id: e.target.value })} /></label><label>ライセンス<input required value={manifest.license} onChange={e => change({ license: e.target.value })} /></label></div>
       </div></details>
-      <button className={styles.primary} disabled={!scope || !rights || pending || !coverValid || processorAvailable === null} type="submit">{pending ? '原本の確認・コードの整理・保存中…' : '自分のNoahに保存'}</button>
+      <button className={styles.primary} disabled={!scope || !rights || pending || !coverValid || (!externalForm && processorAvailable === null)} type="submit">{pending ? '原本の確認・コードの整理・保存中…' : connect ? '接続情報を保存して試す' : engineeringMode ? '保存して動きを試す' : '自分のNoahに保存'}</button>
     </fieldset></form>
     {processingMessage && <output aria-live="polite">{processingMessage}</output>}
     {pending && processingMessage && <button type="button" onClick={() => processingController.current?.abort()}>整理・保存を中止</button>}

@@ -1,3 +1,4 @@
+import { noahAgentStore } from './noah-agent-store.ts';
 import { createIntakeSync, type IntakeDependencies, type IntakeSource } from './noah-intake-sync.ts';
 import { createIntakeProbe } from './noah-intake-probe.ts';
 import { intakeStatement } from './noah-intake-db.ts';
@@ -5,7 +6,7 @@ import { noahListing, NOAH_LISTING_SQL, type NoahListingInput } from './noah-int
 import { parseNoahConnect, noahPublicHttpsUrl } from './noah-connect-requirements.ts';
 import { planNoahConnection } from './noah-connect-plan.ts';
 import { noahLaunchPlanState, noahPlaceLabel } from './noah-connect-source.ts';
-import { NoahAgentError } from './noah-agent-upload.ts';
+import { NoahAgentError, noahUploadId } from './noah-agent-upload.ts';
 import { RECIPES } from './noah-execution-contract.mjs';
 
 type Row = {
@@ -142,5 +143,24 @@ export function createIntakeStore(deps: IntakeDependencies) {
     if (result.meta.changes !== 1) throw new NoahAgentError('内容が更新されました。再読込してください。', 409);
     return { id, revision: revision + 1 };
   }
-  return { ...sync, ...probe, list, detail, status, moderate };
+  async function engineeringTrial(owner: string, uploadId: string) {
+    const upload = await noahAgentStore(db, owner).get(noahUploadId(uploadId));
+    if (!upload || upload.uploadState !== 'ready') throw new NoahAgentError('Agentが見つかりません。', 404);
+    const { adapter, endpointUrl } = upload.manifest;
+    if (adapter !== 'mcp_http' || !endpointUrl) return null;
+    // Bind trials to an existing listed MCP contract, including its full path. A private URL is never an execution grant.
+    const match = await db.prepare(`SELECT f.id FROM noah_intake_families f
+      JOIN noah_intake_candidates c ON c.id=f.representative_id
+      JOIN noah_intake_checks k ON k.candidate_id=c.id
+      LEFT JOIN noah_connections n ON n.owner_id=? AND n.family_key=f.id AND n.disconnected_at IS NULL
+      WHERE f.listed=1 AND f.withdrawn_at IS NULL AND f.hidden_at IS NULL AND c.state='active'
+        AND k.mouth='mcp-remote' AND k.level>=1 AND json_extract(k.connect_json,'$.target.url')=?
+        AND (n.id IS NULL OR json_extract(n.connect_json,'$.target.url')=?)
+      ORDER BY (n.state='connected') DESC, f.level DESC, f.id LIMIT 1`)
+      .bind(owner, endpointUrl, endpointUrl).first<{ id: string }>();
+    if (!match) return null;
+    const candidate = await detail(match.id, owner, false);
+    return candidate.listed ? { id: candidate.id, name: candidate.name, connection: candidate.connection } : null;
+  }
+  return { ...sync, ...probe, list, detail, status, moderate, engineeringTrial };
 }

@@ -2,7 +2,7 @@
 /* oxlint-disable next/no-html-link-for-pages -- The dedicated cloud Worker serves a separate document with a fresh line check. */
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Cloud, PackagePlus, ShoppingBag, Signal } from 'lucide-react';
+import { Cloud, SquareTerminal, ShoppingBag, Signal } from 'lucide-react';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import type { NoahFirstJob } from '@/lib/noah-first-jobs';
 import { noahCardHref } from '@/lib/noah-project-view';
@@ -34,7 +34,12 @@ function TodayHeading() {
     <div className={styles.date}>{today && <time>{new Intl.DateTimeFormat(locale, {
       weekday: 'long', month: 'long', day: 'numeric',
     }).format(today)}</time>}</div>
-    <h1>{t('Today')}</h1>
+    <div className={styles.titleRow}>
+      <h1>{t('Today')}</h1>
+      <Link className={styles.engineering} href="/noah/engineering">
+        <SquareTerminal size={18} aria-hidden="true" />{t('Agentエンジニアリング')}
+      </Link>
+    </div>
   </header>;
 }
 
@@ -94,7 +99,6 @@ export function NoahStoreServices() {
   return <aside className={styles.services}>
     <nav aria-label={t('ストアのサービス')}>
       <Link href="/noah/marketplace"><ShoppingBag size={17} aria-hidden="true" />{t('Agentを買う')}</Link>
-      <Link href="/noah/publisher"><PackagePlus size={17} aria-hidden="true" />{t('Agentを載せる')}</Link>
     </nav>
     <nav aria-label={t('eSIMでつなぐ専用クラウド')}>
       <Link href="/connect"><Signal size={17} aria-hidden="true" />{t('eSIMでつなぐ専用クラウド')}</Link>

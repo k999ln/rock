@@ -12,6 +12,8 @@ import { screen } from './fixtures/noah/screen.mjs';
 
 void test('Noah return paths stay within the service, preserve an agent handoff and refuse login loops', () => {
   const detail = '/noah/ready/agent?id=family-1#work';
+  const engineering = '/noah/engineering?step=test&agent=a2c933c4-6b40-4340-9268-0903f1bd0417';
+  assert.equal(new URL(navigation.noahAccountHref(engineering), 'https://avoado.si').searchParams.get('returnTo'), engineering);
   assert.equal(navigation.noahReturnPath(detail), detail);
   assert.equal(new URL(navigation.noahAccountHref(detail), 'https://avoado.si').searchParams.get('returnTo'), detail);
   for (const invalid of [undefined, '', '//evil.test/noah', '/os', '/noahish', '/noah/../../os', '/noah/account?returnTo=/noah', '/noah/account/other', '/noah\\evil', '/noah\n']) {
