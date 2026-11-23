@@ -32,6 +32,7 @@
 | DB | docs/database-status.md | db/schema.ts, drizzle/（正）, drizzle-main/, drizzle-legacy/ | — | `npm run database:check`, `npm run schema:check` |
 | サイト | — | sites/avocado-mini（Astro）, sites/sky-live, public/, public-release/ | — | `npm run test:avocado-mini-site` |
 | Codex 運用 | AGENTS.md, codex/tasks/ | .codex/agents, .codex/skills, .github/ | — | `npm run bot:check` |
+| 画面のデザイン参照 | design/references/README.md | design/references/moodboard, design/references/components（WebP・1 枚 300 KB 以内） | — | — |
 | 歴史（読まない） | archive/, docs/evidence/（212 件・17MB）, workspaces/, docs/merge-loss-audit-*, toolkits/mr, vendor/mr | — | — | — |
 
 ## 3. 「読まなくてよい」の定義
