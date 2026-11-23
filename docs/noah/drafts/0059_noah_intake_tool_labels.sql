@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS noah_intake_tool_labels (
   reason TEXT NOT NULL,
   created_at INTEGER NOT NULL,
   invalidated_at INTEGER,
-  PRIMARY KEY(family_id, candidate_id, tool_name, tools_sha256, tool_definition_sha256, label_version, verifier_version)
+  PRIMARY KEY(family_id, candidate_id, tool_name, tools_sha256, tool_definition_sha256, manifest_sha256, label_version, verifier_version)
 );
 CREATE INDEX IF NOT EXISTS noah_intake_tool_labels_read
   ON noah_intake_tool_labels(family_id, candidate_id, tools_sha256, manifest_sha256, label_version, verifier_version, status, tool_name);

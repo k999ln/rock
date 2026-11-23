@@ -256,6 +256,7 @@ const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
 const uniqueSorted = (values: readonly string[]) => [...new Set(values)].sort(compare);
 
 function validateTool(tool: NoahLabelToolInput): NoahLabelToolInput {
+  if (!object(tool) || Object.keys(tool).some((key) => !['name', 'description', 'inputSchema', 'outputSchema'].includes(key))) throw new Error('tool has unknown fields');
   assertString(tool?.name, 'tool.name', NOAH_LABEL_BATCH_LIMITS.maxToolNameChars);
   assertString(tool?.description, 'tool.description', NOAH_LABEL_BATCH_LIMITS.maxToolDescriptionChars, true);
   assertJson(tool?.inputSchema, 'tool.inputSchema');
@@ -269,6 +270,7 @@ function validateTool(tool: NoahLabelToolInput): NoahLabelToolInput {
 }
 
 function validateSeries(series: NoahLabelSeriesInput): NoahLabelSeriesInput {
+  if (!object(series) || Object.keys(series).some((key) => !['familyId', 'candidateId', 'toolsSha256', 'tools'].includes(key))) throw new Error('series has unknown fields');
   assertString(series?.familyId, 'series.familyId', 400);
   assertString(series?.candidateId, 'series.candidateId', 300);
   assertSha(series?.toolsSha256, 'series.toolsSha256');
@@ -793,6 +795,24 @@ WHERE family_id=? AND candidate_id=? AND tools_sha256=?
   AND label_version=? AND verifier_version=? AND invalidated_at IS NULL
   AND manifest_sha256=(SELECT manifest_sha256 FROM current_generation)
 ORDER BY tool_name`;
+
+/**
+ * Optional offline/D1-adapter write shape.  It is exported as SQL only; this
+ * module never executes it.  The manifest is part of the conflict key, so a
+ * new fixed generation is appended beside the old one rather than overwriting
+ * evidence that may still be under review.
+ */
+export const NOAH_LABEL_UPSERT_SQL = `INSERT INTO noah_intake_tool_labels
+  (schema,request_id,manifest_sha256,family_id,candidate_id,tools_sha256,
+   tool_definition_sha256,tool_name,label_version,verifier_version,status,
+   consumes_json,produces,inputs_json,outputs_json,evidence_json,reason,created_at)
+  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+ON CONFLICT(family_id,candidate_id,tool_name,tools_sha256,tool_definition_sha256,manifest_sha256,label_version,verifier_version)
+DO UPDATE SET request_id=excluded.request_id,status=excluded.status,
+  consumes_json=excluded.consumes_json,produces=excluded.produces,
+  inputs_json=excluded.inputs_json,outputs_json=excluded.outputs_json,
+  evidence_json=excluded.evidence_json,reason=excluded.reason,created_at=excluded.created_at
+WHERE noah_intake_tool_labels.manifest_sha256=excluded.manifest_sha256`;
 
 function rowFromDb(row: NoahLabelDbRow): NoahLabelRow {
   if (row.schema !== NOAH_LABEL_ROW_SCHEMA || row.labelVersion !== NOAH_LABEL_VERSION || row.verifierVersion !== NOAH_LABEL_VERIFIER_VERSION) throw new Error('label row version is invalid');

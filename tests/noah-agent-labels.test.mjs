@@ -40,6 +40,8 @@ test('batch input is strict and preserves literal tool field names', () => {
   assert.equal(parsed.series[0].tools[0].name, 'clean_csv');
   assert.deepEqual(Object.keys(parsed.series[0].tools[0]).sort(), ['description', 'inputSchema', 'name', 'outputSchema']);
   assert.throws(() => parseNoahLabelBatch({ ...input(), extra: true }), /invalid/);
+  assert.throws(() => parseNoahLabelBatch({ ...input(), series: [{ ...series(), untrusted: 'metadata' }] }), /unknown fields/);
+  assert.throws(() => parseNoahLabelBatch({ ...input(), series: [{ ...series(), tools: [{ ...cleanCsvTool(), untrusted: 'metadata' }] }] }), /unknown fields/);
   assert.throws(() => parseNoahLabelBatch({ ...input(), series: [series(), series()] }), /duplicate familyId/);
 });
 

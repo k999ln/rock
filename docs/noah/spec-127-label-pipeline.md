@@ -105,13 +105,14 @@ CREATE TABLE IF NOT EXISTS noah_intake_tool_labels (
   reason TEXT NOT NULL,
   created_at INTEGER NOT NULL,
   invalidated_at INTEGER,
-  PRIMARY KEY(family_id, candidate_id, tool_name, tools_sha256, tool_definition_sha256, label_version, verifier_version)
+  PRIMARY KEY(family_id, candidate_id, tool_name, tools_sha256, tool_definition_sha256, manifest_sha256, label_version, verifier_version)
 );
 CREATE INDEX IF NOT EXISTS noah_intake_tool_labels_read
   ON noah_intake_tool_labels(family_id, tools_sha256, manifest_sha256, label_version, verifier_version, status, tool_name);
 ```
 
 An offline sink may write these rows to a local export after review. There is no default sink in the module, so calling the label pipeline cannot mutate production by accident.
+The draft table's primary key includes `manifest_sha256`; a later fixed generation is appended rather than overwriting an older generation. `NOAH_LABEL_UPSERT_SQL` is an adapter shape only and is never executed by this module.
 ## 再開と無効化
 
 `prepareNoahLabelBatch` sorts series and tools and computes one fixed manifest hash. `labelNoahBatch` accepts a resume row only when request ID, family, candidate, `toolsSha256`, `toolDefinitionSha256`, manifest hash, label version, and verifier version all match. A changed tool definition gets a new request ID; a changed batch manifest marks the old matching request as `stale_resume`. No old accepted row is read for a new version.
