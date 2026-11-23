@@ -1,0 +1,8 @@
+{
+  "name": "noah-cloud-agents",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "deploy": "wrangler deploy --config ./wrangler.jsonc", "check": "wrangler deploy --dry-run --config ./wrangler.jsonc" },
+  "devDependencies": { "wrangler": "4.166.0" }
+}

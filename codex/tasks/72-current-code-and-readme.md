@@ -41,3 +41,27 @@ main統合: PR321は`37ef2bfd`へmerge済み。merge後verifyはbrowser fixture�
 最終検収: 方針・旧優先順位整理は独立pass。参照Noahの3差分も独立pass・原本hash一致。baseline/Codex対象12件、Noah/端末承認関連26件、型検査と設計/進捗整合は成功。最終headのCIとmain状態は[PR325](https://github.com/k999ln/rock/pull/325)を確認する。
 
 方針同期・Noah追補を含む全verifyはexit0。本体4,433件中4,429成功・失敗0・skip4、build/API成功。最終commitの同一SHA CIとmerge後の状態はPR325を正本に確認し、この記録自体から完了を推測しない。
+
+
+## 2026-11-23 進捗台帳の現main照合
+
+本人指示: `iceiceice999/rock` の進捗台帳を最新にし、現在の開発項目を箇条書きで示す。
+
+- 対象: main `42cf4b619ee19bcb47612250d70539457dec1977`。統合・公開担当siが、task索引・project.md・README・project-statusとH1の次の作業を同期する。設計変更や他製品の再受入は行わない。
+- GitHub APIでPRの状態とHEADを読み、旧PR #329/330/332/339/335/342/344/345/346/347/352/358のHEADを `git merge-base --is-ancestor <head> HEAD` で照合、全件exit0。旧PR #342/344〜347は未マージで閉じられていてもコードは現mainに含まれる。
+- 本番/Pixelの確認範囲は新PR #7/9/10/14/16の既存記録に基づく。今回、本番操作・実機試験を再実行したとは記さない。mainの既存verify run45033873402は成功。
+- PR #17は再照合でverifyを含む全7チェック成功、main統合済み。記事/X公開はPR本文の記録。実注文/承認、次回6時間運用は未実証。収集の24時間観測、CLI本番/実モデル、全Agent/300人受入も完了へ進めない。
+- COLOMBIA原本は `data/jennifer-knowledge.json` で未登録のため、判断材料に追加しない。
+- 検証: 本更新の `npm run verify` と既存の設計・台帳整合検査の結果をPR本文へ記録する。`verify:design` は現package.jsonに無く、現行の `design:check` を使う。
+
+独立検収の指摘（L5の過去時点、X公式API不使用と継続未確認、旧PRの出所明記）を反映。初回verifyは進捗更新に連動するDB状況の生成差分で停止したため、`node scripts/database-status.mjs` で日付・milestone・次作業のみを同期して再実行する。DB構造・本番受入の値は変更しない。
+
+本人の追加指定に従い、開発項目を「画面をジャックさせない技術・eSIM導入・クラウド設計・収集・接続・受け皿」の6区分へ整理。暗号化・定期実行・更新/復旧・Eveでの作成/改良・作者管理・売買・商売の工程・mii接続・運用を関連する後続範囲として記載し、実装完了を確認していない項目は未確認と明記する。
+
+追加照合: 旧PR #391/410/411/412/413/415もGitHub上のマージと現mainへのHEAD包含を確認し、eSIM・クラウド運用・定期便・商売の設計図の統合根拠とした。6区分と関連後続の追加箇所も独立検収で合格。
+
+仕上げ時の再照合: PR #17がmainへ統合されたため、最新main `b56d8e83b39fd946e4f5330eba0907bf36425172` を通常mergeで取り込み、追記履歴を両側保全。現mainのverify run45038039086も成功。新PR #18（無料Workersの公式MCP3種）・#19（実モデル通信修正）の未マージ作業と個別成功の記録を追記し、Noah本番の全体受入とは分けた。
+
+本更新の検証: 初期base42cf4b6上の全verifyは主要5,162成功・5skip・失敗0、型/lint/build、Web asset欠落0、仕事API1,918・CSV385まで成功。末尾work:checkでH1生成文書の未同期を検出し、生成同期後にwork:check・bot:check成功。先行試行の共有依存パス由来2失敗は、同じlockの専用コピーへ変更後、該当13試験と上記主要試験全体で解消。最新main取り込み後は進捗・設計・DB・mission・work・botと差分を再検査する。ローカルverifyの単一実行exit0とは記載しない。
+
+台帳更新: [PR #20](https://github.com/iceiceice999/rock/pull/20)。最新main取り込み後のproject:check・design:check・database:check・mission:check・work:check・bot:check・git diff --checkは成功。最終独立検収も合格。最終HEADのCIとmain統合はPRを参照する。

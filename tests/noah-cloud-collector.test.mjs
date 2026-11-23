@@ -15,6 +15,7 @@ const key = randomBytes(32).toString('hex'), NOW = Date.UTC(2026, 10, 22);
 function bucket() {
   const rows = new Map(); let generation = 0;
   return { rows, conflict: false,
+    async head(path) { const row = rows.get(path); return row && { etag: row.etag }; },
     async get(path) { const row = rows.get(path); return row && { etag: row.etag, async json() { return JSON.parse(row.body); } }; },
     async put(path, body, options) {
       const old = rows.get(path);
@@ -116,7 +117,8 @@ void test('missing or unavailable cloud state aborts before collection or public
 });
 void test('cloud workflow uses hosted runners, only the canonical branch, read-only Git and one publisher', () => {
   const workflow = readFileSync(new URL('../.github/workflows/noah-agent-collection.yml', import.meta.url), 'utf8');
-  assert.match(workflow, /runs-on: ubuntu-latest/); assert.match(workflow, /github\.ref == 'refs\/heads\/main'/);
+  assert.match(workflow, /if: github\.repository == 'iceiceice999\/rock' && github\.ref == 'refs\/heads\/main' && vars\.NOAH_COLLECTION_ACTIVE == 'true'/);
+  assert.match(workflow, /runs-on: ubuntu-latest/);
   assert.match(workflow, /contents: read/); assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /group: noah-agent-collection-production/); assert.match(workflow, /cancel-in-progress: false/);
   assert.doesNotMatch(workflow, /self-hosted|upload-artifact|actions\/cache|pull_request_target/);
@@ -200,4 +202,38 @@ void test('the run summary shows the counts, what went into the grid, and the fa
   assert.match(text, /- github: unavailable（1 回目）/);
   assert.doesNotMatch(text, new RegExp(key));
   assert.match(collectorSummary({ counts: {}, alerts: [{ source: 'import', code: 'http_500' }], warnings: [] }), /\*\*人が見る失敗: 1 件\*\*/);
+});
+
+void test('chunked manifest commits without opening chunk bodies or waiting for cleanup', { timeout: 3000 }, async () => {
+  const store = bucket(), prefix = 'noah/collector/v2/chunks/', removed = [];
+  const list = Promise.withResolvers(), background = [];
+  const get = store.get.bind(store);
+  store.get = async path => {
+    assert.ok(!path.startsWith(prefix), 'manifest validation should only need chunk metadata');
+    return get(path);
+  };
+  store.list = () => list.promise;
+  store.delete = async paths => { removed.push(...paths); };
+  const api = createCollectorCheckpointApi({ bucket: store, key, now: () => NOW, waitUntil: work => background.push(work) });
+  const hash = await checkpointChunkHash('aaaa');
+  await post(api, { action: 'write_chunk', hash, data: 'aaaa' });
+  const checkpoint = { schema: 'noah-collector-checkpoint/2', updatedAt: NOW - 1, runId: '123', chunks: [hash] };
+  const first = await post(api, { action: 'write', etag: null, checkpoint });
+  assert.equal(first.status, 200);
+  const { etag } = await first.json();
+  assert.deepEqual(await (await post(api, { action: 'read' })).json(), { etag, checkpoint });
+  assert.equal(background.length, 1);
+  assert.deepEqual(removed, []);
+
+  // A slower cleanup must not delete a chunk that a newer manifest now references.
+  const nextHash = await checkpointChunkHash('bbbb');
+  await post(api, { action: 'write_chunk', hash: nextHash, data: 'bbbb' });
+  store.list = async () => ({ objects: [hash, nextHash, 'orphan'].map(key => ({ key: prefix + key, uploaded: new Date(NOW - 8_000_000) })) });
+  const second = await post(api, { action: 'write', etag, checkpoint: { ...checkpoint, updatedAt: NOW, chunks: [nextHash] } });
+  assert.equal(second.status, 200);
+  await background[1];
+  assert.deepEqual(removed, [prefix + 'orphan']);
+  list.resolve({ objects: [{ key: prefix + nextHash, uploaded: new Date(NOW - 8_000_000) }] });
+  await background[0];
+  assert.deepEqual(removed, [prefix + 'orphan']);
 });

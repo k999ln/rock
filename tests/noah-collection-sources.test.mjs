@@ -73,9 +73,12 @@ function sources({ readme = '- [acme/old-tool](https://github.com/acme/old-tool)
       { objectID: '103', title: 'Acme agent', url: 'https://github.com/Acme/Agent', points: 5, num_comments: 0, created_at_i: Math.floor(NOW / 1000) },
     ] : [] });
     if (url.hostname === 'api.github.com') {
+      // task 125 の「急に伸びた物」の検索（pushed:>=）は、tests/noah-scout.test.mjs で確かめる。ここでは空で返す。
+      if (/pushed:>=/.test(url.searchParams.get('q'))) return Response.json({ items: [] });
       assert.match(url.searchParams.get('q'), /created:>=2026-11-08/);
       return Response.json({ items: [{ full_name: 'New/Server', name: 'server', description: 'A new MCP server', stargazers_count: 40, created_at: new Date(NOW - DAY).toISOString(), owner: { login: 'New' } }] });
     }
+    if (url.hostname === 'www.producthunt.com') return new Response('<feed xmlns="http://www.w3.org/2005/Atom"></feed>');
     if (url.hostname === 'huggingface.co') return Response.json([{ id: 'maker/mcp-space', author: 'maker', likes: 3, createdAt: new Date(NOW - 2 * DAY).toISOString(), cardData: { title: 'MCP Space', short_description: '画像を作る' } }]);
     if (url.hostname === 'registry.npmjs.org') return Response.json({ objects: url.searchParams.get('from') === '0' && url.searchParams.get('text') === 'keywords:mcp-server' ? [{ package: { name: '@acme/mcp', description: 'Acme MCP', date: new Date(NOW - 5 * DAY).toISOString(), links: { repository: 'git+https://github.com/acme/mcp.git' }, publisher: { username: 'acme' } }, downloads: { weekly: 5000 } }] : [] });
     if (url.hostname === 'hub.docker.com') return Response.json({ results: [{ name: 'github', description: 'GitHub MCP', pull_count: 100000, star_count: 3, date_registered: new Date(NOW - 90 * DAY).toISOString() }, { name: 'signatures', pull_count: 9 }], next: 'https://hub.docker.com/v2/namespaces/mcp/repositories?page=2' });

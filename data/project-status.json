@@ -1376,9 +1376,9 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-11-20",
-  "milestone": "Noah/Eveの機能を保ち、重複処理と説明を現行方針へ統合",
-  "nextAction": "Noahを本人MacでAgent選択・接続・実行・成果受領・停止まで完成させる。参照チャットの未完了を同一source・実環境で照合し、その後miiの声/Eve/空間表示操作へつなぐ。SIM/eSIMはOS導入系統として個別受入する。",
+  "updatedAt": "2026-11-23",
+  "milestone": "Noahの現main統合・限定本番受入・運用と集客の残件を照合",
+  "nextAction": "PR #18・#19統合後の本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -13175,5 +13175,169 @@
       "freshMacAccepted": false
     },
     "gitFailureCleanup": "all parallel Git reads settle before failure returns; deterministic regression passes"
+  },
+  "progressLedgerReconciliation": {
+    "updatedAt": "2026-11-23",
+    "repository": "iceiceice999/rock",
+    "baseMain": "16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617",
+    "task": "codex/tasks/72-current-code-and-readme.md",
+    "owner": "統合・公開担当si",
+    "method": "GitHub PR/CIの読取とgit merge-base --is-ancestorによる統合照合。本番操作・過去実機試験の再実行はしていない。",
+    "taskIndex": "codex/tasks/00-index.md",
+    "historicalPullRequests": [
+      {
+        "number": 329,
+        "state": "closed",
+        "merged": true,
+        "head": "cc4ab3927d250fb6bfdedf52c1f9d0cc8ea0a13f",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 330,
+        "state": "closed",
+        "merged": true,
+        "head": "c392b7d74f2c65bfdd4fe5a570c4659981f57db5",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 332,
+        "state": "closed",
+        "merged": true,
+        "head": "02c41ff88b94f18b51a016cf4cad86f7b3aa7087",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 339,
+        "state": "closed",
+        "merged": true,
+        "head": "210de19d0e4a4fb903a339a11761056aef81c6e3",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 335,
+        "state": "closed",
+        "merged": true,
+        "head": "4c5cd074ded11585ab4290f055ee8708ff022d97",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 342,
+        "state": "closed",
+        "merged": false,
+        "head": "3f34c3e60868d84cdbfa48ad3137a2452fcab898",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 344,
+        "state": "closed",
+        "merged": false,
+        "head": "d0dd8bd3a554675a79500b5dda5ca642e6fc43ee",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 345,
+        "state": "closed",
+        "merged": false,
+        "head": "12bcda6f526a9b4ef4367c81e334068dc248fd68",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 346,
+        "state": "closed",
+        "merged": false,
+        "head": "a65e7ea6c85b43b481f22391d94636386053d575",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 347,
+        "state": "closed",
+        "merged": false,
+        "head": "30c5a2e628132230b931e2cb77083897e7349c4f",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 352,
+        "state": "closed",
+        "merged": true,
+        "head": "daaf6f55505d6afa1423fb9d7f90160b482f1835",
+        "headInMain": true,
+        "ancestryExit": 0
+      },
+      {
+        "number": 358,
+        "state": "closed",
+        "merged": true,
+        "head": "daf7f0b8bb6872c5338d65a527931ed10d091cf8",
+        "headInMain": true,
+        "ancestryExit": 0
+      }
+    ],
+    "mainVerification": {
+      "status": "success",
+      "url": "https://github.com/iceiceice999/rock/actions/runs/45038039086",
+      "scope": "前回照合したmain b56d8e83のCI",
+      "sha": "b56d8e83b39fd946e4f5330eba0907bf36425172"
+    },
+    "productionEvidenceRefs": [
+      "https://github.com/iceiceice999/rock/pull/7",
+      "https://github.com/iceiceice999/rock/pull/9",
+      "https://github.com/iceiceice999/rock/pull/10",
+      "https://github.com/iceiceice999/rock/pull/14",
+      "https://github.com/iceiceice999/rock/pull/16"
+    ],
+    "boundaries": [
+      "掲載/接続定義取得を全Agent実行成功にしない",
+      "Pixelブラウザの限定受入を実機OSや100人同時外部実行の合格にしない",
+      "収集の復旧1回を24時間/72時間の継続合格にしない",
+      "CLIのLinux試験・実モデルの個別成功をNoah本番配備や全体受入にしない",
+      "旧タスク393件は今回再検収せず、件数を製品完成率にしない"
+    ],
+    "historicalPullRequestRepository": "k999ln/rock",
+    "scopeAreas": [
+      "画面をジャックさせない技術",
+      "eSIM導入",
+      "クラウドシステムの設計",
+      "Agentを集めるシステム",
+      "Agentの接続",
+      "受け皿のシステム"
+    ],
+    "initialBaseMain": "42cf4b619ee19bcb47612250d70539457dec1977",
+    "pendingPullRequests": [],
+    "pullRequest": "https://github.com/iceiceice999/rock/pull/20",
+    "mergedPullRequests": [
+      {
+        "number": 17,
+        "url": "https://github.com/iceiceice999/rock/pull/17",
+        "head": "d84074b181fc8cdae58a38bf9451d3c753ec6046",
+        "state": "MERGED",
+        "verify": "SUCCESS",
+        "security": "SUCCESS",
+        "acceptance": "記事/Xと計測をmainへ統合。実注文/承認・次回6時間運用は未実証。"
+      },
+      {
+        "number": 19,
+        "url": "https://github.com/iceiceice999/rock/pull/19",
+        "state": "MERGED",
+        "scope": "実モデル通信修正と6種の個別成功・応答失敗例、公開209のPixel再確認。Containers本番受入は残る。",
+        "mergeCommit": "4644580cc929d71c1fab7ada714de5d166d48228"
+      },
+      {
+        "number": 18,
+        "url": "https://github.com/iceiceice999/rock/pull/18",
+        "state": "MERGED",
+        "scope": "無料Workersの公式MCP3種。Memory/Filesystem実モデル成功はPR記録。Noah有効化・全閉画面後の本番一周は未受入。",
+        "mergeCommit": "16a9eae6dac5a40ab0f1bfacc4ecad2de9e34617"
+      }
+    ]
   }
 }
