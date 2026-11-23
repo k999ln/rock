@@ -49,7 +49,8 @@ export function eveTemplateDemand(b: NoahBlueprint, ledger: readonly EveDemand[]
   return ledger.filter(hit).sort((x, y) => y.priceYen - x.priceYen || x.id.localeCompare(y.id));
 }
 
-const better = (x: EveAgentRecord, y: EveAgentRecord) =>
+/** エージェントの良い順（Jev の合格率の見積り → 実費 → ref）。 */
+export const eveCompareAgents = (x: EveAgentRecord, y: EveAgentRecord) =>
   acceptanceEstimate({ capabilityId: y.ref, runs: y.runs, accepted: y.accepted }).mean - acceptanceEstimate({ capabilityId: x.ref, runs: x.runs, accepted: x.accepted }).mean
   || (x.costYen ?? 0) - (y.costYen ?? 0) || x.ref.localeCompare(y.ref);
 
@@ -64,7 +65,7 @@ export function eveFitTemplate(
   const steps = base.steps.map((s): EveStep => {
     if (s.kind !== 'auto' || s.glue || s.agent || !s.capability || NOAH_BUILTIN_CAPABILITIES.includes(s.capability as never) || base.keepForSelf.includes(s.id)) return s;
     const ok = new Set(verified[s.capability] ?? []);
-    const ranked = agents.filter((x) => x.capability === s.capability && ok.has(x.ref)).sort(better);
+    const ranked = agents.filter((x) => x.capability === s.capability && ok.has(x.ref)).sort(eveCompareAgents);
     if (!ranked.length) {
       gaps.push({ step: s.id, capability: s.capability });
       return s;
@@ -80,6 +81,29 @@ export function eveFitTemplate(
 export const EVE_OWNER_MINUTES = { tap: 2, review: 10, human: 5 } as const;
 export function eveOwnerMinutesPerRun(c: EveCombination) {
   return c.steps.reduce((sum, s) => (s.kind === 'auto' || s.id.startsWith('signup:') || c.keepForSelf.includes(s.id) ? sum : sum + EVE_OWNER_MINUTES[s.kind]), 0);
+}
+
+/**
+ * 組み合わせ 1 回の見込みの利益 ＝ 売れる見込み × 単価 × 工程が通る見込み − 実費 − 本人の分数 × 1 分の値段。
+ * 工程が通る見込みは、auto の工程ごとの Jev の合格率の見積り（実績が無い部品は 1/2）の積。つなぎ目と決まった式は 1。
+ */
+export function eveCombinationExpectedProfit(
+  c: EveCombination,
+  demand: EveDemand,
+  agents: readonly EveAgentRecord[],
+  opts: { record?: EveSaleRecord; ownerMinuteValueYen?: number } = {},
+) {
+  const byRef = new Map(agents.map((a) => [a.ref, a]));
+  const passRate = c.steps.reduce((p, s) => {
+    if (s.kind !== 'auto' || s.glue || !s.capability || NOAH_BUILTIN_CAPABILITIES.includes(s.capability as never)) return p;
+    const rec = s.agent ? byRef.get(s.agent.ref) : undefined;
+    return p * acceptanceEstimate(rec ? { capabilityId: rec.ref, runs: rec.runs, accepted: rec.accepted } : undefined).mean;
+  }, 1);
+  const { rate, basis } = eveSaleRate(demand, opts.record);
+  const costYen = c.steps.reduce((sum, s) => sum + (s.costYen ?? 0), 0);
+  const ownerMinutes = eveOwnerMinutesPerRun(c);
+  const profitYen = Math.floor(rate * demand.priceYen * passRate - costYen - ownerMinutes * (opts.ownerMinuteValueYen ?? 0));
+  return { profitYen, passRate: Math.round(passRate * 1e6) / 1e6, saleRate: rate, saleBasis: basis, costYen, ownerMinutes };
 }
 
 export type EveTemplateRank = {
@@ -104,22 +128,14 @@ export function eveRankTemplates(input: {
   blueprints?: readonly NoahBlueprint[];
 }): EveTemplateRank[] {
   const out: EveTemplateRank[] = [];
-  const byRef = new Map(input.agents.map((a) => [a.ref, a]));
   for (const b of input.blueprints ?? noahBlueprints()) {
     if (b.hold) continue;
     for (const d of eveTemplateDemand(b, input.ledger)) {
       const skeleton = eveCombinationFromBlueprint(b, { author: input.author ?? { kind: 'eve' }, demand: { id: d.id, expectedPriceYen: d.priceYen } }).combination;
       const { combination, gaps } = eveFitTemplate({ ...skeleton, id: `${skeleton.id}:${d.id}`.slice(0, 96) }, input.agents, input.verified);
-      const passRate = combination.steps.reduce((p, s) => {
-        if (s.kind !== 'auto' || s.glue || !s.capability || NOAH_BUILTIN_CAPABILITIES.includes(s.capability as never)) return p;
-        const rec = s.agent ? byRef.get(s.agent.ref) : undefined;
-        return p * acceptanceEstimate(rec ? { capabilityId: rec.ref, runs: rec.runs, accepted: rec.accepted } : undefined).mean;
-      }, 1);
-      const { rate } = eveSaleRate(d, input.records?.[d.id]);
-      const cost = combination.steps.reduce((sum, s) => sum + (s.costYen ?? 0), 0);
-      const profitYen = Math.floor(rate * d.priceYen * passRate - cost - eveOwnerMinutesPerRun(combination) * (input.ownerMinuteValueYen ?? 0));
+      const { profitYen, passRate, saleRate } = eveCombinationExpectedProfit(combination, d, input.agents, { record: input.records?.[d.id], ownerMinuteValueYen: input.ownerMinuteValueYen });
       const status = eveCombinationStatus(eveCombinationProblems(combination, { verified: input.verified, demand: input.ledger }));
-      out.push({ blueprint: b.id, demandId: d.id, combination, status, gaps, passRate: Math.round(passRate * 1e6) / 1e6, saleRate: rate, profitYen });
+      out.push({ blueprint: b.id, demandId: d.id, combination, status, gaps, passRate, saleRate, profitYen });
     }
   }
   return out.sort((x, y) => y.profitYen - x.profitYen || x.gaps.length - y.gaps.length || x.blueprint.localeCompare(y.blueprint) || x.demandId.localeCompare(y.demandId));

@@ -62,7 +62,13 @@ function fillArgs(args: Readonly<Record<string, string>> | undefined, sample: Re
 
 export async function eveDryRun(
   c: EveCombination,
-  opts: { sample: Readonly<Record<string, unknown>>; call?: EveAgentCaller; now?: () => number },
+  opts: {
+    sample: Readonly<Record<string, unknown>>;
+    call?: EveAgentCaller;
+    now?: () => number;
+    /** 相手の今の版（ref → hash）。組み合わせに書いた版と違う相手へは、確かめ直すまで送らない。 */
+    versions?: Readonly<Record<string, string>>;
+  },
 ): Promise<EvePaperResult> {
   const now = opts.now ?? (() => Date.now());
   const outputs = new Map<string, unknown>();
@@ -109,6 +115,11 @@ export async function eveDryRun(
       }
       if (!step.agent || !opts.call) {
         finish('no-part', step.agent ? '呼び出し役が渡されていないので、動かしていません。' : `「${step.capability ?? step.label}」をこなすエージェントが決まっていません。`);
+        continue;
+      }
+      const live = opts.versions && Object.hasOwn(opts.versions, step.agent.ref) ? opts.versions[step.agent.ref] : undefined;
+      if (live !== undefined && live !== step.agent.version) {
+        finish('no-part', `「${step.agent.ref}」の版が ${step.agent.version.slice(0, 12)} から ${live.slice(0, 12)} に変わりました。確かめ直すまで送りません。`);
         continue;
       }
       if (reservedYen + (step.costYen ?? 0) > c.budget.perRunYen) {
