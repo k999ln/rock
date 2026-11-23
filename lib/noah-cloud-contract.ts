@@ -40,7 +40,39 @@ export const NOAH_FREE_CLOUD_PROFILES: readonly NoahCloudProfile[] = ['memory', 
 export function noahCloudSupported(mode?: string): readonly NoahCloudProfile[] {
   return mode === 'free' ? NOAH_FREE_CLOUD_PROFILES : Object.keys(NOAH_CLOUD_PROFILES) as NoahCloudProfile[];
 }
-export const NOAH_FREE_CLOUD_LIMITS = Object.freeze({ dailyJobs: 10, ownerDailyJobs: 3, modelCalls: 4, outputTokens: 1024, modelInputBytes: 32768 });
+/**
+ * 無料のクラウドは、件数ではなく、モデルを使った量（Workers AI の neuron）で数える（2026-11-24。本人「クラウドのシステム作って」
+ * 「cloudflareでいいから最初は」、Workers Paid はまだ申し込まない、払い方は Agent の利益から差し引く）。
+ * Workers AI の無料の割当は 1 日 10,000 neuron（UTC 0 時に戻る。アカウント全体で共有）。ほかの仕組みの分を残して、
+ * クラウドの Agent には既定で 8,000 まで（Worker の環境変数 NOAH_CLOUD_DAILY_NEURONS で下げられる）。
+ * 1 件は最大 jobNeurons まで（受け付ける時に、その分を取り置く。モデルを呼ぶ前に、入力のバイト数を上限のトークン数として確かめる）。
+ * 1 人の 1 日は ownerDailyNeurons まで（ふつうの依頼で 7〜10 件）。件数の上限は、安全のための 2 つ目の柵として残す。
+ */
+export const NOAH_FREE_CLOUD_LIMITS = Object.freeze({ dailyJobs: 60, ownerDailyJobs: 12, modelCalls: 4, outputTokens: 1024, modelInputBytes: 32768, dailyNeurons: 8000, ownerDailyNeurons: 2400, jobNeurons: 1200 });
+/** gpt-oss-20b の neuron（100 万トークンあたり）。https://developers.cloudflare.com/workers-ai/platform/pricing/ （2026-11-24 に確かめた） */
+export const NOAH_CLOUD_NEURONS = Object.freeze({ inputPerMillion: 18182, outputPerMillion: 27273, usdPerThousand: 0.011 });
+/** 使ったトークンの neuron（切り上げ）。 */
+export function noahCloudNeurons(inputTokens: number, outputTokens: number): number {
+  const input = Number.isFinite(inputTokens) && inputTokens > 0 ? inputTokens : 0, output = Number.isFinite(outputTokens) && outputTokens > 0 ? outputTokens : 0;
+  return Math.ceil((input * NOAH_CLOUD_NEURONS.inputPerMillion + output * NOAH_CLOUD_NEURONS.outputPerMillion) / 1e6);
+}
+/** モデルを呼ぶ前の、その 1 回の最大の neuron（トークンは 1 バイト以上なので、入力のバイト数を上限にする）。 */
+export const noahCloudCallNeuronsCap = (inputBytes: number, maxOutputTokens: number) => noahCloudNeurons(inputBytes, maxOutputTokens);
+/** モデルの応答の usage から、使ったトークンを読む。無い・おかしい時は、呼ぶ前の上限で数える（少なく数えない）。 */
+export function noahCloudReplyUsage(reply: unknown, inputBytes: number, maxOutputTokens: number): { inputTokens: number; outputTokens: number; neurons: number } {
+  const usage = (reply as { usage?: { prompt_tokens?: unknown; completion_tokens?: unknown } } | null)?.usage;
+  const ok = (n: unknown): n is number => typeof n === 'number' && Number.isSafeInteger(n) && n >= 0;
+  const inputTokens = ok(usage?.prompt_tokens) ? usage.prompt_tokens : inputBytes;
+  const outputTokens = ok(usage?.completion_tokens) ? usage.completion_tokens : maxOutputTokens;
+  return { inputTokens, outputTokens, neurons: noahCloudNeurons(inputTokens, outputTokens) };
+}
+/** 1 日の neuron の上限（環境変数で下げるだけ。上げる事はできない）。 */
+export function noahCloudDailyNeurons(configured: unknown): number {
+  const n = typeof configured === 'string' && /^\d{1,6}$/.test(configured) ? Number(configured) : NaN;
+  return Number.isSafeInteger(n) && n >= 0 && n < NOAH_FREE_CLOUD_LIMITS.dailyNeurons ? n : NOAH_FREE_CLOUD_LIMITS.dailyNeurons;
+}
+/** 無料の割当が戻る時刻（次の UTC 0 時）を、日本時間の「何時」で言う。 */
+export const NOAH_CLOUD_RESET_TEXT = '日本時間の朝 9 時';
 export const NOAH_CLOUD_LIMITS = Object.freeze({ seconds: 240, modelCalls: 8, promptBytes: 12000, outputBytes: 131072, modelInputBytes: 131072, outputTokens: 2048, files: 12, fileBytes: 32768, totalFileBytes: 65536, dailyJobs: 50, ownerDailyJobs: 10, concurrent: 2 });
 export const NOAH_CLOUD_MODEL = '@cf/openai/gpt-oss-20b';
 export function noahCloudProfile(repository: string): NoahCloudProfile | null {
@@ -53,7 +85,21 @@ export function noahCloudProfile(repository: string): NoahCloudProfile | null {
 export const noahCloudId = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(value);
 export type NoahCloudFile = { name: string; base64: string; bytes: number; sha256: string };
 export type NoahCloudResult = { text: string; files: NoahCloudFile[]; exitCode: number; calls: number };
-export type NoahCloudJob = { id: string; profile: NoahCloudProfile; version: string; distribution: string; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; result?: NoahCloudResult; error?: string; calls: number };
+export type NoahCloudJob = { id: string; profile: NoahCloudProfile; version: string; distribution: string; mode: 'probe' | 'run'; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown'; createdAt: number; deadlineAt: number; completedAt?: number; result?: NoahCloudResult; error?: string; calls: number; usage?: NoahCloudUsage };
+/** 1 件で使ったモデルの量（無料のクラウドで数える。有料の Containers 版はまだ数えない）。 */
+export type NoahCloudUsage = { inputTokens: number; outputTokens: number; neurons: number };
+/** 実行器から届いた usage を確かめる（おかしければ null。結果そのものは捨てない）。 */
+export function noahCloudUsageOf(value: unknown): NoahCloudUsage | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const { inputTokens, outputTokens, neurons } = value as Record<string, unknown>;
+  const ok = (n: unknown): n is number => typeof n === 'number' && Number.isSafeInteger(n) && n >= 0 && n <= 10_000_000;
+  return ok(inputTokens) && ok(outputTokens) && ok(neurons) ? { inputTokens, outputTokens, neurons } : null;
+}
+/** 表示だけに使う、1 ドルの円（約）。docs/compute-placement.md の 3 章と同じく、決済の計算には使わない。 */
+export const NOAH_CLOUD_YEN_PER_USD = 157;
+/** 有料プラン（Workers Paid）の値段で数えた時の、その件のモデル代（円、小数 1 桁）。無料の枠の中なら、今の請求は 0。 */
+export const noahCloudListYen = (usage: NoahCloudUsage) => Math.round(usage.neurons / 1000 * NOAH_CLOUD_NEURONS.usdPerThousand * NOAH_CLOUD_YEN_PER_USD * 10) / 10;
+
 export type NoahCloudConnection = { id: string; profile: NoahCloudProfile; state: 'preparing' | 'connected' | 'failed' | 'disconnected'; revision: number; probeId: string; activeJob: string | null; jobs: string[]; error?: string };
 export async function noahCloudDigest(value: string): Promise<string> {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
