@@ -72,4 +72,4 @@
 
 接続／頼む／止める／切る／受け取る／直してもらう／あなたの番。置き場所は「相手のサーバー」「あなたの端末」「スマホの中」「雲の端末」。技術の言葉（MCP、OAuth、token、runner、lease、container、hash）は画面に出さない。失敗の文は「何が起きたか。次に何をすればいいか。」の 2 文。
 
-- [127: 786系列の接続と稼働表示](spec-127-live-agent-families.md)
+- [127: 786系列の接続と稼働表示](spec-127-live-agent-families.md)・[初回本番受入](acceptance-127-live-agent-families.md)

@@ -42,8 +42,12 @@ void test('provider complete containing an authentication exception is not a suc
 });
 void test('known shared private-data demos cannot be probed or executed as public Agent connections', async t => {
   const f=fixture(t,async()=>{throw Error('must not contact held provider');});
-  const runtime=createNoahProviderRuntime({...f.deps,providerDirectory:async()=>[{card:{id:projectId,name:'Shared demo',href:'https://huggingface.co/spaces/Americo/Agente_Analista',sources:[]},families:[]}]});
-  await assert.rejects(runtime.plan(projectId),e=>e.status===422&&e.message.includes('本人専用'));
+  for (const repository of ['Americo/Agente_Analista', 'sdajani/co-scientist-public-demo', 'SaiPavankumar22/Construction-Assistant', 'regulus1999/geminibot-research', 'daviccoimbra/agente-financeiro-Davi', 'jupyter-agent/jupyter-agent', 'Dubberkuro/ai-coding-crew', 'rootxhacker/Julia-browser-Agent', 'Mavigal/VGR_Assistant_EN', 'Ethan-WZ/ResearchPaperAgent', 'mozhet5550/my-ai-agent']) {
+    const failures=[];
+    const runtime=createNoahProviderRuntime({...f.deps,availability:{failed:async id=>failures.push(id)},providerDirectory:async()=>[{card:{id:projectId,name:'Shared demo',href:`https://huggingface.co/spaces/${repository}`,sources:[]},families:[]}]});
+    await assert.rejects(runtime.plan(projectId),e=>e.status===422&&e.message.includes('本人専用'));
+    assert.deepEqual(failures,[projectId], 'a held demo cannot keep its earlier connected state');
+  }
 });
 function setup(t, overrides = {}) {
   const state = {
