@@ -33,11 +33,18 @@ export function noahAgentStore(db: Pick<D1Database, 'prepare'>, owner: string) {
         (id, owner_id, manifest, manifest_sha256, source_key, source_name, source_bytes, source_sha256, upload_state, created_at, original_key, original_name, original_bytes, original_sha256)
         SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM noah_agent_uploads WHERE owner_id = ?) < 100 RETURNING id`)
         .bind(input.id, owner, JSON.stringify(input.manifest), input.manifestSha256, source?.key ?? null, source?.name ?? null,
-          source?.bytes ?? null, source?.sha256 ?? null, source ? 'pending' : 'ready', Date.now(), source?.key ?? null, source?.name ?? null, source?.bytes ?? null, source?.sha256 ?? null, owner).all();
+          source?.bytes ?? null, source?.sha256 ?? null, source || input.manifest.cover ? 'pending' : 'ready', Date.now(), source?.key ?? null, source?.name ?? null, source?.bytes ?? null, source?.sha256 ?? null, owner).all();
       const existing = await row(input.id);
       if (!existing || existing.manifest_sha256 !== input.manifestSha256 || (existing.original_sha256 ?? existing.source_sha256) !== (source?.sha256 ?? null) || (existing.original_name ?? existing.source_name) !== (source?.name ?? null))
         throw new NoahAgentError('登録IDが使用済みか、保存上限（100件）に達しました。内容を変える場合は新しく登録してください。', 409);
       return { upload: present(existing), created: result.results.length === 1 };
+    },
+    async completeCover(id: string, digest: string) {
+      await db.prepare("UPDATE noah_agent_uploads SET upload_state='ready' WHERE id=? AND owner_id=? AND deleted_at IS NULL AND upload_state='pending' AND source_key IS NULL AND manifest_sha256=? RETURNING id")
+        .bind(id, owner, digest).all();
+      const current = await row(id);
+      if (current?.upload_state !== 'ready' || current.manifest_sha256 !== digest) throw new NoahAgentError('登録の状態が変わりました。',409);
+      return present(current);
     },
     async complete(id: string, source: Source & { key: string }, processing: NoahSourceProcessing) {
       const result = await db.prepare("UPDATE noah_agent_uploads SET upload_state = 'ready', source_key = ?, source_name = ?, source_bytes = ?, source_sha256 = ?, processing_json = ? WHERE id = ? AND owner_id = ? AND deleted_at IS NULL AND upload_state = 'pending' RETURNING *")

@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNod
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, Search, Store } from 'lucide-react';
+import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, Store } from 'lucide-react';
 import { noahLegacyHref, noahMacMenuAllowed, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
@@ -22,7 +22,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const preview = pathname.startsWith('/noah/public');
   const effectiveMode = preview ? 'public' : mode, base = preview ? '/noah/public' : '/noah';
   const [hash, setHash] = useState('');
-  const gridMenuId = useId(), gridMenu = useRef<HTMLDivElement>(null);
+  const storeSearchId = useId(), gridMenuId = useId(), gridMenu = useRef<HTMLDivElement>(null);
   // Mac だけの画面は、Mac で開いた時だけメニューに出す（サーバーの描画と最初の描画は出さず、端末が分かってから出す）。
   const macMenu = useSyncExternalStore(noSubscription, macMenuOnThisDevice, () => false);
   useEffect(() => {
@@ -71,12 +71,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
     ...secondary,
   ];
   const nav = (mobile=false) => <nav className={mobile?styles.bottomNav:styles.desktopNav} aria-label={t('メインメニュー')}>{primary.map(({ href, label, Icon, selected }) => <a key={href} href={href} aria-label={t(label)} aria-current={selected ? 'page' : undefined}><Icon size={22} strokeWidth={1.7}/><span>{t(label)}</span></a>)}</nav>;
-  if (gridHome) return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
-    <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
-      <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
-      <header className={styles.gridTopbar}>
-        <a href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/brand/noah-orange-icon.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
-        <search className={styles.gridSearchSlot}><form action={`${base}/explore`} className={styles.gridSearch} onSubmit={event=>{
+  const searchForm = <form action={`${base}/explore`} className={styles.gridSearch} onSubmit={event=>{
           event.preventDefault();
           const params=new URLSearchParams(window.location.search),data=new FormData(event.currentTarget);
           const word=data.get('q');
@@ -85,8 +80,19 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
           window.location.assign(`${base}/explore?${next}`);
         }}>
           <Search size={18} aria-hidden="true" /><input aria-label={t('Agentを探す')} name="q" maxLength={80} placeholder={t('Agentを探す')} type="search" />
-        </form></search>
-        <button type="button" className={styles.gridMenuButton} popoverTarget={gridMenuId} aria-label={t('メニュー')}><Menu size={22} /><span>{t('メニュー')}</span></button>
+        </form>;
+  if (gridHome) return <NoahSurfaceContext.Provider value={{ mode: effectiveMode, base, hash }}>
+    <div className={styles.shell} data-noah-surface={effectiveMode} data-noah-standalone>
+      <a href="#noah-content" className={styles.skip}>{t('メインコンテンツへ')}</a>
+      <header className={styles.gridTopbar} data-store-header={publicStore || undefined}>
+        <a href={base} className={styles.gridBrand} aria-label="Noah"><Image className={styles.mark} src="/brand/noah-orange-icon.png" width={40} height={40} alt="" unoptimized/><strong>Noah</strong></a>
+        {publicStore && <div className={styles.storeDesktopLinks}>{nav()}</div>}
+        <search className={styles.gridSearchSlot}>{searchForm}</search>
+        {publicStore && <>
+          <button type="button" className={styles.mobileStoreSearch} aria-label={t('Agentを探す')} popoverTarget={storeSearchId}><Search size={21}/></button>
+          <search popover="auto" id={storeSearchId} className={styles.storeSearchPanel}>{searchForm}</search>
+        </>}
+        <button type="button" className={styles.gridMenuButton} popoverTarget={gridMenuId} aria-label={t('メニュー')}>{publicStore ? <MoreHorizontal size={22}/> : <Menu size={22}/>}<span>{t('メニュー')}</span></button>
         <div ref={gridMenu} id={gridMenuId} popover="auto" className={styles.gridMenuPanel}>
           <nav aria-label={t('メインメニュー')}>{gridItems.map(({ href, label, Icon }) => <a key={href} href={href} onClick={() => gridMenu.current?.hidePopover()}><Icon size={19}/><span>{t(label)}</span></a>)}</nav>
         </div>

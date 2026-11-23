@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
+import { NoahPinMotion } from './noah-art-motion';
+import { noahInviteCoverUrl } from '@/lib/noah-cover';
 import type { NoahInvite, NoahSharedAgent } from '@/lib/noah-invites';
 import NoahManagedInstallation from './noah-managed-installation';
 import { startNoahVisiblePolling } from '@/lib/noah-visible-polling';
@@ -98,7 +100,10 @@ export function NoahSharedDetail({id}:{id:string}) {
     {!agent && loaded && token && scope && <section className={styles.notice}><p>このアカウントで招待を受け取ると、共有されたAgentの内容を確認できます。Agentの実行は開始しません。</p><button disabled={busy} onClick={()=>{void claim();}}>このアカウントで受け取る</button></section>}
     {signedOut && <p><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(`/noah/invites/${id}`)}`}>サインイン</Link>して、招待リンクをもう一度開いてください。</p>}
     {error && <p className={styles.error} role="alert">{error}</p>}
-    {agent && <article className={styles.notice}><h2>{agent.manifest.name}</h2><p>{agent.manifest.summary}</p><p>{agent.manifest.author} · v{agent.manifest.version} · {agent.manifest.license}</p><p>{agent.manifest.priceNote}</p><p>共有の期限：{new Date(agent.expiresAt).toLocaleString('ja-JP')}</p>
+    {agent && <article className={styles.notice}><header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true">
+        <NoahPinMotion id={agent.uploadId} name={agent.manifest.name} summary={agent.manifest.summary}
+          cover={agent.manifest.cover ? {type:agent.manifest.cover.type,url:noahInviteCoverUrl(agent.inviteId)} : undefined} />
+      </span><h2>{agent.manifest.name}</h2></header><p>{agent.manifest.summary}</p><p>{agent.manifest.author} · v{agent.manifest.version} · {agent.manifest.license}</p><p>{agent.manifest.priceNote}</p><p>共有の期限：{new Date(agent.expiresAt).toLocaleString('ja-JP')}</p>
       {agent.source && <p><a href={`/api/noah/invites/${id}/source`}>保存版コードを取得（{agent.source.name}）</a></p>}
       <p>{agent.executionAllowed?'接続すると専用環境を裏側で準備します。期限切れ・撤回時は実行を停止します。外部操作の許可は含みません。':'閲覧と、許可された場合のコード取得ができます。この招待では実行は許可されていません。'}</p><details><summary>共有された定義</summary><pre>{JSON.stringify(agent.manifest,null,2)}</pre></details>
     </article>}

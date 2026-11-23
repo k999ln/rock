@@ -9,7 +9,7 @@
 .page button { cursor: pointer; }
 .page button:disabled { cursor: default; opacity: .5; }
 .page :is(button,a,input,textarea,select):focus-visible { outline: 2px solid var(--os-focus); outline-offset: 3px; }
-.page button, .actions a, .notice a { min-height: 48px; padding: 10px 16px; border: 1px solid var(--os-line); border-radius: 14px; background: var(--os-panel); color: var(--os-text); display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
+.page button:where(:not([data-topic])), .actions a, .notice a { min-height: 48px; padding: 10px 16px; border: 1px solid var(--os-line); border-radius: 14px; background: var(--os-panel); color: var(--os-text); display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-size: 14px; text-decoration: none; }
 .page .primary { background: var(--os-accent); color: var(--os-accent-ink); border-color: var(--os-accent); font-weight: 600; }
 .links { display: flex; align-items: center; gap: 24px; padding: 14px 0; border-block: 1px solid var(--os-line); flex-wrap: wrap; }
 .links > span { margin-right: auto; display: flex; gap: 8px; align-items: center; font-size: 14px; }
