@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { createHash, timingSafeEqual } from 'node:crypto';
-import { readFile, stat } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { open } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
@@ -8,6 +9,28 @@ import { desktopJobs } from './jobs.mjs';
 import { prepareManagedDesktopRuntime } from '../../scripts/noah-managed-desktop.mjs';
 
 const digest = value => createHash('sha256').update(value).digest();
+export async function readManagedDesktopPackage(file, expectedSha) {
+  const handle = await open(file, constants.O_RDONLY | constants.O_NONBLOCK);
+  try {
+    const info = await handle.stat();
+    if (!info.isFile() || info.size > 16 * 1024 * 1024) throw Error('パッケージの大きさを確認してください。');
+    // A single extra byte detects growth without ever reading an unbounded file.
+    const buffer = Buffer.alloc(info.size + 1);
+    let size = 0;
+    while (size < buffer.length) {
+      const { bytesRead } = await handle.read(buffer, size, buffer.length - size);
+      if (!bytesRead) break;
+      size += bytesRead;
+    }
+    if (size !== info.size) throw Error('パッケージの大きさを確認してください。');
+    const bytes = buffer.subarray(0, size);
+    if (digest(bytes).toString('hex') !== expectedSha) throw Error('配備したパッケージのSHA-256が一致しません。');
+    return bytes;
+  } finally {
+    await handle.close();
+  }
+}
+
 export function desktopHandler(jobs, token, packageSha) {
   const expected = digest('Bearer ' + token);
   return async (req, res) => {
@@ -41,10 +64,7 @@ async function start() {
   if (process.platform !== 'linux' || !token || token.length < 32 ||
       !/^[0-9a-f]{64}$/.test(sha ?? '') || !file?.endsWith('.zip') ||
       !dbFile || dbFile === ':memory:') throw Error('専用Linuxと固定パッケージ・永続DB・接続設定を確認してください。');
-  const info = await stat(file);
-  if (!info.isFile() || info.size > 16 * 1024 * 1024) throw Error('パッケージの大きさを確認してください。');
-  const bytes = await readFile(file);
-  if (digest(bytes).toString('hex') !== sha) throw Error('配備したパッケージのSHA-256が一致しません。');
+  const bytes = await readManagedDesktopPackage(file, sha);
   const root = fileURLToPath(new URL('../../', import.meta.url));
   const definition = { schema: 'noah-desktop/1', language: 'python',
     entrypoint: 'main.py', model: 'none' };

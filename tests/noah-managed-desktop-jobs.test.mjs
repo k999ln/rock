@@ -1,13 +1,32 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { mkdtemp, rm, truncate, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { once } from 'node:events';
 import { setImmediate } from 'node:timers/promises';
 import { test } from 'node:test';
 import { desktopJobs } from '../services/noah-managed-desktop/jobs.mjs';
+import { readManagedDesktopPackage } from '../services/noah-managed-desktop/server.mjs';
 import bridge from '../services/noah-managed-desktop/bridge.mjs';
 
 const sha = 'a'.repeat(64), id = '1'.repeat(64), other = '2'.repeat(64);
 const body = { text: '入力欄を確認する' };
+
+void test('managed desktop reads only approved package bytes within the deployment size limit', async t => {
+  const dir = await mkdtemp(join(tmpdir(), 'noah-managed-package-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const file = join(dir, 'approved.zip');
+  const bytes = Buffer.from('approved package bytes');
+  const expected = createHash('sha256').update(bytes).digest('hex');
+  await writeFile(file, bytes);
+  assert.deepEqual(await readManagedDesktopPackage(file, expected), bytes);
+  await assert.rejects(readManagedDesktopPackage(file, sha), /SHA-256/);
+  await assert.rejects(readManagedDesktopPackage(dir, expected), /大きさ/);
+  await truncate(file, (16 * 1024 * 1024) + 1);
+  await assert.rejects(readManagedDesktopPackage(file, expected), /大きさ/);
+});
 
 void test('the managed package executes once, rejects changed input, and reopens the same receipt', async () => {
   const db = new DatabaseSync(':memory:');
