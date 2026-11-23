@@ -102,7 +102,7 @@
   padding-bottom: 7px;
 }
 .listHeading h2 { margin: 0; font-size: clamp(24px, 2.2vw, 33px); font-weight: 750; line-height: 1.22; letter-spacing: -.055em; }
-.listHeading a { display: inline-flex; align-items: center; min-height: 40px; color: var(--store-action); font-size: 15px; font-weight: 550; text-decoration: none; }
+.listHeading a { display: inline-flex; align-items: center; min-height: 44px; color: var(--store-action); font-size: 15px; font-weight: 550; text-decoration: none; }
 .services { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 12px 0 28px; padding-block: 6px; border-block: 1px solid #e5e5e9; }
 .services nav { display: flex; flex-wrap: wrap; gap: 0 20px; }
 .services a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #98420e; font-size: 14px; font-weight: 560; }
