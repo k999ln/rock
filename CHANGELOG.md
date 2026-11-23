@@ -4,6 +4,7 @@
 
 ## 2026-11-23
 - NoahでTodayの特集を先頭に置き、「注目のAgent」に以前の2列のピン表示を採用。Agentの商品詳細とストアのナビゲーションを更新。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
+- Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、Agent 説明画面の引継ぎ（旧 task 127、現 task 128）を追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。
 - Noahのストア、専用eSIMの仕事別利用明細、提供元の選択、専用Linux仮想画面でのagent-desktop実行を追加。[実行仕様](docs/services/noah-managed-desktop.md) · [PR #37](https://github.com/iceiceice999/rock/pull/37)
 - avoado.si の React 関連 3 パッケージを 19.2.9 に統一し、CVE-2026-126187 と shadcn CLI の依存脆弱性を修正（[PR #36](https://github.com/iceiceice999/rock/pull/36)）。
 - Noah の「Noahが読んだ」を、リポジトリのファイル `data/noah-scout/leads.json` からクラウドの収集機が載せる形にした（task 125、Opus / Noelle）。読んだ人（Codex の Luna Max・Claude）はファイルに足す PR を出すだけで、運営の Mac に掲載の鍵を置かなくてよい。ファイルに無い出所は送らないので、前の掲載を空で上書きしない。最初の 1 件として、本人が「これいれて」と言った Switch（sandbox-quantum/switch）を、README・LICENSE・公式の手順書まで読んで日本語で書いた。 [正本 PR #34](https://github.com/iceiceice999/rock/pull/34)・[旧PR #426](https://github.com/k999ln/rock/pull/426)
@@ -37,6 +38,7 @@
 
 - Noahの公開Agent一覧と提携案件の非公開索引に、完全取得・候補照合・公開条件の定期点検と自社MCPの共通一覧接続を追加。本番統合は受入中（task101、[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
 
+- 稼ぎ方の設計図の工程に「何を待つか」を足し、待つ相手が全部終わった工程から同時に進める形にした（task122、Opus / Noelle。本人の評価「（段に並べ直した図は）いいとおもう。でもピン画像にはわかりにくすぎる、遷移先の説明画面ならいい」と「許可して」）。470 件の平均 15.1 工程が 9.0 段に、FX × YouTube は 19 工程が 11 段になり、提携の審査を待つ間に台本・動画・LP を作る。収益化の申し込み（AdSense・YouTube パートナー）は出した後へ、ASP の登録は載せる場を作った後へ移した（どちらも出典で確かめ、`NOAH_ACCOUNTS` の事実に入れた）。段の図は、審査者だけの説明画面 `/noah/review/business` に置き、ピンには使わない。待つ相手の前提は `NOAH_STEP_WAITS` にまとめ、本人の答えで直す（仕様 12 章、[PR #424](https://github.com/k999ln/rock/pull/424)）。
 - Noah が Switch（sandbox-quantum/switch）を自分で拾えなかった原因を直した（task 125、Opus / Noelle。本人指示「こういう便利機能を私がツイッターで検索するんじゃなくて Noah にやらせたい」）。GitHub は Agent の道具の話題（ai-agents・multi-agent・agent-orchestration・claude-code・codex）も読み、作られたのが前でも 1 日に 50 以上かつ 2% 以上スターが伸びた repo を拾う。Product Hunt の公開フィードから Agent・AI の道具だけを拾う。Codex の Luna Max が毎日 X を読み、配布元まで読んで日本語で書いた理解を「Noahが読んだ」として載せる口を作った。まとめ役 20 人は `data/noah-scout-curators.json`。配備・X のアカウント・毎日の読み取りは Codex（`codex/tasks/125-noah-scout.md`）。トップの最初の列をパッケージにする指示書も書いた（`codex/tasks/126-noah-packages-first.md`、[PR #421](https://github.com/k999ln/rock/pull/421)）。
 - 旧 main の #415 までの履歴と移行先の Gradio 実行・タップ設定を統合し、開発・PR の参照先を iceiceice999/rock に揃えた（[PR #6](https://github.com/iceiceice999/rock/pull/6)）。
 - task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。

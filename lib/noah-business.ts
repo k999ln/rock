@@ -75,10 +75,15 @@ export type NoahAccount = {
 };
 const A = (id: string, label: string, kind: NoahAccount['kind'], needs: NoahAccountNeed[], extra: Partial<NoahAccount> = {}): NoahAccount => ({ id, label, kind, needs, ...extra });
 export const NOAH_ACCOUNTS: readonly NoahAccount[] = [
-  A('asp-a8', 'A8.net', 'asp', ['email', 'address', 'bank', 'site']),
+  A('asp-a8', 'A8.net', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
+    { text: '会員登録の途中で、載せる場（サイト）の情報を入れる。サイトが無ければ A8 のブログ（ファンブログ）を作る形。初回の登録にサイトの審査は無い。', source: 'https://www.onamae.com/column/affiliate/32/' },
+    { text: '案件の報酬・成果の条件・否認の条件は、ログインした後の「プログラム検索」で見る。提携の申請は、案件によって審査があり、断られる事もある。', source: 'https://www.onamae.com/column/affiliate/32/' },
+  ] }),
   A('asp-moshimo', 'もしもアフィリエイト', 'asp', ['email', 'address', 'bank', 'site']),
   A('asp-afb', 'afb', 'asp', ['email', 'address', 'bank', 'site']),
-  A('asp-accesstrade', 'アクセストレード', 'asp', ['email', 'address', 'bank', 'site']),
+  A('asp-accesstrade', 'アクセストレード', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
+    { text: '登録の最後に、アフィリエイトを始めるサイトの情報（サイト名・サイトの URL など）を入れる。', source: 'https://www.onamae.com/column/affiliate/47/' },
+  ] }),
   A('asp-valuecommerce', 'バリューコマース', 'asp', ['email', 'address', 'bank', 'site']),
   A('amazon-associates', 'Amazonアソシエイト', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
     { text: 'ブログが無くても、X・Instagram・YouTube などの SNS の URL で申し込める。', source: 'https://www.onamae.com/column/affiliate/43/' },
@@ -112,8 +117,13 @@ export const NOAH_ACCOUNTS: readonly NoahAccount[] = [
   A('shopify', 'Shopify', 'marketplace', ['email', 'phone', 'identity', 'bank', 'address']),
   A('base-shop', 'BASE', 'marketplace', ['email', 'bank', 'address']),
   A('hosting', 'サイトの置き場所とドメイン', 'hosting', ['email', 'address']),
-  A('adsense', 'Google AdSense', 'payments', ['email', 'address', 'bank', 'site', 'tax']),
-  A('youtube-partner', 'YouTube パートナープログラム', 'payments', ['email', 'bank', 'tax']),
+  A('adsense', 'Google AdSense', 'payments', ['email', 'address', 'bank', 'site', 'tax'], { facts: [
+    { text: '関連性の高い独自のオリジナル コンテンツが要る。独自性のないコンテンツや著作権で保護されたコンテンツを載せたサイトには、広告を表示できない。', source: 'https://support.google.com/adsense/answer/7299563?hl=ja' },
+  ] }),
+  A('youtube-partner', 'YouTube パートナープログラム', 'payments', ['email', 'bank', 'tax'], { facts: [
+    { text: '今の条件は、登録者 1,000 人以上と、直近 12 か月の公開長尺動画の総再生時間 4,000 時間以上（または直近 90 日の有効なショートの視聴 1,000 万回以上）。数えるのは公開した動画だけ。審査は通常 1 か月ほど。', source: 'https://support.google.com/youtube/answer/82839?hl=ja' },
+    { text: '2027-02-01 から新しく申し込む人は、直近 365 日の有効な公開動画の総再生時間 8,000 時間、または直近 90 日の有効な公開ショートの視聴 2,000 万回が要る（2026-08-11 の発表）。', source: 'https://blog.youtube/intl/ja-jp/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/' },
+  ] }),
   A('stripe', 'Stripe', 'payments', ['email', 'phone', 'identity', 'bank', 'address']),
   A('meta-ads', 'Meta 広告', 'ads', ['email', 'phone']),
   A('google-ads', 'Google 広告', 'ads', ['email', 'phone']),
@@ -263,7 +273,35 @@ export type NoahBlueprintStep = {
   reason?: string; account?: string;
   /** 1 か月あたりの費用の目安（円。0 は無料の範囲）。 */
   costYen?: number;
+  /**
+   * 何を待つか: この工程を始める前に終わっている工程の id（同じ設計図の、前に並ぶ工程だけ）。空なら最初から始められる。
+   * 設計図の工程には必ず書く（2026-11-22 本人の評価。待つ相手が全部終わった工程から同時に進める）。推し活のエージェントの工程は設計図ではないので持たない。
+   */
+  after?: readonly string[];
+  /** 待つ相手の前提の理由（NOAH_STEP_WAITS の文）。説明画面に出す。決まりきった待ち（台本 → 動画など）には付けない。 */
+  waitNote?: string;
 };
+
+/**
+ * 待つ相手の前提（2026-11-22。本人の答えで直す所）。工程が何を待つかのうち、決まりきっていない物だけ、理由をここに置く。
+ * 直す時は、この文と、設計図の工程の after を一緒に直す（試験 tests/noah-business.test.mjs が、待つ相手のつながりを確かめる）。
+ */
+export const NOAH_STEP_WAITS = {
+  aspSignup: 'ASP の登録では、載せる場（サイト・SNS）の名前と URL を入れる（A8.net は無ければ A8 のブログを作る形、アクセストレードも登録の最後にサイトの情報を入れる、Amazon アソシエイトは SNS の URL で申し込める）。だから、載せる場を作った後に ASP に登録する',
+  media: 'ASP の会員登録で入れた載せる場を、提携の申し込みに使う媒体として確かめる。だから、ASP の登録を待つ',
+  offers: '案件の一覧と条件（単価・承認率）は、ASP に登録してから見られる',
+  research: '需要と競合は公開の情報で調べられるので、何も待たない（登録の審査を待つ間に進める）',
+  draft: '出品・販売の頁の文は、登録の前に下書きできる',
+  publishAffiliate: '紹介のリンクを載せるのは、提携が通り、広告の表示と表現の点検が済んでから',
+  publishExpedition: '紹介のリンクを載せるのは、媒体の登録と、広告の表示の点検が済んでから',
+  monetize: '収益化の審査は、出した物がある場で受ける（AdSense は独自のコンテンツを見る。YouTube パートナーは公開した動画の登録者と再生時間で決まる）。だから、出した後に申し込む',
+  deliver: '注文は、出品と応募のどちらからも来る。両方の口を開けてから、納品に入る',
+  orders: '注文と問い合わせは、商品を出した後に来る',
+  storePage: 'ストアの画像は、出来たアプリの画面から作る',
+  proxyPage: '代行の頁（手数料・扱わない物）は、通販の規約と、古物商の許可が要るかが分かってから作る',
+  proxyPromote: '代行の紹介は、代行の頁と特定商取引法の表示が出来てから。最初の注文を待たない',
+  proxySales: '代行の売上は、届けて依頼者に知らせた後に確定する。だから、成果を読むのは、紹介を出した後と、最初の注文を届けた後',
+} as const;
 export type NoahBlueprint = {
   id: string; model: 'affiliate' | 'gig' | 'digital' | 'ads' | 'commerce' | 'app' | 'oshi'; label: string;
   accounts: string[]; steps: NoahBlueprintStep[]; finance: boolean;
@@ -277,26 +315,37 @@ export type NoahBlueprint = {
 const signUp = (account: string): NoahBlueprintStep[] => {
   const a = ACCOUNT.get(account);
   if (!a) throw Error(`unknown account ${account}`);
-  const sensitive = a.needs.filter(n => ['identity', 'bank', 'phone', 'tax'].includes(n));
   return [
-    step(`rules:${account}`, `${a.label}の規約と登録の要件を確かめる`, 'auto', { capability: 'research.market', account }),
-    step(`signup:${account}`, `${a.label}に登録する`, 'human', { account, reason: `パスワード・確認コード${sensitive.length ? `・${sensitive.map(n => ({ identity: '本人確認', bank: '口座', phone: '電話番号', tax: '税の情報' } as Record<string, string>)[n]).join('・')}` : ''}は本人が入れる（Noah は入力内容と手順を用意し、入力欄の手前まで進める）` }),
+    step(`rules:${account}`, `${a.label}の規約と登録の要件を確かめる`, 'auto', { capability: 'research.market', account, after: [] }),
+    signUpStep(account, [`rules:${account}`]),
   ];
 };
-const publishStep = (channel: NoahChannel): NoahBlueprintStep => {
+/** 規約の確認と登録。登録は、規約の確認と waits（ほかの登録など）を待つ。 */
+const signUpAfter = (account: string, waits: readonly string[], waitNote: string): NoahBlueprintStep[] => [signUp(account)[0], signUpStep(account, [`rules:${account}`, ...waits], waitNote)];
+/** 登録の工程だけ（規約の確認の工程を置かない所）。after は、その登録が待つ物。 */
+const signUpStep = (account: string, after: readonly string[], waitNote?: string): NoahBlueprintStep => {
+  const a = ACCOUNT.get(account);
+  if (!a) throw Error(`unknown account ${account}`);
+  const sensitive = a.needs.filter(n => ['identity', 'bank', 'phone', 'tax'].includes(n));
+  return step(`signup:${account}`, `${a.label}に登録する`, 'human', { account, reason: `パスワード・確認コード${sensitive.length ? `・${sensitive.map(n => ({ identity: '本人確認', bank: '口座', phone: '電話番号', tax: '税の情報' } as Record<string, string>)[n]).join('・')}` : ''}は本人が入れる（Noah は入力内容と手順を用意し、入力欄の手前まで進める）`, after, ...(waitNote ? { waitNote } : {}) });
+};
+const publishStep = (channel: NoahChannel, after: readonly string[], waitNote?: string): NoahBlueprintStep => {
   const tap = ACCOUNT.get(channel.account)?.publishByTap;
-  return step(`publish:${channel.id}`, `${channel.label}に出す`, tap ? 'tap' : 'auto', { capability: channel.publish, account: channel.account, ...(tap ? { reason: `${channel.label}の規約上、公開は本人が押す（Noah は下書きまで）` } : {}) });
+  return step(`publish:${channel.id}`, `${channel.label}に出す`, tap ? 'tap' : 'auto', { capability: channel.publish, account: channel.account, ...(tap ? { reason: `${channel.label}の規約上、公開は本人が押す（Noah は下書きまで）` } : {}), after, ...(waitNote ? { waitNote } : {}) });
 };
-const produce = (format: NoahChannel['format']): NoahBlueprintStep[] => {
-  if (format === 'video') return [step('script', '台本を書く', 'auto', { capability: 'content.script' }), step('video', '動画を作る', 'auto', { capability: 'content.video', costYen: 3000 }), step('voice', '声を付ける', 'auto', { capability: 'content.voice' })];
-  if (format === 'image') return [step('copy', '文章を書く', 'auto', { capability: 'content.script' }), step('image', '画像を作る', 'auto', { capability: 'content.image', costYen: 1000 })];
-  if (format === 'site') return [step('article', '記事を書く', 'auto', { capability: 'content.article' }), step('image', '図・画像を作る', 'auto', { capability: 'content.image' })];
-  return [step('copy', '文章を書く', 'auto', { capability: 'content.script' })];
+/** 出す物を作る工程。最初の工程が after を待つ。台本・文章が先で、動画と声（どちらも台本から）は同時に作る。 */
+const produce = (format: NoahChannel['format'], after: readonly string[]): NoahBlueprintStep[] => {
+  if (format === 'video') return [step('script', '台本を書く', 'auto', { capability: 'content.script', after }), step('video', '動画を作る', 'auto', { capability: 'content.video', costYen: 3000, after: ['script'] }), step('voice', '声を付ける', 'auto', { capability: 'content.voice', after: ['script'] })];
+  if (format === 'image') return [step('copy', '文章を書く', 'auto', { capability: 'content.script', after }), step('image', '画像を作る', 'auto', { capability: 'content.image', costYen: 1000, after: ['copy'] })];
+  if (format === 'site') return [step('article', '記事を書く', 'auto', { capability: 'content.article', after }), step('image', '図・画像を作る', 'auto', { capability: 'content.image', after: ['article'] })];
+  return [step('copy', '文章を書く', 'auto', { capability: 'content.script', after })];
 };
-const measure = (): NoahBlueprintStep[] => [
-  step('track', '成果・売上を読む', 'auto', { capability: 'tracking.results' }),
-  step('decide', '続ける・増やす・止めるを決める', 'auto', { capability: 'optimize.rules' }),
-  step('payout', '入金を確かめる', 'human', { reason: '銀行の明細は本人の口座（Noah は ASP・売り場の支払明細との照合を用意する）' }),
+/** 工程の組の、最後の工程たち（組の中の、ほかの工程に待たれていない物）。作った物を全部使う次の工程が、これを待つ。 */
+const finals = (steps: readonly NoahBlueprintStep[]) => steps.filter(s => !steps.some(o => o.after?.includes(s.id))).map(s => s.id);
+const measure = (after: readonly string[], waitNote?: string): NoahBlueprintStep[] => [
+  step('track', '成果・売上を読む', 'auto', { capability: 'tracking.results', after, ...(waitNote ? { waitNote } : {}) }),
+  step('decide', '続ける・増やす・止めるを決める', 'auto', { capability: 'optimize.rules', after: ['track'] }),
+  step('payout', '入金を確かめる', 'human', { reason: '銀行の明細は本人の口座（Noah は ASP・売り場の支払明細との照合を用意する）', after: ['track'] }),
 ];
 
 /** 分類表から、全部の設計図を作る（同じ入力なら、いつも同じ順・同じ中身）。 */
@@ -305,55 +354,63 @@ export function noahBlueprints(): NoahBlueprint[] {
   const push = (b: Omit<NoahBlueprint, 'evidence' | 'accounts'>) => out.push({ ...b, accounts: [...new Set(b.steps.flatMap(s => (s.kind === 'human' && s.account ? [s.account] : [])))], evidence: [] });
   for (const vertical of NOAH_AFFILIATE_VERTICALS) for (const channel of NOAH_CHANNELS) {
     const asp = vertical.asp[0];
+    const made = produce(channel.format, ['offers', 'research']);
+    const checked = vertical.finance ? 'finance-review' : 'disclose';
     push({ id: `affiliate:${vertical.id}:${channel.id}`, model: 'affiliate', label: `${vertical.label}の紹介 × ${channel.label}`, finance: !!vertical.finance, steps: [
-      ...signUp(asp), ...signUp(channel.account),
-      step(`media:${asp}`, 'ASP に載せる場（媒体）を登録する', 'tap', { account: asp, reason: '媒体の登録と提携の申請は ASP の画面で本人が押す（Noah は説明文と申請の中身を用意する）' }),
-      step('offers', '案件を比べて選ぶ（単価・承認率・条件）', 'auto', { capability: 'research.offer' }),
-      step('apply', '案件に提携を申し込む', 'tap', { account: asp, reason: '提携の申請は ASP の画面で本人が押す' }),
-      step('research', '需要と競合を調べる', 'auto', { capability: 'research.market' }),
-      ...produce(channel.format),
-      step('lp', '紹介の LP を作る', 'auto', { capability: 'site.build' }),
-      step('lp-host', 'LP を公開する', 'auto', { capability: 'site.host' }),
-      step('disclose', '広告の表示（PR）と誇大な表現を点検する', 'auto', { capability: 'compliance.check' }),
-      ...(vertical.finance ? [step('finance-review', '金融の表現を確かめる', 'review', { reason: '金融商品の広告の決まり（本人が自分で確かめる。2026-11-22 の本人の回答）' })] : []),
-      publishStep(channel), ...measure(),
+      ...signUp(channel.account), ...signUpAfter(asp, [`signup:${channel.account}`], NOAH_STEP_WAITS.aspSignup),
+      step(`media:${asp}`, 'ASP に載せる場（媒体）を登録する', 'tap', { account: asp, reason: '媒体の登録と提携の申請は ASP の画面で本人が押す（Noah は説明文と申請の中身を用意する）', after: [`signup:${asp}`], waitNote: NOAH_STEP_WAITS.media }),
+      step('offers', '案件を比べて選ぶ（単価・承認率・条件）', 'auto', { capability: 'research.offer', after: [`signup:${asp}`], waitNote: NOAH_STEP_WAITS.offers }),
+      step('apply', '案件に提携を申し込む', 'tap', { account: asp, reason: '提携の申請は ASP の画面で本人が押す', after: ['offers', `media:${asp}`] }),
+      step('research', '需要と競合を調べる', 'auto', { capability: 'research.market', after: [], waitNote: NOAH_STEP_WAITS.research }),
+      ...made,
+      step('lp', '紹介の LP を作る', 'auto', { capability: 'site.build', after: ['offers', 'research'] }),
+      step('lp-host', 'LP を公開する', 'auto', { capability: 'site.host', after: ['lp'] }),
+      step('disclose', '広告の表示（PR）と誇大な表現を点検する', 'auto', { capability: 'compliance.check', after: [...finals(made), 'lp-host'] }),
+      ...(vertical.finance ? [step('finance-review', '金融の表現を確かめる', 'review', { reason: '金融商品の広告の決まり（本人が自分で確かめる。2026-11-22 の本人の回答）', after: ['disclose'] })] : []),
+      publishStep(channel, [checked, 'apply', `signup:${channel.account}`], NOAH_STEP_WAITS.publishAffiliate), ...measure([`publish:${channel.id}`]),
     ] });
   }
   for (const market of NOAH_GIG_MARKETS) for (const [skill, label] of NOAH_GIG_SKILLS) push({ id: `gig:${skill}:${market}`, model: 'gig', label: `${label}の受注 × ${ACCOUNT.get(market)!.label}`, finance: false, steps: [
     ...signUp(market),
-    step('listing', '出品ページを作る', 'auto', { capability: 'content.script' }), step('listing-image', '出品の画像を作る', 'auto', { capability: 'content.image' }),
-    step('publish', '出品する', 'tap', { capability: 'publish.listing', account: market, reason: '出品の公開は売り場の画面で本人が押す' }),
-    step('apply', '募集に応募する', 'auto', { capability: 'gig.apply' }), step('deliver', '納品物を作る', 'auto', { capability: 'gig.deliver' }),
-    step('deliver-check', '納品の前に確かめる', 'review', { reason: '依頼者へ出す前に、本人が中身を確かめる' }),
-    step('reply', '依頼者に返信する', 'auto', { capability: 'support.reply' }), ...measure(),
+    step('listing', '出品ページを作る', 'auto', { capability: 'content.script', after: [], waitNote: NOAH_STEP_WAITS.draft }), step('listing-image', '出品の画像を作る', 'auto', { capability: 'content.image', after: ['listing'] }),
+    step('publish', '出品する', 'tap', { capability: 'publish.listing', account: market, reason: '出品の公開は売り場の画面で本人が押す', after: [`signup:${market}`, 'listing', 'listing-image'] }),
+    step('apply', '募集に応募する', 'auto', { capability: 'gig.apply', after: [`signup:${market}`] }), step('deliver', '納品物を作る', 'auto', { capability: 'gig.deliver', after: ['publish', 'apply'], waitNote: NOAH_STEP_WAITS.deliver }),
+    step('deliver-check', '納品の前に確かめる', 'review', { reason: '依頼者へ出す前に、本人が中身を確かめる', after: ['deliver'] }),
+    step('reply', '依頼者に返信する', 'auto', { capability: 'support.reply', after: ['deliver-check'] }), ...measure(['reply']),
   ] });
   for (const market of NOAH_DIGITAL_MARKETS) for (const [topic, label] of NOAH_DIGITAL_TOPICS) push({ id: `digital:${topic}:${market}`, model: 'digital', label: `${label} × ${ACCOUNT.get(market)!.label}`, finance: false, steps: [
-    ...signUp(market), step('research', '売れている物と足りない物を調べる', 'auto', { capability: 'research.market' }),
-    step('make', '商品を作る', 'auto', { capability: 'product.digital' }), step('cover', '表紙・見本の画像を作る', 'auto', { capability: 'content.image' }),
-    step('listing', '販売ページを書く', 'auto', { capability: 'content.script' }),
-    step('publish', '販売を始める', 'tap', { capability: 'publish.listing', account: market, reason: '販売の公開は売り場の画面で本人が押す' }),
-    ...signUp('x').slice(1), step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x' }), ...measure(),
+    ...signUp(market), step('research', '売れている物と足りない物を調べる', 'auto', { capability: 'research.market', after: [], waitNote: NOAH_STEP_WAITS.research }),
+    step('make', '商品を作る', 'auto', { capability: 'product.digital', after: ['research'] }), step('cover', '表紙・見本の画像を作る', 'auto', { capability: 'content.image', after: ['make'] }),
+    step('listing', '販売ページを書く', 'auto', { capability: 'content.script', after: ['make'] }),
+    step('publish', '販売を始める', 'tap', { capability: 'publish.listing', account: market, reason: '販売の公開は売り場の画面で本人が押す', after: [`signup:${market}`, 'cover', 'listing'] }),
+    signUpStep('x', []), step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x', after: ['publish', 'signup:x'] }), ...measure(['promote']),
   ] });
   for (const channelId of NOAH_ADS_CHANNELS) for (const [theme, label] of NOAH_ADS_THEMES) {
     const channel = NOAH_CHANNELS.find(c => c.id === channelId)!;
+    const partner = channelId === 'blog' ? 'adsense' : 'youtube-partner';
+    const made = produce(channel.format, ['research']);
+    // 収益化の申し込み（AdSense・YouTube パートナー）は、出した物がある場で受けるので、出した後に置く（規約の確認は最初からできる）。
     push({ id: `ads:${theme}:${channelId}`, model: 'ads', label: `${label}の広告収益 × ${channel.label}`, finance: false, steps: [
-      ...signUp(channel.account), ...signUp(channelId === 'blog' ? 'adsense' : 'youtube-partner'),
-      step('research', '伸びている題材を調べる', 'auto', { capability: 'research.market' }), ...produce(channel.format), publishStep(channel), ...measure(),
+      ...signUp(channel.account), signUp(partner)[0],
+      step('research', '伸びている題材を調べる', 'auto', { capability: 'research.market', after: [], waitNote: NOAH_STEP_WAITS.research }), ...made,
+      publishStep(channel, [...finals(made), `signup:${channel.account}`]),
+      signUpStep(partner, [`rules:${partner}`, `publish:${channel.id}`], NOAH_STEP_WAITS.monetize),
+      ...measure([`publish:${channel.id}`, `signup:${partner}`]),
     ] });
   }
   for (const [kind, label, account] of NOAH_COMMERCE) for (const [niche, nicheLabel] of NOAH_COMMERCE_NICHES) {
     if ((kind === 'kdp-books') !== (niche === 'books')) continue;
     push({ id: `commerce:${niche}:${kind}`, model: 'commerce', label: `${nicheLabel} × ${label}`, finance: false, steps: [
-      ...signUp(account), step('research', '売れ筋と仕入れ先を調べる', 'auto', { capability: 'research.offer' }),
-      step('make', '商品の画像・説明を作る', 'auto', { capability: 'content.image' }), step('listing', '商品を出す', 'auto', { capability: 'publish.listing', account }),
-      step('fulfill', '注文を届ける（仕入れ先・受注生産）', 'auto', { capability: 'order.fulfill' }), step('support', '問い合わせに答える', 'auto', { capability: 'support.reply' }),
-      ...signUp('instagram').slice(1), step('promote', 'Instagram で紹介する', 'auto', { capability: 'publish.sns', account: 'instagram' }), ...measure(),
+      ...signUp(account), step('research', '売れ筋と仕入れ先を調べる', 'auto', { capability: 'research.offer', after: [], waitNote: NOAH_STEP_WAITS.research }),
+      step('make', '商品の画像・説明を作る', 'auto', { capability: 'content.image', after: ['research'] }), step('listing', '商品を出す', 'auto', { capability: 'publish.listing', account, after: ['make', `signup:${account}`] }),
+      step('fulfill', '注文を届ける（仕入れ先・受注生産）', 'auto', { capability: 'order.fulfill', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }), step('support', '問い合わせに答える', 'auto', { capability: 'support.reply', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }),
+      signUpStep('instagram', []), step('promote', 'Instagram で紹介する', 'auto', { capability: 'publish.sns', account: 'instagram', after: ['listing', 'signup:instagram'] }), ...measure(['promote']),
     ] });
   }
   for (const [category, label] of NOAH_APP_CATEGORIES) push({ id: `app:${category}:ios`, model: 'app', label: `${label}のアプリ × App Store`, finance: false, steps: [
-    ...signUp('apple-developer'), step('research', '検索の多い悩みと競合を調べる', 'auto', { capability: 'research.market' }),
-    step('build', 'アプリを作る・更新する', 'auto', { capability: 'app.build' }), step('store-page', 'ストアの説明と画像を作る', 'auto', { capability: 'content.image' }),
-    step('submit', '審査に出す', 'tap', { account: 'apple-developer', reason: 'App Store の審査の提出は本人が押す' }), ...measure(),
+    ...signUp('apple-developer'), step('research', '検索の多い悩みと競合を調べる', 'auto', { capability: 'research.market', after: [], waitNote: NOAH_STEP_WAITS.research }),
+    step('build', 'アプリを作る・更新する', 'auto', { capability: 'app.build', after: ['research'] }), step('store-page', 'ストアの説明と画像を作る', 'auto', { capability: 'content.image', after: ['build'], waitNote: NOAH_STEP_WAITS.storePage }),
+    step('submit', '審査に出す', 'tap', { account: 'apple-developer', reason: 'App Store の審査の提出は本人が押す', after: ['signup:apple-developer', 'build', 'store-page'] }), ...measure(['submit']),
   ] });
   for (const [fan, fanLabel] of NOAH_OSHI_FANDOMS) {
     // 推し活の手伝い（見張る・予定・知らせ・遠征・家計簿）は、稼ぎ方の設計図ではなく、Noah のエージェント 1 つ（NOAH_OSHI_AGENT）。
@@ -361,45 +418,106 @@ export function noahBlueprints(): NoahBlueprint[] {
     // 2. 海外のファン向けの購入代行（公式通販・事前通販）。数量制限と規約を守り、人の速さで買う。チケットは扱わない。
     for (const channelId of ['x', 'instagram', 'tiktok'] as const) {
       const channel = NOAH_CHANNELS.find(c => c.id === channelId)!;
+      const made = produce(channel.format, ['page', 'legal-notice']);
       push({ id: `oshi:proxy-overseas:${fan}:${channelId}`, model: 'oshi', label: `${fanLabel}グッズの海外向け購入代行 × ${channel.label}`, finance: false, hold: '後回し（本人 2026-11-22「代行は後回し」）', steps: [
         ...signUp('stripe'), ...signUp('official-shops'), ...signUp('japan-post'), ...signUp(channel.account),
-        step('license', '古物商の許可が要るかを確かめる', 'review', { reason: '代わりに買って渡す形でも、新品の買い取り・売り渡しは古物に当たる場合がある。所轄の警察署・行政書士に確かめる（本人）' }),
-        step('shop-rules', '公式通販の規約（代行・転売・海外転送・数量制限）を確かめる', 'auto', { capability: 'research.market' }),
-        step('page', '代行の頁（手数料・送料・届く日数・扱わない物）を作る', 'auto', { capability: 'site.build' }),
-        step('legal-notice', '特定商取引法の表示（名義・連絡先）を確かめる', 'review', { reason: '名義はノエル個人。表示する住所・電話の出し方は本人が決める' }),
-        step('intake', '依頼・見積もり・前払いを受ける', 'auto', { capability: 'proxy.intake' }),
-        step('buy', '公式通販で買う', 'tap', { account: 'official-shops', reason: '購入は運営が人の速さで押す（自動購入・数量の上限を超える買い方・先着の買い占めはしない）' }),
-        step('receive', '届いた物を確かめる', 'human', { reason: '物を手に取って確かめる（傷・数・中身）' }),
-        step('label', '国際発送の送り状と税関の書類を作る', 'auto', { capability: 'shipping.label' }),
-        step('ship', '梱包して出す', 'human', { reason: '梱包と持ち込み（集荷）は人の手' }),
-        step('support', '依頼者に返信する', 'auto', { capability: 'support.reply' }),
-        ...produce(channel.format), publishStep(channel), ...measure(),
+        step('license', '古物商の許可が要るかを確かめる', 'review', { reason: '代わりに買って渡す形でも、新品の買い取り・売り渡しは古物に当たる場合がある。所轄の警察署・行政書士に確かめる（本人）', after: [] }),
+        step('shop-rules', '公式通販の規約（代行・転売・海外転送・数量制限）を確かめる', 'auto', { capability: 'research.market', after: [] }),
+        step('page', '代行の頁（手数料・送料・届く日数・扱わない物）を作る', 'auto', { capability: 'site.build', after: ['shop-rules', 'license'], waitNote: NOAH_STEP_WAITS.proxyPage }),
+        step('legal-notice', '特定商取引法の表示（名義・連絡先）を確かめる', 'review', { reason: '名義はノエル個人。表示する住所・電話の出し方は本人が決める', after: ['page'] }),
+        step('intake', '依頼・見積もり・前払いを受ける', 'auto', { capability: 'proxy.intake', after: ['page', 'legal-notice', 'signup:stripe'] }),
+        step('buy', '公式通販で買う', 'tap', { account: 'official-shops', reason: '購入は運営が人の速さで押す（自動購入・数量の上限を超える買い方・先着の買い占めはしない）', after: ['intake', 'signup:official-shops'] }),
+        step('receive', '届いた物を確かめる', 'human', { reason: '物を手に取って確かめる（傷・数・中身）', after: ['buy'] }),
+        step('label', '国際発送の送り状と税関の書類を作る', 'auto', { capability: 'shipping.label', after: ['receive', 'signup:japan-post'] }),
+        step('ship', '梱包して出す', 'human', { reason: '梱包と持ち込み（集荷）は人の手', after: ['label'] }),
+        step('support', '依頼者に返信する', 'auto', { capability: 'support.reply', after: ['ship'] }),
+        ...made, publishStep(channel, [...finals(made), `signup:${channel.account}`], NOAH_STEP_WAITS.proxyPromote), ...measure([`publish:${channel.id}`, 'support'], NOAH_STEP_WAITS.proxySales),
       ] });
     }
-    // 3. 推し活の予定のまとめ（事実と日付だけ。画像・本文は転載しない）× ブログの広告収益。
+    // 3. 推し活の予定のまとめ（事実と日付だけ。画像・本文は転載しない）× ブログの広告収益。AdSense の申し込みは、記事を出した後。
     push({ id: `oshi:calendar-media:${fan}`, model: 'oshi', label: `${fanLabel}のイベントの予定まとめ × ブログ`, finance: false, steps: [
-      ...signUp('hosting'), ...signUp('adsense'),
-      step('watch', '公式の告知を見張る', 'auto', { capability: 'oshi.watch' }),
-      step('article', '日付・会場・申込の期間を記事にする（公式の画像・本文は転載しない）', 'auto', { capability: 'content.article' }),
-      step('publish', '記事を出す', 'auto', { capability: 'publish.blog' }), ...measure(),
+      ...signUp('hosting'), signUp('adsense')[0],
+      step('watch', '公式の告知を見張る', 'auto', { capability: 'oshi.watch', after: [] }),
+      step('article', '日付・会場・申込の期間を記事にする（公式の画像・本文は転載しない）', 'auto', { capability: 'content.article', after: ['watch'] }),
+      step('publish', '記事を出す', 'auto', { capability: 'publish.blog', after: ['article', 'signup:hosting'] }),
+      signUpStep('adsense', ['rules:adsense', 'publish'], NOAH_STEP_WAITS.monetize), ...measure(['publish', 'signup:adsense']),
     ] });
   }
   // 4. 遠征（宿・交通）の紹介 × 場所。推し活の遠征の需要に、旅行の案件を当てる。
-  for (const channel of NOAH_CHANNELS) push({ id: `oshi:expedition-affiliate:${channel.id}`, model: 'oshi', label: `推し活の遠征（宿・交通）の紹介 × ${channel.label}`, finance: false, steps: [
-    ...signUp('asp-valuecommerce'), ...signUp(channel.account),
-    step('media:asp-valuecommerce', 'ASP に載せる場（媒体）を登録する', 'tap', { account: 'asp-valuecommerce', reason: '媒体の登録と提携の申請は ASP の画面で本人が押す' }),
-    step('offers', '宿・交通の案件を比べて選ぶ', 'auto', { capability: 'research.offer' }),
-    step('research', '公演の会場と日程から、宿が足りない日を調べる', 'auto', { capability: 'travel.search' }),
-    ...produce(channel.format), step('disclose', '広告の表示（PR）を点検する', 'auto', { capability: 'compliance.check' }), publishStep(channel), ...measure(),
-  ] });
+  for (const channel of NOAH_CHANNELS) {
+    const made = produce(channel.format, ['offers', 'research']);
+    push({ id: `oshi:expedition-affiliate:${channel.id}`, model: 'oshi', label: `推し活の遠征（宿・交通）の紹介 × ${channel.label}`, finance: false, steps: [
+      ...signUp(channel.account), ...signUpAfter('asp-valuecommerce', [`signup:${channel.account}`], NOAH_STEP_WAITS.aspSignup),
+      step('media:asp-valuecommerce', 'ASP に載せる場（媒体）を登録する', 'tap', { account: 'asp-valuecommerce', reason: '媒体の登録と提携の申請は ASP の画面で本人が押す', after: ['signup:asp-valuecommerce'], waitNote: NOAH_STEP_WAITS.media }),
+      step('offers', '宿・交通の案件を比べて選ぶ', 'auto', { capability: 'research.offer', after: ['signup:asp-valuecommerce'], waitNote: NOAH_STEP_WAITS.offers }),
+      step('research', '公演の会場と日程から、宿が足りない日を調べる', 'auto', { capability: 'travel.search', after: [], waitNote: NOAH_STEP_WAITS.research }),
+      ...made, step('disclose', '広告の表示（PR）を点検する', 'auto', { capability: 'compliance.check', after: finals(made) }),
+      publishStep(channel, ['disclose', 'media:asp-valuecommerce', `signup:${channel.account}`], NOAH_STEP_WAITS.publishExpedition), ...measure([`publish:${channel.id}`]),
+    ] });
+  }
   // 5. 推し活の汎用の用品（トレカケース・缶バッジの入れ物など。作品の絵柄は使わない）の物販。
   for (const [kind, label, account] of NOAH_COMMERCE.filter(([k]) => k !== 'kdp-books')) push({ id: `oshi:supplies:${kind}`, model: 'oshi', label: `推し活の用品（絵柄なし） × ${label}`, finance: false, steps: [
-    ...signUp(account), step('research', '売れ筋と仕入れ先を調べる', 'auto', { capability: 'research.offer' }),
-    step('rights', '作品の絵柄・ロゴ・名前を使っていない事を確かめる', 'auto', { capability: 'compliance.check' }),
-    step('make', '商品の画像・説明を作る', 'auto', { capability: 'content.image' }), step('listing', '商品を出す', 'auto', { capability: 'publish.listing', account }),
-    step('fulfill', '注文を届ける', 'auto', { capability: 'order.fulfill' }), step('support', '問い合わせに答える', 'auto', { capability: 'support.reply' }),
-    ...signUp('x').slice(1), step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x' }), ...measure(),
+    ...signUp(account), step('research', '売れ筋と仕入れ先を調べる', 'auto', { capability: 'research.offer', after: [], waitNote: NOAH_STEP_WAITS.research }),
+    step('rights', '作品の絵柄・ロゴ・名前を使っていない事を確かめる', 'auto', { capability: 'compliance.check', after: ['research'] }),
+    step('make', '商品の画像・説明を作る', 'auto', { capability: 'content.image', after: ['rights'] }), step('listing', '商品を出す', 'auto', { capability: 'publish.listing', account, after: ['make', `signup:${account}`] }),
+    step('fulfill', '注文を届ける', 'auto', { capability: 'order.fulfill', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }), step('support', '問い合わせに答える', 'auto', { capability: 'support.reply', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }),
+    signUpStep('x', []), step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x', after: ['listing', 'signup:x'] }), ...measure(['promote']),
   ] });
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// 何を待つか（段・今始められる工程・工程を外した時のつなぎ直し）
+// ---------------------------------------------------------------------------
+
+/**
+ * 待つ相手が正しいか。どの工程も after を持ち、after は同じ設計図の前に並ぶ工程だけで、同じ id を 2 回書かない。
+ * 前に並ぶ工程だけを待つので、輪にならず、設計図の並び順は、いつでも 1 つずつ順に進めてよい順になる。問題が無ければ null。
+ */
+export function noahBlueprintWaitProblem(steps: readonly NoahBlueprintStep[]): string | null {
+  const seen = new Set<string>();
+  for (const s of steps) {
+    if (!s.after) return `「${s.label}」に、何を待つかが書かれていません。`;
+    if (new Set(s.after).size !== s.after.length) return `「${s.label}」が、同じ工程を 2 回待っています。`;
+    const missing = s.after.find(id => !seen.has(id));
+    if (missing) return `「${s.label}」が、前に無い工程（${missing}）を待っています。`;
+    seen.add(s.id);
+  }
+  return null;
+}
+/** 段。待つ相手が無い工程が 1 段目、ほかは「待つ相手の段のいちばん後 + 1」段目。同じ段の工程は同時に進められる。段の中は設計図の並び順。 */
+export function noahBlueprintLevels(steps: readonly NoahBlueprintStep[]): NoahBlueprintStep[][] {
+  const problem = noahBlueprintWaitProblem(steps);
+  if (problem) throw Error(problem);
+  const level = new Map<string, number>(), out: NoahBlueprintStep[][] = [];
+  for (const s of steps) {
+    const at = Math.max(-1, ...(s.after ?? []).map(id => level.get(id)!)) + 1;
+    level.set(s.id, at);
+    (out[at] ??= []).push(s);
+  }
+  return out;
+}
+/**
+ * 今始められる工程（会社で回す時に使う）: まだ終わっていない工程のうち、待つ相手が全部終わった物。設計図の並び順。
+ * 本人の工程（human・tap・review）が終わっていなくても、それを待っていない工程は始められる（本人の工程は、その結果を使う工程だけを止める）。
+ */
+export function noahBlueprintReady(steps: readonly NoahBlueprintStep[], done: ReadonlySet<string>): NoahBlueprintStep[] {
+  const problem = noahBlueprintWaitProblem(steps);
+  if (problem) throw Error(problem);
+  return steps.filter(s => !done.has(s.id) && (s.after ?? []).every(id => done.has(id)));
+}
+/**
+ * 工程を外す（持っているアカウントの登録と規約の確認など）。外した工程を待っていた工程は、代わりに、外した工程が待っていた物を待つ。
+ * だから、外した後も、待つ相手のつながりは切れない（例: YouTube の登録を外すと、YouTube に出す工程は、登録の前の物を待つ）。
+ */
+export function noahBlueprintWithout(steps: readonly NoahBlueprintStep[], drop: (step: NoahBlueprintStep) => boolean): NoahBlueprintStep[] {
+  const dropped = new Map<string, readonly string[]>(), out: NoahBlueprintStep[] = [];
+  const expand = (ids: readonly string[]) => [...new Set(ids.flatMap(id => dropped.get(id) ?? [id]))];
+  for (const s of steps) {
+    const after = expand(s.after ?? []);
+    if (drop(s)) dropped.set(s.id, after);
+    else out.push({ ...s, after });
+  }
   return out;
 }
 
@@ -438,7 +556,8 @@ export type NoahBlueprintPlan = NoahBlueprint & {
 export function noahPlanBlueprints(verified: NoahVerifiedCapabilities = {}, owned: ReadonlySet<string> = new Set()): NoahBlueprintPlan[] {
   const has = (c: NoahCapability) => NOAH_BUILTIN_CAPABILITIES.includes(c) || (verified[c]?.length ?? 0) > 0;
   return noahBlueprints().map((b): NoahBlueprintPlan => {
-    const steps = b.steps.filter(s => !(s.kind === 'human' && s.account && owned.has(s.account)) && !(s.id.startsWith('rules:') && s.account && owned.has(s.account)));
+    // 持っているアカウントの登録と規約の確認を外す。外した工程を待っていた工程は、つなぎ直す（noahBlueprintWithout）。
+    const steps = noahBlueprintWithout(b.steps, s => (s.kind === 'human' || s.id.startsWith('rules:')) && !!s.account && owned.has(s.account));
     const auto = steps.filter(s => s.kind === 'auto');
     const gaps = [...new Set(auto.flatMap(s => (s.capability && !has(s.capability) ? [s.capability] : [])))];
     const covered = auto.filter(s => !s.capability || has(s.capability)).length;
