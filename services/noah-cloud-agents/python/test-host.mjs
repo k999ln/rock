@@ -26,7 +26,7 @@ class Model extends RpcTarget {
     if(this.input.mode==='missing-choices') return JSON.stringify({response:'private model text'});
     if(this.input.mode==='empty-content' || this.input.mode==='output-limit') message.content=null;
     if(this.input.mode==='invalid-json') message.content='private incomplete JSON {';
-    return JSON.stringify({id:'fixture',object:'chat.completion',created:1,choices:[{index:0,finish_reason:this.input.mode==='output-limit'?'length':message.tool_calls?'tool_calls':'stop',message}]});
+    return JSON.stringify({id:'fixture',object:'chat.completion',created:1,choices:[{index:0,finish_reason:['output-limit','truncated-json'].includes(this.input.mode)?'length':message.tool_calls?'tool_calls':'stop',message}]});
   }
 }
 export default {async fetch(request, env) {

@@ -27,6 +27,11 @@ void test('Python model RPC uses the same four-call admission and persists a ver
   const over=world({execute:async(_,bridge)=>{for(let n=0;n<5;n++)await bridge.complete(JSON.stringify({messages:[{role:'user',content:'fixture'}]}));return JSON.stringify(valid());}});
   await over.job.execute();assert.equal(over.calls(),4);assert.equal(over.data.get('job').state,'failed');assert.equal(over.data.get('job').result,undefined);
 });
+void test('boss requests concise JSON with low reasoning without increasing its token or call budget',async()=>{
+  let input;
+  const w=world({model:async(_,value)=>{input=value;return {choices:[]};},execute:async(_,bridge)=>{await bridge.complete(JSON.stringify({messages:[{role:'system',content:'Official instruction'},{role:'user',content:'A job description'}],reasoning_effort:'high',max_tokens:9999}));return JSON.stringify(valid());}});
+  await w.job.execute();assert.equal(input.reasoning_effort,'low');assert.deepEqual(input.response_format,{type:'json_object'});assert.equal(input.max_tokens,1024);assert.equal(w.calls(),1);assert.ok(input.messages[0].content.startsWith('Official instruction'));assert.equal(input.messages[1].content,'A job description');
+});
 void test('stop during Python model RPC wins over late output without blocking the admission gate',async()=>{
   let release;const held=new Promise(r=>{release=r;});
   const w=world({model:async()=>held,execute:async(_,bridge)=>{await bridge.complete(JSON.stringify({messages:[{role:'user',content:'fixture'}]}));return JSON.stringify(valid());}});

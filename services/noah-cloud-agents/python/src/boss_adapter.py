@@ -48,6 +48,8 @@ def boss(prompt, home):
         request = home / 'request.txt'
         request.write_text(prompt, encoding='utf-8')
         boss_commands.ai_group.main(['interview-prep', '@' + str(request), '--count', '5'], obj=context, standalone_mode=False)
+        if MODEL_STATUS.get():
+            raise ExecutionError(MODEL_STATUS.get())
         result = OUTPUT.get()
         if not isinstance(result, dict) or not isinstance(result.get('job_summary'), str) or not isinstance(result.get('questions'), list) or len(result['questions']) != 5 or not isinstance(result.get('preparation_tips'), list):
             raise ValueError('Incomplete boss preparation')

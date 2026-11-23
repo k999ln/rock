@@ -39,7 +39,17 @@ export class NoahFreeCloudJob extends NoahCloudJob {
     return job;
   }
   async runModel(value) {
+    const owner = await this.live();
     const input = { ...noahCloudModelInput(value), max_tokens: limits.outputTokens };
+    if (owner.profile === 'boss') {
+      // The official command requests five JSON questions. Reserve the fixed
+      // output budget for that result rather than a long reasoning preamble.
+      input.reasoning_effort = 'low';
+      input.response_format = { type: 'json_object' };
+      const instruction = 'Return one compact JSON object in the requested language. Keep every string brief (at most 40 characters), exactly five questions, one evaluation point per question and two preparation tips. Do not omit the official fields.';
+      if (input.messages[0].role === 'system') input.messages[0].content += '\n' + instruction;
+      else input.messages.unshift({ role: 'system', content: instruction });
+    }
     if (new TextEncoder().encode(JSON.stringify(input)).length > limits.modelInputBytes) throw Error('無料枠のモデル入力上限に達しました。依頼を短くしてください。');
     let model, deadline;
     await this.ctx.blockConcurrencyWhile(async () => {
