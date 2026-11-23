@@ -1,4 +1,5 @@
 ## 2026-11-24
+- CallMCPの詳細に依頼例・返答の見本・送信先・提供元の料金を追加し、検索と共有から同じ内容を読めるようにした。[PR #41](https://github.com/iceiceice999/rock/pull/41)
 - Noahの登録・掲載に作者が選ぶ画像と動画、任意の表紙動画生成、プレビューを追加。Agentの版と閲覧権限に合わせて表示する。[PR #41](https://github.com/iceiceice999/rock/pull/41)
 - NoahのAgent一覧を共通のピンにそろえ、特集画像とピンに短いアニメーションを追加。端末の「動きを減らす」設定に対応。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
 

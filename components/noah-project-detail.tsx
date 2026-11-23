@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import type { NoahAgentSource } from '@/lib/noah-agent-cards';
 import type { NoahProjectDetail as Detail } from '@/lib/noah-project-view';
 import { NOAH_COLLECTION_LABELS } from '@/lib/noah-collection';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
@@ -12,6 +13,18 @@ import { useNoahLocale } from './noah-locale';
 import styles from './noah-project-detail.module.css';
 import { NOAH_PIN_TOPIC_LABELS } from '@/lib/noah-pins';
 import NoahProductHeader from './noah-product-header';
+
+function ProjectSources({ sources }: { sources: NoahAgentSource[] }) {
+  const { t, locale } = useNoahLocale();
+  return <section id="ratings" className={styles.provenance} aria-labelledby="project-sources-heading">
+    <h2 id="project-sources-heading">{t('掲載元と確認日')}</h2>
+    <ul>{sources.map(source => <li key={source.sourceUrl}>
+      <a href={source.sourceUrl} target="_blank" rel="noopener noreferrer nofollow">{NOAH_COLLECTION_LABELS[source.source]} <span aria-hidden="true">↗</span></a>
+      <time dateTime={new Date(source.observedAt).toISOString()}>{new Intl.DateTimeFormat(locale, {dateStyle:'medium'}).format(source.observedAt)}</time>
+    </li>)}</ul>
+    <NoahAgentSourceRatings sources={sources} />
+  </section>;
+}
 
 export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJob?: string }) {
   const { t } = useNoahLocale();
@@ -67,32 +80,29 @@ export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJ
       <Link className={styles.back} href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>
     </main>;
   }
+  const sourceNotes = detail?.card.sources?.length ? <ProjectSources sources={detail.card.sources} /> : null;
+  if (detail?.connection.kind === 'ready') {
+    return <NoahReadyDetail id={detail.connection.familyId} internalOnly sourceNotes={sourceNotes} />;
+  }
   return <div className={styles.page}>
     <Link className={styles.back} href="/noah">← Agentを探す</Link>
     {!detail && !error && <NoahLoading label="Agentを確認しています…" />}
     {error && <div role="alert" className={styles.error}><p>{error}</p>{!detail && <button onClick={() => { setDetail(null); setError(''); setAttempt(n => n + 1); }}>読み直す</button>}</div>}
     {detail && <>
-      {detail.connection.kind !== 'ready' && <>
-        <NoahProductHeader name={detail.card.name} topic={detail.card.topic}
-          attribution={detail.card.provider ? `${t('提供:')} ${detail.card.provider}` : undefined}
-          action={usageLink} />
-        <div className={styles.overview}>
-          {detail.card.topic && <p className={styles.category}>{t('カテゴリ')} · {t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}</p>}
-          {detail.card.summary && <p className={styles.summary}>{detail.card.summary}</p>}
-        </div>
-      </>}
-      {detail.connection.kind === 'ready' && <NoahReadyDetail id={detail.connection.familyId} internalOnly />}
-      {detail.connection.kind !== 'ready' && <div id="noah-project-use" tabIndex={-1} className={styles.usage}>
+      <NoahProductHeader name={detail.card.name} topic={detail.card.topic}
+        attribution={detail.card.provider ? `${t('提供:')} ${detail.card.provider}` : undefined}
+        action={usageLink} />
+      <div className={styles.overview}>
+        {detail.card.topic && <p className={styles.category}>{t('カテゴリ')} · {t(NOAH_PIN_TOPIC_LABELS[detail.card.topic])}</p>}
+        {detail.card.summary && <p className={styles.summary}>{detail.card.summary}</p>}
+      </div>
+      <div id="noah-project-use" tabIndex={-1} className={styles.usage}>
         {detail.connection.kind === 'cloud'
           ? <NoahCloudAgent key={id} projectId={id} profile={detail.connection.profile} providerFamilyId={detail.connection.providerFamilyId} />
           : <NoahProviderRunner key={id} projectId={id}/>}
-      </div>}
-      {!!detail.card.sources?.length && <section id="ratings" className={styles.ratings} aria-label="出典と外部評価">
-        <h2>外部の評価</h2>
-        <NoahAgentSourceRatings sources={detail.card.sources} />
-        <details><summary>出典・確認日時</summary><ul>{detail.card.sources?.map(source => <li key={source.sourceUrl}><strong>{NOAH_COLLECTION_LABELS[source.source]}</strong><span>{source.sourceUrl}</span><time dateTime={new Date(source.observedAt).toISOString()}>{new Date(source.observedAt).toLocaleString('ja-JP')} 確認</time></li>)}</ul></details>
-      </section>}
-      {detail.connection.kind === 'cloud' || detail.connection.kind === 'ready' ? null : detail.connection.kind === 'space' ? <><details><summary>提供元の画面を開く</summary><section className={styles.connection} aria-label="Noah内で使う">
+      </div>
+      {sourceNotes}
+      {detail.connection.kind === 'cloud' ? null : detail.connection.kind === 'space' ? <><details><summary>提供元の画面を開く</summary><section className={styles.connection} aria-label="Noah内で使う">
         <h2>Noahで使う</h2><p>この画面でAgentの利用画面を開きます。入力は提供者のHugging Face Spaceに送られます。</p>
         <button className={styles.primary} hidden={Boolean(url)} disabled={opening} onClick={() => void openSpace()}>{opening ? '接続先を確認しています…' : '利用画面を開く'}</button>
         {error && <p><Link className={styles.back} href={`/noah/agents/new?${new URLSearchParams({ sourceUrl: `https://huggingface.co/spaces/${detail.connection.repository}`, name: detail.card.name })}`}>Noahで取込・設定する</Link></p>}

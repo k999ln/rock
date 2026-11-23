@@ -147,7 +147,7 @@ export default function NoahConnectButton({ agentId, listed, signedIn, ownerScop
   const waiting = busy || (!!pendingId && !error);
   const main = view.label === null ? null : view.action === 'ask'
     ? (askAs === 'link' ? <Link className={styles.primary} href={detail}>{t(view.label)}</Link> : null)
-    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{busy ? <NoahLoading compact label={t(view.label)} /> : view.label}</button>;
+    : <button type="button" className={styles.primary} disabled={view.disabled} aria-busy={busy || undefined} onClick={press}>{busy ? <NoahLoading compact label={t(view.label)} /> : t(view.label)}</button>;
   // 出す物が無い時（詳細の画面で、つながった後）は、区切りの線も出さない。
   if (!main && !notice && !note) return null;
   return <div className={styles.connect}>

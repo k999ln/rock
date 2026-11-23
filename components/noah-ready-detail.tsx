@@ -5,10 +5,13 @@
  * 未サインインの人が「接続」を押した後、サインインから戻った時は、この画面が、同じ操作 ID で続ける（押し直さない）。
  * 仕様: docs/noah/spec-74-one-click-connect.md の 11.4・11.5。
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
-import NoahProductHeader from './noah-product-header';
+import NoahAppIcon from './noah-app-icon';
+import { ChevronLeft, PhoneCall, ArrowUpRight, PhoneOutgoing } from 'lucide-react';
+import { noahDetailGuide } from '@/lib/noah-detail-guide';
+import pageStyles from './noah-detail-overview.module.css';
 import { noahPinTopic } from '@/lib/noah-pins';
 import NoahAgentShare from './noah-agent-share';
 import NoahLoading from './noah-loading';
@@ -28,11 +31,13 @@ import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
 
 type Detail = NoahReadyItem & { listed: boolean; website: string | null; connection: NoahReadyConnection | null; ownerScope: string | null; explanation?: NoahExplanation; summaryJa?: string | null; error?: string };
+// A schematic waveform for the example, independent of calls or audio recordings.
+const WAVEFORM = [8, 14, 20, 10, 29, 44, 24, 17, 36, 56, 70, 51, 32, 59, 85, 68, 47, 29, 39, 72, 100, 78, 55, 74, 47, 28, 41, 66, 49, 33, 23, 39, 51, 30, 18, 11, 23, 16, 9, 5];
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean }) {
-  const {t}=useNoahLocale();
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode }) {
+  const {t, locale}=useNoahLocale();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
   const [cutting, setCutting] = useState(false), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
@@ -57,8 +62,8 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     }).catch(() => done({ state: 'error' }));
   }, [id, attempt, valid]);
 
-  const back = <p className={styles.back}><Link href="/noah/explore">← {t(NOAH_READY_TEXT.title)}</Link></p>;
-  if (loaded.state !== 'ready') return <main className={`${base.page} ${styles.page}`}>
+  const back = <p className={pageStyles.back}><Link href="/noah/explore"><ChevronLeft size={18} aria-hidden="true" />{t('Agentを探す')}</Link></p>;
+  if (loaded.state !== 'ready') return <main className={`${base.page} ${styles.page} ${pageStyles.page}`}>
     {back}
     {loaded.state === 'loading' && <p className={base.loading}><NoahLoading label={t("読み込んでいます…")} /></p>}
     {loaded.state === 'missing' && <p className={base.empty}>{t(NOAH_READY_TEXT.missing)}</p>}
@@ -68,7 +73,9 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
   const { detail } = loaded, signedIn = detail.ownerScope !== null;
   const live = connection && connection.state !== 'disconnected' ? connection : null;
   const checked = noahCheckedText(detail.checkedAt);
-  const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, noahPriceText(detail.connect.price), noahUsersText(detail.users), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
+  const guide = noahDetailGuide(detail.id, locale);
+  const preview = guide?.examples[0];
+  const facts = [noahBadgeText(detail.connect), detail.connect.placeLabel, guide?.priceLabel || noahPriceText(detail.connect.price), noahUsersText(detail.users), detail.tools > 0 ? `道具 ${detail.tools} 個` : null].filter((text): text is string => !!text);
 
   async function cut(current: NoahReadyConnection) {
     if (cutting) return;
@@ -99,17 +106,58 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     }).catch(() => undefined);
   }
 
-  return <main className={`${base.page} ${styles.page}`}>
+  return <main className={`${base.page} ${styles.page} ${pageStyles.page}`}>
     {back}
-    <article className={styles.detail}>
-      <NoahProductHeader name={detail.name} topic={noahPinTopic(detail.name, detail.summary)}
-        attribution={detail.provider ? `${t('提供:')} ${detail.provider}` : undefined} />
-      <p className={styles.introSummary}>{detail.summary || t('（説明はありません）')}</p>
-      <div className={styles.connectionMeta}>
-        <span>{t(noahPriceText(detail.connect.price))}</span>
-        {detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}
+    <article className={pageStyles.overview}>
+      <div className={pageStyles.intro} data-preview={Boolean(preview) || undefined}>
+        <div className={pageStyles.product}>
+          <header className={pageStyles.identity}>
+            {guide ? <span className={pageStyles.phoneMark} aria-hidden="true"><PhoneCall size={31} strokeWidth={1.8} /></span>
+              : <NoahAppIcon name={detail.name} topic={noahPinTopic(detail.name, detail.summary)} className={pageStyles.appMark} />}
+            <div>
+              <h1>{guide?.name || detail.name}</h1>
+              {detail.provider && <p>{t('提供:')} {detail.provider}</p>}
+            </div>
+          </header>
+          {guide && <h2 className={pageStyles.pitch}>{locale === 'ja'
+            ? guide.headline.split(/(?<=、)/u).map((phrase) => <span key={phrase}>{phrase}</span>)
+            : guide.headline}</h2>}
+          <p className={pageStyles.lead}>{guide?.summary || (locale === 'ja' && detail.summaryJa) || detail.summary || t('（説明はありません）')}</p>
+          <div className={pageStyles.terms}>
+            {guide ? <a href="#noah-guide-terms" className={pageStyles.price}>{guide.priceLabel}</a> : <span>{t(noahPriceText(detail.connect.price))}</span>}
+            {detail.host && <span>{t('送信先: {host}',{host:detail.host})}</span>}
+          </div>
+          <div className={pageStyles.action}>
+            <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
+          </div>
+        </div>
+        {preview && <figure className={pageStyles.memo} aria-label={t('通話メモの見本')}>
+          <figcaption><PhoneOutgoing size={19} strokeWidth={1.8} aria-hidden="true" />{t('通話メモの見本')}</figcaption>
+          <div className={pageStyles.wave} aria-hidden="true">{WAVEFORM.map((height, i) => <i key={i} style={{ height: height + '%' }} />)}</div>
+          <h3>{preview.title}</h3>
+          <dl className={pageStyles.sample}>
+            <div><dt>{t('依頼例')}</dt><dd>{preview.input}</dd></div>
+            <div><dt>{t('返答の例')}</dt><dd>{preview.output}</dd></div>
+          </dl>
+        </figure>}
       </div>
-      <NoahConnectButton agentId={detail.id} listed={detail.listed} signedIn={signedIn} ownerScope={detail.ownerScope} connection={live} onChange={setConnection} resume askAs="none" packageId={from} initialTool={tool} />
+      {guide && <>
+        {guide.examples.length > 1 && <section className={pageStyles.block} aria-labelledby="noah-guide-examples">
+          <h2 id="noah-guide-examples">{t('ほかの使い方')}</h2>
+          <div className={pageStyles.examples}>{guide.examples.slice(1).map(example => <div className={pageStyles.example} key={example.title}>
+            <h3>{example.title}</h3>
+            <dl><div><dt>{t('依頼例')}</dt><dd>{example.input}</dd></div><div><dt>{t('返答の例')}</dt><dd>{example.output}</dd></div></dl>
+          </div>)}</div>
+        </section>}
+        <section className={pageStyles.block} id="noah-guide-terms" aria-labelledby="noah-guide-terms-title">
+          <h2 id="noah-guide-terms-title">{t('準備と料金')}</h2>
+          <dl className={pageStyles.requirements}>
+            {guide.requirements.map(row => <div key={row.label}><dt>{row.label}</dt><dd>{row.text}</dd></div>)}
+            {detail.connect.badge === 'unverified' && detail.connect.level === 1 && <div><dt>{t('Noahでの確認')}</dt><dd>{t('接続先の応答を確認済みです。Noahでの実通話は未確認です。')}</dd></div>}
+          </dl>
+          {guide.sources.length > 0 && <div className={pageStyles.links}>{guide.sources.map(source => <a key={source.href} href={source.href} target="_blank" rel="noopener noreferrer nofollow">{source.label}<ArrowUpRight size={15} aria-hidden="true" /></a>)}</div>}
+        </section>
+      </>}
       {detail.explanation && <NoahExplanationSection explanation={detail.explanation} summary={detail.summary} summaryJa={detail.summaryJa} connected={live?.state === 'connected'} />}
       {from && <NoahPackageExplanation key={from} id={from} familyId={detail.id} tool={tool} />}
       {live?.state!=='connected' && <NoahRegistrationSheet agentId={detail.id}/>}
@@ -121,7 +169,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
     <details className={styles.agentDetails}>
       <summary>{t('Agentの詳細')}</summary>
       <p className={styles.description}>{detail.summary || t('（説明はありません）')}</p>
-      <NoahAgentVisual name={detail.name} summary={detail.summary}/>
+      {!guide && <NoahAgentVisual name={detail.name} summary={detail.summary}/>}
       <ul className={styles.facts} aria-label={t("つなぎ方")}>{facts.map((text, index) => <li key={text} className={index === 0 ? styles.badge : undefined}>{t(text)}</li>)}</ul>
       {checked && <p className={styles.quiet}>{t(checked)}</p>}
       {detail.website && <p className={styles.quiet}>{internalOnly ? <span>提供元: {detail.website}</span> : <a href={detail.website} target="_blank" rel="noopener noreferrer nofollow">{t("提供者のページ（")}{new URL(detail.website).hostname}）</a>}</p>}
@@ -140,6 +188,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
       {error && <p className={styles.reason} role="alert">{t(error)}</p>}
     </section>}
 
-    <footer className={styles.source}><p>{t(NOAH_READY_TEXT.source)}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{t(NOAH_READY_TEXT.report)} →</Link></>}</p></footer>
+    {sourceNotes}
+    <footer className={styles.source}><p>{t(guide ? '登録情報はOfficial MCP Registryの掲載内容です。' : NOAH_READY_TEXT.source)}{NOAH_REPORT_CONTACT && <> <Link href="/noah/help#bot">{t(NOAH_READY_TEXT.report)} →</Link></>}</p></footer>
   </main>;
 }

@@ -314,3 +314,23 @@ void test('the English Memory flow labels the destination, explicit connection, 
   await page.click('Stop');
   assert.equal(running, false);
 });
+
+
+void test('a ready project uses the family detail once and shows a dated source even without ratings', async () => {
+  const familyId = 'mcp-registry:ai.callmcp/server';
+  const listing = 'https://registry.modelcontextprotocol.io/v0.1/servers/ai.callmcp%2Fserver/versions/latest';
+  const detailIds = [];
+  const ui = screen({ modules: { ...modules, './noah-ready-detail': {
+    default: ({ id, sourceNotes }) => { detailIds.push(id); return sourceNotes; },
+  } }, fetch: async () => ({ body: {
+    card: { id: familyId, sources: [{ source: 'mcp-registry', sourceUrl: listing, observedAt: 1795433820330 }] },
+    connection: { kind: 'ready', familyId },
+  } }) });
+  const page = detail(ui);
+  await page.flush();
+  assert.deepEqual(new Set(detailIds), new Set([familyId]));
+  assert.equal(page.find('a', 'Agentを探す').length, 0);
+  assert.equal(page.find('a', 'MCP Registry')[0].props.href, listing);
+  assert.equal(page.find('time')[0].props.dateTime, new Date(1795433820330).toISOString());
+  assert.equal(page.find('h2', '外部の評価').length, 0);
+});

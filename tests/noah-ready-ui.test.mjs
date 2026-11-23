@@ -454,6 +454,31 @@ void test('the detail screen: a withdrawn agent says so, offers no button to use
   assert.match(after.text(), /この Agent は、見つかりませんでした。/);
 });
 
+void test('CallMCP shows sample requests and the cost of real calls before connecting; reading them sends nothing', async () => {
+  const id = 'mcp-registry:ai.callmcp/server';
+  const item = {
+    id, name: 'CallMCP — Phone Call MCP Server', summary: 'A phone service', provider: 'ai.callmcp', website: 'https://callmcp.ai/',
+    listed: true, ownerScope: null, connection: null, host: 'callmcp.ai', users: 0, tools: 213, checkedAt: NOW,
+    connect: { badge: 'unverified', level: 1, placeLabel: 'callmcp.ai', price: { model: 'free' } },
+  };
+  for (const [locale, paid, caption] of [['ja', '実際の通話は有料', '通話メモの見本'], ['en', 'paid', 'Sample call note']]) {
+    const ui = screen({ locale, modules: MODULES, fetch: async (request) => ({
+      body: request.url.startsWith('/api/noah/intake?') ? item : { providers: [], items: [] },
+    }) });
+    const page = ui.mount(DETAIL, { id, internalOnly: true });
+    await page.flush();
+    assert.deepEqual(page.find('h1').map(node => page.text(node)), ['CallMCP']);
+    assert.equal(page.find('figcaption', caption).length, 1);
+    assert.match(page.text(), locale === 'ja' ? /Noahでの実通話は未確認/ : /Noah has yet to verify a live call/);
+    const memo = page.find('figure')[0];
+    assert.equal(page.nodes(memo).filter(node => ['button', 'a', 'input', 'form', 'audio'].includes(node.type)).length, 0);
+    assert.ok(page.find('a').some(node => node.props.href === '#noah-guide-terms' && page.text(node).includes(paid)));
+    assert.equal(page.find('a').filter(node => node.props.href === 'https://callmcp.ai/pricing' && node.props.target === '_blank').length, 1);
+    assert.ok(!page.find('li').some(node => page.text(node) === '無料' || page.text(node) === 'Free'));
+    assert.equal(ui.calls.some(call => call.method !== 'GET'), false);
+  }
+});
+
 void test('the detail screen: unknown agents, malformed IDs, unlisted agents seen by a reviewer', async (t) => {
   const keyed = entry(2, { remotes: [{ type: 'streamable-http', url: `https://${hostOf(2)}/mcp`, headers: [{ name: 'X-Api-Key', isRequired: true, isSecret: true }] }] });
   const w = await world(t, { [hostOf(1)]: mcpServer(), [hostOf(2)]: mcpServer() }, { records: [entry(1), keyed] });
@@ -463,7 +488,7 @@ void test('the detail screen: unknown agents, malformed IDs, unlisted agents see
     await page.flush();
     assert.match(page.text(), /この Agent は、見つかりませんでした。/, id);
     assert.equal(page.find('button').length, 0);
-    assert.deepEqual(page.find('a', 'すぐ使える Agent').map((node) => node.props.href), ['/noah/explore']);
+    assert.deepEqual(page.find('a', 'Agentを探す').map((node) => node.props.href), ['/noah/explore']);
   }
   // 形の違う ID は、問い合わせない。
   const malformed = browser(w, 'owner-a');
