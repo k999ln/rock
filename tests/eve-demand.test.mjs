@@ -57,6 +57,9 @@ void test('段 3: marketplace prices are grouped per place and outcome', () => {
   assert.equal(demand[0].priceYen, 1_230);
   assert.equal(demand[0].competitors, 50);
   assert.equal(demand[0].volumePerWeek, 2);
+  assert.equal(demand[0].id, 'market:note:digital:template');
+  const odd = eveDemandFromMarket([{ place: 'note', item: 'x', outcome: 'digital:a|b', priceYen: 500, url: 'https://note.com/c', checkedAt: day(1) }]);
+  assert.equal(odd[0].id, 'market:note:digital:a|b', 'the id is built from the parts, not by rewriting a joined key');
 });
 
 void test('段 3: the ledger keeps only sourced, fresh, https demand — at least one from each of the three origins', () => {

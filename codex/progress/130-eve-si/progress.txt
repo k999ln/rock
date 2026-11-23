@@ -59,3 +59,5 @@ task 130 Eve（eve.si）のエージェントエンジニアリング — 進み
 - docs/services/eve-si.md に「実装の状態」の表、X の紹介は需要ではなく供給、つなぎ目は宣言型、を書いた。CHANGELOG・task の一覧を更新した。
 
 本人待ち: ① 能力を確かめる見本の仕事を、相手のサーバーへ送ってよいか。② 「登録済みブログ」と ASP はどれか（今の運用は Rentracks）。③ 作者の割合（I2）と、元を「入金 − 費用」にしてよいか。
+
+2026-11-24 12:30 GitHub の CodeQL が lib/eve-demand.ts の 1 か所を指摘した（文字列の置き換えが最初の 1 つだけ）。売り場の需要の id を、つないだ鍵を書き換えて作っていた所。場所と成果から直接作るように直し、成果に「|」が入っても id が崩れない事を tests/eve-demand.test.mjs に足した。他の検査（verify・secrets・CodeQL の JavaScript と Python・repair regressions・web security）は通過。

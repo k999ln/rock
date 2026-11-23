@@ -172,12 +172,12 @@ export function eveDemandFromMarket(observations: readonly EveMarketObservation[
     const key = `${slug(o.place)}|${o.outcome}`;
     groups.set(key, [...(groups.get(key) ?? []), o]);
   }
-  return [...groups.entries()].map(([key, rows]) => {
+  return [...groups.values()].map((rows) => {
     const sold = rows.map((r) => r.soldPerWeek).filter((n): n is number => typeof n === 'number');
     const listings = rows.map((r) => r.listings).filter((n): n is number => Number.isSafeInteger(n));
     const sources = rows.map((r) => ({ url: r.url, checkedAt: r.checkedAt, note: r.item.slice(0, 80) }));
     return {
-      id: `market:${key.replace('|', ':')}`,
+      id: `market:${slug(rows[0].place)}:${rows[0].outcome}`,
       origin: 'market' as const,
       outcome: rows[0].outcome,
       label: `${rows[0].item}（${rows[0].place}）`,
