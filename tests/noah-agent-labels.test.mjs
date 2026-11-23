@@ -34,7 +34,7 @@ const cleanCsvTool = (description = 'Takes a CSV input and returns a cleaned CSV
 const series = (tool = cleanCsvTool()) => ({ familyId: 'mcp-registry:example/csv', candidateId: 'mcp-registry:example/csv', toolsSha256: H('a'), tools: [tool] });
 const input = (tool = cleanCsvTool()) => ({ schema: 'noah-label-batch/1', batchId: 'batch-a', series: [series(tool)] });
 
-test('batch input is strict and preserves literal tool field names', () => {
+void test('batch input is strict and preserves literal tool field names', () => {
   const parsed = parseNoahLabelBatch(input());
   assert.equal(parsed.schema, 'noah-label-batch/1');
   assert.equal(parsed.series[0].tools[0].name, 'clean_csv');
@@ -45,7 +45,7 @@ test('batch input is strict and preserves literal tool field names', () => {
   assert.throws(() => parseNoahLabelBatch({ ...input(), series: [series(), series()] }), /duplicate familyId/);
 });
 
-test('manifest, request id, and batches are deterministic and versioned by tool definitions', async () => {
+void test('manifest, request id, and batches are deterministic and versioned by tool definitions', async () => {
   const first = await prepareNoahLabelBatch(input());
   const reversed = await prepareNoahLabelBatch({ ...input(), series: [{ ...series(), tools: [cleanCsvTool()] }] });
   assert.equal(first.manifest.manifestSha256, reversed.manifest.manifestSha256);
@@ -57,7 +57,7 @@ test('manifest, request id, and batches are deterministic and versioned by tool 
   assert.equal(splitNoahLabelBatches(first).length, 1);
 });
 
-test('complete export keeps one fixed manifest when prepared for bounded child batches', async () => {
+void test('complete export keeps one fixed manifest when prepared for bounded child batches', async () => {
   const runInput = { schema: 'noah-label-export/1', batchId: 'run-a', series: [series(), { ...series(), familyId: 'mcp-registry:other/csv', candidateId: 'mcp-registry:other/csv' }] };
   assert.equal(parseNoahLabelRun(runInput).schema, 'noah-label-export/1');
   const run = await prepareNoahLabelRun(runInput);
@@ -67,7 +67,7 @@ test('complete export keeps one fixed manifest when prepared for bounded child b
   assert.ok(children.every((child) => child.work.every((item) => item.manifestSha256 === run.manifest.manifestSha256)));
 });
 
-test('prompt marks provider metadata as data and asks for canonical produces array', async () => {
+void test('prompt marks provider metadata as data and asks for canonical produces array', async () => {
   const batch = await prepareNoahLabelBatch(input());
   const prompt = buildNoahLabelPrompt(batch.work[0]);
   assert.match(prompt, /<tool-data>/u);
@@ -76,7 +76,7 @@ test('prompt marks provider metadata as data and asks for canonical produces arr
   assert.match(prompt, /clean_csv/u);
 });
 
-test('independent verifier accepts explicit input/output schema evidence and exposes named ports', () => {
+void test('independent verifier accepts explicit input/output schema evidence and exposes named ports', () => {
   const tool = cleanCsvTool();
   const verification = verifyNoahCardProposal(tool, { consumes: ['csv'], produces: 'cleaned-csv' });
   assert.equal(verification.ok, true);
@@ -86,7 +86,7 @@ test('independent verifier accepts explicit input/output schema evidence and exp
   assert.equal(verification.evidence.produces.find((match) => match.source === 'output-schema').path, '$.outputSchema.properties.cleaned_csv');
 });
 
-test('verifier rejects model-only labels and output without a reliable output schema', () => {
+void test('verifier rejects model-only labels and output without a reliable output schema', () => {
   const noOutput = { name: 'search', description: 'Takes a topic and returns a result.', inputSchema: { type: 'object', properties: { topic: { type: 'string' } } } };
   const ambiguous = verifyNoahCardProposal(noOutput, { consumes: ['topic'], produces: 'summary' });
   assert.equal(ambiguous.ok, false);
@@ -97,7 +97,18 @@ test('verifier rejects model-only labels and output without a reliable output sc
   assert.equal(hallucinated.reason, 'consume_not_evidenced');
 });
 
-test('batch labels use canonical parser, discard raw model text, and resume by fixed manifest', async () => {
+void test('output evidence cannot come from an input phrase, negation, or an example value', () => {
+  const inputSchema = { type: 'object', properties: { query: { type: 'string' } } };
+  const proposal = { consumes: ['topic'], produces: 'summary' };
+  for (const description of [
+    'Accepts a summary as input and returns a receipt.',
+    'Returns a receipt, not a summary.',
+  ]) assert.equal(verifyNoahCardProposal({ name: 'get_summary', description, inputSchema }, proposal).ok, false);
+  const tool = { name: 'get_summary', description: 'Returns a receipt.', inputSchema, outputSchema: { type: 'object', examples: [{ summary: 'Example' }] } };
+  assert.equal(verifyNoahCardProposal(tool, proposal).ok, false);
+});
+
+void test('batch labels use canonical parser, discard raw model text, and resume by fixed manifest', async () => {
   const batch = await prepareNoahLabelBatch(input());
   let calls = 0;
   const result = await labelNoahBatch(batch, async (work, prompt) => {
@@ -120,7 +131,7 @@ test('batch labels use canonical parser, discard raw model text, and resume by f
   assert.equal(invalid.failed[0].reason, 'model_output_invalid');
 });
 
-test('read model requires exact family, candidate, version and manifest context', async () => {
+void test('read model requires exact family, candidate, version and manifest context', async () => {
   const batch = await prepareNoahLabelBatch(input());
   const result = await labelNoahBatch(batch, async () => '{"schema":"noah-card/1","consumes":["csv"],"produces":["cleaned-csv"]}', { now: () => 500 });
   const query = { familyId: series().familyId, candidateId: series().candidateId, toolsSha256: H('a'), manifestSha256: batch.manifest.manifestSha256, toolNames: ['clean_csv'] };
@@ -135,7 +146,7 @@ test('read model requires exact family, candidate, version and manifest context'
   assert.equal(readNoahAgentLabels(result.rows, { ...query, toolNames: ['clean_csv', 'other'] }).status, 'partial');
 });
 
-test('persistent reader selects current generation and does not require manifest input', async () => {
+void test('persistent reader selects current generation and does not require manifest input', async () => {
   const batch = await prepareNoahLabelBatch(input());
   const result = await labelNoahBatch(batch, async () => '{"schema":"noah-card/1","consumes":["csv"],"produces":["cleaned-csv"]}', { now: () => 700 });
   const dbRows = result.rows.map((row) => ({

@@ -42,7 +42,7 @@ requestId = familyId + ":" + candidateId + ":" + toolsSha256 + ":" + toolDefinit
 
 `produces` は wire では 1 要素の配列である。parser は読み取った後に `produces` を 1 つの文字列へ返す。配列でない値、語彙外の値、余計な項目、JSON の外の文章は捨てる。
 
-parser を通った後も、別の固定 verifier を通す。`consumes` の各語は tool 名・説明・`inputSchema` にある固定 alias と文字通り一致しなければならない。`produces` は `outputSchema` の property/description、または出力を表す語（`returns` / `result` / `output` / `出力` 等）を含む説明に文字通り一致しなければならない。出力 schema も出力を表す説明も無い時は `ambiguous_output` として落とす。embedding、類似度、モデルの理由文は使わない。
+parser を通った後も、別の固定 verifier を通す。`consumes` の各語は 入力を記述した説明の節または `inputSchema` の宣言にある固定 alias と文字通り一致しなければならない。`produces` は `outputSchema` の property/description、または出力を表す語（`returns` / `result` / `output` / `出力` 等）を含む説明に文字通り一致しなければならない。出力 schema も出力を表す説明も無い時は `ambiguous_output` として落とす。embedding、類似度、モデルの理由文は使わない。
 
 入力/出力 schema の property に一致した時だけ、read model の named port を作る。
 
@@ -84,32 +84,7 @@ readCurrentNoahAgentLabels(db, { familyId, candidateId, toolsSha256 })
 
 これは D1 へ適用する migration ではない。本人の許可と、実台帳での受入が済むまで、下書きとして保管する。
 
-```sql
-CREATE TABLE IF NOT EXISTS noah_intake_tool_labels (
-  schema TEXT NOT NULL CHECK(schema = 'noah-label-row/1'),
-  request_id TEXT NOT NULL,
-  manifest_sha256 TEXT NOT NULL CHECK(length(manifest_sha256) = 64),
-  family_id TEXT NOT NULL,
-  candidate_id TEXT NOT NULL REFERENCES noah_intake_candidates(id),
-  tools_sha256 TEXT NOT NULL CHECK(length(tools_sha256) = 64),
-  tool_definition_sha256 TEXT NOT NULL CHECK(length(tool_definition_sha256) = 64),
-  tool_name TEXT NOT NULL CHECK(length(tool_name) BETWEEN 1 AND 256),
-  label_version TEXT NOT NULL CHECK(label_version = 'noah-card/1'),
-  verifier_version TEXT NOT NULL,
-  status TEXT NOT NULL CHECK(status IN ('accepted','rejected','invalidated')),
-  consumes_json TEXT CHECK(consumes_json IS NULL OR json_valid(consumes_json)),
-  produces TEXT,
-  inputs_json TEXT NOT NULL CHECK(json_valid(inputs_json)),
-  outputs_json TEXT NOT NULL CHECK(json_valid(outputs_json)),
-  evidence_json TEXT NOT NULL CHECK(json_valid(evidence_json)),
-  reason TEXT NOT NULL,
-  created_at INTEGER NOT NULL,
-  invalidated_at INTEGER,
-  PRIMARY KEY(family_id, candidate_id, tool_name, tools_sha256, tool_definition_sha256, manifest_sha256, label_version, verifier_version)
-);
-CREATE INDEX IF NOT EXISTS noah_intake_tool_labels_read
-  ON noah_intake_tool_labels(family_id, tools_sha256, manifest_sha256, label_version, verifier_version, status, tool_name);
-```
+[0059 の SQL 下書き](drafts/0059_noah_intake_tool_labels.sql) に置く。
 
 An offline sink may write these rows to a local export after review. There is no default sink in the module, so calling the label pipeline cannot mutate production by accident.
 The draft table's primary key includes `manifest_sha256`; a later fixed generation is appended rather than overwriting an older generation. `NOAH_LABEL_UPSERT_SQL` is an adapter shape only and is never executed by this module.
@@ -118,3 +93,11 @@ The draft table's primary key includes `manifest_sha256`; a later fixed generati
 `prepareNoahLabelBatch` sorts series and tools and computes one fixed manifest hash. `labelNoahBatch` accepts a resume row only when request ID, family, candidate, `toolsSha256`, `toolDefinitionSha256`, manifest hash, label version, and verifier version all match. A changed tool definition gets a new request ID; a changed batch manifest marks the old matching request as `stale_resume`. No old accepted row is read for a new version.
 
 運営の無作為 200 系列の目視は、この pipeline が作った accepted rows の manifest/version を固定して行う。coverage は「図が中身と合う系列 / 目視した系列」で計算し、95% 未満なら公開せず、落ちた理由（parser、evidence、output ambiguity、version stale）を直して別 manifest で再実行する。台帳の件数を coverage として水増ししない。
+
+## 手元での実行
+
+1. 手元の巡回に `--capture-dir` を指定すると、巡回が通常どおり握手した代表の道具定義を系列ごとに保管できる。以前の台帳だけでは本文を復元できない。`--export-only` では握手も採取も行わない。
+2. `node scripts/noah-label-agent-tools.mjs assemble <intake-export.json> <run.json> <capture-dir>` で、現在の代表と道具一覧のハッシュ・件数が一致する定義を集める。適格系列の総数と、定義を採取できた系列の数を出す。
+3. `node scripts/noah-label-agent-tools.mjs prepare <run.json> <work-dir>` で、固定 manifest と分割したモデル依頼を既存の作業フォルダに書く。応答は 1 行ずつ `{ "manifestSha256": "…", "requestId": "…", "reply": "モデルが返した文字列" }` の JSONL として保存する。作業を再開するときは、同じ manifest と未回答の依頼を使う。
+4. `node scripts/noah-label-agent-tools.mjs verify <run.json> <rows.json> <batch-number> <replies.jsonl>` で、応答を独立した規則で検査する。`save <run.json> <local-intake.sqlite> <batch-number> <replies.jsonl>` は完了したバッチを手元の台帳に検査し直して保存する。外部通信は行わない。
+5. 実データの公開前に、適格全集合に対する札付きの系列数と割合を出し、無作為の 200 系列を運営が目視で点検する。札付きの系列だけを母集団にしない。

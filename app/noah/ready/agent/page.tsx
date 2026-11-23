@@ -1,6 +1,7 @@
 import NoahReadyDetail from '@/components/noah-ready-detail';
 import NoahShelfOpened from '@/components/noah-shelf-opened';
 import NoahTrialEntry from '@/components/noah-trial-entry';
+import { NoahPackageExplanation } from '@/components/noah-agent-explanation';
 import { noahAgentShareMetadata } from '@/lib/noah-agent-share';
 import { publicNoahShareAgent } from '@/lib/noah-agent-share-server';
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ id?: string | string[] }> }) {
@@ -15,5 +16,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ i
   const from = typeof params.from === 'string' && PACKAGE_ID.test(params.from) ? params.from : null;
   const via = typeof params.via === 'string' ? params.via.slice(0, 40) : null;
   const pos = typeof params.pos === 'string' && /^[1-9]\d{0,2}$/u.test(params.pos) ? Number(params.pos) : null;
+  if (PACKAGE_ID.test(id)) return <NoahPackageExplanation key={id} id={id} />;
   return <><NoahTrialEntry via={via} />{from && pos !== null && <NoahShelfOpened from={from} pos={pos} />}<NoahReadyDetail key={id} id={id} tool={tool} from={from} /></>;
 }

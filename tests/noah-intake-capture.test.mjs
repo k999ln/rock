@@ -13,7 +13,7 @@ const HOST = 'capture.example.com';
 const ID = 'mcp-registry:test.provider/agent-1';
 const URL = `https://${HOST}/mcp`;
 
-test('handshake keeps explicit outputSchema while legacy hashes stay stable', async () => {
+void test('handshake keeps explicit outputSchema while legacy hashes stay stable', async () => {
   const outputSchema = { type: 'object', properties: { text: { type: 'string' } } };
   const server = mcpServer({ tools: [tool('describe', true, { outputSchema })] });
   const handshake = await noahMcpHandshake(URL, { fetch: server.fetch });
@@ -24,14 +24,13 @@ test('handshake keeps explicit outputSchema while legacy hashes stay stable', as
   assert.notEqual(await noahToolSha256(legacy), await noahToolSha256({ ...legacy, outputSchema }));
 });
 
-test('capture hook runs only after a committed representative handshake and D1 keeps no raw definitions', async (t) => {
+void test('capture hook runs only after a committed representative handshake and D1 keeps no raw definitions', async (t) => {
   const outputSchema = { type: 'object', properties: { text: { type: 'string' } } };
   const server = mcpServer({ tools: [tool('describe', true, { outputSchema })] });
   const registry = async () => page([entry(1, { remotes: [{ type: 'streamable-http', url: URL }] })]);
   const net = network({ [REGISTRY]: registry, [HOST]: server.fetch });
-  let f;
   const captures = [];
-  f = fixture(t, net.fetch, {
+  const f = fixture(t, net.fetch, {
     onCommittedRepresentativeHandshake: async (capture) => {
       captures.push({ capture, committed: { result: f.check(1).result, toolsSha256: f.check(1).tools_sha256, level: f.sql.prepare('SELECT level FROM noah_intake_families WHERE id=?').get(ID).level } });
     },

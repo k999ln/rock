@@ -39,7 +39,7 @@ export type NoahLabelCaptureBatch = {
 
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const HEX64 = /^[a-f0-9]{64}$/u;
-const CONTROL = /[\u0000-\u001f\u007f]/u;
+const CONTROL = /\p{Cc}/u;
 
 function assertJson(value: unknown, name: string): void {
   try {

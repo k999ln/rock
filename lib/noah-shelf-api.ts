@@ -14,9 +14,11 @@ import { noahAllowed, type NoahFlags } from './noah-flags.ts';
 import { NOAH_PACKAGE_LIMITS, noahShelfOptions, type NoahShelfFlags } from './noah-shelf.ts';
 import { createNoahShelfStore, type ShelfDependencies } from './noah-shelf-store.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
+import { noahShelfExplanation } from './noah-agent-explanation.ts';
 
 export type ShelfApiDependencies = ShelfDependencies & {
   authenticate: (request: Request) => Promise<string>; reviewers: string[]; flags: NoahFlags; shelfFlags: NoahShelfFlags;
+  explainPublic?: boolean;
   /** 応答の後に続ける仕事（見せた記録）。無ければ、応答の前に書く。 */
   waitUntil?: (work: Promise<unknown>) => void;
 };
@@ -57,6 +59,15 @@ export function createNoahShelfApi(deps: ShelfApiDependencies) {
       const later = async (work: Promise<unknown>) => { const quiet = work.catch(() => undefined); if (deps.waitUntil) deps.waitUntil(quiet); else await quiet; };
       if (request.method === 'GET') {
         if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.state(), warnings: deps.shelfFlags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
+        const id = url.searchParams.get('id');
+        if (id !== null) {
+          if (!reviewer && !deps.explainPublic) return json({ error: '見つかりません。' }, 404);
+          const pkg = await store.detail(idOf(id));
+          const target = pkg?.steps.find((step) => step.ref.kind === 'family')?.ref;
+          const explanation = pkg && noahShelfExplanation(pkg);
+          if (!pkg || !explanation || target?.kind !== 'family') return json({ error: 'カードが見つかりません。' }, 404);
+          return json({ id, title: pkg.title, summary: pkg.promise, familyId: target.familyId, tool: target.tool, explanation });
+        }
         const listed = await store.list({ owner, byEvidence: options.byEvidence, seen: deps.shelfFlags.seen });
         if (deps.shelfFlags.seen) await later(store.record(owner, listed.shelves.flatMap((shelf) => shelf.cards.map((card) => ({ id: card.id, position: card.position }))), 'shown'));
         return json({ ...listed, ownerScope });

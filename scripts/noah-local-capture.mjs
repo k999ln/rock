@@ -13,7 +13,7 @@ import {
 
 const SECRET_VALUE = /(?:^|[^A-Za-z0-9])(?:sk-|ghp_|gho_|github_pat_|xox[abp]-|AKIA|hf_|AIza|eyJ)[A-Za-z0-9_-]{8,}|bearer\s+[A-Za-z0-9._-]{12,}/iu;
 const SENSITIVE_VALUE_KEY = /^(?:authorization|cookie|credential|password|secret|token|api[-_]?key|access[-_]?token|session(?:[-_]?id)?)$/iu;
-const CONTROL = /[\u0000-\u001f\u007f]/gu;
+const CONTROL = /\p{Cc}/gu;
 
 function scrub(value, key = '') {
   if (typeof value === 'string') {

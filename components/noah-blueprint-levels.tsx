@@ -10,7 +10,6 @@ export { NoahStepLevels } from './noah-step-levels';
 export type {
   NoahStepCapabilityLabel,
   NoahStepLevelLabels,
-  NoahStepLevelTranslate,
   NoahStepLevelsProps,
 } from './noah-step-levels';
 

@@ -46,12 +46,12 @@ export const NOAH_LABEL_BATCH_LIMITS = {
 } as const;
 /** Full offline export envelope.  It is chunked into bounded batches below. */
 export const NOAH_LABEL_RUN_LIMITS = {
-  maxSeries: 17_046,
-  maxTools: 100_000,
+  maxSeries: 100_000,
+  maxTools: 400_000,
 } as const;
 
 const HEX64 = /^[0-9a-f]{64}$/u;
-const CONTROL = /[\u0000-\u001f\u007f]/u;
+const CONTROL = /\p{Cc}/u;
 const OUTPUT_MARKERS = [
   'return', 'returns', 'returned', 'result', 'output', 'outputs', 'response', 'respond', 'produces',
   '返す', '返り値', '結果', '出力', '生成', '作成', '応答', '提供',
@@ -454,17 +454,20 @@ export function buildNoahLabelPrompt(work: NoahLabelWorkItem): string {
 }
 
 type EvidenceSource = { path: string; text: string; source: NoahLabelEvidenceMatch['source'] };
-const normalize = (value: string) => value.toLocaleLowerCase('en-US').replace(/[\u0000-\u001f\u007f]/gu, ' ').replace(/[_./:-]+/gu, ' ').replace(/\s+/gu, ' ').trim();
-const stringLeaves = (value: unknown, path: string, source: NoahLabelEvidenceMatch['source'], out: EvidenceSource[]): void => {
-  if (typeof value === 'string') { out.push({ path, text: value, source }); return; }
-  if (Array.isArray(value)) { value.forEach((item, index) => stringLeaves(item, `${path}[${index}]`, source, out)); return; }
-  if (object(value)) for (const [key, item] of Object.entries(value)) {
-    const keyPath = `${path}.${key}`;
-    // Property names are evidence too, but a key itself is not provider prose.
-    out.push({ path: keyPath, text: key, source });
-    stringLeaves(item, keyPath, source, out);
+const normalize = (value: string) => value.toLocaleLowerCase('en-US').replace(/\p{Cc}/gu, ' ').replace(/[_./:-]+/gu, ' ').replace(/\s+/gu, ' ').trim();
+function schemaLeaves(value: unknown, path: string, source: EvidenceSource['source'], out: EvidenceSource[]): void {
+  if (!object(value)) return;
+  for (const key of ['description', 'title', 'format']) {
+    const text = value[key];
+    if (typeof text === 'string') out.push({ path: `${path}.${key}`, text, source });
   }
-};
+  if (object(value.properties)) for (const [name, property] of Object.entries(value.properties)) {
+    const field = `${path}.properties.${name}`;
+    out.push({ path: field, text: name, source });
+    schemaLeaves(property, field, source, out);
+  }
+  schemaLeaves(value.items, `${path}.items`, source, out);
+}
 
 /** Conservative, literal aliases.  The verifier does not use embeddings or synonyms. */
 const MATERIAL_TOKENS: Readonly<Record<NoahMaterial, readonly string[]>> = {
@@ -504,34 +507,31 @@ function tokenMatches(text: string, token: string): boolean {
   return new RegExp(`(?:^|\\s)${escaped}(?:$|\\s)`, 'u').test(haystack);
 }
 
-function outputMarked(text: string): boolean {
-  const normalized = normalize(text);
-  return OUTPUT_MARKERS.some((marker) => tokenMatches(normalized, marker));
-}
-function inputMarked(text: string): boolean {
-  const normalized = normalize(text);
-  return INPUT_MARKERS.some((marker) => tokenMatches(normalized, marker));
+function descriptionEvidence(text: string, role: 'consume' | 'produce'): string[] {
+  const markers = role === 'produce' ? OUTPUT_MARKERS : INPUT_MARKERS;
+  return text.split(/[。！？.!?;；\n]+/u).flatMap((sentence) => {
+    if (/\b(?:not|never|without)\b|返さない|出力しない|受け取らない/iu.test(sentence)) return [];
+    const output = /\b(?:returns?|produces?|responds?\s+with|outputs?|provides?)\b/iu.exec(sentence);
+    const clause = !output ? sentence : role === 'produce' ? sentence.slice(output.index) : sentence.slice(0, output.index);
+    return markers.some((marker) => tokenMatches(clause, marker)) ? [clause] : [];
+  });
 }
 
 function evidenceFor(material: NoahMaterial, leaves: readonly EvidenceSource[], role: 'consume' | 'produce'): NoahLabelEvidenceMatch[] {
   const tokens = MATERIAL_TOKENS[material];
   const matches: NoahLabelEvidenceMatch[] = [];
   for (const leaf of leaves) {
-    const direct = tokens.find((token) => tokenMatches(leaf.text, token));
+    if (leaf.source === 'tool-name') continue;
+    const text = leaf.source === 'description' ? descriptionEvidence(leaf.text, role) : [leaf.text];
+    const direct = tokens.find((token) => text.some((part) => tokenMatches(part, token)));
     if (!direct) continue;
-    // A name can identify an input-oriented tool, but by itself it cannot
-    // establish the shape of the returned value.  Outputs require an explicit
-    // output schema or output-marked prose.
-    if (role === 'produce' && leaf.source === 'tool-name') continue;
-    if (role === 'produce' && leaf.source === 'description' && !outputMarked(leaf.text)) continue;
-    if (role === 'consume' && leaf.source === 'description' && !inputMarked(leaf.text)) continue;
     matches.push({ path: leaf.path, token: direct, source: leaf.source });
   }
   return matches;
 }
 
 function schemaValueAtPath(schema: unknown, path: string): unknown {
-  // Paths are produced by stringLeaves, so only the simple object-property
+  // Paths are produced by schemaLeaves, so only the simple object-property
   // segments are needed for a port's declared `type`.  If a provider uses an
   // unusual property name that cannot be traversed, we omit the type rather
   // than guessing it.
@@ -581,12 +581,12 @@ export function verifyNoahCardProposal(tool: NoahLabelToolInput, proposal: { con
     { path: '$.name', text: tool.name, source: 'tool-name' },
     { path: '$.description', text: tool.description, source: 'description' },
   ];
-  stringLeaves(tool.inputSchema, '$.inputSchema', 'input-schema', consumeLeaves);
+  schemaLeaves(tool.inputSchema, '$.inputSchema', 'input-schema', consumeLeaves);
   const produceLeaves: EvidenceSource[] = [
     { path: '$.name', text: tool.name, source: 'tool-name' },
     { path: '$.description', text: tool.description, source: 'description' },
   ];
-  if (tool.outputSchema !== undefined) stringLeaves(tool.outputSchema, '$.outputSchema', 'output-schema', produceLeaves);
+  if (tool.outputSchema !== undefined) schemaLeaves(tool.outputSchema, '$.outputSchema', 'output-schema', produceLeaves);
   const consumes = Object.fromEntries(proposal.consumes.map((material) => [material, evidenceFor(material, consumeLeaves, 'consume')])) as Record<NoahMaterial, NoahLabelEvidenceMatch[]>;
   const produces = evidenceFor(proposal.produces, produceLeaves, 'produce');
   const evidence: NoahLabelEvidence = { consumes, produces };
@@ -811,7 +811,7 @@ ON CONFLICT(family_id,candidate_id,tool_name,tools_sha256,tool_definition_sha256
 DO UPDATE SET request_id=excluded.request_id,status=excluded.status,
   consumes_json=excluded.consumes_json,produces=excluded.produces,
   inputs_json=excluded.inputs_json,outputs_json=excluded.outputs_json,
-  evidence_json=excluded.evidence_json,reason=excluded.reason,created_at=excluded.created_at
+  evidence_json=excluded.evidence_json,reason=excluded.reason
 WHERE noah_intake_tool_labels.manifest_sha256=excluded.manifest_sha256`;
 
 function rowFromDb(row: NoahLabelDbRow): NoahLabelRow {
@@ -841,7 +841,8 @@ function rowFromDb(row: NoahLabelDbRow): NoahLabelRow {
       return { field: port.field, material: port.material as NoahMaterial, type: port.type as string | null };
     });
   };
-  const validatedInputs = checkPorts(inputs, 'input'), validatedOutputs = checkPorts(outputs, 'output');
+  const validatedInputs = row.status === 'accepted' ? checkPorts(inputs, 'input') : [];
+  const validatedOutputs = row.status === 'accepted' ? checkPorts(outputs, 'output') : [];
   return {
     schema: NOAH_LABEL_ROW_SCHEMA,
     requestId: row.requestId,

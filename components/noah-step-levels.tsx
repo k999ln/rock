@@ -5,12 +5,7 @@
  * business の能力表はここへ持ち込まず、必要な表示名だけ props で渡す。
  * そのため、Agent の詳細画面は全 business 分類表を読み込まない。
  */
-import {
-  NOAH_STEP_KINDS,
-  noahBlueprintLevels,
-  type NoahStep,
-  type NoahStepKind,
-} from '@/lib/noah-steps';
+import { noahBlueprintLevels, type NoahStep, type NoahStepKind } from '@/lib/noah-steps';
 import styles from './noah-blueprint-levels.module.css';
 
 const KIND: Record<NoahStepKind, string> = {
@@ -40,9 +35,6 @@ export type NoahStepLevelLabels = {
   costLabel: (yen: number) => string;
 };
 
-/** Built-in UI のキーと既定の文を受け取り、選択中の言語へ変換する。 */
-export type NoahStepLevelTranslate = (key: string, fallback: string) => string;
-
 const DEFAULT_LABELS: NoahStepLevelLabels = {
   ariaLabel: '工程の段（横に並ぶ工程は同時に進む）',
   levelLabel: (level) => `${level} 段目`,
@@ -61,12 +53,8 @@ export type NoahStepCapabilityLabel = string | { readonly label: string };
 export type NoahStepLevelsProps<T extends NoahStep = NoahStep> = {
   steps: readonly T[];
   /** Agent の画面だけ別言語にする場合に、既定の日本語を上書きする。 */
-  labels?: Partial<NoahStepLevelLabels> & {
-    kind?: Partial<Record<NoahStepKind, string>>;
-    tag?: Partial<Record<Exclude<NoahStepKind, 'auto'>, string>>;
-  };
+  labels?: Partial<NoahStepLevelLabels>;
   capabilityLabels?: Readonly<Record<string, NoahStepCapabilityLabel>>;
-  translate?: NoahStepLevelTranslate;
 };
 
 /** 設計図・棚カード・Agent の説明で使う共通の段表示。 */
@@ -74,38 +62,12 @@ export function NoahStepLevels<T extends NoahStep>({
   steps,
   labels,
   capabilityLabels = {},
-  translate,
 }: NoahStepLevelsProps<T>) {
-  const base: NoahStepLevelLabels = {
+  const text: NoahStepLevelLabels = {
     ...DEFAULT_LABELS,
     ...labels,
     kind: { ...DEFAULT_LABELS.kind, ...labels?.kind },
     tag: { ...DEFAULT_LABELS.tag, ...labels?.tag },
-  };
-  const t = translate ?? ((_key: string, fallback: string) => fallback);
-  const text: NoahStepLevelLabels = {
-    ...base,
-    ariaLabel: t('levels.ariaLabel', base.ariaLabel),
-    levelLabel: (level) => t('levels.level', base.levelLabel(level)),
-    kindLabel: t('step.kindLabel', base.kindLabel),
-    kind: Object.fromEntries(
-      NOAH_STEP_KINDS.map((kind) => [
-        kind,
-        t(`step.kind.${kind}`, base.kind[kind] ?? kind),
-      ]),
-    ) as Record<NoahStepKind, string>,
-    tag: Object.fromEntries(
-      (['tap', 'human', 'review'] as const).map((kind) => [
-        kind,
-        t(`step.tag.${kind}`, base.tag[kind] ?? kind),
-      ]),
-    ) as Record<Exclude<NoahStepKind, 'auto'>, string>,
-    reasonLabel: t('step.reasonLabel', base.reasonLabel),
-    waitsLabel: t('step.waitsLabel', base.waitsLabel),
-    noWaits: t('step.noWaits', base.noWaits),
-    waitReasonLabel: t('step.waitReasonLabel', base.waitReasonLabel),
-    capabilityLabel: t('step.capabilityLabel', base.capabilityLabel),
-    costLabel: (yen) => t('step.costLabel', base.costLabel(yen)),
   };
   const levels = noahBlueprintLevels(steps),
     label = new Map(steps.map((s) => [s.id, s.label]));
@@ -171,7 +133,7 @@ export function NoahStepLevels<T extends NoahStep>({
                     )}
                     {s.costYen ? (
                       <>
-                        <dt>{t('step.costHeading', '費用の目安')}</dt>
+                        <dt>費用の目安</dt>
                         <dd>{text.costLabel(s.costYen)}</dd>
                       </>
                     ) : null}

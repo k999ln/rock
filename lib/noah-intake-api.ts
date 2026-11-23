@@ -8,8 +8,13 @@ import { createNoahSweep, noSweep, noahSweepTotal } from './noah-sweep.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
+import type { NoahExplanation } from './noah-agent-explanation.ts';
 export type IntakeApiDependencies = IntakeDependencies & {
   authenticate: (request: Request) => Promise<string>; reviewers: string[]; flags: NoahFlags; wakeKey?: string;
+  explainPublic?: boolean;
+  explainAgent?: (input: { id: string; owner: string | null; reviewer: boolean }) => Promise<{
+    explanation: NoahExplanation; summaryJa: string | null;
+  } | null>;
   /** 棚の、載せるかの見直し（lib/noah-shelf-store.ts の recheckIfDue）。無ければ行わない。失敗しても、合図の結果は変えない。 */
   shelfRecheck?: () => Promise<unknown>;
   providerRecheck?: () => Promise<unknown>;
@@ -36,7 +41,11 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
         // 運営の画面（審査者だけ）。launch は、見張る数（docs/noah/spec-97-launch-ops.md の 6 章）。数えられない時は null（取り込みの節の、他の行は出す）。
         if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.status(url.searchParams), launch: await launch(deps.flags).catch(() => null), warnings: deps.flags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
         const id = url.searchParams.get('id');
-        return json({ ...(id ? await store.detail(id, owner, reviewer) : await store.list(owner, url.searchParams)), ownerScope });
+        if (!id) return json({ ...await store.list(owner, url.searchParams), ownerScope });
+        const detail = await store.detail(id, owner, reviewer);
+        const explain = reviewer || (detail.listed && deps.explainPublic);
+        const extra = explain ? await deps.explainAgent?.({ id, owner, reviewer }).catch(() => null) : null;
+        return json({ ...detail, ...extra, ownerScope });
       }
       if (!reviewer || request.headers.get('origin') !== url.origin) return json({ error: '同じNoahから操作してください。' }, 403);
       if (request.headers.get(OWNER_SCOPE_HEADER) !== ownerScope) return json({ error: 'アカウントが変わりました。再読込してください。' }, 409);

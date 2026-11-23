@@ -19,7 +19,7 @@ const capture = (overrides = {}) => ({
   ...overrides,
 });
 
-test('local capture is directly consumable, redacts credential-like values, and resumes', async () => {
+void test('local capture is directly consumable, redacts credential-like values, and resumes', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'noah-label-capture-'));
   try {
     const write = createNoahLocalCaptureWriter(directory);
@@ -38,7 +38,7 @@ test('local capture is directly consumable, redacts credential-like values, and 
   }
 });
 
-test('local capture enforces the bounded manifest size before writing', async () => {
+void test('local capture enforces the bounded manifest size before writing', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'noah-label-capture-size-'));
   try {
     const write = createNoahLocalCaptureWriter(directory, { maxBytes: 200 });
