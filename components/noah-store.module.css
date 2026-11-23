@@ -63,18 +63,18 @@
 }
 .featureArt[data-memory] h2 { max-inline-size: 9em; }
 .phrase { display: block; }
-.featureFoot, .row { display: flex; align-items: center; }
+.featureFoot { display: flex; align-items: center; }
 .featureFoot { min-height: 78px; gap: 12px; padding: 10px 20px; box-sizing: border-box; }
-.featureIcon, .appIcon { width: 51px; height: 51px; flex: none; }
-.featureByline, .rowText { flex: 1; min-width: 0; }
-.featureByline strong, .featureByline small, .rowText strong, .rowText small {
+.featureIcon { width: 51px; height: 51px; flex: none; }
+.featureByline { flex: 1; min-width: 0; }
+.featureByline strong, .featureByline small {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.featureByline strong, .rowText strong { font-size: 17px; font-weight: 650; line-height: 1.33; letter-spacing: -.025em; }
-.featureByline small, .rowText small { color: #66666e; font-size: 13px; line-height: 1.5; }
+.featureByline strong { font-size: 17px; font-weight: 650; line-height: 1.33; letter-spacing: -.025em; }
+.featureByline small { color: #66666e; font-size: 13px; line-height: 1.5; }
 .pill {
   display: inline-grid;
   min-width: 66px;
@@ -90,9 +90,9 @@
   font-weight: 750;
   line-height: 1.2;
 }
-.coverLink:hover .pill, .row:hover .pill { background: #ffe3d0; }
+.coverLink:hover .pill { background: #ffe3d0; }
 .coverLink:focus-visible { outline: 3px solid var(--store-action); outline-offset: -4px; }
-.row:focus-visible, .listHeading a:focus-visible, .services a:focus-visible { outline: 2px solid #b43c00; outline-offset: 3px; }
+.pinLink:focus-visible, .listHeading a:focus-visible, .services a:focus-visible { outline: 2px solid #b43c00; outline-offset: 3px; }
 .collection { min-width: 0; }
 .listHeading {
   display: flex;
@@ -104,16 +104,36 @@
 }
 .listHeading h2 { margin: 0; font-size: clamp(24px, 2.2vw, 33px); font-weight: 750; line-height: 1.22; letter-spacing: -.055em; }
 .listHeading a { display: inline-flex; align-items: center; min-height: 40px; color: var(--store-action); font-size: 15px; font-weight: 550; text-decoration: none; }
-.collection ul { margin: 0; padding: 0; list-style: none; }
-.row { position: relative; gap: 12px; padding: 12px 0; color: inherit; text-decoration: none; }
-.collection li + li .row::before { content: ''; position: absolute; inset: 0 0 auto; margin-inline-start: 63px; height: 1px; background: var(--store-line); }
+.pinGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  column-gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pinGrid[data-measured] { grid-auto-rows: 4px; }
+.pinLink { display: block; padding-bottom: 16px; color: inherit; text-decoration: none; }
+.pinGrid [data-shape='1'] .pinLink > span { aspect-ratio: 1; }
+.pinGrid [data-shape='2'] .pinLink > span { aspect-ratio: 4 / 5; }
+.pinLink:hover > span { filter: brightness(.96); }
+.pinTitle, .pinSummary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  margin-inline: 3px;
+}
+.pinTitle { margin-top: 7px; font-size: 16px; font-weight: 700; line-height: 1.35; }
+.pinSummary { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #606067; }
 .services { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 12px 0 28px; padding-block: 6px; border-block: 1px solid #e5e5e9; }
 .services nav { display: flex; flex-wrap: wrap; gap: 0 20px; }
 .services a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #98420e; font-size: 14px; font-weight: 560; }
 @media (min-width: 850px) {
   .showcase[data-related] { grid-template-columns: minmax(0, 1.55fr) minmax(265px, 1fr); }
   .collection { padding-top: 8px; border-top: 1px solid var(--store-line); }
-  .row { min-height: 75px; box-sizing: border-box; }
 }
 @media (max-width: 849px) {
   .top { margin-bottom: 16px; }
@@ -128,9 +148,7 @@
   .featureArt h2 { font-size: clamp(32px, 8.4vw, 43px); }
   .featureFoot { min-height: 72px; gap: 10px; padding: 12px 14px; }
   .featureIcon { width: 44px; height: 44px; }
-  .row { gap: 11px; padding: 10px 0; }
-  .appIcon { width: 49px; height: 49px; }
-  .collection li + li .row::before { margin-inline-start: 60px; }
+  .pinGrid { column-gap: 8px; }
   .pill { min-width: 58px; }
   .services { margin-bottom: 18px; }
 }

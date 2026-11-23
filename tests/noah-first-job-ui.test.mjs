@@ -56,7 +56,11 @@ void test('Today places a real featured job and the catalog ahead of store servi
   const directoryHref = '/noah/discover/agent?id=' + directoryId;
   const items = [
     { id: project, name: 'memory', topic: 'data', external: true },
-    { id: directoryId, name: 'A published agent', topic: 'dev', external: true, summary: 'Catalog description' },
+    { id: directoryId, name: 'A published agent', topic: 'dev', shape: 1, external: true, summary: 'Catalog description' },
+    ...['c', 'd', 'e', 'f'].map((key, index) => ({
+      id: 'project-' + key.repeat(64), name: 'Research ' + key,
+      topic: 'research', shape: index % 3, external: true,
+    })),
   ];
   for (const available of [[memory], []]) {
     const page = { ...pageReply(available), total: items.length, items };
@@ -70,6 +74,15 @@ void test('Today places a real featured job and the catalog ahead of store servi
     assert.equal(feature.props.href, available.length ? memory.href : '/noah/discover/agent?id=' + project);
     assert.equal(home.find('h2', 'Who’s working on what?').length, available.length);
     assert.equal(directory.props.href, directoryHref);
+    const shelf = home.find('section').find(node => node.props['aria-labelledby'] === 'noah-featured-agents-title');
+    const shelfNodes = home.nodes(shelf);
+    const pins = shelfNodes.filter(node => node.type === 'li');
+    assert.deepEqual(pins.map(pin => pin.props['data-shape']), [1, 0, 1, 2]);
+    assert.deepEqual(pins.map(pin => pin.props['data-topic']), ['dev', 'research', 'research', 'research']);
+    assert.deepEqual(pins.map(pin => home.nodes(pin).find(node => node.type === 'a').props.href),
+      items.slice(1, 5).map(item => '/noah/discover/agent?id=' + item.id));
+    assert.equal(home.nodes(pins[0]).some(node => node.type === 'span' && home.text(node) === 'AP'), true);
+    assert.equal(shelfNodes.some(node => node.type === 'button'), false);
     assert.equal(home.find('a', 'See all')[0].props.href, '/noah/explore');
     assert.ok(anchors.indexOf(feature) < anchors.indexOf(directory));
     assert.ok(anchors.indexOf(directory) < anchors.indexOf(services));

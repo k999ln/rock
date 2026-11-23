@@ -1,15 +1,17 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- The dedicated cloud Worker serves a separate document with a fresh line check. */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Cloud, PackagePlus, ShoppingBag, Signal } from 'lucide-react';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import type { NoahFirstJob } from '@/lib/noah-first-jobs';
+import { NOAH_PIN_TOPIC_LABELS, noahPinInitials } from '@/lib/noah-pins';
 import { noahCardHref } from '@/lib/noah-project-view';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import NoahAppIcon from './noah-app-icon';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-store.module.css';
+import pins from './noah-pins.module.css';
 
 const hrefFor = (card: NoahAgentCard) => noahCardHref(card) ?? noahReadyDetailHref(card.id);
 
@@ -34,6 +36,40 @@ function TodayHeading() {
     }).format(today)}</time>}</div>
     <h1>{t('Today')}</h1>
   </header>;
+}
+
+function FeaturedPins({ items }: { items: NoahAgentCard[] }) {
+  const { t } = useNoahLocale();
+  const list = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const element = list.current;
+    if (!element || typeof ResizeObserver === 'undefined') return;
+    // Span four-pixel grid tracks so CSS places each new link in the shortest column.
+    // Measure the links, which keep their intrinsic height as their list items span tracks.
+    const observer = new ResizeObserver(() => {
+      for (const card of element.children) {
+        const link = card.firstElementChild;
+        if (link && card instanceof HTMLElement)
+          card.style.gridRowEnd = `span ${Math.max(1, Math.ceil(link.getBoundingClientRect().height / 4))}`;
+      }
+      element.dataset.measured = 'true';
+    });
+    for (const link of element.querySelectorAll('a')) observer.observe(link);
+    return () => observer.disconnect();
+  }, [items]);
+
+  return <ul className={styles.pinGrid} ref={list}>
+    {items.map(item => <li key={item.id} className={pins.tone} data-topic={item.topic} data-shape={item.shape}>
+      <Link href={hrefFor(item)} className={styles.pinLink}>
+        <span className={pins.panel} aria-hidden="true">
+          <span className={pins.initials}>{noahPinInitials(item.name)}</span>
+          <span className={pins.topicLabel}>{t(NOAH_PIN_TOPIC_LABELS[item.topic])}</span>
+        </span>
+        <strong className={styles.pinTitle}>{item.name}</strong>
+        {(item.summary || item.provider) && <small className={styles.pinSummary}>{item.summary || item.provider}</small>}
+      </Link>
+    </li>)}
+  </ul>;
 }
 
 export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob & { href: string })[]; items: NoahAgentCard[] }) {
@@ -77,13 +113,7 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
           <h2 id="noah-featured-agents-title">{t('注目のAgent')}</h2>
           <Link href="/noah/explore">{t('すべて見る')}</Link>
         </header>
-        <ul>{related.map(item => <li key={item.id}>
-          <Link href={hrefFor(item)} className={styles.row}>
-            <NoahAppIcon name={item.name} topic={item.topic} className={styles.appIcon} />
-            <span className={styles.rowText}><strong>{item.name}</strong><small>{item.summary || item.provider}</small></span>
-            <span className={styles.pill}>{t('見る')}</span>
-          </Link>
-        </li>)}</ul>
+        <FeaturedPins items={related} />
       </section>}
     </div>}
   </div>;
