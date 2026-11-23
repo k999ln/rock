@@ -9,7 +9,7 @@ import { createCollectorCheckpointApi, NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYT
 import { collectionSignature } from '../lib/noah-collection.ts';
 import { createCollectionApi } from '../lib/noah-collection-api.ts';
 import { openCollectorStore, writeCollectorJson } from '../scripts/noah-collector-store.mjs';
-import { checkpointClient, encodeCheckpoint, restoreCheckpoint, runCloudCollector } from '../scripts/noah-cloud-collector.mjs';
+import { checkpointClient, collectorAlerts, collectorSummary, COLLECTOR_ALERT_REPEAT, encodeCheckpoint, restoreCheckpoint, runCloudCollector } from '../scripts/noah-cloud-collector.mjs';
 
 const key = randomBytes(32).toString('hex'), NOW = Date.UTC(2026, 10, 22);
 function bucket() {
@@ -165,6 +165,43 @@ void test('checkpoint cleanup retains committed chunks and recent uploads, and c
   assert.deepEqual(removed, [prefix + 'old']);
   store.list = async () => { throw Error('unavailable'); };
   assert.equal((await post(api, { action: 'write', etag: saved.etag, checkpoint: { ...value, updatedAt: NOW } })).status, 200);
+});
+
+void test('a one-off source failure is left to the next run, while production, shape, key and repeated failures need a person', () => {
+  const status = {
+    sources: [{ id: 'github', failure_count: 1 }, { id: 'npm', failure_count: COLLECTOR_ALERT_REPEAT }, { id: 'mcp-registry', failure_count: 2 }],
+    errors: [
+      { source: 'github', code: 'unavailable' },
+      { source: 'mcp-registry', code: 'rate_limited' },
+      { source: 'npm', code: 'unavailable' },
+      { source: 'docker', code: 'invalid_response' },
+      { source: 'import', code: 'http_500' },
+      { source: 'publication', code: 'unavailable' },
+      { source: 'x', code: 'needs_credentials' },
+    ],
+  };
+  const { alerts, warnings } = collectorAlerts(status);
+  assert.deepEqual(warnings, [{ source: 'github', code: 'unavailable', failures: 1 }, { source: 'mcp-registry', code: 'rate_limited', failures: 2 }]);
+  assert.deepEqual(alerts.map((item) => item.source), ['npm', 'docker', 'import', 'publication', 'x']);
+  assert.equal(alerts[0].failures, COLLECTOR_ALERT_REPEAT);
+  assert.deepEqual(collectorAlerts({ errors: [], sources: [] }), { alerts: [], warnings: [] });
+});
+
+void test('the run summary shows the counts, what went into the grid, and the failures without any secret', () => {
+  const text = collectorSummary({
+    counts: { registry: 31200, active: 29038, handshake: 126, listed: 125, unchecked: 29401 },
+    import: { status: 'updated', sent: 7, rowsWritten: 0, waiting: 0 },
+    published: [{ source: 'github', items: 169 }, { source: 'smithery', items: 0 }],
+    feeds: { smithery: 'needs_credentials' },
+    alerts: [], warnings: [{ source: 'github', code: 'unavailable', failures: 1 }],
+  });
+  assert.match(text, /\| 31200 \| 29038 \| 126 \| 125 \| 29401 \|/);
+  assert.match(text, /送った系列 7/);
+  assert.match(text, /\| smithery \| 0 \| needs_credentials \|/);
+  assert.match(text, /人が見る失敗: なし/);
+  assert.match(text, /- github: unavailable（1 回目）/);
+  assert.doesNotMatch(text, new RegExp(key));
+  assert.match(collectorSummary({ counts: {}, alerts: [{ source: 'import', code: 'http_500' }], warnings: [] }), /\*\*人が見る失敗: 1 件\*\*/);
 });
 
 void test('chunked manifest commits without opening chunk bodies or waiting for cleanup', { timeout: 3000 }, async () => {
