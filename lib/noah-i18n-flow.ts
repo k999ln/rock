@@ -1,4 +1,5 @@
 export const NOAH_FLOW_MESSAGES:Record<string,readonly [string,string,string,string,string]> = {
+  '端末・実行先': ['Devices and run locations', '设备和运行位置', '기기 및 실행 위치', 'Dispositivos y lugares de ejecución', 'الأجهزة وأماكن التنفيذ'],
   '自分のAgent': ['My agents', '我的 Agent', '내 Agent', 'Mis agentes', 'وكلائي'],
   '利用条件を見る': ['View usage terms', '查看使用条件', '이용 조건 보기', 'Ver condiciones de uso', 'عرض شروط الاستخدام'],
   'ピックアップ': ['Featured', '精选', '추천', 'Destacado', 'اختيار مميز'],
