@@ -3,8 +3,9 @@ import type { NoahProjectDetail } from './noah-project-view.ts';
 import { noahSourceRepository } from './noah-source-import.ts';
 import { noahCloudProfile, type NoahCloudProfile } from './noah-cloud-contract.ts';
 import { noahProjectSources } from './noah-provider-resolve.ts';
+import { noahFirstJobs } from './noah-first-jobs.ts';
 
-type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[] };
+type Dependencies = { directory: () => Promise<DirectoryEntry[]>; fetcher?: typeof fetch; cloudEnabled?: boolean; cloudProfiles?: readonly NoahCloudProfile[]; publicAsk?: boolean };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store, private', 'X-Content-Type-Options': 'nosniff' } });
 /** Resolve only an existing public catalog identity. The caller cannot supply a fetch URL or execution target. */
 export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false, cloudProfiles?: readonly NoahCloudProfile[]): NoahProjectDetail {
@@ -30,8 +31,10 @@ export function noahProjectDetail(entry: DirectoryEntry, cloudEnabled = false, c
 /** Use the detail page's exact distribution and runtime checks for the connectable list too. */
 export function withNoahCloudAvailability(entries: DirectoryEntry[], cloudEnabled = false, cloudProfiles?: readonly NoahCloudProfile[]): DirectoryEntry[] {
   return entries.map(entry => {
-    const available = noahProjectDetail(entry, cloudEnabled, cloudProfiles).connection.kind === 'cloud';
-    return { ...entry, cloudAvailable: available, card: available ? { ...entry.card, run: 'phone' } : entry.card };
+    const { connection } = noahProjectDetail(entry, cloudEnabled, cloudProfiles);
+    return connection.kind === 'cloud'
+      ? { ...entry, cloudProfile: connection.profile, card: { ...entry.card, run: 'phone' } }
+      : { ...entry, cloudProfile: undefined };
   });
 }
 
@@ -80,6 +83,12 @@ export function createNoahProjectApi(deps: Dependencies) {
           ? 'このSpaceはAPI専用です。Noahから実行するには接続設定が必要です。'
           : error instanceof Error && error.message === 'space_embedding_denied' ? 'このSpaceは画面の組み込みを許可していません。Noahの接続設定で別の実行方式を確認してください。'
           : '利用画面を確認できませんでした。提供元の停止・起動中・認証が必要な場合があります。時間をおいて再確認してください。' }, 503); }
+      }
+      const requested = params.get('firstJob');
+      if (requested) {
+        const choices = await noahFirstJobs([entry], deps.publicAsk === true);
+        detail.firstJob = choices.find(choice => choice.id === requested && choice.href &&
+          (choice.id !== 'memory' || (detail.connection.kind === 'cloud' && detail.connection.profile === 'memory')));
       }
       return json(detail);
     } catch { return json({ error: 'Agentを読み込めませんでした。再試行してください。' }, 503); }
