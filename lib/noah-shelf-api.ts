@@ -19,6 +19,7 @@ import { noahShelfExplanation } from './noah-agent-explanation.ts';
 export type ShelfApiDependencies = ShelfDependencies & {
   authenticate: (request: Request) => Promise<string>; reviewers: string[]; flags: NoahFlags; shelfFlags: NoahShelfFlags;
   explainPublic?: boolean;
+  explainLabels?: boolean;
   /** 応答の後に続ける仕事（見せた記録）。無ければ、応答の前に書く。 */
   waitUntil?: (work: Promise<unknown>) => void;
 };
@@ -66,7 +67,11 @@ export function createNoahShelfApi(deps: ShelfApiDependencies) {
           const target = pkg?.steps.find((step) => step.ref.kind === 'family')?.ref;
           const explanation = pkg && noahShelfExplanation(pkg);
           if (!pkg || !explanation || target?.kind !== 'family') return json({ error: 'カードが見つかりません。' }, 404);
-          return json({ id, title: pkg.title, summary: pkg.promise, familyId: target.familyId, tool: target.tool, explanation });
+          const display = deps.explainLabels === false ? {
+            consumes: [], produces: [], showMaterials: false,
+            steps: explanation.steps.map(({ flow: _flow, ...step }) => step),
+          } : explanation;
+          return json({ id, title: pkg.title, summary: pkg.promise, familyId: target.familyId, tool: target.tool, explanation: display });
         }
         const listed = await store.list({ owner, byEvidence: options.byEvidence, seen: deps.shelfFlags.seen });
         if (deps.shelfFlags.seen) await later(store.record(owner, listed.shelves.flatMap((shelf) => shelf.cards.map((card) => ({ id: card.id, position: card.position }))), 'shown'));

@@ -15,6 +15,7 @@ export type NoahExplanation = {
   consumes: readonly NoahMaterial[];
   produces: readonly NoahMaterial[];
   steps: readonly NoahStep[];
+  showMaterials?: false;
 };
 
 const OWNER_REASONS = {
@@ -52,6 +53,17 @@ function ownerSteps(plan: readonly NoahPlanStep[]): NoahStep[] {
       reason: OWNER_REASONS[step.kind], after, flow,
       ...(after.length ? { waitNote: NOAH_STEP_WAITS.connectAccount } : {}) }];
   });
+}
+
+/** Only the common, documented connection and request actions are known without tool labels. */
+export function noahAgentConnectionExplanation(plan: readonly NoahPlanStep[], blocked: boolean): NoahExplanation {
+  const setup = ownerSteps(plan);
+  const steps: NoahStep[] = blocked ? [{ id: 'usage:terms', kind: 'tap', label: '利用条件を見る' }] : [
+    ...setup,
+    { id: 'connect:open', kind: 'tap', label: '接続', after: setup.map(({ id }) => id) },
+    { id: 'usage:request', kind: 'tap', label: '依頼する', after: ['connect:open'] },
+  ];
+  return { consumes: [], produces: [], steps: steps.map(({ flow: _flow, ...step }) => step), showMaterials: false };
 }
 
 const GENERIC_MATERIALS = new Set<NoahMaterial>(['text', 'code', 'notes', 'topic', 'csv']);

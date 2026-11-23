@@ -14,9 +14,9 @@ export type {
 } from './noah-step-levels';
 
 export default function NoahBlueprintLevels({
-  steps,
+  steps, showMaterials,
 }: {
-  steps: readonly NoahBlueprintStep[];
+  steps: readonly NoahBlueprintStep[]; showMaterials?: boolean;
 }) {
-  return <NoahStepLevels steps={steps} capabilityLabels={NOAH_CAPABILITIES} />;
+  return <NoahStepLevels steps={steps} capabilityLabels={NOAH_CAPABILITIES} showMaterials={showMaterials} />;
 }
