@@ -7,7 +7,7 @@ import styles from './noah-loading.module.css';
 export default function NoahLoading({ label = '読み込み中', compact = false, variant = 'default' }: { label?: string; compact?: boolean; variant?: 'default' | 'cards' | 'connection' | 'page' }) {
   const {t,locale}=useNoahLocale();
   if (variant === 'connection') return <output aria-live="polite" className={styles.connection}>
-    <Image src="/brand/noah-icon-transparent.svg" width={88} height={88} alt="" aria-hidden="true" unoptimized className={styles.connectionMark} />
+    <Image src="/brand/noah-orange-icon.png" width={88} height={88} alt="" aria-hidden="true" unoptimized className={styles.connectionMark} />
     <span className={styles.srOnly}>{label}</span>
   </output>;
   const cards = !compact && variant === 'cards';
@@ -17,7 +17,7 @@ export default function NoahLoading({ label = '読み込み中', compact = false
     {cards ? <span className={styles.grid} aria-hidden="true">{Array.from({length:6},(_,i)=><span key={i} className={styles.card}>
       <span className={styles.panel}/><span className={styles.title}/><span className={styles.line}/><span className={styles.shortLine}/>
     </span>)}</span> : <span className={styles.brand} aria-hidden="true">
-      <span className={styles.identity}><Image src="/company-mark.png" width={compact ? 20 : fullPage ? 32 : 28} height={compact ? 20 : fullPage ? 32 : 28} alt="" unoptimized className={styles.mark} />{fullPage && <span>Noah</span>}</span>
+      <span className={styles.identity}><Image src="/brand/noah-orange-icon.png" width={compact ? 20 : fullPage ? 32 : 28} height={compact ? 20 : fullPage ? 32 : 28} alt="" unoptimized className={styles.mark} />{fullPage && <span>Noah</span>}</span>
       {!compact && <span className={styles.track}><span/></span>}
     </span>}
   </output>;

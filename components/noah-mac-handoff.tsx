@@ -1,8 +1,8 @@
 'use client';
+import { NOAH_MODELS } from '@/lib/noah-model-catalog.mjs';
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowLeft,
   ArrowUpRight,
   Check,
   ChevronDown,
@@ -45,25 +45,21 @@ export default function NoahMacHandoff({
   const agent = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$/.test(initialAgent)
     ? initialAgent
     : '';
-  const launchHref = `/noah/activity${agent ? `?agent=${encodeURIComponent(agent)}` : '?compose=1'}#library`;
+  const launchHref = agent ? `/noah/agents/${encodeURIComponent(agent)}` : '/noah/my';
   return (
-    <main className={styles.page}>
-      <Link href={launchHref} className={styles.back}>
-        <ArrowLeft size={16} />
-        Agentに戻る
-      </Link>
+    <section id="mac" className={styles.page} aria-labelledby="noah-mac-title">
       <header>
         <span className={styles.icon}>
           <Laptop size={25} />
         </span>
-        <h1>Macをつなぐ</h1>
+        <h2 id="noah-mac-title">Macをつなぐ</h2>
         <span className={styles.chip}>Apple Silicon Mac</span>
       </header>
       <ol className={styles.steps}>
         <li>
           <span className={styles.number}>1</span>
           <div>
-            <h2>Noahを入れる</h2>
+            <h3>Noahを入れる</h3>
             <a
               className={styles.download}
               href="/noah-downloads/Noah-Mac.zip"
@@ -75,6 +71,7 @@ export default function NoahMacHandoff({
             <p>
               展開して <code>Install.command</code> を開く
             </p>
+            <a href="/noah-downloads/Noah-Mac.zip.sha256" download>ZIPのSHA-256を確認</a>
             <details>
               <summary>
                 必要なもの
@@ -114,16 +111,14 @@ export default function NoahMacHandoff({
                 Node.js
                 <ArrowUpRight size={14} />
               </a>
-              <a href="/noah-downloads/Noah-Mac.zip.sha256" download>
-                SHA-256
-              </a>
+
             </details>
           </div>
         </li>
         <li>
           <span className={styles.number}>2</span>
           <div>
-            <h2>このMacを登録</h2>
+            <h3>このMacを登録</h3>
             <p>ターミナルで実行 → 表示されたURLで承認</p>
             <Command value="noah pair" />
           </div>
@@ -131,7 +126,7 @@ export default function NoahMacHandoff({
         <li>
           <span className={styles.number}>3</span>
           <div>
-            <h2>Noahを起動</h2>
+            <h3>Noahを起動</h3>
             <Command value="noah start" />
             <Link className={styles.continue} href={launchHref}>
               Agentを使う
@@ -159,9 +154,17 @@ export default function NoahMacHandoff({
             </dd>
           </div>
           <div>
+            <dt>ローカルモデル</dt>
+            <dd>登録した画面Agentは、モデルを使わずに動かすこともできます。モデルを使う場合は、Agentに指定した次のいずれかをMacに準備します。
+              <ul>{NOAH_MODELS.filter(model => !model.derivedFrom).map(model => (
+                <li key={model.id}>{model.name}（約{(model.bytes / 1e9).toFixed(1)} GB）</li>
+              ))}</ul>
+            </dd>
+          </div>
+          <div>
             <dt>実行できる時</dt>
             <dd>
-              Macが起動・接続中。初回はモデル取得の時間と空き容量が必要です。
+              Macが起動し、Noahが接続している間に実行できます。
             </dd>
           </div>
           <div>
@@ -171,11 +174,11 @@ export default function NoahMacHandoff({
           <div>
             <dt>画面へのアクセス</dt>
             <dd>
-              Macの専用環境で処理。本人の画面・入力・ブラウザは操作しません。
+              画面操作を使うAgentは、専用Linux内でagent-desktopを使って読み取りと入力を行います。
             </dd>
           </div>
         </dl>
       </details>
-    </main>
+    </section>
   );
 }

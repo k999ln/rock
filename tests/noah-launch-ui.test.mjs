@@ -196,7 +196,7 @@ void test('connection steps follow the user action order and Mac setup preserves
   const value = text(h.tree);
   assert.ok(value.indexOf('1. Agentを選ぶ') < value.indexOf('2. Macをつなぐ'));
   const link = h.nodes.find((n) => n.type === 'a' && text(n) === 'Macをつなぐ');
-  assert.equal(link.props.href, '/noah/mac?agent=anicca');
+  assert.equal(link.props.href, '/noah/devices?agent=anicca#mac');
 });
 
 void test('activity view polls actual execution, shares owner-scoped stop, and shows the returned result without HTML execution', async (t) => {

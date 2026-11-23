@@ -20,6 +20,7 @@ for (const [language, entry] of [['python', 'main.py'], ['node', 'main.mjs']]) {
     check(`${language} ${stage ? 'stage' : 'run'}`, auditNoahContainerArgs(args, { stage }));
   }
 }
+check('desktop', auditNoahContainerArgs(terminalContainerArgs('noah-desktop-check', 'image', volume, { root: '' }, 'main.py', 'python', false, true)));
 check('VM', auditNoahVmArgs(engineArgs()));
 if (failures.length) {
   console.error(failures.join('\n'));

@@ -8,8 +8,10 @@ const text = (value, max) => Array.from(String(value ?? '')).map(char => char.ch
  * leads: 足した出所（scripts/noah-collector-feeds.mjs）。sent: 本番の一覧へ入れ終えた系列（スマホで今すぐ・詳細へのリンクは、入れ終えた物だけ）。
  * X は、公式 API の鍵が有る時だけ出す（鍵の無い収集機が、運営の Codex が送った X の紹介を、空で上書きしないため）。Reddit・Bluesky は、ここでは出さない。
  */
-export function collectionSnapshots({ exported, discoveries, x, now, leads = [], sent = new Set(), xConfigured = x?.status !== 'needs_credentials' }) {
-  const sources = ['github', 'huggingface', 'mcp-registry', 'hackernews', 'npm', 'docker', 'smithery', 'awesome', 'producthunt', ...(xConfigured ? ['x'] : [])];
+export function collectionSnapshots({ exported, discoveries, x, now, leads = [], sent = new Set(), xConfigured = x?.status !== 'needs_credentials', scout = [] }) {
+  // scout: 読んだ紹介のファイル（data/noah-scout/leads.json）の紹介。ファイルに有る出所だけを送る（無い出所は、前の掲載を空で上書きしない）。
+  const scoutSources = [...new Set(scout.map(item => item.source))].filter(source => !(source === 'x' && xConfigured));
+  const sources = ['github', 'huggingface', 'mcp-registry', 'hackernews', 'npm', 'docker', 'smithery', 'awesome', 'producthunt', ...(xConfigured ? ['x'] : []), ...scoutSources];
   const pending = new Map(sources.map(source => [source, []]));
   const add = item => {
     const list = pending.get(item.source);
@@ -47,6 +49,7 @@ export function collectionSnapshots({ exported, discoveries, x, now, leads = [],
   }
   for (const item of leads) add(item);
   if (xConfigured) for (const item of x.items) add(item);
+  for (const item of scout) add(item);
   return sources.map(source => {
     // 同じ配布 URL は、並びの上の 1 件だけ（別の出所の紹介は、公開の API が 1 枚にまとめる）。
     const ranked = pending.get(source).map(item => ({ item, hot: noahCollectionHot({ sources: [item], run: item.run, name: item.name, summary: item.summary }) }))

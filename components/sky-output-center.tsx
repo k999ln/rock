@@ -55,7 +55,9 @@ function downloadText(filename: string, content: string) {
 export default function SkyOutputCenter({
   campusId,
   initialWorkJobId,
+  embedded = false,
 }: {
+  embedded?: boolean;
   campusId?: CampusId;
   initialWorkJobId?: string;
 }) {
@@ -208,25 +210,21 @@ export default function SkyOutputCenter({
     }
   }
 
-  return <WorkspaceShell
-    title={campusId ? `${CAMPUSES[campusId].shortName} Noah` : 'Noah'}
-    contentClassName={styles.shell}
-    tone="sky"
-  >
-    <main className={styles.page} aria-labelledby="sky-output-title">
+  const Container = embedded ? 'section' : 'main';
+  const content = <Container className={styles.page} aria-labelledby={embedded ? undefined : 'sky-output-title'} aria-label={embedded ? 'ファイル' : undefined}>
       <header className={styles.header}>
-        <div>
+        {!embedded && <div>
           <p className={styles.eyebrow}>{campusId ? `${CAMPUSES[campusId].shortName.toUpperCase()} / SKY` : 'SKY'} · 成果</p>
           <h1 id="sky-output-title">成果</h1>
           <p>保存したエージェント成果を確認し、形式が合うアプリへ渡せます。OS版ではEveの仕事にも戻れます。</p>
-        </div>
+        </div>}
         <button type="button" onClick={refresh}><RefreshCw size={16} /> 更新</button>
       </header>
-      <nav className={styles.nav} aria-label="Noahの移動先">
+      {!embedded && <nav className={styles.nav} aria-label="Noahの移動先">
         <Link href={home}>Noahでエージェントを探す</Link>
         <Link href="/fitness">Fitnessアプリの例 <ArrowRight size={15} /></Link>
         <Link href={zema}>OS版のEveで仕事を見る</Link>
-      </nav>
+      </nav>}
       {listState === 'loading' && <p className={styles.notice}>本人の仕事を読み込んでいます…</p>}
       {listState === 'signed_out' && <p className={styles.notice}><Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(outputPath)}`}>サインイン</Link>すると、自分の成果を確認できます。</p>}
       {listState === 'unavailable' && <p className={styles.notice} role="alert">仕事を読み込めませんでした。接続を確認して更新してください。</p>}
@@ -315,6 +313,8 @@ export default function SkyOutputCenter({
           <p className={styles.footnote}>エージェントの文章は未検証の出力です。外部送信や次のエージェントへの引継ぎはEveで内容・権限・費用を確認してください。</p>
         </section>
       </div>}
-    </main>
-  </WorkspaceShell>;
+    </Container>;
+  return embedded ? content : <WorkspaceShell
+    title={campusId ? `${CAMPUSES[campusId].shortName} Noah` : 'Noah'}
+    contentClassName={styles.shell} tone="sky">{content}</WorkspaceShell>;
 }
