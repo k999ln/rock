@@ -10,8 +10,18 @@ export async function checkpointChunkHash(data: string) {
 }
 const objectKey = 'noah/collector/v1/checkpoint.json';
 const json = (data: unknown, status = 200) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
-type Bucket = Pick<R2Bucket, 'get' | 'put'> & Partial<Pick<R2Bucket, 'list' | 'delete'>>;
-export function createCollectorCheckpointApi({ bucket, key, now = Date.now }: { bucket?: Bucket; key?: string; now?: () => number }) {
+type Bucket = Pick<R2Bucket, 'get' | 'head' | 'put'> & Partial<Pick<R2Bucket, 'list' | 'delete'>>;
+
+async function pruneCheckpointChunks(bucket: Bucket, active: Set<string>, etag: string, cutoff: number) {
+  if (!bucket.list || !bucket.delete) return;
+  const page = await bucket.list({ prefix: chunkPrefix, limit: 1000 });
+  const expired = page.objects.filter(part => part.uploaded.getTime() < cutoff && !active.has(part.key.slice(chunkPrefix.length))).map(part => part.key);
+  if (expired.length && (await bucket.head(objectKey))?.etag === etag) await bucket.delete(expired);
+}
+
+export function createCollectorCheckpointApi({ bucket, key, now = Date.now, waitUntil }: {
+  bucket?: Bucket; key?: string; now?: () => number; waitUntil?: (work: Promise<void>) => void;
+}) {
   return async (request: Request) => {
     try {
       if (new URL(request.url).pathname !== NOAH_CHECKPOINT_PATH) return json({ error: 'not_found' }, 404);
@@ -47,21 +57,21 @@ export function createCollectorCheckpointApi({ bucket, key, now = Date.now }: { 
         if (typeof value.sqliteGzip !== 'string' || !/^H4sI[A-Za-z0-9+/]*={0,2}$/.test(value.sqliteGzip) || value.sqliteGzip.length % 4) return json({ error: 'checkpoint_invalid' }, 400);
       } else {
         if (!Array.isArray(value.chunks) || !value.chunks.length || value.chunks.length > 128 || value.chunks.some((hash: unknown) => typeof hash !== 'string' || !/^[a-f0-9]{64}$/.test(hash))) return json({ error: 'checkpoint_invalid' }, 400);
-        for (const hash of value.chunks) if (!await bucket.get(chunkPrefix + hash)) return json({ error: 'checkpoint_chunk_missing' }, 409);
+        // Existence checks must not leave R2 object bodies open while committing the manifest.
+        for (const hash of new Set<string>(value.chunks)) if (!await bucket.head(chunkPrefix + hash)) return json({ error: 'checkpoint_chunk_missing' }, 409);
       }
       if ((old?.etag ?? null) !== input.etag) return json({ error: 'checkpoint_conflict' }, 409);
-      if (old && (await old.json<{ updatedAt: number }>()).updatedAt >= value.updatedAt) return json({ error: 'checkpoint_stale' }, 409);
+      const previous = old ? await old.json<{ updatedAt: number; chunks?: string[] }>() : null;
+      if (previous && previous.updatedAt >= value.updatedAt) return json({ error: 'checkpoint_stale' }, 409);
       // Persist only the declared fields; callers cannot choose another R2 path.
       const checkpoint = { schema: value.schema, updatedAt: value.updatedAt, runId: value.runId, ...(value.schema === 'noah-collector-checkpoint/1' ? { sqliteGzip: value.sqliteGzip } : { chunks: value.chunks }) };
       const saved = await bucket.put(objectKey, JSON.stringify(checkpoint), { onlyIf: old ? { etagMatches: old.etag } : { etagDoesNotMatch: '*' }, httpMetadata: { contentType: 'application/json' } });
       if (saved && bucket.list && bucket.delete) {
-        // Keep two hours for in-flight readers (runner timeout: eight minutes). Cleanup is bounded and retryable.
-        try {
-          const active = new Set<string>(value.chunks ?? []);
-          const page = await bucket.list({ prefix: chunkPrefix, limit: 1000 });
-          const expired = page.objects.filter(part => part.uploaded.getTime() < now() - 7_200_000 && !active.has(part.key.slice(chunkPrefix.length))).map(part => part.key);
-          if (expired.length) await bucket.delete(expired);
-        } catch { /* A cleanup failure must not turn an already committed checkpoint into a failed write. */ }
+        // Preserve the previous manifest for readers that started before this commit.
+        const active = new Set<string>([...(previous?.chunks ?? []), ...('chunks' in checkpoint ? checkpoint.chunks : [])]);
+        const cleanup = pruneCheckpointChunks(bucket, active, saved.etag, now() - 7_200_000).catch(() => undefined);
+        if (waitUntil) waitUntil(cleanup);
+        else await cleanup;
       }
       return saved ? json({ etag: saved.etag, updatedAt: value.updatedAt }) : json({ error: 'checkpoint_conflict' }, 409);
     } catch (error) {
