@@ -14,6 +14,6 @@ const SERIES = (catalog as { schema: string; series: Record<string, CatalogEntry
 export function noahCatalogTools(candidateId: string, current: { toolsSha256: string | null; toolCount: number | null }): readonly NoahToolDefinition[] | null {
   const entry = Object.hasOwn(SERIES, candidateId) ? SERIES[candidateId] : null;
   if (!entry || !current.toolsSha256 || entry.toolsSha256 !== current.toolsSha256) return null;
-  if (current.toolCount !== null && entry.tools.length !== current.toolCount) return null;
+  if (entry.tools.length !== current.toolCount) return null;
   return entry.tools;
 }

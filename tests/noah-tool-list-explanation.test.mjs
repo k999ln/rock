@@ -50,6 +50,7 @@ void test('the catalog is used only when the live definition hash and count matc
   assert.ok(listed?.some((t) => t.name === 'search_cars'));
   assert.equal(noahCatalogTools(id, { toolsSha256: 'f'.repeat(64), toolCount: 7 }), null, 'changed definitions');
   assert.equal(noahCatalogTools(id, { toolsSha256: sha, toolCount: 8 }), null, 'changed count');
+  assert.equal(noahCatalogTools(id, { toolsSha256: sha, toolCount: null }), null, 'missing live count');
   assert.equal(noahCatalogTools(id, { toolsSha256: null, toolCount: null }), null);
   assert.equal(noahCatalogTools('mcp-registry:unknown/agent', { toolsSha256: sha, toolCount: 7 }), null);
   assert.equal(noahCatalogTools('constructor', { toolsSha256: sha, toolCount: 7 }), null, 'no prototype keys');
