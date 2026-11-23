@@ -12,6 +12,8 @@ import {
   skyEveSelectionTargetKey,
   skyEveExecutionTargets,
 } from '../lib/sky-eve-connections.ts';
+import * as connections from '../lib/sky-eve-connections.ts';
+import { screen } from './fixtures/noah/screen.mjs';
 import { describeAdapter } from '../lib/rockstar-adapters.ts';
 const fixture = () => {
   const agent = {
@@ -113,6 +115,20 @@ void test('Sky management uses the same single-target choice and preserves owner
   assert.match(view,/runtime\.ownerUserId !== ownerUserId/);
   assert.match(view,/data\.ownerUserId !== ownerUserId/);
   assert.ok(view.indexOf('runtime.ownerUserId !== ownerUserId')<view.indexOf('const connected = skyEveExecutionTargets'));
+});
+void test('Noah device pins keep the exact Eve model and agent selection without prefetch, and withhold the link for a missing model', async () => {
+  const f = runtimeFixture();
+  const missing = { ...f.agent, id: randomUUID(), modelId: 'missing', name:'準備中の担当' };
+  f.device.agents.push(missing);
+  const ui = screen({ now:f.device.updatedAt, navigator:{onLine:true}, modules:{'@/lib/sky-eve-connections':connections},
+    fetch:async ({url}) => ({body:{ownerUserId:'owner', devices:url === '/api/eve/runtime' ? [f.device] : []}}) });
+  const view = ui.mount('components/sky-device-agent-connections.tsx', {ownerUserId:'owner',pinView:true}); await view.flush();
+  assert.deepEqual(view.find('li').map(node => node.props['data-agent-pin-id']), [f.agent.id, missing.id]);
+  const face = view.find('a', f.agent.name)[0];
+  assert.equal(face.props.href, skyEveDevicePath(f.reference));
+  assert.equal(face.props.prefetch, false);
+  assert.equal(view.find('a', missing.name).length, 0);
+  assert.ok(ui.calls.every(call => call.method === 'GET'));
 });
 void test('runtime references pin digest scheme into the same Eve URL and reject protocol substitution', () => {
   const f = runtimeFixture();

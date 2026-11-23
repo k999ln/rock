@@ -7,7 +7,8 @@ import NoahRegistrationSheet from './noah-registration-sheet';
 import NoahAgentFeedback from './noah-agent-feedback';
 import { researchKindLabels, type ResearchDetail, type ResearchSummary } from '@/lib/noah-research-types';
 import styles from './noah-agent-catalog.module.css';
-import { noahPinInitials } from '@/lib/noah-pins';
+import { noahPinTopic } from '@/lib/noah-pins';
+import NoahProductHeader from './noah-product-header';
 
 export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: string; basePath?: string }) {
   const {t}=useNoahLocale();
@@ -38,12 +39,8 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
     {error && <div role="alert" className={styles.error}>{t(error)} <button onClick={() => setAttempt(n => n + 1)}>{t("再試行")}</button></div>}
     {!entry && !error && <NoahLoading/>}
     {entry && <>
-      <header className={styles.storeProduct}>
-        <span className={styles.productMark} aria-hidden="true">{noahPinInitials(entry.name)}</span>
-        <div><h1>{entry.name}</h1>{entry.author && <p>{entry.author}</p>}
-          {agent && <a className={styles.productPill} href="#noah-product-access">{t('利用条件を見る')}</a>}
-        </div>
-      </header>
+      <NoahProductHeader name={entry.name} topic={noahPinTopic(entry.name, entry.summary)} attribution={entry.author}
+        action={agent ? <a href="#noah-product-access">{t('利用条件を見る')}</a> : undefined} />
       <p className={styles.productSummary}>{entry.summary}</p>
       <div className={styles.facts}><div><small>{t("分類")}</small><strong>{t(researchKindLabels[entry.kind])}</strong></div><div><small>{t("確認状況")}</small><strong>{entry.level === 'primary' ? t("一次資料を確認") : t("資料確認待ち")}</strong></div></div>
       <section className={styles.notice} id="noah-product-access"><h2>{agent ? t("このAgentを使う") : t("この関連資産について")}</h2>

@@ -1,3 +1,8 @@
+## 2026-11-24
+- CallMCPの詳細に依頼例・返答の見本・送信先・提供元の料金を追加し、検索と共有から同じ内容を読めるようにした。[PR #41](https://github.com/iceiceice999/rock/pull/41)
+- Noahの登録・掲載に作者が選ぶ画像と動画、任意の表紙動画生成、プレビューを追加。Agentの版と閲覧権限に合わせて表示する。[PR #41](https://github.com/iceiceice999/rock/pull/41)
+- NoahのAgent一覧を共通のピンにそろえ、特集画像とピンに短いアニメーションを追加。端末の「動きを減らす」設定に対応。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
+
 ## 2026-11-23
 - Noah Agent Store の行の評価の札（30px）と「その他の操作」（38px）、詳細の「利用条件を見る」（40px）を、スマホの幅と触れる画面で 44px にした（Opus / Noelle。task 129 の D7。[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
 - Noah の日本語の検索で、よく頼まれる仕事の語 70 個のうち 0 件だった 15 個（プレゼン・予約・価格・SNS・タスク・メモ・電話など）を英語の語幹に広げ、全部 1 件以上にした（Opus / Noelle。task 129 の D11。`lib/noah-search-terms.ts`。[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
@@ -5,6 +10,7 @@
 - Noah のブラウザだけの本人を、全員まとめた 1 日の上限で抑えた（Opus / Noelle。抜け道 S1・task 129 の D1）: 新しい接続・依頼・Agent の登録・下書きのファイル・コードの取り込みが上限を越えたら 429。サインインした本人は数えない。新しい表は作らず、既存のアカウントの回数表で数える（`lib/noah-browser-quota.ts`。[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
 - Noah を世に出す前の決めと直し（Opus / Noelle。本人「好きにしていいよ／だから早く完成品世に出したい」）: ホームの Noah 自身の案内に「Noahの案内（広告を含む）」と書く、「ココナラの仕事」は Mac で開いた時だけメニューに出す、コードを保存した Agent は Mac で動く事を追加の画面に書く、ブラウザだけの本人にはお金の受取口座と本人確認の書類を新しく置かせない、売り手の受け渡しの窓口は鍵の無い人に 401 だけ。決めは docs/structure/07 の 2026-11-23 の行、残りは [task 129](codex/tasks/129-noah-ux-debug.md)（[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
 - Noah を知らない人の目で一周して確かめた（Opus / Noelle。本人指示「ユーザーエクスピリエンスを辿ってデバグしてほしい（略）全部一個一個因数分解してちゃんといますぐ全機能が使えるか確かめて欲しい」）。日本語で探すと 0 件だった（「画像」「翻訳」「要約」など）のを、英語の語幹にも広げて直した。「自分のAgentを追加」がテンプレートのまま保存できなかったのを直した。保存したものに出ていたサインインと Mac の節、運営でない人の「Noah全体」、44px より小さい押す所、呼ぶたびに全件を作り直す公開一覧を直した。全体の流れの図・機能ごとの表・抜け道の表を docs/noah/ux-audit-2026-11-22.md に、残りを task 129 に書いた（[PR #43](https://github.com/iceiceice999/rock/pull/43)）。
+- NoahでTodayの特集を先頭に置き、「注目のAgent」に以前の2列のピン表示を採用。Agentの商品詳細とストアのナビゲーションを更新。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
 - NoahのAgent詳細と棚のカードに、検査済みの札と接続計画から「渡す物 → 返る物」と工程の待ち順を表示する。6言語対応、審査者の設計図と表示を共用。実データの札付け・200系列の目視・一般公開は未完了（task 128（旧 127）、[PR #27](https://github.com/iceiceice999/rock/pull/27)）。
 - Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、Agent 説明画面の引継ぎ（旧 task 127、現 task 128）を追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。
 - Noahのストア、専用eSIMの仕事別利用明細、提供元の選択、専用Linux仮想画面でのagent-desktop実行を追加。[実行仕様](docs/services/noah-managed-desktop.md) · [PR #37](https://github.com/iceiceice999/rock/pull/37)
