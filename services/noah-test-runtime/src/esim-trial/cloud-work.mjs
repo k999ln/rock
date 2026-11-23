@@ -3,11 +3,28 @@ import { withinFreeTrialBudget } from './guide.mjs';
 import { cloudPackages, routeId, parseWorkReport } from './cloud-packages.mjs';
 
 const json = (value, status = 200) => Response.json(value, { status });
-const preferredRoute = (routes) =>
-  routes.find((r) => r.kind === 'provider') ?? routes[0];
+const preferredRoute = (routes) => routes.find((r) => r.kind === 'noah');
 const validId =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const terminal = new Set(['completed', 'stopped', 'attention']);
+
+const freeTerms = 'noah-free-trial/1';
+async function offerId(pkg, routes = pkg.routes) {
+  const data = [
+    pkg.id,
+    pkg.name,
+    pkg.version ?? null,
+    freeTerms,
+    routes.map(({ id, kind, label, binding }) => [id, kind, label, binding]),
+  ];
+  const hash = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(JSON.stringify(data)),
+  );
+  return Array.from(new Uint8Array(hash), (b) =>
+    b.toString(16).padStart(2, '0'),
+  ).join('');
+}
 
 export default {
   async fetch(request, env) {
@@ -68,7 +85,10 @@ export class CloudWork {
         : ids.length
           ? await this.storage.get(ids.map((id) => 'run:' + id))
           : new Map();
+      const terms = pkg ? await offerId(pkg) : null;
       return json({
+        offer: terms,
+        version: pkg?.version,
         packages: packages.map(({ id, name }) => ({ id, name })),
         agent,
         work: selected?.id,
@@ -87,6 +107,8 @@ export class CloudWork {
             result: job.result,
             note: job.note,
             report: job.report,
+            usage: job.usage,
+            version: job.version,
           })),
       });
     }
@@ -99,6 +121,15 @@ export class CloudWork {
           const job = await tx.get(key);
           if (!job || terminal.has(job.state))
             return { stopped: job?.state === 'stopped' };
+          if (job.binding === 'AGENT_DESKTOP') {
+            await tx.put(key, {
+              ...job,
+              state: 'stopping',
+              note: '専用画面の停止を確認しています。',
+            });
+            await tx.setAlarm(Date.now() + 250);
+            return { stopped: false };
+          }
           await tx.put(key, {
             ...job,
             state: 'stopped',
@@ -128,6 +159,19 @@ export class CloudWork {
         ? preferredRoute(available)
         : available.find((r) => r.id === input.route);
     if (!route) return json({ error: '選択した接続先は利用できません。' }, 422);
+    const offer = await offerId(pkg);
+    if (
+      (route.binding === 'AGENT_DESKTOP' ||
+        input.offer !== undefined ||
+        this.env.NOAH_AGENT_ROUTES !== undefined) &&
+      input.offer !== offer
+    )
+      return json(
+        {
+          error: '接続先の版または料金条件が変わりました。開き直してください。',
+        },
+        409,
+      );
     const permit = await this.permit(owner, agent, route.id);
     if (
       !permit.active ||
@@ -139,6 +183,7 @@ export class CloudWork {
         { error: '回線または0円の実行条件を確認してください。' },
         403,
       );
+    const routeOffer = await offerId(pkg, [route]);
     const result = await this.storage.transaction(async (tx) => {
       const existing = await tx.get(key);
       if (existing)
@@ -155,6 +200,16 @@ export class CloudWork {
         agent,
         route: route.id,
         routeLabel: route.label,
+        version: pkg.version ?? offer,
+        routeOffer,
+        usage: {
+          currency: permit.quote.currency,
+          pricingVersion: freeTerms,
+          maximumMinor: permit.quote.customerMinor,
+          external: route.kind !== 'noah',
+          completedRuns: null,
+          amountMinor: null,
+        },
         binding: route.binding,
         preference: input.route,
         text: input.text,
@@ -187,13 +242,17 @@ export class CloudWork {
     try {
       next = await this.advance(job);
     } catch {
-      next = { state: 'waiting', note: '同じ接続先で結果を再確認します。' };
+      next = {
+        state: job.state === 'stopping' ? 'stopping' : 'waiting',
+        note: '同じ接続先で状態を再確認します。',
+      };
     }
     await this.storage.transaction(async (tx) => {
       const current = await tx.get(key);
       if (
         !current ||
         terminal.has(current.state) ||
+        (current.state === 'stopping' && job.state !== 'stopping') ||
         (await tx.get('active')) !== id
       )
         return;
@@ -214,25 +273,6 @@ export class CloudWork {
     });
   }
   async advance(job) {
-    const permit = await this.permit(job.owner, job.agent, job.route);
-    if (
-      !permit.active ||
-      permit.enrollment !== job.enrollment ||
-      permit.device !== job.device ||
-      !withinFreeTrialBudget(permit.quote)
-    )
-      return {
-        state: 'stopped',
-        note: '回線・利用期限・費用条件を確認してください。',
-      };
-    const registered = this.packages()
-      .find((pkg) => pkg.id === job.agent)
-      ?.routes.find(
-        (route) => route.id === job.route && route.binding === job.binding,
-      );
-    const binding = registered && this.env[job.binding];
-    if (!binding)
-      return { state: 'waiting', note: '選択した接続先の復旧を待っています。' };
     // Namespace provider IDs by account. The upstream receives no account or eSIM credentials.
     const digest = await crypto.subtle.digest(
       'SHA-256',
@@ -242,16 +282,70 @@ export class CloudWork {
       n.toString(16).padStart(2, '0'),
     ).join('');
     const url = 'https://agent.invalid/jobs/' + reference;
-    const options = { redirect: 'manual', signal: AbortSignal.timeout(8000) };
+    const headers =
+      job.binding === 'AGENT_DESKTOP'
+        ? { 'X-Noah-Desktop-Package': job.version }
+        : {};
+    const options = {
+      headers,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(8000),
+    };
+    if (job.state === 'stopping') {
+      const binding = this.env.AGENT_DESKTOP;
+      const response = binding && await binding.fetch(url, { ...options, method: 'DELETE' });
+      if (response?.status === 204) return { state: 'stopped', note: '専用画面の停止を確認しました。' };
+      // The guest can finish before the stop arrives. Recover its original
+      // receipt through the same entitlement and result checks as polling.
+      if (response?.status === 200) return this.receive(job, reference, response);
+      if (response && response.status >= 400 && response.status < 500 && response.status !== 429)
+        return { state: 'attention', note: '元の依頼の結果と停止状態を確認してください。' };
+      return { state: 'stopping', note: '専用画面の停止を確認しています。' };
+    }
+    const permit = await this.permit(job.owner, job.agent, job.route);
+    if (
+      !permit.active ||
+      permit.enrollment !== job.enrollment ||
+      permit.device !== job.device ||
+      !withinFreeTrialBudget(permit.quote)
+    )
+      return job.binding === 'AGENT_DESKTOP'
+        ? {
+            state: 'stopping',
+            note: '利用権が変更されたため専用画面の停止を確認します。',
+          }
+        : {
+            state: 'stopped',
+            note: '回線・利用期限・費用条件を確認してください。',
+          };
+    const pkg = this.packages().find((item) => item.id === job.agent);
+    const registered = pkg?.routes.find(
+      (route) => route.id === job.route && route.binding === job.binding,
+    );
+    if (
+      registered &&
+      job.routeOffer &&
+      (await offerId(pkg, [registered])) !== job.routeOffer
+    )
+      return {
+        state: 'attention',
+        note: '登録内容が変わりました。元の依頼と料金条件を確認してください。',
+      };
+    const binding = registered && this.env[job.binding];
+    if (!binding)
+      return { state: 'waiting', note: '選択した接続先の復旧を待っています。' };
     let response = await binding.fetch(url, options);
     if (response.status === 404) {
-      if ((await this.storage.get('active')) !== job.id)
-        return { state: 'stopped' };
+      if (
+        (await this.storage.get('active')) !== job.id ||
+        (await this.storage.get('run:' + job.id))?.state === 'stopping'
+      )
+        return { state: 'stopping' };
       // Registered adapters must implement create-if-absent for this same work ID.
       response = await binding.fetch(url, {
         ...options,
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { ...headers, 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: job.text }),
       });
     }
@@ -269,6 +363,9 @@ export class CloudWork {
         state: 'attention',
         note: '接続先が受付を拒否しました。設定を確認してください。',
       };
+    return this.receive(job, reference, response);
+  }
+  async receive(job, reference, response) {
     const reader = response.body?.getReader();
     if (!reader)
       return {
@@ -316,7 +413,7 @@ export class CloudWork {
       !withinFreeTrialBudget(current.quote)
     )
       return {
-        state: 'stopped',
+        state: job.state === 'stopping' ? 'attention' : job.binding === 'AGENT_DESKTOP' ? 'stopping' : 'stopped',
         note: '受取前に回線または費用条件が変わりました。',
       };
     const report = parseWorkReport(payload.report);
@@ -339,6 +436,19 @@ export class CloudWork {
     }
     return {
       state: 'completed',
+      ...(job.usage
+        ? {
+            usage: {
+              ...job.usage,
+              completedRuns: 1,
+              // Only the first-party zero-price permit covers the full customer amount.
+              // An external adapter's result is not a verified provider invoice.
+              amountMinor: job.usage.external
+                ? null
+                : current.quote.customerMinor,
+            },
+          }
+        : {}),
       result: payload.result,
       note: '成果が届きました。',
       report: report ?? {

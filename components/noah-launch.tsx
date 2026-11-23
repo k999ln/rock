@@ -205,7 +205,7 @@ export default function NoahLaunch({
     : selected
       ? `/noah/activity?agent=${encodeURIComponent(selected)}#library`
       : '/noah/activity';
-  const macHref = `/noah/mac${selected ? `?agent=${encodeURIComponent(selected)}` : ''}`;
+  const macHref = `/noah/devices${selected ? `?agent=${encodeURIComponent(selected)}` : ''}#mac`;
   return (
     <main className={styles.page}>
       <header className={styles.hero}>

@@ -13,6 +13,7 @@ import { noahCardHref, noahProjectHref } from '@/lib/noah-project-view';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import styles from './noah-pins.module.css';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
+import { useNoahLocale } from './noah-locale';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
 import { NOAH_COLLECTION_RUN_LABELS } from '@/lib/noah-collection';
 
@@ -41,27 +42,31 @@ export function noahPinLayout(heights: readonly (number | undefined)[], columns:
   return { placed, height: Math.max(0, ...tops) };
 }
 
-export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onHide }: {
+export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onHide, presentation = 'board' }: {
+  presentation?: 'store' | 'board';
   items: NoahPinView[]; signedIn: boolean; ownerScope: string | null;
   onChange?: (id: string, savedIn: string[]) => void; onHide?: (id: string) => void;
 }) {
+  const {t} = useNoahLocale();
+  const store = presentation === 'store';
   const frame = useRef<HTMLDivElement>(null), cards = useRef(new Map<string, HTMLElement>());
   const [width, setWidth] = useState(0), [heights, setHeights] = useState<{ width: number; map: Map<string, number> }>({ width: 0, map: new Map() });
   const [saving, setSaving] = useState<NoahPinView | null>(null);
   useEffect(() => {
     const element = frame.current;
-    if (!element) return;
+    if (store || !element) return;
     const update = () => setWidth(Math.floor(element.clientWidth));
     update();
     if (typeof ResizeObserver === 'undefined') { window.addEventListener('resize', update); return () => window.removeEventListener('resize', update); }
     const observer = new ResizeObserver(update);
     observer.observe(element);
     return () => observer.disconnect();
-  }, []);
+  }, [store]);
   const { columns, gap, columnWidth } = noahPinColumns(width);
   // 描くたびに、まだ測っていないカード（と、列の幅が変わった時は全部）の高さを測る。変わった時だけ状態を変える（変わらなければ、描き直さない）。
   const [fonts, setFonts] = useState(0);
   useLayoutEffect(() => {
+    if (store) return;
     setHeights((old) => {
       const map = old.width === columnWidth ? new Map(old.map) : new Map<string, number>();
       let changed = old.width !== columnWidth;
@@ -71,30 +76,32 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
       }
       return changed ? { width: columnWidth, map } : old;
     });
-  }, [columnWidth, items, fonts]);
+  }, [columnWidth, items, fonts, store]);
   // Rating requests, expanded provenance and translations can change card height after mount.
   useEffect(() => {
-    if (typeof ResizeObserver === 'undefined') return;
+    if (store || typeof ResizeObserver === 'undefined') return;
     const observer=new ResizeObserver(()=>setFonts(n=>n+1));
     for (const card of cards.current.values()) observer.observe(card);
     return ()=>observer.disconnect();
-  }, [items,width]);
+  }, [items,width,store]);
   // 字の読み込みで高さが変わった時も、測り直す。
-  useEffect(() => { void document.fonts?.ready.then(() => setFonts((n) => n + 1)); }, []);
+  useEffect(() => { if (!store) void document.fonts?.ready.then(() => setFonts((n) => n + 1)); }, [store]);
   const known = heights.width === columnWidth ? heights.map : new Map<string, number>();
-  const layout = noahPinLayout(items.map((item) => known.get(item.id)), columns, columnWidth, gap);
+  const layout = store ? null : noahPinLayout(items.map((item) => known.get(item.id)), columns, columnWidth, gap);
 
-  return <div ref={frame} className={styles.grid} style={{ height: layout.height }}>
-    {width > 0 && items.map((item, index) => {
-      const at = layout.placed[index];
-      return <article key={item.id} ref={(element) => { if (element) cards.current.set(item.id, element); else cards.current.delete(item.id); }}
-        className={`${styles.pin} ${styles.tone}`} style={{ width: columnWidth, transform: at ? `translate(${at.left}px, ${at.top}px)` : undefined, visibility: at ? 'visible' : 'hidden' }}
+  return <div ref={frame} className={store ? styles.storeList : styles.grid} style={layout ? { height: layout.height } : undefined}>
+    {(store || width > 0) && items.map((item, index) => {
+      const at = layout?.placed[index];
+      const href = noahCardHref(item) ?? noahReadyDetailHref(item.id);
+      return <article key={item.id} ref={store ? undefined : (element) => { if (element) cards.current.set(item.id, element); else cards.current.delete(item.id); }}
+        className={`${store ? styles.storeItem : styles.pin} ${styles.tone}`} style={store ? undefined : { width: columnWidth, transform: at ? `translate(${at.left}px, ${at.top}px)` : undefined, visibility: at ? 'visible' : 'hidden' }}
         data-topic={item.topic} data-shape={item.shape} aria-label={item.name}>
-        <a className={styles.face} href={noahCardHref(item) ?? noahReadyDetailHref(item.id)}>
+        <a className={styles.face} href={href}>
           <span className={styles.panel} aria-hidden="true"><span className={styles.initials}>{noahPinInitials(item.name)}</span><span className={styles.topicLabel}>{NOAH_PIN_TOPIC_LABELS[item.topic]}</span></span>
-          <strong className={styles.name}>{item.name}</strong>
+          <div className={styles.pinCopy}><strong className={styles.name}>{item.name}</strong>
           {item.summary && <span className={styles.summary}>{item.summary}</span>}
-          <small className={styles.meta}>{item.host ?? item.provider} · {item.external ? 'Noahで接続を確認' : item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>
+          <small className={styles.meta}>{item.host ?? item.provider} · {item.external ? 'Noahで接続を確認' : item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small></div>
+          {store && <span className={styles.openItem}>{t('見る')}</span>}
         </a>
         {!item.external && <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
           {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}

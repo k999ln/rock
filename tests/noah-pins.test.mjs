@@ -219,3 +219,59 @@ void test('related ("これも使われています") walks other people\'s boar
   assert.equal(w.f.sql.prepare('SELECT succeeded FROM noah_pin_stats WHERE family_id = ?').get(familyId(3)).succeeded, 0);
   assert.equal(NOAH_PIN_RANK.minPeople, 5);
 });
+
+void test('board picks ("このボードに合う Agent") change with the board, skip what the board has and what the viewer hid, and follow the board\'s privacy', async (t) => {
+  const { get, post } = await pinsWorld(t, 6);
+  // 他の 5 人が、1 と 2・3 と 4 を、それぞれ別のボードに一緒に保存している。
+  for (const user of ['u1', 'u2', 'u3', 'u4', 'u5']) {
+    const work = (await post(user, { action: 'create', name: '仕事', visibility: 'private' })).body.id;
+    await post(user, { action: 'save', boardId: work, familyId: familyId(1) });
+    await post(user, { action: 'save', boardId: work, familyId: familyId(2) });
+    const home = (await post(user, { action: 'create', name: '暮らし', visibility: 'private' })).body.id;
+    await post(user, { action: 'save', boardId: home, familyId: familyId(3) });
+    await post(user, { action: 'save', boardId: home, familyId: familyId(4) });
+  }
+  const quiet = (await post('me', { action: 'create', name: '静かな部屋', visibility: 'public' })).body.id;
+  await post('me', { action: 'save', boardId: quiet, familyId: familyId(1) });
+  const town = (await post('me', { action: 'create', name: '街の装い', visibility: 'private' })).body.id;
+  await post('me', { action: 'save', boardId: town, familyId: familyId(3) });
+  const picks = async (board, user = 'me') => (await get(`/api/noah/pins?board=${board}`, user));
+  // ボードごとに違う物が出る。ボードに入っている物は出さない。
+  assert.deepEqual((await picks(quiet)).body.items.map((item) => item.id), [familyId(2)]);
+  assert.deepEqual((await picks(town)).body.items.map((item) => item.id), [familyId(4)]);
+  // 公開のボードは誰でも、自分だけのボードは持ち主だけ。形の違う ID は 400。
+  assert.deepEqual((await picks(quiet, null)).body.items.map((item) => item.id), [familyId(2)]);
+  assert.equal((await picks(town, 'other')).status, 404);
+  assert.equal((await picks('not-a-board')).status, 400);
+  // 見る人が「表示しない」にした物は出さない。保存を足すと、おすすめも変わる。
+  await post('me', { action: 'hide', familyId: familyId(2) });
+  assert.deepEqual((await picks(quiet)).body.items, []);
+  await post('me', { action: 'save', boardId: town, familyId: familyId(4) });
+  assert.deepEqual((await picks(town)).body.items, []);
+});
+
+void test('the board page shows its own picks under the board, and nothing when there are none', async () => {
+  const { screen } = await import('./fixtures/noah/screen.mjs');
+  const pin = (id, name) => ({ id, name, summary: `${name} の説明`, host: 'agent.example', topic: 'work', shape: 0, savedIn: [], initials: name.slice(0, 2).toUpperCase(), kind: 'remote', provider: 'agent.example' });
+  const board = { id: '00000000-0000-4000-8000-000000000001', name: '静かな部屋', visibility: 'public', pins: 1, followers: 0, revision: 1, mine: true, following: false, covers: [] };
+  // グリッドの部品は大きさを測るので、名前だけを並べる代わりの部品にする（ここで確かめるのは、どの Agent をどこに出すか）。
+  const modules = { './noah-pin-grid': { default: ({ items }) => ({ type: 'ul', props: { children: items.map((item) => ({ type: 'li', props: { children: item.name }, key: item.id })) } }) } };
+  const ui = screen({ modules, fetch: async (request) => {
+    if (request.url.includes('/api/noah/pins?board=')) return { body: { items: [pin('mcp:b', 'Beta helper')], ownerScope: 'scope-a' } };
+    return { body: { board, items: [pin('mcp:a', 'Alpha helper')], nextCursor: null, ownerScope: 'scope-a' } };
+  } });
+  const page = ui.mount('components/noah-boards.tsx#NoahBoardPage', { id: board.id });
+  await page.flush();
+  const text = page.text();
+  assert.match(text, /静かな部屋/);
+  assert.match(text, /このボードに合う Agent/);
+  assert.match(text, /Beta helper/);
+  assert.ok(ui.calls.some((call) => call.url.endsWith(`/api/noah/pins?board=${board.id}`)));
+
+  const empty = screen({ modules, fetch: async (request) => (request.url.includes('/api/noah/pins?board=')
+    ? { body: { items: [], ownerScope: 'scope-a' } }
+    : { body: { board, items: [pin('mcp:a', 'Alpha helper')], nextCursor: null, ownerScope: 'scope-a' } }) });
+  const quiet = empty.mount('components/noah-boards.tsx#NoahBoardPage', { id: board.id });
+  await quiet.flush();
+  assert.doesNotMatch(quiet.text(), /このボードに合う Agent/);
+});

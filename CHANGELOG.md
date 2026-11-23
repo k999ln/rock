@@ -1,5 +1,14 @@
 ## 2026-11-23
-- Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、task 127 の引継ぎを追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。
+- Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、Agent 説明画面の引継ぎ（旧 task 127、現 task 128）を追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。
+- Noahのストア、専用eSIMの仕事別利用明細、提供元の選択、専用Linux仮想画面でのagent-desktop実行を追加。[実行仕様](docs/services/noah-managed-desktop.md) · [PR #37](https://github.com/iceiceice999/rock/pull/37)
+- avoado.si の React 関連 3 パッケージを 19.2.9 に統一し、CVE-2026-126187 と shadcn CLI の依存脆弱性を修正（[PR #36](https://github.com/iceiceice999/rock/pull/36)）。
+- Noah の「Noahが読んだ」を、リポジトリのファイル `data/noah-scout/leads.json` からクラウドの収集機が載せる形にした（task 125、Opus / Noelle）。読んだ人（Codex の Luna Max・Claude）はファイルに足す PR を出すだけで、運営の Mac に掲載の鍵を置かなくてよい。ファイルに無い出所は送らないので、前の掲載を空で上書きしない。最初の 1 件として、本人が「これいれて」と言った Switch（sandbox-quantum/switch）を、README・LICENSE・公式の手順書まで読んで日本語で書いた。 [正本 PR #34](https://github.com/iceiceice999/rock/pull/34)・[旧PR #426](https://github.com/k999ln/rock/pull/426)
+- NoahのTime・boss面接準備・Hermes計画を無料枠の公式Python処理で本番受入。Worker分離とモデル応答の補正後、390px Chrome全終了中の保存・成果再表示・download/hashを確認し、途中の失敗も保持（task125、[PR #32](https://github.com/iceiceice999/rock/pull/32)）。
+- Noah無料クラウドへ公式PythonのTime・boss面接準備・Hermes計画/メモを追加する実装と、期限・停止・依頼分離の検証を追加。本番受入は継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)、task125）。
+- Noahへ786系列の台帳・接続条件と、成果受領に基づく10秒更新の稼働一覧を追加。提供元の版・定義変更、失敗、24時間の確認期限を反映（[PR #28](https://github.com/iceiceice999/rock/pull/28)）。Sites 216で5系列の成果・保存・再表示・停止を初回受入し、[記録](docs/noah/acceptance-127-live-agent-families.md)と共有状態を持つ接続の保留補正を追加（[PR #33](https://github.com/iceiceice999/rock/pull/33)）。
+- Eve・Noahの利用・実行・収益・物流を8枚で追える[図解設計書](docs/noah/illustrated-specifications.md)と共有用PDFを追加し、各機能の判定条件と本番受入の残件を明記（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
+- Noahに、お店・会社のサイト運営と個人のメモ整理を目的から選び、依頼と成果の再表示へ進む入口を追加。画面・API・保存先・初見利用者での検証方法を[構造図](docs/noah/first-use-architecture.md)に記録し、[専用eSIM](docs/structure/03-esim.md)、[管理クラウド](docs/services/noah-cloud-agents.md)、[Eve・定期便・報酬](docs/noah/eve-distribution-and-rewards.md)の構造図・実装・受入条件を追記（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
+- Noah収集のチェックポイント確定を修正。チャンクの存在はメタデータで照合し、保存応答後に古い断片を掃除する。掲載再開と24時間の鮮度は [PR #26](https://github.com/iceiceice999/rock/pull/26) に記録。
 - Noahの「接続できる」検索に、有効な実行環境で対応している公式CLIを含める。詳細と同じ配布元・profile判定で、未設定や類似URLを除外し、カードの保存・評価IDとデザインを保持（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。
 - Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正 [PR #21](https://github.com/iceiceice999/rock/pull/21)）。
 - Noahの進捗を現main・旧PRの祖先・既存本番受入記録と照合し、task索引・project.md・README・進捗JSON・H1の次作業を同期。未確認の運用・集客・実機受入は残件として保持（[PR #20](https://github.com/iceiceice999/rock/pull/20)）。
@@ -8,6 +17,9 @@
 - NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。
 
 ## 2026-11-22
+- デザイン参照ライブラリを rock に入れた（Opus / Noelle。本人指示「実際に使えるように参照ライブラリの雛形を作って…AGENTS.mdに追記する文も入れて」）。Codex の雛形（ノエルの Mac の中だけにあった）を、Noah の実際の参照 4 枚（図解のカード・余白の写真の並び・今のピンのグリッド・よりみちのタイムラインとトーク）で埋め、`design/references/` に置いた。AGENTS.md に「9. 画面を作る時」を足した（[PR #42](https://github.com/iceiceice999/rock/pull/42)）。
+- Noah のボードに「このボードに合う Agent」を足した（Opus / Noelle。本人指示「どのボードに保存したかでおすすめが変わるようにして。ボードごとの違いを実際に触って見たい」）。ボードの保存を起点に、他の人のボードから Pixie で行き着く物を出す。ボードが違えば違う物が出て、保存するとその場で変わる。学習なし・5 人より少ない人の保存からは出さない）（[PR #40](https://github.com/iceiceice999/rock/pull/40)）。
+- Noah の Agent 収集で、1 回きりの出所の失敗（GitHub の一時的な不調・混雑）で実行全体が「失敗」になっていたのを直した（Opus / Noelle。本人の問い「毎日更新してくれるシステム作ってって前いったけどできた？」）。本番への取り込み・掲載の失敗、形が変わった応答、X の鍵、同じ出所が 6 回続けて失敗した時だけを「人が見る失敗」にする。毎回の実行の要約に、台帳・握手・一覧に載る数と、出所ごとの数と失敗を出す）（[PR #38](https://github.com/iceiceice999/rock/pull/38)）。
 - Noahの収集停止の記録を正本へ移植し、旧mainの手動実行とCodexの毎時実行で収集を復旧。24時間の鮮度と正本への実行先切り替えは追跡中（[PR #15](https://github.com/iceiceice999/rock/pull/15)、[PR #16](https://github.com/iceiceice999/rock/pull/16)、[復旧実行](https://github.com/k999ln/rock/actions/runs/45032700818)）。
 - NoahのWordPress/EC診断2種をSites208で実行・保存・再読込まで受入し、掲載時刻と成果本文の表示を補正。登録媒体への紹介・6時間の成果取得を接続、実注文/承認は0件（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。
 - Noahの自律収集の変更とtask 125・126を正本へ移植した（[PR #13](https://github.com/iceiceice999/rock/pull/13)）。本番の復旧・配備と運用確認はtask 125に記録する。

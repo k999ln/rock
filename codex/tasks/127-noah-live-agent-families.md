@@ -1,0 +1,17 @@
+# 127 — 786系列をNoahへ接続し、利用可能な一覧を更新する
+
+本人指示（2026-11-23）: 接続できるものから動作確認と本番反映まで行い、利用可能Agent一覧を継続更新する。
+
+対象: docs/noah/spec-127-live-agent-families.md、Noah本体台帳、directory/provider runtime、availability API/UI、関連テスト、追加D1表。
+
+- [x] 786系列を正規URLで既存Noahへ結び付ける。
+- [x] 本番の接続確認・成果受領を公開の状態記録へ反映し、10秒ごとに表示更新。
+- [x] 公開APIのある本体を実行・保存・再表示・停止で受入。
+- [x] 全体verify、mainへのPR統合、Sitesソースtree一致、本番配備と本番再確認。
+- [x] 残る系列の認証・実行環境・停止条件を理由付きで記録。
+
+全786系列の稼働を一括で保証しない。SDK/Toolを本体数へ足さず、外部契約・有料利用・本人認証は既存の権限を保持する。
+
+初回受入: [本番受入記録](../../docs/noah/acceptance-127-live-agent-families.md)。Sites 216で5系列の成果・保存・再表示、停止と他利用者への非公開を確認。残る系列の個別実行接続は継続対象。
+
+受入・接続保留補正: [PR #33](https://github.com/iceiceice999/rock/pull/33)。最終全体verify成功（5210成功、既存5skip）。追補版の公開記録はPR本文に残す。

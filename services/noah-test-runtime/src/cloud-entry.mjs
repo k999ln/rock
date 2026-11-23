@@ -26,18 +26,41 @@ export default {
   async fetch(request, env) {
     // This Worker is private (service bindings only). The web ingress authenticates
     // the account. LINE separately verifies the carrier evidence for this request.
-    if (!env.LINE) return failure('実回線の接続確認を準備しています。', 503);
+    const connectionHelp = (message, status) =>
+      request.method === 'GET'
+        ? new Response(
+            layout(
+              '専用クラウドに接続',
+              '<p>' +
+                message +
+                '</p><p><a href="/connect">eSIMを設定</a> · <a href="/noah/purchases">購入履歴を確認</a> · <a href="/noah">Noahに戻る</a></p>',
+              'eSIMクラウド',
+            ),
+            {
+              status,
+              headers: {
+                ...headers,
+                'Content-Type': 'text/html; charset=utf-8',
+              },
+            },
+          )
+        : failure(message, status);
+    if (!env.LINE)
+      return connectionHelp('実回線の接続確認を準備しています。', 503);
     const { pathname } = new URL(request.url);
     const distribution = distributionAction(request.method, pathname);
     const action =
       distribution ??
-      (request.method === 'GET' && pathname === root
-        ? 'list'
-        : request.method === 'POST' && pathname === root + '/start'
-          ? 'start'
-          : request.method === 'POST' && pathname === root + '/stop'
-            ? 'stop'
-            : null);
+      (['GET', 'POST'].includes(request.method) &&
+      pathname === root + '/metered'
+        ? 'metered'
+        : request.method === 'GET' && pathname === root
+          ? 'list'
+          : request.method === 'POST' && pathname === root + '/start'
+            ? 'start'
+            : request.method === 'POST' && pathname === root + '/stop'
+              ? 'stop'
+              : null);
     if (!action) return failure('操作を確認してください。', 404);
     const account = request.headers.get('X-Noah-Account');
     if (!account) return failure('利用者を確認してください。', 403);
@@ -83,7 +106,7 @@ export default {
     if (distribution === 'notice') return recipient(null);
     const evidence = request.headers.get('X-Noah-Carrier-Proof');
     if (!evidence || evidence.length > 8192)
-      return failure('専用回線から接続してください。', 403);
+      return connectionHelp('専用回線から接続してください。', 403);
     let input = {
       agent: new URL(request.url).searchParams.get('agent') ?? undefined,
       work: new URL(request.url).searchParams.get('work') ?? undefined,
@@ -103,7 +126,7 @@ export default {
         const { done, value } = await reader.read();
         if (done) break;
         size += value.length;
-        if (size > 8192) {
+        if (size > (action === 'metered' ? 48000 : 8192)) {
           await reader.cancel();
           return failure('文章が長すぎます。', 413);
         }
@@ -132,7 +155,7 @@ export default {
       redirect: 'manual',
     });
     if (!verified.ok)
-      return failure(
+      return connectionHelp(
         '回線を確認できません。',
         verified.status >= 500 ? 503 : 403,
       );
@@ -144,6 +167,21 @@ export default {
       !/^[a-zA-Z0-9._:-]{1,128}$/.test(grant.owner)
     )
       return failure('回線の利用者が一致しません。', 403);
+    if (action === 'metered') {
+      // LINE obtains these two fields from the carrier. The edge supplies the
+      // independently verified eSIM grant's order and device, never client headers.
+      if (
+        !grant.orderId ||
+        !grant.deviceRef ||
+        grant.orderId !== request.headers.get('X-Noah-Order') ||
+        grant.deviceRef !== request.headers.get('X-Noah-Device')
+      )
+        return failure('契約中の注文と端末を専用回線で確認できません。', 403);
+      return new Response(null, {
+        status: 204,
+        headers: { ...headers, 'X-Noah-Line-Verified': 'metered' },
+      });
+    }
     if (distribution) return recipient(grant.owner, input);
     const jobs = env.JOBS.get(env.JOBS.idFromName(grant.owner));
     const response = await jobs.fetch('https://jobs.invalid/' + action, {

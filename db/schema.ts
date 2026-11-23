@@ -2949,3 +2949,25 @@ export const noahTeikibinLines = sqliteTable('noah_teikibin_lines', {
   check('noah_teikibin_lines_paid_ref', sql`(${t.payoutState} = 'paid') = (${t.payoutRef} IS NOT NULL)`),
   check('noah_teikibin_lines_goods_ref', sql`(${t.goodsState} = 'assigned') = (${t.goodsRef} IS NOT NULL)`),
 ]);
+
+// Public operational evidence for catalog projects; never includes owner or task content.
+export const noahAgentAvailability = sqliteTable('noah_agent_availability', {
+  projectId: text('project_id').primaryKey(),
+  protocol: text('protocol').notNull(),
+  manifestHash: text('manifest_hash').notNull(),
+  endpointsJson: text('endpoints_json').notNull(),
+  state: text('state').notNull(),
+  checkedAt: integer('checked_at').notNull(),
+  successAt: integer('success_at'),
+  successDigest: text('success_digest'),
+  failureAt: integer('failure_at'),
+  nextCheckAt: integer('next_check_at').notNull(),
+  leaseUntil: integer('lease_until').notNull().default(0),
+  revision: integer('revision').notNull().default(1),
+}, t => [
+  index('noah_agent_availability_due').on(t.nextCheckAt, t.leaseUntil),
+  check('noah_agent_availability_state', sql`${t.state} IN ('connected','verified','unavailable')`),
+  check('noah_agent_availability_protocol', sql`${t.protocol} IN ('gradio','mcp')`),
+  check('noah_agent_availability_manifest', sql`length(${t.manifestHash}) = 64`),
+  check('noah_agent_availability_endpoints', sql`json_valid(${t.endpointsJson})`),
+]);

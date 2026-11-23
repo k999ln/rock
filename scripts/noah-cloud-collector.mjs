@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, rmSync, appendFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -92,6 +92,45 @@ export function restoreCheckpoint(directory, checkpoint, now = Date.now()) {
   } finally { rmSync(temporary, { force: true }); }
 }
 
+/** 出所が続けて失敗した回数が、これ以上なら人が見る（1 回きりの失敗・混雑は、次の回に続きから動くので、落ちた扱いにしない）。 */
+export const COLLECTOR_ALERT_REPEAT = 6;
+/**
+ * 失敗を「人が見る物（alerts）」と「次の回に任せる物（warnings）」に分ける。
+ * 人が見る物: 本番への取り込み・掲載の失敗、形が変わった応答、鍵の問題（X）、同じ出所が COLLECTOR_ALERT_REPEAT 回以上続けて失敗。
+ */
+export function collectorAlerts(status, repeat = COLLECTOR_ALERT_REPEAT) {
+  const failures = new Map((status.sources ?? []).map((source) => [source.id, Number(source.failure_count) || 0]));
+  const alerts = [], warnings = [];
+  for (const error of status.errors ?? []) {
+    const count = failures.get(error.source) ?? 0;
+    const actionable = ['import', 'publication'].includes(error.source) || error.code === 'invalid_response' || count >= repeat
+      || (error.source === 'x' && ['needs_credentials', 'quota_required'].includes(error.code));
+    (actionable ? alerts : warnings).push(count ? { ...error, failures: count } : error);
+  }
+  return { alerts, warnings };
+}
+const cell = (value) => String(value ?? '—').replace(/[|\r\n]/g, ' ');
+/** GitHub の実行の要約（GITHUB_STEP_SUMMARY）に書く、1 回分の数。鍵や中身は書かない。 */
+export function collectorSummary(result) {
+  const counts = result.counts ?? {}, lines = ['## Noah の Agent 収集', ''];
+  lines.push('| 台帳 | 有効 | 握手した | 一覧に載る | まだ確かめていない |', '| ---: | ---: | ---: | ---: | ---: |',
+    `| ${cell(counts.registry)} | ${cell(counts.active)} | ${cell(counts.handshake)} | ${cell(counts.listed)} | ${cell(counts.unchecked)} |`, '');
+  if (result.import) lines.push(`本番の一覧へ入れた: ${cell(result.import.status)}（送った系列 ${cell(result.import.sent)}・書いた行 ${cell(result.import.rowsWritten)}・待っている ${cell(result.import.waiting)}）`, '');
+  if (result.published?.length) {
+    lines.push('| 出所 | 載せた数 | 集める先の状態 |', '| --- | ---: | --- |');
+    for (const item of result.published) lines.push(`| ${cell(item.source)} | ${cell(item.items)} | ${cell(result.feeds?.[item.source] ?? '')} |`);
+    lines.push('');
+  }
+  const { alerts = [], warnings = [] } = result;
+  lines.push(alerts.length ? `**人が見る失敗: ${alerts.length} 件**` : '人が見る失敗: なし');
+  for (const item of alerts) lines.push(`- ${cell(item.source)}: ${cell(item.code)}${item.failures ? `（${item.failures} 回続けて）` : ''}`);
+  if (warnings.length) {
+    lines.push('', `次の回に任せる失敗: ${warnings.length} 件（続きから動く）`);
+    for (const item of warnings) lines.push(`- ${cell(item.source)}: ${cell(item.code)}${item.failures ? `（${item.failures} 回目）` : ''}`);
+  }
+  return lines.join('\n') + '\n';
+}
+
 export async function runCloudCollector({ directory, origin, key, xToken, runId, fetcher, now = Date.now, collect = runCollector, bootstrap, importIntake = false, smitheryKey, githubToken }) {
   if (!/^(bootstrap|[0-9]{1,25})$/.test(runId)) throw Error('cloud_run_id');
   const network = fetcher ? null : createCollectorNetwork();
@@ -114,7 +153,7 @@ export async function runCloudCollector({ directory, origin, key, xToken, runId,
     await request({ action: 'write', etag: saved.etag, checkpoint });
     const { snapshots } = JSON.parse(readFileSync(join(directory, 'collection.json'), 'utf8'));
     const published = await publishCollection({ snapshots, origin, key, fetcher: transport, now });
-    return { runId, updatedAt: checkpoint.updatedAt, previousRunId: saved.checkpoint.runId, counts: status.counts, errors: status.errors, x: status.steps.x.status,
+    return { runId, updatedAt: checkpoint.updatedAt, previousRunId: saved.checkpoint.runId, counts: status.counts, errors: status.errors, ...collectorAlerts(status), x: status.steps.x.status,
       feeds: Object.fromEntries(Object.entries(status.steps.feeds ?? {}).map(([id, feed]) => [id, feed.status])), import: status.steps.import ?? null, published };
   } finally { await network?.close(); }
 }
@@ -125,7 +164,9 @@ async function main() {
     key: process.env.NOAH_COLLECTION_KEY, xToken: process.env.NOAH_X_BEARER_TOKEN, runId: values.bootstrap ? 'bootstrap' : process.env.GITHUB_RUN_ID,
     importIntake: !!values.import, smitheryKey: process.env.SMITHERY_API_KEY || undefined, githubToken: process.env.GITHUB_TOKEN || undefined });
   console.log(JSON.stringify(result));
-  if (result.errors?.length) process.exitCode = 1;
+  if (process.env.GITHUB_STEP_SUMMARY && !result.seeded) appendFileSync(process.env.GITHUB_STEP_SUMMARY, collectorSummary(result));
+  // 落ちた扱いにするのは、人が見る失敗の時だけ（1 回きりの失敗は、次の回が続きから動く）。
+  if (result.alerts?.length) process.exitCode = 1;
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main().catch(error => {
   console.error(/^(cloud_|collector_publish_)[a-z0-9_]+$/.test(error.message) ? error.message : 'cloud_collection_failed'); process.exitCode = 1;

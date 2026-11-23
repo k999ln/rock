@@ -48,16 +48,16 @@
    - 配布元を読む（GitHub の README・公式の頁・使用許諾の LICENSE）。
    - 書くのは、読んで確かめた事だけ。何をする物か・誰向けか・どう動かすか（ブラウザ・Mac・サーバー・鍵が要るか）・費用・使用許諾の注意（例: Commons Clause、非商用）。
    - 分からない事は書かない。投稿の文は写さない。日本語で 500 字まで。
-4. `leads.json` を書く。形は `scripts/noah-collector-social.mjs` の先頭にある。
-   - `source`: `x`
-   - `post`: 紹介の投稿の URL
+4. `data/noah-scout/leads.json` に紹介を足す。
    - `project`: 配布元の正規の URL
-   - `postedAt`: 投稿の日時
-   - `metrics`: 画面に出ている `likes`・`reposts`
+   - `foundAt`: Noah が紹介を見つけた日時
    - `understanding`: `name`・`summary`・`maker`・`page`・`run`（`space`・`key`・`mac` のどれか）
-5. 載せる。`node --experimental-strip-types scripts/noah-collector-social.mjs --file leads.json --dir ~/noah-social --publish https://avoado.si`
-   - 鍵 `NOAH_COLLECTION_KEY` は、権限 600 の設定ファイルから環境変数で渡す。
-   - 置き場（runtime.env の件）はノエルに聞く。鍵を作り直す指示はしない。
+   - 投稿があるときは `source`（X は `x`）、投稿 URL の `post`、投稿日時の `postedAt`、画面に出ている `likes`・`reposts` の `metrics` も足す。
+5. 載せる（2026-11-23 に変えた）。読んだ紹介を `data/noah-scout/leads.json` に足す PR を出して main に入れる。クラウドの収集機が、次の回にまとめて「Noahが読んだ」と X の列へ載せる。
+   - 形は `scripts/noah-collector-social.mjs` の `scoutFileItems`。1 件は `project`・`foundAt`・`understanding`（要る）と、投稿があれば `source`・`post`・`postedAt`・`metrics`。
+   - 運営の Mac に掲載の鍵（`NOAH_COLLECTION_KEY`）を置かなくてよい。runtime.env の件は不要になった。
+   - `scripts/noah-collector-social.mjs --publish` で直接載せると、収集機の掲載と同じ出所を上書きし合うので使わない。
+   - 試験 `tests/noah-scout.test.mjs` が、ファイルの全件の形を確かめる。
 6. 止める条件: X が確認（画像の問題・電話の確認・「自動の操作の疑い」）を出したら、そこで止めてノエルに知らせる。確認は解かない。ログインを繰り返さない。
 7. 記録: 読んだ件数・載せた件数・落とした理由を `work/noah-scout/YYYY-MM-DD.json` に残す（Git に入れない）。週に 1 行、この task の末尾に書く。
 
@@ -66,7 +66,7 @@
 - 30 日の間に、紹介したリンクが 3 回以上載った人を足す。引用元の人も数える。足した人はリストに入れ、`data/noah-scout-curators.json` に根拠付きで追記する PR を出す。
 - 30 日で 1 件も載らなかった人は、外す候補としてノエルに見せる（外すのはノエルの答えの後）。
 
-### 3.5 最初の 1 件は Switch
+### 3.5 最初の 1 件は Switch（2026-11-23: Claude が読んで `data/noah-scout/leads.json` に入れた）
 
 - 3.3 の形で、Switch を最初に載せる。読む順は Claude_Digest の投稿 → switch_ai_ の投稿 → github.com/sandbox-quantum/switch → LICENSE。
 - 理解に必ず入れる事: Mac のアプリと自前のサーバーで動き、スマホからは動かない事。使用許諾が Apache 2.0 + Commons Clause で、Switch を動かす事自体を有料で売れない事（`run`: `mac`）。
@@ -96,6 +96,10 @@
 - 旧 `k999ln/rock` の `main` を手動で起動し、[Actions 45032700818](https://github.com/k999ln/rock/actions/runs/45032700818) の収集ジョブが成功。[本番の Hacker News](https://avoado.si/api/noah/collection?source=hackernews&order=new) は78件から84件へ進み、取得した20件の `observedAt` が16:30:40から23:25:37 JSTに更新された。
 - Codex の毎時の予備実行 `noah-2` を有効化。鮮度2時間以内の連続24時間は観測中。
 - GitHub の正本には収集用シークレットが未登録。旧 `main` を本番の掲載元として維持し、正本側は設定と明示的な有効化を待つ。切り替え手順は [収集機の運用](../../docs/services/noah-agent-collection.md#クラウド常時運用2026-11-22-本人追加指示)。
+
+#### 2026-11-23 チェックポイントのタイムアウト
+
+- 旧 `main` の収集で、チャンク保存完了後のマニフェスト確定が60秒でタイムアウトし、公開 Hacker News の鮮度が2時間を超えた。チャンクの存在確認を R2 メタデータの読み取りに変え、古い断片の掃除を確定応答後に移す。掲載再開と24時間観測の実測は [修正 PR #26](https://github.com/iceiceice999/rock/pull/26) に記録する。
 
 ## 4. 合格条件
 

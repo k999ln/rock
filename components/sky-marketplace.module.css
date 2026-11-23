@@ -206,3 +206,6 @@ a.cardBottom:hover { color: #e5f6fd; }
 .starterAgent strong { font-size: 16px; }
 .starterAgent small { font-size: 12px; color: #bbd9c6; }
 .starterAgent:focus-visible { outline: 2px solid #d6f6dd; outline-offset: 3px; }
+:global([data-noah-standalone]) .primaryAction { background:var(--noah-action,#a14206); color:#fff; }
+:global([data-noah-standalone]) .primaryAction:hover { background:#843300; }
+:global([data-noah-standalone]) :is(.primaryAction,.secondaryAction,.card):focus-visible { outline-color:#c85e11; }
