@@ -11,6 +11,20 @@
  * 仕様: docs/noah/spec-122-business-blueprints.md
  */
 
+import {
+  noahBlueprintWithout,
+  type NoahStep,
+  type NoahStepKind,
+} from './noah-steps.ts';
+export {
+  NOAH_STEP_KINDS,
+  noahBlueprintLevels,
+  noahBlueprintReady,
+  noahBlueprintWaitProblem,
+  noahBlueprintWithout,
+} from './noah-steps.ts';
+export type { NoahStep, NoahStepKind } from './noah-steps.ts';
+
 // ---------------------------------------------------------------------------
 // 工程の種類と、要る能力
 // ---------------------------------------------------------------------------
@@ -18,9 +32,10 @@
 /**
  * auto: Noah が最後までやる。tap: Noah が全部用意し、本人が確かめて押す（規約が本人の同意・手動の公開を求める所）。
  * human: 本人にしかできない（本人確認・パスワード・確認コード・口座・電話番号・規約への同意）。review: 本人が中身を確かめる（金融の表現など）。
+ *
+ * 工程の共通型とグラフ操作は `lib/noah-steps.ts` にあり、ここでは
+ * business の能力名だけを追加で狭くする。
  */
-export const NOAH_STEP_KINDS = ['auto', 'tap', 'human', 'review'] as const;
-export type NoahStepKind = typeof NOAH_STEP_KINDS[number];
 
 /** 能力。keywords は、Noah のエージェントの名前・説明に当てる語（小文字・決まった照合だけ）。 */
 export const NOAH_CAPABILITIES = {
@@ -267,20 +282,11 @@ export const NOAH_OSHI_AGENT = {
 // 設計図
 // ---------------------------------------------------------------------------
 
-export type NoahBlueprintStep = {
-  id: string; label: string; kind: NoahStepKind; capability?: NoahCapability;
-  /** 人・押すだけ・確かめる工程の理由。 */
-  reason?: string; account?: string;
-  /** 1 か月あたりの費用の目安（円。0 は無料の範囲）。 */
-  costYen?: number;
-  /**
-   * 何を待つか: この工程を始める前に終わっている工程の id（同じ設計図の、前に並ぶ工程だけ）。空なら最初から始められる。
-   * 設計図の工程には必ず書く（2026-11-22 本人の評価。待つ相手が全部終わった工程から同時に進める）。推し活のエージェントの工程は設計図ではないので持たない。
-   */
-  after?: readonly string[];
-  /** 待つ相手の前提の理由（NOAH_STEP_WAITS の文）。説明画面に出す。決まりきった待ち（台本 → 動画など）には付けない。 */
-  waitNote?: string;
-};
+/**
+ * 稼ぎ方の設計図が使う工程。共通工程の能力名だけ business の語彙へ
+ * 狭め、consumes / produces など別の利用側の追加フィールドも拒まない。
+ */
+export type NoahBlueprintStep = Omit<NoahStep, 'capability'> & { capability?: NoahCapability };
 
 /**
  * 待つ相手の前提（2026-11-22。本人の答えで直す所）。工程が何を待つかのうち、決まりきっていない物だけ、理由をここに置く。
@@ -463,61 +469,6 @@ export function noahBlueprints(): NoahBlueprint[] {
     step('fulfill', '注文を届ける', 'auto', { capability: 'order.fulfill', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }), step('support', '問い合わせに答える', 'auto', { capability: 'support.reply', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }),
     signUpStep('x', []), step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x', after: ['listing', 'signup:x'] }), ...measure(['promote']),
   ] });
-  return out;
-}
-
-// ---------------------------------------------------------------------------
-// 何を待つか（段・今始められる工程・工程を外した時のつなぎ直し）
-// ---------------------------------------------------------------------------
-
-/**
- * 待つ相手が正しいか。どの工程も after を持ち、after は同じ設計図の前に並ぶ工程だけで、同じ id を 2 回書かない。
- * 前に並ぶ工程だけを待つので、輪にならず、設計図の並び順は、いつでも 1 つずつ順に進めてよい順になる。問題が無ければ null。
- */
-export function noahBlueprintWaitProblem(steps: readonly NoahBlueprintStep[]): string | null {
-  const seen = new Set<string>();
-  for (const s of steps) {
-    if (!s.after) return `「${s.label}」に、何を待つかが書かれていません。`;
-    if (new Set(s.after).size !== s.after.length) return `「${s.label}」が、同じ工程を 2 回待っています。`;
-    const missing = s.after.find(id => !seen.has(id));
-    if (missing) return `「${s.label}」が、前に無い工程（${missing}）を待っています。`;
-    seen.add(s.id);
-  }
-  return null;
-}
-/** 段。待つ相手が無い工程が 1 段目、ほかは「待つ相手の段のいちばん後 + 1」段目。同じ段の工程は同時に進められる。段の中は設計図の並び順。 */
-export function noahBlueprintLevels(steps: readonly NoahBlueprintStep[]): NoahBlueprintStep[][] {
-  const problem = noahBlueprintWaitProblem(steps);
-  if (problem) throw Error(problem);
-  const level = new Map<string, number>(), out: NoahBlueprintStep[][] = [];
-  for (const s of steps) {
-    const at = Math.max(-1, ...(s.after ?? []).map(id => level.get(id)!)) + 1;
-    level.set(s.id, at);
-    (out[at] ??= []).push(s);
-  }
-  return out;
-}
-/**
- * 今始められる工程（会社で回す時に使う）: まだ終わっていない工程のうち、待つ相手が全部終わった物。設計図の並び順。
- * 本人の工程（human・tap・review）が終わっていなくても、それを待っていない工程は始められる（本人の工程は、その結果を使う工程だけを止める）。
- */
-export function noahBlueprintReady(steps: readonly NoahBlueprintStep[], done: ReadonlySet<string>): NoahBlueprintStep[] {
-  const problem = noahBlueprintWaitProblem(steps);
-  if (problem) throw Error(problem);
-  return steps.filter(s => !done.has(s.id) && (s.after ?? []).every(id => done.has(id)));
-}
-/**
- * 工程を外す（持っているアカウントの登録と規約の確認など）。外した工程を待っていた工程は、代わりに、外した工程が待っていた物を待つ。
- * だから、外した後も、待つ相手のつながりは切れない（例: YouTube の登録を外すと、YouTube に出す工程は、登録の前の物を待つ）。
- */
-export function noahBlueprintWithout(steps: readonly NoahBlueprintStep[], drop: (step: NoahBlueprintStep) => boolean): NoahBlueprintStep[] {
-  const dropped = new Map<string, readonly string[]>(), out: NoahBlueprintStep[] = [];
-  const expand = (ids: readonly string[]) => [...new Set(ids.flatMap(id => dropped.get(id) ?? [id]))];
-  for (const s of steps) {
-    const after = expand(s.after ?? []);
-    if (drop(s)) dropped.set(s.id, after);
-    else out.push({ ...s, after });
-  }
   return out;
 }
 
