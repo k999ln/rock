@@ -42,3 +42,13 @@ Workers FreeとSQLite Durable Objects、Workers AIの無料割当を使い、有
 受付後は永続alarmが実行を開始し、ブラウザGETなしで既存の宛先票からWorkへ結果を送る。実行中の再起動は再送せず結果不明。停止は永続状態で以後のモデル/Tool送信と結果採用を閉じる。すでに提供元で始まったモデル計算自体の中断を保証するものではない。公式ツールは依頼専用の/tmp/workspaceのみを使い、外部fetchや利用者端末にはつながない。出力ファイルは既存上限とhashを検証する。
 
 追加受入: 実workerdで公式Tool呼出、VFSの依頼間分離、直接パス/リンクによる領域外拒否を確認する。本番で実モデル/Tool呼出と成果hash、Chrome全終了後のWork保存、同一ID非再実行、別owner拒否、停止後の追加操作なしを確認してから各profileをUIで有効にする。2026-11-23、Sites210で3profileの実モデル/公式Tool処理とChrome全終了後のD1保存・再表示・download/hashを確認し、別依頼の停止/再送非実行/別owner拒否も確認した。端末条件と配備版、成果の証拠は [task125](../../codex/tasks/125-noah-cloud-agents.md#2026-11-23-本番の画面閉鎖後受取停止) に記録する。
+
+## 無料枠の公式Python実行
+
+2026-11-23の追加指示。公式Hermes Agent 0.19.0の会話ループとTodo/Memory、boss-agent-cli 3.4.151のinterview-prepコマンド、Time 2026.11.18のMCP factoryをPython Workersへ組み込む。配布物のSHA-256を検証して展開し、公式ソースは変更しない。OSシェル、Hermesの汎用ファイル操作・追加Tool・長期記憶、bossの求人検索・応募は提供しない。Hermesの計画と依頼内の記憶、bossの面接準備、Timeの変換結果を成果ファイルとして保存する。
+
+PythonのVFSはisolateで共有されるため、依頼ごとにUUIDの一時領域を作り、公式Hermesのcontext-local homeとインスタンス別Storeを使う。Python実行をisolate内で直列化し、終了時に領域とContextを必ず破棄する。モデル輸送は運営鍵を渡さないRPC capabilityで固定モデルへ中継し、既存の日次10件・本人3件・同時2件・240秒・モデル4回の同一予約で数える。JS coordinatorは長いPython呼出を開始gateの外で待ち、停止・期限後のモデル/Tool受付と結果採用を閉じる。Pythonの外部公開URL・任意URL入力・OSプロセス起動は設けない。
+
+互換層は非対話コールバック、無効化したバックグラウンドログ、固定RPCモデル輸送、公式設定への一時保存に限定する。モデルの出力やfixture成功を公式Tool成功と扱わず、成功した操作名・入力/応答hashと固定配布版を実行記録へ残す。結果は既存Work callbackで送達し、保存済みの再表示は実行を起こさない。本番D1 migration・有料プラン変更は不要。
+
+合格条件: 3profileで公式処理成功・実モデル1回以上・成果hash一致、画面閉鎖後に閲覧なしでWork保存、再表示/ダウンロード、異なる依頼の記憶非共有、同一IDの非再実行、停止/期限後の結果不採用。既存3profileと全体verifyの合格を保つ。本番受入前のprofileは完成扱いにしない。

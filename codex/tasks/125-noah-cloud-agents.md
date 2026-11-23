@@ -113,3 +113,9 @@ PixelでMemoryを検索した際、従来の掲載familyだけを対象にした
 受入で、保存済みcloudFilesにも「添付の内容は保存されていません」と出る汎用注記の不整合を発見。共通結果表示へ保存済み添付数を渡し、未保存の添付がある場合だけ注記を出すよう補正した。表示補正と受入記録は [PR #21](https://github.com/iceiceice999/rock/pull/21)。次版での表示再確認と最終検査は同PRへ記録する。
 
 検証基点: PR18の最終head `1a12b4bb4ac77b954cfa33c0d93105413a1e94e9` でローカル全体verify全工程成功（主要5,175成功/5skip/失敗0、API1,918、CSV385）、GitHub全8チェックSUCCESS。新規課金・本番D1 migration・外部申込なし。残る制約は無料枠上限、未対応CLI3種、新ログイン管理移行、実機Pixelでの新クラウド受入。
+
+## 公式Python無料枠の拡張（2026-11-23、受入前）
+
+Timeの公式MCP、bossの公式面接準備CLI、Hermesの公式AIAgent＋todo/memoryを非公開Python DOへ追加。公式wheelのSHA照合・headless範囲の梱包、共通モデルRPC、ジョブごとの一時領域とisolateロック、同一Workへの結果callbackを使用する。Hermesのshell/外部Web/一般ファイル操作、bossの検索/応募は非対応とUIに明記。新規契約・課金・D1 migrationなし。
+
+ローカルworkerdの固定モデルで3種の実処理・成果hash・依頼間分離・再送拒否・停止・不正Tool/結果拒否・@入力固定パスを確認。既存26試験＋追加5境界試験成功。Python配備はサイズ制約への梱包調整中。本番実モデル・ブラウザ全閉鎖後の保存・スマホ再読込、全体verify/CIとPRは未完了。これらを完了してから現行状態を更新する。
