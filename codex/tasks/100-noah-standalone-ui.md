@@ -410,3 +410,15 @@ GitHub受入先: [PR #3](https://github.com/iceiceice999/rock/pull/3)。main `a0
 | `fresh-result-reloaded.json` | `f1b064468b8c22ccb36cc12b6f1c85dad4e12b2798f15c9af407870e3cb9b2cd` |
 | `fresh-result-reloaded.png` | `5d445cf825738e37ad4afa60ee3b0a4e2f60dc40f0d59de50079f372db6b8b67` |
 | `physical-result-url.txt` | `4bc32299e9ae36b8a597e24400abcd608d079de7760bb32ca34dab120d2c6d82` |
+
+### 2026-11-23　Agent名を使わず、やりたい仕事から始める
+
+ホームに受付可能な目的と期待成果を表示し、詳細で受付条件を再確認する。WordPress保守とEC改修は対応する診断だけを開き、メモ整理は公式Memoryの既存の依頼・成果保存につなぐ。初回に目的を押した時点では依頼を送信しない。初めて使う人が成果を探し直せるよう、詳細から目的選択と保存済み成果へ戻るリンクを用意した。
+
+画面・API・保存先を対応させた[初回利用の構造図と受入手順](../../docs/noah/first-use-architecture.md)を参照。70点の判定は、初見の利用者が補助なしで実行・成果の再表示を完了したか、本人が負担をどう評価したかで確認する。
+
+[PR #24](https://github.com/iceiceice999/rock/pull/24)。Chromeの320・390・1280pxで3目的の明示送信を確認。候補なしは実ローカルAPI、実行・保存先は模擬応答を使用。Memoryは成果一覧を経て同じWorkを再読込し、依頼数が増えないことを確認した。
+
+PR #24の追補で、受付可能な目的を「お店・会社のサイト運営」「自分のメモ整理」にまとめ、仕事の成果を誰がどう使うかを6言語で表示。空の区分を出さない回帰試験を追加した。[法人・個人それぞれの受入方法](../../docs/noah/first-use-architecture.md#法人と個人に何を届けるか)と[Eve・定期便・報酬の仕様](../../docs/noah/eve-distribution-and-rewards.md)を参照。
+
+[Eve・Noah 図解設計書](../../docs/noah/illustrated-specifications.md)と[共有用PDF](../../docs/assets/noah-illustrated-specifications.pdf)に、画面からAPI・権限・保存先・受入までと、売上・報酬・物流を接続する条件をまとめた（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。

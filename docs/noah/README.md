@@ -2,6 +2,10 @@
 
 2026-11-20。[Noah の設計書（全体）](../noah-design.md) と [詳細設計書](../noah-detailed-design.md) の下の層。**作業単位 1 つ（＝ `codex/tasks/` の 1 枚＝ 1 PR）につき 1 本**で、その単位を実装するのに要る事を全部書く: 今あるコードのどこをどう変えるか、入出力の形、規則の全表、画面と文言、処理の順、試験、完了の定義。
 
+まず[Eve・Noah 図解設計書](illustrated-specifications.md)で、製品の全体設計、機能仕様と事業スキームを8枚の図でたどれる。[PDF版](../assets/noah-illustrated-specifications.pdf)
+
+機能ごとの実装根拠を読む場合は、[利用者の画面・eSIM・クラウド](first-use-architecture.md)と、[EveからNoahへの接続・現金の報酬・物の定期便](eve-distribution-and-rewards.md)を参照する。
+
 読む順は、task 1 枚 → その仕様書 1 本 → 仕様書が指す型契約（[docs/contracts/](../contracts/)）と試験（[docs/design-validation/noah/](../design-validation/noah/README.md)）。それ以外は読まなくてよい。
 
 **ローンチまでに作る範囲は、[ローンチの最小限（MVP）](mvp-launch.md) が決める。** 各仕様書の最後の「ローンチの範囲」の章が、その仕様書のうち、出すまでに作る所と、その完了の定義。出すまでは、その章だけを作る（表の「ローンチ」の列が、作る順）。
@@ -67,3 +71,5 @@
 ## 言葉（画面に出す物）
 
 接続／頼む／止める／切る／受け取る／直してもらう／あなたの番。置き場所は「相手のサーバー」「あなたの端末」「スマホの中」「雲の端末」。技術の言葉（MCP、OAuth、token、runner、lease、container、hash）は画面に出さない。失敗の文は「何が起きたか。次に何をすればいいか。」の 2 文。
+
+- [127: 786系列の接続と稼働表示](spec-127-live-agent-families.md)・[初回本番受入](acceptance-127-live-agent-families.md)

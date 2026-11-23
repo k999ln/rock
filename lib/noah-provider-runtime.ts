@@ -5,6 +5,8 @@ import { noahProjectDetail } from './noah-project-api.ts';
 import { resolveNoahProvider } from './noah-provider-resolve.ts';
 import { prepareProviderMcp, providerMcpInput, callProviderMcp } from './noah-provider-mcp.ts';
 import { noahAllowed } from './noah-flags.ts';
+import { noahHostedProviderHeld } from './noah-hosted-provider-policy.ts';
+import { noahProviderManifest, noahReviewedAgentEndpoint, type AvailabilityObservation } from './noah-agent-availability.ts';
 import {
   prepareProvider,
   providerInput,
@@ -23,6 +25,12 @@ import type { NoahAskItem } from './noah-ask-view.ts';
 import { workStore } from './work-store.ts';
 export type ProviderDependencies = NoahConnectApiDependencies & {
   providerDirectory?: () => Promise<DirectoryEntry[]>;
+  availability?: {
+    prepared: (plan: ProviderPlan, observation?: AvailabilityObservation) => Promise<void>;
+    succeeded: (projectId: string, digest: string, manifest: string, startedAt: number) => Promise<void>;
+    failed: (projectId: string, observedAfter?: number, manifest?: string, leaseUntil?: number) => Promise<void>;
+    claimDue: () => Promise<{ projectId: string; observation: AvailabilityObservation }[]>;
+  };
 };
 const ACTIVE =
   "json_extract(payload,'$.noahRemote.provider.protocol') IN ('gradio','mcp') AND json_extract(payload,'$.noahRemote.state') IN ('queued','running')";
@@ -71,7 +79,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
     const job = UUID.test(id) ? await jobs.get(owner, id) : null;
     return job?.noahRemote?.provider && ['gradio', 'mcp'].includes(job.noahRemote.provider.protocol) ? job : null;
   };
-  async function plan(projectId: string): Promise<ProviderPlan> {
+  async function plan(projectId: string, observation: AvailabilityObservation = { startedAt: now() }): Promise<ProviderPlan> {
     if (!/^project-[a-f0-9]{64}$/.test(projectId))
       return reject('Agentを選び直してください。', 400);
     const entry = (await deps.providerDirectory?.())?.find(
@@ -80,6 +88,10 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
     if (!entry) return reject('このAgentは現在掲載されていません。', 404);
     const { connection } = noahProjectDetail(entry);
     const target = connection.kind === 'space' ? connection : await resolveNoahProvider(entry, fetcher);
+    if (target.kind === 'space' && noahHostedProviderHeld(target.repository)) {
+      await deps.availability?.failed(projectId, observation.startedAt, undefined, observation.leaseUntil).catch(() => undefined);
+      return reject('この公開環境は、利用者ごとのデータ分離または外部操作の権限を確認する必要があります。本人専用の接続を準備してください。', 422);
+    }
     const prepared = target.kind === 'space' ? await prepareProvider(target.repository, fetcher) : await prepareProviderMcp(target.url, fetcher, deps.probeCheck);
     for (const endpoint of prepared.endpoints)
       endpoint.digest = await noahSha256(
@@ -89,16 +101,20 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
             target.kind,
             prepared.host,
             prepared.prefix,
+            'sourceRevision' in prepared ? prepared.sourceRevision : null,
             endpoint.digest,
           ]),
         ),
       );
-    return {
+    const plan: ProviderPlan = {
       projectId,
       name: entry.card.name,
       repository: target.repository,
       ...prepared,
     };
+    plan.availabilityManifest = await noahProviderManifest(plan);
+    await deps.availability?.prepared(plan, observation).catch(() => undefined);
+    return plan;
   }
   async function finish(
     owner: string,
@@ -114,7 +130,12 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
       phase: 'done',
       leaseUntil: 0,
     };
-    return jobs.update(owner, next, job.revision);
+    const saved = await jobs.update(owner, next, job.revision);
+    if (saved && outcome.state === 'returned' && job.noahRemote?.toolSha256 && job.noahRemote.provider?.availabilityManifest && noahReviewedAgentEndpoint(job.noahRemote.provider.repository, job.noahRemote.provider.api))
+      await deps.availability?.succeeded(job.noahRemote.provider.projectId, job.noahRemote.toolSha256, job.noahRemote.provider.availabilityManifest, Date.parse(job.createdAt)).catch(() => undefined);
+    if (saved && ['failed', 'unknown'].includes(outcome.state) && job.noahRemote?.provider?.availabilityManifest)
+      await deps.availability?.failed(job.noahRemote.provider.projectId, now(), job.noahRemote.provider.availabilityManifest).catch(() => undefined);
+    return saved;
   }
   async function poll(
     owner: string,
@@ -442,6 +463,7 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
       leaseUntil: 0,
       nextPollAt: 0,
       deadline: at + 1800000,
+      availabilityManifest: prepared.availabilityManifest,
     };
     // Atomic limits also cover simultaneous browser requests. No schema migration is needed.
     const created = await db
@@ -518,5 +540,12 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
       rows.results.map((row) => reconcile(row.user_id, row.id)),
     );
   }
-  return { plan, accept, run, poll, get, list, wake, stop, sweep };
+  async function checkAvailability() {
+    const due = await deps.availability?.claimDue() ?? [];
+    for (const { projectId, observation } of due) {
+      try { await plan(projectId, observation); }
+      catch { await deps.availability?.failed(projectId, observation.startedAt, undefined, observation.leaseUntil).catch(() => undefined); }
+    }
+  }
+  return { plan, accept, run, poll, get, list, wake, stop, sweep, checkAvailability };
 }

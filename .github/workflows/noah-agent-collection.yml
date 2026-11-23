@@ -15,7 +15,8 @@ concurrency:
 
 jobs:
   collect:
-    if: github.repository == 'k999ln/rock' && github.ref == 'refs/heads/main'
+    # Keep the existing publisher active until its replacement is configured.
+    if: github.repository == 'iceiceice999/rock' && github.ref == 'refs/heads/main' && vars.NOAH_COLLECTION_ACTIVE == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:

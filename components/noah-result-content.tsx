@@ -291,10 +291,12 @@ export default function NoahResultContent({
   result,
   id,
   compact = false,
+  savedAttachments = 0,
 }: {
   result: NoahReceivedResult;
   id: string;
   compact?: boolean;
+  savedAttachments?: number;
 }) {
   const { t } = useNoahLocale(),
     view = useMemo(() => noahResultPresentation(result), [result]);
@@ -440,7 +442,7 @@ export default function NoahResultContent({
         <p className={styles.muted}>{t('成果の一部を表示しています')}</p>
       )}
       {result.attachments >
-        (result.images?.length ?? 0) + (result.imageUrls?.length ?? 0) && (
+        (result.images?.length ?? 0) + (result.imageUrls?.length ?? 0) + savedAttachments && (
         <p className={styles.muted}>{t('添付の内容は保存されていません')}</p>
       )}
       {view.kind !== 'image' && (

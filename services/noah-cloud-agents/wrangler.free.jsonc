@@ -1,0 +1,25 @@
+{
+  "name": "noah-free-cloud-agents",
+  "account_id": "ae3e6c52c0a9e50aab66a6e4184aa09e",
+  "main": "dist/free-worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "no_bundle": true,
+  "build": { "command": "node build-free.mjs" },
+  "vars": { "NOAH_CLOUD_MODE": "free" },
+  "durable_objects": { "bindings": [
+    { "name": "JOBS", "class_name": "NoahFreeCloudJob" },
+    { "name": "CONNECTIONS", "class_name": "NoahCloudConnection" },
+    { "name": "BUDGET", "class_name": "NoahCloudBudget" },
+    { "name": "PYTHON", "class_name": "NoahPythonJob", "script_name": "noah-python-cloud-agents" },
+    { "name": "PYTHON_BOSS", "class_name": "NoahPythonJob", "script_name": "noah-python-cloud-agents-boss" },
+    { "name": "PYTHON_HERMES", "class_name": "NoahPythonJob", "script_name": "noah-python-cloud-agents-hermes" }
+  ] },
+  "exports": {
+    "NoahFreeCloudJob": { "type": "durable-object", "storage": "sqlite" },
+    "NoahCloudConnection": { "type": "durable-object", "storage": "sqlite" },
+    "NoahCloudBudget": { "type": "durable-object", "storage": "sqlite" }
+  },
+  "ai": { "binding": "AI" },
+  "observability": { "enabled": false }
+}

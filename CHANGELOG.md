@@ -1,13 +1,33 @@
+## 2026-11-23
+- NoahのTime・boss面接準備・Hermes計画を無料枠の公式Python処理で本番受入。Worker分離とモデル応答の補正後、390px Chrome全終了中の保存・成果再表示・download/hashを確認し、途中の失敗も保持（task125、[PR #32](https://github.com/iceiceice999/rock/pull/32)）。
+- Noah無料クラウドへ公式PythonのTime・boss面接準備・Hermes計画/メモを追加する実装と、期限・停止・依頼分離の検証を追加。本番受入は継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)、task125）。
+- Noahへ786系列の台帳・接続条件と、成果受領に基づく10秒更新の稼働一覧を追加。提供元の版・定義変更、失敗、24時間の確認期限を反映（[PR #28](https://github.com/iceiceice999/rock/pull/28)）。Sites 216で5系列の成果・保存・再表示・停止を初回受入し、[記録](docs/noah/acceptance-127-live-agent-families.md)と共有状態を持つ接続の保留補正を追加（[PR #33](https://github.com/iceiceice999/rock/pull/33)）。
+- Eve・Noahの利用・実行・収益・物流を8枚で追える[図解設計書](docs/noah/illustrated-specifications.md)と共有用PDFを追加し、各機能の判定条件と本番受入の残件を明記（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
+- Noahに、お店・会社のサイト運営と個人のメモ整理を目的から選び、依頼と成果の再表示へ進む入口を追加。画面・API・保存先・初見利用者での検証方法を[構造図](docs/noah/first-use-architecture.md)に記録し、[専用eSIM](docs/structure/03-esim.md)、[管理クラウド](docs/services/noah-cloud-agents.md)、[Eve・定期便・報酬](docs/noah/eve-distribution-and-rewards.md)の構造図・実装・受入条件を追記（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
+- Noah収集のチェックポイント確定を修正。チャンクの存在はメタデータで照合し、保存応答後に古い断片を掃除する。掲載再開と24時間の鮮度は [PR #26](https://github.com/iceiceice999/rock/pull/26) に記録。
+- Noahの「接続できる」検索に、有効な実行環境で対応している公式CLIを含める。詳細と同じ配布元・profile判定で、未設定や類似URLを除外し、カードの保存・評価IDとデザインを保持（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。
+- Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正 [PR #21](https://github.com/iceiceice999/rock/pull/21)）。
+- Noahの進捗を現main・旧PRの祖先・既存本番受入記録と照合し、task索引・project.md・README・進捗JSON・H1の次作業を同期。未確認の運用・集客・実機受入は残件として保持（[PR #20](https://github.com/iceiceice999/rock/pull/20)）。
+- Noahへ無料枠の公式MCPクラウド実行器を追加。永続alarm、依頼分離、期限・停止、対応profile限定、掲載削除後の停止を実装（[PR #18](https://github.com/iceiceice999/rock/pull/18)、Noah本番受入は継続中）。
+- Noahの実モデル継続時のHTTP400と未実行の完了報告を修正し、公開209のPixelで外部登録→認証付き実行→成果の再読込を再検証（[PR #19](https://github.com/iceiceice999/rock/pull/19)）。
+- NoahのWordPress/EC集客記事と直接導線を改善し、自社Xで紹介を公開。入口の経路別集計と6時間の集客改善を接続。実顧客の申込・承認は未確認（task101、[PR #17](https://github.com/iceiceice999/rock/pull/17)）。
+
 ## 2026-11-22
 - Noah のボードに「このボードに合う Agent」を足した（Opus / Noelle。本人指示「どのボードに保存したかでおすすめが変わるようにして。ボードごとの違いを実際に触って見たい」）。ボードの保存を起点に、他の人のボードから Pixie で行き着く物を出す。ボードが違えば違う物が出て、保存するとその場で変わる。学習なし・5 人より少ない人の保存からは出さない）（[PR #BOARDPICK](https://github.com/iceiceice999/rock/pull/BOARDPICK)）。
+- Noahの収集停止の記録を正本へ移植し、旧mainの手動実行とCodexの毎時実行で収集を復旧。24時間の鮮度と正本への実行先切り替えは追跡中（[PR #15](https://github.com/iceiceice999/rock/pull/15)、[PR #16](https://github.com/iceiceice999/rock/pull/16)、[復旧実行](https://github.com/k999ln/rock/actions/runs/45032700818)）。
+- NoahのWordPress/EC診断2種をSites208で実行・保存・再読込まで受入し、掲載時刻と成果本文の表示を補正。登録媒体への紹介・6時間の成果取得を接続、実注文/承認は0件（[PR #14](https://github.com/iceiceice999/rock/pull/14)）。
+- Noahの自律収集の変更とtask 125・126を正本へ移植した（[PR #13](https://github.com/iceiceice999/rock/pull/13)）。本番の復旧・配備と運用確認はtask 125に記録する。
+- Noahの各チャット差分（固定CLI6種、公開サイト診断2種、ココナラ下書き、Pixel受入記録）を統合し、全体verify成功。クラウドCLI本番配備は未完了（[PR #12](https://github.com/iceiceice999/rock/pull/12)）。
 - NoahからDaisukeのAniccaでココナラの公開募集を探索し、Macで提案の下書きを受け取り、停止できるようにした（[PR #11](https://github.com/iceiceice999/rock/pull/11)）。
 - Noah公開203のPixel実機受入をREADME・task100・作業一覧へ記録。ポコ音の録音、振動完了、Agentboard新規登録→認証付き実行→成果の再読込保持を確認（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
+- NoahのCLI実行器に公式Memory/FilesystemとNode 24固定環境を追加。依頼分離・ファイル作成/読込・領域外拒否をLinuxで検証。クラウド配備は未完了（[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
 - Noahの法人Agent統合をSites206で公開し、共通実行・保存・再読込と自動再判定を実測。提供元とNoahの保存範囲を明記（[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
 - Noah: 掲載配布元から公開MCP接続を照合し、Noah内の入力・実行・成果保存に対応（[PR #7](https://github.com/iceiceice999/rock/pull/7)）。
 
 
 - Noahの公開Agent一覧と提携案件の非公開索引に、完全取得・候補照合・公開条件の定期点検と自社MCPの共通一覧接続を追加。本番統合は受入中（task101、[PR #8](https://github.com/iceiceice999/rock/pull/8)）。
 
+- Noah が Switch（sandbox-quantum/switch）を自分で拾えなかった原因を直した（task 125、Opus / Noelle。本人指示「こういう便利機能を私がツイッターで検索するんじゃなくて Noah にやらせたい」）。GitHub は Agent の道具の話題（ai-agents・multi-agent・agent-orchestration・claude-code・codex）も読み、作られたのが前でも 1 日に 50 以上かつ 2% 以上スターが伸びた repo を拾う。Product Hunt の公開フィードから Agent・AI の道具だけを拾う。Codex の Luna Max が毎日 X を読み、配布元まで読んで日本語で書いた理解を「Noahが読んだ」として載せる口を作った。まとめ役 20 人は `data/noah-scout-curators.json`。配備・X のアカウント・毎日の読み取りは Codex（`codex/tasks/125-noah-scout.md`）。トップの最初の列をパッケージにする指示書も書いた（`codex/tasks/126-noah-packages-first.md`、[PR #421](https://github.com/k999ln/rock/pull/421)）。
 - 旧 main の #415 までの履歴と移行先の Gradio 実行・タップ設定を統合し、開発・PR の参照先を iceiceice999/rock に揃えた（[PR #6](https://github.com/iceiceice999/rock/pull/6)）。
 - task 103 を今の決まり（使い続けた割合）で作った（Opus / Noelle。本人指示「やるべきこと全部やって」）。Noah の依頼・委任・手元の Agent の記録から、1 か月に 1 回でも頼めば続けた、として eSIM を入れて始めた人と入れずに始めた人を比べ、運営の画面に 95% の幅と判定を出す。Codex の月額の解約率の版（#364）は、月額をやめたので入れない（[PR #415](https://github.com/k999ln/rock/pull/415)）。
 - task 101 の項目 1・4（Noah の運営向けの月別の従量と移る引き金・runner が止まった時の復旧試験、Codex の #370）を今の main に入れた（Opus / Noelle。本人指示「やるべきこと全部やって」）。利用の画面は main の形（引数で範囲を受け取る）に、クラウドの従量の欄を足した（[PR #414](https://github.com/k999ln/rock/pull/414)）。
@@ -20,6 +40,13 @@
 
 - Noahの配給（画面では「定期便」）のお金の決まりを記録。本人の取り分はゆくゆく全部物、仕入先とつながるまでは現金。何割かは未定、残りはAgentを作った人と運営の分。利用者全員への等分は物・寄与の分は作業料として現金。箱はおまかせ。eSIMは最初は必須にしない。渡す前に税理士・弁護士に確認。受け取る人が見る「配給」を「定期便」に変えた（04「Noahの配給」、[PR #404](https://github.com/k999ln/rock/pull/404)）。
 - Noahの稼ぎ方の設計図に推し活を足した（task122、Opus / Noelle。本人指示「推し活向けのイベント予約とかグッズかう代行自動ボットもいれて」）。推し活の手伝いはNoahのエージェント1つ（公式の告知を見張る・予定に入れる・知らせる・遠征を探す・家計簿。申込と支払いは本人が押す。値段はNoahの料金に従う）として定義し、会社の稼ぎ方は海外向けの購入代行（後回し。人の速さ・数量制限の内・チケットは扱わない・古物の要否は本人が確かめる）、予定まとめ、遠征の紹介、絵柄なしの用品の物販の37件（合計470件）。抽選・先着への自動申込、転売、買い占め、複数アカウント、待機列の回避、版権グッズは作らない（理由と出典付き）。仕様 `docs/noah/spec-122-business-blueprints.md` の11章、試験1本追加。
+
+- Noahの全掲載を対象に提供元の公式定義解決・MCP入力/Work保存・対応状況点検を追加。TimeとSequential Thinkingの固定CLIを隔離環境で検証し、guessit-jsの実MCP結果保存を確認。本番クラウド未配備・全件受入は継続中（task125、[PR #1](https://github.com/iceiceice999/rock/pull/1)）。
+
+- GitHub新アカウントのプロフィールを整理し、rock全74ブランチの履歴保持を照合。過去PR 28件の復元用ブランチと403件のPR記録を新rockへ保全し、取得し直したバックアップのhashを確認。移行後CIの全履歴検査時間・CodeQL読取権限を調整（[PR #1](https://github.com/iceiceice999/rock/pull/1)、本番受入は未完了）。
+
+- Noahの公式CLI管理クラウド、接続・停止・結果保存と提供元接続の選択を実装。公式2配布物の隔離実行と3幅Chrome試験を確認。本番配備・実モデル受入はWorkers Paid利用先の確定待ち（task125、[新rock PR #1](https://github.com/iceiceice999/rock/pull/1)、旧 #402、Draft）。
+
 
 - 移行先privateリポジトリのCodeQLにActions読取権限を追加し、全履歴SPIDERの検査時間を有界で延長。固定版スキャナ・既存検知規則・失敗時の拒否は維持（[PR #3](https://github.com/iceiceice999/rock/pull/3)）。
 
