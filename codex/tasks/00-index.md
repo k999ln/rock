@@ -94,7 +94,7 @@
 | 2 | L8 | 97 | [97-noah-launch-ops.md](97-noah-launch-ops.md) | 出すための運用: 巡回を起こす Worker、切り替え、取り下げの窓口、見張る数、戻し方 | ✅ L8コードは現mainに統合（旧 [PR #346](https://github.com/k999ln/rock/pull/346)、[PR #6](https://github.com/iceiceice999/rock/pull/6)）。旧 [PR #358](https://github.com/k999ln/rock/pull/358) に公開/DB適用記録あり。「本番適用なし」は過去時点の記述。G4〜G6全体受入は未確認。収集復旧と24時間観測は [PR #16](https://github.com/iceiceice999/rock/pull/16)・task125-scout |
 | 2 | — | 83 | [83-noah-mac-installer.md](83-noah-mac-installer.md) | 専用の端末（家）: 今ある Mac を、座らずに使える端末にする | |
 | 2 | — | 92 | [92-noah-standing-work.md](92-noah-standing-work.md) | 継続して任せる（予定を account に置く） | |
-| 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | ✅ 利用者の専用クラウド契約で確定額と予約額を分けて表示（[PR #389](https://github.com/k999ln/rock/pull/389)） |
+| 2 | — | 94 | [94-noah-usage-three-views.md](94-noah-usage-three-views.md) | 利用の記録を 1 か所に（利用者・提供者・運営） | ✅ 利用者の専用クラウド契約で確定額と予約額を分けて表示（[PR #389](https://github.com/k999ln/rock/pull/389)）。✅ マイAgentの仕事別利用明細（[PR #46](https://github.com/iceiceice999/rock/pull/46)） |
 | 3 | — | 81 | [81-noah-connect-patrol.md](81-noah-connect-patrol.md) | 作者の引き取り、取り下げ、並び順 | |
 | 3 | — | 76 | [76-eve-build-autofill.md](76-eve-build-autofill.md) | 載せる 1 画面と自動入力（見分ける） | |
 | 3 | — | 77 | [77-eve-build-normalize.md](77-eve-build-normalize.md) | 整える・接続試験と接続証明・機械審査 | |
