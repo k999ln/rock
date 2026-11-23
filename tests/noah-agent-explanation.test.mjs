@@ -123,6 +123,31 @@ void test('the live detail read requires the representative, exact tools hash an
   assert.equal(await read(), null, 'old labels disappear after a different handshake hash');
 });
 
+void test('the public connection stages render without 0060 and never query labels while disabled', async (t) => {
+  const f = fixture(t, async () => page([entry(1)]));
+  f.sql.exec(readFileSync(new URL('../drizzle-main/0059_noah_agent_availability.sql', import.meta.url), 'utf8'));
+  assert.equal(f.sql.prepare("SELECT 1 FROM sqlite_master WHERE name='noah_intake_tool_labels'").get(), undefined);
+  await f.store.sync();
+  markListed(f, 1);
+  const id = 'mcp-registry:test.provider/agent-1';
+  const request = new Request(`https://noah.test/api/noah/intake?${new URLSearchParams({ id })}`);
+  const guest = async () => { throw Error('UNAUTHORIZED'); };
+  const base = { ...f.deps, authenticate: guest, reviewers: ['reviewer'], flags: parseNoahFlags({ NOAH_INTAKE_PUBLIC: 'true' }), explainPublic: true };
+  const route = (labels) => createIntakeApi({ ...base, explainAgent: (input) => readNoahAgentExplanation(f.db, input, { labels, connectionFallback: true }) });
+  const response = await route(false)(request);
+  assert.equal(response.status, 200);
+  const { explanation } = await response.json();
+  assert.deepEqual(levelNames(explanation), [['サインイン'], ['接続'], ['依頼する']]);
+  assert.equal(explanation.showMaterials, false);
+  assert.equal(f.queries.some((sql) => sql.includes('noah_intake_tool_labels')), false);
+  assert.deepEqual((await (await route(true)(request)).json()).explanation, explanation, 'missing label table falls back even when enabled');
+  const markup = await renderNoahExplanationFixture('single', { explanation });
+  assert.match(markup, /data-noah-explanation="steps".*data-noah-step-levels/);
+  assert.doesNotMatch(markup, /渡す物|返る物|受け取る物|explanationIo|stepIo|class="wire"/);
+  const connected = noahExplanationWithConnection(explanation, true);
+  assert.deepEqual(levelNames(connected), [['依頼する']]);
+});
+
 void test('the ready detail renders the three scenarios after Connect with reasons and omits unlabelled diagrams', async () => {
   for (const sample of Object.keys(NOAH_EXPLANATION_FIXTURES)) {
     const body = await renderNoahExplanationFixture(sample);

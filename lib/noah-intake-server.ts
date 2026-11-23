@@ -24,7 +24,10 @@ export function noahIntakeDependencies() {
       runtime: noahCloudRuntime({ url: config.NOAH_CLOUD_URL, key: config.NOAH_CLOUD_KEY }) }),
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     explainPublic: config.NOAH_EXPLAIN_PUBLIC === 'true',
-    explainAgent: (input: Parameters<typeof readNoahAgentExplanation>[1]) => readNoahAgentExplanation(database(), input),
+    explainLabels: config.NOAH_EXPLAIN_LABELS === 'true',
+    explainAgent: (input: Parameters<typeof readNoahAgentExplanation>[1]) => readNoahAgentExplanation(database(), input, {
+      labels: config.NOAH_EXPLAIN_LABELS === 'true', connectionFallback: true,
+    }),
     // 収集機（GitHub の定期実行）が、握手の済んだ系列を一覧へ入れる時の鍵（紹介の掲載と同じ。lib/noah-intake-import.ts）。
     collectorKey: config.NOAH_COLLECTION_KEY,
     origin: noahPublicOrigin(config.NOAH_ORIGIN),
