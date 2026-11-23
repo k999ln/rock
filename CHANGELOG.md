@@ -1,4 +1,5 @@
 ## 2026-11-23
+- [専用eSIMの標準導入](docs/structure/03-esim.md)とクラウド実行先の図を更新し、avokado管理クラウド・提供元指定の実行・公開Noah試用の条件、仕事別の計量と実回線受入の残件を記録。
 - NoahのTime・boss面接準備・Hermes計画を無料枠の公式Python処理で本番受入。Worker分離とモデル応答の補正後、390px Chrome全終了中の保存・成果再表示・download/hashを確認し、途中の失敗も保持（task125、[PR #32](https://github.com/iceiceice999/rock/pull/32)）。
 - Noah無料クラウドへ公式PythonのTime・boss面接準備・Hermes計画/メモを追加する実装と、期限・停止・依頼分離の検証を追加。本番受入は継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)、task125）。
 - Noahへ786系列の台帳・接続条件と、成果受領に基づく10秒更新の稼働一覧を追加。提供元の版・定義変更、失敗、24時間の確認期限を反映（[PR #28](https://github.com/iceiceice999/rock/pull/28)）。Sites 216で5系列の成果・保存・再表示・停止を初回受入し、[記録](docs/noah/acceptance-127-live-agent-families.md)と共有状態を持つ接続の保留補正を追加（[PR #33](https://github.com/iceiceice999/rock/pull/33)）。
