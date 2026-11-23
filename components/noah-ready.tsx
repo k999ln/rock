@@ -14,6 +14,7 @@ import { Package, FileText, Search, Tag } from 'lucide-react';
 import ui from './noah-unified.module.css';
 import NoahLoading from './noah-loading';
 import NoahCard from './noah-card';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import base from './noah-service.module.css';
 import styles from './noah-ready.module.css';
 
@@ -107,7 +108,14 @@ export default function NoahReady({ shelf, initialQuery = '', onQueryChange }: {
     { ...connection, agentId: item.id, name: item.name, placeLabel: item.connect.placeLabel },
     ...old.filter((other) => other.agentId !== item.id),
   ]);
-  const cards = (items: NoahReadyItem[]) => <div className={styles.cards}>{items.map((item) => <NoahCard key={item.id} item={item} signedIn={signedIn} ownerScope={page.ownerScope} connection={connectionOf(item.id)} onChange={changed(item)} />)}</div>;
+  const cards = (items: NoahReadyItem[]) => <NoahAgentPinGrid>{items.map((item) => <NoahCard key={item.id} item={item} signedIn={signedIn} ownerScope={page.ownerScope} connection={connectionOf(item.id)} onChange={changed(item)} />)}</NoahAgentPinGrid>;
+  const connections = (items: Mine[]) => <NoahAgentPinGrid>{items.map((connection) => {
+    const href = noahReadyDetailHref(connection.agentId);
+    const connected = connection.state === 'connected';
+    return <NoahAgentPin key={connection.id} id={connection.agentId} name={connection.name} href={href}
+      meta={connected ? t(connection.placeLabel ?? '') : t(noahConnectionStateText(connection.state))}
+      actions={<Link className={styles.secondary} href={href}>{connected ? t("頼む") : t("開く")}</Link>} />;
+  })}</NoahAgentPinGrid>;
   const ran = page.items.filter((item) => item.section === 'ran'), fresh = page.items.filter((item) => item.section === 'new');
   // 切っていない接続。つながっている物と、そうでない物（失敗・途中・取り下げ）を、分けて出す（見出しと中身を、合わせる）。
   const live = mine.filter((connection) => connection.state !== 'disconnected');
@@ -130,17 +138,11 @@ export default function NoahReady({ shelf, initialQuery = '', onQueryChange }: {
 
       {working.length > 0 && !search && <section className={styles.section} aria-labelledby="noah-ready-connected">
         <h2 id="noah-ready-connected">{t(NOAH_READY_TEXT.connected)}{planCards ? <small>{planCards.limit} {t("個のうち")} {planCards.live} {t("個")}</small> : null}</h2>
-        <ul className={styles.connections}>{working.map((connection) => <li key={connection.id}>
-          <span className={styles.connectionName}><strong>{connection.name}</strong><small>{t(connection.placeLabel ?? '')}</small></span>
-          <Link className={styles.secondary} href={noahReadyDetailHref(connection.agentId)}>{t("頼む")}</Link>
-        </li>)}</ul>
+        {connections(working)}
       </section>}
       {broken.length > 0 && !search && <section className={styles.section} aria-labelledby="noah-ready-broken">
         <h2 id="noah-ready-broken">{t(NOAH_READY_TEXT.notConnected)}</h2>
-        <ul className={styles.connections}>{broken.map((connection) => <li key={connection.id}>
-          <span className={styles.connectionName}><strong>{connection.name}</strong><small>{t(noahConnectionStateText(connection.state))}</small></span>
-          <Link className={styles.secondary} href={noahReadyDetailHref(connection.agentId)}>{t("開く")}</Link>
-        </li>)}</ul>
+        {connections(broken)}
       </section>}
 
       {page.state === 'loading' && <p className={base.loading}><NoahLoading label={t("読み込んでいます…")} /></p>}

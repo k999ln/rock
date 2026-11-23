@@ -1,3 +1,4 @@
+'use client';
 import {
   AudioLines, Blocks, BookOpen, Boxes, BriefcaseBusiness, ChartNoAxesCombined,
   Clock3, Compass, Database, FilePenLine, Folder, GalleryVerticalEnd, GraduationCap,
@@ -6,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { NoahPinTopic } from '@/lib/noah-pins';
 import styles from './noah-app-icon.module.css';
+import { useArtEntrance } from './noah-art-motion';
 
 type Mark = readonly [LucideIcon, 'amber' | 'blue' | 'violet' | 'jade' | 'coral' | 'ink' | 'rose'];
 
@@ -41,8 +43,9 @@ export default function NoahAppIcon({ name, topic = 'other', className = '' }: {
   topic?: NoahPinTopic;
   className?: string;
 }) {
+  const ref = useArtEntrance();
   const [Icon, palette] = catalog.get(name.trim().toLowerCase()) ?? topics[topic] ?? topics.other;
-  return <span className={`${styles.icon} ${className}`} data-palette={palette} aria-hidden="true">
+  return <span ref={ref} data-noah-motion="icon" className={`${styles.icon} ${className}`} data-palette={palette} aria-hidden="true">
     <Icon strokeWidth={2.05} focusable="false" />
   </span>;
 }

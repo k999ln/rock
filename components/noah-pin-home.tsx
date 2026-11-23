@@ -122,7 +122,7 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='noah
     {!current && <NoahLoading label="読み込んでいます…" variant="cards"/>}
     {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" className={styles.recovery} onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
     {current?.page?.items.length===0 && <p className={styles.status}>この条件のAgentはまだありません。</p>}
-    {current?.page && <NoahPinGrid presentation="store" items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
+    {current?.page && <NoahPinGrid items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
     {current?.page?.nextCursor && <div className={styles.moreRow}><button type="button" disabled={current.more} onClick={()=>void more()}>{current.more?'読み込み中…':'もっと見る'}</button></div>}
     {current?.error && !current.page && fallback}
   </section></>;

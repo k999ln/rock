@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
 import type { SkyPricing } from '@/lib/sky-submission';
+import { SKY_CITATION_AGENT_ID } from '@/lib/sky-citation-agent';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import {
   catalogHostMismatch,
@@ -29,6 +30,8 @@ import {
   type SkyHostEnvironment,
 } from '@/lib/sky-tool-compatibility';
 import SkyToolCard from '@/components/sky-tool-card';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
+import { groupNoahAgentPackages } from '@/lib/noah-agent-package-view';
 import SkyToolOverview from '@/components/sky-tool-overview';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import WorkspaceShell from '@/components/workspace-shell';
@@ -192,6 +195,10 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
   });
   const hasMarketResults = hasResults || matchingAi.length > 0;
   const offersByPackage = new Map((commerce.data?.configured ? commerce.data.offers : []).map((offer) => [offer.packageKey, offer]));
+  const packagePrice = (item: RegistryItem) => {
+    const offer = offersByPackage.get(item.packageKey);
+    return offer ? `${commerceAmount(offer.amountMinor, offer.currency)} / 買い切り` : pricingLabel[item.manifest.pricing.model];
+  };
   const initialPackageItem = initialPackageKey
     ? registry.find((item) => item.packageKey === initialPackageKey) ?? null : null;
   const initialPackageState: InitialPackageState = !initialPackageKey ? 'none'
@@ -227,10 +234,13 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
 
         <CommerceNavigation />
 
-        <Link href="/noah/citations" className={styles.starterAgent}>
-          <span><strong>今すぐ使える · 出典整理Agent</strong><small>無料 · スマホだけで実行 · 成果はNoahへ保存</small></span>
-          <ArrowRight size={20} aria-hidden="true" />
-        </Link>
+        <section className={styles.agentSection} aria-labelledby="starter-agent-title">
+          <h2 id="starter-agent-title">今すぐ使えるAgent</h2>
+          <NoahAgentPinGrid>
+            <NoahAgentPin id={SKY_CITATION_AGENT_ID} name="出典整理Agent" href="/noah/citations"
+              summary="無料 · スマホだけで実行 · 成果はNoahへ保存" />
+          </NoahAgentPinGrid>
+        </section>
 
         {initialPackageState === 'missing' && (
           <output className={styles.registryNote}>
@@ -350,7 +360,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
               {hasResults && (
                 <section className={styles.automationSection} aria-labelledby="automation-market-title">
                   {matchingAi.length > 0 && <div className={styles.aiSectionHeading}><div><span><Cable size={15} /> MCP AUTOMATION</span><h2 id="automation-market-title">Toolを探す</h2></div></div>}
-                  <div className={styles.grid}>
+                  {visibleCatalog.length > 0 && <div className={styles.grid}>
                     {visibleCatalog.map((tool) => (
                       <SkyToolCard
                         key={tool.id}
@@ -363,7 +373,21 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
                         hostMismatch={catalogHostMismatch(tool, host)}
                       />
                     ))}
-                    {visibleRegistry.map((item) => (
+                  </div>}
+                  {groupNoahAgentPackages(visibleRegistry).map((group) => group.agents ? (
+                    <div className={styles.agentSection} key={group.items[0].packageKey}>
+                      <NoahAgentPinGrid>{group.items.map((item) => {
+                        const mismatch = registryHostMismatch(item.manifest.capabilities.executionTargets, host);
+                        return <NoahAgentPin key={item.packageKey} id={item.manifest.id} name={item.manifest.name}
+                          summary={item.manifest.summary} onSelect={() => setSelected(item)}
+                          meta={<>
+                            <span>{['審査済み', item.manifest.fund.categories[0], item.manifest.developer.displayName, packagePrice(item)].filter(Boolean).join(' · ')}</span>
+                            {mismatch && <span>この端末では対象外 · {mismatch}</span>}
+                          </>} />;
+                      })}</NoahAgentPinGrid>
+                    </div>
+                  ) : <div className={styles.grid} key={group.items[0].packageKey}>
+                    {group.items.map((item) => (
                       <button type="button" className={`${styles.card} ${styles.registryCard}`} key={item.packageKey} onClick={() => setSelected(item)}>
                         <div className={styles.cardTop}>
                           <span className={styles.cardIcon}><BadgeCheck size={26} /></span>
@@ -378,12 +402,12 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
                           )}
                         </div>
                         <div className={styles.cardBottom}>
-                          <span>{item.manifest.developer.displayName} · {offersByPackage.has(item.packageKey) ? `${commerceAmount(offersByPackage.get(item.packageKey)!.amountMinor, offersByPackage.get(item.packageKey)!.currency)} / 買い切り` : pricingLabel[item.manifest.pricing.model]}</span>
+                          <span>{item.manifest.developer.displayName} · {packagePrice(item)}</span>
                           <ArrowUpRight size={18} />
                         </div>
                       </button>
                     ))}
-                  </div>
+                  </div>)}
                 </section>
               )}
             </>

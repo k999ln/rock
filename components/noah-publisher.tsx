@@ -1,7 +1,9 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { parseSkyToolPackage } from '@/lib/sky-tool-package';
+import { groupNoahAgentPackages } from '@/lib/noah-agent-package-view';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import NoahPublicationForm from './noah-publication-form';
 import type { StoredSkyToolPackage } from '@/lib/sky-tool-package-store';
 import type { NoahUpload } from '@/lib/noah-agent-store';
@@ -68,13 +70,33 @@ export default function NoahPublisher() {
       </fieldset>
     </section>
     <section aria-label="自分の公開仕様"><h2>2. 審査提出・公開状態</h2>{loading&&<p>読み込み中…</p>}{!loading&&!rows.length&&!error&&<p>登録した公開仕様はありません。</p>}
-      {rows.map(p=><article key={p.packageKey} className={styles.notice}><h3>{p.manifest.name} · v{p.manifest.version}</h3><p>{labels[p.status]}{p.status==='verified'&&!p.installable?' · 審査期限などの条件を再確認中':''}</p><p>{p.manifest.summary}</p><small>{p.packageKey}</small>
-        {p.manifest.source.artifact&&<p><a href={`/api/noah/releases/${encodeURIComponent(p.packageKey)}/source?manifest=${p.manifestSha256}`}>この版の配布コードを確認</a> · {p.manifest.source.artifact.name} · {p.manifest.source.artifact.sha256.slice(0,12)}</p>}
-        <details><summary>この版の仕様を見る</summary><pre>{JSON.stringify(p.manifest,null,2)}</pre></details>
-        <div className={styles.actions}>{p.status==='submitted'&&<button disabled={busy||!scope||blocked} onClick={()=>void mutate('PATCH',{action:'submit',packageKey:p.packageKey,manifestSha256:p.manifestSha256,status:p.status})}>審査へ提出する</button>}
-          {p.status!=='revoked'&&(confirmWithdraw===p.packageKey?<><span>この版の公開・審査を撤回します。</span><button disabled={busy||!scope||blocked} onClick={()=>void mutate('PATCH',{action:'withdraw',packageKey:p.packageKey,manifestSha256:p.manifestSha256,status:p.status})}>撤回を確定</button><button disabled={busy} onClick={()=>setConfirmWithdraw('')}>戻る</button></>:<button disabled={busy} onClick={()=>setConfirmWithdraw(p.packageKey)}>この版を撤回</button>)}
-        </div><p>登録・提出は実行試験の合格を意味しません。実行先・利用条件・審査が揃った版を市場へ掲載します。</p>
-      </article>)}
+      {groupNoahAgentPackages(rows).map(group => {
+        const cards = group.items.map(p => {
+          const status = labels[p.status] + (p.status === 'verified' && !p.installable ? ' · 審査期限などの条件を再確認中' : '');
+          const artifact = p.manifest.source.artifact;
+          const mutationDisabled = busy || !scope || blocked;
+          const controls = <>
+            {artifact && <p><a href={`/api/noah/releases/${encodeURIComponent(p.packageKey)}/source?manifest=${p.manifestSha256}`}>この版の配布コードを確認</a> · {artifact.name} · {artifact.sha256.slice(0,12)}</p>}
+            <details className={styles.publishedSpec}><summary>この版の仕様を見る</summary><pre>{JSON.stringify(p.manifest, null, 2)}</pre></details>
+            <div className={styles.actions}>
+              {p.status === 'submitted' && <button disabled={mutationDisabled} onClick={() => void mutate('PATCH', { action: 'submit', packageKey: p.packageKey, manifestSha256: p.manifestSha256, status: p.status })}>審査へ提出する</button>}
+              {p.status !== 'revoked' && (confirmWithdraw === p.packageKey ? <>
+                <span>この版の公開・審査を撤回します。</span>
+                <button disabled={mutationDisabled} onClick={() => void mutate('PATCH', { action: 'withdraw', packageKey: p.packageKey, manifestSha256: p.manifestSha256, status: p.status })}>撤回を確定</button>
+                <button disabled={busy} onClick={() => setConfirmWithdraw('')}>戻る</button>
+              </> : <button disabled={busy} onClick={() => setConfirmWithdraw(p.packageKey)}>この版を撤回</button>)}
+            </div>
+            <p>登録・提出は実行試験の合格を意味しません。実行先・利用条件・審査が揃った版を市場へ掲載します。</p>
+          </>;
+          return group.agents ? <NoahAgentPin key={p.packageKey} id={p.manifest.id} name={p.manifest.name}
+            summary={p.manifest.summary} meta={<>v{p.manifest.version} · {status}<br />{p.packageKey}</>} actions={controls} /> :
+            <article key={p.packageKey} className={styles.notice}><h3>{p.manifest.name} · v{p.manifest.version}</h3>
+              <p>{status}</p><p>{p.manifest.summary}</p><small>{p.packageKey}</small>{controls}
+            </article>;
+        });
+        return group.agents ? <NoahAgentPinGrid key={group.items[0].packageKey}>{cards}</NoahAgentPinGrid> :
+          <Fragment key={group.items[0].packageKey}>{cards}</Fragment>;
+      })}
     </section>
   </main>;
 }

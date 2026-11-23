@@ -28,3 +28,11 @@
   stroke-linejoin: round;
   filter: drop-shadow(0 1px 1px #33200b24);
 }
+
+@media (prefers-reduced-motion:no-preference) {
+  .icon[data-entered] svg { animation: mark-arrives 1.2s cubic-bezier(.2,.75,.25,1) both; }
+}
+@keyframes mark-arrives {
+  from { transform: translateY(12%) rotate(-8deg) scale(.86); }
+  to { transform: none; }
+}

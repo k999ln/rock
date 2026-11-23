@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'r
 import Link from 'next/link';
 import SkyAgentCapabilityReview from '@/components/sky-agent-capability-review';
 import { SkyPurchases } from '@/components/sky-commerce';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import NoahNavigation from './noah-navigation';
 import { ArrowRight, ArrowUpRight, Bot, Check, ChevronRight, Cloud, Plus, RefreshCw, Search, Settings2 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
@@ -20,7 +21,7 @@ const starters = [
   { id: 'writing', title: '文章を作る', detail: '目的と読み手に合わせて下書き', name: '文章担当', instructions: '目的と読み手を確認し、分かりやすい文章の下書きを作ってください。曖昧な点は質問し、事実と提案を区別してください。' },
   { id: 'planning', title: '仕事を進める', detail: '作業の順番と確認事項を整理', name: '計画担当', instructions: '目的、期限、使える資料と予算を確認し、作業の順番、必要な承認、完了条件を提案してください。実行していない作業を完了と書かないでください。' },
 ] as const;
-export default function SkyAgentLibrary({ publicRuntime = true, embedded = false, creator = false }: { publicRuntime?: boolean; embedded?: boolean; creator?: boolean } = {}) {
+export default function SkyAgentLibrary({ publicRuntime = true, embedded = false, creator = false, pinView = false }: { publicRuntime?: boolean; embedded?: boolean; creator?: boolean; pinView?: boolean } = {}) {
   const [agents, setAgents] = useState<SkyLibraryAgent[]>([]);
   const [ownerUserId, setOwnerUserId] = useState('');
   const [selected, setSelected] = useState<SkyLibraryAgent | null>(null);
@@ -148,9 +149,12 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
           <label className={styles.search}><Search size={17} /><input aria-label="エージェントを検索" placeholder="名前・役割・LLMで探す" value={query} onChange={e => setQuery(e.target.value)} /></label>
           {loading && <p aria-live="polite">追加済みの担当を読み込んでいます…</p>}
           {!loading && !signedOut && !visible.length && <div className={styles.empty}><Bot size={32} strokeWidth={1.4} /><h3>{query ? '一致する担当がありません' : '最初のエージェントを作ろう。'}</h3><p>{query ? '名前やモデルを変えて検索してください。' : '用途を選ぶところから始められます。接続済みToolの担当もここに並びます。'}</p></div>}
+          {pinView ? <NoahAgentPinGrid>{visible.map(agent => <NoahAgentPin key={agent.id} id={agent.id} name={agent.name}
+            meta={<>{agent.model} · {agent.source === 'personal' ? '自分の担当' : 'Noahで追加したTool'} · {agent.enabled ? 'Eveで選択可' : '利用停止中'}</>}
+            pressed={selected?.id === agent.id} disabled={busy || dirty} onSelect={() => open(agent)} />)}</NoahAgentPinGrid> :
           <div className={styles.list}>{visible.map(agent => <button key={agent.id} className={styles.agent} aria-pressed={selected?.id === agent.id} disabled={busy || dirty} onClick={() => open(agent)}>
             <span className={styles.avatar}><Bot size={22} /></span><span className={styles.agentCopy}><strong>{agent.name}</strong><small>{agent.model}</small><span>{agent.source === 'personal' ? '自分の担当' : 'Noahで追加したTool'} · {agent.enabled ? 'Eveで選択可' : '利用停止中'}</span></span><ChevronRight size={16} />
-          </button>)}</div>
+          </button>)}</div>}
           <p className={styles.boundary}>ここにはNoahに保存した担当が並びます。接続した端末の担当は下で確認できます。接続先の稼働と費用は、Eveで依頼する前に確認します。</p>
         </section>
         <section ref={editorRef} className={styles.editor} aria-labelledby="agent-settings-title">
@@ -197,7 +201,7 @@ export default function SkyAgentLibrary({ publicRuntime = true, embedded = false
           {selected && !creating && !dirty && <SkyAgentCapabilityReview key={`${selected.id}:${selected.revision}`} agent={selected} onSaved={saved => { setSelected(saved); setSettings(saved); setAgents(list => list.map(item => item.id === saved.id ? saved : item)); }} />}
         </section>
       </div>
-      {ownerUserId && (creator ? <details className={styles.deviceDetails}><summary>Pixelなどの接続を確認する</summary><SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId}/></details> : <SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId} />)}
+      {ownerUserId && (creator ? <details className={styles.deviceDetails}><summary>Pixelなどの接続を確認する</summary><SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId}/></details> : <SkyDeviceAgentConnections key={ownerUserId} ownerUserId={ownerUserId} pinView={pinView} />)}
     </div>;
   return embedded ? content : <WorkspaceShell title="自分のNoah">{content}</WorkspaceShell>;
 }

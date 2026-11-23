@@ -1,3 +1,6 @@
+## 2026-11-24
+- NoahのAgent一覧を共通のピンにそろえ、特集画像とピンに短いアニメーションを追加。端末の「動きを減らす」設定に対応。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
+
 ## 2026-11-23
 - NoahでTodayの特集を先頭に置き、「注目のAgent」に以前の2列のピン表示を採用。Agentの商品詳細とストアのナビゲーションを更新。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
 - Noahのストア、専用eSIMの仕事別利用明細、提供元の選択、専用Linux仮想画面でのagent-desktop実行を追加。[実行仕様](docs/services/noah-managed-desktop.md) · [PR #37](https://github.com/iceiceice999/rock/pull/37)

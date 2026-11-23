@@ -89,6 +89,34 @@ void test('Today places a real featured job and the catalog ahead of store servi
   }
 });
 
+void test('every page of catalog results uses pins and keeps the catalog actions separate', async () => {
+  const items = Array.from({ length: 7 }, (_, index) => ({
+    id: 'catalog-' + index, name: 'Agent ' + index, topic: 'work', shape: index % 3,
+    summary: 'Agent purpose', provider: 'Test provider', external: index > 0,
+    href: '/noah/ready/agent?id=local', savedIn: [],
+  }));
+  const ui = screen({ fetch: async ({ url }) => {
+    const next = new URL(url, 'https://avoado.si').searchParams.get('cursor') === '6';
+    return { body: { items: next ? items.slice(6) : items.slice(0, 6), nextCursor: next ? null : '6', total: 7, ownerScope: 'test-owner' } };
+  } });
+  const home = ui.mount('components/noah-pin-home.tsx', {});
+  await home.flush();
+  const pins = () => home.find('li').filter(node => node.props['data-agent-pin-id']);
+  assert.deepEqual(pins().map(row => row.props['data-agent-pin-id']), items.slice(0, 6).map(item => item.id));
+  await home.click('もっと見る');
+  await home.flush();
+  assert.deepEqual(pins().map(row => row.props['data-shape']), items.map(item => item.shape));
+  const nodes = home.nodes(pins()[0]);
+  const face = nodes.find(node => node.type === 'a');
+  assert.equal(face.props.href, items[0].href);
+  assert.equal(home.nodes(face).some(node => node.type === 'button'), false);
+  assert.equal(nodes.some(node => node.props?.['aria-label'] === 'Agent 0を保存'), true);
+  assert.equal(nodes.some(node => node.props?.['aria-label'] === 'その他の操作'), true);
+  const last = home.nodes(pins().at(-1));
+  assert.equal(last.find(node => node.type === 'a').props.href, '/noah/discover/agent?id=catalog-6');
+  assert.equal(last.some(node => node.type === 'button'), false);
+});
+
 void test('the public home shows a purpose section only when it has a usable task', async () => {
   const memory = choices.find(job => job.id === 'memory');
   const sites = choices.filter(job => job.operation);

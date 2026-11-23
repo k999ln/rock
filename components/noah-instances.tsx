@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { startNoahVisiblePolling } from '@/lib/noah-visible-polling';
 import type { NoahAgentPin, NoahInstance } from '@/lib/noah-instances';
+import { NoahAgentPin as AgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import styles from './noah-agent-catalog.module.css';
 
 export type InstanceView = NoahInstance & { preparationAttached?: boolean };
@@ -53,6 +54,11 @@ export function NoahInstancesList() {
   return <section className={styles.notice}><h2>使用するAgentと版</h2><p>詳細画面から追加したAgentの更新・元の版への復元を管理します。</p>
     {error&&<p role="alert">{error}</p>}
     {!rows.length&&!error&&<p>Agentの詳細で「この版を準備して追加」を選ぶと表示されます。</p>}
-    <ul>{rows.map(r=><li key={r.id}><Link href={`/noah/library/${r.id}`}>{r.active?.name||r.pending?.pin.name||r.last?.pin.name||'準備中のAgent'} · {r.active?.version||'未選択'}</Link> — {r.removed?'ライブラリから削除済み':r.pending?'版を準備中':r.last?.state==='failed'?'準備失敗・元の版を保持':'保存済み'}</li>)}</ul>
+    <NoahAgentPinGrid>{rows.map(row => {
+      const pin = row.active ?? row.pending?.pin ?? row.last?.pin;
+      const status = row.removed ? 'ライブラリから削除済み' : row.pending ? '版を準備中' : row.last?.state === 'failed' ? '準備失敗・元の版を保持' : '保存済み';
+      return <AgentPin key={row.id} id={pin?.agentId ?? row.id} name={pin?.name ?? '準備中のAgent'}
+        href={`/noah/library/${row.id}`} meta={`${row.active?.version || '未選択'} · ${status}`} />;
+    })}</NoahAgentPinGrid>
   </section>;
 }
