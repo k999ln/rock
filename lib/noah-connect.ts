@@ -12,6 +12,7 @@
  * 道具の一覧の決まりは docs/noah/spec-87-tool-agent.md の 11.3。
  */
 import { NoahAgentError } from './noah-agent-upload.ts';
+import { createNoahBrowserQuota, NOAH_BROWSER_QUOTA_MESSAGE } from './noah-browser-quota.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { stopNoahAsksOfConnection } from './noah-ask-store.ts';
 import { nextNoahConnectionState, type NoahConnectionEvent, type NoahConnectionState } from './noah-connect-plan.ts';
@@ -140,6 +141,8 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
   const { db, flags } = deps, now = deps.now ?? Date.now;
   const prepare = (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).bind(...args);
   const { handshake } = createNoahUserHandshake({ ...deps, hostHandshakes: flags.askLimits.hostHandshakes });
+  // ブラウザだけの本人を全員まとめた、1 日の新しい接続の上限（task 128 の D1）。
+  const browserQuota = createNoahBrowserQuota(db, now);
   const readOne = (owner: string, id: string) => prepare(ONE, id, owner).first<Row>();
   /** セッションを閉じる要求は、本人を待たせない（結果と状態を書き終えた後に送る。届かなくても、結果は変わらない）。 */
   const afterwards = async (work: Promise<unknown>) => { if (deps.waitUntil) deps.waitUntil(work); else await work; };
@@ -209,6 +212,7 @@ export function createNoahConnectService(deps: NoahConnectDependencies) {
       gate = noahPlanConnectGate(await noahPlanOf(limits.source, owner), { liveCards: cards, lastMinute: counts?.last_minute ?? 0, lastDay: counts?.last_day ?? 0 }, same ? 'same_package' : 'new_card');
     }
     if (!gate.ok) return failed(gate.status, gate.message);
+    if (!(await browserQuota.take(owner, 'connections'))) return failed(429, NOAH_BROWSER_QUOTA_MESSAGE);
 
     // 行を入れ、握手の手前まで進める（1 回の書き込み）。入らなかった時は、同じ操作か、同じ系列の別の操作が、先に入っている。
     const consent = JSON.stringify({ permissions: NOAH_INTAKE_PERMISSIONS, sendsTo: target.host, at });
