@@ -2,7 +2,7 @@
 // 公開の API を、知らない人（Cookie なし）とブラウザだけの本人（Cookie あり）の 2 通りで、GET だけで呼ぶ。読むだけ。書き込む API は呼ばない。
 // 使い方: node scripts/noah-public-probe.mjs https://avoado.si [出力.json]
 // 見る事: 200 を返す API に、他人の物・運営の物・設定の中身が無いか。500 番台が無いか。
-// task 127（docs/noah/ux-audit-2026-11-22.md の 4 章）。
+// task 128（docs/noah/ux-audit-2026-11-22.md の 4 章）。
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 

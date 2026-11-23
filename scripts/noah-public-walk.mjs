@@ -2,7 +2,7 @@
 // 公開の画面を、知らない人のスマホ（幅 390）で開く。読むだけ。ボタンは押さない。
 // 使い方: node scripts/noah-public-walk.mjs https://avoado.si [/noah,/noah/explore,...]
 // 見る事: 横にはみ出す所・44px より小さい押す所（spec-90 の 5 章の 1）・画面が呼んで失敗した API・画面の誤り。
-// task 127（docs/noah/ux-audit-2026-11-22.md の 3 章）。
+// task 128（docs/noah/ux-audit-2026-11-22.md の 3 章）。
 import { createRequire } from 'node:module';
 
 // Playwright はこのリポジトリの依存に入れていない（入っている環境の物を使う。NODE_PATH も見る）。
