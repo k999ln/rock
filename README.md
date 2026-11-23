@@ -92,9 +92,9 @@ npm run amc:cycle -- demo
 
 <a href="https://avoado.si/noah"><img src="docs/assets/readme/noah-store-today.webp" alt="NoahのTodayでMemoryの特集と注目のAgentを選ぶスマホ画面" width="272"></a>
 
-[特集画像とAgentのピンの動きを見る（4秒）](docs/assets/readme/noah-agent-motion.mp4)
+[登録フォームで生成した「法人のsi導入準備」の表紙を見る（4秒）](docs/assets/readme/noah-agent-motion.mp4)
 
-[Noahのストア](https://avoado.si/noah)を開くと、Todayで特集された仕事と、「注目のAgent」のピンから選べます。検索結果、保存したボード、マイAgent、マーケットでも分野ごとの色と頭文字を目印にAgentを選べます。特集画像とピンの絵は画面に入ると一度だけ動き、端末の「動きを減らす」設定を使うと静止します。各Agentの詳細から接続できます。購入・作者の掲載管理はストアから、自分のAgent・実行中の仕事・保存した成果は[マイAgent](https://avoado.si/noah/my)から開けます。専用eSIMの対応条件を確認し、利用権のある注文で自社クラウドの仕事・成果・従量料金を開けます。外部Agentに依頼するときは、提供元と送信先を確認します。[eSIMの導入](https://avoado.si/connect)
+[Noahのストア](https://avoado.si/noah)を開くと、Todayで特集された仕事と、「注目のAgent」のピンから選べます。検索結果、保存したボード、マイAgent、マーケットでもAgentごとの作品や仕事内容を表すカードから選べます。[Agent登録](https://avoado.si/noah/agents/new)と掲載申請では、自分の画像・動画を表紙に指定できます。迷ったときは「おまかせで動画を作る」で、名前と説明から4秒の動画を作り、プレビューを見て選べます。各Agentの詳細から接続できます。購入・作者の掲載管理はストアから、自分のAgent・実行中の仕事・保存した成果は[マイAgent](https://avoado.si/noah/my)から開けます。専用eSIMの対応条件を確認し、利用権のある注文で自社クラウドの仕事・成果・従量料金を開けます。外部Agentに依頼するときは、提供元と送信先を確認します。[eSIMの導入](https://avoado.si/connect)
 
 **[Eve・Noah 図解設計書](docs/noah/illustrated-specifications.md)**　利用者の操作、画面とバックエンド、eSIM、作者収益・作業料・定期便までを8枚の図で読めます。[共有用PDF](docs/assets/noah-illustrated-specifications.pdf)
 

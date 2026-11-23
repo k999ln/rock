@@ -5,6 +5,7 @@ import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import { Bot, ArrowRight } from 'lucide-react';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import type { NoahFeedPage, NoahFeedPreference } from '@/lib/noah-feed';
+import { noahReleaseCoverUrl } from '@/lib/noah-cover';
 import styles from './noah-timeline.module.css';
 
 type Props = { query?: string; order?: 'recommended' | 'latest' | 'following'; settings?: boolean };
@@ -86,7 +87,7 @@ function NoahPublishedContent({ query = '', order = 'recommended', settings = fa
         <button disabled={busy} onClick={() => { void preference('hide',entry.toolId,true); }}>非表示</button>
       </>}<Link href={href} className={styles.detailsLink}>詳細・利用条件 <ArrowRight size={15} /></Link></div>;
       if (entry.isAgent) return <NoahAgentPin key={entry.packageKey} id={entry.toolId} name={entry.name}
-        href={href} summary={entry.summary} meta={<>{byline}{terms}</>} actions={actions} />;
+        cover={entry.cover && { type:entry.cover.type, url:noahReleaseCoverUrl(entry.packageKey,entry.digest) }} href={href} summary={entry.summary} meta={<>{byline}{terms}</>} actions={actions} />;
       return <li key={entry.packageKey} className={styles.feedTool}><article className={styles.post}>
         <Link href={href} className={styles.avatar} aria-label={`${entry.name}の詳細`}><Bot size={23} /></Link><div className={styles.postContent}>
           {byline}<h2 className={styles.postTitle}><Link href={href}>{entry.name}</Link></h2><p className={styles.postText}>{entry.summary}</p>

@@ -1,9 +1,8 @@
 'use client';
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import Link from 'next/link';
-import { NOAH_PIN_TOPIC_LABELS, noahPinInitials, noahPinShape, noahPinTopic, type NoahPinTopic } from '@/lib/noah-pins';
-import { useNoahLocale } from './noah-locale';
-import { NoahPinMotion } from './noah-art-motion';
+import { noahPinShape, noahPinTopic, type NoahPinTopic } from '@/lib/noah-pins';
+import { NoahPinMotion, type NoahCoverView } from './noah-art-motion';
 import pins from './noah-pins.module.css';
 import styles from './noah-agent-pin.module.css';
 
@@ -35,18 +34,15 @@ export function NoahAgentPinGrid({ children, compact = false }: { children: Reac
 
 type PinFaceProps = {
   id: string; name: string; href?: string; prefetch?: false; topic?: NoahPinTopic; shape?: 0 | 1 | 2;
-  summary?: string; onSelect?: () => void; disabled?: boolean; pressed?: boolean;
+  summary?: string; cover?: NoahCoverView; onSelect?: () => void; disabled?: boolean; pressed?: boolean;
 };
 
-export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summary, onSelect, disabled, pressed }: PinFaceProps) {
-  const { t } = useNoahLocale();
+export function NoahAgentPinFace({ id, name, href, prefetch, topic, shape, summary, cover, onSelect, disabled, pressed }: PinFaceProps) {
   const category = topic ?? noahPinTopic(name, summary ?? '');
   const attributes = { className: `${styles.face} ${pins.tone}`, 'data-shape': shape ?? noahPinShape(id), 'data-topic': category };
   const contents = <>
     <span className={pins.panel} aria-hidden="true">
-      <NoahPinMotion topic={category} />
-      <span className={pins.initials}>{noahPinInitials(name)}</span>
-      <span className={pins.topicLabel}>{t(NOAH_PIN_TOPIC_LABELS[category])}</span>
+      <NoahPinMotion id={id} name={name} summary={summary} cover={cover} />
     </span>
     <strong className={styles.name}>{name}</strong>
     {summary && <span className={styles.summary}>{summary}</span>}

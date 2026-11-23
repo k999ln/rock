@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'r
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { NOAH_MANIFEST_LIMIT, NOAH_SOURCE_LIMIT, NOAH_PERMISSIONS, noahAgentTemplate, noahSha256, parseNoahAgentManifest, type NoahAgentManifest } from '@/lib/noah-agent-upload';
+import NoahCoverPicker, { coverReady, type CoverChoice } from './noah-cover-picker';
 import NoahDraftStoragePanel from './noah-draft-storage';
 import type { NoahDraft, NoahDraftContent } from '@/lib/noah-drafts';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
@@ -18,6 +19,9 @@ export default function NoahAgentUploadForm() {
   const [manifest, setManifest] = useState<NoahAgentManifest>({ ...noahAgentTemplate, name: '', summary: '', author: '', adapter: 'source', endpointUrl: null, priceNote: '' });
   const [source, setSource] = useState<File | null>(null), [scope, setScope] = useState('');
   const [id, setId] = useState(''), [rights, setRights] = useState(false), [pending, setPending] = useState(false), [error, setError] = useState('');
+  const [cover, setCover] = useState<CoverChoice>({ kind: 'later' });
+  const coverValid = coverReady(cover, manifest.name, manifest.summary);
+  const coverFile = 'file' in cover && coverValid ? cover.file : undefined;
   const [attempt, setAttempt] = useState(0);
   const [accountChecking, setAccountChecking] = useState(true), [signedOut, setSignedOut] = useState(false);
   const [returnPath, setReturnPath] = useState('/noah/agents/new?launch=1');
@@ -160,7 +164,7 @@ export default function NoahAgentUploadForm() {
       if (draft.current.id === savedId) {
         draft.current = { id:'', revision:0, saved:'', busy:true }; draftRetry.current = null;
         setManifest({ ...noahAgentTemplate, name:'', summary:'', author:'', adapter:'source', endpointUrl:null, priceNote:'' });
-        setCode(''); setSource(null); setRights(false); setId(''); setDraftRevision(0);
+        setCode(''); setSource(null); setRights(false); setId(''); setCover({ kind: 'later' }); setDraftRevision(0);
         window.history.replaceState(window.history.state, '', noahUploadPath(window.location.search, ''));
       }
       setDraftError(''); setDraftMessage('下書きを削除しました。');
@@ -193,7 +197,7 @@ export default function NoahAgentUploadForm() {
     const a = document.createElement('a'); a.href = url; a.download = 'noah-agent.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   async function save(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault(); if (pending || !scope || !rights) return;
+    event.preventDefault(); if (pending || !scope || !rights || !coverValid) return;
     setError(''); setPending(true); setProcessingMessage('');
     const controller = new AbortController(); processingController.current = controller;
     try {
@@ -217,8 +221,14 @@ export default function NoahAgentUploadForm() {
           const receipt = await processUpload(inputFile, uploadId, scope, setProcessingMessage, controller.signal);
           form.set('processingReceipt', JSON.stringify(receipt));
         }
+        if (coverFile) form.set('cover', coverFile);
         body = form;
-      } else { body = JSON.stringify({ id: uploadId, manifest: parsed, rightsConfirmed: true, draft: draftReference }); Object.assign(headers, { 'Content-Type': 'application/json' }); }
+      } else {
+        const payload = JSON.stringify({ id: uploadId, manifest: parsed, rightsConfirmed: true, draft: draftReference });
+        if (coverFile) {
+          const form = new FormData(); form.set('payload', payload); form.set('cover', coverFile); body = form;
+        } else { body = payload; Object.assign(headers, { 'Content-Type': 'application/json' }); }
+      }
       controller.signal.throwIfAborted(); setProcessingMessage('原本と確認済みの結果を保存中…');
       const response = await fetch('/api/noah/agents', { method: 'POST', headers, body, signal: controller.signal });
       const data = await response.json() as { agent: { id: string }; error?: string }; if (!response.ok) throw new Error(data.error || '保存できませんでした。');
@@ -277,6 +287,9 @@ export default function NoahAgentUploadForm() {
       <div className={styles.import}><label>定義JSONを読み込む<input type="file" accept=".json,application/json" onChange={e => { void importDefinition(e.target.files?.[0]); e.target.value = ''; }} /></label><button type="button" onClick={template}>テンプレートをダウンロード</button></div>
       <label>Agentの名前<input required maxLength={100} value={manifest.name} onChange={e => change({ name: e.target.value })} placeholder="例：毎朝のニュース担当" /></label>
       <label>何をしてくれるAgent？<textarea required rows={4} maxLength={2000} value={manifest.summary} onChange={e => change({ summary: e.target.value })} placeholder="できる仕事、必要な入力、受け取れる成果を書いてください。" /></label>
+      <NoahCoverPicker key={scope} name={manifest.name} summary={manifest.summary} value={cover}
+        onChange={value => { setCover(value); setId(''); }} />
+      {cover.kind !== 'later' && <small>表紙は「自分のNoahに保存」で登録します。下書きから再開するときは、表紙を選び直してください。</small>}
       <div className={styles.columns}><label>作者<input required maxLength={100} value={manifest.author} onChange={e => change({ author: e.target.value })} /></label><label>版<input required value={manifest.version} onChange={e => change({ version: e.target.value })} placeholder="1.0.0" /></label></div>
       <label>どう使うAgent？<select value={manifest.adapter} onChange={e => { const { runtime: _runtime, ...base } = manifest; setManifest({ ...base, adapter: e.target.value as NoahAgentManifest['adapter'], endpointUrl: e.target.value === 'source' ? null : '' }); setId(''); }}>
         <option value="source">コードを保存して実行先を準備する</option><option value="web">専用のWeb画面を開く</option><option value="mcp_http">MCPサーバーに接続する</option><option value="a2a">A2A対応Agentに接続する</option>{manifest.adapter === 'local_app' && <option value="local_app">対応済みローカルアプリ</option>}
@@ -306,7 +319,7 @@ export default function NoahAgentUploadForm() {
         <small>取得する場合は上の「GitHub・Hugging Faceからコードを取得」を使います。参照URLの入力だけでは取得しません。</small>
         <div className={styles.columns}><label>識別名<input required value={manifest.id} onChange={e => change({ id: e.target.value })} /></label><label>ライセンス<input required value={manifest.license} onChange={e => change({ license: e.target.value })} /></label></div>
       </div></details>
-      <button className={styles.primary} disabled={!scope || !rights || pending || processorAvailable === null} type="submit">{pending ? '原本の確認・コードの整理・保存中…' : '自分のNoahに保存'}</button>
+      <button className={styles.primary} disabled={!scope || !rights || pending || !coverValid || processorAvailable === null} type="submit">{pending ? '原本の確認・コードの整理・保存中…' : '自分のNoahに保存'}</button>
     </fieldset></form>
     {processingMessage && <output aria-live="polite">{processingMessage}</output>}
     {pending && processingMessage && <button type="button" onClick={() => processingController.current?.abort()}>整理・保存を中止</button>}

@@ -83,7 +83,7 @@
 :global([data-noah-standalone]) .page { --os-accent:var(--noah-action,#a14206); --os-accent-ink:#fff; --os-focus:var(--noah-action,#a14206); }
 .storeProduct { display:flex; align-items:center; gap:clamp(14px,2vw,23px); padding:22px 0 12px; }
 .storeProduct > div { min-width:0; }
-.productMark { flex:none; display:grid; place-items:center; width:clamp(68px,12vw,100px); height:clamp(68px,12vw,100px); border-radius:24%; color:#753203; background:linear-gradient(145deg,#ffe6b6,#ffb35d); box-shadow:inset 0 0 0 1px #973e0014; font-size:clamp(25px,4vw,36px); font-weight:750; letter-spacing:-.045em; }
+.productMark { position:relative; isolation:isolate; overflow:hidden; flex:none; display:grid; place-items:center; width:clamp(68px,12vw,100px); height:clamp(68px,12vw,100px); border-radius:24%; color:#753203; background:linear-gradient(145deg,#ffe6b6,#ffb35d); box-shadow:inset 0 0 0 1px #973e0014; font-size:clamp(25px,4vw,36px); font-weight:750; letter-spacing:-.045em; }
 .storeProduct h1 { font-size:clamp(24px,4vw,38px); line-height:1.14; letter-spacing:-.045em; margin:0; overflow-wrap:anywhere; }
 .storeProduct p { margin:4px 0; color:#695d52; font-size:14px; }
 .page .productPill { display:inline-flex; align-items:center; min-height:40px; padding:6px 15px; margin-top:5px; border-radius:30px; color:#fff; background:var(--noah-action,#a14206); font-size:13px; font-weight:700; text-decoration:none; }

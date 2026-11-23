@@ -1,0 +1,11 @@
+.picker { display: grid; gap: 12px; margin: 6px 0; padding: 14px; min-width: 0; border: 1px solid #c4c4c8; border-radius: 14px; }
+.picker legend { padding: 0 5px; font-weight: 700; }
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 3px 14px; }
+.picker .options label { display: inline-flex; flex-flow: row nowrap; align-items: center; gap: 7px; min-height: 40px; font-size: .94rem; cursor: pointer; }
+.picker .options input[type="radio"] { width: 18px; height: 18px; min-height: 18px; padding: 0; margin: 0; flex-shrink: 0; accent-color: #b44b06; }
+.upload { display: grid; gap: 4px; }
+.generate { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.generate p,.picker p { margin: 0; }
+.preview { margin: 0; width: min(100%, 320px); }
+.preview img,.preview video { display: block; max-height: 220px; width: 100%; object-fit: contain; background: #181b21; border-radius: 12px; }
+.preview figcaption { margin-top: 5px; font-size: .8rem; }

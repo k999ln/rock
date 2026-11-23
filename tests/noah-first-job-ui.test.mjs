@@ -81,7 +81,8 @@ void test('Today places a real featured job and the catalog ahead of store servi
     assert.deepEqual(pins.map(pin => pin.props['data-topic']), ['dev', 'research', 'research', 'research']);
     assert.deepEqual(pins.map(pin => home.nodes(pin).find(node => node.type === 'a').props.href),
       items.slice(1, 5).map(item => '/noah/discover/agent?id=' + item.id));
-    assert.equal(home.nodes(pins[0]).some(node => node.type === 'span' && home.text(node) === 'AP'), true);
+    assert.equal(home.nodes(pins[0]).find(node => node.props?.['data-agent-art'])?.props['data-agent-art'], 'signature');
+    assert.equal(home.nodes(pins[0]).some(node => node.type === 'canvas'), true);
     assert.equal(shelfNodes.some(node => node.type === 'button'), false);
     assert.equal(home.find('a', 'See all')[0].props.href, '/noah/explore');
     assert.ok(anchors.indexOf(feature) < anchors.indexOf(directory));

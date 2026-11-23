@@ -8,7 +8,7 @@ import type { NoahFirstJob } from '@/lib/noah-first-jobs';
 import { noahCardHref } from '@/lib/noah-project-view';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
 import NoahAppIcon from './noah-app-icon';
-import { NoahFeatureMotion } from './noah-art-motion';
+import { NoahPinMotion } from './noah-art-motion';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-store.module.css';
 import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
@@ -62,7 +62,7 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
       <article className={styles.feature}>
         <Link className={styles.coverLink} href={feature.href}>
           <div className={styles.featureArt} data-memory={memory || undefined}>
-            <NoahFeatureMotion />
+            <div className={styles.featureStage}><NoahPinMotion id={project ?? card?.id ?? feature.name} name={feature.name} summary={card?.summary ?? feature.subtitle} /></div>
             <small>{t('ピックアップ')}</small>
             <h2 aria-label={feature.title}>{memory && locale === 'ja'
               ? feature.title.split(/(?<=、)/u).map(phrase => <span className={styles.phrase} key={phrase}>{phrase}</span>)

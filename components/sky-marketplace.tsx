@@ -41,12 +41,14 @@ import {
   skyAiMarketplaceEntries,
   type SkyAiMarketplaceEntry,
 } from '@/lib/sky-ai-marketplace';
+import { noahReleaseCoverUrl } from '@/lib/noah-cover';
 import styles from '@/components/sky-marketplace.module.css';
 import { CommerceNavigation, MarketplacePurchase, commerceAmount, usePublicCommerceOffers } from '@/components/sky-commerce';
 import { includedRockstarServicePackageKeys } from '@/lib/rockstar-service-package-access';
 
 type RegistryItem = {
   packageKey: string;
+  manifestSha256: string;
   manifest: SkyToolPackage;
   status: string;
   installable: boolean;
@@ -379,7 +381,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
                       <NoahAgentPinGrid>{group.items.map((item) => {
                         const mismatch = registryHostMismatch(item.manifest.capabilities.executionTargets, host);
                         return <NoahAgentPin key={item.packageKey} id={item.manifest.id} name={item.manifest.name}
-                          summary={item.manifest.summary} onSelect={() => setSelected(item)}
+                          cover={item.manifest.cover && { type:item.manifest.cover.type, url:noahReleaseCoverUrl(item.packageKey,item.manifestSha256) }} summary={item.manifest.summary} onSelect={() => setSelected(item)}
                           meta={<>
                             <span>{['審査済み', item.manifest.fund.categories[0], item.manifest.developer.displayName, packagePrice(item)].filter(Boolean).join(' · ')}</span>
                             {mismatch && <span>この端末では対象外 · {mismatch}</span>}
