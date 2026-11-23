@@ -1,0 +1,39 @@
+.header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 1.875rem);
+  padding-block: .5rem 1.4rem;
+}
+.mark { --noah-app-icon-size: clamp(5rem, 23vw, 8rem); }
+.identity { min-width: 0; }
+.header .identity h1 {
+  margin: 0;
+  color: #1d1d1f;
+  font-size: clamp(1.5rem, 3.4vw, 2.35rem);
+  font-weight: 740;
+  line-height: 1.16;
+  letter-spacing: -.035em;
+  overflow-wrap: anywhere;
+}
+.header .identity p {
+  margin: .36rem 0 0;
+  color: #68686f;
+  font-size: .94rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.header .identity a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: .36rem;
+  padding-inline: .95rem;
+  border-radius: 2rem;
+  background: #fff0e4;
+  color: #924008;
+  font-size: .88rem;
+  font-weight: 700;
+  text-decoration: none;
+}

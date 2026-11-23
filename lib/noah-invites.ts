@@ -1,3 +1,5 @@
+import { isNoahCover } from './noah-cover.ts';
+import { serveNoahCover } from './noah-cover-storage.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError, noahSha256, noahUploadId, type NoahAgentManifest } from './noah-agent-upload.ts';
 import { OWNER_SCOPE_HEADER, ownerScopeFor } from './owner-intent.ts';
@@ -106,6 +108,17 @@ export function createNoahInviteApi(deps: { db: Pick<D1Database, 'prepare'>; aut
       const row = await grant(owner,noahUploadId(id));
       if (!row) throw new NoahAgentError('有効な招待を確認できません。期限・撤回・受取アカウントを確認してください。',404);
       return json({ agent: shared(row), ownerScope: await ownerScopeFor(owner) });
+    }),
+    cover: (request: Request, id: string) => handle(request,false,async recipient => {
+      id = noahUploadId(id);
+      const row = await grant(recipient,id), pin: unknown = row && JSON.parse(row.manifest).cover;
+      if (!row || !isNoahCover(pin)) throw new NoahAgentError('この招待のカバーが見つかりません。',404);
+      const response = await serveNoahCover(deps.bucket, row.owner_id, pin, request);
+      const after = await grant(recipient,id);
+      if (!after || after.revision !== row.revision || after.manifest_sha256 !== row.manifest_sha256) {
+        await response.body?.cancel(); throw new NoahAgentError('招待の有効期限が切れたか、撤回されました。',404);
+      }
+      return response;
     }),
     download: (request: Request, id: string) => handle(request,false,async owner => {
       id = noahUploadId(id); const row = await grant(owner,id);

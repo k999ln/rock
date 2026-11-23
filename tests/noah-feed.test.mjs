@@ -5,7 +5,8 @@ import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { createNoahFeedApi } from '../lib/noah-feed.ts';
 import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
-import { ownerScopeFor } from '../lib/owner-intent.ts';
+import { ownerScopeFor, OWNER_SCOPE_HEADER } from '../lib/owner-intent.ts';
+import { screen } from './fixtures/noah/screen.mjs';
 
 function fixture(t, publicTags = () => []) {
   const db = new DatabaseSync(':memory:'); t.after(() => db.close());
@@ -32,6 +33,33 @@ void test('public feed only contains currently reviewed publications, never draf
   const data = await (await api.get(getRequest('', null))).json();
   assert.deepEqual(data.entries.map(e => e.packageKey), [publicKey]); assert.equal(data.ownerScope, null); assert.deepEqual(data.preferences, []);
   advance(100001); assert.equal((await (await api.get(getRequest())).json()).entries.length, 0);
+});
+void test('public feed marks explicitly published Agents while preserving ordinary tools and their order', async t => {
+  const { api, publish } = fixture(t);
+  const tool = publish(1), agent = publish(2, { category: 'Agent' });
+  const { entries } = await (await api.get(getRequest('order=latest', null))).json();
+  assert.deepEqual(entries.map(entry => [entry.packageKey, entry.isAgent]), [[tool, false], [agent, true]]);
+  const ui = screen({
+    modules: { '@/lib/owner-intent': { OWNER_SCOPE_HEADER } },
+    fetch: async ({ url, method, headers, body }) => {
+      const target = new URL(url, 'https://noah.example');
+      const requestHeaders = { 'test-owner': 'alice', origin: 'https://noah.example', ...headers };
+      const response = method === 'GET'
+        ? await api.get(new Request(target, { headers: requestHeaders }))
+        : await api.set(new Request(target, { method: 'PUT', headers: requestHeaders, body: JSON.stringify(body) }));
+      return { status: response.status, body: await response.json() };
+    },
+  });
+  const feed = ui.mount('components/noah-published-feed.tsx', { order: 'latest' });
+  await feed.flush();
+  const cards = () => feed.find('li').filter(node => node.props['data-agent-pin-id']);
+  assert.deepEqual(cards().map(node => node.props['data-agent-pin-id']), ['dev.example.agent-2']);
+  const agentNodes = feed.nodes(cards()[0]);
+  assert.equal(agentNodes.find(node => node.type === 'a').props.href, `/noah/marketplace?package=${encodeURIComponent(agent)}`);
+  assert.ok(agentNodes.some(node => node.type === 'button' && feed.text(node) === '提供元をフォロー'));
+  await feed.press(agentNodes.find(node => node.type === 'button' && feed.text(node) === '非表示'));
+  assert.equal(cards().length, 0);
+  assert.deepEqual(feed.find('a', '詳細・利用条件').map(node => node.props.href), [`/noah/marketplace?package=${encodeURIComponent(tool)}`]);
 });
 void test('keyset pagination is deterministic at equal timestamps; new arrivals and revocations are handled without duplication', async t => {
   const { api, publish, db, time } = fixture(t); for (let n = 1; n <= 25; n++) publish(n, { published: time() - 1 });

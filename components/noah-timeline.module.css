@@ -49,6 +49,9 @@
 .feedLabel { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); padding: 14px 18px 3px 72px; }
 .feedLabel > svg { color: var(--accent); }
 .resultCount { margin-left: auto; }
+.feedTool { grid-column: 1 / -1; }
+.surface:not([data-noah-catalog='embedded']) [data-agent-pin-grid] { --noah-pin-summary:#bbc7ce; --noah-pin-meta:#bbc7ce; }
+.surface [data-agent-pin-id] .postActions { flex-wrap:wrap; justify-content:flex-start; }
 .post { display: flex; gap: 12px; padding: 14px 17px 9px; border-bottom: 1px solid var(--line); transition: background .15s; }
 .post:hover { background: #050607; }
 .avatar { width: 42px; height: 42px; flex: 0 0 42px; display: grid; place-items: center; border-radius: 50%; color: #b9c5d6; background: #202936; }

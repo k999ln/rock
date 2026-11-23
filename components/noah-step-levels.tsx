@@ -5,6 +5,7 @@
  * business の能力表はここへ持ち込まず、必要な表示名だけ props で渡す。
  * そのため、Agent の詳細画面は全 business 分類表を読み込まない。
  */
+import type { NoahHandshakeSchema, NoahHandshakeTool } from '@/lib/noah-handshake-tools';
 import { noahBlueprintLevels, type NoahStep, type NoahStepKind } from '@/lib/noah-steps';
 import styles from './noah-blueprint-levels.module.css';
 
@@ -71,6 +72,7 @@ export type NoahStepLevelsProps<T extends NoahStep = NoahStep> = {
   flowLabel?: (label: FlowLabel) => string;
   materialLabel?: (material: string) => string;
   showMaterials?: boolean;
+  availableTools?: readonly NoahHandshakeTool[];
 };
 
 /** 設計図・棚カード・Agent の説明で使う共通の段表示。 */
@@ -81,6 +83,7 @@ export function NoahStepLevels<T extends NoahStep>({
   flowLabel = unchanged,
   materialLabel = unchanged,
   showMaterials = true,
+  availableTools = [],
 }: NoahStepLevelsProps<T>) {
   const text: NoahStepLevelLabels = {
     ...DEFAULT_LABELS,
@@ -88,8 +91,21 @@ export function NoahStepLevels<T extends NoahStep>({
     kind: { ...DEFAULT_LABELS.kind, ...labels?.kind },
     tag: { ...DEFAULT_LABELS.tag, ...labels?.tag },
   };
-  const levels = noahBlueprintLevels(steps),
-    label = new Map(steps.map((s) => [s.id, s.label]));
+  const levels: Array<Array<NoahStep & { tool?: NoahHandshakeTool }>> = noahBlueprintLevels(steps);
+  const requestLevel = levels.findIndex((level) => level.some(({ id }) => id === 'usage:request'));
+  // This is a list of alternatives the provider advertises, not a dependency
+  // of the request step. Leave the original wait graph unchanged.
+  if (availableTools.length && requestLevel >= 0) {
+    levels.splice(requestLevel, 0, availableTools.map((tool, index) => ({
+      id: `available-tool:${index}`, kind: 'auto', label: tool.name, tool,
+    })));
+  }
+  const label = new Map(steps.map((step) => [step.id, step.label]));
+  function schemaText(schema: NoahHandshakeSchema | null) {
+    if (!schema) return flowLabel(FLOW_LABELS.unknown);
+    if (!schema.fields.length) return schema.type ?? flowLabel(FLOW_LABELS.unknown);
+    return schema.fields.map(({ name, type }) => `${name}: ${type ?? flowLabel(FLOW_LABELS.unknown)}`).join(' · ');
+  }
   return (
     <ol className={styles.levels} data-noah-step-levels aria-label={text.ariaLabel}>
       {levels.map((level, index) => (
@@ -103,6 +119,16 @@ export function NoahStepLevels<T extends NoahStep>({
           <div className={styles.steps}>
             {level.length > 1 && <p className={styles.parallel}>{flowLabel(FLOW_LABELS.parallel)}</p>}
             {level.map((s) => {
+              if (s.tool) return <details key={s.id} className={styles.step} data-noah-tool={s.tool.name}>
+                <summary>
+                  <span className={styles.stepTitle}>{s.tool.name}</span>
+                  <span className={styles.toolIo}>
+                    <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.receives)}</span>{schemaText(s.tool.input)}</span>
+                    <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.returns)}</span>{schemaText(s.tool.output)}</span>
+                  </span>
+                </summary>
+                {s.tool.description && <p className={styles.toolDescription}>{s.tool.description}</p>}
+              </details>;
               const capability = s.capability
                 ? capabilityLabels[s.capability]
                 : undefined;

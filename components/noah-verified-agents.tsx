@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { VerifiedRegistry } from '@/lib/noah-verified-registry';
 import type { NoahAvailabilityResponse } from '@/lib/noah-agent-availability-api';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import styles from './noah-timeline.module.css';
 
 const labels: Record<string, string> = { agent: '本体を確認', unverifiable: '確認不能・公開根拠不足', merged: '同一系列・関連配布', historical: '旧系統', announced: '提供開始前', template: 'テンプレート', framework: '開発基盤', tool: '道具・画面', model: 'モデル', resource: '教材・評価資料', other: 'その他・本体条件未充足' };
@@ -91,20 +92,23 @@ export default function NoahVerifiedAgents() {
       : <select aria-label="判定で絞り込む" value={decision} onChange={e => { setDecision(e.target.value); setPage(0); }}><option value="all">判定：すべて</option>{Object.entries(labels).map(([key, label]) => <option value={key} key={key}>{label}</option>)}</select>}
     {!data && !error && <output>一覧を読み込んでいます…</output>}
     {error && <p role="alert">{error} {data ? '直前に取得できた一覧を表示しています。' : ''}</p>}
-    {view === 'products' ? products.slice(start, start + 25).map(p => <article className={styles.post} key={p.familyId}>
-      <div className={styles.postContent}><h2 className={styles.postTitle}>{p.name}</h2><p>{p.publisher} · {p.category}{p.added ? ' · 今回追加' : ''}</p>
-        <p className={styles.postText}>{p.summary}</p><p className={styles.researchNote}>調査時の状態：{p.status}</p>
-        {p.id === 'AG0734' && <p>架空店舗の商品・注文データを使うデモです。実店舗の商品情報ではありません。</p>}
-        <p>{liveLabels[liveById.get(p.id)?.status ?? 'unverified']}</p>
-        {liveById.get(p.id)?.checkedAt && <p className={styles.researchNote}>接続確認：{new Date(liveById.get(p.id)!.checkedAt!).toLocaleString('ja-JP')}</p>}
-        {liveById.get(p.id) && <Link href={liveById.get(p.id)!.href}>{liveById.get(p.id)!.status === 'available' ? 'Noahで使う' : '接続方法を確認する'}</Link>}
-        <details><summary>確認資料・接続条件</summary><ul>{p.requirements.map(r => <li key={r}>{r}</li>)}</ul>
-          {p.assessment && <p>{p.assessment.method}：{p.assessment.note}（{new Date(p.assessment.reviewedAt).toLocaleDateString('ja-JP')}）</p>}
-          {p.assessment?.detail && <p>{p.assessment.detail}</p>}
-          {p.protocol && <p>提供元の文書に接続方式の案内があります。現在の試験結果は稼働状態に表示します。</p>}
-          <ul>{p.sources.map(url => <li key={url}><a href={url} target="_blank" rel="noreferrer">{url}</a></li>)}</ul>
-        </details>
-      </div></article>) : reviews.slice(start, start + 25).map(r => <article className={styles.post} key={r.key}>
+    {view === 'products' ? <NoahAgentPinGrid>{products.slice(start, start + 25).map(p => {
+      const liveItem = liveById.get(p.id);
+      return <NoahAgentPin key={p.familyId} id={p.familyId} name={p.name} href={liveItem?.href} summary={p.summary}
+        meta={<>{p.publisher} · {p.category}{p.added ? ' · 今回追加' : ''}<br />{liveLabels[liveItem?.status ?? 'unverified']}</>}
+        actions={<>
+          <p className={styles.researchNote}>調査時の状態：{p.status}</p>
+          {p.id === 'AG0734' && <p>架空店舗の商品・注文データを使うデモです。実店舗の商品情報ではありません。</p>}
+          {!!liveItem?.checkedAt && <p className={styles.researchNote}>接続確認：{new Date(liveItem.checkedAt).toLocaleString('ja-JP')}</p>}
+          {liveItem && <Link href={liveItem.href}>{liveItem.status === 'available' ? 'Noahで使う' : '接続方法を確認する'}</Link>}
+          <details><summary>確認資料・接続条件</summary><p>{p.summary}</p><ul>{p.requirements.map(r => <li key={r}>{r}</li>)}</ul>
+            {p.assessment && <p>{p.assessment.method}：{p.assessment.note}（{new Date(p.assessment.reviewedAt).toLocaleDateString('ja-JP')}）</p>}
+            {p.assessment?.detail && <p>{p.assessment.detail}</p>}
+            {p.protocol && <p>提供元の文書に接続方式の案内があります。現在の試験結果は稼働状態に表示します。</p>}
+            <ul>{p.sources.map(url => <li key={url}><a href={url} target="_blank" rel="noreferrer">{url}</a></li>)}</ul>
+          </details>
+        </>} />;
+    })}</NoahAgentPinGrid> : reviews.slice(start, start + 25).map(r => <article className={styles.post} key={r.key}>
         <div className={styles.postContent}><h2 className={styles.postTitle}><a href={r.url} target="_blank" rel="noreferrer">{r.name}</a></h2><p>{r.key} · {r.source} · {labels[r.decision] || r.decision}</p><p>{r.reason}</p><p className={styles.researchNote}>{r.method.startsWith('individual') ? '個別資料の精査' : '取得資料の自動一次選別'}</p></div>
       </article>)}
     {data && <div className={styles.feedEnd}><p>{total.toLocaleString('ja-JP')}件 · {current + 1} / {pages}ページ</p><button disabled={current === 0} onClick={() => setPage(current - 1)}>前へ</button> <button disabled={current + 1 >= pages} onClick={() => setPage(current + 1)}>次へ</button></div>}

@@ -2,6 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { catalog } from '../lib/catalog.ts';
+import { screen } from './fixtures/noah/screen.mjs';
+import * as compatibility from '../lib/sky-tool-compatibility.ts';
+import * as packageView from '../lib/noah-agent-package-view.ts';
+import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
+import { SKY_CITATION_AGENT_ID } from '../lib/sky-citation-agent.ts';
 import { marketplaceCommissionMinor, marketplaceProviderNetMinor } from '../lib/sky-marketplace-policy.ts';
 import { skyAiMarketplaceEntries } from '../lib/sky-ai-marketplace.ts';
 import { skyToolDetailActionLabel, skyToolUiState } from '../lib/sky-tool-ui.ts';
@@ -178,4 +183,44 @@ void test('only confirmed host mismatches are hidden; prerequisites and installa
   assert.match(marketplace, /必要ソフト・外部アカウント・接続状態は別途確認が必要/);
   assert.match(marketplace, /skyToolDetailActionLabel\(tool\)/);
   assert.equal(skyToolDetailActionLabel(catalog.find((tool) => tool.id === 'jev-router')), '導入条件を見る');
+});
+
+void test('verified marketplace Agents open their existing offer from a pin, while tools keep their own cards', async () => {
+  const record = (name, category) => {
+    const manifest = createSkyToolPackageDraft({ name, sourceKind: 'github', sourceUrl: 'https://github.com/example/tool', developerId: 'publisher', developerName: 'Publisher', license: 'MIT' });
+    manifest.fund.categories = [category];
+    return { packageKey: `${manifest.id}@${manifest.version}`, status: 'verified', installable: true, manifest };
+  };
+  const agent = record('Memo Agent', 'Agent'), tool = record('Format Tool', 'automation');
+  const offer = { packageKey: agent.packageKey, amountMinor: 300, currency: 'JPY' };
+  const ui = screen({
+    navigator: { userAgent: 'Macintosh', maxTouchPoints: 0 },
+    modules: {
+      '@/lib/catalog': { catalog: [] }, '@/lib/noah-agent-package-view': packageView,
+      '@/lib/sky-citation-agent': { SKY_CITATION_AGENT_ID },
+      '@/lib/sky-tool-compatibility': compatibility, '@/lib/sky-tool-ui': {},
+      '@/lib/use-sky-tool-context': { useSkyToolContext: () => ({}) },
+      '@/lib/sky-ai-marketplace': { skyAiMarketplaceEntries: [] },
+      '@/lib/rockstar-service-package-access': { includedRockstarServicePackageKeys: () => new Set() },
+      '@/components/sky-tool-card': { default: () => null }, '@/components/sky-tool-overview': { default: () => null },
+      '@/components/workspace-shell': { default: 'main' },
+      '@/components/ui/dialog': { Dialog: ({ open, children }) => open ? children : null, DialogTitle: 'h2', DialogDescription: 'p', DialogContent: 'dialog' },
+      '@/components/sky-commerce': {
+        CommerceNavigation: () => null, MarketplacePurchase: 'purchase',
+        commerceAmount: (minor, currency) => `${minor} ${currency}`,
+        usePublicCommerceOffers: () => ({ data: { configured: true, offers: [offer] } }),
+      },
+    },
+    fetch: async ({ url }) => url === '/api/sky/tool-registry' ? { body: { packages: [tool, agent] } } : { status: 401 },
+  });
+  const page = ui.mount('components/sky-marketplace.tsx');
+  await page.flush();
+  const pins = page.find('li').filter(node => node.props['data-agent-pin-id']);
+  assert.deepEqual(pins.map(node => node.props['data-agent-pin-id']), [SKY_CITATION_AGENT_ID, agent.manifest.id]);
+  assert.equal(page.nodes(pins[0]).find(node => node.type === 'a').props.href, '/noah/citations');
+  assert.match(page.text(pins[1]), /審査済み.*Publisher.*300 JPY \/ 買い切り/);
+  assert.equal(page.find('button', tool.manifest.name).length, 1);
+  await page.press(page.nodes(pins[1]).find(node => node.type === 'button'));
+  assert.deepEqual(page.find('purchase').map(node => node.props.offer.packageKey), [agent.packageKey]);
+  assert.deepEqual(ui.calls.map(call => call.method), ['GET', 'GET']);
 });

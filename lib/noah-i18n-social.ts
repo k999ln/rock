@@ -237,6 +237,7 @@ export const NOAH_SOCIAL_MESSAGES: Record<
     'Ver versión Mac →',
     'عرض إصدار Mac ←',
   ],
+  '掲載元と確認日': ['Listing source and date checked', '收录来源和核实日期', '등록 출처 및 확인일', 'Fuente y fecha de consulta', 'مصدر الإدراج وتاريخ التحقق'],
   '配布元・出典': ['Sources', '来源', '출처', 'Fuentes', 'المصادر'],
   確認した情報: [
     'Checked information',

@@ -26,6 +26,7 @@ function render(hash = '#timeline', snapshot = { items, social: { profile: { id:
   const modules = {
     './noah-locale': {useNoahLocale:()=>({t:x=>x,locale:'ja'})},
     './noah-agent-visual': {default:'agent-visual'},
+    './noah-agent-pin': { NoahAgentPinFace: 'agent-pin-face' },
     react: { useState: value => [value, () => {}], useRef: () => ({ current: null }), useEffect() {} },
     'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' },
     'lucide-react': new Proxy({}, { get: (_, key) => String(key) }),
@@ -53,7 +54,7 @@ void test('UI mixes posts and Agents with recommended, following and Agent-only 
   assert.ok(all.some(n=>n.props?.href==='/noah#following' && text(n)==='フォロー中'));
   assert.ok(all.some(n=>n.props?.href==='/noah#timeline' && text(n)==='おすすめ'));
   assert.ok(nodes(render('#agents')).some(n=>n.props?.href==='/noah#timeline' && text(n)==='Agentのみ'));
-  assert.ok(nodes(cards[1]).some(node => node.props?.href === '/noah/agents/agent'));
+  assert.ok(nodes(cards[1]).some(node => node.type === 'agent-pin-face' && node.props?.href === '/noah/agents/agent'));
   assert.ok(!nodes(cards[0]).some(node => node.props?.href?.startsWith('/noah/social')));
 });
 void test('Agent filter narrows the same list and retired filters return to all without private management actions', () => {
