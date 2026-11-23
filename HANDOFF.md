@@ -27,7 +27,14 @@ Claude のセッションには k999ln/rock（旧リポジトリ）が付いて�
 
 main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった。5〜7 は、それを merge 済み（ぶつかった所は Claude が解いた。応答の見出しの確かめも測り直した）。1〜3 はぶつからない。4 は `CHANGELOG.md` だけがぶつかる（`tools/merge-changelog.py` で両方の行を残せる）。どの枝も migration を足していない（`drizzle/` を触っていない）。
 
-## 今の状態（11-24 00:45。これが最新）
+## 今の状態（11-24 01:50。これが最新）
+
+- 9 本は全部 main に入った（#38・#40・#42・#43）。クラウドの直し（無料のクラウドを neuron で数える）も #44 で入った（main `6283f6a6`）。
+- **無料 Worker の配り直しは、本人の Cloudflare のログイン待ち**: Mac の Wrangler に旧アカウント（`noah-free-cloud-agents` がある方）への有効なログインが無い。本人がログインしたら、`services/noah-cloud-agents` で `npm ci`、`npx wrangler deploy --config ./wrangler.free.jsonc`、`/health` と配った版を報告する。パスワード・トークンは扱わない。Sites と Worker は、どちらを先に出しても動く。
+- **公開は #41 待ちのまま**（下の 00:45 と同じ理由）。#41 を main に入れる時の参考は `claude/ice2/pr41-on-main-2`（`8c5be853`）に作り直した: #41 の `1cca7753` を main `5631fa7c` に merge（Q4 の `noahCardOrigin`・Q5 の `macMenu` を残す。CHANGELOG と 00-index は両方の行。応答の見出しの確かめは build して測り直して PASS）、「すべて見る」を 44px（試験 1 本）、そのあと main `6283f6a6` を merge（CHANGELOG と `lib/noah-i18n.ts` は両方の行）。前の `claude/ice2/pr41-on-main`（`a6195ddd`）は古い。
+- 別スレッドの #45（Agent の説明に材料の流れ）は、main と CHANGELOG の同じ所（## 2026-11-24）を足すので、マージの前に main を merge する要がある（向こうの PR なので触らない）。
+
+## 今の状態（11-24 00:45）
 
 - マージ済み: #38（収集）・#40（ボード）・#42（参照ライブラリ）。4〜9 は #43（先 `47093b8c`）で CI 中。
 - #43 の途中で直した事: CodeQL の 2 件（`scripts/noah-public-probe.mjs`、`3f0b7341`）。main に #25 が入り task 128 を使ったので、こちらの一周の確かめは **task 129**（`codex/tasks/129-noah-ux-debug.md`）にした（`47093b8c`）。
