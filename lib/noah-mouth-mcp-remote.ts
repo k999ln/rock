@@ -30,7 +30,14 @@ const CLIENT_INFO = { name: 'noah', version: '1' };
 const TOOL_NAME = /^[A-Za-z0-9_.:/-]{1,128}$/;
 const SESSION_ID = /^[\x21-\x7e]{1,512}$/;
 
-export type NoahToolDef = { name: string; description: string; inputSchema: unknown; readOnly: boolean };
+export type NoahToolDef = {
+  name: string;
+  description: string;
+  inputSchema: unknown;
+  /** The provider's explicit output JSON Schema, when it supplied one. */
+  outputSchema?: unknown;
+  readOnly: boolean;
+};
 export type NoahMouthContext = {
   /** 検査済みの fetch。createNoahGuardedFetch を通した物を渡す。 */
   fetch: typeof fetch;
@@ -136,6 +143,12 @@ export type NoahHandshake = {
   /** 名前の形が違って入れなかった道具の数。 */
   skippedTools: number;
 };
+/**
+ * The non-secret, serializable part of a successful handshake.  A probe keeps
+ * the session private and passes this snapshot to its post-commit hook only;
+ * callers never need the session id or transport headers to capture labels.
+ */
+export type NoahHandshakeSnapshot = Pick<NoahHandshake, 'protocol' | 'serverName' | 'tools' | 'toolsSha256'>;
 
 /** `WWW-Authenticate` から、保護された資源の公開情報の場所と scope を読む。 */
 export function parseNoahWwwAuthenticate(header: string | null): { resourceMetadata: string | null; scope: string | null } {
@@ -239,7 +252,18 @@ async function rpc(session: NoahMcpSession, ctx: NoahMouthContext, method: strin
 
 /** 道具の定義の hash。名前順に並べ、決まった順の JSON にして sha256。承認した後の差し替えを見つけるのに使う。 */
 export function noahToolsSha256(tools: NoahToolDef[]): Promise<string> {
-  return sha256Hex(canonicalJson([...tools].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))));
+  // Keep the legacy wire shape byte-for-byte for tools that do not advertise
+  // outputSchema.  The optional field is included only when the provider
+  // actually supplied it, so old hashes remain valid while schema changes
+  // invalidate the new label snapshot.
+  const serialized = [...tools].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)).map((tool) => ({
+    name: tool.name,
+    description: tool.description,
+    inputSchema: tool.inputSchema,
+    ...(tool.outputSchema === undefined ? {} : { outputSchema: tool.outputSchema }),
+    readOnly: tool.readOnly,
+  }));
+  return sha256Hex(canonicalJson(serialized));
 }
 
 /**
@@ -276,7 +300,7 @@ export async function noahMcpHandshake(rawUrl: string, ctx: NoahMouthContext): P
   for (let page = 0; page < NOAH_MOUTH_LIMITS.toolPages; page++) {
     const listed = (await rpc(session, ctx, 'tools/list', cursor ? { cursor } : {}, NOAH_MOUTH_LIMITS.handshakeMs)) as { tools?: unknown; nextCursor?: unknown };
     if (!Array.isArray(listed?.tools)) throw new NoahMouthError('incompatible', '道具の一覧の形が違います。');
-    for (const raw of listed.tools as { name?: unknown; description?: unknown; inputSchema?: unknown; annotations?: { readOnlyHint?: unknown } }[]) {
+    for (const raw of listed.tools as { name?: unknown; description?: unknown; inputSchema?: unknown; outputSchema?: unknown; annotations?: { readOnlyHint?: unknown } }[]) {
       if (typeof raw?.name !== 'string' || !TOOL_NAME.test(raw.name) || seen.has(raw.name)) { skipped++; continue; }
       if (tools.length >= NOAH_MOUTH_LIMITS.maxTools) throw new NoahMouthError('too_large', '道具が多すぎます。');
       seen.add(raw.name);
@@ -284,6 +308,7 @@ export async function noahMcpHandshake(rawUrl: string, ctx: NoahMouthContext): P
         name: raw.name,
         description: typeof raw.description === 'string' ? raw.description : '',
         inputSchema: raw.inputSchema && typeof raw.inputSchema === 'object' ? raw.inputSchema : { type: 'object' },
+        ...(raw.outputSchema === undefined ? {} : { outputSchema: raw.outputSchema }),
         readOnly: raw.annotations?.readOnlyHint === true,
       });
     }
