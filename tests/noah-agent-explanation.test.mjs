@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import { noahAgentExplanation, noahExplanationWithConnection, noahShelfExplanation } from '../lib/noah-agent-explanation.ts';
 import { noahBlueprintLevels } from '../lib/noah-steps.ts';
+import { noahBlueprints } from '../lib/noah-business.ts';
 import { planNoahConnection } from '../lib/noah-connect-plan.ts';
 import { noahLaunchPlanState } from '../lib/noah-connect-source.ts';
 import { createIntakeApi } from '../lib/noah-intake-api.ts';
@@ -168,4 +169,20 @@ void test('the detail exposes material labels and review wires before expanding 
   const key = await renderNoahExplanationFixture('key', { locale: 'en' });
   assert.match(key, /class="portLabel">Input<\/span>Access key/);
   assert.doesNotMatch(key, /class="wire"/);
+});
+
+void test('the reviewer blueprint passes the script to two parallel jobs and gates the publish input', () => {
+  const plan = noahBlueprints().find(({ id }) => id === 'affiliate:fx:youtube');
+  const byId = new Map(plan.steps.map((step) => [step.id, step]));
+  const split = { from: 'script', material: '台本' };
+  assert.deepEqual(byId.get('video').flow.dataFrom, [split]);
+  assert.deepEqual(byId.get('voice').flow.dataFrom, [split]);
+  assert.ok(noahBlueprintLevels(plan.steps).some((level) =>
+    level.includes(byId.get('video')) && level.includes(byId.get('voice'))));
+  assert.equal(byId.get('finance-review').flow.gate, true);
+  const next = byId.get('publish:youtube');
+  assert.ok(next.flow.dataFrom.some(({ from }) => from === 'finance-review'));
+  assert.ok(next.after.some((id) => id.startsWith('signup:')));
+  assert.ok(next.flow.dataFrom.every(({ from }) => !from.startsWith('signup:')));
+  assert.ok(plan.steps.every(({ flow }) => flow && !flow.branch && !flow.repeat));
 });
