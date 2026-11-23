@@ -65,13 +65,14 @@ class NoahPythonJob(DurableObject):
             raise ValueError('Invalid request')
         async with RUN_LOCK:
             from adapters import CAPABILITY, Stopped, hermes, boss, live
-            from runtime_shared import ExecutionError
+            from runtime_shared import ExecutionError, MODEL_META
             if await self.ctx.storage.get('started'):
                 raise ValueError('Execution already admitted; not replayed')
             await self.ctx.storage.put('started', True)
             await self.ctx.storage.setAlarm(__import__('time').time() * 1000 + 86400000)
             home = Path(tempfile.mkdtemp(prefix='noah-job-'))
             token = CAPABILITY.set(capability)
+            meta_token = MODEL_META.set([])
             try:
                 live()
                 result = (hermes if profile == 'hermes' else boss)(prompt, home)
@@ -83,13 +84,14 @@ class NoahPythonJob(DurableObject):
             except Stopped:
                 return json.dumps({'error': {'code': 'execution_stopped'}})
             except ExecutionError as exc:
-                return json.dumps({'error': {'code': exc.code}})
+                return json.dumps({'error': {'code': exc.code, 'models': MODEL_META.get()}})
             except Exception:
                 # Upstream tracebacks can contain private input and are longer
                 # than the saved Work error. Never transmit them to the UI.
                 return json.dumps({'error': {'code': 'official_execution_failed'}})
             finally:
                 CAPABILITY.reset(token)
+                MODEL_META.reset(meta_token)
                 shutil.rmtree(home)
 
     async def alarm(self):

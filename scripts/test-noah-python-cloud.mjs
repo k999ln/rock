@@ -36,10 +36,12 @@ try {
   const wrong=await run({profile:'time',tool:'read_file',arguments:{}});assert.equal(wrong.status,422);
   const nonce='private-plan-'+randomUUID(), id=randomUUID();
   const hermes=await run({id,profile:'hermes',prompt:nonce});assert.equal(hermes.status,200,hermes.error);assert.equal(hermes.calls.length,2);
+  assert.deepEqual(hermes.calls[0].tools?.map(t=>t.function?.name).sort(),['memory','todo']);
   assert.deepEqual(JSON.parse(decode(hermes,'plan.json')).map(t=>t.content),[nonce]);assert.match(decode(hermes,'MEMORY.md'),new RegExp(nonce));
   assert.deepEqual(hermes.data.operations.map(o=>[o.name,o.ok]),[['todo',true],['memory',true]]);
   assert.ok(hermes.calls.every(v=>Buffer.byteLength(JSON.stringify(v))<32768));
   const replay=await run({id,profile:'hermes',prompt:nonce});assert.equal(replay.status,422);assert.equal(replay.calls.length,0);
+  const resumed=await run({profile:'hermes',mode:'no-tool-once',prompt:'Recover the actual tool action'});assert.equal(resumed.status,200,JSON.stringify(resumed.error));assert.equal(resumed.calls.length,3);assert.deepEqual(JSON.parse(decode(resumed,'plan.json')).map(t=>t.content),['Recover the actual tool action']);
   const isolated=await run({profile:'hermes',mode:'read',prompt:'Read a fresh job'});assert.equal(isolated.status,200,isolated.error);assert.deepEqual(JSON.parse(decode(isolated,'plan.json')),[]);assert.ok(!JSON.stringify(isolated).includes(nonce));assert.ok(!isolated.data.files.some(f=>f.name==='MEMORY.md'));
   for(const mode of ['no-tool','bad-tool','stopped','stop-model']){const result=await run({profile:'hermes',mode});assert.equal(result.status,422,mode);assert.ok(!result.data);if(mode==='no-tool')assert.equal(result.error.code,'hermes_tool_not_called');}
   const slow=run({profile:'hermes',mode:'slow',prompt:'Slow independent plan'});
@@ -51,7 +53,7 @@ try {
   const bad=await run({profile:'boss',mode:'bad-boss',prompt:'Fresh invalid response'});assert.equal(bad.status,422);assert.ok(!bad.data);assert.ok(!JSON.stringify(bad).includes(prompt));
   for(const [mode,code] of [['missing-choices','model_response_shape'],['empty-content','model_empty_content'],['output-limit','model_output_limit'],['truncated-json','model_output_limit'],['invalid-json','model_json_invalid']]) {
     const failed=await run({profile:'boss',mode,prompt:'Safe failure classification'});
-    assert.equal(failed.status,422);assert.deepEqual(failed.error,{code});assert.equal(failed.calls.length,1);assert.ok(!failed.data);
+    assert.equal(failed.status,422);assert.equal(failed.error.code,code);assert.deepEqual(Object.keys(failed.error).sort(),['code','models']);assert.equal(failed.error.models.length,1);assert.equal(failed.calls.length,1);assert.ok(!failed.data);
   }
   console.log('Python workerd: official Time, Hermes todo/memory, boss CLI; hashes, isolation, replay, stop/error gates and @input passed. Model responses were fixtures.');
 } finally {try{if(typeof child.pid==='number')process.kill(-child.pid,'SIGTERM');}catch{}await new Promise(r=>setTimeout(r,200));await rm(temporary,{recursive:true,force:true});}

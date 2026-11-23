@@ -62,7 +62,11 @@ export function validatePythonResult(profile, raw) {
       execution_stopped: '実行が停止したか、時間の上限に達しました。',
     };
     const code = value.error.code;
-    throw Error(Object.hasOwn(messages, code) ? `${messages[code]} (${code})` : '公式Agentの処理に失敗しました。');
+    const models = value.error.models;
+    const last = Array.isArray(models) && models.length <= 4 ? models.at(-1) : null;
+    const counts = last && Number.isInteger(last.inputTools) && last.inputTools >= 0 && last.inputTools <= 32 && Number.isInteger(last.outputTools) && last.outputTools >= 0 && last.outputTools <= 32 && ['stop', 'length', 'tool_calls', 'other'].includes(last.finish)
+      ? ` models=${models.length},tools=${last.inputTools}/${last.outputTools},finish=${last.finish}` : '';
+    throw Error(Object.hasOwn(messages, code) ? `${messages[code]} (${code}${counts})` : '公式Agentの処理に失敗しました。');
   }
   if (typeof value.text !== 'string' || !value.text.trim() || !Array.isArray(value.files) || !Array.isArray(value.operations) || !value.operations.length || value.operations.length > 12 || !value.operations.some(o => o.ok === true) || value.operations.some(o => !names.includes(o.name) || typeof o.ok !== 'boolean' || !/^[a-f0-9]{64}$/.test(o.inputSha256) || !/^[a-f0-9]{64}$/.test(o.resultSha256)) || value.files.some(f => f.name === 'noah-execution.json')) throw Error('公式Pythonの処理結果を確認できませんでした。');
   return value;

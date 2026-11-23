@@ -58,6 +58,11 @@ def hermes(prompt, home):
         agent._print_fn = lambda *args, **kwargs: None
         stage = 'hermes_conversation_failed'
         result = agent.run_conversation(prompt)
+        if result.get('completed') and not result.get('error') and not MODEL_STATUS.get() and not any(m.get('role') == 'tool' for m in result.get('messages', [])):
+            # Continue the official agent once when the model merely describes
+            # an action. The shared capability still allows four calls total.
+            live()
+            result = agent.run_conversation('The previous answer did not execute a tool. Call the actual todo or memory function now to perform the original request, then briefly report its real result. Do not just describe or quote a tool call.', conversation_history=result.get('messages', []))
         if result.get('failed') or result.get('error') or result.get('interrupted') or not result.get('completed'):
             raise ExecutionError(MODEL_STATUS.get() or 'hermes_incomplete')
         stage = 'hermes_result_invalid'

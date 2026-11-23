@@ -8,17 +8,19 @@ class Model extends RpcTarget {
   async complete(encoded) {
     const input = JSON.parse(encoded);
     this.calls.push(input);
+    if(this.input.profile==='hermes' && this.calls.length===1 && JSON.stringify(input.tools?.map(t=>t.function?.name).sort())!==JSON.stringify(['memory','todo'])) throw Error('Official Hermes tool schemas were not sent');
     if(this.input.mode === 'slow' && this.calls.length === 1){pending=true;await new Promise(r=>setTimeout(r,1500));pending=false;}
     if (this.input.mode === 'stop-model') throw Error('stopped during model');
     const nonce = this.input.prompt;
     let message = { role: 'assistant', content: nonce };
-    if (input.tools) {
-      if (this.calls.length === 1 && this.input.mode !== 'no-tool') {
+    if (this.input.profile === 'hermes') {
+      if ((this.calls.length === 1 && this.input.mode !== 'no-tool-once' || this.calls.length === 2 && this.input.mode === 'no-tool-once') && this.input.mode !== 'no-tool') {
         const operations = this.input.mode === 'read'
           ? [['todo', {}]]
           : this.input.mode === 'bad-tool' ? [['terminal', {command:'false'}]]
           : [['todo', {todos:[{id:'one',content:nonce,status:'pending'}]}], ['memory', {action:'add',target:'memory',content:nonce}]];
         message = {role:'assistant',content:null,tool_calls:operations.map(([name,args],i)=>({id:`call${i}`,type:'function',function:{name,arguments:JSON.stringify(args)}}))};
+        if(message.tool_calls.some(c=>!input.tools?.some(t=>t.function?.name===c.function.name)) && this.input.mode!=='bad-tool') throw Error('Fixture cannot call an unadvertised tool');
       }
     } else {
       message.content = this.input.mode === 'bad-boss' ? '{}' : JSON.stringify({job_summary:nonce,questions:Array.from({length:5},(_,i)=>({question:`Question ${i+1}: ${nonce}`,framework:'Use an example'})),preparation_tips:[nonce]});

@@ -9,6 +9,7 @@ MODEL = '@cf/openai/gpt-oss-20b'
 CAPABILITY = ContextVar('noah_model_capability')
 OUTPUT = ContextVar('noah_boss_output')
 MODEL_STATUS = ContextVar('noah_model_status', default=None)
+MODEL_META = ContextVar('noah_model_meta', default=None)
 
 class ExecutionError(Exception):
     """Only a fixed error code crosses the private RPC boundary."""
@@ -33,6 +34,11 @@ def model_response(payload):
         raise Stopped('Model admission closed') from exc
     live()
     choice = body.get('choices', [None])[0] if isinstance(body, dict) and body.get('choices') else None
+    meta = MODEL_META.get()
+    if meta is not None and len(meta) < 4:
+        message = choice.get('message', {}) if isinstance(choice, dict) else {}
+        finish = choice.get('finish_reason') if isinstance(choice, dict) else None
+        meta.append({'inputTools': min(len(payload.get('tools', [])), 32), 'outputTools': min(len(message.get('tool_calls') or []), 32), 'finish': finish if finish in {'stop', 'length', 'tool_calls'} else 'other'})
     if not isinstance(choice, dict):
         MODEL_STATUS.set('model_response_shape')
     elif choice.get('finish_reason') == 'length':
