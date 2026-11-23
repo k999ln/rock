@@ -118,4 +118,4 @@ PixelでMemoryを検索した際、従来の掲載familyだけを対象にした
 
 Timeの公式MCP、bossの公式面接準備CLI、Hermesの公式AIAgent＋todo/memoryを非公開Python DOへ追加。公式wheelのSHA照合・headless範囲の梱包、共通モデルRPC、ジョブごとの一時領域とisolateロック、同一Workへの結果callbackを使用する。Hermesのshell/外部Web/一般ファイル操作、bossの検索/応募は非対応とUIに明記。新規契約・課金・D1 migrationなし。
 
-ローカルworkerdの固定モデルで3種の実処理・成果hash・依頼間分離・再送拒否・停止・不正Tool/結果拒否・@入力固定パスを確認。既存26試験＋追加5境界試験成功。Python配備はサイズ制約への梱包調整中。本番実モデル・ブラウザ全閉鎖後の保存・スマホ再読込、全体verify/CIとPRは未完了。これらを完了してから現行状態を更新する。
+ローカルworkerdの固定モデルで3種の実処理・成果hash・依頼間分離・再送拒否・停止・不正Tool/結果拒否・@入力固定パスを確認。既存26試験＋追加5境界試験成功。非公開Python Workerを既存無料環境へ配備済み（8f4fc1c8-dd3d-4caf-8e3f-6265c4f87a8a）。応答待ち中でも接続確認が返る試験と、固定依存lockからの再現も成功。本番実モデル・ブラウザ全閉鎖後の保存・スマホ再読込、全体verify/CIは継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)）。これらを完了してから現行状態を更新する。
