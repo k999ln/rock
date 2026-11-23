@@ -74,6 +74,9 @@ void test('private media and the published edition retain the exact cover, byte 
   const read = async (owner,range) => f.publisher.cover(await request(link,{owner,headers:range?{Range:range}:{}}),release.packageKey);
   assert.equal((await read()).status,404); assert.equal((await read('bob')).status,404);
   assert.equal((await read('alice')).status,200);
+  const theater = noahReleaseCoverUrl(release.packageKey, release.manifestSha256, true);
+  const theaterRead = async () => f.publisher.cover(await request(theater, { owner:'alice' }), release.packageKey);
+  assert.equal((await theaterRead()).status,404);
   const submit = {action:'submit',packageKey:release.packageKey,manifestSha256:release.manifestSha256,status:'submitted'};
   assert.equal((await f.publisher.transition(await request('/api/noah/publisher',{owner:'alice',method:'PATCH',body:submit}))).status,200);
   assert.equal((await read()).status,404);
@@ -81,6 +84,7 @@ void test('private media and the published edition retain the exact cover, byte 
   const observed = Date.now();
   f.sqlite.prepare("INSERT INTO sky_tool_package_reviews(id,package_key,manifest_sha256,reviewer_id,decision,checks_json,evidence_json,notes,reviewed_at,expires_at) VALUES('review',?,?,'independent','verified','{}','{}','',?,?)").run(release.packageKey,release.manifestSha256,observed,observed+3_600_000);
   const chunk = await read(null,'bytes=0-1'); assert.equal(chunk.status,206); assert.equal(chunk.headers.get('Content-Range'),'bytes 0-1/'+png.length); assert.deepEqual(Buffer.from(await chunk.arrayBuffer()),png.subarray(0,2));
+  assert.equal((await theaterRead()).status,200);
   assert.equal((await read(null,'bytes=9000-')).status,416);
   assert.equal((await f.publisher.cover(await request(noahReleaseCoverUrl(release.packageKey,'1'.repeat(64))),release.packageKey)).status,404);
   const clock = t.mock.method(Date,'now',()=>observed + 3_600_001);

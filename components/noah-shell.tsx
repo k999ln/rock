@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNod
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, Store } from 'lucide-react';
+import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, Store, Clapperboard } from 'lucide-react';
 import { noahLegacyHref, noahMacMenuAllowed, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
@@ -49,7 +49,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const personal = personalRoutes.includes(localPath.split('/')[0]) || /^agents\/[0-9a-f-]{36}$/i.test(localPath);
   const primary = publicStore ? [
     { href: base, label: 'ストア', Icon: Store, selected: !personal },
-    { href: `${base}/my`, label: 'マイAgent', Icon: Bot, selected: personal },
+    { href: `${base}/my`, label: 'シアター', Icon: Clapperboard, selected: personal },
   ] : [
     { href: timeline, label: 'タイムライン', Icon: Home, selected: isTimeline },
     { href: `${base}/explore`, label: 'Agent', Icon: Bot, selected: pathname.endsWith('/explore') },

@@ -2,6 +2,27 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { screen } from './fixtures/noah/screen.mjs';
 import * as cover from '../lib/noah-cover.ts';
+import * as guide from '../lib/noah-author-guide.ts';
+
+void test('authors can paste or import a short .md guide and an old read cannot replace newer text', async () => {
+  const ui = screen({modules:{ '@/lib/noah-author-guide':guide }});
+  const props = { value:'', onChange(text) { props.value = text; } };
+  const page = ui.mount('components/noah-guide-editor.tsx', props);
+  const file = () => page.find('input')[0];
+  const upload = async value => {
+    file().props.onChange({currentTarget:{files:[value], value:'picked'}});
+    await page.flush();
+  };
+  await upload(new File(['# Guide\r\n1. Open it'],'guide.md'));
+  assert.equal(props.value,'# Guide\n1. Open it');
+  await upload(new File(['x'.repeat(2001)], 'too-long.md'));
+  assert.equal(props.value, '# Guide\n1. Open it'); assert.ok(page.text().includes('2,000文字'));
+  let release;
+  await upload({name:'older.md',size:40,text:()=>new Promise(resolve=>{ release=resolve; })});
+  page.find('textarea')[0].props.onChange({currentTarget:{value:'newer manual edit'}});
+  release('older file'); await page.flush();
+  assert.equal(props.value,'newer manual edit');
+});
 
 function picker() {
   const props = { name:'Memory', summary:'関係を照合する', value:{ kind:'later' }, onChange(value) { props.value = value; } };

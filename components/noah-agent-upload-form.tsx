@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { NOAH_MANIFEST_LIMIT, NOAH_SOURCE_LIMIT, NOAH_PERMISSIONS, noahAgentTemplate, noahSha256, parseNoahAgentManifest, type NoahAgentManifest } from '@/lib/noah-agent-upload';
 import NoahCoverPicker, { coverReady, type CoverChoice } from './noah-cover-picker';
+import NoahGuideEditor from './noah-guide-editor';
 import NoahDraftStoragePanel from './noah-draft-storage';
 import type { NoahDraft, NoahDraftContent } from '@/lib/noah-drafts';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
@@ -72,7 +73,7 @@ export default function NoahAgentUploadForm() {
   const hashing = Boolean(source && rights && sourceDigest?.file !== source);
   const sourceSignature = source && rights ? JSON.stringify([source.name, sourceDigest?.file === source ? sourceDigest.hash : null]) : '';
   const draftSignature = draftContent + sourceSignature;
-  const hasInput = Boolean(manifest.name || manifest.summary || code || source || testCode);
+  const hasInput = Boolean(manifest.name || manifest.summary || manifest.guideMarkdown || code || source || testCode);
   const saveDraft = useCallback(async () => {
     if (!scope || draftLoading || restoreFailed || hashing || draft.current.busy) return false;
     if (!hasInput || draft.current.saved === draftSignature) return true;
@@ -294,6 +295,15 @@ export default function NoahAgentUploadForm() {
       <label>何をしてくれるAgent？<textarea required rows={4} maxLength={2000} value={manifest.summary} onChange={e => change({ summary: e.target.value })} placeholder="できる仕事、必要な入力、受け取れる成果を書いてください。" /></label>
       <NoahCoverPicker key={scope} name={manifest.name} summary={manifest.summary} value={cover}
         onChange={value => { setCover(value); setId(''); }} />
+      <NoahGuideEditor key={scope} value={manifest.guideMarkdown ?? ''} onChange={value => {
+        setManifest(current => {
+          const next = { ...current };
+          if (value.trim()) next.guideMarkdown = value;
+          else delete next.guideMarkdown;
+          return next;
+        });
+        setId('');
+      }} />
       {cover.kind !== 'later' && <small>表紙は「自分のNoahに保存」で登録します。下書きから再開するときは、表紙を選び直してください。</small>}
       <div className={styles.columns}><label>作者<input required maxLength={100} value={manifest.author} onChange={e => change({ author: e.target.value })} /></label><label>版<input required value={manifest.version} onChange={e => change({ version: e.target.value })} placeholder="1.0.0" /></label></div>
       <label>どう使うAgent？<select value={manifest.adapter} onChange={e => { const { runtime: _runtime, ...base } = manifest; setManifest({ ...base, adapter: e.target.value as NoahAgentManifest['adapter'], endpointUrl: e.target.value === 'source' ? null : '' }); setId(''); }}>

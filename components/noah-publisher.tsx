@@ -40,7 +40,7 @@ export default function NoahPublisher() {
       const sourceResponse=await fetch('/api/noah/agents',{cache:'no-store'}), available=await sourceResponse.json() as {agents:NoahUpload[];ownerScope:string};
       if (!mounted.current) return;
       if (!sourceResponse.ok || available.ownerScope!==data.ownerScope) throw new Error('本人の登録済みコードを確認できません。読み直してください。');
-      setUploads(available.agents.filter(a=>a.uploadState==='ready'&&a.source));
+      setUploads(available.agents.filter(a=>a.uploadState==='ready' && (a.source || a.manifest.cover || a.manifest.guideMarkdown)));
       owner.current=data.ownerScope; setScope(data.ownerScope); setRows(data.packages); setError('');
     } catch(e) { if(mounted.current) {setRows([]); setScope(''); setError(e instanceof Error?e.message:'読み込めません。');} }
     finally {if(mounted.current) setLoading(false);}
@@ -74,7 +74,7 @@ export default function NoahPublisher() {
       if (uploadId && !upload) throw new Error('選択した登録版を読み直してください。');
       void mutate('POST', {
         manifest, confirmations: { ...checks, distributeSource },
-        ...(upload ? { upload:{id:upload.id,manifestSha256:upload.manifestSha256,sourceSha256:upload.source!.sha256} } : {}),
+        ...(upload?.source ? { upload:{id:upload.id,manifestSha256:upload.manifestSha256,sourceSha256:upload.source.sha256} } : {}),
         ...(cover.kind === 'existing' && upload ? { coverUploadId:upload.id } : {}),
       }, 'file' in cover ? cover.file : undefined);
     } catch(e) {setError(e instanceof Error?e.message:'仕様を確認してください。');}
@@ -86,10 +86,10 @@ export default function NoahPublisher() {
     {notice&&<output className={styles.notice}>{notice}</output>}
     <section aria-label="公開仕様の登録"><h2>1. 公開仕様を用意する</h2>
       <fieldset className={styles.fields} disabled={busy||blocked||!scope}>
-        <label>配布する保存済みコード（任意）<select value={uploadId} onChange={e=>{setUploadId(e.target.value);setDistributeSource(false);setCover({kind:'later'});edit('');}}><option value="">ファイルを添付しない</option>{uploads.map(a=><option key={a.id} value={a.id}>{a.manifest.name} · {a.manifest.version} · {a.source!.sha256.slice(0,12)}</option>)}</select></label>
+        <label>登録済みのAgentから用意する（任意）<select value={uploadId} onChange={e=>{setUploadId(e.target.value);setDistributeSource(false);setCover({kind:'later'});edit('');}}><option value="">新しく用意する</option>{uploads.map(a=><option key={a.id} value={a.id}>{a.manifest.name} · {a.manifest.version}{a.source && " · " + a.source.sha256.slice(0,12)}</option>)}</select></label>
         <NoahPublicationForm key={uploadId+scope} upload={uploads.find(a=>a.id===uploadId)} ownerScope={scope} disabled={busy||blocked||!scope} onDirty={()=>edit('')} onBuild={value=>{edit(value);setNotice('公開仕様を用意しました。権利・料金・権限・試験結果を確認して保存してください。');}}/>
-        {uploadId&&<label className={styles.check}><input type="checkbox" checked={distributeSource} onChange={e=>setDistributeSource(e.target.checked)}/>選択した保存版コードを、審査後に購入者・利用権を持つ人へ配布することを確認した</label>}
-        {uploadId&&<p>保存版のコードとhashをこの公開仕様に固定します。原本は本人用のままです。コードの添付だけでは接続・実行できる状態にはなりません。</p>}
+        {selectedUpload?.source&&<label className={styles.check}><input type="checkbox" checked={distributeSource} onChange={e=>setDistributeSource(e.target.checked)}/>選択した保存版コードを、審査後に購入者・利用権を持つ人へ配布することを確認した</label>}
+        {selectedUpload?.source&&<p>保存版のコードとhashをこの公開仕様に固定します。原本は本人用のままです。コードの添付だけでは接続・実行できる状態にはなりません。</p>}
         <details><summary>高度な設定 · JSONの読み込み・編集</summary>
         <label>仕様ファイルを読み込む（JSON・128 KiBまで）<input type="file" accept=".json,application/json" onChange={e=>void readFile(e.target.files?.[0])}/></label>
         <label>公開する仕様<textarea value={code} onChange={e=>edit(e.target.value)} rows={16} spellCheck={false} placeholder="公開仕様のJSONを貼り付ける、または上でひな型を作成"/><small>APIキー・パスワード・非公開コードは含めないでください。保存した版は上書きせず、新しい版として登録します。</small></label>
@@ -98,7 +98,7 @@ export default function NoahPublisher() {
           value={cover} onChange={value => { setCover(value); setChecks(emptyChecks()); }}
           existing={selectedUpload?.manifest.cover ? { src:noahPrivateCoverUrl(selectedUpload.id), type:selectedUpload.manifest.cover.type } : undefined} />}
         {(Object.keys(confirmations) as Check[]).map(k=><label key={k} className={styles.check}><input type="checkbox" checked={checks[k]} onChange={e=>setChecks(v=>({...v,[k]:e.target.checked}))}/>{confirmations[k]}</label>)}
-        <button className={styles.primary} disabled={!code||!coverValid||!Object.values(checks).every(Boolean)||Boolean(uploadId&&!distributeSource)} onClick={save}>{busy?'処理中…':'公開仕様を保存する'}</button>
+        <button className={styles.primary} disabled={!code||!coverValid||!Object.values(checks).every(Boolean)||Boolean(selectedUpload?.source&&!distributeSource)} onClick={save}>{busy?'処理中…':'公開仕様を保存する'}</button>
       </fieldset>
     </section>
     <section aria-label="自分の公開仕様"><h2>2. 審査提出・公開状態</h2>{loading&&<p>読み込み中…</p>}{!loading&&!rows.length&&!error&&<p>登録した公開仕様はありません。</p>}

@@ -30,6 +30,9 @@ void test('signed-out help and device settings lead to the optional Mac runner, 
   assert.ok(devices.find('section').some(node => node.props.id === 'mac'));
   assert.equal(href(ui.mount('components/sky-service-help.tsx'), 'Mac用Noahと導入手順を見る'), '/noah/devices#mac');
   const guide = devices;
+  assert.equal(href(guide, 'Agentを使う'), '/noah/my?view=agents');
+  const selected = ui.mount('components/noah-mac-handoff.tsx', { initialAgent: 'memory' });
+  assert.equal(href(selected, 'Agentを使う'), '/noah/agents/memory');
   const zip = href(guide, 'Mac用Noahをダウンロード');
   const checksum = href(guide, 'ZIPのSHA-256を確認');
   assert.equal(zip, '/noah-downloads/Noah-Mac.zip');
