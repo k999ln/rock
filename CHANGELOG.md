@@ -1,3 +1,7 @@
+## 2026-11-23
+
+- Noah の「Noahが読んだ」を、リポジトリのファイル `data/noah-scout/leads.json` からクラウドの収集機が載せる形にした（task 125、Opus / Noelle）。読んだ人（Codex の Luna Max・Claude）はファイルに足す PR を出すだけで、運営の Mac に掲載の鍵を置かなくてよい。ファイルに無い出所は送らないので、前の掲載を空で上書きしない。最初の 1 件として、本人が「これいれて」と言った Switch（sandbox-quantum/switch）を、README・LICENSE・公式の手順書まで読んで日本語で書いた。
+
 ## 2026-11-22
 
 - Noah が Switch（sandbox-quantum/switch）を自分で拾えなかった原因を直した（task 125、Opus / Noelle。本人指示「こういう便利機能を私がツイッターで検索するんじゃなくて Noah にやらせたい」）。GitHub は Agent の道具の話題（ai-agents・multi-agent・agent-orchestration・claude-code・codex）も読み、作られたのが前でも 1 日に 50 以上かつ 2% 以上スターが伸びた repo を拾う。Product Hunt の公開フィードから Agent・AI の道具だけを拾う。Codex の Luna Max が毎日 X を読み、配布元まで読んで日本語で書いた理解を「Noahが読んだ」として載せる口を作った。まとめ役 20 人は `data/noah-scout-curators.json`。配備・X のアカウント・毎日の読み取りは Codex（`codex/tasks/125-noah-scout.md`）。トップの最初の列をパッケージにする指示書も書いた（`codex/tasks/126-noah-packages-first.md`、[PR #421](https://github.com/k999ln/rock/pull/421)）。

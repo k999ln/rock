@@ -1,0 +1,18 @@
+{
+  "schema": "noah-scout-leads/1",
+  "note": "Noah が読んで理解した紹介（task 125）。収集機が毎回まとめて「Noahが読んだ」の列へ載せる。1 件ごとに、配布元（README・公式の頁・LICENSE）まで読んで確かめた事だけを日本語で書く。投稿の文は写さない。foundAt から 30 日で載らなくなる。形は scripts/noah-collector-social.mjs の scoutFileItems。",
+  "leads": [
+    {
+      "project": "https://github.com/sandbox-quantum/switch",
+      "foundAt": "2026-11-22T10:36:00Z",
+      "readBy": "Claude（2026-11-22。README・LICENSE・docs/official の getting-started・agent-protocol・messaging-apps を読んだ。ノエルの依頼「これいれて」）",
+      "understanding": {
+        "name": "Switch（Switch Buddy）",
+        "maker": "SandboxAQ",
+        "page": "https://github.com/sandbox-quantum/switch",
+        "run": "mac",
+        "summary": "Slack・Discord・Telegram・Mattermost のチャンネルを「部屋」にして、人と複数の AI（Claude Code・Codex・Cursor・OpenCode など）が同じ会話と文脈で一緒に働けるようにする、無料公開のソフト（Teams は外から届くサーバーが要る）。案内役の Switch Buddy に話しかけるだけで、Agent と部屋を作り、チャットアプリをつなぐ所まで進む。動かすには Mac・Windows・Linux に画面アプリ（Switch Console）を入れ、自分のパソコンかサーバーで Switch を動かす。スマホのチャットアプリから話しかけられるが、スマホだけでは動かない（Switch Cloud は準備中）。Switch は無料で、AI は自分の Claude や ChatGPT の契約を使う。使用許諾は Apache 2.0 に Commons Clause が付き、Switch を動かす事自体を有料のサービスとして売る事はできない。画面アプリは匿名の利用統計を送る設定が最初から入っている（切れる）。"
+      }
+    }
+  ]
+}

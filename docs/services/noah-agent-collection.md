@@ -81,7 +81,7 @@ GitHub ActionsのLinux runnerで5分ごとに期限を確認し、同じ収集�
 | GitHub の急な伸び（`github-rising`） | Agent の道具の話題ごとに、直近 7 日に更新があるスター 300 以上の repo を 100 件。スターの数を残し、1 日に 50 以上かつ全体の 2% 以上伸びた物を拾う。出た時は、Noah が初めて伸びを確かめた時 | 6 時間 |
 | GitHub の新着（`github-mcp`） | MCP に加えて ai-agents・multi-agent・agent-orchestration・claude-code・codex の話題 | 2 時間 |
 | Product Hunt（`producthunt`） | 公開の Atom フィード。Agent・AI の道具の語がある物だけ。作った人の名前は載せない | 6 時間 |
-| Noahが読んだ（`noah-read`） | Codex の Luna Max が、Noah 用の X アカウントのリスト「Noah scouts」（`data/noah-scout-curators.json`）を 1 日 1 回読み、投稿・引用元・配布元まで読んで日本語で書いた理解。1 枚のカードの説明の先頭に出る | 1 日 |
+| Noahが読んだ（`noah-read`） | Codex の Luna Max が、Noah 用の X アカウントのリスト「Noah scouts」（`data/noah-scout-curators.json`）を 1 日 1 回読み、投稿・引用元・配布元まで読んで日本語で書いた理解。`data/noah-scout/leads.json` に書き、クラウドの収集機が毎回まとめて載せる（2026-11-23 から。運営の Mac に鍵を置かない）。1 枚のカードの説明の先頭に出る | 1 日 |
 
 本番の受け口が新しい出所をまだ知らない間（Sites の配備の前）は、収集機はその出所を `not_ready` として飛ばし、失敗にしない。
 
