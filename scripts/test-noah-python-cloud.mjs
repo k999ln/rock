@@ -11,7 +11,7 @@ const folder = resolve(root,'services/noah-cloud-agents/python');
 const temporary = await mkdtemp(resolve(tmpdir(),'noah-python-test-'));
 const port = 18993;
 const config = resolve(temporary,'wrangler.jsonc');
-await writeFile(config,JSON.stringify({name:'noah-python-test-host',main:resolve(folder,'test-host.mjs'),compatibility_date:'2026-10-01',durable_objects:{bindings:[...['time','boss','hermes'].map(profile=>({name:profile==='time'?'PYTHON':'PYTHON_'+profile.toUpperCase(),class_name:'NoahPythonJob',script_name:'noah-python-cloud-agents'+(profile==='time'?'':'-'+profile)}))]}}));
+await writeFile(config,JSON.stringify({name:'noah-python-test-host',main:resolve(folder,'test-host.mjs'),compatibility_date:'2026-10-01',durable_objects:{bindings:['time','boss','hermes'].map(profile=>({name:profile==='time'?'PYTHON':'PYTHON_'+profile.toUpperCase(),class_name:'NoahPythonJob',script_name:'noah-python-cloud-agents'+(profile==='time'?'':'-'+profile)}))}}));
 const command = process.env.NOAH_PYTHON_WRANGLER || resolve(root,'services/noah-cloud-agents/node_modules/.bin/wrangler');
 const child = spawn(command,['dev','--config',config,...['wrangler.jsonc','wrangler.boss.jsonc','wrangler.hermes.jsonc'].flatMap(name=>['--config',resolve(folder,name)]),'--ip','127.0.0.1','--port',String(port),'--persist-to',resolve(temporary,'state')],{cwd:folder,stdio:['ignore','pipe','pipe'],detached:true});
 let output = '';
