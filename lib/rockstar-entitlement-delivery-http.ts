@@ -67,12 +67,13 @@ function parseCodeKeyring(value: string | undefined): RockstarEntitlementCodeKey
 }
 
 async function authorizeSeller(request: Request, config: RuntimeConfig) {
+  // 鍵を持たない人には、設定の有無（売り手の一覧・鍵の束が無い事）を返さない。先に 401 にする。
+  const match = /^Bearer ([A-Za-z0-9_-]{32,256})$/.exec(request.headers.get('authorization') ?? '');
+  if (!match) return { ok: false as const, status: 401, code: 'UNAUTHORIZED' };
   const sellers = parseSellerRegistry(config.ROCKSTAR_ENTITLEMENT_DELIVERY_SELLERS);
   if (!sellers) return { ok: false as const, status: 503, code: 'SELLER_REGISTRY_UNCONFIGURED' };
   const keyring = parseCodeKeyring(config.ROCKSTAR_ENTITLEMENT_DELIVERY_CODE_KEYS);
   if (!keyring) return { ok: false as const, status: 503, code: 'DELIVERY_KEYS_UNCONFIGURED' };
-  const match = /^Bearer ([A-Za-z0-9_-]{32,256})$/.exec(request.headers.get('authorization') ?? '');
-  if (!match) return { ok: false as const, status: 401, code: 'UNAUTHORIZED' };
   const tokenHash = await sha256Hex(match[1]);
   let issuerId: string | null = null;
   for (const seller of sellers) {

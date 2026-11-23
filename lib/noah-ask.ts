@@ -16,6 +16,7 @@ import { isNoahManagedWork, noahManagedWorkView, listNoahManagedWork } from './n
  */
 import { noahDelivery, noahExpectsImage } from './noah-output-receipt.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
+import { createNoahBrowserQuota, NOAH_BROWSER_QUOTA_MESSAGE } from './noah-browser-quota.ts';
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { finishGoneNoahAsk, finishNoahAsk, noahAskRunGone, noahAskView, NOAH_ASK_COLUMNS, NOAH_ASK_END_MESSAGES, NOAH_ASK_STOP_MESSAGES, type NoahAskRow } from './noah-ask-store.ts';
 import { createNoahConnectService, type NoahConnectApiDependencies, type NoahConnectDependencies } from './noah-connect.ts';
@@ -83,6 +84,8 @@ export function createNoahAskService(deps: NoahAskDependencies) {
   const prepare = (sql: string, ...args: (string | number | null)[]) => db.prepare(sql).bind(...args);
   const connections = createNoahConnectService(deps);
   const hands = createNoahUserHandshake({ ...deps, hostHandshakes: flags.askLimits.hostHandshakes });
+  // ブラウザだけの本人を全員まとめた、1 日の依頼の上限（task 129 の D1）。
+  const browserQuota = createNoahBrowserQuota(db, now);
   const readOne = (owner: string, id: string) => prepare(ONE, id, owner).first<NoahAskRow>();
   /** 応答の後に回してよい仕事（握手のセッションを閉じる要求）。 */
   const afterwards = async (work: Promise<unknown>) => { if (deps.waitUntil) deps.waitUntil(work); else await work; };
@@ -121,6 +124,7 @@ export function createNoahAskService(deps: NoahAskDependencies) {
       .first<{ open: number; last_minute: number; last_day: number; host_last_minute: number }>();
     const gate = noahAskGate({ open: counts?.open ?? 0, lastMinute: counts?.last_minute ?? 0, lastDay: counts?.last_day ?? 0, hostLastMinute: counts?.host_last_minute ?? 0 }, flags.askLimits);
     if (!gate.ok) return failed(gate.status, gate.message);
+    if (!(await browserQuota.take(owner, 'asks'))) return failed(429, NOAH_BROWSER_QUOTA_MESSAGE);
     // この依頼の握手の分の、接続先の枠（接続・道具の一覧と同じ枠）。
     if (!(await hands.take(target.host))) return failed(429, NOAH_HOST_BUSY);
 

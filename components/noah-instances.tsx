@@ -45,11 +45,15 @@ export function NoahInstanceAdd({agentId,scope}:{agentId:string;scope:string}) {
 }
 
 export function NoahInstancesList() {
-  const [rows,setRows]=useState<NoahInstance[]>([]),[error,setError]=useState('');
+  const [rows,setRows]=useState<NoahInstance[]>([]),[error,setError]=useState(''),[hidden,setHidden]=useState(false);
   useEffect(()=>startNoahVisiblePolling(async signal=>{
     try {const data=await instanceResponse(await fetch('/api/noah/instances',{cache:'no-store',signal}));if(!Array.isArray(data.instances))throw new Error('一覧を確認できません。');if(!signal.aborted){setRows(data.instances);setError('');}}
-    catch(e){if(!signal.aborted){setRows([]);setError(e instanceof Error?e.message:'読み込めません。');}}
+    catch(e){if(signal.aborted)return;
+      // 版の管理は、実行ホスト（サインインした本人の Noah）の機能。ブラウザだけで使う人（401）と、管理の無い所（404）には、節ごと出さない。
+      if(e instanceof InstanceResponseError&&(e.status===401||e.status===404)){setHidden(true);return 600_000;}
+      setRows([]);setError(e instanceof Error?e.message:'読み込めません。');}
   },15000),[]);
+  if(hidden) return null;
   return <section className={styles.notice}><h2>使用するAgentと版</h2><p>詳細画面から追加したAgentの更新・元の版への復元を管理します。</p>
     {error&&<p role="alert">{error}</p>}
     {!rows.length&&!error&&<p>Agentの詳細で「この版を準備して追加」を選ぶと表示されます。</p>}

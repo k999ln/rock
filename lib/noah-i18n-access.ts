@@ -1,4 +1,7 @@
 export const NOAH_ACCESS_MESSAGES: Record<string, readonly [string, string, string, string, string]> = {
+  'サインインした本人だけ': ['Signed-in accounts only', '仅限已登录的本人', '로그인한 본인만', 'Solo con sesión iniciada', 'للحسابات المسجّل دخولها فقط'],
+  'お金の受取口座と本人確認の書類は、サインインした本人だけが保存できます。このブラウザだけの保存先は、同じ端末を使う人が開けるためです。': ['Only signed-in accounts can save payout accounts and identity documents, because anyone using this device can open a workspace saved only in this browser.', '收款账户和身份证明文件只能由已登录的本人保存，因为使用同一设备的人都能打开仅保存在此浏览器中的空间。', '수령 계좌와 본인 확인 서류는 로그인한 본인만 저장할 수 있습니다. 이 브라우저에만 저장된 공간은 같은 기기를 쓰는 사람이 열 수 있기 때문입니다.', 'Solo las cuentas con sesión iniciada pueden guardar cuentas de cobro y documentos de identidad, porque cualquiera que use este dispositivo puede abrir un espacio guardado solo en este navegador.', 'لا يمكن حفظ حسابات الاستلام ووثائق الهوية إلا للحسابات المسجّل دخولها، لأن أي شخص يستخدم هذا الجهاز يمكنه فتح مساحة محفوظة في هذا المتصفح فقط.'],
+  '{group}を消す': ['Delete {group}', '删除{group}', '{group} 지우기', 'Borrar {group}', 'حذف {group}'],
   '保存先を準備しています…': ['Preparing your workspace…', '正在准备保存空间…', '저장 공간 준비 중…', 'Preparando tu espacio…', 'جارٍ تجهيز مساحة الحفظ…'],
   '保存先を開けませんでした。もう一度お試しください。': ['Could not open your workspace. Please try again.', '无法打开保存空间，请重试。', '저장 공간을 열지 못했습니다. 다시 시도해 주세요.', 'No se pudo abrir tu espacio. Inténtalo de nuevo.', 'تعذر فتح مساحة الحفظ. حاول مرة أخرى.'],
   'このブラウザへの保存について': ['Saving in this browser', '在此浏览器中保存', '이 브라우저에 저장하기', 'Guardar en este navegador', 'الحفظ في هذا المتصفح'],

@@ -28,3 +28,12 @@ export type NoahProfileView = NoahProfile & { ownerScope: string; available: boo
 export const emptyNoahProfile = (): NoahProfile => ({ revision: 0, fields: {}, documents: [], grants: [], paused: false, reuseEnabled: false, consents: [] });
 export const PROFILE_MAX_DOCUMENT = 5 * 1024 * 1024;
 export const profileField = (value: unknown): value is ProfileField => typeof value === 'string' && Object.hasOwn(NOAH_PROFILE_FIELDS, value);
+/**
+ * サインインした本人だけが保存できる群（決め: 2026-11-23、本人「好きにしていいよ」。使い勝手の確かめ 9 章の Q3・抜け道 S9）。
+ * ブラウザだけの本人（Cookie の保存先）は、同じ端末を使う人が開けるので、お金の受取口座と本人確認の書類を新しく置かせない。
+ * 既に置いた物は、読む・消す事だけできる。
+ */
+export const NOAH_PROFILE_SIGNED_IN_GROUPS: readonly string[] = ['受取口座', '本人確認'];
+export const NOAH_PROFILE_SIGNED_IN_ONLY = 'お金の受取口座と本人確認の書類は、サインインした本人だけが保存できます。このブラウザだけの保存先は、同じ端末を使う人が開けるためです。';
+export const profileFieldSignedInOnly = (field: ProfileField): boolean => NOAH_PROFILE_SIGNED_IN_GROUPS.includes(NOAH_PROFILE_FIELDS[field].group);
+
