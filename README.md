@@ -90,11 +90,17 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
+**[Eve・Noah 図解設計書](docs/noah/illustrated-specifications.md)**　利用者の操作、画面とバックエンド、eSIM、作者収益・作業料・定期便までを8枚の図で読めます。[共有用PDF](docs/assets/noah-illustrated-specifications.pdf)
+
+公開ホームに「何をしたいですか？」という入口を追加しました。「お店・会社のサイト運営」では保守・制作会社との打ち合わせに使う診断結果と確認事項を、「自分のメモ整理」では誰が何を担当するか、あとから見返せるメモを受け取れます。その時に受付可能な仕事を選べます。選ぶ前に受け取れる成果が分かり、詳細で入力・送信先を確かめて本人が依頼します。完了後は「保存した成果を見る」から開き直せます。画面とバックエンドの接続、データの取得元、初めて使う人に試してもらう手順は[初回利用の構造図](docs/noah/first-use-architecture.md)にまとめています。
+
+基盤の仕様は[専用eSIMの発行・端末への導入・利用時の回線照合](docs/structure/03-esim.md)、[Noahクラウドの受付・実行・成果保存](docs/services/noah-cloud-agents.md)、[自社設備を含むクラウドの配置と運用](docs/compute-placement.md)にあります。公開NoahはWi-Fiや今のSIMで使えます。専用eSIMを必要とするRockstarOSの入口は模擬回線まで検証しています。Eveで担当を作る作者、Noahで依頼する利用者、外部から実入金を照合する運営のつながりは[報酬と定期便の構造図・計算例](docs/noah/eve-distribution-and-rewards.md)で確認できます。
+
 公開Gradio APIと公開MCPに対応するAgentは、詳細の「使う」から入力して実行でき、進捗と成果をNoahの同じ仕事画面に保存します。実行中は仕事詳細を開いたままにし、保存された成果は後から再表示できます。結果通信が途切れた場合は自動再実行しません。APIのないコード紹介や提供元のGPU制限は、準備・失敗理由を表示します。
 
 掲載リポジトリやパッケージは「使う」で提供元の公開接続定義を確認します。GitHub・npm・Dockerの公式配布記録を照合し、接続できるものはNoah内で入力・実行・成果保存へ進みます。本人認証や未対応のCLIが必要な場合は理由を表示します。掲載・定義取得・実行成功は区別します。
 
-CLIの管理クラウドは、Memory・Filesystem・Sequential Thinkingの3種類を追加契約なしの無料枠で公開しています。対応範囲は [task125](codex/tasks/125-noah-cloud-agents.md) に記録しています。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。固定応答の検査に加え、実モデル `gpt-oss-20b` で6配布物の道具実行・成果生成の成功例を手元の隔離Linuxで確認しました。空本文による継続通信の失敗を修正し、道具を実行しない完了報告は受け付けません。モデルの形式エラーによる失敗例もあり、本番クラウドでの受入とは区別します。無料のWorkers実行器は公式JavaScript本体を組み込み、3種類とも本番Noahから実モデルと公式Toolで処理し、Chrome全終了後の成果保存・再表示・ファイルの内容/hash一致を確認しました。1人3件/UTC日、全体10件/UTC日、1件240秒までです。Memoryの作業中の記憶は依頼ごとに分離し、出力ファイルは成果として保存します。Python/shellを要する残り3種は本番未対応です。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
+CLIの管理クラウドは、Memory・Filesystem・Sequential ThinkingにTime・bossの面接準備・Hermesの計画/依頼内メモを加え、公式6種類の対応機能を追加契約なしの無料枠で公開しています。対応範囲は [task125](codex/tasks/125-noah-cloud-agents.md) に記録しています。Hermes・boss-agent-cli・Time・Sequential Thinking・Memory・Filesystemの公式固定版を依頼ごとの隔離環境で動かします。標準入出力MCPの4配布物は外部通信なしのLinuxで起動・実ツール応答を確認し、Memoryの依頼間分離、Filesystemの作成/読込/作業領域外の拒否、生成物のhashも確認しました。固定応答の検査に加え、実モデル `gpt-oss-20b` で6配布物の道具実行・成果生成の成功例を手元の隔離Linuxで確認しました。空本文による継続通信の失敗を修正し、道具を実行しない完了報告は受け付けません。モデルの形式エラーによる失敗例もあり、本番クラウドでの受入とは区別します。無料のWorkers実行器は公式JavaScript本体を組み込み、3種類とも本番Noahから実モデルと公式Toolで処理し、Chrome全終了後の成果保存・再表示・ファイルの内容/hash一致を確認しました。1人3件/UTC日、全体10件/UTC日、1件240秒までです。Memoryの作業中の記憶は依頼ごとに分離し、出力ファイルは成果として保存します。公式TimeのMCP・bossの面接準備コマンド・Hermes本体の計画/依頼内メモは、種類ごとの非公開Python Workerで動かします。3種とも本番Noahから実モデルと公式処理を実行し、スマホ幅390pxのChromeを全終了した後のD1保存、保存一覧からの再表示・再読込・ファイルの内容/hash一致を確認しました。128MB制限での失敗はWorker分離で対処し、bossの出力上限とHermesの道具未実行も上限を増やさず補正しました。文章だけの完了を成功にはしません。Hermesのshell/一般ファイル操作、bossの求人検索/応募はこの無料版では扱いません。提供元の公開server.json、npmと公式MCP台帳、Docker公式配布記録から接続先を照合し、利用者にコード取込を求めずNoahの入力とWork保存へ進む処理も追加しています。全掲載の対応状況は `scripts/noah-agent-coverage.mjs` で点検し、定義確認を実行成功とは数えません。
 
 管理クラウドの依頼は画面を閉じても実行が続き、共通の「実行中」「保存したもの → 成果」から本文とファイルを開けます。成果の閲覧ではAgentを再実行しません。スマホ幅390pxのChromeで全終了後の保存と再表示、実行中の停止・再読込保持を確認しています。実機Pixelの新クラウド受入とは区別します。保存済みファイルには未保存の注記を出さず、添付データが届いていない従来の結果には注記を維持します。
 
@@ -442,3 +448,5 @@ macOSでHomebrewのOpenSSL 3を使う場合は `PATH=/opt/homebrew/opt/openssl@3
 収集したAgentのカードはNoah内の詳細画面を開き、外部評価・出典・接続を確認できます。掲載済みの接続先は既存の接続と依頼へ、公開Spaceは確認した利用画面をNoah内へ表示します。未対応の実行先・API専用Spaceは未接続と表示し、Noah内の取込・設定へ進みます。
 
 Noahのブラウザ本人は、会員登録なしで自分専用のAgent取込と下書きの保存へ進めます。コードの保存権利確認・容量上限・本人別の分離を保ち、公開や実行の権限は別に判定します。
+
+確認済みの786系列は `/noah/agents/verified` で検索できます。接続条件の調査と本番の稼働状態を分け、成果受領・定義変更・失敗・確認期限を10秒ごとに表示へ反映します。すべての系列が接続済みという意味ではありません。[接続と稼働表示](docs/noah/spec-127-live-agent-families.md)・[初回本番受入](docs/noah/acceptance-127-live-agent-families.md)

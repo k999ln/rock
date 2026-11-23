@@ -1,5 +1,10 @@
 ## 2026-11-23
-- Noahの収集に公式リリースを追加し、候補の詳細からEveへ出典付きの依頼文を準備できるようにした（task125、公開前）。
+- Noahの収集に公式リリースを追加し、候補の詳細からEveへ出典付きの依頼文を準備できるようにした（task125、[PR #31](https://github.com/iceiceice999/rock/pull/31)）。
+- NoahのTime・boss面接準備・Hermes計画を無料枠の公式Python処理で本番受入。Worker分離とモデル応答の補正後、390px Chrome全終了中の保存・成果再表示・download/hashを確認し、途中の失敗も保持（task125、[PR #32](https://github.com/iceiceice999/rock/pull/32)）。
+- Noah無料クラウドへ公式PythonのTime・boss面接準備・Hermes計画/メモを追加する実装と、期限・停止・依頼分離の検証を追加。本番受入は継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)、task125）。
+- Noahへ786系列の台帳・接続条件と、成果受領に基づく10秒更新の稼働一覧を追加。提供元の版・定義変更、失敗、24時間の確認期限を反映（[PR #28](https://github.com/iceiceice999/rock/pull/28)）。Sites 216で5系列の成果・保存・再表示・停止を初回受入し、[記録](docs/noah/acceptance-127-live-agent-families.md)と共有状態を持つ接続の保留補正を追加（[PR #33](https://github.com/iceiceice999/rock/pull/33)）。
+- Eve・Noahの利用・実行・収益・物流を8枚で追える[図解設計書](docs/noah/illustrated-specifications.md)と共有用PDFを追加し、各機能の判定条件と本番受入の残件を明記（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
+- Noahに、お店・会社のサイト運営と個人のメモ整理を目的から選び、依頼と成果の再表示へ進む入口を追加。画面・API・保存先・初見利用者での検証方法を[構造図](docs/noah/first-use-architecture.md)に記録し、[専用eSIM](docs/structure/03-esim.md)、[管理クラウド](docs/services/noah-cloud-agents.md)、[Eve・定期便・報酬](docs/noah/eve-distribution-and-rewards.md)の構造図・実装・受入条件を追記（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。
 - Noah収集のチェックポイント確定を修正。チャンクの存在はメタデータで照合し、保存応答後に古い断片を掃除する。掲載再開と24時間の鮮度は [PR #26](https://github.com/iceiceice999/rock/pull/26) に記録。
 - Noahの「接続できる」検索に、有効な実行環境で対応している公式CLIを含める。詳細と同じ配布元・profile判定で、未設定や類似URLを除外し、カードの保存・評価IDとデザインを保持（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。
 - Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正 [PR #21](https://github.com/iceiceice999/rock/pull/21)）。

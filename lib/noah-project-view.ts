@@ -1,5 +1,6 @@
 import type { NoahAgentCard } from './noah-agent-cards.ts';
 import type { NoahCloudProfile } from './noah-cloud-contract.ts';
+import type { NoahFirstJob } from './noah-first-jobs.ts';
 
 export const noahProjectHref = (id: string) => `/noah/discover/agent?${new URLSearchParams({ id })}`;
 /** Collected cards always open Noah, even while an older snapshot still carries an external href. */
@@ -11,7 +12,7 @@ export type NoahProjectConnection =
   | { kind: 'cloud'; profile: NoahCloudProfile; providerFamilyId: string | null }
   | { kind: 'space'; repository: string }
   | { kind: 'setup'; importHref: string | null };
-export type NoahProjectDetail = { card: NoahAgentCard; connection: NoahProjectConnection };
+export type NoahProjectDetail = { card: NoahAgentCard; connection: NoahProjectConnection; firstJob?: NoahFirstJob };
 
 export function eveNoahProjectHref(id: string) {
   return `/os/eve?${new URLSearchParams({ noahProject: id })}#eve-compose`;

@@ -1,5 +1,7 @@
 # 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
 
+2026-11-23 Python無料実行の拡張: Hermesの計画・情報整理、bossの面接準備、Timeの公式Python処理をprofileごとの別Worker・依頼別Durable Objectへ組み込む。isolateに異なる公式実装を同居させず、モデルと利用枠は共通実行器で管理する。配布物の固定hashと機能制限を保ち、実行・保存を本番受入してから公開する。[契約](../services/noah-cloud-agents.md#無料枠の公式python実行)
+
 2026-11-23 無料クラウド実行: 固定した公式Memory/Filesystem/Sequential ThinkingのJavaScript本体をWorkersへ組み込み、依頼専用VFSとSQLite Durable Objectのalarmで実行する。プラン変更をせず、無料枠・日次予約・実受入済profileの制限を保持する。[境界と合格条件](../services/noah-cloud-agents.md#無料枠の公式javascript実行)
 
 2026-11-22 CLI対応の継続: MemoryとFilesystemの公式固定版は依頼ごとの作業領域だけを使う。記憶ファイルも成果物としてWorkへ保存し、次回の自動読込や利用者端末のファイル操作は提供しない。配備先は元のCloudflare account IDへ固定する。
@@ -271,3 +273,5 @@ Agent詳細 `/noah/ready/agent?id=...` に共有・URLコピーを設ける。�
 Noahの固定アダプターで公開サイト診断を実行し、結果と相談準備票を共通Workへ保存する。外部へのURL送信・公開レポートの扱いを実行前に明示し、用途と希望が合う場合だけ登録済み記事へ進める。提携索引、実行証拠、条件期限、記事内原文タグの全てを公開・紹介の直前に照合する。詳細と真偽の合格条件は [サービス定義](../services/noah-site-diagnostics.md)。
 
 2026-11-22 集客改善: 既存WordPress/EC記事の冒頭から対象Noah Agentへ直接つなぎ、自社Xから記事へ案内する。固定2件の入口は公開条件を再確認し、経路/UTC日付別のブラウザ遷移要求だけを30日分保存する。人・注文・承認への確定帰属は行わず、ASP実記録と別に改善する。
+
+2026-11-23: [786系列の接続と稼働表示](../noah/spec-127-live-agent-families.md)。既存の公開Agent一覧へ本体台帳を名寄せして追加し、本番の準備・成果受領を記録する。表示は10秒ごとに更新し、確認期限を過ぎたものを利用可能と断定しない。

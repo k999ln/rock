@@ -1,0 +1,70 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fixture } from './fixtures/noah/intake.mjs';
+import { createNoahAvailabilityStore, presentNoahAvailability, noahProviderManifest, noahReviewedAgentEndpoint, NOAH_AVAILABILITY_TTL } from '../lib/noah-agent-availability.ts';
+import { createNoahAvailabilityApi } from '../lib/noah-agent-availability-api.ts';
+import { noahVerifiedDirectory, noahVerifiedIdentities } from '../lib/noah-verified-directory.ts';
+const id = 'project-' + 'b'.repeat(64);
+const plan = (revision = 'a', digest = 'd') => ({ projectId: id, repository: 'example/demo', host: 'https://example-demo.hf.space', prefix: '/gradio_api', sourceRevision: revision, endpoints: [{name:'respond', digest, fields:[]}] });
+function setup(t) {
+  const f = fixture(t);
+  f.sql.exec(readFileSync(new URL('../drizzle/0059_noah_agent_availability.sql', import.meta.url), 'utf8'));
+  return {f, store:createNoahAvailabilityStore(f.db, f.time)};
+}
+void test('success needs current manifest and a real Work after the last failure; metadata never renews success TTL', async t => {
+  const {f,store}=setup(t), p=plan(), manifest=await noahProviderManifest(p), started=f.time();
+  await store.prepared(p);
+  assert.equal(presentNoahAvailability(await store.read(id), f.time()).status, 'connected');
+  await store.succeeded(id,'d',manifest,started);
+  assert.equal(presentNoahAvailability(await store.read(id), f.time()).status,'available');
+  f.advance(NOAH_AVAILABILITY_TTL + 1);
+  await store.prepared(p);
+  assert.equal(presentNoahAvailability(await store.read(id), f.time()).status,'connected');
+  await store.succeeded(id,'d',manifest,f.time());
+  f.advance(1); await store.failed(id,f.time(),manifest); f.advance(1); await store.prepared(p);
+  await store.succeeded(id,'d',manifest,started);
+  assert.equal((await store.read(id)).state,'connected');
+  await store.succeeded(id,'d',manifest,f.time());
+  assert.equal((await store.read(id)).state,'verified');
+  f.advance(1); await store.prepared(plan('b'));
+  await store.succeeded(id,'d',manifest,f.time());
+  assert.equal((await store.read(id)).state,'connected');
+  f.advance(NOAH_AVAILABILITY_TTL);
+  assert.equal(presentNoahAvailability(await store.read(id), f.time()).status,'stale');
+});
+void test('old probes cannot overwrite new definitions, failures or newer leases',async t=>{
+  const {f,store}=setup(t);
+  await store.prepared(plan()); f.advance(3600001);
+  const [first]=await store.claimDue();
+  assert.equal((await store.claimDue()).length,0);
+  f.advance(60001); const [second]=await store.claimDue();
+  await store.prepared(plan('old'),first.observation);
+  assert.equal((await store.read(id)).lease_until,second.observation.leaseUntil);
+  await store.failed(id,first.observation.startedAt,undefined,first.observation.leaseUntil);
+  assert.equal((await store.read(id)).state,'connected');
+  await store.prepared(plan('new'),second.observation);
+  const current=await store.read(id);
+  await store.prepared(plan('old'),first.observation);
+  assert.equal((await store.read(id)).manifest_hash,current.manifest_hash);
+});
+void test('public API derives counts without exposing user data and has no mutation verb',async t=>{
+  const {f,store}=setup(t); let rechecked=0;
+  const pending=[]; await store.prepared(plan());
+  const identities=async()=>[{id:'AG0001',familyId:'f',projectId:id,name:'n',source:'s',category:'c'}];
+  const api=createNoahAvailabilityApi({store,identities,now:f.time,recheck:async()=>{rechecked++;},waitUntil:p=>pending.push(p)});
+  const response=await api(new Request('https://noah.test/api/noah/agent-availability'));
+  assert.equal(response.headers.get('Cache-Control'),'no-store');
+  const value=await response.json(); assert.equal(value.connected,1); assert.equal(value.available,0);
+  assert.deepEqual(Object.keys(value.items[0]).sort(),['checkedAt','expiresAt','familyId','href','id','projectId','protocol','status','succeededAt']);
+  await Promise.all(pending); assert.equal(rechecked,1);
+  assert.equal((await api(new Request('https://noah.test/api/noah/agent-availability',{method:'POST'}))).status,405);
+});
+void test('786 canonical identities remain unique; citations cannot become executable sources',async()=>{
+  const [entries,identities]=await Promise.all([noahVerifiedDirectory(),noahVerifiedIdentities()]);
+  assert.equal(entries.length,786); assert.equal(new Set(identities.map(r=>r.projectId)).size,786);
+  for(const row of entries) for(const source of row.card.sources) assert.equal(source.sourceUrl.toLowerCase().replace(/\/$/,''),row.card.href.toLowerCase().replace(/\/$/,''));
+  assert.equal(noahReviewedAgentEndpoint('ksufian/ai-car-assistant','respond'),true);
+  assert.equal(noahReviewedAgentEndpoint('ksufian/ai-car-assistant','clear'),false);
+  assert.equal(noahReviewedAgentEndpoint('unknown/demo','respond'),false);
+});
