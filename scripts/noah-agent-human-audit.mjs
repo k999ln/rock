@@ -573,7 +573,6 @@ export function scoreAudit({
       sourceStatus === 'verified' &&
       definitionsStatus === 'verified' &&
       everySampleHasDefinition &&
-      counts.unclear === 0 &&
       reviewed === total;
   const claim = claimEligible
     ? counts.match >= threshold

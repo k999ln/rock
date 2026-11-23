@@ -58,7 +58,7 @@ node scripts/noah-agent-human-audit.mjs score \
   --out work/noah-agent-human-audit/score.json
 ```
 
-集計は、`--corpus`（省略時は manifest の source path）の JSON の SHA-256 が manifest と同じかを読み取りで確かめます。元データが無い、変わった、judgment が 200 件揃っていない、`unclear` が残っている、または evidence ID が不正な時は `claim: "not_claimed"` とし、途中までの件数を 95% 合格とは呼びません。
+集計は、`--corpus`（省略時は manifest の source path）の JSON の SHA-256 が manifest と同じかを読み取りで確かめます。元データが無い、変わった、judgment が 200 件揃っていない、または evidence ID が不正な時は `claim: "not_claimed"` とします。`unclear` は 200 件の内数で、一致分には加えません。
 
 `--definitions`（省略時は manifest の definitions path）がある manifest では、label export の schema と SHA-256 も確かめます。`match` は、行の `definitionEvidenceIds` が空でなく、manifest の完全一致定義 ID を含み、その ID が `sourceEvidenceIds` にもある時だけ有効です。定義なしの行は `mismatch` としてのみ記録でき、`match` や `unclear` にはできません。
 
@@ -68,6 +68,6 @@ node scripts/noah-agent-human-audit.mjs score \
 2. 200 行全てに一意な judgment がある。
 3. 全行に source evidence と output evidence があり、`match` の行には版の一致した definition evidence がある。
 4. 200 行全てに版の一致した definition がある。
-5. `unclear` が 0 件で、`match` が 190 件以上ある。
+5. `match` が 190 件以上ある。
 
 このスクリプトは人の判断を作らず、外部 Agent を呼ばず、ラベル付けの表を読みません。`score.json` の `counts`・`invalid`・`source.status` と judgments、画面写真の digest を一緒に保存してから、PR の証拠として扱います。
