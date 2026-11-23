@@ -1,3 +1,4 @@
+import type { NoahWorkUsageReceipt } from './noah-work-usage-receipt.ts';
 export const NOAH_DATA_POLICY = 'noah-quality-v1';
 export type NoahDataFile = { name: string; base64: string; sha256: string; bytes: number };
 export type NoahDataResult = {
@@ -8,7 +9,7 @@ export type NoahDataResult = {
 export type NoahDataSummary = { id: string; agentId: string; completedAt: string; state?: 'active' | 'revoked' };
 export type NoahContribution = { id: string; state: 'active' | 'revoked'; createdAt: number; revokedAt: number | null };
 export type NoahDataDetail = {
-  id: string; revision?: number; result: NoahDataResult;
+  id: string; revision?: number; result: NoahDataResult; usageReceipt?: NoahWorkUsageReceipt;
   contribution?: NoahContribution | null; sourceSha256?: string; policyVersion?: string;
 };
 export type NoahDataResponse = {

@@ -18,6 +18,7 @@ type Dependencies = {
   now?: () => number;
   receiptKey?: string;
   profiles?: readonly NoahCloudProfile[];
+  freeRuntime?: boolean;
 };
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie, Authorization', 'X-Content-Type-Options': 'nosniff' } });
 const active = (job: WorkJob) => ['queued', 'running'].includes(job.noahRemote?.state ?? '');
@@ -53,7 +54,12 @@ async function receive(db: Dependencies['db'], owner: string, work: WorkJob, rem
     }
     // 使ったモデルの量（無料のクラウドが数えた物）。失敗した依頼でも、使った分は残す。おかしい値は捨てる（結果は捨てない）。
     const usage = next !== work ? noahCloudUsageOf((remote as { usage?: unknown }).usage) : null;
-    if (usage && next.noahRemote?.cloud) next.noahRemote = { ...next.noahRemote, cloud: { ...next.noahRemote.cloud, usage } };
+    if (next !== work && next.noahRemote?.cloud) {
+      const reportedModelCalls = !active(next) && Number.isSafeInteger(remote.calls) && remote.calls >= 0 && remote.calls <= NOAH_CLOUD_LIMITS.modelCalls ? remote.calls : null;
+      next.noahRemote = { ...next.noahRemote, cloud: { ...next.noahRemote.cloud,
+        ...(usage ? { usage } : {}), ...(reportedModelCalls !== null ? { reportedModelCalls } : {}),
+      } };
+    }
     if (next !== work) await jobs.update(owner, next, work.revision);
     return (await jobs.get(owner, work.id))!;
 }
@@ -129,7 +135,7 @@ export function createNoahCloudApi(deps: Dependencies) {
         if (work && !active(work)) return json({ job: view(work), ownerScope: scope });
         if (!work) {
           const created = createNoahRemoteWork(input.jobId, { connectionId: input.connectionId, familyKey: project, digest: NOAH_CLOUD_PROFILES[profile].sha256, agentName: entry!.card.name, host: 'Noahクラウド', tool: 'cloud-agent', toolSha256: NOAH_CLOUD_PROFILES[profile].sha256, toolsSha256: NOAH_CLOUD_PROFILES[profile].sha256, args: { prompt: input.prompt }, inputSha256: hash }, now());
-          created.noahRemote = { ...created.noahRemote!, prompt: input.prompt, cloud: { projectId: project, profile, version: NOAH_CLOUD_PROFILES[profile].version } };
+          created.noahRemote = { ...created.noahRemote!, prompt: input.prompt, cloud: { projectId: project, profile, version: NOAH_CLOUD_PROFILES[profile].version, ...(deps.freeRuntime ? { freeTier: true } : {}) } };
           work = await jobs.create(owner, created);
           if (!work) throw new NoahAgentError('依頼IDが使用されています。', 409);
         }
