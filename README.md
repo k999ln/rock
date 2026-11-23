@@ -90,7 +90,13 @@ npm run amc:cycle -- demo
 
 ## Noahで、仕事に合うAgentを探す
 
-[Noahのストア](https://avoado.si/noah)でAgentを探し、詳細から接続できます。購入・作者の掲載管理はストアから、自分のAgent・実行中の仕事・保存した成果は[マイAgent](https://avoado.si/noah/my)から開けます。保存した成果を開くと、仕事ごとの利用明細で使用量と料金の確定状況を確認できます。専用クラウドの契約者は同じ成果一覧から、仕事ごとのCPU使用量・計算料・Agent料・予約額を確認できます。専用eSIMの対応条件を確認し、利用権のある注文で自社クラウドの仕事・成果・従量料金を開けます。外部Agentに依頼するときは、提供元と送信先を確認します。[eSIMの導入](https://avoado.si/connect)
+<a href="https://avoado.si/noah"><img src="docs/assets/readme/noah-store-today.webp" alt="NoahのTodayでMemoryの特集と注目のAgentを選ぶスマホ画面" width="272"></a>
+
+[登録フォームで生成した「法人のsi導入準備」の表紙を見る（4秒）](docs/assets/readme/noah-agent-motion.mp4)
+
+[Noahのストア](https://avoado.si/noah)を開くと、Todayで特集された仕事と、「注目のAgent」のピンから選べます。検索結果、保存したボード、マイAgent、マーケットでもAgentごとの作品や仕事内容を表すカードから選べます。[Agent登録](https://avoado.si/noah/agents/new)と掲載申請では、自分の画像・動画を表紙に指定できます。迷ったときは「おまかせ生成」で、名前と説明から4秒の動画を作り、プレビューを見て選べます。CallMCPの詳細では、予約確認の依頼例と通話メモ、KaiCallsの利用条件を読んでから接続できます。購入・作者の掲載管理はストアから、自分のAgent・実行中の仕事・保存した成果は[マイAgent](https://avoado.si/noah/my)から開けます。専用eSIMの対応条件を確認し、利用権のある注文で自社クラウドの仕事・成果・従量料金を開けます。外部Agentに依頼するときは、提供元と送信先を確認します。[eSIMの導入](https://avoado.si/connect)
+
+保存した成果を開くと、仕事ごとの利用明細で使用量と料金の確定状況を確認できます。専用クラウドの契約者は同じ成果一覧から、仕事ごとのCPU使用量・計算料・Agent料・予約額を確認できます。
 
 **[Eve・Noah 図解設計書](docs/noah/illustrated-specifications.md)**　利用者の操作、画面とバックエンド、eSIM、作者収益・作業料・定期便までを8枚の図で読めます。[共有用PDF](docs/assets/noah-illustrated-specifications.pdf)
 

@@ -1,48 +1,121 @@
-.entry { color:#211c19; }
-.top { display:flex; align-items:center; justify-content:space-between; gap:10px 20px; flex-wrap:wrap; margin-bottom:16px; }
-.top h1 { margin:0; font-size:clamp(30px,3.4vw,46px); line-height:1.15; font-weight:750; letter-spacing:-.055em; }
-.top nav { display:flex; align-items:center; gap:16px; }
-.top nav a { display:inline-flex; align-items:center; gap:5px; min-height:44px; font-size:14px; font-weight:650; color:var(--noah-ink,#924000); }
-.showcase { display:grid; gap:24px; margin-bottom:14px; }
-.showcase[data-related] { grid-template-columns:minmax(0,1.65fr) minmax(260px,1fr); }
-.feature { display:flex; flex-direction:column; overflow:hidden; border:1px solid #eddcd0; border-radius:22px; background:white; box-shadow:0 5px 20px #5c260a11; }
-.featureArt { display:grid; align-content:end; justify-items:start; gap:8px; min-height:210px; flex:1; padding:clamp(20px,2.5vw,34px); color:#fff; background:linear-gradient(90deg,#290e02eb 0%,#3d1505ad 39%,transparent 78%),#3b1807 url('/brand/noah-cloud-glass.webp') center 51% / cover no-repeat; }
-.featureArt > small { font-weight:700; font-size:12px; color:#ffdfb6; }
-.featureArt > strong { max-width:16ch; text-wrap:balance; font-size:clamp(25px,2.6vw,38px); line-height:1.23; letter-spacing:-.04em; }
-.featureArt > span { max-width:65%; font-size:13px; line-height:1.5; }
-.featureFoot,.row { display:flex; align-items:center; gap:12px; }
-.featureFoot { padding:12px 18px; }
-.featureFoot > strong,.rowText { min-width:0; flex:1; }
-.featureIcon,.appIcon { display:grid; place-items:center; flex:none; width:48px; height:48px; border-radius:13px; font-weight:750; font-size:21px; line-height:1; }
-.featureIcon { color:#743300; background:linear-gradient(140deg,#ffe3aa,#ffb263); }
-.appIcon { color:var(--pin-ink); background:var(--pin-bg); }
-.pill { flex:none; padding:5px 13px; border-radius:40px; color:var(--noah-ink,#924000); background:#fff1e4; font-weight:750; font-size:12px; }
-.feature:hover .pill,.row:hover .pill { background:#ffd7b6; }
-.collection h2 { margin:0 0 6px; font-size:clamp(21px,2vw,27px); letter-spacing:-.04em; }
-.row { padding:12px 0; border-bottom:1px solid #ece6df; }
-.rowText strong,.rowText small { display:block; overflow:hidden; text-overflow:ellipsis; }
-.rowText strong { font-size:15px; white-space:nowrap; }
-.rowText small { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; color:#615c58; line-height:1.5; font-size:12px; }
-.cloudLine { margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0 12px; padding:0 13px; background:#fff6ed; border:1px solid #f0dfcf; border-radius:13px; }
-.cloudLine a { display:inline-flex; align-items:center; gap:5px; color:var(--noah-ink,#924000); min-height:44px; font-size:13px; }
-.cloudLine a:first-child { font-weight:650; }
-@media(max-width:740px) {
-  .showcase[data-related] { grid-template-columns:1fr; gap:14px; }
-  .featureArt { min-height:185px; }
-  .collection { display:grid; grid-template-columns:minmax(0,1fr); }
-  .row { min-height:62px; padding:8px 0; }
-  .appIcon { width:42px; height:42px; border-radius:11px; font-size:18px; }
-  .rowText small { -webkit-line-clamp:1; }
-  .feature { border-radius:18px; }
-  .featureFoot { padding:9px 13px; }
-  .featureIcon { width:38px; height:38px; border-radius:10px; }
+.entry {
+  color: #19191c;
+  --store-action: #b43c00;
+  --store-line: #e5e5e9;
 }
-@media(max-width:480px){
-  .top { row-gap:0; margin-bottom:10px; }
-  .top nav { gap:10px; }
-  .top nav a { font-size:12px; }
-  .top nav svg { display:none; }
-  .featureArt > span { max-width:75%; }
-  .cloudLine { padding-inline:10px; column-gap:6px; }
-  .cloudLine a { font-size:12px; }
+.top { margin: 0 0 18px; }
+.date {
+  min-height: 19px;
+  margin-bottom: 2px;
+  color: #686870;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 19px;
+}
+.top h1 {
+  margin: 0;
+  font-size: clamp(40px, 4.7vw, 60px);
+  font-weight: 780;
+  line-height: 1.05;
+  letter-spacing: -.055em;
+}
+.showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(26px, 3vw, 46px);
+  margin-bottom: 28px;
+}
+.feature {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 5px 22px #17192a14, 0 0 0 1px #16182b0c;
+}
+.coverLink { display: block; color: inherit; text-decoration: none; }
+.featureArt {
+  position: relative;
+  display: grid;
+  padding: 0 clamp(18px,3vw,30px) 16px;
+  background: #fff;
+  color: #19191c;
+}
+.featureStage { position:relative; height:clamp(170px,23vw,315px); margin:0 calc(-1 * clamp(18px,3vw,30px)) 16px; overflow:hidden; }
+.featureArt > small { color:#a6420e; font-size:13px; font-weight:650; margin-bottom:4px; }
+.featureArt h2 {
+  max-inline-size: 14em;
+  margin: 0;
+  font-size: clamp(32px, 3.3vw, 52px);
+  font-weight: 760;
+  line-height: 1.15;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.phrase { display:inline-block; }
+.featureFoot { display: flex; align-items: center; }
+.featureFoot { min-height: 78px; gap: 12px; padding: 10px 20px; box-sizing: border-box; }
+.featureIcon { width: 51px; height: 51px; flex: none; }
+.featureByline { flex: 1; min-width: 0; }
+.featureByline strong, .featureByline small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.featureByline strong { font-size: 17px; font-weight: 650; line-height: 1.33; letter-spacing: -.025em; }
+.featureByline small { color: #66666e; font-size: 13px; line-height: 1.5; }
+.pill {
+  display: inline-grid;
+  min-width: 66px;
+  min-height: 30px;
+  box-sizing: border-box;
+  flex: none;
+  place-items: center;
+  padding: 4px 14px;
+  border-radius: 100px;
+  background: #f2f2f5;
+  color: var(--store-action);
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+.coverLink:hover .pill { background: #ffe3d0; }
+.coverLink:focus-visible { outline: 3px solid var(--store-action); outline-offset: -4px; }
+.listHeading a:focus-visible, .services a:focus-visible { outline: 2px solid #b43c00; outline-offset: 3px; }
+.collection { min-width: 0; }
+.listHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 10px;
+  padding-bottom: 7px;
+}
+.listHeading h2 { margin: 0; font-size: clamp(24px, 2.2vw, 33px); font-weight: 750; line-height: 1.22; letter-spacing: -.055em; }
+.listHeading a { display: inline-flex; align-items: center; min-height: 40px; color: var(--store-action); font-size: 15px; font-weight: 550; text-decoration: none; }
+.services { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 12px 0 28px; padding-block: 6px; border-block: 1px solid #e5e5e9; }
+.services nav { display: flex; flex-wrap: wrap; gap: 0 20px; }
+.services a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #98420e; font-size: 14px; font-weight: 560; }
+@media (min-width: 850px) {
+  .showcase[data-related] { grid-template-columns: minmax(0, 1.55fr) minmax(265px, 1fr); }
+  .collection { padding-top: 8px; border-top: 1px solid var(--store-line); }
+}
+@media (max-width: 849px) {
+  .top { margin-bottom: 16px; }
+
+
+}
+@media (max-width: 560px) {
+  .showcase { gap: 25px; margin-bottom: 20px; }
+  .feature { border-radius: 18px; }
+
+
+  .featureArt h2 { font-size: clamp(32px, 8.4vw, 43px); }
+  .featureFoot { min-height: 72px; gap: 10px; padding: 12px 14px; }
+  .featureIcon { width: 44px; height: 44px; }
+  .pill { min-width: 58px; }
+  .services { margin-bottom: 18px; }
 }

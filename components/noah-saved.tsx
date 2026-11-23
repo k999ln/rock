@@ -48,7 +48,7 @@ export default function NoahSaved({ params }: { params: NoahPageParams }) {
           <NoahBoardsPage embedded />
         )
       ) : tab === 'roles' ? (
-        <SkyAgentLibrary embedded />
+        <SkyAgentLibrary embedded pinView />
       ) : tab === 'files' ? (
         <SkyOutputCenter key={job} initialWorkJobId={job} embedded />
       ) : (

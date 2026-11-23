@@ -1,9 +1,11 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import { Bot, ArrowRight } from 'lucide-react';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import type { NoahFeedPage, NoahFeedPreference } from '@/lib/noah-feed';
+import { noahReleaseCoverUrl } from '@/lib/noah-cover';
 import styles from './noah-timeline.module.css';
 
 type Props = { query?: string; order?: 'recommended' | 'latest' | 'following'; settings?: boolean };
@@ -75,17 +77,24 @@ function NoahPublishedContent({ query = '', order = 'recommended', settings = fa
     {fresh && <div className={styles.notice}><button onClick={() => setAttempt(n => n + 1)}>新着・更新を読み込む</button></div>}
     {error && <div className={styles.notice} role="alert"><p>{error}</p><button onClick={() => setAttempt(n => n + 1)}>先頭から読み直す</button></div>}
     {!page && !error && <output className={styles.loading}>公開Agentを読み込み中…</output>}
-    {!settings && page?.entries.map(entry => {
+    {!settings && page && page.entries.length > 0 && <NoahAgentPinGrid>{page.entries.map(entry => {
       const href = `/noah/marketplace?package=${encodeURIComponent(entry.packageKey)}`;
-      return <article key={entry.packageKey} className={styles.post}>
+      const published = new Date(entry.publishedAt);
+      const byline = <div className={styles.postHeader}><span className={styles.author}>{entry.author}</span><time className={styles.postMeta} dateTime={published.toISOString()}> · {published.toLocaleDateString('ja-JP')}</time></div>;
+      const terms = <><p>{entry.priceNote}</p><div className={styles.researchBadges}><span>v{entry.version}</span><span>{entry.reason}</span>{entry.categories.map(c => <span key={c}>{c}</span>)}</div></>;
+      const actions = <div className={styles.postActions}>{page.ownerScope && <>
+        <button disabled={busy} onClick={() => { void preference('follow',entry.authorId,!has('follow',entry.authorId)); }}>{has('follow',entry.authorId) ? 'フォロー解除' : '提供元をフォロー'}</button>
+        <button disabled={busy} onClick={() => { void preference('hide',entry.toolId,true); }}>非表示</button>
+      </>}<Link href={href} className={styles.detailsLink}>詳細・利用条件 <ArrowRight size={15} /></Link></div>;
+      if (entry.isAgent) return <NoahAgentPin key={entry.packageKey} id={entry.toolId} name={entry.name}
+        cover={entry.cover && { type:entry.cover.type, url:noahReleaseCoverUrl(entry.packageKey,entry.digest) }} href={href} summary={entry.summary} meta={<>{byline}{terms}</>} actions={actions} />;
+      return <li key={entry.packageKey} className={styles.feedTool}><article className={styles.post}>
         <Link href={href} className={styles.avatar} aria-label={`${entry.name}の詳細`}><Bot size={23} /></Link><div className={styles.postContent}>
-          <div className={styles.postHeader}><span className={styles.author}>{entry.author}</span><time className={styles.postMeta} dateTime={new Date(entry.publishedAt).toISOString()}> · {new Date(entry.publishedAt).toLocaleDateString('ja-JP')}</time></div>
-          <h2 className={styles.postTitle}><Link href={href}>{entry.name}</Link></h2><p className={styles.postText}>{entry.summary}</p>
-          <p>{entry.priceNote}</p><div className={styles.researchBadges}><span>v{entry.version}</span><span>{entry.reason}</span>{entry.categories.map(c => <span key={c}>{c}</span>)}</div>
-          <div className={styles.postActions}>{page.ownerScope && <><button disabled={busy} onClick={() => { void preference('follow',entry.authorId,!has('follow',entry.authorId)); }}>{has('follow',entry.authorId) ? 'フォロー解除' : '提供元をフォロー'}</button><button disabled={busy} onClick={() => { void preference('hide',entry.toolId,true); }}>非表示</button></>}<Link href={href} className={styles.detailsLink}>詳細・利用条件 <ArrowRight size={15} /></Link></div>
+          {byline}<h2 className={styles.postTitle}><Link href={href}>{entry.name}</Link></h2><p className={styles.postText}>{entry.summary}</p>
+          {terms}{actions}
         </div>
-      </article>;
-    })}
+      </article></li>;
+    })}</NoahAgentPinGrid>}
     {!settings && page && !page.entries.length && <p className={styles.researchNote}>{order === 'following' ? 'フォローした提供元の公開Agentはまだありません。' : '条件に合う公開Agentはまだありません。公開・更新されるとここに表示されます。'}</p>}
     {!settings && page?.nextCursor && <div ref={sentinel} className={styles.feedEnd}><button disabled={busy} onClick={() => { void more(); }}>公開Agentをさらに読み込む</button></div>}
   </section>;

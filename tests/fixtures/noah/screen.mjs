@@ -67,6 +67,9 @@ export function screen(options = {}) {
     useContext: (held) => held.value,
   };
 
+  // The harness has no paint phase. Run layout effects in the existing effect queue.
+  hooks.useLayoutEffect = hooks.useEffect;
+
   const context = createContext({
     FormData: class {constructor(form){this.form=form;}get(key){return this.form.values?.[key]??null;}},
     console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController, AbortSignal,
@@ -134,9 +137,13 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-tap-sound') return load('lib/noah-tap-sound.ts');
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
+      if (id === '@/lib/noah-agent-art' || id === './noah-agent-art.ts') return load('lib/noah-agent-art.ts');
+      if (id === '@/lib/noah-cover') return load('lib/noah-cover.ts');
+      if (id === '@/lib/noah-card-video-paint') return load('lib/noah-card-video-paint.ts');
       if (id === '@/lib/noah-intake-import-parts') return importParts;
       // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
       if (id === '@/lib/noah-ready-view') return readyView;
+      if (id === '@/lib/noah-detail-guide') return load('lib/noah-detail-guide.ts');
       if (id === '@/lib/noah-project-view') return load('lib/noah-project-view.ts');
 
       if (id === '@/lib/noah-agent-share') return agentShare;
