@@ -120,7 +120,7 @@ Timeの公式MCP、bossの公式面接準備CLI、Hermesの公式AIAgent＋todo/
 
 ローカルworkerdの固定モデルで3種の実処理・成果hash・依頼間分離・再送拒否・停止・不正Tool/結果拒否・@入力固定パスを確認。既存26試験＋追加5境界試験成功。非公開Python Workerを既存無料環境へ配備済み（8f4fc1c8-dd3d-4caf-8e3f-6265c4f87a8a）。応答待ち中でも接続確認が返る試験と、固定依存lockからの再現も成功。本番実モデル・ブラウザ全閉鎖後の保存・スマホ再読込、全体verify/CIは継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)）。これらを完了してから現行状態を更新する。
 
-## 2026-11-23 Python本番メモリ制限への対応（受入中）
+## 2026-11-23 Python本番メモリ制限への対応（[PR #32](https://github.com/iceiceice999/rock/pull/32)、受入中）
 
 PR #30は全体verify（5,198成功・5skip・失敗0、API1,918、CSV385）と全7 CI成功後にmain `217e4ee389071e7c298c5a944f89e5990976fd03` へマージ。Sites215/source `9c749b0e6f255f089f152ea95ebb5adc354ea744` / tree `8886081657fbf08173294ab66ef0ad81de2c91fa` を公開したが、Timeの初回本番Work `a8b9d01b-231d-4dd6-8ae2-d8af9fe3321c` が128MBのisolate上限で失敗した。Chrome終了後にfailedとしてD1へ保存されたことを確認し、成功扱いにしない。Sites214へ切り戻し、既存3種・保存データを維持した（deployment `appgdep_6b03c837e2a88191813b467acfcfd2d1` succeeded/env18）。
 
