@@ -1,4 +1,5 @@
 ## 2026-11-24
+- Noah の「注目のAgent」の「すべて見る」（スマホ幅で 73×40px）を 44px にした。公開の後の本番で、`/noah` の下の 6 画面のうち小さい押す所はこれだけだった（Opus / Noelle。task 129 の D7。[PR #HEADINGTAP](https://github.com/iceiceice999/rock/pull/HEADINGTAP)）。
 - マイAgentの成果詳細に仕事別の使用量・料金を追加。専用クラウドはCPUと予約・確定額、外部提供元の未報告分は未確定と表示（task 94、[PR #46](https://github.com/iceiceice999/rock/pull/46)）。
 - Noah の札なし説明で、握手と版が一致する道具を接続と依頼の間に表示する。入力は定義上の項目名・型、出力定義がなければ「未確認」。Sites v227 の公開済み画面も正本へ統合。 [PR #50](https://github.com/iceiceice999/rock/pull/50)
 - 0060 未適用の Noah で Agent・棚・審査者の説明の段を表示し、入出力の札は既定で非表示にする。0059 の手元 D1 と 390px・1280px の6画面で確認。 [PR #48](https://github.com/iceiceice999/rock/pull/48)
