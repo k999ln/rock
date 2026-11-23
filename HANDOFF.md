@@ -32,7 +32,7 @@ main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった�
 1（収集）は PR #38 でマージ済み。2（ボード）は PR #39 で進めてよい。**3〜9 は、1 本にまとめた枝 `claude/ice2/noah-all`（`9cbabc6c8644`）で 1 つの PR にする**（2〜9 と main `97cf7cfe` を merge 済み。本文は `pr/all.md`）。こうすると、CHANGELOG のぶつかりで CI を 7 回待たずに済む。
 
 - PR #39 がマージされたら、`claude/ice2/noah-all` の CHANGELOG の `#BOARDPICK`（`pull/BOARDPICK` も）を `39` に直してから main を merge する（同じ行が同じ文になるので、ぶつからない）。
-- 残りの印は、まとめの PR の番号 N に直す: `sed -i -E 's#(\#|pull/)(REFLIB|UXAUDIT|LAUNCH|QUOTA|TAPS|SEARCHWORDS|STORETAPS)\b#\1N#g' CHANGELOG.md`（N を番号に）。CHANGELOG 以外に印は無い。
+- 残りの印は、まとめの PR の番号 N に直す（mac でも動く書き方）: `perl -pi -e 's/(#|pull\/)(REFLIB|UXAUDIT|LAUNCH|QUOTA|TAPS|SEARCHWORDS|STORETAPS)\b/${1}N/g' CHANGELOG.md`（N を番号に）。CHANGELOG 以外に印は無い。
 - まとめの PR の check が全部通ったらマージして、avoado.si を main から公開し直す（下の 6・7）。
 
 ## 手順
