@@ -623,6 +623,55 @@ function invalidRow(work: NoahLabelWorkItem, reason: 'model_output_invalid' | 's
   };
 }
 
+/**
+ * Build a rejected row for an operator runner without exposing the raw model
+ * response.  The family-level runner uses the same row contract as the
+ * original per-tool batch runner, so an offline import cannot bypass the
+ * shelf/parser boundary by choosing a different orchestration shape.
+ */
+export function rejectedNoahLabelRow(
+  work: NoahLabelWorkItem,
+  reason: 'model_output_invalid' | 'stale_resume',
+  now = Date.now(),
+): NoahLabelRow {
+  return invalidRow(work, reason, now);
+}
+
+/**
+ * Build an accepted row only after the canonical shelf parser and the
+ * deterministic evidence verifier have both succeeded.  Keeping this helper
+ * beside the existing row constructor prevents the family runner from
+ * creating a second, weaker persistence contract.
+ */
+export function acceptedNoahLabelRow(
+  work: NoahLabelWorkItem,
+  proposal: { consumes: readonly NoahMaterial[]; produces: NoahMaterial },
+  verification: NoahLabelVerification,
+  now = Date.now(),
+): NoahLabelRow {
+  if (!verification.ok || verification.reason !== 'accepted') throw new Error('label evidence is not accepted');
+  return {
+    schema: NOAH_LABEL_ROW_SCHEMA,
+    requestId: work.requestId,
+    manifestSha256: work.manifestSha256,
+    familyId: work.familyId,
+    candidateId: work.candidateId,
+    toolsSha256: work.toolsSha256,
+    toolDefinitionSha256: work.toolDefinitionSha256,
+    toolName: work.tool.name,
+    labelVersion: NOAH_LABEL_VERSION,
+    verifierVersion: NOAH_LABEL_VERIFIER_VERSION,
+    status: 'accepted',
+    consumes: [...proposal.consumes],
+    produces: proposal.produces,
+    inputs: verification.inputs,
+    outputs: verification.outputs,
+    evidence: verification.evidence,
+    reason: 'accepted',
+    createdAt: now,
+  };
+}
+
 function sameResume(row: NoahLabelRow, work: NoahLabelWorkItem, manifestSha256: string): boolean {
   return row.requestId === work.requestId && row.manifestSha256 === manifestSha256 && row.familyId === work.familyId && row.toolsSha256 === work.toolsSha256 && row.toolDefinitionSha256 === work.toolDefinitionSha256 && row.labelVersion === NOAH_LABEL_VERSION && row.verifierVersion === NOAH_LABEL_VERIFIER_VERSION;
 }

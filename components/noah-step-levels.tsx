@@ -19,6 +19,19 @@ const TAG: Record<Exclude<NoahStepKind, 'auto'>, string> = {
   human: '本人',
   review: '本人が確かめる',
 };
+const FLOW_LABELS = {
+  receives: '受け取る物',
+  returns: '返る物',
+  none: 'なし',
+  unknown: '未確認',
+  parallel: '並行',
+  collect: 'まとめる',
+  review: '確認の関所',
+  branch: '分かれる条件',
+  repeat: '繰り返す条件',
+} as const;
+type FlowLabel = (typeof FLOW_LABELS)[keyof typeof FLOW_LABELS];
+const unchanged = (label: string) => label;
 
 /** 表示する言葉を Agent 側の言語設定に差し替えるための共通ラベル。 */
 export type NoahStepLevelLabels = {
@@ -55,6 +68,8 @@ export type NoahStepLevelsProps<T extends NoahStep = NoahStep> = {
   /** Agent の画面だけ別言語にする場合に、既定の日本語を上書きする。 */
   labels?: Partial<NoahStepLevelLabels>;
   capabilityLabels?: Readonly<Record<string, NoahStepCapabilityLabel>>;
+  flowLabel?: (label: FlowLabel) => string;
+  materialLabel?: (material: string) => string;
 };
 
 /** 設計図・棚カード・Agent の説明で使う共通の段表示。 */
@@ -62,6 +77,8 @@ export function NoahStepLevels<T extends NoahStep>({
   steps,
   labels,
   capabilityLabels = {},
+  flowLabel = unchanged,
+  materialLabel = unchanged,
 }: NoahStepLevelsProps<T>) {
   const text: NoahStepLevelLabels = {
     ...DEFAULT_LABELS,
@@ -82,10 +99,16 @@ export function NoahStepLevels<T extends NoahStep>({
             {index + 1}
           </span>
           <div className={styles.steps}>
+            {level.length > 1 && <p className={styles.parallel}>{flowLabel(FLOW_LABELS.parallel)}</p>}
             {level.map((s) => {
               const capability = s.capability
                 ? capabilityLabels[s.capability]
                 : undefined;
+              const links = s.flow?.dataFrom ?? [];
+              const gate = s.kind === 'review' || s.flow?.gate;
+              const describe = (items: readonly string[] | undefined) => items
+                ? items.map(materialLabel).join('・') || flowLabel(FLOW_LABELS.none)
+                : flowLabel(FLOW_LABELS.unknown);
               return (
                 <details
                   key={s.id}
@@ -93,10 +116,28 @@ export function NoahStepLevels<T extends NoahStep>({
                   data-person={s.kind === 'auto' ? undefined : 'true'}
                 >
                   <summary>
-                    {s.kind !== 'auto' && (
-                      <span className={styles.tag}>{text.tag[s.kind]}</span>
-                    )}
-                    {s.label}
+                    {links.length > 0 && <span className={styles.transfers}>
+                      {links.map(({ from, material }) => (
+                        <span className={styles.transfer} key={JSON.stringify([from, material])}>
+                          <span className={styles.origin}>{label.get(from)}</span>
+                          <span className={styles.wire}>{materialLabel(material)}</span>
+                          {gate && <span className={styles.gate}>{flowLabel(FLOW_LABELS.review)}</span>}
+                        </span>
+                      ))}
+                    </span>}
+                    <span className={styles.stepTitle}>
+                      {s.kind !== 'auto' && <span className={styles.tag}>{text.tag[s.kind]}</span>}
+                      {gate && !links.length && <span className={styles.gate}>{flowLabel(FLOW_LABELS.review)}</span>}
+                      {new Set(links.map(({ from }) => from)).size > 1 && <span className={styles.tag}>{flowLabel(FLOW_LABELS.collect)}</span>}
+                      {s.label}
+                    </span>
+                    <span className={styles.stepIo}>
+                      <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.receives)}</span>{describe(s.flow?.inputs)}</span>
+                      <span className={styles.stepArrow} aria-hidden="true" />
+                      <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.returns)}</span>{describe(s.flow?.outputs)}</span>
+                    </span>
+                    {s.flow?.branch && <span className={styles.control}><strong>{flowLabel(FLOW_LABELS.branch)}</strong> {s.flow.branch}</span>}
+                    {s.flow?.repeat && <span className={styles.control}><strong>{flowLabel(FLOW_LABELS.repeat)}</strong> {s.flow.repeat}</span>}
                   </summary>
                   <dl className={styles.facts}>
                     <dt>{text.kindLabel}</dt>

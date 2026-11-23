@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import { noahAgentExplanation, noahExplanationWithConnection, noahShelfExplanation } from '../lib/noah-agent-explanation.ts';
 import { noahBlueprintLevels } from '../lib/noah-steps.ts';
+import { noahBlueprints } from '../lib/noah-business.ts';
 import { planNoahConnection } from '../lib/noah-connect-plan.ts';
 import { noahLaunchPlanState } from '../lib/noah-connect-source.ts';
 import { createIntakeApi } from '../lib/noah-intake-api.ts';
@@ -138,4 +139,50 @@ void test('the ready detail renders the three scenarios after Connect with reaso
   const english = await renderNoahExplanationFixture('key', { locale: 'en' });
   assert.match(english, /What this Agent can do.*What you provide.*What you get back/);
   assert.match(english, /Enter API_KEY.*Why you’re needed/);
+});
+
+void test('the graph separates data links from setup waits and only joins genuine inputs', () => {
+  const plan = [{ kind: 'secrets', state: 'needed', fill: 'typed', label: 'API_KEY を入力' }];
+  const summary = { name: 'combine', consumes: ['checked-csv', 'summary'], produces: 'analysis' };
+  const flow = noahAgentExplanation([...chain, summary], plan);
+  const byName = new Map(flow.steps.map((step) => [step.label, step]));
+  assert.deepEqual(byName.get('clean_csv').after, [byName.get('API_KEY を入力').id]);
+  assert.deepEqual(byName.get('clean_csv').flow.dataFrom, []);
+  assert.deepEqual(byName.get('check_csv').flow, {
+    inputs: ['cleaned-csv'], outputs: ['checked-csv'],
+    dataFrom: [{ from: byName.get('clean_csv').id, material: 'cleaned-csv' }], gate: true,
+  });
+  assert.deepEqual(byName.get('combine').flow.dataFrom, [
+    { from: byName.get('check_csv').id, material: 'checked-csv' },
+    { from: byName.get('make_summary').id, material: 'summary' },
+  ]);
+  assert.deepEqual(levelNames(noahExplanationWithConnection(flow, true)), [['clean_csv', 'make_summary'], ['check_csv'], ['combine']]);
+});
+
+void test('the detail exposes material labels and review wires before expanding a step', async () => {
+  const body = await renderNoahExplanationFixture('chain');
+  assert.match(body, /class="parallel">並行/);
+  assert.match(body, /class="wire">整えた CSV<\/span><span class="gate">確認の関所/);
+  assert.match(body, /class="portLabel">受け取る物<\/span>整えた CSV/);
+  assert.match(body, /class="portLabel">返る物<\/span>検査を通った CSV/);
+  assert.doesNotMatch(body, /分かれる条件|繰り返す条件|class="tag">まとめる/);
+  const key = await renderNoahExplanationFixture('key', { locale: 'en' });
+  assert.match(key, /class="portLabel">Input<\/span>Access key/);
+  assert.doesNotMatch(key, /class="wire"/);
+});
+
+void test('the reviewer blueprint passes the script to two parallel jobs and gates the publish input', () => {
+  const plan = noahBlueprints().find(({ id }) => id === 'affiliate:fx:youtube');
+  const byId = new Map(plan.steps.map((step) => [step.id, step]));
+  const split = { from: 'script', material: '台本' };
+  assert.deepEqual(byId.get('video').flow.dataFrom, [split]);
+  assert.deepEqual(byId.get('voice').flow.dataFrom, [split]);
+  assert.ok(noahBlueprintLevels(plan.steps).some((level) =>
+    level.includes(byId.get('video')) && level.includes(byId.get('voice'))));
+  assert.equal(byId.get('finance-review').flow.gate, true);
+  const next = byId.get('publish:youtube');
+  assert.ok(next.flow.dataFrom.some(({ from }) => from === 'finance-review'));
+  assert.ok(next.after.some((id) => id.startsWith('signup:')));
+  assert.ok(next.flow.dataFrom.every(({ from }) => !from.startsWith('signup:')));
+  assert.ok(plan.steps.every(({ flow }) => flow && !flow.branch && !flow.repeat));
 });

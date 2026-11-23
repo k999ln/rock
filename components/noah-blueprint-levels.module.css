@@ -7,15 +7,32 @@
 .level { display:flex; gap:10px; align-items:flex-start; min-width:0; }
 .number { flex:none; width:26px; height:26px; margin-top:4px; border-radius:50%; background:#f7f7f8; color:#71717a; font-size:12px; display:grid; place-items:center; }
 .steps { display:flex; flex-wrap:wrap; gap:6px; flex:1; min-width:0; max-width:calc(100% - 36px); }
+.parallel { flex-basis:100%; margin:0; color:#71717a; font-size:12px; font-weight:600; }
 .step { box-sizing:border-box; max-width:100%; min-width:0; background:#fff; border:1px solid #ececef; border-radius:10px; font-size:13px; }
+.parallel ~ .step { flex:1 1 126px; }
 .step[data-person] { border-style:dashed; border-color:#b89be3; background:#f3eefb; }
-.step[open] { flex-basis:100%; }
+.step[open], .parallel ~ .step[open] { flex-basis:100%; }
 .step summary { position:relative; cursor:pointer; list-style:none; min-height:44px; padding:10px 11px; padding-inline-end:29px; line-height:1.6; overflow-wrap:anywhere; }
 .step summary::-webkit-details-marker { display:none; }
 .step summary::after { content:''; position:absolute; inset-inline-end:12px; top:16px; width:6px; height:6px; border:solid #7546c8; border-width:0 1.5px 1.5px 0; transform:rotate(45deg); }
 .step[open] summary::after { transform:translateY(3px) rotate(225deg); }
 .step summary:focus-visible { outline:2px solid #7546c8; outline-offset:2px; border-radius:10px; }
 .tag { display:inline-block; margin-inline-end:6px; padding:0 6px; font-size:11px; line-height:1.8; color:#7546c8; background:#fff; border:1px solid #dbc7ef; border-radius:20px; vertical-align:1px; }
+.stepTitle { display:block; font-weight:600; }
+.transfers { display:grid; gap:4px; margin-block-end:8px; }
+.transfer { display:grid; grid-template-columns:minmax(0,auto) minmax(34px,1fr) auto; align-items:center; gap:5px; font-size:11px; }
+.origin { color:#52525b; }
+.wire { position:relative; display:block; padding:0 6px 1px; border-block-end:1px solid #7546c8; color:#5b329e; text-align:center; }
+.wire::after { content:''; position:absolute; inset-inline-end:0; inset-block-end:-3px; width:5px; height:5px; border-block-start:1px solid #7546c8; border-inline-end:1px solid #7546c8; transform:rotate(45deg); }
+.wire:dir(rtl)::after { transform:rotate(-45deg); }
+.gate { display:inline-block; padding:0 4px; border:1px dashed #8a62c1; border-radius:4px; background:#f3eefb; color:#5b329e; font-size:11px; font-weight:600; }
+.stepTitle .gate { margin-inline-end:6px; }
+.stepIo { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:start; gap:5px; margin-block-start:5px; margin-inline-end:-13px; color:#3f3f46; font-size:12px; }
+.portLabel { display:block; color:#65656e; font-size:11px; }
+.stepArrow { align-self:center; color:#7546c8; }
+.stepArrow::before { content:'→'; }
+.stepArrow:dir(rtl)::before { content:'←'; }
+.control { display:block; margin-block-start:5px; font-size:12px; }
 .facts { display:block; margin:0; padding:0 11px 10px; font-size:12px; color:#52525b; line-height:1.8; }
 .facts dt { margin-top:6px; color:#71717a; font-size:11px; }
 .facts dd { margin:0; overflow-wrap:anywhere; }
