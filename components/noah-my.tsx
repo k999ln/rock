@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   noahMyHref,
   noahMySelection,
-  type NoahMyView,
+  noahMyTitles,
 } from '@/lib/noah-my-routes';
 import type { NoahPageParams } from '@/lib/noah-page-routes';
 import { useNoahLocale } from './noah-locale';
@@ -14,12 +14,7 @@ import NoahSaved from './noah-saved';
 import NoahTheater from './noah-theater';
 import styles from './noah-my.module.css';
 
-const views: readonly [NoahMyView, string][] = [
-  ['theater', '上映中'],
-  ['agents', '自分のAgent'],
-  ['activity', '実行中'],
-  ['saved', '保存したもの'],
-];
+const utilityViews = ['agents', 'activity', 'saved'] as const;
 
 export default function NoahMy({
   params,
@@ -33,15 +28,15 @@ export default function NoahMy({
   return (
     <div className={styles.hub} data-theater={view === 'theater' || undefined}>
       <header className={styles.hubHeader}>
-        <h1>{t('シアター')}</h1>
-        <nav className={styles.segments} aria-label={t('シアター')}>
-          {views.map(([key, label]) => (
+        <h1>{t(noahMyTitles[view])}</h1>
+        <nav className={styles.segments} aria-label={t('Agentと仕事')}>
+          {utilityViews.map(key => (
             <Link
               key={key}
               href={noahMyHref(key, saved, params)}
               aria-current={key === view ? 'page' : undefined}
             >
-              {t(label)}
+              {t(noahMyTitles[key])}
             </Link>
           ))}
         </nav>

@@ -4,6 +4,12 @@ export const myViews = ['theater', 'agents', 'activity', 'saved'] as const;
 export const savedViews = ['results', 'boards', 'roles', 'files'] as const;
 export type NoahMyView = (typeof myViews)[number];
 export type NoahMySavedView = (typeof savedViews)[number];
+export const noahMyTitles: Record<NoahMyView, string> = {
+  theater: 'シアター',
+  agents: '自分のAgent',
+  activity: '実行中',
+  saved: '保存したもの',
+};
 
 export function noahMySelection(
   params: NoahPageParams,

@@ -93,7 +93,7 @@ void test('selecting a saved Agent pin opens settings and protects an unsaved ed
  assert.equal(view.find('button', agents[1].name)[0].props.disabled, false);
  assert.ok(ui.calls.every(call => call.method === 'GET'));
 });
-void test('the theater opens by default and old library, activity and saved links keep their readers',()=>{
+void test('old links keep the theater and personal readers while the section menu shows only work utilities',()=>{
  const child=name=>({default:props=>({type:'section',props:{...props,children:name}})});
  const modules={'@/lib/noah-my-routes':myRoutes, './noah-work-page':child('WORK'), './noah-library':child('LIBRARY'), './noah-saved':child('SAVED'),
   './noah-theater':child('THEATER')};
@@ -104,11 +104,13 @@ void test('the theater opens by default and old library, activity and saved link
  ];
  for(const [params,legacy,reader] of cases){
   const ui=screen({modules}); const page=ui.mount('components/noah-my.tsx',{params,legacy});
-  assert.match(page.text(),new RegExp(reader)); assert.equal(page.find('h1').length,1);
+  const title={THEATER:'シアター',LIBRARY:'自分のAgent',WORK:'実行中',SAVED:'保存したもの'}[reader];
+  assert.match(page.text(),new RegExp(reader)); assert.deepEqual(page.find('h1').map(node=>page.text(node)),[title]);
   assert.equal(page.text().includes('THEATER'),reader==='THEATER');
   const nav=page.nodes(page.find('nav')[0]).filter(node=>node.type==='a');
-  assert.deepEqual(nav.map(link=>page.text(link)),['上映中','自分のAgent','実行中','保存したもの']);
-  assert.equal(nav.filter(link=>link.props['aria-current']==='page').length,1);
+  assert.equal(page.find('nav')[0].props['aria-label'],'Agentと仕事');
+  assert.deepEqual(nav.map(link=>page.text(link)),['自分のAgent','実行中','保存したもの']);
+  assert.deepEqual(nav.filter(link=>link.props['aria-current']==='page').map(link=>page.text(link)),reader==='THEATER'?[]:[title]);
   assert.equal(ui.calls.length,0);
  }
  assert.deepEqual(myRoutes.noahMySelection({},'saved'),{view:'saved',saved:'boards'});

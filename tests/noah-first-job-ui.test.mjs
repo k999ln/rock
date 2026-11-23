@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as cloudContract from '../lib/noah-cloud-contract.ts';
+import * as botNotice from '../lib/noah-bot-notice.ts';
 import { noahFirstJobs } from '../lib/noah-first-jobs.ts';
+import * as theaterFilms from '../lib/noah-theater-films.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import { screen } from './fixtures/noah/screen.mjs';
 import { siteTool } from '../toolkits/noah-affiliate-agents/site-diagnostics.mjs';
@@ -12,10 +14,12 @@ const choices = (await noahFirstJobs([], false)).map(job => ({
   ...job, href: `/noah/discover/agent?id=${project}&firstJob=${job.id}`,
 }));
 const quiet = { default: () => null };
-const modules = {
-  './noah-timeline': quiet, './noah-pin-grid': quiet, './noah-ready-detail': quiet, './noah-work-list': quiet,
+const sharedModules = {
+  './noah-timeline': quiet, './noah-pin-grid': quiet, './noah-work-list': quiet,
   '@/lib/owner-intent': ownerIntent, '@/lib/noah-cloud-contract': cloudContract,
+  '@/lib/noah-theater-films': theaterFilms,
 };
+const modules = { ...sharedModules, './noah-ready-detail': quiet };
 const pageReply = firstJobs => ({ items: [], total: 0, nextCursor: null, ownerScope: null, firstJobs });
 const detail = (ui, firstJob) => ui.mount('components/noah-project-detail.tsx', { id: project, firstJob });
 
@@ -333,4 +337,76 @@ void test('a ready project uses the family detail once and shows a dated source 
   assert.equal(page.find('a', 'MCP Registry')[0].props.href, listing);
   assert.equal(page.find('time')[0].props.dateTime, new Date(1795433820330).toISOString());
   assert.equal(page.find('h2', '外部の評価').length, 0);
+});
+
+const trainingId = 'project-777248dbd7e37423d0bae088fc9201cfec479dd305b7d94a544cd22face444ad';
+const trainingCard = { name: '法人のsi導入準備', topic: 'work', sources: [] };
+const projectDetail = 'components/noah-project-detail.tsx';
+
+function assertTrainingVideo(page) {
+  const videos = page.find('video');
+  assert.equal(videos.length, 1);
+  const [video] = videos;
+  assert.equal(video.props.src, '/noah/theater/training.mp4');
+  assert.equal(video.props.poster, '/noah/theater/training.webp');
+  assert.equal(video.props.controls, true);
+  assert.equal(video.props.playsInline, true);
+  assert.equal(video.props.preload, 'none');
+  assert.ok(!video.props.autoPlay);
+  const figure = page.find('figure').find(node => page.nodes(node).includes(video));
+  assert.ok(figure);
+  assert.ok(page.nodes(figure).some(node => node.type === 'figcaption' && page.text(node).includes('会議の前の五分間')));
+  return video;
+}
+
+void test('the training project shows an inline film above its runner and keeps its use action', async () => {
+  const ui = screen({ modules, fetch: async () => ({ body: { card: trainingCard, connection: { kind: 'setup' } } }) });
+  const page = ui.mount(projectDetail, { id: trainingId });
+  assert.equal(page.find('video').length, 0);
+  await page.flush();
+  const video = assertTrainingVideo(page);
+  assert.equal(page.find('a', '利用条件を見る')[0].props.href, '#noah-project-use');
+  const use = page.nodes().find(node => node.props.id === 'noah-project-use');
+  assert.ok(page.nodes(use).some(node => node.type === 'button' && page.text(node) === '使う'));
+  assert.ok(page.nodes().indexOf(video) < page.nodes().indexOf(use));
+  assert.deepEqual(ui.calls.map(call => [call.method, call.url]), [['GET', '/api/noah/discover/project?id=' + trainingId]]);
+});
+
+void test('the ready training project keeps its connect button and renders the film on the family detail', async () => {
+  const familyId = 'mcp-registry:test.provider/training';
+  const ui = screen({ modules: { ...sharedModules, '@/lib/noah-bot-notice': botNotice, './noah-ask': quiet }, fetch: async ({ url }) => {
+    if (url === '/api/noah/discover/project?id=' + trainingId) return { body: {
+      card: trainingCard, connection: { kind: 'ready', familyId },
+    } };
+    if (url === '/api/noah/intake?id=' + encodeURIComponent(familyId)) return { body: {
+      ...trainingCard, id: familyId, summary: '', listed: true, ownerScope: null, connection: null, tools: 1, users: 0,
+      connect: { badge: 'unverified', level: 1, placeLabel: '研修用クラウド', price: { model: 'free' } },
+    } };
+    return { body: { items: [], providers: [] } };
+  } });
+  const page = ui.mount(projectDetail, { id: trainingId });
+  await page.flush();
+  const video = assertTrainingVideo(page);
+  const [connect] = page.find('button', '接続');
+  assert.ok(connect);
+  assert.ok(page.nodes().indexOf(connect) < page.nodes().indexOf(video));
+  const readPaths = ['/api/noah/discover/project', '/api/noah/intake', '/api/noah/registration', '/api/noah/pins'];
+  assert.ok(ui.calls.every(call => call.method === 'GET' && readPaths.includes(call.url.split('?')[0])));
+});
+
+void test('a same-named project, a first-job entry, and a failed detail load have no training video', async () => {
+  const setup = { card: trainingCard, connection: { kind: 'setup' } };
+  const job = choices[0];
+  for (const [props, reply, expected] of [
+    [{ id: project }, { body: setup }, '法人のsi導入準備'],
+    [{ id: trainingId, firstJob: job.id }, { body: { ...setup, firstJob: job } }, job.title],
+    [{ id: trainingId }, { status: 503, body: { error: 'offline' } }, 'offline'],
+  ]) {
+    const ui = screen({ modules, fetch: async () => reply });
+    const page = ui.mount(projectDetail, props);
+    await page.flush();
+    assert.ok(page.text().includes(expected));
+    assert.equal(page.find('video').length, 0);
+    assert.ok(ui.calls.every(call => call.method === 'GET'));
+  }
 });

@@ -41,3 +41,12 @@
 .provenance li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 16px; padding: 7px 0; }
 .provenance a { color: #843b0c; text-underline-offset: .2em; font-size: 14px; }
 .provenance time { color: #605c57; font-size: 13px; }
+
+.trailer { margin: 22px 0; color: #29241f; }
+.trailer figcaption { display: flex; align-items: baseline; flex-wrap: wrap; gap: .45rem .75rem; margin-bottom: .65rem; }
+.trailer figcaption span { color: #974415; font-size: .82rem; font-weight: 650; }
+.trailer figcaption strong { font-family: 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, serif; font-size: clamp(1.15rem, 3vw, 1.45rem); }
+.trailer figcaption time { margin-inline-start: auto; color: #635b52; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.trailer video { display: block; width: 100%; aspect-ratio: 2.1; object-fit: contain; border-radius: 8px; background: #181410; }
+.trailer summary { width: fit-content; min-height: 44px; align-content: center; color: #714023; cursor: pointer; font-size: .9rem; }
+.trailer ol { margin: 0 0 .5rem; padding-inline-start: 1.5rem; line-height: 1.6; }

@@ -1,5 +1,23 @@
 import { noahProjectHref } from './noah-project-view.ts';
 
+const trainingProjectId = 'project-777248dbd7e37423d0bae088fc9201cfec479dd305b7d94a544cd22face444ad';
+
+export const noahTrainingFilm = {
+  id: 'training',
+  projectId: trainingProjectId,
+  agent: '法人のsi導入準備',
+  title: '会議の前の五分間',
+  outcome: ['月2回 × 5分 → 月10分'],
+  href: noahProjectHref(trainingProjectId),
+  poster: '/noah/theater/training.webp',
+  video: '/noah/theater/training.mp4',
+  scenes: [
+    { caption: '研修で、何を聞けばいい？', detail: '例にするのは、月2回、1人が5分かけて紙のメモをまとめる仕事です。' },
+    { caption: '紙の仕事を、一行ずつほどく。', detail: '準備票に作業内容、回数、所要時間を入力し、整理したい業務を伝えます。' },
+    { caption: '一枚の準備票を手に、席に着く。', detail: '作業時間の内訳と研修で聞くことが届きます。相談するかは自分で選べます。' },
+  ],
+} as const;
+
 // Each film is an editorial example tied to a catalog entry, not a recorded user job.
 export const noahTheaterFilms = [
   {
@@ -28,17 +46,5 @@ export const noahTheaterFilms = [
       { caption: '朝九時と、午前零時が重なる。', detail: '返るのは変換した時刻です。この例では東京の09:00が同日の00:00 UTCに当たります。' },
     ],
   },
-  {
-    id: 'training',
-    agent: '法人のsi導入準備',
-    title: '会議の前の五分間',
-    outcome: ['月2回 × 5分 → 月10分'],
-    href: noahProjectHref('project-777248dbd7e37423d0bae088fc9201cfec479dd305b7d94a544cd22face444ad'),
-    poster: '/noah/theater/training.webp',
-    scenes: [
-      { caption: '研修で、何を聞けばいい？', detail: '例にするのは、月2回、1人が5分かけて紙のメモをまとめる仕事です。' },
-      { caption: '紙の仕事を、一行ずつほどく。', detail: '準備票に作業内容、回数、所要時間を入力し、整理したい業務を伝えます。' },
-      { caption: '一枚の準備票を手に、席に着く。', detail: '作業時間の内訳と研修で聞くことが届きます。相談するかは自分で選べます。' },
-    ],
-  },
+  noahTrainingFilm,
 ] as const;

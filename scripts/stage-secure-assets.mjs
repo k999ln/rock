@@ -26,6 +26,7 @@ export async function stageSecureAssets(root) {
         await mkdir(dirname(join(client, storage)), { recursive: true });
         await rename(file, join(client, storage));
         entries[path] = { storage };
+        if (/^\/noah\/theater\/[\w-]+\.mp4$/.test(path)) entries[path].theaterVideoBytes = bytes.length;
       }
     }
   }

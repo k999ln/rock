@@ -36,7 +36,7 @@ const WAVEFORM = [8, 14, 20, 10, 29, 44, 24, 17, 36, 56, 70, 51, 32, 59, 85, 68,
 type Loaded = { state: 'loading' } | { state: 'missing' } | { state: 'error' } | { state: 'ready'; detail: Detail };
 
 /** tool: 最初に選んでおく道具（棚のカードから来た時。/noah/ready/agent?tool=…）。from: そのカードの ID（試行の本人の報告を、下に出す）。 */
-export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode }) {
+export default function NoahReadyDetail({ id, tool = null, from = null, internalOnly = false, sourceNotes, trailer }: { id: string; tool?: string | null; from?: string | null; internalOnly?: boolean; sourceNotes?: ReactNode; trailer?: ReactNode }) {
   const {t, locale}=useNoahLocale();
   // 読んだ詳細は、何回目の読み取りの物かと一緒に持つ（「読み直す」を押したら、届くまでは「読み込み中」）。
   const [result, setResult] = useState<{ attempt: number; loaded: Loaded } | null>(null), [connection, setConnection] = useState<NoahReadyConnection | null>(null);
@@ -141,6 +141,7 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
           </dl>
         </figure>}
       </div>
+      {trailer}
       {guide && <>
         {guide.examples.length > 1 && <section className={pageStyles.block} aria-labelledby="noah-guide-examples">
           <h2 id="noah-guide-examples">{t('ほかの使い方')}</h2>
