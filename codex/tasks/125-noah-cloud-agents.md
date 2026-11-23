@@ -152,3 +152,15 @@ PR #30は全体verify（5,198成功・5skip・失敗0、API1,918、CSV385）と�
 証拠: `work/noah-python-production-acceptance-20261123/run-1795410978357/`（Time）、`run-1795414058801/`（boss）、`run-1795417447302/`（Hermes）のreport.json/result.png。最初のTimeメモリ失敗、boss2回の失敗、Hermes3回の失敗も同ディレクトリの別runに保存し、同一IDを再実行したり成功へ書き換えたりしていない。今回は合計9件を使用し残り1件を保持。Cookie・運営鍵は証拠に保存しない。配備ログ・公開照合は `work/noah-free-python-research-20261123/`。
 
 検証: 公式workerdの3profile試験（実モデル応答はfixture）、共通無料実行器/モデル境界試験、独立コードレビュー、本番の上記3件が成功。分離版・main統合版・boss補正版の全体verifyは各exit0。最終のfixture補強・受入記録を含む全体verify、GitHub CI、マージSHAはPR #32へ確定結果を記録する。無料枠の空きがなければ停止する。Hermesのshell、bossの検索/応募、新ログイン自身による旧環境管理は未受入のまま。
+
+## 2026-11-24 無料のクラウドを、使ったモデルの量で数える
+
+本人「クラウドのシステム作って」「100人とかいったら黒字化するよね？」「cloudflareでいいから最初は」。払い方は「Agentの利益から差し引く」、Workers Paid は「まだ申し込まない」（[07 の 2026-11-24](../../docs/structure/07-decisions-from-minutes.md)）。
+
+- 受付（`NoahCloudBudget`）: 件数の代わりに Workers AI の neuron で数える。全体 8,000/UTC日（`NOAH_CLOUD_DAILY_NEURONS` で下げられる）、本人 2,400、受付時に 1 件 1,200 を取り置く。件数の上限は安全の柵として全体 60・本人 12。使い切った日は「日本時間の朝 9 時に戻ります」を返す。
+- 実行（`NoahFreeCloudJob.runModel`）: 呼ぶ前に、入力のバイト数を上限のトークン数として 1 件の上限を確かめる。応答の `usage` から使った量を数え（無い時は上限で数える）、依頼と全体の枠に足す。止めた・時間切れの時も、その 1 回の上限で数える。断る理由は `blockConcurrencyWhile` の外で投げる（中で投げると Durable Object が作り直され、失敗の結果を返せなかった）。
+- 保存と画面: 使った量（入力・出力のトークン・neuron）を Work の `noahRemote.cloud.usage` に残し、クラウドの画面に「使った量: モデル N 回・M neuron（無料の枠の中。有料プランの値段なら 約 X 円）」を出す。おかしい値は捨て、結果は残す。
+- 試験: `tests/noah-free-cloud-neurons.test.mjs`（6 本。数え方・結果の usage・全体の断り・本人の断り・1 件の上限・Work への保存）。既存のクラウドの試験 39 本も通る。
+- 配備: `noah-free-cloud-agents` の Worker を配り直す（`wrangler deploy --config wrangler.free.jsonc`）まで、本番の数え方は変わらない。Sites 側は、usage が無い結果をこれまでどおり受け取る。
+- まだやらない: 自分のコードの Agent のクラウド実行（Workers Paid が要る）。月の合計を定期便の台帳の「実費」へ入れる操作（無料の枠の中は実費 0。有料にした月から、Cloudflare の請求額を運営が入れる）。
+

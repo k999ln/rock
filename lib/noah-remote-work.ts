@@ -1,6 +1,6 @@
 import type { NoahProviderRun } from './noah-provider-types.ts';
 import type { NoahReceivedResult } from './noah-result-media.ts';
-import type { NoahCloudFile, NoahCloudProfile } from './noah-cloud-contract.ts';
+import type { NoahCloudFile, NoahCloudProfile, NoahCloudUsage } from './noah-cloud-contract.ts';
 /**
  * 相手のサーバーで動く仕事（置き場所が provider）の、Work の記録。
  *
@@ -40,7 +40,7 @@ export type NoahRemoteExecution = {
   note?: string;
   error?: string;
   /** Managed-cloud results keep the existing unverified Work/owner boundary. */
-  cloud?: { projectId: string; profile: NoahCloudProfile; version: string; files?: NoahCloudFile[] };
+  cloud?: { projectId: string; profile: NoahCloudProfile; version: string; files?: NoahCloudFile[]; usage?: NoahCloudUsage };
 };
 
 const iso = (at: number) => new Date(at).toISOString();

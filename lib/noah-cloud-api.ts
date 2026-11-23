@@ -1,7 +1,7 @@
 import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import type { DirectoryEntry } from './noah-agent-directory.ts';
-import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS, noahCloudDigest, noahCloudId, noahCloudProfile, noahCloudResult, type NoahCloudJob, type NoahCloudProfile } from './noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, NOAH_CLOUD_LIMITS, noahCloudDigest, noahCloudId, noahCloudProfile, noahCloudResult, noahCloudUsageOf, type NoahCloudJob, type NoahCloudProfile } from './noah-cloud-contract.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import { createNoahRemoteWork, finishNoahRemoteWork, startNoahRemoteWork } from './noah-remote-work.ts';
 import { workStore } from './work-store.ts';
@@ -51,6 +51,9 @@ async function receive(db: Dependencies['db'], owner: string, work: WorkJob, rem
     } else if (['failed', 'cancelled', 'unknown'].includes(remote.state)) {
       next = finishNoahRemoteWork(work, { state: remote.state as 'failed' | 'cancelled' | 'unknown', error: remote.error || 'クラウド実行を完了できませんでした。' }, now());
     }
+    // 使ったモデルの量（無料のクラウドが数えた物）。失敗した依頼でも、使った分は残す。おかしい値は捨てる（結果は捨てない）。
+    const usage = next !== work ? noahCloudUsageOf((remote as { usage?: unknown }).usage) : null;
+    if (usage && next.noahRemote?.cloud) next.noahRemote = { ...next.noahRemote, cloud: { ...next.noahRemote.cloud, usage } };
     if (next !== work) await jobs.update(owner, next, work.revision);
     return (await jobs.get(owner, work.id))!;
 }
@@ -71,7 +74,7 @@ export function createNoahCloudResultApi(deps: Pick<Dependencies, 'db' | 'receip
 }
 export function createNoahCloudApi(deps: Dependencies) {
   const jobs = workStore(deps.db), now = deps.now ?? Date.now;
-  const view = (job: WorkJob) => ({ id: job.id, name: job.title, state: job.noahRemote?.state, createdAt: job.createdAt, completedAt: job.noahRemote?.completedAt, prompt: job.noahRemote?.prompt, result: job.noahRemote?.result, files: job.noahRemote?.cloud?.files ?? [], error: job.noahRemote?.error, calls: job.noahRemote?.modelCalls ?? 0 });
+  const view = (job: WorkJob) => ({ id: job.id, name: job.title, state: job.noahRemote?.state, createdAt: job.createdAt, completedAt: job.noahRemote?.completedAt, prompt: job.noahRemote?.prompt, result: job.noahRemote?.result, files: job.noahRemote?.cloud?.files ?? [], error: job.noahRemote?.error, calls: job.noahRemote?.modelCalls ?? 0, usage: job.noahRemote?.cloud?.usage ?? null });
   return async (request: Request) => {
     try {
       if (!['GET', 'POST'].includes(request.method)) return json({ error: 'method_not_allowed' }, 405);
