@@ -1,12 +1,14 @@
-// ピンの場面の絵（spec-115 の 9 章）の試験: 形の確かめ（型・札・部品・種類・余計な項目）・棚の 17 枚の絵（形が通る・札はカードの文にある言葉だけ）・
-// 全部の型が描ける（札が絵に出る・数が壊れない・高さが型の通り）・Luna Max が書く 1 枚（題・入れる物・返る物・絵）の確かめ。
+// ピンの図解（バージョン TAKE。spec-115 の 9 章）の試験: 形の確かめ（図の名前・札の数・図ごとの字の上限・余計な項目）・棚の 17 枚（形が通る・札はカードの文にある言葉だけ・同じ図は 2 枚まで）・
+// 全部の図が描ける（札が絵に出る・数が壊れない・高さが図の通り・字が絵の外へはみ出さない）・動き（全部の図に動く部分・止まった絵が既定・軽い物だけ動く）・
+// 保存のボタンの下に字が無い・Luna Max への説明・Luna Max が書く 1 枚（題・入れる物・返る物・図解）の確かめ。
+// バージョン 1（場面の絵）の試験は、ブランチ claude/noah-pins-version-1 にある。図の作りが変わったので、同じ事を TAKE の図で確かめ直した（弱めた確かめは無い。はみ出しの確かめを足した）。
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { runInThisContext } from 'node:vm';
 import ts from 'typescript';
-import { NOAH_PIN_KEEP_OUT, NOAH_PIN_LABEL_MAX, NOAH_PIN_PARTS, NOAH_PIN_TEMPLATES, NOAH_PIN_WORD_MAX, noahPinLabelWidth, noahPinTemplateGuide, parseNoahPin, parseNoahPinScene } from '../lib/noah-pin-scene.ts';
+import { NOAH_PIN_KEEP_OUT, NOAH_PIN_LABEL_MAX, NOAH_PIN_TEMPLATES, noahPinLabelWidth, noahPinTemplateGuide, parseNoahPin, parseNoahPinScene } from '../lib/noah-pin-scene.ts';
 import { NOAH_SHELF_SCENE_SOURCE, NOAH_SHELF_SCENES } from '../lib/noah-pin-scenes-shelf.ts';
 import * as sceneLib from '../lib/noah-pin-scene.ts';
 
@@ -25,123 +27,134 @@ function loadArt() {
 const Art = loadArt();
 const draw = (scene) => renderToStaticMarkup(React.createElement(Art, { scene }));
 const cards = JSON.parse(readFileSync(new URL('../data/noah-shelf-first-cards.json', import.meta.url), 'utf8'));
+const TEMPLATES = Object.entries(NOAH_PIN_TEMPLATES);
+/** 短い札と、図ごとの上限いっぱいの札（全角と、英字だけの 2 通り）。 */
+const shortLabels = (spec) => spec.slots.map((_, i) => `札${i + 1}`);
+const longLabels = (spec) => spec.slots.map((max) => 'あ'.repeat(Math.floor(max)));
+const asciiLabels = (spec) => spec.slots.map((max) => 'W'.repeat(Math.floor(max / 0.6)));
+const scene = (template, labels) => ({ template, labels, parts: [], variant: null });
+const decode = (text) => text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"');
+/** 描いた SVG の字の、だいたいの箱（字の幅は noahPinLabelWidth と同じ数え方。上は字の大きさの 0.9、下は 0.25）。 */
+function textBoxes(svg) {
+  return [...svg.matchAll(/<text ([^>]*)>([^<]*)<\/text>/g)].map(([, attrs, content]) => {
+    const number = (name) => Number(new RegExp(`${name}="([^"]+)"`).exec(attrs)?.[1]);
+    const x = number('x'), y = number('y'), size = number('font-size'), width = noahPinLabelWidth(decode(content)) * size;
+    const anchor = /text-anchor="(\w+)"/.exec(attrs)?.[1] ?? 'start';
+    const left = anchor === 'middle' ? x - width / 2 : anchor === 'end' ? x - width : x;
+    return { text: decode(content), left, right: left + width, top: y - size * 0.9, bottom: y + size * 0.25, size };
+  });
+}
 
-void test('the scene shape is checked: template, exact label count, short labels, parts, variants, no extra keys', () => {
-  const ok = { template: 'transform', parts: ['receipt', 'ledger'], labels: ['カフェ代', '勘定科目'] };
-  assert.deepEqual(parseNoahPinScene(ok).scene, { ...ok, variant: null });
+void test('the scene shape is checked: diagram name, exact label count, per-diagram label limits, no parts or variants, no extra keys', () => {
+  const ok = { template: 'tree', labels: ['取引の内容', '勘定科目', '仕訳の例', '税区分'] };
+  assert.deepEqual(parseNoahPinScene(ok).scene, { ...ok, parts: [], variant: null });
+  assert.deepEqual(parseNoahPinScene({ ...ok, parts: [], variant: null }).scene, { ...ok, parts: [], variant: null });
   const bad = [
+    [{ ...ok, template: 'transform' }, 'template'],
     [{ ...ok, template: 'poster' }, 'template'],
-    [{ ...ok, labels: ['カフェ代'] }, 'labels_count'],
-    [{ ...ok, labels: ['カフェ代', 'とても長い札の言葉です'] }, 'label_long:1'],
-    [{ ...ok, labels: ['カフェ代', ' 勘定 '] }, 'label:1'],
-    [{ ...ok, labels: ['カフェ代', '<b>x</b>'] }, 'label:1'],
-    [{ ...ok, labels: ['カフェ\n代', '勘定科目'] }, 'label:0'],
-    [{ ...ok, parts: ['receipt', 'rocket'] }, 'part:1'],
+    [{ ...ok, labels: ['取引の内容', '勘定科目', '仕訳の例'] }, 'labels_count'],
+    [{ ...ok, labels: ['取引の内容です', '勘定科目', '仕訳の例', '税区分'] }, 'label_long:0'],
+    [{ ...ok, labels: ['取引の内容', '勘定科目と仕訳', '仕訳の例', '税区分'] }, 'label_long:1'],
+    [{ ...ok, labels: ['取引の内容', ' 勘定 ', '仕訳の例', '税区分'] }, 'label:1'],
+    [{ ...ok, labels: ['取引の内容', '<b>x</b>', '仕訳の例', '税区分'] }, 'label:1'],
+    [{ ...ok, labels: ['取引\nの内容', '勘定科目', '仕訳の例', '税区分'] }, 'label:0'],
     [{ ...ok, parts: ['receipt'] }, 'parts_count'],
     [{ ...ok, variant: 'ok' }, 'variant'],
-    [{ template: 'inspect', parts: ['document'], labels: ['請求書', '番号', '結果'] }, 'variant'],
     [{ ...ok, x: 10 }, 'unknown_key:x'],
     [null, 'not_object'],
     [[ok], 'not_object'],
   ];
   for (const [value, error] of bad) assert.equal(parseNoahPinScene(value).error, error, JSON.stringify(value));
-  // 吹き出しと単語の言葉だけ、少し長くてよい。
-  assert.ok(parseNoahPinScene({ template: 'speak', labels: ['comfortable', '音節と強勢'] }).scene);
-  assert.equal(parseNoahPinScene({ template: 'speak', labels: ['音節と強勢', 'comfortable!!!!'] }).error, 'label_long:1');
+  // 英字は 0.6 字で数える（comfortable は 6.6 字。カスタマージャーニーマップの下の札は 8 字まで）。
+  assert.ok(parseNoahPinScene(scene('journey', ['comfortable', '強勢'])).scene);
+  assert.equal(parseNoahPinScene(scene('journey', ['uncomfortableness', '強勢'])).error, 'label_long:0');
+  // 図の表: 番号はチートシートの 01〜24 が 1 つずつ。どの札の上限も、全体の上限を越えない。
+  assert.deepEqual(TEMPLATES.map(([, spec]) => spec.no), Array.from({ length: 24 }, (_, i) => i + 1));
+  for (const [template, spec] of TEMPLATES) for (const max of spec.slots) assert.ok(max >= 1 && max <= NOAH_PIN_LABEL_MAX, template);
 });
 
-void test('the 17 shelf cards each have a valid scene whose labels are words from the card itself', () => {
+void test('the 17 shelf cards each have a valid diagram whose labels are words from the card itself', () => {
   assert.deepEqual(Object.keys(NOAH_SHELF_SCENE_SOURCE).sort(), cards.map((card) => card.id).sort());
   assert.equal(Object.keys(NOAH_SHELF_SCENES).length, cards.length);
   for (const card of cards) {
-    const { scene, error } = parseNoahPinScene(NOAH_SHELF_SCENE_SOURCE[card.id]);
-    assert.ok(scene, `${card.id}: ${error}`);
+    const { scene: parsed, error } = parseNoahPinScene(NOAH_SHELF_SCENE_SOURCE[card.id]);
+    assert.ok(parsed, `${card.id}: ${error}`);
     const text = [card.title, card.promise, card.give, card.get].join(' ');
-    for (const label of scene.labels) assert.ok(text.includes(label), `${card.id}: 「${label}」がカードの文に無い`);
+    for (const label of parsed.labels) assert.ok(text.includes(label), `${card.id}: 「${label}」がカードの文に無い`);
   }
-  // 17 枚で、型が偏らない（同じ型は 2 枚まで）。
-  const counts = Object.values(NOAH_SHELF_SCENES).reduce((map, scene) => map.set(scene.template, (map.get(scene.template) ?? 0) + 1), new Map());
+  // 17 枚で、図が偏らない（同じ図は 2 枚まで）。
+  const counts = Object.values(NOAH_SHELF_SCENES).reduce((map, item) => map.set(item.template, (map.get(item.template) ?? 0) + 1), new Map());
   for (const [template, count] of counts) assert.ok(count <= 2, `${template} が ${count} 枚`);
+  assert.ok(counts.size >= 14, `図が ${counts.size} 種類しかない`);
 });
 
-void test('every template draws: labels appear, numbers never break, and the height follows the template', () => {
-  const sample = (template, spec) => ({ template, labels: Array.from({ length: spec.labels }, (_, i) => `札${i + 1}`), parts: (spec.parts ?? []).map((choices) => choices[0]), variant: spec.variants?.[0] ?? null });
-  for (const [template, spec] of Object.entries(NOAH_PIN_TEMPLATES)) {
-    for (const variant of spec.variants ?? [null]) {
-      for (const pick of [0, -1]) {
-        const scene = { ...sample(template, spec), variant, parts: (spec.parts ?? []).map((choices) => choices.at(pick)) };
-        assert.ok(parseNoahPinScene(scene).scene, `${template} の見本が形に合わない`);
-        const svg = draw(scene);
-        assert.match(svg, new RegExp(`viewBox="0 0 300 ${spec.height}"`), template);
-        assert.ok(!/NaN|undefined|Infinity/.test(svg), `${template}/${variant}: 壊れた数`);
-        for (const label of scene.labels) assert.ok(svg.includes(label), `${template}/${variant}: 「${label}」が描かれていない`);
-        assert.match(svg, /aria-hidden="true"/);
+void test('every diagram draws: labels appear, numbers never break, the height follows the diagram, and no word leaves the picture', () => {
+  for (const [template, spec] of TEMPLATES) {
+    for (const labels of [shortLabels(spec), longLabels(spec), asciiLabels(spec)]) {
+      assert.ok(parseNoahPinScene(scene(template, labels)).scene, `${template} の見本が形に合わない: ${labels}`);
+      const svg = draw(scene(template, labels));
+      assert.match(svg, new RegExp(`viewBox="0 0 300 ${spec.height}"`), template);
+      assert.ok(!/NaN|undefined|Infinity/.test(svg), `${template}: 壊れた数`);
+      for (const label of labels) assert.ok(svg.includes(label), `${template}: 「${label}」が描かれていない`);
+      assert.match(svg, /aria-hidden="true"/);
+      // 字は絵の中に収まり、字の大きさは 19（スマホの 2 列で 11px 以上）。
+      for (const box of textBoxes(svg)) {
+        assert.ok(box.left >= 2 && box.right <= 298 && box.top >= 2 && box.bottom <= spec.height - 2, `${template}: 「${box.text}」がはみ出す（${box.left.toFixed(0)}〜${box.right.toFixed(0)}, ${box.top.toFixed(0)}〜${box.bottom.toFixed(0)}）`);
+        assert.ok(box.size >= 19, `${template}: 「${box.text}」の字が ${box.size}`);
       }
     }
   }
-  // 入れる → 返る の部品は、全部が何かを描く（部屋・矢印・札の 9 個の形に、部品 1 つにつき 2 個以上の形が足される）。
-  for (const part of NOAH_PIN_PARTS) {
-    const svg = draw({ template: 'transform', labels: ['入れる', '返る'], parts: [part, part], variant: null });
-    assert.ok((svg.match(/<(rect|path|circle|ellipse|polygon|line|text)\b/g) ?? []).length >= 9 + 2 * 2, `${part} が描かれていない`);
-  }
-  for (const scene of Object.values(NOAH_SHELF_SCENES)) assert.ok(!/NaN|undefined/.test(draw(scene)));
+  for (const item of Object.values(NOAH_SHELF_SCENES)) assert.ok(!/NaN|undefined/.test(draw(item)));
 });
 
-void test('every template acts out its job once: a moving part, a still picture by default, and only light properties animate', () => {
+void test('every diagram draws itself once: a moving part, a finished picture by default, and only light properties animate', () => {
   const motion = readFileSync(new URL('../components/noah-pin-scene.module.css', import.meta.url), 'utf8');
   const source = readFileSync(new URL('../components/noah-pin-scene.tsx', import.meta.url), 'utf8');
-  const sample = (template, spec, variant) => ({ template, labels: Array.from({ length: spec.labels }, (_, i) => `札${i + 1}`), parts: (spec.parts ?? []).map((choices) => choices[0]), variant });
-  for (const [template, spec] of Object.entries(NOAH_PIN_TEMPLATES)) {
-    for (const variant of spec.variants ?? [null]) {
-      const svg = draw(sample(template, spec, variant));
-      // 動く部分が 1 つ以上ある（その型の仕事を演じる）。
-      assert.match(svg, /class="m (pop|rise|slide|draw|grow|drop|scan|arc|pull)"/, `${template}/${variant}: 動く部分が無い`);
-      // サーバーで描いた絵は止まった絵（data-motion は、画面に入るのを待つ時に、画面の側で付ける）。
-      assert.ok(!svg.includes('data-motion'), `${template}/${variant}: 初めから動く印がある`);
-      assert.match(svg, /^<svg class="art"/);
-    }
-  }
-  // 線を描く動きで囲む線には、長さ 1 の印がある（無いと点線になる）。
-  for (const svg of Object.entries(NOAH_PIN_TEMPLATES).map(([template, spec]) => draw(sample(template, spec, spec.variants?.[0] ?? null)))) {
-    for (const [, inner] of svg.matchAll(/<g class="m draw"[^>]*>(<[^>]+>)/g)) assert.match(inner, /pathLength="1"/, inner);
+  for (const [template, spec] of TEMPLATES) {
+    const svg = draw(scene(template, shortLabels(spec)));
+    // 動く部分が 2 つ以上ある（図が描かれていく）。
+    assert.ok((svg.match(/class="m (pop|rise|slide|slideR|fall|fade|draw|grow|growY|swing)"/g) ?? []).length >= 2, `${template}: 動く部分が足りない`);
+    // サーバーで描いた絵は描き終わった図（data-motion は、画面に入るのを待つ時に、画面の側で付ける）。
+    assert.ok(!svg.includes('data-motion'), `${template}: 初めから動く印がある`);
+    assert.match(svg, /^<svg class="art"/);
+    // 線を描く動きで囲む線には、長さ 1 の印がある（無いと点線になる）。
+    for (const [, inner] of svg.matchAll(/<g class="m draw"[^>]*>(<[^>]+>)/g)) assert.match(inner, /pathLength="1"/, `${template}: ${inner}`);
+    // 針の回る中心が書いてある。
+    for (const [, attrs] of svg.matchAll(/<g class="m swing"([^>]*)>/g)) assert.match(attrs, /--ox:\d+px;--oy:\d+px/, template);
   }
   // 使った動き方は、全部 CSS にある。キーフレームで動かすのは、形（transform）・透明度・線の描き足しだけ（重い描き直しを起こさない）。
   for (const [, kind] of source.matchAll(/k="(\w+)"/g)) assert.match(motion, new RegExp(`\\.art\\[data-motion\\] \\.${kind} \\{[^}]*animation-name: \\w+`), kind);
   const frames = [...motion.matchAll(/@keyframes \w+ \{(.*)\}\n/g)].map(([, body]) => body);
-  assert.ok(frames.length >= 9);
+  assert.ok(frames.length >= 10);
   for (const body of frames) for (const [, property] of body.matchAll(/([a-z-]+):/g)) assert.ok(['opacity', 'transform', 'stroke-dashoffset'].includes(property), property);
+  // 1 枚の動きは 1.4 秒以内に終わる（いちばん遅い始まり + いちばん長い動き）。
+  const delays = [...source.matchAll(/d=\{(\d+)\}/g)].map(([, n]) => Number(n)), durations = [...motion.matchAll(/animation-duration: \.(\d+)s/g)].map(([, n]) => Number(`0.${n}`) * 1000);
+  assert.ok(Math.max(...delays) + Math.max(...durations) <= 1800 && Math.max(...delays) <= 900, `${Math.max(...delays)} + ${Math.max(...durations)}`);
   // 動きを減らす設定の人には動かさない。
   assert.match(motion, /@media \(prefers-reduced-motion: reduce\) \{ \.m \{ animation: none !important; \} \}/);
   assert.match(source, /prefers-reduced-motion: reduce/);
 });
 
 void test('no word is drawn under the save button (top right), even with the longest labels', () => {
-  const decode = (text) => text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"');
-  const longest = (template, index) => 'あ'.repeat((template === 'speak' || template === 'word') && index === 0 ? NOAH_PIN_WORD_MAX : NOAH_PIN_LABEL_MAX);
-  for (const [template, spec] of Object.entries(NOAH_PIN_TEMPLATES)) {
-    for (const variant of spec.variants ?? [null]) {
-      for (const labels of [Array.from({ length: spec.labels }, (_, i) => `札${i + 1}`), Array.from({ length: spec.labels }, (_, i) => longest(template, i))]) {
-        const svg = draw({ template, labels, parts: (spec.parts ?? []).map((choices) => choices[0]), variant });
-        for (const [, attrs, content] of svg.matchAll(/<text ([^>]*)>([^<]*)<\/text>/g)) {
-          const number = (name) => Number(new RegExp(`${name}="([^"]+)"`).exec(attrs)?.[1]);
-          const x = number('x'), y = number('y'), size = number('font-size'), width = noahPinLabelWidth(decode(content)) * size;
-          const right = /text-anchor="middle"/.test(attrs) ? x + width / 2 : x + width, top = y - size * 0.9;
-          assert.ok(!(right > NOAH_PIN_KEEP_OUT.x && top < NOAH_PIN_KEEP_OUT.y), `${template}/${variant}: 「${decode(content)}」が保存のボタンの下（右 ${right.toFixed(0)}・上 ${top.toFixed(0)}）`);
-        }
+  for (const [template, spec] of TEMPLATES) {
+    for (const labels of [shortLabels(spec), longLabels(spec), asciiLabels(spec)]) {
+      for (const box of textBoxes(draw(scene(template, labels)))) {
+        assert.ok(!(box.right > NOAH_PIN_KEEP_OUT.x && box.top < NOAH_PIN_KEEP_OUT.y), `${template}: 「${box.text}」が保存のボタンの下（右 ${box.right.toFixed(0)}・上 ${box.top.toFixed(0)}）`);
       }
     }
   }
 });
 
-void test('the guide for Luna Max lists every template with its parts and variants', () => {
+void test('the guide for Luna Max lists every diagram with its number, name and label limits', () => {
   const guide = noahPinTemplateGuide();
-  for (const [template, spec] of Object.entries(NOAH_PIN_TEMPLATES)) {
-    assert.ok(guide.includes(`- ${template}:`), template);
-    for (const variant of spec.variants ?? []) assert.ok(guide.includes(variant), `${template}/${variant}`);
+  for (const [template, spec] of TEMPLATES) {
+    assert.ok(guide.includes(`- ${template}（${String(spec.no).padStart(2, '0')} ${spec.name} / ${spec.en}）:`), template);
+    assert.ok(guide.includes(`札の字の上限 = [${spec.slots.join(', ')}]`), template);
   }
+  assert.equal(guide.split('\n').length, 24);
 });
 
-void test('one pin written by Luna Max is checked: title, give, get and the scene', () => {
+void test('one pin written by Luna Max is checked: title, give, get and the diagram', () => {
   const pin = { title: '経費の勘定科目と仕訳を決める', give: '取引の内容', get: '勘定科目と仕訳の例', scene: NOAH_SHELF_SCENE_SOURCE['pkg:keihi-kamoku'] };
   assert.equal(parseNoahPin(pin).error, null);
   assert.equal(parseNoahPin({ ...pin, title: '' }).error, 'title');

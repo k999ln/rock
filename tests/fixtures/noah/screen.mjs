@@ -134,7 +134,7 @@ export function screen(options = {}) {
       if (id === '@/lib/noah-tap-sound') return load('lib/noah-tap-sound.ts');
       // 通信も保存もしない、決まった式だけの lib（ピンタレスト風の一覧の分野・形。task 115）は、本物をそのまま渡す。
       if (id === '@/lib/noah-pins') return pins;
-      // ピンの場面の絵の形と、棚の 17 枚の絵（spec-115 の 9 章）。決まった表だけの式なので、本物をそのまま渡す。
+      // ピンの図解の形と、棚の 17 枚の図解（spec-115 の 9 章）。決まった表だけの式なので、本物をそのまま渡す。
       if (id === '@/lib/noah-pin-scene') return pinScene;
       if (id === '@/lib/noah-pin-scenes-shelf') return shelfScenes;
       if (id === '@/lib/noah-intake-import-parts') return importParts;

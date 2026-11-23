@@ -1,58 +1,60 @@
 /**
- * Noah のピンの絵（場面の絵。2026-11-22 の本人の決定）。構図100選のような、平らな形の場面の絵で、何をする Agent かを見せる。
+ * Noah のピンの絵（バージョン TAKE。2026-11-24 の本人の指示「こういうの思い描いてたんだけど。今のをバージョン1って名前で保存して、次のやつはバージョンTAKEで保存して全部作り直して」）。
+ * 絵は「資料の図解」。しょうへい（@showheyohtaki）さんの「資料で使う図解・グラフの名前」のチートシート（Take｜AI革命 @aikakumei_take さんが紹介）の 24 種類から、
+ * その Agent の仕事がいちばん伝わる図を 1 つ選び、図の中の札に、その Agent の言葉を入れる。灰色の面に青 1 色。
+ * （バージョン 1 は、人と景色の「場面の絵」だった。ブランチ claude/noah-pins-version-1 に残してある。）
  *
- * 絵は「型（template）」と、型ごとの決まった数の「札の言葉（labels）」「部品（parts）」「種類（variant）」だけで書く（座標は書かない）。
+ * 絵は「型（template。図の名前）」と、型ごとの決まった数の「札の言葉（labels）」だけで書く（座標は書かない）。札ごとに、図に収まる字の上限がある。
  * 決まった形の JSON なので、人が書いても、AI（Codex の Luna Max。codex/tasks/130）が説明を読んで書いても、同じ物差しで確かめられる。
  * 描くのは components/noah-pin-scene.tsx。ここは、確かめる関数と表だけ（通信も保存もしない）。
  * 仕様: docs/noah/spec-115-pin-grid.md の 9 章。
  */
 
-/** 入れる → 返る、の型で使える部品。 */
-export const NOAH_PIN_PARTS = [
-  'receipt', 'ledger', 'document', 'chart', 'mail', 'calendar', 'photo', 'code', 'database', 'chat', 'phone', 'map', 'cup', 'book', 'music', 'video',
-  'gift', 'coin', 'list', 'idea',
-] as const;
-export type NoahPinPart = (typeof NOAH_PIN_PARTS)[number];
-
-type Spec = { labels: number; parts?: readonly (readonly string[])[]; variants?: readonly string[]; height: number; summary: string };
+type Spec = { no: number; name: string; en: string; slots: readonly number[]; height: number; summary: string };
 
 /**
- * 型の表。labels は札の言葉の数（並びの意味は summary の通り）。parts は部品の数と、それぞれ選べる物。variants は種類。height は絵の高さ（幅は 300）。
- * 足す時は、ここと components/noah-pin-scene.tsx の両方に足す（試験が、全部の型を描けるかを確かめる）。
+ * 図の表（チートシートの番号の順）。slots は札ごとの字の上限（英字・数字・記号は 0.6 字で数える）。並びの意味は summary の通り。height は絵の高さ（幅は 300）。
+ * 足す時は、ここと components/noah-pin-scene.tsx の両方に足す（試験が、全部の図を描けるか・動くか・右上に字が無いかを確かめる）。
  */
 export const NOAH_PIN_TEMPLATES = {
-  transform: { labels: 2, parts: [NOAH_PIN_PARTS, NOAH_PIN_PARTS], height: 220, summary: '入れる物 → 返る物。labels = [入れる物の札, 返る物の札]。parts = [入れる物, 返る物]' },
-  inspect: { labels: 3, parts: [['document', 'flyer']], variants: ['ok', 'warn'], height: 240, summary: '書類を確かめる。labels = [書類の題, 確かめる所の文, 結果の札]。variant = ok（問題なし）か warn（気になる所あり）' },
-  steps: { labels: 1, height: 260, summary: '手順を並べて書類にまとめる。labels = [流れの中の判断の札（例: 承認）]' },
-  browse: { labels: 1, height: 220, summary: 'ウェブで調べて、出典つきの一覧を返す。labels = [一覧の各行に付く札（例: 日付）]' },
-  board: { labels: 1, variants: ['building', 'house', 'paper'], height: 250, summary: '掲示板の中から 1 つを選ぶ。labels = [選んだ物の札]。variant = 掲示の紙の絵' },
-  shelf: { labels: 1, variants: ['law', 'book'], height: 230, summary: '本棚から 1 冊を探す。labels = [見つけた物の札]。variant = 本の表紙の印' },
-  speak: { labels: 2, height: 230, summary: '話して確かめる。labels = [吹き出しの言葉, 下の札]' },
-  word: { labels: 3, height: 210, summary: '単語を引く。labels = [単語, 読み, 小さい札]' },
-  play: { labels: 1, height: 250, summary: 'みんなで遊ぶ問題。labels = [問題の札（例: Q1）]' },
-  print: { labels: 1, variants: ['math', 'letters'], height: 240, summary: '印刷して使う紙と道具。labels = [紙の中の言葉]' },
-  gauge: { labels: 2, parts: [['gift', 'coin', 'cup']], height: 220, summary: '目安・上限を出す。labels = [物の札, 目盛りの札]' },
-  return: { labels: 2, height: 230, summary: 'お金が戻る。labels = [出した所の札, 戻る物の札]' },
-  split: { labels: 3, height: 210, summary: '内訳に分ける。labels = [全体の札, いちばん大きい部分の札, 残りの札]' },
-  place: { labels: 1, parts: [['station', 'temple', 'none']], variants: ['autumn', 'spring', 'green'], height: 270, summary: '景色の中の場所を探す。labels = [上の札]。variant = 木の季節' },
-  nearby: { labels: 1, parts: [['restroom', 'none']], variants: ['lockers', 'shop'], height: 240, summary: '近くの物を探す。labels = [距離などの札]。variant = 左の物' },
-  building: { labels: 1, variants: ['nursery', 'hospital', 'office'], height: 230, summary: '施設を調べる。labels = [札（例: 住所・電話）]' },
+  venn: { no: 1, name: 'ベン図', en: 'Venn diagram', slots: [6, 6], height: 230, summary: '2 つの円の重なり。重なり（青）が、その Agent が返す物。labels = [左の円, 右の円]' },
+  matrix: { no: 2, name: '4象限マトリクス（2×2）', en: '2x2 matrix', slots: [5, 5, 6], height: 230, summary: '縦横 2 つの軸で 4 つに分け、青い点で 1 つを示す。labels = [横の軸, 縦の軸, 青い点]' },
+  tree: { no: 3, name: 'ロジックツリー', en: 'Logic tree', slots: [5, 6, 6, 6], height: 240, summary: '1 つを 3 つに分ける。labels = [根（入れる物）, 枝 1, 枝 2, 枝 3]' },
+  pyramid: { no: 4, name: 'ピラミッド図', en: 'Pyramid diagram', slots: [6, 6], height: 230, summary: '下から積み上げる段。labels = [青い段, 段の名前（左上の札）]' },
+  mindmap: { no: 5, name: 'マインドマップ', en: 'Mind map', slots: [5, 4, 4, 4, 4], height: 240, summary: '中心から 4 つに広げる。labels = [中心, 枝 1, 枝 2, 枝 3, 枝 4]' },
+  flowchart: { no: 6, name: 'フローチャート', en: 'Flowchart', slots: [6, 4, 5, 5], height: 240, summary: 'ひし形の分かれ目を通る手順。labels = [始め, ひし形（確かめる事）, 次の箱, 結果（青）]' },
+  cycle: { no: 7, name: 'サイクル図', en: 'Cycle diagram', slots: [4, 4, 4, 4], height: 240, summary: '矢印が輪になって回り続ける 4 つ。labels = [上, 右, 下, 左]' },
+  fishbone: { no: 8, name: 'フィッシュボーン図（特性要因図）', en: 'Fishbone diagram', slots: [3, 5, 5], height: 220, summary: '魚の骨の形で原因を洗い出す。labels = [頭（結果）, 上の骨, 下の骨]' },
+  scatter: { no: 9, name: '散布図', en: 'Scatter plot', slots: [5, 5], height: 220, summary: '点の散らばりで 2 つの関係を見る。labels = [横の軸, 縦の軸]' },
+  bubble: { no: 10, name: 'バブルチャート', en: 'Bubble chart', slots: [4, 5], height: 220, summary: '円の大きさで 3 つ目を見せる。labels = [いちばん大きい円, 横の軸]' },
+  heatmap: { no: 11, name: 'ヒートマップ', en: 'Heatmap', slots: [7, 6, 3], height: 230, summary: '表のマスを色の濃さで塗る。labels = [表（左下の札）, 濃い所, 濃さ]' },
+  radar: { no: 12, name: 'レーダーチャート', en: 'Radar chart', slots: [4, 4, 5], height: 230, summary: 'くもの巣の形で項目を比べる。labels = [左上の項目, 左下の項目, 下の項目]' },
+  gauge: { no: 13, name: 'ゲージチャート', en: 'Gauge chart', slots: [5, 5], height: 220, summary: '半円のメーターと針。labels = [測る物, 目盛りの印]' },
+  combo: { no: 14, name: '複合グラフ（棒＋折れ線）', en: 'Combo chart (bar + line)', slots: [5, 4], height: 220, summary: '棒と折れ線で 2 つの数を重ね、差を示す。labels = [青い棒, 差]' },
+  pictogram: { no: 15, name: '絵グラフ（ピクトグラム）', en: 'Pictogram chart', slots: [6, 5], height: 214, summary: '人の印の数で割合を見せる。labels = [左下の札, 右の青い札]' },
+  stacked: { no: 16, name: '帯グラフ（100%積み上げ）', en: '100% stacked bar chart', slots: [6, 5, 4], height: 216, summary: '全体の帯を、割合で区切った帯に分けて内訳を見せる。labels = [いちばん大きい部分（青）, 2 番目, 3 番目]' },
+  gantt: { no: 17, name: 'ガントチャート', en: 'Gantt chart', slots: [6, 4], height: 220, summary: '日付の目盛りに横棒で期間を並べる。labels = [青い期間, 縦の線（日）]' },
+  timeline: { no: 18, name: 'タイムライン', en: 'Timeline', slots: [4, 4, 4], height: 210, summary: '1 本の線に出来事を順に並べる。labels = [左, 中, 右（青）]' },
+  funnel: { no: 19, name: 'ファネル図', en: 'Funnel chart', slots: [6, 5, 5], height: 230, summary: '段ごとに絞られていく漏斗。labels = [いちばん上, 2 段目, 最後（青）]' },
+  journey: { no: 20, name: 'カスタマージャーニーマップ', en: 'Customer journey map', slots: [8, 4], height: 220, summary: '段ごとの上下を線で見せる。labels = [下の札, いちばん高い所]' },
+  treemap: { no: 21, name: 'ツリーマップ', en: 'Treemap', slots: [5, 4], height: 220, summary: '四角の大きさで全体の内訳。labels = [いちばん大きい四角（青）, 右下の四角]' },
+  swimlane: { no: 22, name: 'スイムレーン図', en: 'Swimlane diagram', slots: [3, 3, 3], height: 230, summary: '担当ごとのレーンで手順を分ける。labels = [上のレーン, 下のレーン, 下のレーンの青い手順]' },
+  chevron: { no: 23, name: '矢羽根図（シェブロン）', en: 'Chevron process', slots: [3, 3, 3], height: 200, summary: '矢羽根を横に並べて工程を見せる。labels = [1 つ目, 2 つ目, 3 つ目（青）]' },
+  concentric: { no: 24, name: '同心円図', en: 'Concentric circle diagram', slots: [3, 6], height: 230, summary: '円の入れ子で範囲を絞る。labels = [中心, 右下の札]' },
 } as const satisfies Record<string, Spec>;
 export type NoahPinTemplate = keyof typeof NOAH_PIN_TEMPLATES;
 
-/** 1 枚の絵。 */
+/** 1 枚の絵。parts と variant は、バージョン 1 と同じ JSON の形を保つために残した項目（TAKE では、いつも空と null）。 */
 export type NoahPinScene = { template: NoahPinTemplate; labels: string[]; parts: string[]; variant: string | null };
 
 /**
  * 絵の右上の、何も置かない所（幅 300 の絵の座標。x より右で、かつ y より上）。グリッドの保存のボタンが、スマホの 2 列（カードの幅 約 160px〜）で覆う所。
- * 型を足す時も、札・✓・地図のピン・硬貨のような大事な形は、ここに置かない（字が入らない事は tests/noah-pin-scene.test.mjs が確かめる）。
+ * 図を足す時も、札の字は、ここに置かない（tests/noah-pin-scene.test.mjs が、いちばん長い札で確かめる）。
  */
 export const NOAH_PIN_KEEP_OUT = { x: 195, y: 100 } as const;
 
-/** 札の言葉の長さの上限（字の数。英字・数字・記号は 0.6 字で数える）。スマホの 2 列で、札が絵からはみ出さない長さ。 */
+/** 札の言葉の長さの、どの図でも越えない上限（字の数。英字・数字・記号は 0.6 字で数える）。図ごとの上限は slots。 */
 export const NOAH_PIN_LABEL_MAX = 8;
-/** 吹き出し・単語の言葉は、少し長くてよい（字の数。数え方は同じ）。 */
-export const NOAH_PIN_WORD_MAX = 10;
 
 export function noahPinLabelWidth(text: string): number {
   return Array.from(text).reduce((sum, char) => sum + ((char.codePointAt(0) ?? 0) < 128 ? 0.6 : 1), 0);
@@ -63,7 +65,7 @@ const BAD = { test: (text: string) => Array.from(text).some((char) => { const co
 
 /**
  * 外から来た JSON（人が書いた物・AI が書いた物）を確かめて、1 枚の絵にする。形が違えば null と理由。
- * 確かめる事: 型が表にある・札の数がちょうど・札が空でなく長すぎない・部品と種類が表にある・余計な項目が無い。
+ * 確かめる事: 図が表にある・札の数がちょうど・札が空でなく、その図の字の上限に収まる・parts は空・variant は null・余計な項目が無い。
  */
 export function parseNoahPinScene(value: unknown): { scene: NoahPinScene; error: null } | { scene: null; error: string } {
   const fail = (error: string) => ({ scene: null, error });
@@ -73,29 +75,23 @@ export function parseNoahPinScene(value: unknown): { scene: NoahPinScene; error:
   if (typeof input.template !== 'string' || !Object.hasOwn(NOAH_PIN_TEMPLATES, input.template)) return fail('template');
   const template = input.template as NoahPinTemplate, spec: Spec = NOAH_PIN_TEMPLATES[template];
   const labels = input.labels, parts = input.parts ?? [], variant = input.variant ?? null;
-  if (!Array.isArray(labels) || labels.length !== spec.labels) return fail('labels_count');
-  const wide = template === 'speak' || template === 'word';
+  if (!Array.isArray(labels) || labels.length !== spec.slots.length) return fail('labels_count');
   for (const [index, label] of labels.entries()) {
     if (typeof label !== 'string' || !label.trim() || label !== label.trim() || BAD.test(label)) return fail(`label:${index}`);
-    if (noahPinLabelWidth(label) > (wide && index === 0 ? NOAH_PIN_WORD_MAX : NOAH_PIN_LABEL_MAX)) return fail(`label_long:${index}`);
+    if (noahPinLabelWidth(label) > spec.slots[index]) return fail(`label_long:${index}`);
   }
-  const allowed = spec.parts ?? [];
-  if (!Array.isArray(parts) || parts.length !== allowed.length) return fail('parts_count');
-  for (const [index, part] of parts.entries()) if (typeof part !== 'string' || !allowed[index].includes(part)) return fail(`part:${index}`);
-  if (spec.variants ? typeof variant !== 'string' || !spec.variants.includes(variant) : variant !== null) return fail('variant');
-  return { scene: { template, labels: [...labels] as string[], parts: [...parts] as string[], variant: variant as string | null }, error: null };
+  if (!Array.isArray(parts) || parts.length !== 0) return fail('parts_count');
+  if (variant !== null) return fail('variant');
+  return { scene: { template, labels: [...labels] as string[], parts: [], variant: null }, error: null };
 }
 
-/** AI への説明（codex/tasks/130 の指示書が、そのまま使う表）。型ごとに 1 行。 */
+/** AI への説明（codex/tasks/130 の指示書が、そのまま使う表）。図ごとに 1 行。 */
 export function noahPinTemplateGuide(): string {
-  return (Object.entries(NOAH_PIN_TEMPLATES) as [NoahPinTemplate, Spec][]).map(([name, spec]) => {
-    const parts = spec.parts?.map((choices, index) => `parts[${index}] ∈ {${choices.join(', ')}}`).join('; ');
-    const variants = spec.variants ? `variant ∈ {${spec.variants.join(', ')}}` : 'variant = null';
-    return `- ${name}: ${spec.summary}。${[parts, variants].filter(Boolean).join('; ')}`;
-  }).join('\n');
+  return (Object.entries(NOAH_PIN_TEMPLATES) as [NoahPinTemplate, Spec][]).map(([name, spec]) =>
+    `- ${name}（${String(spec.no).padStart(2, '0')} ${spec.name} / ${spec.en}）: ${spec.summary}。札の字の上限 = [${spec.slots.join(', ')}]`).join('\n');
 }
 
-/** 1 枚のピンの字と絵（題・入れる物・返る物・場面の絵）。Luna Max が 1.7 万件ぶん書く物の形（codex/tasks/130）。 */
+/** 1 枚のピンの字と絵（題・入れる物・返る物・図解）。Luna Max が 1.7 万件ぶん書く物の形（codex/tasks/130）。 */
 export type NoahPin = { title: string; give: string; get: string; scene: NoahPinScene };
 /** 題・入れる物・返る物の長さの上限（字の数。数え方は noahPinLabelWidth と同じ）。 */
 export const NOAH_PIN_TEXT_MAX = { title: 20, give: 30, get: 30 } as const;

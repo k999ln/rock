@@ -2,7 +2,7 @@
 /**
  * ピンタレスト風のグリッド（task 115）。カードを 1 枚ずつ、今いちばん短い列に置く（同じなら左）。先に高さを測ってから置く。
  * 置き方は Pinterest の Gestalt（github.com/pinterest/gestalt、Apache-2.0）の Masonry の決まりを、小さく書き写した物（部品ごとは入れない）。
- * 列の数は、幅に合わせて 2〜6。カードは、場面の絵と日本語の題・入れる物 → 返る物（pin がある時。spec-115 の 9 章）か、分野の色の面に頭文字・名前・説明 2 行。「保存」でボードへ。
+ * 列の数は、幅に合わせて 2〜6。カードは、資料の図解と日本語の題・入れる物 → 返る物（pin がある時。spec-115 の 9 章）か、分野の色の面に頭文字・名前・説明 2 行。「保存」でボードへ。
  * 仕様: docs/noah/spec-115-pin-grid.md の 3 章。
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';

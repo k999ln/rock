@@ -4,7 +4,7 @@
  * カードの名前と説明は運営の言葉（「Noah の説明」と添える）。提供者の説明は、押した先の詳細の画面に、そのまま出る。
  * 並びと、載せるかどうかは、サーバーが決める（GET /api/noah/shelf）。ここは、返った順に出すだけ。閉じている・読めない・載る物が無い時は、何も出さない。
  * サインインした本人は、カードを「表示しない」にできる（その本人の棚から外れる。POST /api/noah/shelf の hide）。
- * カードの上には、何をする仕事かの場面の絵（lib/noah-pin-scenes-shelf.ts。spec-115 の 9 章）。絵が無いカードは、今まで通り字だけ。
+ * カードの上には、何をする仕事かの資料の図解（lib/noah-pin-scenes-shelf.ts。spec-115 の 9 章。バージョン TAKE）。絵が無いカードは、今まで通り字だけ。
  * 仕様: docs/noah/spec-110-shelf.md の 10 章。
  */
 import { useEffect, useState } from 'react';
