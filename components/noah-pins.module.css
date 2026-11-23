@@ -2,6 +2,8 @@
 .home { padding-top:8px; }
 .firstJobs { padding: 18px 0 8px; scroll-margin-top: 80px; }
 .firstJobs h1 { margin: 0 0 12px; color: #252329; font-size: 22px; line-height: 1.35; }
+.purposeSection { margin: 0 0 12px; }
+.purposeSection h2 { margin: 0 0 5px; font-size: 15px; line-height: 1.5; color: #403b47; }
 .firstJobs ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
 .firstJobs li > a { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 100%; min-height: 54px; padding: 10px 14px; border: 1px solid #e2dfe7; border-radius: 12px; color: #29262e; text-decoration: none; }
 .firstJobs li > a:hover { background: #f8f6fb; }

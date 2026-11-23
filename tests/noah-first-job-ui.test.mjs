@@ -42,6 +42,24 @@ void test('the public home opens available tasks directly with their expected ou
   assert.equal(ui.calls[0].method, 'GET');
 });
 
+void test('the public home shows a purpose section only when it has a usable task', async () => {
+  const memory = choices.find(job => job.id === 'memory');
+  const sites = choices.filter(job => job.operation);
+  for (const [available, visible, hidden] of [
+    [[memory], '自分のメモ整理', 'お店・会社のサイト運営'],
+    [sites, 'お店・会社のサイト運営', '自分のメモ整理'],
+  ]) {
+    const ui = screen({ modules, fetch: async () => ({ body: pageReply(available) }) });
+    const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
+    await home.flush();
+    assert.equal(home.find('h2', visible).length, 1);
+    assert.equal(home.find('h2', hidden).length, 0);
+    for (const lang of NOAH_LOCALES.filter(lang => lang !== 'ja')) {
+      assert.notEqual(noahTranslate(lang, visible), visible);
+    }
+  }
+});
+
 void test('all unavailable and a failed lookup both preserve exploration and saved results; the local home does not request choices', async () => {
   for (const state of ['unavailable', 'error', 'local']) {
     const ui = screen({ modules, fetch: async () => state === 'error' ? { status: 503, body: { error: 'offline' } } : { body: pageReply(choices.map(job => ({ ...job, href: null }))) } });

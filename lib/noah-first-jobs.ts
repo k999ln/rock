@@ -7,21 +7,21 @@ const choices = [
     id: 'wordpress-maintenance',
     title: 'WordPressの保守を相談する準備',
     input: '管理しているWordPressサイトの公開URL',
-    output: '公開ページの診断結果と、保守の相談で確認したいこと',
+    output: '保守会社との打ち合わせに使える、サイトの診断結果と質問リスト',
     operation: 'diagnose_wordpress_site',
   },
   {
     id: 'ec-production',
     title: 'ネットショップの改修点を調べる',
     input: '管理しているネットショップの公開URL',
-    output: '公開ページの診断結果と、制作・改修を依頼するときの確認事項',
+    output: '制作会社に改修を相談するときに使える、ショップの診断結果と確認リスト',
     operation: 'diagnose_ec_site',
   },
   {
     id: 'memory',
     title: 'メモの中の関係を整理する',
     input: '人物・担当・作業など、整理したいメモ',
-    output: 'メモに出てくる項目と関係を整理した記録',
+    output: '誰が何を担当するか、あとから見返せるメモ',
   },
 ] as const;
 

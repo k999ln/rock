@@ -9,6 +9,11 @@ import { NOAH_COLLECTION_LABELS, NOAH_COLLECTION_SOURCES } from '@/lib/noah-coll
 import NoahPinGrid, {type NoahPinView} from './noah-pin-grid';
 import NoahLoading from './noah-loading';
 import styles from './noah-pins.module.css';
+const purposeSections = [
+  { title: 'お店・会社のサイト運営', ids: ['wordpress-maintenance', 'ec-production'] },
+  { title: '自分のメモ整理', ids: ['memory'] },
+];
+
 type Page={items:NoahPinView[];nextCursor:string|null;ownerScope:string|null;total:number;firstJobs?:NoahFirstJob[]};
 export default function NoahPinHome({fallback,searchQuery='',initialSource='noah',onClearQuery,showFirstJobs=false}:{fallback?:ReactNode;searchQuery?:string;initialSource?:string;onClearQuery?:()=>void;showFirstJobs?:boolean}) {
   const params=useSearchParams();
@@ -71,9 +76,16 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='noah
   const availableJobs=current?.page?.firstJobs?.filter((job):job is NoahFirstJob & {href:string}=>job.href!==null);
   return <>{showFirstJobs && <section className={styles.firstJobs} id="first-jobs" tabIndex={-1} aria-labelledby="noah-first-jobs-title">
     <h1 id="noah-first-jobs-title">{t('何をしたいですか？')}</h1>
-    {availableJobs?.length ? <ul>{availableJobs.map(job => <li key={job.id}>
-      <Link href={job.href}><span><strong>{t(job.title)}</strong><small>{t(job.output)}</small></span><ChevronRight size={18} aria-hidden="true"/></Link>
-    </li>)}</ul> : <output>{t(!current ? '利用できる仕事を確認しています…' : availableJobs ? '今選べる仕事はありません。' : '今選べる仕事を確認できませんでした。')}</output>}
+    {availableJobs?.length ? purposeSections.map(section => {
+      const jobs = availableJobs.filter(job => section.ids.includes(job.id));
+      if (jobs.length === 0) return null;
+      return <div className={styles.purposeSection} key={section.title}>
+        <h2>{t(section.title)}</h2>
+        <ul>{jobs.map(job => <li key={job.id}>
+          <Link href={job.href}><span><strong>{t(job.title)}</strong><small>{t(job.output)}</small></span><ChevronRight size={18} aria-hidden="true"/></Link>
+        </li>)}</ul>
+      </div>;
+    }) : <output>{t(!current ? '利用できる仕事を確認しています…' : availableJobs ? '今選べる仕事はありません。' : '今選べる仕事を確認できませんでした。')}</output>}
     <nav className={styles.firstJobLinks} aria-label={t('仕事を探す・成果を見る')}>
       <Link href="/noah/explore">{t('ほかの仕事を探す')}</Link>
       <Link href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>

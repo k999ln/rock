@@ -30,7 +30,7 @@
 
 再開順は、① PR #18・#19統合後の本番受入の確認、② 収集の継続観測と実行先移行、③ 診断利用から注文・承認までの実測。CLI本番配備などの契約・承認条件は各taskに残す。
 
-初めて使う人が目的から仕事を選び、保存した成果を開き直す導線を[PR #24](https://github.com/iceiceice999/rock/pull/24)で開発。対象はWordPress保守・EC改修・メモ整理。[画面・API・データの構造図と70点の受入手順](docs/noah/first-use-architecture.md)で、本番受入と初見利用者による評価を追跡する。
+初めて使う人が目的から仕事を選び、保存した成果を開き直す導線を[PR #24](https://github.com/iceiceice999/rock/pull/24)で開発。法人・店舗には保守や改修の相談資料、個人には担当を整理して見返せるメモを案内する。[eSIMの専用回線](docs/structure/03-esim.md)、[本人の仕事を実行するクラウド](docs/services/noah-cloud-agents.md)、[Eveとの関係、作者の売上・作業料・等分と現物への引渡し](docs/noah/eve-distribution-and-rewards.md)の図と受入状況も同PRに追加。[画面・API・データの構造図と70点の受入手順](docs/noah/first-use-architecture.md)で、本番受入と初見利用者による評価を追跡する。
 
 以下の旧タスク台帳393件は、今回個別に再検収していない。Noahの新しい番号付きtaskは上の一覧を参照し、旧台帳の完了件数を製品完成率にしない。
 
