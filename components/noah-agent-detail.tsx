@@ -9,6 +9,7 @@ import type { NoahUpload } from '@/lib/noah-agent-store';
 import { adapterLabels } from './noah-agent-catalog';
 import { permissionLabels } from './noah-agent-upload-form';
 import styles from './noah-agent-catalog.module.css';
+import { noahPinInitials } from '@/lib/noah-pins';
 import NoahLocalConnectionPanel from './noah-local-connection';
 import NoahManagedInstallation from './noah-managed-installation';
 import { NoahInviteManager } from './noah-invites';
@@ -82,7 +83,8 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
     {error && <div role="alert" className={styles.error}>{error} {!m && <button onClick={() => setAttempt(n => n + 1)}>再試行</button>}</div>}
     {!m && !error && <output>読み込んでいます…</output>}
     {m && <>
-      <header className={styles.hero}><div><span className={styles.eyebrow}>{builtin ? 'EXTERNAL AGENT' : 'PRIVATE / YOUR AGENT'}</span><h1>{m.name}</h1><p>{m.summary}</p></div></header>
+      <header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true">{noahPinInitials(m.name)}</span><div><h1>{m.name}</h1><p>{builtin ? '外部Agent' : '自分のAgent'}</p></div></header>
+      <p className={styles.productSummary}>{m.summary}</p>
       <div className={styles.facts}><div><small>接続方式</small><strong>{builtin ? '背景実行・本人Codex接続' : m.runtime ? 'ターミナル用テンプレート' : testConnection ? 'テストAgent接続' : adapterLabels[m.adapter]}</strong></div><div><small>作者 / 版</small><strong>{m.author} / {m.version}</strong></div><div><small>実行する場所</small><strong>{builtin || m.runtime ? 'このMacの隔離環境' : testConnection ? 'クラウド / このMac' : m.adapter === 'source' ? '未設定' : m.adapter === 'local_app' ? '隔離環境の対応待ち' : '接続先のサービス'}</strong></div></div>
       {testConnection && upload?.uploadState === 'ready' && <NoahLocalConnectionPanel key={id + scope} id={id} ownerScope={scope} />}
       {builtin && !remote && <NoahManagedInstallation key={id} id={id} />}

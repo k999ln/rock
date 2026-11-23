@@ -400,6 +400,7 @@ export type LinuxCommand =
   | { action: 'add'; listingId: string }
   | {
       action: 'run';
+      listingDigest?: string;
       listingId: string;
       requestId: string;
       input: string;
@@ -435,6 +436,8 @@ export async function linuxCommand(
   } else if (command.action === 'run') {
     requireAccess(w, now);
     const item = listing(command.listingId);
+    if (command.listingDigest !== undefined && command.listingDigest !== item.digest)
+      fail('選んだAgentの版が変わりました。実行条件を確認してください。');
     if (command.accepted !== true || !w.attachments.includes(item.id))
       fail('追加・料金・実行内容を確認してください。');
     const input = linuxText(command.input, 4000),

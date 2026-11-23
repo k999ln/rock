@@ -71,6 +71,7 @@ export default function SkyConnectedRuntime() {
         >
           <Link href="/os/eve">Eveで続きを見る</Link>
           <Link href="/connect/device">端末の追加・解除</Link>
+          <Link href="/noah/mac">自分のMacでAgentを動かす</Link>
           <Link href="/#sky-manage">Noahのライブラリへ戻る</Link>
         </nav>
         {status === 'loading' && <p>接続した能力を確認しています…</p>}

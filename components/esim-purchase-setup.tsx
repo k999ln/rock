@@ -232,7 +232,7 @@ export function EsimPurchaseSetup({ orderId, iosConnect = false }: { orderId: st
     {!iosConnect && eligibleOrder &&
       <p className={status.esimDeviceEntitlementState === 'active' ? styles.success : styles.notice}>
         {status.esimDeviceEntitlementState === 'active'
-          ? 'この端末の利用権を確認しました。Noahは、Agentを選んで仕事を頼み、成果を受け取る場所です。'
+          ? 'この端末の利用権を確認しました。専用クラウドへのアクセスを有効にすると、そこでAgentに依頼し、利用量と料金を確認できます。'
           : status.esimDeviceEntitlementState === 'revoked_or_stale'
             ? '端末利用権の証明が現在の信頼条件またはPackage版と一致しません。同期が回復するまで機能を利用できません。'
             : status.deviceInstallState === 'verified_installed_enabled'
@@ -258,7 +258,7 @@ export function EsimPurchaseSetup({ orderId, iosConnect = false }: { orderId: st
     </section>}
     {eligibleOrder && status.esimDeviceEntitlementState === 'active' &&
       <nav className={styles.esimLinks} aria-label="eSIM追加後の案内">
-        <Link className={styles.primary} href="/noah/explore">Noahで最初のAgentを選ぶ</Link>
+        <Link className={styles.secondary} href="/noah/explore">公開ストアでAgentを探す</Link>
         <Link className={styles.secondary} href="/connect/service">専用クラウドの契約条件を確認</Link>
       </nav>}
     {cloud && <section className={styles.esimMaterial} aria-label="専用クラウドへのアクセス">
