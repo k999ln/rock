@@ -7,6 +7,7 @@ import NoahRegistrationSheet from './noah-registration-sheet';
 import NoahAgentFeedback from './noah-agent-feedback';
 import { researchKindLabels, type ResearchDetail, type ResearchSummary } from '@/lib/noah-research-types';
 import styles from './noah-agent-catalog.module.css';
+import { noahPinInitials } from '@/lib/noah-pins';
 
 export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: string; basePath?: string }) {
   const {t}=useNoahLocale();
@@ -32,14 +33,20 @@ export default function NoahPublicDetail({ id, basePath = '/noah' }: { id: strin
     return () => controller.abort();
   }, [id, key]);
   const agent = entry?.kind === 'agent' || entry?.kind === 'candidate';
-  return <div><main className={`${styles.page} ${styles.formPage}`}>
+  return <div><main className={`${styles.page} ${styles.formPage} ${styles.catalogDetail}`}>
     <nav className={styles.nav}><Link href={`${basePath}/explore?tab=catalog`}>{t("← Agentを探す")}</Link></nav>
     {error && <div role="alert" className={styles.error}>{t(error)} <button onClick={() => setAttempt(n => n + 1)}>{t("再試行")}</button></div>}
     {!entry && !error && <NoahLoading/>}
     {entry && <>
-      <header className={styles.hero}><div><span className={styles.eyebrow}>NOAH · AGENT CATALOG</span><h1>{entry.name}</h1><p>{entry.summary}</p></div></header>
+      <header className={styles.storeProduct}>
+        <span className={styles.productMark} aria-hidden="true">{noahPinInitials(entry.name)}</span>
+        <div><h1>{entry.name}</h1>{entry.author && <p>{entry.author}</p>}
+          {agent && <a className={styles.productPill} href="#noah-product-access">{t('利用条件を見る')}</a>}
+        </div>
+      </header>
+      <p className={styles.productSummary}>{entry.summary}</p>
       <div className={styles.facts}><div><small>{t("分類")}</small><strong>{t(researchKindLabels[entry.kind])}</strong></div><div><small>{t("確認状況")}</small><strong>{entry.level === 'primary' ? t("一次資料を確認") : t("資料確認待ち")}</strong></div></div>
-      <section className={styles.notice}><h2>{agent ? t("このAgentを使う") : t("この関連資産について")}</h2>
+      <section className={styles.notice} id="noah-product-access"><h2>{agent ? t("このAgentを使う") : t("この関連資産について")}</h2>
         <p>{agent ? t("このAgentは紹介情報です。スマホで使える接続先は、対応一覧から選べます。") : t("Agentを作る・動かすための関連資産です。単独の業務Agentとは区別しています。")}</p>
         <p>{t("利用費用：")}{entry.price}</p><p>{t("ライセンス：")}{entry.license || '未確認'}{t("。利用条件は配布元で確認してください。")}</p>
         {agent && <Link className={styles.primary} href={`/noah/explore?${new URLSearchParams({q:entry.name.slice(0,80)})}`}>{t("スマホで使えるAgentを探す")}</Link>}

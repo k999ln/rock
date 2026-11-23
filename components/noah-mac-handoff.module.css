@@ -1,7 +1,6 @@
 .page { max-width:720px; margin:auto; padding:28px 24px 80px; color:var(--sky-text,#202023); }
-.back { display:inline-flex; align-items:center; gap:7px; color:var(--sky-muted,#737078); text-decoration:none; font-size:13px; min-height:44px; }
 .page header { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:22px 0 36px; }
-.page h1 { font-size:28px; letter-spacing:-1px; margin:0; }
+.page header h2 { font-size:28px; letter-spacing:-1px; margin:0; }
 .icon { display:grid; place-items:center; width:46px; height:46px; border-radius:13px; background:#f4effb; color:#7546c8; }
 .chip { font-size:11px; color:#737078; border:1px solid #e7e4eb; padding:5px 8px; border-radius:5px; }
 .steps { list-style:none; margin:0; padding:0; }
@@ -27,4 +26,4 @@
 .page details > a { display:inline-flex; align-items:center; gap:4px; font-size:11px; color:#7546c8; margin:0 16px 12px 0; }
 .extra { margin-left:46px; }
 .page :is(a,button,summary):focus-visible { outline:2px solid #7546c8; outline-offset:4px; }
-@media(max-width:600px) { .page { padding:20px 18px 100px; }.page header { margin-top:12px; gap:10px; }.page h1 { font-size:24px; }.chip { margin-left:56px; margin-top:-8px; }.steps > li { gap:12px; }.extra { margin-left:42px; } }
+@media(max-width:600px) { .page { padding:20px 18px 100px; }.page header { margin-top:12px; gap:10px; }.page header h2 { font-size:24px; }.chip { margin-left:56px; margin-top:-8px; }.steps > li { gap:12px; }.extra { margin-left:42px; } }

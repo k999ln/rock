@@ -13,9 +13,14 @@ import { collectXAgents } from './noah-collector-x.mjs';
 import { collectionSnapshots, publishCollection } from './noah-collector-publish.mjs';
 import { collectFeeds, feedLeads, feedStatus } from './noah-collector-feeds.mjs';
 import { importFamilies, importedFamilies } from './noah-collector-import.mjs';
+import { readScoutFile } from './noah-collector-social.mjs';
+import { fileURLToPath } from 'node:url';
+
+/** 読んだ紹介のファイル data/noah-scout/leads.json（task 125）。Codex・Claude が読んで理解した紹介を書き、収集機が毎回まとめて載せる。 */
+export const NOAH_SCOUT_LEADS_PATH = fileURLToPath(new URL('../data/noah-scout/leads.json', import.meta.url));
 
 /** One bounded pass. Provider failures retain their own checkpoints and retry deadlines. */
-export async function collectAgents({ local, directory, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, signal, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken }) {
+export async function collectAgents({ local, directory, fetcher, now = Date.now, budget = NOAH_PATROL_BUDGET, signal, xToken, publishOrigin, publishKey, importOrigin, smitheryKey, githubToken, scoutPath = NOAH_SCOUT_LEADS_PATH }) {
   const startedAt = now(), steps = {}, errors = [];
   const intake = createIntakeStore({ db: local.db, fetcher, now, budget });
   const discovery = createDiscoveryStore({ db: local.db, fetcher, now });
@@ -41,7 +46,10 @@ export async function collectAgents({ local, directory, fetcher, now = Date.now,
     .map(({ metadata_json, ...row }) => ({ ...row, metadata: JSON.parse(metadata_json), verified: false }));
   writeCollectorJson(join(directory, 'discovery.json'), { schema: 'noah-discovery-export/1', exportedAt, candidates });
   writeCollectorJson(join(directory, 'import.json'), exported);
-  const snapshots = collectionSnapshots({ exported, discoveries: candidates, x, now: exportedAt, leads: feedLeads(local, exportedAt), sent: importedFamilies(local.sql), xConfigured: !!xToken });
+  const scout = readScoutFile(scoutPath, exportedAt);
+  steps.scout = { collected: scout.items.length, rejected: scout.rejected };
+  if (scout.rejected.file) errors.push({ source: 'scout', code: 'invalid_file' });
+  const snapshots = collectionSnapshots({ exported, discoveries: candidates, x, now: exportedAt, leads: feedLeads(local, exportedAt), sent: importedFamilies(local.sql), xConfigured: !!xToken, scout: scout.items });
   writeCollectorJson(join(directory, 'collection.json'), { snapshots });
   const sources = [...collectorSources(local.sql), ...feedStatus(local.sql)];
   for (const source of collectorSources(local.sql)) if (source.error_code) errors.push({ source: source.id, code: source.error_code });

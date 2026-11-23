@@ -6,7 +6,7 @@
 .identity { display:flex; align-items:center; gap:12px; color:#24212a; font-size:24px; font-weight:600; letter-spacing:-.6px; }
 .mark { display:block; object-fit:contain; }
 .track { display:block; position:relative; width:64px; height:2px; overflow:hidden; border-radius:2px; background:#eeecf1; }
-.track > span { display:block; width:24px; height:100%; border-radius:inherit; background:#8c6abb; animation:noah-progress 1.8s ease-in-out infinite; }
+.track > span { display:block; width:24px; height:100%; border-radius:inherit; background:#a94b0a; animation:noah-progress 1.8s ease-in-out infinite; }
 .cards { display:block; width:100%; padding:4px 0 24px; }
 .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px 12px; }
 .card { display:flex; min-width:0; flex-direction:column; align-items:flex-start; gap:8px; animation:noah-breathe 2.4s ease-in-out infinite; }

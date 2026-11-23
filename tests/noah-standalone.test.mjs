@@ -91,13 +91,15 @@ void test('old in-flight results are discarded when the signed-in owner changes'
 
 void test('the primary activity route shows remote jobs without reopening retired Mac screens', async () => {
   const jsx = (type, props) => ({ type, props });
-  const modules = { 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' }, 'next/navigation': { redirect: (url) => { throw Error(url); } }, '@/components/noah-work-page': { default: 'work-page' }, '@/components/noah-service.module.css': { default: {} } };
+  const modules = { 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': { default: 'a' }, 'next/navigation': { redirect: (url) => { throw Error(url); } }, '@/components/noah-my': { default: 'my-agent' }, '@/components/noah-service.module.css': { default: {} } };
   const code = ts.transpileModule(readFileSync(new URL('../app/noah/activity/page.tsx', import.meta.url), 'utf8'), { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const unit = { exports: {} };
   runInNewContext(`(function(exports, require, module){${code}\n})`, { URLSearchParams })(unit.exports, name => { assert(name in modules, name); return modules[name]; }, unit);
   const tree = await unit.exports.default({ searchParams: Promise.resolve({}) });
-  assert.equal(tree.type, 'work-page');
-  assert.equal((await unit.exports.default({ searchParams: Promise.resolve({ agent: 'anicca' }) })).type, 'work-page');
+  assert.equal(tree.type, 'my-agent'); assert.equal(tree.props.legacy, 'activity');
+  const linked = await unit.exports.default({ searchParams: Promise.resolve({ agent: 'anicca' }) });
+  assert.equal(linked.props.legacy, 'activity');
+  assert.equal(linked.props.params.agent, 'anicca');
 });
 
 void test('a known owner change hides cached results before the next network reply', async () => {

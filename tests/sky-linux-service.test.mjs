@@ -17,6 +17,7 @@ import {
   parseLinuxTerms,
   linuxText,
 } from '../lib/sky-linux-service.ts';
+import { handleEsimMeteredWork } from '../lib/noah-esim-metered.ts';
 import { linuxServiceStore } from '../lib/sky-linux-service-store.ts';
 import { captureEsimAuthorityReads } from '../lib/esim-cloud-grant.ts';
 import { createServiceSetup, acceptServiceSetup } from '../lib/rockstar-service-setup.ts';
@@ -151,6 +152,49 @@ async function run(w, listing, id = randomUUID()) {
   });
   return { w, result, id };
 }
+void test('dedicated eSIM jobs share the approved contract, reserve once and expose only measured charges to the same device', async () => {
+  const setupData = await setup(), listing = setupData.listing;
+  let workspace = setupData.w, revision = 1;
+  const context = { owner: workspace.ownerId, device: workspace.deviceRef, order: workspace.orderId };
+  const store = {
+    catalog: async () => [listing],
+    ownerResponse: async () => ({ workspace: { revision, payload: workspace }, access: { canRead: true, canExecute: true } }),
+    command: async (owner, expected, command) => {
+      assert.equal(owner, context.owner); assert.equal(expected, revision);
+      workspace = await linuxCommand(workspace, command, [listing], now);
+      revision++;
+    },
+  };
+  const send = (body, data = context, session = context.owner) =>
+    handleEsimMeteredWork(body, data, store, async () => session);
+  assert.equal((await send(undefined, context, 'another-user')).status, 403);
+  assert.equal((await send(undefined, { ...context, device: 'other-device' })).status, 403);
+  assert.equal((await send(undefined, { ...context, order: 'other-order' })).status, 403);
+  const first = await (await send(undefined)).text();
+  assert.match(first, /計算料金/); assert.equal(workspace.jobs.length, 0);
+  const id = randomUUID();
+  const data = { action: 'run', contract: workspace.contractDigest, revision: '1', listing: listing.id,
+    version: listing.digest, requestId: id, text: 'Agent work', cpu: '170000', maximum: '270', accepted: 'yes' };
+  const submit = (overrides) => send(new URLSearchParams({ ...data, ...overrides }).toString());
+  assert.equal((await submit({ maximum: '1' })).status, 409);
+  assert.equal((await submit({ version: 'changed' })).status, 403);
+  assert.equal((await submit({ accepted: '' })).status, 403);
+  assert.equal((await submit({})).status, 303);
+  assert.equal((await submit({})).status, 409);
+  assert.equal(workspace.jobs.length, 1);
+  assert.equal(workspace.jobs[0].reservedMinor, 270);
+  assert.match(await (await send(undefined)).text(), /確定使用量・料金は未確定/);
+  workspace = await linuxCommand(workspace, { action: 'claim', jobId: id, claimId: 'worker-claim' }, [listing], now);
+  const receipt = event(workspace, 'result', { jobId: id, claimId: 'worker-claim', contractDigest: workspace.contractDigest,
+    listingDigest: listing.digest, inputSha256: workspace.jobs[0].inputSha256, outcome: 'succeeded',
+    meter: 'linux-wait4-child-cpu/1', cpuMs: 2000, durationMs: 2500, text: 'saved result' });
+  workspace = await applyLinuxEvent(workspace, receipt, now);
+  workspace = await applyLinuxEvent(workspace, receipt, now);
+  const result = await (await send(undefined)).text();
+  assert.match(result, /2000 CPUミリ秒、確定計算料 0.01 USD、確定Agent料 1.00 USD/);
+  assert.match(result, /saved result/); assert.equal(workspace.jobs.length, 1);
+});
+
 void test('registration → Add → job → measured usage → monthly invoice → paid → creator transfer → restriction/recovery preserves all data', async () => {
   const { w: base, listing } = await setup();
   const execution = await run(base, listing);

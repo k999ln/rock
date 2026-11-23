@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { mkdir, readFile } from 'node:fs/promises';
+import { lstat, mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { InstallError, runCommand, sha256 } from './noah-source-fetch.mjs';
@@ -7,24 +7,52 @@ import { TERMINAL_SURFACE } from '../lib/noah-terminal-contract.mjs';
 import { MODEL, LIMITS, modelFor, limitsFor, validArtifactName } from './noah-execution-recipes.mjs';
 import { getNoahModelManager } from './noah-model-manager.mjs';
 import { noahModel } from '../lib/noah-model-catalog.mjs';
+import { auditNoahContainerArgs, auditNoahVmArgs } from '../lib/noah-screenless-audit.mjs';
 
 const localEnv = () => ({ PATH: process.env.PATH, HOME: process.env.HOME, LANG: 'C.UTF-8' });
 const engineHomes=new Map();
+const managedRoots = new Set();
+const managedSocket = '/run/noah-desktop/docker.sock';
+
+export async function configureManagedDesktopEngine(root, signal) {
+  if (process.platform !== 'linux' || !path.isAbsolute(root)) throw new InstallError('運営の専用Linux VMを確認できません。', 503);
+  const stat = await lstat(managedSocket).catch(() => null);
+  if (!stat?.isSocket()) throw new InstallError('運営の専用Linux実行器が未接続です。', 503);
+  let labels;
+  try {
+    const output = await runCommand('docker', ['--host', 'unix://' + managedSocket, 'info', '--format', '{{json .Labels}}'],
+      { env: localEnv(), signal, timeout: 5000 });
+    labels = JSON.parse(output);
+  } catch {
+    signal.throwIfAborted();
+    throw new InstallError('運営の専用Linux実行器に接続できません。', 503);
+  }
+  if (!Array.isArray(labels) || !labels.includes('noah.purpose=managed-desktop')) throw new InstallError('運営専用の実行器を識別できません。', 503);
+  managedRoots.add(path.resolve(root));
+}
 export function configureNoahEngine(root,directory){if(!path.isAbsolute(directory)||Buffer.byteLength(path.join(directory,'noah-exec/docker.sock'))>100)throw new InstallError('実行環境の保存先パスが長すぎます。');engineHomes.set(path.resolve(root),directory);}
 export const engineHome = root => engineHomes.get(path.resolve(root))??path.join(root, 'work/runtime-state/noah-engine/colima');
-export const engineSocket = root => `unix://${engineHome(root)}/noah-exec/docker.sock`;
+export const engineSocket = root => managedRoots.has(path.resolve(root))
+  ? 'unix://' + managedSocket : `unix://${engineHome(root)}/noah-exec/docker.sock`;
 const docker = (root, args, options = {}) => runCommand('docker', ['--host', engineSocket(root), ...args], { env: localEnv(), ...options });
+let engineStarting;
 export function engineArgs() {
   return ['start', 'noah-exec', '--activate=false', '--ssh-config=false', '--mount', 'none', '--cpus', '2', '--memory', '4', '--disk', '40', '--root-disk', '10', '--runtime', 'docker', '--vm-type', 'vz', '--binfmt=false', '--network-address=false', '--network-host-addresses=false'];
 }
-
-let engineStarting;
+export function assertNoahContainerArgs(args, options = {}) {
+  const violations = auditNoahContainerArgs(args, options);
+  if (violations.length) throw new InstallError('本人の画面を保護する実行条件を満たしていません: ' + violations.join(' / '));
+  return args;
+}
 export async function ensureEngine(root, signal) {
   try { await docker(root, ['info', '--format', '{{.ServerVersion}}'], { signal, timeout: 5000 }); return; } catch { signal.throwIfAborted(); }
+  if (managedRoots.has(path.resolve(root))) throw new InstallError('運営の専用Linux実行器に接続できません。', 503);
   if (!engineStarting) engineStarting = (async () => {
     // Colima ignores COLIMA_HOME if the directory does not already exist.
     await mkdir(engineHome(root), { recursive: true, mode: 0o700 });
-    await runCommand('colima', engineArgs(),
+    const args = engineArgs();
+    if (auditNoahVmArgs(args).length) throw new InstallError('本人の端末から分離したVMを準備できません。');
+    await runCommand('colima', args,
       { env: { ...localEnv(), COLIMA_HOME: engineHome(root), COLIMA_CACHE_HOME: path.join(root, 'work/runtime-state/noah-engine/cache') }, timeout: 300000 });
   })().finally(() => { engineStarting = null; });
   await engineStarting; signal.throwIfAborted();
@@ -100,6 +128,7 @@ export function runIsolated({ root, image, recipe, prompt, probe = false, signal
 export function runIsolatedProtocol({ root, args, request, probe = false, signal, onModel = async () => {}, model,
   seconds = 240, requireModel = true, spawnProcess = spawn }) {
   signal.throwIfAborted();
+  assertNoahContainerArgs(args);
   const name = args[args.indexOf('--name') + 1];
   return new Promise((resolve, reject) => {
     const child = spawnProcess('docker', ['--host', engineSocket(root), ...args], { env: localEnv(), stdio: ['pipe', 'pipe', 'pipe'] });

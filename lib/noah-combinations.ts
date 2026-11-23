@@ -14,6 +14,6 @@ export function combinationMetadata(item?:ServiceCombination):Metadata {
   const title=item?item.title+' · Noah':'サービスとAgentを組み合わせる · Noah';
   const description=item?.summary??'実サービスの対応、費用、必要な準備を出典付きで確認。使いたいAgentを動かすための準備票を作ります。';
   const url=NOAH_PUBLIC_ORIGIN+'/noah/combinations'+(item?'/'+item.id:'');
-  const images=[{url:NOAH_PUBLIC_ORIGIN+'/brand/noah-social-card-v1.png',width:1200,height:630,alt:title}];
+  const images=[{url:NOAH_PUBLIC_ORIGIN+'/brand/noah-social-card-orange.png',width:1200,height:630,alt:title}];
   return {title,description,alternates:{canonical:url},openGraph:{type:'website',url,title,description,images},twitter:{card:'summary_large_image',title,description,images}};
 }
