@@ -27,7 +27,14 @@ Claude のセッションには k999ln/rock（旧リポジトリ）が付いて�
 
 main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった。5〜7 は、それを merge 済み（ぶつかった所は Claude が解いた。応答の見出しの確かめも測り直した）。1〜3 はぶつからない。4 は `CHANGELOG.md` だけがぶつかる（`tools/merge-changelog.py` で両方の行を残せる）。どの枝も migration を足していない（`drizzle/` を触っていない）。
 
-## いまの手順（23:55。これが最新。下の「速くするための変更」より優先）
+## 今の状態（11-24 00:45。これが最新）
+
+- マージ済み: #38（収集）・#40（ボード）・#42（参照ライブラリ）。4〜9 は #43（先 `47093b8c`）で CI 中。
+- #43 の途中で直した事: CodeQL の 2 件（`scripts/noah-public-probe.mjs`、`3f0b7341`）。main に #25 が入り task 128 を使ったので、こちらの一周の確かめは **task 129**（`codex/tasks/129-noah-ux-debug.md`）にした（`47093b8c`）。
+- **公開は待つ**: 本番 v225 は、別スレッドがマージ前の #41（kaiya.kk）から出した物。main から出すと #41 の画面が消えるので、AGENTS.md の 8 のとおり、#41 が main に入ってから main で 1 回出す。#41 は触らない。
+- #41 を main に入れる時の参考: `claude/ice2/pr41-on-main`（`a6195ddd`。#41 の `5e16872e` を `3f0b7341` の上に merge。`components/noah-pin-grid.tsx` はカードの下の行を `noahCardOrigin` に、`components/noah-shell.tsx` は Mac だけの「ココナラの仕事」を残す。応答の見出しの確かめは測り直し済み。#41 はその後も進んでいる）。
+
+## いまの手順（23:55。上の「今の状態」が新しい）
 
 いま: 1（収集）は #38、2（ボード）は #40 でマージ済み（main `cab0dc49`）。3（参照ライブラリ）は Codex が #42 にした（先 `c060ad57`）。
 
