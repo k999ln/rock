@@ -8,6 +8,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentVisual from './noah-agent-visual';
+import NoahProductHeader from './noah-product-header';
+import { noahPinTopic } from '@/lib/noah-pins';
 import NoahAgentShare from './noah-agent-share';
 import NoahLoading from './noah-loading';
 import Link from 'next/link';
@@ -98,7 +100,8 @@ export default function NoahReadyDetail({ id, tool = null, from = null, internal
   return <main className={`${base.page} ${styles.page}`}>
     {back}
     <article className={styles.detail}>
-      <header className={styles.cardHead}><h1>{detail.name}</h1><span className={styles.provider}>{t("提供:")} {detail.provider}</span></header>
+      <NoahProductHeader name={detail.name} topic={noahPinTopic(detail.name, detail.summary)}
+        attribution={detail.provider ? `${t('提供:')} ${detail.provider}` : undefined} />
       <p className={styles.introSummary}>{detail.summary || t('（説明はありません）')}</p>
       <div className={styles.connectionMeta}>
         <span>{t(noahPriceText(detail.connect.price))}</span>

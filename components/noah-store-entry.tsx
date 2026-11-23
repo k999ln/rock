@@ -1,17 +1,40 @@
 'use client';
-/* oxlint-disable next/no-html-link-for-pages -- The dedicated cloud Worker serves an independent HTML document with a fresh line check. */
+/* oxlint-disable next/no-html-link-for-pages -- The dedicated cloud Worker serves a separate document with a fresh line check. */
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Cloud, PackagePlus, ShoppingBag } from 'lucide-react';
+import { Cloud, PackagePlus, ShoppingBag, Signal } from 'lucide-react';
 import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import type { NoahFirstJob } from '@/lib/noah-first-jobs';
-import { noahPinInitials } from '@/lib/noah-pins';
 import { noahCardHref } from '@/lib/noah-project-view';
 import { noahReadyDetailHref } from '@/lib/noah-ready-view';
+import NoahAppIcon from './noah-app-icon';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-store.module.css';
-import pins from './noah-pins.module.css';
 
 const hrefFor = (card: NoahAgentCard) => noahCardHref(card) ?? noahReadyDetailHref(card.id);
+
+function TodayHeading() {
+  const { locale, t } = useNoahLocale();
+  const [today, setToday] = useState<Date | null>(null);
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    function updateDate() {
+      const now = new Date();
+      setToday(now);
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      timer = setTimeout(updateDate, midnight.getTime() - now.getTime());
+    }
+    updateDate();
+    return () => clearTimeout(timer);
+  }, []);
+  return <header className={styles.top}>
+    <div className={styles.date}>{today && <time>{new Intl.DateTimeFormat(locale, {
+      weekday: 'long', month: 'long', day: 'numeric',
+    }).format(today)}</time>}</div>
+    <h1>{t('Today')}</h1>
+  </header>;
+}
 
 export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob & { href: string })[]; items: NoahAgentCard[] }) {
   const { t } = useNoahLocale();
@@ -19,34 +42,61 @@ export default function NoahStoreEntry({ jobs, items }: { jobs?: (NoahFirstJob &
   const job = jobs?.find(option => option.id === 'memory') ?? jobs?.[0];
   const project = job ? new URL(job.href, 'https://avoado.si').searchParams.get('id') : null;
   const card = job ? items.find(item => (item.feedbackId ?? item.id) === project) : items.find(item => item.name);
-  const feature = job ? { href: job.href, title: t(job.title), body: t(job.output), name: card?.name || (job.id === 'memory' ? 'Memory' : t(job.title)), label: t('使う') }
-    : card ? { href: hrefFor(card), title: card.name, body: card.summary, name: card.provider || card.name, label: t('見る') } : null;
-  const related = items.filter(item => item !== card && item.name).slice(0, 3);
+  const memory = job?.id === 'memory';
+  const feature = job ? {
+    href: job.href,
+    title: memory ? t('この仕事、誰の担当だっけ？') : t(job.title),
+    name: memory ? 'Memory' : card?.name || t(job.title),
+    subtitle: memory ? t(job.title) : t(job.output),
+    label: t('使う'),
+  } : card ? {
+    href: hrefFor(card), title: card.name, name: card.name,
+    subtitle: card.summary || card.provider, label: t('見る'),
+  } : null;
+  const related = items.filter(item => item !== card && item.name).slice(0, 4);
   return <div className={styles.entry}>
-    <div className={styles.top}><h1>{t('Agentストア')}</h1>
-      <nav aria-label={t('ストアのサービス')}>
-        <Link href="/noah/marketplace"><ShoppingBag size={17} aria-hidden="true"/>{t('Agentを買う')}</Link>
-        <Link href="/noah/publisher"><PackagePlus size={17} aria-hidden="true"/>{t('Agentを載せる')}</Link>
-      </nav>
-    </div>
-    <nav className={styles.cloudLine} aria-label={t('eSIMでつなぐ専用クラウド')}>
-      <Link href="/connect"><Cloud size={19} aria-hidden="true"/><span>{t('eSIMでつなぐ専用クラウド')}</span><ChevronRight size={15} aria-hidden="true"/></Link>
-      <a href="/api/noah/cloud-work" aria-label={t('専用eSIMで成果・料金を確認')}>{t('専用クラウドを開く')} <ChevronRight size={14} aria-hidden="true"/></a>
-    </nav>
+    <TodayHeading />
     {feature && <div className={styles.showcase} data-related={related.length > 0 || undefined}>
-      <Link className={styles.feature} href={feature.href}>
-        <span className={styles.featureArt}><small>{t('ピックアップ')}</small><strong>{feature.title}</strong><span>{feature.body}</span></span>
-        <span className={styles.featureFoot}><b className={styles.featureIcon} aria-hidden="true">{noahPinInitials(feature.name)}</b><strong>{feature.name}</strong><span className={styles.pill}>{feature.label}</span></span>
-      </Link>
-      {related.length > 0 && <div className={styles.collection}>
-        <h2>{t('注目のAgent')}</h2>
-        {related.map(item => <Link href={hrefFor(item)} key={item.id} className={styles.row}>
-          <span className={`${styles.appIcon} ${pins.tone}`} data-topic={item.topic} aria-hidden="true">{noahPinInitials(item.name)}</span>
-          <span className={styles.rowText}><strong>{item.name}</strong><small>{item.summary || item.provider}</small></span>
-          <span className={styles.pill}>{t('見る')}</span>
-        </Link>)}
-      </div>}
+      <article className={styles.feature}>
+        <Link className={styles.coverLink} href={feature.href}>
+          <div className={styles.featureArt} data-memory={memory || undefined}>
+            <small>{t('ピックアップ')}</small>
+            <h2>{feature.title}</h2>
+          </div>
+          <div className={styles.featureFoot}>
+            <NoahAppIcon name={feature.name} topic={card?.topic} className={styles.featureIcon} />
+            <div className={styles.featureByline}><strong>{feature.name}</strong><small>{feature.subtitle}</small></div>
+            <span className={styles.pill}>{feature.label}</span>
+          </div>
+        </Link>
+      </article>
+      {related.length > 0 && <section className={styles.collection} aria-labelledby="noah-featured-agents-title">
+        <header className={styles.listHeading}>
+          <h2 id="noah-featured-agents-title">{t('注目のAgent')}</h2>
+          <Link href="/noah/explore">{t('すべて見る')}</Link>
+        </header>
+        <ul>{related.map(item => <li key={item.id}>
+          <Link href={hrefFor(item)} className={styles.row}>
+            <NoahAppIcon name={item.name} topic={item.topic} className={styles.appIcon} />
+            <span className={styles.rowText}><strong>{item.name}</strong><small>{item.summary || item.provider}</small></span>
+            <span className={styles.pill}>{t('見る')}</span>
+          </Link>
+        </li>)}</ul>
+      </section>}
     </div>}
-
   </div>;
+}
+
+export function NoahStoreServices() {
+  const { t } = useNoahLocale();
+  return <aside className={styles.services}>
+    <nav aria-label={t('ストアのサービス')}>
+      <Link href="/noah/marketplace"><ShoppingBag size={17} aria-hidden="true" />{t('Agentを買う')}</Link>
+      <Link href="/noah/publisher"><PackagePlus size={17} aria-hidden="true" />{t('Agentを載せる')}</Link>
+    </nav>
+    <nav aria-label={t('eSIMでつなぐ専用クラウド')}>
+      <Link href="/connect"><Signal size={17} aria-hidden="true" />{t('eSIMでつなぐ専用クラウド')}</Link>
+      <a href="/api/noah/cloud-work" aria-label={t('専用eSIMで成果・料金を確認')}><Cloud size={17} aria-hidden="true" />{t('専用クラウドを開く')}</a>
+    </nav>
+  </aside>;
 }

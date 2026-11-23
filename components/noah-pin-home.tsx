@@ -9,7 +9,7 @@ import { NOAH_PIN_TOPIC_LABELS } from '@/lib/noah-pins';
 import { NOAH_COLLECTION_LABELS, NOAH_COLLECTION_SOURCES } from '@/lib/noah-collection';
 import NoahPinGrid, {type NoahPinView} from './noah-pin-grid';
 import NoahLoading from './noah-loading';
-import NoahStoreEntry from './noah-store-entry';
+import NoahStoreEntry, { NoahStoreServices } from './noah-store-entry';
 import styles from './noah-pins.module.css';
 const purposeSections = [
   { title: 'お店・会社のサイト運営', ids: ['wordpress-maintenance', 'ec-production'] },
@@ -105,6 +105,7 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='noah
       <Link href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>
     </nav>
   </section>}
+  {showFirstJobs && <NoahStoreServices />}
   <section id="noah-collection" className={styles.home} aria-label="Agent一覧">
     <div className={styles.feedHeading}><h2>{t(searchQuery ? '検索結果' : source && source!=='noah' ? '新しく見つかったAgent' : 'Agentを見つける')}</h2>{current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}</div>
     <div className={styles.catalogTools}><div className={styles.filters} aria-label="Agentを絞り込む">{[['noah','接続できる'],['','すべて'],['discovered','新しく見つかった']].map(([value,label])=><button key={value} type="button" aria-pressed={source===value} onClick={()=>chooseSource(value)}>{label}</button>)}</div>

@@ -1,4 +1,7 @@
 export const NOAH_FLOW_MESSAGES:Record<string,readonly [string,string,string,string,string]> = {
+  'Today': ['Today', '今天', '투데이', 'Hoy', 'اليوم'],
+  'この仕事、誰の担当だっけ？': ['Who’s working on what?', '这项工作由谁负责？', '이 일은 누가 맡았더라?', '¿Quién se encarga de esta tarea?', 'من يتولّى هذه المهمة؟'],
+  'すべて見る': ['See all', '查看全部', '모두 보기', 'Ver todo', 'عرض الكل'],
   '端末・実行先': ['Devices and run locations', '设备和运行位置', '기기 및 실행 위치', 'Dispositivos y lugares de ejecución', 'الأجهزة وأماكن التنفيذ'],
   '自分のAgent': ['My agents', '我的 Agent', '내 Agent', 'Mis agentes', 'وكلائي'],
   '利用条件を見る': ['View usage terms', '查看使用条件', '이용 조건 보기', 'Ver condiciones de uso', 'عرض شروط الاستخدام'],

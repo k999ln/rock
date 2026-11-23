@@ -30,7 +30,9 @@ void test('the public home opens available tasks directly with their expected ou
   const region = home.find('section').find(s => s.props.id === 'first-jobs');
   assert.equal(region.props.tabIndex, -1);
   assert.equal(home.find('section')[0], region);
-  assert.equal(home.find('h1', 'Agentストア').length, 1);
+  assert.equal(home.find('h1', 'Today').length, 1);
+  assert.equal(home.find('time').length, 1);
+  assert.equal(home.find('h2', 'この仕事、誰の担当だっけ？').length, 1);
   assert.ok(home.find('h2').some(h => h.props.id === region.props['aria-labelledby']));
   assert.equal(home.find('a', '専用クラウドを開く')[0].props.href, '/api/noah/cloud-work');
   assert.equal(home.find('a', 'eSIMでつなぐ専用クラウド')[0].props.href, '/connect');
@@ -46,6 +48,32 @@ void test('the public home opens available tasks directly with their expected ou
   assert.equal(home.text(region).includes(choices[0].title), false);
   assert.equal(ui.calls.length, 1);
   assert.equal(ui.calls[0].method, 'GET');
+});
+
+void test('Today places a real featured job and the catalog ahead of store services', async () => {
+  const memory = choices.find(job => job.id === 'memory');
+  const directoryId = 'project-' + 'b'.repeat(64);
+  const directoryHref = '/noah/discover/agent?id=' + directoryId;
+  const items = [
+    { id: project, name: 'memory', topic: 'data', external: true },
+    { id: directoryId, name: 'A published agent', topic: 'dev', external: true, summary: 'Catalog description' },
+  ];
+  for (const available of [[memory], []]) {
+    const page = { ...pageReply(available), total: items.length, items };
+    const ui = screen({ modules, locale: 'en', fetch: async () => ({ body: page }) });
+    const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
+    await home.flush();
+    const anchors = home.find('a');
+    const feature = home.find('a', 'Featured')[0];
+    const directory = home.find('a', 'A published agent')[0];
+    const services = home.find('a', 'Buy agents')[0];
+    assert.equal(feature.props.href, available.length ? memory.href : '/noah/discover/agent?id=' + project);
+    assert.equal(home.find('h2', 'Who’s working on what?').length, available.length);
+    assert.equal(directory.props.href, directoryHref);
+    assert.equal(home.find('a', 'See all')[0].props.href, '/noah/explore');
+    assert.ok(anchors.indexOf(feature) < anchors.indexOf(directory));
+    assert.ok(anchors.indexOf(directory) < anchors.indexOf(services));
+  }
 });
 
 void test('the public home shows a purpose section only when it has a usable task', async () => {
