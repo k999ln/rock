@@ -28,7 +28,8 @@ class Model extends RpcTarget {
     if(this.input.mode==='missing-choices') return JSON.stringify({response:'private model text'});
     if(this.input.mode==='empty-content' || this.input.mode==='output-limit') message.content=null;
     if(this.input.mode==='invalid-json') message.content='private incomplete JSON {';
-    return JSON.stringify({id:'fixture',object:'chat.completion',created:1,choices:[{index:0,finish_reason:['output-limit','truncated-json'].includes(this.input.mode)?'length':message.tool_calls?'tool_calls':'stop',message}]});
+    message.reasoning_content = 'synthetic fixture';
+    return JSON.stringify({id:'fixture',object:'chat.completion',created:1,usage:{prompt_tokens:100,completion_tokens:50,total_tokens:150,completion_tokens_details:{reasoning_tokens:10}},choices:[{index:0,finish_reason:['output-limit','truncated-json'].includes(this.input.mode)?'length':message.tool_calls?'tool_calls':'stop',message}]});
   }
 }
 export default {async fetch(request, env) {

@@ -1,5 +1,5 @@
 ## 2026-11-23
-- Noah公式Python3種の本番メモリ上限による失敗を記録し、profileごとのWorker・依存読み込みへ分離。受入までは本番を安定版214へ戻した（task125、[PR #32](https://github.com/iceiceice999/rock/pull/32)）。
+- NoahのTime・boss面接準備・Hermes計画を無料枠の公式Python処理で本番受入。Worker分離とモデル応答の補正後、390px Chrome全終了中の保存・成果再表示・download/hashを確認し、途中の失敗も保持（task125、[PR #32](https://github.com/iceiceice999/rock/pull/32)）。
 - Noah無料クラウドへ公式PythonのTime・boss面接準備・Hermes計画/メモを追加する実装と、期限・停止・依頼分離の検証を追加。本番受入は継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)、task125）。
 - Noahへ786系列の台帳・接続条件と、成果受領に基づく10秒更新の稼働一覧を追加。提供元の版・定義変更、失敗、24時間の確認期限を反映（[PR #28](https://github.com/iceiceice999/rock/pull/28)）。本番受入はtask 127へ記録する。
 - Eve・Noahの利用・実行・収益・物流を8枚で追える[図解設計書](docs/noah/illustrated-specifications.md)と共有用PDFを追加し、各機能の判定条件と本番受入の残件を明記（[PR #24](https://github.com/iceiceice999/rock/pull/24)）。

@@ -6,7 +6,7 @@
 
 合格条件: 公式Agentの実クラウド処理、本人/Origin/再送/停止/上限/鍵非露出、スマホで接続→依頼→結果再表示。公開結果・CI・PRは受入後に記録する。
 
-状態（2026-11-23）: 公式Memory・Filesystem・Sequential Thinkingの無料Workers実行と、画面を閉じた後の成果受取をSites210で本番受入済み。停止・再送非実行・別所有者拒否も確認。Hermes・boss・Timeは本番未対応で、任意CLI全体の実行合格ではない。新ログインから旧環境への管理移行は未確認、有料化・新規契約なし。
+状態（2026-11-23）: 公式Memory・Filesystem・Sequential ThinkingはSites210、公式Time・bossの面接準備・Hermesの計画/依頼内メモはSites216で、実モデル処理と画面全閉鎖後の成果保存・再表示・ダウンロードを本番受入済み。既存の停止・再送非実行・別所有者拒否の確認を保持。Hermesのshell/一般ファイル操作、bossの検索/応募、任意CLI全体の実行合格は含まない。新ログインから旧環境への管理移行は未確認、有料化・新規契約なし。
 
 PR: 無料実行器・共通成果は [#18](https://github.com/iceiceice999/rock/pull/18)、従来コンテナ修正・Pixel記録は [#19](https://github.com/iceiceice999/rock/pull/19)。旧 [#1](https://github.com/iceiceice999/rock/pull/1) / [k999ln #402](https://github.com/k999ln/rock/pull/402) の経緯は以下に保持する。
 
@@ -120,8 +120,35 @@ Timeの公式MCP、bossの公式面接準備CLI、Hermesの公式AIAgent＋todo/
 
 ローカルworkerdの固定モデルで3種の実処理・成果hash・依頼間分離・再送拒否・停止・不正Tool/結果拒否・@入力固定パスを確認。既存26試験＋追加5境界試験成功。非公開Python Workerを既存無料環境へ配備済み（8f4fc1c8-dd3d-4caf-8e3f-6265c4f87a8a）。応答待ち中でも接続確認が返る試験と、固定依存lockからの再現も成功。本番実モデル・ブラウザ全閉鎖後の保存・スマホ再読込、全体verify/CIは継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)）。これらを完了してから現行状態を更新する。
 
-## 2026-11-23 Python本番メモリ制限への対応（[PR #32](https://github.com/iceiceice999/rock/pull/32)、受入中）
+## 2026-11-23 Python本番メモリ制限と実モデルの補正（[PR #32](https://github.com/iceiceice999/rock/pull/32)）
 
 PR #30は全体verify（5,198成功・5skip・失敗0、API1,918、CSV385）と全7 CI成功後にmain `217e4ee389071e7c298c5a944f89e5990976fd03` へマージ。Sites215/source `9c749b0e6f255f089f152ea95ebb5adc354ea744` / tree `8886081657fbf08173294ab66ef0ad81de2c91fa` を公開したが、Timeの初回本番Work `a8b9d01b-231d-4dd6-8ae2-d8af9fe3321c` が128MBのisolate上限で失敗した。Chrome終了後にfailedとしてD1へ保存されたことを確認し、成功扱いにしない。Sites214へ切り戻し、既存3種・保存データを維持した（deployment `appgdep_6b03c837e2a88191813b467acfcfd2d1` succeeded/env18）。
 
-公式adapterをprofile別に読み込み、Time/boss/Hermesを別のWorkerへ分離する修正を追加。異なるprofileの受付を拒否し、quota/model/Workは共通管理のまま。SDKがimport時に乱数を必要とするため、起動時snapshotへ押し込まずrequest内で初期化する。ローカルworkerdで3種の公式実処理・接続・成果hash・依頼分離・再送・停止と別profile拒否を確認。本番の実モデルとメモリ上限内での受入はまだ継続中。
+公式adapterをprofile別に読み込み、Time/boss/Hermesを別のWorkerへ分離する修正を追加。異なるprofileの受付を拒否し、quota/model/Workは共通管理のまま。SDKがimport時に乱数を必要とするため、起動時snapshotへ押し込まずrequest内で初期化する。ローカルworkerdで3種の公式実処理・接続・成果hash・依頼分離・再送・停止と別profile拒否を確認。この分離後に本番の実モデル処理を検証し、以下の追加補正と3種の受入を完了した。
+
+
+### Sites216での公式Python3種の受入
+
+- Timeは分離後に成功。bossは出力打切りを `model_output_limit` と分類できるよう補正し、同じ1,024トークン上限のまま推論量low・JSON・短いフィールドを指定して公式面接準備を完了。Hermesは本文だけの応答を成功にせず、最初の道具指定と、公式の会話履歴を使った1回限りの継続を追加して公式Todoの実行を確認した。共通4回/240秒・全体10件/UTC日・本人3件/UTC日を増やしていない。
+- 公式adapterからAI bindingへ届く道具名/件数をfixtureで照合し、実際に宣言された道具だけを返す試験へ補強。モデルのusageを含む応答、初回本文だけ→公式会話継続→道具実行、出力打切り・空本文・未知形式、停止/期限/遅延応答も確認。安全な診断は固定エラー分類・回数・道具数・終了理由だけで、内部思考や入力本文をエラーへ記録しない。
+- 本番受入はChrome157.0.8103.79、390×844px/touch。UIで接続→送信→queued受理直後にChromeプロセスを全終了。15秒間はHTTPも送らず、その後は共通 `/api/noah/ask/:id` のD1読取だけで保存完了を確認。jobId付きcloud GETによる取得/保存を使わない。同じセッションをメモリ内だけで復元した別Chromeから保存一覧→詳細→再読込→downloadを操作し、実bytes/hash・横溢れなし・JS例外なしを確認。新しい実機Pixel受入とは区別する。
+
+| 公式profile | Work | Chrome終了 UTC（2026-11-23） | D1保存 UTC | 実モデル / 公式処理 | 成果 |
+| --- | --- | --- | --- | --- | --- |
+| Time 2026.11.18 | `350f43c1-c313-444f-ae77-1dfbcfcb3881` | 05:16:33.714 | 05:16:42.097 | 2回 / convert_time | 東京09:00→UTC00:00、時差−9時間 |
+| boss-agent-cli 3.4.151 | `f1e5704f-212c-40a8-9f31-5ed998332b1f` | 06:07:52.464 | 06:08:02.042 | 1回 / ai-interview-prep | 架空求人の質問5件・準備tip2件、応募なし |
+| Hermes 0.19.0 | `5ed9af03-b9fa-47b1-a878-4f18460032ed` | 07:04:27.233 | 07:04:40.654 | 3回 / todo | 固有nonceを含む計画3項目、全てpending |
+
+ダウンロードした成果のSHA-256:
+
+- Time `time-results.json`（1,269 bytes）: `34efbfc8d274ad1e640dc001b812ab711387ed03757ddabe0aa255fd1a19f357`。
+- boss `interview-preparation.json`（1,484 bytes）: `9b6f469a5a333cb20d06693916f96d6658e8ccd43aad42ad0d4a19f4d0d90cca`。
+- Hermes `plan.json`（518 bytes）: `306ea07813c3861cb3419da601dafef31c326ea08c81ffef1ab9763b9b9829b3`。
+
+公開出所: Sites216 / env18、main `3fcf449c26535bb0eb31d9a6034baea0dde023b1`、source `8b004b2cf0bde7a74e6a2744c0259d235e81a15a`、tree `970fefc91be43dfc30e985c869b2f2f4b75fac05`、deployment `appgdep_6b03c9a62ae08191bf303d26f07df7ca` succeeded。PR #32は実行器・試験・記録の補正で、共通Sitesアプリは変更していない。Sitesの出所と後続runtimeの出所を区別する。
+
+最終実行器: common `78f4d85f-b3b2-4135-9374-9b4b21aca331` / Hermes `e12efa26-4947-4c04-85c7-a1645ae221d2`（コード `41db65090`）、boss `c0985c43-db04-4c85-b497-8c138513689e`（`831021fbe`）、Time `e68ff836-6451-4418-a2bd-1eb7a6b40b1c`（分離版 `68757fa96`）。Time受入時のcommonは `77a40abe-e108-4202-aa14-85e2d176e5b3`、boss受入時は `1121946d-9d39-45f8-90c7-d1d2f809257f` とし、後続補正が既存の成功例を再試験したとは数えない。正確な配備ログと各時点は下記publication記録を正とする。
+
+証拠: `work/noah-python-production-acceptance-20261123/run-1795410978357/`（Time）、`run-1795414058801/`（boss）、`run-1795417447302/`（Hermes）のreport.json/result.png。最初のTimeメモリ失敗、boss2回の失敗、Hermes3回の失敗も同ディレクトリの別runに保存し、同一IDを再実行したり成功へ書き換えたりしていない。今回は合計9件を使用し残り1件を保持。Cookie・運営鍵は証拠に保存しない。配備ログ・公開照合は `work/noah-free-python-research-20261123/`。
+
+検証: 公式workerdの3profile試験（実モデル応答はfixture）、共通無料実行器/モデル境界試験、独立コードレビュー、本番の上記3件が成功。分離版・main統合版・boss補正版の全体verifyは各exit0。最終のfixture補強・受入記録を含む全体verify、GitHub CI、マージSHAはPR #32へ確定結果を記録する。無料枠の空きがなければ停止する。Hermesのshell、bossの検索/応募、新ログイン自身による旧環境管理は未受入のまま。
