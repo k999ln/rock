@@ -12,4 +12,5 @@ export type NoahProviderRun = {
   leaseUntil: number;
   nextPollAt: number;
   deadline: number;
+  availabilityManifest?: string;
 };

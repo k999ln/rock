@@ -36,6 +36,10 @@ const event = (name, value) =>
   new Response(`event: ${name}\ndata: ${JSON.stringify(value)}\n\n`, {
     headers: { 'Content-Type': 'text/event-stream' },
   });
+void test('provider complete containing an authentication exception is not a successful Agent result', async () => {
+  await assert.rejects(providerResult(['Error during processing: litellm.AuthenticationError: API key not valid'], origin));
+  await assert.rejects(providerResult([{error:'authentication failed'}], origin));
+});
 function setup(t, overrides = {}) {
   const state = {
     info: info(),
