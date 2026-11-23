@@ -102,4 +102,8 @@ The draft table's primary key includes `manifest_sha256`; a later fixed generati
 2. `node scripts/noah-label-agent-tools.mjs assemble <intake-export.json> <run.json> <capture-dir>` で、現在の代表と道具一覧のハッシュ・件数が一致する定義を集める。適格系列の総数と、定義を採取できた系列の数を出す。
 3. `node scripts/noah-label-agent-tools.mjs prepare <run.json> <work-dir>` で、固定 manifest と分割したモデル依頼を既存の作業フォルダに書く。応答は 1 行ずつ `{ "manifestSha256": "…", "requestId": "…", "reply": "モデルが返した文字列" }` の JSONL として保存する。作業を再開するときは、同じ manifest と未回答の依頼を使う。
 4. `node scripts/noah-label-agent-tools.mjs verify <run.json> <rows.json> <batch-number> <replies.jsonl>` で、応答を独立した規則で検査する。`save <run.json> <local-intake.sqlite> <batch-number> <replies.jsonl>` は完了したバッチを手元の台帳に検査し直して保存する。外部通信は行わない。
+
+系列単位の運用は `node scripts/noah-label-agent-tools.mjs run <run.json> <state-dir> --codex` を使う。Luna の低推論で提案し、別の Sol の高推論で 3 観点を点検する。採用には 2 観点以上と既存の根拠検査を要する。実行中に止まった時は同じ状態フォルダを使い、同じ道具定義で通過した系列の結果を再利用する。`readyFamilies` は全道具が通った系列数、`labeledFamilies` は 1 個以上通った系列数、`verifierRejectedFamilies` は別の確かめ役が 2 観点以上で否とした札を含む系列数。
+
+採取と並行する時は `watch <intake.json> <capture-dir> <state-dir> --acquisition-state <rounds.json> --codex` を使う。採取側は全域の取り直しが終わるごとに `{"schema":"noah-label-acquisition/1","completedRounds":1}` の回数を更新する。新しく全道具が通った系列・道具版が 2 回続けて増えなければ停止する。待機中やモデルを使えない時は、成果のない一周として数えない。
 5. 実データの公開前に、適格全集合に対する札付きの系列数と割合を出し、無作為の 200 系列を運営が目視で点検する。札付きの系列だけを母集団にしない。

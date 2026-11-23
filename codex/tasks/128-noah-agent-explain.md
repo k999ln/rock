@@ -106,7 +106,7 @@
 
 ## 9. Graph Engineering with Claude の使い方
 
-2026-11-24 01:00 の本人指示。設計の出典は [@0xCodez の記事](https://x.com/0xCodez/status/2079165300625330317)。章の照合には同じ投稿 ID の [全文ミラー](https://teapaw.org/0xCodez/article/2079165300625330317) を使った。
+2026-11-24 01:00 の本人指示。設計の出典は [@0xCodez の記事](https://x.com/0xCodez/status/2079165300625330317)。同じ投稿 ID の [全文ミラー](https://teapaw.org/0xCodez/article/2079165300625330317) とログイン済みの X で章番号を照合した。
 
 | 記事 | 遷移先の説明画面 | 台帳・札付け |
 | --- | --- | --- |
