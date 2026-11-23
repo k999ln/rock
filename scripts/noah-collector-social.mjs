@@ -80,6 +80,42 @@ function understood(raw, { project, postedAt, now }) {
   return { item };
 }
 
+/**
+ * 読んだ紹介のファイル（data/noah-scout/leads.json。task 125）。Codex の Luna Max（や Claude）が読んで理解した紹介を、Git のファイルに書き、
+ * クラウドの収集機（鍵は GitHub Actions の secret だけ）が毎回まとめて載せる。運営の Mac に掲載の鍵を置かなくてよい。
+ * 1 件は、投稿付き（source・post・postedAt・metrics。X・Reddit・Bluesky の期限内だけ投稿のカードも出る）か、投稿なし（理解だけ）。どちらも understanding が要る。
+ * foundAt（Noah が見つけた日時）から 30 日を過ぎた理解は載せない（新着の列を古い物で埋めないため）。
+ */
+export const NOAH_SCOUT_FILE = { maxLeads: 2000, keepMs: 30 * 86_400_000 };
+export function scoutFileItems(input, now) {
+  if (!input || typeof input !== 'object' || input.schema !== 'noah-scout-leads/1' || !Array.isArray(input.leads) || input.leads.length > NOAH_SCOUT_FILE.maxLeads) return { items: [], rejected: { file: 1 } };
+  const items = new Map(), rejected = {};
+  const reject = code => { rejected[code] = (rejected[code] ?? 0) + 1; };
+  for (const raw of input.leads) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw) || raw.understanding === undefined) { reject('shape'); continue; }
+    const foundAt = Date.parse(raw.foundAt ?? '');
+    if (!Number.isFinite(foundAt) || foundAt > now + 120_000) { reject('found_at'); continue; }
+    if (foundAt + NOAH_SCOUT_FILE.keepMs <= now) { reject('too_old'); continue; }
+    if (raw.post !== undefined) {
+      const lead = socialLead(raw, now);
+      if (lead.item) items.set(lead.item.id, lead.item);
+      // 投稿だけが期限切れの時は、理解は残す（投稿のカードは X 1 日・他 3 日で消える決まりのまま）。
+      if (lead.error && lead.error !== 'too_old') { reject(lead.error); continue; }
+    }
+    const project = typeof raw.project === 'string' ? projectUrl(raw.project) : null;
+    if (!project || /^https:\/\/(?:x|twitter|www\.reddit|reddit|bsky)\./u.test(project)) { reject('project'); continue; }
+    const read = understood(raw.understanding, { project, postedAt: foundAt, now });
+    if (read.error) { reject(read.error); continue; }
+    items.set(read.item.id, read.item);
+  }
+  return { items: [...items.values()], rejected };
+}
+/** リポジトリの読んだ紹介のファイルを読む。無い時は空（その出所のスナップショットを送らない＝上書きしない）。 */
+export function readScoutFile(path, now) {
+  if (!existsSync(path)) return { items: [], rejected: {} };
+  try { return scoutFileItems(JSON.parse(readFileSync(path, 'utf8')), now); } catch { return { items: [], rejected: { file: 1 } }; }
+}
+
 /** 期限内の紹介を、手元の状態とまとめる（同じ投稿・同じ配布元は、新しい数で置き換え）。出所ごとに、新しい投稿から 500 件まで。「Noahが読んだ」も同じ形。 */
 export const SOCIAL_SNAPSHOT_SOURCES = [...NOAH_COLLECTION_SOCIAL, 'noah-read'];
 export function mergeSocial(previous, incoming, now) {
