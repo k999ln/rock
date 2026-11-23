@@ -3,10 +3,11 @@
  * ピンタレスト風のグリッド（task 115）。カードを 1 枚ずつ、今いちばん短い列に置く（同じなら左）。先に高さを測ってから置く。
  * 置き方は Pinterest の Gestalt（github.com/pinterest/gestalt、Apache-2.0）の Masonry の決まりを、小さく書き写した物（部品ごとは入れない）。
  * 列の数は、幅に合わせて 2〜6。カードは、資料の図解と日本語の題・入れる物 → 返る物（pin がある時。spec-115 の 9 章）か、分野の色の面に頭文字・名前・説明 2 行。「保存」でボードへ。
- * 図解のカード（data-art）は、絵が横長（539:208）で小さいので、保存と「その他」を絵に重ねず、字の下の行に、名前・提供元の行と並べる。
+ * 図解のカード（data-art）は、App Store の Today のカードのように、1 枚ずつ違う深い色の組（noahPinTonesInOrder）の 1 枚のカード。上に図解、下に同じ色の帯で題と説明。
+ * 絵が横長（539:208）で小さいので、保存と「その他」は絵に重ねず、帯のいちばん下の行に、名前・提供元の行と並べる。
  * 仕様: docs/noah/spec-115-pin-grid.md の 3 章。
  */
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { MoreHorizontal, Check, Plus, X } from 'lucide-react';
 import { NOAH_PIN_TEXT, NOAH_PIN_TOPIC_LABELS, noahCardOrigin, noahPinInitials } from '@/lib/noah-pins';
@@ -17,6 +18,7 @@ import type { NoahAgentCard } from '@/lib/noah-agent-cards';
 import { useNoahLocale } from './noah-locale';
 import NoahAgentSourceRatings from './noah-agent-source-ratings';
 import NoahPinSceneArt from './noah-pin-scene';
+import { noahPinColors, noahPinTonesInOrder } from '@/lib/noah-pin-diagram';
 import { NOAH_COLLECTION_RUN_LABELS } from '@/lib/noah-collection';
 
 /** グリッドの 1 枚（GET /api/noah/pins の items の 1 件）。 */
@@ -90,18 +92,25 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
   useEffect(() => { if (!store) void document.fonts?.ready.then(() => setFonts((n) => n + 1)); }, [store]);
   const known = heights.width === columnWidth ? heights.map : new Map<string, number>();
   const layout = store ? null : noahPinLayout(items.map((item) => known.get(item.id)), columns, columnWidth, gap);
+  // 図解のカードの色の組（隣や上下に並ぶカードが同じ色にならないように、並びの順で決める）。
+  const tones = noahPinTonesInOrder(items.map((item) => item.id));
 
   return <div ref={frame} className={store ? styles.storeList : styles.grid} style={layout ? { height: layout.height } : undefined}>
     {(store || width > 0) && items.map((item, index) => {
-      const at = layout?.placed[index], art = Boolean(item.pin) && !store;
+      const at = layout?.placed[index], art = Boolean(item.pin) && !store, tone = tones[index], colors = noahPinColors(tone);
+      // 図解のカードの色（帯・字・差し色・押す所）。CSS の変数で渡す（noah-pins.module.css の [data-art]）。
+      const artStyle = art ? {
+        '--art-band': colors.band, '--art-ink': colors.bandInk, '--art-sub': colors.bandSub, '--art-accent': colors.blue, '--art-on-accent': colors.onBlue,
+        '--art-button': colors.dark ? 'rgba(255,255,255,.18)' : 'rgba(0,0,0,.09)',
+      } as CSSProperties : undefined;
       const href = noahCardHref(item) ?? noahReadyDetailHref(item.id);
       const meta = <small className={styles.meta}>{item.pin ? `${item.name} · ` : ''}{noahCardOrigin(item)} · {item.external ? 'Noahで接続を確認' : item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.oneTap ? 'すぐ試せる' : '接続して使う'}</small>;
       return <article key={item.id} ref={store ? undefined : (element) => { if (element) cards.current.set(item.id, element); else cards.current.delete(item.id); }}
-        className={`${store ? styles.storeItem : styles.pin} ${styles.tone}`} style={store ? undefined : { width: columnWidth, transform: at ? `translate(${at.left}px, ${at.top}px)` : undefined, visibility: at ? 'visible' : 'hidden' }}
+        className={`${store ? styles.storeItem : styles.pin} ${styles.tone}`} style={store ? undefined : { ...artStyle, width: columnWidth, transform: at ? `translate(${at.left}px, ${at.top}px)` : undefined, visibility: at ? 'visible' : 'hidden' }}
         data-topic={item.topic} data-shape={item.shape} data-art={art ? '' : undefined} aria-label={item.name}>
         <a className={styles.face} href={href}>
           {item.pin && art
-            ? <span className={styles.scene} aria-hidden="true"><NoahPinSceneArt scene={item.pin.scene} ready={Boolean(at)} /></span>
+            ? <span className={styles.scene} aria-hidden="true"><NoahPinSceneArt scene={item.pin.scene} ready={Boolean(at)} tone={tone} /></span>
             : <span className={styles.panel} aria-hidden="true"><span className={styles.initials}>{noahPinInitials(item.name)}</span><span className={styles.topicLabel}>{NOAH_PIN_TOPIC_LABELS[item.topic]}</span></span>}
           <div className={styles.pinCopy}><strong className={styles.name}>{item.pin?.title ?? item.name}</strong>
           {item.pin ? <span className={styles.summary}>{item.pin.give} <span className={styles.arrow}>→</span> {item.pin.get}</span> : item.summary && <span className={styles.summary}>{item.summary}</span>}

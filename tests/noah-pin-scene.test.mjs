@@ -1,7 +1,7 @@
 // ピンの図解（バージョン TAKE。spec-115 の 9 章）の試験: 形の確かめ（図の名前・札の数・図ごとの字の上限・余計な項目）・棚の 17 枚（形が通る・札はカードの文にある言葉だけ・同じ図は 2 枚まで）・
 // 全部の図が描ける（札が 1 回ずつ絵に出る・絵の外へはみ出さない・字が小さすぎない・作り話の数が無い・壊れた数が無い）・
 // 動き「ぽよん」（時刻 u の純関数・初めは札が無い・途中が動く・止める時には揺れが収まっている）・
-// しょうへいさんの図解パックの許諾の表示・Luna Max への説明・Luna Max が書く 1 枚（題・入れる物・返る物・図解）の確かめ。
+// 色の組（App Store の Today のカードのような 12 組）で字が読める・しょうへいさんの図解パックの許諾の表示・Luna Max への説明・Luna Max が書く 1 枚（題・入れる物・返る物・図解）の確かめ。
 // 絵は canvas に描くので、node の中では、描く命令を書き留める小さな代わり（recorder）で確かめる。字の幅は noahPinLabelWidth と同じ数え方（英字 0.6・他 1）。
 // 本物のブラウザでの見た目（390px と 1280px・動き）は、作った人が画面で確かめた（docs/noah/spec-115-pin-grid.md の 9 章）。
 import test from 'node:test';
@@ -14,7 +14,7 @@ import { NOAH_PIN_LABEL_MAX, NOAH_PIN_TEMPLATES, noahPinLabelWidth, noahPinTempl
 import { NOAH_SHELF_SCENE_SOURCE, NOAH_SHELF_SCENES } from '../lib/noah-pin-scenes-shelf.ts';
 import * as diagram from '../lib/noah-pin-diagram.ts';
 
-const { drawNoahPinDiagram, noahPinHold, NOAH_PIN_ART } = diagram;
+const { drawNoahPinDiagram, noahPinHold, NOAH_PIN_ART, NOAH_PIN_TONES, noahPinColors, noahPinTone, noahPinTonesInOrder } = diagram;
 const require = createRequire(import.meta.url);
 const React = require('react'), { renderToStaticMarkup } = require('react-dom/server');
 const cards = JSON.parse(readFileSync(new URL('../data/noah-shelf-first-cards.json', import.meta.url), 'utf8'));
@@ -56,6 +56,10 @@ function recorder() {
       texts.push({ text, left: Math.min(...xs), right: Math.max(...xs), top: Math.min(...ys), bottom: Math.max(...ys), size: size * Math.sqrt(Math.abs(m[0] * m[3] - m[1] * m[2])), alpha: state.globalAlpha });
     },
   };
+  // 濃淡（グラデーション）: 色の段を書き留める物を返す。
+  const gradient = (name) => (...args) => { note(name, args); return { addColorStop: (at, color) => { note('addColorStop', [at, color]); if (!/^(#[0-9A-F]{6}|rgba\(\d+,\d+,\d+,[\d.]+\))$/i.test(color)) throw new Error(`色の形が違う: ${color}`); } }; };
+  methods.createLinearGradient = gradient('createLinearGradient');
+  methods.createRadialGradient = gradient('createRadialGradient');
   for (const name of ['beginPath', 'closePath', 'moveTo', 'lineTo', 'arc', 'arcTo', 'roundRect', 'rect', 'bezierCurveTo', 'fill', 'stroke', 'clip', 'fillRect', 'clearRect', 'setLineDash']) {
     methods[name] = (...args) => note(name, args.map((value) => (Array.isArray(value) ? value.join('/') : value)));
   }
@@ -65,7 +69,7 @@ function recorder() {
   });
   return { k, log, texts };
 }
-const drawAt = (item, u) => { const r = recorder(); drawNoahPinDiagram(r.k, item, u); return r; };
+const drawAt = (item, u, tone = 0) => { const r = recorder(); drawNoahPinDiagram(r.k, item, u, tone); return r; };
 
 void test('the scene shape is checked: diagram name, exact label count, per-diagram label limits, no parts or variants, no extra keys', () => {
   const ok = { template: 'tree', labels: ['取引の内容', '勘定科目', '仕訳の例', '税区分'] };
@@ -114,9 +118,9 @@ void test('every finished diagram shows each label once, inside the picture, at 
   const { width: W, height: H } = NOAH_PIN_ART;
   const sets = (spec) => [shortLabels(spec), longLabels(spec), asciiLabels(spec)];
   const all = [...TEMPLATES.flatMap(([template, spec]) => sets(spec).map((labels) => scene(template, labels))), ...Object.values(NOAH_SHELF_SCENES)];
-  for (const item of all) {
+  for (const [n, item] of all.entries()) for (const tone of [n % NOAH_PIN_TONES.length, (n + 5) % NOAH_PIN_TONES.length]) {
     assert.ok(parseNoahPinScene(item).scene, `${item.template} の見本が形に合わない: ${item.labels}`);
-    const { texts } = drawAt(item, noahPinHold(item.template));
+    const { texts } = drawAt(item, noahPinHold(item.template), tone);
     const shown = texts.filter((box) => box.alpha > 0.001);
     // 札は、どれも 1 回ずつ、はっきり（透けずに）描かれている。
     for (const label of new Set(item.labels)) {
@@ -176,7 +180,45 @@ void test('every diagram builds itself with the poyon motion as a pure function 
   const local = (id) => (id === '@/lib/noah-pin-diagram' ? diagram : id.endsWith('.module.css') ? { default: new Proxy({}, { get: (_, name) => String(name) }) } : require(id));
   runInThisContext(`(function (exports, require, module) {${code}\n})`)(unit.exports, local, unit);
   const html = renderToStaticMarkup(React.createElement(unit.exports.default, { scene: NOAH_SHELF_SCENES['pkg:keihi-kamoku'] }));
-  assert.equal(html, '<canvas class="art" width="539" height="208" data-template="tree" aria-hidden="true"></canvas>');
+  const tone = noahPinColors(3);
+  const html2 = renderToStaticMarkup(React.createElement(unit.exports.default, { scene: NOAH_SHELF_SCENES['pkg:keihi-kamoku'], tone: 3 }));
+  assert.equal(html, `<canvas class="art" width="539" height="208" style="background:linear-gradient(135deg, ${noahPinColors(0).bg1}, ${noahPinColors(0).bg2})" data-template="tree" aria-hidden="true"></canvas>`);
+  assert.match(html2, new RegExp(`linear-gradient\\(135deg, ${tone.bg1}, ${tone.bg2}\\)`));
+});
+
+void test('every color tone keeps every word readable, like the App Store cards it follows', () => {
+  // WCAG の比（明るい方 + 0.05）÷（暗い方 + 0.05）。
+  const lum = (hex) => { const [r, g, b] = [1, 3, 5].map((i) => { const v = parseInt(hex.slice(i, i + 2), 16) / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  assert.ok(NOAH_PIN_TONES.length >= 10, '色の組が少ない');
+  assert.equal(new Set(NOAH_PIN_TONES.map((tone) => tone.name)).size, NOAH_PIN_TONES.length);
+  assert.ok(NOAH_PIN_TONES.some((tone) => tone.dark) && NOAH_PIN_TONES.some((tone) => !tone.dark), '暗い組と明るい組の両方がある');
+  for (const [i, tone] of NOAH_PIN_TONES.entries()) {
+    const c = noahPinColors(i);
+    for (const [name, text, ground, need] of [
+      ['字 / 面の左上', c.mark, c.bg1, 4.5], ['字 / 面の右下', c.mark, c.bg2, 4.5], ['差し色の字 / 面の左上', c.blue, c.bg1, 4.5], ['差し色の字 / 面の右下', c.blue, c.bg2, 3.5],
+      ['差し色の上の字', c.onBlue, c.blue, 4.5], ['中の差し色の上の字', c.onM, c.blueM, 4.5], ['弱い差し色の上の字', c.onL, c.blueL, 4.5], ['弱い差し色の上の数字', c.blue, c.blueL, 3],
+      ['灰色の上の字', c.mark, c.g3, 4.5], ['淡い灰色の上の字', c.mark, c.g2, 4.5], ['札の上の字', c.mark, c.card, 4.5], ['薄い字 / 面', c.sub, c.stage, 3],
+      ['帯の題', c.bandInk, c.band, 4.5], ['帯の薄い字', c.bandSub, c.band, 3], ['帯の矢印', c.blue, c.band, 3],
+    ]) assert.ok(contrast(text, ground) >= need, `${tone.name}: ${name} が ${contrast(text, ground).toFixed(2)}（${need} 以上が要る）`);
+    // 形の色は、面から見分けられる（元の図の弱い差し色 #C9D8FB と面 #F1F0EE の比 約 1.26 を下回らない）。
+    for (const [name, shape, need] of [['中の差し色', c.blueM, 1.6], ['弱い差し色', c.blueL, 1.25], ['淡い灰色', c.g2, 1.1], ['灰色', c.g3, 1.25], ['濃い灰色', c.g4, 1.8]]) {
+      assert.ok(contrast(shape, c.stage) >= need, `${tone.name}: ${name}が面に溶ける（${contrast(shape, c.stage).toFixed(2)}）`);
+    }
+  }
+  // 色の組は id で決まり、いつも同じ。棚の 17 枚は、8 組以上に散らばる（並んだカードが、同じ色ばかりにならない）。
+  for (const card of cards) { assert.equal(noahPinTone(card.id), noahPinTone(card.id)); assert.ok(noahPinTone(card.id) >= 0 && noahPinTone(card.id) < NOAH_PIN_TONES.length); }
+  assert.ok(new Set(cards.map((card) => noahPinTone(card.id))).size >= 8, `棚の色が ${new Set(cards.map((card) => noahPinTone(card.id))).size} 組だけ`);
+  // 並びの順で決める時は、どの 4 枚続きも、全部違う色（グリッドで隣や上下に並ぶカード）。似た id ばかりの並びでも同じ。
+  for (const ids of [cards.map((card) => card.id), Array.from({ length: 60 }, (_, i) => `pkg:agent-${i}`), Array.from({ length: 30 }, () => 'pkg:same')]) {
+    const tones = noahPinTonesInOrder(ids);
+    assert.equal(tones.length, ids.length);
+    for (let i = 3; i < tones.length; i++) assert.equal(new Set(tones.slice(i - 3, i + 1)).size, 4, `${ids[i]}: 前の 3 枚と同じ色（${tones.slice(i - 3, i + 1).join(",")}）`);
+    assert.deepEqual(noahPinTonesInOrder(ids), tones);
+  }
+  // 範囲の外の番号も、組の中へ戻る。
+  assert.deepEqual(noahPinColors(-1), noahPinColors(NOAH_PIN_TONES.length - 1));
+  assert.deepEqual(noahPinColors(NOAH_PIN_TONES.length), noahPinColors(0));
 });
 
 void test('the drawing keeps the MIT notice of the Motion Prompt diagram pack it was copied from', () => {

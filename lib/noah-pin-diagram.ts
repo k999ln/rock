@@ -5,7 +5,7 @@
  * （#217〜240。https://github.com/showheyohtaki/motion-prompt の packs/diagram/pack.js、commit 683ecca）を書き写した物。
  * MIT License (c) 2026 Shohei Ohtaki。許諾の全文は vendor/motion-prompt/LICENSE。
  *
- * 書き写したまま: 539×208 の面・色（面 #F1F0EE・青 3 段・灰色 3 段・濃い灰色）・字の書体・図の形と大きさ・出てくる順（各コマは時刻 u の純関数）。
+ * 書き写したまま: 539×208 の面・図の色の役割（強い差し色・中・弱い・灰色 3 段・字の色）・字の書体・図の形と大きさ・出てくる順（各コマは時刻 u の純関数）。
  * Noah で変えた所（理由は、札に、その Agent の言葉を入れるため・説明に無い数を描かないため・本人が可愛い動きを望んだため）:
  * - 図の中の仮の字（A・B・?・テーマ・結果・TAM など）を、札の言葉（scene.labels）にした。札が長い時は、字を少し小さくする（それでも長い時は、幅に詰める）。
  * - 作り話の数（72%・30%・10人中3人・ファネルの 100/58/27/9・帯の %・4月〜12月）は描かない。順番の数字（1, 2, 3…）と「?」だけ残した。
@@ -16,6 +16,8 @@
  *   ぽよん・ぴょこっ・ふわっ の 3 つを動画で見比べて、本人がぽよんを選んだ）。同じ作者の Motion Prompt の動きの数から作った:
  *   #001 ポップイン（ばね 1 − e^(−6.5t)·cos(15t)）＋ #011 スクワッシュ＆ストレッチ（縦横を逆に伸び縮み・体積を保つ）。
  *   線を引く動き（矢印・枝）と、出てくる順番は元のまま。
+ * - 色を、App Store の Today のカードのような、1 枚ずつ違う深い色の組（NOAH_PIN_TONES。12 組）にした（本人の指示 2026-11-24「色味がダサい」「こんな感じにして」）。
+ *   元の面 #F1F0EE と青 #2F6BEB の代わりに、組ごとの 2 色の濃淡の面・光・差し色。図の中の色の役割（どこが強い差し色か）は元のまま。
  * - 1 周（4.7 秒）で消えて繰り返す代わりに、画面に入った時に 1 回だけ組み上げて、止める（本人の決定 2026-11-24「画面に入った時に1回」）。
  *   止める時刻は noahPinHold。繰り返しは components/noah-pin-scene.tsx がしない（ここの式は、元と同じく 0〜4.7 秒のどこでも描ける）。
  *
@@ -31,13 +33,8 @@ type Cell = (k: K, w: number, h: number, u: number, L: readonly string[]) => voi
 /** 絵の大きさ（元のカードと同じ 539×208）と、元の 1 周の長さ（秒）。 */
 export const NOAH_PIN_ART = { width: 539, height: 208, cycle: 4.7 } as const;
 
-// @kit（元の packs/diagram/pack.js の共通部分）
+// @kit（元の packs/diagram/pack.js の共通部分。色は下の「色の組」で、1 枚ずつ変える）
 const CW = NOAH_PIN_ART.width, CH = NOAH_PIN_ART.height;
-const C = {
-  stage: '#F1F0EE', sub: '#8E8E93', mark: '#3A3A3E',
-  blue: '#2F6BEB', blueM: '#9DB8F6', blueL: '#C9D8FB', g2: '#E2E1DE', g3: '#CFCECB', g4: '#A9A8A5',
-};
-const WHITE = '#FFFFFF';
 const FONT = '"Hiragino Sans", "Helvetica Neue", "PingFang SC", "Noto Sans", "Noto Sans CJK JP", system-ui, sans-serif';
 const TAU = Math.PI * 2;
 
@@ -57,8 +54,95 @@ function rr(k: K, x: number, y: number, w: number, h: number, r: number) {
 function txt(k: K, s: string, x: number, y: number, font: string, col: string, align: CanvasTextAlign = 'left', base: CanvasTextBaseline = 'alphabetic') {
   k.font = font; k.fillStyle = col; k.textAlign = align; k.textBaseline = base; k.fillText(s, x, y);
 }
-function bg(k: K, w: number, h: number) { k.fillStyle = C.stage; k.fillRect(0, 0, w, h); }
+/** 面: 色の組の 2 色の斜めの濃淡、右上からの柔らかい光、下は帯の色へ溶ける（カードの下の、題の帯へつながる）。 */
+function bg(k: K, w: number, h: number) {
+  const g = k.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, C.bg1); g.addColorStop(1, C.bg2);
+  k.fillStyle = g; k.fillRect(0, 0, w, h);
+  const glow = k.createRadialGradient(w * 0.74, -h * 0.15, 0, w * 0.74, -h * 0.15, w * 0.72);
+  glow.addColorStop(0, rgba('#FFFFFF', C.dark ? 0.16 : 0.5)); glow.addColorStop(1, rgba('#FFFFFF', 0));
+  k.fillStyle = glow; k.fillRect(0, 0, w, h);
+  const foot = k.createLinearGradient(0, h * 0.6, 0, h);
+  foot.addColorStop(0, rgba(C.band, 0)); foot.addColorStop(1, rgba(C.band, 0.6));
+  k.fillStyle = foot; k.fillRect(0, h * 0.6, w, h * 0.4);
+}
 function fade(u: number) { return 1 - easeInOut(P(u, 4.1, 4.5)); }              // the whole figure fades out at the end of the cycle
+
+// 色の組（Noah で足した部分。本人の指示 2026-11-24「色味がダサい」「こんな感じにして」と、App Store の Today のカードの画面）。
+// App Store のカードのように、1 枚ずつ違う深い色の面に、明るく光る差し色（暗い組）か、濃い差し色（明るい組）。図の役割の名前（blue・blueM・blueL・g2〜g4・mark・sub）は元のまま、中の色だけを組ごとに変える。
+// 字の濃さは WCAG の比で確かめる（地の上の字 4.5 以上。tests/noah-pin-scene.test.mjs）。
+type Tone = { name: string; dark: boolean; bg: readonly [string, string]; accent: string };
+/** 色の組。bg = 面の左上と右下、accent = 差し色（元の blue の役。中くらい・弱い差し色は、面と差し色を混ぜて作る）。 */
+export const NOAH_PIN_TONES: readonly Tone[] = [
+  { name: '夜空', dark: true, bg: ['#0B1433', '#24336E'], accent: '#7CF0A6' },
+  { name: '苔', dark: true, bg: ['#1C2614', '#46562D'], accent: '#F3DC8C' },
+  { name: '琥珀', dark: true, bg: ['#552A0F', '#A35F24'], accent: '#FFD978' },
+  { name: '葡萄', dark: true, bg: ['#2B1159', '#6C33AE'], accent: '#FFB8E8' },
+  { name: '深い青緑', dark: true, bg: ['#0E2F35', '#28626A'], accent: '#FFD49A' },
+  { name: '金', dark: true, bg: ['#120E07', '#38290E'], accent: '#EEC650' },
+  { name: '炎', dark: true, bg: ['#761A10', '#B84D1C'], accent: '#FFEDB0' },
+  { name: '霧', dark: true, bg: ['#2C3546', '#56647B'], accent: '#DCEBFF' },
+  { name: 'ピーチ', dark: false, bg: ['#FBE4C6', '#F7BCCB'], accent: '#B8262A' },
+  { name: 'レモン', dark: false, bg: ['#FCEB66', '#F4CB3E'], accent: '#234E66' },
+  { name: '空', dark: false, bg: ['#DDEFFC', '#B7D8F4'], accent: '#2246C2' },
+  { name: 'ラベンダー', dark: false, bg: ['#DCD0FA', '#ADE9D3'], accent: '#4B2FB8' },
+];
+/** 1 つの組の、図の役割ごとの色（と、カードの下の帯の色）。onM・onL は、中くらい・弱い差し色の上の字（白と黒の、読みやすい方）。 */
+export type NoahPinColors = {
+  dark: boolean; bg1: string; bg2: string; stage: string; blue: string; blueM: string; blueL: string; g2: string; g3: string; g4: string;
+  mark: string; sub: string; onBlue: string; onM: string; onL: string; card: string; chip: string; band: string; bandInk: string; bandSub: string;
+};
+/** 明るさ（WCAG の相対輝度）と、2 色の比。字の色を選ぶのに使う。 */
+function luminance(hex: string) { return hexRGB(hex).map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }).reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0); }
+function contrast(a: string, b: string) { const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); }
+const readable = (ground: string, ...inks: string[]) => inks.reduce((best, ink) => (contrast(ink, ground) > contrast(best, ground) ? ink : best));
+function colorsOf(t: Tone): NoahPinColors {
+  const [bg1, bg2] = t.bg, stage = mix(bg1, bg2, 0.5), blue = t.accent, light = t.dark ? '#FFFFFF' : '#000000';
+  const mark = t.dark ? '#FFFFFF' : '#1C1C1E', onBlue = t.dark ? bg1 : '#FFFFFF';
+  // 中くらい・弱い差し色: 面と差し色を混ぜる割合を、ねらいの割合に近い順に試し、上の字が 4.5 以上で読め、面から見分けられる（中 1.6・弱 1.25 以上）最初の物にする。
+  const tint = (aim: number, see: number) => [0, 0.06, -0.06, 0.12, -0.12, 0.18, -0.18, 0.24, 0.3].map((d) => mix(stage, blue, clamp(aim + d, 0.08, 0.9)))
+    .find((c) => contrast(readable(c, mark, onBlue), c) >= 4.5 && contrast(c, stage) >= see) ?? mix(stage, blue, aim);
+  const blueM = tint(t.dark ? 0.45 : 0.45, 1.6), blueL = tint(t.dark ? 0.24 : 0.2, 1.25);
+  const band = t.dark ? mix(bg2, '#000000', 0.28) : mix(bg2, '#000000', 0.07);
+  return {
+    dark: t.dark, bg1, bg2, stage, blue, blueM, blueL,
+    g2: mix(stage, light, t.dark ? 0.1 : 0.07), g3: mix(stage, light, t.dark ? 0.2 : 0.14), g4: mix(stage, light, t.dark ? 0.4 : 0.34),
+    mark, sub: mix(stage, light, t.dark ? 0.66 : 0.55), onBlue, onM: readable(blueM, mark, onBlue), onL: readable(blueL, mark, onBlue),
+    card: t.dark ? mix(stage, '#FFFFFF', 0.13) : mix(stage, '#FFFFFF', 0.6), chip: t.dark ? mix(stage, '#FFFFFF', 0.82) : '#FFFFFF',
+    band, bandInk: t.dark ? '#FFFFFF' : '#1C1C1E', bandSub: mix(band, light, t.dark ? 0.72 : 0.55),
+  };
+}
+const COLORS = NOAH_PIN_TONES.map(colorsOf);
+/** 組の番号 tone（0 から）の色。範囲の外は、組の数で割った余り。 */
+export function noahPinColors(tone: number): NoahPinColors {
+  const n = COLORS.length;
+  return COLORS[((Math.trunc(tone) % n) + n) % n];
+}
+/** カードの id から、組の番号を決める（同じ id はいつも同じ色）。FNV-1a で混ぜ、似た id（pkg:… など）でも散らばるように、最後にもう一度かき混ぜる。 */
+export function noahPinTone(id: string): number {
+  let h = 2166136261;
+  for (const ch of id) { h ^= ch.codePointAt(0) ?? 0; h = Math.imul(h, 16777619) >>> 0; }
+  h = (h ^ (h >>> 16)) >>> 0; h = Math.imul(h, 0x85ebca6b) >>> 0;
+  h = (h ^ (h >>> 13)) >>> 0; h = Math.imul(h, 0xc2b2ae35) >>> 0;
+  h = (h ^ (h >>> 16)) >>> 0;
+  return h % NOAH_PIN_TONES.length;
+}
+/**
+ * 並んだカードの組の番号。それぞれ noahPinTone から始め、すぐ前の 3 枚と同じ色なら、次の組へずらす
+ * （グリッドで隣や上下に並ぶカードが、同じ色にならない。同じ並びなら、いつも同じ色）。
+ */
+export function noahPinTonesInOrder(ids: readonly string[]): number[] {
+  const out: number[] = [], n = NOAH_PIN_TONES.length;
+  for (const id of ids) {
+    let tone = noahPinTone(id);
+    for (let step = 0; step < n && out.slice(-3).includes(tone); step++) tone = (tone + 1) % n;
+    out.push(tone);
+  }
+  return out;
+}
+/** 描く間の色（drawNoahPinDiagram が、描く前に組を決め、描き終わったら元に戻す）。 */
+let C: NoahPinColors = COLORS[0];
+function rgba(hex: string, a: number) { const [r, g, b] = hexRGB(hex); return `rgba(${r},${g},${b},${a})`; }
 
 // 部品の出方「ぽよん」（Noah で足した部分。本人が 3 つの型から選んだ）。
 /** 1 つの部品の、その時の形: a = 透明度、sx・sy = 横と縦の拡大率。 */
@@ -246,8 +330,8 @@ function tree(k: K, w: number, h: number, u: number, L: readonly string[]) {
   pen(k, C.g4, 3);
   L2.forEach((c, i) => trace(k, elbow(R, c, RW, W2[i]), easeInOut(P(u, 0.75, 1.15))));
   L3.forEach((c, i) => trace(k, elbow(L2[i >> 1], c, W2[i >> 1], W3), easeInOut(P(u, 1.35 + i * 0.06, 1.75 + i * 0.06))));
-  pbox(k, u, 0.4, R[0], R[1], RW, RH, 10, C.blue, () => label(k, L[0], R[0], R[1] + 1, { ...ROOT, color: WHITE }));
-  L2.forEach((c, i) => pbox(k, u, 1.05 + i * 0.08, c[0], c[1], W2[i], H2, 9, C.blueM, () => label(k, L[i + 1], c[0], c[1] + 1, { ...BRANCH, color: C.mark })));
+  pbox(k, u, 0.4, R[0], R[1], RW, RH, 10, C.blue, () => label(k, L[0], R[0], R[1] + 1, { ...ROOT, color: C.onBlue }));
+  L2.forEach((c, i) => pbox(k, u, 1.05 + i * 0.08, c[0], c[1], W2[i], H2, 9, C.blueM, () => label(k, L[i + 1], c[0], c[1] + 1, { ...BRANCH, color: C.onM })));
   L3.forEach((c, i) => pbox(k, u, 1.65 + i * 0.08, c[0], c[1], W3, H3, 8, C.blueL));
   k.globalAlpha = 1;
 }
@@ -286,21 +370,22 @@ function pyramid(k: K, w: number, h: number, u: number, L: readonly string[]) {
 // @element 05
 // 05 マインドマップ: a center word, curved branches out to both sides, then smaller twigs
 // Noah: 札 = [真ん中, 右上の枝, 右下の枝, 左上の枝, 左下の枝]。札のある枝の箱は、札の幅に合わせて広げる（真ん中の 2 本は、元の通り字の無い小さな箱）。
-const MM: readonly [number, number, number, string, readonly Pt[]][] = [
-  // [side, end dx, end dy, color, twigs [dx, dy]]
-  [1, 128, -52, C.blueM, [[204, -72], [204, -32]]],
-  [1, 142, 8, C.g4, []],
-  [1, 124, 56, C.blueM, [[204, 76]]],
-  [-1, 128, -52, C.g4, [[204, -70]]],
-  [-1, 140, 10, C.blueM, []],
-  [-1, 124, 56, C.g4, [[204, 36], [204, 76]]],
+const MM: readonly [number, number, number, 'blueM' | 'g4', readonly Pt[]][] = [
+  // [side, end dx, end dy, color role, twigs [dx, dy]]
+  [1, 128, -52, 'blueM', [[204, -72], [204, -32]]],
+  [1, 142, 8, 'g4', []],
+  [1, 124, 56, 'blueM', [[204, 76]]],
+  [-1, 128, -52, 'g4', [[204, -70]]],
+  [-1, 140, 10, 'blueM', []],
+  [-1, 124, 56, 'g4', [[204, 36], [204, 76]]],
 ];
 const MM_LABEL = [1, -1, 2, 3, -1, 4];          // branch → label index (-1 = no label)
 function mindmap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   k.globalAlpha = fade(u);
   const cx = w / 2, cy = h / 2, BRANCH: Fit = { size: 17, min: 15, max: 85 }, CENTER: Fit = { size: 19, min: 16, max: 184 };
-  MM.forEach(([sd, ex, ey, col, twigs], i) => {
+  MM.forEach(([sd, ex, ey, role, twigs], i) => {
+    const col = C[role], gray = role === 'g4';
     const text = MM_LABEL[i] < 0 ? '' : L[MM_LABEL[i]] ?? '';
     const pw = text ? Math.max(54, fit(k, text, BRANCH).width + 22) : 54, ph = text ? 28 : 24;
     const x0 = cx + sd * 40, x1 = cx + sd * ex, y1 = cy + ey;
@@ -310,12 +395,13 @@ function mindmap(k: K, w: number, h: number, u: number, L: readonly string[]) {
       const a: Pt = [x1 + sd * Math.max(26, pw / 2), y1], b: Pt = [cx + sd * tx - sd * 20, cy + ty], t0 = 1.45 + i * 0.07 + j * 0.05;
       const tp = bezPts(a, [a[0] + sd * 22, a[1]], [b[0] - sd * 26, b[1]], b, 16);
       pen(k, col, 2.5); trace(k, tp, easeInOut(P(u, t0, t0 + 0.35)));
-      pbox(k, u, t0 + 0.3, cx + sd * tx, cy + ty, 40, 18, 9, col === C.g4 ? C.g3 : C.blueL);
+      pbox(k, u, t0 + 0.3, cx + sd * tx, cy + ty, 40, 18, 9, gray ? C.g3 : C.blueL);
     });
-    pbox(k, u, 1.15 + i * 0.09, x1, y1, pw, ph, ph / 2, col === C.g4 ? C.g4 : C.blueM, text ? () => label(k, text, x1, y1 + 1, { ...BRANCH, color: C.mark }) : undefined);
+    // 札のある灰色の箱は、字が読めるように一段淡い灰色（g3）にする。
+    pbox(k, u, 1.15 + i * 0.09, x1, y1, pw, ph, ph / 2, gray ? (text ? C.g3 : C.g4) : C.blueM, text ? () => label(k, text, x1, y1 + 1, { ...BRANCH, color: gray ? C.mark : C.onM }) : undefined);
   });
   const cw = Math.max(100, fit(k, L[0] ?? '', CENTER).width + 36);
-  pbox(k, u, 0.4, cx, cy, cw, 44, 22, C.blue, () => label(k, L[0], cx, cy + 1, { ...CENTER, color: WHITE }));
+  pbox(k, u, 0.4, cx, cy, cw, 44, 22, C.blue, () => label(k, L[0], cx, cy + 1, { ...CENTER, color: C.onBlue }));
   k.globalAlpha = 1;
 }
 
@@ -345,7 +431,7 @@ function flow(k: K, w: number, h: number, u: number, L: readonly string[]) {
   put(k, D[0], D[1], pose(u, 1.2), () => {
     k.fillStyle = C.blue;
     k.beginPath(); k.moveTo(D[0], D[1] - dh); k.lineTo(D[0] + dw, D[1]); k.lineTo(D[0], D[1] + dh); k.lineTo(D[0] - dw, D[1]); k.closePath(); k.fill();
-    txt(k, '?', D[0], D[1] + 2, `700 26px ${FONT}`, WHITE, 'center', 'middle');
+    txt(k, '?', D[0], D[1] + 2, `700 26px ${FONT}`, C.onBlue, 'center', 'middle');
   }, dh);
   pbox(k, u, 1.6, B[0], B[1], 72, 40, 6, C.blueL);
   pbox(k, u, 1.95, E[0], E[1], 66, 36, 18, C.g3);
@@ -392,7 +478,7 @@ function cycle(k: K, w: number, h: number, u: number, L: readonly string[]) {
     put(k, x, y, pose(u, 0.4 + i * 0.32), () => {
       k.fillStyle = C.blueL; k.beginPath(); k.arc(x, y, nr, 0, TAU); k.fill();
       if (on > 0) { k.save(); k.globalAlpha *= on; k.fillStyle = C.blue; k.beginPath(); k.arc(x, y, nr, 0, TAU); k.fill(); k.restore(); }
-      txt(k, String(i + 1), x, y + 1, `700 22px ${FONT}`, on > 0.5 ? WHITE : C.blue, 'center', 'middle');
+      txt(k, String(i + 1), x, y + 1, `700 22px ${FONT}`, on > 0.5 ? C.onBlue : C.blue, 'center', 'middle');
     }, nr);
     const right = x > cx;
     say(k, u, 0.6 + i * 0.32, L[i], right ? x + nr + 14 : x - nr - 14, y + 1, { size: 20, min: 16, max: 127, color: C.mark, align: right ? 'left' : 'right' });
@@ -418,7 +504,7 @@ function fishbone(k: K, w: number, h: number, u: number, L: readonly string[]) {
   const sp = easeInOut(P(u, 0.45, 1.0));
   if (sp > 0) { pen(k, C.mark, 3); trace(k, [[x0, y], [x1, y]], sp, 14, C.mark); }
   // head
-  pbox(k, u, 0.95, hx + 8, y, 92, 56, 12, C.blue, () => label(k, L[0], hx + 8, y + 1, { size: 20, min: 15, max: 76, color: WHITE }));
+  pbox(k, u, 0.95, hx + 8, y, 92, 56, 12, C.blue, () => label(k, L[0], hx + 8, y + 1, { size: 20, min: 15, max: 76, color: C.onBlue }));
   // big bones: root on the spine at bx, tip up-left / down-left
   const bones = [[150, -1], [258, -1], [366, -1], [150, 1], [258, 1], [366, 1]] as const;
   bones.forEach(([bx, sd], i) => {
@@ -538,10 +624,11 @@ const HM = (() => {
   for (let i = 0; i < cols; i++) { let sum = 0; for (let j = 0; j < rows; j++) sum += v[j * cols + i]; if (sum > best) { best = sum; hot = i; } }
   return { cols, rows, v, hot };
 })();
-const HMCOL = [mix(C.stage, C.blueL, 0.55), C.blueL, C.blueM, mix(C.blueM, C.blue, 0.55), C.blue];
+/** ヒートマップの 5 段の濃さ（今の色の組で）。 */
+const hmcol = () => [mix(C.stage, C.blueL, 0.55), C.blueL, C.blueM, mix(C.blueM, C.blue, 0.55), C.blue];
 function heatmap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const { cols, rows, v, hot } = HM;
+  const { cols, rows, v, hot } = HM, HMCOL = hmcol();
   const cw = 30, ch = 28, g = 4, gx = 96, gy = 44, gw = cols * (cw + g) - g, gh = rows * (ch + g) - g;
   // row labels (short gray bars) so it reads as a table
   for (let j = 0; j < rows; j++) { rr(k, 46, gy + j * (ch + g) + ch / 2 - 4, 36, 8, 4); k.fillStyle = C.g3; k.fill(); }
@@ -602,7 +689,7 @@ function radar(k: K, w: number, h: number, u: number, L: readonly string[]) {
   if (sb > 0.01) {
     k.save(); k.globalAlpha = fo;
     radarPath(k, cx, cy, R, RB, sb);
-    k.fillStyle = 'rgba(169,168,165,0.22)'; k.fill();
+    k.fillStyle = rgba(C.g4, 0.22); k.fill();
     k.strokeStyle = C.g4; k.lineWidth = 2.5; k.stroke();
     k.restore();
   }
@@ -610,7 +697,7 @@ function radar(k: K, w: number, h: number, u: number, L: readonly string[]) {
   if (sa > 0.01) {
     k.save(); k.globalAlpha = fo;
     radarPath(k, cx, cy, R, RA, sa);
-    k.fillStyle = 'rgba(47,107,235,0.28)'; k.fill();
+    k.fillStyle = rgba(C.blue, 0.28); k.fill();
     k.strokeStyle = C.blue; k.lineWidth = 3; k.stroke();
     RA.forEach((v, i) => {
       const a = -Math.PI / 2 + i / n * Math.PI * 2, r = R * v * sa, x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
@@ -772,7 +859,7 @@ function band(k: K, w: number, h: number, u: number, L: readonly string[]) {
       let left = x0;
       row.slice(0, 3).forEach((v, s) => {
         const ww = bwid * v / 100;
-        say(k, u, t0 + 0.75 + s * 0.08, L[s], left + ww / 2, y + bh / 2 + 1, { size: 16, min: 14, max: ww - 14, color: s === 0 ? WHITE : C.mark });
+        say(k, u, t0 + 0.75 + s * 0.08, L[s], left + ww / 2, y + bh / 2 + 1, { size: 16, min: 14, max: ww - 14, color: [C.onBlue, C.onM, C.onL][s] });
         left += ww;
       });
     }
@@ -854,9 +941,9 @@ function timeline(k: K, w: number, h: number, u: number, L: readonly string[]) {
     const cwid = text ? Math.max(64, fit(k, text, CARD).width + 24) : 64, chh = 32, cy = up ? y - r - 26 - chh / 2 : y + r + 26 + chh / 2;
     const left = clamp(x - cwid / 2, 8, w - 8 - cwid);
     put(k, left + cwid / 2, cy, pose(u, t0 + 0.15), () => {
-      k.fillStyle = last ? C.blue : WHITE; k.strokeStyle = last ? C.blue : C.g3; k.lineWidth = 2;
+      k.fillStyle = last ? C.blue : C.card; k.strokeStyle = last ? C.blue : C.g3; k.lineWidth = 2;
       rr(k, left, cy - chh / 2, cwid, chh, 8); k.fill(); k.stroke();
-      if (text) label(k, text, left + cwid / 2, cy + 1, { ...CARD, color: last ? WHITE : C.mark });
+      if (text) label(k, text, left + cwid / 2, cy + 1, { ...CARD, color: last ? C.onBlue : C.mark });
       else { rr(k, x - 20, cy - 6, 40, 5, 2.5); k.fillStyle = C.g3; k.fill(); rr(k, x - 20, cy + 2, 28, 5, 2.5); k.fillStyle = C.g2; k.fill(); }
     }, chh / 2);
     put(k, x, y, pose(u, t0), () => {
@@ -898,8 +985,8 @@ function funnel(k: K, w: number, h: number, u: number, L: readonly string[]) {
     const ww = wd * p;
     k.fillStyle = COL[i]; rr(k, cx0 - ww / 2, y, ww, bh, 7); k.fill();
     const li = FUNNEL_LABEL[i];
-    if (li >= 0) say(k, u, t0 + 0.3, L[li], cx0, y + bh / 2 + 1, { size: 20, min: 15, max: wd - 20, color: i === 3 ? WHITE : C.mark });
-    else put(k, cx0, y + bh / 2, pose(u, t0 + 0.3), () => { rr(k, cx0 - 22, y + bh / 2 - 3, 44, 6, 3); k.fillStyle = WHITE; k.fill(); }, 3);
+    if (li >= 0) say(k, u, t0 + 0.3, L[li], cx0, y + bh / 2 + 1, { size: 20, min: 15, max: wd - 20, color: i === 3 ? C.onBlue : i === 0 ? C.onL : C.onM });
+    else put(k, cx0, y + bh / 2, pose(u, t0 + 0.3), () => { rr(k, cx0 - 22, y + bh / 2 - 3, 44, 6, 3); k.fillStyle = C.chip; k.fill(); }, 3);
   });
   k.globalAlpha = 1;
 }
@@ -911,10 +998,10 @@ function funnel(k: K, w: number, h: number, u: number, L: readonly string[]) {
 const JV = [0.35, 0.7, -0.6, 0.15, 0.85];     // feeling per stage (+ up = good)
 function face(k: K, x: number, y: number, r: number, good: boolean, col: string) {
   k.fillStyle = col; k.beginPath(); k.arc(x, y, r, 0, Math.PI * 2); k.fill();
-  k.fillStyle = WHITE;
+  k.fillStyle = C.onBlue;
   k.beginPath(); k.arc(x - r * 0.36, y - r * 0.22, r * 0.13, 0, 7); k.fill();
   k.beginPath(); k.arc(x + r * 0.36, y - r * 0.22, r * 0.13, 0, 7); k.fill();
-  k.strokeStyle = WHITE; k.lineWidth = Math.max(1.6, r * 0.15); k.lineCap = 'round';
+  k.strokeStyle = C.onBlue; k.lineWidth = Math.max(1.6, r * 0.15); k.lineCap = 'round';
   k.beginPath();
   if (good) k.arc(x, y + r * 0.02, r * 0.42, Math.PI * 0.2, Math.PI * 0.8);
   else k.arc(x, y + r * 0.62, r * 0.42, Math.PI * 1.2, Math.PI * 1.8);
@@ -930,13 +1017,13 @@ function journey(k: K, w: number, h: number, u: number, L: readonly string[]) {
   k.globalAlpha = f;
   // stage headers: plain rounded boxes (not arrows), the stage names as short bars
   for (let i = 0; i < n; i++) {
-    pbox(k, u, 0.35 + i * 0.1, cx(i), 27, cw - 12, 26, 7, i === 2 ? C.g3 : C.blueM, () => { rr(k, cx(i) - 22, 25, 44, 5, 2.5); k.fillStyle = WHITE; k.fill(); });
+    pbox(k, u, 0.35 + i * 0.1, cx(i), 27, cw - 12, 26, 7, i === 2 ? C.g3 : C.blueM, () => { rr(k, cx(i) - 22, 25, 44, 5, 2.5); k.fillStyle = C.chip; k.fill(); });
   }
   // action cards (what the customer does at each stage)
   for (let i = 0; i < n; i++) {
     const y = 50;
     put(k, cx(i), y + 19, pose(u, 0.6 + i * 0.1), () => {
-      rr(k, cx(i) - cw / 2 + 10, y, cw - 20, 38, 6); k.fillStyle = WHITE; k.fill();
+      rr(k, cx(i) - cw / 2 + 10, y, cw - 20, 38, 6); k.fillStyle = C.card; k.fill();
       k.strokeStyle = C.g3; k.lineWidth = 1.5; k.stroke();
       rr(k, cx(i) - cw / 2 + 18, y + 10, cw - 46, 6, 3); k.fillStyle = C.g3; k.fill();
       rr(k, cx(i) - cw / 2 + 18, y + 22, cw - 60, 6, 3); k.fillStyle = C.g2; k.fill();
@@ -989,7 +1076,7 @@ function treemap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   k.globalAlpha = f;
   RS.forEach(([x, y, ww, hh, col, li], i) => {
     pbox(k, u, 0.4 + i * 0.22, x + ww / 2, y + hh / 2, ww, hh, 5, col, li >= 0
-      ? () => label(k, L[li], x + 12, y + 21, { size: li === 0 ? 24 : 20, min: li === 0 ? 18 : 15, max: ww - 24, color: li === 0 ? WHITE : C.mark, align: 'left' })
+      ? () => label(k, L[li], x + 12, y + 21, { size: li === 0 ? 24 : 20, min: li === 0 ? 18 : 15, max: ww - 24, color: li === 0 ? C.onBlue : C.onM, align: 'left' })
       : undefined);
   });
   k.globalAlpha = 1;
@@ -1004,7 +1091,7 @@ function swimlane(k: K, w: number, h: number, u: number, L: readonly string[]) {
   // skeleton: lanes
   for (let i = 0; i < NL; i++) {
     const y = Y0 + i * LH;
-    k.fillStyle = WHITE; k.fillRect(X0 + HW, y, X1 - X0 - HW, LH);
+    k.fillStyle = C.card; k.fillRect(X0 + HW, y, X1 - X0 - HW, LH);
     k.fillStyle = C.g2; k.fillRect(X0, y, HW, LH);
     label(k, L[i], X0 + HW / 2, y + LH / 2 + 1, { size: 18, min: 15, max: HW - 12, color: C.mark });
   }
@@ -1037,7 +1124,7 @@ function swimlane(k: K, w: number, h: number, u: number, L: readonly string[]) {
     put(k, cx, cy, pose(u, t0), () => {
       k.fillStyle = last ? C.blue : C.blueL; k.strokeStyle = last ? C.blue : C.blueM; k.lineWidth = 2;
       rr(k, cx - bw / 2, cy - bh / 2, bw, bh, 7); k.fill(); k.stroke();
-      k.fillStyle = last ? WHITE : C.g4;
+      k.fillStyle = last ? C.onBlue : C.g4;
       rr(k, cx - 16, cy - 3, 32, 6, 3); k.fill();
     }, bh / 2);
   }
@@ -1064,7 +1151,7 @@ function chevron(k: K, w: number, h: number, u: number, L: readonly string[]) {
       k.moveTo(x, y0); k.lineTo(x + cw - dp, y0); k.lineTo(x + cw, ym); k.lineTo(x + cw - dp, y0 + ch); k.lineTo(x, y0 + ch);
       if (i > 0) k.lineTo(x + dp, ym);
       k.closePath(); k.fill();
-      txt(k, String(i + 1), tx + 4, ym + 1, `700 24px ${FONT}`, i === n - 1 ? WHITE : C.mark, 'center', 'middle');
+      txt(k, String(i + 1), tx + 4, ym + 1, `700 24px ${FONT}`, i === n - 1 ? C.onBlue : C.mark, 'center', 'middle');
     }, ch / 2);
     // short notes under each step
     const nx = tx + 4;
@@ -1085,7 +1172,7 @@ function concentric(k: K, w: number, h: number, u: number, L: readonly string[])
   k.strokeStyle = C.g2; k.lineWidth = 2; k.beginPath(); k.arc(cx0, cy0, RR[0], 0, 7); k.stroke();
   k.globalAlpha = f;
   RR.forEach((r, i) => put(k, cx0, cy0, pose(u, 0.4 + i * 0.45), () => { k.fillStyle = COL[i]; k.beginPath(); k.arc(cx0, cy0, r, 0, 7); k.fill(); }, r));
-  say(k, u, 1.85, L[0], cx0, cy0 + 1, { size: 18, min: 14, max: 54, color: WHITE });
+  say(k, u, 1.85, L[0], cx0, cy0 + 1, { size: 18, min: 14, max: 54, color: C.onBlue });
   say(k, u, 0.95, L[1], cx0 + RR[0] + 18, cy0 + 1, { size: 18, min: 15, max: w - 12 - (cx0 + RR[0] + 18), color: C.mark, align: 'left' });
   k.globalAlpha = 1;
 }
@@ -1102,9 +1189,11 @@ export function noahPinHold(template: NoahPinTemplate): number {
   return template === 'heatmap' ? 3.9 : 4;
 }
 
-/** 1 枚の図解を、時刻 u（秒）の形で描く。k は、539×208 の座標で描けるように縮めた（setTransform 済みの）面。前の絵は、ここで塗りつぶす。 */
-export function drawNoahPinDiagram(k: CanvasRenderingContext2D, scene: Pick<NoahPinScene, 'template' | 'labels'>, u: number): void {
+/** 1 枚の図解を、時刻 u（秒）の形で、色の組 tone（NOAH_PIN_TONES の番号。noahPinTone で決める）で描く。k は、539×208 の座標で描けるように縮めた（setTransform 済みの）面。前の絵は、ここで塗りつぶす。 */
+export function drawNoahPinDiagram(k: CanvasRenderingContext2D, scene: Pick<NoahPinScene, 'template' | 'labels'>, u: number, tone = 0): void {
+  const before = C;
+  C = noahPinColors(tone);
   k.save();
-  CELLS[scene.template](k, CW, CH, u, scene.labels);
-  k.restore();
+  try { CELLS[scene.template](k, CW, CH, u, scene.labels); }
+  finally { k.restore(); C = before; }
 }

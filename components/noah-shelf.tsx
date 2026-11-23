@@ -13,6 +13,7 @@ import { NOAH_SHELF_TEXT, type NoahShelfCard } from '@/lib/noah-shelf-view';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { NOAH_SHELF_SCENES } from '@/lib/noah-pin-scenes-shelf';
 import NoahPinSceneArt from './noah-pin-scene';
+import { noahPinTone } from '@/lib/noah-pin-diagram';
 import styles from './noah-ready.module.css';
 
 type Shelf = { id: string; name: string; cards: NoahShelfCard[] };
@@ -57,7 +58,7 @@ function ShelfCard({ card, onHide, hiding }: { card: NoahShelfCard; onHide: (() 
   const scene = NOAH_SHELF_SCENES[card.id];
   return <article className={styles.card}>
     {/* 絵は飾り。同じ行き先の題のリンクが読まれるので、絵のリンクは読み上げとタブの順から外す。 */}
-    {scene && <Link className={styles.shelfScene} href={card.target} tabIndex={-1} aria-hidden="true"><NoahPinSceneArt scene={scene} /></Link>}
+    {scene && <Link className={styles.shelfScene} href={card.target} tabIndex={-1} aria-hidden="true"><NoahPinSceneArt scene={scene} tone={noahPinTone(card.id)} /></Link>}
     <header className={styles.cardHead}>
       <h3><Link className={styles.cardName} href={card.target}><span>{card.title}</span></Link></h3>
       <span className={styles.provider}>{card.topicLabel}</span>

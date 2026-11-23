@@ -4,17 +4,18 @@
  * lib/noah-pin-diagram.ts（しょうへいさんの Motion Prompt の図解パックの書き写し。MIT License (c) 2026 Shohei Ohtaki）で、539:208 の canvas に描く。
  * 動き（本人の決定 2026-11-24「画面に入った時に1回」と、指示「もっと可愛いアニメーション」「cuteじゃなくて可愛い」）: 画面に入った時に 1 回だけ、元と同じ順番で、
  * 部品が可愛い動き「ぽよん」（lib/noah-pin-diagram.ts。本人が 3 つから選んだ）で出て組み上がり、組み上がった形で止まる（元のように消えて繰り返さない）。
- * 動きを減らす設定の人・見えたかを確かめられない端末には、初めから組み上がった形を出す。サーバーで描いた時は、同じ色の空の面（字も形も無い）。
+ * 色は、色の組 tone（App Store の Today のカードのように 1 枚ずつ違う深い色。lib/noah-pin-diagram.ts の NOAH_PIN_TONES。本人の指示「色味がダサい」「こんな感じにして」）。
+ * 動きを減らす設定の人・見えたかを確かめられない端末には、初めから組み上がった形を出す。サーバーで描いた時は、同じ色の組の空の面（字も形も無い）。
  * 字は canvas の中なので、読み上げには出さない（aria-hidden。カードの題と説明の字が読まれる）。
  * 見張り（IntersectionObserver）・時計（requestAnimationFrame）・大きさ（ResizeObserver）は、ページ全体で 1 つずつ（絵ごとには作らない）。
  */
 import { useEffect, useRef } from 'react';
-import { drawNoahPinDiagram, NOAH_PIN_ART, noahPinHold } from '@/lib/noah-pin-diagram';
+import { drawNoahPinDiagram, NOAH_PIN_ART, noahPinColors, noahPinHold } from '@/lib/noah-pin-diagram';
 import type { NoahPinScene } from '@/lib/noah-pin-scene';
 import css from './noah-pin-scene.module.css';
 
 /** 描いている 1 枚。u は今の時刻（秒）、start は動き始めた時の時計（動いていない時は null）。 */
-type Art = { canvas: HTMLCanvasElement; scene: NoahPinScene; u: number; start: number | null; onPlay: () => void };
+type Art = { canvas: HTMLCanvasElement; scene: NoahPinScene; tone: number; u: number; start: number | null; onPlay: () => void };
 
 /** 今の u の形を、canvas の今の幅（端末の画素の 2 倍まで）で描く。 */
 function paint(art: Art) {
@@ -25,7 +26,7 @@ function paint(art: Art) {
   const k = canvas.getContext('2d');
   if (!k) return;
   k.setTransform(w / NOAH_PIN_ART.width, 0, 0, h / NOAH_PIN_ART.height, 0, 0);
-  drawNoahPinDiagram(k, art.scene, art.u);
+  drawNoahPinDiagram(k, art.scene, art.u, art.tone);
 }
 
 // 時計: 動いている絵だけを、1 つの requestAnimationFrame でまとめて描く。組み上がったら外す。
@@ -82,21 +83,22 @@ function forget(art: Art) {
 
 /**
  * 1 枚の図解。ready は、置き場所が決まったか（グリッドは、置く前のカードを左上に重ねて隠すので、置き終わるまで見張りを始めない）。棚のように初めから置いてある所では省く。
- * 1 度動いた絵は、置き直し（列の幅が変わった時など）でもう一度動かさない（組み上がった形のまま）。
+ * 1 度動いた絵は、置き直し（列の幅が変わった時など）でもう一度動かさない（組み上がった形のまま）。tone は色の組の番号（noahPinTone(カードの id) で決める）。
  */
-export default function NoahPinSceneArt({ scene, className, ready = true }: { scene: NoahPinScene; className?: string; ready?: boolean }) {
+export default function NoahPinSceneArt({ scene, className, ready = true, tone = 0 }: { scene: NoahPinScene; className?: string; ready?: boolean; tone?: number }) {
   const frame = useRef<HTMLCanvasElement>(null), played = useRef(false);
   useEffect(() => {
     const canvas = frame.current;
     if (!canvas) return;
     const still = played.current || typeof IntersectionObserver === 'undefined' || typeof requestAnimationFrame === 'undefined'
       || Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
-    const art: Art = { canvas, scene, u: still ? noahPinHold(scene.template) : 0, start: null, onPlay: () => { played.current = true; } };
+    const art: Art = { canvas, scene, tone, u: still ? noahPinHold(scene.template) : 0, start: null, onPlay: () => { played.current = true; } };
     follow(art);
     paint(art);
     if (!still && ready) watch(art);
     return () => forget(art);
-  }, [scene, ready]);
+  }, [scene, ready, tone]);
+  const colors = noahPinColors(tone);
   return <canvas ref={frame} className={`${css.art}${className ? ` ${className}` : ''}`} width={NOAH_PIN_ART.width} height={NOAH_PIN_ART.height}
-    data-template={scene.template} aria-hidden="true" />;
+    style={{ background: `linear-gradient(135deg, ${colors.bg1}, ${colors.bg2})` }} data-template={scene.template} aria-hidden="true" />;
 }
