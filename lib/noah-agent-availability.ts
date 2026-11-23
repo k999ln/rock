@@ -22,6 +22,7 @@ export function noahReviewedAgentEndpoint(repository: string, api: string) {
     'jayeshmurthi49-byte/agentic-rag-chatbot-api': 'ask',
     'coding-it-forward-dc-transit/dc-metro-transit-assistant': 'respond',
     'samir72/multi-agent-research-paper-analysis-system': 'analyze_research',
+    'jeganvnr1604/trailhaven-ai-assistant': 'respond',
   };
   return reviewed[repository.toLowerCase()] === api;
 }

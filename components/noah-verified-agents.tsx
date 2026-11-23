@@ -94,6 +94,7 @@ export default function NoahVerifiedAgents() {
     {view === 'products' ? products.slice(start, start + 25).map(p => <article className={styles.post} key={p.familyId}>
       <div className={styles.postContent}><h2 className={styles.postTitle}>{p.name}</h2><p>{p.publisher} · {p.category}{p.added ? ' · 今回追加' : ''}</p>
         <p className={styles.postText}>{p.summary}</p><p className={styles.researchNote}>{p.status}</p>
+        {p.id === 'AG0734' && <p>架空店舗の商品・注文データを使うデモです。実店舗の商品情報ではありません。</p>}
         <p>{liveLabels[liveById.get(p.id)?.status ?? 'unverified']}</p>
         {liveById.get(p.id)?.checkedAt && <p className={styles.researchNote}>接続確認：{new Date(liveById.get(p.id)!.checkedAt!).toLocaleString('ja-JP')}</p>}
         {liveById.get(p.id) && <Link href={liveById.get(p.id)!.href}>{liveById.get(p.id)!.status === 'available' ? 'Noahで使う' : '接続方法を確認する'}</Link>}
