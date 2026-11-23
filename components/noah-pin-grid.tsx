@@ -26,7 +26,7 @@ export default function NoahPinGrid({ items, signedIn, ownerScope, onChange, onH
         : item.run ? NOAH_COLLECTION_RUN_LABELS[item.run] : item.oneTap ? 'すぐ試せる' : '接続して使う';
       return <NoahAgentPin key={item.id} id={item.id} name={item.name} topic={item.topic} shape={item.shape}
         summary={item.summary} href={noahCardHref(item) ?? noahReadyDetailHref(item.id)}
-        meta={[noahCardOrigin(item), runStatus].filter(Boolean).join(' · ')}
+        meta={<>{noahCardOrigin(item)} · {runStatus}</>}
         actions={<>
           {!item.external && <button type="button" className={styles.save} data-saved={item.savedIn.length > 0 || undefined} onClick={() => setSaving(item)} aria-label={`${item.name}を${item.savedIn.length ? '保存済み' : '保存'}`}>
             {item.savedIn.length ? NOAH_PIN_TEXT.saved : NOAH_PIN_TEXT.save}
