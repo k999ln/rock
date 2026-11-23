@@ -7,7 +7,7 @@
  * 仕様: docs/noah/spec-86-remote-mouth.md の 4.2・10.3、spec-88-mass-probe.md の 9.3・9.4。
  */
 import { noahFormSummary } from './noah-form.ts';
-import { NoahMouthError, noahMcpClose, noahMcpHandshake, type NoahMcpSession, type NoahMouthCode, type NoahMouthContext } from './noah-mouth-mcp-remote.ts';
+import { NoahMouthError, noahMcpClose, noahMcpHandshake, type NoahHandshakeSnapshot, type NoahMcpSession, type NoahMouthCode, type NoahMouthContext } from './noah-mouth-mcp-remote.ts';
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
@@ -49,7 +49,13 @@ export type NoahProbeOutcome =
  * 401 を受けても、相手の許可の公開情報は探さない（ローンチでは、要求は初期化の 1 回だけで終わる）。
  * 失敗は、理由の符号にして返す（投げない）。全体の待ちは NOAH_PROBE.timeoutMs まで。
  */
-export async function probeL1(url: string, ctx: NoahMouthContext, clock: () => number = Date.now): Promise<NoahProbeOutcome> {
+/**
+ * Optional observer for the successful handshake metadata.  The probe result
+ * deliberately remains the old summary shape; the intake layer holds this
+ * snapshot in memory until the checks transaction commits.
+ */
+export type NoahProbeSuccessObserver = (handshake: NoahHandshakeSnapshot) => void;
+export async function probeL1(url: string, ctx: NoahMouthContext, clock: () => number = Date.now, onSuccess?: NoahProbeSuccessObserver): Promise<NoahProbeOutcome> {
   const overall = AbortSignal.timeout(NOAH_PROBE.timeoutMs);
   const signal = ctx.signal ? AbortSignal.any([ctx.signal, overall]) : overall;
   const started = clock();
@@ -57,6 +63,10 @@ export async function probeL1(url: string, ctx: NoahMouthContext, clock: () => n
   try {
     const handshake = await noahMcpHandshake(url, { ...ctx, signal });
     session = handshake.session;
+    // Observers are advisory and must never turn a successful handshake into
+    // an unreachable result.  createIntakeProbe uses this only to retain the
+    // definitions until the representative row is durably committed.
+    try { onSuccess?.(handshake); } catch { /* capture is post-commit work */ }
     const { formTools, oneTapTools } = noahFormSummary(handshake.tools);
     return { ok: true, toolsSha256: handshake.toolsSha256, toolCount: handshake.tools.length, readOnly: handshake.allReadOnly, formTools, oneTapTools, latencyMs: Math.max(0, clock() - started) };
   } catch (error) {

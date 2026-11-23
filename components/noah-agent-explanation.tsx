@@ -1,0 +1,81 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { NOAH_MATERIALS } from '@/lib/noah-shelf';
+import { noahExplanationWithConnection, type NoahExplanation } from '@/lib/noah-agent-explanation';
+import { useNoahLocale } from './noah-locale';
+import { NoahStepLevels } from './noah-step-levels';
+import base from './noah-service.module.css';
+import styles from './noah-ready.module.css';
+
+type PackageDetail = {
+  id: string; title: string; summary: string; familyId: string; tool: string; explanation: NoahExplanation;
+};
+
+const firstSentence = (text: string, locale: string) =>
+  new Intl.Segmenter(locale, { granularity: 'sentence' }).segment(text.trim())[Symbol.iterator]().next().value?.segment.trim();
+
+export function NoahExplanationSection({ explanation, summary, summaryJa, connected = false, card = false }: {
+  explanation: NoahExplanation; summary: string; summaryJa?: string | null; connected?: boolean; card?: boolean;
+}) {
+  const { locale, t } = useNoahLocale();
+  const translated = locale === 'ja' && summaryJa && summaryJa !== summary ? summaryJa : null;
+  const intro = firstSentence(translated || summary, locale);
+  const flow = noahExplanationWithConnection(explanation, connected);
+  const steps = flow.steps.map((step) => {
+    const secret = step.id.startsWith('connect:') ? /^(.*) を入力$/u.exec(step.label) : null;
+    const service = step.id.startsWith('connect:') ? /^(.*) へのアクセスを許可$/u.exec(step.label) : null;
+    const label = secret ? t('{name} を入力', { name: secret[1] })
+      : service ? t('{name} へのアクセスを許可', { name: service[1] })
+      : step.id.startsWith('connect:') ? t(step.label) : step.label;
+    return { ...step, label, reason: step.reason && t(step.reason), waitNote: step.waitNote && t(step.waitNote) };
+  });
+  const materialList = (items: NoahExplanation['consumes']) => items.length ? <ul>{items.map((item) => <li key={item}>{t(NOAH_MATERIALS[item])}</li>)}</ul> : t('なし');
+
+  return <section className={styles.explanation}>
+    <h2>{t(card ? 'このカードでできる事' : 'この Agent でできる事')}</h2>
+    {intro && <p className={styles.explanationSummary}>{intro}</p>}
+    {translated && <details className={styles.explanationSource}>
+      <summary>{t('自動翻訳')} · {t('原文')}</summary><p>{summary}</p>
+    </details>}
+    <dl className={styles.explanationIo}>
+      <div><dt>{t('渡す物')}</dt><dd>{materialList(flow.consumes)}</dd></div>
+      <span aria-hidden="true">{locale === 'ar' ? '←' : '→'}</span>
+      <div><dt>{t('返る物')}</dt><dd>{materialList(flow.produces)}</dd></div>
+    </dl>
+    <p className={styles.explanationHint}>{t('同じ段の工程は並行して進められます。')}</p>
+    <NoahStepLevels steps={steps} labels={{
+      ariaLabel: t('工程の段（横に並ぶ工程は同時に進む）'),
+      levelLabel: (level) => t('{level} 段目', { level }),
+      kindLabel: t('種類'), kind: { auto: t('Agent の道具'), tap: t('本人が押す'), human: t('本人が行う'), review: t('本人が確かめる') },
+      tag: { tap: t('本人が押す'), human: t('本人'), review: t('本人が確かめる') },
+      reasonLabel: t('本人が入る理由'), waitsLabel: t('待つ物'), noWaits: t('なし（最初から始められる）'), waitReasonLabel: t('待つ理由'),
+    }} />
+  </section>;
+}
+
+export function NoahPackageExplanation({ id, familyId, tool }: { id: string; familyId?: string; tool?: string | null }) {
+  const { t } = useNoahLocale();
+  const [result, setResult] = useState<{ id: string; value: PackageDetail | null } | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch(`/api/noah/shelf?${new URLSearchParams({ id })}`, { cache: 'no-store', signal: controller.signal })
+      .then(async (response) => response.ok ? await response.json() as PackageDetail : null)
+      .then((value) => { if (!controller.signal.aborted) setResult({ id, value }); })
+      .catch(() => { if (!controller.signal.aborted) setResult({ id, value: null }); });
+    return () => controller.abort();
+  }, [id]);
+
+  const pkg = result?.id === id ? result.value : null;
+  if (familyId) return pkg?.familyId === familyId && (!tool || pkg.tool === tool)
+    ? <NoahExplanationSection explanation={pkg.explanation} summary={pkg.summary} card /> : null;
+  return <main className={`${base.page} ${styles.page}`}>
+    <p className={styles.back}><Link href="/noah/explore">← {t('戻る')}</Link></p>
+    {pkg ? <article className={styles.detail}>
+      <h1>{pkg.title}</h1>
+      <Link className={styles.primary} href={`/noah/ready/agent?${new URLSearchParams({ id: pkg.familyId, tool: pkg.tool, from: pkg.id })}`}>{t('Agent を開く')}</Link>
+      <NoahExplanationSection explanation={pkg.explanation} summary={pkg.summary} card />
+    </article> : <p className={base.empty}>{t(result?.id === id ? '見つかりません。' : '読み込んでいます…')}</p>}
+  </main>;
+}

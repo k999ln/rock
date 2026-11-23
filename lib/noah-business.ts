@@ -11,6 +11,23 @@
  * 仕様: docs/noah/spec-122-business-blueprints.md
  */
 
+import {
+  NOAH_ACCOUNT_FACTS,
+  NOAH_STEP_WAITS,
+  noahBlueprintWithout,
+  type NoahStep,
+  type NoahStepKind,
+} from './noah-steps.ts';
+export {
+  NOAH_STEP_KINDS,
+  NOAH_STEP_WAITS,
+  noahBlueprintLevels,
+  noahBlueprintReady,
+  noahBlueprintWaitProblem,
+  noahBlueprintWithout,
+} from './noah-steps.ts';
+export type { NoahStep, NoahStepKind } from './noah-steps.ts';
+
 // ---------------------------------------------------------------------------
 // 工程の種類と、要る能力
 // ---------------------------------------------------------------------------
@@ -18,9 +35,10 @@
 /**
  * auto: Noah が最後までやる。tap: Noah が全部用意し、本人が確かめて押す（規約が本人の同意・手動の公開を求める所）。
  * human: 本人にしかできない（本人確認・パスワード・確認コード・口座・電話番号・規約への同意）。review: 本人が中身を確かめる（金融の表現など）。
+ *
+ * 工程の共通型とグラフ操作は `lib/noah-steps.ts` にあり、ここでは
+ * business の能力名だけを追加で狭くする。
  */
-export const NOAH_STEP_KINDS = ['auto', 'tap', 'human', 'review'] as const;
-export type NoahStepKind = typeof NOAH_STEP_KINDS[number];
 
 /** 能力。keywords は、Noah のエージェントの名前・説明に当てる語（小文字・決まった照合だけ）。 */
 export const NOAH_CAPABILITIES = {
@@ -75,26 +93,15 @@ export type NoahAccount = {
 };
 const A = (id: string, label: string, kind: NoahAccount['kind'], needs: NoahAccountNeed[], extra: Partial<NoahAccount> = {}): NoahAccount => ({ id, label, kind, needs, ...extra });
 export const NOAH_ACCOUNTS: readonly NoahAccount[] = [
-  A('asp-a8', 'A8.net', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
-    { text: '会員登録の途中で、載せる場（サイト）の情報を入れる。サイトが無ければ A8 のブログ（ファンブログ）を作る形。初回の登録にサイトの審査は無い。', source: 'https://www.onamae.com/column/affiliate/32/' },
-    { text: '案件の報酬・成果の条件・否認の条件は、ログインした後の「プログラム検索」で見る。提携の申請は、案件によって審査があり、断られる事もある。', source: 'https://www.onamae.com/column/affiliate/32/' },
-  ] }),
+  A('asp-a8', 'A8.net', 'asp', ['email', 'address', 'bank', 'site'], { facts: NOAH_ACCOUNT_FACTS['asp-a8'] }),
   A('asp-moshimo', 'もしもアフィリエイト', 'asp', ['email', 'address', 'bank', 'site']),
   A('asp-afb', 'afb', 'asp', ['email', 'address', 'bank', 'site']),
-  A('asp-accesstrade', 'アクセストレード', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
-    { text: '登録の最後に、アフィリエイトを始めるサイトの情報（サイト名・サイトの URL など）を入れる。', source: 'https://www.onamae.com/column/affiliate/47/' },
-  ] }),
+  A('asp-accesstrade', 'アクセストレード', 'asp', ['email', 'address', 'bank', 'site'], { facts: NOAH_ACCOUNT_FACTS['asp-accesstrade'] }),
   A('asp-valuecommerce', 'バリューコマース', 'asp', ['email', 'address', 'bank', 'site']),
-  A('amazon-associates', 'Amazonアソシエイト', 'asp', ['email', 'address', 'bank', 'site'], { facts: [
-    { text: 'ブログが無くても、X・Instagram・YouTube などの SNS の URL で申し込める。', source: 'https://www.onamae.com/column/affiliate/43/' },
-    { text: '審査があり、180 日以内にリンク経由の売上 3 件が目安。', source: 'https://www.onamae.com/column/affiliate/43/' },
-  ] }),
+  A('amazon-associates', 'Amazonアソシエイト', 'asp', ['email', 'address', 'bank', 'site'], { facts: NOAH_ACCOUNT_FACTS['amazon-associates'] }),
   A('rakuten-affiliate', '楽天アフィリエイト', 'asp', ['email', 'address']),
   A('x', 'X', 'channel', ['email', 'phone']),
-  A('tiktok', 'TikTok', 'channel', ['email', 'phone'], { publishByTap: true, facts: [
-    { text: '審査前の API は、本人だけが見られる公開（SELF_ONLY）しかできず、自分が管理するアカウントへ投稿するための内部の道具は審査の対象外。', source: 'https://developers.tiktok.com/docs/en/content-sharing-guidelines' },
-    { text: '広告・提携の投稿は、商用の表示（ブランドコンテンツ）を付け、非公開にできない。', source: 'https://developers.tiktok.com/docs/en/content-sharing-guidelines' },
-  ] }),
+  A('tiktok', 'TikTok', 'channel', ['email', 'phone'], { publishByTap: true, facts: NOAH_ACCOUNT_FACTS['tiktok'] }),
   A('instagram', 'Instagram（プロアカウント）', 'channel', ['email', 'phone']),
   A('youtube', 'YouTube', 'channel', ['email', 'phone']),
   A('threads', 'Threads', 'channel', ['email']),
@@ -117,20 +124,13 @@ export const NOAH_ACCOUNTS: readonly NoahAccount[] = [
   A('shopify', 'Shopify', 'marketplace', ['email', 'phone', 'identity', 'bank', 'address']),
   A('base-shop', 'BASE', 'marketplace', ['email', 'bank', 'address']),
   A('hosting', 'サイトの置き場所とドメイン', 'hosting', ['email', 'address']),
-  A('adsense', 'Google AdSense', 'payments', ['email', 'address', 'bank', 'site', 'tax'], { facts: [
-    { text: '関連性の高い独自のオリジナル コンテンツが要る。独自性のないコンテンツや著作権で保護されたコンテンツを載せたサイトには、広告を表示できない。', source: 'https://support.google.com/adsense/answer/7299563?hl=ja' },
-  ] }),
-  A('youtube-partner', 'YouTube パートナープログラム', 'payments', ['email', 'bank', 'tax'], { facts: [
-    { text: '今の条件は、登録者 1,000 人以上と、直近 12 か月の公開長尺動画の総再生時間 4,000 時間以上（または直近 90 日の有効なショートの視聴 1,000 万回以上）。数えるのは公開した動画だけ。審査は通常 1 か月ほど。', source: 'https://support.google.com/youtube/answer/82839?hl=ja' },
-    { text: '2027-02-01 から新しく申し込む人は、直近 365 日の有効な公開動画の総再生時間 8,000 時間、または直近 90 日の有効な公開ショートの視聴 2,000 万回が要る（2026-08-11 の発表）。', source: 'https://blog.youtube/intl/ja-jp/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/' },
-  ] }),
+  A('adsense', 'Google AdSense', 'payments', ['email', 'address', 'bank', 'site', 'tax'], { facts: NOAH_ACCOUNT_FACTS['adsense'] }),
+  A('youtube-partner', 'YouTube パートナープログラム', 'payments', ['email', 'bank', 'tax'], { facts: NOAH_ACCOUNT_FACTS['youtube-partner'] }),
   A('stripe', 'Stripe', 'payments', ['email', 'phone', 'identity', 'bank', 'address']),
   A('meta-ads', 'Meta 広告', 'ads', ['email', 'phone']),
   A('google-ads', 'Google 広告', 'ads', ['email', 'phone']),
   A('apple-developer', 'Apple Developer Program', 'developer', ['email', 'phone', 'identity', 'bank', 'tax']),
-  A('official-shops', '公式通販のアカウント（作品・事務所ごと）', 'marketplace', ['email', 'phone', 'address'], { publishByTap: true, facts: [
-    { text: 'チケットぴあの規約は、自動入力のソフトや BOT での利用、転売目的の取得、営利目的の転売を禁じ、購入者と入場者の名義の一致を求める（18 条 1 項 15 号・1 号・19 号、9 条 3 項）。公式通販も、作る時に規約の自動購入・代行・転送の扱いを確かめる。', source: 'https://t.pia.jp/info/terms-sp.jsp' },
-  ] }),
+  A('official-shops', '公式通販のアカウント（作品・事務所ごと）', 'marketplace', ['email', 'phone', 'address'], { publishByTap: true, facts: NOAH_ACCOUNT_FACTS['official-shops'] }),
   A('japan-post', '日本郵便（国際郵便マイページ）', 'hosting', ['email', 'address', 'phone']),
 ];
 const ACCOUNT = new Map(NOAH_ACCOUNTS.map(a => [a.id, a]));
@@ -267,41 +267,12 @@ export const NOAH_OSHI_AGENT = {
 // 設計図
 // ---------------------------------------------------------------------------
 
-export type NoahBlueprintStep = {
-  id: string; label: string; kind: NoahStepKind; capability?: NoahCapability;
-  /** 人・押すだけ・確かめる工程の理由。 */
-  reason?: string; account?: string;
-  /** 1 か月あたりの費用の目安（円。0 は無料の範囲）。 */
-  costYen?: number;
-  /**
-   * 何を待つか: この工程を始める前に終わっている工程の id（同じ設計図の、前に並ぶ工程だけ）。空なら最初から始められる。
-   * 設計図の工程には必ず書く（2026-11-22 本人の評価。待つ相手が全部終わった工程から同時に進める）。推し活のエージェントの工程は設計図ではないので持たない。
-   */
-  after?: readonly string[];
-  /** 待つ相手の前提の理由（NOAH_STEP_WAITS の文）。説明画面に出す。決まりきった待ち（台本 → 動画など）には付けない。 */
-  waitNote?: string;
-};
-
 /**
- * 待つ相手の前提（2026-11-22。本人の答えで直す所）。工程が何を待つかのうち、決まりきっていない物だけ、理由をここに置く。
- * 直す時は、この文と、設計図の工程の after を一緒に直す（試験 tests/noah-business.test.mjs が、待つ相手のつながりを確かめる）。
+ * 稼ぎ方の設計図が使う工程。共通工程の能力名だけ business の語彙へ
+ * 狭め、consumes / produces など別の利用側の追加フィールドも拒まない。
  */
-export const NOAH_STEP_WAITS = {
-  aspSignup: 'ASP の登録では、載せる場（サイト・SNS）の名前と URL を入れる（A8.net は無ければ A8 のブログを作る形、アクセストレードも登録の最後にサイトの情報を入れる、Amazon アソシエイトは SNS の URL で申し込める）。だから、載せる場を作った後に ASP に登録する',
-  media: 'ASP の会員登録で入れた載せる場を、提携の申し込みに使う媒体として確かめる。だから、ASP の登録を待つ',
-  offers: '案件の一覧と条件（単価・承認率）は、ASP に登録してから見られる',
-  research: '需要と競合は公開の情報で調べられるので、何も待たない（登録の審査を待つ間に進める）',
-  draft: '出品・販売の頁の文は、登録の前に下書きできる',
-  publishAffiliate: '紹介のリンクを載せるのは、提携が通り、広告の表示と表現の点検が済んでから',
-  publishExpedition: '紹介のリンクを載せるのは、媒体の登録と、広告の表示の点検が済んでから',
-  monetize: '収益化の審査は、出した物がある場で受ける（AdSense は独自のコンテンツを見る。YouTube パートナーは公開した動画の登録者と再生時間で決まる）。だから、出した後に申し込む',
-  deliver: '注文は、出品と応募のどちらからも来る。両方の口を開けてから、納品に入る',
-  orders: '注文と問い合わせは、商品を出した後に来る',
-  storePage: 'ストアの画像は、出来たアプリの画面から作る',
-  proxyPage: '代行の頁（手数料・扱わない物）は、通販の規約と、古物商の許可が要るかが分かってから作る',
-  proxyPromote: '代行の紹介は、代行の頁と特定商取引法の表示が出来てから。最初の注文を待たない',
-  proxySales: '代行の売上は、届けて依頼者に知らせた後に確定する。だから、成果を読むのは、紹介を出した後と、最初の注文を届けた後',
-} as const;
+export type NoahBlueprintStep = Omit<NoahStep, 'capability'> & { capability?: NoahCapability };
+
 export type NoahBlueprint = {
   id: string; model: 'affiliate' | 'gig' | 'digital' | 'ads' | 'commerce' | 'app' | 'oshi'; label: string;
   accounts: string[]; steps: NoahBlueprintStep[]; finance: boolean;
@@ -463,61 +434,6 @@ export function noahBlueprints(): NoahBlueprint[] {
     step('fulfill', '注文を届ける', 'auto', { capability: 'order.fulfill', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }), step('support', '問い合わせに答える', 'auto', { capability: 'support.reply', after: ['listing'], waitNote: NOAH_STEP_WAITS.orders }),
     signUpStep('x', []), step('promote', 'X で紹介する', 'auto', { capability: 'publish.sns', account: 'x', after: ['listing', 'signup:x'] }), ...measure(['promote']),
   ] });
-  return out;
-}
-
-// ---------------------------------------------------------------------------
-// 何を待つか（段・今始められる工程・工程を外した時のつなぎ直し）
-// ---------------------------------------------------------------------------
-
-/**
- * 待つ相手が正しいか。どの工程も after を持ち、after は同じ設計図の前に並ぶ工程だけで、同じ id を 2 回書かない。
- * 前に並ぶ工程だけを待つので、輪にならず、設計図の並び順は、いつでも 1 つずつ順に進めてよい順になる。問題が無ければ null。
- */
-export function noahBlueprintWaitProblem(steps: readonly NoahBlueprintStep[]): string | null {
-  const seen = new Set<string>();
-  for (const s of steps) {
-    if (!s.after) return `「${s.label}」に、何を待つかが書かれていません。`;
-    if (new Set(s.after).size !== s.after.length) return `「${s.label}」が、同じ工程を 2 回待っています。`;
-    const missing = s.after.find(id => !seen.has(id));
-    if (missing) return `「${s.label}」が、前に無い工程（${missing}）を待っています。`;
-    seen.add(s.id);
-  }
-  return null;
-}
-/** 段。待つ相手が無い工程が 1 段目、ほかは「待つ相手の段のいちばん後 + 1」段目。同じ段の工程は同時に進められる。段の中は設計図の並び順。 */
-export function noahBlueprintLevels(steps: readonly NoahBlueprintStep[]): NoahBlueprintStep[][] {
-  const problem = noahBlueprintWaitProblem(steps);
-  if (problem) throw Error(problem);
-  const level = new Map<string, number>(), out: NoahBlueprintStep[][] = [];
-  for (const s of steps) {
-    const at = Math.max(-1, ...(s.after ?? []).map(id => level.get(id)!)) + 1;
-    level.set(s.id, at);
-    (out[at] ??= []).push(s);
-  }
-  return out;
-}
-/**
- * 今始められる工程（会社で回す時に使う）: まだ終わっていない工程のうち、待つ相手が全部終わった物。設計図の並び順。
- * 本人の工程（human・tap・review）が終わっていなくても、それを待っていない工程は始められる（本人の工程は、その結果を使う工程だけを止める）。
- */
-export function noahBlueprintReady(steps: readonly NoahBlueprintStep[], done: ReadonlySet<string>): NoahBlueprintStep[] {
-  const problem = noahBlueprintWaitProblem(steps);
-  if (problem) throw Error(problem);
-  return steps.filter(s => !done.has(s.id) && (s.after ?? []).every(id => done.has(id)));
-}
-/**
- * 工程を外す（持っているアカウントの登録と規約の確認など）。外した工程を待っていた工程は、代わりに、外した工程が待っていた物を待つ。
- * だから、外した後も、待つ相手のつながりは切れない（例: YouTube の登録を外すと、YouTube に出す工程は、登録の前の物を待つ）。
- */
-export function noahBlueprintWithout(steps: readonly NoahBlueprintStep[], drop: (step: NoahBlueprintStep) => boolean): NoahBlueprintStep[] {
-  const dropped = new Map<string, readonly string[]>(), out: NoahBlueprintStep[] = [];
-  const expand = (ids: readonly string[]) => [...new Set(ids.flatMap(id => dropped.get(id) ?? [id]))];
-  for (const s of steps) {
-    const after = expand(s.after ?? []);
-    if (drop(s)) dropped.set(s.id, after);
-    else out.push({ ...s, after });
-  }
   return out;
 }
 

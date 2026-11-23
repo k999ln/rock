@@ -5,7 +5,7 @@
 //
 // 使い方:
 //   node --experimental-strip-types scripts/noah-local-patrol.mjs [--db work/noah-local/intake.sqlite] [--minutes 60] [--out work/noah-local/import.json]
-//     [--export-only] [--limit 2000] [--first data/noah-shelf-first-cards.json]
+//     [--export-only] [--limit 2000] [--first data/noah-shelf-first-cards.json] [--capture-dir work/noah-local/labels]
 // --limit: 書き出す系列の数を絞る（本番の D1 の書き込みは、新しい系列 1 つで約 13 行。日ごとの枠がある時は、日を分けて増やす）。
 // --first: 先に入れる系列。棚のカードのファイル（カードの工程が使う系列）か、系列の ID の配列の JSON。残りは、1 回で頼める道具を持つ物・読むだけの物・応答の速い物の順。
 // 何度でも続きから動く（台帳の頁の位置と、握手の予定は、DB に残る）。同じ接続先へは 1 時間に 1 回しか握手しない（本番と同じ決まり）。
@@ -16,6 +16,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createIntakeStore } from '../lib/noah-intake-store.ts';
 import { noahIntakeExport } from '../lib/noah-intake-import.ts';
+import { createNoahLocalCaptureWriter } from './noah-local-capture.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (name, fallback) => { const i = process.argv.indexOf(name); return i >= 0 ? process.argv[i + 1] : fallback; };
@@ -24,8 +25,10 @@ const outPath = resolve(root, arg('--out', 'work/noah-local/import.json'));
 const minutes = Number(arg('--minutes', '60'));
 const exportOnly = process.argv.includes('--export-only');
 const limitArg = arg('--limit', null), firstArg = arg('--first', null);
+const captureDirArg = arg('--capture-dir', null);
 const limit = limitArg === null ? undefined : Number(limitArg);
 if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw Error('--limit は 0 以上の整数です。');
+if (captureDirArg !== null && !captureDirArg.trim()) throw Error('--capture-dir は空にできません。');
 /** --first のファイルから、系列の ID を読む（カードの配列なら、工程が使う系列。文字の配列なら、そのまま）。 */
 const first = firstArg === null ? [] : (() => {
   const value = JSON.parse(readFileSync(resolve(root, firstArg), 'utf8'));
@@ -68,10 +71,14 @@ const db = {
 };
 
 const log = (event) => console.log(JSON.stringify({ at: new Date().toISOString(), ...event }));
+// Capture is opt-in and stays outside the import artifact. --export-only never
+// constructs the probe, so it cannot make a provider request.
+const capture = captureDirArg === null ? null : createNoahLocalCaptureWriter(resolve(root, captureDirArg));
 if (!exportOnly) {
   // 手元では、本番の合図 1 回より多く進める（CPU の上限が無い）。同じ接続先へ 1 時間に 1 回の決まりは、そのまま。
   const budget = { pages: 1000, probes: 96, concurrent: 24, seconds: 55 };
-  const store = createIntakeStore({ db, now: Date.now, fetcher: fetch, origin: 'https://avoado.si', budget });
+  const store = createIntakeStore({ db, now: Date.now, fetcher: fetch, origin: 'https://avoado.si', budget,
+    ...(capture ? { onCommittedRepresentativeHandshake: capture } : {}) });
   const end = Date.now() + minutes * 60_000;
   // 1. 台帳を最後まで読む。
   for (let round = 0; Date.now() < end; round++) {
