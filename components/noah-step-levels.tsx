@@ -70,6 +70,7 @@ export type NoahStepLevelsProps<T extends NoahStep = NoahStep> = {
   capabilityLabels?: Readonly<Record<string, NoahStepCapabilityLabel>>;
   flowLabel?: (label: FlowLabel) => string;
   materialLabel?: (material: string) => string;
+  showMaterials?: boolean;
 };
 
 /** 設計図・棚カード・Agent の説明で使う共通の段表示。 */
@@ -79,6 +80,7 @@ export function NoahStepLevels<T extends NoahStep>({
   capabilityLabels = {},
   flowLabel = unchanged,
   materialLabel = unchanged,
+  showMaterials = true,
 }: NoahStepLevelsProps<T>) {
   const text: NoahStepLevelLabels = {
     ...DEFAULT_LABELS,
@@ -89,7 +91,7 @@ export function NoahStepLevels<T extends NoahStep>({
   const levels = noahBlueprintLevels(steps),
     label = new Map(steps.map((s) => [s.id, s.label]));
   return (
-    <ol className={styles.levels} aria-label={text.ariaLabel}>
+    <ol className={styles.levels} data-noah-step-levels aria-label={text.ariaLabel}>
       {levels.map((level, index) => (
         <li key={index} className={styles.level}>
           <span
@@ -104,7 +106,7 @@ export function NoahStepLevels<T extends NoahStep>({
               const capability = s.capability
                 ? capabilityLabels[s.capability]
                 : undefined;
-              const links = s.flow?.dataFrom ?? [];
+              const links = showMaterials ? s.flow?.dataFrom ?? [] : [];
               const gate = s.kind === 'review' || s.flow?.gate;
               const describe = (items: readonly string[] | undefined) => items
                 ? items.map(materialLabel).join('・') || flowLabel(FLOW_LABELS.none)
@@ -131,11 +133,11 @@ export function NoahStepLevels<T extends NoahStep>({
                       {new Set(links.map(({ from }) => from)).size > 1 && <span className={styles.tag}>{flowLabel(FLOW_LABELS.collect)}</span>}
                       {s.label}
                     </span>
-                    <span className={styles.stepIo}>
+                    {showMaterials && <span className={styles.stepIo}>
                       <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.receives)}</span>{describe(s.flow?.inputs)}</span>
                       <span className={styles.stepArrow} aria-hidden="true" />
                       <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.returns)}</span>{describe(s.flow?.outputs)}</span>
-                    </span>
+                    </span>}
                     {s.flow?.branch && <span className={styles.control}><strong>{flowLabel(FLOW_LABELS.branch)}</strong> {s.flow.branch}</span>}
                     {s.flow?.repeat && <span className={styles.control}><strong>{flowLabel(FLOW_LABELS.repeat)}</strong> {s.flow.repeat}</span>}
                   </summary>
