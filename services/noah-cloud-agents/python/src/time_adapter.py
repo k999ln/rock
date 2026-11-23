@@ -13,4 +13,3 @@ for name in ['get_current_time', 'convert_time', 'get_time_ago']:
     tool = TIME._tool_manager.get_tool(name)
     tool.fn = inline_time_function(tool.fn)
     tool.is_async = True
-

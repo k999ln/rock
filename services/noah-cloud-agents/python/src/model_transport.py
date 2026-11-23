@@ -8,4 +8,3 @@ class BoundTransport(httpx.BaseTransport):
         if request.method != 'POST' or str(request.url) != 'https://noah-model.internal/v1/chat/completions':
             raise Stopped('Unsupported model endpoint')
         return httpx.Response(200, request=request, json=model_response(json.loads(request.content)))
-

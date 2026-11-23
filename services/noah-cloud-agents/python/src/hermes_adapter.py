@@ -107,4 +107,3 @@ def hermes(prompt, home):
             agent.client.close()
         reset_hermes_home_override(token)
         MODEL_STATUS.reset(status_token)
-

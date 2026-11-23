@@ -66,4 +66,3 @@ def file(name, value):
 
 def operation(name, arguments, result, ok=True):
     return {'name': name, 'ok': ok, 'inputSha256': hashlib.sha256(arguments.encode()).hexdigest(), 'resultSha256': hashlib.sha256(result.encode()).hexdigest()}
-
