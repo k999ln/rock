@@ -332,6 +332,13 @@ void test('the work list across agents (the activity and data screens): newest f
       assert.match(saved.text(cards[0]), /found cobalt/, path);
       const link = saved.nodes(cards[0]).find((node) => node.type === 'a');
       assert.equal(link.props.href, `/noah/tasks/${uuid(10)}`, path);
+      const id = link.props.href.split('/').pop();
+      const detailPage = ui.mount('components/noah-task-detail.tsx', { id });
+      await detailPage.flush();
+      assert.match(detailPage.text(), /found cobalt/, path);
+      assert.match(detailPage.text(), /この仕事の利用明細/, path);
+      assert.match(detailPage.text(), /提供元の料金未確定（請求情報なし）/, 'a response from the provider does not prove its bill');
+      assert.doesNotMatch(detailPage.text(), /someone else/, path);
       assert.doesNotMatch(saved.text(), /No data yet|someone else/, path);
       assert.ok(ui.calls.some((req) => req.url === '/api/noah/ask'), path);
       assert.ok(ui.calls.some((req) => req.url === `/api/noah/ask/${uuid(10)}`), path);

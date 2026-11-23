@@ -23,6 +23,7 @@ function harness(fetcher) {
         useEffect(fn, deps) { const i = cursor++, old = slots[i]; if (!old || deps.some((v, n) => v !== old.deps[n])) { slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
       };
       if (id === 'next/link') return { default: 'a' };
+      if (id === './noah-work-usage-receipt') return { default: 'receipt-panel' };
       if (id === '@/lib/noah-result-data-contract') return { NOAH_DATA_POLICY: 'noah-quality-v1' };
       if (id === '@/lib/owner-intent') return { readOwnerScope, OWNER_SCOPE_HEADER };
       if (id.endsWith('.module.css')) return { default: {} };
@@ -41,6 +42,7 @@ void test('sharing starts unselected, needs both selection and explicit consent,
   const h = harness(async (url, options) => options.method === 'POST' ? Response.json({ ...page(), contribution: { id: 'contribution', state: 'active', createdAt: 1, revokedAt: null } }) : standard(url)); t.after(() => h.close());
   await h.flush(); h.click('Test Agent'); await h.flush();
   assert.match(h.text(), /private result text/); assert.match(h.text(), /すでに運営が保存した写しは回収できません/);
+  assert.equal(h.nodes().find(node => node.type === 'receipt-panel')?.props.id, 'job');
   assert.equal(h.button('選択した成果を提供する').disabled, true);
   h.check('本文を提供する'); assert.equal(h.button('選択した成果を提供する').disabled, true);
   h.check('選んだ成果と目的を確認'); h.check('report.csv'); assert.equal(h.button('選択した成果を提供する').disabled, true);
@@ -86,6 +88,7 @@ void test('operator view only appears with server permission and exports are rec
     return Response.json({ ...page(), operatorAllowed: true, ...(params.has('id') ? { detail: { ...detail(), contribution: undefined, revision: undefined } } : {}) });
   }); t.after(() => h.close());
   await h.flush(); h.click('運営に提供された成果'); await h.flush(); h.click('Test Agent'); await h.flush();
+  assert.equal(h.nodes().some(node => node.type === 'receipt-panel'), false);
   assert.doesNotMatch(h.text(), /本文を提供する|提供を取り消す/); withdrawn = true; h.click('成果をJSONで保存'); await h.flush();
   assert.equal(h.downloads.length, 0); assert.doesNotMatch(h.text(), /private result text/); assert.match(h.calls.at(-1).url, /view=operator/);
 });
