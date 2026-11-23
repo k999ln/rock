@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { ProviderPlan, ProviderField } from '@/lib/noah-gradio';
+import type { NoahFirstJob } from '@/lib/noah-first-jobs';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { prepareNoahConnectionSound } from '@/lib/noah-connection-sound';
 import { noahHaptic } from '@/lib/noah-haptics';
@@ -11,8 +12,10 @@ import styles from './noah-provider-runner.module.css';
 import { useNoahLocale } from './noah-locale';
 export default function NoahProviderRunner({
   projectId,
+  operation,
 }: {
   projectId: string;
+  operation?: NoahFirstJob['operation'];
 }) {
   const { t } = useNoahLocale();
   const fieldPrefix = useId();
@@ -54,9 +57,11 @@ export default function NoahProviderRunner({
       }
       if (!r.ok || !b.plan || typeof b.ownerScope !== 'string')
         throw Error(b.error || '準備できませんでした。');
+      if (operation && !b.plan.endpoints.some(item => item.name === operation))
+        throw Error('この診断は現在利用できません。別の目的を選んでください。');
       setPlan(b.plan);
       setScope(b.ownerScope);
-      setApi(b.plan.endpoints[0]?.name ?? '');
+      setApi(operation ?? b.plan.endpoints[0]?.name ?? '');
       setValues({});
       noahHaptic('success');
       sound.play();
@@ -142,7 +147,7 @@ export default function NoahProviderRunner({
       typeof value === 'boolean'
         ? String(value)
         : Array.isArray(value) ? value.join('\n') : '';
-    const label = f.label + (f.kind === 'list' ? t('（1行に1件）') : '');
+    const label = (operation ? t(f.label) : f.label) + (f.kind === 'list' ? t('（1行に1件）') : '');
     const change = (v: unknown) =>
       setValues((old) => ({ ...old, [f.name]: v }));
     return (
@@ -169,11 +174,11 @@ export default function NoahProviderRunner({
             onChange={(e) => change(JSON.parse(e.target.value))}
           >
             <option value='""' disabled>
-              選んでください
+              {t('選んでください')}
             </option>
             {f.choices?.map((c) => (
               <option key={JSON.stringify(c)} value={JSON.stringify(c)}>
-                {String(c)}
+                {operation ? t(String(c)) : String(c)}
               </option>
             ))}
           </select>
@@ -207,7 +212,7 @@ export default function NoahProviderRunner({
   };
   return (
     <section className={styles.panel} aria-label="Noahで実行">
-      <h2>{t('Noahで使う')}</h2>
+      <h2>{t(operation ? '診断するサイト' : 'Noahで使う')}</h2>
       {!plan && (
         <>
           <p>{t('提供元の接続先を確認し、この画面で入力して実行できます。届いた成果はNoahに残ります。')}</p>
@@ -217,7 +222,7 @@ export default function NoahProviderRunner({
             disabled={busy}
             onClick={() => void prepare()}
           >
-            {busy ? t('準備中…') : t('使う')}
+            {busy ? t('準備中…') : t(operation ? '診断の入力欄を開く' : '使う')}
           </button>
         </>
       )}
@@ -237,8 +242,8 @@ export default function NoahProviderRunner({
           }}
         >
           <fieldset disabled={busy || uncertain}>
-            {endpoint.description && <p>{endpoint.description}</p>}
-            {plan.endpoints.length > 1 && (
+            {endpoint.description && <p>{operation ? t(endpoint.description) : endpoint.description}</p>}
+            {!operation && plan.endpoints.length > 1 && (
               <label className={styles.field}>
                 <span>{t('何をしますか？')}</span>
                 <select

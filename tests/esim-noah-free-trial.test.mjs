@@ -549,7 +549,7 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
   const f = fixture(t, { routeBindings: { PROVIDER: provider } });
   f.invite();
   await phone(f.trial);
-  const start = { id: newApproval(), text: 'abc', route: 'auto' };
+  const start = { id: newApproval(), text: 'abc', route: 'provider' };
   const run = (action, input) =>
     f.trial.cloudWork('alice', true, action, input);
   await assert.rejects(
@@ -582,15 +582,19 @@ await test('an eSIM cloud job survives a closed screen, lost provider reply and 
   await run('start', start);
   const [saved] = (await run('list')).jobs;
   assert.equal(saved.result, '3 characters');
+  assert.equal(saved.usage.external, true);
+  assert.equal(saved.usage.amountMinor, null);
+  assert.equal(saved.usage.completedRuns, 1);
   assert.equal(creations, 1);
   await assert.rejects(run('start', { ...start, route: 'noah' }), /依頼内容/);
-  for (const route of ['noah', 'registered']) {
+  for (const route of ['auto', 'registered']) {
     const id = newApproval();
     await run('start', { id, route, text: 'xy' });
     await until(async () => (await run('list')).jobs[0].state === 'completed');
     const view = await run('list');
     assert.equal(view.preference, route);
-    assert.equal(view.jobs[0].route, route);
+    assert.equal(view.jobs[0].route, route === 'auto' ? 'noah' : route);
+    if (route === 'auto') assert.equal(view.jobs[0].usage.amountMinor, 0);
     assert.match(view.jobs[0].result, /文字数 2/);
   }
   const selected = await run('list', { work: start.id });

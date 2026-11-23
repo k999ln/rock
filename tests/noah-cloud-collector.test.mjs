@@ -9,12 +9,13 @@ import { createCollectorCheckpointApi, NOAH_CHECKPOINT_PATH, NOAH_CHECKPOINT_BYT
 import { collectionSignature } from '../lib/noah-collection.ts';
 import { createCollectionApi } from '../lib/noah-collection-api.ts';
 import { openCollectorStore, writeCollectorJson } from '../scripts/noah-collector-store.mjs';
-import { checkpointClient, encodeCheckpoint, restoreCheckpoint, runCloudCollector } from '../scripts/noah-cloud-collector.mjs';
+import { checkpointClient, collectorAlerts, collectorSummary, COLLECTOR_ALERT_REPEAT, encodeCheckpoint, restoreCheckpoint, runCloudCollector } from '../scripts/noah-cloud-collector.mjs';
 
 const key = randomBytes(32).toString('hex'), NOW = Date.UTC(2026, 10, 22);
 function bucket() {
   const rows = new Map(); let generation = 0;
   return { rows, conflict: false,
+    async head(path) { const row = rows.get(path); return row && { etag: row.etag }; },
     async get(path) { const row = rows.get(path); return row && { etag: row.etag, async json() { return JSON.parse(row.body); } }; },
     async put(path, body, options) {
       const old = rows.get(path);
@@ -164,4 +165,75 @@ void test('checkpoint cleanup retains committed chunks and recent uploads, and c
   assert.deepEqual(removed, [prefix + 'old']);
   store.list = async () => { throw Error('unavailable'); };
   assert.equal((await post(api, { action: 'write', etag: saved.etag, checkpoint: { ...value, updatedAt: NOW } })).status, 200);
+});
+
+void test('a one-off source failure is left to the next run, while production, shape, key and repeated failures need a person', () => {
+  const status = {
+    sources: [{ id: 'github', failure_count: 1 }, { id: 'npm', failure_count: COLLECTOR_ALERT_REPEAT }, { id: 'mcp-registry', failure_count: 2 }],
+    errors: [
+      { source: 'github', code: 'unavailable' },
+      { source: 'mcp-registry', code: 'rate_limited' },
+      { source: 'npm', code: 'unavailable' },
+      { source: 'docker', code: 'invalid_response' },
+      { source: 'import', code: 'http_500' },
+      { source: 'publication', code: 'unavailable' },
+      { source: 'x', code: 'needs_credentials' },
+    ],
+  };
+  const { alerts, warnings } = collectorAlerts(status);
+  assert.deepEqual(warnings, [{ source: 'github', code: 'unavailable', failures: 1 }, { source: 'mcp-registry', code: 'rate_limited', failures: 2 }]);
+  assert.deepEqual(alerts.map((item) => item.source), ['npm', 'docker', 'import', 'publication', 'x']);
+  assert.equal(alerts[0].failures, COLLECTOR_ALERT_REPEAT);
+  assert.deepEqual(collectorAlerts({ errors: [], sources: [] }), { alerts: [], warnings: [] });
+});
+
+void test('the run summary shows the counts, what went into the grid, and the failures without any secret', () => {
+  const text = collectorSummary({
+    counts: { registry: 31200, active: 29038, handshake: 126, listed: 125, unchecked: 29401 },
+    import: { status: 'updated', sent: 7, rowsWritten: 0, waiting: 0 },
+    published: [{ source: 'github', items: 169 }, { source: 'smithery', items: 0 }],
+    feeds: { smithery: 'needs_credentials' },
+    alerts: [], warnings: [{ source: 'github', code: 'unavailable', failures: 1 }],
+  });
+  assert.match(text, /\| 31200 \| 29038 \| 126 \| 125 \| 29401 \|/);
+  assert.match(text, /送った系列 7/);
+  assert.match(text, /\| smithery \| 0 \| needs_credentials \|/);
+  assert.match(text, /人が見る失敗: なし/);
+  assert.match(text, /- github: unavailable（1 回目）/);
+  assert.doesNotMatch(text, new RegExp(key));
+  assert.match(collectorSummary({ counts: {}, alerts: [{ source: 'import', code: 'http_500' }], warnings: [] }), /\*\*人が見る失敗: 1 件\*\*/);
+});
+
+void test('chunked manifest commits without opening chunk bodies or waiting for cleanup', { timeout: 3000 }, async () => {
+  const store = bucket(), prefix = 'noah/collector/v2/chunks/', removed = [];
+  const list = Promise.withResolvers(), background = [];
+  const get = store.get.bind(store);
+  store.get = async path => {
+    assert.ok(!path.startsWith(prefix), 'manifest validation should only need chunk metadata');
+    return get(path);
+  };
+  store.list = () => list.promise;
+  store.delete = async paths => { removed.push(...paths); };
+  const api = createCollectorCheckpointApi({ bucket: store, key, now: () => NOW, waitUntil: work => background.push(work) });
+  const hash = await checkpointChunkHash('aaaa');
+  await post(api, { action: 'write_chunk', hash, data: 'aaaa' });
+  const checkpoint = { schema: 'noah-collector-checkpoint/2', updatedAt: NOW - 1, runId: '123', chunks: [hash] };
+  const first = await post(api, { action: 'write', etag: null, checkpoint });
+  assert.equal(first.status, 200);
+  const { etag } = await first.json();
+  assert.deepEqual(await (await post(api, { action: 'read' })).json(), { etag, checkpoint });
+  assert.equal(background.length, 1);
+  assert.deepEqual(removed, []);
+
+  // A slower cleanup must not delete a chunk that a newer manifest now references.
+  const nextHash = await checkpointChunkHash('bbbb');
+  await post(api, { action: 'write_chunk', hash: nextHash, data: 'bbbb' });
+  store.list = async () => ({ objects: [hash, nextHash, 'orphan'].map(key => ({ key: prefix + key, uploaded: new Date(NOW - 8_000_000) })) });
+  const second = await post(api, { action: 'write', etag, checkpoint: { ...checkpoint, updatedAt: NOW, chunks: [nextHash] } });
+  assert.equal(second.status, 200);
+  await background[1];
+  assert.deepEqual(removed, [prefix + 'orphan']);
+  list.resolve({ objects: [{ key: prefix + nextHash, uploaded: new Date(NOW - 8_000_000) }] });
+  await background[0];
+  assert.deepEqual(removed, [prefix + 'orphan']);
 });

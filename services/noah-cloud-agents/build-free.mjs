@@ -20,6 +20,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const output = resolve(directory, 'dist/free-worker.mjs');
   await buildFree({ outfile: output });
   const compressed = gzipSync(await readFile(output)).length;
-  if (compressed > 3 * 1024 * 1024) throw Error('Worker exceeds Free plan package limit');
+  if (compressed > 3 * 1024 * 1024) throw Error('Worker exceeds the project gzip packaging budget');
   console.log(`Official MCP Worker built (${compressed} gzip bytes)`);
 }

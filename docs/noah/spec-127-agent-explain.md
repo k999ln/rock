@@ -1,6 +1,6 @@
 # 127 Agent の説明画面
 
-2026-11-22 23:15 の本人指示。元の指示書と待ち順の土台を [旧 PR #424](https://github.com/k999ln/rock/pull/424) から [正本 PR #25](https://github.com/iceiceice999/rock/pull/25) へ移植した。引継ぎと受入条件は [task 127](../../codex/tasks/127-noah-agent-explain.md) に置く。
+2026-11-22 23:15 の本人指示。元の指示書と待ち順の土台を [旧 PR #424](https://github.com/k999ln/rock/pull/424) から [正本 PR #25](https://github.com/iceiceice999/rock/pull/25) へ移植した。引継ぎと受入条件は [task 128（旧 task 127）](../../codex/tasks/128-noah-agent-explain.md) に置く。
 
 ## 画面
 

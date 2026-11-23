@@ -1,11 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import NoahMacHandoff from './noah-mac-handoff';
 import NoahNavigation from './noah-navigation';
 import WorkspaceShell from './workspace-shell';
 import SkyDeviceAgentConnections from './sky-device-agent-connections';
 import styles from './sky-device-agent-connections.module.css';
-export default function SkyConnectedRuntime() {
+export default function SkyConnectedRuntime({ initialAgent }: { initialAgent?: string }) {
   const [owner, setOwner] = useState(''),
     [status, setStatus] = useState<
       'loading' | 'signed_out' | 'unavailable' | 'ready'
@@ -71,6 +72,7 @@ export default function SkyConnectedRuntime() {
         >
           <Link href="/os/eve">Eveで続きを見る</Link>
           <Link href="/connect/device">端末の追加・解除</Link>
+          <Link href="#mac">自分のMacでAgentを動かす</Link>
           <Link href="/#sky-manage">Noahのライブラリへ戻る</Link>
         </nav>
         {status === 'loading' && <p>接続した能力を確認しています…</p>}
@@ -90,6 +92,7 @@ export default function SkyConnectedRuntime() {
           <SkyDeviceAgentConnections key={owner} ownerUserId={owner} />
         )}
       </section>
+      <NoahMacHandoff initialAgent={initialAgent} />
     </WorkspaceShell>
   );
 }

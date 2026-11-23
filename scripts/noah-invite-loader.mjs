@@ -2,7 +2,7 @@ import { createNoahLocalRequest } from './noah-local-api.mjs';
 import { readNoahSourceBytes, NOAH_SOURCE_DOWNLOAD_LIMIT } from './noah-source-bytes.mjs';
 import { InstallError } from './noah-source-fetch.mjs';
 import { isNoahInviteAgentId } from '../lib/noah-invite-contract.mjs';
-import { parseTerminalRuntime } from '../lib/noah-terminal-contract.mjs';
+import { parseNoahRuntime } from '../lib/noah-runtime-contract.mjs';
 
 // Only invoked after the existing loopback Host/Origin/account checks.
 export function inviteSourceLoader(incoming, scope, id, getOwner, fetcher = fetch) {
@@ -15,7 +15,7 @@ export function inviteSourceLoader(incoming, scope, id, getOwner, fetcher = fetc
     if (!response.ok) throw new InstallError(data.error || '招待の実行許可を確認できません。', response.status);
     if (data.ownerScope !== scope || a?.inviteId !== inviteId || !a.executionAllowed || a.access !== 'source' || !a.source ||
       !Number.isSafeInteger(a.revision) || a.revision < 1 || !Number.isSafeInteger(a.expiresAt) || a.expiresAt <= Date.now()) throw new InstallError('招待の実行許可・期限を確認できません。', 403);
-    const runtime = parseTerminalRuntime(a.manifest?.runtime);
+    const runtime = parseNoahRuntime(a.manifest?.runtime);
     return { id, manifest: a.manifest, manifestSha256: a.manifestSha256, source: a.source, uploadState: 'ready',
       invite: { inviteId, uploadId: a.uploadId, manifestSha256: a.manifestSha256, sourceSha256: a.source.sha256, runtime, revision: a.revision, expiresAt: a.expiresAt } };
   };

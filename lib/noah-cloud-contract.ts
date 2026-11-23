@@ -3,12 +3,12 @@ export const NOAH_CLOUD_PROFILES = {
   hermes: {
     name: 'Hermes Agent', repository: 'https://github.com/NousResearch/hermes-agent', version: '0.19.0',
     package: 'hermes-agent', sha256: 'bd0bac012aee38a60894781f4597dc29ee7bedb3448540249921f10d3bef327f',
-    description: '文章・コード・ファイルの作成をNoahのクラウドで実行します。',
+    description: '公式Hermesで計画を作り、依頼した情報を整理して保存します。記憶はこの依頼の中だけで使います。シェル実行や外部サイトの操作には対応していません。',
   },
   boss: {
     name: 'boss-agent-cli', repository: 'https://github.com/can4hou6joeng4/boss-agent-cli', version: '3.4.151',
     package: 'boss-agent-cli', sha256: '7d4b8834ab195964167c4dd8b07df82e4cc83c7f801124307ff8f386bbc4bef4',
-    description: '入力した求人票から面接の準備と質問を作成します。求人検索・応募には求人サービスの本人認証が必要です。',
+    description: '入力した求人票から公式bossで面接の準備と質問5件を作成します。求人検索・応募には対応していません。',
   },
   time: {
     name: 'Time', repository: 'https://github.com/modelcontextprotocol/servers/tree/main/src/time', version: '2026.11.18',
@@ -36,7 +36,7 @@ export const NOAH_CLOUD_PROFILES = {
   },
 } as const;
 export type NoahCloudProfile = keyof typeof NOAH_CLOUD_PROFILES;
-export const NOAH_FREE_CLOUD_PROFILES: readonly NoahCloudProfile[] = ['memory', 'thinking', 'filesystem'];
+export const NOAH_FREE_CLOUD_PROFILES: readonly NoahCloudProfile[] = ['memory', 'thinking', 'filesystem', 'time', 'boss', 'hermes'];
 export function noahCloudSupported(mode?: string): readonly NoahCloudProfile[] {
   return mode === 'free' ? NOAH_FREE_CLOUD_PROFILES : Object.keys(NOAH_CLOUD_PROFILES) as NoahCloudProfile[];
 }

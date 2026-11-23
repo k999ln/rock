@@ -2,7 +2,7 @@ import { noahInviteAgentId } from './noah-invite-contract.mjs';
 import { noahModelDigest } from './noah-model-catalog.mjs';
 import type { WorkJob } from './workflow.ts';
 import { recipeFor, modelFor, LIMITS, validArtifactName } from './noah-execution-contract.mjs';
-import { parseTerminalRuntime } from './noah-terminal-contract.mjs';
+import { parseNoahRuntime } from './noah-runtime-contract.mjs';
 import { isReleasePackageKey, releaseAgentId } from './noah-release-contract.mjs';
 import { validOperationEvent, type NoahOperationEvent } from './noah-operation-events.ts';
 import { operationUuid, operationRunId } from './noah-operation-contract.mjs';
@@ -13,9 +13,9 @@ export type NoahExecution = {
   agentId: string; recipe: string; version: string; image: string; model: 'qwen2.5:1.5b' | 'qwen3:4b' | 'none' | 'codex-account'; prompt: string;
   modelSha256?: string;
   provider?: { name: 'openai-codex'; model: string; version: string; sha256: string; consent: 'codex-account/1'; metric: 'provider_turns' };
-  source?: { uploadId: string; manifestSha256: string; sourceSha256: string; runtime: ReturnType<typeof parseTerminalRuntime> };
-  release?: { packageKey: string; manifestSha256: string; sourceSha256: string; runtime: ReturnType<typeof parseTerminalRuntime>; timeoutSeconds: number };
-  invite?: { inviteId: string; uploadId: string; manifestSha256: string; sourceSha256: string; runtime: ReturnType<typeof parseTerminalRuntime>; revision: number; expiresAt: number };
+  source?: { uploadId: string; manifestSha256: string; sourceSha256: string; runtime: ReturnType<typeof parseNoahRuntime> };
+  release?: { packageKey: string; manifestSha256: string; sourceSha256: string; runtime: ReturnType<typeof parseNoahRuntime>; timeoutSeconds: number };
+  invite?: { inviteId: string; uploadId: string; manifestSha256: string; sourceSha256: string; runtime: ReturnType<typeof parseNoahRuntime>; revision: number; expiresAt: number };
   inputSha256: string; claimSha256: string; state: 'queued' | 'running' | 'returned' | 'failed' | 'cancelled' | 'unknown';
   chargeMinor: 0; verification: 'host_observed_unverified'; calls: number;
   startedAt?: number; completedAt?: number;
@@ -42,7 +42,7 @@ export async function createNoahWork(id: string, value: unknown): Promise<WorkJo
       terminal = Object.keys(s).length === 4 && Object.keys(s).every(k => ['uploadId', 'manifestSha256', 'sourceSha256', 'runtime'].includes(k)) &&
         /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(s.uploadId) && input.agentId === s.uploadId &&
         /^[a-f0-9]{64}$/.test(s.manifestSha256) && /^[a-f0-9]{64}$/.test(s.sourceSha256) &&
-        input.recipe === 'terminal' && input.model === parseTerminalRuntime(s.runtime).model && /^\d{1,6}\.\d{1,6}\.\d{1,6}(?:-[a-zA-Z0-9.-]{1,16})?$/.test(input.version || '');
+        input.recipe === 'terminal' && input.model === parseNoahRuntime(s.runtime).model && /^\d{1,6}\.\d{1,6}\.\d{1,6}(?:-[a-zA-Z0-9.-]{1,16})?$/.test(input.version || '');
     } catch { /* Invalid terminal declarations remain rejected below. */ }
   }
   if (input?.release && !input.source) {
@@ -51,7 +51,7 @@ export async function createNoahWork(id: string, value: unknown): Promise<WorkJo
       terminal = Object.keys(r).length === 5 && Object.keys(r).every(k => ['packageKey','manifestSha256','sourceSha256','runtime','timeoutSeconds'].includes(k)) &&
         isReleasePackageKey(r.packageKey) && input.agentId === releaseAgentId(r.manifestSha256) &&
         /^[a-f0-9]{64}$/.test(r.manifestSha256) && /^[a-f0-9]{64}$/.test(r.sourceSha256) &&
-        input.recipe === 'terminal' && input.version === r.packageKey.split('@')[1] && input.model === parseTerminalRuntime(r.runtime).model &&
+        input.recipe === 'terminal' && input.version === r.packageKey.split('@')[1] && input.model === parseNoahRuntime(r.runtime).model &&
         Number.isInteger(r.timeoutSeconds) && r.timeoutSeconds > 0 && r.timeoutSeconds <= 240;
     } catch { terminal = false; }
   }
@@ -61,7 +61,7 @@ export async function createNoahWork(id: string, value: unknown): Promise<WorkJo
       terminal = Object.keys(r).length === 7 && Object.keys(r).every(k => ['inviteId','uploadId','manifestSha256','sourceSha256','runtime','revision','expiresAt'].includes(k)) &&
         noahInviteAgentId(r.inviteId) !== null && input.agentId === noahInviteAgentId(r.inviteId) && noahInviteAgentId(r.uploadId) !== null &&
         /^[a-f0-9]{64}$/.test(r.manifestSha256) && /^[a-f0-9]{64}$/.test(r.sourceSha256) &&
-        input.recipe === 'terminal' && input.model === parseTerminalRuntime(r.runtime).model && /^\d{1,6}\.\d{1,6}\.\d{1,6}(?:-[a-zA-Z0-9.-]{1,16})?$/.test(input.version || '') &&
+        input.recipe === 'terminal' && input.model === parseNoahRuntime(r.runtime).model && /^\d{1,6}\.\d{1,6}\.\d{1,6}(?:-[a-zA-Z0-9.-]{1,16})?$/.test(input.version || '') &&
         Number.isSafeInteger(r.revision) && r.revision >= 1 && Number.isSafeInteger(r.expiresAt) && r.expiresAt > 0;
     } catch { terminal = false; }
   }
