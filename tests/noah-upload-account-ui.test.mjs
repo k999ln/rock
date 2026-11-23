@@ -18,7 +18,7 @@ function harness(fetcher, search = '?launch=1') {
     useCallback(fn, deps) { const i = cursor++, old = slots[i]; if (!old || deps.some((v, n) => !Object.is(v, old.deps[n]))) slots[i] = { deps, value: fn }; return slots[i].value; },
     useEffect(fn, deps) { const i = cursor++, old = slots[i]; if (!old || deps.some((v, n) => !Object.is(v, old.deps[n]))) { slots[i] = { deps }; effects.push(() => { old?.cleanup?.(); slots[i].cleanup = fn(); }); } },
   };
-  const jsx = (type, props) => ({ type, props });
+  const jsx = (type, props, key) => ({ type, props, key });
   runInNewContext(code, {
     exports, Error, AbortController, AbortSignal, URL, URLSearchParams, crypto, TextEncoder,
     window: { location: { search }, addEventListener() {}, removeEventListener() {} },
@@ -73,6 +73,26 @@ void test('signed-out registration offers usable sign-in and retry, then loads d
   assert.match(h.text(), /入力すると自動保存します/);
   assert.equal(h.calls.filter(c => c.url === '/api/noah/drafts').length, 1);
   assert.ok(h.calls.every(c => !c.options?.method || c.options.method === 'GET'));
+});
+
+void test('cover and guide retain distinct identities when the owner session opens', async t => {
+  const h = harness(async url => reply(200, url === '/api/noah/agents'
+    ? { ownerScope: 'owner-a' }
+    : { ownerScope: 'owner-a', drafts: [] }));
+  t.after(() => h.unmount());
+  function editorKeys() {
+    return ['cover-picker', 'guide-editor'].map(type => {
+      const editors = h.nodes().filter(node => node.type === type);
+      assert.equal(editors.length, 1);
+      return editors[0].key;
+    });
+  }
+  const before = editorKeys();
+  await h.flush();
+  const after = editorKeys();
+  assert.notEqual(before[0], before[1]);
+  assert.notEqual(after[0], after[1]);
+  assert.ok(after.every((key, index) => key !== before[index]));
 });
 
 void test('network failures, invalid replies and timeouts leave an enabled retry outside the disabled form', async t => {

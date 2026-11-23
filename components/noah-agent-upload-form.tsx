@@ -295,7 +295,7 @@ export default function NoahAgentUploadForm() {
       <label>何をしてくれるAgent？<textarea required rows={4} maxLength={2000} value={manifest.summary} onChange={e => change({ summary: e.target.value })} placeholder="できる仕事、必要な入力、受け取れる成果を書いてください。" /></label>
       <NoahCoverPicker key={scope} name={manifest.name} summary={manifest.summary} value={cover}
         onChange={value => { setCover(value); setId(''); }} />
-      <NoahGuideEditor key={scope} value={manifest.guideMarkdown ?? ''} onChange={value => {
+      <NoahGuideEditor key={`guide-${scope}`} value={manifest.guideMarkdown ?? ''} onChange={value => {
         setManifest(current => {
           const next = { ...current };
           if (value.trim()) next.guideMarkdown = value;
