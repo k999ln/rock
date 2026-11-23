@@ -1,0 +1,24 @@
+FROM ubuntu:24.04@sha256:9c7f200c07e3d4a03e7249d2c16bf66a51120fb876aa2242cf31451412543289 AS base
+FROM base AS release
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl
+RUN set -eu; case "$(dpkg --print-architecture)" in \
+      arm64) arch=aarch64; checksum=438990a703fbeb19775596c341c3701435e80adbfa1b2f64b82ff17567d5573b ;; \
+      amd64) arch=x86_64; checksum=ca77b6b75034eeb12e537dd8c0a4f2a3424119253f38b7e6bd79ba0d2fef1264 ;; \
+      *) exit 1 ;; esac; \
+    curl -fsSL --retry 2 "https://github.com/vercel-labs/agent-desktop/releases/download/v1.3.1/agent-desktop-v1.3.1-${arch}-unknown-linux-gnu.tar.gz" -o /tmp/release.tar.gz; \
+    echo "$checksum  /tmp/release.tar.gz" | sha256sum -c -; \
+    mkdir /verified && tar -xzf /tmp/release.tar.gz -C /verified && test -x /verified/agent-desktop
+
+FROM base
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    python3 python3-tk python3-gi gir1.2-gtk-3.0 xvfb xauth x11-utils xdotool scrot openbox \
+    dbus-daemon at-spi2-core libatk-bridge2.0-0t64 \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -g 10001 agent && useradd -u 10001 -g 10001 -m agent
+COPY --from=release /verified/agent-desktop /usr/local/bin/agent-desktop
+COPY noah_desktop.py /usr/lib/python3/dist-packages/noah_desktop.py
+COPY desktop_runner.py desktop_session.py /opt/noah/
+ENV HOME=/home/agent PYTHONDONTWRITEBYTECODE=1
+USER 10001:10001
+WORKDIR /workspace
+ENTRYPOINT ["/usr/bin/python3", "-I", "-u", "/opt/noah/desktop_runner.py"]

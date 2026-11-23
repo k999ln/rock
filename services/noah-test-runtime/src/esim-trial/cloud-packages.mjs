@@ -3,6 +3,7 @@
 const defaults = [
   {
     id: 'text-check',
+    version: '1',
     name: '文章の文字数・行数を確認',
     routes: [
       {
@@ -21,14 +22,33 @@ const defaults = [
     ],
   },
 ];
+const desktopPackage = {
+  id: 'desktop',
+  name: '専用画面で依頼する',
+  routes: [
+    {
+      id: 'noah',
+      kind: 'noah',
+      label: 'Noahクラウドの専用画面',
+      binding: 'AGENT_DESKTOP',
+    },
+  ],
+};
 export const routeId = (value) =>
   typeof value === 'string' && /^[a-z][a-z0-9-]{0,47}$/.test(value);
 const label = (value) =>
   typeof value === 'string' && value.trim() && value.length <= 100;
 export function cloudPackages(env) {
+  const desktopSha = env.NOAH_DESKTOP_PACKAGE_SHA256;
+  const desktopReady =
+    typeof env.AGENT_DESKTOP?.fetch === 'function' &&
+    typeof desktopSha === 'string' &&
+    /^[a-f0-9]{64}$/.test(desktopSha);
   const packages =
     env.NOAH_AGENT_ROUTES === undefined
-      ? defaults
+      ? desktopReady
+        ? [...defaults, { ...desktopPackage, version: desktopSha }]
+        : defaults
       : JSON.parse(env.NOAH_AGENT_ROUTES);
   const seen = new Set();
   if (!Array.isArray(packages) || packages.length > 32)
@@ -39,6 +59,7 @@ export function cloudPackages(env) {
       !routeId(pkg.id) ||
       seen.has(pkg.id) ||
       !label(pkg.name) ||
+      (pkg.version !== undefined && !label(pkg.version)) ||
       !Array.isArray(pkg.routes) ||
       pkg.routes.length > 16
     )
@@ -60,9 +81,14 @@ export function cloudPackages(env) {
       )
         throw Error('Invalid adapter');
       ids.add(route.id);
+      if (
+        route.binding === 'AGENT_DESKTOP' &&
+        (!desktopReady || pkg.version !== desktopSha)
+      )
+        return false;
       return typeof env[route.binding]?.fetch === 'function';
     });
-    return { id: pkg.id, name: pkg.name, routes };
+    return { id: pkg.id, name: pkg.name, version: pkg.version ?? null, routes };
   });
 }
 

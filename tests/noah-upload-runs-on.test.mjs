@@ -64,13 +64,13 @@ void test('コードを保存する Agent を選んでいる時だけ、Mac で�
   t.after(() => h.unmount()); await h.flush();
   const note = h.nodes().find(n => n.type === 'p' && n.props?.role === 'note');
   assert.ok(note, 'コードの時は、動く場所の注記がある');
-  assert.match(h.text(), /コードを保存したAgentは、MacのNoah（このMacの隔離環境）で動きます。/);
-  assert.match(h.text(), /スマホやブラウザだけでは動かせません。/);
+  assert.match(h.text(), /コードを保存したAgentは、自分のMacのNoahで動きます（Noahの専用環境で動かせるのは、運営が確認したパッケージだけです）。/);
+  assert.match(h.text(), /スマホやブラウザだけでは、まだ動かせません。/);
   assert.match(h.text(), /「MCPサーバーに接続する」か「専用のWeb画面を開く」/);
   const select = h.nodes().find(n => n.type === 'select' && [n.props.children].flat().some(o => o?.props?.value === 'mcp_http'));
   assert.ok(select);
   select.props.onChange({ target: { value: 'mcp_http' } });
   await h.flush();
   assert.equal(h.nodes().some(n => n.type === 'p' && n.props?.role === 'note'), false, '接続先の Agent には出さない');
-  assert.doesNotMatch(h.text(), /スマホやブラウザだけでは動かせません/);
+  assert.doesNotMatch(h.text(), /スマホやブラウザだけでは、まだ動かせません/);
 });

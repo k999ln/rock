@@ -1,17 +1,21 @@
 .shell {
+  --noah-brand: #f47b20;
+  --noah-ink: #913c04;
+  --noah-action: #a14206;
+  --noah-soft: #fff1e2;
   --sky-text: #202024;
   --sky-muted: #71717a;
   --sky-line: #e8e5ee;
   --sky-panel: #fff;
-  --sky-accent: #f3eefb;
+  --sky-accent: #ffe6cc;
   --os-bg: #fff;
   --os-text: #202024;
   --os-muted: #71717a;
   --os-line: #e8e5ee;
   --os-panel: #fff;
-  --os-raised: #f7f5fa;
-  --noah-raised: #f7f5fa;
-  --os-accent: #7628df;
+  --os-raised: #fff8f1;
+  --noah-raised: #fff8f1;
+  --os-accent: #a14206;
   --os-accent-ink: #fff;
   color: #202024;
   background: #fff;
@@ -34,7 +38,7 @@
   font: inherit;
 }
 .shell :is(button, a, input, textarea, select, summary):focus-visible {
-  outline: 3px solid #a180df;
+  outline: 3px solid #a94b0a;
   outline-offset: 3px;
 }
 .shell :is(button, a, summary) {
@@ -78,7 +82,7 @@
   color: inherit;
 }
 .gridBrand:hover, .gridMenuButton:hover, .gridAccount:hover {
-  background: #f7f5fa;
+  background: #fff8f1;
 }
 .gridBrand strong { font-size: 23px; letter-spacing: -1px; }
 .gridMenuButton { cursor: pointer; }
@@ -94,7 +98,7 @@
   border-radius: 24px;
   background: #efeff1;
 }
-.gridSearch:focus-within { border-color: #a180df; background: #fff; }
+.gridSearch:focus-within { border-color: #a94b0a; background: #fff; }
 .gridSearch svg { flex-shrink: 0; color: #71717a; }
 .gridSearch input {
   width: 100%;
@@ -124,7 +128,7 @@
   padding: 6px 10px;
   border-radius: 8px;
 }
-.gridMenuPanel a:hover { background: #f7f5fa; }
+.gridMenuPanel a:hover { background: #fff8f1; }
 .gridBody { padding: 0 16px 48px; min-width: 0; }
 @media (max-width: 520px) {
   .gridTopbar { gap: 5px; min-height: 58px; padding: 6px 8px; }
@@ -183,11 +187,11 @@
   flex-shrink: 0;
 }
 .rail nav a:hover {
-  background: #f7f5fa;
+  background: #fff8f1;
 }
 .rail nav a[aria-current] {
-  background: #f3eafa;
-  color: #7628df;
+  background: #fff1e2;
+  color: #a14206;
   font-weight: 700;
 }
 .secondary {
@@ -202,7 +206,7 @@
   margin-top: 24px;
   padding: 12px;
   border-radius: 12px;
-  background: #7628df;
+  background: #a14206;
   color: white !important;
 }
 .account {
@@ -307,7 +311,7 @@
     min-height: 44px;
     padding: 5px 10px;
     border-radius: 9px;
-    background: #7628df;
+    background: #a14206;
     color: white !important;
     font-size: 13px;
   }
@@ -352,7 +356,7 @@
     overflow-wrap: anywhere;
   }
   .bottomNav a[aria-current] {
-    color: #7628df;
+    color: #a14206;
     font-weight: 700;
   }
   .content :global([data-noah-embedded] .rock-main) {
@@ -362,3 +366,18 @@
 :global([dir='rtl']) .back svg {
   transform: scaleX(-1);
 }
+
+.gridTopbar { border-bottom:1px solid #ededf2; max-width:1220px; margin-inline:auto; padding-inline:clamp(16px,3vw,42px); }
+.gridBody { max-width:1220px; margin-inline:auto; padding:28px clamp(16px,3vw,42px) 64px; }
+.gridSearchSlot { max-width:570px; margin-inline:auto 0; }
+.gridSearch { min-height:42px; border-radius:13px; background:#f2f2f6; }
+@media(max-width:600px) {
+  .gridBody { padding:16px 16px calc(80px + env(safe-area-inset-bottom)); }
+  .gridTopbar { padding-inline:10px; }
+  .gridBrand strong { display:inline; font-size:20px; }
+  .gridBrand { gap:2px; }
+  .gridBrand img { width:30px; height:30px; }
+}
+@media(max-width:355px) { .gridBrand strong { display:none; } }
+
+.shell[data-noah-surface="public"] .bottomNav { grid-template-columns:repeat(2,minmax(0,1fr)); }

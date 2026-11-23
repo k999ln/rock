@@ -10,6 +10,8 @@ import * as botNotice from '../lib/noah-bot-notice.ts';
 import * as formLib from '../lib/noah-form.ts';
 import * as view from '../lib/noah-ready-view.ts';
 import * as resultData from '../lib/noah-result-data-contract.ts';
+import * as myRoutes from '../lib/noah-my-routes.ts';
+import { noahPageTab } from '../lib/noah-page-routes.ts';
 import { mcpServer, tool } from './fixtures/noah/mcp-server.mjs';
 import { world, familyId, hostOf, uuid } from './fixtures/noah/connect-world.mjs';
 import * as profileContract from '../lib/noah-profile-contract.ts';
@@ -312,6 +314,32 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りました情報を検索提供者の説明')), [true]);
   assert.deepEqual(back(data), [detail(1)]);
 
+  await t.test('saved results in My Agent and the original saved entry show the same private remote Work', async () => {
+    const unused = { default: () => null };
+    const modules = {
+      ...MODULES, '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': { noahPageTab },
+      './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused,
+      './noah-result-data': unused,
+    };
+    const before = calls(one).length;
+    for (const [path, legacy] of [['/noah/my?view=saved&tab=results', undefined], ['/noah/saved?tab=results', 'saved']]) {
+      const params = Object.fromEntries(new URL(path, 'https://avoado.si').searchParams);
+      const ui = screen({ modules, fetch: w.browser({ user: 'owner-a' }, background), now: w.f.time() });
+      const saved = ui.mount('components/noah-my.tsx', { params, legacy });
+      await saved.flush();
+      const cards = saved.find('li').filter((row) => row.props.className === 'resultCard');
+      assert.equal(cards.length, 1, path);
+      assert.match(saved.text(cards[0]), /found cobalt/, path);
+      const link = saved.nodes(cards[0]).find((node) => node.type === 'a');
+      assert.equal(link.props.href, `/noah/tasks/${uuid(10)}`, path);
+      assert.doesNotMatch(saved.text(), /No data yet|someone else/, path);
+      assert.ok(ui.calls.some((req) => req.url === '/api/noah/ask'), path);
+      assert.ok(ui.calls.some((req) => req.url === `/api/noah/ask/${uuid(10)}`), path);
+      assert.ok(ui.calls.every((req) => req.method === 'GET'), path);
+    }
+    assert.equal(calls(one).length, before);
+  });
+
   // 成果が出た依頼が無い人の「成果データ」には、何も出さない（できなかった依頼は、「実行中」の側にだけ出る）。
   const failedOnly = open('owner-d', { ownerScope: null, refresh: 0, only: 'succeeded', heading: '接続したAgentの成果' }).page;
   await failedOnly.flush();
@@ -331,23 +359,9 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.deepEqual([rowsOf(own).length, back(own)], [2, []]);
 });
 
-void test('saved results show remote work directly and retained shared wrappers preserve their inserted work list', async () => {
-  // 頁（app/noah/activity・app/noah/data）が渡す物。部品は、こちらの一覧を読み込まない（受け取った物を置くだけ）。
+void test('retained shared wrappers preserve their inserted work list', async () => {
   const marker = (name) => ({ type: 'aside', props: { id: name, children: name }, key: null });
   const document = { hidden: false, addEventListener() {}, removeEventListener() {} };
-  const pageOf = async (file, modules, props = {}) => {
-    const ui = screen({ fetch: async () => ({ status: 401, body: { error: 'サインインしてください。' } }), modules });
-    const page = ui.mount(file, props);
-    await page.flush();
-    return page;
-  };
-  const stubs = {
-    '@/components/noah-launch': { default: function NoahLaunch(props) { return { type: 'main', props: { 'data-screen': 'activity', children: props.phoneWork }, key: null }; } },
-    '@/components/noah-result-data': { default: function NoahResultData(props) { return { type: 'main', props: { 'data-screen': 'data', children: props.phoneResults }, key: null }; } },
-    './noah-work-list': { default: function NoahWorkList(props) { return { type: 'section', props: { 'data-list': JSON.stringify(props), children: [] }, key: null }; } },
-  };
-  const given = (page) => page.nodes().filter((node) => node.type === 'section').map((node) => JSON.parse(node.props['data-list']));
-  assert.deepEqual(given(await pageOf('components/noah-work-page.tsx', stubs, {results:true,embedded:true})), [{ ownerScope: null, refresh: 0, only: 'succeeded', showEmpty: true }]);
 
   // 部品の側: 受け取った物を、main の中、自分の一覧の上に置く。
   const placed = async (file, prop, modules) => {

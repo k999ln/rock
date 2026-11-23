@@ -164,3 +164,49 @@ void test('publish: a 400 for a source production does not know yet is "not read
   assert.deepEqual(results, [{ source: 'producthunt', status: 'not_ready' }, { source: 'github', items: 0 }, { source: 'noah-read', status: 'not_ready' }]);
   await assert.rejects(publishCollection({ snapshots: [snapshot('hackernews')], origin: 'https://avoado.si', key: KEY, fetcher, now: () => NOW }), /collector_publish_http_400/);
 });
+
+// 読んだ紹介のファイル（data/noah-scout/leads.json）。Codex・Claude が読んで理解した紹介を Git に書き、クラウドの収集機が載せる（運営の Mac に掲載の鍵を置かない）。
+void test('scout file: understanding-only leads become Noah-read cards; posts keep their own deadlines; English, stale or broken leads are dropped', async () => {
+  const { scoutFileItems } = await import('../scripts/noah-collector-social.mjs');
+  const understanding = { name: 'Switch', maker: 'SandboxAQ', page: 'https://github.com/sandbox-quantum/switch', run: 'mac', summary: '複数の AI と人が同じ部屋で働けるようにする無料公開のソフト。' };
+  const lead = (fields) => ({ project: 'https://github.com/sandbox-quantum/switch', foundAt: new Date(NOW - DAY).toISOString(), understanding, ...fields });
+  const only = scoutFileItems({ schema: 'noah-scout-leads/1', leads: [lead({})] }, NOW);
+  assert.deepEqual(only.items.map((item) => item.source), ['noah-read']); assert.deepEqual(only.rejected, {});
+  assert.equal(only.items[0].createdAt, NOW - DAY, 'dated when Noah found it');
+  // 投稿が期限内なら投稿のカードも出る。期限切れの投稿は落ちるが、理解は残る。
+  const fresh = scoutFileItems({ schema: 'noah-scout-leads/1', leads: [lead({ source: 'x', post: 'https://x.com/Claude_Digest/status/1', postedAt: new Date(NOW - HOUR).toISOString(), metrics: { likes: 9 } })] }, NOW);
+  assert.deepEqual(fresh.items.map((item) => item.source).sort((a, b) => a.localeCompare(b)), ['noah-read', 'x']);
+  const stalePost = scoutFileItems({ schema: 'noah-scout-leads/1', leads: [lead({ source: 'x', post: 'https://x.com/Claude_Digest/status/1', postedAt: new Date(NOW - 2 * DAY).toISOString() })] }, NOW);
+  assert.deepEqual(stalePost.items.map((item) => item.source), ['noah-read']); assert.deepEqual(stalePost.rejected, {});
+  const bad = scoutFileItems({ schema: 'noah-scout-leads/1', leads: [
+    lead({ understanding: { ...understanding, summary: 'English only' } }),
+    lead({ foundAt: new Date(NOW - 31 * DAY).toISOString() }),
+    lead({ project: 'https://x.com/someone' }),
+    { foundAt: new Date(NOW).toISOString(), project: 'https://github.com/a/b' },
+  ] }, NOW);
+  assert.equal(bad.items.length, 0); assert.deepEqual(bad.rejected, { understanding: 1, too_old: 1, project: 1, shape: 1 });
+  assert.deepEqual(scoutFileItems({ schema: 'other', leads: [] }, NOW).rejected, { file: 1 });
+});
+
+void test('scout file: only the sources the file holds are published, so an empty file never blanks the X or Noah-read lanes', () => {
+  const read = { id: 'noah-read:https://github.com/a/b', source: 'noah-read', name: 'B', summary: '日本語の理解', author: 'a', url: 'https://github.com/a/b', sourceUrl: 'https://github.com/a/b', observedAt: NOW, expiresAt: NOW + DAY, createdAt: NOW - DAY };
+  const base = { exported: { families: [], candidates: [], checks: [] }, discoveries: [], x: { status: 'needs_credentials', items: [] }, now: NOW };
+  assert.deepEqual(collectionSnapshots(base).map((s) => s.source).filter((s) => ['noah-read', 'x', 'reddit'].includes(s)), []);
+  const withRead = collectionSnapshots({ ...base, scout: [read] });
+  assert.deepEqual(withRead.find((s) => s.source === 'noah-read').items.map((i) => i.id), [read.id]);
+  assert.equal(withRead.some((s) => s.source === 'reddit'), false);
+});
+
+void test('scout file in the repository: every lead is well formed (only age may retire one)', async () => {
+  const { readFileSync, existsSync } = await import('node:fs');
+  const { scoutFileItems } = await import('../scripts/noah-collector-social.mjs');
+  const { NOAH_SCOUT_LEADS_PATH } = await import('../scripts/noah-agent-collector.mjs');
+  assert.ok(existsSync(NOAH_SCOUT_LEADS_PATH));
+  const input = JSON.parse(readFileSync(NOAH_SCOUT_LEADS_PATH, 'utf8'));
+  for (const lead of input.leads) {
+    const at = Date.parse(lead.foundAt) + HOUR;
+    const result = scoutFileItems({ ...input, leads: [lead] }, at);
+    assert.deepEqual(result.rejected, {}, lead.project);
+    assert.ok(result.items.some((item) => item.source === 'noah-read'), lead.project);
+  }
+});

@@ -43,7 +43,7 @@
 .field input[type='checkbox'] {
   width: 24px;
   height: 24px;
-  accent-color: #7650b8;
+  accent-color: #a14206;
 }
 .panel summary {
   min-height: 44px;
@@ -53,7 +53,7 @@
 .panel .primary {
   width: 100%;
   min-height: 48px;
-  background: #7650b8;
+  background: #a14206;
   color: white;
   font: inherit;
   font-weight: 600;
@@ -80,10 +80,10 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: #64517e;
+  color: #913c04;
 }
 .panel :focus-visible {
-  outline: 3px solid #ad8ae5;
+  outline: 3px solid #a94b0a;
   outline-offset: 3px;
 }
 @media (max-width: 520px) {

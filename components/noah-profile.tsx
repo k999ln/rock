@@ -23,6 +23,7 @@ export default function NoahProfile(){
     {state.error&&<div role="alert" className={styles.error}>{state.error}<button type="button" onClick={()=>void state.reload()}>{t("読み直す")}</button></div>}
     <NoahContractLinks/>
     <NoahLanguageSetting/><NoahHapticsSetting/>
+    <p><Link href="/noah/devices">{t('端末・実行先')}</Link></p>
     {state.profile?.browserOwned&&<details className={styles.receipts}><summary>{t('このブラウザへの保存について')}</summary><p>{t('登録情報と成果は、このブラウザで再び開けます。共有端末では同じ保存先を開けるため、個人の端末を使ってください。')}</p><p>{t('ブラウザのデータを消した場合、別の端末を使う場合、180日以上利用しない場合は、保存先を引き継げません。')}</p></details>}
   </main>;
 }
