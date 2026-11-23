@@ -50,12 +50,12 @@ export class NoahFreeCloudJob extends NoahCloudJob {
       if (input.messages[0].role === 'system') input.messages[0].content += '\n' + instruction;
       else input.messages.unshift({ role: 'system', content: instruction });
     }
-    if (new TextEncoder().encode(JSON.stringify(input)).length > limits.modelInputBytes) throw Error('無料枠のモデル入力上限に達しました。依頼を短くしてください。');
     let model, deadline;
     await this.ctx.blockConcurrencyWhile(async () => {
       const latest = await this.live();
       if (latest.calls >= limits.modelCalls) throw Error('無料枠のモデル呼出上限に達しました。');
       if (latest.profile === 'hermes' && latest.calls === 0 && input.tools?.length) input.tool_choice = 'required';
+      if (new TextEncoder().encode(JSON.stringify(input)).length > limits.modelInputBytes) throw Error('無料枠のモデル入力上限に達しました。依頼を短くしてください。');
       deadline = latest.deadlineAt;
       await this.ctx.storage.put('job', { ...latest, calls: latest.calls + 1 });
       model = this.env.AI.run(NOAH_CLOUD_MODEL, input);

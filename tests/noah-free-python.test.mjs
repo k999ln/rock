@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildFree, officialPackaging } from '../services/noah-cloud-agents/build-free.mjs';
-import { NOAH_CLOUD_PROFILES } from '../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, noahCloudModelInput } from '../lib/noah-cloud-contract.ts';
 
 const bundle = await buildFree({write:false,entryPoints:undefined,stdin:{contents:"export {NoahFreeCloudJob} from './free-worker.mjs'; export {validatePythonResult,pythonJob} from './free-python.mjs';",resolveDir:new URL('../services/noah-cloud-agents/',import.meta.url).pathname},plugins:[officialPackaging,{name:'rpc-unit-host',setup(b){b.onResolve({filter:/^cloudflare:workers$/},()=>({path:'rpc',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export class DurableObject {constructor(ctx,env){this.ctx=ctx;this.env=env}}; export class RpcTarget {}'}));}}]});
 const {NoahFreeCloudJob,validatePythonResult,pythonJob}=await import(`data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].text).toString('base64')}`);
@@ -36,6 +36,13 @@ void test('Hermes keeps its official tool schema and fixed model budget with low
   const inputs=[],tools=[{type:'function',function:{name:'todo',parameters:{type:'object'}}}];
   const w=world({profile:'hermes',model:async(_,value)=>{inputs.push(value);return {choices:[]};},execute:async(_,bridge)=>{for(let n=0;n<2;n++)await bridge.complete(JSON.stringify({messages:[{role:'user',content:'Plan'}],tools}));return JSON.stringify({...valid(),operations:[{...valid().operations[0],name:'todo'}]});}});
   await w.job.execute();for(const input of inputs){assert.equal(input.reasoning_effort,'low');assert.equal(input.response_format,undefined);assert.equal(input.max_tokens,1024);assert.deepEqual(input.tools,tools);}assert.equal(w.calls(),2);assert.equal(inputs[0].tool_choice,'required');assert.equal(inputs[1].tool_choice,undefined);
+});
+void test('Hermes input admission counts the forced tool selection before spending a model call',async()=>{
+  const payload={messages:[{role:'user',content:'x'}],tools:[{type:'function',function:{name:'todo',parameters:{type:'object'}}}]};
+  const original={...noahCloudModelInput(payload),max_tokens:1024,reasoning_effort:'low'};
+  payload.messages[0].content='x'.repeat(32760-Buffer.byteLength(JSON.stringify(original))+1);
+  const w=world({profile:'hermes',execute:async(_,bridge)=>{await bridge.complete(JSON.stringify(payload));throw Error('should not reach');}});
+  await w.job.execute();assert.equal(w.calls(),0);assert.equal(w.data.get('job').calls,0);assert.equal(w.data.get('job').state,'failed');assert.match(w.data.get('job').error,/モデル入力上限/);
 });
 void test('stop during Python model RPC wins over late output without blocking the admission gate',async()=>{
   let release;const held=new Promise(r=>{release=r;});
