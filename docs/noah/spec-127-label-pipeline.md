@@ -105,5 +105,7 @@ The draft table's primary key includes `manifest_sha256`; a later fixed generati
 
 系列単位の運用は `node scripts/noah-label-agent-tools.mjs run <run.json> <state-dir> --codex` を使う。Luna の低推論で提案し、別の Sol の高推論で 3 観点を点検する。採用には 2 観点以上と既存の根拠検査を要する。実行中に止まった時は同じ状態フォルダを使い、同じ道具定義で通過した系列の結果を再利用する。`readyFamilies` は全道具が通った系列数、`labeledFamilies` は 1 個以上通った系列数、`verifierRejectedFamilies` は別の確かめ役が 2 観点以上で否とした札を含む系列数。
 
+系列に混じる根拠不足は、モデルの省略と別に記録する。札付け役は元の定義から拾った候補と、URL 等を除いた定義を見る。確認役は支持候補の一覧なしで、提案された札と定義を照合する。未使用のスキーマ定義、外部参照、代替分岐の一方、実例の値から素材を作らない。運用改訂後は、未完了の系列を新しい工程で再試行し、全道具が通過済みの系列は同じ定義版の記録を再利用する。
+
 採取と並行する時は `watch <intake.json> <capture-dir> <state-dir> --acquisition-state <rounds.json> --codex` を使う。採取側は全域の取り直しが終わるごとに `{"schema":"noah-label-acquisition/1","completedRounds":1}` の回数を更新する。新しく全道具が通った系列・道具版が 2 回続けて増えなければ停止する。待機中やモデルを使えない時は、成果のない一周として数えない。
 5. 実データの公開前に、適格全集合に対する札付きの系列数と割合を出し、無作為の 200 系列を運営が目視で点検する。札付きの系列だけを母集団にしない。

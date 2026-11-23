@@ -51,6 +51,7 @@ import {
   labelNoahFamily,
   NOAH_LABEL_FAMILY_JOB_SCHEMA,
   NOAH_LABEL_OPERATOR_LIMITS,
+  NOAH_LABEL_OPERATOR_REVISION,
 } from '../lib/noah-label-operator.ts';
 import { readOllamaModelInventory } from '../lib/ollama-model-inventory.ts';
 import { generateText } from '../lib/llm-providers.ts';
@@ -185,7 +186,7 @@ function existingReceipt(stateDirectory, family, manifestSha256, retryRejected) 
   for (const file of files.reverse()) {
     const value = readJsonIfPresent(join(directory, file));
     if (!value || value.schema !== 'noah-label-family-receipt/1' || value.generation?.familyId !== family.familyId || value.generation?.candidateId !== family.candidateId || value.generation?.toolsSha256 !== family.toolsSha256 || value.generation?.manifestSha256 !== manifestSha256) continue;
-    if (value.status === 'ready' || (!retryRejected && value.status !== 'blocked')) return value;
+    if (value.status === 'ready' || (!retryRejected && value.status !== 'blocked' && value.generation.operatorRevision === NOAH_LABEL_OPERATOR_REVISION)) return value;
   }
   return null;
 }
