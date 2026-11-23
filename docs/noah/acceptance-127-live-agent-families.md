@@ -38,7 +38,7 @@ AG0495 Sobit AI Research Assistantは提供元のAuthenticationErrorを検知し
 
 PR #28の全体npm run verify、提供元runtime・availability・正規URL照合・UI・DB migration検証が成功。最終head `2c9a3598e43b2b1a3cb3bbc171bd7bef4380d841`のGitHub verify、CodeQL、secrets、regressions/web-securityがすべて成功後に配備した。
 
-追加保留の変更は同じtaskの追補PRで検証・配備する。以後の系列追加は、公開ソースの仕事入口・本人分離・必要権限を確認し、実行→保存→再読込→失敗/停止を検証してから利用可能へ進める。615件の自動一次選別の個別確認、未対応API/CLI用の隔離実行器、必要な提供元認証の接続は未完了。
+追加保留の変更は[追補PR #33](https://github.com/iceiceice999/rock/pull/33)で検証・配備する。追補の全体verify（単体5210成功、既存5skipを含む）と重点28件は成功。最終の統合SHA・配備版・本番再確認はPR本文へ記録する。以後の系列追加は、公開ソースの仕事入口・本人分離・必要権限を確認し、実行→保存→再読込→失敗/停止を検証してから利用可能へ進める。615件の自動一次選別の個別確認、未対応API/CLI用の隔離実行器、必要な提供元認証の接続は未完了。
 
 ### 追加候補10件の確認
 
