@@ -24,7 +24,7 @@ export const NOAH_EXPLANATION_FIXTURES = {
   key: { name: '鍵付きの CSV 検査', summary: '認証が必要なツールで、整えた CSV を検査します。', tools: [check], signedIn: true, secrets: ['API_KEY'] },
 };
 
-export async function renderNoahExplanationFixture(sample, { locale = 'ja', noLabels = false } = {}) {
+export async function renderNoahExplanationFixture(sample, { locale = 'ja', noLabels = false, explanation } = {}) {
   const { name, summary, tools, signedIn, secrets } = NOAH_EXPLANATION_FIXTURES[sample];
   const req = { surface: 'none', places: ['provider'], services: [], secrets, model: { use: 'none' } };
   const state = noahLaunchPlanState({ signedIn, connectSha256: 'a'.repeat(64), level: 1, consentedSha256: null });
@@ -33,7 +33,7 @@ export async function renderNoahExplanationFixture(sample, { locale = 'ja', noLa
   const detail = {
     id, name, summary, provider: 'UI fixture', host: 'agent.example.test', tools: tools.length, listed: true,
     connect: { badge: plan.badge, price: { model: 'free' } }, ownerScope: signedIn ? 'test-owner' : null, connection: null,
-    ...(noLabels ? {} : { explanation: noahAgentExplanation(tools, plan.steps) }),
+    ...(noLabels ? {} : { explanation: explanation ?? noahAgentExplanation(tools, plan.steps) }),
   };
 
   const omitted = new Set([

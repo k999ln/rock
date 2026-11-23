@@ -81,6 +81,22 @@ async function shelved(w) {
 /** 巡回の握手を 1 回（同じ接続先へは 1 時間に 1 回なので、時計を進めてから）。 */
 const patrolAfter = async (w, ms) => { w.f.advance(ms); return w.patrol(); };
 
+void test('a published shelf explanation returns stages without material fields when labels are disabled', async (t) => {
+  const { w } = await ran(t);
+  await shelved(w);
+  const handler = createNoahShelfApi({ db: w.f.db, now: w.f.time, reviewers: [],
+    authenticate: async () => { throw Error('UNAUTHORIZED'); }, flags: parseNoahFlags(SHELF_OPEN),
+    shelfFlags: parseNoahShelfFlags(SHELF_OPEN), explainPublic: true, explainLabels: false });
+  const response = await handler(new Request(`${ORIGIN}/api/noah/shelf?id=pkg:player-lookup`));
+  assert.equal(response.status, 200);
+  const { explanation } = await response.json();
+  assert.equal(explanation.showMaterials, false);
+  assert.deepEqual(explanation.consumes, []);
+  assert.deepEqual(explanation.produces, []);
+  assert.ok(explanation.steps.length > 0);
+  assert.ok(explanation.steps.every((step) => !step.flow));
+});
+
 void test('the table: the migration is the contract, and both migration folders carry the same file', () => {
   const contract = readFileSync(new URL('../docs/contracts/noah-shelf-v1.sql', import.meta.url), 'utf8');
   const migration = readFileSync(new URL('../drizzle/0050_noah_shelf.sql', import.meta.url), 'utf8');
