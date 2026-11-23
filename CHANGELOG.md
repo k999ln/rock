@@ -1,5 +1,5 @@
 ## 2026-11-24
-- Noahストアの作者向け入口を「Agentエンジニアリング」に統合。Eveと相談しながら作成・接続・試行・掲載申請へ進める（task 129）。
+- Noahストアの作者向け入口を「Agentエンジニアリング」に統合。Eveと相談しながら作成・接続・試行・掲載申請へ進める（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。
 - Noahの「法人のsi導入準備」の詳細に、作業時間を準備票にまとめる15秒の予告編を追加。共通ナビゲーションの「シアター」タブを撤去（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
 - Noahの「シアター」でAgentごとの短い予告編を上映し、作者の動画と保存した仕事への入口を追加（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
 - Noah の「注目のAgent」の「すべて見る」（スマホ幅で 73×40px）を 44px にした。公開の後の本番で、`/noah` の下の 6 画面のうち小さい押す所はこれだけだった（Opus / Noelle。task 129 の D7。[PR #54](https://github.com/iceiceice999/rock/pull/54)）。
