@@ -2,6 +2,7 @@
 - Noah の 300 人の試行の利益の試算を docs に置いた（Opus / Noelle。Sheets「Noah 300人の利益試算」の revision 14 の写し。式を組み直して表の値 504 個と一致を確かめた）: 今の実例の売上（月 39,500 円）では 1 人あたりの本人の分は月 14 円で、600 円の天引きは始まらず、12 か月の会社の利益は −51,984 円。1 人 600 円には月 約 44 万円の売上が要る（[PR #55](https://github.com/iceiceice999/rock/pull/55)）。
 - Noah の「注目のAgent」の「すべて見る」（スマホ幅で 73×40px）を 44px にした。公開の後の本番で、`/noah` の下の 6 画面のうち小さい押す所はこれだけだった（Opus / Noelle。task 129 の D7。[PR #54](https://github.com/iceiceice999/rock/pull/54)）。
 - エージェントエンジニアリングを定義し、Eve（eve.si）で組み合わせを作る・試す・入金で採点する・作り直す設計を [services/eve-si.md](docs/services/eve-si.md) に置いた。本人の決定 4 つを 07 に記録し、06 の Eve の行と 04 に反映（Opus / Noelle。本人「それ設計して」）。文書だけで、コードは未着手。
+- Eve（eve.si）の設計に、需要の台帳から逆算してお金になる組み合わせを見つける仕組み（型への当てはめと発見、見込みの利益での並び）、Eve と人の 2 通りの作り方、2 つのお金の道を足し、つなぐ役を Noa から Eve にまとめた（Opus / Noelle。本人の回答 4 つ）。services/eve-si.md・07・06・04・00・AGENTS.md に反映。コード識別子と API は変えない。 [PR #49](https://github.com/iceiceice999/rock/pull/49)
 - エージェントエンジニアリングを定義し、Eve（eve.si）で組み合わせを作る・試す・入金で採点する・作り直す設計を [services/eve-si.md](docs/services/eve-si.md) に置いた。本人の決定 4 つを 07 に記録し、06 の Eve の行と 04 に反映（Opus / Noelle。本人「それ設計して」）。文書だけで、コードは未着手。 [PR #49](https://github.com/iceiceice999/rock/pull/49)
 - Noah の 300 人の試行のお金の決めを記録した（Opus / Noelle。本人回答 2026-11-24）: 試行の間（300 人が集まるまで）は無料で、本人の分（定期便）も配らない。300 人が集まった次の月から、定期便と、有料（600 円）の本人の分からの差し引きを始める。本人の分は余剰の 75%、Agent を作った人の分は売上の 20%（[PR #51](https://github.com/iceiceice999/rock/pull/51)）。
 - マイAgentの成果詳細に仕事別の使用量・料金を追加。専用クラウドはCPUと予約・確定額、外部提供元の未報告分は未確定と表示（task 94、[PR #46](https://github.com/iceiceice999/rock/pull/46)）。
