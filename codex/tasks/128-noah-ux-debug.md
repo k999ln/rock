@@ -55,7 +55,7 @@
 
 ### D7 押す所を 44px 以上に（全部の画面）
 
-- **2026-11-23 Claude が主な 9 画面を済ませた**（枝 `claude/ice2/noah-taps`）: 手元の本番と同じ build で、`/noah`・探す・保存・マイAgent・実行中・登録情報・追加・利用状況・登録サポートが「small 0」。残り: PR #37（Agent Store）のカードの評価の札（30px）と「その他の操作」（38px）、`productPill`（40px）。ほかの画面。
+- **2026-11-23 Claude が主な 9 画面を済ませた**（枝 `claude/ice2/noah-taps`）: 手元の本番と同じ build で、`/noah`・探す・保存・マイAgent・実行中・登録情報・追加・利用状況・登録サポートが「small 0」。PR #37（Agent Store）の行の評価の札（30px）・「その他の操作」（38px）・`productPill`（40px）も 44px にした（枝 `claude/ice2/noah-store-taps`。本番の行に同じ規則を足して 44px になる事を確かめた）。残り: ほかの画面。
 
 - わかっている事: 頭の部分と登録情報の画面は直した。残り: 「保存したもの → Agent」の「下書きを再開・新規登録」（25px）、利用状況の「Agentを確認する →」（19px）、チェックボックス、ほかの画面。
 - やる事: `scripts/noah-public-walk.mjs` を `/noah` の下の全部の画面で動かし、出た物を直す。

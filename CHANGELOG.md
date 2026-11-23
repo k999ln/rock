@@ -1,4 +1,5 @@
 ## 2026-11-23
+- Noah Agent Store の行の評価の札（30px）と「その他の操作」（38px）、詳細の「利用条件を見る」（40px）を、スマホの幅と触れる画面で 44px にした（Opus / Noelle。task 128 の D7。[PR #STORETAPS](https://github.com/iceiceice999/rock/pull/STORETAPS)）。
 - Noah の日本語の検索で、よく頼まれる仕事の語 70 個のうち 0 件だった 15 個（プレゼン・予約・価格・SNS・タスク・メモ・電話など）を英語の語幹に広げ、全部 1 件以上にした（Opus / Noelle。task 128 の D11。`lib/noah-search-terms.ts`。[PR #SEARCHWORDS](https://github.com/iceiceice999/rock/pull/SEARCHWORDS)）。
 - Noah の主な画面に残っていた小さい押す所（「下書きを再開・新規登録」「下書きの保存量」「Agentを確認する →」「Agentを探す」「タイムラインへ戻る」）を 44px 以上にした（Opus / Noelle。task 128 の D7。[PR #TAPS](https://github.com/iceiceice999/rock/pull/TAPS)）。
 - Noah のブラウザだけの本人を、全員まとめた 1 日の上限で抑えた（Opus / Noelle。抜け道 S1・task 128 の D1）: 新しい接続・依頼・Agent の登録・下書きのファイル・コードの取り込みが上限を越えたら 429。サインインした本人は数えない。新しい表は作らず、既存のアカウントの回数表で数える（`lib/noah-browser-quota.ts`。[PR #QUOTA](https://github.com/iceiceice999/rock/pull/QUOTA)）。
