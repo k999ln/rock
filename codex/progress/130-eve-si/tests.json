@@ -1,19 +1,48 @@
 {
   "schema": "task-tests/1",
   "task": 130,
-  "updatedAt": "2026-11-24T07:30:00+09:00",
-  "command": "node --experimental-strip-types --test tests/eve-*.test.mjs",
+  "updatedAt": "2026-11-24T08:00:00+09:00",
+  "command": "bash codex/progress/130-eve-si/init.sh",
   "files": [
     {
       "file": "tests/eve-combination.test.mjs",
       "stage": 1,
       "pass": 13,
       "fail": 0,
-      "covers": ["470 通りの変換と止まる誤り 0", "live の例と defineCombination", "規則 1〜9 の落ちる例", "工程の合格条件", "つなぎ目の変換と固定テスト"]
+      "covers": [
+        "470 通りの変換と止まる誤り 0",
+        "live の例と defineCombination",
+        "規則 1〜9 の落ちる例",
+        "工程の合格条件",
+        "つなぎ目の変換と固定テスト"
+      ]
+    },
+    {
+      "file": "tests/eve-combination-paper.test.mjs",
+      "stage": 2,
+      "pass": 4,
+      "fail": 0,
+      "covers": [
+        "最初の 1 本の形と状態（paper）",
+        "全工程の見本・外へ出す工程の実行 0・呼び出し役に外へ出す工程を渡さない",
+        "Jev の判定で落ちた工程の先は止まる・呼び直さない",
+        "部品が無い時の理由・keepForSelf・予算（見積りと実費の大きい方で押さえる）"
+      ]
     }
   ],
   "existing": [
-    { "file": "tests/noah-business.test.mjs", "note": "task 130 が使う設計図。依存を入れる前は typescript が無く 1 件落ちていた（変更前の main でも同じ）" },
-    { "file": "tests/sky-recipe-planner.test.mjs", "note": "task 130 の探索が使う" }
-  ]
+    {
+      "file": "tests/noah-business.test.mjs",
+      "note": "task 130 が使う設計図。依存を入れる前は typescript が無く 1 件落ちていた（変更前の main でも同じ）"
+    },
+    {
+      "file": "tests/sky-recipe-planner.test.mjs",
+      "note": "task 130 の探索が使う"
+    },
+    {
+      "file": "tests/eve-smith-mii-browser.test.mjs, tests/eve-sdk-delegation-d1-browser.test.mjs",
+      "note": "変更前の main でも 3 件落ちる。lib/generated/private-content.ts（暗号化した私的ファイルから作る物）が無いため。task 130 とは関係しない"
+    }
+  ],
+  "typecheck": "npx tsc --noEmit: task 130 のファイルに誤り 0。lib/legal-ai.ts など 3 件の private-content の誤りは変更前からある"
 }

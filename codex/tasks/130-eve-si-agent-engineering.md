@@ -15,7 +15,7 @@
 
 ## 合格条件
 
-仕様の「作る順」の表。`node --experimental-strip-types --test tests/eve-*.test.mjs`、`npm run typecheck`。
+仕様の「作る順」の表。`bash codex/progress/130-eve-si/init.sh`（task 130 の試験・元の部品の試験・型の検査）、`npm run typecheck`。
 
 ## やらないこと
 

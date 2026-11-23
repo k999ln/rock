@@ -8,7 +8,7 @@ cd "$(git rev-parse --show-toplevel)"
 [ -d node_modules ] || npm ci --ignore-scripts --no-audit --no-fund
 
 # 2. task 130 の試験（外へは通信しない。相手のエージェントは合成の物）。
-node --experimental-strip-types --test tests/eve-*.test.mjs
+node --experimental-strip-types --test tests/eve-combination*.test.mjs tests/eve-demand*.test.mjs tests/eve-discover*.test.mjs tests/eve-score*.test.mjs
 
 # 3. 元からある試験のうち、task 130 が使う部品の物。
 node --experimental-strip-types --test tests/noah-business.test.mjs tests/sky-recipe-planner.test.mjs

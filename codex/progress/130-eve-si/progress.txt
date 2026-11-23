@@ -12,3 +12,15 @@ task 130 Eve（eve.si）のエージェントエンジニアリング — 進み
 - 設計の直し: X の紹介（data/noah-scout/leads.json）は需要ではなく、エージェントの側（供給）だった。需要の台帳の元は、受注の募集（買い手の予算）・ASP の案件（成果報酬）・売り場の公開価格にする。
 
 次の一手: 段 2（lib/eve-combination-paper.ts の試運転と、data/eve-combinations の最初の 1 本）。
+
+2026-11-24 08:00 段 2 が終わった。
+- lib/eve-combination-paper.ts: 試運転。待つ順（段）どおりに動かす。外へ出す工程と、本人が押す・入れる・確かめる工程は実行せず、送る予定の中身を見本として次へ渡す。合格は Jev の判定（eveCheckAccept）。落ちた工程の先は止め、呼び直さない。
+- 予算は、工程の見積りと相手が返した実費の大きい方で押さえる（少なく返されても上限を越えない）。試験で見つけて直した。
+- data/eve-combinations/affiliate-ai-tools-blog.json: 最初の 1 本（AI の道具の紹介 × 自分のブログ。金融以外）。作者 noellesugar99（手で書いた扱い）。設計図 affiliate:ai-tools:blog から作り、2 つ直した:
+  1. 調査と案件比較 → 記事、の間に、つなぎ目の変換 brief（記事の指示を作る）を置いた。
+  2. 設計図では「LP を公開 → 広告の表示を点検」の順だった。点検 → 公開の順に直した（lp-host は disclose を待つ）。
+  状態は paper（確かめたエージェント 0・需要が未確定）。合成のエージェントを当てた試運転は全工程の見本が出て passed。
+- tests/eve-combination-paper.test.mjs: 4 件すべて通過。
+- 未確認: 「登録済みブログ」と ASP の持ち主（今の自社 Web の運用はレントラックス。設計図の ASP 一覧にレントラックスは無い）。本人に聞く（設計書 13 章 E2）。
+
+次の一手: 段 3（lib/eve-demand.ts の需要の台帳）。

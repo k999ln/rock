@@ -38,7 +38,7 @@ export type EveGlueSpec = {
 };
 
 const LIMITS = { ops: 50, tests: 20, text: 4_000, take: 1_000, outputBytes: 64 * 1024, pathParts: 12 } as const;
-const PART = /^[A-Za-z0-9_\-ぁ-んァ-ヶ一-龠ー]{1,64}$/u;
+const PART = /^[A-Za-z0-9_\-ぁ-んァ-ヶ一-龠ー・々]{1,64}$/u;
 const FORBIDDEN = new Set(['__proto__', 'prototype', 'constructor']);
 
 export class EveGlueError extends Error {}
