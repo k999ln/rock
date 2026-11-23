@@ -211,3 +211,26 @@ void test('the reviewer blueprint passes the script to two parallel jobs and gat
   assert.ok(next.flow.dataFrom.every(({ from }) => !from.startsWith('signup:')));
   assert.ok(plan.steps.every(({ flow }) => flow && !flow.branch && !flow.repeat));
 });
+
+void test('the unlabelled detail renders verified catalog tools after connection and request', async () => {
+  const { noahAgentToolListExplanation } = await import('../lib/noah-agent-explanation.ts');
+  const { noahCatalogTools } = await import('../lib/noah-tool-catalog.ts');
+  const id = 'mcp-registry:ai.carfinity/marketplace';
+  const tools = noahCatalogTools(id, {
+    toolsSha256: '061ada28fe167a55959d5dc222b007e0a7e008c6a9bf6d3307b91714cfc2820e',
+    toolCount: 7,
+  });
+  assert.ok(tools);
+  const explanation = noahAgentToolListExplanation([], tools);
+  const html = await renderNoahExplanationFixture('single', { explanation });
+  const start = html.indexOf('data-noah-explanation="tools"');
+  assert.ok(start >= 0);
+  const section = html.slice(start, html.indexOf('</section>', start));
+  assert.ok(section.indexOf('接続') < section.indexOf('依頼する'));
+  assert.ok(section.indexOf('依頼する') < section.indexOf('search_cars'));
+  assert.equal((section.match(/class="number"/g) ?? []).length, 3);
+  assert.equal((section.match(/<details/g) ?? []).length, 9);
+  assert.match(section, /query（文字）/);
+  assert.match(section, /返る物<\/span>未確認/);
+  assert.doesNotMatch(section, /class="(?:wire|transfers)"/);
+});
