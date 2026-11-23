@@ -2,6 +2,8 @@
 - CallMCPの詳細に依頼例・返答の見本・送信先・提供元の料金を追加し、検索と共有から同じ内容を読めるようにした。[PR #41](https://github.com/iceiceice999/rock/pull/41)
 - Noahの登録・掲載に作者が選ぶ画像と動画、任意の表紙動画生成、プレビューを追加。Agentの版と閲覧権限に合わせて表示する。[PR #41](https://github.com/iceiceice999/rock/pull/41)
 - NoahのAgent一覧を共通のピンにそろえ、特集画像とピンに短いアニメーションを追加。端末の「動きを減らす」設定に対応。 [PR #41](https://github.com/iceiceice999/rock/pull/41)
+- 0060 未適用の Noah で Agent・棚・審査者の説明の段を表示し、入出力の札は既定で非表示にする。0059 の手元 D1 と 390px・1280px の6画面で確認。 [PR #48](https://github.com/iceiceice999/rock/pull/48)
+- Noah の遷移先で各工程の入出力、名前付きのデータの線、並行・合流・点検を表示する。札用の `0060_noah_intake_tool_labels` を追加し、記事番号と運用手順を [task 128](codex/tasks/128-noah-agent-explain.md#9-graph-engineering-with-claude-の使い方) に記録。実データの受入と本番反映は運用記録で追う。 [PR #45](https://github.com/iceiceice999/rock/pull/45)
 - Noah の無料のクラウドを、件数（全体 1 日 10 件・本人 3 件）ではなく、Workers AI の無料割当の中で使ったモデルの量（neuron）で数えるようにした（Opus / Noelle。本人「クラウドのシステム作って」「cloudflareでいいから最初は」、Workers Paid はまだ申し込まない）: 全体 8,000・本人 2,400・1 件 1,200 neuron。1 件ごとの使った量を Work に残し、画面に有料プランの値段での額を並べる。上限を超える呼び出しは呼ぶ前に止め、失敗として結果を返す（[PR #44](https://github.com/iceiceice999/rock/pull/44)）。
 
 ## 2026-11-23

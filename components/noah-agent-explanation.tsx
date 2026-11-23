@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { NOAH_MATERIALS } from '@/lib/noah-shelf';
+import { NOAH_MATERIALS, type NoahMaterial } from '@/lib/noah-shelf';
 import { noahExplanationWithConnection, type NoahExplanation } from '@/lib/noah-agent-explanation';
 import { useNoahLocale } from './noah-locale';
 import { NoahStepLevels } from './noah-step-levels';
@@ -28,30 +28,32 @@ export function NoahExplanationSection({ explanation, summary, summaryJa, connec
     const service = step.id.startsWith('connect:') ? /^(.*) へのアクセスを許可$/u.exec(step.label) : null;
     const label = secret ? t('{name} を入力', { name: secret[1] })
       : service ? t('{name} へのアクセスを許可', { name: service[1] })
-      : step.id.startsWith('connect:') ? t(step.label) : step.label;
+      : /^(?:connect|usage):/u.test(step.id) ? t(step.label) : step.label;
     return { ...step, label, reason: step.reason && t(step.reason), waitNote: step.waitNote && t(step.waitNote) };
   });
   const materialList = (items: NoahExplanation['consumes']) => items.length ? <ul>{items.map((item) => <li key={item}>{t(NOAH_MATERIALS[item])}</li>)}</ul> : t('なし');
 
-  return <section className={styles.explanation}>
+  return <section className={styles.explanation} data-noah-explanation={flow.showMaterials === false ? 'steps' : 'materials'}>
     <h2>{t(card ? 'このカードでできる事' : 'この Agent でできる事')}</h2>
     {intro && <p className={styles.explanationSummary}>{intro}</p>}
     {translated && <details className={styles.explanationSource}>
       <summary>{t('自動翻訳')} · {t('原文')}</summary><p>{summary}</p>
     </details>}
-    <dl className={styles.explanationIo}>
+    {flow.showMaterials !== false && <dl className={styles.explanationIo}>
       <div><dt>{t('渡す物')}</dt><dd>{materialList(flow.consumes)}</dd></div>
       <span aria-hidden="true">{locale === 'ar' ? '←' : '→'}</span>
       <div><dt>{t('返る物')}</dt><dd>{materialList(flow.produces)}</dd></div>
-    </dl>
+    </dl>}
     <p className={styles.explanationHint}>{t('同じ段の工程は並行して進められます。')}</p>
-    <NoahStepLevels steps={steps} labels={{
+    <NoahStepLevels steps={steps} flowLabel={t} showMaterials={flow.showMaterials !== false}
+      materialLabel={(material) => t(Object.hasOwn(NOAH_MATERIALS, material) ? NOAH_MATERIALS[material as NoahMaterial] : material)}
+      labels={{
       ariaLabel: t('工程の段（横に並ぶ工程は同時に進む）'),
       levelLabel: (level) => t('{level} 段目', { level }),
       kindLabel: t('種類'), kind: { auto: t('Agent の道具'), tap: t('本人が押す'), human: t('本人が行う'), review: t('本人が確かめる') },
       tag: { tap: t('本人が押す'), human: t('本人'), review: t('本人が確かめる') },
       reasonLabel: t('本人が入る理由'), waitsLabel: t('待つ物'), noWaits: t('なし（最初から始められる）'), waitReasonLabel: t('待つ理由'),
-    }} />
+      }} />
   </section>;
 }
 
