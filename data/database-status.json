@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 258,
+    "tableCount": 257,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "PR #18・#19統合後の本番受入、収集の24時間鮮度と実行先移行、紹介の実注文/承認を個別に確認する。Containers本番配備・無料CLIのNoah本番受入、全掲載Agent対応、300人の試行は未受入。現行の作業別状態はcodex/tasks/00-index.mdを参照する。"
   },
   "webSchema": {
-    "tableCount": 181,
+    "tableCount": 180,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -101,7 +101,6 @@
       "noah_intake_checks",
       "noah_intake_families",
       "noah_intake_sources",
-      "noah_intake_tool_labels",
       "noah_maintenance_requests",
       "noah_package_connections",
       "noah_package_evidence",
@@ -208,8 +207,8 @@
       "sky_linux_service_receipts"
     ],
     "sourceOnlyStatus": "local synthetic schema; production tables unverified; no new production migration",
-    "migrationCount": 41,
-    "latestMigration": "0060_noah_intake_tool_labels.sql",
+    "migrationCount": 40,
+    "latestMigration": "0059_noah_agent_availability.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 25,
     "marketplaceRelationGuardCount": 8,
@@ -299,7 +298,6 @@
           "noah_intake_checks",
           "noah_intake_families",
           "noah_intake_sources",
-          "noah_intake_tool_labels",
           "noah_maintenance_requests",
           "noah_package_connections",
           "noah_package_evidence",
@@ -378,7 +376,7 @@
           "sky_x_feed_state",
           "sky_x_oauth_states"
         ],
-        "tableCount": 111
+        "tableCount": 110
       },
       {
         "id": "marketplace",
@@ -532,7 +530,6 @@
         "noah_intake_checks",
         "noah_intake_families",
         "noah_intake_sources",
-        "noah_intake_tool_labels",
         "noah_maintenance_requests",
         "noah_package_connections",
         "noah_package_evidence",
@@ -633,8 +630,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0060_noah_intake_tool_labels.sql",
-      "tableCount": 181,
+      "expectedAppliedThrough": "0059_noah_agent_availability.sql",
+      "tableCount": 180,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

@@ -55,7 +55,7 @@ sequenceDiagram
 ```
 
 - **接続を選ぶ。** `GET /api/noah/discover/project?id=…` で配布元・実行環境・対応 profile を確認し、`GET /api/noah/cloud-agents?projectId=…` で接続状態と本人の履歴を読む。接続・依頼・停止・切断は同じ API への JSON の POST。書込には同一 Origin と現在の `X-Rock-Owner-Scope` が必要で、接続・依頼時には本人の許可設定も確認する。Sites から専用 Worker への `POST /rpc` はサーバー間の Bearer 認証を使う。[詳細 API](../../app/api/noah/discover/project/route.ts)・[クラウド API](../../app/api/noah/cloud-agents/route.ts)・[検査と転送](../../lib/noah-cloud-api.ts)
-- **依頼を受け付ける。** 接続の試験が成功し、有効な接続 ID が一致すると、同じ接続で前の依頼が終わっていることを調べる。無料枠は全体で同時2件、UTC日ごとに実行10件、本人3件。接続試験は全体で別に100件/日、同時枠は実行と共用する。満枠は429。1件240秒、依頼本文12,000バイト、モデル最大4回、モデル入力32,768バイト/回、出力1,024トークン/回。固定モデルは `@cf/openai/gpt-oss-20b` で、共有の無料割当に達すると利用を停止する。[枠の定義](../../lib/noah-cloud-contract.ts)・[受付判定](../../services/noah-cloud-agents/worker.mjs)・[モデルの呼出](../../services/noah-cloud-agents/free-worker.mjs)
+- **依頼を受け付ける。** 接続の試験が成功し、有効な接続 ID が一致すると、同じ接続で前の依頼が終わっていることを調べる。無料枠は全体で同時2件。実行は、件数ではなく使ったモデルの量（Workers AI の neuron）で数える（2026-11-24）: 全体で UTC 日ごとに 8,000 neuron（Workers AI の無料割当 1 日 10,000 の内。Worker の `NOAH_CLOUD_DAILY_NEURONS` で下げられる）、本人 2,400 neuron。受付の時に 1 件の上限 1,200 neuron を取り置き、モデルを呼ぶ前に入力のバイト数を上限のトークン数として確かめる。安全のための件数の上限は全体 60 件・本人 12 件。接続試験は全体で別に100件/日、同時枠は実行と共用する。満枠は429で、使い切った日は戻る時刻（日本時間の朝 9 時）を返す。1件240秒、依頼本文12,000バイト、モデル最大4回、モデル入力32,768バイト/回、出力1,024トークン/回。固定モデルは `@cf/openai/gpt-oss-20b` で、共有の無料割当に達すると利用を停止する。[枠の定義](../../lib/noah-cloud-contract.ts)・[受付判定](../../services/noah-cloud-agents/worker.mjs)・[モデルの呼出](../../services/noah-cloud-agents/free-worker.mjs)
 - **結果を受け取る。** 公式ツールの成功を少なくとも1件確認し、本文とファイルを返す。成果ファイルは実行記録 `noah-execution.json` を含め12件まで、各32 KiB・合計64 KiB。`POST /api/noah/cloud-agents/result` は Origin のないサーバー間 Bearer 認証と暗号化宛先票（AES-GCM）を検証する。本人・project・依頼 ID・入力ハッシュに加え、配布版・ハッシュ・終了状態・各ファイルの実体を照合する。受取後は `/noah/saved?tab=results` から `/noah/tasks/{id}` を開ける。共通の `GET /api/noah/ask/{id}` はこのクラウド成果を D1 から読む。[宛先票](../../lib/noah-cloud-receipt.ts)・[コールバック](../../app/api/noah/cloud-agents/result/route.ts)・[共通の成果読取](../../lib/noah-ask.ts)
 - **通信や処理が途中で止まったとき。** 同じ依頼 ID・入力の再送は既存状態を返し、内容が違えば409。依頼中の端末切断は実行を継続する。本人の停止は終端状態にし、遅れて届く結果で上書きしない。開始済みの提供元モデル計算の中断時刻は観測できない。実行中の実行器再起動、または停止確認失敗は `unknown` とし、自動で再実行しない。完了通知の保存に失敗したら10分ごと、完了から最長30日間、**結果だけ**を送り直す。送達済みの実行器内データは完了から1日を過ぎた alarm で削除し、本人の D1 の Work は保持する。[実行器の復旧](../../services/noah-cloud-agents/worker.mjs)・[受付・結果照合](../../lib/noah-cloud-api.ts)
 
@@ -100,7 +100,7 @@ sequenceDiagram
 
 2026-11-23の最新指示により、追加料金を発生させずに進める。Memory 2.2.1 / Filesystem 2.4.0 / Sequential Thinking 2.2.0の公式npm本体をfactoryから呼ぶ。shellプロセス・コンテナではなく、公式ツール実装をWorkersへ組み込む方式。bundlerで解決できないversion.jsの動的package.json読込だけを固定manifestの値に置換し、ツール実装やパス検査は書き換えない。
 
-Workers FreeとSQLite Durable Objects、Workers AIの無料割当を使い、有料モデル・Gateway・契約変更を使わない。無料枠超過はCloudflare側のエラーで停止する。運営側でも全体10件/UTC日、本人3件/UTC日、同時2件、モデル4回、出力1024tokens/回、入力32768bytes/回を上限にする。別機能と共有の無料割当を使うため、上限未満でも空きがない日は実行できない。
+Workers FreeとSQLite Durable Objects、Workers AIの無料割当を使い、有料モデル・Gateway・契約変更を使わない。無料枠超過はCloudflare側のエラーで停止する。運営側でも、使ったモデルの量（全体 8,000 neuron/UTC日、本人 2,400、1 件 1,200）、同時2件、モデル4回、出力1024tokens/回、入力32768bytes/回を上限にする（件数の上限は全体60件・本人12件）。1 件ごとの使った量（入力・出力のトークンと neuron）は、結果と一緒に Work の `noahRemote.cloud.usage` へ残し、画面に「有料プランの値段なら何円か」と並べて出す。別機能と共有の無料割当を使うため、上限未満でも空きがない日は実行できない。
 
 受付後は永続alarmが実行を開始し、ブラウザGETなしで既存の宛先票からWorkへ結果を送る。実行中の再起動は再送せず結果不明。停止は永続状態で以後のモデル/Tool送信と結果採用を閉じる。すでに提供元で始まったモデル計算自体の中断を保証するものではない。公式ツールは依頼専用の/tmp/workspaceのみを使い、外部fetchや利用者端末にはつながない。出力ファイルは既存上限とhashを検証する。
 

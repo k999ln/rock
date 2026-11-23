@@ -19,7 +19,7 @@ CREATE TABLE `noah_intake_tool_labels` (
 	`created_at` integer NOT NULL,
 	`invalidated_at` integer,
 	PRIMARY KEY(`family_id`, `candidate_id`, `tool_name`, `tools_sha256`, `tool_definition_sha256`, `manifest_sha256`, `label_version`, `verifier_version`),
-	FOREIGN KEY (`candidate_id`) REFERENCES `noah_intake_candidates`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`candidate_id`) REFERENCES `noah_intake_candidates`(`id`),
 	CONSTRAINT "noah_intake_tool_labels_schema" CHECK("noah_intake_tool_labels"."schema" = 'noah-label-row/1'),
 	CONSTRAINT "noah_intake_tool_labels_manifest" CHECK(length("noah_intake_tool_labels"."manifest_sha256") = 64),
 	CONSTRAINT "noah_intake_tool_labels_tools" CHECK(length("noah_intake_tool_labels"."tools_sha256") = 64),
@@ -32,5 +32,4 @@ CREATE TABLE `noah_intake_tool_labels` (
 	CONSTRAINT "noah_intake_tool_labels_outputs" CHECK(json_valid("noah_intake_tool_labels"."outputs_json")),
 	CONSTRAINT "noah_intake_tool_labels_evidence" CHECK(json_valid("noah_intake_tool_labels"."evidence_json"))
 );
---> statement-breakpoint
 CREATE INDEX `noah_intake_tool_labels_read` ON `noah_intake_tool_labels` (`family_id`,`candidate_id`,`tools_sha256`,`manifest_sha256`,`label_version`,`verifier_version`,`status`,`tool_name`);

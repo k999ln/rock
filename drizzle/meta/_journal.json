@@ -281,13 +281,6 @@
       "when": 4102444800031,
       "tag": "0059_noah_agent_availability",
       "breakpoints": true
-    },
-    {
-      "idx": 40,
-      "version": "6",
-      "when": 4102444800032,
-      "tag": "0060_noah_intake_tool_labels",
-      "breakpoints": true
     }
   ]
 }

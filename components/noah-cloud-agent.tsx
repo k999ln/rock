@@ -1,13 +1,13 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { NOAH_CLOUD_PROFILES, type NoahCloudConnection, type NoahCloudFile, type NoahCloudProfile } from '@/lib/noah-cloud-contract';
+import { NOAH_CLOUD_PROFILES, noahCloudListYen, type NoahCloudConnection, type NoahCloudFile, type NoahCloudProfile, type NoahCloudUsage } from '@/lib/noah-cloud-contract';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import NoahLoading from './noah-loading';
 import NoahReadyDetail from './noah-ready-detail';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-cloud-agent.module.css';
 
-type Job = { id: string; state: string; prompt: string; result?: { text: string }; files: NoahCloudFile[]; error?: string; calls: number };
+type Job = { id: string; state: string; prompt: string; result?: { text: string }; files: NoahCloudFile[]; error?: string; calls: number; usage?: NoahCloudUsage | null };
 type State = { ownerScope: string; connection: NoahCloudConnection | null; jobs: Job[] };
 const active = (job: Job) => ['queued', 'running'].includes(job.state);
 const label: Record<string, string> = { queued: '受付済み', running: '実行中', returned: '結果を受け取りました', failed: '実行できませんでした', cancelled: '停止済み', unknown: '結果を確認できません' };
@@ -95,6 +95,7 @@ export default function NoahCloudAgent({ projectId, profile, providerFamilyId }:
           {job.error && <p role="alert">{t(job.error)}</p>}
           {!!job.files?.length && <div className={styles.files}>{job.files.map(file => <button key={file.name} onClick={() => download(file)}>{t('{name}を保存',{name:file.name})}</button>)}</div>}
           {active(job) && <p className={styles.note}>{t('画面を閉じてもクラウドで処理が続きます。')}</p>}
+          {job.usage && <p className={styles.note}>{t('使った量: モデル {calls} 回・{neurons} neuron（無料の枠の中。有料プランの値段なら 約 {yen} 円）', { calls: job.calls, neurons: job.usage.neurons.toLocaleString(), yen: noahCloudListYen(job.usage) })}</p>}
         </article>)}</div>}
       </>}
     </>}

@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import { NOAH_CLOUD_PROFILES as profiles, NOAH_CLOUD_LIMITS as limits, NOAH_FREE_CLOUD_LIMITS, noahCloudSupported, NOAH_CLOUD_MODEL, noahCloudId, noahCloudDigest, noahCloudModelInput, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES as profiles, NOAH_CLOUD_LIMITS as limits, NOAH_FREE_CLOUD_LIMITS, NOAH_CLOUD_RESET_TEXT, noahCloudDailyNeurons, noahCloudSupported, NOAH_CLOUD_MODEL, noahCloudId, noahCloudDigest, noahCloudModelInput, noahCloudResult } from '../../lib/noah-cloud-contract.ts';
 
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' } });
 const terminal = state => ['returned', 'failed', 'cancelled', 'unknown'].includes(state);
@@ -36,15 +36,34 @@ export class NoahCloudBudget extends DurableObject {
     const input = await request.json();
     return this.ctx.blockConcurrencyWhile(async () => {
       const now = Date.now(), day = new Date(now).toISOString().slice(0, 10);
-      const quota = this.env.NOAH_CLOUD_MODE === 'free' ? NOAH_FREE_CLOUD_LIMITS : limits;
+      const free = this.env.NOAH_CLOUD_MODE === 'free';
+      const quota = free ? NOAH_FREE_CLOUD_LIMITS : limits;
       let state = await this.ctx.storage.get('budget');
-      if (!state || state.day !== day) state = { day, jobs: 0, probes: 0, owners: {}, leases: state?.leases ?? {} };
+      if (!state || state.day !== day) state = { day, jobs: 0, probes: 0, owners: {}, neurons: 0, ownerNeurons: {}, leases: state?.leases ?? {} };
+      state.neurons ??= 0; state.ownerNeurons ??= {};
       for (const [id, lease] of Object.entries(state.leases)) if (lease.until <= now) delete state.leases[id];
       if (input.action === 'release') { delete state.leases[input.id]; await this.ctx.storage.put('budget', state); return json({ ok: true }); }
+      // 使ったモデルの量（neuron）を足す。受け付けた時の取り置きは、使った分だけ減らす（取り置きと使った分の合計は、1 日の上限を超えない）。
+      if (input.action === 'use') {
+        if (!Number.isSafeInteger(input.neurons) || input.neurons < 0 || input.neurons > 1000000 || !/^[a-f0-9]{64}$/.test(input.owner ?? '')) return json({ error: 'invalid_usage' }, 400);
+        state.neurons += input.neurons;
+        state.ownerNeurons[input.owner] = (state.ownerNeurons[input.owner] ?? 0) + input.neurons;
+        const lease = state.leases[input.id];
+        if (lease?.reserve) lease.reserve = Math.max(0, lease.reserve - input.neurons);
+        await this.ctx.storage.put('budget', state); return json({ ok: true });
+      }
       if (state.leases[input.id]) return json({ ok: true });
       if (Object.keys(state.leases).length >= limits.concurrent || (input.mode === 'run' ? state.jobs >= quota.dailyJobs || (state.owners[input.owner] ?? 0) >= quota.ownerDailyJobs : state.probes >= 100)) return json({ error: 'クラウドの利用枠が埋まっています。時間をおいて再試行してください。' }, 429);
+      // 無料のクラウド: 1 件の上限の分を取り置けるかで受け付ける（全体の 1 日・本人の 1 日）。
+      if (free && input.mode === 'run') {
+        const leases = Object.values(state.leases);
+        const reserved = leases.reduce((sum, lease) => sum + (lease.reserve ?? 0), 0);
+        const ownerReserved = leases.filter(lease => lease.owner === input.owner).reduce((sum, lease) => sum + (lease.reserve ?? 0), 0);
+        if (state.neurons + reserved + quota.jobNeurons > noahCloudDailyNeurons(this.env.NOAH_CLOUD_DAILY_NEURONS)) return json({ error: `今日の無料のクラウドの枠を使い切りました。${NOAH_CLOUD_RESET_TEXT}に戻ります。` }, 429);
+        if ((state.ownerNeurons[input.owner] ?? 0) + ownerReserved + quota.jobNeurons > quota.ownerDailyNeurons) return json({ error: `今日のあなたの無料のクラウドの枠を使い切りました。${NOAH_CLOUD_RESET_TEXT}に戻ります。` }, 429);
+      }
       if (input.mode === 'run') { state.jobs++; state.owners[input.owner] = (state.owners[input.owner] ?? 0) + 1; } else state.probes++;
-      state.leases[input.id] = { until: now + (limits.seconds + 30) * 1000 };
+      state.leases[input.id] = { until: now + (limits.seconds + 30) * 1000, owner: input.owner, ...(free && input.mode === 'run' ? { reserve: quota.jobNeurons } : {}) };
       await this.ctx.storage.put('budget', state); return json({ ok: true });
     });
   }

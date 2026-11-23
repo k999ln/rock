@@ -2951,42 +2951,6 @@ export const noahTeikibinLines = sqliteTable('noah_teikibin_lines', {
 ]);
 
 // Public operational evidence for catalog projects; never includes owner or task content.
-export const noahIntakeToolLabels = sqliteTable('noah_intake_tool_labels', {
-  schema: text('schema').notNull(),
-  requestId: text('request_id').notNull(),
-  manifestSha256: text('manifest_sha256').notNull(),
-  familyId: text('family_id').notNull(),
-  candidateId: text('candidate_id').notNull().references(() => noahIntakeCandidates.id),
-  toolsSha256: text('tools_sha256').notNull(),
-  toolDefinitionSha256: text('tool_definition_sha256').notNull(),
-  toolName: text('tool_name').notNull(),
-  labelVersion: text('label_version').notNull(),
-  verifierVersion: text('verifier_version').notNull(),
-  status: text('status', { enum: ['accepted', 'rejected', 'invalidated'] }).notNull(),
-  consumesJson: text('consumes_json'),
-  produces: text('produces'),
-  inputsJson: text('inputs_json').notNull(),
-  outputsJson: text('outputs_json').notNull(),
-  evidenceJson: text('evidence_json').notNull(),
-  reason: text('reason').notNull(),
-  createdAt: integer('created_at').notNull(),
-  invalidatedAt: integer('invalidated_at'),
-}, (t) => [
-  primaryKey({ columns: [t.familyId, t.candidateId, t.toolName, t.toolsSha256, t.toolDefinitionSha256, t.manifestSha256, t.labelVersion, t.verifierVersion] }),
-  index('noah_intake_tool_labels_read').on(t.familyId, t.candidateId, t.toolsSha256, t.manifestSha256, t.labelVersion, t.verifierVersion, t.status, t.toolName),
-  check('noah_intake_tool_labels_schema', sql`${t.schema} = 'noah-label-row/1'`),
-  check('noah_intake_tool_labels_manifest', sql`length(${t.manifestSha256}) = 64`),
-  check('noah_intake_tool_labels_tools', sql`length(${t.toolsSha256}) = 64`),
-  check('noah_intake_tool_labels_definition', sql`length(${t.toolDefinitionSha256}) = 64`),
-  check('noah_intake_tool_labels_name', sql`length(${t.toolName}) BETWEEN 1 AND 256`),
-  check('noah_intake_tool_labels_version', sql`${t.labelVersion} = 'noah-card/1'`),
-  check('noah_intake_tool_labels_status', sql`${t.status} IN ('accepted','rejected','invalidated')`),
-  check('noah_intake_tool_labels_consumes', sql`${t.consumesJson} IS NULL OR json_valid(${t.consumesJson})`),
-  check('noah_intake_tool_labels_inputs', sql`json_valid(${t.inputsJson})`),
-  check('noah_intake_tool_labels_outputs', sql`json_valid(${t.outputsJson})`),
-  check('noah_intake_tool_labels_evidence', sql`json_valid(${t.evidenceJson})`),
-]);
-
 export const noahAgentAvailability = sqliteTable('noah_agent_availability', {
   projectId: text('project_id').primaryKey(),
   protocol: text('protocol').notNull(),
