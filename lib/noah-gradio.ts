@@ -27,6 +27,8 @@ export type ProviderEndpoint = {
   toolDigest?: string;
 };
 export type ProviderPlan = {
+  availabilityManifest?: string;
+  sourceRevision?: string;
   protocol?: 'gradio' | 'mcp';
   projectId: string;
   name: string;
@@ -97,11 +99,11 @@ async function readJson(
     return error('提供元のAPI定義を読み取れませんでした。', 502);
   }
 }
-export async function providerOrigin(
+async function providerIdentity(
   repository: string,
   fetcher: typeof fetch,
   signal: AbortSignal,
-): Promise<string> {
+) {
   if (!/^[\w.-]+\/[\w.-]+$/.test(repository))
     return error('Agentの提供元を確認できません。');
   const info = await readJson(
@@ -137,7 +139,10 @@ export async function providerOrigin(
     !['RUNNING', 'SLEEPING'].includes(String(info.runtime.stage))
   )
     return error('提供元の実行環境は停止中、または準備中です。', 503);
-  return u.origin;
+  return { host: u.origin, sourceRevision: typeof info.sha === 'string' ? info.sha : undefined };
+}
+export async function providerOrigin(repository: string, fetcher: typeof fetch, signal: AbortSignal): Promise<string> {
+  return (await providerIdentity(repository, fetcher, signal)).host;
 }
 function field(value: unknown): ProviderField | null {
   if (
@@ -237,7 +242,7 @@ export async function prepareProvider(
   fetcher: typeof fetch = fetch,
 ) {
   const signal = AbortSignal.timeout(12000),
-    host = await providerOrigin(repository, fetcher, signal);
+    { host, sourceRevision } = await providerIdentity(repository, fetcher, signal);
   const config = await readJson(`${host}/config`, fetcher, signal);
   if (
     !object(config) ||
@@ -295,7 +300,7 @@ export async function prepareProvider(
       ),
     );
   }
-  return { host, prefix, endpoints };
+  return { host, prefix, endpoints, sourceRevision };
 }
 export function providerInput(
   endpoint: ProviderEndpoint,
@@ -429,6 +434,14 @@ export async function providerResult(
 ): Promise<NoahReceivedResult> {
   if (!Array.isArray(data) || data.length === 0)
     error('提供元から成果が届きませんでした。', 502);
+  // Some applications return a provider exception inside an HTTP/SSE "complete" result.
+  // That is an execution failure, not a successful Agent output.
+  for (const value of data as unknown[]) {
+    if (typeof value === 'string' && /^\s*(?:Error during processing:|Traceback \(most recent call last\):)/.test(value))
+      error('提供元で処理に失敗しました。認証・利用枠・稼働状態を確認してください。', 502);
+    if (object(value) && value.error && !value.result && !value.data)
+      error('提供元が処理エラーを返しました。入力や提供元の稼働状態を確認してください。', 502);
+  }
   const imageSignal = AbortSignal.timeout(7000);
   const images: NonNullable<NoahReceivedResult['images']> = [],
     texts: string[] = [];

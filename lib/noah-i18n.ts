@@ -38,6 +38,7 @@ export const NOAH_MESSAGES: Record<
   ...NOAH_FLOW_MESSAGES,
   ...NOAH_ACCESS_MESSAGES,
   ...NOAH_TEIKIBIN_MESSAGES,
+  '画面を閉じてもクラウドで処理が続きます。': ['Processing continues in the cloud when you close this page.', '关闭此页面后，云端处理仍会继续。', '이 화면을 닫아도 클라우드에서 처리가 계속됩니다.', 'El procesamiento continúa en la nube aunque cierres esta página.', 'تستمر المعالجة في السحابة حتى عند إغلاق هذه الصفحة.'],
   '登録先の受付が混み合っています。': ['The service is temporarily limiting registrations.', '注册服务暂时限制请求。', '서비스에서 일시적으로 등록을 제한하고 있습니다.', 'El servicio está limitando temporalmente los registros.', 'تحدّ الخدمة مؤقتًا من عمليات التسجيل.'],
   '受付再開の目安: {time}': ['Registration may resume at {time}', '预计可再次注册的时间：{time}', '등록 재개 예상: {time}', 'Hora prevista para volver a registrarse: {time}', 'الوقت المتوقع لاستئناف التسجيل: {time}'],
   タイムライン: ['Timeline', '动态', '타임라인', 'Inicio', 'المنشورات'],

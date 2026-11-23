@@ -99,3 +99,41 @@
 - 公開MCPの保存説明は、提供元の本文非保存とNoahの依頼・成果保存を区別する。
 - 独立したChrome 157 / 390px・タッチ試験でも、一覧検索→使う→実行→保存→reload→保存一覧から同一Work再表示が成功。外部遷移0・申込なし。証拠はGit外の `work/noah-production-qa-20261122/revenue-production-mobile/report.json`。Sites206のtreeは `2e0f4eafec9915b274074f79e1296346b4e7a7d3`。
 - 保存範囲の補正文言を既存business Worker版 `5ae9e805-5917-4db3-9ef4-c181753c277b` へ配備し、公開MCP tools/listで提供元とNoahの保存説明を確認。実行schema・紹介判定・台帳は変更なし。
+
+## 2026-11-22 追加の提携案件との実行連携（作業中）
+既存combination Workerへ公開サイト診断2種を追加。編集範囲はsite-diagnostics関連、既存combination/revenueの公開と台帳、lib/noah-revenue-directoryとDirectoryEntryの固定型、試験/記録。provider/Workの本体は変更しない。合格条件はdocs/services/noah-site-diagnostics.md。実条件/正式タグ/外部診断の証拠はGit外。
+
+- 追加2種の実MCP呼出しを本人の公開サイトで確認。提携・条件・媒体用原文タグとブログ公開2件をChromeで検証。関連48試験・型検査・Worker dry-run成功。現在は旧Workerの配備と共通Noahへの反映を受入中。実注文/承認は追加対象0件。統合担当がこのコミットを取り込んだ版で全体verifyとPR番号を記録する。
+
+## 2026-11-22 全チャット差分の統合検証（PR #12）
+
+- [PR #12](https://github.com/iceiceice999/rock/pull/12)でCLI `9f888cc36`、公開サイト診断 `e88bab58d` と、mainに入ったココナラ `9bd709013`・Pixel受入記録を統合。追記文書は両側を保持。
+- 統合 `7c543a79d` の `PATH=/opt/homebrew/opt/openssl@3/bin:$PATH npm run verify` が全工程成功。主要5,155成功・5skip・失敗0、仕事API1,918、CSV385。型検査・lint・ビルド・資産欠落0も成功。後続mainマージ `49fc3cd2f` は同一tree。GitHubの最終検査結果とマージSHAはPRに記録する。
+- CLI本番配備・実モデル受入、共通Noah画面での追加診断受入は別工程。検査成功を本番実行・実注文・承認・入金の成功として扱わない。
+
+## 2026-11-22 公開サイト診断2種の本番受入（PR #14）
+
+- PR #12のmain `0e7042d605df7ef0b862c0be470af4c3f6148716` をSites208へ公開。Sites source `b19148f05060af3cfd698092a2ae5081eb42f234` とtree `47dec6d3cb778d25c454c9a7b49cb477305c128a` が一致。既存法人Agentを含む公開API3件を確認。
+- 旧combination Worker最終版 `d4e5d292-5ea8-43f9-94ba-43b84b02b094`。新D1 migration・新規契約・アカウント移設なし。ECの判定区分保持、公開時刻の通信差による除外、共通成果が番号だけになる表示を補正。固定接続・公開条件・媒体タグの制限を維持。
+- WordPressとECを別担当のChrome390pxで、検索→使う→外部診断→読める診断本文/準備事項→保存→reload→保存一覧から同一Work再表示まで確認。入力は本人の公開サイト `https://avoado.si/`、相談希望false。広告主への申込なし。WPはタッチ・横溢れなし・JS例外なしも確認。
+- Git外の証拠: WPは `work/noah-production-qa-20261122/site-diagnostics-mobile/report.json` と `wordpress-result.png`。ECは `work/noah-affiliate-delivery-20261122/expansion-noah-ec-acceptance.private.json` と `expansion-noah-ec-result.jpg`。失敗した初回の表示記録も保全し、既存Workを書き換えない。
+- 登録済みブログへ広告を明示した2記事を公開。原文広告のURL・rel・targetを照合。WordPressは `/archives/15895863.html`、ECは `/archives/15895910.html`（いずれも `kirin8038.livedoor.blog`）。正式タグ・案件条件・報酬単価はGit外。
+- レントラックスの365日・全状態の注文/承認をChromeで取得し、追加2件を含む8観測を台帳へ保存。追加案件の実注文・承認は0件。媒体集計を個別Noah利用者へ推測帰属せず、入金済みに昇格しない。
+- 自動alarmが手動実行なしで13:52→14:07 UTC、runCount73→74へ進み、lastError=null・追加2件readyを実測。既存6時間のASP取得を2件へ拡張。次回6時間取得の成功は未確認で、Mac/Chromeの稼働・ログインに依存する。
+- 関連49試験、型検査、lint、ビルド、既存基準の全体verifyを実施。時刻補正は応答が100ms後となる再現、表示補正は実WorkerのMCP応答を共通成果表示へ渡して診断・準備・広告導線が残る試験を含む。最終PRの検証結果はPR本文に記録する。
+- 未完了: 実顧客の申込・広告主承認・銀行入金の通し受入。公開や診断成功は報酬獲得を意味しない。残る候補は個別実行・媒体・現行条件の根拠が揃うまで公開しない。
+
+## 2026-11-23 集客の実行と改善
+
+本人指示「公開して終わりじゃなくて、実際に人を集めて申込・成果承認が出るところまで」に対応。
+
+- 既存WP/EC記事を公開更新。検索意図に合わせたタイトル、冒頭の対象Agent入口、4/5項目のチェックリスト、依頼メモ、公式出典を追加。正式広告のhref/rel/targetは公開DOMで一致確認。
+- 自社X [紹介投稿](https://x.com/evesi_/status/2124518969063485728) を2026-11-23 00:02 JSTに公開。2記事へのリンクと広告表記を確認。表示1件は自己確認を含み、実顧客流入とは呼ばない。
+- `/start/wordpress-maintenance` と `/start/ec-production` は公開ゲートを通った固定Noahカードにのみ302。経路blog/x/other・UTC日付別のブラウザ遷移要求を30日分集計。IP/URL/個人識別子なし。人数・注文とは区別。HEADとprefetchは非加算、任意リダイレクトなし。停止で503、再起動後保持を試験。
+- 旧Worker version `3072171e-0958-4b18-aabc-1a4b148ed9d2` に配備し、公開記事から各カードへの遷移と各1件の記録を実確認（全てQA）。共有Sites209は再配備していない。配備後のalarmはrunCount 77→78、2026-11-22T15:07:35.507Zに自動進行し、入口2件とQA集計の保持を確認した。
+- 既存heartbeat `noah` を6時間の集客改善・実成果・承認追跡へ更新。通常投稿は24時間に最大1回、JST9–21時、重複確認/台帳記録、本文改善は1日1点。広告費0。実申込の自動生成・DM送信なし。
+- 証拠は非公開work/noah-affiliate-delivery-20261122の `growth-articles.private.json`、`growth-journal.private.json`、`growth-after-status.private.json` と `growth-*.jpg`。運営鍵・広告タグはGitへ含めない。
+- 未完了: Rentracksは現在ログイン切れで新しい成果取得は未実施。最後の実ASP観測2026-11-22T13:50:26.830Zは2件とも注文/承認0。次回自動実行の成功、実顧客獲得、申込、広告主承認をまだ実証していない。ログイン依頼済み。古い0を現在の結果とみなさない。
+- 検証: 関連10試験成功。全体verifyは未変更eve-smith-mii-browserのtimeoutで初回失敗し単独2試験成功。全体verifyの再実行が全工程成功（主要5,164 pass / 5 skip / 0 fail、API1,918、CSV385、build等）。
+
+- Git: [PR #17](https://github.com/iceiceice999/rock/pull/17)。全体verify成功のコードa635654acと公開受入を保持。

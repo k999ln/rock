@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { resolveNoahProvider, noahProjectSources } from '../lib/noah-provider-resolve.ts';
 import { noahProjectDetail } from '../lib/noah-project-api.ts';
+import { noahCloudEntry } from '../lib/noah-cloud-api.ts';
+import { auditNoahEntry } from '../scripts/noah-agent-coverage.mjs';
 const id = 'project-' + 'a'.repeat(64);
 const row = (href = 'https://github.com/maker/agent', sources = []) => ({ card: { id, feedbackId: id, name: 'Agent', href, sources }, families: [], observedAt: 0 });
 const manifest = url => ({ name: 'io.github.maker/agent', version: '1.0.0', remotes: [{ type: 'streamable-http', url }] });
@@ -10,6 +12,7 @@ void test('all first-party sources are considered before a CLI fallback; aggrega
   assert.equal(noahProjectDetail(entry).connection.kind, 'space');
   assert.equal((await resolveNoahProvider(entry, async () => { throw Error('must not fetch'); })).kind, 'space');
   const aggregator = row('https://github.com/maker/agent', [{ source: 'awesome', sourceUrl: 'https://github.com/NousResearch/hermes-agent' }]);
+  assert.equal(noahCloudEntry(aggregator), null);
   assert.deepEqual(noahProjectSources(aggregator), ['https://github.com/maker/agent']);
 });
 void test('repository-owned server.json resolves a public MCP without running tools or source code', async () => {
@@ -46,6 +49,12 @@ void test('Docker identity uses the official catalog and a fixed upstream commit
   });
   assert.equal(target.repository, 'https://hub.docker.com/r/mcp/example');
   assert.equal(calls[1], `https://raw.githubusercontent.com/maker/agent/${sha}/src/example/server.json`);
+});
+void test('coverage counts metadata and fixed profiles separately from execution success', async () => {
+  const result = await auditNoahEntry(row('https://hub.docker.com/r/mcp/time'));
+  assert.equal(result.state, 'cloud_profile'); assert.equal(result.executionVerified, false);
+  const result2 = await auditNoahEntry(row(), { live: false });
+  assert.equal(result2.state, 'needs_resolution'); assert.equal(result2.executionVerified, false);
 });
 void test('monorepo distribution folders require an immutable full commit', async () => {
   const commit = 'd'.repeat(40), calls = [];

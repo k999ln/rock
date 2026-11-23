@@ -338,7 +338,7 @@ export default function NoahWorkList({
                 {!agentId && ask.agentId && (
                   <p className={styles.workAgent}>
                     <Link
-                      href={`${ask.mode==='provider'?'/noah/discover/agent':'/noah/ready/agent'}?id=${encodeURIComponent(ask.agentId)}`}
+                      href={`${['provider','cloud'].includes(ask.mode)?'/noah/discover/agent':'/noah/ready/agent'}?id=${encodeURIComponent(ask.agentId)}`}
                     >
                       {t(NOAH_ASK_TEXT.agent)} →
                     </Link>

@@ -1,5 +1,7 @@
 import { noahAgentDirectory } from './noah-agent-directory-server';
+import { createNoahCloudApi, noahCloudRuntime } from './noah-cloud-api';
 import { createNoahProviderRuntime } from './noah-provider-runtime';
+import { createNoahAvailabilityStore } from './noah-agent-availability';
 import { noahProfileStore } from './noah-profile-server';
 import { noahRegistrationRuntime } from './noah-registration-runtime-server';
 import { env, waitUntil } from 'cloudflare:workers';
@@ -15,6 +17,10 @@ export function noahIntakeDependencies() {
   const config = env as unknown as Record<string, string | undefined>;
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
   const dependencies = { db: database(), ...access, providerDirectory: noahAgentDirectory,
+    availability: createNoahAvailabilityStore(database()),
+    cloudApi: createNoahCloudApi({ authenticate: requestUser, db: database(), directory: noahAgentDirectory,
+      authorize: noahProfileStore().authorize, receiptKey: config.NOAH_CLOUD_KEY,
+      runtime: noahCloudRuntime({ url: config.NOAH_CLOUD_URL, key: config.NOAH_CLOUD_KEY }) }),
     flags: parseNoahFlags(config), wakeKey: config.NOAH_PATROL_WAKE_KEY,
     // 収集機（GitHub の定期実行）が、握手の済んだ系列を一覧へ入れる時の鍵（紹介の掲載と同じ。lib/noah-intake-import.ts）。
     collectorKey: config.NOAH_COLLECTION_KEY,
@@ -26,6 +32,6 @@ export function noahIntakeDependencies() {
     planLimits: { open: parseNoahShelfFlags(config).planLimits, source: noahTeikibinPlanSource(config) ?? NOAH_PLAN_SOURCE },
     // 棚の、載せるかの見直し（巡回の合図の中で、10 分に 1 回まで。docs/noah/spec-110-shelf.md の 4 章）と、実績の数え直し（UTC の 1 日に 1 回。5 章）。
     shelfRecheck: async () => { const shelf = createNoahShelfStore({ db: database(), now: Date.now }); await shelf.recheckIfDue(); await shelf.rollupIfDue(); },
-    providerRecheck: async () => { await createNoahProviderRuntime(dependencies).sweep(); } };
+    providerRecheck: async () => { const provider = createNoahProviderRuntime(dependencies); await provider.sweep(); await provider.checkAvailability(); } };
   return dependencies;
 }

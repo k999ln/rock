@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import NoahResultContent from './noah-result-content';
+import NoahManagedFiles from './noah-managed-files';
 import { useNoahLocale } from './noah-locale';
 import NoahLoading from './noah-loading';
 import { noahAskRowView, type NoahAskItem } from '@/lib/noah-ask-view';
@@ -184,14 +185,16 @@ export default function NoahTaskDetail({ id }: { id: string }) {
               {t('成果が届くまで、この画面を開いたままにしてください。')}
             </p>
           )}
+          {ask.mode === 'cloud' && ask.finishedAt === undefined && <p className={styles.meta}>{t('画面を閉じてもクラウドで処理が続きます。')}</p>}
           {ask.error && (
             <p role="alert" className={styles.error}>
               {ask.error}
             </p>
           )}
           {result && ask.result && (
-            <NoahResultContent key={ask.id} result={ask.result} id={ask.id} />
+            <NoahResultContent key={ask.id} result={ask.result} id={ask.id} savedAttachments={ask.cloudFiles?.length ?? 0} />
           )}
+          {result && !!ask.cloudFiles?.length && <NoahManagedFiles files={ask.cloudFiles} />}
           {noahAskRowView(ask, now).stoppable && (
             <button
               className={styles.secondary}
@@ -216,7 +219,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
           {ask.agentId && (
             <Link
               className={styles.back}
-              href={`${ask.mode === 'provider' ? '/noah/discover/agent' : '/noah/ready/agent'}?id=${encodeURIComponent(ask.agentId)}`}
+              href={`${['provider', 'cloud'].includes(ask.mode) ? '/noah/discover/agent' : '/noah/ready/agent'}?id=${encodeURIComponent(ask.agentId)}`}
             >
               {t('この Agent を開く')}
             </Link>
