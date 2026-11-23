@@ -108,7 +108,7 @@ Workers FreeとSQLite Durable Objects、Workers AIの無料割当を使い、有
 
 2026-11-23の追加指示。公式Hermes Agent 0.19.0の会話ループとTodo/Memory、boss-agent-cli 3.4.151のinterview-prepコマンド、Time 2026.11.18のMCP factoryをPython Workersへ組み込む。配布物のSHA-256を検証して展開し、公式ソースは変更しない。OSシェル、Hermesの汎用ファイル操作・追加Tool・長期記憶、bossの求人検索・応募は提供しない。Hermesの計画と依頼内の記憶、bossの面接準備、Timeの変換結果を成果ファイルとして保存する。
 
-PythonのVFSはisolateで共有されるため、依頼ごとにUUIDの一時領域を作り、公式Hermesのcontext-local homeとインスタンス別Storeを使う。Python実行をisolate内で直列化し、終了時に領域とContextを必ず破棄する。モデル輸送は運営鍵を渡さないRPC capabilityで固定モデルへ中継し、既存の日次10件・本人3件・同時2件・240秒・モデル4回の同一予約で数える。JS coordinatorは長いPython呼出を開始gateの外で待ち、停止・期限後のモデル/Tool受付と結果採用を閉じる。Pythonの外部公開URL・任意URL入力・OSプロセス起動は設けない。
+Time/boss/Hermesはそれぞれ別Workerへ固定し、別profileのRPCを拒否する。Timeの接続確認ではschema生成と公式UTC時刻ツールも動かし、単なるimport成功を準備完了としない。PythonのVFSはisolateで共有されるため、依頼ごとにUUIDの一時領域を作り、公式Hermesのcontext-local homeとインスタンス別Storeを使う。Python実行をisolate内で直列化し、終了時に領域とContextを必ず破棄する。モデル輸送は運営鍵を渡さないRPC capabilityで固定モデルへ中継し、既存の日次10件・本人3件・同時2件・240秒・モデル4回の同一予約で数える。JS coordinatorは長いPython呼出を開始gateの外で待ち、停止・期限後のモデル/Tool受付と結果採用を閉じる。Pythonの外部公開URL・任意URL入力・OSプロセス起動は設けない。
 
 互換層は非対話コールバック、無効化したバックグラウンドログ、固定RPCモデル輸送、公式設定への一時保存に限定する。モデルの出力やfixture成功を公式Tool成功と扱わず、成功した操作名・入力/応答hashと固定配布版を実行記録へ残す。結果は既存Work callbackで送達し、保存済みの再表示は実行を起こさない。本番D1 migration・有料プラン変更は不要。
 

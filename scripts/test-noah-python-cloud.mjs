@@ -11,9 +11,9 @@ const folder = resolve(root,'services/noah-cloud-agents/python');
 const temporary = await mkdtemp(resolve(tmpdir(),'noah-python-test-'));
 const port = 18993;
 const config = resolve(temporary,'wrangler.jsonc');
-await writeFile(config,JSON.stringify({name:'noah-python-test-host',main:resolve(folder,'test-host.mjs'),compatibility_date:'2026-10-01',durable_objects:{bindings:[{name:'PYTHON',class_name:'NoahPythonJob',script_name:'noah-python-cloud-agents'}]}}));
+await writeFile(config,JSON.stringify({name:'noah-python-test-host',main:resolve(folder,'test-host.mjs'),compatibility_date:'2026-10-01',durable_objects:{bindings:[...['time','boss','hermes'].map(profile=>({name:profile==='time'?'PYTHON':'PYTHON_'+profile.toUpperCase(),class_name:'NoahPythonJob',script_name:'noah-python-cloud-agents'+(profile==='time'?'':'-'+profile)}))]}}));
 const command = process.env.NOAH_PYTHON_WRANGLER || resolve(root,'services/noah-cloud-agents/node_modules/.bin/wrangler');
-const child = spawn(command,['dev','--config',config,'--config',resolve(folder,'wrangler.jsonc'),'--ip','127.0.0.1','--port',String(port),'--persist-to',resolve(temporary,'state')],{cwd:folder,stdio:['ignore','pipe','pipe'],detached:true});
+const child = spawn(command,['dev','--config',config,...['wrangler.jsonc','wrangler.boss.jsonc','wrangler.hermes.jsonc'].flatMap(name=>['--config',resolve(folder,name)]),'--ip','127.0.0.1','--port',String(port),'--persist-to',resolve(temporary,'state')],{cwd:folder,stdio:['ignore','pipe','pipe'],detached:true});
 let output = '';
 child.stdout.on('data',b=>{output=(output+b).slice(-10000);}); child.stderr.on('data',b=>{output=(output+b).slice(-10000);});
 const origin = `http://127.0.0.1:${port}`;
@@ -28,6 +28,8 @@ const decode = (value,name) => {
 try {
   const deadline=Date.now()+120000;
   while(true){try{if((await fetch(origin+'/ready')).ok)break;}catch{}if(child.exitCode!==null||Date.now()>deadline)throw Error(output);await new Promise(r=>setTimeout(r,300));}
+  for(const profile of ['time','boss','hermes']) {const probe=await run({profile,mode:'probe'});assert.equal(probe.ready,true,JSON.stringify({profile,...probe}));}
+  const cross=await run({profile:'hermes',routeProfile:'time'});assert.equal(cross.status,422);assert.equal(cross.calls.length,0);
   const time=await run({profile:'time',tool:'convert_time',arguments:{source_timezone:'Asia/Tokyo',target_timezone:'UTC',time:'09:00'}});
   assert.equal(time.status,200);assert.equal(time.tools.length,3);assert.equal(time.result.structuredContent.time_difference,'-9.0h');assert.match(time.result.structuredContent.target.datetime,/T00:00:00\+00:00$/);
   const invalid=await run({profile:'time',tool:'convert_time',arguments:{time:'99:99'}});assert.ok(invalid.status===422||invalid.result?.isError);

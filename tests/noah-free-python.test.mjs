@@ -4,15 +4,15 @@ import { readFile } from 'node:fs/promises';
 import { buildFree, officialPackaging } from '../services/noah-cloud-agents/build-free.mjs';
 import { NOAH_CLOUD_PROFILES } from '../lib/noah-cloud-contract.ts';
 
-const bundle = await buildFree({write:false,entryPoints:undefined,stdin:{contents:"export {NoahFreeCloudJob} from './free-worker.mjs'; export {validatePythonResult} from './free-python.mjs';",resolveDir:new URL('../services/noah-cloud-agents/',import.meta.url).pathname},plugins:[officialPackaging,{name:'rpc-unit-host',setup(b){b.onResolve({filter:/^cloudflare:workers$/},()=>({path:'rpc',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export class DurableObject {constructor(ctx,env){this.ctx=ctx;this.env=env}}; export class RpcTarget {}'}));}}]});
-const {NoahFreeCloudJob,validatePythonResult}=await import(`data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].text).toString('base64')}`);
+const bundle = await buildFree({write:false,entryPoints:undefined,stdin:{contents:"export {NoahFreeCloudJob} from './free-worker.mjs'; export {validatePythonResult,pythonJob} from './free-python.mjs';",resolveDir:new URL('../services/noah-cloud-agents/',import.meta.url).pathname},plugins:[officialPackaging,{name:'rpc-unit-host',setup(b){b.onResolve({filter:/^cloudflare:workers$/},()=>({path:'rpc',namespace:'test'}));b.onLoad({filter:/.*/,namespace:'test'},()=>({contents:'export class DurableObject {constructor(ctx,env){this.ctx=ctx;this.env=env}}; export class RpcTarget {}'}));}}]});
+const {NoahFreeCloudJob,validatePythonResult,pythonJob}=await import(`data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].text).toString('base64')}`);
 const valid=()=>({text:'fixture result',files:[],operations:[{name:'ai-interview-prep',ok:true,inputSha256:'a'.repeat(64),resultSha256:'b'.repeat(64)}]});
 function world({profile='boss',execute,call,model=async()=>({choices:[{finish_reason:'stop',message:{content:'done'}}]}),milliseconds=2000}={}) {
   const data=new Map([['job',{id:'00000000-0000-4000-8000-000000000001',owner:'a'.repeat(64),profile,mode:'run',prompt:'fixture',calls:0,state:'queued',deadlineAt:Date.now()+milliseconds}]]);
   let serial=Promise.resolve(),calls=0;
   const ctx={storage:{get:async k=>structuredClone(data.get(k)),put:async(k,v)=>data.set(k,structuredClone(v)),setAlarm:async()=>{}},blockConcurrencyWhile(fn){const p=serial.then(fn);serial=p.catch(()=>{});return p;}};
   const stub={execute,call,tools:async()=>JSON.stringify([{name:'convert_time',inputSchema:{type:'object'}}])};
-  const job=new NoahFreeCloudJob(ctx,{PYTHON:{getByName(name){assert.equal(name,`${'a'.repeat(64)}:00000000-0000-4000-8000-000000000001`);return stub;}},AI:{async run(...args){calls++;return model(...args);}},BUDGET:{getByName:()=>({fetch:async()=>Response.json({ok:true})})}});
+  const job=new NoahFreeCloudJob(ctx,{[{time:'PYTHON',boss:'PYTHON_BOSS',hermes:'PYTHON_HERMES'}[profile]]:{getByName(name){assert.equal(name,`${'a'.repeat(64)}:00000000-0000-4000-8000-000000000001`);return stub;}},AI:{async run(...args){calls++;return model(...args);}},BUDGET:{getByName:()=>({fetch:async()=>Response.json({ok:true})})}});
   return {job,data,calls:()=>calls};
 }
 const until=async predicate=>{const end=Date.now()+2000;while(!predicate()){assert.ok(Date.now()<end,'test wait expired');await new Promise(r=>setTimeout(r,5));}};
@@ -40,4 +40,12 @@ void test('a pending Python execution expires and a pending Time tool can be sto
 });
 void test('Python results require actual successful permitted operations and cannot forge the receipt',()=>{
   for(const value of [{...valid(),operations:[]},{...valid(),operations:[{...valid().operations[0],ok:false}]},{...valid(),operations:[{...valid().operations[0],name:'terminal'}]},{...valid(),files:[{name:'noah-execution.json'}]}])assert.throws(()=>validatePythonResult('boss',JSON.stringify(value)));
+});
+
+void test('each official Python profile has a distinct binding with no fallback to another isolate',()=>{
+  const ids=[];
+  const env=Object.fromEntries(['PYTHON','PYTHON_BOSS','PYTHON_HERMES'].map(name=>[name,{getByName(id){ids.push([name,id]);return name;}}]));
+  for(const [profile,binding] of [['time','PYTHON'],['boss','PYTHON_BOSS'],['hermes','PYTHON_HERMES']]) assert.equal(pythonJob(env,{profile,owner:'owner',id:'job'}),binding);
+  assert.deepEqual(ids.map(v=>v[0]),['PYTHON','PYTHON_BOSS','PYTHON_HERMES']);
+  assert.throws(()=>pythonJob({PYTHON:env.PYTHON},{profile:'hermes',owner:'owner',id:'job'}));
 });

@@ -11,7 +11,9 @@
     { "name": "JOBS", "class_name": "NoahFreeCloudJob" },
     { "name": "CONNECTIONS", "class_name": "NoahCloudConnection" },
     { "name": "BUDGET", "class_name": "NoahCloudBudget" },
-    { "name": "PYTHON", "class_name": "NoahPythonJob", "script_name": "noah-python-cloud-agents" }
+    { "name": "PYTHON", "class_name": "NoahPythonJob", "script_name": "noah-python-cloud-agents" },
+    { "name": "PYTHON_BOSS", "class_name": "NoahPythonJob", "script_name": "noah-python-cloud-agents-boss" },
+    { "name": "PYTHON_HERMES", "class_name": "NoahPythonJob", "script_name": "noah-python-cloud-agents-hermes" }
   ] },
   "exports": {
     "NoahFreeCloudJob": { "type": "durable-object", "storage": "sqlite" },

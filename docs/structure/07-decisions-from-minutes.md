@@ -1,5 +1,7 @@
 # 07 議事録から抽出した決定事項（日付順）
 
+2026-11-23: Noah公式PythonのTime/boss/Hermesは128MBのisolate上限を共有しない別Workerへ分離する。固定profile以外を拒否し、既存の共通日次枠・モデル予約・Work保存・停止を維持する。
+
 - 2026-11-23 本人指示「追加料金なしでCLI型をNoah内で」により、Workers Free / SQLite Durable Objects / Workers AIの無料割当内で、固定した公式JavaScript MCP配布物のfactoryを使う。起動と結果送達はクラウドのalarmで行い、Mac・画面を閉じても継続する。実受入したprofileだけを有効化し、Python/shell CLIや全件対応へ昇格しない。新規有料契約を行わず、無料枠超過は停止する。
 
 - 2026-11-22 本人指示（19:36）「なんかこういう便利機能をさ私がツイッターで検索するんじゃなくて Noah にやらせたいのよ」「それを繋げるのが Eve ね」「最初は Noah は単発機能じゃなくてパッケージにしてもいいのかも」と回答。X は公式 API ではなく、Codex の Luna Max がブラウザで 1 日 1 回、Noah 用に新しく作る X アカウントで読み、投稿・引用元・配布元まで読んで日本語で理解を書く（「ちゃんと読んだもの正しく理解して」）。まとめ役の最初の 20 人は Claude が選び、その後は Noah が候補に足す。トップは「パッケージを上、単発は下」。Switch は新着に載せ、Claude Code と Codex の連携（Telegram）に使い、パッケージの手本にする（コードは使わない。Commons Clause）。GitHub の正本は今後 iceiceice999/rock（「今後 iceiceice の方で github 全部あげてね」）。task 125・126。

@@ -12,8 +12,9 @@ export class PythonModelBridge extends RpcTarget {
   }
 }
 export function pythonJob(env, job) {
-  if (!env.PYTHON) throw Error('Python実行器が接続されていません。');
-  return env.PYTHON.getByName(`${job.owner}:${job.id}`);
+  const binding = { time: 'PYTHON', boss: 'PYTHON_BOSS', hermes: 'PYTHON_HERMES' }[job.profile];
+  if (!binding || !env[binding]) throw Error('Python実行器が接続されていません。');
+  return env[binding].getByName(`${job.owner}:${job.id}`);
 }
 export async function timeSession(stub) {
   const listing = JSON.parse(await stub.tools());

@@ -1,12 +1,35 @@
 {
   "name": "noah-python-cloud-agents",
   "account_id": "ae3e6c52c0a9e50aab66a6e4184aa09e",
-  "main": "src/entry.py",
+  "main": "src/time_entry.py",
   "compatibility_date": "2026-10-01",
-  "compatibility_flags": ["python_workers"],
+  "compatibility_flags": [
+    "python_workers"
+  ],
   "workers_dev": false,
   "preview_urls": false,
-  "exports": { "NoahPythonJob": { "type": "durable-object", "storage": "sqlite" } },
-  "rules": [{ "type": "Data", "globs": ["vendor/**/*.yaml", "vendor/**/*.json", "vendor/**/*.txt", "vendor/**/*.md", "vendor/**/*.jinja2", "vendor/**/*.j2", "vendor/**/*.dist-info/*"], "fallthrough": true }],
-  "observability": { "enabled": false }
+  "exports": {
+    "NoahPythonJob": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  },
+  "rules": [
+    {
+      "type": "Data",
+      "globs": [
+        "vendor/**/*.yaml",
+        "vendor/**/*.json",
+        "vendor/**/*.txt",
+        "vendor/**/*.md",
+        "vendor/**/*.jinja2",
+        "vendor/**/*.j2",
+        "vendor/**/*.dist-info/*"
+      ],
+      "fallthrough": true
+    }
+  ],
+  "observability": {
+    "enabled": false
+  }
 }

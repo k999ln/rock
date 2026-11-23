@@ -29,7 +29,7 @@ class Model extends RpcTarget {
 export default {async fetch(request, env) {
   if (new URL(request.url).pathname === '/ready') return new Response('ready');
   if (new URL(request.url).pathname === '/busy') return Response.json({pending});
-  const input = await request.json(), stub = env.PYTHON.getByName(input.id), model = new Model(input);
+  const input = await request.json(), stub = env[{time:'PYTHON',boss:'PYTHON_BOSS',hermes:'PYTHON_HERMES'}[input.routeProfile||input.profile]].getByName(input.id), model = new Model(input);
   try {
     if(input.mode==='probe') return Response.json({ready:await stub.probe(input.profile)});
     if (input.profile === 'time') return Response.json({tools:JSON.parse(await stub.tools()),result:JSON.parse(await stub.call(input.tool,JSON.stringify(input.arguments)))});
