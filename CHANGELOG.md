@@ -1,4 +1,5 @@
 ## 2026-11-23
+- NoahのAgent詳細と棚のカードに、検査済みの札と接続計画から「渡す物 → 返る物」と工程の待ち順を表示する。6言語対応、審査者の設計図と表示を共用。実データの札付け・200系列の目視・一般公開は未完了（task 127、[PR #27](https://github.com/iceiceice999/rock/pull/27)）。
 - Noahの稼ぎ方の設計図に「何を待つか」の段と審査者向け詳細を移植し、task 127 の引継ぎを追加（[PR #25](https://github.com/iceiceice999/rock/pull/25)）。
 - Noahの「接続できる」検索に、有効な実行環境で対応している公式CLIを含める。詳細と同じ配布元・profile判定で、未設定や類似URLを除外し、カードの保存・評価IDとデザインを保持（[PR #23](https://github.com/iceiceice999/rock/pull/23)）。
 - Noah無料クラウド3種のブラウザ全終了後の成果保存・再表示・ファイル取得と停止を本番受入。保存済み添付の誤注記を補正（実行器 [PR #18](https://github.com/iceiceice999/rock/pull/18)、受入・表示補正 [PR #21](https://github.com/iceiceice999/rock/pull/21)）。
