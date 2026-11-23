@@ -63,6 +63,9 @@ export function screen(options = {}) {
     useContext: (held) => held.value,
   };
 
+  // The harness has no paint phase. Run layout effects in the existing effect queue.
+  hooks.useLayoutEffect = hooks.useEffect;
+
   const context = createContext({
     FormData: class {constructor(form){this.form=form;}get(key){return this.form.values?.[key]??null;}},
     console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController, AbortSignal,

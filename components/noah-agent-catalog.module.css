@@ -41,8 +41,8 @@
 .import { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 16px; padding: 20px; background: var(--os-raised); border-radius: 14px; }
 .notice, .error { display: block; margin: 20px 0; border: 1px solid var(--os-line); border-radius: 14px; padding: 22px; font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
 .error { border-color: #b85656; }
-.notice summary { cursor: pointer; min-height: 44px; }
-.notice pre { overflow-x: auto; font-size: 12px; }
+.notice summary, .publishedSpec summary { cursor: pointer; min-height: 44px; }
+.notice pre, .publishedSpec pre { overflow-x: auto; font-size: 12px; }
 .digest { display: block; overflow-wrap: anywhere; font-size: 11px; }
 .facts { display: grid; grid-template-columns: repeat(3, 1fr); border-block: 1px solid var(--os-line); padding: 22px 0; gap: 20px; }
 .facts div { display: grid; gap: 8px; }

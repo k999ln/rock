@@ -1,0 +1,13 @@
+.pinArt,.poster { position:absolute; inset:0; display:block; overflow:hidden; pointer-events:none; }
+.pinArt { color:var(--pin-ink); }
+.emblem { position:absolute; inset-inline-end:-4%; top:5%; width:42%; height:56%; opacity:.18; transform:rotate(-9deg); }
+.orbit { position:absolute; width:85%; aspect-ratio:1.65; inset-inline-start:-32%; bottom:5%; border:1px solid currentColor; border-radius:50%; opacity:.12; transform:rotate(-34deg); }
+.poster { z-index:-1; background-image:var(--noah-feature-image); background-position:var(--noah-feature-position,center); background-size:cover; }
+@media (prefers-reduced-motion:no-preference) {
+  .pinArt[data-entered] .emblem { animation: unfold 1.75s cubic-bezier(.2,.75,.2,1) both; }
+  .pinArt[data-entered] .orbit { animation: trace 2.2s ease-out both; }
+  .poster[data-entered] { animation: reveal 3.4s cubic-bezier(.18,.63,.23,1) both; }
+}
+@keyframes unfold { from { transform:translate(23%,16%) rotate(9deg) scale(.76); opacity:.04; } to { transform:rotate(-9deg); opacity:.18; } }
+@keyframes trace { from { transform:translateX(-22%) rotate(-12deg); opacity:.04; } to { transform:rotate(-34deg); opacity:.12; } }
+@keyframes reveal { from { transform:scale(1.12) translate(1.4%,-1%); } to { transform:scale(1); } }

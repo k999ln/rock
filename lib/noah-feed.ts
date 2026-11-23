@@ -2,10 +2,11 @@ import { boundedNoahBody } from './noah-agent-api.ts';
 import { NoahAgentError, noahSha256 } from './noah-agent-upload.ts';
 import { ownerScopeFor, OWNER_SCOPE_HEADER } from './owner-intent.ts';
 import type { SkyToolPackage } from './sky-tool-package.ts';
+import { isNoahAgentPackage } from './noah-agent-package-view.ts';
 import { noahRecommendationContext, noahRecommendationSettings } from './noah-recommendations.ts';
 
 export type NoahFeedPreference = { kind: 'follow' | 'hide' | 'interest' | 'personalize'; subject: string };
-export type NoahFeedEntry = { packageKey: string; toolId: string; version: string; digest: string; name: string; summary: string; authorId: string; author: string; categories: string[]; priceNote: string; publishedAt: number; reason: string };
+export type NoahFeedEntry = { isAgent: boolean; packageKey: string; toolId: string; version: string; digest: string; name: string; summary: string; authorId: string; author: string; categories: string[]; priceNote: string; publishedAt: number; reason: string };
 export type NoahFeedPage = { entries: NoahFeedEntry[]; nextCursor: string | null; preferences: NoahFeedPreference[]; ownerScope: string | null; snapshot: number };
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
 type FeedRow = { package_key: string; tool_id: string; manifest_sha256: string; manifest: string; published_at: number; score: number; followed: number; interest: number; history: number; compatible: number };
@@ -65,7 +66,7 @@ export function createNoahFeedApi(deps: { db: Pick<D1Database, 'prepare'>; authe
       const page = rows.results.slice(0, 20), last = page.at(-1);
       const entries: NoahFeedEntry[] = page.map(row => {
         const m = JSON.parse(row.manifest) as SkyToolPackage;
-        return { packageKey: row.package_key, toolId: row.tool_id, version: m.version, digest: row.manifest_sha256, name: m.name, summary: m.summary,
+        return { isAgent: isNoahAgentPackage(m), packageKey: row.package_key, toolId: row.tool_id, version: m.version, digest: row.manifest_sha256, name: m.name, summary: m.summary,
           authorId: m.developer.id, author: m.developer.displayName, categories: m.fund.categories, priceNote: m.pricing.note, publishedAt: row.published_at,
           reason: row.followed && (ranked || order === 'following') ? 'フォロー中の提供元' : ranked && row.interest ? '選んだ興味に関連' : ranked && row.history ? '同意後に利用したAgentの公開タグに関連' : ranked && row.compatible ? '選んだMacの実行方法に対応（接続状態は詳細で確認）' : '公開・更新されたAgentとTool' };
       });

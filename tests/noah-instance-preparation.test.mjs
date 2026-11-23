@@ -98,6 +98,7 @@ void test('version UI retries a known conflict with the latest revision, but pre
         if(id==='react')return react;if(id==='react/jsx-runtime')return{jsx,jsxs:jsx};if(id==='next/link')return{default:'a'};
         if(id==='@/lib/owner-intent')return{OWNER_SCOPE_HEADER:'X-Rock-Owner-Scope'};
         if(id==='@/lib/noah-visible-polling')return{startNoahVisiblePolling:polling.start};if(id==='./noah-instances')return shared;
+        if(id==='./noah-agent-pin')return{NoahAgentPin:'li',NoahAgentPinGrid:'ul'};
         if(id==='./workspace-shell'||id==='./noah-managed-installation')return{default:'section'};if(id.endsWith('.css'))return{default:{}};
         throw new Error('Unexpected import '+id);
       }});return exports;

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { startNoahVisiblePolling } from '@/lib/noah-visible-polling';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import styles from './noah-agent-catalog.module.css';
 import NoahExecutionPanel from './noah-execution-panel';
 import { NoahInstanceAdd } from './noah-instances';
@@ -88,7 +89,8 @@ export function NoahInstallationsList() {
     {error && <output>{error}</output>}
     {loading && <output>このMacの接続状態を確認中…</output>}
     {!loading && !rows.length && !error && <p>タイムラインの詳細で「接続する」を押すと、ここに追加されます。</p>}
-    <ul>{rows.map(r => <li key={r.id}><Link href={`/noah/agents/${r.id}`}>{r.name}</Link> — {labels[r.state] || r.state}</li>)}</ul>
+    <NoahAgentPinGrid>{rows.map(installation => <NoahAgentPin key={installation.id} id={installation.id}
+      name={installation.name} href={`/noah/agents/${installation.id}`} meta={labels[installation.state] || installation.state} />)}</NoahAgentPinGrid>
     <Link href="/noah/explore">Agentを探す →</Link>
   </section>;
 }

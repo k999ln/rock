@@ -13,6 +13,8 @@ void test('live catalog refreshes evidence, filters usable bodies, and expires a
     return {body:{asOf:now,total:786,available:1,connected:0,items:[{id:product.id,familyId:'f',projectId:'p',status:'available',checkedAt:now,succeededAt:now,expiresAt:now+15000,href:'/noah/discover/agent?id=p'}]}};
   }});
   const view=ui.mount('components/noah-verified-agents.tsx');await view.flush();
+  assert.equal(view.find('li').filter(node => node.props['data-agent-pin-id'] === product.familyId).length, 1);
+  assert.equal(view.find('a', product.name)[0].props.href, '/noah/discover/agent?id=p');
   assert.equal(view.find('a','Noahで使う').length,1);
   await view.change(view.find('select').find(n=>n.props['aria-label']==='稼働状態で絞り込む'),'available');
   assert.ok(view.text().includes('Car Agent'));

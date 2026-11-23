@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {existsSync,readFileSync} from 'node:fs';
 import {noahPageHref,noahPageTab,NOAH_EXPLORE_TABS} from '../lib/noah-page-routes.ts';
 import {noahPageRedirect} from '../services/sky-web/noah-page-routes.mjs';
+import * as agentLibrary from '../lib/sky-agent-library.ts';
+import * as providers from '../lib/llm-providers.ts';
 import * as myRoutes from '../lib/noah-my-routes.ts';
 import {screen} from './fixtures/noah/screen.mjs';
 
@@ -34,6 +36,59 @@ void test('each saved type still renders its existing store-backed reader from o
   if(tab==='files')assert.equal(p.find('section').find(x=>x.props.initialWorkJobId)?.props.initialWorkJobId,'saved-job');
  }
  const ui=screen({modules});assert.match(ui.mount('components/noah-saved.tsx',{params:{tab:'boards',board:'board-one'}}).text(),/BOARD board-one/);
+});
+void test('personal library pin faces open the owned upload, shared invitation and entitled release; search only filters uploads', async () => {
+ const modules = {
+  './workspace-shell': {default: ({children}) => children},
+  './noah-instances': {NoahInstancesList: () => null},
+  './noah-managed-installation': {NoahInstallationsList: () => null},
+  './noah-agent-catalog': {adapterLabels: {web: '専用Web画面'}},
+ };
+ const manifest = {name:'Calendar Agent', summary:'Meetings', version:'1.1', adapter:'web'};
+ const library = {ownerScope:'owner', uploads:[{id:'upload', manifest, uploadState:'ready'}],
+  releases:[{packageKey:'package@1', manifestSha256:'release', name:'Market Agent', version:'1.0'}],
+  roles:[{id:'role', name:'Writing Agent', model:'local', enabled:false}]};
+ const invite = {inviteId:'invitation', uploadId:'shared', manifest:{...manifest,name:'Shared Agent'}, expiresAt:1000, access:'source'};
+ const ui = screen({modules, fetch:async ({url}) => {
+  if (url === '/api/noah/library') return {body:library};
+  assert.equal(url, '/api/noah/invites?received=1');
+  return {body:{ownerScope:'owner',shared:[invite]}};
+ }});
+ const view = ui.mount('components/noah-library.tsx', {embedded:true}); await view.flush();
+ const ids = () => view.find('li').map(node => node.props['data-agent-pin-id']);
+ assert.deepEqual(ids(), ['package@1', 'upload', 'shared', 'role']);
+ for (const [name,href] of [['Calendar Agent','/noah/agents/upload'],['Shared Agent','/noah/invites/invitation'],['Market Agent','/noah/releases/release']]) {
+  assert.equal(view.find('a',name)[0].props.href, href);
+ }
+ assert.match(view.text(), /閲覧・コード取得/);
+ assert.match(view.text(), /利用停止中/);
+ await view.type('no match');
+ assert.deepEqual(ids(), ['package@1', 'shared', 'role']);
+ assert.ok(ui.calls.every(call => call.method === 'GET'));
+});
+void test('selecting a saved Agent pin opens settings and protects an unsaved edit', async () => {
+ const empty = {default:() => null};
+ const modules = {
+  './noah-navigation':empty, '@/components/workspace-shell':empty, '@/components/sky-agent-capability-review':empty,
+  '@/components/sky-owned-agents':empty, '@/components/sky-device-agent-connections':empty,
+  '@/components/sky-commerce':{SkyPurchases:() => null}, '@/components/sky-feedback':{SkyNotice:() => null},
+  '@/lib/sky-agent-library':agentLibrary, '@/lib/llm-providers':providers,
+ };
+ const agents = ['Writing Agent','Coding Agent'].map((name, index) => ({
+  ...agentLibrary.defaultSkyAgentSettings(name, name), name, source:'personal', id:'agent-' + index, revision:1,
+ }));
+ const ui = screen({modules, fetch:async ({url}) => {
+  assert.equal(url, '/api/sky/agents'); return {body:{agents,ownerUserId:'owner'}};
+ }});
+ const view = ui.mount('components/sky-agent-library.tsx', {embedded:true,pinView:true}); await view.tick(0);
+ assert.deepEqual(view.find('li').map(node => node.props['data-agent-pin-id']), agents.map(agent => agent.id));
+ await view.click(agents[0].name);
+ assert.equal(view.find('button', agents[0].name)[0].props['aria-pressed'], true);
+ await view.change(view.find('input').find(node => node.props.value === agents[0].name), 'Edited');
+ assert.equal(view.find('button', agents[1].name)[0].props.disabled, true);
+ await view.click('変更を破棄');
+ assert.equal(view.find('button', agents[1].name)[0].props.disabled, false);
+ assert.ok(ui.calls.every(call => call.method === 'GET'));
 });
 void test('the three My Agent sections restore from their URLs and old library and saved links select the correct personal reader',()=>{
  const child=name=>({default:props=>({type:'section',props:{...props,children:name}})});
