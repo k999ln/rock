@@ -8,21 +8,23 @@ import NoahReadyDetail from './noah-ready-detail';
 import NoahLoading from './noah-loading';
 import NoahCloudAgent from './noah-cloud-agent';
 import NoahProviderRunner from './noah-provider-runner';
+import { useNoahLocale } from './noah-locale';
 import styles from './noah-project-detail.module.css';
 
-export default function NoahProjectDetail({ id }: { id: string }) {
+export default function NoahProjectDetail({ id, firstJob }: { id: string; firstJob?: string }) {
+  const { t } = useNoahLocale();
   const [detail, setDetail] = useState<Detail | null>(null), [error, setError] = useState(''), [attempt, setAttempt] = useState(0);
   const [opening, setOpening] = useState(false), [url, setUrl] = useState(''), [frameLoaded, setFrameLoaded] = useState(false), [slow, setSlow] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
-    void fetch(`/api/noah/discover/project?${new URLSearchParams({ id })}`, { cache: 'no-store', signal: controller.signal })
+    void fetch(`/api/noah/discover/project?${new URLSearchParams(firstJob ? { id, firstJob } : { id })}`, { cache: 'no-store', signal: controller.signal })
       .then(async response => {
         const body = await response.json() as Detail & { error?: string };
         if (!response.ok) throw Error(body.error || 'Agentを読み込めません。');
         if (!controller.signal.aborted) setDetail(body);
       }).catch(e => { if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Agentを読み込めません。'); });
     return () => controller.abort();
-  }, [id, attempt]);
+  }, [id, firstJob, attempt]);
   useEffect(() => {
     if (!url || frameLoaded) return;
     const timer = setTimeout(() => setSlow(true), 15000);
@@ -41,6 +43,23 @@ export default function NoahProjectDetail({ id }: { id: string }) {
       setUrl(target.href);
     } catch (e) { setError(e instanceof Error ? e.message : '接続できませんでした。'); }
     finally { setOpening(false); }
+  }
+  if (firstJob) {
+    const job = detail?.firstJob?.id === firstJob ? detail.firstJob : undefined;
+    return <main className={styles.page}>
+      <Link className={styles.back} href="/noah#first-jobs">← {t('目的を選び直す')}</Link>
+      {!detail && !error && <NoahLoading label={t('仕事の受付を確認しています…')} />}
+      {error && <div className={styles.error} role="alert"><p>{t(error)}</p><button type="button" onClick={() => { setError(''); setAttempt(n => n + 1); }}>{t('読み直す')}</button></div>}
+      {detail && (!job ? <p><output>{t('この仕事は現在利用できません。別の目的を選んでください。')}</output></p> : <>
+        <header><h1>{t(job.title)}</h1><dl className={styles.jobFacts}>
+          <div><dt>{t('用意するもの')}</dt><dd>{t(job.input)}</dd></div>
+          <div><dt>{t('受け取れるもの')}</dt><dd>{t(job.output)}</dd></div>
+        </dl></header>
+        {job.operation && detail.connection.kind === 'setup' && <NoahProviderRunner key={id} projectId={id} operation={job.operation}/>}
+        {job.id === 'memory' && detail.connection.kind === 'cloud' && detail.connection.profile === 'memory' && <NoahCloudAgent key={id} projectId={id} profile="memory" providerFamilyId={null}/>}
+      </>)}
+      <Link className={styles.back} href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>
+    </main>;
   }
   return <div className={styles.page}>
     <Link className={styles.back} href="/noah">← Agentを探す</Link>
