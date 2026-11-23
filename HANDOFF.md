@@ -27,7 +27,17 @@ Claude のセッションには k999ln/rock（旧リポジトリ）が付いて�
 
 main は 23:0x に PR #37（Agent Store）が入って `f285200f` になった。5〜7 は、それを merge 済み（ぶつかった所は Claude が解いた。応答の見出しの確かめも測り直した）。1〜3 はぶつからない。4 は `CHANGELOG.md` だけがぶつかる（`tools/merge-changelog.py` で両方の行を残せる）。どの枝も migration を足していない（`drizzle/` を触っていない）。
 
-## 今の状態（11-24 01:50。これが最新）
+## 今の状態（11-24 05:35。これが最新）
+
+- **公開は済んだ**: 別スレッドの PR #50（noah-sites-v227-reconcile）が #41 の画面を main に入れ（main `06bfe89e`。Q4 の `noahCardOrigin` は残った）、05:18 ごろ別スレッドが main から avoado.si を出した。#41 待ちは終わり。`claude/ice2/pr41-on-main-2` はもう要らない。
+- 本番で確かめた（Claude、05:18〜05:26）: entitlement-deliveries 401（main の版）、受入 16/16、一周の行 1・2・3・4・6・7・10（5 は本番では送らない）、画面（検索「画像」3 件・広告の表示・スマホのメニューにココナラ無し・受取口座と本人確認はサインインした本人だけ）、Mac だけのメニュー（Mac 1・Linux 0）、6 画面ではみ出し 0。`/api/noah/trial?me=1` の 404 は、試行の切り替えが閉じているからで、決めた通り（`lib/noah-trial-api.ts`）。
+- **残っていた小さい押す所 1 つ**（/noah の「注目のAgent」の「すべて見る」73×40px）の直し: `claude/ice2/noah-store-heading-tap`（`682fceabf4974b1428caa245aa42548feafd7e24`、main `ca38ad01` の上）。`.listHeading a` の min-height 40→44px、試験 `tests/noah-store-heading-tap.test.mjs`（直す前は落ちる）、00-index の 129 の行（D1・D3・D4・D7・D9・D10・D11 は済み）、CHANGELOG の仮の印 `HEADINGTAP`。
+- Codex のチャット（「修正して avoado.si を再公開」）に、追記12（#51 の後で、今の公開が main ≥ `06bfe89e` から出ているかを確かめるだけ）と追記13（上の直しの PR・マージ・main から 1 回公開。AGENTS.md の 8 の確かめ、本番 D1 の migration はしない、0060 は未適用のまま）が並んでいる。05:33 に Mac が眠って、そこで止まっている。
+- PR #51（300 人の試行のお金の決め。docs 5 file だけ、先 `b4cbd43b`）は CI 中。緑ならマージ。
+- 無料 Worker の配り直しは、まだ本人の Cloudflare の承認待ち（Wrangler の OAuth が時間切れ）。
+- 300 人の利益の試算は Sheets「Noah 300人の利益試算」（https://claude.ai/artifact/KsF5u8VBCtGvhHB4xwYFUJ）。本人の答え: 収益は会社が回す Agent の売上、300 人が集まるまで（3 か月）は無料で本人の分も配らない、本人の分は余剰の 75%、有料 600 円、作った人の分 20%、買い手を連れてくる割合はわからない（1 段目で測る）。
+
+## 今の状態（11-24 01:50）
 
 - 9 本は全部 main に入った（#38・#40・#42・#43）。クラウドの直し（無料のクラウドを neuron で数える）も #44 で入った（main `6283f6a6`）。
 - **無料 Worker の配り直しは、本人の Cloudflare のログイン待ち**: Mac の Wrangler に旧アカウント（`noah-free-cloud-agents` がある方）への有効なログインが無い。本人がログインしたら、`services/noah-cloud-agents` で `npm ci`、`npx wrangler deploy --config ./wrangler.free.jsonc`、`/health` と配った版を報告する。パスワード・トークンは扱わない。Sites と Worker は、どちらを先に出しても動く。
