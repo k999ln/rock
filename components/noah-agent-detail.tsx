@@ -9,7 +9,8 @@ import type { NoahUpload } from '@/lib/noah-agent-store';
 import { adapterLabels } from './noah-agent-catalog';
 import { permissionLabels } from './noah-agent-upload-form';
 import styles from './noah-agent-catalog.module.css';
-import { noahPinInitials } from '@/lib/noah-pins';
+import { NOAH_COVER_TYPES, noahPrivateCoverUrl } from '@/lib/noah-cover';
+import { NoahPinMotion } from './noah-art-motion';
 import NoahLocalConnectionPanel from './noah-local-connection';
 import NoahManagedInstallation from './noah-managed-installation';
 import { NoahInviteManager } from './noah-invites';
@@ -19,6 +20,7 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
   const [upload, setUpload] = useState<NoahUpload | null>(null), [scope, setScope] = useState('');
   const [error, setError] = useState(''), [message, setMessage] = useState(''), [pending, setPending] = useState(false);
   const [launchUrl, setLaunchUrl] = useState(''), [attempt, setAttempt] = useState(0), [confirmDelete, setConfirmDelete] = useState(false);
+  const [retryCover, setRetryCover] = useState<File | null>(null);
   const [retrySource, setRetrySource] = useState<File | null>(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -68,14 +70,16 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
     catch (e) { setError((e as Error).message); } finally { setPending(false); }
   }
   async function retryUpload() {
-    if (!upload || !scope || !retrySource || pending) return;
+    if (!upload || !scope || (upload.original && !retrySource) || (!retrySource && !retryCover) || pending) return;
     setPending(true); setError('');
     try {
-      const form = new FormData(); form.set('id', upload.id); form.set('manifest', JSON.stringify(upload.manifest)); form.set('rightsConfirmed', 'true'); form.set('source', retrySource);
+      const form = new FormData(); form.set('id', upload.id); form.set('manifest', JSON.stringify(upload.manifest)); form.set('rightsConfirmed', 'true');
+      if (retrySource) form.set('source', retrySource);
+      if (retryCover) form.set('cover', retryCover);
       const response = await fetch('/api/noah/agents', { method: 'POST', headers: { [OWNER_SCOPE_HEADER]: scope }, body: form });
       const data = await response.json() as { agent: NoahUpload; error?: string };
       if (!response.ok) throw new Error(data.error || 'ファイルを保存できません。');
-      setUpload(data.agent); setRetrySource(null); setMessage('ファイルの保存が完了しました。');
+      setUpload(data.agent); setRetrySource(null); setRetryCover(null); setMessage('ファイルの保存が完了しました。');
     } catch (e) { setError((e as Error).message); } finally { setPending(false); }
   }
   return <div className={`${styles.page} ${styles.formPage}`}>
@@ -83,7 +87,7 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
     {error && <div role="alert" className={styles.error}>{error} {!m && <button onClick={() => setAttempt(n => n + 1)}>再試行</button>}</div>}
     {!m && !error && <output>読み込んでいます…</output>}
     {m && <>
-      <header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true">{noahPinInitials(m.name)}</span><div><h1>{m.name}</h1><p>{builtin ? '外部Agent' : '自分のAgent'}</p></div></header>
+      <header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true"><NoahPinMotion id={id} name={m.name} summary={m.summary} cover={m.cover && upload?.uploadState === 'ready' ? {type:m.cover.type,url:noahPrivateCoverUrl(id)} : undefined} /></span><div><h1>{m.name}</h1><p>{builtin ? '外部Agent' : '自分のAgent'}</p></div></header>
       <p className={styles.productSummary}>{m.summary}</p>
       <div className={styles.facts}><div><small>接続方式</small><strong>{builtin ? '背景実行・本人Codex接続' : m.runtime ? 'ターミナル用テンプレート' : testConnection ? 'テストAgent接続' : adapterLabels[m.adapter]}</strong></div><div><small>作者 / 版</small><strong>{m.author} / {m.version}</strong></div><div><small>実行する場所</small><strong>{builtin || m.runtime ? 'このMacの隔離環境' : testConnection ? 'クラウド / このMac' : m.adapter === 'source' ? '未設定' : m.adapter === 'local_app' ? '隔離環境の対応待ち' : '接続先のサービス'}</strong></div></div>
       {testConnection && upload?.uploadState === 'ready' && <NoahLocalConnectionPanel key={id + scope} id={id} ownerScope={scope} />}
@@ -92,7 +96,10 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
         {m.endpointUrl && <p>{testConnection ? '元の登録URL（テストでは使用しません）' : '接続先'}：<a href={m.endpointUrl} target="_blank" rel="noopener noreferrer">{m.endpointUrl}</a></p>}
         {m.sourceUrl && <p><a href={m.sourceUrl} target="_blank" rel="noopener noreferrer">ソースを見る ↗</a></p>}
       </section>
-      {upload?.uploadState === 'pending' ? <div className={styles.notice}><p>ファイルの保存が未完了です。元と同じ「{upload.original?.name || upload.source?.name}」を選んで再試行してください。</p><label>再送する原本ファイル<input type="file" disabled={pending} onChange={e => setRetrySource(e.target.files?.[0] || null)} /></label><button disabled={!retrySource || pending} onClick={() => void retryUpload()}>アップロードを再試行</button></div> :
+      {upload?.uploadState === 'pending' ? <div className={styles.notice}><p>ファイルの保存が未完了です。登録時と同じファイルで再試行できます。</p>
+        {upload.original && <label>再送する原本ファイル · {upload.original.name}<input type="file" disabled={pending} onChange={e => setRetrySource(e.target.files?.[0] || null)} /></label>}
+        {m.cover && <label>未保存のカバーを再送<input type="file" accept={NOAH_COVER_TYPES.join(',')} disabled={pending} onChange={e => setRetryCover(e.target.files?.[0] || null)} /></label>}
+        <button disabled={Boolean(upload.original && !retrySource) || (!retrySource && !retryCover) || pending} onClick={() => void retryUpload()}>アップロードを再試行</button></div> :
         !testConnection && !builtin && m.adapter !== 'source' && <div className={styles.actions}><button className={styles.primary} disabled={pending} onClick={() => void connect()}>{pending ? '確認しています…' : '接続する'}</button>
           {launchUrl && <a className={styles.primary} href={launchUrl} target="_blank" rel="noopener noreferrer">{m.adapter === 'local_app' ? 'Aniccaの設定画面を開く ↗' : 'Agentを使う ↗'}</a>}
           {launchUrl && m.adapter === 'local_app' && <button disabled={pending} onClick={() => void disconnectLocal()}>設定画面を停止</button>}</div>}

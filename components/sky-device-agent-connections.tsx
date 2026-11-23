@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { NoahAgentPin, NoahAgentPinGrid } from './noah-agent-pin';
 import Link from 'next/link';
 import {
   skyEveDevicePath,
@@ -13,9 +14,9 @@ import styles from './sky-device-agent-connections.module.css';
 
 /** Reuse Eve's authenticated presence. Do not install, copy, or run agents here. */
 export default function SkyDeviceAgentConnections({
-  ownerUserId,
+  ownerUserId, pinView = false,
 }: {
-  ownerUserId: string;
+  ownerUserId: string; pinView?: boolean;
 }) {
   const [devices, setDevices] = useState<EveExecutionPresence[]>([]);
   const [notice, setNotice] = useState('端末の担当を確認しています…');
@@ -99,6 +100,7 @@ export default function SkyDeviceAgentConnections({
       clearInterval(clock);
     };
   }, [ownerUserId]);
+  const AgentList = pinView ? NoahAgentPinGrid : Fragment;
   return (
     <section
       className={styles.deviceConnections}
@@ -107,44 +109,27 @@ export default function SkyDeviceAgentConnections({
       <h2>接続した端末の担当</h2>
       <p>{notice}</p>
       {devices.map((device) => (
-        <div key={device.deviceId} className={styles.deviceGroup}>
+        <div key={device.deviceId} className={pinView ? styles.pinGroup : styles.deviceGroup}>
           <h3>{device.name}</h3>
-          {device.agents.map((agent) => {
+          <AgentList>{device.agents.map((agent) => {
             const model = device.models.find((m) => m.id === agent.modelId);
             const state = skyEveDeviceState(device, agent.id, observedAt);
-            return (
-              <article key={agent.id}>
-                <strong>{agent.name}</strong>
-                <dl>
-                  <div>
-                    <dt>基盤モデル</dt>
-                    <dd>{model?.name ?? '未確認'}</dd>
-                  </div>
-                  <div>
-                    <dt>実行先</dt>
-                    <dd>{device.name}</dd>
-                  </div>
-                </dl>
-                <p>{state.label}</p>
-                {model && (
-                  <Link
-                    prefetch={false}
-                    href={skyEveDevicePath({
-                      deviceId: device.deviceId,
-                      agentId: agent.id,
-                      agentSha256: agent.sha256,
-                      modelSha256: model.sha256,
-                      ...(isEveRuntimePresence(device) && 'scheme' in model
-                        ? { modelScheme: model.scheme }
-                        : {}),
-                    })}
-                  >
-                    この担当をEveで開く
-                  </Link>
-                )}
-              </article>
-            );
-          })}
+            const href = model ? skyEveDevicePath({
+              deviceId: device.deviceId, agentId: agent.id, agentSha256: agent.sha256, modelSha256: model.sha256,
+              ...(isEveRuntimePresence(device) && 'scheme' in model ? { modelScheme: model.scheme } : {}),
+            }) : undefined;
+            if (pinView) return <NoahAgentPin key={agent.id} id={agent.id} name={agent.name} href={href} prefetch={false}
+              meta={<>基盤モデル · {model?.name ?? '未確認'}<br />実行先 · {device.name}<br />{state.label}{href && <> · この担当をEveで開く</>}</>} />;
+            return <article key={agent.id}>
+              <strong>{agent.name}</strong>
+              <dl>
+                <div><dt>基盤モデル</dt><dd>{model?.name ?? '未確認'}</dd></div>
+                <div><dt>実行先</dt><dd>{device.name}</dd></div>
+              </dl>
+              <p>{state.label}</p>
+              {href && <Link prefetch={false} href={href}>この担当をEveで開く</Link>}
+            </article>;
+          })}</AgentList>
         </div>
       ))}
       <Link href="/connect/device">端末を接続・解除する</Link>

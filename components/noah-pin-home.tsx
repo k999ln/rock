@@ -9,7 +9,7 @@ import { NOAH_PIN_TOPIC_LABELS } from '@/lib/noah-pins';
 import { NOAH_COLLECTION_LABELS, NOAH_COLLECTION_SOURCES } from '@/lib/noah-collection';
 import NoahPinGrid, {type NoahPinView} from './noah-pin-grid';
 import NoahLoading from './noah-loading';
-import NoahStoreEntry from './noah-store-entry';
+import NoahStoreEntry, { NoahStoreServices } from './noah-store-entry';
 import styles from './noah-pins.module.css';
 const purposeSections = [
   { title: 'お店・会社のサイト運営', ids: ['wordpress-maintenance', 'ec-production'] },
@@ -105,6 +105,7 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='noah
       <Link href="/noah/saved?tab=results">{t('保存した成果を見る')}</Link>
     </nav>
   </section>}
+  {showFirstJobs && <NoahStoreServices />}
   <section id="noah-collection" className={styles.home} aria-label="Agent一覧">
     <div className={styles.feedHeading}><h2>{t(searchQuery ? '検索結果' : source && source!=='noah' ? '新しく見つかったAgent' : 'Agentを見つける')}</h2>{current?.page && <span>{current.page.total.toLocaleString('ja-JP')}件</span>}</div>
     <div className={styles.catalogTools}><div className={styles.filters} aria-label="Agentを絞り込む">{[['noah','接続できる'],['','すべて'],['discovered','新しく見つかった']].map(([value,label])=><button key={value} type="button" aria-pressed={source===value} onClick={()=>chooseSource(value)}>{label}</button>)}</div>
@@ -121,7 +122,7 @@ export default function NoahPinHome({fallback,searchQuery='',initialSource='noah
     {!current && <NoahLoading label="読み込んでいます…" variant="cards"/>}
     {current?.error && <div role="alert" className={styles.status}>{current.error}<button type="button" className={styles.recovery} onClick={()=>current.page?void more():setAttempt(n=>n+1)}>再試行</button></div>}
     {current?.page?.items.length===0 && <p className={styles.status}>この条件のAgentはまだありません。</p>}
-    {current?.page && <NoahPinGrid presentation="store" items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
+    {current?.page && <NoahPinGrid items={current.page.items} signedIn={current.page.ownerScope!==null} ownerScope={current.page.ownerScope} onChange={(id,savedIn)=>setState(old=>old?.key===key && old.page?{...old,page:{...old.page,items:old.page.items.map(i=>i.id===id?{...i,savedIn}:i)}}:old)} onHide={id=>void hide(id)}/>}
     {current?.page?.nextCursor && <div className={styles.moreRow}><button type="button" disabled={current.more} onClick={()=>void more()}>{current.more?'読み込み中…':'もっと見る'}</button></div>}
     {current?.error && !current.page && fallback}
   </section></>;
