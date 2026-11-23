@@ -40,6 +40,11 @@ void test('provider complete containing an authentication exception is not a suc
   await assert.rejects(providerResult(['Error during processing: litellm.AuthenticationError: API key not valid'], origin));
   await assert.rejects(providerResult([{error:'authentication failed'}], origin));
 });
+void test('known shared private-data demos cannot be probed or executed as public Agent connections', async t => {
+  const f=fixture(t,async()=>{throw Error('must not contact held provider');});
+  const runtime=createNoahProviderRuntime({...f.deps,providerDirectory:async()=>[{card:{id:projectId,name:'Shared demo',href:'https://huggingface.co/spaces/Americo/Agente_Analista',sources:[]},families:[]}]});
+  await assert.rejects(runtime.plan(projectId),e=>e.status===422&&e.message.includes('本人専用'));
+});
 function setup(t, overrides = {}) {
   const state = {
     info: info(),

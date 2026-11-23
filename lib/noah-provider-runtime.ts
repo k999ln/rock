@@ -5,6 +5,7 @@ import { noahProjectDetail } from './noah-project-api.ts';
 import { resolveNoahProvider } from './noah-provider-resolve.ts';
 import { prepareProviderMcp, providerMcpInput, callProviderMcp } from './noah-provider-mcp.ts';
 import { noahAllowed } from './noah-flags.ts';
+import { noahHostedProviderHeld } from './noah-hosted-provider-policy.ts';
 import { noahProviderManifest, noahReviewedAgentEndpoint, type AvailabilityObservation } from './noah-agent-availability.ts';
 import {
   prepareProvider,
@@ -87,6 +88,8 @@ export function createNoahProviderRuntime(deps: ProviderDependencies) {
     if (!entry) return reject('このAgentは現在掲載されていません。', 404);
     const { connection } = noahProjectDetail(entry);
     const target = connection.kind === 'space' ? connection : await resolveNoahProvider(entry, fetcher);
+    if (target.kind === 'space' && noahHostedProviderHeld(target.repository))
+      return reject('この公開環境は、利用者ごとのデータ分離または外部操作の権限を確認する必要があります。本人専用の接続を準備してください。', 422);
     const prepared = target.kind === 'space' ? await prepareProvider(target.repository, fetcher) : await prepareProviderMcp(target.url, fetcher, deps.probeCheck);
     for (const endpoint of prepared.endpoints)
       endpoint.digest = await noahSha256(
