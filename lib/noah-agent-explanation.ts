@@ -16,7 +16,13 @@ export type NoahExplanation = {
   produces: readonly NoahMaterial[];
   steps: readonly NoahStep[];
   showMaterials?: false;
+  /** false の時は、上の「渡す物 → 返る物」の箱だけを出さない（道具ごとの受け取る物は出す）。 */
+  ioSummary?: false;
 };
+
+/** 握手で取れた tools/list の定義から、推測なしで読める部分だけを残した形。 */
+export type NoahToolField = { field: string; type: string | null; required: boolean };
+export type NoahToolDefinition = { name: string; inputs: readonly NoahToolField[]; outputs: readonly NoahToolField[] | null };
 
 const OWNER_REASONS = {
   account: 'この Agent への接続は本人のアカウントに保存されます。',
@@ -64,6 +70,34 @@ export function noahAgentConnectionExplanation(plan: readonly NoahPlanStep[], bl
     { id: 'usage:request', kind: 'tap', label: '依頼する', after: ['connect:open'] },
   ];
   return { consumes: [], produces: [], steps: steps.map(({ flow: _flow, ...step }) => step), showMaterials: false };
+}
+
+const TYPE_LABEL: Record<string, string> = {
+  string: '文字', number: '数', integer: '数', boolean: 'はい・いいえ', array: '一覧', object: 'まとまり',
+};
+
+/** 項目名と型だけを書く。物の名前は作らない。 */
+export function noahToolFieldLabel({ field, type, required }: NoahToolField): string {
+  const kind = type ? TYPE_LABEL[type] ?? type : null;
+  return `${field}${kind ? `（${kind}${required ? '' : '・任意'}）` : required ? '' : '（任意）'}`;
+}
+
+export const NOAH_TOOL_CHOICE_NOTE = '依頼の内容に合う道具を Agent が選んで使います。道具どうしで何が渡るかは確かめていないため、線は引いていません。';
+
+/**
+ * 札が無い Agent でも、tools/list の定義に書いてある道具と入力項目は出せる。
+ * 道具どうしの受け渡しは定義からは分からないので線を引かず、同じ段に並べる。
+ */
+export function noahAgentToolListExplanation(plan: readonly NoahPlanStep[], tools: readonly NoahToolDefinition[]): NoahExplanation | null {
+  if (!tools.length || new Set(tools.map((tool) => tool.name)).size !== tools.length) return null;
+  const base = noahAgentConnectionExplanation(plan, false);
+  const toolSteps: NoahStep[] = tools.map((tool, index) => ({
+    id: `tool:${index}`, kind: 'auto', label: tool.name, after: ['usage:request'], waitNote: NOAH_TOOL_CHOICE_NOTE,
+    flow: { inputs: tool.inputs.map(noahToolFieldLabel), ...(tool.outputs ? { outputs: tool.outputs.map(noahToolFieldLabel) } : {}) },
+  }));
+  const steps = [...base.steps, ...toolSteps];
+  if (noahBlueprintWaitProblem(steps)) return null;
+  return { consumes: [], produces: [], steps, ioSummary: false };
 }
 
 const GENERIC_MATERIALS = new Set<NoahMaterial>(['text', 'code', 'notes', 'topic', 'csv']);

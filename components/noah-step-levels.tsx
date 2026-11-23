@@ -70,7 +70,8 @@ export type NoahStepLevelsProps<T extends NoahStep = NoahStep> = {
   capabilityLabels?: Readonly<Record<string, NoahStepCapabilityLabel>>;
   flowLabel?: (label: FlowLabel) => string;
   materialLabel?: (material: string) => string;
-  showMaterials?: boolean;
+  /** 'flow' の時は、受け渡しの記録（flow）がある工程だけに「受け取る物 → 返る物」を出す。 */
+  showMaterials?: boolean | 'flow';
 };
 
 /** 設計図・棚カード・Agent の説明で使う共通の段表示。 */
@@ -106,7 +107,8 @@ export function NoahStepLevels<T extends NoahStep>({
               const capability = s.capability
                 ? capabilityLabels[s.capability]
                 : undefined;
-              const links = showMaterials ? s.flow?.dataFrom ?? [] : [];
+              const io = showMaterials === 'flow' ? Boolean(s.flow) : showMaterials;
+              const links = io ? s.flow?.dataFrom ?? [] : [];
               const gate = s.kind === 'review' || s.flow?.gate;
               const describe = (items: readonly string[] | undefined) => items
                 ? items.map(materialLabel).join('・') || flowLabel(FLOW_LABELS.none)
@@ -133,7 +135,7 @@ export function NoahStepLevels<T extends NoahStep>({
                       {new Set(links.map(({ from }) => from)).size > 1 && <span className={styles.tag}>{flowLabel(FLOW_LABELS.collect)}</span>}
                       {s.label}
                     </span>
-                    {showMaterials && <span className={styles.stepIo}>
+                    {io && <span className={styles.stepIo}>
                       <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.receives)}</span>{describe(s.flow?.inputs)}</span>
                       <span className={styles.stepArrow} aria-hidden="true" />
                       <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.returns)}</span>{describe(s.flow?.outputs)}</span>

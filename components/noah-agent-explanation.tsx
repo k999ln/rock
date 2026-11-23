@@ -33,19 +33,20 @@ export function NoahExplanationSection({ explanation, summary, summaryJa, connec
   });
   const materialList = (items: NoahExplanation['consumes']) => items.length ? <ul>{items.map((item) => <li key={item}>{t(NOAH_MATERIALS[item])}</li>)}</ul> : t('なし');
 
-  return <section className={styles.explanation} data-noah-explanation={flow.showMaterials === false ? 'steps' : 'materials'}>
+  return <section className={styles.explanation} data-noah-explanation={flow.showMaterials === false ? 'steps' : flow.ioSummary === false ? 'tools' : 'materials'}>
     <h2>{t(card ? 'このカードでできる事' : 'この Agent でできる事')}</h2>
     {intro && <p className={styles.explanationSummary}>{intro}</p>}
     {translated && <details className={styles.explanationSource}>
       <summary>{t('自動翻訳')} · {t('原文')}</summary><p>{summary}</p>
     </details>}
-    {flow.showMaterials !== false && <dl className={styles.explanationIo}>
+    {flow.showMaterials !== false && flow.ioSummary !== false && <dl className={styles.explanationIo}>
       <div><dt>{t('渡す物')}</dt><dd>{materialList(flow.consumes)}</dd></div>
       <span aria-hidden="true">{locale === 'ar' ? '←' : '→'}</span>
       <div><dt>{t('返る物')}</dt><dd>{materialList(flow.produces)}</dd></div>
     </dl>}
     <p className={styles.explanationHint}>{t('同じ段の工程は並行して進められます。')}</p>
-    <NoahStepLevels steps={steps} flowLabel={t} showMaterials={flow.showMaterials !== false}
+    {flow.ioSummary === false && <p className={styles.explanationHint}>{t('道具の段は、依頼の内容に合うものを Agent が選んで使います。受け取る物は道具の定義に書かれた項目です。')}</p>}
+    <NoahStepLevels steps={steps} flowLabel={t} showMaterials={flow.showMaterials === false ? false : flow.ioSummary === false ? 'flow' : true}
       materialLabel={(material) => t(Object.hasOwn(NOAH_MATERIALS, material) ? NOAH_MATERIALS[material as NoahMaterial] : material)}
       labels={{
       ariaLabel: t('工程の段（横に並ぶ工程は同時に進む）'),

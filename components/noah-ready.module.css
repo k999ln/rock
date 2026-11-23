@@ -38,6 +38,8 @@
 .explanationSummary { margin:0 0 12px; color:#52525b; font-size:13px; line-height:1.65; }
 .explanationSource { margin:0 0 12px; color:#52525b; font-size:12px; }
 .explanationSource summary { min-height:32px; color:#7546c8; cursor:pointer; }
+/* 道具の一覧は入力項目が長いので、1つずつ横幅いっぱいに並べる。 */
+.explanation[data-noah-explanation='tools'] [data-noah-step-levels] details { flex-basis:100%; }
 .explanationIo { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:start; gap:8px; margin:0 0 16px; }
 .explanationIo div { padding:9px 10px; border:1px solid #ececef; border-radius:8px; background:#f7f7f8; }
 .explanationIo span { align-self:center; color:#7546c8; }
