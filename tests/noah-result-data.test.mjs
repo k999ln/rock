@@ -43,6 +43,27 @@ void test('detail projects only verified file bytes and output fields; no other 
     await assert.rejects(readNoahDataResult(JSON.stringify({ noahExecution: execution })), { status: 409 });
   }
 });
+void test('local runner results retain their numeric completion time and private usage receipt', async t => {
+  const f = fixture(t);
+  const execution = { ...result(), completedAt: now, calls: 2, chargeMinor: 0, verification: 'host_observed_unverified' };
+  f.add('personal', 'owner', execution);
+  const detail = await f.store.detail('owner', 'personal');
+  assert.equal(detail.result.completedAt, new Date(now).toISOString());
+  assert.equal(detail.usageReceipt.source, 'local');
+  assert.equal(detail.usageReceipt.metrics.modelCalls, 2);
+  assert.equal(detail.usageReceipt.metrics.inputTokens, null);
+  assert.equal(detail.usageReceipt.pricingBasis, 'noah-relay');
+  assert.equal(detail.usageReceipt.externalCharge, 'unreported');
+  await assert.rejects(f.store.detail('other-owner', 'personal'), { status: 404 });
+
+  const consent = share({ workId: 'personal' });
+  await f.store.mutate('owner', consent);
+  const shared = await f.store.detail('operator', consent.id, true);
+  assert.equal(shared.result.text, detail.result.text);
+  assert.ok(!Object.hasOwn(shared, 'usageReceipt'));
+  assert.ok(!Object.hasOwn(shared.result, 'usageReceipt'));
+});
+
 void test('sharing requires exact consent, selection, policy and source revision; client cannot supply contents or owner', async t => {
   const f = fixture(t);
   const invalid = [{ consent: false }, { consent: 'true' }, { includeText: false }, { policyVersion: 'other' }, { files: ['missing'] }, { files: ['report.csv', 'report.csv'] }, { text: 'injected' }, { ownerId: 'other' }, { workRevision: -1 }, { id: 'not-uuid' }];

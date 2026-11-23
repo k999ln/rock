@@ -1,3 +1,4 @@
+import type { NoahWorkUsageReceipt } from './noah-work-usage-receipt.ts';
 import type { NoahReceivedResult } from './noah-result-media.ts';
 import type { NoahCloudFile } from './noah-cloud-contract.ts';
 /**
@@ -24,6 +25,7 @@ export type NoahAskItem = {
   delivery?: 'missing_image';
   result?: NoahReceivedResult; note?: string;
   cloudFiles?: NoahCloudFile[];
+  usageReceipt?: NoahWorkUsageReceipt;
 };
 
 /** 画面の文（決まった文）。 */

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import NoahResultContent from './noah-result-content';
 import NoahManagedFiles from './noah-managed-files';
+import NoahWorkUsageReceiptPanel from './noah-work-usage-receipt';
 import { useNoahLocale } from './noah-locale';
 import NoahLoading from './noah-loading';
 import { noahAskRowView, type NoahAskItem } from '@/lib/noah-ask-view';
@@ -195,6 +196,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
             <NoahResultContent key={ask.id} result={ask.result} id={ask.id} savedAttachments={ask.cloudFiles?.length ?? 0} />
           )}
           {result && !!ask.cloudFiles?.length && <NoahManagedFiles files={ask.cloudFiles} />}
+          <NoahWorkUsageReceiptPanel receipt={ask.usageReceipt} id={ask.workId || ask.id} requestId={ask.id} host={ask.host} />
           {noahAskRowView(ask, now).stoppable && (
             <button
               className={styles.secondary}

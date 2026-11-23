@@ -1,3 +1,4 @@
+import { noahCloudRecordedToolCalls, noahRemoteUsageReceipt } from './noah-work-usage-receipt.ts';
 import type { NoahAskItem } from './noah-ask-view.ts';
 import { NOAH_CLOUD_PROFILES } from './noah-cloud-contract.ts';
 import { NOAH_REMOTE_TEMPLATE } from './noah-remote-work.ts';
@@ -33,4 +34,11 @@ export function noahManagedWorkView(job: WorkJob, includeResult = false): NoahAs
     ...(remote.error ? { error: remote.error } : {}),
     ...(includeResult && remote.result ? { result: remote.result, note: remote.note, cloudFiles: remote.cloud!.files ?? [] } : {}),
   };
+}
+
+export async function noahManagedWorkDetail(job: WorkJob): Promise<NoahAskItem> {
+  const remote = job.noahRemote!;
+  const usageReceipt = noahRemoteUsageReceipt('managed-cloud', remote);
+  usageReceipt.metrics.toolCalls = await noahCloudRecordedToolCalls(remote);
+  return { ...noahManagedWorkView(job, true), usageReceipt };
 }

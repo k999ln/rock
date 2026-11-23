@@ -22,6 +22,7 @@ import {
 } from './noah-remote-work.ts';
 import type { WorkJob } from './workflow.ts';
 import type { NoahAskItem } from './noah-ask-view.ts';
+import { noahRemoteUsageReceipt } from './noah-work-usage-receipt.ts';
 import { workStore } from './work-store.ts';
 export type ProviderDependencies = NoahConnectApiDependencies & {
   providerDirectory?: () => Promise<DirectoryEntry[]>;
@@ -67,6 +68,7 @@ export function providerWorkView(
       ? { finishedAt: r.completedAt ?? Date.parse(job.updatedAt) }
       : {}),
     ...(r.error ? { error: r.error } : {}),
+    ...(includeResult ? { usageReceipt: noahRemoteUsageReceipt('provider', r) } : {}),
     ...(includeResult && r.result ? { result: r.result, note: r.note } : {}),
   };
 }

@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import NoahWorkUsageReceiptPanel from './noah-work-usage-receipt';
 import { NOAH_DATA_POLICY, type NoahDataResponse, type NoahDataDetail } from '@/lib/noah-result-data-contract';
 import { readOwnerScope, OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import type { ReactNode } from 'react';
@@ -142,6 +143,7 @@ export default function NoahResultData({ phoneResults, embedded=false }: { phone
       <div className={styles.actions}><button disabled={pending} onClick={() => { void perform(() => exportResult()); }}>成果をJSONで保存</button>
         {detail.result.files.map(file => <button key={file.name} disabled={pending} onClick={() => { void perform(() => exportResult(file.name)); }}>{file.name} を保存（{file.bytes} bytes）</button>)}
       </div>
+      {view === 'personal' && <NoahWorkUsageReceiptPanel receipt={detail.usageReceipt} id={detail.id} />}
       {view === 'personal' && <section aria-label="運営への提供">
         <h3>Noahの品質確認・不具合調査へ提供</h3>
         <p>提供は任意です。提供しなくても成果を保存・利用できます。学習・販売・一般公開への提供は含みません。</p>

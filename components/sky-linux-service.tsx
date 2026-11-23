@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import { SkyNotice } from './sky-feedback';
 import WorkspaceShell from './workspace-shell';
+import NoahContractResults from './noah-contract-results';
 import type {
   linuxMonthUsage,
   LinuxWorkspace,
@@ -41,7 +42,7 @@ const dollars = (minor: number) =>
   new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'USD' }).format(
     minor / 100,
   );
-export default function SkyLinuxService() {
+export default function SkyLinuxService({ resultsOnly = false }: { resultsOnly?: boolean } = {}) {
   const [view, setView] = useState<View | null>(null),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
@@ -222,6 +223,15 @@ export default function SkyLinuxService() {
   }
   const workspace = view?.workspace?.payload,
     terms = workspace?.terms ?? view?.terms;
+  if (resultsOnly) {
+    const readable = readState === 'ready' && visible() && view?.access?.canRead === true;
+    return <NoahContractResults
+      state={readState}
+      workspace={readable ? workspace : undefined}
+      supported={view?.access?.reason !== 'dispatch_schema_unsupported'}
+      refresh={() => void refresh()}
+    />;
+  }
   const catalog =
     view?.catalog.filter((l) =>
       `${l.agent.name} ${l.agent.instructions} ${l.model.name}`

@@ -1,3 +1,4 @@
+import { noahLocalUsageReceipt } from './noah-work-usage-receipt.ts';
 import { NoahAgentError } from './noah-agent-upload.ts';
 import { noahDigest } from './noah-execution.ts';
 import { LIMITS, validArtifactName } from './noah-execution-contract.mjs';
@@ -24,10 +25,17 @@ export function noahDataOperatorAllowed(owner: string, configured?: string): boo
 /** Only output fields cross this boundary. Work title, prompt, runtime keys and identity do not. */
 export async function readNoahDataResult(payload: string): Promise<NoahDataResult> {
   const job: unknown = JSON.parse(payload);
-  const execution = object(job) && object(job.noahExecution) ? job.noahExecution : null;
-  if (!execution || execution.state !== 'returned' || !object(execution.result)) fail('受け取った成果がありません。仕事の状態を確認してください。', 404);
+  return readExecutionResult(object(job) ? job.noahExecution : null);
+}
+
+async function readExecutionResult(execution: unknown): Promise<NoahDataResult> {
+  if (!object(execution) || execution.state !== 'returned' || !object(execution.result)) fail('受け取った成果がありません。仕事の状態を確認してください。', 404);
   const result = execution.result;
-  if (typeof execution.agentId !== 'string' || execution.agentId.length > 300 || typeof execution.version !== 'string' || execution.version.length > 200 || typeof execution.completedAt !== 'string' || !Number.isFinite(Date.parse(execution.completedAt)) || execution.completedAt.length > 40 || typeof result.text !== 'string' || !Number.isSafeInteger(result.exitCode) || !Array.isArray(result.files) || result.files.length > LIMITS.files || byteLength(JSON.stringify(result)) > LIMITS.resultBytes) fail('成果の形式を確認できません。仕事を開いて確認してください。', 409);
+  // Earlier snapshots store ISO dates. Local runners persist epoch milliseconds.
+  const completed = execution.completedAt;
+  const completedAt = typeof completed === 'number' && Number.isSafeInteger(completed)
+    && completed >= 0 && completed <= 8_640_000_000_000_000 ? new Date(completed).toISOString() : completed;
+  if (typeof execution.agentId !== 'string' || execution.agentId.length > 300 || typeof execution.version !== 'string' || execution.version.length > 200 || typeof completedAt !== 'string' || !Number.isFinite(Date.parse(completedAt)) || completedAt.length > 40 || typeof result.text !== 'string' || !Number.isSafeInteger(result.exitCode) || !Array.isArray(result.files) || result.files.length > LIMITS.files || byteLength(JSON.stringify(result)) > LIMITS.resultBytes) fail('成果の形式を確認できません。仕事を開いて確認してください。', 409);
   const files: NoahDataResult['files'] = [], names = new Set<string>();
   let total = 0;
   for (const file of result.files) {
@@ -39,7 +47,7 @@ export async function readNoahDataResult(payload: string): Promise<NoahDataResul
     names.add(file.name);
     files.push({ name: file.name, base64: file.base64, sha256: file.sha256, bytes: Number(file.bytes) });
   }
-  return { agentId: execution.agentId, version: execution.version, completedAt: execution.completedAt, verification: 'host_observed_unverified', text: result.text, files, exitCode: Number(result.exitCode) };
+  return { agentId: execution.agentId, version: execution.version, completedAt, verification: 'host_observed_unverified', text: result.text, files, exitCode: Number(result.exitCode) };
 }
 function cursorFor(params: URLSearchParams, operator: boolean): [string | number, string] | null {
   const value = params.get('cursor');
@@ -63,8 +71,12 @@ export function createNoahDataStore(db: DB, now = Date.now) {
     }
     const row = await db.prepare(`SELECT id,revision,payload FROM work_jobs WHERE user_id=? AND id=? AND ${returned}`).bind(owner, id).first<WorkRow>();
     if (!row) fail('成果が見つかりません。一覧を読み直してください。', 404);
-    const result = await readNoahDataResult(row.payload), shared = await contribution(owner, id);
-    return { id: row.id, revision: row.revision, result, contribution: shared ? present(shared) : null };
+    const job: unknown = JSON.parse(row.payload);
+    const execution = object(job) ? job.noahExecution : null;
+    const result = await readExecutionResult(execution), shared = await contribution(owner, id);
+    return { id: row.id, revision: row.revision, result,
+      ...(object(execution) ? { usageReceipt: noahLocalUsageReceipt(execution) } : {}),
+      contribution: shared ? present(shared) : null };
   }
   async function list(owner: string, params: URLSearchParams, view: 'personal' | 'operator' | 'contributions' = 'personal') {
     const shared = view !== 'personal', operator = view === 'operator';
