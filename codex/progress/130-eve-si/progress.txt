@@ -1,0 +1,14 @@
+task 130 Eve（eve.si）のエージェントエンジニアリング — 進み具合
+
+正本のリポジトリ: iceiceice999/rock。ブランチ: claude/eve-si-agent-engineering-20261124。PR: #49。
+仕様: docs/services/eve-si.md。設計書（本人の手元）: https://claude.ai/artifact/AXJsY82uAvjM9TKra8Evvg
+
+2026-11-24 07:30 段 1 が終わった。
+- lib/eve-combination.ts: 組み合わせファイル（eve-combination/1）の型、検査の規則 1〜9、defineCombination、設計図からの変換、工程の合格条件（eveCheckAccept。Jev が呼ぶ）。
+- lib/eve-glue.ts: つなぎ目の変換。設計の時は「小さな関数」と書いたが、宣言型（決まった操作の並び）にした。解釈器だけが動かすので、外へ通信できない・Workers でも同じ結果、が作りの上で決まるため。
+- tests/eve-combination.test.mjs: 13 件すべて通過。470 通りの設計図すべてが変換でき、止まる誤りは 0、状態はすべて paper（部品も需要もまだ無いので試運転だけ）。
+- 見つけた事: 109 通りの設計図（デジタル商品 90・物販 16・推し活 3）が、X・Instagram の登録の前に規約の確認を持っていなかった。変換の時に確認の工程を足す。
+- 見つけた事: 38 通りで「注文を届ける」「問い合わせに答える」が出口に使われていない（回すのに要る仕事なので、止めずに note で知らせる）。
+- 設計の直し: X の紹介（data/noah-scout/leads.json）は需要ではなく、エージェントの側（供給）だった。需要の台帳の元は、受注の募集（買い手の予算）・ASP の案件（成果報酬）・売り場の公開価格にする。
+
+次の一手: 段 2（lib/eve-combination-paper.ts の試運転と、data/eve-combinations の最初の 1 本）。

@@ -1,0 +1,19 @@
+{
+  "schema": "task-tests/1",
+  "task": 130,
+  "updatedAt": "2026-11-24T07:30:00+09:00",
+  "command": "node --experimental-strip-types --test tests/eve-*.test.mjs",
+  "files": [
+    {
+      "file": "tests/eve-combination.test.mjs",
+      "stage": 1,
+      "pass": 13,
+      "fail": 0,
+      "covers": ["470 通りの変換と止まる誤り 0", "live の例と defineCombination", "規則 1〜9 の落ちる例", "工程の合格条件", "つなぎ目の変換と固定テスト"]
+    }
+  ],
+  "existing": [
+    { "file": "tests/noah-business.test.mjs", "note": "task 130 が使う設計図。依存を入れる前は typescript が無く 1 件落ちていた（変更前の main でも同じ）" },
+    { "file": "tests/sky-recipe-planner.test.mjs", "note": "task 130 の探索が使う" }
+  ]
+}
