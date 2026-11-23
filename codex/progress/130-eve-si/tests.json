@@ -1,7 +1,7 @@
 {
   "schema": "task-tests/1",
   "task": 130,
-  "updatedAt": "2026-11-24T10:00:00+09:00",
+  "updatedAt": "2026-11-24T11:00:00+09:00",
   "command": "bash codex/progress/130-eve-si/init.sh",
   "files": [
     {
@@ -72,6 +72,18 @@
         "固定・需要が無い時・試す予算・差し替えられる工程が無い時",
         "試運転で落ちた工程も候補・確かめた物で良くならなければ Eve が作る",
         "採用は本人だけ・版が変わった相手へは送らない"
+      ]
+    },
+    {
+      "file": "tests/eve-combination-catalog.test.mjs",
+      "stage": "5-6 画面",
+      "pass": 4,
+      "fail": 0,
+      "covers": [
+        "一覧（状態・本人の番・部品の種類・本人の分数・470 通り → 19 通り）",
+        "API GET（一覧・1 本・404）",
+        "API POST check（人が書いた組み合わせ。形の誤りは項目の名前）",
+        "API POST score（本人の申告は承認にしない・期間の誤り・無い id）"
       ]
     }
   ],

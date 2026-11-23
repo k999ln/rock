@@ -301,7 +301,7 @@ export function eveCheckAccept(rule: EveAcceptRule, output: unknown): { ok: bool
   }
   if (rule.type === 'text') {
     if (typeof output !== 'string') return { ok: false, reason: '文章が返っていません。' };
-    const n = [...output].length;
+    const n = Array.from(new Intl.Segmenter('ja', { granularity: 'grapheme' }).segment(output)).length;
     if (rule.minLength !== undefined && n < rule.minLength) return { ok: false, reason: `${rule.minLength} 文字以上が要ります（${n} 文字）。` };
     if (rule.maxLength !== undefined && n > rule.maxLength) return { ok: false, reason: `${rule.maxLength} 文字までです（${n} 文字）。` };
     const lacking = (rule.mustInclude ?? []).filter((w) => !output.includes(w));
@@ -311,7 +311,7 @@ export function eveCheckAccept(rule: EveAcceptRule, output: unknown): { ok: bool
   const file = output as { mime?: unknown; bytes?: unknown } | null;
   if (!file || typeof file.mime !== 'string' || !Number.isSafeInteger(file.bytes)) return { ok: false, reason: 'ファイル（mime と大きさ）が返っていません。' };
   if (!rule.mime.includes(file.mime)) return { ok: false, reason: `ファイルの種類が違います（${file.mime}）。` };
-  if (rule.maxBytes !== undefined && (file.bytes as number) > rule.maxBytes) return { ok: false, reason: `大きすぎます（${file.bytes} バイト）。` };
+  if (rule.maxBytes !== undefined && (file.bytes as number) > rule.maxBytes) return { ok: false, reason: `大きすぎます（${file.bytes as number} バイト）。` };
   return { ok: true, reason: 'ファイルの種類と大きさが合っています。' };
 }
 

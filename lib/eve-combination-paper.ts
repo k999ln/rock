@@ -57,7 +57,10 @@ function gather(step: EveStep, outputs: ReadonlyMap<string, unknown>, sample: Re
 
 function fillArgs(args: Readonly<Record<string, string>> | undefined, sample: Readonly<Record<string, unknown>>) {
   if (!args) return undefined;
-  return Object.fromEntries(Object.entries(args).map(([k, v]) => [k, v.replace(/\{([^}]+)\}/gu, (_, key: string) => String(sample[key] ?? ''))]));
+  return Object.fromEntries(Object.entries(args).map(([k, v]) => [k, v.replace(/\{([^}]+)\}/gu, (_, key: string) => {
+    const v = sample[key];
+    return v === undefined || v === null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v as string | number | boolean | bigint);
+  })]));
 }
 
 export async function eveDryRun(
@@ -127,7 +130,7 @@ export async function eveDryRun(
         continue;
       }
       try {
-        const res = await opts.call(step.agent, { ...input, ...(fillArgs(step.agent.args, opts.sample) ?? {}) });
+        const res = await opts.call(step.agent, { ...input, ...fillArgs(step.agent.args, opts.sample) });
         const spent = Number.isSafeInteger(res.costYen) && (res.costYen as number) >= 0 ? (res.costYen as number) : (step.costYen ?? 0);
         costYen += spent;
         reservedYen += Math.max(spent, step.costYen ?? 0);

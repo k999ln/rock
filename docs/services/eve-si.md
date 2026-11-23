@@ -4,7 +4,7 @@
 - 本人の回答（2026-11-24）: ① eve.si は Eve と同じ物。② 「コードかエージェントか」は、組み合わせを作る時の話。③ 名前はこのまま使い、下の定義を公式にする。④ 最初に手で通す 1 本は「金融以外の紹介 × 登録済みブログ」。⑤ エージェントエンジニアリングをやるのは Eve（自動）と人（Eve を道具に）の両方。⑥ お金の元は、組み合わせを回した外部の入金と、組み合わせを使ってもらった作者の収入の両方。⑦ 上手さの中心は、型への当てはめと、型に無い組み合わせの発見の両方。⑧ つなぐ役は Noa から Eve にまとめる。
 - 定義: エージェントエンジニアリング ＝ あるエージェントの出力を別のエージェントの入力につなぎ、最後に外部の入金の記録が出る流れを作る技術。LangChain の Agent engineering（2025-12-09。1 つの LLM の仕組みを本番で信頼できる物にする反復）や Agentic engineering（AI エージェントの開発作業を監督する手法）とは意味が違う。
 - Goal（Eveが作る）: 目的＝誰が何にいくら払っているか（需要）から逆算して、お金になる組み合わせを見つけ、作り、試し、入金で採点し、悪い工程だけを作り直す / 入力＝需要の台帳、稼ぎ方の設計図、確かめたエージェント、人の一文や手書きの組み合わせ、本人が自分でやりたい工程（`keepForSelf`）、予算 / 期待成果＝検査と試運転に通った組み合わせファイル（`eve-combination/1`）、見込みの利益の順位、成績表 / 予算上限＝`noahBusinessAllowance` の内側。1 本の試す期間の上限は候補 3,000 円 / 要る権限＝組み合わせの読み書きと試運転。公開・送信・送金・契約は本人と Broker・Wallet。
-- Eve（旧 Noa の役）がつなぐもの: `lib/eve-agent-*.ts`（今のつなぐ役のコード）、`lib/noah-steps.ts`、`lib/noah-business.ts`（設計図 470 通り）、`lib/sky-recipe-planner.ts`（型への当てはめの探索）、`data/noah-business-capabilities.json`（確かめたエージェント。2026-11-24 時点で 0 件）、Eve のビルド（[eve-agent-build.md](eve-agent-build.md)）、`lib/noah-ask.ts`、`lib/work-composition-executor.ts`（切り替え `NOAH_SHELF_CHAINS`）。需要の最初の元は `lib/sky-gig-desk.ts`・`lib/sky-gig-offers.ts`（受注の募集）、`toolkits/noah-affiliate-agents`（ASP の案件と成果）、`data/noah-scout/leads.json`（X の紹介）。新規 Agent: つなぎ目の変換（能力 `glue.convert`。外へ通信しない小さな関数と固定テスト）。
+- Eve（旧 Noa の役）がつなぐもの: `lib/eve-agent-*.ts`（今のつなぐ役のコード）、`lib/noah-steps.ts`、`lib/noah-business.ts`（設計図 470 通り）、`lib/sky-recipe-planner.ts`（型への当てはめの探索）、`data/noah-business-capabilities.json`（確かめたエージェント。2026-11-24 時点で 0 件）、Eve のビルド（[eve-agent-build.md](eve-agent-build.md)）、`lib/noah-ask.ts`、`lib/work-composition-executor.ts`（切り替え `NOAH_SHELF_CHAINS`）。需要の最初の元は `lib/sky-gig-desk.ts`・`lib/sky-gig-offers.ts`（受注の募集）、`toolkits/noah-affiliate-agents`（ASP の案件と成果）、売り場の公開価格。`data/noah-scout/leads.json`（X の紹介）は「使えるエージェント」の候補で、需要ではない（誰もお金を払っていない。2026-11-24 に実装で分けた）。新規 Agent: つなぎ目の変換（能力 `glue.convert`。宣言型の操作の並び `eve-glue/1` と固定テストで、外へ通信できない作り。Workers と Node で同じ結果）。
 - AMCの工程:
   1. 需要を集める（担当: Eve）— 合格条件: 台帳の 1 件ごとに、成果の型・払う人と場所・単価・量・競合・出典 URL・確かめた日がある。
   2. 組み合わせを作る（担当: Eve か人）— 合格条件: `author` が `eve` か `person`。`origin` が `template` か `discovered`。`demand` が台帳の id を指す。
@@ -55,10 +55,25 @@ Eve（自動）は、需要の台帳から見込みの利益が高い道を探�
 | --- | --- | --- |
 | 1. 形と検査 | `lib/eve-combination.ts`、`lib/eve-glue.ts` | 470 通りすべてを骨組みに変換でき、検査が通る。規則 1〜9 のそれぞれに落ちる例の試験がある |
 | 2. 手で 1 本通す | `data/eve-combinations/` の 1 本（金融以外の紹介 × 登録済みブログ）、`lib/eve-combination-paper.ts` | 試運転で全工程の見本が出る。本番で tap を本人が 1 回押し、ASP の記録を 1 回読めた |
-| 3. 需要の台帳と能力（2 と並行） | `lib/eve-demand.ts`、`data/noah-business-capabilities.json` | 受注・ASP・X の 3 つの元から、出典付きの需要が各 1 件以上。「需要と競合を調べる」「成果・売上を読む」に確かめたエージェントが各 1 つ以上 |
+| 3. 需要の台帳と能力（2 と並行） | `lib/eve-demand.ts`、`data/noah-business-capabilities.json` | 受注・ASP・売り場の 3 つの元から、出典付きの需要が各 1 件以上（X の紹介は供給なので外した）。「需要と競合を調べる」「成果・売上を読む」に確かめたエージェントが各 1 つ以上 |
 | 4. Eve の探索と発見 | `lib/eve-combination-search.ts`、`lib/eve-discover.ts` | 型の組み合わせが検査に通る。型に無い組み合わせを 1 つ以上候補に出し、見込みの利益を出典付きの数字で示す |
 | 5. 採点と作り直し | `lib/eve-combination-score.ts`、`lib/eve-combination-rebuild.ts`、画面 | Jev の合格条件をすべて満たす |
 | 6. 人が作り、使ってもらう | 人の道具、Noah への掲載、作者の受け取りの計算 | 外部の記録で確定した収益が出た時だけ、作者の分が計算される |
+
+## 実装の状態（2026-11-24。task 130・PR #49）
+
+| 段 | 作った物 | 試験 |
+| --- | --- | --- |
+| 1. 形と検査 | `lib/eve-combination.ts`（形・規則 1〜9・設計図からの変換・`eveCheckAccept`）、`lib/eve-glue.ts`（宣言型のつなぎ目） | 470 通りすべてを変換でき、検査で止まる物 0。規則ごとに落ちる例。変換の際に、登録の前の規約の確認が抜けていた 109 通りへ確認を足す |
+| 2. 手で 1 本通す | `lib/eve-combination-paper.ts`（試運転）、`data/eve-combinations/affiliate-ai-tools-blog.json` | 試運転で外へ出す工程の実行 0。最初の 1 本は設計図から 2 か所変えた（調査と案件から記事の指示を作るつなぎ目、LP を公開する前に広告の表示を点検）。本番で本人が押す・ASP の記録を読むのは本人待ち |
+| 3. 需要の台帳 | `lib/eve-demand.ts`、`lib/eve-verify.ts` | 受注・ASP・売り場から出典付きの需要。出典が無い・90 日より古い・https でない・0 円は入れない。能力を確かめる見本の仕事は、本人の同意まで相手へ送らない |
+| 4. 探索と発見 | `lib/eve-combination-search.ts`、`lib/eve-discover.ts` | 型に無い組み合わせを見込みの利益の順に出す。確かめていない矢印は使わない。設計図 470 通りの「作る」部分は 19 通りの作り方に収まる |
+| 5. 採点と作り直し | `lib/eve-combination-score.ts`、`lib/eve-combination-rebuild.ts`、画面 `/os/eve/combinations`、API `/api/eve/combinations` | Jev の合格条件 8 つ。段ごとに数えてよい記録の元を決め、本人の申告は数えない。一番数が落ちた段は (次+1)÷(前+2) で見て、同じ型の他の成績表があれば中央値と比べる |
+| 6. 作者の受け取り | `eveAuthorShare`（`lib/eve-combination-score.ts`） | 外部の入金の記録がある時だけ計算する。割合は未決の間は額を出さない |
+
+段の数が落ちた時に責めを負う能力（`EVE_FUNNEL_BLAME`）: 作った → 出した は出す工程と出す前の点検、出した → 見られた は調べ方と出す場所、見られた → 押された は中身（記事・台本・画像・動画）、押された → 申し込まれた は受け皿（LP・案件の選び方）、申し込まれた → 承認された は案件の条件と納品の質。入金は相手の支払い待ちで、作り直す工程は無い。
+
+既定案で進めた所（本人に聞く）: 作者の分の元は「入金 − 費用」（使った人が損をした回は 0）。数えるのは承認ではなく入金の記録。需要の台帳と確かめたエージェントは、出典付きの物がたまるまで空（画面も空と言い、順位を出さない）。
 
 ## 決めていない事
 

@@ -123,7 +123,7 @@ export function runEveGlue(spec: EveGlueSpec, input: unknown): Record<string, un
       case 'template':
         write(out, as, op.text.replace(/\{\{([^}]*)\}\}/gu, (_, p: string) => {
           const v = get(p.trim());
-          return v === undefined || v === null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
+          return v === undefined || v === null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v as string | number | boolean | bigint);
         }));
         break;
       case 'take': { const v = get(op.from); write(out, as, Array.isArray(v) ? structuredClone(v.slice(0, op.n)) : []); break; }
