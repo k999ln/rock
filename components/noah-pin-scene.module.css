@@ -1,33 +1,4 @@
-/* ピンの図解の動き（バージョン TAKE。spec-115 の 9 章）。本人の決定（2026-11-24「画面に入った時に1回」）: 画面に入った時に 1 回だけ、図が描かれていって止まる。
-   描かれ方は、しょうへい（@showheyohtaki）さんの「資料で使う図解・グラフの名前」の動画と同じ考え（線が伸びる・箱が順に出る・棒が伸びる・針が振れる）。
-   名前は見本集 motion-prompt（showheyohtaki.github.io/motion-prompt）の型から: pop = #001 ポップイン、rise = #005 マスク（下から出る）、slide・slideR・fall = #002 スタガー（順に出る）、
-   draw = #004 線を描く、grow・growY = #002 と #010 オーバーシュート（伸びて行き過ぎて戻る）、swing = #010（針が行き過ぎて戻る）、fade = 浮かび上がる。#007 の数が増える動きは使わない（数を描かない決まり）。
-   止まった絵が既定（svg に data-motion が無い時: サーバーで描いた時・動きを減らす設定の人・見えたかを確かめられない端末）。armed は最初の形で止めて待ち、play で 1 回だけ動く。
-   動かすのは transform・opacity・stroke-dashoffset だけ（重い描き直しを起こす物は動かさない。tests/noah-pin-scene.test.mjs が確かめる）。 */
-.m { transform-box: fill-box; }
-.art[data-motion] .m { animation-duration: .5s; animation-delay: var(--d, 0ms); animation-fill-mode: both; animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
-.art[data-motion="armed"] .m { animation-play-state: paused; }
-
-.art[data-motion] .pop { transform-origin: center; animation-name: npPop; animation-timing-function: cubic-bezier(.2, .9, .3, 1.25); }
-.art[data-motion] .rise { animation-name: npRise; animation-duration: .45s; }
-.art[data-motion] .slide { animation-name: npSlide; animation-duration: .45s; }
-.art[data-motion] .slideR { animation-name: npSlideR; animation-duration: .45s; }
-.art[data-motion] .fall { animation-name: npFall; animation-duration: .45s; }
-.art[data-motion] .fade { animation-name: npFade; animation-duration: .4s; }
-.art[data-motion] .draw { stroke-dasharray: 1; animation-name: npDraw; animation-duration: .5s; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
-.art[data-motion] .grow { transform-origin: 0 50%; animation-name: npGrow; animation-duration: .7s; }
-.art[data-motion] .growY { transform-origin: 50% 100%; animation-name: npGrowY; animation-duration: .7s; }
-.art[data-motion] .swing { transform-box: view-box; transform-origin: var(--ox) var(--oy); animation-name: npSwing; animation-duration: .9s; animation-timing-function: ease-out; }
-
-@keyframes npPop { from { opacity: 0; transform: scale(.4); } 65% { opacity: 1; transform: scale(1.08); } to { opacity: 1; transform: none; } }
-@keyframes npRise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@keyframes npSlide { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: none; } }
-@keyframes npSlideR { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
-@keyframes npFall { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
-@keyframes npFade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes npDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes npGrow { from { transform: scaleX(0); } 70% { transform: scaleX(1.05); } 86% { transform: scaleX(.98); } to { transform: none; } }
-@keyframes npGrowY { from { transform: scaleY(0); } 70% { transform: scaleY(1.06); } 86% { transform: scaleY(.98); } to { transform: none; } }
-@keyframes npSwing { from { transform: rotate(-110deg); } 70% { transform: rotate(7deg); } 86% { transform: rotate(-3deg); } to { transform: none; } }
-
-@media (prefers-reduced-motion: reduce) { .m { animation: none !important; } }
+/* ピンの図解（バージョン TAKE。spec-115 の 9 章）。絵は canvas（lib/noah-pin-diagram.ts。しょうへいさんの図解パックの書き写し）。
+   大きさは元のカードと同じ 539:208。描く前（サーバーで描いた時・JS が動く前）も、元の面と同じ色 #F1F0EE の空の面を出す。
+   動き（画面に入った時に 1 回組み上がる。動きを減らす設定の人には動かさない）は components/noah-pin-scene.tsx が描く。 */
+.art { display:block; width:100%; height:auto; aspect-ratio:539 / 208; background:#F1F0EE; }

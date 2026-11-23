@@ -137,6 +137,8 @@ export function screen(options = {}) {
       // ピンの図解の形と、棚の 17 枚の図解（spec-115 の 9 章）。決まった表だけの式なので、本物をそのまま渡す。
       if (id === '@/lib/noah-pin-scene') return pinScene;
       if (id === '@/lib/noah-pin-scenes-shelf') return shelfScenes;
+      // ピンの図解を描く式（しょうへいさんの図解パックの書き写し。canvas に描くだけで、通信も保存もしない）。
+      if (id === '@/lib/noah-pin-diagram') return load('lib/noah-pin-diagram.ts');
       if (id === '@/lib/noah-intake-import-parts') return importParts;
       // 詳細の頁へのリンクを作るだけの式（集めたAgentのカードの「Noahで開く」。task 121）。
       if (id === '@/lib/noah-ready-view') return readyView;

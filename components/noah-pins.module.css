@@ -22,7 +22,7 @@
 .face { display:block; color:inherit; text-decoration:none; }
 .panel { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; aspect-ratio:4 / 3; padding:14px; border-radius:16px; overflow:hidden; background:var(--pin-bg); color:var(--pin-ink); transition:filter .15s; }
 .pin[data-shape="1"] .panel { aspect-ratio:1 / 1; }
-.scene { display:block; border-radius:16px; overflow:hidden; line-height:0; transition:filter .15s; } /* 資料の図解（spec-115 の 9 章）。高さは絵の型が決める。 */
+.scene { display:block; border-radius:10px; overflow:hidden; line-height:0; box-shadow:0 0 0 1px #e4e2de; transition:filter .15s; } /* 資料の図解（spec-115 の 9 章）。元のカードと同じ角の丸み 10px と、細い縁。 */
 .face:hover .scene { filter:brightness(.96); }
 .pin[data-shape="2"] .panel { aspect-ratio:4 / 5; }
 .face:hover .panel { filter:brightness(.94); }
@@ -197,3 +197,19 @@
   .storeItem .sources a { min-height:44px; }
   .storeItem .more summary { width:44px; height:44px; }
 }
+
+/* 図解のピン（data-art。spec-115 の 9 章。バージョン TAKE）: 字は、しょうへいさんの図解のカードの下の字と同じ並び（太い名前 → 灰色の行）。
+   絵は横長（539:208）でスマホの 2 列では高さ約 70px なので、保存と「その他」は絵に重ねず、いちばん下の行に、名前・提供元の行と並べる（Pinterest のスマホと同じく、絵の上には何も置かない）。 */
+.pin[data-art] { display:flex; flex-wrap:wrap; align-items:center; gap:0 6px; }
+.pin[data-art] .face { flex:0 0 100%; min-width:0; }
+.pin[data-art] .name { margin:10px 2px 0; font-size:15px; line-height:1.45; letter-spacing:-.01em; color:#1d1d1f; }
+.pin[data-art] .summary { margin:2px 2px 0; font-size:12.5px; line-height:1.5; color:#8e8e93; }
+.pin[data-art] .arrow { color:#2f6beb; font-weight:700; }
+.pin[data-art] > .meta { order:1; flex:1 1 0; min-width:0; margin:6px 0 0 2px; font-size:11.5px; color:#a1a1aa; }
+.pin[data-art] .more { position:relative; top:auto; left:auto; order:2; margin-top:6px; }
+.pin[data-art] .more summary { opacity:1; width:36px; height:36px; background:#f4f3f1; }
+.pin[data-art] .more > button { top:40px; left:auto; right:0; }
+.pin[data-art] .save { position:static; order:3; opacity:1; min-height:36px; margin-top:6px; padding:0 14px; border-radius:18px; background:#fff1df; color:#913c04; font-size:12px; }
+.pin[data-art] .save[data-saved] { background:#ffe0bf; color:#743205; }
+.pin[data-art] .sources { order:4; flex:0 0 100%; }
+@media (hover:none) { .pin[data-art] .save { min-height:44px; padding:0 12px; } .pin[data-art] .more summary { width:44px; height:44px; } .pin[data-art] .more > button { top:48px; } }
