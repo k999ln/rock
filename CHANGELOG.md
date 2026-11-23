@@ -1,5 +1,6 @@
 ## 2026-11-23
 - Noahのストア、専用eSIMの仕事別利用明細、提供元の選択、専用Linux仮想画面でのagent-desktop実行を追加。[実行仕様](docs/services/noah-managed-desktop.md) · [PR #37](https://github.com/iceiceice999/rock/pull/37)
+- avoado.si の React 関連 3 パッケージを 19.2.9 に統一し、CVE-2026-126187 と shadcn CLI の依存脆弱性を修正（[PR #36](https://github.com/iceiceice999/rock/pull/36)）。
 - Noah の「Noahが読んだ」を、リポジトリのファイル `data/noah-scout/leads.json` からクラウドの収集機が載せる形にした（task 125、Opus / Noelle）。読んだ人（Codex の Luna Max・Claude）はファイルに足す PR を出すだけで、運営の Mac に掲載の鍵を置かなくてよい。ファイルに無い出所は送らないので、前の掲載を空で上書きしない。最初の 1 件として、本人が「これいれて」と言った Switch（sandbox-quantum/switch）を、README・LICENSE・公式の手順書まで読んで日本語で書いた。 [正本 PR #34](https://github.com/iceiceice999/rock/pull/34)・[旧PR #426](https://github.com/k999ln/rock/pull/426)
 - NoahのTime・boss面接準備・Hermes計画を無料枠の公式Python処理で本番受入。Worker分離とモデル応答の補正後、390px Chrome全終了中の保存・成果再表示・download/hashを確認し、途中の失敗も保持（task125、[PR #32](https://github.com/iceiceice999/rock/pull/32)）。
 - Noah無料クラウドへ公式PythonのTime・boss面接準備・Hermes計画/メモを追加する実装と、期限・停止・依頼分離の検証を追加。本番受入は継続中（[PR #30](https://github.com/iceiceice999/rock/pull/30)、task125）。
