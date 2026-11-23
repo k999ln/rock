@@ -30,7 +30,9 @@ void test('the public home opens available tasks directly with their expected ou
   const region = home.find('section').find(s => s.props.id === 'first-jobs');
   assert.equal(region.props.tabIndex, -1);
   assert.equal(home.find('section')[0], region);
-  assert.equal(home.find('h1', 'Agentストア').length, 1);
+  assert.equal(home.find('h1', 'Today').length, 1);
+  assert.equal(home.find('time').length, 1);
+  assert.equal(home.find('h2', 'この仕事、誰の担当だっけ？').length, 1);
   assert.ok(home.find('h2').some(h => h.props.id === region.props['aria-labelledby']));
   assert.equal(home.find('a', '専用クラウドを開く')[0].props.href, '/api/noah/cloud-work');
   assert.equal(home.find('a', 'eSIMでつなぐ専用クラウド')[0].props.href, '/connect');
@@ -46,6 +48,74 @@ void test('the public home opens available tasks directly with their expected ou
   assert.equal(home.text(region).includes(choices[0].title), false);
   assert.equal(ui.calls.length, 1);
   assert.equal(ui.calls[0].method, 'GET');
+});
+
+void test('Today places a real featured job and the catalog ahead of store services', async () => {
+  const memory = choices.find(job => job.id === 'memory');
+  const directoryId = 'project-' + 'b'.repeat(64);
+  const directoryHref = '/noah/discover/agent?id=' + directoryId;
+  const items = [
+    { id: project, name: 'memory', topic: 'data', external: true },
+    { id: directoryId, name: 'A published agent', topic: 'dev', shape: 1, external: true, summary: 'Catalog description' },
+    ...['c', 'd', 'e', 'f'].map((key, index) => ({
+      id: 'project-' + key.repeat(64), name: 'Research ' + key,
+      topic: 'research', shape: index % 3, external: true,
+    })),
+  ];
+  for (const available of [[memory], []]) {
+    const page = { ...pageReply(available), total: items.length, items };
+    const ui = screen({ modules, locale: 'en', fetch: async () => ({ body: page }) });
+    const home = ui.mount('components/noah-home.tsx', { mode: 'public' });
+    await home.flush();
+    const anchors = home.find('a');
+    const feature = home.find('a', 'Featured')[0];
+    const directory = home.find('a', 'A published agent')[0];
+    const services = home.find('a', 'Buy agents')[0];
+    assert.equal(feature.props.href, available.length ? memory.href : '/noah/discover/agent?id=' + project);
+    assert.equal(home.find('h2', 'Who’s working on what?').length, available.length);
+    assert.equal(directory.props.href, directoryHref);
+    const shelf = home.find('section').find(node => node.props['aria-labelledby'] === 'noah-featured-agents-title');
+    const shelfNodes = home.nodes(shelf);
+    const pins = shelfNodes.filter(node => node.type === 'li');
+    assert.deepEqual(pins.map(pin => pin.props['data-shape']), [1, 0, 1, 2]);
+    assert.deepEqual(pins.map(pin => pin.props['data-topic']), ['dev', 'research', 'research', 'research']);
+    assert.deepEqual(pins.map(pin => home.nodes(pin).find(node => node.type === 'a').props.href),
+      items.slice(1, 5).map(item => '/noah/discover/agent?id=' + item.id));
+    assert.equal(home.nodes(pins[0]).find(node => node.props?.['data-agent-art'])?.props['data-agent-art'], 'signature');
+    assert.equal(home.nodes(pins[0]).some(node => node.type === 'canvas'), true);
+    assert.equal(shelfNodes.some(node => node.type === 'button'), false);
+    assert.equal(home.find('a', 'See all')[0].props.href, '/noah/explore');
+    assert.ok(anchors.indexOf(feature) < anchors.indexOf(directory));
+    assert.ok(anchors.indexOf(directory) < anchors.indexOf(services));
+  }
+});
+
+void test('every page of catalog results uses pins and keeps the catalog actions separate', async () => {
+  const items = Array.from({ length: 7 }, (_, index) => ({
+    id: 'catalog-' + index, name: 'Agent ' + index, topic: 'work', shape: index % 3,
+    summary: 'Agent purpose', provider: 'Test provider', external: index > 0,
+    href: '/noah/ready/agent?id=local', savedIn: [],
+  }));
+  const ui = screen({ fetch: async ({ url }) => {
+    const next = new URL(url, 'https://avoado.si').searchParams.get('cursor') === '6';
+    return { body: { items: next ? items.slice(6) : items.slice(0, 6), nextCursor: next ? null : '6', total: 7, ownerScope: 'test-owner' } };
+  } });
+  const home = ui.mount('components/noah-pin-home.tsx', {});
+  await home.flush();
+  const pins = () => home.find('li').filter(node => node.props['data-agent-pin-id']);
+  assert.deepEqual(pins().map(row => row.props['data-agent-pin-id']), items.slice(0, 6).map(item => item.id));
+  await home.click('もっと見る');
+  await home.flush();
+  assert.deepEqual(pins().map(row => row.props['data-shape']), items.map(item => item.shape));
+  const nodes = home.nodes(pins()[0]);
+  const face = nodes.find(node => node.type === 'a');
+  assert.equal(face.props.href, items[0].href);
+  assert.equal(home.nodes(face).some(node => node.type === 'button'), false);
+  assert.equal(nodes.some(node => node.props?.['aria-label'] === 'Agent 0を保存'), true);
+  assert.equal(nodes.some(node => node.props?.['aria-label'] === 'その他の操作'), true);
+  const last = home.nodes(pins().at(-1));
+  assert.equal(last.find(node => node.type === 'a').props.href, '/noah/discover/agent?id=catalog-6');
+  assert.equal(last.some(node => node.type === 'button'), false);
 });
 
 void test('the public home shows a purpose section only when it has a usable task', async () => {
@@ -243,4 +313,24 @@ void test('the English Memory flow labels the destination, explicit connection, 
   assert.match(page.text(), /Note text/);
   await page.click('Stop');
   assert.equal(running, false);
+});
+
+
+void test('a ready project uses the family detail once and shows a dated source even without ratings', async () => {
+  const familyId = 'mcp-registry:ai.callmcp/server';
+  const listing = 'https://registry.modelcontextprotocol.io/v0.1/servers/ai.callmcp%2Fserver/versions/latest';
+  const detailIds = [];
+  const ui = screen({ modules: { ...modules, './noah-ready-detail': {
+    default: ({ id, sourceNotes }) => { detailIds.push(id); return sourceNotes; },
+  } }, fetch: async () => ({ body: {
+    card: { id: familyId, sources: [{ source: 'mcp-registry', sourceUrl: listing, observedAt: 1795433820330 }] },
+    connection: { kind: 'ready', familyId },
+  } }) });
+  const page = detail(ui);
+  await page.flush();
+  assert.deepEqual(new Set(detailIds), new Set([familyId]));
+  assert.equal(page.find('a', 'Agentを探す').length, 0);
+  assert.equal(page.find('a', 'MCP Registry')[0].props.href, listing);
+  assert.equal(page.find('time')[0].props.dateTime, new Date(1795433820330).toISOString());
+  assert.equal(page.find('h2', '外部の評価').length, 0);
 });

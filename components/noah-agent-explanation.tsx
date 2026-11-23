@@ -45,7 +45,7 @@ export function NoahExplanationSection({ explanation, summary, summaryJa, connec
       <div><dt>{t('返る物')}</dt><dd>{materialList(flow.produces)}</dd></div>
     </dl>}
     <p className={styles.explanationHint}>{t('同じ段の工程は並行して進められます。')}</p>
-    <NoahStepLevels steps={steps} flowLabel={t} showMaterials={flow.showMaterials !== false}
+    <NoahStepLevels steps={steps} flowLabel={t} showMaterials={flow.showMaterials !== false} availableTools={flow.availableTools}
       materialLabel={(material) => t(Object.hasOwn(NOAH_MATERIALS, material) ? NOAH_MATERIALS[material as NoahMaterial] : material)}
       labels={{
       ariaLabel: t('工程の段（横に並ぶ工程は同時に進む）'),

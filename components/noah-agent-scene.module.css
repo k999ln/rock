@@ -1,0 +1,24 @@
+.scene,.frame {
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+}
+.scene {
+  overflow:hidden;
+  pointer-events:none;
+  isolation:isolate;
+}
+.still {
+  position:absolute;
+  left:8%;
+  top:41%;
+  max-width:84%;
+  padding:.08em .24em;
+  color:#252422;
+  background:#fff6df;
+  font:650 clamp(13px,2vw,25px)/1.23 Georgia,serif;
+  overflow-wrap:anywhere;
+}
+.frame[data-painted] + .still { display:none; }

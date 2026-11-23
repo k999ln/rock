@@ -1,3 +1,4 @@
+import type { NoahHandshakeTool } from './noah-handshake-tools.ts';
 import type { NoahPlanStep, NoahPlanStepKind } from './noah-connect-plan.ts';
 import type { NoahMaterial, NoahPackage } from './noah-shelf.ts';
 import { NOAH_STEP_WAITS, noahBlueprintWaitProblem, noahBlueprintWithout, type NoahStep, type NoahStepFlow } from './noah-steps.ts';
@@ -16,6 +17,7 @@ export type NoahExplanation = {
   produces: readonly NoahMaterial[];
   steps: readonly NoahStep[];
   showMaterials?: false;
+  availableTools?: readonly NoahHandshakeTool[];
 };
 
 const OWNER_REASONS = {
@@ -55,15 +57,18 @@ function ownerSteps(plan: readonly NoahPlanStep[]): NoahStep[] {
   });
 }
 
-/** Only the common, documented connection and request actions are known without tool labels. */
-export function noahAgentConnectionExplanation(plan: readonly NoahPlanStep[], blocked: boolean): NoahExplanation {
+/** Connection and request stages. Captured definitions describe available tools, never transfers. */
+export function noahAgentConnectionExplanation(plan: readonly NoahPlanStep[], blocked: boolean, availableTools: readonly NoahHandshakeTool[] = []): NoahExplanation {
   const setup = ownerSteps(plan);
   const steps: NoahStep[] = blocked ? [{ id: 'usage:terms', kind: 'tap', label: '利用条件を見る' }] : [
     ...setup,
     { id: 'connect:open', kind: 'tap', label: '接続', after: setup.map(({ id }) => id) },
     { id: 'usage:request', kind: 'tap', label: '依頼する', after: ['connect:open'] },
   ];
-  return { consumes: [], produces: [], steps: steps.map(({ flow: _flow, ...step }) => step), showMaterials: false };
+  return {
+    consumes: [], produces: [], steps: steps.map(({ flow: _flow, ...step }) => step), showMaterials: false,
+    ...(!blocked && availableTools.length ? { availableTools } : {}),
+  };
 }
 
 const GENERIC_MATERIALS = new Set<NoahMaterial>(['text', 'code', 'notes', 'topic', 'csv']);

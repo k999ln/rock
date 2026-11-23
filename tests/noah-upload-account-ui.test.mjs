@@ -33,6 +33,7 @@ function harness(fetcher, search = '?launch=1') {
       if (id === '@/lib/noah-agent-upload') return { NOAH_PERMISSIONS: [], noahAgentTemplate: { permissions: [] } };
       if (id === '@/lib/owner-intent') return { OWNER_SCOPE_HEADER: 'X-Rock-Owner-Scope' };
       if (['@/lib/noah-terminal-template', '@/lib/noah-upload-processing-client'].includes(id)) return {};
+      if (id === './noah-cover-picker') return { default:'cover-picker', coverReady:()=>true };
       if (id === './noah-draft-storage') return { default: 'draft-storage' };
       if (id.endsWith('.module.css')) return { default: {} };
       throw Error(id);

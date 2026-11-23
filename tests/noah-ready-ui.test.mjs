@@ -30,7 +30,7 @@ function browser(w, user, extra = {}) {
   return { session, ui };
 }
 const posts = (ui) => ui.calls.filter((call) => call.method === 'POST');
-const cards = (page) => page.find('article');
+const cards = (page) => page.find('article').filter((card) => page.nodes(card).some((node) => node.type === 'ul' && node.props['aria-label'] === 'つなぎ方'));
 /** 何をしますか？行（押せる）を除いた、画面のボタンの文。 */
 const actions = (page) => page.find('button').filter((node) => node.props.className !== 'toolButton').map((node) => page.text(node));
 const buttonsIn = (page, node) => page.nodes(node).filter((child) => child.type === 'button' || (child.type === 'a' && child.props.className === 'primary'));
@@ -48,7 +48,7 @@ void test('the list: sections, one main button per card, badges in words, where 
   // 段: 動いた（人が動かした物）が先、握手だけの物が後。件数も出る。
   assert.ok(text.indexOf('人が動かして、成果が返った物です。') < text.indexOf('Noah が、応答する事だけを確かめた物です。'));
   assert.deepEqual(page.find('h2').map((node) => page.text(node)), ['動いた1 件', 'まだ誰も動かしていない2 件']);
-  assert.deepEqual(cards(page).map((card) => page.text(page.nodes(card).find((node) => node.type === 'h3'))), ['Agent 2', 'Agent 1', 'Agent 3'].filter((name) => text.includes(name)).sort((a, b) => text.indexOf(a) - text.indexOf(b)));
+  assert.deepEqual(cards(page).map((card) => card.props['aria-label']), ['Agent 2', 'Agent 1', 'Agent 3'].filter((name) => text.includes(name)).sort((a, b) => text.indexOf(a) - text.indexOf(b)));
   assert.equal(cards(page).length, 3);
   for (const card of cards(page)) {
     // カードの主ボタンは 1 つ。
@@ -163,7 +163,7 @@ void test('the list: search waits for the typing to stop, filters, and reads on'
   // 続きを読む（重ならない）。
   await page.click('続きを読む');
   assert.equal(cards(page).length, 24);
-  assert.equal(new Set(cards(page).map((card) => page.text(page.nodes(card).find((node) => node.type === 'h3')))).size, 24);
+  assert.equal(new Set(cards(page).map((card) => card.props['aria-label'])).size, 24);
   assert.equal(page.find('button', '続きを読む').length, 0);
   // 押すだけで試せる物だけ。
   await page.click('押すだけで試せる');
@@ -182,7 +182,7 @@ void test('the list: search waits for the typing to stop, filters, and reads on'
   assert.equal(ui.calls.length, before);
   await page.tick(1);
   assert.deepEqual(ui.calls.slice(before).map((call) => call.url), ['/api/noah/intake?q=Weather']);
-  assert.deepEqual([page.find('h2').map((node) => page.text(node)), cards(page).map((card) => page.text(page.nodes(card).find((node) => node.type === 'h3')))], [['探した結果'], ['Weather lookup']]);
+  assert.deepEqual([page.find('h2').map((node) => page.text(node)), cards(page).map((card) => card.props['aria-label'])], [['探した結果'], ['Weather lookup']]);
   assert.equal(page.find('button', '押すだけで試せる').length, 0, '探している間は、絞り込みを出さない');
   await page.type('zzzz-not-there');
   await page.tick(300);
@@ -221,7 +221,8 @@ void test('signed in: one press on the card connects, and the button becomes 頼
   assert.doesNotMatch(page.text(card()), /につなぎました/);
   // 上の段に出る。行は 1 件。相手が受けたのは握手だけ。
   assert.match(page.text(), /つながっているもの/);
-  assert.deepEqual(page.find('li', 'Agent 1').filter((node) => page.text(node).includes('頼む')).length, 1);
+  const connected = page.find('section').find((node) => node.props['aria-labelledby'] === 'noah-ready-connected');
+  assert.deepEqual(page.nodes(connected).filter((node) => node.type === 'article').map((node) => node.props['aria-label']), ['Agent 1']);
   assert.deepEqual([w.rows().length, w.rows()[0].state, w.rows()[0].id, rpcs(server)], [1, 'connected', sent[1].body.id, ['initialize', 'notifications/initialized', 'tools/list']]);
   // 開き直しても、つながっている物は「頼む」。
   const again = browser(w, 'owner-a').ui.mount(LIST);
@@ -253,8 +254,15 @@ void test('a connection the provider refused is listed as not connected, with it
   assert.match(page.text(card('Agent 2')), /相手のサーバーが、Noah からの接続を断りました。/);
   assert.deepEqual(buttonsIn(page, card('Agent 1')).map((node) => page.text(node)), ['頼む']);
   // 上の段: つながっている物と、そうでない物を、分けて出す。見出しと中身が、合っている。
-  assert.match(page.text(section('つながっているもの')), /^つながっているものAgent 1相手のサーバー（[^）]+）頼む$/);
-  assert.match(page.text(section('つながっていないもの')), /^つながっていないものAgent 2つながっていません。開く$/);
+  for (const [title, name, fact, link, id] of [
+    ['つながっているもの', 'Agent 1', /相手のサーバー（[^）]+）/, '頼む', familyId(1)],
+    ['つながっていないもの', 'Agent 2', /つながっていません。/, '開く', familyId(2)],
+  ]) {
+    const nodes = page.nodes(section(title));
+    assert.deepEqual(nodes.filter(node => node.type === 'article').map(node => node.props['aria-label']), [name]);
+    assert.match(page.text(section(title)), fact);
+    assert.equal(nodes.find(node => node.type === 'a' && page.text(node) === link).props.href, `/noah/ready/agent?id=${encodeURIComponent(id)}`);
+  }
   // つながっている物が無くなれば、その見出しは出ない。
   const only = browser(w, 'owner-a');
   w.f.sql.prepare("UPDATE noah_connections SET state='disconnected',disconnected_at=?,revision=revision+1 WHERE state='connected'").run(w.f.time());
@@ -446,6 +454,31 @@ void test('the detail screen: a withdrawn agent says so, offers no button to use
   assert.match(after.text(), /この Agent は、見つかりませんでした。/);
 });
 
+void test('CallMCP shows sample requests and the cost of real calls before connecting; reading them sends nothing', async () => {
+  const id = 'mcp-registry:ai.callmcp/server';
+  const item = {
+    id, name: 'CallMCP — Phone Call MCP Server', summary: 'A phone service', provider: 'ai.callmcp', website: 'https://callmcp.ai/',
+    listed: true, ownerScope: null, connection: null, host: 'callmcp.ai', users: 0, tools: 213, checkedAt: NOW,
+    connect: { badge: 'unverified', level: 1, placeLabel: 'callmcp.ai', price: { model: 'free' } },
+  };
+  for (const [locale, paid, caption] of [['ja', '実際の通話は有料', '通話メモの見本'], ['en', 'paid', 'Sample call note']]) {
+    const ui = screen({ locale, modules: MODULES, fetch: async (request) => ({
+      body: request.url.startsWith('/api/noah/intake?') ? item : { providers: [], items: [] },
+    }) });
+    const page = ui.mount(DETAIL, { id, internalOnly: true });
+    await page.flush();
+    assert.deepEqual(page.find('h1').map(node => page.text(node)), ['CallMCP']);
+    assert.equal(page.find('figcaption', caption).length, 1);
+    assert.match(page.text(), locale === 'ja' ? /Noahでの実通話は未確認/ : /Noah has yet to verify a live call/);
+    const memo = page.find('figure')[0];
+    assert.equal(page.nodes(memo).filter(node => ['button', 'a', 'input', 'form', 'audio'].includes(node.type)).length, 0);
+    assert.ok(page.find('a').some(node => node.props.href === '#noah-guide-terms' && page.text(node).includes(paid)));
+    assert.equal(page.find('a').filter(node => node.props.href === 'https://callmcp.ai/pricing' && node.props.target === '_blank').length, 1);
+    assert.ok(!page.find('li').some(node => page.text(node) === '無料' || page.text(node) === 'Free'));
+    assert.equal(ui.calls.some(call => call.method !== 'GET'), false);
+  }
+});
+
 void test('the detail screen: unknown agents, malformed IDs, unlisted agents seen by a reviewer', async (t) => {
   const keyed = entry(2, { remotes: [{ type: 'streamable-http', url: `https://${hostOf(2)}/mcp`, headers: [{ name: 'X-Api-Key', isRequired: true, isSecret: true }] }] });
   const w = await world(t, { [hostOf(1)]: mcpServer(), [hostOf(2)]: mcpServer() }, { records: [entry(1), keyed] });
@@ -455,7 +488,7 @@ void test('the detail screen: unknown agents, malformed IDs, unlisted agents see
     await page.flush();
     assert.match(page.text(), /この Agent は、見つかりませんでした。/, id);
     assert.equal(page.find('button').length, 0);
-    assert.deepEqual(page.find('a', 'すぐ使える Agent').map((node) => node.props.href), ['/noah/explore']);
+    assert.deepEqual(page.find('a', 'Agentを探す').map((node) => node.props.href), ['/noah/explore']);
   }
   // 形の違う ID は、問い合わせない。
   const malformed = browser(w, 'owner-a');
