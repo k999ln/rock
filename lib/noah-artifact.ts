@@ -1,10 +1,10 @@
 import { NoahAgentError, NOAH_SOURCE_LIMIT, noahUploadId, noahSha256 } from './noah-agent-upload.ts';
-import { parseTerminalRuntime } from './noah-terminal-contract.mjs';
+import { parseNoahRuntime } from './noah-runtime-contract.mjs';
 
 export type NoahArtifact = {
   schema: 'noah-source/1'; uploadId: string; uploadManifestSha256: string;
   sha256: string; originalSha256: string; name: string; bytes: number;
-  runtime?: ReturnType<typeof parseTerminalRuntime>;
+  runtime?: ReturnType<typeof parseNoahRuntime>;
 };
 export function parseNoahArtifact(value: unknown): NoahArtifact {
   const v = value as NoahArtifact;
@@ -15,7 +15,7 @@ export function parseNoahArtifact(value: unknown): NoahArtifact {
     !Number.isSafeInteger(v.bytes) || v.bytes < 4 || v.bytes > NOAH_SOURCE_LIMIT) throw new NoahAgentError('配布ファイルの固定版を確認してください。');
   return { schema: 'noah-source/1', uploadId: noahUploadId(v.uploadId), uploadManifestSha256: v.uploadManifestSha256,
     sha256: v.sha256, originalSha256: v.originalSha256, name: v.name, bytes: v.bytes,
-    ...(Object.hasOwn(v, 'runtime') ? { runtime: parseTerminalRuntime(v.runtime) } : {}) };
+    ...(Object.hasOwn(v, 'runtime') ? { runtime: parseNoahRuntime(v.runtime) } : {}) };
 }
 export async function noahArtifactKey(owner: string, sha256: string) {
   return `noah/releases/${await noahSha256(new TextEncoder().encode(owner))}/${sha256}`;

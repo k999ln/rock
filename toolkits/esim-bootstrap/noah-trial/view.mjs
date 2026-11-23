@@ -130,7 +130,7 @@ export function addressScreen(address, root = base, hosted = false) {
 }
 
 export function cloudScreen(
-  { packages, agent, routes, automaticRoute, preference, jobs, work },
+  { packages, agent, version, offer, routes, automaticRoute, preference, jobs, work },
   id,
   { root = base + 'agents', hosted = false } = {},
 ) {
@@ -149,14 +149,14 @@ export function cloudScreen(
         '</nav>'
       : '';
   const choices = [
-    { id: 'auto', label: '自動（' + (automaticRoute ?? '接続先待ち') + '）' },
+    ...(automaticRoute ? [{ id: 'auto', label: '標準（' + automaticRoute + '）' }] : []),
     ...routes,
   ];
   const unavailable =
-    preference !== 'auto' && !routes.some((r) => r.id === preference);
+    !choices.some((r) => r.id === preference);
   const options =
     (unavailable
-      ? '<option selected disabled value="">前回の実行先は利用できません。選び直してください。</option>'
+      ? '<option selected disabled value="">利用する実行先を選んでください。</option>'
       : '') +
     choices
       .map(
@@ -169,6 +169,7 @@ export function cloudScreen(
     waiting: '結果を照会中',
     completed: '完了',
     attention: '確認が必要',
+    stopping: '停止確認待ち',
     stopped: '停止',
   };
   const history = jobs
@@ -192,6 +193,10 @@ export function cloudScreen(
             `<dt>${title}</dt><dd>${items.length ? items.map(esc).join('<br>') : '報告された項目なし'}</dd>`,
         )
         .join('');
+      const u = job.usage;
+      const usage = u ? `<dt>利用量</dt><dd>${u.completedRuns === 1 ? '完了1回' : '未確定'}</dd>
+        <dt>実行料</dt><dd>${u.amountMinor === 0 ? '0円（avokadoの実行記録）' : '未確定'}${u.external ? ' · 提供元の料金明細は未取得' : ''}</dd>
+        <dt>料金条件</dt><dd>${esc(u.pricingVersion)} · 本人の承認上限 ${esc(u.maximumMinor)}円</dd>` : '<dt>利用明細</dt><dd>未計測</dd>';
       const stop = ['queued', 'waiting'].includes(job.state)
         ? jobForm(
             'stop',
@@ -199,12 +204,13 @@ export function cloudScreen(
             hidden('id', job.id) + hidden('agent', agent),
           )
         : '';
-      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p><small><a href="${esc(root)}?work=${encodeURIComponent(job.id)}">仕事番号 ${esc(job.id)}</a></small></p><p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p>${job.result && job.note ? '<p>' + esc(job.note) + '</p>' : ''}<dl>${sections}</dl>${stop}</li>`;
+      return `<li><b>${esc(states[job.state] ?? job.state)}</b> · ${esc(label)}<p><small><a href="${esc(root)}?work=${encodeURIComponent(job.id)}">仕事番号 ${esc(job.id)}</a></small></p><p>${esc(job.result ?? job.note ?? '画面を閉じてもサーバーで続けます。')}</p>${job.result && job.note ? '<p>' + esc(job.note) + '</p>' : ''}<dl>${sections}${usage}</dl>${stop}</li>`;
     })
     .join('');
   return layout(
     'クラウドでAgentを使う',
     `${menu}<section><h2>${esc(agentName)}</h2>
+    <p>${version ? 'Agent版 ' + esc(version) : offer ? '登録定義 ' + esc(offer.slice(0, 12)) : ''} · このフォームに入力した文章を、選んだ実行先に送ります。</p>
     <p>${hosted ? 'この試験の実行料は0円です。' : '0円の模擬環境です。各接続先はこのMac上の別のWorkerで動きます。'}受付後は別のアプリに移れます。</p>
     ${
       routes.length
@@ -213,6 +219,7 @@ export function cloudScreen(
             'バックグラウンドで実行',
             hidden('id', id) +
               hidden('agent', agent) +
+              (offer ? hidden('offer', offer) : '') +
               '<label>実行先<select required name="route">' +
               options +
               '</select></label><label>文章<input required name="text" maxlength="500"></label>',
@@ -220,7 +227,7 @@ export function cloudScreen(
         : '<p>利用可能な実行先がありません。</p>'
     }</section>
     <section><h2>仕事と成果</h2>${history ? '<ul>' + history + '</ul>' : '<p>依頼はありません。</p>'}
-    <a href="${esc(root)}?${work ? 'work=' + encodeURIComponent(work) : 'agent=' + encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>${hosted ? '<p><a href="/api/noah/cloud-work/distribution">あなたへの定期便</a></p>' : ''}`,
+    <a href="${esc(root)}?${work ? 'work=' + encodeURIComponent(work) : 'agent=' + encodeURIComponent(agent)}">状態を更新</a></section><a href="${hosted ? '/noah' : base}">Noahに戻る</a>${hosted ? '<p><a href="/api/noah/cloud-work/metered">契約中のクラウドでAgentを動かす・従量明細を見る</a></p><p><a href="/noah/usage">提供元を含むAgentの利用記録</a></p><p><a href="/api/noah/cloud-work/distribution">あなたへの定期便</a></p>' : ''}`,
     hosted ? 'eSIMクラウド' : '開発用・模擬回線',
   );
 }

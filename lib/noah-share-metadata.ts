@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { NOAH_PUBLIC_ORIGIN } from './noah-public-origin';
 
-const title = 'Noah — あなたのAgentワークスペース';
+const title = 'Noah — Agentストア';
 const description = 'Agentを見つけ、仕事を任せ、成果を受け取る。自分のAgentも公開できる、あなたとAgentのワークスペース。';
 const image = {
-  url: `${NOAH_PUBLIC_ORIGIN}/brand/noah-social-card-v1.png`,
+  url: `${NOAH_PUBLIC_ORIGIN}/brand/noah-social-card-orange.png`,
   width: 1200,
   height: 630,
   alt: 'Noah — Agentを見つける。仕事を任せる。成果を受け取る。',

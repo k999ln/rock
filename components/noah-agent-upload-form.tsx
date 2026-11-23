@@ -281,16 +281,21 @@ export default function NoahAgentUploadForm() {
       <label>どう使うAgent？<select value={manifest.adapter} onChange={e => { const { runtime: _runtime, ...base } = manifest; setManifest({ ...base, adapter: e.target.value as NoahAgentManifest['adapter'], endpointUrl: e.target.value === 'source' ? null : '' }); setId(''); }}>
         <option value="source">コードを保存して実行先を準備する</option><option value="web">専用のWeb画面を開く</option><option value="mcp_http">MCPサーバーに接続する</option><option value="a2a">A2A対応Agentに接続する</option>{manifest.adapter === 'local_app' && <option value="local_app">対応済みローカルアプリ</option>}
       </select></label>
-      {manifest.adapter === 'source' && <section className={styles.notice}><h2>画面を使わない実行</h2>
+      {manifest.adapter === 'source' && <section className={styles.notice}><h2>自分の操作を妨げない専用環境</h2>
         <label><input type="checkbox" checked={Boolean(manifest.runtime)} onChange={e => {
           if (e.target.checked) change({ runtime: { schema: 'noah-terminal/1', language: 'node', entrypoint: 'main.mjs', model: 'none' }, permissions: ['read_input', 'write_files'] });
           else { const { runtime: _runtime, ...base } = manifest; setManifest(base); setId(''); }
-        }} />ターミナル用コードとして接続・実行する</label>
+        }} />専用環境で接続・実行する</label>
         {manifest.runtime && <div className={styles.fields}>
-          <label>実行する言語<select value={manifest.runtime.language} onChange={e => change({ runtime: { ...manifest.runtime!, language: e.target.value, entrypoint: e.target.value === 'python' ? 'main.py' : 'main.mjs' } })}><option value="node">Node（JavaScript・TypeScript）</option><option value="python">Python</option></select></label>
+          <label>作業に使うもの<select value={manifest.runtime.schema} onChange={e => change({ runtime: { ...manifest.runtime!, schema: e.target.value, ...(e.target.value === 'noah-desktop/1' ? { language: 'python', entrypoint: 'main.py' } : {}) } })}>
+            <option value="noah-terminal/1">画面を使わない処理</option><option value="noah-desktop/1">専用の仮想画面（Python）</option>
+          </select></label>
+          <label>実行する言語<select value={manifest.runtime.language} disabled={manifest.runtime.schema === 'noah-desktop/1'} onChange={e => change({ runtime: { ...manifest.runtime!, language: e.target.value, entrypoint: e.target.value === 'python' ? 'main.py' : 'main.mjs' } })}><option value="node">Node（JavaScript・TypeScript）</option><option value="python">Python</option></select></label>
+          {manifest.runtime.schema === 'noah-desktop/1' && <p>専用Linux内の画面操作にはagent-desktopを使えます。Pythonからnoah_desktop.snapshotで画面を読み、set_valueで入力します。</p>}
           <label>起動するファイル<input required value={manifest.runtime.entrypoint} maxLength={160} onChange={e => change({ runtime: { ...manifest.runtime!, entrypoint: e.target.value } })} /></label>
           <label>使うローカルモデル<select value={manifest.runtime.model} onChange={e => change({ runtime: { ...manifest.runtime!, model: e.target.value } })}><option value="none">モデルを使わない処理</option><option value="qwen3:4b">qwen3:4b</option><option value="qwen2.5:1.5b">qwen2.5:1.5b</option></select></label>
           <p>標準ライブラリと同梱コードに対応します。本人の画面・マウス・キーボード・ブラウザには接続しません。外部通信や追加依存が必要なAgentは、その実行環境の対応が必要です。</p>
+          {manifest.runtime.schema === 'noah-desktop/1' && <p>Pythonの画面操作は専用のLinux環境内で行います。Tk・xdotool・scrotに対応し、この画面を閉じても処理は続きます。Mac・Windows専用アプリや外部サイトの操作は未対応です。</p>}
         </div>}
       </section>}
       {!['local_app','source'].includes(manifest.adapter) && <label>{manifest.adapter === 'a2a' ? 'AgentのHTTPS origin' : '接続先URL'}<input required type="url" value={manifest.endpointUrl || ''} onChange={e => change({ endpointUrl: e.target.value })} placeholder={manifest.adapter === 'mcp_http' ? 'https://your-agent.com/mcp' : 'https://your-agent.com'} /><small>APIキーやパスワードは含めないでください。</small></label>}
