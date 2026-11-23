@@ -16,6 +16,7 @@ export const NOAH_FEEDS = {
   'github-mcp': { source: 'github', everyMs: 2 * HOUR },
   'github-rising': { source: 'github', everyMs: 6 * HOUR },
   producthunt: { source: 'producthunt', everyMs: 6 * HOUR },
+  'github-releases': { source: 'github', everyMs: 2 * HOUR },
   'huggingface-mcp': { source: 'huggingface', everyMs: 2 * HOUR },
   npm: { source: 'npm', everyMs: 6 * HOUR },
   docker: { source: 'docker', everyMs: 6 * HOUR },
@@ -178,6 +179,32 @@ async function githubRising({ fetcher, now, state, keys = {} }) {
   // 今回の検索に出ず、記録も古くなった repo は忘れる（状態が際限なく育たないように）。
   for (const key of Object.keys(history)) if (!seen.has(key) && !history[key].some(([at]) => now - at <= GITHUB_RISING.keepMs)) delete history[key];
   state.stars = history;
+  return items;
+}
+
+// Follow releases as well as new repositories: existing tools also ship new capabilities.
+const TRACKED_GITHUB_RELEASES = [
+  { repo: 'sandbox-quantum/switch', summary: 'Claude CodeやCodexを共有ルームにつなぐSwitchの公式リリース。Switch Buddyが初期設定を案内します。', run: 'mac' },
+];
+async function githubReleases({ fetcher, now }) {
+  const items = [];
+  for (const { repo, summary, run } of TRACKED_GITHUB_RELEASES) {
+    const project = `https://github.com/${repo}`;
+    // Fixed public repositories only. Read release metadata without sending repository credentials.
+    const { body } = await get(fetcher, `https://api.github.com/repos/${repo}/releases/latest`, { now });
+    const release = json(body);
+    const createdAt = iso(release?.published_at), tag = release?.tag_name;
+    if (!createdAt || createdAt > now || typeof tag !== 'string' || !/^[\w.-]{1,120}$/u.test(tag) ||
+        release.html_url !== `${project}/releases/tag/${tag}` || release.draft !== false || release.prerelease !== false) {
+      throw new FeedFailure('invalid_response');
+    }
+    if (createdAt + NOAH_COLLECTION_LIMITS.maxAgeMs <= now) continue;
+    items.push(lead('github', {
+      id: `github-release:${repo}:${tag}`, name: safe(text(release.name, 200)) || repo, author: repo.split('/')[0],
+      summary, run, url: project, sourceUrl: release.html_url, createdAt,
+      expiresAt: createdAt + NOAH_COLLECTION_LIMITS.maxAgeMs,
+    }, now));
+  }
   return items;
 }
 
@@ -368,7 +395,8 @@ async function smithery({ fetcher, now, state, keys }) {
   return items;
 }
 
-const READERS = { hackernews, 'github-mcp': githubMcp, 'github-rising': githubRising, producthunt, 'huggingface-mcp': huggingfaceMcp, npm, docker, awesome, smithery };
+const READERS = { hackernews, 'github-mcp': githubMcp, 'github-rising': githubRising, 'github-releases': githubReleases,
+  producthunt, 'huggingface-mcp': huggingfaceMcp, npm, docker, awesome, smithery };
 
 /** 収集機の SQLite の、出所の状態と、集めた紹介の表（手元だけ。本番の表ではない）。 */
 export function feedTables(sql) {

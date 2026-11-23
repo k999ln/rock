@@ -75,6 +75,13 @@ function sources({ readme = '- [acme/old-tool](https://github.com/acme/old-tool)
     if (url.hostname === 'api.github.com') {
       // task 125 の「急に伸びた物」の検索（pushed:>=）は、tests/noah-scout.test.mjs で確かめる。ここでは空で返す。
       if (/pushed:>=/.test(url.searchParams.get('q'))) return Response.json({ items: [] });
+      if (url.pathname === '/repos/sandbox-quantum/switch/releases/latest') {
+        assert.equal(init.headers.Authorization, undefined);
+        return Response.json({ name: 'Switch Console 0.41.1', tag_name: 'switch-console-v0.41.1',
+          published_at: new Date(NOW - 4 * DAY).toISOString(), draft: false, prerelease: false,
+          html_url: 'https://github.com/sandbox-quantum/switch/releases/tag/switch-console-v0.41.1',
+          body: 'release body should not be republished' });
+      }
       assert.match(url.searchParams.get('q'), /created:>=2026-11-08/);
       return Response.json({ items: [{ full_name: 'New/Server', name: 'server', description: 'A new MCP server', stargazers_count: 40, created_at: new Date(NOW - DAY).toISOString(), owner: { login: 'New' } }] });
     }
@@ -98,7 +105,7 @@ void test('feeds: each source is read on its own schedule, keeps no post text, a
   const net = sources();
   const first = await collectFeeds({ local, fetcher: net.fetcher, now: () => clock });
   assert.equal(first.smithery.status, 'needs_credentials');
-  for (const id of ['hackernews', 'github-mcp', 'huggingface-mcp', 'npm', 'docker', 'awesome']) assert.equal(first[id].status, 'updated', id);
+  for (const id of ['hackernews', 'github-mcp', 'github-releases', 'huggingface-mcp', 'npm', 'docker', 'awesome']) assert.equal(first[id].status, 'updated', id);
   const leads = feedLeads(local, clock), by = (id) => leads.find((lead) => lead.id === id);
   // Hacker News: Show HN と配布元のリンクだけ。題名は載せ、投稿の本文は無い。追跡の ?ref は落とす。
   assert.equal(by('hackernews:101').url, 'https://inbox.example.com/launch');
@@ -106,6 +113,20 @@ void test('feeds: each source is read on its own schedule, keeps no post text, a
   assert.equal(by('hackernews:102'), undefined, 'an essay is not an agent');
   assert.equal(by('hackernews:103').url, 'https://github.com/acme/agent');
   assert.equal(by('github-mcp:new/server').createdAt, NOW - DAY);
+  const release = by('github-release:sandbox-quantum/switch:switch-console-v0.41.1');
+  assert.equal(release.url, 'https://github.com/sandbox-quantum/switch');
+  assert.equal(release.run, 'mac');
+  assert.equal(release.createdAt, NOW - 4 * DAY);
+  assert.equal(release.expiresAt, NOW + 3 * DAY);
+  assert.doesNotMatch(JSON.stringify(release), /release body should not/);
+  const published = collectionSnapshots({ exported: { candidates: [], checks: [], families: [] }, discoveries: [],
+    x: { status: 'needs_credentials', items: [] }, now: NOW,
+    leads: [...leads, card({ id: 'github-rising:sandbox-quantum/switch', url: release.url, sourceUrl: release.url, createdAt: NOW, metrics: { stars: 4700 } })],
+  }).find(snapshot => snapshot.source === 'github');
+  const switchItems = published.items.filter(item => item.url === release.url);
+  assert.equal(switchItems.length, 1);
+  assert.equal(switchItems[0].sourceUrl, release.sourceUrl);
+  assert.equal(switchItems[0].metrics.stars, 4700);
   assert.equal(by('huggingface-mcp:maker/mcp-space').run, 'space');
   assert.equal(by('npm:@acme/mcp').url, 'https://github.com/acme/mcp'); assert.equal(by('npm:@acme/mcp').metrics.downloads, 5000);
   assert.equal(by('npm:@acme/mcp').createdAt, NOW - 30 * DAY, 'the first npm search is not news either (its date is the last publish)');

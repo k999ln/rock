@@ -49,7 +49,22 @@ export function collectionSnapshots({ exported, discoveries, x, now, leads = [],
   if (xConfigured) for (const item of x.items) add(item);
   return sources.map(source => {
     // 同じ配布 URL は、並びの上の 1 件だけ（別の出所の紹介は、公開の API が 1 枚にまとめる）。
-    const ranked = pending.get(source).map(item => ({ item, hot: noahCollectionHot({ sources: [item], run: item.run, name: item.name, summary: item.summary }) }))
+    const candidates = pending.get(source);
+    const releases = new Map();
+    for (const item of candidates) {
+      if (item.expiresAt <= now || !item.id.startsWith('github-release:')) continue;
+      const prior = releases.get(item.url);
+      if (!prior || item.createdAt > prior.createdAt) releases.set(item.url, item);
+    }
+    const freshestRatings = new Map();
+    for (const item of candidates) {
+      if (item.expiresAt <= now || !item.metrics || !releases.has(item.url)) continue;
+      const prior = freshestRatings.get(item.url);
+      if (!prior || item.observedAt > prior.observedAt) freshestRatings.set(item.url, item);
+    }
+    const ranked = candidates.filter(item => !releases.has(item.url) || releases.get(item.url) === item)
+      .map(item => freshestRatings.has(item.url) ? { ...item, metrics: freshestRatings.get(item.url).metrics } : item)
+      .map(item => ({ item, hot: noahCollectionHot({ sources: [item], run: item.run, name: item.name, summary: item.summary }) }))
       .sort((a, b) => b.hot - a.hot || a.item.id.localeCompare(b.item.id));
     // 同じ名前の写し（Hugging Face の複製の Space など）も、上の 1 件だけ。
     const urls = new Set(), ids = new Set(), names = new Set(), items = [];
