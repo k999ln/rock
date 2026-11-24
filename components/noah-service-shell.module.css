@@ -240,6 +240,10 @@
 .content :global([data-noah-embedded] .sky-feed-layout) {
   grid-template-columns: minmax(0, 1fr);
 }
+@media (min-width: 1001px) {
+  .secondary nav a { padding-inline: 6px; column-gap: 8px; }
+  .secondary nav a span { min-width: 0; text-wrap: balance; }
+}
 @media (min-width: 601px) and (max-width: 1000px) {
   .body {
     grid-template-columns: 76px minmax(0, 1fr);
