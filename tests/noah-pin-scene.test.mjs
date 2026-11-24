@@ -255,7 +255,9 @@ void test('every diagram paints about 70% base, 25% main and 5% accent (the gold
 void test('the drawing keeps the MIT notice of the Motion Prompt diagram pack it was copied from', () => {
   const source = readFileSync(new URL('../lib/noah-pin-diagram.ts', import.meta.url), 'utf8');
   assert.match(source.slice(0, 600), /MIT License \(c\) 2026 Shohei Ohtaki/);
-  assert.ok(source.slice(0, 600).includes('https://github.com/showheyohtaki/motion-prompt'), '冒頭に元のリポジトリの URL');
+  // 冒頭の URL を取り出し、ホスト名とパスを完全に比べる（元の作者のリポジトリが書いてある事）。
+  const origins = (source.slice(0, 600).match(/https:\/\/[^\s、。（）()]+/gu) ?? []).map((text) => new URL(text));
+  assert.ok(origins.some((url) => url.hostname === 'github.com' && url.pathname === '/showheyohtaki/motion-prompt'), '冒頭に元のリポジトリの URL');
   const license = readFileSync(new URL('../vendor/motion-prompt/LICENSE', import.meta.url), 'utf8');
   assert.match(license, /^MIT License\n\nCopyright \(c\) 2026 Shohei Ohtaki\n/);
   assert.match(license, /The above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software\./);
