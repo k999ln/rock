@@ -15,7 +15,8 @@ export type NoahStepKind = (typeof NOAH_STEP_KINDS)[number];
 export type NoahStepDataLink = { from: string; material: string };
 export type NoahStepFlow = {
   inputs: readonly string[];
-  outputs: readonly string[];
+  /** 無い時は「未確認」と表示する（道具の定義に outputSchema が無い時など）。 */
+  outputs?: readonly string[];
   dataFrom?: readonly NoahStepDataLink[];
   gate?: boolean;
   branch?: string;
@@ -40,6 +41,8 @@ export type NoahStep = {
   after?: readonly string[];
   /** 待つ相手が必要な理由。決まりきった待ちには付けなくてよい。 */
   waitNote?: string;
+  /** 工程名の下に出す1行の説明（道具なら提供者の説明の最初の1文）。 */
+  note?: string;
   /** 受け渡す物に根拠がある時だけ記録する。after には設定などの前提も含められる。 */
   flow?: NoahStepFlow;
 };
@@ -65,7 +68,7 @@ export function noahBlueprintWaitProblem<T extends NoahStep>(
       return `「${step.label}」が、前に無い工程（${missing}）を待っています。`;
     if (step.flow) {
       for (const { from, material } of step.flow.dataFrom ?? []) {
-        if (!step.after.includes(from) || !seen.get(from)?.flow?.outputs.includes(material) || !step.flow.inputs.includes(material))
+        if (!step.after.includes(from) || !seen.get(from)?.flow?.outputs?.includes(material) || !step.flow.inputs.includes(material))
           return `「${step.label}」に、前の工程の出力と一致しない受け渡しがあります（${material}）。`;
       }
     }

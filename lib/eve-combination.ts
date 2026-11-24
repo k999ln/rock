@@ -234,7 +234,7 @@ export function eveCombinationProblems(c: EveCombination, ctx: EveCheckContext =
 
   // 3. 最後に外部の記録を読む。狙う需要に出典がある。
   if (!exitStep) add(3, 'block', `出口の工程（${c.exit.step}）がありません。`);
-  else if (exitStep.flow && !exitStep.flow.outputs.includes(c.exit.material)) add(3, 'block', `出口の工程が「${c.exit.material}」を出していません。`, exitStep.id);
+  else if (exitStep.flow && !exitStep.flow.outputs?.includes(c.exit.material)) add(3, 'block', `出口の工程が「${c.exit.material}」を出していません。`, exitStep.id);
   if (!c.demand) add(3, 'paper', '狙う需要（需要の台帳の id）が決まっていません。本番の前に決めます。');
   else {
     const entry = ctx.demand?.find((d) => d.id === c.demand!.id);
@@ -388,7 +388,7 @@ export function eveCombinationFromBlueprint(
     keepForSelf: [],
     budget: opts.budget ?? { perRunYen: 3_000, trialYen: 3_000 },
     steps,
-    exit: { step: last.id, material: last.flow?.outputs[0] ?? '入金確認', source: EXIT_SOURCE[b.model], counts: 'approved-or-paid' },
+    exit: { step: last.id, material: last.flow?.outputs?.[0] ?? '入金確認', source: EXIT_SOURCE[b.model], counts: 'approved-or-paid' },
   };
   return { combination, inserted };
 }

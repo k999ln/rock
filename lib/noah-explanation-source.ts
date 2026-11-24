@@ -1,11 +1,8 @@
-import toolSnapshot from '../data/noah-handshake-tools.json' with { type: 'json' };
-import { currentNoahHandshakeTools, type NoahHandshakeToolSeries } from './noah-handshake-tools.ts';
-import { noahAgentConnectionExplanation, noahAgentExplanation } from './noah-agent-explanation.ts';
+import { noahAgentConnectionExplanation, noahAgentExplanation, noahAgentToolListExplanation } from './noah-agent-explanation.ts';
+import { noahCatalogTools } from './noah-tool-catalog.ts';
 import { readCurrentNoahAgentLabels } from './noah-agent-labels.ts';
 import { planNoahSubject, readNoahSubject } from './noah-connect-source.ts';
 import type { IntakeDb } from './noah-intake-db.ts';
-
-const snapshot: Readonly<Record<string, NoahHandshakeToolSeries>> = toolSnapshot;
 
 export async function readNoahAgentExplanation(db: IntakeDb, { id, owner, reviewer }: {
   id: string; owner: string | null; reviewer: boolean;
@@ -32,10 +29,10 @@ export async function readNoahAgentExplanation(db: IntakeDb, { id, owner, review
   const detailed = fullyLabelled && plan.badge !== 'blocked'
     ? noahAgentExplanation(labels.tools.map(({ toolName, ...label }) => ({ ...label, name: toolName })), plan.steps)
     : null;
-  const availableTools = Object.hasOwn(snapshot, id)
-    ? currentNoahHandshakeTools(snapshot[id], subject.candidateId, current.toolsSha256, current.toolCount)
-    : [];
-  const explanation = detailed ?? (display?.connectionFallback
-    ? noahAgentConnectionExplanation(plan.steps, plan.badge === 'blocked', availableTools) : null);
+  // 札がそろわない時は、定義に書いてある道具と入力項目だけを出す。定義の写しが今の版と違えば2段に戻す。
+  const catalogTools = !detailed && display?.connectionFallback && plan.badge !== 'blocked'
+    ? noahCatalogTools(subject.candidateId, current) : null;
+  const listed = catalogTools ? noahAgentToolListExplanation(plan.steps, catalogTools) : null;
+  const explanation = detailed ?? listed ?? (display?.connectionFallback ? noahAgentConnectionExplanation(plan.steps, plan.badge === 'blocked') : null);
   return explanation ? { explanation, summaryJa: current.summaryJa } : null;
 }

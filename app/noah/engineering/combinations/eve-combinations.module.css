@@ -80,6 +80,10 @@
 .funnel strong { display: block; font-size: 16px; font-variant-numeric: tabular-nums; }
 .funnel span { display: block; color: var(--os-muted); font-size: .875rem; line-height: 1.4; }
 .note { margin: 32px 0 0; padding: 16px 0 0; border-top: 1px solid var(--os-line); color: var(--os-muted); font-size: .875rem; }
+.shareExample { width: 100%; border-collapse: collapse; font-size: .875rem; font-variant-numeric: tabular-nums; }
+.shareExample caption { padding: 8px 0; text-align: start; font-weight: 650; }
+.shareExample th, .shareExample td { padding: .45rem .25rem; border-bottom: 1px solid var(--os-line); text-align: start; }
+.shareExample thead { color: var(--os-muted); }
 @media (min-width: 761px) {
   .hero { padding: 12px 0 24px; }
   .stats > div { padding: 16px; }

@@ -35,3 +35,7 @@
 - 実行環境: OpenSSL 3をPATHへ指定。独立作業ツリーのためrootに加えて `sites/avocado-mini` と `toolkits/noah-coconala` にlockfileどおり `npm ci --ignore-scripts`。最初のverifyは不足依存で停止し、補完後に `test:noah-coconala` からverify末尾まで同じ順で再実行して終了コード0。テストの削除・緩和はなし。
 - 外部への実登録・決済・公開切替は未実施。実画面確認は合成APIであり、本番受入の証拠にはしない。
 - 実装と検証: [PR #63](https://github.com/iceiceice999/rock/pull/63)（draft、未公開）。
+
+### 最新mainとの整合
+
+2026-11-24: main `b17aa5b684` を取り込み、CHANGELOG・タスク一覧・決定事項の両側の追記を保全して競合を解消。登録関連コードの競合なし。取り込み後のtypecheck・lint:product・登録/プロフィール/Agent詳細/翻訳等の関連テスト84件は成功。上記の全体verifyは取り込み前の実施記録であり、取り込み後は関連範囲を再検証した。公開範囲の回答待ちで、mainへのマージ・公開は未実施。
