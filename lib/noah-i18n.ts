@@ -1,3 +1,4 @@
+import { NOAH_REGISTRATION_MESSAGES } from './noah-i18n-registration.ts';
 import { NOAH_FLOW_MESSAGES } from './noah-i18n-flow.ts';
 import { NOAH_RESULT_MESSAGES } from './noah-i18n-results.ts';
 import { NOAH_ACCESS_MESSAGES } from './noah-i18n-access.ts';
@@ -34,6 +35,7 @@ export const NOAH_MESSAGES: Record<
   string,
   readonly [string, string, string, string, string]
 > = {
+  ...NOAH_REGISTRATION_MESSAGES,
   ...NOAH_SOCIAL_MESSAGES,
   ...NOAH_EXTRA_MESSAGES,
   ...NOAH_ACCOUNT_MESSAGES,

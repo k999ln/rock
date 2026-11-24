@@ -215,6 +215,8 @@ function NoahAskForm({ agentId, agentName, connectionId, ownerScope, host, tool,
     </details>}
     {problem && !fields.some((item) => item.name === problem.field) && <p className={styles.fieldError} role="alert">{problem.message}</p>}
     {agentId && <details className={styles.permissionOptions} open={policy==='deny'||policy==='paused'||undefined}><summary>{t('任せる範囲')} · {t(policy==='loading'?'確認中':policy==='confirm'?'確認して実行':policy==='deny'?'任せない':policy==='paused'?'停止中':'任せる')}</summary><NoahDelegationPicker target={agentId} name={agentName??host} action={tool.name} digest={tool.sha256} ownerScope={ownerScope} onMode={setPolicy}/></details>}
+    <p className={styles.quiet}>{t('入力の一部と成果は、Noahの仕事履歴に保存されます。')}</p>
+    <p className={styles.quiet}>{t('Noahの中継料は0円。提供元の料金は未確認です。提供元で料金・契約を確認してから実行してください。')}</p>
     {confirming ? <fieldset className={styles.confirmBox}>
       <legend>{t("頼む前の確かめ")}</legend>
       <p>{tool.readOnly?t('入力内容を送り、この操作を実行します。'):t('この操作は、送信先のデータを変更・送信する可能性があります。')}</p>
