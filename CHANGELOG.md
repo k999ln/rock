@@ -1,8 +1,30 @@
 ## 2026-11-24
 - Noah の全画面の読み込みに、マスコット「点のトラ」のスケボーゲームを入れた（`components/noah-tiger-game.tsx`・`lib/noah-tiger-game.ts`）。今は難しい版（開いた瞬間に始まり、穴が 1 つだけの壁をくぐる）で、ふつう版は `NOAH_TIGER_NORMAL` として残す。どの穴も通れることと壁の間隔をテストで確かめる。見本の HTML とふつう版・難しい版の記録は `design/references/`（本人指示 2026-11-24 04:57・05:04・07:05。枝 `claude/noah-tiger-loading`）。
+- マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
+- マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
+- Noah の道具カタログを掲載中の系列に合わせて再採取した。接続先の説明の冒頭と入力項目を同梱し、取得・照合の結果は [task 128](codex/tasks/128-noah-agent-explain.md#95-掲載系列の道具定義を再取得) に記録。 [PR #65](https://github.com/iceiceice999/rock/pull/65)
+- 収益型の組み合わせ詳細で、申込承認と実入金後の作者分20%を計算例で確認できるようにした。費用を確認できない場合は作者分を未確定にする（[PR #61](https://github.com/iceiceice999/rock/pull/61)）。
+- つなぐ役を、本人の最初の決定どおり Noa から Eve にまとめた形へ戻した（Opus / Noelle。本人回答 13:54「前者で」）。同じ日に main で「内部ではNoaが接続を組み立てる」と書き換わっていた AGENTS.md・00・04・06・services/eve-si.md を戻し、07 に回答を 1 行足した。目的型・収益型の定義など、ほかの追記はそのまま。コード識別子と API は変えない。
+- 組み合わせの作者の分を「入金 − 費用」の 20% に決めた（Opus / Noelle。本人回答 13:54。`EVE_AUTHOR_SHARE_BPS` = 2,000。Noah の Agent の作者と同じ割合）。目的型・収益型の 2 つの型と、能力を確かめる見本の仕事の送信も、本人の回答として 07 と services/eve-si.md に記録した。
+- eve.si の設計書（Claude の文書）の全文を [services/eve-si-design.md](docs/services/eve-si-design.md) に写した（Opus / Noelle。本人「gitにあげて」）。図 4 枚は原本だけ。本人の回答 ⑧ の書き方が main で変わった事を、写しの頭に書いた。
+- 稼ぐ設計図 470 件の 1 年目の月の利益を、公開の数字で見積もった（Opus / Noelle。0 円も入れた平均）: 1 件あたり月 −380 円。動画の作る費用（月 3,000 円）が見込みより大きいため。動画と画像をオープンソースで作れば +259 円。あわせて、オープンソースの自分で動く Agent の 2026 年 10 月の一覧と、Noah での組み合わせを docs に置き、目的型の Agent は一旦無料という本人の答えを記録した（[PR #60](https://github.com/iceiceice999/rock/pull/60)）。
+- Eveがモデル1回で複数Agentの設計案を返し、相談記録に各担当の入力・成果と、本人の目的または案件の成果地点・確認方法を残すようにした。PCのナビゲーションで作者画面の名前を読みやすくした（task 130、[PR #58](https://github.com/iceiceice999/rock/pull/58)）。
+
+- Eveの相談で、Hermesが組み合わせ案をその仕事のメモに保存できるよう、道具を呼ばずに答えた場合の再試行を修正した（task 130、[PR #57](https://github.com/iceiceice999/rock/pull/57)）。
+- ストアのAgentエンジニアリングでEveに直接相談し、複数Agentの役割と受け渡しを確認できるようにした。組み合わせの日本語の素材照合と予算の判定も修正した（task 130、[PR #49](https://github.com/iceiceice999/rock/pull/49)）。
+- Eve（eve.si）のエージェントエンジニアリングを実装した（Opus / Noelle。本人「最後までやって」。task 130）: 組み合わせファイル `eve-combination/1` と検査の規則 1〜9、宣言型のつなぎ目、試運転（外へ出す工程は動かさない）、出典付きの需要の台帳、型への当てはめと型に無い組み合わせの発見、Jev の成績表（外部の記録だけ）、作り直しの提案（2 割以上良い時だけ。採用は本人）、作者の受け取りの計算（入金の記録だけ。割合は未決）。画面 `/os/eve/combinations` と API `/api/eve/combinations`。最初の 1 本は「AI の道具の紹介 × 自分のブログ（金融以外）」。試験 43 件。 [PR #49](https://github.com/iceiceice999/rock/pull/49)
+- AgentエンジニアリングのEveに相談すると、Noahの無料クラウドが返した設計案を相談文と一緒に読めるようにした（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。
+- Noahストアの作者向け入口を「Agentエンジニアリング」に統合。Eveと相談しながら作成・接続・試行・掲載申請へ進める（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。
+- Noahの「法人のsi導入準備」の詳細に、作業時間を準備票にまとめる15秒の予告編を追加。共通ナビゲーションの「シアター」タブを撤去（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
+- Noahの「シアター」でAgentごとの短い予告編を上映し、作者の動画と保存した仕事への入口を追加（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
+- Noah の 300 人の試行の利益の試算を docs に置いた（Opus / Noelle。Sheets「Noah 300人の利益試算」の revision 14 の写し。式を組み直して表の値 504 個と一致を確かめた）: 今の実例の売上（月 39,500 円）では 1 人あたりの本人の分は月 14 円で、600 円の天引きは始まらず、12 か月の会社の利益は −51,984 円。1 人 600 円には月 約 44 万円の売上が要る（[PR #55](https://github.com/iceiceice999/rock/pull/55)）。
+- Noah の「注目のAgent」の「すべて見る」（スマホ幅で 73×40px）を 44px にした。公開の後の本番で、`/noah` の下の 6 画面のうち小さい押す所はこれだけだった（Opus / Noelle。task 129 の D7。[PR #54](https://github.com/iceiceice999/rock/pull/54)）。
+- エージェントエンジニアリングを定義し、Eve（eve.si）で組み合わせを作る・試す・入金で採点する・作り直す設計を [services/eve-si.md](docs/services/eve-si.md) に置いた。本人の決定 4 つを 07 に記録し、06 の Eve の行と 04 に反映（Opus / Noelle。本人「それ設計して」）。文書だけで、コードは未着手。
+- Eve（eve.si）の設計に、需要の台帳から逆算してお金になる組み合わせを見つける仕組み（型への当てはめと発見、見込みの利益での並び）、Eve と人の 2 通りの作り方、2 つのお金の道を足し、つなぐ役を Noa から Eve にまとめた（Opus / Noelle。本人の回答 4 つ）。services/eve-si.md・07・06・04・00・AGENTS.md に反映。コード識別子と API は変えない。 [PR #49](https://github.com/iceiceice999/rock/pull/49)
 - Noah の 300 人の試行のお金の決めを記録した（Opus / Noelle。本人回答 2026-11-24）: 試行の間（300 人が集まるまで）は無料で、本人の分（定期便）も配らない。300 人が集まった次の月から、定期便と、有料（600 円）の本人の分からの差し引きを始める。本人の分は余剰の 75%、Agent を作った人の分は売上の 20%（[PR #51](https://github.com/iceiceice999/rock/pull/51)）。
 - マイAgentの成果詳細に仕事別の使用量・料金を追加。専用クラウドはCPUと予約・確定額、外部提供元の未報告分は未確定と表示（task 94、[PR #46](https://github.com/iceiceice999/rock/pull/46)）。
 - Noah の札なし説明で、握手と版が一致する道具を接続と依頼の間に表示する。入力は定義上の項目名・型、出力定義がなければ「未確認」。Sites v227 の公開済み画面も正本へ統合。 [PR #50](https://github.com/iceiceice999/rock/pull/50)
+- Noah の道具一覧を Claude v2 に切り替える。つなぐ → 頼む → Agent が道具を使う段ごとに、提供者の説明と受け取る項目を表示する。本番台帳とハッシュ・道具数が一致した定義を使う。 [PR #52](https://github.com/iceiceice999/rock/pull/52)
 - 0060 未適用の Noah で Agent・棚・審査者の説明の段を表示し、入出力の札は既定で非表示にする。0059 の手元 D1 と 390px・1280px の6画面で確認。 [PR #48](https://github.com/iceiceice999/rock/pull/48)
 - Noah の遷移先で各工程の入出力、名前付きのデータの線、並行・合流・点検を表示する。札用の `0060_noah_intake_tool_labels` を追加し、記事番号と運用手順を [task 128](codex/tasks/128-noah-agent-explain.md#9-graph-engineering-with-claude-の使い方) に記録。実データの受入と本番反映は運用記録で追う。 [PR #45](https://github.com/iceiceice999/rock/pull/45)
 - Noah の無料のクラウドを、件数（全体 1 日 10 件・本人 3 件）ではなく、Workers AI の無料割当の中で使ったモデルの量（neuron）で数えるようにした（Opus / Noelle。本人「クラウドのシステム作って」「cloudflareでいいから最初は」、Workers Paid はまだ申し込まない）: 全体 8,000・本人 2,400・1 件 1,200 neuron。1 件ごとの使った量を Work に残し、画面に有料プランの値段での額を並べる。上限を超える呼び出しは呼ぶ前に止め、失敗として結果を返す（[PR #44](https://github.com/iceiceice999/rock/pull/44)）。

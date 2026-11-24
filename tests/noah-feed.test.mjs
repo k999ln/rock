@@ -13,11 +13,13 @@ function fixture(t, publicTags = () => []) {
   for (const file of ['0021_sites_schema_convergence.sql','0036_noah_feed_preferences.sql','0042_noah_recommendations.sql']) db.exec(readFileSync(new URL('../drizzle/' + file, import.meta.url), 'utf8'));
   let time = 1800000000000;
   const api = createNoahFeedApi({ publicTags, clock: () => time, authenticate: async request => { const owner = request.headers.get('test-owner'); if (!owner) throw new Error('UNAUTHORIZED'); return owner; }, db: { prepare(sql) { return { bind(...args) { return { async all() { return { results: db.prepare(sql).all(...args) }; } }; } }; } } });
-  function publish(n, { author = 'author-a', status = 'verified', expires = time + 100000, reviewHash = 'hash', published = time - n, category = 'development', review = true } = {}) {
+  function publish(n, { author = 'author-a', status = 'verified', expires = time + 100000, digest = 'hash', reviewHash = digest, published = time - n, category = 'development', review = true, cover, guideMarkdown } = {}) {
     const manifest = createSkyToolPackageDraft({ sourceKind: 'github', sourceUrl: 'https://github.com/example/agent', developerId: author, developerName: author, license: 'MIT', name: `Agent ${n}` });
     manifest.id = `dev.example.agent-${n}`; manifest.fund.categories = [category]; manifest.fund.tags = ['automation'];
+    if (cover) manifest.cover = cover;
+    if (guideMarkdown) manifest.guideMarkdown = guideMarkdown;
     const key = `${manifest.id}@0.1.0`;
-    db.prepare('INSERT INTO sky_tool_packages(package_key,tool_id,version,user_id,manifest,manifest_sha256,status,created_at,updated_at,published_at) VALUES(?,?,?,?,?,?,?,?,?,?)').run(key, manifest.id, '0.1.0', author, JSON.stringify(manifest), 'hash', status, time - 1000, time, published);
+    db.prepare('INSERT INTO sky_tool_packages(package_key,tool_id,version,user_id,manifest,manifest_sha256,status,created_at,updated_at,published_at) VALUES(?,?,?,?,?,?,?,?,?,?)').run(key, manifest.id, '0.1.0', author, JSON.stringify(manifest), digest, status, time - 1000, time, published);
     if (review) db.prepare('INSERT INTO sky_tool_package_reviews(id,package_key,manifest_sha256,reviewer_id,decision,checks_json,evidence_json,notes,reviewed_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?)').run(randomUUID(), key, reviewHash, 'reviewer', 'verified', '{}', '{}', '', time - 1000, expires);
     return key;
   }
@@ -60,6 +62,39 @@ void test('public feed marks explicitly published Agents while preserving ordina
   await feed.press(agentNodes.find(node => node.type === 'button' && feed.text(node) === '非表示'));
   assert.equal(cards().length, 0);
   assert.deepEqual(feed.find('a', '詳細・利用条件').map(node => node.props.href), [`/noah/marketplace?package=${encodeURIComponent(tool)}`]);
+});
+void test('creator screenings select reviewed videos and preserve guide text without rendering external assets', async t => {
+  const f = fixture(t);
+  const digest = 'b'.repeat(64);
+  const guide = '# 使い方\n1. メモを選ぶ\n2. 結果を見る\n\n![remote](https://media.example/a)\n<img src="https://media.example/b">';
+  const edition = { category:'Agent', digest, guideMarkdown:guide, cover:{type:'video/webm',bytes:200,sha256:'a'.repeat(64)} };
+  const visible = f.publish(1, edition);
+  f.publish(2, { ...edition, status:'revoked' });
+  f.publish(3, { category: 'Agent' });
+  assert.equal((await (await f.api.get(getRequest('', null))).json()).entries.some(e => e.guideMarkdown), false);
+  const ui = screen({ fetch: async ({url,method}) => {
+    assert.equal(method,'GET');
+    const query = new URL(url,'https://noah.example').searchParams;
+    assert.equal(query.get('media'),'video');
+    const res = await f.api.get(getRequest(query, null)); return { status:res.status, body:await res.json() };
+  }});
+  let selected;
+  const list = ui.mount('components/noah-theater-authors.tsx', { selectedDigest:'', onSelect:entry=>{selected=entry;} });
+  await list.flush();
+  assert.equal(list.find('video').length,0);
+  assert.equal(list.find('button').length,1);
+  await list.press(list.find('button')[0]);
+  assert.equal(selected.packageKey,visible); assert.equal(selected.guideMarkdown,guide);
+  let back = false;
+  const player = ui.mount('components/noah-theater-authors.tsx#NoahAuthorScreening',{entry:selected,onBack:()=>{back=true;}});
+  const video = player.find('video')[0];
+  assert.equal(video.props.src,'/api/noah/releases/'+encodeURIComponent(visible)+'/cover?digest='+digest+'&public=1');
+  assert.equal(video.props.preload,'none'); assert.equal(video.props.controls,true); assert.equal(video.props.autoPlay,undefined);
+  assert.equal(player.find('img').length,0);
+  assert.equal(player.find('h4','使い方').length,1); assert.equal(player.find('ol').length,1);
+  assert.ok(player.find('a').every(a => a.props.href.startsWith('/noah/')));
+  await player.click('上映作品に戻る'); assert.equal(back,true);
+  assert.equal(ui.calls.length,1);
 });
 void test('keyset pagination is deterministic at equal timestamps; new arrivals and revocations are handled without duplication', async t => {
   const { api, publish, db, time } = fixture(t); for (let n = 1; n <= 25; n++) publish(n, { published: time() - 1 });

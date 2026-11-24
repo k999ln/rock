@@ -1,4 +1,5 @@
 import { isNoahCover, type NoahCover } from './noah-cover.ts';
+import { normalizedNoahGuide } from './noah-author-guide.ts';
 import {
   SKY_CONNECTION_TYPES,
   SKY_EXECUTION_TARGETS,
@@ -43,6 +44,7 @@ export type SkyToolConfirmation = (typeof SKY_TOOL_CONFIRMATION)[number];
 export type SkyToolPackage = {
   schema: typeof SKY_TOOL_PACKAGE_SCHEMA;
   cover?: NoahCover;
+  guideMarkdown?: string;
   id: string;
   version: string;
   name: string;
@@ -256,8 +258,11 @@ function developerId(value: unknown) {
 
 export function parseSkyToolPackage(value: unknown): SkyToolPackage {
   const sourceRoot = object(value, 'Tool Package');
-  const root = exactObject(sourceRoot, 'cover' in sourceRoot ? [...packageKeys, 'cover'] : packageKeys, 'Tool Package');
+  const optionalKeys = ['cover', 'guideMarkdown'].filter(key => key in sourceRoot);
+  const root = exactObject(sourceRoot, [...packageKeys, ...optionalKeys], 'Tool Package');
   if ('cover' in root && !isNoahCover(root.cover)) throw new SkySubmissionError('カバーの固定版を確認してください。');
+  const guideMarkdown = normalizedNoahGuide(root.guideMarkdown);
+  if ('guideMarkdown' in root && !guideMarkdown) throw new SkySubmissionError('使い方ガイドは1〜2,000文字で入力してください。');
   if (root.schema !== SKY_TOOL_PACKAGE_SCHEMA)
     throw new SkySubmissionError('未対応のTool Package版です。');
   const id = string(root.id, 'Tool ID', 3, 140);
@@ -390,6 +395,7 @@ export function parseSkyToolPackage(value: unknown): SkyToolPackage {
   return {
     schema: SKY_TOOL_PACKAGE_SCHEMA,
     ...(isNoahCover(root.cover) ? { cover: root.cover } : {}),
+    ...(guideMarkdown ? { guideMarkdown } : {}),
     id,
     version,
     name: string(root.name, 'Tool名', 2, 80),

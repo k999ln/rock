@@ -1,4 +1,16 @@
-# 04 Eve → Noa → AMC → Jev、Sky、そしてサービス挙動の書き方（2026-11-02）
+# 04 Eve → AMC → Jev（2026-11-24 に Noa を Eve へ統合）、Sky、そしてサービス挙動の書き方（2026-11-02）
+
+収益型Agentの成果はマイAgentの本人限定の仕事詳細で開く。成果承認額・入金額・確認できた実費を個別に表示する。作者の取り分は本人の案件の入金と最終費用がそろい、作者と運用者の関係を確認した時に算出する。
+
+2026-11-24 本人決定。EveでAgentを作るとき、目的型は本人の目的、収益型は案件で決めた成果地点を設計の基準にする。目的型は何を誰に届ければ役立つかを決める。収益型は取り決めた申込・承認・購入などに実際に達した記録を照合する。入金と配給は別に記録する。
+
+2026-11-24 収益型の設計と採点。Eve（eve.si）は、誰が何にいくら払っているか（需要の台帳）から逆算して、エージェントの出力を次のエージェントの入力につなぎ、最後に外部の入金の記録が出る流れ（組み合わせ）を見つけ、作り、試し、入金で採点し、悪い工程だけを作り直す。組み合わせは Eve が自動でも作り、人も Eve を道具にして作る。稼ぎ方の型への当てはめと、型に無い組み合わせの発見の両方を、見込みの利益で並べる。どれも `eve-combination/1` の 1 ファイルにし、決まった式の検査と外へ出さない試運転を通す。公開画面ではEveが相談と作成を受け付け、内部の接続はNoa、工程管理はAMC、独立判定はJevが担う。公開・送信・送金には既存の本人確認とBroker・Walletの承認を使う。[書式と合格条件](../services/eve-si.md)
+
+2026-11-24 Agentエンジニアリングから開いたEveでは、作者が相談文と送信先を確認して依頼する。組み合わせの設計相談では、Noahの無料クラウドでモデルを1回呼び、各Agentの担当と受け渡しを相談文とともに表示する。提案したAgentの試運転は作者が後から選ぶ。相談結果は本人のWorkとして保存し、接続済みの自分の端末も選べる。
+
+2026-11-24 Noahの作者は、ストアから「Agentエンジニアリング」を開き、自作または外部接続した本人の登録版を試し、そのAgentの掲載仕様を用意して既存の審査へ提出できる。Eveは工程に応じた相談を受け付ける。実行には既存の本人・実行先の許可を使い、掲載には既存の審査を使う。
+
+2026-11-24 Noahの公開ナビゲーションから「シアター」タブを外す。ストアにはAgentを探す入口を置く。「法人のsi導入準備」の詳細では予告編をその場で再生できる。作者は既存の登録・掲載の表紙に自分の動画を選べる。自分のAgent、実行中の仕事、保存したものは引き続き開ける。保存した成果から仕事別の利用明細へ進める。[上映と表紙の設計](../noah/spec-115-pin-grid.md)
 
 2026-11-24 NoahのAgent詳細。CallMCPの掲載では電話の用途、入力と返答の見本、提供元に渡る情報、無料プレビューと有料回線の条件を確認してから接続できる。公式資料に基づく使用例と、Noahで検証済みの実行状態を区別する。[Agent詳細の設計](../noah/spec-127-agent-explain.md)
 
@@ -108,7 +120,7 @@ Noahのクラウドを選んだ仕事は、本人のMacが閉じていても、N
 sequenceDiagram
   participant U as 本人（mii / スマホ / Pro）
   participant E as Eve（会話→Goal）
-  participant N as Noa（道具・Agentをつなぐ）
+  participant N as Eve のつなぐ役（2026-11-24 に Noa から統合）
   participant A as AMC（工程・担当・合格条件）
   participant S as Sky（Agent/Tool/情報の市場）
   participant W as Work（Job・Receipt）
@@ -132,8 +144,8 @@ sequenceDiagram
 
 | 役割 | 一言 | 持ってよいもの | 持ってはいけないもの |
 | --- | --- | --- | --- |
-| **Eve** | 本人と話し、Goal を作る | 会話文脈、Memory、本人の好み | 実行権限、お金 |
-| **Noa** | Goal に対して道具・Agent・実行先をつないで「担当」を形にする（ノアの方舟＝全部を乗せて渡す） | Sky の検索、接続の提案 | 本人の承認なしの実行 |
+| **Eve** | 本人と話し、Goal を作る。道具・Agent・実行先をつないで「担当」と組み合わせを形にする（2026-11-24 に Noa を統合） | 会話文脈、Memory、本人の好み、Sky の検索、接続の提案、需要の台帳 | 実行権限、お金、本人の承認なしの実行、自分が作った組み合わせの合格判定 |
+| ~~Noa~~ | 2026-11-24 に Eve へ統合（本人決定）。つなぐ役は Eve が持つ | — | — |
 | **AMC** | 工程に分解、担当・順序・合格条件を決め、進行を見る（Jennifer を吸収） | Job の発行、進捗、差し戻し | 評価の最終判断（Jev の仕事） |
 | **Jev** | 成果を独立に評価。権限は持たない | 合格条件、過去の評価 | 実行、変更 |
 | **Spider** | コード・接続先を巡回し、不具合と権限逸脱を探す | 読み取り | 書き込み |
@@ -141,7 +153,7 @@ sequenceDiagram
 | **Broker** | 本人の承認・予算・端末権限を実行に渡す門番 | 承認、予算枠 | — |
 | **Wallet** | 残高・予約・台帳・精算・天引き | お金 | 仕事の判断 |
 
-**内部構造として AMC / Eve / Noa を一つに潰さない**（本人の指示）。公開UIでは Eve と Noah を表示し、NoahからEveへ選択したTool・記事・担当を渡す。ウェイクワードは「ヘイ、エヴァ」（議事録 10-27）。
+**内部構造として AMC / Eve を一つに潰さない**（本人の指示）。2026-11-24 の本人決定で Noa は Eve にまとめた。AMC と Jev は分けたまま（作った者が合格を出さないため）。公開UIでは Eve と Noah を表示し、NoahからEveへ選択したTool・記事・担当を渡す。ウェイクワードは「ヘイ、エヴァ」（議事録 10-27）。
 
 注: 議事録 10-07 の「ジェニファーが最上位（データ許可）、下にプロジェクト管理・データ管理・データ探索の3人」は、この表では Jennifer＝AMC、3人＝AMC 内の役割（.codex/agents の amc / amc-worker / amc-reviewer）として読む。現行の責任分担はAMCへ統合する。互換API・保存識別子に残る`jennifer`は別製品を意味しない。
 
@@ -152,7 +164,7 @@ sequenceDiagram
 | 役割 | lib | app / api | 備考 |
 | --- | --- | --- | --- |
 | Eve | lib/eve-*.ts, lib/zema-chat-session.ts | app/chat, app/zema, app/api/eve | zema-chat-session は Eve 配下へ（task 04） |
-| Noa | lib/eve-agent-proposal.ts, eve-agent-creation.ts, eve-agent-origin.ts, components/eve-object-agent-creator.tsx | app/api/llm/local-agent | コード内の `smith` → `noa`（task 04） |
+| Eve のつなぐ役（旧 Noa） | lib/eve-agent-proposal.ts, eve-agent-creation.ts, eve-agent-origin.ts, components/eve-object-agent-creator.tsx | app/api/llm/local-agent | 2026-11-24 に Eve へ統合。ファイル名は既に eve-。コード内の `smith`・`noa` の識別子と API は変えない |
 | AMC | lib/amc-*.ts, lib/jennifer-amc-*.ts, lib/jennifer-*.ts | app/amc, app/api/amc, app/api/jennifer | 内部名と互換入口の整理はtask40。移動だけを機能統合の完了としない |
 | Jev | lib/jev-evaluation.ts, jev-transport.ts, android/jev-provider | app/api/jev-evaluation | — |
 | Spider | lib/spider-*.ts, toolkits/spider-guard | — | .github/workflows/spider-codeql.yml |
@@ -169,7 +181,7 @@ sequenceDiagram
 # <サービス名>
 - 本人が言う一言: 「…」
 - Goal（Eveが作る）: 目的 / 入力 / 期待成果 / 予算上限 / 要る権限
-- Noaがつなぐもの: Tool / Agent / 情報（Skyの何を使うか。無ければ「新規Agent: …」）
+- Eveがつなぐもの: Tool / Agent / 情報（Skyの何を使うか。無ければ「新規Agent: …」）
 - AMCの工程: 1. … 2. … 3. …（各工程に担当と合格条件）
 - Jevの合格条件: 数値で書けるものは数値（例: 姿勢誤差 < 5°、請求額の検算一致）
 - 出力先: mii（空間のどこに） / スマホ（画面） / ファイル

@@ -15,7 +15,7 @@ export function noahBrowserRequestAllowed(request: Request): boolean {
   ].includes(path)) return true;
   // Private source intake shares this browser's owner; review/publish/runner APIs remain excluded.
   if (method === 'GET' && path === '/api/noah/drafts') return true;
-  if (method === 'POST' && ['/api/noah/import', '/api/noah/agents'].includes(path)) return true;
+  if (method === 'POST' && ['/api/noah/import', '/api/noah/agents', '/api/noah/revenue/work'].includes(path)) return true;
   if (['GET', 'POST'].includes(method) && path === '/api/noah/drafts/storage') return true;
   const uploadId = '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}';
   if (['GET', 'PUT', 'DELETE'].includes(method) && new RegExp(`^/api/noah/drafts/${uploadId}$`, 'i').test(path)) return true;

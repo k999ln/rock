@@ -41,7 +41,7 @@ export function providerMcpInput(endpoint: ProviderEndpoint, input: Record<strin
   return parsed.args;
 }
 /** A fresh handshake and identical tool definition are required immediately before the single call. */
-export async function callProviderMcp(url: string, endpoint: ProviderEndpoint, args: unknown, fetcher: typeof fetch, check: ((url: URL) => Promise<void>) | undefined, beforeSend: () => Promise<boolean>, onSend: () => void) {
+export async function callProviderMcp(url: string, endpoint: ProviderEndpoint, args: unknown, fetcher: typeof fetch, check: ((url: URL) => Promise<void>) | undefined, beforeSend: () => Promise<boolean>, onSend: () => void, revenue?: Parameters<typeof noahMcpCall>[5]) {
   const ctx = providerMcpContext(fetcher, check);
   const handshake = await noahMcpHandshake(url, { ...ctx, signal: AbortSignal.timeout(8000) });
   try {
@@ -50,7 +50,7 @@ export async function callProviderMcp(url: string, endpoint: ProviderEndpoint, a
     if (!tool || !endpoint.form || await noahToolSha256(tool) !== endpoint.toolDigest) throw new NoahAgentError('操作の入力定義が変わりました。接続し直してください。', 409);
     if (!await beforeSend()) return null;
     onSend();
-    const result = await noahMcpCall(handshake.session, endpoint.name, args, ctx, 60000);
+    const result = await noahMcpCall(handshake.session, endpoint.name, args, ctx, 60000, revenue);
     if (!result.ok) throw new NoahAgentError('提供元が処理エラーを返しました。入力内容を確認してください。', 422);
     return noahResultText(result);
   } finally { await noahMcpClose(handshake.session, ctx); }

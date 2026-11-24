@@ -1,0 +1,28 @@
+.consultation { min-width: 0; scroll-margin-block: 20px; }
+.consultation > section {
+  margin: 0;
+  padding: clamp(18px, 3vw, 32px);
+  color: #29251f;
+  background: #fff;
+  border: 1px solid #e1d8ce;
+  border-radius: 18px;
+}
+.consultation h2 { font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.25; letter-spacing: -.035em; }
+.consultation > section > div:first-child { flex-wrap: wrap; row-gap: 4px; }
+.consultation textarea { max-width: 100%; }
+.consultation article { min-width: 0; overflow-wrap: anywhere; }
+.consultation article pre { max-width: 100%; }
+.consultation [data-eve-proposal] { margin-block: 16px; }
+.consultation [data-eve-proposal] h4 { margin: 0 0 8px; font-size: 1.15rem; }
+.consultation [data-eve-proposal] ol { margin: 14px 0; padding-inline-start: 1.6rem; list-style: decimal; }
+.consultation [data-eve-proposal] li { padding: .75rem 0 .75rem .3rem; border-block-start: 1px solid #e5ded7; }
+.consultation [data-eve-proposal] li::marker { color: #a44208; font-weight: 700; }
+.consultation [data-eve-proposal] p { margin: .4rem 0; }
+.consultation [data-eve-proposal] dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: .3rem .7rem; margin: .5rem 0 0; }
+.consultation [data-eve-proposal] dt { font-weight: 650; color: #5e534a; }
+.consultation [data-eve-proposal] dd { margin: 0; }
+
+.consultation [data-eve-scheme] { margin-block: 1rem; padding: 1rem; border: 1px solid #e1d8ce; border-radius: 12px; }
+.consultation [data-eve-scheme] h5 { margin: 0; font-size: 1rem; }
+.consultation [data-eve-scheme] dl { display: grid; grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+.consultation [data-eve-scheme] dt { font-size: .9rem; }

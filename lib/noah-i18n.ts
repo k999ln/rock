@@ -6,6 +6,8 @@ import { NOAH_ACCOUNT_MESSAGES } from './noah-i18n-account.ts';
 import { NOAH_EXTRA_MESSAGES } from './noah-i18n-extra.ts';
 import { NOAH_TEIKIBIN_MESSAGES } from './noah-i18n-teikibin.ts';
 import { NOAH_EXPLANATION_MESSAGES } from './noah-i18n-explanation.ts';
+import { NOAH_THEATER_MESSAGES } from './noah-i18n-theater.ts';
+import { NOAH_ENGINEERING_EVE_MESSAGES } from './noah-i18n-engineering-eve.ts';
 /** UI strings only: user input, provider descriptions and results are never translated. */
 export const NOAH_LOCALES = ['ja', 'en', 'zh-CN', 'ko', 'es', 'ar'] as const;
 export type NoahLocale = (typeof NOAH_LOCALES)[number];
@@ -40,6 +42,8 @@ export const NOAH_MESSAGES: Record<
   ...NOAH_ACCESS_MESSAGES,
   ...NOAH_TEIKIBIN_MESSAGES,
   ...NOAH_EXPLANATION_MESSAGES,
+  ...NOAH_THEATER_MESSAGES,
+  ...NOAH_ENGINEERING_EVE_MESSAGES,
   '使った量: モデル {calls} 回・{neurons} neuron（無料の枠の中。有料プランの値段なら 約 {yen} 円）': ['Used: {calls} model calls, {neurons} neurons (within the free allowance; about ¥{yen} at paid-plan prices)', '用量：模型 {calls} 次、{neurons} neuron（在免费额度内；按付费方案约 {yen} 日元）', '사용량: 모델 {calls}회, {neurons} neuron(무료 한도 내. 유료 요금으로는 약 {yen}엔)', 'Uso: {calls} llamadas al modelo, {neurons} neuronas (dentro del cupo gratuito; unos {yen} ¥ con precios del plan de pago)', 'الاستخدام: {calls} من استدعاءات النموذج، {neurons} نيورون (ضمن الحصة المجانية؛ نحو {yen} ين بأسعار الخطة المدفوعة)'],
   '今日の無料のクラウドの枠を使い切りました。日本時間の朝 9 時に戻ります。': ['Today\'s free cloud allowance is used up. It resets at 9:00 Japan time.', '今天的免费云端额度已用完，将于日本时间上午 9 点恢复。', '오늘의 무료 클라우드 한도를 모두 사용했습니다. 일본 시간 오전 9시에 다시 채워집니다.', 'Se agotó el cupo gratuito de la nube de hoy. Se renueva a las 9:00, hora de Japón.', 'نفدت حصة السحابة المجانية لليوم. تتجدد في الساعة 9:00 بتوقيت اليابان.'],
   '今日のあなたの無料のクラウドの枠を使い切りました。日本時間の朝 9 時に戻ります。': ['You have used your free cloud allowance for today. It resets at 9:00 Japan time.', '您今天的免费云端额度已用完，将于日本时间上午 9 点恢复。', '오늘 내 무료 클라우드 한도를 모두 사용했습니다. 일본 시간 오전 9시에 다시 채워집니다.', 'Usaste tu cupo gratuito de la nube de hoy. Se renueva a las 9:00, hora de Japón.', 'لقد استخدمت حصتك المجانية من السحابة لهذا اليوم. تتجدد في الساعة 9:00 بتوقيت اليابان.'],

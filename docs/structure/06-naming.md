@@ -8,7 +8,7 @@
 | --- | --- | --- | --- |
 | **avokado** | 会社・ブランド | — | avocado, AVOKADO（大文字はロゴ表記のみ可） |
 | **mii** | 建築・暮らしに埋め込む物理端末 | avocadomini.si（将来 mii.si を検討） | avocadoMini, avocado mini, Mini, R5（R5は設計世代の番号として内部で残す） |
-| **Eve** | 話しかける相手。依頼→仕事→成果の窓口 | avoado.si/os/eve（eve.si は過去PDFの表記） | Zema（旧名。仕事の実行層の意味で内部名に残す）, イブ |
+| **Eve** | 話しかける相手。依頼→仕事→成果の窓口。エージェントをつないで入金が起きる流れを作る、エージェントエンジニアリングの道具でもある（2026-11-24） | avoado.si/os/eve。eve.si は Eve の名前（2026-11-24 本人決定。ドメインの所有は未確認） | Zema（旧名。仕事の実行層の意味で内部名に残す）, イブ |
 | **Noah** | Agentを集める・つなげる・載せる最小構成。情報・Tool・コミュニティとEveへの導線も持つ | avoado.si/noah | Jennifer, Smith, Sky, smis（公開画面の旧名） |
 | **RockstarOS** | どのハードでも同じ実行基盤。端末名として表示してよい | — | Rockstar OS, Rock, rock, rocketstar（別物: docs/rocketstar-design は旧設計資料）, dev.rock（内部識別子として残す） |
 | **Pro** | AI専用PC（今は構造整理の対象外） | avocadopro.si | avocado Pro, avokadoPro |
@@ -17,8 +17,8 @@
 
 | 名前 | 役割1行 | 主なコード | 旧名・統合先 |
 | --- | --- | --- | --- |
-| **Eve** | 会話を Goal（目的・入力・期待成果・予算）に変える | lib/eve-*.ts, components/sky-chat-workspace.tsx | Zema chat（lib/zema-chat-session.ts は Eve 配下へ） |
-| **Noa** | Eveが決めた目的に対して、Tool・Agent・実行先をつないで「担当」を形にする（ノアの方舟） | lib/eve-agent-*.ts, components/eve-object-agent-creator.tsx, app/api/llm/local-agent | **Smith**（旧名。コード内 `smith` は段階的に `noa` へ） |
+| **Eve** | 会話を Goal（目的・入力・期待成果・予算）に変え、Tool・Agent・実行先をつないで「担当」と組み合わせを形にする（2026-11-24 に Noa を統合） | lib/eve-*.ts, lib/eve-agent-*.ts, components/sky-chat-workspace.tsx, components/eve-object-agent-creator.tsx, app/api/llm/local-agent | Zema chat（lib/zema-chat-session.ts は Eve 配下へ）、**Noa**（2026-11-24 に Eve へ統合） |
+| ~~Noa~~ | 2026-11-24 の本人決定で Eve へ統合。つなぐ役は Eve が持つ | （Eve の行へ） | **Smith**（旧名）→ Noa → Eve。コード内の `smith`・`noa` の識別子と API は変えない |
 | **AMC** | avokado Mission Control。Goalを工程に分解し、担当・順序・合格条件を持つ | lib/amc-*.ts, lib/jennifer-amc-*.ts, data/amc/, app/amc | **Jennifer**（project chief of staff。役割がAMCと重複するためAMCへ統合。lib/jennifer-*.ts は amc/ 配下へ） |
 | **Jev** | 成果を独立に評価する remote evaluator。権限は持たない | lib/jev-*.ts, app/api/jev-evaluation | — |
 | **Spider** | コードと接続先を巡回して不具合・権限逸脱を探す検査役（雲が歩く軌跡のアニメーション） | lib/spider-*.ts, components/spider-workspace.tsx, toolkits/spider-guard, .github/workflows/spider-codeql.yml | — |
@@ -32,7 +32,7 @@
 
 ## 使ってはいけない言い換え
 
-- 「Smith」→ Noa。「Zema」→ 文脈で Eve（会話）か Work（実行）。「Jennifer」→ AMC。
+- 「Smith」「Noa」→ Eve（2026-11-24 に統合。コード識別子と API は変えない）。「Zema」→ 文脈で Eve（会話）か Work（実行）。「Jennifer」→ AMC。
 - 「avocadoMini」→ mii。「Mini」単独は mii の意味でなら可、ただし新規本文では mii。
 - 「si」= AI の表記（2026-10-13の決定）。本文の AI 表記は si のまま。API/enum/パスは変えない。
 - 製品が何個あるかを数えるときは外側の表だけを数える（会社1、物理端末1、入口1、場所1、基盤1、PC1）。

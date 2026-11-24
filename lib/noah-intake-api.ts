@@ -40,6 +40,11 @@ export function createIntakeApi(deps: IntakeApiDependencies) {
       if (request.method === 'GET') {
         // 運営の画面（審査者だけ）。launch は、見張る数（docs/noah/spec-97-launch-ops.md の 6 章）。数えられない時は null（取り込みの節の、他の行は出す）。
         if (url.searchParams.get('state') === '1') return reviewer ? json({ ...await store.status(url.searchParams), launch: await launch(deps.flags).catch(() => null), warnings: deps.flags.warnings, ownerScope }) : json({ error: '見つかりません。' }, 404);
+        if (url.searchParams.has('engineeringAgent')) {
+          if (!owner) return json({ error: '自分のAgentにサインインしてください。' }, 401);
+          if (!noahAllowed(deps.flags, 'ask', reviewer)) return json({ match: null, ownerScope });
+          return json({ match: await store.engineeringTrial(owner, url.searchParams.get('engineeringAgent') || ''), ownerScope });
+        }
         const id = url.searchParams.get('id');
         if (!id) return json({ ...await store.list(owner, url.searchParams), ownerScope });
         const detail = await store.detail(id, owner, reviewer);

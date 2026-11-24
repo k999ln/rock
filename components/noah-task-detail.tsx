@@ -6,20 +6,22 @@ import { ArrowLeft } from 'lucide-react';
 import NoahResultContent from './noah-result-content';
 import NoahManagedFiles from './noah-managed-files';
 import NoahWorkUsageReceiptPanel from './noah-work-usage-receipt';
+import NoahWorkRevenueReceiptPanel from './noah-work-revenue-receipt';
 import { useNoahLocale } from './noah-locale';
 import NoahLoading from './noah-loading';
 import { noahAskRowView, type NoahAskItem } from '@/lib/noah-ask-view';
-import { noahWorkStages, noahWorkState } from '@/lib/noah-work-view';
+import { noahWorkAgentHref, noahWorkStages, noahWorkState } from '@/lib/noah-work-view';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import styles from './noah-unified.module.css';
 export default function NoahTaskDetail({ id }: { id: string }) {
   const { t, locale } = useNoahLocale();
-  const [ask, setAsk] = useState<NoahAskItem | null>(null),
+  const [loadedAsk, setAsk] = useState<NoahAskItem | null>(null),
     [error, setError] = useState(''),
     [scope, setScope] = useState<string | null>(null),
     [attempt, setAttempt] = useState(0),
     [busy, setBusy] = useState(false),
     [now, setNow] = useState(() => Date.now());
+  const ask = loadedAsk?.id === id ? loadedAsk : null;
   const generation = useRef(0);
   const invalidate = useCallback(() => {
     generation.current++;
@@ -153,7 +155,7 @@ export default function NoahTaskDetail({ id }: { id: string }) {
         {t('戻る')}
       </Link>
       <header className={styles.heading}>
-        <h1>{t(result ? '成果の詳細' : '仕事の詳細')}</h1>
+        <h1>{t(ask?.mode === 'revenue' ? '収益記録の詳細' : result ? '成果の詳細' : '仕事の詳細')}</h1>
       </header>
       {error && (
         <div role="alert" className={styles.error}>
@@ -170,7 +172,8 @@ export default function NoahTaskDetail({ id }: { id: string }) {
       {ask && (
         <>
           {!result && <h2>{t(noahOperationLabel(ask.tool))}</h2>}
-          <p className={styles.meta}>{ask.host}</p>
+          {ask.mode === 'revenue' && <h2>{ask.tool}</h2>}
+          {ask.host && <p className={styles.meta}>{ask.host}</p>}
           <output className={styles.state}>{t(noahWorkState(ask))}</output>
           {!result && (
             <ol className={styles.track}>
@@ -192,11 +195,12 @@ export default function NoahTaskDetail({ id }: { id: string }) {
               {ask.error}
             </p>
           )}
-          {result && ask.result && (
+          {ask.mode !== 'revenue' && result && ask.result && (
             <NoahResultContent key={ask.id} result={ask.result} id={ask.id} savedAttachments={ask.cloudFiles?.length ?? 0} />
           )}
           {result && !!ask.cloudFiles?.length && <NoahManagedFiles files={ask.cloudFiles} />}
-          <NoahWorkUsageReceiptPanel receipt={ask.usageReceipt} id={ask.workId || ask.id} requestId={ask.id} host={ask.host} />
+          {ask.revenueReceipt && <NoahWorkRevenueReceiptPanel receipt={ask.revenueReceipt} />}
+          {ask.mode !== 'revenue' && <NoahWorkUsageReceiptPanel receipt={ask.usageReceipt} id={ask.workId || ask.id} requestId={ask.id} host={ask.host} />}
           {noahAskRowView(ask, now).stoppable && (
             <button
               className={styles.secondary}
@@ -221,9 +225,9 @@ export default function NoahTaskDetail({ id }: { id: string }) {
           {ask.agentId && (
             <Link
               className={styles.back}
-              href={`${['provider', 'cloud'].includes(ask.mode) ? '/noah/discover/agent' : '/noah/ready/agent'}?id=${encodeURIComponent(ask.agentId)}`}
+              href={noahWorkAgentHref(ask.mode, ask.agentId)}
             >
-              {t('この Agent を開く')}
+              {t(ask.mode === 'revenue' ? 'この組み合わせを開く' : 'この Agent を開く')}
             </Link>
           )}
         </>

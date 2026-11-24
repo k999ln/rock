@@ -1,9 +1,14 @@
 import { createSkyToolPackageDraft, parseSkyToolPackage, type SkyToolSourceKind } from './sky-tool-package.ts';
 import { SkySubmissionError, type SkyConnectionType, type SkyPermission, type SkyPricing, type SkyExecutionTarget } from './sky-submission.ts';
 
+export function noahPublicationAgentId(ownerScope: string, uploadId: string) {
+  return `dev.noah-${ownerScope.replace('owner-v1:', '').slice(0, 16)}.agent-${uploadId}`;
+}
+
 export type PublicationField = { name: string; label: string; type: 'string' | 'number' | 'integer' | 'boolean'; required: boolean };
 export type PublicationForm = {
   id: string; version: string; name: string; summary: string; developerName: string; developerId: string;
+  guideMarkdown?: string;
   license: string; sourceKind: SkyToolSourceKind; sourceUrl: string; fileName?: string;
   connectionType: SkyConnectionType; endpointUrl: string; connectivity: 'online' | 'offline' | 'hybrid';
   targets: SkyExecutionTarget[]; permissions: SkyPermission[]; sideEffects: ('local_write' | 'external_write' | 'financial')[];
@@ -30,6 +35,7 @@ export function packageFromPublicationForm(input: PublicationForm) {
     fileName: input.fileName, name: input.name, summary: input.summary, developerName: input.developerName,
     developerId: input.developerId, version: input.version, license: input.license });
   return parseSkyToolPackage({ ...draft, id: input.id, version: input.version,
+    ...(input.guideMarkdown?.trim() ? { guideMarkdown: input.guideMarkdown } : {}),
     source: { ...draft.source, license: input.license },
     io: { inputSchema: publicationFieldsSchema(input.input), outputSchema: publicationFieldsSchema(input.output) },
     adapter: { connectionType: input.connectionType, endpointUrl: input.endpointUrl.trim() || null },

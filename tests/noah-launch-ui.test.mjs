@@ -43,6 +43,7 @@ function harness(reply, activity = false, props) {
     tick;
   runInNewContext(code, {
     exports,
+    crypto,
     Error,
     AbortController,
     URLSearchParams,
@@ -424,4 +425,39 @@ void test('a work detail clears the previous result on sign-out and returns to t
   } finally {
     ui.close();
   }
+});
+
+
+void test('engineering sends a sample only on the selected owner connection and displays its returned text', async t => {
+  const agentId = '00000000-0000-4000-8000-000000000047';
+  const other = {id:'another-run', deviceId:'mac', kind:'run', state:'succeeded', agent:{agentId:'else', name:'別のAgent'}};
+  const state = {...empty, devices:[{id:'mac', name:'本人のMac', online:true, revoked:false}],
+    uploadedAgents:[{id:agentId, name:'自作Agent', ready:true, kind:'upload', model:'none'}], commands:[other]};
+  const h = harness((_url,options) => {
+    if (options?.method !== 'POST') return Response.json(state);
+    const command = JSON.parse(options.body);
+    assert.equal(options.headers['X-Rock-Owner-Scope'], state.ownerScope);
+    if (command.action === 'connect') {
+      assert.equal(command.agentId,agentId);
+      state.commands.push({id:command.id, deviceId:'mac', kind:'connect', state:'succeeded', stopRequested:false, currentBoot:true, agent:{agentId,name:'自作Agent'}});
+    } else {
+      assert.equal(command.action,'run');
+      assert.equal(command.connectionId,state.commands[1].id);
+      state.commands.push({id:command.id, deviceId:'mac', kind:'run', state:'succeeded', agent:{agentId,name:'自作Agent'}});
+      state.jobs.push({id:command.id,noahExecution:{result:{text:'受け取った例文 ' + command.prompt,files:[]}}});
+    }
+    return Response.json({});
+  },false,{engineeringAgentId:agentId,expectedOwnerScope:state.ownerScope});
+  t.after(()=>h.close()); await h.flush();
+  assert.equal(h.calls.filter(c=>c.options?.method==='POST').length,0);
+  assert.doesNotMatch(text(h.tree),/別のAgent|Agentを選ぶ/);
+  h.nodes.find(n=>n.type==='button' && text(n)==='このAgentをつなぐ').props.onClick(); await h.flush();
+  h.nodes.find(n=>n.type==='textarea').props.onChange({target:{value:'整理する'}});
+  await h.flush();
+  const run=h.nodes.find(n=>n.type==='button' && text(n)==='この入力で試す');
+  assert.equal(run.props.disabled,false); run.props.onClick(); await h.flush();
+  assert.match(text(h.tree),/受け取った例文 整理する/);
+  state.ownerScope='different-owner'; await h.poll();
+  assert.doesNotMatch(text(h.tree),/受け取った例文/);
+  assert.match(text(h.tree),/アカウントが変わりました/);
 });

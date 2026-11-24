@@ -1,0 +1,239 @@
+.theater {
+  --ink: #25201d;
+  --ember: #ed783d;
+  --hairline: #d9d1c8;
+  --serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Songti SC', 'STIX Two Text', Georgia, serif;
+  color: var(--ink);
+  min-width: 0;
+}
+.projector { scroll-margin-block-start: 78px; }
+.projector:focus-visible { outline: 2px solid #b44e1f; outline-offset: 3px; }
+
+.monitor {
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid #201f1d;
+  border-radius: 4px;
+  background: #101110;
+  color: #faf5ea;
+}
+
+.screen {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  aspect-ratio: 2.1;
+  min-height: 240px;
+  padding: clamp(24px, 5vw, 66px);
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(ellipse at 82% 24%, #725446, #262729 49%, #131413 84%);
+}
+
+.monitor[data-film='time'] .screen { background: radial-gradient(ellipse at 80% 20%, #969589, #3e4749 54%, #1b2528); }
+.monitor[data-film='training'] .screen { background: radial-gradient(ellipse at 83% 30%, #a88561, #5f4735 56%, #322720); }
+
+.picture, .shade, .linework { position: absolute; pointer-events: none; }
+.picture {
+  z-index: -3;
+  inset: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 57% 50%;
+  transform-origin: 70% 45%;
+  animation: camera 5s ease-out both;
+  animation-play-state: paused;
+}
+.monitor[data-scene='1'] .picture { background-position: 67% 50%; --start-scale: 1.08; --end-scale: 1.12; }
+.monitor[data-scene='2'] .picture { background-position: 50% 55%; --start-scale: 1.075; --end-scale: 1.015; }
+@keyframes camera { from { transform: scale(var(--start-scale, 1)); } to { transform: scale(var(--end-scale, 1.04)); } }
+.shade {
+  z-index: -2;
+  inset: 0;
+  background: linear-gradient(0deg, #080908da 0%, #08090836 46%, #08090813 79%, #0809085c),
+    linear-gradient(90deg, #090a09a8, #090a0930 49%, transparent 80%);
+}
+.credit {
+  position: absolute;
+  inset-block-start: clamp(20px, 3.1vw, 42px);
+  inset-inline-start: clamp(24px, 5vw, 66px);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: clamp(11px, 1.2vw, 14px);
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-shadow: 0 1px 8px #000;
+}
+.credit span { width: 7px; height: 7px; background: var(--ember); border-radius: 50%; }
+.duration {
+  position: absolute;
+  inset-block-start: clamp(20px, 3.1vw, 42px);
+  inset-inline-end: clamp(24px, 5vw, 66px);
+  color: #faf5ed;
+  font: 12px/1.4 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .05em;
+  text-shadow: 0 1px 6px #000;
+}
+.intertitle { max-width: min(100%, 48rem); }
+.intertitle h2 {
+  margin: 0;
+  color: #fffaf1;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(34px, 5.4vw, 77px);
+  line-height: 1.22;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  text-shadow: 0 2px 20px #09090977;
+}
+.intertitle p {
+  margin: clamp(12px, 2vw, 22px) 0 0;
+  max-width: 38em;
+  color: #fcf6ee;
+  font-size: clamp(14px, 1.5vw, 19px);
+  line-height: 1.65;
+  letter-spacing: .015em;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 7px #000b;
+}
+.outcome {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 18px;
+  margin-top: 11px;
+  padding-inline-start: 10px;
+  border-inline-start: 2px solid var(--ember);
+  color: #ffdfb5;
+  font: 500 clamp(12px, 1.25vw, 15px)/1.6 'IBM Plex Mono', ui-monospace, monospace;
+  text-shadow: 0 1px 7px #000;
+}
+
+/* A diagram is drawn in the light of each still: connections, clock hands, or ruled notes. */
+.linework { z-index: -1; inset: 8% 5% 21% 46%; overflow: hidden; opacity: .76; }
+.linework i {
+  position: absolute;
+  inset: var(--y, 48%) auto auto var(--x, 14%);
+  width: var(--length, 55%);
+  height: 1px;
+  background: linear-gradient(90deg, #e97532, #ffc793a8);
+  transform-origin: left center;
+  animation: trace 3.3s cubic-bezier(.21,.55,.22,1) both;
+  animation-play-state: paused;
+}
+.linework i::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffac72;
+}
+.linework i:nth-child(1) { --x: 12%; --y: 57%; --angle: -22deg; --length: 45%; }
+.linework i:nth-child(2) { --x: 46%; --y: 32%; --angle: 28deg; --length: 32%; animation-delay: .18s; }
+.linework i:nth-child(3) { --x: 29%; --y: 72%; --angle: -9deg; --length: 52%; animation-delay: .36s; }
+.monitor[data-film='time'] .linework i { --x: 58%; --y: 55%; }
+.monitor[data-film='time'] .linework i:nth-child(1) { --angle: -78deg; --length: 30%; }
+.monitor[data-film='time'] .linework i:nth-child(2) { --angle: -18deg; --length: 36%; }
+.monitor[data-film='time'] .linework i:nth-child(3) { --angle: 164deg; --length: 18%; }
+.monitor[data-film='training'] .linework i { --x: 27%; --angle: -7deg; }
+.monitor[data-film='training'] .linework i:nth-child(1) { --y: 38%; --length: 50%; }
+.monitor[data-film='training'] .linework i:nth-child(2) { --y: 48%; --length: 38%; }
+.monitor[data-film='training'] .linework i:nth-child(3) { --y: 58%; --length: 44%; }
+.monitor[data-scene='0'] .linework i:not(:first-child) { opacity: 0; }
+.monitor[data-scene='1'] .linework i:last-child { opacity: 0; }
+@keyframes trace { from { transform: rotate(var(--angle)) scaleX(.56); } to { transform: rotate(var(--angle)) scaleX(1); } }
+
+.transport {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding-inline: clamp(5px, 1.7vw, 22px);
+  background: #171816;
+  border-top: 1px solid #ffffff19;
+}
+.control {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: #f6f4eb;
+  cursor: pointer;
+}
+.control:disabled { color: #66665e; cursor: default; }
+.control:not(:disabled):hover { color: #ffac72; }
+.timeline { display: flex; flex: 1; gap: 4px; margin-inline: 8px clamp(12px, 2vw, 24px); }
+.track { position: relative; flex: 1; height: 2px; background: #504f48; overflow: hidden; }
+.track[data-past='true'], .clockFill { background: var(--ember); }
+.clockFill { position: absolute; inset: 0; transform-origin: left; animation: elapsed linear both; animation-play-state: paused; }
+@keyframes elapsed { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.monitor[data-running='true'] .clockFill,
+.monitor[data-running='true'] .picture,
+.monitor[data-running='true'] .linework i { animation-play-state: running; }
+.counter { color: #e1ded3; font: 11px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .045em; margin-inline-end: 6px; white-space: nowrap; }
+.counter span { opacity: .5; }
+
+.notes { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding-block: 8px; border-bottom: 1px solid var(--hairline); }
+.script { flex: 1; min-width: 0; }
+.script summary, .detailLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.script summary { cursor: pointer; list-style: none; }
+.script summary::-webkit-details-marker { display: none; }
+.script[open] summary svg { transform: rotate(180deg); }
+.script ol { max-width: 60ch; padding-inline-start: 24px; margin: 4px 0 16px; }
+.script li { padding: 6px 0; font-size: 14px; line-height: 1.7; }
+.script li::marker { color: #96502f; font-family: ui-monospace, monospace; }
+.script li p { margin: 2px 0 0; color: #5e554d; }
+.detailLink { flex-shrink: 0; color: #883a17; }
+.detailLink:hover, .script summary:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.program { padding-block: clamp(20px, 3.3vw, 40px); }
+.program h2 { margin: 0 0 15px; color: var(--ink); font: 600 clamp(19px, 2vw, 26px)/1.2 var(--serif); letter-spacing: -.025em; }
+.choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(9px, 2.2vw, 28px); }
+.choice { display: flex; flex-direction: column; align-items: stretch; min-width: 0; padding: 0 0 4px; cursor: pointer; border: 0; background: transparent; color: var(--ink); text-align: start; }
+.thumb { display: block; position: relative; aspect-ratio: 2.5; background-color: #3b332d; background-position: 57% 42%; background-size: cover; border-radius: 2px; }
+.thumb[data-film='time'] { background-color: #4a565b; }
+.thumb[data-film='training'] { background-color: #685341; }
+.choice[aria-pressed='true'] .thumb::after { content: ''; position: absolute; inset: auto 0 0; height: 3px; background: var(--ember); }
+.choiceTitle { display: block; margin-block-start: 9px; color: #261f1b; font: 600 clamp(14px, 1.75vw, 22px)/1.45 var(--serif); overflow-wrap: anywhere; }
+.choiceAgent { color: #625950; margin-top: 2px; font-size: clamp(11px, 1.15vw, 13px); line-height: 1.5; overflow-wrap: anywhere; }
+.choice:hover .choiceTitle { text-decoration: underline; text-underline-offset: 4px; }
+.theater :is(button, a, summary):focus-visible { outline: 2px solid #b44e1f; outline-offset: 3px; }
+.monitor button:focus-visible { outline-color: #ffb887; outline-offset: -4px; }
+
+@media (max-width: 600px) {
+  .screen { aspect-ratio: 1.38; min-height: 244px; padding: 58px clamp(16px, 5vw, 29px) clamp(16px, 5vw, 29px); }
+  .credit { inset-inline-start: clamp(16px, 5vw, 29px); }
+  .picture { background-position: 59% 45%; }
+  .intertitle h2 { font-size: clamp(31px, 8.3vw, 49px); }
+  .intertitle p { margin-block-start: 9px; font-size: 14px; }
+  .linework { inset: 8% 1% 35% 40%; }
+  .thumb { aspect-ratio: 1.7; }
+  .counter { margin-inline-end: 0; }
+  .notes { column-gap: 12px; }
+  .notes:has(.script[open]) { flex-wrap: wrap; }
+  .script[open] { flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .picture, .linework i { animation: none; }
+  .linework i { transform: rotate(var(--angle)); }
+  .clockFill { animation: none; transform: scaleX(0); }
+}

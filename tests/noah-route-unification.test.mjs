@@ -45,6 +45,9 @@ void test('API routes, authentication, mutations and unknown URLs are not aliase
   for(const path of ['/api/sky/agents','/sky/unknown','/sky/tools/x/extra','/sky/marketplace-extra','/sky/code','//evil.invalid','/sky%2Fmarketplace']) assert.equal(noahPageRedirect(path),null);
   assert.equal(await(await app.fetch(new Request('https://avoado.si/api/sky/agents',{method:'POST',body:'fixture'}))).text(),'/api/sky/agents');
   assert.equal(await(await app.fetch(new Request('https://avoado.si/noah/unknown'))).text(),'/noah/unknown');
+  const engineering=await app.fetch(new Request('https://avoado.si/noah/engineering'));
+  assert.equal(engineering.status,200);
+  assert.equal(await engineering.text(),'/noah/engineering');
   const encoded=await app.fetch(new Request('https://avoado.si/sky/tools/%2F%2Fevil.invalid?returnTo=https%3A%2F%2Fevil.invalid'));
   assert.equal(new URL(encoded.headers.get('location')).origin,'https://avoado.si');
 });

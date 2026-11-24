@@ -1,3 +1,4 @@
+import { noahRevenueConfig } from './noah-revenue-operation';
 import { noahAgentDirectory } from './noah-agent-directory-server';
 import { createNoahCloudApi, noahCloudRuntime } from './noah-cloud-api';
 import { createNoahProviderRuntime } from './noah-provider-runtime';
@@ -17,7 +18,7 @@ import { readNoahAgentExplanation } from './noah-explanation-source';
 export function noahIntakeDependencies() {
   const config = env as unknown as Record<string, string | undefined>;
   const access = noahReviewerAccess(requestUser, config.NOAH_REVIEWER_USER_IDS, config.NOAH_REVIEWER_OWNER_SCOPES);
-  const dependencies = { db: database(), ...access, providerDirectory: noahAgentDirectory,
+  const dependencies = { db: database(), revenueConfig: noahRevenueConfig(config), ...access, providerDirectory: noahAgentDirectory,
     availability: createNoahAvailabilityStore(database()),
     cloudApi: createNoahCloudApi({ authenticate: requestUser, db: database(), directory: noahAgentDirectory,
       authorize: noahProfileStore().authorize, receiptKey: config.NOAH_CLOUD_KEY,

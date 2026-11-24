@@ -1,0 +1,105 @@
+{
+  "schema": "task-tests/1",
+  "task": 130,
+  "updatedAt": "2026-11-24T11:00:00+09:00",
+  "command": "bash codex/progress/130-eve-si/init.sh",
+  "files": [
+    {
+      "file": "tests/eve-combination.test.mjs",
+      "stage": 1,
+      "pass": 13,
+      "fail": 0,
+      "covers": [
+        "470 通りの変換と止まる誤り 0",
+        "live の例と defineCombination",
+        "規則 1〜9 の落ちる例",
+        "工程の合格条件",
+        "つなぎ目の変換と固定テスト"
+      ]
+    },
+    {
+      "file": "tests/eve-combination-paper.test.mjs",
+      "stage": 2,
+      "pass": 4,
+      "fail": 0,
+      "covers": [
+        "最初の 1 本の形と状態（paper）",
+        "全工程の見本・外へ出す工程の実行 0・呼び出し役に外へ出す工程を渡さない",
+        "Jev の判定で落ちた工程の先は止まる・呼び直さない",
+        "部品が無い時の理由・keepForSelf・予算（見積りと実費の大きい方で押さえる）"
+      ]
+    },
+    {
+      "file": "tests/eve-demand.test.mjs",
+      "stage": 3,
+      "pass": 7,
+      "fail": 0,
+      "covers": [
+        "受注の募集 → 需要（予算の中央値・7 日の量・応募数）",
+        "ASP の案件 → 需要（口座・入金・取引は金融）",
+        "売り場の公開価格 → 需要",
+        "台帳: 出典の無い・古い・http・0 円の需要を入れない、3 つの元から各 1 件以上",
+        "売れる見込み（控えめな見積り → 実績 5 回以上で実績）と見込みの利益",
+        "能力を確かめる（Jev の判定・呼び直さない・通った物だけ足す・元を書き換えない）"
+      ]
+    },
+    {
+      "file": "tests/eve-discover.test.mjs",
+      "stage": 4,
+      "pass": 7,
+      "fail": 0,
+      "covers": [
+        "需要から逆算（候補・見込みの利益・足りない素材・確かめていない矢印を使わない・同じ結果）",
+        "エージェントから順に広げる（A と B はつながる）",
+        "型と同じ道は template と設計図の id",
+        "5 回に 1 回は実績の少ない道を試す",
+        "発見 → 組み合わせファイル（出口まで。金融は本人の確認）",
+        "型への当てはめ（良い順・次点 2 つ・gaps・元を書き換えない・本人の分数）",
+        "型 × 需要の並び（需要の無い型は並べない）"
+      ]
+    },
+    {
+      "file": "tests/eve-score.test.mjs",
+      "stage": "5-6",
+      "pass": 8,
+      "fail": 0,
+      "covers": [
+        "外部の記録だけを数える（本人の申告・金額の無い承認・参照番号の無い入金・Work の見積りを数えない。同じ参照番号は 1 回）",
+        "一番数が落ちた段と責めを負う工程（割合そのもの・同じ型の他の成績表と比べる・測っていない段を飛ばす）",
+        "実績を売れる見込みへ戻す（測っていない段は 0 にしない）",
+        "作者の分（入金の記録だけ・Eve が作った物は運営・自分で使った分は無し・割合は未決）",
+        "作り直し（責めの工程だけ・確かめた物だけ・2 割以上良い時だけ提案・元の版を残す）",
+        "固定・需要が無い時・試す予算・差し替えられる工程が無い時",
+        "試運転で落ちた工程も候補・確かめた物で良くならなければ Eve が作る",
+        "採用は本人だけ・版が変わった相手へは送らない"
+      ]
+    },
+    {
+      "file": "tests/eve-combination-catalog.test.mjs",
+      "stage": "5-6 画面",
+      "pass": 4,
+      "fail": 0,
+      "covers": [
+        "一覧（状態・本人の番・部品の種類・本人の分数・470 通り → 19 通り）",
+        "API GET（一覧・1 本・404）",
+        "API POST check（人が書いた組み合わせ。形の誤りは項目の名前）",
+        "API POST score（本人の申告は承認にしない・期間の誤り・無い id）"
+      ]
+    }
+  ],
+  "existing": [
+    {
+      "file": "tests/noah-business.test.mjs",
+      "note": "task 130 が使う設計図。依存を入れる前は typescript が無く 1 件落ちていた（変更前の main でも同じ）"
+    },
+    {
+      "file": "tests/sky-recipe-planner.test.mjs",
+      "note": "task 130 の探索が使う"
+    },
+    {
+      "file": "tests/eve-smith-mii-browser.test.mjs, tests/eve-sdk-delegation-d1-browser.test.mjs",
+      "note": "変更前の main でも 3 件落ちる。lib/generated/private-content.ts（暗号化した私的ファイルから作る物）が無いため。task 130 とは関係しない"
+    }
+  ],
+  "typecheck": "npx tsc --noEmit: task 130 のファイルに誤り 0。lib/legal-ai.ts など 3 件の private-content の誤りは変更前からある"
+}

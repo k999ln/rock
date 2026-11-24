@@ -1,9 +1,10 @@
-import { NOAH_CLOUD_LIMITS, noahCloudDigest, noahCloudListYen, noahCloudUsageOf } from './noah-cloud-contract.ts';
+import { NOAH_CLOUD_LIMITS, NOAH_EVE_ADVICE_PURPOSE, noahCloudDigest, noahCloudListYen, noahCloudUsageOf } from './noah-cloud-contract.ts';
 import type { NoahRemoteExecution } from './noah-remote-work.ts';
 
 export type NoahWorkUsageReceipt = {
   source: 'managed-cloud' | 'provider' | 'form' | 'local';
   agentVersion: string | null;
+  model?: string;
   pricingBasis: 'included' | 'noah-relay' | null;
   externalCharge: 'unreported' | 'not-applicable';
   metrics: {
@@ -41,7 +42,8 @@ export function noahRemoteUsageReceipt(
   if (source === 'managed-cloud' && remote.cloud) {
     const cloud = remote.cloud;
     const usage = noahCloudUsageOf(cloud.usage);
-    row.agentVersion = cloud.version || null;
+    const advice = cloud.runtimePurpose === NOAH_EVE_ADVICE_PURPOSE;
+    if (!advice) row.agentVersion = cloud.version || null;
     // Only the free Worker emits neuron usage. Older Work without a recorded tariff
     // can also come from a Container. Its relay placeholder is not a cloud receipt.
     if (remote.chargeMinor === 0 && (usage || cloud.freeTier === true)) row.pricingBasis = 'included';
@@ -49,6 +51,9 @@ export function noahRemoteUsageReceipt(
     // jobs modelCalls was initialized to zero even when the model actually ran.
     row.metrics.modelCalls = count(cloud.reportedModelCalls, NOAH_CLOUD_LIMITS.modelCalls)
       ?? (remote.state === 'returned' ? count(remote.modelCalls, NOAH_CLOUD_LIMITS.modelCalls) : null);
+    if (advice && cloud.runtimeModel && row.metrics.modelCalls !== null && row.metrics.modelCalls > 0) {
+      row.model = cloud.runtimeModel;
+    }
     if (usage) {
       Object.assign(row.metrics, usage);
       row.estimateYen = noahCloudListYen(usage);
@@ -90,6 +95,10 @@ export async function noahCloudRecordedToolCalls(remote: NoahRemoteExecution): P
   const cloud = remote.cloud;
   if (!cloud || remote.verification !== 'relay_observed_unverified' || remote.state !== 'returned'
     || !(cloud.freeTier === true || noahCloudUsageOf(cloud.usage))) return null;
+  if (cloud.runtimePurpose === NOAH_EVE_ADVICE_PURPOSE) {
+    return cloud.proposal && remote.modelCalls === 1 && cloud.reportedModelCalls === 1
+      && remote.toolCalls === 0 && cloud.files?.length === 0 ? 0 : null;
+  }
   const file = cloud.files?.find(item => item.name === 'noah-execution.json');
   if (!file || !Number.isInteger(file.bytes) || file.bytes <= 0 || file.bytes > NOAH_CLOUD_LIMITS.fileBytes
     || typeof file.base64 !== 'string' || file.base64.length !== Math.ceil(file.bytes / 3) * 4) return null;

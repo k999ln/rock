@@ -1,12 +1,17 @@
 import type { NoahAskItem } from './noah-ask-view.ts';
 export const noahWorkHref = (id: string) =>
   `/noah/tasks/${encodeURIComponent(id)}`;
+export function noahWorkAgentHref(mode: string, agentId: string) {
+  const id = encodeURIComponent(agentId);
+  if (mode === 'revenue') return `/noah/engineering/combinations/${id}`;
+  return `${mode === 'provider' || mode === 'cloud' ? '/noah/discover/agent' : '/noah/ready/agent'}?id=${id}`;
+}
 export function noahWorkState(
-  ask: Pick<NoahAskItem, 'state' | 'stopRequested' | 'delivery'>,
+  ask: Pick<NoahAskItem, 'state' | 'stopRequested' | 'delivery' | 'mode'>,
 ): string {
   if (ask.state === 'needs_user') return '確認待ち';
   if (ask.delivery==='missing_image')return '画像が未受取';
-  if (ask.state === 'succeeded') return '応答を受信';
+  if (ask.state === 'succeeded') return ask.mode === 'revenue' ? '収益記録を作成済み' : '応答を受信';
   if (ask.state === 'failed') return '失敗';
   if (ask.state === 'unknown') return '結果を確認できません';
   if (ask.state === 'cancelled' || ask.state === 'stopped') return '停止済み';
