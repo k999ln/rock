@@ -1,5 +1,5 @@
 ## 2026-11-25
-- SPIDER の手入れ: `sites/avocado-mini` の開発用 vite（astro 経由）を 8.3.1 から 8.3.8 に上げ、high の穴（server.fs の外のファイルが読める等）を消した。lockfile が穴のある版へ戻らない事の試験（`tests/dependency-floor.test.mjs`）を足した。avocado-mini の high は 1 → 0（Opus / Noelle）。（旧リポジトリ k999ln/rock の枝 `claude/spider-daily-20261122` から正本へ移した）
+- SPIDER の手入れ: `sites/avocado-mini` の開発用 vite（astro 経由）を 8.3.1 から 8.3.8 に上げ、high の穴（server.fs の外のファイルが読める等）を消した。lockfile が穴のある版へ戻らない事の試験（`tests/dependency-floor.test.mjs`）を足した。avocado-mini の high は 1 → 0（Opus / Noelle）。（旧リポジトリ k999ln/rock の枝 `claude/spider-daily-20261122` から正本へ移した） [PR #72](https://github.com/iceiceice999/rock/pull/72)
 
 ## 2026-11-24
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
