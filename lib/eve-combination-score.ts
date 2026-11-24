@@ -77,6 +77,7 @@ export function eveOutcomeRecordProblem(r: EveOutcomeRecord, c: Pick<EveCombinat
   if (!Number.isSafeInteger(r.count) || r.count < 0) return '件数が不正です。';
   if (!Number.isFinite(Date.parse(r.at))) return '時刻が不正です。';
   if ((r.stage === 'approved' || r.stage === 'paid') && !(Number.isSafeInteger(r.amountYen) && (r.amountYen as number) >= 0)) return '承認・入金の記録に金額がありません。';
+  if ((r.stage === 'approved' || r.stage === 'paid') && r.count === 0 && (r.amountYen as number) > 0) return '承認・入金が0件の記録には正の金額を付けられません。';
   if (r.costYen !== undefined && !(Number.isSafeInteger(r.costYen) && r.costYen >= 0)) return '費用が不正です。';
   if (r.costYen !== undefined && r.stage !== 'made') return '費用は「作った」（Work の receipt）の記録にだけ書きます。';
   return null;
@@ -130,6 +131,8 @@ export type EveScorecard = {
   days: number;
   funnel: EveFunnel;
   costYen: number;
+  /** この期間に明示された実費があり、渡されたWorkの費用票に期間外・欠損・食い違いがない。 */
+  costComplete?: boolean;
   approvedYen: number;
   paidYen: number;
   /** 承認額 − 費用（承認・確定した収益だけ。発生・未承認は数えない）。 */
@@ -159,7 +162,8 @@ export function eveScore(
   if (!Number.isFinite(from) || !Number.isFinite(to) || to < from) throw new Error('score_window_invalid');
   const funnel = Object.fromEntries(EVE_FUNNEL.map((s) => [s, null])) as EveFunnel;
   const rejected: EveScorecard['rejected'] = [];
-  const seen = new Set<string>();
+  const seen = new Map<string, EveOutcomeRecord>();
+  let costComplete = true;
   let costYen = 0;
   let approvedYen = 0;
   let paidYen = 0;
@@ -168,24 +172,35 @@ export function eveScore(
   for (const r of sorted) {
     if (r.combinationId !== c.id || r.version !== c.version) continue;
     const at = Date.parse(r.at);
-    if (Number.isFinite(at) && (at < from || at > to)) continue;
+    if (Number.isFinite(at) && (at < from || at > to)) {
+      if (at < from && r.stage === 'made' && r.source === 'work') costComplete = false;
+      continue;
+    }
     const problem = eveOutcomeRecordProblem(r, c);
     if (problem) {
+      if (r.stage === 'made' && r.source === 'work') costComplete = false;
       rejected.push({ reference: String(r.reference ?? ''), stage: String(r.stage), reason: problem });
       continue;
     }
     const key = `${r.stage}|${r.source}|${r.reference}`;
-    if (seen.has(key)) {
+    const earlier = seen.get(key);
+    if (earlier) {
+      if (r.stage === 'made' && (earlier.costYen !== r.costYen || earlier.count !== r.count)) costComplete = false;
+      if ((r.stage === 'paid' || r.stage === 'approved') && (earlier.amountYen !== r.amountYen || earlier.count !== r.count)) throw new Error('score_conflicting_receipt');
       rejected.push({ reference: r.reference, stage: r.stage, reason: '同じ参照番号の記録は 1 回だけ数えます。' });
       continue;
     }
-    seen.add(key);
+    seen.set(key, r);
     counted += 1;
     funnel[r.stage] = (funnel[r.stage] ?? 0) + r.count;
-    if (r.stage === 'made') costYen += r.costYen ?? 0;
+    if (r.stage === 'made') {
+      if (r.costYen === undefined) costComplete = false;
+      else costYen += r.costYen;
+    }
     if (r.stage === 'approved') approvedYen += r.amountYen ?? 0;
     if (r.stage === 'paid') paidYen += r.amountYen ?? 0;
   }
+  if (![costYen, approvedYen, paidYen].every(Number.isSafeInteger)) throw new Error('score_amount_out_of_range');
   const notes: string[] = [];
   let last: EveFunnelStage | null = null;
   for (const s of EVE_FUNNEL) {
@@ -207,6 +222,7 @@ export function eveScore(
     days,
     funnel,
     costYen,
+    costComplete: costComplete && funnel.made !== null,
     approvedYen,
     paidYen,
     profitYen,
@@ -246,16 +262,17 @@ export type EveAuthorShare = {
   userId: string;
   payee: { kind: 'operator' } | { kind: 'person'; id: string };
   /** 入金された額 − 費用（0 より下は 0）。 */
-  baseYen: number;
+  baseYen: number | null;
   shareBps: number | null;
   shareYen: number | null;
-  status: 'none' | 'pending-rate' | 'due';
+  status: 'none' | 'pending-cost' | 'pending-rate' | 'due';
   reason: string;
 };
 
 /**
  * 組み合わせを使ってもらった作者の分（2 つ目のお金の道）。外部の入金の記録で確定した額だけが元。
  * 元は「入金された額 − 費用」（使った人が損をした回は 0）。Eve が作った組み合わせの作者の分は運営に入る。
+ * 同じ利用者・案件の費用と入金を含む累積記録で計算する。期間の表示を足し合わせて支払額にしない。
  * 自分の組み合わせを自分で使った分は計算しない。割合に null を渡した時は額を出さない。eve.si は送金しない（払うのは Wallet）。
  */
 export function eveAuthorShare(score: EveScorecard, userId: string, shareBps: number | null = EVE_AUTHOR_SHARE_BPS): EveAuthorShare {
@@ -264,10 +281,13 @@ export function eveAuthorShare(score: EveScorecard, userId: string, shareBps: nu
   if (shareBps !== null && !(Number.isSafeInteger(shareBps) && shareBps >= 0 && shareBps <= 10_000)) throw new Error('share_bps_invalid');
   if (score.author.kind === 'person' && score.author.id === userId)
     return { ...base, baseYen: 0, shareBps, shareYen: null, status: 'none', reason: '自分の組み合わせを自分で使った分は、作者の分を計算しません。' };
-  if (score.funnel.paid === null || score.paidYen <= 0)
+  if (!score.funnel.paid || score.paidYen <= 0)
     return { ...base, baseYen: 0, shareBps, shareYen: null, status: 'none', reason: '外部の記録で確定した入金が、まだありません。' };
+  if (score.costComplete !== true)
+    return { ...base, baseYen: null, shareBps, shareYen: null, status: 'pending-cost', reason: 'この利用の実費がそろうと、作者の分が決まります。' };
   const baseYen = Math.max(0, score.paidYen - score.costYen);
   if (baseYen === 0) return { ...base, baseYen, shareBps, shareYen: null, status: 'none', reason: '入金が費用を超えていないので、作者の分はありません。' };
   if (shareBps === null) return { ...base, baseYen, shareBps, shareYen: null, status: 'pending-rate', reason: '作者に入る割合が、まだ決まっていません（本人待ち）。' };
-  return { ...base, baseYen, shareBps, shareYen: Math.floor((baseYen * shareBps) / 10_000), status: 'due', reason: '入金の記録で確定した分です。払うのは Wallet です。' };
+  const shareYen = Number(BigInt(baseYen) * BigInt(shareBps) / BigInt(10_000));
+  return { ...base, baseYen, shareBps, shareYen, status: 'due', reason: '入金の記録で確定した分です。払うのは Wallet です。' };
 }

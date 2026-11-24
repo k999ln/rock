@@ -5,6 +5,7 @@ import { eveEngineeringNavigation } from '@/lib/eve-engineering-navigation';
 import columns from '@/components/noah-engineering-columns.module.css';
 import { EVE_STATUS_LABEL, eveCatalogEntry, eveCombinationFile, type EveStepView } from '@/lib/eve-combination-catalog';
 import { EVE_AUTHOR_SHARE_BPS, EVE_FUNNEL, EVE_FUNNEL_LABEL } from '@/lib/eve-combination-score';
+import { eveAuthorShareExample } from '@/lib/eve-author-share-example';
 import styles from '../eve-combinations.module.css';
 
 type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ engineering?: string; lang?: string }> };
@@ -27,6 +28,7 @@ export async function generateMetadata(p: Props): Promise<Metadata> {
 }
 
 const KIND: Record<EveStepView['kind'], string> = { auto: '自動', tap: '本人が押す', human: '本人だけ', review: '本人が確かめる' };
+const yen = (value: number) => `${value.toLocaleString('ja-JP')}円`;
 const PART: Record<EveStepView['part'], string> = {
   agent: '部品あり',
   glue: 'つなぎ目の変換',
@@ -40,6 +42,7 @@ export default async function EveCombinationPage(p: Props) {
   const r = await load(p);
   if (!r) notFound();
   const { c, entry } = r;
+  const shareExample = eveAuthorShareExample(c);
   const { engineering, lang } = await p.searchParams;
   const links = eveEngineeringNavigation(engineering, lang);
   const flowByStep = new Map(c.steps.map(step => [step.id, step.flow]));
@@ -69,7 +72,7 @@ export default async function EveCombinationPage(p: Props) {
             <div><dt>本人の手間</dt><dd>1 回あたり {entry.ownerMinutesPerRun} 分（登録は最初の 1 回だけなので数えていません）</dd></div>
           </dl>
           <nav className={styles.jumps} aria-label="組み合わせの詳細">
-            <a href="#eve-flow">組み合わせの図</a><a href="#eve-owner">本人の番</a><a href="#eve-score">成績表</a>
+            <a href="#eve-flow">組み合わせの図</a><a href="#eve-owner">本人の番</a><a href="#eve-score">成績表</a><a href="#eve-author">作者の取り分</a>
           </nav>
         </header>
 
@@ -159,7 +162,26 @@ export default async function EveCombinationPage(p: Props) {
             <section className={styles.section} aria-labelledby="eve-author">
               <h2 id="eve-author">作る人の受け取り</h2>
               <p>この組み合わせを他の人が使って、外部の入金の記録で確定した額が出た時だけ、作者の分を計算します。Eve が作った組み合わせの分は運営に入ります。払うのは Wallet です。</p>
-              <p className={styles.empty}>{EVE_AUTHOR_SHARE_BPS === null ? '作者に入る割合は、まだ決まっていません。' : `作者の割合: 入金 − 費用 の ${EVE_AUTHOR_SHARE_BPS / 100}%`}</p>
+              <p>{EVE_AUTHOR_SHARE_BPS === null ? '作者に入る割合は、まだ決まっていません。' : `作者の取り分は、入金額から費用を引いた額の${EVE_AUTHOR_SHARE_BPS / 100}%です。`}</p>
+              {shareExample && (
+                <table className={styles.shareExample}>
+                  <caption>紹介案件の計算例（成果地点は申込承認）</caption>
+                  <thead><tr><th scope="col">模擬記録</th><th scope="col">申込承認時</th><th scope="col">後日の入金時</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">成果地点</th>
+                      <td>{shareExample.atApproval.conversionReached ? '到達' : '未到達'}</td>
+                      <td>{shareExample.atDeposit.conversionReached ? '到達済み' : '未到達'}</td></tr>
+                    <tr><th scope="row">承認額</th><td>{yen(shareExample.atApproval.approvedYen)}</td><td>{yen(shareExample.atDeposit.approvedYen)}</td></tr>
+                    <tr><th scope="row">入金額</th>
+                      <td>{shareExample.atApproval.paidYen === null ? '記録なし' : yen(shareExample.atApproval.paidYen)}</td>
+                      <td>{shareExample.atDeposit.paidYen === null ? '記録なし' : yen(shareExample.atDeposit.paidYen)}</td></tr>
+                    <tr><th scope="row">費用</th><td>{yen(shareExample.atApproval.costYen)}</td><td>{yen(shareExample.atDeposit.costYen)}</td></tr>
+                    <tr><th scope="row">作者の取り分</th>
+                      <td>{shareExample.atApproval.shareYen === null ? '未確定' : yen(shareExample.atApproval.shareYen)}</td>
+                      <td>{shareExample.atDeposit.shareYen === null ? '未確定' : yen(shareExample.atDeposit.shareYen)}</td></tr>
+                  </tbody>
+                </table>
+              )}
             </section>
           </aside>
         </div>

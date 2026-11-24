@@ -112,6 +112,43 @@ void test('段 6: the author is paid only from external payment records; Eve-mad
   assert.throws(() => eveAuthorShare(s, 'user2', 12_000));
 });
 
+void test('成果承認から後日の入金までを同じ案件の累積で比較し、費用の欠けた期間を確定に使わない', () => {
+  const cost = R('made', 1, 'work', 'work:case-1', { costYen: 1_000 });
+  const approval = R('approved', 1, 'asp', 'asp:case-1', { amountYen: 8_000, at: AT(15) });
+  const payment = R('paid', 1, 'bank', 'bank:case-1', { amountYen: 8_000, at: AT(21) });
+  const history = [cost, approval, payment, payment];
+  const accepted = eveScore(C, history, { from: AT(10), to: AT(15) });
+  assert.deepEqual([accepted.funnel.approved, accepted.funnel.paid, eveAuthorShare(accepted, 'reader').shareYen], [1, null, null]);
+  const settled = eveScore(C, history, WINDOW);
+  assert.deepEqual([settled.funnel.approved, settled.funnel.paid, eveAuthorShare(settled, 'reader').shareYen], [1, 1, 1_400]);
+  const slice = eveScore(C, [...history, { ...cost, reference: 'work:later', at: AT(21), costYen: 50 }], { from: AT(20), to: AT(22) });
+  assert.equal(slice.costYen, 50);
+  assert.equal(eveAuthorShare(slice, 'reader').status, 'pending-cost');
+  for (const fees of [[], [{ ...cost, costYen: undefined }], [cost, { ...cost, reference: 'work:other', costYen: undefined }],
+    [cost, { ...cost, costYen: 900 }], [cost, { ...cost, reference: 'work:invalid', costYen: -1 }]]) {
+    const share = eveAuthorShare(eveScore(C, [payment, ...fees], WINDOW), 'reader');
+    assert.deepEqual([share.status, share.baseYen, share.shareYen], ['pending-cost', null, null]);
+  }
+  const free = eveScore(C, [payment, { ...cost, costYen: 0 }], WINDOW);
+  assert.equal(eveAuthorShare(free, 'reader').shareYen, 1_600);
+  const { costComplete, ...legacy } = free;
+  assert.equal(costComplete, true);
+  assert.equal(eveAuthorShare(legacy, 'reader').shareYen, null);
+});
+
+void test('0件で正額の記録と矛盾した明細を見分け、円単位の20%を整数で切り捨てる', () => {
+  const cost = R('made', 1, 'work', 'work:cost', { costYen: 0 });
+  const paid = R('paid', 0, 'bank', 'bank:zero', { amountYen: 8_000 });
+  const none = eveScore(C, [cost, paid, R('approved', 0, 'asp', 'asp:zero', { amountYen: 8_000 })], WINDOW);
+  assert.deepEqual([none.rejected.length, none.funnel.approved, none.funnel.paid, eveAuthorShare(none, 'reader').shareYen], [2, null, null, null]);
+  // Multiplying this amount by 2,000 as a Number rounds the share up by one yen.
+  const amountYen = Number.MAX_SAFE_INTEGER - 22;
+  const one = { ...paid, count: 1, amountYen };
+  assert.equal(eveAuthorShare(eveScore(C, [cost, one], WINDOW), 'reader').shareYen, Number(BigInt(amountYen) / BigInt(5)));
+  assert.throws(() => eveScore(C, [one, { ...one, amountYen: 1 }], WINDOW), /conflicting_receipt/);
+  assert.throws(() => eveScore(C, [one, { ...one, reference: 'bank:other' }], WINDOW), /amount_out_of_range/);
+});
+
 // 作り直し。相手は合成の物。
 const agents = [
   { ref: 'noah:r', version: H, tool: 'run', capability: 'research.market', runs: 20, accepted: 19 },

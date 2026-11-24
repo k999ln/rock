@@ -2,11 +2,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { eveAuthorShareExample } from '../lib/eve-author-share-example.ts';
 import {
   EVE_DEMAND_LEDGER, eveCombinationCatalog, eveCombinationGet, eveCombinationPost, eveTemplateShapeCount,
 } from '../lib/eve-combination-catalog.ts';
 
 const first = JSON.parse(readFileSync(new URL('../data/eve-combinations/affiliate-ai-tools-blog.json', import.meta.url), 'utf8'));
+
+void test('referral illustration keeps conversion at approval and author share at deposit, outside the actual catalog score', () => {
+  const example = eveAuthorShareExample(first);
+  assert.deepEqual(example.atApproval, { conversionReached: true, approvedYen: 8_000, paidYen: null, costYen: 1_000, shareYen: null });
+  assert.deepEqual(example.atDeposit, { conversionReached: true, approvedYen: 8_000, paidYen: 8_000, costYen: 1_000, shareYen: 1_400 });
+  assert.equal(first.exit.material, '入金確認');
+  assert.equal(eveAuthorShareExample({ ...first, id: 'another:combination' }), null);
+});
 
 void test('catalog: the first combination is listed with its status, owner steps and parts', () => {
   const items = eveCombinationCatalog();
