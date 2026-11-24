@@ -1,4 +1,18 @@
 export const NOAH_ENGINEERING_EVE_MESSAGES = {
+  'Eveに相談する': ['Ask Eve', '咨询 Eve', 'Eve에게 상담하기', 'Consultar a Eve', 'استشر Eve'],
+  '作りたいAgentについて教えてください。EveはNoahの無料クラウドでHermesを使い、設計案をこの画面に返します。': [
+    'Describe the agent you want to build. Eve uses Hermes in Noah’s free cloud and returns a design suggestion here.',
+    '请描述你想创建的 Agent。Eve 会在 Noah 的免费云端使用 Hermes，并在此处回复设计建议。',
+    '만들고 싶은 Agent에 대해 알려 주세요. Eve가 Noah 무료 클라우드의 Hermes로 설계안을 만들어 여기에 답변합니다.',
+    'Describe el agente que quieres crear. Eve usa Hermes en la nube gratuita de Noah y muestra aquí una propuesta de diseño.',
+    'صِف الوكيل الذي تريد إنشاءه. تستخدم Eve نظام Hermes في سحابة Noah المجانية وتعرض مقترح التصميم هنا.',
+  ],
+  '相談したいこと': ['Your question', '你想咨询的问题', '상담할 내용', 'Tu consulta', 'سؤالك'],
+  'Eveに送る': ['Send to Eve', '发送给 Eve', 'Eve에게 보내기', 'Enviar a Eve', 'أرسل إلى Eve'],
+  '相談と返答': ['Questions and replies', '咨询与回复', '상담과 답변', 'Consultas y respuestas', 'الاستشارات والردود'],
+  'Eveの返答（Hermesで実行）': ['Eve’s reply (run by Hermes)', 'Eve 的回复（由 Hermes 执行）', 'Eve의 답변(Hermes 실행)', 'Respuesta de Eve (ejecutada por Hermes)', 'ردّ Eve (بتنفيذ Hermes)'],
+  '自分の端末でEveに相談する': ['Ask Eve on my device', '在我的设备上咨询 Eve', '내 기기에서 Eve에게 상담하기', 'Consultar a Eve en mi dispositivo', 'استشر Eve على جهازي'],
+  'Eveの相談用の無料クラウドを現在利用できません。': ['The free cloud for Eve consultations is currently unavailable.', 'Eve 咨询的免费云端目前不可用。', '현재 Eve 상담용 무료 클라우드를 이용할 수 없습니다.', 'La nube gratuita de consultas de Eve no está disponible ahora.', 'سحابة استشارات Eve المجانية غير متاحة حاليًا.'],
   '誰の仕事を任せたいですか？ 入力の例と、届けたい成果を一つずつ決めましょう。': [
     'Whose work will this agent help with? Choose one example input and one result you want it to deliver.',
     '这款 Agent 要帮谁工作？先确定一个输入示例和一个期望的成果。',

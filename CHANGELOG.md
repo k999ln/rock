@@ -1,4 +1,5 @@
 ## 2026-11-24
+- AgentエンジニアリングのEveに相談すると、Noahの無料クラウドが返した設計案を相談文と一緒に読めるようにした（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。
 - Noahストアの作者向け入口を「Agentエンジニアリング」に統合。Eveと相談しながら作成・接続・試行・掲載申請へ進める（task 129、[PR #56](https://github.com/iceiceice999/rock/pull/56)）。
 - Noahの「法人のsi導入準備」の詳細に、作業時間を準備票にまとめる15秒の予告編を追加。共通ナビゲーションの「シアター」タブを撤去（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
 - Noahの「シアター」でAgentごとの短い予告編を上映し、作者の動画と保存した仕事への入口を追加（task 129、[PR #53](https://github.com/iceiceice999/rock/pull/53)）。
