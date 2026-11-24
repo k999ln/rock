@@ -5,6 +5,7 @@
  * 並びと、載せるかどうかは、サーバーが決める（GET /api/noah/shelf）。ここは、返った順に出すだけ。閉じている・読めない・載る物が無い時は、何も出さない。
  * サインインした本人は、カードを「表示しない」にできる（その本人の棚から外れる。POST /api/noah/shelf の hide）。
  * カードの上には、何をする仕事かの資料の図解（lib/noah-pin-scenes-shelf.ts。spec-115 の 9 章。バージョン TAKE）。絵が無いカードは、今まで通り字だけ。
+ * 絵の色は、配色の黄金比 70:25:5 の 3 色。3 色は、棚の上から数えた n 枚目ごとにベースの色相を黄金角（約 137.5°）ずつ回して変える（lib/noah-pin-diagram.ts の noahPinColors(n)。3 段を通して続ける）。
  * 仕様: docs/noah/spec-110-shelf.md の 10 章。
  */
 import { useEffect, useState } from 'react';
@@ -13,7 +14,6 @@ import { NOAH_SHELF_TEXT, type NoahShelfCard } from '@/lib/noah-shelf-view';
 import { OWNER_SCOPE_HEADER } from '@/lib/owner-intent';
 import { NOAH_SHELF_SCENES } from '@/lib/noah-pin-scenes-shelf';
 import NoahPinSceneArt from './noah-pin-scene';
-import { noahPinTone } from '@/lib/noah-pin-diagram';
 import styles from './noah-ready.module.css';
 
 type Shelf = { id: string; name: string; cards: NoahShelfCard[] };
@@ -41,14 +41,14 @@ export default function NoahShelf() {
   if (!filled.length) return null;
   return <>
     <p className={styles.sectionNote}>{NOAH_SHELF_TEXT.lead}</p>
-    {filled.map((shelf) => <section key={shelf.id} className={styles.section} aria-labelledby={`noah-shelf-${shelf.id}`}>
+    {filled.map((shelf, s) => { const first = filled.slice(0, s).reduce((sum, earlier) => sum + earlier.cards.length, 0); return <section key={shelf.id} className={styles.section} aria-labelledby={`noah-shelf-${shelf.id}`}>
       <h2 id={`noah-shelf-${shelf.id}`}>{shelf.name}<small>{shelf.cards.length} 件</small></h2>
-      <div className={styles.cards}>{shelf.cards.map((card) => <ShelfCard key={card.id} card={card} onHide={ownerScope ? () => { void hide(card); } : null} hiding={busy === card.id} />)}</div>
-    </section>)}
+      <div className={styles.cards}>{shelf.cards.map((card, i) => <ShelfCard key={card.id} card={card} tone={first + i} onHide={ownerScope ? () => { void hide(card); } : null} hiding={busy === card.id} />)}</div>
+    </section>; })}
   </>;
 }
 
-function ShelfCard({ card, onHide, hiding }: { card: NoahShelfCard; onHide: (() => void) | null; hiding: boolean }) {
+function ShelfCard({ card, tone, onHide, hiding }: { card: NoahShelfCard; tone: number; onHide: (() => void) | null; hiding: boolean }) {
   const facts = [
     ...card.runs.map((place) => NOAH_SHELF_TEXT.runs[place]),
     NOAH_SHELF_TEXT.owner(card.ownerSteps, card.ownerMinutes),
@@ -58,7 +58,7 @@ function ShelfCard({ card, onHide, hiding }: { card: NoahShelfCard; onHide: (() 
   const scene = NOAH_SHELF_SCENES[card.id];
   return <article className={styles.card}>
     {/* 絵は飾り。同じ行き先の題のリンクが読まれるので、絵のリンクは読み上げとタブの順から外す。 */}
-    {scene && <Link className={styles.shelfScene} href={card.target} tabIndex={-1} aria-hidden="true"><NoahPinSceneArt scene={scene} tone={noahPinTone(card.id)} /></Link>}
+    {scene && <Link className={styles.shelfScene} href={card.target} tabIndex={-1} aria-hidden="true"><NoahPinSceneArt scene={scene} tone={tone} /></Link>}
     <header className={styles.cardHead}>
       <h3><Link className={styles.cardName} href={card.target}><span>{card.title}</span></Link></h3>
       <span className={styles.provider}>{card.topicLabel}</span>

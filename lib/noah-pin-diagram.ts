@@ -16,8 +16,9 @@
  *   ぽよん・ぴょこっ・ふわっ の 3 つを動画で見比べて、本人がぽよんを選んだ）。同じ作者の Motion Prompt の動きの数から作った:
  *   #001 ポップイン（ばね 1 − e^(−6.5t)·cos(15t)）＋ #011 スクワッシュ＆ストレッチ（縦横を逆に伸び縮み・体積を保つ）。
  *   線を引く動き（矢印・枝）と、出てくる順番は元のまま。
- * - 色を、App Store の Today のカードのような、1 枚ずつ違う深い色の組（NOAH_PIN_TONES。12 組）にした（本人の指示 2026-11-24「色味がダサい」「こんな感じにして」）。
- *   元の面 #F1F0EE と青 #2F6BEB の代わりに、組ごとの 2 色の濃淡の面・光・差し色。図の中の色の役割（どこが強い差し色か）は元のまま。
+ * - 色を、Mac の App Store の絵のような、1 枚ずつ違う色にした（本人の指示 2026-11-24「色味がダサい」「こんな感じにして」「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」）。
+ *   元の面 #F1F0EE と青 #2F6BEB の代わりに、配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」の 3 色（noahPinColors。カードごとに黄金角ずつ回す）。
+ *   塗りの面積が 70:25:5 に近くなるように、各図の形の大きさ・太さ・塗る所を変えた（各図の「配色の黄金比」の行）。
  * - 1 周（4.7 秒）で消えて繰り返す代わりに、画面に入った時に 1 回だけ組み上げて、止める（本人の決定 2026-11-24「画面に入った時に1回」）。
  *   止める時刻は noahPinHold。繰り返しは components/noah-pin-scene.tsx がしない（ここの式は、元と同じく 0〜4.7 秒のどこでも描ける）。
  *
@@ -33,7 +34,7 @@ type Cell = (k: K, w: number, h: number, u: number, L: readonly string[]) => voi
 /** 絵の大きさ（元のカードと同じ 539×208）と、元の 1 周の長さ（秒）。 */
 export const NOAH_PIN_ART = { width: 539, height: 208, cycle: 4.7 } as const;
 
-// @kit（元の packs/diagram/pack.js の共通部分。色は下の「色の組」で、1 枚ずつ変える）
+// @kit（元の packs/diagram/pack.js の共通部分。色は下の「色」の 3 色で、カードごとに変える）
 const CW = NOAH_PIN_ART.width, CH = NOAH_PIN_ART.height;
 const FONT = '"Hiragino Sans", "Helvetica Neue", "PingFang SC", "Noto Sans", "Noto Sans CJK JP", system-ui, sans-serif';
 const TAU = Math.PI * 2;
@@ -54,94 +55,125 @@ function rr(k: K, x: number, y: number, w: number, h: number, r: number) {
 function txt(k: K, s: string, x: number, y: number, font: string, col: string, align: CanvasTextAlign = 'left', base: CanvasTextBaseline = 'alphabetic') {
   k.font = font; k.fillStyle = col; k.textAlign = align; k.textBaseline = base; k.fillText(s, x, y);
 }
-/** 面: 色の組の 2 色の斜めの濃淡、右上からの柔らかい光、下は帯の色へ溶ける（カードの下の、題の帯へつながる）。 */
+/**
+ * 面: ベースの色 1 つの濃淡（同じ色相で、左上が少し深く右下が少し明るい）と、上からの柔らかい光。
+ * 絵の下の字は、カードの白い地に置く（Mac の App Store のカードと同じ。絵に帯は付けない）。
+ */
 function bg(k: K, w: number, h: number) {
   const g = k.createLinearGradient(0, 0, w, h);
   g.addColorStop(0, C.bg1); g.addColorStop(1, C.bg2);
   k.fillStyle = g; k.fillRect(0, 0, w, h);
-  const glow = k.createRadialGradient(w * 0.74, -h * 0.15, 0, w * 0.74, -h * 0.15, w * 0.72);
-  glow.addColorStop(0, rgba('#FFFFFF', C.dark ? 0.16 : 0.5)); glow.addColorStop(1, rgba('#FFFFFF', 0));
+  const glow = k.createRadialGradient(w * 0.62, -h * 0.38, 0, w * 0.62, -h * 0.38, w * 0.62);
+  glow.addColorStop(0, rgba('#FFFFFF', C.dark ? 0.14 : 0.45)); glow.addColorStop(1, rgba('#FFFFFF', 0));
   k.fillStyle = glow; k.fillRect(0, 0, w, h);
-  const foot = k.createLinearGradient(0, h * 0.6, 0, h);
-  foot.addColorStop(0, rgba(C.band, 0)); foot.addColorStop(1, rgba(C.band, 0.6));
-  k.fillStyle = foot; k.fillRect(0, h * 0.6, w, h * 0.4);
 }
 function fade(u: number) { return 1 - easeInOut(P(u, 4.1, 4.5)); }              // the whole figure fades out at the end of the cycle
 
-// 色の組（Noah で足した部分。本人の指示 2026-11-24「色味がダサい」「こんな感じにして」と、App Store の Today のカードの画面）。
-// App Store のカードのように、1 枚ずつ違う深い色の面に、明るく光る差し色（暗い組）か、濃い差し色（明るい組）。図の役割の名前（blue・blueM・blueL・g2〜g4・mark・sub）は元のまま、中の色だけを組ごとに変える。
-// 字の濃さは WCAG の比で確かめる（地の上の字 4.5 以上。tests/noah-pin-scene.test.mjs）。
-type Tone = { name: string; dark: boolean; bg: readonly [string, string]; accent: string };
-/** 色の組。bg = 面の左上と右下、accent = 差し色（元の blue の役。中くらい・弱い差し色は、面と差し色を混ぜて作る）。 */
-export const NOAH_PIN_TONES: readonly Tone[] = [
-  { name: '夜空', dark: true, bg: ['#0B1433', '#24336E'], accent: '#7CF0A6' },
-  { name: '苔', dark: true, bg: ['#1C2614', '#46562D'], accent: '#F3DC8C' },
-  { name: '琥珀', dark: true, bg: ['#552A0F', '#A35F24'], accent: '#FFD978' },
-  { name: '葡萄', dark: true, bg: ['#2B1159', '#6C33AE'], accent: '#FFB8E8' },
-  { name: '深い青緑', dark: true, bg: ['#0E2F35', '#28626A'], accent: '#FFD49A' },
-  { name: '金', dark: true, bg: ['#120E07', '#38290E'], accent: '#EEC650' },
-  { name: '炎', dark: true, bg: ['#761A10', '#B84D1C'], accent: '#FFEDB0' },
-  { name: '霧', dark: true, bg: ['#2C3546', '#56647B'], accent: '#DCEBFF' },
-  { name: 'ピーチ', dark: false, bg: ['#FBE4C6', '#F7BCCB'], accent: '#B8262A' },
-  { name: 'レモン', dark: false, bg: ['#FCEB66', '#F4CB3E'], accent: '#234E66' },
-  { name: '空', dark: false, bg: ['#DDEFFC', '#B7D8F4'], accent: '#2246C2' },
-  { name: 'ラベンダー', dark: false, bg: ['#DCD0FA', '#ADE9D3'], accent: '#4B2FB8' },
-];
-/** 1 つの組の、図の役割ごとの色（と、カードの下の帯の色）。onM・onL は、中くらい・弱い差し色の上の字（白と黒の、読みやすい方）。 */
+// 色（Noah で足した部分。本人の指示 2026-11-24「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」「黄金比カラーになってない」と、Mac の App Store の画面の録画）。
+// 配色の黄金比「ベース 70%・メイン 25%・アクセント 5%」（面積の割合）で、1 枚の絵を 3 つの色だけで描く（本人の決定 2026-11-24「1 枚の絵の中」「カードごとに変える」）。
+// - ベース（約 70%）: 面と、同じ色相の淡い・濃い色（図の骨組み・空のマス・札の地。役割 g2・g3・g4・card）。
+// - メイン（約 25%）: 図の形（役割 blueM と、その淡い色 blueL）。色相はベースの隣（+28°。黄色が暗く濁る所は −28°）。
+// - アクセント（約 5%）: いちばん大事な所だけ（役割 blue）。色相はベースの反対（補色。+180°）。
+// 面積の割合は、24 種類の図を本物のブラウザで描いて画素を数えて確かめた（spec-115 の 9 章に表）。
+// カードごとの 3 色は、並びの n 枚目ごとにベースの色相を黄金角（360° ÷ φ² ≈ 137.5°）ずつ回して変える（隣は必ず違う色・何枚でも同じ色に戻らない）。
+// ベースの色相で、絵の種類を決める（Mac の App Store の絵と同じ 3 種類）: 青〜紫は深い色、赤紫〜赤〜朱は鮮やかな色、橙〜黄〜緑〜青緑〜空色は淡い色。
+// 色は OKLCH（人の目に揃った明るさ）で作り、字が読める明るさ（WCAG 4.5 以上）まで、明るさだけを動かす。字の濃さと形の見分けは試験が確かめる。
+/** 黄金比 φ と黄金角（度）。 */
+export const PHI = (1 + Math.sqrt(5)) / 2;
+export const GOLDEN_ANGLE = 360 / (PHI * PHI);
+/** 配色の黄金比（ベース・メイン・アクセントの面積の割合）。 */
+export const NOAH_PIN_COLOR_RATIO = { base: 0.7, main: 0.25, accent: 0.05 } as const;
+/** 1 枚目のベースの色相（OKLCH の度。夜空の青）。 */
+const HUE0 = 262;
+type Kind = 'deep' | 'vivid' | 'pale';
+/**
+ * 1 枚の、図の役割ごとの色。ベース = bg1・bg2・stage・g2・g3・g4・card、メイン = blueM・blueL、アクセント = blue。
+ * 字の色 = mark（地の上）・sub（薄い字）・accentText（地の上のアクセントの字）・onBlue・onM・onL（アクセント・メイン・淡いメインの上）・chip（形の上の小さな印）。
+ * hues = ベース・メイン・アクセントの色相。
+ */
 export type NoahPinColors = {
-  dark: boolean; bg1: string; bg2: string; stage: string; blue: string; blueM: string; blueL: string; g2: string; g3: string; g4: string;
-  mark: string; sub: string; onBlue: string; onM: string; onL: string; card: string; chip: string; band: string; bandInk: string; bandSub: string;
+  kind: Kind; dark: boolean; hue: number; hues: { base: number; main: number; accent: number };
+  bg1: string; bg2: string; stage: string; blue: string; blueM: string; blueL: string; g2: string; g3: string; g4: string;
+  mark: string; sub: string; onBlue: string; onM: string; onL: string; card: string; chip: string;
+  /** アクセントの色相の字（面の上で 4.5 以上で読める）。鮮やかな面では、白に近い色（形のアクセントより明るい）。 */
+  accentText: string;
 };
-/** 明るさ（WCAG の相対輝度）と、2 色の比。字の色を選ぶのに使う。 */
+/** 明るさ（WCAG の相対輝度）と、2 色の比。 */
 function luminance(hex: string) { return hexRGB(hex).map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }).reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0); }
 function contrast(a: string, b: string) { const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); }
 const readable = (ground: string, ...inks: string[]) => inks.reduce((best, ink) => (contrast(ink, ground) > contrast(best, ground) ? ink : best));
-function colorsOf(t: Tone): NoahPinColors {
-  const [bg1, bg2] = t.bg, stage = mix(bg1, bg2, 0.5), blue = t.accent, light = t.dark ? '#FFFFFF' : '#000000';
-  const mark = t.dark ? '#FFFFFF' : '#1C1C1E', onBlue = t.dark ? bg1 : '#FFFFFF';
-  // 中くらい・弱い差し色: 面と差し色を混ぜる割合を、ねらいの割合に近い順に試し、上の字が 4.5 以上で読め、面から見分けられる（中 1.6・弱 1.25 以上）最初の物にする。
-  const tint = (aim: number, see: number) => [0, 0.06, -0.06, 0.12, -0.12, 0.18, -0.18, 0.24, 0.3].map((d) => mix(stage, blue, clamp(aim + d, 0.08, 0.9)))
-    .find((c) => contrast(readable(c, mark, onBlue), c) >= 4.5 && contrast(c, stage) >= see) ?? mix(stage, blue, aim);
-  const blueM = tint(t.dark ? 0.45 : 0.45, 1.6), blueL = tint(t.dark ? 0.24 : 0.2, 1.25);
-  const band = t.dark ? mix(bg2, '#000000', 0.28) : mix(bg2, '#000000', 0.07);
+/** OKLCH（明るさ L 0〜1・鮮やかさ c・色相 h 度）を #RRGGBB に。画面で出せない鮮やかさの時は、色相と明るさを保って鮮やかさを下げる。 */
+function oklch(L: number, c: number, h: number) {
+  const a = Math.cos((h * Math.PI) / 180), b = Math.sin((h * Math.PI) / 180);
+  const rgb = (cc: number) => {
+    const l = (L + 0.3963377774 * cc * a + 0.2158037573 * cc * b) ** 3, m = (L - 0.1055613458 * cc * a - 0.0638541728 * cc * b) ** 3, s = (L - 0.0894841775 * cc * a - 1.291485548 * cc * b) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+  };
+  let lo = 0, hi = c;
+  if (rgb(c).some((v) => v < -1e-4 || v > 1 + 1e-4)) { for (let i = 0; i < 24; i++) { const mid = (lo + hi) / 2; if (rgb(mid).some((v) => v < -1e-4 || v > 1 + 1e-4)) hi = mid; else lo = mid; } } else lo = c;
+  return '#' + rgb(lo).map((v) => { const x = clamp(v); return Math.round(255 * (x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055)).toString(16).padStart(2, '0'); }).join('').toUpperCase();
+}
+/** 明るさ L から step ずつ動かして、ok を満たす最初の色（色相と鮮やかさはそのまま）。80 歩で見つからなければ、最後の色。 */
+function seek(L: number, c: number, h: number, step: number, ok: (hex: string) => boolean) {
+  let hex = oklch(L, c, h);
+  for (let i = 1; i <= 80 && !ok(hex); i++) hex = oklch(clamp(L + step * i), c, h);
+  return hex;
+}
+const turn = (h: number) => ((h % 360) + 360) % 360;
+/** ベースの色相から、絵の種類（深い・鮮やか・淡い）。 */
+function kindOf(h: number): Kind { return h >= 235 && h < 305 ? 'deep' : h >= 305 || h < 40 ? 'vivid' : 'pale'; }
+const WHITE = '#FFFFFF', INK = '#1C1C1E';
+/** 黄色（OKLCH 70〜125°）は、とても明るい時しか黄色に見えない（暗くすると芥子色・茶色になる）。 */
+const yellow = (h: number) => h >= 70 && h < 125;
+/** n 枚目（0 から。負の数も可）の 3 色。ベースの色相 = 1 枚目 + n × 黄金角。メイン = その隣、アクセント = その反対。 */
+function colorsAt(n: number): NoahPinColors {
+  const hue = turn(HUE0 + n * GOLDEN_ANGLE), kind = kindOf(hue), dark = kind !== 'pale';
+  // メインは、淡い面では濃く使う（暗い黄色は濁る）ので、黄色に当たる時は反対の隣へ。
+  const hm = kind === 'pale' && yellow(turn(hue + 28)) ? turn(hue - 28) : turn(hue + 28), ha = turn(hue + 180);
+  const mark = dark ? WHITE : INK, light = dark ? WHITE : '#000000';
+  // ベース: 面の 2 色（同じ色相の、深さだけ違う 2 色）。字（mark）が 4.5 以上で読める。
+  let bg1: string, bg2: string;
+  if (kind === 'deep') { bg1 = oklch(0.26, 0.09, hue); bg2 = oklch(0.34, 0.12, hue); }
+  else if (kind === 'vivid') { const ok = (x: string) => contrast(WHITE, x) >= 4.6; bg1 = seek(0.5, 0.2, hue, -0.01, ok); bg2 = seek(0.56, 0.19, hue, -0.01, ok); }
+  else { const ok = (x: string) => contrast(INK, x) >= 12; bg1 = seek(0.97, 0.03, hue, 0.005, ok); bg2 = seek(0.92, 0.06, hue, 0.005, ok); }
+  const stage = mix(bg1, bg2, 0.5);
+  const inks = [mark, dark ? bg1 : WHITE, INK, WHITE];
+  const onAny = (x: string) => contrast(readable(x, ...inks), x) >= 4.6;
+  // ベースの淡い・濃い色（同じ色相）: 字を置く g2・g3・card は字が読め、形として面から見分けられる。
+  const tintOf = (L: number, c: number, step: number, see: number, text: boolean) => seek(L, c, hue, step, (x) => contrast(x, stage) >= see && (!text || contrast(mark, x) >= 4.6));
+  const g2 = kind === 'deep' ? tintOf(0.36, 0.09, 0.01, 1.15, true) : kind === 'vivid' ? tintOf(0.45, 0.17, -0.01, 1.15, true) : tintOf(0.99, 0.015, -0.005, 1.12, true);
+  const g3 = kind === 'deep' ? tintOf(0.42, 0.09, 0.01, 1.3, true) : kind === 'vivid' ? tintOf(0.41, 0.16, -0.01, 1.3, true) : tintOf(0.86, 0.04, -0.01, 1.3, true);
+  const g4 = kind === 'deep' ? tintOf(0.6, 0.07, 0.01, 1.9, false) : kind === 'vivid' ? tintOf(0.76, 0.1, 0.01, 1.9, false) : tintOf(0.66, 0.05, -0.01, 1.9, false);
+  const card = kind === 'deep' ? tintOf(0.38, 0.08, 0.01, 1.2, true) : kind === 'vivid' ? tintOf(0.43, 0.16, -0.01, 1.2, true) : tintOf(0.995, 0.01, -0.005, 1.1, true);
+  // メイン: 図の形。面から見分けられ（1.7 以上）、上の字が 4.5 以上。淡いメイン（blueL）は、メインとも見分けられる。
+  const blueM = kind === 'deep' ? seek(0.8, 0.11, hm, 0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x))
+    : kind === 'vivid' ? seek(0.88, 0.08, hm, 0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x))
+      : seek(0.68, 0.15, hm, -0.01, (x) => contrast(x, stage) >= 1.7 && onAny(x));
+  const blueL = seek(kind === 'deep' ? 0.56 : kind === 'vivid' ? 0.72 : 0.85, kind === 'pale' ? 0.08 : 0.11, hm, kind === 'pale' ? -0.01 : 0.01,
+    (x) => contrast(x, stage) >= 1.3 && contrast(x, blueM) >= 1.3 && onAny(x));
+  // アクセント: 形として面からはっきり見え（2 以上）、上に字を置ける（4.5 以上）。深い面と淡い面では、そのまま面の上の字にもなる（左上 4.5・右下 3.5 以上）。
+  // 鮮やかな面（中くらいの明るさ）の上で 4.5 以上の字は白に近い色しか無いので、字だけ別の明るい色（accentText）にして、形は色のあるアクセントにする。
+  const onBg = (x: string) => contrast(x, bg1) >= 4.6 && contrast(x, bg2) >= 3.6;
+  const blue = kind === 'deep' ? seek(0.85, 0.16, ha, 0.01, (x) => onBg(x) && onAny(x))
+    : kind === 'vivid' ? seek(0.84, 0.15, ha, 0.01, (x) => contrast(x, stage) >= 2.2 && onAny(x))
+      : seek(0.55, 0.2, ha, -0.01, (x) => onBg(x) && onAny(x));
+  const accentText = kind === 'vivid' ? seek(0.95, 0.06, ha, 0.01, onBg) : blue;
   return {
-    dark: t.dark, bg1, bg2, stage, blue, blueM, blueL,
-    g2: mix(stage, light, t.dark ? 0.1 : 0.07), g3: mix(stage, light, t.dark ? 0.2 : 0.14), g4: mix(stage, light, t.dark ? 0.4 : 0.34),
-    mark, sub: mix(stage, light, t.dark ? 0.66 : 0.55), onBlue, onM: readable(blueM, mark, onBlue), onL: readable(blueL, mark, onBlue),
-    card: t.dark ? mix(stage, '#FFFFFF', 0.13) : mix(stage, '#FFFFFF', 0.6), chip: t.dark ? mix(stage, '#FFFFFF', 0.82) : '#FFFFFF',
-    band, bandInk: t.dark ? '#FFFFFF' : '#1C1C1E', bandSub: mix(band, light, t.dark ? 0.72 : 0.55),
+    kind, dark, hue, hues: { base: hue, main: hm, accent: ha }, bg1, bg2, stage, blue, blueM, blueL, g2, g3, g4,
+    mark, sub: mix(stage, light, dark ? 0.68 : 0.58), accentText, onBlue: readable(blue, ...inks), onM: readable(blueM, ...inks), onL: readable(blueL, ...inks), card,
+    chip: readable(blueM, WHITE, INK) === WHITE ? mix(blueM, WHITE, 0.7) : mix(blueM, INK, 0.45),
   };
 }
-const COLORS = NOAH_PIN_TONES.map(colorsOf);
-/** 組の番号 tone（0 から）の色。範囲の外は、組の数で割った余り。 */
-export function noahPinColors(tone: number): NoahPinColors {
-  const n = COLORS.length;
-  return COLORS[((Math.trunc(tone) % n) + n) % n];
+const COLORS = new Map<number, NoahPinColors>();
+/** n 枚目（並びの順。0 から）の色。同じ n は、いつも同じ色。 */
+export function noahPinColors(n: number): NoahPinColors {
+  const key = Math.trunc(n) || 0;
+  let colors = COLORS.get(key);
+  if (!colors) { if (COLORS.size > 512) COLORS.clear(); colors = colorsAt(key); COLORS.set(key, colors); }
+  return colors;
 }
-/** カードの id から、組の番号を決める（同じ id はいつも同じ色）。FNV-1a で混ぜ、似た id（pkg:… など）でも散らばるように、最後にもう一度かき混ぜる。 */
-export function noahPinTone(id: string): number {
-  let h = 2166136261;
-  for (const ch of id) { h ^= ch.codePointAt(0) ?? 0; h = Math.imul(h, 16777619) >>> 0; }
-  h = (h ^ (h >>> 16)) >>> 0; h = Math.imul(h, 0x85ebca6b) >>> 0;
-  h = (h ^ (h >>> 13)) >>> 0; h = Math.imul(h, 0xc2b2ae35) >>> 0;
-  h = (h ^ (h >>> 16)) >>> 0;
-  return h % NOAH_PIN_TONES.length;
-}
-/**
- * 並んだカードの組の番号。それぞれ noahPinTone から始め、すぐ前の 3 枚と同じ色なら、次の組へずらす
- * （グリッドで隣や上下に並ぶカードが、同じ色にならない。同じ並びなら、いつも同じ色）。
- */
-export function noahPinTonesInOrder(ids: readonly string[]): number[] {
-  const out: number[] = [], n = NOAH_PIN_TONES.length;
-  for (const id of ids) {
-    let tone = noahPinTone(id);
-    for (let step = 0; step < n && out.slice(-3).includes(tone); step++) tone = (tone + 1) % n;
-    out.push(tone);
-  }
-  return out;
-}
-/** 描く間の色（drawNoahPinDiagram が、描く前に組を決め、描き終わったら元に戻す）。 */
-let C: NoahPinColors = COLORS[0];
+/** 描く間の色（drawNoahPinDiagram が、描く前に決め、描き終わったら元に戻す）。 */
+let C: NoahPinColors = noahPinColors(0);
 function rgba(hex: string, a: number) { const [r, g, b] = hexRGB(hex); return `rgba(${r},${g},${b},${a})`; }
 
 // 部品の出方「ぽよん」（Noah で足した部分。本人が 3 つの型から選んだ）。
@@ -259,7 +291,8 @@ function bezPts(p0: Pt, c0: Pt, c1: Pt, p3: Pt, n = 28): Pt[] {
 
 // @element 01
 // 01 ベン図: two circles slide in from the sides and overlap; only the shared part turns blue
-// Noah: 札は円の外側に（左 = 青・右 = 濃い灰色。元の A・B の代わり）。円は寄りすぎてぷるんと戻り、寄り終わったら 2 つの円が一緒に揺れる。
+// Noah: 札は円の外側に（左 = アクセントの字・右 = 字の色。元の A・B の代わり）。円は寄りすぎてぷるんと戻り、寄り終わったら 2 つの円が一緒に揺れる。
+// 配色の黄金比: 2 つの円 = メイン（左は淡いメイン）、重なり = アクセント（約 5%）、面 = ベース（約 70%）。
 function venn(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   const app = easeOut(P(u, 0.3, 0.7)), m = ease(u, 0.5, 1.1);
@@ -268,22 +301,22 @@ function venn(k: K, w: number, h: number, u: number, L: readonly string[]) {
   k.save(); k.globalAlpha = fade(u) * app;
   put(k, w / 2, cy, wob(u, landed(0.5, 1.1)), () => {
     k.fillStyle = C.blueL; k.beginPath(); k.arc(ax, cy, r, 0, TAU); k.fill();
-    k.fillStyle = C.g2; k.beginPath(); k.arc(bx, cy, r, 0, TAU); k.fill();
+    k.fillStyle = C.blueM; k.beginPath(); k.arc(bx, cy, r, 0, TAU); k.fill();
     // shared part: B inside A
     k.save(); k.beginPath(); k.arc(ax, cy, r, 0, TAU); k.clip();
     k.fillStyle = C.blue; k.beginPath(); k.arc(bx, cy, r, 0, TAU); k.fill(); k.restore();
     pen(k, C.blueM, 3); k.beginPath(); k.arc(ax, cy, r, 0, TAU); k.stroke();
-    pen(k, C.g4, 3); k.beginPath(); k.arc(bx, cy, r, 0, TAU); k.stroke();
   }, r);
   const edge = w / 2 - 44 - r - 14;   // the left circle's settled outer edge, minus a gap
-  say(k, u, 1.35, L[0], edge, cy + 1, { size: 26, min: 18, max: edge - 12, color: C.blue, align: 'right' });
+  say(k, u, 1.35, L[0], edge, cy + 1, { size: 26, min: 18, max: edge - 12, color: C.accentText, align: 'right' });
   say(k, u, 1.45, L[1], w - edge, cy + 1, { size: 26, min: 18, max: edge - 12, color: C.mark, align: 'left' });
   k.restore();
 }
 
 // @element 02
 // 02 4象限マトリクス: two axes cross in the middle, four areas appear, items are placed; top-right is the target
-// Noah: 札 = [横の軸（矢印の先の右）, 縦の軸（矢印の先の左）, 青い点（点の下）]。青い点の下を空けるため、灰色の点を 1 つ上へ動かした。
+// Noah: 札 = [横の軸（矢印の先の右）, 縦の軸（矢印の先の左）, 狙いの点（アクセントの札の中）]。札を置くため、灰色の点を 1 つ上へ動かした。
+// 配色の黄金比: 右上（狙い）= メイン、左上・右下 = 淡いメイン、左下 = ベースの淡い色、狙いの点 = アクセントの札（約 5%）。
 const MDOTS: readonly [number, number, number][] = [[0.55, -0.62, 1], [0.18, -0.78, 0], [-0.5, -0.45, 0], [-0.3, 0.5, 0], [-0.62, 0.22, 0], [0.45, 0.4, 0], [0.7, 0.62, 0]];
 function matrix(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
@@ -292,7 +325,7 @@ function matrix(k: K, w: number, h: number, u: number, L: readonly string[]) {
   // four areas
   ([[1, -1], [-1, -1], [-1, 1], [1, 1]] as const).forEach(([sx, sy], i) => {
     const x = sx > 0 ? cx + gap : cx - gap - qw, y = sy > 0 ? cy + gap : cy - gap - qh;
-    pbox(k, u, 1.0 + i * 0.08, x + qw / 2, y + qh / 2, qw, qh, 10, i === 0 ? C.blueL : C.g2);
+    pbox(k, u, 1.0 + i * 0.08, x + qw / 2, y + qh / 2, qw, qh, 10, i === 0 ? C.blueM : i === 2 ? C.g2 : C.blueL);
   });
   // axes grow from the center out
   const g = ease(u, 0.4, 0.6);
@@ -305,29 +338,34 @@ function matrix(k: K, w: number, h: number, u: number, L: readonly string[]) {
   }
   // items
   MDOTS.forEach(([dx, dy, hot], i) => {
-    const x = cx + dx * (hw - 20), y = cy + dy * (hh - 6), r = hot ? 12 : 8;
-    put(k, x, y, pose(u, 1.45 + i * 0.1), () => { k.fillStyle = hot ? C.blue : C.g4; k.beginPath(); k.arc(x, y, r, 0, TAU); k.fill(); }, r);
+    if (hot) return;
+    const x = cx + dx * (hw - 20), y = cy + dy * (hh - 6), r = 8;
+    put(k, x, y, pose(u, 1.45 + i * 0.1), () => { k.fillStyle = C.g4; k.beginPath(); k.arc(x, y, r, 0, TAU); k.fill(); }, r);
   });
+  // 狙いの点: アクセントの札（字は札 3）。右上の区画の中に収める。
+  const TAG: Fit = { size: 18, min: 15, max: qw - 34 }, tw = Math.max(104, fit(k, L[2] ?? '', TAG).width + 34), th = 46;
+  const tx = clamp(cx + MDOTS[0][0] * (hw - 20), cx + gap + 8 + tw / 2, cx + gap + qw - 8 - tw / 2), ty = cy - gap - qh / 2;
+  pbox(k, u, 1.45, tx, ty, tw, th, th / 2, C.blue, () => label(k, L[2], tx, ty + 1, { ...TAG, color: C.onBlue }));
   say(k, u, 1.0, L[0], cx + hw + 16, cy + 1, { size: 18, min: 15, max: w - 10 - (cx + hw + 16), color: C.mark, align: 'left' });
   say(k, u, 1.08, L[1], cx - 14, cy - hh + 14, { size: 18, min: 15, max: 140, color: C.mark, align: 'right' });
-  say(k, u, 2.2, L[2], cx + MDOTS[0][0] * (hw - 20), cy + MDOTS[0][1] * (hh - 6) + 28, { size: 18, min: 15, max: 136, color: C.blue });
   k.globalAlpha = 1;
 }
 
 // @element 03
 // 03 ロジックツリー: one box on the left branches to the right, with elbow lines
 // Noah: 元の 1 → 2 → 4 を、1 → 3 → 6 にした（札 = [根, 枝 1, 枝 2, 枝 3]）。根と枝の箱は、札の幅に合わせて広げる。根の「?」は根の札にした。
+// 配色の黄金比: 根 = アクセント（約 5%）、枝・葉・線 = メイン（約 25%。そのため枝と葉の箱を大きく、線を太くした）、面 = ベース。
 function tree(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   k.globalAlpha = fade(u);
   const ROOT: Fit = { size: 20, min: 16, max: 112 }, BRANCH: Fit = { size: 18, min: 15, max: 124 };
   const RW = Math.max(66, fit(k, L[0] ?? '', ROOT).width + 28), RH = 50, R: Pt = [14 + RW / 2, h / 2];
-  const W2 = [1, 2, 3].map((i) => Math.max(76, fit(k, L[i] ?? '', BRANCH).width + 24)), H2 = 36;
-  const L2: Pt[] = [40, 104, 168].map((y, i) => [236 + W2[i] / 2, y]);
-  const L3: Pt[] = L2.flatMap(([, y]): Pt[] => [[484, y - 15], [484, y + 15]]);
-  const W3 = 64, H3 = 22;
+  const W2 = [1, 2, 3].map((i) => Math.max(84, fit(k, L[i] ?? '', BRANCH).width + 28)), H2 = 44;
+  const L2: Pt[] = [40, 104, 168].map((y, i) => [228 + W2[i] / 2, y]);
+  const L3: Pt[] = L2.flatMap(([, y]): Pt[] => [[478, y - 15], [478, y + 15]]);
+  const W3 = 84, H3 = 27;
   const elbow = (p: Pt, c: Pt, pw: number, cw: number): Pt[] => { const x0 = p[0] + pw / 2, x1 = c[0] - cw / 2, xm = (x0 + x1) / 2; return [[x0, p[1]], [xm, p[1]], [xm, c[1]], [x1, c[1]]]; };
-  pen(k, C.g4, 3);
+  pen(k, C.blueL, 5);
   L2.forEach((c, i) => trace(k, elbow(R, c, RW, W2[i]), easeInOut(P(u, 0.75, 1.15))));
   L3.forEach((c, i) => trace(k, elbow(L2[i >> 1], c, W2[i >> 1], W3), easeInOut(P(u, 1.35 + i * 0.06, 1.75 + i * 0.06))));
   pbox(k, u, 0.4, R[0], R[1], RW, RH, 10, C.blue, () => label(k, L[0], R[0], R[1] + 1, { ...ROOT, color: C.onBlue }));
@@ -338,13 +376,14 @@ function tree(k: K, w: number, h: number, u: number, L: readonly string[]) {
 
 // @element 04
 // 04 ピラミッド図: a triangle in four layers, stacked from the bottom up; the top layer is blue
-// Noah: 札 = [青い段（右に、短い線を引いて）, 段の名前（下から 2 段目の左）]。段は、元の「上から落ちる」の代わりに、下から順にぽよんと出る。
+// Noah: 札 = [いちばん上の段（右に、短い線を引いた先のアクセントの札の中）, 段の名前（下から 2 段目の中）]。段は、元の「上から落ちる」の代わりに、下から順にぽよんと出る。
+// 配色の黄金比: 下の 3 段 = メイン（約 25%。そのため幅を 168 から 196 に）、いちばん上の段と札 = アクセント（約 5%）、面 = ベース。
 function pyramid(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   k.globalAlpha = fade(u);
-  const top = 16, base = 192, hwB = 168, n = 4, gp = 6, cx = w / 2;
+  const top = 16, base = 192, hwB = 196, n = 4, gp = 6, cx = 232;
   const th = (base - top - gp * (n - 1)) / n, half = (y: number) => hwB * (y - top) / (base - top);
-  const cols = [C.g3, C.blueL, C.blueM, C.blue];
+  const cols = [C.blueL, C.blueL, C.blueM, C.blue];
   for (let i = 0; i < n; i++) {                       // i = 0 bottom
     const yb = base - i * (th + gp), yt = yb - th;
     put(k, cx, (yt + yb) / 2, pose(u, 0.4 + i * 0.32), () => {
@@ -358,86 +397,89 @@ function pyramid(k: K, w: number, h: number, u: number, L: readonly string[]) {
   const pa = clamp(pose(u, 1.5).a);
   if (pa > 0) {
     k.save(); k.globalAlpha *= pa;
-    pen(k, C.g4, 2); k.beginPath(); k.moveTo(cx + half(ty) + 10, ty); k.lineTo(tx - 8, ty); k.stroke();
+    pen(k, C.blue, 3); k.beginPath(); k.moveTo(cx + half(ty) + 10, ty); k.lineTo(tx - 2, ty); k.stroke();
     k.restore();
   }
-  say(k, u, 1.5, L[0], tx, ty + 1, { size: 22, min: 16, max: w - 12 - tx, color: C.blue, align: 'left' });
-  const y1 = base - (th + gp) - th / 2, x1 = cx - half(y1) - 24;
-  say(k, u, 0.9, L[1], x1, y1 + 1, { size: 20, min: 16, max: x1 - 12, color: C.mark, align: 'right' });
+  const TAG: Fit = { size: 20, min: 15, max: w - 12 - tx - 28 }, tw = Math.max(84, fit(k, L[0] ?? '', TAG).width + 32), tagH = 44;
+  pbox(k, u, 1.5, tx + tw / 2, ty, tw, tagH, tagH / 2, C.blue, () => label(k, L[0], tx + tw / 2, ty + 1, { ...TAG, color: C.onBlue }));
+  // 段の名前は、下から 2 段目の中に（左に広げた分、外の左には字を置く幅が無いため）。
+  const y1 = base - (th + gp) - th / 2;
+  say(k, u, 0.9, L[1], cx, y1 + 1, { size: 20, min: 16, max: 2 * half(y1 - th / 2) - 28, color: C.onL });
   k.globalAlpha = 1;
 }
 
 // @element 05
 // 05 マインドマップ: a center word, curved branches out to both sides, then smaller twigs
 // Noah: 札 = [真ん中, 右上の枝, 右下の枝, 左上の枝, 左下の枝]。札のある枝の箱は、札の幅に合わせて広げる（真ん中の 2 本は、元の通り字の無い小さな箱）。
-const MM: readonly [number, number, number, 'blueM' | 'g4', readonly Pt[]][] = [
+// 配色の黄金比: 真ん中 = アクセント（約 5%）、枝・小枝・線 = メイン（約 25%。札のある枝はメイン、他は淡いメイン。そのため箱を大きく、線を太くした）、面 = ベース。
+const MM: readonly [number, number, number, 'blueM' | 'blueL', readonly Pt[]][] = [
   // [side, end dx, end dy, color role, twigs [dx, dy]]
-  [1, 128, -52, 'blueM', [[204, -72], [204, -32]]],
-  [1, 142, 8, 'g4', []],
-  [1, 124, 56, 'blueM', [[204, 76]]],
-  [-1, 128, -52, 'g4', [[204, -70]]],
-  [-1, 140, 10, 'blueM', []],
-  [-1, 124, 56, 'g4', [[204, 36], [204, 76]]],
+  [1, 128, -52, 'blueM', [[214, -72], [214, -32]]],
+  [1, 142, 8, 'blueL', []],
+  [1, 124, 56, 'blueM', [[214, 76]]],
+  [-1, 128, -52, 'blueM', [[214, -70]]],
+  [-1, 140, 10, 'blueL', []],
+  [-1, 124, 56, 'blueM', [[208, 36], [214, 76]]],
 ];
 const MM_LABEL = [1, -1, 2, 3, -1, 4];          // branch → label index (-1 = no label)
 function mindmap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   k.globalAlpha = fade(u);
-  const cx = w / 2, cy = h / 2, BRANCH: Fit = { size: 17, min: 15, max: 85 }, CENTER: Fit = { size: 19, min: 16, max: 184 };
+  const cx = w / 2, cy = h / 2, BRANCH: Fit = { size: 17, min: 15, max: 76 }, CENTER: Fit = { size: 19, min: 16, max: 184 };
   MM.forEach(([sd, ex, ey, role, twigs], i) => {
-    const col = C[role], gray = role === 'g4';
+    const col = C[role];
     const text = MM_LABEL[i] < 0 ? '' : L[MM_LABEL[i]] ?? '';
-    const pw = text ? Math.max(54, fit(k, text, BRANCH).width + 22) : 54, ph = text ? 28 : 24;
+    const pw = text ? Math.max(64, fit(k, text, BRANCH).width + 28) : 72, ph = text ? 40 : 32;
     const x0 = cx + sd * 40, x1 = cx + sd * ex, y1 = cy + ey;
     const pts = bezPts([x0, cy], [cx + sd * 78, cy], [cx + sd * (ex - 50), y1], [x1 - sd * 26, y1]);
-    pen(k, col, 3); trace(k, pts, easeInOut(P(u, 0.7 + i * 0.09, 1.2 + i * 0.09)));
+    pen(k, col, 5); trace(k, pts, easeInOut(P(u, 0.7 + i * 0.09, 1.2 + i * 0.09)));
     twigs.forEach(([tx, ty], j) => {
-      const a: Pt = [x1 + sd * Math.max(26, pw / 2), y1], b: Pt = [cx + sd * tx - sd * 20, cy + ty], t0 = 1.45 + i * 0.07 + j * 0.05;
+      const a: Pt = [x1 + sd * Math.max(26, pw / 2), y1], b: Pt = [cx + sd * tx - sd * 30, cy + ty], t0 = 1.45 + i * 0.07 + j * 0.05;
       const tp = bezPts(a, [a[0] + sd * 22, a[1]], [b[0] - sd * 26, b[1]], b, 16);
-      pen(k, col, 2.5); trace(k, tp, easeInOut(P(u, t0, t0 + 0.35)));
-      pbox(k, u, t0 + 0.3, cx + sd * tx, cy + ty, 40, 18, 9, gray ? C.g3 : C.blueL);
+      pen(k, C.blueL, 4); trace(k, tp, easeInOut(P(u, t0, t0 + 0.35)));
+      pbox(k, u, t0 + 0.3, cx + sd * tx, cy + ty, 60, 28, 14, C.blueL);
     });
-    // 札のある灰色の箱は、字が読めるように一段淡い灰色（g3）にする。
-    pbox(k, u, 1.15 + i * 0.09, x1, y1, pw, ph, ph / 2, gray ? (text ? C.g3 : C.g4) : C.blueM, text ? () => label(k, text, x1, y1 + 1, { ...BRANCH, color: gray ? C.mark : C.onM }) : undefined);
+    pbox(k, u, 1.15 + i * 0.09, x1, y1, pw, ph, ph / 2, col, text ? () => label(k, text, x1, y1 + 1, { ...BRANCH, color: role === 'blueM' ? C.onM : C.onL }) : undefined);
   });
   const cw = Math.max(100, fit(k, L[0] ?? '', CENTER).width + 36);
-  pbox(k, u, 0.4, cx, cy, cw, 44, 22, C.blue, () => label(k, L[0], cx, cy + 1, { ...CENTER, color: C.onBlue }));
+  pbox(k, u, 0.4, cx, cy, cw, 48, 24, C.blue, () => label(k, L[0], cx, cy + 1, { ...CENTER, color: C.onBlue }));
   k.globalAlpha = 1;
 }
 
 // @element 06
 // 06 フローチャート: start -> step -> decision (diamond) -> step -> end, with a "No" loop back;
 // then a marker walks the path once (loops back once, then goes on to the end)
-// Noah: 図を 8 下げ、札 = [始め, ひし形（確かめる事）, 次の箱, 終わり]（次の箱だけ下、他は上。最初の箱は、元の通り字なし）。ひし形の「?」は残す。
+// Noah: 図を下げ、札 = [始め, ひし形（確かめる事）, 次の箱, 終わり]（次の箱だけ下、他は上。最初の箱は、元の通り字なし）。ひし形の「?」は残す。
+// 配色の黄金比: ひし形 = アクセント（約 5%）、始め・終わり・箱・矢印 = メイン（約 25%。そのため形を大きく、矢印を太くした）、面 = ベース。
 function flow(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   k.globalAlpha = fade(u);
-  const y = 88, S: Pt = [64, y], A: Pt = [158, y], D: Pt = [262, y], B: Pt = [364, y], E: Pt = [460, y], LY = 176;
-  const dw = 46, dh = 36;                                   // diamond half sizes
+  const y = 96, S: Pt = [47, y], A: Pt = [150.75, y], D: Pt = [269.5, y], B: Pt = [388.25, y], E: Pt = [492, y], LY = 178;
+  const dw = 50, dh = 44, sw = 35, aw = 46, ah = 38;           // half sizes: diamond, start/end, step boxes
   const arrows: Pt[][] = [
-    [[S[0] + 34, y], [A[0] - 36, y]],
-    [[A[0] + 36, y], [D[0] - dw, y]],
-    [[D[0] + dw, y], [B[0] - 36, y]],
-    [[B[0] + 36, y], [E[0] - 34, y]],
+    [[S[0] + sw, y], [A[0] - aw - 2, y]],
+    [[A[0] + aw, y], [D[0] - dw - 2, y]],
+    [[D[0] + dw, y], [B[0] - aw - 2, y]],
+    [[B[0] + aw, y], [E[0] - sw - 2, y]],
   ];
-  const loop: Pt[] = [[D[0], y + dh], [D[0], LY], [A[0], LY], [A[0], y + 20]];
+  const loop: Pt[] = [[D[0], y + dh], [D[0], LY], [A[0], LY], [A[0], y + ah + 2]];
   const tA = [0.6, 1.0, 1.4, 1.75];
-  pen(k, C.g4, 3);
-  arrows.forEach((pts, i) => trace(k, pts, easeInOut(P(u, tA[i], tA[i] + 0.22)), 10, C.g4));
-  trace(k, loop, easeInOut(P(u, 2.0, 2.45)), 10, C.g4);
+  pen(k, C.blueM, 5);
+  arrows.forEach((pts, i) => trace(k, pts, easeInOut(P(u, tA[i], tA[i] + 0.22)), 10, C.blueM));
+  trace(k, loop, easeInOut(P(u, 2.0, 2.45)), 10, C.blueM);
   // shapes
-  pbox(k, u, 0.4, S[0], S[1], 66, 36, 18, C.g3);
-  pbox(k, u, 0.8, A[0], A[1], 72, 40, 6, C.blueL);
+  pbox(k, u, 0.4, S[0], S[1], sw * 2, 64, 30, C.blueL);
+  pbox(k, u, 0.8, A[0], A[1], aw * 2, ah * 2, 8, C.blueM);
   put(k, D[0], D[1], pose(u, 1.2), () => {
     k.fillStyle = C.blue;
     k.beginPath(); k.moveTo(D[0], D[1] - dh); k.lineTo(D[0] + dw, D[1]); k.lineTo(D[0], D[1] + dh); k.lineTo(D[0] - dw, D[1]); k.closePath(); k.fill();
     txt(k, '?', D[0], D[1] + 2, `700 26px ${FONT}`, C.onBlue, 'center', 'middle');
   }, dh);
-  pbox(k, u, 1.6, B[0], B[1], 72, 40, 6, C.blueL);
-  pbox(k, u, 1.95, E[0], E[1], 66, 36, 18, C.g3);
+  pbox(k, u, 1.6, B[0], B[1], aw * 2, ah * 2, 8, C.blueM);
+  pbox(k, u, 1.95, E[0], E[1], sw * 2, 64, 30, C.blueL);
   // labels: above the start, the diamond and the end; below the next step (so that neighbours never touch)
-  ([[S, 0.4, C.mark, 36], [D, 1.2, C.blue, 36], [B, 1.6, C.mark, y + 38], [E, 1.95, C.mark, 36]] as const).forEach(([p, t, col, ly], i) => {
-    say(k, u, t + 0.2, L[i], p[0], ly, { size: 18, min: 15, max: 108, color: col });
+  ([[S, 0.4, C.mark, 36, 88], [D, 1.2, C.accentText, 36, 108], [B, 1.6, C.mark, y + ah + 18, 108], [E, 1.95, C.mark, 36, 88]] as const).forEach(([p, t, col, ly, max], i) => {
+    say(k, u, t + 0.2, L[i], clamp(p[0], 2 + max / 2, w - 2 - max / 2), ly, { size: 18, min: 15, max, color: col });
   });
   // marker: start -> A -> D -> (No) loop -> A -> D -> (Yes) -> B -> E
   const path: Pt[] = [S, A, D, [D[0], LY], [A[0], LY], A, D, B, E];
@@ -454,20 +496,24 @@ function flow(k: K, w: number, h: number, u: number, L: readonly string[]) {
 // 07 サイクル図: four steps on a ring; arrows draw one after another until the ring closes,
 // then the highlight goes round the ring once
 // Noah: 丸を 45° 回して（右上から時計回り）、札 = [1, 2, 3, 4 の丸の札] を丸の外の左右に置く。丸の中の順番の数字は残す。
+// 配色の黄金比: 輪の内側の面・輪・丸 = メイン（約 25%。内側を淡いメインで塗り、丸を大きく、輪を太くした）、
+// 光が 1 周して最後に止まる 4 番目の丸 = アクセント（約 5%）、面 = ベース。
 function cycle(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   k.globalAlpha = fade(u);
-  const cx = w / 2, cy = h / 2, RX = 128, RY = 70, nr = 26, n = 4;
+  const cx = w / 2, cy = h / 2, RX = 128, RY = 70, nr = 38, n = 4;
   const ang = (i: number) => -Math.PI / 4 + i * TAU / n, pos = (a: number): Pt => [cx + Math.cos(a) * RX, cy + Math.sin(a) * RY];
+  // 輪の内側の面（淡いメイン）。輪と一緒に、真ん中からぽよんと出る。
+  put(k, cx, cy, pose(u, 0.3), () => { k.fillStyle = C.blueL; k.beginPath(); k.ellipse(cx, cy, RX - 22, RY - 14, 0, 0, TAU); k.fill(); }, RY - 14);
   for (let i = 0; i < n; i++) {
     const t = easeInOut(P(u, 0.7 + i * 0.32, 0.98 + i * 0.32));
     if (t <= 0) continue;
     const A = pos(ang(i)), B = pos(ang(i + 1)), pts: Pt[] = [];
     for (let j = 0; j <= 60; j++) {
       const q = pos(lerp(ang(i), ang(i + 1), j / 60));
-      if (Math.hypot(q[0] - A[0], q[1] - A[1]) > nr + 10 && Math.hypot(q[0] - B[0], q[1] - B[1]) > nr + 8) pts.push(q);
+      if (Math.hypot(q[0] - A[0], q[1] - A[1]) > nr + 6 && Math.hypot(q[0] - B[0], q[1] - B[1]) > nr + 8) pts.push(q);
     }
-    pen(k, C.blueM, 3); trace(k, pts, t, 13, C.blueM);
+    pen(k, C.blueM, 6); trace(k, pts, t, 14, C.blueM);
   }
   // highlight going round: 2.2s -> 3.8s, 0.4s per step, soft edges
   const hp = P(u, 2.2, 3.8) * n;
@@ -475,13 +521,15 @@ function cycle(k: K, w: number, h: number, u: number, L: readonly string[]) {
     const dd = hp - i;
     const on = (u > 2.15 && u < 4.0 && dd > -0.25 && dd < 1.25) ? clamp(Math.min(dd + 0.25, 1.25 - dd) * 2.5) : 0;
     const [x, y] = pos(ang(i));
+    // 4 番目の丸は、光が 1 周して止まった所なので、アクセントのまま残る。
+    const stay = i === n - 1 ? clamp((u - 3.7) / 0.3) : 0, lit = Math.max(on, stay);
     put(k, x, y, pose(u, 0.4 + i * 0.32), () => {
-      k.fillStyle = C.blueL; k.beginPath(); k.arc(x, y, nr, 0, TAU); k.fill();
-      if (on > 0) { k.save(); k.globalAlpha *= on; k.fillStyle = C.blue; k.beginPath(); k.arc(x, y, nr, 0, TAU); k.fill(); k.restore(); }
-      txt(k, String(i + 1), x, y + 1, `700 22px ${FONT}`, on > 0.5 ? C.onBlue : C.blue, 'center', 'middle');
+      k.fillStyle = C.blueM; k.beginPath(); k.arc(x, y, nr, 0, TAU); k.fill();
+      if (lit > 0) { k.save(); k.globalAlpha *= lit; k.fillStyle = C.blue; k.beginPath(); k.arc(x, y, nr, 0, TAU); k.fill(); k.restore(); }
+      txt(k, String(i + 1), x, y + 1, `700 26px ${FONT}`, lit > 0.5 ? C.onBlue : C.onM, 'center', 'middle');
     }, nr);
-    const right = x > cx;
-    say(k, u, 0.6 + i * 0.32, L[i], right ? x + nr + 14 : x - nr - 14, y + 1, { size: 20, min: 16, max: 127, color: C.mark, align: right ? 'left' : 'right' });
+    const right = x > cx, lx = right ? x + nr + 12 : x - nr - 12;
+    say(k, u, 0.6 + i * 0.32, L[i], lx, y + 1, { size: 20, min: 16, max: right ? w - 4 - lx : lx - 4, color: C.mark, align: right ? 'left' : 'right' });
   }
   k.globalAlpha = 1;
 }
@@ -489,7 +537,8 @@ function cycle(k: K, w: number, h: number, u: number, L: readonly string[]) {
 // @element 08
 // 08 フィッシュボーン図: a spine runs right to the head (the result); slanted bones join it from above
 // and below, each with small side bones (the causes)
-// Noah: 札 = [頭（元の「結果」）, 上の骨の先, 下の骨の先]。骨の先の上下に札を置くため、骨を 80 から 72 に短くした。
+// Noah: 札 = [頭（元の「結果」）, 左上の骨の先の箱, 左下の骨の先の箱]。骨の先に、原因の分類の箱を置いた（石川図の作り）。骨を 80 から 72 に短くした。
+// 配色の黄金比: 頭 = アクセント（約 5%）、骨・小骨・分類の箱 = メイン（約 25%。札のある箱はメイン、他は淡いメイン）、背骨と尾 = 字の色、面 = ベース。
 function fishbone(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   k.globalAlpha = fade(u);
@@ -512,17 +561,23 @@ function fishbone(k: K, w: number, h: number, u: number, L: readonly string[]) {
     const t = easeInOut(P(u, a, a + 0.35));
     if (t <= 0) return;
     const tip: Pt = [bx - BX, y + sd * BL];
-    pen(k, C.blueM, 3); trace(k, [[bx, y], tip], t);
+    pen(k, C.blueM, 7); trace(k, [[bx, y], tip], t);
     // small bones (horizontal, pointing left) at 1/3 and 2/3 of the bone
     [0.36, 0.68].forEach((f, j) => {
       const st = ease(u, a + 0.38 + j * 0.08, 0.22);
       if (st <= 0) return;
       const px = lerp(tip[0], bx, f), py = lerp(tip[1], y, f);
-      pen(k, C.g4, 2.5); k.beginPath(); k.moveTo(px, py); k.lineTo(px - 26 * st, py); k.stroke();
+      pen(k, C.blueL, 5); k.beginPath(); k.moveTo(px, py); k.lineTo(px - 30 * st, py); k.stroke();
     });
   });
-  say(k, u, 1.6, L[1], 150 - BX, y - BL - 18, { size: 18, min: 15, max: 150, color: C.mark });
-  say(k, u, 1.7, L[2], 150 - BX, y + BL + 18, { size: 18, min: 15, max: 150, color: C.mark });
+  // 骨の先の分類の箱（左の 2 つに札 1・2。箱は、隣の箱と重ならないように、骨の先から左へ寄せる）。
+  const BOX: Fit = { size: 18, min: 15, max: 112 };
+  bones.forEach(([bx, sd], i) => {
+    const li = i === 0 ? 1 : i === 3 ? 2 : -1, text = li > 0 ? L[li] ?? '' : '';
+    const bw = text ? clamp(fit(k, text, BOX).width + 26, 92, 138) : 92, bh = 40, tipx = bx - BX, by = y + sd * (BL - 6);
+    const x = clamp(tipx, 8 + bw / 2, tipx + 46 - bw / 2), a = 1.25 + (i % 3) * 0.14 + (sd > 0 ? 0.07 : 0);
+    pbox(k, u, a + 0.3, x, by, bw, bh, 9, text ? C.blueM : C.blueL, text ? () => label(k, text, x, by + 1, { ...BOX, color: C.onM }) : () => { rr(k, x - 24, by - 3, 48, 6, 3); k.fillStyle = C.chip; k.fill(); });
+  });
   k.globalAlpha = 1;
 }
 
@@ -557,6 +612,7 @@ function axisLabels(k: K, u: number, x: string | undefined, y: string | undefine
 // @element 09
 // 09 散布図: many small dots pop in from left to right, rising to the right; a dashed trend line follows
 // Noah: 札 = [横の軸, 縦の軸]。点は、左から 1 つずつぽよんと出る。
+// 配色の黄金比: 傾きの帯（点が集まる幅。淡いメイン）と点 = メイン（約 25%）、傾きの線と右上の 10 の点 = アクセント（約 5%）、面・軸 = ベース。
 const SCPTS = (() => {
   const r = rand(907), pts: { x: number; y: number }[] = [];
   for (let i = 0; i < 52; i++) {
@@ -574,23 +630,31 @@ function scatter(k: K, w: number, h: number, u: number, L: readonly string[]) {
   k.save(); k.globalAlpha = fo;
   const X = (x: number) => lerp(A.x0 + 10, A.x1 - 8, x), Y = (y: number) => lerp(A.y1 - 8, A.y0 + 6, y);
   // trend line (drawn after the dots)
-  const tl = easeInOut(P(u, 1.85, 2.5));
-  if (tl > 0) {
-    const xa = X(0.02), ya = Y(0.11), xb = X(0.98), yb = Y(0.83);
-    seg(k, xa, ya, lerp(xa, xb, tl), lerp(ya, yb, tl), C.g4, 2.5, [7, 8]);
+  const xa = X(0.02), ya = Y(0.11), xb = X(0.98), yb = Y(0.83), band = 48;
+  // 傾きの帯: 点より先に、左から右へ塗られる。
+  const bp = easeInOut(P(u, 0.3, 1.6));
+  if (bp > 0) {
+    const xe = lerp(xa, xb, bp), ye = lerp(ya, yb, bp);
+    k.save(); k.beginPath(); k.rect(A.x0 + 3, A.y0, A.x1 - A.x0 - 3, A.y1 - A.y0 - 3); k.clip();
+    k.fillStyle = C.blueL; k.beginPath(); k.moveTo(xa, ya - band); k.lineTo(xe, ye - band); k.lineTo(xe, ye + band); k.lineTo(xa, ya + band); k.closePath(); k.fill();
+    k.restore();
   }
+  const hot = SCPTS.slice(-10);
   for (const p of SCPTS) {
-    const x = X(p.x), y = Y(p.y);
-    put(k, x, y, pose(u, 0.4 + p.x * 1.25), () => dot(k, x, y, 5, C.blue), 5);
+    const x = X(p.x), y = Y(p.y), top = hot.includes(p);
+    put(k, x, y, pose(u, 0.4 + p.x * 1.25), () => dot(k, x, y, top ? 10 : 6, top ? C.blue : C.blueM), top ? 10 : 6);
   }
+  const tl = easeInOut(P(u, 1.85, 2.5));
+  if (tl > 0) seg(k, xa, ya, lerp(xa, xb, tl), lerp(ya, yb, tl), C.blue, 6);
   k.restore();
 }
 
 // @element 10
 // 10 バブルチャート: a few semi-transparent circles of different sizes grow on the axes
-// Noah: 札 = [いちばん大きい円（青。円の中）, 横の軸]。
+// Noah: 札 = [いちばん大きい円（アクセント。円の中）, 横の軸]。
+// 配色の黄金比: 円 = メイン（約 25%。透けない円にして、数と大きさを増やした）、いちばん大きい円 = アクセント（約 5%）、面・軸 = ベース。
 const BB: readonly [number, number, number, number][] = [   // x, y (0..1 in the plot), radius px, emphasized
-  [0.16, 0.30, 18, 0], [0.34, 0.64, 34, 0], [0.53, 0.34, 25, 0], [0.67, 0.6, 44, 1], [0.89, 0.30, 14, 0],
+  [0.12, 0.30, 36, 0], [0.3, 0.66, 48, 0], [0.47, 0.26, 38, 0], [0.25, 0.12, 22, 0], [0.5, 0.78, 26, 0], [0.86, 0.72, 28, 0], [0.9, 0.24, 32, 0], [0.68, 0.56, 44, 1],
 ];
 function bubble(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
@@ -599,13 +663,13 @@ function bubble(k: K, w: number, h: number, u: number, L: readonly string[]) {
   const fo = dataFade(u);
   const X = (x: number) => lerp(A.x0 + 10, A.x1 - 8, x), Y = (y: number) => lerp(A.y1 - 8, A.y0 + 6, y);
   BB.forEach(([bx, by, br, em], i) => {
-    const x = X(bx), y = Y(by), col = em ? C.blue : C.blueM;
+    const x = X(bx), y = Y(by), col = em ? C.blue : i % 2 ? C.blueM : C.blueL;
     k.save(); k.globalAlpha = fo;
-    put(k, x, y, pose(u, 0.45 + i * 0.24), () => {
-      k.save(); k.globalAlpha *= em ? 0.42 : 0.5; dot(k, x, y, br, col); k.restore();
-      k.strokeStyle = col; k.lineWidth = 2.5; k.beginPath(); k.arc(x, y, br, 0, Math.PI * 2); k.stroke();
+    put(k, x, y, pose(u, 0.45 + i * 0.17), () => {
+      dot(k, x, y, br, col);
+      k.strokeStyle = C.stage; k.lineWidth = 2; k.beginPath(); k.arc(x, y, br, 0, Math.PI * 2); k.stroke();
     }, br);
-    if (em) say(k, u, 1.6, L[0], x, y + 1, { size: 18, min: 14, max: 76, color: C.mark });
+    if (em) say(k, u, 1.75, L[0], x, y + 1, { size: 18, min: 14, max: 2 * br - 12, color: C.onBlue });
     k.restore();
   });
 }
@@ -624,12 +688,15 @@ const HM = (() => {
   for (let i = 0; i < cols; i++) { let sum = 0; for (let j = 0; j < rows; j++) sum += v[j * cols + i]; if (sum > best) { best = sum; hot = i; } }
   return { cols, rows, v, hot };
 })();
-/** ヒートマップの 5 段の濃さ（今の色の組で）。 */
-const hmcol = () => [mix(C.stage, C.blueL, 0.55), C.blueL, C.blueM, mix(C.blueM, C.blue, 0.55), C.blue];
+/**
+ * ヒートマップの 5 段の濃さ: 淡いメイン → その間の 2 段 → メイン → アクセント（いちばん濃い段だけがアクセント）。
+ * 配色の黄金比: マスの 4 段 = メイン（約 25%。そのためマスを 30×28 から 27×26 に小さく）、いちばん濃い段 = アクセント（約 5%）、面・行の名前 = ベース。
+ */
+const hmcol = () => [C.blueL, mix(C.blueL, C.blueM, 0.33), mix(C.blueL, C.blueM, 0.67), C.blueM, C.blue];
 function heatmap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   const { cols, rows, v, hot } = HM, HMCOL = hmcol();
-  const cw = 30, ch = 28, g = 4, gx = 96, gy = 44, gw = cols * (cw + g) - g, gh = rows * (ch + g) - g;
+  const cw = 27, ch = 26, g = 4, gx = 104, gy = 44, gw = cols * (cw + g) - g, gh = rows * (ch + g) - g;
   // row labels (short gray bars) so it reads as a table
   for (let j = 0; j < rows; j++) { rr(k, 46, gy + j * (ch + g) + ch / 2 - 4, 36, 8, 4); k.fillStyle = C.g3; k.fill(); }
   for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
@@ -648,13 +715,15 @@ function heatmap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   say(k, u, 0.4, L[2], rx - 10, 22, { size: 16, min: 14, max: 120, color: C.sub, align: 'right' });
   const x = gx + hot * (cw + g) + cw / 2;
   put(k, x, gy + gh + 8, pose(u, 1.7), () => arrowAt(k, x, gy + gh + 5, -Math.PI / 2, 7, C.blue), 4);
-  say(k, u, 1.75, L[1], clamp(x, 102, w - 102), gy + gh + 24, { size: 17, min: 14, max: 180, color: C.blue });
+  say(k, u, 1.75, L[1], clamp(x, 102, w - 102), gy + gh + 24, { size: 17, min: 14, max: 180, color: C.accentText });
   k.restore();
 }
 
 // @element 12
 // 12 レーダーチャート: a spider-web scale; a gray polygon, then the blue polygon spreads out from the center
-// Noah: 札 = [左上, 右上, 右下, 左下 の軸の名前]（上と下の軸は、字を置く所が無いので札なし）。形は広がりすぎてぷるんと戻り、青い形の角の点はぽよんと出る。
+// Noah: 札 = [左上, 右上, 右下, 左下 の軸の名前]（上と下の軸は、字を置く所が無いので札なし）。形は広がりすぎてぷるんと戻り、前に出る形の角の点はぽよんと出る。
+// 配色の黄金比: 目盛りの六角形の面（淡いメイン）・前に出る形・軸の名前の札 = メイン（約 25%。そのため半径を 86 から 94 に）、その形の縁と角の点 = アクセント（約 5%）、
+// 比べる形（点線）・目盛りの線・面 = ベース。
 const RA = [0.92, 0.58, 0.84, 0.4, 0.76, 0.52];
 const RB = [0.55, 0.74, 0.46, 0.72, 0.5, 0.66];
 const RL: readonly [number, CanvasTextAlign][] = [[5, 'right'], [1, 'left'], [2, 'left'], [4, 'right']];
@@ -669,39 +738,44 @@ function radarPath(k: K, cx: number, cy: number, R: number, vals: readonly numbe
 }
 function radar(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const cx = w / 2, cy = h / 2 + 2, R = 86, n = 6;
+  const cx = w / 2, cy = h / 2 + 2, R = 94, n = 6;
   k.lineJoin = 'round';
+  radarPath(k, cx, cy, R, Array.from({ length: n }, () => 1), 1);
+  k.fillStyle = C.blueL; k.fill();
   for (let ring = 1; ring <= 4; ring++) {
     radarPath(k, cx, cy, R, Array.from({ length: n }, () => ring / 4), 1);
-    k.strokeStyle = ring === 4 ? C.g4 : C.g3; k.lineWidth = 2; k.stroke();
+    k.strokeStyle = C.stage; k.lineWidth = 2; k.stroke();
   }
   for (let i = 0; i < n; i++) {
     const a = -Math.PI / 2 + i / n * Math.PI * 2;
-    seg(k, cx, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R, C.g3, 2);
-    dot(k, cx + Math.cos(a) * R, cy + Math.sin(a) * R, 4, C.g4);
+    seg(k, cx, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R, C.stage, 2);
   }
+  // 軸の名前は、淡いメインの札に入れる（札も、図の形の一部としてメインの色に数える）。
+  const LAB: Fit = { size: 17, min: 14, max: 136 };
   RL.forEach(([i, align], j) => {
-    const a = -Math.PI / 2 + i / n * Math.PI * 2;
-    say(k, u, 0.3 + j * 0.06, L[j], cx + Math.cos(a) * (R + 14), cy + Math.sin(a) * R + 1, { size: 18, min: 15, max: 160, color: C.mark, align });
+    const text = L[j];
+    if (!text) return;
+    const a = -Math.PI / 2 + i / n * Math.PI * 2, ax = cx + Math.cos(a) * (R + 12), ay = cy + Math.sin(a) * R;
+    const pw = fit(k, text, LAB).width + 22, px = align === 'right' ? ax - pw / 2 : ax + pw / 2;
+    pbox(k, u, 0.3 + j * 0.06, px, ay, pw, 30, 15, C.blueL, () => label(k, text, px, ay + 1, { ...LAB, color: C.onL }));
   });
   const fo = dataFade(u);
   const sb = ease(u, 0.4, 0.7);
   if (sb > 0.01) {
     k.save(); k.globalAlpha = fo;
     radarPath(k, cx, cy, R, RB, sb);
-    k.fillStyle = rgba(C.g4, 0.22); k.fill();
-    k.strokeStyle = C.g4; k.lineWidth = 2.5; k.stroke();
+    k.setLineDash([6, 5]); k.strokeStyle = C.g4; k.lineWidth = 2.5; k.stroke(); k.setLineDash([]);
     k.restore();
   }
   const sa = ease(u, 0.95, 0.9);
   if (sa > 0.01) {
     k.save(); k.globalAlpha = fo;
     radarPath(k, cx, cy, R, RA, sa);
-    k.fillStyle = rgba(C.blue, 0.28); k.fill();
-    k.strokeStyle = C.blue; k.lineWidth = 3; k.stroke();
+    k.fillStyle = C.blueM; k.fill();
+    k.strokeStyle = C.blue; k.lineWidth = 7; k.stroke();
     RA.forEach((v, i) => {
       const a = -Math.PI / 2 + i / n * Math.PI * 2, r = R * v * sa, x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
-      put(k, x, y, pose(u, 1.2 + i * 0.06), () => dot(k, x, y, 4.5, C.blue), 4.5);
+      put(k, x, y, pose(u, 1.2 + i * 0.06), () => dot(k, x, y, 9.5, C.blue), 9.5);
     });
     k.restore();
   }
@@ -711,61 +785,66 @@ function radar(k: K, w: number, h: number, u: number, L: readonly string[]) {
 // 13 ゲージチャート: a half-circle meter; the needle swings past and settles
 // Noah: 下の「72%」の数の代わりに札 1（測る物）。札 2 は、目盛りの右の端（いっぱいの所）の名前。針の位置は形だけ（数は描かない）。
 // 針は、元（cos(7.5t)）より細かく、ぷるぷる揺れて止まる。
+// 配色の黄金比: 目盛りの帯（満ちた所 = メイン・残り = 淡いメイン）と文字盤（淡いメイン）= メイン（約 25%。半径を 120 から 126 に、帯を 30 から 48 に太くした）、
+// 針と札 1 の札 = アクセント（約 5%）、面 = ベース。
 function needle(u: number) {
   const t = u - 0.5;
   return t <= 0 ? 0 : 1 - Math.exp(-3.2 * t) * Math.cos(11 * t);
 }
 function gauge(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const cx = w / 2, cy = 152, R = 120, T = 30, V = 0.72;
+  const cx = w / 2, cy = 152, R = 126, T = 48, V = 0.72, face = R - T - 2;
   const f = V * needle(u) * (1 - easeInOut(P(u, 4.1, 4.5)));
+  k.fillStyle = C.blueL; k.beginPath(); k.moveTo(cx - face, cy); k.arc(cx, cy, face, Math.PI, Math.PI * 2); k.closePath(); k.fill();
   k.lineCap = 'butt';
-  k.strokeStyle = C.g2; k.lineWidth = T;
+  k.strokeStyle = C.blueL; k.lineWidth = T;
   k.beginPath(); k.arc(cx, cy, R - T / 2, Math.PI, Math.PI * 2); k.stroke();
   if (f > 0.002) {
-    k.strokeStyle = C.blue; k.lineWidth = T;
+    k.strokeStyle = C.blueM; k.lineWidth = T;
     k.beginPath(); k.arc(cx, cy, R - T / 2, Math.PI, Math.PI + Math.PI * f); k.stroke();
   }
-  for (let i = 0; i <= 10; i++) {   // ticks every 10%
-    const a = Math.PI + Math.PI * i / 10, r0 = R - T - 12, r1 = R - T - (i % 5 === 0 ? 24 : 18);
-    seg(k, cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * r1, cy + Math.sin(a) * r1, C.g4, 2.5);
+  for (let i = 0; i <= 10; i++) {   // ticks every 10% (on the dial face)
+    const a = Math.PI + Math.PI * i / 10, r0 = face - 6, r1 = face - (i % 5 === 0 ? 18 : 12);
+    seg(k, cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * r1, cy + Math.sin(a) * r1, C.stage, 2.5);
   }
-  const a = Math.PI + Math.PI * f, Ln = R - 22, bw = 7;
+  const a = Math.PI + Math.PI * f, Ln = R - 18, bw = 11;
   const ca = Math.cos(a), sa = Math.sin(a);
-  k.fillStyle = C.mark; k.beginPath();
+  k.fillStyle = C.blue; k.beginPath();
   k.moveTo(cx + ca * Ln, cy + sa * Ln);
   k.lineTo(cx - sa * bw, cy + ca * bw);
-  k.lineTo(cx - ca * 12, cy - sa * 12);
+  k.lineTo(cx - ca * 14, cy - sa * 14);
   k.lineTo(cx + sa * bw, cy - ca * bw);
   k.closePath(); k.fill();
-  dot(k, cx, cy, 13, C.mark);
-  dot(k, cx, cy, 5, C.stage);
+  dot(k, cx, cy, 19, C.blue);
+  dot(k, cx, cy, 7, C.stage);
   k.save(); k.globalAlpha = fade(u);
   say(k, u, 0.3, L[1], cx + R + 14, cy - 2, { size: 18, min: 15, max: w - 12 - (cx + R + 14), color: C.sub, align: 'left' });
-  say(k, u, 0.9, L[0], cx, cy + 36, { size: 24, min: 17, max: 300, color: C.mark });
+  const TAG: Fit = { size: 22, min: 16, max: 260 }, tw = Math.max(110, fit(k, L[0] ?? '', TAG).width + 36);
+  pbox(k, u, 0.9, cx, cy + 38, tw, 30, 15, C.blue, () => label(k, L[0], cx, cy + 39, { ...TAG, color: C.onBlue }));
   k.restore();
 }
 
 // @element 14
 // 14 複合グラフ（棒＋折れ線）: bars on the left scale (gray ticks), a dotted line on the right scale (blue ticks)
 // Noah: 左上に凡例（札 1 = 棒・札 2 = 折れ線）。棒は伸びすぎてぷるんと戻り、点はぽよんと出る。
+// 配色の黄金比: 棒 = メイン（約 25%。棒の幅を 36 から 46 に）、折れ線・点・右の目盛り = アクセント（約 5%。線を太く、点を大きく）、面・左の目盛り = ベース。
 const CB = [42, 55, 50, 66, 74, 88];       // bars (left scale, % of height)
 const CL = [26, 34, 52, 46, 64, 80];       // line (right scale, % of height)
 function combo(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const floor = 186, top = 24, sc = (floor - top) / 100, x0 = 86, x1 = 452, slot = (x1 - x0) / CB.length, bw = 36;
+  const floor = 186, top = 24, sc = (floor - top) / 100, x0 = 86, x1 = 452, slot = (x1 - x0) / CB.length, bw = 46;
   for (let i = 1; i <= 3; i++) { const y = lerp(floor, top, i / 3.4); seg(k, x0 + 4, y, x1 - 4, y, C.g2, 2); }
   seg(k, x0, top, x0, floor, C.g4, 2.5);
-  seg(k, x1, top, x1, floor, C.blue, 2.5);
+  seg(k, x1, top, x1, floor, C.blue, 3.5);
   seg(k, x0, floor, x1, floor, C.g4, 2.5);
   for (let i = 0; i <= 4; i++) {   // two different scales: gray ticks on the left, blue ticks on the right
     const y = lerp(floor, top, i / 4);
     seg(k, x0 - 10, y, x0, y, C.g4, 2.5);
-    seg(k, x1, y, x1 + 10, y, C.blue, 2.5);
+    seg(k, x1, y, x1 + 12, y, C.blue, 3.5);
   }
   put(k, 112, 56, pose(u, 0.3), () => { rr(k, 104, 48, 16, 16, 3); k.fillStyle = C.blueL; k.fill(); }, 8);
   say(k, u, 0.34, L[0], 130, 56, { size: 17, min: 14, max: 140, color: C.mark, align: 'left' });
-  put(k, 112, 80, pose(u, 0.4), () => { seg(k, 102, 80, 122, 80, C.blue, 3.5); dot(k, 112, 80, 6, C.blue); dot(k, 112, 80, 2.5, C.stage); }, 6);
+  put(k, 112, 80, pose(u, 0.4), () => { seg(k, 100, 80, 124, 80, C.blue, 5); dot(k, 112, 80, 8, C.blue); dot(k, 112, 80, 3, C.stage); }, 8);
   say(k, u, 0.44, L[1], 130, 80, { size: 17, min: 14, max: 140, color: C.mark, align: 'left' });
   const fo = dataFade(u);
   k.save(); k.globalAlpha = fo;
@@ -778,20 +857,21 @@ function combo(k: K, w: number, h: number, u: number, L: readonly string[]) {
   const pts: Pt[] = CL.map((v, i) => [x0 + slot * (i + 0.5), floor - v * sc]);
   const pl = P(u, 1.3, 2.2) * (pts.length - 1);
   if (pl > 0) {
-    k.strokeStyle = C.blue; k.lineWidth = 3.5; k.lineJoin = 'round'; k.lineCap = 'round';
+    k.strokeStyle = C.blue; k.lineWidth = 6; k.lineJoin = 'round'; k.lineCap = 'round';
     k.beginPath(); k.moveTo(pts[0][0], pts[0][1]);
     const n = Math.floor(pl);
     for (let i = 1; i <= n; i++) k.lineTo(pts[i][0], pts[i][1]);
     if (n < pts.length - 1) { const f = pl - n; k.lineTo(lerp(pts[n][0], pts[n + 1][0], f), lerp(pts[n][1], pts[n + 1][1], f)); }
     k.stroke();
   }
-  pts.forEach(([x, y], i) => put(k, x, y, pose(u, 1.25 + i * 0.18), () => { dot(k, x, y, 7, C.blue); dot(k, x, y, 3, C.stage); }, 7));
+  pts.forEach(([x, y], i) => put(k, x, y, pose(u, 1.25 + i * 0.18), () => { dot(k, x, y, 11, C.blue); dot(k, x, y, 4, C.stage); }, 11));
   k.restore();
 }
 
 // @element 15
 // 15 絵グラフ（ピクトグラム）: 10 people in one row pop in gray, then 3 of them turn blue
-// Noah: 「30%」と「10人中3人」の代わりに、札 1（大きく青）と札 2（小さく灰色）。人は、足元を基準に 1 人ずつぽよんと出る。
+// Noah: 「30%」と「10人中3人」の代わりに、札 1（大きくアクセントの字）と札 2（小さく薄い字）。人は、足元を基準に 1 人ずつぽよんと出る。
+// 配色の黄金比: 7 人と床の台 = メイン（約 25%。人を 80 から 112 の高さにして、10 人から 9 人に。床を台に）、前の 2 人 = アクセント（約 5%。元の 3 人から 2 人に）、面 = ベース。
 // faceless pictogram person (the same parts as the camera packs). x,y = feet, h = height in px. o.col: color
 function person(k: K, x: number, y: number, h: number, o: { col?: string; lean?: number; legs?: [number, number]; arms?: [number, number] } = {}) {
   k.save(); k.translate(x, y); const s = h / 1.8; k.scale(s, -s); if (o.lean) k.rotate(o.lean);
@@ -805,29 +885,31 @@ function person(k: K, x: number, y: number, h: number, o: { col?: string; lean?:
 }
 function picto(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const fo = dataFade(u), n = 10, xs = 214, sp = 32, foot = 158, ph = 80, HI = 3;
+  const fo = dataFade(u), n = 9, xs = 200, sp = 38, foot = 160, ph = 112, HI = 2;
   k.save(); k.globalAlpha = fo;
   for (let i = 0; i < n; i++) {
-    let col = C.g3;
-    if (i < HI) { const pc = easeInOut(P(u, 1.25 + i * 0.22, 1.5 + i * 0.22)); col = mix(C.g3, C.blue, pc); }
+    let col = C.blueM;
+    if (i < HI) { const pc = easeInOut(P(u, 1.25 + i * 0.22, 1.5 + i * 0.22)); col = mix(C.blueM, C.blue, pc); }
     const x = xs + i * sp;
     put(k, x, foot - ph / 2, pose(u, 0.35 + i * 0.06), () => person(k, x, foot, ph, { col }), ph / 2);
   }
-  say(k, u, 1.25, L[0], 164, 112, { size: 40, min: 24, max: 152, color: C.blue, align: 'right', weight: 800 });
+  say(k, u, 1.25, L[0], 164, 112, { size: 40, min: 24, max: 152, color: C.accentText, align: 'right', weight: 800 });
   say(k, u, 1.35, L[1], 164, 148, { size: 16, min: 14, max: 152, color: C.sub, align: 'right', weight: 600 });
-  seg(k, xs - 22, foot + 6, xs + (n - 1) * sp + 18, foot + 6, C.g3, 2);
+  // 床: 人が立つ淡いメインの台。
+  rr(k, xs - 26, foot + 4, (n - 1) * sp + 52, 16, 8); k.fillStyle = C.blueL; k.fill();
   k.restore();
 }
 
 // @element 16
 // 16 帯グラフ（100%積み上げ）: 4 bands of the same length fill from left to right; dashed lines join the borders
-// Noah: いちばん上の帯の、はじめの 3 つの区切りに札 = [1 つ目（白）, 2 つ目, 3 つ目]（元の各帯の % の数の代わり。他の帯には字を置かない）。
+// Noah: いちばん上の帯の、はじめの 3 つの区切りに札 = [1 つ目, 2 つ目, 3 つ目]（元の各帯の % の数の代わり。他の帯には字を置かない）。
+// 配色の黄金比: 区切りの 1・2 つ目 = メイン（約 25%）、札のある帯の 1 つ目だけ = アクセント（約 5%）、3・4 つ目と面 = ベース。
 // 帯は左から塗られ、塗り終わったら帯ごとぷるんと揺れる。
 const BD = [[38, 27, 22, 13], [30, 34, 20, 16], [46, 24, 18, 12], [25, 31, 28, 16]];
 function band(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const COL = [C.blue, C.blueM, C.blueL, C.g3];
-  const x0 = 100, bwid = 390, bh = 28, gap = 16, y0 = (h - (4 * bh + 3 * gap)) / 2;
+  const COL = (j: number) => [j ? C.blueM : C.blue, C.blueL, C.g3, C.g2];
+  const x0 = 100, bwid = 390, bh = 32, gap = 12, y0 = (h - (4 * bh + 3 * gap)) / 2;
   for (let j = 0; j < 4; j++) { rr(k, 46, y0 + j * (bh + gap) + bh / 2 - 4, 36, 8, 4); k.fillStyle = C.g3; k.fill(); }
   const fo = dataFade(u);
   k.save(); k.globalAlpha = fo;
@@ -849,7 +931,7 @@ function band(k: K, w: number, h: number, u: number, L: readonly string[]) {
       let a = x0;
       row.forEach((v, s) => {
         const ww = bwid * v / 100;
-        k.fillStyle = COL[s]; k.fillRect(a, y, ww, bh);
+        k.fillStyle = COL(j)[s]; k.fillRect(a, y, ww, bh);
         if (s) { k.fillStyle = C.stage; k.fillRect(a - 1, y, 2, bh); }
         a += ww;
       });
@@ -859,7 +941,7 @@ function band(k: K, w: number, h: number, u: number, L: readonly string[]) {
       let left = x0;
       row.slice(0, 3).forEach((v, s) => {
         const ww = bwid * v / 100;
-        say(k, u, t0 + 0.75 + s * 0.08, L[s], left + ww / 2, y + bh / 2 + 1, { size: 16, min: 14, max: ww - 14, color: [C.onBlue, C.onM, C.onL][s] });
+        say(k, u, t0 + 0.75 + s * 0.08, L[s], left + ww / 2, y + bh / 2 + 1, { size: 16, min: 14, max: ww - 14, color: [C.onBlue, C.onL, C.mark][s] });
         left += ww;
       });
     }
@@ -882,11 +964,13 @@ function arrowTo(k: K, x: number, y: number, dx: number, dy: number, s: number, 
 // 17 ガントチャート: date scale on top, bars start at staggered columns and grow to the right
 // Noah: 行の名前（A〜E）は灰色の棒に。札 1 = 青い期間（その行の左）、札 2 = 「日」の縦線（下）。上の 1〜8 は列の番号なので残す。
 // 棒は伸びすぎてぷるんと戻り、伸び終わったら揺れる。
+// 配色の黄金比: 列の番号の帯と棒 = メイン（約 25%。番号を帯に入れ、棒を 20 から 24 の太さに）、札 1 の棒と「日」の縦線 = アクセント（約 5%）、面・行の名前・線 = ベース。
 function gantt(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const x0 = 84, cols = 8, cw = 52, yAxis = 44, f = fade(u);
-  // skeleton: date scale + grid (always visible)
-  for (let i = 0; i < cols; i++) txt(k, String(i + 1), x0 + cw * i + cw / 2, 34, `500 18px ${FONT}`, C.sub, 'center');
+  const x0 = 84, cols = 8, cw = 52, yAxis = 50, f = fade(u);
+  // skeleton: date scale (in a band) + grid (always visible)
+  rr(k, x0, 8, cw * cols, 36, 8); k.fillStyle = C.blueM; k.fill();
+  for (let i = 0; i < cols; i++) txt(k, String(i + 1), x0 + cw * i + cw / 2, 28, `600 18px ${FONT}`, C.onM, 'center', 'middle');
   k.strokeStyle = C.g2; k.lineWidth = 2;
   for (let i = 0; i <= cols; i++) { k.beginPath(); k.moveTo(x0 + cw * i, yAxis); k.lineTo(x0 + cw * i, 186); k.stroke(); }
   k.strokeStyle = C.g4; k.lineWidth = 2.5; k.lineCap = 'round';
@@ -894,19 +978,19 @@ function gantt(k: K, w: number, h: number, u: number, L: readonly string[]) {
   for (let i = 0; i <= cols; i++) { k.beginPath(); k.moveTo(x0 + cw * i, yAxis - 6); k.lineTo(x0 + cw * i, yAxis); k.stroke(); }
   const T = [[0, 2], [1.5, 2], [3, 1.5], [3.5, 3], [6, 2]];
   T.forEach(([s, len], i) => {
-    const y = 62 + i * 27, t0 = 0.4 + i * 0.3, p = ease(u, t0, 0.5);
+    const y = 66 + i * 27, t0 = 0.4 + i * 0.3, p = ease(u, t0, 0.5);
     rr(k, 36, y - 4, 36, 8, 4); k.fillStyle = C.g3; k.fill();
     if (p <= 0.001) return;
     const bx = x0 + cw * s + 3, full = cw * len - 6;
     k.save(); k.globalAlpha = Math.min(1, p * 3) * f;
-    put(k, bx + full / 2, y, wob(u, landed(t0, 0.5)), () => { k.fillStyle = i === 3 ? C.blue : C.blueM; rr(k, bx, y - 10, Math.max(6, full * p), 20, 6); k.fill(); }, 10);
+    put(k, bx + full / 2, y, wob(u, landed(t0, 0.5)), () => { k.fillStyle = i === 3 ? C.blue : C.blueM; rr(k, bx, y - 12, Math.max(6, full * p), 24, 6); k.fill(); }, 12);
     k.restore();
   });
   k.save(); k.globalAlpha = f;
-  say(k, u, 1.7, L[0], x0 + cw * 3.5 - 8, 62 + 3 * 27 + 1, { size: 17, min: 14, max: 165, color: C.blue, align: 'right' });
+  say(k, u, 1.7, L[0], x0 + cw * 3.5 - 8, 66 + 3 * 27 + 1, { size: 17, min: 14, max: 165, color: C.accentText, align: 'right' });
   const mx = x0 + cw * 5.5, ml = Math.min(1, ease(u, 2.0, 0.4));
-  if (ml > 0) seg(k, mx, yAxis, mx, lerp(yAxis, 184, ml), C.mark, 2.5);
-  put(k, mx, yAxis, pose(u, 2.0), () => dot(k, mx, yAxis, 4.5, C.mark), 4.5);
+  if (ml > 0) seg(k, mx, yAxis, mx, lerp(yAxis, 186, ml), C.blue, 3.5);
+  put(k, mx, yAxis, pose(u, 2.0), () => dot(k, mx, yAxis, 6, C.blue), 6);
   say(k, u, 2.3, L[1], mx, 197, { size: 16, min: 14, max: 120, color: C.mark });
   k.restore();
 }
@@ -915,41 +999,42 @@ function gantt(k: K, w: number, h: number, u: number, L: readonly string[]) {
 // 18 タイムライン: one line drawn left to right; dots and short marks appear in order, alternating up/down
 // Noah: 月の名前（作り話の日付）の代わりに、上の 3 枚に札 = [左, 真ん中, 右（青）]。下の 2 枚は、字の代わりの灰色の棒。札の札は、字の幅に合わせて広げる。
 // 点と札はぽよんと出る（札は、軸から伸びた線の先で）。
+// 配色の黄金比: 時の軸（太い帯）・線・札 = メイン（約 25%。軸を太い帯に、札を大きく）、最後の点と札 = アクセント（約 5%）、面・点 = ベース。
 const TL_LABEL = [0, -1, 1, -1, 2];
 function timeline(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const y = 106, xa = 36, xb = 503, f = fade(u), CARD: Fit = { size: 18, min: 15, max: 126 };
+  const y = 106, xa = 30, xb = 500, f = fade(u), CARD: Fit = { size: 18, min: 15, max: 126 };
   const pl = easeInOut(P(u, 0.4, 2.0));
   const tip = lerp(xa, xb, pl);
   k.globalAlpha = f;
   if (pl > 0) {
-    k.strokeStyle = C.mark; k.lineWidth = 3; k.lineCap = 'round';
+    k.strokeStyle = C.blueM; k.lineWidth = 16; k.lineCap = 'round';
     k.beginPath(); k.moveTo(xa, y); k.lineTo(tip, y); k.stroke();
-    if (pl > 0.97) arrowTo(k, xb + 6, y, 1, 0, 11, C.mark);
+    if (pl > 0.97) arrowTo(k, xb + 24, y, 1, 0, 20, C.blueM);
   }
   const XS = [78, 166, 254, 342, 430];
   XS.forEach((x, i) => {
     const t0 = 0.4 + 1.6 * tipT(i, XS, xa, xb);
     if (u <= t0) return;
-    const up = i % 2 === 0, last = i === XS.length - 1, r = last ? 10 : 7;
-    // short stem + small card
+    const up = i % 2 === 0, last = i === XS.length - 1, r = last ? 13 : 9;
+    // short stem + card
     const ps = clamp(ease(u, t0 + 0.1, 0.3));
-    const dir = up ? -1 : 1, y1 = y + dir * (r + 4), y2 = y + dir * (r + 4 + 22 * ps);
-    k.strokeStyle = last ? C.blue : C.g4; k.lineWidth = 2.5;
+    const dir = up ? -1 : 1, y1 = y + dir * (r + 2), y2 = y + dir * (r + 2 + 24 * ps);
+    k.strokeStyle = last ? C.blue : C.blueM; k.lineWidth = 4;
     k.beginPath(); k.moveTo(x, y1); k.lineTo(x, y2); k.stroke();
     const text = TL_LABEL[i] < 0 ? '' : L[TL_LABEL[i]] ?? '';
-    const cwid = text ? Math.max(64, fit(k, text, CARD).width + 24) : 64, chh = 32, cy = up ? y - r - 26 - chh / 2 : y + r + 26 + chh / 2;
+    const cwid = text ? Math.max(96, fit(k, text, CARD).width + 28) : 96, chh = 46, cy = up ? y - r - 26 - chh / 2 : y + r + 26 + chh / 2;
     const left = clamp(x - cwid / 2, 8, w - 8 - cwid);
     put(k, left + cwid / 2, cy, pose(u, t0 + 0.15), () => {
-      k.fillStyle = last ? C.blue : C.card; k.strokeStyle = last ? C.blue : C.g3; k.lineWidth = 2;
-      rr(k, left, cy - chh / 2, cwid, chh, 8); k.fill(); k.stroke();
-      if (text) label(k, text, left + cwid / 2, cy + 1, { ...CARD, color: last ? C.onBlue : C.mark });
-      else { rr(k, x - 20, cy - 6, 40, 5, 2.5); k.fillStyle = C.g3; k.fill(); rr(k, x - 20, cy + 2, 28, 5, 2.5); k.fillStyle = C.g2; k.fill(); }
+      k.fillStyle = last ? C.blue : C.blueL;
+      rr(k, left, cy - chh / 2, cwid, chh, 10); k.fill();
+      if (text) label(k, text, left + cwid / 2, cy + 1, { ...CARD, color: last ? C.onBlue : C.onL });
+      else { rr(k, x - 24, cy - 7, 48, 6, 3); k.fillStyle = C.blueM; k.fill(); rr(k, x - 24, cy + 3, 32, 6, 3); k.fillStyle = C.blueM; k.fill(); }
     }, chh / 2);
     put(k, x, y, pose(u, t0), () => {
-      k.fillStyle = last ? C.blue : C.blueM;
+      k.fillStyle = last ? C.blue : C.stage;
       k.beginPath(); k.arc(x, y, r, 0, 7); k.fill();
-      k.strokeStyle = C.stage; k.lineWidth = 2; k.stroke();
+      k.strokeStyle = last ? C.stage : C.blueM; k.lineWidth = 3; k.stroke();
     }, r);
   });
   k.globalAlpha = 1;
@@ -967,8 +1052,8 @@ function tipT(i: number, XS: readonly number[], xa: number, xb: number) {
 const FUNNEL_LABEL = [0, 1, -1, 2];
 function funnel(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
-  const cx0 = w / 2, bh = 34, gap = 10, y0 = 21, f = fade(u);
-  const WD = [470, 350, 236, 132];
+  const cx0 = w / 2, bh = 30, gap = 14, y0 = 23, f = fade(u);
+  const WD = [440, 330, 224, 164];
   const COL = [C.blueL, C.blueM, C.blueM, C.blue];
   WD.forEach((wd, i) => {
     const t0 = 0.4 + i * 0.36, p = ease(u, t0, 0.45);
@@ -994,7 +1079,8 @@ function funnel(k: K, w: number, h: number, u: number, L: readonly string[]) {
 // @element 20
 // 20 カスタマージャーニーマップ: stage headers as plain boxes (columns), an action card under each,
 // then the feeling line goes up and down across the stages, with a smile / frown mark on each point
-// Noah: 札 = [いちばん高い点（上に青で）, いちばん低い点（下に灰色で）]。見出し・行動の札・顔は、ぽよんと出る。
+// Noah: 札 = [いちばん高い点（上にアクセントの字で）, いちばん低い点（下に薄い字で）]。見出し・行動の札・顔は、ぽよんと出る。
+// 配色の黄金比: 段階の見出しと行動の札 = メイン（約 25%。行動の札を淡いメインに）、気持ちの線と良い顔 = アクセント（約 5%。線を太く、顔を大きく）、面・悪い顔 = ベース。
 const JV = [0.35, 0.7, -0.6, 0.15, 0.85];     // feeling per stage (+ up = good)
 function face(k: K, x: number, y: number, r: number, good: boolean, col: string) {
   k.fillStyle = col; k.beginPath(); k.arc(x, y, r, 0, Math.PI * 2); k.fill();
@@ -1017,16 +1103,15 @@ function journey(k: K, w: number, h: number, u: number, L: readonly string[]) {
   k.globalAlpha = f;
   // stage headers: plain rounded boxes (not arrows), the stage names as short bars
   for (let i = 0; i < n; i++) {
-    pbox(k, u, 0.35 + i * 0.1, cx(i), 27, cw - 12, 26, 7, i === 2 ? C.g3 : C.blueM, () => { rr(k, cx(i) - 22, 25, 44, 5, 2.5); k.fillStyle = C.chip; k.fill(); });
+    pbox(k, u, 0.35 + i * 0.1, cx(i), 27, cw - 12, 26, 7, C.blueM, () => { rr(k, cx(i) - 22, 25, 44, 5, 2.5); k.fillStyle = C.chip; k.fill(); });
   }
   // action cards (what the customer does at each stage)
   for (let i = 0; i < n; i++) {
     const y = 50;
     put(k, cx(i), y + 19, pose(u, 0.6 + i * 0.1), () => {
-      rr(k, cx(i) - cw / 2 + 10, y, cw - 20, 38, 6); k.fillStyle = C.card; k.fill();
-      k.strokeStyle = C.g3; k.lineWidth = 1.5; k.stroke();
-      rr(k, cx(i) - cw / 2 + 18, y + 10, cw - 46, 6, 3); k.fillStyle = C.g3; k.fill();
-      rr(k, cx(i) - cw / 2 + 18, y + 22, cw - 60, 6, 3); k.fillStyle = C.g2; k.fill();
+      rr(k, cx(i) - cw / 2 + 8, y, cw - 16, 38, 7); k.fillStyle = C.blueL; k.fill();
+      rr(k, cx(i) - cw / 2 + 18, y + 10, cw - 46, 6, 3); k.fillStyle = C.blueM; k.fill();
+      rr(k, cx(i) - cw / 2 + 18, y + 22, cw - 60, 6, 3); k.fillStyle = C.blueM; k.fill();
     }, 19);
   }
   k.globalAlpha = 1;
@@ -1037,7 +1122,7 @@ function journey(k: K, w: number, h: number, u: number, L: readonly string[]) {
   const pl = easeInOut(P(u, 1.25, 2.25));
   if (pl > 0) {
     k.save(); k.beginPath(); k.rect(0, 0, lerp(pts[0][0], pts[n - 1][0], pl) + 1, h); k.clip();
-    k.strokeStyle = C.blue; k.lineWidth = 3.5; k.lineJoin = 'round'; k.lineCap = 'round';
+    k.strokeStyle = C.blue; k.lineWidth = 6; k.lineJoin = 'round'; k.lineCap = 'round';
     k.beginPath(); k.moveTo(pts[0][0], pts[0][1]);
     for (let i = 0; i < n - 1; i++) {
       const [x0, y0] = pts[i], [x1, y1] = pts[i + 1], mx = (x0 + x1) / 2;
@@ -1047,17 +1132,19 @@ function journey(k: K, w: number, h: number, u: number, L: readonly string[]) {
   }
   pts.forEach(([x, y], i) => {
     const good = JV[i] >= 0;
-    put(k, x, y, pose(u, 1.2 + (i / (n - 1)) * 1.0), () => face(k, x, y, 12, good, good ? C.blue : C.g4), 12);
+    put(k, x, y, pose(u, 1.2 + (i / (n - 1)) * 1.0), () => face(k, x, y, 14, good, good ? C.blue : C.g4), 14);
   });
   const hi = JV.indexOf(Math.max(...JV)), lo = JV.indexOf(Math.min(...JV));
-  say(k, u, 2.3, L[0], pts[hi][0], pts[hi][1] - 22, { size: 16, min: 14, max: cw - 8, color: C.blue });
+  say(k, u, 2.3, L[0], pts[hi][0], pts[hi][1] - 22, { size: 16, min: 14, max: cw - 8, color: C.accentText });
   say(k, u, 2.35, L[1], pts[lo][0], pts[lo][1] + 24, { size: 16, min: 14, max: cw - 8, color: C.sub });
   k.globalAlpha = 1;
 }
 
 // @element 21
 // 21 ツリーマップ: one outer rectangle gets filled by rectangles of different sizes, biggest first
-// Noah: 札 = [いちばん大きい四角（青。元の A）, 2 番目（元の B）]。C・D の字は描かない。四角は、札ごとぽよんと出る。
+// Noah: 札 = [いちばん大きい四角（元の A）, 見てほしい四角（元の B）]。C・D の字は描かない。四角は、札ごとぽよんと出る。
+// 配色の黄金比: いちばん大きい四角 = メイン（約 25%）、見てほしい四角 = アクセント（約 5%）、他の四角（ベースの淡い・濃い色）と面 = ベース。
+// そのため四角の分け方を変えた（元は A が全体の 3 割の青、B が 1 割）。四角の大きさは数を表さない（作り話の数を描かないため）。
 function treemap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   const f = fade(u);
@@ -1065,18 +1152,18 @@ function treemap(k: K, w: number, h: number, u: number, L: readonly string[]) {
   k.strokeStyle = C.g3; k.lineWidth = 2; k.setLineDash([6, 6]);
   rr(k, X0, Y0, X1 - X0, Y1 - Y0, 6); k.stroke(); k.setLineDash([]);
   const RS: readonly [number, number, number, number, string, number][] = [                                  // x, y, w, h, color, label index
-    [50, 18, 206, 172, C.blue, 0],
-    [260, 18, 140, 96, C.blueM, 1],
-    [404, 18, 85, 96, C.blueL, -1],
-    [260, 118, 98, 72, C.blueL, -1],
-    [362, 118, 70, 72, C.g3, -1],
-    [436, 118, 53, 34, C.g3, -1],
-    [436, 156, 53, 34, C.g4, -1],
+    [50, 18, 180, 172, C.blueM, 0],
+    [234, 18, 150, 42, C.blue, 1],
+    [388, 18, 101, 42, C.g3, -1],
+    [234, 64, 106, 126, C.g2, -1],
+    [344, 64, 145, 56, C.g3, -1],
+    [344, 124, 72, 66, C.g4, -1],
+    [420, 124, 69, 66, C.g2, -1],
   ];
   k.globalAlpha = f;
   RS.forEach(([x, y, ww, hh, col, li], i) => {
     pbox(k, u, 0.4 + i * 0.22, x + ww / 2, y + hh / 2, ww, hh, 5, col, li >= 0
-      ? () => label(k, L[li], x + 12, y + 21, { size: li === 0 ? 24 : 20, min: li === 0 ? 18 : 15, max: ww - 24, color: li === 0 ? C.onBlue : C.onM, align: 'left' })
+      ? () => label(k, L[li], x + 12, y + 21, { size: li === 0 ? 24 : 20, min: li === 0 ? 18 : 15, max: ww - 24, color: li === 0 ? C.onM : C.onBlue, align: 'left' })
       : undefined);
   });
   k.globalAlpha = 1;
@@ -1085,6 +1172,7 @@ function treemap(k: K, w: number, h: number, u: number, L: readonly string[]) {
 // @element 22
 // 22 スイムレーン図: lane names on the left; boxes and arrows move across the lanes step by step
 // Noah: レーンの名前（顧客・営業・制作）を札 = [上, 真ん中, 下 のレーン] に。名前の列を 62 から 80 に広げた。手順の箱はぽよんと出る。
+// 配色の黄金比: 名前の列と手順の箱 = メイン（約 25%。名前の列をメインに、箱を大きく）、最後の箱 = アクセント（約 5%）、レーンの地・線と面 = ベース。
 function swimlane(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   const f = fade(u), X0 = 22, X1 = 517, HW = 80, Y0 = 13, LH = 60, NL = 3;
@@ -1092,15 +1180,15 @@ function swimlane(k: K, w: number, h: number, u: number, L: readonly string[]) {
   for (let i = 0; i < NL; i++) {
     const y = Y0 + i * LH;
     k.fillStyle = C.card; k.fillRect(X0 + HW, y, X1 - X0 - HW, LH);
-    k.fillStyle = C.g2; k.fillRect(X0, y, HW, LH);
-    label(k, L[i], X0 + HW / 2, y + LH / 2 + 1, { size: 18, min: 15, max: HW - 12, color: C.mark });
+    k.fillStyle = C.blueM; k.fillRect(X0, y, HW, LH);
+    label(k, L[i], X0 + HW / 2, y + LH / 2 + 1, { size: 18, min: 15, max: HW - 12, color: C.onM });
   }
   k.strokeStyle = C.g3; k.lineWidth = 2;
   for (let i = 1; i < NL; i++) { k.beginPath(); k.moveTo(X0, Y0 + i * LH); k.lineTo(X1, Y0 + i * LH); k.stroke(); }
   k.beginPath(); k.moveTo(X0 + HW, Y0); k.lineTo(X0 + HW, Y0 + NL * LH); k.stroke();
   rr(k, X0, Y0, X1 - X0, NL * LH, 6); k.stroke();
   // steps
-  const BX = [138, 224, 310, 396, 474], BLN = [0, 1, 2, 1, 0], bw = 56, bh = 30;
+  const BX = [144, 228, 312, 396, 472], BLN = [0, 1, 2, 1, 0], bwOf = (i: number) => (i === 4 ? 84 : 70), bhOf = (i: number) => (i === 4 ? 44 : 40);
   const cyOf = (l: number) => Y0 + l * LH + LH / 2;
   k.globalAlpha = f;
   for (let i = 0; i < BX.length; i++) {
@@ -1109,8 +1197,8 @@ function swimlane(k: K, w: number, h: number, u: number, L: readonly string[]) {
     if (i > 0) {
       const pa = easeInOut(P(u, t0 - 0.24, t0 + 0.02));
       if (pa > 0) {
-        const xs = BX[i - 1] + bw / 2, ys = cyOf(BLN[i - 1]), xe = BX[i], ye0 = cyOf(BLN[i]);
-        const down = ye0 > ys, ye = ye0 + (down ? -bh / 2 - 3 : bh / 2 + 3);
+        const xs = BX[i - 1] + bwOf(i - 1) / 2, ys = cyOf(BLN[i - 1]), xe = BX[i], ye0 = cyOf(BLN[i]);
+        const down = ye0 > ys, ye = ye0 + (down ? -bhOf(i) / 2 - 3 : bhOf(i) / 2 + 3);
         const l1 = xe - xs, l2 = Math.abs(ye - ys), tot = l1 + l2, d = pa * tot;
         k.strokeStyle = C.mark; k.lineWidth = 2.5; k.lineCap = 'round'; k.lineJoin = 'round';
         k.beginPath(); k.moveTo(xs, ys);
@@ -1120,12 +1208,12 @@ function swimlane(k: K, w: number, h: number, u: number, L: readonly string[]) {
         if (pa > 0.98) arrowTo(k, xe, ye, 0, down ? 1 : -1, 9, C.mark);
       }
     }
-    const last = i === BX.length - 1, cx = BX[i], cy = cyOf(BLN[i]);
+    const last = i === BX.length - 1, cx = BX[i], cy = cyOf(BLN[i]), bw = bwOf(i), bh = bhOf(i);
     put(k, cx, cy, pose(u, t0), () => {
-      k.fillStyle = last ? C.blue : C.blueL; k.strokeStyle = last ? C.blue : C.blueM; k.lineWidth = 2;
-      rr(k, cx - bw / 2, cy - bh / 2, bw, bh, 7); k.fill(); k.stroke();
-      k.fillStyle = last ? C.onBlue : C.g4;
-      rr(k, cx - 16, cy - 3, 32, 6, 3); k.fill();
+      k.fillStyle = last ? C.blue : C.blueL; k.strokeStyle = last ? C.blue : C.blueM; k.lineWidth = 2.5;
+      rr(k, cx - bw / 2, cy - bh / 2, bw, bh, 8); k.fill(); k.stroke();
+      k.fillStyle = last ? C.onBlue : C.blueM;
+      rr(k, cx - 18, cy - 3, 36, 6, 3); k.fill();
     }, bh / 2);
   }
   k.globalAlpha = 1;
@@ -1151,7 +1239,7 @@ function chevron(k: K, w: number, h: number, u: number, L: readonly string[]) {
       k.moveTo(x, y0); k.lineTo(x + cw - dp, y0); k.lineTo(x + cw, ym); k.lineTo(x + cw - dp, y0 + ch); k.lineTo(x, y0 + ch);
       if (i > 0) k.lineTo(x + dp, ym);
       k.closePath(); k.fill();
-      txt(k, String(i + 1), tx + 4, ym + 1, `700 24px ${FONT}`, i === n - 1 ? C.onBlue : C.mark, 'center', 'middle');
+      txt(k, String(i + 1), tx + 4, ym + 1, `700 24px ${FONT}`, [C.onL, C.onL, C.onM, C.onM, C.onBlue][i], 'center', 'middle');
     }, ch / 2);
     // short notes under each step
     const nx = tx + 4;
@@ -1163,16 +1251,17 @@ function chevron(k: K, w: number, h: number, u: number, L: readonly string[]) {
 
 // @element 24
 // 24 同心円図: circles appear one inside another around the same center
-// Noah: TAM・SAM・SOM の代わりに、札 = [真ん中の円の中（白）, 外の円の右]。円は、下の端を基準にぽよんと出る（中の円ほど後）。
+// Noah: TAM・SAM・SOM の代わりに、札 = [真ん中の円の中, 外の円の右]。円は、下の端を基準にぽよんと出る（中の円ほど後）。
+// 配色の黄金比: 外と中の輪 = メイン（約 25%。外の円を 91 から 98 に）、真ん中の円 = アクセント（約 5%。31 から 38 に）、面 = ベース。
 function concentric(k: K, w: number, h: number, u: number, L: readonly string[]) {
   bg(k, w, h);
   const f = fade(u), cx0 = w / 2, cy0 = h / 2 + 2;
-  const RR = [91, 61, 31], COL = [C.blueL, C.blueM, C.blue];
+  const RR = [98, 65, 38], COL = [C.blueL, C.blueM, C.blue];
   // skeleton: faint outer ring guide
   k.strokeStyle = C.g2; k.lineWidth = 2; k.beginPath(); k.arc(cx0, cy0, RR[0], 0, 7); k.stroke();
   k.globalAlpha = f;
   RR.forEach((r, i) => put(k, cx0, cy0, pose(u, 0.4 + i * 0.45), () => { k.fillStyle = COL[i]; k.beginPath(); k.arc(cx0, cy0, r, 0, 7); k.fill(); }, r));
-  say(k, u, 1.85, L[0], cx0, cy0 + 1, { size: 18, min: 14, max: 54, color: C.onBlue });
+  say(k, u, 1.85, L[0], cx0, cy0 + 1, { size: 18, min: 14, max: 2 * RR[2] - 14, color: C.onBlue });
   say(k, u, 0.95, L[1], cx0 + RR[0] + 18, cy0 + 1, { size: 18, min: 15, max: w - 12 - (cx0 + RR[0] + 18), color: C.mark, align: 'left' });
   k.globalAlpha = 1;
 }
@@ -1189,7 +1278,7 @@ export function noahPinHold(template: NoahPinTemplate): number {
   return template === 'heatmap' ? 3.9 : 4;
 }
 
-/** 1 枚の図解を、時刻 u（秒）の形で、色の組 tone（NOAH_PIN_TONES の番号。noahPinTone で決める）で描く。k は、539×208 の座標で描けるように縮めた（setTransform 済みの）面。前の絵は、ここで塗りつぶす。 */
+/** 1 枚の図解を、時刻 u（秒）の形で、並びの tone 枚目の 3 色（noahPinColors。70:25:5。カードごとに黄金角ずつ回す）で描く。k は、539×208 の座標で描けるように縮めた（setTransform 済みの）面。前の絵は、ここで塗りつぶす。 */
 export function drawNoahPinDiagram(k: CanvasRenderingContext2D, scene: Pick<NoahPinScene, 'template' | 'labels'>, u: number, tone = 0): void {
   const before = C;
   C = noahPinColors(tone);

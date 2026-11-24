@@ -198,23 +198,29 @@
   .storeItem .more summary { width:44px; height:44px; }
 }
 
-/* 図解のピン（data-art。spec-115 の 9 章。バージョン TAKE）: App Store の Today のカードのように、1 枚ずつ違う深い色のカード（色の組は lib/noah-pin-diagram.ts の NOAH_PIN_TONES。
-   本人の指示 2026-11-24「色味がダサい」「こんな感じにして」）。上に図解（下の端が帯の色へ溶ける）、下に同じ色の帯で、太い題 → 薄い字の「入れる物 → 返る物」→ 名前・提供元と押す所。
-   色はカードごとに grid が CSS の変数で渡す（--art-band 帯・--art-ink 字・--art-sub 薄い字・--art-accent 差し色・--art-button 押す所の地）。字の濃さは試験が確かめる（帯の上で 4.5 以上）。
-   絵は横長（539:208）でスマホの 2 列では高さ約 70px なので、保存と「その他」は絵に重ねない（Pinterest のスマホと同じく、絵の上には何も置かない）。 */
-.pin[data-art] { display:flex; flex-wrap:wrap; align-items:center; gap:0 6px; padding:0 10px 10px 0; border-radius:18px; background:var(--art-band); color:var(--art-ink); }
-.pin[data-art] .face { flex:0 0 100%; min-width:0; }
-.pin[data-art] .scene { border-radius:18px 18px 0 0; box-shadow:none; }
-.pin[data-art] .name { margin:8px 0 0 12px; font-size:15px; line-height:1.4; letter-spacing:-.01em; color:var(--art-ink); }
-.pin[data-art] .summary { margin:3px 0 0 12px; font-size:12.5px; line-height:1.5; color:var(--art-sub); }
-.pin[data-art] .arrow { color:var(--art-accent); font-weight:700; }
-.pin[data-art] > .meta { order:1; flex:1 1 0; min-width:0; margin:8px 0 0 12px; font-size:11.5px; color:var(--art-sub); }
+/* 図解のピン（data-art。spec-115 の 9 章。バージョン TAKE）: Mac の App Store のカード（本人の指示 2026-11-24「こんな感じの色味にして　今のやつじゃ飽きるから黄金比を活用して」と画面の録画）。
+   白い地に、角の丸い色の絵（1 枚の絵は配色の黄金比 ベース 70%・メイン 25%・アクセント 5% の 3 色。3 色はカードごとに黄金角ずつ回す。lib/noah-pin-diagram.ts の noahPinColors）、その下の白い地に、薄い分野の名前 → 太い題 → 灰色の「入れる物 → 返る物」→ 名前・提供元と押す所。
+   黄金比: 字の大きさは PC で 11・14・17.8 px（√φ ずつ。11 × φ = 17.8）、説明の行の高さは φ（1.618）、間は 3・5・8・13 px（フィボナッチ数。隣同士の比が φ に近づく）、絵の角は 13 px。
+   絵は横長（539:208 ≈ φ²）でスマホの 2 列では高さ約 70px なので、保存と「その他」は絵に重ねない（Pinterest のスマホと同じく、絵の上には何も置かない）。 */
+.pin[data-art] { display:flex; flex-wrap:wrap; align-items:center; gap:0 8px; color:#1d1d1f; }
+.pin[data-art] .face { flex:0 0 100%; min-width:0; color:inherit; text-decoration:none; }
+.pin[data-art] .scene { border-radius:13px; box-shadow:none; }
+.pin[data-art] .scene canvas { border-radius:13px; }
+.pin[data-art] .eyebrow { display:block; margin:13px 0 0; color:#6e6e73; font-size:11px; font-weight:600; line-height:1.3; }
+.pin[data-art] .name { margin:3px 0 0; font-size:15px; line-height:1.272; letter-spacing:-.01em; color:#1d1d1f; }
+.pin[data-art] .summary { margin:5px 0 0; font-size:12.5px; line-height:1.618; color:#6e6e73; }
+.pin[data-art] .arrow { color:#a14206; font-weight:700; }
+.pin[data-art] > .meta { order:1; flex:1 1 0; min-width:0; margin:8px 0 0; font-size:11px; color:#6e6e73; }
 .pin[data-art] .more { position:relative; top:auto; left:auto; order:2; margin-top:8px; }
-.pin[data-art] .more summary { opacity:1; width:36px; height:36px; background:var(--art-button); color:var(--art-ink); }
+.pin[data-art] .more summary { opacity:1; width:36px; height:36px; background:#efeff4; color:#1d1d1f; }
 .pin[data-art] .more > button { top:40px; left:auto; right:0; }
-.pin[data-art] .save { position:static; order:3; opacity:1; min-height:36px; margin-top:8px; padding:0 14px; border-radius:18px; background:var(--art-button); color:var(--art-ink); font-size:12px; }
-.pin[data-art] .save[data-saved] { background:var(--art-accent); color:var(--art-on-accent); }
-.pin[data-art] .sources { order:4; flex:0 0 100%; margin:8px 0 0 12px; color:var(--art-ink); }
-.pin[data-art] .sources a,.pin[data-art] .sourceBadge { background:var(--art-button); color:var(--art-ink); }
-.pin[data-art] .face:hover .scene { filter:brightness(1.06); }
-@media (hover:none) { .pin[data-art] .save { min-height:44px; padding:0 12px; } .pin[data-art] .more summary { width:44px; height:44px; } .pin[data-art] .more > button { top:48px; } }
+.pin[data-art] .save { position:static; order:3; opacity:1; min-height:36px; margin-top:8px; padding:0 13px; border-radius:18px; background:#efeff4; color:#913c04; font-size:12px; }
+.pin[data-art] .save[data-saved] { background:#1d1d1f; color:#fff; }
+.pin[data-art] .sources { order:4; flex:0 0 100%; margin:8px 0 0; }
+.pin[data-art] .face:hover .scene { filter:brightness(1.04); }
+.pin[data-art] .face:focus-visible { outline:2px solid #a14206; outline-offset:3px; border-radius:13px; }
+@media (min-width:520px) {
+  .pin[data-art] .name { font-size:17.8px; }
+  .pin[data-art] .summary { font-size:14px; }
+}
+@media (hover:none) { .pin[data-art] .save { min-height:44px; padding:0 13px; } .pin[data-art] .more summary { width:44px; height:44px; } .pin[data-art] .more > button { top:48px; } }

@@ -1,4 +1,4 @@
 /* ピンの図解（バージョン TAKE。spec-115 の 9 章）。絵は canvas（lib/noah-pin-diagram.ts。しょうへいさんの図解パックの書き写し）。
-   大きさは元のカードと同じ 539:208。描く前（サーバーで描いた時・JS が動く前）も、色の組の 2 色の濃淡の空の面を出す（部品の style。ここは無い時の色）。
+   大きさは元のカードと同じ 539:208（≈ φ²）。描く前（サーバーで描いた時・JS が動く前）も、その n 枚目の 2 色の濃淡の空の面を出す（部品の style。ここは無い時の色）。
    動き（画面に入った時に 1 回組み上がる。動きを減らす設定の人には動かさない）は components/noah-pin-scene.tsx が描く。 */
-.art { display:block; width:100%; height:auto; aspect-ratio:539 / 208; background:#1B2550; }
+.art { display:block; width:100%; height:auto; aspect-ratio:539 / 208; background:#F2F2F7; }
