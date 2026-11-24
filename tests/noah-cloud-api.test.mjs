@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createNoahCloudApi, createNoahCloudResultApi, noahCloudRuntime } from '../lib/noah-cloud-api.ts';
-import { eveReturnedProposal } from '../lib/eve-consultation-proposal.ts';
+import { eveAdviceProposal, eveReturnedProposal } from '../lib/eve-consultation-proposal.ts';
 import { noahProjectDetail } from '../lib/noah-project-api.ts';
 import { noahBrowserRequestAllowed } from '../lib/noah-browser-session.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
@@ -19,7 +19,7 @@ async function world(t, freeRuntime = false) {
   const records = new Map(), starts = [];
   const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, freeRuntime, authenticate: async () => owner, directory: async () => listed ? [entry, { ...entry, cloudProfile: 'memory', card: { ...entry.card, id: 'project-' + 'b'.repeat(64), feedbackId: 'project-' + 'b'.repeat(64), href: NOAH_CLOUD_PROFILES.memory.repository } }] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
     count++;
-    if (input.action === 'start') { starts.push(input); receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, profile: input.profile, version, distribution, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
+    if (input.action === 'start') { starts.push(input); receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, purpose: input.purpose, profile: input.profile, version, distribution, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
     if (input.action === 'stop' && records.has(input.jobId)) { const stopped = {...records.get(input.jobId),state:'cancelled'}; records.set(input.jobId,stopped); return Response.json(stopped); }
     if (input.action === 'job') return records.has(input.jobId) ? Response.json(records.get(input.jobId)) : Response.json({ error: 'not_found' }, { status: 404 });
     return Response.json({ connection: null });
@@ -120,6 +120,7 @@ void test('Eve consultations use the official free Hermes runtime and return onl
   w.requireConfirmation();
   assert.equal((await w.request({ ...start, purpose })).status, 409);
   assert.equal((await w.request({ ...start, purpose, confirm: true })).status, 202);
+  assert.equal(w.starts.at(-1).purpose, undefined);
   const actualText = 'Fixture generated reply for the reading list';
   const job = { ...w.records.get(start.jobId), state: 'returned', calls: 2, result: { text: actualText, files: [], exitCode: 0 } };
   assert.equal((await w.deliver(job)).status, 200);
@@ -144,17 +145,22 @@ void test('Eve sends a bounded combination brief with the confirmed goal and sav
   assert.deepEqual(w.starts, []);
   assert.equal((await w.request({ ...start, confirm: true })).status, 202);
   assert.match(w.starts[0].prompt, /A catalog design example passes "記事の指示"/u);
-  assert.match(w.starts[0].prompt, /^First call the actual memory function with action="add", target="memory", content=/u);
+  assert.equal(w.starts[0].purpose, 'eve-combination-advice');
+  assert.match(w.starts[0].prompt, /^Return exactly one JSON object/u);
   assert.match(w.starts[0].prompt, /memory: organize supplied notes/u);
+  assert.match(w.starts[0].prompt, /recording symptoms only requires a usable log/u);
+  assert.match(w.starts[0].prompt, /an approved application, a purchase, or payment/u);
   assert.doesNotMatch(w.starts[0].prompt, /filesystem:/u, 'absent store profiles are not offered');
-  assert.match(w.starts[0].prompt, /After memory succeeds, reply only with a brief natural-language receipt/u);
+  assert.doesNotMatch(w.starts[0].prompt, /memory function|MEMORY.md/u);
   assert.ok(w.starts[0].prompt.endsWith('\n' + prompt));
   assert.equal((await w.request({ ...start, confirm: true, proposalLanguage: 'en' })).status, 409);
-  const generated = JSON.stringify({ input: '会議のメモ', steps: [
+  const scheme = { kind: 'user_goal', recipient: '編集担当者', outcome: '確認用の記事案', acceptance: '担当者が内容を確認して掲載枠を決める', evidence: '記事案に対する担当者のレビュー記録' };
+  const generated = JSON.stringify({ input: '会議のメモ', scheme, steps: [
     { agent: 'memory', role: '担当者ごとに論点を整理', output: '担当と論点の表' },
     { agent: null, role: '記事を下書きするAgent', output: '確認用の記事案' },
   ] });
-  const job = { ...w.records.get(start.jobId), state: 'returned', calls: 2, result: { text: generated, files: [], exitCode: 0 } };
+  const job = { ...w.records.get(start.jobId), state: 'returned', calls: 1, result: { text: generated, files: [], exitCode: 0, calls: 1, operationCount: 0 } };
+  assert.notEqual((await w.deliver({ ...job, purpose: undefined })).status, 200);
   assert.equal((await w.deliver(job)).status, 200);
   const status = () => w.api(new Request(`${origin}/api/noah/cloud-agents?projectId=${project}&purpose=${purpose}`));
   const { jobs } = await (await status()).json();
@@ -163,12 +169,67 @@ void test('Eve sends a bounded combination brief with the confirmed goal and sav
   assert.equal(jobs[0].proposal.steps[1].profile, null);
   assert.equal(jobs[0].proposal.steps[0].projectId, 'project-' + 'b'.repeat(64));
   assert.equal(jobs[0].proposal.deliverable, '確認用の記事案');
+  assert.deepEqual(jobs[0].proposal.scheme, scheme);
   assert.equal(jobs[0].proposalBrief, undefined);
+  assert.equal(jobs[0].runtimePurpose, 'eve-combination-advice');
+  const stored = JSON.parse(w.f.sql.prepare('SELECT payload FROM work_jobs WHERE id=?').get(start.jobId).payload);
+  assert.deepEqual(stored.noahRemote.used, []);
+  assert.equal(stored.noahRemote.toolCalls, 0);
+  assert.equal(stored.noahRemote.modelCalls, 1);
+  const generic = await w.api(new Request(`${origin}/api/noah/cloud-agents?projectId=${project}`));
+  assert.deepEqual((await generic.json()).jobs, []);
   assert.equal((await w.request({ ...start, confirm: true })).status, 200);
   assert.equal(w.starts.length, 1);
   w.owner('unrelated');
   assert.deepEqual((await (await status()).json()).jobs, []);
 });
+void test('a pending consultation created before direct advice retries its original Hermes route and brief', async t => {
+  const w = await world(t, true);
+  const start = { action: 'start', jobId: id(910), connectionId: id(911), purpose: 'eve-engineering', proposalLanguage: 'ja', prompt: '会議を整理する' };
+  assert.equal((await w.request(start)).status, 202);
+  const sql = w.f.sql, record = JSON.parse(sql.prepare('SELECT payload FROM work_jobs WHERE id=?').get(start.jobId).payload);
+  delete record.noahRemote.cloud.runtimePurpose;
+  record.noahRemote.cloud.proposalBrief = 'earlier authenticated Hermes instructions: ';
+  sql.prepare('UPDATE work_jobs SET payload=? WHERE id=?').run(JSON.stringify(record), start.jobId);
+  delete w.records.get(start.jobId).purpose;
+  const response = await w.request(start);
+  assert.equal(response.status, 202);
+  assert.equal(w.starts.at(-1).purpose, undefined);
+  assert.equal(w.starts.at(-1).prompt, record.noahRemote.cloud.proposalBrief + start.prompt);
+  assert.equal((await response.json()).job.runtimePurpose, undefined);
+});
+
+void test('one direct model reply needs a grounded complete proposal and zero tool operations before the Work is returned', async t => {
+  const w = await world(t, true);
+  const prompt = 'A design', purpose = 'eve-engineering', proposalLanguage = 'en';
+  assert.equal((await w.request({ action:'start', purpose:'eve-combination-advice', jobId:id(810), connectionId:id(811), prompt })).status, 400);
+  assert.deepEqual(w.starts, []);
+  const scheme = { kind:'user_goal', recipient:'Team lead', outcome:'Report', acceptance:'The team lead approves the report', evidence:'Review record' };
+  const valid = { calls: 1, operationCount: 0, exitCode: 0, files: [], text: JSON.stringify({ input: 'Notes', scheme, steps: [{agent:'memory',role:'Group notes',output:'Groups'}, {agent:null,role:'Draft',output:'Report'}] }) };
+  for (const [index, patch] of [{ operationCount: 1 }, { calls: 2 }, { files: null }, { files: [{}] }, { text: null }, { text: 'done' }, { text: 'Report '+valid.text }, { text: JSON.stringify({ ...JSON.parse(valid.text), scheme: undefined }) }, { text: valid.text.replace('"memory"', '"unknown"') }].entries()) {
+    const jobId = id(820+index);
+    assert.equal((await w.request({ action:'start', purpose, proposalLanguage, jobId, connectionId:id(811), prompt })).status, 202);
+    const job = { ...w.records.get(jobId), state:'returned', calls:1, result:{ ...valid, ...patch }, usage:{inputTokens:100,outputTokens:25,neurons:2} };
+    assert.equal((await w.deliver(job)).status, 200);
+    const saved = JSON.parse(w.f.sql.prepare('SELECT payload FROM work_jobs WHERE id=?').get(jobId).payload);
+    assert.equal(saved.noahRemote.state, 'failed');
+    assert.equal(saved.noahRemote.result, undefined);
+    assert.equal(saved.noahRemote.cloud.proposal, undefined);
+    assert.equal(saved.noahRemote.cloud.usage.neurons, 2);
+  }
+});
+void test('a proposed conversion can end at an approved application without claiming payment or acceptance', () => {
+  const scheme = { kind: 'conversion', recipient: '紹介を希望した担当者', outcome: '相談申込', acceptance: '提携先が申込を承認', evidence: '提携先の承認レコード' };
+  const model = { input: '相談の希望', steps: [
+    { agent: null, role: '希望を整理', output: '候補一覧' },
+    { agent: null, role: '候補を紹介', output: '相談申込' },
+  ], scheme: { ...scheme, accepted: true } };
+  const proposal = eveAdviceProposal(JSON.stringify(model), {});
+  assert.deepEqual(proposal.scheme, scheme);
+  assert.equal(proposal.accepted, undefined);
+  assert.equal(eveAdviceProposal(JSON.stringify({ ...model, scheme: { ...scheme, evidence: '' } }), {}), null);
+});
+
 void test('per-job memory can supply the model design, while unlisted or repeated agents never become store recommendations', () => {
   const targets = { memory: 'project-' + 'b'.repeat(64) };
   const shape = { input: 'Notes', steps: [
@@ -176,7 +237,9 @@ void test('per-job memory can supply the model design, while unlisted or repeate
     { agent: null, role: 'Draft action items', output: 'Tasks' },
   ] };
   const saved = JSON.stringify(shape), note = { name: 'MEMORY.md', base64: Buffer.from('# Memory\n' + saved).toString('base64') };
-  assert.equal(eveReturnedProposal('I saved the plan.', [note], targets).deliverable, 'Tasks');
+  const legacy = eveReturnedProposal('I saved the plan.', [note], targets);
+  assert.equal(legacy.deliverable, 'Tasks');
+  assert.equal(legacy.scheme, undefined);
   assert.equal(eveReturnedProposal('I saved the plan.', [], targets), null);
   assert.equal(eveReturnedProposal(saved, [], {}), null);
   for (const agent of ['unlisted', '__proto__', 'memory']) {

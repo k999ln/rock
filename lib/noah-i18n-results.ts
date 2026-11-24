@@ -193,6 +193,7 @@ export const NOAH_RESULT_MESSAGES: Record<
   '実行定義（SHA-256）': ['Execution definition (SHA-256)', '执行定义（SHA-256）', '실행 정의(SHA-256)', 'Definición de ejecución (SHA-256)', 'تعريف التنفيذ (SHA-256)'],
   '計測方法': ['Measurement method', '计量方式', '측정 방식', 'Método de medición', 'طريقة القياس'],
   'モデルの報告値。使用量の報告がない呼び出しは上限値で記録します。': ['Usage reported by the model. Calls with no reported usage are counted at their limit.', '按模型报告的用量计量。如果某次调用没有用量报告，按其上限记录。', '모델이 보고한 사용량입니다. 사용량 보고가 없는 호출은 상한값으로 기록합니다.', 'Se usa lo que informa el modelo. Las llamadas sin datos de uso se contabilizan por su límite.', 'يُستخدم ما يبلّغ به النموذج. عند غياب تقرير الاستخدام، يُسجَّل الحد الأعلى للاستدعاء.'],
+  "使用モデル": ["Model used", "使用的模型", "사용한 모델", "Modelo utilizado", "النموذج المستخدم"],
   "Agentの版": ["Agent version", "Agent 版本", "Agent 버전", "Versión del agente", "إصدار الوكيل"],
   "仕事番号": ["Job ID", "工作编号", "작업 번호", "ID del trabajo", "رقم المهمة"],
   "依頼番号": ["Request ID", "请求编号", "요청 번호", "ID de la solicitud", "رقم الطلب"],

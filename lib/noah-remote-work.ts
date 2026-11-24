@@ -41,7 +41,7 @@ export type NoahRemoteExecution = {
   note?: string;
   error?: string;
   /** Managed-cloud results keep the existing unverified Work/owner boundary. */
-  cloud?: { projectId: string; profile: NoahCloudProfile; version: string; purpose?: 'eve-engineering'; proposalBrief?: string; proposalTargets?: EveProposalTargets; proposal?: EveProposal; freeTier?: true; reportedModelCalls?: number; files?: NoahCloudFile[]; usage?: NoahCloudUsage };
+  cloud?: { projectId: string; profile: NoahCloudProfile; version: string; purpose?: 'eve-engineering'; runtimePurpose?: 'eve-combination-advice'; runtimeModel?: string; proposalBrief?: string; proposalTargets?: EveProposalTargets; proposal?: EveProposal; freeTier?: true; reportedModelCalls?: number; files?: NoahCloudFile[]; usage?: NoahCloudUsage };
 };
 
 const iso = (at: number) => new Date(at).toISOString();
