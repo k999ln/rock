@@ -24,7 +24,7 @@
 | 作る（コード） | Gemini CLI（google-gemini/gemini-cli） | 107,389（10-16） | Apache-2.0 | ターミナルでコードを書く Agent | ターミナル型 |
 | 作る（コード） | OpenHands（OpenHands/OpenHands） | 91,004（10-16） | MIT | 作業の繰り返しと画面を持つ開発の Agent。決まった時刻の自動化も | SDK は対応済み |
 | 作る（コード） | Cline（cline/cline） | 70,370（10-16） | Apache-2.0 | 編集器・CLI・SDK の Agent。既定では変更と命令に承認が要る | SDK は対応済み |
-| 作る（コード） | Open Interpreter（openinterpreter/openinterpreter） | 68,500（10-02） | Apache-2.0 | 手元で命令とコードを動かす Agent | 無し |
+| 作る（コード） | Open Interpreter（openinterpreter/openinterpreter） | 68,500（10-02） | Apache-2.0 | Codex を元にした Rust の Agent。ほかの Agent の動かし方をまねる命令がある（Octomind の説明） | 無し |
 | 作る（コード） | Goose（aaif-goose/goose） | 55,324（10-16） | Apache-2.0 | 手元の汎用 Agent。70 以上の MCP の拡張 | 対応済み |
 | 作る（コード） | Aider（Aider-AI/aider） | 49,300（10-02） | Apache-2.0 | 変更のたびに git に残す、ペアプログラミングの Agent | 対応済み |
 | 画面を操作 | browser-use（browser-use/browser-use） | 117,000（10-02） | MIT | Agent がブラウザを動かすための Python の土台 | Space 版だけ（止まっていた） |
