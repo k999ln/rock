@@ -144,7 +144,10 @@ void test('Eve sends a bounded combination brief with the confirmed goal and sav
   assert.deepEqual(w.starts, []);
   assert.equal((await w.request({ ...start, confirm: true })).status, 202);
   assert.match(w.starts[0].prompt, /A catalog design example passes "記事の指示"/u);
-  assert.match(w.starts[0].prompt, /memory:/u);
+  assert.match(w.starts[0].prompt, /^First call the actual memory function with action="add", target="memory", content=/u);
+  assert.match(w.starts[0].prompt, /memory: organize supplied notes/u);
+  assert.doesNotMatch(w.starts[0].prompt, /filesystem:/u, 'absent store profiles are not offered');
+  assert.match(w.starts[0].prompt, /After memory succeeds, reply only with a brief natural-language receipt/u);
   assert.ok(w.starts[0].prompt.endsWith('\n' + prompt));
   assert.equal((await w.request({ ...start, confirm: true, proposalLanguage: 'en' })).status, 409);
   const generated = JSON.stringify({ input: '会議のメモ', steps: [

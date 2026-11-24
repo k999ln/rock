@@ -32,10 +32,36 @@ void test('boss requests concise JSON with low reasoning without increasing its 
   const w=world({model:async(_,value)=>{input=value;return {choices:[]};},execute:async(_,bridge)=>{await bridge.complete(JSON.stringify({messages:[{role:'system',content:'Official instruction'},{role:'user',content:'A job description'}],reasoning_effort:'high',max_tokens:9999}));return JSON.stringify(valid());}});
   await w.job.execute();assert.equal(input.reasoning_effort,'low');assert.deepEqual(input.response_format,{type:'json_object'});assert.equal(input.max_tokens,1024);assert.equal(w.calls(),1);assert.ok(input.messages[0].content.startsWith('Official instruction'));assert.equal(input.messages[1].content,'A job description');
 });
-void test('Hermes keeps its official tool schema and fixed model budget with low reasoning',async()=>{
-  const inputs=[],tools=[{type:'function',function:{name:'todo',parameters:{type:'object'}}}];
-  const w=world({profile:'hermes',model:async(_,value)=>{inputs.push(value);return {choices:[]};},execute:async(_,bridge)=>{for(let n=0;n<2;n++)await bridge.complete(JSON.stringify({messages:[{role:'user',content:'Plan'}],tools}));return JSON.stringify({...valid(),operations:[{...valid().operations[0],name:'todo'}]});}});
-  await w.job.execute();for(const input of inputs){assert.equal(input.reasoning_effort,'low');assert.equal(input.response_format,undefined);assert.equal(input.max_tokens,1024);assert.deepEqual(input.tools,tools);}assert.equal(w.calls(),2);assert.equal(inputs[0].tool_choice,'required');assert.equal(inputs[1].tool_choice,undefined);
+void test('Hermes requires an official tool until a matched successful result, then allows a normal final answer', async () => {
+  const inputs = [];
+  const tools = ['todo', 'memory'].map(name => ({ type: 'function', function: { name, parameters: { type: 'object' } } }));
+  const messages = [{ role: 'user', content: 'Plan' }];
+  const requestTool = id => ({ role: 'assistant', content: null, tool_calls: [{ id, type: 'function', function: { name: 'memory', arguments: '{}' } }] });
+  const result = (id, output) => ({ role: 'tool', tool_call_id: id, content: JSON.stringify(output) });
+  const w = world({
+    profile: 'hermes',
+    model: async (_, input) => { inputs.push(input); return { choices: [] }; },
+    execute: async (_, bridge) => {
+      const turn = () => bridge.complete(JSON.stringify({ messages, tools }));
+      await turn();
+      messages.push({ role: 'assistant', content: 'I can make a plan.' }, { role: 'user', content: 'Use the memory tool.' });
+      await turn();
+      messages.push(requestTool('first'), result('first', { success: false }), result('unmatched', { success: true }));
+      await turn();
+      messages.push(requestTool('second'), result('second', { success: true }));
+      await turn();
+      return JSON.stringify({ ...valid(), operations: [{ ...valid().operations[0], name: 'memory' }] });
+    },
+  });
+  await w.job.execute();
+  assert.equal(w.data.get('job').state, 'returned');
+  assert.deepEqual(inputs.map(input => input.tool_choice), ['required', 'required', 'required', undefined]);
+  for (const input of inputs) {
+    assert.equal(input.reasoning_effort, 'low');
+    assert.equal(input.response_format, undefined);
+    assert.equal(input.max_tokens, 1024);
+    assert.deepEqual(input.tools, tools);
+  }
 });
 void test('Hermes input admission counts the forced tool selection before spending a model call',async()=>{
   const payload={messages:[{role:'user',content:'x'}],tools:[{type:'function',function:{name:'todo',parameters:{type:'object'}}}]};

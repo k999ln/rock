@@ -19,21 +19,30 @@ export function eveProposalTargets(directory: readonly DirectoryEntry[]): EvePro
   return targets;
 }
 
+const planningCapabilities: Record<NoahCloudProfile, string> = {
+  memory: 'organize supplied notes and relationships',
+  thinking: 'plan the steps for a task',
+  filesystem: 'prepare files for this job',
+  time: 'read and convert times',
+  boss: 'prepare interview questions from a supplied job description',
+  hermes: 'plan work and organize notes',
+};
+
 /** Immutable task context for an owned Work. Never include another Work or account data here. */
 export function eveProposalBrief(question: string, language: NoahLocale, targets: EveProposalTargets): string {
-  const options = (Object.keys(targets) as NoahCloudProfile[]).map(key => `${key}: ${NOAH_CLOUD_PROFILES[key].description}`);
+  const options = (Object.keys(targets) as NoahCloudProfile[]).map(key => `${key}: ${planningCapabilities[key]}`);
   const verified = Object.values(EVE_VERIFIED).some(refs => refs?.length);
   const example = /ブログ|記事|\b(?:blog|article)\b/iu.test(question) && eveCombinationFile('affiliate:ai-tools:blog');
   const article = example && example.steps.find(s => s.id === 'article');
   const from = article && article.flow?.dataFrom?.[0];
   return [
-    'Eve: design a proposed workflow tailored to the author’s goal. Use 2–4 distinct agent roles in order. Each step consumes the preceding output. The last output is the deliverable.',
-    'Choose different listed profiles where their abilities fit the goal. Use JSON null for a new role if no listed profile fits. Do not claim that steps ran, are connected, or earned money.',
-    verified ? 'Catalogued profiles are candidates; this combination has not been tested.' : 'The Eve capability ledger has no verified matches yet. This is an untested design.',
-    ...options,
-    ...(from ? [`A catalog design example passes "${from.material}" from ${from.from} to ${article.id}. Choose a handoff suited to this request.`] : []),
-    `Write user-visible values in ${language} or the language the author explicitly requests. Keep each value under 120 characters. Use the Hermes memory tool once to save this JSON, and repeat just the same JSON in the final response:`,
-    '{"input":"starting material","steps":[{"agent":"profile key or null","role":"specific role","output":"concrete intermediate artifact"},{"agent":null,"role":"another role","output":"finished deliverable"}]}',
+    'First call the actual memory function with action="add", target="memory", content=the serialized design JSON. Write it into this job’s memory now.',
+    'Design JSON: {"input":"starting material","steps":[{"agent":"listed key or JSON null","role":"specific job","output":"artifact"}]}. Fill it for the goal below.',
+    'Choose 2–4 different agent roles in order. Each receives the preceding output; the last delivers the requested outcome. Use a listed key only where its ability fits, otherwise null.',
+    'Candidate keys: ' + options.join('; '),
+    verified ? 'The proposed combination is untested.' : 'Eve has no verified capability matches. These are suggestions.',
+    ...(from ? [`A catalog design example passes "${from.material}" from ${from.from} to ${article.id}. Adapt to the actual goal.`] : []),
+    `Write concise values in ${language}, unless the author asks for another language. After memory succeeds, reply only with a brief natural-language receipt. The proposed agents have not run.`,
     'Author request:',
   ].join('\n') + '\n';
 }
