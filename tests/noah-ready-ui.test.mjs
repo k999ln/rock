@@ -562,13 +562,23 @@ void test('the entry on the explore screen appears only for people who may see t
   const retried = broken.ui.mount(ENTRY);
   await retried.flush();
   assert.deepEqual([links(retried).length, probes(broken.ui)], [1, 1]);
-  // 一覧や詳細では現在の本番メニューを維持する。
-  const shell = open.ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
-  await shell.flush();
-  assert.deepEqual(shell.find('nav').slice(0, 1).flatMap((nav) => shell.nodes(nav).filter((node) => node.type === 'a').map((node) => node.props['aria-label'])), ['ストア', 'マイAgent']);
-  const tabLinks = shell.nodes(shell.find('nav')[0]).filter(node => node.type === 'a');
-  assert.deepEqual(tabLinks.map(node => node.props.href), ['/noah', '/noah/my']);
-  assert.equal(tabLinks[0].props['aria-current'], 'page');
+});
+
+void test('the public store and detail pages keep work and saved results in the menu without a bottom tab bar', () => {
+  for (const pathname of ['/noah', '/noah/explore', '/noah/discover/agent', '/noah/ready', '/noah/my', '/noah/saved', '/noah/activity']) {
+    const ui = screen({ modules: { ...MODULES, 'next/navigation': { usePathname: () => pathname } } });
+    const shell = ui.mount('components/noah-shell.tsx', { mode: 'public', children: null });
+    assert.ok(!shell.nodes().some(node => node.props.className === 'bottomNav'));
+    assert.ok(!shell.find('a').some(link => link.props.href === '/noah/my' || shell.text(link).includes('シアター')));
+    const trigger = shell.find('button').find(button => button.props['aria-label'] === 'メニュー');
+    const panel = shell.find('div').find(node => node.props.id === trigger.props.popoverTarget && node.props.popover === 'auto');
+    assert.ok(panel);
+    const links = shell.nodes(panel).filter(node => node.type === 'a').map(link => link.props.href);
+    for (const href of ['/noah', '/noah/my?view=agents', '/noah/activity', '/noah/saved?tab=results', '/noah/profile']) assert.ok(links.includes(href), pathname + ' → ' + href);
+    const [rail] = shell.find('aside');
+    if (rail) assert.ok(shell.nodes(rail).some(node => node.type === 'a' && node.props.href === '/noah/saved?tab=results'));
+    assert.equal(ui.calls.length, 0);
+  }
 });
 
 // ---------------------------------------------------------------------------

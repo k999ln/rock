@@ -30,7 +30,8 @@ const jsx = (type, props, key) => ({ type, props: props ?? {}, key: key ?? null 
  */
 export function screen(options = {}) {
   const calls = [], visits = [], storage = new Map(Object.entries(options.storage ?? {}));
-  let clock = options.now ?? Date.UTC(2026, 10, 21, 3), timerId = 0, uuid = 0, inflight = 0;
+  const startTime = options.now ?? Date.UTC(2026, 10, 21, 3);
+  let clock = startTime, timerId = 0, uuid = 0, inflight = 0;
   const timers = new Map();
   // 描いている途中の部品・描いた後に動かす effect・状態が変わった印。画面（mount）ごとの物は、mount の中に持つ。
   let current = null, effects = [], dirty = false, mounts = 0;
@@ -68,12 +69,13 @@ export function screen(options = {}) {
   };
 
   // The harness has no paint phase. Run layout effects in the existing effect queue.
-  hooks.useLayoutEffect = hooks.useEffect;
+  hooks.useLayoutEffect = (run, deps) => hooks.useEffect(run, deps);
 
   const context = createContext({
     FormData: class {constructor(form){this.form=form;}get(key){return this.form.values?.[key]??null;}},
     console, queueMicrotask, File, Blob, Uint8Array, atob, navigator: options.navigator ?? {}, URL, URLSearchParams, JSON, Math, Array, Object, Number, String, Boolean, Error, Promise, Symbol, Map, Set, RegExp, Reflect, Proxy, Intl, AbortController, AbortSignal,
     Date: class extends Date { constructor(...args) { if (args.length) super(...args); else super(clock); } static now() { return clock; } },
+    performance: { now: () => clock - startTime },
     crypto: { randomUUID: () => `00000000-0000-4000-8000-${String(++uuid).padStart(12, '0')}` },
     fetch: async (url, init = {}) => {
       const request = { url: String(url), method: init.method ?? 'GET', headers: { ...init.headers }, body: init.body ? JSON.parse(init.body) : undefined };
@@ -103,6 +105,8 @@ export function screen(options = {}) {
     innerWidth: options.width ?? 390,
     setTimeout: context.setTimeout, clearTimeout: context.clearTimeout,
   };
+  if (options.matchMedia) context.window.matchMedia = options.matchMedia;
+  if (options.IntersectionObserver) context.IntersectionObserver = options.IntersectionObserver;
 
   const loaded = new Map();
   function load(file) {
@@ -175,6 +179,11 @@ export function screen(options = {}) {
         const output = node.type(node.props);
         current = before;
         return expand(output, id);
+      }
+      // Opt in to host refs only when the test models an element (focus, bounds, or media).
+      const ref = node.props.ref;
+      if (options.hostElement && ref && typeof ref === 'object' && ref.current == null) {
+        ref.current = options.hostElement(node.type, node.props);
       }
       return { ...node, props: { ...node.props, children: expand(node.props.children, `${path}/${typeof node.type === 'symbol' ? 'fragment' : node.type}`) } };
     };

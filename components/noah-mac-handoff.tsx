@@ -45,7 +45,7 @@ export default function NoahMacHandoff({
   const agent = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$/.test(initialAgent)
     ? initialAgent
     : '';
-  const launchHref = agent ? `/noah/agents/${encodeURIComponent(agent)}` : '/noah/my';
+  const launchHref = agent ? `/noah/agents/${encodeURIComponent(agent)}` : '/noah/my?view=agents';
   return (
     <section id="mac" className={styles.page} aria-labelledby="noah-mac-title">
       <header>

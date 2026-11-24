@@ -13,12 +13,13 @@ const js = 'export const fixture = true;\n';
 
 async function assetFixture(staged) {
   const directory = mkdtempSync(join(tmpdir(), 'rock-assets-security-'));
-  for (const path of ['scripts', 'services/sky-web', 'dist/server', 'dist/client/_next/static']) mkdirSync(join(directory, path), { recursive: true });
+  for (const path of ['scripts', 'services/sky-web', 'dist/server', 'dist/client/_next/static', 'dist/client/noah/theater']) mkdirSync(join(directory, path), { recursive: true });
   const server = join(directory, 'dist/server');
   writeFileSync(join(directory, 'scripts/stage-sky-domain-router.mjs'), stager);
   writeFileSync(join(directory, 'services/sky-web/domain-router.mjs'), source);
   writeFileSync(join(directory, 'services/sky-web/noah-page-routes.mjs'), readFileSync(new URL('../services/sky-web/noah-page-routes.mjs', import.meta.url)));
   writeFileSync(join(directory, 'dist/client/_next/static/fixture.js'), js);
+  writeFileSync(join(directory, 'dist/client/noah/theater/training.mp4'), Buffer.from([10, 20, 30, 40, 50, 60]));
   writeFileSync(join(directory, 'dist/client/sw.js'), '/* asset-first stale service worker */');
   // Intentionally no _headers file: responses must actually cross the wrapper.
   assert.throws(() => readFileSync(join(directory, 'dist/client/_headers')), /ENOENT/);
@@ -100,6 +101,11 @@ void test('staged Worker-first delivery protects assets, redirects, canonical SW
 
 void test('canonical assets retain headers even when hosting forces asset-first routing', async t => {
   const f = await assetFixture('published'); t.after(() => f.close());
+  const clip = await f.worker.dispatchFetch('https://avoado.si/noah/theater/training.mp4', {headers:{range:'bytes=2-4'}});
+  assert.equal(clip.status, 206);
+  assert.equal(clip.headers.get('content-type'), 'video/mp4');
+  assert.equal(clip.headers.get('content-range'), 'bytes 2-4/6');
+  assert.deepEqual([...new Uint8Array(await clip.arrayBuffer())], [30, 40, 50]);
   for (const path of ['/_next/static/fixture.js', '/sw.js']) {
     const response = await f.worker.dispatchFetch('https://avoado.si' + path);
     assert.equal(response.status, 200);

@@ -314,12 +314,12 @@ void test('the work list across agents (the activity and data screens): newest f
   assert.deepEqual(rowsOf(data).map((row) => data.text(row).startsWith('結果を受け取りました情報を検索提供者の説明')), [true]);
   assert.deepEqual(back(data), [detail(1)]);
 
-  await t.test('saved results in My Agent and the original saved entry show the same private remote Work', async () => {
+  await t.test('saved results in the theater and the original saved entry show the same private remote Work', async () => {
     const unused = { default: () => null };
     const modules = {
       ...MODULES, '@/lib/noah-my-routes': myRoutes, '@/lib/noah-page-routes': { noahPageTab },
       './noah-library': unused, './noah-boards': {}, './sky-agent-library': unused, './sky-output-center': unused,
-      './noah-result-data': unused,
+      './noah-result-data': unused, './noah-theater': unused,
     };
     const before = calls(one).length;
     for (const [path, legacy] of [['/noah/my?view=saved&tab=results', undefined], ['/noah/saved?tab=results', 'saved']]) {

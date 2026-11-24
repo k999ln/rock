@@ -27,7 +27,7 @@ export function noahLegacyHref(hash: string, mode: NoahSurfaceMode, base: string
 /** These are navigation destinations, never authentication or execution grants. */
 export function noahActionHref(mode: NoahSurfaceMode, base: string, target: string, agentId = '') {
   if (target === 'register') return '/noah/agents/new';
-  if (target === 'library') return `${base}/saved?tab=agents`;
+  if (target === 'library') return `${base}/my?view=agents`;
   if (target === 'work') return `${base}/activity`;
   if (target === 'agent' && /^[a-zA-Z0-9_-]{1,160}$/.test(agentId)) return `${base}/agents/${agentId}`;
   return `${base}/explore`;
