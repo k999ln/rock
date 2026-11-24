@@ -45,6 +45,8 @@ export type { NoahStep, NoahStepKind } from './noah-steps.ts';
 /** 能力。keywords は、Noah のエージェントの名前・説明に当てる語（小文字・決まった照合だけ）。 */
 export const NOAH_CAPABILITIES = {
   'research.market': { label: '需要と競合を調べる', keywords: ['search', 'research', 'trend', 'keyword', 'serp', 'seo', '検索', '調査'] },
+  // 2026-11-24（task 130）: 規約と登録の要件を確かめる工程を、需要の調べ（research.market）から分けた。規約は提供元の実際の文を読める部品だけがこなせる。
+  'research.terms': { label: '規約と登録の要件を確かめる', keywords: ['terms', 'policy', 'guideline', 'compliance', '規約', '利用規約', 'ガイドライン'] },
   'research.offer': { label: '案件・商品を比べる', keywords: ['affiliate', 'offer', 'product', 'price', 'compare', 'アフィリエイト', '比較'] },
   'content.script': { label: '台本・文章を書く', keywords: ['write', 'writing', 'copy', 'script', 'text', 'llm', '文章', '台本'] },
   'content.article': { label: '記事を書く', keywords: ['article', 'blog', 'seo', 'write', '記事'] },
@@ -350,7 +352,7 @@ const signUp = (account: string): NoahBlueprintStep[] => {
   const a = ACCOUNT.get(account);
   if (!a) throw Error(`unknown account ${account}`);
   return [
-    step(`rules:${account}`, `${a.label}の規約と登録の要件を確かめる`, 'auto', { capability: 'research.market', account, after: [], flow: nodeFlow(['提供元の規約・登録要件'], ['登録要件の確認結果']) }),
+    step(`rules:${account}`, `${a.label}の規約と登録の要件を確かめる`, 'auto', { capability: 'research.terms', account, after: [], flow: nodeFlow(['提供元の規約・登録要件'], ['登録要件の確認結果']) }),
     signUpStep(account, [`rules:${account}`]),
   ];
 };
@@ -464,7 +466,7 @@ export function noahBlueprints(): NoahBlueprint[] {
       push({ id: `oshi:proxy-overseas:${fan}:${channelId}`, model: 'oshi', label: `${fanLabel}グッズの海外向け購入代行 × ${channel.label}`, finance: false, hold: '後回し（本人 2026-11-22「代行は後回し」）', steps: [
         ...signUp('stripe'), ...signUp('official-shops'), ...signUp('japan-post'), ...signUp(channel.account),
         step('license', '古物商の許可が要るかを確かめる', 'review', { reason: '代わりに買って渡す形でも、新品の買い取り・売り渡しは古物に当たる場合がある。所轄の警察署・行政書士に確かめる（本人）', after: [], flow: nodeFlow(['事業・取扱いの前提', '規約・法令の確認対象'], ['許可要否の判断'], { gate: true }) }),
-        step('shop-rules', '公式通販の規約（代行・転売・海外転送・数量制限）を確かめる', 'auto', { capability: 'research.market', after: [], flow: nodeFlow(['公式通販規約・法令情報'], ['公式通販の購入条件'], { gate: true }) }),
+        step('shop-rules', '公式通販の規約（代行・転売・海外転送・数量制限）を確かめる', 'auto', { capability: 'research.terms', after: [], flow: nodeFlow(['公式通販規約・法令情報'], ['公式通販の購入条件'], { gate: true }) }),
         step('page', '代行の頁（手数料・送料・届く日数・扱わない物）を作る', 'auto', { capability: 'site.build', after: ['shop-rules', 'license'], waitNote: NOAH_STEP_WAITS.proxyPage, flow: nodeFlow(['公式通販の購入条件', '許可要否の判断'], ['代行の頁'], { dataFrom: [{ from: 'shop-rules', material: '公式通販の購入条件' }, { from: 'license', material: '許可要否の判断' }] }) }),
         step('legal-notice', '特定商取引法の表示（名義・連絡先）を確かめる', 'review', { reason: '名義はノエル個人。表示する住所・電話の出し方は本人が決める', after: ['page'], flow: nodeFlow(['代行の頁', '表示要件'], ['適法表示の承認'], { dataFrom: [{ from: 'page', material: '代行の頁' }], gate: true }) }),
         step('intake', '依頼・見積もり・前払いを受ける', 'auto', { capability: 'proxy.intake', after: ['page', 'legal-notice', 'signup:stripe'], flow: nodeFlow(['代行の頁', '適法表示の承認', '決済アカウント'], ['依頼・見積もり・前払い情報'], { dataFrom: [{ from: 'page', material: '代行の頁' }, { from: 'legal-notice', material: '適法表示の承認' }] }) }),

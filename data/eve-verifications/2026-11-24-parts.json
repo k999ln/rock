@@ -1,0 +1,461 @@
+{
+  "schema": "eve-verifications/1",
+  "kind": "eve-parts",
+  "note": "Eve が作った部品を、Noah の候補と同じ見本の仕事と Jev の判定で 1 回ずつ確かめた記録。部品の出力は Eve の物なので見本として残す。",
+  "runs": [
+    {
+      "at": "2026-11-24T10:31:02.876Z",
+      "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+      "parts": [
+        {
+          "capability": "research.market",
+          "ref": "eve-part:keyword-research",
+          "version": "0b0b3f08ab0418b3364ce8953406163d5dfb3ddc8a14478c777031eed049bfd0",
+          "files": [
+            "lib/eve-part-research.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 21365,
+          "verification": {
+            "capability": "research.market",
+            "ref": "eve-part:keyword-research",
+            "version": "0b0b3f08ab0418b3364ce8953406163d5dfb3ddc8a14478c777031eed049bfd0",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+            "outputHash": "3f8bfb9810bf87ada13705c52b5ffa3966448dc1de1be053a488b47cbad99d99",
+            "at": "2026-11-24T10:31:02.878Z"
+          },
+          "sample": {
+            "topic": "法人向け AI 研修",
+            "keywords": [
+              {
+                "word": "法人向け AI 教育",
+                "hits": 1557,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91+AI+%E6%95%99%E8%82%B2&fulltext=1"
+              },
+              {
+                "word": "AI 研修時間",
+                "hits": 1059,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E6%99%82%E9%96%93&fulltext=1"
+              },
+              {
+                "word": "AI 研修内容",
+                "hits": 902,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E5%86%85%E5%AE%B9&fulltext=1"
+              },
+              {
+                "word": "AI 研修参加者",
+                "hits": 794,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E5%8F%82%E5%8A%A0%E8%80%85&fulltext=1"
+              },
+              {
+                "word": "AI 研修プログラム",
+                "hits": 439,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0&fulltext=1"
+              },
+              {
+                "word": "AI 研修講座",
+                "hits": 344,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E8%AC%9B%E5%BA%A7&fulltext=1"
+              },
+              {
+                "word": "AI 研修費用",
+                "hits": 211,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E8%B2%BB%E7%94%A8&fulltext=1"
+              },
+              {
+                "word": "AI 研修教材",
+                "hits": 102,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E6%95%99%E6%9D%90&fulltext=1"
+              },
+              {
+                "word": "AI 研修メリット",
+                "hits": 81,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88&fulltext=1"
+              }
+            ],
+            "basis": "LLM の候補を、日本語版ウィキペディアの全文検索の件数で裏付けた（件数は話題の広さの目安。検索の回数ではない）。",
+            "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+            "checkedAt": "2026-11-24T10:31:24.241Z",
+            "dropped": []
+          }
+        },
+        {
+          "capability": "tracking.results",
+          "ref": "eve-part:results-csv",
+          "version": "32609f848c9f3e5ca5c8c2f7e6ab038e585c357c96335e9a2676765c06787124",
+          "files": [
+            "lib/eve-part-results.ts"
+          ],
+          "model": null,
+          "ms": 1,
+          "verification": {
+            "capability": "tracking.results",
+            "ref": "eve-part:results-csv",
+            "version": "32609f848c9f3e5ca5c8c2f7e6ab038e585c357c96335e9a2676765c06787124",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "1a839a6198cfbbbb827c2e922ad269bcab026791e60caac696ee7c876621423a",
+            "outputHash": "2f2a996bfb7273038f17275dae6985c21b39308ddc5dc0bca4babadb9c5c52cc",
+            "at": "2026-11-24T10:31:24.242Z"
+          },
+          "sample": {
+            "format": "daily",
+            "clicks": 200,
+            "occurred": 4,
+            "approved": 1,
+            "pending": 3,
+            "rejected": 0,
+            "approvedYen": 8000,
+            "pendingYen": 0,
+            "currency": "JPY",
+            "rows": 2,
+            "from": "2026-11-20",
+            "to": "2026-11-21"
+          }
+        },
+        {
+          "capability": "content.script",
+          "ref": "eve-part:script-writer",
+          "version": "1020192c5e6c2fea1cb12d97141d69a9a163d49a2931b8a99e602ad002b5d34e",
+          "files": [
+            "lib/eve-part-writer.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 15842,
+          "verification": {
+            "capability": "content.script",
+            "ref": "eve-part:script-writer",
+            "version": "1020192c5e6c2fea1cb12d97141d69a9a163d49a2931b8a99e602ad002b5d34e",
+            "ok": false,
+            "reason": "呼び出しが失敗しました: 長さが 120〜600 文字の外です（68 文字）。",
+            "inputHash": "de91bc0562c4138a37e3c862718c40b5d22e2df08b13147d2d01f53e0a8c6741",
+            "outputHash": null,
+            "at": "2026-11-24T10:31:24.243Z"
+          },
+          "sample": null
+        }
+      ]
+    },
+    {
+      "at": "2026-11-24T10:36:45.743Z",
+      "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+      "parts": [
+        {
+          "capability": "content.script",
+          "ref": "eve-part:script-writer",
+          "version": "d7a59ace9caf17a4907d8f1d46da5a88d3bd6aac56586843e6370cd113cced76",
+          "files": [
+            "lib/eve-part-writer.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 31258,
+          "verification": {
+            "capability": "content.script",
+            "ref": "eve-part:script-writer",
+            "version": "d7a59ace9caf17a4907d8f1d46da5a88d3bd6aac56586843e6370cd113cced76",
+            "ok": true,
+            "reason": "長さと語が合っています。",
+            "inputHash": "de91bc0562c4138a37e3c862718c40b5d22e2df08b13147d2d01f53e0a8c6741",
+            "outputHash": "707a5ac075900beb35c2b81fcf10a8f4a19abdbb7034ecbacbaacb6c6517b093",
+            "at": "2026-11-24T10:36:45.745Z"
+          },
+          "sample": "PR\n法人向け AI 研修を迷っていませんか。競合も気になるかもしれません。\n比べる時は、機能の多寡と価格帯を見てください。ユーザーのフィードバックも大切です。\n申し込む前に、公式の案内で内容を確認しましょう。また、公式のQ&Aも見ておくと安心です。\n法人向け AI 研修を比べて選んでください。"
+        }
+      ]
+    },
+    {
+      "at": "2026-11-24T10:40:09.661Z",
+      "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+      "parts": [
+        {
+          "capability": "research.market",
+          "ref": "eve-part:keyword-research",
+          "version": "244d848a090642a14a7662eaa8a86e2e051bc7875c40bda9ff68da86b83ae99a",
+          "files": [
+            "lib/eve-part-research.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 21139,
+          "verification": {
+            "capability": "research.market",
+            "ref": "eve-part:keyword-research",
+            "version": "244d848a090642a14a7662eaa8a86e2e051bc7875c40bda9ff68da86b83ae99a",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "f25dc4c6eeacb44c6a3d13d39e91f7c8dc0f66f5c179962ca83c5ace0f90b4a8",
+            "outputHash": "0a8b9b8abcadd8ab2a907effcb8406d67a6ed51a255a8817a032705a6e788e44",
+            "at": "2026-11-24T10:40:09.664Z"
+          },
+          "sample": {
+            "topic": "法人向け AI 研修",
+            "keywords": [
+              "法人向け AI 教育",
+              "AI 研修時間",
+              "AI 研修内容",
+              "AI 研修参加者",
+              "AI 研修プログラム",
+              "AI 研修講座",
+              "AI 研修費用",
+              "AI 研修教材",
+              "AI 研修メリット"
+            ],
+            "evidence": [
+              {
+                "word": "法人向け AI 教育",
+                "hits": 1557,
+                "source": "https://ja.wikipedia.org/w/index.php?search=%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91+AI+%E6%95%99%E8%82%B2&fulltext=1"
+              },
+              {
+                "word": "AI 研修時間",
+                "hits": 1059,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E6%99%82%E9%96%93&fulltext=1"
+              },
+              {
+                "word": "AI 研修内容",
+                "hits": 902,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E5%86%85%E5%AE%B9&fulltext=1"
+              },
+              {
+                "word": "AI 研修参加者",
+                "hits": 794,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E5%8F%82%E5%8A%A0%E8%80%85&fulltext=1"
+              },
+              {
+                "word": "AI 研修プログラム",
+                "hits": 439,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0&fulltext=1"
+              },
+              {
+                "word": "AI 研修講座",
+                "hits": 344,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E8%AC%9B%E5%BA%A7&fulltext=1"
+              },
+              {
+                "word": "AI 研修費用",
+                "hits": 211,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E8%B2%BB%E7%94%A8&fulltext=1"
+              },
+              {
+                "word": "AI 研修教材",
+                "hits": 102,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E6%95%99%E6%9D%90&fulltext=1"
+              },
+              {
+                "word": "AI 研修メリット",
+                "hits": 81,
+                "source": "https://ja.wikipedia.org/w/index.php?search=AI+%E7%A0%94%E4%BF%AE%E3%83%A1%E3%83%AA%E3%83%83%E3%83%88&fulltext=1"
+              }
+            ],
+            "basis": "LLM の候補を、日本語版ウィキペディアの全文検索の件数で裏付けた（件数は話題の広さの目安。検索の回数ではない）。",
+            "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+            "checkedAt": "2026-11-24T10:40:30.800Z",
+            "dropped": []
+          }
+        },
+        {
+          "capability": "compliance.check",
+          "ref": "eve-part:ad-check",
+          "version": "a7da67d88d756c00bc10a3f563779323f16e042d1c27eb9238c6dd7b8bcc8a75",
+          "files": [
+            "lib/eve-part-adcheck.ts",
+            "lib/eve-part-writer.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": null,
+          "ms": 13,
+          "verification": {
+            "capability": "compliance.check",
+            "ref": "eve-part:ad-check",
+            "version": "a7da67d88d756c00bc10a3f563779323f16e042d1c27eb9238c6dd7b8bcc8a75",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "8474f1d3bae21d0d42fd8f13a8d5866416a67b52e9203a065b151fd39c396074",
+            "outputHash": "f17a4a330f87f4bd5da5e88ff09128197cc18a9416446e54810a9aad9cfa5b03",
+            "at": "2026-11-24T10:40:30.802Z"
+          },
+          "sample": {
+            "ok": true,
+            "problems": [],
+            "documents": 2
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-11-24T10:49:49.064Z",
+      "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+      "parts": [
+        {
+          "capability": "research.terms",
+          "ref": "eve-part:terms-reader",
+          "version": "d10c46a331c906dd1299954695f014dc7d1562010d08a9fb0c279aa072ef96a4",
+          "files": [
+            "lib/eve-part-terms.ts",
+            "lib/eve-part-adcheck.ts",
+            "lib/eve-part-writer.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 44952,
+          "verification": {
+            "capability": "research.terms",
+            "ref": "eve-part:terms-reader",
+            "version": "d10c46a331c906dd1299954695f014dc7d1562010d08a9fb0c279aa072ef96a4",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "f3c5690dd2085b0f54be2da38a91b92e7a83ab756f636850335ca6b73033a9fb",
+            "outputHash": "1acf3f6c8085501235bc369a0828186fb1ec58cf9ecf29e5095b903b0b43d2e7",
+            "at": "2026-11-24T10:49:49.067Z"
+          },
+          "sample": {
+            "account": "asp-sample",
+            "requirements": [
+              {
+                "kind": "登録の条件",
+                "item": "18歳以上",
+                "quote": "満18歳以上の個人"
+              },
+              {
+                "kind": "登録の条件",
+                "item": "法人",
+                "quote": "日本国内に所在する法人"
+              },
+              {
+                "kind": "禁止",
+                "item": "広告主の商品申し込む行為",
+                "quote": "自ら広告主の商品を申し込む行為"
+              },
+              {
+                "kind": "禁止",
+                "item": "商標使用",
+                "quote": "広告主の商標を含む語句で"
+              },
+              {
+                "kind": "禁止",
+                "item": "不正確な効果表示",
+                "quote": "事実と異なる効果や"
+              },
+              {
+                "kind": "支払い",
+                "item": "成果報酬",
+                "quote": "広告主が成果を承認した月の翌々月末日に"
+              }
+            ],
+            "source": "input",
+            "dropped": 0,
+            "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+            "checkedAt": "2026-11-24T10:50:34.016Z"
+          }
+        }
+      ]
+    },
+    {
+      "at": "2026-11-24T10:51:31.438Z",
+      "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+      "parts": [
+        {
+          "capability": "tracking.results",
+          "ref": "eve-part:results-csv",
+          "version": "4aa85f4e496747ff95d158fee01b8bfbb253ee1fac4cbff8325cf08417ada02e",
+          "files": [
+            "lib/eve-part-results.ts"
+          ],
+          "model": null,
+          "ms": 3,
+          "verification": {
+            "capability": "tracking.results",
+            "ref": "eve-part:results-csv",
+            "version": "4aa85f4e496747ff95d158fee01b8bfbb253ee1fac4cbff8325cf08417ada02e",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "1a839a6198cfbbbb827c2e922ad269bcab026791e60caac696ee7c876621423a",
+            "outputHash": "2f2a996bfb7273038f17275dae6985c21b39308ddc5dc0bca4babadb9c5c52cc",
+            "at": "2026-11-24T10:51:31.441Z"
+          },
+          "sample": {
+            "format": "daily",
+            "clicks": 200,
+            "occurred": 4,
+            "approved": 1,
+            "pending": 3,
+            "rejected": 0,
+            "approvedYen": 8000,
+            "pendingYen": 0,
+            "currency": "JPY",
+            "rows": 2,
+            "from": "2026-11-20",
+            "to": "2026-11-21"
+          }
+        },
+        {
+          "capability": "research.terms",
+          "ref": "eve-part:terms-reader",
+          "version": "c28d302a8de8a009dac872a40e1674a39810b91963cc56941aacb4f0feadbc9b",
+          "files": [
+            "lib/eve-part-terms.ts",
+            "lib/eve-part-adcheck.ts",
+            "lib/eve-part-writer.ts",
+            "lib/eve-part-llm.ts"
+          ],
+          "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+          "ms": 43269,
+          "verification": {
+            "capability": "research.terms",
+            "ref": "eve-part:terms-reader",
+            "version": "c28d302a8de8a009dac872a40e1674a39810b91963cc56941aacb4f0feadbc9b",
+            "ok": true,
+            "reason": "形が合っています。",
+            "inputHash": "f3c5690dd2085b0f54be2da38a91b92e7a83ab756f636850335ca6b73033a9fb",
+            "outputHash": "d235b3ecf7c2914f3c7a192b8a37a19862dc49c76630cf491a0e85a42bf5ab56",
+            "at": "2026-11-24T10:51:31.444Z"
+          },
+          "sample": {
+            "account": "asp-sample",
+            "requirements": [
+              {
+                "kind": "登録の条件",
+                "item": "18歳以上",
+                "quote": "満18歳以上の個人"
+              },
+              {
+                "kind": "登録の条件",
+                "item": "法人",
+                "quote": "日本国内に所在する法人"
+              },
+              {
+                "kind": "禁止",
+                "item": "広告主の商品申し込む行為",
+                "quote": "自ら広告主の商品を申し込む行為"
+              },
+              {
+                "kind": "禁止",
+                "item": "商標使用",
+                "quote": "広告主の商標を含む語句で"
+              },
+              {
+                "kind": "禁止",
+                "item": "不正確な効果表示",
+                "quote": "事実と異なる効果や"
+              },
+              {
+                "kind": "支払い",
+                "item": "成果報酬",
+                "quote": "広告主が成果を承認した月の翌々月末日に"
+              }
+            ],
+            "source": "input",
+            "dropped": 0,
+            "model": "qwen2.5-3b-instruct-q4_k_m.gguf#626b4a6678b86442",
+            "checkedAt": "2026-11-24T10:52:14.711Z"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -7,7 +7,8 @@ const json = (body: unknown, status = 200) =>
 const LIMIT = 256_000;
 
 export async function GET(request: Request) {
-  const r = eveCombinationGet(new URL(request.url).searchParams.get('id'));
+  const params = new URL(request.url).searchParams;
+  const r = eveCombinationGet(params.get('id'), params.get('version'));
   return json(r.body, r.status);
 }
 
