@@ -1,4 +1,5 @@
 ## 2026-11-24
+- eve.si の設計書（Claude の文書）の全文を [services/eve-si-design.md](docs/services/eve-si-design.md) に写した（Opus / Noelle。本人「gitにあげて」）。図 4 枚は原本だけ。本人の回答 ⑧ の書き方が main で変わった事を、写しの頭に書いた。
 - 稼ぐ設計図 470 件の 1 年目の月の利益を、公開の数字で見積もった（Opus / Noelle。0 円も入れた平均）: 1 件あたり月 −380 円。動画の作る費用（月 3,000 円）が見込みより大きいため。動画と画像をオープンソースで作れば +259 円。あわせて、オープンソースの自分で動く Agent の 2026 年 10 月の一覧と、Noah での組み合わせを docs に置き、目的型の Agent は一旦無料という本人の答えを記録した（[PR #60](https://github.com/iceiceice999/rock/pull/60)）。
 - Eveがモデル1回で複数Agentの設計案を返し、相談記録に各担当の入力・成果と、本人の目的または案件の成果地点・確認方法を残すようにした。PCのナビゲーションで作者画面の名前を読みやすくした（task 130、[PR #58](https://github.com/iceiceice999/rock/pull/58)）。
 

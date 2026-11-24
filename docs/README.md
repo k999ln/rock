@@ -200,5 +200,6 @@ MiniはR5の1本自律・200mm以内・別Hub不要の空間端末、Proは独�
 - [Noah の棚とパッケージ](noah/spec-110-shelf.md)（本人の決定 11-19〜21。入口の棚「稼ぐ・仕事を省く」「教育」「暮らし」、カード 1 枚 ＝ 1 つの仕事を最後までやる組合せ、今動かせる物だけを載せる条件、学習を使わない並び、札、つなげる数。書式は [services/noah-shelf.md](services/noah-shelf.md)、最初のカード案 12 枚もそこ）。
 - [Noah を 300 人に出す](noah/trial-300.md)（30 → 100 → 300 の段と次へ進む条件、出し方の決まり、稼げる額の式と測り方、守る決まり、先に要る物）。
 - [Eve（eve.si）— エージェントエンジニアリング](services/eve-si.md)（本人の決定 11-24。エージェントをつないで入金が起きる流れを、手で書く・自動の探索・Eve に話す、のどれでも同じファイルにし、検査・試運転・入金での採点・悪い工程だけの作り直しを通す。作る順と合格条件）。
+  - [eve.si 設計書の写し](services/eve-si-design.md)（2026-11-24。定義・他社の同じ言葉との違い・理念・全体像・組み合わせファイル・見つけ方・採点と作り直し・お金の流れ・守る決まり・画面・既存のコードとの対応・作る順・本人への 36 問）。
 - [Noah — 接続・実行・取り込み・市場の設計（詳細）](noah-agent-market-design.md)。書式は [services/noah-one-click-connect.md](services/noah-one-click-connect.md)、[services/noah-own-device.md](services/noah-own-device.md)、[services/noah-screenless.md](services/noah-screenless.md)、[services/noah-agent-intake.md](services/noah-agent-intake.md)、[services/eve-agent-build.md](services/eve-agent-build.md)、[services/noah-mobile-variant.md](services/noah-mobile-variant.md)、[services/noah-agent-purchase.md](services/noah-agent-purchase.md)。task は codex/tasks 74〜97（73 は main の別の task）。
 - [外にある Agent の実測（2026-11-20）](noah-agent-census-20261120.md)（上の設計の根拠。MCP の公式台帳・Hugging Face・ACP の件数と、鍵なしでつながる割合、調査した 85 件の分類）。
