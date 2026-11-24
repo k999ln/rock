@@ -25,3 +25,9 @@
 - 試運転で、外へ出す工程を実行しない。
 - Eve が作った組み合わせを、Eve が合格にしない（合格は Jev）。
 - コード識別子（`smith`・`noa`）・API・保存識別子を変えない。
+
+## 収益系Agentを使った人の成果画面
+
+「マイAgent → 保存した成果」から元の仕事を開くと、成果承認額・入金額・仕事全体の費用・作者20%の確定状態を確認できる。組み合わせ詳細から単独の収益記録を作る場合も同じ一覧で開く。運用者・提供元と仕事の対応は[サービス設計](../../docs/services/eve-si.md#提供元との接続)に従う。
+
+対象の回帰検査は `node --experimental-strip-types --test tests/noah-work-revenue-api.test.mjs tests/noah-work-revenue-receipt.test.mjs tests/noah-provider-mcp.test.mjs tests/noah-ask-ui.test.mjs tests/eve-start-revenue-work.test.mjs`。本番の実入金の受入には、提供元の接続と当該利用者の入金済みの仕事が必要。

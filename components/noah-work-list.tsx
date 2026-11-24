@@ -22,6 +22,7 @@ import {
 } from '@/lib/noah-ask-view';
 import { useNoahLocale } from './noah-locale';
 import {
+  noahWorkAgentHref,
   noahWorkGroups,
   noahWorkHref,
   noahWorkState,
@@ -166,7 +167,7 @@ export default function NoahWorkList({
   useEffect(() => {
     const epoch = generation.current;
     for (const ask of asks) {
-      if (ask.state !== 'succeeded' || wanted.current.has(ask.id)) continue;
+      if (ask.state !== 'succeeded' || (only === 'succeeded' && ask.mode === 'revenue') || wanted.current.has(ask.id)) continue;
       wanted.current.add(ask.id);
       void fetch(`/api/noah/ask/${ask.id}`, { cache: 'no-store' })
         .then(async (response) => {
@@ -186,7 +187,7 @@ export default function NoahWorkList({
           if (generation.current === epoch) wanted.current.delete(ask.id);
         });
     }
-  }, [asks]);
+  }, [asks, only]);
 
   async function stop(ask: NoahAskItem) {
     setError('');
@@ -304,7 +305,7 @@ export default function NoahWorkList({
                       <output>
                         {locale === 'ja' ? view.text : t(noahWorkState(ask))}
                       </output>
-                    ) : locale === 'ja' ? (
+                    ) : locale === 'ja' && ask.mode !== 'revenue' ? (
                       view.text
                     ) : (
                       t(noahWorkState(ask))
@@ -338,9 +339,9 @@ export default function NoahWorkList({
                 {!agentId && ask.agentId && (
                   <p className={styles.workAgent}>
                     <Link
-                      href={`${['provider','cloud'].includes(ask.mode)?'/noah/discover/agent':'/noah/ready/agent'}?id=${encodeURIComponent(ask.agentId)}`}
+                      href={noahWorkAgentHref(ask.mode, ask.agentId)}
                     >
-                      {t(NOAH_ASK_TEXT.agent)} →
+                      {t(ask.mode === 'revenue' ? 'この組み合わせを開く' : NOAH_ASK_TEXT.agent)} →
                     </Link>
                   </p>
                 )}
@@ -357,14 +358,16 @@ export default function NoahWorkList({
           {shown.map((ask) => (
             <li className={ui.resultCard} key={ask.id}>
               <Link href={noahWorkHref(ask.id)}>
-                {results[ask.id] ? (
+                {ask.mode === 'revenue' ? (
+                  <time dateTime={new Date(ask.createdAt).toISOString()}>{new Date(ask.createdAt).toLocaleString(locale)}</time>
+                ) : results[ask.id] ? (
                   <NoahResultPreview result={results[ask.id]} />
                 ) : (
                   <NoahLoading compact />
                 )}
-                <h2>{new Date(ask.createdAt).toLocaleDateString(locale)}</h2>
+                <h2>{ask.mode === 'revenue' ? ask.tool : new Date(ask.createdAt).toLocaleDateString(locale)}</h2>
                 <small>
-                  <FileText size={13} /> {ask.host}
+                  <FileText size={13} /> {ask.mode === 'revenue' ? t(noahWorkState(ask)) : ask.host}
                 </small>
               </Link>
             </li>

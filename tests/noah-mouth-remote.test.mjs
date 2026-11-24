@@ -140,6 +140,11 @@ void test('接続先の検査: 内部向けの名前、転送、鍵の持ち出�
   assert.deepEqual([moved.code, moved.detail], ['blocked', { redirectedTo: 'b.example.org' }]);
   assert.deepEqual(hits, [['https://a.example.com/mcp', '{"query":"本人の入力"}']], '本人の入力を、見せた送り先の外へ送らない');
   assert.equal(await (await pinned('https://a.example.com/old', { method: 'POST', body: '{}' })).text(), 'ok', '同じ host の中の転送には従う');
+  hits.length = 0;
+  const session = { url: 'https://a.example.com/old', protocol: NOAH_MCP_PROTOCOLS[0], sessionId: null, nextId: 1 };
+  const meta = { workId: 'work', combinationId: 'offer', version: 1, dispatchProof: 'local-test' };
+  assert.equal((await failure(noahMcpCall(session, 'read', {}, { fetch: pinned }, 1000, meta))).code, 'blocked');
+  assert.deepEqual(hits.map(([url]) => url), [session.url]);
   const resolving = createNoahGuardedFetch(base, { check: async (url) => { if (url.hostname === 'rebind.example.com') throw new NoahMouthError('blocked', '内部のアドレスです。'); } });
   assert.equal((await failure(resolving('https://rebind.example.com/mcp', {}))).code, 'blocked', '名前を引いた先の検査（差し込み口）');
 });

@@ -80,3 +80,25 @@ Eve（自動）は、需要の台帳から見込みの利益が高い道を探�
 ## 決めていない事
 
 36 問のうち 28 問が本人待ち（ドメイン eve.si の持ち主、Eve が作った組み合わせを他の人に出すか、需要の台帳の最初の元、本人の 1 分の値段、最初の 1 本のブログと ASP など）。2026-11-24 13:54 に、作者に入る割合（20%）、作者の分の元（入金 − 費用）、見本の仕事の送信（送ってよい）が決まった。返事が無い間は既定案で進める。設計書の全文と既定案: [eve-si-design.md](eve-si-design.md)（[原本の設計書](https://claude.ai/artifact/AXJsY82uAvjM9TKra8Evvg) の 2026-11-24 13:40 の写し。図は原本だけ）。
+
+## マイAgentで開く仕事の収益明細
+
+収益運用者は「マイAgent → 保存した成果」から仕事を選び、成果承認・入金・費用を別々に確認する。資料作成の依頼者や広告の紹介先には、運営者の報酬を表示しない。
+
+記録のない金額は未確認として扱う。署名を確認した提供元の記録を仕事・運用者・組み合わせの版に結び付け、入金とその仕事の最終費用がそろった時に、正の差額の20%を作者分として円未満切り捨てで計算する。作者と利用者が同一なら分配対象外とし、本人関係を確認できなければ保留する。画面の再表示は読取のみ。
+
+### 提供元との接続
+
+1. 運営者が対象の系列・HTTPSの実行先・道具名・組み合わせIDを確認し、サーバー専用の `NOAH_REVENUE_PROVIDER_TARGET` に `{familyKey, endpoint, tool, combinationId}` を設定する。証憑を照合する提供元の識別子と専用の共有鍵（32文字以上）を `NOAH_REVENUE_PROVIDER_ID` と `NOAH_REVENUE_PROVIDER_SECRET` に設定する。
+2. 作者のIDと認証済みアカウントの対応は `NOAH_REVENUE_AUTHOR_OWNERS` に保存する。各仕事の受取人の照合には `NOAH_REVENUE_OPERATOR_ACCOUNTS` の「認証済み利用者ID → 提供元の運用者ID」が必要。1つの運用者IDを複数の利用者には割り当てない。いずれもサーバー側のJSONオブジェクトで管理する。
+3. 通常のMCP実行では、対象の道具に限り `tools/call` の `params._meta["avoado.si/revenue-work"]` で `workId, combinationId, version, dispatchProof` が渡る。Gradioでは同じ値を `X-Noah-Revenue-Work`、`-Combination`、`-Version`、`-Proof` ヘッダーで渡す。提供元は受けた仕事と実行記録の対応を保ち、提供元自身が照合できた明細だけを送る。
+4. 提供元は `POST /api/noah/revenue/receipts` にJSONを送る。共通項目は `schema: "noah-revenue-receipt/1"`、`providerId, workId, combinationId, version, stage, source, currency: "JPY", amountYen, observedAt, reference, evidenceSha256`。日時はUnixミリ秒、金額は円整数、参照とSHA-256はその仕事に帰属する明細に対応する。全件で提供元が確認した受取人の `operatorRef` を添え、通常実行ではさらに `dispatchProof` を添える。実行当時に組み合わせと版を保存していない仕事には、自動では帰属させない。
+5. `avocado-provider-signature` は `t=<Unix秒>,v1=<16進HMAC-SHA256>`。署名対象は `<Unix秒>.<生のJSON本文>`、許容時間差は5分。再送時は同じ明細参照、観測日時、金額、ハッシュを保持する。201は新規、200は記録済みを示す。409は元の仕事の完了状態・版・明細の重複を照合する。
+
+| 段階 | 証憑の種類 | 金額の意味 |
+| --- | --- | --- |
+| `approved` | `asp-approval` | その仕事に帰属すると承認された報酬。承認だけでは作者分は未確定 |
+| `paid` | `bank-deposit` | その仕事への実入金を確認した明細。複数の入金は合計 |
+| `cost` | `final-work-cost` | その仕事の全費用がそろったときの合計。実費0円は明示的に受理 |
+
+提供元の連携前でも本人は仕事の収益記録を開ける。確定には実際の入金と最終費用の明細が必要で、証憑の書き込みによる送金は発生しない。

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import EveStartRevenueWork from '@/components/eve-start-revenue-work';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { eveEngineeringNavigation } from '@/lib/eve-engineering-navigation';
@@ -71,6 +72,7 @@ export default async function EveCombinationPage(p: Props) {
             <div><dt>1 回の費用</dt><dd>{entry.costYenPerRun.toLocaleString('ja-JP')} 円（上限 {c.budget.perRunYen.toLocaleString('ja-JP')} 円・試す期間の上限 {c.budget.trialYen.toLocaleString('ja-JP')} 円）</dd></div>
             <div><dt>本人の手間</dt><dd>1 回あたり {entry.ownerMinutesPerRun} 分（登録は最初の 1 回だけなので数えていません）</dd></div>
           </dl>
+          <EveStartRevenueWork combinationId={c.id} version={c.version} />
           <nav className={styles.jumps} aria-label="組み合わせの詳細">
             <a href="#eve-flow">組み合わせの図</a><a href="#eve-owner">本人の番</a><a href="#eve-score">成績表</a><a href="#eve-author">作者の取り分</a>
           </nav>

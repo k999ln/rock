@@ -479,3 +479,53 @@ void test('engineering tests the selected owner upload through its exact listed 
   w.f.sql.prepare('UPDATE noah_intake_families SET withdrawn_at=? WHERE id=?').run(w.f.time(),familyId(1));
   assert.equal((await fetch({ method:'GET', url:lookupUrl(goodId) })).body.match, null);
 });
+
+void test('an owner opens one saved result and later sees its approved earnings, payment, costs and confirmed creator share', async () => {
+  const id = uuid(501), scope = await ownerIntent.ownerScopeFor('owner-a');
+  const ask = {
+    id, workId: id, mode: 'provider', revision: 1, state: 'succeeded', stopRequested: false,
+    createdAt: 1, updatedAt: 2, finishedAt: 2, result: { text: '保存した成果', files: [] },
+    revenueReceipt: { approvedYen: 8000, paidYen: null, costYen: 1000, authorShareYen: null, authorShareStatus: 'pending-payment', shareBps: 2000 },
+  };
+  const ui = screen({ modules: MODULES, fetch: async request => {
+    assert.equal(request.method, 'GET');
+    assert.equal(request.url, '/api/noah/ask/' + id);
+    return { body: { ...ask, ownerScope: scope } };
+  } });
+  const page = ui.mount('components/noah-task-detail.tsx', { id });
+  const findPanel = () => page.find('section').find(node => node.props['aria-label'] === 'この仕事の収益明細');
+  await page.flush();
+  assert.ok(findPanel());
+  assert.match(page.text(findPanel()), /成果承認額[￥¥]8,000入金額入金記録なしこの仕事の費用[￥¥]1,000作者の取り分（20%）未確定/);
+  assert.ok(page.find('section').some(node => node.props['aria-label'] === 'この仕事の利用明細'));
+
+  assert.doesNotMatch(page.text(findPanel()), /証憑の連携待ち/);
+  ask.revenueReceipt.evidenceConnection = 'unconfigured';
+  await page.tick(15000);
+  assert.match(page.text(findPanel()), /成果承認額[￥¥]8,000/);
+  assert.match(page.text(findPanel()), /証憑の連携待ち/);
+  ask.revenueReceipt.evidenceConnection = 'connected';
+
+  // The same saved job is re-read even after it has finished. A payment alone does not confirm the share.
+  Object.assign(ask.revenueReceipt, { paidYen: 8000, costYen: null, authorShareStatus: 'pending-cost' });
+  await page.tick(15000);
+  assert.match(page.text(findPanel()), /入金額[￥¥]8,000この仕事の費用未確定作者の取り分（20%）未確定/);
+  Object.assign(ask.revenueReceipt, { costYen: 1000, authorShareStatus: 'confirmed', authorShareYen: 1400 });
+  await page.tick(15000);
+  assert.match(page.text(findPanel()), /作者の取り分（20%）確定（[￥¥]1,400）/);
+  assert.doesNotMatch(page.text(findPanel()), /証憑の連携待ち/);
+
+  // The server can confirm a zero share. A prior result must not remain visible after the receipt is absent.
+  Object.assign(ask.revenueReceipt, { costYen: 8000, authorShareYen: 0 });
+  await page.tick(15000);
+  assert.match(page.text(findPanel()), /確定（[￥¥]0）/);
+  Object.assign(ask.revenueReceipt, { approvedYen: null, paidYen: null, costYen: null, authorShareYen: null, authorShareStatus: 'unresolved' });
+  await page.tick(15000);
+  assert.match(page.text(findPanel()), /成果承認額未確認入金額未確認/);
+  Object.assign(ask.revenueReceipt, { authorShareStatus: 'not-applicable' });
+  await page.tick(15000);
+  assert.match(page.text(findPanel()), /作者の取り分（20%）分配対象外/);
+  delete ask.revenueReceipt;
+  await page.tick(15000);
+  assert.equal(findPanel(), undefined);
+});
