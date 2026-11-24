@@ -35,6 +35,8 @@ export default function EveStartRevenueWork({ combinationId, version }: { combin
         body: JSON.stringify({ combinationId, requestId: attempt.current.id }),
       });
       const result = await response.json() as { workId?: unknown; ownerScope?: unknown };
+      if (response.status === 401) throw Error('本人確認が必要です。マイAgentで保存先を確認してください。');
+      if (response.status === 429) throw Error('本日の受付上限に達しました。明日もう一度お試しください。');
       if (!response.ok || typeof result.workId !== 'string' || !result.workId || result.ownerScope !== scope)
         throw Error(response.status === 409 ? '保存先を確認して、もう一度開いてください。' : '収益の記録を開けませんでした。もう一度お試しください。');
       try { sessionStorage.removeItem(key); } catch { /* Optional retry persistence. */ }

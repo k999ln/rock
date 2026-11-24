@@ -11,6 +11,7 @@ import {
 import { createNoahRemoteWork } from '../lib/noah-remote-work.ts';
 import { createReceiptSignature } from '../lib/receipt-signature.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
+import { createNoahBrowserSessions } from '../lib/noah-browser-session.ts';
 import { workStore } from '../lib/work-store.ts';
 
 const origin = 'https://noah.example',
@@ -316,4 +317,24 @@ void test('historical Work without a pinned combination version and author canno
     ),
     undefined,
   );
+});
+
+
+void test('the signed browser that owns My Agent can create its record, but cannot authenticate a provider receipt', async t => {
+  const { db } = fixture(t);
+  const sessions = createNoahBrowserSessions({ active: 'local', keys: { local: 'af'.repeat(32) } });
+  const issue = new Request(origin + '/api/noah/session', { method: 'POST', headers: { origin } });
+  const cookie = (await sessions.issue(issue)).split(';')[0];
+  const authenticate = sessions.authenticate;
+  const owner = await authenticate(new Request(origin + '/api/noah/ask', { headers: { cookie } }));
+  const api = createNoahWorkRevenueApi({ db, authenticate });
+  const body = { combinationId, requestId: crypto.randomUUID() };
+  const headers = { origin, cookie, 'X-Rock-Owner-Scope': await ownerScopeFor(owner) };
+  const accepted = await api.start(request('/api/noah/revenue/work', body, headers));
+  assert.equal(accepted.status, 201);
+  const { workId } = await accepted.json();
+  assert.equal((await workStore(db).get(owner, workId)).templateId, 'noah-revenue-operation');
+  assert.equal((await api.start(request('/api/noah/revenue/work', body, headers))).status, 200);
+  for (const path of ['/api/noah/revenue/receipts', '/api/noah/revenue/work/other'])
+    await assert.rejects(authenticate(request(path, {}, headers)), /UNAUTHORIZED/);
 });

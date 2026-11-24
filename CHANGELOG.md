@@ -1,4 +1,5 @@
 ## 2026-11-24
+- マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
 - Noah の道具カタログを掲載中の系列に合わせて再採取した。接続先の説明の冒頭と入力項目を同梱し、取得・照合の結果は [task 128](codex/tasks/128-noah-agent-explain.md#95-掲載系列の道具定義を再取得) に記録。 [PR #65](https://github.com/iceiceice999/rock/pull/65)
 - 収益型の組み合わせ詳細で、申込承認と実入金後の作者分20%を計算例で確認できるようにした。費用を確認できない場合は作者分を未確定にする（[PR #61](https://github.com/iceiceice999/rock/pull/61)）。
