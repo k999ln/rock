@@ -6,7 +6,7 @@ import { EVE_DEMAND_LEDGER, EVE_STATUS_LABEL, eveCombinationCatalog, eveTemplate
 import styles from './eve-combinations.module.css';
 
 export const metadata: Metadata = {
-  title: '何で稼ぐ？ — Eve',
+  title: '組み合わせ例 — Agentエンジニアリング',
   description: 'エージェントの出力を別のエージェントの入力につなぎ、最後に外部の入金の記録が出る組み合わせ。',
   robots: { index: false, follow: false },
 };
@@ -24,7 +24,7 @@ export default async function EveCombinationsPage({ searchParams }: { searchPara
           <Link href={links.consultation}>Agentエンジニアリング</Link>
         </nav>
         <header className={styles.hero}>
-          <h1>何で稼ぐ？</h1>
+          <h1>組み合わせ例</h1>
           <p className={styles.lead}>
             エージェントの出力を、別のエージェントの入力につなぎます。ここでは、ASP・売り場・銀行の入金を確認するまでの設計例を読めます。
           </p>
@@ -37,7 +37,7 @@ export default async function EveCombinationsPage({ searchParams }: { searchPara
 
         <div className={columns.columns} data-engineering-columns>
           <section className={`${styles.section} ${columns.primary}`} data-engineering-primary aria-labelledby="eve-combos">
-            <h2 id="eve-combos">組み合わせ</h2>
+            <h2 id="eve-combos">何で稼ぐ？</h2>
             <p>手で書いた物と、Eve が型に当てはめた物・見つけた物。どれも同じ検査と試運転を通ります。</p>
             <ul className={styles.list}>
               {items.map((c) => (
