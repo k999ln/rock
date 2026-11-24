@@ -1,0 +1,4 @@
+.page > section { color: #edf4f7; }
+.page :is(h1, h2, summary) { color: #edf4f7; }
+.page :is(p, label, summary, button) { font-size: 1rem; }
+.page > a { display: inline-block; margin-top: 1rem; }

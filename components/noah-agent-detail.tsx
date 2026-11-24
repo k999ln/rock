@@ -109,7 +109,7 @@ export default function NoahAgentDetail({ id, remote = false, engineering = fals
       {engineering && m.adapter === 'source' && upload?.uploadState === 'ready' && (m.runtime && upload.source
         ? <NoahLaunch key={id + scope} engineeringAgentId={id} expectedOwnerScope={scope} />
         : <p className={styles.notice}>この版を動かすには、起動ファイルを含むコードと実行設定が必要です。「自分のAgentを作る」で、NodeまたはPythonのテンプレートから登録できます。</p>)}
-      {remote && !engineering && (builtin || m.runtime) && <p><Link href={`/noah/activity?agent=${id}`}>自分のMacを選んで接続・実行</Link></p>}
+      {remote && !engineering && (builtin || m.runtime) && <p><Link href={m.runtime ? `/noah/engineering?step=test&agent=${id}#engineering-work` : `/noah/activity?agent=${id}`}>自分のMacを選んで接続・実行</Link></p>}
       {!remote && m.adapter === 'source' && (m.runtime && upload?.uploadState === 'ready' ? <NoahManagedInstallation key={id + scope} id={id} terminal /> : <p className={styles.notice}>コードを保存しています。実行方式と必要な環境の準備が完了すると接続できます。</p>)}
       {message && <output className={styles.notice}>{message}</output>}
       

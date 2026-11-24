@@ -1,4 +1,5 @@
 ## 2026-11-24
+- Noah内のMac接続を登録なしの保存先に結び、Runnerの資格情報をNoahに限定した。本人承認後、このMacの専用Linux VMで入力・読取・画像取得を実行し、Noahで成果を受取。白背景の旧faviconを透過済みNoahロゴに更新し、Webの公開名をNoah・Eveへ修正（task 83、[PR #64](https://github.com/iceiceice999/rock/pull/64)）。
 - Eveがモデル1回で複数Agentの設計案を返し、相談記録に各担当の入力・成果と、本人の目的または案件の成果地点・確認方法を残すようにした。PCのナビゲーションで作者画面の名前を読みやすくした（task 130、[PR #58](https://github.com/iceiceice999/rock/pull/58)）。
 
 - Eveの相談で、Hermesが組み合わせ案をその仕事のメモに保存できるよう、道具を呼ばずに答えた場合の再試行を修正した（task 130、[PR #57](https://github.com/iceiceice999/rock/pull/57)）。

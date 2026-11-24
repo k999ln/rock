@@ -7,18 +7,18 @@ import './workspace.css';
 import './work/work.css';
 import './os-shell.css';
 export const metadata: Metadata = {
-  title: 'RockstarOS',
+  title: 'Noah・Eve',
   description:
-    'NoahとEveの会話・仕事・成果を同じアカウントで引き継ぐRockstarOS WebOS Developer Preview。',
-  applicationName: 'RockstarOS',
+    'NoahでAgentを見つけ、Eveと相談し、仕事の成果を受け取る。',
+  applicationName: 'Noah・Eve',
   manifest: '/manifest.webmanifest',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'RockstarOS',
+    title: 'Noah・Eve',
   },
-  icons: { icon: '/brand/rainbow-icon-transparent.svg', apple: '/brand/rainbow-logo-192.png' },
+  icons: { icon: '/brand/noah-icon-v2.png', apple: '/brand/noah-icon-v2.png' },
 };
 export const viewport: Viewport = {
   width: 'device-width',

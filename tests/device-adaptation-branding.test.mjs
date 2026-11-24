@@ -23,9 +23,9 @@ void test('company logo bytes are identical across existing company site, web an
   assert.deepEqual(bytes('android/shell/src/main/res/drawable-nodpi/company_mark.png'), logo);
   assert.equal(createHash('sha256').update(logo).digest('hex'), contract.brand.logoSha256);
   assert.equal(contract.brand.product, 'RockstarOS');
-  assert.match(text('app/layout.tsx'), /apple: '\/brand\/rainbow-logo-192.png'/);
+  assert.match(text('app/layout.tsx'), /apple: '\/brand\/noah-icon-v2.png'/);
   assert.match(text('app/web-app-manifests.ts'), /name: 'RockstarOS'/);
-  assert.match(text('app/layout.tsx'), /apple: '\/brand\/rainbow-logo-192.png'/);
+  assert.match(text('app/layout.tsx'), /apple: '\/brand\/noah-icon-v2.png'/);
   assert.match(text('android/shell/src/main/res/values/branding.xml'), />RockstarOS</);
 });
 

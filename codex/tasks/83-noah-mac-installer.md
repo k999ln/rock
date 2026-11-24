@@ -27,5 +27,7 @@
 
 - 更新済みRunnerと同じMacの専用Colima VMでagent-desktop v1.3.1の読み取り・入力・画面取得・停止を実測。外部AgentやmacOS/Windowsアプリの受入ではない。
 - 接続はNoahのブラウザ保存先を使う `/noah/mac/connect` へ移し、旧アカウント用の接続コード・セッションと分離。登録なしの開始、別所有者の拒否、権限外APIの拒否、取消後の失効を実Workers/ローカルDBで検証する。
-- 検証: `node --experimental-strip-types --test tests/noah-device-pairing.test.mjs tests/noah-browser-session.test.mjs tests/noah-mac-runner.test.mjs tests/rockstar-device-authorization-ui.test.mjs`、`npm run verify`。公開からの本人承認・実行・成果受取はまだ未完了。
+- 検証: `node --experimental-strip-types --test tests/noah-device-pairing.test.mjs tests/noah-browser-session.test.mjs tests/noah-mac-runner.test.mjs tests/rockstar-device-authorization-ui.test.mjs`、`npm run verify`。
 - 上記30件と公開用typecheck/buildは成功。`npm run verify` は本体5,440件成功・5件skip後、変更外の `toolkits/noah-coconala/test/background.test.mjs:88`（500 !== 200）で停止。作業用コピーに同toolkitの依存関係がなく、後続の全体検査は未実施。テストの削除や合格への読み替えはしていない。
+- 本人の明示承認後、導入済みMac Runnerを常駐起動。公開Noahで本人限定のAgent `0e9858ca-7275-4c1f-a7d4-fddcfe56f568` を接続・実行し、画面取得・agent-desktop読取・入力・ゲスト表示・非root・ホストhome非公開・入力機器非公開・Docker socket非公開の8項目すべてtrueの成果を受領。初期状態の別Macやホスト前面の連続観測は未受入。
+- 公開WebのfaviconとAppleアイコンは既存の透過済みNoah画像へ更新。古いキャッシュと区別する `/brand/noah-icon-v2.png` を使用。PR #64はドラフトを維持する。
