@@ -1,3 +1,5 @@
+/** Public catalog identity for the official NousResearch/hermes-agent repository. */
+export const NOAH_EVE_HERMES_PROJECT = 'project-a17476e9d7955152138283110c7070bbcee5ac285cd06e6b5165969c461c4cb6';
 /** Operator-reviewed distributions only. Catalog prose never becomes an executable command. */
 export const NOAH_CLOUD_PROFILES = {
   hermes: {

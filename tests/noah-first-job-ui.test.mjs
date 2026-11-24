@@ -41,7 +41,10 @@ void test('the public home opens available tasks directly with their expected ou
   assert.equal(home.find('a', '専用クラウドを開く')[0].props.href, '/api/noah/cloud-work');
   assert.equal(home.find('a', 'eSIMでつなぐ専用クラウド')[0].props.href, '/connect');
   assert.equal(home.find('a', 'Agentを買う')[0].props.href, '/noah/marketplace');
-  assert.equal(home.find('a', 'Agentを載せる')[0].props.href, '/noah/publisher');
+  const engineering = home.find('a', 'Agentエンジニアリング');
+  assert.deepEqual(engineering.map(link => link.props.href), ['/noah/engineering']);
+  assert.ok(home.nodes(home.find('header')[0]).includes(engineering[0]));
+  assert.ok(!home.find('a').some(link => ['/noah/agents/new', '/noah/registration', '/noah/publisher'].includes(link.props.href)));
   assert.equal(home.find('a', 'ピックアップ')[0].props.href, choices.find(job => job.id === 'memory').href);
   const links = home.nodes(region).filter(n => n.type === 'a');
   assert.deepEqual(links.map(link => link.props.href), [...choices.slice(1).map(job => job.href), '/noah/explore', '/noah/saved?tab=results']);
@@ -75,6 +78,7 @@ void test('Today places a real featured job and the catalog ahead of store servi
     const feature = home.find('a', 'Featured')[0];
     const directory = home.find('a', 'A published agent')[0];
     const services = home.find('a', 'Buy agents')[0];
+    assert.equal(home.find('a', 'Agent Engineering')[0].props.href, '/noah/engineering');
     assert.equal(feature.props.href, available.length ? memory.href : '/noah/discover/agent?id=' + project);
     assert.equal(home.find('h2', 'Who’s working on what?').length, available.length);
     assert.equal(directory.props.href, directoryHref);

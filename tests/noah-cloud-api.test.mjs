@@ -5,18 +5,18 @@ import { noahProjectDetail } from '../lib/noah-project-api.ts';
 import { noahBrowserRequestAllowed } from '../lib/noah-browser-session.ts';
 import { ownerScopeFor } from '../lib/owner-intent.ts';
 import { fixture } from './fixtures/noah/intake.mjs';
-import { NOAH_CLOUD_PROFILES } from '../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, NOAH_EVE_HERMES_PROJECT } from '../lib/noah-cloud-contract.ts';
 import { NoahAgentError } from '../lib/noah-agent-upload.ts';
 
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const distribution = NOAH_CLOUD_PROFILES.hermes.sha256, version = NOAH_CLOUD_PROFILES.hermes.version;
-const project = 'project-' + 'a'.repeat(64), origin = 'https://noah.test';
+const project = NOAH_EVE_HERMES_PROJECT, origin = 'https://noah.test';
 const entry = { card: { id: project, feedbackId: project, href: 'https://github.com/NousResearch/hermes-agent', name: 'Hermes', sources: [] }, families: [] };
-async function world(t) {
+async function world(t, freeRuntime = false) {
   const f = fixture(t); let owner = 'owner-a', listed = true, denied = false, confirmRequired = false, count = 0, admissionStatus = 200, receipt;
   const secret = crypto.randomUUID() + crypto.randomUUID();
   const records = new Map();
-  const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, authenticate: async () => owner, directory: async () => listed ? [entry] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
+  const api = createNoahCloudApi({ db: f.db, now: f.time, receiptKey: secret, freeRuntime, authenticate: async () => owner, directory: async () => listed ? [entry] : [], authorize: async (_owner, _target, _action, _digest, confirmed) => { if (denied) throw Error('DENIED'); if (confirmRequired && !confirmed) throw new NoahAgentError('毎回確認してください', 409); }, runtime: async input => {
     count++;
     if (input.action === 'start') { receipt = input.receipt; if (admissionStatus !== 200) return Response.json({ error: '利用枠が埋まっています' }, { status: admissionStatus }); const old = records.get(input.jobId); if (!old) records.set(input.jobId, { id: input.jobId, profile: input.profile, version, distribution, mode: 'run', state: 'running', calls: 0 }); return Response.json(records.get(input.jobId)); }
     if (input.action === 'stop' && records.has(input.jobId)) { const stopped = {...records.get(input.jobId),state:'cancelled'}; records.set(input.jobId,stopped); return Response.json(stopped); }
@@ -106,6 +106,31 @@ void test('budget rejection leaves a failed Work, not a permanently running spin
   assert.equal((await w.request({ action: 'start', jobId: id(1), connectionId: id(2), prompt: 'hello' })).status, 429);
   const saved = JSON.parse(w.f.sql.prepare('SELECT payload FROM work_jobs WHERE id=?').get(id(1)).payload);
   assert.equal(saved.noahRemote.state, 'failed');
+});
+void test('Eve consultations use the official free Hermes runtime and return only actual owned consultation jobs', async t => {
+  const w = await world(t, true), purpose = 'eve-engineering';
+  const start = { action: 'start', connectionId: id(1), jobId: id(2), prompt: 'Design an agent to sort an example reading list.' };
+  const status = () => w.api(new Request(`${origin}/api/noah/cloud-agents?projectId=${project}&purpose=${purpose}`));
+  assert.equal((await w.request({ ...start, purpose, projectId: 'project-' + '1'.repeat(64) })).status, 400);
+  assert.equal(w.calls(), 0);
+  assert.equal((await w.request({ ...start, jobId: id(3) })).status, 202);
+  assert.equal((await w.request({ ...start, jobId: id(3), purpose })).status, 409);
+  assert.deepEqual((await (await status()).json()).jobs, []);
+  w.requireConfirmation();
+  assert.equal((await w.request({ ...start, purpose })).status, 409);
+  assert.equal((await w.request({ ...start, purpose, confirm: true })).status, 202);
+  const actualText = 'Fixture generated reply for the reading list';
+  const job = { ...w.records.get(start.jobId), state: 'returned', calls: 2, result: { text: actualText, files: [], exitCode: 0 } };
+  assert.equal((await w.deliver(job)).status, 200);
+  const { jobs } = await (await status()).json();
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].result.text, actualText);
+  assert.equal(jobs[0].calls, 2);
+  w.owner('different-owner');
+  assert.deepEqual((await (await status()).json()).jobs, []);
+  const paid = await world(t, false);
+  assert.equal((await paid.request({ ...start, purpose, confirm: true })).status, 503);
+  assert.equal(paid.calls(), 0);
 });
 void test('a saved per-operation confirmation is required before dispatch', async t => {
   const w = await world(t); w.requireConfirmation();

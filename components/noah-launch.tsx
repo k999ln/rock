@@ -49,10 +49,12 @@ const status: Record<string, string> = {
 export default function NoahLaunch({
   phoneWork,
   workId,
-}: { phoneWork?: ReactNode; workId?: string } = {}) {
+  engineeringAgentId,
+  expectedOwnerScope,
+}: { phoneWork?: ReactNode; workId?: string; engineeringAgentId?: string; expectedOwnerScope?: string } = {}) {
   const params = useSearchParams(),
     [compose, setCompose] = useState(
-      Boolean(params.get('agent')) || params.get('compose') === '1',
+      Boolean(engineeringAgentId || params.get('agent')) || params.get('compose') === '1',
     ),
     [agents, setAgents] = useState<Agent[]>([]),
     [state, setState] = useState<State | null>(null),
@@ -60,7 +62,7 @@ export default function NoahLaunch({
     [readError, setReadError] = useState(''),
     [signedOut, setSignedOut] = useState(false),
     [device, setDevice] = useState(''),
-    [selected, setSelected] = useState(params.get('agent') ?? ''),
+    [selected, setSelected] = useState(engineeringAgentId ?? params.get('agent') ?? ''),
     [prompt, setPrompt] = useState(''),
     [consent, setConsent] = useState(false),
     [pending, setPending] = useState(false),
@@ -85,6 +87,12 @@ export default function NoahLaunch({
         return;
       }
       if (!r.ok) throw new Error(d.error ?? 'Noahの応答を確認できません。');
+      if (expectedOwnerScope && d.ownerScope !== expectedOwnerScope) {
+        setState(null);
+        setRetry(null);
+        setReadError('アカウントが変わりました。Agentを選び直してください。');
+        return;
+      }
       setReadError('');
       setState(d);
       setRetry((old) =>
@@ -102,11 +110,11 @@ export default function NoahLaunch({
           '',
       );
     },
-    [workId],
+    [workId, expectedOwnerScope],
   );
   useEffect(() => {
     const c = new AbortController();
-    if (!workId)
+    if (!workId && !engineeringAgentId)
       void fetch('/api/noah/launch?public=1', { signal: c.signal })
         .then(async (r) => {
           const d = (await r.json()) as { agents: Agent[]; error?: string };
@@ -139,7 +147,7 @@ export default function NoahLaunch({
       clearInterval(timer);
       document.removeEventListener('visibilitychange', tick);
     };
-  }, [workId, refresh]);
+  }, [workId, refresh, engineeringAgentId]);
   async function act(action: string, body: Record<string, unknown>) {
     if (!state || pending) return;
     setPending(true);
@@ -162,7 +170,7 @@ export default function NoahLaunch({
         throw new Error(d.error ?? 'Noahの応答を確認できません。');
       }
       accepted = true;
-      if (action === 'run') setCompose(false);
+      if (action === 'run' && !engineeringAgentId) setCompose(false);
       setRetry(null);
       setNotice(
         action === 'stop'
@@ -200,15 +208,17 @@ export default function NoahLaunch({
     online = state?.devices?.some(
       (d) => d.id === device && d.online && !d.revoked,
     );
-  const returnTo = workId
+  const returnTo = engineeringAgentId ? `/noah/engineering?step=test&agent=${encodeURIComponent(engineeringAgentId)}` : workId
     ? `/noah/work/${encodeURIComponent(workId)}`
     : selected
       ? `/noah/activity?agent=${encodeURIComponent(selected)}#library`
       : '/noah/activity';
   const macHref = `/noah/devices${selected ? `?agent=${encodeURIComponent(selected)}` : ''}#mac`;
+  const Container = engineeringAgentId ? 'section' : 'main';
+  const commands = engineeringAgentId ? state?.commands.filter(c => c.agent.agentId === engineeringAgentId) : state?.commands;
   return (
-    <main className={styles.page}>
-      <header className={styles.hero}>
+    <Container className={engineeringAgentId ? undefined : styles.page}>
+      {!engineeringAgentId && <><header className={styles.hero}>
         <div>
           <h1>{workId ? '仕事の詳細' : '実行中のAgent'}</h1>
         </div>
@@ -228,7 +238,7 @@ export default function NoahLaunch({
         )}
         <Link href="/noah/explore">Agentを探す</Link>
         <Link href="/noah/data">保存した成果</Link>
-      </nav>
+      </nav></>}
       {error && (
         <p role="alert" className={styles.error}>
           {error}
@@ -278,7 +288,7 @@ export default function NoahLaunch({
       )}
       {!workId && compose && (
         <section className={styles.notice} id="library">
-          <h2>1. Agentを選ぶ</h2>
+          {!engineeringAgentId && <><h2>1. Agentを選ぶ</h2>
           <details>
             <summary>Agentを作る・公開する</summary>
             <nav className={styles.nav}>
@@ -329,7 +339,9 @@ export default function NoahLaunch({
               ))}
             </select>
           </label>
-          {chosen && (
+          </>}
+          {engineeringAgentId && state && !chosen && <p>この登録版には実行できる設定がありません。コードと実行設定を確認してください。</p>}
+          {chosen && !engineeringAgentId && (
             <>
               <h3>{chosen.name}</h3>
               <details className={styles.agentDetails}>
@@ -356,7 +368,7 @@ export default function NoahLaunch({
             </>
           )}
           <div className={styles.notice}>
-            <h2>2. Macをつなぐ</h2>
+            <h2>{engineeringAgentId ? '試すMacを選ぶ' : '2. Macをつなぐ'}</h2>
             {state && (
               <>
                 <label>
@@ -383,7 +395,7 @@ export default function NoahLaunch({
                     </Link>
                   </p>
                 )}
-                {device && (
+                {device && !engineeringAgentId && (
                   <button
                     disabled={pending}
                     onClick={() => void act('revoke', { id: device })}
@@ -398,7 +410,7 @@ export default function NoahLaunch({
           {!selected && <p>Agentを選んでください。</p>}
           <button
             disabled={
-              !state || !selected || !online || pending || Boolean(retry)
+              !state || !selected || !online || pending || Boolean(retry) || Boolean(engineeringAgentId && !chosen)
             }
             onClick={() =>
               void act('connect', {
@@ -410,9 +422,9 @@ export default function NoahLaunch({
           >
             {connection ? '接続し直す' : 'このAgentをつなぐ'}
           </button>
-          {connection && (
+          {connection && (!engineeringAgentId || chosen) && (
             <div>
-              <h2>3. 仕事を頼む</h2>
+              <h2>{engineeringAgentId ? '試したい入力' : '3. 仕事を頼む'}</h2>
               <label>
                 依頼する仕事
                 <textarea
@@ -451,13 +463,13 @@ export default function NoahLaunch({
                   })
                 }
               >
-                この内容で実行
+                {engineeringAgentId ? 'この入力で試す' : 'この内容で実行'}
               </button>
             </div>
           )}
         </section>
       )}
-      {!workId && state && (
+      {!workId && !engineeringAgentId && state && (
         <section className={styles.activityStats} aria-label="仕事の状況">
           <div>
             <strong>
@@ -486,17 +498,15 @@ export default function NoahLaunch({
       )}
       {phoneWork}
       <section className={styles.activityList} id="work">
-        <h2>仕事と成果</h2>
-        {state && !state.commands.length && (
+        <h2>{engineeringAgentId ? 'このAgentの試行と成果' : '仕事と成果'}</h2>
+        {state && !commands?.length && (
           <div className={styles.empty}>
             <p>まだ仕事はありません。</p>
-            <Link className={styles.primary} href="/noah/explore">
-              Agentを選んで始める
-            </Link>
+            {!engineeringAgentId && <Link className={styles.primary} href="/noah/explore">Agentを選んで始める</Link>}
           </div>
         )}
-        {state?.commands.map((c) => {
-          const job = state.jobs.find((j) => j.id === c.id)?.noahExecution;
+        {commands?.map((c) => {
+          const job = state?.jobs.find((j) => j.id === c.id)?.noahExecution;
           return (
             <article
               key={c.id}
@@ -519,7 +529,7 @@ export default function NoahLaunch({
                     ? '停止要求を送信済み'
                     : (status[c.state] ?? c.state)}
               </p>
-              {!workId && c.kind === 'run' && (
+              {!engineeringAgentId && !workId && c.kind === 'run' && (
                 <Link href={`/noah/work/${encodeURIComponent(c.id)}`}>
                   仕事の詳細を開く
                 </Link>
@@ -574,6 +584,6 @@ export default function NoahLaunch({
           );
         })}
       </section>
-    </main>
+    </Container>
   );
 }

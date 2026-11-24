@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNod
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, Store } from 'lucide-react';
+import { ShieldCheck, Bot, Home, UserRound, Settings2, RefreshCw, ArrowLeft, Globe, Bookmark, Menu, MoreHorizontal, Search, Store, SquareTerminal } from 'lucide-react';
 import { noahLegacyHref, noahMacMenuAllowed, type NoahSurfaceMode } from '@/lib/noah-surface';
 import { useNoahLocale } from './noah-locale';
 import styles from './noah-service-shell.module.css';
@@ -55,6 +55,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   const secondary = [
     ...(publicStore ? [
       { href: `${base}/explore`, label: 'Agentを探す', Icon: Search },
+      ...(!gridHome ? [{ href: '/noah/engineering', label: 'Agentエンジニアリング', Icon: SquareTerminal }] : []),
       { href: `${base}/my?view=agents`, label: '自分のAgent', Icon: Bot },
       { href: `${base}/activity`, label: '実行中', Icon: RefreshCw },
       { href: `${base}/saved?tab=results`, label: '保存した成果を見る', Icon: Bookmark },
@@ -67,7 +68,7 @@ export default function NoahShell({ children, mode = 'local' }: { children: Reac
   ];
   const gridItems = [
     ...(publicStore ? [{ href: base, label: 'ストア', Icon: Store }] : [{ href: base, label: 'ホーム', Icon: Home }, ...localPrimary]),
-    { href: `${base}/registration`, label: '登録サポート', Icon: Bot },
+    ...(!publicStore ? [{ href: `${base}/registration`, label: '登録サポート', Icon: Bot }] : []),
     ...secondary,
   ];
   const localNav = (mobile=false) => <nav className={mobile?styles.bottomNav:styles.desktopNav} aria-label={t('メインメニュー')}>{localPrimary.map(({ href, label, Icon, selected }) => <a key={href} href={href} aria-label={t(label)} aria-current={selected ? 'page' : undefined}><Icon size={22} strokeWidth={1.7}/><span>{t(label)}</span></a>)}</nav>;
