@@ -245,6 +245,16 @@
    "branch": "claude/ice2/noah-trial-profit 67421771 (docs only, on main 71014dfd)",
    "command": "python3 scratchpad/profit/model.py (rebuild of the Sheets model vs the 12か月 sheet + まとめ + 分かれ目); release/project/repository/design/version checks; node --test noah-page-consolidation, noah-shelf, noah-trial",
    "result": "504 values checked, 0 mismatches; checks exit 0; tests 17/19 (the 2 failures also fail on main: Cannot find package 'typescript' in tests/fixtures/noah/screen.mjs, environmental)."
+  },
+  {
+   "branch": "production avoado.si (13:40, after PR #54)",
+   "command": "scripts/noah-public-walk.mjs https://avoado.si; curl internal entitlement-deliveries",
+   "result": "/noah small 0 (44px live); 10 pages overflow 0; new small: /noah/registration 2, /noah/help 2; entitlement 401."
+  },
+  {
+   "branch": "claude/ice2/noah-earning-average 4b928374 (docs only, on main d5e925f4)",
+   "command": "scratchpad/profit/earn.py vs sheet 稼ぐ設計図 (revision 16); release/project/repository/design/version checks; node --test 13 files reading CHANGELOG/spec-110/spec-122/07/README/business",
+   "result": "sheet summary cells equal Python (477/857/-380/259; 224,155/402,960/102,360; 260/398; 147,547/201,747; 142,137/165,337; 319/377; 466/613); checks 0; 102/102 pass."
   }
  ]
 }
