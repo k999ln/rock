@@ -1,29 +1,23 @@
-.eve {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px 16px;
-  padding: 20px clamp(16px, 3vw, 28px);
-  background: #faf5ed;
-  color: #33251d;
-  border: 1px solid #e7d9c7;
-  border-radius: 16px;
+.consultation { min-width: 0; scroll-margin-block: 20px; }
+.consultation > section {
+  margin: 0;
+  padding: clamp(18px, 3vw, 32px);
+  color: #29251f;
+  background: #fff;
+  border: 1px solid #e1d8ce;
+  border-radius: 18px;
 }
-.monogram {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: #35251f;
-  color: #ffdfb5;
-  font: italic 30px/1 Georgia, serif;
-}
-.copy { flex: 1 1 14rem; min-width: 0; }
-.copy h2 { margin: 0 0 4px; font: 600 1.18rem/1.2 Georgia, serif; }
-.copy p { margin: 0; color: #554337; font-size: .92rem; line-height: 1.65; }
-.eve a { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; color: #874019; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
-.eve a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 2px; }
-.consultation { max-width: 46rem; margin: 0 auto; padding: clamp(18px, 5vw, 48px); color: #32251c; font-family: system-ui, sans-serif; }
-.consultation h1 { margin: 28px 0 0; font: 500 clamp(44px, 8vw, 68px)/1 Georgia, serif; }
-.consultation a { display: inline-flex; min-height: 44px; align-items: center; color: #86401a; text-underline-offset: 4px; }
+.consultation h2 { font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.25; letter-spacing: -.035em; }
+.consultation > section > div:first-child { flex-wrap: wrap; row-gap: 4px; }
+.consultation textarea { max-width: 100%; }
+.consultation article { min-width: 0; overflow-wrap: anywhere; }
+.consultation article pre { max-width: 100%; }
+.consultation [data-eve-proposal] { margin-block: 16px; }
+.consultation [data-eve-proposal] h4 { margin: 0 0 8px; font-size: 1.15rem; }
+.consultation [data-eve-proposal] ol { margin: 14px 0; padding-inline-start: 1.6rem; list-style: decimal; }
+.consultation [data-eve-proposal] li { padding: .75rem 0 .75rem .3rem; border-block-start: 1px solid #e5ded7; }
+.consultation [data-eve-proposal] li::marker { color: #a44208; font-weight: 700; }
+.consultation [data-eve-proposal] p { margin: .4rem 0; }
+.consultation [data-eve-proposal] dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: .3rem .7rem; margin: .5rem 0 0; }
+.consultation [data-eve-proposal] dt { font-weight: 650; color: #5e534a; }
+.consultation [data-eve-proposal] dd { margin: 0; }

@@ -1,5 +1,7 @@
 # 130 Eve（eve.si）— エージェントエンジニアリング
 
+ストアの「Agentエンジニアリング」がEveの作者画面。相談から届く組み合わせ案は、各担当の入出力と最終成果を示す。外部への送信・掲載は別途本人が操作する。[PR #49](https://github.com/iceiceice999/rock/pull/49)
+
 本人指示（2026-11-24）「エージェントをこれとこれを繋げたらお金になるみたいなのはエージェントエンジニアリングって造語にして、それを上手に組み合わせるための eve.si にする」と、同日の回答 8 つ。仕様: [docs/services/eve-si.md](../../docs/services/eve-si.md)。決定: [07](../../docs/structure/07-decisions-from-minutes.md) の 2026-11-24 の 2 行。
 
 進み具合・試験の一覧・起動の手順: [codex/progress/130-eve-si/](../progress/130-eve-si/)（`progress.txt`・`tests.json`・`init.sh`）。再開する時は `progress.txt` と `git log` を読んでから続ける。

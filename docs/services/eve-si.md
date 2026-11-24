@@ -1,10 +1,12 @@
 # Eve（eve.si）— エージェントエンジニアリング
 
+ストアから作者画面を開くと、Eveへの相談欄と自作・外部接続・試行・掲載の操作を一緒に表示する。広い画面では主列と補助列の幅を約1.618対1にする。狭い画面は一列に組み直し、組み合わせ案の各Agentの入力と出力を順に読めるようにする。
+
 - 本人が言う一言: 「エージェントをこれとこれを繋げたらお金になるみたいなのはエージェントエンジニアリングって造語にして、それを上手に組み合わせるための eve.si にする（自分でコード入れるかエージェントかは決めてないけど）」（2026-11-24）
-- 本人の回答（2026-11-24）: ① eve.si は Eve と同じ物。② 「コードかエージェントか」は、組み合わせを作る時の話。③ 名前はこのまま使い、下の定義を公式にする。④ 最初に手で通す 1 本は「金融以外の紹介 × 登録済みブログ」。⑤ エージェントエンジニアリングをやるのは Eve（自動）と人（Eve を道具に）の両方。⑥ お金の元は、組み合わせを回した外部の入金と、組み合わせを使ってもらった作者の収入の両方。⑦ 上手さの中心は、型への当てはめと、型に無い組み合わせの発見の両方。⑧ つなぐ役は Noa から Eve にまとめる。
+- 本人の回答（2026-11-24）: ① eve.si は Eve と同じ物。② 「コードかエージェントか」は、組み合わせを作る時の話。③ 名前はこのまま使い、下の定義を公式にする。④ 最初に手で通す 1 本は「金融以外の紹介 × 登録済みブログ」。⑤ エージェントエンジニアリングをやるのは Eve（自動）と人（Eve を道具に）の両方。⑥ お金の元は、組み合わせを回した外部の入金と、組み合わせを使ってもらった作者の収入の両方。⑦ 上手さの中心は、型への当てはめと、型に無い組み合わせの発見の両方。⑧ つなぐ役の公開窓口は Eve にまとめる。内部の接続組み立ては Noa が担う。
 - 定義: エージェントエンジニアリング ＝ あるエージェントの出力を別のエージェントの入力につなぎ、最後に外部の入金の記録が出る流れを作る技術。LangChain の Agent engineering（2025-12-09。1 つの LLM の仕組みを本番で信頼できる物にする反復）や Agentic engineering（AI エージェントの開発作業を監督する手法）とは意味が違う。
 - Goal（Eveが作る）: 目的＝誰が何にいくら払っているか（需要）から逆算して、お金になる組み合わせを見つけ、作り、試し、入金で採点し、悪い工程だけを作り直す / 入力＝需要の台帳、稼ぎ方の設計図、確かめたエージェント、人の一文や手書きの組み合わせ、本人が自分でやりたい工程（`keepForSelf`）、予算 / 期待成果＝検査と試運転に通った組み合わせファイル（`eve-combination/1`）、見込みの利益の順位、成績表 / 予算上限＝`noahBusinessAllowance` の内側。1 本の試す期間の上限は候補 3,000 円 / 要る権限＝組み合わせの読み書きと試運転。公開・送信・送金・契約は本人と Broker・Wallet。
-- Eve（旧 Noa の役）がつなぐもの: `lib/eve-agent-*.ts`（今のつなぐ役のコード）、`lib/noah-steps.ts`、`lib/noah-business.ts`（設計図 470 通り）、`lib/sky-recipe-planner.ts`（型への当てはめの探索）、`data/noah-business-capabilities.json`（確かめたエージェント。2026-11-24 時点で 0 件）、Eve のビルド（[eve-agent-build.md](eve-agent-build.md)）、`lib/noah-ask.ts`、`lib/work-composition-executor.ts`（切り替え `NOAH_SHELF_CHAINS`）。需要の最初の元は `lib/sky-gig-desk.ts`・`lib/sky-gig-offers.ts`（受注の募集）、`toolkits/noah-affiliate-agents`（ASP の案件と成果）、売り場の公開価格。`data/noah-scout/leads.json`（X の紹介）は「使えるエージェント」の候補で、需要ではない（誰もお金を払っていない。2026-11-24 に実装で分けた）。新規 Agent: つなぎ目の変換（能力 `glue.convert`。宣言型の操作の並び `eve-glue/1` と固定テストで、外へ通信できない作り。Workers と Node で同じ結果）。
+- Eveで相談し、内部でNoaがつなぐもの: `lib/eve-agent-*.ts`（今のつなぐ役のコード）、`lib/noah-steps.ts`、`lib/noah-business.ts`（設計図 470 通り）、`lib/sky-recipe-planner.ts`（型への当てはめの探索）、`data/noah-business-capabilities.json`（確かめたエージェント。2026-11-24 時点で 0 件）、Eve のビルド（[eve-agent-build.md](eve-agent-build.md)）、`lib/noah-ask.ts`、`lib/work-composition-executor.ts`（切り替え `NOAH_SHELF_CHAINS`）。需要の最初の元は `lib/sky-gig-desk.ts`・`lib/sky-gig-offers.ts`（受注の募集）、`toolkits/noah-affiliate-agents`（ASP の案件と成果）、売り場の公開価格。`data/noah-scout/leads.json`（X の紹介）は「使えるエージェント」の候補で、需要ではない（誰もお金を払っていない。2026-11-24 に実装で分けた）。新規 Agent: つなぎ目の変換（能力 `glue.convert`。宣言型の操作の並び `eve-glue/1` と固定テストで、外へ通信できない作り。Workers と Node で同じ結果）。
 - AMCの工程:
   1. 需要を集める（担当: Eve）— 合格条件: 台帳の 1 件ごとに、成果の型・払う人と場所・単価・量・競合・出典 URL・確かめた日がある。
   2. 組み合わせを作る（担当: Eve か人）— 合格条件: `author` が `eve` か `person`。`origin` が `template` か `discovered`。`demand` が台帳の id を指す。

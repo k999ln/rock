@@ -1,4 +1,18 @@
 export const NOAH_ENGINEERING_EVE_MESSAGES = {
+  '作業を選ぶ': ['Choose an action', '选择操作', '작업 선택', 'Elegir una acción', 'اختر إجراءً'],
+  '組み合わせ例': ['Example combinations', '组合示例', '조합 예시', 'Ejemplos de combinaciones', 'أمثلة على التركيبات'],
+  '最初に渡すもの': ['Starting input', '最初的输入', '처음에 전달할 자료', 'Material inicial', 'المدخلات الأولى'],
+  '前のAgentから受け取るもの': ['From the previous agent', '从上一个 Agent 接收', '앞 Agent에서 받을 자료', 'Del agente anterior', 'من الوكيل السابق'],
+  '次のAgentに渡すもの': ['For the next agent', '交给下一个 Agent', '다음 Agent에 전달할 자료', 'Para el siguiente agente', 'إلى الوكيل التالي'],
+  '最後に受け取る成果': ['Final deliverable', '最终成果', '최종 결과물', 'Resultado final', 'المخرجات النهائية'],
+  'ストアの掲載を見る': ['View store listing', '查看商店条目', '스토어에서 보기', 'Ver en la tienda', 'عرض في المتجر'],
+  '例：会議メモから要点をまとめ、担当者ごとのタスクを作りたい': ['For example: Turn meeting notes into key points and tasks for each person.', '例如：整理会议要点，并为每位负责人创建任务。', '예: 회의 메모를 요약하고 담당자별 할 일을 만들고 싶어요.', 'Por ejemplo: Resume mis notas de una reunión y prepara tareas para cada persona.', 'مثال: لخّص محضر الاجتماع وحضّر مهامًا لكل مسؤول.'],
+  'Agentの組み合わせ案': ['Proposed agent workflow', 'Agent 组合方案', 'Agent 조합 제안', 'Propuesta de agentes', 'سير عمل الوكلاء المقترح'],
+  '各Agentの担当と、次に渡すものを並べた設計案です。': ['The design shows each agent’s role and what it hands to the next agent.', '此设计展示每个 Agent 的职责和交给下一步的内容。', '각 Agent가 맡는 일과 다음 단계에 넘기는 자료입니다.', 'El diseño indica la función de cada agente y qué entrega al siguiente.', 'يوضح التصميم دور كل وكيل وما يسلّمه إلى الوكيل التالي.'],
+  '対応する実行先の候補': ['Supported runtime candidate', '支持的执行环境候选', '지원되는 실행 환경 후보', 'Entorno de ejecución compatible propuesto', 'خيار تشغيل مدعوم'],
+  '新しく作る役割の候補': ['Suggested role to build', '建议新建的角色', '새로 만들 역할 후보', 'Función propuesta para crear', 'دور مقترح للإنشاء'],
+  'やりたいことを教えてください。EveがAgentの担当と、次のAgentに何を渡すかを提案します。': ['Describe your goal. Eve suggests agents and what each one should hand to the next.', '请描述你的目标，Eve 会建议各 Agent 的职责和交接内容。', '하고 싶은 일을 알려 주세요. Eve가 Agent별 역할과 다음 단계에 넘길 자료를 제안해요.', 'Describe tu objetivo. Eve sugiere qué agente hace cada parte y qué entrega al siguiente.', 'صِف هدفك. تقترح Eve دور كل وكيل وما يسلّمه إلى الوكيل التالي.'],
+  '組み合わせの相談文が長すぎます。目的と渡したい素材に絞ってください。': ['Shorten the request to your goal and the material you want to provide.', '请缩短咨询内容，聚焦目标和输入素材。', '요청을 줄여 목표와 입력 자료를 중심으로 작성하세요.', 'Acorta la consulta indicando el objetivo y los materiales de entrada.', 'اختصر الطلب ليشمل هدفك والمواد التي تريد تقديمها.'],
   'Eveに相談する': ['Ask Eve', '咨询 Eve', 'Eve에게 상담하기', 'Consultar a Eve', 'استشر Eve'],
   '作りたいAgentについて教えてください。EveはNoahの無料クラウドでHermesを使い、設計案をこの画面に返します。': [
     'Describe the agent you want to build. Eve uses Hermes in Noah’s free cloud and returns a design suggestion here.',

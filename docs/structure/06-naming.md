@@ -17,8 +17,8 @@
 
 | 名前 | 役割1行 | 主なコード | 旧名・統合先 |
 | --- | --- | --- | --- |
-| **Eve** | 会話を Goal（目的・入力・期待成果・予算）に変え、Tool・Agent・実行先をつないで「担当」と組み合わせを形にする（2026-11-24 に Noa を統合） | lib/eve-*.ts, lib/eve-agent-*.ts, components/sky-chat-workspace.tsx, components/eve-object-agent-creator.tsx, app/api/llm/local-agent | Zema chat（lib/zema-chat-session.ts は Eve 配下へ）、**Noa**（2026-11-24 に Eve へ統合） |
-| ~~Noa~~ | 2026-11-24 の本人決定で Eve へ統合。つなぐ役は Eve が持つ | （Eve の行へ） | **Smith**（旧名）→ Noa → Eve。コード内の `smith`・`noa` の識別子と API は変えない |
+| **Eve** | 会話を Goal（目的・入力・期待成果・予算）に変える | lib/eve-*.ts, components/sky-chat-workspace.tsx | Zema chat（lib/zema-chat-session.ts は Eve 配下へ） |
+| **Noa** | Eveが決めた目的に対して、Tool・Agent・実行先をつないで「担当」を形にする（ノアの方舟） | lib/eve-agent-*.ts, components/eve-object-agent-creator.tsx, app/api/llm/local-agent | **Smith**（旧名。コード内 `smith` は段階的に `noa` へ） |
 | **AMC** | avokado Mission Control。Goalを工程に分解し、担当・順序・合格条件を持つ | lib/amc-*.ts, lib/jennifer-amc-*.ts, data/amc/, app/amc | **Jennifer**（project chief of staff。役割がAMCと重複するためAMCへ統合。lib/jennifer-*.ts は amc/ 配下へ） |
 | **Jev** | 成果を独立に評価する remote evaluator。権限は持たない | lib/jev-*.ts, app/api/jev-evaluation | — |
 | **Spider** | コードと接続先を巡回して不具合・権限逸脱を探す検査役（雲が歩く軌跡のアニメーション） | lib/spider-*.ts, components/spider-workspace.tsx, toolkits/spider-guard, .github/workflows/spider-codeql.yml | — |
@@ -32,7 +32,7 @@
 
 ## 使ってはいけない言い換え
 
-- 「Smith」「Noa」→ Eve（2026-11-24 に統合。コード識別子と API は変えない）。「Zema」→ 文脈で Eve（会話）か Work（実行）。「Jennifer」→ AMC。
+- 「Smith」→ Noa。「Zema」→ 文脈で Eve（会話）か Work（実行）。「Jennifer」→ AMC。
 - 「avocadoMini」→ mii。「Mini」単独は mii の意味でなら可、ただし新規本文では mii。
 - 「si」= AI の表記（2026-10-13の決定）。本文の AI 表記は si のまま。API/enum/パスは変えない。
 - 製品が何個あるかを数えるときは外側の表だけを数える（会社1、物理端末1、入口1、場所1、基盤1、PC1）。

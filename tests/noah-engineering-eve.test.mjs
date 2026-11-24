@@ -2,42 +2,40 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { screen } from './fixtures/noah/screen.mjs';
 import { NOAH_LOCALES, noahTranslate } from '../lib/noah-i18n.ts';
+import * as navigation from '../lib/eve-engineering-navigation.ts';
 import { noahEngineeringSteps } from '../lib/noah-engineering.ts';
 import * as guidance from '../lib/noah-engineering-eve.ts';
 import { withMiniSite } from '../services/sky-web/domain-router.mjs';
 import * as cloud from '../lib/noah-cloud-contract.ts';
 import * as intent from '../lib/owner-intent.ts';
 
-void test('each engineering step opens a localized editable Eve draft in another tab, with only a fixed step and language in the URL', () => {
+void test('every author stage embeds the editable Eve consultation, keeping the device and catalog reachable', () => {
   for (const locale of NOAH_LOCALES) {
-    const ui = screen({ locale, modules: { '@/lib/noah-engineering-eve': guidance } });
+    const ui = screen({ locale, modules: {
+      '@/lib/noah-engineering-eve': guidance, '@/lib/eve-engineering-navigation': navigation,
+      '@/lib/noah-cloud-contract': cloud, '@/lib/owner-intent': intent, './noah-ready-detail': { default: () => null },
+    } });
     for (const stage of noahEngineeringSteps) {
-      const page = ui.mount('components/noah-engineering-eve.tsx', { stage, agentName: 'private-agent' });
-      const [link] = page.find('a');
-      const url = new URL(link.props.href, 'https://avoado.si');
-      assert.equal(url.pathname, '/os/eve');
-      assert.equal(url.hash, '#eve-compose');
-      assert.deepEqual([...url.searchParams], [['engineering', stage], ['lang', locale]]);
-      assert.equal(link.props.target, '_blank');
-      assert.match(link.props.rel, /noopener/);
-      const { question, tip } = guidance.engineeringAdvice[stage];
-      assert.ok(page.text().includes(noahTranslate(locale, tip)));
-      const draft = guidance.engineeringEveDraft(url.searchParams.get('engineering'), url.searchParams.get('lang'));
-      assert.equal(draft, noahTranslate(locale, question));
-      if (locale !== 'ja') {
-        assert.notEqual(draft, question);
-        assert.notEqual(noahTranslate(locale, tip), tip);
-      }
+      const page = ui.mount('components/noah-engineering-eve.tsx', { stage });
+      const links = navigation.eveEngineeringNavigation(stage, locale);
+      assert.equal(page.find('textarea')[0].props.value, noahTranslate(locale, guidance.engineeringAdvice[stage].question));
+      assert.equal(page.find('a').length, 0, 'Eve is embedded in this page');
+      assert.equal(links.consultation, `/noah/engineering?step=${stage}&lang=${locale}#eve-compose`);
+      assert.equal(links.catalog, `/noah/engineering/combinations?engineering=${stage}&lang=${locale}`);
+      assert.equal(links.device, `/os/eve?engineering=${stage}&lang=${locale}&mode=device#eve-compose`);
     }
-    assert.deepEqual(ui.calls, []);
+    const initial = ui.mount('components/noah-engineering-eve.tsx', { emptyDraft: true });
+    assert.equal(initial.find('textarea')[0].props.value, '');
+    assert.deepEqual(ui.calls.filter(call => call.method === 'POST'), []);
     assert.equal(ui.storage.size, 0);
   }
   for (const stage of [undefined, null, '', 'constructor', '__proto__', 'custom request', ['test']]) {
     assert.equal(guidance.engineeringEveDraft(stage, 'ja'), '');
+    assert.equal(navigation.eveEngineeringNavigation(stage, ['ar']).consultation, '/noah/engineering?step=create&lang=ja#eve-compose');
   }
 });
 
-void test('the existing site router passes engineering handoffs to Eve on the public and local hosts', async () => {
+void test('the site router preserves the engineering composer on the public and local hosts', async () => {
   const seen = [];
   const router = withMiniSite({ fetch(request) { seen.push(request.url); return new Response('Eve'); } });
   for (const origin of ['https://avoado.si', 'http://127.0.0.1:48623']) {
@@ -100,4 +98,21 @@ void test('Eve sends the edited question only after confirmation and shows the r
   await reread.tick(0);
   assert.equal(reread.text(reread.find('pre')[0]), reply);
   assert.equal(starts, 1);
+});
+
+void test('Eve displays a returned chain with exact handoffs and proposed roles without making a new call', async () => {
+  const steps = [
+    { profile: 'memory', role: '質問を分類', input: '参加者の質問', output: 'テーマごとの質問集' },
+    { profile: null, role: '研修計画を組むAgent', input: 'テーマごとの質問集', output: '研修の時間割' },
+  ];
+  const ui = screen({ modules: { '@/lib/noah-cloud-contract': cloud, '@/lib/owner-intent': intent, './noah-ready-detail': { default: () => null } },
+    fetch: () => ({ body: { ownerScope: 'a', connection: null, jobs: [
+      { id: 'owned', prompt: '研修を開きたい', state: 'returned', result: { text: 'original' }, files: [], proposal: { steps, deliverable: '研修の時間割' } },
+    ] } }) });
+  const view = ui.mount('components/noah-cloud-agent.tsx', { projectId: cloud.NOAH_EVE_HERMES_PROJECT, profile: 'hermes', providerFamilyId: null, eveDraft: '', proposeCombination: true });
+  await view.tick(0);
+  assert.deepEqual(view.find('dd').map(n => view.text(n)), ['参加者の質問','テーマごとの質問集','テーマごとの質問集','研修の時間割']);
+  assert.match(view.text(), /Memory/);
+  assert.match(view.text(), /新しく作る役割の候補/);
+  assert.equal(ui.calls.filter(call => call.method === 'POST').length, 0);
 });

@@ -120,10 +120,12 @@ void test('規則 9: no keys, passwords, or card/account numbers in the file', (
 void test('accept rules (judged by Jev, never by the maker)', () => {
   assert.equal(eveCheckAccept({ type: 'json', required: ['keywords'], minItems: 2 }, { keywords: ['a', 'b'] }).ok, true);
   assert.equal(eveCheckAccept({ type: 'json', required: ['keywords'] }, { other: 1 }).ok, false);
+  assert.equal(eveCheckAccept({ type: 'json', required: ['keywords'] }, []).ok, false);
   assert.equal(eveCheckAccept({ type: 'json', minItems: 3 }, { items: [1] }).ok, false);
   assert.deepEqual(eveCheckAccept({ type: 'text', minLength: 5, mustInclude: ['PR'] }, 'PR です。広告'), { ok: true, reason: '長さと語が合っています。' });
   assert.equal(eveCheckAccept({ type: 'text', mustInclude: ['PR'] }, '広告の表示なし').ok, false);
   assert.equal(eveCheckAccept({ type: 'file', mime: ['video/mp4'], maxBytes: 10 }, { mime: 'video/mp4', bytes: 11 }).ok, false);
+  assert.equal(eveCheckAccept({ type: 'file', mime: ['video/mp4'] }, { mime: 'video/mp4', bytes: -1 }).ok, false);
   assert.equal(eveCheckAccept({ type: 'file', mime: ['video/mp4'] }, { mime: 'video/mp4', bytes: 11 }).ok, true);
 });
 
@@ -150,4 +152,13 @@ void test('glue: a declarative transform that cannot reach the network, with fix
   assert.equal(eveGlueTestResults({ ...spec, tests: [{ input: {}, expected: { wrong: true } }] })[0].ok, false);
   const big = { schema: EVE_GLUE_SCHEMA, ops: [{ op: 'pick', from: 'x', as: 'y' }], tests: [{ input: {}, expected: { y: null } }] };
   assert.throws(() => runEveGlue(big, { x: 'あ'.repeat(30_000) }), /バイトを超えました/);
+});
+
+void test('an intermediate glue result respects the same size limit as the final result', () => {
+  const spec = { schema: EVE_GLUE_SCHEMA, tests: [{ input: {}, expected: {} }], ops: [
+    { op: 'pick', from: 'report', as: 'result' },
+    { op: 'const', value: 'done', as: 'result' },
+  ] };
+  assert.throws(() => runEveGlue(spec, { report: 'a'.repeat(65_536) }), /バイト/);
+  assert.deepEqual(runEveGlue(spec, { report: 'small report' }), { result: 'done' });
 });

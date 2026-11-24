@@ -41,6 +41,11 @@ void test('API POST: check a hand-written combination; shape errors name the fie
   const bad = eveCombinationPost({ action: 'check', combination: { ...first, version: 0 } });
   assert.equal(bad.status, 400);
   assert.equal(bad.body.path, 'version');
+  const brokenFlow = structuredClone(first);
+  brokenFlow.steps.at(-1).flow = { inputs: [] };
+  const broken = eveCombinationPost({ action: 'check', combination: brokenFlow });
+  assert.equal(broken.status, 400);
+  assert.match(broken.body.path, /\.flow$/u);
   assert.equal(eveCombinationPost({ action: 'check', combination: first, extra: 1 }).status, 400);
   assert.equal(eveCombinationPost({ action: 'send' }).status, 400);
   assert.equal(eveCombinationPost([]).status, 400);
@@ -53,6 +58,9 @@ void test('API POST: score from records — external records only; bad windows a
     records: [rec('made', 3, 'work', 'work:1', { costYen: 300 }), rec('sent', 3, 'work', 'work:2'), rec('approved', 1, 'self', 'me', { amountYen: 5_000 })],
   });
   assert.equal(r.status, 200);
+  assert.equal(r.body.score.judge, null, 'self-supplied evidence cannot produce a Jev judgment');
+  assert.equal(r.body.score.mode, 'preview');
+  assert.equal(r.body.score.evidence, 'caller-supplied');
   assert.equal(r.body.score.approvedYen, 0, 'self-report is not approval');
   assert.equal(r.body.score.funnel.approved, null);
   assert.equal(r.body.score.rejected.length, 1);

@@ -106,6 +106,11 @@ export function eveGlueProblem(spec: EveGlueSpec): string | null {
   }
 }
 
+const encoder = new TextEncoder();
+function checkOutputBytes(size: number) {
+  if (size > LIMITS.outputBytes) throw new EveGlueError(`出力が ${LIMITS.outputBytes} バイトを超えました。`);
+}
+
 /** 変換を動かす。形が不正・出力が大きすぎる・数にならない時は投げる。 */
 export function runEveGlue(spec: EveGlueSpec, input: unknown): Record<string, unknown> {
   const problem = eveGlueProblem(spec);
@@ -120,12 +125,17 @@ export function runEveGlue(spec: EveGlueSpec, input: unknown): Record<string, un
     switch (op.op) {
       case 'pick': write(out, as, structuredClone(get(op.from) ?? null)); break;
       case 'const': write(out, as, op.value); break;
-      case 'template':
+      case 'template': {
+        let bytes = 0;
         write(out, as, op.text.replace(/\{\{([^}]*)\}\}/gu, (_, p: string) => {
           const v = get(p.trim());
-          return v === undefined || v === null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v as string | number | boolean | bigint);
+          const value = v === undefined || v === null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v as string | number | boolean | bigint);
+          bytes += encoder.encode(value).length;
+          checkOutputBytes(bytes);
+          return value;
         }));
         break;
+      }
       case 'take': { const v = get(op.from); write(out, as, Array.isArray(v) ? structuredClone(v.slice(0, op.n)) : []); break; }
       case 'map': {
         const v = get(op.from);
@@ -143,8 +153,8 @@ export function runEveGlue(spec: EveGlueSpec, input: unknown): Record<string, un
       }
       case 'count': { const v = get(op.from); write(out, as, Array.isArray(v) ? v.length : 0); break; }
     }
+    checkOutputBytes(encoder.encode(JSON.stringify(out)).length);
   }
-  if (new TextEncoder().encode(JSON.stringify(out)).length > LIMITS.outputBytes) throw new EveGlueError(`出力が ${LIMITS.outputBytes} バイトを超えました。`);
   return out;
 }
 

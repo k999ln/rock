@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import EveSyncWorkspace from '@/components/eve-sync-workspace';
 import SkyChatWorkspace from '@/components/sky-chat-workspace';
 import { readSkyEveSelection } from '@/lib/sky-eve-connections';
+import { eveEngineeringNavigation } from '@/lib/eve-engineering-navigation';
 import { engineeringEveDraft } from '@/lib/noah-engineering-eve';
-import EveEngineeringConsultation from '@/components/eve-engineering-consultation';
+import { redirect } from 'next/navigation';
 export const metadata: Metadata = {
   title: 'Eve — RockstarOS',
   description: 'PixelでもWebでも、同じ会話・仕事・成果から続きを。',
@@ -31,10 +32,7 @@ export default async function EvePage({
   const params = await searchParams;
   const initialDraft = engineeringEveDraft(params.engineering, params.lang);
   if (initialDraft && params.engineering && !params.mode && !params.device && !params.thread) {
-    const device = new URLSearchParams({ mode: 'device', engineering: params.engineering });
-    if (typeof params.lang === 'string') device.set('lang', params.lang);
-    return <EveEngineeringConsultation draft={initialDraft} backHref={'/noah/engineering?' + new URLSearchParams({ step: params.engineering })}
-      deviceHref={'/os/eve?' + device + '#eve-compose'} />;
+    redirect(eveEngineeringNavigation(params.engineering, params.lang).consultation);
   }
   return params.mode === 'tools' ? (
     <SkyChatWorkspace />

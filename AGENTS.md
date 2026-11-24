@@ -13,7 +13,7 @@
 
 ## 2. 名前
 
-- 正本は `docs/structure/06-naming.md`。外: avokado / mii / Eve / Sky / RockstarOS / Pro。内: Eve（2026-11-24 に Noa＝旧Smith を統合）, AMC（旧Jennifer を吸収）, Jev, Spider, Sky, Work/Job/Receipt（旧Zema）, Broker, Wallet, Game。
+- 正本は `docs/structure/06-naming.md`。外: avokado / mii / Eve / Sky / RockstarOS / Pro。内: Eve, Noa（旧Smith）, AMC（旧Jennifer を吸収）, Jev, Spider, Sky, Work/Job/Receipt（旧Zema）, Broker, Wallet, Game。
 - avoado.si の公開サービス名は最新の本人指示により Eve と Noah。他は内部名。AI の表記は si。
 - 旧名が本文にあったら task 03/04 の手順で直す。API path・D1 table・enum・環境変数は変えない。
 
@@ -51,7 +51,7 @@
 - RockstarOS は一つ。ハード差は hardware profile（02-rockstaros.md）。account が正本、端末は cache。
 - eSIM は RockstarOS の鍵付き回線。GB を売らない。OS 本体を eSIM に入れない（03-esim.md）。
 - mii は Spatial Core（4 Tower + Hub）＋ 差し替え可能な表示層。Tower に OS を 4 コピー入れない（01-mii.md）。
-- Eve → AMC → Jev の内部構造は潰さない（Noa は 2026-11-24 の本人決定で Eve へ統合）。Eve は自分が作った組み合わせを合格にしない。Jev は権限を持たない。Spider は読むだけ。Broker と Wallet のゲートを飛ばさない。
+- Eve → Noa → AMC → Jev の内部構造は潰さない。組み合わせの相談と作成の公開窓口は Eve にまとめる。Jev は権限を持たない。Spider は読むだけ。Broker と Wallet のゲートを飛ばさない。
 - 端末内 LLM の出力、remote 完了、CI 成功は、本人の承認・Tool 成功・実機合格に昇格しない。QEMU / 単体 APK / PWA の合格を実機 OS の合格と呼ばない。
 
 ## 8. マージ時

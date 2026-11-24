@@ -107,7 +107,7 @@
 .services nav { display: flex; flex-wrap: wrap; gap: 0 20px; }
 .services a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #98420e; font-size: 14px; font-weight: 560; }
 @media (min-width: 850px) {
-  .showcase[data-related] { grid-template-columns: minmax(0, 1.55fr) minmax(265px, 1fr); }
+  .showcase[data-related] { grid-template-columns: minmax(0, 1.618fr) minmax(265px, 1fr); }
   .collection { padding-top: 8px; border-top: 1px solid var(--store-line); }
 }
 @media (max-width: 849px) {

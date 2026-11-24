@@ -13,7 +13,7 @@
 .heading h1 { font-size: clamp(1.7rem, 4vw, 2.95rem); font-weight: 750; line-height: 1.18; letter-spacing: -.045em; margin: 6px 0 0; overflow-wrap: anywhere; }
 .back, .textLink, .empty a, .next { display: inline-flex; min-height: 44px; align-items: center; gap: .45rem; text-decoration: none; }
 .back { color: var(--accent); font-size: .92rem; font-weight: 640; }
-.actions { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-block: 1px solid var(--line); margin: 22px 0; }
+.actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); border-block: 1px solid var(--line); margin: 0; }
 .actions a { color: var(--ink); display: grid; grid-template-columns: 1fr auto; gap: .65rem .3rem; padding: 17px 13px; position: relative; text-decoration: none; font-weight: 650; line-height: 1.4; }
 .actions a + a { border-inline-start: 1px solid var(--line); }
 .actions .icon { grid-column: 1 / -1; color: var(--accent); }
@@ -30,9 +30,24 @@
 .next { background: var(--accent); color: white; padding: 2px 16px; border-radius: 9px; margin: 16px 0 4px; font-weight: 650; }
 .status button { min-height: 44px; }
 .page :is(a,select,button):focus-visible { outline: 3px solid #ba540f; outline-offset: 2px; }
-@media (max-width: 680px) {
-  .actions { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  .actions a { padding: 14px 12px; }
+.resources { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin: 4px 4px 16px; }
+.resources a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; color: #83401a; font-size: .94rem; text-decoration: underline; text-underline-offset: 4px; }
+.resources svg { flex: none; }
+.toggle { display: none; }
+@container eve-layout (max-width: 671.99px) {
+  .toggle { display: flex; align-items: center; gap: .6rem; width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: #fff; font: inherit; font-weight: 650; text-align: start; cursor: pointer; }
+  .toggle svg { margin-inline-start: auto; flex: none; }
+  .toggle small { font-size: .875rem; font-weight: 500; color: var(--accent); }
+  .toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .chooser[data-actions-open="false"] .tools { display: none; }
+  .actions a { padding: 12px; }
   .actions a:nth-child(3) { border-inline-start: 0; }
   .actions a:nth-child(n + 3) { border-block-start: 1px solid var(--line); }
+}
+@container eve-layout (min-width: 672px) {
+  .actions { grid-template-columns: minmax(0, 1fr); }
+  .actions a { grid-template-columns: auto minmax(0, 1fr) auto; column-gap: .7rem; align-items: center; }
+  .actions .icon { grid-column: auto; }
+  .actions a + a { border-inline-start: 0; border-block-start: 1px solid var(--line); }
+  .actions a[aria-current] { box-shadow: inset 3px 0 #d9681f; }
 }

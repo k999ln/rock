@@ -50,7 +50,10 @@ void test('段 4: from demand back to what we have — candidates, profit, and t
 void test('段 4: forward from one agent — “A and B connect” — finds demand downstream', () => {
   const writer = arrows.find((a) => a.id === 'noah:writer');
   assert.deepEqual(eveNeighbors(writer, arrows).map((a) => a.id), ['noah:translator']);
-  const found = eveDiscoverForward(writer, input);
+  assert.deepEqual(eveDiscoverForward(writer, input), [], 'the starting agent needs its own input');
+  const ready = { ...input, have: ['research-report'] };
+  assert.deepEqual(eveDiscoverForward(writer, { ...ready, budgetYen: 125 }), [], 'the budget includes the starting agent');
+  const found = eveDiscoverForward(writer, ready);
   assert.ok(found.length >= 1);
   assert.deepEqual(found[0].arrows.map((a) => a.id), ['noah:writer', 'noah:translator']);
   assert.equal(found[0].demandId, 'gig:short-translation:coconala');
@@ -127,4 +130,12 @@ void test('段 4: templates are matched to demand and ranked by expected profit;
   assert.ok(ranked.every((r) => r.status !== 'blocked'), 'templates with demand are well-formed');
   assert.deepEqual(ranked.map((r) => r.profitYen), [...ranked].map((r) => r.profitYen).sort((a, b) => b - a));
   assert.deepEqual(eveRankTemplates({ ledger, agents: [], verified: {} }).map((r) => r.combination.id), ranked.map((r) => r.combination.id), 'deterministic');
+});
+
+void test('different Japanese materials cannot connect until a verified agent produces the required input', () => {
+  const demand = [D('demand:summary', 'gig', '要約', 'store', 200, 1, 1)];
+  const writer = A('noah:writer', 'content.article', ['記事'], '要約');
+  const plan = have => eveDiscoverFromDemand({ have, arrows: [writer], demand });
+  assert.deepEqual(plan(['画像']).gaps[0].missingMaterials, ['記事']);
+  assert.equal(plan(['記事']).candidates[0].arrows[0].id, writer.id);
 });

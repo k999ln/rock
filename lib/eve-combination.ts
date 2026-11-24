@@ -13,7 +13,7 @@
  * - live:    本番に進める（公開・送信・送金は、それでも Broker・Wallet と本人の門を通る）。
  */
 
-import { noahBlueprintWaitProblem, type NoahStep } from './noah-steps.ts';
+import { noahBlueprintWaitProblem, type NoahStep, type NoahStepDataLink } from './noah-steps.ts';
 import { NOAH_ACCOUNTS, NOAH_BUILTIN_CAPABILITIES, type NoahBlueprint } from './noah-business.ts';
 import { eveGlueProblem, eveGlueTestsPass, type EveGlueSpec } from './eve-glue.ts';
 
@@ -103,6 +103,7 @@ function need(ok: unknown, path: string, message: string): asserts ok {
 }
 const yen = (v: unknown) => Number.isSafeInteger(v) && (v as number) >= 0 && (v as number) <= 100_000_000;
 const text = (v: unknown, max: number) => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
+const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(word => typeof word === 'string' && word.trim().length > 0);
 
 /**
  * 組み合わせの形を確かめ、凍らせた写しを返す（人が手で書く時の入口）。形が壊れていたら投げる。
@@ -134,7 +135,16 @@ export function defineCombination(input: EveCombination): EveCombination {
     need(s && typeof s.id === 'string' && ID.test(s.id), `${at}.id`, '工程の id が不正です。');
     need(text(s.label, 200), `${at}.label`, '工程の名前が要ります。');
     need(['auto', 'tap', 'human', 'review'].includes(s.kind), `${at}.kind`, 'auto・tap・human・review のどれかです。');
-    need(Array.isArray(s.after), `${at}.after`, '待つ工程の配列が要ります（無ければ []）。');
+    need(strings(s.after) && s.after.every((id: string) => ID.test(id)), `${at}.after`, '待つ工程の id の配列が要ります（無ければ []）。');
+    need(s.capability === undefined || text(s.capability, 120), `${at}.capability`, '能力の名前を文字で指定してください。');
+    need(s.reason === undefined || typeof s.reason === 'string', `${at}.reason`, '本人が関わる理由を文字で指定してください。');
+    if (s.flow !== undefined) {
+      need(s.flow && strings(s.flow.inputs) && strings(s.flow.outputs), `${at}.flow`, '工程の入力と出力を文字列の配列で指定してください。');
+      need(s.flow.dataFrom === undefined || (Array.isArray(s.flow.dataFrom) && s.flow.dataFrom.every((link: NoahStepDataLink) =>
+        link && typeof link.from === 'string' && ID.test(link.from) && typeof link.material === 'string' && link.material.trim())),
+        `${at}.flow.dataFrom`, '受け取る工程の id と素材名が要ります。');
+    }
+    need(s.fallback === undefined || Array.isArray(s.fallback), `${at}.fallback`, '差し替えの候補は配列で指定してください。');
     need(s.costYen === undefined || yen(s.costYen), `${at}.costYen`, '円の整数です。');
     const refs: [string, EveAgentRef | undefined][] = [['agent', s.agent]];
     (s.fallback ?? []).forEach((f: EveAgentRef, j: number) => refs.push([`fallback[${j}]`, f]));
@@ -241,8 +251,12 @@ export function eveCombinationProblems(c: EveCombination, ctx: EveCheckContext =
       else if (!eveGlueTestsPass(s.glue)) add(4, 'paper', 'つなぎ目の変換が、固定テストに通っていません。', s.id);
       continue;
     }
-    if (!s.capability || NOAH_BUILTIN_CAPABILITIES.includes(s.capability as never)) continue;
-    const verified = ctx.verified?.[s.capability] ?? [];
+    if (s.capability && NOAH_BUILTIN_CAPABILITIES.includes(s.capability as never)) continue;
+    if (!s.capability) {
+      add(4, 'paper', 'この自動工程には能力と、その能力をこなす部品が要ります。', s.id);
+      continue;
+    }
+    const verified = ctx.verified && Object.hasOwn(ctx.verified, s.capability) ? ctx.verified[s.capability] ?? [] : [];
     if (!s.agent) add(4, 'paper', `「${s.capability}」をこなすエージェントが決まっていません。`, s.id);
     else if (!verified.includes(s.agent.ref)) add(4, 'paper', `「${s.agent.ref}」は「${s.capability}」をこなすと確かめていません。`, s.id);
   }
@@ -291,7 +305,7 @@ export function eveCombinationStatus(problems: readonly EveProblem[]): EveCombin
 export function eveCheckAccept(rule: EveAcceptRule, output: unknown): { ok: boolean; reason: string } {
   if (rule.type === 'json') {
     if (output === null || typeof output !== 'object') return { ok: false, reason: 'JSON のオブジェクトか配列が返っていません。' };
-    const missing = (rule.required ?? []).filter((k) => !Array.isArray(output) && !(k in (output as object)));
+    const missing = (rule.required ?? []).filter((k) => Array.isArray(output) || !Object.hasOwn(output, k));
     if (missing.length) return { ok: false, reason: `項目が足りません: ${missing.join('・')}` };
     if (rule.minItems !== undefined) {
       const list = Array.isArray(output) ? output : Object.values(output as object).find(Array.isArray);
@@ -309,7 +323,7 @@ export function eveCheckAccept(rule: EveAcceptRule, output: unknown): { ok: bool
     return { ok: true, reason: '長さと語が合っています。' };
   }
   const file = output as { mime?: unknown; bytes?: unknown } | null;
-  if (!file || typeof file.mime !== 'string' || !Number.isSafeInteger(file.bytes)) return { ok: false, reason: 'ファイル（mime と大きさ）が返っていません。' };
+  if (!file || typeof file.mime !== 'string' || (!Number.isSafeInteger(file.bytes) || (file.bytes as number) < 0)) return { ok: false, reason: 'ファイル（mime と大きさ）が返っていません。' };
   if (!rule.mime.includes(file.mime)) return { ok: false, reason: `ファイルの種類が違います（${file.mime}）。` };
   if (rule.maxBytes !== undefined && (file.bytes as number) > rule.maxBytes) return { ok: false, reason: `大きすぎます（${file.bytes as number} バイト）。` };
   return { ok: true, reason: 'ファイルの種類と大きさが合っています。' };

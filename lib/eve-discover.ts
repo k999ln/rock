@@ -55,18 +55,15 @@ export type EveDiscovery = {
   reason: string;
 };
 
-/** 素材の型の書き方を、工程の計画が受け付ける形にそろえる（小文字・数字・-、英字で始まる、48 文字まで）。 */
-export function eveMaterial(name: string): string {
-  const s = name.toLowerCase().replace(/[^a-z0-9-]+/gu, '-').replace(/-+/gu, '-').replace(/^-|-$/gu, '');
-  return (/^[a-z]/u.test(s) ? s : `m-${s}`).slice(0, 48).replace(/-$/u, '') || 'm';
-}
+/** 素材の名前は表示と受け渡しに使う。日本語や記号を落とすと違う成果が同じ型になってしまう。 */
+export const eveMaterial = (name: string): string => name.trim().normalize('NFC').toLowerCase();
 
-const toCapability = (a: EveArrow): RecipeCapability => ({
+const toCapability = (a: EveArrow, materialId: (name: string) => string): RecipeCapability => ({
   id: a.id,
   name: `${a.capability}（${a.id}）`,
   kind: a.ownerMinutes > 0 ? 'owner' : 'tool',
-  consumes: a.consumes.map(eveMaterial),
-  produces: eveMaterial(a.produces),
+  consumes: a.consumes.map(materialId),
+  produces: materialId(a.produces),
   available: a.verified,
   costMinor: a.costYen,
   ownerMinutes: a.ownerMinutes,
@@ -130,17 +127,22 @@ const rank = (a: EveDiscovery, b: EveDiscovery) => b.profitYen - a.profitYen || 
 export function eveDiscoverFromDemand(input: EveDiscoverInput): { candidates: EveDiscovery[]; gaps: { demandId: string; missingMaterials: string[] }[] } {
   const templates = templateIndex(input.templates);
   const byId = new Map(input.arrows.map((a) => [a.id, a]));
-  const caps = input.arrows.map(toCapability);
+  // planRecipes accepts short ASCII IDs. Use a one-to-one lookup for this plan and return the original material names to the caller.
+  const materials = [...new Set([...input.have, ...input.demand.map(d => d.outcome),
+    ...input.arrows.flatMap(a => [...a.consumes, a.produces])].map(eveMaterial))].sort();
+  const ids = new Map(materials.map((name, i) => [name, `m-${i}`]));
+  const materialId = (name: string) => ids.get(eveMaterial(name))!;
+  const caps = input.arrows.map(a => toCapability(a, materialId));
   const obs = input.arrows.map(toObservation);
-  const have = [...new Set(input.have.map(eveMaterial))];
+  const have = [...new Set(input.have.map(materialId))];
   const candidates: EveDiscovery[] = [];
   const gaps: { demandId: string; missingMaterials: string[] }[] = [];
   for (const d of input.demand) {
-    const want = eveMaterial(d.outcome);
+    const want = materialId(d.outcome);
     if (have.includes(want)) continue;
     const plan = planRecipes({ have, want, budgetMinor: input.budgetYen ?? 100_000_000, ownerMinuteValueMinor: input.ownerMinuteValueYen ?? 0, expectedRepeats: 10, keepForSelf: [] }, caps, obs);
     if (!plan.candidates.length) {
-      gaps.push({ demandId: d.id, missingMaterials: plan.gap?.missingMaterials ?? [want] });
+      gaps.push({ demandId: d.id, missingMaterials: (plan.gap?.missingMaterials ?? [want]).map(id => materials[Number(id.slice(2))]) });
       continue;
     }
     for (const c of plan.candidates) candidates.push(score(d, c.steps.map((s) => byId.get(s.capabilityId)!), c.acceptanceRate, input, templates));
@@ -162,15 +164,9 @@ export function eveNeighbors(a: EveArrow, arrows: readonly EveArrow[], have: rea
 export function eveDiscoverForward(start: EveArrow, input: EveDiscoverInput): EveDiscovery[] {
   if (!start.verified) return [];
   const startOut = eveMaterial(start.produces);
-  const others = input.arrows.filter((a) => a.id !== start.id);
-  const { candidates } = eveDiscoverFromDemand({ ...input, have: [...input.have, startOut], arrows: others });
-  const templates = templateIndex(input.templates);
-  const demandById = new Map(input.demand.map((d) => [d.id, d]));
-  const startPass = (start.accepted + 1) / (start.runs + 2);
-  return candidates
-    .filter((c) => c.arrows.some((a) => a.consumes.map(eveMaterial).includes(startOut)))
-    .map((c) => score(demandById.get(c.demandId)!, [start, ...c.arrows], c.passRate * startPass, input, templates))
-    .sort(rank);
+  const arrows = [start, ...input.arrows.filter(a => a.id !== start.id)];
+  return eveDiscoverFromDemand({ ...input, arrows }).candidates.filter(c =>
+    c.arrows[0]?.id === start.id && c.arrows.slice(1).some(a => a.consumes.map(eveMaterial).includes(startOut)));
 }
 
 /**

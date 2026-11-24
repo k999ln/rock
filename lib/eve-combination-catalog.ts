@@ -61,7 +61,7 @@ export type EveCatalogEntry = {
 function viewStep(c: EveCombination, s: EveStep, problems: readonly EveProblem[]): EveStepView {
   const builtin = !!s.capability && NOAH_BUILTIN_CAPABILITIES.includes(s.capability as never);
   const part: EveStepView['part'] = c.keepForSelf.includes(s.id) ? 'self' : s.kind !== 'auto' ? 'owner' : s.glue ? 'glue' : builtin ? 'builtin' : s.agent ? 'agent' : 'missing';
-  const label = s.capability && s.capability in NOAH_CAPABILITIES ? NOAH_CAPABILITIES[s.capability as keyof typeof NOAH_CAPABILITIES].label : s.capability === 'glue.convert' ? 'つなぎ目の変換' : null;
+  const label = s.capability && Object.hasOwn(NOAH_CAPABILITIES, s.capability) ? NOAH_CAPABILITIES[s.capability as keyof typeof NOAH_CAPABILITIES].label : s.capability === 'glue.convert' ? 'つなぎ目の変換' : null;
   return {
     id: s.id,
     label: s.label,
@@ -171,9 +171,11 @@ export function eveCombinationPost(value: unknown): { status: number; body: unkn
     const w = v.window as { from?: unknown; to?: unknown } | undefined;
     if (!w || typeof w.from !== 'string' || typeof w.to !== 'string') return { status: 400, body: { error: '期間（from・to）が要ります。' } };
     try {
-      return { status: 200, body: { score: eveScore(r.c, v.records as EveOutcomeRecord[], { from: w.from, to: w.to }) } };
+      // These records came from the caller, even when their source field names a bank or an ASP.
+      const preview = eveScore(r.c, v.records as EveOutcomeRecord[], { from: w.from, to: w.to });
+      return { status: 200, body: { score: { ...preview, judge: null, evidence: 'caller-supplied', mode: 'preview' } } };
     } catch {
-      return { status: 400, body: { error: '期間を確かめてください。' } };
+      return { status: 400, body: { error: '記録と期間を確かめてください。' } };
     }
   }
   return { status: 400, body: { error: 'action は check か score です。' } };
