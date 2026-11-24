@@ -222,7 +222,7 @@ export function eveScore(
     days,
     funnel,
     costYen,
-    costComplete: costComplete && funnel.made !== null,
+    costComplete: costComplete && (funnel.made ?? 0) > 0,
     approvedYen,
     paidYen,
     profitYen,

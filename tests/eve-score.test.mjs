@@ -136,8 +136,12 @@ void test('成果承認から後日の入金までを同じ案件の累積で比
     const share = eveAuthorShare(eveScore(C, [payment, ...fees], WINDOW), 'reader');
     assert.deepEqual([share.status, share.baseYen, share.shareYen], ['pending-cost', null, null]);
   }
-  const free = eveScore(C, [payment, { ...cost, costYen: 0 }], WINDOW);
-  assert.equal(eveAuthorShare(free, 'reader').shareYen, 1_600);
+  const zeroJobs = eveScore(C, [payment, { ...cost, count: 0, costYen: 0 }], WINDOW);
+  const unknownCost = eveAuthorShare(zeroJobs, 'reader');
+  assert.deepEqual([zeroJobs.costComplete, unknownCost.status, unknownCost.shareYen], [false, 'pending-cost', null]);
+  const free = eveScore(C, [payment, { ...cost, count: 1, costYen: 0 }], WINDOW);
+  const noExpense = eveAuthorShare(free, 'reader');
+  assert.deepEqual([free.costComplete, noExpense.status, noExpense.shareYen], [true, 'due', 1_600]);
   const { costComplete, ...legacy } = free;
   assert.equal(costComplete, true);
   assert.equal(eveAuthorShare(legacy, 'reader').shareYen, null);
