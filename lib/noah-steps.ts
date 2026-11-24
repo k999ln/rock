@@ -41,6 +41,8 @@ export type NoahStep = {
   after?: readonly string[];
   /** 待つ相手が必要な理由。決まりきった待ちには付けなくてよい。 */
   waitNote?: string;
+  /** 工程名の下に出す1行の説明（道具なら提供者の説明の最初の1文）。 */
+  note?: string;
   /** 受け渡す物に根拠がある時だけ記録する。after には設定などの前提も含められる。 */
   flow?: NoahStepFlow;
 };

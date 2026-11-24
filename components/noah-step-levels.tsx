@@ -72,6 +72,10 @@ export type NoahStepLevelsProps<T extends NoahStep = NoahStep> = {
   materialLabel?: (material: string) => string;
   /** 'flow' の時は、受け渡しの記録（flow）がある工程だけに「受け取る物 → 返る物」を出す。 */
   showMaterials?: boolean | 'flow';
+  /** 段ごとの見出し。null なら数字だけ。 */
+  levelTitle?: (level: readonly T[], index: number) => string | null;
+  /** true の時は、受け取る物と返る物を1つずつ札にして並べる。 */
+  chips?: boolean;
 };
 
 /** 設計図・棚カード・Agent の説明で使う共通の段表示。 */
@@ -82,6 +86,8 @@ export function NoahStepLevels<T extends NoahStep>({
   flowLabel = unchanged,
   materialLabel = unchanged,
   showMaterials = true,
+  levelTitle,
+  chips = false,
 }: NoahStepLevelsProps<T>) {
   const text: NoahStepLevelLabels = {
     ...DEFAULT_LABELS,
@@ -102,7 +108,8 @@ export function NoahStepLevels<T extends NoahStep>({
             {index + 1}
           </span>
           <div className={styles.steps}>
-            {level.length > 1 && <p className={styles.parallel}>{flowLabel(FLOW_LABELS.parallel)}</p>}
+            {levelTitle?.(level, index) ? <p className={styles.levelTitle}>{levelTitle(level, index)}</p>
+              : level.length > 1 && <p className={styles.parallel}>{flowLabel(FLOW_LABELS.parallel)}</p>}
             {level.map((s) => {
               const capability = s.capability
                 ? capabilityLabels[s.capability]
@@ -110,9 +117,10 @@ export function NoahStepLevels<T extends NoahStep>({
               const io = showMaterials === 'flow' ? Boolean(s.flow) : showMaterials;
               const links = io ? s.flow?.dataFrom ?? [] : [];
               const gate = s.kind === 'review' || s.flow?.gate;
-              const describe = (items: readonly string[] | undefined) => items
-                ? items.map(materialLabel).join('・') || flowLabel(FLOW_LABELS.none)
-                : flowLabel(FLOW_LABELS.unknown);
+              const describe = (items: readonly string[] | undefined) => !items ? flowLabel(FLOW_LABELS.unknown)
+                : !items.length ? flowLabel(FLOW_LABELS.none)
+                : chips ? <span className={styles.chips}>{items.map((item) => <span key={item} className={styles.chip}>{materialLabel(item)}</span>)}</span>
+                : items.map(materialLabel).join('・');
               return (
                 <details
                   key={s.id}
@@ -135,7 +143,8 @@ export function NoahStepLevels<T extends NoahStep>({
                       {new Set(links.map(({ from }) => from)).size > 1 && <span className={styles.tag}>{flowLabel(FLOW_LABELS.collect)}</span>}
                       {s.label}
                     </span>
-                    {io && <span className={styles.stepIo}>
+                    {s.note && <span className={styles.note}>{s.note}</span>}
+                    {io && <span className={styles.stepIo} data-chips={chips ? 'true' : undefined}>
                       <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.receives)}</span>{describe(s.flow?.inputs)}</span>
                       <span className={styles.stepArrow} aria-hidden="true" />
                       <span><span className={styles.portLabel}>{flowLabel(FLOW_LABELS.returns)}</span>{describe(s.flow?.outputs)}</span>

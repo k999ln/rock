@@ -55,3 +55,24 @@ void test('the catalog is used only when the live definition hash and count matc
   assert.equal(noahCatalogTools('mcp-registry:unknown/agent', { toolsSha256: sha, toolCount: 7 }), null);
   assert.equal(noahCatalogTools('constructor', { toolsSha256: sha, toolCount: 7 }), null, 'no prototype keys');
 });
+
+void test('each level says in words what happens there, and tools carry the provider sentence', async () => {
+  const { noahExplanationLevelTitle, NOAH_CONNECT_NOTE, NOAH_REQUEST_NOTE } = await import('../lib/noah-agent-explanation.ts');
+  const flow = noahAgentToolListExplanation([], [
+    { name: 'find', summary: 'Find things.', inputs: [{ field: 'b', type: 'string', required: false }, { field: 'a', type: 'string', required: true }], outputs: null },
+    { name: 'list', inputs: [], outputs: null },
+  ]);
+  const levels = noahBlueprintLevels(flow.steps);
+  assert.deepEqual(levels.map(noahExplanationLevelTitle), ['つなぐ', '頼む', 'Agent が道具を使う（2つから選ぶ）']);
+  assert.equal(levels[0][0].note, NOAH_CONNECT_NOTE);
+  assert.equal(levels[1][0].note, NOAH_REQUEST_NOTE);
+  assert.equal(levels[2][0].note, 'Find things.');
+  assert.equal(levels[2][1].note, undefined, 'no sentence is invented when the provider wrote none');
+  assert.deepEqual(levels[2][0].flow?.inputs, ['a（文字）', 'b（文字・任意）'], 'required fields come first');
+});
+
+void test('owner setup before connecting is titled as preparation', async () => {
+  const { noahExplanationLevelTitle } = await import('../lib/noah-agent-explanation.ts');
+  assert.equal(noahExplanationLevelTitle([{ id: 'connect:0', kind: 'human', label: 'API_KEY を入力' }]), 'つなぐ前の準備');
+  assert.equal(noahExplanationLevelTitle([{ id: 'other', kind: 'auto', label: 'x' }]), null);
+});
