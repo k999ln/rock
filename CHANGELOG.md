@@ -1,5 +1,5 @@
 ## 2026-11-24
-- Noah の全画面の読み込みに、マスコット「点のトラ」のスケボーゲームを入れた（`components/noah-tiger-game.tsx`・`lib/noah-tiger-game.ts`）。今は難しい版（開いた瞬間に始まり、穴が 1 つだけの壁をくぐる）で、ふつう版は `NOAH_TIGER_NORMAL` として残す。どの穴も通れることと壁の間隔をテストで確かめる。見本の HTML とふつう版・難しい版の記録は `design/references/`（本人指示 2026-11-24 04:57・05:04・07:05。枝 `claude/noah-tiger-loading`）。
+- Noah の全画面の読み込みに、マスコット「点のトラ」のスケボーゲームを入れた（`components/noah-tiger-game.tsx`・`lib/noah-tiger-game.ts`）。今は難しい版（開いた瞬間に始まり、穴が 1 つだけの壁をくぐる）で、ふつう版は `NOAH_TIGER_NORMAL` として残す。どの穴も通れることと壁の間隔をテストで確かめる。見本の HTML とふつう版・難しい版の記録は `design/references/`（本人指示 2026-11-24 04:57・05:04・07:05。枝 `claude/noah-tiger-loading`。[PR #69](https://github.com/iceiceice999/rock/pull/69)）。
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
 - Noah の道具カタログを掲載中の系列に合わせて再採取した。接続先の説明の冒頭と入力項目を同梱し、取得・照合の結果は [task 128](codex/tasks/128-noah-agent-explain.md#95-掲載系列の道具定義を再取得) に記録。 [PR #65](https://github.com/iceiceice999/rock/pull/65)
