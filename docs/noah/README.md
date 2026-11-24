@@ -23,7 +23,7 @@
 | 2 | L8（全部） | 97 | [出すための運用](spec-97-launch-ops.md) | `noah-flags-v1.ts`、`noah-intake-v1.ts` | `noah-flags.test.mjs`、`noah-intake.test.mjs` |
 | 2 | L9（全部） | 90 | [手元だけの一周](spec-90-phone-only-loop.md) | （参照実装の全部をつなぐ） | `noah-loop.test.mjs`（通信しない一周。`tests/` には、本物の入口を通す版を足す） |
 | 1 | L5・L8 に足す（13 章） | 110 | [棚とパッケージ](spec-110-shelf.md)（111・112・113 も、この仕様書の章を使う） | `noah-shelf-v1.ts`、`noah-shelf-v1.sql`、`noah-shelf-queries-v1.sql` | `noah-shelf.test.mjs`、`validate-noah-shelf-v1.py` |
-| 2 | ローンチの後 | 122 | [稼ぎ方の設計図と、会社で回す自動の流れ](spec-122-business-blueprints.md) | `lib/noah-business.ts`、`data/noah-business-capabilities.json` | `noah-business.test.mjs` |
+| 2 | ローンチの後 | 122 | [稼ぎ方の設計図と、会社で回す自動の流れ](spec-122-business-blueprints.md)・[1 年目の月の利益の見積もり](business-blueprints-average.md) | `lib/noah-business.ts`、`data/noah-business-capabilities.json` | `noah-business.test.mjs` |
 | 2 | ローンチの後（切り替えは閉） | 124 | [定期便の台帳（入金・締め・払い出し）](spec-124-teikibin-ledger.md) | `lib/noah-teikibin.ts`、`lib/noah-teikibin-store.ts`、`drizzle/0055_noah_teikibin.sql` | `noah-teikibin.test.mjs` |
 | 2 | 出した直後 | 114 | [300 人に出す](trial-300.md)・[300 人の試行の利益の試算](trial-300-profit.md)（Sheets の写し） | `noah-shelf-v1.ts`（`NOAH_TRIAL` ほか）、`noah-shelf-v1.sql`（`noah_trial_*`） | 同上 |
 | 3 | 出した後の確かめ | 129 | [使い勝手と抜け道の確かめ（2026-11-22）](ux-audit-2026-11-22.md)（全体の流れの図・機能ごとの表・抜け道） | `lib/noah-search-terms.ts`、`scripts/noah-public-walk.mjs`、`scripts/noah-public-probe.mjs` | `noah-search-terms.test.mjs`、`noah-library-public-sections.test.mjs`、`noah-usage-operator-tab.test.mjs`、`noah-revenue-catalog-cache.test.mjs` |
