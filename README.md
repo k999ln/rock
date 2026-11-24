@@ -241,7 +241,7 @@ flowchart LR
 
 ## 選んだAgentを、自分のMacで動かす
 
-最初の実行先は本人のApple Silicon Macです。Runnerを入れ、自分のアカウントとMacを結ぶと、Noahの管理画面でAgentへの依頼、成果の確認、停止に進めます。
+最初の実行先は本人のApple Silicon Macです。Runnerを入れ、使っているブラウザのNoahとMacを結ぶと、NoahでAgentへの依頼、成果の確認、停止に進めます。Macの接続に新しい会員登録は不要です。専用画面の実行はMac内のLinux環境を使います。macOS・Windows用アプリの操作は未対応です。
 
 [DaisukeのココナラAgent](https://avoado.si/noah/coconala/agent) はMacで公開案件を探し、選んだ理由と提案の下書きをNoahに表示します。Noahから停止できます。
 
@@ -258,7 +258,7 @@ Noahのメニューにある「ココナラの仕事」（MacでNoahを開いた
 **現行の入口**　[Agentを探す](https://avoado.si/noah/explore)　·　**対象**　Apple Silicon Mac
 
 1. 接続画面で「Mac用Noahをダウンロード」を選び、ZIPを展開して `Install.command` を開きます。
-2. ターミナルで次のコマンドを順に使います。`noah doctor` の診断で不足したものがあれば、接続画面の導入手順を確認します。`noah pair` で表示されたURLを開き、自分のアカウントでこのMacを承認します。
+2. ターミナルで次のコマンドを順に使います。`noah doctor` の診断で不足したものがあれば、接続画面の導入手順を確認します。`noah pair` で表示されたURLを普段Noahを使っているブラウザで開き、コードと端末名を確認してこのMacを承認します。接続先は `/noah/mac/connect` です。
 
 ```sh
 noah doctor
@@ -268,7 +268,7 @@ noah start
 
 ### 仕事を実行し、成果を確認して停止する
 
-[Agentを使う](https://avoado.si/noah/launch)で自分のMacとAgentを選びます。「実行中」から「仕事の詳細を開く」を選ぶと、その仕事の進捗を確認し、実行中は停止を依頼できます。完了後は同じURLで成果を読み直し、Agentが返したファイルを保存できます。初めてサインインする場合は、本人確認を終えると登録やMac承認の画面に戻ります。
+[Agentを使う](https://avoado.si/noah/launch)で自分のMacとAgentを選びます。「実行中」から「仕事の詳細を開く」を選ぶと、その仕事の進捗を確認し、実行中は停止を依頼できます。完了後は同じブラウザで成果を読み直し、Agentが返したファイルを保存できます。
 
 実行器全体を止めるには `noah stop` を使います。回線が切れた仕事は自動で再実行されません。再接続したら `noah receipts` で同じ仕事の報告を照合できます。
 

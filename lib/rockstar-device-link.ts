@@ -2,8 +2,6 @@ type Database = Pick<D1Database, 'prepare' | 'batch'>;
 
 const USER_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const USER_CODE = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$/;
-const DEVICE_CODE = /^rock_device_[A-Za-z0-9_-]{43}$/;
-const SESSION_TOKEN = /^rock_session_[A-Za-z0-9_-]{43}$/;
 const LINK_TTL_MS = 10 * 60_000;
 const SESSION_TTL_MS = 90 * 24 * 60 * 60_000;
 
@@ -78,12 +76,18 @@ export function deviceAuthorizationResponse(value: object, bound: boolean) {
   return response;
 }
 
-export function rockstarDeviceLinkStore(db: Database) {
+export function rockstarDeviceLinkStore(db: Database, scope: 'account' | 'noah-runner' = 'account') {
+  const noah = scope === 'noah-runner';
+  const DEVICE_CODE = noah ? /^noah_device_[A-Za-z0-9_-]{43}$/ : /^rock_device_[A-Za-z0-9_-]{43}$/;
+  const SESSION_TOKEN = noah ? /^noah_runner_[A-Za-z0-9_-]{43}$/ : /^rock_session_[A-Za-z0-9_-]{43}$/;
+  // Separate grants in existing tables; a Noah grant never becomes an account session.
+  const scopeSql = noah ? "id LIKE 'noah-runner:%'" : "id NOT LIKE 'noah-runner:%'";
+  const newId = () => (noah ? 'noah-runner:' : '') + crypto.randomUUID();
   return {
     async identity(token: string, now = Date.now()) {
       if (!SESSION_TOKEN.test(token)) throw new Error('UNAUTHORIZED');
       const row = await db.prepare(`SELECT id, user_id AS userId FROM rockstar_device_sessions
-        WHERE token_sha256 = ? AND revoked_at IS NULL AND expires_at > ?`)
+        WHERE token_sha256 = ? AND revoked_at IS NULL AND expires_at > ? AND ${scopeSql}`)
         .bind(await sha256(token), now).first<{id:string;userId:string}>();
       if (!row) throw new Error('UNAUTHORIZED');
       return row;
@@ -92,7 +96,7 @@ export function rockstarDeviceLinkStore(db: Database) {
       const code = typeof codeInput === 'string' ? codeInput.trim().toUpperCase() : '';
       if (!USER_CODE.test(code)) throw new Error('DEVICE_AUTHORIZATION_CODE_INVALID');
       const row = await db.prepare(`SELECT client_name AS clientName, status, expires_at AS expiresAt
-        FROM rockstar_device_authorizations WHERE user_code_sha256 = ?`)
+        FROM rockstar_device_authorizations WHERE user_code_sha256 = ? AND ${scopeSql}`)
         .bind(await sha256(code)).first<{ clientName: string; status: string; expiresAt: number }>();
       if (!row || row.status !== 'pending' || row.expiresAt <= now) return null;
       return { clientName: row.clientName, expiresAt: row.expiresAt };
@@ -101,8 +105,8 @@ export function rockstarDeviceLinkStore(db: Database) {
     async begin(nameInput: unknown, now = Date.now()) {
       const clientName = safeDeviceName(nameInput);
       for (let attempt = 0; attempt < 3; attempt += 1) {
-        const id = crypto.randomUUID();
-        const deviceCode = `rock_device_${bytesToBase64Url(randomBytes(32))}`;
+        const id = newId();
+        const deviceCode = `${noah ? 'noah_device_' : 'rock_device_'}${bytesToBase64Url(randomBytes(32))}`;
         const code = userCode();
         const expiresAt = now + LINK_TTL_MS;
         try {
@@ -132,7 +136,7 @@ export function rockstarDeviceLinkStore(db: Database) {
         throw new Error('DEVICE_AUTHORIZATION_CODE_INVALID');
       const result = await db.prepare(`UPDATE rockstar_device_authorizations
         SET status = 'approved', user_id = ?, approved_at = ?
-        WHERE user_code_sha256 = ? AND status = 'pending' AND expires_at > ?`)
+        WHERE user_code_sha256 = ? AND status = 'pending' AND expires_at > ? AND ${scopeSql}`)
         .bind(ownerUserId, now, await sha256(code), now).run();
       if (changes(result) === 1) return { approved: true };
       return { approved: false };
@@ -144,7 +148,7 @@ export function rockstarDeviceLinkStore(db: Database) {
         throw new Error('DEVICE_AUTHORIZATION_CODE_INVALID');
       const result = await db.prepare(`UPDATE rockstar_device_authorizations
         SET status = 'denied', user_id = ?, approved_at = ?
-        WHERE user_code_sha256 = ? AND status = 'pending' AND expires_at > ?`)
+        WHERE user_code_sha256 = ? AND status = 'pending' AND expires_at > ? AND ${scopeSql}`)
         .bind(ownerUserId, now, await sha256(code), now).run();
       return { denied: changes(result) === 1 };
     },
@@ -156,7 +160,7 @@ export function rockstarDeviceLinkStore(db: Database) {
       const row = await db.prepare(`SELECT id, status, user_id AS userId,
           client_name AS clientName, expires_at AS expiresAt,
           last_polled_at AS lastPolledAt
-        FROM rockstar_device_authorizations WHERE device_code_sha256 = ?`)
+        FROM rockstar_device_authorizations WHERE device_code_sha256 = ? AND ${scopeSql}`)
         .bind(codeHash).first<AuthorizationRow>();
       if (!row) throw new Error('DEVICE_CODE_INVALID');
       if (row.status === 'consumed') return { status: 'access_denied' as const };
@@ -179,10 +183,10 @@ export function rockstarDeviceLinkStore(db: Database) {
       if (row.status !== 'approved' || !row.userId)
         return { status: 'access_denied' as const };
 
-      const token = `rock_session_${bytesToBase64Url(randomBytes(32))}`;
+      const token = `${noah ? 'noah_runner_' : 'rock_session_'}${bytesToBase64Url(randomBytes(32))}`;
       const tokenHash = await sha256(token);
       const expiresAt = now + SESSION_TTL_MS;
-      const deviceId = crypto.randomUUID();
+      const deviceId = newId();
       const [inserted] = await db.batch([
         db.prepare(`INSERT INTO rockstar_device_sessions
           (id, user_id, device_name, token_sha256, created_at, expires_at, last_used_at, revoked_at)
@@ -205,7 +209,7 @@ export function rockstarDeviceLinkStore(db: Database) {
       if (!SESSION_TOKEN.test(tokenInput)) throw new Error('UNAUTHORIZED');
       const tokenHash = await sha256(tokenInput);
       const row = await db.prepare(`SELECT id, user_id AS userId FROM rockstar_device_sessions
-        WHERE token_sha256 = ? AND revoked_at IS NULL AND expires_at > ?`)
+        WHERE token_sha256 = ? AND revoked_at IS NULL AND expires_at > ? AND ${scopeSql}`)
         .bind(tokenHash, now).first<{ id: string; userId: string }>();
       if (!row) throw new Error('UNAUTHORIZED');
       await db.prepare(`UPDATE rockstar_device_sessions SET last_used_at = ?
@@ -217,7 +221,7 @@ export function rockstarDeviceLinkStore(db: Database) {
     async list(ownerUserId: string, now = Date.now()) {
       const rows = await db.prepare(`SELECT id, device_name AS deviceName, created_at AS createdAt,
           last_used_at AS lastUsedAt, expires_at AS expiresAt
-        FROM rockstar_device_sessions WHERE user_id = ? AND revoked_at IS NULL AND expires_at > ?
+        FROM rockstar_device_sessions WHERE user_id = ? AND revoked_at IS NULL AND expires_at > ? AND ${scopeSql}
         ORDER BY created_at DESC LIMIT 50`)
         .bind(ownerUserId, now).all();
       return rows.results;
@@ -225,7 +229,7 @@ export function rockstarDeviceLinkStore(db: Database) {
 
     async revoke(ownerUserId: string, id: string, now = Date.now()) {
       const result = await db.prepare(`UPDATE rockstar_device_sessions SET revoked_at = ?
-        WHERE id = ? AND user_id = ? AND revoked_at IS NULL`)
+        WHERE id = ? AND user_id = ? AND revoked_at IS NULL AND ${scopeSql}`)
         .bind(now, id, ownerUserId).run();
       return changes(result) === 1;
     },

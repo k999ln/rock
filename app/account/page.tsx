@@ -2,6 +2,7 @@ import RockstarAccount from '@/components/rockstar-account';
 import { redirect } from 'next/navigation';
 import { noahAccountHref } from '@/lib/noah-navigation';
 export const dynamic = 'force-dynamic';
+export const metadata = { title: '本人確認 — NoahとEve', description: 'NoahとEveの既存アカウントを確認します。' };
 export default async function AccountPage({ searchParams }: { searchParams: Promise<{ returnTo?: string; mode?: string }> }) {
   const params = await searchParams;
   if (typeof params.returnTo === 'string' && /^\/noah(?:\/|$)/.test(params.returnTo)) {
