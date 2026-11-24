@@ -47,12 +47,15 @@ export function createNoahPublisherApi(deps: { db: Pick<D1Database,'prepare'>; a
   }
   return {
     async cover(request: Request, packageKey: string) {
-      const digest = new URL(request.url).searchParams.get('digest');
+      const params = new URL(request.url).searchParams;
+      const digest = params.get('digest');
       const notFound = () => json({ error: 'カバーが見つかりません。' }, 404);
       if (!isReleasePackageKey(packageKey) || !digest || !/^[a-f0-9]{64}$/.test(digest)) return notFound();
       try {
         let viewer: string | null = null;
-        try { viewer = await deps.authenticate(request); } catch (e) { if (!(e instanceof Error && e.message === 'UNAUTHORIZED')) throw e; }
+        if (params.get('public') !== '1') {
+          try { viewer = await deps.authenticate(request); } catch (e) { if (!(e instanceof Error && e.message === 'UNAUTHORIZED')) throw e; }
+        }
         const visible = () => deps.db.prepare(`SELECT p.user_id AS owner,json_extract(p.manifest,'$.cover') AS cover FROM sky_tool_packages p
           WHERE p.package_key=? AND p.manifest_sha256=? AND (p.user_id=? OR (p.status='verified' AND p.published_at IS NOT NULL
             AND EXISTS(SELECT 1 FROM sky_tool_package_reviews r WHERE r.package_key=p.package_key AND r.manifest_sha256=p.manifest_sha256

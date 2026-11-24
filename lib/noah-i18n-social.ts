@@ -2,6 +2,16 @@ export const NOAH_SOCIAL_MESSAGES: Record<
   string,
   readonly [string, string, string, string, string]
 > = {
+  '上映作品に戻る': ['Back to the program','返回放映节目','상영 목록으로 돌아가기','Volver al programa','العودة إلى برنامج العروض'],
+  '作者の上映室': ['Creator screenings','作者放映室','제작자 상영관','Sala de creadores','عروض المؤلفين'],
+  '動画を掲載する': ['Submit a film','投稿影片','영상 제출','Presentar un vídeo','تقديم مقطع'],
+  '公開された作者の動画はまだありません。': ['No creator films have been published yet.','暂时还没有公开的作者影片。','아직 공개된 제작자 영상이 없습니다.','Aún no se han publicado vídeos de creadores.','لم تُنشر مقاطع من المؤلفين بعد.'],
+  '動画を読み込み中…': ['Loading films…','正在加载影片…','영상 불러오는 중…','Cargando vídeos…','جارٍ تحميل المقاطع…'],
+  'この動画は現在再生できません。': ['This film is currently unavailable.','此影片目前无法播放。','현재 이 영상을 재생할 수 없습니다.','Este vídeo no se puede reproducir ahora.','يتعذر تشغيل هذا المقطع حاليًا.'],
+  '上映作品を読み込めませんでした。': ['Could not load the screenings.','无法加载放映作品。','상영작을 불러올 수 없습니다.','No se pudieron cargar los vídeos.','تعذّر تحميل العروض.'],
+  'ほかの作品を見る': ['More films','更多影片','다른 작품 보기','Más vídeos','المزيد من المقاطع'],
+  '使い方ガイド': ['How to use it','使用指南','사용 가이드','Guía de uso','دليل الاستخدام'],
+  '詳細・利用条件': ['Details and terms','详情与使用条件','상세 정보 및 이용 조건','Detalles y condiciones','التفاصيل وشروط الاستخدام'],
   人が利用: ['users', '人使用', '명 사용', 'usuarios', 'مستخدم'],
   王冠: ['Crowns', '认可', '추천', 'Reconocimientos', 'تقديرات'],
   コメント: ['Comments', '评论', '댓글', 'Comentarios', 'التعليقات'],

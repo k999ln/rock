@@ -13,8 +13,8 @@ export function isNoahCover(value: unknown): value is NoahCover {
 export function noahPrivateCoverUrl(id: string) {
   return '/api/noah/agents/' + encodeURIComponent(id) + '/cover';
 }
-export function noahReleaseCoverUrl(packageKey: string, manifestSha256: string) {
-  return '/api/noah/releases/' + encodeURIComponent(packageKey) + '/cover?digest=' + encodeURIComponent(manifestSha256);
+export function noahReleaseCoverUrl(packageKey: string, manifestSha256: string, publicOnly = false) {
+  return '/api/noah/releases/' + encodeURIComponent(packageKey) + '/cover?digest=' + encodeURIComponent(manifestSha256) + (publicOnly ? '&public=1' : '');
 }
 export function noahInviteCoverUrl(inviteId: string) {
   return '/api/noah/invites/' + encodeURIComponent(inviteId) + '/cover';

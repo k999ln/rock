@@ -12,10 +12,12 @@ import styles from './noah-agent-catalog.module.css';
 import { NOAH_COVER_TYPES, noahPrivateCoverUrl } from '@/lib/noah-cover';
 import { NoahPinMotion } from './noah-art-motion';
 import NoahLocalConnectionPanel from './noah-local-connection';
+import NoahLaunch from './noah-launch';
+import NoahEngineeringMcpTrial from './noah-engineering-mcp-trial';
 import NoahManagedInstallation from './noah-managed-installation';
 import { NoahInviteManager } from './noah-invites';
 import { NOAH_TEST_MANIFEST_SHA256 } from '@/lib/noah-local-connection';
-export default function NoahAgentDetail({ id, remote = false }: { id: string; remote?: boolean }) {
+export default function NoahAgentDetail({ id, remote = false, engineering = false }: { id: string; remote?: boolean; engineering?: boolean }) {
   const router = useRouter(), builtin = id === 'anicca';
   const [upload, setUpload] = useState<NoahUpload | null>(null), [scope, setScope] = useState('');
   const [error, setError] = useState(''), [message, setMessage] = useState(''), [pending, setPending] = useState(false);
@@ -82,17 +84,17 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
       setUpload(data.agent); setRetrySource(null); setRetryCover(null); setMessage('ファイルの保存が完了しました。');
     } catch (e) { setError((e as Error).message); } finally { setPending(false); }
   }
-  return <div className={`${styles.page} ${styles.formPage}`}>
-    <nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link></nav>
+  return <div className={engineering ? styles.formPage : `${styles.page} ${styles.formPage}`}>
+    {!engineering && <nav className={styles.nav}><Link href="/noah/explore">← Agent一覧</Link><Link href="/noah/saved?tab=agents">自分のAgent</Link></nav>}
     {error && <div role="alert" className={styles.error}>{error} {!m && <button onClick={() => setAttempt(n => n + 1)}>再試行</button>}</div>}
     {!m && !error && <output>読み込んでいます…</output>}
     {m && <>
-      <header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true"><NoahPinMotion id={id} name={m.name} summary={m.summary} cover={m.cover && upload?.uploadState === 'ready' ? {type:m.cover.type,url:noahPrivateCoverUrl(id)} : undefined} /></span><div><h1>{m.name}</h1><p>{builtin ? '外部Agent' : '自分のAgent'}</p></div></header>
-      <p className={styles.productSummary}>{m.summary}</p>
+      {!engineering && <><header className={styles.storeProduct}><span className={styles.productMark} aria-hidden="true"><NoahPinMotion id={id} name={m.name} summary={m.summary} cover={m.cover && upload?.uploadState === 'ready' ? {type:m.cover.type,url:noahPrivateCoverUrl(id)} : undefined} /></span><div><h1>{m.name}</h1><p>{builtin ? '外部Agent' : '自分のAgent'}</p></div></header>
+      <p className={styles.productSummary}>{m.summary}</p></>}
       <div className={styles.facts}><div><small>接続方式</small><strong>{builtin ? '背景実行・本人Codex接続' : m.runtime ? 'ターミナル用テンプレート' : testConnection ? 'テストAgent接続' : adapterLabels[m.adapter]}</strong></div><div><small>作者 / 版</small><strong>{m.author} / {m.version}</strong></div><div><small>実行する場所</small><strong>{builtin || m.runtime ? 'このMacの隔離環境' : testConnection ? 'クラウド / このMac' : m.adapter === 'source' ? '未設定' : m.adapter === 'local_app' ? '隔離環境の対応待ち' : '接続先のサービス'}</strong></div></div>
       {testConnection && upload?.uploadState === 'ready' && <NoahLocalConnectionPanel key={id + scope} id={id} ownerScope={scope} />}
       {builtin && !remote && <NoahManagedInstallation key={id} id={id} />}
-      <section className={styles.notice}><h2>利用条件</h2>{!builtin && upload?.uploadState === 'ready' && <p><Link href={`/noah/outbox?agent=${id}`}>このAgentの情報を送る →</Link></p>}<p>{m.priceNote}</p><p>必要な権限：{m.permissions.map(p => permissionLabels[p]).join('、') || '申告なし'}</p><p>ライセンス：{m.license}</p>
+      <section className={styles.notice}><h2>利用条件</h2>{!builtin && !engineering && upload?.uploadState === 'ready' && <p><Link href={`/noah/outbox?agent=${id}`}>このAgentの情報を送る →</Link></p>}<p>{m.priceNote}</p><p>必要な権限：{m.permissions.map(p => permissionLabels[p]).join('、') || '申告なし'}</p><p>ライセンス：{m.license}</p>
         {m.endpointUrl && <p>{testConnection ? '元の登録URL（テストでは使用しません）' : '接続先'}：<a href={m.endpointUrl} target="_blank" rel="noopener noreferrer">{m.endpointUrl}</a></p>}
         {m.sourceUrl && <p><a href={m.sourceUrl} target="_blank" rel="noopener noreferrer">ソースを見る ↗</a></p>}
       </section>
@@ -100,14 +102,18 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
         {upload.original && <label>再送する原本ファイル · {upload.original.name}<input type="file" disabled={pending} onChange={e => setRetrySource(e.target.files?.[0] || null)} /></label>}
         {m.cover && <label>未保存のカバーを再送<input type="file" accept={NOAH_COVER_TYPES.join(',')} disabled={pending} onChange={e => setRetryCover(e.target.files?.[0] || null)} /></label>}
         <button disabled={Boolean(upload.original && !retrySource) || (!retrySource && !retryCover) || pending} onClick={() => void retryUpload()}>アップロードを再試行</button></div> :
-        !testConnection && !builtin && m.adapter !== 'source' && <div className={styles.actions}><button className={styles.primary} disabled={pending} onClick={() => void connect()}>{pending ? '確認しています…' : '接続する'}</button>
+        !testConnection && !builtin && m.adapter !== 'source' && <div className={styles.actions}><button className={styles.primary} disabled={pending} onClick={() => void connect()}>{pending ? '確認しています…' : engineering && m.adapter !== 'web' ? '接続を試す' : '接続する'}</button>
           {launchUrl && <a className={styles.primary} href={launchUrl} target="_blank" rel="noopener noreferrer">{m.adapter === 'local_app' ? 'Aniccaの設定画面を開く ↗' : 'Agentを使う ↗'}</a>}
           {launchUrl && m.adapter === 'local_app' && <button disabled={pending} onClick={() => void disconnectLocal()}>設定画面を停止</button>}</div>}
-      {remote && (builtin || m.runtime) && <p><Link href={`/noah/activity?agent=${id}`}>自分のMacを選んで接続・実行</Link></p>}
+      {engineering && m.adapter === 'mcp_http' && upload?.uploadState === 'ready' && scope && <NoahEngineeringMcpTrial key={id + scope} id={id} ownerScope={scope} />}
+      {engineering && m.adapter === 'source' && upload?.uploadState === 'ready' && (m.runtime && upload.source
+        ? <NoahLaunch key={id + scope} engineeringAgentId={id} expectedOwnerScope={scope} />
+        : <p className={styles.notice}>この版を動かすには、起動ファイルを含むコードと実行設定が必要です。「自分のAgentを作る」で、NodeまたはPythonのテンプレートから登録できます。</p>)}
+      {remote && !engineering && (builtin || m.runtime) && <p><Link href={`/noah/activity?agent=${id}`}>自分のMacを選んで接続・実行</Link></p>}
       {!remote && m.adapter === 'source' && (m.runtime && upload?.uploadState === 'ready' ? <NoahManagedInstallation key={id + scope} id={id} terminal /> : <p className={styles.notice}>コードを保存しています。実行方式と必要な環境の準備が完了すると接続できます。</p>)}
       {message && <output className={styles.notice}>{message}</output>}
       
-      {upload && <section className={styles.notice}><h2>登録したファイル</h2><p>{upload.source ? `${upload.source.name} · ${(upload.source.bytes / 1024).toFixed(1)} KiB` : '接続先と定義を保存しています。'}</p>
+      {upload && !engineering && <section className={styles.notice}><h2>登録したファイル</h2><p>{upload.source ? `${upload.source.name} · ${(upload.source.bytes / 1024).toFixed(1)} KiB` : '接続先と定義を保存しています。'}</p>
         <p><Link href={`/noah/usage?scope=publisher&agent=${encodeURIComponent(`noah-upload:${upload.id}`)}`}>このAgentの利用状況を見る →</Link></p>
         <details><summary>外部Agentから利用状況を送る</summary><p>サーバー側の報告キーは <code>noah-upload:{upload.id}</code>。既存の開発者キーと利用報告APIを使います。<Link href="/sky/publish">開発者キーの管理</Link></p><p>接続だけでは使用量は届きません。作者がAgentの実行完了・失敗時に報告処理を組み込みます。</p></details>
         {upload.processing && <div><h3>{{ refactored: 'リファクタして保存しました', unchanged: '変更なしで保存しました', unsupported: '自動整理の対象外・原本を保存', failed: '整理・検証を完了できず・原本を保存' }[upload.processing.status]}</h3><p>{upload.processing.message}</p>
@@ -123,7 +129,7 @@ export default function NoahAgentDetail({ id, remote = false }: { id: string; re
         <p className={styles.muted}>掲載申請は別途入力・審査が必要です。本人用ファイルは自動公開されません。</p>
         {!confirmDelete ? <button onClick={() => setConfirmDelete(true)}>自分の一覧から削除</button> : <div className={styles.actions}><span>この登録を削除します。外部Agent本体は停止しません。</span><button disabled={pending} onClick={() => void remove()}>削除する</button><button onClick={() => setConfirmDelete(false)}>戻る</button></div>}
       </section>}
-      {upload?.uploadState === 'ready' && scope && <NoahInviteManager key={`${id}/${scope}`} agentId={id} scope={scope} hasSource={Boolean(upload.source)} hasRuntime={Boolean(upload.manifest.runtime)} />}
+      {!engineering && upload?.uploadState === 'ready' && scope && <NoahInviteManager key={`${id}/${scope}`} agentId={id} scope={scope} hasSource={Boolean(upload.source)} hasRuntime={Boolean(upload.manifest.runtime)} />}
     </>}
   </div>;
 }

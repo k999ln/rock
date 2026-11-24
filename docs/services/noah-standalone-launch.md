@@ -1,5 +1,7 @@
 # Noah 単体ローンチ
 
+2026-11-24　ストアの作者向け入口は `/noah/engineering`。自作も外部接続も本人の登録版を保存し、同じ版の試行と掲載申請へ引き継ぐ。試行で使える操作は登録した方式と実行先の状態による。Eveへの工程別相談は作者が送信する。公開には掲載審査が必要。
+
 - 本人の一言: 「登録・審査・公開から、別ユーザーが追加して接続・実行・停止するまで繋げて、初めてのMacでも使えるところまでテストして」
 - Goal: 対応済み固定Agentと審査済みNode/Python配布版を、Eveを開かずNoahから使う。
 - 接続: 公開Webのaccount・既存Package/Review/instance/Work・本人Mac runner。Macは既存device authorizationで本人が承認し、外向きHTTPSのみで取得する。認証情報は実行containerへ渡さない。

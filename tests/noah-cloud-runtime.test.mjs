@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
-import { NOAH_CLOUD_PROFILES, noahCloudModelInput, noahCloudResult, noahCloudProfile } from '../lib/noah-cloud-contract.ts';
+import { NOAH_CLOUD_PROFILES, NOAH_EVE_ADVICE_PURPOSE, NOAH_EVE_HERMES_PROJECT, noahCloudModelInput, noahCloudResult, noahCloudProfile } from '../lib/noah-cloud-contract.ts';
 
 const bundle = await build({ entryPoints: ['services/noah-cloud-agents/worker.mjs'], bundle: true, write: false, format: 'esm', platform: 'node', plugins: [{ name: 'durable-object-test-host', setup(b) {
   b.onResolve({ filter: /^cloudflare:workers$/ }, () => ({ path: 'durable', namespace: 'test' }));
@@ -29,6 +29,48 @@ void test('runtime is private and never accepts browser origins or unknown profi
   assert.equal((await worker.fetch(make({ Authorization: `Bearer ${key}` }), env)).status, 200);
   assert.equal((await worker.fetch(make({ Authorization: `Bearer ${key}` }, { action: 'start', distribution: 'b'.repeat(64) }), env)).status, 409);
   assert.equal(calls, 1);
+});
+void test('only the private free official Eve start accepts the advice purpose and binds it to the existing owner and job ID', async () => {
+  const key = 'worker-test-' + 'x'.repeat(40);
+  const jobs = new Map(), connections = new Map();
+  let admissions = 0;
+  const env = {
+    NOAH_CLOUD_KEY: key, NOAH_CLOUD_MODE: 'free',
+    BUDGET: { getByName: () => ({ async fetch() { admissions++; return Response.json({ ok: true }); } }) },
+    JOBS: { getByName(name) {
+      if (!jobs.has(name)) {
+        const obj = new NoahCloudJob(context(), env);
+        obj.schedule = async () => {};
+        obj.recover = async () => {};
+        jobs.set(name, { fetch: (url, init) => obj.fetch(new Request(url, init)) });
+      }
+      return jobs.get(name);
+    } },
+    CONNECTIONS: { getByName(name) {
+      if (!connections.has(name)) {
+        const ctx = context();
+        if (name === owner + ':' + NOAH_EVE_HERMES_PROJECT + ':hermes') ctx.data.set('connection', { id: id(1), state: 'connected', revision: 1, jobs: [] });
+        const conn = new NoahCloudConnection(ctx, env);
+        connections.set(name, { fetch: (url, init) => conn.fetch(new Request(url, init)) });
+      }
+      return connections.get(name);
+    } },
+  };
+  const payload = { action: 'start', owner, project: NOAH_EVE_HERMES_PROJECT, profile: 'hermes', distribution: NOAH_CLOUD_PROFILES.hermes.sha256, connectionId: id(1), jobId: id(2), prompt: 'Goal', purpose: NOAH_EVE_ADVICE_PURPOSE };
+  const rpc = (body, config = env, auth = key) => worker.fetch(new Request('https://worker/rpc', { method: 'POST', headers: { Authorization: 'Bearer ' + auth }, body: JSON.stringify(body) }), config);
+  assert.equal((await rpc(payload, env, 'wrong')).status, 401);
+  for (const patch of [{ action: 'connect' }, { mode: 'probe' }, { purpose: 'invalid' }, { profile: 'boss' }, { project }]) assert.equal((await rpc({ ...payload, ...patch })).status, 400);
+  assert.equal((await rpc(payload, { ...env, NOAH_CLOUD_MODE: 'paid' })).status, 400);
+  assert.equal(admissions, 0);
+  const started = await rpc(payload);
+  assert.equal(started.status, 202);
+  assert.equal((await started.json()).purpose, NOAH_EVE_ADVICE_PURPOSE);
+  const again = await rpc(payload);
+  assert.equal(again.status, 200);
+  assert.equal((await again.json()).purpose, NOAH_EVE_ADVICE_PURPOSE);
+  assert.equal((await rpc({ ...payload, purpose: undefined })).status, 409);
+  assert.equal((await rpc({ ...payload, action: 'job', purpose: undefined, owner: 'c'.repeat(64) })).status, 404);
+  assert.equal(admissions, 1);
 });
 void test('global budget serializes admission, keeps midnight leases, and releases only the given job', async () => {
   const ctx = context(), budget = new NoahCloudBudget(ctx, {});

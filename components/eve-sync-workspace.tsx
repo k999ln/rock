@@ -74,9 +74,11 @@ const label = (s: string) =>
 const subscribeWorkspaceView=(changed:()=>void)=>{window.addEventListener('hashchange',changed);window.addEventListener('popstate',changed);return()=>{window.removeEventListener('hashchange',changed);window.removeEventListener('popstate',changed);};};
 export default function EveSyncWorkspace({
   initialThreadId = '',
+  initialDraft = '',
   initialSelection = { kind: 'none' },
 }: {
   initialThreadId?: string;
+  initialDraft?: string;
   initialSelection?: SkyEveSelection;
 }) {
   const workspaceHash=useSyncExternalStore(subscribeWorkspaceView,()=>window.location.hash,()=>'');
@@ -117,7 +119,7 @@ export default function EveSyncWorkspace({
     const conversation = conversationRef.current;
     if (conversation && conversationId) conversation.scrollTop = conversation.scrollHeight;
   }, [selected, conversationId]);
-  const [input, setInput] = useState(''),
+  const [input, setInput] = useState(initialDraft),
     [targetId, setTargetId] = useState(skyEveSelectionTargetKey(initialSelection)),
     [agentId, setAgentId] = useState(
       initialSelection.kind === 'device' || initialSelection.kind === 'runtime'
@@ -138,7 +140,8 @@ export default function EveSyncWorkspace({
     expanded = useRef(false);
   const [leaveTarget,setLeaveTarget]=useState<{href?:string;resume?:()=>void}|null>(null);
   const discardingDraft=useRef(false);
-  const hasUnsentDraft=Boolean(input.trim());
+  // An untouched suggestion can be restored from its stage URL after sign-in.
+  const hasUnsentDraft=Boolean(input.trim()) && input !== initialDraft;
   useEffect(()=>{
     if(!hasUnsentDraft)return;
     const warn=(event:BeforeUnloadEvent)=>{if(!discardingDraft.current)event.preventDefault();};
