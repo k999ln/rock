@@ -100,7 +100,7 @@ export default async function EveCombinationPage(p: Props) {
                         const steps = sources.map(edge => order.get(edge.from)).filter(n => n !== undefined);
                         return <div key={material}>{material}{steps.length > 0 && <small>（工程 {steps.join('・')} から）</small>}</div>;
                       })}</dd></div>
-                      <div><dt>出力</dt><dd>{flow.outputs.join('・')}</dd></div>
+                      <div><dt>出力</dt><dd>{flow.outputs?.join('・') ?? '未確認'}</dd></div>
                     </dl>}
                     {s.problems.map((x, j) => (
                       <p key={j} className={`${styles.problem} ${x.level === 'block' ? styles.problemBlock : ''}`}>規則 {x.rule}: {x.message}</p>
