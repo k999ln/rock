@@ -1,0 +1,426 @@
+<title>Noah 読み込み中</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
+<style>
+/* Layout: one centred column. Loading status on top, the game strip below, a one-line hint at the bottom.
+   The tiger is the only colour; everything else is the quiet grey of an offline page. */
+:root {
+  --bg: #FFFFFF;
+  --fg: #202024;
+  --muted: #76727F;
+  --line: #E6E3EB;
+  --tiger: #F7931E;
+  --hole: #202024;      /* stripes, eyes and nose of the tiger */
+  --thing: #8E8998;     /* cones, bench, pigeons, street */
+  --cloud: #E9E6EE;
+  --pixel: "DotGothic16", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141318; --fg: #ECEAF0; --muted: #8E8A98; --line: #2A2830;
+    --tiger: #F7931E; --hole: #141318; --thing: #6F6B7A; --cloud: #24222B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141318; --fg: #ECEAF0; --muted: #8E8A98; --line: #2A2830;
+  --tiger: #F7931E; --hole: #141318; --thing: #6F6B7A; --cloud: #24222B;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--pixel);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  box-sizing: border-box;
+}
+.screen {
+  min-height: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+  padding-block: 32px;
+  box-sizing: border-box;
+}
+.status { display: flex; flex-direction: column; gap: 10px; }
+.status-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.brand { font-size: 22px; letter-spacing: .02em; }
+.message { font-size: 15px; color: var(--muted); min-width: 0; }
+.message .dots::after { content: ""; animation: dots 1.2s steps(4, end) infinite; }
+@keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+.percent { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { height: 6px; background: var(--line); overflow: hidden; }
+.bar > span { display: block; height: 100%; width: 0; background: var(--tiger); transition: width .4s steps(6, end); }
+.again {
+  align-self: flex-start;
+  font: inherit; font-size: 14px; color: var(--fg);
+  background: transparent; border: 2px solid var(--fg); padding: 6px 12px; cursor: pointer;
+}
+.again:focus-visible { outline: 3px solid var(--tiger); outline-offset: 2px; }
+
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  max-width: 100%;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+.stage:focus-visible { outline: 3px solid var(--tiger); outline-offset: 4px; }
+canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.score {
+  position: absolute; top: 4px; right: 0;
+  font-size: 15px; color: var(--muted);
+  font-variant-numeric: tabular-nums; letter-spacing: .08em;
+  display: flex; gap: 18px;
+}
+.score .now { color: var(--fg); }
+.score.flash .now { animation: flash .25s steps(1, end) 4; }
+@keyframes flash { 50% { visibility: hidden; } }
+.callout {
+  position: absolute; left: 0; right: 0; top: 26%;
+  text-align: center; font-size: 16px; color: var(--fg);
+  pointer-events: none;
+}
+.callout small { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+.hint { margin: 0; font-size: 13px; color: var(--muted); text-align: center; }
+kbd { font: inherit; border: 1px solid var(--muted); padding: 0 5px; }
+@media (max-width: 480px) {
+  .brand { font-size: 19px; }
+  .message, .percent { font-size: 13px; }
+  .callout { font-size: 14px; top: 20%; }
+  .score { font-size: 12px; gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .message .dots::after { animation: none; content: "..."; }
+  .bar > span { transition: none; }
+}
+</style>
+
+<main class="screen">
+  <section class="status" aria-live="polite">
+    <div class="status-row">
+      <span class="brand">Noah</span>
+      <span class="percent" id="percent">0%</span>
+    </div>
+    <div class="bar" role="progressbar" aria-label="読み込みの進み具合" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar"><span id="barFill"></span></div>
+    <div class="status-row">
+      <span class="message" id="message">Agent を探しています<span class="dots"></span></span>
+    </div>
+    <button class="again" id="again" type="button" hidden>もう一度読み込む</button>
+  </section>
+
+  <div class="stage" id="stage" tabindex="0" role="application" aria-label="トラがスケボーでコーンやハトをよけるゲーム。スペースキーかタップでオーリー（ジャンプ）します。">
+    <canvas id="game" width="480" height="160"></canvas>
+    <div class="score" aria-hidden="true"><span id="hi"></span><span class="now" id="now">00000</span></div>
+    <div class="callout" id="callout">スペースキーかタップでスタート<small>待っている間、トラのスケボーをどうぞ</small></div>
+  </div>
+
+  <p class="hint"><kbd>スペース</kbd> か <kbd>↑</kbd>、またはタップでオーリー（板ごとジャンプ）。長く押すと高く跳びます。</p>
+</main>
+
+<script>
+(() => {
+  // ---------- loading (sample: the real app would report its own progress) ----------
+  const stages = [
+    [0, "Agent を探しています"],
+    [38, "道具をそろえています"],
+    [74, "仕事場を開いています"],
+    [96, "もうすぐです"],
+  ];
+  const percentEl = document.getElementById("percent");
+  const barEl = document.getElementById("bar");
+  const fillEl = document.getElementById("barFill");
+  const messageEl = document.getElementById("message");
+  const againEl = document.getElementById("again");
+  let progress = 0, loadTimer = null;
+
+  function setProgress(p) {
+    progress = Math.min(100, p);
+    percentEl.textContent = Math.floor(progress) + "%";
+    fillEl.style.width = progress + "%";
+    barEl.setAttribute("aria-valuenow", String(Math.floor(progress)));
+    if (progress >= 100) {
+      messageEl.textContent = "準備ができました";
+      againEl.hidden = false;
+      return;
+    }
+    let text = stages[0][1];
+    for (const [at, t] of stages) if (progress >= at) text = t;
+    messageEl.innerHTML = text + '<span class="dots"></span>';
+  }
+  function startLoading() {
+    clearTimeout(loadTimer);
+    againEl.hidden = true;
+    setProgress(0);
+    const step = () => {
+      // uneven steps, slower near the end, like a real load
+      const left = 100 - progress;
+      setProgress(progress + Math.max(0.6, Math.random() * left * 0.09));
+      if (progress < 100) loadTimer = setTimeout(step, 380 + Math.random() * 520);
+    };
+    loadTimer = setTimeout(step, 600);
+  }
+  againEl.addEventListener("click", startLoading);
+  startLoading();
+
+  // ---------- sprites (one dot = D logical pixels) ----------
+  const D = 3;
+  // '#' = tiger orange, 'o' = hole (stripe, eye, nose), 'b' = skateboard, '.' = nothing
+  // the tiger stands on the board with all four paws; 24 x 10 dots
+  function tigerSprite({ pose = "ride", eyesOpen = true, board = "flat" } = {}) {
+    const W = 24, H = 10;
+    const g = Array.from({ length: H }, () => Array(W).fill("."));
+    const on = (x, y, c = "#") => { if (y >= 0 && y < H && x >= 0 && x < W) g[y][x] = c; };
+    [[0, 0], [0, 1], [1, 2]].forEach(([x, y]) => on(x, y));               // tail
+    for (let x = 3; x <= 14; x++) on(x, 2);                                  // back
+    for (let y = 3; y <= 5; y++) for (let x = 2; x <= 14; x++) on(x, y);     // body
+    for (const x of [3, 6, 9, 12]) { on(x, 3, "o"); on(x, 4, "o"); }         // stripes
+    for (let y = 1; y <= 3; y++) for (let x = 15; x <= 21; x++) on(x, y);    // head
+    for (let x = 16; x <= 20; x++) on(x, 4);                                 // chin
+    on(16, 0); on(20, 0);                                                    // ears
+    if (eyesOpen) { on(17, 2, "o"); on(19, 2, "o"); }                        // eyes
+    on(18, 3, "o");                                                          // nose
+    // paws on the deck; when pushing, one back leg reaches down to the street
+    const paws = pose === "push" ? [6, 10, 13] : [3, 6, 10, 13];
+    for (const x0 of paws) { on(x0, 6); on(x0 + 1, 6); }
+    if (pose === "push") { on(2, 6); on(1, 7); on(1, 8); on(0, 9); }
+    // skateboard: deck, raised nose, two wheels. "pop" presses the tail down for an ollie
+    for (let x = 2; x <= 22; x++) on(x, 7, "b");
+    on(23, 6, "b");
+    if (board === "pop") { on(2, 7, "."); on(3, 7, "."); on(2, 8, "b"); on(3, 8, "b"); }
+    for (const x0 of [4, 18]) for (const y of [8, 9]) { on(x0, y, "b"); on(x0 + 1, y, "b"); }
+    return g.map(r => r.join(""));
+  }
+  const T = {
+    ride: tigerSprite(), push: tigerSprite({ pose: "push" }),
+    blink: tigerSprite({ eyesOpen: false }), ollie: tigerSprite({ board: "pop" }),
+    air: tigerSprite(), down: tigerSprite({ eyesOpen: false }),
+  };
+  // street things, drawn in the quiet grey. 'o' is a hole (the reflective band, an eye)
+  const CONE = ["...#...", "..###..", "..ooo..", ".#####.", ".#####.", "#######"];
+  const CONE_TALL = ["...#...", "..###..", "..###..", "..ooo..", ".#####.", ".#####.", ".#####.", "#######"];
+  const BENCH = ["############", "############", ".#........#.", ".#........#.", ".#........#."];
+  const PIGEON = [
+    ["....##..", "...##...", "##o####.", ".######.", "....##.."],
+    ["........", "........", "##o####.", ".#######", "...###.."],
+  ];
+  const CLOUD = ["...####...", ".########.", "##########"];
+
+  // ---------- canvas ----------
+  const W = 480, H = 160, GROUND = 140;
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+  const stage = document.getElementById("stage");
+  let k = 1; // device pixels per logical pixel
+  function resize() {
+    const r = stage.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.round(r.width * dpr));
+    canvas.height = Math.max(1, Math.round(r.height * dpr));
+    k = canvas.width / W;
+    draw();
+  }
+  let colors = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    for (const n of ["bg", "tiger", "hole", "thing", "cloud", "fg"]) colors[n] = cs.getPropertyValue("--" + n).trim();
+    draw();
+  }
+  // a rect snapped to device pixels so dots stay crisp at any scale
+  function rect(x, y, w, h, c) {
+    const x0 = Math.round(x * k), y0 = Math.round(y * k);
+    const x1 = Math.round((x + w) * k), y1 = Math.round((y + h) * k);
+    ctx.fillStyle = c;
+    ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+  }
+  function sprite(rows, x, y, palette) {
+    for (let j = 0; j < rows.length; j++) {
+      const r = rows[j];
+      for (let i = 0; i < r.length; i++) {
+        const c = palette[r[i]];
+        if (c) rect(x + i * D, y + j * D, D, D, c);
+      }
+    }
+  }
+
+  // ---------- game state ----------
+  const tiger = { x: 22, y: 0, vy: 0, w: 24 * D, h: 10 * D };
+  const groundY = () => GROUND - tiger.h;
+  let state = "idle"; // idle | run | over
+  let speed, distance, score, obstacles, clouds, joints, dust, frame, blinkAt, pushAt, holding, lastMilestone;
+  let hi = 0;
+  try { hi = parseInt(localStorage.getItem("noah-tiger-hi-hard") || "0", 10) || 0; } catch (e) { hi = 0; }
+
+  function reset() {
+    tiger.y = groundY(); tiger.vy = 0;
+    speed = 8.5; distance = 0; score = 0; frame = 0; blinkAt = 120; pushAt = 40; lastMilestone = 0;
+    obstacles = []; dust = [];
+    clouds = [{ x: 110, y: 30 }, { x: 280, y: 52 }, { x: 420, y: 22 }];
+    // sidewalk joints: short marks under the street line, evenly spaced
+    joints = Array.from({ length: 11 }, (_, i) => ({ x: i * 48 + 10 }));
+  }
+  reset();
+
+  const pad = n => String(Math.floor(n)).padStart(5, "0");
+  const hiEl = document.getElementById("hi"), nowEl = document.getElementById("now");
+  const scoreBox = document.querySelector(".score");
+  const callout = document.getElementById("callout");
+  function showScore() {
+    nowEl.textContent = pad(score);
+    hiEl.textContent = hi > 0 ? "HI " + pad(hi) : "";
+  }
+  showScore();
+
+  // Hard mode: every obstacle is a wall of a cone and stacked pigeons with ONE hole, 44 px tall.
+  // Hole heights and spacing were checked by simulating this exact physics: every wall can be
+  // threaded, but only with the right moment and the right length of press (a few frames).
+  const HOLE_H = 44;
+  const HOLE_BOTTOMS = [0, 18, 24, 30, 36, 42, 48, 54, 60]; // 0 = the hole is on the street: do not jump
+  let untilNext = 0;
+  function addWall(x) {
+    const hb = HOLE_BOTTOMS[Math.floor(Math.random() * HOLE_BOTTOMS.length)];
+    const PW = 8 * D, PH = 5 * D;
+    const pigeon = (bottom) => obstacles.push({ kind: "pigeon", x, y: GROUND - bottom - PH, w: PW, h: PH });
+    if (hb > 0) {
+      const rows = hb >= 8 * D ? CONE_TALL : CONE;
+      obstacles.push({ kind: "thing", rows, x, y: GROUND - rows.length * D, w: rows[0].length * D, h: rows.length * D });
+      for (let top = hb; top > rows.length * D; top -= PH) pigeon(top - PH);
+    }
+    for (let b = hb + HOLE_H; b < GROUND + PH; b += PH) pigeon(b);
+  }
+  const gapFrames = () => 30 + Math.random() * 10;
+  function firstWall() {
+    // the first wall reaches the tiger about 0.45 s after the page opens
+    const x = tiger.x + 22 * D + 27 * speed;
+    addWall(x);
+    untilNext = x + gapFrames() * speed - (W + 10);
+  }
+  function spawn(dt) {
+    untilNext -= speed * dt;
+    if (untilNext <= 0) { addWall(W + 10 + untilNext); untilNext += gapFrames() * speed; }
+  }
+
+  function hit(o) {
+    // forgiving boxes: body, head and legs of the tiger against a slightly smaller obstacle
+    const t = tiger;
+    const boxes = [
+      [t.x + 2 * D, t.y + 2 * D, 13 * D, 4 * D],   // body
+      [t.x + 15 * D, t.y + 1 * D, 7 * D, 4 * D],   // head
+      [t.x + 3 * D, t.y + 6 * D, 19 * D, 4 * D],   // paws, board and wheels
+    ];
+    const ox = o.x, oy = o.y, ow = o.w, oh = o.h;
+    return boxes.some(([x, y, w, h]) => x < ox + ow && x + w > ox && y < oy + oh && y + h > oy);
+  }
+
+  function jump() {
+    if (state === "idle" || state === "over") { start(); return; }
+    if (tiger.y >= groundY() - 0.5) { tiger.vy = -8.6; holding = true; }
+  }
+  function release() {
+    holding = false;
+    if (tiger.vy < -4) tiger.vy = -4;
+  }
+  function start() {
+    reset(); state = "run"; callout.hidden = true; showScore(); firstWall();
+  }
+  function gameOver() {
+    state = "over";
+    if (score > hi) { hi = Math.floor(score); try { localStorage.setItem("noah-tiger-hi-hard", String(hi)); } catch (e) {} }
+    showScore();
+    callout.innerHTML = "ぶつかった！<small>スペースキーかタップで、もう一度</small>";
+    callout.hidden = false;
+  }
+
+  // ---------- loop ----------
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let lastT = performance.now();
+  function tick(now) {
+    const dt = Math.max(0, Math.min(2.5, (now - lastT) / (1000 / 60)));
+    lastT = now;
+    frame += dt;
+    if (state === "run") {
+      speed = Math.min(13, speed + 0.002 * dt);
+      distance += speed * dt;
+      score = distance * 0.025;
+      if (Math.floor(score / 100) > lastMilestone) {
+        lastMilestone = Math.floor(score / 100);
+        scoreBox.classList.remove("flash"); void scoreBox.offsetWidth; scoreBox.classList.add("flash");
+      }
+      // physics
+      tiger.vy += (holding && tiger.vy < 0 ? 0.42 : 0.62) * dt;
+      tiger.y += tiger.vy * dt;
+      if (tiger.y > groundY()) { tiger.y = groundY(); tiger.vy = 0; }
+      // world
+      for (const o of obstacles) o.x -= speed * dt;
+      obstacles = obstacles.filter(o => o.x + o.w > -10);
+      spawn(dt);
+      for (const c of clouds) { c.x -= speed * 0.18 * dt; if (c.x < -40) { c.x = W + Math.random() * 120; c.y = 18 + Math.random() * 44; } }
+      for (const j of joints) { j.x -= speed * dt; if (j.x < -4) j.x += 48 * joints.length; }
+      // dust kicked up behind the back wheel while rolling
+      const onGround = tiger.y >= groundY() - 0.5;
+      if (onGround && Math.floor(frame) % 5 === 0) dust.push({ x: tiger.x + 3 * D, y: GROUND - 2 - Math.random() * 4, life: 16 });
+      for (const p of dust) { p.x -= speed * 0.7 * dt; p.life -= dt; }
+      dust = dust.filter(p => p.life > 0);
+      if (onGround && frame > pushAt + 14) pushAt = frame + 70 + Math.random() * 70;
+      if (obstacles.some(hit)) gameOver();
+      nowEl.textContent = pad(score);
+    } else if (state === "idle" && !reduce) {
+      if (frame > blinkAt + 8) blinkAt = frame + 140 + Math.random() * 160;
+    }
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  function draw() {
+    if (!colors.bg) return;
+    ctx.fillStyle = colors.bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (const c of clouds) sprite(CLOUD, c.x, c.y, { "#": colors.cloud });
+    rect(0, GROUND, W, 2, colors.thing);
+    for (const j of joints) rect(j.x, GROUND + 4, 2, 6, colors.thing);
+    for (const p of dust) rect(p.x, p.y, 2, 2, colors.thing);
+    for (const o of obstacles) {
+      if (o.kind === "thing") sprite(o.rows, o.x, o.y, { "#": colors.thing, "o": colors.bg });
+      else sprite(PIGEON[Math.floor(frame / 10) % 2], o.x, o.y, { "#": colors.thing, "o": colors.bg });
+    }
+    let s;
+    if (state === "over") s = T.down;
+    else if (state === "idle") s = (frame > blinkAt && frame < blinkAt + 8) ? T.blink : T.ride;
+    else if (tiger.y < groundY() - 0.5) s = tiger.vy < -5 ? T.ollie : T.air;
+    else s = (frame > pushAt && frame < pushAt + 14) ? T.push : T.ride;
+    sprite(s, tiger.x, tiger.y, { "#": colors.tiger, "o": colors.hole, "b": colors.fg });
+  }
+
+  // ---------- input ----------
+  const isJumpKey = e => e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW";
+  window.addEventListener("keydown", e => {
+    if (!isJumpKey(e) || e.target.closest("button")) return;
+    e.preventDefault();
+    if (!e.repeat) jump();
+  });
+  window.addEventListener("keyup", e => { if (isJumpKey(e)) release(); });
+  stage.addEventListener("pointerdown", e => { e.preventDefault(); stage.focus({ preventScroll: true }); jump(); });
+  window.addEventListener("pointerup", release);
+  window.addEventListener("pointercancel", release);
+
+  // ---------- theme and size ----------
+  new ResizeObserver(resize).observe(stage);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColors);
+  new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  readColors();
+  resize();
+  start();
+  requestAnimationFrame(tick);
+})();
+</script>
