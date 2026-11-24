@@ -68,7 +68,7 @@ Eve（自動）は、需要の台帳から見込みの利益が高い道を探�
 | --- | --- | --- |
 | 1. 形と検査 | `lib/eve-combination.ts`（形・規則 1〜9・設計図からの変換・`eveCheckAccept`）、`lib/eve-glue.ts`（宣言型のつなぎ目） | 470 通りすべてを変換でき、検査で止まる物 0。規則ごとに落ちる例。変換の際に、登録の前の規約の確認が抜けていた 109 通りへ確認を足す |
 | 2. 手で 1 本通す | `lib/eve-combination-paper.ts`（試運転）、`data/eve-combinations/affiliate-ai-tools-blog.json` | 試運転で外へ出す工程の実行 0。最初の 1 本は設計図から 2 か所変えた（調査と案件から記事の指示を作るつなぎ目、LP を公開する前に広告の表示を点検）。本番で本人が押す・ASP の記録を読むのは本人待ち |
-| 3. 需要の台帳 | `lib/eve-demand.ts`、`lib/eve-verify.ts` | 受注・ASP・売り場から出典付きの需要。出典が無い・90 日より古い・https でない・0 円は入れない。能力を確かめる見本の仕事は、本人の同意まで相手へ送らない |
+| 3. 需要の台帳 | `lib/eve-demand.ts`、`lib/eve-verify.ts` | 受注・ASP・売り場から出典付きの需要。出典が無い・90 日より古い・https でない・0 円は入れない。能力を確かめる見本の仕事は、本人の同意（2026-11-24 13:54）の後、`scripts/eve-verify-run.mjs` で送った。Noah の 205 件のうち能力の語で当たった候補 54 件から、読むだけで見本を入れられる道具を持つ 29 件へ 1 回ずつ送り、Jev の判定に通った物は 0 件（記録は `data/eve-verifications/2026-11-24.json`）。送信・購入・電話・申込などの道具は呼ばない |
 | 4. 探索と発見 | `lib/eve-combination-search.ts`、`lib/eve-discover.ts` | 型に無い組み合わせを見込みの利益の順に出す。確かめていない矢印は使わない。設計図 470 通りの「作る」部分は 19 通りの作り方に収まる |
 | 5. 採点と作り直し | `lib/eve-combination-score.ts`、`lib/eve-combination-rebuild.ts`、画面 `/os/eve/combinations`、API `/api/eve/combinations` | Jev の合格条件 8 つ。段ごとに数えてよい記録の元を決め、本人の申告は数えない。一番数が落ちた段は (次+1)÷(前+2) で見て、同じ型の他の成績表があれば中央値と比べる |
 | 6. 作者の受け取り | `eveAuthorShare`（`lib/eve-combination-score.ts`） | 外部の入金の記録がある時だけ計算する。元は「入金 − 費用」、割合は 20%（`EVE_AUTHOR_SHARE_BPS`） |

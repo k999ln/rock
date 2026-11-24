@@ -1,4 +1,5 @@
 ## 2026-11-24
+- Eve の能力の確かめを本物の候補へ送った（Opus / Noelle。本人回答 13:54「全部送ってよい」。task 130）。Noah の 205 件から能力の語で当たった 54 件のうち、読むだけで見本を入れられる道具を持つ 29 件へ 1 回ずつ送り、Jev の判定に通った物は 0 件。送信・購入・電話・申込などの道具は呼ばない。`scripts/eve-verify-run.mjs`、記録は `data/eve-verifications/2026-11-24.json`。
 - マイAgentのブラウザー保存先から、同じ本人の収益記録を作成・再表示できるようにした（[PR #68](https://github.com/iceiceice999/rock/pull/68)）。
 - マイAgentで収益系Agentの成果を開くと、同じ仕事の承認額・実入金・最終費用と作者20%の確定状況を確認できるようにした。証憑の連携前も表示する（[PR #67](https://github.com/iceiceice999/rock/pull/67)）。
 - Noah の道具カタログを掲載中の系列に合わせて再採取した。接続先の説明の冒頭と入力項目を同梱し、取得・照合の結果は [task 128](codex/tasks/128-noah-agent-explain.md#95-掲載系列の道具定義を再取得) に記録。 [PR #65](https://github.com/iceiceice999/rock/pull/65)

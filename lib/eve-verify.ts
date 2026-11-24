@@ -83,3 +83,75 @@ export function eveMergeVerified(file: EveVerifiedFile, results: readonly EveVer
   for (const r of results) if (r.ok) verified[r.capability] = [...new Set([...(verified[r.capability] ?? []), r.ref])].sort();
   return { ...file, verified: Object.fromEntries(Object.keys(verified).sort().map((k) => [k, verified[k]])) };
 }
+
+// ---------------------------------------------------------------------------
+// 本物の候補へ送る時の、道具の選び方と入力の作り方（2026-11-24 13:54 の本人回答「全部送ってよい」）。
+// 送ってよいのは、読むだけの道具だけ。送信・購入・電話・申込・登録・投稿などの道具は、候補にどれだけ合っていても呼ばない。
+// ---------------------------------------------------------------------------
+
+/** MCP の道具の定義（tools/list の 1 件）。 */
+export type EveMcpTool = {
+  name: string;
+  description?: string;
+  inputSchema?: { type?: string; properties?: Record<string, { type?: string | string[]; enum?: readonly unknown[] }>; required?: readonly string[] };
+  annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean };
+};
+
+/** 外に影響が出る道具の名前（送る・買う・電話する・申し込む・登録する・書き換える など）。これに当たる道具は呼ばない。 */
+export const EVE_VERIFY_SIDE_EFFECT =
+  /(send|call|dial|sms|whatsapp|email|mail|post|publish|create|add|update|edit|delete|remove|buy|purchase|order|checkout|cart|pay|book|reserve|hire|apply|submit|register|sign_?up|subscribe|transfer|deploy|upload|save|store|launch|place|cancel|approve|vote|feedback|waitlist|invite|connect|login|auth|start|claim|mint|trade|swap|bid|quote|contact|message|notify|schedule|set_|start)/iu;
+const READS = /(search|get|list|lookup|look_up|find|fetch|read|query|check|scan|report|estimate|analy|stat|value|compare|describe|info|research|summar|answer|explain|resolve)/iu;
+const WRITES_TEXT = /(write|draft|script|compose|generate|suggest|idea)/iu;
+
+/** 能力ごとに、見本の中身を入れてよい項目の名前と、入れる見本の値。 */
+const VERIFY_FIELDS: Readonly<Record<string, { fields: readonly string[]; from: string; prefer: RegExp }>> = {
+  'research.market': { fields: ['query', 'q', 'keyword', 'keywords', 'topic', 'search', 'term', 'text', 'prompt', 'question'], from: 'topic', prefer: /(research|search|keyword|trend|market)/iu },
+  'tracking.results': { fields: ['csv', 'data', 'text', 'content', 'input', 'report'], from: 'csv', prefer: /(report|analy|stat|parse|read)/iu },
+  'content.script': { fields: ['brief', 'prompt', 'text', 'topic', 'query', 'instructions', 'description'], from: 'brief', prefer: /(script|write|draft|compose|generate)/iu },
+};
+
+const isString = (p?: { type?: string | string[] }) => !p?.type || p.type === 'string' || (Array.isArray(p.type) && p.type.includes('string'));
+
+/**
+ * 見本の仕事を頼む道具を 1 つ選び、入力を作る。選べない時は理由を返す（呼ばない）。
+ * 1. 外に影響が出る名前の道具・destructiveHint の道具は除く。
+ * 2. readOnlyHint が付いた道具か、読むだけの名前の道具だけを使う（台本・文章を書く能力だけは、書くだけの名前も使う）。
+ * 3. 必ず要る項目がすべて見本で埋まる道具だけを使う（埋まらない項目があれば呼ばない）。見本を入れる項目が 1 つも無い道具も使わない。
+ * 4. 能力に合う名前の道具を先に、同じなら名前の順。
+ */
+export function eveVerifyToolChoice(task: EveVerifyTask, tools: readonly EveMcpTool[]): { tool: EveMcpTool; args: Record<string, string> } | { tool: null; reason: string } {
+  const spec = VERIFY_FIELDS[task.capability];
+  if (!spec) return { tool: null, reason: `「${task.capability}」の見本の入れ方が決まっていません。` };
+  const value = task.input[spec.from];
+  if (typeof value !== 'string' || !value) return { tool: null, reason: '見本の値がありません。' };
+  const usable: { tool: EveMcpTool; args: Record<string, string> }[] = [];
+  for (const tool of tools) {
+    if (typeof tool?.name !== 'string' || EVE_VERIFY_SIDE_EFFECT.test(tool.name) || tool.annotations?.destructiveHint === true) continue;
+    const readOnly = tool.annotations?.readOnlyHint === true || READS.test(tool.name) || (task.capability === 'content.script' && WRITES_TEXT.test(tool.name));
+    if (!readOnly) continue;
+    const props = tool.inputSchema?.properties ?? {};
+    const required = tool.inputSchema?.required ?? [];
+    const fits = (key: string) => spec.fields.includes(key.toLowerCase()) && isString(props[key]) && !props[key]?.enum;
+    if (!required.every(fits)) continue;
+    const key = required.find(fits) ?? Object.keys(props).sort().find(fits);
+    if (!key) continue;
+    usable.push({ tool, args: Object.fromEntries([...new Set([...required, key])].map((k) => [k, value])) });
+  }
+  if (!usable.length) return { tool: null, reason: '読むだけで、見本を入れられる道具がありません（外に影響が出る道具は呼びません）。' };
+  usable.sort((a, b) => Number(spec.prefer.test(b.tool.name)) - Number(spec.prefer.test(a.tool.name)) || a.tool.name.localeCompare(b.tool.name));
+  return usable[0];
+}
+
+/** MCP の道具の返事を、Jev が判定する形にする。構造化された返事があればそれ、無ければ文章（JSON として読めれば JSON）。 */
+export function eveMcpOutput(result: { structuredContent?: unknown; content?: readonly { type?: string; text?: string }[]; isError?: boolean }): unknown {
+  const text = (result.content ?? []).filter((c) => c?.type === 'text' && typeof c.text === 'string').map((c) => c.text).join('\n');
+  if (result.isError) throw new Error(`道具が失敗を返しました: ${text.slice(0, 200)}`);
+  if (result.structuredContent !== undefined && result.structuredContent !== null) return result.structuredContent;
+  try {
+    const parsed: unknown = JSON.parse(text);
+    if (parsed && typeof parsed === 'object') return parsed;
+  } catch {
+    // 文章のまま判定する
+  }
+  return text;
+}
